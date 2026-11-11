@@ -1543,10 +1543,12 @@ Everything in this section was read by verify-docs-audio-to-notes on 2026-11-10.
   the wheel (`.dist-info` holds `METADATA`, `RECORD`, `WHEEL`). Code: `YMT3(model_path, model_name, precision="32",
   device="cpu")` with `model_name` one of "YMT3+", "YPTF+Single", "YPTF+Multi", "YPTF+MoE+Multi", which loads with
   `self.model.load_state_dict(torch.load(model_path),strict=False)`; `predict(filepath, batch_size=8, callback=None,
-  output_path="output.mid")` writes the MIDI with `note_event2midi` (`MidiFile(ticks_per_beat=480, type=0)`, one
-  channel per program, drums as internal program 128; `yourmt3/utils/midi.py`). The weights repository (revision
-  4300d378) now also holds Basic Pitch, CREPE, Omnizart and MELODIA files besides the YourMT3 `.pt` files; `cardData`
-  is still null and it is not gated. `YPTF+Single.pt` is 121,781,787 bytes with LFS SHA-256 28a7dd18...ff3313e4.
+  output_path="output.mid")` writes the MIDI with `note_event2midi` (`MidiFile(ticks_per_beat=480, type=0)` and then
+  `midi.type = 1`: an empty first track and one track per program, every note-on at velocity 100, no tempo message,
+  one channel per program, drums on channel 9 as internal program 128; `yourmt3/utils/midi.py`; corrected by the
+  round's verifier, who re-read the wheel on 2026-11-11). The weights repository (revision 4300d378, last modified
+  2025-08-30) also holds Basic Pitch, CREPE, Omnizart and MELODIA files besides the YourMT3 `.pt` files (80 files);
+  `cardData` is still null and it is not gated. `YPTF+Single.pt` is 121,781,787 bytes with LFS SHA-256 28a7dd18...ff3313e4.
 
 ## 38. SoX (input preparation; added in gap round 2)
 
@@ -1856,7 +1858,8 @@ sections 36 `mt3-infer` and 37 `yourmt3` (who publishes them, the checkpoint reg
 read from the code, the install and the refused runs); new section 38 SoX (license quoted) and new section 39 (arXiv
 2601.11768, no code or weights linked), with tool-list lines 38 and 39; status notes on tool-list lines 12, 36 and 37.
 What ran and what was refused is in `trials.md`, "Gap round 2". These additions have not been through a verify-docs
-pass.
+pass. (They were checked against their sources by `verify-gapfill-audio-to-notes` on 2026-11-11; its log, with the
+corrections made here, is at the end of `trials.md`.)
 
 ## Verification log (verify-docs-audio-to-notes, 2026-11-10)
 

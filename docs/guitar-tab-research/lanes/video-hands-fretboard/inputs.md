@@ -45,7 +45,9 @@ They are fixed per shot and do not follow the player. R3a_cu was used at its ful
 
 ## C1: a still of a guitar neck with a capo (added in gap round 2, 2026-11-11)
 
-The shared clips have no capo (shared manifest, "Caveats"), so this lane added one freely licensed still for the
+The shared video clips show no capo (shared manifest, "Caveats"; its capo clip S5capo2 is synthesized audio with no
+video; corrected by the round-2 verifier, this said "The shared clips have no capo"), so this lane added one freely
+licensed still for the
 capo questions (gap V6 in `GAPS.md`). Found on Wikimedia Commons in `Category:Capos` (category page read 2026-11-11;
 the Commons search API answered HTTP 429 to this box twice, and the general web-search budget of this session was
 used up, so the category page was read instead). Two smaller files in that category were looked at and not used:

@@ -1,6 +1,6 @@
 {
   "lane": "chords-beats-key",
-  "generated": "2026-11-10",
+  "generated": "2026-11-11",
   "tools": [
     {
       "name": "aubio",
@@ -548,7 +548,8 @@
                 "est_A4_Hz": 440.729,
                 "note": "no truth"
               }
-            }
+            },
+            "gap1_capo_labels": "S5capo2 first four chord segments (seconds): A 0.46-4.18, D 4.18-7.62, A 7.62-8.45, E 8.45-9.57; at the four truth midpoints (3.214, 4.821, 5.893, 6.964 s) on S5capo2: A D D D; on S2n (no capo): G Am G C; truth S5capo2: A:maj 2.14-4.29, D:maj 4.29-5.36, A:maj 5.36-6.43, D:maj 6.43-7.50 (from scripts/capo_chord_labels.py, samples/capo_chords/capo_chord_labels.json; no tool outputs a capo position or takes a capo or transposition input)"
           }
         },
         {
@@ -1153,6 +1154,10 @@
               "key": "E major",
               "key_weighted": 0.5,
               "eval_key": "e0311"
+            },
+            "gap1_capo_labels": {
+              "CNN + CRF": "S5capo2 first four chord segments (seconds): A:maj 2.20-4.30, D:maj 4.30-7.70, A:maj 7.70-11.90, D:maj 11.90-13.00; at the four truth midpoints (3.214, 4.821, 5.893, 6.964 s) on S5capo2: A:maj D:maj D:maj D:maj; on S2n (no capo): G:maj C:maj G:maj C:maj; truth S5capo2: A:maj 2.14-4.29, D:maj 4.29-5.36, A:maj 5.36-6.43, D:maj 6.43-7.50 (from scripts/capo_chord_labels.py, samples/capo_chords/capo_chord_labels.json; no tool outputs a capo position or takes a capo or transposition input)",
+              "deep chroma": "S5capo2 first four chord segments (seconds): A:maj 2.20-4.40, D:maj 4.40-5.60, A:maj 5.60-6.50, D:maj 6.50-7.80; at the four truth midpoints (3.214, 4.821, 5.893, 6.964 s) on S5capo2: A:maj D:maj A:maj D:maj; on S2n (no capo): G:maj C:maj G:maj C:maj; truth S5capo2: A:maj 2.14-4.29, D:maj 4.29-5.36, A:maj 5.36-6.43, D:maj 6.43-7.50 (from scripts/capo_chord_labels.py, samples/capo_chords/capo_chord_labels.json; no tool outputs a capo position or takes a capo or transposition input)"
             }
           }
         },
@@ -2346,7 +2351,8 @@
               }
             },
             "R2_no_truth": "multifeature 143.76 BPM (confidence 1.93), TempoCNN k16 72.0 and k4 72.0; keys bgate/krumhansl/temperley F# major, edma/shaath Eb minor; TonalExtractor key B major, 43 chord segments",
-            "R2full_no_truth": "multifeature 143.68 BPM (confidence 1.33), TempoCNN k16 72.0, k4 144.0; keys bgate/krumhansl/edma/shaath Eb minor, temperley F# major; 227 chord segments"
+            "R2full_no_truth": "multifeature 143.68 BPM (confidence 1.33), TempoCNN k16 72.0, k4 144.0; keys bgate/krumhansl/edma/shaath Eb minor, temperley F# major; 227 chord segments",
+            "gap1_capo_labels": "S5capo2 first four chord segments (seconds): Am 0.00-1.21, F#m 1.21-1.53, A 1.53-4.23, Bm 4.23-4.83; at the four truth midpoints (3.214, 4.821, 5.893, 6.964 s) on S5capo2: A Bm A D; on S2n (no capo): G G G C; truth S5capo2: A:maj 2.14-4.29, D:maj 4.29-5.36, A:maj 5.36-6.43, D:maj 6.43-7.50 (from scripts/capo_chord_labels.py, samples/capo_chords/capo_chord_labels.json; no tool outputs a capo position or takes a capo or transposition input)"
           }
         },
         {
@@ -2889,7 +2895,11 @@
             "note": "run total covers autochord, CREMA and lv-chordia, each on S3 and S5capo2; venvs rebuilt from the first-round freezes",
             "S5capo2_chords": {
               "chords_autochord": "root 0.647, majmin 0.647, mirex 0.647, 15 segments (e1767)"
-            }
+            },
+            "gap1_capo_labels": "S5capo2 first four chord segments (seconds): A:maj 1.95-4.13, D:maj 4.13-7.43, A:maj 7.43-11.89, D:maj 11.89-12.82; at the four truth midpoints (3.214, 4.821, 5.893, 6.964 s) on S5capo2: A:maj D:maj D:maj D:maj; on S2n (no capo): G:maj C:maj G:maj C:maj; truth S5capo2: A:maj 2.14-4.29, D:maj 4.29-5.36, A:maj 5.36-6.43, D:maj 6.43-7.50 (from scripts/capo_chord_labels.py, samples/capo_chords/capo_chord_labels.json; no tool outputs a capo position or takes a capo or transposition input)",
+            "per_job_wall_s": 9.28,
+            "control": "each tool ran on S3 first as a control into out/gap1check_<tool>/S3/ (moved afterwards to out/gap1_controls/<tool>/S3/); the S3 outputs are byte-identical to the first round's (autochord .lab; CREMA .lab and .jams; lv-chordia .lab and .json for both dictionaries); venvs rebuilt from samples/crema/venv-tf.freeze.txt without jax and jaxlib and samples/lv_chordia/venv-lvchordia.freeze.txt; tensorflow-cpu 2.12.1 downloaded again (221.1 MiB); plan scripts/plans/gap1_capo_chords.json; truth has 22 segments",
+            "run_total": "r0605 total 102.1 s wall, 103.8 s CPU, 1040.7 MB peak RSS (6 jobs, all exit 0)"
           }
         }
       ],
@@ -2942,7 +2952,8 @@
         "no separate license statement found for the weights (downloaded from Google Drive)",
         "author measurement: \"The measured test accuracy of the TensorFlow model is 67.33%.\" (test set not named)",
         "tested \"for Python 3 setup in Ubuntu (18.04)\"; \"Windows is unsupported\"",
-        "why the first job was the slowest was not isolated for this tool (numba cache files were written; share of time not measured)"
+        "why the first job was the slowest was not isolated for this tool (numba cache files were written; share of time not measured)",
+        "this round's S5capo2 output and score were not reproduced by the verifier: tensorflow-cpu 2.12.1 (221.1 MiB) is no longer cached and the disk notice allows no new download over 200 MB; checked from the files"
       ]
     },
     {
@@ -3105,7 +3116,11 @@
             "note": "run total covers autochord, CREMA and lv-chordia, each on S3 and S5capo2; venvs rebuilt from the first-round freezes",
             "S5capo2_chords": {
               "chords_crema": "root 0.638, majmin 0.638, mirex 0.638, 7 segments (e1768)"
-            }
+            },
+            "gap1_capo_labels": "S5capo2 first four chord segments (seconds): A:maj 2.14-4.27, D:maj 4.27-7.43, A:maj 7.43-21.36, D:maj 21.36-22.48; at the four truth midpoints (3.214, 4.821, 5.893, 6.964 s) on S5capo2: A:maj D:maj D:maj D:maj; on S2n (no capo): G:maj C:maj/5 G:maj G:maj; truth S5capo2: A:maj 2.14-4.29, D:maj 4.29-5.36, A:maj 5.36-6.43, D:maj 6.43-7.50 (from scripts/capo_chord_labels.py, samples/capo_chords/capo_chord_labels.json; no tool outputs a capo position or takes a capo or transposition input)",
+            "per_job_wall_s": 6.95,
+            "control": "each tool ran on S3 first as a control into out/gap1check_<tool>/S3/ (moved afterwards to out/gap1_controls/<tool>/S3/); the S3 outputs are byte-identical to the first round's (autochord .lab; CREMA .lab and .jams; lv-chordia .lab and .json for both dictionaries); venvs rebuilt from samples/crema/venv-tf.freeze.txt without jax and jaxlib and samples/lv_chordia/venv-lvchordia.freeze.txt; tensorflow-cpu 2.12.1 downloaded again (221.1 MiB); plan scripts/plans/gap1_capo_chords.json; truth has 22 segments",
+            "run_total": "r0605 total 102.1 s wall, 103.8 s CPU, 1040.7 MB peak RSS (6 jobs, all exit 0)"
           }
         }
       ],
@@ -3141,7 +3156,8 @@
         "vocabulary size not determined (model resources sit behind the symlink crema/models/chord, not read)",
         "weights ship inside the package; no separate weights license found; training data not read",
         "docs http://crema.readthedocs.io not read",
-        "why the first job was the slowest was not isolated for this tool"
+        "why the first job was the slowest was not isolated for this tool",
+        "this round's S5capo2 output and score were not reproduced by the verifier: tensorflow-cpu 2.12.1 (221.1 MiB) is no longer cached and the disk notice allows no new download over 200 MB; checked from the files"
       ]
     },
     {
@@ -4096,7 +4112,25 @@
             "S5capo2_chords": {
               "chords_lvchordia_submission": "root 0.946, majmin 0.946, mirex 0.946, 23 segments (e1770)",
               "chords_lvchordia_ismir2017": "root 0.946, majmin 0.946, mirex 0.946, 23 segments (e1769)"
-            }
+            },
+            "gap1_capo_labels": "S5capo2 first four chord segments (seconds): A:maj 2.11-4.30, D:maj 4.30-5.41, A:maj 5.41-6.43, D:maj 6.43-7.55; at the four truth midpoints (3.214, 4.821, 5.893, 6.964 s) on S5capo2: A:maj D:maj A:maj D:maj; on S2n (no capo): G:maj C:maj G:maj C:maj; truth S5capo2: A:maj 2.14-4.29, D:maj 4.29-5.36, A:maj 5.36-6.43, D:maj 6.43-7.50 (from scripts/capo_chord_labels.py, samples/capo_chords/capo_chord_labels.json; no tool outputs a capo position or takes a capo or transposition input)",
+            "per_job_wall_s": 9.14,
+            "control": "each tool ran on S3 first as a control into out/gap1check_<tool>/S3/ (moved afterwards to out/gap1_controls/<tool>/S3/); the S3 outputs are byte-identical to the first round's (autochord .lab; CREMA .lab and .jams; lv-chordia .lab and .json for both dictionaries); venvs rebuilt from samples/crema/venv-tf.freeze.txt without jax and jaxlib and samples/lv_chordia/venv-lvchordia.freeze.txt; tensorflow-cpu 2.12.1 downloaded again (221.1 MiB); plan scripts/plans/gap1_capo_chords.json; truth has 22 segments",
+            "run_total": "r0605 total 102.1 s wall, 103.8 s CPU, 1040.7 MB peak RSS (6 jobs, all exit 0)"
+          }
+        },
+        {
+          "run_id": "r0671",
+          "input_id": "S5capo2 (verifier re-run)",
+          "cores": 2,
+          "wall_s": 29.79,
+          "peak_mb": null,
+          "exit_code": null,
+          "output_files": [],
+          "metrics": {
+            "verifier_rerun": true,
+            "wait_for_slot_s": 344,
+            "result": ".lab and .json files of both dictionaries byte-identical to r0605's"
           }
         }
       ],
@@ -4294,11 +4328,11 @@
       "kind": "open-source",
       "what": "Python library for automatic music transcription from the Music and Culture Technology (MCT) Lab; its chord application (Harmony Transformer based) transcribes chord progressions to MIDI and CSV.",
       "url": "https://github.com/Music-and-Culture-Technology-Lab/omnizart",
-      "version": "PyPI omnizart 0.6.3 (uploaded 2026-05-31; sdist only); HEAD 2026-05-31 (commit bcd8cb4); pyproject python \">=3.8,<3.15\", tensorflow \">=2.5.0\" for python < 3.14; JOSS doi 10.21105/joss.03391",
+      "version": "PyPI omnizart 0.6.3 (uploaded 2026-05-31; sdist only); HEAD 2026-05-31 (commit bcd8cb4); pyproject python \">=3.8,<3.15\", tensorflow \">=2.5.0\" for python < 3.14; JOSS doi 10.21105/joss.03391; files per release (PyPI JSON, read 2026-11-10): 0.1.0 to 0.5.0 and 0.6.0 each have a py3-none-any wheel and an sdist, 0.6.1, 0.6.2 and 0.6.3 only an sdist; requires_python \">=3.6.1,<3.9\" for 0.1.1 to 0.5.0, \">=3.8\" for 0.6.x; 0.5.0 wheel uploaded 2021-12-09 (sha256 4bc708c6...8d8f) pins \"tensorflow (==2.5.0)\", \"urllib3 (==1.26.4)\", \"librosa (>=0.8.0,<0.9.0)\", \"madmom (>=0.16.1,<0.17.0)\", \"spleeter (>=2.3.0,<3.0.0)\", \"vamp (>=1.1.0,<2.0.0)\", \"mir_eval (>=0.6,<0.7)\", \"pyfluidsynth (>=1.2.5,<2.0.0)\"; 0.6.0 wheel (2026-05-30, sha256 f6c9e3f0...cbb3) asks for \"tensorflow>=2.5.0; python_version < \\\"3.14\\\"\" and \"tf-keras; python_version >= \\\"3.9\\\" and python_version < \\\"3.14\\\"\"",
       "tried": false,
       "tried_how": null,
       "runs": [],
-      "not_run_reason": "sdist only; requires tensorflow>=2.5, tf-keras, madmom>=0.16.1, pyfluidsynth, sherpa-onnx, vamp. Not attempted by the trial agent (time). The verifier then tried a chord-only install (sdist with --no-deps on the cached tensorflow-cpu 2.12.1 plus only the chord checkpoint file, 44,242,072 bytes); the shell command was refused before it ran (\"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External]\"). Nothing was installed. (Gap round 1: one attempt with the omnizart 0.5.0 wheel on Python 3.8, tensorflow 2.5.0 and numpy 1.19.5 preinstalled, no build isolation, failed building madmom 0.16.1: \"madmom/ml/nn/layers.c:38:6: error: #error Cython requires Python 3.9+.\", a C file generated by Cython 3.3.1 left in uv's shared sdist cache by this lane's r0025.)",
+      "not_run_reason": "sdist only; requires tensorflow>=2.5, tf-keras, madmom>=0.16.1, pyfluidsynth, sherpa-onnx, vamp. Not attempted by the trial agent (time). The verifier then tried a chord-only install (sdist with --no-deps on the cached tensorflow-cpu 2.12.1 plus only the chord checkpoint file, 44,242,072 bytes); the shell command was refused before it ran (\"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External]\"). Nothing was installed. (Gap round 1: one attempt with the omnizart 0.5.0 wheel on Python 3.8, tensorflow 2.5.0 and numpy 1.19.5 preinstalled, no build isolation, failed building madmom 0.16.1: \"madmom/ml/nn/layers.c:38:6: error: #error Cython requires Python 3.9+.\", a C file generated by Cython 3.3.1 left in uv's shared sdist cache by this lane's r0025.) Gap round 1 detail: the audio-to-notes lane's gap agent had tried the same release at 23:30 UTC with a plain uv pip install and stopped at \"Failed to build `vamp==1.1.0`\" (\"No module named 'numpy'\" during the build); the attempt here (2026-11-11 00:18 UTC, 1 min 7.7 s; log logs/gap1/install_omnizart_attempt1.log) was uv venv --python 3.8 (CPython 3.8.20, 19.9 MiB), uv pip install \"numpy==1.19.5\" \"cython<3\" \"setuptools<60\" wheel (Cython 0.29.37, setuptools 59.8.0), then uv pip install --no-build-isolation \"omnizart==0.5.0\" with numpy held at 1.19.5; uv \"Resolved 91 packages\", downloaded among others tensorflow 2.5.0 (433.4 MiB), and built mir-eval 0.6, termcolor 1.1.0, wrapt 1.12.1 and vamp 1.1.0; the madmom 0.16.1 build failed: \"madmom/ml/nn/layers.c:38:6: error: #error Cython requires Python 3.9+.\" then \"error: command 'cc' failed with exit status 1\"; exit 1; TensorFlow and Omnizart were not installed (28 small packages were; list in logs/gap1/venv-omnizart-attempt1.freeze.txt). The build ran in the unpacked madmom sdist in uv's shared cache, whose madmom/ml/nn/layers.c says \"Generated by Cython 3.3.1\" and is dated 2026-11-10 20:58:23 UTC, inside this lane's first-round madmom build on Python 3.11 (r0025, 20:56:22 to 20:58:55 UTC); this build's Cython 0.29.37 re-generated three other modules (\"[1/3] Cythonizing madmom/audio/comb_filters.pyx\" ... \"[3/3] Cythonizing madmom/ml/hmm.pyx\") and compiled the old layers.c. A second attempt with a fresh copy of the sdist (for example uv's --no-cache) was not made: the task allowed one attempt. Nothing ran in chord mode, so there are no Omnizart scores. The venv, CPython 3.8.20 and the TensorFlow 2.5.0 cache entry (1.1 GB unpacked) were removed.",
       "for_aaron": true,
       "callable_via": [
         "cli",
@@ -4308,7 +4342,8 @@
         "audio file: omnizart chord transcribe <path/to/audio.wav>; Python ChordTranscription.transcribe(input_audio, model_path=None, output=\"./\")"
       ],
       "outputs": [
-        "a MIDI file and a CSV with fieldnames [\"chord\", \"start\", \"end\"]; labels via CHORD_INT_MAPPING: 12 major (C:maj ... B:maj, sharps spelled), 12 minor, N, and an extra X class; inference skips X and N when writing MIDI notes; frame length 0.046 s"
+        "a MIDI file and a CSV with fieldnames [\"chord\", \"start\", \"end\"]; labels via CHORD_INT_MAPPING: 12 major (C:maj ... B:maj, sharps spelled), 12 minor, N, and an extra X class; inference skips X and N when writing MIDI notes; frame length 0.046 s",
+        "checkpoint files: both the 0.5.0 and 0.6.0 wheels contain omnizart/checkpoints/chord/chord_v1/saved_model.pb, variables/variables.index and configurations.yaml but not the variables data file; omnizart download-checkpoints (omnizart/cli/cli.py) fetches it, with nine other models, from the GitHub release checkpoints-20211001 (.../releases/download/checkpoints-20211001/chord_v1@variables.data-00000-of-00001, saved as checkpoints/chord/chord_v1/variables/variables.data-00000-of-00001); GitHub release-asset downloads answered (HTTP 302 to release-assets.githubusercontent.com, then 200) from the research box on 2026-11-10"
       ],
       "constraints_accepted": [
         "model_path",
@@ -4341,7 +4376,8 @@
       "unverified": [
         "no separate weights license found",
         "whether the Omnizart Docker image already holds its checkpoints was not checked (for-aaron.md)",
-        "Omnizart's beat application is \"beat tracking in MIDI domain\" (omnizart/beat/app.py), not audio"
+        "Omnizart's beat application is \"beat tracking in MIDI domain\" (omnizart/beat/app.py), not audio",
+        "the chord-only install and the 0.5.0 attempt never ran Omnizart; the audio-to-notes lane's 23:30 UTC attempt is quoted from that lane's trials.md"
       ]
     },
     {
@@ -4536,7 +4572,7 @@
       "tried": false,
       "tried_how": null,
       "runs": [],
-      "not_run_reason": "Binaries come from the Vamp plugin download page or a source build of a cloned repository; neither is a package-manager route; not attempted. Not in Ubuntu 24.04 apt. The download page's link (https://code.soundsoftware.ac.uk/projects/qm-vamp-plugins/files) gave \"Connection reset by peer\" to the verifier's curl on 2026-11-10; after the Omnizart refusal the verifier did not try a downloaded binary or a source build. (Gap round 1: still not run. The download site reset the connection again (2026-11-10 23:30:27 UTC); no Debian, Ubuntu or PyPI package (Ubuntu has only libqm-dsp, the library); the Vamp Plugin Pack 2.0 Linux AppImage holds the plugins only inside its GUI installer program, which was not run.)",
+      "not_run_reason": "Binaries come from the Vamp plugin download page or a source build of a cloned repository; neither is a package-manager route; not attempted in the first round. Not in Ubuntu 24.04 apt. The download page's link (https://code.soundsoftware.ac.uk/projects/qm-vamp-plugins/files) gave \"Connection reset by peer\" to the verifier's curl on 2026-11-10; after the Omnizart refusal the verifier did not try a downloaded binary or a source build. (Gap round 1: still not run. apt (Ubuntu 24.04, universe enabled): no plugin package; apt-cache search --names-only 'vamp|qm-|sonic-' lists libvamp-hostsdk3v5, libvamp-sdk2v5, rubberband-vamp, vamp-examples, vamp-plugin-sdk(-doc), libqm-dsp0t64 and libqm-dsp-dev 1.7.1-8 (the library the README sentence refers to, not the plugins) and sonic-visualiser 4.5.2-2build3 (a GUI; its dependencies include no plugin package); package-name searches of all suites at packages.ubuntu.com and packages.debian.org for \"qm-vamp\" and \"sonic-annotator\" answered \"Sorry, your search gave no results\"; PyPI qm-vamp-plugins, vamp-plugins-qm, qm-dsp, qmdsp, pyqmdsp, vampy and sonic-annotator all HTTP 404. The download site reset the connection again at 2026-11-10 23:30:27 UTC (curl: (35) Recv failure: Connection reset by peer; the session proxy's status listed \"tunnel closed (code 1006) after 4s; 517 B sent, 39 B received\" for code.soundsoftware.ac.uk:443 at 21:37, 21:37, 21:56, 22:48 and 23:30 UTC that day; reset again at 2026-11-11 00:41 UTC for the verifier). The Vamp Plugin Pack's Linux download (GitHub release asset, 34,248,632 bytes) is an AppImage whose file system holds the installer program, Qt 6 and other shared libraries and no Vamp plugin file; the plugins are inside that GUI program (its binary carries the strings \"Queen Mary Vamp plugins\" and \"qm-vamp-plugins\"), which asks to be run (\"Make it executable 3. Run it\"). It was not run (a downloaded GUI installer, with no display on this box), no plugin binary was taken out of it, and the file was deleted. So no QM plugin was available to the vamp Python host used for Chordino, and nothing was run. Not tried: a lane-written program calling libqm-dsp's key-mode and tempo-tracking classes directly (the plugins' own wrapper code would have to be re-created, so its output would not be the plugins' output).)",
       "for_aaron": true,
       "callable_via": [
         "vamp-plugin",
@@ -4555,7 +4591,8 @@
       ],
       "constraints_accepted": [
         "Bar and Beat Tracker parameter \"Beats per Bar – The number of beats per bar (or measure). The plugin assumes that the number of beats per bar is fixed throughout the music.\"",
-        "Key Detector parameter \"Tuning Frequency – The frequency of concert A in the music under analysis.\""
+        "Key Detector parameter \"Tuning Frequency – The frequency of concert A in the music under analysis.\"",
+        "the QM plugin list (plugin-doc page) has no tuning plugin; the Key Detector takes a \"Tuning Frequency\" parameter"
       ],
       "license": {
         "code": {
@@ -4578,7 +4615,8 @@
       "unverified": [
         "COPYING is the GPL v2 text; README says \"These plugins are provided under the terms of the GNU General Public License\" without a version",
         "Sonic Visualiser 5.2.1 menu labels for these plugins not checked (for-aaron.md step 1)",
-        "the Key Detector profiles \"are drawn from analysis of Book I of the Well Tempered Klavier by J S Bach, recorded at A=440 equal temperament.\""
+        "the Key Detector profiles \"are drawn from analysis of Book I of the Well Tempered Klavier by J S Bach, recorded at A=440 equal temperament.\"",
+        "that the QM plugins are inside the Vamp Plugin Pack installer program rests on its strings and on the image holding no plugin file; the installer was not run"
       ]
     },
     {
@@ -4637,7 +4675,7 @@
       "kind": "research-model",
       "what": "Music structure analyzer: tempo, beats, downbeats, beat positions and functional sections from the WASPAA 2023 paper \"All-In-One Metrical And Functional Structure Analysis With Neighborhood Attentions on Demixed Audio\" (Taejun Kim and Juhan Nam).",
       "url": "https://github.com/mir-aidj/all-in-one",
-      "version": "PyPI allin1 1.1.0 (uploaded 2023-10-10; classifiers Python 3.8 to 3.11, requires_python \">=3.8\"); HEAD 2023-10-10 (commit 18e7890); weights taejunkim/allinone on Hugging Face; gap round 1 ran it with NATTEN 0.17.3 (built from the PyPI sdist, CPU), madmom 0.16.1 (PyPI), demucs 4.0.1, torch 2.5.1+cpu, Python 3.9",
+      "version": "PyPI allin1 1.1.0 (uploaded 2023-10-10; classifiers Python 3.8 to 3.11, requires_python \">=3.8\"); HEAD 2023-10-10 (commit 18e7890); weights taejunkim/allinone on Hugging Face; gap round 1 ran it with NATTEN 0.17.3 (built from the PyPI sdist, CPU), madmom 0.16.1 (PyPI), demucs 4.0.1, torch 2.5.1+cpu, Python 3.9; the allin1-1.1.0-py3-none-any.whl is 49,790 bytes (sha256 90edc464...f800e); harmonix-all maps to eight files harmonix-fold0-0vra4ys2.pth ... harmonix-fold7-qwwskhg6.pth of taejunkim/allinone (revision 379e5fd0, lastModified 2023-10-30), each 1,400,571 bytes; Demucs htdemucs 955717e8-8726e21a.th is 84,141,911 bytes (SHA-256 of all nine weight files in samples/allin1/weights_sha256.txt)",
       "tried": true,
       "tried_how": "local-cpu",
       "runs": [
@@ -4662,7 +4700,8 @@
           "exit_code": 0,
           "output_files": [],
           "metrics": {
-            "cpu_s": 158.6
+            "cpu_s": 158.6,
+            "note": "the 0.17.3 and 0.17.4 CPU wheels for cp39 attached to NATTEN's GitHub releases (HTTP 200) were not used; the verifier rebuilt 0.17.3 the same way in r0675 (149.28 s wall, exit 0)"
           }
         },
         {
@@ -4677,8 +4716,11 @@
           ],
           "metrics": {
             "per_clip": {
-              "S3": "job 103.5 s (htdemucs 31.4, inference 67.6), bpm 95, 29 beats / 8 downbeats; beat F 0.951, AMLt 0.906, downbeat F 1.000 (e1509); tempo ratio 0.990 (e1510)"
-            }
+              "S3": "job 103.5 s (htdemucs 31.4, inference 67.6), bpm 95, 29 beats / 8 downbeats; beat F 0.951, AMLt 0.906, downbeat F 1.000 (e1509); tempo ratio 0.990 (e1510); clip 24.0 s, spectrograms 0.586 s, model load 1.168 s, peak RSS 1552.6 MB, 3 segments"
+            },
+            "cpu_s": 126.7,
+            "stages_s": "htdemucs subprocess 31.425 (CPU 49.921), spectrograms 0.586, model load 1.168, inference 67.555 (CPU 72.156); torch reported 2 threads; S3 ran alone first",
+            "excerpts": "S3 beats 2.51, 3.14, 3.76, ... (29; truth 32 from 2.5 s), downbeats 2.51, 5.02, 7.52, ... (8); segments start 0 to 2.50, intro 2.50 to 23.99, start 23.99 to 24.00"
           }
         },
         {
@@ -4695,16 +4737,19 @@
             "cpu_s": 2178.5,
             "note": "every job's wall time includes the Demucs htdemucs separation subprocess",
             "per_clip": {
-              "S4": "job 155.2 s (htdemucs 43.2, inference 107.1), bpm 115, 65 beats / 17 downbeats; beat F 0.977, AMLt 0.956, downbeat F 1.000 (e1578); tempo ratio 0.991 (e1579)",
-              "S7flat30": "job 114.6 s (htdemucs 40.8, inference 69.0), bpm 95, 29 beats / 8 downbeats; beat F 0.951, AMLt 0.906, downbeat F 1.000 (e1580); tempo ratio 0.990 (e1581)",
-              "S2n": "job 124.1 s (htdemucs 36.5, inference 82.5), bpm 111, 47 beats / 12 downbeats; beat F 0.989, AMLt 0.979, downbeat F 1.000 (e1582); tempo ratio 0.991 (e1583)",
-              "S5capo2": "job 125.7 s (htdemucs 38.6, inference 81.7), bpm 111, 46 beats / 12 downbeats; beat F 0.979, AMLt 0.958, downbeat F 1.000 (e1584); tempo ratio 0.991 (e1585)",
-              "S5dropd": "job 129.9 s (htdemucs 41.5, inference 83.5), bpm 111, 47 beats / 12 downbeats; beat F 0.989, AMLt 0.979, downbeat F 1.000 (e1586); tempo ratio 0.991 (e1587)",
-              "R1a": "job 122.8 s (htdemucs 36.1, inference 81.8), bpm 107, 48 beats / 12 downbeats; beat F 0.000, AMLt 0.923, downbeat F 0.000 (e1588); tempo ratio 1.000 (e1589)",
-              "R1b": "job 138.2 s (htdemucs 51.1, inference 82.1), bpm 91, 35 beats / 8 downbeats; beat F 0.633, AMLt 0.659, downbeat F 0.105 (e1590); tempo ratio 1.011 (e1591)",
-              "R1c": "job 166.2 s (htdemucs 62.6, inference 98.9), bpm 120, 52 beats / 13 downbeats; beat F 0.000, AMLt 0.945, downbeat F 0.000 (e1614); tempo ratio 1.008 (e1615)",
-              "R2full": "job 777.8 s (htdemucs 186.9, inference 581.6), bpm 71, 264 beats / 66 downbeats"
-            }
+              "S4": "job 155.2 s (htdemucs 43.2, inference 107.1), bpm 115, 65 beats / 17 downbeats; beat F 0.977, AMLt 0.956, downbeat F 1.000 (e1578); tempo ratio 0.991 (e1579); clip 38.7 s, spectrograms 0.825 s, model load 1.346 s, peak RSS 1510.2 MB, 4 segments",
+              "S7flat30": "job 114.6 s (htdemucs 40.8, inference 69.0), bpm 95, 29 beats / 8 downbeats; beat F 0.951, AMLt 0.906, downbeat F 1.000 (e1580); tempo ratio 0.990 (e1581); clip 24.0 s, spectrograms 0.508 s, model load 1.349 s, peak RSS 1484.2 MB, 3 segments",
+              "S2n": "job 124.1 s (htdemucs 36.5, inference 82.5), bpm 111, 47 beats / 12 downbeats; beat F 0.989, AMLt 0.979, downbeat F 1.000 (e1582); tempo ratio 0.991 (e1583); clip 29.4 s, spectrograms 0.663 s, model load 1.563 s, peak RSS 1507.8 MB, 3 segments",
+              "S5capo2": "job 125.7 s (htdemucs 38.6, inference 81.7), bpm 111, 46 beats / 12 downbeats; beat F 0.979, AMLt 0.958, downbeat F 1.000 (e1584); tempo ratio 0.991 (e1585); clip 29.4 s, spectrograms 0.649 s, model load 1.330 s, peak RSS 1554.8 MB, 3 segments",
+              "S5dropd": "job 129.9 s (htdemucs 41.5, inference 83.5), bpm 111, 47 beats / 12 downbeats; beat F 0.989, AMLt 0.979, downbeat F 1.000 (e1586); tempo ratio 0.991 (e1587); clip 29.4 s, spectrograms 0.714 s, model load 1.395 s, peak RSS 1538.8 MB, 3 segments",
+              "R1a": "job 122.8 s (htdemucs 36.1, inference 81.8), bpm 107, 48 beats / 12 downbeats; beat F 0.000, AMLt 0.923, downbeat F 0.000 (e1588); tempo ratio 1.000 (e1589); clip 29.2 s, spectrograms 0.642 s, model load 1.328 s, peak RSS 1532.9 MB, 4 segments",
+              "R1b": "job 138.2 s (htdemucs 51.1, inference 82.1), bpm 91, 35 beats / 8 downbeats; beat F 0.633, AMLt 0.659, downbeat F 0.105 (e1590); tempo ratio 1.011 (e1591); clip 29.3 s, spectrograms 0.827 s, model load 1.425 s, peak RSS 1516.9 MB, 3 segments",
+              "R1c": "job 166.2 s (htdemucs 62.6, inference 98.9), bpm 120, 52 beats / 13 downbeats; beat F 0.000, AMLt 0.945, downbeat F 0.000 (e1614); tempo ratio 1.008 (e1615); clip 28.2 s, spectrograms 0.617 s, model load 1.423 s, peak RSS 1457.4 MB, 2 segments",
+              "R2full": "job 777.8 s (htdemucs 186.9, inference 581.6), bpm 71, 264 beats / 66 downbeats; clip 228.5 s, spectrograms 4.960 s, model load 1.385 s, peak RSS 2038.5 MB, 10 segments"
+            },
+            "R2full_note": "the whole song (228.5 s): 777.8 s, of which 186.9 s Demucs and 581.6 s the 8-network inference; segment labels start 0.00 to 0.12, verse, verse, chorus (43.41 to 80.12), verse, chorus, solo (140.11 to 173.46), chorus, chorus, outro (220.07 to 228.49); median inter-beat interval 0.830 s (72.29 BPM), positions 1 to 4 (the artist's page lists 72 bpm, per INPUTS.md)",
+            "excerpts": "S2n downbeats 2.14, 4.30, 6.43, 8.58, ... and S5capo2 2.14, 4.29, 6.43, 8.58, ... (12 each; truth 2.143, 4.286, 6.429, 8.571, ...). R1a: beats run at the truth tempo (median inter-beat interval 0.560 s against 0.561 s) with a median offset of -0.267 s from the nearest truth beat, -0.48 of a beat, i.e. on the off-beats; R1c the same with +0.223 s (+0.44 of its 0.504 s beat). R1b's first beat is at 5.42 s",
+            "batch_plan": "scripts/batch_run.py, plan scripts/plans/gap1_allin1_batch.json; samples/allin1/batch_gap1_timings.jsonl"
           }
         },
         {
@@ -4718,7 +4763,38 @@
             "samples/allin1/S4.cli_r0576.json"
           ],
           "metrics": {
-            "note": "same bpm, beats, downbeats and positions as r0563's S4; one segment boundary 20.70 s vs 20.69 s (Demucs --shifts 1 uses a random offset)"
+            "note": "same bpm, beats, downbeats and positions as r0563's S4; one segment boundary 20.70 s vs 20.69 s. Demucs 4.0.1 separates with --shifts 1 by default, which offsets the input by a random amount, so two runs need not give identical stems; the verifier's re-run of S3 (r0693) gave a JSON byte-identical to r0521's",
+            "command": "allin1 /home/user/gtr/inputs/S4/S4.wav -o <dir> -d cpu --demix-dir <dir>/demix --spec-dir <dir>/spec; cpu_s 181.3"
+          }
+        },
+        {
+          "run_id": "r0675",
+          "input_id": "verifier re-run: venv rebuilt from its freeze (torch 2.5.1+cpu downloaded again, 166.6 MiB), NATTEN 0.17.3 built again from the PyPI sdist",
+          "cores": 2,
+          "wall_s": 149.28,
+          "peak_mb": null,
+          "exit_code": 0,
+          "output_files": [],
+          "metrics": {
+            "verifier_rerun": true,
+            "cpu_s": 174.4,
+            "result": "the four functions import; freeze identical to the saved one; weights with the SHA-256 in samples/allin1/weights_sha256.txt"
+          }
+        },
+        {
+          "run_id": "r0693",
+          "input_id": "S3 (verifier re-run)",
+          "cores": 2,
+          "wall_s": 142.7,
+          "peak_mb": null,
+          "exit_code": null,
+          "output_files": [],
+          "metrics": {
+            "verifier_rerun": true,
+            "htdemucs_s": 50.4,
+            "inference_s": 87.1,
+            "note": "against 31.4 s and 67.6 s in r0521, with a load average of 6.42 at the start against 1.52",
+            "result": "S3.json and the files derived from it byte-identical to r0521's"
           }
         }
       ],
@@ -4729,16 +4805,23 @@
         "python"
       ],
       "inputs": [
-        "audio file; every input is first split into stems by Demucs (src/allin1/demix.py runs sys.executable -m demucs.separate with --name htdemucs)"
+        "audio file; every input is first split into stems by Demucs (src/allin1/demix.py runs sys.executable -m demucs.separate with --name htdemucs)",
+        "44.1 kHz WAV by path (stereo; mono for R1), R2full (228.5 s) included; Demucs decodes it and returns four 44.1 kHz stereo stems; allin1 makes 12-band-per-octave log spectrograms at 100 frames per second (spectrogram.py, \"fps=int(44100 / 441)\")",
+        "PyPI allin1 1.1.0 requires_dist: demucs, huggingface-hub, hydra-core, librosa, matplotlib, \"natten; platform_system == 'Darwin'\", numpy, omegaconf, plus training extras; madmom is not declared, although allin1/spectrogram.py and allin1/postprocessing/metrical.py import it"
       ],
       "outputs": [
         "JSON per file with \"bpm\", \"beats\" (seconds), \"downbeats\" (seconds), \"beat_positions\" (1, 2, 3, 4, ...) and \"segments\" with start, end and \"label\" (labels: start, end, intro, outro, break, bridge, inst, solo, verse, chorus)",
-        "optional --activ frame-level activations at 100 FPS; --embed embeddings; allin1.sonify(result) click track audio; no chord output"
+        "optional --activ frame-level activations at 100 FPS; --embed embeddings; allin1.sonify(result) click track audio; no chord output",
+        "bpm is an integer: the most frequent rounded value of 60 / inter-beat interval (postprocessing/tempo.py); beats and downbeats are written with 2 decimals (the 0.01 s grid of its 100 frames per second); beat_positions 1 to 4 on these clips; no confidence values",
+        "the lane script scripts/allin1_run.py also wrote beats.txt, downbeats.txt, beat_positions.txt (time, position), tempo.txt and segments.lab; segment labels seen: start and intro on the S and R1 clips, and on R2full start, verse, chorus, solo, outro",
+        "not run: visualize and sonify (they write images and audio); the stems were deleted with each run (allin1's default keep_byproducts=False), so no audio was kept"
       ],
       "constraints_accepted": [
         "CLI: allin1 [-h] [-o OUT_DIR] [-v] [--viz-dir VIZ_DIR] [-s] [--sonif-dir SONIF_DIR] [-a] [-e] [-m MODEL] [-d DEVICE] [-k] [--demix-dir DEMIX_DIR] [--spec-dir SPEC_DIR]",
         "-d DEVICE (default: cuda if available else cpu)",
-        "models: harmonix-all (default, ensemble of 8 fold models) and harmonix-fold*"
+        "models: harmonix-all (default, ensemble of 8 fold models) and harmonix-fold*",
+        "analyze() signature in the 1.1.0 wheel: model (harmonix-all or one harmonix-fold0 to harmonix-fold7), device, include_activations, include_embeddings, demix_dir, spec_dir, keep_byproducts, overwrite, multiprocess, visualize, sonify",
+        "no tempo range, meter or tempo hint; the DBN's beats_per_bar=[3, 4] is fixed in postprocessing/metrical.py"
       ],
       "license": {
         "code": {
@@ -4759,7 +4842,13 @@
             "url": "https://raw.githubusercontent.com/urinieto/harmonixset/main/LICENSE"
           }
         ],
-        "service_terms": []
+        "service_terms": [
+          {
+            "topic": "NATTEN (dependency; built from its PyPI sdist for the runs)",
+            "quote": "Copyright (c) 2022 - 2026 Ali Hassani.",
+            "url": "https://raw.githubusercontent.com/SHI-Labs/NATTEN/main/LICENSE"
+          }
+        ]
       },
       "pricing": null,
       "handoffs_out": [
@@ -4767,6 +4856,11 @@
           "to": "allin1.sonify (click track)",
           "via_format": "beats, downbeats, beat_positions in JSON",
           "evidence": "`allin1.sonify(result)` \"will mix metronome clicks for beats and downbeats, and event sounds for segment boundaries\" (README)"
+        },
+        {
+          "to": "gtr-eval beats scorer (this lane's evaluation tool)",
+          "via_format": "JSON object with a beats list and a downbeats list (seconds), or one-time-per-line copies",
+          "evidence": "the lane scored one-time-per-line copies (scripts/allin1_run.py writes beats.txt and downbeats.txt; beats evals e1509, e1578, e1580, e1582, e1584, e1586, e1588, e1590 and e1614), and gtr-eval also takes the JSON file as written (verifier, 2026-11-11, --no-ledger on out/allin1/S3/S3.json: beat F 0.95082 and downbeat F 1.0, as e1509); its bpm is an integer derived from those beats (allin1/postprocessing/tempo.py)"
         }
       ],
       "unverified": [
@@ -4774,7 +4868,10 @@
         "author speed claim: \"With an RTX 4090 GPU and Intel i9-10940X CPU (14 cores, 28 threads, 3.30 GHz), the `harmonix-all` model processed 10 songs (33 minutes) in 73 seconds.\"",
         "PyPI license field empty; the Hugging Face model card is only the YAML header \"license: mit\"",
         "whether NATTEN 0.17.4 imports on Python 3.10 or newer (it did not on 3.9 here) and whether it builds on Windows with CUDA (for-aaron.md step 5)",
-        "the allin1 README's NATTEN website (shi-labs.com/natten) had an expired TLS certificate on 2026-11-10 (notAfter Dec 3 2025); its wheel list was not read"
+        "what the allin1 README's NATTEN website (shi-labs.com/natten) lists: not read, because its TLS certificate had expired (notAfter Dec 3 2025; seen on 2026-11-10 and 2026-11-11)",
+        "whether the Demucs random shift is what moved the 20.69 / 20.70 s boundary in r0576; on S3 a second run (r0693) gave a byte-identical JSON",
+        "the venv size of 1.4 GB is the gap agent's du reading in its transcript; that venv is gone",
+        "how the rest of r0512's wall time divides between resolving, during which uv fetched the 10,854,271-byte sdist, and the import test was not timed"
       ]
     },
     {
@@ -4782,7 +4879,7 @@
       "kind": "research-model",
       "what": "Tempo-CNN, a tempo estimator by Hendrik Schreiber: global tempo, tempogram image and meter CNNs.",
       "url": "https://github.com/hendriks73/tempo-cnn",
-      "version": "PyPI tempocnn 0.0.8 (uploaded 2024-10-17; requires_python \"<3.12,>=3.9\"; requires tensorflow==2.17.0); HEAD 2024-10-17 (commit 482c64a)",
+      "version": "PyPI tempocnn 0.0.8 (uploaded 2024-10-17; requires_python \"<3.12,>=3.9\"; requires tensorflow==2.17.0); HEAD 2024-10-17 (commit 482c64a); wheel tempocnn-0.0.8-py3-none-any.whl 41,305,827 bytes (sha256 73ef63ee...059b5); PyPI requires_dist: jams>=0.3.1, librosa>=0.9.0, matplotlib>=3.0.0, scipy>=1.10.0, setuptools>=65.5.1, tensorflow==2.17.0; ran in Python 3.11.15 with tensorflow 2.17.0, keras 3.15.1, numpy 1.26.4, librosa 0.11.0",
       "tried": true,
       "tried_how": "local-cpu",
       "runs": [
@@ -4811,7 +4908,16 @@
               "R1b": "fcn 90 e1689; cnn 94 (x1.04) e1686; ismir2018 90 e1691; fma2018 93.06 e1690; deeptemp 92 e1688; deepsquare 90 e1687; shallowtemp 90 e1693; mazurka 171 (x1.90) e1692; meter 5",
               "R1c": "fcn 119 e1699; cnn 119 e1696; ismir2018 120 e1701; fma2018 120.79 e1700; deeptemp 116 e1698; deepsquare 119 e1697; shallowtemp 119 e1703; mazurka 119 e1702; meter 3",
               "R2full": "fcn 72; cnn 72; ismir2018 72; fma2018 143.30; deeptemp 144; deepsquare 72; shallowtemp 144; mazurka 285; meter 9"
-            }
+            },
+            "install": "uv pip install \"tempocnn==0.0.8\" soundfile, 48.2 s (venv 2.5 GB by du, the gap agent's reading); importing TensorFlow printed CUDA-plugin registration errors (\"Unable to register cuFFT factory ...\") and then ran on the CPU; gtr-run set TF_NUM_INTRAOP_THREADS=2",
+            "timing_detail": "S3's read_features took 16.49 s against 1.17 to 1.57 s on every other clip (the first-run cost this lane measured for librosa in r0468, not isolated here); TensorFlow import 2.84 to 3.10 s per job; per model 0.05 to 0.46 s to load and 0.11 to 1.31 s for estimate_tempo on the 24 to 39 s clips (the longest was cnn on eight of those nine clips, fcn on S7flat30), 0.18 to 2.59 s on R2full",
+            "models_loaded": "fcn (the tempo command's default), cnn, ismir2018, fma2018, deeptemp, deepsquare, shallowtemp, mazurka via TempoClassifier(model).estimate_tempo(features, interpolate=False) and estimate_mirex (t1, t2, s1), then MeterClassifier('fma2018-meter').estimate_meter(read_features(file, frames=512)); models copied out of the wheel: cnn, fcn, ismir2018, shallowtemp_k6, dt_maz_v_fold0; downloaded: fma2018.h5 (1,345,912 bytes), deeptemp_k16.h5 (1,402,696), deepsquare_k16.h5 (4,915,064), fma2018-meter.h5 (1,106,208) from raw.githubusercontent.com/hendriks73/tempo-cnn/main/tempocnn/models/ (sizes and SHA-256: samples/tempocnn/models_sha256.txt)",
+            "parameter_counts": "fcn 313,136; cnn and ismir2018 2,921,684; fma2018 313,136; deeptemp_k16 320,304; deepsquare_k16 1,198,704; shallowtemp_k6 688,792; dt_maz_v_fold0 320,304; fma2018-meter 253,111",
+            "R1b_cnn_note": "\"x1.04\" for cnn on R1b is a ratio of 1.0444 (94 / 90), above the 1.04 limit of the 4 % tolerance",
+            "mirex_triples": "(t1, t2, s1) on S3: fcn 48, 96, 0.247; shallowtemp 96, 192, 1.0; on R2full: fcn 72, 143, 0.939 (samples/tempocnn/)",
+            "S7flat30": "gave the same values as S3 for every model and the meter",
+            "R2full_note": "no truth; the artist's page lists 72 bpm and \"4/4 Swing\" (INPUTS.md)",
+            "scoring_note": "the first score_all.py pass over out/tempocnn/ also scored the batch jobs' log files tempocnn.stdout.txt and tempocnn.stderr.txt as tempo estimates; those 18 evals, e1624, e1625, e1634, e1635, e1644, e1645, e1654, e1655, e1664, e1665, e1674, e1675, e1684, e1685, e1694, e1695, e1704 and e1705, are not results; they were removed from out/scores/scores.jsonl and stay in the shared gtr-eval ledger, and score_all.py now skips *.stdout.txt and *.stderr.txt"
           }
         }
       ],
@@ -4822,17 +4928,22 @@
         "python"
       ],
       "inputs": [
-        "audio file: tempo -i my_audio.wav"
+        "audio file: tempo -i my_audio.wav",
+        "audio features: \"Resample file to 11025 Hz, then transform using STFT with length 1024 and hop size 512. Convert resulting linear spectrum to mel spectrum with 40 bands ranging from 20 to 5000 Hz.\" (tempocnn/feature.py; librosa.load(file, sr=11025), librosa.feature.melspectrogram(..., n_mels=40, fmin=20, fmax=5000)); the ran clips were 44.1 kHz 16-bit WAV by path (R2full 228.5 s included)"
       ],
       "outputs": [
         "global tempo in BPM (plain, JAMS with --jams, or MIREX with --mirex), tempogram image (tempogram -p, writes a .png), meter estimate (meter -m fma2018-meter)",
-        "the 0.0.8 wheel holds 24 tempo models and no key or meter model; fma2018, fma2018-meter, deeptemp_k16 and deepsquare_k16 are downloaded from raw.githubusercontent.com at first use"
+        "the 0.0.8 wheel holds 24 tempo models and no key or meter model; fma2018, fma2018-meter, deeptemp_k16 and deepsquare_k16 are downloaded from raw.githubusercontent.com at first use",
+        "estimate_tempo returns one BPM (whole numbers for every model except fma2018, whose classes are on a log-BPM scale, e.g. 112.40386637720552); estimate_mirex returns two tempi and the salience of the first; the meter model returns a numerator; no beat times; the lane script writes tempo_<model>.txt, meter_fma2018.txt and tempocnn.json",
+        "console scripts in the wheel: tempo, tempogram, meter and greekfolk (entry_points.txt); there is no key command (key estimation is the separate key-cnn repository)"
       ],
       "constraints_accepted": [
         "model: -m ismir2018, deeptemp, mazurka, fma2018-meter",
         "--interpolate",
         "Python classifier.estimate_tempo(features, interpolate=False)",
-        "some models may be downloaded (and cached) at execution time"
+        "some models may be downloaded (and cached) at execution time",
+        "the tempo command's -m default is fcn; the meter command's is fma2018-meter (tempocnn/commands.py); aliases in TempoClassifier.__init__: mazurka -> dt_maz_v_fold0, deeptemp -> deeptemp_k16, shallowtemp -> shallowtemp_k6, deepsquare -> deepsquare_k16; no tempo range or tempo hint",
+        "model files not in the wheel are fetched at run time: tempocnn/classifier.py reads models/<name>.h5 from the package, else downloads https://raw.githubusercontent.com/hendriks73/tempo-cnn/main/tempocnn/models/<name>.h5 (then the dev branch) into ~/.tempocnn/<version>/"
       ],
       "license": {
         "code": {
@@ -4849,10 +4960,18 @@
         "service_terms": []
       },
       "pricing": null,
-      "handoffs_out": [],
+      "handoffs_out": [
+        {
+          "to": "JAMS tempo annotation (the same container CREMA writes for chords)",
+          "via_format": "one BPM per file (tempo) and a numerator (meter), as plain numbers on stdout or in a file; with --jams the tempo goes into a JAMS tempo annotation",
+          "evidence": "tempocnn/commands.py, _write_tempo_result; _create_tempo_jam (survey.md handoff fact 26)"
+        }
+      ],
       "unverified": [
         "training data not read (UNVERIFIED)",
-        "PyPI license \"AGPL\"; LICENSE is the AGPL v3 text"
+        "PyPI license \"AGPL\"; LICENSE is the AGPL v3 text",
+        "not re-run by the verifier: tensorflow 2.17.0 (573.4 MiB to download) is no longer in the shared cache and the orchestrator's disk notice allows no new download over 200 MB unless a lane cannot finish without it; the outputs and scores were checked from the files",
+        "the venv size of 2.5 GB is the gap agent's du reading in its transcript; that venv is gone"
       ]
     },
     {
@@ -5068,23 +5187,26 @@
       "kind": "open-source",
       "what": "libkeyfinder is a small C++11 library for estimating the musical key of digital audio (Ibrahim Sha'ath; maintained by the Mixxx DJ software team since 2020); keyfinder-cli is its command-line front end.",
       "url": "https://github.com/mixxxdj/libkeyfinder",
-      "version": "libkeyfinder HEAD 2024-07-09 (commit 941e517); keyfinder-cli https://github.com/EvanPurkhiser/keyfinder-cli HEAD 2026-11-10 (commit 788e010); PyPI keyfinder 1.1.0 (2019-04-14) is a Python binding from the same author (https://github.com/evanpurkhiser/keyfinder-py)",
+      "version": "libkeyfinder HEAD 2024-07-09 (commit 941e517); keyfinder-cli https://github.com/EvanPurkhiser/keyfinder-cli HEAD 2026-11-10 (commit 788e010); PyPI keyfinder 1.1.0 (2019-04-14) is a Python binding from the same author (https://github.com/evanpurkhiser/keyfinder-py); release tags (git ls-remote --tags, 2026-11-10): v0.11, v2.0, v2.1, v2.2, v2.2.1 to v2.2.6, 2.2.7, 2.2.8; tag 2.2.8 = commit b33b5a8 (2023-09-27)",
       "tried": false,
       "tried_how": null,
       "runs": [],
-      "not_run_reason": "Not in Ubuntu 24.04 apt (apt-cache search keyfinder returned nothing); the build route is a CMake build of cloned repositories, the kind of step the session policy refused twice (madmom, BTC); not attempted. PyPI keyfinder 1.1.0 is a binding that needs libkeyfinder installed. (Gap round 1: still not run. No Debian/Ubuntu package in any suite, no conda-forge package, only the PyPI sdist binding; the CMake build of a 2.2.8 clone was refused: \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External]\".)",
+      "not_run_reason": "Not in Ubuntu 24.04 apt (apt-cache search keyfinder with main, restricted, universe and multiverse enabled printed nothing); packages.ubuntu.com and packages.debian.org name searches of all suites: \"Sorry, your search gave no results\"; PyPI keyfinder 1.1.0 has one file, the sdist keyfinder-1.1.0.tar.gz (a binding that compiles against an installed libkeyfinder), and libkeyfinder, pykeyfinder, keyfinder-py, keyfinder-cli and key-finder answered HTTP 404; conda-forge libkeyfinder, keyfinder-cli and keyfinder answered HTTP 404. Source route, tried once on 2026-11-11: git clone --depth 1 --branch 2.2.8 worked (commit b33b5a8; a release tarball from github.com/codeload.github.com answered HTTP 403 with \"GitHub access to this repository is not enabled for this session\"); apt-get install -y libfftw3-dev (3.3.10-1ubuntu3) worked; the next command (cmake -S ... -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF ... && cmake --build --parallel 2 && cmake --install) was refused before it ran (about 00:13 UTC): \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\" Nothing was built, no run id was written, and the clone was deleted. The glue planned for the run (decode the WAV with libsndfile, fill KeyFinder::AudioData, call KeyFinder::KeyFinder::keyOfAudio, print the key) was not written. Steps for Aaron: for-aaron.md, section 4.",
       "for_aaron": true,
       "callable_via": [
         "cli"
       ],
       "inputs": [
-        "audio file: keyfinder-cli AMajor.mp3 (needs ffmpeg and libkeyfinder; libkeyfinder needs FFTW3)"
+        "audio file: keyfinder-cli AMajor.mp3 (needs ffmpeg and libkeyfinder; libkeyfinder needs FFTW3)",
+        "for-aaron.md section 4, steps 5 to 7 (WSL route): the keyfinder-cli README asks for \"ffmpeg\" and \"libkeyfinder\"; libkeyfinder README commands with -DBUILD_TESTING=OFF; keyfinder-cli with -DCMAKE_PREFIX_PATH so it finds the libkeyfinder just installed (UNVERIFIED)"
       ],
       "outputs": [
-        "one global key string per file (24 major/minor keys in standard notation, e.g. \"A\" for A major); nothing is printed and exit status 0 when there is no key (silence)"
+        "one global key string per file (24 major/minor keys in standard notation, e.g. \"A\" for A major); nothing is printed and exit status 0 when there is no key (silence)",
+        "keyfinder-cli README: \"`A` is equivalent to A Major. Sharps are not used.\"; how a minor key is printed is not shown there (UNVERIFIED)"
       ],
       "constraints_accepted": [
-        "notation flags -n standard, -n openkey, -n camelot"
+        "notation flags -n standard, -n openkey, -n camelot",
+        "libkeyfinder CMake option -DBUILD_TESTING=OFF (README)"
       ],
       "license": {
         "code": {
@@ -5107,7 +5229,10 @@
       "unverified": [
         "keyfinder-cli LICENSE is also the GPL v3 text (https://raw.githubusercontent.com/EvanPurkhiser/keyfinder-cli/main/LICENSE)",
         "for-aaron.md step 4 reaches libKeyFinder through Mixxx; that route is UNVERIFIED (whether the Windows 2.5.6 installer was built with it was not checked)",
-        "keyfinder-py not read further"
+        "keyfinder-py not read further",
+        "Ubuntu's mixxx 2.4.0+dfsg-2build4 (universe) lists no keyfinder package among its dependencies; its binary /usr/bin/mixxx (sha256 94339a56...cc55, unpacked with dpkg-deb -x, not run) contains no \"keyfinder\" string and contains the strings \"Queen Mary Key Detector\", \"Queen Mary Tempo and Beat Tracker\", \"qm-keydetector\" and \"GetKeyMode\"; so with that package the Mixxx route would offer only the Queen Mary detector (UNVERIFIED: Mixxx was not run; for-aaron.md step 4)",
+        "Essentia's Key algorithm (https://essentia.upf.edu/reference/std_Key.html) has a profileType \"shaath\", described as \"profiles based on Krumhansl’s specifically tuned to popular and electronic music\"; related, not the same algorithm: the page does not name libKeyFinder; trials.md has Essentia's shaath results",
+        "the exact ffmpeg package list for the apt command in for-aaron.md step 5, and whether -DCMAKE_PREFIX_PATH finds the installed libkeyfinder, are UNVERIFIED"
       ]
     },
     {
@@ -5115,7 +5240,7 @@
       "kind": "research-model",
       "what": "skey: Python package for automatic musical key detection from audio recordings, based on the S-KEY model of Yuexuan Kong et al. (\"S-KEY: Self-supervised Learning of Major and Minor Keys from Audio\", ICASSP 2025).",
       "url": "https://github.com/deezer/skey",
-      "version": "HEAD 2026-10-27 (commit 80d9590); weights skey/models/skey.pt (765,465 bytes) in the repository; the PyPI name skey (0.2) belongs to an unrelated project",
+      "version": "HEAD 2026-10-27 (commit 80d9590); weights skey/models/skey.pt (765,465 bytes) in the repository; the PyPI name skey (0.2) belongs to an unrelated project; ran through the community ONNX export huggingface.co/aaatmy/skey-onnx (revision c04b6a2b, created and last modified 2026-09-17 per the Hugging Face API; skey.onnx 324,536 bytes, SHA-256 50bac66d...12b1; opset 17; converted from skey.pt at commit 918b83d) with onnxruntime 1.31.1 (Python 3.11.15, torch 2.15.0+cpu and torchaudio 2.11.1+cpu only for the resampler upstream uses)",
       "tried": true,
       "tried_how": "local-cpu",
       "runs": [
@@ -5144,11 +5269,30 @@
               "R1c": "G major (score 0.876), weighted 1.0 e1714",
               "R2": "D# minor (score 0.319)",
               "R2full": "D# minor (score 0.565)"
-            }
+            },
+            "timing": "per clip 1.6 to 2.0 s for the 24 to 39 s clips (S3, the first job, 3.56 s), R2full 2.65 s; inside the script the ONNX inference took 0.05 to 0.30 s per clip and 0.48 s for R2full (samples/skey/<clip>.skey.json)",
+            "glue": "scripts/skey_onnx_run.py (83 lines), written for this lane following upstream skey/key_detection.py: soundfile decode, torchaudio.transforms.Resample(orig_freq=44100, new_freq=22050), mean of the channels, float32 [1, samples] into the graph, label = labels[argmax(scores)] from the manifest",
+            "R1a_note": "the second-ranked class, G# minor (0.114), is the truth key Ab minor spelled with a sharp",
+            "second_label": "S3 A minor 0.030; S7flat30 E minor 0.039; S4 E minor 0.053; S2n A minor 0.025; S5capo2 B minor 0.012; S5dropd A minor 0.019; R1a G# minor 0.114; R1b C# minor 0.244; R1c D major 0.010; R2 F# major 0.273",
+            "S7flat30_note": "S3 rendered 30 cents flat gave the same label as S3, with a top score of 0.774 against 0.815",
+            "R2_R2full_note": "no truth; the artist's page lists \"D# Minor\" (INPUTS.md)"
+          }
+        },
+        {
+          "run_id": "r0665",
+          "input_id": "S3,S7flat30,S4,S2n,S5capo2,S5dropd,R1a,R1b,R1c,R2,R2full (verifier re-run)",
+          "cores": 2,
+          "wall_s": 23.44,
+          "peak_mb": null,
+          "exit_code": null,
+          "output_files": [],
+          "metrics": {
+            "verifier_rerun": true,
+            "result": "venv rebuilt offline from its freeze (identical); skey.onnx and manifest.json from revision c04b6a2b (same SHA-256); all 11 labels and all 24 scores per clip bitwise identical to r0588's"
           }
         }
       ],
-      "not_run_reason": "(corrected in gap round 1: the same weights ran through the community ONNX export, see runs; the repository's own PyTorch route is still not run.) First-round reason: Installs from its repository with poetry; PyPI skey 0.2 has the home page http://github.com/dleonik/skey and no release files; not attempted for the same reason as the other repository code (session policy refused code from external repositories).",
+      "not_run_reason": "(corrected in gap round 1: the same weights ran through the community ONNX export, see runs; the repository's own PyTorch route is still not run.) First-round reason: Installs from its repository with poetry; PyPI skey 0.2 has the home page http://github.com/dleonik/skey and no release files; not attempted for the same reason as the other repository code (session policy refused code from external repositories). PyPI: no Deezer S-KEY package under the names skey (the unrelated 0.2, summary \"SecureKey test\", no files), s-key, deezer-skey or skey-deezer (the last three HTTP 404 at https://pypi.org/pypi/<name>/json).",
       "for_aaron": true,
       "callable_via": [
         "cli",
@@ -5156,15 +5300,20 @@
         "python"
       ],
       "inputs": [
-        "audio file or directory: poetry skey path/to/audio --device cpu; Python detect_key(audio_dir=\"path/to/audio\", extension=\"mp3\", device=\"cpu\")"
+        "audio file or directory: poetry skey path/to/audio --device cpu; Python detect_key(audio_dir=\"path/to/audio\", extension=\"mp3\", device=\"cpu\")",
+        "ONNX route (huggingface.co/aaatmy/skey-onnx): float32 mono PCM at 22,050 Hz, shape [1, samples]; decoding, resampling and the channel mean are left to the caller (model card)",
+        "what the ONNX graph leaves to the caller, per upstream skey/key_detection.py at main: decoding (torchaudio.load(song_path, backend=\"soundfile\")), resampling (torchaudio.transforms.Resample(orig_freq=waveform_sr, new_freq=sr)) and the mono mix (torch.mean(waveform, dim=0, keepdim=True)); the label is key_map[int(torch.mean(logits, dim=0).argmax())]"
       ],
       "outputs": [
-        "a predicted major or minor key per file, printed or saved to a .csv when given a directory (<dir>/prediction/predictions.csv with header \"Audio File\", \"Predicted Key\"); 24 labels (\"A Major\", \"Bb Major\", ..., \"G# Major\", \"B minor\", ..., \"Bb minor\")"
+        "a predicted major or minor key per file, printed or saved to a .csv when given a directory (<dir>/prediction/predictions.csv with header \"Audio File\", \"Predicted Key\"); 24 labels (\"A Major\", \"Bb Major\", ..., \"G# Major\", \"B minor\", ..., \"Bb minor\")",
+        "ONNX route: scores of shape [1, 24], softmax included, in the manifest's label order (model card, manifest.json)",
+        "ONNX route: one global key, no confidence calibration (the card: \"its softmax scores are not calibrated confidence\"); the lane script writes key_skey.txt (e.g. G major) and skey.json (all 24 scores); peak normalization, VQT/dB preprocessing, frequency cropping and ChromaNet are inside the graph (card); manifest parity cases with max_score_error 5.4e-07, 9.5e-07 and 3.8e-06"
       ],
       "constraints_accepted": [
         "--checkpoint",
         "--ext",
-        "--device (default: cpu, e.g., cuda, mps)"
+        "--device (default: cpu, e.g., cuda, mps)",
+        "ONNX route: none in the graph besides the audio (no tuning, no key-profile or vocabulary option)"
       ],
       "license": {
         "code": {
@@ -5175,7 +5324,8 @@
         "weights": {
           "name": "skey/models/skey.pt",
           "quote": "The MIT license does not apply to the model weights in skey.pt. You may use the model weights only for non-commercial research purposes.",
-          "url": "https://raw.githubusercontent.com/deezer/skey/main/README.md"
+          "url": "https://raw.githubusercontent.com/deezer/skey/main/README.md",
+          "note": "The community ONNX export that ran here (huggingface.co/aaatmy/skey-onnx, revision c04b6a2b) was converted from skey.pt at commit 918b83d, the same file (765,465 bytes, SHA-256 78dfd0ad...ead4) as skey.pt at main. The README at 918b83d says under License only \"The code of **SKEY** is [MIT-licensed](LICENSE).\"; the README at main adds the sentence quoted above. The ONNX card: \"That paragraph does not separately state a license for pretrained weights; this model card does not assign them a new license.\" (all read 2026-11-10 and again 2026-11-11)"
         },
         "training_data": [
           {
@@ -5185,17 +5335,46 @@
             "url": "https://arxiv.org/html/2501.12907v2"
           }
         ],
-        "service_terms": []
+        "service_terms": [
+          {
+            "topic": "ONNX export (aaatmy/skey-onnx): status of the conversion",
+            "quote": "This is a community conversion of the upstream checkpoint, not a newly trained model or an official Deezer release.",
+            "url": "https://huggingface.co/aaatmy/skey-onnx"
+          },
+          {
+            "topic": "ONNX export: LICENSE file",
+            "quote": "Copyright (c) 2019-present, Deezer SA.",
+            "url": "https://huggingface.co/aaatmy/skey-onnx"
+          },
+          {
+            "topic": "ONNX export: ConvNeXt-LICENSE (MIT)",
+            "quote": "Copyright (c) Meta Platforms, Inc. and affiliates.",
+            "url": "https://huggingface.co/aaatmy/skey-onnx"
+          },
+          {
+            "topic": "ONNX export: nnAudio-LICENSE (MIT text)",
+            "quote": "Copyright (c) 2018 The Python Packaging Authority",
+            "url": "https://huggingface.co/aaatmy/skey-onnx"
+          }
+        ]
       },
       "pricing": null,
-      "handoffs_out": [],
+      "handoffs_out": [
+        {
+          "to": "browser (decoded mono signal into the S-KEY ONNX graph)",
+          "via_format": "float32 mono PCM at 22,050 Hz, shape [1, samples]; returns scores [1, 24]",
+          "evidence": "the aaatmy/skey-onnx graph takes \"float32 mono PCM at **22,050 Hz**, shape `[1, samples]`\" and returns `scores` [1, 24], and its card says \"Browser inference uses ONNX Runtime Web WASM CPU\" (https://huggingface.co/aaatmy/skey-onnx, read 2026-11-10); the same file ran here under onnxruntime 1.31.1 for Python; the browser side was not run in this lane (survey.md handoff fact 24)"
+        }
+      ],
       "unverified": [
         "which of the two models (60k or 1M songs) is skey.pt is not stated in the README",
         "the paper's footnote points to https://github.com/deezer/s-key; whether it is the same repository as https://github.com/deezer/skey was not checked",
         "poetry skey as written in the README; \"poetry run skey ...\" is the usual form, UNVERIFIED (for-aaron.md step 3)",
         "author measurements (paper Table II, MIREX score in %, FMAKv2 / GTZAN / GiantSteps / SWD): {'S-KEY (60k)': {'FMAKv2': 72.1, 'GTZAN': 70.9, 'GiantSteps': 71.7, 'SWD': 89.0}, 'S-KEY (1M)': {'FMAKv2': 73.2, 'GTZAN': 74.4, 'GiantSteps': 72.1, 'SWD': 90.4}, 'madmom (same table)': {'FMAKv2': 73.1, 'GTZAN': 67.9, 'GiantSteps': 71.0, 'SWD': 87.7}}",
-        "a community ONNX conversion exists at https://huggingface.co/aaatmy/skey-onnx (named in a search result; not read)",
-        "README at the converter's commit 918b83d states only that the code is MIT-licensed; README at main adds the non-commercial research restriction for the weights (both read 2026-11-10)"
+        "whether the ONNX run and Deezer's own PyTorch code give the same labels (the optional for-aaron.md step 3 would show it)",
+        "the venv size of 926 MB is the gap agent's du reading in its transcript; that venv is gone",
+        "the browser side of handoff fact 24 was not run in this lane",
+        "the ONNX card says the conversion is used by Key & Tempo (https://github.com/Hikari-Tsai/music-detection) to estimate a single global major or minor key from audio; the reports say nothing more about that app"
       ]
     },
     {
@@ -5320,7 +5499,9 @@
         "no license file found at https://github.com/edhulme/guitar-tuning-classification (re-checked 2026-11-10)",
         "reported accuracies (97.5 % for 2 classes and 73.9 % for 5 classes, per a web search summary) UNVERIFIED: ORCA and ACM answered HTTP 403, slides HTTP 404",
         "paper title and authors per a web search summary only (\"Acoustic Classification of Guitar Tunings with Deep Learning\")",
-        "the README does not list the tuning class names"
+        "the README does not list the tuning class names",
+        "gap round 1 search (2026-11-10): six web searches, the arXiv API, Hugging Face model searches and PyPI names found no open-string tuning or capo detector from audio with published weights or a package; the six web searches were not repeated by the verifier (its web-search budget was used up) and rest on the gap agent's transcript, their result lists summarised in survey.md",
+        "the PyPI names guitar-tuning-classification, guitar-tuning, guitartuning, guitar-tuning-classifier, tuning-classifier, capo-detection and guitar-capo answered HTTP 404 (2026-11-10)"
       ]
     },
     {
@@ -5727,7 +5908,7 @@
       "kind": "open-source",
       "what": "Desktop application (Vamp host) for viewing audio and running Vamp plugin analyses; \"No plugins are included with Sonic Visualiser itself\" (download page).",
       "url": "https://www.sonicvisualiser.org/download.html",
-      "version": "5.2.1 (64-bit Windows installer, per for-aaron.md)",
+      "version": "5.2.1 (64-bit Windows installer, per for-aaron.md); Ubuntu 24.04 apt: sonic-visualiser 4.5.2-2build3 (a GUI; its dependencies include no plugin package)",
       "tried": false,
       "tried_how": null,
       "runs": [],
@@ -5764,13 +5945,13 @@
     {
       "name": "Vamp Plugin Pack",
       "kind": "open-source",
-      "what": "Windows installer bundling the Queen Mary and Matthias Mauch Vamp plugin libraries (including QM plugins, Chordino and NNLS Chroma).",
+      "what": "Windows installer bundling the Queen Mary and Matthias Mauch Vamp plugin libraries (including QM plugins, Chordino and NNLS Chroma). Gap round 1: its page also offers \"Installer for 64-bit Linux 1. Save the file 2. Make it executable 3. Run it\"; listing the Linux image with unsquashfs -l (nothing was executed) shows the installer program usr/bin/vamp-plugin-pack-installer (18,567,512 bytes), 6 Qt 6 libraries with Qt's image-format and platform plugins, 42 other shared libraries (xcb, X11, GLib, ICU, compression and others), and no Vamp plugin file (67 entries; listed again by the verifier on 2026-11-11, same SHA-256); the program contains the strings \"Queen Mary Vamp plugins\" and \"Queen Mary plugin set\", i.e. the plugins travel inside the installer program, which is a GUI. The file was deleted.",
       "url": "https://www.vamp-plugins.org/pack.html",
-      "version": null,
+      "version": "2.0 (Linux installer https://github.com/vamp-plugins/vamp-plugin-pack/releases/download/v2.0/vamp-plugin-pack-installer-2.0, downloaded on 2026-11-11: 34,248,632 bytes, sha256 e8ed873f...2126f, an ELF executable with a squashfs image at byte 157,624, i.e. an AppImage)",
       "tried": false,
       "tried_how": null,
       "runs": [],
-      "not_run_reason": "Installer step for Aaron on Windows (for-aaron.md step 1); not run on the cloud box.",
+      "not_run_reason": "Installer step for Aaron on Windows (for-aaron.md step 1); not run on the cloud box. Gap round 1: the Linux installer (an AppImage) was downloaded and listed, not run (a downloaded GUI installer, with no display on this box).",
       "for_aaron": true,
       "callable_via": [
         "vamp-plugin",
@@ -5791,7 +5972,8 @@
       "handoffs_out": [],
       "unverified": [
         "listed on https://www.vamp-plugins.org/download.html as \"Chordino and NNLS Chroma Matthias Mauch With source code Included in Vamp Plugin Pack\"",
-        "pack license not read"
+        "pack license not read",
+        "that the QM plugins are inside the installer program rests on its strings and on the image holding no plugin file; the installer was not run"
       ]
     },
     {
@@ -5799,7 +5981,7 @@
       "kind": "open-source",
       "what": "DJ software; its KeyFinder key analyzer plugin (analyzerkeyfinder.cpp, id keyfinder:2) links libKeyFinder (minimum version 2.2.4) when built with KEYFINDER ON.",
       "url": "https://www.mixxx.org/download/",
-      "version": "2.5.6 for Windows (per for-aaron.md); source read on the 2.5 branch",
+      "version": "2.5.6 for Windows (per for-aaron.md); source read on the 2.5 branch; Ubuntu mixxx 2.4.0+dfsg-2build4 (universe)",
       "tried": false,
       "tried_how": null,
       "runs": [],
@@ -5826,7 +6008,9 @@
       "unverified": [
         "whether the Windows 2.5.6 installer was built with KeyFinder was not checked (UNVERIFIED; the Preferences screenshot in step 2 shows it)",
         "Mixxx 2.5 manual section 13.5 says Mixxx re-analyses tracks \"if you select a different key detection plugin\"",
-        "Mixxx license not stated in the reports"
+        "Mixxx license not stated in the reports",
+        "Ubuntu's mixxx 2.4.0 package was built without KeyFinder (its binary has no \"keyfinder\" string and has the Queen Mary key detector's strings; survey.md), so with that package the route would offer only the Queen Mary detector (UNVERIFIED: Mixxx was not run)",
+        "Mixxx's source on its 2.5 branch (raw.githubusercontent.com/mixxxdj/mixxx/2.5/, read 2026-11-10) has option(KEYFINDER \"KeyFinder support\" ON) in CMakeLists.txt, linking libKeyFinder (minimum version 2.2.4)"
       ]
     },
     {
@@ -6044,20 +6228,64 @@
       "kind": "open-source",
       "what": "Source separation model; All-In-One runs demucs.separate with --name htdemucs on every input.",
       "url": null,
-      "version": "htdemucs",
-      "tried": false,
-      "tried_how": null,
-      "runs": [],
-      "not_run_reason": "Not run in this lane (source-separation lane covers it; allin1 was not run).",
+      "version": "htdemucs; demucs 4.0.1 (PyPI's only file for 4.0.1 is an sdist; uv installed a wheel it had built earlier and cached); htdemucs weights 955717e8-8726e21a.th, 84,141,911 bytes, from dl.fbaipublicfiles.com via demucs.pretrained.get_model('htdemucs')",
+      "tried": true,
+      "tried_how": "local-cpu",
+      "runs": [
+        {
+          "run_id": "r0521",
+          "input_id": "S3 (htdemucs subprocess inside the All-In-One job)",
+          "cores": 2,
+          "wall_s": null,
+          "peak_mb": null,
+          "exit_code": 0,
+          "output_files": [],
+          "metrics": {
+            "htdemucs_subprocess_s": 31.425,
+            "htdemucs_cpu_s": 49.921,
+            "note": "the ledger's 103.54 s wall is the whole allin1 job; stems deleted after the run"
+          }
+        },
+        {
+          "run_id": "r0563",
+          "input_id": "S4,S7flat30,S2n,S5capo2,S5dropd,R1a,R1b,R1c,R2full (htdemucs subprocess inside each All-In-One job)",
+          "cores": 2,
+          "wall_s": null,
+          "peak_mb": null,
+          "exit_code": 0,
+          "output_files": [
+            "samples/allin1/"
+          ],
+          "metrics": {
+            "htdemucs_subprocess_s": {
+              "S4": "43.201 (66.875)",
+              "S7flat30": "40.832 (56.207)",
+              "S2n": "36.500 (58.405)",
+              "S5capo2": "38.619 (60.460)",
+              "S5dropd": "41.503 (61.636)",
+              "R1a": "36.127 (53.813)",
+              "R1b": "51.086 (65.476)",
+              "R1c": "62.594 (67.540)",
+              "R2full": "186.930 (318.146)"
+            },
+            "note": "seconds (CPU seconds); the ledger's 1854.58 s wall is the nine whole allin1 jobs; stems deleted after each run"
+          }
+        }
+      ],
+      "not_run_reason": "Not run on its own in this lane (the source-separation lane covers it). It ran inside every All-In-One job of gap round 1 as the subprocess python -m demucs.separate --out <dir> --name htdemucs --device cpu <file>.",
       "for_aaron": false,
       "callable_via": [
         "cli"
       ],
-      "inputs": [],
-      "outputs": [
-        "stems"
+      "inputs": [
+        "audio file; Demucs decodes it (the All-In-One runs gave it 44.1 kHz WAV)"
       ],
-      "constraints_accepted": [],
+      "outputs": [
+        "stems (four 44.1 kHz stereo stems per clip in the All-In-One runs)"
+      ],
+      "constraints_accepted": [
+        "--shifts defaults to 1 (\"Number of random shifts for equivariant stabilization.\", demucs/separate.py); apply_model then shifts the input \"by a random amount between 0 and 0.5 sec\" (demucs/apply.py, random.randint); allin1 passes no shift or seed, so two runs on one file need not give identical stems"
+      ],
       "license": {
         "code": null,
         "weights": null,
@@ -6584,6 +6812,211 @@
       "handoffs_out": [],
       "unverified": [
         "the browser-audio-sync lane covers the metronome side; standard itself not read in these reports"
+      ]
+    },
+    {
+      "name": "NATTEN",
+      "kind": "library",
+      "what": "Library whose functions All-In-One's models import: allin1/models/dinat.py line 10 of the 1.1.0 wheel is \"from natten.functional import natten1dav, natten1dqkrpb, natten2dav, natten2dqkrpb\".",
+      "url": "https://github.com/SHI-Labs/NATTEN",
+      "version": "0.17.3 built from its PyPI sdist (CPU only) and used; 0.17.4 built but its import failed on Python 3.9; 0.17.5 is the only version with CPU wheels on https://whl.natten.org (+torch250cpu and +torch260cpu, cp39 to cp312); GitHub release assets of v0.17.3 and v0.17.4 named natten-0.17.x+torch{220,230,240,250}cpu-cp39-cp39-linux_x86_64.whl answered HTTP 200 to a HEAD request (not downloaded)",
+      "tried": true,
+      "tried_how": "local-cpu",
+      "runs": [
+        {
+          "run_id": "r0512",
+          "input_id": "build NATTEN 0.17.4 from its PyPI sdist (CPU only)",
+          "cores": 2,
+          "wall_s": 224.85,
+          "peak_mb": 1303.1,
+          "exit_code": 1,
+          "output_files": [],
+          "metrics": {
+            "cpu_s": 158.6,
+            "note": "uv's log says \"Prepared 1 package in 1m 29s\"; the build finished, but `import natten` failed on Python 3.9: \"TypeError: unsupported operand type(s) for |: 'type' and '_GenericAlias'\" (natten/flops.py line 82, input_shape: torch.Size | Sequence[int])"
+          }
+        },
+        {
+          "run_id": "r0518",
+          "input_id": "build NATTEN 0.17.3 from its PyPI sdist (CPU only)",
+          "cores": 2,
+          "wall_s": 97.45,
+          "peak_mb": 1302.9,
+          "exit_code": 0,
+          "output_files": [],
+          "metrics": {
+            "cpu_s": 158.6,
+            "note": "from natten.functional import natten1dav, natten1dqkrpb, natten2dav, natten2dqkrpb worked; setup.py printed \"Building NATTEN for CPU ONLY.\"; script logs/gap1/build_natten.sh with NATTEN_N_WORKERS=2"
+          }
+        },
+        {
+          "run_id": "r0675",
+          "input_id": "verifier re-run: NATTEN 0.17.3 built again from the PyPI sdist",
+          "cores": 2,
+          "wall_s": 149.28,
+          "peak_mb": null,
+          "exit_code": 0,
+          "output_files": [],
+          "metrics": {
+            "verifier_rerun": true,
+            "cpu_s": 174.4,
+            "result": "the four functions import"
+          }
+        }
+      ],
+      "not_run_reason": null,
+      "for_aaron": false,
+      "callable_via": [
+        "python"
+      ],
+      "inputs": [],
+      "outputs": [],
+      "constraints_accepted": [
+        "NATTEN CHANGELOG [0.14.6]: \"the changed signature in both QK and AV (both 1D and 2D), where we now take in both kernel size and dilation\"; [0.17.5]: \"Dropped deprecated ops (`natten.functional.natten*d{qk,qkrpb,av}`)\"; [0.20.0]: \"Dropped unfused / CPU backends in libnatten.\" and \"CPU implementations were all unfused, and were very limited as well, and are likewise removed.\"",
+        "the 0.17.3 and 0.17.4 PyPI sdists still define the four functions in src/natten/functional.py; in 0.17.4 natten1dqkrpb logs \"You're calling NATTEN op `natten.functional.natten1dqkrpb`, which is deprecated in favor of `natten.functional.na1d_qk`\" and returns na1d_qk(query, key, kernel_size=(kernel_size,), dilation=(dilation,), rpb=rpb); under 0.17.3 all four logged such a warning during this lane's allin1 runs",
+        "install page https://natten.org/install/ (read 2026-11-10), \"Older NATTEN builds\": \"if you need to install older NATTEN versions, you can find their wheels in their corresponding GitHub release, or build them from PyPI distributions.\"; for \"< 0.17.5\": \"Refer to our release index on GitHub, or build from distribution using PyPI.\""
+      ],
+      "license": {
+        "code": {
+          "spdx": "MIT",
+          "quote": "Copyright (c) 2022 - 2026 Ali Hassani.",
+          "url": "https://raw.githubusercontent.com/SHI-Labs/NATTEN/main/LICENSE"
+        },
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "what the allin1 README's NATTEN website (https://www.shi-labs.com/natten/) lists: not read, because its TLS certificate had expired (curl: \"SSL certificate problem: certificate has expired\"; issuer Sectigo, notAfter Dec 3 23:59:59 2025 GMT; seen on 2026-11-10 and 2026-11-11); TLS verification was not turned off",
+        "whether NATTEN 0.17.4 imports on Python 3.10 or newer (it did not on 3.9 here) and whether it builds on Windows with the installed PyTorch and CUDA (for-aaron.md step 5)"
+      ]
+    },
+    {
+      "name": "Fretting-Transformer (MIDI to guitar tablature, with tuning and capo conditioning)",
+      "kind": "research-model",
+      "what": "arXiv 2506.14223 (2025-06-17), a MIDI-to-tablature model; the capo and tuning are inputs to a symbolic model, not estimated from audio. Abstract: \"The integration of context-sensitive processing and tuning/capo conditioning further enhances the model’s performance\" (section 4.5 \"Conditioning on Tuning and Capo\").",
+      "url": "https://arxiv.org/html/2506.14223v1",
+      "version": "arXiv 2506.14223 (2025-06-17)",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Found by the gap round's arXiv API query all:capo AND all:guitar (one paper); it takes MIDI, not audio, and is not an open-string tuning or capo detector from audio; nothing was run.",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [
+        "MIDI, with tuning and capo as conditioning inputs"
+      ],
+      "outputs": [
+        "guitar tablature"
+      ],
+      "constraints_accepted": [
+        "tuning and capo conditioning (section 4.5)"
+      ],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "code, weights and license are not stated in the reports"
+      ]
+    },
+    {
+      "name": "A Machine Learning Approach for MIDI to Guitar Tablature Conversion (arXiv 2510.10619)",
+      "kind": "research-model",
+      "what": "arXiv 2510.10619, returned by the gap round's arXiv API query all:\"guitar tuning\"; MIDI input.",
+      "url": "https://arxiv.org/abs/2510.10619",
+      "version": "arXiv 2510.10619",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "MIDI input, not audio; not an open-string tuning or capo detector from audio; nothing was run.",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [
+        "MIDI"
+      ],
+      "outputs": [
+        "guitar tablature (per the title)"
+      ],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "code, weights and license are not stated in the reports"
+      ]
+    },
+    {
+      "name": "magnjorg/ast-finetuned-guitar (Hugging Face model)",
+      "kind": "research-model",
+      "what": "Hugging Face model named in a search result; its config.json labels are overdrive, distortion, chorus, flanger, phaser, tremolo, reverb, feedback delay, slapback delay, low boost, low reduct, high boost, high reduct (guitar effects, not tuning or capo).",
+      "url": "https://huggingface.co/magnjorg/ast-finetuned-guitar",
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Classifies guitar effects, not tuning or capo; nothing was run.",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [],
+      "outputs": [
+        "the 13 effect labels above"
+      ],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "license and model card are not stated in the reports"
+      ]
+    },
+    {
+      "name": "libqm-dsp (Ubuntu packages libqm-dsp0t64 and libqm-dsp-dev)",
+      "kind": "library",
+      "what": "\"C++ library for audio signals analysis\" (Ubuntu package description, source package qm-dsp, homepage https://code.soundsoftware.ac.uk/projects/qm-dsp); the library the QM Vamp plugins are built on, not the plugins.",
+      "url": "https://code.soundsoftware.ac.uk/projects/qm-dsp",
+      "version": "1.7.1-8 (Ubuntu 24.04 apt, universe)",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Not tried: a lane-written program calling libqm-dsp's key-mode and tempo-tracking classes directly would have to re-create the plugins' own wrapper code, so its output would not be the plugins' output.",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [],
+      "outputs": [],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "qm-dsp library (per the QM plugins README)",
+            "quote": "Further copyrights apply to the qm-dsp library used in these plugins. See the README for that library for details.",
+            "url": "https://raw.githubusercontent.com/c4dm/qm-vamp-plugins/master/README.md"
+          }
+        ]
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "the library's own license is not stated in the reports"
       ]
     }
   ]

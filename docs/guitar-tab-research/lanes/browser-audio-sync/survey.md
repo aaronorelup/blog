@@ -1694,8 +1694,10 @@ Raw copies are kept outside the repo in `/home/user/gtr/lanes/browser-audio-sync
   on an Apple M4 Pro processes a 7.8 s chunk in ~6 s (RTF ~0.77)" and "We've measured ~2.5 s per 7.8 s chunk on the
   same Apple M4 Pro with 4 threads." What this box measured is in `trials.md`, "Gap round 2": with the
   `graphOptimizationLevel: "all"` the demo uses (and with `basic`), `InferenceSession.create` threw `std::bad_alloc`
-  in ONNX Runtime Web 1.31.1 with the renderer at about 4.38 GB (section 35 quotes the docs' "WebAssembly has a memory
-  limit of 4GB."); with `disabled` it ran (2 threads: 29.09 s for 10 s of audio on 2 cores, renderer peak 1,319 MB).
+  in ONNX Runtime Web 1.31.1 with the renderer's peak resident memory at 4,381 to 4,386 MB [verifier, round 2: was
+  "about 4.38 GB"; the record's MB are 1,048,576 bytes, so this is about 4.28 GiB] (section 35 quotes the docs'
+  "WebAssembly has a memory limit of 4GB."); with `disabled` it ran (2 threads: 29.09 s for 10 s of audio on 2 cores,
+  renderer peak 1,319 MB).
 - Use here: the guitar row of `stems` as a Float32Array at 44.1 kHz is the in-page handoff to Basic Pitch (section 33,
   after resampling to 22,050 Hz mono) and to a waveform view (sections 16 and 17); not run as a pipeline here.
 - Licence: card front matter `license: mit`, and the card's "License & attribution": "This repo is **MIT-licensed**,

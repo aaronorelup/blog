@@ -1,3 +1,4 @@
+eval_id	stored_gtr_eval_version	stored_exit	rescore_exit	result_objects_compared_with_gtr-eval_0.12.1_--no-ledger	truth	estimate	stored_est_sha256_12	rescored_est_sha256_12	n_est	n_truth	onset_P	onset_R	onset_F1	onset_offset_F1	median_onset_diff_s	voice
 e1781	0.12.0	0	0	DIFF:gtr_eval_version	S1	crepe-notes/tcfull/S1.tcfull.mid	e55e0620152c	e55e0620152c	62	62	0.984	0.984	0.984	0.984	0.009	null
 e1786	0.12.0	0	0	DIFF:gtr_eval_version	S1	crepe-notes/tctiny/S1.tctiny.mid	88b3e2c9d7c9	88b3e2c9d7c9	62	62	1.0	1.0	1.0	1.0	0.009	null
 e1789	0.12.0	0	0	DIFF:gtr_eval_version	S1	crepe-notes/tcfullz/S1.tcfullz.mid	8558a2f73a44	8558a2f73a44	61	62	0.967	0.952	0.959	0.959	0.009	null

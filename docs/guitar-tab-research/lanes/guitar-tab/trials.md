@@ -510,8 +510,9 @@ string higher than the truth tab.
 - Converted (2026-11-10, not timed; not run through `gtr-run`): tuttut S2n (default), tuttut S5capo2 with the capo
   workaround, tuttut S5dropd with Drop D, LilyPond S5dropd with Drop D, all at 112 BPM. Files: 3,158 to 3,170 bytes
   each, `samples/pyguitarpro-glue/*.gp5`. (Gap round 2 added a ledger line: all eight conversions of this section,
-  these four plus the three audio chains and R3a below, were re-run on 2026-11-11 with the same script and arguments
-  as r0586, `gtr-run --nolock`; see "Gap round 2". The 2026-11-10 conversions themselves remain unlogged.)
+  these four plus the three audio chains and R3a below, were re-run on 2026-11-11 with the same script, note lists and
+  `--bpm` values (without `--title`, so the new files carry no song title) as r0586, `gtr-run --nolock`; see "Gap
+  round 2". The 2026-11-10 conversions themselves remain unlogged.)
 - Read back with `gtr-eval tab` (PyGuitarPro reader, time from the beat positions and the song tempo): tuttut S2n e0430
   90/90 matched, same string+fret 1.0000, tuning and capo "stated in the estimate file" as [40..64] / 0; tuttut S5capo2
   e0431 90/90, 1.0000, capo read back 2; tuttut S5dropd e0432 90/90, 0.9778, tuning read back [38, 45, 50, 55, 59, 64];
@@ -839,7 +840,7 @@ same effect was reached as described; "no" = neither. Every cell is backed by th
 | tabsynth 1.0.6 | no in `events_to_tablature` (a `fretboard` only at `generate_candidates`) | workaround: notes transposed down (e0392) | param `max_fret` (e0394) | no (stretch is a cost term) | no (position preference is a cost term) | no | yes (`start`, `duration`, seconds) |
 | SynthTab TabCNN checkpoints | no (trained profile, standard) | no | no (19 in the profile) | no | no | no | yes (frames, 23.2 ms hop) |
 | TabCNN Zenodo 11406378 / `cstr/tabcnn-onnx` (gap round 2) | no (trained profile, standard) | no | no (19) | no | no | no | yes (frames, 23.2 ms hop) |
-| scorify 0.4.0 (gap round 2) | param tuning per string (e1818) | param `capoFret` (e1816) | param `fretCount` per string (not varied) | param player `maxFretSpan`, level (amateur run: `infeasible`) | soft high-fret costs per level (not varied) | no field; a `scoring` cost hook did it (e1830) | beats as rationals (seconds via the tempo map) |
+| scorify 0.4.0 (gap round 2) | param tuning per string (e1818) | param `capoFret` (e1816) | `fretCount` per string (not varied; 19 in the preset) | param player `maxFretSpan`, level (amateur run: `infeasible`) | soft high-fret costs per level (not varied) | no field; a `scoring` cost hook did it (e1830) | beats as rationals (seconds via the tempo map) |
 
 ## Handoff run on real video audio without truth: R3a (Basic Pitch notes into tuttut and LilyPond)
 
@@ -921,10 +922,15 @@ found, nothing to run) in `survey.md` only; gtrsnipe below and in `for-aaron.md`
   `AMT-Tools/examples/papers/guitarProFx.py`, read from a blob-less clone, not run) sets `iterations = 2500`, loops over
   six folds, trains each on five of six splits of its `GuitarProFx` dataset folder (120 tracks per split; the
   repository does not list that folder's contents), tests each on one GuitarSet player
-  (`test_splits = [test_splits.pop(k)]`) and saves under `models/fold-<k>`. The record does not say which fold the
-  published file is. If it is one of these fold models, its training split held GuitarSet tracks of five of the six
-  players, so at least two of the three R1 players (02, 04, 00) were in it; which fold, and so which player was held
-  out, is UNVERIFIED.
+  (`test_splits = [test_splits.pop(k)]`) and saves under `models/fold-<k>`. (Verifier's note, 2026-11-11: the script
+  builds its training set only from that `GuitarProFx` folder, whose dataset class takes tracks 120k to 120k+119 of
+  the folder's sorted `jams` list, and the repository README describes the script as "`guitarProFx` for GuitarProFx
+  training and GuitarSet validation"; six splits of 120 are 720 tracks, while the paper gives GuitarProFX as 360
+  tracks; whether GuitarSet tracks were in that folder is not in the repository.) The record does not say which fold
+  the published file is. If it is one of these fold models and was trained as the paper describes (the six-fold
+  GuitarSet cross-validation plus the GuitarProFX tracks), its training data held GuitarSet tracks of five of the six
+  players, so at least two of the three R1 players (02, 04, 00); which fold, and so which player was held out, and
+  whether the script's data folder held GuitarSet tracks, is UNVERIFIED.
 - What (b) `tabcnn.onnx` was trained on: the export repository's `tool/tabcnn/README.md` (https://github.com/CrispStrobe/onnx_runtime_dart ,
   commit `7bdf47d`, 2026-09-18, sparse blob-less clone, not run) gives `EPOCHS=4 VAL_GUITARIST=5 python train.py
   features/ tabcnn.onnx` and "Held-out (guitarist-5) **tablature F1 0.745** (paper 0.748)"; `train.py` keeps every
@@ -961,8 +967,8 @@ found, nothing to run) in `survey.md` only; gtrsnipe below and in `for-aaron.md`
 | r0595 | (b) `tabcnn-gpfx.onnx` on the amt-tools front-end (check) | 0-1 | 70.03 s | 63.89 s | 1021.6 MB | 3.45 | 6.88 to 15.25 s | 1.73 to 4.34 s |
 | r0601 | (b) `tabcnn.onnx`, `preprocess.py` order (check) | 2-3 | 46.73 s | 52.90 s | 1004.2 MB | 2.14 | 5.63 to 6.02 s | 0.62 to 0.74 s |
 
-  r0594 and r0595 started while other lanes' jobs ran (load 3.45); their first clips took longest (S2n 10.92 s and
-  15.25 s). ONNX Runtime threads: the glue read `Cpus_allowed_list` of every thread of its process after inference
+  r0594 and r0595 started while other lanes' jobs ran (load 3.45); their first two clips took longest (r0594: S2n
+  10.92 s, S2s 11.65 s; r0595: S2n 15.25 s, S2s 11.64 s). ONNX Runtime threads: the glue read `Cpus_allowed_list` of every thread of its process after inference
   (`/proc/<pid>/task/*/status`): 6 threads in each ONNX run, all allowed only the slot's two cores (`2-3` or `0-1`).
   Clips are 24.0 to 29.4 s long. Logs: `samples/tabcnn-published-weights/*.log.txt`.
 - The ONNX export against the pickled model: `scripts/gap2_compare_frames.py` over all 9,830 frames of the 8 clips:
@@ -1002,7 +1008,8 @@ found, nothing to run) in `survey.md` only; gtrsnipe below and in `for-aaron.md`
 
   The R1 rows of both tables must be read with the training-data facts above: `tabcnn.onnx` was trained, per its
   README, on GuitarSet players 00 to 04, which include all three R1 takes; the Zenodo model, if it is one of the
-  paper's fold models, on five of the six players (which five is UNVERIFIED). Checked independently with mir_eval 0.8.2 called directly (no gtr-eval code; the
+  paper's fold models trained as the paper describes, on five of the six players (which five, and what the training
+  script's data folder held, is UNVERIFIED). Checked independently with mir_eval 0.8.2 called directly (no gtr-eval code; the
   scorer's venv): matched count and same-string-and-fret fractions of e1715, e1736 and e1760 recomputed equal.
 - What the S5 rows show: neither file has a capo or tuning input (both fixed to standard tuning, 19 frets, as in the
   checkpoint's profile and the card's class layout); on S5capo2 the matched notes sit on the truth string at the same
@@ -1013,7 +1020,7 @@ found, nothing to run) in `survey.md` only; gtrsnipe below and in `for-aaron.md`
   (3.2044, 62, 2, 3), (3.2276, 67, 1, 3), (3.7152, 55, 4, 5). Truth starts with G2 (string 6 fret 3) and G3 (string 3
   open) at 2.1429 s. Files: `samples/tabcnn-published-weights/` (S2n and R1c note files of (a) and of `tabcnn.onnx`,
   the S2n frames CSV of (a), `scores.tsv`, the three frame comparisons, the run logs); all outputs under
-  `/home/user/gtr/lanes/guitar-tab/gap2/tabcnn/` (1.6 MB).
+  `/home/user/gtr/lanes/guitar-tab/gap2/tabcnn/` (80 files, 2.0 MB by `du` at 01:12 UTC, verifier).
 - Output and input format facts: as for the SynthTab checkpoints (frames: 6 strings x frames, fret or silent, 23.2 ms
   hop; notes from amt-tools' decoding; no velocity, no Guitar Pro or MusicXML writer); the ONNX files take `float32[N,
   192, 9, 1]` and return `float32[N, 6, 21]` log-probabilities, so the CQT, the windowing, the argmax and the decoding
@@ -1053,8 +1060,8 @@ found, nothing to run) in `survey.md` only; gtrsnipe below and in `for-aaron.md`
   capo, Drop D; wall 19.73 s, CPU 22.36 s, peak RSS 175.7 MB, after 20.0 s waiting for a slot, load 5.69 at start);
   r0623 (9 runs: larger search limits, adaptive mode, level amateur, the pin; wall 48.26 s, CPU 55.42 s, peak RSS
   345.3 MB, load 4.71); r0631 (3 runs with one player limit relaxed; wall 4.57 s); r0633 (R1b with a strumming right
-  hand; wall 1.40 s); r0630 (prefix bisection, `--nolock`; wall 16.36 s); r0641 (`limitsExceeded`, `--nolock`; wall
-  0.14 s). The glue gained options after r0621; r0635 re-ran r0621's ten runs with the final glue (wall 18.67 s): the
+  hand; wall 1.40 s); r0630 (prefix bisection, `--nolock`, unpinned; wall 16.36 s); r0641 (`limitsExceeded`,
+  `--nolock`, unpinned; wall 0.14 s); r0630 and r0641 are diagnostics whose times are not used as results. The glue gained options after r0621; r0635 re-ran r0621's ten runs with the final glue (wall 18.67 s): the
   same status and the same (onset, pitch, string, fret, finger) for every note of every run.
 - Results (`gtr-eval tab`, time-based; the input is the truth notes, so "matched" counts the notes scorify placed):
 
@@ -1161,6 +1168,9 @@ found, nothing to run) in `survey.md` only; gtrsnipe below and in `for-aaron.md`
 
 ### Checks made in this round (by the gap agent itself; no independent verifier has read this section yet)
 
+(An independent check of this section followed: "Verification log (verify-gapfill-guitar-tab, round 2, 2026-11-11)"
+at the end of this file.)
+
 - Every run id cited in this section (r0586, r0591, r0592, r0594, r0595, r0601, r0621, r0623, r0630, r0631, r0633,
   r0635, r0641, plus r0155 and r0469 from above) has a ledger line with exit 0, and the walls, CPU times, peak RSS,
   cores and load averages quoted were copied from those lines.
@@ -1191,7 +1201,8 @@ found, nothing to run) in `survey.md` only; gtrsnipe below and in `for-aaron.md`
 None. This lane wrote no audio or video files. Its large outputs (frame CSVs, note lists, LilyPond files, Guitar Pro
 files) are under `/home/user/gtr/lanes/guitar-tab/out/`; the small pictures it made (LilyPond PNG pages, 8.5 to 9.9 KB)
 are in `samples/lilypond/` (including `R3a.bp.png`, the R3a tab from Basic Pitch notes). Gap round 2 wrote no audio or
-video either; its outputs (frame CSVs, note lists, scorify JSON, GP5 files, logs; 33 MB with the downloads) are under
+video either; its outputs (frame CSVs, note lists, scorify JSON, GP5 files, logs; 33 MB with the downloads as the gap
+agent measured it, 17 MB by `du` at 01:12 UTC after the weights and the clones' `.git` folders were deleted) are under
 `/home/user/gtr/lanes/guitar-tab/gap2/`.
 
 ## Verification log (verify-trials-guitar-tab, 2026-11-10)
@@ -1320,3 +1331,120 @@ dry-run package list; the wording of the two permission refusals; which GuitarSe
 trained on, and which paper run `guitar-fl.pth` and `guitar-gaps.pth` are (so whether they saw the R1 takes); the
 TuxGuitar and MuseScore menu paths in `for-aaron.md` (programs not opened); the Guitab browser page's behaviour (its
 HTML was read, the page was not run).
+
+## Verification log (verify-gapfill-guitar-tab, round 2, 2026-11-11)
+
+Checked by an independent agent between 00:50 and 01:20 UTC on 2026-11-11: the section "Gap round 2" above, the gap
+round's edits to earlier sections of this file, `survey.md`, `for-aaron.md` and `tools.json`, and the new files under
+`samples/scorify/`, `samples/tabcnn-published-weights/` and `scripts/gap2_*`. Its scripts are in
+`scripts/verify-gap2/`, its small outputs in `samples/verify-gap2/`, its large outputs under
+`/home/user/gtr/lanes/guitar-tab/verify-gap2/` (no audio or video; the gap round's outputs in `gap2/` were read, not
+modified).
+
+What was checked, and how:
+
+- **Run ledger.** The 13 run ids of the gap round (r0586, r0591, r0592, r0594, r0595, r0601, r0621, r0623, r0630,
+  r0631, r0633, r0635, r0641) and r0155, r0469 have ledger lines with exit 0, and these 13 are all the guitar-tab runs
+  in the ledger between 00:00 UTC and the start of this check (no failed run left out). Commands match the batch
+  scripts; wall, CPU, peak RSS, cores, slot wait and load average in the tables and prose match the ledger, and every
+  per-clip wall and inner-time range in the TabCNN table matches the saved logs. One prose detail did not:
+  "their first clips took longest" (r0594's longest clip was S2s, 11.65 s), corrected.
+- **Scores.** The 57 eval ids in this section's tables (e1715 to e1762 made with gtr-eval 0.11.1, e1808 to e1830 with
+  0.12.0) were re-run from their recorded arguments with gtr-eval 0.12.0 and `--no-ledger`
+  (`scripts/verify-gap2/rescore.py`, output `samples/verify-gap2/rescore_57_evals.txt`): `metrics` and `counts` equal
+  the stored results in 57 of 57, and every estimate file's SHA-256 still equals the one the ledger recorded. The 25
+  table rows that carry eval ids (16 TabCNN, 9 scorify) were compared cell by cell with the ledger
+  (`scripts/verify-gap2/check_tables.py`): 0 mismatches. (The gap agent's "41 rows" count was not reproduced from the
+  section's tables; the 16 rows of `samples/tabcnn-published-weights/scores.tsv` also match.) G1: e0430 to e0433,
+  e1088, e1090 and e1092 re-scored on the 2026-11-10 GP5 files and on the `gap2/gp5/` files give the stored results;
+  e1089 and e1091 are chords-beats-key chord scores; `scripts/gap2_compare_gp5.py`, re-run, reports identical content
+  in all eight file pairs, titles aside. `tools.json` lists those eval ids and r0586 for PyGuitarPro, and `for_aaron` is
+  true for Noise2Fret and CNN-MTL.
+- **Independent recomputation** with mir_eval 0.8.2 called directly (`scripts/verify-gap2/mireval_check.py`,
+  `mireval_check2.py`): matched count and same-string-and-fret fraction of e1715, e1736, e1739, e1760 (TabCNN) and
+  e1814, e1816, e1818, e1829, e1830 (scorify): all equal to the stored values.
+- **Re-runs**, outputs compared with the gap round's:
+  - r0674 (2 cores 0-1, wall 72.73 s; `scripts/verify-gap2/verify_tabcnn.sh`, log
+    `samples/verify-gap2/verify_tabcnn.log.txt`): `scripts/gap2_run_tabcnn.py` unchanged, the three weight files
+    downloaded again from the URLs above (SHA-256 and md5 equal to `weights-files.txt`), in a venv rebuilt from the gap
+    round's freeze (its own freeze identical). S2n and R1c with the Zenodo file, `tabcnn-gpfx.onnx` and `tabcnn.onnx`:
+    all six frames CSVs and note lists byte-identical to the gap round's; ONNX Runtime used 6 threads, all allowed
+    only cores 0-1. Times differed: the first clip took 35.51 s wall (first imports from the new venv) and 5.79 s inner
+    against the gap round's 8.35 s and 3.27 s; the other clips 6.32 to 9.54 s wall.
+  - r0680 (2 cores 2-3, after 121.0 s waiting for a slot, wall 14.53 s; `verify_scorify.sh`, log
+    `samples/verify-gap2/verify_scorify.log.txt`): scorify S2n, R1c, R1b, S5capo2 capo 2, S5dropd Drop D, the S2n pin,
+    R1a `minDuration` 1/256, with the gap round's glue and a venv holding only mido 1.3.3 and PyGuitarPro 0.11
+    (`samples/verify-gap2/uv-pip-freeze-venv-verify-sym.txt`): same status, same input JSON and the same (onset, pitch,
+    string, fret, finger) for every note and the same reported cost in all seven.
+  - r0689 (`--nolock`, light; `scripts/verify-gap2/scorify_defaults.mjs`): the default player and level amateur
+    values and the `classicalGuitar()` strings (E2 to E4, `fretCount` 19) are as quoted above.
+  - r0711 (`--nolock`, light): two GP5 glue conversions (tuttut S2n, the Basic Pitch chain R1c) are byte-identical to
+    the `gap2/gp5/` files.
+- **Other recounts from the files**: the frame comparisons (9,830 frames; 58,980 of 58,980 cells for the Zenodo file
+  against `tabcnn-gpfx.onnx` on both front-ends; 58 frames and 58 cells for the two `tabcnn.onnx` orders; note lists
+  equal within 1.0e-6 s); the S2n excerpt of (a); the S5capo2 and S5dropd statements; the pickle listing of the
+  re-downloaded Zenodo file (`scripts/verify-gap2/pkl_inspect.py`: the globals named above, `cuda:0`, tuning E2 to
+  E4); scorify's R1a and R1b failure notes (ticks, durations and times from the input JSON and the truth), the eight
+  off-position notes of the Drop D run, the pin result (one string change, 35 finger changes, the costs), the
+  `difficulty`, `assumptions` and `stats` fields, the default search limits in `arrange.mjs` (64, 128, 500,000), the
+  "Unsupported techniques" status, the `NoteEvent` and annotation fields and the absence of tab, Guitar Pro or
+  MusicXML writers in the `.d.mts` files; every sample file in `samples/scorify/` and
+  `samples/tabcnn-published-weights/` is a byte copy of the file in `gap2/` it names.
+- **Sources, re-read live** on 2026-11-11 between 00:57 and 01:10 UTC: the `cstr/tabcnn-onnx` API (revision
+  `886ead7d8b67db58503bd79f80781724dd33dd60`, file sizes and SHA-256) and card, the `cstr/tabcnn-GGUF` card, the Zenodo
+  11406378 API record (licence, size, md5, description), arXiv 2405.14679v3 HTML (section 2.2), the robust-guitar-tabs
+  project page and `robust-guitar-tabs/code` at `f50309a` (README, both licence files, `guitarProFx.py`,
+  `datasets/GuitarProFx.py`), `onnx_runtime_dart` at `7bdf47d` (`LICENSE`, `tool/tabcnn/README.md`, `train.py`,
+  `preprocess.py`), the npm registry record and the installed scorify 0.4.0 package files, gtrsnipe at `a9be933`
+  (`git ls-remote`: still the head of `main` at 01:03 UTC; `LICENSE.md`, `LICENSE-COMMERCIAL.md`, `pyproject.toml`,
+  `README.md`, `gtrsnipe/arguments.py`) and PyPI (HTTP 404 for the JSON API and the simple index at 01:03 UTC), FretPath
+  at `5e4fb42` (README, `FretPath.qml`), and the Lund record page and PDF (`scripts/verify-gap2/qfind.py` for the
+  quotes). Every quote that the gap round added to `trials.md`, `survey.md`, `for-aaron.md` and `tools.json` was found
+  at its source word for word (apart from line breaks and Markdown block-quote markers); licence ids, sizes, hashes,
+  dates and commit ids match. Code, weights and data licences are kept apart in the new entries, except the thesis
+  entry in `tools.json` (below).
+- **Earlier parts of the record**: compared with the verified commit `22c8124`, the gap round changed this file
+  outside its own section only by appending sentences or parentheticals (the PyGuitarPro and NOT RUN paragraphs, the
+  gtrsnipe bullet, two constraint-table rows, the media note) and deleted nothing; all earlier headings, tables and the
+  2026-11-10 verification logs of `trials.md` and `survey.md` are intact. `tools.json` parses (95 entries).
+- **Wording, secrets, files**: a search of the added text for judging words found them only inside quotes, scorify's
+  status name `best-found`, file names and URLs. No key, token or personal detail (gtrsnipe's commercial-licence email
+  stays omitted). No audio or video under the lane folder; the largest file is `tools.json` (about 282 KB).
+
+What was changed (each fix is in place, in the gap round's own text unless marked):
+
+- `trials.md`: the PyGuitarPro note now says the re-run used the same script, note lists and `--bpm` values without
+  `--title` (it said "the same script and arguments"); in the TabCNN section, a verifier's note that `guitarProFx.py`
+  builds its training set only from its own `GuitarProFx` data folder (the repository README: "`guitarProFx` for
+  GuitarProFx training and GuitarSet validation"), so the statement that a fold's training data held GuitarSet tracks
+  of five players rests on the paper's text, not on the code, and is now written as conditional (also in the R1 note
+  under the tables); the load note (first two clips); the size of `gap2/tabcnn/` (80 files, 2.0 MB; it said 1.6 MB)
+  and of `gap2/` (17 MB now; it said 33 MB with the downloads, since deleted); r0630 and r0641 marked unpinned
+  diagnostics; in the constraint table, scorify's fret-count cell no longer says "param" (the legend reserves it for
+  parameters a run exercised; `fretCount` was left at the preset's 19); a pointer under the gap agent's own checks.
+- `survey.md`: gtrsnipe's extras list completed (`synth`, `all`, `test` were missing); the thesis section's tab rule
+  now follows the source ("band", frets of the fingering, not "fretted note") and section 7.9's judging method
+  (visual inspection, listening, tab ergonomics); the Zenodo file's allow-list described as amt-tools, torch, numpy and
+  built-in names; a note on what the training code shows (as above); the dates behind "the model card, modified later,
+  no longer says" (README file last changed 2026-07-20 20:50 UTC, gpfx file added to the card's repository at 21:25
+  UTC, card's first version "has no public weights"); for `tabcnn.onnx`, the export README names the GuitarSet v1.1.0
+  record; handoff fact 18 names the option the Drop D run used (`classicalGuitar({ tuning: [...] })`); a new line on
+  scorify's `tuner`, `pitch-detect` and `pitch-worklet` subpaths and `suggestCapo` (from the package, not tried); a
+  pointer at the end of the gap round's summary.
+- `tools.json`: the thesis entry's training-data licence no longer states GuitarSet v1.1.0 (the thesis cites the 2018
+  paper only) and its quote, a sentence of section 7.11, is labelled as not a licence; the Zenodo entry's
+  `training_overlap` now separates the paper's description from what the training script loads; gtrsnipe's
+  `not_run_reason` no longer says the simple index answered 404 on 2026-11-10 (only the JSON API was read that day).
+- Not changed: `for-aaron.md` (its two new steps match the README and `FretPath.qml` at `5e4fb42`, the gtrsnipe README
+  and `arguments.py` at `a9be933`, and the S2n truth: G2 on string 6 fret 3 and G3 on string 3 open at 2.143 s).
+
+Disk: the venvs this check built (`venv-verify-amt` from the gap round's freeze, `venv-verify-sym`), the re-downloaded
+weights and two blob-less clones were deleted after use; free disk 7,551 MB at 01:15 UTC.
+
+Still UNVERIFIED after this check: the permission refusal of the gtrsnipe install at 00:40 UTC (the gap agent's
+report; no log of it exists; no `venv-gtrsnipe` exists, which is consistent with it; the install was not attempted
+again here); the npm output "added 1 package" and the free-disk figures of the gap round (8,912, 7,531, 7,278 and
+7,904 MB); which fold the Zenodo file is and whether the training script's `GuitarProFx` folder held GuitarSet tracks;
+that the `tabcnn.onnx` on Hugging Face is the model the export README's command trained (both give held-out F1 0.745);
+which part of scorify's mechanics model rejects R1b at its 56th note; the MuseScore palette names in `for-aaron.md`
+section 5 step 6 (program not opened).

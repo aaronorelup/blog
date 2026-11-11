@@ -14,7 +14,8 @@ verification log at the end, carry the same marks in the ledger.) Scores come fr
 `e....`; every result of this lane records `gtr_eval_version` 0.11.1) unless a line says the number was computed by a
 script here, in which case the script is named. (corrected in gap round 1: that sentence about slots covers the
 first round; of the gap round's runs, r0542, r0551, r0554 and r0556 ran in a 2-core slot, and r0534, r0549, r0552,
-r0557 and r0558 are `--nolock` light jobs; see "Gap round 1".)
+r0557 and r0558 are `--nolock` light jobs; see "Gap round 1". Of gap round 2's runs, r0620, r0643, r0670 and r0672
+ran in a 2-core slot, and r0656, r0657, r0658, r0668 and r0673 are `--nolock`; see "Gap round 2".)
 
 Scripts: `scripts/` in this folder. Small outputs: `samples/<tool>/`. Big outputs (audio):
 `/home/user/gtr/lanes/fingerstyle-voices-taps/out/<tool>/`, listed under "Media kept outside git" at the end.

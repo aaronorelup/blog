@@ -179,7 +179,15 @@ Notes on the list, read 2026-11-10:
   Monaco package's `LICENSE` (https://raw.githubusercontent.com/CoderLine/alphaTab/develop/packages/monaco/LICENSE,
   byte-identical to the package's) begins "alphaTab Monaco is licensed under MPL-2.0." followed by the MPL 2.0 text;
   the language server's `LICENSE` begins "alphaTab Language Server is licensed under MPL-2.0."; npm `license` field
-  `MPL-2.0` for both. What the try lane saw (trials.md, "Gap round 2"): installed and bundled with esbuild (r0604), a
+  `MPL-2.0` for both. (Verifier, gap round 2, re-read 2026-11-11 in the 1.9.0 tarballs from registry.npmjs.org and at
+  the URL above: between that first line and the MPL 2.0 text both files have "Copyright © 2025, Daniel Kuschny and
+  Contributors, All rights reserved." and "See LICENSE.header for further licenses of integrated submodules."; the
+  `LICENSE.header` of both packages is a file-header template, "This Source Code Form is subject to the terms of the
+  Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at
+  http://mozilla.org/MPL/2.0/.", and names no other license. Registry `license` fields of the packages the 1.9.0
+  install pulled in: dompurify "(MPL-2.0 OR Apache-2.0)"; `monaco-editor`, marked, `@types/trusted-types` and the
+  vscode-* packages "MIT".)
+  What the try lane saw (trials.md, "Gap round 2"): installed and bundled with esbuild (r0604), a
   fret, a string and a capo typed in Monaco and redrawn by alphaTab, a string 7 refused with the language server's
   marker AT208 "Note string is out of range. Available range: 1-6" (r0614), the `.gp` export read back with the edits
   (e1780, e1784).
@@ -1199,7 +1207,14 @@ history (`git clone --filter=blob:none --no-checkout https://github.com/HAYASAKA
   frontend (Vue 3 + Vite)." (`docs/ARCHITECTURE.md`, link markup dropped); `go.mod` requires
   `github.com/wailsapp/wails/v3 v3.0.0-alpha.74`. The README's platform badge URL encodes the text "platform-Windows |
   macOS | Linux", and the README points to GitHub Releases for builds ("Download the current build for your operating system from GitHub Releases.", link
-  markup dropped); github.com pages answer 403 from this box, so the release files were not listed.
+  markup dropped); github.com pages answer 403 from this box, so the release files were not listed. (Verifier, gap
+  round 2, 2026-11-11: the web fetch tool listed them, https://github.com/HAYASAKA7/HAYA-TAB/releases/expanded_assets/v3.1.8:
+  `HAYA-TAB-linux-amd64.tar.gz` 28.1 MB, `HAYA-TAB-linux-arm64.tar.gz` 27.4 MB, `HAYA-TAB-macos-amd64.dmg` 31.7 MB,
+  `HAYA-TAB-macos-arm64.dmg` 31.7 MB, `HAYA-TAB-windows-386.zip` 27.3 MB, `HAYA-TAB-windows-amd64.zip` 27.8 MB,
+  `HAYA-TAB-windows-arm64.zip` 26.9 MB and the two source archives, dated 2026-07-31. Each file's own URL answers the
+  box with a redirect to release-assets.githubusercontent.com, which serves it. The Linux amd64 archive holds one
+  executable, `HAYA-TAB`, linked against `libwebkit2gtk-4.1.so.0` and `libgtk-3.so.0` among others; the Windows amd64
+  zip holds one file, `HAYA-TAB.exe`. Details: trials.md, "Gap round 2", HAYA-TAB.)
 - **Repository and versions.** https://github.com/HAYASAKA7/HAYA-TAB, default branch `main` (`git ls-remote`: HEAD at
   eb0466a). First commit bf61c77 "Initial commit", 2026-02-09T10:11:03+08:00 (author and committer date; the date the
   GitHub repository was created was not visible from here); last commit on `main` eb0466a "chore: ignore generated
@@ -1227,7 +1242,9 @@ history (`git clone --filter=blob:none --no-checkout https://github.com/HAYASAKA
 - **How a program calls it:** a desktop program; no command line or library interface for tab content was found in
   the README or the architecture document.
 - **LICENSE FACTS** (read 2026-11-11): a. Code: `LICENSE`
-  (https://raw.githubusercontent.com/HAYASAKA7/HAYA-TAB/main/LICENSE, 11,341 bytes, identical on `master`) is the
+  (https://raw.githubusercontent.com/HAYASAKA7/HAYA-TAB/main/LICENSE, 11,341 bytes, identical on `master`; verifier:
+  the repository has no `master` branch, `git ls-remote` lists `main` and six feature branches, and
+  raw.githubusercontent.com answered the `master` URL with the same file) is the
   Apache License text, "Apache License Version 2.0, January 2004 http://www.apache.org/licenses/"; its section 2: "Grant
   of Copyright License. Subject to the terms and conditions of this License, each Contributor hereby grants to You a
   perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare
@@ -1519,3 +1536,13 @@ Every quote added was compared with the saved file it came from (`scripts/gap2_c
 `samples/verify/gap2_quote_check.tsv`). Still UNVERIFIED: the date HAYA-TAB's GitHub repository was created (its
 first commit is dated 2026-02-09) and the files of its GitHub releases (github.com answers 403 here); whether abcjs
 can force a string per note (no option for it in the pages read, and none among the click and drag options).
+
+Checked by `verify-gapfill-web-tab-render` on 2026-11-11 (full log: trials.md, "Verification log
+(verify-gapfill-web-tab-render, round 2, 2026-11-11)"). The 55 quotes of this round and 4 more were looked up in the
+live sources, not the saved copies (`samples/verify/gap2_verify_live_quotes.tsv`): all found, 40 byte for byte and 19
+after whitespace or markup normalisation. Added in place, each marked "Verifier": the copyright and LICENSE.header lines
+of the two alphaTab editor packages and the registry license fields of what their install pulls in; the HAYA-TAB
+release files (listed with the web fetch tool, so that item is no longer UNVERIFIED); the absence of a `master`
+branch in HAYA-TAB. Still UNVERIFIED: the date HAYA-TAB's GitHub repository was created (api.github.com answered 403
+to the web fetch tool too). On abcjs and a per-note string, the installed 6.7.2 source assigns the string from the
+pitch (trials.md, "Gap round 2", abcjs, "Two notes on one string"); no input for it was found there either.

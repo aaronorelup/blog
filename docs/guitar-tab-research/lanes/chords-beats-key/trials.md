@@ -815,8 +815,10 @@ so they are also in `out/scores/scores.jsonl` and `samples/scores/`), scripts in
 `samples/<tool>/`, full outputs in `/home/user/gtr/lanes/chords-beats-key/out/<tool>/<clip>/`. Each tool's venv and the
 weights it downloaded were deleted when the tool was done; its `uv pip freeze` is in `samples/<tool>/`. The shared disk
 had 11 GB free when this round started (`df` at 23:13 UTC; 9.5 GB at 23:19); the orchestrator's DISK LOW notice (below
-9,000 MB free) printed from about 23:32 UTC on, with 5.3 to 9.2 GB free while this round ran. This section, and every note marked "gap round 1" elsewhere in this file,
-was written after the verification log at the end and has not been checked by a separate agent.
+9,000 MB free) printed from about 23:32 UTC on, with 5.3 to 9.2 GB free while this round ran. This section, and every
+note marked "gap round 1" elsewhere in this file, was written after the first verification log below; it was then
+checked by verify-gapfill-chords-beats-key (the last section of this file, "Verification log
+(verify-gapfill-chords-beats-key, round 1, 2026-11-11)").
 
 ### All-In-One 1.1.0 (PyPI `allin1`): beats, downbeats, tempo and song sections, after a Demucs separation
 
@@ -976,8 +978,8 @@ was written after the verification log at the end and has not been checked by a 
 | R1b (90) | 90 yes e1689 | 94 x1.04 e1686 | 90 yes e1691 | 93.06 yes e1690 | 92 yes e1688 | 90 yes e1687 | 90 yes e1693 | 171 x1.90 e1692 | 5 |
 | R1c (119) | 119 yes e1699 | 119 yes e1696 | 120 yes e1701 | 120.79 yes e1700 | 116 yes e1698 | 119 yes e1697 | 119 yes e1703 | 119 yes e1702 | 3 |
 
-  "x1.04" for cnn on R1b is a ratio of 1.0444 (94 / 90), above the 1.04 limit of the 4 % tolerance. R2full (no truth; the artist's
-  page lists 72 bpm and "4/4 Swing", per INPUTS.md): fcn, cnn, ismir2018 and deepsquare 72; fma2018 143.30; deeptemp
+  "x1.04" for cnn on R1b is a ratio of 1.0444 (94 / 90), above the 1.04 limit of the 4 % tolerance. R2full (no truth;
+  the artist's page lists 72 bpm and "4/4 Swing", per INPUTS.md): fcn, cnn, ismir2018 and deepsquare 72; fma2018 143.30; deeptemp
   and shallowtemp 144; mazurka 285; meter 9. MIREX triples (t1, t2, s1) on S3: fcn 48, 96, 0.247; shallowtemp 96, 192,
   1.0; on R2full: fcn 72, 143, 0.939 (all in `samples/tempocnn/`). S7flat30 (S3 rendered 30 cents flat) gave the same
   values as S3 for every model and the meter.
@@ -1064,7 +1066,8 @@ was written after the verification log at the end and has not been checked by a 
   plugins and none on PyPI; Ubuntu does package the DSP library they are built on (`libqm-dsp0t64` / `libqm-dsp-dev`
   1.7.1-8) and Sonic Visualiser 4.5.2 (a GUI without plugins). The plugin download site reset the connection again at
   2026-11-10 23:30:27 UTC. The Vamp Plugin Pack's Linux download (GitHub release asset, 34,248,632 bytes) is an AppImage
-  whose file system holds only the installer program and Qt libraries; the plugins are inside that GUI program, which
+  whose file system holds the installer program, Qt 6 and other shared libraries and no Vamp plugin file; the plugins
+  are inside that GUI program (its binary carries the strings "Queen Mary Vamp plugins" and "qm-vamp-plugins"), which
   asks to be run ("Make it executable 3. Run it"). It was not run (a downloaded GUI installer, with no display on this
   box), no plugin binary was taken out of it, and the file was deleted. So no QM plugin was available to the `vamp`
   Python host used for Chordino, and nothing was run. The QM plugin list (plugin-doc page, survey.md) has no tuning
@@ -1122,9 +1125,9 @@ D:maj, E:maj); S2n's are G:maj, C:maj, D:maj.
   were rebuilt from the first round's freezes (`samples/crema/venv-tf.freeze.txt` without jax and jaxlib, as the
   verifier did; `samples/lv_chordia/venv-lvchordia.freeze.txt`; tensorflow-cpu 2.12.1 had to be downloaded again,
   221.1 MiB), and the same scripts ran in run r0605 (2 cores; 102.1 s wall in total, 103.8 s CPU, 1040.7 MB peak RSS;
-  plan `scripts/plans/gap1_capo_chords.json`): each tool on S3 first as a control, into
-  `out/gap1check_<tool>/S3/` (moved afterwards to `out/gap1_controls/<tool>/S3/`), then on S5capo2 (autochord 9.28 s, CREMA 6.95 s, lv-chordia 9.14 s per job,
-  `samples/capo_chords/batch_gap1_capo_timings.jsonl`). The S3 control outputs are byte-identical to the first round's
+  plan `scripts/plans/gap1_capo_chords.json`): each tool on S3 first as a control, into `out/gap1check_<tool>/S3/`
+  (moved afterwards to `out/gap1_controls/<tool>/S3/`), then on S5capo2 (autochord 9.28 s, CREMA 6.95 s, lv-chordia
+  9.14 s per job, `samples/capo_chords/batch_gap1_capo_timings.jsonl`). The S3 control outputs are byte-identical to the first round's
   (autochord `.lab`; CREMA `.lab` and `.jams`; lv-chordia `.lab` and `.json` for both dictionaries). The venvs and the
   TensorFlow download were deleted afterwards.
 - S5capo2 chord scores of the re-run tools (gtr-eval 0.11.1; root = majmin = sevenths = mirex on this clip): autochord
@@ -1207,7 +1210,7 @@ position or an open-string tuning.
 | BTC (jayg996/BTC-ISMIR19, commit 2682317) | Distributed only as a GitHub repository (no PyPI package; survey.md). The clone (with `test/btc_model.pt` 12,154,754 bytes and `test/btc_model_large_voca.pt` 12,229,576 bytes) and a venv (torch 2.15.0+cpu, librosa 0.11.0, mir_eval 0.8.2, pandas 3.1.1, pyyaml; freeze in `samples/btc/`) were made and `scripts/btc_run.py` was written (the repository's test.py loop with `np.float`/`np.int` aliases and `torch.load(weights_only=False)`), but the `gtr-run` call that would execute it was refused by this session's tool-permission policy (the trial agent's transcript shows "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External]"). The clone and venv were deleted. |
 | madmom from GitHub main (0.17.dev0, 27f032e) | Build from the clone refused by the same policy; PyPI 0.16.1 was used instead (madmom section). |
 | libKeyFinder + keyfinder-cli | Not in Ubuntu 24.04 apt (`apt-cache search keyfinder` returned nothing); the build route is a CMake build of cloned repositories, the kind of step this session's policy refused twice (madmom, BTC); not attempted. PyPI `keyfinder` 1.1.0 is a binding that needs libkeyfinder installed (survey.md). (Gap round 1: still not run. No Debian or Ubuntu package in any suite and nothing on conda-forge either; the CMake build of a 2.2.8 clone was attempted and refused with "Reason: [Code from External]"; see "Gap round 1".) |
-| S-KEY (deezer/skey) | (corrected in gap round 1: the same weights ran here through the community ONNX export `aaatmy/skey-onnx` with onnxruntime and a few lines of glue, no repository code; see "Gap round 1". The repository's own PyTorch route is still not run.) First-round reason: installs from its repository with poetry (survey.md); PyPI `skey` 0.2 has the home page http://github.com/dleonik/skey and no release files (PyPI JSON read 2026-11-10); not attempted for the same reason. |
+| S-KEY (deezer/skey) | (corrected in gap round 1: the same weights ran here through the community ONNX export `aaatmy/skey-onnx` with onnxruntime and lane-written glue (`scripts/skey_onnx_run.py`, 83 lines), no repository code; see "Gap round 1". The repository's own PyTorch route is still not run.) First-round reason: installs from its repository with poetry (survey.md); PyPI `skey` 0.2 has the home page http://github.com/dleonik/skey and no release files (PyPI JSON read 2026-11-10); not attempted for the same reason. |
 | All-In-One (allin1 1.1.0) | (corrected in gap round 1: it ran here, see "Gap round 1"; madmom 0.16.1 from PyPI on Python 3.9 and NATTEN 0.17.3 built from its PyPI sdist replaced the README's GitHub madmom and NATTEN website.) First-round reason: its README (raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md, read 2026-11-10) says "Install NATTEN (Required for Linux and Windows; macOS will auto-install)" (Linux: "Download from NATTEN website"; Windows: "Build from source") and installs madmom from GitHub ("pip install git+https://github.com/CPJKU/madmom  # install the latest madmom directly from GitHub"); the madmom git route was refused here; not attempted. Each run would also include a Demucs htdemucs separation (survey.md). |
 | tempo-cnn (tempocnn 0.0.8) | (corrected in gap round 1: it ran here with tensorflow 2.17.0, see "Gap round 1"; the package has no key model.) First-round reason: PyPI metadata requires `tensorflow==2.17.0`; the only TensorFlow wheel in the shared cache was tensorflow-cpu 2.12.1 and the orchestrator's disk notice (4.7 to 7.9 GB free on the shared disk during this run, per the notices and `df -h`) asked lanes not to install a second TensorFlow version. Not installed. Essentia's TempoCNN algorithm with the deeptemp models ran (Essentia section); their metadata cites Schreiber and Müller, SMC 2019. |
 | Omnizart chord (0.6.3) | (Gap round 1: still not run. One attempt with the 0.5.0 wheel on Python 3.8, TensorFlow 2.5.0 and numpy preinstalled failed while building madmom 0.16.1, on a C file generated earlier by Cython 3.3.1 in uv's shared cache; see "Gap round 1".) First-round reason: sdist only; requires tensorflow>=2.5, tf-keras, madmom>=0.16.1, pyfluidsynth, sherpa-onnx, vamp (PyPI metadata). Not attempted by the trial agent (time). The verifier then tried a chord-only install (the sdist with `--no-deps` on the cached tensorflow-cpu 2.12.1, plus only the chord checkpoint file, 44,242,072 bytes, from the GitHub release `checkpoints-20211001` that `omnizart download-checkpoints` reads); the shell command was refused before it ran: "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External]". Nothing was installed. The sdist's `setup.py` itself runs `uv pip install` / `pip install` for Cython, numpy, madmom, vamp, pyaudio and pyfluidsynth when they are missing (read in the sdist, sha256 66b96cd3...45c1). |
@@ -1224,8 +1227,9 @@ position or an open-string tuning.
 
 None. No tool run in this lane writes audio or video (allin1's sonification, which would, was not run). All outputs
 are text, JSON, `.lab` and `.jams` files under `/home/user/gtr/lanes/chords-beats-key/out/`. (Gap round 1: still none.
-All-In-One's Demucs separation wrote four stems per clip under `out/allin1/<clip>/demix/`, and they were deleted at the
-end of each run, as allin1 does by default; `sonify` and `visualize` were not run.)
+All-In-One's Demucs separation wrote four stems per clip under `out/allin1/<clip>/demix/` (the CLI run r0576: under
+`out/allin1_cli/S4/demix/`), and they were deleted at the end of each run, as allin1 does by default; `sonify` and
+`visualize` were not run. Verifier, 2026-11-11: no audio file is left under `out/`.)
 
 ## Verification log (verify-trials-chords-beats-key, 2026-11-10)
 
@@ -1312,3 +1316,123 @@ Still UNVERIFIED after this check:
 - The UNVERIFIED items in `for-aaron.md` (see its own log).
 
 Verifier's runs: r0411, r0425, r0436, r0437, r0438, r0439, r0442, r0445, r0446, r0449, r0452, r0455, r0468, r0474.
+
+## Verification log (verify-gapfill-chords-beats-key, round 1, 2026-11-11)
+
+Checks of "Gap round 1" and of the round's notes in this file, survey.md, for-aaron.md, tools.json, `samples/` and
+`scripts/`, by an independent agent, against the run ledger, the gtr-eval ledger, the saved outputs, re-runs, the sources
+fetched again on 2026-11-11 and the gap agent's session transcript. Scripts and re-run plans: `scripts/verify/gap1/`;
+outputs, logs and page copies: `/home/user/gtr/lanes/chords-beats-key/verify-gap1/` (not in git). Every venv, cache entry
+and weight file the re-runs added was deleted afterwards.
+
+What was checked, and the result:
+
+- Run ledger: the eight runs of the round (r0512, r0518, r0521, r0563, r0576, r0584, r0588, r0605) are the only runs of
+  this lane from r0480 to r0605, and each is in `/home/user/gtr/ledger/runs.jsonl` with the command described, 2 cores,
+  and the wall-clock, CPU, peak RSS and exit code the text gives. r0512 (exit 1) is written up as a failed import, and its
+  log ends with the quoted TypeError. The per-job lines of `logs/gap1/batch_*.jsonl` (10 All-In-One, 10 tempo-cnn, 11
+  S-KEY and 6 capo jobs, all exit 0) match the per-clip times quoted and are the files copied to
+  `samples/*/batch_gap1*_timings.jsonl`; the stage times match each clip's `timings.json`, `tempocnn.json` or `skey.json`.
+- Scores: all 121 gtr-eval ledger entries the gap agent wrote (e1509, e1510, e1578 to e1591, e1614 to e1714, e1767 to
+  e1770) have exit code 0 and were re-run in-process with `--no-ledger` from their stored argv
+  (`scripts/verify/gap1/rerun_gap1_evals.py`, gtr-eval 0.12.0, whose changelog changes only `tab` and `f0` reading): 121 of
+  121 results identical apart from `gtr_eval_version`. The 13 estimate files are unchanged since scoring (SHA-256), and the
+  90 BPM and key values passed on the command line in the other rows of `out/scores/scores.jsonl` equal the files they
+  were read from. The 18 log-file evals are not in that file; `logs/gap1/scores.before_logfile_filter.jsonl` differs from
+  it only by those 18 rows and 13 later rows (S-KEY and the capo re-runs); `samples/scores/scores_<tool>.jsonl` hold the
+  newest line per key for all 15 tools.
+- Table cells, recomputed with the verifier's own readers (`check_allin1.py`, `check_tempocnn_skey.py`,
+  `check_capo_table.py`): the All-In-One timing table (10 rows) and score table (9 rows), the 72 tempo cells and 9 meter
+  values of the tempo-cnn table, the 9 S-KEY rows and the 8 rows of the capo table (first four segments that are not `N`,
+  labels at the four truth midpoints on S5capo2 and on S2n): all equal. Also equal: the excerpts and counts in the text
+  (S3, S2n and S5capo2 beats and downbeats; the R1a and R1c offsets of -0.267 s and +0.223 s; R1b's first beat; R2full's
+  bpm 71, 264 beats, 66 bar starts and 10 segments with the labels and times quoted; the CLI's S4 JSON differs from the
+  wrapper's only at the 20.69 / 20.70 s boundary), the tempo-cnn timing ranges, MIREX triples and R2full values, the S-KEY
+  timing ranges and R2 / R2full keys, e1767 to e1770 and the first-round S5capo2 evals cited (e0598, e0306, e0309, e0983),
+  the round's rows in "S3 versus S7flat30" and "Open-string tuning and capo", and the byte identity of the r0605 S3
+  controls with the first round's files.
+- Files: every path named in "Gap round 1" exists, except what the text says was deleted (venvs, `models/tempocnn_home`,
+  weights); the sample copies equal the files in `out/`; no audio file is left under `out/`.
+- Re-runs (2 cores each, labels starting "verify"):
+  - S-KEY, r0665: the 11 clips of r0588, venv rebuilt offline from its freeze (freeze identical), `skey.onnx` and
+    `manifest.json` from revision c04b6a2b (same SHA-256); 23.44 s wall. All 11 labels and all 24 scores per clip bitwise
+    identical to r0588's.
+  - lv-chordia on S5capo2, r0671 (344 s wait for a slot, 29.79 s wall): the `.lab` and `.json` files of both dictionaries
+    byte-identical to r0605's.
+  - All-In-One: venv rebuilt from its freeze (torch 2.5.1+cpu downloaded again, 166.6 MiB), NATTEN 0.17.3 built again from
+    the PyPI sdist in r0675 (149.28 s wall, 174.4 s CPU, exit 0; the four functions import), freeze identical to the saved
+    one, weights with the SHA-256 in `samples/allin1/weights_sha256.txt`; S3 in r0693 (142.7 s wall; htdemucs 50.4 s and
+    inference 87.1 s, against 31.4 s and 67.6 s in r0521, with a load average of 6.42 at the start against 1.52):
+    `S3.json` and the files derived from it byte-identical to r0521's.
+  - Not re-run: tempo-cnn, because tensorflow 2.17.0 (573.4 MiB to download, per the round's install log) is no longer
+    in the shared cache and the orchestrator's disk notice allows no new download over 200 MB unless a lane cannot finish
+    without it; autochord and CREMA, because tensorflow-cpu 2.12.1 (221.1 MiB) is no longer cached either. Their outputs
+    and scores were checked from the files.
+- Sources, fetched again on 2026-11-11 (`fetch_sources.sh`; statuses in `verify-gap1/raw/status.tsv`) and compared with
+  the text (`check_quotes.py`: 41 quotes present; two of them differ only by the space that HTML link markup leaves before
+  a comma): the NATTEN install page, CHANGELOG and LICENSE; the NATTEN site's certificate (curl error 60; issuer Sectigo,
+  notAfter Dec 3 23:59:59 2025 GMT); whl.natten.org (CPU wheels only for 0.17.5, `+torch250cpu` and `+torch260cpu`, cp39
+  to cp312); the eight 0.17.3 and 0.17.4 CPU wheel assets on GitHub (HTTP 200); PyPI JSON for allin1, natten, demucs
+  4.0.1 (an sdist only), tempocnn, omnizart, keyfinder and skey, and the HTTP 404 names; the conda-forge 404s; the
+  package-name searches at packages.ubuntu.com and packages.debian.org; the allin1 wheel, the NATTEN 0.17.3 and 0.17.4
+  sdists, the demucs 4.0.1 sdist, the tempocnn wheel and the omnizart 0.5.0 and 0.6.0 wheels (each SHA-256 equal to
+  PyPI's; every code line, function, alias, default, docstring, dependency pin and file list the text quotes is in them);
+  the four tempo-cnn model files from GitHub and the five in the wheel (sizes and SHA-256 equal to
+  `samples/tempocnn/models_sha256.txt`); the Hugging Face API data for taejunkim/allinone and aaatmy/skey-onnx; the S-KEY
+  READMEs at main and at 918b83d, `key_detection.py`, the LICENSE, and the ONNX card, manifest and license files;
+  `skey.pt` at main and at 918b83d (both 765,465 bytes, SHA-256 78dfd0ad...ead4); the QM plugin documentation, the Vamp
+  Plugin Pack page and its Linux installer (same size and SHA-256; listed again, not run, deleted); the Mixxx 2.4.0 .deb
+  (SHA-256 equal to apt's) and its binary's strings; `git ls-remote` of libkeyfinder (tag 2.2.8 = b33b5a8, committed
+  2023-09-27; HEAD 941e517) and the codeload HTTP 403 text; the libkeyfinder README (main, and tag 2.2.8 with the same
+  build commands) and the keyfinder-cli README; Essentia's Key page; the four arXiv API queries, the Hugging Face model
+  searches (up to 1,000 results each for "capo", "drop d" and "open tuning": no guitar, tuning or capo model) and the
+  PyPI names of the capo search. The code.soundsoftware.ac.uk download page reset the connection again at 2026-11-11
+  00:41 UTC. Licenses stay apart as the text has them: S-KEY code MIT, weights "only for non-commercial research
+  purposes" (README at main), and the ONNX card assigns the weights no new license; NATTEN MIT.
+- NOT RUN HERE reasons: the libKeyFinder CMake refusal is in the gap agent's transcript (00:13:55 UTC, "[Code from
+  External]"); no run id was written and `src/` is empty. The QM Vamp checks were repeated as above. Omnizart: the
+  attempt's log has the quoted lines, 1 min 7.7 s and 28 installed packages (the freeze); in uv's cached madmom 0.16.1
+  sdist, `madmom/ml/nn/layers.c` says "Generated by Cython 3.3.1" and is dated 20:58:23 UTC, inside r0025 (20:56:22 to
+  20:58:54 UTC, the only madmom build in the ledger at that time), and the three regenerated modules say Cython 0.29.37
+  (00:18:53 to 00:18:56 UTC); CPython 3.8 is no longer installed and no TensorFlow wheel is left in the uv cache. The
+  audio-to-notes lane's 23:30 UTC attempt is in its trials.md as quoted. The capo-detector search: the six web queries,
+  with the result lists summarised in survey.md, are in the gap agent's transcript.
+- Earlier record: against commit ee7da27 (trials.md before this round) all 18 earlier headings are present in order, the
+  first verification log is byte-identical, and the only earlier lines that changed are the round's notes (two intro
+  lines, seven "Not run here" rows that keep their first-round text, one media line). survey.md against dbe9e50: seven
+  lines changed, each only extended by a gap note. for-aaron.md against ee7da27: one line extended, and step 2 of section
+  5 reflowed around an inserted sentence with its first-round text kept. tools.json against 58786f2: ten entries
+  changed, none removed.
+- Wording, secrets, size: "a slow sdist download", "just outside", "a few lines of glue" and "a stale copy" were
+  reworded (below); no key, token or signed URL is in the lane folder; no audio or video; the largest file is tools.json
+  (276,596 bytes after the changes below).
+
+What was changed:
+
+- This file: disk free when the round started (11 GB at 23:13 UTC, not 9.5 GB); NATTEN's "therefore" removed and the
+  unused GitHub release wheels named; r0512's "slow sdist download" replaced by uv's own build time; demucs 4.0.1 came as
+  a wheel uv had built and cached; S7flat30's All-In-One JSON and timings are not in `samples/`; the "x1.04" wording;
+  which S-KEY model files were fetched and which are hashed; the first output folder of the capo controls; the Vamp
+  Plugin Pack image also holds 42 non-Qt shared libraries; the S-KEY "Not run here" row; the media note (the CLI's stems
+  folder, no audio left); the "not checked" sentences at the top of "Gap round 1".
+- survey.md: header note; the Vamp Plugin Pack listing; handoff fact 25 (exact eval ids, and gtr-eval also reads the
+  allin1 JSON as written: beat F 0.95082 and downbeat F 1.0 on S3 with `--no-ledger`, as e1509); the handoff header.
+- for-aaron.md: section 3 (which clips the ONNX run covered), section 4 (the Mixxx remark is about Ubuntu's package,
+  UNVERIFIED), section 7 ("a stale copy"), the gap note.
+- tools.json (`scripts/verify/gap1/fix_tools_json.py`): S-KEY: the outdated "ONNX conversion ... not read" item removed
+  from `unverified`, the README-commit fact moved from `unverified` to `license.weights.note`, the ONNX route's input and
+  output added; All-In-One: the r0576 note no longer names a cause, the NATTEN-website item reworded, an r0518 note on
+  the unused GitHub wheels and the verifier's rebuild.
+
+Still UNVERIFIED after this check:
+
+- The six web searches were not repeated (this session's web-search budget was used up); what they returned rests on the
+  gap agent's transcript.
+- The tempo-cnn, autochord and CREMA outputs of this round were not reproduced (reasons above).
+- Whether the Demucs random shift is what moved the 20.69 / 20.70 s boundary in r0576; on S3 a second run (r0693) gave a
+  byte-identical JSON.
+- That the QM plugins are inside the Vamp Plugin Pack installer program rests on its strings and on the image holding no
+  plugin file; the installer was not run.
+- The venv sizes (1.4 GB, 2.5 GB, 926 MB) are the gap agent's `du` readings in its transcript; those venvs are gone.
+
+Verifier's runs: r0665, r0671, r0675, r0693.

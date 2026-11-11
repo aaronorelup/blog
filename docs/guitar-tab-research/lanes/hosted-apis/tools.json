@@ -1,6 +1,6 @@
 {
   "lane": "hosted-apis",
-  "generated": "2026-11-10",
+  "generated": "2026-11-11",
   "tools": [
     {
       "name": "Music.AI API",
@@ -22,13 +22,17 @@
       "inputs": [
         "audio URL (workflow param `inputUrl` in the API reference's job examples, `inputFileUrl` on the module pages); upload via GET /upload then PUT",
         "audio formats: \"Include all audio formats, such as WAV, MP3, OGG, FLAC, etc.\"",
-        "video formats: \"Include all video formats, such as AVI, MP4, MKV, etc.\""
+        "video formats: \"Include all video formats, such as AVI, MP4, MKV, etc.\"",
+        "GET /upload returns `uploadUrl` and `downloadUrl` (\"URL to upload the file to. This URL is temporary.\"); POST /job with JSON {\"name\", \"workflow\" (slug), \"params\" (must match the workflow's input schema, e.g. \"inputUrl\"), \"metadata\"} returns {\"id\"} (https://music.ai/docs/api/reference/)"
       ],
       "outputs": [
         "Chords module: `key` and `chordMap` (start time, end time, chord classes); file-formats page shows chord JSON {\"start\": 0, \"end\": 10, \"chord\": \"C\"}",
         "Beats module: `bpm` (number) and `beatMap` (each beat's start time and beat number); file-formats page shows {\"start\": 0, \"end\": 10, \"bpm\": 120}",
         "Guitar Stems module: `acoustic_guitar`, `electric_guitar`, `other` (audio)",
-        "Guitar Parts module: `rhythm_guitars`, `solo_guitars`, `other` (audio)"
+        "Guitar Parts module: `rhythm_guitars`, `solo_guitars`, `other` (audio)",
+        "GET /job/:id returns `status` (`QUEUED`, `STARTED`, `SUCCEEDED`, `FAILED`) and `result` (\"Processing results (URLs to output files) when status is SUCCEEDED\"); GET /job/:id/status; DELETE /job/:id; GET /workflow lists workflows",
+        "Chords module `key` (\"Detected root key of the audio (e.g., C Major, A minor).\") and `chordMap` (\"Timeline of Chord annotations extracted from the input audio file. Each annotation specifies the chord's start time, end time, and multiple Chord classes.\"); the page describes the classes \"Complex Jazz, Simple Jazz, Complex Pop, and Simple Pop\" and \"bass detection\"",
+        "Beats module `beatMap` (\"JSON containing beat annotations extracted from the input audio. Each annotation specifies the beat's start time and beat number.\"); the Beats module page and the file-formats page show different beat shapes"
       ],
       "constraints_accepted": [],
       "license": {
@@ -95,12 +99,17 @@
           }
         ]
       },
-      "pricing": "Plans \"Pay as you go $0\" (\"48h temporary storage\", \"2 concurrent processing jobs\"), \"Professional $25 USD Billed monthly\" (\"$25 credit included every month (limited offer)\"), \"Business / Enterprise\" (\"Contact us\"). Pay-as-you-go modules: \"Transcription - Chords $0.04 / min\", \"Transcription - Beats $0.03 / min\", \"Transcription - Sections $0.04 / min\", \"Stem separation - Guitar stems (Acoustic guitar, Electric guitar) $0.1 / min\", \"Stem separation - Guitar parts (Rhythm guitars, Solo guitars) $0.1 / min\", \"Stem separation - Musical stems (Guitars) $0.07 / min\", \"Generators - Metronome $0.002 / min\", \"Classification - Instruments detection $0.02 / min\", \"Classification - Music metadata (By Cyanite) $0.15 / min\". FAQ: \"Pay-as-you-go and Professional members must purchase credits up front and cannot have a negative credit balance.\" (https://music.ai/pricing/, read 2026-11-10)",
+      "pricing": "Plans \"Pay as you go $0\" (\"48h temporary storage\", \"2 concurrent processing jobs\"), \"Professional $25 USD Billed monthly\" (\"10 concurrent processing jobs\", \"$25 credit included every month (limited offer)\", \"100GB permanent storage\", \"5% discount on all modules\"), \"Business / Enterprise\" (\"Contact us\"). Pay-as-you-go modules: \"Transcription - Chords $0.04 / min\", \"Transcription - Beats $0.03 / min\", \"Transcription - Sections $0.04 / min\", \"Stem separation - Guitar stems (Acoustic guitar, Electric guitar) $0.1 / min\", \"Stem separation - Guitar parts (Rhythm guitars, Solo guitars) $0.1 / min\", \"Stem separation - Musical stems (Guitars) $0.07 / min\", \"Stem separation - Musical stems (Bass) $0.07 / min\", \"Generators - Metronome $0.002 / min\", \"Classification - Instruments detection $0.02 / min\", \"Classification - Music metadata (By Cyanite) $0.15 / min\". FAQ: \"Pay-as-you-go and Professional members must purchase credits up front and cannot have a negative credit balance.\" (https://music.ai/pricing/, read 2026-11-10)",
       "handoffs_out": [
         {
           "to": "Soundslice data API",
           "via_format": "beatMap JSON (each beat's start time and beat number) with `bpm`; Soundslice syncpoints take [zero_based_bar, time_in_seconds, optional_position_0_to_480]",
           "evidence": "Docs only, not called: https://music.ai/modules/transcription/beats/ and https://www.soundslice.com/help/data-api/ (survey.md, Handoff facts)"
+        },
+        {
+          "to": "Klangio API",
+          "via_format": "`acoustic_guitar` / `electric_guitar` and `rhythm_guitars` / `solo_guitars` stems (audio)",
+          "evidence": "Docs: Klangio /transcription?model=guitar takes an audio file as the multipart `file` (https://api-docs.klang.io/docs/getting-started/basic-job-workflow); its docs do not list the accepted audio formats, so whether each stem file is accepted is UNVERIFIED (one call per format would settle it); not tested"
         }
       ],
       "unverified": [
@@ -128,7 +137,11 @@
       "inputs": [
         "multipart upload, form field `file` (audio; which input audio formats parse is not listed in the docs)",
         "/lead-sheet: `file` plus optional `lyrics` (plain text); query `infer_lyrics`",
-        "query `model` (required on /transcription), `title`, `composer` (max 120 chars each), `webhook_url`; form field `outputs` (array)"
+        "query `model` (required on /transcription), `title`, `composer` (max 120 chars each), `webhook_url`; form field `outputs` (array)",
+        "Errors page (https://api-docs.klang.io/docs/getting-started/error-descriptions): \"Audio file format could not be parsed!\", \"Audio file must be longer than 5 seconds!\", and for beat tracking \"this error may occur if the audio is a-rhythmic, has a tempo outside the 40-300 bpm range\"",
+        "Basic Job Workflow page: \"Depending on your current subscription billing status, creating a job may inflict quota costs. For a testing account a demo transcription is created by default.\"",
+        "/transcription form field `outputs` (array; spec enum `mxml`, `midi`, `pdf`, `gp5`, `json`, `midi_quant`); the docs' model-selection table lists eleven of the twelve `model` values and not `multi`",
+        "/chord-recognition and /chord-recognition-extended: query `vocabulary` (required); the full vocabulary's regex allows maj, min, dim, aug, min6, maj6, min7, maj7, minmaj7, 7, dim7, hdim7, sus2, sus4 (N = no chord, X = unknown)"
       ],
       "outputs": [
         "MusicXML (`xml` result path)",
@@ -139,13 +152,16 @@
         "extended chords JSON: object with `key` (e.g. \"A minor\"), `chords` (same triplets) and `strums` ([<time_stamp_in_seconds>, <strum_direction>], \"U\" or \"D\")",
         "beat tracking JSON: [<beat_timestamp_in_seconds>, <downbeat>] tuples, second value counts the beat in the bar (1.0 to 4.0 for 4/4)",
         "separated audio: WAV 16-bit PCM stereo 44.1 kHz (default) or MP3 128 kbps stereo 44.1 kHz, per stem via /job/{job_id}/audio?stem_type=<stem>",
-        "`json` value in the transcription output enum: fields not documented"
+        "`json` value in the transcription output enum: fields not documented",
+        "HTTPS, API key in header `kl-api-key`; POST a multipart upload to a job endpoint, then poll GET https://api.klang.io/job/{job_id}/status or pass `webhook_url`, then GET https://api.klang.io/job/{job_id}/{format}; status values in the spec: `IN_QUEUE`, `IN_PROGRESS`, `COMPLETED`, `FAILED`, `CANCELLED`, `TIMED_OUT` (the Basic Job Workflow page lists four: `IN_QUEUE`, `IN_PROGRESS`, `FAILED`, `COMPLETED`); the status response can carry an `error` string",
+        "create response: `job_id`, `creation_date`, `deletion_date`, `status_endpoint_url` (docs example); a transcription job's response also carries `gen_xml`, `gen_midi`, `gen_midi_quant`, `gen_gp5`, `gen_pdf`"
       ],
       "constraints_accepted": [
         "/transcription `model` (spec enum: piano, guitar, bass, vocal, universal, lead, detect, drums, multi, wind, string, piano_arrangement)",
         "chord `vocabulary` (docs: major-minor, full; spec also root)",
         "/source-separation `model` four-stems (default) or six-stems; `output` wav or mp3",
-        "no tuning, capo, key, tempo or note-range parameter appears in the spec's /transcription parameters or body schema"
+        "no tuning, capo, key, tempo or note-range parameter appears in the spec's /transcription parameters or body schema",
+        "model selection page: `guitar` \"Optimized for audio consisting mainly of guitar.\"; `lead` \"Will extract the overall melody and chords played in the audio.\""
       ],
       "license": {
         "code": null,
@@ -234,7 +250,9 @@
         "`outputs` array encoding as repeated multipart form fields",
         "Training data of Klangio's models: not stated on the pages read",
         "Strum recognition output [time_s, \"U\"|\"D\"] is an output-only fact: no accepting tool was checked in this lane",
-        "The API itself has separate terms that were not found on a public page"
+        "The API itself has separate terms that were not found on a public page",
+        "The docs sitemap names the host `docs-api.klang.io`, which could not be reached through the box's proxy (502); the `api-docs.klang.io` URLs cited answered HTTP 200",
+        "No Klangio call was made: the free \"Basic\" tier may return a demo transcription on a testing account, and the first call with four formats may cost more than one request of quota (for-aaron.md section 4)"
       ]
     },
     {
@@ -253,11 +271,13 @@
       ],
       "inputs": [
         "raw bytes as `application/octet-stream` via POST /api/v1/upload/ with header `Content-Disposition: attachment; filename=<name>` (\"Uploads a file, up to 10 GB.\")",
-        "JSON {\"source_id\", \"presets\": {...}} for /api/v1/split/stem_separator/ (one stem) or /api/v1/split/multistem/ (several)"
+        "JSON {\"source_id\", \"presets\": {...}} for /api/v1/split/stem_separator/ (one stem) or /api/v1/split/multistem/ (several)",
+        "`stem` enum vocals, drum, piano, bass, guitar, electric_guitar, acoustic_guitar, synthesizer, strings, wind: \"'guitar' extracts all guitars into one track, 'electric_guitar' and 'acoustic_guitar' extract only one kind of guitar. 'guitar' is available only with andromeda.\"; `encoder_format` \"If None - convert to source file format.\""
       ],
       "outputs": [
         "done task carries `tracks`, each {type: \"stem\"|\"back\", label, url, name, size, waveform, playlist_file}, plus `duration`; `encoder_format` mp3, wav, flac, aac, ogg",
-        "stems: vocals, drum, piano, bass, guitar, electric_guitar, acoustic_guitar, synthesizer, strings, wind (multistem `stem_list` max 6: vocals, drum, piano, bass, electric_guitar, acoustic_guitar)"
+        "stems: vocals, drum, piano, bass, guitar, electric_guitar, acoustic_guitar, synthesizer, strings, wind (multistem `stem_list` max 6: vocals, drum, piano, bass, electric_guitar, acoustic_guitar)",
+        "upload response `id`, `name`, `size`, `duration` (seconds, integer), `expires` (Unix time); /check/: \"Pass all your `task_ids` in one request, up to 200: the limit is 30 requests per minute.\"; POST /api/v1/delete/ removes source and results; batch variants /api/v1/split/batch/..."
       ],
       "constraints_accepted": [
         "`stem`, `splitter` (andromeda, perseus, orion, phoenix, lyra, lynx, or auto), `encoder_format`, `extraction_level`, `dereverb_enabled`",
@@ -300,8 +320,14 @@
           }
         ]
       },
-      "pricing": "https://www.lalal.ai/pricing/ (read 2026-11-10; page rendered USD): Lite \"$7.5 /mo$90 billed annually\", Pro \"$15/mo$180 billed annually\"; top-ups \"Master with 750 minutes for $50, Premium with 3000 minutes for $190, and Enterprise with 5000 minutes for $300\"; minutes are \"total file length × number of stem separation types\". llms.txt: \"API access is available with the Pro plan or any minute top-up pack - no subscription required\" and \"API requests consume Fast-queue minutes.\"",
-      "handoffs_out": [],
+      "pricing": "https://www.lalal.ai/pricing/ (read 2026-11-10; page rendered USD): Lite \"$7.5 /mo$90 billed annually\", Pro \"$15/mo$180 billed annually\"; top-ups \"Master with 750 minutes for $50, Premium with 3000 minutes for $190, and Enterprise with 5000 minutes for $300\"; minutes are \"total file length × number of stem separation types\". llms.txt: \"API access is available with the Pro plan or any minute top-up pack - no subscription required\" and \"API requests consume Fast-queue minutes.\" \"Pro is the better choice if you need more Fast Queue minutes, access to the VST plugin, local processing in the desktop app, or API access.\" (pricing page); llms.txt (\"Last updated: 2026-07-14\") says \"there is no official SDK - REST + OpenAPI only\" and prices are \"shown in your regional currency\".",
+      "handoffs_out": [
+        {
+          "to": "Klangio API",
+          "via_format": "`guitar` / `electric_guitar` / `acoustic_guitar` stem files (`encoder_format` mp3, wav, flac, aac, ogg)",
+          "evidence": "Docs: Klangio /transcription?model=guitar takes an audio file as the multipart `file` (https://api-docs.klang.io/docs/getting-started/basic-job-workflow); its docs do not list the accepted audio formats, so whether each stem file is accepted is UNVERIFIED (one call per format would settle it); not tested"
+        }
+      ],
       "unverified": [
         "Training data of the separation models: not stated on the pages read",
         "Where the account pages show the license key (UNVERIFIED)",
@@ -327,12 +353,15 @@
       ],
       "inputs": [
         "POST https://api.audioshake.ai/tasks with JSON {\"url\": \"<media URL>\" | \"assetId\": \"<id>\", \"targets\": [{\"model\": \"guitar\", \"formats\": [\"wav\"]}, ...]}",
-        "audio WAV, AIFF, FLAC, MP3, AAC/M4A (\"Supports up to 192kHz sample rate\"); video MP4/MOV (\"Only the audio stream is processed — video content is ignored.\")"
+        "audio WAV, AIFF, FLAC, MP3, AAC/M4A (\"Supports up to 192kHz sample rate\"); video MP4/MOV (\"Only the audio stream is processed — video content is ignored.\")",
+        "`GET https://api.audioshake.ai/models` is public (\"Unauthenticated requests return default app config values\") and returned JSON on 2026-11-10 with per-model `id`, `category`, `creditsPerMinute`, input formats and `outputFormats`; for every separation model the input formats audio `wav`, `aiff`, `flac`, `mp3`, `aac`, `m4a` and video `mp4`, `mov`, taken from `url` or `assetId`",
+        "\"Multi-channel or surround formats (e.g. 5.1) are not supported\"; \"Maximum input length for `transcription` and `alignment` is 45 minutes.\" (no separation length limit was stated on the pages read); local files go through Upload File first (returns `assetId`); webhooks are documented"
       ],
       "outputs": [
         "per-target `output` array with download links (\"Output download links expire after one hour.\"); formats wav, mp3, flac, aiff, mp4",
         "guitar \"All guitar-family parts together (acoustic + electric).\"; guitar_electric \"Electric guitar only (clean or distorted).\"; guitar_acoustic \"Acoustic/plucked guitar-family sources (acoustic guitar, banjo, lute).\"",
-        "no note, chord, beat or tab output is listed; JSON/SRT/TXT only for the lyric and music-detection models"
+        "no note, chord, beat or tab output is listed; JSON/SRT/TXT only for the lyric and music-detection models",
+        "`other-x-guitar` \"Everything except vocals, drums, bass, and guitar.\"; `residual` \"Everything not covered by the task's other targets.\" (1.0 credits/min); \"Migrating from Jobs\" page exists for the older Jobs API"
       ],
       "constraints_accepted": [
         "targets/models and formats only; no musical hints"
@@ -410,6 +439,11 @@
           "to": "AudioShake Tasks API",
           "via_format": "per-target download link",
           "evidence": "Docs: AudioShake accepts `url` (quickstart); not tested"
+        },
+        {
+          "to": "Klangio API",
+          "via_format": "`guitar` / `guitar_electric` / `guitar_acoustic` stems (formats wav, mp3, flac, aiff, mp4)",
+          "evidence": "Docs: Klangio /transcription?model=guitar takes an audio file as the multipart `file` (https://api-docs.klang.io/docs/getting-started/basic-job-workflow); its docs do not list the accepted audio formats, so whether each stem file is accepted is UNVERIFIED (one call per format would settle it); not tested"
         }
       ],
       "unverified": [
@@ -435,13 +469,16 @@
         "http"
       ],
       "inputs": [
-        "file upload: POST /assets/upload2 returns a presigned S3 upload URL; PUT the file with its MIME type; POST /assets; POST /assets/analyze/stem with `stemType`"
+        "file upload: POST /assets/upload2 returns a presigned S3 upload URL; PUT the file with its MIME type; POST /assets; POST /assets/analyze/stem with `stemType`",
+        "header `Authorization: Bearer [API Key]` (api-authentication page); poll GET /tasks/:_id (or POST /tasks/query with `_ids`, as in the tutorial) \"at 5 second intervals\""
       ],
       "outputs": [
         "main `stemType`: four primary stems (vocals, bass, drums, melodies) plus \"instrumental\"; MIDI for the vocal, drums, bass and melody stems (overview page: \"midi of each stem except for drums, the chord progression as txt and midi\")",
         "chord progression in MIDI and CSV format; key and tempo in asset metaData (example \"tempo\": 140, \"key\": \"B:min\")",
         "\"melodic-stem\": piano, electric guitar, acoustic guitar, strings, wind, and other melodies; \"drum-stem\": kick, snare and other drums; \"vocal-stem\": lead and background vocals",
-        "GET /assets/download/:_id/:type returns a presigned download URL for each id in the asset's `stems` or `midi` arrays"
+        "GET /assets/download/:_id/:type returns a presigned download URL for each id in the asset's `stems` or `midi` arrays",
+        "endpoints page: \"separates a complete song into four primary stems, vocals, bass, drums, and melodies\"; \"Extraction of a unique MIDI file for the vocal, drums, bass, and melody stems.\"; \"Detection of the song's chord progression, represented in MIDI and CSV format\"; \"Detection of the song's Key and Tempo, which will be stored in all of the related asset's metaData fields.\"",
+        "tutorial: \"Stems usually take around 10-20 seconds, and the remainder usually takes another 10-20 seconds.\""
       ],
       "constraints_accepted": [
         "`stemType`; no tuning, capo or key hint parameter is documented"
@@ -470,11 +507,22 @@
             "topic": "Returned content",
             "quote": "Unless expressly permitted by the content owner or by applicable law, you will not, and will not permit your end users or others acting on your behalf to, do the following with content returned from the API: 1. Scrape, build databases, or otherwise create permanent copies of such content, or keep cached copies longer than permitted by the cache header; 2. Copy, translate, modify, create a derivative work of, sell, lease, lend, convey, distribute, publicly display, or sublicense to any third party;",
             "url": "https://fadr.com/api-terms"
+          },
+          {
+            "topic": "Definition of Use",
+            "quote": "\"Use\" means use, host, store, modify, communicate, and publish.",
+            "url": "https://fadr.com/api-terms"
           }
         ]
       },
       "pricing": "\"Usage of the Fadr API requires a Fadr Plus subscription, which costs $10/mo or $100/yr. Your subscription pays for your first $10 of API usage every month.\" Billing page: \"Create Stem Task US$0.05 per minute of audio\". Fadr Plus page comparison row: \"☁️ API Price (per 100 minutes per stem)\" with \"$1\" in the Fadr column (the two pages state the price in different units).",
-      "handoffs_out": [],
+      "handoffs_out": [
+        {
+          "to": "Klangio API",
+          "via_format": "electric and acoustic guitar stems via `\"melodic-stem\"`",
+          "evidence": "Docs: Klangio /transcription?model=guitar takes an audio file as the multipart `file` (https://api-docs.klang.io/docs/getting-started/basic-job-workflow); its docs do not list the accepted audio formats, so whether each stem file is accepted is UNVERIFIED (one call per format would settle it); not tested"
+        }
+      ],
       "unverified": [
         "Whether the documented endpoints behave as documented (one call with a Plus key would settle it)",
         "No clause naming model training was found on https://fadr.com/api-terms",
@@ -502,10 +550,12 @@
       "outputs": [
         "audio files only (no notes, chords or tab); `output_format` 0 mp3 320 kbps (default), 1 wav 16-bit, 2 flac 16-bit, 3 m4a, 4 wav 32-bit, 5 flac 24-bit",
         "GET https://mvsep.com/api/separation/get?hash=<hash>: `status` one of not_found, waiting, processing, done, failed, distributing, merging; when done `data` has `algorithm`, `output_format`, `input_file`, `files`",
-        "guitar-related algorithms (render id): 31 \"MVSep Guitar (guitar, other)\", 66 \"MVSep Acoustic Guitar (acoustic-guitar, other)\", 81 \"MVSep Electric Guitar (electric-guitar, other)\", 101 \"MVSep Lead/Rhythm Guitar (lead-guitar, rhythm-guitar)\", 124 \"MVSep Pedal Steel Guitar\", 63 \"BS Roformer SW (vocals, bass, drums, guitar, piano, other)\", 30 \"Ensemble All-In (vocals, bass, drums, piano, guitar, lead/back vocals, other)\""
+        "guitar-related algorithms (render id): 31 \"MVSep Guitar (guitar, other)\", 66 \"MVSep Acoustic Guitar (acoustic-guitar, other)\", 81 \"MVSep Electric Guitar (electric-guitar, other)\", 101 \"MVSep Lead/Rhythm Guitar (lead-guitar, rhythm-guitar)\", 124 \"MVSep Pedal Steel Guitar\", 63 \"BS Roformer SW (vocals, bass, drums, guitar, piano, other)\", 30 \"Ensemble All-In (vocals, bass, drums, piano, guitar, lead/back vocals, other)\"",
+        "\"All regions share one account database, so the same account, API key and job hashes work everywhere\" (de, de2, sg; hk deprecated); other algorithms in the live list: 20 \"Demucs4 HT (vocals, drums, bass, other)\", 41 \"MVSep Bass (bass, other)\""
       ],
       "constraints_accepted": [
-        "`sep_type`, `add_opt1..3` (model options); no musical hints"
+        "`sep_type`, `add_opt1..3` (model options); no musical hints",
+        "`add_opt1` labels for sep_type 31, author-reported SDR figures as MVSEP's own option labels: \"0 - mdx23c (2023.08, SDR: 4.78)\", \"2 - mdx23c (2024.06, SDR: 6.34)\", \"3 - MelRoformer (2024.06, SDR: 7.02)\", \"5 - BSRoformer (viperx, SDR: 7.16)\", \"6 - Ensemble (BS + Mel, SDR: 7.51)\", \"7 - BS Roformer SW (SDR: 9.05) (default)\"; for 101: \"0 - Two-stage model (SDR: 9.21) (default)\", \"1 - One-stage model (SDR: 9.02)\""
       ],
       "license": {
         "code": null,
@@ -535,13 +585,20 @@
         ]
       },
       "pricing": "https://mvsep.com/en/plans (read 2026-11-10; table cells): Unregistered and Registered (both \"Free\"): Max File Length \"10 min\", Max File Size \"100 MB\", Daily Separations \"50\", Concurrent Jobs \"1\"; Premium (\"Pro · Credit-Based\", \"from $3\"): \"100 min\", \"1000 MB\", \"Unlimited\", \"No Limit\". API Access: \"—\" (Unregistered), \"Limited\" (Registered), \"Full\" (Premium). \"Standard models use 1 credit per minute of audio.\" Credit packs (price, credits, per-minute price as printed): $3, 60, $0.05; $5, 200, $0.025; $10, 600, $0.0167; $30, 2,000, $0.015; $50, 4,000, $0.0125; $100, 8,500, $0.0118; $200, 18,000, $0.0111; $500, 50,000, $0.01; $1,000, 110,000, $0.0091. \"*A 4-minute song with a standard model costs 4 credits. Ensemble models and some options cost more — see how credits are calculated. Prices in USD, taxes included.\" `price_coefficient` per model (e.g. 6 for \"Ensemble All-In\", 1 for \"MVSep Guitar\").",
-      "handoffs_out": [],
+      "handoffs_out": [
+        {
+          "to": "Klangio API",
+          "via_format": "sep_type 31 / 66 / 81 / 101 guitar stems (`output_format` mp3, wav, flac, m4a)",
+          "evidence": "Docs: Klangio /transcription?model=guitar takes an audio file as the multipart `file` (https://api-docs.klang.io/docs/getting-started/basic-job-workflow); its docs do not list the accepted audio formats, so whether each stem file is accepted is UNVERIFIED (one call per format would settle it); not tested"
+        }
+      ],
       "unverified": [
         "\"up to 10 concurrent jobs\" (a search snippet that did not match the page read)",
         "Author-reported SDR numbers (MVSEP's own option labels, e.g. sep_type 31 add_opt1 \"7 - BS Roformer SW (SDR: 9.05) (default)\"): the full_api page does not name the test set; the algorithm list says \"a guitar validation set\" (\"30 треков\" in the Russian description)",
         "No clause naming retention periods or model training on uploads was found on /terms (privacy page not read)",
         "0 of 126 algorithm entries had a non-null `nc_license` field on 2026-11-10",
-        "Official examples repo ZFTurbo/MVSep-API-Examples was not read"
+        "Official examples repo ZFTurbo/MVSep-API-Examples was not read",
+        "The English description of render id 31 in https://mvsep.com/api/app/algorithms says \"The model was compared with the Demucs4HT model (6 stems) on a guitar validation set.\" and gives a table in which Demucs4HT (6 stems) has guitar SDR 5.22 and BS Roformer SW 9.05; the validation set's tracks and source are not named"
       ]
     },
     {
@@ -993,7 +1050,13 @@
         ]
       },
       "pricing": "\"**Price**: $0.0007 per seconds\" (https://fal.ai/models/fal-ai/demucs/llms.txt)",
-      "handoffs_out": [],
+      "handoffs_out": [
+        {
+          "to": "Klangio API",
+          "via_format": "`guitar` stem with `htdemucs_6s` (`output_format` wav or mp3)",
+          "evidence": "Docs: Klangio /transcription?model=guitar takes an audio file as the multipart `file` (https://api-docs.klang.io/docs/getting-started/basic-job-workflow); its docs do not list the accepted audio formats, so whether each stem file is accepted is UNVERIFIED (one call per format would settle it); not tested"
+        }
+      ],
       "unverified": [
         "Whether fal accepts `data:` URLs for `audio_url`",
         "No transcription-to-notes, chord or beat model is listed on https://fal.ai/llms.txt (a curated subset; a full catalogue search was not done)"
@@ -1024,12 +1087,14 @@
           {
             "topic": "Content licence to Hugging Face",
             "quote": "You hereby grant us a worldwide, royalty-free and non-exclusive license to use, display, publish, reproduce, distribute, and make derivative works of such Content to provide Services and as otherwise permitted under these Terms and our Privacy Policy",
-            "url": "https://huggingface.co/terms-of-service"
+            "url": "https://huggingface.co/terms-of-service",
+            "note": "Hugging Face Terms of Service, \"Effective Date: September 15, 2022\", read 2026-11-10"
           },
           {
             "topic": "Public repositories",
             "quote": "If you decide to set your Repository public, you grant each User a perpetual, irrevocable, worldwide, royalty-free, non-exclusive license to use, display, publish, reproduce, distribute, and make derivative works of your Content through our Services and functionalities",
-            "url": "https://huggingface.co/terms-of-service"
+            "url": "https://huggingface.co/terms-of-service",
+            "note": "Hugging Face Terms of Service, \"Effective Date: September 15, 2022\", read 2026-11-10"
           }
         ]
       },
@@ -1286,7 +1351,20 @@
         },
         "weights": null,
         "training_data": [],
-        "service_terms": []
+        "service_terms": [
+          {
+            "topic": "Rate limits on public Spaces (Gradio guide)",
+            "quote": "While you can use any public Space as an API, you may get rate limited by Hugging Face if you make too many requests. For unlimited usage of a Space, simply duplicate the Space to create a private Space, and then use it to make as many requests as you'd like!",
+            "url": "https://www.gradio.app/guides/getting-started-with-the-python-client",
+            "read": "2026-11-10"
+          },
+          {
+            "topic": "Duplicated Spaces are billed (Gradio guide)",
+            "quote": "if the original Space uses GPUs, your private Space will as well, and your Hugging Face account will get billed based on the price of the GPU.",
+            "url": "https://www.gradio.app/guides/getting-started-with-the-python-client",
+            "read": "2026-11-10"
+          }
+        ]
       },
       "pricing": null,
       "handoffs_out": [],
@@ -1743,6 +1821,20 @@
               "lead": 8.24
             }
           }
+        },
+        {
+          "run_id": "r0343",
+          "input_id": "S4",
+          "cores": null,
+          "wall_s": null,
+          "peak_mb": null,
+          "exit_code": null,
+          "output_files": [],
+          "metrics": {
+            "kind": "verifier re-scoring of the fourth stem scoring (e0360) from the verification log item 3 (e1315, e1316, e1317, e1328; scoring runs r0339, r0340, r0342, r0343, --nolock, OMP_NUM_THREADS=1)",
+            "eval": "e1328",
+            "result": "identical metrics and counts"
+          }
         }
       ],
       "not_run_reason": null,
@@ -1796,7 +1888,8 @@
       "pricing": null,
       "handoffs_out": [],
       "unverified": [
-        "The Space card license was not read in this lane"
+        "The Space card license was not read in this lane",
+        "r0343 and e1328 are the fourth entries of the verification log's lists (scoring runs r0339, r0340, r0342, r0343; evals e1315, e1316, e1317, e1328), taken here as the re-scoring of e0360 (the one stem scoring that is not an ElevenLabs file)"
       ]
     },
     {
@@ -2336,7 +2429,11 @@
       "inputs": [
         "audio formats `audio/wav`, `audio/mp3`, `audio/aiff`, `audio/aac`, `audio/ogg`, `audio/flac`, `audio/mpeg`, `audio/m4a`, `audio/l16`, `audio/opus`, `audio/alaw`, `audio/mulaw`, `audio/webm`; \"Maximum request size is 20 MB total (including prompts and all files)\" for inline data; \"Use the Files API for files larger than 20 MB.\"",
         "video formats `video/mp4`, `video/mpeg`, `video/mov`, `video/avi`, `video/x-flv`, `video/mpg`, `video/webm`, `video/wmv`, `video/3gpp`; input methods File API (20GB paid / 2GB free), Cloud Storage Registration, Inline Data (< 100MB), YouTube URLs (public videos)",
-        "tested with `countTokens`: WAV (`audio/wav`) and MP4 (`video/mp4`) sent inline as base64"
+        "tested with `countTokens`: WAV (`audio/wav`) and MP4 (`video/mp4`) sent inline as base64",
+        "audio page: \"Tokens: 32 tokens per second of audio (1 minute = 1,920 tokens)\"; \"Max length: 9.5 hours of audio per prompt\"; \"Resolution: Downsampled to 16 Kbps\"; \"Channels: Multi-channel audio combined to single channel\"; \"Non-speech: Gemini understands non-speech sounds (birdsong, sirens, etc.)\"",
+        "video page: default \"1 frame per second\" sampling, a custom rate set with `fps` in the `processing` object (example `\"fps\": 0.5`), only in `\"static\"` mode; static mode \"Audio is processed at 1Kbps (single channel). Timestamps are added every second.\"; \"If `media_resolution` is set to low, frames are tokenized at 66 tokens per frame.\"; \"Otherwise, frames are tokenized at 258 tokens per frame.\"; \"Audio: 32 tokens per second.\"; \"Total: Approximately 100 tokens per second of video at default (low) media resolution, or approximately 300 tokens per second of video at high media resolution.\"; \"Models with a 1M context window can process videos up to 3 hours long by default (at low media resolution), or up to 1 hour long at high media resolution.\"; opt-in `\"processing\": \"agentic\"` listed for \"Gemini 4 Carbon, Gemini 4 Argon, 3.8 Flash, 3.6 Flash, 3.5 Flash Lite\"",
+        "YouTube URLs: \"For the free tier, you can't upload more than 8 hours of YouTube video per day.\"",
+        "model pages: `gemini-4-carbon` \"Inputs Text, Image, Video, Audio, and PDF\" (pricing page: \"Our most capable reasoning model\"); `gemini-3.5-flash-lite` lists the same inputs (pricing page: \"A cost-efficient model, optimized for high-volume agentic tasks, translation, and simple data processing\")"
       ],
       "outputs": [
         "text (JSON when requested with `response_format: {type: \"text\", mime_type: \"application/json\", schema: {...}}`); interaction object with `status`, `steps[]`, `usage` (`total_input_tokens`, `input_tokens_by_modality[]`, `total_output_tokens`, `total_thought_tokens`, ...) (from the API reference, not observed here because generation was blocked)"
@@ -2398,7 +2495,7 @@
           }
         ]
       },
-      "pricing": "Paid Tier per 1M tokens in USD (pricing page, read 2026-11-10): Gemini 3.5 Flash-Lite input \"$0.30 (text / image / video / audio)\", output \"$2.50\"; Gemini 3.8 Flash input \"$0.75 through December 31, 2026. $1.50 starting January 1, 2027.\", output \"$3.75 through December 31, 2026. $7.50 starting January 1, 2027.\"; free tier \"Free of charge\" on both; Gemini 4 Carbon input \"$2.00 through November 30, 2026.\" / \"$4.00 starting December 1, 2026.\", output \"$10.00 through November 30, 2026.\" / \"$20.00 starting December 1, 2026.\"; \"Gemini 4 Carbon is not available on the Free tier.\" Billing page: \"The minimum purchase is $5.\" Audio \"32 tokens per second of audio (1 minute = 1,920 tokens)\"; arithmetic from the quoted numbers (not a measured bill): one minute of audio = 1,920 tokens = USD 0.000576 at $0.30/1M.",
+      "pricing": "Paid Tier per 1M tokens in USD (pricing page, read 2026-11-10): Gemini 3.5 Flash-Lite input \"$0.30 (text / image / video / audio)\", output \"$2.50\"; Gemini 3.8 Flash input \"$0.75 through December 31, 2026. $1.50 starting January 1, 2027.\", output \"$3.75 through December 31, 2026. $7.50 starting January 1, 2027.\"; free tier \"Free of charge\" on both; Gemini 4 Carbon input \"$2.00 through November 30, 2026.\" / \"$4.00 starting December 1, 2026.\", output \"$10.00 through November 30, 2026.\" / \"$20.00 starting December 1, 2026.\"; \"Gemini 4 Carbon is not available on the Free tier.\" Billing page: \"The minimum purchase is $5.\" Audio \"32 tokens per second of audio (1 minute = 1,920 tokens)\"; arithmetic from the quoted numbers (not a measured bill): one minute of audio = 1,920 tokens = USD 0.000576 at $0.30/1M. Re-run cost (for-aaron.md section 1): 10 calls capped at 2 USD by the script, at most 24,576 output tokens per call, i.e. at most 0.25 USD per Carbon call and 0.06 USD per Flash-Lite call at the prices read on 2026-11-10; from December 2026 a Carbon call costs up to about twice that. Nothing was billed in this lane (0 USD; only HTTP 402 and countTokens).",
       "handoffs_out": [],
       "unverified": [
         "No Gemini generation trial ran (HTTP 402), so no chord, note or capo answer from Gemini exists in this lane",
@@ -2471,7 +2568,8 @@
       ],
       "inputs": [
         "Chat Completions `file` part with `filename` and a `file_data` data URL (\"The Chat Completions endpoint rejects `input_audio` parts. Use `file` with a model that accepts audio.\"); Responses `input_file`",
-        "WAV 16-bit 44.1 kHz mono up to 3.4 MB (S4) accepted as a data URL in a `file` part; MP4 `file` parts refused for all three free-tier models (for Muse Spark Open on all five providers, r0304); JPEG frames as `image_url` parts accepted"
+        "WAV 16-bit 44.1 kHz mono up to 3.4 MB (S4) accepted as a data URL in a `file` part; MP4 `file` parts refused for all three free-tier models (for Muse Spark Open on all five providers, r0304); JPEG frames as `image_url` parts accepted",
+        "\"Audio support depends on the selected model, provider, and request format. Confirm the accepted encoding, duration, and request-size limits for your route before using longer recordings.\"; \"Video support, sampling, duration limits, and audio-track handling depend on the model and provider.\""
       ],
       "outputs": [
         "OpenAI chat-completion JSON: `choices[0].message.content` (string holding the JSON answer), `choices[0].message.reasoning` when the route returns it, `choices[0].message.provider_metadata.gateway.routing.finalProvider`, `usage` (`prompt_tokens`, `completion_tokens`, `completion_tokens_details.reasoning_tokens`, `prompt_tokens_details` (`cached_tokens`, `audio_tokens`, `video_tokens`), `cost`, `market_cost`, `gateway_cost` in USD)"
@@ -2580,17 +2678,29 @@
             "quote": "Per-request no-training controls add no cost on any plan. ZDR requires Pro or Enterprise.",
             "url": "https://vercel.com/kb/guide/control-ai-provider-data.md",
             "read": "2026-11-11"
+          },
+          {
+            "topic": "Provider terms on each model page",
+            "quote": "Using a provider means you agree to their terms, listed under Legal.",
+            "url": "https://vercel.com/ai-gateway/models/mimo-v2.6-flash",
+            "read": "2026-11-11"
+          },
+          {
+            "topic": "No-training table caveat (docs)",
+            "quote": "A provider's default policy may not match with the status that AI Gateway has in place due to negotiated agreements.",
+            "url": "https://vercel.com/docs/ai-gateway/security-and-compliance/disallow-prompt-training.md",
+            "read": "2026-11-11"
           }
         ]
       },
-      "pricing": "Per-token prices per model in `GET https://ai-gateway.vercel.sh/v1/models`; free tier; top-up in the dashboard (https://vercel.com/docs/ai-gateway/pricing , \"Top up your AI Gateway Credits\").",
+      "pricing": "Per-token prices per model in `GET https://ai-gateway.vercel.sh/v1/models`; free tier; top-up in the dashboard (https://vercel.com/docs/ai-gateway/pricing , \"Top up your AI Gateway Credits\"). Money counted from samples/spend.jsonl (verifier calls included): gateway 0.089169 USD, all services 0.959949 USD (ElevenLabs 0.86878, xAI 0.002); gap round 2 made no paid call.",
       "handoffs_out": [],
       "unverified": [
         "Whether the gateway passes a WAV `file` part to the two Google models: its model list gives both Google models input modalities `text`, `image`, `pdf`, `video`, without `audio`",
         "\"Audio support depends on the selected model, provider, and request format.\"; video support, sampling and duration limits depend on the model and provider",
         "Which Vercel plan the gateway key's team is on was not checked from this box; the HTTP 403 bodies of r0022 and r0023 name the gateway's \"Free tier\""
       ],
-      "request_options_sent": "the trial scripts sent neither `disallowPromptTraining` nor `zeroDataRetention`; only `providerOptions.gateway.only` / `order` when `--only` was given; `usage.is_byok` false in all 25 gateway lines of samples/spend.jsonl",
+      "request_options_sent": "the trial scripts sent neither `disallowPromptTraining` nor `zeroDataRetention`; only `providerOptions.gateway.only` / `order` when `--only` was given; `usage.is_byok` false in all 25 gateway lines of samples/spend.jsonl; every `providerAttempts` entry in the saved gateway `response.json` files, refused calls included, has `credentialType` \"system\" (46 entries in the 30 saved gateway `response.json` files, per verify-gapfill-hosted-apis)",
       "corrections": [
         "corrected in gap round 2 (gapfill-hosted-apis, 2026-11-11): \"Vercel's gateway terms were not read\" removed; AI Product Terms, Terms of Service, Notices and License Information and the data-handling docs quoted (survey.md, Vercel AI Gateway)"
       ]
@@ -2641,7 +2751,7 @@
             "trial": "(a) chords, tempo, key",
             "tokens_prompt_completion_reasoning": "423 / 2216 (1559)",
             "cost_usd": 0.0006797,
-            "answer": "0.00-4.00 N, then 2 s chords D A Bm G D A G A Bm G D A G A Bm G D A G A D A G A, 40.00-44.50 D (the file is 38.741 s); 120 BPM; D major; 4/4",
+            "answer": "0.00-4.00 N, then 2 s chords D A Bm G D A G A Bm G D A G A D A G A, 40.00-44.50 D (the file is 38.741 s); 120 BPM; D major; 4/4",
             "chords_root_majmin_sevenths": "0.589 / 0.589 / 0.563",
             "chords_eval": "e0058",
             "tempo": "120 vs 116, +3.4 %, within 4 %",
@@ -3016,7 +3126,7 @@
           }
         ]
       },
-      "pricing": "USD 0.00000014 per input token and 0.00000028 per output token (catalog). Cost of the 22 free-tier gateway calls counted at 0.074782 USD (sum of `usage.cost` alone 0.073938); verifier's gateway calls r0302 0.000387 USD, r0360 0.007544 USD and r0391 0.006456 USD.",
+      "pricing": "USD 0.00000014 per input token and 0.00000028 per output token (catalog). Cost of the 22 free-tier gateway calls counted at 0.074782 USD (sum of `usage.cost` alone 0.073938); verifier's gateway calls r0302 0.000387 USD, r0360 0.007544 USD and r0391 0.006456 USD. Xiaomi's model page (https://mimo.mi.com/models/en-US/mimo-v2.6-flash) lists \"$0.14USD / Million tokens\" input (cache miss) and \"$0.28USD / Million tokens\" output, the rates in the gateway's `/v1/models` list (0.00000014 and 0.00000028 per token, with `varies_by_provider` true); the gateway's markdown model page (https://vercel.com/ai-gateway/models/mimo-v2.6-flash.md) lists \"$0.112/1M input tokens, $0.224/1M output tokens\".",
       "handoffs_out": [],
       "unverified": [
         "For the same request MiMo's S3 chord root accuracy was 0.193 in r0028 and 0.781 in r0302, and its tempo 99 and 120 BPM: answers vary between calls",
@@ -3024,10 +3134,11 @@
         "Which MiMo V2.6 Flash checkpoint the `xiaomi` provider serves; the model's training data was not read",
         "No clause on training models with customer inputs was found in the English Xiaomi MiMo Service Agreement (the word \"train\" occurs only in § 4.5, staff training)"
       ],
-      "gateway_data_flags": "model list 2026-11-11: no_training \"some\", zdr \"none\"; Xiaomi not in the gateway's no-training table; every MiMo call that answered was served by `xiaomi` (finalProvider); the MP4 calls r0077 and r0098 were tried on `xiaomi` and the six other providers in turn and refused by all seven (providerAttempts)",
+      "gateway_data_flags": "model list 2026-11-11: no_training \"some\", zdr \"none\"; Xiaomi not in the gateway's no-training table; every MiMo call that answered was served by `xiaomi` (finalProvider); the MP4 calls r0077 and r0098 were tried on `xiaomi` and the six other providers in turn and refused by all seven (providerAttempts); the model page lists the providers xiaomi, deepinfra, novita, gmicloud, boundless, inference-net and tencent",
       "corrections": [
         "corrected in gap round 2 (gapfill-hosted-apis, 2026-11-11): weights license and Xiaomi's terms quoted (survey.md, \"The three models called through the gateway\")",
-        "corrected by verify-gapfill-hosted-apis (round 2, 2026-11-11): gateway_data_flags had said all MiMo calls were served by `xiaomi`; the two MP4 calls were refused by all seven providers"
+        "corrected by verify-gapfill-hosted-apis (round 2, 2026-11-11): gateway_data_flags had said all MiMo calls were served by `xiaomi`; the two MP4 calls were refused by all seven providers",
+        "corrected in the 2026-11-11 refresh of this file: the r0052 chord answer had an extra `Bm G D A G A` run (24 chords); trials.md has 18 chords, `D A Bm G D A G A Bm G D A G A D A G A`, then `40.00-44.50 D`"
       ]
     },
     {
@@ -3249,7 +3360,7 @@
           "quote": "Meta claims no ownership of outputs generated by the Software.",
           "url": "https://huggingface.co/api/models/meta-models/Muse-Spark-Open-816B-A42B",
           "read": "2026-11-11",
-          "note": "license text read from the gate prompt in the Hub API answer (the repository files answer HTTP 401 without a token); \"Release date: October 15, 2026\"; § 2 requires \"Built with Muse Spark Open\" to be displayed; § 3 requires a separate agreement for a \"Model as a Service\" business above \"twenty (20) million US dollars\" of revenue in twelve months; grant clause: \"Permission is hereby granted, free of charge, to any person (the \"Licensee\") accessing or obtaining a copy of this software, including the model, code, model weights, parameters, configuration files, and associated documentation files (the “Software”), to deal in the Software without restriction\""
+          "note": "license text read from the gate prompt in the Hub API answer (the repository files answer HTTP 401 without a token); \"Release date: October 15, 2026\"; § 2 requires \"Built with Muse Spark Open\" to be displayed; § 3 requires a separate agreement for a \"Model as a Service\" business above \"twenty (20) million US dollars\" of revenue in twelve months; grant clause: \"Permission is hereby granted, free of charge, to any person (the \"Licensee\") accessing or obtaining a copy of this software, including the model, code, model weights, parameters, configuration files, and associated documentation files (the “Software”), to deal in the Software without restriction\"; \"Copyright (c) 2026 Meta Platforms, Inc.\"; § 2 in full: \"Licensee shall prominently display \"Built with Muse Spark Open\" in the user interface of each product or service that uses the Software or any Derivatives, or in the accompanying documentation, website, or settings menu.\"; § 3 \"does not apply to (a) internal use, research, or any commercial activity that is not Model as a Service\"; Exhibit A, the usage policy, \"Dated: October 15, 2026\""
         },
         "training_data": [],
         "service_terms": [
@@ -3269,6 +3380,24 @@
           {
             "topic": "Meta Model API Terms, Exhibit C (Hosted Platform Access)",
             "quote": "Meta does not receive or process your Content, including Inputs or Outputs, in connection with your access to the Meta Materials through a Hosted Platform. Meta does not use such Content to train, develop, evaluate, or improve Meta’s artificial intelligence models, products, or services in connection with that access.",
+            "url": "https://dev.meta.ai/legal/terms-of-service",
+            "read": "2026-11-11"
+          },
+          {
+            "topic": "Meta Model API Terms, Exhibit C: definition of Hosted Platform",
+            "quote": "a third-party cloud platform authorized by Meta to host and provide access to the Meta Materials",
+            "url": "https://dev.meta.ai/legal/terms-of-service",
+            "read": "2026-11-11"
+          },
+          {
+            "topic": "Meta Model API Terms: open weights",
+            "quote": "Certain Meta Models may also be made available by Meta under open source or open weight terms or other separate terms.",
+            "url": "https://dev.meta.ai/legal/terms-of-service",
+            "read": "2026-11-11"
+          },
+          {
+            "topic": "Meta Model API Terms: use outside the Services",
+            "quote": "Conversely, these Terms do not apply to, limit, or terminate any rights you have to use Meta Models outside the Services (e.g., on a self-hosted basis) pursuant to a separate license.",
             "url": "https://dev.meta.ai/legal/terms-of-service",
             "read": "2026-11-11"
           }
@@ -3341,7 +3470,9 @@
       "outputs": [
         "chat-completion JSON"
       ],
-      "constraints_accepted": [],
+      "constraints_accepted": [
+        "prompt text (the schema went into the prompt text because `response_format` is not in its `supported_parameters`)"
+      ],
       "license": {
         "code": null,
         "weights": null,
@@ -3579,6 +3710,55 @@
             "zip_bytes": 5586876,
             "result": "six MP3s byte-identical (same SHA-256) to r0064's; only the ZIP container bytes differ"
           }
+        },
+        {
+          "run_id": "r0339",
+          "input_id": "S4",
+          "cores": null,
+          "wall_s": null,
+          "peak_mb": null,
+          "exit_code": null,
+          "output_files": [],
+          "metrics": {
+            "kind": "verifier re-scoring of e0057 from WAVs remade with the recipe (--nolock, OMP_NUM_THREADS=1)",
+            "eval": "e1315",
+            "result": "identical metrics and counts"
+          }
+        },
+        {
+          "run_id": "r0340",
+          "input_id": "S6taps",
+          "cores": null,
+          "wall_s": null,
+          "peak_mb": null,
+          "exit_code": null,
+          "output_files": [],
+          "metrics": {
+            "kind": "verifier re-scoring of e0391 (--nolock, OMP_NUM_THREADS=1)",
+            "eval": "e1316",
+            "result": "identical metrics and counts"
+          }
+        },
+        {
+          "run_id": "r0342",
+          "input_id": "R2",
+          "cores": null,
+          "wall_s": null,
+          "peak_mb": null,
+          "exit_code": null,
+          "output_files": [],
+          "metrics": {
+            "kind": "verifier re-scoring of e0426 (--nolock, OMP_NUM_THREADS=1)",
+            "eval": "e1317",
+            "result": "identical metrics and counts",
+            "si_sdr_numpy_check_dB": {
+              "S4 guitar": 13.6999,
+              "S4 lead (other.mp3)": 15.755,
+              "S6taps guitar": 26.774,
+              "R2 vocals": 15.4436
+            },
+            "note": "SI-SDR written out separately in numpy (scripts/verify-trials/si_sdr_check.py): the same as gtr-eval's to the second decimal"
+          }
         }
       ],
       "not_run_reason": null,
@@ -3592,7 +3772,8 @@
         "tested: a stereo 16-bit 44.1 kHz WAV of 6.8 MB was accepted"
       ],
       "outputs": [
-        "\"ZIP archive containing separated audio stems. Each stem is provided as a separate audio file in the requested output format.\"; six_stems_v1: `drums.mp3`, `vocals.mp3`, `piano.mp3`, `guitar.mp3`, `bass.mp3`, `other.mp3` (MP3 192 kb/s, 44.1 kHz, stereo); decoded with ffmpeg 6.1.1 each MP3 starts 1,105 samples (25.06 ms) late and is longer than the input"
+        "\"ZIP archive containing separated audio stems. Each stem is provided as a separate audio file in the requested output format.\"; six_stems_v1: `drums.mp3`, `vocals.mp3`, `piano.mp3`, `guitar.mp3`, `bass.mp3`, `other.mp3` (MP3 192 kb/s, 44.1 kHz, stereo); decoded with ffmpeg 6.1.1 each MP3 starts 1,105 samples (25.06 ms) late and is longer than the input",
+        "\"This endpoint might have high latency, depending on the length of the audio file.\" (r0064, r0189 and r0194 each returned in 6.98, 6.10 and 6.78 s round trip)"
       ],
       "constraints_accepted": [
         "`stem_variation_id` only (two or six stems); no instrument prompt, no time range"
@@ -3620,28 +3801,50 @@
           {
             "topic": "Music Terms scope (1.1)",
             "quote": "The “Music Service” is the ElevenLabs Service that generates and returns Output in the form of sound recordings and the musical compositions embodied in them, based on Input",
-            "url": "https://elevenlabs.io/music-terms"
+            "url": "https://elevenlabs.io/music-terms",
+            "note": "Music Terms \"Last updated: 09 October 2026\""
           },
           {
             "topic": "Zero retention",
             "quote": "When enable_logging is set to false zero retention mode will be used for the request. Zero retention mode may only be used by enterprise customers.",
             "url": "https://elevenlabs.io/docs/api-reference/music/separate-stems.md"
+          },
+          {
+            "topic": "Content licence (4(d)): attribute",
+            "quote": "perpetual and irrevocable",
+            "url": "https://elevenlabs.io/terms-of-use"
+          },
+          {
+            "topic": "Content licence (4(d)): attribute",
+            "quote": "royalty-free and fully paid",
+            "url": "https://elevenlabs.io/terms-of-use"
+          },
+          {
+            "topic": "Content licence (4(d)): attribute",
+            "quote": "sub-licensable, through multiple tiers",
+            "url": "https://elevenlabs.io/terms-of-use"
           }
         ]
       },
-      "pricing": "No stem separation rate was found on https://elevenlabs.io/pricing/api. Measured: 1,065 credits for 38.741 s (S4), 807 for 29.357 s (S6taps), 990 for 36.000 s (R2): 27.49, 27.49 and 27.50 credits per second of input audio. USD figures use 0.00022 USD per credit, the trial script's own assumption (UNVERIFIED). \"MP3 with 192kbps bitrate requires you to be subscribed to Creator tier or above. PCM with 44.1kHz sample rate requires you to be subscribed to Pro tier or above.\"",
+      "pricing": "No stem separation rate was found on https://elevenlabs.io/pricing/api. Measured: 1,065 credits for 38.741 s (S4), 807 for 29.357 s (S6taps), 990 for 36.000 s (R2): 27.49, 27.49 and 27.50 credits per second of input audio. USD figures use 0.00022 USD per credit, the trial script's own assumption (UNVERIFIED). \"MP3 with 192kbps bitrate requires you to be subscribed to Creator tier or above. PCM with 44.1kHz sample rate requires you to be subscribed to Pro tier or above.\" Money counted (samples/spend.jsonl): 4 ElevenLabs calls 0.63206 USD (2,873 credits x 0.00022, an estimate) in the first round; the verifier's r0315 0.2343 USD (1,065 credits) and r0318 0.00242 USD (11 credits); ElevenLabs total 0.86878 USD.",
       "handoffs_out": [
         {
           "to": "HF Space mimbres/YourMT3-cpu (YourMT3)",
           "via_format": "guitar.mp3 from six_stems_v1 (MP3 192 kb/s, 44.1 kHz, stereo, 38.79 s), unchanged",
           "evidence": "Tested: r0231 (YourMT3-cpu accepted the MP3 and answered with MIDI inside HTML); WAV 44.1 kHz input also accepted by the YourMT3 and Beat-This Spaces (r0112, r0118)"
+        },
+        {
+          "to": "Klangio API",
+          "via_format": "`guitar.mp3` from `six_stems_v1` (tested: r0064, MP3 192 kb/s, 44.1 kHz, stereo)",
+          "evidence": "Docs: Klangio /transcription?model=guitar takes an audio file as the multipart `file` (https://api-docs.klang.io/docs/getting-started/basic-job-workflow); its docs do not list the accepted audio formats, so whether each stem file is accepted is UNVERIFIED (one call per format would settle it); not tested"
         }
       ],
       "unverified": [
         "The USD price of an ElevenLabs credit (0.00022 USD per credit is the trial script's assumption; all ElevenLabs USD figures rest on it)",
         "Whether the Music Terms cover stem separation (the words \"stem\" and \"stems\" do not occur in the Music Terms page text)",
         "The docs do not name the six stems; the names come from the r0064 call",
-        "The account's credit counter difference could also include another agent's use of the same account in the window"
+        "The account's credit counter difference could also include another agent's use of the same account in the window",
+        "The three verifier re-scorings r0339, r0340 and r0342 are listed in trials.md with the eval ids e1315, e1316, e1317 in the order of the scored files e0057, e0391 and e0426"
       ]
     },
     {
@@ -3835,12 +4038,14 @@
           }
         ]
       },
-      "pricing": "\"Speech to Text | $0.10 / hr (REST), $0.20 / hr (Streaming)\" (https://docs.x.ai/developers/pricing.md)",
+      "pricing": "\"Speech to Text | $0.10 / hr (REST), $0.20 / hr (Streaming)\" (https://docs.x.ai/developers/pricing.md) Money counted: r0105 36 s x 0.10 USD/h = 0.001 USD; the verifier's r0306 0.001 USD; xAI total 0.002 USD.",
       "handoffs_out": [],
       "unverified": [
         "No lyric truth exists for R2; the ElevenLabs and xAI transcripts differ in the second line, in \"want to\" against \"wanna\" and in the leading apostrophe",
         "xAI's Enterprise Terms of Service (output ownership, data use): the page answered HTTP 403 to the box on 2026-11-11; for-aaron.md section 14 asks Aaron to save it",
-        "The `x-zero-data-retention` response header the docs describe was not saved for r0105 or r0306"
+        "The `x-zero-data-retention` response header the docs describe was not saved for r0105 or r0306",
+        "Vercel's Notices and License Information lists \"xAI Enterprise Terms of Service\" (https://x.ai/legal/terms-of-service-enterprise) for xAI in its Marketplace and https://x.ai/legal/terms-of-service for xAI models in the AI Gateway; neither route was used for these calls",
+        "The x.ai claims rest on the round's note raw/gap2-xai-403-note.txt: the copies of the 403 page were deleted because the page printed the box's network address, the Internet Archive's index answered HTTP 429, and verify-gapfill-hosted-apis's one status request for the three x.ai pages and OpenAI's Services Agreement was refused by the box's permission system and not retried"
       ],
       "corrections": [
         "corrected in gap round 2 (gapfill-hosted-apis, 2026-11-11): \"xAI's terms were not read\" replaced by the docs FAQ quotes and the HTTP 403 record (survey.md, xAI Speech to Text API)"
@@ -3854,7 +4059,23 @@
       "version": null,
       "tried": false,
       "tried_how": null,
-      "runs": [],
+      "runs": [
+        {
+          "run_id": "r0307",
+          "input_id": null,
+          "cores": null,
+          "wall_s": null,
+          "peak_mb": null,
+          "exit_code": null,
+          "output_files": [
+            "samples/verify-trials/xai/models_xai_deepseek.json"
+          ],
+          "metrics": {
+            "kind": "verifier re-run of the model-list script (21:50 UTC, same script)",
+            "result": "the same model ids and input modalities from all three endpoints"
+          }
+        }
+      ],
       "not_run_reason": "no listed language model takes audio or video, so the chord, note, capo and video trials were not sent to xAI (model list read with the key, r0307 by the verifier gave the same ids and modalities)",
       "for_aaron": false,
       "callable_via": [
@@ -3885,7 +4106,23 @@
       "version": null,
       "tried": false,
       "tried_how": null,
-      "runs": [],
+      "runs": [
+        {
+          "run_id": "r0307",
+          "input_id": null,
+          "cores": null,
+          "wall_s": null,
+          "peak_mb": null,
+          "exit_code": null,
+          "output_files": [
+            "samples/verify-trials/xai/models_xai_deepseek.json"
+          ],
+          "metrics": {
+            "kind": "verifier re-run of the model-list script (21:50 UTC, same script)",
+            "result": "the same model ids and input modalities from all three endpoints"
+          }
+        }
+      ],
       "not_run_reason": "no audio or video input, so no DeepSeek trial was run; only the free model list was read",
       "for_aaron": false,
       "callable_via": [
@@ -3927,7 +4164,9 @@
       "outputs": [
         "text and audio (model page: Audio \"Input and output\")"
       ],
-      "constraints_accepted": [],
+      "constraints_accepted": [
+        "text prompt: the only place a capo, tuning, key or tempo constraint can be stated to a free-text audio model (survey.md, Constraint inputs)"
+      ],
       "license": {
         "code": null,
         "weights": null,
@@ -4002,7 +4241,9 @@
         "audio as an OpenAI-style `{\"type\": \"input_audio\", \"input_audio\": {\"data\": <URL>}}` part, video as `video_url`; \"Using Base64 encoding: The encoded Base64 string must be smaller than 10 MB\"; audio \"common formats such as AMR, WAV, 3GP, 3GPP, AAC, and MP3.\"; video \"MP4, AVI, MKV, MOV, FLV, WMV, and others.\""
       ],
       "outputs": [],
-      "constraints_accepted": [],
+      "constraints_accepted": [
+        "text prompt: the only place a capo, tuning, key or tempo constraint can be stated to a free-text audio model (survey.md, Constraint inputs)"
+      ],
       "license": {
         "code": null,
         "weights": null,
@@ -4028,7 +4269,7 @@
           }
         ]
       },
-      "pricing": "Per million tokens, \"Last Updated:Nov 07, 2026\" (https://www.alibabacloud.com/help/en/model-studio/model-pricing, read 2026-11-11): qwen3.8-omni-flash Singapore \"International\": input \"$0.15\", cache-hit input \"$0.016\", output \"$0.47\"; qwen3.5-omni-plus \"International\": input \"$1.4\" (text, image, video) and \"$11\" (audio), output \"$8.3\" (text) and \"$44\" (text + audio), free quota \"1 million tokens\" (Singapore only). Audio tokens: \"Qwen3.8-Omni-Flash: Input audio formula: Total tokens = Audio duration (seconds) * 7.\" (https://help.aliyun.com/en/model-studio/qwen-omni)",
+      "pricing": "Per million tokens, \"Last Updated:Nov 07, 2026\" (https://www.alibabacloud.com/help/en/model-studio/model-pricing, read 2026-11-11): qwen3.8-omni-flash Singapore \"International\": input \"$0.15\", cache-hit input \"$0.016\", output \"$0.47\"; qwen3.5-omni-plus \"International\": input \"$1.4\" (text, image, video) and \"$11\" (audio), output \"$8.3\" (text) and \"$44\" (text + audio), free quota \"1 million tokens\" (Singapore only). Audio tokens: \"Qwen3.8-Omni-Flash: Input audio formula: Total tokens = Audio duration (seconds) * 7.\" (https://help.aliyun.com/en/model-studio/qwen-omni) Billing rules (Qwen-Omni page): \"The models on this page are billed by the number of tokens for each modality (audio, image, video).\"; \"If the audio duration is less than 1 second, it is counted as 1 second.\"; arithmetic, not a bill: the 38.741 s of S4 would be about 271 audio tokens. \"The Qwen3.5-Omni and Qwen3-Omni series offer a free quota only in Singapore.\"; the same table on https://help.aliyun.com/en/model-studio/model-pricing lists prices in CNY.",
       "handoffs_out": [],
       "unverified": [],
       "corrections": [
@@ -4077,7 +4318,8 @@
         "http"
       ],
       "inputs": [
-        "Nova 2 Lite: text, images, video, documents; Nova 2 Sonic: speech, text"
+        "Nova 2 Lite: text, images, video, documents; Nova 2 Sonic: speech, text",
+        "Nova user guide: \"This documentation is for Amazon Nova Version 1.\" and \"To start building with Amazon Nova, you must access the models through an API using Amazon Bedrock.\""
       ],
       "outputs": [
         "text (Lite), speech and text (Sonic), embeddings (Multimodal Embeddings)"
@@ -4099,6 +4341,13 @@
             "quote": "For certain models identified on the Bedrock abuse detection page, as part of providing the Service, Amazon Bedrock stores Service inputs and outputs for up to 30 days (unless otherwise required by law) solely to detect activity that violates our, or third-party model providers’, terms of service or use policies.",
             "url": "https://aws.amazon.com/service-terms/",
             "read": "2026-11-11"
+          },
+          {
+            "topic": "AI Services scope (§ 50.1)",
+            "quote": "Amazon Foundation Models (Amazon Nova and Titan models)",
+            "url": "https://aws.amazon.com/service-terms/",
+            "read": "2026-11-11",
+            "note": "§ 50.1 counts \"Amazon Bedrock\" and this among the AI Services; neither is in § 50.3's list of services whose AI Content AWS may use \"to develop and improve\""
           }
         ]
       },
@@ -4261,7 +4510,7 @@
             1
           ],
           "wall_s": 0.36,
-          "peak_mb": 50.2,
+          "peak_mb": null,
           "exit_code": 0,
           "output_files": [],
           "metrics": {
@@ -4278,7 +4527,7 @@
             1
           ],
           "wall_s": 0.57,
-          "peak_mb": 70.0,
+          "peak_mb": null,
           "exit_code": 0,
           "output_files": [],
           "metrics": {
@@ -4313,7 +4562,8 @@
         "The first round's ffmpeg steps (excerpts, frames, stem decoding, amix) were not ledger runs; the excerpts and frames were re-made and logged in gap round 2 (r0599, r0600), the stem decoding was remade by the first verifier but not logged"
       ],
       "corrections": [
-        "corrected in gap round 2 (gapfill-hosted-apis, 2026-11-11): the excerpt cuts and the R3a frame extraction were not logged in the first round; re-run through gtr-run --nolock as r0599 and r0600 with byte-identical outputs"
+        "corrected in gap round 2 (gapfill-hosted-apis, 2026-11-11): the excerpt cuts and the R3a frame extraction were not logged in the first round; re-run through gtr-run --nolock as r0599 and r0600 with byte-identical outputs",
+        "corrected in the 2026-11-11 refresh of this file: peak_mb of r0661 and r0662 set to null; trials.md gives only wall time (0.36 s, 0.57 s), the 2-core slot (cores 0-1) and, for r0661, the 267.5 s wait for a slot"
       ]
     },
     {
@@ -4543,7 +4793,9 @@
       "inputs": [
         "notation upload (`POST /api/v1/slices/SCOREHASH/notation-file/` then a `PUT` of the raw file): \"MusicXML, Guitar Pro, PowerTab or TuxGuitar\"; \"It does not support our PDF/image scan feature\"; \"This API method is only available by special permission.\"",
         "recordings (`POST /api/v1/slices/SCOREHASH/recordings/`) `source`: \"2 — MP3 uploaded to Soundslice\", \"4 — Video uploaded to Soundslice\", \"3 — Video URL\", \"8 — MP3 URL\", \"1 — YouTube video\" (`source_data`: \"The URL or ID of the YouTube video.\"), 6 Vimeo, 7 Wistia, 9 Mux (the last three only if the account is linked with that service)",
-        "syncpoints (`GET|POST /api/v1/recordings/RECORDING_ID/syncpoints/`): \"syncpoints are stored as a simple JSON array. Example: [[0, 0], [1, 0.57], [1, 0.8, 240], [2, 1.3]]\""
+        "syncpoints (`GET|POST /api/v1/recordings/RECORDING_ID/syncpoints/`): \"syncpoints are stored as a simple JSON array. Example: [[0, 0], [1, 0.57], [1, 0.8, 240], [2, 1.3]]\"",
+        "\"A Soundslice API key consists of two strings — an application ID and associated password.\"; \"For each API call, you'll need to authenticate with your API key, using HTTP Basic Authentication.\"",
+        "syncpoint value 3: \"a number (integer or float) between 0 and 480, where 0 is the start of the bar and 480 is the end of the bar.\""
       ],
       "outputs": [
         "`GET /api/v1/slices/SCOREHASH/notation-file/` (\"the original uploaded notation file ... (e.g., MusicXML, GPX, etc.)\")",
@@ -4610,17 +4862,33 @@
           {
             "topic": "Individual terms (10.2)",
             "quote": "We do not claim ownership in your User Content. However, we need a licence to host your User Content, make sure it is available to you when you want it, make sure it works with Flat and to improve our Service.",
-            "url": "https://help.flat.io/en/policies/terms-of-service-individual/"
+            "url": "https://help.flat.io/en/policies/terms-of-service-individual/",
+            "note": "page \"Last updated September 4, 2026\"; the policies index dates this version \"5 January 2016\""
           },
           {
             "topic": "Embed terms (8.2)",
             "quote": "We do not claim ownership in your User Content. Instead, you grant us a worldwide, non-exclusive, royalty-free and perpetual licence to use, copy, reproduce, distribute, adapt, re-format, modify, publish, translate, licence, sub-licence, and exploit the User Content anywhere and in any form for the purpose of providing our Service (including allowing our users to view your User Content).",
-            "url": "https://help.flat.io/en/policies/terms-of-service-embed/"
+            "url": "https://help.flat.io/en/policies/terms-of-service-embed/",
+            "note": "\"This is the current version of these terms, dated 16 May 2019.\"; they \"apply to individuals and businesses using Flat Embed\""
           },
           {
             "topic": "MCP server",
             "quote": "Flat is available as a remote MCP server, so assistants and agents can create, search and read the scores of a Flat account.",
             "url": "https://help.flat.io/en/general/developers-api-embed/"
+          },
+          {
+            "topic": "Policies index",
+            "quote": "We do not claim ownership over your User Content",
+            "url": "https://help.flat.io/en/policies/",
+            "note": "https://flat.io/legal (the spec's `termsOfService`) redirected to https://help.flat.io/en/policies/ (\"Legal and privacy information\", \"Last updated December 7, 2023\"); the part \"User content and ownership\"",
+            "read": "2026-11-10"
+          },
+          {
+            "topic": "Flat APIs and Embed page",
+            "quote": "Flat is available as a remote MCP server, so assistants and agents can create, search and read the scores of a Flat account.",
+            "url": "https://help.flat.io/en/general/developers-api-embed/",
+            "note": "page \"Flat APIs and Embed\", \"Last updated October 19, 2026\"; lists Embed, the REST API, an Import API and \"AI assistants (MCP)\"; names no API terms and no API price; https://flat.io/legal/en/general/developers-api-embed/ redirects to a sign-in page",
+            "read": "2026-11-10"
           }
         ]
       },
@@ -4653,7 +4921,8 @@
         "http"
       ],
       "inputs": [
-        "`GET trends/nodes?cp=4,1` and `GET trends/songs?cp=4,1` with a Roman-numeral chord path relative to the key; HTTP Bearer Token (`activkey`)"
+        "`GET trends/nodes?cp=4,1` and `GET trends/songs?cp=4,1` with a Roman-numeral chord path relative to the key; HTTP Bearer Token (`activkey`)",
+        "\"You authenticate to the Hooktheory API by providing an HTTP Bearer Token ... retrieved through the API with your hooktheory.com username and password\" (`POST users/auth`, token in `activkey`)"
       ],
       "outputs": [
         "`trends/nodes`: nodes {\"chord_ID\", \"chord_HTML\", \"probability\", \"child_path\"} (\"Each node contains a chord and the frequency with which it occurs in the database\")",
@@ -4721,6 +4990,11 @@
           {
             "topic": "Closure to new apps",
             "quote": "Effective today, new Web API use cases will no longer be able to access or use the following endpoints and functionality in their third-party applications. Applications with existing extended mode Web API access that were relying on these endpoints remain unaffected by this change.",
+            "url": "https://developer.spotify.com/blog/2024-11-27-changes-to-the-web-api"
+          },
+          {
+            "topic": "Closure to new apps: scope",
+            "quote": "New apps that are registered on or after today's date",
             "url": "https://developer.spotify.com/blog/2024-11-27-changes-to-the-web-api"
           }
         ]
@@ -4802,7 +5076,13 @@
         ]
       },
       "pricing": "https://stemsplit.io/pricing (read 2026-11-10): credit packs of 10 minutes \"$2.00\" (\"$0.20/minute\"), 30 minutes \"$5.00\" (\"$0.17/minute\"), 100 minutes \"$12.00\" (\"$0.12/minute\"), 300 minutes \"$30.00\" (\"$0.10/minute\"); \"5 free minutes on signup\". Launch post: \"The API uses the same credit system as the web app — no separate API pricing, no subscription required.\"",
-      "handoffs_out": [],
+      "handoffs_out": [
+        {
+          "to": "Klangio API",
+          "via_format": "`SIX_STEMS` guitar stem",
+          "evidence": "Docs: Klangio /transcription?model=guitar takes an audio file as the multipart `file` (https://api-docs.klang.io/docs/getting-started/basic-job-workflow); its docs do not list the accepted audio formats, so whether each stem file is accepted is UNVERIFIED (one call per format would settle it); not tested"
+        }
+      ],
       "unverified": [
         "The post says the API runs the \"same HTDemucs FT model\" as the web app; `htdemucs_ft` is a four-stem model in the Demucs README, so which model gives the six-stem output is UNVERIFIED",
         "The API reference at https://stemsplit.io/developers/reference was fetched but its endpoint list was not read in detail",
@@ -5335,10 +5615,12 @@
       ],
       "inputs": [
         "exactly one of `song_id`, `upload_audio_id` or `audio_url`: \"Public HTTPS URL or data URI for an MP3, WAV, or M4A file between 10 seconds and 10 minutes and no larger than 100 MB. Provide exactly one audio source.\"",
-        "optional `title` (string, maxLength 50)"
+        "optional `title` (string, maxLength 50)",
+        "OpenAPI component `ApiSongTranscribeInput` (its `title` is `TranscribeMusicInput`): `song_id` (\"Generated song ID from song_id in a /generate/song response.\"), `upload_audio_id` (\"Audio ID returned by /files/upload with purpose='audio'.\"), `audio_url`; `title` \"Optional title used for the generated transcription files.\""
       ],
       "outputs": [
-        "`zip_url` (required): \"The generated transcription archive.\"; contents per input not documented beyond \"can include MusicXML, PDF sheet music, and timestamped lyrics\""
+        "`zip_url` (required): \"The generated transcription archive.\"; contents per input not documented beyond \"can include MusicXML, PDF sheet music, and timestamped lyrics\"",
+        "OpenAPI component `ApiSongTranscribeOutput` (its `title` is `TranscribeMusicOutput`); queue form `/mureka/api/song/transcribe/requests/{request_id}/status` and `.../requests/{request_id}`; llms.txt category \"audio-to-text\"; not in fal's site-wide index https://fal.ai/llms.txt"
       ],
       "constraints_accepted": [
         "none: no instrument, tuning, capo, key or tempo field in the input schema"
@@ -5369,8 +5651,14 @@
           }
         ]
       },
-      "pricing": "\"Billing is calculated per transcribed song. Your request will cost **$0.20** per song. For **$1** you can transcribe **5 songs**.\" (llms.txt)",
-      "handoffs_out": [],
+      "pricing": "\"Billing is calculated per transcribed song. Your request will cost **$0.20** per song. For **$1** you can transcribe **5 songs**.\" (llms.txt) for-aaron.md section 15: the two calls on S4 (38.741 s) and R2 (36.000 s) would cost 0.40 USD; both are inside the endpoint's limits.",
+      "handoffs_out": [
+        {
+          "to": "Flat.io API",
+          "via_format": "MusicXML inside the `zip_url` archive (\"can include MusicXML, PDF sheet music, and timestamped lyrics\")",
+          "evidence": "Docs: https://fal.ai/models/mureka/api/song/transcribe/llms.txt and Flat import \"Preferred formats\" (https://flat.io/developers/docs/openapi.yaml); not tested; what the ZIP holds is UNVERIFIED until one call"
+        }
+      ],
       "unverified": [
         "What the ZIP holds for a given input (MusicXML parts, PDF, lyrics; whether there is a guitar part, tablature or MIDI)",
         "Mureka's own terms (https://www.mureka.ai/terms is script-rendered; text not read)",
@@ -5412,7 +5700,14 @@
               "notifications/initialized": 0.664,
               "tools/list": 0.493
             },
-            "tools_call_sent": false
+            "tools_call_sent": false,
+            "user_agent": "research-probe/0.1 (MCP client, no account)",
+            "initialize_bytes": 1663,
+            "tools_list_bytes": 19822,
+            "initialize_capabilities": "tools and resources (both listChanged false)",
+            "x_ratelimit_limit": 3000,
+            "protocol_version_sent": "2025-06-18",
+            "client_name": "research-probe"
           }
         },
         {
@@ -5444,10 +5739,13 @@
       "inputs": [
         "create_score: `score`, a .cesure text (version 2 JSON; notes as fret.string or by pitch; \"Strings from 1 (the highest); x as fret mutes.\")",
         "import_score: `score`, \".cesure text, AlphaTex, or Open in Cesure link, verbatim\"",
-        "the other draft tools take `draft` (the id a previous tool gave)"
+        "the other draft tools take `draft` (the id a previous tool gave)",
+        "import_score also takes AlphaTex; the apps-survey lane records Tabtify writing \"alphaTex (.alphatex)\" (its survey.md, Tabtify's home page, as quoted there); the MCP tools take no MusicXML, MIDI or Guitar Pro file (the app imports those, per the apps-survey lane); no `tools/call` was sent",
+        "format page (https://cesure.app/format): \"This is version 2.\"; track `tuning` \"Open strings from string 1 (the highest) to string N (the lowest)\"; track `capo` \"Capo position in frets. Fret numbers stay relative to the capo; only the sounding pitch moves.\"; tool descriptions: \"a track without tuning is a guitar in standard tuning; tuning lists the open strings from string 1\"; \"Every measure must read and fill its time signature, or nothing is created and the refusal names each fault with its place.\""
       ],
       "outputs": [
-        "a draft id, a summary and a short link that opens the draft in the web app; read_score returns .cesure measures, \"200 at most a call\"; no tool returns the whole score in one answer"
+        "a draft id, a summary and a short link that opens the draft in the web app; read_score returns .cesure measures, \"200 at most a call\"; no tool returns the whole score in one answer",
+        "`instructions` text: \"A draft is kept 14 days after the last call that touches it. Each tool that opens or changes a draft answers with a short link that opens it in Cesure, the web app, with no account.\" and \"No tool gives the whole score back: each answers with a summary, and read_score reads measures, 200 at most a call.\"; `open_in_cesure` declares a UI resource `ui://cesure/player-0.8.3+ac6e74d` in its `_meta`"
       ],
       "constraints_accepted": [
         "refinger: `mode` auto, standard (\"lowest frets\"), optimized (\"fewest hand moves\"); `searchCapo` (\"lets it choose a capo\")",
@@ -5469,6 +5767,12 @@
           {
             "topic": "Linked assistants",
             "quote": "What that assistant does with your scores falls under its provider's own terms.",
+            "url": "https://cesure.app/terms",
+            "read": "2026-11-11"
+          },
+          {
+            "topic": "Linked AI assistants",
+            "quote": "If you link an AI assistant such as ChatGPT or Claude to your account, it acts at your request within what you allowed on the linking page — seeing, reading and saving scores — and you can unlink it at any time from the \"Me\" screen.",
             "url": "https://cesure.app/terms",
             "read": "2026-11-11"
           }
@@ -5501,7 +5805,222 @@
       "unverified": [
         "Whether create_score is in fact served without an account: the tools declare noauth, but no tools/call was sent"
       ],
-      "added": "gap round 2 (gapfill-hosted-apis, 2026-11-11)"
+      "added": "gap round 2 (gapfill-hosted-apis, 2026-11-11)",
+      "tools_detail": [
+        {
+          "tool": "create_score",
+          "title": "Create a score",
+          "required_inputs": [
+            "score (a .cesure text)"
+          ],
+          "other_inputs": [],
+          "securitySchemes": [
+            "noauth",
+            "oauth2"
+          ],
+          "readOnlyHint": false,
+          "destructiveHint": false
+        },
+        {
+          "tool": "import_score",
+          "title": "Import a score",
+          "required_inputs": [
+            "score (.cesure text, AlphaTex, or an \"Open in Cesure\" link)"
+          ],
+          "other_inputs": [],
+          "securitySchemes": [
+            "noauth",
+            "oauth2"
+          ],
+          "readOnlyHint": false,
+          "destructiveHint": false
+        },
+        {
+          "tool": "read_score",
+          "title": "Read measures",
+          "required_inputs": [
+            "draft"
+          ],
+          "other_inputs": [
+            "track",
+            "from",
+            "to"
+          ],
+          "securitySchemes": [
+            "noauth",
+            "oauth2"
+          ],
+          "readOnlyHint": true,
+          "destructiveHint": false
+        },
+        {
+          "tool": "edit_measures",
+          "title": "Edit measures",
+          "required_inputs": [
+            "draft",
+            "from",
+            "to",
+            "measures"
+          ],
+          "other_inputs": [
+            "track"
+          ],
+          "securitySchemes": [
+            "noauth",
+            "oauth2"
+          ],
+          "readOnlyHint": false,
+          "destructiveHint": true
+        },
+        {
+          "tool": "transpose",
+          "title": "Transpose",
+          "required_inputs": [
+            "draft",
+            "semitones (-24 to 24)"
+          ],
+          "other_inputs": [
+            "notesOffTheNeck: retune_lowest_string or change_octave",
+            "harmonicsOffTheNeck: keep_harmonic or play_fretted"
+          ],
+          "securitySchemes": [
+            "noauth",
+            "oauth2"
+          ],
+          "readOnlyHint": false,
+          "destructiveHint": true
+        },
+        {
+          "tool": "refinger",
+          "title": "Place the notes again",
+          "required_inputs": [
+            "draft"
+          ],
+          "other_inputs": [
+            "track",
+            "mode: auto, standard, optimized",
+            "searchCapo (boolean, default false)"
+          ],
+          "securitySchemes": [
+            "noauth",
+            "oauth2"
+          ],
+          "readOnlyHint": false,
+          "destructiveHint": true
+        },
+        {
+          "tool": "undo_last_change",
+          "title": "Undo the last change",
+          "required_inputs": [
+            "draft"
+          ],
+          "other_inputs": [],
+          "securitySchemes": [
+            "noauth",
+            "oauth2"
+          ],
+          "readOnlyHint": false,
+          "destructiveHint": true
+        },
+        {
+          "tool": "open_in_cesure",
+          "title": "Open in Cesure",
+          "required_inputs": [
+            "draft"
+          ],
+          "other_inputs": [],
+          "securitySchemes": [
+            "noauth",
+            "oauth2"
+          ],
+          "readOnlyHint": true,
+          "destructiveHint": false
+        },
+        {
+          "tool": "search_catalog",
+          "title": "Search the catalog",
+          "required_inputs": [],
+          "other_inputs": [
+            "query",
+            "language: en, fr, es"
+          ],
+          "securitySchemes": [
+            "noauth"
+          ],
+          "readOnlyHint": true,
+          "destructiveHint": false
+        },
+        {
+          "tool": "list_my_scores",
+          "title": "List my scores",
+          "required_inputs": [],
+          "other_inputs": [
+            "offset"
+          ],
+          "securitySchemes": [
+            "oauth2"
+          ],
+          "readOnlyHint": true,
+          "destructiveHint": false
+        },
+        {
+          "tool": "read_my_score",
+          "title": "Open one of my scores",
+          "required_inputs": [
+            "id"
+          ],
+          "other_inputs": [],
+          "securitySchemes": [
+            "oauth2"
+          ],
+          "readOnlyHint": false,
+          "destructiveHint": false
+        },
+        {
+          "tool": "save_new_score",
+          "title": "Save as a new score",
+          "required_inputs": [
+            "draft"
+          ],
+          "other_inputs": [
+            "title"
+          ],
+          "securitySchemes": [
+            "oauth2"
+          ],
+          "readOnlyHint": false,
+          "destructiveHint": false
+        },
+        {
+          "tool": "update_my_score",
+          "title": "Save over my score",
+          "required_inputs": [
+            "draft"
+          ],
+          "other_inputs": [],
+          "securitySchemes": [
+            "oauth2"
+          ],
+          "readOnlyHint": false,
+          "destructiveHint": true
+        },
+        {
+          "tool": "organize_my_scores",
+          "title": "Organize my scores",
+          "required_inputs": [],
+          "other_inputs": [
+            "create_tags",
+            "add",
+            "remove",
+            "delete_unused_tags"
+          ],
+          "securitySchemes": [
+            "oauth2"
+          ],
+          "readOnlyHint": false,
+          "destructiveHint": true
+        }
+      ]
     }
   ]
 }

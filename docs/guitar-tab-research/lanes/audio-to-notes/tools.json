@@ -5610,7 +5610,7 @@
 "tried": false,
 "tried_how": null,
 "runs": [],
-"not_run_reason": "NOT RUN HERE: runs only from its cloned repository (no package from the authors); in gap round 2 (gapfill-audio-to-notes, 2026-11-11) running the Deep Salience clone's predict_on_audio.py --help was refused by the session's permission system (\"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\"), and no TensorFlow or Keras venv was on the box (trials.md, Gap round 2, A5). README pins Keras 2.2.2, Librosa 0.6.2, madmom 0.16.1, Python 3.6+; no TensorFlow version named.",
+"not_run_reason": "NOT RUN HERE: runs only from its cloned repository (no package from the authors); in gap round 2 (gapfill-audio-to-notes, 2026-11-11) running the Deep Salience clone's predict_on_audio.py --help was refused by the session's permission system (\"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\"), and no TensorFlow or Keras venv was on the box (trials.md, Gap round 2, A5); this tool itself was not attempted after that refusal. README lists Keras 2.2.2, Librosa 0.6.2, madmom 0.16.1, Python 3.6+; no TensorFlow version named.",
 "for_aaron": true,
 "callable_via": [
 "python"
@@ -5650,7 +5650,7 @@
 "tried": false,
 "tried_how": null,
 "runs": [],
-"not_run_reason": "NOT RUN HERE: runs only from its cloned repository (no package from the authors); in gap round 2 (gapfill-audio-to-notes, 2026-11-11) running the Deep Salience clone's predict_on_audio.py --help was refused by the session's permission system (\"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\"), and no TensorFlow or Keras venv was on the box (trials.md, Gap round 2, A5). README pins Keras 2.3.0, Librosa 0.7.0, madmom 0.16.1, pysndfx 0.3.6, Python 3.7+; no TensorFlow version named.",
+"not_run_reason": "NOT RUN HERE: runs only from its cloned repository (no package from the authors); in gap round 2 (gapfill-audio-to-notes, 2026-11-11) running the Deep Salience clone's predict_on_audio.py --help was refused by the session's permission system (\"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\"), and no TensorFlow or Keras venv was on the box (trials.md, Gap round 2, A5); this tool itself was not attempted after that refusal. README lists Keras 2.3.0, Librosa 0.7.0, madmom 0.16.1, pysndfx 0.3.6, Python 3.7+; no TensorFlow version named.",
 "for_aaron": true,
 "callable_via": [
 "python"
@@ -7843,7 +7843,7 @@
 "audio file path (model.predict(path, batch_size, progress_callback))"
 ],
 "outputs": [
-"a MIDI file written by note_event2midi: MidiFile(ticks_per_beat=480, type=0), default velocity 100, set_tempo commented out, one channel per program (0-8, 10-15), drums as internal program 128; from the code, not observed"
+"a MIDI file written by note_event2midi: MidiFile(ticks_per_beat=480, type=0) followed by midi.type = 1, so type 1: an empty first track, then one track per program with a track_name and a program_change; every note-on at velocity 100 (the default; predict() passes none); no tempo message (set_tempo commented out; ticks at 500,000 microseconds per beat); one channel per program (0-8, 10-15), drums on channel 9 as internal program 128; from the code (yourmt3/utils/midi.py), not observed; corrected by verify-gapfill-audio-to-notes round 2 (2026-11-11)"
 ],
 "constraints_accepted": [
 "model type",
@@ -7874,7 +7874,7 @@
 "requires": "einops, lightning, mido, mir-eval, scikit-learn, torchaudio, transformers==4.45.1",
 "publisher": "PyPI project yourmt3 with an empty author field and an author_email field naming 'dummyjenil'; weights in the Hugging Face repo of user 'shethjenil' (shethjenil/Audio2Midi_Models); a third-party repackaging, not the YourMT3 authors' release (their Space is mimbres/YourMT3); no license field, classifier or license file",
 "attempt_status": "installed from PyPI (uv pip install yourmt3==0.1.4, 49 packages, exit 0) and checkpoint YPTF+Single.pt downloaded (121,781,787 bytes, sha256 28a7dd18...ff3313e4 = the repo's LFS digest); running YMT3(...).predict on S2n, R1c and the S4 guitar stem through gtr-run was refused by the session's permission system: \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\" (gap round 2 (gapfill-audio-to-notes, 2026-11-11))",
-"checkpoint_facts": "shethjenil/Audio2Midi_Models revision 4300d378: YPTF+Single.pt 121,781,787 bytes (taken: the smallest), YMT3+.pt 185,123,699, YPTF+MoE+Multi 2.pt 188,636,597, YPTF+Multi.pt 313,554,331, YPTF+MoE+Multi 1.pt 386,049,197, YMT3+MusicFM.pt 1,484,875,284; URL https://huggingface.co/shethjenil/Audio2Midi_Models/resolve/<rev>/<file>; deleted after the attempt"
+"checkpoint_facts": "shethjenil/Audio2Midi_Models revision 4300d378: YPTF+Single.pt 121,781,787 bytes (taken: the smallest of the six YourMT3 .pt files; the repository has 80 files, among them smaller CREPE, Basic Pitch, Omnizart and MELODIA files that this package does not load), YMT3+.pt 185,123,699, YPTF+MoE+Multi 2.pt 188,636,597, YPTF+Multi.pt 313,554,331, YPTF+MoE+Multi 1.pt 386,049,197, YMT3+MusicFM.pt 1,484,875,284; URL https://huggingface.co/shethjenil/Audio2Midi_Models/resolve/<rev>/<file>; deleted after the attempt"
 },
 {
 "name": "Self-supervised F0 and voicing for monophonic music (Bitra and Beigi, arXiv 2601.11768)",

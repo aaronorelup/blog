@@ -1,0 +1,25 @@
+trials.md old sections 18 new sections 20 old headings missing []
+  earlier verification logs byte-identical: {'## Verification log (verify-trials-audio-to-notes, 2026-11-10)': True, '## Verification log (verify-gapfill-audio-to-notes, round 1, 2026-11-11)': True}
+  old lines changed or removed: 8
+    CHANGED  18 - **Scores** come from `gtr-eval` (gtr-eval 0.11.1 for every eval id in this file; the eval id `eNNNN` is given with each number; the definitions are 
+    CHANGED  52 hFT-Transformer, Omnizart, NeuralNote, Sheet Sage, MuScriptor, PENN, CREPE Notes and the other survey additions
+    APPENDED 57 github.com answering 403, and a source build that failed.)
+    APPENDED 427      315 MiB; per clip 2.72 to 6.50 s.
+    APPENDED 663 build): UNVERIFIED.
+    APPENDED 838   mt3-pytorch, MR-MT3 and YourMT3 code (survey.md, section 36).
+    APPENDED 868   CPU Space. Steps for a local run on Aaron's PC: `for-aaron.md`, section 1.
+    APPENDED 949   so installing it means compiling it; not attempted.
+survey.md old sections 44 new sections 47 old headings missing []
+  earlier verification logs byte-identical: {'## Verification log (verify-docs-audio-to-notes, 2026-11-10)': True}
+  old lines changed or removed: 8
+    APPENDED 49 12. CREPE Notes (`xavriley/crepe_notes`). PyPI `crepe-notes` 0.2.0 (2026-03-13); last commit 2026-03-13. GPL-3.0. Uses CREPE, PESTO, PENN or torchcrep
+    APPENDED 64 36. mt3-infer (`openmirlab/mt3-infer`, PyPI 0.2.0, 2026-07-11; added in gap round 1): one Python API and CLI over vendored MR-MT3, mt3-pytorch and You
+    APPENDED 65 37. yourmt3 (PyPI 0.1.4, 2025-08-31, third party; added in gap round 1): YourMT3 model types with weights from the Hugging Face repo `shethjenil/Audio
+    APPENDED 622   while Essentia's `PitchYin` read the same sines correctly; the cause is UNVERIFIED in `trials.md`.
+    APPENDED 1296   verifier 2026-11-10).
+    APPENDED 1318   submodule (`.gitmodules`), so the model files themselves were not listed here.
+    APPENDED 1452   which vendors three of them, was not used in their place.
+    APPENDED 1472 - **Not run here** (as for section 36).
+for-aaron.md old sections 12 new sections 14 old headings missing []
+  earlier verification logs byte-identical: {}
+  old lines changed or removed: 0

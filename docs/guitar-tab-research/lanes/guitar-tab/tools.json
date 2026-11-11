@@ -200,7 +200,7 @@
               "R1b": "tab e1733: 65/70 matched of 90 est, same string+fret/matched 0.9846, /truth 0.9143; notes e1734: onset F1 0.8125; frames e1735: tab F1 0.8823, pitch F1 0.8920",
               "R1c": "tab e1736: 119/148 matched of 135 est, same string+fret/matched 1.0000, /truth 0.8041; notes e1737: onset F1 0.8410; frames e1738: tab F1 0.9380, pitch F1 0.9420"
             },
-            "training_overlap": "R1 clips come from GuitarSet; the file is trained on GuitarSet + GuitarProFX with six-fold leave-one-player-out training code; which fold (held-out player) the file is: UNVERIFIED"
+            "training_overlap": "R1 clips come from GuitarSet; per the paper the model follows the six-fold leave-one-player-out GuitarSet cross-validation plus all GuitarProFX tracks; the training script (robust-guitar-tabs/code guitarProFx.py) takes its training tracks only from its own GuitarProFx data folder (5 of 6 splits of 120 tracks) and tests on one GuitarSet player per fold; which fold (held-out player) the file is, and whether that folder held GuitarSet tracks: UNVERIFIED"
           }
         },
         {
@@ -1477,7 +1477,7 @@
       "tried": false,
       "tried_how": null,
       "runs": [],
-      "not_run_reason": "NOT RUN HERE. Not on PyPI (pypi.org/pypi/gtrsnipe/json and pypi.org/simple/gtrsnipe/ answered HTTP 404 on 2026-11-10 and again on 2026-11-11 00:39 UTC). On 2026-11-11 00:40 UTC an install from the repository at a9be933 (uv pip install \"gtrsnipe @ git+https://github.com/scottvr/gtrsnipe@a9be933...\") was refused by the box's permission system: \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\" Steps, including a --no-refinger / --refinger round trip of a hand-corrected string, are in for-aaron.md section 4.",
+      "not_run_reason": "NOT RUN HERE. Not on PyPI (pypi.org/pypi/gtrsnipe/json answered \"not found\" on 2026-11-10; it and pypi.org/simple/gtrsnipe/ answered HTTP 404 on 2026-11-11 at 00:39 UTC and again at 01:03 UTC, the second time read by the verifier). On 2026-11-11 00:40 UTC an install from the repository at a9be933 (uv pip install \"gtrsnipe @ git+https://github.com/scottvr/gtrsnipe@a9be933...\") was refused by the box's permission system: \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\" Steps, including a --no-refinger / --refinger round trip of a hand-corrected string, are in for-aaron.md section 4.",
       "for_aaron": true,
       "callable_via": [
         "cli"
@@ -4264,8 +4264,8 @@
         "weights": null,
         "training_data": [
           {
-            "name": "GuitarSet (parameter tuning and evaluation on the same data, section 7.11)",
-            "license": "v1.1.0 cc-by-4.0",
+            "name": "GuitarSet (parameter tuning and evaluation on the same data; the quote is section 7.11 of the thesis, not a licence)",
+            "license": "version not stated in the thesis (it cites the ISMIR 2018 paper only); GuitarSet v1.1.0 is cc-by-4.0 and v1.0.1 cc-by-nc-4.0 (survey.md, GuitarSet section)",
             "quote": "Den data som användes för att generera de optimerade parametrarna användes också för att testa resultaten.",
             "url": "https://lup.lub.lu.se/student-papers/record/9226851/file/9226852.pdf"
           }

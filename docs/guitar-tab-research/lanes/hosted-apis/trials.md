@@ -665,6 +665,9 @@ lane), and no key was read (Cesure's MCP server was called without an account). 
 
 - The stem decoding and trimming were remade by the first round's verifier with byte-identical results (verification
   log, item 3) but are still not ledger runs.
+- Re-run by verify-gapfill-hosted-apis, each script unchanged, in a CPU slot (2 cores): r0661 (re-run of r0599,
+  0.36 s): the three SHA-256 equal those in `inputs/README.md`; r0662 (re-run of r0600, 0.57 s): 18 JPEGs, 531,261
+  bytes, all byte-identical to `out/frames/R3a/`. The copies were deleted.
 
 ### gradio_client: which runs used it (gap H2)
 
@@ -755,6 +758,9 @@ steps. The sections above already called these calls refused; their text is unch
   of those it carries (4 semitones at most)". No audio goes in: the assistants page says "No audio. Turning a
   recording into a tab happens in the app, from a sound."
 - Failures: none; the OAuth metadata path answered 404.
+- Re-run by verify-gapfill-hosted-apis: r0655 (`--nolock`, a remote call, 2.26 s by the ledger), output in
+  `/home/user/gtr/lanes/hosted-apis/verify-gap2/cesure-mcp/` (outside git): the same four HTTP codes and byte counts,
+  a `tools_list.json` byte-identical to the one above, and all four response bodies equal to r0622's.
 
 ## Survey tool list: what else was checked for a run
 
@@ -936,7 +942,7 @@ were deleted; the demucs re-run WAVs, the R3b and R3c frames and the re-run reco
 An independent check of what gap round 2 added: the section "Gap round 2" above, the gap-round-2 parts of
 `survey.md` and `for-aaron.md`, `tools.json`, `samples/cesure-mcp/`, `samples/gap2/` and `scripts/gap2/`. The text
 checked is commit d90f43e against d2e9a17 (the commit before the round; `git diff`, read only). Date from
-`date -u +%F`; work from 00:41 to about 01:05 UTC. This check spent nothing and read no key value.
+`date -u +%F`; work from 00:41 to about 01:10 UTC. This check spent nothing and read no key value.
 
 What was checked, and how:
 
@@ -1016,6 +1022,7 @@ What was changed:
 - V8 `tools.json` (`scripts/verify-gap2/update_tools_json.py`): the Muse Model License grant moved from
   `service_terms` into `weights.note`; MiMo `gateway_data_flags` corrected as V1; a correction line on Gemini as V6;
   the runs r0661 and r0662 (ffmpeg) and r0655 (Cesure) added.
+- V9 `trials.md`: the re-runs r0661, r0662 and r0655 are noted at the end of the ffmpeg and Cesure subsections.
 - Added: `scripts/verify-gap2/` (URL list, fetch script, quote checker, tools.json update) and
   `samples/verify-gap2/` (fetch status, quote results). Page copies stay outside git in
   `/home/user/gtr/lanes/hosted-apis/verify-gap2/`.

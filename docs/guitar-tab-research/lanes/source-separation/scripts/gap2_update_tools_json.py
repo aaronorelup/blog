@@ -102,10 +102,11 @@ add_unverified(b, ["Not run here: running the clone's train.py was refused by th
 a = T["AudioSep (Separate Anything You Describe)"]
 a["not_run_reason"] = ("Gap round 2 (corrected; the 200 MB notice is no longer the reason): with 7,403 MB free at "
                        "2026-11-11 00:42 UTC the 3,617,315,079 bytes of checkpoints would have left about 3,950 MB, "
-                       "under the 4 GB of free disk that round had to keep; nothing downloaded. Its route also runs a "
-                       "cloned repository's code (from pipeline import ...), which the permission system refused for "
-                       "Gaborformer and Banquet in the same round; not attempted for AudioSep. Whether a 10 s CPU run "
-                       "is feasible is still UNVERIFIED")
+                       "under the 4 GB of free disk that round had to keep; nothing downloaded (at 01:06 UTC 7,695 MB "
+                       "were free, about 4,245 MB after such a download, under env.sh's 4,500 MB 'DISK CRITICAL' "
+                       "line). Its route also runs a cloned repository's code (from pipeline import ...), which the "
+                       "permission system refused for Gaborformer and Banquet in the same round; not attempted for "
+                       "AudioSep. Whether a 10 s CPU run is feasible is still UNVERIFIED")
 add_unverified(a, ["README imports 'inference' from pipeline, but pipeline.py (head 944583f) defines "
                    "separate_audio(model, audio_file, text, output_file, device='cuda', use_chunk=False) and no "
                    "'inference' (read in gap round 2, not run)"])

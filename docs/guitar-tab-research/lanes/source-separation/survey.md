@@ -1181,3 +1181,12 @@ and the other services stay with the hosted-apis lane.
 Judging language: the remaining words such as "state-of-the-art", "better", "SOTA", "won" are inside quotes with
 their source named; two unquoted phrases were rewritten ("SDX 2023 3rd place" now quoted from its README; "heavy" for
 ZeroSep replaced by what it loads).
+
+## Gap round 2 additions (gapfill-source-separation, 2026-11-11)
+Facts added in place, each marked "gap round 2" and dated, read from PyPI JSON, the Hugging Face API, HTTP HEAD and
+shallow clones (copies under `/home/user/gtr/lanes/source-separation/gap2/fetched/`): Gaborformer (no PyPI package;
+`pyproject.toml` license and dependencies; Hub file sizes; output format; CPU path in fp32), Banquet (how the query
+becomes a PaSST embedding, the chunking and the output in the code; the PaSST `openmic` weights URL and size;
+hear21passt's PyPI facts), AudioSep (the README's `inference` is `separate_audio` in `pipeline.py`; no PyPI package),
+the "Runnable here?" cells of these tools and of the guitar fine-tune, and one handoff line (AudioSep's function
+name). What ran or was refused on the box is in `trials.md`, "Gap round 2".

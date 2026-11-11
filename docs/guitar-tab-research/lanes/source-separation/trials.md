@@ -337,11 +337,11 @@ Face, Zenodo and GitHub-mirror APIs and READMEs on 2026-11-10 and matches, excep
   `checkpoint/audiosep_base_4M_steps.ckpt` 1,264,844,076 bytes and `checkpoint/music_speech_audioset_epoch_15_esc_89.98.pt`
   2,352,471,003 bytes, readable without a login. Not run: 3.6 GB of checkpoints under the 200 MB download notice.
   Whether a 10 s CPU run is feasible was therefore not measured (UNVERIFIED; survey.md reports that the README picks
-  the CPU when CUDA is absent). (Corrected in gap round 2: the 200 MB notice no longer applied, but with 7,403 MB free
-  at 00:42 UTC on 2026-11-11 the download would have left about 3,950 MB, under the 4 GB this round had to keep free;
-  still not run, and the 10 s CPU timing is still UNVERIFIED. Its route also runs a cloned repository's code, which
-  the permission system refused for two other tools in that round. See "Gap round 2".) The same Space API call (verifier, 2026-11-10) reported the Space's runtime stage as
-  `RUNTIME_ERROR` (requested hardware `a10g-small`).
+  the CPU when CUDA is absent). The same Space API call (verifier, 2026-11-10) reported the Space's runtime stage as
+  `RUNTIME_ERROR` (requested hardware `a10g-small`). (Corrected in gap round 2: the 200 MB notice no longer applied,
+  but with 7,403 MB free at 00:42 UTC on 2026-11-11 the download would have left about 3,950 MB, under the 4 GB that
+  round had to keep free; still not run, and the 10 s CPU timing is still UNVERIFIED. Its route also runs a cloned
+  repository's code, which the permission system refused for two other tools in that round. See "Gap round 2".)
 - **Banquet (`kwatcharasupat/query-bandit`, query by example).** Zenodo record 13694558 (API, read 2026-11-10):
   license `cc-by-nc-sa-4.0`, `access_right: open` (no login), 14 checkpoints of 551,785,899 to 768,226,933 bytes
   (`ev-pre-aug.ckpt` 645,470,187). Not run: the smallest checkpoint is 552 MB, above the 200 MB notice, before the
@@ -928,8 +928,8 @@ Added 2026-11-11 (from 00:20 UTC) by `gapfill-source-separation`, to close the g
 for this lane (`GAPS.md`, rows S1 and S2) and to run the tools the first round left out because of the disk notice.
 Disk at the start: 8.6 GB free (`df -h /`, 00:20 UTC); `env.sh` still printed the "DISK LOW" notice quoted under "NOT
 RUN HERE" (it is printed below 9,000 MB). The orchestrator's task for this round asked for these runs as long as 4 GB
-stays free, one tool at a time, deleting each venv and its weights afterwards; `df -h /` is quoted before and after
-each download below. Same scoring, file layout and conventions as the sections above.
+stays free, one tool at a time, deleting each venv and its weights afterwards; the free disk is quoted below wherever
+a download was made or considered. Same scoring, file layout and conventions as the sections above.
 
 ### Gaborformer (`sevagh/gaborformer`): NOT RUN HERE, installing the cloned repository was refused
 
@@ -998,9 +998,13 @@ each download below. Same scoring, file layout and conventions as the sections a
   about 1.0 s (demucs-onnx) or 8.4 s (audio-separator) after the start until 1.0 to 1.5 s before the end; the threads
   allowed only on CPU 2 or CPU 3, which belong to the other slot, used 43.75 s (demucs-onnx) and 56.06 s
   (audio-separator) of CPU time, and field 39 of their `stat` (the CPU a thread last ran on) read 2 or 3 in every
-  sample (`samples/gap2-ort/probe_*_S4.json`). With 2 threads every thread of the process stayed allowed on CPUs 0-1. The probe's own CPU time (0.46 to 0.75 s per run) is included in
-  the CPU column (it runs inside the job). The "CPU s by allowed CPUs" column is summed per thread from `/proc` at the
-  last sample before exit; the CPU column is `gtr-run`'s rusage.
+  sample (`samples/gap2-ort/probe_*_S4.json`). With 2 threads every thread of the process stayed allowed on CPUs
+  0-1. The probe's own CPU time (0.46 to 0.75 s per run) is included in the CPU column (it runs inside the job). The
+  "CPU s by allowed CPUs" column is summed per thread from `/proc` at the last sample before exit; the CPU column is
+  `gtr-run`'s rusage. (Verifier, round 2: the thread pattern was seen again with a separately written probe in the
+  re-runs r0713 (= r0615), r0718 (= r0610) and r0719 (= r0612). r0610's peak RSS of 8051.0 MB was not reproduced:
+  r0718, with the same freeze and the same default threads, peaked at 6203.9 MB, the figure of r0471, r0548 and r0612.
+  See the verification log at the end.)
 - **Output:** all stems of all four runs are sample-identical (max |diff| 0) to the first-round files of r0471
   (`out/demucs-onnx-htdemucs_6s-fp16/S4/`) and r0487 (`out/uvr/UVR-MDX-NET-Inst_HQ_3/S4/`)
   (`samples/gap2-ort/compare_with_first_round.txt`, `scripts/compare_runs.py`), so the scores e1417 and e1422 hold for
@@ -1045,8 +1049,8 @@ each download below. Same scoring, file layout and conventions as the sections a
   1,708,495 samples that is 111 chunks by the formula in `core/models/ebase.py` `chunked_inference`), each chunk is
   separated with the same query embedding, and the chunks are overlap-added with a Hann window and trimmed to the
   mixture's length. What comes back is one waveform, the estimate of "the stem that sounds like the query", with
-  the mixture's channels and length, resampled to the mixture's rate and written with `ta.save(output_path,
-  estimate, fsm)` to `--output_path`. One call gives one stem; another stem needs another call with another query.
+  the mixture's channels and length, resampled back to the mixture's rate when that is not 44.1 kHz, and written with
+  `ta.save(output_path, estimate, fsm)` to `--output_path`. One call gives one stem; another stem needs another call with another query.
   `inference_byoq`'s default config is `./expt/bandit-everything-test.yml` and its default `stem_name` is "target".
 - **Steps for Aaron:** `for-aaron.md`, item 3 (same route; its "Not run here" reason corrected, and a note added for
   the case that the run asks for the `DATA_ROOT` variable, which `config/data/moisesdb-test.yml` reads).
@@ -1109,7 +1113,8 @@ each download below. Same scoring, file layout and conventions as the sections a
   script vocals -22.83, bass -25.30, guitar -28.71, drums -29.21, piano -31.20, other -73.14.
 - **S6taps** (map guitar=guitar, taps=drums): guitar-ft (e1833) guitar 3.02 / 4.07 / 17.70 / 4.33, taps 2.91 /
   11.22 / 24.92 / 11.42; stock through the script (e1834) guitar -7.75 / 0.34 / 29.56 / 0.35, taps 7.17 / 10.58 /
-  25.57 / 10.73. Projections: guitar-ft true guitar 0.5465 in `guitar`, 0.177 in `piano`; true taps 0.413 in
+  25.57 / 10.73 (first round, stock through the Demucs CLI, e0119: guitar -8.05 / 1.64 / 29.82 / 1.65, taps 6.98 /
+  10.87 / 26.26 / 11.01). Projections: guitar-ft true guitar 0.5465 in `guitar`, 0.177 in `piano`; true taps 0.413 in
   `drums`, 0.240 in `guitar`; stock true guitar 0.0635 in `guitar`, 0.755 in `piano`; true taps 0.8025 in `drums`.
 - **S2s** (one synthesized steel guitar, no truth stems; mix -18.23 dBFS): guitar-ft piano -24.55, guitar -36.63,
   bass -52.44, other -55.54, vocals -59.18, drums -60.49 dBFS.
@@ -1123,18 +1128,20 @@ each download below. Same scoring, file layout and conventions as the sections a
 
 ### AudioSep: NOT RUN HERE, the 4 GB of free disk this round had to keep would not have stayed free
 
-- **Disk, measured** (2026-11-11 00:42 UTC): 7,403 MB free (`df -BM /`; `df -h /` printed 6.6 to 7.9 GB between
+- **Disk, measured** (2026-11-11 00:42 UTC): 7,403 MB free (`df -BM /`; `df -h /` printed 6.6 to 8.6 GB between
   00:20 and 00:42 UTC while other lanes worked). The two checkpoints in the Hugging Face Space `Audio-AGI/AudioSep`
   (API with `blobs=true`, same time) are `checkpoint/audiosep_base_4M_steps.ckpt` 1,264,844,076 bytes and
   `checkpoint/music_speech_audioset_epoch_15_esc_89.98.pt` 2,352,471,003 bytes, 3,617,315,079 bytes (3,450 MB in
   `df -BM` units) together. After the download about 3,950 MB would have been left: under the 4 GB this round's task
   set as the floor, and under the 4,500 MB below which `env.sh` prints "DISK CRITICAL ... No download over 100 MB".
   Nothing was downloaded, so no AudioSep run, and no timing, exists from this box. The Space's runtime stage was
-  still `RUNTIME_ERROR` (same API call).
+  still `RUNTIME_ERROR` (same API call). At the end of the round (01:06 UTC) 7,695 MB were free, which would have
+  left about 4,245 MB: above 4 GiB, still under the 4,500 MB line of `env.sh`.
 - **The code route:** there is no PyPI package (`https://pypi.org/pypi/audiosep/json` and `audio-sep`: HTTP 404,
   2026-11-11); the README runs `from pipeline import build_audiosep, inference` from a clone of the repository, the
   same kind of step (running a cloned repository's code) that the permission system refused for Gaborformer and
-  Banquet above. It was not attempted for AudioSep, since the disk condition had already failed.
+  Banquet above ("Reason: [Code from External]"). It was not attempted for AudioSep: at 00:42 the disk condition had
+  already failed, and the permission system had refused that kind of step twice in this round.
 - **Read from a clone** (`git clone --depth 1`, head `944583f`, 2024-11-26, 8.3 MB; deleted, copies of the files read
   in `/home/user/gtr/lanes/source-separation/gap2/fetched/audiosep/`): `pipeline.py` defines `build_audiosep` and
   `separate_audio(model, audio_file, text, output_file, device='cuda', use_chunk=False)`, and no function named
@@ -1185,8 +1192,7 @@ each download below. Same scoring, file layout and conventions as the sections a
   zeros, and wrote `"si_sdr_db": "inf"` for the lead (see the audio-separator section). The same scoring was run again
   with the current tool (r0688, 2 cores; e1836): the result file records gtr-eval 0.12.1 (the run's label says 0.12.0,
   the version `gtr-eval --version` had printed earlier in this round; 0.12.1 changed only `f0`, per its README) and
-  again has
-  `"si_sdr_db": "inf"` for the lead, `3.164122` for the instrumental, and in `processing` mir_eval's refusal "All the
+  again has `"si_sdr_db": "inf"` for the lead, `3.164122` for the instrumental, and in `processing` mir_eval's refusal "All the
   estimated sources should be non-silent (not all-zeros) ...; SDR not reported"
   (`samples/scores/gap2_gtreval_0.12.1_rerun_of_e1431.json`). In `gtr_eval.py` 0.12.1, `si_sdr` (line 2221) removes
   the means, computes `alpha = <est, ref> / <ref, ref>`, `tgt = alpha * ref`, `res = est - tgt`, and returns
@@ -1194,6 +1200,25 @@ each download below. Same scoring, file layout and conventions as the sections a
   all-zero estimate both are 0, so the value written is "inf"; it is not a measurement of separation quality. In the
   eval ledger, the scorings that name this lane's folders and hold an infinite value are e1431, the verifier's re-run
   of it (e1564) and e1836; in `samples/scores/` only the files of e1431 and e1836 hold one.
+
+### What gap round 2 changed outside this section
+
+- `trials.md`: notes "(corrected in gap round 2: ...)" at the top of the file (4-core runs), at the demucs-onnx run
+  r0471 and its verifier re-run r0548, under the audio-separator table (r0487, r0503), at the whole-song paragraph of
+  "Demucs 4.1.0, further runs", at the gtr-eval note of the audio-separator section, and in "Tools NOT RUN HERE"
+  (Banquet, AudioSep and the guitar fine-tune corrected; Gaborformer added); the handoff list and "Media kept outside
+  git" list the new folders.
+- `for-aaron.md`: item 2 (AudioSep: reason, and `separate_audio` instead of the README's `inference`), item 3
+  (Banquet: reason, what the query is, `DATA_ROOT` note), item 5 (the guitar fine-tune ran here) and a new item 8
+  (Gaborformer).
+- `survey.md`: Gaborformer (packaging, file sizes, output format), Banquet (query path and output in the code, PaSST
+  weights), AudioSep (`separate_audio`), the tool list's "Runnable here?" cells of these tools.
+- `tools.json`: the entries of Gaborformer, Banquet, AudioSep, the guitar fine-tune, demucs-onnx, MDX-Net,
+  python-audio-separator and Demucs, by `scripts/gap2_update_tools_json.py`.
+- Venvs made and deleted in this round: `venv-gaborformer`, `venv-ort`, `venv-banquet`; `venv-demucs`, `venv-uvr`
+  and `venv-librosa` (from the first round) were used and kept. Weights downloaded: only `guitar_htdemucs_6s.pt`
+  (deleted). Free disk at the end of the round: 7,695 MB (`df -BM /`, 01:06 UTC); this round's own files outside
+  `out/` take 488 KB (`gap2/`: copies of the files read, logs).
 
 ## Stems available for other lanes (handoffs)
 
@@ -1390,3 +1415,45 @@ added: `scripts/verify-trials-reruns.sh`, `verify-trials-gtreval-rerun.py`, `ver
 **Disk:** the verifier's re-run outputs were deleted after the comparisons (the numbers are in `samples/verify-trials/`);
 the SCNet outputs were kept in `out/msst-scnet-musdb18/`; the re-created venvs were deleted; the SCNet checkpoint
 (42 MB) is kept in `verify/models/scnet/`.
+
+## Verification log (verify-gapfill-source-separation, round 2, 2026-11-11)
+
+Work started 2026-11-11 01:08 UTC by `verify-gapfill-source-separation`, on the same box, to check what
+`gapfill-source-separation` added in "Gap round 2" and its edits to `survey.md`, `for-aaron.md` and `tools.json`.
+The baseline for "what gap round 2 changed" is the repository's commit `d2e9a17` (2026-11-11 00:19 UTC, before that
+round), compared read-only with `git diff`. Scripts added: `scripts/verify-gap2-*`. Results: `samples/verify-gap2/`.
+Items are appended as they are finished.
+
+**Re-runs**
+
+- `adityalakhani/htdemucs-6s-guitar-ft` (r0636): NOT RE-RUN. The checkpoint was downloaded again into
+  `verify-gap2/models/guitar-ft/` (2026-11-11 01:12 UTC, 12.6 s; 329,654,071 bytes; SHA-256 `4fde369e...260e`, equal
+  to the Hub's LFS hash and to the hash `gtr-run` logged for r0636's input), but the command that would have run
+  `scripts/verify-gap2-guitar-ft-rerun.sh` (the r0636 command with a new output folder) was refused by the session's
+  permission system: "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code
+  from External]." (01:13 UTC). It was not retried another way; nothing ran (no log, no ledger line), and the
+  checkpoint was deleted at once. The fine-tune's outputs that r0636 to r0644 left in `out/` were checked instead
+  (below).
+- audio-separator MDX-Net with ONNX Runtime's default threads (r0615): re-run as r0713 (`scripts/verify-gap2-ort-rerun.sh`,
+  2 cores, slot 0-1, started 01:14:40 UTC, load1 0.82), watched by a probe written for this check
+  (`scripts/verify-gap2-thread-probe.py`, 0.5 s interval; `samples/verify-gap2/probe_mdx-default_S4_verify.json`):
+  wall 36.65 s, CPU 98.8 s (2.70 x wall), peak RSS 3168.9 MB, exit 0. Three worker threads were each allowed on
+  exactly one CPU, 1, 2 and 3, from 7.5 s after the start to 1.5 s before the end, and the CPU each last ran on read
+  1, 2 and 3 in all 55 samples; the threads allowed only on CPU 2 or CPU 3 used 21.27 s and 21.21 s of CPU time. The
+  same pattern as r0615. Both output stems are sample-identical (max |diff| 0) to r0487's first-round files; the
+  re-run's audio was deleted. The wall time differs from r0615 (85.76 s) on the same command: a single run on a
+  shared box.
+- demucs-onnx with ONNX Runtime's default threads (r0610) and with 2 intra-op threads (r0612): re-run as r0718 and
+  r0719 (`scripts/verify-gap2-onnx-rerun.sh`, `verify-gap2-onnx2-rerun.sh`; both 2 cores, slot 0-1, load1 0.55 and
+  1.24) in a venv re-created from `samples/demucs-onnx/uv-pip-freeze-venv-ort.txt` (identical `uv pip freeze`; 151 MB
+  by `du`, deleted afterwards), each watched by `scripts/verify-gap2-thread-probe.py`
+  (`samples/verify-gap2/probe_onnx-default_S4_verify.json`, `probe_onnx-ort2_S4_verify.json`). r0718 (default):
+  wall 29.12 s, CPU 80.1 s (2.75 x wall), peak RSS 6203.9 MB; three worker threads each allowed on exactly one CPU (1,
+  2, 3) from 1.0 s after the start to 0.5 s before the end, the CPU each last ran on read 1, 2 and 3 in all 55
+  samples, and the threads on CPU 2 and CPU 3 used 17.63 s and 17.60 s of CPU time. r0719 (2 threads; the wrapper
+  printed `intra_op_num_threads=2` for the one session): wall 36.10 s, CPU 60.8 s, peak RSS 6204.0 MB; every thread
+  allowed on CPUs 0-1 in every sample (one worker thread besides the main thread). All six stems of both runs are
+  sample-identical to r0471's first-round files; the audio was deleted. This confirms the gap round's thread
+  findings with a second probe. Not reproduced: r0610's peak RSS of 8051.0 MB. r0718, with the same freeze and the
+  same default threads, peaked at 6203.9 MB, as did r0471 and r0548 (6204.5 MB) and r0612 (6203.9 MB). Why r0610 used
+  1.8 GB more was not determined. The gap round's table is left as the ledger has it, and a note was added below it.

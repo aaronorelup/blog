@@ -14,7 +14,8 @@ Conventions used in this file:
   118.2 s, r0058 71.7 s, r0128 490.6 s. (Corrected by the verifier, 2026-11-10; the earlier text said the `--nolock`
   runs were all under 3 s.)
 - **Eval ids** (`eNNNN`) are lines in `/home/user/gtr/eval/ledger/evals.jsonl` written by `gtr-eval` (version 0.11.1 in
-  every result cited here);
+  every result cited here; verifier of gap round 2: except e1780, e1782, e1784, e1826 and e1827 in section "Gap round
+  2", which are 0.12.0, whose changelog says no metric definition changed);
   `gtr-eval ledger --id eNNNN --full` prints the whole result with the definitions of every number.
   `tab` numbers: matched = truth and estimate notes with onsets within 50 ms and the same MIDI pitch (mir_eval
   `match_notes`, onset tolerance 0.05 s, pitch tolerance 50 cents); "same string and fret" = matched pairs with the same
@@ -877,7 +878,8 @@ Agent `gapfill-web-tab-render`, 2026-11-11 (UTC). It closes the two gaps the com
 (`GAPS.md`, rows W1 and W2): editing on the drawn tab (abcjs's click and drag options, and the alphaTab editor package
 `@coderline/alphatab-monaco`), with a record of how each tool run in this lane lets a user change a string or a fret;
 and HAYA-TAB (survey only, `survey.md` section "HAYA-TAB"). Conventions as at the top of this file: run ids from the
-ledger, eval ids from gtr-eval 0.11.1, test pages served by `scripts/serve.cjs` on 127.0.0.1:8765, the box's
+ledger, eval ids from gtr-eval 0.11.1 (verifier: e1763 and e1764 only; e1780, e1782, e1784, e1826 and e1827 are
+gtr-eval 0.12.0, see the verification log of this round), test pages served by `scripts/serve.cjs` on 127.0.0.1:8765, the box's
 pre-installed Playwright 1.63.0 with its headless Chromium (`chromium.launch()` with no options in every driver below;
 nothing was installed for the browser). Every run below took a 2-core slot. Free disk before the installs: 7.4 GB
 (`df -h /`).
@@ -944,6 +946,11 @@ nothing was installed for the browser). Every run below took a 2-core slot. Free
 - **Two notes on one string.** After the F#3 edit (B and D), abcjs put the melody's "4" on string 4 at the same x
   position (beat 2 of bar 1) as the bass voice's open D, "0" on string 4: two simultaneous notes on one string, drawn
   on top of each other in `gap2_B_apply_after_drags.webp`. abcjs chose string 4 for the new pitch itself.
+  (Verifier, gap round 2, from the installed 6.7.2 source: `notesToNumber` in
+  `src/tablatures/instruments/string-patterns.js` is called once per drawn note or chord; `toNumber` puts a single note
+  on the highest-pitched string whose open pitch is at or below the note, and `sameString` moves one note of an ABC
+  chord to the next lower string only when two notes of that same chord land on one string. Notes of different voices
+  are not compared, and no per-note string input was found in `src/tablatures/`.)
 - **In short:** a click on a note or a tab number gives the application the note's place in the ABC text; a drag or an
   arrow key gives a step count in staff positions (a tab number is dragged in the same 3.875 px steps, not by
   strings); abcjs itself changes neither the ABC nor the tab. A change appears only when application code rewrites
@@ -967,11 +974,22 @@ nothing was installed for the browser). Every run below took a 2-core slot. Free
   entry (`./worker`) that starts the language server of `@coderline/alphatab-language-server` 1.9.0. Nothing in it
   draws a score or connects the editor to alphaTab: redrawing after an edit is application code. License:
   `"license": "MPL-2.0"`; the package's `LICENSE` begins "alphaTab Monaco is licensed under MPL-2.0." (survey,
-  alphaTab section).
+  alphaTab section). (Verifier, gap round 2, read in the 1.9.0 tarballs from registry.npmjs.org: `dist/worker.mjs`
+  carries the language server's code compiled in from the alphaTab monorepo's `lsp` folder (source comments
+  `// ../lsp/src/server/...`) and imports `@coderline/alphatab` and the `vscode-languageserver*` packages, not
+  `@coderline/alphatab-language-server`; that package is imported by the main entry for the TextMate grammar and the
+  language configuration (`dist/alphatex.mjs`). The language server checks the text with alphaTab's
+  `AlphaTexImporter` and passes its diagnostics on as code `AT<number>` with source "alphaTab" (the AT208 marker
+  below). No file of the package calls alphaTab's renderer.)
 - **Install** (2026-11-11, in its own folder so the earlier install stays as it was):
   `cd /home/user/gtr/lanes/web-tab-render/web-monaco && npm install --no-audit --no-fund --ignore-scripts
   @coderline/alphatab-monaco@1.9.0`, "added 14 packages in 9s" (none of the 14 declares an install script in its
-  registry entry, so `--ignore-scripts` skipped nothing). 125 MB of `node_modules`: `monaco-editor` 0.57.0 105 MB,
+  registry entry, so `--ignore-scripts` skipped nothing; verifier: none of the 14 registry entries lists a `preinstall`,
+  `install` or `postinstall` script; dompurify 3.4.15 lists `prepare` (`husky`), which npm's scripts page,
+  https://docs.npmjs.com/cli/v11/using-npm/scripts read 2026-11-11, says "Runs BEFORE the package is packed, i.e.
+  during npm publish and npm pack" and "Runs on local npm install without package arguments"; registry `license`
+  fields: the three `@coderline` packages "MPL-2.0", dompurify "(MPL-2.0 OR Apache-2.0)", the other ten "MIT").
+  125 MB of `node_modules`: `monaco-editor` 0.57.0 105 MB,
   `@coderline` (alphatab 1.9.0, alphatab-monaco, alphatab-language-server) 15 MB, the rest under 5 MB; the tree is in
   `samples/alphatab-monaco/npm-ls-monaco.txt` (monaco-editor 0.57.0 with dompurify 3.4.15 and marked 14.0.0,
   vscode-textmate 9.3.2, vscode-oniguruma 2.0.1, vscode-languageserver 11.0.0, vscode-languageserver-protocol 3.18.5,
@@ -982,7 +1000,9 @@ nothing was installed for the browser). Every run below took a 2-core slot. Free
 - **Build:** `scripts/build_alphatab_monaco.sh` (entry `scripts/alphatab_monaco_entry.mjs`), r0604 (2 cores, 1.25 s
   wall, CPU 1.7 s, peak RSS 384.6 MB, slot wait 15.6 s, exit 0, no esbuild warnings) wrote to
   `/home/user/gtr/lanes/web-tab-render/web/bundles/alphatab-monaco/`: `editor.js` 6,287,979 bytes and `editor.css`
-  175,371 bytes (Monaco and the package; Monaco's ESM build imports 135 CSS files), `codicon-LTRFOK3N.ttf` 153,228
+  175,371 bytes (Monaco and the package; Monaco's ESM build imports 135 CSS files; verifier: 135 CSS `import`
+  statements in Monaco's ESM code, which resolve to 100 distinct CSS files, the 100 that esbuild's metafile of the
+  page bundle lists, r0705), `codicon-LTRFOK3N.ttf` 153,228
   bytes, `editor.worker.js` 307,296 bytes (Monaco's own worker) and `alphatex-lsp.worker.js` 1,599,875 bytes (the
   language server with alphaTab inside).
 - **Page:** `scripts/pages/alphatab_monaco.html`, wired the way the alphatab.net playground's source wires the same
@@ -991,8 +1011,9 @@ nothing was installed for the browser). Every run below took a 2-core slot. Free
   wasm))`, a Monaco model in language `alphatex`, `basicEditorLspIntegration(editor, worker, {languageId: 'alphatex',
   diagnosticsDelay: 150, completionRange})` (the playground's `DIAGNOSTICS_DELAY_MS = 150` and its `typedTokenRange`),
   and under the editor alphaTab 1.9.0 (the lane's UMD build) drawing the editor's text with `api.tex(text)` 250 ms
-  after the last change (the playground's `TEX_RENDER_DELAY_MS = 250`). The editor is 1,000 px tall, so all 52 lines
-  of the input are on screen without scrolling.
+  after the last change (the playground's `TEX_RENDER_DELAY_MS = 250`). The editor is 1,000 px tall, so all 36 lines
+  of the input are on screen without scrolling (verifier: the input file has 36 lines, 37 after the capo line is
+  added; the text said 52).
 - **Run:** driver `scripts/alphatab_monaco_edit.cjs`, r0614 (2 cores, 12.84 s wall, CPU 1.1 s, peak RSS 144.8 MB, slot
   wait 64.1 s, exit 0). Input: the S2n truth alphaTex (`samples/alphatab/S2n.truth.atex`, 864 bytes; melody bar 1 on
   line 11, `0.3.4 0.3.4 3.2.4 3.2.4 |`; bass bar 1 on line 25, `3.6.4 0.4.4 3.6.4 0.4.4 |`; notes are
@@ -1029,6 +1050,11 @@ nothing was installed for the browser). Every run below took a 2-core slot. Free
 - **Two notes on one string, here too.** After step 2 the melody's G3 (fret 5 on string 4) and the bass voice's open D3
   (string 4) start together at 2.678571 s. The language server reported nothing, alphaTab drew the "5" over the bass's
   grey "0" on the same line (`S2n.monaco_edited.webp`), and the `.gp` export kept both notes on string 4.
+  (Verifier, gap round 2: the three smaller runs below made the same move of the same note, G3 to string 4 fret 5, so
+  their outputs hold the same pair. The read-backs of r0624's `.gp` and of r0626's MEI (r0627) have pitch 55 on string
+  4 fret 5 and pitch 50 on string 4 fret 0, both at 2.678571 s; VexTab drew the "5" over the "0"
+  (`samples/vextab/gap2_editor_string_edit.webp`). None of the three reported anything: alphaTab's console was empty,
+  VexTab's editor error text was empty, and Verovio's `edit()` returned true; Verovio's own log was not read.)
 - **Input and output format facts:** in: alphaTex text (fret.string.duration; `\capo`, `\tuning` and other metadata
   lines); out: what the application exports from alphaTab (here `.gp` and alphaTex); the editor's text is itself
   alphaTex.
@@ -1062,7 +1088,7 @@ change-and-redraw run", the run shows that the positions are taken from the data
 | OpenSheetMusicDisplay 2.3.0 | (b) | (b) | draws the `<technical><string>`/`<fret>` of the MusicXML it is given (r0158); no editing API used; no change-and-redraw run |
 | Verovio 6.4.1 | (b) | (b) | toolkit `edit()` with `set` on `tab.fret` and `tab.course` changed the MEI and the drawn fret text (r0626, e1827); or the input MEI or MusicXML (r0165); no UI |
 | MuseScore 3.2.3, command line | (b) | (b) | the positions of a TAB MusicXML input were kept on output for S2n (r0179, e0367) and changed for the capo file (r0180, e0368); its desktop editor was not run (for-aaron.md item 1) |
-| webmscore 1.2.1 | (c) | (c) | no editing in the package (survey's tool list: "Edits" no); a TAB MusicXML input came out with 0/90 of its positions kept (r0291, e1009) |
+| webmscore 1.2.1 | (c) | (c) | no editing in the package (survey's tool list: "Edits" no); a TAB MusicXML input came out with 0/90 of its positions kept (r0291, e1009). Verifier: the methods of its `src/index.js` load, set excerpts, read metadata, save and synthesize, and none edits a note; whether string and fret written in a MuseScore `.mscz`/`.mscx` input survive (which would be (b)) was not tried, UNVERIFIED |
 | LilyPond 2.24.3 | (b) | (b) | string numbers written in the `.ly` text (r0211, e0412); without them LilyPond chooses (r0197) |
 | TuxGuitar 1.5.6, format plugins headless | (b) | (b) | the positions of the input file kept by its readers and writers (r0221); no change-and-rewrite run; its desktop editor was not run (for-aaron.md item 5) |
 | PyGuitarPro 0.11 | (b) | (b) | string 3 fret 0 -> string 4 fret 5 in the data model, written as GP5 (r0236) |
@@ -1106,6 +1132,25 @@ at commit eb0466a (2026-07-31) uses alphaTab as the viewer (lockfile: 1.8.1); no
 alphaTab exporter or sets a note's string or fret; its edit dialog edits library metadata (title, artist, album, type,
 tag, country, language). Steps for Aaron: for-aaron.md item 8.
 
+(Verifier, gap round 2, 2026-11-11: "cannot list" holds for the box's own requests only, and it is not what kept the
+program from running. The web fetch tool read the asset list of release v3.1.8
+(https://github.com/HAYASAKA7/HAYA-TAB/releases/expanded_assets/v3.1.8): `HAYA-TAB-linux-amd64.tar.gz` 28.1 MB,
+`HAYA-TAB-linux-arm64.tar.gz` 27.4 MB, `HAYA-TAB-macos-amd64.dmg` and `HAYA-TAB-macos-arm64.dmg` 31.7 MB each,
+`HAYA-TAB-windows-386.zip` 27.3 MB, `HAYA-TAB-windows-amd64.zip` 27.8 MB, `HAYA-TAB-windows-arm64.zip` 26.9 MB, and the
+two source archives, uploaded 2026-07-31. From the box, a release file's own URL
+(`https://github.com/HAYASAKA7/HAYA-TAB/releases/download/v3.1.8/<file>`) answers 302 and release-assets.githubusercontent.com
+serves the file, while github.com's repository and release pages and api.github.com answer 403. The verifier
+downloaded two files to look inside, ran nothing, and deleted them: `HAYA-TAB-linux-amd64.tar.gz` (29,446,789 bytes)
+holds one file, `HAYA-TAB`, an x86-64 ELF executable (58,746,400 bytes) whose dynamic section (`readelf -d`) names
+`libwebkit2gtk-4.1.so.0`, `libjavascriptcoregtk-4.1.so.0`, `libsoup-3.0.so.0` and `libgtk-3.so.0` among others;
+`HAYA-TAB-windows-amd64.zip` (29,172,874 bytes) holds one file, `HAYA-TAB.exe` (59,417,088 bytes). The box has
+`libgtk-3.so.0` but not the other three (`ldconfig -p`); `apt-get -s install libwebkit2gtk-4.1-0` lists 46 packages to
+install; Xvfb is installed. The repository's `.github/workflows/release.yml` installs `libgtk-3-dev
+libwebkit2gtk-4.1-dev` and builds with `EXTRA_TAGS=webkit2_41`, and the tag v3.1.8 is commit eb0466a, the commit the
+source facts above come from. Not run here, specifically: the gap asked for a survey line, and a run on this box would
+need the WebKitGTK 4.1 libraries installed, a virtual display and a downloaded binary started; none of that was
+attempted.)
+
 ### Files of this round
 
 Scripts: `scripts/abcjs_click_drag.cjs`, `scripts/pages/abcjs_click_drag.html`, `scripts/pages/abcjs_editor_click.html`,
@@ -1146,7 +1191,10 @@ logs): `/home/user/gtr/lanes/web-tab-render/out/` `abcjs-click-drag/`, `alphatab
   of this list stands.)
 - **HAYA-TAB** (desktop tab library with an alphaTab viewer; added in gap round 2): not run. A Wails v3 desktop program
   whose builds are on GitHub Releases, which this box cannot list (github.com answers 403); facts from its source are
-  in "Gap round 2" and in the survey. for-aaron.md item 8.
+  in "Gap round 2" and in the survey. for-aaron.md item 8. (Verifier, gap round 2: the release files were listed with
+  the web fetch tool and can be fetched from the box by their own URLs; what a run here would need is the WebKitGTK 4.1,
+  JavaScriptCoreGTK 4.1 and libsoup 3.0 libraries that the Linux build is linked against and the box lacks, a virtual
+  display, and a downloaded binary started, none of which was attempted. Details in "Gap round 2", HAYA-TAB.)
 - **Video inputs (R3a, R3b, R3c):** not used; this lane renders and converts tab files, it does not read audio or
   video.
 
@@ -1245,3 +1293,111 @@ and re-runs. Every correction above is marked "verifier" in place. Scripts and t
 - The 189 MB `node_modules` size after the first npm install (overwritten by later installs).
 - The live alphatab.net playground was not opened; for-aaron.md item 7 rests on the repository source at commit
   ec751a23.
+
+## Verification log (verify-gapfill-web-tab-render, round 2, 2026-11-11)
+
+Independent check of what `gapfill-web-tab-render` added in gap round 2: the section "Gap round 2", its notes in
+earlier sections of this file, its edits to `survey.md`, `for-aaron.md` and `tools.json`, and its new files under
+`samples/` and `scripts/`. Every correction is marked "Verifier" or "verifier" where it was made. Scripts of this check:
+`scripts/verify-gap2/`; tables: `samples/verify/gap2_verify_reeval.tsv` and `samples/verify/gap2_verify_live_quotes.tsv`;
+re-run outputs: `/home/user/gtr/lanes/web-tab-render/verify-gap2/`.
+
+**What was checked**
+
+- **Run ledger.** The round's nine runs (r0598, r0604, r0614, r0618, r0624, r0625, r0626, r0627, r0663) are all of this
+  lane's ledger rows between r0407 and this check. Each took a 2-core slot (cores 0-1 or 2-3) and exited 0; the
+  commands, inputs, wall times, CPU times (rounded to 0.1 s), peak RSS and slot waits quoted match the ledger. No run
+  of the round failed.
+- **Eval ledger.** The seven evals exist with the numbers quoted (e1763 87/90 and 87/87; e1764 88/90 and 88/88; e1780,
+  e1782 and e1827 89/90 and 88/89 with one string difference of +1; e1784 the same against S5capo2 with capo 2 stated
+  in both; e1826 90/90 and 89/90). e1763 and e1764 are gtr-eval 0.11.1; e1780, e1782, e1784, e1826 and e1827 are
+  0.12.0, which the round's text called 0.11.1 (fixed here and at the top of this file; the 0.12.0 and 0.12.1 changelog
+  entries change how ASCII-tab and `f0` files are read, not these JSON `tab` scores). All seven were re-scored with
+  their own arguments and `--no-ledger`, once with 0.12.0 and again with 0.12.1, which appeared during this check:
+  every result identical apart from the version, every estimate file unchanged (`gap2_verify_reeval.tsv`).
+- **Files and recounts.** Every file the round names exists; the text and binary samples are byte-identical to their
+  originals under `out/` (and `S2n.truth.atex` to the input of r0614), and each WebP screenshot has the size of its
+  PNG there. The abcjs read-backs differ from the earlier unedited read-back
+  `S2n_written.tab.json` in notes 1 to 3 (B) and 1 to 2 (D) only, and both have F#3 (string 4, fret 4) and the bass's D3
+  (string 4, fret 0) at the same x. The editor text after step 2 differs from the input on line 11 only; after step 4 a
+  line `\capo 2` follows the `\tuning` line. The `.gp` and alphaTex read-backs of r0618 are byte-identical to each other.
+  The Monaco result JSON matches the step table cell by cell (12 completion rows, the AT208 marker with its range, the
+  AT204 console line). Screenshots viewed: the three abcjs ones, the three Monaco ones, the VexTab and alphaTab string
+  edits.
+- **Re-runs** (each `gtr-run --lane web-tab-render`, 2 cores, exit 0, labels starting "verify"; wall times r0676 13.27
+  s, r0678 13.01 s, r0679 1.20 s, r0682 2.46 s, r0683 0.68 s, r0684 0.78 s, r0685 0.25 s, r0705 1.17 s): r0676 (of r0598) gave
+  the same listener events, coordinates and tab changes, and byte-identical edited ABC and read-backs; r0678 (of r0614)
+  the same states, markers and console lines and byte-identical `.gp`, alphaTex and editor files (language server
+  ready in 348.7 ms, first score at 674.1 ms); r0679 (of r0624) and r0682 (of r0625) byte-identical outputs; r0683 (of
+  r0626) the same steps and drawn frets, an MEI that differs only in generated `xml:id`s, and a byte-identical
+  read-back; r0684 and r0685 (of r0618 and r0627) byte-identical read-backs. r0705 repeated the r0604 build from a
+  fresh reinstall out of the npm cache ("added 14 packages", 125 MB of `node_modules`, `monaco-editor` 105 MB,
+  `@coderline` 15 MB, 135 MB with esbuild 0.25.12, as the round reported): the five bundle files byte-identical to the
+  round's. The reinstall and the rebuilt copies were deleted afterwards; esbuild's metafile is kept, gzipped, as
+  `verify-gap2/editor.meta.json.gz`.
+- **Source claims.** Read in the installed abcjs 6.7.2 (`selectables.js`, `selection.js`, `spacing.js`,
+  `absolute.js`, `abc_editor.js`, `abc_editarea.js`), Verovio 6.4.1 typings (`edit`, `editStatus`, `editResponse`, the
+  action list), the two alphaTab editor packages' 1.9.0 tarballs from registry.npmjs.org (exports, `lsp.d.ts`,
+  `worker.mjs`, README and LICENSE files), the playground files at commit ec751a23 on raw.githubusercontent.com
+  (`DIAGNOSTICS_DELAY_MS = 150`, `typedTokenRange`, `TEX_RENDER_DELAY_MS = 250`, `onig.wasm`, the `alphatex` model) and
+  a blobless clone of HAYA-TAB made for this check and deleted afterwards (commits, tags, branches, `frontend/`
+  package and lock files, `useAlphaTab.ts`, `EditTabModal.vue`, `PdfViewer.vue`, `git grep` for exporters and string or
+  fret writes, `go.mod`, `app_files.go`, the release workflow). All as the round states, except the worker entry and
+  the CSS count below.
+- **Quotes.** The 55 quotes of the round's quote table and 4 more ("Upload TAB", "Open with Inner Viewer", "HAYA-TAB
+  helps musicians:", the MPL heading of the Monaco LICENSE) were looked up in the live sources fetched on 2026-11-11
+  (docs.abcjs.net, raw.githubusercontent.com, registry.npmjs.org, the 1.9.0 tarballs, the installed packages): 59 of
+  59 found, 40 byte for byte and 19 after whitespace or markup normalisation, where the HTML puts block elements
+  together or the Markdown wraps a line or a link. The quotes this check added (npm's scripts page, the LICENSE and
+  LICENSE.header lines) are in the same table, marked "[verifier's own quote]", all found. Code licenses only; no
+  weights or data are involved, and none are mixed up.
+- **NOT RUN reasons.** HAYA-TAB: the round's reason, that the box cannot list the releases, holds for the box's own
+  requests (github.com's repository and release pages and api.github.com answered 403 to curl on 2026-11-11) but did
+  not stop a run: the web fetch tool listed the release files, and their own URLs answer the box. Rewritten with the
+  measured facts (section "Gap round 2", HAYA-TAB; "Not run here"; survey; for-aaron.md; tools.json). The other NOT RUN
+  items of the round: none.
+- **Wording, privacy, sizes.** No judging or advice words in the round's additions outside quotes ("should" and
+  "must" occur only inside quoted docs and license text). No key, token or password in the lane folder. `for-aaron.md`
+  described the computer its steps were for ("the Windows 11 laptop" in its first paragraph, from before the round,
+  "for Windows" in item 5 and "the Windows build" in item 8); reworded.
+  No file in the lane folder is over 300 KB (`tools.json` is the largest, 236,692 bytes); no audio or video.
+- **Earlier parts.** Compared with commit d2e9a17 (the state before the round): every heading and table row of this
+  file and of `for-aaron.md` is still there; in `survey.md` 108 of 110 table rows are unchanged and the two others
+  (Verovio's "Edits" cell, the Monaco row's RUNNABLE cell) carry marked corrections; the other changes to earlier text
+  are appended notes. The earlier verification logs are intact; the round appended one marked note to this file's
+  "Still UNVERIFIED" list. `tools.json` is valid JSON with all 79 earlier entries kept.
+
+**What was changed**
+
+- Gap round 2, conventions and the top of this file: the gtr-eval version of five evals (0.12.0, not 0.11.1).
+- Monaco section: the worker entry carries the language server's code compiled in and imports `@coderline/alphatab`,
+  not the `@coderline/alphatab-language-server` package, which the main entry imports for the grammar; the language
+  server checks the text with alphaTab's `AlphaTexImporter`. "135 CSS files" is 135 CSS import statements resolving to
+  100 files (r0705's metafile). "All 52 lines" of the input is 36. Added: the registry license fields of the 14
+  installed packages, and that dompurify lists a `prepare` script while none lists an install script.
+- abcjs section: how 6.7.2 picks the string (one note: the highest-pitched string at or below its pitch; one chord:
+  `sameString`; voices not compared), from its source.
+- "Two notes on one string, here too": r0624, r0625 and r0626 made the same move and hold the same pair, with no
+  report from alphaTab, VexTab or Verovio.
+- The string-or-fret table: webmscore's (c) rests on a MusicXML input; a MuseScore-format input with positions was not
+  tried.
+- HAYA-TAB: the release files, the Linux build's libraries (WebKitGTK 4.1, JavaScriptCoreGTK 4.1, libsoup 3.0, none on
+  the box), the Windows zip's single `HAYA-TAB.exe`, the release workflow's WebKitGTK build, and a NOT RUN reason that
+  says what a run would need; for-aaron.md item 8 step 1 rewritten for the files the release has.
+- `for-aaron.md`: the first paragraph and item 5 no longer name the computer's system, and the introduction's HAYA-TAB
+  sentence gives the reason above.
+- `survey.md`: the full first lines of both alphaTab editor LICENSE files and their `LICENSE.header`; HAYA-TAB's release
+  files and its missing `master` branch; a check note under its "Gap round 2 log".
+- `tools.json` (`scripts/verify-gap2/fix_tools_json.py`, to be run after `scripts/gap2_update_tools_json.py`): HAYA-TAB's
+  version, NOT RUN reason and UNVERIFIED list; the Monaco entry's playground note; webmscore's and abcjs's notes; the
+  verifier's re-runs r0676, r0678, r0679, r0682, r0683, r0684, r0685 and r0705 in their tools' run lists.
+
+**Still UNVERIFIED**
+
+- The date HAYA-TAB's GitHub repository was created (api.github.com answered 403 to the web fetch tool as well), and
+  what the released program does with a note (for-aaron.md item 8; the program was not started here).
+- Whether webmscore keeps string and fret from a MuseScore `.mscz`/`.mscx` input.
+- Verovio's log after the `edit()` calls (not read by the script).
+- The round's own readings that could not be repeated: 7.4 GB free before its installs, its two unlogged dry runs per
+  driver, and "520 KB" for the kept `vscode-oniguruma` (507,465 bytes unpacked; 516 KB by `du -sh` now).
+- The live alphatab.net playground and its alphaTex editor (not opened).

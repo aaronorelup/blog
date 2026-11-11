@@ -11,8 +11,10 @@ were added. What changed and the counts are in "## Verification log" at the end.
 in `/home/user/gtr/lanes/chords-beats-key/verify/` (not committed); its scripts are `scripts/verify_*`.
 
 Gap round 1 (2026-11-10 and 11, gapfill-chords-beats-key): items marked "Gap round 1" or "(gap round 1 ...)" were added
-after that check and are not verified by a separate agent; their raw copies are in
-`/home/user/gtr/lanes/chords-beats-key/raw/gap1/` (not committed).
+after that check; their raw copies are in `/home/user/gtr/lanes/chords-beats-key/raw/gap1/` (not committed). They were
+then checked against the sources, fetched again on 2026-11-11, by verify-gapfill-chords-beats-key (log at the end of
+trials.md, "Verification log (verify-gapfill-chords-beats-key, round 1, 2026-11-11)"; its copies are in
+`/home/user/gtr/lanes/chords-beats-key/verify-gap1/raw/`).
 
 Marks used in the tool list:
 
@@ -519,7 +521,9 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
     https://github.com/vamp-plugins/vamp-plugin-pack/releases/download/v2.0/vamp-plugin-pack-installer-2.0 (downloaded on
     2026-11-11: 34,248,632 bytes, sha256 e8ed873f...2126f, an ELF executable with a squashfs image at byte 157,624, i.e.
     an AppImage). Listing that image with `unsquashfs -l` (nothing was executed) shows the installer program
-    `usr/bin/vamp-plugin-pack-installer` (18,567,512 bytes) and Qt 6 libraries, and no plugin files; the program contains
+    `usr/bin/vamp-plugin-pack-installer` (18,567,512 bytes), 6 Qt 6 libraries with Qt's image-format and platform
+    plugins, 42 other shared libraries (xcb, X11, GLib, ICU, compression and others), and no Vamp plugin file (67
+    entries; listed again by the verifier on 2026-11-11, same SHA-256); the program contains
     the strings "Queen Mary Vamp plugins" and "Queen Mary plugin set", i.e. the plugins travel inside the installer
     program, which is a GUI. The file was deleted.
 
@@ -1418,15 +1422,19 @@ one of the two tools' own documentation describes.
     (`model-development/dataloader.py` lines 36 and 44); at inference autochord computes the same `bothchroma` output
     itself (line 3).
 
-Added in gap round 1 (2026-11-11, gapfill-chords-beats-key; not re-checked by a verifier):
+Added in gap round 1 (2026-11-11, gapfill-chords-beats-key; checked by verify-gapfill-chords-beats-key the same day,
+see trials.md):
 
 24. A decoded mono signal at 22,050 Hz into S-KEY in a browser: the `aaatmy/skey-onnx` graph takes "float32 mono PCM at
     **22,050 Hz**, shape `[1, samples]`" and returns `scores` [1, 24], and its card says "Browser inference uses ONNX
     Runtime Web WASM CPU" (https://huggingface.co/aaatmy/skey-onnx, read 2026-11-10); the same file ran here under
     onnxruntime 1.31.1 for Python (trials.md, "Gap round 1"). The browser side was not run in this lane.
-25. All-In-One's JSON (`beats`, `downbeats`, `beat_positions` in seconds and bar positions) is read as written by gtr-eval
-    `beats` once split into one-time-per-line files (`scripts/allin1_run.py` writes `beats.txt` and `downbeats.txt`;
-    evals e1509 to e1615 in trials.md); its `bpm` is an integer derived from those beats (`allin1/postprocessing/tempo.py`).
+25. All-In-One's JSON (`beats`, `downbeats`, `beat_positions` in seconds and bar positions) is read by gtr-eval `beats`:
+    the lane scored one-time-per-line copies (`scripts/allin1_run.py` writes `beats.txt` and `downbeats.txt`; beats evals
+    e1509, e1578, e1580, e1582, e1584, e1586, e1588, e1590 and e1614 in trials.md), and gtr-eval also takes the JSON file
+    as written, as an object with a `beats` list and a `downbeats` list (verifier, 2026-11-11, `--no-ledger` on
+    `out/allin1/S3/S3.json`: beat F 0.95082 and downbeat F 1.0, as e1509). Its `bpm` is an integer derived from those
+    beats (`allin1/postprocessing/tempo.py`).
 26. tempo-cnn's `tempo` output (one BPM per file) and `meter` output (a numerator) are plain numbers on stdout or in a
     file (`tempocnn/commands.py`, `_write_tempo_result`); with `--jams` the tempo goes into a JAMS `tempo` annotation
     (`_create_tempo_jam`), the same container CREMA writes for chords (CREMA section).

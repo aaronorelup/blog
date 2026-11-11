@@ -58,3 +58,12 @@ EXACT	https://raw.githubusercontent.com/HAYASAKA7/HAYA-TAB/main/README.md	Upload
 EXACT_AFTER_WHITESPACE_OR_MARKUP	https://raw.githubusercontent.com/HAYASAKA7/HAYA-TAB/main/README.md	Open with Inner Viewer
 EXACT	https://raw.githubusercontent.com/HAYASAKA7/HAYA-TAB/main/README.md	HAYA-TAB helps musicians:
 EXACT	https://raw.githubusercontent.com/CoderLine/alphaTab/develop/packages/monaco/LICENSE	Mozilla Public License Version 2.0
+EXACT_AFTER_WHITESPACE_OR_MARKUP	https://docs.npmjs.com/cli/v11/using-npm/scripts [verifier's own quote]	Runs BEFORE the package is packed, i.e. during npm publish and npm pack
+EXACT_AFTER_WHITESPACE_OR_MARKUP	https://docs.npmjs.com/cli/v11/using-npm/scripts [verifier's own quote]	Runs on local npm install without package arguments
+EXACT	@coderline/alphatab-monaco 1.9.0 tarball, LICENSE [verifier's own quote]	Copyright © 2025, Daniel Kuschny and Contributors, All rights reserved.
+EXACT	@coderline/alphatab-monaco 1.9.0 tarball, LICENSE [verifier's own quote]	See LICENSE.header for further licenses of integrated submodules.
+EXACT	@coderline/alphatab-language-server 1.9.0 tarball, LICENSE [verifier's own quote]	Copyright © 2025, Daniel Kuschny and Contributors, All rights reserved.
+EXACT	@coderline/alphatab-language-server 1.9.0 tarball, LICENSE [verifier's own quote]	See LICENSE.header for further licenses of integrated submodules.
+EXACT_AFTER_WHITESPACE_OR_MARKUP	@coderline/alphatab-monaco 1.9.0 tarball, LICENSE.header [verifier's own quote]	This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+EXACT_AFTER_WHITESPACE_OR_MARKUP	@coderline/alphatab-language-server 1.9.0 tarball, LICENSE.header [verifier's own quote]	This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+EXACT	https://raw.githubusercontent.com/CoderLine/alphaTab/develop/packages/monaco/LICENSE [verifier's own quote]	Copyright © 2025, Daniel Kuschny and Contributors, All rights reserved.

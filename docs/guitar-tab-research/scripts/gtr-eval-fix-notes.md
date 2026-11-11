@@ -162,3 +162,127 @@ e0484):
 - `/home/user/gtr/eval/checks/0.12.0/`: the scripts and outputs behind sections 3 to 5 (`scan_f0.py` and
   `scan_f0.json`, `rescore_logged.py` and `rescore_logged.json`, `rescore_compare.py` and `compare.jsonl`).
 - Ledger: 9 lines appended (e1771 to e1779). Copies under `gtr-eval/` here: written by `sync_docs.sh`.
+
+## Verification (verify-gtr-eval-fix, 2026-11-11)
+
+An independent check of the fix and of this file. Scripts, inputs and outputs: `/home/user/gtr/eval/checks/verify-0.12.0/`.
+Result: both fixes do what sections 1 and 2 say and nothing else, every number and id in sections 2 to 5 checks out, and
+the ledger lost and changed no line. One gap in the `f0` fix was found: a tab-separated file whose empty cells end the
+row. It is fixed in gtr-eval 0.12.1 (last part below). Every eval I ran used `--no-ledger`, with `GTR_EVAL_LEDGER` set to
+a file that must stay absent, and it stayed absent.
+
+**The code change.** The 0.11.1 source is in git, at blog commit 45298df (`scripts/gtr-eval/gtr_eval.py`, SHA-256
+`4c30f2e4ebe91216d6cc1104bc7a3855b140e99d6b91bcdf0ef8984b80a3d910`), byte-identical to fix-gtr-eval's own saved copy.
+A `diff` against 0.12.0 shows four changes: the version and date, the capo reader (`CAPO_LINE_START_RE`, `CAPO_FIELD_RE`, `CAPO_WORD_RE`, `capo_statements()` and the capo loop of
+`_load_ascii_tab()`), and the row loop of `cmd_f0()`. Nothing else changed. Only `tab` reads ASCII tab
+(`load_est_notes(..., want_tab=True)`) and only `f0` runs that row loop, so no other subcommand can give a different
+result. The selftest diff holds exactly the five checks of section 2, and `sync_docs.sh` gained `README.md`.
+
+**My own inputs** (`own_inputs.py`; files in `own_inputs/`; results in `own_inputs.json`). Each was scored by the
+installed version, by 0.12.0 and by 0.11.1.
+
+- `f0`. Truth S2s, `--voice melody` and `--voice bass`. One estimate on a 256/44100 s hop, with 15-cent, 80-cent and
+  octave errors, false alarms and some empty confidence cells. It was written 21 ways: with and without a header; with
+  empty frequency cells or with zeros; zeros with every confidence cell filled; tab-separated; with `n/a` and `?` cells;
+  with a row that has no frequency cell; with a second header line; with a MIDI column; and with `--conf-threshold 0.5`.
+  I computed the expected numbers from the truth JSON with `mir_eval.melody` directly, without gtr-eval's code.
+  - 0.12.0 matched them (5 numbers to 6 decimals, and the row counts) in 17 of 21 cases.
+  - 0.11.1 stopped with `IndexError` (exit 3) on every file with an empty cell, including empty confidence cells. On
+    the file with zeros and every confidence cell filled it gave the same numbers as 0.12.0.
+  - The four other cases are tab-separated files whose empty cells end the row: `0.0000\t\t`, or `0.0000\t` in a
+    two-column file, which is what pandas writes for NaN. `read_lines()` strips each line, tabs included, so 0.12.0
+    read those rows as having no frequency cell and left them out. On S2s melody it kept 4,395 of 5,058 rows and
+    mir_eval interpolated across the gaps: voicing false alarm 0.997543 and overall accuracy 0.677452, where the same
+    values written with commas give 0.100737 and 0.800068.
+  - The installed 0.12.1 gives the computed numbers in 21 of 21 cases.
+- `tab`. An ASCII tab written from the S5capo2 truth (capo 2) under 14 different headers. I worked out the expected capo
+  by the README rule, and the matched count with my own longest-common-subsequence code. All 42 runs came out as
+  expected; 0.12.1 and 0.12.0 agree on every one. The defect shows on 0.11.1:
+  - "Title: My song with a capo on fret 5" with no capo line gives capo 5 "stated", 19 of 90 matched, same string and
+    fret 0.0. 0.12.0 gives capo 2 assumed, 90 of 90 matched, 1.0.
+  - "Title: S5 (capo 7 version)" before "[Capo 2nd fret]" gives capo 7 (0.12.0: 2).
+  - "Played with a capo on the 3rd fret in the video." gives 3 (0.12.0: assumed).
+  - All three versions give the same result for "Capo 2", "# capo: 2", "Key: A   Capo: 4", "No capo", a capo line
+    after the staff, a "Capo:" field after "without capo", and `--est-capo`.
+  - Besides "Tuning: standard, capo 2" (section 1), 0.12.0 also no longer reads "Capo2" written without a space. It
+    still reads a "Capo:" field inside a title: "Title: Song (Capo: 3)" gives 3, as on 0.11.1. Both follow the
+    documented rule.
+- One older edge case behaves the same in all three versions and is now written in the README. In a file without a
+  header, a first row with a text cell is taken as the header line, so that row is lost without a `processing` count.
+
+**Re-scoring with 0.12.0** (`rescore_sample.py`; `rescore_sample_0120.jsonl`; 00:51 to 00:56 UTC). My own selection of
+166 earlier evals:
+
+- the 9 evals section 3 lists as changed, the 8 it lists as not comparable, and the other 9 failed evals;
+- a seeded random sample of every subcommand, 12 each (20 for `f0`), taken where possible from evals that fix-gtr-eval
+  had not re-scored.
+
+Results:
+
+- 147 identical: the whole result JSON apart from `gtr_eval_version`, and the same exit code. They cover all 11
+  subcommands in the ledger, and 118 of them were not in fix-gtr-eval's set.
+- 9 differ, exactly e0440 to e0447 and e0468. Each new result equals its re-scoring (e1771 to e1779) apart from the
+  version. For e0468 only `processing` and `tuning_and_capo.est.capo_source` differ.
+- 10 could not be compared. For e0448 to e0455 the lane rewrote the `melodia0.csv` files at 21:34:11 to 21:34:59. For
+  e1315 and e1593 (`stems`) the stem files have since been deleted.
+
+**Sections 3 and 4, claim by claim** (`claims_check.py`; `claims_check.json`; my own parsing with Python's `csv`
+module).
+
+- The eight rows of the `f0` table equal the ledger.
+- e1772 to e1779 have the same metrics and counts as e0448 to e0455.
+- Each zero-filled copy is larger by exactly its number of empty cells: 4,462, 1,768, 1,760 and 4,465 bytes. Each file
+  has 10,116 rows.
+- The four `.melodia.csv` files were last written at 21:33:00 to 21:33:05, before e0440, and still have the hash that
+  the new evals record.
+- The lane's cited evals differ from the new ones by at most 0.000397 (S2n and S5dropd) and not at all (S2s and S6taps).
+- The ASCII-tab evals are e0461, e0468, e0475 and e0484 (plus e1771). Only e0468's file mentions a capo, and none of the
+  six failed `tab` evals had an ASCII-tab estimate.
+- The lanes now hold 167 files that gtr-eval's ASCII-tab detector accepts; the guitar-tab lane wrote 18 of them after
+  00:22. Still only the e0468 file and its copy mention a capo.
+- Among the 149 `f0` evals of 0.11.1, only e0440 to e0447 have empty cells. None has a text cell or a missing cell.
+
+**Ledger** (`ledger_check.py`; `ledger_check.json`).
+
+- At 00:42 UTC: 1,835 lines. Every id equals its line number, time stamps never go back, and every line has the compact
+  form that `append_ledger` writes.
+- e0001 to e1770 are 0.11.1. The last, e1770, ran at 00:24:36, four seconds before 0.12.0 was installed.
+- e1771 to e1835 are 0.12.0, starting with fix-gtr-eval's e1771 at 00:26:53.
+- SHA-256 of the first 1,600 lines (4,188,077 bytes): `a035c360673fb3003e659d04563decd2c37adf6c5d0c94d881ccf6d4d877f65e`.
+  Of the first 1,770 lines (4,538,214 bytes): `101cf3303b3589086a40106cb0de845ce7cda90c3388574798508c95a99f0958`. Both
+  were unchanged at 01:06, when the ledger had 1,836 lines.
+- No hash was recorded before the fix, so I compared old lines with three copies of ledger lines that other agents of
+  this session wrote on 2026-11-10, before the fix. They are in the session scratchpad: `v/rerun_evals.json` (22:08),
+  `cited_evals.json` (22:39) and `evals_dump.txt` (23:17). Together they cover 279 ids from e0018 to e1345, and every
+  one equals the current line.
+- e1771 to e1779 carry the old argv without `--out`, the same working directory and `agent_hint` fix-gtr-eval.
+
+**Self-tests** (`selftest/`).
+
+- 0.12.0: `selftest` gives 124 PASS, 0 FAIL, 0 N/A; `--all-inputs` gives 359 / 0 / 52.
+- 0.11.1 with its own tests: `--all-inputs` gives 354 / 0 / 52, with 119 PASS in part 1. Compared check by check with
+  0.12.0, the 406 shared checks give the same results; 0.12.0 adds the 5 new ones.
+- 0.11.1 with the 0.12.0 tests: 120 PASS, 4 FAIL, 0 N/A. The four failures are exactly those of section 2.
+
+**gtr-eval 0.12.1** was installed at 2026-11-11 00:57:51 UTC; its README changelog entry describes it.
+
+- `f0` now reads its table with `read_table(path, keep_trailing_tabs=True)`. A line that contains a tab and no space
+  keeps the tabs at its end, so its empty trailing cells stay cells. Every other subcommand reads tables exactly as
+  before.
+- New selftest check `f0.empty_cells_at_row_end_tab_separated`. It writes a three-column file with a header and a
+  two-column file without one that starts with `0.2000\t`, and both must score like the file with 0 written. On 0.12.0
+  it fails: voicing false alarm 0.993789, 640 of 801 rows.
+- 0.12.1 `selftest`: 125 / 0 / 0. `--all-inputs`: 360 / 0 / 52, the same results as 0.12.0 check by check plus the new
+  check. `selftest.txt` and `selftest.json` now hold this run; the 0.12.0 ones are kept in
+  `/home/user/gtr/eval/checks/verify-0.12.0/installed_0120/`.
+- Every `f0` estimate in the ledger is comma-separated (all 157 `f0` evals up to e1835), so no stored result changes.
+  Re-scored with 0.12.1 and `--no-ledger` (`rescore_0121.py`; `rescore_0121.jsonl`; 183 evals): every comparable `f0`
+  eval (141) and every ASCII-tab eval gave exactly the stored result, together with 3 sampled evals of every other
+  subcommand: 174 identical. For e0440 to e0447 and e0468 the stored result is the 0.12.0 re-scoring. The 9 left were
+  not comparable: e0448 to e0455, and e1317 (a deleted stem file).
+- The first 0.12.1 eval in the ledger is a lane's e1836 (`stems`).
+- After `sync_docs.sh`, the five files in `gtr-eval/` next to this file and the launcher are byte-identical to the
+  installed ones (`cmp`). The script also copied `../gtr-run` again; its content is unchanged.
+
+**For GAPS.md** (not edited here): rows X1 and X2 are fixed in 0.12.0, with the follow-up in 0.12.1. e1771 is the
+re-scoring of e0468, which the web-tab-render lane cites.

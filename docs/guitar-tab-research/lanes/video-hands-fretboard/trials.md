@@ -958,8 +958,12 @@ gap round 2: ...)"; this section holds what was run. In short:
   scripts/gap-round-2/picking_hand_onsets.py --landmarks <lane>/out/mediapipe-hands/R3c_full.jsonl --bp-notes
   <audio-to-notes>/out/basic-pitch/tflite-default-R3bc/R3c.notes.csv --wav /home/user/gtr/inputs/R3c/R3c.mono.wav
   --mp4 /home/user/gtr/inputs/R3c/R3c.mp4 --out <lane>/gap2/picking-hand` (full paths in the ledger), run **r0609**,
-  2 cores (slot 2-3, no wait), wall 27.09 s, CPU 21.2 s, peak RSS 407.3 MB, exit 0. Most of the time is the
-  pure-Python lag search of the A/V check.
+  2 cores (slot 2-3, no wait), wall 27.09 s, CPU 21.2 s, peak RSS 407.3 MB, exit 0. (corrected by the round-2
+  verifier: this line said most of the time was the pure-Python lag search of the A/V check. A cProfile re-run, r0709
+  (2 cores, 31.62 s wall under the profiler, new empty `NUMBA_CACHE_DIR`), puts 27.6 s of its 30.6 s in module
+  imports, most of it numba / llvmlite compilation reached through librosa (`librosa.load`, the first librosa call,
+  15.1 s cumulative), and 1.9 s in the numpy `dot` and `norm` calls of the A/V lag search. Whether r0609's numba cache
+  folder was empty is not recorded.)
 - Install: `uv venv --python 3.11 venv-analysis && uv pip install --python venv-analysis/bin/python librosa==0.11.0
   matplotlib pillow` (files hard-linked from the shared uv cache; about 3 MB of new disk; freeze in
   `samples/picking-hand-onsets/uv-pip-freeze.txt`: librosa 0.11.0, numpy 2.4.6, scipy 1.17.1, numba 0.68.1). The venv
@@ -970,16 +974,16 @@ Results with the 63 Basic Pitch onsets (118 near samples, 331 rest samples; spee
 | landmark | frame | near median | rest median | near mean | rest mean | peaks | onsets hit (of 63) | hit share | timeline share | median onset-to-peak |
 |---|---|---|---|---|---|---|---|---|---|---|
 | wrist (0) | abs | 2.15 | 1.66 | 2.96 | 2.53 | 55 | 13 | 0.206 | 0.247 | 81.9 ms |
-| thumb tip (4) | abs | 5.05 | 4.76 | 7.29 | 7.47 | 65 | 20 | 0.318 | 0.292 | 57.4 ms |
+| thumb tip (4) | abs | 5.05 | 4.76 | 7.29 | 7.47 | 65 | 20 | 0.317 | 0.292 | 57.4 ms |
 | thumb tip (4) | rel | 4.93 | 4.38 | 6.78 | 7.06 | 72 | 23 | 0.365 | 0.323 | 56.4 ms |
 | index tip (8) | abs | 3.47 | 2.78 | 4.58 | 3.98 | 57 | 16 | 0.254 | 0.256 | 67.2 ms |
 | index tip (8) | rel | 2.95 | 2.55 | 3.67 | 3.38 | 69 | 21 | 0.333 | 0.310 | 62.6 ms |
 | middle tip (12) | abs | 3.25 | 2.25 | 4.25 | 3.67 | 59 | 18 | 0.286 | 0.265 | 68.6 ms |
-| middle tip (12) | rel | 2.64 | 2.17 | 3.19 | 2.93 | 72 | 23 | 0.365 | 0.323 | 55.2 ms |
+| middle tip (12) | rel | 2.64 | 2.17 | 3.18 | 2.93 | 72 | 23 | 0.365 | 0.323 | 55.2 ms |
 | ring tip (16) | abs | 2.90 | 2.30 | 4.21 | 3.75 | 62 | 17 | 0.270 | 0.278 | 76.0 ms |
 | ring tip (16) | rel | 2.71 | 2.30 | 3.36 | 3.09 | 68 | 17 | 0.270 | 0.305 | 84.9 ms |
 
-With the 54 librosa onsets (106 near, 343 rest samples), rel frame: thumb near / rest median 4.80 / 4.41, hits 22 of 54
+With the 54 librosa onsets (106 near, 343 rest samples), rel frame: thumb near / rest median 4.80 / 4.40, hits 22 of 54
 (0.407) against a timeline share of 0.323; index 2.84 / 2.62, 16 (0.296) against 0.310; middle 2.54 / 2.16, 23 (0.426)
 against 0.323; ring 2.47 / 2.38, 18 (0.333) against 0.305. The pinky (20) and both onset lists for every landmark
 are in the JSON.
@@ -989,17 +993,23 @@ Basic Pitch onsets (k = 0 is the sample within 20 ms of the onset):
 
 | landmark | -5 | -4 | -3 | -2 | -1 | 0 | +1 | +2 | +3 | +4 | +5 |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| wrist (0), abs | 2.06 | 2.14 | 2.24 | 2.51 | 2.17 | 2.93 | 3.62 | 3.88 | 3.33 | 2.98 | 2.30 |
+| wrist (0), abs | 2.06 | 2.14 | 2.24 | 2.51 | 2.18 | 2.93 | 3.62 | 3.88 | 3.33 | 2.98 | 2.30 |
 | thumb tip (4) | 5.53 | 5.76 | 8.56 | 10.83 | 6.99 | 7.81 | 8.25 | 7.42 | 7.11 | 8.01 | 6.32 |
-| index tip (8) | 2.54 | 2.67 | 2.94 | 3.90 | 3.51 | 3.67 | 4.16 | 4.56 | 3.56 | 3.17 | 3.40 |
-| middle tip (12) | 2.18 | 2.87 | 3.09 | 3.36 | 2.69 | 3.43 | 3.46 | 3.62 | 3.39 | 2.83 | 2.63 |
+| index tip (8) | 2.53 | 2.67 | 2.94 | 3.90 | 3.51 | 3.67 | 4.16 | 4.56 | 3.56 | 3.18 | 3.40 |
+| middle tip (12) | 2.18 | 2.87 | 3.09 | 3.36 | 2.69 | 3.43 | 3.46 | 3.61 | 3.39 | 2.83 | 2.63 |
 | ring tip (16) | 2.52 | 3.31 | 3.25 | 3.17 | 2.63 | 3.81 | 3.17 | 3.70 | 3.82 | 3.07 | 2.85 |
+
+(corrected by the round-2 verifier: seven values in this section, the thumb abs hit share in the first table, the middle
+tip's rel near mean, the librosa thumb rest median and four cells of the table above, were 0.001 or 0.01 off because
+they had been rounded from the JSON's already rounded values (for example 3.615 shown as 3.62 where the unrounded mean
+is 3.6146); every value here is now rounded once from full precision, recomputed with
+`scripts/verify-gap-round-2/recount_picking_hand.py`.)
 
 - In numbers, with the Basic Pitch onsets: for every row of the first table the near median is higher than the rest
   median, by 0.29 to 1.00 pixels per frame; the near mean is higher for every row except the thumb (abs 7.29 against
   7.47, rel 6.78 against 7.06). In the rel frame the four fingertips' hit shares (0.270 to 0.365) differ from their
   timeline shares (0.305 to 0.323) by -0.035 to +0.042. In the onset-locked table the thumb's largest mean is at
-  k = -2 (10.83), the wrist's, index tip's and middle tip's at k = +2 (3.88, 4.56, 3.62) and the ring tip's at k = +3
+  k = -2 (10.83), the wrist's, index tip's and middle tip's at k = +2 (3.88, 4.56, 3.61) and the ring tip's at k = +3
   (3.82). Nothing here was checked against which string or finger sounded each note.
 - Output format facts: `picking_hand_onsets_R3c.json` (definitions, landmark and onset counts, the A/V check, and per
   onset list and landmark/frame: near and rest medians and means, the peak threshold, peak count, hits, hit share,
@@ -1025,8 +1035,9 @@ Basic Pitch onsets (k = 0 is the sample within 20 ms of the onset):
   a capo video.
 - Views given to every detector (one gtr-run job per detector, `scripts/gap-round-2/run_openvocab_images.py`, which
   repeats `scripts/run_openvocab.py`'s prompts, score floors, model ids and box handling for any image list):
-  `C1_full` (the whole 960 x 1706 image), `C1_lower` (the crop x 250-760, y 1000-1706, nut to bottom edge, no
-  headstock, not scaled), and the eight R3a / R3a_cu views of the earlier YOLOE run (R3a frames 100, 300, 500 full and
+  `C1_full` (the whole 960 x 1706 image), `C1_lower` (the crop x 250-760, y 1000-1706, not scaled: from the lowest
+  part of the headstock, about 55 px above the nut, to the bottom edge; corrected by the round-2 verifier, it said
+  "nut to bottom edge, no headstock"), and the eight R3a / R3a_cu views of the earlier YOLOE run (R3a frames 100, 300, 500 full and
   100, 300 as the 3x crop; R3a_cu frames 0, 150, 280), so that each detector also reports what it calls "capo" on
   frames that have no capo. The six frames were decoded again with `ffmpeg -i <clip>.mp4 -vf "select=eq(n\,N)" -vsync
   0 -frames:v 1`; frames 100 and 300 of R3a and 150 of R3a_cu are pixel-identical (largest difference 0) to the PNGs the

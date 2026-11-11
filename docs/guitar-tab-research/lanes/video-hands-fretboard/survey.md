@@ -159,7 +159,8 @@ Ultralytics pose, YOLOE-26, CoTracker3, SAM 2.1 or OpenPose, so those formats ar
 ### Datasets pairing guitar video with annotations
 
 - Goldstein and Moses 2018 (GoPro on the guitar, note ground truth); GuiFiR-Synth / GuiFiR-Vid (2026, no link found;
-  corrected in gap round 2: https://github.com/kmu-ee-ailab/guifir_dataset, data for non-commercial research; per-frame
+  corrected in gap round 2: https://github.com/kmu-ee-ailab/guifir_dataset, data "for non-commercial research,
+  education, and reproducibility of the GuiFiR work"; per-frame
   tablature, capo position, and on val/test fretboard corners plus five fingertips);
   GAPS (audio + score + MIDI, YouTube performance-video links, CC BY-NC-SA 4.0 on Zenodo; verify: "license: mit" on its
   Hugging Face card); Ego-Exo4D (Music scenario, 3D hand
@@ -545,8 +546,9 @@ Ultralytics pose, YOLOE-26, CoTracker3, SAM 2.1 or OpenPose, so those formats ar
     "license: other", with no license text: https://huggingface.co/lllyasviel/Annotators/raw/main/README.md). The
     same account's code that downloads that file, `annotator/openpose/__init__.py` in `lllyasviel/ControlNet-v1-1-nightly`
     (https://raw.githubusercontent.com/lllyasviel/ControlNet-v1-1-nightly/main/annotator/openpose/__init__.py),
-    begins "# Original from CMU https://github.com/CMU-Perceptual-Computing-Lab/openpose" and "# 2nd Edited by
-    https://github.com/Hzzone/pytorch-openpose" and sets `hand_model_path =
+    opens with the comment lines "# Openpose", "# Original from CMU https://github.com/CMU-Perceptual-Computing-Lab/openpose"
+    and "# 2nd Edited by https://github.com/Hzzone/pytorch-openpose" (corrected by the round-2 verifier: it said the
+    file "begins" with the second and third of these lines) and sets `hand_model_path =
     "https://huggingface.co/lllyasviel/Annotators/resolve/main/hand_pose_model.pth"`. The same folder holds
     `annotator/openpose/LICENSE`
     (https://raw.githubusercontent.com/lllyasviel/ControlNet-v1-1-nightly/main/annotator/openpose/LICENSE), which
@@ -950,7 +952,8 @@ Ultralytics pose, YOLOE-26, CoTracker3, SAM 2.1 or OpenPose, so those formats ar
   large-scale detection and grounding datasets that collectively provide diverse object categories, language
   grounding, and rich visual variability. In practice, three public sources are commonly used: Objects365 (object
   detection with bounding boxes), GQA (grounding-style annotations aligned with language), and Flickr30k Entities
-  (phrase grounding)." and, under its Table 1, "Models are trained on Objects365v1, GQA, and Flickr30k datasets." The
+  (phrase grounding)." and, in the captions of its Tables 1 and 2, "Models are trained on Objects365v1, GQA, and
+  Flickr30k datasets." The
   original YOLOE paper (Wang et al., "YOLOE: Real-Time Seeing Anything", arXiv 2503.07465, submitted 10 Mar 2025, PDF
   https://arxiv.org/pdf/2503.07465): "Data. We follow [5] to utilize detection and grounding datasets, including
   Objects365 (V1) [52], GoldG [22] (includes GQA [17] and Flickr30k [43]), where images from COCO [34] are excluded."
@@ -1282,7 +1285,8 @@ Each entry: what the source itself says, and whether code or weights are linked 
   https://github.com/Kristen-Z/GigaHands and the dataset card links https://github.com/brown-ivl/GigaHands (a metadata
   clone of the first: HEAD `be19068fb2f4b40ab259997d10cdcaa1afe45f3a`, 2026-11-07, "Merge pull request #27 from
   brown-ivl/hf-data-links", 67 files, no LICENSE file in the tree). Data: Hugging Face dataset `freddie007/GigaHands`
-  (not gated, last modified 2026-11-07); README news line of 2026-11-07: "It includes hand poses, object poses and
+  (not gated, last modified 2026-11-07); the repository README's news line of 2026-11-07
+  (https://raw.githubusercontent.com/Kristen-Z/GigaHands/main/README.md, as are the README quotes below): "It includes hand poses, object poses and
   meshes, multiview RGB videos (1.06 TB), text annotations, demo data, and checkpoints." Hand poses come as MANO
   parameters and 2D / 3D keypoints per session; using the repository's tools needs the MANO model files (README:
   "Download [mano](https://mano.is.tue.mpg.de/download.php) models and place the `MANO_*.pkl` files under
@@ -1296,8 +1300,9 @@ Each entry: what the source itself says, and whether code or weights are linked 
     and "Change chords by lifting your fingers off the fretboard and sliding your fingers to new positions to form
     different chords." In `annotations_v2.jsonl` (18,539,852 bytes, 13,787 rows; downloaded, counted and deleted), 119
     rows mention "ukulele" in their `clarify_annotation` or `description`, in 11 capture sessions whose names contain
-    "instrument" (for example `p003-instrument`); 109 of them give a frame span (65 to 868 frames each, 21,023 frames
-    in all) and 10 run to the end of their sequence (`end_frame_id` -1). The annotations are text per clip; whether
+    "instrument" (for example `p003-instrument`); 109 of them give a frame span (`end_frame_id` minus
+    `start_frame_id`: 65 to 868 frames each, 21,023 frames in all) and 10 run to the end of their sequence
+    (`end_frame_id` -1). The annotations are text per clip; whether
     the 3D object poses include the ukulele, whether any fret or string labels exist, and how the ukulele clips look
     on video were not checked (the videos are part of the 1.06 TB set; not downloaded). No guitar appears in the
     instruction script.
@@ -1338,7 +1343,9 @@ Each entry: what the source itself says, and whether code or weights are linked 
   repository roots; HaMeR's demo uses it to locate hands. rtmlib lists "ViTPose for 133 keypoints".
   (gap round 2, read 2026-11-11) **The ViTPose-s whole-body ONNX file the trial ran** (`vitpose-s-wholebody.onnx`,
   97,427,067 bytes) is `onnx/wholebody/vitpose-s-wholebody.onnx` in the Hugging Face repo `JunkyByte/easy_ViTPose`
-  (HF API `?blobs=true`: same size; not gated). Weights license, from that repo's card
+  (HF API `?blobs=true`: same size; not gated; added by the round-2 verifier: the API's LFS sha256 for that file,
+  `ccac893a8ad6da7d43f9655047acf48e482e66922db7f4273a3b615cea989127`, equals the sha256 trials.md gives for the
+  file the trial ran). Weights license, from that repo's card
   (https://huggingface.co/JunkyByte/easy_ViTPose/raw/main/README.md), section "License": "Refer to official
   https://github.com/ViTAE-Transformer/ViTPose/blob/main/LICENSE for model license" (the Apache-2.0 `LICENSE` above).
   The easy_ViTPose code (https://raw.githubusercontent.com/JunkyByte/easy_ViTPose/main/README.md; its `LICENSE` is the

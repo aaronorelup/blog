@@ -16,7 +16,8 @@ How to read the numbers:
   `--nolock` where they appear. Other lanes' jobs ran on the other slot, and unpinned jobs anywhere, at the same
   time, so wall-clock figures carry that load.
 - **Scores** come from `gtr-eval` (gtr-eval 0.11.1 for every eval id in this file (corrected in gap round 2: except
-  e1781 to e1791, gtr-eval 0.12.0, see "Gap round 2", item A3); the eval id `eNNNN` is given with each number; the definitions are in
+  e1781, e1783 and e1785 to e1791, gtr-eval 0.12.0, see "Gap round 2", item A3; e1782 and e1784 belong to another
+  lane); the eval id `eNNNN` is given with each number; the definitions are in
   `docs/guitar-tab-research/scripts/gtr-eval/README.md`). Notes: onset-only precision / recall / F1 with a 50 ms
   onset tolerance and 50 cents pitch tolerance (mir_eval.transcription), and the same with the offset condition
   (offset within max(20 % of the truth note's length, 50 ms)). f0: mir_eval.melody on a 10 ms grid against the truth
@@ -51,14 +52,15 @@ How to read the numbers:
 
 Not run here (reasons and evidence under "Tools not run here", steps in `for-aaron.md`): CREPE (TensorFlow
 package), MELODIA Vamp plugin, pYIN Vamp plugin, Timbre-Trap, MT3, YourMT3+, MR-MT3,
-hFT-Transformer, Omnizart, NeuralNote, Sheet Sage, MuScriptor, PENN, CREPE Notes and the other survey additions
+hFT-Transformer, Omnizart, NeuralNote, Sheet Sage, MuScriptor, PENN and the other survey additions
 listed there. (corrected in gap round 1: RMVPE and Onsets and Frames ran, see "Gap round 1", and the round's verifier
 took them out of this list; CREPE, MT3 with its PyTorch port mt3-pytorch, MR-MT3, YourMT3+ on the box's CPU and
 Omnizart still did not run, and their entries now give the reason as it is after that round: the session's permission
 system for code from cloned repositories or local folders (MR-MT3 and YourMT3+ were not attempted after its refusals),
 github.com answering 403, and a source build that failed.) (corrected in gap round 2: CREPE Notes ran, item A3 under
-"Gap round 2"; the PyPI packages `mt3-infer` and `yourmt3` installed but running them was refused by the session's
-permission system, as was running the Deep Salience clone, item A5.)
+"Gap round 2", and the round's verifier took it out of this list; the PyPI packages `mt3-infer` and `yourmt3`
+installed but running them was refused by the session's permission system, as was running the Deep Salience clone,
+item A5.)
 
 ## The monophonic f0 trackers: shared facts
 
@@ -1205,7 +1207,7 @@ refused three commands in this round, each recorded word for word where it happe
   package, CC BY-NC-SA 4.0, item A4) is the only trained model it runs when given `--f0`.
 - Install (Python 3.11, worked first time; log `samples/crepe-notes/logs/install-crepenotes.log`): a new venv with the
   fingerstyle-voices-taps lane's `venv-madmom` packages at the same versions (numpy 2.4.6, scipy 1.17.1, mido 1.3.3,
-  soundfile 0.14.0 and five more, from the shared uv cache); that lane's built `madmom` 0.17.dev0 package directory
+  soundfile 0.14.0 and six more, from the shared uv cache); that lane's built `madmom` 0.17.dev0 package directory
   and its `.dist-info` copied in with `cp -a` (36 MB; nothing of the other lane's venv was changed); then `uv pip
   install --no-deps crepe-notes==0.2.0`, and its other declared dependencies with numpy and scipy held: `uv pip install
   -c <numpy==2.4.6, scipy==1.17.1> "click>=8.0" "librosa>=0.10.0" pretty_midi tqdm matplotlib` (33 packages, all from
@@ -1240,9 +1242,10 @@ refused three commands in this round, each recorded word for word where it happe
   above (up to 95, about 1,975 Hz), from the frames at 1,500 Hz or above that the torchcrepe viterbi output holds on
   R1b (torchcrepe section above).
 
-Scores (gtr-eval 0.12.0, the version on the box in this round; its changelog says "no metric definition changed"
-from 0.11.1, whose two fixes concern ASCII-tab and f0 files; notes, onset 50 ms / pitch 50 cents; S1 and R1b against
-all truth notes, S4lead against the S4 truth's `melody` voice, as for the other tools here):
+Scores (gtr-eval 0.12.0, the version on the box in this round; its changelog entry for 0.12.0 reads "two fixes in how
+estimate files are read; no metric definition changed", the two fixes being the capo line of ASCII-tab estimates and
+f0 rows with empty or unreadable cells; notes, onset 50 ms / pitch 50 cents; S1 and R1b against all truth notes,
+S4lead against the S4 truth's `melody` voice, as for the other tools here):
 
 | clip | f0 input | printed tuning offset (cents) | est. notes | truth notes | onset-only P | R | F1 | onset+offset F1 | median onset diff of matched (s) | eval id |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -1261,7 +1264,7 @@ all truth notes, S4lead against the S4 truth's `melody` voice, as for the other 
   the tracker named by `--pitch-tracker` (crepe, pesto, penn, torchcrepe; each an optional extra not installed here).
 - Constraints accepted: `--tuning-offset` (cents), `--min-duration`, `--min-velocity`, `--sensitivity`,
   `--disable-splitting`, `--use-smoothing`; not changed in this run. No pitch range, capo or string input.
-- Samples: `samples/crepe-notes/` (the nine MIDI files, `scores/`, `logs/` with each call's output and the install
+- Samples: `samples/crepe-notes/` (the nine MIDI files in `midi/`, `scores/`, `logs/` with each call's output and the install
   log, `facts.jsonl` from `scripts/gap2/crepenotes_facts.py`, the freeze). Full outputs and the f0 copies:
   `/home/user/gtr/lanes/audio-to-notes/out/crepe-notes/<cfg>/`.
 
@@ -1304,7 +1307,8 @@ package on PyPI from its authors; each runs from its own repository's scripts.
   Nothing of it ran (no venv, no folder, no ledger line afterwards). No venv on the box held TensorFlow or Keras (no
   `tensorflow` or `keras` package in any `venv*` folder one or two levels under `/home/user/gtr/lanes/`, checked at
   00:35 UTC), and the gap round 1 venv `venv-oaf` (TensorFlow 2.9.1) had been deleted; it
-  was not rebuilt, because running any of these four needs code from its cloned repository, which was refused here.
+  was not rebuilt, because running any of these four needs code from its cloned repository, which was refused here
+  for Deep Salience; JDC and SSL were not attempted after that refusal.
 - So: NOT RUN HERE. JDC, SSL and Deep Salience have weights in their repositories: steps in `for-aaron.md`, section
   13. MTANet publishes no weights, so there is nothing to run without training it; no steps. The clones were deleted
   after reading. The reasons in "From the docs lane's survey" above and in `tools.json` now say this.
@@ -1322,7 +1326,8 @@ package on PyPI from its authors; each runs from its own repository's scripts.
 - With `sampleRate=44100, frameSize=2048, hopSize=256, lowRMSThreshold=0.1` set explicitly and `outputUnvoiced`
   "negative", "zero" or "abs", the outputs are those of the first check: median 103.826 Hz for the 110 Hz sine,
   138.591 for 220, 146.832 for 369.99, 293.665 for 440 (166 frames each, all above 0 Hz, so `outputUnvoiced` changes
-  nothing here). With `preciseTime=true` (the reference page: "use non-standard precise YIN timing (slow)") the
+  nothing here). With `preciseTime=true` (the reference page,
+  https://essentia.upf.edu/reference/std_PitchYinProbabilistic.html: "use non-standard precise YIN timing (slow)") the
   medians are 110.0, 110.0, 73.416 and 61.735 Hz. Every value is the frequency of a whole MIDI number (103.826 = MIDI
   44, 138.591 = 49, 146.832 = 50, 293.665 = 62, 73.416 = 38, 61.735 = 35).
 - Where the grid comes from. The frame-level stage `PitchYinProbabilities` (same settings) returned its pitch
@@ -1333,7 +1338,8 @@ package on PyPI from its authors; each runs from its own repository's scripts.
   (https://raw.githubusercontent.com/MTG/essentia/master/src/algorithms/tonal/pitchyinprobabilities.cpp, line 324),
   and `hz2midi` returns an integer: `inline int hz2midi(Real hz, Real tuningFrequency) { return 69 + (int)
   round(log2(hz / tuningFrequency) * 12); }`
-  (https://raw.githubusercontent.com/MTG/essentia/master/src/essentia/essentiamath.h, line 750). The HMM stage then
+  (https://raw.githubusercontent.com/MTG/essentia/master/src/essentia/essentiamath.h, lines 750 to 752, joined here on
+  one line). The HMM stage then
   outputs, per frame, the candidate closest to its decoded state, `440. * pow(2, (pitchCandidates[iFrame][iPitch] -
   69) / 12)` (`pitchyinprobabilitieshmm.cpp`), so every output is a whole-MIDI frequency. Feeding the frame-level
   candidates to `PitchYinProbabilitiesHMM` with its defaults gave the same medians as the composite algorithm. That
@@ -1453,11 +1459,14 @@ package on PyPI from its authors; each runs from its own repository's scripts.
 - Checkpoint: the package downloads nothing itself; its description builds the model with
   `YMT3(hf_hub_download("shethjenil/Audio2Midi_Models","YMT3+.pt"),"YMT3+")`. Its code accepts the model names
   "YMT3+", "YPTF+Single", "YPTF+Multi" and "YPTF+MoE+Multi" (`yourmt3/__init__.py`). Under the disk notice the
-  smallest of the repository's model files was taken: `YPTF+Single.pt`, 121,781,787 bytes, from
+  smallest of the repository's six YourMT3 `.pt` files was taken (the repository's 80 files also include smaller
+  CREPE, Basic Pitch, Omnizart and MELODIA files, which this package does not load): `YPTF+Single.pt`, 121,781,787
+  bytes, from
   https://huggingface.co/shethjenil/Audio2Midi_Models/resolve/4300d378d749842010c9e4b1c8822ad5e4ab0090/YPTF%2BSingle.pt
   (curl, 5.0 s), SHA-256 28a7dd18...ff3313e4, equal to the repository's LFS digest (others: `YMT3+.pt` 185,123,699,
   `YPTF+MoE+Multi 2.pt` 188,636,597, `YPTF+Multi.pt` 313,554,331, `YPTF+MoE+Multi 1.pt` 386,049,197, `YMT3+MusicFM.pt`
-  1,484,875,284 bytes; API listing `samples/yourmt3-pypi/hf-api-shethjenil-Audio2Midi_Models-2026-11-11.json`). Which
+  1,484,875,284 bytes; the `.pt` and `.zip` entries of the API listing, 20 of its 80 files, in
+  `samples/yourmt3-pypi/hf-api-shethjenil-Audio2Midi_Models-2026-11-11.json`). Which
   of the authors' checkpoints these files are: UNVERIFIED (the Space's checkpoints are Lightning `.ckpt` files of
   361 to 759 MB; no hash in common was checked). The file was deleted afterwards.
 - Run attempt (one): `scripts/gap2/run_yourmt3_pypi.py` through `gtr-run` (2-core slot): `YMT3(<YPTF+Single.pt>,
@@ -1469,21 +1478,26 @@ package on PyPI from its authors; each runs from its own repository's scripts.
   checked 00:48:45 UTC; `samples/yourmt3-pypi/permission-refusal.txt`). No other attempt was made. No program numbers, MIDI or timing are on record.
 - MIDI format, from the code only (not observed): `predict()` reads the file with torchaudio, averages the channels,
   resamples to the model's rate and writes with `note_event2midi` (`yourmt3/utils/midi.py`): `MidiFile(ticks_per_beat=
-  480, type=0)`, default velocity 100, the `set_tempo` line commented out, one MIDI channel per program (channels 0-8
-  and 10-15), drums as internal program 128.
+  480, type=0)` followed by `midi.type = 1`, so a type 1 file: an empty first track, then one track per program, each
+  with a `track_name` and a `program_change`; every note-on at velocity 100 (the function's default `velocity`;
+  `predict()` passes none); no tempo message (the `set_tempo` line is commented out; ticks are computed at 500,000
+  microseconds per beat); one MIDI channel per program (channels 0-8 and 10-15), drums on channel 9 as internal program
+  128. (corrected by the round's verifier: the `midi.type = 1` line, the tracks, the velocity and channel 9 were left
+  out.)
 - Steps for Aaron: `for-aaron.md`, section 14.
 
 ### Gap round 2: self-check (not a separate verification)
 
-At about 00:55 UTC the agent compared the ids cited in this section with the ledgers: the 11 eval ids (e1781 to
-e1791 of this round, gtr-eval 0.12.0, and the earlier e1011 and e1023) have exit code 0, and every number in the
-CREPE Notes table equals its stored result (estimate and truth counts, onset-only P / R / F1, onset+offset F1, median
+At about 00:55 UTC the agent compared the ids cited in this section with the ledgers: the 11 eval ids (the nine of
+this round, e1781, e1783 and e1785 to e1791, gtr-eval 0.12.0, and the earlier e1011 and e1023; e1782 and e1784 are
+another lane's) have exit code 0, and every number in the CREPE Notes table equals its stored result (estimate and truth counts, onset-only P / R / F1, onset+offset F1, median
 onset difference, voice); the 15 run ids (this round's r0602, r0616, r0647, r0664, r0666 and r0667, and the earlier
 ones cited) exist with the cores, wall, CPU (user + sys), peak RSS, slot wait and exit codes given here. Every
 `samples/` and `scripts/` path named in this round exists. The round's venvs (`venv-crepenotes`, `venv-bp-gap2`, the
 ONNX Runtime probe venv, `venv-mt3infer`, `venv-yourmt3`), the `YPTF+Single.pt` file and the shallow clones read for
 item A5 were deleted after use; the shared uv cache was not cleaned (every large package these venvs used is also
-used by other venvs on the box). No separate verifier has checked this round.
+used by other venvs on the box). No separate verifier has checked this round. (A separate check followed:
+"Verification log (verify-gapfill-audio-to-notes, round 2, 2026-11-11)" at the end of this file.)
 
 ## Outputs for other lanes (on the box, outside git)
 
@@ -1777,3 +1791,160 @@ small source archives stay) were deleted afterwards.
   `shethjenil/Audio2Midi_Models` files (no statement found); whether that repository holds the YourMT3 authors'
   checkpoints (hashes not compared).
 
+## Verification log (verify-gapfill-audio-to-notes, round 2, 2026-11-11)
+
+Checked by `verify-gapfill-audio-to-notes` from 00:57 to about 01:30 UTC on 2026-11-11: the section "Gap round 2", the
+round's edits elsewhere in this file, in `survey.md`, `for-aaron.md` and `tools.json`, and its new files under
+`samples/` and `scripts/` (the round's whole change is the difference between git commits d2e9a17 and e4f9bc1, part
+of it already in d90f43e; e4f9bc1 also holds the verifier's first two scripts and their outputs). Scripts: `scripts/verify_gap2/`; small outputs: `samples/verify-gap2/`; re-run
+outputs on the box under `/home/user/gtr/lanes/audio-to-notes/verify-gap2/`. The re-runs' venvs (CREPE Notes rebuilt
+offline from the round's freeze, two ONNX Runtime probe venvs), the re-run's SoX audio and the downloaded sources were
+deleted afterwards.
+
+**What was checked, and the result**
+
+- Ledger. The round's six runs are in `runs.jsonl` with the commands, inputs, cores, wall, CPU (user + sys), peak RSS,
+  slot wait and exit codes given above: r0602 (`--nolock`; 0.26 s, 0.24 s, 9.7 MB, exit 0), r0616 (cores 2-3; 35.19 s,
+  35.1 s, 570.9 MB, 50.9 s wait, exit 0), r0647 (`--nolock`; 10.57 s, 10.5 s, 153.1 MB, exit 0), r0664 (cores 0-1;
+  25.05 s, 41.6 s, 411.9 MB, 354.0 s wait, exit 0), r0666 and r0667 (`--nolock` under `taskset -c 0,1`; 6.55 s and
+  6.35 s, exit 0, ONNX Runtime 1.31.1 and 1.23.2 venvs as stated). The PENN runs r0399 and r0423 are exit 1 with the
+  wall, CPU and peak RSS given in A1; the other cited ids (r0047 of chords-beats-key, 36.85 s on cores 2-3, its command
+  `uv pip install ... --no-build-isolation madmom==0.16.1`; r0234, r0319, r0321, r0430, r0516, r0579) exist as
+  described. No other run of this lane started in the round: the three refused commands never reached `gtr-run` (no
+  ledger line with the tool `deep-salience`, `mt3-infer` or `yourmt3-pypi`). No failed run is described as a success.
+- Scores. The round's nine eval ids are e1781, e1783 and e1785 to e1791 (gtr-eval 0.12.0, exit code 0); e1782 and
+  e1784, inside the range the round wrote as "e1781 to e1791", are the web-tab-render lane's `tab` evals (corrected
+  below). Every number in the CREPE Notes table and in `tools.json`'s CREPE Notes scores equals the stored result.
+  All nine were re-scored with `gtr-eval --no-ledger` from their stored arguments; by then the box had gtr-eval 0.12.1
+  (its changelog: "`f0` only, one more fix in how estimate files are read; no metric definition changed"), and the
+  nine result objects equal the stored ones apart from `gtr_eval_version`, with the same estimate SHA-256
+  (`samples/verify-gap2/rescore_gap2.tsv`, `scripts/verify_gap2/rescore_gap2.py`). The verifier's own code
+  (pretty_midi and `mir_eval.transcription`, not gtr-eval) gives the same onset-only P / R / F1 and onset+offset F1 at
+  3 decimals for all nine (`samples/verify-gap2/indep_mir_eval_crepenotes.txt`).
+- Files. Every `samples/` and `scripts/` path the round names exists, and the sample copies (nine CREPE Notes MIDI
+  files, their logs and score files, `gap2-onnx-affinity-r0664.json`, the probe output, `gap2-sines-explicit.txt`) are
+  byte-identical to the box outputs. Recounted from the files (`scripts/verify_gap2/recount_crepenotes.py`, output
+  `samples/verify-gap2/recount_crepenotes.txt`): the `tcfull` and `tctiny` f0 inputs equal the torchcrepe files apart
+  from the header; `tcfullz` sets to 0 Hz exactly the frames with periodicity below 0.21 (199 of 2,984, 1,750 of 2,934,
+  546 of 3,875); the MIDI files are type 1, 220 ticks per quarter, 2 tracks, program 0, tempo 120, velocities 7 to
+  127, no pitch bends or control changes; pitch-0 notes 1 (S1), 51 (R1b), 3 (S4lead) in `tcfullz`; R1b notes at MIDI
+  90 or above 48 (`tcfull`) and 52 (`tctiny`), highest 95; the printed tuning offsets are those in the table; per-call
+  GNU time wall 3.17 to 4.44 s, peak RSS 423.1 to 570.9 MiB. r0664's 16 MIDI files and 16 note lists are
+  byte-identical to r0234's `onnx-default` ones, and its `affinity.json` holds the seven threads described (three first
+  seen at 2.588 s with `Cpus_allowed_list` 1, 2 and 3). The gap agent's own session transcript on the box holds the
+  commands and outputs behind the figures that have no file of their own: the SoX hashes and sample differences, the
+  installs (crepe-notes 10 + 1 + 33 packages, venv 568 MB; mt3-infer 72 packages in 0.34 s, 1.4 GB; yourmt3 49
+  packages in 7.87 s, 1.1 GB; `YPTF+Single.pt` by curl in 5.01 s with the SHA-256 given), the 7,247 MB free at the
+  start, the file lists of the four A5 clones and the search for TensorFlow or Keras venvs (none found).
+- Re-runs (comparison: `samples/verify-gap2/rerun_compare.txt`):
+  - **r0694**, CREPE Notes, the r0616 batch on the same nine inputs (2 cores, cores 0-1; wall 75.6 s, CPU 75.1 s, peak
+    RSS 578.5 MB, exit 0, 0.0 s wait), in a venv rebuilt offline from the round's freeze (crepe-notes 0.2.0 from its
+    PyPI wheel, SHA-256 checked; madmom 0.17.dev0 copied from the fingerstyle-voices-taps venv as in r0616). The input
+    script, re-run, wrote nine byte-identical f0 files; all nine MIDI files are byte-identical to r0616's and the
+    printed tuning offsets are the same. Per call 6.12 to 22.33 s (r0616: 3.17 to 4.44 s; the first call took 22.33 s).
+  - **r0691**, SoX, the r0602 command (`--nolock`, light; wall 0.27 s, exit 0), plus two unlogged runs with `-R` and
+    one with `-D`: the default-mode output differs from r0602's and from the kept lane input (at most 2 units of 16-bit,
+    in 942,812 of 2,116,800 samples); the `-R` outputs are byte-identical to each other and to gap round 2's `-R` output
+    (SHA-256 7453f3e8...38887d6), and the `-D` output to its `-D` output (54580ba3...432dee03).
+  - **r0692**, the A6 sine check (`--nolock`, light; wall 11.26 s, exit 0): output byte-identical to r0647's.
+  - **r0698** (ONNX Runtime 1.23.2, Python 3.10) and **r0699** (1.31.1, Python 3.11), the A8 probe under `taskset -c
+    0,1` (`--nolock`; venvs with `onnxruntime` and `numpy` only, built offline; Basic Pitch's `nmp.onnx` from the
+    basic-pitch 0.4.0 wheel): the same pattern as r0667 and r0666. With only `graph_optimization_level` set, 1.23.2 made
+    worker threads whose `Cpus_allowed_list` is 1, 2 and 3, each running only there, and 1.31.1 two threads first seen
+    with 0-1 and then with 2 or 3; with `intra_op_num_threads = 2` every new thread had 0-1. r0698's ledger CPU time is
+    17.4 s in 6.52 s of wall time under a 2-CPU mask.
+  - `mt3-infer` and `yourmt3`: nothing of either ran in the round, so there was nothing to re-run, and the verifier did
+    not submit the refused commands again.
+- Refusals. The three "[Code from External]" refusals are in the gap agent's session transcript on the box, as the
+  results of Bash calls sent at 00:36:11, 00:46:31 and 00:48:33 UTC (answers at 00:36:13, 00:46:38 and 00:48:41)
+  carrying the commands recorded in `samples/gap2-melody-extraction/not-run.txt` and the two `permission-refusal.txt`
+  files; the checks after them (00:36:18, 00:46:44, 00:48:45 UTC) found no venv, folder, log or ledger line. JDC and
+  SSL have no refusal of their own: they were not attempted (corrected below). The agent's one web search (item A7)
+  returned "Web search was not performed: this turn's web search budget is used up"; the verifier's one search for a
+  code repository of arXiv 2601.11768 got the same answer.
+- Sources, re-read on 2026-11-11: SoX's `COPYING`, the first lines of `LICENSE.GPL` and `LICENSE.LGPL`, the headers
+  of `src/sox.c` and `src/tempo.c` and the `sox.1` text on dither, `-R` and `-D` (every quote verbatim); madmom's
+  `LICENSE` (both numbered conditions and the model-file line) and the installed `madmom/models/LICENSE` line; the
+  SPDX `BSD-2-Clause` template (madmom's text matches it; its "COPYRIGHT OWNER" fills the template's replaceable
+  "COPYRIGHT HOLDER"); the PyPI JSON and wheels of crepe-notes 0.2.0 (license field, author, upload date, size and
+  SHA-256, `Requires-Dist`, `crepe_notes.py` line 6, the torchcrepe call at lines 129 to 145, the program name,
+  `parse_f0`, `freqs_to_midi`, the CLI options), mt3-infer 0.2.0 (author, project URLs, wheel size and SHA-256, the
+  LICENSE quotes in its PyPI license text, `checkpoints.yaml` identical to the sample copy, the clone and `git lfs pull`
+  in `utils/download.py`, `MT3_CHECKPOINT_DIR`, `load_audio` in `utils/audio.py`, the CLI options, the adapter's
+  `PrettyMIDI(initial_tempo=120.0)`, `_apply_auto_filtering` and `auto_filter=True`), yourmt3 0.1.4 (metadata, wheel
+  size and SHA-256, the three `.dist-info` files, `YMT3`, `predict`, the description's example, `note_event2midi`),
+  basic-pitch 0.4.0 (`inference.py` line 132) and rmvpe-onnx 0.2.3 (`model.py` lines 235 to 239); the Hugging Face
+  API of `shethjenil/Audio2Midi_Models` (revision 4300d378, 2025-08-30, not gated, `cardData` null, 80 files, the six
+  YourMT3 `.pt` sizes and `YPTF+Single.pt`'s LFS digest); the four A5 repositories at the heads `git ls-remote` gives
+  (86e6d2b, eb2525d, 2856a89, 4b2ff44): README quotes (verbatim), the scripts' options, defaults and help text, JDC's
+  `model.py` imports, `replicate.yaml`, `requirements.txt`, `predict_on_audio.py`'s help and output names, the weight
+  sizes (HTTP Content-Length), MTANet's `config.py`, its `main.py` imports and which model files exist; PyPI has no
+  package under deepsalience, deep-salience, ismir2017-deepsalience, melodyextraction-jdc, melody-extraction-jdc,
+  melodyextraction-ssl or mtanet (`jdc` is an unrelated Jupyter package); Essentia's `pitchyinprobabilities.cpp` line
+  324, `essentiamath.h` lines 750 to 752, `pitchyinprobabilitieshmm.cpp` line 176 and the reference page's
+  `preciseTime` text; arXiv 2601.11768 through the API, the abstract page and the PDF (title, authors, affiliations,
+  comment, one version, eess.AS, the abstract quotes, the PESTO sentence, whose "transposition-equivariant" is split by
+  a line break in the PDF, "With fs = 16 kHz", "ResNeXt1D encoder", Table 1's 96.54 / 97.55, Table 2's caption, the
+  five instruments and no guitar, the two ORCID links as the PDF's only URLs, the license link and its title); the
+  librosa 1.0.0 `pitch.py` docstrings, the SwiftF0 README (line 104) and the SOME README (the A9 quotes; the docstrings
+  write the two function names in double backticks); the gtr-eval changelog. Code, weights and data licenses are kept
+  apart in the round's text and in `tools.json`.
+- Language, size, privacy: no judging words in the round's added text outside quotations of sources (the arXiv
+  abstract's "competitive", the docstrings' "recommended", SOME's "better"); no audio or video and no file over 300 KB
+  in this folder (`tools.json` 272,536 bytes after the changes below); no key, token, e-mail address or personal
+  detail.
+- Earlier record (`scripts/verify_gap2/check_earlier_record.py`, `samples/verify-gap2/earlier_record_check.txt`, run
+  before the verifier's own corrections below): against commit d2e9a17, every earlier `## ` section of `trials.md`,
+  `survey.md` and `for-aaron.md` is still there under its heading; the two earlier verification logs in this file and
+  the one in `survey.md` are byte-identical; every earlier line is unchanged or has text appended, except line 18 of
+  this file, where the round inserted its note in mid-sentence and kept the original words. The same check after the
+  verifier's corrections (`samples/verify-gap2/earlier_record_check_after_corrections.txt`): the earlier logs are still
+  byte-identical, and the one more earlier line changed is the "Not run here" list (correction 2 below). `tools.json`
+  before the round is the d2e9a17 file (the round's backup is identical); `git diff -w` against it shows only content
+  edits (all read), and the file re-serialises to its own bytes with `json.dumps(indent=0, ensure_ascii=False)`.
+
+**What was changed in this file**
+
+1. The round's eval ids: "e1781 to e1791" became "e1781, e1783 and e1785 to e1791" in "How to read the numbers" and in
+   the round's self-check (e1782 and e1784 are another lane's).
+2. Summary: CREPE Notes taken out of the "Not run here" list (it ran in this round; the round had left it in the list
+   next to its note); the round's note says so.
+3. A3: "and five more" became "and six more" (the install log has ten base packages); the gtr-eval sentence read as
+   if 0.11.1 had the two fixes, and now quotes the 0.12.0 changelog entry; the samples line names `midi/`.
+4. A5: JDC and SSL were not attempted after the Deep Salience refusal (the text read as if running all four had been
+   refused).
+5. A6: the reference page's URL added to its quote; `hz2midi` spans lines 750 to 752 (was "line 750").
+6. `yourmt3`: `YPTF+Single.pt` is the smallest of the repository's six YourMT3 `.pt` files, not of its model files (the
+   80 files include smaller CREPE, Basic Pitch, Omnizart and MELODIA files); the saved API listing holds only its `.pt`
+   and `.zip` entries (20 of 80); the MIDI writer: `midi.type = 1` follows `MidiFile(..., type=0)`, so the file is type
+   1 with an empty first track and one track per program, every note-on at velocity 100, no tempo message and drums on
+   channel 9 (the round's text gave type 0 and left out the tracks, the velocity and channel 9).
+7. The round's self-check points to this log.
+
+**What was changed elsewhere**
+
+- `survey.md`: section 37, the MIDI writer as in 6 above, and "now also holds" became "also holds" (the repository's
+  revision is from 2025-08-30), with its 80 files; the "Gap round 2 additions" index points to this log.
+- `for-aaron.md`: section 13, JDC and SSL were not attempted after the refusal, and "a TensorFlow 1.x backend" became
+  a TensorFlow backend whose version the repository does not name (UNVERIFIED which one works with Keras 2.2.2);
+  section 14, "the smallest file there" became "the smallest of the six YourMT3 `.pt` files there".
+- `tools.json` (`scripts/verify_gap2/fix_tools_json.py`; layout kept, 99 entries): `yourmt3` `outputs` (the MIDI
+  writer as in 6) and `checkpoint_facts` (the smallest of six `.pt` files); `melodyExtraction_JDC` and
+  `melodyExtraction_SSL` `not_run_reason` (not attempted after the Deep Salience refusal; "README lists", was "README
+  pins").
+
+**Still UNVERIFIED**
+
+- Whether code or weights for arXiv 2601.11768 are published anywhere: no web search was possible in this round,
+  for the gap agent or the verifier (the session's search budget was used up).
+- Why `PitchYinProbabilistic`'s chosen values lie below the sines' pitch, and why its clip outputs differed between
+  r0321 and r0430 (as the round left it).
+- Which of the YourMT3 authors' checkpoints the `shethjenil/Audio2Midi_Models` `.pt` files are, and the license of
+  those files; whether `mt3-infer` and `yourmt3` would run on this box if running them were allowed, and the programs
+  and MIDI they would write for a solo guitar (the refused runs were not submitted again).
+- The round's statement that `json.load` of `tools.json` before and after its re-indent compared equal: the file
+  between those two steps was not kept, so only the two checks above (`git diff -w`, re-serialisation) were made.
+- Deep Salience's "406 MB, mostly comparison outputs and figures": the 406 MB is the `du` in the agent's transcript;
+  the share of comparison outputs and figures was not measured.
+- The routes in `for-aaron.md` sections 13 and 14 (Windows or WSL2, Python 2.7 to 3.7 environments, Git LFS): none
+  could be tried here.

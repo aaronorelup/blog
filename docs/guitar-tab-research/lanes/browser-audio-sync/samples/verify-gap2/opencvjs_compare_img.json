@@ -1,0 +1,1252 @@
+{
+ "input_mode": "img",
+ "frames": {
+  "R3a_cu_f0150/handquad": {
+   "unrectified": {
+    "segments_py": 142,
+    "segments_js": 142,
+    "same_list_same_order": true,
+    "same_set": true,
+    "only_py": 0,
+    "only_js": 0,
+    "edge_pixels_py_js": [
+     10410,
+     10410
+    ],
+    "counts_equal": true,
+    "counts_py": {
+     "segments_total": 142,
+     "segments_in_quad": 70,
+     "string_like": 37,
+     "fret_like": 27
+    }
+   },
+   "rectified": {
+    "segments_py": 113,
+    "segments_js": 113,
+    "same_list_same_order": true,
+    "same_set": true,
+    "only_py": 0,
+    "only_js": 0,
+    "edge_pixels_py_js": [
+     7597,
+     7597
+    ],
+    "counts_equal": true,
+    "counts_py": {
+     "segments_total": 113,
+     "string_like": 31,
+     "fret_like": 8
+    },
+    "fret_x_clusters_equal": true,
+    "string_y_clusters_equal": true,
+    "fret_x_clusters_js": [
+     339.0,
+     408.5,
+     478.0,
+     647.0,
+     746.2,
+     793.0
+    ],
+    "string_y_clusters_js": [
+     5.5,
+     28.1,
+     46.1
+    ]
+   },
+   "neck_axis_deg_equal": true,
+   "fretboard_width_equal": true,
+   "mask_pixels_py_js": [
+    25313,
+    25313
+   ],
+   "homography_max_abs_diff": 0.0,
+   "homography_max_rel_diff": 0.0,
+   "homography_identical": true,
+   "homography_rounded_6_equal": true,
+   "rectified_bytes_differing": 2,
+   "rectified_bytes_total": 278400,
+   "rectified_max_abs_diff": 1,
+   "times_ms_js_unrect_rect": [
+    [
+     45.06499999947846,
+     14.75
+    ],
+    [
+     10.094999998807907,
+     10.859999999403954
+    ],
+    [
+     9.990000000223517,
+     11.109999999403954
+    ]
+   ],
+   "times_s_py_unrect_rect_incl_lsd": [
+    0.0299,
+    0.012
+   ],
+   "times_ms_py_same_steps": {
+    "threads_default": 2,
+    "ms_default_threads": [
+     [
+      4.94,
+      5.55
+     ],
+     [
+      5.79,
+      6.58
+     ],
+     [
+      5.76,
+      5.41
+     ]
+    ],
+    "ms_1_thread": [
+     [
+      10.88,
+      10.32
+     ],
+     [
+      9.78,
+      10.08
+     ],
+     [
+      9.46,
+      9.73
+     ]
+    ]
+   },
+   "input_bytes_differing_from_cv2_imread": 0,
+   "input_max_abs_byte_diff": 0
+  },
+  "R3a_cu_f0150/samquad": {
+   "unrectified": {
+    "segments_py": 142,
+    "segments_js": 142,
+    "same_list_same_order": true,
+    "same_set": true,
+    "only_py": 0,
+    "only_js": 0,
+    "edge_pixels_py_js": [
+     10410,
+     10410
+    ],
+    "counts_equal": true,
+    "counts_py": {
+     "segments_total": 142,
+     "segments_in_quad": 62,
+     "string_like": 33,
+     "fret_like": 21
+    }
+   },
+   "rectified": {
+    "segments_py": 98,
+    "segments_js": 98,
+    "same_list_same_order": true,
+    "same_set": true,
+    "only_py": 0,
+    "only_js": 0,
+    "edge_pixels_py_js": [
+     7276,
+     7276
+    ],
+    "counts_equal": true,
+    "counts_py": {
+     "segments_total": 98,
+     "string_like": 27,
+     "fret_like": 9
+    },
+    "fret_x_clusters_equal": true,
+    "string_y_clusters_equal": true,
+    "fret_x_clusters_js": [
+     309.5,
+     472.8,
+     547.0,
+     624.0,
+     690.0,
+     759.0
+    ],
+    "string_y_clusters_js": [
+     4.0,
+     23.9,
+     39.2,
+     105.8
+    ]
+   },
+   "neck_axis_deg_equal": true,
+   "fretboard_width_equal": true,
+   "mask_pixels_py_js": [
+    20749,
+    20749
+   ],
+   "homography_max_abs_diff": 0.0,
+   "homography_max_rel_diff": 0.0,
+   "homography_identical": true,
+   "homography_rounded_6_equal": true,
+   "rectified_bytes_differing": 2,
+   "rectified_bytes_total": 278400,
+   "rectified_max_abs_diff": 1,
+   "times_ms_js_unrect_rect": [
+    [
+     12.184999998658895,
+     11.445000000298023
+    ],
+    [
+     11.105000000447035,
+     11.275000000372529
+    ],
+    [
+     10.830000000074506,
+     11.505000000819564
+    ]
+   ],
+   "times_s_py_unrect_rect_incl_lsd": [
+    0.03,
+    0.0115
+   ],
+   "times_ms_py_same_steps": {
+    "threads_default": 2,
+    "ms_default_threads": [
+     [
+      4.56,
+      4.46
+     ],
+     [
+      4.62,
+      3.97
+     ],
+     [
+      8.36,
+      4.3
+     ]
+    ],
+    "ms_1_thread": [
+     [
+      8.03,
+      5.27
+     ],
+     [
+      5.24,
+      4.4
+     ],
+     [
+      4.98,
+      4.65
+     ]
+    ]
+   },
+   "input_bytes_differing_from_cv2_imread": 0,
+   "input_max_abs_byte_diff": 0
+  },
+  "R3a_cu_f0000/handquad": {
+   "unrectified": {
+    "segments_py": 116,
+    "segments_js": 116,
+    "same_list_same_order": true,
+    "same_set": true,
+    "only_py": 0,
+    "only_js": 0,
+    "edge_pixels_py_js": [
+     9973,
+     9973
+    ],
+    "counts_equal": true,
+    "counts_py": {
+     "segments_total": 116,
+     "segments_in_quad": 54,
+     "string_like": 27,
+     "fret_like": 25
+    }
+   },
+   "rectified": {
+    "segments_py": 107,
+    "segments_js": 107,
+    "same_list_same_order": true,
+    "same_set": true,
+    "only_py": 0,
+    "only_js": 0,
+    "edge_pixels_py_js": [
+     6553,
+     6553
+    ],
+    "counts_equal": true,
+    "counts_py": {
+     "segments_total": 107,
+     "string_like": 31,
+     "fret_like": 10
+    },
+    "fret_x_clusters_equal": true,
+    "string_y_clusters_equal": true,
+    "fret_x_clusters_js": [
+     1.0,
+     97.5,
+     476.5,
+     536.0,
+     642.0,
+     695.5,
+     747.0,
+     786.5
+    ],
+    "string_y_clusters_js": [
+     2.7,
+     17.3,
+     38.8
+    ]
+   },
+   "neck_axis_deg_equal": true,
+   "fretboard_width_equal": true,
+   "mask_pixels_py_js": [
+    25313,
+    25313
+   ],
+   "homography_max_abs_diff": 0.0,
+   "homography_max_rel_diff": 0.0,
+   "homography_identical": true,
+   "homography_rounded_6_equal": true,
+   "rectified_bytes_differing": 1,
+   "rectified_bytes_total": 278400,
+   "rectified_max_abs_diff": 1,
+   "times_ms_js_unrect_rect": [
+    [
+     9.144999999552965,
+     9.28999999910593
+    ],
+    [
+     8.799999998882413,
+     9.75
+    ],
+    [
+     9.054999999701977,
+     9.754999998956919
+    ]
+   ],
+   "times_s_py_unrect_rect_incl_lsd": [
+    0.0431,
+    0.0176
+   ],
+   "times_ms_py_same_steps": {
+    "threads_default": 2,
+    "ms_default_threads": [
+     [
+      6.58,
+      4.26
+     ],
+     [
+      6.84,
+      6.94
+     ],
+     [
+      5.81,
+      5.18
+     ]
+    ],
+    "ms_1_thread": [
+     [
+      4.79,
+      4.92
+     ],
+     [
+      4.63,
+      4.35
+     ],
+     [
+      4.9,
+      4.47
+     ]
+    ]
+   },
+   "input_bytes_differing_from_cv2_imread": 0,
+   "input_max_abs_byte_diff": 0
+  },
+  "R3a_cu_f0280/handquad": {
+   "unrectified": {
+    "segments_py": 118,
+    "segments_js": 118,
+    "same_list_same_order": true,
+    "same_set": true,
+    "only_py": 0,
+    "only_js": 0,
+    "edge_pixels_py_js": [
+     9779,
+     9779
+    ],
+    "counts_equal": true,
+    "counts_py": {
+     "segments_total": 118,
+     "segments_in_quad": 61,
+     "string_like": 29,
+     "fret_like": 31
+    }
+   },
+   "rectified": {
+    "segments_py": 89,
+    "segments_js": 89,
+    "same_list_same_order": true,
+    "same_set": true,
+    "only_py": 0,
+    "only_js": 0,
+    "edge_pixels_py_js": [
+     6685,
+     6685
+    ],
+    "counts_equal": true,
+    "counts_py": {
+     "segments_total": 89,
+     "string_like": 26,
+     "fret_like": 16
+    },
+    "fret_x_clusters_equal": true,
+    "string_y_clusters_equal": true,
+    "fret_x_clusters_js": [
+     1.0,
+     12.5,
+     270.0,
+     417.0,
+     482.0,
+     543.2,
+     599.0,
+     654.5,
+     704.0,
+     748.0,
+     794.5
+    ],
+    "string_y_clusters_js": [
+     3.7,
+     24.6,
+     44.5
+    ]
+   },
+   "neck_axis_deg_equal": true,
+   "fretboard_width_equal": true,
+   "mask_pixels_py_js": [
+    25313,
+    25313
+   ],
+   "homography_max_abs_diff": 0.0,
+   "homography_max_rel_diff": 0.0,
+   "homography_identical": true,
+   "homography_rounded_6_equal": true,
+   "rectified_bytes_differing": 1,
+   "rectified_bytes_total": 278400,
+   "rectified_max_abs_diff": 1,
+   "times_ms_js_unrect_rect": [
+    [
+     9.865000000223517,
+     10.455000000074506
+    ],
+    [
+     9.575000001117587,
+     10.284999998286366
+    ],
+    [
+     9.580000000074506,
+     10.22999999858439
+    ]
+   ],
+   "times_s_py_unrect_rect_incl_lsd": [
+    0.0308,
+    0.0101
+   ],
+   "times_ms_py_same_steps": {
+    "threads_default": 2,
+    "ms_default_threads": [
+     [
+      4.21,
+      3.75
+     ],
+     [
+      4.3,
+      3.9
+     ],
+     [
+      4.67,
+      3.9
+     ]
+    ],
+    "ms_1_thread": [
+     [
+      4.74,
+      4.68
+     ],
+     [
+      4.64,
+      4.57
+     ],
+     [
+      4.46,
+      4.82
+     ]
+    ]
+   },
+   "input_bytes_differing_from_cv2_imread": 0,
+   "input_max_abs_byte_diff": 0
+  },
+  "R3b_f0225/handquad": {
+   "unrectified": {
+    "segments_py": 351,
+    "segments_js": 351,
+    "same_list_same_order": true,
+    "same_set": true,
+    "only_py": 0,
+    "only_js": 0,
+    "edge_pixels_py_js": [
+     25294,
+     25294
+    ],
+    "counts_equal": true,
+    "counts_py": {
+     "segments_total": 351,
+     "segments_in_quad": 115,
+     "string_like": 31,
+     "fret_like": 41
+    }
+   },
+   "rectified": {
+    "segments_py": 106,
+    "segments_js": 106,
+    "same_list_same_order": true,
+    "same_set": true,
+    "only_py": 0,
+    "only_js": 0,
+    "edge_pixels_py_js": [
+     7121,
+     7121
+    ],
+    "counts_equal": true,
+    "counts_py": {
+     "segments_total": 106,
+     "string_like": 15,
+     "fret_like": 15
+    },
+    "fret_x_clusters_equal": true,
+    "string_y_clusters_equal": true,
+    "fret_x_clusters_js": [
+     3.0,
+     499.5,
+     570.0,
+     649.0,
+     715.0,
+     777.0,
+     887.0,
+     931.0,
+     980.0,
+     1020.0,
+     1060.0,
+     1133.0,
+     1168.0
+    ],
+    "string_y_clusters_js": [
+     3.7,
+     24.9,
+     68.5,
+     112.0
+    ]
+   },
+   "neck_axis_deg_equal": true,
+   "fretboard_width_equal": true,
+   "mask_pixels_py_js": [
+    160877,
+    160877
+   ],
+   "homography_max_abs_diff": 0.0,
+   "homography_max_rel_diff": 0.0,
+   "homography_identical": true,
+   "homography_rounded_6_equal": true,
+   "rectified_bytes_differing": 1,
+   "rectified_bytes_total": 468000,
+   "rectified_max_abs_diff": 1,
+   "times_ms_js_unrect_rect": [
+    [
+     65.17999999970198,
+     16.614999998360872
+    ],
+    [
+     42.309999998658895,
+     19.769999999552965
+    ],
+    [
+     42.97499999962747,
+     17.28500000014901
+    ]
+   ],
+   "times_s_py_unrect_rect_incl_lsd": [
+    0.1451,
+    0.0144
+   ],
+   "times_ms_py_same_steps": {
+    "threads_default": 2,
+    "ms_default_threads": [
+     [
+      15.3,
+      5.15
+     ],
+     [
+      14.7,
+      4.95
+     ],
+     [
+      14.86,
+      5.21
+     ]
+    ],
+    "ms_1_thread": [
+     [
+      16.19,
+      6.54
+     ],
+     [
+      15.54,
+      6.64
+     ],
+     [
+      15.91,
+      6.65
+     ]
+    ]
+   },
+   "input_bytes_differing_from_cv2_imread": 0,
+   "input_max_abs_byte_diff": 0
+  },
+  "R3b_f0000/handquad": {
+   "unrectified": {
+    "segments_py": 310,
+    "segments_js": 310,
+    "same_list_same_order": true,
+    "same_set": true,
+    "only_py": 0,
+    "only_js": 0,
+    "edge_pixels_py_js": [
+     23364,
+     23364
+    ],
+    "counts_equal": true,
+    "counts_py": {
+     "segments_total": 310,
+     "segments_in_quad": 109,
+     "string_like": 42,
+     "fret_like": 37
+    }
+   },
+   "rectified": {
+    "segments_py": 95,
+    "segments_js": 95,
+    "same_list_same_order": true,
+    "same_set": true,
+    "only_py": 0,
+    "only_js": 0,
+    "edge_pixels_py_js": [
+     7468,
+     7468
+    ],
+    "counts_equal": true,
+    "counts_py": {
+     "segments_total": 95,
+     "string_like": 18,
+     "fret_like": 21
+    },
+    "fret_x_clusters_equal": true,
+    "string_y_clusters_equal": true,
+    "fret_x_clusters_js": [
+     319.2,
+     408.8,
+     495.0,
+     569.5,
+     639.0,
+     770.0,
+     827.0,
+     883.0,
+     929.0,
+     976.0,
+     1058.5,
+     1093.0,
+     1128.5
+    ],
+    "string_y_clusters_js": [
+     5.8,
+     79.0
+    ]
+   },
+   "neck_axis_deg_equal": true,
+   "fretboard_width_equal": true,
+   "mask_pixels_py_js": [
+    160877,
+    160877
+   ],
+   "homography_max_abs_diff": 0.0,
+   "homography_max_rel_diff": 0.0,
+   "homography_identical": true,
+   "homography_rounded_6_equal": true,
+   "rectified_bytes_differing": 3,
+   "rectified_bytes_total": 468000,
+   "rectified_max_abs_diff": 1,
+   "times_ms_js_unrect_rect": [
+    [
+     41.65500000119209,
+     16.584999999031425
+    ],
+    [
+     41.080000000074506,
+     16.21000000089407
+    ],
+    [
+     41.505000000819564,
+     16.91000000014901
+    ]
+   ],
+   "times_s_py_unrect_rect_incl_lsd": [
+    0.1401,
+    0.0144
+   ],
+   "times_ms_py_same_steps": {
+    "threads_default": 2,
+    "ms_default_threads": [
+     [
+      14.54,
+      5.25
+     ],
+     [
+      14.23,
+      5.19
+     ],
+     [
+      13.87,
+      5.94
+     ]
+    ],
+    "ms_1_thread": [
+     [
+      15.11,
+      6.5
+     ],
+     [
+      14.78,
+      6.57
+     ],
+     [
+      15.1,
+      6.73
+     ]
+    ]
+   },
+   "input_bytes_differing_from_cv2_imread": 0,
+   "input_max_abs_byte_diff": 0
+  },
+  "R3b_f0449/handquad": {
+   "unrectified": {
+    "segments_py": 375,
+    "segments_js": 375,
+    "same_list_same_order": true,
+    "same_set": true,
+    "only_py": 0,
+    "only_js": 0,
+    "edge_pixels_py_js": [
+     27013,
+     27013
+    ],
+    "counts_equal": true,
+    "counts_py": {
+     "segments_total": 375,
+     "segments_in_quad": 151,
+     "string_like": 87,
+     "fret_like": 41
+    }
+   },
+   "rectified": {
+    "segments_py": 119,
+    "segments_js": 119,
+    "same_list_same_order": true,
+    "same_set": true,
+    "only_py": 0,
+    "only_js": 0,
+    "edge_pixels_py_js": [
+     8649,
+     8649
+    ],
+    "counts_equal": true,
+    "counts_py": {
+     "segments_total": 119,
+     "string_like": 20,
+     "fret_like": 15
+    },
+    "fret_x_clusters_equal": true,
+    "string_y_clusters_equal": true,
+    "fret_x_clusters_js": [
+     323.0,
+     492.0,
+     567.5,
+     639.5,
+     770.5,
+     826.5,
+     881.0,
+     929.0,
+     975.5,
+     1053.0,
+     1096.5,
+     1164.5
+    ],
+    "string_y_clusters_js": [
+     19.5,
+     37.5,
+     45.1,
+     91.0
+    ]
+   },
+   "neck_axis_deg_equal": true,
+   "fretboard_width_equal": true,
+   "mask_pixels_py_js": [
+    160877,
+    160877
+   ],
+   "homography_max_abs_diff": 0.0,
+   "homography_max_rel_diff": 0.0,
+   "homography_identical": true,
+   "homography_rounded_6_equal": true,
+   "rectified_bytes_differing": 3,
+   "rectified_bytes_total": 468000,
+   "rectified_max_abs_diff": 1,
+   "times_ms_js_unrect_rect": [
+    [
+     46.894999999552965,
+     18.949999999254942
+    ],
+    [
+     44.91499999910593,
+     17.049999998882413
+    ],
+    [
+     44.82500000111759,
+     17.31499999947846
+    ]
+   ],
+   "times_s_py_unrect_rect_incl_lsd": [
+    0.1578,
+    0.0156
+   ],
+   "times_ms_py_same_steps": {
+    "threads_default": 2,
+    "ms_default_threads": [
+     [
+      20.04,
+      5.9
+     ],
+     [
+      16.75,
+      5.86
+     ],
+     [
+      15.95,
+      5.97
+     ]
+    ],
+    "ms_1_thread": [
+     [
+      17.83,
+      7.48
+     ],
+     [
+      17.13,
+      7.41
+     ],
+     [
+      16.7,
+      6.96
+     ]
+    ]
+   },
+   "input_bytes_differing_from_cv2_imread": 0,
+   "input_max_abs_byte_diff": 0
+  },
+  "R3c_f0225/handquad": {
+   "unrectified": {
+    "segments_py": 433,
+    "segments_js": 433,
+    "same_list_same_order": true,
+    "same_set": true,
+    "only_py": 0,
+    "only_js": 0,
+    "edge_pixels_py_js": [
+     34674,
+     34674
+    ],
+    "counts_equal": true,
+    "counts_py": {
+     "segments_total": 433,
+     "segments_in_quad": 124,
+     "string_like": 75,
+     "fret_like": 48
+    }
+   },
+   "rectified": {
+    "segments_py": 117,
+    "segments_js": 117,
+    "same_list_same_order": true,
+    "same_set": true,
+    "only_py": 0,
+    "only_js": 0,
+    "edge_pixels_py_js": [
+     8223,
+     8223
+    ],
+    "counts_equal": true,
+    "counts_py": {
+     "segments_total": 117,
+     "string_like": 28,
+     "fret_like": 29
+    },
+    "fret_x_clusters_equal": true,
+    "string_y_clusters_equal": true,
+    "fret_x_clusters_js": [
+     466.5,
+     615.5,
+     688.5,
+     746.2,
+     799.8,
+     841.5,
+     852.0,
+     887.0,
+     897.5,
+     936.0,
+     963.5,
+     976.5,
+     1009.2,
+     1040.2,
+     1071.5,
+     1098.8,
+     1124.2,
+     1148.0
+    ],
+    "string_y_clusters_js": [
+     1.3,
+     17.6,
+     36.2,
+     45.0,
+     66.0
+    ]
+   },
+   "neck_axis_deg_equal": true,
+   "fretboard_width_equal": true,
+   "mask_pixels_py_js": [
+    62221,
+    62221
+   ],
+   "homography_max_abs_diff": 0.0,
+   "homography_max_rel_diff": 0.0,
+   "homography_identical": true,
+   "homography_rounded_6_equal": true,
+   "rectified_bytes_differing": 0,
+   "rectified_bytes_total": 468000,
+   "rectified_max_abs_diff": 0,
+   "times_ms_js_unrect_rect": [
+    [
+     51.67999999970198,
+     17.78500000014901
+    ],
+    [
+     54.84499999880791,
+     16.929999999701977
+    ],
+    [
+     50.46000000089407,
+     17.455000000074506
+    ]
+   ],
+   "times_s_py_unrect_rect_incl_lsd": [
+    0.1648,
+    0.0159
+   ],
+   "times_ms_py_same_steps": {
+    "threads_default": 2,
+    "ms_default_threads": [
+     [
+      19.63,
+      5.68
+     ],
+     [
+      18.78,
+      5.44
+     ],
+     [
+      18.98,
+      5.55
+     ]
+    ],
+    "ms_1_thread": [
+     [
+      24.52,
+      9.36
+     ],
+     [
+      33.51,
+      10.13
+     ],
+     [
+      33.99,
+      10.36
+     ]
+    ]
+   },
+   "input_bytes_differing_from_cv2_imread": 0,
+   "input_max_abs_byte_diff": 0
+  },
+  "R3c_f0000/handquad": {
+   "unrectified": {
+    "segments_py": 378,
+    "segments_js": 378,
+    "same_list_same_order": true,
+    "same_set": true,
+    "only_py": 0,
+    "only_js": 0,
+    "edge_pixels_py_js": [
+     32422,
+     32422
+    ],
+    "counts_equal": true,
+    "counts_py": {
+     "segments_total": 378,
+     "segments_in_quad": 108,
+     "string_like": 62,
+     "fret_like": 46
+    }
+   },
+   "rectified": {
+    "segments_py": 139,
+    "segments_js": 139,
+    "same_list_same_order": true,
+    "same_set": true,
+    "only_py": 0,
+    "only_js": 0,
+    "edge_pixels_py_js": [
+     8321,
+     8321
+    ],
+    "counts_equal": true,
+    "counts_py": {
+     "segments_total": 139,
+     "string_like": 33,
+     "fret_like": 19
+    },
+    "fret_x_clusters_equal": true,
+    "string_y_clusters_equal": true,
+    "fret_x_clusters_js": [
+     743.5,
+     803.0,
+     848.0,
+     896.0,
+     929.5,
+     940.5,
+     975.2,
+     1000.0,
+     1014.0,
+     1039.0,
+     1072.0,
+     1099.0,
+     1118.0,
+     1128.0,
+     1149.5
+    ],
+    "string_y_clusters_js": [
+     25.5,
+     43.3,
+     56.2,
+     64.0,
+     74.4
+    ]
+   },
+   "neck_axis_deg_equal": true,
+   "fretboard_width_equal": true,
+   "mask_pixels_py_js": [
+    62221,
+    62221
+   ],
+   "homography_max_abs_diff": 0.0,
+   "homography_max_rel_diff": 0.0,
+   "homography_identical": true,
+   "homography_rounded_6_equal": true,
+   "rectified_bytes_differing": 0,
+   "rectified_bytes_total": 468000,
+   "rectified_max_abs_diff": 0,
+   "times_ms_js_unrect_rect": [
+    [
+     47.59500000067055,
+     16.919999999925494
+    ],
+    [
+     47.244999999180436,
+     17
+    ],
+    [
+     47.330000000074506,
+     16.875
+    ]
+   ],
+   "times_s_py_unrect_rect_incl_lsd": [
+    0.1606,
+    0.0158
+   ],
+   "times_ms_py_same_steps": {
+    "threads_default": 2,
+    "ms_default_threads": [
+     [
+      18.82,
+      5.48
+     ],
+     [
+      17.79,
+      5.24
+     ],
+     [
+      17.88,
+      5.45
+     ]
+    ],
+    "ms_1_thread": [
+     [
+      32.08,
+      9.83
+     ],
+     [
+      31.0,
+      10.24
+     ],
+     [
+      31.25,
+      10.14
+     ]
+    ]
+   },
+   "input_bytes_differing_from_cv2_imread": 0,
+   "input_max_abs_byte_diff": 0
+  },
+  "R3c_f0449/handquad": {
+   "unrectified": {
+    "segments_py": 392,
+    "segments_js": 392,
+    "same_list_same_order": true,
+    "same_set": true,
+    "only_py": 0,
+    "only_js": 0,
+    "edge_pixels_py_js": [
+     32545,
+     32545
+    ],
+    "counts_equal": true,
+    "counts_py": {
+     "segments_total": 392,
+     "segments_in_quad": 102,
+     "string_like": 57,
+     "fret_like": 43
+    }
+   },
+   "rectified": {
+    "segments_py": 116,
+    "segments_js": 116,
+    "same_list_same_order": true,
+    "same_set": true,
+    "only_py": 0,
+    "only_js": 0,
+    "edge_pixels_py_js": [
+     8168,
+     8168
+    ],
+    "counts_equal": true,
+    "counts_py": {
+     "segments_total": 116,
+     "string_like": 33,
+     "fret_like": 30
+    },
+    "fret_x_clusters_equal": true,
+    "string_y_clusters_equal": true,
+    "fret_x_clusters_js": [
+     622.2,
+     688.8,
+     748.8,
+     801.8,
+     851.5,
+     897.2,
+     935.0,
+     974.0,
+     1009.5,
+     1043.5,
+     1073.5,
+     1095.8,
+     1109.5,
+     1118.0,
+     1128.5,
+     1140.0
+    ],
+    "string_y_clusters_js": [
+     2.5,
+     10.2,
+     28.4,
+     44.5,
+     55.9,
+     128.0
+    ]
+   },
+   "neck_axis_deg_equal": true,
+   "fretboard_width_equal": true,
+   "mask_pixels_py_js": [
+    62221,
+    62221
+   ],
+   "homography_max_abs_diff": 0.0,
+   "homography_max_rel_diff": 0.0,
+   "homography_identical": true,
+   "homography_rounded_6_equal": true,
+   "rectified_bytes_differing": 1,
+   "rectified_bytes_total": 468000,
+   "rectified_max_abs_diff": 1,
+   "times_ms_js_unrect_rect": [
+    [
+     47.230000000447035,
+     16.865000000223517
+    ],
+    [
+     46.915000000968575,
+     16.449999999254942
+    ],
+    [
+     46.71499999985099,
+     17.28500000014901
+    ]
+   ],
+   "times_s_py_unrect_rect_incl_lsd": [
+    0.1552,
+    0.0179
+   ],
+   "times_ms_py_same_steps": {
+    "threads_default": 2,
+    "ms_default_threads": [
+     [
+      30.85,
+      7.68
+     ],
+     [
+      30.33,
+      8.97
+     ],
+     [
+      30.11,
+      9.31
+     ]
+    ],
+    "ms_1_thread": [
+     [
+      18.89,
+      6.69
+     ],
+     [
+      18.17,
+      6.75
+     ],
+     [
+      21.91,
+      6.35
+     ]
+    ]
+   },
+   "input_bytes_differing_from_cv2_imread": 0,
+   "input_max_abs_byte_diff": 0
+  }
+ }
+}

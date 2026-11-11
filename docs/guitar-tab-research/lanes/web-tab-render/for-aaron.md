@@ -1,6 +1,6 @@
 # web-tab-render: steps for Aaron
 
-Things this lane could not run on the cloud box, written so they can be done on the Windows 11 laptop (or in the
+Things this lane could not run on the cloud box, written so they can be done on Aaron's own computer (or in the
 product's own website) without programming. Each item says which files to use and what to send back. The files named
 here are in the blog repo under `docs/guitar-tab-research/` (the `inputs/` folder holds the shared test files; this
 lane's `samples/` folder holds the files the trials made). Nothing here needs the GPU.
@@ -10,8 +10,10 @@ lanes not to start downloads or installs over 200 MB), and its Linux AppImage (1
 to run on the box, which has no FUSE tools; muzart could not be installed because this session's permission
 check refused running that repository's install step (the trial agent's report); Soundslice, Flat.io and Guitar Pro
 need an account or a paid desktop program; the box has no sound card, so nothing could be listened to. HAYA-TAB (item
-8, added in gap round 2 on 2026-11-11) is a desktop program whose builds are on GitHub Releases, which the box cannot
-list.
+8, added in gap round 2 on 2026-11-11) is a desktop window program: its Linux build is linked against WebKitGTK 4.1
+libraries the box does not have, and installing them and starting a downloaded program was not attempted here
+(corrected by the verifier on 2026-11-11; the earlier sentence said the box cannot list its GitHub releases, but the
+release files can be fetched by their own addresses).
 
 ## 1. MuseScore Studio 4 (free desktop program): does it make a TAB staff from Guitar Pro files?
 
@@ -65,7 +67,8 @@ This checks the current MuseScore (musescore.org's download page linked version 
 
 On the box only TuxGuitar's file converters were used, from a small program; its window was never opened.
 
-1. Download TuxGuitar for Windows from https://www.tuxguitar.app/ (or the TuxGuitar page on SourceForge) and install it.
+1. Download TuxGuitar for your operating system from https://www.tuxguitar.app/ (or the TuxGuitar page on SourceForge)
+   and install it.
 2. Open `inputs/S2n/S2n.gp5`. Click the first note of bar 1 and change its fret (type a number).
 3. File > Save As: save as `.gp5`, then File > Export as MusicXML, and as ASCII tab if offered.
 4. Send back: a screenshot, the saved files, the TuxGuitar version from Help > About.
@@ -97,8 +100,10 @@ Added in gap round 2 (2026-11-11). Its source code (commit eb0466a of 2026-07-31
 alphaTab 1.8.1 and an edit dialog for the title, artist and other library details, and no code that changes a note
 or saves a tab file. This checks the released program.
 
-1. Open https://github.com/HAYASAKA7/HAYA-TAB/releases/latest in a browser, download the Windows build and install it
-   (free; Apache 2.0 license). Note the version number.
+1. Open https://github.com/HAYASAKA7/HAYA-TAB/releases/latest in a browser and download the file for your operating
+   system (free; Apache 2.0 license). For v3.1.8, the newest release on 2026-11-11, there are `.zip` files for
+   Windows, `.dmg` files for macOS and `.tar.gz` files for Linux, each for more than one processor type; the Windows
+   `amd64` zip holds a single file, `HAYA-TAB.exe`, so unzip it and start that file. Note the version number.
 2. Right-click empty library space and choose **Upload TAB** (the README's words). Add `inputs/S2n/S2n.gp5`,
    `inputs/S5capo2/S5capo2.gp5`, `inputs/S5dropd/S5dropd.gp5` and `lanes/web-tab-render/samples/alphatab/S2n.export.gp`.
 3. Open each one with **Open with Inner Viewer**. Take a screenshot of the first lines of each. Look for a TAB staff,
@@ -115,3 +120,6 @@ or saves a tab file. This checks the released program.
 Checked on 2026-11-10 by `verify-trials-web-tab-render` against the box's files and the alphaTab repository source;
 what changed in this file is listed in `trials.md`, section "Verification log". Item 8 and the HAYA-TAB sentence of the
 introduction were added by `gapfill-web-tab-render` on 2026-11-11 (`trials.md`, section "Gap round 2").
+`verify-gapfill-web-tab-render` changed the first paragraph's wording about the computer, item 5's download line, the
+HAYA-TAB sentence and item 8's step 1 on 2026-11-11 (`trials.md`, "Verification log (verify-gapfill-web-tab-render,
+round 2, 2026-11-11)").

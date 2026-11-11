@@ -1,0 +1,110 @@
+{
+ "cmd": [
+  "/home/user/gtr/lanes/source-separation/verify-gap2/venv-ort/bin/python",
+  "/home/user/blog/docs/guitar-tab-research/lanes/source-separation/scripts/gap2_ort_threads.py",
+  "2",
+  "demucs_onnx.cli:main",
+  "separate",
+  "/home/user/gtr/inputs/S4/S4.wav",
+  "/home/user/gtr/lanes/source-separation/verify-gap2/out/onnx-ort2/S4",
+  "--model",
+  "htdemucs_6s",
+  "--small",
+  "--providers",
+  "cpu",
+  "-v"
+ ],
+ "exit_code": 0,
+ "wall_s": 36.07,
+ "interval_s": 0.5,
+ "samples": 72,
+ "probe_affinity": [
+  0,
+  1
+ ],
+ "probe_own_cpu_s": 0.05,
+ "max_threads_at_once": 5,
+ "threads_seen": 5,
+ "cpu_s_by_last_allowed_list": {
+  "0-1": 60.72
+ },
+ "threads": [
+  {
+   "pid": 11872,
+   "tid": 11872,
+   "name": "python",
+   "allowed": {
+    "0-1": 72
+   },
+   "cpus": {
+    "1": 53,
+    "0": 19
+   },
+   "first_s": 0.0,
+   "cpu_s": 34.9,
+   "last_allowed": "0-1",
+   "last_s": 35.57
+  },
+  {
+   "pid": 11872,
+   "tid": 11873,
+   "name": "python",
+   "allowed": {
+    "0-1": 71
+   },
+   "cpus": {
+    "0": 71
+   },
+   "first_s": 0.5,
+   "cpu_s": 0.12,
+   "last_allowed": "0-1",
+   "last_s": 35.57
+  },
+  {
+   "pid": 11872,
+   "tid": 11874,
+   "name": "python",
+   "allowed": {
+    "0-1": 71
+   },
+   "cpus": {
+    "0": 71
+   },
+   "first_s": 0.5,
+   "cpu_s": 0.0,
+   "last_allowed": "0-1",
+   "last_s": 35.57
+  },
+  {
+   "pid": 11872,
+   "tid": 11890,
+   "name": "python",
+   "allowed": {
+    "0-1": 69
+   },
+   "cpus": {
+    "0": 49,
+    "1": 20
+   },
+   "first_s": 1.0,
+   "cpu_s": 25.7,
+   "last_allowed": "0-1",
+   "last_s": 35.07
+  },
+  {
+   "pid": 11872,
+   "tid": 12104,
+   "name": "python",
+   "allowed": {
+    "0-1": 1
+   },
+   "cpus": {
+    "1": 1
+   },
+   "first_s": 9.51,
+   "cpu_s": 0.0,
+   "last_allowed": "0-1",
+   "last_s": 9.51
+  }
+ ]
+}

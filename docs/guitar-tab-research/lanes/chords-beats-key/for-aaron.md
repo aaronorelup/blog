@@ -56,8 +56,8 @@ ready: `docs/guitar-tab-research/lanes/chords-beats-key/scripts/btc_run.py`.
 ## 3. S-KEY (Deezer key detection)
 
 Gap round 1: the same weights ran here through a community ONNX export (trials.md, "Gap round 1"), so the record has
-S-KEY keys for all clips. These steps run Deezer's own PyTorch code, which would show whether the two give the same
-labels; optional.
+S-KEY keys for the ten clips of step 3 and R2full. These steps run Deezer's own PyTorch code, which would show whether
+the two give the same labels; optional.
 
 1. With the same Python 3.11 and Git: `git clone https://github.com/deezer/skey`, `cd skey`, `pip install poetry`,
    `poetry install`.
@@ -87,7 +87,8 @@ was not checked (UNVERIFIED; the Preferences screenshot in step 2 shows it).
    R1c, R2, and the preferences screenshot.
 
 Added in gap round 1: Ubuntu's own Mixxx 2.4.0 package was built without KeyFinder (its binary has no "keyfinder"
-string; survey.md), so on Linux this route would show only the Queen Mary detector. The command-line route, which the
+string and has the Queen Mary key detector's strings; survey.md), so with that package this route would offer only the
+Queen Mary detector (UNVERIFIED: Mixxx was not run). The command-line route, which the
 box's permission system refused to build here (trials.md, "Gap round 1"), in WSL (Ubuntu) on the same PC:
 
 5. `sudo apt install cmake g++ libfftw3-dev pkg-config libavcodec-dev libavformat-dev libavutil-dev libswresample-dev`
@@ -139,8 +140,9 @@ needed for the record; the steps stay for a run on a Windows PC.
 
 Not run here: the verifier's chord-only install of the PyPI sdist was refused by the session's permission classifier
 ("Code from External"; trials.md, "Not run here"). Gap round 1: one attempt with the 0.5.0 wheel on Python 3.8
-(TensorFlow 2.5.0) failed while building madmom 0.16.1 from a stale copy in the box's shared cache (trials.md, "Gap round
-1"). The steps below use the project's Docker image instead.
+(TensorFlow 2.5.0) failed while building madmom 0.16.1 from the copy of its sdist in the box's shared cache, which held a
+C file generated earlier by Cython 3.3.1 (trials.md, "Gap round 1"). The steps below use the project's Docker image
+instead.
 
 1. Install Docker Desktop for Windows.
 2. `docker pull mctlab/omnizart:latest`, then `docker run -it -v <clips folder>:/clips mctlab/omnizart:latest bash` (the
@@ -186,7 +188,12 @@ evaluation code's five classes are DADGAD, Drop D, Open D, Open G and Standard.
 ## Gap round 1 note (gapfill-chords-beats-key, 2026-11-11)
 
 Sections 1, 3, 4, 5, 6, 7 and 9 gained gap-round notes (what ran here since, and the new WSL route for libKeyFinder in
-section 4). They were written after the verification log below and have not been checked by a separate agent.
+section 4). They were written after the verification log below and were then checked by verify-gapfill-chords-beats-key
+on 2026-11-11 (log at the end of trials.md): the libkeyfinder and keyfinder-cli README commands and quotes in section 4
+match the READMEs (main, and libkeyfinder's tag 2.2.8 has the same build commands), and the NATTEN changelog line in
+section 5 matches. No step was changed; three notes were reworded (section 3: which clips the ONNX run covered; section 4:
+the Mixxx remark is about Ubuntu's package, not Linux in general; section 7: "a stale copy" replaced by what the cached
+copy held).
 
 ## Verification log (verify-trials-chords-beats-key, 2026-11-10)
 

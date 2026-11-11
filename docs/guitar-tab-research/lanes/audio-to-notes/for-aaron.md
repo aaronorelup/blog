@@ -285,15 +285,16 @@ torch versions (`_C.pt26cpu.pyd` to `_C.pt211cu130.pyd`, listed by the verifier)
 
 Not run here: each runs only from its own cloned repository (no package from the authors), and on 2026-11-11 the
 box's permission system refused running the Deep Salience clone's script ("[Code from External]"; `trials.md`, "Gap
-round 2", item A5). All three keep their weights in the repository, so a clone is all that has to be downloaded.
+round 2", item A5; JDC and SSL were not attempted after that refusal). All three keep their weights in the repository, so a clone is all that has to be downloaded.
 These are old Keras projects; the versions below are the ones their own files name. The TensorFlow version for JDC and
 SSL is not named anywhere in those repositories, and whether these versions install on Windows today is UNVERIFIED, so
 this is a job for a coding agent on the PC (or under WSL2) that may adjust versions, but not the code, and reports
 what it changed.
 
 1. melodyExtraction_JDC: `git clone https://github.com/keums/melodyExtraction_JDC`; an environment with Python 3.6,
-   Keras 2.2.2, librosa 0.6.2, madmom 0.16.1, numpy, scipy, matplotlib and a TensorFlow 1.x backend (README:
-   "Keras 2.2.2", "Librosa 0.6.2", "madmom 0.16.1"); then, from the clone's folder, `python melodyExtraction_JDC.py
+   Keras 2.2.2, librosa 0.6.2, madmom 0.16.1, numpy, scipy, matplotlib and a TensorFlow backend for Keras (README:
+   "Keras 2.2.2", "Librosa 0.6.2", "madmom 0.16.1"; the repository names no TensorFlow version, so which one works
+   with Keras 2.2.2 is UNVERIFIED); then, from the clone's folder, `python melodyExtraction_JDC.py
    -p <path>\S1.wav -o out` and the same for `R1b.wav`, `S4lead.wav` and `R2.wav` (leaving out `-gpu` runs on the CPU:
    the code's default is `None`, "It will run with cpu if None").
 2. melodyExtraction_SSL: `git clone https://github.com/keums/melodyExtraction_SSL`; the same kind of environment
@@ -330,7 +331,8 @@ throwaway Python 3.11 environment for each. The clips: `S2n.wav`, `R1c.wav` and 
    `from huggingface_hub import hf_hub_download`, `from yourmt3 import YMT3`,
    `m = YMT3(hf_hub_download("shethjenil/Audio2Midi_Models", "YPTF+Single.pt"), "YPTF+Single")` and, per clip,
    `m.predict("S2n.wav", output_path="S2n.yourmt3.mid")` (the package's own example uses `YMT3+.pt` with `"YMT3+"`;
-   `YPTF+Single.pt` is the smallest file there, 121,781,787 bytes). Which torch build pip picks on Windows (CPU or
+   `YPTF+Single.pt` is the smallest of the six YourMT3 `.pt` files there, 121,781,787 bytes). Which torch build pip
+   picks on Windows (CPU or
    CUDA) is UNVERIFIED.
 3. Send back: the `.mid` files, the time per clip and CPU or GPU, `pip freeze` of each environment, the list of files
    under `.mt3_checkpoints` (mt3-infer), and any error text.

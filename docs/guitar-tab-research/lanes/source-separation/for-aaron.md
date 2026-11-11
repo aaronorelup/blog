@@ -4,6 +4,8 @@ Written 2026-11-10 by `try-source-separation`, checked and corrected on 2026-11-
 `verify-trials-source-separation` (what changed is listed at the end of `trials.md`). Each item below could not be run
 on the research box (4 CPU cores, no GPU, 6 to 7 GB of free disk shared by about 20 agents during the work). The
 reason is in `trials.md` under "NOT RUN HERE". The laptop is assumed to be Windows 11 with an 8 GB RTX 4070.
+Updated 2026-11-11 by `gapfill-source-separation` (gap round 2, `trials.md` "Gap round 2"): items 2, 3 and 5 have
+corrected reasons (item 5 then ran on the box's CPU, so it is now optional), and item 8 (Gaborformer) is new.
 
 **The test clips** (all made or licensed for this research, described in `docs/guitar-tab-research/inputs/INPUTS.md`):
 `S4.wav` (38.7 s synthesized band: drums, bass, strummed steel guitar, a "Voice Oohs" lead; the true stems exist, so
@@ -47,7 +49,9 @@ system refused for two other tools (`trials.md`, "Gap round 2").
    2026-11-10 the Hugging Face API reported this Space's runtime stage as `RUNTIME_ERROR`, so the page may show an
    error instead of the app; if it does, go to step 4.
 2. Upload `S4.wav`, enter the text `acoustic guitar`, run, download the output. Then `R3a.wav` with `classical
-   guitar`, and `S6taps.wav` with `guitar` and again with `knocking` (to see whether the taps come out).
+   guitar`, and `S6taps.wav` with `guitar` and again with `knocking` (to see whether the taps come out). Then `S4.wav`
+   and `R2.wav` with each of `bass`, `drums` and `singing` (the queries gap round 2 planned to run here on 10 s cuts;
+   added in gap round 2).
 3. Send back the files and the prompts. The output should be one mono file at 32 kHz (that is what the code
    writes, per the survey); say if it is something else.
 4. Local route (the README's "Setup" and "Inference" sections, https://github.com/Audio-AGI/AudioSep): in a Miniconda

@@ -223,8 +223,8 @@ and quotes its own license file; these are the license texts themselves.
   The `cstr/tabcnn-onnx` card (below) says "The GuitarProFX (`amt-tools`) model natively uses **class 20 = silence,
   class k = fret k**." The file itself was not opened here, and how it loads was not tested. (Gap round 2,
   2026-11-11: it was downloaded (md5 equal to the record's) and run; it is a whole pickled amt-tools `TabCNN` object
-  saved at `model-2500`, it loads with `torch.load(weights_only=True)` and an allow-list of the amt-tools and torch
-  classes it names, and its runs and scores are in `trials.md`, "Gap round 2".)
+  saved at `model-2500`, it loads with `torch.load(weights_only=True)` and an allow-list of the amt-tools, torch,
+  numpy and Python built-in names its pickle lists, and its runs and scores are in `trials.md`, "Gap round 2".)
 - Training code for this model, read 2026-11-11: the project page https://robust-guitar-tabs.github.io/ links "Code"
   to https://github.com/robust-guitar-tabs/code (blob-less clone, last commit 2024-06-03, `f50309a`). Its README:
   "**AMT-Tools**: A customized version of the Cwitkowitz AMT-Tools code ... including our dataset loader, for training
@@ -233,7 +233,11 @@ and quotes its own license file; these are the license texts themselves.
   `AMT-Tools/LICENSE.txt` begins "MIT License / Copyright (c) 2023 Frank Cwitkowitz". The training script
   `AMT-Tools/examples/papers/guitarProFx.py` runs six folds of 2,500 iterations, each tested on one GuitarSet player;
   the Zenodo record does not say which fold the published file comes from (UNVERIFIED; this matters for clips cut
-  from GuitarSet, see `trials.md`).
+  from GuitarSet, see `trials.md`). (Verifier, 2026-11-11: the README lists the script as "`guitarProFx` for
+  GuitarProFx training and GuitarSet validation", and the script takes its training tracks only from its own
+  `GuitarProFx` data folder, five splits of 120 tracks per fold, whose contents the repository does not list; that
+  GuitarSet players are in the training data comes from the paper's text, "The third one also follows the same
+  cross-validation but adds all the synthetic GuitarProFX tracks to the training split.")
 - Hugging Face https://huggingface.co/cstr/tabcnn-onnx (HF API: created 2026-07-20, last modified 2026-08-02; card read
   2026-11-10 at https://huggingface.co/cstr/tabcnn-onnx/raw/main/README.md): card YAML `license: cc-by-4.0`. Files
   `tabcnn.onnx`, `tabcnn-gpfx.onnx`, `tabcnn-cqt.bin`. The card says: "Vanilla: trained here on **GuitarSet** (CC BY
@@ -250,7 +254,11 @@ and quotes its own license file; these are the license texts themselves.
   0.748)", and says "Data: **GuitarSet, CC BY 4.0** (`zenodo.org/records/3371780`, `audio_mono-mic` + `annotation`).
   Derived weights redistributable **with attribution**." and "the GuitarProFX-augmented weights (DAFx-24) aren't
   public", the last of which the model card, modified later, no longer says. `train.py` trains on every GuitarSet
-  player except `VAL_GUITARIST` (default 5).)
+  player except `VAL_GUITARIST` (default 5).) (Dates checked by the verifier, 2026-11-11: that README file was last
+  changed in commit `8adf1ae` (2026-07-20, 20:50 UTC, per a blob-less clone); the card's commit list
+  (huggingface.co/api/models/cstr/tabcnn-onnx/commits/main) shows the first card at 20:52 UTC that day, the gpfx file
+  added at 21:25 UTC, and the last change on 2026-08-02; the first card version (`24be4a2`) says the
+  GuitarProFX-augmented variant "has no public weights".)
 - Card facts on the front-end, read 2026-11-11 (the card calls it "the #1 correctness risk (differs by variant!)"):
   both files use "the same CQT geometry (sr 22050, hop 512, n_bins 192, bins_per_octave 24, fmin C1 = 32.703 Hz)";
   for `tabcnn-gpfx.onnx` "per-clip dB, then [0,1]" (`librosa.amplitude_to_db(C, ref=np.max)` then min-max), for
@@ -263,7 +271,8 @@ and quotes its own license file; these are the license texts themselves.
   conversions (f32, f16, q8_0, q4_k). The card: "**These are emission SCORES, not a decided tablature.** Turning them
   into a playable fingering needs a constrained decoder (one note per string, fret range, capo, hand span)."
 - Training data licences: GuitarSet v1.1.0 is `cc-by-4.0` and v1.0.1 is `cc-by-nc-4.0` (GuitarSet section; the cards do
-  not say which version was used); DadaGP has no dataset licence text and is shared for research by request (DadaGP
+  not say which version was used; for `tabcnn.onnx` the export repository's `tool/tabcnn/README.md`, quoted above,
+  names `zenodo.org/records/3371780`, the v1.1.0 record, noted by the verifier 2026-11-11); DadaGP has no dataset licence text and is shared for research by request (DadaGP
   section); EGFxSet's licence was not read (UNVERIFIED).
 - `trials.md` lists the original TabCNN code with "Weights published: no", which holds for that repository; the files
   above were published by other people and were not run there. (Corrected in gap round 2: the Zenodo file and both
@@ -611,7 +620,8 @@ and quotes its own license file; these are the license texts themselves.
   Noncommercial License 1.0.0" and contains the three clauses quoted above word for word, and `LICENSE-COMMERCIAL.md`
   still reads as quoted. `pyproject.toml`: version 0.8.3, core dependencies `MIDIFile`, `midiutil`, `mido>=1.3`,
   `numpy>=2.1`, extras `audio` (librosa, soundfile, scipy, noisereduce), `separation` (demucs), `play`
-  (python-rtmidi). `https://pypi.org/pypi/gtrsnipe/json` and `https://pypi.org/simple/gtrsnipe/` answered HTTP 404, so
+  (python-rtmidi), `synth` (pyfluidsynth), `all` (the four before) and `test` (pytest, pytest-cov) (extras list
+  completed by the verifier from the same file, 2026-11-11). `https://pypi.org/pypi/gtrsnipe/json` and `https://pypi.org/simple/gtrsnipe/` answered HTTP 404, so
   it is still not a published package; an install from the repository was refused by the box's permission system
   (`trials.md`, "Gap round 2"). README on tab input: "A tab states where each note is played, and gtrsnipe keeps that."
   and "**`--no-refinger`** never moves a note to another string. `--transpose` slides each note along its string, and
@@ -969,6 +979,11 @@ and quotes its own license file; these are the license texts themselves.
   `scoring: { id, cost(frame, realization) }` hook must be pure, deterministic, finite and nonnegative. ... It cannot
   override hard validity or the musical-fidelity priority.") is the documented way to bias a note toward a string. Run on
   the box on 2026-11-11 (runs r0621, r0623, r0630, r0631, r0633, r0635, r0641; `trials.md`, "Gap round 2").
+- Also in the 0.4.0 package (verifier, 2026-11-11, from its `package.json` exports and README; not tried): optional
+  subpaths `pitch-detect`, `pitch-worklet` and `tuner`; README: "`scorify/tuner` listens too: `createPitchInput` feeds
+  the microphone to a YIN pitch-detector AudioWorklet in real time, and `tuningTargets`/`nearestTarget` name the string
+  being tuned and how many cents it is off". The `songs` subpath also declares a `suggestCapo` function (not read
+  further).
 
 ## Guitar Chord Diagram Suggestion (d'Hooge et al.; added by verify-docs-guitar-tab, 2026-11-10)
 
@@ -1012,7 +1027,7 @@ and quotes its own license file; these are the license texts themselves.
   filter"); the parameters were tuned with Optuna (precision and recall as objectives; 12 hours for the solo takes and
   12 hours for the comp takes); `htdemucs_6s` separates the guitar before all this for full mixes. Tab step (section
   5.4): notes starting within ±50 ms form a chord; every combination of positions with one note per string and at most
-  4 frets between the highest and lowest fretted note is a state; Viterbi minimises a transition cost
+  4 frets between the highest and the lowest fret of the fingering is a state; Viterbi minimises a transition cost
   K = w_fret·ΔB + w_string·ΔS − p_open·N_open (hand movement along the frets and across the strings, open strings
   rewarded), whose weights were tuned with Optuna to maximise the share of notes on GuitarSet's annotated string.
   Section 3.1: six strings, 22 frets, standard tuning; no capo or tuning input is described.
@@ -1020,7 +1035,8 @@ and quotes its own license file; these are the license texts themselves.
   pitch within a quarter tone). Section 7.11: "Den data som användes för att generera de optimerade parametrarna
   användes också för att testa resultaten." (the data used to generate the optimised parameters was also used to test
   the results). Section 7.9: four songs by other artists (one of them a fingerstyle version) were run through the whole
-  pipeline and judged by listening, with no ground truth.
+  pipeline and judged by the authors by visual inspection and listening to the MIDI, and by looking at the tab's
+  ergonomics, with no ground truth.
 - Author-reported numbers (not checked here): Table 5, Basic Pitch with its default 128 ms against the 40 ms baseline:
   solo precision / recall / F1 0.647 / 0.705 / 0.671 against 0.493 / 0.760 / 0.594, comp 0.447 / 0.464 / 0.449 against
   0.374 / 0.528 / 0.433; Table 1, after the filters: F1 0.72 to 0.77 for solo and 0.37 to 0.53 for comp, per genre;
@@ -1322,7 +1338,7 @@ None of these pairs was run by this agent; the try agent's `trials.md` records w
 18. User constraint "tuning" is accepted by: amt-tools `GuitarProfile(tuning=[...], num_frets=...)`; tuttut
     `Tuning(strings, nfrets)` (Python API only; `tuttut-cli` uses the default `Tuning()`); tutts `new Tuning([...],
     nfrets)` (README; run with Drop D in r0205, eval e0410, `trials.md`); gtrsnipe `--tuning`,
-    `--tuning-pitches`; scorify (per-string `openPitch`, `createFrettedInstrument(...)`; gap round 2 ran Drop D, run r0621, eval e1818); LilyPond `stringTunings`; FretPath
+    `--tuning-pitches`; scorify (per-string `openPitch`, `createFrettedInstrument(...)`; gap round 2 ran Drop D through the preset option `classicalGuitar({ tuning: [...] })`, run r0621, eval e1818); LilyPond `stringTunings`; FretPath
     (read from the MuseScore instrument's string data); Fretting-Transformer `TUNING<#,#,#,#,#,#>` token (no code). Fixed to standard
     tuning in: TabCNN (`string_midi_pitches = [40,45,50,55,59,64]`), Guitab (`OPEN_PITCH` in `guitab/guitar.py`), MIDI-to-Tab
     ("an assumption of standard tuning"), tabsynth ("Standard tuning focus"; `trials.md`: no tuning reaches
@@ -1481,4 +1497,6 @@ were compared with those copies by script after whitespace and hyphenation were 
 card, five READMEs (the export repository's `tool/tabcnn`, robust-guitar-tabs, scorify, gtrsnipe, FretPath), five
 licence files, the arXiv HTML, scorify's `package.json` and gtrsnipe's `pyproject.toml`, all found (the `pyproject.toml`
 comment spans two lines with a `#` marker between them), plus the four thesis quotes and six record-page fields, all
-found. Not re-checked by a second agent yet.
+found. Not re-checked by a second agent yet. (Re-checked against the live sources by verify-gapfill-guitar-tab on
+2026-11-11; what it checked and changed in this file is listed in `trials.md`, "Verification log
+(verify-gapfill-guitar-tab, round 2, 2026-11-11)".)

@@ -1,6 +1,6 @@
 {
  "lane": "browser-audio-sync",
- "generated": "2026-11-10",
+ "generated": "2026-11-11",
  "tools": [
   {
    "name": "Web Audio API clock and look-ahead scheduling (AudioContext.currentTime, start(when))",
@@ -3962,7 +3962,9 @@
      "metrics": {
       "cpu_slot": "2-core gtr-run slot (pinned)",
       "what": "htdemucs_6s on the wasm provider, 2 threads, graph optimization disabled; see the htdemucs_6s entry",
-      "thread_binding": "every renderer thread had Cpus_allowed_list 0-1 and last ran on CPU 0 or 1 at every sample; renderer CPU/wall 1.656"
+      "thread_binding": "every renderer thread had Cpus_allowed_list 0-1 and last ran on CPU 0 or 1 at every sample; renderer CPU/wall 1.656",
+      "renderer_threads_with_cpu_time": "1 DedicatedWorker (22.24 CPU s) and the main thread (41.38 CPU s)",
+      "cpus_last_ran_on": "{0, 1} in 98 samples"
      }
     },
     {
@@ -3981,7 +3983,14 @@
       "numThreads_after_create": 4,
       "worker_threads": 3,
       "thread_binding": "all threads on CPUs 0-1; renderer CPU/wall over the separation 1.929",
-      "hardwareConcurrency": 2
+      "hardwareConcurrency": 2,
+      "renderer_threads_with_cpu_time": "3 DedicatedWorker threads (13.49, 13.48 and 13.34 CPU s) and the main thread (33.49 CPU s)",
+      "cpus_last_ran_on": "{0, 1} in 102 samples",
+      "renderer_cpu_per_wall_by_chunk": [
+       1.935,
+       1.931
+      ],
+      "hardwareConcurrency_in_page": 2
      }
     },
     {
@@ -3997,7 +4006,9 @@
      "metrics": {
       "cpu_slot": "2-core gtr-run slot (pinned)",
       "what": "1 thread (no DedicatedWorker thread used CPU time)",
-      "thread_binding": "CPUs 2-3 only; renderer CPU/wall 0.823"
+      "thread_binding": "CPUs 2-3 only; renderer CPU/wall 0.823",
+      "renderer_threads_with_cpu_time": "main thread only; no DedicatedWorker thread used CPU time",
+      "cpus_last_ran_on": "{2, 3} in 149 samples"
      }
     },
     {
@@ -4011,6 +4022,43 @@
      "metrics": {
       "cpu_slot": "2-core gtr-run slot (pinned)",
       "what": "htdemucs_6s session creation with graphOptimizationLevel all: std::bad_alloc (also r0606 basic, r0617 all without the CPU memory arena)"
+     }
+    },
+    {
+     "run_id": "r0716",
+     "input_id": "S4_10s",
+     "cores": 2,
+     "wall_s": 7.87,
+     "peak_mb": 4383.8,
+     "exit_code": null,
+     "output_files": [],
+     "metrics": {
+      "cpu_slot": "2-core gtr-run slot (pinned)",
+      "what": "verifier's re-run of r0593 (2 threads, graph optimization all)",
+      "outcome": "the same std::bad_alloc from InferenceSession.create after 6.7 s",
+      "graph_optimization": "all",
+      "threads": 2,
+      "note": "peak_mb = renderer VmHWM read from /proc; ledger load1_at_start 1.49"
+     }
+    },
+    {
+     "run_id": "r0687",
+     "input_id": "S4_10s",
+     "cores": 2,
+     "wall_s": 51.32,
+     "peak_mb": 1209.0,
+     "exit_code": 0,
+     "output_files": [
+      "samples/verify-gap2/"
+     ],
+     "metrics": {
+      "cpu_slot": "2-core gtr-run slot (pinned)",
+      "what": "verifier's re-run of r0597 (2 threads, graph optimization disabled): the six stem WAVs byte-identical to r0597's",
+      "session_create_s": 15.21,
+      "separate_s_for_10_s": 30.97,
+      "renderer_cpu_per_wall_separation": 1.582,
+      "renderer_threads_with_cpu_time": "1 DedicatedWorker (22.26 CPU s) and the main thread (41.81 CPU s)",
+      "thread_binding": "every listed renderer thread allowed on 0-1 and last seen on CPU 0 or 1 (101 samples)"
      }
     }
    ],
@@ -4047,7 +4095,8 @@
    "handoffs_out": [],
    "unverified": [
     "WebGPU execution provider (no adapter on the box; for-aaron.md step list 1)",
-    "r0310 failure (result file overwritten)"
+    "r0310 failure (result file overwritten)",
+    "graphOptimizationLevel extended, enableMemPattern false, the fp32 htdemucs_6s file, the proxy worker and the WebGPU and WebNN providers were not tried (trials.md, Gap round 2)"
    ]
   },
   {
@@ -5206,7 +5255,11 @@
        ]
       ],
       "load_ms": "script onload 272-305 ms, runtime ready 360-418 ms",
-      "note": "peak_mb = renderer VmHWM read from /proc by scripts/gap2/drive_gap2.mjs (the ledger's max_rss misses the renderer)"
+      "note": "peak_mb = renderer VmHWM read from /proc by scripts/gap2/drive_gap2.mjs (the ledger's max_rss misses the renderer)",
+      "first_call_on_a_frame_ms": "up to 68.7",
+      "getPerspectiveTransform_ms": "0.05 to 0.17",
+      "warpPerspective_ms": "4.6 to 9.0 (last repeat)",
+      "functions_present": "Canny, HoughLinesP, HoughLines, getPerspectiveTransform, warpPerspective, fillConvexPoly, cvtColor, findContours, minAreaRect, boxPoints, perspectiveTransform, findHomography, Sobel, calcOpticalFlowPyrLK, imread, matFromImageData are functions; createLineSegmentDetector, LineSegmentDetector and goodFeaturesToTrack are undefined"
      }
     },
     {
@@ -5272,6 +5325,101 @@
       "cpu_slot": "2-core gtr-run slot (pinned)",
       "what": "the same reference with timings of the page's step groups (cv2 default 2 threads, and 1 thread)"
      }
+    },
+    {
+     "run_id": "r0703",
+     "input_id": "R3a_cu (frames 150, 0, 280), R3b and R3c (frames 225, 0, 449)",
+     "cores": 2,
+     "wall_s": 4.05,
+     "peak_mb": 304.7,
+     "exit_code": 0,
+     "output_files": [
+      "samples/verify-gap2/opencvjs_compare_raw.json"
+     ],
+     "metrics": {
+      "cpu_slot": "2-core gtr-run slot (pinned)",
+      "what": "verifier's re-run of r0651 (input raw) with R3c added, R3c quad from the chains lane's r0532",
+      "vs_r0651": "segment lists, homographies and rectified bytes identical on the 7 shared frame/quad pairs",
+      "R3c_vs_opencv_python_5_0_0": "HoughLinesP segment lists identical (same order), counts, clusters, edge and mask pixels equal, homography identical; rectified images differ in 0, 0 and 1 bytes (of 468,000) by at most 1 level",
+      "counts_frame_in_quad_string_fret": {
+       "R3c 225": [
+        433,
+        124,
+        75,
+        48
+       ],
+       "R3c 0": [
+        378,
+        108,
+        62,
+        46
+       ],
+       "R3c 449": [
+        392,
+        102,
+        57,
+        43
+       ]
+      },
+      "counts_rectified_string_fret": {
+       "R3c 225": [
+        117,
+        28,
+        29
+       ],
+       "R3c 0": [
+        139,
+        33,
+        19
+       ],
+       "R3c 449": [
+        116,
+        33,
+        30
+       ]
+      },
+      "ms_R3c_frame_step_rectified_step": [
+       [
+        46.7,
+        67.4
+       ],
+       [
+        16.4,
+        25.1
+       ]
+      ]
+     }
+    },
+    {
+     "run_id": "r0704",
+     "input_id": "R3a_cu, R3b, R3c",
+     "cores": 2,
+     "wall_s": 4.34,
+     "peak_mb": 361.0,
+     "exit_code": 0,
+     "output_files": [
+      "samples/verify-gap2/opencvjs_compare_img.json"
+     ],
+     "metrics": {
+      "cpu_slot": "2-core gtr-run slot (pinned)",
+      "what": "verifier's re-run of r0654 (Chromium decodes the PNG / JPEG) with R3c added",
+      "results": "the same as r0703; Chromium's decode of the three R3c JPEGs gave the same bytes as cv2.imread (0 differ), 47.1-52.7 ms per frame"
+     }
+    },
+    {
+     "run_id": "r0702",
+     "input_id": "R3a_cu, R3b, R3c",
+     "cores": 2,
+     "wall_s": 3.01,
+     "peak_mb": 151.1,
+     "exit_code": 0,
+     "output_files": [
+      "scripts/verify-gap2/opencv_lines_ref_verify.py"
+     ],
+     "metrics": {
+      "cpu_slot": "2-core gtr-run slot (pinned)",
+      "what": "OpenCV-Python 5.0.0.93 reference with R3c added (verifier); its R3c output equals the chains lane's r0532 output in every field but the times, rectified PNGs pixel-identical"
+     }
     }
    ],
    "not_run_reason": null,
@@ -5292,7 +5440,9 @@
    "constraints_accepted": [
     "quad (4 points), output size, Canny thresholds, HoughLinesP rho/theta/threshold/minLineLength/maxLineGap; nothing is learned",
     "no createLineSegmentDetector (LSD) in this build although the typings declare it",
-    "build information: Parallel framework: none (one thread)"
+    "build information: Parallel framework: none (one thread)",
+    "dist/opencv.js is one 13,298,869-byte file with the WebAssembly module embedded (Emscripten SINGLE_FILE); cv.getBuildInformation(): \"General configuration for OpenCV 5.0.0\", \"Timestamp: 2026-06-24T04:53:04Z\", \"Target: Emscripten 1 x86\", \"Disabled: highgui imgcodecs stitching videoio world\"",
+    "the type() number of a Mat depends on the build: CV_CN_SHIFT is 5 on OpenCV's 5.x branch and 3 on 4.x, so CV_32SC4 is 100 here and another number in 4.x builds"
    ],
    "license": {
     "code": {
@@ -5314,7 +5464,7 @@
    ],
    "unverified": [
     "The README says opencv.js was downloaded from https://docs.opencv.org/5.0.0/opencv.js, which returned HTTP 404 on 2026-11-10 and again on 2026-11-11; https://docs.opencv.org/5.x/opencv.js redirected (301) to https://docs.opencv.org/5.0/opencv.js (200, 16,210,809 bytes, a different size from the package's 13,298,869-byte file; not compared further)",
-    "R3c was not run: the video lane has no OpenCV output for R3c to compare with"
+    "r0649's one-segment-per-frame reading (its result file was overwritten by r0651; the trial agent's account)"
    ]
   },
   {
@@ -6022,7 +6172,51 @@
        "drums": 0.022,
        "other": 0.0007
       },
-      "vs_native_db": "-41.4 (guitar) to -61.4 (bass) dB against the native ORT outputs, with the same input and optimization level"
+      "vs_native_db": "-41.4 (guitar) to -61.4 (bass) dB against the native ORT outputs, with the same input and optimization level",
+      "renderer_threads_with_cpu_time": "1 DedicatedWorker (22.24 CPU s) and the main thread (41.38 CPU s)",
+      "cpus_last_ran_on": "{0, 1} in 98 samples",
+      "wasm_file_loaded": "ort-wasm-simd-threaded.wasm, 14,848,852 bytes (server log)",
+      "output": "six stems, each 441,000 samples x 2 channels, float32 WAV at 44.1 kHz",
+      "stem_peak_rms_dbfs": {
+       "drums": [
+        0.391,
+        -28.88
+       ],
+       "bass": [
+        0.284,
+        -24.68
+       ],
+       "other": [
+        0.0019,
+        -80.25
+       ],
+       "vocals": [
+        0.401,
+        -21.88
+       ],
+       "guitar": [
+        0.216,
+        -31.37
+       ],
+       "piano": [
+        0.324,
+        -27.77
+       ]
+      },
+      "vs_native_r0596_db_sample_by_sample": {
+       "drums": -61.0,
+       "bass": -61.4,
+       "other": -45.5,
+       "vocals": -59.3,
+       "guitar": -41.5,
+       "piano": -49.6
+      },
+      "memory_source": "/proc only: performance.measureUserAgentSpecificMemory() threw SecurityError and performance.memory returned rounded values",
+      "wasm_threads_vs_time_s_for_10_s": {
+       "1 thread (r0613)": 52.73,
+       "2 threads (r0597)": 29.09,
+       "4 threads (r0607)": 30.25
+      }
      }
     },
     {
@@ -6042,7 +6236,14 @@
       "session_create_s": 16.65,
       "separate_s_for_10_s": 30.25,
       "renderer_cpu_per_wall_separation": 1.929,
-      "stems": "sample-identical to r0597"
+      "stems": "sample-identical to r0597",
+      "renderer_threads_with_cpu_time": "3 DedicatedWorker threads (13.49, 13.48 and 13.34 CPU s) and the main thread (33.49 CPU s)",
+      "cpus_last_ran_on": "{0, 1} in 102 samples",
+      "renderer_cpu_per_wall_by_chunk": [
+       1.935,
+       1.931
+      ],
+      "hardwareConcurrency_in_page": 2
      }
     },
     {
@@ -6062,13 +6263,15 @@
       "session_create_s": 16.89,
       "separate_s_for_10_s": 52.73,
       "renderer_cpu_per_wall_separation": 0.823,
-      "stems": "sample-identical to r0597"
+      "stems": "sample-identical to r0597",
+      "renderer_threads_with_cpu_time": "main thread only; no DedicatedWorker thread used CPU time",
+      "cpus_last_ran_on": "{2, 3} in 149 samples"
      }
     },
     {
      "run_id": "r0596",
      "input_id": "S4_10s",
-     "cores": 2,
+     "cores": null,
      "wall_s": 18.52,
      "peak_mb": 7099.5,
      "exit_code": 0,
@@ -6076,7 +6279,7 @@
       "out/htdemucs6s-native/"
      ],
      "metrics": {
-      "cpu_slot": "2-core gtr-run slot (pinned)",
+      "cpu_slot": "started in a 2-core gtr-run slot, but ONNX Runtime ran with its default thread setting; in the verifier's re-run of r0603's command (r0696) the worker threads were pinned one each to CPUs 1, 2 and 3 whatever the slot, so this is not a 2-core figure (verifier, round 2; no probe ran in this run itself)",
       "what": "native reference: demucs-onnx 0.3.4 functions, onnxruntime 1.31.1 CPU EP, ORT_ENABLE_ALL",
       "session_create_s": 8.79,
       "separate_s": 8.86,
@@ -6091,7 +6294,7 @@
     {
      "run_id": "r0603",
      "input_id": "S4_10s",
-     "cores": 2,
+     "cores": null,
      "wall_s": 26.48,
      "peak_mb": 1793.7,
      "exit_code": 0,
@@ -6099,7 +6302,7 @@
       "out/htdemucs6s-native-optdisabled/"
      ],
      "metrics": {
-      "cpu_slot": "2-core gtr-run slot (pinned)",
+      "cpu_slot": "started in a 2-core gtr-run slot, but ONNX Runtime ran with its default thread setting; in the verifier's re-run of r0603's command (r0696) the worker threads were pinned one each to CPUs 1, 2 and 3 whatever the slot, so this is not a 2-core figure (verifier, round 2; no probe ran in this run itself)",
       "what": "native reference, ORT_DISABLE_ALL",
       "session_create_s": 12.28,
       "separate_s": 13.76
@@ -6108,7 +6311,7 @@
     {
      "run_id": "r0611",
      "input_id": "S4_10s (Chromium-decoded samples)",
-     "cores": 2,
+     "cores": null,
      "wall_s": 42.4,
      "peak_mb": 1793.5,
      "exit_code": 0,
@@ -6116,7 +6319,7 @@
       "out/htdemucs6s-native-chromiuminput-optdisabled/"
      ],
      "metrics": {
-      "cpu_slot": "2-core gtr-run slot (pinned)",
+      "cpu_slot": "started in a 2-core gtr-run slot, but ONNX Runtime ran with its default thread setting; in the verifier's re-run of r0603's command (r0696) the worker threads were pinned one each to CPUs 1, 2 and 3 whatever the slot, so this is not a 2-core figure (verifier, round 2; no probe ran in this run itself)",
       "what": "native reference, ORT_DISABLE_ALL, fed the float32 samples Chromium's decodeAudioData returned (r0608)"
      }
     },
@@ -6132,7 +6335,122 @@
      ],
      "metrics": {
       "cpu_slot": "none (gtr-run --nolock, light)",
-      "what": "decodeAudioData of the 16-bit WAV: negative samples x/32768, positive samples x * float32(1/32767); soundfile: x/32768 for all"
+      "what": "decodeAudioData of the 16-bit WAV: negative samples x/32768, positive samples x * float32(1/32767); soundfile: x/32768 for all",
+      "positive_samples": "445,024 positive samples (87 are zero) are 32768/32767 times larger in the browser than in soundfile's float32 read; 0 of 882,000 samples differ from the rule"
+     }
+    },
+    {
+     "run_id": "r0687",
+     "input_id": "S4_10s",
+     "cores": 2,
+     "wall_s": 51.32,
+     "peak_mb": 1209.0,
+     "exit_code": 0,
+     "output_files": [
+      "verify-gap2/out/htdemucs6s-web/ (outside git)",
+      "samples/verify-gap2/"
+     ],
+     "metrics": {
+      "cpu_slot": "2-core gtr-run slot (pinned)",
+      "what": "verifier's re-run of r0597 (2 threads, graph optimization disabled)",
+      "session_create_s": 15.21,
+      "separate_s_for_10_s": 30.97,
+      "renderer_cpu_per_wall_separation": 1.582,
+      "stems": "all six WAV files byte-identical to r0597's",
+      "thread_binding": "every listed renderer thread allowed on 0-1 and last seen on CPU 0 or 1",
+      "renderer_threads_with_cpu_time": "1 DedicatedWorker (22.26 CPU s) and the main thread (41.81 CPU s)",
+      "cpus_last_ran_on": "CPU 0 or 1 in 101 samples",
+      "renderer_vmhwm_mb": 1209.0
+     }
+    },
+    {
+     "run_id": "r0696",
+     "input_id": "S4_10s",
+     "cores": null,
+     "wall_s": 30.77,
+     "peak_mb": 1796.4,
+     "exit_code": 0,
+     "output_files": [
+      "samples/verify-gap2/probe_native_optdisabled_default.json"
+     ],
+     "metrics": {
+      "cpu_slot": "gtr-run slot 0-1; ORT default threads: main thread on CPUs 0-1, three worker threads allowed only on CPU 1, CPU 2 and CPU 3 (a /proc probe every 0.25 s)",
+      "what": "verifier's re-run of r0603 (native reference, ORT_DISABLE_ALL, default threads) inside a thread probe",
+      "cpu_s_by_allowed_cpus": {
+       "0-1": 23.99,
+       "1": 8.88,
+       "2": 8.32,
+       "3": 8.9
+      },
+      "session_create_s": 13.31,
+      "separate_s": 16.51,
+      "stems": "sample-identical to r0603's"
+     }
+    },
+    {
+     "run_id": "r0697",
+     "input_id": "S4_10s",
+     "cores": 2,
+     "wall_s": 22.31,
+     "peak_mb": 1794.8,
+     "exit_code": 0,
+     "output_files": [
+      "samples/verify-gap2/probe_native_optdisabled_2threads.json"
+     ],
+     "metrics": {
+      "cpu_slot": "2-core gtr-run slot (pinned); ORT intra_op_num_threads=2 set by a wrapper, every thread allowed on 0-1",
+      "what": "native reference, ORT_DISABLE_ALL, 2 ORT threads (verifier)",
+      "session_create_s": 12.47,
+      "separate_s": 9.24,
+      "stems": "sample-identical to r0603's"
+     }
+    },
+    {
+     "run_id": "r0700",
+     "input_id": "S4_10s",
+     "cores": 2,
+     "wall_s": 18.33,
+     "peak_mb": 7862.5,
+     "exit_code": 0,
+     "output_files": [
+      "samples/verify-gap2/probe_native_optall_2threads.json"
+     ],
+     "metrics": {
+      "cpu_slot": "2-core gtr-run slot (pinned); ORT intra_op_num_threads=2 set by a wrapper, every thread allowed on 0-1",
+      "what": "native reference, ORT_ENABLE_ALL (demucs-onnx _make_session), 2 ORT threads (verifier)",
+      "session_create_s": 8.79,
+      "separate_s": 8.38,
+      "stems": "sample-identical to r0596's"
+     }
+    },
+    {
+     "run_id": "r0701",
+     "input_id": "S4_10s",
+     "cores": 2,
+     "wall_s": 1.68,
+     "peak_mb": null,
+     "exit_code": 0,
+     "output_files": [],
+     "metrics": {
+      "cpu_slot": "2-core gtr-run slot (pinned)",
+      "what": "verifier's re-run of r0608 (decodeAudioData check): decoded WAV byte-identical to r0608's"
+     }
+    },
+    {
+     "run_id": "r0716",
+     "input_id": "S4_10s",
+     "cores": 2,
+     "wall_s": 7.87,
+     "peak_mb": 4383.8,
+     "exit_code": null,
+     "output_files": [],
+     "metrics": {
+      "cpu_slot": "2-core gtr-run slot (pinned)",
+      "what": "verifier's re-run of r0593 (2 threads, graph optimization all)",
+      "outcome": "the same std::bad_alloc from InferenceSession.create after 6.7 s",
+      "graph_optimization": "all",
+      "threads": 2,
+      "note": "peak_mb = renderer VmHWM read from /proc; ledger load1_at_start 1.49"
      }
     }
    ],
@@ -6151,7 +6469,9 @@
    ],
    "constraints_accepted": [
     "segment length fixed in the graph (343,980 samples); longer audio by chunked overlap-add (demucs-onnx _chunked_separate_single / infer.py separate)",
-    "ONNX Runtime session options: graphOptimizationLevel (all and basic threw std::bad_alloc in WebAssembly here; disabled ran), numThreads"
+    "ONNX Runtime session options: graphOptimizationLevel (all and basic threw std::bad_alloc in WebAssembly here; disabled ran), numThreads",
+    "demucs-onnx browser demo (read in the wheel's browser.py): Cross-Origin-Opener-Policy: same-origin and Cross-Origin-Embedder-Policy: require-corp; ort.env.wasm.numThreads = Math.min(navigator.hardwareConcurrency ?? 2, 4); executionProviders [\"wasm\"], graphOptimizationLevel: \"all\" (the level that threw std::bad_alloc here)",
+    "Chromium 153 decodeAudioData turns 16-bit WAV samples into floats as x / 32768 for negative samples and x * float32(1/32767) for positive samples; soundfile's float32 read, which demucs-onnx uses, is x / 32768 for every sample"
    ],
    "license": {
     "code": {
@@ -6170,6 +6490,12 @@
       "license": null,
       "quote": "The 6 source variant of htdemucs was trained only on Meta internal dataset, which likely means CC-NC-BY license is applicable, as it was the case for all models released by FAIR.",
       "url": "https://raw.githubusercontent.com/adefossez/demucs/main/README.md"
+     },
+     {
+      "name": "MusDB (named in the Demucs maintainer's README statement on the weights licence)",
+      "license": null,
+      "quote": "The license of the weights is not clear: MusDB contains some data that were only usable for research purpose.",
+      "url": "https://raw.githubusercontent.com/adefossez/demucs/main/README.md"
      }
     ],
     "service_terms": []
@@ -6185,7 +6511,9 @@
    "unverified": [
     "which kernels of the WebAssembly build cause the -41.4 to -61.4 dB difference from the native ORT outputs was not looked into",
     "the maker's speed, memory and parity figures (Apple M4 Pro) were not measured here",
-    "graphOptimizationLevel extended, enableMemPattern false, the fp32 file, the proxy worker and WebGPU/WebNN were not tried"
+    "graphOptimizationLevel extended, enableMemPattern false, the fp32 file, the proxy worker and WebGPU/WebNN were not tried",
+    "whether ORT's worker threads left the 2-core slot in r0596, r0603 and r0611 themselves (no probe ran in them; the same command in r0696 and the same package in the source-separation lane's r0610 showed it)",
+    "the venv-demucsonnx size of 151 MB (deleted; the rebuilt venv measured 154 MB by du -sh after its runs)"
    ]
   },
   {

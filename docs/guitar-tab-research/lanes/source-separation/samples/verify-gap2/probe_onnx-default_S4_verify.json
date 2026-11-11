@@ -1,0 +1,124 @@
+{
+ "cmd": [
+  "/home/user/gtr/lanes/source-separation/verify-gap2/venv-ort/bin/demucs-onnx",
+  "separate",
+  "/home/user/gtr/inputs/S4/S4.wav",
+  "/home/user/gtr/lanes/source-separation/verify-gap2/out/onnx-default/S4",
+  "--model",
+  "htdemucs_6s",
+  "--small",
+  "--providers",
+  "cpu",
+  "-v"
+ ],
+ "exit_code": 0,
+ "wall_s": 29.09,
+ "interval_s": 0.5,
+ "samples": 58,
+ "probe_affinity": [
+  0,
+  1
+ ],
+ "probe_own_cpu_s": 0.04,
+ "max_threads_at_once": 6,
+ "threads_seen": 6,
+ "cpu_s_by_last_allowed_list": {
+  "0-1": 26.27,
+  "1": 17.77,
+  "2": 17.63,
+  "3": 17.6
+ },
+ "threads": [
+  {
+   "pid": 10262,
+   "tid": 10262,
+   "name": "demucs-onnx",
+   "allowed": {
+    "0-1": 58
+   },
+   "cpus": {
+    "1": 3,
+    "0": 55
+   },
+   "first_s": 0.0,
+   "cpu_s": 26.15,
+   "last_allowed": "0-1",
+   "last_s": 28.59
+  },
+  {
+   "pid": 10262,
+   "tid": 10279,
+   "name": "demucs-onnx",
+   "allowed": {
+    "0-1": 57
+   },
+   "cpus": {
+    "1": 57
+   },
+   "first_s": 0.5,
+   "cpu_s": 0.12,
+   "last_allowed": "0-1",
+   "last_s": 28.59
+  },
+  {
+   "pid": 10262,
+   "tid": 10280,
+   "name": "demucs-onnx",
+   "allowed": {
+    "0-1": 57
+   },
+   "cpus": {
+    "0": 57
+   },
+   "first_s": 0.5,
+   "cpu_s": 0.0,
+   "last_allowed": "0-1",
+   "last_s": 28.59
+  },
+  {
+   "pid": 10262,
+   "tid": 10304,
+   "name": "demucs-onnx",
+   "allowed": {
+    "1": 55
+   },
+   "cpus": {
+    "1": 55
+   },
+   "first_s": 1.0,
+   "cpu_s": 17.77,
+   "last_allowed": "1",
+   "last_s": 28.08
+  },
+  {
+   "pid": 10262,
+   "tid": 10305,
+   "name": "demucs-onnx",
+   "allowed": {
+    "2": 55
+   },
+   "cpus": {
+    "2": 55
+   },
+   "first_s": 1.0,
+   "cpu_s": 17.63,
+   "last_allowed": "2",
+   "last_s": 28.08
+  },
+  {
+   "pid": 10262,
+   "tid": 10306,
+   "name": "demucs-onnx",
+   "allowed": {
+    "3": 55
+   },
+   "cpus": {
+    "3": 55
+   },
+   "first_s": 1.0,
+   "cpu_s": 17.6,
+   "last_allowed": "3",
+   "last_s": 28.08
+  }
+ ]
+}

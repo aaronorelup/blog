@@ -188,7 +188,9 @@ clips of your own would give that.
    `scripts/vhf_common.py`) for the fretting hand's position. The capo fret (2) is the ground truth for take 2 and "no
    capo" for take 1.
 6. A labelled alternative exists but was not downloaded: the GuiFiR dataset's per-frame annotations include a capo
-   position (`frame_capo`); its terms allow non-commercial research use only (`survey.md`, Datasets section).
+   position (`frame_capo`); its `DATASET_TERMS.md` says "The dataset assets are provided for non-commercial research,
+   education, and reproducibility of the GuiFiR work." (`survey.md`, Datasets section; wording corrected by the
+   round-2 verifier, it said the terms "allow non-commercial research use only").
 
 ## Verification log (verify-trials-video-hands-fretboard, 2026-11-10)
 

@@ -768,7 +768,11 @@ Agent `gapfill-browser-audio-sync`, 2026-11-11 (UTC), closing this lane's three 
 question that file left open for this lane (thread binding of ONNX Runtime Web). Same box and the same pre-installed
 headless Chromium as above (Playwright 1.63.0, browser build `chromium-1243`, headless shell, "Chrome for Testing
 153.0.8010.12"). Unlike the first round, every timed run ran in a 2-core slot (`gtr-run` without `--nolock`, slot
-wait 0 to 38.9 s, `load1_at_start` 2.1 to 7.0); the one `--nolock` run (r0608) is a 2-second decode check.
+wait 0 to 38.9 s, `load1_at_start` 0.63 to 7.02 [verifier, round 2: was "2.1 to 7.0", the range of the htdemucs runs
+only; the OpenCV runs started at 0.63 to 3.06]); the one `--nolock` run (r0608) is a 2-second decode check.
+[verifier, round 2: the three native reference runs (r0596, r0603, r0611) were started in a slot, but with ONNX
+Runtime's default thread setting, which in the verifier's re-run of r0603's command (r0696) pinned worker threads to
+CPUs outside the slot; they are not 2-core figures. See the note under the native table.]
 
 - Scripts (`scripts/gap2/`): `serve_gap2.mjs` (a copy of `serve.mjs` with this round's roots and a log line per
   request), `drive_gap2.mjs` (based on `drive.mjs`, plus a `/proc` sampler: every 500 ms it reads, for every process
@@ -776,8 +780,10 @@ wait 0 to 38.9 s, `load1_at_start` 2.1 to 7.0); the one `--nolock` run (r0608) i
   every thread's name, CPU time, the CPU it last ran on (field 39 of `/proc/<pid>/task/<tid>/stat`) and its
   `Cpus_allowed_list`; the page prints `PHASE <name> <epoch ms>` lines and the driver gives each process's CPU seconds
   between two marks). The sampler runs in the driver's node process, inside the same slot; it cost 1.9 to 2.5 ms per
-  sample. In r0593 the sampler's process-type field read "browser" for every process (Chromium rewrites its argv into
-  one string); this was fixed before r0597, and in r0593 the renderer is the process with the 4,384.0 MB peak.
+  sample in the htdemucs runs [verifier, round 2: 1.8 and 3.2 ms in the OpenCV.js runs r0651 and r0654]. It lists
+  only renderer threads that used CPU time (`ticks > 0` in `drive_gap2.mjs`). In r0593 the sampler's process-type
+  field read "browser" for every process (Chromium rewrites its argv into one string); this was fixed before r0597,
+  and in r0593 the renderer is the process with the 4,384.0 MB peak.
 - Libraries: a separate folder, `/home/user/gtr/lanes/browser-audio-sync/node-gap2/` (npm 10.9.9): `npm install
   --save-exact onnxruntime-web@1.31.1` ("added 18 packages in 3s"; `onnxruntime-web` 150,622,959 bytes by `du -sb`,
   equal to the npm registry's unpacked size) and, for the OpenCV.js section, `@techstark/opencv-js@5.0.0-release.1`.
@@ -828,13 +834,34 @@ Browser runs (2 cores each):
 | r0607 | `disabled` | 4 | 6 stems, sample-identical to r0597 | 16.65 s | 30.25 s (15.45 + 14.65) | 1,216.1 MB | 1.929 |
 | r0613 | `disabled` | 1 | 6 stems, sample-identical to r0597 | 16.89 s | 52.73 s (26.19 + 26.37) | 1,204.3 MB | 0.823 |
 
-Native reference runs (ONNX Runtime 1.31.1, CPU execution provider, ORT's default thread count; 2 cores each):
+Native reference runs (ONNX Runtime 1.31.1, CPU execution provider, ORT's default thread count; started in a 2-core
+slot, but not 2-core figures [verifier, round 2: was "2 cores each"; see the note under this table]):
 
 | run | graph optimization | input | session creation | separation | peak RSS (ledger) | ledger CPU / wall |
 |---|---|---|---|---|---|---|
 | r0596 | `ORT_ENABLE_ALL` (`_make_session`) | S4_10s.wav read by soundfile | 8.79 s | 8.86 s | 7,099.5 MB | 37.2 / 18.52 s |
 | r0603 | `ORT_DISABLE_ALL` | the same | 12.28 s | 13.76 s | 1,793.7 MB | 44.2 / 26.48 s |
 | r0611 | `ORT_DISABLE_ALL` | Chromium's decoded samples (r0608, float32 WAV) | 14.04 s | 27.78 s (`load1_at_start` 5.97) | 1,793.5 MB | 47.2 / 42.4 s |
+
+- [verifier, round 2] Not 2-core figures. demucs-onnx's `_make_session` (`inference.py` lines 194 to 199 in the 0.3.4
+  wheel) and the script's `disabled` branch set no thread count, and ONNX Runtime's threading page says: "By default
+  with intra_op_num_threads=0 or not set, each session will start with the main thread on the 1st core (not
+  affinitized). Then extra threads per additional physical core are created, and affinitized to that core (1 or 2
+  logical processors)." (https://onnxruntime.ai/docs/performance/tune-performance/threading.html, read by the verifier
+  on 2026-11-11). The verifier re-ran r0603's command inside a `/proc` thread probe (r0696, slot 0-1,
+  `scripts/verify-gap2/thread_probe.py`, every 0.25 s): the main thread was allowed on CPUs 0-1, and three worker
+  threads were each allowed on one CPU only, 1, 2 and 3 (field 39 of their `stat` read that CPU in every sample). By
+  the probe's count the threads allowed on CPU 2 or CPU 3, outside the slot, used 8.32 and 8.90 of the run's 50.09 CPU
+  s (CPUs 0-1: 23.99 s, CPU 1: 8.88 s). r0696: session creation 13.31 s, separation 16.51 s, stems sample-identical to
+  r0603's. The source-separation lane saw the same with the same package (its r0610). No probe ran in r0596, r0603 and
+  r0611 themselves; they used the same code, ORT version and default setting. With ORT's intra-op thread
+  count set to 2 by a wrapper (`scripts/verify-gap2/ort_threads.py`; the reference script unchanged) every thread of
+  the process stayed allowed on CPUs 0-1: r0697 (`ORT_DISABLE_ALL`): session creation 12.47 s, separation 9.24 s,
+  peak RSS 1,794.8 MB, wall 22.31 s, stems sample-identical to r0603's; r0700 (`ORT_ENABLE_ALL`, `_make_session`):
+  8.79 s and 8.38 s, peak RSS 7,862.5 MB, wall 18.33 s, stems sample-identical to r0596's. These two are 2-core
+  figures for the native path. During r0611 (slot 2-3) the source-separation lane's r0610 (default ORT threads) and
+  r0612 held slot 0-1 (ledger start times and walls); r0603 overlapped r0605 of chords-beats-key in slot 0-1; no other
+  ledger run overlapped r0596, whose ledger CPU is 2.01 times its wall.
 
 - Memory: ORT Web's documentation says "WebAssembly has a memory limit of 4GB." (`survey.md` section 35). The three
   failed sessions stopped with the renderer at 4,381 to 4,386 MB, during `create`; the same model file and ORT version
@@ -886,8 +913,11 @@ Native reference runs (ONNX Runtime 1.31.1, CPU execution provider, ORT's defaul
   float32(1/32767) for positive samples (a float32 product): 0 of the 882,000 samples differ from that rule. soundfile's
   float32 read, which demucs-onnx uses, is x / 32768 for every sample. So the 445,024 positive samples (87 are zero) are
   32768/32767 times larger in the browser.
-- Speed facts (2 cores): browser 2 threads 29.09 s for the 10 s clip; native 13.76 s with optimizations disabled and
-  8.86 s with them on. demucs-web's 4-stem htdemucs on the same clip took 55.6 s with 2 threads in the first round
+- Speed facts (2 cores): browser 2 threads 29.09 s for the 10 s clip (r0597; the verifier's re-run r0687: 30.97 s);
+  native with ORT's intra-op threads set to 2, all threads on the slot's 2 cores (verifier): 9.24 s with optimizations
+  disabled (r0697) and 8.38 s with them on (r0700). [verifier, round 2: this bullet gave the native times as 13.76 s
+  and 8.86 s, from r0603 and r0596, which ran with ORT's default thread setting (note under the native table).]
+  demucs-web's 4-stem htdemucs on the same clip took 55.6 s with 2 threads in the first round
   (r0329, `--nolock` on a shared box, so not comparable as a timing).
 - Output format facts: `session.run({mix})` returns one tensor, `stems`, float32, dims [1, 6, 2, 343980], rows drums,
   bass, other, vocals, guitar, piano. The page writes each stem as a 2-channel float32 WAV at 44.1 kHz with the input's
@@ -906,7 +936,7 @@ per process, since its renderer was not recognised as one):
 
 - Every Chromium process (browser, two zygotes, GPU process, network utility, renderer) and every renderer thread had
   `Cpus_allowed_list` equal to the slot (0-1; 2-3 in r0613 and r0617) at every sample; in the unpinned r0608 it was
-  0-3.
+  0-3. [verifier, round 2: "every renderer thread" = every one the driver lists, i.e. those that used CPU time.]
 - The CPU each renderer thread last ran on (field 39) was always one of the slot's two cores: {0, 1} in r0597 (98
   samples) and r0607 (102), {2, 3} in r0613 (149).
 - `navigator.hardwareConcurrency` was 2 in the page.
@@ -919,6 +949,11 @@ per process, since its renderer was not recognised as one):
 - So in these runs the WebAssembly threads stayed on the slot's 2 cores and used at most 2 cores' worth of CPU time;
   the separation took 30.25 s with 4 threads, 29.09 s with 2 and 52.73 s with 1. The ledger's CPU for these three runs
   (3.9 to 4.2 s per run) misses the renderer's 61 to 76 CPU s.
+- [verifier, round 2] The verifier's re-run of r0597 (r0687, slot 0-1) gave the same picture: every listed process
+  and renderer thread allowed on 0-1 and last seen on CPU 0 or 1 (101 samples), 1 `DedicatedWorker` (22.26 CPU s)
+  and the main thread (41.81 CPU s), renderer CPU / wall over the separation 1.582. Native ONNX Runtime with its
+  default thread setting, as in this round's native reference runs, behaved differently: in the verifier's r0696 its
+  worker threads were pinned to CPUs 1, 2 and 3 whatever the slot (note under the native table).
 
 ### OpenCV.js 5.0.0 (`@techstark/opencv-js` 5.0.0-release.1): the video lane's fret and string line steps in the page
 
@@ -939,8 +974,13 @@ per process, since its renderer was not recognised as one):
 - Frames and quads: those of the video lane's OpenCV runs: r0149 and r0400 (R3a_cu frames 150, 0 and 280 with the
   hand-set quad, and frame 150 also with the quad taken from the SAM 2.1 mask) and r0214 (R3b frames 225, 0 and 449 with
   its hand-set quad). The `GAPS.md` row named "R3b and R3c"; the video lane has no OpenCV run on R3c, so there was no
-  Python output to compare with and R3c was not run. The frames were decoded again from the same clips (R3a_cu.mp4
-  sha256 `e02d0c17...`, R3b.mp4 `95adf1a3...`, as recorded there) with the video lane's settings (PNG for R3a_cu, JPEG
+  Python output to compare with and R3c was not run. [verifier, round 2: a Python output on R3c did exist, from
+  another lane: the chains lane's r0532 ran a copy of the video lane's `run_opencv_lines.py` on R3c frames 225, 0 and
+  449 with a neck quad set by hand, (1655,335) (1705,378) (1210,903) (1112,858), rectified to 1200x130
+  (`lanes/chains/trials.md`; output in `/home/user/gtr/lanes/chains/out/chainD/opencv-lines-R3c/`). The verifier ran
+  R3c with that quad; see "R3c, run by the verifier" below the comparison table.] The frames were decoded again from
+  the same clips (R3a_cu.mp4 sha256 `e02d0c17...`, R3b.mp4 `95adf1a3...`, as recorded there) with the video lane's
+  settings (PNG for R3a_cu, JPEG
   `-q:v 2` for R3b), one frame per ffmpeg call (`-vf select=eq(n\,<n>)`); hashes in `samples/opencv-js/frames_sha256.txt`.
 - Python reference (`scripts/gap2/opencv_lines_ref.py`; `venv-opencv` with `opencv-contrib-python` 5.0.0.93 and numpy
   2.4.6, installed `--offline` from the shared uv cache, freeze in `samples/opencv-js/venv-opencv.freeze.txt`, deleted
@@ -977,10 +1017,31 @@ per process, since its renderer was not recognised as one):
   and rectified view), the fret and string clusters, the neck axis, the fretboard width and the quad mask's pixel
   count. The `INTER_CUBIC` rectified images differ from Python's in 1 to 3 bytes, by 1 level, and their Canny edges are
   still equal.
+- R3c, run by the verifier (round 2): the same page (`opencvjs.html`, unchanged) and a copy of the reference script
+  whose job list also holds R3c with the chains lane's quad (`scripts/verify-gap2/opencv_lines_ref_verify.py`; the
+  only change is that job line), on R3c frames decoded the same way (JPEG `-q:v 2`, one ffmpeg call per frame; the
+  three files are byte-identical to the chains lane's frames of r0532). Runs, 2 cores each: r0702 (Python, all ten
+  frame/quad pairs, wall 3.01 s), r0703 (page, `raw`, wall 4.05 s), r0704 (page, `img`, wall 4.34 s). The Python
+  output for R3c equals r0532's `opencv_lines_R3c.json` in every field except the times, and its rectified PNGs equal
+  r0532's pixel for pixel. Page against Python, both input modes:
+
+| frame / quad | HoughLinesP segments on the frame (in quad) | string-like / fret-like | segments on the rectified neck | string-like / fret-like | segment lists, JS vs Python | homography, JS vs Python | rectified image: bytes differing (of), max difference |
+|---|---|---|---|---|---|---|---|
+| R3c 225 / hand-set (chains r0532) | 433 (124) | 75 / 48 | 117 | 28 / 29 | identical, same order | identical | 0 (of 468,000), 0 |
+| R3c 0 / hand-set | 378 (108) | 62 / 46 | 139 | 33 / 19 | identical, same order | identical | 0 (of 468,000), 0 |
+| R3c 449 / hand-set | 392 (102) | 57 / 43 | 116 | 33 / 30 | identical, same order | identical | 1 (of 468,000), 1 |
+
+  Canny edge-pixel counts, clusters, neck axis, width and mask pixels are equal as well; Chromium's JPEG decode gave
+  the same bytes as `cv2.imread` (0 differ) in 47.1 to 52.7 ms per frame. In r0703 and r0704 the other seven pairs gave
+  segment lists, homographies and rectified bytes identical to r0651 and r0654. Page times for R3c (repeats 2 and 3):
+  frame step 46.7 to 67.4 ms, rectified step 16.4 to 25.1 ms; OpenCV-Python in r0702: 17.8 to 30.3 ms and 5.2 to 9.3
+  ms (2 threads). Outputs: `/home/user/gtr/lanes/browser-audio-sync/verify-gap2/out/opencvjs/`; comparison JSONs in
+  `samples/verify-gap2/`.
 - Browser decoding (`img` mode): Chromium's decode of the three PNGs and of the three JPEGs gave the same RGB bytes as
   `cv2.imread` (0 bytes differ in each of the six frames); decoding took 18.4 to 30.7 ms per 640x480 PNG and 47.3 to
   53.0 ms per 1920x1080 JPEG.
-- Times (ms, repeats 2 and 3 of both page runs and of r0653; the first call on a frame took up to 68.8 ms in the page):
+- Times (ms, repeats 2 and 3 of both page runs and of r0653; the first call on a frame took up to 68.7 ms in the page
+  [verifier, round 2: was "68.8", which is a repeat-2 value]):
 
 | step group | R3a_cu, 640x480: OpenCV.js | R3a_cu: OpenCV-Python, 2 threads / 1 thread | R3b, 1920x1080: OpenCV.js | R3b: OpenCV-Python, 2 threads / 1 thread |
 |---|---|---|---|---|
@@ -1103,7 +1164,6 @@ figures miss the renderer).
 | r0611 | native reference on Chromium's decoded input, `ORT_DISABLE_ALL` | cores 2-3 (waited 15.6 s) | 42.4 | 5.97 |
 | r0613 | htdemucs_6s in ORT Web, 1 thread, `disabled` | cores 2-3 | 75.36 | 7.02 |
 | r0617 | htdemucs_6s in ORT Web, 2 threads, `all` without the CPU memory arena: `std::bad_alloc` | cores 2-3 (waited 13.6 s) | 9.46 | 5.81 |
-
 | r0646 | OpenCV-Python 5.0.0 reference on the six frames | cores 2-3 (waited 11.2 s) | 1.18 | 3.06 |
 | r0649 | OpenCV.js page, `raw` input, first try (segment reader read 1 segment per frame; not used) | cores 2-3 | 2.81 | 1.77 |
 | r0651 | OpenCV.js page, `raw` input (cv2.imread's bytes), 3 repeats | cores 0-1 | 2.66 | 1.75 |
@@ -1111,6 +1171,12 @@ figures miss the renderer).
 | r0654 | OpenCV.js page, `img` input (Chromium decodes PNG / JPEG), 3 repeats | cores 0-1 | 3.37 | 0.63 |
 
 gtr-eval ids of gap round 2: e1765 (browser stems, r0597), e1766 (native stems, r0596).
+
+[verifier, round 2: a blank line inside this table, between r0617 and r0646, split it in two (the second part had no
+header row); removed. r0596, r0603 and r0611 ran with ONNX Runtime's default thread setting, which in the verifier's
+re-run of r0603's command (r0696) pinned three worker threads to CPUs 1, 2 and 3 whatever the slot; no probe ran in
+those three runs themselves (note under the native table). The verifier's own runs are listed in its log at the end
+of this file.]
 
 ## Media kept outside git
 
@@ -1248,3 +1314,108 @@ was not recomputed.
 Clean-up after verification: the verifier's re-installed `node_modules` subset (208 MB), the npm tarballs, the two
 soundfont files it cached and its re-run WAVs were deleted; its re-run JSON results stay in
 `/home/user/gtr/lanes/browser-audio-sync/verify/out/`.
+
+## Verification log (verify-gapfill-browser-audio-sync, round 2, 2026-11-11)
+
+Checker: `verify-gapfill-browser-audio-sync`, on "Gap round 2" above, the gap round's edits to `survey.md` (tool-list
+line 55, section 49 additions, section 55), `for-aaron.md` (note in section 3) and `tools.json` (five entries), and its
+files under `samples/` and `scripts/`. Its scripts are in `scripts/verify-gap2/`, its small outputs in
+`samples/verify-gap2/`, its large outputs in `/home/user/gtr/lanes/browser-audio-sync/verify-gap2/`. Text it changed
+inside the sections above is marked "[verifier, round 2 ...]".
+
+**What was checked**
+
+- Ledger: all 15 runs cited (r0593 to r0654) are in `runs.jsonl` with the commands, cores, slot waits, walls and
+  `load1_at_start` values the "Run ids" table gives; every exit code is 0 (the three `std::bad_alloc` runs end with
+  the driver's exit 0; the text calls them failed sessions, which their result files and console logs show). The
+  ledger CPU and RSS figures quoted (r0597 4.17 s and 241.7 MB; 3.9 to 4.2 s for r0597, r0607, r0613; native 37.2,
+  44.2, 47.2 s) match. r0649's result file was overwritten by r0651 (same path), so its one-segment reading is the
+  trial agent's account.
+- gtr-eval: e1765 and e1766 are in `evals.jsonl` with the numbers in the score table; re-run from their stored
+  arguments with `--no-ledger`, both give identical metrics (only `gtr_eval_version` differs, 0.11.1 then 0.12.0;
+  `samples/verify-gap2/e176*_rerun_no_ledger.json`). e1417 (source-separation, 1.04 / 2.75 / 15.29 / 3.12) and e1223
+  match the values quoted.
+- Recomputed from the WAVs in separate code (`scripts/verify-gap2/check_htdemucs.py`,
+  `samples/verify-gap2/check_htdemucs_recomputed.json`): all 37 SHA-256 values of `stems_sha256.txt`; the 1- and
+  4-thread stems sample-identical to the 2-thread ones; format, peak and RMS of the six stems; sum of stems minus mix
+  -12.93 dB; the three projection rows; every cell of the parity table; the decode rule (0 of 882,000 samples differ
+  from it; 445,024 positive, 87 zero; soundfile's float32 read is x / 32768 for all).
+- Result files: every page result, console log, `ref.json` and sample named was opened; the browser and native
+  tables, the thread figures (process and thread `Cpus_allowed_list`, field 39, `DedicatedWorker` CPU times, CPU /
+  wall per phase), the failure times (9.9, 6.5, 8.2 s from the console logs), the server log (`ort-wasm-simd-
+  threaded.wasm`, 14,848,852 bytes), the download log (200, 136,428,532 bytes, 5.0 s), the npm logs ("added 18
+  packages in 3s", "added 1 package in 673ms") and the trimmed samples (equal to the full outputs apart from the
+  segment lists) agree with the text. The r0593 page version (6,880 bytes, from the 00:19 commit of this folder)
+  passes `graphOptimizationLevel: 'all'` itself. The page's overlap-add was read against `_chunked_separate_single`
+  and `_make_transition_window` in the PyPI wheel (sha256 `9232ad4c...`, re-downloaded); they match.
+- OpenCV: `segments()`, `classify()` and `clusters()` in `opencv_lines_ref.py` are identical to the video lane's
+  `run_opencv_lines.py`; the gap round's reference JSON equals the video lane's r0400 and r0214 JSON in every field
+  but the times and its rectified PNGs equal that lane's pixel for pixel; every count, cluster, homography and
+  rectified-byte figure of the comparison table and both timing tables was recomputed from the full results
+  (`scripts/verify-gap2/check_opencv.py`, `samples/verify-gap2/check_opencv_r065*_vs_video_lane.json`); the six frames
+  decoded again here have the hashes of `frames_sha256.txt`. Package facts re-read in a fresh `npm ci` of
+  `samples/environment/node-gap2-package-lock.json`: `onnxruntime-web` 150,622,959 bytes, `@techstark/opencv-js`
+  14,731,296 bytes (both equal to the registry's unpacked size), `dist/opencv.js` 13,298,869 bytes built with
+  `SINGLE_FILE=1` and `binaryDecode`, `createLineSegmentDetector` declared in `imgproc_feature.d.ts`.
+- Quotes and pages, fetched again on 2026-11-11 (copies in `verify-gap2/fetch/`, byte-identical to the gap round's
+  saved copies): the Hub API (revision, created 2026-05-21T15:34:49Z, last modified 15:35:22Z, `mit`, sizes and LFS
+  hashes of both ONNX files, `infer.py` 4,909 bytes, `requirements.txt` 46 bytes), every quoted string of `survey.md`
+  section 55 (card, `infer.py`, the browser guide, the wheel's `browser.py`, `LICENSE` and PyPI fields, upload
+  2026-05-22) and the two Demucs README sentences (`scripts/verify-gap2/check_quotes.py`), the Apache-2.0 clause in
+  the package's `LICENSE`, the build-information lines, the docs.opencv.org answers (404; 301 to `5.0/opencv.js`; 200
+  with 16,210,809 bytes), `CV_CN_SHIFT` 5 on 5.x and 3 on 4.x, the Signalsmith README sentence now in `tools.json`, and
+  the ONNX Runtime Web docs quotes ("WebAssembly has a memory limit of 4GB.", "This value includes the main thread."):
+  all verbatim. Code, weights and training-data licences are in separate fields, as in this file's other Demucs
+  entries. Code shown in backticks in section 55 (the card's `InferenceSession.create(...)` call, `int(7.8 * 44100)`,
+  `w[i] = i / overlap`) is condensed, not quoted; the source lines say the same.
+- NOT RUN reasons: the `webnn/stem-separator` correction holds (`trials.md` never gave the disk notice as its reason);
+  the R3c reason did not hold (below).
+- Language, secrets, size: no judging word outside quotations in the new text or the changed `tools.json` entries;
+  no key, token or personal detail; no audio or video and no file over 300 KB in this folder (`tools.json` 249,739
+  bytes after the edits; folder 2.9 MB). Earlier sections, tables and the 2026-11-10 verification logs of
+  `trials.md` and `survey.md` are unchanged apart from the lines the gap round edited (three in `trials.md`, one in
+  `survey.md`; checked with a diff against the 00:19 commit of this folder).
+
+**Re-runs by the verifier** (each in a 2-core slot, cores 0-1; pages served by `scripts/verify-gap2/serve_verify2.mjs`, a
+copy of `serve_gap2.mjs` that serves `/nm/`, `/dl/` and `/frames/` from `verify-gap2/` and writes uploads there, so the
+gap round's `out/` was not touched; driver `scripts/gap2/drive_gap2.mjs` unchanged; packages from the saved lock file;
+the model read from the shared Hugging Face cache, sha256 `7ce55792...`, no new download; venvs rebuilt `--offline`
+from the saved freezes):
+
+| run (original) | wall, load1 | result |
+|---|---|---|
+| r0687 (r0597: 2 threads, `disabled`) | 51.32 s, 6.07 | the six stem WAVs byte-identical to r0597's; session 15.21 s (15.65), separation 30.97 s (29.09), renderer VmHWM 1,209.0 MB (1,319.1), CPU / wall 1.582 (1.656), every listed thread on 0-1 |
+| r0716 (r0593: `all`, 2 threads) | 7.87 s, 1.49 | the same `std::bad_alloc` from `create` after 6.7 s; renderer VmHWM 4,383.8 MB |
+| r0701 (r0608: decode check) | 1.68 s, 2.60 | decoded WAV byte-identical to r0608's |
+| r0696 (r0603: native, `ORT_DISABLE_ALL`, default threads, in a `/proc` probe) | 30.77 s, 4.69 | stems sample-identical; ORT worker threads allowed only on CPU 1, CPU 2, CPU 3 (note under the native table) |
+| r0697, r0700 (native with 2 ORT threads, `disabled` / `all`) | 22.31 s, 4.17; 18.33 s, 3.42 | every thread on 0-1; separation 9.24 s and 8.38 s; stems sample-identical to r0603's and r0596's |
+| r0702 (r0653: Python reference, with R3c added) | 3.01 s, 2.57 | the seven gap-round pairs as before; R3c equal to the chains lane's r0532 apart from times |
+| r0703, r0704 (r0651, r0654: OpenCV.js page, `raw` / `img`, with R3c added) | 4.05 s, 2.40; 4.34 s, 2.45 | the seven pairs identical to r0651 / r0654 (segments, homographies, rectified bytes); R3c rows in the OpenCV section |
+
+**Changed**
+
+- `trials.md`: the slot-run `load1_at_start` range (0.63 to 7.02, not 2.1 to 7.0); the sampler cost (1.8 and 3.2 ms in
+  the OpenCV runs) and that the driver lists only threads with CPU time; the native table's "2 cores each" (not 2-core
+  figures: ORT's default threads; the verifier's probe r0696 and the 2-thread runs r0697 and r0700 added); the "Speed
+  facts" native times (now the 2-thread figures 9.24 s and 8.38 s); a thread-binding bullet (r0687, and the native
+  contrast); the R3c reason (a Python output on R3c existed, the chains lane's r0532) and an R3c table from the
+  verifier's runs; "68.8" to "68.7 ms" for the first call; a blank line that split the gap-round run-id table.
+- `survey.md` section 55 and `for-aaron.md` section 3: "about 4.38 GB" replaced by the measured 4,381 to 4,386 MB
+  (the record's MB are 1,048,576 bytes: about 4.28 GiB).
+- `tools.json` (`scripts/verify-gap2/update_tools_json_verify2.py`): r0596, r0603, r0611 `cores` null with the
+  thread note; runs r0687, r0696, r0697, r0700, r0701 added to the htdemucs_6s entry and r0702 to r0704 to OpenCV.js;
+  the OpenCV.js "R3c was not run" item removed. `scripts/gap2/update_tools_json.py` no longer reproduces the file
+  alone; run it, then this script.
+
+**Still UNVERIFIED**
+
+- Whether ORT's worker threads left the slot in r0596, r0603 and r0611 themselves (no probe ran in them; the same
+  command in r0696 and the same package in the source-separation lane's r0610 showed it). The `venv-demucsonnx`
+  size of 151 MB (deleted; the rebuilt venv measured 154 MB by `du -sh` after its runs).
+- r0649's one-segment-per-frame reading (result overwritten). The maker's speed, memory and parity figures, and the
+  cause of the -41 to -61 dB browser-native difference, as the gap round says.
+
+Clean-up: the verifier's venvs (`venv-verify-demucsonnx` 154 MB, `venv-verify-opencv` 210 MB, both hard-linked from the
+shared uv cache), its `node_modules` (169 MB), its WAV and raw RGB outputs and the re-downloaded wheel were deleted;
+its JSON results, probe files, frames (PNG and JPEG) and page fetches stay in
+`/home/user/gtr/lanes/browser-audio-sync/verify-gap2/`.
