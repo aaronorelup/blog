@@ -478,7 +478,7 @@ once the 3D hero pins the top.
 | Its post links are exactly the ledger's listed posts; each sits once under its topic with its AO id; the topic pills, group counts, the counter line ("N posts · N projects · N courses") and "Open the ledger" carry the real counts; Start here is `START_HERE` in order; a notes link only for a listed post's own notes, on every index row whose post has them | tea-2 |
 | Projects (each section's cards, in order), courses, the newest Now snapshot and About show what `/projects/`, `/courses/`, `/now/` and `/about/` show | tea-3 |
 | Every internal link and picture resolves: page anchors are ids on the page, every other address answers 200, an anchor on another page is an id there | tea-4 |
-| No draft or unlisted post anywhere: no slug in the HTML, no title, no AO id of its own | tea-5 |
+| No draft or unlisted post anywhere: no slug in the HTML; no title and no AO id of its own in the page's text or any attribute, outside Now's and About's own words (the main site's, tea-3) | tea-5 |
 | Canonical, robots and the sitemap follow the shipped `TEA_SEO` through `teaSeo()` (`'pending'`: self canonical, no robots tag, not in the sitemap); never a feed item, no `data-pagefind-body` | tea-6 |
 | The panel footer's "Tea room" link and the homepage gate's button reach `/tea/`; the gate's `data-no-fly` leaves at once (the scene doesn't hold the click to fly) | tea-7 |
 | The hero, the rail and the footer lead back to `/`; the footer carries every `NAV` link | tea-8 |

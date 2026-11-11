@@ -149,17 +149,26 @@ test('tea-4 every internal link and picture on /tea/ resolves in the build', asy
   }
 });
 
-test('tea-5 no draft or unlisted post appears anywhere on the page: no slug, no title, no id of its own', async ({ page, request }) => {
+test('tea-5 no draft or unlisted post shows on the page: no slug anywhere, no title or id of its own outside Now’s and About’s words', async ({ page, request }) => {
   const html = await (await request.get(TEA)).text();
   for (const { slug } of HIDDEN) expect(html, slug).not.toMatch(new RegExp(`(^|[^a-z0-9-])${slug}([^a-z0-9-]|$)`));
   // an id a listed post also carries (two posts filed under one AO number) tells nothing, so only the others count
   const listedIds = new Set(Object.values((await (await request.get('/ledger/previews.json')).json()).posts).map((p) => p.id));
   await page.goto(TEA);
-  const ids = await page.locator(':is(.tea-card-meta, .tea-row-meta) > span:first-child').allTextContents();
-  const titles = (await page.locator(':is(.tea-card-title, .tea-row-title)').allTextContents()).map(squash);
+  // All the page says, its text and every attribute (alt text, titles, addresses), but Now and About: those are the
+  // main site's own words, which tea-3 holds equal to /now/ and /about/, not a list of posts.
+  const said = squash(await page.evaluate(() => {
+    const doc = document.documentElement.cloneNode(true);
+    for (const el of doc.querySelectorAll('.tea-prose, .tea-about-text')) el.remove();
+    return [doc.textContent, ...[...doc.querySelectorAll('*')].flatMap((e) => [...e.attributes].map((a) => a.value))].join('\n');
+  }));
+  expect(said.length).toBeGreaterThan(10_000);
+  // each place it is said, with a little of what is around it
+  const at = (re) => [...said.matchAll(new RegExp(re, 'g'))].map((m) => said.slice(Math.max(0, m.index - 40), m.index + m[0].length + 40));
+  const literal = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   for (const { data } of HIDDEN) {
-    if (!listedIds.has(data.id)) expect(ids, data.id).not.toContain(data.id);
-    expect(titles, data.title).not.toContain(squash(data.title));
+    if (!listedIds.has(data.id)) expect(at(`(?<![A-Za-z0-9-])${data.id}(?![0-9])`), data.id).toEqual([]);
+    expect(at(literal(squash(data.title))), data.title).toEqual([]);
   }
 });
 
