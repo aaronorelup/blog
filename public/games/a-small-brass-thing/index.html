@@ -168,10 +168,12 @@ function stepTweens(h) {
 function* wait(s) { let t = 0; while (t < s) t += (yield) || 0; }
 function* until(f) { while (!f()) yield; }
 function* tweenY(o, k, to, d, e) { const t = tw(o, k, to, d, e); while (!t.done) yield; }
+function* audioReady() { let t = 0; while (A.ctx && A.ctx.state !== 'running' && t < 0.4) t += (yield) || 0; }   // a touch unlocks sound a moment after it lands
 
 // ---------- effects ----------
 function ripple(x, y, r0, r1, d, c, a, w) { if (fx.length < 160) fx.push({ kind: 0, x, y, r0, r1, d, c, a: a || .6, w: w || 0.012, t: 0 }); }
 function sparks(x, y, n, c, sp) {
+  if (RM) return;
   for (let i = 0; i < n && fx.length < 160; i++) {
     const a = Math.random() * TAU, v = (sp || .5) * (.4 + Math.random() * .8);
     fx.push({ kind: 1, x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, d: .5 + Math.random() * .5, c, a: .9, t: 0 });
@@ -225,7 +227,7 @@ function aInit() {
 }
 function aUnlock() {
   if (!aInit()) return;
-  if (A.ctx.state === 'suspended' && !document.hidden) { const p = A.ctx.resume(); if (p && p.catch) p.catch(() => {}); }
+  if (A.ctx.state !== 'running' && A.ctx.state !== 'closed' && !document.hidden) { const p = A.ctx.resume(); if (p && p.catch) p.catch(() => {}); }
 }
 const aOk = () => A.ctx && A.ctx.state === 'running' && !G.muted && A.n < (TS > 4 ? 8 : 56);
 const aT = (off) => A.ctx.currentTime + 0.02 + (frameT + (off || 0)) / TS;
@@ -257,7 +259,7 @@ function sTick(i, soft) {
 function sSeat(last) { if (!aOk()) return; const t = aT(); osc('sine', 196, t, 0.003, 0.22, 0.16, 150); osc('triangle', last ? 1760 : 1174.7, t, 0.002, 0.05, 0.3); }
 function sClunk() {
   if (!aOk()) return; const t = aT();
-  osc('sine', 96, t, 0.004, 0.75, 0.42, 58); osc('sine', 70, t + 0.01, 0.006, 0.5, 0.5); nz(t, 0.001, 0.3, 0.05, 'lowpass', 420, 0.7);
+  osc('sine', 96, t, 0.004, 0.7, 0.42, 58); osc('sine', 70, t + 0.01, 0.006, 0.45, 0.5); osc('triangle', 196, t, 0.002, 0.28, 0.11, 104); nz(t, 0.001, 0.3, 0.05, 'lowpass', 480, 0.7);
 }
 function sHop() { if (!aOk()) return; osc('sine', 330, aT(), 0.02, 0.07, 0.32, 760); }
 function sBead(i) { if (!aOk()) return; const t = aT(); osc('sine', [880, 740, 587][i], t, 0.002, 0.1, 0.12, [660, 554, 440][i]); nz(t, 0.001, 0.12, 0.02, 'bandpass', 3000, 2); }
@@ -289,7 +291,7 @@ function sHorn(f, vol) {   // two detuned saws through a lowpass that opens as t
   fl.connect(g); g.connect(A.bus);
   [f, f * 1.007, f * 0.5].forEach((ff, k) => { const o = c.createOscillator(); o.type = k < 2 ? 'sawtooth' : 'sine'; o.frequency.value = ff; o.connect(fl); o.start(t); o.stop(t + 2.2); aTrack(o, k ? [] : [fl, g]); });
 }
-function sBass(f, off) { if (!aOk()) return; const t = aT(off); osc('triangle', f, t, 0.02, 0.26, 2.3); osc('sine', f * 2, t, 0.02, 0.07, 1.6); }
+function sBass(f, off) { if (!aOk()) return; const t = aT(off); osc('triangle', f * 2, t, 0.02, 0.17, 2.4); osc('sine', f, t, 0.02, 0.2, 2.2); osc('sine', f * 4, t, 0.02, 0.03, 1.2); }
 function sChord() { if (!aOk()) return; [146.83, 220, 293.66, 369.99, 440, 587.33, 880].forEach((f, k) => sPluck(f, k * 0.075 * TS, 0.8, (k - 3) * 0.12)); sBass(73.42, 0); }
 function seaSync() {   // brown noise under a slow LFO, following G.sea
   if (!A.ctx || A.ctx.state !== 'running') return;
@@ -328,6 +330,7 @@ function resize() {
   L[2] = { x: W * 0.29, y: H * (H > W * 1.05 ? 0.565 : 0.6), s: Rh };
   L[3] = { x: W / 2, y: H * 0.47, s: Rh };
   placeBoats(capH); buildHome(); camUpdate();
+  if (G.dial.k >= 0 && !G.input.beam) G.beam.tgt = G.beam.ang + adiff(G.beam.ang, boats[G.dial.k].ang);   // stay on the boat being answered
 }
 function camUpdate() {
   const k = clamp(G.cam.k, 0, 3), i = Math.min(2, Math.floor(k)), f = k - i, a = L[i], b = L[i + 1];
@@ -405,7 +408,7 @@ function buildHome() {
   HM.order = [7, 2, 12, 16, 5, 9, 0, 14, 10, 3, 17, 6, 1, 11, 15, 8, 4, 13];   // the order windows light in
   HM.piers = [0.555, 0.675].map(u => { const v = coastV(u), a = P(u, v + 0.005), b = P(u + 0.008, v - (port ? 0.05 : 0.075)); return [a[0], a[1], b[0], b[1]]; });
   const mo = [[0.535, 0.038], [0.59, 0.05], [0.7, 0.045]].map(m => P(m[0], coastV(m[0]) - m[1] * (port ? 0.7 : 1)));
-  const st = [[0.66, -0.1], [1.12, 0.22], [0.98, -0.1]].map(m => P(m[0], m[1])), ct = P(0.63, 0.4);
+  const st = [[0.66, 0.11], [1.12, 0.24], [0.98, 0.11]].map(m => P(m[0], m[1])), ct = P(0.63, 0.4);
   HM.path = mo.map((m, i) => ({ a: st[i], c: [ct[0] + (i - 1) * 2, ct[1]], b: m }));
   HM.trees = [];   // a little texture for the land: trees, kept clear of the village and the light
   for (let k = 0; k < 70; k++) {
@@ -489,13 +492,15 @@ function nextMove() { const p = plan(); if (!p) return null; for (let i = 0; i <
 function nearestLost() { let best = null, bd = 9; for (const b of boats) if (!b.found) { const d = Math.abs(adiff(G.beam.ang, b.ang)); if (d < bd) { bd = d; best = b; } } return best; }
 
 // ---------- the idle ladder: a cue at once, a ghost hand at 8 s, a nudge at 20 s, and at 40 s it finishes the step ----------
-function task(kind, text, once) { G.task = kind; hint.idle = hint.carry ? 14 : 0; hint.stuck = 0; hint.lvl = 0; hint.acc = 0; hint.demo = 0; hint.once = once ? 3.4 : 0; hint.text = text || ''; }
+function task(kind, text, once) { G.task = kind; hint.idle = hint.carry ? 14 : 0; hint.stuck = 0; hint.lvl = 0; hint.acc = 0; hint.demo = 0; hint.once = once ? 3.4 : 0; hint.text = text || ''; hint.said = false; }
 function taskEnd() { hint.carry = !!G.task && hint.lvl >= 3; G.task = null; hint.lvl = 0; hint.once = 0; }   // a step the box finished alone: the next one waits less
 function stepHint(h) {
   if (!G.task) return;
   hint.idle += h; hint.stuck += h; hint.demo += h;
   const lv = hint.idle >= 40 ? 3 : hint.idle >= 20 ? 2 : (hint.idle >= 8 || hint.stuck >= 32) ? 1 : 0;
-  if (lv !== hint.lvl) { if (lv > hint.lvl && lv === 1 && hint.text) say(hint.text, 10); if (lv >= 1 && hint.lvl < 1) hint.demo = 0; hint.lvl = lv; }
+  if (lv !== hint.lvl) { if (lv >= 1 && hint.lvl < 1) hint.demo = 0; hint.lvl = lv; }
+  // the ghost hand comes first and the words a little later, so a player who is only thinking keeps the puzzle
+  if (!hint.said && hint.text && (hint.idle >= (G.task === 'ember' ? 8 : 13) || hint.stuck >= 44)) { hint.said = true; say(hint.text, 11); }
   if (lv < 2 || G.task === 'ember') return;
   if (G.task === 'rings') {
     hint.acc += h;
@@ -618,7 +623,7 @@ const BEAM_HW = 0.15, GV = [240, 192, 106], CV = [226, 121, 92];
 const mixGC = (t, a) => 'rgba(' + Math.round(lerp(GV[0], CV[0], t)) + ',' + Math.round(lerp(GV[1], CV[1], t)) + ',' + Math.round(lerp(GV[2], CV[2], t)) + ',' + clamp(a, 0, 1).toFixed(3) + ')';
 const disk = (c, x, y, r) => { c.beginPath(); c.arc(x, y, Math.max(0, r), 0, TAU); };
 const px = (r, a) => [r * Math.sin(a), -r * Math.cos(a)];
-const beamAng = () => RM ? Math.round(G.beam.ang / (7.5 * DEG)) * 7.5 * DEG : G.beam.ang;
+const beamAng = () => !RM ? G.beam.ang : G.hand.spin ? Math.floor(G.hand.phase + 1e-6) * SA : Math.round(G.beam.ang / (7.5 * DEG)) * 7.5 * DEG;
 const handAng = () => G.hand.follow ? beamAng() : (RM ? Math.floor(G.hand.phase + 1e-6) : G.hand.phase) * SA;
 function glow(c, x, y, r, rgb, a) {
   if (a <= 0.004 || r <= 0) return;
@@ -861,7 +866,7 @@ function drawDisc(c) {
     const u = lerp(1, L[0].s / s, G.ember), em = (1 - a) , p = px(bd.r, bd.ang), k = (1 + 0.45 * bd.z) * u;
     const b2 = RM ? 1 : 0.8 + 0.2 * Math.sin(G.clock * 1.6);
     if (em > 0.01) glow(c, p[0], p[1], 0.8 * u * (0.9 + 0.1 * b2), CORAL, 0.14 * em * b2 * bd.a);
-    glow(c, p[0], p[1], 0.17 * k * (1 + 1.3 * em) * (em > 0.01 ? b2 : 1) + 0.2 * G.lampPulse * (bd.r < 0.02 ? 1 : 0), CORAL, 0.85 * bd.a);
+    glow(c, p[0], p[1], 0.17 * k * (1 + 1.3 * em) * (em > 0.01 ? b2 : 0.9 + 0.1 * b2) + 0.2 * G.lampPulse * (bd.r < 0.02 ? 1 : 0), CORAL, 0.85 * bd.a);
     c.globalAlpha = bd.a; c.fillStyle = '#E2795C'; disk(c, p[0], p[1], 0.036 * k * (1 + 0.6 * em)); c.fill();
     c.fillStyle = 'rgba(255,225,205,0.85)'; disk(c, p[0] - 0.008 * k, p[1] - 0.009 * k, 0.013 * k * (1 + 0.6 * em)); c.fill();
     if (G.input.ember && !RM) { const t = (G.clock % 2.6) / 2.6; c.strokeStyle = col(CORAL, 0.5 * (1 - t)); c.lineWidth = 1.5 / s; disk(c, 0, 0, 0.08 + t * 0.34); c.stroke(); }
@@ -946,8 +951,9 @@ function drawLand(c) {
     const P = HM.path[j], u = t, v = 1 - u, x = v * v * P.a[0] + 2 * v * u * P.c[0] + u * u * P.b[0], y = v * v * P.a[1] + 2 * v * u * P.c[1] + u * u * P.b[1];
     const dx = 2 * v * (P.c[0] - P.a[0]) + 2 * u * (P.b[0] - P.c[0]), dy = 2 * v * (P.c[1] - P.a[1]) + 2 * u * (P.b[1] - P.c[1]);
     const Ln = Math.max(0.2, 8.5 / s) * [1, 0.88, 1.14][j], bob = RM ? 0 : Math.sin(G.clock * 1.2 + j * 2) * 0.05 * (t >= 1 ? 1 : 0.3);
-    hull(c, x, y, Math.atan2(dx, -dy) + bob, Ln, a, j, t < 0.97);
-    glow(c, x, y, Ln * 1.5, GOLD, 0.55 * a * (1 - 0.5 * d)); c.fillStyle = col(CREAM, a); disk(c, x, y, Math.max(Ln * 0.14, 1.3 / s)); c.fill();
+    const ba = a * clamp(t / 0.07, 0, 1);
+    hull(c, x, y, Math.atan2(dx, -dy) + bob, Ln, ba, j, t < 0.97);
+    glow(c, x, y, Ln * 1.5, GOLD, 0.55 * ba * (1 - 0.5 * d)); c.fillStyle = col(CREAM, ba); disk(c, x, y, Math.max(Ln * 0.14, 1.3 / s)); c.fill();
   }
   c.restore();
 }
@@ -962,9 +968,10 @@ function pluck(i, off) {
 }
 function stepHand(h) {
   const Hd = G.hand; if (!Hd.on) return;
-  const p0 = Hd.phase, p1 = p0 + h / STEP_T; Hd.phase = p1;
+  const p0 = Hd.phase, lim = Hd.stop, end = lim != null && p0 + h / STEP_T >= lim, p1 = end ? lim : p0 + h / STEP_T; Hd.phase = p1;
   let n = Hd.fresh ? Math.ceil(p0 - 1e-9) : Math.floor(p0 + 1e-9) + 1; Hd.fresh = false;
-  for (; n <= p1 + 1e-9; n++) {   // every detent the hand passed in this step
+  if (end) { Hd.on = false; Hd.stop = null; }   // a round that ends at the top does not play the top twice
+  for (; n <= p1 + 1e-9 && !(end && n > lim - 1e-6); n++) {   // every detent the hand passed in this step
     const off = (n - p0) * STEP_T, s = mod(n, 12);
     if (s === 0 && Hd.onBar) Hd.onBar(Math.round(n / 12), off);
     for (const r of rings) if (r.peg > 0.5 && r.a > 0.5 && mod(r.step, 12) === s) pluck(r.i, off);
@@ -974,6 +981,7 @@ function stepHand(h) {
 }
 function findBoat(b) {
   b.found = 1; b.flare = 1; tw(b, 'lit', 1, 0.5, E.out3); sFound(b.i); hint.stuck = 0;
+  tw(b, 'head', b.head + adiff(b.head, Math.atan2(-b.x, b.y)), 1.6, E.io2, 0.2);   // it turns its bow to the light
   ripple(b.x, b.y, 0.06, 0.75, 1.2, GOLD, 0.75); ripple(b.x, b.y, 0.06, 0.45, 0.8, CREAM, 0.5); sparks(b.x, b.y, 8, GOLD, 0.6);
 }
 function stepBeam(h) {
@@ -1077,9 +1085,9 @@ function* answer(onNote) {   // once a phrase is right, the hand goes round once
   const top = Math.ceil((Hd.phase + 0.01) / 12) * 12;
   yield* tweenY(Hd, 'phase', top, 0.3 + (top - Hd.phase) * 0.04, E.io2);
   yield* wait(0.3);
-  Hd.fresh = true; Hd.onStep = onNote; Hd.on = true;
-  yield* until(() => Hd.phase >= top + 12);
-  Hd.on = false; Hd.phase = top + 12; Hd.onStep = null;
+  Hd.fresh = true; Hd.onStep = onNote; Hd.stop = top + 12; Hd.on = true;
+  yield* until(() => !Hd.on);
+  Hd.onStep = null;
 }
 function* dotRound(idx, set, where, text) {   // pegs onto marks: on the rim, or around a boat
   const Hd = G.hand; G.pit = idx; G.dotsWhere = where;
@@ -1102,6 +1110,7 @@ function* bWake() {
   G.input.ember = true; task('ember', 'Touch the light.');
   yield* until(() => G.tapped);
   taskEnd(); G.input.ember = false; say('', 1); cv.style.cursor = 'default';
+  yield* audioReady();
   sWake(); G.lampPulse = 1.4; ripple(0, 0, 0.05, 1.0, 1.5, CORAL, 0.6); ripple(0, 0, 0.05, 0.6, 1.0, CORAL, 0.4);
   yield* wait(0.8);
   tw(G, 'discA', 1, 1.7, E.out3);
@@ -1119,14 +1128,16 @@ function* bLatch() {
   yield* lock([10, 2], 'Each ring has its own gold mark.');
   yield* lock([7, 10], 'Each ring has its own gold mark.');
   yield* ringIn(2, 4);
-  yield* lock([4, 5, 7], 'Each ring has its own gold mark.');
-  yield* lock([1, 8, 4], 'Each ring has its own gold mark.');
+  yield* lock([4, 7, 7], 'Each ring has its own gold mark.');
+  yield* lock([1, 10, 4], 'Each ring has its own gold mark.');
   yield* wait(0.3);
 }
 function* bGears() {
   yield* wait(0.5);
+  // The first geared round starts with two notches already home, so turning the outer ring is seen to carry one away.
+  // The second leaves the inner rings a step or two from their marks: tempting, and wrong to do first.
   yield* linkIn(0); yield* wiggle(0);
-  yield* lock([5, 9, 2], 'The outer ring pulls its neighbour along. Set it first.');
+  yield* lock([5, 10, 4], 'The outer ring pulls its neighbour along. Set it first.');
   yield* linkIn(1); yield* wiggle(0);
   yield* lock([9, 0, 3], 'Each ring pulls the one inside it. Work from the outside in.');
   // the lamp lights, and every notch turns out to hold a peg
@@ -1168,9 +1179,8 @@ function* bHand() {
     for (let i = 0; i < 3; i++) { const d = sdiff(mod(rings[i].step, 12), p[i]); if (d) { rings[i].step += d; rings[i].flash = 1; sTick(i, true); } }
     G.pit = k; G.lampPulse = 0.8;
     yield* wait(0.5);
-    const top = Hd.phase; Hd.fresh = true; Hd.on = true;
-    yield* until(() => Hd.phase >= top + 12);
-    Hd.on = false; Hd.phase = top + 12;
+    Hd.fresh = true; Hd.stop = Hd.phase + 12; Hd.on = true;
+    yield* until(() => !Hd.on);
   }
   yield* wait(0.7);
 }
@@ -1234,11 +1244,11 @@ function* bHome() {
   let lit = 0;
   Hd.onBar = (b, off) => {
     if (b >= 18) return;
-    const k = b % 6; Hm.pass = Math.floor(b / 6); setPhrase(k);
+    const k = b % 6; Hm.pass = Math.floor(b / 6); setPhrase(k); G.lampPulse = 0.9;
     if (Hm.pass >= 1) sBass(BASS[k], off);
     if (b === 6) tw(Hm, 'dawn', 1, 11.5 * 12 * STEP_T, E.io2);
     if (b === 6 || b === 8 || b === 10) tw(Hm.boat, (b - 6) / 2, 1, 9.5, E.out2);
-    if (b === 10 || b === 12 || b === 14) sHorn(HORN[(b - 10) / 2], 0.42);
+    if (b === 10 || b === 12 || b === 14) { const j = (b - 10) / 2, m = HM.path[j].b; sHorn(HORN[j], 0.42); ripple(m[0], m[1], 0.3, 2.6, 1.8, GOLD, 0.7); ripple(m[0], m[1], 0.3, 1.6, 1.3, CREAM, 0.5); }
   };
   G.onPluck = (i, off) => {
     let k;
@@ -1246,9 +1256,9 @@ function* bHome() {
     Hm.tw[k] = 1;
     if (Hm.pass >= 2) sPluck(PIT[G.pit][i] * 2, off + STEP_T, 0.3, 0);
   };
-  Hd.on = true;
-  yield* until(() => Hd.phase >= 18 * 12);
-  Hd.on = false; Hd.spin = false; Hd.onBar = null; G.onPluck = null;
+  Hd.stop = 18 * 12; Hd.on = true;
+  yield* until(() => !Hd.on);
+  Hd.spin = false; Hd.onBar = null; G.onPluck = null;
   for (let k = 0; k < 18; k++) { Hm.lit[k] = 1; Hm.tw[k] = 1; }
   sChord(); B.flash = 1; G.lampPulse = 1.5;
   tw(Hm, 'sun', 1, 5.5, E.out2); tw(B, 'tgt', B.tgt + 2.2, 6, E.out2); tw(B, 'a', 0.25, 5, E.io2);
@@ -1273,7 +1283,7 @@ function* bKeep() {   // a return visit: the dawn harbour, the boats moored, the
   G.ended = true; keepEl.hidden = false; document.getElementById('stage').classList.add('keeping');
   Array.from(keepEl.children).forEach((el, i) => reveals.push({ el, t: 0.6 + i * 0.7 }));
   Hd.phase = 0; Hd.fresh = true; Hd.spin = true;
-  Hd.onBar = (b, off) => { const k = mod(b, 6); setPhrase(k); sBass(BASS[k], off); };
+  Hd.onBar = (b, off) => { const k = mod(b, 6); setPhrase(k); sBass(BASS[k], off); G.lampPulse = 0.9; };
   G.onPluck = () => { G.home.tw[Math.floor(Math.random() * 18)] = 1; };
   Hd.on = true;
   yield* wait(2.5);
@@ -1287,7 +1297,7 @@ function base(i, sv) {
   tweens.length = 0; fx.length = 0; drags.clear(); run = null;
   Object.assign(G, { discA: 0, lamp: 0, lampPulse: 0, thump: 0, sea: 0, fade: 0, ember: 0, marks: [], dots: [], dotsWhere: 'rim', goal: null, solveT: 0, pit: 0, task: null, onPluck: null, tapped: false, ended: false });
   Object.assign(G.bead, { r: 0, ang: 0, a: 1, z: 0 }); G.link[0] = G.link[1] = 0;
-  Object.assign(G.hand, { a: 0, len: 0, phase: 0, on: false, fresh: false, follow: false, spin: false, onStep: null, onBar: null, glow: 0 });
+  Object.assign(G.hand, { a: 0, len: 0, phase: 0, on: false, fresh: false, follow: false, spin: false, stop: null, onStep: null, onBar: null, glow: 0 });
   Object.assign(G.beam, { a: 0, len: 0, ang: 0, tgt: 0, flash: 0 });
   Object.assign(G.home, { a: 0, dawn: 0, sun: 0, pass: 0 }); G.home.lit = new Array(18).fill(0); G.home.tw = new Array(18).fill(0); G.home.boat = [0, 0, 0];
   G.cam.k = 0; G.dial.k = -1; G.dial.a = 0; G.input.ember = G.input.rings = G.input.beam = false;
@@ -1295,7 +1305,7 @@ function base(i, sv) {
   boats.forEach((b, k) => Object.assign(b, { found: 0, seen: 0, lit: 0, flare: 0, horn: 0, sail: 0, gone: 0, head: [0.7, -1.0, 2.3][k] }));
   const sr = (sv && Array.isArray(sv.r)) ? sv.r : [], at = (k, d) => { const v = Number.isInteger(sr[k]) ? mod(sr[k], 12) : d; rings[k].step = rings[k].vis = v; };
   if (i >= 1) { G.discA = 1; rings[0].a = 1; at(0, 8); }
-  if (i >= 2) { rings[1].a = rings[2].a = 1; at(1, 8); at(2, 4); }
+  if (i >= 2) { rings[1].a = rings[2].a = 1; at(1, 10); at(2, 4); }
   if (i >= 3) { G.lamp = 1; G.bead.a = 0; rings.forEach(r => { r.peg = 1; }); }
   if (i >= 4) { G.hand.a = 1; G.hand.len = 1; }
   if (i >= 5) { G.cam.k = 1; G.sea = 1; G.hand.follow = true; Object.assign(G.beam, { a: 1, len: 1 }); G.beam.ang = G.beam.tgt = restAngle(); boats.forEach(b => { b.found = 1; b.lit = 1; }); }
@@ -1317,7 +1327,7 @@ function frame(now) {
   if (!(dt > 0)) dt = 0; else if (dt > 0.05) dt = 0.05;   // clamp, so a pause or a slow frame never jumps the game
   if (document.hidden) return;
   if (A.mine) {   // only ever undo a suspend this page did itself: a host frame that suspends the audio keeps it suspended
-    if (A.ctx.state === 'suspended') { A.mine = false; const p = A.ctx.resume(); if (p && p.catch) p.catch(() => {}); } else if (now > A.mineT) A.mine = false;
+    if (A.ctx.state !== 'running') { A.mine = false; const p = A.ctx.resume(); if (p && p.catch) p.catch(() => {}); } else if (now > A.mineT) A.mine = false;
   }
   frameT = 0;
   let g = dt * TS;
