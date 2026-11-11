@@ -21,6 +21,8 @@ interface Props {
   published?: Date;
   // The footer's line after the copyright (PanelChrome's own line when left out).
   tagline?: string;
+  // False on a page that brings its own <main> (/stats); PanelChrome's scrolling body is the landmark otherwise.
+  main?: boolean;
 }
 const {
   title,
@@ -31,6 +33,7 @@ const {
   image,
   published,
   tagline,
+  main,
 } = Astro.props;
 ---
 
@@ -45,7 +48,7 @@ const {
     <ModeToggle />
     <div id="panel-screen" class="pc-screen">
       <div id="panel-card" class="pc-card">
-        <PanelChrome active={active} view={view} tagline={tagline}>
+        <PanelChrome active={active} view={view} tagline={tagline} main={main}>
           <slot />
         </PanelChrome>
       </div>
