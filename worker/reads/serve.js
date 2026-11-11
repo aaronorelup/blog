@@ -1,5 +1,5 @@
 // /api/reads, the reader counter AO-057's demo shows (src/elements/ao-demo/demos/cf/index.js). POST {slug} counts one read, GET
-// ?slug= gives the counts. Stored (reads.sql): post, UTC day, the edge's country, a count; never an address, a
+// ?slug= gives a listed post's counts. Stored (reads.sql): post, UTC day, the edge's country, a count; never an address, a
 // browser, a cookie or a time of day. A read counts only from this site's own pages, from something that doesn't
 // call itself a bot, for a listed post. The limiters are keyed on the post, so one script can add at most about
 // 30 reads a minute to one post per Cloudflare location (the post says a patient script can inflate it).
@@ -35,6 +35,9 @@ export async function count(request, env) {
 export async function counts(request, env) {
   const slug = new URL(request.url).searchParams.get('slug') || '';
   if (!SLUG.test(slug)) return status(400);
+  // Before the limiter and D1: an unlisted post answers exactly as a slug that never existed, whatever was counted
+  // while it was listed, and a made-up slug costs no limiter key and no query.
+  if (!(await isListed(env, slug))) return status(404);
   if (!(await env.STATS_LIMIT.limit({ key: slug })).success) return status(429);
   const now = Date.now();
   await ensure(env.DB, SCHEMA);

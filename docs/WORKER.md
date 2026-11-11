@@ -32,7 +32,7 @@ needs a secret or state. Only the paths `run_worker_first` names reach it: video
 | Route | Answers |
 |---|---|
 | `POST /api/reads {slug}` | `204` counted (or skipped quietly for a self-declared bot); `403` not from one of the site's pages; `400` no slug, or a body over 1 KB; `404` not a listed post; `429` that post had 30 reads in the last minute here |
-| `GET /api/reads?slug=` | `200 { slug, total, first, today, days: [{ day, n }], countries: [{ country, n }], asOf }`; `400`; `429` past 60 a minute for that post |
+| `GET /api/reads?slug=` | `200 { slug, total, first, today, days: [{ day, n }], countries: [{ country, n }], asOf }`; `400`; `404` not a listed post, before the limiter and D1 (an unlisted post answers exactly as an unknown slug, whatever was counted while it was listed); `429` past 60 a minute for that post |
 | `GET`, `HEAD /api/stats` | `200` the stored snapshot (cached 5 minutes per location); `503 { error, state }` (`gathering` or `not-connected`) until one exists; `500 { error }` when D1 can't be read |
 | `GET /api/session` | `200 { ask, voice }`, cached 30 s: `ask` `true` when the `ask` flag is on and `DEEPSEEK_API_KEY` is set; `voice` when `ask` is and the `ask_voice` flag is on too |
 | `POST /api/session {turnstile}` | `200 { token, exp }`, an Ask token for 30 minutes; `403` not from one of the site's pages; `413` a body over 3 KB (a Turnstile response can be 2,048 characters); `401` siteverify says no, or the solve's hostname isn't in `TURNSTILE_HOSTNAMES`, or its action isn't `ask` |
