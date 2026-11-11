@@ -117,6 +117,9 @@
   font-family: var(--font-body); font-weight: 600; font-size: 16.5px; line-height: 1.3;
 }
 .tea-card-title a, .tea-row-title a { text-decoration: none; transition: color 160ms ease; }
+/* The outside-link arrow after a project's name: no shipped Zen Maru file draws it (fonts.css lists U+2197 for slice
+   58, whose file has no such glyph), so it takes the body's stack and that file is not fetched for nothing. */
+.tea-card-title [aria-hidden] { font-family: var(--font-body); }
 .tea-card-line {
   margin: 0; font-family: var(--font-serif); font-size: 15.5px; line-height: 1.5; color: var(--pc-body);
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden;
