@@ -73,10 +73,13 @@
     linear-gradient(to top, rgba(40, 22, 30, .45), rgba(40, 22, 30, 0) 30%);
 }
 
-/* The scene: one length of scroll for both layouts, so a switch between them moves nothing below the hero. Over a
-   canvas that changes every frame the box's backdrop blur is a full blur pass a frame for 10% of what shows. */
+/* The title box over the picture is the same on every path (no backdrop blur: over a canvas that changes every frame it
+   would be a full blur pass a frame for the 10% that shows through). By day its card is opaque: the dusk picture
+   under a tenth of it took the title to 2.6:1 and the kicker to 4.2:1. */
+:root[data-mode='day'] .tea-hero-box { background-color: var(--tea-card); }
+
+/* The scene: one length of scroll for both layouts, so a switch between them moves nothing below the hero. */
 .tea-hero[data-3d='on'] { height: 300vh; }
-.tea-hero[data-3d='on'] .tea-hero-box { backdrop-filter: none; }
 
 /* dock: the pin sticks; the box opens where the static layout centres it, then docks lower left, clear of the
    day/night switch at the foot of the screen on a wide one. */

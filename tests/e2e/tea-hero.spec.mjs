@@ -416,3 +416,23 @@ test('tea-hero-19 the stage is one screen on every path, and the hero fades into
   await expect.poll(foot).toBe('1');
 });
 
+test('tea-hero-20 the title box is the same box static and over the scene, opaque by day', async ({ page }) => {
+  await page.addInitScript(() => { try { localStorage.setItem('scene-mode', 'day'); } catch {} });
+  const look = () => page.locator('.tea-hero-box').evaluate((b) => {
+    const cs = getComputedStyle(b);
+    const alpha = (cs.backgroundColor.match(/[\d.]+/g) || []).map(Number)[3];
+    return { blur: cs.backdropFilter || cs.webkitBackdropFilter || 'none', alpha: alpha == null ? 1 : alpha };
+  });
+  await page.goto('/tea/?hero=off');
+  await settled(page);
+  const still = await look();
+  await page.goto('/tea/?hero=on');
+  await settled(page);
+  await expect(hero(page)).toHaveAttribute('data-3d', 'on');
+  await holdScene(page);
+  // the same box on both paths (nothing about it changes when the scene arrives), and by day its card hides the picture
+  // under it, so the title and kicker keep their contrast whatever the picture is
+  expect(await look()).toEqual(still);
+  expect(still).toEqual({ blur: 'none', alpha: 1 });
+});
+
