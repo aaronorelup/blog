@@ -5,11 +5,17 @@ import { flags, spend, today } from '../lib/flags.js';
 import { json, status } from '../lib/http.js';
 import { normalize, sha256 } from '../lib/text.js';
 import { count } from './counts.js';
-import { byPost, retrieve } from './retrieve.js';
+import { buildJson } from '../lib/build-files.js';
+import { byPost, MANIFEST, retrieve } from './retrieve.js';
 import { indexVersion } from './sync.js';
 
 const CACHE_FOR = 3600; // seconds
 let spentOn = null; // the UTC day this isolate saw search_daily spent
+
+// Only chunks of a doc this deploy's manifest lists ('<kind>:<slug>'). The index and the cached answers trail a
+// deploy by a minute or two (sync.js drops an unlisted post's vectors on its next run, and v moves a run later),
+// and an unlisted or renamed post must be gone from the answers at once.
+const listed = (docs, chunks) => chunks.filter(({ kind, slug }) => Object.hasOwn(docs, `${kind}:${slug}`));
 
 export async function serve(request, env, ctx) {
   const [f, v] = await Promise.all([flags(env), indexVersion(env)]);
@@ -23,11 +29,15 @@ export async function serve(request, env, ctx) {
   if (!all.success || !one.success) return status(429);
   ctx.waitUntil(count(env, 'search', q));
 
+  const { docs } = await buildJson(env, MANIFEST);
   const key = new Request(`https://cache.internal/search?v=${v}&q=${encodeURIComponent(q)}`);
   const cached = await caches.default.match(key);
-  if (cached) return json(await cached.json());
+  if (cached) {
+    const was = await cached.json();
+    return json({ ...was, hits: listed(docs, was.hits) });
+  }
   if (spentOn === today()) return status(503);
-  const hits = byPost(await retrieve(env, q, 20), 2, 8).map(({ title, voice, ...hit }) => hit);
+  const hits = byPost(listed(docs, await retrieve(env, q, 20)), 2, 8).map(({ title, voice, ...hit }) => hit);
   ctx.waitUntil(spend(env, 'search', 1, f.search_daily).then((ok) => { if (!ok) spentOn = today(); }));
   const body = { v, hits };
   ctx.waitUntil(caches.default.put(key, json(body, 200, { 'Cache-Control': `max-age=${CACHE_FOR}` })));

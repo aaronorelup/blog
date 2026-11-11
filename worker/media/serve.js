@@ -3,7 +3,7 @@
 // ranges and checking conditional requests itself. What isn't in R2 is a static asset: those ignore Range, so
 // ranges are cut here from the length the build lists in /media-sizes.json; with no length known, the whole file
 // (200, Accept-Ranges). A read-aloud post file not recorded yet answers 200 { ready: false }, never a 404.
-import { json } from '../lib/http.js';
+import { json, status } from '../lib/http.js';
 import { buildJson } from '../lib/build-files.js';
 
 // What the asset server sends with every file, so a file answers the same from either place. A read-aloud
@@ -20,7 +20,8 @@ const sizeOf = (env, pathname) => buildJson(env, '/media-sizes.json').then((all)
 
 export async function serve(request, env) {
   const url = new URL(request.url);
-  const path = decodeURIComponent(url.pathname);
+  let path;
+  try { path = decodeURIComponent(url.pathname); } catch { return status(400); } // a broken %-escape names no file
   if (request.method === 'GET' || request.method === 'HEAD') {
     const stored = await fromR2(request, env, path.slice(1));
     if (stored) return stored;
