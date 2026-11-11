@@ -108,15 +108,16 @@ export async function mount(section, stage, opts = {}) {
 }
 
 // The canvas fades in over the poster (data-ready, 700 ms in stage.css); once it covers it the poster is taken away
-// (data-covered), so a switch of mode fetches no other poster under an opaque canvas. Both come back together.
+// (data-covered), so a switch of mode fetches no other poster under an opaque canvas. Both come back together. The
+// timer has its own field: s.cover is the docked box's share (resize), which the lens shift is multiplied by.
 function reveal(s, stage) {
   stage.dataset.ready = '';
-  clearTimeout(s.cover);
-  s.cover = setTimeout(() => { if (stage.dataset.ready != null) stage.dataset.covered = ''; }, 800);
+  clearTimeout(s.posterTimer);
+  s.posterTimer = setTimeout(() => { if (stage.dataset.ready != null) stage.dataset.covered = ''; }, 800);
 }
 
 function conceal(s, stage) {
-  clearTimeout(s.cover);
+  clearTimeout(s.posterTimer);
   delete stage.dataset.covered;
   delete stage.dataset.ready;
 }
