@@ -5,8 +5,10 @@ import { OWNER } from '../data/site.js';
 
 const CONTEXT = 'https://schema.org';
 
-// A listed post. url is the page's canonical; image is absolute, and left out when the page has none.
-export function blogPosting({ headline, description, published, url, image }) {
+// A listed post. url is the page's canonical; image is absolute, and left out when the page has none. The author is
+// the site's owner, except on a post Claude wrote as "I" (voice: claude): its page says "Written by Claude"
+// (post/PostHeader.astro), so its data names no author at all rather than contradict the page.
+export function blogPosting({ headline, description, published, url, image, voice }) {
   return {
     '@context': CONTEXT,
     '@type': 'BlogPosting',
@@ -16,7 +18,7 @@ export function blogPosting({ headline, description, published, url, image }) {
     url,
     mainEntityOfPage: url,
     ...(image ? { image } : {}),
-    author: { '@type': 'Person', name: OWNER.name, url: new URL(OWNER.about, url).href },
+    ...(voice === 'claude' ? {} : { author: { '@type': 'Person', name: OWNER.name, url: new URL(OWNER.about, url).href } }),
   };
 }
 

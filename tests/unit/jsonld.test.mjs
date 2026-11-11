@@ -30,6 +30,17 @@ test('a listed post: a BlogPosting of what the page already states, and nothing 
   assert.equal('dateModified' in blogPosting(post), false);
 });
 
+test('a post Claude wrote as "I" names no author, and is the same otherwise', () => {
+  const byClaude = blogPosting({ ...post, voice: 'claude' });
+  assert.equal('author' in byClaude, false);
+  assert.equal(scriptText(byClaude).includes('author'), false);
+  const { author, ...rest } = blogPosting(post);
+  assert.deepEqual(author, { '@type': 'Person', name: OWNER.name, url: 'https://aaronorelup.com/about/' });
+  assert.deepEqual(byClaude, rest);
+  // Only 'claude' is a voice (src/schemas/post.ts): with none, the author is the owner.
+  assert.deepEqual(blogPosting({ ...post, voice: undefined }).author, author);
+});
+
 test('a post with no share image claims none', () => {
   assert.equal('image' in blogPosting({ ...post, image: undefined }), false);
 });
