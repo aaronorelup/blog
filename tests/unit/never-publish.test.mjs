@@ -20,6 +20,17 @@ test('runs of 2 and 3 words match across punctuation and line breaks', () => {
   assert.ok(!matches('Acme Widget Co', 'Acme widget Co'));
 });
 
+test("an underscore beside a word doesn't hide it: Markdown's _emphasis_, a file name", () => {
+  assert.ok(matches('Zorblax', 'I worked at _Zorblax_ then.'));
+  assert.ok(matches('Zorblax', 'I worked at __Zorblax__ then.'));
+  assert.ok(matches('Acme Widget', 'at _Acme Widget_ we'));
+  assert.ok(matches('Zorblax', '![the team](/media/x/Zorblax_team.webp)'));
+  assert.ok(!matches('Zorblax', 'zorblax_team and Zorblaxian_team'));
+  // A term written with an underscore still matches as written, and only as written.
+  assert.ok(matches('zb_internal', 'the zb_internal flag'));
+  assert.ok(!matches('zb_internal', 'the zb internal flag'));
+});
+
 test('a host matches its subdomains and deeper paths, a path only below itself', () => {
   assert.ok(matches('secret.example.dev', 'see https://hq.secret.example.dev/api/rules.'));
   assert.ok(matches('https://secret.example.dev/', '(secret.example.dev)'));

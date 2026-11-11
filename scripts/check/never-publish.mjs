@@ -25,13 +25,30 @@ function urlKeys(host, pathPart) {
   return keys;
 }
 
-// [key, index] for everything in the text a term could be.
-export function* keys(text) {
-  const words = [...text.matchAll(WORD)];
+// [key, index] for each word ({ 0: word, index }) and each run of 2 or 3.
+function* runs(words) {
   for (let i = 0; i < words.length; i++) {
     yield [words[i][0], words[i].index];
     if (i + 1 < words.length) yield [`${words[i][0]} ${words[i + 1][0]}`, words[i].index];
     if (i + 2 < words.length) yield [`${words[i][0]} ${words[i + 1][0]} ${words[i + 2][0]}`, words[i].index];
+  }
+}
+
+const parts = (word) => word.split('_').filter(Boolean);
+
+// [key, index] for everything in the text a term could be. A word with an underscore is read twice: as written (a
+// term can have one), and broken at it with the 2 words either side, because Markdown's _emphasis_ and a file name
+// (Name_team.webp) put an underscore beside a word that is published without it.
+export function* keys(text) {
+  const words = [...text.matchAll(WORD)];
+  yield* runs(words);
+  for (let i = 0; i < words.length; i++) {
+    if (!words[i][0].includes('_')) continue;
+    const before = [];
+    const after = [];
+    for (let j = i - 1; j >= 0 && before.length < 2; j--) before.unshift(...parts(words[j][0]));
+    for (let j = i + 1; j < words.length && after.length < 2; j++) after.push(...parts(words[j][0]));
+    yield* runs([...before.slice(-2), ...parts(words[i][0]), ...after.slice(0, 2)].map((w) => ({ 0: w, index: words[i].index })));
   }
   for (const m of text.matchAll(URLISH)) for (const key of urlKeys(m[1], m[2])) yield [key, m.index];
 }
