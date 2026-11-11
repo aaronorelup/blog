@@ -1,16 +1,19 @@
 // What moves the hero besides time: the scroll progress through the pinned section (0 at the top, 1 when the pin
 // lets go), the pointer (a mouse), the device's tilt where it needs no permission prompt, and on touch screens with
 // no tilt a slow drift. All of it is eased in update(dt); set() and freeze() are the screenshot hooks.
+const clamp1 = (v) => Math.max(-1, Math.min(1, v));
+
 export function createInput(section, spec) {
   const st = {
     raw: 0, p: 0, par: { x: 0, y: 0 }, aim: { x: 0, y: 0 }, mouse: false, tilt: null, tilted: false,
     forced: null, snap: false,
   };
+  // a drag that leaves the window still reports the pointer: held to the window's edge, like the tilt
   const onMove = (e) => {
     if (e.pointerType !== 'mouse') return;
     st.mouse = true;
-    st.aim.x = (e.clientX / innerWidth) * 2 - 1;
-    st.aim.y = -((e.clientY / innerHeight) * 2 - 1);
+    st.aim.x = clamp1((e.clientX / innerWidth) * 2 - 1);
+    st.aim.y = clamp1(-((e.clientY / innerHeight) * 2 - 1));
   };
   const onTilt = (e) => {
     if (e.gamma == null || e.beta == null) return;

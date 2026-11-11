@@ -132,7 +132,9 @@ function wire(s, section, stage) {
   const loop = (now) => {
     s.raf = 0;
     if (!s.running) return;
-    const dt = Math.min(0.25, (now - s.clock) / 1000);   // the clock restarts on resume, so no jump after a pause
+    // the clock restarts on resume, so no jump after a pause; a frame's timestamp is when it began, which after a long
+    // task (the first draw's shader compile) is earlier than the performance.now() the clock was set from: never < 0
+    const dt = Math.max(0, Math.min(0.25, (now - s.clock) / 1000));
     s.clock = now;
     frame(s, section, dt);
     s.raf = requestAnimationFrame(loop);
