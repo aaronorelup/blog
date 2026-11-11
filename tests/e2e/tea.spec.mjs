@@ -313,3 +313,28 @@ test('tea-13 no console error and no sideways scroll, at 1440 and 390 wide, by d
   }
   expect(errors).toEqual([]);
 });
+
+// Where the strip's current pill sits once a smooth scroll of the strip has ended (the same scrollLeft for 200 ms).
+const pillPlace = (page) => page.evaluate(async () => {
+  const strip = document.querySelector('[data-tea-strip]');
+  for (let last = -1; last !== strip.scrollLeft;) {
+    last = strip.scrollLeft;
+    await new Promise((ok) => setTimeout(ok, 200));
+  }
+  const s = strip.getBoundingClientRect();
+  const a = document.querySelector('[data-tea-link][aria-current="true"]').getBoundingClientRect();
+  return { inside: a.left >= s.left - 0.5 && a.right <= s.right + 0.5, pill: [a.left, a.right].map(Math.round), strip: [s.left, s.right].map(Math.round) };
+});
+
+test('tea-14 on a narrow window the strip keeps the chapter being read in view: its pill sits whole inside the strip', async ({ page, isMobile }) => {
+  if (!isMobile) await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(TEA);
+  // the chapters overflow the strip, so it scrolls: the case this is about
+  expect(await page.locator('[data-tea-strip]').evaluate((s) => s.scrollWidth > s.clientWidth)).toBe(true);
+  for (const c of [...CHAPTERS, ...CHAPTERS.slice(0, -1).reverse()]) {
+    await toChapter(page, c.id);
+    await expect.poll(() => marked(page)).toEqual([`${c.id}=true`]);
+    const at = await pillPlace(page);
+    expect(at.inside, `${c.id}: pill ${at.pill} in strip ${at.strip}`).toBe(true);
+  }
+});

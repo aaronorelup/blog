@@ -13,7 +13,9 @@ function mark(id) {
   }
   const a = links.get(id);
   if (a && strip && strip.scrollWidth > strip.clientWidth) {
-    strip.scrollTo({ left: a.offsetLeft - 16, behavior: still ? 'auto' : 'smooth' });
+    // the pill's place in the strip's own scroll (offsetLeft counts from the rail, which starts further out)
+    const left = a.getBoundingClientRect().left - strip.getBoundingClientRect().left + strip.scrollLeft;
+    strip.scrollTo({ left: left - 16, behavior: still ? 'auto' : 'smooth' });
   }
 }
 
