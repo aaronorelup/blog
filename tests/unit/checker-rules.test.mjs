@@ -9,7 +9,6 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
-import matter from 'gray-matter';
 import { runChecks } from '../../scripts/check/run.mjs';
 import { hash, SALT, termKey } from '../../scripts/check/never-publish.mjs';
 import { HELD } from '../../src/data/exempt.js';
@@ -91,10 +90,7 @@ put('src/components/Classed.astro', '<div class="a" data-style="b"></div>\n');
 put('src/pages/courses/theirs.astro', '<div style="color:red"></div>\n');
 test.after(() => fs.rmSync(root, { recursive: true }));
 
-// gray-matter keeps a file it failed to parse and hands it back blank the next time it is asked, so a second run in
-// one process would miss bad-yaml.md's error (the checker itself runs once a process). Each run here starts clean.
-const run = (deploy) => { matter.clearCache(); return runChecks({ root, deploy }); };
-const runs = { check: run(false), deploy: run(true) };
+const runs = { check: runChecks({ root }), deploy: runChecks({ root, deploy: true }) };
 const of = (rule, file, level = 'check') => runs[level].filter((i) => i.rule === rule && i.file === file);
 const lineOf = (text, needle) => text.slice(0, text.indexOf(needle)).split('\n').length;
 const shape = (issues) => issues.map((i) => [i.line, i.severity, i.message]).sort((a, b) => a[0] - b[0] || a[2].localeCompare(b[2]));
@@ -144,11 +140,13 @@ test('prose: a HELD post is only warned about', { skip: !held && 'no post is hel
   assert.deepEqual(issues.filter((i) => i.severity !== 'warn'), []);
 });
 
-test('frontmatter: broken YAML fails the deploy, in a post and in a project file', () => {
+// gray-matter keeps a file it failed to parse and hands it back blank the next time it is asked. The second run
+// here (deploy) once saw bad-yaml.md as a post with no frontmatter at all, and its YAML error went unreported.
+test('frontmatter: broken YAML fails the deploy, in a post and in a project file, on every run in one process', () => {
   for (const [file, message] of [['src/content/posts/bad-yaml.md', /^the frontmatter isn't valid YAML: /], ['src/content/projects/bad.yaml', /^this isn't valid YAML: /]]) {
-    for (const level of ['check', 'deploy']) {
-      const issues = of('frontmatter', file, level);
-      assert.equal(issues.length, 1, `${file} (${level})`);
+    for (const again of [runs.check, runs.deploy, runChecks({ root }), runChecks({ root, deploy: true })]) {
+      const issues = again.filter((i) => i.rule === 'frontmatter' && i.file === file);
+      assert.equal(issues.length, 1, file);
       assert.equal(issues[0].severity, 'error');
       assert.match(issues[0].message, message);
     }
