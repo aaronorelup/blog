@@ -79,6 +79,17 @@ export function shareUrlProblems(html, pathname) {
     .map(([what, got]) => `${pathname}: ${what} is ${got.length ? got.join(', ') : 'missing'}, not ${want}`);
 }
 
+// A listed post's page carries exactly one JSON-LD block (chrome/Head.astro, lib/jsonld.js): it parses, and its url is
+// the page's canonical, https://aaronorelup.com<pathname>.
+export function jsonLdProblems(html, pathname) {
+  const blocks = [...html.matchAll(/<script\b[^>]*\stype="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+  if (blocks.length !== 1) return [`${pathname}: ${blocks.length} JSON-LD blocks, not 1`];
+  const want = SITE + pathname;
+  let data;
+  try { data = JSON.parse(blocks[0]); } catch (e) { return [`${pathname}: its JSON-LD block does not parse (${e.message})`]; }
+  return data?.url === want ? [] : [`${pathname}: its JSON-LD url is ${data?.url ?? 'missing'}, not ${want}`];
+}
+
 // Every path of the baseline is still answered: built, or the source of a redirect. Live paths are left out.
 export function baselineProblems(baseline, isBuilt, redirectSources) {
   return baseline.filter((p) => !isLivePath(p) && !isBuilt(p) && !redirectSources.has(p) && !redirectSources.has(p.replace(/\/$/, '')))
@@ -99,7 +110,8 @@ export function check(dist, listed = listedSlugs()) {
     ...statsPagesProblems(read('stats-pages.txt'), listed),
     ...rssProblems(read('rss.xml'), listed),
     ...[...listed].filter((s) => !isLive(s) && isBuilt(`/ledger/${s}/`))
-      .flatMap((s) => shareUrlProblems(read(`ledger/${s}/index.html`), `/ledger/${s}/`)),
+      .map((s) => [read(`ledger/${s}/index.html`), `/ledger/${s}/`])
+      .flatMap(([html, pathname]) => [...shareUrlProblems(html, pathname), ...jsonLdProblems(html, pathname)]),
     ...baselineProblems(readBaseline(), isBuilt, redirectSourcesOf(read('_redirects'))),
   ];
 }

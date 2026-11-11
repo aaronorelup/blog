@@ -1,6 +1,7 @@
 ---
 // /ledger/<slug>/: every post that isn't a draft. An unlisted one is built with noindex and no share card. Under
 // `astro dev` only, a draft is served at its URL too, for a look before Aaron's OK: noindex, no share card, in no list.
+// A listed post's page carries its BlogPosting; a noindex page gets none (chrome/Head.astro).
 import { allPosts, slugOf } from '../../lib/content.js';
 import { ogImage } from '../../lib/og/image.js';
 import PanelPage from '../../layouts/PanelPage.astro';
@@ -16,6 +17,6 @@ const { title, summary, date, unlisted, draft } = post.data;
 const image = unlisted || draft ? undefined : (await ogImage(post)).path;
 ---
 <PanelPage title={`${title} · Aaron Orelup`} description={summary} active="ledger" noindex={unlisted || draft} image={image}
-  published={date}>
+  published={date} headline={title}>
   <PostView post={post} />
 </PanelPage>
