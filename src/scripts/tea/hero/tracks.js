@@ -1,7 +1,7 @@
 // The manifest's motion: scroll tracks (keyed on the hero's progress, 0 to 1) and idle waves (keyed on time), both as
 // deltas from each node's rest pose, applied once a frame. A node is a bone or a rigid part, any Object3D; a track
 // whose actor or node is missing is skipped. Channels: position, rotation (degrees), scale, squash, bend (deform).
-import { Euler, MathUtils, Quaternion } from 'three';
+import { Euler, MathUtils, Quaternion } from './three.js';
 
 const sanitise = (n) => String(n).replace(/\s/g, '_').replace(/[[\]./:]/g, '');
 
@@ -90,11 +90,11 @@ function add(slot, channel, v, k = 1) {
   } else if (channel === 'bend') slot.bend += (Array.isArray(v) ? v[0] : v) * k;
 }
 
-const _e = new Euler();
-const _q = new Quaternion();
+let R = null;   // scratch rotation, made on first use (three arrives with the scene: three.js)
 
 // p: the smoothed scroll progress; time: seconds of idle clock (frozen for screenshots).
 export function applyTracks(bound, p, time) {
+  const { e: _e, q: _q } = R || (R = { e: new Euler(), q: new Quaternion() });
   for (const s of bound.live) {
     s.pos[0] = s.pos[1] = s.pos[2] = 0; s.rot[0] = s.rot[1] = s.rot[2] = 0;
     s.scl[0] = s.scl[1] = s.scl[2] = 1; s.bend = 0;

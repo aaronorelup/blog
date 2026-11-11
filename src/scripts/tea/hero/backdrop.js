@@ -1,7 +1,7 @@
 // The one picture behind the characters: a plane set back in the scene, plus cut-out layers of the same picture at
 // nearer depths (alpha in the image). Each layer holds its night and day image and mixes them by the mode; the
 // current mode's image loads first, the other after the first frame (later()).
-import { Mesh, PlaneGeometry, ShaderMaterial, SRGBColorSpace, TextureLoader } from 'three';
+import { Mesh, PlaneGeometry, ShaderMaterial, SRGBColorSpace, TextureLoader } from './three.js';
 
 const VERT = `
 varying vec2 vUv;
@@ -20,8 +20,9 @@ void main() {
 }
 `;
 
-const texLoader = new TextureLoader();
+let texLoader = null;
 function tex(url, anisotropy) {
+  texLoader ||= new TextureLoader();
   return texLoader.loadAsync(url).then((t) => {
     t.colorSpace = SRGBColorSpace;
     t.anisotropy = anisotropy;

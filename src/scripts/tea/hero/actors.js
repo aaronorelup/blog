@@ -2,8 +2,7 @@
 // (manifest position and rotation; whole-body tracks move it) holding an inner group (manifest scale; squash scales
 // it) holding the model. Props load beside it and hang from a named node or from the actor. Material overrides by
 // node name (the TV's screen shader), a tint, the env light, and a bend deform for a mesh with no skeleton.
-import { Color, Group, MathUtils } from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { Color, GLTFLoader, Group, MathUtils } from './three.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { crtMaterial } from './crt.js';
 import { addBend } from './deform.js';

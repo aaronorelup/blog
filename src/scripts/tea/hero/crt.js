@@ -1,7 +1,7 @@
 // The television's screen: an emissive shader standing in for a broadcast (an evening sky with a moon, scanlines,
 // a rolling bar, grain, the tube's vignette) and flicker(t), the same brightness curve the TV's light and glow
 // follow. A manifest's `materials: { "<node>": { "shader": "crt" } }` puts it on that node's meshes.
-import { Color, ShaderMaterial } from 'three';
+import { Color, ShaderMaterial } from './three.js';
 
 export const flicker = (t) =>
   0.9 + 0.06 * Math.sin(t * 13.1) * Math.sin(t * 2.7) + 0.04 * Math.sin(t * 57.3 + Math.sin(t * 3.3) * 4);

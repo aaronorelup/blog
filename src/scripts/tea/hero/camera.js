@@ -1,7 +1,7 @@
 // The camera: a Catmull-Rom path through the manifest's keys (position and look-at, keyed on scroll progress), a
 // field of view that crops like object-fit: cover of the poster's aspect (so the poster lines up at any size; a
 // portrait screen has its own shot and poster), and the pointer's parallax, an eased offset in screen space.
-import { CatmullRomCurve3, MathUtils, PerspectiveCamera, Vector3 } from 'three';
+import { CatmullRomCurve3, MathUtils, PerspectiveCamera, Vector3 } from './three.js';
 
 export function createCamera(manifest) {
   const c = manifest.camera;
@@ -33,15 +33,14 @@ export function fitCamera(rig, ref, w, h) {
   rig.cam.updateProjectionMatrix();
 }
 
-const _p = new Vector3();
-const _l = new Vector3();
-const _f = new Vector3();
-const _r = new Vector3();
-const _u = new Vector3();
-const UP = new Vector3(0, 1, 0);
+let V = null;   // scratch vectors, made on first use (three arrives with the scene: three.js)
+const scratch = () => V || (V = {
+  p: new Vector3(), l: new Vector3(), f: new Vector3(), r: new Vector3(), u: new Vector3(), up: new Vector3(0, 1, 0),
+});
 
 // p: smoothed progress; par: eased pointer offset, -1..1 each axis
 export function placeCamera(rig, p, par) {
+  const { p: _p, l: _l, f: _f, r: _r, u: _u, up: UP } = scratch();
   const t = curveT(rig.times, p);
   rig.pos.getPoint(t, _p);
   rig.look.getPoint(t, _l);

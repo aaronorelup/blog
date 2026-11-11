@@ -2,7 +2,7 @@
 // manifest, pins the section (data-3d="on", stage.css), cross-fades from the poster on the first drawn frame, and
 // runs the frame loop only while the hero is on screen and the tab is visible. Any failure throws before the pin,
 // leaving the poster. window.__teaHero is the screenshot and console hook (setProgress, freeze, pointer, dispose).
-import { ACESFilmicToneMapping, Color, Fog, Scene, WebGLRenderer } from 'three';
+import { ACESFilmicToneMapping, Color, Fog, Scene, WebGLRenderer } from './three.js';
 import { disposeTree, loadActors } from './actors.js';
 import { loadBackdrop, paintBackdrop } from './backdrop.js';
 import { createCamera, fitCamera, placeCamera } from './camera.js';
@@ -12,11 +12,13 @@ import { buildLights, paintLights, skyEnvironment } from './lights.js';
 import { loadManifest } from './manifest.js';
 import { createMotes, tickMotes } from './motes.js';
 import { leadOf, pinSection, relayout, unpinSection, writeProgress } from './pin.js';
+import { loadThree } from './three.js';
 import { applyTracks, bindTracks } from './tracks.js';
 
 const isNight = () => document.documentElement.dataset.mode !== 'day';
 
 export async function mount(section, stage, opts = {}) {
+  await loadThree();
   const coarse = matchMedia('(pointer: coarse)').matches;
   const small = Math.min(innerWidth, innerHeight) < 600;
   const manifest = await loadManifest(stage.dataset.manifest || '/tea/hero/manifest.json');

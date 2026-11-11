@@ -1,6 +1,6 @@
 // Drifting motes: fireflies and stray petals as one Points cloud, every movement in the vertex shader (one draw,
 // no per-frame CPU work). They fall slowly, sway, and wrap inside the manifest's box; colour and glow follow the mode.
-import { AdditiveBlending, BufferGeometry, Color, Float32BufferAttribute, Points, ShaderMaterial, Vector3 } from 'three';
+import { AdditiveBlending, BufferGeometry, Color, Float32BufferAttribute, Points, ShaderMaterial, Vector3 } from './three.js';
 
 const VERT = `
 uniform float uTime; uniform float uSize; uniform float uScale; uniform vec3 uMin; uniform vec3 uMax;

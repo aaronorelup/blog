@@ -4,7 +4,7 @@
 import {
   AdditiveBlending, AmbientLight, CanvasTexture, Color, DirectionalLight, EquirectangularReflectionMapping,
   HemisphereLight, PMREMGenerator, PointLight, SRGBColorSpace, Sprite, SpriteMaterial, Vector3,
-} from 'three';
+} from './three.js';
 import { flicker } from './crt.js';
 import { findNode } from './tracks.js';
 
@@ -22,9 +22,7 @@ function anchor(attach, actors, scene) {
   return (attach.node && findNode(actor, attach.node)) || actor.root;
 }
 
-const _a = new Color();
-const _b = new Color();
-const _v = new Vector3();
+let C = null;   // scratch colours, made on first use (three arrives with the scene: three.js)
 
 export function buildLights(manifest, actors, scene) {
   const lights = [];
@@ -56,6 +54,7 @@ export function buildLights(manifest, actors, scene) {
 }
 
 export function paintLights(rig, mix, time) {
+  const { a: _a, b: _b, v: _v } = C || (C = { a: new Color(), b: new Color(), v: new Vector3() });
   const f = flicker(time);
   for (const { spec, light } of rig.lights) {
     const n = spec.night;
