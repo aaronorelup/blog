@@ -1,0 +1,5 @@
+vdz1yk8137gg6f, RTX 4090 SECURE camenduru/trellis2:latest, $0.89/h, created 2026-11-10 13:04 CST, TERMINATED 13:49 CST (API confirms gone; never got past the 29 GB image pull in 45 min)
+e9i3f2qwqzy9yx, RTX 4090 SECURE plan B runpod/pytorch and boot.sh, $0.89/h, created 2026-11-10 13:32 CST, TERMINATED 13:49 CST (API confirms gone; pip resolver conflict, no deps installed)
+pdv3f0gwb5d1be, RTX 4090 SECURE plan B2 runpod/pytorch and fixed boot.sh, $0.89/h, created 2026-11-10 13:49 CST, TERMINATED 14:09 CST (API confirms gone; deps and weights OK in 4 min, but my job worker never started and the hot-swap restart killed itself)
+3c8oacy2gt6wlr, RTX 4090 SECURE plan B3 (B2 with the worker fix), $0.89/h, created 2026-11-10 14:09 CST, TERMINATED 18:12 CST (API confirms gone)
+# Final check 19:14 CST through RunPod GraphQL (myself.pods): [] - no pod exists. All four are TERMINATED.
