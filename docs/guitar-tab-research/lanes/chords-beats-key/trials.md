@@ -796,6 +796,124 @@ were equal. Samples: `samples/r3/`.
   (`--nolock`, one thread; 44.0 s and 13.8 s): the JSON and `.lab` files for both dictionaries byte-identical to the
   trial's for both clips.
 
+## Gap round 1
+
+Agent: gapfill-chords-beats-key. Date: 2026-11-10 to 2026-11-11 (`date -u +%F`), from about 23:15 UTC. Task: run the
+tools the first round recorded as not run (for lack of disk or time, or not attempted) on the same clips with the same
+scoring, preferring published packages (PyPI wheels, apt) over code from cloned repositories, and record what still
+cannot run. Same conventions as above: `rNNNN` run ids, `eNNNN` gtr-eval 0.11.1 ids (scored with `scripts/score_all.py`,
+so they are also in `out/scores/scores.jsonl` and `samples/scores/`), scripts in `scripts/`, small outputs in
+`samples/<tool>/`, full outputs in `/home/user/gtr/lanes/chords-beats-key/out/<tool>/<clip>/`. Each tool's venv and the
+weights it downloaded were deleted when the tool was done; its `uv pip freeze` is in `samples/<tool>/`. The shared disk
+had 9.5 GB free at the start; the orchestrator's DISK LOW notice (below 9,000 MB free) printed from about 23:32 UTC on,
+with 6.3 to 9.0 GB free while this round ran.
+
+### All-In-One 1.1.0 (PyPI `allin1`): beats, downbeats, tempo and song sections, after a Demucs separation
+
+- What: Taejun Kim and Juhan Nam's structure analyzer (survey.md, All-In-One), PyPI `allin1` 1.1.0 (the wheel
+  `allin1-1.1.0-py3-none-any.whl`, sha256 90edc464...f800e). Each call first runs Demucs `htdemucs` on the input in a
+  subprocess (`allin1/demix.py`), then madmom spectrograms of the four stems, then an ensemble of 8 networks
+  (`harmonix-all`, the default model) whose beat and downbeat activations go through madmom's
+  `DBNDownBeatTrackingProcessor(beats_per_bar=[3, 4])`.
+- Install (venv-allin1, Python 3.9.25; numpy held at 1.23.5 by a constraints file in every step), commands as run:
+  1. `uv pip install "numpy==1.23.5" "scipy<1.11" mido "cython<3" "setuptools<81" wheel soundfile cmake ninja
+     "torch==2.5.1" "torchaudio==2.5.1"` (torch 2.5.1+cpu, torchaudio 2.5.1+cpu, scipy 1.10.1, Cython 0.29.37,
+     cmake 4.4.4).
+  2. `uv pip install --no-build-isolation madmom==0.16.1` (the PyPI sdist; uv reused the wheel it had built in this lane's
+     r0047, same Python and numpy).
+  3. NATTEN. The README's link (the NATTEN website) failed TLS on 2026-11-10 (expired certificate), and the CPU wheels on
+     NATTEN's current index are all version 0.17.5, which no longer has the four functions allin1 imports (survey.md,
+     All-In-One, "Gap round 1"). NATTEN was therefore built from its PyPI sdist, CPU only:
+     `NATTEN_N_WORKERS=2 uv pip install --no-build-isolation natten==<version>` with the venv's `bin/` on PATH (for
+     cmake); `setup.py` printed "Building NATTEN for CPU ONLY." (script `/home/user/gtr/lanes/chords-beats-key/logs/gap1/build_natten.sh`).
+     0.17.4, run r0512 (2 cores; 224.85 s wall including a slow sdist download, 158.6 s CPU, 1303.1 MB peak RSS; exit 1):
+     the build finished, but `import natten` failed on Python 3.9 with "TypeError: unsupported operand type(s) for |:
+     'type' and '_GenericAlias'" (`natten/flops.py` line 82). 0.17.3, run r0518 (2 cores; 97.45 s wall, 158.6 s CPU,
+     1302.9 MB; exit 0): `from natten.functional import natten1dav, natten1dqkrpb, natten2dav, natten2dqkrpb` worked.
+  4. `uv pip install "demucs==4.0.1" "allin1==1.1.0"` (4 s; demucs 4.0.1 from its sdist, librosa 0.11.0,
+     huggingface-hub 1.8.0, hydra-core 1.3.8, omegaconf 2.3.1, matplotlib 3.9.4, numba 0.60.0, openunmix 1.3.0).
+  No file of allin1, madmom, NATTEN or Demucs was edited. The venv was 1.4 GB by `du` (hard links into the shared uv
+  cache). Freeze: `samples/allin1/venv-allin1.freeze.txt`.
+- Weights, fetched before the timed runs so that no run includes a download (`/home/user/gtr/lanes/chords-beats-key/logs/gap1/allin1_fetch_weights.log`):
+  Demucs `htdemucs`, `955717e8-8726e21a.th`, 84,141,911 bytes, from dl.fbaipublicfiles.com via
+  `demucs.pretrained.get_model('htdemucs')`; the eight `harmonix-fold*` files from Hugging Face `taejunkim/allinone`,
+  1,400,571 bytes each (the HF hub printed "Warning: You are sending unauthenticated requests to the HF Hub"). SHA-256
+  of all nine: `samples/allin1/weights_sha256.txt`. All were deleted after the runs.
+- Runs: `scripts/allin1_run.py` calls the package's own functions in the order and with the defaults of
+  `allin1.analyze()`: `demix([path], demix_dir, 'cpu')` (the subprocess `<python> -m demucs.separate --out <dir> --name
+  htdemucs --device cpu <file>`), `extract_spectrograms(..., multiprocess=True)`, `load_pretrained_model('harmonix-all',
+  'cpu')`, `run_inference(...)` under `torch.no_grad()`, `save_results(...)`; it times each stage
+  (`time.perf_counter`; CPU seconds of the process and of its waited-for children) and then deletes the stems and
+  spectrograms, as `analyze()` does with its default `keep_byproducts=False`. S3 ran alone first, run r0521 (2 cores;
+  103.54 s wall, 126.7 s CPU, 1552.6 MB peak RSS); the other nine clips in batch run r0563 (2 cores; 1854.58 s wall in
+  total, 2178.5 s CPU, 2038.5 MB peak RSS; `scripts/batch_run.py`, plan `scripts/plans/gap1_allin1_batch.json`). torch
+  reported 2 threads. Every job's wall-clock includes the Demucs separation:
+
+| clip | job wall s | htdemucs subprocess s (its CPU s) | spectrograms s | model load s | inference s (CPU s) | peak RSS MB | bpm | beats / downbeats | segments |
+|---|---|---|---|---|---|---|---|---|---|
+| S3 (24.0 s) | 103.507 | 31.425 (49.921) | 0.586 | 1.168 | 67.555 (72.156) | 1552.6 | 95 | 29 / 8 | 3 |
+| S4 (38.7 s) | 155.221 | 43.201 (66.875) | 0.825 | 1.346 | 107.065 (111.049) | 1510.2 | 115 | 65 / 17 | 4 |
+| S7flat30 (24.0 s) | 114.578 | 40.832 (56.207) | 0.508 | 1.349 | 68.969 (73.237) | 1484.2 | 95 | 29 / 8 | 3 |
+| S2n (29.4 s) | 124.084 | 36.500 (58.405) | 0.663 | 1.563 | 82.549 (87.553) | 1507.8 | 111 | 47 / 12 | 3 |
+| S5capo2 (29.4 s) | 125.681 | 38.619 (60.460) | 0.649 | 1.330 | 81.732 (86.319) | 1554.8 | 111 | 46 / 12 | 3 |
+| S5dropd (29.4 s) | 129.930 | 41.503 (61.636) | 0.714 | 1.395 | 83.473 (88.006) | 1538.8 | 111 | 47 / 12 | 3 |
+| R1a (29.2 s) | 122.792 | 36.127 (53.813) | 0.642 | 1.328 | 81.847 (86.304) | 1532.9 | 107 | 48 / 12 | 4 |
+| R1b (29.3 s) | 138.223 | 51.086 (65.476) | 0.827 | 1.425 | 82.136 (86.623) | 1516.9 | 91 | 35 / 8 | 3 |
+| R1c (28.2 s) | 166.226 | 62.594 (67.540) | 0.617 | 1.423 | 98.894 (99.464) | 1457.4 | 120 | 52 / 13 | 2 |
+| R2full (228.5 s) | 777.783 | 186.930 (318.146) | 4.960 | 1.385 | 581.557 (603.523) | 2038.5 | 71 | 264 / 66 | 10 |
+
+  (S3's row is r0521; the others are per-job lines of r0563, `samples/allin1/batch_gap1_timings.jsonl`; stage times
+  from each clip's `timings.json`, copied to `samples/allin1/<clip>.timings.json`.) R2full, the whole song: 777.8 s,
+  of which 186.9 s Demucs and 581.6 s the 8-network inference.
+- The published command line, once: run r0576 (2 cores; 155.62 s wall, 181.3 s CPU, 1526.9 MB) ran
+  `allin1 /home/user/gtr/inputs/S4/S4.wav -o <dir> -d cpu --demix-dir <dir>/demix --spec-dir <dir>/spec`. Its `S4.json`
+  equals the wrapper's (r0563) in `bpm`, all 65 beats, 17 downbeats and the beat positions; one segment boundary differs,
+  20.70 s (CLI) against 20.69 s (wrapper) (`samples/allin1/S4.cli_r0576.json`). Demucs 4.0.1's `--shifts` defaults to 1
+  ("Number of random shifts for equivariant stabilization.", `demucs/separate.py`), and `apply_model` then shifts the
+  input "by a random amount between 0 and 0.5 sec" (`demucs/apply.py`, `random.randint`); allin1 passes no shift or seed,
+  so two runs on one file need not give identical stems.
+- Output format: allin1's own `<name>.json` with `path`, `bpm` (an integer: the most frequent rounded value of 60 /
+  inter-beat interval, `postprocessing/tempo.py`), `beats` and `downbeats` (seconds, written with 2 decimals, i.e. on the
+  0.01 s grid of its 100 frames per second), `beat_positions` (1 to 4 here) and `segments` (`start`, `end`, `label`). No
+  confidence values. The lane script also writes `beats.txt`, `downbeats.txt`, `beat_positions.txt` (time, position),
+  `tempo.txt` and `segments.lab`. Segment labels seen: `start` and `intro` on the S and R1 clips (S3: `start` 0 to 2.50,
+  `intro` 2.50 to 23.99, `start` 23.99 to 24.00; S4: `start`, then three `intro` segments); R2full: `start` 0.00 to 0.12,
+  `verse`, `verse`, `chorus` (43.41 to 80.12), `verse`, `chorus`, `solo` (140.11 to 173.46), `chorus`, `chorus`, `outro`
+  (220.07 to 228.49).
+- Output excerpts: S3 beats 2.51, 3.14, 3.76, ... (29; truth 32 from 2.5 s), downbeats 2.51, 5.02, 7.52, ... (8). S2n
+  downbeats 2.14, 4.30, 6.43, 8.58, ... and S5capo2 2.14, 4.29, 6.43, 8.58, ... (12 each; truth 2.143, 4.286, 6.429,
+  8.571, ...). R1a: the beats run at the truth tempo (median
+  inter-beat interval 0.560 s against 0.561 s) with a median offset of -0.267 s from the nearest truth beat, -0.48 of a
+  beat, i.e. on the off-beats; R1c the same with +0.223 s (+0.44 of its 0.504 s beat). R1b's first beat is at 5.42 s.
+  R2full (no truth): bpm 71, median inter-beat interval 0.830 s (72.29 BPM), 264 beats, 66 bar starts, positions 1 to 4
+  (the artist's page lists 72 bpm, per INPUTS.md).
+- Input facts: the 44.1 kHz WAV by path (stereo; mono for R1); Demucs decodes it and returns four 44.1 kHz stereo stems;
+  allin1 makes 12-band-per-octave log spectrograms at 100 frames per second (`spectrogram.py`, "fps=int(44100 / 441)").
+  R2full (228.5 s) was accepted.
+- Constraint inputs (`analyze()` signature in the 1.1.0 wheel): `model` (`harmonix-all` or one `harmonix-fold0` to
+  `harmonix-fold7`), `device`, `include_activations`, `include_embeddings`, `demix_dir`, `spec_dir`,
+  `keep_byproducts`, `overwrite`, `multiprocess`, `visualize`, `sonify`. No tempo range, meter or tempo hint; the DBN's
+  `beats_per_bar=[3, 4]` is fixed in `postprocessing/metrical.py`.
+- Scores (gtr-eval 0.11.1; beats and downbeats in one call, `--downbeats-est`):
+
+| clip | beats F / CMLt / AMLt | est / truth beats | downbeat F / CMLt | est / truth downbeats | eval | bpm | within 4 % (ratio) | eval |
+|---|---|---|---|---|---|---|---|---|
+| S3 | 0.951 / 0.906 / 0.906 | 29 / 32 | 1.000 / 1.000 | 8 / 8 | e1509 | 95 | yes (0.990) | e1510 |
+| S7flat30 | 0.951 / 0.906 / 0.906 | 29 / 32 | 1.000 / 1.000 | 8 / 8 | e1580 | 95 | yes (0.990) | e1581 |
+| S4 | 0.977 / 0.956 / 0.956 | 65 / 68 | 1.000 / 1.000 | 17 / 17 | e1578 | 115 | yes (0.991) | e1579 |
+| S2n | 0.989 / 0.979 / 0.979 | 47 / 48 | 1.000 / 1.000 | 12 / 12 | e1582 | 111 | yes (0.991) | e1583 |
+| S5capo2 | 0.979 / 0.958 / 0.958 | 46 / 48 | 1.000 / 1.000 | 12 / 12 | e1584 | 111 | yes (0.991) | e1585 |
+| S5dropd | 0.989 / 0.979 / 0.979 | 47 / 48 | 1.000 / 1.000 | 12 / 12 | e1586 | 111 | yes (0.991) | e1587 |
+| R1a | 0.000 / 0.000 / 0.923 | 48 / 53 | 0.000 / 0.000 | 12 / 14 | e1588 | 107 | yes (1.000) | e1589 |
+| R1b | 0.633 / 0.659 / 0.659 | 35 / 44 | 0.105 / 0.182 | 8 / 11 | e1590 | 91 | yes (1.011) | e1591 |
+| R1c | 0.000 / 0.000 / 0.945 | 52 / 56 | 0.000 / 0.929 | 13 / 14 | e1614 | 120 | yes (1.008) | e1615 |
+
+  Song sections have no truth in these clips and were not scored.
+- Not run: `visualize` and `sonify` (they write images and audio). The stems were deleted with the run (allin1's
+  default), so no audio was kept.
+- Samples: `samples/allin1/` (JSON of S3, S4, S2n, S5capo2, S5dropd, R1a, R1b, R1c, R2full and the CLI's S4; per-clip
+  timings; batch timings; weight hashes; freeze).
+
 ## S3 versus S7flat30 (the same notes rendered 30 cents flat): what changed
 
 Collected from the sections above (same eval ids); S3 value / S7flat30 value.
@@ -844,7 +962,7 @@ position or an open-string tuning.
 | madmom from GitHub main (0.17.dev0, 27f032e) | Build from the clone refused by the same policy; PyPI 0.16.1 was used instead (madmom section). |
 | libKeyFinder + keyfinder-cli | Not in Ubuntu 24.04 apt (`apt-cache search keyfinder` returned nothing); the build route is a CMake build of cloned repositories, the kind of step this session's policy refused twice (madmom, BTC); not attempted. PyPI `keyfinder` 1.1.0 is a binding that needs libkeyfinder installed (survey.md). |
 | S-KEY (deezer/skey) | Installs from its repository with poetry (survey.md); PyPI `skey` 0.2 has the home page http://github.com/dleonik/skey and no release files (PyPI JSON read 2026-11-10); not attempted for the same reason. |
-| All-In-One (allin1 1.1.0) | Its README (raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md, read 2026-11-10) says "Install NATTEN (Required for Linux and Windows; macOS will auto-install)" (Linux: "Download from NATTEN website"; Windows: "Build from source") and installs madmom from GitHub ("pip install git+https://github.com/CPJKU/madmom  # install the latest madmom directly from GitHub"); the madmom git route was refused here; not attempted. Each run would also include a Demucs htdemucs separation (survey.md). |
+| All-In-One (allin1 1.1.0) | (corrected in gap round 1: it ran here, see "Gap round 1"; madmom 0.16.1 from PyPI on Python 3.9 and NATTEN 0.17.3 built from its PyPI sdist replaced the README's GitHub madmom and NATTEN website.) First-round reason: its README (raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md, read 2026-11-10) says "Install NATTEN (Required for Linux and Windows; macOS will auto-install)" (Linux: "Download from NATTEN website"; Windows: "Build from source") and installs madmom from GitHub ("pip install git+https://github.com/CPJKU/madmom  # install the latest madmom directly from GitHub"); the madmom git route was refused here; not attempted. Each run would also include a Demucs htdemucs separation (survey.md). |
 | tempo-cnn (tempocnn 0.0.8) | PyPI metadata requires `tensorflow==2.17.0`; the only TensorFlow wheel in the shared cache was tensorflow-cpu 2.12.1 and the orchestrator's disk notice (4.7 to 7.9 GB free on the shared disk during this run, per the notices and `df -h`) asked lanes not to install a second TensorFlow version. Not installed. Essentia's TempoCNN algorithm with the deeptemp models ran (Essentia section); their metadata cites Schreiber and Müller, SMC 2019. |
 | Omnizart chord (0.6.3) | sdist only; requires tensorflow>=2.5, tf-keras, madmom>=0.16.1, pyfluidsynth, sherpa-onnx, vamp (PyPI metadata). Not attempted by the trial agent (time). The verifier then tried a chord-only install (the sdist with `--no-deps` on the cached tensorflow-cpu 2.12.1, plus only the chord checkpoint file, 44,242,072 bytes, from the GitHub release `checkpoints-20211001` that `omnizart download-checkpoints` reads); the shell command was refused before it ran: "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External]". Nothing was installed. The sdist's `setup.py` itself runs `uv pip install` / `pip install` for Cython, numpy, madmom, vamp, pyaudio and pyfluidsynth when they are missing (read in the sdist, sha256 66b96cd3...45c1). |
 | Beat Transformer | Repository code that first separates stems with Spleeter (survey.md); repository-code execution was refused here twice; not attempted. |

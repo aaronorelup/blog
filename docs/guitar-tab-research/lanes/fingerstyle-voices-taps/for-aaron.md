@@ -209,7 +209,9 @@ guitar body is not known (trials.md, "Gap round 1").
 3. Listen to RT1 (the MP3 on that page, 3:53). Write down whether it has hits on the guitar body and, if it does, the
    times of a few of them (minutes:seconds) and what kind they are (thumb on the top, palm on the bridge, fingers on the
    side ...). Send back that list. It would be the first real tap truth for this lane, and the onset and Demucs outputs
-   made here can then be checked against it.
+   made here can then be checked against it. For reference, the loudest peaks of the Demucs drums stems made from RT1
+   are at 0:31.8, 1:05.8, 1:08.4, 1:10.4 and 3:25.8 (htdemucs_6s) and 0:49.9 (htdemucs); what sound is there is not
+   known.
 4. One more candidate was found and not downloaded because its license is the Public Domain Mark 1.0, not CC0 or CC BY:
    https://archive.org/details/RacerSessions-DannyGodinez11082015 (a steel-string acoustic set whose description says
    "imaginative fingerstyle and percussive textures", with live looping and echo/reverb). Whether to use it is your

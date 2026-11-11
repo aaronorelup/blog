@@ -53,7 +53,7 @@ number). RUNNABLE / NOT-CPU-BOX are pointers for the try agent, not test results
 13. Spotify Basic Pitch (`spotify/basic-pitch`). PyPI 0.4.0 (2024-08-16); last commit 2025-11-13. Code Apache-2.0; model files ship in the package with no separate license file. RUNNABLE.
 14. NeuralNote (`DamRsn/NeuralNote`, VST3/AU/Standalone). Last commit 2026-11-07. v2 uses MuScriptor GGUF weights (CC BY-NC 4.0), v1 used Basic Pitch. Code Apache-2.0. Installers for macOS and Windows; Linux build from source. NOT-CPU-BOX (desktop plugin).
 15. MT3 (`magenta/mt3`, JAX/T5X). No PyPI release from Magenta (the PyPI name `mt3` belongs to an unrelated outlier-detection package); last commit 2026-10-27. Code Apache-2.0; checkpoints at `gs://mt3/checkpoints` with no license statement found (no license or readme file in a listing of the public bucket). Documented route is Colab (the notebook installs `jax[cuda12]`). To check on CPU. Gap round 1: the notebook's install of the cloned repository was refused by the session's permission system (`trials.md`).
-16. YourMT3+ (GitHub `mimbres/YourMT3` holds README + GPL-3.0 LICENSE, last commit 2024-11-29; code and checkpoints in the Hugging Face Space `mimbres/YourMT3`, card `license: apache-2.0`, last modified 2025-01-31). Callable as a Gradio Space (ZeroGPU hardware; its `/process_audio` returns HTML with the MIDI embedded as a base64 data URL); local run to check. Gap round 1: no local run (running code from cloned repositories was refused by the session's permission system; `trials.md`).
+16. YourMT3+ (GitHub `mimbres/YourMT3` holds README + GPL-3.0 LICENSE, last commit 2024-11-29; code and checkpoints in the Hugging Face Space `mimbres/YourMT3`, card `license: apache-2.0`, last modified 2025-01-31). Callable as a Gradio Space (ZeroGPU hardware; its `/process_audio` returns HTML with the MIDI embedded as a base64 data URL); local run to check. Gap round 1: no local run (not attempted after the session's permission system refused running code from cloned repositories for MT3 and mt3-pytorch; `trials.md`).
 17. MR-MT3 (`gudgud96/MR-MT3`). Last commit 2024-07-12. Code MIT; weights `gudgud1014/MR-MT3` (MIT tag). Research environment (TensorFlow 2.11 + torch pins). `inference.py` calls `self.model.cuda()` unconditionally. NOT-CPU-BOX as shipped (a code change would be needed). Gap round 1: not attempted (same permission reason; `trials.md`).
 18. mt3-pytorch (`kunato/mt3-pytorch`). Last commit 2022-05-24. No LICENSE file. To check. Gap round 1: running its clone was refused by the session's permission system (`trials.md`); its 183.7 MB checkpoint is the same file as MR-MT3's `mt3.pth` (section 18).
 19. MuScriptor (`muscriptor/muscriptor`, Kyutai and Mirelo, arXiv 2607.08168). PyPI `muscriptor` 0.4.0 (2026-10-20); last commit 2026-10-20. Code MIT; weights CC BY-NC 4.0 "supplemented by" specific conditions of use, gated on Hugging Face (free login, automatic approval); small 103M / medium 307M / large 1.4B parameters. Outputs MIDI with beats and bars, JSON or JSONL note events, MusicXML and tab PDFs (with MuseScore 4); the CLI takes an instrument list (`--instruments`). RUNNABLE (`small` per README) with a Hugging Face token.
@@ -212,9 +212,12 @@ point there by name.
   RWC-synth and 0.967 ± 0.091 on MDB-stem-synth.
 - **Added in gap round 1 (PyPI JSON and the source archive, read 2026-11-10): how the package installs.** PyPI holds
   only the source archive `crepe-0.0.16.tar.gz` (16,519 bytes, sha256 521c80a0...36d29631), so `pip install crepe`
-  builds it. Its `setup.py` begins with `import pkg_resources` (absent from setuptools 81 and later; the build on
-  the box stopped with "ModuleNotFoundError: No module named 'pkg_resources'") and, unless `crepe/model-<capacity>.h5`
-  is already in the source tree, downloads `model-{tiny,small,medium,large,full}.h5.bz2` from `base_url =
+  builds it. Its `setup.py` imports `pkg_resources` (line 6), which setuptools removed in 82.0.0 (setuptools
+  changelog, https://raw.githubusercontent.com/pypa/setuptools/main/NEWS.rst, read 2026-11-11: "``pkg_resources`` has
+  been removed from Setuptools."; corrected by the round's verifier, the line said "absent from setuptools 81 and
+  later"); the build on the box, with the newest setuptools, stopped with "ModuleNotFoundError: No module named
+  'pkg_resources'". Unless `crepe/model-<capacity>.h5` is already in the source tree, `setup.py` downloads
+  `model-{tiny,small,medium,large,full}.h5.bz2` from `base_url =
   'https://github.com/marl/crepe/raw/models/'` and decompresses them into the package. Compressed sizes on the
   `models` branch (head bb29b8d9, via raw.githubusercontent.com): tiny 1,307,310, small 4,320,088, medium 15,376,974,
   large 33,197,356, full 57,689,301 bytes; decompressed tiny 2,011,144 and full 89,038,936 bytes. `requires_dist`:
@@ -1419,7 +1422,8 @@ Everything in this section was read by verify-docs-audio-to-notes on 2026-11-10.
   d8cbd287 by `git ls-remote`, 2026-11-10).
 - **Version:** PyPI 0.2.0, uploaded 2026-07-11 (first release 0.1.0 on 2025-11-14); `requires_python >=3.9`; requires
   `torch>=2.0.0`, `torchaudio`, `torchvision`, `transformers>=4.35.0`, `librosa>=0.9.1`, `mido`, `pretty-midi`,
-  `soxr` and others; extras `tensorflow` (`tensorflow>=2.13.0`), `torch`, `synthesis` (PyPI JSON).
+  `soxr` and others; extras `all`, `dev`, `full`, `synthesis`, `tensorflow` (`tensorflow>=2.13.0`) and `torch` (PyPI
+  JSON).
 - **How a program calls it (description):** `from mt3_infer import transcribe`, `midi = transcribe(audio, sr=16000)`,
   `midi.save("output.mid")`; `transcribe(audio, model="mr_mt3")`, `model="mt3_pytorch"`, `model="yourmt3"`;
   `load_model("mt3_pytorch", device="cuda")`; CLI `mt3-infer download --all` ("Download all models at once (874MB
@@ -1443,14 +1447,15 @@ Everything in this section was read by verify-docs-audio-to-notes on 2026-11-10.
     (UNVERIFIED; settled by reading its download module).
   - c. Training data: as for MR-MT3, mt3-pytorch (MT3) and YourMT3+.
   - d. Service: not applicable.
-- **Not run here:** in gap round 1 the MT3, mt3-pytorch, MR-MT3 and YourMT3+ code could not be run from their
-  repositories (the session's permission system, `trials.md`); this package, which vendors three of them, was not
-  used in their place.
+- **Not run here:** in gap round 1 the session's permission system refused installing the MT3 clone and running the
+  mt3-pytorch clone, and MR-MT3 and YourMT3+ were not attempted after those refusals (`trials.md`); this package,
+  which vendors three of them, was not used in their place.
 
 ## 37. yourmt3 (PyPI, third party; added in gap round 1)
 
 - **What, links:** PyPI `yourmt3` 0.1.4, uploaded 2025-08-31 (first release 0.1.0 on 2025-07-25), summary "Music
-  Transcription", author field "dummyjenil"; no project URL (PyPI JSON, read 2026-11-10). Its description lists the
+  Transcription", `author_email` field naming "dummyjenil" (the `author` field is empty); no project URL (PyPI JSON,
+  read 2026-11-10). Its description lists the
   model types "YMT3+", "YPTF+Single", "YPTF+Multi", "YPTF+MoE+Multi 1" and "YPTF+MoE+Multi 2", shows `from yourmt3
   import YMT3`, `model = YMT3(hf_hub_download("shethjenil/Audio2Midi_Models","YMT3+.pt"),"YMT3+")` and
   `model.predict(path, batch_size, ...)` inside a Gradio interface whose output is `gr.File(label="midi")`, and under
@@ -1698,7 +1703,9 @@ requirements); section 20 Omnizart (the older releases' pins); section 24 Onsets
 checkpoint; the `magenta` 2.1.4 pins and console script; the MAESTRO checkpoint archive); new sections 36 `mt3-infer`
 and 37 `yourmt3` (PyPI repackagings, license facts quoted or stated as absent); a gap-round status on the tool-list
 lines 1, 5, 15, 16, 17, 18, 20 and 24. What ran and what was refused is in `trials.md`, "Gap round 1" and "Tools not run
-here". These additions have not been through the verify-docs pass below.
+here". These additions have not been through the verify-docs pass below. (They were checked against their sources
+by `verify-gapfill-audio-to-notes` on 2026-11-10 and 2026-11-11; its log, with the corrections made here, is at the
+end of `trials.md`.)
 
 ## Verification log (verify-docs-audio-to-notes, 2026-11-10)
 

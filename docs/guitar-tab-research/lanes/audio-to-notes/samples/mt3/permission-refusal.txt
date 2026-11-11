@@ -37,3 +37,9 @@ Answer of the session's permission system (agent's copy):
 
 Nothing ran (no out/mt3-pytorch directory was created). The venv, the checkpoint and the clones were deleted
 afterwards.
+
+Checked by verify-gapfill-audio-to-notes (2026-11-11): the gap agent's own session transcript on the box records
+both refusals with this text, as the results of Bash calls at 23:15:09 UTC (the call also ran `date` and put the
+install in the background with its output going to logs/gap1-mt3-install.log, which was never created) and at
+23:21:24 UTC (the run_mt3_pytorch.py command above). The transcript also shows the checks afterwards: no venv-mt3
+directory at 23:15:42 UTC, and no out/mt3-pytorch directory after the second refusal.

@@ -48,12 +48,13 @@ How to read the numbers:
 | Onsets and Frames, Magenta MAESTRO checkpoint (`magenta` 2.1.4), piano-trained, gap round 1 | yes, S1, S2n, R1c, S4 guitar stem | r0545 | MIDI (program 0, velocities, no pedal, no pitch bends) |
 
 Not run here (reasons and evidence under "Tools not run here", steps in `for-aaron.md`): CREPE (TensorFlow
-package), RMVPE, MELODIA Vamp plugin, pYIN Vamp plugin, Timbre-Trap, MT3, YourMT3+, MR-MT3, Onsets and Frames,
+package), MELODIA Vamp plugin, pYIN Vamp plugin, Timbre-Trap, MT3, YourMT3+, MR-MT3,
 hFT-Transformer, Omnizart, NeuralNote, Sheet Sage, MuScriptor, PENN, CREPE Notes and the other survey additions
-listed there. (corrected in gap round 1: RMVPE and Onsets and Frames ran, see "Gap round 1"; CREPE, MT3 with its
-PyTorch port mt3-pytorch, MR-MT3, YourMT3+ on the box's CPU and Omnizart still did not run, and their entries now give
-the reason as it is after that round: the session's permission system for code from cloned repositories or local
-folders, github.com answering 403, and a source build that failed.)
+listed there. (corrected in gap round 1: RMVPE and Onsets and Frames ran, see "Gap round 1", and the round's verifier
+took them out of this list; CREPE, MT3 with its PyTorch port mt3-pytorch, MR-MT3, YourMT3+ on the box's CPU and
+Omnizart still did not run, and their entries now give the reason as it is after that round: the session's permission
+system for code from cloned repositories or local folders (MR-MT3 and YourMT3+ were not attempted after its refusals),
+github.com answering 403, and a source build that failed.)
 
 ## The monophonic f0 trackers: shared facts
 
@@ -802,7 +803,8 @@ at 22:44 UTC, for about 20 agents).
   and refused by the session's permission system, below.)
 - Gap round 1 (`gapfill-audio-to-notes`, 2026-11-10, 23:14 to 23:23 UTC). The notebook's install route: `git clone
   --depth 1 --branch=main https://github.com/magenta/mt3` (commit 7ecf19d, 2026-10-27; the clone was allowed), then
-  the notebook's install command with `jax[cpu]` in place of `jax[cuda12]` (no GPU here): `uv venv --python 3.11
+  the notebook's install command with `jax[cpu]` in place of `jax[cuda12]` and without its `-f
+  https://storage.googleapis.com/jax-releases/jax_cuda_releases.html` (no GPU here): `uv venv --python 3.11
   venv-mt3 && uv pip install --python venv-mt3/bin/python "jax[cpu]" nest-asyncio pyfluidsynth==1.3.0 -e <clone>`.
   Answer: "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from
   External]." Nothing of that command ran (no venv and no log existed afterwards). The clone's `setup.py` would have
@@ -823,7 +825,9 @@ at 22:44 UTC, for about 20 agents).
   tf`; `contrib/vocabularies.py`: `import t5.data`). The README's usage, `InferenceHandler('./pretrained')` then
   `.inference(<audio>)`, run from the clone through `scripts/run_mt3_pytorch.py` (device cpu) in a venv holding
   torch 2.15.0+cpu, was refused with the same answer ("[Code from External]"); nothing ran (no output folder was
-  created). The venv, the checkpoint and the clones were deleted.
+  created). The venv, the checkpoint and the clones were deleted. (Added by the round's verifier: that venv held
+  torch and its own dependencies only, `samples/mt3/uv-pip-freeze-venv-mt3pytorch-py3.11-unused.txt`; transformers,
+  librosa, note-seq, t5, ddsp and TensorFlow, which `inference.py` and `contrib/` import, were not installed in it.)
 - Which model variant: none ran. From the mt3-pytorch code (not from a run): the codec is built with
   `num_velocity_bins=1` and `NoteEncodingWithTiesSpec` on inputs of 256 frames, the settings of the MT3 notebook's
   `mt3` branch (its `ismir2021` branch uses 127 velocity bins, `NoteEncodingSpec` and 512 frames), and the MIDI file
@@ -833,7 +837,7 @@ at 22:44 UTC, for about 20 agents).
 - Not used in place of the refused routes: the PyPI package `mt3-infer` 0.2.0 (2026-07-11), which vendors the
   mt3-pytorch, MR-MT3 and YourMT3 code (survey.md, section 36).
 
-### YourMT3+ - NOT RUN HERE (Space quota) and not run locally (disk; in gap round 1: permission system)
+### YourMT3+ - NOT RUN HERE (Space quota) and not run locally (disk; in gap round 1: not attempted, see below)
 
 - The author's Space `mimbres/YourMT3` (Gradio 4.39.0, hardware `zero-a10g`, stage RUNNING, git sha 5e66c1ea,
   last modified 2025-01-31, card license apache-2.0; read from https://huggingface.co/api/spaces/mimbres/YourMT3 on
@@ -859,7 +863,9 @@ at 22:44 UTC, for about 20 agents).
   561,544,628 bytes) and list `torch`, `torchaudio`, `lightning>=2.2.1`, `transformers` (`==4.45.1` in the ZeroGPU
   Space), `librosa`, `einops`, `mido`, `mir_eval` from GitHub, `yt-dlp` and `wandb` in `requirements.txt`. The
   hosted-apis lane's runs of `mimbres/YourMT3-cpu` on S2n and R1c (r0164 31.18 s, r0245 31.34 s, on the Space's
-  `cpu-basic` hardware) are the CPU timings on record. Steps for a local run on Aaron's PC: `for-aaron.md`, section 1.
+  `cpu-basic` hardware: round trips its script measured from sending the request to having the whole answer, upload
+  and queueing included; the ledger walls of the two runs are 32.21 s and 33.78 s) are the timings on record for the
+  CPU Space. Steps for a local run on Aaron's PC: `for-aaron.md`, section 1.
 
 ### MR-MT3 (`gudgud96/MR-MT3`) - NOT RUN HERE
 
@@ -901,8 +907,9 @@ at 22:44 UTC, for about 20 agents).
   `>=3.8`; PyPI JSON, read 2026-11-10). Command (23:30 UTC): `uv venv --python 3.8 venv-omnizart && uv pip install
   --python venv-omnizart/bin/python "omnizart==0.5.0"`. uv downloaded CPython 3.8.20 (19.9 MiB) and created the venv,
   "Resolved 91 packages in 13.00s" (among them tensorflow 2.5.0, spleeter 2.4.0, librosa 0.8.1, numpy 1.19.5,
-  keras-nightly 2.5.0.dev2021032900), then built the three packages that PyPI has only as source archives (madmom
-  0.16.1, vamp 1.1.0, wrapt 1.12.1) and stopped after 17.0 s (exit 1): "Failed to build `vamp==1.1.0`" ... "File
+  keras-nightly 2.5.0.dev2021032900), then started building ("Building ...") the three packages that have no wheel on PyPI for Linux and Python
+  3.8 (madmom 0.16.1 and wrapt 1.12.1: a source archive only; vamp 1.1.0: a source archive and two Python 2.7 wheels,
+  macOS and Windows) and stopped after 17.0 s (exit 1): "Failed to build `vamp==1.1.0`" ... "File
   "<string>", line 3, in <module> ModuleNotFoundError: No module named 'numpy'", with uv's hint "`vamp` (v1.1.0) was
   included because `omnizart` (v0.5.0) depends on `vamp`" and "This error likely indicates that `vamp@1.1.0` depends
   on `numpy`, but doesn't declare it as a build dependency". Nothing was installed, so neither music nor vocal mode
@@ -953,10 +960,12 @@ no longer printed (this round's rule: keep at least 4 GB free). Each tool was in
 scored with gtr-eval 0.11.1, its `uv pip freeze` saved in its samples folder, and its venv and weights deleted
 afterwards. Two tools ran (RMVPE, Onsets and Frames: the sections below). The items of the round that did not run are
 corrected where they stand under "Tools not run here" (MT3 with mt3-pytorch, MR-MT3, YourMT3+ on the CPU, Omnizart,
-CREPE), with the reason as it is now. Three of those refusals came from the session's permission system
-("[Code from External]") and are recorded word for word in `samples/mt3/permission-refusal.txt` and
-`samples/crepe/gap1-not-run.txt`; after two of them, no further command of that kind (running code from a cloned
-repository) was submitted for MR-MT3 or YourMT3+.
+CREPE), with the reason as it is now. The session's permission system refused three commands ("[Code from
+External]"): two for MT3 (the notebook's install of the cloned repository, then running the mt3-pytorch clone) and
+one for CREPE (installing its source with the weights put in place); the answers are recorded word for word in
+`samples/mt3/permission-refusal.txt` and `samples/crepe/gap1-not-run.txt`. After the first two, no further command of
+that kind (running code from a cloned repository) was submitted for MR-MT3 or YourMT3+, so those two were not
+attempted.
 
 ### RMVPE through `rmvpe-onnx` 0.2.3 (ONNX Runtime, CPU)
 
@@ -1052,7 +1061,8 @@ and R3a have no truth: their f0 files are in `out/rmvpe/f0/` (`samples/rmvpe/R2.
   maximum RSS 1,178,656 KiB. Per file, from the script's log ("Starting transcription for" to "Transcription written
   to", `scripts/oaf_log_times.py`, `samples/onsets-frames/run_facts.json`): S1 5.30 s, S2n 4.07 s, R1c 4.31 s, S4
   guitar stem 4.97 s; the log shows "Restoring parameters from .../model.ckpt" once per file. The first file started
-  20.5 s after the run started (TensorFlow import and estimator setup). TensorFlow logged that `libcudart.so.11.0`
+  about 20 s after the run started (20.5 s counted from the ledger's start time, 23:41:16, which has whole seconds;
+  TensorFlow import and estimator setup). TensorFlow logged that `libcudart.so.11.0`
   could not be loaded and ran on the CPU.
 - Output: one MIDI file per input: type 1, 220 ticks per quarter, 2 tracks, tempo 120, one instrument, program 0, no
   control changes (no pedal), no pitch bends; velocities 67 to 76 (S1), 55 to 74 (S2n), 30 to 76 (R1c), 54 to 75 (S4
@@ -1097,7 +1107,8 @@ code 0. Run figures (r0516, r0517, r0545: wall, CPU = user + sys, peak RSS, core
 the end; the round's venvs, weights and the downloaded CPython 3.8.20 were removed, and so were the uv cache entries
 that only its installs had added (about 2.0 GB from Onsets and Frames, 39 MB from RMVPE), except small ones: three
 source-built archives of 10 MB in all (librosa 0.7.2, mir_eval 0.7, pretty_midi 0.2.9) and a 6 MB setuptools 75.3.4
-archive from the Omnizart build attempt. No separate verifier has checked this round.
+archive from the Omnizart build attempt. No separate verifier has checked this round. (A separate check followed:
+"Verification log (verify-gapfill-audio-to-notes, round 1, ...)" at the end of this file.)
 
 ## Outputs for other lanes (on the box, outside git)
 

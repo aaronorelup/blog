@@ -8,8 +8,9 @@ one slot of 2 cores; no 4-core (`--all-cores`) run was made. Every run id (r0xxx
 reports that from about 21:05 UTC the slots were queued 15 to 20 jobs deep (its own count at the time; no log of it
 was kept). The run ledger only holds jobs that finished; counted from it (`started_utc` minus `lock_wait_s`), at most
 8 jobs were waiting for a slot at the same moment between 20:50 and 23:30 UTC (at 21:04; sampled every 10 s), and 6
-at each 5-minute mark from 21:35 to 21:55 (verifier's count). The later runs were grouped into three batch jobs (r0478, r0493, r0510),
-each holding one 2-core slot, inside which every item was logged with `gtr-run --nolock` (details under "Demucs
+at each 5-minute mark from 21:35 to 21:55 (verifier's count). The later runs were grouped into three batch jobs
+(r0478, r0493, r0510), each holding one 2-core slot, inside which every item was logged with `gtr-run --nolock`
+(details under "Demucs
 4.1.0, further runs"). The box was shared with about 20 agents throughout: the 1-minute load averages at run start
 listed below run from 2.4 to 10.3 (17.4 and 19.6 for the two unpinned HPSS runs), so wall-clock times are single
 runs on a busy machine, with CPU time beside them. Estimated stems are in
@@ -61,7 +62,9 @@ outside git (list at the end).
   each (`bass-8d85a5bd.pth`, `drums-9619578f.pth`, `other-b52fbbf7.pth`, `vocals-b62c91ce.pth`) from
   `https://zenodo.org/records/3370489/files/...`; `umxl` = 4 files of 113,101,348 bytes each (`bass-2ca1ce51.pth`,
   `drums-69e0ebd4.pth`, `other-c8c5b3e6.pth`, `vocals-bccbd9aa.pth`) from `https://zenodo.org/records/5069601/files/...`.
-  Parameter counts printed by the loaded separators: umxhq 35,577,488, umxl 113,032,848.
+  Parameter counts printed by the loaded separators: umxhq 35,577,488, umxl 113,032,848 (umxhq re-counted by the
+  verifier; umxl not, its weights were deleted from the cache). All eight file sizes and both Zenodo license ids
+  were re-read from the Zenodo API by the verifier.
 - **Runs** (command: `umx --model <umxhq|umxl> --no-cuda --outdir out/<model> <clip>.wav`, all other options at
   their defaults: `--niter 1`, `--wiener-win-len 300`, no `--residual`, `--ext .wav`; script
   `scripts/umx_batch.sh`; 2 cores each):
@@ -191,8 +194,8 @@ outside git (list at the end).
   -34.73 dB (mdx_extra S4), -39.05 dB (htdemucs S6taps), -12.59 dB (htdemucs_6s S6taps), -44.67 dB (htdemucs S2s),
   -16.18 dB (htdemucs_6s S2s). So the stems do not add back exactly to the mix; the three htdemucs_6s residuals
   (-12.76, -12.59, -16.18 dB) are the highest in this list. Per-run facts: `samples/demucs/stemfacts_<model>_<clip>.json`
-  (every value in the 48 `stemfacts_*.json` files of this lane was recomputed by the verifier from the audio with
-  separate code: no mismatch).
+  (every value in the trial agent's 48 `stemfacts_*.json` files was recomputed by the verifier from the audio with
+  separate code, `scripts/verify-trials-audio-check.py facts`, r0553: no mismatch).
 - **S4, scored** (`gtr-eval stems`, map drums=drums, bass=bass, lead=vocals, guitar=other for the 4-stem models and
   guitar=guitar for htdemucs_6s; SI-SDR / SDR / SIR / SAR in dB; `samples/scores/gtreval_stems_<model>_S4.json`):
 
@@ -327,7 +330,7 @@ Face, Zenodo and GitHub-mirror APIs and READMEs on 2026-11-10 and matches, excep
   `facebook/sam-audio-small` `gated: manual`, `usedStorage` 5,100,547,943 bytes; `-base` `manual`, 7,725,405,659;
   `-large` `manual`, 14,861,356,211. A request for `https://huggingface.co/facebook/sam-audio-small/resolve/main/config.json`
   without a login returned HTTP 401. Not run: the weights need an approved Hugging Face login, and the smallest
-  repository is 5.1 GB against 5 to 7 GB of free disk.
+  repository is 5.1 GB against 6.2 to 7.2 GB of free disk.
 - **AudioSep (text-queried).** The Hugging Face Space `Audio-AGI/AudioSep` (API, read 2026-11-10) holds
   `checkpoint/audiosep_base_4M_steps.ckpt` 1,264,844,076 bytes and `checkpoint/music_speech_audioset_epoch_15_esc_89.98.pt`
   2,352,471,003 bytes, readable without a login. Not run: 3.6 GB of checkpoints under the 200 MB download notice.
@@ -349,7 +352,10 @@ Face, Zenodo and GitHub-mirror APIs and READMEs on 2026-11-10 and matches, excep
   checkpoint, `SEG_mixemb/model.pth` 150,237,319 or `SEG_resemb/model.pth` 151,026,043 bytes, which together are
   also above the 200 MB notice.)
 - **`adityalakhani/htdemucs-6s-guitar-ft` (htdemucs_6s fine-tuned on guitar).** Hub API (read 2026-11-10):
-  `guitar_htdemucs_6s.pt` 329,654,071 bytes, not gated. Not run: above the 200 MB notice.
+  `guitar_htdemucs_6s.pt` 329,654,071 bytes, not gated. Not run: above the 200 MB notice. (Verifier, from the repo's
+  files, 2026-11-10: card metadata `license: apache-2.0`, `datasets: MoisesDB`; its `inference.py` reads and writes
+  audio with soundfile and takes `--device auto|cuda|cpu`, so a CPU run is possible in its code; its
+  `requirements.txt` pins `demucs==4.0.1`.)
 - **Demucs in the browser.** `free-music-demixer` (sevagh): its README calls it "An archived snapshot ... no longer
   maintained" and "Model weights are not included" (survey.md). `demucs-rs`: its README names Metal, Vulkan and
   WebGPU back ends; the box has no GPU (survey.md). Not run here. Instead the `demucs-onnx` package's htdemucs_6s
@@ -362,13 +368,15 @@ Face, Zenodo and GitHub-mirror APIs and READMEs on 2026-11-10 and matches, excep
   1,007,816,988 bytes, sizes from HTTP HEAD on the audio-separator mirror): not downloaded (200 MB notice). The
   Mel-Band RoFormer architecture was run with the 45 MB becruily guitar checkpoint instead (below).
 - **SCNet:** not in the audio-separator 0.48.0 model list (`samples/audio-separator/model_catalogue_0.48.0.json`
-  has no entry containing "scnet"); MSST lists SCNet checkpoints, not tried for lack of time.
+  has no entry containing "scnet"); MSST lists SCNet checkpoints. The trial agent did not try them (time); the
+  verifier ran the 42 MB "SCNet Small" checkpoint through MSST (section "SCNet Small (MUSDB18)" below).
 - **demucs-infer, bs-roformer-infer, melband-roformer-infer (OpenMIRLab), PolUVR:** repackagings of models already
   run here through demucs, audio-separator and MSST; not tried, to keep the CPU slots for other tools.
 
 ## Demucs 4.0.1 with the current torchaudio (I/O check only, no separation)
 
-Many tools still pin the previous Demucs release (for example MSST's `requirements.txt` lists `demucs==4.0.0`), so
+Some tools pin an earlier Demucs release (MSST's `requirements.txt` lists `demucs==4.0.0`; the verifier found that
+`adityalakhani/htdemucs-6s-guitar-ft`'s `requirements.txt` pins `demucs==4.0.1`), so
 the reader and writer of PyPI `demucs` 4.0.1 were checked against torchaudio 2.11.1 without loading a model
 (`scripts/demucs401_io_check.py`, light job, not timed; venv deleted afterwards, freeze in
 `samples/demucs/uv-pip-freeze-demucs-4.0.1-iocheck.txt`).
@@ -463,7 +471,8 @@ the reader and writer of PyPI `demucs` 4.0.1 were checked against torchaudio 2.1
 
 ## Demucs 4.1.0, further runs (batch A): solo-guitar recordings, R2, option checks, whole song
 
-From 21:05 UTC the shared CPU slots were queued 15 to 20 jobs deep, so the remaining runs were grouped into batch
+Because the shared CPU slots were queued (the trial agent counted 15 to 20 jobs waiting from about 21:05 UTC; the
+ledger shows up to 8, see the top of this file), the remaining runs were grouped into batch
 jobs: each batch is one `gtr-run` job holding one 2-core slot (`scripts/batch_A.sh`, `batch_B.sh`, `batch_C.sh`), and
 inside it every item is started with `gtr-run --nolock`, which gives each item its own ledger line (wall, CPU, peak
 RSS, input hash). The ledger shows `cores: null` for those items because `--nolock` records no pinning; the batch log
@@ -517,8 +526,8 @@ its slot.
 
   The base run took more CPU time (27.8 s) than the `--mp3`, `--float32` and `-j 2` runs (17.5 to 18.7 s), which do
   the same separation with a different writer or with 2 parallel jobs; the cause of that spread was not isolated (it
-  ran first, and the box's load average was 6 to 10 during these runs). One run per option: these timings are not
-  averages. **The output is not identical from run to run:** `demucs/apply.py` draws a random
+  ran first, and the box's 1-minute load average at the start of these runs was 5.96 to 10.26). One run per option:
+  these timings are not averages. **The output is not identical from run to run:** `demucs/apply.py` draws a random
   time offset when `shifts` > 0 (line 245, `offset = random.randint(0, max_shift)`; the CLI default is `--shifts 1`).
   Measured with `scripts/compare_runs.py`: `other.wav` of the base run against the `-j 2` run differs by
   max |diff| 0.0549, difference level -20.74 dB; against the `--float32` run -20.49 dB; the htdemucs_6s `guitar.wav`
@@ -541,8 +550,8 @@ its slot.
   (htdemucs_6s); stem levels (RMS dBFS) htdemucs vocals -15.75, other -18.69, bass -21.23, drums -24.81;
   htdemucs_6s vocals -15.81, guitar -19.25, bass -20.86, drums -24.52, piano -44.65, other -45.22. The batch that
   held the slot is r0478 (wall 1514.33 s for all of batch A after waiting 3270.9 s for the slot). A 4-core
-  (`--all-cores`) whole-song timing was not attempted: it needs both slots at once, and with 15 to 20 jobs queued it
-  would have held one slot idle while waiting for the other.
+  (`--all-cores`) whole-song timing was not attempted: it needs both slots at once, and with jobs queued for the
+  slots (see the top of this file) it would have held one slot idle while waiting for the other.
 - **Clipping guard visible in the real-song stems:** on R2 and R2full the `drums` and `vocals` stems of every Demucs
   model peak at exactly -0.09 dBFS (0.990 of full scale). `demucs/audio.py` `prevent_clip` with the default
   `--clip-mode rescale` does `wav = wav / max(1.01 * wav.abs().max(), 1)`, which gives that peak whenever a stem
@@ -623,10 +632,13 @@ its slot.
 
 - **What:** MSST, the training and inference framework behind many community RoFormer checkpoints; PyPI `msst` 0.1.0
   (uploaded 2026-09-09, author "Roman Solovyev (ZFTurbo)", homepage https://github.com/ZFTurbo/Music-Source-Separation-Training),
-  console script `msst-inference`. Code license MIT per survey.md (`license_expression: 'MIT'`).
-- **Install (worked) and one refusal:** a `git clone --depth 1` of the repository (head `1d4b3c4`, 2026-11-10) was
-  made, but running its `inference.py` from inside the clone was refused by this session's permission check
-  ("Code from External"), so the clone was deleted and the PyPI package was used instead: `uv venv --python 3.11
+  console script `msst-inference`. Code license MIT per survey.md (`license_expression: 'MIT'`; verifier: the PyPI
+  metadata says `MIT`, and the repository's LICENSE reads "MIT License / Copyright (c) 2024 Roman Solovyev (ZFTurbo)",
+  https://raw.githubusercontent.com/ZFTurbo/Music-Source-Separation-Training/main/LICENSE, read 2026-11-10).
+- **Install (worked) and one refusal:** a `git clone --depth 1` of the repository (head `1d4b3c4`, 2026-11-10; the
+  verifier's `git ls-remote` shows the same head) was made; the trial agent reports that running its `inference.py`
+  from inside the clone was refused by its session's permission check ("Code from External"; no log of that kept),
+  so the clone was deleted and the PyPI package was used instead: `uv venv --python 3.11
   venv-msst`; `uv pip install torch==2.15.0 numpy scipy soundfile librosa ml_collections omegaconf beartype
   rotary_embedding_torch einops "hyper_connections==0.1.11" matplotlib tqdm pyyaml packaging` (the imports of the
   inference path; the repository's full `requirements.txt` also lists wandb, bitsandbytes, wxpython, transformers and
@@ -682,11 +694,58 @@ its slot.
   takes the overlap from the model config when `--mdxc_overlap` is not given, so 2 here as well. audio-separator's
   `--normalization 0.9` only scales a signal whose peak is above 0.9 (`spec_utils.normalize`), and neither this
   input (`S4_0-10s` peaks at 0.815) nor any of its stems (peaks 0.0000 to 0.609) is above 0.9, so it did not change
-  these files. (Correction by the
-  verifier: the trial text named the 0.9 normalisation and MSST's overlap of 2 as differences between the two runs.)
+  these files. (Correction by the verifier: the trial text named the 0.9 normalisation and MSST's overlap of 2 as
+  differences between the two runs.)
 - **Constraint inputs for a re-run:** `--model_type`, `--config_path` (chunk size, overlap and instruments are in the
   YAML), `--extract_instrumental`, `--use_tta`, `--bigshifts`, `--pcm_type`, `--flac_file`, `--lora_checkpoint_peft`
   / `--lora_checkpoint_loralib`, `--filename_template`. No pitch or tuning parameters.
+
+## SCNet Small (MUSDB18) through PyPI `msst` 0.1.0 (run by the verifier)
+
+- **What:** SCNet ("SCNet: Sparse Compression Network for Music Source Separation", the title the README of
+  https://github.com/starrytong/SCNet gives for its official implementation), as the "SCNet Small (by starrytong)"
+  checkpoint in ZFTurbo's `docs/pretrained_models.md` (4 stems: drums, bass, other, vocals; no guitar stem). Not in
+  audio-separator 0.48.0's catalogue (see "NOT RUN HERE"); the trial agent skipped it "for lack of time". Run here
+  by `verify-trials-source-separation`, 2026-11-10.
+- **License:** MSST's LICENSE: "MIT License / Copyright (c) 2024 Roman Solovyev (ZFTurbo)"
+  (https://raw.githubusercontent.com/ZFTurbo/Music-Source-Separation-Training/main/LICENSE, read 2026-11-10). SCNet's
+  LICENSE: "MIT License / Copyright (c) 2024 starrytong" (https://raw.githubusercontent.com/starrytong/SCNet/main/LICENSE,
+  read 2026-11-10). No license for the checkpoint itself is stated in `pretrained_models.md` (searched for "licen",
+  2026-11-10); the file names say `musdb18` and the row reports "MUSDB test" scores, but the training data is not
+  stated there, and the weights' license is UNVERIFIED.
+- **Install:** none beyond the MSST venv above (re-created by the verifier from the saved freeze; `msst/models/scnet`
+  ships with the package). Checkpoint `scnet_checkpoint_musdb18.ckpt` 42,434,986 bytes (sha256 `1bc0d1ab...e2aa`) and
+  `config_musdb18_scnet.yaml` 1,739 bytes from
+  `https://github.com/ZFTurbo/Music-Source-Separation-Training/releases/download/v.1.0.6/` (the links in that table
+  row), kept in `/home/user/gtr/lanes/source-separation/verify/models/scnet/`. Config: `chunk_size: 485100`,
+  `num_overlap: 4`, `normalize: true`, `dims [4, 32, 64, 128]`, `nfft 4096`, `hop_size 1024`.
+- **Runs** (`msst-inference --model_type scnet --config_path config_musdb18_scnet.yaml --start_check_point
+  scnet_checkpoint_musdb18.ckpt --input_folder <dir with one clip> --store_dir verify/out/msst-scnet-musdb18
+  --force_cpu --disable_detailed_pbar`; `scripts/verify-trials-reruns.sh wave3-scnet`; cores 2-3; the output folder
+  was then moved to `out/msst-scnet-musdb18/` and scored there):
+
+| run | clip | wall s | CPU s | peak RSS MB | load1 at start | msst "Elapsed time" s | model load s |
+|---|---|---|---|---|---|---|---|
+| r0559 | S4 (38.7 s) | 109.10 | 197.1 | 3372.2 | 4.09 | 106.08 | 0.13 |
+| r0560 | S6taps (29.4 s) | 98.94 | 165.5 | 3333.7 | 3.76 | 95.76 | 0.13 |
+
+  Each run printed two torch `UserWarning`s ("A window was not provided. A rectangular window will be applied ...")
+  from `torch.stft` / `torch.istft` as called by `msst/models/scnet/scnet.py`.
+- **Output format:** `out/msst-scnet-musdb18/<clip>/{drums,bass,other,vocals}.wav`, float32 WAV (FLOAT), 44,100 Hz,
+  2 channels, frame count equal to the input; stem sum at lag 0, residual -36.06 dB (S4) and -36.07 dB (S6taps).
+  Facts: `samples/msst/stemfacts_scnet-musdb18_<clip>.json`.
+- **S4** (e1596; map drums, bass, guitar=other, lead=vocals; SI-SDR / SDR / SIR / SAR dB): drums 9.61 / 11.78 /
+  22.88 / 12.15; bass 7.27 / 8.50 / 18.19 / 9.06; guitar (other) 2.23 / 2.39 / 3.86 / 9.31; lead (vocals) 2.45 /
+  4.29 / 16.67 / 4.64. Projection of the true lead: other 0.504, vocals 0.470; of the true guitar: other 0.884.
+  Stem levels (mix -17.37 dBFS): other -20.73, bass -25.41, vocals -26.59, drums -29.39 dBFS.
+- **S6taps** (e1597; map guitar=other, taps=drums): guitar 21.73 / 21.93 / 23.82 / 26.48; taps 7.57 / 11.13 / 23.61 /
+  11.40. Projection of the true taps: drums 0.797, other 0.213; of the true guitar: other 0.995, drums 0.003. Levels
+  (mix -18.03): other -18.24, drums -33.08, vocals -73.43, bass -75.70 dBFS. Onsets of `drums.wav`
+  (`scripts/onsets_of_stem.py`, `samples/onsets-handoff/scnet-musdb18_S6taps_drums_onsets.txt`) against the 32 taps
+  (e1595, 50 ms window): 47 onsets, F 0.810, precision 0.681, recall 1.000, 32 / 32 matched, median timing
+  -0.0057 s.
+- **Constraint inputs for a re-run:** those of `msst-inference` (above); chunk size and overlap are in the YAML. No
+  pitch or tuning parameters.
 
 ## python-audio-separator 0.48.0 and the UVR model zoo (VR, MDX-Net, Demucs, MDX23C, BS-RoFormer, BS-RoFormer-SW)
 
@@ -708,8 +767,10 @@ its slot.
   `BS-Roformer-SW.ckpt` lists no stems in the catalogue, and its YAML says `instruments: ['bass', 'drums', 'other',
   'vocals', 'guitar', 'piano']` (`samples/audio-separator/BS-Roformer-SW.yaml`). No entry contains "SCNet". Downloads:
   the code tries `https://github.com/nomadkaraoke/python-audio-separator/releases/download/model-configs/<file>` first
-  and the original UVR release URL second (`separator.py`, `download_model_files`); Demucs `.th` files come from
-  `https://dl.fbaipublicfiles.com/demucs/hybrid_transformer/` (catalogue `download_files`). Files used (bytes):
+  and the original UVR release URL second (`separator.py`, `download_model_files`); for the Demucs `.th` file the
+  catalogue's `download_files` give `https://dl.fbaipublicfiles.com/demucs/hybrid_transformer/5c90dfd2-34c22ccb.th`,
+  which the same code tries after the mirror (verifier: both hosts answer HTTP HEAD with 54,996,327 bytes; which host
+  served each file was not logged). Files used (bytes):
   `1_HP-UVR.pth` 126,792,647; `UVR-MDX-NET-Inst_HQ_3.onnx` 66,759,214; `5c90dfd2-34c22ccb.th` (htdemucs_6s)
   54,996,327; `MDX23C-8KFFT-InstVoc_HQ.ckpt` 448,101,203; `model_bs_roformer_ep_317_sdr_12.9755.ckpt` 639,331,213;
   `BS-Roformer-SW.ckpt` 699,412,152 (sha256 of each in `samples/audio-separator/model-files-sha256.txt`). The three
@@ -739,15 +800,16 @@ its slot.
   normalize input and output audio to", `--help`) scales a signal down to a peak of 0.9 only when its peak is above
   0.9 (`spec_utils.normalize`: `if maxv > max_peak: wave *= max_peak / maxv`): R2 (input peak 0.989) gave stems
   that peak at -0.92 dBFS = 0.90, while the S4 input (peak 0.891) and its stems (peaks -1.41 dBFS and lower) were not
-  scaled. On R2 the stem-sum residuals are -14.71 / -13.39 dB against -37.71 / -34.39 dB on S4 (below); whether the
-  scaling accounts for that was not isolated (verifier). Frame count equal to the input for MDX-Net, Demucs, MDX23C
+  scaled. On R2 the stem-sum residuals are -14.71 / -13.39 dB against -37.71 / -34.39 dB on S4 (next lines); whether
+  the scaling accounts for that was not isolated (verifier). Frame count equal to the input for MDX-Net, Demucs, MDX23C
   and the RoFormers (files 34 bytes larger than the input WAV: a `LIST`/`INFO` chunk with `ISFT` "Lavf60.16.100");
   **the VR model's files are shorter: 463 frames short on S4 (1,708,032 vs 1,708,495) and 400 short on R2**, still
-  aligned at lag 0. (Verifier re-run of r0481, r0531, cores 2-3, load1 3.67: wall 84.6 s, CPU 138.1 s, peak RSS
-  2052.2 MB; both files sample-identical to r0481's, again 1,708,032 frames. e1421 recomputed with mir_eval directly:
-  instrumental 7.54 / 7.64 / 8.69 / 14.88, lead 4.72 / 6.14 / 19.10 / 6.42, as above.) Residual of the stem sum against the mix: VR -37.71 dB
-  (S4), MDX-Net -34.39 dB (S4), Demucs 6s -12.16 dB (S4), BS-RoFormer-SW -36.86 dB, MDX23C -68.24 dB, BS-RoFormer
-  -72.07 dB (first 10 s of S4), VR -14.71 dB and MDX-Net -13.39 dB (R2).
+  aligned at lag 0. Residual of the stem sum against the mix: VR -37.71 dB (S4), MDX-Net -34.39 dB (S4), Demucs 6s
+  -12.16 dB (S4), BS-RoFormer-SW -36.86 dB, MDX23C -68.24 dB, BS-RoFormer -72.07 dB (first 10 s of S4), VR -14.71 dB
+  and MDX-Net -13.39 dB (R2).
+  **Verifier re-run of r0481** (r0531, cores 2-3, load1 3.67): wall 84.6 s, CPU 138.1 s, peak RSS 2052.2 MB; both
+  files sample-identical to r0481's, again 1,708,032 frames. e1421 recomputed with mir_eval directly: instrumental
+  7.54 / 7.64 / 8.69 / 14.88, lead 4.72 / 6.14 / 19.10 / 6.42, as below.
 - **S4, scored.** For the two-stem models a reference `instrumental` = drums + bass + guitar truth stems
   (`inputs/S4_truth_2stem/instrumental.wav`, made with `scripts/sum_stems.py`, sha256 `a1b467a8...309a`) and `lead`
   = the truth lead stem; SI-SDR / SDR / SIR / SAR dB:
@@ -820,9 +882,10 @@ its slot.
   (The PyTorch `demucs -n htdemucs_6s` run on S4, r0021: wall 36.37 s, CPU 50.0 s, peak RSS 1349.6 MB.)
 - **Output format:** `<out dir>/target_<index>_<source>.wav`: `target_0_drums`, `target_1_bass`, `target_2_other`,
   `target_3_vocals`, `target_4_guitar`, `target_5_piano`; float32 WAV (FLOAT), 44,100 Hz, 2 channels, 13,668,016
-  bytes each for S4, frame count equal to the input, stem sum at lag 0 (residual -12.10 dB). The program printed
-  "Input samples: 441000", "Length in seconds: 10", "Number of channels: 2", "demucs_model_load returned true",
-  "Starting Demucs (6-source) inference" and per-thread progress lines.
+  bytes each for S4, frame count equal to the input, stem sum at lag 0 (residual -12.10 dB). For the 10 s clip
+  (r0508) the program printed "Input samples: 441000", "Length in seconds: 10", "Number of channels: 2",
+  "demucs_model_load returned true", "Starting Demucs (6-source) inference" and per-thread progress lines (for S4,
+  r0509: "Input samples: 1708495", "Length in seconds: 38.7414").
 - **S4 scored** (e1446; map drums, bass, guitar=target_4_guitar, lead=target_3_vocals; SI-SDR / SDR / SIR / SAR dB):
   drums 8.91 / 9.66 / 22.04 / 9.94; bass 7.16 / 9.58 / 20.78 / 9.96; guitar 0.02 / 1.51 / 15.08 / 1.84; lead 8.06 /
   8.61 / 15.06 / 9.86. Projection of the true guitar: guitar 0.286, piano 0.277, vocals 0.093; of the lead: vocals
@@ -844,12 +907,16 @@ clip unless noted. Guitar-bearing stems for transcription lanes: `htdemucs_6s/<c
 R2, R2full, R3a, R3b, R3c), `htdemucs/<clip>/other.wav` (S4, S6taps, S2s, R2, R2full, R3a, R3b, R3c),
 `uvr/BS-Roformer-SW/S4_0-10s/guitar.wav` and `msst-bs-roformer-sw/S4_0-10s/guitar.wav` (first 10 s of S4 only),
 `msst-becruily-guitar/<clip>/Guitar.wav` (float32; S4, S4_0-10s, S2s), `demucs.cpp-htdemucs_6s/S4/target_4_guitar.wav`
-(float32). Bass for bass-line lanes: `<model>/<clip>/bass.wav` from htdemucs, htdemucs_6s, htdemucs_ft, mdx_extra,
-umxhq, umxl, spleeter-4stems. Percussion for tap lanes: `<model>/S6taps/drums.wav` (htdemucs, htdemucs_6s, umxhq,
-spleeter-4stems) and `hpss/S6taps/<setting>/percussive.wav` (float32), with onset lists already scored against the
-taps in `samples/onsets-handoff/`. Caveats per tool: VR (`uvr/1_HP-UVR`) files are 463 (S4) and 400 (R2) frames
-shorter than the input; Demucs `--mp3` files are 1,368 frames longer and 1105 samples late as decoded by
-libsndfile; `derived_instrumental_sum.wav` files are sums made here for scoring, not tool output.
+(float32), `msst-scnet-musdb18/<clip>/other.wav` (float32; S4, S6taps; that model has no guitar stem). Bass for
+bass-line lanes: `<model>/<clip>/bass.wav` from htdemucs, htdemucs_6s, htdemucs_ft, mdx_extra, umxhq, umxl,
+spleeter-4stems, msst-scnet-musdb18. Percussion for tap lanes: `<model>/S6taps/drums.wav` (htdemucs,
+htdemucs_6s, umxhq, spleeter-4stems, msst-scnet-musdb18 (float32)) and `hpss/S6taps/<setting>/percussive.wav`
+(float32), with onset lists already scored against the taps in `samples/onsets-handoff/`. Caveats per tool: VR
+(`uvr/1_HP-UVR`) files are 463 (S4) and 400 (R2) frames shorter than the input; Demucs `--mp3` files are 1,368
+frames longer and 1105 samples late as decoded by libsndfile (and by ffmpeg, same frame count);
+`derived_instrumental_sum.wav` files are sums made here for scoring, not tool output. Other lanes' runs that already
+used these stems as input are in the eval ledger (for example e0161 to e0170, e0950 and e0965, by the
+fingerstyle-voices-taps lane).
 
 ## Media kept outside git
 
@@ -904,6 +971,8 @@ here from the S4 files (synthesized for this research; INPUTS.md gives the licen
 | `msst-becruily-guitar/S4` | Guitar.wav | 13.7 MB | 38.741 | 44100 Hz / 2 ch / FLOAT |
 | `msst-becruily-guitar/S4_0-10s` | Guitar.wav | 3.5 MB | 10.0 | 44100 Hz / 2 ch / FLOAT |
 | `msst-bs-roformer-sw/S4_0-10s` | bass.wav, drums.wav, guitar.wav, other.wav, piano.wav, vocals.wav | 21.2 MB | 10.0 | 44100 Hz / 2 ch / FLOAT |
+| `msst-scnet-musdb18/S4` (verifier) | bass.wav, drums.wav, other.wav, vocals.wav | 54.7 MB | 38.741 | 44100 Hz / 2 ch / FLOAT |
+| `msst-scnet-musdb18/S6taps` (verifier) | bass.wav, drums.wav, other.wav, vocals.wav | 41.4 MB | 29.357 | 44100 Hz / 2 ch / FLOAT |
 | `spleeter-4stems/R2` | bass.wav, derived_instrumental_sum.wav, drums.wav, other.wav, vocals.wav | 38.1 MB | 36.0 | 44100 Hz / 2 ch / FLOAT; 44100 Hz / 2 ch / PCM_16 |
 | `spleeter-4stems/S4` | bass.wav, drums.wav, other.wav, vocals.wav | 27.3 MB | 38.741 | 44100 Hz / 2 ch / PCM_16 |
 | `spleeter-4stems/S6taps` | bass.wav, drums.wav, other.wav, vocals.wav | 20.7 MB | 29.357 | 44100 Hz / 2 ch / PCM_16 |
@@ -921,5 +990,97 @@ here from the S4 files (synthesized for this research; INPUTS.md gives the licen
 | `uvr/htdemucs_6s/S4` | bass.wav, drums.wav, guitar.wav, other.wav, piano.wav, vocals.wav | 41.0 MB | 38.741 | 44100 Hz / 2 ch / PCM_16 |
 | `uvr/model_bs_roformer_ep_317_sdr_12.9755/S4_0-10s` | instrumental.wav, vocals.wav | 3.5 MB | 10.0 | 44100 Hz / 2 ch / PCM_16 |
 
-Total: 1669.0 MB in 236 files.
+Total: 1669.0 MB in 236 files (trial agent's list; recounted by the verifier before the SCNet run: 236 files,
+1669.0 MB). With the verifier's two SCNet folders: 1765.1 MB in 244 files. The MP3 row's 10.04 s is the header's
+figure (`soundfile.info`: 442,747 frames); the files decode to 442,368 frames (10.031 s). The verifier's re-run
+outputs (duplicates of runs above) were written to `/home/user/gtr/lanes/source-separation/verify/out/` and are not
+listed here.
 
+
+## Verification log (verify-trials-source-separation, 2026-11-11)
+
+Work done 2026-11-10 23:23 UTC to 2026-11-11 00:10 UTC by `verify-trials-source-separation`, on the same box. Scripts
+added: `scripts/verify-trials-reruns.sh`, `verify-trials-gtreval-rerun.py`, `verify-trials-audio-check.py`,
+`verify-trials-demucs401-io.py`. Results: `samples/verify-trials/` (`facts.json`, `diffs.json`, `metrics.json`,
+`gtreval_rerun_compare.txt`, `rerun_*.json`).
+
+**What was checked**
+
+- Run ledger: all 64 run ids cited (r0019 to r0510) exist with lane `source-separation`; every wall, CPU, peak RSS,
+  load1, cores and exit code quoted in the tables matches the ledger. The three non-zero exits (r0051, r0460, r0466)
+  are written up as failures. The commands match the recorded `cmd_str`.
+- gtr-eval: all 55 eval ids cited exist; every number quoted matches the stored result. All 56 scorings the trial
+  agent made (the 55 plus e1419, not cited) were re-run with the same arguments into new files (batch r0536, evals
+  e1514 to e1569): metrics, counts, options and the sha256 of every estimate and reference file are identical. (The
+  trial agent's closing summary counted 68 gtr-eval runs; 12 of the 68 ledger lines that name this lane's folders,
+  e0161 to e0170, e0950 and e0965, score this lane's stems against references in, and write their results to, the
+  fingerstyle-voices-taps lane's folder.)
+- Independent recomputation with mir_eval 0.8.2 called directly and separate SI-SDR code (`verify-trials-audio-check.py
+  metrics`, r0555): e0389 (Open-Unmix), e0073 (Demucs), e0811 (HPSS), e1395 (Spleeter), e1416 (LoRA), e1417
+  (demucs-onnx), e1425 and e1427 (MSST), e1421 (audio-separator), e1446 (demucs.cpp), and the onset F-measures of
+  e0815, e0919, e0928, e0934 and e1397: every value equal to gtr-eval's at two decimals.
+- Stem facts: every value in the 48 `stemfacts_*.json` files (frames, subtype, bytes, RMS, peak, stem-sum residual
+  and lag, projections) recomputed from the audio with separate code (r0553): no mismatch. Difference levels between
+  runs recomputed (r0550): all match, with the reference energy made explicit where the text was ambiguous.
+- Files: every `samples/` and `scripts/` path named exists; `out/` holds the 236 audio files (1669.0 MB) listed;
+  MP3, FLOAT, PCM_16 and frame-count statements re-read (and the WAV chunk layout of the 34-byte-larger files).
+- Re-runs through `gtr-run` with "verify" labels (outputs in `/home/user/gtr/lanes/source-separation/verify/out/`
+  unless moved): Demucs r0524 (= r0019), r0525 (= r0099), r0526 (= r0462), r0527 (= r0460, exit 1 as recorded);
+  LoRA r0529 (= r0467); HPSS r0530 (= r0262); audio-separator VR r0531 (= r0481); demucs.cpp r0541 (= r0508);
+  Open-Unmix r0539 (= r0085); MSST r0547 (= r0473); demucs-onnx r0548 (= r0471); Demucs 4.0.1 writer check r0544
+  (r0543 exited 1: the verifier's script imported soundfile, which that frozen venv lacks; fixed and re-run as
+  r0544). Sample-identical to the original: Open-Unmix, HPSS, VR, demucs.cpp, MSST becruily, demucs-onnx. Different
+  from run to run (random shift, shifts=1): PyTorch Demucs and the LoRA run, by -10.89 to -22.60 dB, with the scores
+  of the re-runs in e1575 and e1576. The re-created venvs (`venv-umx`, `venv-msst`, `venv-demucs401`) were
+  installed from the saved freezes and gave identical `uv pip freeze` output.
+- NOT RUN HERE: every size, gate, HTTP status and license id re-read on 2026-11-10 from the Hugging Face API (models,
+  Space, dataset), Zenodo API, HTTP HEAD on the release mirrors and the raw READMEs; all match. The two quoted
+  log lines of the disk notice match `env.sh` and the saved logs.
+- Licenses quoted in this file re-fetched and compared word for word: Open-Unmix LICENSE and README, Demucs README
+  (including the "License" section) and `docs/release.md`, Spleeter LICENSE and README, audio-separator LICENSE and
+  README, demucs.cpp LICENSE and README, the demucs-onnx wheel's LICENSE (re-downloaded from PyPI), the Hub license
+  tags of the LoRA, StemSplit and Retrobear repositories, and the LoRA card. All match.
+- Judging language: removed "least of all" and "clean"; "So ... returned a small part of the guitar" replaced by
+  the measured levels; for-aaron.md's "Easiest route" replaced.
+- No secrets, no personal data, no file over 300 KB and no audio or video under this lane's docs folder (largest:
+  `survey.md`, 121 KB).
+
+**What was changed (corrections)**
+
+- demucs-onnx: the text said both the ONNX and the PyTorch runs draw a random shift; demucs-onnx has none (fixed
+  overlap-add), and its re-run is sample-identical. `browser.py`'s default browser model is the htdemucs-ft vocals
+  ONNX file, not the htdemucs_6s file.
+- MSST vs audio-separator BS-RoFormer-SW: the stated causes (0.9 normalisation, MSST's overlap of 2) were not
+  differences between the two runs; replaced by what each code does; the -22.70 to -23.21 dB range applies to the
+  four non-silent stems.
+- MSST venv "95 MB by du": an artifact of `du` over several hard-linked venvs; 1.4 GB measured alone.
+- audio-separator `--normalization 0.9`: it limits peaks above 0.9 only (R2 scaled, S4 not); the text said
+  "peak-normalised". The Demucs `.th` file is tried from the audio-separator mirror before `dl.fbaipublicfiles.com`.
+- "Queued 15 to 20 jobs deep": attributed to the trial agent; the ledger shows at most 8 waiting jobs at once.
+- demucs 4.1.0 and numpy: the metadata lists numpy only for macOS x86_64 (not "does not declare").
+- Facts added: which FFmpeg libraries torchcodec loads (was UNVERIFIED), AudioSep Space `RUNTIME_ERROR`, Banquet's
+  CPU branch and missing requirements file, the guitar-ft repo's CPU option and `demucs==4.0.1` pin, MP3 header
+  vs decoded length, Spleeter's log lines located in its source, difference-level reference energies, the second
+  Eigen error line, demucs.cpp printouts per run.
+- Marked as the trial agent's unverifiable figures: Spleeter venv 1.7 GB, its extracted model size, the TensorFlow
+  start-up message, the 904.2 MiB cache cleanup, the demucs.cpp source tree size, the "Code from External" refusal.
+- Run by the verifier: SCNet Small (MUSDB18) through MSST on S4 and S6taps (r0559, r0560; e1596, e1597, onset
+  handoff e1595; e1593 and e1594 are the same scorings made before the folder was moved to `out/`), new section
+  above, added to the stem index and the media list.
+- for-aaron.md: Banquet step 2 pointed to an install section the README does not have (replaced with the package
+  list from the code's imports); SAM Audio's README section is "Setup", not "Installation"; AudioSep got a local
+  route from its README because the Space reported a runtime error; the guitar-ft item got the commands from its
+  model card; ZeroSep got steps from its README; R2's SAM Audio prompt changed from `electric guitar` to `guitar`
+  (R2's instruments are not known).
+
+**Still UNVERIFIED**
+
+- Spleeter was not re-run (re-installing TensorFlow was over the 200 MB disk notice); its outputs and scores were
+  re-read. The htdemucs_ft, mdx_extra and umxl parameter counts were not re-counted (weights deleted). The trial
+  agent's queue-depth count, the "Code from External" refusal, the TensorFlow message and the cache-cleanup figure
+  have no saved log. Whether AudioSep and Banquet run on a CPU in practice, whether `sam-audio-small` fits in 8 GB,
+  and the SCNet checkpoint's license remain open.
+
+**Disk:** the verifier's re-run outputs were deleted after the comparisons (the numbers are in `samples/verify-trials/`);
+the SCNet outputs were kept in `out/msst-scnet-musdb18/`; the re-created venvs were deleted; the SCNet checkpoint
+(42 MB) is kept in `verify/models/scnet/`.

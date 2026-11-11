@@ -7,7 +7,9 @@ below was read from the live source on 2026-11-10 unless a line says otherwise. 
 only; it does not rank or recommend. Tools in it were not run by this agent (the try agent's results are in
 `trials.md`). Text marked "verifier" (for example "(verifier)" or "added by the verifier") was added or corrected on
 2026-11-10 by the independent checker verify-docs-fingerstyle-voices-taps after re-reading the live sources; its tally
-is in the verification log at the end.
+is in the verification log at the end. Text marked "(gap round 1 ...)" was added later the same day (from 23:14 UTC)
+by the lane's gap-round agent, from the sources it names, after that verification; the verification log does not
+cover it.
 
 How dates and versions were read: PyPI versions and upload dates from `https://pypi.org/pypi/<package>/json`; the
 last commit of a repository from a blobless `git clone --depth 1` (`git log -1 --format=%cI`), done with

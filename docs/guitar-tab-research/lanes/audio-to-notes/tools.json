@@ -974,6 +974,53 @@
       "cpu_s": 10.5,
       "printed": "Threshold 0.03; Frames 2984; Voiced 498 (16.7 %); F0 range 216.3 – 392.8 Hz; Time 2902.0 ms"
      }
+    },
+    {
+     "run_id": "r0579",
+     "input_id": "S1,S2n,S2s,S4,S4lead,R1b,R2,R3a",
+     "cores": 2,
+     "wall_s": 25.42,
+     "peak_mb": 1199.2,
+     "exit_code": 0,
+     "output_files": [
+      "/home/user/gtr/lanes/audio-to-notes/verify-gap1/rmvpe-out/f0/<clip>.f0.csv"
+     ],
+     "metrics": {
+      "round": "verification of gap round 1 (verify-gapfill-audio-to-notes, 2026-11-11)",
+      "command": "the r0516 command, venv rebuilt from samples/rmvpe/uv-pip-freeze-venv-rmvpe-py3.11.txt, rmvpe.onnx re-downloaded (same sha256)",
+      "cpu_s": 44.6,
+      "slot_wait_s": 0.0,
+      "model_setup_s": 1.464,
+      "predict_s_per_clip": {
+       "S1": 14.153,
+       "S2n": 0.91,
+       "S2s": 1.075,
+       "S4": 1.19,
+       "S4lead": 1.081,
+       "R1b": 0.84,
+       "R2": 0.836,
+       "R3a": 0.535
+      },
+      "outputs_vs_r0516": "all eight f0 CSVs byte-identical"
+     }
+    },
+    {
+     "run_id": "r0581",
+     "input_id": "S1",
+     "cores": null,
+     "wall_s": 6.02,
+     "peak_mb": 1007.9,
+     "exit_code": 0,
+     "output_files": [
+      "/home/user/gtr/lanes/audio-to-notes/verify-gap1/rmvpe-out/cli/S1.csv"
+     ],
+     "metrics": {
+      "round": "verification of gap round 1 (verify-gapfill-audio-to-notes, 2026-11-11)",
+      "nolock": true,
+      "command": "the r0517 CLI command",
+      "cpu_s": 8.8,
+      "outputs_vs_r0517": "CSV byte-identical; printed summary identical except Time (1639.4 ms; r0517 2902.0 ms)"
+     }
     }
    ],
    "not_run_reason": null,
@@ -987,7 +1034,7 @@
    "outputs": [
     "frame-level vocal f0; inference() returns (hidden_vec_segments, out_segments) trimmed to len(audio) // hop_length + 1 frames (conversion of out_segments to Hz not traced)",
     "rmvpe-onnx predict(): time (s, hop 160 samples at 16 kHz = 10 ms), frequency (Hz, salience-weighted average of the 9 bins around the peak), confidence (largest of the 360 sigmoid outputs, 0 to 1), activation (frames x 360, 20-cent bins, centres 31.70 to 2005.50 Hz); a frequency in every frame, no voiced flag, no notes",
-    "CLI --csv: header time,frequency,confidence; frames below --confidence-threshold (default 0.03) written as 0 Hz; without --csv it only prints a summary"
+    "CLI --csv: header time,frequency,confidence; frames below --confidence-threshold (default 0.03) written as 0 Hz; without --csv it prints a summary and writes no file (--plot also shows an interactive plotly figure)"
    ],
    "constraints_accepted": [
     "model_path",
@@ -1230,6 +1277,53 @@
       "cpu_s": 10.5,
       "printed": "Threshold 0.03; Frames 2984; Voiced 498 (16.7 %); F0 range 216.3 – 392.8 Hz; Time 2902.0 ms"
      }
+    },
+    {
+     "run_id": "r0579",
+     "input_id": "S1,S2n,S2s,S4,S4lead,R1b,R2,R3a",
+     "cores": 2,
+     "wall_s": 25.42,
+     "peak_mb": 1199.2,
+     "exit_code": 0,
+     "output_files": [
+      "/home/user/gtr/lanes/audio-to-notes/verify-gap1/rmvpe-out/f0/<clip>.f0.csv"
+     ],
+     "metrics": {
+      "round": "verification of gap round 1 (verify-gapfill-audio-to-notes, 2026-11-11)",
+      "command": "the r0516 command, venv rebuilt from samples/rmvpe/uv-pip-freeze-venv-rmvpe-py3.11.txt, rmvpe.onnx re-downloaded (same sha256)",
+      "cpu_s": 44.6,
+      "slot_wait_s": 0.0,
+      "model_setup_s": 1.464,
+      "predict_s_per_clip": {
+       "S1": 14.153,
+       "S2n": 0.91,
+       "S2s": 1.075,
+       "S4": 1.19,
+       "S4lead": 1.081,
+       "R1b": 0.84,
+       "R2": 0.836,
+       "R3a": 0.535
+      },
+      "outputs_vs_r0516": "all eight f0 CSVs byte-identical"
+     }
+    },
+    {
+     "run_id": "r0581",
+     "input_id": "S1",
+     "cores": null,
+     "wall_s": 6.02,
+     "peak_mb": 1007.9,
+     "exit_code": 0,
+     "output_files": [
+      "/home/user/gtr/lanes/audio-to-notes/verify-gap1/rmvpe-out/cli/S1.csv"
+     ],
+     "metrics": {
+      "round": "verification of gap round 1 (verify-gapfill-audio-to-notes, 2026-11-11)",
+      "nolock": true,
+      "command": "the r0517 CLI command",
+      "cpu_s": 8.8,
+      "outputs_vs_r0517": "CSV byte-identical; printed summary identical except Time (1639.4 ms; r0517 2902.0 ms)"
+     }
     }
    ],
    "not_run_reason": null,
@@ -1243,7 +1337,7 @@
    ],
    "outputs": [
     "rmvpe-onnx predict(): time (s, hop 160 samples at 16 kHz = 10 ms), frequency (Hz, salience-weighted average of the 9 bins around the peak), confidence (largest of the 360 sigmoid outputs, 0 to 1), activation (frames x 360, 20-cent bins, centres 31.70 to 2005.50 Hz); a frequency in every frame, no voiced flag, no notes",
-    "CLI --csv: header time,frequency,confidence; frames below --confidence-threshold (default 0.03) written as 0 Hz; without --csv it only prints a summary"
+    "CLI --csv: header time,frequency,confidence; frames below --confidence-threshold (default 0.03) written as 0 Hz; without --csv it prints a summary and writes no file (--plot also shows an interactive plotly figure)"
    ],
    "constraints_accepted": [
     "model_path",
@@ -4248,7 +4342,7 @@
      }
     }
    ],
-   "not_run_reason": "This lane's anonymous call to the ZeroGPU Space was refused for lack of quota (\"You have exceeded your ZeroGPU quota (90s requested vs. 79s left)...\"). (corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): the disk limit no longer applied, and the default checkpoint, 561,544,628 bytes, fits the round's 4 GB rule.) A local CPU run was not attempted: the code exists only in the Space's git repository, and running code from cloned repositories was refused twice by the session's permission system in that round (\"[Code from External]\"). No local 2-core runtime is on record; the hosted-apis lane's calls to mimbres/YourMT3-cpu (r0164 31.18 s, r0245 31.34 s, cpu-basic) are the CPU timings on record.",
+   "not_run_reason": "This lane's anonymous call to the ZeroGPU Space was refused for lack of quota (\"You have exceeded your ZeroGPU quota (90s requested vs. 79s left)...\"). (corrected in gap round 1 (gapfill-audio-to-notes, 2026-11-10): the disk limit no longer applied, and the default checkpoint, 561,544,628 bytes, fits the round's 4 GB rule.) A local CPU run was not attempted: the code exists only in the Space's git repository (no package from the authors; the third-party PyPI packages yourmt3 and mt3-infer were not used), and running code from cloned repositories was refused twice by the session's permission system in that round (\"[Code from External]\"). No local 2-core runtime is on record; the hosted-apis lane's calls to mimbres/YourMT3-cpu (r0164 31.18 s and r0245 31.34 s, round trips its script measured, upload and queueing included; ledger walls 32.21 s and 33.78 s; cpu-basic hardware) are the timings on record for the CPU Space.",
    "for_aaron": true,
    "callable_via": [
     "http",
@@ -4997,7 +5091,32 @@
         0.698
        ]
       },
-      "midi_facts": "type 1, 220 ticks per quarter, 2 tracks, tempo 120, one instrument program 0, no control changes, no pitch bends; velocities 67-76 (S1), 55-74 (S2n), 30-76 (R1c), 54-75 (S4guitar)"
+      "midi_facts": "type 1, 220 ticks per quarter, 2 tracks, tempo 120, one instrument program 0, no control changes, no pitch bends; velocities 67-76 (S1), 55-74 (S2n), 30-76 (R1c), 54-75 (S4guitar)",
+      "startup_note": "about 20 s: counted from the ledger's start time 23:41:16, which has whole seconds; the first 'Starting transcription' log line is at 23:41:36.47 (verify-gapfill-audio-to-notes)"
+     }
+    },
+    {
+     "run_id": "r0583",
+     "input_id": "S1,S2n,R1c,S4guitar",
+     "cores": 2,
+     "wall_s": 38.72,
+     "peak_mb": 1154.2,
+     "exit_code": 0,
+     "output_files": [
+      "/home/user/gtr/lanes/audio-to-notes/verify-gap1/oaf-out/<clip>.wav.midi"
+     ],
+     "metrics": {
+      "round": "verification of gap round 1 (verify-gapfill-audio-to-notes, 2026-11-11)",
+      "command": "the r0545 command, venv rebuilt from samples/onsets-frames/uv-pip-freeze-venv-oaf-py3.8.txt, checkpoint re-downloaded (same sha256)",
+      "cpu_s": 42.6,
+      "slot_wait_s": 0.0,
+      "per_file_s_from_log": {
+       "S1": 5.232,
+       "S2n": 3.309,
+       "R1c": 3.568,
+       "S4guitar": 5.102
+      },
+      "outputs_vs_r0545": "all four MIDI files byte-identical"
      }
     }
    ],
@@ -7387,13 +7506,13 @@
   {
    "name": "mt3-infer",
    "kind": "library",
-   "what": "Production-ready, unified inference toolkit for the MT3 music transcription model family (PyPI description): one Python API and CLI over vendored MR-MT3, mt3-pytorch and YourMT3 code",
+   "what": "one Python API and CLI over vendored MR-MT3, mt3-pytorch and YourMT3 code; its PyPI description: \"Production-ready, unified inference toolkit for the MT3 music transcription model family\"",
    "url": "https://github.com/openmirlab/mt3-infer",
    "version": "PyPI 0.2.0 (uploaded 2026-07-11); repository HEAD d8cbd287 (git ls-remote, 2026-11-10)",
    "tried": false,
    "tried_how": null,
    "runs": [],
-   "not_run_reason": "gap round 1 (gapfill-audio-to-notes, 2026-11-10): added to the survey; not run. The MT3, mt3-pytorch, MR-MT3 and YourMT3+ code could not be run from their repositories (session permission system), and this package, which vendors three of them, was not used in their place.",
+   "not_run_reason": "gap round 1 (gapfill-audio-to-notes, 2026-11-10): added to the survey; not run. The session's permission system refused installing the MT3 clone and running the mt3-pytorch clone, and MR-MT3 and YourMT3+ were not attempted after those refusals; this package, which vendors three of them, was not used in their place.",
    "for_aaron": false,
    "callable_via": [
     "python",
@@ -7471,7 +7590,7 @@
      "note": "no license field, no license classifier and no license text in the PyPI metadata (read 2026-11-10)"
     },
     "weights": {
-     "name": "shethjenil/Audio2Midi_Models (revision 4300d378): YMT3+.pt 185,123,699 bytes and six other files",
+     "name": "shethjenil/Audio2Midi_Models (revision 4300d378): YMT3+.pt 185,123,699 bytes and the six other YourMT3 and MT3 files listed in survey.md section 37 (the repository also holds other models' files, e.g. crepe_*.h5 and melodia_vamp_plugin_*.zip)",
      "quote": null,
      "url": "https://huggingface.co/shethjenil/Audio2Midi_Models",
      "note": "no license tag and no card data (Hugging Face API cardData null, 2026-11-10)"

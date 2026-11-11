@@ -10,7 +10,9 @@ says "one thread", the ledger's `threads_env` holds `OMP_NUM_THREADS`, `MKL_NUM_
 = 1; where it says `taskset`, the command itself was pinned to one core. (The verifier's re-runs, listed in the
 verification log at the end, carry the same marks in the ledger.) Scores come from `gtr-eval` (ledger `/home/user/gtr/eval/ledger/evals.jsonl`, ids
 `e....`; every result of this lane records `gtr_eval_version` 0.11.1) unless a line says the number was computed by a
-script here, in which case the script is named.
+script here, in which case the script is named. (corrected in gap round 1: that sentence about slots covers the
+first round; of the gap round's runs, r0542, r0551, r0554 and r0556 ran in a 2-core slot, and r0534, r0549, r0552,
+r0557 and r0558 are `--nolock` light jobs; see "Gap round 1".)
 
 Scripts: `scripts/` in this folder. Small outputs: `samples/<tool>/`. Big outputs (audio):
 `/home/user/gtr/lanes/fingerstyle-voices-taps/out/<tool>/`, listed under "Media kept outside git" at the end.
@@ -865,12 +867,30 @@ Negative timing means the detected onset comes before the annotated one. Files:
 Added on 2026-11-10 from 23:14 UTC by the gap-round agent of this lane (`gapfill-fingerstyle-voices-taps`), for the
 tools that the first round recorded as NOT RUN HERE because of the orchestrator's low-disk notice or a missing
 TensorFlow, and for a real recording with body taps. Free disk at the start: 11 GB (`df -h /`); the disk notice of
-`env.sh` was not printed. Same conventions as above: run ids `r....` from the run ledger, eval ids `e....` from the
-eval ledger (gtr-eval 0.11.1), big files under `/home/user/gtr/lanes/fingerstyle-voices-taps/gap1/`. The question for
+`env.sh` was not printed then. It was printed again from about 23:28 UTC (8,981 MB free, other lanes writing too);
+the only downloads of this round after that were the 5.6 MB RT1 MP3 and small metadata files, and 8.1 GB was free at
+the end. Same conventions as above: run ids `r....` from the run ledger, eval ids `e....` from the
+eval ledger (gtr-eval 0.11.1), audio under `/home/user/gtr/lanes/fingerstyle-voices-taps/inputs/RT1/` and
+`.../out/gap1-RT1/`, logs, raw search answers and the piano_svsep files under `.../gap1/`. The question for
 every drum or percussion transcriber is the one of the first round: on `S6taps` (guitar plus General MIDI
 percussion standing in for body taps, 32 truth taps) and on its taps-only stem `S6taps/stems/taps.wav`, which onsets
 does it report and with which drum labels (`gtr-eval onsets --field taps`, 50 ms window), and how many events does it
 report on `S2s` (the same notes without taps).
+
+Status of this round, item by item (details in the sections below):
+
+| item | result here |
+|---|---|
+| ADTOF (Keras/TensorFlow) | NOT RUN HERE: install from its repository refused by the session's permission system |
+| Omnizart drum mode | NOT RUN HERE: install of 0.6.3 from PyPI with TensorFlow 2.15.1 refused by the permission system |
+| ADT_STR | NOT RUN HERE: install of its PyPI dependencies refused by the permission system; checkpoint not downloaded |
+| LarsNet | NOT RUN HERE: dependencies installed; running its `separate.py` refused by the permission system |
+| drumsep | NOT RUN HERE: checkpoint downloaded and read; running Demucs with it refused by the permission system |
+| Cluster and Separate (piano_svsep) | NOT RUN HERE: install refused; MusicXML inputs for S2n and S5dropd and a scorer for its output prepared |
+| real recording with taps | Freesound 674811: HTTP 403 again; new input RT1 (archive.org, CC BY 3.0, "Tapping, Fingerstyle"; body hits UNVERIFIED) run through librosa HPSS, seven onset detectors (librosa, three aubio methods, two madmom programs, Essentia OnsetRate) and two Demucs models |
+
+So none of the five drum tools produced onsets or labels on S6taps, its taps stem or S2s on this box; no gtr-eval
+scoring was possible for them, and no eval id belongs to this round.
 
 ### ADTOF, original Keras/TensorFlow (https://github.com/MZehren/ADTOF): NOT RUN HERE, install refused
 
@@ -979,7 +999,8 @@ report on `S2s` (the same notes without taps).
   `--repo` checkpoint with `torch.load(path, 'cpu', weights_only=False)` (`demucs/states.py` line 59 of the installed
   package).
 - Checkpoint (allowed): `curl` of `https://drive.usercontent.google.com/download?id=1-Dm666ScPkg8Gt2-lK3Ua0xOudWHZBGC&export=download&confirm=t`
-  at 23:23 UTC (HTTP 206 for a first 1,024-byte range, then the whole file in 6 s): `content-disposition: attachment;
+  at 23:23 UTC (HTTP 206 for a first 1,024-byte range, then HTTP 200 and `content-length: 167400043` for the whole
+  file, in 6 s): `content-disposition: attachment;
   filename="49469ca8.th"`, 167,400,043 bytes, `last-modified: Wed, 15 Jun 2022 23:49:20 GMT`, sha256
   `aefaa8543c9b9c75e22f5f32b53ab86dfe416457849af1383ff1aef83401423f`. Read without unpickling (zip listing and
   `pickletools.genops` on `archive/data.pkl`, 397 zip entries): the pickle references four globals,
@@ -1207,17 +1228,18 @@ notice); `venv-core`, `venv-essentia` and `venv-madmom` are still under `/home/u
 Clones of ADTOF-pytorch and piano_svsep were deleted after their files were read (`repos/` is empty). Separate
 blob-less clones of 36 repositories, among them `CPJKU__piano_svsep` and `xavriley__ADTOF-pytorch`, made at 20:56 to
 21:14 UTC for the survey, are under `clones/` (110 MB after the verifier's `git ls-tree -l` calls fetched some of
-their blobs).
+their blobs). The verifier rebuilt `venv-nmfd` and `venv-basicpitch` offline from the two freeze files (uv's shared
+cache, hard links, no measurable change in free disk) under `verify-trials/` for its re-runs, and deleted both
+after them.
 
 Gap round 1: `venv-adtof-tf` (created empty, install refused) and `venv-larsnet` and `venv-drumsep` (installed,
 running refused) were deleted the same minute; no venv was created for Omnizart, ADT_STR or piano_svsep (their
 commands were refused whole). Freezes: `samples/freezes/venv-larsnet.txt`, `venv-drumsep.txt` (identical to
 `venv-demucs.txt`). `venv-demucs` was rebuilt from `freeze/venv-demucs.txt` at 23:38 UTC for the RT1 Demucs runs
-(its `uv pip freeze` was identical to that file) and deleted at 23:53 UTC. The shallow clones of ADT_STR, LarsNet, drumsep and piano_svsep under
-`gap1/repos/`, the inspected sdists of madmom 0.16.1 and vamp 1.1.0 and the 167 MB drumsep checkpoint were deleted
-after they were read (about 270 MB); `venv-core`, `venv-essentia` and `venv-madmom` were used as they were. The verifier rebuilt `venv-nmfd` and `venv-basicpitch` offline from the two freeze files (uv's shared
-cache, hard links, no measurable change in free disk) under `verify-trials/` for its re-runs, and deleted both
-after them.
+(its `uv pip freeze` was identical to that file) and deleted at 23:53 UTC. The shallow clones of ADT_STR, LarsNet,
+drumsep and piano_svsep under `gap1/repos/`, the inspected sdists of madmom 0.16.1 and vamp 1.1.0 and the 167 MB
+drumsep checkpoint were deleted after they were read (about 270 MB); `venv-core`, `venv-essentia` and `venv-madmom`
+were used as they were.
 
 ## Inputs added by this lane
 

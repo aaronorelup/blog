@@ -226,7 +226,8 @@ with a smaller GPU only the default mode applies. Its models are CC BY-NC-SA 3.0
 Nothing to do: it ran on the box in gap round 1 (`rmvpe-onnx` 0.2.3 with `rmvpe.onnx`, runs r0516 and r0517;
 `trials.md`, "Gap round 1"). The old reason (the per-download disk limit) no longer applies. The `--help` question is
 answered there: `rmvpe-onnx predict` writes a file only with `--csv <path>` (columns `time,frequency,confidence`)
-and otherwise prints a summary.
+and otherwise prints a summary; `--plot` also shows an interactive plotly figure (its `--help`: "Show an interactive
+pitch plot after inference").
 
 ## 10. Timbre-Trap (multi-pitch), MR-MT3, hFT-Transformer, Onsets and Frames: research code
 

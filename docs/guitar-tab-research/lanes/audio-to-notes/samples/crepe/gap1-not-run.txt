@@ -26,3 +26,8 @@ bytes, sha256 521c80a0...36d29631).
 
 The same CREPE weights ran on this box before through torchcrepe (PyTorch conversion of tiny and full) and
 Essentia's PitchCREPE (crepe-tiny-1.pb, crepe-full-1.pb); see trials.md.
+
+Checked by verify-gapfill-audio-to-notes (2026-11-11): the gap agent's own session transcript on the box records the
+refusal with this text as the result of a Bash call at 23:29:08 UTC (the command in item 2, with its output going to
+logs/gap1-crepe-install.log, which was never created), and the check at 23:29:31 UTC that found no venv-crepe
+directory.
