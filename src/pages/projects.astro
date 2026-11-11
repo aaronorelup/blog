@@ -1,11 +1,11 @@
 ---
 import PanelPage from '../layouts/PanelPage.astro';
 import ProjectsView from '../components/projects/ProjectsView.astro';
+import { PAGES } from '../data/pages.js';
 ---
 
 <PanelPage
-  title="Projects · Aaron Orelup"
-  description="Everything I’ve made or am making, sorted by what you can do with it: games to play in the browser, apps to download, films to watch, and the private tools behind them."
+  {...PAGES['/projects/']}
   active="projects"
   view="projects"
 >

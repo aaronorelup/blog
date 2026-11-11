@@ -5,9 +5,10 @@
 import ModeToggle from '../components/chrome/ModeToggle.astro';
 import PanelChrome from '../components/chrome/PanelChrome.astro';
 import Home from '../layouts/Home.astro';
+import { PAGES } from '../data/pages.js';
 ---
 
-<Home title="Aaron Orelup · the tea house">
+<Home {...PAGES['/']}>
 <div id="scene-wrap" class="home-wrap">
   <div id="scene-viewport" class="home-viewport">
     <canvas id="home-scene-canvas" class="home-canvas" aria-hidden="true" role="presentation"></canvas>

@@ -7,6 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import matter from 'gray-matter';
 import { isLive, isLivePath } from '../../src/data/exempt.js';
+import { OG } from '../../src/data/limits.js';
 import { isListed } from '../../src/lib/posts.js';
 
 const ROOT = fileURLToPath(new URL('../../', import.meta.url));
@@ -65,12 +66,17 @@ export function rssProblems(xml, listed) {
   return [...bad, ...sameSet('rss.xml', slugs, listed)];
 }
 
+// The <link> and <meta> tags of a page's head, and one attribute of a tag.
+const headTags = (html) => {
+  const end = html.indexOf('</head>');
+  return (end < 0 ? html : html.slice(0, end)).match(/<(?:link|meta)\b[^>]*>/g) || [];
+};
+const attr = (tag, name) => (tag.match(new RegExp(`\\s${name}="([^"]*)"`)) || [])[1];
+
 // A page names its own address once as <link rel="canonical"> and once as og:url (chrome/Head.astro), and both are
 // https://aaronorelup.com<pathname>: what a search engine indexes and what a shared link counts against.
 export function shareUrlProblems(html, pathname) {
-  const end = html.indexOf('</head>');
-  const tags = (end < 0 ? html : html.slice(0, end)).match(/<(?:link|meta)\b[^>]*>/g) || [];
-  const attr = (tag, name) => (tag.match(new RegExp(`\\s${name}="([^"]*)"`)) || [])[1];
+  const tags = headTags(html);
   const want = SITE + pathname;
   return [
     ['canonical', tags.filter((t) => attr(t, 'rel') === 'canonical').map((t) => attr(t, 'href'))],
@@ -78,6 +84,58 @@ export function shareUrlProblems(html, pathname) {
   ].filter(([, got]) => got.length !== 1 || got[0] !== want)
     .map(([what, got]) => `${pathname}: ${what} is ${got.length ? got.join(', ') : 'missing'}, not ${want}`);
 }
+
+// The pixel size of a JPEG or PNG, from its bytes: { width, height }, or null for anything else.
+export function imageSize(buf) {
+  if (buf.length >= 24 && buf.readUInt32BE(0) === 0x89504e47) return { width: buf.readUInt32BE(16), height: buf.readUInt32BE(20) };
+  if (buf.length < 4 || buf[0] !== 0xff || buf[1] !== 0xd8) return null;
+  for (let i = 2; i + 9 <= buf.length && buf[i] === 0xff;) {
+    const m = buf[i + 1];
+    if (m === 0xff) i += 1;                                           // a fill byte
+    else if (m >= 0xc0 && m <= 0xcf && m !== 0xc4 && m !== 0xc8 && m !== 0xcc) {   // a frame header
+      return { width: buf.readUInt16BE(i + 7), height: buf.readUInt16BE(i + 5) };
+    } else if (m === 0x01 || (m >= 0xd0 && m <= 0xd8)) i += 2;        // a marker with no length
+    else i += 2 + buf.readUInt16BE(i + 2);
+  }
+  return null;
+}
+
+// What X asks of a summary_large_image picture: no smaller than 300 by 157, no larger than 4096 by 4096.
+const X_CARD = { min: [300, 157], max: [4096, 4096] };
+
+// A listed page shares a picture (chrome/Head.astro): one twitter:card, summary_large_image, and one og:image, a JPEG
+// or PNG of this build at https://aaronorelup.com/<path>. A card the build draws or keeps (/og/…) is exactly
+// OG.width by OG.height; any other picture is a size X shows large. sizeOf(path) → { width, height }, or null: no
+// such JPEG or PNG in the build.
+export function shareImageProblems(html, pathname, sizeOf) {
+  const tags = headTags(html);
+  const cards = tags.filter((t) => attr(t, 'name') === 'twitter:card').map((t) => attr(t, 'content'));
+  const images = tags.filter((t) => attr(t, 'property') === 'og:image').map((t) => attr(t, 'content'));
+  const problems = [];
+  if (cards.length !== 1 || cards[0] !== 'summary_large_image') {
+    problems.push(`${pathname}: twitter:card is ${cards.length ? cards.join(', ') : 'missing'}, not summary_large_image`);
+  }
+  if (images.length !== 1) return [...problems, `${pathname}: og:image is ${images.length ? `there ${images.length} times` : 'missing'}`];
+  const [image] = images;
+  if (!image.startsWith(SITE + '/')) return [...problems, `${pathname}: og:image ${image} is not under ${SITE}/`];
+  const file = decodeURIComponent(new URL(image).pathname);
+  const size = sizeOf(file);
+  if (!size) return [...problems, `${pathname}: og:image ${file} is not a JPEG or PNG of this build`];
+  const { width: w, height: h } = size;
+  if (file.startsWith('/og/') ? w !== OG.width || h !== OG.height
+    : w < X_CARD.min[0] || h < X_CARD.min[1] || w > X_CARD.max[0] || h > X_CARD.max[1]) {
+    problems.push(`${pathname}: og:image ${file} is ${w}×${h}` + (file.startsWith('/og/') ? `, not ${OG.width}×${OG.height}`
+      : `, outside ${X_CARD.min.join('×')} to ${X_CARD.max.join('×')}`));
+  }
+  return problems;
+}
+
+// A notes page shares no picture: tests/e2e/post.spec.mjs (post-11) holds it to none.
+const NOTES = /^\/ledger\/[^/]+\/notes\/$/;
+
+// The pages the sitemap lists, as paths: the pages a link to this site is shared from.
+export const sitemapPaths = (xml) => [...xml.matchAll(/<loc>([^<]*)<\/loc>/g)].map((m) => m[1])
+  .filter((loc) => loc.startsWith(SITE + '/')).map((loc) => loc.slice(SITE.length));
 
 // Every path of the baseline is still answered: built, or the source of a redirect. Live paths are left out.
 export function baselineProblems(baseline, isBuilt, redirectSources) {
@@ -94,12 +152,18 @@ const redirectSourcesOf = (text) => new Set(text.split('\n').map((l) => l.trim()
 export function check(dist, listed = listedSlugs()) {
   const read = (p) => fs.readFileSync(path.join(dist, p), 'utf8');
   const isBuilt = (p) => fs.existsSync(path.join(dist, p.endsWith('/') ? p + 'index.html' : p));
+  const sizeOf = (p) => {
+    const file = path.join(dist, p);
+    return file.startsWith(dist) && fs.existsSync(file) && fs.statSync(file).isFile() ? imageSize(fs.readFileSync(file)) : null;
+  };
   return [
     ...previewsProblems(JSON.parse(read('ledger/previews.json')), listed),
     ...statsPagesProblems(read('stats-pages.txt'), listed),
     ...rssProblems(read('rss.xml'), listed),
     ...[...listed].filter((s) => !isLive(s) && isBuilt(`/ledger/${s}/`))
       .flatMap((s) => shareUrlProblems(read(`ledger/${s}/index.html`), `/ledger/${s}/`)),
+    ...sitemapPaths(read('sitemap.xml')).filter((p) => p.endsWith('/') && !isLivePath(p) && !NOTES.test(p) && isBuilt(p))
+      .flatMap((p) => shareImageProblems(read(`${p.slice(1)}index.html`), p, sizeOf)),
     ...baselineProblems(readBaseline(), isBuilt, redirectSourcesOf(read('_redirects'))),
   ];
 }

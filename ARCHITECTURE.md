@@ -93,6 +93,7 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 |---|---|---|
 | `/ledger/<slug>/`, `/ledger/<slug>/notes/` | `src/pages/ledger/[slug].astro`, `[slug]/notes.astro` | readers, the homepage overlay (it fetches the page and mounts its view, `article[data-post-article][data-panel-view]`) |
 | `/og/<slug>.jpg` | `src/pages/og/[slug].jpg.js`, drawn by `src/lib/og/` | X and other link previews: each listed post's `og:image`, `?v=<h8>` |
+| `/og/page/<name>.jpg` | `src/pages/og/page/[name].jpg.js`, drawn by `src/lib/og/` | the same for each listed page that isn't a post or a notes page (`src/lib/og/pages.js`), `?v=<h8>` |
 | `/ledger/previews.json` | `src/pages/ledger/previews.json.js` | `src/scripts/cards/data.js` (the hover card, search results, Goobie's related posts), `worker/reads/serve.js`, `worker/stats/index.js` |
 | `/pagefind/` | `scripts/build/pagefind.mjs` (Pagefind's Node API over `dist/ledger/**/*.html`) | `src/scripts/search/keyword.js`: only what carries `data-pagefind-body` (a listed post's or notes page's text) is in it |
 | `/stats-pages.txt` | `scripts/build/stats-pages.mjs` | `worker/stats/index.js`: the only pages `/stats` may name |
@@ -168,6 +169,7 @@ fails the build, or only warns in a live notebook.
 | `src/data/limits.js` | every text cap and target, preview media, icon, project picture and og sizes |
 | `src/data/exempt.js` | `LIVE_NOTEBOOKS`, `isLive()`, `isLivePath()`: what no rule may fail or touch (and the project AO-073's file doesn't name); `HELD`, `isHeld()`: posts waiting for Aaron's own rewrite (AO-028), which the content rules only warn about |
 | `src/data/site.js` | `NAV` (key, href, label, overlay) and `SOCIAL`: the chrome's links; a NAV key is also a view's name |
+| `src/data/pages.js` | `PAGES`: the `<title>` and description of `/`, `/ledger/`, `/projects/`, `/about/`, `/research/` and `/now/`, by address, read by the page and by its share card; `nowTitle()` for `/now/<date>/` |
 | `src/data/fonts.json` | written by `scripts/tools/fonts.mjs`: the font preload, each self-hosted face's range, the code points no family has |
 | `src/data/banned-phrases.js` | the phrases and dead links WRITING.md bans (plain: nothing private) |
 | `src/data/never-publish.json` | salted SHA-256 of the private never-publish terms (`npm run never-publish:hash`) |
@@ -187,7 +189,7 @@ fails the build, or only warns in a live notebook.
 | `src/lib/glyphs.js` | the line drawings: a topic's glyph (where a post has no icon) and the search lens; Astro and the browser read it |
 | `src/lib/text/rules.js`, `hash.js` | what a reader reads (shared with the browser's read-aloud), content hashes |
 | `src/lib/text/minutes.js` | reading minutes from `text.words` (the post header's, the card's and the ledger row's) |
-| `src/lib/og/` | `card.js` draws a share card with sharp (1200×630 JPEG: icon or glyph, id and topic, the title in Zen Maru Gothic from `src/assets/fonts/`, the verdict); `image.js` names it by hash, keeps it in `node_modules/.astro/og/`, and fails the build on a card that can't be drawn, except a live notebook's, which falls back to `public/og/default.jpg` |
+| `src/lib/og/` | `card.js` draws a share card with sharp (1200×630 JPEG: icon or glyph, id and topic, the title in Zen Maru Gothic from `src/assets/fonts/`, the verdict); `image.js` names it by hash, keeps it in `node_modules/.astro/og/`, and fails the build on a card that can't be drawn, except a live notebook's, which falls back to `public/og/default.jpg`; `pages.js` lists the listed pages that aren't posts or notes pages (`data/pages.js`, each Now snapshot and research document) and gives each the same card with its own title and, under it, its description (`pageImage`), which both layouts ask for by the page's address |
 | `src/lib/build.js` | `COMMIT`, the commit a build is made from (the `ao-build` meta) |
 | `src/lib/read/` | `posts.js` (`recordable`: the posts recorded, listed and never a live notebook; `ranked`, the cron's order), `sections.js` (a post → sections and their hashes), `speak.js` (the copy the voice reads: numbers, money, units, dates, clock times and lengths spelled out, with its map back to the screen), `align.js` (the voice's character times → words). `speak.js` and `align.js` run in the Worker too |
 | `src/lib/search/chunks.js`, `docs.js` | a listed post or its notes → search chunks (the short version, then each h2 section, at most 1,500 characters) and the manifest; `docs.js` reads the build's posts once |
@@ -196,7 +198,7 @@ fails the build, or only warns in a live notebook.
 | `src/lib/projects.js` | the projects page's data: `SECTIONS`, order, state chips, needs glyphs, pictures or icons, `DERIVED` (the course's live lesson count); a card linking an unlisted post fails the build |
 | `src/pages/index.astro` + `src/layouts/Home.astro` | the homepage: the tea house scene's markup (classes from `home.css`, no inline style), `ModeToggle`, and its overlay frame (`PanelChrome` around an empty `[data-panel-host]`); `Home` links `site.css`, then `home.css` |
 | `src/pages/{ledger,projects,about,courses,stats,404}.astro`, `ledger/[slug].astro`, `ledger/[slug]/notes.astro`, `now/index.astro`, `now/[date].astro` | the panel pages |
-| `src/pages/og/[slug].jpg.js` | each listed post's share card (`src/lib/og/`) |
+| `src/pages/og/[slug].jpg.js`, `og/page/[name].jpg.js` | each listed post's share card, and each other listed page's (`src/lib/og/`) |
 | `src/pages/courses/**`, `src/pages/research/**` | the course and research pages; `research/[slug].md.js` writes each document's raw Markdown copy for agents |
 | `src/pages/search/` | `manifest.json.js`, `docs/[doc].json.js`: search's build files |
 | `src/pages/ask/` | `manifest.json.js`, `[file].txt.js`: RAG Goobie's build files |
@@ -333,6 +335,7 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
 | `/ledger/<slug>/` for every post, `public/_redirects`, RSS guid = `https://aaronorelup.com/ledger/<slug>/` | `verify-dist` against `tests/baseline/urls.txt` |
 | the `<ao-*>` tag names and attributes (72 posts use them) | the e2e suite; an unknown tag fails the build (`rehype-post-text`) |
 | every listed post's page has one `<link rel="canonical">` and one `og:url`, both `https://aaronorelup.com/ledger/<slug>/` (`chrome/Head.astro`) | `verify-dist` |
+| every page of `/sitemap.xml` but a notes page has one `twitter:card` (`summary_large_image`) and one `og:image`, a JPEG or PNG of the build: under `/og/` exactly 1200×630, any other picture between 300×157 and 4096×4096 | `verify-dist` |
 | `/ledger/previews.json` = `{ posts: { slug: card } }`, keys = listed slugs | `verify-dist` |
 | `/stats-pages.txt`: no unlisted slug, nothing deeper than `/ledger/<slug>/` except `/ledger/<listed>/notes/` | `verify-dist`, `agg.test.mjs` |
 | `/version.json` and the main-only guard in `astro.config.mjs` | unchanged |
