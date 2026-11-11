@@ -3,12 +3,13 @@
 // browser, a cookie or a time of day. A read counts only from this site's own pages, from something that doesn't
 // call itself a bot, for a listed post. The limiters are keyed on the post, so one script can add at most about
 // 30 reads a minute to one post per Cloudflare location (the post says a patient script can inflate it).
-import { json, status, sameOrigin } from '../lib/http.js';
+import { json, readJson, status, sameOrigin } from '../lib/http.js';
 import { ensure } from '../lib/sql.js';
 import { buildJson } from '../lib/build-files.js';
 import SCHEMA from './reads.sql';
 
 const SLUG = /^[a-z0-9][a-z0-9-]{0,99}$/;
+const MAX_BODY = 1024; // bytes: { slug } with the longest slug is under 120
 const BOTS = /bot|crawl|spider|slurp|headless|python|curl|wget|httpclient|okhttp|java\/|go-http|lighthouse|preview/i;
 const DAY = 86400e3;
 const isoDay = (t) => new Date(t).toISOString().slice(0, 10);
@@ -16,7 +17,7 @@ const isListed = async (env, slug) => Object.hasOwn((await buildJson(env, '/ledg
 
 export async function count(request, env) {
   if (!sameOrigin(request)) return status(403);
-  const slug = await request.json().then((b) => String(b?.slug ?? ''), () => '');
+  const slug = String((await readJson(request, MAX_BODY))?.slug ?? ''); // a body over the cap has no slug: 400
   if (!SLUG.test(slug)) return status(400);
   const ua = request.headers.get('User-Agent') || '';
   if (!ua || BOTS.test(ua) || request.cf?.verifiedBotCategory) return status(204); // skipped, quietly

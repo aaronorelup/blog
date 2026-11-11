@@ -272,7 +272,7 @@ fails the build, or only warns in a live notebook.
 | Path | What |
 |---|---|
 | `worker/index.js` | `ROUTES` and `CRONS`: the routes and jobs above |
-| `worker/lib/` | `http.js` (json, status, sameOrigin, readJson), `sql.js` (ensure), `flags.js` + `flags.sql` (switches, daily caps), `memo.js` (a read shared for 30 s), `session.js` (Ask tokens), `text.js` (normalize, scrub, sha256), `build-files.js` |
+| `worker/lib/` | `http.js` (json, status, sameOrigin, readBytes, readJson), `sql.js` (ensure), `flags.js` + `flags.sql` (switches, daily caps), `memo.js` (a read shared for 30 s), `session.js` (Ask tokens), `text.js` (normalize, scrub, sha256), `build-files.js` |
 | `worker/media/serve.js` | video, audio, HLS and `/read/*`: R2 first, then the asset, with byte ranges |
 | `worker/reads/` | `serve.js` + `reads.sql`: the reader counter |
 | `worker/stats/` | `index.js` (serve and `runStep`), `shape.js` (pure), `stats.sql`: the traffic snapshot |
