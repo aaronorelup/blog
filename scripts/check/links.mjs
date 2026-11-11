@@ -1,8 +1,8 @@
-// Links in posts, notes, Now snapshots and project files (code examples left out): every /ledger/<slug>/ link, and
-// every slug in a project's posts:, goes to a listed post (and /notes/ to its notes page), nothing links a page under
-// public/ledger/ (the hidden easter eggs, found by looking, so no list names them), and no link matches
-// banned-phrases.js's LINKS. A link through a redirect warns. The old address /posts/<slug>/ is read as /ledger/<slug>/,
-// where public/_redirects sends it, so it can't reach a draft or an unlisted post either.
+// Links in posts, notes, Now snapshots, research and project files (code examples left out): every /ledger/<slug>/
+// link, and every slug in a project's posts:, goes to a listed post (and /notes/ to its notes page), nothing links a
+// page under public/ledger/ (the hidden easter eggs, found by looking, so no list names them), and no link matches
+// banned-phrases.js's LINKS. A link through a redirect warns. The old address /posts/<slug>/ is read as
+// /ledger/<slug>/, where public/_redirects sends it, so it can't reach a draft or an unlisted post either.
 import { LINKS } from '../../src/data/banned-phrases.js';
 import { isListed } from '../../src/lib/posts.js';
 import { keyLine, liner, withoutCode } from './text.mjs';
@@ -18,7 +18,7 @@ export default function links(repo, report) {
   const notes = new Set(repo.notes.map((n) => n.slug));
   const moved = redirects(repo);
 
-  for (const { file, raw } of [...repo.posts, ...repo.notes, ...repo.now, ...repo.projects]) {
+  for (const { file, raw } of [...repo.posts, ...repo.notes, ...repo.now, ...repo.research, ...repo.projects]) {
     const line = liner(raw);
     const text = withoutCode(raw);
     for (const m of text.matchAll(LEDGER)) {
