@@ -18,11 +18,15 @@ class AoMatrix extends HTMLElement {
     if (aspect) this.style.setProperty('--ao-aspect', aspect);
     this.views = (this.getAttribute('views') || '').split('|').map((v) => v.trim()).filter(Boolean);
 
-    const grid = h('div', { class: 'ao-matrix-grid', role: 'table' }, h('span', { class: 'ao-matrix-corner' }));
-    for (let i = 0; i < n; i++) grid.append(h('span', { class: 'ao-matrix-col', role: 'columnheader', text: cols[i] || '' }));
+    // An ARIA table needs its rows and cells: each row and each figure sits in a wrapper that has the role and no box
+    // of its own (display: contents, style.css), so the grid lays out the same children as before.
+    const tr = (cls, ...kids) => h('div', { class: cls, role: 'row' }, ...kids);
+    const head = tr('ao-matrix-tr ao-matrix-head', h('span', { class: 'ao-matrix-corner', role: 'cell' }));
+    for (let i = 0; i < n; i++) head.append(h('span', { class: 'ao-matrix-col', role: 'columnheader', text: cols[i] || '' }));
+    const grid = h('div', { class: 'ao-matrix-grid', role: 'table' }, head);
     for (const r of rows) {
       const [label, note] = r.getAttribute('data-row').split('|');
-      grid.append(h('div', { class: 'ao-matrix-row', role: 'rowheader' },
+      const row = tr('ao-matrix-tr', h('div', { class: 'ao-matrix-row', role: 'rowheader' },
         h('b', { text: label.trim() }), note ? h('span', { text: note.trim() }) : null));
       const figs = [...r.querySelectorAll(':scope > figure')];
       for (let i = 0; i < n; i++) {
@@ -30,8 +34,9 @@ class AoMatrix extends HTMLElement {
         f.classList.add('ao-matrix-cell');
         // On a phone the column heading sits above the grid, out of sight: each cell says it.
         if (cols[i]) f.dataset.col = cols[i];
-        grid.append(f);
+        row.append(h('div', { class: 'ao-matrix-td', role: 'cell' }, f));
       }
+      grid.append(row);
       r.remove();
     }
     this.cells = [...grid.querySelectorAll('figure:not(.none)')];
