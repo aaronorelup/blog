@@ -1,6 +1,6 @@
-// The files the checks read, loaded once from a repo root: posts, notes and the Now page's snapshots with their
-// frontmatter, project files, and plain file helpers. run.mjs builds it and hands it to every rule. Paths are
-// repo-relative with forward slashes.
+// The files the checks read, loaded once from a repo root: posts, notes, research and the Now page's snapshots with
+// their frontmatter, project files, and plain file helpers. run.mjs builds it and hands it to every rule. Paths
+// are repo-relative with forward slashes.
 import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
@@ -42,6 +42,7 @@ export function loadRepo(root) {
     posts: md('src/content/posts'),
     notes: md('src/content/notes'),
     now: md('src/content/now'),
+    research: md('src/content/research'),
     projects: list('src/content/projects', (f) => f.endsWith('.yaml')).map(project),
   };
 }

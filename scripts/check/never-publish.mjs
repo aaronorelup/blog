@@ -9,7 +9,7 @@ export const SALT = 'aaronorelup.com never-publish v1\n';
 export const hash = (key) => crypto.hash('sha256', SALT + key);
 
 const WORD = /[\p{L}\p{N}_]+/gu;
-const URLISH = /(?:https?:\/\/)?((?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,})((?:\/[^\s"'`<>()[\]{}|*,]*)?)/g;
+const URLISH = /(?:https?:\/\/)?((?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,})(?::\d+(?=\/))?((?:\/[^\s"'`<>()[\]{}|*,]*)?)/g;
 
 const segmentsOf = (pathPart) => pathPart.split('/').filter(Boolean).map((s) => s.replace(/[.:;!?]+$/, ''));
 
@@ -25,15 +25,36 @@ function urlKeys(host, pathPart) {
   return keys;
 }
 
-// [key, index] for everything in the text a term could be.
-export function* keys(text) {
-  const words = [...text.matchAll(WORD)];
+// [key, index] for each word ({ 0: word, index }) and each run of 2 or 3.
+function* runs(words) {
   for (let i = 0; i < words.length; i++) {
     yield [words[i][0], words[i].index];
     if (i + 1 < words.length) yield [`${words[i][0]} ${words[i + 1][0]}`, words[i].index];
     if (i + 2 < words.length) yield [`${words[i][0]} ${words[i + 1][0]} ${words[i + 2][0]}`, words[i].index];
   }
-  for (const m of text.matchAll(URLISH)) for (const key of urlKeys(m[1], m[2])) yield [key, m.index];
+}
+
+const parts = (word) => word.split('_').filter(Boolean);
+
+// [key, index] for everything in the text a term could be. A word with an underscore is read twice: as written (a
+// term can have one), and broken at it with the 2 words either side, because Markdown's _emphasis_ and a file name
+// (Name_team.webp) put an underscore beside a word that is published without it.
+export function* keys(text) {
+  const words = [...text.matchAll(WORD)];
+  yield* runs(words);
+  for (let i = 0; i < words.length; i++) {
+    if (!words[i][0].includes('_')) continue;
+    const before = [];
+    const after = [];
+    for (let j = i - 1; j >= 0 && before.length < 2; j--) before.unshift(...parts(words[j][0]));
+    for (let j = i + 1; j < words.length && after.length < 2; j++) after.push(...parts(words[j][0]));
+    yield* runs([...before.slice(-2), ...parts(words[i][0]), ...after.slice(0, 2)].map((w) => ({ 0: w, index: words[i].index })));
+  }
+  // A path is read whole and up to each ?, # and &: a listed link is the same link with ?tab=… or #top after it.
+  for (const m of text.matchAll(URLISH)) {
+    for (const key of urlKeys(m[1], m[2])) yield [key, m.index];
+    for (const cut of m[2].matchAll(/[?#&]/g)) for (const key of urlKeys(m[1], m[2].slice(0, cut.index))) yield [key, m.index];
+  }
 }
 
 // The key a line of the private list is stored under: a host or URL as its host (lower case) and path, else its
@@ -46,7 +67,7 @@ export function termKey(line) {
 }
 
 const scope = (repo) => [
-  ...repo.posts, ...repo.notes, ...repo.now, ...repo.projects,
+  ...repo.posts, ...repo.notes, ...repo.now, ...repo.research, ...repo.projects,
   ...repo.list('src/components/about'), ...repo.list('src/components/now'),
   ...repo.list('src/data', (f) => /^src\/data\/[^/]+\.js$/.test(f)),
 ].map((e) => (typeof e === 'string' ? { file: e, raw: repo.read(e) } : e));
