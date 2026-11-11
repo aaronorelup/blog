@@ -131,7 +131,7 @@ Every limiter is `simple`, counted per Cloudflare location and approximate. None
 |---|---|
 | `CF_ANALYTICS_TOKEN` | the snapshot's read-only analytics token (set) |
 | `LANTERN_URL` | where the lantern door goes (`GET /api/lantern`); Aaron's own address, set from the box, never written in a file (set) |
-| `SESSION_KEY` | `put-secret.mjs SESSION_KEY` makes 32 random bytes; rotating it ends every Ask session |
+| `SESSION_KEY` | `put-secret.mjs SESSION_KEY` makes 32 random bytes; rotating it ends every Ask session. Unset or empty, no token is minted or accepted: `POST /api/session`, `/api/ask` and `/api/ask/hear` answer `503` |
 | `TURNSTILE_SECRET` | `put-secret.mjs TURNSTILE_SECRET` reads it from the widget |
 | `DEEPSEEK_API_KEY` | Ask's DeepSeek key, from Infisical (`put-secret.mjs DEEPSEEK_API_KEY`; set). Without it Ask is `off` |
 | `ELEVENLABS_API_KEY` | read-aloud: the Worker's own restricted key (Text to Speech and User read, a monthly credit quota), never Aaron's main key, so `put-secret.mjs ELEVENLABS_API_KEY <its Infisical name>`. Without it `read.step` is `off` |

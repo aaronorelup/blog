@@ -37,3 +37,18 @@ test('a media handler that throws is logged and answered 503, like an API handle
   assert.equal(await res.text(), '');
   assert.deepEqual(logged.mock.calls[0].arguments, ['/media/x/clip.mp4', 'R2 is away']);
 });
+
+test('without SESSION_KEY, Ask and Ask by voice answer 503 to a well-formed token', async (t) => {
+  const logged = t.mock.method(console, 'error', () => {});
+  const token = `e30.${'A'.repeat(43)}`;
+  const ask = at('/api/ask', { method: 'POST', headers: { 'X-AO-Session': token }, body: JSON.stringify({ q: 'what did it cost' }) });
+  const hear = at('/api/ask/hear', {
+    method: 'POST', body: new Uint8Array(2048),
+    headers: { 'X-AO-Session': token, Origin: 'https://aaronorelup.com', 'Content-Type': 'audio/webm' },
+  });
+  for (const request of [ask, hear]) {
+    const res = await worker.fetch(request, {}, ctx);
+    assert.equal(res.status, 503, new URL(request.url).pathname);
+  }
+  assert.deepEqual(logged.mock.calls.map((c) => c.arguments[1]), ['SESSION_KEY is not set', 'SESSION_KEY is not set']);
+});
