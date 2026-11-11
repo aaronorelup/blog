@@ -487,7 +487,7 @@ once the 3D hero pins the top.
 | Day or night chosen on a panel page is what `/tea/` opens in, and the reverse (the shared `scene-mode`) | tea-11 |
 | The first Tab is the skip link, in view; it takes the keyboard past the hero and the rail into the first chapter; no positive tabindex | tea-12 |
 | No console error, no sideways scroll at 1440 and 390 wide by day and by night (at the top and at every chapter), every picture loads | tea-13 |
-| Under 1024 px the strip keeps the chapter being read in view: at every chapter, going down and back up, its pill sits whole inside the strip once the strip's own scroll has ended | tea-14 (desktop at 390 wide, and phone) |
+| Under 1024 px the strip keeps the chapter being read in view: at every chapter, going down and back up, its pill sits whole inside the strip, with reduced motion (the strip moves at once) and without (it glides; WebKit starts the glide up to about 0.7 s late, so the pass waits for the pill to arrive and stay) | tea-14 (desktop at 390 wide, and phone) |
 | One `h1`, the hero's title, first; each chapter's word an `h2` and the first heading in it; About's sections (`AboutView level={2} title={false}`) at `h3` with no title of their own; no heading skips a level | tea-15 |
 
 ## Read-aloud (`read-aloud.spec.mjs`)
