@@ -101,7 +101,8 @@ test('an AI error, a timeout or an answer without text is a bare 502, logged wit
   t.mock.timers.enable({ apis: ['setTimeout'] });
   answer = () => new Promise(() => {});
   const pending = hear();
-  await new Promise((res) => setImmediate(res));
+  // Until the model is called, which is when its 20 s timer starts: how many turns the guards take varies under load.
+  while (runs.length < 3) await new Promise((res) => setImmediate(res));
   for (let i = 0; i < 5; i++) { t.mock.timers.tick(5e3); await new Promise((res) => setImmediate(res)); }
   r = await pending;
   t.mock.timers.reset();
