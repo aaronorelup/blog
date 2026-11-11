@@ -149,7 +149,7 @@ fails the build, or only warns in a live notebook.
 | `.dev.vars.example` | the local test keys for `wrangler dev` (copy to the git-ignored `.dev.vars`) |
 | `.node-version` | 22.23.4, the Node Workers Builds uses. `astro` stays pinned at 7.4.1, the last release that runs on agent boxes' 22.22.0 (CLAUDE.md, Commands) |
 | `package.json`, `package-lock.json`, `tsconfig.json`, `src/env.d.ts`, `.gitignore` | the scripts and dependencies, TypeScript for the `.ts` schemas and Astro's types, what git leaves out |
-| `public/_headers` | noindex for two hidden pages; a year, `immutable`, for the content-hashed `/_astro/*` and `/fonts/*`; a day for `/media/icons/*` |
+| `public/_headers` | noindex for two hidden pages; a year, `immutable`, for the content-hashed `/_astro/*` and `/fonts/*`; five minutes for `/pagefind/*`; a day for `/media/icons/*` |
 | `archive/2026-10-29-before-rework/` | every post as it was before the rework (read only) |
 
 ### `src/content/` and `src/data/`
@@ -302,7 +302,7 @@ about a second; run it before every landing, and with paths to see one post (`np
 | `links.mjs` | `/ledger/<slug>/` goes to a listed post, `/notes/` to its notes; nothing under `public/ledger/`; no banned link | deploy |
 | `elements.mjs` | each `src/elements/ao-*/` has its section in `docs/COMPONENTS.md` | check |
 | `assets.mjs` | preview stills and loops exist and are under their caps, icon and project picture caps, every named video or audio is in R2 or in a `STAYS_IN_GIT` folder | deploy |
-| `code.mjs` | 400 lines, no CSS imported by browser JS, no `style=` in components, layouts or pages, `astro:content` only in `lib/content.js` and the schemas, no IP under `worker/` | check |
+| `code.mjs` | 400 lines, no CSS imported by browser JS, no `style=` in components, layouts or pages, `astro:content` only in `lib/content.js`, `content.config.ts` and the schemas, no IP under `worker/` | check |
 
 Anything in a live notebook's paths is at most a warning, at either level. `npm run check -- --strict` fails on
 warnings too, except those a live notebook or a `HELD` post may keep.
