@@ -16,6 +16,7 @@ import { loadThree } from './three.js';
 import { applyTracks, bindTracks, sample } from './tracks.js';
 
 const isNight = () => document.documentElement.dataset.mode !== 'day';
+const SKY = ['#20284F', '#B98A6A', '#151726'];   // the painted sky the models are lit by: top, horizon, ground
 
 export async function mount(section, stage, opts = {}) {
   await loadThree();
@@ -53,7 +54,7 @@ export async function mount(section, stage, opts = {}) {
     s.backdrop = backdrop;
     for (const l of backdrop.layers) scene.add(l.mesh);
     for (const a of actors) scene.add(a.root);
-    s.env = skyEnvironment(renderer, '#20284F', '#B98A6A', '#151726');
+    s.env = skyEnvironment(renderer, ...SKY);
     scene.environment = s.env;
     s.lights = buildLights(manifest, actors, scene);
     s.bound = bindTracks(manifest, actors);
@@ -153,7 +154,7 @@ function wire(s, section, stage) {
     s.raf = requestAnimationFrame(loop);
   };
   s.play = () => {
-    const on = s.visible && s.onscreen && !s.disposed && !s.held;
+    const on = s.visible && s.onscreen && !s.disposed && !s.held && !s.lost;
     if (on && !s.running) { s.running = true; s.clock = performance.now(); s.raf = requestAnimationFrame(loop); }
     if (!on && s.running) { s.running = false; cancelAnimationFrame(s.raf); s.raf = 0; }
   };
@@ -169,6 +170,20 @@ function wire(s, section, stage) {
   });
   s.ro.observe(stage);
   s.ro.observe(section.querySelector('.tea-hero-box') || stage);
+  // A lost WebGL context (a GPU reset, too many contexts): the poster shows again and nothing draws until it is back.
+  // three remakes its own state then; the environment light only ever lived on the GPU (drawn once by PMREM), so it is
+  // drawn again, or the characters come back lit blue-grey.
+  s.onLost = () => { s.lost = true; delete stage.dataset.ready; s.play(); };
+  s.onBack = () => {
+    s.lost = false;
+    s.env = skyEnvironment(s.renderer, ...SKY);
+    s.scene.environment = s.env;
+    frame(s, section, 0);
+    requestAnimationFrame(() => { if (!s.lost && !s.disposed) stage.dataset.ready = ''; });
+    s.play();
+  };
+  s.canvas.addEventListener('webglcontextlost', s.onLost);
+  s.canvas.addEventListener('webglcontextrestored', s.onBack);
   s.play();
 }
 
@@ -178,6 +193,8 @@ export function dispose(s, section, stage) {
   cancelAnimationFrame(s.raf);
   s.io.disconnect(); s.ro.disconnect(); s.mo.disconnect();
   document.removeEventListener('visibilitychange', s.onVis);
+  s.canvas.removeEventListener('webglcontextlost', s.onLost);
+  s.canvas.removeEventListener('webglcontextrestored', s.onBack);
   s.input.dispose();
   disposeTree(s.scene);
   s.lights.tex.dispose();

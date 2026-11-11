@@ -251,3 +251,29 @@ test('tea-hero-11 the day/night switch pressed while the scene loads is the mode
   for (const pair of st.pics) expect(pair[st.night ? 0 : 1]).toMatch(st.night ? /-night\./ : /-day\./);
 });
 
+test('tea-hero-12 a lost WebGL context shows the poster until it is back, then the scene lit as before', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await page.goto('/tea/?hero=on');
+  await expect(hero(page)).toHaveAttribute('data-hero-settled', '', { timeout: 60_000 });
+  await expect(hero(page)).toHaveAttribute('data-3d', 'on');
+  const lost = await page.evaluate(() => {
+    const ext = window.__teaHero.state.renderer.getContext().getExtension('WEBGL_lose_context');
+    if (!ext) return false;
+    window.__ext = ext;
+    window.__env0 = window.__teaHero.state.scene.environment;
+    ext.loseContext();
+    return true;
+  });
+  test.skip(!lost, 'no WEBGL_lose_context in this browser');
+  await expect(page.locator('[data-tea-stage][data-ready]')).toHaveCount(0, { timeout: 15_000 });
+  await page.evaluate(() => window.__ext.restoreContext());
+  await expect(page.locator('[data-tea-stage][data-ready]')).toHaveCount(1, { timeout: 60_000 });
+  // the environment light (drawn on the GPU) is drawn again, not the lost one kept
+  expect(await page.evaluate(() => {
+    const env = window.__teaHero.state.scene.environment;
+    return !!env && env !== window.__env0;
+  })).toBe(true);
+  expect(errors).toEqual([]);
+});
+
