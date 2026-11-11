@@ -32,7 +32,8 @@ Jefrie (left) and Yusef (right, with a lantern) around a small CRT television. E
   poster back the same way; a lost WebGL context shows the poster until the context is back. Drawing stops when the
   hero is off screen or the tab is hidden. Pixel ratio capped at 1.75 (1.5 on touch or small screens; fewer motes).
 - **Nothing moves under the reader.** The section grows by two screens when the scene pins, so the pin waits for a
-  moment when that moves nothing the reader reads (`whenPinnable` in `pin.js`): the scroll at rest, and the page at its
+  moment when that moves nothing the reader reads (`whenPinnable` in `pin.js`): the scroll at rest (no scroll for 200 ms
+  and none over the next two frames, so a chapter link tapped just before the pin gets its jump), and the page at its
   top or the title box above the screen (then the scroll moves by the growth). A reader with the box on screen keeps
   the poster until they go back to the top or past it. A reload or a way back to a place inside the pinned scene
   lands there again (`onLeave`/`placeBack`). `data-hero-settled` on the section says the hero will change no layout
@@ -127,7 +128,7 @@ the static and the pinned hero, and sits in the strip's reserved right end once 
 | `public/tea/hero/manifest.json` | the scene, all of it |
 | `public/tea/hero/*.webp, *.glb` | stand-in picture layers (`bg-*`), posters (`poster-*`), stand-in models (`standin-*`) |
 | `scripts/tools/tea-hero/` | `shots.mjs`, `poster.mjs`, `silhouettes.mjs` (overlap and behind-the-box per size and scroll), `verify.mjs`; `standins.mjs` (stand-in GLBs), `paint.mjs` + `paint-scene.js` (stand-in picture) |
-| `tests/e2e/tea-hero.spec.mjs` | the e2e spec (tea-hero-1 to 22, listed in `tests/e2e/INVENTORY.md`) |
+| `tests/e2e/tea-hero.spec.mjs` | the e2e spec (tea-hero-1 to 23, listed in `tests/e2e/INVENTORY.md`) |
 | `src/pages/tea-lab.astro` | the lab: the real hero and rail over empty chapter heads; `?manifest=`. DELETE before merging |
 
 Outside these, the slice touched `src/styles/tea/cover.css` (the padding variables; the SVG garden's rules and the
@@ -281,13 +282,13 @@ and restores the poster.
 
 ## Verified
 
-- e2e `tea-hero.spec.mjs` (tea-hero-1 to 22) in both projects, desktop (Chromium 1440x900) and phone (WebKit,
+- e2e `tea-hero.spec.mjs` (tea-hero-1 to 23) in both projects, desktop (Chromium 1440x900) and phone (WebKit,
   iPhone 13); each test seen failing on a build broken on purpose. Among them: the box holds still through the mount
   (8), a late scene moves nothing on screen (9), arriving at `/tea/#projects` lands there (10), the switch pressed
   while loading (11), a lost and restored context (12), reduced motion turned on (13), no poster fetched under the
   canvas (14), a square window (15), a missing manifest or model (16), Save-Data and a small device (17), a reload
   inside the scene (18), the stage one screen and the foot's fade (19), the same box on both paths (20), where the
-  box docks (21), the box low on a portrait screen (22).
+  box docks (21), the box low on a portrait screen (22), a chapter link tapped just as the scene pins (23).
 - `verify.mjs` against `/tea/` and `/tea-lab/` (both layouts; see its header).
 - The poster against the scene's opening frame at 1440x900, 1280x720, 1440x700, 768x1024, 390x844 and 360x640 (offset
   0, mean difference 1.0 to 1.5 of 255); the actors' silhouettes as above (`silhouettes.mjs`); the title box's text

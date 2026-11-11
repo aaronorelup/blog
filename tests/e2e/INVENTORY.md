@@ -542,6 +542,7 @@ for `data-hero-settled` (the hero will change no layout by itself any more) befo
 | The title box is the same box static and over the scene: no backdrop blur, an opaque card by day | tea-hero-20 |
 | The box docks only where it leaves most of the frame to the scene (1024x768 flows, 1366x768 docks with the lens shift scaled) | tea-hero-21 (desktop) |
 | On a portrait screen the box waits low and the cast stands clear above it, and the scene keeps the portrait frame's full height | tea-hero-22 |
+| A chapter link tapped in the last moments before the scene pins lands on its chapter, from a chapter (the pin no longer cuts the jump short) and from the top (nor lands it two screens early) | tea-hero-23 |
 
 ## The live site (`live.spec.mjs`, `npm run e2e:live`)
 

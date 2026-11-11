@@ -29,19 +29,29 @@ export function unpinSection(section) {
 // page at its very top, or the title box above the screen (the scroll then moves by the growth, keepPlace, so what is
 // below the hero stays put; a strip of picture left at the top shows the scene's end instead of the poster), and the
 // scroll at rest (a smooth scroll to a #chapter, or a fling, would be cut short by that move). A reader with the box
-// still on screen keeps the poster until they go back to the top or past the box.
-const REST = 200;
+// still on screen keeps the poster until they go back to the top or past the box. At rest means no scroll for REST ms
+// and none over the next two frames: a chapter link tapped just before the timer starts its scroll on the next frame,
+// and a pin in between would cut that jump short (or, at the top, land it two screens early).
+export const REST = 200;
 export function whenPinnable(section) {
   const box = section.querySelector('.tea-hero-box') || section;
   return new Promise((resolve) => {
     let timer = 0;
+    let moves = 0;
+    const frames = (n, then) => (n ? requestAnimationFrame(() => frames(n - 1, then)) : then());
     const check = () => {
       if (scrollY > 0 && box.getBoundingClientRect().bottom > 0) return;
-      removeEventListener('scroll', onScroll);
-      resolve();
+      const [y, seen] = [scrollY, moves];
+      frames(2, () => {
+        if (moves !== seen || scrollY !== y) return;   // it moved: the rest after it decides
+        removeEventListener('scroll', onScroll);
+        removeEventListener('hashchange', onScroll);
+        resolve();
+      });
     };
-    const onScroll = () => { clearTimeout(timer); timer = setTimeout(check, REST); };
+    const onScroll = () => { moves++; clearTimeout(timer); timer = setTimeout(check, REST); };
     addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('hashchange', onScroll);
     onScroll();
   });
 }

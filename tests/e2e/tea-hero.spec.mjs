@@ -3,6 +3,7 @@
 // starts only after first paint; where WebGL runs it mounts and pins with no console error; the title box's skip link
 // and chapter links get past the pinned hero; on a phone the day/night switch is on screen through it.
 import { chromium } from '@playwright/test';
+import { REST } from '../../src/scripts/tea/hero/pin.js';
 import { test, expect } from './fixtures.mjs';
 
 // What only the 3D needs: its chunk, three and its glTF loader, the manifest, the models and the picture layers.
@@ -467,3 +468,31 @@ test('tea-hero-22 on a portrait screen the cast stands clear above the title box
   expect(await page.evaluate(() => Math.round(window.__teaHero.state.camRig.cam.fov))).toBe(50);
 });
 
+// A chapter link tapped in the last moments before the scene pins lands on its chapter all the same. The pin waits for
+// REST ms of no scroll (pin.js), armed in the task that puts the canvas in the stage; the tap comes 5 ms before that
+// timer, so before the jump's first frame: from a chapter (the pin's own scroll used to cut the jump short, the reader
+// left where they were) and from the top of the page (the section's growth used to land it two screens early).
+test('tea-hero-23 a chapter link tapped just as the scene pins still lands on its chapter', async ({ page }) => {
+  test.setTimeout(180_000);
+  for (const [from, link] of [['about', '[data-tea-link="ledger"]'], [null, '.tea-toc a[href="#ledger"]']]) {
+    await page.unroute('**/tea/hero/manifest.json');
+    const release = await gate(page, '**/tea/hero/manifest.json');
+    await page.goto('/tea/?hero=on');
+    await page.waitForFunction(() => document.fonts.status === 'loaded');
+    if (from) await page.locator(`#${from}`).evaluate((el) => el.scrollIntoView({ block: 'start', behavior: 'instant' }));
+    await page.evaluate(([link, delay]) => {
+      const stage = document.querySelector('[data-tea-stage]');
+      new MutationObserver((records, mo) => {
+        if (!stage.querySelector('canvas')) return;
+        mo.disconnect();
+        setTimeout(() => document.querySelector(link).click(), delay);
+      }).observe(stage, { childList: true });
+    }, [link, REST - 5]);
+    release();
+    await settled(page);
+    await expect(page, `from ${from || 'the top'}`).toHaveURL(/#ledger$/);
+    await expect.poll(() => page.locator('#ledger').evaluate((el) =>
+      Math.abs(el.getBoundingClientRect().top - parseFloat(getComputedStyle(el).scrollMarginTop))),
+    { message: `from ${from || 'the top'}`, timeout: 30_000 }).toBeLessThan(2);
+  }
+});
