@@ -496,3 +496,40 @@ test('tea-hero-23 a chapter link tapped just as the scene pins still lands on it
     { message: `from ${from || 'the top'}`, timeout: 30_000 }).toBeLessThan(2);
   }
 });
+
+// The manifest names parts of the models: the nodes its tracks and idle waves move, the nodes lights and glows hang
+// from, each prop's parent and each material override's node. The runtime skips a name the models lack without a
+// word (tracks.js findNode; a light or glow falls back to the actor's root, a prop to its model), so a model swapped in
+// with a part renamed would silently stop moving or light the wrong place. Every name in the shipped manifest is found.
+test('tea-hero-24 every part the manifest names is in the loaded models', async ({ page }) => {
+  await page.goto('/tea/?hero=on');
+  await settled(page);
+  await expect(hero(page)).toHaveAttribute('data-3d', 'on');
+  const missing = await page.evaluate(() => {
+    const { manifest: m, actors } = window.__teaHero.state;
+    // findNode's own matching: the rig map's alias, the exact name, the name GLTFLoader leaves, the glTF's own name
+    const clean = (n) => String(n).replace(/\s/g, '_').replace(/[[\]./:]/g, '');
+    const found = (id, name) => {
+      const a = actors.find((x) => x.spec.id === id);
+      if (!a) return false;
+      const want = a.spec.rig.map[name] || name;
+      let hit = false;
+      a.model.traverse((o) => { hit ||= o.name === want || o.name === clean(want) || o.userData?.name === want; });
+      return hit;
+    };
+    const out = [];
+    for (const t of [...m.tracks, ...m.idle]) {
+      if (!actors.some((a) => a.spec.id === t.actor)) out.push(`actor ${t.actor}`);
+      else if (t.node && !found(t.actor, t.node)) out.push(`${t.actor}/${t.node} (${t.channel})`);
+    }
+    for (const l of [...m.lights, ...m.glows]) {
+      if (l.attach && l.attach.node && !found(l.attach.actor, l.attach.node)) out.push(`${l.attach.actor}/${l.attach.node} (light or glow)`);
+    }
+    for (const a of m.actors) {
+      for (const p of a.props) if (p.parent && !found(a.id, p.parent)) out.push(`${a.id}/${p.parent} (parent of ${p.id})`);
+      for (const n of Object.keys(a.materials)) if (!found(a.id, n)) out.push(`${a.id}/${n} (material)`);
+    }
+    return out;
+  });
+  expect(missing).toEqual([]);
+});

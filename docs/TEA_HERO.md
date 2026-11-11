@@ -128,7 +128,7 @@ the static and the pinned hero, and sits in the strip's reserved right end once 
 | `public/tea/hero/manifest.json` | the scene, all of it |
 | `public/tea/hero/*.webp, *.glb` | stand-in picture layers (`bg-*`), posters (`poster-*`), stand-in models (`standin-*`) |
 | `scripts/tools/tea-hero/` | `shots.mjs`, `poster.mjs`, `silhouettes.mjs` (overlap and behind-the-box per size and scroll), `verify.mjs`; `standins.mjs` (stand-in GLBs), `paint.mjs` + `paint-scene.js` (stand-in picture) |
-| `tests/e2e/tea-hero.spec.mjs` | the e2e spec (tea-hero-1 to 23, listed in `tests/e2e/INVENTORY.md`) |
+| `tests/e2e/tea-hero.spec.mjs` | the e2e spec (tea-hero-1 to 24, listed in `tests/e2e/INVENTORY.md`) |
 | `src/pages/tea-lab.astro` | the lab: the real hero and rail over empty chapter heads; `?manifest=`. DELETE before merging |
 
 Outside these, the slice touched `src/styles/tea/cover.css` (the padding variables; the SVG garden's rules and the
@@ -199,7 +199,7 @@ foot.L, thigh.R, shin.R, foot.R, wing.L, wing.R, tail.01 ... tail.NN` (base to t
 
 GLTFLoader strips `.` `:` `/` `[` `]` from names and turns spaces into `_`, so `upperarm.L` arrives as `upperarmL`.
 Write the convention names in the manifest anyway: the lookup tries the rig `map` alias, the exact name, the
-sanitised name, then the glTF's original name. A track whose actor or node is missing is skipped silently. Put each
+sanitised name, then the glTF's original name. A track whose actor or node is missing is skipped silently (e2e tea-hero-24 lists any name of the shipped manifest the models lack). Put each
 part's pivot where it bends (shoulder, wing root, tail joint): rotation tracks turn nodes about their own origin.
 Models face +z with Y up. The root's `position` is where the model's origin goes.
 
@@ -282,13 +282,13 @@ and restores the poster.
 
 ## Verified
 
-- e2e `tea-hero.spec.mjs` (tea-hero-1 to 23) in both projects, desktop (Chromium 1440x900) and phone (WebKit,
+- e2e `tea-hero.spec.mjs` (tea-hero-1 to 24) in both projects, desktop (Chromium 1440x900) and phone (WebKit,
   iPhone 13); each test seen failing on a build broken on purpose. Among them: the box holds still through the mount
   (8), a late scene moves nothing on screen (9), arriving at `/tea/#projects` lands there (10), the switch pressed
   while loading (11), a lost and restored context (12), reduced motion turned on (13), no poster fetched under the
   canvas (14), a square window (15), a missing manifest or model (16), Save-Data and a small device (17), a reload
   inside the scene (18), the stage one screen and the foot's fade (19), the same box on both paths (20), where the
-  box docks (21), the box low on a portrait screen (22), a chapter link tapped just as the scene pins (23).
+  box docks (21), the box low on a portrait screen (22), a chapter link tapped just as the scene pins (23), every part the manifest names found in the models (24).
 - `verify.mjs` against `/tea/` and `/tea-lab/` (both layouts; see its header).
 - The poster against the scene's opening frame at 1440x900, 1280x720, 1440x700, 768x1024, 390x844 and 360x640 (offset
   0, mean difference 1.0 to 1.5 of 255); the actors' silhouettes as above (`silhouettes.mjs`); the title box's text
