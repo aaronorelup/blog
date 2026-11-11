@@ -3,7 +3,7 @@
 // nobody's site name; and what is shown can't carry markup. A made-up site, with one post nobody may see.
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { makeSite, mentionsUnlisted, refHost, safeHost, safeLabel, safePath, scrubDay } from '../../worker/stats/shape.js';
+import { assembleDay, makeSite, mentionsUnlisted, refHost, safeHost, safeLabel, safePath, scrubDay } from '../../worker/stats/shape.js';
 
 const HIDDEN = 'secret-unlisted-post';
 const site = makeSite(['# every public page', '/', '/ledger/', '/ledger/earthlight/', '/ledger/the-missing-map/',
@@ -60,6 +60,22 @@ test('a probe is quoted as asked, unless it names a post or a page the site does
     `/media/${HIDDEN}/clip.mp4`, `/media/previews/${HIDDEN}.webp`, `/media/previews/${HIDDEN}-loop.mp4`, `/backup/${HIDDEN}.zip`,
     `/x?post=${HIDDEN}`, `/-${HIDDEN}-/`, '/courses/a-course-not-out/', '/courses/other/']) assert.equal(probe(asked), null, asked);
   for (const asked of [`/ledger/${HIDDEN}/`, `/posts/${HIDDEN}`, `/media/${HIDDEN}/clip.mp4`, `/backup/${HIDDEN}.zip`]) assert.equal(probe(asked, cards), null, asked);
+});
+
+test('an unlisted post with a one-word or two-word slug is no more shown than a long one', () => {
+  // A slug of three words or more is also caught as a word the site does not use. A short one is caught only by
+  // asking whether the post under /ledger/, /posts/ or /media/ is listed.
+  for (const slug of ['hidden', 'two-words', 'x', 'earthlightx', 'the-missing']) {
+    for (const asked of [`/ledger/${slug}/`, `/ledger/${slug}`, `/ledger/${slug}.html`, `/ledger/${slug}/notes/`, `/posts/${slug}/`, `/LEDGER/${slug.toUpperCase()}/`,
+      `/ledger%2F${slug}`, `/media/${slug}/clip.mp4`, `/media/previews/${slug}.webp`]) {
+      assert.equal(probe(asked), null, asked);
+      assert.equal(probe(asked, cards), null, asked);
+      assert.equal(safePath(asked, site), null, asked);
+      assert.equal(safePath(asked, cards), null, asked);
+    }
+  }
+  assert.equal(mentionsUnlisted(JSON.stringify({ probes: [['/ledger/hidden/', 1]] }), site), true);
+  assert.deepEqual(scrubDay({ probes: [['/ledger/hidden/', 1], ['/media/hidden/clip.mp4', 1], ['/.env', 1]], reads: [['hidden', 4]] }, site).probes, [['/.env', 1]]);
 });
 
 test('a path is shown with every character that means something in HTML percent-encoded', () => {
@@ -135,4 +151,31 @@ test('mentionsUnlisted: finds a post that is not listed in a stored day, however
   for (const path of [`/ledger/${HIDDEN}/`, `/LEDGER/${HIDDEN.toUpperCase()}`, `/posts/${HIDDEN}`, `/ledger%2F${HIDDEN}`, `/media/${HIDDEN}/clip.mp4`,
     `/media/previews/${HIDDEN}.webp`]) assert.equal(mentionsUnlisted(text([path]), site), true, path);
   assert.equal(mentionsUnlisted(text([], [['earthlight', 2], [HIDDEN, 1]]), site), true);
+});
+
+test('assembleDay: a day is put together from listed posts only, whatever the steps fetched before a post was unlisted', () => {
+  const hours = (at, n) => Object.assign(new Array(24).fill(0), { [at]: n });
+  const core = {
+    d: '2026-11-10', req: { person: 9 }, pages: { person: 4, stale: 0, agent: 0 }, bytes: { person: 100 }, bots: [], agents: [], stale: [],
+    probes: [['/.git/config', 2], [`/ledger/${HIDDEN}/`, 1], ['/ledger/hidden/', 1]], probeStatus: {}, probeCountries: {}, botCountries: {},
+    rum: { loads: 3, visits: 2, paths: [['/about/', 2], ['/ledger/hidden/', 1]] },
+  };
+  const windows = [
+    { countries: { NZ: 2 }, devices: { desktop: 2 }, paths: { '/ledger/earthlight/': 2, '/ledger/hidden/': 1 }, hours: hours(3, 3) },
+    { countries: { NZ: 1, US: 1 }, devices: { mobile: 2 }, paths: { '/ledger/earthlight/': 1, [`/ledger/${HIDDEN}/`]: 1 }, hours: hours(4, 2) },
+  ];
+  const reads = [{ slug: 'earthlight', n: 3 }, { slug: 'hidden', n: 9 }, { slug: HIDDEN, n: 2 }, { slug: 'the-missing-map', n: 5 }, { slug: 'the-missing-map-2', n: 1 }];
+  const day = assembleDay(core, windows, reads, site);
+  // The reads of a post that is not listed (any more) are left out, the rest most read first.
+  assert.deepEqual(day.reads, [['the-missing-map', 5], ['earthlight', 3]]);
+  assert.deepEqual(day.people.paths, [['/ledger/earthlight/', 3]]);
+  assert.deepEqual(day.probes, [['/.git/config', 2]]);
+  assert.deepEqual(day.rum, { loads: 3, visits: 2, paths: [['/about/', 2]] });
+  assert.deepEqual(day.people.countries, { NZ: 3, US: 1 });
+  assert.deepEqual(day.people.hours, hours(3, 3).map((n, h) => n + hours(4, 2)[h]));
+  assert.equal(mentionsUnlisted(JSON.stringify(day), site), false);
+  assert.ok(!JSON.stringify(day).includes('hidden') && !JSON.stringify(day).includes(HIDDEN));
+  // A count of nothing is no row, and no reads at all is an empty list.
+  assert.deepEqual(assembleDay(core, [], [{ slug: 'earthlight', n: 0 }], site).reads, []);
+  assert.deepEqual(assembleDay(core, [], null, site).reads, []);
 });
