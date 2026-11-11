@@ -49,7 +49,7 @@ export function normalise(m, url) {
         .sort((a, b) => a.t - b.t),
       parallax: { x: 0.3, y: 0.18, ease: 4, drift: 0.5, ...(cam.parallax || {}) },
       portrait: {
-        fov: 46, spread: 0.55, pull: 1.6, drop: 0.9, ...(cam.portrait || {}),
+        fov: 46, spread: 0.55, pull: 1.6, drop: 0.9, aspect: 430 / 932, ...(cam.portrait || {}),
       },
     },
     tracks: (m.tracks || []).map(track),

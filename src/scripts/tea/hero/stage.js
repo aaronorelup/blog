@@ -11,7 +11,7 @@ import { createInput } from './input.js';
 import { buildLights, paintLights, skyEnvironment } from './lights.js';
 import { loadManifest } from './manifest.js';
 import { createMotes, tickMotes } from './motes.js';
-import { pinSection, unpinSection, writeProgress } from './pin.js';
+import { leadOf, pinSection, relayout, unpinSection, writeProgress } from './pin.js';
 import { applyTracks, bindTracks } from './tracks.js';
 
 const isNight = () => document.documentElement.dataset.mode !== 'day';
@@ -24,7 +24,7 @@ export async function mount(section, stage, opts = {}) {
   canvas.className = 'tea-stage-canvas';
   canvas.setAttribute('aria-hidden', 'true');
   const renderer = new WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance', alpha: false });
-  const s = { renderer, canvas, manifest, raf: 0, running: false, visible: true, onscreen: true, frozen: null };
+  const s = { renderer, canvas, manifest, raf: 0, running: false, visible: true, onscreen: true, frozen: null, lead: 0 };
   try {
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1, coarse || small ? 1.5 : 1.75));
     renderer.toneMapping = ACESFilmicToneMapping;
@@ -68,6 +68,7 @@ export async function mount(section, stage, opts = {}) {
     s.clock = performance.now();
     s.time = 0;
     pinSection(section);
+    s.lead = leadOf(section);
     frame(s, section, 0);
   } catch (e) {
     canvas.remove();
@@ -100,7 +101,8 @@ function frame(s, section, dt) {
   const k = 1 - Math.exp(-dt * 3.2);
   s.mix += (s.target - s.mix) * (dt ? k : 1);
   if (Math.abs(s.target - s.mix) < 1e-3) s.mix = s.target;
-  const p = s.input.st.p;
+  // the scene's own progress: in the flow layout it waits for the title box to scroll away (s.lead)
+  const p = Math.min(1, Math.max(0, (s.input.st.p - s.lead) / (1 - s.lead)));
   writeProgress(section, s.input.st.raw);
   applyTracks(s.bound, p, time);
   placeCamera(s.camRig, p, s.input.st.par);
@@ -133,8 +135,14 @@ function wire(s, section, stage) {
   s.io.observe(section);
   s.onVis = () => { s.visible = document.visibilityState === 'visible'; s.play(); };
   document.addEventListener('visibilitychange', s.onVis);
-  s.ro = new ResizeObserver(() => { resize(s, stage); if (!s.running) frame(s, section, 0); });
+  s.ro = new ResizeObserver(() => {
+    relayout(section);
+    s.lead = leadOf(section);
+    resize(s, stage);
+    if (!s.running) frame(s, section, 0);
+  });
   s.ro.observe(stage);
+  s.ro.observe(section.querySelector('.tea-hero-box') || stage);
   s.mo = new MutationObserver(() => { s.target = isNight() ? 1 : 0; });
   s.mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-mode'] });
   s.play();

@@ -1,60 +1,31 @@
 ---
-// THROWAWAY lab page for the hero runtime (feat/alt-view-hero). Deleted before the final commit; never ships.
-// It reproduces tea-core's hero markup contract with a placeholder title box and a few chapters to scroll into.
-import '../styles/site.css';
+// The hero lab (/tea-lab/): the tea room's real hero and rail over empty chapter heads, so the 3D hero runs alone and
+// loads fast; no rail script, so /tea/'s own scripts stay inlined. Development only: noindex, linked from nowhere,
+// deleted before the tea room lands (docs/TEA_HERO.md). ?manifest=<file>.json loads /tea/hero/<file>.json instead.
+import '../styles/tea/tea.css';
 import Head from '../components/chrome/Head.astro';
-import ModeToggle from '../components/chrome/ModeToggle.astro';
-import Stage from '../components/tea/hero/Stage.astro';
+import TeaChapter from '../components/tea/TeaChapter.astro';
+import TeaHero from '../components/tea/TeaHero.astro';
+import TeaRail from '../components/tea/TeaRail.astro';
+import { CHAPTERS } from '../data/tea.js';
 ---
 
 <!doctype html>
-<html lang="en">
-  <head><Head title="Tea room hero lab" description="Hero lab" noindex={true} /></head>
-  <body class="lab">
-    <ModeToggle />
-    <section class="tea-hero" id="top" data-tea-hero>
-      <div class="tea-hero-pin">
-        <Stage />
-        <div class="tea-hero-box">
-          <p class="lab-kicker">The tea room</p>
-          <h1 class="lab-h1">Aaron Orelup</h1>
-          <p class="lab-statement">Everything I learn about AI, by lantern light.</p>
-          <p class="lab-counts">73 posts · 41 projects · 2 courses</p>
-          <ol class="lab-toc">
-            <li><a href="#c1">Start here</a></li>
-            <li><a href="#c2">The ledger</a></li>
-            <li><a href="#c3">Projects</a></li>
-            <li><a href="#c4">Courses</a></li>
-          </ol>
-          <a class="lab-skip" href="#c1">Skip to the chapters</a>
-          <a class="lab-pill" href="/">Go to the main site</a>
-        </div>
-      </div>
-    </section>
-    <main>
-      <section id="c1" class="lab-ch"><h2>Start here</h2><p>Chapter one.</p></section>
-      <section id="c2" class="lab-ch"><h2>The ledger</h2><p>Chapter two.</p></section>
-      <section id="c3" class="lab-ch"><h2>Projects</h2><p>Chapter three.</p></section>
-      <section id="c4" class="lab-ch"><h2>Courses</h2><p>Chapter four.</p></section>
-    </main>
-    <style is:global>
-      body.lab { margin: 0; background: var(--page); color: var(--body); }
-      body.lab .mode-toggle { position: fixed; top: 14px; right: 14px; z-index: 20; }
-      .tea-hero:not([data-3d='on']) { height: 100vh; height: 100svh; }
-      .tea-hero:not([data-3d='on']) .tea-hero-pin { height: 100%; display: grid; place-items: center; }
-      .tea-hero-box {
-        position: relative; z-index: 2; width: min(400px, 84vw); padding: 26px 28px;
-        border: 1px solid rgba(242, 231, 213, .55); color: #F2E7D5; font-family: var(--font-body);
-        background: rgba(16, 18, 32, .18); backdrop-filter: blur(2px);
-      }
-      .tea-hero-box a { color: #F2E7D5; }
-      .lab-kicker { margin: 0; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #F0C06A; }
-      .lab-h1 { margin: 6px 0 10px; font-family: var(--font-display); font-size: 40px; line-height: 1; }
-      .lab-statement, .lab-counts { margin: 0 0 10px; font-size: 15px; }
-      .lab-toc { margin: 0 0 12px; padding-left: 18px; font-size: 15px; line-height: 1.5; }
-      .lab-skip { display: block; font-size: 13px; margin-bottom: 10px; }
-      .lab-pill { display: inline-block; padding: 6px 14px; border-radius: 99px; background: #F2E7D5; color: #101220 !important; font-size: 13px; text-decoration: none; }
-      .lab-ch { min-height: 80vh; padding: 60px 8vw; border-top: 1px solid var(--line); }
-    </style>
+<html lang="en" class="tea-root">
+  <head><Head title="Tea room hero lab" description="The tea room hero on its own." noindex={true} /></head>
+  <body class="tea">
+    <TeaHero counter="75 posts · 41 projects · 2 courses" />
+    <script is:inline>
+      (function () {
+        var m = new URLSearchParams(location.search).get('manifest');
+        if (m && /^[\w-]+(\/[\w-]+)*\.json$/.test(m)) document.querySelector('[data-tea-stage]').dataset.manifest = '/tea/hero/' + m;
+      })();
+    </script>
+    <div class="tea-frame">
+      <TeaRail />
+      <main class="tea-main" id="chapters" tabindex="-1">
+        {CHAPTERS.map((c) => <TeaChapter id={c.id}><p>Nothing here in the lab.</p></TeaChapter>)}
+      </main>
+    </div>
   </body>
 </html>

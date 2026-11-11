@@ -1,6 +1,6 @@
 // The camera: a Catmull-Rom path through the manifest's keys (position and look-at, keyed on scroll progress), a
-// field of view that crops like object-fit: cover of the reference aspect (so the poster lines up at any desktop
-// size; a portrait screen gets its own wider shot), and the pointer's parallax, an eased offset in screen space.
+// field of view that crops like object-fit: cover of the poster's aspect (so the poster lines up at any size; a
+// portrait screen has its own shot and poster), and the pointer's parallax, an eased offset in screen space.
 import { CatmullRomCurve3, MathUtils, PerspectiveCamera, Vector3 } from 'three';
 
 export function createCamera(manifest) {
@@ -26,10 +26,10 @@ export function fitCamera(rig, ref, w, h) {
   const a = w / h;
   rig.cam.aspect = a;
   rig.portrait = a < 1;
-  const v = rig.spec.fov;
-  if (rig.portrait) rig.cam.fov = rig.spec.portrait.fov;
-  else if (a >= ref) rig.cam.fov = MathUtils.radToDeg(2 * Math.atan(Math.tan(MathUtils.degToRad(v) / 2) * ref / a));
-  else rig.cam.fov = v;
+  // like object-fit: cover of a picture of aspect r (the poster's): a wider screen keeps its horizontal field and crops
+  // top and bottom, a narrower one keeps its vertical field and crops the sides. Portrait has its own picture.
+  const [v, r] = rig.portrait ? [rig.spec.portrait.fov, rig.spec.portrait.aspect] : [rig.spec.fov, ref];
+  rig.cam.fov = a > r ? MathUtils.radToDeg(2 * Math.atan(Math.tan(MathUtils.degToRad(v) / 2) * r / a)) : v;
   rig.cam.updateProjectionMatrix();
 }
 

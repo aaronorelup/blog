@@ -1,10 +1,11 @@
 ---
-// The tea room's hero: one viewport, the framed title box over the night backdrop. The markup is a contract with the
-// 3D hero (phase 2): .tea-hero[data-tea-hero] > .tea-hero-pin > .tea-hero-stage[data-tea-stage] (the backdrop, where
-// the poster and canvas mount) + .tea-hero-box (kicker, h1, statement, counter, the chapter list, the way out).
+// The tea room's hero: the framed title box over the 3D hero's stage (hero/Stage.astro: the poster of the scene's
+// opening frame, then the scene itself once it can run). The markup is the contract with the 3D hero:
+// .tea-hero[data-tea-hero] > .tea-hero-pin > .tea-hero-stage[data-tea-stage] (poster and canvas) + .tea-hero-box
+// (kicker, h1, statement, counter, the chapter list, the way out). One viewport without the scene, pinned with it.
 import { CHAPTERS, COPY } from '../../data/tea.js';
 import { roman } from '../../lib/tea.js';
-import TeaNight from './TeaNight.astro';
+import Stage from './hero/Stage.astro';
 
 interface Props { counter: string }
 const { counter } = Astro.props;
@@ -12,7 +13,7 @@ const { counter } = Astro.props;
 
 <section class="tea-hero" id="top" data-tea-hero aria-labelledby="tea-title">
   <div class="tea-hero-pin">
-    <div class="tea-hero-stage" data-tea-stage aria-hidden="true"><TeaNight /></div>
+    <Stage />
     <div class="tea-hero-box">
       <a class="tea-skip" href="#chapters">{COPY.skip}</a>
       <p class="tea-kicker">{COPY.kicker}</p>

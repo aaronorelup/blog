@@ -1,10 +1,8 @@
-/* The tea room hero's stage (components/tea/hero/Stage.astro, scripts/tea/hero/). Without the 3D scene the section is
-   one screen with the poster behind the title box; with it (data-3d="on" on .tea-hero) the section is tall and its
-   pin sticks while the scroll plays the scene, the title box first centred, then docked lower left. Read by tea-core:
-   --tea-hero-progress (0..1) and data-hero-phase (open, docked) on .tea-hero. */
-
-.tea-hero { position: relative; }
-.tea-hero-pin { position: relative; }
+/* The tea room hero's stage (components/tea/hero/Stage.astro, scripts/tea/hero/). Static: the poster behind the title
+   box, one screen (cover.css). With the scene (data-3d="on") the section is tall and pin.js picks a layout,
+   data-hero-layout: "dock" (landscape, the box fits) pins .tea-hero-pin and docks the box lower left once the scene
+   moves; "flow" (portrait, or the box doesn't fit) pins only the stage and the box scrolls away with the page. Both
+   start with the box where the static layout has it. Read by tea-core: --tea-hero-progress, data-hero-phase. */
 
 .tea-hero-stage {
   position: absolute;
@@ -15,7 +13,9 @@
   pointer-events: none;
 }
 :root[data-mode='day'] .tea-hero-stage { background: #3A2A3F; }
+.tea-hero-box { z-index: 2; }
 
+/* The first picture on every path: the scene's opening frame, one image for the mode and the screen's shape. */
 .tea-stage-poster {
   position: absolute;
   inset: 0;
@@ -54,37 +54,70 @@
     linear-gradient(to top, rgba(40, 22, 30, .45), rgba(40, 22, 30, 0) 30%);
 }
 
-/* The pinned hero, only while the 3D scene runs. */
+/* The scene: one length of scroll for both layouts, so a switch between them moves nothing below the hero. Over a
+   canvas that changes every frame the box's backdrop blur is a full blur pass a frame for 10% of what shows. */
 .tea-hero[data-3d='on'] { height: 300vh; }
-.tea-hero[data-3d='on'] .tea-hero-pin {
+.tea-hero[data-3d='on'] .tea-hero-box { backdrop-filter: none; }
+
+/* dock: the pin sticks; the box opens where the static layout centres it, then docks lower left, clear of the
+   day/night switch at the foot of the screen on a wide one. */
+.tea-hero[data-hero-layout='dock'] {
+  --tea-dock-x: clamp(16px, 3vw, 44px);
+  --tea-dock-low: clamp(16px, 4vh, 44px);
+}
+.tea-hero[data-hero-layout='dock'] .tea-hero-pin {
   position: sticky;
   top: 0;
   height: 100vh;
   height: 100svh;
-  overflow: hidden;
 }
-@media (max-width: 700px) {
-  .tea-hero[data-3d='on'] { height: 220vh; }
-}
-
-.tea-hero[data-3d='on'] .tea-hero-box {
+.tea-hero[data-hero-layout='dock'] .tea-hero-box {
   position: absolute;
-  z-index: 2;
+  width: min(540px, 100% - 2 * var(--tea-hero-px));
   left: 50%;
-  top: 50%;
+  top: calc(50% + (var(--tea-hero-pt) - var(--tea-hero-pb)) / 2);
   translate: -50% -50%;
+  transform-origin: 0 100%;
   transition: left 900ms cubic-bezier(.2, .7, .2, 1), top 900ms cubic-bezier(.2, .7, .2, 1),
     translate 900ms cubic-bezier(.2, .7, .2, 1), scale 900ms cubic-bezier(.2, .7, .2, 1);
 }
-.tea-hero[data-3d='on'][data-hero-phase='docked'] .tea-hero-box {
-  left: clamp(16px, 3vw, 44px);
-  top: calc(100% - clamp(16px, 4vh, 44px));
+.tea-hero[data-hero-layout='dock'][data-hero-phase='docked'] .tea-hero-box {
+  left: var(--tea-dock-x);
+  top: calc(100% - var(--tea-dock-low));
   translate: 0 -100%;
   scale: .86;
-  transform-origin: 0 100%;
 }
-@media (max-width: 700px) {
-  /* on a phone the characters stand in the top half, so the open box waits low, then docks smaller */
-  .tea-hero[data-3d='on'] .tea-hero-box { top: calc(100% - 3vh); translate: -50% -100%; }
-  .tea-hero[data-3d='on'][data-hero-phase='docked'] .tea-hero-box { scale: .74; }
+@media (min-width: 1024px) {
+  .tea-hero[data-hero-layout='dock'] { --tea-dock-low: max(78px, 4vh); }
+}
+
+/* flow: the stage sticks for the whole section; the box keeps the static layout's place in the first screen and
+   scrolls away with the page, and the scene waits for it (pin.js, the lead). Nothing here may clip: a sticky stage
+   needs every ancestor's overflow visible. */
+.tea-hero[data-hero-layout='flow'] .tea-hero-pin {
+  height: 100%;
+  padding: 0;
+  overflow: visible;
+  grid-template-rows: minmax(100vh, auto) 1fr;
+  grid-template-rows: minmax(100svh, auto) 1fr;
+  place-items: initial;
+}
+.tea-hero[data-hero-layout='flow'] .tea-hero-stage {
+  position: sticky;
+  inset: 0 auto auto;
+  grid-area: 1 / 1 / 3 / 2;
+  align-self: start;
+  height: 100vh;
+  height: 100svh;
+}
+.tea-hero[data-hero-layout='flow'] .tea-hero-box {
+  grid-area: 1 / 1;
+  align-self: center;
+  justify-self: center;
+  width: min(540px, 100% - 2 * var(--tea-hero-px));
+  margin: var(--tea-hero-pt) 0 var(--tea-hero-pb);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tea-hero-box { transition: none; }
 }

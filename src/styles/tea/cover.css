@@ -1,55 +1,14 @@
-/* The tea room's static hero (components/tea/TeaHero.astro, TeaNight.astro): one viewport, the night backdrop in
-   the stage and the framed title box. Day mode moves the same scene to an earlier, bluer evening. The 3D hero's own
-   rules (stage.css) layer on top of these in phase 2. */
-.tea-hero { position: relative; min-height: 100vh; min-height: 100svh; }
+/* The tea room's hero (components/tea/TeaHero.astro): one viewport, the framed title box over the 3D hero's stage
+   (stage.css owns the stage, the poster and the pinned layouts). The pin's padding lives in --tea-hero-pt/-pb/-px so
+   stage.css can put the box exactly where this static layout puts it. */
+.tea-hero {
+  --tea-hero-pt: 84px; --tea-hero-pb: 56px; --tea-hero-px: var(--tea-pad);
+  position: relative; min-height: 100vh; min-height: 100svh;
+}
 .tea-hero-pin {
   position: relative; min-height: inherit; box-sizing: border-box; display: grid; place-items: center;
-  padding: 84px var(--tea-pad) 56px; overflow: hidden; isolation: isolate;
+  padding: var(--tea-hero-pt) var(--tea-hero-px) var(--tea-hero-pb); overflow: hidden; isolation: isolate;
 }
-.tea-hero-stage { position: absolute; inset: 0; z-index: -1; background: rgb(11, 16, 48); }
-:root[data-mode='day'] .tea-hero-stage { background: rgb(43, 58, 120); }
-.tea-hero-stage::after {
-  content: ''; position: absolute; inset: auto 0 0; height: 22%;
-  background: linear-gradient(180deg, transparent, var(--pc-page));
-}
-.tn { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-
-/* the scene, night */
-.tn-sky-top { stop-color: #0B1030; } .tn-sky-mid { stop-color: #1B2148; } .tn-sky-low { stop-color: #2E335A; }
-.tn-stars { fill: #FFF0C8; opacity: 0.8; }
-.tn-glow-in { stop-color: rgba(255, 240, 200, 0.3); } .tn-glow-out { stop-color: rgba(255, 240, 200, 0); }
-.tn-moon { fill: #F6EBCF; } .tn-moon-mark { fill: #E2D2AC; opacity: 0.55; }
-.tn-mtn-far { fill: #222949; } .tn-mtn-near { fill: #2A3150; }
-.tn-warm-in { stop-color: rgba(255, 196, 120, 0.2); } .tn-warm-out { stop-color: rgba(255, 196, 120, 0); }
-.tn-wall { fill: #4F3240; } .tn-shoji { fill: #F2C46D; } .tn-kumiko { stroke: #5B3A26; stroke-width: 3; fill: none; }
-.tn-post, .tn-beam { fill: #3F2918; } .tn-deck { fill: #5B3A26; } .tn-deck-edge { fill: #2E1E12; }
-.tn-roof { fill: #363E56; } .tn-roof-ridge { fill: none; stroke: #4C5674; stroke-width: 6; stroke-linecap: round; }
-.tn-roof-line { fill: none; stroke: rgba(10, 12, 24, 0.35); stroke-width: 3; }
-.tn-grass-top { stop-color: #2C3F37; } .tn-grass-low { stop-color: #151E1C; }
-.tn-stones { fill: #4A4F58; } .tn-stone { fill: #565B63; } .tn-fire { fill: #FFE6A8; }
-.tn-lamp-in { stop-color: rgba(255, 216, 146, 0.55); } .tn-lamp-mid { stop-color: rgba(255, 216, 146, 0.16); }
-.tn-lamp-out { stop-color: rgba(255, 216, 146, 0); }
-.tn-trunk { fill: #2A1C12; } .tn-bloom { fill: #5E3A50; } .tn-bloom-hi { fill: #CE8CA4; opacity: 0.45; }
-
-/* the scene, day: the same evening an hour earlier */
-:root[data-mode='day'] .tn-sky-top { stop-color: #2B3A78; }
-:root[data-mode='day'] .tn-sky-mid { stop-color: #6C6FA6; }
-:root[data-mode='day'] .tn-sky-low { stop-color: #E9B49A; }
-:root[data-mode='day'] .tn-stars { opacity: 0.35; }
-:root[data-mode='day'] .tn-mtn-far { fill: #4D5786; }
-:root[data-mode='day'] .tn-mtn-near { fill: #5A6390; }
-:root[data-mode='day'] .tn-wall { fill: #8A5A69; }
-:root[data-mode='day'] .tn-shoji { fill: #FCE7B4; }
-:root[data-mode='day'] .tn-kumiko { stroke: #7A4E30; }
-:root[data-mode='day'] .tn-post, :root[data-mode='day'] .tn-beam { fill: #5E3C23; }
-:root[data-mode='day'] .tn-deck { fill: #9A5F36; }
-:root[data-mode='day'] .tn-roof { fill: #4D5675; }
-:root[data-mode='day'] .tn-grass-top { stop-color: #4D6B4E; }
-:root[data-mode='day'] .tn-grass-low { stop-color: #2F4535; }
-:root[data-mode='day'] .tn-stones, :root[data-mode='day'] .tn-stone { fill: #7C8088; }
-:root[data-mode='day'] .tn-bloom { fill: #B06C88; }
-:root[data-mode='day'] .tn-bloom-hi { fill: #F7B7C8; opacity: 0.6; }
-:root[data-mode='day'] .tn-trunk { fill: #4A2F1D; }
 
 /* the framed box: washi over a faint lattice, a second hairline inside like joinery */
 .tea-hero-box {
@@ -100,7 +59,7 @@
 .tea-pill.is-big { padding: 15px 28px; font-size: 17px; }
 
 @media (max-width: 560px) {
-  .tea-hero-pin { padding: 76px 14px 40px; }
+  .tea-hero { --tea-hero-pt: 76px; --tea-hero-pb: 40px; --tea-hero-px: 14px; }
   .tea-hero-box { padding: 46px 22px 26px; }
   .tea-skip { left: 22px; right: auto; }
   .tea-toc a { font-size: 17px; }
