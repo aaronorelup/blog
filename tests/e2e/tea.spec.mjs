@@ -110,7 +110,13 @@ test('tea-3 projects, courses, Now and About show what their own pages show', as
     return [document.querySelector('.page-kicker').textContent, parts.join('')];
   });
   await page.goto('/about/');
-  const about = await page.locator('[data-panel-view="about"] .pc-prose').textContent();
+  // About as /about/ shows it under its title: the lede and the prose (the tea room's chapter word is the title)
+  const about = await page.locator('[data-panel-view="about"] .page').evaluate((p) => {
+    const rest = p.cloneNode(true);
+    rest.querySelector('.page-title')?.remove();
+    return rest.textContent;
+  });
+  expect(bare(about).length).toBeGreaterThan(1000);
 
   await page.goto(TEA);
   for (const [key, names] of Object.entries(sections)) {
@@ -121,7 +127,7 @@ test('tea-3 projects, courses, Now and About show what their own pages show', as
   expect(await page.locator('.tea-plate-title a').evaluateAll((as) => as.map((a) => [a.getAttribute('href'), a.textContent]))).toEqual(courses);
   await expect(page.locator('.tea-sheet-kicker')).toHaveText(now[0]);
   expect(bare(await page.locator('.tea-prose').textContent())).toBe(bare(now[1]));
-  expect(bare(await page.locator('.tea-about-text .pc-prose').textContent())).toBe(bare(about));
+  expect(bare(await page.locator('.tea-about-text .page').textContent())).toBe(bare(about));
 });
 
 test('tea-4 every internal link and picture on /tea/ resolves in the build', async ({ page, request }) => {
