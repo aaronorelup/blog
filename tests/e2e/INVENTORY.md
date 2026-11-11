@@ -511,6 +511,38 @@ every 200 ms), so nothing waits for the Worker's key.
 | Every tap that reads plays inside itself, as iOS and strict Android autoplay need: Listen speaks a silent utterance and plays the one `<audio>` before its import and fetch, and that element alone then reads the recording; a word, the bar's play, a change of voice and the speed start the recording or the voice within the tap | `listen.js` `unlock()`, `index.js` `play()`, `HTMLMediaElement.play` / `speechSynthesis.speak` (stand-ins that mark the tap) | read-8 |
 | The bar is drawn again on every play, pause and next part; the speed button only when the speed changes, so its content is never touched as the reading moves to its next part or pauses (listen-5), and its own click still steps it | `bar.js` `show()` | read-9 |
 
+## The tea room's hero (`tea-hero.spec.mjs`)
+
+The 3D hero at the top of `/tea/` (`src/components/tea/hero/`, `src/scripts/tea/hero/`, `docs/TEA_HERO.md`). Both
+projects have WebGL (desktop Chromium, phone WebKit), so the scene runs in both; on a box with a software GPU every
+frame is a long task, so a test that checks layout holds the scene's loop through its own hook first, and tests wait
+for `data-hero-settled` (the hero will change no layout by itself any more) before they act.
+
+| Behaviour | Spec |
+|---|---|
+| With reduced motion the poster stays and none of the 3D (its chunk, three, the loader, the manifest, models, picture layers) is fetched | tea-hero-1 |
+| Without WebGL the same | tea-hero-2 (desktop: a Chromium flag) |
+| Nothing of the 3D is fetched before first paint; where the scene runs its files do come, after it | tea-hero-3 |
+| Where WebGL runs the scene mounts, pins and draws with no console error, and what sticks stays at the top mid-scroll | tea-hero-4 |
+| On a phone the day/night switch is on screen and on top through the static and the pinned hero, works, and is the only one | tea-hero-5 (phone) |
+| The title box's skip link takes the keyboard past the pinned hero to the chapters | tea-hero-6 |
+| Every chapter link in the title box lands on its chapter at its scroll margin | tea-hero-7 |
+| The title box holds within 1 px of its static place on every frame while the scene takes over | tea-hero-8 |
+| A scene that arrives late moves nothing on screen: with the box still on screen it waits; with the reader on the first chapter it pins with the chapter left where it is | tea-hero-9 |
+| Arriving at `/tea/#projects` with the scene ready mid-scroll lands on the chapter | tea-hero-10 |
+| The day/night switch pressed while the models load is the mode the scene comes up in, its pictures included | tea-hero-11 |
+| A lost WebGL context shows the poster until it is back, then the scene with its light made again | tea-hero-12 |
+| Reduced motion turned on while the scene runs puts the poster back, the page where it was | tea-hero-13 |
+| With the scene up the switch fetches no poster under the canvas | tea-hero-14 |
+| The poster and the scene take the same shape of frame, a square window included | tea-hero-15 |
+| A missing manifest or model keeps the poster and the hero one screen, with no page error | tea-hero-16 |
+| Save-Data and a small device keep the poster and fetch none of the 3D | tea-hero-17 |
+| A reload inside the scene comes back to the same place in it; a new visit starts at the top | tea-hero-18 |
+| The stage is one screen on every path, and the hero's foot fades into the page (static always, with the scene only as the pin lets go) | tea-hero-19 |
+| The title box is the same box static and over the scene: no backdrop blur, an opaque card by day | tea-hero-20 |
+| The box docks only where it leaves most of the frame to the scene (1024x768 flows, 1366x768 docks with the lens shift scaled) | tea-hero-21 (desktop) |
+| On a portrait screen the box waits low and the cast stands clear above it, and the scene keeps the portrait frame's full height | tea-hero-22 |
+
 ## The live site (`live.spec.mjs`, `npm run e2e:live`)
 
 GET and HEAD only: `/version.json` is a main build (live-1), every baseline path answers (live-2), media come from
