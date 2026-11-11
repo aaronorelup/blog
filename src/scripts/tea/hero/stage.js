@@ -32,6 +32,9 @@ export async function mount(section, stage, opts = {}) {
   try {
     renderer.setPixelRatio(Math.min(devicePixelRatio || 1, coarse || small ? 1.5 : 1.75));
     renderer.toneMapping = ACESFilmicToneMapping;
+    // the page's mode from now on, the switch pressed while the scene loads included
+    s.mo = new MutationObserver(() => { s.target = isNight() ? 1 : 0; });
+    s.mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-mode'] });
     const night = isNight();
     s.mix = night ? 1 : 0;
     s.target = s.mix;
@@ -67,8 +70,14 @@ export async function mount(section, stage, opts = {}) {
     s.input = createInput(section, manifest.camera.parallax);
     s.size = [0, 0];
     stage.appendChild(canvas);
-    // the pin waits for a moment when it moves nothing on screen (pin.js); the poster stays till then
-    await whenPinnable(section);
+    // the pin waits for a moment when it moves nothing on screen (pin.js); the poster stays till then. If the mode
+    // changed while the scene loaded, the other mode's pictures come first, so the first frame is in the page's mode.
+    for (;;) {
+      await whenPinnable(section);
+      if ((s.target === 1) === night || backdrop.tried) break;
+      await backdrop.later();
+    }
+    s.mix = s.target;
     pinSection(section);
     resize(s, stage);
     s.lead = leadOf(section);
@@ -77,6 +86,8 @@ export async function mount(section, stage, opts = {}) {
     s.time = 0;
     frame(s, section, 0);
   } catch (e) {
+    if (s.mo) s.mo.disconnect();
+    if (s.input) s.input.dispose();
     canvas.remove();
     renderer.dispose();
     unpinSection(section);   // a failure after the pin leaves the static hero, not a tall section holding a poster
@@ -158,8 +169,6 @@ function wire(s, section, stage) {
   });
   s.ro.observe(stage);
   s.ro.observe(section.querySelector('.tea-hero-box') || stage);
-  s.mo = new MutationObserver(() => { s.target = isNight() ? 1 : 0; });
-  s.mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-mode'] });
   s.play();
 }
 

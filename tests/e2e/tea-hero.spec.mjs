@@ -228,3 +228,26 @@ test('tea-hero-10 arriving at a chapter address lands on the chapter with the sc
     Math.abs(el.getBoundingClientRect().top - parseFloat(getComputedStyle(el).scrollMarginTop))), { timeout: 30_000 }).toBeLessThan(2);
 });
 
+test('tea-hero-11 the day/night switch pressed while the scene loads is the mode the scene comes up in', async ({ page }) => {
+  const release = await gate(page, '**/*.glb');
+  const asked = page.waitForRequest(/\.glb$/, { timeout: 60_000 });
+  await page.goto('/tea/?hero=on');
+  await asked;   // the scene is loading its models: the switch now
+  const mode = () => page.evaluate(() => document.documentElement.dataset.mode || 'night');
+  const before = await mode();
+  await page.locator('#mode-toggle').click();
+  await expect.poll(mode).not.toBe(before);
+  release();
+  await expect(hero(page)).toHaveAttribute('data-hero-settled', '', { timeout: 60_000 });
+  await expect(hero(page)).toHaveAttribute('data-3d', 'on');
+  const st = await page.evaluate(() => {
+    const s = window.__teaHero.state;
+    return { night: document.documentElement.dataset.mode !== 'day', target: s.target, mix: s.mix,
+      pics: s.backdrop.layers.map((l) => [l.mat.uniforms.uNight.value.image.src, l.mat.uniforms.uDay.value.image.src]) };
+  });
+  // the scene's mode, its blend and the picture it shows are the page's (1 is night)
+  expect(st.target).toBe(st.night ? 1 : 0);
+  expect(st.mix).toBe(st.target);
+  for (const pair of st.pics) expect(pair[st.night ? 0 : 1]).toMatch(st.night ? /-night\./ : /-day\./);
+});
+

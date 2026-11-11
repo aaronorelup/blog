@@ -47,18 +47,23 @@ export async function loadBackdrop(manifest, night, anisotropy) {
     mesh.name = 'layer:' + spec.id;
     return { spec, mesh, mat, loaded: { night, day: !night } };
   }));
-  return {
+  let other = null;
+  const b = {
     layers,
-    // the other mode's images, fetched once the first frame is up
+    tried: false,
+    // the other mode's images, fetched once (after the first frame, or before it if the mode changed while loading);
+    // tried is true once that is over, loaded or not (a missing one leaves the first mode's picture in its place)
     later() {
-      return Promise.all(layers.map(async (l) => {
+      other ||= Promise.all(layers.map(async (l) => {
         const url = night ? l.spec.day : l.spec.night;
         if (url === (night ? l.spec.night : l.spec.day)) return;
         const t = await tex(url, anisotropy);
         l.mat.uniforms[night ? 'uDay' : 'uNight'].value = t;
-      })).catch(() => {});
+      })).catch(() => {}).then(() => { b.tried = true; });
+      return other;
     },
   };
+  return b;
 }
 
 export function paintBackdrop(backdrop, mix, fogColor) {
