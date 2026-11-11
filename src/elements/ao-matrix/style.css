@@ -35,6 +35,8 @@ ao-matrix img { max-width: 100%; height: auto; }
   gap: 10px 10px;
   align-items: start;
 }
+/* The table's rows and cells (role="row", role="cell") carry the roles only: the grid lays out what they hold. */
+.ao-matrix-tr, .ao-matrix-td { display: contents; }
 .ao-matrix-col {
   font: 600 11px/1.3 Karla, system-ui, sans-serif;
   text-transform: uppercase;
@@ -87,7 +89,7 @@ ao-matrix figcaption .ao-meta { display: block; font-size: 11.5px; color: var(--
 ao-matrix > figcaption { margin-top: 14px; font-size: 13px; }
 @media (max-width: 640px) {
   .ao-matrix-grid { grid-template-columns: repeat(var(--ao-cols), minmax(0, 1fr)); gap: 8px; }
-  .ao-matrix-corner, .ao-matrix-col { display: none; }
+  .ao-matrix-head, .ao-matrix-corner, .ao-matrix-col { display: none; }
   .ao-matrix-row { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; gap: 2px 8px; padding: 10px 0 0; border-top: 1px solid var(--pc-line); }
   .ao-matrix-cell:not(.none)::before {
     content: attr(data-col);

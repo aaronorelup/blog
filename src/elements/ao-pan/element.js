@@ -17,8 +17,11 @@ class AoPan extends HTMLElement {
     const views = (this.getAttribute('views') || '').split('|').map((v) => v.trim());
     imgs.forEach((img, i) => { img.dataset.label = views[i] || img.alt || 'View ' + (i + 1); });
 
+    // Two of these on a page are two regions with one name: each takes its caption's title first, so they differ.
+    const title = this.querySelector(':scope > figcaption b')?.textContent.trim();
     const stage = h('div', { class: 'ao-pan-stage', tabindex: '0', role: 'region',
-      'aria-label': 'Wide picture: drag, or use the arrow keys, to pan' }, h('div', { class: 'ao-pan-track' }, ...imgs));
+      'aria-label': (title ? title + '. ' : '') + 'Wide picture: drag, or use the arrow keys, to pan' },
+    h('div', { class: 'ao-pan-track' }, ...imgs));
     this.stage = stage;
 
     this.miniImg = h('img', { alt: '', draggable: 'false', 'data-no-zoom': '' });
