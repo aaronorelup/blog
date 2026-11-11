@@ -191,7 +191,9 @@ export function check(dist, listed = listedSlugs(), byClaude = claudeSlugs()) {
     ...[...listed].filter((s) => !isLive(s) && isBuilt(`/ledger/${s}/`))
       .map((s) => [read(`ledger/${s}/index.html`), `/ledger/${s}/`, byClaude.has(s)])
       .flatMap(([html, pathname, claude]) => [...shareUrlProblems(html, pathname), ...jsonLdProblems(html, pathname, claude)]),
-    ...sitemapPaths(read('sitemap.xml')).filter((p) => p.endsWith('/') && !isLivePath(p) && isBuilt(p))
+    // Not the course pages: other repos write their data (CLAUDE.md), and a picture of theirs must never stop a deploy.
+    ...sitemapPaths(read('sitemap.xml'))
+      .filter((p) => p.endsWith('/') && !isLivePath(p) && !p.startsWith('/courses/') && isBuilt(p))
       .flatMap((p) => shareImageProblems(read(`${p.slice(1)}index.html`), p, sizeOf)),
     ...baselineProblems(readBaseline(), isBuilt, redirectSourcesOf(read('_redirects'))),
   ];
