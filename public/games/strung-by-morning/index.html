@@ -7,6 +7,7 @@
 <meta name="description" content="A guitar with no strings has to sing by dawn. Spin its six strings from the sounds of one night in a small repair shop. A short musical game, made to be played once.">
 <meta name="theme-color" content="#101220">
 <meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23101220'/%3E%3Cpath d='M5 21c4-10 7-10 11 0s7 10 11 0' fill='none' stroke='%23F0C06A' stroke-width='2.4' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='8' r='3' fill='%23E2795C'/%3E%3C/svg%3E">
 <style>
   :root { --page: #101220; --tile: #201F2C; --gold: #F0C06A; --cream: #F2E7D5; --body: #C9BCA9; --soft: #9C917F; --coral: #E2795C; }
   * { box-sizing: border-box; }
@@ -57,12 +58,13 @@
     color: var(--cream); background: rgba(242, 231, 213, .06); border: 1px solid rgba(242, 231, 213, .35); }
   .btn:hover { border-color: var(--gold); color: var(--gold); }
   .btn.go { border-color: var(--coral); color: #fff; background: rgba(226, 121, 92, .22); }
-  #mute { position: absolute; top: max(8px, env(safe-area-inset-top)); right: max(8px, env(safe-area-inset-right)); width: 48px; height: 48px; padding: 0; border-radius: 50%;
-    background: rgba(32, 31, 44, .55); border: 1px solid rgba(242, 231, 213, .18); color: var(--cream); cursor: pointer; display: grid; place-items: center;
-    transition: border-color .2s ease, background .2s ease, transform .15s ease; touch-action: manipulation; }
-  #mute:hover { border-color: var(--gold); }
-  #mute:active { transform: scale(.94); }
-  #mute svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  #mute { position: absolute; top: max(2px, env(safe-area-inset-top)); right: max(2px, env(safe-area-inset-right)); width: 48px; height: 48px; padding: 0; border: 0; border-radius: 50%;
+    background: none; color: var(--cream); cursor: pointer; display: grid; place-items: center; touch-action: manipulation; }
+  #mute::before { content: ""; position: absolute; inset: 6px; border-radius: 50%; background: rgba(32, 31, 44, .6); border: 1px solid rgba(242, 231, 213, .2);
+    transition: border-color .2s ease, transform .15s ease; }
+  #mute:hover::before { border-color: var(--gold); }
+  #mute:active::before { transform: scale(.92); }
+  #mute svg { position: relative; width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
   #mute .off { display: none; stroke: var(--coral); }
   #mute[aria-pressed="true"] .on { display: none; }
   #mute[aria-pressed="true"] .off { display: inline; }
@@ -71,7 +73,7 @@
   #turn.on { display: block; }
   .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   noscript p { position: absolute; left: 10%; right: 10%; top: 40%; text-align: center; color: var(--cream); font-size: 18px; }
-  @media (prefers-reduced-motion: reduce) { #mute, #hint { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { #mute::before, #hint { transition: none; } }
 </style>
 </head>
 <body>
@@ -260,11 +262,16 @@ function ksRender(midi) {
   let want = sr / f - 0.5, L = Math.floor(want), d = want - L;
   if (d < 0.12) { L -= 1; d += 1; }
   const C = (1 - d) / (1 + d), g = Math.pow(10, -3 / (f * dur * 0.9));
-  const dl = new Float32Array(L), bright = midi < 48 ? 0.34 : midi < 60 ? 0.46 : midi < 72 ? 0.6 : 0.72;
-  let lp = 0, mean = 0;
-  for (let i = 0; i < L; i++) { lp += ((Math.random() * 2 - 1) - lp) * bright; dl[i] = lp; mean += lp; }
-  mean /= L;
-  for (let i = 0; i < L; i++) dl[i] -= mean;
+  /* the pluck itself: the shape a string takes when a finger lets go a fifth of the way along, so the low harmonics lead */
+  const dl = new Float32Array(L), fc = f * (midi < 48 ? 13 : midi < 60 ? 9 : midi < 72 ? 8.5 : 7), roll = midi < 48 ? 1.02 : midi < 60 ? 1.16 : 1.08, N = Math.min(Math.floor(L / 2) - 1, 70);
+  let top = 0;
+  for (let h = 1; h <= N; h++) {
+    const amp = Math.sin(h * Math.PI * 0.21) / Math.pow(h, roll) / (1 + Math.pow(h * f / fc, 2)), w = TAU * h / L;
+    if (Math.abs(amp) < 1e-4) continue;
+    for (let i = 0; i < L; i++) dl[i] += amp * Math.sin(w * i);
+  }
+  for (let i = 0; i < L; i++) { const v = Math.abs(dl[i]); if (v > top) top = v; }
+  for (let i = 0; i < L; i++) dl[i] /= top || 1;
   let idx = 0, prev = 0, apx = 0, apy = 0, peak = 0;
   for (let i = 0; i < n; i++) {
     const cur = dl[idx], v = g * 0.5 * (cur + prev);
@@ -376,10 +383,10 @@ function setMuted(m, quiet) {
 }
 /* the voices of the six strings */
 const VOX = {
-  clock: { gain: 0.6, lp: 1700, send: 0.1, pan: -0.08 },
-  rain: { gain: 0.36, lp: 3000, send: 0.3, pan: 0.22, dur: 0.75 },
-  moth: { gain: 0.44, lp: 7000, send: 0.36, pan: -0.18 },
-  answer: { gain: 0.25, lp: 9500, send: 0.62, pan: 0.34, dur: 1.6 },
+  clock: { gain: 0.44, lp: 2600, send: 0.1, pan: -0.08 },
+  rain: { gain: 0.33, lp: 3400, send: 0.3, pan: 0.22, dur: 0.75 },
+  moth: { gain: 0.52, lp: 7000, send: 0.36, pan: -0.18 },
+  answer: { gain: 0.32, lp: 9500, send: 0.62, pan: 0.34, dur: 1.6 },
   open: { gain: 0.4, lp: 5200, send: 0.3 },
 };
 
@@ -395,7 +402,7 @@ function resize() {
   ox = (cssW - 360 * sc) / 2; oy = (cssH - 640 * sc) * 0.4;
   XMIN = -ox / sc; XMAX = (cssW - ox) / sc; YMIN = -oy / sc; YMAX = (cssH - oy) / sc;
   domEl.style.transform = 'translate(' + ox.toFixed(2) + 'px,' + oy.toFixed(2) + 'px) scale(' + sc.toFixed(4) + ')';
-  $('turn').classList.toggle('on', sc < 0.72 && cssW > cssH);
+  $('turn').classList.toggle('on', sc < 0.72 && cssW > cssH && !!window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
 }
 
 const LAMP = { x: 180, y: 186 };
@@ -404,7 +411,7 @@ const CLK = { x: 300, y: 196 }, PIV = { x: 300, y: 219 }, PLEN = 50;
 const GTR = { x: 108, y: 440 };
 const AIR = { x0: 34, x1: 326, y0: 208, y1: 384 };
 const WIRE = { x0: 44, x1: 316, y: 92, sag: 7 };
-const RIB = { x: 20, y: 524, w: 320, h: 40 };
+const RIB = { x: 20, y: 522, w: 320, h: 44 };
 const SADDLE = -36, NUT = 190, SLEN = NUT - SADDLE;
 const PEGX = [203, 215, 227, 227, 215, 203];
 const pegPos = (i) => ({ x: GTR.x + PEGX[i], y: GTR.y + (i < 3 ? -21.5 : 21.5) });
@@ -450,7 +457,7 @@ function transport(dt) {
 function schedStep(abs, off) {
   const s = ((abs % LOOP) + LOOP) % LOOP;
   if (M.tick && s % 2 === 0) {
-    noiseHit(off, (s / 2) % 2 ? 1850 : 2500, 5, 0.035, 0.05, 0.3, 0.08);
+    noiseHit(off, (s / 2) % 2 ? 1850 : 2500, 5, 0.05, 0.05, 0.3, 0.08);
     after(off, () => { F.tickFlash = 1; });
   }
   for (const L of LAYERS) {
@@ -467,7 +474,7 @@ function fire(L, n, off) {
     case 'kettle': pad(n.p, off, (n.l || 4) * STEP, 0.075); break;
     case 'moth': pluck(n.p, off, VOX.moth); break;
     case 'answer': pluck(n.p, off, VOX.answer); break;
-    case 'birds': bell(n.p, off, 0.085); break;
+    case 'birds': bell(n.p, off, 0.12); break;
   }
   after(off, () => onSound(L, n));
 }
@@ -486,12 +493,21 @@ function onSound(L, n) {
 function bobPos() { return { x: PIV.x + Math.sin(F.pendAng) * PLEN, y: PIV.y + Math.cos(F.pendAng) * PLEN }; }
 
 /* recording: one pass of the loop, starting from the first thing the player does */
-const R = { layer: '', start: -1, end: -1, auto: false };
-function recBegin(layer) { R.layer = layer; R.start = -1; R.end = -1; R.auto = false; S.layers[layer] = []; }
+const R = { layer: '', start: -1, end: -1, auto: false, open: false };
+function recBegin(layer) { R.layer = layer; R.start = -1; R.end = -1; R.auto = false; R.open = true; S.layers[layer] = []; }
 function recArm(abs) { if (R.start < 0) { R.start = abs; R.end = abs + LOOP; } }
 const recArmed = () => R.start >= 0;
 const recDone = () => R.start >= 0 && M.pos >= R.end;
-function recEnd() { R.start = -1; R.end = -1; R.auto = false; }
+function recEnd() { R.start = -1; R.end = -1; R.auto = false; R.open = false; }
+/* the moment a layer is kept: its marks light up along the ribbon and its string rings gold */
+function keptFlash(L) {
+  const i = LAYERS.indexOf(L);
+  for (const n of S.layers[L]) rib[L][n.s] = G.t;
+  vib[i] = 1; glow[L] = 1;
+  for (let k = 0; k <= 10; k++) { const xl = lerp(SADDLE, NUT, k / 10); spark(GTR.x + xl, GTR.y + strY(i, xl), 2, C_GOLD, 26); }
+  ring(RIB.x + RIB.w / 2, RIB.y + RIB.h / 2, C_GOLD, 20, 170, 0.8);
+  tone(0, 1174.7, 1174.7, 0.5, 0.02, 'sine', 0.6); tone(0.11, 1760, 1760, 0.7, 0.018, 'sine', 0.6);
+}
 const recFrac = () => (R.start < 0 ? 0 : clamp((M.pos - R.start) / LOOP, 0, 1));
 function noteAt(L, s) { const a = S.layers[L]; for (let i = 0; i < a.length; i++) if (a[i].s === s) return a[i]; return null; }
 function barEmpty(L, b) { return !S.layers[L].some((n) => (n.s >> 3) === b); }
@@ -967,7 +983,7 @@ function drawThread() {
   ctx.fillStyle = g; circ(T.x, T.y, 20); ctx.fill();
   ctx.fillStyle = coral(1); circ(T.x, T.y, 4.2 + p * 0.9); ctx.fill();
   ctx.strokeStyle = rgba(C_CREAM, 0.9); ctx.lineWidth = 1.1; star4(T.x, T.y, 8 + p * 3);
-  if (T.stage === 'wait') cue(T.x, T.y, 15);
+  if (T.stage === 'wait' || T.stage === 'drift') cue(T.x, T.y, 15);
 }
 function drawWaves() {
   const a = F.waveA;
@@ -1095,14 +1111,15 @@ function drawRibbon() {
     for (let i = 0; i < notes.length; i++) {
       const n = notes[i], x = X(n.s), c = colFor(L, n.s), f = clamp(1 - (G.t - rib[L][n.s]) / 0.55, 0, 1), big = 1 + f * 0.6;
       ctx.fillStyle = c; ctx.strokeStyle = c;
-      if (L === 'clock') { circ(x, y0 + 35.5, (n.p > 40 ? 1.4 : 2) * big); ctx.fill(); }
-      else if (L === 'rain') { const yy = y0 + 30.5 - (n.f || 0) * 0.33; ctx.lineWidth = 1.3 * big; line(x + 1, yy - 2.4, x - 1, yy + 1.6); }
-      else if (L === 'kettle') { ctx.lineWidth = 2.2 * big; for (let k = 0; k < (n.l || 1); k++) { const xa = X((n.s + k) % LOOP); line(xa - px * 0.42, y0 + 24.5, xa + px * 0.42 - (k === (n.l || 1) - 1 ? 2 : 0), y0 + 24.5); } }
-      else if (L === 'moth') { const yy = y0 + 20.5 - Math.max(0, SCALE.indexOf(n.p)) * 1.25; circ(x, yy, 1.7 * big); ctx.fill(); }
-      else if (L === 'answer') { const yy = y0 + 8; ctx.beginPath(); ctx.moveTo(x, yy - 2.6 * big); ctx.lineTo(x + 2.2 * big, yy); ctx.lineTo(x, yy + 2.6 * big); ctx.lineTo(x - 2.2 * big, yy); ctx.closePath(); ctx.fill(); }
-      else { const yy = y0 + 4.5; ctx.lineWidth = 1.2 * big; ctx.beginPath(); ctx.moveTo(x - 2.6, yy - 1.6); ctx.lineTo(x, yy + 1.2); ctx.lineTo(x + 2.6, yy - 1.6); ctx.stroke(); }
+      if (L === 'clock') { circ(x, y0 + 39, (n.p > 40 ? 1.6 : 2.3) * big); ctx.fill(); }
+      else if (L === 'rain') { const yy = y0 + 33.5 - (n.f || 0) * 0.36; ctx.lineWidth = 1.5 * big; line(x + 1.2, yy - 2.8, x - 1.2, yy + 1.8); }
+      else if (L === 'kettle') { ctx.lineWidth = 2.2 * big; for (let k = 0; k < (n.l || 1); k++) { const xa = X((n.s + k) % LOOP); line(xa - px * 0.42, y0 + 26, xa + px * 0.42 - (k === (n.l || 1) - 1 ? 2 : 0), y0 + 26); } }
+      else if (L === 'moth') { const yy = y0 + 22 - Math.max(0, SCALE.indexOf(n.p)) * 1.3; circ(x, yy, 2 * big); ctx.fill(); }
+      else if (L === 'answer') { const yy = y0 + 9.5; ctx.beginPath(); ctx.moveTo(x, yy - 3 * big); ctx.lineTo(x + 2.5 * big, yy); ctx.lineTo(x, yy + 3 * big); ctx.lineTo(x - 2.5 * big, yy); ctx.closePath(); ctx.fill(); }
+      else { const yy = y0 + 4.5; ctx.lineWidth = 1.3 * big; ctx.beginPath(); ctx.moveTo(x - 3, yy - 1.8); ctx.lineTo(x, yy + 1.4); ctx.lineTo(x + 3, yy - 1.8); ctx.stroke(); }
     }
   }
+  if (F.holding) { ctx.strokeStyle = coral(0.95); ctx.lineWidth = 2.6; const hn = clamp(Math.floor(M.pos - F.holding.q) + 1, 1, 12); for (let k = 0; k < hn; k++) { const xa = X((F.holding.s + k) % LOOP); line(xa - px * 0.42, y0 + 26, xa + px * 0.42, y0 + 26); } }
   if (!REDUCED && M.run) { ctx.strokeStyle = gold(0.55); ctx.lineWidth = 1.2; line(x0 + PH, y0 + 2, x0 + PH, y0 + h - 2); }
   if (recL) { ctx.strokeStyle = coral(0.95); ctx.lineWidth = 2.4; line(x0 + 3, y0 + h - 1.6, x0 + 3 + (w - 6) * recFrac(), y0 + h - 1.6); }
   ctx.restore();
@@ -1170,10 +1187,12 @@ function* prompt(o) {
   WATCH = !o.acted;
   P = null; setHint('');
 }
-function poke() {
+function poke(missed) {
   WATCH = false;
   if (!P) return;
-  P.idle = 0; P.acted = true;
+  P.acted = true;
+  if (missed) return;
+  P.idle = 0;
   if (P.stage > 0) { P.stage = 0; if (P.onPoke) P.onPoke(); }
 }
 function tickPrompt(dt) {
@@ -1210,7 +1229,7 @@ function threadBegin(i, src) {
   const s = src(); T.x = s.x; T.y = s.y;
 }
 function threadFly() {
-  if (T.stage !== 'wait' && T.stage !== 'drag' && T.stage !== 'back') return;
+  if (T.stage !== 'wait' && T.stage !== 'drag' && T.stage !== 'back' && T.stage !== 'drift') return;
   T.stage = 'fly'; T.fx = T.x; T.fy = T.y; T.ft = 0; T.grab = false;
   tone(0, 1320, 1980, 0.22, 0.035, 'sine', 0.5);
 }
@@ -1223,10 +1242,11 @@ function threadAttach() {
   vib[T.i] = 0.8;
 }
 function threadDown(x, y) {
-  if (T.stage !== 'wait') return;
+  if (T.stage !== 'wait' && T.stage !== 'drift') return true;
   const peg = pegPos(T.i);
-  if (dist(x, y, T.x, T.y) < 42) { T.stage = 'drag'; T.grab = true; T.moved = 0; T.px = x; T.py = y; tone(0, 1760, 1760, 0.18, 0.03, 'sine', 0.5); }
-  else if (dist(x, y, peg.x, peg.y) < 34) threadFly();
+  if (dist(x, y, T.x, T.y) < 42) { T.stage = 'drag'; T.grab = true; T.moved = 0; T.px = x; T.py = y; tone(0, 1760, 1760, 0.18, 0.03, 'sine', 0.5); return true; }
+  if (dist(x, y, peg.x, peg.y) < 34) { threadFly(); return true; }
+  return false;
 }
 function threadMove(x, y) {
   if (T.stage !== 'drag') return;
@@ -1245,7 +1265,12 @@ function updThread(dt) {
   if (!T.on) return;
   const s = threadSrc(), peg = pegPos(T.i);
   if (T.stage === 'wait') { T.x = s.x; T.y = s.y; }
-  else if (T.stage === 'fly') {
+  else if (T.stage === 'drift') {
+    /* nobody came for it, so it wanders over by itself */
+    T.ft += dt / (WATCH ? 5 : 16); const k = sm(T.ft);
+    T.x = lerp(T.fx, peg.x, k) + (REDUCED ? 0 : Math.sin(G.t * 1.7) * 7 * (1 - k)); T.y = lerp(T.fy, peg.y, k) - Math.sin(k * Math.PI) * 30;
+    if (T.ft >= 1) threadAttach();
+  } else if (T.stage === 'fly') {
     T.ft += dt / 0.55; const k = eIO(T.ft);
     T.x = lerp(T.fx, peg.x, k); T.y = lerp(T.fy, peg.y, k) - Math.sin(k * Math.PI) * 26;
     if (T.ft >= 1) threadAttach();
@@ -1294,7 +1319,8 @@ function* ritual(i, src, lines) {
   threadBegin(i, src);
   say(lines[0]);
   yield* prompt({ kind: 'thread', keys: 'Space brings it over', hot: { peg: i }, at: () => ({ x: T.x, y: T.y, r: 20 }),
-    ghost: gDrag(() => ({ x: T.x, y: T.y }), () => pegPos(i), 2.8), complete: threadFly, done: () => T.stage === 'on' || T.stage === 'done' });
+    ghost: gDrag(() => ({ x: T.x, y: T.y }), () => pegPos(i), 2.8),
+    auto: () => { if (T.stage === 'wait') { T.stage = 'drift'; T.fx = T.x; T.fy = T.y; T.ft = 0; } }, complete: threadFly, done: () => T.stage === 'on' || T.stage === 'done' });
   yield 0.45;
   say(lines[1]);
   const peg = pegPos(i);
@@ -1318,7 +1344,7 @@ function freePluck(x, y) {
   return true;
 }
 function pulseTap() {
-  if (!M.run) return;
+  if (!M.run || !R.open) return;
   const q = Math.round(M.pos);
   recArm(q);
   if (q >= R.end) return;
@@ -1326,7 +1352,7 @@ function pulseTap() {
   if (!noteAt('clock', s)) S.layers.clock.push({ s, p, skip: q });
   pluck(p, 0, VOX.clock); onSound('clock', { s, p });
 }
-function rainArm() { if (recArmed() || !M.run) return; recArm(Math.ceil(M.pos)); M.on.rain = true; M.from.rain = R.end; }
+function rainArm() { if (recArmed() || !M.run || !R.open) return; recArm(Math.ceil(M.pos)); M.on.rain = true; M.from.rain = R.end; }
 function slideSet(x, down) {
   if (!down) { F.fingerDown = false; return; }
   const lx = x - GTR.x;
@@ -1357,7 +1383,7 @@ function rainFill() {
   }
 }
 function holdStart(src) {
-  if (F.holding || !M.run) return;
+  if (F.holding || !M.run || !R.open) return;
   const q = Math.round(M.pos);
   recArm(q);
   if (q >= R.end) return;
@@ -1459,7 +1485,7 @@ function harmonyAt(s) {
   return SCALE[clamp(base + 2, 0, SCALE.length - 1)];
 }
 function answerTap(x, y) {
-  if (!M.run) return;
+  if (!M.run || !R.open) return;
   const q = Math.round(M.pos);
   recArm(q);
   if (q >= R.end) return;
@@ -1498,6 +1524,7 @@ function latchTap(x, y) {
   let best = -1, bd = 64;
   for (let j = 0; j < 2; j++) { if (F.latchT[j]) continue; const d = dist(x, y, GTR.x + LATCH_X[j], GTR.y + 64); if (d < bd) { bd = d; best = j; } }
   if (best >= 0) latchShut(best);
+  return best >= 0;
 }
 function latchShut(j) { if (F.latchT[j]) return; F.latchT[j] = 1; noiseHit(0, 2100, 5, 0.09, 0.05, j ? 0.2 : -0.2, 0.12); tone(0, 320, 180, 0.07, 0.06, 'triangle', 0.1); spark(GTR.x + LATCH_X[j], GTR.y + 64, 4, C_CREAM, 28); }
 function latchNext() { for (let j = 0; j < 2; j++) if (!F.latchT[j]) { latchShut(j); return; } }
@@ -1586,7 +1613,7 @@ function* beatClock() {
   yield* prompt({ kind: 'pulse', keys: 'Space plucks', hot: { string: 0 }, at: () => ({ x: sx, y: sy, r: 22 }),
     ghost: () => { const d = ((M.pos % 8) + 8) % 8, down = d < 0.5 || d > 7.5 || Math.abs(d - 4) < 0.5 || Math.abs(d - 7) < 0.5; return { x: sx + (down ? 0 : 5), y: sy + (down ? 0 : 9), down }; },
     auto: () => { R.auto = true; }, onPoke: () => { R.auto = false; }, hold: () => recArmed() && !R.auto, done: recDone, tick: armedSay('Keep going. Four bars, and the shop keeps them.') });
-  M.hook = null; fillClock(); recEnd();
+  M.hook = null; fillClock(); recEnd(); keptFlash('clock');
   say('It kept that.');
   yield stepsWait(14); say('Your pulse will go round all night.');
   yield stepsWait(14);
@@ -1604,7 +1631,7 @@ function* beatRain() {
     ghost: (u) => { const x = R.auto ? gx(Math.max(1, F.fretI)) : lerp(gx(1), gx(5), 0.5 - 0.5 * Math.cos(u * 1.5)); return { x, y: GTR.y + strY(1, x - GTR.x), down: true }; },
     auto: () => { R.auto = true; rainArm(); }, onPoke: () => { if (R.auto) { R.auto = false; F.fingerDown = false; } },
     hold: () => recArmed() && !R.auto, done: recDone, tick: armedSay('Wherever your finger is, that is the note.') });
-  M.hook = null; F.rainLive = false; F.fingerDown = false; rainFill(); M.on.rain = true; M.from.rain = 0; recEnd();
+  M.hook = null; F.rainLive = false; F.fingerDown = false; rainFill(); M.on.rain = true; M.from.rain = 0; recEnd(); keptFlash('rain');
   say('It kept your rain.');
   yield stepsWait(14); say('Clock and rain, going round together.');
   yield stepsWait(14);
@@ -1620,7 +1647,7 @@ function* beatKettle() {
     ghost: () => { const down = (((M.pos % 8) + 8) % 8) < 6; return { x: 52, y: 252 + (down ? 0 : 8), down }; },
     auto: () => { R.auto = true; }, onPoke: () => { if (R.auto) { R.auto = false; if (F.holding && F.holding.src === 'ghost') holdEnd(); } },
     hold: () => recArmed() && !R.auto, done: recDone, tick: armedSay('Let go, then hold again. Long notes, like breathing.') });
-  M.hook = null; holdEnd(); kettleFill(); recEnd();
+  M.hook = null; holdEnd(); kettleFill(); recEnd(); keptFlash('kettle');
   say('It kept your breath.');
   yield stepsWait(14); say('Three strings. The shop is warming up.');
   yield stepsWait(14);
@@ -1640,7 +1667,7 @@ function* beatMoth() {
   yield stepsWait(13);
   say('Draw again as often as you like. Tap the lamp to keep it.');
   yield* prompt({ kind: 'keep', keys: 'Space keeps it. Up or Down draws again', hot: { lamp: 1 }, at: () => ({ x: LAMP.x, y: LAMP.y - 8, r: 30 }), ghost: gTap(LAMP.x, LAMP.y - 6), act: keepIt, complete: keepIt, done: () => F.kept && !F.drawing });
-  W.rays = 0.35;
+  W.rays = 0.35; keptFlash('moth');
   say('That is your melody. Nobody else has it.');
   yield stepsWait(16); say('Listen to it ride on the rest.');
   yield stepsWait(14);
@@ -1655,7 +1682,7 @@ function* beatAnswer() {
   yield* prompt({ kind: 'answer', keys: 'Space taps', hot: { room: 1 }, at: () => ({ x: 180, y: 300, r: 70 }),
     ghost: (u) => { const i = Math.floor(u / 1.6) % SPOTS.length, c = (u % 1.6) / 1.6, s = SPOTS[i]; return { x: s[0], y: s[1] + (c < 0.3 ? (0.3 - c) * 40 : 0), down: c > 0.32 && c < 0.6 }; },
     auto: () => { R.auto = true; }, onPoke: () => { R.auto = false; }, hold: () => recArmed() && !R.auto, done: recDone, tick: armedSay('Each tap, the shop sings a note above your melody.') });
-  M.hook = null; answerFill(); recEnd();
+  M.hook = null; answerFill(); recEnd(); keptFlash('answer');
   say('The room answered you.');
   yield stepsWait(14); say('Five strings. One to go.');
   yield stepsWait(14);
@@ -1674,7 +1701,7 @@ function* beatBirds() {
     auto: () => { if (!F.birdMoved) { birdStep(1, 7); birdStep(3, 18); F.birdMoved = false; } },
     act: keepIt, complete: keepIt, done: () => F.kept,
     tick: () => { if (!told && (F.birdMoved || G.t - t0 > 14)) { told = true; say('Tap the lamp when it sounds right.'); } } });
-  F.dragBird = -1;
+  F.dragBird = -1; keptFlash('birds');
   say('Six strings. All of them yours.');
   yield stepsWait(16); say('Listen. This is the whole night.');
   yield stepsWait(22);
@@ -1946,12 +1973,14 @@ function draw() {
 let ptr = null, lastXY = { x: 0, y: 0 }, kbStr = 0;
 function toStage(e) { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left - ox) / sc, y: (e.clientY - r.top - oy) / sc }; }
 function onDown(x, y) {
-  poke();
   const kind = P ? P.kind : '';
+  const sure = !(kind === 'lamp' || kind === 'thread' || kind === 'birds' || kind === 'lid' || kind === 'latch' || kind === 'frame' || kind === '');
+  let hit = true;
+  if (sure) poke();
   switch (kind) {
     case 'gate': P.act(); break;
-    case 'lamp': if (nearLamp(x, y)) P.act(); else freePluck(x, y); break;
-    case 'thread': threadDown(x, y); break;
+    case 'lamp': hit = nearLamp(x, y); if (hit) P.act(); else freePluck(x, y); break;
+    case 'thread': hit = threadDown(x, y); break;
     case 'wind': windDown(x, y); break;
     case 'pulse': pulseTap(); break;
     case 'slide': slideSet(x, true); break;
@@ -1959,13 +1988,15 @@ function onDown(x, y) {
     case 'draw': drawStart(x, y); break;
     case 'keep': if (nearLamp(x, y)) F.lampTap = { x, y }; else drawStart(x, y); break;
     case 'answer': answerTap(x, y); break;
-    case 'birds': if (!birdDown(x, y) && nearLamp(x, y)) P.act(); break;
-    case 'lid': if (y > 366 && y < 520) P.act(); break;
-    case 'latch': latchTap(x, y); break;
+    case 'birds': hit = birdDown(x, y); if (!hit && nearLamp(x, y)) { hit = true; P.act(); } break;
+    case 'lid': hit = y > 366 && y < 520; if (hit) P.act(); break;
+    case 'latch': hit = latchTap(x, y); break;
     case 'strum': F.strumFrom = { x, y }; break;
-    case 'frame': if (x > FRAME.x - 16 && x < FRAME.x + FRAME.w + 16 && y > FRAME.y - 18 && y < FRAME.y + FRAME.h + 24) P.act(); break;
-    default: freePluck(x, y);
+    case 'frame': hit = x > FRAME.x - 16 && x < FRAME.x + FRAME.w + 16 && y > FRAME.y - 18 && y < FRAME.y + FRAME.h + 24; if (hit) P.act(); break;
+    default: hit = freePluck(x, y);
   }
+  if (!sure) poke(!hit);
+  if (!hit || kind === 'wind' || kind === 'slide' || kind === 'hold') parts.push({ k: 1, x, y, t: 0, life: 0.34, col: C_CREAM, r0: 3, r1: 13 });
 }
 function onMove(x, y) {
   if (P) P.idle = 0;
