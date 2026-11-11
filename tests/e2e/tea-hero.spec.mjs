@@ -16,6 +16,11 @@ const hero = (page) => page.locator('[data-tea-hero]');
 // boot.js has decided: the scene is on (data-3d) or kept off with its reason (data-3d-off)
 const decided = (page, timeout = 15_000) => expect.poll(() => hero(page).evaluate((s) => s.dataset['3d'] || s.dataset['3dOff'] || ''),
   { timeout }).not.toBe('');
+// the hero will change no layout by itself any more: kept off, or pinned with its first frame up
+const settled = (page, timeout = 60_000) => expect(hero(page)).toHaveAttribute('data-hero-settled', '', { timeout });
+// The scene's frame loop held through its own hook, where it runs (the pin, the tall section and the anchors stay as
+// they are): under a software GPU on a busy box every frame is a long task, and polls and scrolls starve behind them.
+const holdScene = (page) => page.evaluate(() => window.__teaHero && window.__teaHero.hold(true));
 // Holds every request matching pattern (a page.route glob) until release() is called, as a slow network would.
 async function gate(page, pattern) {
   let release;
@@ -85,8 +90,10 @@ test('tea-hero-4 where WebGL runs, the scene mounts and pins with no console err
   await expect(page.locator('[data-tea-stage][data-ready] canvas')).toHaveCount(1, { timeout: 60_000 });
   const layout = await hero(page).getAttribute('data-hero-layout');
   expect(layout).toMatch(/^(dock|flow)$/);
-  // the section is taller than the screen and what sticks stays at the top while the scroll plays
+  // the section is taller than the screen and what sticks stays at the top while the scroll plays (layout, not
+  // drawing: the loop is held so the polls are not starved)
   const sticky = layout === 'dock' ? '.tea-hero-pin' : '[data-tea-stage]';
+  await holdScene(page);
   await page.evaluate(() => {
     const s = document.querySelector('[data-tea-hero]');
     scrollTo({ top: (s.offsetHeight - innerHeight) / 2, behavior: 'instant' });
@@ -121,12 +128,14 @@ test('tea-hero-5 on a phone the day/night switch is on screen and works while th
 
 test('tea-hero-6 the skip link in the title box takes the keyboard past the hero to the chapters', async ({ page, browserName }) => {
   await page.goto('/tea/?hero=on');
-  await decided(page, 30_000);
+  await settled(page);
+  await holdScene(page);
   await page.keyboard.press('Tab');
   await expect(page.locator('.tea-skip')).toBeFocused();
   await page.keyboard.press('Enter');
+  // the page's own smooth scroll, past the pinned section
   await expect.poll(() => page.locator('#chapters').evaluate((m) => Math.round(m.getBoundingClientRect().top)),
-    { timeout: 20_000 }).toBe(0);
+    { timeout: 30_000 }).toBe(0);
   // Chromium moves focus to the target; WebKit only moves the place the next Tab starts from
   if (browserName === 'chromium') await expect(page.locator('#chapters')).toBeFocused();
 });
@@ -134,14 +143,11 @@ test('tea-hero-6 the skip link in the title box takes the keyboard past the hero
 test('tea-hero-7 each chapter link in the title box lands on its chapter', async ({ page }) => {
   test.setTimeout(150_000);
   await page.goto('/tea/?hero=on');
-  await decided(page, 30_000);
-  // With the scene up, its frame loop is held (its own hook; the pin, the tall section and the anchors stay as they
-  // are): six long smooth scrolls under a software GPU on a busy box otherwise take minutes. tea-hero-6 lands with
-  // the scene drawing.
-  if (await hero(page).getAttribute('data-3d') === 'on') {
-    await page.waitForFunction(() => window.__teaHero, null, { timeout: 60_000 });
-    await page.evaluate(() => window.__teaHero.hold(true));
-  }
+  await settled(page);
+  // The scene's loop held and the page's smooth scrolling off: six long smooth scrolls under a software GPU on a busy
+  // box otherwise take minutes, and where each link lands is the point here. tea-hero-6 lands with the smooth scroll.
+  await holdScene(page);
+  await page.addStyleTag({ content: 'html { scroll-behavior: auto !important; }' });
   const links = page.locator('.tea-hero-box .tea-toc a');
   const n = await links.count();
   expect(n).toBeGreaterThan(0);
@@ -318,6 +324,41 @@ test('tea-hero-15 the poster and the scene take the same shape of frame, a squar
       portrait: window.__teaHero.state.camRig.portrait,
     }));
     expect(got, `${width}x${height}`).toEqual({ tall: width <= height, portrait: width <= height });
+  }
+});
+
+test('tea-hero-16 a missing manifest or model keeps the poster, the hero one screen', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  for (const missing of ['**/tea/hero/manifest.json', '**/*.glb']) {
+    await page.unrouteAll();
+    await page.route(missing, (route) => route.fulfill({ status: 404, body: '' }));
+    await page.goto('/tea/?hero=on');
+    await expect(hero(page)).toHaveAttribute('data-3d-off', 'failed', { timeout: 60_000 });
+    await expect(hero(page)).toHaveAttribute('data-hero-settled', '');
+    await expect(hero(page)).not.toHaveAttribute('data-3d', /./);
+    await posterShown(page);
+    // the static hero (the pinned one is three screens): the box and its padding, or one screen
+    expect(await hero(page).evaluate((s) => s.offsetHeight < 2 * innerHeight), missing).toBe(true);
+  }
+  expect(errors).toEqual([]);
+});
+
+test('tea-hero-17 Save-Data and a small device keep the poster and fetch none of the 3D', async ({ context }) => {
+  for (const [why, init] of [
+    ['save data', () => Object.defineProperty(Navigator.prototype, 'connection',
+      { configurable: true, get: () => ({ saveData: true, effectiveType: '4g' }) })],
+    ['small device', () => Object.defineProperty(Navigator.prototype, 'deviceMemory', { configurable: true, get: () => 1 })],
+  ]) {
+    const page = await context.newPage();
+    await page.addInitScript(init);
+    const seen = asked3d(page);
+    await page.goto('/tea/');   // not ?hero=on, which skips these two checks
+    await expect(hero(page)).toHaveAttribute('data-3d-off', why, { timeout: 30_000 });
+    await page.waitForTimeout(1500);
+    await posterShown(page);
+    expect(seen, why).toEqual([]);
+    await page.close();
   }
 });
 
