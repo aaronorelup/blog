@@ -160,8 +160,8 @@ Ultralytics pose, YOLOE-26, CoTracker3, SAM 2.1 or OpenPose, so those formats ar
 
 - Goldstein and Moses 2018 (GoPro on the guitar, note ground truth); GuiFiR-Synth / GuiFiR-Vid (2026, no link found;
   corrected in gap round 2: https://github.com/kmu-ee-ailab/guifir_dataset, data "for non-commercial research,
-  education, and reproducibility of the GuiFiR work"; per-frame
-  tablature, capo position, and on val/test fretboard corners plus five fingertips);
+  education, and reproducibility of the GuiFiR work" (quoted by the round-2 verifier; it said "data for
+  non-commercial research"); per-frame tablature, capo position, and on val/test fretboard corners plus five fingertips);
   GAPS (audio + score + MIDI, YouTube performance-video links, CC BY-NC-SA 4.0 on Zenodo; verify: "license: mit" on its
   Hugging Face card); Ego-Exo4D (Music scenario, 3D hand
   pose, signed license); Guitar-TECHS has no video in its release; Ultralytics Hand Keypoints (generic hands,
@@ -952,7 +952,8 @@ Ultralytics pose, YOLOE-26, CoTracker3, SAM 2.1 or OpenPose, so those formats ar
   large-scale detection and grounding datasets that collectively provide diverse object categories, language
   grounding, and rich visual variability. In practice, three public sources are commonly used: Objects365 (object
   detection with bounding boxes), GQA (grounding-style annotations aligned with language), and Flickr30k Entities
-  (phrase grounding)." and, in the captions of its Tables 1 and 2, "Models are trained on Objects365v1, GQA, and
+  (phrase grounding)." and, in the captions of its Tables 1 and 2 (round-2 verifier; it said "under its Table 1"),
+  "Models are trained on Objects365v1, GQA, and
   Flickr30k datasets." The
   original YOLOE paper (Wang et al., "YOLOE: Real-Time Seeing Anything", arXiv 2503.07465, submitted 10 Mar 2025, PDF
   https://arxiv.org/pdf/2503.07465): "Data. We follow [5] to utilize detection and grounding datasets, including
@@ -1286,7 +1287,8 @@ Each entry: what the source itself says, and whether code or weights are linked 
   clone of the first: HEAD `be19068fb2f4b40ab259997d10cdcaa1afe45f3a`, 2026-11-07, "Merge pull request #27 from
   brown-ivl/hf-data-links", 67 files, no LICENSE file in the tree). Data: Hugging Face dataset `freddie007/GigaHands`
   (not gated, last modified 2026-11-07); the repository README's news line of 2026-11-07
-  (https://raw.githubusercontent.com/Kristen-Z/GigaHands/main/README.md, as are the README quotes below): "It includes hand poses, object poses and
+  (https://raw.githubusercontent.com/Kristen-Z/GigaHands/main/README.md, as are the README quotes below; URL added
+  by the round-2 verifier): "It includes hand poses, object poses and
   meshes, multiview RGB videos (1.06 TB), text annotations, demo data, and checkpoints." Hand poses come as MANO
   parameters and 2D / 3D keypoints per session; using the repository's tools needs the MANO model files (README:
   "Download [mano](https://mano.is.tue.mpg.de/download.php) models and place the `MANO_*.pkl` files under
@@ -1301,7 +1303,7 @@ Each entry: what the source itself says, and whether code or weights are linked 
     different chords." In `annotations_v2.jsonl` (18,539,852 bytes, 13,787 rows; downloaded, counted and deleted), 119
     rows mention "ukulele" in their `clarify_annotation` or `description`, in 11 capture sessions whose names contain
     "instrument" (for example `p003-instrument`); 109 of them give a frame span (`end_frame_id` minus
-    `start_frame_id`: 65 to 868 frames each, 21,023 frames in all) and 10 run to the end of their sequence
+    `start_frame_id`, definition added by the round-2 verifier: 65 to 868 frames each, 21,023 frames in all) and 10 run to the end of their sequence
     (`end_frame_id` -1). The annotations are text per clip; whether
     the 3D object poses include the ukulele, whether any fret or string labels exist, and how the ukulele clips look
     on video were not checked (the videos are part of the 1.06 TB set; not downloaded). No guitar appears in the
@@ -1613,3 +1615,6 @@ rendered PDF page because its text layer drops ligatures.
   annotations; CC BY-NC 4.0.
 - V5 and V6 (runs, `trials.md` "Gap round 2"): Handoff fact 9 now points at the alignment run r0609.
 - Judging words: none added (searched in the new text for the words listed in `GAPS.md`).
+- (round-2 verifier, 2026-11-11) Every quote and source fact added above was fetched again and found verbatim; six
+  wordings were corrected in place, each marked "round-2 verifier". What was checked and changed is in `trials.md`,
+  "Verification log (verify-gapfill-video-hands-fretboard, round 2, 2026-11-11)".

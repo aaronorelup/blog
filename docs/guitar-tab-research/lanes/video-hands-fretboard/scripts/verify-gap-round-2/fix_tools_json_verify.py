@@ -43,7 +43,7 @@ t['license']['weights'] = {
 t = tool('OWLv2 (google/owlv2-base-patch16-ensemble)')
 old = "because its 619,918,824-byte weights were over the box's 200 MB download limit."
 assert t['what'].endswith(old)
-t['what'] = t['what'] + " (gap round 2: it also ran on the box's CPU with transformers 5.22.2, runs r0632 and r0634 failed, r0639 gave scored boxes; the weights were fetched for that run and deleted after it.)"
+t['what'] = t['what'] + " (added by the round-2 verifier: in gap round 2 it also ran on the box's CPU with transformers 5.22.2; runs r0632 and r0634 failed, r0639 gave scored boxes; the weights were fetched for that run and deleted after it.)"
 
 d['updated'] = d['updated'].rstrip(')') + '; verifier edits: scripts/verify-gap-round-2/fix_tools_json_verify.py)'
 open(path, 'w', encoding='utf-8').write(json.dumps(d, indent=1, ensure_ascii=False))

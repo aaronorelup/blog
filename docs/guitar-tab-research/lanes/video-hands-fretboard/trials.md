@@ -1310,3 +1310,124 @@ Still UNVERIFIED: which R3b fret numbering is right (step 9 of `for-aaron.md` se
 appeared; the text of the r0057/r0061 import error and the trial session's permission refusals (no log file kept;
 the ledger has exit 1 for r0057/r0061, and `apt-gles.log` shows libgles2 newly installed at 21:02); whether the
 WiLoR detector's `left`/`right` names are its output classes (read from the pickle's strings only).
+
+## Verification log (verify-gapfill-video-hands-fretboard, round 2, 2026-11-11)
+
+Checked between about 00:55 and 01:23 UTC on 2026-11-11: everything gap round 2 changed in this folder since commit
+`f4fc2bd` (the "Gap round 2" section above, its edits to `survey.md`, `for-aaron.md`, `inputs.md` and `tools.json`, and
+the new files under `samples/` and `scripts/gap-round-2/`). Working files are under
+`/home/user/gtr/lanes/video-hands-fretboard/verify-gap2/` (re-run outputs in `out/`, pages read in `web/`); the
+verifier's scripts are in `scripts/verify-gap-round-2/`.
+
+What was checked:
+
+- Ledger: the nine gap-round-2 runs (r0609, r0628, r0629, r0632, r0634, r0639, r0648, r0650, r0652) are in
+  `/home/user/gtr/ledger/runs.jsonl` with the commands, input hashes, cores, wall, CPU, peak memory and exit codes
+  quoted above; r0632 and r0634 (exit 1) are described as failures; r0629 and r0652 ran with `--nolock`, as stated;
+  this lane has no other run in that range. Gap round 2 ran no gtr-eval, and the eval ledger has no entry for this lane
+  (R3c and C1 have no ground truth), so there was no eval to re-score.
+- `tools.json`: valid JSON, 75 entries (the 74 before plus GigaHands). Every `runs[].run_id` is a ledger id of this
+  lane except WiLoR's attempt (null, with its note); every `step` is in its group's `times.tsv`, and every exit code,
+  wall and peak of the 87 `runs[]` entries matches the ledger or the `times.tsv` line (`check_tools_json.py`); step
+  peaks are `max_rss_kb` / 1024 and labelled MiB. WiLoR is `tried: false`; Grounding DINO `tried: true`, local-cpu
+  (r0648); YOLO-World `tried: true` (r0650); OWLv2 "public-space and local-cpu".
+- Outputs and samples: every file the "Gap round 2" section names exists. Counts, scores, boxes, labels outside the
+  prompt list, per-view and model-load times were recounted from the four `results.json` files, the Space JSON and
+  the OpenCV JSON (`recount_openvocab.py`, `compare_yoloe_old_new.py`) and match the text and tables; the eight R3a /
+  R3a_cu views of r0628 match the trial's `out/yoloe/results.json` box for box. Of the six `gap2/frames` PNGs, three are
+  pixel-identical to the Space inputs of r0193 and three to fresh decodes with the stated ffmpeg command. C1's
+  positions (nut, fret wires 1 and 2, capo bar and clamp, fretboard edges) were checked on a gridded crop. No file
+  over 300 KB and no audio or video in this folder (5.3 MB in total).
+- Picking hand: an independent recount (`recount_picking_hand.py`: its own speed series, onset merge and
+  local-maximum rule, without plateau handling) reproduces the landmark statistics, the 87 / 63 / 54 / 43 onset counts,
+  the 118 / 331 and 106 / 343 near / rest splits, every peak count, hit count and timeline share, and every median,
+  mean and onset-locked mean, apart from the seven rounding slips corrected above. ffprobe: `R3c.mp4`'s video and AAC
+  streams start at 0.000000 s; 25 fps; 450 frames.
+- Re-runs, labels starting "verify gap2": r0681 = r0628 (YOLOE-26s; 2 cores, slot 0-1, slot wait 66.6 s, wall 9.54 s):
+  all ten views identical apart from timings. r0686 = r0652 (OpenCV; `--nolock`, wall 1.47 s): JSON identical apart
+  from `time_s`. r0690 = r0629 (Spaces; `--nolock`, wall 34.71 s): the same 28 OWLv2 mask annotations; the Grounding
+  DINO call failed again with `ValueError('Unknown protocol: ws')`. r0695 = r0609 (picking hand; 2 cores, slot 2-3,
+  slot wait 57.7 s, wall 22.42 s; `venv-analysis` rebuilt from the saved freeze, its `uv pip freeze` identical to it):
+  JSON, CSV and npz identical. r0709: the same script under cProfile (2 cores, wall 31.62 s), for the timing claim.
+- Not re-run: OWLv2 base (r0639), Grounding DINO tiny (r0648) and YOLO-World v2 (r0650) locally. Each needs a new
+  download over 200 MB (619,918,824; 689,359,096; 25,923,032 + 353,976,522 bytes), which the orchestrator's disk notice
+  rules out unless a lane cannot finish without it. Checked instead: the HF API (2026-11-11) gives the repo commits,
+  last-modified dates, `apache-2.0` tags, sizes and LFS sha256 the text quotes, and those sha256 equal the ones the
+  ledger computed for the weight files at run time; the `ultralytics/assets` v8.4.0 release file `yolov8s-worldv2.pt`
+  was downloaded again (25,923,032 bytes), hashed (the sha256 of r0650's input) and deleted; the CLIP URL in
+  openai-clip 1.0.1's `clip/clip.py` carries the sha256 the ledger gives; in `venv-ultra` (transformers 5.22.2)
+  `Owlv2Processor` has no `post_process_object_detection`, `Owlv2ImageProcessor` has it with `(outputs, threshold,
+  target_sizes)`, and calling the processor's method prints the exact `AttributeError` text quoted for r0634;
+  Ultralytics 8.4.209 `set_classes` calls `build_text_model("clip:ViT-B/32")` and its settings file has `weights_dir`
+  "weights" (relative); the two clamp boxes of the OWLv2 Space (r0629 and r0690) lie within 5 px of the two local
+  r0639 "capo" boxes.
+- Web sources, fetched again on 2026-11-11 and compared with each quote after collapsing whitespace only
+  (`fetch.sh`, `qcheck.py`): every quote added in gap round 2 was found verbatim. Sources: OpenPose `README.md`,
+  `LICENSE` and `models/getModels.sh` (`hand/pose_iter_102000.caffemodel`); arXiv 1704.07809 (PDF and abstract page;
+  four authors, submitted 25 Apr 2017; the "Render" quote matches with the footnote mark "3" after "rendered", which
+  the text says it leaves out); `Hzzone/pytorch-openpose` (raw `LICENSE` and `LICENSE.md` HTTP 404; a metadata clone at
+  `5ee71dc`, 2021-06-21, lists 32 files and no license file; the README has no "licen"); the `lllyasviel/Annotators`
+  card ("license: other" front matter only); `ControlNet-v1-1-nightly`'s `annotator/openpose/__init__.py` and
+  `LICENSE` (compared byte for byte with CMU's: one U+00A0 and CMU's final newline differ; `lllyasviel/ControlNet`'s
+  copy is identical to it); the MediaPipe pose and holistic pages (card links as described), the BlazePose GHUM 3D
+  card, the Face Mesh V2 card (page 3 rendered and read; its text layer gives "sma phone" and "di erent") and the hand
+  card (all three "Apache License, Version 2.0"; none names a public dataset); `ultralytics/assets` `LICENSE` (main
+  and master identical); the Ultralytics YOLOE page (quotes and the three table rows); arXiv 2602.00168 (Sapkota and
+  Karkee); arXiv 2503.07465 (submitted 10 Mar 2025; the second quote is under "A. More Implementation Details"); the
+  easy_ViTPose card, HF API record, GitHub README and `LICENSE` (Apache 2.0), and the ViTPose README; the Kookmin AI lab
+  home page (link titled "Code") and the GuiFiR publication page (organization link only); `guifir_dataset` README,
+  `LICENSE`, `DATASET_TERMS.md` and a metadata clone (`e707e51`, 2026-10-29, 13 files); GigaHands: arXiv abstract page
+  (seven authors, 5 Dec 2024, v3, "CVPR 2025 Highlight"), project page, HF dataset API and card (not gated, last
+  modified 2026-11-07, `cc-by-nc-4.0`), the GitHub README (news line of 2026/11/07, MANO line, License section), a
+  metadata clone (`be19068`, 67 files, no LICENSE), `instruction_script.json` (387,755 bytes: the scene, its eight
+  activities, 16 ukulele actions, no guitar) and `annotations_v2.jsonl` (18,539,852 bytes, 13,787 rows: 119 ukulele
+  rows in 11 sessions, 109 spans of 65 to 868 frames summing to 21,023, 10 with `end_frame_id` -1; deleted after
+  counting); the Commons file page of C1 (license line, attribution, caption, description, date, "Own work", the
+  original's 1,688 x 3,000 pixels and 2.37 MB, the "Using this picture" text, the Trademarked tag), the 960-pixel
+  rendition (downloaded again at 01:10 UTC: the same sha256 as C1), the pages of the two smaller files (272 x 148 and
+  300 x 224 pixels), the two Spaces' runtime records (RUNNING, cpu-basic; `merve/owlv2` at `8af0855e`), and the
+  COCO-WholeBody README and MediaPipe hand page lines that `tools.json` now quotes.
+- NOT RUN HERE reasons in the new text (the capo clip pair, the GigaHands videos, the GuiFiR archive) are specific and
+  match the sources. The first page of Commons' `Category:Capos` (200 of its 207 files, read 2026-11-11) lists still
+  images only (.jpg, .png, .jpeg, .webp, .svg).
+- No judging words, keys, tokens or personal details in the added text or in the new `tools.json` strings (the C1
+  author box's e-mail address is not reproduced). No step of this check was refused by the permission system.
+- The earlier record: every heading, table row and line of the four Markdown files at `f4fc2bd` is still present,
+  except the five lines gap round 2 extended with marked corrections and the two grouped-jobs rows whose peak unit
+  changed from MB to MiB; the earlier verification logs are unchanged.
+
+What was changed:
+
+- `trials.md`: the V5 timing sentence (most of the time is module imports with numba compilation, the lag search
+  about 1.9 s; corrected in place); seven picking-hand values that had been rounded twice (0.318 to 0.317, 3.19 to
+  3.18, 4.41 to 4.40, 2.17 to 2.18, 2.54 to 2.53, 3.17 to 3.18, 3.62 to 3.61, the last also in the sentence below the
+  tables); the description of the `C1_lower` view (it includes the lowest part of the headstock).
+- `survey.md`: ControlNet's `__init__.py` opens with "# Openpose" before the two lines quoted; "under its Table 1"
+  is now the captions of Tables 1 and 2; the GigaHands README quotes are tied to the repository README's URL; the
+  frame-span definition (`end_frame_id` minus `start_frame_id`); the ViTPose ONNX file's sha256 match; the GuiFiR
+  data terms in the tool list are quoted instead of shortened.
+- `tools.json` (`scripts/verify-gap-round-2/fix_tools_json_verify.py`): the same `__init__.py` wording; a note on the
+  ViTPose ONNX sha256; YOLO-World `license.weights`, which was null: the `ultralytics/assets` `LICENSE` and the v8.4.0
+  file's size and sha256; OWLv2's `what` now names the local runs; `updated`.
+- `inputs.md`: "The shared clips have no capo" now reads that the shared video clips show no capo (S5capo2 is audio).
+- `for-aaron.md` section 10, step 6: the GuiFiR terms are quoted instead of paraphrased.
+- Peak memory unit: gtr-run writes `max_rss_mb` as `ru_maxrss / 1024` (`gtr-run` line 120), that is MiB, so every
+  peak this file quotes from the ledger as "MB", in the gap-round-2 section as in the earlier sections, is a MiB value.
+- Disk, following the orchestrator's disk notice ("delete ... model weights you are done with"): deleted the eight
+  weight files over 10 MB in `/home/user/gtr/lanes/video-hands-fretboard/dl/` (`scaled_offline.pth`,
+  `holistic_landmarker.task`, `pose_landmarker_heavy.task`, `hand_pose_model.pth`, `mobileclip2_b.ts`,
+  `yolo26s-pose.pt`, `sam2.1_t.pt`, `yoloe-26s-seg.pt`; 680,703,997 bytes; each one's sha256 was checked against the
+  sections above before deletion, where their sources are given), the `venv-analysis` rebuilt for r0695 (freeze in
+  `samples/picking-hand-onsets/`), the numba caches and the metadata clones. A re-run of the trials that used those
+  files has to download them again. `venv-mediapipe`, `venv-rtmlib`, `venv-ultra`, the outputs in `out/` and the
+  `gap2/` folder were kept.
+
+Still UNVERIFIED:
+
+- The local OWLv2, Grounding DINO tiny and YOLO-World v2 outputs were not reproduced (not re-run, reason above).
+- The r0632 error text and the gap round's two HTTP 429 answers from the Commons API: no log was kept (the ledger has
+  r0632 with exit 1 and 5.23 s; this check's own Commons API request was also answered with HTTP 429, at 01:09:57 UTC).
+- Whether r0609's numba cache folder was empty.
+- Whether the `ultralytics/assets` repository `LICENSE` covers its release files (the release page answers 403 here).
+- The licenses of the datasets the new training-data quotes name and of the CLIP ViT-B/32 weights, as the text says.
+- The 7 files on the second page of `Category:Capos`.

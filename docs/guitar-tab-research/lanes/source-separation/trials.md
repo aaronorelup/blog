@@ -1457,3 +1457,36 @@ Items are appended as they are finished.
   findings with a second probe. Not reproduced: r0610's peak RSS of 8051.0 MB. r0718, with the same freeze and the
   same default threads, peaked at 6203.9 MB, as did r0471 and r0548 (6204.5 MB) and r0612 (6203.9 MB). Why r0610 used
   1.8 GB more was not determined. The gap round's table is left as the ledger has it, and a note was added below it.
+
+**Ledger, scores and files**
+
+- Run ledger: all 22 run ids the round cites (r0471, r0472, r0477, r0487, r0503, r0548, r0610, r0612, r0615, r0619,
+  r0636, r0637, r0638, r0640, r0642, r0644, r0645, r0659, r0660, r0669, r0677, r0688) exist with lane `source-separation` and exit code 0;
+  every wall, CPU, CPU/wall ratio, peak RSS, load1, core set and start time in the round's three tables and its text
+  matches the ledger, and the commands match `cmd_str` (the guitar fine-tune runs through `gap2_guitar_ft.py` with
+  `venv-demucs`, the thread re-runs through `gap2_thread_probe.py`, the 4-core runs with `OMP_NUM_THREADS=4` and
+  cores 0-3). No failed run is described as a success. The ledger lines of other lanes that overlap r0659 are the four
+  `--nolock` runs of 1.06 to 2.26 s the text names.
+- gtr-eval: e1831 to e1836 exist and every number quoted from them matches the ledger (as do the first-round
+  e0095, e0119 and e1399 quoted beside them). All six were scored again with the same arguments and `--no-ledger`
+  (r0717, 2 cores; `scripts/verify-gap2-gtreval-rerun.py`, `samples/verify-gap2/gtreval_rerun_compare.txt`): metrics,
+  counts, options and the SHA-256 of every estimate, reference and truth file are identical to the stored results, and
+  the six result files in `samples/scores/` equal the ledger. One naming fact: e1836's `--out` in the eval ledger (and
+  in r0688's command) is `samples/scores/gap2_gtreval_0.12.0_rerun_of_e1431.json`; the file was renamed afterwards to
+  `gap2_gtreval_0.12.1_rerun_of_e1431.json`, the name the text gives, and no file of the first name exists.
+- Audio recomputed with separate code (r0722, 2 cores; `scripts/verify-gap2-audio-check.py`,
+  `samples/verify-gap2/audio_facts_guitar-ft.json`) from the six folders in `out/htdemucs-6s-guitar-ft/` and
+  `out/htdemucs_6s-via-ft-script/`: PCM_24, 44,100 Hz, 2 channels and frame counts equal to the inputs; every RMS
+  level, stem-sum residual and projection the text quotes (S4, S6taps, S2s, R2; fine-tune and stock control) agrees at
+  the precision given; R2 `vocals.wav` has 40 of 3,175,200 samples at full scale; R2 `derived_instrumental_sum.wav`
+  (FLOAT) equals drums + bass + other + guitar + piano exactly. The `run_info_*.json` files hold the load and
+  separation times of the table, `epoch` 60, `val_loss` 0.24393, `val_sdr_db` 6.07983, 525 tensors loaded and
+  "<All keys matched successfully>". The 27,414,996-parameter count and the float32 dtype of the checkpoint were not
+  re-counted (the checkpoint could not be loaded here, see above).
+- Whole-box timing: both box-sampler files sum to the figures quoted (r0669: 1,438.1 busy CPU s, 816.1 by the job,
+  622.0 by other processes, 368.8 s, mean load1 6.50, per-CPU busy 97.4 to 97.9 %; r0677: 1,079.1, 355.6, 723.5,
+  284.6 s, 6.26); 622.0 / 368.8 s = 1.69 CPUs and 723.5 / 284.6 s = 2.54 CPUs. The two stem-facts files hold the
+  residuals and levels quoted for r0659 and r0660; the first-round residuals (-25.54, -23.04 dB) are those of
+  `samples/demucs/stemfacts_*_R2full.json`.
+- Media list: `scripts/media_list.py` run again (01:21 UTC) gives 2,097.8 MB in 281 files, the six new rows exactly
+  as in the table.

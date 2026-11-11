@@ -3197,7 +3197,7 @@
   {
    "name": "OWLv2 (google/owlv2-base-patch16-ensemble) via the public Space merve/owlv2",
    "kind": "research-model",
-   "what": "Google's open-vocabulary object detector (text queries -> boxes); in transformers as Owlv2ForObjectDetection. The model ran on Hugging Face's machine through the public Space with gradio_client 2.7.2 because its 619,918,824-byte weights were over the box's 200 MB download limit. (gap round 2: it also ran on the box's CPU with transformers 5.22.2, runs r0632 and r0634 failed, r0639 gave scored boxes; the weights were fetched for that run and deleted after it.)",
+   "what": "Google's open-vocabulary object detector (text queries -> boxes); in transformers as Owlv2ForObjectDetection. The model ran on Hugging Face's machine through the public Space with gradio_client 2.7.2 because its 619,918,824-byte weights were over the box's 200 MB download limit. (added by the round-2 verifier: in gap round 2 it also ran on the box's CPU with transformers 5.22.2; runs r0632 and r0634 failed, r0639 gave scored boxes; the weights were fetched for that run and deleted after it.)",
    "url": "https://huggingface.co/google/owlv2-base-patch16-ensemble",
    "version": "google/owlv2-base-patch16-ensemble (HF last modified 2024-10-31); Space merve/owlv2 (cpu-basic, RUNNING; app.py commit 8af0855e, last modified 2024-03-06); code in google-research/scenic (last commit 2026-10-31); (gap round 2) local runs: model repo commit cfd3195ba4ea9592eec887ded089f4c08eff231d, model.safetensors 619,918,824 bytes, sha256 e1e130b9e404cf91a75ad45644c1da9d7fa5284085eecc864266a6923efb99e7, transformers 5.22.2, torch 2.15.0+cpu",
    "tried": true,

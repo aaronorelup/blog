@@ -1,6 +1,6 @@
 {
   "lane": "web-tab-render",
-  "generated": "2026-11-10",
+  "generated": "2026-11-11",
   "tools": [
     {
       "name": "alphaTab (@coderline/alphatab)",
@@ -642,7 +642,7 @@
           "input_id": "S2n",
           "cores": 2,
           "wall_s": 0.27,
-          "peak_mb": 85.7,
+          "peak_mb": null,
           "exit_code": 0,
           "output_files": [],
           "metrics": {
@@ -655,7 +655,7 @@
           "input_id": "S2n",
           "cores": 2,
           "wall_s": 1.2,
-          "peak_mb": 139.1,
+          "peak_mb": null,
           "exit_code": 0,
           "output_files": [],
           "metrics": {
@@ -667,7 +667,7 @@
           "input_id": "S2n",
           "cores": 2,
           "wall_s": 0.78,
-          "peak_mb": 85.1,
+          "peak_mb": null,
           "exit_code": 0,
           "output_files": [],
           "metrics": {
@@ -679,7 +679,7 @@
           "input_id": "S2n",
           "cores": 2,
           "wall_s": 0.25,
-          "peak_mb": 85.9,
+          "peak_mb": null,
           "exit_code": 0,
           "output_files": [],
           "metrics": {
@@ -860,7 +860,7 @@
     {
       "name": "@coderline/alphatab-monaco and @coderline/alphatab-language-server",
       "kind": "library",
-      "what": "alphaTex editing in the Monaco editor (experimental) (README of alphatab-monaco); alphaTex language server with completion, hover docs and formatting, plus a TextMate grammar.",
+      "what": "alphaTex editing in the Monaco editor (experimental) (README of alphatab-monaco); alphaTex language server with completion, hover docs and formatting, plus a TextMate grammar.; the worker entry (dist/worker.mjs) carries the language server's code compiled in and imports @coderline/alphatab and the vscode-languageserver* packages, while the main entry imports @coderline/alphatab-language-server for the TextMate grammar and the language configuration; the language server checks the text with alphaTab's AlphaTexImporter and reports its diagnostics as code AT<number>, source \"alphaTab\"; no file of the package calls alphaTab's renderer (verifier, gap round 2)",
       "url": "https://github.com/CoderLine/alphaTab",
       "version": "1.9.0 (npm, 2026-10-31), with monaco-editor 0.57.0 and @coderline/alphatab-language-server 1.9.0",
       "tried": true,
@@ -888,7 +888,8 @@
               "editor.worker.js": 307296,
               "alphatex-lsp.worker.js": 1599875
             },
-            "install": "npm install --no-audit --no-fund --ignore-scripts @coderline/alphatab-monaco@1.9.0: 14 packages, 9 s, 125 MB node_modules (monaco-editor 105 MB)"
+            "install": "npm install --no-audit --no-fund --ignore-scripts @coderline/alphatab-monaco@1.9.0: 14 packages, 9 s, 125 MB node_modules (monaco-editor 105 MB)",
+            "install_scripts": "none of the 14 installed packages lists a preinstall, install or postinstall script in its registry entry; dompurify 3.4.15 lists prepare (husky), which npm runs on a local install without package arguments (verifier, gap round 2)"
           }
         },
         {
@@ -929,7 +930,7 @@
           "input_id": "S2n",
           "cores": 2,
           "wall_s": 0.77,
-          "peak_mb": 85.2,
+          "peak_mb": null,
           "exit_code": 0,
           "output_files": [
             "samples/alphatab-monaco/S2n.monaco_edited.gp.est.json",
@@ -962,7 +963,7 @@
           "input_id": "S2n",
           "cores": 2,
           "wall_s": 13.01,
-          "peak_mb": 144.9,
+          "peak_mb": null,
           "exit_code": 0,
           "output_files": [],
           "metrics": {
@@ -974,7 +975,7 @@
           "input_id": null,
           "cores": 2,
           "wall_s": 1.17,
-          "peak_mb": 414.3,
+          "peak_mb": null,
           "exit_code": 0,
           "output_files": [],
           "metrics": {
@@ -1004,7 +1005,7 @@
       "license": {
         "code": {
           "spdx": "MPL-2.0",
-          "quote": "alphaTab Monaco is licensed under MPL-2.0. (Monaco package LICENSE, first line); alphaTab Language Server is licensed under MPL-2.0. (language server LICENSE, first line)",
+          "quote": "alphaTab Monaco is licensed under MPL-2.0. (Monaco package LICENSE, first line); alphaTab Language Server is licensed under MPL-2.0. (language server LICENSE, first line); between that first line and the MPL 2.0 text both files have \"Copyright © 2025, Daniel Kuschny and Contributors, All rights reserved.\" and \"See LICENSE.header for further licenses of integrated submodules.\"; the LICENSE.header of both packages is a file-header template, \"This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.\", and names no other license; registry license fields of the packages the 1.9.0 install pulled in: dompurify \"(MPL-2.0 OR Apache-2.0)\"; monaco-editor, marked, @types/trusted-types and the vscode-* packages \"MIT\" (verifier, gap round 2)",
           "url": "https://raw.githubusercontent.com/CoderLine/alphaTab/develop/packages/monaco/LICENSE"
         },
         "weights": null,
@@ -1280,7 +1281,7 @@
           "input_id": "S2n",
           "cores": 2,
           "wall_s": 2.46,
-          "peak_mb": 131.0,
+          "peak_mb": null,
           "exit_code": 0,
           "output_files": [],
           "metrics": {
@@ -1879,7 +1880,7 @@
           "input_id": "S2n",
           "cores": 2,
           "wall_s": 13.27,
-          "peak_mb": 141.2,
+          "peak_mb": null,
           "exit_code": 0,
           "output_files": [],
           "metrics": {
@@ -1898,7 +1899,8 @@
       "outputs": [
         "SVG (notation and a tab line computed from the notes; tab numbers are text.abcjs-tab-number elements in the SVG)",
         "synthesized audio (SoundFont URLs paulrosen.github.io/midi-js-soundfonts/FluidR3_GM/ by default)",
-        "timing callbacks"
+        "timing callbacks",
+        "the clickListener's abcelem for a click or drag on a note or tab number (el_type, startChar and endChar in the ABC text, pitches for notes) and drag.step; the ABC text the application keeps"
       ],
       "constraints_accepted": [
         "tablature[].instrument: \"violin\" | \"mandolin\" | \"fiddle\" | \"guitar\" | \"fiveString\" | \"\"",
@@ -1906,7 +1908,10 @@
         "tablature[].capo (default 0)",
         "tablature[].highestNote",
         "label",
-        "hideTabSymbol"
+        "hideTabSymbol",
+        "dragging: true",
+        "clickListener(abcelem, tuneNumber, classes, analysis, drag, mouseEvent)",
+        "selectTypes (needed for arrow-key and Enter handling on notes)"
       ],
       "license": {
         "code": {
@@ -1924,6 +1929,11 @@
           "to": "(gtr-eval, by reading tab numbers back from the SVG)",
           "via_format": "SVG text.abcjs-tab-number elements",
           "evidence": "90 (string, fret, pitch) triples equal the truth's; 88/90 by order with the default 50 ms chord window, 90/90 with --chord-window 0.01 (e0638, e1332 to e1334)"
+        },
+        {
+          "to": "application code that rewrites the ABC string and calls renderAbc again",
+          "via_format": "clickListener abcelem startChar/endChar and drag step",
+          "evidence": "abcjs changes neither the ABC nor the tab by itself; a page that rewrote the ABC from the step gave 87/90 matched and 87/87 on the truth's string and fret (r0598, e1763); the Editor textarea route gave 88/90 and 88/88 (e1764)"
         }
       ],
       "unverified": [
@@ -1938,7 +1948,7 @@
           "r0312",
           "r0598"
         ],
-        "how": "ABC has no string; abcjs picks it from the pitch",
+        "how": "text: the ABCJS.Editor textarea, typed after clicking the note or its tab number (r0312, r0598 D); drag and arrow keys: abcjs reports a step and changes nothing, the application rewrites the ABC (r0598 A to C); ABC has no string, abcjs picks it from the pitch (r0598: F#3 put on string 4)",
         "key": "a = through a built-in editing interface; b = only by changing the data and drawing or converting again; c = not at all (trials.md, \"Gap round 2\")"
       }
     },
@@ -2097,7 +2107,7 @@
           "input_id": "S2n",
           "cores": 2,
           "wall_s": 0.68,
-          "peak_mb": 190.6,
+          "peak_mb": null,
           "exit_code": 0,
           "output_files": [],
           "metrics": {
@@ -2166,12 +2176,18 @@
           "to": "MIDI consumers",
           "via_format": "MIDI",
           "evidence": "from the MEI tab: 90 notes, onset F1 1.0 (e0307)"
+        },
+        {
+          "to": "(gtr-eval via the lane's MEI reader, scripts/mei_tab_to_json.py)",
+          "via_format": "MEI tab after toolkit edit()",
+          "evidence": "edit() set on tab.course and tab.fret changed the MEI that getMEI() returned; read back 89/90 matched, 88/89 on the truth's string and fret, string difference +1 for one note (r0626, r0627, e1827)"
         }
       ],
       "unverified": [
         "the licenses of humlib, MidiFile, pugixml and MINIZ-CPP inside Verovio were not read",
         "the Verovio Python and C++ builds were not tried",
-        "json++ and tuning-library carry MIT permission text in the repository (include/json/LICENSE, include/tuning-library/LICENSE.md)"
+        "json++ and tuning-library carry MIT permission text in the repository (include/json/LICENSE, include/tuning-library/LICENSE.md)",
+        "Verovio's own log after the edit() calls (not read by the script); which line the note was drawn on after the edit was not measured"
       ],
       "string_fret_change": {
         "fret": "b",
@@ -2759,7 +2775,8 @@
         }
       ],
       "unverified": [
-        "under Node 22.23.4 loading needs two workarounds (writable globalThis.navigator, globalThis.fetch deleted); npm license field is the bare string GPL, LICENSE.GPL is GPL v3 text"
+        "under Node 22.23.4 loading needs two workarounds (writable globalThis.navigator, globalThis.fetch deleted); npm license field is the bare string GPL, LICENSE.GPL is GPL v3 text",
+        "whether webmscore keeps string and fret from a MuseScore .mscz/.mscx input (which would make its string/fret change (b) rather than (c)); not tried"
       ],
       "string_fret_change": {
         "fret": "c",
@@ -6074,13 +6091,13 @@
     {
       "name": "HAYA-TAB (HAYASAKA7/HAYA-TAB)",
       "kind": "desktop app",
-      "what": "Organize, read, play, and sync your music tabs from one lightweight desktop app. (README); a Wails v3 (Go) program with a Vue 3 frontend; PDF viewer with annotations and an alphaTab viewer and player for Guitar Pro and MusicXML",
+      "what": "Organize, read, play, and sync your music tabs from one lightweight desktop app. (README); a Wails v3 (Go) program with a Vue 3 frontend; PDF viewer with annotations and an alphaTab viewer and player for Guitar Pro and MusicXML; bundles alphaTab 1.8.1 (MPL-2.0, from the lockfile)",
       "url": "https://github.com/HAYASAKA7/HAYA-TAB",
-      "version": "tag v3.1.8 (2026-07-31, commit eb0466a); frontend/package.json 3.1.7; first commit 2026-02-09; last commit on main eb0466a 2026-07-31; release v3.1.8 files: HAYA-TAB-linux-amd64.tar.gz, HAYA-TAB-linux-arm64.tar.gz, HAYA-TAB-macos-amd64.dmg, HAYA-TAB-macos-arm64.dmg, HAYA-TAB-windows-386.zip, HAYA-TAB-windows-amd64.zip, HAYA-TAB-windows-arm64.zip (listed with the web fetch tool, 2026-11-11)",
+      "version": "tag v3.1.8 (2026-07-31, commit eb0466a); frontend/package.json 3.1.7; first commit 2026-02-09; last commit on main eb0466a 2026-07-31; release v3.1.8 files: HAYA-TAB-linux-amd64.tar.gz, HAYA-TAB-linux-arm64.tar.gz, HAYA-TAB-macos-amd64.dmg, HAYA-TAB-macos-arm64.dmg, HAYA-TAB-windows-386.zip, HAYA-TAB-windows-amd64.zip, HAYA-TAB-windows-arm64.zip (listed with the web fetch tool, 2026-11-11); default branch main (no master branch; git ls-remote lists main and six feature branches); 276 commits on main",
       "tried": false,
       "tried_how": null,
       "runs": [],
-      "not_run_reason": "desktop window program (Wails v3); the gap asked for a survey line. Its release files can be fetched from the box by their own URLs (github.com's release pages and api.github.com answer 403 to the box; the files were listed with the web fetch tool). The Linux build is linked against libwebkit2gtk-4.1, libjavascriptcoregtk-4.1 and libsoup-3.0, which the box lacks (it has libgtk-3 and Xvfb); installing them, a virtual display and starting a downloaded binary were not attempted (trials.md, \"Gap round 2\", HAYA-TAB, verifier note)",
+      "not_run_reason": "desktop window program (Wails v3); the gap asked for a survey line. Its release files can be fetched from the box by their own URLs (github.com's release pages and api.github.com answer 403 to the box; the files were listed with the web fetch tool). The Linux build is linked against libwebkit2gtk-4.1, libjavascriptcoregtk-4.1 and libsoup-3.0, which the box lacks (it has libgtk-3 and Xvfb); installing them, a virtual display and starting a downloaded binary were not attempted (the Linux amd64 archive holds one executable, HAYA-TAB, and the Windows amd64 zip one file, HAYA-TAB.exe; apt-get -s install libwebkit2gtk-4.1-0 lists 46 packages; trials.md, \"Gap round 2\", HAYA-TAB, verifier note)",
       "for_aaron": true,
       "callable_via": [
         "desktop-gui"
@@ -6099,7 +6116,7 @@
       "license": {
         "code": {
           "spdx": "Apache-2.0",
-          "quote": "Grant of Copyright License. Subject to the terms and conditions of this License, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare Derivative Works of, publicly display, publicly perform, sublicense, and distribute the Work and such Derivative Works in Source or Object form. (LICENSE section 2); NOTICE: HAYA-TAB Copyright 2026 Ai Hayasaka",
+          "quote": "Grant of Copyright License. Subject to the terms and conditions of this License, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare Derivative Works of, publicly display, publicly perform, sublicense, and distribute the Work and such Derivative Works in Source or Object form. (LICENSE section 2); NOTICE: HAYA-TAB Copyright 2026 Ai Hayasaka; This product includes software developed by Ai Hayasaka (https://github.com/HAYASAKA7/HAYA-TAB). (NOTICE); HAYA-TAB is available under the Apache License 2.0. See NOTICE for attribution information. (README)",
           "url": "https://raw.githubusercontent.com/HAYASAKA7/HAYA-TAB/main/LICENSE"
         },
         "weights": null,
@@ -6121,5 +6138,5 @@
       }
     }
   ],
-  "updated": "2026-11-11 (gap round 2, gapfill-web-tab-render: GAPS.md W1 and W2); checked by verify-gapfill-web-tab-render 2026-11-11 (scripts/verify-gap2/fix_tools_json.py)"
+  "updated": "2026-11-11 (gap round 2, gapfill-web-tab-render: GAPS.md W1 and W2; checked by verify-gapfill-web-tab-render); refreshed from survey.md, trials.md and for-aaron.md as they stood after that check (json-web-tab-render-round-2)"
 }

@@ -1482,8 +1482,8 @@ package on PyPI from its authors; each runs from its own repository's scripts.
   with a `track_name` and a `program_change`; every note-on at velocity 100 (the function's default `velocity`;
   `predict()` passes none); no tempo message (the `set_tempo` line is commented out; ticks are computed at 500,000
   microseconds per beat); one MIDI channel per program (channels 0-8 and 10-15), drums on channel 9 as internal program
-  128. (corrected by the round's verifier: the `midi.type = 1` line, the tracks, the velocity and channel 9 were left
-  out.)
+  128. (corrected by the round's verifier: the round's text stopped at `type=0` and left out the `midi.type = 1` line,
+  the tracks and channel 9, and gave "default velocity 100" for the velocity every note-on gets.)
 - Steps for Aaron: `for-aaron.md`, section 14.
 
 ### Gap round 2: self-check (not a separate verification)
@@ -1793,11 +1793,12 @@ small source archives stay) were deleted afterwards.
 
 ## Verification log (verify-gapfill-audio-to-notes, round 2, 2026-11-11)
 
-Checked by `verify-gapfill-audio-to-notes` from 00:57 to about 01:30 UTC on 2026-11-11: the section "Gap round 2", the
+Checked by `verify-gapfill-audio-to-notes` from 00:57 to about 01:25 UTC on 2026-11-11: the section "Gap round 2", the
 round's edits elsewhere in this file, in `survey.md`, `for-aaron.md` and `tools.json`, and its new files under
 `samples/` and `scripts/` (the round's whole change is the difference between git commits d2e9a17 and e4f9bc1, part
-of it already in d90f43e; e4f9bc1 also holds the verifier's first two scripts and their outputs). Scripts: `scripts/verify_gap2/`; small outputs: `samples/verify-gap2/`; re-run
-outputs on the box under `/home/user/gtr/lanes/audio-to-notes/verify-gap2/`. The re-runs' venvs (CREPE Notes rebuilt
+of it already in d90f43e; e4f9bc1 also holds the verifier's first two scripts and their outputs). Scripts:
+`scripts/verify_gap2/`; small outputs: `samples/verify-gap2/`; re-run outputs on the box under
+`/home/user/gtr/lanes/audio-to-notes/verify-gap2/`. The re-runs' venvs (CREPE Notes rebuilt
 offline from the round's freeze, two ONNX Runtime probe venvs), the re-run's SoX audio and the downloaded sources were
 deleted afterwards.
 
@@ -1918,7 +1919,8 @@ deleted afterwards.
    80 files include smaller CREPE, Basic Pitch, Omnizart and MELODIA files); the saved API listing holds only its `.pt`
    and `.zip` entries (20 of 80); the MIDI writer: `midi.type = 1` follows `MidiFile(..., type=0)`, so the file is type
    1 with an empty first track and one track per program, every note-on at velocity 100, no tempo message and drums on
-   channel 9 (the round's text gave type 0 and left out the tracks, the velocity and channel 9).
+   channel 9 (the round's text stopped at `type=0`, left out the tracks and channel 9, and gave "default velocity 100"
+   for the velocity every note-on gets).
 7. The round's self-check points to this log.
 
 **What was changed elsewhere**
