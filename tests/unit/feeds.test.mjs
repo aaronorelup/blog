@@ -1,31 +1,14 @@
 // /rss.xml, /sitemap.xml and /ledger/previews.json (src/pages/), run as they are over made-up collections: listed
 // posts only, newest first in the feed, each by its /ledger/<slug>/ address, a notes page only beside its listed
-// post, and never a draft, an unlisted post or a draft Now snapshot. astro:content is stood in for by a loader (as
-// worker-env.mjs does for .sql), and a JSON file under src/ is imported the way the build imports it.
+// post, and never a draft, an unlisted post or a draft Now snapshot. astro-content.mjs stands in for astro:content.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { register } from 'node:module';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
+import { setCollections } from './astro-content.mjs';
 import { PROJECTS, TOPICS } from '../../src/data/taxonomy.js';
 import { previewsProblems, rssProblems } from '../../scripts/build/contracts.mjs';
-
-register('data:text/javascript,' + encodeURIComponent(`
-  import { readFile } from 'node:fs/promises';
-  export async function resolve(specifier, context, next) {
-    return specifier === 'astro:content' ? { url: 'stub:astro-content', shortCircuit: true } : next(specifier, context);
-  }
-  export async function load(url, context, next) {
-    if (url === 'stub:astro-content') {
-      return { format: 'module', shortCircuit: true, source: 'export const getCollection = async (name) => [...(globalThis.COLLECTIONS[name] ?? [])];'
-        + 'export const render = async (entry) => ({ remarkPluginFrontmatter: { text: entry.text } });' };
-    }
-    if (url.startsWith('file:') && url.includes('/src/data/') && url.endsWith('.json') && context.importAttributes?.type !== 'json') {
-      return { format: 'module', shortCircuit: true, source: 'export default ' + await readFile(new URL(url), 'utf8') };
-    }
-    return next(url, context);
-  }`));
 
 const HIDDEN = 'secret-unlisted-post';
 const [topic] = Object.keys(TOPICS);
@@ -33,14 +16,14 @@ const [project] = Object.keys(PROJECTS);
 const post = (slug, id, day, more = {}) => ({ id: slug, data: { id, title: `Title of ${slug}`, summary: `Summary of ${slug}`, date: new Date(`${day}T00:00:00Z`), topic, project: [], ...more } });
 const notes = (slug) => ({ id: slug, data: { post: slug, title: `Notes on ${slug}`, summary: 's' } });
 const card = { verdict: 'It works', takeaway: 'It ran.', points: ['One.'] };
-globalThis.COLLECTIONS = {
+setCollections({
   posts: [post('shown', 'AO-001', '2026-10-01', { preview: card }), { ...post('newer', 'AO-003', '2026-11-01', { project: [project] }), text: { words: 460 } },
     post('same-day', 'AO-002', '2026-10-01'), post('a-draft', 'AO-004', '2026-11-02', { draft: true, preview: card }),
     post(HIDDEN, 'AO-005', '2026-11-03', { unlisted: true, preview: { ...card, takeaway: 'Nobody may read this.' } })],
   notes: [notes('shown'), notes(HIDDEN)],
   now: [{ id: '2026-10-01', data: {} }, { id: '2026-11-01', data: {} }, { id: '2026-11-05', data: { draft: true } }],
   research: [{ id: 'a-paper', data: {} }],
-};
+});
 const SITE = 'https://aaronorelup.com';
 // public/ as the build names it (astro.config.mjs defines __PUBLIC_DIR__): a made-up one, where one post has an icon.
 const publicDir = fs.mkdtempSync(path.join(os.tmpdir(), 'public-'));
