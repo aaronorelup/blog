@@ -237,7 +237,7 @@ and restores the poster.
 ## Measured (2026-11-11, this branch)
 
 - Boot entry (Stage's script): 1,121 B, **642 B gzip**, plus the site's existing shared preload helper (852 B gzip).
-- 3D chunk `stage.*.js`: 47,358 B, **16.1 KB gzip** (all of `src/scripts/tea/hero/` plus the meshopt decoder, which is
+- 3D chunk `stage.*.js`: 47,466 B, **16.1 KB gzip** (all of `src/scripts/tea/hero/` plus the meshopt decoder, which is
   22.4 KB of it, 6.1 KB gzip). Loads only after first paint, only on the 3D path.
 - It also loads `three.module.*.js` (166.6 KB gzip) and `GLTFLoader.*.js` (13.1 KB gzip), byte-identical to the
   chunks the site already ships, so cached for anyone who has seen the homepage or a post with a model.
