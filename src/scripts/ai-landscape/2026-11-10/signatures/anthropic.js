@@ -234,9 +234,15 @@ export function create(ctx, world) {
     }
     // words wait half a second after the beat's own block has settled: until then a pinned word would sit askew
     st.age = amount > 0.01 ? st.age + dt : 0;
-    st.on = amount > 0.5 && (st.age > 0.5 || ctx.reduced);
+    st.on = amount > 0.5 && (st.age > 0.5 || ctx.reduced) && el.dataset.beatNow === 'c';
     root.visible = amount > 0.01;
-    if (!root.visible) { if (!st.catching) st.hold = 0; cord.draw = 0; cord.update(); stations.forEach((s) => { if (s.img) s.img.style.opacity = '0'; }); return; }
+    if (!root.visible) {
+      if (!st.catching) st.hold = 0;
+      cord.draw = 0; cord.update();
+      stations.forEach((s) => { s.li.classList.remove('is-on'); if (s.img) s.img.style.opacity = '0'; });
+      if (title) title.classList.remove('is-on');
+      return;
+    }
 
     // the plug: dragged, in flight, seated, or at home beside the tools floor
     homeAt(home);
