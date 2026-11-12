@@ -121,7 +121,7 @@ a.ail-slab:hover { background: var(--ail-fg); color: var(--ail-bg); }
 .ail-eds__ed { display: grid; gap: 4px; min-height: 48px; padding: 10px 12px; font-size: 17px; line-height: 1.2; text-decoration: none; box-shadow: inset 0 0 0 1px var(--ail-ink); }
 a.ail-eds__ed:hover { background: color-mix(in srgb, var(--ail-ink) 8%, var(--ail-floor)); }
 .ail-eds__ed[aria-current] { background: var(--ail-ink); color: var(--ail-floor); }
-.ail-eds__next { box-shadow: none; outline: 1.5px dashed var(--ail-ink-2); outline-offset: -1.5px; color: var(--ail-ink-2); align-content: center; }
+.ail-eds__next { box-shadow: none; outline: 1.5px dashed var(--ail-ink-2); outline-offset: -1.5px; color: var(--ail-ink-2); align-content: center; font-size: var(--ail-fs-label); letter-spacing: .14em; }
 .ail-eds__newest { margin-top: 12px; }
 
 /* ---- the sources drawer: a modal panel at the right, its list loaded from the sources page */
