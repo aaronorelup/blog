@@ -82,17 +82,28 @@
 .ail-layer__say { font-size: clamp(21px, 2vw, 26px); line-height: 1.16; }
 .ail-layer__more { display: grid; gap: 8px; margin: 10px 0 4px; padding: 13px 16px 14px; max-width: 30rem; background: var(--ail-card); box-shadow: 0 0 0 1px var(--ail-fg); font-size: 18px; line-height: 1.25; }
 .ail-layer__more dfn { font-style: normal; display: block; margin-bottom: 2px; color: var(--ail-fg-2); }
+.ail-layer__thesis { font-size: 20px; line-height: 1.2; padding-left: 12px; border-left: 2px solid var(--ail-fg); max-width: 30rem; }
+.ail-gram__past { display: none; }
 
 /* ---- the nine layers, 3D page: one layer at a time bottom left, the request over the stack, the chip on the thread */
 .ail-gl .ail-gram__list { display: block; margin: 0; max-width: none; }
-.ail-gl .ail-layer { position: absolute; left: var(--ail-margin); bottom: var(--ail-margin); width: min(34vw, 520px); gap: 12px; visibility: hidden; opacity: 0; }
-.ail-gl .ail-layer.is-on { visibility: visible; opacity: 1; animation: ail-rise 420ms var(--ail-ease) both; }
-@keyframes ail-rise { from { opacity: .06; transform: translate3d(0, 14px, 0); } to { opacity: 1; transform: none; } }
+/* a caption is triggered at its floor's boundary and cross-fades with the one before it in 200 ms: never an empty screen */
+.ail-gl .ail-layer { position: absolute; left: var(--ail-margin); bottom: var(--ail-margin); width: min(34vw, 520px); gap: 12px; visibility: hidden; opacity: 0; transition: opacity 200ms linear, visibility 0s linear 200ms; }
+.ail-gl .ail-layer.is-on { visibility: visible; opacity: 1; transition-delay: 0s; }
+.ail-gl .ail-layer__thesis { font-size: clamp(19px, 1.6vw, 24px); }
+/* the floors already passed: number and name, one line each, above the caption. Each jumps the thread to its floor */
+.ail-gl .ail-gram__past { display: grid; gap: 1px; position: absolute; left: var(--ail-margin); bottom: 50%; margin: 0; }
+.ail-gram__past li { display: none; }
+.ail-gram__past li.is-on { display: block; }
+.ail-gram__past button { display: block; padding: 3px 8px 3px 0; color: var(--ail-fg-2); white-space: nowrap; }
+.ail-gram__past button:is(:hover, :focus-visible) { color: var(--ail-fg); }
+.ail-gram__pn { margin-right: .5em; }
 .ail-gl .ail-layer__name { font-size: var(--ail-fs-title); }
 .ail-gl .ail-layer__say { font-size: var(--ail-fs-sentence); line-height: 1.08; }
 .ail-gl .ail-gram__ask, .ail-gl .ail-gram__close { margin: 0; opacity: 0; visibility: hidden; color: var(--ail-fg); }
 .ail-gl .ail-gram__ask.is-on, .ail-gl .ail-gram__close.is-on { visibility: visible; }
-.ail-gl .ail-gram__ask { max-width: none; white-space: nowrap; font-size: clamp(22px, 2.3vw, 34px); }
+/* the request, pinned under the chrome at the top centre for the whole lesson: the thread's premise, set back to 70 percent */
+.ail-gl .ail-gram__ask { position: absolute; left: 50%; top: calc(var(--ail-top) + 4px); transform: translateX(-50%); max-width: none; white-space: nowrap; font-size: 24px; color: color-mix(in srgb, var(--ail-fg) 70%, transparent); }
 .ail-gl .ail-gram__close { position: absolute; left: var(--ail-margin); bottom: var(--ail-margin); max-width: min(34vw, 520px); }
 .ail-gl .ail-gram__chip { display: grid; place-items: center; width: 46px; height: 46px; margin: 0; border-radius: 50%; background: var(--ail-floor); box-shadow: 0 0 0 1.5px var(--ail-ink); color: var(--ail-ink); opacity: 0; visibility: hidden; }
 .ail-gl .ail-gram__chip.is-on { visibility: visible; }
@@ -116,14 +127,20 @@
 
 @media (max-width: 899px) {
   .ail-gl .ail-gram .ail-stage, .ail-gl .ail-end .ail-stage { display: flex; flex-direction: column; justify-content: flex-end; padding: 0 var(--ail-margin) 20px; }
-  .ail-gl .ail-layer { position: static; display: none; width: auto; gap: 8px; }
+  .ail-gl .ail-layer { position: static; display: none; width: auto; gap: 8px; transition: none; }
   .ail-gl .ail-layer.is-on { display: grid; }
+  .ail-gl .ail-layer__thesis { font-size: 17px; }
+  /* phone: the passed floors are a row of numbers above the caption (their names are read by a screen reader) */
+  .ail-gl .ail-gram__past { position: static; display: flex; flex-wrap: wrap; gap: 2px 4px; order: -1; margin: 0 0 6px; }
+  .ail-gl .ail-gram__past button { min-width: 30px; padding: 6px 4px; font-size: 12px; }
+  .ail-gram__pn { margin: 0; }
+  .ail-gram__pw { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
   .ail-gram .ail-layer__n, .ail-gram .ail-layer__more dfn, .ail-end .ail-end__links, .ail-end .ail-end__prov { font-size: 14px; }
   .ail-gl .ail-layer__name { font-size: 40px; }
   .ail-gl .ail-layer__say, .ail-gl .ail-gram__close, .ail-gl .ail-gram__ask { font-size: 23px; line-height: 1.12; }
-  .ail-gl .ail-gram__ask, .ail-gl .ail-gram__close { position: static; display: none; max-width: none; white-space: normal; }
+  .ail-gl .ail-gram__ask, .ail-gl .ail-gram__close { position: static; display: none; max-width: none; white-space: normal; transform: none; }
   .ail-gl .ail-gram__ask.is-on, .ail-gl .ail-gram__close.is-on { display: block; }
-  .ail-gl .ail-gram__ask { order: 2; margin-top: 10px; color: var(--ail-fg-2); }
+  .ail-gl .ail-gram__ask { order: 2; margin-top: 10px; font-size: 19px; color: var(--ail-fg-2); }
   .ail-gl .ail-gram__chip { width: 34px; height: 34px; }
   .ail-gram__chip svg { width: 20px; height: 20px; }
   .ail-gl .ail-end__quote, .ail-gl .ail-end__foot { position: static; width: auto; max-width: none; }

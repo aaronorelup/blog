@@ -1,7 +1,8 @@
 ---
 // The nine layers, taught once, as HTML (SPEC 2.2): the closing line as the heading, the sentence someone might
 // say, then the nine in their fixed order. Opening a layer's name shows what goes wrong without it and its term.
-// 3D page: one layer shows at a time beside the neutral stack, and the chip rides the thread (sections/grammar.js).
+// 3D page: one layer shows at a time beside the neutral stack, the request stays pinned at the top, the floors already
+// passed stay as a short list, and the chip rides the thread (sections/grammar.js).
 import '../../../../styles/ai-landscape/2026-11-10/frame.css';
 import Glyph from '../Glyph.astro';
 import { COPY } from '../data/copy.js';
@@ -15,7 +16,7 @@ const first = layers[0];
 const last = layers[layers.length - 1];
 const rail = `${first.n} ${first.name} – ${last.n} ${last.name}`;
 ---
-<section id="layers" class="ail-sec ail-gram" data-sec="grammar" data-screens="4.4" data-land="0.5" data-rail={rail} aria-labelledby="layers-title">
+<section id="layers" class="ail-sec ail-gram" data-sec="grammar" data-screens="3.2" data-land="0.3" data-rail={rail} aria-labelledby="layers-title">
   <div class="ail-stage">
     <h2 id="layers-title" class="ail-gram__close ail-sentence">{COPY.grammar.close}</h2>
     <p class="ail-gram__ask ail-sentence">{COPY.grammar.request}</p>
@@ -32,8 +33,12 @@ const rail = `${first.n} ${first.name} – ${last.n} ${last.name}`;
             </div>
           </details>
           <p class="ail-layer__say ail-sentence">{l.sentence}</p>
+          {l.id === 'model' && <p class="ail-layer__thesis">{COPY.grammar.thesis}</p>}
         </li>
       ))}
+    </ol>
+    <ol class="ail-gram__past">
+      {layers.map((l, i) => <li data-i={i}><button type="button" class="ail-label" data-i={i}><span class="ail-gram__pn">{l.n}</span> <span class="ail-gram__pw">{l.name}</span></button></li>)}
     </ol>
     <p class="ail-gram__chip" aria-hidden="true">{layers.map((l) => <Glyph name={l.id} />)}</p>
   </div>

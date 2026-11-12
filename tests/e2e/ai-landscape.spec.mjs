@@ -14,6 +14,7 @@ const PAGES = ['/ai-landscape/', ...DATED];
 const SOURCES = SNAPSHOTS.map((s) => `/ai-landscape/${s.date}/sources/`);
 const COMPANIES = ['anthropic', 'openai', 'google', 'meta', 'xai'];
 const WORDS_MAX = 60;
+const BOARD_MAX = 80;      // a board state: one table or one list of labels. Its stage carries data-board
 
 // ?tier=low pins the cheap animated rung and turns the watchdog off, so software WebGL never drops the page to its
 // text version mid-test (the homepage precedent). The scene is up once window.__landscape says ready and it drew.
@@ -322,11 +323,11 @@ test('landscape-9 the five companies are reachable from the keyboard, and every 
 const STOPS = {
   worlds: [0.12, 0.34, 0.5, 0.62, 0.95, 1.3, 1.55, 2.0, 2.45, 2.62, 2.8, 2.93],
   opening: [0, 0.3, 0.6, 1.0, 1.4],
-  grammar: [0.1, 0.35, 0.8, 1.2, 1.6, 2.0, 2.4, 2.8, 3.2, 3.6, 3.95, 4.2],
+  grammar: [0.1, 0.2, 0.39, 0.67, 0.95, 1.23, 1.58, 1.94, 2.22, 2.5, 2.78, 3.0, 3.15],
 };
 const stopsOf = (s) => (STOPS[s.name] || [0.05, 0.3, 0.6, 0.9].map((f) => +(f * s.screens).toFixed(2))).filter((u) => u <= s.screens);
 
-test('landscape-10 never more than 60 words on screen at first depth, in any state of the walk', async ({ page }) => {
+test('landscape-10 never more than 60 words on screen at first depth (80 on a board), in any state of the walk', async ({ page }) => {
   test.setTimeout(600_000);
   await open(page);
   await light(page);
@@ -336,8 +337,9 @@ test('landscape-10 never more than 60 words on screen at first depth, in any sta
     for (const u of stopsOf(s)) {
       await go(page, s.id, u);
       const words = await onScreen(page);
+      const cap = await page.evaluate(() => !!document.querySelector('.ail-stage.is-on[data-board]')) ? BOARD_MAX : WORDS_MAX;
       most = Math.max(most, words.length);
-      if (words.length > WORDS_MAX) over.push(`${s.id} at ${u}: ${words.length} words: ${words.join(' ')}`);
+      if (words.length > cap) over.push(`${s.id} at ${u}: ${words.length} words, over ${cap}: ${words.join(' ')}`);
     }
   }
   console.log(`landscape-10 ${test.info().project.name}: at most ${most} words on screen over the walk`);
