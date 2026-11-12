@@ -85,7 +85,7 @@ export function create(ctx, el, sec) {
   const list = $('.ail-open__five', el);
   const caps = $$('.ail-open__co', el).map((li) => { const at = new Vector3(); return { li, at, pin: ctx.phone ? null : labels.pin(li, at, { ax: 0.5, ay: 0 }) }; });
   const skip = ctx.reduced || !!window.location.hash || window.scrollY > 100;
-  const st = { live: false, clock: 0, born: -1, last: -1, heard: -1, type: null, laid: false, g: null, tour: '', tt: 0, grace: 0, dim: 0, hover: -1, lifts: towers.map(() => 0) };
+  const st = { live: false, warm: 0, clock: 0, born: -1, last: -1, heard: -1, type: null, laid: false, g: null, tour: '', tt: 0, grace: 0, dim: 0, hover: -1, lifts: towers.map(() => 0) };
   const v = new Vector3();
   ctx.state.opening = { t: 0, tour: '' };
 
@@ -126,7 +126,7 @@ export function create(ctx, el, sec) {
       // whatever has loaded): the tilt then meets no new picture or shader, so its first frames do not stall
       const first = !st.live;
       const drawn = towers.every((tw) => tw.lid.mesh.material.uniforms.uMap.value && (tw.char.kind === 'orb3d' || tw.char.mesh.material.uniforms.uMap.value));
-      if (drawn) st.warm = (st.warm || 0) + 1;
+      if (drawn) st.warm++;
       if (first && (ctx.time - st.born > 4 || st.warm > 3)) {
         st.live = true;
         el.classList.add('is-live');
@@ -198,11 +198,11 @@ export function create(ctx, el, sec) {
       // words: the captions sit under the lids and leave before the next section, the open line leaves first
       const seen = st.live ? 1 : 0;
       const capO = seen * (1 - smooth(span(u, 1.2, 1.5)));
-      if (ctx.phone) fade(list, seen * (1 - smooth(span(u, 0.55, 0.85))));
+      if (ctx.phone) fade(list, capO);
       else for (const cap of caps) { cap.li.style.opacity = capO.toFixed(3); cap.li.style.visibility = capO < 0.01 ? 'hidden' : 'visible'; }
       fade(words, 1 - smooth(span(u, 0.55, 0.85)), -24 * smooth(span(u, 0.55, 0.85)));
       const chip = st.tour && u < 0.05 ? st.tour : '';
-      if (tourEl.dataset.state !== chip) { if (chip) tourEl.dataset.state = chip; else delete tourEl.dataset.state; }
+      if ((tourEl.dataset.state || '') !== chip) { if (chip) tourEl.dataset.state = chip; else delete tourEl.dataset.state; }
       ctx.state.opening.t = time; ctx.state.opening.tour = st.tour;
     },
     dispose() {

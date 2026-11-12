@@ -58,7 +58,8 @@ export function create(ctx, el, sec) {
   const ray = new Raycaster();
   const ndc = new Vector2();
   const pick = (x, y) => {
-    ndc.set((x / window.innerWidth) * 2 - 1, 1 - (y / window.innerHeight) * 2);
+    const box = ctx.canvas.getBoundingClientRect();
+    ndc.set(((x - box.left) / box.width) * 2 - 1, 1 - ((y - box.top) / box.height) * 2);
     ray.setFromCamera(ndc, ctx.camera);
     const hit = sp.group.visible ? ray.intersectObjects(sp.floors.map((f) => f.mesh), false)[0] : null;
     return hit ? hit.object.userData.i : -1;
@@ -81,7 +82,7 @@ export function create(ctx, el, sec) {
   }
 
   return {
-    stops: [0.16, ...Array.from({ length: N }, (_, k) => LEAD + (k + 0.6) * STEP), END + 0.1].map((u) => u / sec.screens),
+    stops: [0.22, ...Array.from({ length: N }, (_, k) => LEAD + (k + 0.6) * STEP), END + 0.1].map((u) => u / sec.screens),
     leave() {
       sp.group.visible = false;
       answer.show = 0; answer.update();
