@@ -1,5 +1,6 @@
 ---
-// Provider-agnostic design (SPEC 2.9.4): twenty lamps, five companies by four questions, lit, half lit or dark.
+// Provider-agnostic design (SPEC 2.9.4): twenty lamps, five companies by four questions. A lamp says yes, partly, no
+// or not said by its shape, in one ink for every company: the owner's colour is the line under its name.
 // Text version: a real table with the answer in words and a lamp beside it, then the plumbing that makes swaps work.
 // 3D page (sections/agnostic.js): the lamps lie on a glass board in front of the stacks, one column per company.
 import '../../../../styles/ai-landscape/2026-11-10/architecture.css';
@@ -9,8 +10,9 @@ import { fact, view } from '../data/view.js';
 
 const G = view.data.architecture.agnostic;
 const COLS = [['backsStandards', COPY.architecture.standards], ['harnessRunsOthers', COPY.architecture.runsOthers], ['planTravels', COPY.architecture.planTravels], ['modelsElsewhere', COPY.architecture.elsewhere]];
-const SAY = { yes: COPY.architecture.yes, partial: COPY.best.partly, no: COPY.architecture.no };
-const rows = G.matrix.map((m) => ({ id: m.provider, name: view.provider(m.provider).name, cells: COLS.map(([k]) => ({ key: k, value: m[k].value, fact: fact(m[k].claim) })) }));
+const SAY = { yes: COPY.architecture.yes, partial: COPY.best.partly, no: COPY.architecture.no, unknown: COPY.state.undisclosed };
+const lampOf = (v) => (SAY[v] ? v : 'unknown');
+const rows = G.matrix.map((m) => ({ id: m.provider, name: view.provider(m.provider).name, cells: COLS.map(([k]) => ({ key: k, value: lampOf(m[k].value), fact: fact(m[k].claim) })) }));
 ---
 <section id="agnostic" class="ail-sec ail-agn" data-sec="agnostic" data-kind="board" data-screens="0.7" data-land="0.35" data-rail={G.claim.short} aria-labelledby="agnostic-title">
   <div class="ail-stage">

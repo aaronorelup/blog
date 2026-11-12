@@ -1,7 +1,7 @@
 // Provider-agnostic design and billing (SPEC 2.9.4, 2.9.5), two sections in front of the row. "board": twenty
-// lamps on a glass board, one column under each stack, lit, half lit or dark. "rail": a tank and a meter for each
+// lamps on a dark glass board, one column under each stack, each the page's own lamp shape in paper white. "rail": a tank and a meter for each
 // company on a rail, a bead that runs from the tank and switches to the meter when it runs dry. Both tour.
-import { BoxGeometry, CylinderGeometry, Group, Mesh, SphereGeometry, Vector3 } from 'three';
+import { BoxGeometry, CylinderGeometry, Group, Mesh, Vector3 } from 'three';
 import { easeIO, smooth, span } from '../core/clock.js';
 import { $, $$, announce } from '../core/dom.js';
 import { ROW_X } from '../scene/row.js';
@@ -12,6 +12,8 @@ const ROWS_Y = [2.2, 1.56, 0.92, 0.28];
 const BZ = 2.35;
 const RZ = 4.6;
 const DARK = { glass: '#2E3036', rim: '#6B707A', glow: '#2E3036' };
+const BAND = 19.4;                    // the board's width: the five columns and a little air
+const LABELS = 152;                   // CSS px the four row labels need at its left
 
 function frame(ctx, el, sec, build) {
   const group = new Group();
@@ -42,33 +44,37 @@ function board(ctx, el, sec) {
   return frame(ctx, el, sec, (group, pin) => {
     const { rig, row, reduced } = ctx;
     // a standing board of house glass in front of the stacks: one column of lamps under each company's lid
-    const slab = block(ctx, roundBox(20.6, 2.62, 0.14, 0.05), 'house', 2.62, { alpha: 0.34 });
+    const slab = block(ctx, roundBox(BAND, 2.62, 0.14, 0.05), DARK, 2.62, { alpha: 0.86 });
     slab.position.set(0, 1.27, BZ);
     group.add(slab);
-    const halfAt = (start) => new SphereGeometry(0.21, 24, 12, start, Math.PI, 0, Math.PI / 2).rotateX(Math.PI / 2);
-    const domes = [halfAt(Math.PI * 1.5), halfAt(Math.PI / 2)];          // the left half, then the right
     const rows = $$('.ail-agn__row', el);
+    // each lamp is the cell's own button, pinned on the board: the same shape the legend and the phone's table show
     const lamps = rows.flatMap((tr, c) => $$('.ail-agn__cell', tr).map((td, r) => {
-      const v = td.dataset.v;
-      const own = owner(tr.dataset.p);
-      // two halves of a dome: both lit for yes, the left one for partly, none for no
-      const halves = domes.map((geo, h) => {
-        const lit = v === 'yes' || (v === 'partial' && h === 0);
-        const m = new Mesh(geo, ctx.mats.core(lit ? own : DARK));
-        m.position.set(ROW_X[c], ROWS_Y[r], BZ + 0.06);
-        m.scale.set(1, 1, 0.6);
-        group.add(m);
-        return { m, lit };
-      });
       const btn = $('.ail-fact', td);
       pin(btn, new Vector3(ROW_X[c], ROWS_Y[r], BZ + 0.1), { ax: 0.5, ay: 0.5 });
-      return { halves, c, r, btn, on: 0 };
+      return { c, r, btn, lamp: $('.ail-lampx', btn), on: 0 };
     }));
-    $$('.ail-agn__q', el).forEach((th, r) => pin(th, new Vector3(-10.45, ROWS_Y[r], BZ), { ax: 1, ay: 0.5 }));
+    $$('.ail-agn__q', el).forEach((th, r) => pin(th, new Vector3(-BAND / 2 - 0.2, ROWS_Y[r], BZ), { ax: 1, ay: 0.5 }));
     $$('.ail-agn__p', el).forEach((th, c) => pin(th, new Vector3(ROW_X[c], 0, BZ + 0.1), { ax: 0.5, ay: 0, dy: 8 }));
-    const shade = shadow(ctx, 20.6, 0.5, { opacity: 0.14, soft: 0.6 });
+    const shade = shadow(ctx, BAND, 0.5, { opacity: 0.14, soft: 0.6 });
     shade.position.set(0.3, 0.004, BZ + 0.3);
     group.add(shade);
+    // The camera's seat, from the window: the row labels start clear of the rail (96 px at 1440), the band ends
+    // 64 px inside the right edge, and band and labels sit as one centred block. A phone keeps the plain row
+    const TAN = Math.tan((24 * Math.PI) / 360);
+    const base = { ...STOPS.board };
+    function seat() {
+      if (ctx.phone) { STOPS.board.cx = 0.5; return; }
+      const W = window.innerWidth, H = window.innerHeight;
+      const left = Math.max(40, Math.min(96, W / 15)), right = Math.max(24, Math.min(64, W / 22.5));
+      const room = Math.max(320, W - left - LABELS - right);
+      const dist = Math.max(29.52, (BAND * H) / (2 * TAN * room) + BZ);
+      const unit = H / (2 * TAN * (dist - BZ));                          // CSS px a world unit takes on the board
+      STOPS.board.fit = Math.max(base.fit, dist * 2 * TAN * (W / H));
+      STOPS.board.cx = (left + LABELS + (W - left - LABELS - right) / 2 + base.look[0] * unit) / W;
+    }
+    seat();
+    window.addEventListener('resize', seat);
     return {
       stops: [0.42],
       update(dt, u) {
@@ -80,16 +86,12 @@ function board(ctx, el, sec) {
         shade.material.opacity = 0.14 * k;
         // the lamps come on row by row, left to right
         lamps.forEach((l) => {
-          l.on = reduced ? 1 : smooth(span(u, 0.06 + l.r * 0.04 + l.c * 0.012, 0.16 + l.r * 0.04 + l.c * 0.012));
-          const hot = l.btn.matches(':hover, :focus-visible') ? 0.25 : 0;
-          l.halves.forEach((h) => {
-            const un = h.m.material.uniforms;
-            un.uShow.value = k; un.uActive.value = h.lit ? l.on * 0.85 + hot : 0;
-            h.m.visible = k > 0.01;
-          });
+          const on = reduced ? 1 : smooth(span(u, 0.06 + l.r * 0.04 + l.c * 0.012, 0.16 + l.r * 0.04 + l.c * 0.012));
+          if (Math.abs(on - l.on) > 0.004 || on === 1) { l.on = on; l.lamp.style.transform = on < 1 ? `scale(${(0.4 + 0.6 * on).toFixed(3)})` : ''; l.lamp.style.opacity = on < 1 ? on.toFixed(3) : ''; }
         });
         return k;
       },
+      dispose() { window.removeEventListener('resize', seat); Object.assign(STOPS.board, base); },
     };
   });
 }
