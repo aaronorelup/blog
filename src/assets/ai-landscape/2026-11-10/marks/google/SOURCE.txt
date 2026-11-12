@@ -1,0 +1,17 @@
+Official mark, unaltered.
+
+google-g.png
+  Google G, full colour, the gradient version, as downloaded from the official guidelines page
+  https://partnermarketinghub.withgoogle.com/brands/google/branding-guidelines/
+  (its download link: storage.googleapis.com/pe-portal-consumer-prod-wagtail-static/original_images/GoogleG_FullColor_RGB.png)
+  Fetched 2026-11-12. Byte-identical to the download. 2820x2820 RGBA PNG.
+  The same page offers GoogleG_FullColor_RGB.eps. No EPS-to-SVG converter was available on the build machine, so
+  the plan's fallback applies: "Keep the PNG as google-g.png if no clean vector comes out of the EPS." There is
+  therefore no google-g.svg.
+
+gemini-spark.svg is NOT shipped. Plan rule: "Google says product icons need a Partner Marketing Hub account and an
+approval form. Owner decision needed (SPEC 10). Until then the Google G is the lid mark and this file is not
+shipped."
+
+Rule kept (read first-hand by the director on that page): full colour only, on white or black, clear space of one
+G width, never modified or recoloured, use to refer to Google and never to imply endorsement.

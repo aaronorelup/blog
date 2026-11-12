@@ -1,0 +1,16 @@
+Official file, unaltered.
+
+grok-mark.svg
+  The Grok app icon as served by xAI at https://grok.com/images/favicon.svg (the plan names this URL as the
+  other official copy of the Grok mark). Fetched 2026-11-12, byte-identical (also identical to the copy the
+  director fetched the same day). It is the app icon: the Grok mark in white inside a black rounded tile.
+
+Not obtained:
+  The brand zip https://data.x.ai/logos/SpaceXAI_Grok_Assets.zip (linked from https://x.ai/legal/brand-guidelines)
+  and the x.ai pages answered HTTP 403 to a script on 2026-11-12. The refusal was not worked around.
+  spacexsi-mark.svg is therefore NOT shipped. A Wikimedia Commons search for a current SpaceXSI/xAI file was cut
+  short by Commons' rate limit (HTTP 429) and was not pushed further. Print the name in house type instead.
+
+Rule kept (read first-hand by the director on x.ai/legal/brand-guidelines): use the logos exactly as provided, with
+no alteration or adjustment, only to refer accurately to the company, never to imply endorsement, and add nothing
+close by that makes a new mark. SpaceXSI says it is a separate company from X, so never use the X logo for it.

@@ -1,0 +1,23 @@
+No Meta mark is shipped in this folder. Both planned files are missing on purpose.
+
+meta-logo.svg (Meta logo, primary variation) - NOT SHIPPED
+  Official source: https://www.meta.com/brand/resources/meta/company-brand/ (page "Updated June 2026", read
+  2026-11-12). Its download (Meta_Company-Lockup.zip) sits behind the checkbox "I have read and accept the
+  applicable guidelines and other terms for use." Accepting Meta's terms is the owner's decision, not the art
+  builder's, so the file was not downloaded. The same page says to "work closely with your Meta counterpart for
+  detailed guidelines and approvals through the internal Brand Review process" (SPEC 10 open item).
+  Fallback checked: Wikimedia Commons "File:Meta Platforms Inc. logo.svg" (public domain, trademarked, credit
+  about.meta.com/brand/resources/meta/company-brand). It was not used: the file itself says "Graphic created by"
+  a Commons contributor, so it is a third-party recreation, not Meta's file.
+  To ship it: the owner accepts the terms on that page, downloads the zip, and the primary-colour SVG goes here
+  unaltered as meta-logo.svg.
+  Rule to keep then (read first-hand by the director): primary colour variation where possible, never under 12 px,
+  clear space of twice the symbol height, never to represent Facebook. Editorials are a listed use; the page also
+  says all use needs approval.
+
+muse-mark.svg (Muse mark, the blue looping M) - NOT SHIPPED
+  Seen in the header of https://muse.ai/ on 2026-11-12; no public download exists. Plan rule: "Ship it only if an
+  official vector file can be obtained. Never redraw or trace it. Without the file, print "Muse" in the house type
+  beside the Meta logo."
+
+Until a file arrives, print the names in house type.
