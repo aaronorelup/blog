@@ -646,10 +646,12 @@ test('tea-hero-26 one actor swapped for another rides its leader and cuts and di
 });
 
 // The shipped manifest's own swap on the page (tests/unit/tea-hero.test.mjs checks the runtime's modules; this checks
-// the scene the page really mounts): Jefrie handed over to her leap mesh, which follows her. Every follower the
+// the scene the page really mounts): Jefrie handed over to her leap mesh, which follows her. An actor hidden at the top
+// of the scroll by its own whole-actor visible or opacity track stands in for another for part of it, so it must
+// follow someone (one that doesn't is drawn at its own place while the other is cut away), and every follower the
 // manifest names is one the runtime knows (a runtime without "follow" drops them all); down the scroll and back, a
 // step either side of every visible key and at 0, 0.3 and 0.6, exactly one of each pair is drawn, the follower on its
-// leader's root; and the number of point lights drawn never changes (a light under a hidden actor is not drawn, so the
+// leader's root; the number of point lights drawn never changes (a light under a hidden actor is not drawn, so the
 // leap actor carries its own pair: a change would recompile every lit material in the middle of the leap).
 test('tea-hero-27 the shipped leap: exactly one of a character and her leap mesh drawn, on one root, the lights the same', async ({ page }) => {
   test.setTimeout(180_000);
@@ -663,6 +665,10 @@ test('tea-hero-27 the shipped leap: exactly one of a character and her leap mesh
     const s = H.state;
     const raw = await (await fetch(document.querySelector('[data-tea-stage]').dataset.manifest || '/tea/hero/manifest.json')).json();
     const wanted = (raw.actors || []).filter((a) => a.follow).map((a) => `${a.follow}>${a.id}`);
+    const first = (t) => [...t.keys].sort((a, b) => a[0] - b[0])[0][1];
+    const standins = (raw.actors || []).filter((a) => (raw.tracks || []).some((t) => t.actor === a.id && !t.node
+      && t.keys && t.keys.length && ((t.channel === 'visible' && first(t) < 0.5) || (t.channel === 'opacity' && first(t) <= 0.004))));
+    const loose = standins.filter((a) => !a.follow).map((a) => a.id);
     const pairs = s.actors.filter((a) => a.spec.follow).map((a) => [a, s.actors.find((b) => b.spec.id === a.spec.follow)]);
     const cuts = raw.tracks.filter((t) => t.channel === 'visible').flatMap((t) => t.keys.map(([p]) => p));
     const ps = [...new Set([0, 0.3, 0.6, ...cuts.flatMap((p) => [p - 0.001, p + 0.001])])]
@@ -686,9 +692,10 @@ test('tea-hero-27 the shipped leap: exactly one of a character and her leap mesh
       else if (n !== lights) bad.push(`progress ${p.toFixed(4)}: ${n} point lights drawn, ${lights} at the top`);
     }
     H.setProgress(null);
-    return { wanted, got: pairs.map(([f, l]) => `${l.spec.id}>${f.spec.id}`), bad };
+    return { wanted, loose, standins: standins.length, got: pairs.map(([f, l]) => `${l.spec.id}>${f.spec.id}`), bad };
   });
-  test.skip(!out.wanted.length, 'the manifest hands no character over to another');
+  test.skip(!out.wanted.length && !out.standins, 'the manifest hands no character over to another');
+  expect(out.loose, 'hidden at the top, following no one').toEqual([]);
   expect(out.got.sort()).toEqual(out.wanted.sort());
   expect(out.bad).toEqual([]);
 });

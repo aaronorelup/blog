@@ -276,8 +276,20 @@ test('camera.portrait.keys: a portrait screen follows its own path, a landscape 
 // of every visible key and at 0, 0.3, 0.6 and 1, exactly one of each pair is drawn, the follower on its leader's root.
 // The page's side of it is e2e tea-hero-27.
 const FOLLOWERS = (SHIPPED.actors || []).filter((a) => a.follow);
+// An actor hidden at the top of the scroll by its own whole-actor visible or opacity track stands in for another for
+// part of it (the leap mesh in Jefrie's place): read from the file as written, so a manifest that has lost a "follow"
+// fails here rather than leaving the swap test below nothing to check.
+const hiddenAtTop = (id) => (SHIPPED.tracks || []).some((t) => t.actor === id && !t.node && t.keys && t.keys.length
+  && ((t.channel === 'visible' && sample(t.keys, 0, 'linear') < 0.5) || (t.channel === 'opacity' && sample(t.keys, 0, 'linear') <= 0.004)));
+const STANDINS = (SHIPPED.actors || []).filter((a) => hiddenAtTop(a.id));
+test('every stand-in of the shipped manifest follows the actor it stands in for', () => {
+  for (const a of STANDINS) {
+    assert.ok(a.follow && SHIPPED.actors.some((b) => b.id === a.follow && b !== a),
+      `${a.id} is hidden at the top of the scroll by its own track and follows no one: it is drawn at its own place`);
+  }
+});
 test('the shipped swap: exactly one of each pair drawn down the scroll and back, the follower on its leader\'s root',
-  { skip: !FOLLOWERS.length && 'the shipped manifest has no follower' }, async () => {
+  { skip: !FOLLOWERS.length && !STANDINS.length && 'the shipped manifest hands no actor over to another' }, async () => {
     const m = normalise(SHIPPED, '/tea/hero/manifest.json');
     for (const f of FOLLOWERS) {
       assert.ok(SHIPPED.actors.some((a) => a.id === f.follow), `${f.id} follows ${f.follow}, which is not an actor`);
