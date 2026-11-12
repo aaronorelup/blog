@@ -35,9 +35,9 @@ environment where one was saved.
 
 - The 4 cores are split into two slots of 2 cores (cores 0-1 and cores 2-3). A job waits for a free slot and
   is pinned to that slot's 2 cores with `sched_setaffinity`, so at most two timed jobs ran at once and each
-  had 2 cores to itself. Of the 722 logged runs, 246 ran in a 2-core slot and 4 with all four cores. The other
-  471 ran unpinned (`--nolock`): light jobs, browser and API jobs, and jobs that could not get a slot while the
-  queue was long. Each lane's `trials.md` says which runs were pinned. One catch found late: native ONNX Runtime
+  had 2 cores to itself. Of the 730 logged runs, 253 ran in a 2-core slot and 5 with all four cores, and one
+  (r0001) is the wrapper's own self-test. The other 471 ran unpinned (`--nolock`): light jobs, browser and API
+  jobs, and jobs that could not get a slot while the queue was long. Each lane's `trials.md` says which runs were pinned. One catch found late: native ONNX Runtime
   sets its own thread affinity and ignored the 2-core slot unless its thread count was set, so timings of
   ONNX Runtime jobs at default settings are not 2-core figures (see the video, audio-to-notes and browser lanes).
 - `--all-cores` takes both slots and all 4 cores, for a whole-box figure.
@@ -67,4 +67,7 @@ Local runs cost nothing beyond the cloud session itself. Calls to paid APIs are 
 The container's worker process restarted at about 20:49 UTC on 2026-11-10, after the test inputs were finished
 and before the ten lanes started, and again at about 01:33 UTC on 2026-11-11 during a site build. The files on disk
 survived both. The run was stopped by hand at about 01:25 UTC on 2026-11-11, when the account's weekly usage limit
-was nearly used up: eleven background workflows were cut off (see `README.md`).
+was nearly used up: eleven background workflows were cut off. It resumed on the same box at about 03:45 UTC on
+2026-11-12 and was finished that day: the cut-off checks were continued under their own headings in each lane's
+`trials.md`, and the one gap round that had not started (chords-beats-key, round 2) was run and checked. Runs
+r0723 to r0730 are from the second sitting.
