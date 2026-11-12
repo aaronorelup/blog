@@ -22,7 +22,7 @@ export function create(ctx, world) {
   const reasons = world.items(1);                             // why each media socket is empty
   const title = $('.ail-sig__list[data-list="0"] h3', el);    // the two standards, by name
   const go = world.button('go');
-  const st = { run: [], hop: null, rest: 0, at: -1, cardAt: -1, mode: '', tour: false, auto: false, ledge: 0, hold: 0, catching: false, sel: -1, drag: null, dragged: false, step: 0, hung: 0, on: false, gone: false };
+  const st = { run: [], hop: null, rest: 0, at: -1, cardAt: -1, mode: '', tour: false, auto: false, ledge: 0, hold: 0, catching: false, sel: -1, drag: null, dragged: false, step: 0, hung: 0, on: false, age: 0, column: false, lids: 1, gone: false };
   const sig = { lit: -1, dark: false };
   const root = new Group();                                   // the room's own coordinates: x and z from the stack's foot
   root.visible = false;
@@ -58,16 +58,22 @@ export function create(ctx, world) {
       document.body.appendChild(s.img);
       s.over = tex.userData.over;
     });
-    if (!ctx.phone) s.pin = labels.pin(li, () => v.copy(s.pos).add(root.position).setY(s.pos.y - 0.08), { ax: 0.5, ay: 0, dy: 9 });
+    if (!ctx.phone) s.pin = labels.pin(li, () => (st.column ? v.set(s.pos.x + 0.5, s.pos.y + 0.33, s.pos.z) : v.set(s.pos.x, s.pos.y - 0.08, s.pos.z)).add(root.position));
     return s;
   });
-  // a shelf to the upper right on a wide screen, a column beside the stack on a phone
+  // a shelf to the upper right where it fits beside the stack, else a column close to it (a phone, a narrow window)
   function layout() {
     const stop = ctx.rig.world(0, 'open');
-    const depth = stop.pos[2] + 0.4;
+    const depth = stop.pos[2] + 0.4, n = Math.max(1, stations.length - 1);
     const right = stop.pos[0] + ((stop.look[0] - stop.pos[0]) * depth) / stop.pos[2] + depth * Math.tan((stop.fov * Math.PI) / 360) * camera.aspect;
-    const gap = Math.max(0.8, Math.min(1.24, (right - 3.72) / Math.max(1, stations.length - 1)));
-    stations.forEach((s, k) => (ctx.phone ? s.pos.set(2.2, 4.86 - k * 1.14, 0.2) : s.pos.set(2.95 + k * gap, 4.42, -0.4)));
+    const gap = Math.max(0.98, Math.min(1.24, (right - 3.5) / n));
+    const first = Math.max(2.5, Math.min(2.95, right - 0.55 - gap * n));
+    st.column = ctx.phone || right < 5.9;
+    stations.forEach((s, k) => {
+      if (st.column) s.pos.set(2.2, 4.86 - k * 1.14, 0.2); else s.pos.set(first + k * gap, 4.42, -0.4);
+      if (s.pin) Object.assign(s.pin, st.column ? { ax: 0, ay: 0.5, dx: 8, dy: 0 } : { ax: 0.5, ay: 0, dx: 0, dy: 9 });
+    });
+    world.ui.toggleAttribute('data-column', st.column && !ctx.phone);
   }
   layout();
   window.addEventListener('resize', layout);
@@ -97,17 +103,22 @@ export function create(ctx, world) {
     tower.group.add(mesh);
     return mesh;
   });
-  const reasonPins = ctx.phone ? [] : reasons.map((li) => labels.pin(li, () => tower.anchor(MODEL, 1, labels.project), { ay: 0.5 }));
+  // the reasons are pinned as one list beside the floor's end, so a long one may wrap on a narrow screen
+  const reasonList = reasons.length && !ctx.phone ? reasons[0].parentElement : null;
+  const reasonPin = reasonList ? labels.pin(reasonList, () => tower.anchor(MODEL, 1, labels.project)) : null;
   // k 0 to 1: how far the model floor is out. `under` leaves the floor's own callout its place (beat d)
   function sockets(k, under = false) {
     const f = tower.floors[MODEL];
-    if (k > 0.001) f.slide = Math.max(f.slide, k * (ctx.phone ? 0.55 : 0.95));
+    if (k > 0.001) f.slide = Math.max(f.slide, k * (ctx.phone || (st.column && !under) ? 0.55 : 0.95));
     hoops.forEach((mesh, n) => { mesh.visible = k > 0.02; mesh.position.set(f.slide + 0.44 + n * 0.3, f.y + FLOOR.h / 2 + 0.155, 0.76); });
     strip.visible = k > 0.02;
     strip.position.set(f.slide + 0.44 + (hoops.length - 1) * 0.15, f.y + FLOOR.h / 2 + 0.155, 0.74);
     hoopMat.opacity = Math.min(1, k * 1.4); strip.material.opacity = Math.min(1, k * 1.4) * 0.94;
     reasons.forEach((li, n) => li.classList.toggle('is-on', k > 0.5 + n * 0.14));
-    reasonPins.forEach((pin, n) => { pin.dx = under ? 46 : 18; pin.dy = under ? 46 + n * 31 : (n - (reasons.length - 1) / 2) * 31; });
+    if (reasonPin) {
+      Object.assign(reasonPin, under ? { dx: 46, dy: 30, ay: 0 } : { dx: 18, dy: 0, ay: 0.5 });
+      reasonList.style.maxWidth = `${Math.max(240, window.innerWidth - tower.anchor(MODEL, 1, labels.project).x - reasonPin.dx - 16).toFixed(0)}px`;
+    }
   }
 
   // ---- the small pixel creature of its command-line tool lives on floor 8, the floor the agent steers it from
@@ -207,10 +218,12 @@ export function create(ctx, world) {
   sig.update = (dt, amount) => {
     const quick = ctx.reduced ? 1 : 0;
     root.position.set(tower.x + tower.shift, 0, tower.z);
-    // the frame is lowered onto the plain wall once the name has left the room, and lifted before it returns
+    // the frame is lowered onto the plain wall only once the name has quite left the room (the title stood where
+    // it hangs), over the next third of a screen, and is lifted again before the name returns
     const frame = inst.parts.portrait;
     if (frame && cfg.portrait.hangs != null) {
-      if (inst.open > 0.02) st.hung = ctx.phone ? 0 : 1 - Math.min(1, inst.nameShow / inst.open);        // a phone has no clear wall beside the stack
+      const gone = inst.open > 0.02 && inst.nameShow / inst.open < 0.02;
+      if (inst.open > 0.02) st.hung = ctx.phone || !gone ? 0 : ctx.reduced ? 1 : smooth(span(world.sec.u, 0.9, 1.22));      // a phone has no clear wall beside the stack
       frame.position.y = lerp(cfg.portrait.y, cfg.portrait.hangs, easeOut(st.hung));
     }
     pet.visible = tower.open > 0.6 && !!pet.material.uniforms.uMap.value;
@@ -219,7 +232,9 @@ export function create(ctx, world) {
       pet.quaternion.copy(camera.quaternion);
       pet.material.uniforms.uOpacity.value = smooth(span(tower.open, 0.6, 0.95)) * tower.show;
     }
-    st.on = amount > 0.5;
+    // words wait half a second after the beat's own block has settled: until then a pinned word would sit askew
+    st.age = amount > 0.01 ? st.age + dt : 0;
+    st.on = amount > 0.5 && (st.age > 0.5 || ctx.reduced);
     root.visible = amount > 0.01;
     if (!root.visible) { if (!st.catching) st.hold = 0; cord.draw = 0; cord.update(); stations.forEach((s) => { if (s.img) s.img.style.opacity = '0'; }); return; }
 
@@ -256,29 +271,33 @@ export function create(ctx, world) {
     // the lids, and what each one keeps of a visit: a clay bead for the plug, a clay chip for the card
     const active = st.sel >= 0 ? st.sel : st.hop ? st.hop.k : st.at;
     const words = st.on && st.mode !== 'sockets';
+    // in a narrow window the column stands where the reasons go: the lids step back while the sockets are out
+    const stay = st.column && !ctx.phone && st.mode === 'sockets' ? 0 : 1;
+    st.lids = quick ? stay : damp(st.lids, stay, 6, dt);
+    const show = amount * st.lids;
     stations.forEach((s, k) => {
       s.inK = quick ? (s.in ? 1 : 0) : damp(s.inK, s.in ? 1 : 0, 10, dt);
       s.cardK = quick ? s.card : damp(s.cardK, s.card, 10, dt);
       s.pulse = Math.max(0, s.pulse - dt * 1.4);
       s.slab.position.copy(s.pos);
       const u = s.slab.material.uniforms;
-      u.uShow.value = amount; u.uPulse.value = smooth(s.pulse); u.uHatch.value = s.in === 0.5 ? 1 : 0; u.uFrost.value = s.seen && !(s.ext.mcp in { yes: 1, partial: 1, no: 1 }) ? 1 : 0;
+      u.uShow.value = show; u.uPulse.value = smooth(s.pulse); u.uHatch.value = s.in === 0.5 ? 1 : 0; u.uFrost.value = s.seen && !(s.ext.mcp in { yes: 1, partial: 1, no: 1 }) ? 1 : 0;
       s.plate.position.set(s.pos.x, s.pos.y + 0.7, s.pos.z);
       s.plate.quaternion.copy(camera.quaternion);
-      s.plate.material.uniforms.uOpacity.value = amount;
+      s.plate.material.uniforms.uOpacity.value = show;
       s.seat.position.set(s.pos.x - 0.22, s.pos.y, s.pos.z + 0.3);
       s.seat.scale.setScalar(Math.max(0.001, smooth(s.inK)));
-      s.seat.material.uniforms.uShow.value = amount; s.seat.material.uniforms.uActive.value = smooth(s.pulse);
+      s.seat.material.uniforms.uShow.value = show; s.seat.material.uniforms.uActive.value = smooth(s.pulse);
       s.chip.position.set(s.pos.x + 0.2, s.pos.y, s.pos.z + 0.3);
       s.chip.scale.setScalar(Math.max(0.001, smooth(s.cardK)));
-      s.chip.material.uniforms.uShow.value = amount;
+      s.chip.material.uniforms.uShow.value = show;
       s.li.classList.toggle('is-on', words);
       s.li.toggleAttribute('data-picked', words && k === active);
       s.li.toggleAttribute('data-seen', s.seen);
       if (s.img) {                                                      // the same sums as the row's own lid image
         const p = labels.project(v.copy(s.plate.position).add(root.position));
         const px = (PLATE * s.over * window.innerHeight) / (2 * v.sub(camera.position).dot(camera.getWorldDirection(bend)) * Math.tan((camera.fov * Math.PI) / 360));
-        s.img.style.opacity = amount.toFixed(3);
+        s.img.style.opacity = show.toFixed(3);
         s.img.style.transform = `translate3d(${p.x.toFixed(1)}px,${p.y.toFixed(1)}px,0) translate(-50%,-50%) scale(${(px / 100).toFixed(4)})`;
       }
     });
@@ -297,7 +316,7 @@ export function create(ctx, world) {
     window.removeEventListener('resize', layout);
     unhear();
     stations.forEach((s) => { if (s.pin) s.pin.drop(); if (s.img) s.img.remove(); if (s.tex) s.tex.dispose(); });
-    reasonPins.forEach((p) => p.drop());
+    if (reasonPin) { reasonPin.drop(); reasonList.style.maxWidth = ''; }
     if (titlePin) titlePin.drop();
     // the slab is the stack's own shared shape: its materials go, the shape stays
     root.traverse((o) => { if (o.material) o.material.dispose(); if (o.geometry && o.geometry !== slabGeometry()) o.geometry.dispose(); });

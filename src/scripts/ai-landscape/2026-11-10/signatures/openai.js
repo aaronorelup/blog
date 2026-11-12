@@ -24,7 +24,7 @@ export function create(ctx, world) {
   const empty = world.catchItems();            // the reason beside the empty media socket
   const worksTitle = ctx.phone ? $('.ail-sig__list[data-list="1"] h3', world.el) : null;      // in the phone's sheet the workers get their heading
   const go = world.button('go');
-  const st = { held: false, manual: false, auto: 0, lift: 0, level: 0, t: -1, free: -1, said: false, step: 0, floor: -1, back: false, told: false };
+  const st = { held: false, manual: false, auto: 0, lift: 0, level: 0, t: -1, free: -1, said: false, step: 0, floor: -1, back: false, told: false, age: 0, caught: 0 };
   const sig = { lit: -1, dark: false };
   const v = new Vector3(), at = new Vector3();
   const say = (li) => [...li.querySelectorAll('.ail-own, .ail-note, .ail-tag')].map((n) => n.textContent.trim()).filter(Boolean).join('. ');
@@ -97,7 +97,8 @@ export function create(ctx, world) {
     strip.visible = k > 0.02;
     strip.position.set(f.slide + 0.44 + (hoops.length - 1) * 0.15, f.y + FLOOR.h / 2 + 0.155, 0.74);
     hoopMat.opacity = Math.min(1, k * 1.4); strip.material.opacity = Math.min(1, k * 1.4) * 0.94;
-    empty.forEach((li) => li.classList.toggle('is-on', k > 0.5));
+    st.caught = k > 0.001 ? st.caught + (ctx.dt || 0) : 0;      // its words wait until the catch's own block has settled
+    empty.forEach((li) => li.classList.toggle('is-on', k > 0.5 && (st.caught > 0.5 || ctx.reduced)));
   }
 
   // ---- holding and letting go. A task that has left the voice floor is nobody's to stop
@@ -159,7 +160,9 @@ export function create(ctx, world) {
     if (st.t >= 0 && !now) st.t += dt;
     const t = st.t;
     const end = until();
-    const on = amount > 0.5;
+    // words wait half a second after the beat's own block has settled: until then a pinned word would sit askew
+    st.age = amount > 0.01 ? st.age + dt : 0;
+    const on = amount > 0.5 && (st.age > 0.5 || ctx.reduced);
 
     // the voice floor, and the interface above it, lift half a unit. The visitor's own thread stops there, talking
     const up = 0.5 * smooth(st.lift) * amount;
