@@ -104,7 +104,7 @@ test.describe('cf', () => {
   });
 });
 
-// goobie-lab's post (AO-078) is a draft, so no built page has it: until it's out its four parts are mounted into the
+// goobie-lab's post (AO-083) is a draft, so no built page has it: until it's out its four parts are mounted into the
 // first built page with an <ao-demo>, with the demo's own stylesheet, as the post's article would hold them.
 const LAB_CSS = fs.readFileSync(new URL('../../../src/elements/ao-demo/demos/goobie-lab/style.css', import.meta.url), 'utf8');
 async function openLab(page) {

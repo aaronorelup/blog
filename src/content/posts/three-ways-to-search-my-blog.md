@@ -1,5 +1,5 @@
 ---
-id: "AO-078"
+id: "AO-083"
 title: "Three ways an AI can answer questions from my blog"
 summary: "I had Claude test three ways an AI model can answer from my 72 posts. An agent with search tools was the most accurate and the slowest, reading them all kept pace on whole-blog questions, and a passage search only on lookups."
 date: 2026-11-06

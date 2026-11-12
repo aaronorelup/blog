@@ -267,7 +267,7 @@ streams the same two films.
 
 ### `ao-demo`: claude-text-watermark (`synthid`), who-visits-a-new-website (`cf`), three-ways-to-search-my-blog (`goobie-lab`)
 
-`goobie-lab`'s post (AO-078) is a draft, so the build has no page of it: until it's out, `demo.spec.mjs` mounts the
+`goobie-lab`'s post (AO-083) is a draft, so the build has no page of it: until it's out, `demo.spec.mjs` mounts the
 parts into the first built page with an `<ao-demo>`, with the demo's own stylesheet, as the post's article would.
 
 | Behaviour | Listener or attribute | Spec |
