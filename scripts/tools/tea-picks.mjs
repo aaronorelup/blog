@@ -7,25 +7,31 @@ import { fileURLToPath } from 'node:url';
 import { loadRepo } from '../check/repo.mjs';
 import { picksSite } from '../check/tea-picks.mjs';
 import { TEA_CHAPTERS } from '../../src/data/tea-chapters.js';
-import { PICKS_FILE, picksFile, readPicks } from '../../src/lib/tea-picks.js';
+import { fromPicker, PICKS_FILE, picksFile, readPicks } from '../../src/lib/tea-picks.js';
 
+const stop = (reason) => { console.error(`tea:picks: ${reason}`); process.exit(1); };
 const args = process.argv.slice(2);
 const at = args.indexOf('--root');
-const root = at < 0 ? fileURLToPath(new URL('../../', import.meta.url)) : path.resolve(args.splice(at, 2)[1]);
+const [, dir] = at < 0 ? [] : args.splice(at, 2);
+if (at >= 0 && !dir) stop('--root needs the folder of the repo to write into: --root <dir>');
+const root = dir ? path.resolve(dir) : fileURLToPath(new URL('../../', import.meta.url));
 const [input] = args;
-const stop = (reason) => { console.error(`tea:picks: ${reason}`); process.exit(1); };
 if (!input) stop('name the JSON file that holds the picker\'s saved document: npm run tea:picks -- <file>');
 
 let doc;
-try { doc = JSON.parse(fs.readFileSync(input, 'utf8')); } catch (e) { stop(`${input}: ${e.code === 'ENOENT' ? 'no such file' : e.message}`); }
+try { doc = fromPicker(JSON.parse(fs.readFileSync(input, 'utf8'))); } catch (e) { stop(`${input}: ${e.code === 'ENOENT' ? 'no such file' : e.message}`); }
 
 const repo = loadRepo(root);
-let warnings;
-try { ({ warnings } = readPicks(doc, TEA_CHAPTERS, picksSite(repo), { source: input, allowPrivate: true })); } catch (e) { stop(e.message); }
+let chapters, warnings;
+try { ({ chapters, warnings } = readPicks(doc, TEA_CHAPTERS, picksSite(repo), { source: input, allowPrivate: true })); } catch (e) { stop(e.message); }
 
 const text = picksFile(doc, TEA_CHAPTERS);
 const before = repo.exists(PICKS_FILE) ? repo.read(PICKS_FILE) : null;
-for (const w of warnings) console.log(`warn  ${w}`);
+for (const w of warnings) console.log(`warn  ${w.text}`);
+// An auto shelf fills itself on the page in ledger order, which the picker's preview may not match: say what it shows.
+for (const c of chapters) {
+  for (const s of c.shelves.filter((s) => s.auto)) console.log(`auto  ${c.id}/${s.id} shows ${s.keys.join(', ') || 'nothing'}`);
+}
 if (before === text) {
   console.log(`tea:picks: ${PICKS_FILE} already holds these picks, nothing changed`);
   process.exit(0);

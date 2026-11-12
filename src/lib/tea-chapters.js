@@ -12,15 +12,19 @@ import { postRow, projectHref, roman } from './tea.js';
 export function resolveChapters(doc, registry, { posts, notes, cards, hasMachine, warn = () => {} }) {
   const listed = new Map(posts.filter((p) => isListed(p.data)).map((p) => [p.id, p]));
   const byKey = new Map(cards.map((c) => [c.key, c]));
-  const { chapters, warnings } = readPicks(doc, registry, { posts, projects: new Set(byKey.keys()), hasMachine });
-  warnings.forEach((w) => warn(w));
+  const projects = new Map(cards.map((c) => [c.key, c.section]));
+  const { chapters, warnings } = readPicks(doc, registry, { posts, projects, hasMachine });
+  warnings.forEach((w) => warn(w.text));
   const row = {
     post: (slug) => ({ kind: 'post', ...postRow(listed.get(slug), notes) }),
     project: (key) => {
       const card = byKey.get(key);
-      const hidden = (card.posts ?? []).find((p) => !listed.has(p.slug));
-      if (hidden) throw new Error(`src/data/tea-picks.json: project "${key}" links "${hidden.slug}", which is not a listed post`);
-      return { kind: 'project', key, card, ...projectHref(card) };
+      const link = projectHref(card);
+      // the link the row carries and every post the card names: lib/projects.js refuses only the latter upstream
+      const slugs = [/^\/ledger\/([^/?#]+)/.exec(link.href)?.[1], ...(card.posts ?? []).map((p) => p.slug)].filter(Boolean);
+      const hidden = slugs.find((slug) => !listed.has(slug));
+      if (hidden) throw new Error(`src/data/tea-picks.json: project "${key}" links "${hidden}", which is not a listed post`);
+      return { kind: 'project', key, card, ...link };
     },
     machine: (name) => ({ kind: 'machine', key: name, href: `/labs/teardown/${name}/` }),
   };
