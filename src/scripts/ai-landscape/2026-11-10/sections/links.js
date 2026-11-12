@@ -153,8 +153,10 @@ export function create(ctx, el, sec) {
       // lights down: the room sweeps dark, a low wash of light keeps the glass and the floor readable
       studio.dark = 0.999 * k; studio.roomX = 0;
       studio.glow.amount = 0.62 * k; studio.glow.radius = 19; studio.glow.color.set('#9EA6B8'); studio.glow.pos.set(0, 3.5, 7);
-      // the chrome and the words flip to paper on ink while the room is dark
-      if ((k > 0.5) !== (document.documentElement.dataset.chrome === 'dark')) { if (k > 0.5) document.documentElement.dataset.chrome = 'dark'; else delete document.documentElement.dataset.chrome; }
+      // the chrome and the words flip to paper on ink while the room is dark. The sweep comes from the left, where
+      // the title stands, so they flip as it reaches the title (a third of the way) and not at the middle of the room
+      const night = k > 0.34;
+      if (night !== (document.documentElement.dataset.chrome === 'dark')) { if (night) document.documentElement.dataset.chrome = 'dark'; else delete document.documentElement.dataset.chrome; }
 
       if (!st.touched && !reduced && k > 0.95) {
         st.clock += dt;

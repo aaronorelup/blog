@@ -195,6 +195,8 @@
 .ail-ar-more .ail-ar-glyph { display: none; }
 .ail-gl .ail-ar-more { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--ail-fg); background: var(--ail-card); }
 .ail-gl .ail-ar-more .ail-ar-glyph { display: block; }
+/* the three dots of a "more" button are drawn as dots, heavy enough to be seen as a control */
+.ail-gl .ail-ar-more .ail-ar-glyph, .ail-gl .ail-ms__restbtn .ail-ar-glyph { width: 22px; height: 22px; stroke-width: 2.8; }
 .ail-gl [open] > .ail-ar-more { background: var(--ail-fg); color: var(--ail-bg); }
 .ail-gl .ail-ar-morew, .ail-gl .ail-bill__pn, .ail-gl .ail-agn__w { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 

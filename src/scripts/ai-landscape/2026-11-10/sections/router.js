@@ -110,8 +110,9 @@ export function create(ctx, el, sec) {
     stops: [0.25, 0.5, 0.82],
     enter() { group.visible = true; pins.forEach((p) => { p.on = true; }); },
     leave() { hide(); pins.forEach((p) => { p.on = false; p.el.style.opacity = '0'; }); st.chosen = -1; },
-    update(t, dt, u) {
+    update(t, dt) {
       st.time += dt;
+      const u = t;                                 // every stop below is a share of the section, whatever its length in screens
       const lit = st.chosen >= 0 ? st.chosen : u < 0.36 ? 0 : u < 0.62 ? 1 : 2;
       light(lit);
       const k = smooth(span(u, 0, 0.16)) * (1 - smooth(span(u, 0.88, 1)));

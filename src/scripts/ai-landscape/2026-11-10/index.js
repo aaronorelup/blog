@@ -103,7 +103,14 @@ function boot() {
     history.pushState(null, '', a.hash);
   });
   window.addEventListener('hashchange', () => { if (state.tier !== 'static') land(location.hash, false); });
-  if (location.hash) land(location.hash, false);
+  if (location.hash) {
+    land(location.hash, false);
+    // the browser's own scroll to the anchor can come after this one and leave the page at the section's top,
+    // so the page lands once more when it has loaded, unless the visitor has already started to scroll
+    let touched = false;
+    const off = input.onInput((kind) => { if (kind !== 'move') { touched = true; off(); } });
+    window.addEventListener('load', () => requestAnimationFrame(() => { off(); if (!touched && land(location.hash, false)) { clock.update(0); clock.jump(); } }), { once: true });
+  }
   clock.update(0); clock.jump();
   state.tier = rung.name;
 

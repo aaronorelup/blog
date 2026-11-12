@@ -1,7 +1,7 @@
 // The nine layers, taught once (SPEC 2.2): the five stacks close into one neutral grey stack and a request drops
 // through it as an ink thread. Nine stops of 0.4 screens after a 0.3 lead-in, in three camera acts. One layer's
 // words at a time, its glyph lit on its floor, a chip by the thread head that shows what the request has become.
-// In the last 0.2 the answer climbs back as a pale line, and the five come back around the grey stack.
+// After the ninth the answer climbs back as a pale line, and over the last quarter screen the five come back around the grey stack.
 import { Raycaster, Vector2, Vector3 } from 'three';
 import { easeIO, lerp, smooth, span } from '../core/clock.js';
 import { $, $$, announce } from '../core/dom.js';
@@ -96,7 +96,8 @@ export function create(ctx, el, sec) {
       // where the thread's head is, as a point of its path: 0 the sentence, 1 over the lid, 2 the first floor
       const f = u < LEAD ? smooth(span(u, 0.1, 0.28)) : 1 + i + easeIO(span((u - LEAD - i * STEP) / STEP, 0, 0.35));
       const pf = f - 2;
-      const done = smooth(span(u, END + 0.13, END + 0.2));
+      // the five come back over a quarter of a screen, so the line-up arrives and never pops in (it used to take 60 px of scroll)
+      const done = smooth(span(u, END + 0.2, END + 0.47));
       const away = smooth(span(u, 0, 0.24)) * (1 - done);
       const there = smooth(span(away, 0.3, 0.85));
 
@@ -110,7 +111,7 @@ export function create(ctx, el, sec) {
       }
       row.datum = 1 - smooth(span(u, 0, 0.1));
       sp.reset(); sp.show = there;
-      const shut = 1 - smooth(span(u, END, END + 0.1));
+      const shut = 1 - smooth(span(u, END, END + 0.12));
       let sum = 0;
       for (let k = N - 2; k >= 0; k--) { sum += GAP * (1 - smooth(Math.abs(pf - (k + 0.5)) - 0.5)) * there * shut; raise[k] = sum; }
       const a = u >= LEAD && u < END ? i : -1;
@@ -133,9 +134,9 @@ export function create(ctx, el, sec) {
       // the thread: from the sentence, over the lid, through the centre of every floor. The answer comes back up it
       pts[0].set(0, topY + 1.5, 0); pts[1].set(0, topY + 0.32, 0);
       for (let k = 0; k < N; k++) pts[k + 2].set(0, yOf(k), 0);
-      const drawn = there * smooth(span(u, 0.08, 0.14)) * (1 - smooth(span(u, END + 0.1, END + 0.16)));
+      const drawn = there * smooth(span(u, 0.08, 0.14)) * (1 - smooth(span(u, END + 0.16, END + 0.24)));
       thread.points = pts; thread.at(ctx.reduced ? N + 1 : f); thread.show = drawn;
-      const up = span(u, END, END + 0.11);
+      const up = span(u, END, END + 0.15);
       answer.points = back; answer.at(easeIO(up) * (N + 1)); answer.dark = 1; answer.show = up > 0 ? drawn : 0;
       answer.update();
       // on the delegation floor two lines leave the stack, one to each side: the work handed to other agents
@@ -149,16 +150,16 @@ export function create(ctx, el, sec) {
       // camera and lamp: three acts joined on arcs, in from the row and back out to it
       const y = pf <= 0 ? yOf(0) : lerp(yOf(Math.floor(pf)), yOf(Math.min(N - 1, Math.floor(pf) + 1)), pf - Math.floor(pf));
       const stop = stand(TURNS.reduce((n, [from, to]) => n + easeIO(span(u, from, to)), 0), y);
-      const w = easeIO(span(u, 0.02, LEAD)) * (1 - easeIO(span(u, END - 0.02, END + 0.14)));
+      const w = easeIO(span(u, 0.02, LEAD)) * (1 - easeIO(span(u, END - 0.02, END + 0.22)));
       rig.mix(rig.stops.row, stop, w);
       studio.lamp.set(...HOURS.hero).lerp(lamp, w);
       studio.warmth = stop.warm * w;
 
       // words: the request while the thread drops, then one layer at a time, then the closing line with the request
       setActive(a);
-      const back2 = smooth(span(u, END + 0.03, END + 0.08)) * (1 - smooth(span(u, END + 0.15, END + 0.2)));
+      const back2 = smooth(span(u, END + 0.03, END + 0.08)) * (1 - smooth(span(u, END + 0.2, END + 0.28)));
       show(ask, smooth(span(u, 0.05, 0.14)) * (1 - span(u, 0.23, 0.29)) + back2);
-      show(close, smooth(span(u, END, END + 0.05)) * (1 - smooth(span(u, END + 0.15, END + 0.2))));
+      show(close, smooth(span(u, END, END + 0.05)) * (1 - smooth(span(u, END + 0.36, END + 0.47))));
       show(chip, drawn * smooth(span(f, 1.5, 1.9)) * (1 - span(u, END, END + 0.03)));
       if (!input.touch && input.moved) ctx.canvas.style.cursor = pick(input.px, input.py) >= 0 ? 'pointer' : '';
     },
