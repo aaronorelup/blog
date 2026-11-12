@@ -1,7 +1,7 @@
 // The tea room's one projection (pure: no DOM, no state). A scene is drawn on a board of 1600x900 units (d) or
 // 900x1600 (p), fitted to cover the window. The camera is a pinhole that pushes by m toward the scene's aim: a
 // flat standing at distance r is drawn r / (r - m) times its rest size, about the aim's place on the screen.
-// frame.js places flats, slots and ports with it, layout.js resolves the named pushes with it, and
+// frame.js places flats, slots and ports with it, plan.js resolves the named pushes with it, and
 // src/lib/tea-scene.js checks sharpness and cover with it, so the page and the checks can never disagree.
 
 export const BOARD = Object.freeze({ d: Object.freeze([1600, 900]), p: Object.freeze([900, 1600]) });

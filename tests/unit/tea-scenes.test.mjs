@@ -166,6 +166,13 @@ test('lengths: base + per x n, known before layout; the chapter after the hero a
   assert.equal(Math.round(total * 100) / 100, 13.5);
 });
 
+test('a chapter too short for its screens to open on it and shut after it is refused', () => {
+  const short = structuredClone(STUBS.now);
+  short.scene.length = { d: [0.9, 0], p: [1.8, 0] };
+  const { room } = compileRoom([ch('hero'), ch('start'), ch('now'), ch('about')], { hero, start: STUBS.start, now: short, about: STUBS.about });
+  assert.deepEqual(checkRoom(room).errors, ['now d: 0.90 vh is too short for the screens to open on it and shut after it']);
+});
+
 test('two neighbours with one phone layout are named in a warning', () => {
   const twin = structuredClone(STUBS.film);
   twin.scene.p.layout = 'sheets';

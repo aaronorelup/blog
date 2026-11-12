@@ -10,6 +10,7 @@
 import { chapterLength, paperSpan } from '../scripts/tea/room/engine/lengths.js';
 import { plan } from '../scripts/tea/room/engine/plan.js';
 import { cameraAt, poseScene, slotRect } from '../scripts/tea/room/engine/pose.js';
+import { CLOSE, IN, OUT } from '../scripts/tea/room/engine/screens.js';
 import { compOf, coverScale, grow, holds, moved, overlap, portScale, SHARP, windowRect } from '../scripts/tea/room/engine/project.js';
 import { compileRoom, roomJson, TeaSceneError } from './tea-scene.js';
 
@@ -219,6 +220,19 @@ function pieces(room, fns, errors) {
   }
 }
 
+// Two screens changes never overlap: each chapter is long enough to finish opening on it before the next change
+// (or the house closing) begins, in both compositions.
+function spacing(room, errors) {
+  for (const comp of ['d', 'p']) {
+    const L = plan(room, comp === 'd' ? { w: 1440, h: 900 } : { w: 390, h: 844 });
+    L.chapters.forEach((c, i) => {
+      const opens = i === 0 || (i === 1 && L.chapters[0].hero) ? 0 : OUT[1];
+      const next = c.last ? -CLOSE[0] : -IN[0];
+      if (c.len < opens + next) errors.push(`${c.id} ${comp}: ${fmt(c.len)} vh is too short for the screens to open on it and shut after it`);
+    });
+  }
+}
+
 // Every check over a compiled room. marks: { d, p } measured marks by composition, or { all } (estimated when
 // absent). fns: the set pieces by chapter id. Returns { errors, warnings }, each a list of sentences.
 export function checkRoom(room, { marks = null, fns = null } = {}) {
@@ -227,6 +241,7 @@ export function checkRoom(room, { marks = null, fns = null } = {}) {
   cover(room, marks, errors);
   openings(room, marks, errors);
   pieces(room, fns, errors);
+  spacing(room, errors);
   return { errors: [...new Set(errors)], warnings: [...new Set(warnings)] };
 }
 

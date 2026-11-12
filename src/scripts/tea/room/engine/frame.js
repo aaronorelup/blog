@@ -8,7 +8,8 @@ import { hash01, within } from './tracks.js';
 // What an off slot holds: opacity 0, no pointer, data-off. The same value every time, written every frame.
 export const OFF = Object.freeze({ on: false, x: 0, y: 0, w: 0, h: 0, o: 0 });
 
-const finite = (x, d) => (Number.isFinite(x) ? x : Number.isNaN(x) || x === undefined ? d : x > 0 ? 1e12 : -1e12);
+// An input that is not a finite number: NaN or not a number at all is d, an infinity the far end of the page.
+const finite = (x, d) => (Number.isFinite(x) ? x : typeof x !== 'number' || Number.isNaN(x) ? d : x > 0 ? 1e12 : -1e12);
 
 // The chapter that holds y (px): the last whose section begins at or above it. Above the page, the first; below
 // it (the footer), the last.
