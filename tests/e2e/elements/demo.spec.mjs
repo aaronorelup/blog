@@ -1,5 +1,6 @@
 // <ao-demo>: the per-post demos, loaded as their own chunk. synthid (AO-0 claude-text-watermark) has five parts, cf
-// (who-visits-a-new-website) two; /cdn-cgi/trace and /api/reads are answered by the fixtures.
+// (who-visits-a-new-website) two, goobie-lab (three-ways-to-search-my-blog) four; /cdn-cgi/trace and /api/reads are
+// answered by the fixtures, goobie-lab's live tools by the build's own /ask/ files and /rss.xml.
 import { test, expect } from '../fixtures.mjs';
 import { open, pageWith } from '../helpers.mjs';
 
@@ -99,5 +100,136 @@ test.describe('cf', () => {
     const d = demo(page, 'cf', 'count');
     await expect(d).toContainText('5');
     await expect(d).toContainText('Not counted: this browser says it is automated.');
+  });
+});
+
+// goobie-lab's four parts, on its post's own page (AO-083), as a reader gets them.
+const lab = (page, part) => page.locator(`ao-demo[name="goobie-lab"][part="${part}"] > .gl`);
+const slide = (range, value) => range.evaluate((r, v) => { r.value = String(v === 'max' ? r.max : v); r.dispatchEvent(new Event('input', { bubbles: true })); }, value);
+
+test.describe('goobie-lab', () => {
+  test.beforeEach(async ({ page }) => open(page, pageWith('ao-demo', (a) => a.name === 'goobie-lab')));
+
+  test('demo-lab-1 windows: the three ways, each with its map, in-context seeing every post and RAG a few', async ({ page }) => {
+    const d = lab(page, 'windows');
+    await expect(d.locator('.gl-way')).toHaveCount(3);
+    const posts = await d.locator('.gl-way-context .gl-post').count();
+    expect(posts).toBeGreaterThan(50);
+    await expect(d.locator('.gl-way-context .gl-post.is-seen')).toHaveCount(posts);
+    const rag = await d.locator('.gl-way-rag .gl-post.is-seen').count();
+    expect(rag).toBeGreaterThan(0);
+    expect(rag).toBeLessThan(posts / 4);
+    await expect(d.locator('.gl-way-agent .gl-post.is-seen').first()).toBeAttached();
+  });
+
+  test('demo-lab-2 context: another question redraws the figures and the answer, and a blog past the window no longer fits', async ({ page }) => {
+    const d = lab(page, 'context');
+    const answer = d.locator('.gl-answer');
+    const figures = d.locator('.gl-run .gl-stats');
+    const before = await answer.textContent();
+    const figs = await figures.textContent();
+    await d.locator('button.gl-q[aria-pressed="false"]').first().click();
+    await expect(answer).not.toHaveText(before);
+    await expect(figures).not.toHaveText(figs);
+    await expect(d.locator('button.gl-q[aria-pressed="true"]')).toHaveCount(1);
+    const out = d.locator('.gl-grow-out');
+    await expect(out).toContainText('of the window');
+    await slide(d.locator('.gl-grow input[type=range]'), 'max');
+    await expect(out).toContainText('no longer fits');
+    await expect(out).toContainText(/: [1-9]\d{2,}% of the window/);   // past it, by how much: 600 posts are 200%
+  });
+
+  test('demo-lab-3 rag: the k slider moves the cut and the window, and a chunk opens', async ({ page }) => {
+    const d = lab(page, 'rag');
+    await expect(d.locator('.gl-hit.is-in')).toHaveCount(8);
+    const meter = d.locator('.gl-meter-text');
+    const before = await meter.textContent();
+    await slide(d.locator('.gl-k input[type=range]'), 3);
+    await expect(d.locator('.gl-hit.is-in')).toHaveCount(3);
+    await expect(meter).not.toHaveText(before);
+    await expect(d.locator('.gl-k .gl-note')).toContainText('top 8');
+    const chunk = d.locator('details.gl-chunk').first();
+    await chunk.locator('summary').click();
+    await expect(chunk.locator('p')).toBeVisible();
+  });
+
+  test('demo-lab-4 agent: Next, Back and Show every turn step through, the answer and grade at the last', async ({ page }) => {
+    const d = lab(page, 'agent');
+    const [back, next] = [d.getByRole('button', { name: 'Back' }), d.getByRole('button', { name: 'Next turn' })];
+    await expect(d.locator('.gl-turn')).toHaveCount(1);
+    await expect(d.locator('.gl-answer')).toHaveCount(0);
+    await next.click();
+    await expect(d.locator('.gl-turn')).toHaveCount(2);
+    await back.click();
+    await expect(d.locator('.gl-turn')).toHaveCount(1);
+    await d.getByRole('button', { name: 'Show every turn' }).click();
+    await expect(d.locator('.gl-answer')).toBeVisible();
+    await expect(d.locator('.gl-grade')).toContainText('key facts');
+    await expect(next).toBeDisabled();
+    // By keyboard, a button that turns itself off hands the focus to the other way: Back at the last turn, Next at the first.
+    await back.focus();
+    for (let i = 0; i < 20 && await back.isEnabled(); i++) await page.keyboard.press('Enter');
+    await expect(next).toBeFocused();
+    for (let i = 0; i < 20 && await next.isEnabled(); i++) await page.keyboard.press('Enter');
+    await expect(back).toBeFocused();
+    // The September answer: a line, then its "- " lines as a list.
+    await d.locator('button.gl-q').nth(1).click();
+    await d.getByRole('button', { name: 'Show every turn' }).click();
+    await expect(d.locator('.gl-answer ul li')).toHaveCount(5);
+    await expect(d.locator('.gl-answer p').nth(1)).toHaveText('By topic:');
+  });
+
+  test('demo-lab-5 agent: a recorded tool call runs again live, the same as recorded on the posts it searched, and stays as you step', async ({ page }) => {
+    const d = lab(page, 'agent');
+    const call = d.locator('.gl-call').first();
+    await call.getByRole('button', { name: 'Run this call live' }).click();
+    const live = call.locator('.gl-live');
+    await expect(live).toContainText(/^Same as the recorded run/);
+    const [, searched] = /on the (\d+) posts/.exec(await live.textContent());
+    expect(Number(searched)).toBeGreaterThanOrEqual(72);   // every post of the recording is still listed
+    // This post says RunPod too, so on all the posts listed today the same call returns more: the note counts the
+    // posts listed since the recording, this one among them, and those and the ones it searched add up to today's.
+    const note = await live.locator('.gl-note').textContent();
+    const since = /on the (\d+) posts it searched\. (?:(\d+) posts have been listed since, this one among them|This post has been listed since), so on all (\d+) listed today it returns something new\.$/.exec(note);
+    expect(since, note).not.toBeNull();
+    expect(Number(since[1]) + Number(since[2] ?? 1)).toBe(Number(since[3]));
+    const today = call.locator('details.gl-result', { hasText: 'What it returns on all' });
+    await today.locator('summary').click();
+    await expect(today.locator('pre')).toContainText('three-ways-to-search-my-blog [83.');
+    const result = call.locator('details.gl-result').first();
+    await result.locator('summary').click();
+    await d.getByRole('button', { name: 'Next turn' }).click();
+    await expect(d.locator('.gl-turn')).toHaveCount(2);
+    await expect(live).toContainText(/^Same as the recorded run/);
+    await expect(result).toHaveAttribute('open', '');
+    // A call no post since has changed, the September list: the same on every post listed today.
+    await d.locator('button.gl-q').nth(1).click();
+    const sept = d.locator('.gl-call').first();
+    await sept.getByRole('button', { name: 'Run this call live' }).click();
+    await expect(sept.locator('.gl-live .gl-note')).toHaveText(/^Same as the recorded run\. Run just now on the \d+ posts listed today\.$/);
+  });
+
+  test('demo-lab-7 agent: a live run that can\'t read the site\'s files says so, and the next try works', async ({ page }) => {
+    const call = lab(page, 'agent').locator('.gl-call').first();
+    const go = call.getByRole('button', { name: 'Run this call live' });
+    await page.route('**/ask/manifest.json', (route) => route.fulfill({ status: 500, body: '' }));
+    await go.click();
+    await expect(call.locator('.gl-live')).toContainText('couldn’t be read');
+    await page.unroute('**/ask/manifest.json');
+    await go.click();
+    await expect(call.locator('.gl-live')).toContainText(/^Same as the recorded run/);
+  });
+
+  test('demo-lab-6 agent: the playground searches the reader\'s words as plain text; cites link to passages', async ({ page }) => {
+    const d = lab(page, 'agent');
+    const form = d.locator('form.gl-play');
+    await form.locator('input.gl-input').fill('graphics card');
+    await form.getByRole('button', { name: 'Run' }).click();
+    await expect(form.locator('.gl-play-out')).toContainText('matches in');
+    await form.locator('input.gl-input').fill('(');
+    await form.getByRole('button', { name: 'Run' }).click();
+    await expect(form.locator('.gl-play-out')).toContainText('for /\\(/i');
+    await d.getByRole('button', { name: 'Show every turn' }).click();
+    await expect(d.locator('.gl-answer a.gl-cite').first()).toHaveAttribute('href', /^\/ledger\/[a-z0-9-]+\/(notes\/)?(#[a-z0-9-]+)?$/);
   });
 });
