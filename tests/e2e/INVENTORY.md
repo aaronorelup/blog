@@ -557,7 +557,7 @@ for `data-hero-settled` (the hero will change no layout by itself any more) befo
 | A chapter link tapped in the last moments before the scene pins lands on its chapter, from a chapter (the pin no longer cuts the jump short) and from the top (nor lands it two screens early) | tea-hero-23 |
 | Every part the manifest names (the nodes its tracks and idle waves move, the nodes lights and glows hang from, each prop's parent and each material override's node) is in the loaded models: the runtime would skip a missing one without a word | tea-hero-24 |
 | Leaving the page while the scene loads (a reload as the manifest arrives, and as the models do) leaves no console error: once the page is being left the scene starts no load and reports none it loses | tea-hero-25 |
-| One actor in place of another, on `/tea/` with the shipped manifest plus a follower served in its place: down the scroll to 0.8 and back, the follower rides its leader's root and scale, an opacity dissolve (with `fade`: alpha-hashed) and a visible cut show and hide each actor as keyed, the dissolved-out actor comes back, and nothing reaches the console | tea-hero-26 |
+| One actor in place of another, on `/tea/` with the shipped manifest (its own followers and whole-actor `visible` and `opacity` tracks left out) plus a follower made of another of its actors' models, served in its place, so it holds whatever the cast is: down the scroll to 0.8 and back, the follower rides its leader's root and scale, an opacity dissolve (with `fade`) and a visible cut show and hide each actor as keyed, the dissolved-out actor comes back, and nothing reaches the console | tea-hero-26 |
 
 ## The live site (`live.spec.mjs`, `npm run e2e:live`)
 
