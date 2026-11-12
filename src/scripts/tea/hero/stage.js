@@ -68,7 +68,7 @@ export async function mount(section, stage, opts = {}) {
     for (const l of backdrop.layers) scene.add(l.mesh);
     for (const a of actors) scene.add(a.root);
     s.env = skyEnvironment(renderer, ...SKY);
-    scene.environment = s.env;
+    scene.environment = s.env.texture;
     s.lights = buildLights(manifest, actors, scene);
     s.bound = bindTracks(manifest, actors);
     s.motes = createMotes(manifest.motes, coarse || small ? manifest.motes.mobile : manifest.motes.count,
@@ -213,7 +213,7 @@ function wire(s, section, stage) {
   s.onBack = () => {
     s.lost = false;
     s.env = skyEnvironment(s.renderer, ...SKY);
-    s.scene.environment = s.env;
+    s.scene.environment = s.env.texture;
     frame(s, section, 0);
     requestAnimationFrame(() => { if (!s.lost && !s.disposed) reveal(s, stage); });
     s.play();

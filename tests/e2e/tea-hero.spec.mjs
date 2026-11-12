@@ -292,7 +292,7 @@ test('tea-hero-12 a lost WebGL context shows the poster until it is back, then t
   expect(errors).toEqual([]);
 });
 
-test('tea-hero-13 reduced motion asked for while the scene runs puts the poster back, the page where it was', async ({ page }) => {
+test('tea-hero-13 reduced motion asked for while the scene runs puts the poster back, the page where it was, the GPU freed', async ({ page }) => {
   await page.goto('/tea/?hero=on');
   await expect(hero(page)).toHaveAttribute('data-hero-settled', '', { timeout: 60_000 });
   await expect(hero(page)).toHaveAttribute('data-3d', 'on');
@@ -304,6 +304,12 @@ test('tea-hero-13 reduced motion asked for while the scene runs puts the poster 
   await expect(hero(page)).not.toHaveAttribute('data-3d', /./);
   await posterShown(page);
   expect(Math.abs(await top() - before)).toBeLessThanOrEqual(1);
+  // every picture and geometry the scene put on the GPU is freed with it (the picture layers' night and day images
+  // and the sky light's render target included)
+  expect(await page.evaluate(() => {
+    const m = window.__teaHero.state.renderer.info.memory;
+    return { geometries: m.geometries, textures: m.textures };
+  })).toEqual({ geometries: 0, textures: 0 });
 });
 
 test('tea-hero-14 with the scene up the day/night switch fetches no poster under it', async ({ page }) => {

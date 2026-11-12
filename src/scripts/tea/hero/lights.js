@@ -86,7 +86,8 @@ function glowTexture() {
 }
 
 // A tiny painted sky (night above, a warm horizon, dark ground) as image-based light, so the models' PBR materials
-// read as lit by this place rather than by black.
+// read as lit by this place rather than by black. Returns PMREM's render target (scene.environment is its texture):
+// freeing only the texture would leave the target's own on the GPU.
 export function skyEnvironment(renderer, top, horizon, ground) {
   const c = document.createElement('canvas');
   c.width = 64; c.height = 32;
@@ -99,8 +100,8 @@ export function skyEnvironment(renderer, top, horizon, ground) {
   t.mapping = EquirectangularReflectionMapping;
   t.colorSpace = SRGBColorSpace;
   const pmrem = new PMREMGenerator(renderer);
-  const env = pmrem.fromEquirectangular(t).texture;
+  const target = pmrem.fromEquirectangular(t);
   pmrem.dispose();
   t.dispose();
-  return env;
+  return target;
 }

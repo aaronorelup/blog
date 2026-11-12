@@ -142,12 +142,19 @@ export async function loadActors(manifest, portrait, signal) {
   return actors;
 }
 
+// Every picture of a material: its maps, and a shader's uniforms (the picture layers' night and day images).
+export function texturesOf(mat) {
+  const out = Object.values(mat).filter((v) => v && v.isTexture);
+  for (const u of Object.values(mat.uniforms || {})) if (u && u.value && u.value.isTexture) out.push(u.value);
+  return out;
+}
+
 export function disposeTree(obj) {
   obj.traverse((o) => {
     if (o.isSkinnedMesh && o.skeleton) o.skeleton.dispose();   // a rigged character's bone texture
     if (o.geometry) o.geometry.dispose();
     for (const mat of [].concat(o.material || [])) {
-      for (const v of Object.values(mat)) if (v && v.isTexture) v.dispose();
+      for (const t of texturesOf(mat)) t.dispose();
       mat.dispose();
     }
   });
