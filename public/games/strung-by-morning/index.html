@@ -1,0 +1,2217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Strung by Morning</title>
+<meta name="description" content="A guitar with no strings has to sing by dawn. Spin its six strings from the sounds of one night in a small repair shop. A short musical game, made to be played once.">
+<meta name="theme-color" content="#101220">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23101220'/%3E%3Cpath d='M5 21c4-10 7-10 11 0s7 10 11 0' fill='none' stroke='%23F0C06A' stroke-width='2.4' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='8' r='3' fill='%23E2795C'/%3E%3C/svg%3E">
+<style>
+  :root { --page: #101220; --tile: #201F2C; --gold: #F0C06A; --cream: #F2E7D5; --body: #C9BCA9; --soft: #9C917F; --coral: #E2795C; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--page); color: var(--body); overflow: hidden;
+    overscroll-behavior: none; touch-action: none; -webkit-text-size-adjust: 100%; }
+  body { position: fixed; inset: 0; font-family: Georgia, "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
+  #app { position: absolute; inset: 0; overflow: hidden; }
+  #c { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; cursor: default; }
+  body.kb #c:focus { outline: 2px solid rgba(240, 192, 106, .75); outline-offset: -5px; }
+  /* Everything written is real text, laid out in the same 360 by 640 space the canvas draws in. */
+  #dom { position: absolute; left: 0; top: 0; width: 360px; height: 640px; transform-origin: 0 0; pointer-events: none; }
+  #dom a, #dom button { pointer-events: auto; }
+  #title { position: absolute; left: 0; right: 0; top: 304px; margin: 0; text-align: center; font-weight: 400; font-size: 31px;
+    letter-spacing: .02em; color: var(--gold); opacity: 0; text-shadow: 0 0 22px rgba(16, 18, 32, .9), 0 0 6px rgba(16, 18, 32, .9); }
+  #cap { position: absolute; left: 22px; right: 22px; top: 572px; height: 50px; margin: 0; display: flex; align-items: center;
+    justify-content: center; text-align: center; font-size: 17px; line-height: 1.32; color: var(--cream); opacity: 0;
+    text-shadow: 0 0 10px rgba(16, 18, 32, .95), 0 0 3px rgba(16, 18, 32, .95); }
+  body.keep #cap { top: 396px; }
+  #hint { position: absolute; left: 22px; right: 22px; top: 621px; margin: 0; text-align: center; font: 12px/1.2 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    letter-spacing: .04em; color: var(--soft); opacity: 0; transition: opacity .3s ease; }
+  #hint.on { opacity: 1; }
+  #tag { position: absolute; left: 180px; top: 290px; width: 236px; margin: 0; opacity: 0; visibility: hidden;
+    transform: translate(-50%, -50%); filter: drop-shadow(0 10px 22px rgba(0, 0, 0, .5)); }
+  #tag .paper { background: var(--cream); color: #2a2533; padding: 17px 20px 18px 44px; font-size: 18px; line-height: 1.34; font-style: italic;
+    clip-path: polygon(30px 0, 100% 0, 100% 100%, 30px 100%, 0 50%); min-height: 84px; display: flex; align-items: center; }
+  #tag .paper::before { content: ""; position: absolute; left: 17px; top: 50%; width: 9px; height: 9px; margin-top: -5px; border-radius: 50%;
+    background: var(--page); box-shadow: inset 0 0 0 1.5px rgba(42, 37, 51, .35); }
+  #tagText { margin: 0; }
+  #end { position: absolute; left: 22px; right: 22px; top: 566px; text-align: center; opacity: 0; visibility: hidden; }
+  #end p { margin: 0 0 9px; font-size: 14.5px; line-height: 1.35; color: var(--body); }
+  .lnk { font: inherit; font-size: 14px; color: var(--gold); background: none; border: 0; padding: 19px 10px; margin: -19px 2px; cursor: pointer;
+    text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; border-radius: 6px; display: inline-block; }
+  .lnk:hover { color: var(--cream); }
+  .lnk.small { font-size: 12.5px; color: var(--soft); }
+  .lnk.small:hover { color: var(--gold); }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  #keep { position: absolute; inset: 0; opacity: 0; visibility: hidden; }
+  #kdate { position: absolute; left: 0; right: 0; top: 364px; margin: 0; text-align: center; font-size: 13.5px; letter-spacing: .05em; color: var(--body);
+    text-shadow: 0 0 8px rgba(16, 18, 32, .9); }
+  #kfoot { position: absolute; left: 10px; right: 10px; top: 606px; margin: 0; text-align: center; font-size: 12.5px; color: var(--soft); }
+  #kcredit { position: absolute; left: 22px; right: 22px; top: 578px; margin: 0; text-align: center; font-size: 12.5px; color: var(--soft); }
+  #confirm { position: absolute; left: 30px; right: 30px; top: 392px; padding: 18px 18px 16px; background: var(--tile); border: 1px solid rgba(242, 231, 213, .22);
+    border-radius: 14px; text-align: center; box-shadow: 0 24px 60px rgba(0, 0, 0, .55); pointer-events: auto; }
+  #confirm[hidden] { display: none; }
+  #confirm p { margin: 0 0 14px; font-size: 15.5px; line-height: 1.4; color: var(--cream); }
+  .btn { font: 600 14px/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; min-height: 54px; padding: 0 18px; margin: 3px 4px; border-radius: 999px; cursor: pointer;
+    color: var(--cream); background: rgba(242, 231, 213, .06); border: 1px solid rgba(242, 231, 213, .35); }
+  .btn:hover { border-color: var(--gold); color: var(--gold); }
+  .btn.go { border-color: var(--coral); color: #fff; background: rgba(226, 121, 92, .22); }
+  #mute { position: absolute; top: max(2px, env(safe-area-inset-top)); right: max(2px, env(safe-area-inset-right)); width: 48px; height: 48px; padding: 0; border: 0; border-radius: 50%;
+    background: none; color: var(--cream); cursor: pointer; display: grid; place-items: center; touch-action: manipulation; }
+  #mute::before { content: ""; position: absolute; inset: 6px; border-radius: 50%; background: rgba(32, 31, 44, .6); border: 1px solid rgba(242, 231, 213, .2);
+    transition: border-color .2s ease, transform .15s ease; }
+  #mute:hover::before { border-color: var(--gold); }
+  #mute:active::before { transform: scale(.92); }
+  #mute svg { position: relative; width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  #mute .off { display: none; stroke: var(--coral); }
+  #mute[aria-pressed="true"] .on { display: none; }
+  #mute[aria-pressed="true"] .off { display: inline; }
+  #turn { position: absolute; left: 0; right: 0; bottom: 6px; margin: 0; text-align: center; font: 12px/1.2 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--soft);
+    pointer-events: none; display: none; }
+  #turn.on { display: block; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  noscript p { position: absolute; left: 10%; right: 10%; top: 40%; text-align: center; color: var(--cream); font-size: 18px; }
+  @media (prefers-reduced-motion: reduce) { #mute::before, #hint { transition: none; } }
+</style>
+</head>
+<body>
+<main id="app">
+  <canvas id="c" tabindex="0" role="application" aria-label="Strung by Morning, a short musical game. Follow the words under the picture. Space is the main key. M mutes the sound." aria-describedby="cap"></canvas>
+  <div id="dom">
+    <h1 id="title">Strung by Morning</h1>
+    <div id="tag" aria-live="polite"><div class="paper"><p id="tagText"></p></div></div>
+    <p id="cap" aria-live="polite"></p>
+    <p id="hint"></p>
+    <div id="end">
+      <p>Designed and built by Claude, at Aaron's request.</p>
+      <a class="lnk" id="back" href="/projects/">Back to the site</a>
+    </div>
+    <div id="keep">
+      <p id="kdate"></p>
+      <p id="kcredit">Designed and built by Claude, at Aaron's request.</p>
+      <p id="kfoot"><button type="button" class="lnk small" id="again">Start another night</button> <a class="lnk small" href="/projects/">Back to the site</a></p>
+      <div id="confirm" role="group" aria-label="Start another night" hidden>
+        <p>Start a new night from the beginning? The one on the wall will be let go.</p>
+        <button type="button" class="btn go" id="yes">Start again</button>
+        <button type="button" class="btn" id="no">Keep this night</button>
+      </div>
+    </div>
+  </div>
+  <button type="button" id="mute" aria-pressed="false" aria-label="Mute sound" title="Mute (M)">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.2L12 5.6v12.8l-4.8-3.9H4z"/><path class="on" d="M15.4 9.2a4 4 0 0 1 0 5.6M17.9 6.8a7.4 7.4 0 0 1 0 10.4"/><path class="off" d="M15.6 9.6l5 4.8M20.6 9.6l-5 4.8"/></svg>
+  </button>
+  <p id="turn">This one is drawn for an upright screen. It plays best tall.</p>
+  <noscript><p>Strung by Morning is a small game drawn and played with JavaScript. Please turn it on to play.</p></noscript>
+</main>
+<script>
+/* Strung by Morning. One night in a small repair shop, made to be played once.
+   Everything is drawn and synthesised in this file: no images, no audio files, no requests.
+   Time only moves inside requestAnimationFrame, so the site's game frame can pause it by holding frames and suspending audio.
+   For tests: ?t=1..20 speeds the game clock, ?fresh=1 ignores and never writes the save, window.__game is read-only state.
+   The save lives in localStorage under ao.strung-by-morning.v1. */
+(function () {
+'use strict';
+
+/* ================= helpers ================= */
+const $ = (id) => document.getElementById(id);
+const TAU = Math.PI * 2;
+const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
+const lerp = (a, b, t) => a + (b - a) * t;
+const sm = (t) => { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
+const eOut = (t) => 1 - Math.pow(1 - clamp(t, 0, 1), 3);
+const eIO = (t) => { t = clamp(t, 0, 1); return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; };
+const eBack = (t) => { t = clamp(t, 0, 1); const c = 1.70158; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+const appr = (v, to, rate, dt) => v + (to - v) * (1 - Math.exp(-rate * dt));
+const dist = (ax, ay, bx, by) => Math.hypot(ax - bx, ay - by);
+const mix3 = (a, b, t) => [lerp(a[0], b[0], t), lerp(a[1], b[1], t), lerp(a[2], b[2], t)];
+function rng(seed) {
+  return function () {
+    seed = (seed + 0x6D2B79F5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const hash = (n) => { const x = Math.sin(n * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+
+/* ================= palette ================= */
+const PAGE = '#101220';
+const C_PAGE = [16, 18, 32], C_TILE = [32, 31, 44], C_GOLD = [240, 192, 106], C_CREAM = [242, 231, 213],
+  C_BODY = [201, 188, 169], C_SOFT = [156, 145, 127], C_CORAL = [226, 121, 92];
+const rgba = (c, a) => 'rgba(' + (c[0] | 0) + ',' + (c[1] | 0) + ',' + (c[2] | 0) + ',' + (a <= 0 ? 0 : a >= 1 ? 1 : a.toFixed(3)) + ')';
+
+/* ================= setup ================= */
+const QS = new URLSearchParams(location.search);
+const SPEED = clamp(parseFloat(QS.get('t')) || 1, 1, 20);
+const FRESH = QS.get('fresh') === '1';
+const KEY = 'ao.strung-by-morning.v1';
+const mq = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+let REDUCED = !!(mq && mq.matches);
+if (mq) {
+  const f = (e) => { REDUCED = e.matches; };
+  if (mq.addEventListener) mq.addEventListener('change', f); else if (mq.addListener) mq.addListener(f);
+}
+
+const BEATS = ['note', 'clock', 'rain', 'kettle', 'moth', 'answer', 'birds', 'silence', 'ending'];
+const LAYERS = ['clock', 'rain', 'kettle', 'moth', 'answer', 'birds'];
+
+/* music: 76 bpm, steps are eighth notes, one loop is four bars */
+const BPM = 76, STEP = 60 / BPM / 2, LOOP = 32;
+const midiHz = (m) => 440 * Math.pow(2, (m - 69) / 12);
+const OPEN = [38, 45, 50, 55, 57, 62];                       // D A D G A D, string 6 first
+const SCALE = [57, 59, 62, 64, 66, 69, 71, 74, 76, 78, 81];  // D major pentatonic, A3 up
+const RAIN_STEPS = [0, 3, 6, 9, 11, 14, 16, 19, 22, 25, 27, 30];
+const RAIN_SET = new Set(RAIN_STEPS);
+const RAIN_FRETS = [0, 2, 5, 7, 9, 12];
+const RAIN_DEF = [5, 5, 7, 9, 7, 5, 2, 5, 7, 5, 2, 0];
+const KETTLE_P = [50, 52, 57, 50];
+const BIRD_P = [74, 78, 81, 76, 83];
+const BIRD_DEF = [3, 10, 14, 21, 28];
+const ALL_PITCH = [38, 45, 47, 50, 52, 54, 55, 57, 59, 62, 64, 66, 69, 71, 74, 76, 78, 81];
+
+/* ================= saved state ================= */
+function blank() {
+  return { v: 1, beat: 0, done: false, date: '', muted: false,
+    layers: { clock: [], rain: [], kettle: [], moth: [], answer: [], birds: [] }, line: [], birds: BIRD_DEF.slice() };
+}
+let S = blank();
+function loadSave() {
+  if (FRESH) return;
+  try {
+    const raw = window.localStorage.getItem(KEY);
+    if (!raw) return;
+    const o = JSON.parse(raw);
+    if (!o || o.v !== 1 || typeof o.layers !== 'object') return;
+    const b = blank();
+    b.beat = clamp(o.beat | 0, 0, BEATS.length - 1);
+    b.done = !!o.done; b.date = typeof o.date === 'string' ? o.date.slice(0, 40) : ''; b.muted = !!o.muted;
+    for (const L of LAYERS) {
+      const arr = Array.isArray(o.layers[L]) ? o.layers[L] : [];
+      b.layers[L] = arr.filter((n) => n && n.s >= 0 && n.s < LOOP && n.p > 20 && n.p < 110).slice(0, 64)
+        .map((n) => { const m = { s: n.s | 0, p: n.p | 0 }; for (const k of ['l', 'x', 'y', 'r', 'f', 'b']) if (typeof n[k] === 'number') m[k] = n[k]; return m; });
+    }
+    if (Array.isArray(o.line)) b.line = o.line.filter((p) => Array.isArray(p) && isFinite(p[0]) && isFinite(p[1])).slice(0, 200).map((p) => [+p[0], +p[1]]);
+    if (Array.isArray(o.birds) && o.birds.length === 5) b.birds = o.birds.map((s) => clamp(s | 0, 0, LOOP - 1));
+    S = b;
+  } catch (e) { /* storage is closed or the save is broken: start a new night */ }
+}
+function save() {
+  if (FRESH) return;
+  try { window.localStorage.setItem(KEY, JSON.stringify(S, (k, v) => (k === 'skip' ? undefined : v))); } catch (e) { /* play on without it */ }
+}
+function wipeSave() { try { window.localStorage.removeItem(KEY); } catch (e) { /* nothing to wipe */ } }
+
+/* ================= game clock ================= */
+const G = { t: 0, bi: 0, mode: 'play', ended: false, kb: false, started: false };
+const timers = [];
+function after(off, fn) { timers.push({ t: G.t + off, fn }); }
+function runTimers() {
+  for (let i = 0; i < timers.length; i++) {
+    if (timers[i].t <= G.t) { const f = timers[i].fn; timers.splice(i, 1); i--; f(); }
+  }
+}
+
+/* ================= sound ================= */
+const A = { ctx: null, ok: false, muted: false, base: 0, g0: 0, bufs: {}, queue: [], rainLevel: 0 };
+const SP = SPEED;
+A.live = () => A.ok && A.ctx.state === 'running' && !A.asleep;
+function aTime(off) { return Math.max(A.ctx.currentTime + 0.004, A.base + (G.t + off - A.g0) / SP); }
+function syncAudioClock() {
+  if (!A.ok) return;
+  const want = A.ctx.currentTime + 0.03, have = A.base + (G.t - A.g0) / SP, err = have - want;
+  if (Math.abs(err) > 0.07) { A.base = want; A.g0 = G.t; } else A.base -= err * 0.06;
+}
+function audioInit() {
+  if (A.ctx) { if (A.ctx.state !== 'running' && A.ctx.resume) A.ctx.resume().catch(() => {}); return; }
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return;
+  try {
+    /* on phones with the ringer switched off, ask for the kind of audio session that still plays */
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) { /* not offered here */ }
+    const c = A.ctx = new AC();
+    A.master = c.createGain(); A.master.gain.value = A.muted ? 0 : 0.9;
+    A.comp = c.createDynamicsCompressor();
+    A.comp.threshold.value = -10; A.comp.knee.value = 6; A.comp.ratio.value = 16; A.comp.attack.value = 0.003; A.comp.release.value = 0.22;
+    A.master.connect(A.comp); A.comp.connect(c.destination);
+    A.bus = c.createGain(); A.bus.gain.value = 0.9; A.bus.connect(A.master);
+    A.rev = c.createConvolver(); A.rev.buffer = makeImpulse(c);
+    A.revOut = c.createGain(); A.revOut.gain.value = 0.85; A.rev.connect(A.revOut); A.revOut.connect(A.master);
+    A.noise = makeNoise(c, 2);
+    A.ok = true; A.base = c.currentTime; A.g0 = G.t;
+    A.queue = ALL_PITCH.slice();
+    if (c.state !== 'running' && c.resume) c.resume().catch(() => {});
+  } catch (e) { A.ok = false; }
+}
+function makeNoise(c, sec) {
+  const n = Math.floor(c.sampleRate * sec), b = c.createBuffer(1, n, c.sampleRate), d = b.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+  return b;
+}
+function makeImpulse(c) {
+  const sr = c.sampleRate, n = Math.floor(sr * 2.6), b = c.createBuffer(2, n, sr), pre = Math.floor(sr * 0.012);
+  for (let ch = 0; ch < 2; ch++) {
+    const d = b.getChannelData(ch); let y = 0;
+    for (let i = pre; i < n; i++) {
+      const u = (i - pre) / (n - pre), k = lerp(0.75, 0.16, Math.sqrt(u));
+      y += ((Math.random() * 2 - 1) - y) * k;
+      d[i] = y * Math.pow(1 - u, 2.7) * (i - pre < 300 ? (i - pre) / 300 : 1);
+    }
+  }
+  return b;
+}
+/* Karplus and Strong: a burst of noise goes round a tuned delay and wears smooth, like a plucked string */
+function ksRender(midi) {
+  const c = A.ctx, sr = c.sampleRate, f = midiHz(midi);
+  const dur = midi < 48 ? 7 : midi < 60 ? 6 : midi < 72 ? 4.6 : 3.4;
+  const n = Math.floor(sr * dur), b = c.createBuffer(1, n, sr), out = b.getChannelData(0);
+  let want = sr / f - 0.5, L = Math.floor(want), d = want - L;
+  if (d < 0.12) { L -= 1; d += 1; }
+  const C = (1 - d) / (1 + d), g = Math.pow(10, -3 / (f * dur * 1.5));
+  /* the pluck itself: the shape a string takes when a finger lets go a fifth of the way along, so the low harmonics lead */
+  const dl = new Float32Array(L), fc = f * (midi < 48 ? 13 : midi < 60 ? 9 : midi < 72 ? 8.5 : 7), roll = midi < 48 ? 1.02 : midi < 60 ? 1.16 : 1.08, N = Math.min(Math.floor(L / 2) - 1, 70);
+  let top = 0;
+  for (let h = 1; h <= N; h++) {
+    const amp = Math.sin(h * Math.PI * 0.21) / Math.pow(h, roll) / (1 + Math.pow(h * f / fc, 2)), w = TAU * h / L;
+    if (Math.abs(amp) < 1e-4) continue;
+    for (let i = 0; i < L; i++) dl[i] += amp * Math.sin(w * i);
+  }
+  for (let i = 0; i < L; i++) { const v = Math.abs(dl[i]); if (v > top) top = v; }
+  for (let i = 0; i < L; i++) dl[i] /= top || 1;
+  let idx = 0, prev = 0, apx = 0, apy = 0, peak = 0;
+  for (let i = 0; i < n; i++) {
+    const cur = dl[idx], v = g * 0.5 * (cur + prev);
+    prev = cur;
+    const y = C * v + apx - C * apy; apx = v; apy = y;
+    out[i] = cur; dl[idx] = y;
+    if (++idx >= L) idx = 0;
+    const a = cur < 0 ? -cur : cur; if (a > peak) peak = a;
+  }
+  const k = 0.85 / (peak || 1), fin = Math.floor(sr * 0.0008), fout = Math.floor(sr * 0.25);
+  for (let i = 0; i < n; i++) out[i] *= k * (i < fin ? i / fin : 1) * (i > n - fout ? (n - i) / fout : 1);
+  return b;
+}
+function pumpAudio() { if (A.ok && A.queue.length) { const m = A.queue.shift(); if (!A.bufs[m]) A.bufs[m] = ksRender(m); } }
+function route(node, pan, send) {
+  let n = node;
+  if (pan && A.ctx.createStereoPanner) { const p = A.ctx.createStereoPanner(); p.pan.value = pan; n.connect(p); n = p; }
+  n.connect(A.bus);
+  if (send) { const s = A.ctx.createGain(); s.gain.value = send; n.connect(s); s.connect(A.rev); }
+}
+function pluck(midi, off, o) {
+  if (!A.live()) return;
+  const c = A.ctx, t = aTime(off), rate = o.rate || 1;
+  const b = A.bufs[midi] || (A.bufs[midi] = ksRender(midi));
+  const src = c.createBufferSource(); src.buffer = b; src.playbackRate.value = rate;
+  const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = o.lp || 8000; lp.Q.value = 0.3;
+  const g = c.createGain(), hold = Math.min(o.dur || 8, b.duration / rate) / SP;
+  g.gain.setValueAtTime(o.gain, t); g.gain.setTargetAtTime(0, t + hold, 0.03 + (o.dur ? 0.22 : 0.05) / SP);
+  src.connect(lp); lp.connect(g); route(g, o.pan || 0, o.send || 0);
+  src.start(t); src.stop(t + hold + 0.3 + 1.2 / SP);
+}
+function noiseHit(off, freq, q, gain, dur, pan, send, type) {
+  if (!A.live()) return;
+  const c = A.ctx, t = aTime(off);
+  const src = c.createBufferSource(); src.buffer = A.noise; src.loop = true;
+  const bp = c.createBiquadFilter(); bp.type = type || 'bandpass'; bp.frequency.value = freq; bp.Q.value = q;
+  const g = c.createGain();
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(gain, t + 0.003); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  src.connect(bp); bp.connect(g); route(g, pan || 0, send || 0);
+  src.start(t, Math.random() * 1.5); src.stop(t + dur + 0.05);
+}
+function tone(off, f0, f1, dur, gain, type, send, pan) {
+  if (!A.live()) return;
+  const c = A.ctx, t = aTime(off), o = c.createOscillator(), g = c.createGain();
+  o.type = type || 'sine'; o.frequency.setValueAtTime(f0, t);
+  if (f1 && f1 !== f0) o.frequency.exponentialRampToValueAtTime(f1, t + dur * 0.8);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(gain, t + 0.006); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g); route(g, pan || 0, send || 0);
+  o.start(t); o.stop(t + dur + 0.05);
+}
+/* the kettle: two triangles a hair apart, a quiet octave, and breath */
+function padStart(midi, off, vel) {
+  if (!A.live()) return null;
+  const c = A.ctx, t = aTime(off), f = midiHz(midi);
+  const out = c.createGain(); out.gain.setValueAtTime(0.0001, t); out.gain.setTargetAtTime(vel, t, 0.11 / SP + 0.01);
+  const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1500; lp.Q.value = 0.4; lp.connect(out);
+  const nodes = [];
+  for (const [mul, amp, type] of [[0.9965, 0.5, 'triangle'], [1.0035, 0.5, 'triangle'], [2.001, 0.13, 'sine']]) {
+    const o = c.createOscillator(), g = c.createGain(); o.type = type; o.frequency.value = f * mul; g.gain.value = amp;
+    o.connect(g); g.connect(lp); o.start(t); nodes.push(o);
+  }
+  const ns = c.createBufferSource(); ns.buffer = A.noise; ns.loop = true;
+  const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = f * 5; bp.Q.value = 2.2;
+  const ng = c.createGain(); ng.gain.value = 0.2; ns.connect(bp); bp.connect(ng); ng.connect(out); ns.start(t, Math.random()); nodes.push(ns);
+  const lfo = c.createOscillator(), lg = c.createGain(); lfo.frequency.value = 0.28 * SP; lg.gain.value = vel * 0.22;
+  lfo.connect(lg); lg.connect(out.gain); lfo.start(t); nodes.push(lfo);
+  route(out, -0.25, 0.5);
+  return {
+    release(off2) {
+      const t2 = Math.max(aTime(off2 || 0), t + 0.02);
+      out.gain.setTargetAtTime(0, t2, 0.22 / SP + 0.012);
+      for (const nd of nodes) { try { nd.stop(t2 + 1.6 / SP + 0.2); } catch (e) { /* already stopped */ } }
+    },
+  };
+}
+function pad(midi, off, durGame, vel) { const h = padStart(midi, off, vel); if (h) h.release(off + durGame); }
+/* a bird: a small bell made by one sine bending another */
+function bell(midi, off, vel) {
+  if (!A.live()) return;
+  const c = A.ctx, t = aTime(off), f = midiHz(midi), car = c.createOscillator(), mod = c.createOscillator(), mg = c.createGain(), g = c.createGain();
+  const dur = 1.25 / Math.sqrt(SP);
+  car.frequency.setValueAtTime(f * 0.94, t); car.frequency.exponentialRampToValueAtTime(f, t + 0.045);
+  mod.frequency.value = f * 3.01; mg.gain.setValueAtTime(f * 1.7, t); mg.gain.exponentialRampToValueAtTime(f * 0.04, t + 0.4);
+  mod.connect(mg); mg.connect(car.frequency);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vel, t + 0.006); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  car.connect(g); route(g, 0.3, 0.5);
+  car.start(t); mod.start(t); car.stop(t + dur + 0.05); mod.stop(t + dur + 0.05);
+}
+function setRainBed(level) {
+  if (!A.ok || A.rainLevel === level) return;
+  const c = A.ctx;
+  if (!A.rainG) {
+    const src = c.createBufferSource(); src.buffer = A.noise; src.loop = true;
+    const hp = c.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 1100;
+    const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 5200;
+    A.rainG = c.createGain(); A.rainG.gain.value = 0;
+    src.connect(hp); hp.connect(lp); lp.connect(A.rainG); A.rainG.connect(A.bus); src.start();
+  }
+  A.rainLevel = level;
+  A.rainG.gain.setTargetAtTime(level, c.currentTime, 1.4 / SP + 0.02);
+}
+const muteBtn = $('mute');
+function setMuted(m, quiet) {
+  A.muted = !!m; S.muted = A.muted;
+  if (A.ok) A.master.gain.setTargetAtTime(A.muted ? 0 : 0.9, A.ctx.currentTime, 0.03);
+  muteBtn.setAttribute('aria-pressed', A.muted ? 'true' : 'false');
+  muteBtn.setAttribute('aria-label', A.muted ? 'Turn sound on' : 'Mute sound');
+  if (!quiet) save();
+}
+/* the voices of the six strings */
+const VOX = {
+  clock: { gain: 0.44, lp: 2600, send: 0.1, pan: -0.08, dur: 2.4 },
+  rain: { gain: 0.33, lp: 3400, send: 0.3, pan: 0.22, dur: 0.75 },
+  moth: { gain: 0.52, lp: 7000, send: 0.36, pan: -0.18, dur: 2.2 },
+  answer: { gain: 0.32, lp: 9500, send: 0.62, pan: 0.34, dur: 1.6 },
+  open: { gain: 0.4, lp: 5200, send: 0.3 },
+};
+
+/* ================= the stage: 360 by 640, scaled to fit, the room running on past its edges ================= */
+const cv = $('c'), ctx = cv.getContext('2d'), domEl = $('dom');
+let sc = 1, ox = 0, oy = 0, dpr = 1, cssW = 360, cssH = 640, XMIN = 0, XMAX = 360, YMIN = 0, YMAX = 640;
+function resize() {
+  cssW = window.innerWidth || 360; cssH = window.innerHeight || 640;
+  dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const w = Math.max(1, Math.round(cssW * dpr)), h = Math.max(1, Math.round(cssH * dpr));
+  if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
+  sc = Math.min(cssW / 360, cssH / 640);
+  ox = (cssW - 360 * sc) / 2; oy = (cssH - 640 * sc) * 0.4;
+  XMIN = -ox / sc; XMAX = (cssW - ox) / sc; YMIN = -oy / sc; YMAX = (cssH - oy) / sc;
+  domEl.style.transform = 'translate(' + ox.toFixed(2) + 'px,' + oy.toFixed(2) + 'px) scale(' + sc.toFixed(4) + ')';
+  $('turn').classList.toggle('on', sc < 0.72 && cssW > cssH && !!window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+}
+
+const LAMP = { x: 180, y: 186 };
+const WIN = { x: 24, y: 30, w: 312, h: 120 };
+const CLK = { x: 300, y: 196 }, PIV = { x: 300, y: 219 }, PLEN = 50;
+const GTR = { x: 108, y: 440 };
+const AIR = { x0: 34, x1: 326, y0: 208, y1: 384 };
+const WIRE = { x0: 44, x1: 316, y: 92, sag: 7 };
+const RIB = { x: 20, y: 522, w: 320, h: 44 };
+const SADDLE = -36, NUT = 190, SLEN = NUT - SADDLE;
+const PEGX = [203, 215, 227, 227, 215, 203];
+const pegPos = (i) => ({ x: GTR.x + PEGX[i], y: GTR.y + (i < 3 ? -21.5 : 21.5) });
+const fretX = (n) => NUT - SLEN * (1 - Math.pow(2, -n / 12));
+const strY = (i, xl) => lerp((i - 2.5) * 5.4, (i - 2.5) * 3.7, (xl - SADDLE) / SLEN);
+const wireY = (x) => { const u = (x - 180) / 140; return WIRE.y + WIRE.sag * (1 - u * u); };
+const birdX = (s) => WIRE.x0 + s * (WIRE.x1 - WIRE.x0) / (LOOP - 1);
+const dropX = (s) => GTR.x + 2 + ((s * 37) % 41);
+const FINGER_X = RAIN_FRETS.map((f) => (f ? fretX(f) + 5 : NUT + 1));   // where a finger sits for each note, guitar space
+
+/* the world: W is where things are heading, V is where they are */
+const W = { lamp: 0, dawn: 0, cloud: 0, rain: 0, guitar: 0, ribbon: 0, kettle: 0, moth: 0, birds: 0, lid: 0, door: 0, lift: 0, hands: 0, day: 0, gone: 0, pend: 0, rays: 0, strings: 0 };
+const V = { lamp: 0, dawn: 0, cloud: 0, rain: 0, guitar: 0, ribbon: 0, kettle: 0, moth: 0, birds: 0, lid: 0, door: 0, lift: 0, hands: 0, day: 0, gone: 0, pend: 0, rays: 0, steam: 0, inkA: 0.1 };
+const RATE = { lamp: 2.4, dawn: 0.3, cloud: 0.5, rain: 0.6, guitar: 1.5, ribbon: 2.5, kettle: 0.9, moth: 1, birds: 0.8, lid: 2.6, door: 0.8, lift: 1.1, hands: 1.5, day: 1, gone: 1.2, pend: 1.3, rays: 2 };
+const F = {
+  wind: 0, windAuto: false, pegAng: 0, waveA: 0, tunedAt: -9, windKey: 0,
+  rayFlash: new Float32Array(9), tickFlash: 0, pendAng: 0,
+  fingerDown: false, fretI: 0, touched: [0, 0, 0, 0], dropNext: 0, rainLive: false,
+  holding: null, steamUntil: -9,
+  drawing: null, lineReady: false, kept: false, steer: null, mothX: 180, mothY: 230, mothF: 0, trace: 1, lampTap: null,
+  echoI: 0, echoT: 0, kbSpot: 0,
+  selBird: 0, dragBird: -1, birdMoved: false,
+  latch: [0, 0], lidShut: false, lampOff: false,
+  strumAt: -9, strummed: false, strumFrom: null, finale: false, lightA: 0, cadence: false,
+  tagA: 0, tagFlip: 0, titleA: 0, endA: 0, clockH: 1.7, playing: false, frameGlow: 0, tickVol: 1,
+};
+const vib = [0, 0, 0, 0, 0, 0];
+const glow = { clock: 0, rain: 0, kettle: 0, moth: 0, answer: 0, birds: 0 };
+const rib = {};
+for (const L of LAYERS) rib[L] = new Float32Array(LOOP).fill(-99);
+const birds = BIRD_DEF.map(() => ({ x: 0, hop: 0, sing: 0, in: 0, moved: false }));
+const SPOTS = [[180, 212], [300, 196], [52, 250], [116, 128], [130, 440], [262, 122]];   // lamp, clock, kettle, window, sound hole, window
+
+/* ================= the loop that keeps everything ================= */
+const M = { run: false, pos: 0, next: 0, tick: false, on: {}, from: {}, hook: null };
+for (const L of LAYERS) { M.on[L] = false; M.from[L] = 0; }
+function transport(dt) {
+  if (!M.run) return;
+  M.pos += dt / STEP;
+  const ahead = 0.13 * SP;
+  while ((M.next - M.pos) * STEP < ahead) { schedStep(M.next, Math.max(0, (M.next - M.pos) * STEP)); M.next++; }
+}
+function schedStep(abs, off) {
+  const s = ((abs % LOOP) + LOOP) % LOOP;
+  if (M.tick && s % 2 === 0) {
+    noiseHit(off, (s / 2) % 2 ? 1850 : 2500, 5, 0.2 * F.tickVol, 0.05, 0.3, 0.08);
+    after(off, () => { F.tickFlash = 1; });
+  }
+  for (const L of LAYERS) {
+    if (!M.on[L] || abs < M.from[L]) continue;
+    const notes = S.layers[L];
+    for (let i = 0; i < notes.length; i++) { const n = notes[i]; if (n.s === s && n.skip !== abs) fire(L, n, off); }
+  }
+  if (M.hook) M.hook(abs, s, off);
+}
+function fire(L, n, off) {
+  switch (L) {
+    case 'clock': pluck(n.p, off, VOX.clock); break;
+    case 'rain': pluck(n.p, off, VOX.rain); tone(off, 1900, 950, 0.05, 0.03, 'sine', 0.2, 0.2); break;
+    case 'kettle': pad(n.p, off, (n.l || 4) * STEP, 0.075); break;
+    case 'moth': pluck(n.p, off, VOX.moth); break;
+    case 'answer': pluck(n.p, off, VOX.answer); break;
+    case 'birds': bell(n.p, off, 0.12); break;
+  }
+  after(off, () => onSound(L, n));
+}
+/* every sound has a twin you can see */
+function onSound(L, n) {
+  const i = LAYERS.indexOf(L);
+  vib[i] = 1; glow[L] = 1; rib[L][n.s] = G.t;
+  if (L === 'clock') { const b = bobPos(); ring(b.x, b.y, C_GOLD, 7, 20, 0.5); }
+  else if (L === 'rain') splash(n.s);
+  else if (L === 'kettle') F.steamUntil = Math.max(F.steamUntil, G.t + (n.l || 4) * STEP);
+  else if (L === 'moth') { if (n.r >= 0) F.rayFlash[n.r] = 1; if (n.x) spark(n.x, n.y, 4, C_GOLD, 26); F.mothF = 1; }
+  else if (L === 'answer') { const x = n.x || 180, y = n.y || 300; ring(x, y, C_GOLD, 4, 26, 0.7); star(x, y, C_GOLD); }
+  else if (L === 'birds') { const b = birds[n.b | 0]; if (b) { b.hop = 1; b.sing = 1; } }
+  if (F.finale) addLight(L, n);
+}
+function bobPos() { return { x: PIV.x + Math.sin(F.pendAng) * PLEN, y: PIV.y + Math.cos(F.pendAng) * PLEN }; }
+
+/* recording: one pass of the loop, starting from the first thing the player does */
+const R = { layer: '', start: -1, end: -1, auto: false, open: false };
+function recBegin(layer) { R.layer = layer; R.start = -1; R.end = -1; R.auto = false; R.open = true; S.layers[layer] = []; }
+function recArm(abs) { if (R.start < 0) { R.start = abs; R.end = abs + LOOP; } }
+const recArmed = () => R.start >= 0;
+const recDone = () => R.start >= 0 && M.pos >= R.end;
+function recEnd() { R.start = -1; R.end = -1; R.auto = false; R.open = false; }
+/* the moment a layer is kept: its marks light up along the ribbon and its string rings gold */
+function keptFlash(L) {
+  const i = LAYERS.indexOf(L);
+  for (const n of S.layers[L]) rib[L][n.s] = G.t;
+  vib[i] = 1; glow[L] = 1;
+  for (let k = 0; k <= 10; k++) { const xl = lerp(SADDLE, NUT, k / 10); spark(GTR.x + xl, GTR.y + strY(i, xl), 2, C_GOLD, 26); }
+  ring(RIB.x + RIB.w / 2, RIB.y + RIB.h / 2, C_GOLD, 20, 170, 0.8);
+  tone(0, 1174.7, 1174.7, 0.5, 0.02, 'sine', 0.6); tone(0.11, 1760, 1760, 0.7, 0.018, 'sine', 0.6);
+}
+const recFrac = () => (R.start < 0 ? 0 : clamp((M.pos - R.start) / LOOP, 0, 1));
+function noteAt(L, s) { const a = S.layers[L]; for (let i = 0; i < a.length; i++) if (a[i].s === s) return a[i]; return null; }
+function barEmpty(L, b) { return !S.layers[L].some((n) => (n.s >> 3) === b); }
+
+/* ================= small lights: sparks, rings, stars ================= */
+const parts = [];
+function spark(x, y, n, col, spd) {
+  if (REDUCED) n = Math.min(n, 2);
+  for (let i = 0; i < n; i++) { const a = Math.random() * TAU, v = spd * (0.4 + Math.random() * 0.8); parts.push({ k: 0, x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 8, t: 0, life: 0.5 + Math.random() * 0.4, col, r: 1 + Math.random() }); }
+}
+function ring(x, y, col, r0, r1, life) { parts.push({ k: 1, x, y, t: 0, life, col, r0, r1 }); }
+function star(x, y, col) { parts.push({ k: 2, x, y, t: 0, life: 0.9, col, r: 5 }); }
+function splash(s) {
+  /* by day the guitar is gone, and the drip lands in the cup left on the bench */
+  const keep = G.mode === 'keep', xf = guitarXf(), x = keep ? 257 : xf.x - GTR.x + dropX(s), y = keep ? 485 : xf.y + strY(1, dropX(s) - GTR.x);
+  ring(x, y, C_GOLD, 2, 11, 0.4);
+  if (!REDUCED) for (const d of [-1, 1]) parts.push({ k: 0, x, y, vx: d * 26, vy: -44, t: 0, life: 0.36, col: C_GOLD, r: 1.1, g: 240 });
+}
+function updParts(dt) {
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const p = parts[i]; p.t += dt;
+    if (p.t >= p.life) { parts.splice(i, 1); continue; }
+    if (p.k === 0) { p.x += p.vx * dt; p.y += p.vy * dt; p.vy += (p.g || 30) * dt; p.vx *= 1 - 1.5 * dt; }
+  }
+  if (parts.length > 260) parts.splice(0, parts.length - 260);
+}
+function drawParts() {
+  for (const p of parts) {
+    const u = p.t / p.life, a = 1 - u;
+    if (p.k === 0) { ctx.fillStyle = rgba(p.col, a); circ(p.x, p.y, p.r * (1 - u * 0.5)); ctx.fill(); }
+    else if (p.k === 1) { ctx.strokeStyle = rgba(p.col, a * 0.85); ctx.lineWidth = 1.5; circ(p.x, p.y, lerp(p.r0, p.r1, REDUCED ? 0.6 : eOut(u))); ctx.stroke(); }
+    else { ctx.strokeStyle = rgba(p.col, a); ctx.lineWidth = 1.2; star4(p.x, p.y - (REDUCED ? 0 : u * 10), p.r * (0.5 + eOut(u) * 0.7)); }
+  }
+}
+function star4(x, y, r) { ctx.beginPath(); ctx.moveTo(x - r, y); ctx.lineTo(x + r, y); ctx.moveTo(x, y - r); ctx.lineTo(x, y + r); ctx.stroke(); }
+
+/* the light drawing of the finale: every note leaves a mark that stays */
+const lights = [], lightSeen = new Set();
+function addLight(L, n) {
+  const key = L + n.s;
+  if (lightSeen.has(key)) return;
+  lightSeen.add(key);
+  lights.push({ L, n, t: G.t });
+}
+function drawLights() {
+  const A0 = F.lightA;
+  if (A0 < 0.01 || !lights.length) return;
+  ctx.lineCap = 'round';
+  for (const m of lights) {
+    const n = m.n, born = eOut((G.t - m.t) / 0.7), pulse = 0.72 + 0.28 * (F.cadence ? 1 : Math.max(0, 1 - (G.t - rib[m.L][n.s]) * 2.5)), a = A0 * born * pulse;
+    ctx.strokeStyle = gold(a); ctx.fillStyle = gold(a);
+    if (m.L === 'clock') {
+      const th = (84 + (n.s / 31) * 128) * Math.PI / 180, r = n.p > 40 ? 64 : 70;
+      ctx.lineWidth = n.p > 40 ? 1.4 : 2.2;
+      line(PIV.x + Math.cos(th) * r, PIV.y + Math.sin(th) * r, PIV.x + Math.cos(th) * (r + 7 * born), PIV.y + Math.sin(th) * (r + 7 * born));
+    } else if (m.L === 'rain') {
+      const x = WIN.x + 12 + n.s * 9.3, len = 16 + (n.f || 0) * 3.4;
+      ctx.lineWidth = 1.5; line(x + 2, WIN.y + 34, x - 2, WIN.y + 34 + len * born);
+      circ(x - 2, WIN.y + 34 + len * born, 1.6); ctx.fill();
+    } else if (m.L === 'kettle') {
+      const x0 = 92 + (n.s / LOOP) * 46, h = (n.l || 4) * 8 * born;
+      ctx.lineWidth = 1.5; ctx.beginPath();
+      for (let k = 0; k <= 14; k++) { const u = k / 14, y = 268 - u * h, x = x0 + Math.sin(u * 5 + n.s) * (2 + u * 5); if (k) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
+      ctx.stroke();
+    } else if (m.L === 'answer') {
+      ctx.lineWidth = 1.5; star4(n.x || 180, n.y || 300, 7 * born);
+      ctx.lineWidth = 0.9; const x = n.x || 180, y = n.y || 300, q = 3.4 * born;
+      line(x - q, y - q, x + q, y + q); line(x - q, y + q, x + q, y - q);
+    } else if (m.L === 'birds') {
+      const b = birds[n.b | 0]; if (!b) continue;
+      const y = wireY(b.x) - 16;
+      ctx.lineWidth = 1.3;
+      for (let k = 0; k < 3; k++) { ctx.beginPath(); ctx.arc(b.x, y, 6 + k * 5 * born, -Math.PI * 0.8, -Math.PI * 0.2); ctx.strokeStyle = gold(a * (1 - k * 0.28)); ctx.stroke(); }
+    }
+  }
+}
+
+/* ================= drawing the room ================= */
+let INK = C_CREAM;
+const ink = (a) => rgba(INK, a * V.inkA);
+const gold = (a) => rgba(C_GOLD, a);
+const coral = (a) => rgba(C_CORAL, a);
+const pulse = (speed) => (REDUCED ? 0.5 : 0.5 + 0.5 * Math.sin(G.t * (speed || 3.2)));
+function line(x1, y1, x2, y2) { ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); }
+function circ(x, y, r) { ctx.beginPath(); ctx.arc(x, y, Math.max(0, r), 0, TAU); }
+function rrect(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function cue(x, y, r) {
+  const p = pulse(3.4);
+  ctx.strokeStyle = coral(0.55 + 0.4 * p); ctx.lineWidth = 1.8; circ(x, y, r + p * 3); ctx.stroke();
+  ctx.strokeStyle = coral(0.16); ctx.lineWidth = 5; circ(x, y, r + p * 3); ctx.stroke();
+}
+function isHot(k) { return !!(P && P.hot && P.hot[k]); }
+
+const SKY = [[0, [9, 11, 26], [22, 26, 54]], [0.34, [16, 18, 44], [52, 42, 80]], [0.58, [32, 38, 80], [160, 92, 98]], [0.8, [62, 82, 134], [236, 160, 104]], [1, [118, 154, 196], [249, 218, 164]]];
+function skyAt(d) {
+  for (let i = 1; i < SKY.length; i++) if (d <= SKY[i][0]) { const a = SKY[i - 1], b = SKY[i], t = (d - a[0]) / (b[0] - a[0]); return [mix3(a[1], b[1], t), mix3(a[2], b[2], t)]; }
+  return [SKY[4][1], SKY[4][2]];
+}
+const STARS = [];
+{ const r = rng(11); for (let i = 0; i < 38; i++) STARS.push([WIN.x + 6 + r() * (WIN.w - 12), WIN.y + 4 + r() * 64, 0.5 + r() * 0.8, r() * TAU]); }
+const ROOF = [[0, 106], [0, 98], [24, 86], [48, 98], [48, 102], [62, 102], [62, 90], [70, 90], [70, 102], [94, 102], [94, 92], [122, 79], [150, 92], [150, 104], [178, 104], [178, 96], [204, 96], [204, 86], [214, 86], [214, 96], [238, 96], [238, 102], [262, 102], [262, 90], [286, 78], [312, 92], [312, 122], [0, 122]];
+
+function drawWindow() {
+  const x = WIN.x, y = WIN.y, w = WIN.w, h = WIN.h, d = V.dawn, t = G.t;
+  ctx.save();
+  ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
+  const sky = skyAt(d), gr = ctx.createLinearGradient(0, y, 0, y + h);
+  gr.addColorStop(0, rgba(sky[0], 1)); gr.addColorStop(1, rgba(sky[1], 1));
+  ctx.fillStyle = gr; ctx.fillRect(x, y, w, h);
+  const sa = (1 - sm(d / 0.5)) * (1 - V.cloud * 0.92);
+  if (sa > 0.02) for (const s of STARS) { ctx.fillStyle = rgba(C_CREAM, sa * (REDUCED ? 0.7 : 0.55 + 0.45 * Math.sin(t * 1.1 + s[3]))); circ(s[0], s[1], s[2] * 0.75); ctx.fill(); }
+  const ma = (1 - sm((d - 0.3) / 0.4)) * (1 - V.cloud * 0.85);
+  if (ma > 0.02) {
+    const mx = x + 258 - d * 90, my = y + 24 + d * 34;
+    ctx.save(); ctx.beginPath(); ctx.rect(mx - 12, my - 12, 24, 24); ctx.arc(mx - 4.2, my - 2.2, 7.6, 0, TAU, true); ctx.clip('evenodd');
+    ctx.fillStyle = rgba(C_CREAM, ma * 0.92); circ(mx, my, 8.5); ctx.fill(); ctx.restore();
+  }
+  const ga = sm((d - 0.42) / 0.4);
+  if (ga > 0.01) {
+    const sx = x + 206, sy = y + 124 - 50 * sm((d - 0.62) / 0.38);
+    const g2 = ctx.createRadialGradient(sx, sy, 2, sx, sy, 170);
+    g2.addColorStop(0, rgba([255, 226, 160], 0.75 * ga)); g2.addColorStop(0.35, rgba(C_GOLD, 0.3 * ga)); g2.addColorStop(1, rgba(C_GOLD, 0));
+    ctx.fillStyle = g2; ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = rgba([255, 238, 196], sm((d - 0.6) / 0.2)); circ(sx, sy, 12); ctx.fill();
+  }
+  if (V.cloud > 0.01) { ctx.fillStyle = rgba([12, 14, 28], 0.6 * V.cloud); ctx.fillRect(x, y, w, h); }
+  /* roofs, a wire, somebody still awake */
+  const rc = mix3(mix3([10, 11, 22], [40, 31, 52], sm(d / 0.7)), [86, 74, 86], sm((d - 0.7) / 0.3));
+  ctx.fillStyle = rgba(rc, 1); ctx.beginPath();
+  for (let i = 0; i < ROOF.length; i++) { const p = ROOF[i]; if (i) ctx.lineTo(x + p[0], y + p[1]); else ctx.moveTo(x + p[0], y + p[1]); }
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = rgba(C_CREAM, 0.16 + 0.2 * d); ctx.lineWidth = 1; ctx.stroke();
+  if (d < 0.2) { ctx.fillStyle = gold(0.75 * (1 - d / 0.2)); ctx.fillRect(x + 128, y + 96, 4, 5); }
+  ctx.strokeStyle = rgba(C_CREAM, 0.34 + 0.3 * d); ctx.lineWidth = 1.2;
+  line(WIRE.x0 - 8, wireY(WIRE.x0 - 8) - 6, WIRE.x0 - 8, y + h); line(WIRE.x1 + 8, wireY(WIRE.x1 + 8) - 6, WIRE.x1 + 8, y + h);
+  ctx.lineWidth = isHot('birds') ? 1.5 : 1; ctx.beginPath();
+  for (let k = 0; k <= 24; k++) { const wx = WIRE.x0 - 8 + (k / 24) * (WIRE.x1 - WIRE.x0 + 16); if (k) ctx.lineTo(wx, wireY(wx)); else ctx.moveTo(wx, wireY(wx)); }
+  ctx.stroke();
+  if (V.birds > 0.01) {
+    if (M.run && M.on.birds && !REDUCED) { const px = birdX(((M.pos % LOOP) + LOOP) % LOOP * (LOOP - 1) / LOOP); ctx.fillStyle = gold(0.7); circ(px, wireY(px), 1.7); ctx.fill(); }
+    for (let i = 0; i < 5; i++) drawBird(i);
+  }
+  if (V.rain > 0.01) {
+    ctx.strokeStyle = rgba([190, 200, 232], 0.38 * V.rain); ctx.lineWidth = 1;
+    for (let i = 0; i < 34; i++) {
+      const ph = REDUCED ? hash(i + 3) : (t * (0.9 + hash(i) * 0.7) + hash(i * 7)) % 1;
+      const rx = x + hash(i * 3 + 1) * (w + 20), ry = y - 12 + ph * (h + 24);
+      line(rx, ry, rx - 3.2, ry + 10);
+    }
+  }
+  ctx.restore();
+  /* the frame */
+  ctx.strokeStyle = ink(0.92); ctx.lineWidth = 1.7; ctx.strokeRect(x, y, w, h);
+  ctx.strokeStyle = ink(0.5); ctx.lineWidth = 1.1;
+  line(x, y + 22, x + w, y + 22); line(x + 104, y, x + 104, y + 22); line(x + 208, y, x + 208, y + 22);
+  ctx.strokeStyle = ink(0.75); ctx.lineWidth = 1.5; line(x - 7, y + h + 4.5, x + w + 7, y + h + 4.5);
+  ctx.strokeStyle = ink(0.12); ctx.lineWidth = 1; line(x + 30, y + 60, x + 52, y + 34); line(x + 38, y + 64, x + 52, y + 47);
+}
+const BIRD_SIZE = [1.28, 1.08, 0.94, 1.18, 0.84];
+function drawBird(i) {
+  const b = birds[i], s = BIRD_SIZE[i], inn = eOut(b.in);
+  if (inn <= 0) return;
+  const hop = REDUCED ? 0 : Math.sin(clamp(b.hop, 0, 1) * Math.PI) * 5;
+  let x = b.x, y = wireY(b.x) - hop;
+  if (inn < 1) { x = lerp(b.x + 70 + i * 12, b.x, inn); y = lerp(WIN.y - 26, y, inn) - Math.sin(inn * Math.PI) * 10; }
+  const sel = isHot('birds') && (F.dragBird === i || (G.kb && F.selBird === i));
+  const c = b.sing > 0.05 ? mix3(C_CREAM, C_GOLD, clamp(b.sing * 1.5, 0, 1)) : isHot('birds') ? C_CORAL : C_CREAM;
+  ctx.strokeStyle = rgba(c, 0.95); ctx.fillStyle = rgba(mix3([14, 15, 30], c, b.sing > 0.05 ? 0.35 : 0.12), 1); ctx.lineWidth = sel ? 1.9 : 1.3;
+  ctx.beginPath(); ctx.ellipse(x - 0.5 * s, y - 5.6 * s, 6 * s, 4.4 * s, -0.25, 0, TAU); ctx.fill(); ctx.stroke();
+  circ(x + 4.4 * s, y - 9.8 * s, 2.9 * s); ctx.fill(); ctx.stroke();
+  const open = b.sing > 0.3 ? 1.6 : 0.4;
+  ctx.beginPath(); ctx.moveTo(x + 7 * s, y - 10.6 * s); ctx.lineTo(x + 10.4 * s, y - 10.6 * s - open * s); ctx.moveTo(x + 7 * s, y - 9.4 * s); ctx.lineTo(x + 10.4 * s, y - 9.6 * s + open * s); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x - 5.6 * s, y - 4.4 * s); ctx.lineTo(x - 11.5 * s, y - 1.6 * s); ctx.stroke();
+  if (inn >= 1) { ctx.lineWidth = 1; line(x - 1.2 * s, y - 1.6 * s, x - 1.2 * s, y + hop); line(x + 1.6 * s, y - 1.6 * s, x + 1.6 * s, y + hop); }
+  else if (!REDUCED) { const f = Math.sin(G.t * 26 + i) * 5 * s; line(x - 1 * s, y - 8 * s, x - 5 * s, y - 12 * s - f); }
+  if (sel) cue(x, y - 6 * s, 14);
+}
+
+function drawRoomBack() {
+  /* lamplight on the wall */
+  if (V.lamp > 0.01) {
+    const g = ctx.createRadialGradient(LAMP.x, LAMP.y + 10, 6, LAMP.x, LAMP.y + 40, 330);
+    g.addColorStop(0, gold(0.2 * V.lamp)); g.addColorStop(0.3, gold(0.075 * V.lamp)); g.addColorStop(1, gold(0));
+    ctx.fillStyle = g; ctx.fillRect(XMIN, YMIN, XMAX - XMIN, YMAX - YMIN);
+  }
+  if (V.dawn > 0.4) { ctx.fillStyle = rgba([240, 170, 110], 0.085 * sm((V.dawn - 0.4) / 0.5) + 0.06 * V.day); ctx.fillRect(XMIN, YMIN, XMAX - XMIN, YMAX - YMIN); }
+}
+function drawDecor() {
+  /* only wide screens see the rest of the shop */
+  ctx.lineWidth = 1.2;
+  if (XMIN < -44) {
+    ctx.strokeStyle = ink(0.4);
+    line(-150, 196, -22, 196); line(-140, 196, -140, 206); line(-32, 196, -32, 206);
+    for (const jx of [-126, -100, -78, -52]) { rrect(jx - 7, 178 - (jx % 3) * 2, 14, 18 + (jx % 3) * 2, 3); ctx.stroke(); line(jx - 5, 176 - (jx % 3) * 2, jx + 5, 176 - (jx % 3) * 2); }
+    ctx.save(); ctx.translate(-62, 318); line(0, -86, 0, -40); circ(0, -90, 2.5); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(0, 12, 20, 24, 0, 0, TAU); ctx.stroke(); ctx.beginPath(); ctx.ellipse(0, -18, 14, 15, 0, 0, TAU); ctx.stroke();
+    ctx.strokeRect(-3, -62, 6, 34); circ(0, 6, 5); ctx.stroke(); ctx.restore();
+    ctx.save(); ctx.translate(-128, 306); line(0, -70, 0, -30); circ(0, -74, 2.5); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, -30); ctx.bezierCurveTo(-26, -6, -22, 34, 0, 34); ctx.bezierCurveTo(22, 34, 26, -6, 0, -30); ctx.stroke(); circ(0, 12, 4.5); ctx.stroke(); ctx.restore();
+  }
+  if (XMAX > 404) {
+    ctx.strokeStyle = ink(0.45);
+    const dx = 396, o = V.door;
+    ctx.strokeRect(dx, 196, 70, 310);
+    if (o > 0.01) { const g = ctx.createLinearGradient(dx, 0, dx + 70, 0); g.addColorStop(0, rgba([255, 226, 170], 0.5 * o)); g.addColorStop(1, rgba(C_GOLD, 0.16 * o)); ctx.fillStyle = g; ctx.fillRect(dx + 1, 197, 68 * eOut(o), 308); }
+    ctx.strokeStyle = ink(0.45); ctx.beginPath(); ctx.moveTo(dx + 70, 196); ctx.lineTo(dx + 70 - 14 * (1 - o) - 2, 204 + 6 * o); ctx.lineTo(dx + 70 - 14 * (1 - o) - 2, 498 - 6 * o); ctx.lineTo(dx + 70, 506); ctx.stroke();
+    circ(dx + 12 + 40 * o, 356, 2.6); ctx.stroke();
+    line(dx + 96, 240, dx + 120, 240); line(dx + 108, 240, dx + 108, 252);
+  }
+}
+function drawDoorLight() {
+  const d = eOut(V.door);
+  if (d < 0.01) return;
+  for (let k = 0; k < 3; k++) {
+    const w = 250 * d + k * 22, top = 100 * d + k * 16;
+    const g = ctx.createLinearGradient(XMAX, 0, XMAX - w, 0);
+    g.addColorStop(0, rgba([255, 222, 160], 0.075 * d)); g.addColorStop(1, rgba(C_GOLD, 0.012 * d));
+    ctx.fillStyle = g; ctx.beginPath();
+    ctx.moveTo(XMAX + 2, 156 - k * 6); ctx.lineTo(XMAX + 2, YMAX + 2); ctx.lineTo(XMAX - w, YMAX + 2); ctx.lineTo(XMAX - top, 164 - k * 6); ctx.closePath(); ctx.fill();
+  }
+}
+function drawBench() {
+  ctx.strokeStyle = ink(0.85); ctx.lineWidth = 1.6; line(XMIN - 5, 506, XMAX + 5, 506);
+  ctx.strokeStyle = ink(0.3); ctx.lineWidth = 1.1; line(XMIN - 5, 513, XMAX + 5, 513);
+  line(12, 513, 12, YMAX + 5); line(348, 513, 348, YMAX + 5);
+  if (YMAX > 660) line(XMIN - 5, 672, XMAX + 5, 672);
+}
+function drawClock() {
+  const g = glow.clock, cx = CLK.x, cy = CLK.y;
+  ctx.fillStyle = rgba(C_PAGE, 0.9); circ(cx, cy, 21); ctx.fill();
+  ctx.strokeStyle = ink(0.92); ctx.lineWidth = 1.6; circ(cx, cy, 21); ctx.stroke();
+  ctx.strokeStyle = ink(0.3); ctx.lineWidth = 1; circ(cx, cy, 17.5); ctx.stroke();
+  ctx.strokeStyle = ink(0.6);
+  for (let k = 0; k < 12; k++) { const a = k / 12 * TAU, r0 = k % 3 ? 15.2 : 13.6; line(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0, cx + Math.cos(a) * 17, cy + Math.sin(a) * 17); }
+  const ha = (F.clockH % 12) / 12 * TAU - Math.PI / 2, ma = (F.clockH % 1) * TAU - Math.PI / 2;
+  ctx.strokeStyle = ink(0.95); ctx.lineWidth = 1.9; line(cx, cy, cx + Math.cos(ha) * 8.5, cy + Math.sin(ha) * 8.5);
+  ctx.lineWidth = 1.3; line(cx, cy, cx + Math.cos(ma) * 13, cy + Math.sin(ma) * 13);
+  ctx.fillStyle = ink(0.95); circ(cx, cy, 1.6); ctx.fill();
+  ctx.strokeStyle = ink(0.8); ctx.lineWidth = 1.4; rrect(cx - 20, cy + 21, 40, 71, 6); ctx.stroke();
+  const b = bobPos(), tf = F.tickFlash;
+  ctx.strokeStyle = ink(0.9); ctx.lineWidth = 1.2; line(PIV.x, PIV.y, b.x, b.y);
+  ctx.fillStyle = rgba(mix3(C_PAGE, C_GOLD, Math.max(g * 0.9, tf * 0.25)), 1); circ(b.x, b.y, 6.5); ctx.fill();
+  ctx.strokeStyle = rgba(mix3(INK, C_GOLD, Math.max(g, tf * 0.5)), lerp(0.92 * V.inkA, 1, g)); ctx.lineWidth = 1.5 + g; circ(b.x, b.y, 6.5); ctx.stroke();
+  if (g > 0.05) { ctx.strokeStyle = gold(g * 0.3); ctx.lineWidth = 5; circ(b.x, b.y, 8); ctx.stroke(); }
+}
+function drawKettle() {
+  const g = glow.kettle, hot = isHot('kettle'), on = V.kettle, t = G.t;
+  const sing = F.holding || G.t < F.steamUntil ? 1 : 0;
+  ctx.strokeStyle = ink(0.8); ctx.lineWidth = 1.4;
+  line(12, 277, 96, 277); line(22, 277, 22, 287); line(22, 287, 31, 277); line(86, 277, 86, 287); line(86, 287, 77, 277);
+  line(40, 277, 43, 269); line(60, 277, 57, 269); line(38, 269, 62, 269);
+  if (on > 0.03) {
+    const fl = REDUCED ? 0 : Math.sin(t * 13) * 0.8;
+    ctx.strokeStyle = gold(0.85 * on); ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(47, 277); ctx.quadraticCurveTo(46 + fl, 273, 50, 270.5); ctx.quadraticCurveTo(54 + fl, 273, 53, 277); ctx.stroke();
+  }
+  const jig = sing && !REDUCED ? Math.sin(t * 40) * 0.45 : 0;
+  const col = hot ? coral(0.98) : rgba(mix3(INK, C_GOLD, g * 0.8), lerp(0.94 * V.inkA, 1, g * 0.8));
+  ctx.fillStyle = rgba(C_PAGE, 0.92); ctx.strokeStyle = col; ctx.lineWidth = 1.6;
+  ctx.beginPath(); ctx.moveTo(35, 268); ctx.lineTo(65, 268); ctx.quadraticCurveTo(71, 259, 66, 249); ctx.quadraticCurveTo(62, 240, 50, 240); ctx.quadraticCurveTo(38, 240, 34, 249); ctx.quadraticCurveTo(29, 259, 35, 268); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(40.5, 243 + jig); ctx.quadraticCurveTo(50, 237 + jig, 59.5, 243 + jig); ctx.stroke();
+  circ(50, 237.4 + jig, 2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(67.5, 256); ctx.quadraticCurveTo(76, 254, 80, 243); ctx.lineTo(84.5, 245); ctx.quadraticCurveTo(80, 262, 67.5, 263); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(37, 245); ctx.quadraticCurveTo(33, 222, 50, 222); ctx.quadraticCurveTo(67, 222, 63, 245); ctx.stroke();
+  if (hot) cue(50, 250, 27);
+  /* steam */
+  const st = V.steam;
+  if (st > 0.02) {
+    for (let j = 0; j < 3; j++) {
+      const len = (22 + j * 13) * st, x0 = 82.5 + j * 2.4;
+      ctx.strokeStyle = rgba(mix3(INK, C_GOLD, g), (0.5 - j * 0.1) * st * lerp(V.inkA, 1, g)); ctx.lineWidth = 1.3; ctx.beginPath();
+      for (let k = 0; k <= 12; k++) { const u = k / 12, y = 241 - u * len, x = x0 + Math.sin(u * 4.2 + (REDUCED ? 0 : t * 2.1) + j * 2) * (1 + u * 5.5) + u * 4; if (k) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
+      ctx.stroke();
+    }
+  }
+}
+const RAYS = [];
+for (let k = 0; k < 9; k++) {
+  const th = (28 + k * 15.5) * Math.PI / 180, c = Math.cos(th), s = Math.sin(th);
+  let r1 = Math.min(210, (AIR.y1 + 2 - LAMP.y) / s);
+  if (Math.abs(c) > 0.001) r1 = Math.min(r1, 152 / Math.abs(c));
+  RAYS.push({ x0: LAMP.x + c * 15, y0: LAMP.y + s * 15, x1: LAMP.x + c * r1, y1: LAMP.y + s * r1 });
+}
+function drawRays() {
+  const a = V.rays * V.lamp;
+  if (a < 0.01) return;
+  for (let k = 0; k < 9; k++) {
+    const r = RAYS[k], f = F.rayFlash[k];
+    const g = ctx.createLinearGradient(r.x0, r.y0, r.x1, r.y1);
+    g.addColorStop(0, gold((0.34 + f * 0.6) * a)); g.addColorStop(1, gold((0.05 + f * 0.5) * a));
+    ctx.strokeStyle = g; ctx.lineWidth = 1 + f * 1.6; line(r.x0, r.y0, r.x1, r.y1);
+  }
+}
+function drawLamp() {
+  const on = V.lamp, hot = isHot('lamp');
+  ctx.strokeStyle = ink(0.6); ctx.lineWidth = 1.2; line(180, YMIN - 4, 180, 164);
+  if (hot && on < 0.5) { const g = ctx.createRadialGradient(180, 178, 2, 180, 178, 46); g.addColorStop(0, coral(0.26)); g.addColorStop(1, coral(0)); ctx.fillStyle = g; circ(180, 178, 46); ctx.fill(); }
+  ctx.fillStyle = rgba(mix3(C_PAGE, C_GOLD, on * 0.9), 1); ctx.beginPath(); ctx.arc(180, 185, 5.6, 0, Math.PI); ctx.fill();
+  ctx.strokeStyle = hot ? coral(1) : rgba(mix3(INK, C_GOLD, on * 0.6), Math.max(V.inkA, on)); ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(180, 185, 5.6, 0, Math.PI); ctx.stroke();
+  ctx.fillStyle = rgba(C_PAGE, 0.96); ctx.strokeStyle = hot ? coral(1) : ink(0.95); ctx.lineWidth = hot ? 2 : 1.7;
+  ctx.beginPath(); ctx.moveTo(170.5, 164); ctx.lineTo(189.5, 164); ctx.lineTo(204, 184); ctx.quadraticCurveTo(180, 189, 156, 184); ctx.closePath(); ctx.fill(); ctx.stroke();
+  line(176, 164, 176, 160); line(184, 164, 184, 160); line(176, 160, 184, 160);
+  if (hot) cue(180, 177, 27);
+}
+/* ================= the guitar ================= */
+const BODY = new Path2D();
+BODY.moveTo(-88, 0);
+BODY.bezierCurveTo(-88, -34, -70, -52, -44, -52); BODY.bezierCurveTo(-22, -52, -14, -38, 2, -37);
+BODY.bezierCurveTo(16, -36, 22, -42, 40, -42); BODY.bezierCurveTo(60, -42, 72, -30, 72, -13);
+BODY.lineTo(72, 13);
+BODY.bezierCurveTo(72, 30, 60, 42, 40, 42); BODY.bezierCurveTo(22, 42, 16, 36, 2, 37);
+BODY.bezierCurveTo(-14, 38, -22, 52, -44, 52); BODY.bezierCurveTo(-70, 52, -88, 34, -88, 0);
+BODY.closePath();
+const CASE = new Path2D();
+CASE.moveTo(-58, -62); CASE.lineTo(46, -62); CASE.bezierCurveTo(74, -62, 76, -27, 100, -27); CASE.lineTo(234, -27);
+CASE.arcTo(246, -27, 246, -15, 12); CASE.lineTo(246, 15); CASE.arcTo(246, 27, 234, 27, 12); CASE.lineTo(100, 27);
+CASE.bezierCurveTo(76, 27, 74, 62, 46, 62); CASE.lineTo(-58, 62); CASE.bezierCurveTo(-112, 62, -112, -62, -58, -62); CASE.closePath();
+const STR_W = [1.9, 1.6, 1.35, 1.15, 1, 0.85];
+const LATCH_X = [-40, 34];
+const T = { on: false, i: 0, stage: '', x: 0, y: 0, src: null, fx: 0, fy: 0, ft: 0, grab: false, moved: 0 };
+
+function guitarXf() { const lift = eIO(V.lift); return { x: GTR.x + lift * 6, y: GTR.y - lift * 52, r: -0.07 * lift }; }
+function drawCaseBase() {
+  if (V.gone > 0.98) return;
+  ctx.save(); ctx.translate(GTR.x, GTR.y); ctx.globalAlpha = (1 - V.gone) * V.guitar;
+  ctx.fillStyle = rgba([13, 14, 27], 0.9); ctx.fill(CASE);
+  ctx.strokeStyle = ink(0.42); ctx.lineWidth = 1.4; ctx.stroke(CASE);
+  ctx.save(); ctx.scale(0.955, 0.9); ctx.strokeStyle = ink(0.14); ctx.lineWidth = 1; ctx.stroke(CASE); ctx.restore();
+  ctx.restore();
+}
+function drawLid() {
+  const l = V.lid;
+  if (l < 0.005) return;
+  ctx.save(); ctx.translate(GTR.x, GTR.y);
+  const e = eIO(l);
+  ctx.save(); ctx.clip(CASE);
+  ctx.fillStyle = rgba(C_TILE, 0.985); ctx.fillRect(-116, -64, 370, 128 * e);
+  ctx.strokeStyle = ink(0.8); ctx.lineWidth = 1.4; line(-116, -64 + 128 * e, 254, -64 + 128 * e);
+  if (e > 0.9) {
+    const a = (e - 0.9) * 10;
+    ctx.save(); ctx.scale(0.955, 0.9); ctx.strokeStyle = ink(0.26 * a); ctx.lineWidth = 1; ctx.setLineDash([3, 4]); ctx.stroke(CASE); ctx.setLineDash([]); ctx.restore();
+  }
+  ctx.restore();
+  ctx.strokeStyle = ink(0.95); ctx.lineWidth = 1.7; ctx.globalAlpha = clamp(l * 3, 0, 1); ctx.stroke(CASE);
+  if (e > 0.9) {
+    const a = (e - 0.9) * 10; ctx.globalAlpha = a;
+    ctx.strokeStyle = ink(0.8); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(-14, 62); ctx.quadraticCurveTo(-14, 71, -3, 71); ctx.quadraticCurveTo(8, 71, 8, 62); ctx.stroke();
+    for (let j = 0; j < 2; j++) {
+      const shut = F.latch[j], hot = isHot('latch') && shut < 0.5, x = LATCH_X[j];
+      ctx.save(); ctx.translate(x, 60); ctx.rotate((1 - eOut(shut)) * -0.9);
+      ctx.fillStyle = rgba(C_PAGE, 1); ctx.strokeStyle = hot ? coral(1) : rgba(mix3(INK, C_GOLD, shut * 0.25), Math.max(V.inkA, 0.5)); ctx.lineWidth = hot ? 2 : 1.5;
+      rrect(-6, -2, 12, 10, 2); ctx.fill(); ctx.stroke(); line(-3, 4.5, 3, 4.5);
+      ctx.restore();
+      if (hot) cue(x, 64, 17);
+    }
+  }
+  ctx.restore();
+}
+function drawGuitar() {
+  const a = V.guitar * (1 - V.gone);
+  if (a < 0.01 || V.lid > 0.995) return;
+  const xf = guitarXf();
+  ctx.save();
+  ctx.translate(xf.x, xf.y + (1 - eOut(V.guitar)) * 8); ctx.rotate(xf.r); ctx.globalAlpha = a;
+  const hotG = isHot('guitar');
+  ctx.fillStyle = rgba(C_PAGE, 0.95); ctx.fill(BODY);
+  ctx.strokeStyle = hotG ? coral(0.95) : ink(0.96); ctx.lineWidth = 1.8; ctx.stroke(BODY);
+  ctx.save(); ctx.scale(0.93, 0.9); ctx.strokeStyle = ink(0.2); ctx.lineWidth = 1; ctx.stroke(BODY); ctx.restore();
+  ctx.fillStyle = rgba([7, 8, 16], 0.95); circ(22, 0, 15); ctx.fill();
+  ctx.strokeStyle = ink(0.9); ctx.lineWidth = 1.4; ctx.stroke();
+  ctx.strokeStyle = ink(0.3); ctx.lineWidth = 1; circ(22, 0, 18.4); ctx.stroke();
+  ctx.strokeStyle = ink(0.16); circ(22, 0, 20.6); ctx.stroke();
+  /* bridge */
+  ctx.fillStyle = rgba(C_PAGE, 1); ctx.strokeStyle = ink(0.9); ctx.lineWidth = 1.3; rrect(-48, -21, 13, 42, 3); ctx.fill(); ctx.stroke();
+  ctx.lineWidth = 1.9; line(-36, -17, -36, 17);
+  /* neck and fretboard */
+  ctx.fillStyle = rgba(C_PAGE, 1); ctx.strokeStyle = ink(0.92); ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(38, -15.2); ctx.lineTo(72, -14.6); ctx.lineTo(NUT, -11.6); ctx.lineTo(NUT, 11.6); ctx.lineTo(72, 14.6); ctx.lineTo(38, 15.2); ctx.closePath(); ctx.fill(); ctx.stroke();
+  const hw = (x) => lerp(11.6, 15.2, clamp((NUT - x) / (NUT - 38), 0, 1));
+  const hotNeck = isHot('neck');
+  ctx.lineWidth = 1;
+  for (let n = 1; n < 20; n++) {
+    const x = fretX(n); if (x < 41) break;
+    const key = hotNeck && RAIN_FRETS.indexOf(n) > 0;
+    ctx.strokeStyle = key ? coral(0.8) : ink(0.3); line(x, -hw(x), x, hw(x));
+  }
+  ctx.fillStyle = ink(0.42);
+  for (const n of [3, 5, 7, 9]) { circ((fretX(n - 1) + fretX(n)) / 2, 0, 1.5); ctx.fill(); }
+  const x12 = (fretX(11) + fretX(12)) / 2; circ(x12, -5, 1.4); ctx.fill(); circ(x12, 5, 1.4); ctx.fill();
+  ctx.strokeStyle = ink(0.95); ctx.lineWidth = 2.4; line(NUT, -11.6, NUT, 11.6);
+  /* headstock and pegs */
+  ctx.fillStyle = rgba(C_PAGE, 1); ctx.strokeStyle = ink(0.95); ctx.lineWidth = 1.6;
+  ctx.beginPath(); ctx.moveTo(NUT, -11.6); ctx.lineTo(197, -17); ctx.lineTo(231, -15.5); ctx.quadraticCurveTo(239, -8, 237.5, 0); ctx.quadraticCurveTo(239, 8, 231, 15.5); ctx.lineTo(197, 17); ctx.lineTo(NUT, 11.6); ctx.closePath(); ctx.fill(); ctx.stroke();
+  for (let i = 0; i < 6; i++) {
+    const px = PEGX[i], sg = i < 3 ? -1 : 1, hot = P && P.hot && P.hot.peg === i;
+    ctx.fillStyle = ink(0.85); circ(px, sg * 7.5, 1.7); ctx.fill();
+    ctx.strokeStyle = hot ? coral(1) : ink(0.9); ctx.lineWidth = 1.4; line(px, sg * 16.5, px, sg * 19);
+    const tw = T.on && T.i === i ? Math.abs(Math.cos(F.pegAng)) : 1;
+    ctx.fillStyle = rgba(C_PAGE, 1); ctx.beginPath(); ctx.ellipse(px, sg * 21.8, 1.3 + 3.1 * tw, 3, 0, 0, TAU); ctx.fill(); ctx.stroke();
+  }
+  for (let i = 0; i < 6; i++) drawString(i);
+  /* the little tag on its thread */
+  if (F.tagA < 0.5) {
+    const sw = REDUCED ? 0 : Math.sin(G.t * 1.3) * 1.2;
+    ctx.strokeStyle = ink(0.6); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(236, 3); ctx.quadraticCurveTo(240, 9, 239 + sw, 15); ctx.stroke();
+    ctx.save(); ctx.translate(239 + sw, 15); ctx.rotate(0.25 + sw * 0.05);
+    ctx.fillStyle = rgba(C_CREAM, 0.85 * V.inkA); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(3.5, 3); ctx.lineTo(3.5, 12); ctx.lineTo(-3.5, 12); ctx.lineTo(-3.5, 3); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+  ctx.restore();
+}
+function drawString(i) {
+  let slack = 0;
+  if (i >= W.strings) { if (T.on && T.i === i && T.stage === 'on') slack = 1 - sm(F.wind); else return; }
+  const ys = (i - 2.5) * 5.4, yn = (i - 2.5) * 3.7, px = PEGX[i], py = (i < 3 ? -1 : 1) * 7.5;
+  const v = vib[i], hot = P && P.hot && P.hot.string === i;
+  const lit = clamp(v * 1.5, 0, 1);
+  const col = hot ? coral(0.6 + 0.4 * pulse(3.4)) : rgba(mix3(INK, C_GOLD, lit), lerp(0.9 * V.inkA, 1, lit));
+  let stopX = NUT, stopY = yn;
+  if (i === 1 && F.fingerDown && F.fretI > 0) { stopX = FINGER_X[F.fretI] - 4; stopY = strY(1, stopX); }
+  const mx = (SADDLE + stopX) / 2, my = (ys + stopY) / 2;
+  const amp = REDUCED ? 0 : v * (2.7 - i * 0.22) * Math.sin(G.t * (44 + i * 9));
+  ctx.lineWidth = STR_W[i] + (hot ? 0.6 : 0) + lit * 0.5;
+  if (lit > 0.05) {
+    ctx.strokeStyle = gold(0.16 * lit); ctx.lineWidth = STR_W[i] + 5; ctx.beginPath(); ctx.moveTo(SADDLE, ys); ctx.lineTo(stopX, stopY); ctx.stroke();
+    if (!REDUCED) { ctx.strokeStyle = gold(0.3 * lit); ctx.lineWidth = STR_W[i]; ctx.beginPath(); ctx.moveTo(SADDLE, ys); ctx.quadraticCurveTo(mx, my - amp * 2, stopX, stopY); ctx.stroke(); }
+    ctx.lineWidth = STR_W[i] + lit * 0.5;
+  }
+  ctx.strokeStyle = col; ctx.beginPath();
+  ctx.moveTo(-43, ys); ctx.lineTo(SADDLE, ys);
+  ctx.quadraticCurveTo(mx, my + amp * 2 + slack * 20, stopX, stopY);
+  if (stopX !== NUT) ctx.lineTo(NUT, yn);
+  ctx.lineTo(px, py);
+  ctx.stroke();
+  ctx.fillStyle = col; circ(-43, ys, 1.3); ctx.fill();
+  if (i === 1 && F.fingerDown && F.fretI > 0) { ctx.fillStyle = gold(0.95); circ(FINGER_X[F.fretI], strY(1, FINGER_X[F.fretI]), 4); ctx.fill(); ctx.strokeStyle = gold(0.35); ctx.lineWidth = 4; ctx.stroke(); }
+}
+/* hands, for the morning */
+function handAnchor(k) {
+  const xf = guitarXf(), lx = k ? 132 : -46, ly = k ? 14.6 : 51, c = Math.cos(xf.r), s = Math.sin(xf.r);
+  return { x: xf.x + lx * c - ly * s, y: xf.y + lx * s + ly * c + (1 - eOut(V.hands)) * 240 };
+}
+function drawHandBack(k) {
+  const h = handAnchor(k), d = k ? 1 : -1, bx = h.x + d * 22, by = h.y + 150;
+  const fade = (c, a0) => { const g = ctx.createLinearGradient(0, 468, 0, 552); g.addColorStop(0, rgba(c, a0)); g.addColorStop(1, rgba(c, 0)); return g; };
+  ctx.fillStyle = fade(C_PAGE, 0.96); ctx.strokeStyle = fade(INK, 0.9 * V.inkA); ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(bx - 16, by); ctx.lineTo(h.x - 10.5, h.y + 25); ctx.quadraticCurveTo(h.x - 14.5, h.y - 3, h.x, h.y - 5); ctx.quadraticCurveTo(h.x + 14.5, h.y - 3, h.x + 10.5, h.y + 25); ctx.lineTo(bx + 16, by);
+  ctx.fill(); ctx.stroke();
+  const cx = lerp(h.x, bx, 0.36), cy = lerp(h.y, by, 0.36) + 8;
+  ctx.lineWidth = 1.2; line(cx - 13.5, cy - d * 1.5, cx + 13.5, cy + d * 1.5); line(cx - 14, cy + 6 - d * 1.5, cx + 14, cy + 6 + d * 1.5);
+}
+function drawHandFront(k) {
+  const h = handAnchor(k), d = k ? -1 : 1, fa = clamp((548 - h.y) / 50, 0, 1);
+  if (fa <= 0) return;
+  ctx.save(); ctx.globalAlpha = fa; ctx.lineCap = 'round';
+  ctx.strokeStyle = ink(0.92); ctx.lineWidth = 9.5; line(h.x + 9 * d, h.y + 13, h.x + 3 * d, h.y - 13);
+  ctx.strokeStyle = rgba(C_PAGE, 1); ctx.lineWidth = 6.6; line(h.x + 9 * d, h.y + 13, h.x + 3 * d, h.y - 13);
+  ctx.strokeStyle = ink(0.4); ctx.lineWidth = 1; line(h.x + 2.2 * d, h.y - 12, h.x + 5 * d, h.y - 12.6);
+  ctx.restore();
+}
+
+/* ================= threads, tuning, the moth, the rain ================= */
+function threadSrc() { return T.src ? T.src() : { x: 180, y: 300 }; }
+function drawThread() {
+  if (!T.on || T.stage === 'on' || T.stage === 'done' || T.stage === '') return;
+  const s = threadSrc(), p = pulse(4);
+  if (T.stage !== 'wait') {
+    const mx = (s.x + T.x) / 2, my = Math.max(s.y, T.y) + 18 + dist(s.x, s.y, T.x, T.y) * 0.08;
+    ctx.strokeStyle = gold(0.85); ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.quadraticCurveTo(mx, my, T.x, T.y); ctx.stroke();
+  } else {
+    ctx.strokeStyle = gold(0.75); ctx.lineWidth = 1.1; ctx.beginPath(); ctx.moveTo(T.x, T.y);
+    for (let k = 1; k <= 8; k++) ctx.lineTo(T.x + Math.sin(k * 1.1 + (REDUCED ? 0 : G.t * 3)) * 2.4, T.y + k * 2.4);
+    ctx.stroke();
+  }
+  const g = ctx.createRadialGradient(T.x, T.y, 1, T.x, T.y, 20); g.addColorStop(0, coral(0.5)); g.addColorStop(1, coral(0));
+  ctx.fillStyle = g; circ(T.x, T.y, 20); ctx.fill();
+  ctx.fillStyle = coral(1); circ(T.x, T.y, 4.2 + p * 0.9); ctx.fill();
+  ctx.strokeStyle = rgba(C_CREAM, 0.9); ctx.lineWidth = 1.1; star4(T.x, T.y, 8 + p * 3);
+  /* each thread still looks a little like where it came from */
+  const lk = T.look, x = T.x, y = T.y, sw = REDUCED ? 0 : Math.sin(G.t * 2.2);
+  ctx.strokeStyle = rgba(C_CREAM, 0.85); ctx.lineWidth = 1.2;
+  if (lk === 'drop') { ctx.beginPath(); ctx.moveTo(x, y - 15); ctx.bezierCurveTo(x + 2, y - 9, x + 9, y - 3, x + 9, y + 2.5); ctx.arc(x, y + 2.5, 9, 0, Math.PI); ctx.bezierCurveTo(x - 9, y - 3, x - 2, y - 9, x, y - 15); ctx.stroke(); }
+  else if (lk === 'steam') { ctx.beginPath(); ctx.moveTo(x - 2, y - 9); ctx.bezierCurveTo(x - 9 + sw * 2, y - 14, x + 7 + sw * 2, y - 18, x, y - 24); ctx.bezierCurveTo(x - 5, y - 28, x + 3 - sw * 2, y - 31, x + 1, y - 34); ctx.stroke(); }
+  else if (lk === 'echo') { for (const d of [-1, 1]) for (const r of [12, 17]) { ctx.beginPath(); ctx.arc(x, y, r + p * 1.5, d > 0 ? -0.6 : Math.PI - 0.6, d > 0 ? 0.6 : Math.PI + 0.6); ctx.stroke(); } }
+  else if (lk === 'feather') {
+    ctx.save(); ctx.translate(x, y); ctx.rotate(-0.5 + sw * 0.25);
+    ctx.beginPath(); ctx.moveTo(0, 6); ctx.quadraticCurveTo(2, -8, 0, -22); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, 2); ctx.bezierCurveTo(-9, -4, -8, -16, 0, -22); ctx.bezierCurveTo(8, -16, 9, -4, 0, 2); ctx.stroke();
+    ctx.restore();
+  }
+  if (T.stage === 'wait' || T.stage === 'drift') cue(T.x, T.y, 15);
+}
+function drawWaves() {
+  const a = F.waveA;
+  if (a < 0.01) return;
+  const w = F.wind, x0 = 96, x1 = 264, y = 326, amp = 9, n = 56, tuned = w >= 1;
+  const ratio = Math.pow(2, -(1 - w) * 9 / 12), t = REDUCED ? 0 : G.t * 5;
+  ctx.fillStyle = rgba(C_PAGE, 0.6 * a); rrect(x0 - 12, y - 20, x1 - x0 + 24, 40, 12); ctx.fill();
+  ctx.strokeStyle = ink(0.16 * a); ctx.lineWidth = 1; ctx.stroke();
+  const wave = (cyc, ph) => { ctx.beginPath(); for (let k = 0; k <= n; k++) { const u = k / n, env = Math.sin(u * Math.PI); const yy = y + Math.sin(u * cyc * TAU - ph) * amp * env; if (k) ctx.lineTo(x0 + u * (x1 - x0), yy); else ctx.moveTo(x0 + u * (x1 - x0), yy); } ctx.stroke(); };
+  if (tuned) {
+    const k = clamp((G.t - F.tunedAt) / 0.5, 0, 1);
+    ctx.strokeStyle = gold(0.25 * a); ctx.lineWidth = 7 - 3 * k; wave(5, t);
+    ctx.strokeStyle = gold(a); ctx.lineWidth = 2.2; wave(5, t);
+  } else {
+    ctx.strokeStyle = rgba(C_CREAM, 0.6 * a); ctx.lineWidth = 1.4; wave(5, t);
+    ctx.strokeStyle = coral(0.95 * a); ctx.lineWidth = 1.8; wave(5 * ratio, t * ratio + (1 - w) * 2.4);
+  }
+}
+/* the moth and its line */
+let LINE = null;
+function buildLine(pts) {
+  if (!pts || pts.length < 2) return null;
+  const cum = [0];
+  for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + dist(pts[i][0], pts[i][1], pts[i - 1][0], pts[i - 1][1]));
+  return cum[cum.length - 1] < 1 ? null : { pts, cum, len: cum[cum.length - 1] };
+}
+function linePoint(L, f) {
+  const d = clamp(f, 0, 1) * L.len;
+  let i = 1;
+  while (i < L.cum.length - 1 && L.cum[i] < d) i++;
+  const u = (d - L.cum[i - 1]) / Math.max(0.0001, L.cum[i] - L.cum[i - 1]);
+  return [lerp(L.pts[i - 1][0], L.pts[i][0], u), lerp(L.pts[i - 1][1], L.pts[i][1], u)];
+}
+function resample(pts, n) {
+  const L = buildLine(pts);
+  if (!L) return null;
+  const out = [];
+  for (let i = 0; i < n; i++) { const p = linePoint(L, i / (n - 1)); out.push([Math.round(p[0] * 10) / 10, Math.round(p[1] * 10) / 10]); }
+  return out;
+}
+function tracePath(pts, upto) {
+  ctx.beginPath();
+  const m = Math.max(2, Math.ceil(pts.length * upto));
+  for (let i = 0; i < m && i < pts.length; i++) { if (i) ctx.lineTo(pts[i][0], pts[i][1]); else ctx.moveTo(pts[i][0], pts[i][1]); }
+  ctx.stroke();
+}
+function drawMothLine() {
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  if (LINE && V.moth > 0.02 && G.mode === 'play') {
+    const fin = F.finale || F.cadence || G.ended;
+    if (fin) {
+      if (F.trace > 0.001) { ctx.strokeStyle = gold(0.2 * F.lightA); ctx.lineWidth = 6; tracePath(LINE.pts, F.trace); ctx.strokeStyle = gold(0.95 * F.lightA); ctx.lineWidth = 1.9; tracePath(LINE.pts, F.trace); }
+    } else {
+      const a = (P && P.kind === 'keep' ? 0.75 : 0.36) * V.moth * V.lamp;
+      ctx.strokeStyle = rgba(mix3(C_CREAM, C_GOLD, 0.5), a); ctx.lineWidth = 1.5; tracePath(LINE.pts, 1);
+    }
+  }
+  if (F.drawing && F.drawing.pts.length > 1) { ctx.strokeStyle = coral(0.95); ctx.lineWidth = 2; tracePath(F.drawing.pts, 1); }
+}
+function drawMoth() {
+  const a = V.moth;
+  if (a < 0.02) return;
+  const x = F.mothX, y = F.mothY, f = F.mothF, rest = F.mothRest ? 1 : 0;
+  const flap = rest ? 0.25 : REDUCED ? 0.7 : 0.25 + 0.75 * Math.abs(Math.sin(G.t * 21));
+  ctx.fillStyle = rgba(mix3(C_PAGE, C_GOLD, f * 0.6), a); ctx.strokeStyle = rgba(mix3(INK, C_GOLD, f), a * lerp(Math.max(V.inkA, 0.45), 1, f)); ctx.lineWidth = 1.2;
+  for (const d of [-1, 1]) {
+    ctx.beginPath(); ctx.moveTo(x, y - 1); ctx.quadraticCurveTo(x + d * 6, y - 3 - 7 * flap, x + d * 9.5 * (0.5 + flap * 0.5), y - 1 - 4 * flap); ctx.quadraticCurveTo(x + d * 6, y + 3.5, x, y + 2); ctx.closePath(); ctx.fill(); ctx.stroke();
+  }
+  ctx.lineWidth = 1.6; line(x, y - 3, x, y + 3.4);
+  ctx.lineWidth = 0.9; line(x, y - 3, x - 2.4, y - 6.4); line(x, y - 3, x + 2.4, y - 6.4);
+  if (f > 0.05) { ctx.strokeStyle = gold(f * 0.5); ctx.lineWidth = 1.2; circ(x, y, 9 + (1 - f) * 8); ctx.stroke(); }
+}
+/* rain that comes through the roof */
+const drops = [];
+function spawnDrops() {
+  const live = F.rainLive || (M.run && M.on.rain);
+  if (!live) { F.dropNext = Math.ceil(M.pos); return; }
+  const upto = Math.floor(M.pos + 0.72 / STEP);
+  if (F.dropNext < Math.ceil(M.pos)) F.dropNext = Math.ceil(M.pos);
+  for (; F.dropNext <= upto; F.dropNext++) {
+    const s = ((F.dropNext % LOOP) + LOOP) % LOOP;
+    if (!RAIN_SET.has(s) || F.dropNext < M.from.rain && !F.rainLive) continue;
+    const land = G.t + (F.dropNext - M.pos) * STEP;
+    drops.push({ x: G.mode === 'keep' ? 257 : dropX(s), t0: land - 0.72, land });
+  }
+}
+function drawDrops() {
+  if (!drops.length) return;
+  const xf = guitarXf();
+  for (let i = drops.length - 1; i >= 0; i--) {
+    const d = drops[i];
+    if (G.t >= d.land) { drops.splice(i, 1); continue; }
+    if (REDUCED || V.lid > 0.5) continue;
+    const u = clamp((G.t - d.t0) / (d.land - d.t0), 0, 1), y1 = G.mode === 'keep' ? 485 : xf.y + strY(1, d.x - GTR.x), y = lerp(YMIN - 12, y1, u * u);
+    ctx.strokeStyle = rgba([196, 208, 240], 0.3 + 0.5 * u); ctx.lineWidth = 1.2; line(d.x, y - 9 - 12 * u, d.x, y);
+    ctx.fillStyle = rgba([220, 228, 250], 0.9); circ(d.x, y, 1.7); ctx.fill();
+  }
+}
+
+/* ================= the score ribbon: every string writes its own mark ================= */
+function drawRibbon() {
+  const a = V.ribbon;
+  if (a < 0.01) return;
+  const x0 = RIB.x, y0 = RIB.y, w = RIB.w, h = RIB.h, px = w / LOOP, PH = 110;
+  const pos = ((M.pos % LOOP) + LOOP) % LOOP;
+  ctx.save(); ctx.globalAlpha = a;
+  ctx.fillStyle = rgba(C_TILE, 0.9); rrect(x0, y0, w, h, 7); ctx.fill();
+  ctx.strokeStyle = rgba(C_CREAM, 0.2); ctx.lineWidth = 1; ctx.stroke();
+  ctx.beginPath(); ctx.rect(x0 + 1, y0 + 1, w - 2, h - 2); ctx.clip();
+  const X = (s) => {
+    if (REDUCED) return x0 + (s + 0.5) * px;
+    let d = ((s - pos) % LOOP + LOOP) % LOOP;
+    if (d > LOOP - 11.5) d -= LOOP;
+    return x0 + PH + d * px;
+  };
+  ctx.lineWidth = 1;
+  for (let b = 0; b < 4; b++) { ctx.strokeStyle = rgba(C_CREAM, b ? 0.09 : 0.2); const bx = X(b * 8) - px / 2; line(bx, y0 + 3, bx, y0 + h - 3); }
+  const recL = P && recArmed() && !recDone() ? R.layer : '';
+  const colFor = (L, s) => {
+    const f = clamp(1 - (G.t - rib[L][s]) / 0.55, 0, 1);
+    return rgba(f > 0 ? mix3(L === recL ? C_CORAL : C_CREAM, C_GOLD, f) : L === recL ? C_CORAL : C_CREAM, 0.62 + 0.38 * f);
+  };
+  for (const L of LAYERS) {
+    const notes = S.layers[L];
+    for (let i = 0; i < notes.length; i++) {
+      const n = notes[i], x = X(n.s), c = colFor(L, n.s), f = clamp(1 - (G.t - rib[L][n.s]) / 0.55, 0, 1), big = 1 + f * 0.6;
+      ctx.fillStyle = c; ctx.strokeStyle = c;
+      if (L === 'clock') { circ(x, y0 + 39, (n.p > 40 ? 1.6 : 2.3) * big); ctx.fill(); }
+      else if (L === 'rain') { const yy = y0 + 33.5 - (n.f || 0) * 0.36; ctx.lineWidth = 1.5 * big; line(x + 1.2, yy - 2.8, x - 1.2, yy + 1.8); }
+      else if (L === 'kettle') { ctx.lineWidth = 2.2 * big; for (let k = 0; k < (n.l || 1); k++) { const xa = X((n.s + k) % LOOP); line(xa - px * 0.42, y0 + 26, xa + px * 0.42 - (k === (n.l || 1) - 1 ? 2 : 0), y0 + 26); } }
+      else if (L === 'moth') { const yy = y0 + 22 - Math.max(0, SCALE.indexOf(n.p)) * 1.3; circ(x, yy, 2 * big); ctx.fill(); }
+      else if (L === 'answer') { const yy = y0 + 9.5; ctx.beginPath(); ctx.moveTo(x, yy - 3 * big); ctx.lineTo(x + 2.5 * big, yy); ctx.lineTo(x, yy + 3 * big); ctx.lineTo(x - 2.5 * big, yy); ctx.closePath(); ctx.fill(); }
+      else { const yy = y0 + 4.5; ctx.lineWidth = 1.3 * big; ctx.beginPath(); ctx.moveTo(x - 3, yy - 1.8); ctx.lineTo(x, yy + 1.4); ctx.lineTo(x + 3, yy - 1.8); ctx.stroke(); }
+    }
+  }
+  if (F.holding) { ctx.strokeStyle = coral(0.95); ctx.lineWidth = 2.6; const hn = clamp(Math.floor(M.pos - F.holding.q) + 1, 1, 12); for (let k = 0; k < hn; k++) { const xa = X((F.holding.s + k) % LOOP); line(xa - px * 0.42, y0 + 26, xa + px * 0.42, y0 + 26); } }
+  if (!REDUCED && M.run) { ctx.strokeStyle = gold(0.55); ctx.lineWidth = 1.2; line(x0 + PH, y0 + 2, x0 + PH, y0 + h - 2); }
+  if (recL) { ctx.strokeStyle = coral(0.95); ctx.lineWidth = 2.4; line(x0 + 3, y0 + h - 1.6, x0 + 3 + (w - 6) * recFrac(), y0 + h - 1.6); }
+  ctx.restore();
+}
+
+/* ================= a ghost hand, for when nobody is sure what to do ================= */
+function drawGhost(x, y, down, a) {
+  ctx.save(); ctx.translate(x, y); ctx.globalAlpha = a;
+  if (down) { ctx.strokeStyle = rgba(C_CREAM, 0.9); ctx.lineWidth = 1.5; circ(0, 0, 10); ctx.stroke(); ctx.fillStyle = rgba(C_CREAM, 0.16); ctx.fill(); }
+  ctx.rotate(-0.34); if (down) ctx.scale(0.94, 0.94);
+  ctx.fillStyle = rgba(C_PAGE, 0.86); ctx.strokeStyle = rgba(C_CREAM, 0.96); ctx.lineWidth = 1.5; ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(-4.6, 24); ctx.lineTo(-4.6, 4); ctx.quadraticCurveTo(-4.6, -1.6, 0, -1.6); ctx.quadraticCurveTo(4.6, -1.6, 4.6, 4); ctx.lineTo(4.6, 17);
+  ctx.quadraticCurveTo(9, 12.5, 11.6, 18); ctx.quadraticCurveTo(15.6, 14.5, 18, 20); ctx.quadraticCurveTo(22.6, 18, 23.6, 24.5);
+  ctx.lineTo(23, 38); ctx.quadraticCurveTo(22, 47, 13.5, 48); ctx.lineTo(4, 48);
+  ctx.quadraticCurveTo(-4, 45, -8.5, 36.5); ctx.lineTo(-13.4, 29); ctx.quadraticCurveTo(-15.6, 23.4, -10.6, 22.8); ctx.quadraticCurveTo(-7, 23, -4.6, 27.5);
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.restore();
+}
+const gTap = (px, py, period) => (u) => { const c = (u % (period || 1.5)) / (period || 1.5), ap = eOut(clamp(c / 0.35, 0, 1)); return { x: px + (1 - ap) * 16, y: py + (1 - ap) * 20, down: c > 0.38 && c < 0.72 }; };
+const gDrag = (from, to, period) => (u) => {
+  const c = (u % (period || 2.6)) / (period || 2.6), a = from(), b = to();
+  if (c < 0.18) { const ap = eOut(c / 0.18); return { x: a.x + (1 - ap) * 14, y: a.y + (1 - ap) * 18, down: false }; }
+  const k = eIO(clamp((c - 0.26) / 0.5, 0, 1));
+  return { x: lerp(a.x, b.x, k), y: lerp(a.y, b.y, k) - Math.sin(k * Math.PI) * 14, down: c < 0.84 };
+};
+
+/* ================= words ================= */
+const capEl = $('cap'), hintEl = $('hint'), tagEl = $('tag'), tagText = $('tagText'), titleEl = $('title'), endEl = $('end'), keepEl = $('keep');
+const cap = { text: '', next: null, a: 0 };
+const styleCache = new Map();
+function css(el, prop, val) { const k = el.id + prop; if (styleCache.get(k) !== val) { styleCache.set(k, val); el.style[prop] = val; } }
+function say(t) { if (cap.next !== null ? cap.next !== t : cap.text !== t) cap.next = t; }
+let hintText = '';
+const FINE = !!(window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches);
+function setHint(t) { hintText = t || ''; }
+const TAG_FRONT = 'My mother’s. Can it sing by morning?', TAG_BACK = 'It sounds like her kitchen. Thank you.';
+let tagShown = '';
+function updWords(dt) {
+  if (cap.next !== null) { cap.a -= dt * 4.5; if (cap.a <= 0) { cap.a = 0; cap.text = cap.next; cap.next = null; capEl.textContent = cap.text; } }
+  else if (cap.a < 1) cap.a = Math.min(1, cap.a + dt * 3);
+  css(capEl, 'opacity', cap.a.toFixed(2));
+  if (document.body.classList.contains('kb') !== G.kb) document.body.classList.toggle('kb', G.kb);
+  const hv = G.kb || (P && P.keysAlways && FINE) ? hintText : '';
+  if (hintEl.textContent !== hv && hv) hintEl.textContent = hv;
+  hintEl.classList.toggle('on', !!hv);
+  F.tagA = appr(F.tagA, W.tag || 0, 3.2, dt); F.titleA = appr(F.titleA, W.title || 0, 1.6, dt); F.endA = appr(F.endA, W.end || 0, 1.2, dt);
+  F.tagFlip = appr(F.tagFlip, W.tagFlip || 0, 2.6, dt);
+  const want = F.tagFlip > 0.5 ? TAG_BACK : TAG_FRONT;
+  if (W.tag && tagShown !== want) { tagShown = want; tagText.textContent = want; }
+  const ta = F.tagA, flip = F.tagFlip, sq = REDUCED ? 1 : Math.abs(Math.cos(flip * Math.PI));
+  css(tagEl, 'visibility', ta > 0.02 ? 'visible' : 'hidden');
+  css(tagEl, 'opacity', (REDUCED ? ta * (0.25 + 0.75 * Math.abs(Math.cos(flip * Math.PI))) : ta).toFixed(2));
+  css(tagEl, 'transform', 'translate(-50%,-50%) translate(' + ((1 - ta) * 110).toFixed(1) + 'px,' + ((1 - ta) * 120).toFixed(1) + 'px) rotate(' + (-2.5 - (1 - ta) * 14).toFixed(2) + 'deg) scale(' + (Math.max(0.04, sq) * (0.3 + 0.7 * eOut(ta))).toFixed(3) + ',' + (0.3 + 0.7 * eOut(ta)).toFixed(3) + ')');
+  css(titleEl, 'opacity', F.titleA.toFixed(2));
+  css(endEl, 'visibility', F.endA > 0.02 ? 'visible' : 'hidden'); css(endEl, 'opacity', F.endA.toFixed(2));
+  css(keepEl, 'visibility', V.day > 0.02 ? 'visible' : 'hidden'); css(keepEl, 'opacity', V.day.toFixed(2));
+}
+
+/* ================= prompts, and the ladder for when nobody moves ================= */
+let P = null, WATCH = false, co = null;
+function* prompt(o) {
+  P = o; o.idle = 0; o.stage = 0; o.acted = false; o.g0 = 0;
+  setHint(o.keys || '');
+  while (!o.done()) { if (o.tick) o.tick(); yield 0; }
+  WATCH = !o.acted;
+  P = null; setHint('');
+}
+function poke(missed) {
+  WATCH = false;
+  if (!P) return;
+  P.acted = true;
+  if (missed) return;
+  P.idle = 0;
+  if (P.stage > 0) { P.stage = 0; if (P.onPoke) P.onPoke(); }
+}
+function tickPrompt(dt) {
+  if (!P) return;
+  if (P.hold && P.hold()) return;
+  P.idle += dt;
+  const k = WATCH ? 1 / 3 : 1;
+  if (P.stage < 1 && P.idle >= 8 * k) { P.stage = 1; P.g0 = G.t; }
+  if (P.stage < 2 && P.idle >= 20 * k) { P.stage = 2; if (P.auto) P.auto(); }
+  if (P.stage < 3 && P.idle >= 40 * k) { P.stage = 3; if (P.complete) P.complete(); }
+}
+function runCo(dt) {
+  if (!co) return;
+  if (co.cond) { if (!co.cond()) return; co.cond = null; co.wait = 0; }
+  else if (co.wait > 0) { co.wait -= dt; if (co.wait > 0) return; }
+  for (let guard = 0; guard < 200; guard++) {
+    const r = co.g.next();
+    if (r.done) { const c = co; co = null; if (c.then) c.then(); return; }
+    const v = r.value;
+    if (typeof v === 'function') { if (v()) continue; co.cond = v; return; }
+    if (v > 0) { co.wait += v; if (co.wait > 0) return; continue; }
+    co.wait = 0; return;
+  }
+}
+const stepsWait = (n) => { const end = M.pos + n; return () => M.pos >= end; };
+const armedSay = (text) => { let said = false; return () => { if (!said && recArmed()) { said = true; say(text); } }; };
+const mod32 = (q) => ((q % LOOP) + LOOP) % LOOP;
+const nearLamp = (x, y) => dist(x, y, LAMP.x, LAMP.y - 8) < 36;
+
+/* ================= a thread, a peg, a string ================= */
+function threadBegin(i, src, look) {
+  T.on = true; T.i = i; T.src = src; T.look = look || ''; T.stage = 'wait'; T.grab = false;
+  F.wind = 0; F.windAuto = false; F.windKey = 0; F.pegAng = 0; F.windPtr = null;
+  const s = src(); T.x = s.x; T.y = s.y;
+}
+function threadFly() {
+  if (T.stage !== 'wait' && T.stage !== 'drag' && T.stage !== 'back' && T.stage !== 'drift') return;
+  T.stage = 'fly'; T.fx = T.x; T.fy = T.y; T.ft = 0; T.grab = false;
+  tone(0, 1320, 1980, 0.22, 0.035, 'sine', 0.5);
+}
+function threadAttach() {
+  const p = pegPos(T.i);
+  T.stage = 'on'; T.x = p.x; T.y = p.y; F.wind = 0;
+  spark(p.x, p.y, 10, C_GOLD, 46); ring(p.x, p.y, C_GOLD, 5, 26, 0.5);
+  noiseHit(0, 3400, 6, 0.22, 0.04, 0.3, 0.1);
+  pluck(OPEN[T.i], 0.03, { gain: 0.2, lp: 2200, rate: Math.pow(2, -9 / 12), dur: 0.6, send: 0.2 });
+  vib[T.i] = 0.8;
+}
+function threadDown(x, y) {
+  if (T.stage !== 'wait' && T.stage !== 'drift') return true;
+  const peg = pegPos(T.i);
+  if (dist(x, y, T.x, T.y) < 42) { T.stage = 'drag'; T.grab = true; T.moved = 0; T.px = x; T.py = y; tone(0, 1760, 1760, 0.18, 0.03, 'sine', 0.5); return true; }
+  if (dist(x, y, peg.x, peg.y) < 34) { threadFly(); return true; }
+  return false;
+}
+function threadMove(x, y) {
+  if (T.stage !== 'drag') return;
+  T.moved += dist(x, y, T.px, T.py); T.px = x; T.py = y; T.x = x; T.y = y;
+  const peg = pegPos(T.i);
+  if (dist(x, y, peg.x, peg.y) < 24) threadAttach();
+}
+function threadUp() {
+  if (T.stage !== 'drag') return;
+  const peg = pegPos(T.i);
+  if (T.moved < 12 || dist(T.x, T.y, peg.x, peg.y) < 56) threadFly();
+  else { T.stage = 'back'; T.fx = T.x; T.fy = T.y; T.ft = 0; }
+}
+function updThread(dt) {
+  F.waveA = appr(F.waveA, T.on && (T.stage === 'on' || (T.stage === 'done' && G.t - F.tunedAt < 1.5)) ? 1 : 0, 5, dt);
+  if (!T.on) return;
+  const s = threadSrc(), peg = pegPos(T.i);
+  if (T.stage === 'wait') { T.x = s.x; T.y = s.y; }
+  else if (T.stage === 'drift') {
+    /* nobody came for it, so it wanders over by itself */
+    T.ft += dt / (WATCH ? 5 : 16); const k = sm(T.ft);
+    T.x = lerp(T.fx, peg.x, k) + (REDUCED ? 0 : Math.sin(G.t * 1.7) * 7 * (1 - k)); T.y = lerp(T.fy, peg.y, k) - Math.sin(k * Math.PI) * 30;
+    if (T.ft >= 1) threadAttach();
+  } else if (T.stage === 'fly') {
+    T.ft += dt / 0.55; const k = eIO(T.ft);
+    T.x = lerp(T.fx, peg.x, k); T.y = lerp(T.fy, peg.y, k) - Math.sin(k * Math.PI) * 26;
+    if (T.ft >= 1) threadAttach();
+  } else if (T.stage === 'back') {
+    T.ft += dt / 0.35; const k = eOut(T.ft);
+    T.x = lerp(T.fx, s.x, k); T.y = lerp(T.fy, s.y, k);
+    if (T.ft >= 1) T.stage = 'wait';
+  }
+  if (T.stage === 'on') { if (F.windAuto) windAdd(dt * 0.085); if (F.windKey) windAdd(dt * 0.3); }
+}
+const windTurns = () => (T.i === 0 ? 2.3 : 1.25);
+function windAdd(d) {
+  if (T.stage !== 'on' || F.wind >= 1 || !(d > 0)) return;
+  const before = F.wind;
+  F.wind = Math.min(1, F.wind + d);
+  F.pegAng += d * windTurns() * TAU;
+  const q = Math.floor(F.wind * 12), q0 = Math.floor(before * 12);
+  if (q !== q0 && F.wind < 1) {
+    noiseHit(0, 2400 + F.wind * 2200, 8, 0.16, 0.03, 0.3, 0);
+    if (q % 2 === 0) { pluck(OPEN[T.i], 0, { gain: 0.2, lp: 2600, rate: Math.pow(2, -(1 - F.wind) * 9 / 12), dur: 0.5, send: 0.2 }); vib[T.i] = Math.max(vib[T.i], 0.7); }
+  }
+  if (F.wind >= 1) tuned();
+}
+function tuned() {
+  const i = T.i, f = midiHz(OPEN[i]);
+  F.wind = 1; F.tunedAt = G.t; T.stage = 'done'; F.windAuto = false; F.windKey = 0; F.windPtr = null;
+  W.strings = Math.max(W.strings, i + 1);
+  pluck(OPEN[i], 0.02, { gain: 0.42, lp: 5200, send: 0.42, pan: (i - 2.5) * 0.08 });
+  tone(0.02, f * 4, f * 4, 1.1, 0.022, 'sine', 0.6);
+  vib[i] = 1;
+  for (let k = 0; k <= 8; k++) { const xl = lerp(SADDLE, NUT, k / 8); spark(GTR.x + xl, GTR.y + strY(i, xl), 2, C_GOLD, 30); }
+  after(1.7, () => { if (T.stage === 'done' && T.i === i) T.on = false; });
+}
+function windDown(x, y) { const p = pegPos(T.i); F.windPtr = { a: Math.atan2(y - p.y, x - p.x), x, y }; }
+function windMove(x, y) {
+  const w = F.windPtr;
+  if (!w) return;
+  const p = pegPos(T.i), a = Math.atan2(y - p.y, x - p.x);
+  let da = a - w.a;
+  if (da > Math.PI) da -= TAU; else if (da < -Math.PI) da += TAU;
+  const far = dist(x, y, p.x, p.y) > 9, moved = dist(x, y, w.x, w.y);
+  w.a = a; w.x = x; w.y = y;
+  windAdd(Math.max(far ? Math.abs(da) : 0, moved / 46) / (TAU * windTurns()));
+}
+function* ritual(i, src, lines, look) {
+  threadBegin(i, src, look);
+  say(lines[0]);
+  yield* prompt({ kind: 'thread', keys: 'Space brings it over', hot: { peg: i }, at: () => ({ x: T.x, y: T.y, r: 20 }),
+    ghost: gDrag(() => ({ x: T.x, y: T.y }), () => pegPos(i), 2.8),
+    auto: () => { if (T.stage === 'wait') { T.stage = 'drift'; T.fx = T.x; T.fy = T.y; T.ft = 0; } }, complete: threadFly, done: () => T.stage === 'on' || T.stage === 'done' });
+  yield 0.45;
+  say(lines[1]);
+  const peg = pegPos(i);
+  yield* prompt({ kind: 'wind', keys: 'Hold Up or Down to wind', hot: { peg: i }, at: () => ({ x: peg.x, y: peg.y, r: 34 }),
+    ghost: (u) => ({ x: peg.x + Math.cos(u * 3.4) * 30, y: peg.y + Math.sin(u * 3.4) * 30, down: true }),
+    auto: () => { F.windAuto = true; }, onPoke: () => { F.windAuto = false; },
+    complete: () => { if (F.wind < 1) { F.wind = Math.max(F.wind, 0.98); windAdd(0.03); } }, done: () => F.wind >= 1 });
+  say(lines[2]);
+  yield 2.9;
+}
+
+/* ================= what the hands can do ================= */
+function pluckOpen(i, gain) { pluck(OPEN[i], 0, { gain: gain || 0.36, lp: 4000 + i * 700, send: 0.3, pan: (i - 2.5) * 0.08 }); vib[i] = 1; }
+function freePluck(x, y) {
+  if (W.strings < 1 || V.lid > 0.3 || V.gone > 0.5 || V.guitar < 0.5 || F.playing) return false;
+  const xf = guitarXf(), dx = x - xf.x, dy = y - xf.y, c = Math.cos(-xf.r), s = Math.sin(-xf.r), lx = dx * c - dy * s, ly = dx * s + dy * c;
+  if (lx < SADDLE - 8 || lx > NUT + 6 || Math.abs(ly) > 27) return false;
+  let best = 0, bd = 1e9;
+  for (let i = 0; i < W.strings; i++) { const d = Math.abs(ly - strY(i, lx)); if (d < bd) { bd = d; best = i; } }
+  pluckOpen(best);
+  return true;
+}
+function pulseTap() {
+  if (!M.run || !R.open) return;
+  const q = Math.round(M.pos);
+  recArm(q);
+  if (q >= R.end) return;
+  const s = mod32(q), p = s % 2 ? 45 : 38;
+  if (!noteAt('clock', s)) S.layers.clock.push({ s, p, skip: q });
+  pluck(p, 0, VOX.clock); onSound('clock', { s, p });
+}
+function rainArm() { if (recArmed() || !M.run || !R.open) return; recArm(Math.ceil(M.pos)); M.on.rain = true; M.from.rain = R.end; }
+function slideSet(x, down) {
+  if (!down) { F.fingerDown = false; return; }
+  const lx = x - GTR.x;
+  let best = 1, bd = 1e9;
+  for (let k = 1; k < RAIN_FRETS.length; k++) { const d = Math.abs(lx - FINGER_X[k]); if (d < bd) { bd = d; best = k; } }
+  if (!F.fingerDown || F.fretI !== best) noiseHit(0, 3200, 2, 0.045, 0.04, 0.2, 0.1);
+  F.fingerDown = true; F.fretI = best;
+  rainArm();
+}
+function rainHook(abs, s, off) {
+  if (!RAIN_SET.has(s) || (recArmed() && abs >= R.end)) return;
+  let f;
+  if (R.auto) { f = RAIN_DEF[RAIN_STEPS.indexOf(s)]; after(off * 0.5, () => { if (R.auto) { F.fretI = RAIN_FRETS.indexOf(f); F.fingerDown = f > 0; } }); }
+  else f = F.fingerDown ? RAIN_FRETS[F.fretI] : 0;
+  const n = { s, p: 45 + f, f };
+  if (recArmed() && abs >= R.start) {
+    S.layers.rain = S.layers.rain.filter((m) => m.s !== s); S.layers.rain.push(n);
+    if (f > 0 || R.auto) F.touched[s >> 3] = 1;
+  }
+  fire('rain', n, off);
+}
+function rainFill() {
+  for (let k = 0; k < RAIN_STEPS.length; k++) {
+    const s = RAIN_STEPS[k], have = noteAt('rain', s);
+    if (have && F.touched[s >> 3]) continue;
+    S.layers.rain = S.layers.rain.filter((m) => m.s !== s);
+    S.layers.rain.push({ s, p: 45 + RAIN_DEF[k], f: RAIN_DEF[k] });
+  }
+}
+function holdStart(src) {
+  if (F.holding || !M.run || !R.open) return;
+  const q = Math.round(M.pos);
+  recArm(q);
+  if (q >= R.end) return;
+  const s = mod32(q), p = KETTLE_P[s >> 3];
+  F.holding = { q, s, p, src, h: padStart(p, 0, 0.085) };
+  glow.kettle = 1; vib[2] = 1; rib.kettle[s] = G.t;
+}
+function holdEnd() {
+  const h = F.holding;
+  if (!h) return;
+  F.holding = null;
+  if (h.h) h.h.release(0);
+  const len = clamp(Math.round(M.pos - h.q), 1, 12);
+  S.layers.kettle = S.layers.kettle.filter((n) => { for (let k = 0; k < len; k++) if ((h.s + k) % LOOP === n.s) return false; return true; });
+  S.layers.kettle.push({ s: h.s, p: h.p, l: len, skip: h.q });
+}
+function kettleFill() {
+  for (let b = 0; b < 4; b++) {
+    const covered = S.layers.kettle.some((n) => { for (let k = 0; k < (n.l || 1); k++) if ((((n.s + k) % LOOP) >> 3) === b) return true; return false; });
+    if (!covered) S.layers.kettle.push({ s: b * 8, p: KETTLE_P[b], l: 6 });
+  }
+}
+/* the moth's line becomes a melody: a note wherever the line crosses a ray of lamplight, its pitch from its height */
+function segHit(a, b, r) {
+  const dx = b[0] - a[0], dy = b[1] - a[1], ex = r.x1 - r.x0, ey = r.y1 - r.y0, den = dx * ey - dy * ex;
+  if (Math.abs(den) < 1e-6) return null;
+  const u = ((r.x0 - a[0]) * ey - (r.y0 - a[1]) * ex) / den, v = ((r.x0 - a[0]) * dy - (r.y0 - a[1]) * dx) / den;
+  if (u < 0 || u >= 1 || v < 0 || v > 1) return null;
+  return { u, x: a[0] + dx * u, y: a[1] + dy * u };
+}
+const pitchAtY = (y) => SCALE[clamp(Math.floor((AIR.y1 - y) / (AIR.y1 - AIR.y0) * 8), 0, 7)];
+const GHOST_MEL = [[0, 2, 3, 6], [0, 2, 4], [0, 2, 3, 6], [0, 3, 4]];
+function mothNotes(L) {
+  let out = [];
+  const used = new Set();
+  for (let i = 1; i < L.pts.length; i++) {
+    const a = L.pts[i - 1], b = L.pts[i];
+    for (let k = 0; k < 9; k++) {
+      const hit = segHit(a, b, RAYS[k]);
+      if (!hit) continue;
+      const f = (L.cum[i - 1] + hit.u * (L.cum[i] - L.cum[i - 1])) / L.len, s = Math.round(f * LOOP) % LOOP;
+      if (used.has(s)) continue;
+      used.add(s);
+      out.push({ s, p: pitchAtY(hit.y), x: Math.round(hit.x), y: Math.round(hit.y), r: k });
+    }
+  }
+  if (out.length > 18) { out.sort((a, b) => (a.s % 2) - (b.s % 2) || a.s - b.s); out = out.slice(0, 18); }
+  for (let b = 0; b < 4; b++) {
+    if (out.some((n) => (n.s >> 3) === b)) continue;
+    for (const ds of GHOST_MEL[b]) { const s = b * 8 + ds, pt = linePoint(L, s / LOOP); out.push({ s, p: pitchAtY(pt[1]), x: Math.round(pt[0]), y: Math.round(pt[1]), r: -1 }); }
+  }
+  return out.sort((a, b) => a.s - b.s);
+}
+const DEF_LINE = [];
+for (let k = 0; k < 56; k++) { const u = k / 55; DEF_LINE.push([Math.round(50 + u * 260), Math.round(clamp(298 - 56 * Math.sin(u * TAU * 1.15 + 0.3) - 15 * Math.sin(u * TAU * 2.6), AIR.y0 + 4, AIR.y1 - 4))]); }
+const DEFL = buildLine(DEF_LINE);
+function commitLine(pts) {
+  const r = resample(pts, 56);
+  if (!r) return false;
+  S.line = r; LINE = buildLine(r); S.layers.moth = mothNotes(LINE);
+  F.lineReady = true; M.on.moth = true; M.from.moth = 0;
+  tone(0, 880, 1320, 0.25, 0.03, 'sine', 0.4);
+  const p = LINE.pts[0]; ring(p[0], p[1], C_GOLD, 3, 18, 0.5);
+  return true;
+}
+function drawStart(x, y) { F.autoDraw = null; F.steer = null; F.drawing = { pts: [[clamp(x, AIR.x0, AIR.x1), clamp(y, AIR.y0, AIR.y1)]] }; }
+function drawMove(x, y) {
+  const d = F.drawing;
+  if (!d || F.steer || F.autoDraw) return;
+  const px = clamp(x, AIR.x0, AIR.x1), py = clamp(y, AIR.y0, AIR.y1), l = d.pts[d.pts.length - 1];
+  if (dist(px, py, l[0], l[1]) >= 3 && d.pts.length < 900) d.pts.push([px, py]);
+}
+function drawEnd() {
+  const d = F.drawing;
+  if (!d || F.steer || F.autoDraw) return;
+  F.drawing = null;
+  const L = buildLine(d.pts);
+  if (L && L.len >= 44) commitLine(d.pts);
+}
+function steerStart() { F.autoDraw = null; F.steer = { x: AIR.x0 + 8, y: 300, dir: 0, pts: [[AIR.x0 + 8, 300]] }; F.drawing = { pts: F.steer.pts }; }
+function updDrawing(dt) {
+  const st = F.steer;
+  if (st) {
+    st.x += dt * 44; st.y = clamp(st.y + st.dir * 120 * dt, AIR.y0 + 2, AIR.y1 - 2);
+    st.pts.push([st.x, st.y]);
+    if (st.x >= AIR.x1 - 8) { F.steer = null; F.drawing = null; commitLine(st.pts); }
+  }
+  const ad = F.autoDraw;
+  if (ad) {
+    ad.u += dt / 3.4;
+    F.drawing = { pts: DEF_LINE.slice(0, Math.max(2, Math.ceil(clamp(ad.u, 0, 1) * DEF_LINE.length))) };
+    if (ad.u >= 1) { F.autoDraw = null; F.drawing = null; commitLine(DEF_LINE); }
+  }
+}
+function harmonyAt(s) {
+  let best = null, bd = 99;
+  for (const n of S.layers.moth) { const d = (s - n.s + LOOP) % LOOP; if (d < bd) { bd = d; best = n; } }
+  const base = best ? Math.max(0, SCALE.indexOf(best.p)) : 2;
+  return SCALE[clamp(base + 2, 0, SCALE.length - 1)];
+}
+function answerTap(x, y) {
+  if (!M.run || !R.open) return;
+  const q = Math.round(M.pos);
+  recArm(q);
+  if (q >= R.end) return;
+  const s = mod32(q);
+  let n = noteAt('answer', s);
+  if (!n && S.layers.answer.length < 20) { n = { s, p: harmonyAt(s), x: Math.round(clamp(x, 16, 344)), y: Math.round(clamp(y, 40, 500)), skip: q }; S.layers.answer.push(n); }
+  if (!n) return;
+  pluck(n.p, 0, VOX.answer); onSound('answer', n);
+}
+function answerFill() {
+  for (let b = 0; b < 4; b++) if (barEmpty('answer', b)) { const s = b * 8 + 4, sp = SPOTS[(b * 2 + 1) % SPOTS.length]; S.layers.answer.push({ s, p: harmonyAt(s), x: sp[0], y: sp[1] }); }
+}
+function birdsSync() { S.layers.birds = S.birds.map((s, b) => ({ s, p: BIRD_P[b], b })); }
+function birdChirp(b) { bell(BIRD_P[b], 0, 0.06); birds[b].sing = 1; birds[b].hop = 1; }
+function birdDown(x, y) {
+  let best = -1, bd = 36;
+  for (let i = 0; i < 5; i++) { const d = dist(x, y, birds[i].x, wireY(birds[i].x) - 6); if (d < bd) { bd = d; best = i; } }
+  if (best < 0) return false;
+  F.dragBird = best; F.selBird = best; birds[best].dragX = birds[best].x;
+  return true;
+}
+function birdMove(x) {
+  const b = F.dragBird;
+  if (b < 0) return;
+  birds[b].dragX = clamp(x, WIRE.x0, WIRE.x1);
+  birdStep(b, Math.round((birds[b].dragX - WIRE.x0) / (WIRE.x1 - WIRE.x0) * (LOOP - 1)));
+}
+function birdStep(b, s) {
+  s = clamp(s, 0, LOOP - 1);
+  if (s === S.birds[b]) return;
+  S.birds[b] = s; birdsSync(); F.birdMoved = true;
+  noiseHit(0, 4200, 9, 0.08, 0.025, 0.3, 0.05);
+}
+function birdUp() { const b = F.dragBird; if (b < 0) return; F.dragBird = -1; birds[b].dragX = null; birdChirp(b); }
+function latchTap(x, y) {
+  let best = -1, bd = 64;
+  for (let j = 0; j < 2; j++) { if (F.latchT[j]) continue; const d = dist(x, y, GTR.x + LATCH_X[j], GTR.y + 64); if (d < bd) { bd = d; best = j; } }
+  if (best >= 0) latchShut(best);
+  return best >= 0;
+}
+function latchShut(j) { if (F.latchT[j]) return; F.latchT[j] = 1; noiseHit(0, 2100, 5, 0.4, 0.05, j ? 0.2 : -0.2, 0.12); tone(0, 320, 180, 0.07, 0.06, 'triangle', 0.1); spark(GTR.x + LATCH_X[j], GTR.y + 64, 4, C_CREAM, 28); }
+function latchNext() { for (let j = 0; j < 2; j++) if (!F.latchT[j]) { latchShut(j); return; } }
+function strum(dir) {
+  if (F.strummed) return;
+  F.strummed = true; F.strumAt = G.t;
+  for (let k = 0; k < 6; k++) {
+    const i = dir < 0 ? 5 - k : k;
+    pluck(OPEN[i], k * 0.075, { gain: 0.42, lp: 5200, send: 0.55, pan: (i - 2.5) * 0.1 });
+    after(k * 0.075, () => { vib[i] = 1; const xf = guitarXf(); spark(xf.x + 20, xf.y + strY(i, 20), 3, C_GOLD, 40); });
+  }
+}
+
+/* ================= where the bright threads hide ================= */
+const rainSrc = () => { const u = REDUCED ? 0.45 : (G.t * 0.1) % 1; return { x: 246 + Math.sin(u * 9) * 4, y: WIN.y + 30 + u * 84 }; };
+const steamSrc = () => ({ x: 88 + (REDUCED ? 0 : Math.sin(G.t * 1.3) * 5), y: 216 + (REDUCED ? 0 : Math.cos(G.t * 0.9) * 5) });
+const mothSrc = () => ({ x: F.mothX, y: F.mothY + 7 });
+const echoSrc = () => {
+  const n = SPOTS.length, ph = (G.t / 2.3) % n, i = Math.floor(ph), k = REDUCED ? 0 : eIO(clamp((ph - i - 0.72) / 0.28, 0, 1)), a = SPOTS[i], b = SPOTS[(i + 1) % n];
+  return { x: lerp(a[0], b[0], k), y: lerp(a[1], b[1], k) - Math.sin(k * Math.PI) * 22 };
+};
+const featherSrc = () => { const u = REDUCED ? 0.5 : (G.t * 0.075) % 1; return { x: 150 + Math.sin(u * 13) * 28, y: 124 + u * 190 }; };
+
+/* ================= the night, beat by beat ================= */
+const DAWN = [0, 0.02, 0.05, 0.08, 0.12, 0.2, 0.3, 0.38, 0.74];
+const HOUR = [1.7, 2.1, 2.7, 3.3, 3.9, 4.5, 5.1, 5.6, 6.3];
+function applyWorld(i, dark) {
+  const night = i >= 1 && i <= 7;
+  W.lamp = !dark && night ? 1 : 0;
+  W.guitar = i >= 1 ? 1 : 0; W.strings = clamp(i - 1, 0, 6);
+  W.dawn = DAWN[i]; W.cloud = i === 3 || i === 4 ? 1 : 0; W.rain = W.cloud;
+  W.kettle = i >= 4 && i <= 7 ? 1 : 0; W.moth = i >= 5 ? 1 : 0; W.birds = i >= 7 ? 1 : 0;
+  W.ribbon = !dark && i >= 2 && i <= 7 ? 1 : 0; W.rays = !dark && i >= 5 && i <= 7 ? 0.35 : 0;
+  W.lid = i === 8 ? 1 : 0; W.door = i === 8 ? 1 : 0;
+  F.latchT = i === 8 ? [1, 1] : [0, 0]; if (dark) F.latch = F.latchT.slice();
+  F.mothRest = i >= 8;
+  for (let k = 0; k < 6; k++) { const L = LAYERS[k]; M.on[L] = night && k < i - 1; M.from[L] = 0; if (M.on[L] && !S.layers[L].length) defaults(L); }
+  if (i >= 5 && !LINE) LINE = buildLine(S.line) || DEFL;
+  if (i >= 7) birdsSync();
+  const run = !dark && night;
+  M.tick = night; W.pend = run ? 1 : 0; F.tickVol = 1;
+  if (run && !M.run) { M.pos = 0; M.next = 0; }
+  M.run = run; M.hook = null;
+  for (let b = 0; b < 5; b++) birds[b].in = i >= 7 ? 1.4 : 0;
+  F.birdT = i >= 7 ? 99 : 0;
+}
+function defaults(L) {
+  if (L === 'clock') for (let b = 0; b < 4; b++) for (const d of [0, 4, 7]) S.layers.clock.push({ s: b * 8 + d, p: d % 2 ? 45 : 38 });
+  else if (L === 'rain') { F.touched = [0, 0, 0, 0]; rainFill(); }
+  else if (L === 'kettle') kettleFill();
+  else if (L === 'moth') { if (!LINE) { S.line = DEF_LINE; LINE = DEFL; } S.layers.moth = mothNotes(LINE); }
+  else if (L === 'answer') answerFill();
+  else birdsSync();
+}
+function fillClock() { for (let b = 0; b < 4; b++) if (barEmpty('clock', b)) for (const d of [0, 4, 7]) S.layers.clock.push({ s: b * 8 + d, p: d % 2 ? 45 : 38 }); }
+function* gate(i) {
+  let go = false;
+  say(i === 0 ? 'Tap the lamp.' : i === 8 ? 'Welcome back. Tap anywhere to carry on.' : 'Welcome back. Tap the lamp to carry on.');
+  yield* prompt({ kind: 'gate', keys: 'Or press Space', keysAlways: true, hot: i === 8 ? {} : { lamp: 1 }, at: () => ({ x: LAMP.x, y: LAMP.y - 8, r: 30 }), ghost: i === 8 ? gTap(180, 330) : gTap(LAMP.x, LAMP.y - 6), act: () => { go = true; }, done: () => go });
+  let w = 0;
+  yield () => (w++ > 40) || !A.ok || A.ctx.state === 'running';
+}
+function lampSound(on) { noiseHit(0, on ? 3000 : 2200, 3, 0.36, 0.03, 0, 0.15); tone(0, on ? 150 : 110, 80, 0.09, 0.09, 'sine', 0.1); if (on) tone(0.03, 1760, 1760, 0.9, 0.012, 'sine', 0.7); }
+
+function* beatNote() {
+  W.lamp = 1; lampSound(true); W.title = 1; ring(LAMP.x, LAMP.y, C_GOLD, 8, 150, 1.2); ring(LAMP.x, LAMP.y, C_GOLD, 8, 80, 0.8);
+  yield 1.4; say('A small repair shop, long after midnight.');
+  /* the clock is already going, quietly, so the room is alive from the first second */
+  M.pos = 0; M.next = 0; M.tick = true; M.run = true; W.pend = 1; F.tickVol = 0.45;
+  yield 5; W.title = 0;
+  yield 0.6; W.guitar = 1; say('On the bench, a guitar with no strings.');
+  yield 5.2; say('Someone left a note with it.');
+  yield 1.5; W.tag = 1;
+  yield 6.6; W.tag = 0;
+  yield 0.9; say('It can. In this shop, strings are spun from sounds.');
+  yield 5.4;
+  F.tickVol = 1; { const b = bobPos(); ring(b.x, b.y, C_GOLD, 8, 40, 0.9); }
+  say('Listen. Start with the clock.');
+  yield 4.4;
+}
+function* beatClock() {
+  yield* ritual(0, bobPos, ['A bright thread is caught on the pendulum. Drag it to the coral peg.', 'Now wind it. Draw circles around the peg.', 'In tune. That is the sixth string.']);
+  W.ribbon = 1;
+  recBegin('clock'); M.on.clock = true; M.from.clock = 0;
+  M.hook = (abs, s, off) => { const d = s % 8; if (R.auto && !recDone() && (d === 0 || d === 4 || d === 7)) after(off, pulseTap); };
+  say('Tap the string in time with the clock.');
+  const sx = GTR.x + 22, sy = GTR.y + strY(0, 22);
+  yield* prompt({ kind: 'pulse', keys: 'Space plucks', hot: { string: 0 }, at: () => ({ x: sx, y: sy, r: 22 }),
+    ghost: () => { const d = ((M.pos % 8) + 8) % 8, down = d < 0.5 || d > 7.5 || Math.abs(d - 4) < 0.5 || Math.abs(d - 7) < 0.5; return { x: sx + (down ? 0 : 5), y: sy + (down ? 0 : 9), down }; },
+    auto: () => { R.auto = true; }, onPoke: () => { R.auto = false; }, hold: () => recArmed() && !R.auto, done: recDone, tick: armedSay('Keep going. Four bars, and the shop keeps them.') });
+  M.hook = null; fillClock(); recEnd(); keptFlash('clock');
+  say('It kept that.');
+  yield stepsWait(14); say('Your pulse will go round all night.');
+  yield stepsWait(14);
+}
+function* beatRain() {
+  W.rain = 1; W.cloud = 1; say('Rain starts on the window.');
+  yield 6;
+  yield* ritual(1, rainSrc, ['One drop is brighter than the rest. Bring it to the guitar.', 'Wind it up to pitch.', 'The fifth string.'], 'drop');
+  recBegin('rain'); F.rainLive = true; F.fingerDown = false; F.fretI = 0; F.touched = [0, 0, 0, 0]; M.on.rain = false; M.hook = rainHook;
+  say('The roof leaks a little. Each drop plucks the new string.');
+  const gx = (k) => GTR.x + FINGER_X[k], p0 = M.pos, armedRain = armedSay('Wherever your finger is, that is the note.');
+  let toldRain = false;
+  yield* prompt({ kind: 'slide', keys: 'Left and Right move your finger', hot: { neck: 1, string: 1 }, at: () => ({ x: gx(3), y: GTR.y + strY(1, FINGER_X[3]), r: 26 }),
+    ghost: (u) => { const x = R.auto ? gx(Math.max(1, F.fretI)) : lerp(gx(1), gx(5), 0.5 - 0.5 * Math.cos(u * 1.5)); return { x, y: GTR.y + strY(1, x - GTR.x), down: true }; },
+    auto: () => { R.auto = true; rainArm(); }, onPoke: () => { if (R.auto) { R.auto = false; F.fingerDown = false; } },
+    hold: () => recArmed() && !R.auto, done: recDone,
+    tick: () => { armedRain(); if (!toldRain && !recArmed() && M.pos - p0 > 11) { toldRain = true; say('Slide a finger along the neck to change its note.'); } } });
+  M.hook = null; F.rainLive = false; F.fingerDown = false; rainFill(); M.on.rain = true; M.from.rain = 0; recEnd(); keptFlash('rain');
+  say('It kept your rain.');
+  yield stepsWait(14); say('Clock and rain, going round together.');
+  yield stepsWait(14);
+}
+function* beatKettle() {
+  W.kettle = 1; say('On the shelf, the kettle comes to the boil.');
+  yield 6.5;
+  yield* ritual(2, steamSrc, ['Catch the bright curl of steam.', 'Wind it up to pitch.', 'The fourth string.'], 'steam');
+  recBegin('kettle'); M.on.kettle = true; M.from.kettle = 0;
+  M.hook = (abs, s, off) => { if (!R.auto || recDone()) return; if (s % 8 === 0) after(off, () => { if (R.auto) holdStart('ghost'); }); if (s % 8 === 6) after(off, () => { if (F.holding && F.holding.src === 'ghost') holdEnd(); }); };
+  say('Press and hold. The kettle sings for as long as you do.');
+  yield* prompt({ kind: 'hold', keys: 'Hold Space', hot: { kettle: 1, string: 2 }, at: () => ({ x: 50, y: 250, r: 30 }),
+    ghost: () => { const down = (((M.pos % 8) + 8) % 8) < 6; return { x: 52, y: 252 + (down ? 0 : 8), down }; },
+    auto: () => { R.auto = true; }, onPoke: () => { if (R.auto) { R.auto = false; if (F.holding && F.holding.src === 'ghost') holdEnd(); } },
+    hold: () => recArmed() && !R.auto, done: recDone, tick: armedSay('Let go, then hold again. Long notes, like breathing.') });
+  M.hook = null; holdEnd(); kettleFill(); recEnd(); keptFlash('kettle');
+  say('It kept your breath.');
+  yield stepsWait(14); say('Three strings. The shop is warming up.');
+  yield stepsWait(14);
+}
+function keepIt() { if (F.kept) return; F.kept = true; lampSound(true); ring(LAMP.x, LAMP.y - 8, C_GOLD, 10, 44, 0.7); }
+function* beatMoth() {
+  W.rain = 0; W.cloud = 0; W.moth = 1; F.mothRest = false; say('The rain eases. A moth has found the lamp.');
+  yield 7;
+  yield* ritual(3, mothSrc, ['It trails a bright thread. Catch it.', 'Wind it up to pitch.', 'The third string. This one carries the tune.']);
+  W.rays = 1; F.lineReady = false; F.kept = false; S.layers.moth = []; LINE = null; S.line = []; M.on.moth = false;
+  say('Draw one line through the air. The moth will fly it.');
+  yield* prompt({ kind: 'draw', keys: 'Up and Down steer the moth', hot: { air: 1 }, at: () => ({ x: 180, y: 296, r: 60 }),
+    ghost: (u) => { const c = (u % 3.8) / 3.8, p = F.autoDraw ? linePoint(DEFL, clamp(F.autoDraw.u, 0, 1)) : linePoint(DEFL, clamp(c / 0.86, 0, 1)); return { x: p[0], y: p[1], down: !!F.autoDraw || c < 0.87 }; },
+    auto: () => { if (!F.drawing && !F.steer) F.autoDraw = { u: 0 }; }, onPoke: () => { if (F.autoDraw) { F.autoDraw = null; F.drawing = null; } },
+    complete: () => { if (!F.lineReady) { F.autoDraw = null; F.drawing = null; F.steer = null; commitLine(DEF_LINE); } }, done: () => F.lineReady });
+  say('It plucks wherever it crosses the lamplight.');
+  /* drawing again works at once, and the lamp turns coral once the line has been heard a little */
+  const hotKeep = {}, p1 = M.pos, gKeep = gTap(LAMP.x, LAMP.y - 6);
+  let ready = false;
+  yield* prompt({ kind: 'keep', keys: 'Space keeps it. Up or Down draws again', hot: hotKeep, at: () => ({ x: LAMP.x, y: LAMP.y - 8, r: 30 }),
+    ghost: (u) => (ready ? gKeep(u) : null), act: () => { if (ready) keepIt(); }, complete: keepIt, done: () => F.kept && !F.drawing,
+    tick: () => { if (!ready && M.pos - p1 > 13) { ready = true; hotKeep.lamp = 1; say('Draw again as often as you like. Tap the lamp to keep it.'); } } });
+  W.rays = 0.35; keptFlash('moth');
+  say('That is your melody. Nobody else has it.');
+  yield stepsWait(16); say('Listen to it ride on the rest.');
+  yield stepsWait(14);
+}
+function* beatAnswer() {
+  say('The room has been listening too.');
+  yield 6;
+  yield* ritual(4, echoSrc, ['An echo hops from thing to thing. Catch it.', 'Wind it up to pitch.', 'The second string.'], 'echo');
+  recBegin('answer'); M.on.answer = true; M.from.answer = 0;
+  M.hook = (abs, s, off) => { if (R.auto && !recDone() && (s % 8 === 4 || s === 11 || s === 27)) after(off, () => { const p = SPOTS[(s * 5) % SPOTS.length]; answerTap(p[0], p[1]); }); };
+  say('Your tune is playing. Tap anywhere, whenever you like.');
+  yield* prompt({ kind: 'answer', keys: 'Space taps', hot: { room: 1 }, at: () => ({ x: 180, y: 300, r: 70 }),
+    ghost: (u) => { const i = Math.floor(u / 1.6) % SPOTS.length, c = (u % 1.6) / 1.6, s = SPOTS[i]; return { x: s[0], y: s[1] + (c < 0.3 ? (0.3 - c) * 40 : 0), down: c > 0.32 && c < 0.6 }; },
+    auto: () => { R.auto = true; }, onPoke: () => { R.auto = false; }, hold: () => recArmed() && !R.auto, done: recDone, tick: armedSay('Each tap, the shop sings a note above your melody.') });
+  M.hook = null; answerFill(); recEnd(); keptFlash('answer');
+  say('The room answered you.');
+  yield stepsWait(14); say('Five strings. One to go.');
+  yield stepsWait(14);
+}
+function* beatBirds() {
+  W.dawn = 0.34; W.birds = 1; say('The sky is going grey. Birds settle on the wire.');
+  yield 8;
+  yield* ritual(5, featherSrc, ['A bright feather comes down. Catch it.', 'Wind it up to pitch.', 'The first string. The last one.'], 'feather');
+  S.birds = BIRD_DEF.slice(); birdsSync(); M.on.birds = true; M.from.birds = 0; F.kept = false; F.birdMoved = false; F.selBird = 0;
+  say('Drag the birds along the wire. Where each one sits is when it sings.');
+  let t0 = G.t, told = false;
+  const gLamp = gTap(LAMP.x, LAMP.y - 6), gBird = gDrag(() => ({ x: birds[1].x, y: wireY(birds[1].x) - 6 }), () => ({ x: birdX(6), y: wireY(birdX(6)) - 6 }), 2.8);
+  yield* prompt({ kind: 'birds', keys: 'Left and Right move a bird. Up and Down choose one. Space keeps it', hot: { birds: 1, lamp: 1 },
+    at: () => ({ x: birds[F.selBird].x, y: wireY(birds[F.selBird].x) - 7, r: 16 }),
+    ghost: (u) => (F.birdMoved ? gLamp(u) : gBird(u)),
+    auto: () => { if (!F.birdMoved) { birdStep(1, 7); birdStep(3, 18); F.birdMoved = false; } },
+    act: keepIt, complete: keepIt, done: () => F.kept,
+    tick: () => { if (!told && (F.birdMoved || G.t - t0 > 14)) { told = true; say('Tap the lamp when it sounds right.'); } } });
+  F.dragBird = -1; keptFlash('birds');
+  say('Six strings. All of them yours.');
+  yield stepsWait(16); say('Listen. This is the whole night.');
+  yield stepsWait(22);
+}
+function lampOffAct() {
+  if (F.lampOff) return;
+  F.lampOff = true; lampSound(false);
+  W.lamp = 0; W.rays = 0; W.ribbon = 0; W.pend = 0; W.kettle = 0; M.run = false; M.tick = false; F.mothRest = true;
+  if (F.holding) holdEnd();
+}
+function lidShut() { if (F.lidShut) return; F.lidShut = true; W.lid = 1; after(0.42, () => { tone(0, 96, 60, 0.22, 0.2, 'sine', 0.15); noiseHit(0, 420, 0.8, 0.5, 0.09, 0, 0.15, 'lowpass'); }); }
+function* beatSilence() {
+  F.lampOff = false; F.lidShut = false; F.latchT = [0, 0];
+  say('Nearly morning. Put out the lamp.');
+  yield* prompt({ kind: 'lamp', keys: 'Space', hot: { lamp: 1 }, at: () => ({ x: LAMP.x, y: LAMP.y - 8, r: 30 }), ghost: gTap(LAMP.x, LAMP.y - 6), act: lampOffAct, complete: lampOffAct, done: () => F.lampOff });
+  say('');
+  yield 4; say('Quiet.');
+  yield 4.6; say('Close the case.');
+  yield* prompt({ kind: 'lid', keys: 'Space', hot: { guitar: 1 }, at: () => ({ x: GTR.x + 22, y: GTR.y, r: 34 }), ghost: gTap(GTR.x + 22, GTR.y), act: lidShut, complete: lidShut, done: () => F.lidShut });
+  yield 1.5; say('Two latches.');
+  const lp = () => { const j = F.latchT[0] ? 1 : 0; return { x: GTR.x + LATCH_X[j], y: GTR.y + 64 }; };
+  yield* prompt({ kind: 'latch', keys: 'Space', hot: { latch: 1 }, at: () => { const p = lp(); return { x: p.x, y: p.y, r: 18 }; },
+    ghost: (u) => { const p = lp(); return gTap(p.x, p.y)(u); }, act: latchNext, complete: () => { latchShut(0); latchShut(1); }, done: () => F.latchT[0] && F.latchT[1] });
+  yield 1.6; say('Now wait.'); W.dawn = 0.48;
+  yield 6.5; say('The night is inside it.'); W.dawn = 0.58;
+  yield 8; say('');
+  yield 3;
+  W.door = 1; W.dawn = 0.74;
+  noiseHit(0, 300, 0.7, 0.36, 1.3, 0.5, 0.3, 'lowpass'); tone(0.25, 620, 540, 0.5, 0.012, 'triangle', 0.5, 0.5);
+  say('The door. Morning comes in.');
+  yield 6.5;
+}
+function wake(L) {
+  if (L === 'kettle') W.kettle = 1;
+  if (L === 'moth' && G.mode === 'play') { F.mothRest = false; W.moth = 1; }
+  if (L === 'birds') W.birds = 1;
+  const src = L === 'clock' ? bobPos() : L === 'rain' ? { x: 180, y: WIN.y + 60 } : L === 'kettle' ? { x: 50, y: 250 } : L === 'moth' ? { x: F.mothX, y: F.mothY } : L === 'answer' ? { x: 180, y: 300 } : { x: 180, y: 96 };
+  ring(src.x, src.y, C_GOLD, 8, 54, 1.1); glow[L] = 1;
+}
+const NAMES = { clock: 'The clock.', rain: 'The rain.', kettle: 'The kettle.', moth: 'The moth.', answer: 'The room.', birds: 'The birds.' };
+function* perform(short) {
+  const E = short ? { clock: 0, rain: 8, kettle: 16, moth: 32, answer: 64, birds: 80, all: 96, end: 128 } : { clock: 0, rain: 16, kettle: 32, moth: 64, answer: 96, birds: 128, all: 160, end: 192 };
+  for (const L of LAYERS) { if (!S.layers[L].length) defaults(L); M.on[L] = true; M.from[L] = E[L]; }
+  if (!LINE) LINE = buildLine(S.line) || DEFL;
+  M.pos = -1; M.next = 0; M.tick = true; M.hook = null; M.run = true; W.pend = 1;
+  F.finale = !short; F.cadence = false; F.trace = 0; lights.length = 0; lightSeen.clear(); F.playing = true;
+  for (const L of LAYERS) { const at = E[L]; yield () => M.pos >= at - 0.15; say(NAMES[L]); wake(L); }
+  yield () => M.pos >= E.all - 0.15; say(short ? 'Your whole night.' : 'All of it. Your whole night.');
+  yield () => M.pos >= E.end - 0.02;
+  /* an ending written by hand: four falling notes, slower each time, and the chord the open strings were leaning toward */
+  M.run = false; M.tick = false; F.cadence = true; W.pend = 0; say('');
+  pad(50, 0, 6.2, 0.06);
+  [[0, 69], [0.66, 66], [1.42, 64], [2.32, 62]].forEach(([t, p]) => { pluck(p, t, { gain: 0.4, lp: 6000, send: 0.5, pan: -0.1 }); after(t, () => { vib[3] = 1; F.mothF = 1; }); });
+  [38, 45, 50, 54, 57, 62].forEach((p, k) => { pluck(p, 3.5 + k * 0.14, { gain: 0.4, lp: 5000, send: 0.55, pan: (k - 2.5) * 0.1 }); after(3.5 + k * 0.14, () => { vib[k] = 1; }); });
+  bell(86, 4.5, 0.04);
+  after(4.5, () => { for (const b of birds) { b.hop = 1; b.sing = 1; } });
+  yield 8.6;
+  F.playing = false; F.finale = false;
+}
+function* beatEnding() {
+  F.strummed = false;
+  say('Someone has come for it.');
+  yield 3.6; W.hands = 1;
+  yield 2.3; F.latchT = [0, 1]; noiseHit(0, 2100, 5, 0.36, 0.05, -0.2, 0.12);
+  yield 0.55; F.latchT = [0, 0]; noiseHit(0, 2300, 5, 0.36, 0.05, 0.2, 0.12);
+  yield 0.9; W.lid = 0;
+  yield 1.5; say('Careful hands lift it out.'); W.lift = 1;
+  yield 4.2; say('Give it one strum.');
+  const at = () => { const xf = guitarXf(); return { x: xf.x + 22, y: xf.y, r: 32 }; };
+  yield* prompt({ kind: 'strum', keys: 'Space strums', hot: { strings: 1 }, at,
+    ghost: (u) => { const c = (u % 2) / 2, p = at(), k = eIO(clamp((c - 0.2) / 0.4, 0, 1)); return { x: p.x + 4, y: p.y - 26 + k * 52, down: c > 0.15 && c < 0.7 }; },
+    complete: () => strum(1), done: () => F.strummed });
+  say('');
+  yield 4.6; say('Now it plays by itself.');
+  yield 2.2;
+  F.lightA = 1;
+  yield* perform(false);
+  W.tag = 1; W.tagFlip = 0;
+  yield 2.4; W.tagFlip = 1; tone(0, 1568, 1568, 0.5, 0.012, 'sine', 0.6);
+  yield 5.6; W.end = 1;
+  G.ended = true; S.done = true;
+  try { S.date = new Date().toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' }); } catch (e) { S.date = ''; }
+  save();
+  for (;;) yield 1;
+}
+const SCRIPTS = [beatNote, beatClock, beatRain, beatKettle, beatMoth, beatAnswer, beatBirds, beatSilence, beatEnding];
+function startBeat(i, fromLoad) {
+  G.bi = i; S.beat = i;
+  if (!fromLoad) save();
+  co = { wait: 0, cond: null, g: (function* () {
+    applyWorld(i, !!fromLoad);
+    if (fromLoad) { yield* gate(i); applyWorld(i, false); if (i >= 1 && i <= 7) { lampSound(true); ring(LAMP.x, LAMP.y, C_GOLD, 8, 150, 1.2); } }
+    yield* SCRIPTS[i]();
+  })(), then: () => { if (i + 1 < BEATS.length) startBeat(i + 1, false); } };
+}
+
+/* ================= coming back: the shop by day, the line on the wall ================= */
+const FRAME = { x: 86, y: 214, w: 188, h: 136 };
+function frameXf() { const k = Math.min((FRAME.w - 26) / (AIR.x1 - AIR.x0), (FRAME.h - 26) / (AIR.y1 - AIR.y0)); return { k, x: FRAME.x + FRAME.w / 2 - (AIR.x0 + AIR.x1) / 2 * k, y: FRAME.y + FRAME.h / 2 - (AIR.y0 + AIR.y1) / 2 * k }; }
+function drawFrame() {
+  const a = V.day, hot = isHot('frame'), f = FRAME;
+  if (a < 0.02) return;
+  ctx.save(); ctx.globalAlpha = a;
+  ctx.strokeStyle = ink(0.5); ctx.lineWidth = 1; line(f.x + 30, f.y, 180, f.y - 16); line(f.x + f.w - 30, f.y, 180, f.y - 16); ctx.fillStyle = ink(0.8); circ(180, f.y - 16, 1.8); ctx.fill();
+  ctx.fillStyle = rgba(C_TILE, 0.96); ctx.fillRect(f.x, f.y, f.w, f.h);
+  ctx.strokeStyle = hot ? coral(0.65 + 0.35 * pulse(3)) : ink(0.95); ctx.lineWidth = 2.4; ctx.strokeRect(f.x, f.y, f.w, f.h);
+  ctx.strokeStyle = ink(0.35); ctx.lineWidth = 1; ctx.strokeRect(f.x + 7, f.y + 7, f.w - 14, f.h - 14);
+  if (LINE) {
+    const x = frameXf();
+    ctx.save(); ctx.translate(x.x, x.y); ctx.scale(x.k, x.k); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    const tr = F.playing ? F.trace : 1;
+    ctx.strokeStyle = gold(0.3); ctx.lineWidth = 2.2; tracePath(LINE.pts, 1);
+    if (tr > 0.001) { ctx.strokeStyle = gold(0.22 + 0.2 * F.frameGlow); ctx.lineWidth = 9; tracePath(LINE.pts, tr); ctx.strokeStyle = gold(1); ctx.lineWidth = 3; tracePath(LINE.pts, tr); }
+    if (F.playing && M.on.moth && M.pos >= M.from.moth) { const p = linePoint(LINE, mod32(M.pos) / LOOP); ctx.fillStyle = rgba(C_CREAM, 1); circ(p[0], p[1], 5); ctx.fill(); }
+    ctx.restore();
+  }
+  ctx.restore();
+  /* a cup left on the bench */
+  ctx.strokeStyle = ink(0.8 * a); ctx.lineWidth = 1.4; ctx.fillStyle = rgba(C_PAGE, 0.9);
+  ctx.beginPath(); ctx.moveTo(246, 484); ctx.lineTo(248, 505); ctx.lineTo(266, 505); ctx.lineTo(268, 484); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.arc(270, 493, 5.5, -Math.PI / 2, Math.PI / 2); ctx.stroke();
+  ctx.strokeStyle = ink(0.35 * a); ctx.lineWidth = 1.1; ctx.beginPath();
+  for (let k = 0; k <= 10; k++) { const u = k / 10, y = 480 - u * 20, x = 257 + Math.sin(u * 4 + (REDUCED ? 0 : G.t * 1.6)) * (1 + u * 3); if (k) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
+  ctx.stroke();
+}
+function enterKeep() {
+  G.mode = 'keep'; G.ended = true; G.bi = BEATS.length - 1;
+  applyWorld(8, true);
+  W.day = 1; W.dawn = 1; V.dawn = 0.9; W.gone = 1; V.gone = 1; W.guitar = 1; W.lid = 0; W.door = 0.6; W.birds = 1; W.moth = 0; W.strings = 0;
+  for (const b of birds) b.in = 1.4;
+  birdsSync();
+  LINE = buildLine(S.line) || DEFL;
+  F.trace = 1; F.clockH = 9.4;
+  document.body.classList.add('keep');
+  $('kdate').textContent = S.date ? 'Strung on ' + S.date : 'Strung in one night';
+  co = { wait: 0, cond: null, g: (function* () {
+    for (;;) {
+      let go = false;
+      W.ribbon = 0; say('Your night is on the wall. Tap the frame to hear it.');
+      yield* prompt({ kind: 'frame', keys: 'Or press Space', keysAlways: true, hot: { frame: 1 }, at: () => ({ x: 180, y: FRAME.y + FRAME.h / 2, r: 80 }), ghost: gTap(180, FRAME.y + 80), act: () => { go = true; }, done: () => go });
+      let w = 0;
+      yield () => (w++ > 40) || !A.ok || A.ctx.state === 'running';
+      W.ribbon = 1; say('');
+      yield 0.6;
+      yield* perform(true);
+      F.trace = 1;
+      yield 1.5;
+    }
+  })() };
+}
+$('again').addEventListener('click', () => { $('confirm').hidden = false; $('again').setAttribute('aria-expanded', 'true'); $('no').focus(); });
+$('no').addEventListener('click', () => { $('confirm').hidden = true; $('again').setAttribute('aria-expanded', 'false'); $('again').focus(); });
+$('yes').addEventListener('click', () => { wipeSave(); window.location.reload(); });
+
+/* ================= one frame of the world ================= */
+function updMoth(dt) {
+  let tx, ty;
+  const flying = LINE && M.run && M.on.moth && M.pos >= M.from.moth && G.mode === 'play';
+  if (F.mothRest && !flying) { tx = 197; ty = 171; }
+  else if (flying) { const p = linePoint(LINE, mod32(M.pos) / LOOP); tx = p[0]; ty = p[1]; }
+  else { tx = LAMP.x + Math.cos(G.t * 1.1) * 44; ty = LAMP.y + 44 + Math.sin(G.t * 1.9) * 15; }
+  if (!REDUCED && !(F.mothRest && !flying)) { tx += Math.sin(G.t * 9.1) * 1.8; ty += Math.cos(G.t * 7.3) * 1.8; }
+  F.mothX = appr(F.mothX, tx, 11, dt); F.mothY = appr(F.mothY, ty, 11, dt);
+}
+function update(dt) {
+  G.t += dt;
+  for (const k in RATE) V[k] = appr(V[k], W[k], RATE[k], dt);
+  const amb = 0.1 + 0.8 * sm((V.dawn - 0.3) / 0.45);
+  V.inkA = Math.max(amb, 0.1 + 0.9 * V.lamp);
+  const cool = (1 - V.lamp) * (1 - sm((V.dawn - 0.45) / 0.3)) * 0.5;
+  INK = mix3(mix3(C_CREAM, [178, 186, 224], cool), [252, 232, 200], sm((V.dawn - 0.6) / 0.4) * (1 - V.lamp) * 0.6);
+  const singing = F.holding || G.t < F.steamUntil;
+  V.steam = appr(V.steam, singing ? 1 : V.kettle * 0.3, 3, dt);
+  if (singing) { vib[2] = Math.max(vib[2], 0.55); glow.kettle = Math.max(glow.kettle, 0.7); }
+  for (let i = 0; i < 6; i++) vib[i] *= Math.exp(-dt * (i < 2 ? 1.7 : 2.3));
+  for (const L of LAYERS) glow[L] *= Math.exp(-dt * 3);
+  for (let k = 0; k < 9; k++) F.rayFlash[k] *= Math.exp(-dt * 3.2);
+  F.tickFlash *= Math.exp(-dt * 7); F.mothF *= Math.exp(-dt * 4); F.frameGlow = glow.moth;
+  for (let j = 0; j < 2; j++) F.latch[j] = appr(F.latch[j], F.latchT[j], 10, dt);
+  F.birdT = W.birds ? F.birdT + dt : 0;
+  for (let i = 0; i < 5; i++) {
+    const b = birds[i];
+    b.hop = Math.max(0, b.hop - dt * 2.6); b.sing = Math.max(0, b.sing - dt * 2);
+    b.in = W.birds ? Math.max(b.in, clamp((F.birdT - i * 0.7) / 1.4, 0, 1.4)) : 0;
+    b.x = b.dragX != null ? b.dragX : appr(b.x, birdX(S.birds[i]), 12, dt);
+  }
+  F.pendAng = V.pend * 0.2 * Math.cos(Math.PI * M.pos / 2);
+  F.clockH = appr(F.clockH, G.mode === 'keep' ? 9.4 : HOUR[G.bi] + 0.45, 0.02, dt);
+  transport(dt);
+  runTimers();
+  runCo(dt);
+  tickPrompt(dt);
+  updThread(dt); updDrawing(dt); updMoth(dt);
+  if (F.holding && (M.pos - F.holding.q >= 12 || (recArmed() && M.pos >= R.end))) holdEnd();
+  if (F.playing && M.run && M.on.moth) F.trace = Math.max(F.trace, clamp((M.pos - M.from.moth) / LOOP, 0, 1));
+  spawnDrops(); updParts(dt); updWords(dt);
+  setRainBed(W.rain ? 0.07 : 0);
+}
+const MOTES = [];
+{ const r = rng(5); for (let i = 0; i < 16; i++) MOTES.push([r(), r(), r() * TAU, 0.4 + r() * 0.8]); }
+function drawMotes() {
+  const a = Math.max(V.lamp, sm((V.dawn - 0.6) / 0.3)) * 0.3;
+  if (a < 0.02 || REDUCED) return;
+  for (const m of MOTES) {
+    const x = 60 + m[0] * 240 + Math.sin(G.t * 0.21 * m[3] + m[2]) * 22, y = 205 + ((m[1] * 190 + G.t * 3.2 * m[3]) % 190);
+    ctx.fillStyle = gold(a * (0.4 + 0.6 * Math.sin(G.t * 0.7 + m[2]) ** 2)); circ(x, y, 0.9); ctx.fill();
+  }
+}
+function drawGuides() {
+  if (!P) return;
+  const k = P.kind;
+  if ((k === 'thread' || k === 'wind') && T.on) {
+    const p = pegPos(T.i);
+    if (k === 'thread') cue(p.x, p.y, 13);
+    else if (T.stage === 'on') {
+      const r = 30, a = REDUCED ? -0.7 : G.t * 2.4;
+      ctx.strokeStyle = coral(0.5 + 0.35 * pulse(3.4)); ctx.lineWidth = 1.6; ctx.setLineDash([4, 6]); ctx.lineDashOffset = REDUCED ? 0 : -G.t * 16; circ(p.x, p.y, r); ctx.stroke(); ctx.setLineDash([]);
+      const ax = p.x + Math.cos(a) * r, ay = p.y + Math.sin(a) * r;
+      ctx.fillStyle = coral(0.95); ctx.beginPath();
+      ctx.moveTo(ax - Math.sin(a) * 7, ay + Math.cos(a) * 7); ctx.lineTo(ax + Math.cos(a) * 4.5, ay + Math.sin(a) * 4.5); ctx.lineTo(ax - Math.cos(a) * 4.5, ay - Math.sin(a) * 4.5); ctx.closePath(); ctx.fill();
+    }
+  } else if (k === 'draw' && !F.drawing) {
+    ctx.strokeStyle = coral(0.3 + 0.2 * pulse(2.4)); ctx.lineWidth = 1.2; ctx.setLineDash([3, 7]); rrect(AIR.x0, AIR.y0 + 6, AIR.x1 - AIR.x0, AIR.y1 - AIR.y0 - 8, 16); ctx.stroke(); ctx.setLineDash([]);
+    cue(DEF_LINE[0][0], DEF_LINE[0][1], 10);
+  } else if (k === 'answer' && !recArmed()) {
+    for (let i = 0; i < 3; i++) { const s = SPOTS[(i * 2 + 4) % SPOTS.length], u = REDUCED ? 0.5 : (G.t * 0.5 + i / 3) % 1; ctx.strokeStyle = coral(0.7 * (1 - u)); ctx.lineWidth = 1.5; circ(s[0], s[1], 6 + u * 22); ctx.stroke(); }
+  } else if (k === 'slide' && !recArmed()) {
+    const a = P.at(); cue(a.x, a.y, 15);
+  } else if (k === 'pulse' && !recArmed()) {
+    const a = P.at(); cue(a.x, a.y, 15);
+  } else if (k === 'lid') {
+    const a = P.at(); cue(a.x, a.y, 30);
+  } else if (k === 'strum') {
+    const a = P.at(), b = REDUCED ? 0 : Math.sin(G.t * 3) * 4;
+    ctx.strokeStyle = coral(0.9); ctx.lineWidth = 1.8; line(a.x + 46, a.y - 24 + b, a.x + 46, a.y + 24 + b);
+    ctx.beginPath(); ctx.moveTo(a.x + 41, a.y + 18 + b); ctx.lineTo(a.x + 46, a.y + 25 + b); ctx.lineTo(a.x + 51, a.y + 18 + b); ctx.stroke();
+  }
+  if (G.kb && P.at) {
+    const a = P.at();
+    ctx.strokeStyle = gold(0.9); ctx.lineWidth = 1.6; ctx.setLineDash([2, 5]); circ(a.x, a.y, a.r + 5); ctx.stroke(); ctx.setLineDash([]);
+  }
+}
+function drawGhostLayer() {
+  if (!P || P.stage < 1 || !P.ghost || (P.hold && P.hold())) return;
+  const u = G.t - P.g0, g = P.ghost(u);
+  if (g) drawGhost(g.x, g.y, g.down, clamp(u / 0.5, 0, 1) * 0.92);
+}
+function draw() {
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.globalAlpha = 1; ctx.fillStyle = PAGE; ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.setTransform(dpr * sc, 0, 0, dpr * sc, dpr * ox, dpr * oy);
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  drawRoomBack(); drawWindow(); drawDecor(); drawDoorLight();
+  drawClock(); drawKettle();
+  if (G.mode === 'keep') drawFrame();
+  drawBench(); drawCaseBase();
+  drawRays(); drawMotes(); drawMothLine();
+  if (V.hands > 0.01) { drawHandBack(0); drawHandBack(1); }
+  drawGuitar();
+  if (V.hands > 0.01) { drawHandFront(0); drawHandFront(1); }
+  drawLid();
+  drawLamp(); drawMoth();
+  drawLights();
+  drawDrops(); drawThread(); drawWaves(); drawGuides(); drawParts(); drawRibbon();
+  drawGhostLayer();
+}
+
+/* ================= hands on: pointer and keys ================= */
+let ptr = null, lastXY = { x: 0, y: 0 }, kbStr = 0;
+function toStage(e) { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left - ox) / sc, y: (e.clientY - r.top - oy) / sc }; }
+function onDown(x, y) {
+  const kind = P ? P.kind : '';
+  const sure = !(kind === 'lamp' || kind === 'thread' || kind === 'birds' || kind === 'lid' || kind === 'latch' || kind === 'frame' || kind === '');
+  let hit = true;
+  if (sure) poke();
+  switch (kind) {
+    case 'gate': P.act(); break;
+    case 'lamp': hit = nearLamp(x, y); if (hit) P.act(); else freePluck(x, y); break;
+    case 'thread': hit = threadDown(x, y); break;
+    case 'wind': windDown(x, y); break;
+    case 'pulse': pulseTap(); break;
+    case 'slide': slideSet(x, true); break;
+    case 'hold': holdStart('ptr'); break;
+    case 'draw': drawStart(x, y); break;
+    case 'keep': if (nearLamp(x, y)) F.lampTap = { x, y }; else drawStart(x, y); break;
+    case 'answer': answerTap(x, y); break;
+    case 'birds': hit = birdDown(x, y); if (!hit && nearLamp(x, y)) { hit = true; P.act(); } break;
+    case 'lid': hit = y > 366 && y < 520; if (hit) P.act(); break;
+    case 'latch': hit = latchTap(x, y); break;
+    case 'strum': F.strumFrom = { x, y }; break;
+    case 'frame': hit = x > FRAME.x - 16 && x < FRAME.x + FRAME.w + 16 && y > FRAME.y - 18 && y < FRAME.y + FRAME.h + 24; if (hit) P.act(); break;
+    default: hit = freePluck(x, y);
+  }
+  if (!sure) poke(!hit);
+  if (!hit || kind === 'wind' || kind === 'slide' || kind === 'hold') parts.push({ k: 1, x, y, t: 0, life: 0.34, col: C_CREAM, r0: 3, r1: 13 });
+}
+function onMove(x, y) {
+  if (P) P.idle = 0;
+  const kind = P ? P.kind : '';
+  if (kind === 'thread') threadMove(x, y);
+  else if (kind === 'wind') { if (!F.windPtr) windDown(x, y); else windMove(x, y); }
+  else if (kind === 'slide') slideSet(x, true);
+  else if (kind === 'draw' || kind === 'keep') {
+    if (F.lampTap) { if (dist(x, y, F.lampTap.x, F.lampTap.y) > 12) { drawStart(F.lampTap.x, F.lampTap.y); F.lampTap = null; drawMove(x, y); } }
+    else drawMove(x, y);
+  } else if (kind === 'birds') birdMove(x);
+  else if (kind === 'strum' && F.strumFrom && Math.abs(y - F.strumFrom.y) > 14) { strum(y > F.strumFrom.y ? 1 : -1); F.strumFrom = null; }
+}
+function onUp(x, y, cancelled) {
+  const kind = P ? P.kind : '';
+  threadUp(); F.windPtr = null;
+  if (F.fingerDown && !R.auto && !G.kb) F.fingerDown = false;
+  if (F.holding && F.holding.src === 'ptr') holdEnd();
+  if (F.lampTap) { F.lampTap = null; if (!cancelled && kind === 'keep') P.act(); }
+  else if (F.drawing && !F.steer && !F.autoDraw) { if (cancelled) F.drawing = null; else drawEnd(); }
+  birdUp();
+  if (F.strumFrom) { if (!cancelled && kind === 'strum') strum(1); F.strumFrom = null; }
+}
+cv.addEventListener('pointerdown', (e) => {
+  audioInit();
+  if (ptr !== null || e.button > 0) return;
+  ptr = e.pointerId;
+  try { cv.setPointerCapture(e.pointerId); } catch (err) { /* fine without */ }
+  if (document.activeElement !== cv) { try { cv.focus({ preventScroll: true }); } catch (err) { /* old browser */ } }
+  e.preventDefault();
+  G.kb = false;
+  lastXY = toStage(e); onDown(lastXY.x, lastXY.y);
+});
+cv.addEventListener('pointermove', (e) => {
+  if (e.pointerType === 'mouse' && ptr === null) {
+    /* a mouse gets a pointing hand over whatever is asking to be touched */
+    const p = toStage(e), k = P ? P.kind : '';
+    let over = false;
+    if (k === 'gate' || k === 'pulse' || k === 'answer' || k === 'hold' || k === 'strum' || k === 'wind' || k === 'slide') over = true;
+    else if (k === 'thread') over = dist(p.x, p.y, T.x, T.y) < 42;
+    else if (k === 'birds') over = nearLamp(p.x, p.y) || birds.some((b) => dist(p.x, p.y, b.x, wireY(b.x) - 6) < 30);
+    else if (P && P.at) { const a = P.at(); over = dist(p.x, p.y, a.x, a.y) < a.r + 8; }
+    const want = k === 'draw' || (k === 'keep' && !over) ? 'crosshair' : over ? 'pointer' : 'default';
+    if (cv.style.cursor !== want) cv.style.cursor = want;
+  }
+  if (e.pointerId !== ptr) return;
+  lastXY = toStage(e); onMove(lastXY.x, lastXY.y);
+});
+function endPtr(e) {
+  audioInit();
+  if (e.pointerId !== ptr) return;
+  ptr = null;
+  if (e.type === 'pointerup') lastXY = toStage(e);
+  onUp(lastXY.x, lastXY.y, e.type !== 'pointerup');
+}
+cv.addEventListener('pointerup', endPtr);
+cv.addEventListener('pointercancel', endPtr);
+cv.addEventListener('lostpointercapture', endPtr);
+cv.addEventListener('pointerleave', (e) => { if (e.pointerId === ptr && !(cv.hasPointerCapture && cv.hasPointerCapture(e.pointerId))) endPtr(e); });
+cv.addEventListener('contextmenu', (e) => e.preventDefault());
+cv.addEventListener('focus', () => { try { if (cv.matches(':focus-visible')) G.kb = true; } catch (err) { /* older browsers */ } });
+cv.addEventListener('touchstart', (e) => { if (e.cancelable) e.preventDefault(); }, { passive: false });
+cv.addEventListener('touchend', audioInit, { passive: true });
+document.addEventListener('gesturestart', (e) => e.preventDefault());
+document.addEventListener('dblclick', (e) => e.preventDefault());
+
+function onKey(c, down, rep) {
+  if (down) poke();
+  const kind = P ? P.kind : '';
+  if (c === 'go') {
+    if (!down) { if (F.holding && F.holding.src === 'key') holdEnd(); return; }
+    if (rep) return;
+    switch (kind) {
+      case 'gate': case 'lamp': case 'lid': case 'keep': case 'frame': case 'birds': P.act(); break;
+      case 'thread': threadFly(); break;
+      case 'wind': windAdd(0.06); break;
+      case 'pulse': pulseTap(); break;
+      case 'hold': holdStart('key'); break;
+      case 'answer': { const p = SPOTS[F.kbSpot++ % SPOTS.length]; answerTap(p[0], p[1]); break; }
+      case 'latch': latchNext(); break;
+      case 'strum': strum(1); break;
+      default: if (W.strings > 0 && V.lid < 0.3 && V.gone < 0.5 && !F.playing) pluckOpen(kbStr++ % W.strings);
+    }
+    return;
+  }
+  const vert = c === 'up' || c === 'down';
+  if (kind === 'wind') { if (vert) { F.windKey = down ? 1 : 0; if (down && !rep) windAdd(0.04); } }
+  else if (kind === 'slide') {
+    if (down && !vert) { F.fretI = clamp(F.fretI + (c === 'left' ? 1 : -1), 0, RAIN_FRETS.length - 1); F.fingerDown = F.fretI > 0; rainArm(); noiseHit(0, 3200, 2, 0.045, 0.04, 0.2, 0.1); }
+  } else if (kind === 'draw' || kind === 'keep') {
+    if (vert) { if (down) { if (!F.steer) steerStart(); F.steer.dir = c === 'up' ? -1 : 1; } else if (F.steer) F.steer.dir = 0; }
+  } else if (kind === 'birds' && down) {
+    if (vert) { F.selBird = (F.selBird + (c === 'down' ? 1 : 4)) % 5; birdChirp(F.selBird); }
+    else { birdStep(F.selBird, S.birds[F.selBird] + (c === 'right' ? 1 : -1)); if (!rep) birdChirp(F.selBird); }
+  }
+}
+const KEYS = { ' ': 'go', Spacebar: 'go', Enter: 'go', ArrowLeft: 'left', ArrowRight: 'right', ArrowUp: 'up', ArrowDown: 'down' };
+window.addEventListener('keydown', (e) => {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (e.key === 'm' || e.key === 'M') { if (!e.repeat) { audioInit(); setMuted(!A.muted); } return; }
+  const tag = e.target && e.target.tagName;
+  if (tag === 'BUTTON' || tag === 'A') return;
+  const c = KEYS[e.key];
+  if (!c) return;
+  e.preventDefault(); audioInit(); G.kb = true;
+  onKey(c, true, e.repeat);
+});
+window.addEventListener('keyup', (e) => {
+  const c = KEYS[e.key];
+  if (!c) return;
+  const tag = e.target && e.target.tagName;
+  if (tag === 'BUTTON' || tag === 'A') return;
+  onKey(c, false, false);
+});
+window.addEventListener('blur', () => { F.windKey = 0; if (F.steer) F.steer.dir = 0; if (F.holding && F.holding.src === 'key') holdEnd(); });
+muteBtn.addEventListener('click', () => { audioInit(); setMuted(!A.muted); });
+
+/* ================= pause, resume, resize ================= */
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    A.asleep = true;
+    if (F.holding) holdEnd();
+    F.windKey = 0; if (F.steer) F.steer.dir = 0;
+    if (A.ok && A.ctx.state === 'running') { A.weSlept = true; A.ctx.suspend().catch(() => {}); }
+  } else {
+    A.asleep = false; last = 0;
+    if (A.ok && A.weSlept) { A.weSlept = false; A.ctx.resume().catch(() => {}); }
+  }
+});
+window.addEventListener('resize', resize);
+window.addEventListener('orientationchange', resize);
+if (window.visualViewport) window.visualViewport.addEventListener('resize', resize);
+
+let last = 0;
+function frame(now) {
+  window.requestAnimationFrame(frame);
+  if (document.hidden) { last = 0; return; }
+  let dt = last ? (now - last) / 1000 : 0;
+  last = now;
+  if (!(dt > 0)) dt = 0;
+  if (dt > 0.05) dt = 0.05;
+  dt *= SPEED;
+  const n = Math.max(1, Math.ceil(dt / 0.034));
+  for (let i = 0; i < n; i++) update(dt / n);
+  syncAudioClock(); pumpAudio();
+  draw();
+}
+
+/* ================= read-only state, for tests ================= */
+const toClient = (p) => ({ x: Math.round((p.x * sc + ox) * 10) / 10, y: Math.round((p.y * sc + oy) * 10) / 10 });
+const api = {};
+Object.defineProperties(api, {
+  beat: { enumerable: true, get: () => (G.mode === 'keep' ? 'keepsake' : BEATS[G.bi]) },
+  beatIndex: { enumerable: true, get: () => (G.mode === 'keep' ? BEATS.length : G.bi) },
+  beats: { enumerable: true, get: () => BEATS.slice() },
+  ended: { enumerable: true, get: () => G.ended },
+  clock: { enumerable: true, get: () => G.t },
+  muted: { enumerable: true, get: () => A.muted },
+  prompt: { enumerable: true, get: () => (P ? P.kind : '') },
+  strings: { enumerable: true, get: () => W.strings },
+  step: { enumerable: true, get: () => M.pos },
+  recording: { enumerable: true, get: () => (recArmed() && !recDone() ? R.layer : '') },
+  notes: { enumerable: true, get: () => { const o = {}; for (const L of LAYERS) o[L] = S.layers[L].length; return o; } },
+  spots: { enumerable: true, get: () => {
+    const xf = guitarXf(), peg = pegPos(T.on ? T.i : 0);
+    return {
+      lamp: toClient({ x: LAMP.x, y: LAMP.y - 8 }), thread: toClient({ x: T.x, y: T.y }), peg: toClient(peg),
+      string: toClient({ x: xf.x + 22, y: xf.y }), kettle: toClient({ x: 50, y: 250 }),
+      neckLow: toClient({ x: GTR.x + FINGER_X[1], y: GTR.y }), neckHigh: toClient({ x: GTR.x + FINGER_X[5], y: GTR.y }),
+      airLeft: toClient({ x: AIR.x0 + 14, y: 300 }), airRight: toClient({ x: AIR.x1 - 14, y: 300 }), airTop: toClient({ x: 180, y: AIR.y0 + 30 }), airBottom: toClient({ x: 180, y: AIR.y1 - 14 }),
+      birds: birds.map((b) => toClient({ x: b.x, y: wireY(b.x) - 6 })), wireLeft: toClient({ x: WIRE.x0, y: WIRE.y }), wireRight: toClient({ x: WIRE.x1, y: WIRE.y }),
+      lid: toClient({ x: GTR.x + 22, y: GTR.y }), latches: LATCH_X.map((x) => toClient({ x: GTR.x + x, y: GTR.y + 64 })),
+      frame: toClient({ x: 180, y: FRAME.y + FRAME.h / 2 }), room: toClient({ x: 180, y: 320 }),
+    };
+  } },
+});
+window.__game = Object.freeze(api);
+
+/* ================= begin ================= */
+loadSave();
+setMuted(S.muted, true);
+resize();
+for (let i = 0; i < 5; i++) birds[i].x = birdX(S.birds[i]);
+F.latchT = [0, 0]; F.birdT = 0;
+if (S.done) enterKeep(); else startBeat(S.beat, true);
+window.requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
