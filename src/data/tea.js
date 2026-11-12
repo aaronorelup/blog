@@ -1,7 +1,7 @@
 // The tea room (/tea/): the long view of the whole site on one page. Every word of its own copy lives here, inside the
 // never-publish scan. Lists and counts never live here: they come from the same helpers the main site uses (lib/tea.js).
 // TEA_SEO is the one switch for how /tea/ meets search engines; teaSeo() turns it into what the layout and the sitemap
-// read. Policy is Aaron's call (SCOPE.md): 'pending' ships, which is what any new page gets.
+// read. Policy is Aaron's call, not made yet: 'pending' ships, which is what any new page gets.
 export const TEA_BASE = '/tea';
 export const TEA_SEO = 'pending';   // 'pending' | 'canonical-main' | 'noindex' | 'index'
 export const TEA_CANONICAL_TWIN = '/';

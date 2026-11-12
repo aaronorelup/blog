@@ -1,7 +1,7 @@
 // The tea room's shaping (src/lib/tea.js) and its copy and SEO switch (src/data/tea.js), over the real posts, notes
 // and lore read the way the build reads them: every listed post shows once, under its topic; counts, numerals and
-// dates come out right; a project card gets its one link; teaSeo() gives SCOPE.md's table for each value of the
-// switch, and 'pending' is what ships until Aaron decides (HANDOFF.md section 4).
+// dates come out right; a project card gets its one link; teaSeo() gives the table below for each value of the
+// switch, and 'pending' is what ships until Aaron decides.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -134,7 +134,7 @@ test("projectHref: a card's main link (an anchor on /projects/ from here), else 
   assert.deepEqual(projectHref({ main: null, posts: [], section: 'stopped' }), { href: '/projects/#proj-stopped', external: false });
 });
 
-// SCOPE.md's table, HANDOFF.md section 4: canonical null is the Head's default (the page itself); a path is named
+// The four policies Aaron chooses from: canonical null is the Head's default (the page itself); a path is named
 // instead, against the site, so canonical-main's '/' is https://aaronorelup.com/.
 const TABLE = {
   pending: { noindex: false, canonical: null, inSitemap: false },

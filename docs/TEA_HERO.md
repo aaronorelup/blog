@@ -215,8 +215,9 @@ Both rig kinds through one mechanism:
 - **Compression:** `EXT_meshopt_compression` (the decoder, `three/examples/jsm/libs/meshopt_decoder.module.js`, is
   bundled into the lazy 3D chunk only: 22.4 KB, 6.1 KB gzip of it), `KHR_mesh_quantization` and `EXT_texture_webp`,
   all three as required extensions: what `gltf-transform optimize --compress meshopt --texture-compress webp` and
-  `gltfpack -cc -tc` write. The spike's compressed models in `docs/tea-handoff/hero/glb/` (Yusef, the CRT, the lantern,
-  Jefrie) load in the lab through a manifest variant, with no console error. No KTX2 or Draco decoder is bundled.
+  `gltfpack -cc -tc` write. The spike's compressed models (Yusef, the CRT, the lantern, Jefrie; kept with its working
+  material, outside the repository) load in the lab through a manifest variant, with no console error. No KTX2 or
+  Draco decoder is bundled.
 - **Skinned meshes:** a test model built like the final assets (a skinned tail with bones `tail.01` to `tail.03`, a
   rigid `wing.L` with its pivot at its root, quantized, meshopt, a WebP texture) binds by the convention names: the
   bones arrive as `Bone`s named `tail01` with `userData.name` `tail.01`, tracks on `tail.02` and `wing.L` turn them, and
