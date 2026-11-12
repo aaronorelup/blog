@@ -1,0 +1,171 @@
+/* Trust (SPEC 2.10, 2.11): the snapshot stamp, its shelf of editions and its two disclosures, the proof card, the
+   sources drawer and page, and the edition list under the chip. House ink and paper only: no owner's colour here.
+   Text version first. In the 3D page the stamp's date is pressed into the floor and its words keep to the edges. */
+
+/* ---- the stamp, text version */
+.ail-stamp__mark { margin: 0 0 22px; }
+.ail-stamp__ink { position: relative; display: inline-grid; justify-items: start; gap: 4px; padding: 14px 24px 12px; border: 3px solid currentColor; color: var(--ail-fg);
+  -webkit-mask: var(--ail-grain) 0 0 / 220px 220px; mask: var(--ail-grain) 0 0 / 220px 220px; }
+.ail-stamp__ink::after { content: ''; position: absolute; inset: 4px; border: 1px solid currentColor; pointer-events: none; }
+.ail-stamp__k { letter-spacing: .3em; }
+.ail-stamp__date { font: 400 var(--ail-fs-display)/.84 var(--ail-display); letter-spacing: .01em; white-space: nowrap; }
+.ail-stamp { --ail-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' seed='11'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -12.5 0 0 0 10'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)'/%3E%3C/svg%3E"); }
+.ail-stamp__say { display: grid; gap: 14px; max-width: 40rem; margin-bottom: 26px; }
+.ail-stamp__side, .ail-stamp__more { display: grid; gap: 0; max-width: 40rem; }
+
+/* the shelf of editions: this one a solid slab, the next an empty dashed slot */
+.ail-shelf { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px 16px; margin-bottom: 18px; }
+.ail-shelf__row { grid-column: 1 / -1; }
+.ail-shelf__row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; padding: 10px 0 0; border-bottom: 2px solid var(--ail-fg); }
+.ail-shelf__row li { display: flex; }
+.ail-slab { position: relative; display: inline-flex; align-items: center; justify-content: center; min-width: 128px; min-height: 48px; margin-top: 8px; padding: 0 14px;
+  font: 400 26px/1 var(--ail-display); letter-spacing: .03em; color: var(--ail-fg); text-decoration: none; box-shadow: inset 0 0 0 1px var(--ail-fg); }
+.ail-slab[aria-current] { background: var(--ail-fg); color: var(--ail-bg); box-shadow: inset 0 -5px 0 color-mix(in srgb, var(--ail-bg) 22%, transparent); }
+a.ail-slab:hover { background: var(--ail-fg); color: var(--ail-bg); }
+.ail-slab--next { box-shadow: none; outline: 1.5px dashed var(--ail-fg-2); outline-offset: -1.5px; color: var(--ail-fg-2); font: 400 var(--ail-fs-label)/1 var(--ail-mono); letter-spacing: .14em; text-transform: uppercase; }
+.ail-shelf__newest { grid-row: 1; grid-column: 2; display: inline-flex; align-items: center; min-height: 32px; }
+
+/* a disclosure: a number, its words, and a chevron. Its card holds the list */
+.ail-disc summary { position: relative; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; min-height: 48px; padding: 12px 34px 10px 0; border-top: 1px solid var(--ail-hair); }
+.ail-disc summary::after { content: ''; position: absolute; right: 8px; top: 50%; width: 8px; height: 8px; border: solid currentColor; border-width: 0 1.5px 1.5px 0; transform: translateY(-70%) rotate(45deg); transition: transform 200ms var(--ail-ease); }
+.ail-disc[open] summary::after { transform: translateY(-20%) rotate(-135deg); }
+.ail-disc summary:hover .ail-label { text-decoration: underline; text-underline-offset: .25em; }
+.ail-disc__n { font: 400 34px/.9 var(--ail-display); letter-spacing: .01em; }
+.ail-disc__as { color: var(--ail-fg-2); flex-basis: 100%; }
+.ail-disc__card { display: grid; gap: 12px; padding: 4px 0 18px; font-size: 17px; line-height: 1.3; }
+.ail-stamp__counts summary { display: inline-flex; align-items: center; min-height: 44px; border-top: 0; padding: 4px 34px 4px 0; gap: 2px 8px; }
+.ail-stamp__counts summary b { font-weight: 400; color: var(--ail-fg); }
+.ail-stamp__counts summary i { font-style: normal; color: var(--ail-fg-2); }
+.ail-stamp__counts .ail-btn b { font-weight: 400; }
+
+.ail-since, .ail-expiring { display: grid; }
+.ail-since__item { display: grid; gap: 4px; padding: 10px 0; border-top: 1px solid var(--ail-hair); }
+.ail-since__item:first-child, .ail-expiring__item:first-child { border-top: 0; }
+.ail-since__m { display: flex; gap: 12px; color: var(--ail-fg-2); }
+.ail-since__item[data-conf='reported'] .ail-since__m span { text-decoration: underline dotted 1px; text-underline-offset: .3em; }
+.ail-since__item:not([data-conf='confirmed']):not([data-conf='reported']) .ail-since__m span { outline: 1px dashed currentColor; outline-offset: 2px; }
+.ail-since__src { display: inline-flex; align-items: center; justify-content: center; min-width: 36px; min-height: 28px; margin-left: 4px; padding: 0 6px; vertical-align: .1em;
+  color: var(--ail-fg-2); text-decoration: none; box-shadow: inset 0 0 0 1px var(--ail-hair); }
+.ail-since__src:hover { color: var(--ail-fg); box-shadow: inset 0 0 0 1px var(--ail-fg); }
+.ail-expiring__item { display: grid; grid-template-columns: 7.4em 1fr; gap: 4px 12px; padding: 10px 0; border-top: 1px solid var(--ail-hair); }
+.ail-expiring__d { grid-row: span 2; padding-top: 3px; }
+.ail-expiring__say { font-size: 16px; line-height: 1.3; color: var(--ail-fg); }
+
+/* ---- the stamp in the 3D page: the date pressed into the floor in front of the five, words at the edges */
+.ail-gl .ail-stamp__mark { position: absolute; left: 42%; bottom: 4svh; margin: 0; transform: translateX(-50%) perspective(1100px) rotateX(42deg) rotateZ(-1.5deg); transform-origin: 50% 100%; pointer-events: none; }
+.ail-gl .ail-stamp__ink { color: rgba(12, 13, 16, .84); padding: 18px 40px 6px; border-width: 5px; gap: 0; }
+.ail-gl .ail-stamp__ink::after { inset: 7px; border-width: 2px; }
+.ail-gl .ail-stamp__k { font-size: 20px; letter-spacing: .5em; justify-self: center; }
+.ail-gl .ail-stamp__date { font-size: clamp(110px, 15vw, 240px); }
+.ail-gl .ail-stage.is-on .ail-stamp__ink { animation: ail-press 700ms var(--ail-ease) both; }
+@keyframes ail-press { from { opacity: 0; transform: scale(1.14); } 60% { opacity: 1; } to { transform: none; } }
+.ail-gl .ail-stamp__say { position: absolute; left: var(--ail-margin); top: var(--ail-top); width: min(40vw, 540px); margin: 0; }
+.ail-gl .ail-stamp__side { position: absolute; right: var(--ail-margin); top: var(--ail-top); width: min(31vw, 420px); }
+.ail-gl .ail-stamp__more { position: absolute; right: var(--ail-margin); bottom: var(--ail-margin); width: min(28vw, 380px); }
+.ail-gl .ail-shelf, .ail-gl .ail-stamp__more > .ail-disc summary { background: var(--ail-veil); }
+.ail-gl .ail-stamp__say > .ail-sentence { text-wrap: balance; }
+.ail-gl .ail-shelf { padding: 6px 10px 10px; margin: 0 0 6px; }
+.ail-gl .ail-stamp__more > .ail-disc summary { padding-left: 10px; }
+.ail-gl .ail-stamp__more > .ail-disc:first-child summary { border-top: 0; }
+.ail-gl .ail-stamp__more .ail-disc__card { top: auto; bottom: calc(100% + 10px); max-height: calc(100svh - var(--ail-top) - 176px); }
+.ail-gl .ail-stamp__counts summary { justify-self: start; display: inline-flex; align-items: center; padding: 6px 34px 6px 10px; background: var(--ail-veil); box-shadow: inset 0 0 0 1px var(--ail-hair); }
+.ail-gl .ail-disc__card { position: absolute; z-index: 2; left: 0; right: 0; top: calc(100% + 10px); max-height: min(58svh, 540px); overflow: auto; overscroll-behavior: contain; pointer-events: auto;
+  padding: 6px 18px 16px; background: var(--ail-card); box-shadow: 0 0 0 1px var(--ail-fg), 0 18px 40px -16px rgba(12, 13, 16, .4); animation: ail-lift 220ms var(--ail-ease) both; }
+.ail-gl .ail-stamp__counts .ail-disc__card { right: auto; width: min(40vw, 540px); padding-top: 14px; }
+@keyframes ail-lift { from { opacity: 0; transform: translate3d(0, 8px, 0); } }
+/* the scene draws a mark that taints a canvas as an image over its lid: it steps back while a card of the stamp is open */
+.ail-gl:has(#snapshot .ail-stage.is-on .ail-disc[open]) .ail-lidmark { visibility: hidden; }
+
+@media (max-width: 599px) {
+  .ail-stamp__ink { padding: 12px 16px 10px; }
+  .ail-slab { min-height: 44px; min-width: 112px; }
+  .ail-slab:not(.ail-slab--next) { font-size: 22px; }
+  .ail-since__src { min-height: 44px; min-width: 44px; }
+  .ail-gl .ail-stamp .ail-stage { display: flex; flex-direction: column; justify-content: flex-end; gap: 10px; padding: 0 var(--ail-margin) 14px; }
+  .ail-gl .ail-stamp__mark, .ail-gl .ail-stamp__say, .ail-gl .ail-stamp__side, .ail-gl .ail-stamp__more { position: relative; inset: auto; width: auto; max-width: none; }
+  .ail-gl .ail-stamp__mark { align-self: center; transform: perspective(700px) rotateX(38deg); margin-bottom: 2px; }
+  .ail-gl .ail-stamp__ink { padding: 12px 22px 4px; border-width: 4px; }
+  .ail-gl .ail-stamp__k { font-size: 13px; }
+  .ail-gl .ail-stamp__date { font-size: 21vw; }
+  .ail-gl .ail-stamp__say { gap: 6px; }
+  .ail-gl .ail-stamp__say > .ail-sentence { font-size: 22px; }
+  .ail-gl .ail-disc__card, .ail-gl .ail-stamp__counts .ail-disc__card, .ail-gl .ail-stamp__more .ail-disc__card { position: relative; top: auto; bottom: auto; width: auto; max-height: 46svh; margin-top: 6px; }
+  .ail-gl .ail-stamp:has(.ail-disc[open]) .ail-stamp__mark, .ail-gl .ail-stamp:has(.ail-disc[open]) .ail-stamp__say > .ail-sentence { display: none; }
+  .ail-gl .ail-stamp:has(.ail-stamp__more .ail-disc[open]) :is(.ail-stamp__say, .ail-stamp__side) { display: none; }
+}
+
+/* ---- the proof card: a paper slip in house ink, the same in every world, light or dark */
+.ail-proof, .ail-eds, .ail-drawer { --ail-fg: var(--ail-ink); --ail-fg-2: var(--ail-ink-2); --ail-bg: var(--ail-floor); --ail-card: #FFFFFF; --ail-hair: var(--ail-line); color: var(--ail-ink); }
+.ail-proof { position: fixed; left: 12px; top: 12px; z-index: 40; width: min(390px, calc(100vw - 24px)); max-height: calc(100svh - 24px); overflow: auto; padding: 16px 46px 14px 18px;
+  background: var(--ail-floor); box-shadow: 0 0 0 1px var(--ail-ink), 0 20px 44px -14px rgba(12, 13, 16, .42); border-top: 4px solid var(--ail-ink); animation: ail-lift 160ms var(--ail-ease) both; }
+.ail-proof__say { font: 400 19px/1.28 var(--ail-serif); }
+.ail-proof__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-top: 12px; color: var(--ail-ink-2); }
+.ail-proof__meta .ail-tag { margin: 0; color: var(--ail-ink); }
+.ail-proof__conf[data-conf='reported'] { text-decoration: underline dotted 1px; text-underline-offset: .3em; }
+.ail-proof__date time { color: var(--ail-ink); }
+.ail-proof__src { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--ail-line); }
+.ail-proof__src > .ail-label { color: var(--ail-ink-2); }
+.ail-proof__list { display: grid; margin-top: 4px; }
+.ail-proof__list a { display: flex; align-items: baseline; gap: 10px; min-height: 34px; padding: 6px 0 4px; font-size: 15px; line-height: 1.25; text-decoration: none; }
+.ail-proof__list b { flex: none; min-width: 3.4em; padding: 3px 5px 2px; font: 400 12px/1 var(--ail-mono); letter-spacing: .04em; text-align: center; box-shadow: inset 0 0 0 1px var(--ail-ink); }
+.ail-proof__list a:hover b { background: var(--ail-ink); color: var(--ail-floor); }
+.ail-proof__list a:hover .ail-proof__t { text-decoration: underline; text-underline-offset: .2em; }
+.ail-proof__x { position: absolute; right: 4px; top: 4px; display: grid; place-items: center; width: 40px; height: 40px; }
+.ail-proof__x .ail-glyph { width: 18px; height: 18px; }
+.ail-proof__x:hover { background: var(--ail-ink); color: var(--ail-floor); }
+.ail-proof.is-sheet { left: 0; right: 0; top: auto; bottom: 0; width: auto; max-height: 72svh; padding-bottom: calc(16px + env(safe-area-inset-bottom)); box-shadow: 0 0 0 1px var(--ail-ink), 0 -16px 40px -12px rgba(12, 13, 16, .4); }
+.ail-proof.is-sheet .ail-proof__x { width: 44px; height: 44px; }
+.ail-proof.is-sheet .ail-proof__list a { min-height: 44px; }
+
+/* ---- the edition list under the stamp chip */
+.ail-eds { position: fixed; left: 12px; top: 64px; z-index: 25; width: min(340px, calc(100vw - 24px)); padding: 14px 16px 16px; background: var(--ail-floor);
+  box-shadow: 0 0 0 1px var(--ail-ink), 0 20px 44px -14px rgba(12, 13, 16, .42); animation: ail-lift 160ms var(--ail-ease) both; }
+.ail-eds > .ail-label { color: var(--ail-ink-2); }
+.ail-eds__list { display: grid; gap: 10px; margin-top: 10px; }
+.ail-eds__ed { display: grid; gap: 4px; min-height: 48px; padding: 10px 12px; font-size: 17px; line-height: 1.2; text-decoration: none; box-shadow: inset 0 0 0 1px var(--ail-ink); }
+a.ail-eds__ed:hover { background: color-mix(in srgb, var(--ail-ink) 8%, var(--ail-floor)); }
+.ail-eds__ed[aria-current] { background: var(--ail-ink); color: var(--ail-floor); }
+.ail-eds__next { box-shadow: none; outline: 1.5px dashed var(--ail-ink-2); outline-offset: -1.5px; color: var(--ail-ink-2); align-content: center; font-size: var(--ail-fs-label); letter-spacing: .14em; }
+.ail-eds__newest { margin-top: 12px; }
+
+/* ---- the sources drawer: a modal panel at the right, its list loaded from the sources page */
+.ail-drawer { position: fixed; inset: 0 0 0 auto; width: min(560px, 100vw); height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: transparent; overflow: visible; }
+.ail-drawer::backdrop { background: rgba(12, 13, 16, .44); }
+.ail-drawer__panel { display: flex; flex-direction: column; height: 100%; background: var(--ail-floor); box-shadow: -1px 0 0 var(--ail-ink); opacity: 0; transform: translate3d(28px, 0, 0); transition: opacity 220ms var(--ail-ease), transform 260ms var(--ail-ease); }
+.ail-drawer.is-open .ail-drawer__panel { opacity: 1; transform: none; }
+.ail-drawer__head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 16px 12px 20px; border-bottom: 1px solid var(--ail-ink); }
+.ail-drawer__head h2 a { display: inline-flex; gap: .7em; align-items: center; min-height: 44px; text-decoration: none; }
+.ail-drawer__head h2 a:hover { text-decoration: underline; text-underline-offset: .3em; }
+.ail-drawer__head b { font-weight: 400; }
+.ail-drawer__body { flex: 1; overflow: auto; overscroll-behavior: contain; padding: 4px 20px 48px; }
+.ail-drawer__body[aria-busy='true']::before { content: ''; display: block; height: 2px; margin: 18px 0; background: linear-gradient(90deg, var(--ail-ink) 0 30%, var(--ail-line) 30%); background-size: 200% 100%; animation: ail-load 1s linear infinite; }
+@keyframes ail-load { to { background-position: -200% 0; } }
+
+/* ---- the list of sources: the sources page, and the drawer that shows it */
+.ail-srcs { display: grid; }
+.ail-src { display: grid; grid-template-columns: 3.4em 1fr; gap: 3px 12px; padding: 10px 6px 11px 0; border-top: 1px solid var(--ail-line); scroll-margin: 90px; outline-offset: -2px; }
+.ail-src__n { grid-row: span 2; justify-self: end; padding-top: 4px; color: var(--ail-ink-2); }
+.ail-src__t { font: 400 18px/1.25 var(--ail-serif); color: var(--ail-ink); overflow-wrap: anywhere; }
+a.ail-src__t { text-decoration: underline 1px; text-decoration-color: var(--ail-mid); text-underline-offset: .18em; }
+a.ail-src__t:hover { text-decoration-color: currentColor; }
+.ail-src__m { display: flex; flex-wrap: wrap; gap: 4px 10px; color: var(--ail-ink-2); font-size: 11px; }
+.ail-src__k { color: var(--ail-ink); }
+.ail-src.is-hit, .ail-src:target { background: #FFFFFF; box-shadow: inset 4px 0 0 var(--ail-ink); }
+/* withheld with the unverified leads: the number, kind and date stay, the title is a redaction bar */
+.ail-src[data-withheld] .ail-src__t { display: block; width: min(62%, 22em); height: .82em; margin: .28em 0 .16em; background: var(--ail-ink); }
+.ail-src[data-withheld]:nth-child(3n) .ail-src__t { width: min(44%, 15em); }
+.ail-src[data-withheld]:nth-child(3n+1) .ail-src__t { width: min(74%, 27em); }
+.ail-srcs__end { display: grid; gap: 10px; margin-top: 28px; padding-top: 16px; border-top: 2px solid var(--ail-ink); }
+.ail-srcs__end h2 b, .ail-srcs__left b { font-weight: 400; color: var(--ail-ink); }
+.ail-srcs__open { display: grid; gap: 6px; font-size: 17px; line-height: 1.3; }
+.ail-srcs__open li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 0; }
+.ail-srcs__left { color: var(--ail-ink-2); }
+
+/* ---- the sources page itself */
+.ail-srcpage .ail-chrome { padding-bottom: 0; }
+.ail-srcpage__main { max-width: 860px; margin: 0 auto; padding: 28px var(--ail-margin) 56px; }
+.ail-srcs__h { display: flex; align-items: baseline; gap: .3em; margin-bottom: 18px; }
+.ail-srcs__h b { font-weight: 400; color: var(--ail-ink-2); }
+.ail-srcpage__foot { display: grid; gap: 12px; max-width: 860px; margin: 0 auto; padding: 22px var(--ail-margin) 48px; border-top: 1px solid var(--ail-line); color: var(--ail-ink-2); font-size: 16px; }
+.ail-srcpage__foot .ail-label { display: flex; gap: 20px; color: var(--ail-ink); }
+.ail-srcpage__foot a { display: inline-flex; align-items: center; min-height: 32px; }

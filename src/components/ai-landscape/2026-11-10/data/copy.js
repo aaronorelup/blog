@@ -112,6 +112,7 @@ export const COPY = {
     sources: 'Sources',
     confirmed: 'Confirmed',
     reported: 'Reported',
+    unverified: 'unverified leads withheld',
   },
   ending: {
     disclaimer: 'An independent comparison. Not made or endorsed by any company shown. Logos and characters belong to their owners.',

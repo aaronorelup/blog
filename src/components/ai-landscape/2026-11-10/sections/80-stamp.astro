@@ -1,0 +1,85 @@
+---
+// The snapshot stamp (SPEC 2.10): the date pressed into the floor, the day the facts were checked through, the counts
+// taken from the data, and the shelf of editions with its empty slot. What changed since the snapshot and which facts
+// expire are plain <details>, so they read with no JavaScript. No scene module: the camera rests on the row of five.
+import '../../../../styles/ai-landscape/2026-11-10/trust.css';
+import '../../../../styles/ai-landscape/2026-11-10/static.css';
+import Fact from '../Fact.astro';
+import { COPY } from '../data/copy.js';
+import { fact, ownerOf, view } from '../data/view.js';
+
+const { dated = false, snapshots = [] } = Astro.props;
+const DATE = view.snapshot.date;
+const checked = view.snapshot.compiledAt.slice(0, 10);
+const sources = `/ai-landscape/${DATE}/sources/`;
+const since = view.data.sinceSnapshot;
+const expiring = view.data.expiring.map(fact).filter(Boolean).sort((a, b) => a.staleAfter.localeCompare(b.staleAfter));
+if (since.length === 0 || expiring.length !== view.data.expiring.length) throw new Error('ai-landscape: the stamp lost a since or an expiring item');
+const SURE = { confirmed: COPY.stamp.confirmed, reported: COPY.stamp.reported };
+---
+<section id="snapshot" class="ail-sec ail-stamp" data-sec="stamp" data-screens="1.0" data-land="0.35" data-rail={COPY.frame.snapshot} aria-labelledby="snapshot-h">
+  <div class="ail-stage">
+    <h2 id="snapshot-h" class="ail-stamp__mark">
+      <span class="ail-stamp__ink">
+        <span class="ail-stamp__k ail-label">{COPY.frame.snapshot}</span>
+        <time class="ail-stamp__date" datetime={DATE}>{DATE}</time>
+      </span>
+    </h2>
+
+    <div class="ail-stamp__say">
+      <p class="ail-sentence">{COPY.stamp.stale}</p>
+      <details class="ail-disc ail-stamp__counts" name="ail-stamp">
+        <summary class="ail-label"><b>{view.counts.claims}</b> {COPY.stamp.claims} <i aria-hidden="true">/</i> <b>{view.counts.sources}</b> {COPY.stamp.sources}</summary>
+        <div class="ail-disc__card">
+          <p>{view.snapshot.method}</p>
+          <p><a class="ail-btn" href={sources} data-ail-open="sources">{COPY.stamp.sources} <b>{view.counts.sources}</b></a></p>
+        </div>
+      </details>
+    </div>
+
+    <div class="ail-stamp__side">
+      <nav class="ail-shelf" aria-labelledby="snapshot-eds">
+        <p id="snapshot-eds" class="ail-label">{COPY.stamp.editions}</p>
+        <ol class="ail-shelf__row">
+          {snapshots.map((s) => (
+            <li><a class="ail-slab" href={`/ai-landscape/${s.date}/`} aria-current={s.date === DATE ? 'page' : undefined} title={s.summary}><time datetime={s.date}>{s.date}</time></a></li>
+          ))}
+          <li><span class="ail-slab ail-slab--next">{COPY.stamp.next}</span></li>
+        </ol>
+        {dated && <a class="ail-shelf__newest ail-label" href="/ai-landscape/">{COPY.stamp.newest}</a>}
+      </nav>
+    </div>
+
+    <div class="ail-stamp__more">
+
+      <details class="ail-disc" name="ail-stamp">
+        <summary><b class="ail-disc__n">{since.length}</b> <span class="ail-label">{COPY.stamp.since}</span> <span class="ail-disc__as ail-label">{COPY.best.asOf} <time datetime={view.snapshot.compiledAt}>{checked}</time></span></summary>
+        <div class="ail-disc__card">
+          <ol class="ail-since">
+            {since.map((s) => (
+              <li class="ail-since__item" data-conf={s.confidence}>
+                <span class="ail-since__m ail-label"><time datetime={s.date}>{s.date}</time> <span>{SURE[s.confidence] || s.confidence}</span></span>
+                <span class="ail-since__what">{s.what}{s.src && <> <a class="ail-since__src ail-label" href={`${sources}#s-${s.src}`} data-ail-src={s.src}>{s.src}</a></>}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </details>
+
+      <details class="ail-disc" name="ail-stamp">
+        <summary><b class="ail-disc__n">{expiring.length}</b> <span class="ail-label">{COPY.stamp.expiring}</span></summary>
+        <div class="ail-disc__card">
+          <ol class="ail-expiring">
+            {expiring.map((f) => (
+              <li class="ail-expiring__item">
+                <time class="ail-expiring__d ail-label" datetime={f.staleAfter}>{f.staleAfter}</time>
+                <span class="ail-own" data-owner={ownerOf(f.id)}>{f.short}</span>
+                <span class="ail-expiring__say"><Fact fact={f} /></span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
