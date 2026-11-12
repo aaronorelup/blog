@@ -13,8 +13,36 @@ function lead(a) {
   if (!a || !strip || strip.scrollWidth <= strip.clientWidth) return;
   // the pill's place in the strip's own scroll (offsetLeft counts from the rail, which starts further out)
   const left = a.getBoundingClientRect().left - strip.getBoundingClientRect().left + strip.scrollLeft;
-  strip.scrollTo({ left: left - 16, behavior: still ? 'auto' : 'smooth' });
+  slide(Math.max(0, Math.min(left - 16, strip.scrollWidth - strip.clientWidth)));
 }
+
+// The glide is the strip's own, an instant move a frame, never the browser's smooth scroll: in Chromium a link to a
+// chapter followed while a smooth scroll runs on the strip lands with the chapter centred in the window instead of at
+// its top (the ledger, some 17,000 px tall on a phone, 8,292 px down it), from anywhere on the page, by tap, keyboard
+// or script, and the strip glides after every change of chapter, so a link followed within a third of a second of one
+// met it (tea-hero-23). Snapping waits for the glide's end (data-gliding, tea.css); a hand on the strip stops it.
+const GLIDE = 320;
+let glide = 0;
+function slide(to) {
+  stop();
+  const from = strip.scrollLeft;
+  if (still || Math.abs(to - from) < 1) { strip.scrollLeft = to; return; }
+  const t0 = performance.now();
+  strip.dataset.gliding = '';
+  const step = (now) => {
+    const k = Math.min(1, Math.max(0, (now - t0) / GLIDE));
+    strip.scrollLeft = from + (to - from) * (1 - (1 - k) ** 3);
+    if (k < 1) glide = requestAnimationFrame(step);
+    else stop();
+  };
+  glide = requestAnimationFrame(step);
+}
+function stop() {
+  cancelAnimationFrame(glide);
+  glide = 0;
+  delete strip.dataset.gliding;
+}
+for (const type of ['pointerdown', 'wheel', 'touchstart']) strip?.addEventListener(type, () => glide && stop(), { passive: true });
 
 function mark(id) {
   for (const [key, a] of links) {
