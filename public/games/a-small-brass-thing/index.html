@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101220">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex">
+<meta name="description" content="A small brass disc that clicks when you turn it. A quiet toy for one sitting of about ten minutes. Best with sound.">
+<title>A Small Brass Thing</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23101220'/%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%23F0C06A' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%23E2795C'/%3E%3C/svg%3E">
+<style>
+:root{--page:#101220;--tile:#201F2C;--gold:#F0C06A;--cream:#F2E7D5;--body:#C9BCA9;--soft:#9C917F;--coral:#E2795C}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--page);color:var(--body);overflow:hidden;overscroll-behavior:none}
+body{font:16px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-text-size-adjust:100%}
+#stage{position:fixed;inset:0;overflow:hidden}
+#c{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;outline:none}
+#c:focus-visible{outline:2px solid rgba(226,121,92,.5);outline-offset:-5px}
+.serif{font-family:ui-serif,"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif}
+#cap{position:absolute;left:0;right:0;bottom:max(var(--capb,16px),env(safe-area-inset-bottom));margin:0;padding:0 18px;text-align:center;
+  font-style:italic;font-size:clamp(15px,1.6vmin + 9px,21px);line-height:1.3;color:var(--cream);opacity:0;
+  transition:opacity .7s ease;pointer-events:none;text-wrap:balance;text-shadow:0 1px 10px rgba(16,18,32,.9)}
+#cap.on{opacity:.94}
+#stage.keeping #cap{bottom:auto;top:max(17%,64px);font-size:15px}
+#mute{position:absolute;top:max(8px,env(safe-area-inset-top));right:max(8px,env(safe-area-inset-right));width:44px;height:44px;padding:0;
+  border:0;border-radius:50%;background:transparent;color:var(--soft);cursor:pointer;display:grid;place-items:center;opacity:.8;
+  transition:color .2s ease,opacity .2s ease,background .2s ease}
+#mute:hover{color:var(--cream);opacity:1;background:rgba(32,31,44,.7)}
+#mute:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+#mute svg{width:22px;height:22px;display:block}
+#mute .off{display:none}
+#mute[aria-pressed="true"] .on{display:none}
+#mute[aria-pressed="true"] .off{display:inline}
+.panel{position:absolute;left:0;right:0;margin:0;padding:0 22px;text-align:center;pointer-events:none}
+.panel[hidden]{display:none}
+.panel>*{margin:0;opacity:0;transform:translateY(6px);transition:opacity 1.8s ease,transform 1.8s ease}
+.panel>.in{opacity:1;transform:none}
+.panel [hidden]{display:none}
+.panel a,.panel button{pointer-events:auto}
+#end{top:calc(47% + 58px)}
+#keep{bottom:0;padding:30px 18px max(10px,env(safe-area-inset-bottom));
+  background:linear-gradient(to top,rgba(16,18,32,.92),rgba(16,18,32,.74) 58%,rgba(16,18,32,0))}
+#keep .small{margin-top:3px!important;font-size:12.5px}
+#keep .links{margin-top:0!important}
+.line{font-style:italic;font-size:clamp(21px,2.6vmin + 10px,31px);line-height:1.25;color:var(--cream)}
+#keep .line{font-size:clamp(18px,1.4vmin + 10px,22px)}
+.small{font-size:13px;line-height:1.45;color:var(--soft);margin-top:10px!important}
+.links{font-size:14px;margin-top:8px!important}
+.lk{appearance:none;-webkit-appearance:none;display:inline-block;background:none;border:0;margin:0 6px;padding:7px 4px;font:inherit;color:var(--body);
+  text-decoration:underline;text-decoration-color:rgba(201,188,169,.45);text-underline-offset:3px;cursor:pointer;border-radius:4px}
+.lk:hover{color:var(--cream)}
+.lk:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+.lk.go{color:var(--coral);text-decoration-color:rgba(226,121,92,.5)}
+.vh{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+noscript p{position:absolute;inset:auto 0 40%;text-align:center;padding:0 24px;color:var(--cream)}
+@media (prefers-reduced-motion:reduce){.panel>*{transform:none;transition:opacity .4s linear}#cap{transition:opacity .25s linear}}
+</style>
+</head>
+<body>
+<main id="stage">
+  <canvas id="c" tabindex="0" role="application" aria-describedby="help"
+    aria-label="A Small Brass Thing. A brass disc with rings you can turn."></canvas>
+  <p id="cap" class="serif" role="status" aria-live="polite"></p>
+  <button id="mute" type="button" aria-pressed="false" aria-label="Mute sound" title="Sound (M)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 9.5h3.2L12 5.6v12.8l-4.8-3.9H4z" fill="currentColor" fill-opacity=".25"/>
+      <g class="on"><path d="M15.4 9.2a4 4 0 0 1 0 5.6"/><path d="M17.9 6.8a7.4 7.4 0 0 1 0 10.4"/></g>
+      <g class="off"><path d="M16 9.5l5 5"/><path d="M21 9.5l-5 5"/></g>
+    </svg>
+  </button>
+  <section id="end" class="panel" hidden>
+    <p id="endline" class="line serif" role="status" aria-live="polite"></p>
+    <p class="small">Designed and built by Claude, at Aaron's request.</p>
+    <p class="small">Come back any time. Your tune will still be turning.</p>
+    <p class="links"><a class="lk" href="/projects/">Back to the projects</a></p>
+  </section>
+  <section id="keep" class="panel" hidden>
+    <p class="line serif">The light is kept.</p>
+    <p class="small">Designed and built by Claude, at Aaron's request.</p>
+    <p class="links" id="keeplinks"><button class="lk" id="wind" type="button">Wind it back</button><a class="lk" href="/projects/">Back to the projects</a></p>
+    <p class="links" id="ask" hidden><span id="askq">Wind it all the way back and play it again from the start?</span><br>
+      <button class="lk go" id="yes" type="button">Yes, wind it back</button><button class="lk" id="no" type="button">Leave it be</button></p>
+  </section>
+  <p id="help" class="vh">Touch or click the light to begin. Drag a ring to turn it, or tap a ring to click it on by one. With a keyboard, Up and Down choose a ring, Left and Right turn it, Space clicks it on, and M mutes the sound. Nothing is timed and nothing can go wrong.</p>
+  <noscript><p>This small toy needs JavaScript to turn.</p></noscript>
+</main>
+<script>
+(() => {
+'use strict';
+/* A Small Brass Thing. One file, no libraries, no network. All game time advances inside requestAnimationFrame
+   from an accumulated, clamped dt (see frame()), so a host page can pause it by holding rAF and suspending audio. */
+
+// ---------- constants and helpers ----------
+const TAU = Math.PI * 2, HP = Math.PI / 2, DEG = Math.PI / 180, N = 12, SA = TAU / N;
+const KEY = 'ao.a-small-brass-thing.v1';
+const GOLD = '240,192,106', CREAM = '242,231,213', CORAL = '226,121,92', PAGE = '16,18,32';
+const col = (c, a) => 'rgba(' + c + ',' + (a < 0 ? 0 : a > 1 ? 1 : a).toFixed(3) + ')';
+const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
+const lerp = (a, b, t) => a + (b - a) * t;
+const mod = (a, n) => ((a % n) + n) % n;
+const sdiff = (a, b) => mod(b - a + 6, 12) - 6;               // signed shortest way, in detents, from a to b
+const adiff = (a, b) => mod(b - a + Math.PI, TAU) - Math.PI;  // the same in radians
+const hash = (n) => { n = Math.sin(n * 127.1 + 311.7) * 43758.5453; return n - Math.floor(n); };
+const E = {
+  lin: t => t, in2: t => t * t, out2: t => 1 - (1 - t) * (1 - t), io2: t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2,
+  out3: t => 1 - Math.pow(1 - t, 3), io3: t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
+  back: t => { const c = 1.9; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); }
+};
+const qs = new URLSearchParams(location.search);
+const TS = clamp(parseFloat(qs.get('t')) || 1, 1, 20);   // test hook: the game clock runs this many times faster
+const FRESH = qs.get('fresh') === '1';                    // test hook: ignore and never write saved state
+const mqRM = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+let RM = !!(mqRM && mqRM.matches);
+if (mqRM && mqRM.addEventListener) mqRM.addEventListener('change', e => { RM = e.matches; });
+
+// The disc, in units of its own radius. Hit zones are 0.30 wide, so they are 44 px at a 147 px disc.
+const BAND = [[0.62, 0.875], [0.315, 0.585], [0.12, 0.285]];
+const RMID = BAND.map(b => (b[0] + b[1]) / 2);
+const ZONE = [0.6025, 0.30];                 // radius where the outer, then the middle ring's hit zone starts
+const MARK_R = [0.905, 0.6025, 0.30];        // the gold arc of a ring sits just outside it
+const GAPW = [0.115, 0.105, 0.085], PEGR = [0.05, 0.047, 0.04];
+const RIM = 0.948, LAMP_R = 0.085, STEP_T = 0.26;   // STEP_T: seconds the hand takes per detent
+const D4 = 587.33, E4 = 659.26, F4 = 739.99, A4 = 880, B4 = 987.77;   // the comb sits an octave up, where a music box lives
+// One pitch per ring (outer, middle, inner) for each of the six phrases, and the bass under each.
+const PIT = [[D4, F4, A4], [E4, A4, B4], [D4, A4, D4 * 2], [F4, A4, D4 * 2], [E4, B4, E4 * 2], [D4, A4, F4 * 2]];
+const BASS = [146.83, 110, 123.47, 98, 110, 146.83];
+const HORN = [146.83, 110, 92.5];
+const HAND_SETS = [[2, 6, 9], [0, 4, 5], [3, 8, 11]];
+const BOAT_SETS = [[1, 6, 8], [0, 5, 9], [3, 9, 9]];
+const DEFAULT_PHR = [[2, 6, 9], [0, 4, 5], [3, 8, 11], [1, 6, 8], [0, 5, 9], [3, 9, 9]];
+const BEAT_IDS = ['wake', 'latch', 'gears', 'hand', 'lid', 'boats', 'home', 'end', 'keepsake'];
+
+// ---------- state ----------
+const rings = [0, 1, 2].map(i => ({ i, step: 0, vis: 0, vel: 0, frac: 0, a: 0, peg: 0, pop: 0, flash: 0, sel: 0 }));
+const boats = [0, 1, 2].map(i => ({ i, ang: 0, d: 2, x: 0, y: 0, found: 0, seen: 0, lit: 0, flare: 0, horn: 0, sail: 0, head: 0, gone: 0 }));
+const G = {
+  clock: 0, bi: 0, ended: false, muted: false, gate: 0, go: false, tapped: false,
+  discA: 0, lamp: 0, lampPulse: 0, thump: 0, sea: 0, fade: 0, ember: 0,
+  bead: { r: 0, ang: 0, a: 1, z: 0 }, link: [0, 0], marks: [], dots: [], dotsWhere: 'rim', goal: null, solveT: 0,
+  hand: { a: 0, len: 0, phase: 0, on: false, fresh: false, follow: false, onStep: null, onBar: null, glow: 0 },
+  beam: { a: 0, len: 0, ang: 0, tgt: 0, flash: 0, dawn: 0 },
+  cam: { k: 0 }, dial: { k: -1, a: 0 }, rock: { x: 0, y: -1.4 },
+  home: { a: 0, dawn: 0, sun: 0, lit: [], tw: [], boat: [0, 0, 0], pass: 0 },
+  glint: new Array(12).fill(0), trail: [],
+  phr: [], pit: 0, input: { ember: false, rings: false, beam: false }, sel: 0, kb: false, task: null, hover: -2
+};
+const hint = { idle: 0, stuck: 0, lvl: 0, acc: 0, demo: 0, once: 0, text: '' };
+const cam = { x: 0, y: 0, s: 100 };
+const tweens = [], fx = [], drags = new Map();
+let frameT = 0;   // game seconds already stepped inside the current frame (for sub-frame audio timing)
+
+// ---------- tweens, and the little generator helpers the beats are written with ----------
+function tw(o, k, to, d, e, delay) {
+  for (let i = tweens.length - 1; i >= 0; i--) if (tweens[i].o === o && tweens[i].k === k) tweens.splice(i, 1);
+  const t = { o, k, from: null, to, d: Math.max(d, 1e-4), e: e || E.io3, t: -(delay || 0), done: false };
+  tweens.push(t); return t;
+}
+function stepTweens(h) {
+  for (let i = 0; i < tweens.length; i++) {
+    const t = tweens[i]; t.t += h; if (t.t < 0) continue;
+    if (t.from === null) t.from = t.o[t.k];
+    const u = clamp(t.t / t.d, 0, 1); t.o[t.k] = lerp(t.from, t.to, t.e(u));
+    if (u >= 1) { t.done = true; tweens.splice(i--, 1); }
+  }
+}
+function* wait(s) { let t = 0; while (t < s) t += (yield) || 0; }
+function* until(f) { while (!f()) yield; }
+function* tweenY(o, k, to, d, e) { const t = tw(o, k, to, d, e); while (!t.done) yield; }
+function* audioReady() { let t = 0; while (A.ctx && A.ctx.state !== 'running' && t < 0.4) t += (yield) || 0; }   // a touch unlocks sound a moment after it lands
+
+// ---------- effects ----------
+function ripple(x, y, r0, r1, d, c, a, w) { if (fx.length < 160) fx.push({ kind: 0, x, y, r0, r1, d, c, a: a || .6, w: w || 0.012, t: 0 }); }
+function sparks(x, y, n, c, sp) {
+  if (RM) return;
+  for (let i = 0; i < n && fx.length < 160; i++) {
+    const a = Math.random() * TAU, v = (sp || .5) * (.4 + Math.random() * .8);
+    fx.push({ kind: 1, x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, d: .5 + Math.random() * .5, c, a: .9, t: 0 });
+  }
+}
+function stepFx(h) {
+  for (let i = fx.length - 1; i >= 0; i--) {
+    const f = fx[i]; f.t += h;
+    if (f.kind === 1) { f.x += f.vx * h; f.y += f.vy * h; f.vx *= Math.pow(.08, h); f.vy *= Math.pow(.08, h); }
+    else if (f.kind === 2 && f.t > 0) { f.x += f.vx * h; f.y += f.vy * h; }
+    if (f.t >= f.d) fx.splice(i, 1);
+  }
+}
+
+// ---------- captions (real DOM text, announced politely) ----------
+const capEl = document.getElementById('cap');
+const cap = { text: '', next: null, t: 0, swap: 0 };
+let capB = -1;
+function say(text, secs) {
+  if (text === cap.text && cap.next === null) { cap.t = secs || 6; return; }
+  cap.next = text; cap.nextT = secs || 6; cap.swap = cap.text ? 0.45 : 0.01; capEl.classList.remove('on');
+}
+function stepCap(h) {
+  if (cap.next !== null) {
+    cap.swap -= h;
+    if (cap.swap <= 0) { cap.text = cap.next; cap.t = cap.nextT; cap.next = null; capEl.textContent = cap.text; if (cap.text) capEl.classList.add('on'); }
+  } else if (cap.text) { cap.t -= h; if (cap.t <= 0) { cap.text = ''; capEl.classList.remove('on'); } }
+}
+
+// ---------- audio: everything is synthesized, and nothing exists before the first gesture ----------
+const A = { ctx: null, bus: null, master: null, n: 0, noise: null, brown: null, sea: null, seaLvl: -1, mine: false, mineT: 0 };
+function aInit() {
+  if (A.ctx) return true;
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return false;
+  try {
+    const c = A.ctx = new AC();
+    const comp = c.createDynamicsCompressor();   // the limiter on the way out
+    comp.threshold.value = -8; comp.knee.value = 6; comp.ratio.value = 14; comp.attack.value = 0.002; comp.release.value = 0.2;
+    A.master = c.createGain(); A.master.gain.value = G.muted ? 0 : 0.9;
+    A.bus = c.createGain(); A.bus.gain.value = 0.85;
+    A.bus.connect(comp); comp.connect(A.master); A.master.connect(c.destination);
+    const sr = c.sampleRate, wb = c.createBuffer(1, sr, sr), wd = wb.getChannelData(0);
+    for (let i = 0; i < sr; i++) wd[i] = Math.random() * 2 - 1;
+    const bl = sr * 5, bb = c.createBuffer(1, bl, sr), bd = bb.getChannelData(0);
+    let l = 0;
+    for (let i = 0; i < bl; i++) { l = (l + 0.02 * (Math.random() * 2 - 1)) / 1.02; bd[i] = l * 3.5; }
+    const xf = Math.floor(sr * 0.4);   // fold the tail into the head so the loop has no seam
+    for (let i = 0; i < xf; i++) { const u = i / xf; bd[i] = bd[i] * u + bd[bl - xf + i] * (1 - u); }
+    A.noise = wb; A.brown = c.createBuffer(1, bl - xf, sr); A.brown.getChannelData(0).set(bd.subarray(0, bl - xf));
+  } catch (e) { A.ctx = null; return false; }
+  return true;
+}
+function aUnlock() {
+  if (!aInit()) return;
+  if (A.ctx.state !== 'running' && A.ctx.state !== 'closed' && !document.hidden) { const p = A.ctx.resume(); if (p && p.catch) p.catch(() => {}); }
+}
+const aOk = () => A.ctx && A.ctx.state === 'running' && !G.muted && A.n < (TS > 4 ? 8 : 56);
+const aT = (off) => A.ctx.currentTime + 0.02 + (frameT + (off || 0)) / TS;
+function aTrack(src, nodes) {
+  A.n++;
+  src.onended = () => { A.n--; try { src.disconnect(); for (const n of nodes) n.disconnect(); } catch (e) { /* gone */ } };
+}
+function aEnv(g, t, a, peak, d) {
+  g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + d);
+}
+function osc(type, f, t, a, peak, d, f2, pan) {   // one enveloped oscillator, with an optional glide and pan
+  const c = A.ctx, o = c.createOscillator(), g = c.createGain(); o.type = type; o.frequency.setValueAtTime(f, t);
+  if (f2) o.frequency.exponentialRampToValueAtTime(f2, t + a + d * 0.6);
+  aEnv(g, t, a, peak, d); o.connect(g);
+  let last = g; const nodes = [g];
+  if (pan && c.createStereoPanner) { const p = c.createStereoPanner(); p.pan.value = clamp(pan, -1, 1); g.connect(p); last = p; nodes.push(p); }
+  last.connect(A.bus); o.start(t); o.stop(t + a + d + 0.05); aTrack(o, nodes);
+}
+function nz(t, a, peak, d, type, f, q) {          // one enveloped burst of filtered noise
+  const c = A.ctx, s = c.createBufferSource(), fl = c.createBiquadFilter(), g = c.createGain();
+  s.buffer = A.noise; fl.type = type; fl.frequency.value = f; fl.Q.value = q || 1; aEnv(g, t, a, peak, d);
+  s.connect(fl); fl.connect(g); g.connect(A.bus); s.start(t, Math.random() * 0.7); s.stop(t + a + d + 0.05); aTrack(s, [fl, g]);
+}
+function sTick(i, soft) {
+  if (!aOk()) return; const t = aT(), v = soft ? 0.45 : 1, j = 0.94 + Math.random() * 0.12;
+  nz(t, 0.001, 0.2 * v, 0.03, 'bandpass', [1900, 2500, 3200][i] * j, 2.2);
+  osc('sine', [170, 210, 260][i] * j, t, 0.002, 0.2 * v, 0.05);
+}
+function sSeat(last) { if (!aOk()) return; const t = aT(); osc('sine', 196, t, 0.003, 0.22, 0.16, 150); osc('triangle', last ? 1760 : 1174.7, t, 0.002, 0.05, 0.3); }
+function sClunk() {
+  if (!aOk()) return; const t = aT();
+  osc('sine', 96, t, 0.004, 0.7, 0.42, 58); osc('sine', 70, t + 0.01, 0.006, 0.45, 0.5); osc('triangle', 196, t, 0.002, 0.28, 0.11, 104); nz(t, 0.001, 0.3, 0.05, 'lowpass', 480, 0.7);
+}
+function sHop() { if (!aOk()) return; osc('sine', 330, aT(), 0.02, 0.07, 0.32, 760); }
+function sBead(i) { if (!aOk()) return; const t = aT(); osc('sine', [880, 740, 587][i], t, 0.002, 0.1, 0.12, [660, 554, 440][i]); nz(t, 0.001, 0.12, 0.02, 'bandpass', 3000, 2); }
+function sLand() { if (!aOk()) return; const t = aT(); osc('sine', 110, t, 0.004, 0.4, 0.3, 80); osc('triangle', 587.33, t + 0.03, 0.004, 0.1, 0.7); }
+function sWake() { if (!aOk()) return; const t = aT(); osc('sine', 73.4, t, 0.02, 0.5, 1.1); osc('triangle', 293.66, t + 0.05, 0.03, 0.09, 1.6); osc('triangle', 440, t + 0.22, 0.03, 0.06, 1.6); }
+function sRingIn(i) { if (!aOk()) return; const t = aT(); for (let k = 0; k < 4; k++) nz(t + k * 0.07, 0.001, 0.1 + k * 0.03, 0.03, 'bandpass', 1800 + k * 300 + i * 300, 2.5); }
+function sZip() { if (!aOk()) return; const t = aT(); for (let k = 0; k < 12; k++) nz(t + k * 0.065, 0.001, 0.11, 0.022, 'bandpass', 2400 + k * 90, 3); }
+function sLamp() { if (!aOk()) return; const t = aT(); [146.83, 220, 369.99, 587.33].forEach((f, k) => osc('triangle', f, t + k * 0.12, 0.5, 0.11, 2.6)); osc('sine', 73.4, t, 0.3, 0.3, 2.2); }
+function sPeg(i) { if (!aOk()) return; const t = aT(); osc('sine', [880, 1174.7, 1480][i], t, 0.003, 0.07, 0.35); nz(t, 0.001, 0.12, 0.02, 'bandpass', 3200, 2); }
+function sPluck(f, off, vel, pan) {   // a music-box tine: a triangle with a bright partial and a tiny pick
+  if (!aOk()) return; const t = aT(off), v = vel || 1;
+  osc('triangle', f, t, 0.004, 0.25 * v, 1.6, 0, pan); osc('sine', f * 2, t, 0.003, 0.06 * v, 0.6, 0, pan); osc('sine', f * 5.4, t, 0.001, 0.016 * v, 0.07, 0, pan);
+  nz(t, 0.001, 0.04 * v, 0.012, 'bandpass', 4200, 1.5);
+}
+function sDots() { if (!aOk()) return; const t = aT(); osc('sine', 1174.7, t, 0.01, 0.04, 0.5); osc('sine', 1760, t + 0.12, 0.01, 0.03, 0.5); }
+function sKeep() { if (!aOk()) return; const t = aT(); [587.33, 880, 1174.7].forEach((f, k) => osc('triangle', f, t + k * 0.09, 0.005, 0.07, 0.7)); }
+function sShift() { if (!aOk()) return; const c = A.ctx, t = aT(), s = c.createBufferSource(), fl = c.createBiquadFilter(), g = c.createGain();
+  s.buffer = A.noise; s.loop = true; fl.type = 'bandpass'; fl.Q.value = 0.8;
+  fl.frequency.setValueAtTime(260, t); fl.frequency.exponentialRampToValueAtTime(1300, t + 1.3); fl.frequency.exponentialRampToValueAtTime(320, t + 3);
+  g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.1, t + 1.1); g.gain.exponentialRampToValueAtTime(0.0001, t + 3.1);
+  s.connect(fl); fl.connect(g); g.connect(A.bus); s.start(t); s.stop(t + 3.2); aTrack(s, [fl, g]);
+  osc('sine', 73.4, t, 0.6, 0.3, 2.4); }
+function sFound(k) { if (!aOk()) return; const t = aT(), f = [880, 987.77, 1174.7][k]; osc('sine', f, t, 0.004, 0.12, 0.8); osc('sine', f * 1.5, t + 0.11, 0.004, 0.08, 0.9); }
+function sGulls() { if (!aOk()) return; const t = aT(); [0, 0.16, 0.4].forEach((d, k) => osc('sine', 2500 - k * 150, t + d, 0.015, 0.035, 0.11, 1800)); }
+function sBlink() { if (!aOk()) return; osc('sine', 1975.5, aT(), 0.003, 0.022, 0.16); }
+function sHorn(f, vol) {   // two detuned saws through a lowpass that opens as the horn swells
+  if (!aOk()) return; const c = A.ctx, t = aT(), fl = c.createBiquadFilter(), g = c.createGain(), v = vol || 1;
+  fl.type = 'lowpass'; fl.Q.value = 0.9; fl.frequency.setValueAtTime(260, t); fl.frequency.linearRampToValueAtTime(680, t + 0.5); fl.frequency.linearRampToValueAtTime(380, t + 2);
+  g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.26 * v, t + 0.22); g.gain.setValueAtTime(0.26 * v, t + 1.25); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.1);
+  fl.connect(g); g.connect(A.bus);
+  [f, f * 1.007, f * 0.5].forEach((ff, k) => { const o = c.createOscillator(); o.type = k < 2 ? 'sawtooth' : 'sine'; o.frequency.value = ff; o.connect(fl); o.start(t); o.stop(t + 2.2); aTrack(o, k ? [] : [fl, g]); });
+}
+function sBass(f, off) { if (!aOk()) return; const t = aT(off); osc('triangle', f * 2, t, 0.02, 0.17, 2.4); osc('sine', f, t, 0.02, 0.2, 2.2); osc('sine', f * 4, t, 0.02, 0.03, 1.2); }
+function sChord() { if (!aOk()) return; [146.83, 220, 293.66, 369.99, 440, 587.33, 880].forEach((f, k) => sPluck(f, k * 0.075 * TS, 0.8, (k - 3) * 0.12)); sBass(73.42, 0); }
+function seaSync() {   // brown noise under a slow LFO, following G.sea
+  if (!A.ctx || A.ctx.state !== 'running') return;
+  const want = G.sea * (0.05 + 0.035 * G.home.a) * (1 - 0.5 * G.ember);
+  if (Math.abs(want - A.seaLvl) < 0.002) return;
+  if (!A.sea) {
+    if (want <= 0) return;
+    const c = A.ctx, s = c.createBufferSource(), lp = c.createBiquadFilter(), g = c.createGain(), sw = c.createGain(), lfo = c.createOscillator(), lg = c.createGain();
+    s.buffer = A.brown; s.loop = true; lp.type = 'lowpass'; lp.frequency.value = 520; lp.Q.value = 0.4; g.gain.value = 0;
+    sw.gain.value = 0.72; lfo.frequency.value = 0.085; lg.gain.value = 0.28; lfo.connect(lg); lg.connect(sw.gain);
+    s.connect(lp); lp.connect(sw); sw.connect(g); g.connect(A.bus); s.start(); lfo.start(); A.sea = g;
+  }
+  A.seaLvl = want; A.sea.gain.setTargetAtTime(want, A.ctx.currentTime, 0.6);
+}
+const muteBtn = document.getElementById('mute');
+function setMute(m, quiet) {
+  G.muted = m; muteBtn.setAttribute('aria-pressed', m ? 'true' : 'false'); muteBtn.setAttribute('aria-label', m ? 'Turn sound on' : 'Mute sound');
+  if (A.master) A.master.gain.setTargetAtTime(m ? 0 : 0.9, A.ctx.currentTime, 0.03);
+  if (!quiet) saveMute();
+}
+
+// ---------- layout: four camera stations (close, lid, home, ember), boats and the harbour placed to fit ----------
+const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+let W = 0, H = 0, DPR = 1, quality = 1, slowN = 0, slowSum = 0;
+const L = [{}, {}, {}, {}];
+const HM = { coast: [], houses: [], piers: [], moor: [], path: [], stars: [], x0: 0, x1: 0, floor: 0 };
+function resize() {
+  const r = cv.getBoundingClientRect();
+  W = Math.max(160, r.width || window.innerWidth); H = Math.max(160, r.height || window.innerHeight);
+  DPR = Math.max(1, Math.min(window.devicePixelRatio || 1, 2, Math.sqrt(3.4e6 / (W * H))) * quality);   // never more pixels than a frame can afford
+  cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+  const Rc = Math.min(W * 0.46, H * 0.36, 330), capH = clamp(H * 0.085, 44, 70);
+  const Rl = clamp(H / 6, Math.min(147, Rc), Rc), Rh = clamp(Math.min(W, H) * 0.034, 12, 24);
+  L[0] = { x: W / 2, y: H * 0.47, s: Rc };
+  L[1] = { x: W / 2, y: H - Rl * 1.06 - capH, s: Rl };
+  L[2] = { x: W * 0.29, y: H * (H > W * 1.05 ? 0.565 : 0.6), s: Rh };
+  L[3] = { x: W / 2, y: H * 0.47, s: Rh };
+  placeBoats(capH); buildHome(); camUpdate();
+  if (G.dial.k >= 0 && !G.input.beam) G.beam.tgt = G.beam.ang + adiff(G.beam.ang, boats[G.dial.k].ang);   // stay on the boat being answered
+}
+function camUpdate() {
+  const k = clamp(G.cam.k, 0, 3), i = Math.min(2, Math.floor(k)), f = k - i, a = L[i], b = L[i + 1];
+  cam.x = lerp(a.x, b.x, f); cam.y = lerp(a.y, b.y, f);
+  cam.s = Math.exp(lerp(Math.log(a.s), Math.log(b.s), f)) * (1 + (RM ? 0 : 0.012 * G.thump));
+}
+function placeBoats(capH) {
+  const s = L[1].s, cy = L[1].y, dial = 0.6 * s + 6;
+  const xmax = (W / 2 - dial) / s, yup = (cy - dial - 4) / s, ydn = (H - cy - dial - capH) / s;
+  const dmax = (a) => {
+    const sx = Math.abs(Math.sin(a)), c = Math.cos(a); let d = 3.7;
+    if (sx > 1e-3) d = Math.min(d, xmax / sx);
+    if (c > 1e-3) d = Math.min(d, yup / c); else if (c < -1e-3) d = Math.min(d, ydn / -c);
+    return d;
+  };
+  const ok = (deg) => dmax(deg * DEG) >= 1.58, feas = [];
+  for (let deg = -128; deg <= 128; deg++) if (ok(deg)) feas.push(deg);
+  let prefs = [-78, 76, 108];
+  if (ok(0)) {
+    let a0 = 0; while (a0 < 90 && ok(a0 + 1) && ok(-a0 - 1)) a0++;
+    if (a0 >= 50) prefs = [-54, 56, 4]; else { const sd = Math.max(a0 * 0.6, Math.min(a0, 20)); prefs = [-sd, sd, 2]; }
+  }
+  let pick = null;
+  for (const sep of [28, 22, 17, 12, 8, 4]) {
+    const ch = []; let good = feas.length > 0;
+    for (const p of prefs) {
+      let best = null, bd = 1e9;
+      for (const a of feas) { if (ch.some(c => Math.abs(c - a) < sep)) continue; const d = Math.abs(a - p); if (d < bd) { bd = d; best = a; } }
+      if (best === null) { good = false; break; }
+      ch.push(best);
+    }
+    if (good) { pick = ch; break; }
+  }
+  if (!pick) pick = [-24, 24, 0];
+  pick.sort((a, b) => a - b);
+  const pd = [2.4, 3.05, 2.7];
+  pick.forEach((deg, i) => {
+    const a = deg * DEG, d = clamp(pd[i], 1.5, Math.max(1.5, dmax(a) * 0.97)), b = boats[i];
+    b.ang = a; b.d = d; b.x = d * Math.sin(a); b.y = -d * Math.cos(a);
+    b.hx = Math.max(xmax + 1.6, b.x + 1.2); b.hy = Math.min(1.1, ydn + 1.5);   // where it sails off to: the harbour side
+    b.cx = (b.x + b.hx) / 2; b.cy = Math.min(b.y, -1.9) - 0.2;
+  });
+  // a rock, in the widest gap between boats and as far from them as the screen allows
+  const gaps = [[pick[0], pick[1]], [pick[1], pick[2]]].sort((p, q) => (q[1] - q[0]) - (p[1] - p[0]));
+  const ra = (gaps[0][0] + gaps[0][1]) / 2 * DEG; let bd = 1.3, bs = -1;
+  for (let d = 1.3; d <= Math.max(1.3, dmax(ra) + 0.3); d += 0.1) {
+    const x = d * Math.sin(ra), y = -d * Math.cos(ra); let m = 9;
+    for (const b of boats) m = Math.min(m, Math.hypot(b.x - x, b.y - y));
+    if (m > bs) { bs = m; bd = d; }
+  }
+  G.rock.x = bd * Math.sin(ra); G.rock.y = -bd * Math.cos(ra);
+}
+function buildHome() {
+  const s = L[2].s, ox = L[2].x, oy = L[2].y, port = H > W * 1.05, tip = oy / H, bay = port ? 0.69 : 0.71;
+  const P = (u, v) => [(u * W - ox) / s, (v * H - oy) / s];
+  const pts = [[-0.7, tip + 0.06], [-0.1, tip + 0.07], [0.06, tip + 0.08], [0.18, tip + 0.035], [0.255, tip - 0.035], [0.325, tip - 0.035], [0.375, tip + 0.035],
+    [0.42, bay - 0.045], [0.5, bay + 0.002], [0.62, bay + 0.022], [0.74, bay + 0.002], [0.82, bay - 0.05], [0.88, bay - 0.115], [0.97, bay - 0.145], [1.1, bay - 0.135], [1.7, bay - 0.12]];
+  const uv = [];   // Catmull-Rom through the points, as a dense polyline
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(pts.length - 1, i + 2)];
+    for (let k = 0; k < 10; k++) {
+      const t = k / 10, t2 = t * t, t3 = t2 * t, f = (a, b, c, d) => 0.5 * (2 * b + (c - a) * t + (2 * a - 5 * b + 4 * c - d) * t2 + (3 * b - a - 3 * c + d) * t3);
+      uv.push([f(p0[0], p1[0], p2[0], p3[0]), f(p0[1], p1[1], p2[1], p3[1])]);
+    }
+  }
+  uv.push(pts[pts.length - 1]);
+  const coastV = (u) => { for (let i = 1; i < uv.length; i++) if (uv[i][0] >= u) { const a = uv[i - 1], b = uv[i]; return lerp(a[1], b[1], clamp((u - a[0]) / Math.max(1e-6, b[0] - a[0]), 0, 1)); } return bay; };
+  HM.coast = uv.map(p => P(p[0], p[1])); HM.x0 = P(-0.7, 0)[0]; HM.x1 = P(1.7, 0)[0]; HM.floor = P(0, 1.6)[1];
+  const rows = port ? 3 : 2, per = 18 / rows, hs = clamp(Math.min(W, H) * 0.024, 8, 15) / s;
+  HM.houses = [];
+  for (let k = 0; k < 18; k++) {
+    const row = k % rows, c = Math.floor(k / rows), u = 0.462 + (c + (row % 2) * 0.5) * (0.335 / per) + (hash(k * 3.3) - 0.5) * 0.012;
+    const v = coastV(u) + 0.038 + row * (port ? 0.036 : 0.05) + (hash(k * 7.7) - 0.5) * 0.008, p = P(u, v);
+    HM.houses.push({ x: p[0], y: p[1], sz: hs * (0.85 + hash(k * 1.7) * 0.35), rot: (hash(k * 9.1) - 0.5) * 0.35 });
+  }
+  HM.order = [7, 2, 12, 16, 5, 9, 0, 14, 10, 3, 17, 6, 1, 11, 15, 8, 4, 13];   // the order windows light in
+  HM.piers = [0.555, 0.675].map(u => { const v = coastV(u), a = P(u, v + 0.005), b = P(u + 0.008, v - (port ? 0.05 : 0.075)); return [a[0], a[1], b[0], b[1]]; });
+  const mo = [[0.535, 0.038], [0.59, 0.05], [0.7, 0.045]].map(m => P(m[0], coastV(m[0]) - m[1] * (port ? 0.7 : 1)));
+  const st = [[0.66, 0.11], [1.12, 0.24], [0.98, 0.11]].map(m => P(m[0], m[1])), ct = P(0.63, 0.4);
+  HM.path = mo.map((m, i) => ({ a: st[i], c: [ct[0] + (i - 1) * 2, ct[1]], b: m }));
+  HM.trees = [];   // a little texture for the land: trees, kept clear of the village and the light
+  for (let k = 0; k < 70; k++) {
+    const u = -0.04 + hash(k * 4.7) * 1.08, v = coastV(u) + 0.03 + hash(k * 6.1) * hash(k * 2.9) * 0.34, p = P(u, v);
+    if ((u > 0.42 && u < 0.84 && v < coastV(u) + 0.16) || Math.hypot(p[0], p[1]) < 2.6 || v > 0.99) continue;
+    HM.trees.push([p[0], p[1], clamp(Math.min(W, H) * 0.006, 2, 4.2) * (0.7 + hash(k * 9.9) * 0.7) / s]);
+  }
+  const h0 = HM.houses[0], mid = P(0.4, coastV(0.4) + 0.06);
+  HM.road = [0.9, 1.5, mid[0], mid[1], h0.x - h0.sz * 1.2, h0.y + h0.sz * 0.2];
+  HM.stars = []; for (let k = 0; k < 34; k++) HM.stars.push([hash(k * 2.1), hash(k * 5.3) * 0.085, 0.4 + hash(k * 8.9) * 0.6]);
+}
+
+// ---------- saving: one namespaced key, and the game still plays when storage is not there ----------
+function load() {
+  if (FRESH) return null;
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1 && typeof s.b === 'number') return s; } catch (e) { /* no storage */ }
+  return null;
+}
+function save() {
+  if (FRESH) return;
+  try {
+    localStorage.setItem(KEY, JSON.stringify({ v: 1, b: Math.min(G.bi, 7), done: G.bi >= 7 ? 1 : 0, r: rings.map(r => mod(r.step, 12)), p: G.phr, m: G.muted ? 1 : 0 }));
+  } catch (e) { /* no storage */ }
+}
+function saveMute() {
+  if (FRESH) return;
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 1) { s.m = G.muted ? 1 : 0; localStorage.setItem(KEY, JSON.stringify(s)); } } catch (e) { /* no storage */ }
+}
+function phrase(k) {
+  const p = G.phr[k];
+  return (Array.isArray(p) && p.length === 3 && p.every(v => Number.isInteger(v) && v >= 0 && v < 12)) ? p : DEFAULT_PHR[k];
+}
+
+// ---------- turning rings ----------
+function turn(i, d, by) {
+  const r = rings[i]; r.step += d; r.flash = 1; sTick(i);
+  if (i === 0 && G.link[0] > 0.5) { drive(1, d); if (G.link[1] > 0.5) drive(2, d); }
+  else if (i === 1 && G.link[1] > 0.5) drive(2, d);
+  if (by === 'p') hint.idle = 0;
+  evalGoal();
+}
+function drive(j, d) {   // a geared ring is carried along by its driver
+  const r = rings[j]; r.step += d; r.flash = 0.7; sTick(j, true);
+  for (const dr of drags.values()) if (dr.kind === 'ring' && dr.i === j) dr.base += d;
+}
+function evalGoal(silent) {
+  const g = G.goal; if (!g) return;
+  let prog = false, all = true;
+  if (g.type === 'lock') {
+    for (const m of G.marks) { const on = mod(rings[m.ring].step, 12) === m.step; if (on && !m.on) { prog = true; m.pulse = 1; } m.on = on; if (!on) all = false; }
+  } else {
+    const ps = rings.map(r => mod(r.step, 12));
+    for (const d of G.dots) {
+      const cnt = ps.filter(s => s === d.step).length, f = Math.min(cnt, d.need) / d.need;
+      if (f > d.want) { prog = true; d.pop = 1; } d.want = f; if (f < 1) all = false;
+    }
+  }
+  g.met = all;
+  if (prog && !silent) { hint.stuck = 0; sSeat(all); }
+}
+const midDrag = () => { for (const d of drags.values()) if (d.kind === 'ring' && Math.abs(rings[d.i].frac) > 0.3) return true; return false; };
+const solved = () => !!G.goal && G.solveT >= G.goal.dwell;
+function plan() {   // the cheapest way to finish from here: rings are set driver first, so a later move never undoes an earlier one
+  const g = G.goal; if (!g) return null;
+  const n = g.type === 'lock' ? g.t.length : 3, pos = rings.map(r => mod(r.step, 12));
+  let cands = [g.t];
+  if (g.type !== 'lock') { const s = g.set; cands = [[s[0], s[1], s[2]], [s[0], s[2], s[1]], [s[1], s[0], s[2]], [s[1], s[2], s[0]], [s[2], s[0], s[1]], [s[2], s[1], s[0]]]; }
+  let best = null;
+  for (const tg of cands) {
+    const p = pos.slice(), ds = []; let cost = 0;
+    for (let i = 0; i < n; i++) {
+      const d = sdiff(p[i], tg[i]); ds.push(d); cost += Math.abs(d); p[i] = tg[i];
+      if (d && i === 0 && G.link[0] > 0.5) { p[1] = mod(p[1] + d, 12); if (G.link[1] > 0.5) p[2] = mod(p[2] + d, 12); }
+      else if (d && i === 1 && G.link[1] > 0.5) p[2] = mod(p[2] + d, 12);
+    }
+    if (!best || cost < best.cost) best = { cost, ds };
+  }
+  return best;
+}
+function nextMove() { const p = plan(); if (!p) return null; for (let i = 0; i < p.ds.length; i++) if (p.ds[i]) return { ring: i, d: p.ds[i] }; return null; }
+function nearestLost() { let best = null, bd = 9; for (const b of boats) if (!b.found) { const d = Math.abs(adiff(G.beam.ang, b.ang)); if (d < bd) { bd = d; best = b; } } return best; }
+
+// ---------- the idle ladder: a cue at once, a ghost hand at 8 s, a nudge at 20 s, and at 40 s it finishes the step ----------
+function task(kind, text, once) { G.task = kind; hint.idle = hint.carry ? 14 : 0; hint.stuck = 0; hint.lvl = 0; hint.acc = 0; hint.demo = 0; hint.once = once ? 3.4 : 0; hint.text = text || ''; hint.said = false; }
+function taskEnd() { hint.carry = !!G.task && hint.lvl >= 3; G.task = null; hint.lvl = 0; hint.once = 0; }   // a step the box finished alone: the next one waits less
+function stepHint(h) {
+  if (!G.task) return;
+  hint.idle += h; hint.stuck += h; hint.demo += h;
+  const lv = hint.idle >= 40 ? 3 : hint.idle >= 20 ? 2 : (hint.idle >= 8 || hint.stuck >= 32) ? 1 : 0;
+  if (lv !== hint.lvl) { if (lv >= 1 && hint.lvl < 1) hint.demo = 0; hint.lvl = lv; }
+  // the ghost hand comes first and the words a little later, so a player who is only thinking keeps the puzzle
+  if (!hint.said && hint.text && (hint.idle >= (G.task === 'ember' ? 8 : 13) || hint.stuck >= 44)) { hint.said = true; say(hint.text, 11); }
+  if (lv < 2 || G.task === 'ember') return;
+  if (G.task === 'rings') {
+    hint.acc += h;
+    if (hint.acc >= (lv === 3 ? 0.42 : 2.4)) { hint.acc = 0; const m = nextMove(); if (m && !drags.size) turn(m.ring, m.d > 0 ? 1 : -1, 'a'); }
+  } else if (G.task === 'beam') {
+    const b = nearestLost();
+    if (b && !drags.size) { const d = adiff(G.beam.tgt, b.ang), sp = (lv === 3 ? 0.55 : 0.1) * h; G.beam.tgt += clamp(d, -sp, sp); }
+  }
+}
+
+// ---------- input: Pointer Events for mouse and touch, the wheel, and the keyboard as a full equal ----------
+function toWorld(e) { const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top; return { px: x, py: y, x: (x - cam.x) / cam.s, y: (y - cam.y) / cam.s }; }
+const angOf = (p) => Math.atan2(p.x, -p.y);   // 0 is up, clockwise is positive
+function ringAt(r) {
+  if (r > 1.14) return -1;
+  const n = rings[2].a > 0.5 ? 3 : rings[1].a > 0.5 ? 2 : rings[0].a > 0.5 ? 1 : 0;
+  if (!n) return -1;
+  const i = r >= ZONE[0] ? 0 : r >= ZONE[1] ? 1 : 2;
+  return Math.min(i, n - 1);
+}
+function touched() { hint.idle = 0; if (G.gate > 0) G.go = true; }
+function tapEmber() { if (G.input.ember && !G.tapped) { G.tapped = true; aUnlock(); } }
+function endDrag(id, tap) {
+  const d = drags.get(id); if (!d) return; drags.delete(id);
+  if (d.kind !== 'ring') return;
+  const r = rings[d.i]; r.frac = 0;
+  if (tap && G.input.rings && d.moved < 9 && d.steps === 0 && performance.now() - d.t0 < 500) turn(d.i, 1, 'p');
+}
+function dropDrags() { for (const [id, d] of drags) { if (d.kind === 'ring') rings[d.i].frac = 0; try { cv.releasePointerCapture(id); } catch (e) { /* not held */ } } drags.clear(); }
+cv.addEventListener('pointerdown', (e) => {
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
+  e.preventDefault(); aUnlock(); G.kb = false;
+  const p = toWorld(e), r = Math.hypot(p.x, p.y);
+  if (G.gate > 0 || G.input.ember) { drags.set(e.pointerId, { kind: 'tap', x0: p.px, y0: p.py }); return; }
+  touched();
+  const i = G.input.rings ? ringAt(r) : -1;
+  if (i >= 0) {
+    drags.set(e.pointerId, { kind: 'ring', i, last: angOf(p), acc: 0, base: rings[i].step, moved: 0, steps: 0, x0: p.px, y0: p.py, t0: performance.now() });
+    G.sel = i;
+  } else if (G.input.beam && r > 1.08) {
+    drags.set(e.pointerId, { kind: 'beam' }); G.beam.tgt = G.beam.ang + adiff(G.beam.ang, angOf(p)); G.sel = -1;
+  } else return;
+  try { cv.setPointerCapture(e.pointerId); } catch (err) { /* fine without */ }
+});
+cv.addEventListener('pointermove', (e) => {
+  const d = drags.get(e.pointerId), p = toWorld(e), r = Math.hypot(p.x, p.y);
+  if (!d) { G.hover = (e.pointerType === 'mouse' && G.input.rings) ? ringAt(r) : (e.pointerType === 'mouse' && G.input.beam && r > 1.08 ? -1 : -2); cv.style.cursor = G.hover > -2 || (G.input.ember && Math.hypot(p.px - cam.x, p.py - cam.y) < emberHit()) ? 'pointer' : 'default'; return; }
+  if (d.kind === 'ring') {
+    if (!G.input.rings) return;
+    d.moved = Math.max(d.moved, Math.hypot(p.px - d.x0, p.py - d.y0));
+    if (r < 0.05) return;
+    const a = angOf(p); d.acc += adiff(d.last, a) / SA; d.last = a; hint.idle = 0;
+    const ring = rings[d.i], want = d.base + d.acc; let n = Math.round(want), guard = 0;
+    while (ring.step < n && guard++ < 8) { turn(d.i, 1, 'p'); d.steps++; }
+    while (ring.step > n && guard++ < 8) { turn(d.i, -1, 'p'); d.steps++; }
+    ring.frac = clamp(want - ring.step, -0.5, 0.5);
+  } else if (d.kind === 'beam') {
+    if (!G.input.beam) return;
+    if (r > 0.3) { G.beam.tgt = G.beam.ang + adiff(G.beam.ang, angOf(p)); hint.idle = 0; }
+  }
+});
+function emberHit() { return Math.max(64, Math.min(W, H) * 0.2); }
+function pointerEnd(e, cancelled) {
+  aUnlock();
+  const d = drags.get(e.pointerId); if (!d) return;
+  if (d.kind === 'tap') {
+    drags.delete(e.pointerId);
+    if (cancelled) return;
+    const p = toWorld(e);
+    if (G.gate > 0) G.go = true;
+    else if (Math.hypot(p.px - cam.x, p.py - cam.y) < emberHit()) tapEmber();
+    return;
+  }
+  endDrag(e.pointerId, !cancelled);
+  try { cv.releasePointerCapture(e.pointerId); } catch (err) { /* not held */ }
+}
+cv.addEventListener('pointerup', (e) => pointerEnd(e, false));
+cv.addEventListener('pointercancel', (e) => pointerEnd(e, true));
+cv.addEventListener('lostpointercapture', (e) => { if (drags.has(e.pointerId) && drags.get(e.pointerId).kind !== 'tap') endDrag(e.pointerId, false); });
+cv.addEventListener('pointerleave', (e) => { G.hover = -2; if (drags.has(e.pointerId) && !(cv.hasPointerCapture && cv.hasPointerCapture(e.pointerId))) pointerEnd(e, true); });
+let wheelAcc = 0;
+cv.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  if (!G.input.rings && !G.input.beam) return;
+  wheelAcc += e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 100 : 1);
+  if (Math.abs(wheelAcc) < 30) return;
+  const dir = wheelAcc > 0 ? 1 : -1; wheelAcc = 0; touched();
+  const p = toWorld(e), r = Math.hypot(p.x, p.y), i = G.input.rings ? ringAt(r) : -1;
+  if (i >= 0) { G.sel = i; turn(i, dir, 'p'); } else if (G.input.beam) { G.sel = -1; G.beam.tgt += dir * 7.5 * DEG; }
+}, { passive: false });
+for (const ev of ['contextmenu', 'selectstart', 'dragstart', 'gesturestart']) cv.addEventListener(ev, (e) => e.preventDefault());
+function selList() { const l = []; if (G.input.beam) l.push(-1); if (G.input.rings) for (let i = 0; i < 3; i++) if (rings[i].a > 0.5) l.push(i); return l; }
+window.addEventListener('keydown', (e) => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = e.key, ui = e.target && e.target.closest && e.target.closest('button,a');
+  if (k === 'm' || k === 'M') { setMute(!G.muted); e.preventDefault(); return; }
+  if (k === 'Tab') { if (!G.kbHelp && !G.ended) { G.kbHelp = true; say(G.input.ember ? 'Press Space to touch the light.' : 'Up and Down choose a ring. Left and Right turn it. Space clicks it on.', 9); } return; }
+  if (ui && (k === ' ' || k === 'Enter')) return;   // let a focused button or link act as itself
+  const arrow = k === 'ArrowLeft' || k === 'ArrowRight' || k === 'ArrowUp' || k === 'ArrowDown', act = k === ' ' || k === 'Enter' || k === 'Spacebar';
+  if (!arrow && !act) return;
+  if (G.ended) { if (arrow) return; aUnlock(); return; }
+  e.preventDefault(); aUnlock();
+  if (G.gate > 0) { if (act) G.go = true; return; }
+  if (G.input.ember) { if (act) tapEmber(); else say('Press Space to touch the light.', 6); return; }
+  const l = selList(); if (!l.length) return;
+  touched(); G.kb = true;
+  let at = l.indexOf(G.sel); if (at < 0) { at = 0; G.sel = l[0]; if (arrow && (k === 'ArrowUp' || k === 'ArrowDown')) return; }
+  if (k === 'ArrowUp') G.sel = l[Math.max(0, at - 1)];
+  else if (k === 'ArrowDown') G.sel = l[Math.min(l.length - 1, at + 1)];
+  else {
+    const dir = k === 'ArrowLeft' ? -1 : 1;
+    if (G.sel === -1) G.beam.tgt += dir * 7.5 * DEG; else turn(G.sel, dir, 'p');
+  }
+});
+muteBtn.addEventListener('click', () => { aUnlock(); setMute(!G.muted); });
+document.addEventListener('click', aUnlock, true);
+
+// ---------- drawing: one polar renderer under one camera ----------
+const BEAM_HW = 0.15, GV = [240, 192, 106], CV = [226, 121, 92];
+const mixGC = (t, a) => 'rgba(' + Math.round(lerp(GV[0], CV[0], t)) + ',' + Math.round(lerp(GV[1], CV[1], t)) + ',' + Math.round(lerp(GV[2], CV[2], t)) + ',' + clamp(a, 0, 1).toFixed(3) + ')';
+const disk = (c, x, y, r) => { c.beginPath(); c.arc(x, y, Math.max(0, r), 0, TAU); };
+const px = (r, a) => [r * Math.sin(a), -r * Math.cos(a)];
+const beamAng = () => !RM ? G.beam.ang : G.hand.spin ? Math.floor(G.hand.phase + 1e-6) * SA : Math.round(G.beam.ang / (7.5 * DEG)) * 7.5 * DEG;
+const handAng = () => G.hand.follow ? beamAng() : (RM ? Math.floor(G.hand.phase + 1e-6) : G.hand.phase) * SA;
+function glow(c, x, y, r, rgb, a) {
+  if (a <= 0.004 || r <= 0) return;
+  const g = c.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, col(rgb, a)); g.addColorStop(0.4, col(rgb, a * 0.38)); g.addColorStop(1, col(rgb, 0));
+  c.globalCompositeOperation = 'lighter'; c.fillStyle = g; disk(c, x, y, r); c.fill(); c.globalCompositeOperation = 'source-over';
+}
+function wedge(c, ang, hw, r0, r1) { c.beginPath(); c.arc(0, 0, r1, ang - hw - HP, ang + hw - HP); c.arc(0, 0, r0, ang + hw - HP, ang - hw - HP, true); c.closePath(); }
+function rrect(c, x, y, w, h, r) { c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+const hintPulse = () => (hint.lvl >= 1 && G.task === 'rings') ? (RM ? 0.7 : 0.5 + 0.5 * Math.sin(G.clock * 4.2)) : 0;
+
+function draw() {
+  const c = ctx;
+  c.setTransform(DPR, 0, 0, DPR, 0, 0); c.globalAlpha = 1; c.globalCompositeOperation = 'source-over';
+  c.fillStyle = '#101220'; c.fillRect(0, 0, W, H);
+  camUpdate();
+  if (G.home.a > 0.003) drawSky(c);
+  c.save(); c.translate(cam.x, cam.y); c.scale(cam.s, cam.s);
+  c.save();
+  if (G.home.a > 0.003) { c.beginPath(); c.rect(-1e4, (H * 0.1 * G.home.a - cam.y) / cam.s, 2e4, 2e4); c.clip(); }
+  if (G.sea > 0.003) drawSea(c);
+  if (G.home.a > 0.003) drawLand(c);
+  if (G.beam.a > 0.003) drawBeam(c);
+  c.restore();
+  drawAfloat(c);
+  drawDisc(c);
+  drawFx(c);
+  drawHint(c);
+  c.restore();
+  c.globalAlpha = 1;
+  if (G.gate > 0) {
+    c.fillStyle = col(PAGE, 0.55); c.fillRect(0, 0, W, H);
+    const p = RM ? 0.5 : 0.5 + 0.5 * Math.sin(G.clock * 2.6);
+    glow(c, cam.x, cam.y, 46 + p * 10, CORAL, 0.7); c.fillStyle = col(CORAL, 1); disk(c, cam.x, cam.y, 8); c.fill();
+    c.strokeStyle = col(CORAL, 0.7 - p * 0.5); c.lineWidth = 2; disk(c, cam.x, cam.y, 18 + p * 14); c.stroke();
+  }
+  if (G.fade > 0.003) { c.fillStyle = col(PAGE, G.fade); c.fillRect(0, 0, W, H); }
+  // the caption keeps close under the disc, wherever the camera has put it
+  const cb = (G.cam.k < 1.5 && G.home.a < 0.5) ? Math.max(16, Math.round(H - (cam.y + L[Math.round(G.cam.k)].s * 1.03) - 78)) : 16;
+  if (cb !== capB) { capB = cb; capEl.style.setProperty('--capb', cb + 'px'); }
+}
+
+function drawWaves(c, alpha, thr) {
+  const s = cam.s, cell = Math.max(0.3, 26 / s), t = RM ? 0 : G.clock;
+  const x0 = Math.floor(-cam.x / s / cell) - 1, x1 = Math.ceil((W - cam.x) / s / cell) + 1, y0 = Math.floor(-cam.y / s / cell) - 1, y1 = Math.ceil((H - cam.y) / s / cell) + 1;
+  c.beginPath();
+  for (let i = x0; i <= x1; i++) for (let j = y0; j <= y1; j++) {
+    const k = i * 57.3 + j * 113.9, hs = hash(k); if (hs < thr) continue;
+    const x = (i + 0.5 + (hash(k + 1.7) - 0.5) * 0.7) * cell + Math.sin(t * 0.4 + hs * 30) * cell * 0.07, y = (j + 0.5 + (hash(k + 4.1) - 0.5) * 0.7) * cell + Math.sin(t * 0.9 + hs * 50) * cell * 0.04;
+    if (x * x + y * y < 1.1) continue;
+    const w = cell * (0.12 + hs * 0.1);
+    c.moveTo(x - w, y); c.quadraticCurveTo(x - w * 0.5, y - w * 0.55, x, y); c.quadraticCurveTo(x + w * 0.5, y + w * 0.55, x + w, y);
+  }
+  c.lineWidth = 1.5 / s; c.lineCap = 'round'; c.strokeStyle = col(CREAM, alpha); c.stroke();
+}
+function boatPos(b) {   // a boat sails home on a curve that goes round the light, never through it
+  const u = b.sail, v = 1 - u; if (u <= 0) return [b.x, b.y];
+  return [v * v * b.x + 2 * v * u * b.cx + u * u * b.hx, v * v * b.y + 2 * v * u * b.cy + u * u * b.hy];
+}
+function boatDir(b) { const u = b.sail, v = 1 - u; return Math.atan2(v * (b.cx - b.x) + u * (b.hx - b.cx), -(v * (b.cy - b.y) + u * (b.hy - b.cy))); }
+function hull(c, x, y, head, Ln, a, kind, wake) {
+  const Wd = Ln * 0.38, lw = 1.5 / cam.s;
+  c.save(); c.translate(x, y); c.rotate(head); c.globalAlpha = a;
+  if (wake) { c.beginPath(); c.moveTo(-Wd * 0.6, Ln); c.lineTo(-Wd * 1.9, Ln * 2.7); c.moveTo(Wd * 0.6, Ln); c.lineTo(Wd * 1.9, Ln * 2.7); c.moveTo(0, Ln * 1.2); c.lineTo(0, Ln * 2.1); c.strokeStyle = col(CREAM, 0.4); c.lineWidth = lw; c.lineCap = 'round'; c.stroke(); }
+  c.beginPath(); c.moveTo(0, -Ln); c.bezierCurveTo(Wd * 1.2, -Ln * 0.35, Wd * 1.05, Ln * 0.6, Wd * 0.62, Ln); c.lineTo(-Wd * 0.62, Ln); c.bezierCurveTo(-Wd * 1.05, Ln * 0.6, -Wd * 1.2, -Ln * 0.35, 0, -Ln); c.closePath();
+  c.fillStyle = '#3B394B'; c.fill(); c.lineWidth = lw; c.strokeStyle = col(CREAM, 0.8); c.stroke();
+  c.strokeStyle = col(CREAM, 0.5); c.fillStyle = '#2A2838';
+  if (kind === 1) { c.beginPath(); c.moveTo(0, -Ln * 0.45); c.lineTo(Wd * 0.9, Ln * 0.5); c.lineTo(0, Ln * 0.35); c.closePath(); c.fillStyle = col(CREAM, 0.55); c.fill(); }
+  else { rrect(c, -Wd * 0.48, -Ln * 0.1, Wd * 0.96, Ln * (kind === 2 ? 0.7 : 0.5), Wd * 0.15); c.fill(); c.stroke(); if (kind === 2) { disk(c, 0, Ln * 0.42, Wd * 0.2); c.stroke(); } }
+  c.restore();
+}
+function drawSea(c) {
+  const B = G.beam, s = cam.s, far = 1 + (Math.hypot(W, H) / s) * B.len, dn = G.home.dawn * G.home.a;
+  if (dn > 0.01) drawWaves(c, 0.15 * dn * G.sea, 0.72);
+  if (B.a <= 0.003) return;
+  c.save(); wedge(c, beamAng(), BEAM_HW * 1.04, 0.99, far); c.clip();
+  drawWaves(c, 0.7 * B.a * G.sea, 0.4);
+  if (G.home.a < 0.99) {
+    const R = G.rock, k = 0.105, a = B.a * (1 - G.home.a);
+    c.save(); c.translate(R.x, R.y); c.globalAlpha = a; c.beginPath();
+    for (let i = 0; i < 9; i++) { const an = i / 9 * TAU, rr = k * (0.72 + hash(i * 3.7) * 0.5), x = Math.cos(an) * rr * 1.3, y = Math.sin(an) * rr; if (i) c.lineTo(x, y); else c.moveTo(x, y); }
+    c.closePath(); c.fillStyle = '#2B2939'; c.fill(); c.lineWidth = 1.5 / s; c.strokeStyle = col(CREAM, 0.6); c.stroke();
+    c.beginPath(); for (let i = 0; i < 4; i++) { const an = 0.5 + i * 1.5, rr = k * 1.9; c.moveTo(Math.cos(an) * rr, Math.sin(an) * rr * 0.8); c.arc(Math.cos(an) * rr - k * 0.2, Math.sin(an) * rr * 0.8, k * 0.2, 0, Math.PI); }
+    c.strokeStyle = col(CREAM, 0.4); c.stroke(); c.restore();
+    for (const b of boats) if (b.gone < 1) { const p = boatPos(b), bob = RM ? 0 : Math.sin(G.clock * 1.1 + b.i * 2) * 0.05; hull(c, p[0], p[1], b.head + bob, 0.2 * [1, 0.88, 1.14][b.i], a * (1 - b.gone), b.i, b.sail > 0.02 && b.sail < 1); }
+  }
+  c.restore();
+}
+function drawBeam(c) {
+  const B = G.beam, s = cam.s, far = 1 + (Math.hypot(W, H) / s) * B.len, ang = beamAng();
+  const a = B.a * (0.62 + 0.38 * B.flash) * (1 - 0.6 * G.home.dawn * G.home.a);
+  const g = c.createRadialGradient(0, 0, 0.9, 0, 0, far); g.addColorStop(0, col(GOLD, 0.36)); g.addColorStop(0.3, col(GOLD, 0.17)); g.addColorStop(1, col(GOLD, 0.035));
+  c.globalCompositeOperation = 'lighter'; c.fillStyle = g;
+  for (const w of [[1, 0.42], [0.64, 0.34], [0.3, 0.32]]) { c.globalAlpha = a * w[1]; wedge(c, ang, BEAM_HW * w[0], 0.99, far); c.fill(); }
+  c.globalCompositeOperation = 'source-over'; c.globalAlpha = 1;
+  if (G.input.beam) {   // coral means touch this: a grip on the beam
+    const p = RM ? 0.5 : 0.5 + 0.5 * Math.sin(G.clock * 3), q = px(1.42, ang), sel = G.kb && G.sel === -1;
+    glow(c, q[0], q[1], 0.2, CORAL, 0.5); c.fillStyle = col(CORAL, 1); disk(c, q[0], q[1], 0.042); c.fill();
+    c.strokeStyle = col(CORAL, 0.75 - 0.5 * p); c.lineWidth = 2 / s; disk(c, q[0], q[1], 0.07 + 0.05 * p); c.stroke();
+    if (sel) { c.strokeStyle = col(CORAL, 0.9); c.lineWidth = 2 / s; wedge(c, ang, BEAM_HW, 1.02, 1.02 + Math.min(far, 3)); c.stroke(); }
+  }
+}
+function drawDots(c, cx, cy, R, k, am) {
+  const hl = hintPulse(), lw = Math.max(0.008 * k, 1.2 / cam.s);
+  for (const d of G.dots) {
+    const al = d.a * am * (1 - d.keep); if (al <= 0.01) continue;
+    const an = d.step * SA, rr = R * (1 - d.keep), x = cx + rr * Math.sin(an), y = cy - rr * Math.cos(an), pr = 0.04 * k * (1 + 0.5 * d.pop);
+    glow(c, x, y, pr * 3.6, GOLD, (0.16 + 0.3 * d.fill + 0.28 * hl + 0.6 * d.stamp) * al);
+    const full = d.fill > 0.99;
+    c.lineWidth = lw; c.strokeStyle = col(GOLD, 0.92 * al);
+    c.setLineDash(full ? [] : [0.02 * k, 0.014 * k]); c.lineDashOffset = RM ? 0 : -G.clock * 0.02 * k;
+    disk(c, x, y, pr); c.stroke();
+    if (d.need > 1) { disk(c, x, y, pr * 1.85); c.stroke(); }
+    c.setLineDash([]);
+    if (d.fill > 0.01) {
+      c.fillStyle = col(GOLD, al);
+      if (d.need > 1) {
+        disk(c, x, y, pr * 0.9 * Math.min(1, d.fill * 2)); c.fill();
+        if (d.fill > 0.5) { c.lineWidth = pr * 0.55; c.strokeStyle = col(GOLD, al * (d.fill - 0.5) * 2); disk(c, x, y, pr * 1.5); c.stroke(); }
+      } else { disk(c, x, y, pr * d.fill); c.fill(); }
+    }
+  }
+}
+function drawAfloat(c) {   // lanterns, horns and the dial of the boat being answered: all outside the beam's clip
+  const s = cam.s, k = 1 - G.home.a;
+  if (k <= 0.01 || G.sea <= 0.01) return;
+  for (const b of boats) {
+    if (b.gone >= 1 || b.lit <= 0.01) continue;
+    const p = boatPos(b), fl = RM ? 1 : 0.82 + 0.18 * Math.sin(G.clock * 5.3 + b.i * 9), a = b.lit * (1 - b.gone) * k;
+    glow(c, p[0], p[1], 0.2 + 0.3 * b.flare, GOLD, (0.5 * fl + 0.5 * b.flare) * a);
+    c.fillStyle = col(CREAM, a); disk(c, p[0], p[1], Math.max(0.02 + 0.012 * b.flare, 1.8 / s)); c.fill();
+    if (b.horn > 0.01) {
+      const u = 1 - b.horn, toL = Math.atan2(-p[1], -p[0]);
+      c.lineWidth = 2 / s; c.lineCap = 'round';
+      for (let j = 0; j < 3; j++) { const v = u * 1.5 - j * 0.22; if (v <= 0 || v >= 1) continue; c.strokeStyle = col(GOLD, (1 - v) * 0.8 * a); c.beginPath(); c.arc(p[0], p[1], 0.3 + v * 0.75, toL - 0.6, toL + 0.6); c.stroke(); }
+    }
+  }
+  const D = G.dial;
+  if (D.k >= 0 && D.a > 0.01) {
+    const b = boats[D.k], p = boatPos(b), R = 0.5;
+    c.strokeStyle = col(GOLD, 0.2 * D.a); c.lineWidth = 1 / s; disk(c, p[0], p[1], R); c.stroke();
+    c.fillStyle = col(GOLD, 0.55 * D.a);
+    for (let j = 0; j < 12; j++) { const q = px(R, j * SA); disk(c, p[0] + q[0], p[1] + q[1], (j % 3 ? 1.3 : 2.1) / s); c.fill(); }
+    { const q0 = px(R + 0.045, 0), q1 = px(R + 0.1, 0); c.strokeStyle = col(GOLD, 0.6 * D.a); c.lineWidth = 1.5 / s; c.beginPath(); c.moveTo(p[0] + q0[0], p[1] + q0[1]); c.lineTo(p[0] + q1[0], p[1] + q1[1]); c.stroke(); }
+    if (G.hand.on || G.hand.phase % 12 !== 0) { const q = px(R, handAng()); c.fillStyle = col(CREAM, 0.9 * D.a); disk(c, p[0] + q[0], p[1] + q[1], 2.4 / s); c.fill(); glow(c, p[0] + q[0], p[1] + q[1], 9 / s, GOLD, 0.5 * D.a); }
+    if (G.dotsWhere === 'boat') drawDots(c, p[0], p[1], R, 1.45, D.a);
+  }
+}
+function brass(c, k, i) {
+  const m = (v) => Math.min(255, Math.round(v * k)), hi = 'rgb(' + m(98) + ',' + m(80) + ',' + m(60) + ')', lo = 'rgb(' + m(48) + ',' + m(42) + ',' + m(50) + ')';
+  if (!c.createConicGradient) return 'rgb(' + m(64) + ',' + m(55) + ',' + m(54) + ')';
+  const g = c.createConicGradient(-2.25 + i * 0.22, 0, 0);
+  g.addColorStop(0, hi); g.addColorStop(0.2, lo); g.addColorStop(0.5, hi); g.addColorStop(0.72, lo); g.addColorStop(1, hi);
+  return g;
+}
+function drawRing(c, i, a, lod) {
+  const r = rings[i]; if (r.a <= 0.01) return;
+  const b0 = BAND[i][0], b1 = BAND[i][1], rm = RMID[i], w = b1 - b0, th = r.vis * SA, gap = GAPW[i] / rm, A0 = th - HP + gap / 2, A1 = th - HP + TAU - gap / 2;
+  const sc = 1 + 0.06 * (1 - E.out3(r.a)), f = r.flash;
+  c.save(); c.globalAlpha = a * r.a; if (sc !== 1) c.scale(sc, sc);
+  c.lineCap = 'butt'; c.lineWidth = w; c.strokeStyle = brass(c, 1 + 0.4 * f + 0.14 * r.sel, i);
+  c.beginPath(); c.arc(0, 0, rm, A0, A1); c.stroke();
+  c.lineWidth = w * 0.3; c.strokeStyle = 'rgba(255,240,215,0.035)'; c.beginPath(); c.arc(0, 0, rm + w * 0.2, A0, A1); c.stroke();
+  c.strokeStyle = 'rgba(8,8,14,0.10)'; c.beginPath(); c.arc(0, 0, rm - w * 0.3, A0, A1); c.stroke();
+  c.lineWidth = 0.009 + 0.007 * r.sel; c.strokeStyle = mixGC(r.sel, 0.5 + 0.35 * f + 0.45 * r.sel);
+  c.beginPath(); c.arc(0, 0, b1, A0, A1); c.stroke(); c.beginPath(); c.arc(0, 0, b0, A0, A1); c.stroke();
+  c.lineCap = 'round'; c.lineWidth = 0.011; c.strokeStyle = mixGC(r.sel, 0.9); c.beginPath();
+  for (const sg of [-1, 1]) { const an = th + sg * gap / 2, p0 = px(b0, an), p1 = px(b1, an); c.moveTo(p0[0], p0[1]); c.lineTo(p1[0], p1[1]); }
+  c.stroke();
+  if (lod) {
+    c.lineWidth = 0.007; c.strokeStyle = col(GOLD, 0.34 + 0.3 * f); c.beginPath();
+    for (let k = 1; k < 12; k++) { const an = th + k * SA, l = (k % 3 === 0) ? 0.058 : 0.034, p0 = px(b1 - 0.014, an), p1 = px(b1 - 0.014 - l, an); c.moveTo(p0[0], p0[1]); c.lineTo(p1[0], p1[1]); }
+    c.stroke();
+    c.setLineDash([0.012, 0.03]); c.lineWidth = 0.006; c.strokeStyle = col(GOLD, 0.24);
+    c.beginPath(); c.arc(0, 0, rm - w * 0.16, th - HP + SA * 1.5, th - HP + SA * 4.5); c.stroke(); c.setLineDash([]);
+    c.fillStyle = col(GOLD, 0.42); for (const k of [6, 9]) { const p = px(rm - w * 0.16, th + k * SA); disk(c, p[0], p[1], 0.011); c.fill(); }
+  }
+  c.restore();
+}
+function drawDisc(c) {
+  const s = cam.s, a = G.discA, lod = s > 60, Hd = G.hand;
+  if (a > 0.003) {
+    c.globalAlpha = a;
+    let g = c.createRadialGradient(0, 0, 0.9, 0, 0, 1.32); g.addColorStop(0, col(GOLD, 0.14)); g.addColorStop(1, col(GOLD, 0));
+    c.fillStyle = g; disk(c, 0, 0, 1.32); c.fill();
+    g = c.createRadialGradient(0, -0.3, 0.05, 0, 0, 1.02); g.addColorStop(0, '#2B2A3B'); g.addColorStop(0.65, '#201F2C'); g.addColorStop(1, '#181721');
+    c.fillStyle = g; disk(c, 0, 0, 1); c.fill();
+    c.lineWidth = Math.max(0.014, 1.3 / s); c.strokeStyle = col(GOLD, 0.64); disk(c, 0, 0, 0.992); c.stroke();
+    if (lod) {
+      c.lineWidth = 0.005; c.strokeStyle = col(GOLD, 0.2); disk(c, 0, 0, 0.895); c.stroke();
+      c.strokeStyle = 'rgba(8,8,14,0.5)'; c.lineWidth = 0.032; for (const rr of [0.6025, 0.30]) { disk(c, 0, 0, rr); c.stroke(); }
+      c.fillStyle = col(GOLD, 0.34); for (let k = 0; k < 12; k++) { const p = px(RIM, k * SA); disk(c, p[0], p[1], k % 3 ? 0.006 : 0.01); c.fill(); }
+      for (let k = 0; k < 12; k++) { const gl = G.glint[k]; if (gl > 0.02) { const p = px(RIM, k * SA); glow(c, p[0], p[1], 0.11, GOLD, 0.7 * gl * a); c.globalAlpha = a; c.strokeStyle = col(GOLD, 0.9 * gl); c.lineWidth = 0.008; disk(c, p[0], p[1], 0.03 + 0.03 * (1 - gl)); c.stroke(); } }
+    }
+    for (let i = 0; i < 3; i++) drawRing(c, i, a, lod);
+    const hl = hintPulse();
+    for (const m of G.marks) {   // the gold arcs, and the light in a notch that has met its arc
+      if (m.a <= 0.01) continue;
+      const i = m.ring, an = m.step * SA - HP, hw = GAPW[i] / RMID[i] * 0.62 + 0.02, rr = MARK_R[i], ma = m.a * a;
+      c.lineCap = 'round';
+      const gl = 0.24 * m.lit + 0.2 * hl + 0.5 * (m.flash || 0) + 0.3 * (m.pulse || 0);
+      if (gl > 0.01) { c.globalCompositeOperation = 'lighter'; c.lineWidth = 0.08; c.strokeStyle = col(GOLD, gl * ma); c.beginPath(); c.arc(0, 0, rr, an - hw, an + hw); c.stroke(); c.globalCompositeOperation = 'source-over'; }
+      c.globalAlpha = 1; c.lineWidth = 0.028; c.strokeStyle = col(GOLD, (0.66 + 0.34 * m.lit) * ma); c.beginPath(); c.arc(0, 0, rr, an - hw, an + hw); c.stroke();
+      if (m.lit > 0.02) { const th = rings[i].vis * SA - HP, gp = GAPW[i] / RMID[i] / 2; c.lineCap = 'butt'; c.lineWidth = BAND[i][1] - BAND[i][0]; c.strokeStyle = col(GOLD, 0.3 * m.lit * ma); c.beginPath(); c.arc(0, 0, RMID[i], th - gp, th + gp); c.stroke(); }
+    }
+    c.globalAlpha = a; c.lineCap = 'round'; c.lineWidth = 0.02; c.strokeStyle = col(GOLD, 0.9);
+    for (const lk of [[0, 0.6025, 0], [1, 0.30, 1]]) {   // the pins that gear one ring to the next
+      const v = G.link[lk[0]]; if (v <= 0.01) continue;
+      const th = rings[lk[2]].vis * SA; c.beginPath();
+      for (let k = 0; k < 12; k++) { if (v * 12 < k + 0.5) break; const an = th + (k + 0.5) * SA, p0 = px(lk[1] - 0.032, an), p1 = px(lk[1] + 0.032, an); c.moveTo(p0[0], p0[1]); c.lineTo(p1[0], p1[1]); }
+      c.stroke();
+    }
+    if (G.dotsWhere === 'rim' || hint.lvl >= 1) {   // spokes under the ghost dots: any ring's peg may sit on any dot
+      const am = G.dotsWhere === 'rim' ? 1 : 0.7;
+      c.lineWidth = 0.006; for (const d of G.dots) { const al = d.a * am * (1 - d.keep) * a; if (al <= 0.01) continue; const p0 = px(0.13, d.step * SA), p1 = px(0.9, d.step * SA); c.strokeStyle = col(GOLD, (0.08 + 0.12 * hl + 0.1 * d.fill) * al); c.beginPath(); c.moveTo(p0[0], p0[1]); c.lineTo(p1[0], p1[1]); c.stroke(); }
+    }
+  }
+  if (a > 0.003 && Hd.a > 0.01 && Hd.len > 0.01) {   // the hand
+    const ph = handAng(), r0 = LAMP_R + 0.02, r1 = Math.max(r0, Hd.len), al = Hd.a * a;
+    if (!Hd.follow && Hd.on && !RM) { c.globalCompositeOperation = 'lighter'; c.fillStyle = col(GOLD, 1); for (let k = 0; k < 5; k++) { c.globalAlpha = al * 0.045 * (1 + Hd.glow); c.beginPath(); c.moveTo(0, 0); c.arc(0, 0, r1, ph - HP - 0.085 * (k + 1), ph - HP); c.closePath(); c.fill(); } c.globalCompositeOperation = 'source-over'; }
+    const p0 = px(r0, ph), p1 = px(r1, ph);
+    c.globalAlpha = al; c.lineCap = 'round'; c.lineWidth = Math.max(0.02, 1.6 / s); c.strokeStyle = col(GOLD, 0.95); c.beginPath(); c.moveTo(p0[0], p0[1]); c.lineTo(p1[0], p1[1]); c.stroke();
+    c.lineWidth = Math.max(0.006, 0.6 / s); c.strokeStyle = col(CREAM, 0.85); c.beginPath(); c.moveTo(p0[0], p0[1]); c.lineTo(p1[0], p1[1]); c.stroke();
+    glow(c, p1[0], p1[1], 0.07 + 0.05 * Hd.glow, GOLD, 0.6 * al); c.fillStyle = col(GOLD, al); disk(c, p1[0], p1[1], 0.017); c.fill();
+  }
+  if (a > 0.003) {
+    for (let i = 0; i < 3; i++) {   // the pegs
+      const r = rings[i]; if (r.peg <= 0.01 || r.a <= 0.01) continue;
+      const p = px(RMID[i], r.vis * SA), pr = Math.max(PEGR[i], 1.6 / s) * clamp(r.peg, 0, 1.3) * (1 + 0.42 * r.pop);
+      glow(c, p[0], p[1], pr * 3.4, GOLD, 0.6 * r.pop * a);
+      c.globalAlpha = a * r.a; c.fillStyle = 'rgba(8,8,14,0.5)'; disk(c, p[0] + 0.006, p[1] + 0.011, pr * 1.06); c.fill();
+      c.fillStyle = '#F2E7D5'; disk(c, p[0], p[1], pr); c.fill();
+      if (lod) { c.fillStyle = 'rgba(255,255,255,0.75)'; disk(c, p[0] - pr * 0.3, p[1] - pr * 0.32, pr * 0.28); c.fill(); }
+    }
+    c.globalAlpha = a; c.fillStyle = '#14131C'; disk(c, 0, 0, LAMP_R + 0.014); c.fill();
+    c.lineWidth = 0.008; c.strokeStyle = col(GOLD, 0.5); c.stroke();
+  }
+  const br = RM ? 1 : 0.86 + 0.14 * Math.sin(G.clock * 1.7), Lp = G.lamp * (1 - G.ember);
+  if (Lp > 0.003) {   // the lamp, once it is lit
+    const u = Math.max(1, 26 / s);
+    glow(c, 0, 0, (0.52 + 0.3 * G.lampPulse) * u, CORAL, 0.62 * Lp * br * (a > 0.5 ? 1 : a));
+    const g = c.createRadialGradient(0, 0, 0, 0, 0, LAMP_R); g.addColorStop(0, '#FBE3CF'); g.addColorStop(0.55, '#EE9A78'); g.addColorStop(1, '#E2795C');
+    c.globalAlpha = Lp * a; c.fillStyle = g; disk(c, 0, 0, LAMP_R * (0.9 + 0.08 * G.lampPulse)); c.fill();
+  }
+  const bd = G.bead;
+  for (const t of G.trail) { c.fillStyle = col(CORAL, 0.5 * (1 - t[2] / 0.35) * bd.a); disk(c, t[0], t[1], 0.026 * (1 - t[2] / 0.35)); c.fill(); }
+  if (bd.a > 0.003) {   // the bead of light, which is also the ember of the first and the last frame
+    const u = lerp(1, L[0].s / s, G.ember), em = (1 - a) , p = px(bd.r, bd.ang), k = (1 + 0.45 * bd.z) * u;
+    const b2 = RM ? 1 : 0.8 + 0.2 * Math.sin(G.clock * 1.6);
+    if (em > 0.01) glow(c, p[0], p[1], 0.8 * u * (0.9 + 0.1 * b2), CORAL, 0.14 * em * b2 * bd.a);
+    glow(c, p[0], p[1], 0.17 * k * (1 + 1.3 * em) * (em > 0.01 ? b2 : 0.9 + 0.1 * b2) + 0.2 * G.lampPulse * (bd.r < 0.02 ? 1 : 0), CORAL, 0.85 * bd.a);
+    c.globalAlpha = bd.a; c.fillStyle = '#E2795C'; disk(c, p[0], p[1], 0.036 * k * (1 + 0.6 * em)); c.fill();
+    c.fillStyle = 'rgba(255,225,205,0.85)'; disk(c, p[0] - 0.008 * k, p[1] - 0.009 * k, 0.013 * k * (1 + 0.6 * em)); c.fill();
+    if (G.input.ember && !RM) { const t = (G.clock % 2.6) / 2.6; c.strokeStyle = col(CORAL, 0.5 * (1 - t)); c.lineWidth = 1.5 / s; disk(c, 0, 0, 0.08 + t * 0.34); c.stroke(); }
+  }
+  c.globalAlpha = 1;
+  if (a > 0.003 && G.dots.length) drawDots(c, 0, 0, RIM, 1, a * (G.dotsWhere === 'rim' ? 1 : (hint.lvl >= 1 ? 0.75 : 0)));
+}
+function drawFx(c) {
+  for (const f of fx) {
+    const u = clamp(f.t / f.d, 0, 1);
+    if (f.kind === 0) { c.lineWidth = Math.max(f.w, 1 / cam.s); c.strokeStyle = col(f.c, f.a * (1 - u) * (1 - u)); disk(c, f.x, f.y, RM ? lerp(f.r0, f.r1, 0.5) : lerp(f.r0, f.r1, E.out3(u))); c.stroke(); }
+    else if (f.kind === 2) {   // a gull: two strokes that flap
+      if (f.t <= 0) continue;
+      const w = Math.max(0.06, 7.5 / cam.s), fl = Math.sin(f.t * 13 + f.ph) * 0.5, al = f.a * clamp(f.t / 0.2, 0, 1) * (1 - u) * (1 - G.home.a);
+      c.lineWidth = 1.5 / cam.s; c.lineCap = 'round'; c.strokeStyle = col(f.c, al); c.beginPath(); c.moveTo(f.x - w, f.y - w * (0.25 + fl)); c.lineTo(f.x, f.y); c.lineTo(f.x + w, f.y - w * (0.25 + fl)); c.stroke();
+    }
+    else { c.fillStyle = col(f.c, f.a * (1 - u)); disk(c, f.x, f.y, Math.max(0.011 * (1 - u * 0.5), 1 / cam.s)); c.fill(); }
+  }
+}
+function ghostFinger(c, x, y, al, press) {
+  const r = Math.max(0.06, 10 / cam.s);
+  c.fillStyle = col(CORAL, 0.3 * al); disk(c, x, y, r * (1 - 0.2 * press)); c.fill();
+  c.lineWidth = 2 / cam.s; c.strokeStyle = col(CORAL, 0.85 * al); c.stroke();
+}
+function drawHint(c) {   // the ghost hand: it shows the gesture, it never does it
+  if (!G.task || G.gate > 0 || (hint.lvl < 1 && hint.demo >= hint.once)) return;
+  const t = (hint.demo % 3.4) / 3.4, al = clamp(t / 0.12, 0, 1) * clamp((1 - t) / 0.2, 0, 1), s = cam.s;
+  if (G.task === 'ember') { const pr = Math.max(0, Math.sin(t * TAU * 2)); ghostFinger(c, 0.0, 0.0, 0.8, pr); return; }
+  let r, from, to;
+  if (G.task === 'rings') { const m = nextMove(); if (!m) return; r = RMID[m.ring]; from = rings[m.ring].vis * SA; to = from + m.d * SA; }
+  else { const b = nearestLost(); if (!b) return; r = 1.42; from = G.beam.ang; to = from + adiff(from, b.ang); }
+  if (Math.abs(to - from) < 0.02) return;
+  const u = E.io2(clamp((t - 0.1) / 0.6, 0, 1)), ang = lerp(from, to, u), dir = to > from ? 1 : -1;
+  c.lineCap = 'round'; c.lineWidth = Math.max(0.02, 3 / s); c.strokeStyle = col(CORAL, 0.55 * al);
+  c.beginPath(); c.arc(0, 0, r, from - HP, ang - HP, dir < 0); c.stroke();
+  const tip = px(r, to), b1 = px(r - 0.05, to - dir * 0.09 / r), b2 = px(r + 0.05, to - dir * 0.09 / r);
+  c.strokeStyle = col(CORAL, 0.4 * al); c.setLineDash([0.02, 0.03]); c.beginPath(); c.arc(0, 0, r, ang - HP, to - HP, dir < 0); c.stroke(); c.setLineDash([]);
+  c.strokeStyle = col(CORAL, 0.75 * al); c.beginPath(); c.moveTo(b1[0], b1[1]); c.lineTo(tip[0], tip[1]); c.lineTo(b2[0], b2[1]); c.stroke();
+  const p = px(r, ang); ghostFinger(c, p[0], p[1], al, 0);
+}
+function drawSky(c) {
+  const a = G.home.a, d = G.home.dawn, hy = H * 0.1;
+  c.save();
+  c.fillStyle = col(CREAM, 1);
+  for (const st of HM.stars) { c.globalAlpha = a * st[2] * 0.75 * (1 - d) * (RM ? 1 : 0.7 + 0.3 * Math.sin(G.clock * 1.3 + st[0] * 40)); c.fillRect(st[0] * W, st[1] * H, 1.5, 1.5); }
+  c.globalAlpha = a;
+  let g = c.createLinearGradient(0, 0, 0, hy); g.addColorStop(0, col('52,52,96', 0.55 * d)); g.addColorStop(0.55, col('186,104,98', 0.6 * d)); g.addColorStop(1, col(GOLD, 0.92 * d));
+  c.fillStyle = g; c.fillRect(0, 0, W, hy);
+  if (G.home.sun > 0.01) {
+    const r = Math.min(W, H) * 0.075, sx = W * 0.66, sy = hy + r * (1 - 1.2 * G.home.sun);
+    c.save(); c.beginPath(); c.rect(0, 0, W, hy); c.clip(); c.fillStyle = '#FFE7B4'; disk(c, sx, sy, r); c.fill(); c.restore();
+    glow(c, sx, hy, r * 3.4, GOLD, 0.5 * G.home.sun * a);
+  }
+  g = c.createLinearGradient(0, hy, 0, hy + H * 0.6); g.addColorStop(0, col(GOLD, 0.36 * d)); g.addColorStop(0.22, col('160,112,120', 0.17 * d)); g.addColorStop(1, col('64,74,124', 0.08 * d));
+  c.fillStyle = g; c.fillRect(0, hy, W, H - hy);
+  c.strokeStyle = col(GOLD, 0.14 + 0.8 * d); c.lineWidth = 1.2; c.beginPath(); c.moveTo(0, hy); c.lineTo(W, hy); c.stroke();
+  c.restore();
+}
+function drawLand(c) {
+  const s = cam.s, a = G.home.a, d = G.home.dawn, co = HM.coast, Hm = G.home;
+  c.save(); c.globalAlpha = a;
+  c.beginPath(); c.moveTo(HM.x0, HM.floor); for (const p of co) c.lineTo(p[0], p[1]); c.lineTo(HM.x1, HM.floor); c.closePath();
+  c.fillStyle = '#201F2C'; c.fill(); c.fillStyle = col('150,110,96', 0.1 * d); c.fill();
+  c.beginPath(); co.forEach((p, i) => { if (i) c.lineTo(p[0], p[1]); else c.moveTo(p[0], p[1]); });
+  c.lineWidth = 3 / s; c.lineJoin = 'round'; c.strokeStyle = col(CREAM, 0.1 + 0.2 * d); c.stroke();
+  c.lineWidth = 1.2 / s; c.strokeStyle = col(GOLD, 0.34 + 0.4 * d); c.stroke();
+  c.save(); c.beginPath(); c.moveTo(HM.x0, HM.floor); for (const p of co) c.lineTo(p[0], p[1]); c.lineTo(HM.x1, HM.floor); c.closePath(); c.clip();
+  c.lineWidth = 1 / s;   // two terraces under the shore, a road to the village, some trees
+  for (const off of [26, 62]) { c.beginPath(); co.forEach((p, i) => { const y = p[1] + off / s * (1 + 0.25 * Math.sin(p[0] * 0.5 + off)); if (i) c.lineTo(p[0], y); else c.moveTo(p[0], y); }); c.strokeStyle = col(CREAM, 0.05 + 0.05 * d); c.stroke(); }
+  c.setLineDash([4 / s, 5 / s]); c.strokeStyle = col(CREAM, 0.2 + 0.15 * d); c.beginPath(); c.moveTo(HM.road[0], HM.road[1]); c.quadraticCurveTo(HM.road[2], HM.road[3], HM.road[4], HM.road[5]); c.stroke(); c.setLineDash([]);
+  for (const t of HM.trees) { c.fillStyle = '#2B2A3B'; disk(c, t[0], t[1], t[2]); c.fill(); c.fillStyle = col('190,150,110', 0.05 + 0.16 * d); disk(c, t[0] - t[2] * 0.25, t[1] - t[2] * 0.25, t[2] * 0.6); c.fill(); }
+  c.restore();
+  c.fillStyle = '#2A2839'; disk(c, 0, 0, 1.7); c.fill(); c.lineWidth = 1 / s; c.strokeStyle = col(CREAM, 0.2 + 0.2 * d); c.stroke();
+  c.lineCap = 'round'; c.lineWidth = 2.4 / s; c.strokeStyle = col(CREAM, 0.34 + 0.3 * d); c.beginPath(); for (const p of HM.piers) { c.moveTo(p[0], p[1]); c.lineTo(p[2], p[3]); } c.stroke();
+  for (let k = 0; k < HM.houses.length; k++) {
+    const hs = HM.houses[k], lit = Hm.lit[k] || 0, twk = Hm.tw[k] || 0, z = hs.sz;
+    c.save(); c.translate(hs.x, hs.y); c.rotate(hs.rot); c.globalAlpha = a;
+    rrect(c, -z / 2, -z / 2, z, z, z * 0.16); c.fillStyle = '#2E2C3D'; c.fill(); c.fillStyle = col('170,120,100', 0.14 * d); c.fill();
+    c.lineWidth = 1 / s; c.strokeStyle = col(CREAM, 0.14 + 0.26 * d); c.stroke();
+    c.beginPath(); c.moveTo(-z / 2, 0); c.lineTo(z / 2, 0); c.strokeStyle = col(CREAM, 0.1 + 0.1 * d); c.stroke();
+    const w = z * 0.36; c.fillStyle = lit > 0.02 ? 'rgb(' + Math.round(lerp(20, 250, lit)) + ',' + Math.round(lerp(19, 206, lit)) + ',' + Math.round(lerp(28, 120, lit)) + ')' : '#14131C'; c.fillRect(-w / 2, -w / 2 + z * 0.02, w, w);
+    c.restore();
+    glow(c, hs.x, hs.y, z * (1.3 + 1.6 * twk), GOLD, (0.4 + 0.5 * twk) * lit * a);
+  }
+  for (let j = 0; j < 3; j++) {   // the boats, coming in to the piers
+    const t = Hm.boat[j]; if (t <= 0.001) continue;
+    const P = HM.path[j], u = t, v = 1 - u, x = v * v * P.a[0] + 2 * v * u * P.c[0] + u * u * P.b[0], y = v * v * P.a[1] + 2 * v * u * P.c[1] + u * u * P.b[1];
+    const dx = 2 * v * (P.c[0] - P.a[0]) + 2 * u * (P.b[0] - P.c[0]), dy = 2 * v * (P.c[1] - P.a[1]) + 2 * u * (P.b[1] - P.c[1]);
+    const Ln = Math.max(0.2, 8.5 / s) * [1, 0.88, 1.14][j], bob = RM ? 0 : Math.sin(G.clock * 1.2 + j * 2) * 0.05 * (t >= 1 ? 1 : 0.3);
+    const ba = a * clamp(t / 0.07, 0, 1);
+    hull(c, x, y, Math.atan2(dx, -dy) + bob, Ln, ba, j, t < 0.97);
+    glow(c, x, y, Ln * 1.5, GOLD, 0.55 * ba * (1 - 0.5 * d)); c.fillStyle = col(CREAM, ba); disk(c, x, y, Math.max(Ln * 0.14, 1.3 / s)); c.fill();
+  }
+  c.restore();
+}
+
+// ---------- stepping the world (always from the game clock) ----------
+function pluck(i, off) {
+  const r = rings[i], th = mod(r.step, 12) * SA, p = px(RMID[i], th);
+  r.pop = 1; G.hand.glow = 1; G.beam.flash = 1;
+  if (cam.s > 60) { ripple(p[0], p[1], PEGR[i], PEGR[i] * 4.4, 0.65, CREAM, 0.6, 0.008); sparks(p[0], p[1], 2, CREAM, 0.22); }
+  sPluck(PIT[G.pit][i], off, 1, Math.sin(th) * 0.5 * RMID[i]);
+  if (G.onPluck) G.onPluck(i, off);
+}
+function stepHand(h) {
+  const Hd = G.hand; if (!Hd.on) return;
+  const p0 = Hd.phase, lim = Hd.stop, end = lim != null && p0 + h / STEP_T >= lim, p1 = end ? lim : p0 + h / STEP_T; Hd.phase = p1;
+  let n = Hd.fresh ? Math.ceil(p0 - 1e-9) : Math.floor(p0 + 1e-9) + 1; Hd.fresh = false;
+  if (end) { Hd.on = false; Hd.stop = null; }   // a round that ends at the top does not play the top twice
+  for (; n <= p1 + 1e-9 && !(end && n > lim - 1e-6); n++) {   // every detent the hand passed in this step
+    const off = (n - p0) * STEP_T, s = mod(n, 12);
+    if (s === 0 && Hd.onBar) Hd.onBar(Math.round(n / 12), off);
+    for (const r of rings) if (r.peg > 0.5 && r.a > 0.5 && mod(r.step, 12) === s) pluck(r.i, off);
+    if (G.dotsWhere === 'boat' && G.dial.k >= 0 && G.dial.a > 0.5 && G.dots.some(d => d.step === s)) { boats[G.dial.k].flare = 1; sBlink(); G.glint[s] = 1; }
+    if (Hd.onStep) Hd.onStep(s, off);
+  }
+}
+function findBoat(b) {
+  b.found = 1; b.flare = 1; tw(b, 'lit', 1, 0.5, E.out3); sFound(b.i); hint.stuck = 0;
+  tw(b, 'head', b.head + adiff(b.head, Math.atan2(-b.x, b.y)), 1.6, E.io2, 0.2);   // it turns its bow to the light
+  ripple(b.x, b.y, 0.06, 0.75, 1.2, GOLD, 0.75); ripple(b.x, b.y, 0.06, 0.45, 0.8, CREAM, 0.5); sparks(b.x, b.y, 8, GOLD, 0.6);
+}
+function stepBeam(h) {
+  const B = G.beam;
+  if (G.hand.spin) { B.ang = B.tgt = G.hand.phase * SA; return; }
+  const prev = B.ang; B.ang += (B.tgt - B.ang) * (1 - Math.exp(-h * 16));
+  if (Math.abs(B.tgt - B.ang) < 1e-4) B.ang = B.tgt;
+  if (!G.input.beam) return;
+  if (G.hand.follow && B.ang !== prev) {   // the beam is the hand: swept across a peg, it plucks it
+    for (const r of rings) {
+      if (r.peg < 0.5) continue;
+      const pa = mod(r.step, 12) * SA, a0 = adiff(pa, prev), a1 = adiff(pa, B.ang);
+      if ((a0 < 0) !== (a1 < 0) && Math.abs(a0) < 1 && Math.abs(a1) < 1 && G.clock - (r.lastPl || -9) > 0.14) { r.lastPl = G.clock; pluck(r.i, 0); }
+    }
+  }
+  for (const b of boats) if (!b.found) { if (Math.abs(adiff(B.ang, b.ang)) < 0.1) { b.seen += h; if (b.seen >= 0.45) findBoat(b); } else b.seen = 0; }
+  const R = G.rock;   // a small thing in the dark: hold the light on the rock and its gulls lift off
+  if (!R.flown && Math.abs(adiff(B.ang, Math.atan2(R.x, -R.y))) < 0.1) {
+    R.seen = (R.seen || 0) + h;
+    if (R.seen >= 0.5) {
+      R.flown = true; sGulls();
+      if (!RM) for (let k = 0; k < 3; k++) fx.push({ kind: 2, x: R.x + (k - 1) * 0.07, y: R.y - 0.04, vx: (k - 1) * 0.16 + 0.1, vy: -0.26 - k * 0.05, d: 3.2 + k * 0.4, c: CREAM, a: 0.9, t: -k * 0.12, ph: k * 2.1 });
+    }
+  } else R.seen = 0;
+}
+const reveals = [];
+function step(h) {
+  G.clock += h;
+  if (G.gate > 0) { G.gate += h; if (G.go || G.gate > 8) { G.gate = 0; G.go = false; say('', 1); startBeat(G.bi, true); } }
+  else if (run) { const r = run.next(h); if (r.done) { if (G.bi < 7) startBeat(G.bi + 1); else run = null; } }
+  G.go = false;
+  stepTweens(h);
+  const dragging = new Set(); for (const d of drags.values()) if (d.kind === 'ring') dragging.add(d.i);
+  const kS = 1 - Math.exp(-h * 14), kF = Math.exp(-h * 9), kP = Math.exp(-h * 5.5);
+  for (const r of rings) {
+    const target = r.step + 0.3 * r.frac + 2.8 * r.frac * r.frac * r.frac;   // it leans with the finger, then gives past the middle of a detent
+    for (let k = 0; k < 2; k++) { r.vel += (760 * (target - r.vis) - 44 * r.vel) * h / 2; r.vis += r.vel * h / 2; }
+    const want = dragging.has(r.i) ? 1 : (G.kb && G.sel === r.i && G.input.rings) ? 1 : (G.hover === r.i && G.input.rings) ? 0.4 : 0;
+    r.sel += (want - r.sel) * kS; r.flash *= kF; r.pop *= kP;
+  }
+  for (const m of G.marks) { m.lit += ((m.on ? 1 : 0) - m.lit) * kS; if (m.flash) m.flash *= kP; if (m.pulse) m.pulse *= kP; }
+  for (const d of G.dots) { d.fill += (d.want - d.fill) * kS; d.pop *= kP; d.stamp *= Math.exp(-h * 1.6); }
+  for (const b of boats) {
+    b.flare *= kP; if (b.horn > 0) b.horn = Math.max(0, b.horn - h / 2.2);
+    if (b.sail > 0.04 && b.sail < 1) b.head += adiff(b.head, boatDir(b)) * (1 - Math.exp(-h * 3));   // bow along the course
+  }
+  for (let k = 0; k < 18; k++) if (G.home.tw[k]) G.home.tw[k] *= Math.exp(-h * 2.4);
+  for (let k = 0; k < 12; k++) if (G.glint[k]) G.glint[k] = G.glint[k] < 0.01 ? 0 : G.glint[k] * Math.exp(-h * 2.6);
+  G.lampPulse *= Math.exp(-h * 2.4); G.thump *= Math.exp(-h * 8); G.beam.flash *= Math.exp(-h * 4.5); G.hand.glow *= kP;
+  { const bd = G.bead, p = px(bd.r, bd.ang), tr = G.trail, l = tr[tr.length - 1];   // the bead's trail, while it moves
+    for (let i = tr.length - 1; i >= 0; i--) { tr[i][2] += h; if (tr[i][2] >= 0.35) tr.splice(i, 1); }
+    if (bd.a > 0.5 && G.discA > 0.5 && !RM && (!l || Math.hypot(l[0] - p[0], l[1] - p[1]) > 0.035) && (G.bx !== p[0] || G.by !== p[1]) && tr.length < 40) tr.push([p[0], p[1], 0]);
+    G.bx = p[0]; G.by = p[1]; }
+  stepHand(h); stepBeam(h); stepHint(h);
+  if (G.goal) G.solveT = (G.goal.met && !midDrag()) ? G.solveT + h : 0;
+  stepFx(h); stepCap(h);
+  for (let i = reveals.length - 1; i >= 0; i--) { reveals[i].t -= h; if (reveals[i].t <= 0) { reveals[i].el.classList.add('in'); reveals.splice(i, 1); } }
+  frameT += h;
+}
+
+// ---------- the beats: each is a small script on the game clock ----------
+let run = null;
+function startBeat(i, resumed) { G.bi = i; if (!resumed && i >= 1) save(); run = BEATS[i](); run.next(); }
+function setPhrase(k) { const p = phrase(k); for (let i = 0; i < 3; i++) { const r = rings[i]; r.step = p[i]; r.vis = p[i]; r.vel = 0; r.frac = 0; } G.pit = k; }
+function* camTo(k, d) {   // a zoom, or a cross-fade for people who asked for less motion
+  if (RM) { yield* tweenY(G, 'fade', 1, 0.6, E.io2); G.cam.k = k; yield* wait(0.15); yield* tweenY(G, 'fade', 0, 0.8, E.io2); }
+  else yield* tweenY(G.cam, 'k', k, d, E.io3);
+}
+function* ringIn(i, s) { const r = rings[i]; r.step = s; r.vis = s - 2.4; r.vel = 0; sRingIn(i); yield* tweenY(r, 'a', 1, 0.9, E.out3); }
+function* linkIn(j) { sZip(); yield* tweenY(G.link, j, 1, 0.85, E.out2); }
+function* wiggle(i) { yield* wait(0.3); turn(i, 1, 'a'); yield* wait(0.42); turn(i, -1, 'a'); yield* wait(0.35); }
+function* beadHop(s) {
+  const b = G.bead; b.ang = s * SA; sHop();
+  const t = tw(b, 'r', RIM, 0.62, E.io2); tw(b, 'z', 1, 0.31, E.out2);
+  yield* wait(0.31); tw(b, 'z', 0, 0.31, E.in2);
+  while (!t.done) yield;
+  sTick(0, true); const p = px(RIM, b.ang); ripple(p[0], p[1], 0.03, 0.16, 0.5, CORAL, 0.7);
+}
+function* beadRun(t) {   // through each notch, round each groove, down to the lamp
+  const b = G.bead, n = t.length, stops = [0.6025, 0.30, 0];
+  let ang = t[0] * SA; b.ang = ang;
+  for (let i = 0; i < n; i++) {
+    const last = i === n - 1, r1 = last ? 0 : stops[i];
+    yield* tweenY(b, 'r', r1, last ? 0.22 + b.r * 0.42 : 0.2, E.in2);
+    rings[i].flash = 1; sBead(i);
+    if (!last) {
+      const d = sdiff(t[i], t[i + 1]); ang += d * SA;
+      if (d) yield* tweenY(b, 'ang', ang, 0.12 + Math.abs(d) * 0.075, E.io2);
+      yield* wait(0.05);
+    }
+  }
+  b.r = 0; G.lampPulse = 1; sLand(); ripple(0, 0, 0.05, 0.5, 0.8, CORAL, 0.6);
+}
+function* lock(t, text, once) {   // a round of the lock: every notch to its gold arc, and the bead falls
+  G.marks = t.map((s, i) => ({ ring: i, step: s, a: 0, lit: 0, on: false, flash: 0, pulse: 0 }));
+  G.marks.forEach((m, i) => tw(m, 'a', 1, 0.5, E.out3, i * 0.14));
+  yield* wait(0.3);
+  yield* beadHop(t[0]);
+  G.goal = { type: 'lock', t, dwell: 0.3, met: false }; G.solveT = 0; evalGoal(true);
+  G.input.rings = true; task('rings', text, once);
+  yield* until(solved);
+  G.input.rings = false; taskEnd(); dropDrags(); G.goal = null; say('', 1);
+  sClunk(); G.thump = 1; for (const m of G.marks) m.flash = 1;
+  yield* wait(0.12);
+  yield* beadRun(t);
+  yield* wait(0.6);
+  for (const m of G.marks) tw(m, 'a', 0, 0.4, E.io2);
+  yield* wait(0.45); G.marks = [];
+}
+function* answer(onNote) {   // once a phrase is right, the hand goes round once more to say so
+  const Hd = G.hand; Hd.on = false;
+  const top = Math.ceil((Hd.phase + 0.01) / 12) * 12;
+  yield* tweenY(Hd, 'phase', top, 0.3 + (top - Hd.phase) * 0.04, E.io2);
+  yield* wait(0.3);
+  Hd.fresh = true; Hd.onStep = onNote; Hd.stop = top + 12; Hd.on = true;
+  yield* until(() => !Hd.on);
+  Hd.onStep = null;
+}
+function* dotRound(idx, set, where, text) {   // pegs onto marks: on the rim, or around a boat
+  const Hd = G.hand; G.pit = idx; G.dotsWhere = where;
+  G.dots = [...new Set(set)].map(s => ({ step: s, need: set.filter(x => x === s).length, a: 0, fill: 0, want: 0, pop: 0, keep: 0, stamp: 0 }));
+  G.dots.forEach((d, i) => tw(d, 'a', 1, 0.55, E.out3, i * 0.18)); sDots();
+  G.goal = { type: 'set', set: set.slice(), dwell: 0.5, met: false }; G.solveT = 0; evalGoal(true);
+  if (!Hd.on) { Hd.fresh = true; Hd.on = true; }
+  yield* wait(0.6);
+  G.input.rings = true; task('rings', text);
+  yield* until(solved);
+  G.input.rings = false; taskEnd(); dropDrags(); G.goal = null; say('', 1);
+  yield* answer((s) => {
+    const d = G.dots.find(x => x.step === s); if (!d) return;
+    d.stamp = 1; d.pop = 1;
+    if (where === 'boat') { const b = boats[G.dial.k], p = boatPos(b); b.flare = 1; ripple(p[0], p[1], 0.1, 0.5, 0.6, GOLD, 0.6); }
+  });
+  G.phr[idx] = rings.map(r => mod(r.step, 12));
+}
+function* bWake() {
+  G.input.ember = true; task('ember', 'Touch the light.');
+  yield* until(() => G.tapped);
+  taskEnd(); G.input.ember = false; say('', 1); cv.style.cursor = 'default';
+  yield* audioReady();
+  sWake(); G.lampPulse = 1.4; ripple(0, 0, 0.05, 1.0, 1.5, CORAL, 0.6); ripple(0, 0, 0.05, 0.6, 1.0, CORAL, 0.4);
+  yield* wait(0.8);
+  tw(G, 'discA', 1, 1.7, E.out3);
+  yield* wait(1.1);
+  yield* ringIn(0, 5);
+  yield* wait(0.2);
+  yield* lock([0], 'Turn the ring. Bring its gap round to the gold.', true);
+  yield* lock([4], 'Turn the ring. Bring its gap round to the gold.');
+  yield* lock([8], 'Turn the ring. Bring its gap round to the gold.');
+  yield* wait(0.3);
+}
+function* bLatch() {
+  yield* wait(0.4);
+  yield* ringIn(1, 6);
+  yield* lock([10, 2], 'Each ring has its own gold mark.');
+  yield* lock([7, 10], 'Each ring has its own gold mark.');
+  yield* ringIn(2, 4);
+  yield* lock([4, 7, 7], 'Each ring has its own gold mark.');
+  yield* lock([1, 10, 4], 'Each ring has its own gold mark.');
+  yield* wait(0.3);
+}
+function* bGears() {
+  yield* wait(0.5);
+  // The first geared round starts with two notches already home, so turning the outer ring is seen to carry one away.
+  // The second leaves the inner rings a step or two from their marks: tempting, and wrong to do first.
+  yield* linkIn(0); yield* wiggle(0);
+  yield* lock([5, 10, 4], 'The outer ring pulls its neighbour along. Set it first.');
+  yield* linkIn(1); yield* wiggle(0);
+  yield* lock([9, 0, 3], 'Each ring pulls the one inside it. Work from the outside in.');
+  // the lamp lights, and every notch turns out to hold a peg
+  yield* wait(0.2);
+  sLamp(); tw(G, 'lamp', 1, 1.5, E.out3); tw(G.bead, 'a', 0, 1.0, E.io2); G.lampPulse = 1.6; G.thump = 0.6;
+  ripple(0, 0, 0.1, 1.15, 1.8, CORAL, 0.55);
+  yield* wait(1.4);
+  for (let i = 0; i < 3; i++) {
+    const r = rings[i], p = px(RMID[i], mod(r.step, 12) * SA);
+    r.peg = 0; tw(r, 'peg', 1, 0.45, E.back); r.pop = 1; sPeg(i); sparks(p[0], p[1], 6, CREAM, 0.35);
+    yield* wait(0.3);
+  }
+  yield* wait(0.4);
+  tw(G.link, 0, 0, 0.6, E.io2); tw(G.link, 1, 0, 0.6, E.io2);
+  yield* wait(0.8);
+}
+function* bHand() {
+  const Hd = G.hand; G.pit = 0;
+  yield* wait(1.6);
+  Hd.phase = 0; Hd.a = 1; Hd.len = 0; Hd.follow = false; Hd.fresh = true;
+  yield* tweenY(Hd, 'len', 1, 0.9, E.out3);
+  Hd.on = true;
+  yield* until(() => Hd.phase >= 12);
+  say('It was a tune all along.', 6.5);
+  yield* until(() => Hd.phase >= 24);
+  const tx = 'Turn the rings until a peg sits on every gold dot.';
+  for (let k = 0; k < 3; k++) {
+    if (k === 2) { yield* linkIn(0); }
+    yield* dotRound(k, HAND_SETS[k], 'rim', k === 2 ? 'The outer ring pulls its neighbour again. Set it first.' : tx);
+    sKeep(); for (const d of G.dots) tw(d, 'keep', 1, 0.7, E.in2);   // the phrase is kept: its dots fall into the lamp
+    yield* wait(0.7); G.lampPulse = 1.3; G.dots = [];
+    yield* wait(0.5);
+  }
+  tw(G.link, 0, 0, 0.6, E.io2);
+  yield* wait(0.5);
+  say('Three small phrases, and you wrote them.', 8);
+  for (let k = 0; k < 3; k++) {   // the box turns itself and plays all three back
+    const p = phrase(k);
+    for (let i = 0; i < 3; i++) { const d = sdiff(mod(rings[i].step, 12), p[i]); if (d) { rings[i].step += d; rings[i].flash = 1; sTick(i, true); } }
+    G.pit = k; G.lampPulse = 0.8;
+    yield* wait(0.5);
+    Hd.fresh = true; Hd.stop = Hd.phase + 12; Hd.on = true;
+    yield* until(() => !Hd.on);
+  }
+  yield* wait(0.7);
+}
+function* beamTo(a, d) { yield* tweenY(G.beam, 'tgt', a, d, E.io2); yield* wait(0.2); }
+function restAngle() {   // somewhere the beam can rest that is not already on a boat
+  const as = boats.map(b => b.ang).sort((a, b) => a - b);
+  return (as[1] - as[0] >= as[2] - as[1]) ? (as[0] + as[1]) / 2 : (as[1] + as[2]) / 2;
+}
+function* bLid() {
+  const Hd = G.hand, B = G.beam;
+  yield* wait(0.9);
+  Hd.follow = true; Hd.on = false; B.ang = B.tgt = 0; B.len = 0;
+  sShift(); tw(B, 'a', 1, 1.4, E.out2); tw(B, 'len', 1, 2.8, E.io2); tw(G, 'sea', 1, 2.6, E.io2);
+  yield* camTo(1, 3.2);
+  say('The dark has things in it.', 6.5);
+  const lo = Math.min(...boats.map(b => b.ang)) - 0.3, hi = Math.max(...boats.map(b => b.ang)) + 0.3;
+  yield* beamTo(lo, 2.6); yield* beamTo(hi, 4.6); yield* beamTo(restAngle(), 2.2);
+  G.input.beam = true; G.input.rings = true; G.sel = -1; task('beam', 'Drag the light across the water.');
+  yield* until(() => boats.every(b => b.found));
+  G.input.beam = false; G.input.rings = false; taskEnd(); dropDrags();
+  yield* wait(1.3);
+  say('Three boats, a long way from home.', 6);
+  yield* wait(3.2);
+}
+function* bBoats() {
+  const Hd = G.hand, B = G.beam;
+  yield* wait(0.4);
+  for (let k = 0; k < 3; k++) {
+    const b = boats[k]; G.dial.k = k; G.dial.a = 0;
+    yield* beamTo(B.tgt + adiff(B.tgt, b.ang), 1.5);
+    if (k === 1) { yield* linkIn(0); yield* wiggle(0); }
+    tw(G.dial, 'a', 1, 0.7, E.out3);
+    if (k === 0) say('It is blinking at you.', 6);
+    if (Hd.follow) { Hd.follow = false; Hd.phase = mod(B.ang / SA, 12); }
+    else { Hd.phase = 0; Hd.fresh = true; }
+    Hd.a = 1; Hd.on = true;
+    yield* dotRound(3 + k, BOAT_SETS[k], 'boat', k === 2 ? 'The big mark wants two pegs.' : k === 1 ? 'Set your pegs where its marks are. The outer ring pulls its neighbour.' : 'Set your pegs where its marks are.');
+    // recognised: a horn, and it turns for home
+    sHorn(HORN[k]); b.horn = 1; b.flare = 1; G.thump = 0.5;
+    if (k === 0) say('It knows you.', 5); else if (k === 2) say('They all know the way now.', 6);
+    for (const d of G.dots) tw(d, 'a', 0, 1.0, E.io2); tw(G.dial, 'a', 0, 1.1, E.io2);
+    const p = boatPos(b); sparks(p[0], p[1], 10, GOLD, 0.7);
+    yield* wait(1.3);
+    tw(b, 'head', b.head + adiff(b.head, Math.atan2(b.cx - b.x, -(b.cy - b.y))), 1.8, E.io2);
+    tw(b, 'sail', 1, 11, E.io2, 0.6); tw(b, 'gone', 1, 1.5, E.lin, 9.5);
+    if (k === 1) tw(G.link, 0, 0, 0.6, E.io2);
+    yield* wait(1.1); G.dots = []; G.dial.k = -1;
+    for (let t = 0; t < 2.6; t += (yield) || 0) { const q = boatPos(b); B.tgt = B.ang + adiff(B.ang, Math.atan2(q[0], -q[1])); }   // the light walks it a little way home
+  }
+  yield* wait(2.2);
+}
+function* bHome() {
+  const Hd = G.hand, B = G.beam, Hm = G.home;
+  G.input.rings = G.input.beam = false; G.dial.k = -1; G.dots = [];
+  yield* wait(0.8);
+  say('Let it play.', 5);
+  sShift(); tw(Hm, 'a', 1, 3.6, E.io2); tw(Hd, 'a', 0, 1.2, E.io2);
+  yield* camTo(2, 5.4);
+  for (const b of boats) { b.gone = 1; b.sail = 1; }
+  yield* beamTo(B.tgt + adiff(B.tgt, 0), 1.4);
+  B.ang = B.tgt = 0; Hd.phase = -12; Hd.fresh = false; Hd.spin = true; Hd.follow = false;   // one quiet turn over the sleeping coast first
+  rings.forEach(r => { r.peg = 0; });
+  let lit = 0;
+  Hd.onBar = (b, off) => {
+    if (b < 0 || b >= 18) return;
+    if (b === 0) rings.forEach(r => { r.peg = 1; });
+    const k = b % 6; Hm.pass = Math.floor(b / 6); setPhrase(k); G.lampPulse = 0.9;
+    if (Hm.pass >= 1) sBass(BASS[k], off);
+    if (b === 6) tw(Hm, 'dawn', 1, 11.5 * 12 * STEP_T, E.io2);
+    if (b === 6 || b === 8 || b === 10) tw(Hm.boat, (b - 6) / 2, 1, 9.5, E.out2);
+    if (b === 10 || b === 12 || b === 14) { const j = (b - 10) / 2, m = HM.path[j].b; sHorn(HORN[j], 0.42); ripple(m[0], m[1], 0.3, 2.6, 1.8, GOLD, 0.7); ripple(m[0], m[1], 0.3, 1.6, 1.3, CREAM, 0.5); }
+  };
+  G.onPluck = (i, off) => {
+    let k;
+    if (Hm.pass === 0 && lit < 18) { k = HM.order[lit++]; tw(Hm.lit, k, 1, 0.45, E.out3); } else k = HM.order[Math.floor(Math.random() * 18)];
+    Hm.tw[k] = 1;
+    if (Hm.pass >= 2) sPluck(PIT[G.pit][i] * 2, off + STEP_T, 0.3, 0);
+  };
+  Hd.stop = 18 * 12; Hd.on = true;
+  yield* until(() => !Hd.on);
+  Hd.spin = false; Hd.onBar = null; G.onPluck = null;
+  for (let k = 0; k < 18; k++) { Hm.lit[k] = 1; Hm.tw[k] = 1; }
+  sChord(); B.flash = 1; G.lampPulse = 1.5;
+  rings.forEach(r => { r.peg = 1; });
+  tw(Hm, 'sun', 1, 6.5, E.out2); tw(B, 'tgt', B.tgt + 2.6, 7.5, E.out2); tw(B, 'a', 0.25, 6, E.io2);
+  yield* wait(8);
+}
+const endEl = document.getElementById('end'), keepEl = document.getElementById('keep');
+function* bEnd() {   // the lighthouse shrinks to the ember of the first frame
+  const Hd = G.hand;
+  G.input.rings = G.input.beam = false; taskEnd(); say('', 1); Hd.on = false; Hd.spin = false;
+  G.bead.r = 0; G.bead.z = 0; G.bead.a = 0;
+  tw(G.beam, 'a', 0, 2.4, E.io2); tw(G.home, 'a', 0, 3.4, E.io2); tw(G, 'sea', 0, 3.6, E.io2);
+  tw(G, 'ember', 1, 3.2, E.io2); tw(G.bead, 'a', 1, 2.0, E.io2, 0.8); tw(G, 'discA', 0, 2.8, E.io2, 0.4);
+  yield* camTo(3, 3.8);
+  yield* wait(1.2);
+  G.ended = true;
+  endEl.hidden = false; document.getElementById('endline').textContent = 'The light is kept.';
+  Array.from(endEl.children).forEach((el, i) => reveals.push({ el, t: 0.1 + [0, 2.6, 4.2, 5.4][i] }));
+  for (;;) yield;
+}
+function* bKeep() {   // a return visit: the dawn harbour, the boats moored, the tune still turning
+  const Hd = G.hand;
+  G.ended = true; keepEl.hidden = false; document.getElementById('stage').classList.add('keeping');
+  Array.from(keepEl.children).forEach((el, i) => reveals.push({ el, t: 0.6 + i * 0.7 }));
+  Hd.phase = 0; Hd.fresh = true; Hd.spin = true;
+  Hd.onBar = (b, off) => { const k = mod(b, 6); setPhrase(k); sBass(BASS[k], off); G.lampPulse = 0.9; };
+  G.onPluck = () => { G.home.tw[Math.floor(Math.random() * 18)] = 1; };
+  Hd.on = true;
+  yield* wait(2.5);
+  if (!A.ctx || A.ctx.state !== 'running') say('Touch anywhere to hear it.', 14);
+  for (;;) { if (cap.text === 'Touch anywhere to hear it.' && A.ctx && A.ctx.state === 'running') say('', 1); yield; }
+}
+const BEATS = [bWake, bLatch, bGears, bHand, bLid, bBoats, bHome, bEnd, bKeep];
+
+// The scene exactly as beat i expects to find it. A reload lands here, with the saved ring positions and phrases.
+function base(i, sv) {
+  tweens.length = 0; fx.length = 0; drags.clear(); run = null;
+  Object.assign(G, { discA: 0, lamp: 0, lampPulse: 0, thump: 0, sea: 0, fade: 0, ember: 0, marks: [], dots: [], dotsWhere: 'rim', goal: null, solveT: 0, pit: 0, task: null, onPluck: null, tapped: false, ended: false });
+  Object.assign(G.bead, { r: 0, ang: 0, a: 1, z: 0 }); G.link[0] = G.link[1] = 0;
+  Object.assign(G.hand, { a: 0, len: 0, phase: 0, on: false, fresh: false, follow: false, spin: false, stop: null, onStep: null, onBar: null, glow: 0 });
+  Object.assign(G.beam, { a: 0, len: 0, ang: 0, tgt: 0, flash: 0 });
+  Object.assign(G.home, { a: 0, dawn: 0, sun: 0, pass: 0 }); G.home.lit = new Array(18).fill(0); G.home.tw = new Array(18).fill(0); G.home.boat = [0, 0, 0];
+  G.cam.k = 0; G.dial.k = -1; G.dial.a = 0; G.input.ember = G.input.rings = G.input.beam = false; G.rock.flown = false; G.rock.seen = 0;
+  rings.forEach(r => Object.assign(r, { step: 0, vis: 0, vel: 0, frac: 0, a: 0, peg: 0, pop: 0, flash: 0, sel: 0 }));
+  boats.forEach((b, k) => Object.assign(b, { found: 0, seen: 0, lit: 0, flare: 0, horn: 0, sail: 0, gone: 0, head: [0.7, -1.0, 2.3][k] }));
+  const sr = (sv && Array.isArray(sv.r)) ? sv.r : [], at = (k, d) => { const v = Number.isInteger(sr[k]) ? mod(sr[k], 12) : d; rings[k].step = rings[k].vis = v; };
+  if (i >= 1) { G.discA = 1; rings[0].a = 1; at(0, 8); }
+  if (i >= 2) { rings[1].a = rings[2].a = 1; at(1, 10); at(2, 4); }
+  if (i >= 3) { G.lamp = 1; G.bead.a = 0; rings.forEach(r => { r.peg = 1; }); }
+  if (i >= 4) { G.hand.a = 1; G.hand.len = 1; }
+  if (i >= 5) { G.cam.k = 1; G.sea = 1; G.hand.follow = true; Object.assign(G.beam, { a: 1, len: 1 }); G.beam.ang = G.beam.tgt = restAngle(); boats.forEach(b => { b.found = 1; b.lit = 1; }); }
+  if (i >= 6) { boats.forEach(b => { b.gone = 1; b.sail = 1; }); G.hand.follow = false; }
+  if (i >= 8) {
+    G.cam.k = 2; G.hand.a = 0; G.beam.ang = G.beam.tgt = 0; G.beam.a = 0.45;
+    Object.assign(G.home, { a: 1, dawn: 1, sun: 1, pass: 1 }); G.home.lit.fill(1); G.home.boat = [1, 1, 1];
+  }
+}
+
+// ---------- the loop: the only place time moves ----------
+let lastT = 0;
+function frame(now) {
+  window.requestAnimationFrame(frame);
+  let dt = (now - lastT) / 1000; lastT = now;
+  if (dt > 0 && dt < 0.25 && !document.hidden && DPR > 1) {   // a slow machine gets a lighter canvas, once, quietly
+    slowSum += dt; if (++slowN >= 120) { if (slowSum / slowN > 0.034 && quality > 0.5) { quality *= 0.75; resize(); } slowN = 0; slowSum = 0; }
+  }
+  if (!(dt > 0)) dt = 0; else if (dt > 0.05) dt = 0.05;   // clamp, so a pause or a slow frame never jumps the game
+  if (document.hidden) return;
+  if (A.mine) {   // only ever undo a suspend this page did itself: a host frame that suspends the audio keeps it suspended
+    if (A.ctx.state !== 'running') { A.mine = false; const p = A.ctx.resume(); if (p && p.catch) p.catch(() => {}); } else if (now > A.mineT) A.mine = false;
+  }
+  frameT = 0;
+  let g = dt * TS;
+  while (g > 1e-6) { const h = Math.min(g, 1 / 30); step(h); g -= h; }
+  seaSync();
+  draw();
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { dropDrags(); if (A.ctx && A.ctx.state === 'running') { A.mine = true; const p = A.ctx.suspend(); if (p && p.catch) p.catch(() => {}); } }
+  else { lastT = performance.now(); A.mineT = lastT + 1500; }
+});
+window.addEventListener('blur', dropDrags);
+window.addEventListener('resize', resize);
+if (window.visualViewport) window.visualViewport.addEventListener('resize', resize);
+
+// "Wind it back" asks first, then gives the same experience again from the start.
+const windBtn = document.getElementById('wind'), askEl = document.getElementById('ask'), linksEl = document.getElementById('keeplinks');
+askEl.classList.add('in');
+windBtn.addEventListener('click', () => { linksEl.hidden = true; askEl.hidden = false; document.getElementById('no').focus(); });
+document.getElementById('no').addEventListener('click', () => { askEl.hidden = true; linksEl.hidden = false; windBtn.focus(); });
+document.getElementById('yes').addEventListener('click', () => { if (!FRESH) { try { localStorage.removeItem(KEY); } catch (e) { /* no storage */ } } location.reload(); });
+
+// Read-only state for tests.
+const api = {}, def = (k, f) => Object.defineProperty(api, k, { get: f, enumerable: true });
+def('beat', () => BEAT_IDS[G.bi]); def('beatIndex', () => G.bi); def('beats', () => BEAT_IDS.slice());
+def('ended', () => G.ended); def('clock', () => G.clock); def('muted', () => G.muted);
+def('phase', () => G.gate > 0 ? 'gate' : G.input.ember ? 'ember' : G.input.beam ? 'beam' : G.input.rings ? 'rings' : 'watch');
+def('rings', () => rings.filter(r => r.a > 0.5).map(r => mod(r.step, 12)));
+def('goal', () => G.goal ? { type: G.goal.type, targets: (G.goal.t || G.goal.set).slice() } : null);
+def('linked', () => [G.link[0] > 0.5, G.link[1] > 0.5]);
+def('disc', () => ({ x: cam.x, y: cam.y, r: cam.s }));
+def('ringRadii', () => RMID.map(r => r * cam.s));
+def('boats', () => boats.map(b => ({ x: cam.x + b.x * cam.s, y: cam.y + b.y * cam.s, angle: b.ang / DEG, found: !!b.found, home: b.sail > 0 })));
+def('beamAngle', () => mod(G.beam.ang / DEG + 180, 360) - 180);
+def('phrases', () => JSON.parse(JSON.stringify(G.phr)));
+def('selected', () => G.sel); def('keyboard', () => G.kb); def('voices', () => A.n);
+def('audio', () => A.ctx ? A.ctx.state : 'none'); def('hint', () => hint.lvl); def('caption', () => cap.next !== null ? cap.next : cap.text);
+Object.freeze(api);
+Object.defineProperty(window, '__game', { value: api, enumerable: true });
+
+// ---------- boot ----------
+resize();
+const sv = load();
+if (sv) { setMute(!!sv.m, true); if (Array.isArray(sv.p)) G.phr = sv.p.slice(0, 6); }
+if (sv && sv.done) { base(8); startBeat(8, true); }
+else if (sv && sv.b >= 1 && sv.b <= 6) { base(sv.b, sv); G.bi = sv.b; G.gate = 0.001; say('Touch to go on.', 30); }
+else { base(0); startBeat(0); }
+window.requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
