@@ -1,9 +1,17 @@
 // The tea room's picks (src/data/tea-picks.json): what the page's own reader (src/lib/tea-picks.js) refuses fails
 // here, at deploy level, in about a second; a shelf showing the live notebook or a machine gone from the lab only
-// warns. A repo without the file has nothing to check.
+// warns, even under --strict. A repo without the file has nothing to check. npm run tea:picks reads the same site.
 import path from 'node:path';
 import { TEA_CHAPTERS } from '../../src/data/tea-chapters.js';
 import { PICKS_FILE, readPicks } from '../../src/lib/tea-picks.js';
+
+// What readPicks() checks the picks against, from the files: every post (it keeps the listed ones), the project
+// files, the teardown lab's folders.
+export const picksSite = (repo) => ({
+  posts: repo.posts.filter((p) => !p.yamlError).map((p) => ({ id: p.slug, data: p.data })),
+  projects: new Set(repo.projects.map((p) => path.basename(p.file, '.yaml'))),
+  hasMachine: (name) => repo.exists(`public/labs/teardown/${name}`),
+});
 
 export default function teaPicks(repo, report) {
   if (!repo.exists(PICKS_FILE)) return;
@@ -14,14 +22,9 @@ export default function teaPicks(repo, report) {
     report(PICKS_FILE, null, `this isn't valid JSON: ${error.message}`, 'deploy');
     return;
   }
-  const site = {
-    posts: repo.posts.filter((p) => !p.yamlError).map((p) => ({ id: p.slug, data: p.data })),
-    projects: new Set(repo.projects.map((p) => path.basename(p.file, '.yaml'))),
-    hasMachine: (name) => repo.exists(`public/labs/teardown/${name}`),
-  };
   try {
-    const { warnings } = readPicks(doc, TEA_CHAPTERS, site);
-    for (const w of warnings) report(PICKS_FILE, null, w, 'warn');
+    const { warnings } = readPicks(doc, TEA_CHAPTERS, picksSite(repo));
+    for (const w of warnings) report(PICKS_FILE, null, w, 'live');
   } catch (error) {
     if (!error.reason) throw error;
     report(PICKS_FILE, null, `${error.reason} (the page could not be built from it)`, 'deploy');

@@ -2,16 +2,16 @@
 // picker's, dom the section's id on the page (a valid CSS id: never a bare "3d"), kind the component that draws it.
 // A shelf holds one kind of item, at most max of them picked; auto says which listed posts fill it when the owner
 // asks for the newest instead ({} for any listed post). Titles come from the copy and the taxonomy, never from here.
-import { CHAPTERS, COPY } from './tea.js';
+import { COPY } from './tea.js';
 import { PROJECTS, TOPICS } from './taxonomy.js';
 
-const label = (id) => CHAPTERS.find((c) => c.id === id).label;
+const label = (id) => COPY.chapterTitles[id];
 const topic = (id, key, max) => ({ id, dom: `topic-${key}`, kind: 'topic', topic: key, title: TOPICS[key].label,
   shelves: [{ id: 'leads', max, holds: 'post', auto: { topic: key } }] });
 const projects = (id, max) => ({ id, max, holds: 'project' });
 
 export const TEA_CHAPTERS = [
-  { id: 'hero', dom: 'top', kind: 'hero', title: COPY.gardenTitle, shelves: [] },
+  { id: 'hero', dom: 'top', kind: 'hero', title: label('hero'), shelves: [] },
   { id: 'start', dom: 'start', kind: 'start', title: label('start'),
     shelves: [{ id: 'leads', max: 3, holds: 'post', auto: {} }] },
   { id: 'tv', dom: 'evening-television', kind: 'series', title: PROJECTS['evening-television'].label,
