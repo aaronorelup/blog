@@ -1,0 +1,44 @@
+/* Google's world only (SPEC 2.5.3): the two doors' names, the index label, the stamp on the picture, the
+   sentence that takes the console when the dial is turned, and the name plates of the catch. Colours come
+   from worlds/google.js through the --w-* properties, so brandMode "marks-only" needs no edit here. */
+/* the line under the kicker carries this world's glass: the one gradient on the page. Marks-only keeps the house line */
+.ail-world[data-world='google'][data-brand='full'] .ail-kicker { border-image: var(--ail-own-google) 1; }
+
+/* the console: picking a door is one control, the two ways of painting are a pair on their own line */
+.ail-gl .ail-world[data-world='google'] .ail-sig__ui::after { content: ''; flex: 0 0 100%; order: 1; }
+.ail-gl .ail-world[data-world='google'] .ail-sig__ui .ail-btn:not([data-act='go']) { order: 2; }
+/* part one: a name over each tall door, and the label of the one index at the foot of the stack */
+.ail-gl .ail-world[data-world='google'] .ail-sig__item.is-on .ail-fact { pointer-events: auto; }
+.ail-gl .ail-world[data-world='google'] .ail-sig__list h3 { display: block; position: fixed; left: 0; top: 0; z-index: 3; padding: 5px 9px; background: var(--w-scrim); color: var(--ail-fg); white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity 300ms var(--ail-ease); will-change: transform; }
+.ail-gl .ail-world[data-world='google'] .ail-sig__list h3.is-on { opacity: 1; visibility: visible; }
+
+/* part two: the stamp sits on the frame like ink on paper, and opens the second depth */
+.ail-gl .ail-world[data-world='google'] .ail-sig__list[data-list='1'] h3 { padding: 6px 10px 5px; border: 2px solid currentColor; outline: 1px solid currentColor; outline-offset: 2px; font-size: 13px; letter-spacing: .14em; cursor: pointer; }
+.ail-gl .ail-world[data-world='google'] .ail-sig__list[data-list='1'] h3:focus-visible { outline: 2px solid var(--ail-fg); outline-offset: 4px; }
+/* the sentence about its pictures takes the myth's place while the dial is in play */
+.ail-gl .ail-world[data-world='google'] .ail-sig[data-part='2'] .ail-myth { display: none; }
+.ail-gl .ail-world[data-world='google'] .ail-sig[data-part='2'] .ail-sig__list[data-list='1'] .ail-sig__item { position: static; display: none; padding: 0; background: none; white-space: normal; opacity: 1; visibility: visible; transform: none; pointer-events: auto; }
+.ail-gl .ail-world[data-world='google'] .ail-sig[data-part='2'] .ail-sig__list[data-list='1'] .ail-sig__item[data-n='0'] { display: block; font-size: clamp(20px, 1.7vw, 26px); line-height: 1.14; }
+.ail-gl .ail-world[data-world='google'] .ail-sig[data-part='2'] .ail-sig__list[data-list='1'] .ail-own::before { display: none; }
+.ail-gl .ail-world[data-world='google'] .ail-sig[data-part='2'][data-more] .ail-sig__list[data-list='1'] .ail-sig__item { display: block; margin-top: 10px; }
+.ail-gl .ail-world[data-world='google'] .ail-sig[data-part='2'][data-more] .ail-sig__item .ail-note { display: block; margin: 8px 0 0; font-size: 17px; line-height: 1.25; }
+.ail-gl .ail-world[data-world='google'] .ail-sig[data-part='2'][data-more] .ail-sig__item[data-n='1'] { font-size: 17px; line-height: 1.25; color: var(--ail-fg-2); }
+
+/* the catch: name plates. One that was renamed shows its old name until it flips */
+.ail-gl .ail-world[data-world='google'] .ail-catch__item { display: grid; justify-items: start; gap: 4px; padding: 8px 12px 9px; background: var(--w-card); box-shadow: 0 0 0 1px color-mix(in srgb, var(--ail-fg) 46%, transparent); will-change: transform; }
+.ail-gl .ail-world[data-world='google'] .ail-catch__item > * { margin: 0; }
+.ail-gl .ail-world[data-world='google'] .ail-catch__item[data-kind='shut-down'] { transform-origin: 12px 10px; }
+.ail-gl .ail-world[data-world='google'] .ail-catch__was { font: 400 var(--ail-fs-label)/1.2 var(--ail-mono); letter-spacing: .06em; text-transform: uppercase; }
+.ail-gl .ail-world[data-world='google'] .ail-catch__item:not([data-new]) .ail-catch__was { text-decoration: none; opacity: 1; font: inherit; letter-spacing: 0; text-transform: none; }
+.ail-gl .ail-world[data-world='google'] .ail-catch__item[data-kind='renamed']:not([data-new]) .ail-own { display: none; }
+
+@media (max-width: 599px) {
+  /* the phone's sheet lists them: nothing is pinned over the stack */
+  .ail-gl .ail-world[data-world='google'] .ail-sig__list h3 { position: static; display: none; padding: 0; background: none; color: var(--ail-fg-2); transform: none !important; }
+  .ail-gl .ail-world[data-world='google'] .ail-sig__list h3.is-on { display: block; flex: 0 0 100%; }
+  .ail-gl .ail-world[data-world='google'] .ail-sig__list[data-list='1'] h3.is-on { display: inline-block; flex: none; order: 2; padding: 5px 8px 4px; color: var(--ail-fg); outline: 0; border-width: 1.5px; font-size: 11px; }
+  .ail-gl .ail-world[data-world='google'] .ail-sig[data-part='2'] .ail-sig__list[data-list='1'] .ail-sig__item[data-n='0'] { font-size: 18px; }
+  .ail-gl .ail-world[data-world='google'] .ail-catch__item { display: block; padding: 0; background: none; box-shadow: none; }
+  .ail-gl .ail-world[data-world='google'] .ail-catch__item.is-on { display: block; }
+  .ail-gl .ail-world[data-world='google'] .ail-catch__item > * { display: inline; margin-right: .5em; }
+}
