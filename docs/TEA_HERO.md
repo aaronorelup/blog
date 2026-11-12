@@ -258,6 +258,11 @@ in where the standing rig's pose is closest to it). Give it its own actor with `
 - **Lights and glows hanging from a hidden actor are not drawn.** Give the stand-in actor its own lights, as many as the
   one it replaces, so the scene's light count never changes at a cut: a change recompiles every lit material in the
   middle of the scroll. The TV's screen shader is not faded by `opacity`.
+- **So cut an actor that carries lights or glows; dissolve only one that carries none.** Through a dissolve both
+  actors are drawn, and their lights and glows are not faded with them: both actors' lights shine at full strength, so
+  the light on the scene doubles, and the light count changes, so the first time the scroll enters the overlap every
+  lit material on screen is compiled again (one frame took 0.57 s under SwiftShader with a light on each stand-in,
+  0.68 s with the final cast's two light pairs; not measured on a real GPU).
 - Tools that isolate an actor (`silhouettes.mjs`) hide meshes, never an actor's root, which its tracks set.
 
 ### Node naming convention for rigs
