@@ -140,7 +140,7 @@ the static and the pinned hero, and sits in the strip's reserved right end once 
 | `public/tea/hero/*.webp, *.glb` | the painted picture's layers (`bg-*`, final: see "The picture"), posters (`poster-*`), stand-in models (`standin-*`) |
 | `scripts/tools/tea-hero/` | `shots.mjs`, `poster.mjs`, `silhouettes.mjs` (overlap and behind-the-box per size and scroll), `edges.mjs` (the picture covers every frame), `verify.mjs`; `standins.mjs` (stand-in GLBs) |
 | `tests/e2e/tea-hero.spec.mjs` | the e2e spec (tea-hero-1 to 26, listed in `tests/e2e/INVENTORY.md`) |
-| `tests/unit/tea-hero.test.mjs` | the runtime's maths in plain node: the manifest's defaults and new fields, every channel, the swap (follow, a cut, a dissolve down and back), `loadActors` on a GLB made in memory, the skeleton freed, the shipped manifest's channels |
+| `tests/unit/tea-hero.test.mjs` | the runtime's maths in plain node: the manifest's defaults and new fields, every channel, the swap (follow, a cut, a dissolve down and back), `loadActors` on a GLB made in memory, the skeleton freed, the shipped manifest's channels, and its picture covering every frame (`edges.mjs`) |
 | `src/pages/tea-lab.astro` | the lab: the real hero and rail over empty chapter heads; `?manifest=`. Temporary: deleted once the final models land |
 
 Outside these, the slice touched `src/styles/tea/cover.css` (the padding variables; the SVG garden's rules and the
@@ -194,7 +194,11 @@ lens shift docked or not (at the docked box's measured share of the width: at mo
 passes too), at 17 sizes from 360x640 to 1920x1080, no frame shows past the far plate, and the mid layer's side edges
 never come into view where its paint reaches them (rows 921 to 1051 of its 1200; its top and bottom bands are fully
 transparent). A portrait screen grows each layer by `portraitScale` (1.5) about its centre. The stand-in plates showed
-their left edge from progress 0.2 to 0.3 on a docked desktop even with the pointer centred.
+their left edge from progress 0.2 to 0.3 on a docked desktop even with the pointer centred. `npm test` traces the
+shipped manifest the same way (`tests/unit/tea-hero.test.mjs`, about 7 s) and fails on any frame past an edge, as it
+does on the painter's fit: so **keep these `background.layers` when another manifest comes in whole** (the cast's
+carries the painter's fit), and after any change to the camera keys, `camera.dock`, `camera.portrait`, the parallax or
+a layer, read the margins `edges.mjs` prints.
 
 ### Composition (as tuned on the stand-ins)
 
@@ -402,8 +406,8 @@ and restores the poster.
   difference 1.11 to 1.63 of 255 (the screen's grain and the motes); the actors' silhouettes as above
   (`silhouettes.mjs`, on the stand-ins); the title box's text contrast by day and by night over the poster and the
   scene (by day title 3.1, kicker 5.1, the rest 5.5 or more; measured on the stand-in picture).
-- The picture's edges with `edges.mjs` (see "The picture"); it fails on the painter's own fit and on the stand-in
-  plates.
+- The picture's edges with `edges.mjs` (see "The picture"), in `npm test` on the shipped manifest; it fails on the
+  painter's own fit and on the stand-in plates.
 - The loader on the spike's compressed models and a skinned test model (above).
 
 ## Not verified
@@ -441,9 +445,10 @@ and restores the poster.
    in tracks and idle; `follow` and `visible` or `opacity` for the leap). Look at it in the lab with a variant first,
    then on `/tea/`; adjust the keys, `camera.dock.shift` and `camera.portrait.travel` with `shots.mjs --sheet` (the
    title box in the frame), then run `poster.mjs`, and hold the result to `silhouettes.mjs` at 390x844, 360x740,
-   768x1024, 1280x800 and 1440x900: no overlap between the actors, nothing behind the docked box. After any change to
-   the camera or the lens shift, run `edges.mjs` again. Delete the `standin-*.glb` no longer referenced and stop
-   pointing at `jefrie-v2.glb`. Commit the final binaries once.
+   768x1024, 1280x800 and 1440x900: no overlap between the actors, nothing behind the docked box. Keep
+   `background.layers` as they are (`npm test` fails on the painter's own fit, which the cast's manifest carries) and
+   run `npm test` after any change to the camera or the lens shift (it runs `edges.mjs`). Delete the `standin-*.glb`
+   no longer referenced and stop pointing at `jefrie-v2.glb`. Commit the final binaries once.
 3. **Delete `src/pages/tea-lab.astro`** once the final models are in, build, confirm `/tea-lab/` is gone from
    `dist/stats-pages.txt`, run `verify.mjs` and the e2e spec, compare budgets and run `dist-diff` against an
    untouched build, then land per `CLAUDE.md`.

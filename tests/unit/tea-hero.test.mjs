@@ -2,7 +2,7 @@
 // three loaded the way the page loads it: the manifest's defaults, and the new fields only where they are written; the
 // track maths of every channel; one actor swapped for another (follow, a visible cut, an opacity dissolve that always
 // comes back, scrolled down and back like the page); a skinned mesh's skeleton freed; and the shipped manifest held to
-// what the runtime knows. The browser side of the same swap is e2e tea-hero-26.
+// what the runtime knows, its picture to covering every frame (edges.mjs). The browser side of the swap is tea-hero-26.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -240,4 +240,19 @@ test('the shipped manifest: every channel is one the runtime knows, a whole-acto
     assert.ok(!(t.node && ['visible', 'opacity'].includes(t.channel)), `${t.actor}/${t.node}: ${t.channel} is skipped on a node`);
   }
   assert.doesNotThrow(() => normalise(SHIPPED, '/tea/hero/manifest.json'));
+});
+
+// A manifest copied over whole (the cast's, which carries the painter's own fit of the picture) or a new camera key can
+// let a layer's edge into the frame: the shipped one is traced at every size edges.mjs knows, and the painter's fit,
+// which shows the far plate's left edge on a docked desktop and its foot on a portrait tablet, has to fail.
+test('the shipped picture covers every frame: 17 sizes, the whole scroll, the pointer anywhere, docked or not (edges.mjs)', async () => {
+  const { edges } = await import('../../scripts/tools/tea-hero/edges.mjs');
+  const shipped = await edges(SHIPPED);
+  assert.equal(shipped.faults, 0, shipped.lines.join('\n'));
+  const painter = structuredClone(SHIPPED);
+  const layer = (id) => painter.background.layers.find((l) => l.id === id);
+  Object.assign(layer('far'), { size: [28.16, 15.84], y: 0.65 });
+  Object.assign(layer('mid'), { size: [18, 12] });
+  const fit = await edges(painter, { sizes: ['1280x800:dock:1.12', '768x1024'] });
+  assert.ok(fit.faults > 0, fit.lines.join('\n'));
 });
