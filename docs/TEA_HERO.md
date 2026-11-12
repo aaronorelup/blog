@@ -4,9 +4,11 @@ Built on branch `feat/alt-view-hero` (the hero runtime, 2026-11-10) and wired in
 (2026-11-11), on top of tea-core's `/tea/` page. This file is meant to be enough on its own for a session that only
 has the repo.
 
-**Before anything merges to main: delete `src/pages/tea-lab.astro`.** It is a development page (noindex, linked from
-nowhere) kept so the hero can run alone. While it exists the build lists `/tea-lab/` in `stats-pages.txt`. It no
-longer renames the main site's stylesheet (it imports `tea.css`, not `site.css`).
+**The lab page, `src/pages/tea-lab.astro` (`/tea-lab/`), is temporary.** It is a development page kept so the hero
+can run alone, live with the rest of the work in progress until the final models land, then deleted. It carries its
+own robots noindex, is in no sitemap, feed or search index, and nothing links to it; like every built page it is a
+line of `stats-pages.txt`, so `/stats` may name it if it gets visits. It doesn't rename the main site's stylesheet
+(it imports `tea.css`, not `site.css`).
 
 ## What it is
 
@@ -129,7 +131,7 @@ the static and the pinned hero, and sits in the strip's reserved right end once 
 | `public/tea/hero/*.webp, *.glb` | stand-in picture layers (`bg-*`), posters (`poster-*`), stand-in models (`standin-*`) |
 | `scripts/tools/tea-hero/` | `shots.mjs`, `poster.mjs`, `silhouettes.mjs` (overlap and behind-the-box per size and scroll), `verify.mjs`; `standins.mjs` (stand-in GLBs), `paint.mjs` + `paint-scene.js` (stand-in picture) |
 | `tests/e2e/tea-hero.spec.mjs` | the e2e spec (tea-hero-1 to 24, listed in `tests/e2e/INVENTORY.md`) |
-| `src/pages/tea-lab.astro` | the lab: the real hero and rail over empty chapter heads; `?manifest=`. DELETE before merging |
+| `src/pages/tea-lab.astro` | the lab: the real hero and rail over empty chapter heads; `?manifest=`. Temporary: deleted once the final models land |
 
 Outside these, the slice touched `src/styles/tea/cover.css` (the padding variables; the SVG garden's rules and the
 old stage rules removed; the box's backdrop blur removed), `src/styles/tea/tea.css` (the strip's `::before`) and deleted
@@ -309,7 +311,8 @@ and restores the poster.
 1. **Stand-ins.** Yusef is a primitive angel (`standin-angel.glb`), the TV is primitive, the picture is a painted
    placeholder (`bg-*`), Jefrie is the existing 2 MB `jefrie-v2.glb` (over the 1.5 MB per-file cap: a stand-in only;
    one unrigged mesh, her tail curls through the bend deform). All of them are data in the manifest.
-2. **The lab page** must be deleted before merging (its `stats-pages.txt` line).
+2. **The lab page** is live until the final models land (noindex, linked from nowhere, but a line of
+   `stats-pages.txt`): delete it with the swap.
 3. At load, before the scene, tea-core's title moves about 10 px when its web font swaps in (CLS 0.0004, scene or
    not). The scene's arrival moves nothing on screen (tea-hero-8 and 9).
 4. **Composition left for the final assets:** at progress 0 the centred box hides most of the TV on every landscape
@@ -332,6 +335,6 @@ and restores the poster.
    `poster.mjs`, and hold the result to `silhouettes.mjs` at 390x844, 360x740, 768x1024, 1280x800 and 1440x900: no
    overlap between the actors, nothing behind the docked box. Delete `standin-*.glb` and `bg-*.webp` that are no
    longer referenced and stop pointing at `jefrie-v2.glb`. Commit the final binaries once.
-3. **Delete `src/pages/tea-lab.astro`**, build, confirm `/tea-lab/` is gone from `dist/stats-pages.txt`, run
-   `verify.mjs` and the e2e spec, compare budgets and run `dist-diff` against an untouched build, then land per
-   `CLAUDE.md`.
+3. **Delete `src/pages/tea-lab.astro`** once the final models are in, build, confirm `/tea-lab/` is gone from
+   `dist/stats-pages.txt`, run `verify.mjs` and the e2e spec, compare budgets and run `dist-diff` against an
+   untouched build, then land per `CLAUDE.md`.
