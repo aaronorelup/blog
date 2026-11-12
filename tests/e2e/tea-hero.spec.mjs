@@ -586,8 +586,10 @@ test('tea-hero-26 one actor swapped for another rides its leader and cuts and di
   await page.route('**/tea/hero/manifest.json', async (route) => {
     const response = await route.fetch();
     const m = await response.json();
+    const keep = (t) => t.node || !['visible', 'opacity'].includes(t.channel);   // no whole-actor show or hide
     m.actors = m.actors.filter((a) => !a.follow);
-    m.tracks = m.tracks.filter((t) => t.node || !['visible', 'opacity'].includes(t.channel));
+    m.tracks = m.tracks.filter(keep);
+    m.idle = (m.idle || []).filter(keep);
     const others = m.actors.filter((a) => a.id !== LEAD);
     KEYS[others[others.length - 1].id] = { channel: 'visible', keys: [[0.699, 1], [0.701, 0]] };
     m.actors.push({ id: 'swap', src: others[0].src, follow: LEAD, fade: true, position: [0.3, 0, 0.1],
