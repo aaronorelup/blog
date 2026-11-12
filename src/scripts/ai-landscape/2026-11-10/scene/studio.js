@@ -55,6 +55,10 @@ export function createStudio(ctx) {
       sh.uDark.value.set(studio.dark, studio.roomX, studio.glow.radius, studio.glow.amount);
       sh.uGlowPos.value.copy(studio.glow.pos);
       sh.uGlowCol.value.copy(studio.glow.color);
+      // lights out stays dark whatever the colour: a very bright glow (white) is held to half strength
+      const g = sh.uGlowCol.value;
+      const bright = 0.2126 * g.r + 0.7152 * g.g + 0.0722 * g.b;
+      if (bright > 0.5) g.multiplyScalar(0.5 / bright);
       scene.background.copy(PAPER).lerp(NIGHT, studio.dark);
       studio.casters.forEach((c, i) => {
         gu.uTPos.value[i].set(c.x, c.z);

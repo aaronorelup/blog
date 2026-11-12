@@ -16,7 +16,7 @@ const myth = p.myths.find((m) => m.id === cfg.myth) || p.myths[0];
 const others = p.myths.filter((m) => m !== myth);
 const markName = cfg.marks.of === 'name' ? p.name : p.brand;
 ---
-<section id={p.id} class="ail-sec ail-world" data-sec="worlds" data-world={p.id} data-screens="3" data-rail={p.name}
+<section id={p.id} class="ail-sec ail-world" data-sec="worlds" data-world={p.id} data-screens="3" data-land="0.62" data-rail={p.name}
   data-chrome={cfg.theme.chrome} data-brand={cfg.brandMode} data-catch={cfg.catchFloor} aria-labelledby={`${p.id}-name`}>
   <div class="ail-stage">
     <header class="ail-world__head">

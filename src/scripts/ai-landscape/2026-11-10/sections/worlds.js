@@ -88,7 +88,7 @@ export function create(ctx, el, sec) {
   }
   const onRow = (e) => {
     const rowEl = e.target.closest('.ail-floor');
-    if (!rowEl || !st.calls || e.target.closest('.ail-fact')) return;
+    if (!rowEl || !st.calls || e.defaultPrevented) return;          // a proof card that took the click calls preventDefault
     const i = st.calls.rows.indexOf(rowEl);
     if (i >= 0) push(i);
   };

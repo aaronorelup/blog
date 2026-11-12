@@ -44,18 +44,20 @@ export function createTextures(ctx) {
         g.strokeStyle = ink ? '#33363D' : '#C9CDD5'; g.lineWidth = 3; g.stroke();
         return [c, g];
       };
-      let [c, g] = blank();
+      const [c, g] = blank();
       let img = null;
       let iw = 0;
       let ih = 0;
       let made = null;
       let over = 0;
+      let foreign = false;
       if (url) {
         try {
           // an SVG with only a viewBox has no size of its own, and some browsers then draw nothing: give the
           // drawing (never the file) the size its viewBox states
           if (/\.svg(\?|$)/.test(url)) {
             const text = await (await fetch(url)).text();
+            foreign = /<foreignObject/i.test(text);
             const root = text.slice(0, text.indexOf('>') + 1);
             const box = (root.match(/viewBox="([^"]+)"/) || [])[1];
             if (!/\swidth="/.test(root) && box) {
@@ -71,10 +73,9 @@ export function createTextures(ctx) {
         const pad = clear === 'own' ? 0 : clear;                  // 'own': the file carries its own clear space
         const h = Math.min((S * 0.94) / (1 + 2 * pad), ((S * 0.94) * ih) / (iw + 2 * pad * ih));
         const w = (h * iw) / ih;
-        g.drawImage(img, (S - w) / 2, (S - h) / 2, w, h);
-        // a file the browser will not let a canvas read back (it taints it) cannot be a texture. The plate then
-        // stays blank and row.js holds the file itself, as an <img>, over it (texture.userData.over)
-        try { g.getImageData(0, 0, 1, 1); } catch { [c, g] = blank(); over = h / S; }
+        // an SVG with a foreignObject taints any canvas it is drawn to, so it cannot be a texture. The plate
+        // then stays blank and row.js holds the file itself, as an <img>, over it (texture.userData.over)
+        if (foreign) over = h / S; else g.drawImage(img, (S - w) / 2, (S - h) / 2, w, h);
       }
       if (made) URL.revokeObjectURL(made);
       if (!over && (!img || !iw || !ih)) {

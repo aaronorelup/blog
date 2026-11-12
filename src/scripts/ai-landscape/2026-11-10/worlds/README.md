@@ -86,9 +86,12 @@ section and its signature set what they want. Nothing you set lasts a frame unle
 ## Adding a section (the other packages)
 
 `src/components/.../sections/NN-name.astro` renders `<section id data-sec="name" data-screens="1.4"
-data-rail="Label"><div class="ail-stage">...</div></section>`, importing its own CSS. Words come from
-`view` (`data/view.js`: `view.providers`, `view.layers`, `view.data` with every claimRef resolved, `fact()`)
-and `COPY`. A block with `data-beat="a b"` stays hidden until `setBeat(el, 'a')` (`core/dom.js`).
+data-rail="Label" data-land="0.3"><div class="ail-stage">...</div></section>`, importing its own CSS. The
+entry sizes the section, lists it in the rail, shows its stage while the clock is inside it, and lands links
+to `#id` at `data-land` screens in. Words come from `view` (`data/view.js`: `view.providers`, `view.layers`,
+`view.data` with every claimRef resolved, `fact()`) and `COPY`, through `Fact.astro` (a fact with its proof
+data: a click nobody takes with `preventDefault()` pushes in on its floor), `Stack.astro`, `Mark.astro` and
+`Glyph.astro`. A block with `data-beat="a b"` stays hidden until `setBeat(el, 'a')` (`core/dom.js`).
 `src/scripts/.../sections/name.js` exports `create(ctx, el, sec)` and returns
 `{ enter, update(t, dt, u), leave, dispose, stops }` (`t` 0 to 1, `u` screens in, `stops` the still frames
 for reduced motion). Start and end at `ctx.rig.stops.row` so neighbours meet without a jump.

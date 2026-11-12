@@ -88,7 +88,22 @@ function boot() {
   const markRail = buildRail(clock);
   const map = $('.ail-map');
   const cols = $$('.ail-map__col');
-  if (location.hash) { const to = document.getElementById(location.hash.slice(1)); if (to) to.scrollIntoView(); }
+  // A link to a section lands where the section says it is worth arriving (data-land, in screens from its start):
+  // a world's address opens on the world, not on the studio before it.
+  const land = (hash, smooth) => {
+    const sec = clock.sections.find((x) => x.id && x.id === hash.slice(1));
+    if (!sec) return false;
+    window.scrollTo({ top: clock.pixels(sec.s0 + (Number(sec.el.dataset.land) || 0)), behavior: smooth && !reduced ? 'smooth' : 'auto' });
+    return true;
+  };
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a || state.tier === 'static' || !land(a.hash, true)) return;
+    e.preventDefault();
+    history.pushState(null, '', a.hash);
+  });
+  window.addEventListener('hashchange', () => { if (state.tier !== 'static') land(location.hash, false); });
+  if (location.hash) land(location.hash, false);
   clock.update(0); clock.jump();
   state.tier = rung.name;
 
