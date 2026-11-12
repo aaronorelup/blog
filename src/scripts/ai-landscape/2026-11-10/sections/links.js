@@ -13,7 +13,9 @@ const STEP = 3;
 const SQUEEZE = 2.85 / 4.2;
 const VIEW = { pos: [0, 2.7, 31], look: [0, 2.35, 0], fov: 24, fit: 26.6, cy: 0.27 };
 const PHONE = { pos: [0, 3.1, 30], look: [0, 2.5, 0], fov: 24, fit: 18.4, cy: 0.21 };
+// each owner's colour as a line on the dark: its glass, lifted where the glass is too dark to show at night
 const NIGHT = { anthropic: '#E08A6C', openai: '#F3F3F3', google: '#5C9EFF', meta: '#3D8BEA', xai: '#FFFFFF', you: '#A6ABB5', outside: '#A6ABB5' };
+const white = new Color('#FFFFFF');
 
 export function create(ctx, el, sec) {
   const { rig, row, labels, prims, studio, input, phone, reduced } = ctx;
@@ -178,11 +180,12 @@ export function create(ctx, el, sec) {
         const d = Math.min(1, (st.drawn.get(x.n) ?? (mine ? 0 : 1)) + (reduced ? 1 : dt / 0.9));
         st.drawn.set(x.n, d);
         x.arc.draw = mine ? smooth(d * 1.4 - (x.n % 8) * 0.05) : 1;
-        x.arc.show = k * (x.n === st.active ? 1 : mine ? 0.62 : 0.1);
+        // the arc being read is brightest, its kind stays readable, the other kinds are a faint web behind
+        x.arc.show = k * (x.n === st.active ? 1 : mine ? 0.5 : 0.09);
         x.arc.color.copy(x.base);
+        if (x.n === st.active) x.arc.color.lerp(white, 0.25);
         x.arc.update();
       }
-      items.forEach((li) => { li.style.opacity = ''; });
     },
     dispose() {
       el.removeEventListener('click', onChip);
