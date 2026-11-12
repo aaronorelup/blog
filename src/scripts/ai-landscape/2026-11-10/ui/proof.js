@@ -6,7 +6,7 @@ import { $, $$, announce } from '../core/dom.js';
 import { source } from './drawer.js';
 
 const card = document.getElementById('ail-proof');
-const phone = matchMedia('(max-width: 599px)');
+const phone = matchMedia('(max-width: 899px)');
 let from = null;
 let last = '';
 let raf = 0;

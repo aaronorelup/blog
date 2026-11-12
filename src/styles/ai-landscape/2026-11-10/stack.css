@@ -43,7 +43,7 @@
 .ail-gl .ail-world .ail-stack.is-compact .ail-floor:not(.is-lit):not(.is-open) { opacity: 0 !important; visibility: hidden; pointer-events: none; }
 .ail-gl .ail-world .ail-door:not([open]) .ail-stack { display: none; }
 
-@media (max-width: 599px) {
+@media (max-width: 899px) {
   .ail-floor { grid-template-columns: 44px minmax(6.5em, 8em) 1fr; column-gap: 10px; }
   .ail-floor__more { grid-column: 1 / -1; }
   /* phone, 3D page: no label is drawn over a stack. The nine rows sit as a list in the sheet under it */

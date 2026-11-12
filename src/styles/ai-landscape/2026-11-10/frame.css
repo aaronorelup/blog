@@ -45,7 +45,7 @@
 .ail-open__tour[data-state='on'] span::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: ail-blink 1.4s steps(2, jump-none) infinite; }
 @keyframes ail-blink { from { opacity: 1; } to { opacity: .2; } }
 
-@media (max-width: 599px) {
+@media (max-width: 899px) {
   .ail-open, .ail-end { --u: calc(100vw / 21); --lid: 31svh; --gap: 32px; }
   /* phone, 3D page: no caption is drawn over a stack. The five go in a list under the open line */
   .ail-gl .ail-open .ail-stage { display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; padding: 0 var(--ail-margin) 18px; }
@@ -117,7 +117,7 @@
 .ail-gl .ail-end__foot { position: absolute; right: var(--ail-margin); bottom: var(--ail-margin); width: min(27vw, 380px); margin: 0; gap: 8px; }
 .ail-gl .ail-end__fine { font-size: 16px; }
 
-@media (max-width: 599px) {
+@media (max-width: 899px) {
   .ail-gl .ail-gram .ail-stage, .ail-gl .ail-end .ail-stage { display: flex; flex-direction: column; justify-content: flex-end; padding: 0 var(--ail-margin) 20px; }
   .ail-gl .ail-layer { position: static; display: none; width: auto; gap: 8px; }
   .ail-gl .ail-layer.is-on { display: grid; }

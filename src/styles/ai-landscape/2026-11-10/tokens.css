@@ -66,6 +66,6 @@
   --ail-hair: #33363D;
   --ail-veil: var(--ail-scrim-dark);
 }
-@media (max-width: 599px) {
+@media (max-width: 899px) {
   .ail { --ail-fs-body: 18px; --ail-top: 60px; }
 }

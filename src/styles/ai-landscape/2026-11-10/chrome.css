@@ -45,7 +45,7 @@
 .ail-rail a:hover span, .ail-rail a:focus-visible span { opacity: 1; visibility: visible; transform: translate(0, -50%); }
 .ail-rail li[data-gap] { margin-top: 7px; }
 
-@media (max-width: 599px) {
+@media (max-width: 899px) {
   .ail-chrome { padding: 8px 10px; gap: 8px; }
   .ail-chrome__side { gap: 7px; padding: 5px 6px; white-space: nowrap; }
   .ail-chrome__chip { padding: 0 5px; letter-spacing: .02em; font-size: 10.5px; }

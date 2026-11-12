@@ -29,7 +29,7 @@
 /* words arrive with a fade and leave at once, so two never share the screen */
 .ail-gl .ail-ar__list.is-up .ail-ar__item.is-active .ail-ar__say { opacity: 1; visibility: visible; transform: none; transition: opacity var(--ail-t) var(--ail-ease), transform var(--ail-t) var(--ail-ease); }
 
-@media (max-width: 599px) {
+@media (max-width: 899px) {
   .ail-gl .ail-ar__head { right: var(--ail-margin); max-width: none; }
   .ail-gl .ail-ar__head .ail-title { font-size: 30px; }
   .ail-gl .ail-ar__quote { font-size: 18px; line-height: 1.18; }
@@ -106,7 +106,7 @@
 .ail-gl .ail-ms__restlist { position: absolute; right: 0; bottom: calc(100% + 8px); width: min(380px, 80vw); display: grid; gap: 8px; padding: 14px 16px; background: var(--ail-card); box-shadow: 0 0 0 1px var(--ail-hair); font-size: 16px; line-height: 1.25; }
 @keyframes ail-ar-in { from { opacity: 0; transform: translate3d(0, 8px, 0); } to { opacity: 1; transform: none; } }
 
-@media (max-width: 599px) {
+@media (max-width: 899px) {
   .ail-gl .ail-ms__head { right: var(--ail-margin); max-width: none; }
   .ail-gl .ail-ms__head .ail-title { font-size: 30px; }
   .ail-gl .ail-ms__quote { font-size: 18px; }
@@ -171,7 +171,7 @@
 .ail-gl .ail-rt__card { position: absolute; left: 0; top: calc(100% + 8px); width: min(560px, 90vw); max-height: 56vh; overflow: auto; z-index: 4; }
 .ail-gl .ail-rt__chips { padding: 6px 10px; background: var(--ail-veil); justify-self: start; gap: 8px 12px; }
 
-@media (max-width: 599px) {
+@media (max-width: 899px) {
   .ail-gl .ail-rt__shapes { position: absolute; left: var(--ail-margin); right: var(--ail-margin); bottom: var(--ail-margin); display: flex; flex-wrap: wrap; gap: 4px; opacity: var(--rt-on, 0); }
   .ail-gl .ail-rt__shape { display: contents; opacity: 1; }
   .ail-gl .ail-rt__name { min-height: 36px; font-size: 10.5px; padding: 0 8px; }
@@ -247,7 +247,7 @@
 .ail-gl .ail-bill__h { display: block; color: var(--ail-fg-2); margin-bottom: 3px; }
 .ail-gl .ail-bill__cell .ail-fact { font-size: 19px; line-height: 1.15; white-space: nowrap; }
 
-@media (max-width: 599px) {
+@media (max-width: 899px) {
   .ail-gl .ail-agn__claim, .ail-gl .ail-bill__claim { right: var(--ail-margin); max-width: none; font-size: 20px; }
   .ail-gl .ail-agn__key { right: calc(var(--ail-margin) + 52px); }
   .ail-gl table.ail-agn__board { position: absolute; left: var(--ail-margin); right: var(--ail-margin); bottom: calc(var(--ail-margin) + 58px); display: grid; grid-template-columns: 70px repeat(4, 1fr); align-items: center; width: auto; margin: 0; padding: 6px 8px; background: var(--ail-veil); opacity: var(--an-on, 0); }
@@ -281,7 +281,7 @@
 .ail-gl .ail-ms__restlist .ail-ms__tag { flex-direction: row; justify-content: flex-start; gap: 8px; padding: 2px 0; background: none; text-align: left; }
 .ail-gl .ail-ms__restlist .ail-ms__tag .ail-ar-glyph { position: static; }
 .ail-gl .ail-ms__restlist .ail-ms__d[open] > .ail-ms__more { position: static; width: auto; transform: none; margin: 4px 0 8px; }
-@media (max-width: 599px) {
+@media (max-width: 899px) {
   .ail:not(.ail-gl) :is(.ail-agn__board, .ail-bill__table) { table-layout: fixed; }
   .ail:not(.ail-gl) :is(.ail-agn__board, .ail-bill__table) :is(th, td) { padding-right: 5px; font-size: 15px; overflow-wrap: anywhere; }
   .ail:not(.ail-gl) :is(.ail-agn__q, .ail-agn__p, .ail-bill__table thead th, .ail-bill__pick) { font-size: 9.5px; letter-spacing: .02em; }

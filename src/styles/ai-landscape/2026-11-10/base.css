@@ -87,7 +87,7 @@
 .ail-cut .ail-canvas { animation: ail-cut 200ms linear; }
 @keyframes ail-cut { from { opacity: .35; } to { opacity: 1; } }
 
-@media (max-width: 599px) {
+@media (max-width: 899px) {
   .ail-gl .ail-at-tl, .ail-gl .ail-at-bl, .ail-gl .ail-at-r { max-width: none; width: auto; right: var(--ail-margin); }
 }
 @media (prefers-reduced-motion: reduce) {

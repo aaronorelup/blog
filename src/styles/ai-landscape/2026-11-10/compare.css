@@ -59,7 +59,7 @@
 .ail-gl .ail-lu__tip { position: absolute; right: calc(100% + 4px); top: 50%; padding: 4px 7px 3px; background: var(--ail-fg); color: var(--ail-bg); font-size: 11px; white-space: nowrap; transform: translateY(-50%); opacity: 0; visibility: hidden; transition: opacity 150ms; }
 .ail-gl .ail-lu__layer:is(:hover, :focus-visible) .ail-lu__tip { opacity: 1; visibility: visible; }
 .ail-gl .ail-lu__tip .ail-lu__k { color: inherit; opacity: .7; }
-.ail-gl .ail-lu__cell { display: none; width: max-content; max-width: 214px; text-align: center; transition: opacity 150ms; }
+.ail-gl .ail-lu__cell { display: none; width: max-content; max-width: min(214px, 15.5vw); text-align: center; transition: opacity 150ms; }   /* never wider than the pitch of the row: on a narrow window an answer wraps, it does not run under its neighbour */
 .ail-gl .ail-lu__row.is-lit .ail-lu__cell { display: block; }
 .ail-gl .ail-lu__cell.is-dim { opacity: .42 !important; }
 .ail-gl .ail-lu__a { padding: 5px 9px 6px; background: var(--ail-veil); cursor: pointer; }
@@ -84,7 +84,7 @@
 .ail-lens canvas { width: 100%; height: 100%; border-radius: 50%; }
 .ail-gl .ail-lens.is-iris { scale: 9; opacity: 0 !important; transition: scale 720ms var(--ail-ease), opacity 720ms ease-in; }
 
-@media (max-width: 599px) {
+@media (max-width: 899px) {
   .ail-lu__sent { font-size: 14px; }
   /* phone, 3D page: slim stacks in the top third, then the nine names as tappable chips, the sentence, the answers */
   .ail-gl .ail-lu .ail-stage::before { content: ''; position: absolute; left: 0; right: 0; top: 35svh; bottom: 0; background: rgba(248, 249, 251, .94); box-shadow: 0 -1px 0 var(--ail-line); }
@@ -142,6 +142,8 @@
 .ail-ag__slab .ail-lamp { margin: 0; }
 
 .ail-gl .ail-ag__title, .ail-gl .ail-ln__title, .ail-gl .ail-ba__title { position: absolute; left: var(--ail-margin); top: var(--ail-top); max-width: min(46vw, 660px); margin: 0; }
+/* the room goes dark in a sweep from the left, across this title: it keeps a ground of its own, so it reads on both sides of the edge */
+.ail-gl .ail-ln__title { padding: 6px 10px 2px; margin-left: -10px; background: var(--ail-veil); }
 .ail-gl .ail-ag__wrap { overflow: visible; }
 .ail-gl :is(.ail-ag__table, .ail-ag__table tbody) { display: contents; }
 .ail-gl .ail-ag__table thead, .ail-gl .ail-ag__co { display: none; }
@@ -229,7 +231,7 @@
 .ail-gl .ail-ba__when { position: fixed; left: var(--ail-margin); bottom: var(--ail-margin); padding: 4px 16px 10px; background: var(--ail-veil); }
 .ail-gl .ail-ba__guess { position: fixed; right: calc(var(--ail-margin) + 8px); bottom: calc(var(--ail-margin) + 18px); width: min(30vw, 420px); margin: 0; }
 
-@media (max-width: 599px) {
+@media (max-width: 899px) {
   /* phone, 3D page: the row keeps the top third, each section's words sit in the sheet below it */
   .ail-gl :is(.ail-ag, .ail-ln, .ail-ba) .ail-stage::before { content: ''; position: absolute; left: 0; right: 0; top: 35svh; bottom: 0; background: var(--ail-veil); box-shadow: 0 -1px 0 var(--ail-hair); }
   .ail-gl :is(.ail-ag__title, .ail-ln__title, .ail-ba__title) { top: calc(35svh + 10px); right: var(--ail-margin); max-width: none; font-size: 28px; }

@@ -34,7 +34,7 @@
 .ail-gl .ail-world[data-world='google'] .ail-catch__item:not([data-new]) .ail-catch__was { text-decoration: none; opacity: 1; font: inherit; letter-spacing: 0; text-transform: none; }
 .ail-gl .ail-world[data-world='google'] .ail-catch__item[data-kind='renamed']:not([data-new]) .ail-own { display: none; }
 
-@media (max-width: 599px) {
+@media (max-width: 899px) {
   /* the phone's sheet lists them: nothing is pinned over the stack */
   .ail-gl .ail-world[data-world='google'] .ail-sig__list h3 { position: static; display: none; padding: 0; background: none; color: var(--ail-fg-2); transform: none !important; }
   .ail-gl .ail-world[data-world='google'] .ail-sig__list h3.is-on { display: block; flex: 0 0 100%; }

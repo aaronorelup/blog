@@ -35,7 +35,7 @@
 .ail-gl .ail-world[data-world='meta'][data-beat-now='d'] .ail-myth.is-on { opacity: 1; }
 .ail-gl .ail-world[data-world='meta'] .ail-myth s { opacity: .78; }
 
-@media (max-width: 599px) {
+@media (max-width: 899px) {
   .ail-gl .ail-world[data-world='meta'] .ail-sig__list .ail-sig__item { font-size: 18px; }
   .ail-gl .ail-world[data-world='meta'] .ail-catch__item { width: auto; max-width: none; padding: 0; background: none; box-shadow: none; font-size: 15px; }
   /* in the sheet the struck myth is the first line, and the catch starts under it */

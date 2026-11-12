@@ -66,7 +66,7 @@ function buildRail(clock) {
 
 function boot() {
   const query = new URLSearchParams(location.search);
-  const phone = matchMedia('(max-width: 599px)').matches;
+  const phone = matchMedia('(max-width: 899px)').matches;
   const reduced = query.has('reduced') || matchMedia('(prefers-reduced-motion: reduce)').matches;
   const rung = pickRung(query, phone);
   const main = $('#ail-main');

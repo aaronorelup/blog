@@ -13,7 +13,7 @@
 .ail-gl .ail-world[data-world='anthropic'] .ail-sig[data-column] .ail-sig__list[data-list='0'] .ail-sig__item { justify-content: flex-start; max-width: 24vw; }
 .ail-gl .ail-world[data-world='anthropic'] .ail-sig[data-column] .ail-sig__item[data-picked] .ail-note { text-align: left; }
 /* the three reasons are one list beside the model floor: each keeps its own scrim, and a long one may wrap */
-@media (min-width: 600px) {
+@media (min-width: 900px) {
   .ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='1'] ul { justify-items: start; }
   .ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='1'] .ail-sig__item { position: static; white-space: normal; }
 }
@@ -24,7 +24,7 @@
 .ail-gl .ail-world[data-world='anthropic'][data-beat-now='d'] .ail-sig { opacity: 1; transform: none; background-color: transparent; transition: background-color var(--ail-t), visibility 0s linear var(--ail-t); }
 .ail-gl .ail-world[data-world='anthropic'][data-beat-now='d'] .ail-sig > :not(.ail-sig__lists) { opacity: 0; }
 
-@media (max-width: 599px) {
+@media (max-width: 899px) {
   /* in the phone's sheet the two standards head the row of lids, and a picked lid keeps its ring on the line */
   .ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='0'] h3 { display: none; flex-basis: 100%; padding: 0; background: none; opacity: 1; visibility: visible; color: var(--ail-fg-2); }
   .ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='0'] h3.is-on { display: block; }

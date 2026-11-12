@@ -76,7 +76,7 @@ a.ail-slab:hover { background: var(--ail-fg); color: var(--ail-bg); }
 /* the scene draws a mark that taints a canvas as an image over its lid: it steps back while a card of the stamp is open */
 .ail-gl:has(#snapshot .ail-stage.is-on .ail-disc[open]) .ail-lidmark { visibility: hidden; }
 
-@media (max-width: 599px) {
+@media (max-width: 899px) {
   .ail-stamp__ink { padding: 12px 16px 10px; }
   .ail-slab { min-height: 44px; min-width: 112px; }
   .ail-slab:not(.ail-slab--next) { font-size: 22px; }
