@@ -1,0 +1,38 @@
+{
+ "space": "mimbres/YourMT3-cpu",
+ "api_name": "/process_audio",
+ "args": [
+  "file:/home/user/gtr/lanes/hosted-apis/out/elevenlabs/S4_six_stems/stems/guitar.mp3"
+ ],
+ "token": null,
+ "runtime_before": {
+  "stage": "RUNNING",
+  "hardware": {
+   "current": "cpu-basic",
+   "requested": "cpu-basic"
+  }
+ },
+ "space_sha": "bd69fbac7da881df0dfb67d8f4068a3d473df347",
+ "client_connect_s": 0.825,
+ "ok": true,
+ "wall_s": 66.903,
+ "status_changes": [
+  {
+   "t_s": 0.83,
+   "code": "Status.STARTING",
+   "rank": null,
+   "queue_size": null,
+   "eta": null,
+   "progress": null
+  },
+  {
+   "t_s": 2.83,
+   "code": "Status.PROCESSING",
+   "rank": null,
+   "queue_size": null,
+   "eta": null,
+   "progress": null
+  }
+ ],
+ "result": "<HTML string of 18652 characters with an html-midi-player; MIDI taken from its data URL into yourmt3cpu_S4_elguitar.mid>"
+}

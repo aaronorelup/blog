@@ -1,0 +1,8 @@
+scorify S2n.truthmidi: status success (best-found), arrange 1939.0 ms, notes in 90, notes placed 90  (node process 2.03 s)
+scorify R1c.truthmidi: status success (best-found), arrange 1690.4 ms, notes in 148, notes placed 148  (node process 1.83 s)
+scorify R1b.truthmidi: status search-exhausted, arrange 1470.6 ms, notes in 70, notes placed 0, diagnostics: No valid path within the declared candidate and mechanics model  (node process 1.57 s)
+scorify S5capo2.truthmidi.capo2: status success (best-found), arrange 2304.3 ms, notes in 90, notes placed 90  (node process 2.40 s)
+scorify S5dropd.truthmidi.dropD: status success (best-found), arrange 1953.9 ms, notes in 90, notes placed 90  (node process 2.05 s)
+scorify S2n.truthmidi.pin-n1-s4: status success (best-found), arrange 2156.2 ms, notes in 90, notes placed 90  (node process 2.23 s)
+scorify R1a.truthmidi.mindur256: status success (best-found), arrange 1731.6 ms, notes in 189, notes placed 189  (node process 1.83 s)
+[gtr-run r0680] guitar-tab/scorify-0.4.0 "verify (verify-gapfill-guitar-tab round 2): scorify 0.4.0 re-run of S2n, R1c, R1b, S5capo2 capo 2, S5dropd Drop D, S2n pin, R1a minDuration 1/256" wall=14.53s cpu=17.9s rss=168.0MB cores=2 exit=0 slot_wait=121.0s

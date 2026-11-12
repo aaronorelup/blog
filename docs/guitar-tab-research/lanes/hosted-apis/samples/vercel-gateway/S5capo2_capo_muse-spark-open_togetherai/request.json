@@ -1,0 +1,69 @@
+{
+ "model": "meta/muse-spark-open",
+ "messages": [
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "file",
+     "file": {
+      "filename": "S5capo2.mono.wav",
+      "file_data": "<data:audio/wav;base64 of S5capo2.mono.wav: 2589344 bytes, sha256 34fdfcf5b5e8493e4dc7844fafe605a2de19a440b6f19accf649c57c7142885d>"
+     }
+    },
+    {
+     "type": "text",
+     "text": "Listen to this audio recording of a solo guitar piece. From the sound alone, answer as JSON matching the given schema:\n- \"capo_used\": is the guitar played with a capo? \"yes\", \"no\" or \"cannot_tell\".\n- \"capo_fret\": if yes, the fret the capo sits on (an integer), otherwise null.\n- \"key\": the key of the piece, as \"<tonic> major\" or \"<tonic> minor\".\n- \"evidence\": a short explanation of what in the sound led to the answer.\n"
+    }
+   ]
+  }
+ ],
+ "response_format": {
+  "type": "json_schema",
+  "json_schema": {
+   "name": "answer",
+   "schema": {
+    "type": "object",
+    "properties": {
+     "capo_used": {
+      "type": "string",
+      "enum": [
+       "yes",
+       "no",
+       "cannot_tell"
+      ]
+     },
+     "capo_fret": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "key": {
+      "type": "string"
+     },
+     "evidence": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "capo_used",
+     "capo_fret",
+     "key",
+     "evidence"
+    ]
+   }
+  }
+ },
+ "max_tokens": 24576,
+ "providerOptions": {
+  "gateway": {
+   "only": [
+    "togetherai"
+   ],
+   "order": [
+    "togetherai"
+   ]
+  }
+ }
+}

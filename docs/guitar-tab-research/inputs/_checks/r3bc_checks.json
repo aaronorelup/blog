@@ -1,0 +1,266 @@
+{
+ "what": "read-back of the R3b and R3c files (check_r3bc.py)",
+ "clips": {
+  "R3b": {
+   "R3b.mp4": {
+    "duration_s": 18.0,
+    "bit_rate": 4640496,
+    "streams": [
+     {
+      "codec_name": "h264",
+      "profile": "High",
+      "codec_type": "video",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "field_order": "progressive",
+      "r_frame_rate": "25/1",
+      "avg_frame_rate": "25/1",
+      "nb_frames": "450"
+     },
+     {
+      "codec_name": "aac",
+      "profile": "LC",
+      "codec_type": "audio",
+      "sample_rate": "48000",
+      "channels": 2,
+      "r_frame_rate": "0/0",
+      "avg_frame_rate": "0/0",
+      "nb_frames": "845"
+     }
+    ],
+    "bytes": 10441116
+   },
+   "R3b.webm": {
+    "duration_s": 18.008,
+    "bit_rate": 1340259,
+    "streams": [
+     {
+      "codec_name": "vp9",
+      "profile": "Profile 0",
+      "codec_type": "video",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "field_order": "progressive",
+      "r_frame_rate": "25/1",
+      "avg_frame_rate": "25/1"
+     },
+     {
+      "codec_name": "opus",
+      "codec_type": "audio",
+      "sample_rate": "48000",
+      "channels": 2,
+      "r_frame_rate": "0/0",
+      "avg_frame_rate": "0/0"
+     }
+    ],
+    "bytes": 3016924
+   },
+   "R3b.wav": {
+    "duration_s": 18.0,
+    "bit_rate": 1411234,
+    "streams": [
+     {
+      "codec_name": "pcm_s16le",
+      "codec_type": "audio",
+      "sample_rate": "44100",
+      "channels": 2,
+      "r_frame_rate": "0/0",
+      "avg_frame_rate": "0/0"
+     }
+    ],
+    "bytes": 3175278
+   },
+   "R3b.mono.wav": {
+    "duration_s": 18.0,
+    "bit_rate": 705634,
+    "streams": [
+     {
+      "codec_name": "pcm_s16le",
+      "codec_type": "audio",
+      "sample_rate": "44100",
+      "channels": 1,
+      "r_frame_rate": "0/0",
+      "avg_frame_rate": "0/0"
+     }
+    ],
+    "bytes": 1587678
+   },
+   "original/BrylieChristopherOxley-guitar-2018-10-06.mp4": {
+    "duration_s": 580.522,
+    "bit_rate": 3156750,
+    "streams": [
+     {
+      "codec_name": "h264",
+      "profile": "High",
+      "codec_type": "video",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "field_order": "progressive",
+      "r_frame_rate": "25/1",
+      "avg_frame_rate": "25/1",
+      "nb_frames": "14513"
+     },
+     {
+      "codec_name": "aac",
+      "profile": "LC",
+      "codec_type": "audio",
+      "sample_rate": "48000",
+      "channels": 2,
+      "r_frame_rate": "0/0",
+      "avg_frame_rate": "0/0",
+      "nb_frames": "27213"
+     }
+    ],
+    "bytes": 229070359
+   },
+   "wav_facts": {
+    "stereo_frames": 793800,
+    "stereo_channels": 2,
+    "sample_rate": 44100,
+    "mono_frames": 793800,
+    "mono_channels": 1,
+    "mono_sample_rate": 44100,
+    "duration_s": 18.0,
+    "peak_dbfs": -13.06,
+    "rms_dbfs": -30.97,
+    "left_right_correlation": 1.0,
+    "left_minus_right_rms_dbfs": -117.73,
+    "mono_vs_half_sum_max_abs_lsb": 0.5,
+    "samples_at_full_scale": 0
+   },
+   "cuts_in_excerpt_mp4_s": []
+  },
+  "R3c": {
+   "R3c.mp4": {
+    "duration_s": 18.0,
+    "bit_rate": 1753887,
+    "streams": [
+     {
+      "codec_name": "h264",
+      "profile": "High",
+      "codec_type": "video",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "field_order": "progressive",
+      "r_frame_rate": "25/1",
+      "avg_frame_rate": "25/1",
+      "nb_frames": "450"
+     },
+     {
+      "codec_name": "aac",
+      "profile": "LC",
+      "codec_type": "audio",
+      "sample_rate": "48000",
+      "channels": 2,
+      "r_frame_rate": "0/0",
+      "avg_frame_rate": "0/0",
+      "nb_frames": "845"
+     }
+    ],
+    "bytes": 3946246
+   },
+   "R3c.webm": {
+    "duration_s": 18.008,
+    "bit_rate": 579364,
+    "streams": [
+     {
+      "codec_name": "vp9",
+      "profile": "Profile 0",
+      "codec_type": "video",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "field_order": "progressive",
+      "r_frame_rate": "25/1",
+      "avg_frame_rate": "25/1"
+     },
+     {
+      "codec_name": "opus",
+      "codec_type": "audio",
+      "sample_rate": "48000",
+      "channels": 2,
+      "r_frame_rate": "0/0",
+      "avg_frame_rate": "0/0"
+     }
+    ],
+    "bytes": 1304149
+   },
+   "R3c.wav": {
+    "duration_s": 18.0,
+    "bit_rate": 1411234,
+    "streams": [
+     {
+      "codec_name": "pcm_s16le",
+      "codec_type": "audio",
+      "sample_rate": "44100",
+      "channels": 2,
+      "r_frame_rate": "0/0",
+      "avg_frame_rate": "0/0"
+     }
+    ],
+    "bytes": 3175278
+   },
+   "R3c.mono.wav": {
+    "duration_s": 18.0,
+    "bit_rate": 705634,
+    "streams": [
+     {
+      "codec_name": "pcm_s16le",
+      "codec_type": "audio",
+      "sample_rate": "44100",
+      "channels": 1,
+      "r_frame_rate": "0/0",
+      "avg_frame_rate": "0/0"
+     }
+    ],
+    "bytes": 1587678
+   },
+   "original/Manx_Guitar_Lesson-_Three_Little_Boats_2019.webm.1080p.vp9.webm": {
+    "duration_s": 292.84,
+    "bit_rate": 1395314,
+    "streams": [
+     {
+      "codec_name": "vp9",
+      "profile": "Profile 0",
+      "codec_type": "video",
+      "width": 1920,
+      "height": 1080,
+      "pix_fmt": "yuv420p",
+      "field_order": "progressive",
+      "r_frame_rate": "25/1",
+      "avg_frame_rate": "25/1"
+     },
+     {
+      "codec_name": "opus",
+      "codec_type": "audio",
+      "sample_rate": "48000",
+      "channels": 2,
+      "r_frame_rate": "0/0",
+      "avg_frame_rate": "0/0"
+     }
+    ],
+    "bytes": 51075480
+   },
+   "wav_facts": {
+    "stereo_frames": 793800,
+    "stereo_channels": 2,
+    "sample_rate": 44100,
+    "mono_frames": 793800,
+    "mono_channels": 1,
+    "mono_sample_rate": 44100,
+    "duration_s": 18.0,
+    "peak_dbfs": -2.14,
+    "rms_dbfs": -17.83,
+    "left_right_correlation": 1.0,
+    "left_minus_right_rms_dbfs": -67.09,
+    "mono_vs_half_sum_max_abs_lsb": 0.5,
+    "samples_at_full_scale": 0
+   },
+   "cuts_in_excerpt_mp4_s": []
+  }
+ }
+}

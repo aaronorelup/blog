@@ -1,0 +1,414 @@
+gtr-eval 0.12.1 selftest
+PASS check-truth.fixture  | mismatches=[]
+PASS check-truth.detects_wrong_fret  | ['audio file FX1.wav not found next to the truth file', '1 notes where pitch != tuning_midi[6-string] + capo + fret (first: [0])']
+PASS notes.identity_csv_midi  | onset_f1=1.0 onoff_f1=1.0 chroma_f1=1.0
+PASS notes.identity_csv_hz_detected  | onset_f1=1.0 unit_note=["estimate pitch unit: hz (column/key name 'frequency_hz' names a frequency, read as Hz)"]
+PASS notes.identity_headerless_hz_auto  | onset_f1=1.0
+PASS notes.identity_midi  | onset_f1=1.0 onoff_f1=1.0
+PASS notes.midi_programs_filter  | n_est=32 instruments=[(24, True), (33, False), (0, False)]
+PASS notes.identity_json  | onset_f1=1.0
+PASS notes.truth_file_as_estimate  | onset_f1=1.0
+PASS notes.shift_100ms_gives_0  | onset_f1=0.0
+PASS notes.negative_times_after_shift  | onset_f1=1.0
+PASS notes.shift_100ms_undone_by_time_shift  | onset_f1=1.0
+PASS notes.shift_40ms_within_50ms_tol  | onset_f1=1.0 timing={'n_pairs': 40, 'median_s': 0.04, 'mean_s': 0.04, 'mean_abs_s': 0.04, 'p95_abs_s': 0.04, 'max_abs_s': 0.04}
+PASS notes.shift_exactly_50ms_matches  | onset_f1=1.0
+PASS notes.onset_tol_option  | onset_f1=0.0 with --onset-tol 0.03
+PASS notes.transpose_1_semitone_gives_0  | onset_f1=0.0
+PASS notes.transpose_undone_by_pitch_shift  | onset_f1=1.0
+PASS notes.octave_up_0_but_chroma_1  | onset_f1=0.0 chroma_f1=1.0
+PASS notes.30_cents_sharp_still_matches  | onset_f1=1.0
+PASS notes.60_cents_sharp_does_not_match  | onset_f1=0.0
+PASS notes.half_removed_recall_0.5  | recall=0.5 precision=1.0
+PASS notes.recall_by_voice  | {"bass": 0.0, "melody": 1.0}
+PASS notes.voice_filter  | onset_f1=1.0 n_truth=32
+PASS notes.offsets_halved_onset_1_onoff_0  | onset_f1=1.0 onoff_f1=0.0
+PASS notes.onset_pitch_only_file  | onset_f1=1.0 onoff=None
+PASS notes.custom_matcher_equals_mir_eval  | 40 random perturbations, match counts equal
+PASS f0.identity  | {"voicing_recall": 1.0, "voicing_false_alarm": 0.0, "raw_pitch_accuracy": 1.0, "raw_chroma_accuracy": 1.0, "overall_accuracy": 1.0}
+PASS f0.octave_up_rpa_0_rca_1  | {"voicing_recall": 1.0, "voicing_false_alarm": 0.0, "raw_pitch_accuracy": 0.0, "raw_chroma_accuracy": 1.0, "overall_accuracy": 0.200999}
+PASS f0.all_unvoiced  | {"voicing_recall": 0.0, "voicing_false_alarm": 0.0, "raw_pitch_accuracy": 0.0, "raw_chroma_accuracy": 0.0, "overall_accuracy": 0.200999}
+PASS f0.conf_threshold_unvoices_but_keeps_pitch  | {"voicing_recall": 0.0, "voicing_false_alarm": 0.0, "raw_pitch_accuracy": 1.0, "raw_chroma_accuracy": 1.0, "overall_accuracy": 0.200999}
+PASS f0.other_hop_resampled  | rpa=0.995313 (frames at note edges move under interpolation)
+PASS f0.nan_means_unvoiced  | {"voicing_recall": 1.0, "voicing_false_alarm": 0.0, "raw_pitch_accuracy": 1.0, "raw_chroma_accuracy": 1.0, "overall_accuracy": 1.0}
+PASS f0.empty_frequency_cells_unvoiced  | {"voicing_recall": 1.0, "voicing_false_alarm": 0.0, "raw_pitch_accuracy": 1.0, "raw_chroma_accuracy": 1.0, "overall_accuracy": 1.0} n_est_rows=801 empty_cells=161 (same metrics as the file with 0 written)
+PASS f0.empty_confidence_and_text_cell  | oa=1.0 n_est_rows=801 processing=['801 rows with an empty confidence cell: no confidence', "1 rows with a readable time were left out because their frequency or confidence cell is missing or not a number (first: '8.5000,n/a,0.9')"]
+PASS f0.empty_cells_at_row_end_tab_separated  | 3 columns: {"voicing_recall": 1.0, "voicing_false_alarm": 0.0, "raw_pitch_accuracy": 1.0, "raw_chroma_accuracy": 1.0, "overall_accuracy": 1.0} n_est_rows=801; 2 columns, no header, first row '0.2000\t': oa=1.0 n_est_rows=801 (both must equal the file with 0 written: 801 rows, oa=1.0)
+PASS beats.identity  | {"f_measure": 1.0, "precision": 1.0, "recall": 1.0, "CMLc": 1.0, "CMLt": 1.0, "AMLc": 1.0, "AMLt": 1.0, "n_truth": 16, "n_est": 16, "n_matched": 16, "timing_of_matched": {"n_pairs": 16, "median_s": 0.0, "mean_s": 0.0, "mean_abs_s": 0.0, "p95_abs_s": 0.0, "max_abs_s": 0.0}}
+PASS beats.shift_100ms_f_0  | F=0.0
+PASS beats.double_tempo  | F=0.680851 CMLt=0.0 AMLt=1.0
+PASS beats.offbeat  | F=0.0 AMLt=1.0
+PASS beats.downbeat_column  | {"f_measure": 1.0, "precision": 1.0, "recall": 1.0, "CMLc": 1.0, "CMLt": 1.0, "AMLc": 1.0, "AMLt": 1.0, "n_truth": 4, "n_est": 4, "n_matched": 4, "timing_of_matched": {"n_pairs": 4, "median_s": 0.0, "mean_s": 0.0, "mean_abs_s": 0.0, "p95_abs_s": 0.0, "max_abs_s": 0.0}}
+PASS beats.downbeats_file_shifted  | {"f_measure": 0.0, "precision": 0.0, "recall": 0.0, "CMLc": 1.0, "CMLt": 1.0, "AMLc": 1.0, "AMLt": 1.0, "n_truth": 4, "n_est": 4, "n_matched": 0, "timing_of_matched": null}
+PASS beats.json_with_downbeats  | beats_F=1.0 db_F=1.0
+PASS beats.min_beat_time  | n_truth after trim=6
+PASS tempo.identity  | {"truth_bpm": 120.0, "est_bpm": 120.0, "ratio_est_over_truth": 1.0, "relative_deviation": 0.0, "within_tolerance": true, "within_tolerance_any_factor": true, "factors_within_tolerance": ["1"], "octave_error": false, "closest_factor": "1", "relative_deviation_from_closest_factor": 0.0}
+PASS tempo.double_flagged_octave_error  | {"truth_bpm": 120.0, "est_bpm": 240.0, "ratio_est_over_truth": 2.0, "relative_deviation": 1.0, "within_tolerance": false, "within_tolerance_any_factor": true, "factors_within_tolerance": ["2"], "octave_error": true, "closest_factor": "2", "relative_deviation_from_closest_factor": 0.0}
+PASS tempo.half_flagged_octave_error  | closest=1/2
+PASS tempo.triple_any_factor_not_octave  | factors=['3']
+PASS tempo.3pct_within  | dev=0.03
+PASS tempo.5pct_outside  | dev=0.05
+PASS tempo.from_file  | est=119.5
+PASS chords.identity_harte  | root=1.0 majmin=1.0 sevenths=1.0
+PASS chords.identity_shorthand  | normalized={'G': 'G:maj', 'C': 'C:maj', 'D7': 'D:7', 'Em7': 'E:min7'}
+PASS chords.transposed_root_0  | root=0.0
+PASS chords.unparsed_listed  | unparsed={'Cfoo': 1} root=0.75 mirex=0.75 unparsed_s=2.0
+PASS chords.change_points_csv  | sevenths=1.0 fmt=text (comma), change points
+PASS chords.sevenths_vs_triads  | majmin=1.0 sevenths=0.5
+PASS chords.label_normaliser  | 25 labels; wrong: {}
+PASS key.identity  | G major -> 1.0 (same key and mode)
+PASS key.fifth_above  | D major -> 0.5 (estimate is a perfect fifth above, same mode)
+PASS key.relative_minor  | E minor -> 0.3 (relative minor)
+PASS key.parallel  | G minor -> 0.2 (parallel (same tonic, other mode))
+PASS key.shorthand_Gm  | G minor -> 0.2 (parallel (same tonic, other mode))
+PASS key.other  | F# major -> 0.0 (other)
+PASS key.lowercase_with_mode  | G major -> 1.0 (same key and mode)
+PASS key.bare_tonic_major  | G major -> 1.0 (same key and mode)
+PASS tuning.identity  | {"truth_cents": 0.0, "est_cents": 0.0, "difference_cents": 0.0, "abs_difference_cents": 0.0, "difference_mod_100_cents": 0.0, "abs_difference_mod_100_cents": 0.0}
+PASS tuning.plus_10  | diff=10.0
+PASS tuning.wrap_mod_100  | mod100=10.0
+PASS tuning.a4_hz  | est_cents=0.0
+PASS tuning.capo_and_strings  | capo_equal=False diffs=[-2, 0, 0, 0, 0, 0]
+PASS onsets.taps_identity  | {"f_measure": 1.0, "precision": 1.0, "recall": 1.0, "timing_of_matched": {"n_pairs": 8, "median_s": 0.0, "mean_s": 0.0, "mean_abs_s": 0.0, "p95_abs_s": 0.0, "max_abs_s": 0.0}}
+PASS onsets.taps_shift_60ms_0  | F=0.0
+PASS onsets.note_onsets_identity  | F=1.0 n_truth=32
+PASS onsets.json  | F=1.0
+PASS onsets.taps_early_30ms_timing  | F=1.0 timing={'n_pairs': 8, 'median_s': -0.03, 'mean_s': -0.03, 'mean_abs_s': 0.03, 'p95_abs_s': 0.03, 'max_abs_s': 0.03}
+PASS onsets.half_recall_0.5  | {"f_measure": 0.666667, "precision": 1.0, "recall": 0.5, "timing_of_matched": {"n_pairs": 4, "median_s": 0.0, "mean_s": 0.0, "mean_abs_s": 0.0, "p95_abs_s": 0.0, "max_abs_s": 0.0}}
+PASS tab.identity_json  | sf=1.0 matched=40
+PASS tab.identity_csv_assumed_tuning_flagged  | sf=1.0 assumed=True
+PASS tab.identity_csv_headerless  | sf=1.0
+PASS tab.melody_moved_one_string_down  | sf=0.2 sdiff={'0': 8, '+1': 32}
+PASS tab.capo_difference_flagged  | capo_differs=True sf=0.0 abs=1.0
+PASS tab.tuning_difference_flagged  | tuning_differs=True matched=40
+PASS tab.ignore_time_order_alignment  | sf=1.0 matched=40
+PASS tab.ascii_tab  | sf=1.0 matched=40 n_est=40
+PASS tab.guitar_pro_5  | sf=1.0 matched=40 n_est=40
+PASS tab.guitar_pro_5_capo  | sf=1.0 est_capo=2
+PASS tab.musicxml  | sf=1.0 matched=40 tuning=[40, 45, 50, 55, 59, 64]
+PASS notes.musicxml  | onset_f1=1.0
+PASS tab.musicxml_compressed_capo  | sf=1.0 est_capo=2
+PASS tab.ascii_capo_line  | est_capo=2 sf=1.0
+PASS tab.ascii_capo_in_title_not_read  | est_capo=2 (not stated in the estimate; the truth capo is assumed) sf=1.0
+PASS tab.ascii_capo_line_after_title  | est_capo=2 (stated in the estimate file) sf=1.0
+PASS tab.ascii_capo_field_in_tuning_line  | est_capo=2 (stated in the estimate file) sf=1.0
+PASS notes.json_list_of_lists  | onset_f1=1.0
+PASS notes.cols_onset_duration_pitch  | onset_f1=1.0 onoff=1.0
+PASS notes.json_start_end_pitch_hz  | onset_f1=1.0
+PASS f0.voice_bass  | {"voicing_recall": 1.0, "voicing_false_alarm": 0.0, "raw_pitch_accuracy": 1.0, "raw_chroma_accuracy": 1.0, "overall_accuracy": 1.0}
+PASS f0.midi_unit_from_header  | {"voicing_recall": 1.0, "voicing_false_alarm": 0.0, "raw_pitch_accuracy": 1.0, "raw_chroma_accuracy": 1.0, "overall_accuracy": 1.0}
+PASS f0.tuning_offset_applied_to_reference  | rpa=0.0 (est 80 cents below the reference)
+PASS f0.nominal_ignores_tuning_offset  | rpa=1.0
+PASS notes.apply_tuning_offset  | onset_f1=0.0 (truth shifted +80 cents, estimate nominal)
+PASS tuning.from_file  | est=-12.5
+PASS key.from_file  | ws=0.3
+PASS chords.json  | sevenths=1.0
+PASS tab.est_tuning_option_overrides_file  | {"tuning_midi": [40, 45, 50, 55, 59, 64], "tuning_source": "--est-tuning", "capo": 0, "capo_source": "stated in the estimate file"}
+PASS tab.shift_100ms_no_match  | matched=0
+PASS tab.time_shift_option  | matched=40
+PASS tab.voice_option  | {"n_truth": 32, "n_est": 32, "n_matched": 32, "n_truth_left_out": {"bass": 8}, "n_est_without_position": 0}
+PASS notes.musicxml_transpose_octave  | onset_f1=1.0
+PASS tab-frames.identity_long  | {"tab_precision": 1.0, "tab_recall": 1.0, "tab_f1": 1.0, "pitch_precision": 1.0, "pitch_recall": 1.0, "pitch_f1": 1.0, "tab_hits_over_pitch_hits": 1.0}
+PASS tab-frames.identity_long_hop_inferred  | hop=0.02 F=1.0
+PASS tab-frames.identity_matrix  | {"tab_precision": 1.0, "tab_recall": 1.0, "tab_f1": 1.0, "pitch_precision": 1.0, "pitch_recall": 1.0, "pitch_f1": 1.0, "tab_hits_over_pitch_hits": 1.0}
+PASS tab-frames.melody_moved_pitch_1_tab_lower  | pitch_f1=1.0 tab_P=0.529412 expected=0.529412
+PASS tab-frames.all_silent  | {"n_frames": 401, "hop_s": 0.02, "n_truth_notes": 40, "n_truth_left_out": {}, "ref_activations": 680, "est_activations": 0, "tab_hits": 0, "ref_frame_pitches": 680, "est_frame_pitches": 0, "pitch_hits": 0}
+PASS stems.identity  | {"guitar": {"si_sdr_db": "inf", "sdr_db": 227.80401, "sir_db": 232.952827, "sar_db": 226.645989}, "bass": {"si_sdr_db": "inf", "sdr_db": 215.909014, "sir_db": 203.842877, "sar_db": 203.712999}}
+PASS stems.noise_10dB_si_sdr_10  | {"guitar": {"si_sdr_db": 10.008202, "sdr_db": 10.027039, "sar_db": 10.027039}}
+PASS stems.single_mode  | {"guitar": {"si_sdr_db": "inf", "sdr_db": 227.80401, "sar_db": 227.80401}, "bass": {"si_sdr_db": "inf", "sdr_db": 215.909014, "sar_db": 215.909014}}
+PASS stems.ref_dir_option  | {"guitar": "inf", "bass": "inf"}
+PASS stems.swapped_negative  | {"guitar": {"si_sdr_db": -48.142809, "sdr_db": -16.509226, "sir_db": -16.509226, "sar_db": 203.712999}, "bass": {"si_sdr_db": -48.142809, "sdr_db": -15.61162, "sir_db": -15.61162, "sar_db": 226.64599}}
+PASS stems.other_rate_and_stereo  | si_sdr=63.27658 processing=['estimated stem for guitar: resampled 44100 -> 16000 Hz (scipy.signal.resample_poly)', 'estimated stem for guitar: 2 channels averaged to mono']
+PASS cli.launcher_from_root_with_out  | exit=0 stderr=[gtr-eval e0001] notes truth=FX1 exit=0 (ledger /home/user/gtr/eval/checks/verify-0.12.0/tmp/gtr-eval-selftest-kz5d989r/ledger.jsonl)
+PASS cli.ledger_line_written  | 1 ledger lines; stderr=[gtr-eval e0001] notes truth=FX1 exit=0 (ledger /home/user/gtr/eval/checks/verify-0.12.0/tmp/gtr-eval-selftest-kz5d989r/
+PASS cli.error_is_json_exit_1  | exit=1
+PASS cli.ledger_subcommand  | exit=0 out={"id":"e0002","utc":"2026-11-11T00:59:07+00:00","argv":["notes","--truth","/home/user/gtr/eval/fixtures/FX1/FX1.truth.js
+PASS cli.truth_by_clip_id  | exit=0
+PASS [R1a] check-truth  | mismatches=[]
+PASS [R1a] notes.identity  | n=189 onset_f1=1.0 onoff_f1=1.0
+N/A  [R1a] notes.shift_100ms  | same-pitch notes 50-150 ms apart, so 0 is not the known answer
+N/A  [R1a] notes.transpose_1  | notes a semitone apart within 50 ms, so 0 is not the known answer
+PASS [R1a] notes.half_removed  | recall=0.502646 expected=0.502646
+N/A  [R1a] f0.identity  | truth has no 'melody' voice and its notes overlap (130 overlaps), so there is no single reference f0; pick a voice with --voice
+PASS [R1a] tab.identity  | matched=189/189 sf=1.0
+PASS [R1a] tab-frames.identity  | tab_f1=1.0 activations=3513
+PASS [R1a] beats.identity  | beats_F=1.0 downbeats=1.0
+PASS [R1a] chords.identity  | root=1.0 majmin=1.0 sevenths=1.0
+PASS [R1a] key.identity  | Ab minor ws=1.0
+PASS [R1a] tempo.identity  | ratio=1.0
+PASS [R1a] tempo.double  | octave_error=True
+PASS [R1a] tuning.identity  | diff=0.0
+N/A  [R1a] onsets.taps_identity  | truth has no taps
+PASS [R1a] sidecar R1a.notes.csv scores 1  | value=1.0 counts={"n_truth": 189, "n_est": 189, "n_truth_left_out": {}, "n_matched_onset_only": 189, "n_matched_onset_offset": 189}
+PASS [R1a] sidecar R1a.mid scores 1  | value=1.0 counts={"n_truth": 189, "n_est": 189, "n_truth_left_out": {}, "n_matched_onset_only": 189, "n_matched_onset_offset": 189}
+PASS [R1a] sidecar R1a.beats.txt scores 1  | value=1.0 counts={"n_truth_beats": 53, "n_truth_downbeats": 14, "n_est_beats": 53, "n_est_downbeats": 14}
+PASS [R1a] sidecar R1a.chords.lab scores 1  | value=1.0 counts={"n_truth_segments": 13, "n_est_segments": 13, "n_est_labels_unparsed": 0, "est_unparsed_duration_s": 0.0, "truth_span_s": [0.0, 29.158889]}
+PASS [R1a] sidecar R1a.tab.txt scores 1  | value=1.0 counts={"n_truth": 189, "n_est": 189, "n_matched": 189, "n_truth_left_out": {}, "n_est_without_position": 0}
+PASS [R1b] check-truth  | mismatches=[]
+PASS [R1b] notes.identity  | n=70 onset_f1=1.0 onoff_f1=1.0
+PASS [R1b] notes.shift_100ms_gives_0  | onset_f1=0.0
+PASS [R1b] notes.transpose_1_gives_0  | onset_f1=0.0
+PASS [R1b] notes.half_removed  | recall=0.5 expected=0.500000
+N/A  [R1b] f0.identity  | truth has no 'melody' voice and its notes overlap (7 overlaps), so there is no single reference f0; pick a voice with --voice
+PASS [R1b] tab.identity  | matched=70/70 sf=1.0
+PASS [R1b] tab-frames.identity  | tab_f1=1.0 activations=950
+PASS [R1b] beats.identity  | beats_F=1.0 downbeats=1.0
+PASS [R1b] chords.identity  | root=1.0 majmin=1.0 sevenths=1.0
+PASS [R1b] key.identity  | C# major ws=1.0
+PASS [R1b] tempo.identity  | ratio=1.0
+PASS [R1b] tempo.double  | octave_error=True
+PASS [R1b] tuning.identity  | diff=0.0
+N/A  [R1b] onsets.taps_identity  | truth has no taps
+PASS [R1b] sidecar R1b.notes.csv scores 1  | value=1.0 counts={"n_truth": 70, "n_est": 70, "n_truth_left_out": {}, "n_matched_onset_only": 70, "n_matched_onset_offset": 70}
+PASS [R1b] sidecar R1b.mid scores 1  | value=1.0 counts={"n_truth": 70, "n_est": 70, "n_truth_left_out": {}, "n_matched_onset_only": 70, "n_matched_onset_offset": 70}
+PASS [R1b] sidecar R1b.beats.txt scores 1  | value=1.0 counts={"n_truth_beats": 44, "n_truth_downbeats": 11, "n_est_beats": 44, "n_est_downbeats": 11}
+PASS [R1b] sidecar R1b.chords.lab scores 1  | value=1.0 counts={"n_truth_segments": 6, "n_est_segments": 6, "n_est_labels_unparsed": 0, "est_unparsed_duration_s": 0.0, "truth_span_s": [0.0, 29.333333]}
+PASS [R1b] sidecar R1b.tab.txt scores 1  | value=1.0 counts={"n_truth": 70, "n_est": 66, "n_matched": 66, "n_truth_left_out": {}, "n_est_without_position": 0}
+PASS [R1c] check-truth  | mismatches=[]
+PASS [R1c] notes.identity  | n=148 onset_f1=1.0 onoff_f1=1.0
+PASS [R1c] notes.shift_100ms_gives_0  | onset_f1=0.0
+PASS [R1c] notes.transpose_1_gives_0  | onset_f1=0.0
+N/A  [R1c] notes.half_removed  | same pitch twice within 50 ms (e.g. unison on two strings)
+N/A  [R1c] f0.identity  | truth has no 'melody' voice and its notes overlap (109 overlaps), so there is no single reference f0; pick a voice with --voice
+PASS [R1c] tab.identity  | matched=148/148 sf=1.0
+PASS [R1c] tab-frames.identity  | tab_f1=1.0 activations=3235
+PASS [R1c] beats.identity  | beats_F=1.0 downbeats=1.0
+PASS [R1c] chords.identity  | root=1.0 majmin=1.0 sevenths=1.0
+PASS [R1c] key.identity  | G major ws=1.0
+PASS [R1c] tempo.identity  | ratio=1.0
+PASS [R1c] tempo.double  | octave_error=True
+PASS [R1c] tuning.identity  | diff=0.0
+N/A  [R1c] onsets.taps_identity  | truth has no taps
+PASS [R1c] sidecar R1c.notes.csv scores 1  | value=1.0 counts={"n_truth": 148, "n_est": 148, "n_truth_left_out": {}, "n_matched_onset_only": 148, "n_matched_onset_offset": 148}
+PASS [R1c] sidecar R1c.mid scores 1  | value=1.0 counts={"n_truth": 148, "n_est": 148, "n_truth_left_out": {}, "n_matched_onset_only": 148, "n_matched_onset_offset": 148}
+PASS [R1c] sidecar R1c.beats.txt scores 1  | value=1.0 counts={"n_truth_beats": 56, "n_truth_downbeats": 14, "n_est_beats": 56, "n_est_downbeats": 14}
+PASS [R1c] sidecar R1c.chords.lab scores 1  | value=1.0 counts={"n_truth_segments": 14, "n_est_segments": 14, "n_est_labels_unparsed": 0, "est_unparsed_duration_s": 0.0, "truth_span_s": [0.0, 28.235283]}
+PASS [R1c] sidecar R1c.tab.txt scores 1  | value=1.0 counts={"n_truth": 148, "n_est": 148, "n_matched": 146, "n_truth_left_out": {}, "n_est_without_position": 0}
+PASS [R2] check-truth  | mismatches=[]
+N/A  [R2] notes.*  | truth has no notes
+N/A  [R2] beats.identity  | truth has no beats
+N/A  [R2] chords.identity  | truth has no chords
+N/A  [R2] key.identity  | truth has no key
+N/A  [R2] tempo.identity  | truth has no tempo_bpm
+PASS [R2] tuning.identity  | diff=0.0
+N/A  [R2] onsets.taps_identity  | truth has no taps
+PASS [R2] stems.identity_first_10s  | {"instrumental": "inf", "vocals_derived": "inf"}
+PASS [R2full] check-truth  | mismatches=[]
+N/A  [R2full] notes.*  | truth has no notes
+N/A  [R2full] beats.identity  | truth has no beats
+N/A  [R2full] chords.identity  | truth has no chords
+N/A  [R2full] key.identity  | truth has no key
+N/A  [R2full] tempo.identity  | truth has no tempo_bpm
+PASS [R2full] tuning.identity  | diff=0.0
+N/A  [R2full] onsets.taps_identity  | truth has no taps
+PASS [R2full] stems.identity_first_10s  | {"instrumental": "inf", "vocals_derived": "inf"}
+PASS [R3a] check-truth  | mismatches=[]
+N/A  [R3a] notes.*  | truth has no notes
+N/A  [R3a] beats.identity  | truth has no beats
+N/A  [R3a] chords.identity  | truth has no chords
+N/A  [R3a] key.identity  | truth has no key
+N/A  [R3a] tempo.identity  | truth has no tempo_bpm
+PASS [R3a] tuning.identity  | diff=0.0
+N/A  [R3a] onsets.taps_identity  | truth has no taps
+PASS [R3b] check-truth  | mismatches=[]
+N/A  [R3b] notes.*  | truth has no notes
+N/A  [R3b] beats.identity  | truth has no beats
+N/A  [R3b] chords.identity  | truth has no chords
+N/A  [R3b] key.identity  | truth has no key
+N/A  [R3b] tempo.identity  | truth has no tempo_bpm
+PASS [R3b] tuning.identity  | diff=0.0
+N/A  [R3b] onsets.taps_identity  | truth has no taps
+PASS [R3c] check-truth  | mismatches=[]
+N/A  [R3c] notes.*  | truth has no notes
+N/A  [R3c] beats.identity  | truth has no beats
+N/A  [R3c] chords.identity  | truth has no chords
+N/A  [R3c] key.identity  | truth has no key
+N/A  [R3c] tempo.identity  | truth has no tempo_bpm
+PASS [R3c] tuning.identity  | diff=0.0
+N/A  [R3c] onsets.taps_identity  | truth has no taps
+PASS [S1] check-truth  | mismatches=[]
+PASS [S1] notes.identity  | n=62 onset_f1=1.0 onoff_f1=1.0
+PASS [S1] notes.shift_100ms_gives_0  | onset_f1=0.0
+PASS [S1] notes.transpose_1_gives_0  | onset_f1=0.0
+PASS [S1] notes.half_removed  | recall=0.5 expected=0.500000
+PASS [S1] f0.identity  | rpa=1.0 oa=1.0 ref=truth notes with voice 'melody'
+PASS [S1] tab.identity  | matched=62/62 sf=1.0
+PASS [S1] tab-frames.identity  | tab_f1=1.0 activations=1315
+PASS [S1] beats.identity  | beats_F=1.0 downbeats=1.0
+N/A  [S1] chords.identity  | truth has no chords
+PASS [S1] key.identity  | D major ws=1.0
+PASS [S1] tempo.identity  | ratio=1.0
+PASS [S1] tempo.double  | octave_error=True
+PASS [S1] tuning.identity  | diff=0.0
+N/A  [S1] onsets.taps_identity  | truth has no taps
+PASS [S1] sidecar S1.notes.csv scores 1  | value=1.0 counts={"n_truth": 62, "n_est": 62, "n_truth_left_out": {}, "n_matched_onset_only": 62, "n_matched_onset_offset": 62}
+PASS [S1] sidecar S1.mid scores 1  | value=1.0 counts={"n_truth": 62, "n_est": 62, "n_truth_left_out": {}, "n_matched_onset_only": 62, "n_matched_onset_offset": 62}
+PASS [S1] sidecar S1.beats.txt scores 1  | value=1.0 counts={"n_truth_beats": 64, "n_truth_downbeats": 16, "n_est_beats": 64, "n_est_downbeats": 16}
+N/A  [S1] sidecar S1.chords.lab  | empty file
+PASS [S1] sidecar S1.tab.txt scores 1  | value=1.0 counts={"n_truth": 62, "n_est": 62, "n_matched": 62, "n_truth_left_out": {}, "n_est_without_position": 0}
+PASS [S2n] check-truth  | mismatches=[]
+PASS [S2n] notes.identity  | n=90 onset_f1=1.0 onoff_f1=1.0
+PASS [S2n] notes.shift_100ms_gives_0  | onset_f1=0.0
+PASS [S2n] notes.transpose_1_gives_0  | onset_f1=0.0
+PASS [S2n] notes.half_removed  | recall=0.5 expected=0.500000
+PASS [S2n] f0.identity  | rpa=1.0 oa=1.0 ref=truth notes with voice 'melody'
+PASS [S2n] tab.identity  | matched=90/90 sf=1.0
+PASS [S2n] tab-frames.identity  | tab_f1=1.0 activations=2525
+PASS [S2n] beats.identity  | beats_F=1.0 downbeats=1.0
+PASS [S2n] chords.identity  | root=1.0 majmin=1.0 sevenths=1.0
+PASS [S2n] key.identity  | G major ws=1.0
+PASS [S2n] tempo.identity  | ratio=1.0
+PASS [S2n] tempo.double  | octave_error=True
+PASS [S2n] tuning.identity  | diff=0.0
+N/A  [S2n] onsets.taps_identity  | truth has no taps
+PASS [S2n] sidecar S2n.notes.csv scores 1  | value=1.0 counts={"n_truth": 90, "n_est": 90, "n_truth_left_out": {}, "n_matched_onset_only": 90, "n_matched_onset_offset": 90}
+PASS [S2n] sidecar S2n.mid scores 1  | value=1.0 counts={"n_truth": 90, "n_est": 90, "n_truth_left_out": {}, "n_matched_onset_only": 90, "n_matched_onset_offset": 90}
+PASS [S2n] sidecar S2n.beats.txt scores 1  | value=1.0 counts={"n_truth_beats": 48, "n_truth_downbeats": 12, "n_est_beats": 48, "n_est_downbeats": 12}
+PASS [S2n] sidecar S2n.chords.lab scores 1  | value=1.0 counts={"n_truth_segments": 22, "n_est_segments": 22, "n_est_labels_unparsed": 0, "est_unparsed_duration_s": 0.0, "truth_span_s": [0.0, 29.357143]}
+PASS [S2n] sidecar S2n.tab.txt scores 1  | value=1.0 counts={"n_truth": 90, "n_est": 90, "n_matched": 90, "n_truth_left_out": {}, "n_est_without_position": 0}
+PASS [S2n] sidecar S2n.gp5 scores 1  | value=1.0 counts={"n_truth": 90, "n_est": 90, "n_matched": 90, "n_truth_left_out": {}, "n_est_without_position": 0}
+PASS [S2s] check-truth  | mismatches=[]
+PASS [S2s] notes.identity  | n=90 onset_f1=1.0 onoff_f1=1.0
+PASS [S2s] notes.shift_100ms_gives_0  | onset_f1=0.0
+PASS [S2s] notes.transpose_1_gives_0  | onset_f1=0.0
+PASS [S2s] notes.half_removed  | recall=0.5 expected=0.500000
+PASS [S2s] f0.identity  | rpa=1.0 oa=1.0 ref=truth notes with voice 'melody'
+PASS [S2s] tab.identity  | matched=90/90 sf=1.0
+PASS [S2s] tab-frames.identity  | tab_f1=1.0 activations=2525
+PASS [S2s] beats.identity  | beats_F=1.0 downbeats=1.0
+PASS [S2s] chords.identity  | root=1.0 majmin=1.0 sevenths=1.0
+PASS [S2s] key.identity  | G major ws=1.0
+PASS [S2s] tempo.identity  | ratio=1.0
+PASS [S2s] tempo.double  | octave_error=True
+PASS [S2s] tuning.identity  | diff=0.0
+N/A  [S2s] onsets.taps_identity  | truth has no taps
+PASS [S2s] sidecar S2s.notes.csv scores 1  | value=1.0 counts={"n_truth": 90, "n_est": 90, "n_truth_left_out": {}, "n_matched_onset_only": 90, "n_matched_onset_offset": 90}
+PASS [S2s] sidecar S2s.mid scores 1  | value=1.0 counts={"n_truth": 90, "n_est": 90, "n_truth_left_out": {}, "n_matched_onset_only": 90, "n_matched_onset_offset": 90}
+PASS [S2s] sidecar S2s.beats.txt scores 1  | value=1.0 counts={"n_truth_beats": 48, "n_truth_downbeats": 12, "n_est_beats": 48, "n_est_downbeats": 12}
+PASS [S2s] sidecar S2s.chords.lab scores 1  | value=1.0 counts={"n_truth_segments": 22, "n_est_segments": 22, "n_est_labels_unparsed": 0, "est_unparsed_duration_s": 0.0, "truth_span_s": [0.0, 29.357143]}
+PASS [S2s] sidecar S2s.tab.txt scores 1  | value=1.0 counts={"n_truth": 90, "n_est": 90, "n_matched": 90, "n_truth_left_out": {}, "n_est_without_position": 0}
+PASS [S3] check-truth  | mismatches=[]
+PASS [S3] notes.identity  | n=182 onset_f1=1.0 onoff_f1=1.0
+PASS [S3] notes.shift_100ms_gives_0  | onset_f1=0.0
+PASS [S3] notes.transpose_1_gives_0  | onset_f1=0.0
+PASS [S3] notes.half_removed  | recall=0.5 expected=0.500000
+N/A  [S3] f0.identity  | truth has no 'melody' voice and its notes overlap (157 overlaps), so there is no single reference f0; pick a voice with --voice
+PASS [S3] tab.identity  | matched=182/182 sf=1.0
+PASS [S3] tab-frames.identity  | tab_f1=1.0 activations=5318
+PASS [S3] beats.identity  | beats_F=1.0 downbeats=1.0
+PASS [S3] chords.identity  | root=1.0 majmin=1.0 sevenths=1.0
+PASS [S3] key.identity  | G major ws=1.0
+PASS [S3] tempo.identity  | ratio=1.0
+PASS [S3] tempo.double  | octave_error=True
+PASS [S3] tuning.identity  | diff=0.0
+N/A  [S3] onsets.taps_identity  | truth has no taps
+PASS [S3] sidecar S3.notes.csv scores 1  | value=1.0 counts={"n_truth": 182, "n_est": 182, "n_truth_left_out": {}, "n_matched_onset_only": 182, "n_matched_onset_offset": 182}
+PASS [S3] sidecar S3.mid scores 1  | value=1.0 counts={"n_truth": 182, "n_est": 182, "n_truth_left_out": {}, "n_matched_onset_only": 182, "n_matched_onset_offset": 182}
+PASS [S3] sidecar S3.beats.txt scores 1  | value=1.0 counts={"n_truth_beats": 32, "n_truth_downbeats": 8, "n_est_beats": 32, "n_est_downbeats": 8}
+PASS [S3] sidecar S3.chords.lab scores 1  | value=1.0 counts={"n_truth_segments": 10, "n_est_segments": 10, "n_est_labels_unparsed": 0, "est_unparsed_duration_s": 0.0, "truth_span_s": [0.0, 24.0]}
+PASS [S3] sidecar S3.tab.txt scores 1  | value=1.0 counts={"n_truth": 182, "n_est": 182, "n_matched": 182, "n_truth_left_out": {}, "n_est_without_position": 0}
+PASS [S4] check-truth  | mismatches=[]
+PASS [S4] notes.identity  | n=467 onset_f1=1.0 onoff_f1=1.0
+PASS [S4] notes.shift_100ms_gives_0  | onset_f1=0.0
+PASS [S4] notes.transpose_1_gives_0  | onset_f1=0.0
+N/A  [S4] notes.half_removed  | same pitch twice within 50 ms (e.g. unison on two strings)
+PASS [S4] f0.identity  | rpa=1.0 oa=1.0 ref=truth notes with voice 'melody'
+PASS [S4] tab.identity  | matched=369/369 sf=1.0
+PASS [S4] tab-frames.identity  | tab_f1=1.0 activations=8082
+PASS [S4] beats.identity  | beats_F=1.0 downbeats=1.0
+PASS [S4] chords.identity  | root=1.0 majmin=1.0 sevenths=1.0
+PASS [S4] key.identity  | D major ws=1.0
+PASS [S4] tempo.identity  | ratio=1.0
+PASS [S4] tempo.double  | octave_error=True
+PASS [S4] tuning.identity  | diff=0.0
+N/A  [S4] onsets.taps_identity  | truth has no taps
+PASS [S4] sidecar S4.notes.csv scores 1  | value=1.0 counts={"n_truth": 661, "n_est": 661, "n_truth_left_out": {}, "n_matched_onset_only": 661, "n_matched_onset_offset": 661}
+PASS [S4] sidecar S4.mid scores 1  | value=1.0 counts={"n_truth": 661, "n_est": 661, "n_truth_left_out": {}, "n_matched_onset_only": 661, "n_matched_onset_offset": 661}
+PASS [S4] sidecar S4.beats.txt scores 1  | value=1.0 counts={"n_truth_beats": 68, "n_truth_downbeats": 17, "n_est_beats": 68, "n_est_downbeats": 17}
+PASS [S4] sidecar S4.chords.lab scores 1  | value=1.0 counts={"n_truth_segments": 18, "n_est_segments": 18, "n_est_labels_unparsed": 0, "est_unparsed_duration_s": 0.0, "truth_span_s": [0.0, 38.741383]}
+PASS [S4] sidecar S4.tab.txt scores 1  | value=1.0 counts={"n_truth": 369, "n_est": 369, "n_matched": 369, "n_truth_left_out": {"drums": 194}, "n_est_without_position": 0}
+PASS [S4] stems.identity_first_10s  | {"drums": "inf", "bass": "inf", "guitar": "inf", "lead": "inf"}
+PASS [S5capo2] check-truth  | mismatches=[]
+PASS [S5capo2] notes.identity  | n=90 onset_f1=1.0 onoff_f1=1.0
+PASS [S5capo2] notes.shift_100ms_gives_0  | onset_f1=0.0
+PASS [S5capo2] notes.transpose_1_gives_0  | onset_f1=0.0
+PASS [S5capo2] notes.half_removed  | recall=0.5 expected=0.500000
+PASS [S5capo2] f0.identity  | rpa=1.0 oa=1.0 ref=truth notes with voice 'melody'
+PASS [S5capo2] tab.identity  | matched=90/90 sf=1.0
+PASS [S5capo2] tab-frames.identity  | tab_f1=1.0 activations=2525
+PASS [S5capo2] beats.identity  | beats_F=1.0 downbeats=1.0
+PASS [S5capo2] chords.identity  | root=1.0 majmin=1.0 sevenths=1.0
+PASS [S5capo2] key.identity  | A major ws=1.0
+PASS [S5capo2] tempo.identity  | ratio=1.0
+PASS [S5capo2] tempo.double  | octave_error=True
+PASS [S5capo2] tuning.identity  | diff=0.0
+N/A  [S5capo2] onsets.taps_identity  | truth has no taps
+PASS [S5capo2] sidecar S5capo2.notes.csv scores 1  | value=1.0 counts={"n_truth": 90, "n_est": 90, "n_truth_left_out": {}, "n_matched_onset_only": 90, "n_matched_onset_offset": 90}
+PASS [S5capo2] sidecar S5capo2.mid scores 1  | value=1.0 counts={"n_truth": 90, "n_est": 90, "n_truth_left_out": {}, "n_matched_onset_only": 90, "n_matched_onset_offset": 90}
+PASS [S5capo2] sidecar S5capo2.beats.txt scores 1  | value=1.0 counts={"n_truth_beats": 48, "n_truth_downbeats": 12, "n_est_beats": 48, "n_est_downbeats": 12}
+PASS [S5capo2] sidecar S5capo2.chords.lab scores 1  | value=1.0 counts={"n_truth_segments": 22, "n_est_segments": 22, "n_est_labels_unparsed": 0, "est_unparsed_duration_s": 0.0, "truth_span_s": [0.0, 29.357143]}
+PASS [S5capo2] sidecar S5capo2.tab.txt scores 1  | value=1.0 counts={"n_truth": 90, "n_est": 90, "n_matched": 90, "n_truth_left_out": {}, "n_est_without_position": 0}
+PASS [S5capo2] sidecar S5capo2.gp5 scores 1  | value=1.0 counts={"n_truth": 90, "n_est": 90, "n_matched": 90, "n_truth_left_out": {}, "n_est_without_position": 0}
+PASS [S5dropd] check-truth  | mismatches=[]
+PASS [S5dropd] notes.identity  | n=90 onset_f1=1.0 onoff_f1=1.0
+PASS [S5dropd] notes.shift_100ms_gives_0  | onset_f1=0.0
+PASS [S5dropd] notes.transpose_1_gives_0  | onset_f1=0.0
+PASS [S5dropd] notes.half_removed  | recall=0.5 expected=0.500000
+PASS [S5dropd] f0.identity  | rpa=1.0 oa=1.0 ref=truth notes with voice 'melody'
+PASS [S5dropd] tab.identity  | matched=90/90 sf=1.0
+PASS [S5dropd] tab-frames.identity  | tab_f1=1.0 activations=2525
+PASS [S5dropd] beats.identity  | beats_F=1.0 downbeats=1.0
+PASS [S5dropd] chords.identity  | root=1.0 majmin=1.0 sevenths=1.0
+PASS [S5dropd] key.identity  | G major ws=1.0
+PASS [S5dropd] tempo.identity  | ratio=1.0
+PASS [S5dropd] tempo.double  | octave_error=True
+PASS [S5dropd] tuning.identity  | diff=0.0
+N/A  [S5dropd] onsets.taps_identity  | truth has no taps
+PASS [S5dropd] sidecar S5dropd.notes.csv scores 1  | value=1.0 counts={"n_truth": 90, "n_est": 90, "n_truth_left_out": {}, "n_matched_onset_only": 90, "n_matched_onset_offset": 90}
+PASS [S5dropd] sidecar S5dropd.mid scores 1  | value=1.0 counts={"n_truth": 90, "n_est": 90, "n_truth_left_out": {}, "n_matched_onset_only": 90, "n_matched_onset_offset": 90}
+PASS [S5dropd] sidecar S5dropd.beats.txt scores 1  | value=1.0 counts={"n_truth_beats": 48, "n_truth_downbeats": 12, "n_est_beats": 48, "n_est_downbeats": 12}
+PASS [S5dropd] sidecar S5dropd.chords.lab scores 1  | value=1.0 counts={"n_truth_segments": 22, "n_est_segments": 22, "n_est_labels_unparsed": 0, "est_unparsed_duration_s": 0.0, "truth_span_s": [0.0, 29.357143]}
+PASS [S5dropd] sidecar S5dropd.tab.txt scores 1  | value=1.0 counts={"n_truth": 90, "n_est": 90, "n_matched": 90, "n_truth_left_out": {}, "n_est_without_position": 0}
+PASS [S5dropd] sidecar S5dropd.gp5 scores 1  | value=1.0 counts={"n_truth": 90, "n_est": 90, "n_matched": 90, "n_truth_left_out": {}, "n_est_without_position": 0}
+PASS [S6taps] check-truth  | mismatches=[]
+PASS [S6taps] notes.identity  | n=90 onset_f1=1.0 onoff_f1=1.0
+PASS [S6taps] notes.shift_100ms_gives_0  | onset_f1=0.0
+PASS [S6taps] notes.transpose_1_gives_0  | onset_f1=0.0
+PASS [S6taps] notes.half_removed  | recall=0.5 expected=0.500000
+PASS [S6taps] f0.identity  | rpa=1.0 oa=1.0 ref=truth notes with voice 'melody'
+PASS [S6taps] tab.identity  | matched=90/90 sf=1.0
+PASS [S6taps] tab-frames.identity  | tab_f1=1.0 activations=2525
+PASS [S6taps] beats.identity  | beats_F=1.0 downbeats=1.0
+PASS [S6taps] chords.identity  | root=1.0 majmin=1.0 sevenths=1.0
+PASS [S6taps] key.identity  | G major ws=1.0
+PASS [S6taps] tempo.identity  | ratio=1.0
+PASS [S6taps] tempo.double  | octave_error=True
+PASS [S6taps] tuning.identity  | diff=0.0
+PASS [S6taps] onsets.taps_identity  | F=1.0 n=32
+PASS [S6taps] sidecar S6taps.notes.csv scores 1  | value=1.0 counts={"n_truth": 90, "n_est": 90, "n_truth_left_out": {}, "n_matched_onset_only": 90, "n_matched_onset_offset": 90}
+PASS [S6taps] sidecar S6taps.mid scores 1  | value=1.0 counts={"n_truth": 90, "n_est": 90, "n_truth_left_out": {}, "n_matched_onset_only": 90, "n_matched_onset_offset": 90}
+PASS [S6taps] sidecar S6taps.beats.txt scores 1  | value=1.0 counts={"n_truth_beats": 48, "n_truth_downbeats": 12, "n_est_beats": 48, "n_est_downbeats": 12}
+PASS [S6taps] sidecar S6taps.chords.lab scores 1  | value=1.0 counts={"n_truth_segments": 22, "n_est_segments": 22, "n_est_labels_unparsed": 0, "est_unparsed_duration_s": 0.0, "truth_span_s": [0.0, 29.357143]}
+PASS [S6taps] sidecar S6taps.tab.txt scores 1  | value=1.0 counts={"n_truth": 90, "n_est": 90, "n_matched": 90, "n_truth_left_out": {}, "n_est_without_position": 0}
+PASS [S6taps] stems.identity_first_10s  | {"guitar": "inf", "taps": "inf"}
+PASS [S7flat30] check-truth  | mismatches=[]
+PASS [S7flat30] notes.identity  | n=182 onset_f1=1.0 onoff_f1=1.0
+PASS [S7flat30] notes.shift_100ms_gives_0  | onset_f1=0.0
+PASS [S7flat30] notes.transpose_1_gives_0  | onset_f1=0.0
+PASS [S7flat30] notes.half_removed  | recall=0.5 expected=0.500000
+N/A  [S7flat30] f0.identity  | truth has no 'melody' voice and its notes overlap (157 overlaps), so there is no single reference f0; pick a voice with --voice
+PASS [S7flat30] tab.identity  | matched=182/182 sf=1.0
+PASS [S7flat30] tab-frames.identity  | tab_f1=1.0 activations=5318
+PASS [S7flat30] beats.identity  | beats_F=1.0 downbeats=1.0
+PASS [S7flat30] chords.identity  | root=1.0 majmin=1.0 sevenths=1.0
+PASS [S7flat30] key.identity  | G major ws=1.0
+PASS [S7flat30] tempo.identity  | ratio=1.0
+PASS [S7flat30] tempo.double  | octave_error=True
+PASS [S7flat30] tuning.identity  | diff=0.0
+N/A  [S7flat30] onsets.taps_identity  | truth has no taps
+PASS [S7flat30] sidecar S7flat30.notes.csv scores 1  | value=1.0 counts={"n_truth": 182, "n_est": 182, "n_truth_left_out": {}, "n_matched_onset_only": 182, "n_matched_onset_offset": 182}
+PASS [S7flat30] sidecar S7flat30.mid scores 1  | value=1.0 counts={"n_truth": 182, "n_est": 182, "n_truth_left_out": {}, "n_matched_onset_only": 182, "n_matched_onset_offset": 182}
+PASS [S7flat30] sidecar S7flat30.beats.txt scores 1  | value=1.0 counts={"n_truth_beats": 32, "n_truth_downbeats": 8, "n_est_beats": 32, "n_est_downbeats": 8}
+PASS [S7flat30] sidecar S7flat30.chords.lab scores 1  | value=1.0 counts={"n_truth_segments": 10, "n_est_segments": 10, "n_est_labels_unparsed": 0, "est_unparsed_duration_s": 0.0, "truth_span_s": [0.0, 24.0]}
+PASS [S7flat30] sidecar S7flat30.tab.txt scores 1  | value=1.0 counts={"n_truth": 182, "n_est": 182, "n_matched": 182, "n_truth_left_out": {}, "n_est_without_position": 0}
+selftest: 360 PASS, 0 FAIL, 52 N/A (gtr-eval 0.12.1)

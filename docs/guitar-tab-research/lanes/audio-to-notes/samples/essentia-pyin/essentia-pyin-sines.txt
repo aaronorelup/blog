@@ -1,0 +1,8 @@
+sine 110.0 frames 166 voiced 166 median est 103.826
+   PitchYin one frame (109.89300537109375, 1.0)
+sine 220.0 frames 166 voiced 166 median est 138.591
+   PitchYin one frame (219.7863311767578, 0.9999991655349731)
+sine 369.99 frames 166 voiced 166 median est 146.832
+   PitchYin one frame (369.6404113769531, 0.9999978542327881)
+sine 440.0 frames 166 voiced 166 median est 293.665
+   PitchYin one frame (439.587890625, 0.9999960660934448)

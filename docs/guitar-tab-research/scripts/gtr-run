@@ -1,0 +1,145 @@
+#!/usr/bin/env python3
+"""gtr-run: run heavy commands in fixed CPU slots on this box and log them.
+
+Usage:
+  gtr-run --lane <lane> --tool <tool> --label <what this run is> [--input <file>]... [--all-cores | --nolock] -- <command> [args...]
+
+What it does:
+  - the box has 4 CPU cores, split into two slots of 2 cores each (cores 0-1 and cores 2-3)
+  - by default it waits for a free slot and pins the command (and everything it starts) to that slot's 2 cores,
+    so at most two timed jobs run at once and each has 2 cores to itself
+  - --all-cores waits for both slots and gives the command all 4 cores (for a whole-box timing)
+  - --nolock takes no slot and does no pinning (only for light jobs you still want in the ledger)
+  - thread-count variables (OMP_NUM_THREADS and friends) are set to the number of cores given, unless already set
+  - stdout/stderr pass straight through
+  - appends one JSON line to /home/user/gtr/ledger/runs.jsonl with the exact command, the inputs (size + sha256),
+    the cores used, wall-clock seconds, CPU seconds, peak memory, exit code and how long it waited for a slot
+  - prints a one-line summary with the run id (r0001, r0002, ...) to stderr
+
+Quote the run id and the core count in your report.
+"""
+import sys, os, json, time, fcntl, hashlib, resource, subprocess, datetime, shlex
+
+GTR = os.environ.get("GTR", "/home/user/gtr")
+SLOTS = [(os.path.join(GTR, "locks", "cpu0.lock"), (0, 1)), (os.path.join(GTR, "locks", "cpu1.lock"), (2, 3))]
+LEDGER = os.path.join(GTR, "ledger", "runs.jsonl")
+LEDGER_LOCK = os.path.join(GTR, "locks", "ledger.lock")
+
+
+def sha_of(path):
+    try:
+        h = hashlib.sha256()
+        with open(path, "rb") as f:
+            for chunk in iter(lambda: f.read(1 << 20), b""):
+                h.update(chunk)
+        return {"path": os.path.abspath(path), "bytes": os.path.getsize(path), "sha256": h.hexdigest()}
+    except OSError as e:
+        return {"path": os.path.abspath(path), "error": str(e)}
+
+
+def main():
+    argv = sys.argv[1:]
+    if "--" not in argv:
+        sys.stderr.write(__doc__)
+        sys.exit(2)
+    cut = argv.index("--")
+    opts, cmd = argv[:cut], argv[cut + 1:]
+    lane = tool = label = None
+    inputs, nolock, allcores = [], False, False
+    i = 0
+    while i < len(opts):
+        o = opts[i]
+        if o == "--lane": lane = opts[i + 1]; i += 2
+        elif o == "--tool": tool = opts[i + 1]; i += 2
+        elif o == "--label": label = opts[i + 1]; i += 2
+        elif o == "--input": inputs.append(opts[i + 1]); i += 2
+        elif o == "--nolock": nolock = True; i += 1
+        elif o == "--all-cores": allcores = True; i += 1
+        else:
+            sys.stderr.write(f"gtr-run: unknown option {o}\n"); sys.exit(2)
+    if not (lane and tool and label and cmd):
+        sys.stderr.write("gtr-run: --lane, --tool, --label and a command are all required\n"); sys.exit(2)
+
+    os.makedirs(os.path.join(GTR, "locks"), exist_ok=True)
+    os.makedirs(os.path.dirname(LEDGER), exist_ok=True)
+    t_queue = time.time()
+    held, cores = [], None
+    if allcores:
+        for path, cs in SLOTS:
+            f = open(path, "w"); fcntl.flock(f, fcntl.LOCK_EX); held.append(f)
+        cores = tuple(c for _, cs in SLOTS for c in cs)
+    elif not nolock:
+        while cores is None:
+            for path, cs in SLOTS:
+                f = open(path, "w")
+                try:
+                    fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    held.append(f); cores = cs
+                    break
+                except BlockingIOError:
+                    f.close()
+            if cores is None:
+                time.sleep(0.4)
+    waited = time.time() - t_queue
+    env = dict(os.environ)
+    if cores:
+        for k in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS", "NUMEXPR_NUM_THREADS", "VECLIB_MAXIMUM_THREADS", "TF_NUM_INTRAOP_THREADS"):
+            env.setdefault(k, str(len(cores)))
+
+    def pin():
+        if cores:
+            try:
+                os.sched_setaffinity(0, set(cores))
+            except OSError:
+                pass
+
+    in_facts = [sha_of(p) for p in inputs]
+    load1 = os.getloadavg()[0]
+    r0 = resource.getrusage(resource.RUSAGE_CHILDREN)
+    started = datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")
+    t0 = time.time()
+    try:
+        rc = subprocess.call(cmd, env=env, preexec_fn=pin)
+    except FileNotFoundError as e:
+        sys.stderr.write(f"gtr-run: {e}\n"); rc = 127
+    except KeyboardInterrupt:
+        rc = 130
+    wall = time.time() - t0
+    r1 = resource.getrusage(resource.RUSAGE_CHILDREN)
+    for f in held:
+        fcntl.flock(f, fcntl.LOCK_UN); f.close()
+
+    rec = {
+        "lane": lane, "tool": tool, "label": label,
+        "started_utc": started,
+        "cmd": cmd, "cmd_str": " ".join(shlex.quote(c) for c in cmd), "cwd": os.getcwd(),
+        "inputs": in_facts,
+        "wall_s": round(wall, 2),
+        "cpu_user_s": round(r1.ru_utime - r0.ru_utime, 2),
+        "cpu_sys_s": round(r1.ru_stime - r0.ru_stime, 2),
+        "max_rss_mb": round(r1.ru_maxrss / 1024, 1),
+        "exit_code": rc,
+        "cores": list(cores) if cores else None, "n_cores": len(cores) if cores else None,
+        "lock_wait_s": round(waited, 1), "locked": not nolock,
+        "load1_at_start": round(load1, 2),
+        "threads_env": {k: env[k] for k in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS", "TF_NUM_INTRAOP_THREADS") if k in env},
+        "nproc": os.cpu_count(),
+    }
+    with open(LEDGER_LOCK, "w") as lf:
+        fcntl.flock(lf, fcntl.LOCK_EX)
+        n = 0
+        if os.path.exists(LEDGER):
+            with open(LEDGER, "rb") as f:
+                n = sum(1 for _ in f)
+        rec = {"id": f"r{n + 1:04d}", **rec}
+        with open(LEDGER, "a") as f:
+            f.write(json.dumps(rec) + "\n")
+        fcntl.flock(lf, fcntl.LOCK_UN)
+    sys.stderr.write(
+        f"[gtr-run {rec['id']}] {lane}/{tool} \"{label}\" wall={rec['wall_s']}s cpu={rec['cpu_user_s'] + rec['cpu_sys_s']:.1f}s "
+        f"rss={rec['max_rss_mb']}MB cores={rec['n_cores']} exit={rc} slot_wait={rec['lock_wait_s']}s\n")
+    sys.exit(rc)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,37 @@
+{
+ "capo": {
+  "present": "no",
+  "fret": null,
+  "evidence": "No clamp/capo visible on neck in any frame. Side view (t=0.0-6.0s, 15.0-17.0s) and front view (t=7.0-14.0s) both show bare fretboard, strings and wood at the nut and first several frets with no device attached behind any fret."
+ },
+ "tuning": {
+  "tuning": "cannot_tell",
+  "evidence": "Only silent frames provided at 1fps with no audio to analyze pitch, and no close-up detail of tuning pegs/string tension interval to infer tuning visually. Standard classical tuning is likely but cannot be determined from images alone."
+ },
+ "fretting_hand": [
+  {
+   "start": 0.0,
+   "end": 7.0,
+   "visible": true,
+   "lowest_fret": null,
+   "highest_fret": null,
+   "note": "Side/right-angle view from stage left. Left fretting hand on neck is visible throughout, fingers moving on mid-neck, but fret numbers not readable due to distance, angle and resolution."
+  },
+  {
+   "start": 7.0,
+   "end": 15.0,
+   "visible": true,
+   "lowest_fret": null,
+   "highest_fret": null,
+   "note": "Camera switches to frontal/center view. Left fretting hand remains visible on upper neck, playing and shifting position (approx. 2nd-7th fret region), but exact frets cannot be read clearly."
+  },
+  {
+   "start": 15.0,
+   "end": 18.0,
+   "visible": true,
+   "lowest_fret": null,
+   "highest_fret": null,
+   "note": "Camera returns to side/right-angle view to end of clip. Fretting hand still visible on neck and active, covers open to mid-neck area, exact lowest/highest frets not resolvable."
+  }
+ ]
+}

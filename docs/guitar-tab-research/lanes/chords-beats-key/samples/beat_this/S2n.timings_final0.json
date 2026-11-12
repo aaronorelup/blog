@@ -1,0 +1,12 @@
+{
+ "torch": "2.15.0+cpu",
+ "torch_threads": 1,
+ "import_s": 1.139,
+ "load_model_s": 0.367,
+ "inference_s": 2.351,
+ "outputs": {
+  "n_beats": 54,
+  "n_downbeats": 26,
+  "median_ibi_bpm": 111.11
+ }
+}

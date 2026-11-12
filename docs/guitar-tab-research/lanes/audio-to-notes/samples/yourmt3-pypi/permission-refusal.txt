@@ -1,0 +1,10 @@
+# Gap round 2 (gapfill-audio-to-notes), 2026-11-11, about 00:48:40 UTC: the one run attempt of the PyPI package yourmt3 0.1.4
+# Command submitted (one Bash call; G=/home/user/gtr/lanes/audio-to-notes; venv installed from PyPI, exit 0; YPTF+Single.pt downloaded and
+# its SHA-256 checked before):
+#   mkdir -p $G/out/yourmt3-pypi && cd $G/out/yourmt3-pypi && nohup gtr-run --lane audio-to-notes --tool yourmt3-pypi --label "..."
+#     --input S2n.wav --input R1c.wav --input S4/stems/guitar.wav --input YPTF+Single.pt --
+#     $G/venv-yourmt3/bin/python -I scripts/gap2/run_yourmt3_pypi.py $G/gap2/yourmt3ckpt/YPTF+Single.pt "YPTF+Single" $G/out/yourmt3-pypi
+#     > $G/gap2/logs/run-yourmt3.log 2>&1 &
+# Answer of the session's permission system (verbatim, first two sentences):
+Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].
+# Afterwards (checked 2026-11-11T00:48:45Z): no $G/out/yourmt3-pypi, no log file, no yourmt3-pypi line in the run ledger. No other attempt was made.

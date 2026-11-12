@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Chord diagram trial</title>
+<style>
+  body { margin: 0; background: #fff; font-family: sans-serif; }
+  .row { display: flex; gap: 24px; padding: 12px; align-items: flex-start; }
+  .cell { width: 180px; } .cell h4 { margin: 0 0 4px; font-size: 13px; }
+</style>
+<script src="/nm/svguitar/dist/svguitar.umd.js"></script>
+<script src="/nm/vexchords/dist/vexchords.js"></script>
+</head>
+<body>
+<div class="row">
+  <div class="cell"><h4>svguitar: G (320003)</h4><div id="sg1"></div></div>
+  <div class="cell"><h4>svguitar: Bm (x24432)</h4><div id="sg2"></div></div>
+  <div class="cell"><h4>vexchords: G (320003)</h4><div id="vc1"></div></div>
+  <div class="cell"><h4>vexchords: Bm (x24432)</h4><div id="vc2"></div></div>
+</div>
+<script>
+// The two chord shapes used in the S3/S4 truth tabs (G open, Bm barre x24432), drawn by each library.
+window.__log = [];
+const info = {};
+try {
+  // svguitar: fingers are [string, fret] with string 1 = the highest string; fret 0 = open, 'x' = muted
+  new svguitar.SVGuitarChord('#sg1').configure({ strings: 6, frets: 4, position: 1, tuning: ['E', 'A', 'D', 'G', 'B', 'E'] })
+    .chord({ fingers: [[6, 3], [5, 2], [4, 0], [3, 0], [2, 0], [1, 3]], barres: [] }).draw();
+  new svguitar.SVGuitarChord('#sg2').configure({ strings: 6, frets: 4, position: 2, tuning: ['E', 'A', 'D', 'G', 'B', 'E'] })
+    .chord({ fingers: [[6, 'x'], [4, 3], [3, 3], [2, 2]], barres: [{ fromString: 5, toString: 1, fret: 1 }] }).draw();
+  info.svguitar = { ok: true, svgs: document.querySelectorAll('#sg1 svg, #sg2 svg').length };
+} catch (e) { info.svguitar = { ok: false, error: String(e && e.stack || e).slice(0, 600) }; }
+try {
+  // vexchords: chord is [[string, fret], ...] with string 1 = the highest string; 'x' muted, 0 open
+  const draw = (window.vexchords && (window.vexchords.draw || (window.vexchords.default && window.vexchords.default.draw)));
+  draw(document.getElementById('vc1'), { chord: [[6, 3], [5, 2], [4, 0], [3, 0], [2, 0], [1, 3]], position: 0, barres: [], tuning: ['E', 'A', 'D', 'G', 'B', 'E'] }, { width: 150, height: 180 });
+  draw(document.getElementById('vc2'), { chord: [[6, 'x'], [5, 2], [4, 4], [3, 4], [2, 3], [1, 2]], position: 0, barres: [{ fromString: 5, toString: 1, fret: 2 }], tuning: ['E', 'A', 'D', 'G', 'B', 'E'] }, { width: 150, height: 180 });
+  info.vexchords = { ok: true, svgs: document.querySelectorAll('#vc1 svg, #vc2 svg').length, globals: Object.keys(window.vexchords || {}).slice(0, 10) };
+} catch (e) { info.vexchords = { ok: false, error: String(e && e.stack || e).slice(0, 600), globals: Object.keys(window.vexchords || {}).slice(0, 10) }; }
+window.__info = info;
+setTimeout(() => { window.__rendered = true; }, 300);
+</script>
+</body>
+</html>

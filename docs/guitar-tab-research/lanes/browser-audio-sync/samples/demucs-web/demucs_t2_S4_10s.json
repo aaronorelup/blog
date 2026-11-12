@@ -1,0 +1,73 @@
+{
+ "page": "/pages/demucs.html?threads=2",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 63.743,
+ "external_requests": [],
+ "result": {
+  "threads": 2,
+  "file": "/laneinputs/S4_10s/S4_10s.wav",
+  "crossOriginIsolated": true,
+  "constants": {
+   "SAMPLE_RATE": 44100,
+   "FFT_SIZE": 4096,
+   "HOP_SIZE": 1024,
+   "TRAINING_SAMPLES": 343980,
+   "MODEL_SPEC_BINS": 2048,
+   "MODEL_SPEC_FRAMES": 336,
+   "SEGMENT_OVERLAP": 0.25,
+   "TRACKS": [
+    "drums",
+    "bass",
+    "other",
+    "vocals"
+   ],
+   "DEFAULT_MODEL_URL": "https://huggingface.co/timcsy/demucs-web-onnx/resolve/main/htdemucs_embedded.onnx"
+  },
+  "load_ms": 3234.6599999996834,
+  "input": {
+   "sampleRate": 44100,
+   "channels": 2,
+   "seconds": 10
+  },
+  "separate_ms": 55625.439999999944,
+  "progress": [
+   {
+    "ms": 30535.35499999998,
+    "seg": 1,
+    "of": 2
+   },
+   {
+    "ms": 55560.53000000026,
+    "seg": 2,
+    "of": 2
+   }
+  ],
+  "stems": {
+   "drums": {
+    "samples": 441000,
+    "wav": "/home/user/gtr/lanes/browser-audio-sync/out/demucs/S4_10s_drums.wav"
+   },
+   "bass": {
+    "samples": 441000,
+    "wav": "/home/user/gtr/lanes/browser-audio-sync/out/demucs/S4_10s_bass.wav"
+   },
+   "other": {
+    "samples": 441000,
+    "wav": "/home/user/gtr/lanes/browser-audio-sync/out/demucs/S4_10s_other.wav"
+   },
+   "vocals": {
+    "samples": 441000,
+    "wav": "/home/user/gtr/lanes/browser-audio-sync/out/demucs/S4_10s_vocals.wav"
+   }
+  },
+  "logs": [
+   "[model] Loading model...",
+   "[model] Model loaded successfully"
+  ]
+ }
+}

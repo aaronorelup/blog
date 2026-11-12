@@ -1,0 +1,9 @@
+S2n: frames 1265, identical frames 1259, identical string cells 7584/7590, active cells onnx-vanilla 2274, onnx-vanilla-prep 2273
+S2s: frames 1265, identical frames 1240, identical string cells 7565/7590, active cells onnx-vanilla 4004, onnx-vanilla-prep 3986
+S3: frames 1034, identical frames 1026, identical string cells 6196/6204, active cells onnx-vanilla 4120, onnx-vanilla-prep 4116
+S5capo2: frames 1265, identical frames 1265, identical string cells 7590/7590, active cells onnx-vanilla 1585, onnx-vanilla-prep 1585
+S5dropd: frames 1265, identical frames 1260, identical string cells 7585/7590, active cells onnx-vanilla 2336, onnx-vanilla-prep 2335
+R1a: frames 1256, identical frames 1255, identical string cells 7535/7536, active cells onnx-vanilla 2904, onnx-vanilla-prep 2903
+R1b: frames 1264, identical frames 1252, identical string cells 7572/7584, active cells onnx-vanilla 818, onnx-vanilla-prep 817
+R1c: frames 1216, identical frames 1215, identical string cells 7295/7296, active cells onnx-vanilla 2549, onnx-vanilla-prep 2548
+all: frames 9830, identical frames 9772, identical string cells 58922/58980

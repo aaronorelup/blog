@@ -1,0 +1,37 @@
+{
+ "capo": {
+  "present": "no",
+  "fret": null,
+  "evidence": "No capo is visible clamped to the guitar's neck across all frames, which show the neck from multiple angles (side and front) with no capo present."
+ },
+ "tuning": {
+  "tuning": "cannot_tell",
+  "evidence": "There is no visual indication of the guitar's tuning: no tuning labels are present, there is no close-up of tuning peg adjustments, and audio cannot be assessed from the still video frames."
+ },
+ "fretting_hand": [
+  {
+   "start": 0.0,
+   "end": 6.5,
+   "visible": true,
+   "lowest_fret": null,
+   "highest_fret": null,
+   "note": "Side camera angle from the player's right side; the fretting hand is visible on the guitar neck, but exact fret numbers cannot be determined due to the viewing angle and lack of visible fret inlay markers."
+  },
+  {
+   "start": 6.5,
+   "end": 14.5,
+   "visible": true,
+   "lowest_fret": null,
+   "highest_fret": null,
+   "note": "Front-facing camera angle; the fretting hand remains visible on the neck, but specific fret positions cannot be identified as there are no distinct markers to reference for fret numbering."
+  },
+  {
+   "start": 14.5,
+   "end": 17.0,
+   "visible": true,
+   "lowest_fret": null,
+   "highest_fret": null,
+   "note": "Return to side camera angle from the player's right side; the fretting hand is visible on the guitar neck, with exact fret numbers unidentifiable."
+  }
+ ]
+}

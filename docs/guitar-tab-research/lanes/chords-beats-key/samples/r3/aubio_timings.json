@@ -1,0 +1,35 @@
+{
+ "R3a": {
+  "aubio_tempo_s": 0.278,
+  "tempo_stdout": "133.22 bpm",
+  "tempo_rc": 0,
+  "aubio_beat_s": 0.299,
+  "aubio_beat_n": 36,
+  "beat_rc": 0,
+  "aubiotrack_s": 0.085,
+  "aubiotrack_n": 36,
+  "aubiotrack_rc": 0
+ },
+ "R3b": {
+  "aubio_tempo_s": 0.273,
+  "tempo_stdout": "150.84 bpm",
+  "tempo_rc": 0,
+  "aubio_beat_s": 0.256,
+  "aubio_beat_n": 39,
+  "beat_rc": 0,
+  "aubiotrack_s": 0.084,
+  "aubiotrack_n": 39,
+  "aubiotrack_rc": 0
+ },
+ "R3c": {
+  "aubio_tempo_s": 0.263,
+  "tempo_stdout": "125.73 bpm",
+  "tempo_rc": 0,
+  "aubio_beat_s": 0.28,
+  "aubio_beat_n": 33,
+  "beat_rc": 0,
+  "aubiotrack_s": 0.089,
+  "aubiotrack_n": 33,
+  "aubiotrack_rc": 0
+ }
+}

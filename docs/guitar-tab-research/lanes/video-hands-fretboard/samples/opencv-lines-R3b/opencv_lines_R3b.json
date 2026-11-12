@@ -1,0 +1,388 @@
+{
+ "opencv": "5.0.0",
+ "clip": "R3b",
+ "quad_set_by_hand": [
+  [
+   1262.0,
+   25.0
+  ],
+  [
+   1340.0,
+   130.0
+  ],
+  [
+   290.0,
+   765.0
+  ],
+  [
+   245.0,
+   635.0
+  ]
+ ],
+ "rect_size": [
+  1200,
+  130
+ ],
+ "frames": {
+  "R3b_f0225": {
+   "hand_quad": {
+    "quad": [
+     [
+      1262.0,
+      25.0
+     ],
+     [
+      1340.0,
+      130.0
+     ],
+     [
+      290.0,
+      765.0
+     ],
+     [
+      245.0,
+      635.0
+     ]
+    ],
+    "tag": "handquad",
+    "unrectified": {
+     "neck_axis_deg": 149.04,
+     "fretboard_width_px": 130.8,
+     "hough": {
+      "segments_total": 351,
+      "segments_in_quad": 115,
+      "string_like": 31,
+      "fret_like": 41
+     },
+     "lsd": {
+      "segments_total": 828,
+      "segments_in_quad": 213,
+      "string_like": 38,
+      "fret_like": 33
+     },
+     "time_s": 0.7919
+    },
+    "homography_img_to_rect": [
+     [
+      -0.988273,
+      0.734145,
+      1228.846466
+     ],
+     [
+      0.622452,
+      1.03776,
+      -811.478147
+     ],
+     [
+      0.000131,
+      0.000281,
+      1.0
+     ]
+    ],
+    "rectified": {
+     "size": [
+      1200,
+      130
+     ],
+     "hough": {
+      "segments_total": 106,
+      "string_like": 15,
+      "fret_like": 15,
+      "fret_x_clusters_px_from_nut": [
+       3.0,
+       499.5,
+       570.0,
+       649.0,
+       715.0,
+       777.0,
+       887.0,
+       931.0,
+       980.0,
+       1020.0,
+       1060.0,
+       1133.0,
+       1168.0
+      ],
+      "string_y_clusters_px_from_upper_edge": [
+       3.7,
+       24.9,
+       68.5,
+       112.0
+      ]
+     },
+     "lsd": {
+      "segments_total": 223,
+      "string_like": 17,
+      "fret_like": 30,
+      "fret_x_clusters_px_from_nut": [
+       4.1,
+       389.9,
+       496.2,
+       573.1,
+       645.5,
+       711.9,
+       777.1,
+       830.7,
+       884.5,
+       933.6,
+       979.9,
+       1022.7,
+       1063.0,
+       1101.2,
+       1135.7,
+       1168.0
+      ],
+      "string_y_clusters_px_from_upper_edge": [
+       3.5,
+       22.0,
+       27.6,
+       44.8,
+       67.3,
+       73.3,
+       89.8
+      ]
+     },
+     "time_s": 0.4094
+    }
+   }
+  },
+  "R3b_f0000": {
+   "hand_quad": {
+    "quad": [
+     [
+      1262.0,
+      25.0
+     ],
+     [
+      1340.0,
+      130.0
+     ],
+     [
+      290.0,
+      765.0
+     ],
+     [
+      245.0,
+      635.0
+     ]
+    ],
+    "tag": "handquad",
+    "unrectified": {
+     "neck_axis_deg": 149.04,
+     "fretboard_width_px": 130.8,
+     "hough": {
+      "segments_total": 310,
+      "segments_in_quad": 109,
+      "string_like": 42,
+      "fret_like": 37
+     },
+     "lsd": {
+      "segments_total": 793,
+      "segments_in_quad": 201,
+      "string_like": 40,
+      "fret_like": 34
+     },
+     "time_s": 0.7875
+    },
+    "homography_img_to_rect": [
+     [
+      -0.988273,
+      0.734145,
+      1228.846466
+     ],
+     [
+      0.622452,
+      1.03776,
+      -811.478147
+     ],
+     [
+      0.000131,
+      0.000281,
+      1.0
+     ]
+    ],
+    "rectified": {
+     "size": [
+      1200,
+      130
+     ],
+     "hough": {
+      "segments_total": 95,
+      "string_like": 18,
+      "fret_like": 21,
+      "fret_x_clusters_px_from_nut": [
+       319.2,
+       408.8,
+       495.0,
+       569.5,
+       639.0,
+       770.0,
+       827.0,
+       883.0,
+       929.0,
+       976.0,
+       1058.5,
+       1093.0,
+       1128.5
+      ],
+      "string_y_clusters_px_from_upper_edge": [
+       5.8,
+       79.0
+      ]
+     },
+     "lsd": {
+      "segments_total": 248,
+      "string_like": 25,
+      "fret_like": 32,
+      "fret_x_clusters_px_from_nut": [
+       53.2,
+       220.9,
+       319.5,
+       408.9,
+       492.7,
+       569.2,
+       641.6,
+       710.7,
+       769.6,
+       826.3,
+       880.2,
+       932.0,
+       975.9,
+       1018.6,
+       1058.6,
+       1095.6,
+       1130.7,
+       1163.3
+      ],
+      "string_y_clusters_px_from_upper_edge": [
+       7.2,
+       29.6,
+       35.2,
+       77.4,
+       83.2,
+       96.8
+      ]
+     },
+     "time_s": 0.2291
+    }
+   }
+  },
+  "R3b_f0449": {
+   "hand_quad": {
+    "quad": [
+     [
+      1262.0,
+      25.0
+     ],
+     [
+      1340.0,
+      130.0
+     ],
+     [
+      290.0,
+      765.0
+     ],
+     [
+      245.0,
+      635.0
+     ]
+    ],
+    "tag": "handquad",
+    "unrectified": {
+     "neck_axis_deg": 149.04,
+     "fretboard_width_px": 130.8,
+     "hough": {
+      "segments_total": 375,
+      "segments_in_quad": 151,
+      "string_like": 87,
+      "fret_like": 41
+     },
+     "lsd": {
+      "segments_total": 877,
+      "segments_in_quad": 269,
+      "string_like": 72,
+      "fret_like": 30
+     },
+     "time_s": 0.512
+    },
+    "homography_img_to_rect": [
+     [
+      -0.988273,
+      0.734145,
+      1228.846466
+     ],
+     [
+      0.622452,
+      1.03776,
+      -811.478147
+     ],
+     [
+      0.000131,
+      0.000281,
+      1.0
+     ]
+    ],
+    "rectified": {
+     "size": [
+      1200,
+      130
+     ],
+     "hough": {
+      "segments_total": 119,
+      "string_like": 20,
+      "fret_like": 15,
+      "fret_x_clusters_px_from_nut": [
+       323.0,
+       492.0,
+       567.5,
+       639.5,
+       770.5,
+       826.5,
+       881.0,
+       929.0,
+       975.5,
+       1053.0,
+       1096.5,
+       1164.5
+      ],
+      "string_y_clusters_px_from_upper_edge": [
+       19.5,
+       37.5,
+       45.1,
+       91.0
+      ]
+     },
+     "lsd": {
+      "segments_total": 299,
+      "string_like": 47,
+      "fret_like": 23,
+      "fret_x_clusters_px_from_nut": [
+       322.7,
+       494.6,
+       570.7,
+       639.4,
+       705.2,
+       766.9,
+       823.8,
+       929.6,
+       976.0,
+       1015.3,
+       1056.2,
+       1093.9,
+       1129.1,
+       1161.2
+      ],
+      "string_y_clusters_px_from_upper_edge": [
+       25.6,
+       53.0,
+       89.1,
+       111.6,
+       116.3
+      ]
+     },
+     "time_s": 0.2618
+    }
+   }
+  }
+ }
+}

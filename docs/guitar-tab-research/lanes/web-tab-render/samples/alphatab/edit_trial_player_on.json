@@ -1,0 +1,36 @@
+{
+ "target": {
+  "before": {
+   "string_alphatab": 4,
+   "fret": 0,
+   "pitch": 55
+  },
+  "noteBounds": {
+   "x": 225.63316338693852,
+   "y": 87.91499999999999,
+   "w": 10.62,
+   "h": 9
+  },
+  "nBoundsNotes": 1,
+  "container": {
+   "x": 0,
+   "y": 0
+  }
+ },
+ "clickResult": [
+  {
+   "event": "beatMouseDown",
+   "bar": 1,
+   "voice": 1,
+   "beat": 0
+  }
+ ],
+ "after": {
+  "string_alphatab": 4,
+  "fret": 2,
+  "pitch": 57
+ },
+ "gpBytes": 4983,
+ "texChars": 2244,
+ "console": []
+}

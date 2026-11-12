@@ -1,0 +1,379 @@
+cc-bync-def                  lic      STRICT    
+cc-bync-2a1                  lic      STRICT    
+cc-byncsa-def                lic      STRICT    
+cc-byncsa-2a1                lic      STRICT    
+cc-byncnd-def                lic      STRICT    
+cc-byncnd-2a1                lic      STRICT    
+cc-by-2a1end                 lic      STRICT    
+tabcnn-py27                  doc      STRICT    
+tabcnn-run                   doc      STRICT    
+tabcnn-run2                  doc      STRICT    
+tabcnn-prep                  doc      STRICT    
+tabcnn-weights               doc      STRICT    
+tabcnn-zip                   doc      STRICT    
+tabcnn-code:self.sr_downs = 2205 code     STRICT    
+tabcnn-code:n_bins = 192     code     STRICT    
+tabcnn-code:bins_per_octave = 24 code     STRICT    
+tabcnn-code:hop_length = 512 code     STRICT    
+tabcnn-code:con_win_size = 9 code     STRICT    
+tabcnn-code:self.num_classes = 2 code     STRICT    
+tabcnn-code:self.num_strings = 6 code     STRICT    
+tabcnn-code:self.highest_fret =  code     STRICT    
+tabcnn-code:self.num_classes = s code     STRICT    
+tabcnn-code:self.string_midi_pit code     STRICT    
+amt-what                     doc      STRICT    
+amt-wip                      doc      STRICT    
+amt-pip                      doc      STRICT    
+amt-pyreq                    code     STRICT    
+amt-lic-setup                lic      STRICT    
+amt-tuning-doc               code     STRICT    
+amt-frets-doc                code     STRICT    
+amt-gp                       code     STRICT    
+amt-def-tuning               code     STRICT    
+amt-def-frets                code     STRICT    
+amt-lic                      lic      STRICT    
+inh:Acquire annotations in J doc      LOOSE     
+inh:Create a matrix of inhib doc      LOOSE     
+inh:Implement the proposed t doc      STRICT    
+inh:Perform six-fold cross-v doc      LOOSE     
+inh:from guitar_transcriptio doc      STRICT    
+inh:LogisticTablatureEstimat doc      STRICT    
+inh:an instance of `torch.nn doc      LOOSE     
+inh:python guitar_transcript doc      STRICT    
+inh:A Data-Driven Methodolog doc      STRICT    
+inh-setup                    code     STRICT    
+inh-ver                      code     STRICT    
+inh-lic                      lic      STRICT    
+fn:Implement the FretNet mo  doc      STRICT    
+fn:Compute note and continu  doc      STRICT    
+fn:FretNet: Continuous-Valu  doc      STRICT    
+fn-setup                     code     STRICT    
+fn-ver                       code     STRICT    
+fn-req                       code     STRICT    
+fn-inf:model-2000.pt         code     STRICT    
+fn-inf:sample_rate = 22050   code     STRICT    
+fn-inf:hop_length = 512      code     STRICT    
+fn-inf:harmonics=[0.5, 1, 2  code     STRICT    
+fn-inf:n_bins=144            code     STRICT    
+fn-inf:bins_per_octave=36    code     STRICT    
+fn-inf:run_offline(features  code     STRICT    
+fn-inf:stacked_notes_to_fre  code     STRICT    
+fn-inf:StackedPitchListTabl  code     STRICT    
+fn-inf:fmin=librosa.note_to  code     STRICT    
+fn-cmp                       code     STRICT    
+fn-lic                       lic      STRICT    
+st-abs                       doc      STRICT    
+st-demo                      doc      STRICT    
+st-clean                     doc      STRICT    
+st-gt                        doc      STRICT    
+st-yin                       doc      STRICT    
+st-44k                       doc      STRICT    
+st-2tb                       doc      STRICT    
+st-bug                       doc      STRICT    
+st-bug-ac                    doc      STRICT    
+st-bug-el                    doc      STRICT    
+st-lic-readme                lic      STRICT    
+st-lic-file1                 lic      STRICT    
+st-lic-file2                 lic      STRICT    
+st-box                       doc      STRICT    
+hf-code                      doc      STRICT    
+hf-p1                        doc      STRICT    
+hf-p2                        doc      STRICT    
+hf-lic-card                  lic      STRICT    
+hm-pyver                     code     STRICT    
+hm-pyreq                     code     STRICT    
+hm-fork                      code     STRICT    
+hm-lic-class                 lic      STRICT    
+hm-inst1                     code     STRICT    
+hm-inst2                     code     STRICT    
+hm-inst3                     code     STRICT    
+hm-inst4                     code     STRICT    
+hm:midi_transcription guita  doc      STRICT    
+hm:pip install hf-midi-tran  doc      STRICT    
+hm:Input: Audio files (WAV,  doc      LOOSE     
+hm:Output: MIDI files        doc      LOOSE     
+hm:Sample Rate: 16 kHz       doc      LOOSE     
+hm:Architecture: Convolutio  doc      LOOSE     
+hm:This code transcribes so  doc      STRICT    
+hm:License: MIT              lic      LOOSE     
+hm:MidiTranscriptionModel.f  doc      NOT-FOUND missing fragment: 'miditranscriptionmodel.frompretrained("xavriley/midi-transcription-models", instrument="guitar")' ; longest prefix found: 'miditranscriptionmodel.frompretrained('
+hm:model.transcribe("in.wav  doc      NOT-FOUND missing fragment: 'model.transcribe("in.wav", "out.mid")' ; longest prefix found: 'model.transcribe("'
+hm:transcribe_audio_array(a  doc      STRICT    
+hm:sr=16000                  doc      STRICT    
+hm:If you need to separate   doc      STRICT    
+hm:--batch-size              doc      STRICT    
+hm:--checkpoint              doc      STRICT    
+hm:--model-id                doc      STRICT    
+hm-device                    code     STRICT    
+hm-onset                     code     STRICT    
+hm-offset                    code     STRICT    
+hm-seg                       code     STRICT    
+leduc-terms                  lic      STRICT    
+leduc-newer                  lic      STRICT    
+leduc-hf-lic                 lic      STRICT    
+hrgt-gp                      doc      STRICT    
+riley-abs1                   doc      STRICT    
+riley-abs2                   doc      STRICT    
+gt-ver                       code     STRICT    
+gt-pyreq                     code     STRICT    
+gt-lic-pyp                   lic      STRICT    
+gt-ch1                       doc      STRICT    
+gt-ch1b                      doc      STRICT    
+gt-ch2                       doc      STRICT    
+gt:Guitab turns a recording  doc      STRICT    
+gt:On clean recordings abou  doc      STRICT    
+gt:guitab --audio my_song.m  doc      STRICT    
+gt:Every command takes `--d  doc      STRICT    
+gt:guitab-app                doc      STRICT    
+gt:The models run with ONNX  doc      LOOSE     
+gt:A 2:23 song takes about   doc      STRICT    
+gt:A 4-minute song takes we  doc      STRICT    
+gt:at 22.05 kHz mono         doc      STRICT    
+gt:`out/my_song/my_song.gp5  doc      STRICT    
+gt:for every frame and stri  doc      STRICT    
+gt:notes stay on strings th  doc      STRICT    
+gt:Re-finger towards first   doc      STRICT    
+gt:A fixed tempo instead of  doc      STRICT    
+gt:is trained on public dat  doc      STRICT    
+gt:428 selected fingerstyle  doc      STRICT    
+gt:Custom dataset (not dist  doc      LOOSE     
+gt:from the dataset's YouTu  doc      STRICT    
+gt:Real fingerstyle recordi  doc      STRICT    
+gt:the research started fro  doc      LOOSE     
+gt:in an alphaTab viewer wi  doc      LOOSE     
+gt:the beats come from the   doc      STRICT    
+gt:on a grid that follows t  doc      STRICT    
+gt:wav, flac, ogg, mp3, aif  doc      STRICT    
+gt:a recording of a solo gu  doc      STRICT    
+gt:960                       doc      STRICT    
+gt:--grid                    doc      STRICT    
+gt:--onset                   doc      STRICT    
+gt:--orphan                  doc      STRICT    
+gt:--music_lm                doc      STRICT    
+gt:--chords                  doc      STRICT    
+gt:--params                  doc      STRICT    
+gt:--fingering               doc      STRICT    
+gt:--capo                    doc      STRICT    
+gt:Chordonomicon             doc      STRICT    
+gt-lic-readme                lic      STRICT    
+gt-lic-file                  lic      STRICT    
+gt-card-yaml                 lic      STRICT    
+gt-card-lic                  lic      STRICT    
+gt-card-num                  doc      STRICT    
+gt-guitar-doc                code     STRICT    
+gt-guitar-open               code     STRICT    
+gt-gaps-dl                   code     STRICT    
+tart-v2                      doc      STRICT    
+tart-v1                      doc      STRICT    
+tart-num                     doc      STRICT    
+n2f-second                   doc      STRICT    
+n2f-cap                      doc      STRICT    
+n2f-abs                      doc      STRICT    
+n2f-abs2                     doc      STRICT    
+n2f-lic                      lic      STRICT    
+n2f-html-link                doc      STRICT    
+a2t:Given an audio file of u doc      STRICT    
+a2t:python src/train.py --ma doc      LOOSE     
+a2t:infer.py --checkpoint_pa doc      LOOSE     
+a2t:src/python infer.py      doc      STRICT    
+a2t:Currently the model is l doc      STRICT    
+a2t:## Checkpoints           doc      STRICT    
+a2t:We will host a checkpoin doc      STRICT    
+a2t:goat.csv                 doc      STRICT    
+a2t:synthtab.csv             doc      STRICT    
+ny:This project makes use o  doc      LOOSE     
+ny:First, a model is traine  doc      STRICT    
+ny:Alphatab will be used fo  doc      LOOSE     
+ny:It is clear that more th  doc      STRICT    
+ny:MAESTRO dataset performa  doc      STRICT    
+gs:gtrsnipe is a guitar tra  doc      STRICT    
+gs:gtrsnipe -i input.mid -o  doc      STRICT    
+gs:Convert to and from .mid  doc      STRICT    
+gs:(.mid, .mp3, .wav, etc.)  doc      STRICT    
+gs:audio input: librosa pYI  doc      STRICT    
+gs:demucs stem isolation (p  doc      STRICT    
+gs:ranks them by how playab  doc      STRICT    
+gs:gtrsnipe chooses where t  doc      STRICT    
+gs:`viterbi` (default) — a   doc      LOOSE     
+gs:`greedy` — the legacy pe  doc      LOOSE     
+gs:--tuning-pitches "A1,E2,  doc      STRICT    
+gs:never moves a note to an  doc      STRICT    
+gs:gtrsnipe-play             doc      STRICT    
+gs:gtrsnipe-chords           doc      STRICT    
+gs:--analyze                 doc      STRICT    
+gs:--solve-tuning            doc      STRICT    
+gs:DROP_D                    doc      STRICT    
+gs:BARITONE_B                doc      STRICT    
+gs:--drop-low-string         doc      STRICT    
+gs:--num-strings             doc      STRICT    
+gs:--max-fret                doc      STRICT    
+gs:--capo                    doc      STRICT    
+gs:--optimizer               doc      STRICT    
+gs:--fret-span-penalty       doc      STRICT    
+gs:--let-ring-bonus          doc      STRICT    
+gs:--refinger                doc      STRICT    
+gs:--no-refinger             doc      STRICT    
+gs:--single-string           doc      STRICT    
+gs:--transpose               doc      STRICT    
+gs:--prefer-open             doc      STRICT    
+gs:.gtrsnipe/                doc      STRICT    
+gs-ver                       code     STRICT    
+gs-pyreq                     code     STRICT    
+gs-lic1                      lic      STRICT    
+gs-lic2                      lic      STRICT    
+gs-lic3                      lic      STRICT    
+gs-lic-com                   lic      STRICT    
+gs-lic-com2                  lic      STRICT    
+tt-desc                      doc      STRICT    
+tt-pyreq                     code     STRICT    
+tt-entry                     code     STRICT    
+tt:It can handle any tuning  doc      STRICT    
+tt:On Linux, tkinter needs   doc      STRICT    
+tt:The tool works best for   doc      STRICT    
+tt:The sequence of notes an  doc      STRICT    
+tt:a difficulty metric       doc      STRICT    
+tt:The guitar fretboard is   doc      STRICT    
+tt:Slides, Hammer-on, Pull-  doc      STRICT    
+tt-gen1                      code     STRICT    
+tt-gen2                      code     STRICT    
+tt-gen3                      code     STRICT    
+tt-gen4                      code     STRICT    
+tt-gen5                      code     NOT-FOUND missing fragment: 'tojson()' ; longest prefix found: 'to'
+tt-theory                    code     NOT-FOUND missing fragment: 'nfrets=20' ; longest prefix found: 'nfrets'
+tt-weights                   code     STRICT    
+tt-lic                       lic      STRICT    
+tutts-desc                   doc      STRICT    
+tutts-hmm                    doc      STRICT    
+tutts-call                   doc      STRICT    
+tutts-std                    doc      STRICT    
+tutts-data                   doc      STRICT    
+tutts-notes                  doc      STRICT    
+tutts-adapter                doc      STRICT    
+tutts-lic                    lic      NOT-FOUND missing fragment: '"license": "mit"' ; longest prefix found: '"'
+tutts-toAscii                doc      STRICT    
+tutts-toLines                doc      STRICT    
+tutts-toSystems              doc      STRICT    
+ty-what                      doc      STRICT    
+ty:from tayuya import MIDIP  doc      STRICT    
+ty:mid = MIDIParser('sample  doc      STRICT    
+ty:print(mid.render_tabs())  doc      STRICT    
+ty:mid.get_tracks()          doc      STRICT    
+ty:mid.notes_played()        doc      STRICT    
+ty:[{'note': 'C#5', 'time':  doc      STRICT    
+ty:mid.get_key()             doc      STRICT    
+ty-setup                     code     STRICT    
+ty-tabs1                     code     STRICT    
+ty-tabs2                     code     STRICT    
+ty-tabs3                     code     STRICT    
+ty-const                     code     STRICT    
+ty-lic                       lic      STRICT    
+ly-index                     doc      STRICT    
+ly-index2                    doc      STRICT    
+ly-q1                        doc      STRICT    
+ly-q2                        doc      NOT-FOUND missing fragment: 'the default value for minimumfret is 0. even when minimumfret is set, open strings are used whenever possible. this beha' ; longest prefix found: 'ever possible. this behavior can be changed by setting restrainopenstrings to #t'
+ly-q3                        doc      STRICT    
+ly-q4                        doc      STRICT    
+ly-capo                      doc      STRICT    
+ly-lic                       lic      STRICT    
+fp:Playable guitar fingerin  doc      STRICT    
+fp:Computes playable guitar  doc      STRICT    
+fp:Unlike MuseScore's built  doc      STRICT    
+fp:respects existing finger  doc      STRICT    
+fp-ms                        doc      STRICT    
+fp-lic                       lic      STRICT    
+pg-what                      doc      NOT-FOUND missing fragment: 'pyguitarpro is a package to read, write and manipulate gp3, gp4 and gp5 files. initially pyguitarpro is a python port of' ; longest prefix found: 'late gp3, gp4 and gp5 files. initially pyguitarpro is a python port of alphatab '
+pg-imp                       doc      STRICT    
+pg-parse                     doc      STRICT    
+pg-write                     doc      STRICT    
+pg-docs                      doc      STRICT    
+pg-lic-pyp                   lic      STRICT    
+pg-lic1                      lic      STRICT    
+pg-lic2                      lic      STRICT    
+m21:class FretNote           code     STRICT    
+m21:class FretBoard          code     STRICT    
+m21:class GuitarFretBoard    code     STRICT    
+m21:class UkeleleFretBoard   code     STRICT    
+m21:def getPitches           code     STRICT    
+m21:requires a tuning to be  code     STRICT    
+m21:TODO: Chord from Figure  code     STRICT    
+m21:Chord from FretBoard Obj code     STRICT    
+m21-lic1                     lic      STRICT    
+m21-lic2                     lic      STRICT    
+dg-enc                       doc      STRICT    
+dg-cmd1                      doc      STRICT    
+dg-cmd2                      doc      STRICT    
+dg-req                       doc      STRICT    
+dg-notes                     doc      LOOSE     
+dg-lic                       lic      STRICT    
+dg-size                      doc      STRICT    
+dg-access                    lic      STRICT    
+dg-paper-ug                  doc      STRICT    
+dg-paper-200k                doc      STRICT    
+dg-paper-s7                  lic      NOT-FOUND missing fragment: 'we allow researchers to access dadagp from a zenodo repository, on application by request.' ; longest prefix found: 'we allow researchers to access dadagp from a zenodo repository'
+dg-paper-eth                 doc      STRICT    
+gs-desc                      doc      STRICT    
+gset-readme                  doc      STRICT    
+gset-notes                   doc      STRICT    
+gset-lic-gh                  lic      STRICT    
+idmt-1                       doc      STRICT    
+idmt-2                       doc      STRICT    
+egdb-demo                    doc      STRICT    
+gaps-z1                      doc      STRICT    
+gaps-z2                      lic      LOOSE     
+gaps-page                    lic      STRICT    
+gaps-hf-lic                  lic      STRICT    
+techs-page                   lic      STRICT    
+techs-desc                   doc      STRICT    
+goat-readme                  lic      STRICT    
+goat-abs                     doc      STRICT    
+goat-z                       lic      STRICT    
+egset12                      doc      STRICT    
+scoreset                     doc      NOT-FOUND missing fragment: '.gp5 transcribed files, derived from the giantmidi and maestro datasets' ; longest prefix found: '.gp5 '
+scoreset-lic                 lic      STRICT    
+animetab                     doc      STRICT    
+taptotab                     doc      STRICT    
+taptotab2                    doc      STRICT    
+dib-1                        doc      STRICT    
+dib-2                        doc      STRICT    
+dib-lic                      lic      STRICT    
+sdh                          doc      STRICT    
+strum1                       doc      STRICT    
+strum2                       doc      STRICT    
+kp-ml                        doc      STRICT    
+kp-tuning                    doc      STRICT    
+vgtc                         doc      STRICT    
+gcds1                        doc      STRICT    
+gcds2                        doc      STRICT    
+fretiq1                      doc      STRICT    
+fretiq2                      doc      STRICT    
+ttt-tone                     doc      STRICT    
+ft-abs                       doc      STRICT    
+ft-capo                      doc      NOT-FOUND missing fragment: 'the conditioned model contains a capo# and tuning#,#,#,#,#,# token in the input to condition the model for more flexibil' ; longest prefix found: 'the conditioned model contains a capo'
+ft-primer                    doc      STRICT    
+ft-capo7                     doc      STRICT    
+ft-data                      doc      STRICT    
+ft-gtoday                    doc      LOOSE     
+ft-claim                     doc      STRICT    
+m2t-abs                      doc      STRICT    
+m2t-bart                     doc      STRICT    
+m2t-beam                     doc      STRICT    
+m2t-std                      doc      STRICT    
+m2t-15                       doc      STRICT    
+m2t-base                     doc      STRICT    
+m2t-gp8                      doc      STRICT    
+gtab-abs                     doc      STRICT    
+gtab-abs2                    doc      STRICT    
+gtab-model                   doc      NOT-FOUND missing fragment: 'src/model.py' ; longest prefix found: 'src/'
+gtab-ft                      doc      STRICT    
+gtab-demo1                   doc      STRICT    
+gtab-demo2                   doc      STRICT    
+gtab-ckpt                    doc      STRICT    
+gtab-bp                      doc      STRICT    
+gtab-parser                  doc      NOT-FOUND missing fragment: 'src/dadagpparser.py' ; longest prefix found: 'src/'
+gtab-parser2                 doc      STRICT    
+gtab-leduc                   doc      STRICT    
+gtab-10984521                doc      STRICT    
+bont-abs                     doc      NOT-FOUND missing fragment: 'the basic fingering is derived by solving a constrained and multi-attribute optimization problem, which derives the best' ; longest prefix found: 'the best position of the fretting hand, not just the finger used at each moment.'
+m2td-readme                  doc      STRICT    
+pxu-link                     doc      NOT-FOUND missing fragment: 'github.com/xupei0610/guitar' ; longest prefix found: 'gi'
+TOTAL 378  STRICT 342  LOOSE 22  NOT-FOUND 14

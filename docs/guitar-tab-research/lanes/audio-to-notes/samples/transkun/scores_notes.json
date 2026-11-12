@@ -1,0 +1,279 @@
+{
+ "tool": "transkun",
+ "kind": "notes",
+ "dir": "/home/user/gtr/lanes/audio-to-notes/out/transkun",
+ "conf_threshold": null,
+ "results": {
+  "R1a": {
+   "eval_id": "e0434",
+   "args": "notes --truth R1a --est /home/user/gtr/lanes/audio-to-notes/out/transkun/R1a.mid",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.835821,
+     "recall": 0.592593,
+     "f1": 0.693498,
+     "avg_overlap_ratio": 0.605795,
+     "n_matched": 112
+    },
+    "onset_offset": {
+     "precision": 0.313433,
+     "recall": 0.222222,
+     "f1": 0.260062,
+     "avg_overlap_ratio": 0.863796,
+     "n_matched": 42
+    },
+    "recall_by_voice": {
+     "chord": {
+      "n_truth": 189,
+      "onset_only_matched": 112,
+      "onset_only_recall": 0.592593,
+      "onset_offset_matched": 42,
+      "onset_offset_recall": 0.222222
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 112,
+     "median_s": -0.012516,
+     "mean_s": -0.011705,
+     "mean_abs_s": 0.012799,
+     "p95_abs_s": 0.023727,
+     "max_abs_s": 0.040316
+    }
+   },
+   "counts": {
+    "n_truth": 189,
+    "n_est": 134,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 112,
+    "n_matched_onset_offset": 42
+   }
+  },
+  "R1b": {
+   "eval_id": "e0435",
+   "args": "notes --truth R1b --est /home/user/gtr/lanes/audio-to-notes/out/transkun/R1b.mid",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.942308,
+     "recall": 0.7,
+     "f1": 0.803279,
+     "avg_overlap_ratio": 0.528021,
+     "n_matched": 49
+    },
+    "onset_offset": {
+     "precision": 0.326923,
+     "recall": 0.242857,
+     "f1": 0.278689,
+     "avg_overlap_ratio": 0.719114,
+     "n_matched": 17
+    },
+    "recall_by_voice": {
+     "lead": {
+      "n_truth": 70,
+      "onset_only_matched": 49,
+      "onset_only_recall": 0.7,
+      "onset_offset_matched": 17,
+      "onset_offset_recall": 0.242857
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 49,
+     "median_s": -0.014608,
+     "mean_s": -0.012325,
+     "mean_abs_s": 0.015521,
+     "p95_abs_s": 0.026347,
+     "max_abs_s": 0.045998
+    }
+   },
+   "counts": {
+    "n_truth": 70,
+    "n_est": 52,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 49,
+    "n_matched_onset_offset": 17
+   }
+  },
+  "R1c": {
+   "eval_id": "e0436",
+   "args": "notes --truth R1c --est /home/user/gtr/lanes/audio-to-notes/out/transkun/R1c.mid",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.932773,
+     "recall": 0.75,
+     "f1": 0.831461,
+     "avg_overlap_ratio": 0.620375,
+     "n_matched": 111
+    },
+    "onset_offset": {
+     "precision": 0.436975,
+     "recall": 0.351351,
+     "f1": 0.389513,
+     "avg_overlap_ratio": 0.848182,
+     "n_matched": 52
+    },
+    "recall_by_voice": {
+     "chord": {
+      "n_truth": 148,
+      "onset_only_matched": 111,
+      "onset_only_recall": 0.75,
+      "onset_offset_matched": 52,
+      "onset_offset_recall": 0.351351
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 111,
+     "median_s": -0.018785,
+     "mean_s": -0.018871,
+     "mean_abs_s": 0.02033,
+     "p95_abs_s": 0.034375,
+     "max_abs_s": 0.048951
+    }
+   },
+   "counts": {
+    "n_truth": 148,
+    "n_est": 119,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 111,
+    "n_matched_onset_offset": 52
+   }
+  },
+  "S1": {
+   "eval_id": "e0437",
+   "args": "notes --truth S1 --est /home/user/gtr/lanes/audio-to-notes/out/transkun/S1.mid",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.984127,
+     "recall": 1.0,
+     "f1": 0.992,
+     "avg_overlap_ratio": 0.675133,
+     "n_matched": 62
+    },
+    "onset_offset": {
+     "precision": 0.587302,
+     "recall": 0.596774,
+     "f1": 0.592,
+     "avg_overlap_ratio": 0.955809,
+     "n_matched": 37
+    },
+    "recall_by_voice": {
+     "melody": {
+      "n_truth": 62,
+      "onset_only_matched": 62,
+      "onset_only_recall": 1.0,
+      "onset_offset_matched": 37,
+      "onset_offset_recall": 0.596774
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 62,
+     "median_s": 0.003646,
+     "mean_s": 0.003654,
+     "mean_abs_s": 0.003654,
+     "p95_abs_s": 0.005209,
+     "max_abs_s": 0.00625
+    }
+   },
+   "counts": {
+    "n_truth": 62,
+    "n_est": 63,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 62,
+    "n_matched_onset_offset": 37
+   }
+  },
+  "S2n": {
+   "eval_id": "e0438",
+   "args": "notes --truth S2n --est /home/user/gtr/lanes/audio-to-notes/out/transkun/S2n.mid",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.888889,
+     "recall": 0.977778,
+     "f1": 0.931217,
+     "avg_overlap_ratio": 0.844223,
+     "n_matched": 88
+    },
+    "onset_offset": {
+     "precision": 0.707071,
+     "recall": 0.777778,
+     "f1": 0.740741,
+     "avg_overlap_ratio": 0.934783,
+     "n_matched": 70
+    },
+    "recall_by_voice": {
+     "bass": {
+      "n_truth": 48,
+      "onset_only_matched": 48,
+      "onset_only_recall": 1.0,
+      "onset_offset_matched": 45,
+      "onset_offset_recall": 0.9375
+     },
+     "melody": {
+      "n_truth": 42,
+      "onset_only_matched": 40,
+      "onset_only_recall": 0.952381,
+      "onset_offset_matched": 25,
+      "onset_offset_recall": 0.595238
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 88,
+     "median_s": 0.002492,
+     "mean_s": 0.002505,
+     "mean_abs_s": 0.002651,
+     "p95_abs_s": 0.005648,
+     "max_abs_s": 0.006994
+    }
+   },
+   "counts": {
+    "n_truth": 90,
+    "n_est": 99,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 88,
+    "n_matched_onset_offset": 70
+   }
+  },
+  "S3": {
+   "eval_id": "e0439",
+   "args": "notes --truth S3 --est /home/user/gtr/lanes/audio-to-notes/out/transkun/S3.mid",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.976608,
+     "recall": 0.917582,
+     "f1": 0.946176,
+     "avg_overlap_ratio": 0.469574,
+     "n_matched": 167
+    },
+    "onset_offset": {
+     "precision": 0.099415,
+     "recall": 0.093407,
+     "f1": 0.096317,
+     "avg_overlap_ratio": 0.844646,
+     "n_matched": 17
+    },
+    "recall_by_voice": {
+     "chord": {
+      "n_truth": 182,
+      "onset_only_matched": 167,
+      "onset_only_recall": 0.917582,
+      "onset_offset_matched": 17,
+      "onset_offset_recall": 0.093407
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 167,
+     "median_s": -0.001823,
+     "mean_s": -0.001339,
+     "mean_abs_s": 0.005877,
+     "p95_abs_s": 0.014857,
+     "max_abs_s": 0.019271
+    }
+   },
+   "counts": {
+    "n_truth": 182,
+    "n_est": 171,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 167,
+    "n_matched_onset_offset": 17
+   }
+  }
+ }
+}

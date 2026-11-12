@@ -1,0 +1,13 @@
+[
+ {
+  "tool": "lv_chordia",
+  "python": "/home/user/gtr/lanes/chords-beats-key/verify-trials/venvs/lvchordia/bin/python",
+  "script": "/home/user/blog/docs/guitar-tab-research/lanes/chords-beats-key/scripts/lvchordia_run.py",
+  "clips": [
+   "S3",
+   "S7flat30"
+  ],
+  "args": [],
+  "tag": "lvchordia"
+ }
+]

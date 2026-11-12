@@ -1,0 +1,3 @@
+/home/user/gtr/lanes/guitar-tab/verify-gap2/gp5/tuttut_S2n.truthmidi.gp5: 90 notes written of 90 in the list, 13 measures, tuning [40, 45, 50, 55, 59, 64], capo 0
+/home/user/gtr/lanes/guitar-tab/verify-gap2/gp5/bp-tuttut_R1c.bp.gp5: 151 notes written of 153 in the list, 14 measures, tuning [40, 45, 50, 55, 59, 64], capo 0
+[gtr-run r0711] guitar-tab/pyguitarpro-0.11-glue "verify (verify-gapfill-guitar-tab round 2): one GP5 glue conversion re-run, tuttut S2n and Basic Pitch chain R1c (light job, no slot)" wall=0.23s cpu=0.2s rss=23.2MB cores=None exit=0 slot_wait=0.0s

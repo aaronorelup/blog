@@ -1,0 +1,128 @@
+{
+ "tried": true,
+ "tried_how": "local-cpu (PyPI magenta 2.1.4, onsets_frames_transcription_transcribe, maestro_checkpoint.zip; Python 3.8.20, TensorFlow 2.9.1)",
+ "not_run_reason": null,
+ "for_aaron": false,
+ "runs": [
+  {
+   "run_id": "r0545",
+   "input_id": "S1,S2n,R1c,S4guitar",
+   "cores": 2,
+   "wall_s": 39.57,
+   "peak_mb": 1151.0,
+   "exit_code": 0,
+   "output_files": [
+    "/home/user/gtr/lanes/audio-to-notes/out/onsets-frames/<clip>.wav.midi"
+   ],
+   "metrics": {
+    "round": "gap round 1 (gapfill-audio-to-notes, 2026-11-10)",
+    "piano_trained": "the checkpoint was trained on piano recordings (MAESTRO); run here on guitar",
+    "command": "onsets_frames_transcription_transcribe --model_dir=<maestro_checkpoint>/train S1.wav S2n.wav R1c.wav S4guitar.wav (defaults, config onsets_frames), one process, under GNU time",
+    "cpu_s": 42.2,
+    "slot_wait_s": 329.3,
+    "gnu_time_user_s": 40.19,
+    "gnu_time_sys_s": 1.96,
+    "gnu_time_max_rss_kib": 1178656,
+    "per_file_s_from_log": {
+     "S1": 5.298,
+     "S2n": 4.068,
+     "R1c": 4.307,
+     "S4guitar": 4.966
+    },
+    "startup_before_first_file_s": 20.5,
+    "note_counts": {
+     "S1": 65,
+     "S2n": 91,
+     "R1c": 173,
+     "S4guitar": 372
+    },
+    "notes_onset_only_gtr_eval_0.11.1": {
+     "S1": {
+      "truth_notes": 62,
+      "est_notes": 65,
+      "P": 0.954,
+      "R": 1.0,
+      "F1": 0.976,
+      "onset_offset_F1": 0.898,
+      "median_onset_diff_s": -0.014,
+      "eval_id": "e1570"
+     },
+     "S2n": {
+      "truth_notes": 90,
+      "est_notes": 91,
+      "P": 0.967,
+      "R": 0.978,
+      "F1": 0.972,
+      "onset_offset_F1": 0.906,
+      "median_onset_diff_s": -0.015,
+      "eval_id": "e1571",
+      "recall_by_voice": "bass 48/48, melody 40/42"
+     },
+     "R1c": {
+      "truth_notes": 148,
+      "est_notes": 173,
+      "P": 0.607,
+      "R": 0.709,
+      "F1": 0.654,
+      "onset_offset_F1": 0.287,
+      "median_onset_diff_s": -0.034,
+      "eval_id": "e1572"
+     },
+     "R1c_onset_tol_0.1": {
+      "matched": 119,
+      "P": 0.688,
+      "R": 0.804,
+      "F1": 0.741,
+      "onset_offset_F1": 0.349,
+      "eval_id": "e1574"
+     },
+     "S4guitar (truth voice chord)": {
+      "truth_notes": 369,
+      "est_notes": 372,
+      "P": 0.804,
+      "R": 0.81,
+      "F1": 0.807,
+      "onset_offset_F1": 0.607,
+      "median_onset_diff_s": -0.015,
+      "eval_id": "e1573"
+     }
+    },
+    "multipitch_P_R_Acc_notes_on_10ms_grid": {
+     "S2n": [
+      0.86,
+      1.0,
+      0.86
+     ],
+     "R1c": [
+      0.737,
+      0.73,
+      0.579
+     ],
+     "S4guitar": [
+      0.835,
+      0.81,
+      0.698
+     ]
+    },
+    "midi_facts": "type 1, 220 ticks per quarter, 2 tracks, tempo 120, one instrument program 0, no control changes, no pitch bends; velocities 67-76 (S1), 55-74 (S2n), 30-76 (R1c), 54-75 (S4guitar)"
+   }
+  }
+ ],
+ "inputs": [
+  "WAV read with scipy (note_seq.audio_io.wav_data_to_samples: 'Audio will be converted to mono if necessary'), resampled to the model rate; --load_audio_with_librosa is 'required for 24-bit audio'"
+ ],
+ "outputs": [
+  "for each input file, filename + FLAGS.transcribed_file_suffix + '.midi' written with midi_io.sequence_proto_to_midi_file, next to the input (--transcribed_file_suffix defaults to empty)",
+  "MIDI type 1, 220 ticks per quarter, tempo 120, one instrument (program 0), velocities, no pedal, no pitch bends (run r0545)"
+ ],
+ "constraints_accepted": [
+  "--model_dir",
+  "--checkpoint_path",
+  "--config (onsets_frames, drums)",
+  "--hparams",
+  "--load_audio_with_librosa",
+  "--transcribed_file_suffix",
+  "no pitch range, tuning, instrument or tempo input"
+ ],
+ "weights_facts": "maestro_checkpoint.zip (storage.googleapis.com/magentadata): 263,865,474 bytes, Last-Modified 29 Jan 2019, MD5 d46be12f...980124e0 = x-goog-hash, sha256 336c6e44...1e61d030; TensorFlow 1 checkpoint under train/, no license or readme file inside"
+}

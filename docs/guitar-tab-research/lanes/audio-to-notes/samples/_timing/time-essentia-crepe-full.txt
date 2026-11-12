@@ -1,0 +1,1 @@
+wall_s=453.93 user_s=316.95 sys_s=11.36 max_rss_kb=613320 exit=0

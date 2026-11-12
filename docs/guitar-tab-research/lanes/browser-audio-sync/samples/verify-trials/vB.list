@@ -1,0 +1,7 @@
+/home/user/gtr/lanes/browser-audio-sync/verify/out/synths/synth_jssynth_S2n.json /pages/synths.html?method=jssynth&clip=S2n
+/home/user/gtr/lanes/browser-audio-sync/verify/out/synths/synth_smplr_S2n.json /pages/synths.html?method=smplr&clip=S2n
+/home/user/gtr/lanes/browser-audio-sync/verify/out/synths/synth_sfplayer_S2n.json /pages/synths.html?method=sfplayer&clip=S2n
+/home/user/gtr/lanes/browser-audio-sync/verify/out/synths/synth_spessa_S2n.json /pages/synths.html?method=spessa&clip=S2n
+/home/user/gtr/lanes/browser-audio-sync/verify/out/stretch/st_element_0p75_pp1.json /pages/stretch.html?method=element&rate=0.75&pp=1
+/home/user/gtr/lanes/browser-audio-sync/verify/out/alphatab/alphatab_live_countin.json /pages/alphatab_live.html?mode=countin
+/home/user/gtr/lanes/browser-audio-sync/verify/out/alphatab/alphatab_live_external.json /pages/alphatab_live.html?mode=external

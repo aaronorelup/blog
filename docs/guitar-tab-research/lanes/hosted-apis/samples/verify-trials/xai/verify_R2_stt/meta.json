@@ -1,0 +1,13 @@
+{
+ "endpoint": "POST https://api.x.ai/v1/stt",
+ "model": "grok-voice-transcribe-2.0",
+ "language": "en",
+ "audio": "/home/user/gtr/inputs/R2/R2.wav",
+ "audio_bytes": 6350444,
+ "audio_sha256": "ea09b5bd29eaabdd7c502b47112ce5b81d84643f8eee248ec62138c7a1ae5f8f",
+ "audio_duration_s": 36.0,
+ "http_status": 200,
+ "wall_s": 1.108,
+ "cost_usd_counted": 0.001,
+ "cost_rule": "duration_h * 0.10 USD (published REST rate)"
+}

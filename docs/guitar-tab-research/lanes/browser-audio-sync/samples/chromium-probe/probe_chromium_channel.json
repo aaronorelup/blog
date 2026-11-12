@@ -1,0 +1,198 @@
+{
+ "page": "/pages/probe.html",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "chromium",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 6.959,
+ "external_requests": [],
+ "result": {
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+  "hardwareConcurrency": 2,
+  "deviceMemory": 16,
+  "crossOriginIsolated": true,
+  "sharedArrayBuffer": true,
+  "audio": {
+   "state": "running",
+   "sampleRate": 44100,
+   "baseLatency": 0.01,
+   "outputLatency": 0.032,
+   "currentTime_advance_s_over_3s_wall": 3.0011791383219957,
+   "wall_s": 3.0003150000000605,
+   "outputTimestamp": {
+    "contextTime": 2.9600220000000004,
+    "performanceTime": 3218.054999999935
+   },
+   "audioWorklet": true,
+   "setSinkId": true,
+   "playbackStats": true,
+   "renderQuantumSize": 128,
+   "destination_maxChannelCount": 2,
+   "playbackStats_value": {
+    "underrunDuration": 0,
+    "underrunEvents": 0,
+    "totalDuration": 2.013988,
+    "averageLatency": 0.031183,
+    "minimumLatency": 0,
+    "maximumLatency": 0.032879
+   },
+   "latencyHint_interactive": {
+    "sampleRate": 44100,
+    "baseLatency": 0.01,
+    "outputLatency": 0.032
+   },
+   "latencyHint_balanced": {
+    "sampleRate": 44100,
+    "baseLatency": 0.01,
+    "outputLatency": 0.032
+   },
+   "latencyHint_playback": {
+    "sampleRate": 44100,
+    "baseLatency": 0.023219954648526078,
+    "outputLatency": 0.07200000000000001
+   }
+  },
+  "decodeAudioData": {
+   "/inputs/S1/S1.wav": {
+    "ok": true,
+    "sampleRate": 44100,
+    "channels": 2,
+    "duration_s": 29.833333333333332,
+    "ms": 48.11499999999069
+   },
+   "/inputs/R3a/R3a.webm": {
+    "ok": true,
+    "sampleRate": 44100,
+    "channels": 2,
+    "duration_s": 17.999523809523808,
+    "ms": 112.24499999999534
+   },
+   "/inputs/R3a/R3a.mp4": {
+    "ok": true,
+    "sampleRate": 44100,
+    "channels": 2,
+    "duration_s": 17.999546485260772,
+    "ms": 53.59499999997206
+   },
+   "/inputs/R2full/original/JoshWoodward-DW-01-IWantToDestroySomethingBeautiful.flac": {
+    "ok": true,
+    "sampleRate": 44100,
+    "channels": 2,
+    "duration_s": 228.48238095238096,
+    "ms": 511.68499999993946
+   }
+  },
+  "canPlayType": {
+   "audio/wav": "maybe",
+   "audio/mpeg": "probably",
+   "audio/flac": "probably",
+   "audio/mp4; codecs=\"mp4a.40.2\"": "probably",
+   "audio/ogg; codecs=\"opus\"": "probably",
+   "audio/ogg; codecs=\"vorbis\"": "probably",
+   "audio/webm; codecs=\"opus\"": "probably",
+   "video/mp4; codecs=\"avc1.42E01E\"": "probably",
+   "video/mp4; codecs=\"avc1.64001E\"": "probably",
+   "video/mp4; codecs=\"avc1.64001E, mp4a.40.2\"": "probably",
+   "video/webm; codecs=\"vp8\"": "probably",
+   "video/webm; codecs=\"vp9\"": "probably",
+   "video/webm; codecs=\"vp9, opus\"": "probably",
+   "video/mp4; codecs=\"vp09.00.10.08\"": "probably",
+   "video/mp4; codecs=\"av01.0.05M.08\"": "probably",
+   "video/webm; codecs=\"av01.0.05M.08\"": "probably",
+   "video/mp4; codecs=\"hev1.1.6.L93.B0\"": "",
+   "video/mp4; codecs=\"hvc1.1.6.L93.B0\"": ""
+  },
+  "MediaSource_isTypeSupported": {
+   "audio/wav": false,
+   "audio/mpeg": true,
+   "audio/flac": false,
+   "audio/mp4; codecs=\"mp4a.40.2\"": true,
+   "audio/ogg; codecs=\"opus\"": false,
+   "audio/ogg; codecs=\"vorbis\"": false,
+   "audio/webm; codecs=\"opus\"": true,
+   "video/mp4; codecs=\"avc1.42E01E\"": true,
+   "video/mp4; codecs=\"avc1.64001E\"": true,
+   "video/mp4; codecs=\"avc1.64001E, mp4a.40.2\"": true,
+   "video/webm; codecs=\"vp8\"": true,
+   "video/webm; codecs=\"vp9\"": true,
+   "video/webm; codecs=\"vp9, opus\"": true,
+   "video/mp4; codecs=\"vp09.00.10.08\"": true,
+   "video/mp4; codecs=\"av01.0.05M.08\"": true,
+   "video/webm; codecs=\"av01.0.05M.08\"": true,
+   "video/mp4; codecs=\"hev1.1.6.L93.B0\"": false,
+   "video/mp4; codecs=\"hvc1.1.6.L93.B0\"": false
+  },
+  "WebCodecs": {
+   "VideoDecoder": true,
+   "AudioDecoder": true,
+   "VideoEncoder": true,
+   "AudioEncoder": true
+  },
+  "VideoDecoder_isConfigSupported": {
+   "avc1.42E01E no-preference": true,
+   "avc1.42E01E prefer-software": true,
+   "avc1.42E01E prefer-hardware": false,
+   "avc1.64001E no-preference": true,
+   "avc1.64001E prefer-software": true,
+   "avc1.64001E prefer-hardware": false,
+   "vp8 no-preference": true,
+   "vp8 prefer-software": true,
+   "vp8 prefer-hardware": false,
+   "vp09.00.10.08 no-preference": true,
+   "vp09.00.10.08 prefer-software": true,
+   "vp09.00.10.08 prefer-hardware": false,
+   "av01.0.04M.08 no-preference": true,
+   "av01.0.04M.08 prefer-software": true,
+   "av01.0.04M.08 prefer-hardware": false,
+   "hev1.1.6.L93.B0 no-preference": false,
+   "hev1.1.6.L93.B0 prefer-software": false,
+   "hev1.1.6.L93.B0 prefer-hardware": false
+  },
+  "AudioDecoder_isConfigSupported": {
+   "mp4a.40.2": true,
+   "opus": true,
+   "flac": "error: Failed to execute 'isConfigSupported' on 'AudioDecoder': Invalid config; description is required.",
+   "mp3": true,
+   "vorbis": "error: Failed to execute 'isConfigSupported' on 'AudioDecoder': Invalid config; description is required.",
+   "pcm-s16": true,
+   "pcm-f32": true
+  },
+  "VideoEncoder_isConfigSupported": {
+   "avc1.42E01E": true,
+   "vp8": true,
+   "vp09.00.10.08": true,
+   "av01.0.04M.08": true
+  },
+  "videoElement": {
+   "/inputs/R3a/R3a.mp4": {
+    "ok": true,
+    "videoWidth": 640,
+    "videoHeight": 480,
+    "duration": 18.018
+   },
+   "/inputs/R3a/R3a.webm": {
+    "ok": true,
+    "videoWidth": 640,
+    "videoHeight": 480,
+    "duration": 18.018
+   }
+  },
+  "requestVideoFrameCallback": true,
+  "preservesPitch": true,
+  "webgl": {
+   "version": "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+   "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+   "vendor": "Google Inc. (Google)"
+  },
+  "webgpu": {
+   "navigator_gpu": true,
+   "adapter": null
+  },
+  "wasm": {
+   "simd": true,
+   "threads_possible": true
+  }
+ }
+}

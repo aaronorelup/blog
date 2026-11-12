@@ -1,0 +1,567 @@
+## browser t2 (r0597) vs native ENABLE_ALL (r0596)
+{
+ "drums": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0005766600370407104,
+  "n_diff": 881972,
+  "diff_db_re_b": -60.95030028612606,
+  "identical": false,
+  "peak_b": 0.3905051648616791
+ },
+ "bass": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0005879588425159454,
+  "n_diff": 881964,
+  "diff_db_re_b": -61.44159068138684,
+  "identical": false,
+  "peak_b": 0.2842541038990021
+ },
+ "other": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 4.889559932053089e-06,
+  "n_diff": 881987,
+  "diff_db_re_b": -45.51208323583577,
+  "identical": false,
+  "peak_b": 0.001937257475219667
+ },
+ "vocals": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0007825940847396851,
+  "n_diff": 881965,
+  "diff_db_re_b": -59.251431907133245,
+  "identical": false,
+  "peak_b": 0.4006853997707367
+ },
+ "guitar": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0024610310792922974,
+  "n_diff": 881997,
+  "diff_db_re_b": -41.512003015791876,
+  "identical": false,
+  "peak_b": 0.21372070908546448
+ },
+ "piano": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0009506386704742908,
+  "n_diff": 881995,
+  "diff_db_re_b": -49.561620408252764,
+  "identical": false,
+  "peak_b": 0.32455316185951233
+ }
+}
+## browser t2 (r0597) vs native DISABLE_ALL (r0603)
+{
+ "drums": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0005781501531600952,
+  "n_diff": 881964,
+  "diff_db_re_b": -60.93937977631255,
+  "identical": false,
+  "peak_b": 0.3905051648616791
+ },
+ "bass": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0005854759365320206,
+  "n_diff": 881972,
+  "diff_db_re_b": -61.43499069943196,
+  "identical": false,
+  "peak_b": 0.2842540144920349
+ },
+ "other": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 4.915345925837755e-06,
+  "n_diff": 881993,
+  "diff_db_re_b": -45.487190254808496,
+  "identical": false,
+  "peak_b": 0.0019372495589777827
+ },
+ "vocals": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0007824152708053589,
+  "n_diff": 881944,
+  "diff_db_re_b": -59.248367464252645,
+  "identical": false,
+  "peak_b": 0.40068501234054565
+ },
+ "guitar": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.002474382519721985,
+  "n_diff": 881998,
+  "diff_db_re_b": -41.482430186004116,
+  "identical": false,
+  "peak_b": 0.2137099653482437
+ },
+ "piano": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0009506251662969589,
+  "n_diff": 881994,
+  "diff_db_re_b": -49.55452560246223,
+  "identical": false,
+  "peak_b": 0.3245530128479004
+ }
+}
+## browser t2 (r0597) vs native DISABLE_ALL on Chromium-decoded input (r0611)
+{
+ "drums": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0005822628736495972,
+  "n_diff": 881981,
+  "diff_db_re_b": -60.95433882564268,
+  "identical": false,
+  "peak_b": 0.39050769805908203
+ },
+ "bass": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0005708169192075729,
+  "n_diff": 881969,
+  "diff_db_re_b": -61.43037610052899,
+  "identical": false,
+  "peak_b": 0.2842598557472229
+ },
+ "other": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 4.9684313125908375e-06,
+  "n_diff": 881979,
+  "diff_db_re_b": -45.61158696308602,
+  "identical": false,
+  "peak_b": 0.001937004504725337
+ },
+ "vocals": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0007861107587814331,
+  "n_diff": 881959,
+  "diff_db_re_b": -59.2732369749072,
+  "identical": false,
+  "peak_b": 0.4006924629211426
+ },
+ "guitar": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.00251692533493042,
+  "n_diff": 881995,
+  "diff_db_re_b": -41.38557873432576,
+  "identical": false,
+  "peak_b": 0.21367649734020233
+ },
+ "piano": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0009521199390292168,
+  "n_diff": 881990,
+  "diff_db_re_b": -49.49556156039556,
+  "identical": false,
+  "peak_b": 0.32456040382385254
+ }
+}
+## native Chromium-decoded input (r0611) vs native soundfile input (r0603), both DISABLE_ALL
+{
+ "drums": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 2.0831823348999023e-05,
+  "n_diff": 881698,
+  "diff_db_re_b": -91.37765264925882,
+  "identical": false,
+  "peak_b": 0.3905051648616791
+ },
+ "bass": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 2.5875866413116455e-05,
+  "n_diff": 881421,
+  "diff_db_re_b": -92.33822781272951,
+  "identical": false,
+  "peak_b": 0.2842540144920349
+ },
+ "other": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 7.782073225826025e-07,
+  "n_diff": 881991,
+  "diff_db_re_b": -61.51915163291562,
+  "identical": false,
+  "peak_b": 0.0019372495589777827
+ },
+ "vocals": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 9.119510650634766e-06,
+  "n_diff": 881389,
+  "diff_db_re_b": -95.19592480520956,
+  "identical": false,
+  "peak_b": 0.40068501234054565
+ },
+ "guitar": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 4.526972770690918e-05,
+  "n_diff": 881570,
+  "diff_db_re_b": -78.78466944083553,
+  "identical": false,
+  "peak_b": 0.2137099653482437
+ },
+ "piano": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 1.9419938325881958e-05,
+  "n_diff": 881559,
+  "diff_db_re_b": -85.86414609281333,
+  "identical": false,
+  "peak_b": 0.3245530128479004
+ }
+}
+## native DISABLE_ALL (r0603) vs native ENABLE_ALL (r0596)
+{
+ "drums": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 2.8908252716064453e-06,
+  "n_diff": 870731,
+  "diff_db_re_b": -108.57117474036767,
+  "identical": false,
+  "peak_b": 0.3905051648616791
+ },
+ "bass": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 3.4943222999572754e-06,
+  "n_diff": 849009,
+  "diff_db_re_b": -109.33498385335267,
+  "identical": false,
+  "peak_b": 0.2842541038990021
+ },
+ "other": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 4.385947249829769e-08,
+  "n_diff": 881365,
+  "diff_db_re_b": -81.65281494637405,
+  "identical": false,
+  "peak_b": 0.001937257475219667
+ },
+ "vocals": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 1.0281801223754883e-06,
+  "n_diff": 839758,
+  "diff_db_re_b": -115.75484082118045,
+  "identical": false,
+  "peak_b": 0.4006853997707367
+ },
+ "guitar": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 1.33514404296875e-05,
+  "n_diff": 874354,
+  "diff_db_re_b": -89.17221879821983,
+  "identical": false,
+  "peak_b": 0.21372070908546448
+ },
+ "piano": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 4.421919584274292e-06,
+  "n_diff": 866469,
+  "diff_db_re_b": -102.39739690555281,
+  "identical": false,
+  "peak_b": 0.32455316185951233
+ }
+}
+## browser t4 (r0607) vs browser t2 (r0597)
+{
+ "drums": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0,
+  "n_diff": 0,
+  "diff_db_re_b": null,
+  "identical": true,
+  "peak_b": 0.3908482491970062
+ },
+ "bass": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0,
+  "n_diff": 0,
+  "diff_db_re_b": null,
+  "identical": true,
+  "peak_b": 0.28432729840278625
+ },
+ "other": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0,
+  "n_diff": 0,
+  "diff_db_re_b": null,
+  "identical": true,
+  "peak_b": 0.0019339269492775202
+ },
+ "vocals": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0,
+  "n_diff": 0,
+  "diff_db_re_b": null,
+  "identical": true,
+  "peak_b": 0.4007258713245392
+ },
+ "guitar": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0,
+  "n_diff": 0,
+  "diff_db_re_b": null,
+  "identical": true,
+  "peak_b": 0.21569138765335083
+ },
+ "piano": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0,
+  "n_diff": 0,
+  "diff_db_re_b": null,
+  "identical": true,
+  "peak_b": 0.32396799325942993
+ }
+}
+## browser t1 (r0613) vs browser t2 (r0597)
+{
+ "drums": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0,
+  "n_diff": 0,
+  "diff_db_re_b": null,
+  "identical": true,
+  "peak_b": 0.3908482491970062
+ },
+ "bass": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0,
+  "n_diff": 0,
+  "diff_db_re_b": null,
+  "identical": true,
+  "peak_b": 0.28432729840278625
+ },
+ "other": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0,
+  "n_diff": 0,
+  "diff_db_re_b": null,
+  "identical": true,
+  "peak_b": 0.0019339269492775202
+ },
+ "vocals": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0,
+  "n_diff": 0,
+  "diff_db_re_b": null,
+  "identical": true,
+  "peak_b": 0.4007258713245392
+ },
+ "guitar": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0,
+  "n_diff": 0,
+  "diff_db_re_b": null,
+  "identical": true,
+  "peak_b": 0.21569138765335083
+ },
+ "piano": {
+  "samples_a": 441000,
+  "samples_b": 441000,
+  "sr": [
+   44100,
+   44100
+  ],
+  "max_abs_diff": 0.0,
+  "n_diff": 0,
+  "diff_db_re_b": null,
+  "identical": true,
+  "peak_b": 0.32396799325942993
+ }
+}

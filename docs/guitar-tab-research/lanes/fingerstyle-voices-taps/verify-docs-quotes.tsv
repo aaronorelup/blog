@@ -1,0 +1,666 @@
+section	level	sources	quote
+Lane 5, fingerstyle-voices-taps: survey 	MISSING		verifier
+Lane 5, fingerstyle-voices-taps: survey 	MISSING		(verifier)
+Lane 5, fingerstyle-voices-taps: survey 	MISSING		added by the verifier
+Tool list	MISSING		PyPI x.y.z YYYY-MM-DD
+Tool list	MISSING		commit YYYY-MM-DD
+Harmonic-percussive separation and NMF (	EXACT	nussl_readme	**NUSSL IS DEPRECATED**
+Onset detection (where taps and plucks s	EXACT	qm_readme	Note onset detector
+Drum and percussion transcription (candi	EXACT	zen_10084510,zen_10084511	internal non-commercial use
+Drum and percussion transcription (candi	EXACT	mag_readme	currently inactive (archived, read only)
+Drum and percussion transcription (candi	EXACT	pdf_2601.09520	aggregated from 12 public sample packs
+Drum and percussion transcription (candi	EXACT	lars_readme	licensed under CC BY-NC 4.0
+Drum and percussion transcription (candi	MISSING		DrumSep
+Drum and percussion transcription (candi	EXACT	mm_setup,pypi_adtlib,pypi_madmom	Free for non-commercial use
+Drum and percussion transcription (candi	EXACT	ableton_manual,ableton_manual13	Convert Drums to New MIDI Track
+Drum and percussion transcription (candi	EXACT	ableton_manual,ableton_manual13	tapping on a surface
+Percussive guitar and playing-technique 	EXACT	pdf_2307.07426	currently not public
+Percussive guitar and playing-technique 	EXACT	adtlib_readme,mag_drummap,pdf_2307.07426,pdf_2609.11904,zen_10159492,pdf_2608.01093	kick drum
+Percussive guitar and playing-technique 	EXACT	adtlib_readme,mag_drummap,pdf_2609.11904,pdf_2509.21739,zen_7544164	snare drum
+Percussive guitar and playing-technique 	EXACT	pdf_2609.11904	percussion-style techniques (kick drum, snare drum)
+Percussive guitar and playing-technique 	EXACT	pdf_2307.07426	body hits
+Percussive guitar and playing-technique 	EXACT	adtof_license,dyci2_license,epmc_mitsou,iptrec_license,ipttilde_license,libipt_licence	restricted
+Percussive guitar and playing-technique 	EXACT	zen_15690894	non-commercial only
+Symbolic voice separation (notes to melo	EXACT	mb_readme	No gpu is needed for evaluation
+Melody and bass from audio (pitch salien	EXACT	medleydb_dl	non-commercial research use only
+Sections, one per tool	EXACT	epmc_mitsou,iptrec_readme,m21_base,mag_readme,mb_readme,mm_readme	clone
+Sections, one per tool	MISSING		PyPI JSON
+librosa (HPSS, NMF, onsets)	EXACT	lib_readme,pypi_librosa	`librosa` is a Python library for audio and music signal processing.
+librosa (HPSS, NMF, onsets)	EXACT	pypi_librosa,pypi_music21	>=3.12
+librosa (HPSS, NMF, onsets)	EXACT	ableton_manual,adtof_readme,adtpt_audio,adtstr_transcriber,basicpitch_readme,bastas_readme	hann
+librosa (HPSS, NMF, onsets)	EXACT	adtpt_audio,au_copying,au_onseth,eg_license,ess_algref,lib_effects0110	constant
+librosa (HPSS, NMF, onsets)	MISSING		STFT defaults n_fft 2048, hop 512
+librosa (HPSS, NMF, onsets)	EXACT	lib_effects0110,lib_effects100	Decompose an audio time series into harmonic and percussive components. This function automates the STFT->HPSS->ISTFT pipeline, and ensures that the output w...
+librosa (HPSS, NMF, onsets)	EXACT	lib_decompose100	If ``margin = 1.0``, decomposes an input spectrogram ``S = H + P`` where ``H`` contains the harmonic components, and ``P`` contains the percussive components...
+librosa (HPSS, NMF, onsets)	EXACT	lib_decompose100	Masking matrices contain non-negative real values that can be used to measure the assignment of energy from ``S`` into harmonic or percussive components.
+librosa (HPSS, NMF, onsets)	EXACT	lib_decompose100	Given a spectrogram ``S``, produce a decomposition into ``components`` and ``activations`` such that ``S ~= components.dot(activations)``. By default, this i...
+librosa (HPSS, NMF, onsets)	EXACT	lib_decompose100	If None, use `sklearn.decomposition.NMF`
+librosa (HPSS, NMF, onsets)	EXACT	lib_decompose100	components are sorted by ascending peak frequency.
+librosa (HPSS, NMF, onsets)	EXACT	lib_onset100	Compute a spectral flux onset strength envelope.
+librosa (HPSS, NMF, onsets)	EXACT	lib_onset100	Locate note onset events by picking peaks in an onset strength envelope. The `peak_pick` parameters were chosen by large-scale hyper-parameter optimization o...
+librosa (HPSS, NMF, onsets)	EXACT	lib_onset100	https://github.com/CPJKU/onset_db
+librosa (HPSS, NMF, onsets)	EXACT	lib_onset100	{'frames', 'samples', 'time'}
+librosa (HPSS, NMF, onsets)	EXACT	lib_onset100	Backtrack detected onset events to the nearest preceding local minimum of an energy function.
+librosa (HPSS, NMF, onsets)	EXACT	lib_decompose100,lib_effects0110,lib_effects100,lib_onset100	Multi-channel is supported
+librosa (HPSS, NMF, onsets)	EXACT	lib_license	Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright not...
+librosa (HPSS, NMF, onsets)	EXACT	pypi_librosa	License :: OSI Approved :: ISC License (ISCL)
+librosa (HPSS, NMF, onsets)	EXACT	onsetdb_readme	It does not include the audio files. If no download link is given below, the data must be obtained by the original author.
+Essentia (onset algorithms; no HPSS algo	EXACT	ess_readme	Essentia is an open-source C++ library for audio analysis and audio-based music information retrieval released under the Affero GPLv3 license.
+Essentia (onset algorithms; no HPSS algo	EXACT	ess_readme	To use in Python (Linux `x86_64`, `i686`): `pip install essentia` or `pip install essentia-tensorflow`.
+Essentia (onset algorithms; no HPSS algo	EXACT	pypi_essentia,pypi_essentia_tf	AGPL-3.0-only
+Essentia (onset algorithms; no HPSS algo	EXACT	ess_algref,ess_lic,ess_onsetdet,ess_onsets,ess_sfx	Essentia 2.1-beta6-dev documentation
+Essentia (onset algorithms; no HPSS algo	EXACT	ess_algref	Computes the harmonic plus stochastic model analysis
+Essentia (onset algorithms; no HPSS algo	EXACT	ess_algref	Applies a spectral mask to remove a pitched source component from the signal
+Essentia (onset algorithms; no HPSS algo	EXACT	ess_algref	Computes the harmonic model analysis
+Essentia (onset algorithms; no HPSS algo	EXACT	ess_algref	Computes the harmonic plus residual model analysis
+Essentia (onset algorithms; no HPSS algo	EXACT	ess_algref	Computes various onset detection functions
+Essentia (onset algorithms; no HPSS algo	EXACT	ess_algref	Computes onset positions given various onset detection functions
+Essentia (onset algorithms; no HPSS algo	EXACT	ess_algref	Computes the number of onsets per second and their position in time for an audio signal
+Essentia (onset algorithms; no HPSS algo	EXACT	ess_algref	Detects onsets given an audio signal using SuperFlux algorithm
+Essentia (onset algorithms; no HPSS algo	TYPO	ess_onsetdet	spectrum (vector_real)
+Essentia (onset algorithms; no HPSS algo	TYPO	ess_onsetdet	phase (vector_real)
+Essentia (onset algorithms; no HPSS algo	TYPO	ess_onsetdet	onsetDetection (real) - the value of the detection function in the current frame
+Essentia (onset algorithms; no HPSS algo	TYPO	ess_onsetdet	method (string ∈ {hfc, complex, complex_phase, flux, melflux, rms}, default = hfc)
+Essentia (onset algorithms; no HPSS algo	EXACT	ess_onsetdet	the High Frequency Content detection function which accurately detects percussive events
+Essentia (onset algorithms; no HPSS algo	TYPO	ess_onsets	onsets (vector_real) - the onset positions [s]
+Essentia (onset algorithms; no HPSS algo	EXACT	ess_onsets	This algorithm has been optimized for a frameRate of 44100.0/512.0.
+Essentia (onset algorithms; no HPSS algo	TYPO	ess_sfx	signal (vector_real) - the audio input signal
+Essentia (onset algorithms; no HPSS algo	TYPO	ess_sfx	onsets (vector_real) - the onsets times
+Essentia (onset algorithms; no HPSS algo	EXACT	ess_sfx	This implementation is based on the available reference implementation in python [2]
+Essentia (onset algorithms; no HPSS algo	EXACT	ess_copying	GNU AFFERO GENERAL PUBLIC LICENSE Version 3, 19 November 2007
+Essentia (onset algorithms; no HPSS algo	TYPO	ess_lic	Essentia is available under an open licence, Affero GPLv3, for non-commercial applications, thus it is possible to test the library before deciding to licenc...
+Essentia (onset algorithms; no HPSS algo	EXACT	ess_lic	Contact Music Technology Group (UPF) for more information about licensing conditions and for consulting how Essentia can suit your application.
+Essentia (onset algorithms; no HPSS algo	TYPO	ess_lic	Some Essentia library algorithms use third-party libraries with licenses such as GPL, LGPL, and others for which UPF is not able to provide full sublicensing...
+Essentia (onset algorithms; no HPSS algo	EXACT	ess_lic	used by FFT and IFFT algorithms, it can be replaced by more permissive Kiss FFT or Accelerate
+Essentia (onset algorithms; no HPSS algo	EXACT	ess_lic	All the models are available under the CC BY-NC-SA 4.0 license for non-commercial use, and are also available under a proprietary license upon request.
+madmom (CNN, RNN and SuperFlux onset det	EXACT	mm_readme,pypi_madmom	Madmom is an audio signal processing library written in Python with a strong focus on music information retrieval (MIR) tasks.
+madmom (CNN, RNN and SuperFlux onset det	EXACT	mm_license,pypi_madmom	Department of Computational Perception, Johannes Kepler University, Linz, Austria and Austrian Research Institute for Artificial Intelligence (OFAI), Vienna,...
+madmom (CNN, RNN and SuperFlux onset det	EXACT	mm_pyproject	cython>=0.25
+madmom (CNN, RNN and SuperFlux onset det	EXACT	mm_pyproject	numpy>2
+madmom (CNN, RNN and SuperFlux onset det	EXACT	mm_bin_cnn	$ CNNOnsetDetector single INFILE [-o OUTFILE]
+madmom (CNN, RNN and SuperFlux onset det	EXACT	mm_bin_cnn	$ CNNOnsetDetector batch [-o OUTPUT_DIR] [-s OUTPUT_SUFFIX] FILES
+madmom (CNN, RNN and SuperFlux onset det	EXACT	mm_onsets	Processor to get a onset activation function from a CNN
+madmom (CNN, RNN and SuperFlux onset det	EXACT	mm_onsets	sampled with 100 frames per second
+madmom (CNN, RNN and SuperFlux onset det	EXACT	mm_onsets	Processor to get a onset activation function from multiple RNNs
+madmom (CNN, RNN and SuperFlux onset det	EXACT	mm_onsets	Choose networks suitable for online onset detection, i.e. use unidirectional RNNs
+madmom (CNN, RNN and SuperFlux onset det	EXACT	mm_onsets	implements most of the common onset detection functions based on the magnitude or phase information of a spectrogram
+madmom (CNN, RNN and SuperFlux onset det	EXACT	mm_onsets	onsets : numpy array Detected onsets [seconds].
+madmom (CNN, RNN and SuperFlux onset det	EXACT	mm_docs	madmom 0.17.dev0 documentation
+madmom (CNN, RNN and SuperFlux onset det	EXACT	mm_io	Write the events to a file, one event per line.
+madmom (CNN, RNN and SuperFlux onset det	MISSING		text, one onset time in seconds per line (10 ms resolution, e.g. `2.150`, `2.680`, `3.220`)
+madmom (CNN, RNN and SuperFlux onset det	EXACT	mm_license	Unless indicated otherwise (either in the file directly or a LICENCE file inside any directory), all source code files are published under this license:
+madmom (CNN, RNN and SuperFlux onset det	EXACT	adtlib_license,m21_license,mm_license,sf_py	Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+madmom (CNN, RNN and SuperFlux onset det	EXACT	mm_setup,pypi_madmom	BSD, CC BY-NC-SA
+madmom (CNN, RNN and SuperFlux onset det	EXACT	mm_setup,pypi_adtlib,pypi_madmom	License :: Free for non-commercial use
+madmom (CNN, RNN and SuperFlux onset det	EXACT	mm_setup,pypi_adtlib,pypi_madmom,pypi_music21	License :: OSI Approved :: BSD License
+madmom (CNN, RNN and SuperFlux onset det	EXACT	mm_license	All model and data files are distributed under the following license: Creative Commons Attribution-NonCommercial-ShareAlike 4.0
+madmom (CNN, RNN and SuperFlux onset det	EXACT	mm_license,mmm_license	NonCommercial: You must not use the material for commercial purposes.
+madmom (CNN, RNN and SuperFlux onset det	PARTS	mm_license,mmm_license	If you want to include any of these files (or a variation or modification thereof) or technology which utilises them in a commercial product, please contact ...
+madmom (CNN, RNN and SuperFlux onset det	EXACT	mmm_license	All files in this repository are distributed under the following license: Creative Commons Attribution-NonCommercial-ShareAlike 4.0
+madmom (CNN, RNN and SuperFlux onset det	EXACT	onsetdb_readme	Please contact me to get access to this data.
+aubio (onset CLI and Python)	EXACT	au_readme	aubio is a library to label music and sounds. It listens to audio signals and attempts to detect events.
+aubio (onset CLI and Python)	EXACT	au_readme	A python module
+aubio (onset CLI and Python)	EXACT	au_cli,au_readme	command line tools
+aubio (onset CLI and Python)	EXACT	au_version,m21_version,pm_utilities	-alpha
+aubio (onset CLI and Python)	EXACT	au_cli	aubio 0.4.9 documentation
+aubio (onset CLI and Python)	EXACT	au_cli	When started with an input source (-i/--input), the detected onset times are given on the console, in seconds.
+aubio (onset CLI and Python)	EXACT	au_cli	default, energy, hfc, complex, phase, specdiff, kl, mkl, specflux
+aubio (onset CLI and Python)	EXACT	au_cli	default  Default distance, currently hfc
+aubio (onset CLI and Python)	EXACT	au_cli	The resulting function is efficient at detecting percussive onsets.
+aubio (onset CLI and Python)	EXACT	au_cli	Values are typically in the range [0.001, 0.900]. Lower threshold values imply more onsets detected.
+aubio (onset CLI and Python)	EXACT	au_cli	Defaults to 0.3.
+aubio (onset CLI and Python)	EXACT	au_cli	Defaults to 0.020
+aubio (onset CLI and Python)	EXACT	au_cli	Defaults to -90.0.
+aubio (onset CLI and Python)	EXACT	au_cli	-M <value>, --minioi <value>  minimum Inter-Onset Interval (default: 12ms)
+aubio (onset CLI and Python)	EXACT	au_cli	-s <value>, --silence <value>  silence threshold, in dB (default: -70)
+aubio (onset CLI and Python)	EXACT	ableton_manual,adtpt_audio,adtpt_cli,adtpt_init,adtpt_readme,adtstr_readme	default
+aubio (onset CLI and Python)	EXACT	au_onseth	onset detection timestamps (in samples)
+aubio (onset CLI and Python)	EXACT	adtpt_post,au_onseth,sf_py,asap_readme,libfmp_hps,omz_beat_for_drum	(in seconds)
+aubio (onset CLI and Python)	EXACT	ds_predict	default=0.3
+aubio (onset CLI and Python)	MISSING		default=0.012
+aubio (onset CLI and Python)	MISSING		default=-90
+aubio (onset CLI and Python)	EXACT	aubio049_aubioonset_c	if (onset_threshold != 0.)
+aubio (onset CLI and Python)	EXACT	aubio049_aubioonset_c	if (silence_threshold != -90.)
+aubio (onset CLI and Python)	EXACT	aubio049_aubioonset_c	if (onset_minioi != 0.)
+aubio (onset CLI and Python)	MISSING		onset method: hfc, buffer_size: 512, hop_size: 256, silence: -70.000000, threshold: 0.058000
+aubio (onset CLI and Python)	EXACT	au_cli	short wood-block like sound
+aubio (onset CLI and Python)	EXACT	au_copying,eg_license	GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+aubio (onset CLI and Python)	EXACT	au_cli,au_copying,au_onseth,au_readme,eg_license,aubio049_aubioonset_c	either version 3 of the License, or (at your option) any later version.
+aubio (onset CLI and Python)	EXACT	pypi_aubio	License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+SuperFlux reference implementation	EXACT	sf_readme	Python reference implementation of the SuperFlux onset detection algorithm
+SuperFlux reference implementation	EXACT	sf_readme	`SuperFlux.py input.wav` processes the audio file and writes the detected onsets to a file named `input.superflux.txt`.
+SuperFlux reference implementation	PARTS	adtlib_license,mm_license,sf_py	Copyright (c) 2012 - 2014 Sebastian Böck [...] All rights reserved. Redistribution and use in source and binary forms, with or without modification, are per...
+NMF libraries: libnmfd, scikit-learn NMF	EXACT	nmfd_readme,pypi_libnmfd	libnmfd: Music Processing Applications of Nonnegative Matrix Factorization
+NMF libraries: libnmfd, scikit-learn NMF	EXACT	pypi_libnmfd	<4.0,>=3.8
+NMF libraries: libnmfd, scikit-learn NMF	EXACT	nmfd_readme,pypi_libnmfd	The first variant, called nonnegative matrix factor deconvolution (NMFD), extends the original NMF algorithm to the convolutive case, enforcing the temporal ...
+NMF libraries: libnmfd, scikit-learn NMF	EXACT	bastas_license,ds_license,dsep_license,hf_sad_card,mb_license,mb_readme	MIT License
+NMF libraries: libnmfd, scikit-learn NMF	PARTS	bastas_license,ds_license,dsep_license,libfmp_license,magcil_license,mb_license	Permission is hereby granted, free of charge, to any person obtaining a copy of this software [...]
+NMF libraries: libnmfd, scikit-learn NMF	EXACT	nmfd_readme,pypi_libnmfd	The code for this toolbox is published under an [MIT licence](LICENCE).
+NMF libraries: libnmfd, scikit-learn NMF	EXACT	pypi_music21,pypi_sklearn	BSD-3-Clause
+NMF libraries: libnmfd, scikit-learn NMF	EXACT	pypi_torchnmf	A pytorch package for Non-negative Matrix Factorization
+NMF libraries: libnmfd, scikit-learn NMF	EXACT	pypi_libnmfd,pypi_omnizart,pypi_torchnmf,pypi_libfmp	License :: OSI Approved :: MIT License
+NMF libraries: libnmfd, scikit-learn NMF	MISSING		Copyright (c) 2018 The Python Packaging Authority
+NMF libraries: libnmfd, scikit-learn NMF	EXACT	bastas_license,ds_license,dsep_license,mb_license,mcleod_license,nmfd_license	Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 
+NMF libraries: libnmfd, scikit-learn NMF	EXACT	bastas_license,ds_license,dsep_license,mb_license,mcleod_license,nmfd_license	), to deal in the Software without restriction
+NMF libraries: libnmfd, scikit-learn NMF	EXACT	nussl_readme,pypi_nussl	Primitive Methods: Repetition (REPET, 2DFT), Harmonic/Percussive, Vocal melody extraction, Timbre clustering
+NMF libraries: libnmfd, scikit-learn NMF	PARTS	nussl_readme	**NUSSL IS DEPRECATED** [...] There will be no further any updates, bug fixes, or answers for open issues. We're leaving the code here as is for reference an...
+NMF libraries: libnmfd, scikit-learn NMF	EXACT	bastas_license,ds_license,dsep_license,hf_sad_card,mb_license,mb_readme	MIT License
+NMF libraries: libnmfd, scikit-learn NMF	PARTS	bastas_license,ds_license,dsep_license,libfmp_license,magcil_license,mb_license	Permission is hereby granted, free of charge, to any person obtaining a copy of this software [...]
+libfmp HPS and HRPS (added by the verifi	EXACT	pypi_libfmp	Fundamentals of Music Processing
+libfmp HPS and HRPS (added by the verifi	EXACT	pypi_libfmp	Python module for fundamentals of music processing
+libfmp HPS and HRPS (added by the verifi	EXACT	pypi_librosa,pypi_music21,pypi_partitura,pypi_sklearn,pypi_libfmp	>=3.10
+libfmp HPS and HRPS (added by the verifi	EXACT	libfmp_hps	Harmonic-percussive separation (HPS) algorithm
+libfmp HPS and HRPS (added by the verifi	EXACT	libfmp_hps	x_h (np.ndarray): Harmonic signal
+libfmp HPS and HRPS (added by the verifi	EXACT	libfmp_hps	x_p (np.ndarray): Percussive signal
+libfmp HPS and HRPS (added by the verifi	EXACT	libfmp_hps	Horizontal median filter length given in seconds or frames
+libfmp HPS and HRPS (added by the verifi	EXACT	libfmp_hps	Percussive median filter length given in Hertz or bins
+libfmp HPS and HRPS (added by the verifi	EXACT	libfmp_hps	Either 'binary' or 'soft'
+libfmp HPS and HRPS (added by the verifi	EXACT	libfmp_hps	Harmonic-residual-percussive separation (HRPS) algorithm
+libfmp HPS and HRPS (added by the verifi	EXACT	libfmp_hps	x_r (np.ndarray): Residual signal
+libfmp HPS and HRPS (added by the verifi	EXACT	libfmp_hps	Separation factor (Default value = 2.0)
+libfmp HPS and HRPS (added by the verifi	EXACT	bastas_license,ds_license,dsep_license,hf_sad_card,mb_license,mb_readme	MIT License
+libfmp HPS and HRPS (added by the verifi	EXACT	libfmp_license	Copyright (c) 2020 Meinard Müller and Frank Zalkow, International Audio Laboratories Erlangen, Germany.
+libfmp HPS and HRPS (added by the verifi	EXACT	libfmp_hps	License: The MIT license, https://opensource.org/licenses/MIT
+ADTOF (drum transcription, Keras/TensorF	EXACT	adtof_readme,adtpt_readme,zen_10084510,zen_10084511,pdf_2509.21739,pdf_2601.09520	ADTOF: A large dataset of non-synthetic music for automatic drum transcription
+ADTOF (drum transcription, Keras/TensorF	EXACT	adtof_readme,adtpt_readme	High-Quality and Reproducible Automatic Drum Transcription from Crowdsourced Data
+ADTOF (drum transcription, Keras/TensorF	EXACT	adtof_readme,adtof_setup,adtpt_audio,adtpt_cli,adtpt_init,adtpt_post	ADTOF
+ADTOF (drum transcription, Keras/TensorF	EXACT	adtof_readme	This repository has been tested on macOS Ventura with **Python 3.10**.
+ADTOF (drum transcription, Keras/TensorF	EXACT	adtof_readme	The easiest way to test the trained model is our [Colab Notebook]
+ADTOF (drum transcription, Keras/TensorF	EXACT	adtof_readme	with this [Jupyter Notebook](/bin/drumTranscriptor.ipynb)
+ADTOF (drum transcription, Keras/TensorF	EXACT	adtof_readme	Each sample consists of an input (400 frames, 84 bins, 1 channel) and a target (400 Frames, 5 classes).
+ADTOF (drum transcription, Keras/TensorF	EXACT	adtof_readme	The content of this repository is licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License]
+ADTOF (drum transcription, Keras/TensorF	EXACT	adtof_license,adtof_readme,medleydb_dl,dcml_license	Attribution-NonCommercial-ShareAlike 4.0 International
+ADTOF (drum transcription, Keras/TensorF	EXACT	adtof_setup	License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+ADTOF (drum transcription, Keras/TensorF	EXACT	zen_10084510,zen_10084511	ADTOF datasets
+ADTOF (drum transcription, Keras/TensorF	EXACT	adtof_license,dyci2_license,epmc_mitsou,iptrec_license,ipttilde_license,libipt_licence	restricted
+ADTOF (drum transcription, Keras/TensorF	EXACT	zen_10084510,zen_10084511	a copy of the ADTOF datasets is available upon request here. Please indicate your academic affiliation and the intended use of the data.
+ADTOF (drum transcription, Keras/TensorF	EXACT	zen_10084510,zen_10084511	Conditions of use
+ADTOF (drum transcription, Keras/TensorF	EXACT	zen_10084510,zen_10084511	The provided datasets are offered free of charge for internal non-commercial use. No reverse engineering. Do not redistribute, modify, or disassemble the dat...
+ADTOF (drum transcription, Keras/TensorF	EXACT	adtof_readme	rhythm video game charts
+ADTOF (drum transcription, Keras/TensorF	EXACT	adtof_readme	For example, from [Rhythm Gaming World]
+ADTOF (drum transcription, Keras/TensorF	EXACT	adtof_readme	:warning: we are not affiliated with Rhythm Gaming World and we do not control any material, possibly copyrighted, linked there.
+ADTOF-pytorch (PyTorch port of ADTOF's F	EXACT	adtpt_readme	Automatic transcription of drum audio to MIDI, using minimal dependencies (torch, librosa, pretty_midi).
+ADTOF-pytorch (PyTorch port of ADTOF's F	EXACT	adtpt_readme	This repo is a pytorch port of [ADTOF]
+ADTOF-pytorch (PyTorch port of ADTOF's F	EXACT	adtpt_pyproject	adtof-pytorch
+ADTOF-pytorch (PyTorch port of ADTOF's F	EXACT	adtpt_pyproject,omz_changelog,pypi_magenta,pypi_music21,pypi_nussl,pypi_omnizart	0.1.0
+ADTOF-pytorch (PyTorch port of ADTOF's F	EXACT	adtpt_pyproject,pypi_sklearn	>=3.9
+ADTOF-pytorch (PyTorch port of ADTOF's F	EXACT	adtof_readme	It only requires pytorch to be installed (no tensorflow, keras or madmom).
+ADTOF-pytorch (PyTorch port of ADTOF's F	EXACT	adtpt_readme	we reimplement the model in Pytorch and convert the weights directly from the offically released weights (see `convert_weights.py`).
+ADTOF-pytorch (PyTorch port of ADTOF's F	EXACT	adtpt_readme,sf_readme	input.wav
+ADTOF-pytorch (PyTorch port of ADTOF's F	EXACT	adtpt_readme	output.mid
+ADTOF-pytorch (PyTorch port of ADTOF's F	EXACT	adtpt_cli	Device to use for inference
+ADTOF-pytorch (PyTorch port of ADTOF's F	EXACT	pm_constants,pdf_2601.09520	Acoustic Bass Drum
+ADTOF-pytorch (PyTorch port of ADTOF's F	EXACT	pm_constants,pdf_2601.09520	Acoustic Snare
+ADTOF-pytorch (PyTorch port of ADTOF's F	EXACT	lars_readme,pm_constants	Low-Mid Tom
+ADTOF-pytorch (PyTorch port of ADTOF's F	EXACT	pm_constants,pdf_2601.09520	Closed Hi Hat
+ADTOF-pytorch (PyTorch port of ADTOF's F	EXACT	pm_constants	Crash Cymbal 1
+ADTOF-pytorch (PyTorch port of ADTOF's F	EXACT	adtpt_readme	ADTOF (original) | 88.68 | 89.90 | 88.74
+ADTOF-pytorch (PyTorch port of ADTOF's F	EXACT	adtpt_readme	ADTOF-pytorch | 88.26 | 89.83 | 88.51
+ADTOF-pytorch (PyTorch port of ADTOF's F	EXACT	ax_2509.24853	Enhanced Automatic Drum Transcription via Drum Stem Source Separation
+ADTOF-pytorch (PyTorch port of ADTOF's F	EXACT	ax_2509.24853	We describe a simple post-processing step which expands the transcription output from five to seven classes and furthermore, we are able to estimate MIDI vel...
+Omnizart drum mode	EXACT	omz_readme,pypi_omnizart	Omnizart is a Python library that aims for democratizing automatic music transcription.
+Omnizart drum mode	EXACT	adtof_setup,pypi_libnmfd,pypi_librosa,pypi_music21,pypi_omnizart,pypi_sklearn	>=3.8
+Omnizart drum mode	PARTS	omz_changelog	0.6.3 - 2026-05-31 ... Replaced the heavy PyTorch-based external CLI dependencies on Spleeter/Demucs with a lightweight, in-code `sherpa-onnx` backend.
+Omnizart drum mode	EXACT	omz_changelog	0.6.0 - 2026-05-30 **Major compatibility upgrade supporting Python versions up to 3.14.**
+Omnizart drum mode	EXACT	omz_changelog	0.5.0 - 2021-12-09
+Omnizart drum mode	EXACT	omz_readme,pypi_omnizart	The current implementation for the drum model has unknown bugs, preventing loss convergence when training from scratch. Fortunately, you can still enjoy drum...
+Omnizart drum mode	EXACT	omz_readme,pypi_omnizart	Currently, Omnizart is **incompatible for ARM-based MacOS** system
+Omnizart drum mode	TYPO	omz_doc_cli	omnizart drum transcribe [OPTIONS] INPUT_AUDIO
+Omnizart drum mode	MISSING		-o, --output <output> Path to output the prediction file (could be MIDI, CSV, …, etc.)
+Omnizart drum mode	EXACT	omz_doc_api,omz_drumapp	midi: pretty_midi.PrettyMIDI The transcribed drum notes.
+Omnizart drum mode	EXACT	omz_doc_api,omz_drumapp	Path to the raw audio file (.wav)
+Omnizart drum mode	EXACT	omz_doc_api,omz_drumapp	Currently the model predicts 13 classes of different drum sets, and 3 of them will be written to the MIDI file.
+Omnizart drum mode	EXACT	bastas_license,ds_license,dsep_license,hf_sad_card,mb_license,mb_readme	MIT License
+Omnizart drum mode	EXACT	omz_license	Copyright (c) 2020 MCTLab
+Omnizart drum mode	EXACT	bastas_license,ds_license,dsep_license,mb_license,mcleod_license,nmfd_license	Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 
+Omnizart drum mode	EXACT	bastas_license,ds_license,dsep_license,mb_license,mcleod_license,nmfd_license	), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or ...
+Omnizart drum mode	EXACT	omz_beat_for_drum	Extract beat information with madmom library.
+Omnizart drum mode	EXACT	ableton_manual,omz_changelog,pypi_essentia,pypi_librosa,pypi_magenta,pypi_music21	3.14
+Omnizart drum mode	EXACT	omz_doc_api,omz_drumapp	Currently only supports Pop dataset
+Omnizart drum mode	EXACT	omz_doc_api	omnizart.constants.datasets.PopStructure The only supported dataset for drum transcription.
+Omnizart drum mode	EXACT	omz_doc_api	I-Chieh Wei, Chih-Wei Wu, Li Su. 
+Omnizart drum mode	EXACT	omz_doc_api	(in submission)
+Magenta Onsets and Frames, drums checkpo	EXACT	mag_of_readme	State of the art piano and drum transcription models, including velocity estimation.
+Magenta Onsets and Frames, drums checkpo	MARKDOWN	mag_of_readme	This repository is currently inactive and serves only as a supplement to the papers mentioned below. For our current transcription work, see the [MT3 blog po...
+Magenta Onsets and Frames, drums checkpo	EXACT	mag_readme	This repository is currently inactive (archived, read only)
+Magenta Onsets and Frames, drums checkpo	EXACT	mag_of_readme	For drum transcription, use the [checkpoint](https://storage.googleapis.com/magentadata/models/onsets_frames_transcription/e-gmd_checkpoint.zip) trained on t...
+Magenta Onsets and Frames, drums checkpo	EXACT	mag_of_readme	${MODEL_DIR}
+Magenta Onsets and Frames, drums checkpo	EXACT	adtstr_transcriber,ax_2605.12135,demucs_readme,dsep_readme,hf_adtstr_transcriber,klang_drum2notes	drums
+Magenta Onsets and Frames, drums checkpo	EXACT	mag_of_readme	including velocity estimation
+Magenta Onsets and Frames, drums checkpo	MISSING		The first element of each pitch class is the base pitch to which all other pitches in the class will be mapped.
+Magenta Onsets and Frames, drums checkpo	EXACT	mag_license	Copyright 2016 The Magenta Team.  All rights reserved.
+Magenta Onsets and Frames, drums checkpo	EXACT	basicpitch_readme,idm_license,mag_drummap,mag_license,mag_setup,part_license	Apache License
+Magenta Onsets and Frames, drums checkpo	EXACT	mag_setup,part_readme,pypi_magenta,pypi_partitura	Apache 2
+Magenta Onsets and Frames, drums checkpo	EXACT	egmd	E-GMD contains 444 hours of audio from 43 drum kits
+Magenta Onsets and Frames, drums checkpo	TYPO	egmd	The dataset is made available by Google LLC under a Creative Commons Attribution 4.0 International (CC BY 4.0) License.
+ADT_STR (drum transcription trained on s	EXACT	adtstr_readme	ADT_STR is an automatic drum transcription model. Given an input audio file, the model predicts a drum MIDI sequence containing note onsets, pitches, and vel...
+ADT_STR (drum transcription trained on s	EXACT	ax_2601.09520	Towards Realistic Synthetic Data for Automatic Drum Transcription
+ADT_STR (drum transcription trained on s	EXACT	adtstr_readme	Version: `v1.0.0`
+ADT_STR (drum transcription trained on s	EXACT	adtstr_readme,hf_adtstr_api,hf_adtstr_card,hf_adtstr_config	setting-tau-0.8
+ADT_STR (drum transcription trained on s	EXACT	adtstr_readme,hf_adtstr_card,omz_readme,pypi_omnizart	path/to/audio.wav
+ADT_STR (drum transcription trained on s	EXACT	adtpt_readme,adtstr_readme,adtstr_transcriber,au_cli,au_readme,ax_2407.21030	outputs
+ADT_STR (drum transcription trained on s	EXACT	adtstr_readme	writes a MIDI file named after the input audio stem
+ADT_STR (drum transcription trained on s	EXACT	adtstr_readme	The core inference dependencies include PyTorch, TorchAudio, TorchCodec, Transformers, SafeTensors, OmegaConf, PrettyMIDI, NumPy, and tqdm.
+ADT_STR (drum transcription trained on s	EXACT	adtstr_readme	The default audio configuration uses 24 kHz audio and 2.56-second chunks.
+ADT_STR (drum transcription trained on s	EXACT	adtstr_readme	We consolidate the original 47 percussion notes into 26 distinct instrument classes
+ADT_STR (drum transcription trained on s	EXACT	adtstr_readme	The figure below reports F1 scores on ENST and MDB across the full drum instrument vocabulary.
+ADT_STR (drum transcription trained on s	EXACT	adtstr_readme,pdf_2608.01093	a 50 ms tolerance window
+ADT_STR (drum transcription trained on s	EXACT	ax_2601.09520,pdf_2601.09520	We evaluate our model on the ENST and MDB test sets, where it achieves new state-of-the-art results
+ADT_STR (drum transcription trained on s	EXACT	adtstr_license,adtstr_readme	Creative Commons Attribution-ShareAlike 4.0 International
+ADT_STR (drum transcription trained on s	EXACT	adtstr_license	SPDX-License-Identifier: CC-BY-SA-4.0
+ADT_STR (drum transcription trained on s	EXACT	adtstr_readme	This work is licensed under the [Creative Commons Attribution-ShareAlike 4.0 International License]
+ADT_STR (drum transcription trained on s	EXACT	ax_2601.09520,pdf_2601.09520	Our primary contribution is a semi-supervised method to automatically curate a large and diverse corpus of one-shot drum samples from unlabeled audio sources...
+ADT_STR (drum transcription trained on s	EXACT	pdf_2601.09520	The training data for our model is derived from the Lakh MIDI Dataset [8], using the LMD-matched partition, a collection of 45,129 files aligned with the Mil...
+ADT_STR (drum transcription trained on s	EXACT	pdf_2601.09520	Our model is trained exclusively on synthetic audio generated on-the-fly from the LMD MIDI files.
+ADT_STR (drum transcription trained on s	EXACT	lmd	The Lakh MIDI Dataset is distributed with a CC-BY 4.0 license
+ADT_STR (drum transcription trained on s	EXACT	lmd	Of course, I did not transcribe any of the MIDI files in the Lakh MIDI Dataset.
+ADT_STR (drum transcription trained on s	EXACT	lmd	They were scraped from publicly-available sources on the internet
+ADT_STR (drum transcription trained on s	EXACT	pdf_2601.09520	The process began with an unlabeled corpus of one-shot sounds aggregated from 12 public sample packs
+ADT_STR (drum transcription trained on s	EXACT	pdf_2601.09520	http://soundpacks.com
+ADT_STR (drum transcription trained on s	EXACT	soundpacks	SoundPacks.com is an independently curated website that highlights free sample packs, drum kits, loops and preset packs released by music producers, beatmake...
+Inverse Drum Machine (IDM, 2025)	EXACT	ax_2505.03337,idm_readme	The Inverse Drum Machine: Source Separation Through Joint Transcription and Analysis-by-Synthesis
+Inverse Drum Machine (IDM, 2025)	EXACT	idm_readme	The model jointly trains for Automatic Drum Transcription (ADT) and One-shot drum Sample Synthesis (OSS) in an end-to-end manner.
+Inverse Drum Machine (IDM, 2025)	EXACT	idm_readme	[x] Model weights
+Inverse Drum Machine (IDM, 2025)	EXACT	idm_readme	[ ] Evaluation code
+Inverse Drum Machine (IDM, 2025)	EXACT	adtstr_readme,adtstr_transcriber,ds_predict,hf_adtstr_card,hf_adtstr_transcriber,hf_sad_card	pretrained
+Inverse Drum Machine (IDM, 2025)	EXACT	idm_readme,omz_changelog	Python 3.10+
+Inverse Drum Machine (IDM, 2025)	EXACT	idm_inference	{class_name}.wav
+Inverse Drum Machine (IDM, 2025)	EXACT	idm_readme	The modular architecture allows for optional external information, such as corrected transcriptions, to be provided at inference time.
+Inverse Drum Machine (IDM, 2025)	EXACT	idm_readme	To override the transcription, you can pass a dictionary with the onsets to the `separate` function
+Inverse Drum Machine (IDM, 2025)	EXACT	idm_utils	containing onset times in seconds
+Inverse Drum Machine (IDM, 2025)	EXACT	idm_inference,idm_readme	output/separated
+Inverse Drum Machine (IDM, 2025)	EXACT	idm_inference,idm_readme,lars_separate	wiener
+Inverse Drum Machine (IDM, 2025)	EXACT	idm_readme	if the drum loop is too far from the training distribution, the separation quality will be bad.
+Inverse Drum Machine (IDM, 2025)	EXACT	idm_license,mag_license,part_license	Apache License Version 2.0, January 2004
+Inverse Drum Machine (IDM, 2025)	EXACT	ax_2505.03337	Experiments on the StemGMD dataset
+Inverse Drum Machine (IDM, 2025)	EXACT	zen_7860223	StemGMD: A Large-Scale Audio Dataset of Isolated Drum Stems for Deep Drums Demixing - part 1
+Inverse Drum Machine (IDM, 2025)	EXACT	ableton_manual,adtlib_readme,adtof_setup,ax_2304.14848,ax_2307.07426,ax_2407.21030	open
+Drum stem separators that feed a drum tr	EXACT	lars_readme	a new deep drums demixing model that can separate five stems from a stereo drum mixture faster than real-time
+Drum stem separators that feed a drum tr	EXACT	lars_readme,zen_7860223,pdf_2608.01093,pdf_2601.09520	Toward deep drum source separation
+Drum stem separators that feed a drum tr	EXACT	lars_readme,pdf_2307.07426,pdf_2609.11904	Kick Drum
+Drum stem separators that feed a drum tr	EXACT	ableton_manual,dsep_readme,eg_readme,lars_readme,mag_drummap,omz_doc_api	Snare
+Drum stem separators that feed a drum tr	EXACT	lars_readme	Tom-Toms
+Drum stem separators that feed a drum tr	EXACT	lars_readme,pdf_2307.07426,pdf_2608.01093,pdf_2601.09520	Hi-Hat
+Drum stem separators that feed a drum tr	EXACT	dsep_readme,lars_readme,pdf_2608.01093,sad_repo_onset_readme	Cymbals
+Drum stem separators that feed a drum tr	EXACT	lars_readme	specify the device using the `-d` option (default: `cpu`)
+Drum stem separators that feed a drum tr	MARKDOWN	lars_readme	Pretrained LarsNet model checkpoints can be found [here] (562 MB) licensed under CC BY-NC 4.0.
+Drum stem separators that feed a drum tr	EXACT	lars_readme	**StemGMD is freely available on [Zenodo](https://zenodo.org/records/7860223) under the CC-BY 4.0 license.**
+Drum stem separators that feed a drum tr	EXACT	lars_readme	We are working toward releasing the scripts for fine-tuning and training LarsNet from scratch.
+Drum stem separators that feed a drum tr	MARKDOWN	dsep_readme	Drum separation based on a [Hybrid Demucs] model.
+Drum stem separators that feed a drum tr	EXACT	dsep_readme	Separación de fuentes en grabaciones de batería mediante aprendizaje automático
+Drum stem separators that feed a drum tr	EXACT	dsep_readme	an audio file (mp3, wav, flac, or ogg)
+Drum stem separators that feed a drum tr	EXACT	dsep_readme	Bombo (Kick)
+Drum stem separators that feed a drum tr	EXACT	dsep_readme	Redoblante (Snare)
+Drum stem separators that feed a drum tr	EXACT	dsep_readme	Platillos (Cymbals)
+Drum stem separators that feed a drum tr	EXACT	dsep_readme,lars_readme,mag_drummap,pdf_2608.01093,sad_repo_onset_readme	Toms
+Drum stem separators that feed a drum tr	EXACT	dsep_readme	<PATH_IN>
+Drum stem separators that feed a drum tr	EXACT	dsep_readme	<PATH_OUT>
+Drum stem separators that feed a drum tr	EXACT	bastas_license,ds_license,dsep_license,hf_sad_card,mb_license,mb_readme	MIT License
+Drum stem separators that feed a drum tr	EXACT	dsep_license	Copyright (c) 2024 Iñaki Goyeneche
+Drum stem separators that feed a drum tr	MISSING		several drum kit *stem* separation models in the open source community
+Older and minor drum transcribers: ADTLi	EXACT	adtlib_readme	The algorithms return both a .txt file of kick drum, snare drum, and hi-hat onsets and an automatically generated drum tabulature.
+Older and minor drum transcribers: ADTLi	EXACT	adtlib_license	Copyright (c) 2017, CarlSouthall
+Older and minor drum transcribers: ADTLi	EXACT	adtlib_license,m21_license,mm_license,sf_py	Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+Older and minor drum transcribers: ADTLi	EXACT	mm_setup,pypi_adtlib,pypi_madmom	License :: Free for non-commercial use
+Older and minor drum transcribers: ADTLi	EXACT	mm_setup,pypi_adtlib,pypi_madmom,pypi_music21	License :: OSI Approved :: BSD License
+Older and minor drum transcribers: ADTLi	EXACT	ax_2605.12135	an audio-to-chart pipeline that converts raw recordings into playable Clone Hero / YARG charts
+Older and minor drum transcribers: ADTLi	EXACT	ax_2605.12135	a two-stage CRNN onset detector and a six-model ensemble classifier for drums
+Older and minor drum transcribers: ADTLi	EXACT	ax_2605.12135	Code, model weights, and the full benchmark manifest are released.
+Older and minor drum transcribers: ADTLi	EXACT	ax_2605.12135	https://github.com/<your-github-username>/autocharter
+Older and minor drum transcribers: ADTLi	PARTS	ax_2605.12135	drums onset F1 = 0.838 ... at a +/- 100 ms tolerance with per-song global offset search
+Older and minor drum transcribers: ADTLi	EXACT	hf_sad_card	the pretrained **OB+TB** checkpoint of **Separate-and-Detect: Unified Drum Transcription and Stem Generation via Latent Diffusion**
+Older and minor drum transcribers: ADTLi	MARKDOWN	hf_sad_card	Architecture: Latent Diffusion Model (MSG-LD)
+Older and minor drum transcribers: ADTLi	EXACT	hf_sad_card	The checkpoint can then be loaded using the code provided in the official GitHub repository.
+Older and minor drum transcribers: ADTLi	EXACT	hf_sad_card	This repository is released under the MIT License.
+Older and minor drum transcribers: ADTLi	EXACT	ax_2608.01093,ax_misc	Accepted at the 27th International Society for Music Information Retrieval Conference (ISMIR 2026)
+Older and minor drum transcribers: ADTLi	EXACT	pdf_2608.01093	Code: https://github.com/ddman1101/Separate-and-detect
+Older and minor drum transcribers: ADTLi	EXACT	bastas_license,ds_license,dsep_license,hf_sad_card,mb_license,mb_readme	MIT License
+Older and minor drum transcribers: ADTLi	EXACT	sad_repo_license	Copyright (c) 2026 Wei-Han Hsu
+Older and minor drum transcribers: ADTLi	EXACT	pdf_2608.01093	we first obtain a drum mixture using Demucs, and then apply the MSG-LD demixer to generate separated drum stems
+Older and minor drum transcribers: ADTLi	EXACT	pdf_2608.01093	Specifically, we rely on the madmom CNN-based onset processor.
+Older and minor drum transcribers: ADTLi	EXACT	sad_repo_readme,zen_10643148	MusicLDM
+Older and minor drum transcribers: ADTLi	MISSING		The MSG-LD models are trained on a combined corpus of StemGMD [11] (>1200 hours, synthesized) and IDMT-SMT-Drums [21] (2.1 hours, real-world acoustic).
+Research: percussive fingerstyle guitar 	EXACT	ax_2307.07426	Real-time Percussive Technique Recognition and Embedding Learning for the Acoustic Guitar
+Research: percussive fingerstyle guitar 	EXACT	ax_2307.07426	Accepted at the 24th Int. Society for Music Information Retrieval Conf., Milan, Italy, 2023
+Research: percussive fingerstyle guitar 	EXACT	ax_2307.07426,pdf_2307.07426	We develop RT-MIR techniques aimed at augmenting percussive fingerstyle, which blends acoustic guitar playing with guitar body percussion.
+Research: percussive fingerstyle guitar 	EXACT	ax_2307.07426,pdf_2307.07426	We introduce a taxonomy of guitar body percussion based on hand part and location.
+Research: percussive fingerstyle guitar 	MISSING		2-class Kick - K (heel), Non-Kick - NK (all others)
+Research: percussive fingerstyle guitar 	MISSING		4-class Heel - H, Thumb - T, Fingers - F, Nails - N
+Research: percussive fingerstyle guitar 	MISSING		4-class + 5-class
+Research: percussive fingerstyle guitar 	MISSING		Soundhole, Upper Bout, Lower Bout, Upper Side, Lower Side
+Research: percussive fingerstyle guitar 	EXACT	pdf_2307.07426	This was used to create the labelled dataset GPercRep by producing 50 examples (one hit per second) of each combination of taxonomy attributes
+Research: percussive fingerstyle guitar 	TYPO	pdf_2307.07426	Each combination was repeated at four dynamics levels (p, mp, mf, f).
+Research: percussive fingerstyle guitar 	EXACT	pdf_2307.07426	the dataset has 3,157 examples extracted from 52 minutes and 37 seconds of audio at 44.1 kHz. The dataset is currently not public.
+Research: percussive fingerstyle guitar 	EXACT	pdf_2307.07426	a six-channel output made out of one magnetic pickup and five piezo sensors
+Research: percussive fingerstyle guitar 	EXACT	pdf_2307.07426	https://github.com/acids-ircam/nn_tilde
+Research: percussive fingerstyle guitar 	EXACT	pdf_2307.07426	Uniformly across the tests, the networks yield an F-measure around 90% for GPercRep.
+Research: percussive fingerstyle guitar 	MISSING		All networks are able to precisely discriminate between kicks and non-kicks with an F-measure above 99%.
+Research: percussive fingerstyle guitar 	EXACT	pdf_2307.07426	a snippet of real-world guitar percussion patterns
+Research: percussive fingerstyle guitar 	EXACT	pdf_2307.07426	85 hits in one minute of audio
+Research: percussive fingerstyle guitar 	EXACT	pdf_2307.07426	a different audio interface
+Research: percussive fingerstyle guitar 	MISSING		the test on GPercPat exposes a generalisation problem: despite performing data augmentation during training, all networks show a bias toward non-kicks. PercC...
+Research: percussive fingerstyle guitar 	EXACT	pdf_2307.07426	This result may suggest that the networks still overfit to the extent that they are very sensitive to the way that the data is acquired.
+Research: percussive fingerstyle guitar 	EXACT	pdf_2307.07426	601 heel hits
+AG-PT-set and ExpressiveGuitar-Technique	EXACT	zen_10159492	AG-PT-set: Acoustic Guitar Playing Technique dataset
+AG-PT-set and ExpressiveGuitar-Technique	EXACT	zen_10159492	Domenico, Stefani
+AG-PT-set and ExpressiveGuitar-Technique	EXACT	zen_10159492	Luca, Turchet
+AG-PT-set and ExpressiveGuitar-Technique	EXACT	zen_10159492	Creative, Intelligent, and Multisensory Interactions Laboratory
+AG-PT-set and ExpressiveGuitar-Technique	EXACT	zen_10159492	It contains 15 hours and 55 minutes of monophonic recordings of 12 expressive guitar playing techniques (pitched and percussive).
+AG-PT-set and ExpressiveGuitar-Technique	EXACT	zen_10159492	10 hours and 4 minutes of recordings encompassing 8 of the 12 techniques have been labeled, meaning that onsets were identified at the millisecond level
+AG-PT-set and ExpressiveGuitar-Technique	EXACT	zen_10159492	32,592 individual notes have been labeled. Recordings were performed by 6 players on 7 different acoustic steel-string guitars
+AG-PT-set and ExpressiveGuitar-Technique	TYPO	zen_10159492	Kick technique (*percussive*): producing a sound that resembles a kick drum by hitting the lower right part of the top of the guitar body; Snare-A technique ...
+AG-PT-set and ExpressiveGuitar-Technique	EXACT	zen_10159492	Techniques 1 through 8 have been meticulously labeled.
+AG-PT-set and ExpressiveGuitar-Technique	EXACT	pdf_2510.02597,pdf_2609.11904	On the importance of temporally precise onset annotations for real-time music information retrieval: Findings from the ag-pt-set dataset
+AG-PT-set and ExpressiveGuitar-Technique	EXACT	zen_10159492	AG-PT-set
+AG-PT-set and ExpressiveGuitar-Technique	EXACT	eg_readme	The Jupyter notebook loads a dataset of feature vectors extracted from **pitched** and **percussive** sounds recorded with many acoustic guitars.
+AG-PT-set and ExpressiveGuitar-Technique	EXACT	eg_readme	0. **Kick** (Palm on lower body) 1. **Snare 1** (All fingers on lower side) 2. **Tom** (Thumb on higher body) 3. **Snare 2** (Fingers on the muted strings, o...
+AG-PT-set and ExpressiveGuitar-Technique	EXACT	eg_readme,zen_10159492	Natural Harmonics
+AG-PT-set and ExpressiveGuitar-Technique	EXACT	eg_readme,zen_10159492	Palm Mute
+AG-PT-set and ExpressiveGuitar-Technique	EXACT	eg_readme,zen_10159492	Pick Near Bridge
+AG-PT-set and ExpressiveGuitar-Technique	EXACT	eg_readme,zen_10159492	Pick Over the Soundhole
+AG-PT-set and ExpressiveGuitar-Technique	EXACT	au_copying,eg_license	GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+TART: technique-aware audio-to-tablature	EXACT	ax_2609.11904	TART: A Modular Tool for Technique-Aware Audio-to-Tablature Guitar Transcription
+TART: technique-aware audio-to-tablature	EXACT	ax_2609.11904,ax_2608.01093,ax_misc	ISMIR 2026
+TART: technique-aware audio-to-tablature	EXACT	ax_2510.02597	TART: A Comprehensive Tool for Technique-Aware Audio-to-Tab Guitar Transcription
+TART: technique-aware audio-to-tablature	EXACT	ax_2609.11904	a modular four-stage audio-to-tablature pipeline consisting of (1) an audio-to-MIDI transcription model, (2) an expressive technique classifier, (3) an audio...
+TART: technique-aware audio-to-tablature	EXACT	ax_2609.11904,pdf_2609.11904	expressive techniques such as slides, bends, and percussive hits
+TART: technique-aware audio-to-tablature	EXACT	pdf_2609.11904	The label space T consists of the classes listed in Table 2: bend, hammer-on/pull-off, harmonics, kick drum, palm muting, picking/no technique, slide, snare ...
+TART: technique-aware audio-to-tablature	MISSING		we extract the audio chunk spanning the note's duration
+TART: technique-aware audio-to-tablature	EXACT	pdf_2609.11904	(sample rate 22.05 kHz, FFT window 1024). Each frame stacks 40 MFCCs, 40 log-mel bands, and 12 chroma coefficients into a 92-dimensional vector
+TART: technique-aware audio-to-tablature	EXACT	pdf_2609.11904	a temporal CNN-BiLSTM
+TART: technique-aware audio-to-tablature	EXACT	pdf_2609.11904	approximately 160,000 parameters in total.
+TART: technique-aware audio-to-tablature	EXACT	pdf_2609.11904	We consolidate five publicly available guitar technique datasets into a single unified training set: IDMT-SMT-Chords [9], Guitar-TECHS [16], AGPT [8], EG-IPT...
+TART: technique-aware audio-to-tablature	EXACT	pdf_2609.11904	Per-class results on the unified dataset test set
+TART: technique-aware audio-to-tablature	PARTS	lars_readme,pdf_2307.07426,pdf_2609.11904	Kick Drum ... 98.1%
+TART: technique-aware audio-to-tablature	PARTS	pdf_2307.07426,pdf_2609.11904	Snare Drum ... 99.3%
+TART: technique-aware audio-to-tablature	PARTS	pdf_2609.11904	Palm Muting ... 97.9%
+TART: technique-aware audio-to-tablature	PARTS	pdf_2609.11904	Hammer/Pull-off ... 97.4%
+TART: technique-aware audio-to-tablature	PARTS	eg_readme,ess_algref,pdf_2510.02597,pdf_2609.11904,pm_constants,zen_10159492	Harmonics ... 94.9%
+TART: technique-aware audio-to-tablature	PARTS	ableton_manual,ableton_manual13,epmc_mitsou,nature_sfn,pdf_2609.11904,tuttut_readme	Slide ... 94.7%
+TART: technique-aware audio-to-tablature	PARTS	epmc_mitsou,nature_sfn,pdf_2609.11904,zen_10159492	Bend ... 93.8%
+TART: technique-aware audio-to-tablature	PARTS	ableton_manual,ableton_manual13,epmc_mitsou,ess_algref,ess_sfx,mm_onsets	Vibrato ... 89.4%
+TART: technique-aware audio-to-tablature	PARTS	pdf_2609.11904	Macro Avg ... 95.9%
+TART: technique-aware audio-to-tablature	PARTS	ax_2609.11904,pdf_2609.11904	Averaged across these four benchmarks, TART achieves 81.35% audio-to-MIDI F50 ... 71.8% string-fret Tab F1 ... and 54.08% end-to-end Tab F1.
+TART: technique-aware audio-to-tablature	EXACT	adtlib_readme,adtof_readme,adtof_setup,adtpt_readme,adtstr_readme,au_readme	github
+TART: technique-aware audio-to-tablature	EXACT	ableton_manual,adtlib_license,adtpt_readme,adtstr_readme,adtstr_transcriber,au_copying	code
+TART: technique-aware audio-to-tablature	EXACT	ableton_manual,adtlib_readme,adtof_license,adtof_readme,adtpt_cli,adtpt_init	available
+TART: technique-aware audio-to-tablature	EXACT	adtpt_readme,adtstr_readme,au_cli,au_copying,au_readme,ax_2605.12135	release
+TART: technique-aware audio-to-tablature	EXACT	pdf_2307.07426,pdf_2609.11904,pdf_2608.01093,pdf_2509.22655	Licensed under a Creative Commons Attribution 4.0 International License (CC BY 4.0)
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	iptrec_readme,nime_readme,zen_15699591	Introducing EG-IPT and ipt~: a novel electric guitar dataset and a new Max/MSP object for real-time classification of instrumental playing techniques
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	nime_readme	a TorchScript `.ts` model for real-time usage
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	nime_readme	**Python 3.11.11**
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	zen_17706552,zen_15699591	Conference paper
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	zen_15205644	EG-IPT Dataset (Electric Guitar Instrumental Playing Techniques)
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	zen_15205644	It contains 52,320 monophonic audio files, totaling 28 hours, 22 minutes, and 56 seconds of high-resolution recordings (96kHz / 24-bit), and amounts to 29.77...
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	hf_ipt_card	A model takes `(batch, 1, segment_length)` float32 raw audio and returns logits `(batch, num_classes)`; it exports `get_sr()`, `get_seglen()` and `get_classn...
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	dyci2_card,epmc_mitsou	8000 Hz
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	dyci2_card	7168 samples (896 ms, latency floor)
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	dyci2_card	Classes | 14
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	dyci2_card	Parameters | 3,360,398
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	dyci2_card	Size | 14.1 MB
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	dyci2_card	Forward pass | 3.7 ms (Apple Silicon, CPU, 1 thread)
+EG-IPT dataset and ipt~ / libipt / ipt_m	PARTS	ableton_compare,ableton_manual,ableton_manual13,ableton_shop,adtstr_readme,demucs_readme	Training ... Dataset: EG-IPT
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	dyci2_card	TODO: evaluation metrics
+EG-IPT dataset and ipt~ / libipt / ipt_m	PARTS	ipttilde_readme	macOS 10.13 or later with an Apple Silicon processor ... **or** Windows 10/11 on an x64 CPU with AVX2
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	ipttilde_readme	Max 8.6 or later / Max 9.0.3 or later
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	ipttilde_readme	the standalone C library behind ipt~, to use it in your own project
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	iptvamp_readme	for your operating system
+EG-IPT dataset and ipt~ / libipt / ipt_m	MISSING		not attempted
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	ipttilde_readme	train your own playing techniques recognition model
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	dyci2_license,iptrec_license,ipttilde_license,libipt_licence,nime_license	Attribution-NonCommercial 4.0 International
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	dyci2_readme,iptrec_readme,ipttilde_readme	This project is released under a CC-BY-NC-4.0 license.
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	nime_license	This work is licensed under the Creative Commons Attribution-NonCommercial 4.0 International License.
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	nime_license	NonCommercial — You may not use the material for commercial purposes.
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	dyci2_license,iptrec_license,ipttilde_license,libipt_licence,nime_license	Attribution-NonCommercial 4.0 International
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	dyci2_license,iptrec_license,ipttilde_license,libipt_licence,nime_license	Attribution-NonCommercial 4.0 International
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	libipt_readme	libipt is distributed under CC BY-NC 4.0, inherited from ipt_tilde, which it incorporates. Commercial use is not permitted. (The wrapper code in include/, sr...
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	hf_ipt_card	## License CC-BY-NC-4.0.
+EG-IPT dataset and ipt~ / libipt / ipt_m	EXACT	dyci2_license,iptrec_license,ipttilde_license,libipt_licence,nime_license	Attribution-NonCommercial 4.0 International
+Other guitar playing-technique datasets 	EXACT	zen_7544110	The first contains all introduced playing techniques (plucking styles: finger-style, muted, picked; expression styles: normal, bending, slide, vibrato, harmo...
+Other guitar playing-technique datasets 	EXACT	zen_7544110	about 4700 note events with monophonic and polyphonic structure.
+Other guitar playing-technique datasets 	EXACT	zen_7544110	The recordings are provided in one channel RIFF WAVE format with 44100 Hz sample rate.
+Other guitar playing-technique datasets 	EXACT	zen_7544110	stored in XML format
+Other guitar playing-technique datasets 	EXACT	zen_7544213	16 MIDI generated audio files
+Other guitar playing-technique datasets 	EXACT	ax_2501.03720	a variety of guitar techniques, musical excerpts, chords, and scales
+Other guitar playing-technique datasets 	EXACT	ax_2501.03720	two stereo microphones: an egocentric microphone positioned on the performer's head and an exocentric microphone placed in front of the performer
+Other guitar playing-technique datasets 	EXACT	ax_2501.03720	All signals and MIDI labels are properly synchronized.
+Other guitar playing-technique datasets 	EXACT	epmc_mitsou,nature_sfn,pdf_2510.02597,pdf_2609.11904	A multimodal dataset for electric guitar playing technique recognition
+Other guitar playing-technique datasets 	EXACT	epmc_mitsou	549 video samples in MP4 format, and their respective audio samples in WAV format, covering nine different electric guitar techniques
+Other guitar playing-technique datasets 	EXACT	epmc_mitsou	Tapping: using the fingertips of both the fretting and picking hand on the fretboard to fret notes
+Other guitar playing-technique datasets 	EXACT	epmc_mitsou	Repository name: guitar_style_dataset Data identification number: 10.5281/zenodo.10075352
+Other guitar playing-technique datasets 	EXACT	zen_10075352	magcil/guitar_style_dataset: Initial Release
+Other guitar playing-technique datasets 	EXACT	epmc_mitsou	This is an open access article under the CC BY-NC-ND license
+Other guitar playing-technique datasets 	EXACT	au_cli,au_copying,au_onseth,au_readme,bastas_license,ds_license	Software
+Other guitar playing-technique datasets 	EXACT	bastas_license,ds_license,dsep_license,hf_sad_card,mb_license,mb_readme	MIT License
+Other guitar playing-technique datasets 	EXACT	magcil_license	Copyright (c) 2023 Multimedia Analysis Group of the Computational Intelligence Lab (MagCIL)
+Other guitar playing-technique datasets 	EXACT	ax_2509.22655,zen_17706552,pdf_2509.22655	5.9 hours of unique high-quality direct input audio recordings of electric guitars
+Other guitar playing-technique datasets 	EXACT	ax_2509.22655,zen_17706552,pdf_2509.22655	Each recording is annotated using guitar tablatures, a guitar-specific symbolic format supporting string and fret numbers, as well as numerous playing techni...
+Other guitar playing-technique datasets 	EXACT	zen_17706552,zen_15699591	Conference paper
+Other guitar playing-technique datasets 	MISSING		We distribute the GOAT dataset on the Zenodo [footnote 8] platform. The dataset is made available by request to better control its use for research purposes ...
+Other guitar playing-technique datasets 	EXACT	pdf_2509.22655	we intend to make the dataset available for research purposes only, upon request.
+Other guitar playing-technique datasets 	EXACT	adtof_license,dyci2_license,epmc_mitsou,iptrec_license,ipttilde_license,libipt_licence	restricted
+Other guitar playing-technique datasets 	EXACT	zen_15690894	this dataset is non-commercial only, so I unfortunately cannot grant requests for any kind of commercial use case, even internal testing.
+Other guitar playing-technique datasets 	EXACT	ax_2508.07987	Exploring Procedural Data Generation for Automatic Acoustic Guitar Fingerpicking Transcription
+Other guitar playing-technique datasets 	EXACT	ax_2508.07987	knowledge-based fingerpicking tablature composition, MIDI performance rendering, physical modeling using an extended Karplus-Strong algorithm, and audio augm...
+Other items checked: SpectroFusionNet, H	EXACT	nature_sfn	SpectroFusionNet a CNN approach utilizing spectrogram fusion for electric guitar play recognition
+Other items checked: SpectroFusionNet, H	EXACT	nature_sfn	(MFCC), Continuous Wavelet Transform (CWT), and Gammatone
+Other items checked: SpectroFusionNet, H	EXACT	nature_sfn	lightweight models (MobileNetV2, InceptionV3, ResNet50)
+Other items checked: SpectroFusionNet, H	EXACT	nature_sfn	into nine machine learning classifiers
+Other items checked: SpectroFusionNet, H	EXACT	nature_sfn	MFCC-Gammatone late fusion provided the best classification performance, achieving 99.12% accuracy, 100% precision, and 100% recall across 9 distinct guitar ...
+Other items checked: SpectroFusionNet, H	EXACT	nature_sfn	Data availability
+Other items checked: SpectroFusionNet, H	EXACT	nature_sfn	The Guitar style dataset analysed in this study are available in https://zenodo.org/records/10075352.
+Other items checked: SpectroFusionNet, H	EXACT	adtlib_readme,adtof_readme,adtof_setup,adtpt_readme,adtstr_readme,au_readme	github
+Other items checked: SpectroFusionNet, H	EXACT	svsep_readme	code availab
+Other items checked: SpectroFusionNet, H	EXACT	hidrum	we propose Hi-Drum, a novel paradigm combining a self-supervised music understanding model and a Large Language Model (LLM), integrated with a Hierarchical D...
+Other items checked: SpectroFusionNet, H	EXACT	hidrum	sequence modeling is performed by the Qwen decoder
+partitura `estimate_voices` (symbolic vo	EXACT	part_readme,pypi_partitura	**Partitura** is a Python package for handling symbolic musical information. It supports loading from and exporting to *MusicXML* and *MIDI* files.
+partitura `estimate_voices` (symbolic vo	EXACT	pypi_librosa,pypi_music21,pypi_partitura,pypi_sklearn,pypi_libfmp	>=3.10
+partitura `estimate_voices` (symbolic vo	EXACT	part_vs	Voice estimation using the voice separation algorithm proposed in [6]_.
+partitura `estimate_voices` (symbolic vo	EXACT	part_vs	[6] Chew, E. and Wu, Xiaodan (2004) 
+partitura `estimate_voices` (symbolic vo	EXACT	part_vs	Defaults to False.
+partitura `estimate_voices` (symbolic vo	EXACT	part_vs	Note information as a `Part` or `PerformedPart` instances or as a structured array
+partitura `estimate_voices` (symbolic vo	EXACT	part_vs	If the array contains onset and duration information of both score and performance, (e.g., containing both `onset_beat` and `onset_sec`), the score informati...
+partitura `estimate_voices` (symbolic vo	EXACT	part_vs	voice : numpy array Voice for each note in the notearray. (The voices start with 1, as is the MusicXML convention).
+partitura `estimate_voices` (symbolic vo	EXACT	part_vs	Handle grace notes correctly. The current version simply deletes all grace notes.
+partitura `estimate_voices` (symbolic vo	EXACT	ax_2304.14848,m21_base,mcleod_readme,part_vs,vocsep_readme	number of voices
+partitura `estimate_voices` (symbolic vo	EXACT	part_vs	notes with the same onset and duration are treated as a chord and assigned to the same voice
+partitura `estimate_voices` (symbolic vo	EXACT	idm_license,mag_license,part_license	Apache License Version 2.0, January 2004
+partitura `estimate_voices` (symbolic vo	EXACT	part_readme,pypi_partitura	Apache 2.0
+music21 (stream tools that split overlap	EXACT	m21_readme,pypi_music21	`music21` -- A Toolkit for Computer-Aided Musical Analysis and Computational Musicology
+music21 (stream tools that split overlap	MARKDOWN	m21_readme,pypi_music21	Copyright © 2006-2026 Michael Scott Asato Cuthbert
+music21 (stream tools that split overlap	EXACT	basicpitch_readme,pypi_music21,pypi_sklearn	>=3.11
+music21 (stream tools that split overlap	EXACT	pypi_music21,pypi_sklearn	BSD-3-Clause
+music21 (stream tools that split overlap	EXACT	m21_base	If this Stream has overlapping Notes or Chords, this method will isolate all overlaps in unique Voices, and place those Voices in the Stream.
+music21 (stream tools that split overlap	EXACT	m21_base	If this Stream defines one or more voices, extract each into a Part, returning a Score.
+music21 (stream tools that split overlap	EXACT	m21_base	Create a chordal reduction of polyphonic music, where each change to a new pitch results in a new chord.
+music21 (stream tools that split overlap	EXACT	m21_license	Copyright (c) 2006-2026 Michael Scott Asato Cuthbert
+music21 (stream tools that split overlap	EXACT	adtlib_license,m21_license,mm_license,sf_py	Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+Cluster and Separate / piano_svsep (GNN 	EXACT	svsep_readme	Official implementation of the ISMIR 2024 paper 
+Cluster and Separate / piano_svsep (GNN 	EXACT	ax_2407.21030,svsep_readme	We focus on piano music and support homophonic voices, i.e., voices that can contain chords, and cross-staff voices
+Cluster and Separate / piano_svsep (GNN 	EXACT	ax_2407.21030	All code and pre-trained models are available at https://github.com/CPJKU/piano_svsep
+Cluster and Separate / piano_svsep (GNN 	EXACT	svsep_readme	Python_3.8+
+Cluster and Separate / piano_svsep (GNN 	EXACT	svsep_readme	PyTorch_2.0+
+Cluster and Separate / piano_svsep (GNN 	EXACT	svsep_setup	torch==2.7.0
+Cluster and Separate / piano_svsep (GNN 	EXACT	svsep_setup	torch==2.8.0
+Cluster and Separate / piano_svsep (GNN 	EXACT	svsep_setup	torch_geometric
+Cluster and Separate / piano_svsep (GNN 	EXACT	svsep_setup	partitura==1.8.0
+Cluster and Separate / piano_svsep (GNN 	EXACT	svsep_setup	scikit-learn==1.6.0
+Cluster and Separate / piano_svsep (GNN 	EXACT	svsep_readme	input a musical score (with potentially random voice and staff assignments). The system will then return a MEI version of the same musical score with newly p...
+Cluster and Separate / piano_svsep (GNN 	EXACT	ax_2407.21030	from a quantized symbolic music piece (e.g., a MIDI file)
+Cluster and Separate / piano_svsep (GNN 	EXACT	svsep_readme	Our system is supposed to be run in the final stage of a transcription or generation process, where a musical score is *almost* ready
+Cluster and Separate / piano_svsep (GNN 	EXACT	bastas_license,ds_license,dsep_license,hf_sad_card,mb_license,mb_readme	MIT License
+Cluster and Separate / piano_svsep (GNN 	EXACT	svsep_license	Copyright (c) 2024 Institute of Computational Perception
+Cluster and Separate / piano_svsep (GNN 	PARTS	bastas_license,ds_license,dsep_license,libfmp_license,magcil_license,mb_license	Permission is hereby granted, free of charge, to any person obtaining a copy of this software [...]
+Cluster and Separate / piano_svsep (GNN 	EXACT	svsep_readme	Unfortunately, the `jpop` dataset we used in our paper is not public, therefore the results of the paper are not entirely reproducible.
+Cluster and Separate / piano_svsep (GNN 	EXACT	svsep_readme	`dcml` only
+Cluster and Separate / piano_svsep (GNN 	EXACT	svsep_dataset	https://github.com/fosfrancesco/piano_corpora_dcml.git
+Cluster and Separate / piano_svsep (GNN 	EXACT	adtof_license,adtof_readme,medleydb_dl,dcml_license	Attribution-NonCommercial-ShareAlike 4.0 International
+Cluster and Separate / piano_svsep (GNN 	EXACT	dcml_readme	~400 scores from the [romantic piano corpus](https://github.com/DCMLab/romantic_piano_corpus), [debussy solo piano corpus](https://dcmlab.github.io/debussy_p...
+Cluster and Separate / piano_svsep (GNN 	EXACT	dcml_readme	This repository only exists to facilitate the usage of the above repositories.
+Cluster and Separate / piano_svsep (GNN 	EXACT	svsep_readme	This uses the pretrained model we use for the evaluation in our paper
+Cluster and Separate / piano_svsep (GNN 	EXACT	svsep_readme	both `dcml` and `jpop` datasets
+vocsep_ijcai2023 (voice separation as li	EXACT	ax_2304.14848,vocsep_readme	Musical Voice Separation as Link Prediction: Modeling a Musical Perception Task as a Multi-Trajectory Tracking Problem
+vocsep_ijcai2023 (voice separation as li	EXACT	ax_2304.14848	Accepted at the 32nd International Joint Conference on Artificial Intelligence (IJCAI-23)
+vocsep_ijcai2023 (voice separation as li	EXACT	ax_2304.14848,vocsep_readme	Our approach builds a graph from a musical piece, by creating one node for every note, and separates the melodic trajectories by predicting a link between tw...
+vocsep_ijcai2023 (voice separation as li	EXACT	vocsep_readme	The requirements installs the cpu version of Pytorch and Pytorch-Scatter
+vocsep_ijcai2023 (voice separation as li	MARKDOWN	vocsep_readme	This project depends on [WANDB] therfore you will need an account to run the code.
+vocsep_ijcai2023 (voice separation as li	EXACT	vocsep_readme	GMMT+LA
+vocsep_ijcai2023 (voice separation as li	EXACT	bastas_license,ds_license,dsep_license,hf_sad_card,mb_license,mb_readme	MIT License
+vocsep_ijcai2023 (voice separation as li	EXACT	vocsep_license	Copyright (c) 2023 Emmanouil Karystinaios
+McLeod and Steedman HMM voice separation	EXACT	mcleod_readme	This is the code and data from my 2016 Journal of New Music Research paper
+McLeod and Steedman HMM voice separation	EXACT	mcleod_readme	HMM-Based Voice Separation of MIDI Performance
+McLeod and Steedman HMM voice separation	EXACT	mcleod_readme	The goal of this project is to have a Java program which is able to split MIDI performance data into monophonic voices.
+McLeod and Steedman HMM voice separation	EXACT	mcleod_readme	will write the resulting voices of the given FILES into new MIDI files in the voice directory
+McLeod and Steedman HMM voice separation	EXACT	mcleod_readme	Add `-l` if the MIDI files are live performance (unquantized) MIDI.
+McLeod and Steedman HMM voice separation	EXACT	mcleod_readme	`-M INT` flag to set the maximum number of voices to output
+McLeod and Steedman HMM voice separation	EXACT	mcleod_readme	voices divided by both channel and track.
+McLeod and Steedman HMM voice separation	EXACT	mcleod_license	Copyright (c) 2015 Andrew McLeod
+McLeod and Steedman HMM voice separation	PARTS	bastas_license,ds_license,dsep_license,libfmp_license,magcil_license,mb_license	Permission is hereby granted, free of charge, to any person obtaining a copy of this software [...]
+McLeod and Steedman HMM voice separation	EXACT	mcleod_readme	You are free to use this software as is allowed by the [MIT License]
+MidiBERT-Piano melody extraction (MIDI i	EXACT	mb_readme	MidiBERT-Piano: Large-scale Pre-training for Symbolic Music Understanding
+MidiBERT-Piano melody extraction (MIDI i	EXACT	mb_readme	extract melody (mid to mid) using pre-trained MidiBERT-Piano
+MidiBERT-Piano melody extraction (MIDI i	MARKDOWN	mb_readme	Please download the [checkpoints](https://drive.google.com/drive/folders/...)
+MidiBERT-Piano melody extraction (MIDI i	EXACT	mb_readme	(Note: we only provide checkpoints for models in CP representations)
+MidiBERT-Piano melody extraction (MIDI i	EXACT	mb_readme	*No gpu is needed for evaluation*
+MidiBERT-Piano melody extraction (MIDI i	EXACT	mb_extract	path to the input midi file
+MidiBERT-Piano melody extraction (MIDI i	EXACT	mb_extract	path to the output midi file
+MidiBERT-Piano melody extraction (MIDI i	EXACT	mb_extract	View bridge as melody (True) or accompaniment (False)
+MidiBERT-Piano melody extraction (MIDI i	EXACT	mb_extract	the predicted melody midi file
+MidiBERT-Piano melody extraction (MIDI i	EXACT	mb_extract	Given path to input midi file, save the predicted melody midi file.
+MidiBERT-Piano melody extraction (MIDI i	EXACT	mb_extract	Please note that the model is trained on pop909 dataset (containing 3 classes: melody, bridge, accompaniment)
+MidiBERT-Piano melody extraction (MIDI i	EXACT	pop_readme	MELODY track for the main melody, BRIDGE track for the sub-melody, and PIANO track for the accompaniment
+MidiBERT-Piano melody extraction (MIDI i	EXACT	bastas_license,ds_license,dsep_license,hf_sad_card,mb_license,mb_readme	MIT License
+MidiBERT-Piano melody extraction (MIDI i	EXACT	pop_license	Copyright (c) 2020 Music X Lab
+MidiBERT-Piano melody extraction (MIDI i	EXACT	bastas_license,ds_license,dsep_license,hf_sad_card,mb_license,mb_readme	MIT License
+MidiBERT-Piano melody extraction (MIDI i	EXACT	mb_license	Copyright (c) MidiBERT-Piano development team
+MidiBERT-Piano melody extraction (MIDI i	EXACT	mb_readme	ARXIV LICENSE
+MidiBERT-Piano melody extraction (MIDI i	EXACT	pdf_2107.05223	We collect four existing public-domain piano MIDI datasets, including Pop1K7, ASAP, POP909, EMOPIA and compile ourselves a new dataset, named Pianist8.
+MidiBERT-Piano melody extraction (MIDI i	EXACT	asap_readme	The dataset is made available under a [Creative Commons Attribution Non-Commercial Share-Alike 4.0 (CC BY-NC-SA 4.0) license](https://creativecommons.org/lic...
+MidiBERT-Piano melody extraction (MIDI i	TYPO	pdf_2107.05223	eight artists' performances of piano music that we download from YouTube
+MidiBERT-Piano melody extraction (MIDI i	EXACT	pdf_2107.05223	machine transcriptions of 1,747 audio recordings of piano covers
+QM Vamp Plugins: note onset detector (Va	MARKDOWN	qm_readme	Audio feature extraction plugins in [Vamp format] from the [Centre for Digital Music] at Queen Mary, University of London
+QM Vamp Plugins: note onset detector (Va	EXACT	qm_readme	Note onset detector
+QM Vamp Plugins: note onset detector (Va	MISSING		QM Vamp Plugins v1.8 (January 2020)
+QM Vamp Plugins: note onset detector (Va	EXACT	qm_readme	Ready-to-use binary builds of these plugins are provided for common platforms
+QM Vamp Plugins: note onset detector (Va	EXACT	qm_copying	GNU GENERAL PUBLIC LICENSE Version 2, June 1991
+QM Vamp Plugins: note onset detector (Va	EXACT	libipt_readme,nmfd_readme,pypi_libnmfd,qm_readme	Licence
+QM Vamp Plugins: note onset detector (Va	EXACT	qm_readme	These plugins are provided under the terms of the GNU General Public License.  You may install and use the plugin binaries without fee for any purpose commer...
+QM Vamp Plugins: note onset detector (Va	EXACT	qm_readme	If you wish to use this code in a proprietary application or product for which the terms of the GPL are not appropriate, please contact QM Innovation https:/...
+Deep Salience (bass, melody and multi-f0	EXACT	ds_readme	Deep Salience Representations for $F_0$ Estimation in Polyphonic Music
+Deep Salience (bass, melody and multi-f0	EXACT	ds_readme	To compute output from these models, run the script predict/predict_on_audio.py
+Deep Salience (bass, melody and multi-f0	EXACT	ds_predict	specify whehter to save output as singlef0, multif0 or salience
+Deep Salience (bass, melody and multi-f0	EXACT	ds_predict	Amplitude threshold
+Deep Salience (bass, melody and multi-f0	EXACT	ds_predict	List of time stamps in seconds
+Deep Salience (bass, melody and multi-f0	EXACT	ds_predict	List of frequency values in Hz
+Deep Salience (bass, melody and multi-f0	EXACT	bastas_license,ds_license,dsep_license,hf_sad_card,mb_license,mb_readme	MIT License
+Deep Salience (bass, melody and multi-f0	EXACT	ds_license	Copyright (c) 2017 Rachel Bittner
+Deep Salience (bass, melody and multi-f0	TYPO	medleydb_dl	MedleyDB is offered free of charge for non-commercial research use only under the terms of the Creative Commons Attribution Noncommercial License.
+Deep Salience (bass, melody and multi-f0	TYPO	medleydb_dl	MedleyDB by R. Bittner et. al. is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+Deep Salience (bass, melody and multi-f0	EXACT	medleydb_dl	while redistribution of the data is technically allowed under this license, we ask that you do not republish the dataset in full or in part without our consent.
+Deep Salience (bass, melody and multi-f0	EXACT	medleydb_dl,zen_1649325	MedleyDB Audio
+Deep Salience (bass, melody and multi-f0	EXACT	adtof_license,dyci2_license,epmc_mitsou,iptrec_license,ipttilde_license,libipt_licence	restricted
+Guitar string separation (per-string ste	EXACT	pdf_bastas	Separate and Transcribe: Deep Guitar String Separation and its Application for Tablature Transcription Enhancement
+Guitar string separation (per-string ste	EXACT	pdf_bastas	Guitar string separation constitutes a source separation task in which the individual stems to be retrieved are the signals produced by each distinct guitar ...
+Guitar string separation (per-string ste	EXACT	pdf_bastas	datasets: GuitarSet and DadaGP
+Guitar string separation (per-string ste	EXACT	pdf_bastas	We relied on a publicly available implementation
+Guitar string separation (per-string ste	EXACT	pdf_bastas	two new datasets that are also made publicly available
+Guitar string separation (per-string ste	MISSING		The source code is available at: https://github.com/gbastas/deep-guitar-separation
+Guitar string separation (per-string ste	EXACT	bastas_license,ds_license,dsep_license,hf_sad_card,mb_license,mb_readme	MIT License
+Guitar string separation (per-string ste	EXACT	bastas_license	Copyright (c) 2025 gbastas
+Guitar string separation (per-string ste	EXACT	bastas_readme	Senvaitytite train-test split
+Commercial: desktop and hosted drum-to-n	EXACT	ableton_manual,ableton_manual13	13.4 Convert Drums to New MIDI Track
+Commercial: desktop and hosted drum-to-n	EXACT	ableton_manual,ableton_manual13	This command extracts the rhythms from unpitched, percussive audio and places them into a clip on a new MIDI track. The command also attempts to identify kic...
+Commercial: desktop and hosted drum-to-n	EXACT	ableton_manual,ableton_manual13	Convert Drums works well with recorded breakbeats, but also with your own recordings such as beatboxing or tapping on a surface.
+Commercial: desktop and hosted drum-to-n	EXACT	ableton_manual,ableton_manual13	The Convert Drums command, for example, works best with unaccompanied drum breaks; if other instruments are present, their notes will be detected as well.
+Commercial: desktop and hosted drum-to-n	EXACT	ableton_manual,ableton_manual13	you can “tune” the results of the conversion by adding, moving, or deleting transient markers in the audio clip before running any of the Convert commands.
+Commercial: desktop and hosted drum-to-n	EXACT	ableton_manual,ableton_compare,ableton_manual13	Audio to MIDI
+Commercial: desktop and hosted drum-to-n	EXACT	ableton_compare	Extract harmony, melody or drums from an audio sample and convert it to MIDI
+Commercial: desktop and hosted drum-to-n	EXACT	ableton_compare	Not included in Live 13 Intro
+Commercial: desktop and hosted drum-to-n	EXACT	ableton_compare	Included in Live 13 Standard
+Commercial: desktop and hosted drum-to-n	EXACT	ableton_compare	Included in Live 13 Suite
+Commercial: desktop and hosted drum-to-n	EXACT	ableton_compare,ableton_shop	Save 20% on Live 12 now, get a free upgrade to Live 13
+Commercial: desktop and hosted drum-to-n	EXACT	ableton_shop	Original price USD 99
+Commercial: desktop and hosted drum-to-n	EXACT	ableton_shop	now USD 79
+Commercial: desktop and hosted drum-to-n	EXACT	ableton_shop	Original price USD 349
+Commercial: desktop and hosted drum-to-n	EXACT	ableton_shop	now USD 279
+Commercial: desktop and hosted drum-to-n	EXACT	ableton_shop	Original price USD 749
+Commercial: desktop and hosted drum-to-n	EXACT	ableton_shop	now USD 599
+Commercial: desktop and hosted drum-to-n	EXACT	klang_drum2notes	Record, Upload or use a YouTube Link of Music to turn the Drums into Sheet Music, MIDI and MusicXML within seconds.
+Commercial: desktop and hosted drum-to-n	EXACT	klang_drum2notes	Polyphonic - Detects and writes down snare, toms, bass drum and different cymbals, even when played simultaneously.
+Commercial: desktop and hosted drum-to-n	EXACT	klang_drum2notes	Export your notes as sheet music PDFs, quantized or unquantized MIDI files and MusicXML.
+Commercial: desktop and hosted drum-to-n	EXACT	klang_drum2notes,klang_home,klang_terms	Klangio API
+Commercial: desktop and hosted drum-to-n	MISSING		Klangio: Guitar2Tabs, Transcription Studio and the sibling apps
+Commercial: desktop and hosted drum-to-n	EXACT	klang_terms	is intended exclusively for non-commercial use and enables users to test the functionality and quality of the services before subscribing.
+Commercial: desktop and hosted drum-to-n	EXACT	klang_terms	The use of Klangio Services and Apps is intended exclusively for private, non-commercial purposes, subject to the exception described below. Commercial use i...
+Commercial: desktop and hosted drum-to-n	EXACT	klang_terms	Transcriptions may only be used by you in accordance with applicable laws, in particular copyright laws. They must not be used to train music transcription A...
+Not covered (found by the verifier on 20	EXACT	ax_2509.21739,ax_misc	Accepted to ICASSP 2026
+Not covered (found by the verifier on 20	EXACT	adtlib_readme,adtof_readme,adtof_setup,adtpt_readme,adtstr_readme,au_readme	github
+Not covered (found by the verifier on 20	EXACT	ax_misc	Accepted at the International Conference on Technologies for Music Notation and Representation (TENOR) 2025
+Not covered (found by the verifier on 20	EXACT	ax_misc	voice connections, staff assignments, pitch spelling, key signature, stem direction, octave shifts, and clef signs
+Not covered (found by the verifier on 20	EXACT	ax_misc	submitted to ICASSP 2024
+Not covered (found by the verifier on 20	EXACT	ax_misc	Joint Transcription of Acoustic Guitar Strumming Directions and Chords
+Not covered (found by the verifier on 20	EXACT	ax_misc	Accepted to the 26th International Society for Music Information Retrieval Conference (ISMIR), 2025
+Access needs (what a person would need b	EXACT	mb_readme	No gpu is needed for evaluation
+Access needs (what a person would need b	EXACT	adtof_readme	tested on macOS Ventura with **Python 3.10**
+Access needs (what a person would need b	MARKDOWN	vocsep_readme	This project depends on [WANDB] therfore you will need an account to run the code.
+Access needs (what a person would need b	EXACT	klang_terms	The Free Tier allows users to access Klangio Services without creating a user account and without incurring any costs.
+Access needs (what a person would need b	PARTS	ipttilde_readme	macOS 10.13 or later with an Apple Silicon processor ... **or** Windows 10/11 on an x64 CPU with AVX2
+Access needs (what a person would need b	EXACT	ipttilde_readme	Max 8.6 or later / Max 9.0.3 or later
+Access needs (what a person would need b	EXACT	ableton_manual,ableton_manual13	Convert Drums to New MIDI Track
+Access needs (what a person would need b	EXACT	ableton_manual,ableton_compare,ableton_manual13	Audio to MIDI
+Access needs (what a person would need b	EXACT	ableton_compare	Not included in Live 13 Intro
+Access needs (what a person would need b	EXACT	adtof_readme,zen_10084510,zen_10084511	available upon request
+Access needs (what a person would need b	EXACT	zen_10084510,zen_10084511	internal non-commercial use
+Access needs (what a person would need b	EXACT	pdf_2307.07426	currently not public
+Access needs (what a person would need b	EXACT	hf_ipt_card,pdf_2307.07426,svsep_readme,svsep_dataset	not public
+Access needs (what a person would need b	EXACT	adtof_license,dyci2_license,epmc_mitsou,iptrec_license,ipttilde_license,libipt_licence	restricted
+Access needs (what a person would need b	EXACT	zen_15690894	non-commercial only
+Handoff facts	MISSING		X outputs ..., which Y accepts as ...
+Handoff facts	MISSING		(not run)
+Handoff facts	EXACT	omz_doc_api,omz_drumapp	Path to the raw audio file (.wav)
+Handoff facts	EXACT	au_cli	the detected onset times are given on the console, in seconds
+Handoff facts	EXACT	mm_onsets	Detected onsets [seconds]
+Handoff facts	EXACT	ess_onsets	the onset positions [s]
+Handoff facts	EXACT	idm_utils	onset times in seconds
+Handoff facts	EXACT	idm_readme	manual transcription should match these classes
+Handoff facts	MISSING		the one documented ... hook
+Handoff facts	EXACT	basicpitch_readme	a compatible audio file
+Handoff facts	EXACT	basicpitch_readme	will generate a MIDI file, complete with pitch bends
+Handoff facts	EXACT	basicpitch_readme	note events as a CSV file
+Handoff facts	EXACT	basicpitch_readme	Supported Audio Codecs
+Handoff facts	EXACT	basicpitch_readme	`basic-pitch` accepts all sound files that are compatible with its version of [`librosa`]
+Handoff facts	EXACT	basicpitch_readme	Mono Channel Audio Only
+Handoff facts	MISSING		a variable number of pitch-bend values per row (rows are not in time order)
+Handoff facts	EXACT	part_vs	Voice for each note in the notearray
+Handoff facts	MISSING		emitted ... 5 to 8 voices instead of 2
+Handoff facts	MISSING		Basic Pitch 0.4.0 (ONNX model) as the transcriber, then voice separation of its notes
+Handoff facts	EXACT	mcleod_readme	live performance
+Handoff facts	EXACT	mcleod_readme	voices divided by both channel and track
+Handoff facts	EXACT	svsep_readme	with newly produced voice and staff information
+Handoff facts	EXACT	ax_2407.21030	a quantized symbolic music piece
+Handoff facts	EXACT	mb_extract	the predicted melody midi file
+Handoff facts	EXACT	eg_readme,mb_extract,mb_script,nime_readme,pdf_2510.02597,pdf_bastas	bridge
+Handoff facts	EXACT	m21_base	a Score
+Handoff facts	EXACT	demucs_readme	adds a `guitar` and `piano` source
+Handoff facts	MISSING		htdemucs_6s put 0.826 (S2s) and 0.623 (S6taps) into `piano`.
+Handoff facts	EXACT	tuttut_readme	Converts MIDI files to guitar tabs.
+Handoff facts	EXACT	tuttut_readme	The tool works best for single-channel, single-instrument MIDI files
+Handoff facts	EXACT	tuttut_readme	It can handle any tuning for any number of strings
+Handoff facts	EXACT	mcleod_readme	divided by both channel and track
+Handoff facts	EXACT	adtstr_transcriber,ax_2605.12135,demucs_readme,dsep_readme,hf_adtstr_transcriber,klang_drum2notes	drums
+Handoff facts	MISSING		drums (channel 10)
+Handoff facts	MISSING		GM key 37 Side Stick
+Handoff facts	MISSING		GM key 35 Acoustic Bass Drum
+Handoff facts	MISSING		the closest constraints
+Verification log (verify-docs-fingerstyl	MISSING		[...]
+Verification log (verify-docs-fingerstyl	EXACT	adtpt_post,au_cli,basicpitch_readme,demucs_readme,ds_predict,dyci2_card	 ... 
+Verification log (verify-docs-fingerstyl	MISSING		[...]
+Verification log (verify-docs-fingerstyl	EXACT	zen_10084510,zen_10084511	Conditions of use
+Verification log (verify-docs-fingerstyl	EXACT	nature_sfn	Data availability
+Verification log (verify-docs-fingerstyl	MISSING		LICENSE begins ...
+Verification log (verify-docs-fingerstyl	MISSING		(verifier)
+Verification log (verify-docs-fingerstyl	MISSING		Not covered
+Verification log (verify-docs-fingerstyl	MISSING		the closest constraints
+Verification log (verify-docs-fingerstyl	EXACT	zen_15690894	non-commercial only
+Verification log (verify-docs-fingerstyl	EXACT	adtlib_readme,mag_drummap,pdf_2307.07426,pdf_2609.11904,zen_10159492,pdf_2608.01093	kick drum
+Verification log (verify-docs-fingerstyl	EXACT	adtlib_readme,mag_drummap,pdf_2609.11904,pdf_2509.21739,zen_7544164	snare drum

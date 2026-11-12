@@ -1,0 +1,53 @@
+{
+ "capo": {
+  "present": "no",
+  "fret": null,
+  "evidence": "The nut of the guitar is visible at the end of the fretboard in the frames, and there is no capo clamped on the neck."
+ },
+ "tuning": {
+  "tuning": "cannot_tell",
+  "evidence": "The input consists only of video frames without audio, making it impossible to determine the pitch of the strings."
+ },
+ "fretting_hand": [
+  {
+   "start": 0.0,
+   "end": 3.0,
+   "visible": "yes",
+   "lowest_fret": 7,
+   "highest_fret": 10,
+   "note": "Hand holds a position higher up the neck; the index finger bars the 7th fret and the ring/pinky fingers press higher frets."
+  },
+  {
+   "start": 4.0,
+   "end": 11.0,
+   "visible": "yes",
+   "lowest_fret": 1,
+   "highest_fret": 3,
+   "note": "Hand shifts to the lower end of the neck near the nut; the index finger presses the 1st fret and the ring finger presses the 3rd fret."
+  },
+  {
+   "start": 12.0,
+   "end": 12.0,
+   "visible": "yes",
+   "lowest_fret": null,
+   "highest_fret": null,
+   "note": "Hand is in motion (blurred) shifting position along the neck; specific frets cannot be read."
+  },
+  {
+   "start": 13.0,
+   "end": 16.0,
+   "visible": "yes",
+   "lowest_fret": 7,
+   "highest_fret": 10,
+   "note": "Hand returns to the higher position seen at the start of the video (index barre on 7th fret)."
+  },
+  {
+   "start": 17.0,
+   "end": 17.0,
+   "visible": "yes",
+   "lowest_fret": 5,
+   "highest_fret": 7,
+   "note": "Hand shifts to an intermediate position; the index finger presses the 5th fret and the ring finger presses the 7th fret."
+  }
+ ]
+}

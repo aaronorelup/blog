@@ -1,0 +1,24 @@
+{
+ "madmom_version": "0.16.1",
+ "import_s": 0.249,
+ "rnn_beat_activation_s": 5.603,
+ "dbn_beat_tracking_s": 0.133,
+ "tempo_estimation_s": 0.34,
+ "rnn_downbeat_activation_s": 9.056,
+ "dbn_downbeat_tracking_s": 0.613,
+ "chords_cnn_crf_s": 14.382,
+ "chords_deepchroma_s": 0.132,
+ "key_cnn_s": 2.963,
+ "outputs": {
+  "n_beats": 45,
+  "tempo_top": [
+   181.8181818181818,
+   0.3083878252768874
+  ],
+  "n_downbeat_rows": 44,
+  "n_bar_starts": 11,
+  "chords_cnn_n_segments": 13,
+  "chords_dc_n_segments": 8,
+  "key": "F# major"
+ }
+}

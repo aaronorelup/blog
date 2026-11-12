@@ -1,0 +1,17 @@
+ok wall=8.1s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/basicpitch/bp_ort_t1_S1.json
+ok wall=1.3s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/basicpitch/bp_tfjs_wasm_S1.json
+ok wall=73.9s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/basicpitch/bp_tfjs_cpu_S1.json
+ok wall=2.6s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/essentia/essentia_S3.json
+ok wall=7.1s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/essentia/essentia_S1.json
+ok wall=4.6s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/video/decode_mp4.json
+ok wall=31.2s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/mediapipe/mp_cpu_R3c_webm_150.json
+ok wall=3.2s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/ffmpegwasm/ff_st_mp4.json
+ok wall=7.0s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/stretch/st_soundtouch_0p5.json
+ok wall=10.9s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/stretch/st_rubberband_0p5.json
+ok wall=9.6s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/stretch/st_signalsmith_0p5.json
+ok wall=7.7s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/alphatab/alphatab_S2n.json
+ok wall=3.5s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/smalljs/smalljs.json
+ok wall=20.6s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/smalljs/smalljs2.json
+ok wall=11.7s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/waveform/waveform.json
+[gtr-run r0451] browser-audio-sync/verify-rerun "verify: re-run of Basic Pitch ORT t1 / TF.js wasm / TF.js cpu on S1 (r0270), essentia.js S3+S1, Mediabunny mp4 decode, ffmpeg.wasm st mp4, offline stretch 0.5x (r0314), MediaPipe R3c CPU 150, alphaTab export, pitchy/beat-detector, aubiojs/pitchfinder/realtime-bpm, wavesurfer/peaks (r0329); unpinned like the originals" wall=213.82s cpu=24.6s rss=519.7MB cores=None exit=0 slot_wait=0.0s
+CHAIN_DONE

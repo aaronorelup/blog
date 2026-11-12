@@ -1,0 +1,90 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>probe</title>
+<body>
+<script type="module">
+import { finish, fail, sleep, fetchArrayBuffer } from './common.js';
+const R = { userAgent: navigator.userAgent, hardwareConcurrency: navigator.hardwareConcurrency,
+  deviceMemory: navigator.deviceMemory ?? null, crossOriginIsolated: self.crossOriginIsolated,
+  sharedArrayBuffer: typeof SharedArrayBuffer !== 'undefined' };
+try {
+  // --- Web Audio ---
+  const ctx = new AudioContext();
+  await ctx.resume();
+  const p0 = performance.now(), c0 = ctx.currentTime;
+  await sleep(3000);
+  const p1 = performance.now(), c1 = ctx.currentTime;
+  R.audio = { state: ctx.state, sampleRate: ctx.sampleRate, baseLatency: ctx.baseLatency, outputLatency: ctx.outputLatency,
+    currentTime_advance_s_over_3s_wall: c1 - c0, wall_s: (p1 - p0) / 1000,
+    outputTimestamp: ctx.getOutputTimestamp ? ctx.getOutputTimestamp() : null,
+    audioWorklet: !!ctx.audioWorklet, setSinkId: 'setSinkId' in AudioContext.prototype,
+    playbackStats: 'playbackStats' in AudioContext.prototype, renderQuantumSize: ctx.renderQuantumSize ?? null,
+    destination_maxChannelCount: ctx.destination.maxChannelCount };
+  if (R.audio.playbackStats) { try { R.audio.playbackStats_value = JSON.parse(JSON.stringify(ctx.playbackStats.toJSON ? ctx.playbackStats.toJSON() : ctx.playbackStats)); } catch (e) { R.audio.playbackStats_value = String(e); } }
+  for (const hint of ['interactive', 'balanced', 'playback']) {
+    const c = new AudioContext({ latencyHint: hint }); await c.resume(); await sleep(300);
+    R.audio['latencyHint_' + hint] = { sampleRate: c.sampleRate, baseLatency: c.baseLatency, outputLatency: c.outputLatency };
+    await c.close();
+  }
+  await ctx.close();
+  // --- decodeAudioData on the shared inputs ---
+  R.decodeAudioData = {};
+  const dctx = new OfflineAudioContext(1, 1, 44100);
+  for (const f of ['/inputs/S1/S1.wav', '/inputs/R3a/R3a.webm', '/inputs/R3a/R3a.mp4', '/inputs/R2full/original/JoshWoodward-DW-01-IWantToDestroySomethingBeautiful.flac']) {
+    try { const ab = await fetchArrayBuffer(f); const t = performance.now(); const b = await dctx.decodeAudioData(ab);
+      R.decodeAudioData[f] = { ok: true, sampleRate: b.sampleRate, channels: b.numberOfChannels, duration_s: b.duration, ms: performance.now() - t };
+    } catch (e) { R.decodeAudioData[f] = { ok: false, error: String(e) }; }
+  }
+  // --- codec support strings ---
+  const types = ['audio/wav', 'audio/mpeg', 'audio/flac', 'audio/mp4; codecs="mp4a.40.2"', 'audio/ogg; codecs="opus"',
+    'audio/ogg; codecs="vorbis"', 'audio/webm; codecs="opus"', 'video/mp4; codecs="avc1.42E01E"', 'video/mp4; codecs="avc1.64001E"',
+    'video/mp4; codecs="avc1.64001E, mp4a.40.2"', 'video/webm; codecs="vp8"', 'video/webm; codecs="vp9"', 'video/webm; codecs="vp9, opus"',
+    'video/mp4; codecs="vp09.00.10.08"', 'video/mp4; codecs="av01.0.05M.08"', 'video/webm; codecs="av01.0.05M.08"',
+    'video/mp4; codecs="hev1.1.6.L93.B0"', 'video/mp4; codecs="hvc1.1.6.L93.B0"'];
+  const v = document.createElement('video');
+  R.canPlayType = Object.fromEntries(types.map((t) => [t, v.canPlayType(t)]));
+  R.MediaSource_isTypeSupported = self.MediaSource ? Object.fromEntries(types.map((t) => [t, MediaSource.isTypeSupported(t)])) : null;
+  R.WebCodecs = { VideoDecoder: typeof VideoDecoder !== 'undefined', AudioDecoder: typeof AudioDecoder !== 'undefined',
+    VideoEncoder: typeof VideoEncoder !== 'undefined', AudioEncoder: typeof AudioEncoder !== 'undefined' };
+  R.VideoDecoder_isConfigSupported = {};
+  for (const codec of ['avc1.42E01E', 'avc1.64001E', 'vp8', 'vp09.00.10.08', 'av01.0.04M.08', 'hev1.1.6.L93.B0']) {
+    for (const hw of ['no-preference', 'prefer-software', 'prefer-hardware']) {
+      try { const s = await VideoDecoder.isConfigSupported({ codec, codedWidth: 640, codedHeight: 480, hardwareAcceleration: hw });
+        R.VideoDecoder_isConfigSupported[codec + ' ' + hw] = s.supported; } catch (e) { R.VideoDecoder_isConfigSupported[codec + ' ' + hw] = 'error: ' + e.message; }
+    }
+  }
+  R.AudioDecoder_isConfigSupported = {};
+  for (const [codec, sr, ch] of [['mp4a.40.2', 44100, 2], ['opus', 48000, 2], ['flac', 44100, 2], ['mp3', 44100, 2], ['vorbis', 44100, 2], ['pcm-s16', 44100, 2], ['pcm-f32', 44100, 2]]) {
+    try { const s = await AudioDecoder.isConfigSupported({ codec, sampleRate: sr, numberOfChannels: ch }); R.AudioDecoder_isConfigSupported[codec] = s.supported; }
+    catch (e) { R.AudioDecoder_isConfigSupported[codec] = 'error: ' + e.message; }
+  }
+  R.VideoEncoder_isConfigSupported = {};
+  for (const codec of ['avc1.42E01E', 'vp8', 'vp09.00.10.08', 'av01.0.04M.08']) {
+    try { const s = await VideoEncoder.isConfigSupported({ codec, width: 640, height: 480, bitrate: 1e6 }); R.VideoEncoder_isConfigSupported[codec] = s.supported; }
+    catch (e) { R.VideoEncoder_isConfigSupported[codec] = 'error: ' + e.message; }
+  }
+  // --- media element loads ---
+  R.videoElement = {};
+  for (const f of ['/inputs/R3a/R3a.mp4', '/inputs/R3a/R3a.webm']) {
+    const el = document.createElement('video'); el.muted = true; el.preload = 'auto'; el.src = f;
+    R.videoElement[f] = await new Promise((res) => {
+      const to = setTimeout(() => res({ ok: false, error: 'timeout' }), 15000);
+      el.onloadeddata = () => { clearTimeout(to); res({ ok: true, videoWidth: el.videoWidth, videoHeight: el.videoHeight, duration: el.duration }); };
+      el.onerror = () => { clearTimeout(to); res({ ok: false, error: el.error ? `code ${el.error.code}: ${el.error.message}` : 'error' }); };
+    });
+  }
+  R.requestVideoFrameCallback = 'requestVideoFrameCallback' in HTMLVideoElement.prototype;
+  R.preservesPitch = 'preservesPitch' in HTMLMediaElement.prototype;
+  // --- graphics ---
+  const cv = document.createElement('canvas'); const gl = cv.getContext('webgl2') || cv.getContext('webgl');
+  if (gl) { const ext = gl.getExtension('WEBGL_debug_renderer_info');
+    R.webgl = { version: gl.getParameter(gl.VERSION), renderer: ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER),
+      vendor: ext ? gl.getParameter(ext.UNMASKED_VENDOR_WEBGL) : gl.getParameter(gl.VENDOR) }; } else R.webgl = null;
+  R.webgpu = { navigator_gpu: !!navigator.gpu };
+  if (navigator.gpu) { try { const a = await navigator.gpu.requestAdapter(); R.webgpu.adapter = a ? (a.info ? { vendor: a.info.vendor, architecture: a.info.architecture, description: a.info.description, isFallbackAdapter: a.info.isFallbackAdapter } : 'adapter (no info)') : null; } catch (e) { R.webgpu.error = String(e); } }
+  R.wasm = { simd: WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,0,0,1,5,1,96,0,1,123,3,2,1,0,10,10,1,8,0,65,0,253,15,253,98,11])),
+    threads_possible: self.crossOriginIsolated && typeof SharedArrayBuffer !== 'undefined' };
+  finish(R);
+} catch (e) { fail(e, R); }
+</script>
+</body>

@@ -1,0 +1,172 @@
+{
+ "page": "/pages/basicpitch.html?clip=S1&engine=ort&threads=2&map=StatefulPartitionedCall:1,StatefulPartitionedCall:2",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 15.305,
+ "external_requests": [],
+ "result": {
+  "clip": "S1",
+  "engine": "ort",
+  "backend": "ort-wasm",
+  "threads": 2,
+  "crossOriginIsolated": true,
+  "decode_resample_ms": 301.9900000002235,
+  "ort_version": "1.31.1",
+  "model_load_ms": 1841.1000000000931,
+  "ort_inputs": [
+   "serving_default_input_2:0"
+  ],
+  "ort_outputs": [
+   "StatefulPartitionedCall:2",
+   "StatefulPartitionedCall:1",
+   "StatefulPartitionedCall:0"
+  ],
+  "ort_numThreads_after_create": 2,
+  "inference_ms": 9922.200000000186,
+  "windows": 19,
+  "output_shapes": [
+   "StatefulPartitionedCall:2",
+   "StatefulPartitionedCall:1",
+   "StatefulPartitionedCall:0"
+  ],
+  "names88": [
+   "StatefulPartitionedCall:2",
+   "StatefulPartitionedCall:1"
+  ],
+  "mapping": {
+   "note": "StatefulPartitionedCall:1",
+   "onset": "StatefulPartitionedCall:2"
+  },
+  "n_frames": 2565,
+  "notes": {
+   "pydefault": {
+    "params": {
+     "onsetThresh": 0.5,
+     "frameThresh": 0.3,
+     "minNoteLen": 11
+    },
+    "n": 64,
+    "postprocess_ms": 985.3350000004284,
+    "first10": [
+     [
+      1.6834,
+      0.4076,
+      66
+     ],
+     [
+      2.0911,
+      0.418,
+      66
+     ],
+     [
+      2.509,
+      0.4412,
+      67
+     ],
+     [
+      2.927,
+      0.4296,
+      69
+     ],
+     [
+      3.3566,
+      0.6514,
+      69
+     ],
+     [
+      3.7629,
+      0.4076,
+      67
+     ],
+     [
+      4.1705,
+      0.5689,
+      66
+     ],
+     [
+      4.5885,
+      0.5224,
+      64
+     ],
+     [
+      5.0065,
+      0.418,
+      62
+     ],
+     [
+      5.4244,
+      0.4644,
+      62
+     ]
+    ],
+    "csv": "/home/user/gtr/lanes/browser-audio-sync/out/basicpitch/S1_ort-t2_pydefault.csv"
+   },
+   "readme": {
+    "params": {
+     "onsetThresh": 0.25,
+     "frameThresh": 0.25,
+     "minNoteLen": 5
+    },
+    "n": 115,
+    "postprocess_ms": 524.1949999998324,
+    "first10": [
+     [
+      1.6834,
+      0.4076,
+      66
+     ],
+     [
+      2.0911,
+      0.418,
+      66
+     ],
+     [
+      2.509,
+      0.4528,
+      67
+     ],
+     [
+      2.927,
+      0.0929,
+      57
+     ],
+     [
+      2.927,
+      0.4296,
+      69
+     ],
+     [
+      3.345,
+      0.0813,
+      57
+     ],
+     [
+      3.3566,
+      0.418,
+      69
+     ],
+     [
+      3.7629,
+      0.4076,
+      67
+     ],
+     [
+      3.7629,
+      0.1858,
+      86
+     ],
+     [
+      3.7745,
+      0.2683,
+      69
+     ]
+    ],
+    "csv": "/home/user/gtr/lanes/browser-audio-sync/out/basicpitch/S1_ort-t2_readme.csv"
+   }
+  }
+ }
+}

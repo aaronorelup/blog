@@ -1,0 +1,34 @@
+{
+ "input": "/home/user/gtr/inputs/R2/R2.wav",
+ "checkpoint": "/home/user/gtr/lanes/source-separation/gap2/models/guitar-ft/guitar_htdemucs_6s.pt",
+ "shifts": 1,
+ "overlap": 0.25,
+ "segment": 7.8,
+ "seed": 0,
+ "torch_threads": 2,
+ "checkpoint_keys": [
+  "epoch",
+  "scaler_state_dict",
+  "val_loss",
+  "val_sdr_db"
+ ],
+ "checkpoint_meta": {
+  "epoch": 60,
+  "scaler_state_dict": "<class 'dict'>",
+  "val_loss": 0.24393394183028827,
+  "val_sdr_db": 6.079827302978153
+ },
+ "keys_prefixed": true,
+ "load_state_dict": "<All keys matched successfully>",
+ "n_tensors_loaded": 525,
+ "sources": [
+  "drums",
+  "bass",
+  "other",
+  "vocals",
+  "guitar",
+  "piano"
+ ],
+ "load_s": 0.86,
+ "separate_s": 28.69
+}

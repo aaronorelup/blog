@@ -1,0 +1,107 @@
+{
+ "chords": [
+  {
+   "start": 0.0,
+   "end": 4.0,
+   "label": "N"
+  },
+  {
+   "start": 4.0,
+   "end": 6.0,
+   "label": "D"
+  },
+  {
+   "start": 6.0,
+   "end": 8.0,
+   "label": "A"
+  },
+  {
+   "start": 8.0,
+   "end": 10.0,
+   "label": "Bm"
+  },
+  {
+   "start": 10.0,
+   "end": 12.0,
+   "label": "G"
+  },
+  {
+   "start": 12.0,
+   "end": 14.0,
+   "label": "D"
+  },
+  {
+   "start": 14.0,
+   "end": 16.0,
+   "label": "A"
+  },
+  {
+   "start": 16.0,
+   "end": 18.0,
+   "label": "G"
+  },
+  {
+   "start": 18.0,
+   "end": 20.0,
+   "label": "A"
+  },
+  {
+   "start": 20.0,
+   "end": 22.0,
+   "label": "Bm"
+  },
+  {
+   "start": 22.0,
+   "end": 24.0,
+   "label": "G"
+  },
+  {
+   "start": 24.0,
+   "end": 26.0,
+   "label": "D"
+  },
+  {
+   "start": 26.0,
+   "end": 28.0,
+   "label": "A"
+  },
+  {
+   "start": 28.0,
+   "end": 30.0,
+   "label": "G"
+  },
+  {
+   "start": 30.0,
+   "end": 32.0,
+   "label": "A"
+  },
+  {
+   "start": 32.0,
+   "end": 34.0,
+   "label": "D"
+  },
+  {
+   "start": 34.0,
+   "end": 36.0,
+   "label": "A"
+  },
+  {
+   "start": 36.0,
+   "end": 38.0,
+   "label": "G"
+  },
+  {
+   "start": 38.0,
+   "end": 40.0,
+   "label": "A"
+  },
+  {
+   "start": 40.0,
+   "end": 44.5,
+   "label": "D"
+  }
+ ],
+ "tempo_bpm": 120,
+ "key": "D major",
+ "time_signature": "4/4"
+}

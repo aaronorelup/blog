@@ -1,0 +1,131 @@
+{
+ "page": "/pages/alphatab_live.html?mode=countin",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 12.848,
+ "external_requests": [],
+ "result": {
+  "mode": "countin",
+  "alphaTab_npm_version": "1.9.0",
+  "tempo": 112,
+  "taps": [
+   "AudioWorkletNode"
+  ],
+  "alphaTab_ctx": {
+   "sampleRate": 44100,
+   "state": "running",
+   "baseLatency": 0.01
+  },
+  "play_called_ctx_frame": 74624,
+  "taps_after": 3,
+  "taps_joined": 3,
+  "capture": {
+   "firstFrame": 65280,
+   "frames": 370944,
+   "gaps": [],
+   "peak": 0.27846208214759827
+  },
+  "clicks": {
+   "n": 15,
+   "first_after_play_ms": 8.707482993197278,
+   "intervals_ms": [
+    535.51,
+    535.51,
+    535.51,
+    552.925,
+    535.51,
+    535.51,
+    535.51,
+    535.51,
+    535.51,
+    535.51,
+    535.51,
+    536.961,
+    535.51,
+    550.023
+   ],
+   "beat_ms": 535.7142857142857
+  },
+  "first_position_event_over_0": {
+   "now": 3859.975000000093,
+   "currentTime": 11.609977324263038,
+   "endTime": 27857.14285714288,
+   "isSeek": false
+  },
+  "wav": "/home/user/gtr/lanes/browser-audio-sync/out/alphatab/S2n_alphatab_live_countin_metronome.wav",
+  "events_first": [
+   {
+    "now": 0.060000000055879354,
+    "currentTime": 0,
+    "endTime": 0,
+    "isSeek": false
+   },
+   {
+    "now": 0.10000000009313226,
+    "state": 0,
+    "stopped": false
+   },
+   {
+    "now": 554.0150000001304,
+    "currentTime": 0,
+    "endTime": 0,
+    "isSeek": false
+   },
+   {
+    "now": 554.3400000003166,
+    "state": 0,
+    "stopped": false
+   },
+   {
+    "now": 559.6699999999255,
+    "currentTime": 0,
+    "endTime": 0,
+    "isSeek": true
+   },
+   {
+    "now": 571.5600000000559,
+    "currentTime": 0,
+    "endTime": 27857.14285714288,
+    "isSeek": true
+   },
+   {
+    "now": 571.6100000003353,
+    "currentTime": 0,
+    "endTime": 27857.14285714288,
+    "isSeek": true
+   },
+   {
+    "now": 577.1049999999814,
+    "currentTime": 0,
+    "endTime": 27857.14285714288,
+    "isSeek": true
+   },
+   {
+    "now": 577.1300000003539,
+    "state": 0,
+    "stopped": true
+   },
+   {
+    "now": 577.160000000149,
+    "currentTime": 0,
+    "endTime": 27857.14285714288,
+    "isSeek": true
+   },
+   {
+    "now": 665.3650000002235,
+    "state": 1,
+    "stopped": false
+   },
+   {
+    "now": 1062.7350000003353,
+    "state": 0,
+    "stopped": true
+   }
+  ],
+  "events_n": 518
+ }
+}

@@ -1,0 +1,330 @@
+[
+ {
+  "name": "madmom CNNOnsetDetector",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/madmom/S6taps_onsets/CNNOnsetDetector.txt",
+  "n_est": 53,
+  "taps": {
+   "eval_id": "e0681",
+   "f_measure": 0.752941,
+   "precision": 0.603774,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e0684",
+   "f_measure": 0.950495,
+   "precision": 0.90566,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 53,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 0,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "madmom ComplexFlux",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/madmom/S6taps_onsets/ComplexFlux.txt",
+  "n_est": 54,
+  "taps": {
+   "eval_id": "e0686",
+   "f_measure": 0.744186,
+   "precision": 0.592593,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e0688",
+   "f_measure": 0.941176,
+   "precision": 0.888889,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 54,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 1,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "madmom LogFiltSpecFlux",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/madmom/S6taps_onsets/LogFiltSpecFlux.txt",
+  "n_est": 54,
+  "taps": {
+   "eval_id": "e0691",
+   "f_measure": 0.744186,
+   "precision": 0.592593,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e0694",
+   "f_measure": 0.941176,
+   "precision": 0.888889,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 54,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 1,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "madmom OnsetDetector",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/madmom/S6taps_onsets/OnsetDetector.txt",
+  "n_est": 53,
+  "taps": {
+   "eval_id": "e0697",
+   "f_measure": 0.752941,
+   "precision": 0.603774,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e0701",
+   "f_measure": 0.950495,
+   "precision": 0.90566,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 53,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 0,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "madmom OnsetDetectorLL",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/madmom/S6taps_onsets/OnsetDetectorLL.txt",
+  "n_est": 53,
+  "taps": {
+   "eval_id": "e0703",
+   "f_measure": 0.752941,
+   "precision": 0.603774,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e0706",
+   "f_measure": 0.950495,
+   "precision": 0.90566,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 53,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 0,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "madmom SpectralOnsetDetection",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/madmom/S6taps_onsets/SpectralOnsetDetection.txt",
+  "n_est": 54,
+  "taps": {
+   "eval_id": "e0708",
+   "f_measure": 0.744186,
+   "precision": 0.592593,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e0710",
+   "f_measure": 0.941176,
+   "precision": 0.888889,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 54,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 1,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "madmom SuperFlux",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/madmom/S6taps_onsets/SuperFlux.txt",
+  "n_est": 53,
+  "taps": {
+   "eval_id": "e0712",
+   "f_measure": 0.752941,
+   "precision": 0.603774,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e0714",
+   "f_measure": 0.950495,
+   "precision": 0.90566,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 53,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 0,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "madmom SuperFluxNN",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/madmom/S6taps_onsets/SuperFluxNN.txt",
+  "n_est": 53,
+  "taps": {
+   "eval_id": "e0716",
+   "f_measure": 0.752941,
+   "precision": 0.603774,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e0718",
+   "f_measure": 0.950495,
+   "precision": 0.90566,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 53,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 0,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ }
+]

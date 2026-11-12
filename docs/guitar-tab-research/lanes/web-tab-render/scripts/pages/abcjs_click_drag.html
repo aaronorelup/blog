@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>abcjs click and drag trial</title>
+<style>body { margin: 0; background: #fff; } #paper { width: 1200px; }</style>
+<script src="/nm/abcjs/dist/abcjs-basic-min.js"></script>
+</head>
+<body>
+<div id="paper"></div>
+<script>
+// Gap round 2 (web-tab-render): abcjs 6.7.2 with its interactive render options dragging: true and clickListener,
+// and the guitar tablature option. ?src=<abc url>&mode=listen|apply[&selectTypes=note,...]
+//  mode=listen: the clickListener only records what abcjs passes to it; the ABC string is never changed.
+//  mode=apply:  the clickListener does what abcjs's "Selecting and Dragging" page asks of the application ("The
+//               clickListener function should modify the ABC string and rerender if the user has made a change"):
+//               when drag.step is not 0 on a note or tab number, the note's letter in the ABC text between
+//               abcelem.startChar and abcelem.endChar is moved by -drag.step diatonic steps (code written for this
+//               trial: abcjs reports a drag upwards as a negative step, see trials.md) and the tune is drawn again.
+const q = new URLSearchParams(location.search);
+const mode = q.get('mode') || 'listen';
+const selectTypes = q.get('selectTypes') ? q.get('selectTypes').split(',') : undefined;
+let abc = '';
+window.__events = [];
+window.__renders = 0;
+window.__abc = () => abc;
+
+// Move one ABC note token (accidental, letter, octave marks, length) by n diatonic steps. Accidentals are dropped, so
+// the key signature decides the sharp or flat of the new note. The text abcjs points at (startChar to endChar) can
+// include the spaces around the note (" G4 "); they are kept. Returns null if the text is not a single note.
+const LETTERS = 'CDEFGAB';
+function shiftNote(tok, n) {
+  const m = /^(\s*)(\^{1,2}|_{1,2}|=)?([A-Ga-g])([,']*)([\s\S]*)$/.exec(tok);
+  if (!m) return null;
+  let octave = m[3] === m[3].toUpperCase() ? 4 : 5;
+  for (const c of m[4]) octave += c === "'" ? 1 : -1;
+  const idx = octave * 7 + LETTERS.indexOf(m[3].toUpperCase()) + n;
+  octave = Math.floor(idx / 7);
+  const letter = LETTERS[idx - octave * 7];
+  const out = octave >= 5 ? letter.toLowerCase() + "'".repeat(octave - 5) : letter + ','.repeat(4 - octave);
+  return m[1] + out + m[5];
+}
+window.__shiftNote = shiftNote;
+
+function render() {
+  window.__rendered = false;
+  const opts = {
+    add_classes: true, staffwidth: 1150, dragging: true, clickListener: onClick,
+    tablature: [{ instrument: 'guitar', label: 'Guitar', tuning: ['E,', 'A,', 'D', 'G', 'B', 'e'], capo: 0 }],
+  };
+  if (selectTypes) opts.selectTypes = selectTypes;
+  window.__tunes = ABCJS.renderAbc('paper', abc, opts);
+  window.__renders++;
+  window.__rendered = true;
+}
+
+function onClick(abcelem, tuneNumber, classes, analysis, drag, ev) {
+  const rec = {
+    n: window.__events.length, render: window.__renders, el_type: abcelem.el_type,
+    startChar: abcelem.startChar, endChar: abcelem.endChar, text: abc.slice(abcelem.startChar, abcelem.endChar),
+    pitches: Array.isArray(abcelem.pitches) ? abcelem.pitches.map((p) => ({ pitch: p.pitch, name: p.name })) : null,
+    classes,
+    analysis: analysis ? { line: analysis.line, measure: analysis.measure, voice: analysis.voice, name: analysis.name,
+      clickedName: analysis.clickedName } : null,
+    drag: drag ? { step: drag.step, max: drag.max, index: drag.index } : null,
+    event: ev ? ev.type || null : null, applied: null,
+  };
+  if (mode === 'apply' && drag && drag.step && (abcelem.el_type === 'note' || abcelem.el_type === 'tabNumber')) {
+    const to = shiftNote(rec.text, -drag.step);
+    if (to !== null) {
+      abc = abc.slice(0, abcelem.startChar) + to + abc.slice(abcelem.endChar);
+      rec.applied = { from: rec.text, to };
+      setTimeout(render, 0);
+    }
+  }
+  window.__events.push(rec);
+}
+
+// The tab numbers drawn, each assigned to the nearest of the six lines of its tab staff (string 1 = top line), in
+// document order, with the voice class abcjs gave its group (same method as abcjs_tab_readout.cjs).
+window.__tabRead = () => {
+  const staves = [...document.querySelectorAll('#paper svg g.abcjs-staff')].map((g) => {
+    const ys = [...g.querySelectorAll('path')].map((pa) => { const bb = pa.getBBox(); return bb.y + bb.height / 2; }).sort((a, c) => a - c);
+    const lineCls = [...g.classList].find((c) => /^abcjs-l\d+$/.test(c));
+    return { line: lineCls ? parseInt(lineCls.slice(7), 10) : -1, ys };
+  }).filter((s) => s.ys.length === 6);
+  return [...document.querySelectorAll('#paper svg text.abcjs-tab-number')].map((t) => {
+    const fs = parseFloat(t.getAttribute('font-size') || '15');
+    const yc = parseFloat(t.getAttribute('y')) - fs * 0.35;
+    let best = null;
+    for (const s of staves) for (let i = 0; i < 6; i++) {
+      const d = Math.abs(s.ys[i] - yc);
+      if (!best || d < best.d) best = { d, line: s.line, string: i + 1 };
+    }
+    const g = t.closest('g[class*="abcjs-tabNumber"]');
+    const cls = g ? g.getAttribute('class') : '';
+    return { text: t.textContent.trim(), string: best ? best.string : null, line: best ? best.line : null,
+      x: +parseFloat(t.getAttribute('x')).toFixed(2), dy: best ? +best.d.toFixed(2) : null,
+      voice: +((cls.match(/abcjs-v(\d+)/) || [])[1] ?? -1), measure: +((cls.match(/abcjs-m(\d+)/) || [])[1] ?? -1) };
+  });
+};
+
+(async () => {
+  abc = await (await fetch(q.get('src'))).text();
+  render();
+})();
+</script>
+</body>
+</html>

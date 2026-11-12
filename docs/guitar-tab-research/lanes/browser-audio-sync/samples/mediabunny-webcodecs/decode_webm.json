@@ -1,0 +1,182 @@
+{
+ "page": "/pages/video.html?file=webm&parts=decode",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 3.695,
+ "external_requests": [],
+ "result": {
+  "file": "webm",
+  "parts": [
+   "decode"
+  ],
+  "ref": {
+   "n_frames": 539,
+   "codec": "vp9"
+  },
+  "duration": 18.018,
+  "decode": {
+   "codec": "vp9",
+   "decoderConfig": {
+    "codec": "vp09.00.30.08.01.02.02.02.00",
+    "codedWidth": 640,
+    "codedHeight": 480
+   },
+   "canDecode": true,
+   "frames_decoded": 539,
+   "decode_and_hash_ms_total": 985.6949999998324,
+   "ms_per_frame_including_hash": 1.828747680890227,
+   "y_plane_identical_to_ffmpeg_same_index": 539,
+   "y_plane_found_anywhere_in_ffmpeg_decode": 539,
+   "timestamp_minus_ffprobe_pts_ms": {
+    "n": 539,
+    "mean": 0,
+    "mean_abs": 0,
+    "sd": 0,
+    "max_abs": 0,
+    "p95_abs": 0,
+    "min": 0,
+    "max": 0
+   },
+   "formats": [
+    "I420"
+   ],
+   "first5": [
+    {
+     "timestamp": 0.033,
+     "duration": 0.034,
+     "format": "I420",
+     "ref_t": 0.033
+    },
+    {
+     "timestamp": 0.067,
+     "duration": 0.033,
+     "format": "I420",
+     "ref_t": 0.067
+    },
+    {
+     "timestamp": 0.1,
+     "duration": 0.033,
+     "format": "I420",
+     "ref_t": 0.1
+    },
+    {
+     "timestamp": 0.133,
+     "duration": 0.034,
+     "format": "I420",
+     "ref_t": 0.133
+    },
+    {
+     "timestamp": 0.167,
+     "duration": 0.033,
+     "format": "I420",
+     "ref_t": 0.167
+    }
+   ],
+   "decode_only_ms_total": 712.8300000000745,
+   "decode_only_frames": 539,
+   "getSample": [
+    {
+     "k": 1,
+     "t": 0.03336666666666667,
+     "sample_timestamp": 0.033,
+     "frame": 0,
+     "expected_frame_by_ref_pts": 0,
+     "ms": 8.824999999720603
+    },
+    {
+     "k": 2,
+     "t": 0.06673333333333334,
+     "sample_timestamp": 0.033,
+     "frame": 0,
+     "expected_frame_by_ref_pts": 0,
+     "ms": 7.25
+    },
+    {
+     "k": 10,
+     "t": 0.33366666666666667,
+     "sample_timestamp": 0.3,
+     "frame": 8,
+     "expected_frame_by_ref_pts": 8,
+     "ms": 11.154999999795109
+    },
+    {
+     "k": 50,
+     "t": 1.6683333333333334,
+     "sample_timestamp": 1.668,
+     "frame": 49,
+     "expected_frame_by_ref_pts": 49,
+     "ms": 84.74500000011176
+    },
+    {
+     "k": 100,
+     "t": 3.336666666666667,
+     "sample_timestamp": 3.303,
+     "frame": 98,
+     "expected_frame_by_ref_pts": 98,
+     "ms": 104.98500000033528
+    },
+    {
+     "k": 200,
+     "t": 6.673333333333334,
+     "sample_timestamp": 6.673,
+     "frame": 199,
+     "expected_frame_by_ref_pts": 199,
+     "ms": 300.77500000037253
+    },
+    {
+     "k": 217,
+     "t": 7.240566666666667,
+     "sample_timestamp": 7.207,
+     "frame": 215,
+     "expected_frame_by_ref_pts": 215,
+     "ms": 92.93000000016764
+    },
+    {
+     "k": 300,
+     "t": 10.01,
+     "sample_timestamp": 10.01,
+     "frame": 299,
+     "expected_frame_by_ref_pts": 299,
+     "ms": 186.785000000149
+    },
+    {
+     "k": 400,
+     "t": 13.346666666666668,
+     "sample_timestamp": 13.313,
+     "frame": 398,
+     "expected_frame_by_ref_pts": 398,
+     "ms": 21.274999999906868
+    },
+    {
+     "k": 439,
+     "t": 14.647966666666667,
+     "sample_timestamp": 14.615,
+     "frame": 437,
+     "expected_frame_by_ref_pts": 437,
+     "ms": 76.01500000013039
+    },
+    {
+     "k": 500,
+     "t": 16.683333333333334,
+     "sample_timestamp": 16.683,
+     "frame": 499,
+     "expected_frame_by_ref_pts": 499,
+     "ms": 93.68000000016764
+    },
+    {
+     "k": 530,
+     "t": 17.684333333333335,
+     "sample_timestamp": 17.684,
+     "frame": 529,
+     "expected_frame_by_ref_pts": 529,
+     "ms": 37.68999999994412
+    }
+   ],
+   "getSample_matches_expected": 12
+  }
+ }
+}

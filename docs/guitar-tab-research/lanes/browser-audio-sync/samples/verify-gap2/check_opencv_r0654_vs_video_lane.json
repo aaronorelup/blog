@@ -1,0 +1,366 @@
+{
+ "R3a_cu_f0150/handquad": {
+  "unrectified_counts_equal_video_lane": true,
+  "unrectified_counts": {
+   "segments_total": 142,
+   "segments_in_quad": 70,
+   "string_like": 37,
+   "fret_like": 27
+  },
+  "rectified_counts_equal_video_lane": true,
+  "rectified_counts": {
+   "segments_total": 113,
+   "string_like": 31,
+   "fret_like": 8
+  },
+  "fret_clusters_equal_video_lane": true,
+  "string_clusters_equal_video_lane": true,
+  "axis_equal": true,
+  "width_equal": true,
+  "homography_rounded6_equal_video_lane": true,
+  "rect_bytes_differing_vs_video_lane_png": [
+   2,
+   278400,
+   1
+  ],
+  "unrectified_segments_same_order": true,
+  "unrectified_edge_pixels_equal": true,
+  "rectified_segments_same_order": true,
+  "rectified_edge_pixels_equal": true,
+  "mask_pixels_equal": true,
+  "homography_bit_identical_pyref": true,
+  "pyref_equals_video_lane_json_except_times": true,
+  "pyref_png_equals_video_lane_png": true,
+  "js_times_ms": [
+   [
+    43.3,
+    24.2
+   ],
+   [
+    18.7,
+    16.7
+   ],
+   [
+    19.6,
+    12.3
+   ]
+  ],
+  "img_decode": [
+   30.7,
+   0,
+   0
+  ]
+ },
+ "R3a_cu_f0150/samquad": {
+  "unrectified_counts_equal_video_lane": true,
+  "unrectified_counts": {
+   "segments_total": 142,
+   "segments_in_quad": 62,
+   "string_like": 33,
+   "fret_like": 21
+  },
+  "rectified_counts_equal_video_lane": true,
+  "rectified_counts": {
+   "segments_total": 98,
+   "string_like": 27,
+   "fret_like": 9
+  },
+  "fret_clusters_equal_video_lane": true,
+  "string_clusters_equal_video_lane": true,
+  "axis_equal": true,
+  "width_equal": true,
+  "homography_rounded6_equal_video_lane": true,
+  "rect_bytes_differing_vs_video_lane_png": [
+   2,
+   278400,
+   1
+  ],
+  "unrectified_segments_same_order": true,
+  "unrectified_edge_pixels_equal": true,
+  "rectified_segments_same_order": true,
+  "rectified_edge_pixels_equal": true,
+  "mask_pixels_equal": true,
+  "homography_bit_identical_pyref": true,
+  "pyref_equals_video_lane_json_except_times": true,
+  "pyref_png_equals_video_lane_png": true,
+  "js_times_ms": [
+   [
+    10.5,
+    10.3
+   ],
+   [
+    9.9,
+    9.9
+   ],
+   [
+    9.8,
+    9.8
+   ]
+  ],
+  "img_decode": [
+   30.7,
+   0,
+   0
+  ]
+ },
+ "R3a_cu_f0000/handquad": {
+  "unrectified_counts_equal_video_lane": true,
+  "unrectified_counts": {
+   "segments_total": 116,
+   "segments_in_quad": 54,
+   "string_like": 27,
+   "fret_like": 25
+  },
+  "rectified_counts_equal_video_lane": true,
+  "rectified_counts": {
+   "segments_total": 107,
+   "string_like": 31,
+   "fret_like": 10
+  },
+  "fret_clusters_equal_video_lane": true,
+  "string_clusters_equal_video_lane": true,
+  "axis_equal": true,
+  "width_equal": true,
+  "homography_rounded6_equal_video_lane": true,
+  "rect_bytes_differing_vs_video_lane_png": [
+   1,
+   278400,
+   1
+  ],
+  "unrectified_segments_same_order": true,
+  "unrectified_edge_pixels_equal": true,
+  "rectified_segments_same_order": true,
+  "rectified_edge_pixels_equal": true,
+  "mask_pixels_equal": true,
+  "homography_bit_identical_pyref": true,
+  "pyref_equals_video_lane_json_except_times": true,
+  "pyref_png_equals_video_lane_png": true,
+  "js_times_ms": [
+   [
+    15.2,
+    10.5
+   ],
+   [
+    9.9,
+    9.9
+   ],
+   [
+    9.4,
+    9.8
+   ]
+  ],
+  "img_decode": [
+   22.7,
+   0,
+   0
+  ]
+ },
+ "R3a_cu_f0280/handquad": {
+  "unrectified_counts_equal_video_lane": true,
+  "unrectified_counts": {
+   "segments_total": 118,
+   "segments_in_quad": 61,
+   "string_like": 29,
+   "fret_like": 31
+  },
+  "rectified_counts_equal_video_lane": true,
+  "rectified_counts": {
+   "segments_total": 89,
+   "string_like": 26,
+   "fret_like": 16
+  },
+  "fret_clusters_equal_video_lane": true,
+  "string_clusters_equal_video_lane": true,
+  "axis_equal": true,
+  "width_equal": true,
+  "homography_rounded6_equal_video_lane": true,
+  "rect_bytes_differing_vs_video_lane_png": [
+   1,
+   278400,
+   1
+  ],
+  "unrectified_segments_same_order": true,
+  "unrectified_edge_pixels_equal": true,
+  "rectified_segments_same_order": true,
+  "rectified_edge_pixels_equal": true,
+  "mask_pixels_equal": true,
+  "homography_bit_identical_pyref": true,
+  "pyref_equals_video_lane_json_except_times": true,
+  "pyref_png_equals_video_lane_png": true,
+  "js_times_ms": [
+   [
+    13.8,
+    11.4
+   ],
+   [
+    10.2,
+    11.0
+   ],
+   [
+    10.2,
+    10.9
+   ]
+  ],
+  "img_decode": [
+   18.4,
+   0,
+   0
+  ]
+ },
+ "R3b_f0225/handquad": {
+  "unrectified_counts_equal_video_lane": true,
+  "unrectified_counts": {
+   "segments_total": 351,
+   "segments_in_quad": 115,
+   "string_like": 31,
+   "fret_like": 41
+  },
+  "rectified_counts_equal_video_lane": true,
+  "rectified_counts": {
+   "segments_total": 106,
+   "string_like": 15,
+   "fret_like": 15
+  },
+  "fret_clusters_equal_video_lane": true,
+  "string_clusters_equal_video_lane": true,
+  "axis_equal": true,
+  "width_equal": true,
+  "homography_rounded6_equal_video_lane": true,
+  "rect_bytes_differing_vs_video_lane_png": [
+   1,
+   468000,
+   1
+  ],
+  "unrectified_segments_same_order": true,
+  "unrectified_edge_pixels_equal": true,
+  "rectified_segments_same_order": true,
+  "rectified_edge_pixels_equal": true,
+  "mask_pixels_equal": true,
+  "homography_bit_identical_pyref": true,
+  "pyref_equals_video_lane_json_except_times": true,
+  "pyref_png_equals_video_lane_png": true,
+  "js_times_ms": [
+   [
+    48.6,
+    16.9
+   ],
+   [
+    40.8,
+    15.3
+   ],
+   [
+    40.7,
+    18.9
+   ]
+  ],
+  "img_decode": [
+   47.3,
+   0,
+   0
+  ]
+ },
+ "R3b_f0000/handquad": {
+  "unrectified_counts_equal_video_lane": true,
+  "unrectified_counts": {
+   "segments_total": 310,
+   "segments_in_quad": 109,
+   "string_like": 42,
+   "fret_like": 37
+  },
+  "rectified_counts_equal_video_lane": true,
+  "rectified_counts": {
+   "segments_total": 95,
+   "string_like": 18,
+   "fret_like": 21
+  },
+  "fret_clusters_equal_video_lane": true,
+  "string_clusters_equal_video_lane": true,
+  "axis_equal": true,
+  "width_equal": true,
+  "homography_rounded6_equal_video_lane": true,
+  "rect_bytes_differing_vs_video_lane_png": [
+   3,
+   468000,
+   1
+  ],
+  "unrectified_segments_same_order": true,
+  "unrectified_edge_pixels_equal": true,
+  "rectified_segments_same_order": true,
+  "rectified_edge_pixels_equal": true,
+  "mask_pixels_equal": true,
+  "homography_bit_identical_pyref": true,
+  "pyref_equals_video_lane_json_except_times": true,
+  "pyref_png_equals_video_lane_png": true,
+  "js_times_ms": [
+   [
+    63.9,
+    25.4
+   ],
+   [
+    50.1,
+    16.5
+   ],
+   [
+    41.9,
+    16.8
+   ]
+  ],
+  "img_decode": [
+   53.0,
+   0,
+   0
+  ]
+ },
+ "R3b_f0449/handquad": {
+  "unrectified_counts_equal_video_lane": true,
+  "unrectified_counts": {
+   "segments_total": 375,
+   "segments_in_quad": 151,
+   "string_like": 87,
+   "fret_like": 41
+  },
+  "rectified_counts_equal_video_lane": true,
+  "rectified_counts": {
+   "segments_total": 119,
+   "string_like": 20,
+   "fret_like": 15
+  },
+  "fret_clusters_equal_video_lane": true,
+  "string_clusters_equal_video_lane": true,
+  "axis_equal": true,
+  "width_equal": true,
+  "homography_rounded6_equal_video_lane": true,
+  "rect_bytes_differing_vs_video_lane_png": [
+   3,
+   468000,
+   1
+  ],
+  "unrectified_segments_same_order": true,
+  "unrectified_edge_pixels_equal": true,
+  "rectified_segments_same_order": true,
+  "rectified_edge_pixels_equal": true,
+  "mask_pixels_equal": true,
+  "homography_bit_identical_pyref": true,
+  "pyref_equals_video_lane_json_except_times": true,
+  "pyref_png_equals_video_lane_png": true,
+  "js_times_ms": [
+   [
+    68.7,
+    26.5
+   ],
+   [
+    68.8,
+    23.7
+   ],
+   [
+    43.2,
+    16.6
+   ]
+  ],
+  "img_decode": [
+   51.4,
+   0,
+   0
+  ]
+ }
+}

@@ -1,0 +1,36 @@
+{
+ "backend": "tflite",
+ "model_path": "/home/user/gtr/lanes/chains/venv-bp/lib/python3.10/site-packages/basic_pitch/saved_models/icassp_2022/nmp.tflite",
+ "settings": {
+  "onset_threshold": 0.5,
+  "frame_threshold": 0.3,
+  "minimum_note_length": 127.7,
+  "minimum_frequency": null,
+  "maximum_frequency": null,
+  "multiple_pitch_bends": false,
+  "melodia_trick": true
+ },
+ "model_load_s": 0.005,
+ "files": {
+  "S4becruily-Guitar": {
+   "input": "/home/user/gtr/lanes/source-separation/out/msst-becruily-guitar/S4/Guitar.wav",
+   "predict_s": 17.042,
+   "n_notes": 406
+  },
+  "R2sep6s-guitar": {
+   "input": "/home/user/gtr/lanes/source-separation/out/htdemucs_6s/R2/guitar.wav",
+   "predict_s": 1.703,
+   "n_notes": 305
+  },
+  "S6taps-hpss-harmonic": {
+   "input": "/home/user/gtr/lanes/source-separation/out/hpss/S6taps/default/harmonic.wav",
+   "predict_s": 1.282,
+   "n_notes": 175
+  },
+  "S2s-hpss-harmonic": {
+   "input": "/home/user/gtr/lanes/source-separation/out/hpss/S2s/default/harmonic.wav",
+   "predict_s": 1.241,
+   "n_notes": 174
+  }
+ }
+}

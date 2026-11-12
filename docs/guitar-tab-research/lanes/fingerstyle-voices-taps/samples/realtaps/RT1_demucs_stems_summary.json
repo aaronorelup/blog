@@ -1,0 +1,130 @@
+{
+ "out/gap1-RT1/demucs/htdemucs_6s/RT1": {
+  "bass": {
+   "energy_re_mix_db": -13.8,
+   "mono_peak_dbfs": -12.6,
+   "sr": 44100,
+   "channels": 2,
+   "seconds": 233.509
+  },
+  "drums": {
+   "energy_re_mix_db": -40.0,
+   "mono_peak_dbfs": -23.0,
+   "sr": 44100,
+   "channels": 2,
+   "seconds": 233.509,
+   "n_librosa_onsets": 351,
+   "rms_dbfs_per_10s": [
+    -63.4,
+    -63.4,
+    -63.4,
+    -57.1,
+    -63.5,
+    -63.3,
+    -56.0,
+    -62.6,
+    -63.3,
+    -63.5,
+    -63.5,
+    -63.4,
+    -63.3,
+    -63.2,
+    -63.4,
+    -63.4,
+    -63.4,
+    -63.4,
+    -63.4,
+    -63.4,
+    -59.4,
+    -63.4,
+    -63.4,
+    -63.5
+   ]
+  },
+  "guitar": {
+   "energy_re_mix_db": -8.1,
+   "mono_peak_dbfs": -6.6,
+   "sr": 44100,
+   "channels": 2,
+   "seconds": 233.509
+  },
+  "other": {
+   "energy_re_mix_db": -2.5,
+   "mono_peak_dbfs": -3.8,
+   "sr": 44100,
+   "channels": 2,
+   "seconds": 233.509
+  },
+  "piano": {
+   "energy_re_mix_db": -24.3,
+   "mono_peak_dbfs": -17.1,
+   "sr": 44100,
+   "channels": 2,
+   "seconds": 233.509
+  },
+  "vocals": {
+   "energy_re_mix_db": -41.4,
+   "mono_peak_dbfs": -40.1,
+   "sr": 44100,
+   "channels": 2,
+   "seconds": 233.509
+  }
+ },
+ "out/gap1-RT1/demucs/htdemucs/RT1": {
+  "bass": {
+   "energy_re_mix_db": -17.6,
+   "mono_peak_dbfs": -15.1,
+   "sr": 44100,
+   "channels": 2,
+   "seconds": 233.509
+  },
+  "drums": {
+   "energy_re_mix_db": -41.4,
+   "mono_peak_dbfs": -36.3,
+   "sr": 44100,
+   "channels": 2,
+   "seconds": 233.509,
+   "n_librosa_onsets": 1078,
+   "rms_dbfs_per_10s": [
+    -63.3,
+    -63.2,
+    -63.3,
+    -63.7,
+    -62.9,
+    -63.1,
+    -63.4,
+    -63.5,
+    -63.6,
+    -63.4,
+    -63.5,
+    -62.6,
+    -63.1,
+    -63.2,
+    -63.0,
+    -63.3,
+    -63.2,
+    -63.1,
+    -63.1,
+    -63.3,
+    -63.4,
+    -63.5,
+    -63.1,
+    -63.5
+   ]
+  },
+  "other": {
+   "energy_re_mix_db": -0.2,
+   "mono_peak_dbfs": -3.6,
+   "sr": 44100,
+   "channels": 2,
+   "seconds": 233.509
+  },
+  "vocals": {
+   "energy_re_mix_db": -41.5,
+   "mono_peak_dbfs": -48.0,
+   "sr": 44100,
+   "channels": 2,
+   "seconds": 233.509
+  }
+ }
+}

@@ -1,0 +1,213 @@
+digraph G {
+  graph [rankdir=LR, newrank=true, nodesep=0.12, ranksep=1.1, fontname="Helvetica", fontsize=16, labelloc=t, label="Fingerstyle-video path: edges at the voices/taps and video stages, plus the tested edges from notes to the browser", splines=true, concentrate=true, outputorder=edgesfirst];
+  node [shape=box, fontname="Helvetica", fontsize=10, height=0.25, margin="0.06,0.02"];
+  edge [arrowsize=0.6];
+  subgraph cluster_input { label="Input"; fontsize=13; fontname="Helvetica-Bold"; color="#cbd2d9"; style=rounded;
+    {rank=same; "mediabunny"; "webcodecs-audiodecoder-videodecoder-videoframe";}
+    "mediabunny" [label="Mediabunny", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "webcodecs-audiodecoder-videodecoder-videoframe" [label="WebCodecs", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+  }
+  subgraph cluster_separation { label="Source separation"; fontsize=13; fontname="Helvetica-Bold"; color="#cbd2d9"; style=rounded;
+    {rank=same; "demucs"; "librosa"; "open-unmix"; "sam-audio-meta"; "scnet-sparse-compression-network"; "spleeter";}
+    "demucs" [label="Demucs v4", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "librosa" [label="librosa", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "open-unmix" [label="Open-Unmix", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "sam-audio-meta" [label="SAM Audio", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "scnet-sparse-compression-network" [label="SCNet", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "spleeter" [label="Spleeter", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+  }
+  subgraph cluster_notes { label="Notes and melody"; fontsize=13; fontname="Helvetica-Bold"; color="#cbd2d9"; style=rounded;
+    {rank=same; "aubio"; "basic-pitch-for-the-browser-spotify-basic-pitch"; "crepe-notes-crepe-notes"; "essentia"; "fcpe-torchfcpe"; "omnizart"; "pesto"; "basic-pitch"; "torchcrepe";}
+    "aubio" [label="aubio", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "basic-pitch-for-the-browser-spotify-basic-pitch" [label="Basic Pitch for the browser", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "crepe-notes-crepe-notes" [label="CREPE Notes", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "essentia" [label="Essentia", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "fcpe-torchfcpe" [label="FCPE / torchfcpe", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "omnizart" [label="Omnizart", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "pesto" [label="PESTO", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "basic-pitch" [label="Basic Pitch", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "torchcrepe" [label="torchcrepe", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+  }
+  subgraph cluster_fingerstyle { label="Voices and taps"; fontsize=13; fontname="Helvetica-Bold"; color="#cbd2d9"; style=rounded;
+    {rank=same; "adt-str"; "adtof-pytorch"; "cluster-and-separate-piano-svsep"; "drumsep"; "inverse-drum-machine-idm"; "larsnet"; "mcleod-and-steedman-hmm-voice-separation-voice-s"; "midibert-piano-melody-extraction"; "partitura-estimate-voices";}
+    "adt-str" [label="ADT_STR", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "adtof-pytorch" [label="ADTOF-pytorch", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "cluster-and-separate-piano-svsep" [label="Cluster and Separate", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "drumsep" [label="drumsep", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "inverse-drum-machine-idm" [label="Inverse Drum Machine", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "larsnet" [label="LarsNet", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "mcleod-and-steedman-hmm-voice-separation-voice-s" [label="McLeod and Steedman HMM voice…", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "midibert-piano-melody-extraction" [label="MidiBERT-Piano melody extract…", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "partitura-estimate-voices" [label="partitura estimate_voices", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+  }
+  subgraph cluster_video { label="Video hands and fretboard"; fontsize=13; fontname="Helvetica-Bold"; color="#cbd2d9"; style=rounded;
+    {rank=same; "chordar-manbr21-computer-vision-guitar-tutor"; "cotracker3-offline-model"; "grounding-dino-idea-research-tiny-in-transformer"; "guitar-learning-decoudjuan-guitar-learning"; "hamer-3d-mano-hand-mesh-from-one-image"; "mediapipe-hand"; "opencv"; "owlv2-google-owlv2-base-patch16-ensemble-via-the"; "pytorch-openpose-hand-model-pytorch-port-of-open"; "rtmlib-rtmpose-hand-rtmdet-nano-plus-rtmpose-m-h"; "sam2"; "segment-anything-3-sam-3-sam-3-1-meta"; "tapir-bootstapir-tapnext-tapnext-plus-plus-googl"; "wilor-mini-repackaged-wilor-inference"; "yolo-world-ailab-cvc-also-yoloworld-in-ultralyti";}
+    "chordar-manbr21-computer-vision-guitar-tutor" [label="ChordAR", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "cotracker3-offline-model" [label="CoTracker3", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "grounding-dino-idea-research-tiny-in-transformer" [label="Grounding DINO", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "guitar-learning-decoudjuan-guitar-learning" [label="Guitar-Learning", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "hamer-3d-mano-hand-mesh-from-one-image" [label="HaMeR", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "mediapipe-hand" [label="MediaPipe Hand Landmarker", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "opencv" [label="OpenCV", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "owlv2-google-owlv2-base-patch16-ensemble-via-the" [label="OWLv2", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "pytorch-openpose-hand-model-pytorch-port-of-open" [label="pytorch-openpose hand model", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "rtmlib-rtmpose-hand-rtmdet-nano-plus-rtmpose-m-h" [label="rtmlib", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "sam2" [label="Segment Anything 2 / 2.1", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "segment-anything-3-sam-3-sam-3-1-meta" [label="Segment Anything 3", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "tapir-bootstapir-tapnext-tapnext-plus-plus-googl" [label="TAPIR / BootsTAPIR / TAPNext …", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "wilor-mini-repackaged-wilor-inference" [label="WiLoR-mini", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "yolo-world-ailab-cvc-also-yoloworld-in-ultralyti" [label="YOLO-World", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+  }
+  subgraph cluster_tab { label="String and fret"; fontsize=13; fontname="Helvetica-Bold"; color="#cbd2d9"; style=rounded;
+    {rank=same; "fretpath-musescore-studio-4-4-plus-plugin-knoguc"; "gtrsnipe-scott-vr"; "lilypond"; "riley-et-al-guitar-note-models-guitar-fl-pth-gui"; "tabsynth"; "tayuya-vipul-sharma"; "tutts"; "tuttut";}
+    "fretpath-musescore-studio-4-4-plus-plugin-knoguc" [label="FretPath", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "gtrsnipe-scott-vr" [label="gtrsnipe", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "lilypond" [label="LilyPond", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "riley-et-al-guitar-note-models-guitar-fl-pth-gui" [label="Riley et al. guitar note mode…", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "tabsynth" [label="tabsynth", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "tayuya-vipul-sharma" [label="tayuya", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "tutts" [label="tutts and tutts-alphatab", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "tuttut" [label="tuttut", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+  }
+  subgraph cluster_formats { label="Tab file formats"; fontsize=13; fontname="Helvetica-Bold"; color="#cbd2d9"; style=rounded;
+    {rank=same; "abc-format"; "alphatex"; "ascii-tab-informal-convention"; "chordpro-format"; "guitarpro-parser-npm"; "mei-format-tablature-module"; "musescore"; "music21"; "musicxml-4-0-format"; "pyguitarpro"; "tuxguitar";}
+    "abc-format" [label="ABC", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "alphatex" [label="alphaTex", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "ascii-tab-informal-convention" [label="ASCII tab", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "chordpro-format" [label="ChordPro", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "guitarpro-parser-npm" [label="guitarpro-parser", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "mei-format-tablature-module" [label="MEI", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "musescore" [label="MuseScore Studio", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "music21" [label="music21", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "musicxml-4-0-format" [label="MusicXML 4.0", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "pyguitarpro" [label="PyGuitarPro", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "tuxguitar" [label="TuxGuitar", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+  }
+  subgraph cluster_render { label="Browser render, edit, play"; fontsize=13; fontname="Helvetica-Bold"; color="#cbd2d9"; style=rounded;
+    {rank=same; "coderline-alphatab-monaco-and-coderline-alphatab"; "abcjs"; "alphatab"; "chordsheetjs"; "fluidsynth"; "opensheetmusicdisplay-opensheetmusicdisplay"; "verovio-verovio"; "webmscore";}
+    "coderline-alphatab-monaco-and-coderline-alphatab" [label="@coderline/alphatab-monaco an…", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "abcjs" [label="abcjs", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "alphatab" [label="alphaTab", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "chordsheetjs" [label="ChordSheetJS", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "fluidsynth" [label="FluidSynth", style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    "opensheetmusicdisplay-opensheetmusicdisplay" [label="OpenSheetMusicDisplay", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "verovio-verovio" [label="Verovio", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "webmscore" [label="webmscore", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+  }
+  subgraph cluster_sync { label="Metronome and sync"; fontsize=13; fontname="Helvetica-Bold"; color="#cbd2d9"; style=rounded;
+    {rank=same; "htmlmediaelement-playbackrate-and-preservespitch"; "htmlvideoelement-requestvideoframecallback"; "web-audio-api";}
+    "htmlmediaelement-playbackrate-and-preservespitch" [label="HTMLMediaElement.playbackRate…", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "htmlvideoelement-requestvideoframecallback" [label="HTMLVideoElement.requestVideo…", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    "web-audio-api" [label="Web Audio API", style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+  }
+  "mediabunny" -> "demucs" [style=invis, weight=10];
+  "demucs" -> "aubio" [style=invis, weight=10];
+  "aubio" -> "adt-str" [style=invis, weight=10];
+  "adt-str" -> "chordar-manbr21-computer-vision-guitar-tutor" [style=invis, weight=10];
+  "chordar-manbr21-computer-vision-guitar-tutor" -> "fretpath-musescore-studio-4-4-plus-plugin-knoguc" [style=invis, weight=10];
+  "fretpath-musescore-studio-4-4-plus-plugin-knoguc" -> "abc-format" [style=invis, weight=10];
+  "abc-format" -> "coderline-alphatab-monaco-and-coderline-alphatab" [style=invis, weight=10];
+  "coderline-alphatab-monaco-and-coderline-alphatab" -> "htmlmediaelement-playbackrate-and-preservespitch" [style=invis, weight=10];
+  "mediabunny" -> "mediapipe-hand" [color="#1f2933", penwidth=1.3];
+  "webcodecs-audiodecoder-videodecoder-videoframe" -> "mediapipe-hand" [color="#1f2933", penwidth=1.3];
+  "web-audio-api" -> "basic-pitch-for-the-browser-spotify-basic-pitch" [color="#1f2933", penwidth=1.3, constraint=false];
+  "htmlvideoelement-requestvideoframecallback" -> "mediapipe-hand" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "demucs" -> "librosa" [color="#1f2933", penwidth=1.3, constraint=false];
+  "open-unmix" -> "librosa" [color="#1f2933", penwidth=1.3, constraint=false];
+  "spleeter" -> "librosa" [color="#1f2933", penwidth=1.3, constraint=false];
+  "scnet-sparse-compression-network" -> "librosa" [color="#1f2933", penwidth=1.3, constraint=false];
+  "demucs" -> "larsnet" [color="#b8c2cc", style=dashed, penwidth=0.7];
+  "demucs" -> "drumsep" [color="#b8c2cc", style=dashed, penwidth=0.7];
+  "torchcrepe" -> "essentia" [color="#1f2933", penwidth=1.3, constraint=false];
+  "pesto" -> "essentia" [color="#1f2933", penwidth=1.3, constraint=false];
+  "fcpe-torchfcpe" -> "essentia" [color="#1f2933", penwidth=1.3, constraint=false];
+  "torchcrepe" -> "crepe-notes-crepe-notes" [color="#1f2933", penwidth=1.3, constraint=false];
+  "basic-pitch" -> "music21" [color="#1f2933", penwidth=1.3];
+  "basic-pitch" -> "tuttut" [color="#1f2933", penwidth=1.3];
+  "basic-pitch" -> "tutts" [color="#1f2933", penwidth=1.3];
+  "basic-pitch" -> "lilypond" [color="#1f2933", penwidth=1.3];
+  "basic-pitch" -> "tabsynth" [color="#1f2933", penwidth=1.3];
+  "basic-pitch" -> "tayuya-vipul-sharma" [color="#1f2933", penwidth=1.3];
+  "riley-et-al-guitar-note-models-guitar-fl-pth-gui" -> "tuttut" [color="#1f2933", penwidth=1.3, constraint=false];
+  "riley-et-al-guitar-note-models-guitar-fl-pth-gui" -> "lilypond" [color="#1f2933", penwidth=1.3, constraint=false];
+  "basic-pitch" -> "partitura-estimate-voices" [color="#1f2933", penwidth=1.3];
+  "basic-pitch" -> "music21" [color="#1f2933", penwidth=1.3];
+  "librosa" -> "basic-pitch" [color="#1f2933", penwidth=1.3, dir=both];
+  "librosa" -> "inverse-drum-machine-idm" [color="#b8c2cc", style=dashed, penwidth=0.7];
+  "aubio" -> "inverse-drum-machine-idm" [color="#b8c2cc", style=dashed, penwidth=0.7];
+  "essentia" -> "inverse-drum-machine-idm" [color="#b8c2cc", style=dashed, penwidth=0.7];
+  "librosa" -> "adtof-pytorch" [color="#b8c2cc", style=dashed, penwidth=0.7];
+  "librosa" -> "omnizart" [color="#b8c2cc", style=dashed, penwidth=0.7];
+  "partitura-estimate-voices" -> "cluster-and-separate-piano-svsep" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "basic-pitch" -> "midibert-piano-melody-extraction" [color="#b8c2cc", style=dashed, penwidth=0.7];
+  "music21" -> "cluster-and-separate-piano-svsep" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "music21" -> "tuttut" [color="#1f2933", penwidth=1.3, constraint=false];
+  "partitura-estimate-voices" -> "tuttut" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "mcleod-and-steedman-hmm-voice-separation-voice-s" -> "tuttut" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "adtof-pytorch" -> "fluidsynth" [color="#b8c2cc", style=dashed, penwidth=0.7];
+  "omnizart" -> "fluidsynth" [color="#b8c2cc", style=dashed, penwidth=0.7];
+  "adt-str" -> "fluidsynth" [color="#b8c2cc", style=dashed, penwidth=0.7];
+  "librosa" -> "sam-audio-meta" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "tuttut" -> "pyguitarpro" [color="#1f2933", penwidth=1.3];
+  "lilypond" -> "pyguitarpro" [color="#1f2933", penwidth=1.3];
+  "tuxguitar" -> "ascii-tab-informal-convention" [color="#1f2933", penwidth=1.3, constraint=false];
+  "pyguitarpro" -> "alphatab" [color="#1f2933", penwidth=1.3];
+  "pyguitarpro" -> "musescore" [color="#1f2933", penwidth=1.3, constraint=false];
+  "pyguitarpro" -> "tuxguitar" [color="#1f2933", penwidth=1.3, constraint=false];
+  "pyguitarpro" -> "webmscore" [color="#1f2933", penwidth=1.3];
+  "pyguitarpro" -> "guitarpro-parser-npm" [color="#1f2933", penwidth=1.3, constraint=false];
+  "alphatab" -> "tuxguitar" [color="#1f2933", penwidth=1.3, constraint=false];
+  "alphatab" -> "webmscore" [color="#1f2933", penwidth=1.3, constraint=false];
+  "alphatab" -> "musescore" [color="#1f2933", penwidth=1.3, constraint=false];
+  "alphatab" -> "guitarpro-parser-npm" [color="#1f2933", penwidth=1.3, constraint=false];
+  "tuxguitar" -> "alphatab" [color="#1f2933", penwidth=1.3];
+  "tuxguitar" -> "guitarpro-parser-npm" [color="#1f2933", penwidth=1.3, constraint=false];
+  "tuxguitar" -> "lilypond" [color="#1f2933", penwidth=1.3, constraint=false];
+  "music21" -> "opensheetmusicdisplay-opensheetmusicdisplay" [color="#1f2933", penwidth=1.3];
+  "music21" -> "alphatab" [color="#1f2933", penwidth=1.3];
+  "music21" -> "musescore" [color="#1f2933", penwidth=1.3, constraint=false];
+  "musescore" -> "opensheetmusicdisplay-opensheetmusicdisplay" [color="#1f2933", penwidth=1.3];
+  "musescore" -> "verovio-verovio" [color="#1f2933", penwidth=1.3];
+  "musescore" -> "alphatab" [color="#1f2933", penwidth=1.3];
+  "musicxml-4-0-format" -> "alphatab" [color="#1f2933", penwidth=1.3];
+  "musicxml-4-0-format" -> "opensheetmusicdisplay-opensheetmusicdisplay" [color="#1f2933", penwidth=1.3];
+  "musicxml-4-0-format" -> "verovio-verovio" [color="#1f2933", penwidth=1.3];
+  "musicxml-4-0-format" -> "musescore" [color="#1f2933", penwidth=1.3, constraint=false];
+  "musicxml-4-0-format" -> "webmscore" [color="#1f2933", penwidth=1.3];
+  "mei-format-tablature-module" -> "verovio-verovio" [color="#1f2933", penwidth=1.3];
+  "alphatex" -> "alphatab" [color="#1f2933", penwidth=1.3];
+  "abc-format" -> "abcjs" [color="#1f2933", penwidth=1.3];
+  "chordpro-format" -> "chordsheetjs" [color="#1f2933", penwidth=1.3];
+  "coderline-alphatab-monaco-and-coderline-alphatab" -> "alphatab" [color="#1f2933", penwidth=1.3, constraint=false];
+  "alphatab" -> "web-audio-api" [color="#1f2933", penwidth=1.3];
+  "htmlmediaelement-playbackrate-and-preservespitch" -> "alphatab" [color="#1f2933", penwidth=1.3, constraint=false];
+  "mediapipe-hand" -> "opencv" [color="#1f2933", penwidth=1.3, constraint=false];
+  "mediapipe-hand" -> "pytorch-openpose-hand-model-pytorch-port-of-open" [color="#1f2933", penwidth=1.3, constraint=false];
+  "sam2" -> "opencv" [color="#1f2933", penwidth=1.3, constraint=false];
+  "sam2" -> "cotracker3-offline-model" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "segment-anything-3-sam-3-sam-3-1-meta" -> "opencv" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "segment-anything-3-sam-3-sam-3-1-meta" -> "cotracker3-offline-model" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "cotracker3-offline-model" -> "opencv" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "tapir-bootstapir-tapnext-tapnext-plus-plus-googl" -> "opencv" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "rtmlib-rtmpose-hand-rtmdet-nano-plus-rtmpose-m-h" -> "opencv" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "hamer-3d-mano-hand-mesh-from-one-image" -> "opencv" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "wilor-mini-repackaged-wilor-inference" -> "opencv" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "owlv2-google-owlv2-base-patch16-ensemble-via-the" -> "rtmlib-rtmpose-hand-rtmdet-nano-plus-rtmpose-m-h" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "grounding-dino-idea-research-tiny-in-transformer" -> "rtmlib-rtmpose-hand-rtmdet-nano-plus-rtmpose-m-h" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "yolo-world-ailab-cvc-also-yoloworld-in-ultralyti" -> "rtmlib-rtmpose-hand-rtmdet-nano-plus-rtmpose-m-h" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "grounding-dino-idea-research-tiny-in-transformer" -> "sam2" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "mediapipe-hand" -> "guitar-learning-decoudjuan-guitar-learning" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "mediapipe-hand" -> "chordar-manbr21-computer-vision-guitar-tutor" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "mediapipe-hand" -> "basic-pitch" [color="#1f2933", penwidth=1.3, dir=both, constraint=false];
+  "opencv" -> "gtrsnipe-scott-vr" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "opencv" -> "lilypond" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "opencv" -> "fretpath-musescore-studio-4-4-plus-plugin-knoguc" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  "sam2" -> "sam-audio-meta" [color="#b8c2cc", style=dashed, penwidth=0.7, constraint=false];
+  subgraph cluster_legend { label="Legend"; fontsize=11; color="#cbd2d9"; fontname="Helvetica";
+    lg1 [label="ran here", shape=box, style="rounded,filled", fillcolor="#ffffff", color="#1f2933", fontcolor="#1f2933"];
+    lg2 [label="ran on a Space or API", shape=box, style="rounded,dashed,filled", fillcolor="#e3e8ee", color="#52606d", fontcolor="#1f2933"];
+    lg3 [label="not run here", shape=box, style="rounded,dashed,filled", fillcolor="#ffffff", color="#7b8794", fontcolor="#52606d"];
+    lg1 -> lg2 [label=" tested", color="#1f2933", fontsize=9];
+    lg2 -> lg3 [label=" docs only", color="#9aa5b1", style=dashed, fontsize=9];
+  }
+}

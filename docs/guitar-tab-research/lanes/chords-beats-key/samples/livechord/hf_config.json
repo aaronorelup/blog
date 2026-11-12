@@ -1,0 +1,34 @@
+{
+  "model_type": "beat_refiner",
+  "model_version": 1,
+  "feature_version": 1,
+  "architecture": {
+    "n_input_channels": 100,
+    "d_model": 256,
+    "n_heads": 4,
+    "n_layers": 6,
+    "ffn_dim": 512,
+    "dropout": 0.1,
+    "max_frames": 9728,
+    "norm_first": true,
+    "activation": "gelu"
+  },
+  "audio": {
+    "sample_rate": 22050,
+    "hop_length": 2048,
+    "frames_per_sec": 10.7666015625,
+    "n_audio_channels": 98,
+    "n_grid_channels": 2
+  },
+  "training_metadata": {
+    "epoch": 5,
+    "global_step": 9235,
+    "val_metrics": {
+      "n_songs": 6,
+      "beat_f1": 0.9065863978311345,
+      "downbeat_f1": 0.9060772421298836,
+      "cb_f1": 0.3284019925324273
+    },
+    "training_corpus_size": 13017
+  }
+}

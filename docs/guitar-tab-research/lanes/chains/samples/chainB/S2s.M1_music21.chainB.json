@@ -1,0 +1,31 @@
+{
+ "input_csv": "out/voicesplit/S2s/M1_music21.csv",
+ "n_in": 174,
+ "n_in_bass": 151,
+ "n_in_melody": 23,
+ "pooled": {
+  "n_out": 170,
+  "tuttut_s": 0.1,
+  "unjoined": 0,
+  "collisions": 10
+ },
+ "sep": {
+  "bass": {
+   "n_in": 151,
+   "n_out": 147,
+   "tuttut_s": 0.068,
+   "unjoined": 0
+  },
+  "melody": {
+   "n_in": 23,
+   "n_out": 23,
+   "tuttut_s": 0.005,
+   "unjoined": 0
+  },
+  "collisions": 12
+ },
+ "pooled_vs_sep": {
+  "notes_in_both": 170,
+  "same_string_and_fret": 165
+ }
+}

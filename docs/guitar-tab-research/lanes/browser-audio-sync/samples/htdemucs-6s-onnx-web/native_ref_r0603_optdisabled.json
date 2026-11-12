@@ -1,0 +1,50 @@
+{
+ "onnxruntime": "1.31.1",
+ "numpy": "2.4.6",
+ "providers": [
+  "CPUExecutionProvider"
+ ],
+ "inputs": [
+  {
+   "name": "mix",
+   "shape": [
+    1,
+    2,
+    343980
+   ],
+   "type": "tensor(float)"
+  }
+ ],
+ "outputs": [
+  {
+   "name": "stems",
+   "shape": [
+    "Addstems_dim_0",
+    "Addstems_dim_1",
+    "Addstems_dim_2",
+    "Addstems_dim_3"
+   ],
+   "type": "tensor(float)"
+  }
+ ],
+ "graph_optimization": "disabled",
+ "sources": [
+  "drums",
+  "bass",
+  "other",
+  "vocals",
+  "guitar",
+  "piano"
+ ],
+ "input_shape": [
+  2,
+  441000
+ ],
+ "native_sr": 44100,
+ "session_create_s": 12.275,
+ "separate_s": 13.755,
+ "affinity": [
+  2,
+  3
+ ]
+}

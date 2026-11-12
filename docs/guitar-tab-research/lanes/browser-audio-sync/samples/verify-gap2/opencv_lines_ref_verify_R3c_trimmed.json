@@ -1,0 +1,553 @@
+{
+ "opencv": "5.0.0",
+ "threads_default": 2,
+ "frames": {
+  "R3c_f0225": {
+   "file": "/home/user/gtr/lanes/browser-audio-sync/verify-gap2/frames/R3c/f_0226.jpg",
+   "shape": [
+    1080,
+    1920,
+    3
+   ],
+   "rect_size": [
+    1200,
+    130
+   ],
+   "hand_quad": {
+    "quad": [
+     [
+      1655.0,
+      335.0
+     ],
+     [
+      1705.0,
+      378.0
+     ],
+     [
+      1210.0,
+      903.0
+     ],
+     [
+      1112.0,
+      858.0
+     ]
+    ],
+    "tag": "handquad",
+    "unrectified": {
+     "neck_axis_deg": 136.07,
+     "fretboard_width_px": 65.9,
+     "edge_pixels": 34674,
+     "mask_pixels": 62221,
+     "hough": {
+      "segments_total": 433,
+      "segments_in_quad": 124,
+      "string_like": 75,
+      "fret_like": 48
+     },
+     "lsd": {
+      "segments_total": 1384,
+      "segments_in_quad": 265,
+      "string_like": 96,
+      "fret_like": 31
+     },
+     "hough_segments": "433 segments (full list in verify-gap2/out/opencvjs/pyref/opencv_lines_ref.json)",
+     "time_s": 0.1648
+    },
+    "homography_img_to_rect": [
+     [
+      -0.750327,
+      0.872474,
+      949.512979
+     ],
+     [
+      0.620907,
+      0.644651,
+      -1243.55988
+     ],
+     [
+      -0.000349,
+      0.000126,
+      1.0
+     ]
+    ],
+    "homography_full": [
+     [
+      -0.7503272641524433,
+      0.8724735629679563,
+      949.5129785780283
+     ],
+     [
+      0.6209073456641006,
+      0.6446514124198979,
+      -1243.5598802347522
+     ],
+     [
+      -0.0003493573369956765,
+      0.00012617891254278207,
+      1.0
+     ]
+    ],
+    "rectified": {
+     "size": [
+      1200,
+      130
+     ],
+     "edge_pixels": 8223,
+     "hough": {
+      "segments_total": 117,
+      "string_like": 28,
+      "fret_like": 29,
+      "fret_x_clusters_px_from_nut": [
+       466.5,
+       615.5,
+       688.5,
+       746.2,
+       799.8,
+       841.5,
+       852.0,
+       887.0,
+       897.5,
+       936.0,
+       963.5,
+       976.5,
+       1009.2,
+       1040.2,
+       1071.5,
+       1098.8,
+       1124.2,
+       1148.0
+      ],
+      "string_y_clusters_px_from_upper_edge": [
+       1.3,
+       17.6,
+       36.2,
+       45.0,
+       66.0
+      ]
+     },
+     "lsd": {
+      "segments_total": 454,
+      "string_like": 64,
+      "fret_like": 20,
+      "fret_x_clusters_px_from_nut": [
+       3.6,
+       22.2,
+       540.8,
+       615.2,
+       685.4,
+       746.4,
+       799.8,
+       849.5,
+       892.3,
+       937.1,
+       974.0,
+       1009.7,
+       1045.2
+      ],
+      "string_y_clusters_px_from_upper_edge": [
+       2.6,
+       15.7,
+       35.2,
+       44.2,
+       61.3,
+       68.1
+      ]
+     },
+     "hough_segments": "117 segments (full list in verify-gap2/out/opencvjs/pyref/opencv_lines_ref.json)",
+     "time_s": 0.0159
+    },
+    "py_timing": {
+     "threads_default": 2,
+     "ms_default_threads": [
+      [
+       19.63,
+       5.68
+      ],
+      [
+       18.78,
+       5.44
+      ],
+      [
+       18.98,
+       5.55
+      ]
+     ],
+     "ms_1_thread": [
+      [
+       24.52,
+       9.36
+      ],
+      [
+       33.51,
+       10.13
+      ],
+      [
+       33.99,
+       10.36
+      ]
+     ]
+    }
+   }
+  },
+  "R3c_f0000": {
+   "file": "/home/user/gtr/lanes/browser-audio-sync/verify-gap2/frames/R3c/f_0001.jpg",
+   "shape": [
+    1080,
+    1920,
+    3
+   ],
+   "rect_size": [
+    1200,
+    130
+   ],
+   "hand_quad": {
+    "quad": [
+     [
+      1655.0,
+      335.0
+     ],
+     [
+      1705.0,
+      378.0
+     ],
+     [
+      1210.0,
+      903.0
+     ],
+     [
+      1112.0,
+      858.0
+     ]
+    ],
+    "tag": "handquad",
+    "unrectified": {
+     "neck_axis_deg": 136.07,
+     "fretboard_width_px": 65.9,
+     "edge_pixels": 32422,
+     "mask_pixels": 62221,
+     "hough": {
+      "segments_total": 378,
+      "segments_in_quad": 108,
+      "string_like": 62,
+      "fret_like": 46
+     },
+     "lsd": {
+      "segments_total": 1368,
+      "segments_in_quad": 244,
+      "string_like": 97,
+      "fret_like": 31
+     },
+     "hough_segments": "378 segments (full list in verify-gap2/out/opencvjs/pyref/opencv_lines_ref.json)",
+     "time_s": 0.1606
+    },
+    "homography_img_to_rect": [
+     [
+      -0.750327,
+      0.872474,
+      949.512979
+     ],
+     [
+      0.620907,
+      0.644651,
+      -1243.55988
+     ],
+     [
+      -0.000349,
+      0.000126,
+      1.0
+     ]
+    ],
+    "homography_full": [
+     [
+      -0.7503272641524433,
+      0.8724735629679563,
+      949.5129785780283
+     ],
+     [
+      0.6209073456641006,
+      0.6446514124198979,
+      -1243.5598802347522
+     ],
+     [
+      -0.0003493573369956765,
+      0.00012617891254278207,
+      1.0
+     ]
+    ],
+    "rectified": {
+     "size": [
+      1200,
+      130
+     ],
+     "edge_pixels": 8321,
+     "hough": {
+      "segments_total": 139,
+      "string_like": 33,
+      "fret_like": 19,
+      "fret_x_clusters_px_from_nut": [
+       743.5,
+       803.0,
+       848.0,
+       896.0,
+       929.5,
+       940.5,
+       975.2,
+       1000.0,
+       1014.0,
+       1039.0,
+       1072.0,
+       1099.0,
+       1118.0,
+       1128.0,
+       1149.5
+      ],
+      "string_y_clusters_px_from_upper_edge": [
+       25.5,
+       43.3,
+       56.2,
+       64.0,
+       74.4
+      ]
+     },
+     "lsd": {
+      "segments_total": 451,
+      "string_like": 60,
+      "fret_like": 9,
+      "fret_x_clusters_px_from_nut": [
+       850.2,
+       896.2,
+       935.8,
+       975.2,
+       1011.0
+      ],
+      "string_y_clusters_px_from_upper_edge": [
+       26.2,
+       41.6,
+       55.2,
+       76.2,
+       90.4
+      ]
+     },
+     "hough_segments": "139 segments (full list in verify-gap2/out/opencvjs/pyref/opencv_lines_ref.json)",
+     "time_s": 0.0158
+    },
+    "py_timing": {
+     "threads_default": 2,
+     "ms_default_threads": [
+      [
+       18.82,
+       5.48
+      ],
+      [
+       17.79,
+       5.24
+      ],
+      [
+       17.88,
+       5.45
+      ]
+     ],
+     "ms_1_thread": [
+      [
+       32.08,
+       9.83
+      ],
+      [
+       31.0,
+       10.24
+      ],
+      [
+       31.25,
+       10.14
+      ]
+     ]
+    }
+   }
+  },
+  "R3c_f0449": {
+   "file": "/home/user/gtr/lanes/browser-audio-sync/verify-gap2/frames/R3c/f_0450.jpg",
+   "shape": [
+    1080,
+    1920,
+    3
+   ],
+   "rect_size": [
+    1200,
+    130
+   ],
+   "hand_quad": {
+    "quad": [
+     [
+      1655.0,
+      335.0
+     ],
+     [
+      1705.0,
+      378.0
+     ],
+     [
+      1210.0,
+      903.0
+     ],
+     [
+      1112.0,
+      858.0
+     ]
+    ],
+    "tag": "handquad",
+    "unrectified": {
+     "neck_axis_deg": 136.07,
+     "fretboard_width_px": 65.9,
+     "edge_pixels": 32545,
+     "mask_pixels": 62221,
+     "hough": {
+      "segments_total": 392,
+      "segments_in_quad": 102,
+      "string_like": 57,
+      "fret_like": 43
+     },
+     "lsd": {
+      "segments_total": 1351,
+      "segments_in_quad": 228,
+      "string_like": 85,
+      "fret_like": 32
+     },
+     "hough_segments": "392 segments (full list in verify-gap2/out/opencvjs/pyref/opencv_lines_ref.json)",
+     "time_s": 0.1552
+    },
+    "homography_img_to_rect": [
+     [
+      -0.750327,
+      0.872474,
+      949.512979
+     ],
+     [
+      0.620907,
+      0.644651,
+      -1243.55988
+     ],
+     [
+      -0.000349,
+      0.000126,
+      1.0
+     ]
+    ],
+    "homography_full": [
+     [
+      -0.7503272641524433,
+      0.8724735629679563,
+      949.5129785780283
+     ],
+     [
+      0.6209073456641006,
+      0.6446514124198979,
+      -1243.5598802347522
+     ],
+     [
+      -0.0003493573369956765,
+      0.00012617891254278207,
+      1.0
+     ]
+    ],
+    "rectified": {
+     "size": [
+      1200,
+      130
+     ],
+     "edge_pixels": 8168,
+     "hough": {
+      "segments_total": 116,
+      "string_like": 33,
+      "fret_like": 30,
+      "fret_x_clusters_px_from_nut": [
+       622.2,
+       688.8,
+       748.8,
+       801.8,
+       851.5,
+       897.2,
+       935.0,
+       974.0,
+       1009.5,
+       1043.5,
+       1073.5,
+       1095.8,
+       1109.5,
+       1118.0,
+       1128.5,
+       1140.0
+      ],
+      "string_y_clusters_px_from_upper_edge": [
+       2.5,
+       10.2,
+       28.4,
+       44.5,
+       55.9,
+       128.0
+      ]
+     },
+     "lsd": {
+      "segments_total": 397,
+      "string_like": 49,
+      "fret_like": 22,
+      "fret_x_clusters_px_from_nut": [
+       464.6,
+       545.1,
+       622.2,
+       687.7,
+       748.6,
+       802.0,
+       851.2,
+       894.1,
+       938.5,
+       975.5,
+       1010.9,
+       1046.3,
+       1075.4,
+       1123.6
+      ],
+      "string_y_clusters_px_from_upper_edge": [
+       4.9,
+       22.2,
+       46.8,
+       127.1
+      ]
+     },
+     "hough_segments": "116 segments (full list in verify-gap2/out/opencvjs/pyref/opencv_lines_ref.json)",
+     "time_s": 0.0179
+    },
+    "py_timing": {
+     "threads_default": 2,
+     "ms_default_threads": [
+      [
+       30.85,
+       7.68
+      ],
+      [
+       30.33,
+       8.97
+      ],
+      [
+       30.11,
+       9.31
+      ]
+     ],
+     "ms_1_thread": [
+      [
+       18.89,
+       6.69
+      ],
+      [
+       18.17,
+       6.75
+      ],
+      [
+       21.91,
+       6.35
+      ]
+     ]
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,127 @@
+{
+ "input": "/home/user/gtr/inputs/S4/S4.wav",
+ "tempocnn_version": "0.0.8",
+ "tensorflow": "2.17.0",
+ "feature_shape": [
+  5,
+  40,
+  256,
+  1
+ ],
+ "models": {
+  "fcn": {
+   "load_s": 0.294,
+   "resolved_model_name": "fcn",
+   "n_params": 313136,
+   "estimate_tempo_s": 0.391,
+   "tempo": 116.0,
+   "estimate_mirex_s": 0.08,
+   "mirex": {
+    "t1": 58.0,
+    "t2": 116.0,
+    "s1": 0.013446313828787424
+   }
+  },
+  "cnn": {
+   "load_s": 0.387,
+   "resolved_model_name": "cnn",
+   "n_params": 2921684,
+   "estimate_tempo_s": 0.779,
+   "tempo": 116.0,
+   "estimate_mirex_s": 0.197,
+   "mirex": {
+    "t1": 58.0,
+    "t2": 116.0,
+    "s1": 0.06438776075821853
+   }
+  },
+  "ismir2018": {
+   "load_s": 0.335,
+   "resolved_model_name": "ismir2018",
+   "n_params": 2921684,
+   "estimate_tempo_s": 0.597,
+   "tempo": 116.0,
+   "estimate_mirex_s": 0.213,
+   "mirex": {
+    "t1": 58.0,
+    "t2": 116.0,
+    "s1": 0.009949018256449406
+   }
+  },
+  "fma2018": {
+   "load_s": 0.137,
+   "resolved_model_name": "fma2018",
+   "n_params": 313136,
+   "estimate_tempo_s": 0.369,
+   "tempo": 116.52154917032223,
+   "estimate_mirex_s": 0.109,
+   "mirex": {
+    "t1": 116.52154917032223,
+    "t2": 235.0140084613487,
+    "s1": 0.6074766035166
+   }
+  },
+  "deeptemp": {
+   "load_s": 0.246,
+   "resolved_model_name": "deeptemp_k16",
+   "n_params": 320304,
+   "estimate_tempo_s": 0.343,
+   "tempo": 116.0,
+   "estimate_mirex_s": 0.07,
+   "mirex": {
+    "t1": 58.0,
+    "t2": 116.0,
+    "s1": 0.010244442723500155
+   }
+  },
+  "deepsquare": {
+   "load_s": 0.208,
+   "resolved_model_name": "deepsquare_k16",
+   "n_params": 1198704,
+   "estimate_tempo_s": 0.355,
+   "tempo": 116.0,
+   "estimate_mirex_s": 0.078,
+   "mirex": {
+    "t1": 58.0,
+    "t2": 116.0,
+    "s1": 0.0034078952187818383
+   }
+  },
+  "shallowtemp": {
+   "load_s": 0.052,
+   "resolved_model_name": "shallowtemp_k6",
+   "n_params": 688792,
+   "estimate_tempo_s": 0.13,
+   "tempo": 116.0,
+   "estimate_mirex_s": 0.065,
+   "mirex": {
+    "t1": 58.0,
+    "t2": 116.0,
+    "s1": 0.0010517621097702059
+   }
+  },
+  "mazurka": {
+   "load_s": 0.151,
+   "resolved_model_name": "dt_maz_v_fold0",
+   "n_params": 320304,
+   "estimate_tempo_s": 0.317,
+   "tempo": 117.0,
+   "estimate_mirex_s": 0.066,
+   "mirex": {
+    "t1": 117.0,
+    "t2": 216.0,
+    "s1": 0.9999979677869739
+   }
+  }
+ },
+ "timings": {
+  "import_s": 3.096,
+  "read_features_s": 1.256
+ },
+ "meter": {
+  "model": "fma2018-meter",
+  "numerator": 4,
+  "load_s": 0.129,
+  "estimate_s": 0.414
+ }
+}

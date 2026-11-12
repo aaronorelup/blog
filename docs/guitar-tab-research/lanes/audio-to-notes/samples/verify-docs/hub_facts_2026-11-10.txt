@@ -1,0 +1,117 @@
+HF models/ChiTu/FCPE	card.license='cc-by-nc-sa-4.0'	tags=['license:cc-by-nc-sa-4.0']	gated=False	private=False	lastModified=2025-09-19T13:02:16.000Z	sdk=None	nfiles=3
+    DDSP_200k.pt	43362881
+    README.md	36
+HF datasets/lars1234/pitch-benchmark	card.license='cc-by-nc-sa-4.0'	tags=['license:cc-by-nc-sa-4.0']	gated=False	private=False	lastModified=2026-09-14T19:59:24.000Z	sdk=None	nfiles=5
+    README.md	5722
+HF models/maxrmorrison/fcnf0-plus-plus	card.license='mit'	tags=['license:mit']	gated=False	private=False	lastModified=2022-12-19T16:43:52.000Z	sdk=None	nfiles=3
+    README.md	21
+    fcnf0++.pt	107245425
+HF models/gudgud1014/MR-MT3	card.license='mit'	tags=['license:mit']	gated=False	private=False	lastModified=2024-07-10T11:04:32.000Z	sdk=None	nfiles=15
+    README.md	24
+    commu_mt3.pt	183637952
+    continual/exp_segmemV2_prev_context=0_MT3_1e-5_ep100_norandom.ckpt	582511409
+    continual/exp_segmemV2_prev_context=0_MT3_1e-5_ep100_random.ckpt	582509233
+    continual/exp_segmemV2_prev_context=64_prevaug_frame=3_MT3_1e-5_ep100_norandom.ckpt	582509297
+    continual/exp_segmemV2_prev_context=64_prevaug_frame=3_MT3_1e-5_ep100_random.ckpt	582509297
+    mt3.pth	183672643
+    scratch/exp_segmemV2_prev_context=0.ckpt	582536411
+    scratch/exp_segmemV2_prev_context=32.ckpt	582536411
+    scratch/exp_segmemV2_prev_context=64.ckpt	582536411
+    scratch/exp_segmemV2_prev_context=64_prevaug_frame=3.ckpt	582522347
+    scratch/exp_segmemV2_prev_context=64_prevaug_frame=8.ckpt	582524649
+    slakh_f1_0.65.pth	183637952
+    stemmix/epoch=779-val_loss=1.1696.ckpt	582525020
+HF models/MuScriptor/muscriptor-small	card.license='cc-by-nc-4.0'	tags=['license:cc-by-nc-4.0']	gated='auto'	private=False	lastModified=2026-07-10T11:01:31.000Z	sdk=None	nfiles=4
+    README.md	10395
+    model.safetensors	411888600
+HF models/MuScriptor/muscriptor-medium	card.license='cc-by-nc-4.0'	tags=['license:cc-by-nc-4.0']	gated='auto'	private=False	lastModified=2026-07-10T11:01:20.000Z	sdk=None	nfiles=4
+    README.md	10198
+    model.safetensors	1228144472
+HF models/MuScriptor/muscriptor-large	card.license='cc-by-nc-4.0'	tags=['license:cc-by-nc-4.0']	gated='auto'	private=False	lastModified=2026-07-10T10:56:16.000Z	sdk=None	nfiles=4
+    README.md	10255
+    model.safetensors	5465642136
+HF models/DamRsn/muscriptor-gguf	card.license='cc-by-nc-4.0'	tags=['license:cc-by-nc-4.0']	gated=False	private=False	lastModified=2026-11-08T14:20:58.000Z	sdk=None	nfiles=8
+    LICENSE	19347
+    README.md	3266
+    v1/muscriptor-large-f16.gguf	2739142176
+    v1/muscriptor-medium-f16.gguf	618442496
+    v1/muscriptor-small-f16.gguf	209425152
+HF models/lj1995/VoiceConversionWebUI	card.license='mit'	tags=['license:mit']	gated=False	private=False	lastModified=2026-08-01T16:59:13.000Z	sdk=None	nfiles=155
+    README.md	21
+    hubert_base.pt	189507909
+    pretrained/D32k.pth	109978943
+    pretrained/D40k.pth	109978943
+    pretrained/D48k.pth	109978943
+    pretrained/G32k.pth	72653893
+    pretrained/G40k.pth	72763063
+    pretrained/G48k.pth	72850501
+    pretrained/f0D32k.pth	109978943
+    pretrained/f0D40k.pth	109978943
+    pretrained/f0D48k.pth	109978943
+    pretrained/f0G32k.pth	72795627
+    pretrained/f0G40k.pth	72909665
+    pretrained/f0G48k.pth	73008619
+    pretrained_v0/D32k.pth	109978943
+    pretrained_v0/D40k.pth	109978943
+    pretrained_v0/D48k.pth	109978943
+    pretrained_v0/G32k.pth	72653893
+    pretrained_v0/G40k.pth	72763063
+    pretrained_v0/G48k.pth	72850501
+    pretrained_v0/f0D32k.pth	109978943
+    pretrained_v0/f0D40k.pth	109978943
+    pretrained_v0/f0D48k.pth	109978943
+    pretrained_v0/f0G32k.pth	72795627
+    pretrained_v0/f0G40k.pth	72909665
+    pretrained_v0/f0G48k.pth	73008619
+    pretrained_v2/D32k.pth	142875703
+    pretrained_v2/D40k.pth	142875703
+    pretrained_v2/D48k.pth	142875703
+    pretrained_v2/G32k.pth	73811639
+    pretrained_v2/G40k.pth	72959671
+    pretrained_v2/G48k.pth	75318967
+    pretrained_v2/f0D32k.pth	142875703
+    pretrained_v2/f0D40k.pth	142875703
+    pretrained_v2/f0D48k.pth	142875703
+    pretrained_v2/f0G32k.pth	73950049
+    pretrained_v2/f0G40k.pth	73106273
+    pretrained_v2/f0G48k.pth	75465569
+    pymss_weights/dereverb_mel_band_roformer_anvuew_sdr_19.1729.ckpt	456706759
+    pymss_weights/dereverb_mel_band_roformer_less_aggressive_anvuew_sdr_18.8050.ckpt	456754215
+HF spaces/mimbres/YourMT3	card.license='apache-2.0'	tags=[]	gated=False	private=False	lastModified=2025-01-31T14:38:17.000Z	sdk=gradio	nfiles=145
+    README.md	301
+    amt/logs/2024/mc13_256_g4_all_v7_mt3f_sqr_rms_moe_wf4_n8k2_silu_rope_rp_b36_nops/checkpoints/last.ckpt	561544628
+    amt/logs/2024/mc13_256_g4_all_v7_mt3f_sqr_rms_moe_wf4_n8k2_silu_rope_rp_b80_ps2/checkpoints/model.ckpt	758957292
+    amt/logs/2024/notask_all_cross_v6_xk2_amp0811_gm_ext_plus_nops_b72/checkpoints/model.ckpt	542707465
+    amt/logs/2024/ptf_all_cross_rebal5_mirst_xk2_edr005_attend_c_full_plus_b100/checkpoints/model.ckpt	361050039
+    amt/logs/2024/ptf_mc13_256_all_cross_v6_xk5_amp0811_edr005_attend_c_full_plus_2psn_nl26_sb_b26r_800k/checkpoints/model.ckpt	541553263
+    amt/src/extras/unimax_sampler/README.md	2162
+    amt/src/utils/README.md	689
+HF spaces/cwitkowitz/timbre-trap	card.license=None	tags=[]	gated=False	private=False	lastModified=2026-01-15T12:50:02.000Z	sdk=gradio	nfiles=6
+    README.md	230
+    models/tt-orig.pt	11353410
+HF datasets/loubb/aria-midi	card.license='cc-by-nc-sa-4.0'	tags=['license:cc-by-nc-sa-4.0']	gated=False	private=False	lastModified=2025-12-14T10:13:21.000Z	sdk=None	nfiles=10
+    README.md	5912
+    piano-medium-double-1.0.safetensors	446577344
+PYPI basic-pitch	0.4.0	uploaded=2024-08-16T17:17:08.410579Z	first=2022-05-12T06:26:45.501738Z	nreleases=12	license=''	license_expression=None	classifiers=[]	requires_python=None	yanked=[]
+PYPI crepe	0.0.16	uploaded=2024-08-19T18:15:43.284243Z	first=2018-04-17T10:23:36.603789Z	nreleases=16	license='MIT'	license_expression=None	classifiers=['License :: OSI Approved :: MIT License']	requires_python=None	yanked=[]
+PYPI torchcrepe	0.0.24	uploaded=2025-05-16T18:41:13.419088Z	first=2020-08-01T18:56:05.171466Z	nreleases=24	license='MIT'	license_expression=None	classifiers=['License :: OSI Approved :: MIT License']	requires_python=None	yanked=[]
+PYPI librosa	1.0.0	uploaded=2026-08-11T15:37:35.455857Z	first=2013-12-14T22:17:51.194064Z	nreleases=47	license='ISC'	license_expression=None	classifiers=['License :: OSI Approved :: ISC License (ISCL)']	requires_python='>=3.12'	yanked=[]
+PYPI pesto-pitch	2.0.1	uploaded=2025-02-18T16:24:18.845921Z	first=2023-10-16T15:29:52.680557Z	nreleases=4	license=''	license_expression=None	classifiers=['License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)']	requires_python='>=3.8'	yanked=[]
+PYPI torchfcpe	0.0.4	uploaded=2024-03-06T20:03:43.685604Z	first=2023-12-13T20:40:43.556669Z	nreleases=4	license='MIT'	license_expression=None	classifiers=['License :: OSI Approved :: MIT License']	requires_python=''	yanked=[]
+PYPI swift-f0	0.3.0	uploaded=2026-09-25T15:36:25.761406Z	first=2025-07-08T00:39:11.634995Z	nreleases=5	license=''	license_expression='MIT'	classifiers=[]	requires_python='>=3.8'	yanked=[]
+PYPI penn	1.0.0	uploaded=2025-04-02T17:11:45.924447Z	first=2022-12-19T18:24:55.675810Z	nreleases=16	license='MIT'	license_expression=None	classifiers=['License :: OSI Approved :: MIT License']	requires_python=None	yanked=[]
+PYPI aubio	0.4.9	uploaded=2019-02-08T11:21:02.438010Z	first=2016-08-25T10:43:31.278466Z	nreleases=10	license='GNU/GPL version 3'	license_expression=None	classifiers=['License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)']	requires_python=''	yanked=[]
+PYPI essentia	2.1b6.dev1438	uploaded=2026-05-19T16:25:49.379142Z	first=2018-07-03T17:13:49.409181Z	nreleases=23	license=''	license_expression='AGPL-3.0-only'	classifiers=[]	requires_python=None	yanked=[]
+PYPI essentia-tensorflow	2.1b6.dev1438	uploaded=2026-05-19T16:26:01.685674Z	first=2020-04-22T14:03:48.134026Z	nreleases=15	license=''	license_expression='AGPL-3.0-only'	classifiers=[]	requires_python=None	yanked=[]
+PYPI muscriptor	0.4.0	uploaded=2026-10-20T16:00:38.945293Z	first=2026-07-10T11:16:35.436732Z	nreleases=6	license=''	license_expression='MIT'	classifiers=[]	requires_python='>=3.10'	yanked=['0.1.0']
+PYPI omnizart	0.6.3	uploaded=2026-05-31T07:10:55.818285Z	first=2020-11-06T06:33:16.830795Z	nreleases=19	license='MIT'	license_expression=None	classifiers=['License :: OSI Approved :: MIT License']	requires_python='>=3.8'	yanked=[]
+PYPI piano-transcription-inference	0.0.6	uploaded=2025-01-26T02:30:39.045379Z	first=2020-09-18T06:39:23.451489Z	nreleases=6	license=''	license_expression=None	classifiers=['License :: OSI Approved :: MIT License']	requires_python='>=3.6'	yanked=[]
+PYPI transkun	2.0.1	uploaded=2024-09-28T15:30:19.859459Z	first=2022-08-08T00:55:15.659251Z	nreleases=6	license=''	license_expression=None	classifiers=['License :: OSI Approved :: MIT License']	requires_python='>=3.6'	yanked=[]
+PYPI crepe-notes	0.2.0	uploaded=2026-03-13T10:01:57.594543Z	first=2023-07-12T08:15:38.302316Z	nreleases=5	license='GNU General Public License v3.0 license'	license_expression=None	classifiers=['License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)']	requires_python='>=3.9'	yanked=[]
+PYPI aria-amt	ERROR HTTP Error 404: Not Found
+PYPI rmvpe	ERROR HTTP Error 404: Not Found
+PYPI timbre-trap	ERROR HTTP Error 404: Not Found
+PYPI hft-transformer	ERROR HTTP Error 404: Not Found
+PYPI sheetsage	ERROR HTTP Error 404: Not Found
+PYPI mt3	0.2.1	uploaded=2022-06-09T23:41:26.053061Z	first=2022-06-09T23:30:14.998802Z	nreleases=2	license='MIT'	license_expression=None	classifiers=['License :: OSI Approved :: MIT License']	requires_python='>=3.8,<3.11'	yanked=[]
+PYPI neuralnote	ERROR HTTP Error 404: Not Found

@@ -1,0 +1,683 @@
+{
+ "tool": "basic-pitch",
+ "kind": "notes",
+ "dir": "/home/user/gtr/lanes/audio-to-notes/out/basic-pitch/tflite-default",
+ "conf_threshold": null,
+ "results": {
+  "R1a": {
+   "eval_id": "e0486",
+   "args": "notes --truth R1a --est /home/user/gtr/lanes/audio-to-notes/out/basic-pitch/tflite-default/R1a.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.69898,
+     "recall": 0.724868,
+     "f1": 0.711688,
+     "avg_overlap_ratio": 0.803481,
+     "n_matched": 137
+    },
+    "onset_offset": {
+     "precision": 0.489796,
+     "recall": 0.507937,
+     "f1": 0.498701,
+     "avg_overlap_ratio": 0.917919,
+     "n_matched": 96
+    },
+    "recall_by_voice": {
+     "chord": {
+      "n_truth": 189,
+      "onset_only_matched": 137,
+      "onset_only_recall": 0.724868,
+      "onset_offset_matched": 96,
+      "onset_offset_recall": 0.507937
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 137,
+     "median_s": 0.00194,
+     "mean_s": 0.003106,
+     "mean_abs_s": 0.009886,
+     "p95_abs_s": 0.027507,
+     "max_abs_s": 0.041971
+    }
+   },
+   "counts": {
+    "n_truth": 189,
+    "n_est": 196,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 137,
+    "n_matched_onset_offset": 96
+   }
+  },
+  "R1b": {
+   "eval_id": "e0488",
+   "args": "notes --truth R1b --est /home/user/gtr/lanes/audio-to-notes/out/basic-pitch/tflite-default/R1b.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.75,
+     "recall": 0.814286,
+     "f1": 0.780822,
+     "avg_overlap_ratio": 0.810538,
+     "n_matched": 57
+    },
+    "onset_offset": {
+     "precision": 0.644737,
+     "recall": 0.7,
+     "f1": 0.671233,
+     "avg_overlap_ratio": 0.864422,
+     "n_matched": 49
+    },
+    "recall_by_voice": {
+     "lead": {
+      "n_truth": 70,
+      "onset_only_matched": 57,
+      "onset_only_recall": 0.814286,
+      "onset_offset_matched": 49,
+      "onset_offset_recall": 0.7
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 57,
+     "median_s": -0.003851,
+     "mean_s": -0.001491,
+     "mean_abs_s": 0.008431,
+     "p95_abs_s": 0.020113,
+     "max_abs_s": 0.038327
+    }
+   },
+   "counts": {
+    "n_truth": 70,
+    "n_est": 76,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 57,
+    "n_matched_onset_offset": 49
+   }
+  },
+  "R1c": {
+   "eval_id": "e0489",
+   "args": "notes --truth R1c --est /home/user/gtr/lanes/audio-to-notes/out/basic-pitch/tflite-default/R1c.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.769231,
+     "recall": 0.810811,
+     "f1": 0.789474,
+     "avg_overlap_ratio": 0.771866,
+     "n_matched": 120
+    },
+    "onset_offset": {
+     "precision": 0.487179,
+     "recall": 0.513514,
+     "f1": 0.5,
+     "avg_overlap_ratio": 0.890638,
+     "n_matched": 76
+    },
+    "recall_by_voice": {
+     "chord": {
+      "n_truth": 148,
+      "onset_only_matched": 120,
+      "onset_only_recall": 0.810811,
+      "onset_offset_matched": 76,
+      "onset_offset_recall": 0.513514
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 120,
+     "median_s": -0.008379,
+     "mean_s": -0.007826,
+     "mean_abs_s": 0.010975,
+     "p95_abs_s": 0.024832,
+     "max_abs_s": 0.049139
+    }
+   },
+   "counts": {
+    "n_truth": 148,
+    "n_est": 156,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 120,
+    "n_matched_onset_offset": 76
+   }
+  },
+  "S1": {
+   "eval_id": "e0490",
+   "args": "notes --truth S1 --est /home/user/gtr/lanes/audio-to-notes/out/basic-pitch/tflite-default/S1.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.953125,
+     "recall": 0.983871,
+     "f1": 0.968254,
+     "avg_overlap_ratio": 0.827335,
+     "n_matched": 61
+    },
+    "onset_offset": {
+     "precision": 0.65625,
+     "recall": 0.677419,
+     "f1": 0.666667,
+     "avg_overlap_ratio": 0.891387,
+     "n_matched": 42
+    },
+    "recall_by_voice": {
+     "melody": {
+      "n_truth": 62,
+      "onset_only_matched": 61,
+      "onset_only_recall": 0.983871,
+      "onset_offset_matched": 42,
+      "onset_offset_recall": 0.677419
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 61,
+     "median_s": 0.010376,
+     "mean_s": 0.010578,
+     "mean_abs_s": 0.01089,
+     "p95_abs_s": 0.020688,
+     "max_abs_s": 0.023234
+    }
+   },
+   "counts": {
+    "n_truth": 62,
+    "n_est": 64,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 61,
+    "n_matched_onset_offset": 42
+   }
+  },
+  "S2n": {
+   "eval_id": "e0493",
+   "args": "notes --truth S2n --est /home/user/gtr/lanes/audio-to-notes/out/basic-pitch/tflite-default/S2n.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.656934,
+     "recall": 1.0,
+     "f1": 0.792952,
+     "avg_overlap_ratio": 0.85071,
+     "n_matched": 90
+    },
+    "onset_offset": {
+     "precision": 0.445255,
+     "recall": 0.677778,
+     "f1": 0.537445,
+     "avg_overlap_ratio": 0.942161,
+     "n_matched": 61
+    },
+    "recall_by_voice": {
+     "bass": {
+      "n_truth": 48,
+      "onset_only_matched": 48,
+      "onset_only_recall": 1.0,
+      "onset_offset_matched": 25,
+      "onset_offset_recall": 0.520833
+     },
+     "melody": {
+      "n_truth": 42,
+      "onset_only_matched": 42,
+      "onset_only_recall": 1.0,
+      "onset_offset_matched": 36,
+      "onset_offset_recall": 0.857143
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 90,
+     "median_s": 0.008064,
+     "mean_s": 0.008816,
+     "mean_abs_s": 0.009097,
+     "p95_abs_s": 0.019477,
+     "max_abs_s": 0.026961
+    }
+   },
+   "counts": {
+    "n_truth": 90,
+    "n_est": 137,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 90,
+    "n_matched_onset_offset": 61
+   }
+  },
+  "S2s": {
+   "eval_id": "e0495",
+   "args": "notes --truth S2s --est /home/user/gtr/lanes/audio-to-notes/out/basic-pitch/tflite-default/S2s.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.452261,
+     "recall": 1.0,
+     "f1": 0.622837,
+     "avg_overlap_ratio": 0.811113,
+     "n_matched": 90
+    },
+    "onset_offset": {
+     "precision": 0.291457,
+     "recall": 0.644444,
+     "f1": 0.401384,
+     "avg_overlap_ratio": 0.94514,
+     "n_matched": 58
+    },
+    "recall_by_voice": {
+     "bass": {
+      "n_truth": 48,
+      "onset_only_matched": 48,
+      "onset_only_recall": 1.0,
+      "onset_offset_matched": 26,
+      "onset_offset_recall": 0.541667
+     },
+     "melody": {
+      "n_truth": 42,
+      "onset_only_matched": 42,
+      "onset_only_recall": 1.0,
+      "onset_offset_matched": 32,
+      "onset_offset_recall": 0.761905
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 90,
+     "median_s": 0.007501,
+     "mean_s": 0.008816,
+     "mean_abs_s": 0.009203,
+     "p95_abs_s": 0.020278,
+     "max_abs_s": 0.02509
+    }
+   },
+   "counts": {
+    "n_truth": 90,
+    "n_est": 199,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 90,
+    "n_matched_onset_offset": 58
+   }
+  },
+  "S3": {
+   "eval_id": "e0497",
+   "args": "notes --truth S3 --est /home/user/gtr/lanes/audio-to-notes/out/basic-pitch/tflite-default/S3.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.761421,
+     "recall": 0.824176,
+     "f1": 0.791557,
+     "avg_overlap_ratio": 0.847122,
+     "n_matched": 150
+    },
+    "onset_offset": {
+     "precision": 0.609137,
+     "recall": 0.659341,
+     "f1": 0.633245,
+     "avg_overlap_ratio": 0.922491,
+     "n_matched": 120
+    },
+    "recall_by_voice": {
+     "chord": {
+      "n_truth": 182,
+      "onset_only_matched": 150,
+      "onset_only_recall": 0.824176,
+      "onset_offset_matched": 120,
+      "onset_offset_recall": 0.659341
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 150,
+     "median_s": 0.009004,
+     "mean_s": 0.009848,
+     "mean_abs_s": 0.011525,
+     "p95_abs_s": 0.031606,
+     "max_abs_s": 0.042483
+    }
+   },
+   "counts": {
+    "n_truth": 182,
+    "n_est": 197,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 150,
+    "n_matched_onset_offset": 120
+   }
+  },
+  "S4": {
+   "eval_id": "e0499",
+   "args": "notes --truth S4 --est /home/user/gtr/lanes/audio-to-notes/out/basic-pitch/tflite-default/S4.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.635575,
+     "recall": 0.627409,
+     "f1": 0.631466,
+     "avg_overlap_ratio": 0.74255,
+     "n_matched": 293
+    },
+    "onset_offset": {
+     "precision": 0.37744,
+     "recall": 0.372591,
+     "f1": 0.375,
+     "avg_overlap_ratio": 0.913498,
+     "n_matched": 174
+    },
+    "recall_by_voice": {
+     "bass": {
+      "n_truth": 61,
+      "onset_only_matched": 26,
+      "onset_only_recall": 0.42623,
+      "onset_offset_matched": 14,
+      "onset_offset_recall": 0.229508
+     },
+     "chord": {
+      "n_truth": 369,
+      "onset_only_matched": 243,
+      "onset_only_recall": 0.658537,
+      "onset_offset_matched": 147,
+      "onset_offset_recall": 0.398374
+     },
+     "melody": {
+      "n_truth": 37,
+      "onset_only_matched": 24,
+      "onset_only_recall": 0.648649,
+      "onset_offset_matched": 13,
+      "onset_offset_recall": 0.351351
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 293,
+     "median_s": 0.008064,
+     "mean_s": 0.009824,
+     "mean_abs_s": 0.012618,
+     "p95_abs_s": 0.035262,
+     "max_abs_s": 0.045129
+    }
+   },
+   "counts": {
+    "n_truth": 467,
+    "n_est": 461,
+    "n_truth_left_out": {
+     "drums": 194
+    },
+    "n_matched_onset_only": 293,
+    "n_matched_onset_offset": 174
+   }
+  },
+  "S4guitar": {
+   "eval_id": "e0502",
+   "args": "notes --truth S4 --est /home/user/gtr/lanes/audio-to-notes/out/basic-pitch/tflite-default/S4guitar.notes.csv --voice chord --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.782383,
+     "recall": 0.818428,
+     "f1": 0.8,
+     "avg_overlap_ratio": 0.826835,
+     "n_matched": 302
+    },
+    "onset_offset": {
+     "precision": 0.590674,
+     "recall": 0.617886,
+     "f1": 0.603974,
+     "avg_overlap_ratio": 0.916362,
+     "n_matched": 228
+    },
+    "recall_by_voice": {
+     "chord": {
+      "n_truth": 369,
+      "onset_only_matched": 302,
+      "onset_only_recall": 0.818428,
+      "onset_offset_matched": 228,
+      "onset_offset_recall": 0.617886
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 302,
+     "median_s": 0.008376,
+     "mean_s": 0.00923,
+     "mean_abs_s": 0.01063,
+     "p95_abs_s": 0.0251,
+     "max_abs_s": 0.035511
+    }
+   },
+   "counts": {
+    "n_truth": 369,
+    "n_est": 386,
+    "n_truth_left_out": {
+     "drums": 194,
+     "bass": 61,
+     "melody": 37
+    },
+    "n_matched_onset_only": 302,
+    "n_matched_onset_offset": 228
+   }
+  },
+  "S4lead": {
+   "eval_id": "e0505",
+   "args": "notes --truth S4 --est /home/user/gtr/lanes/audio-to-notes/out/basic-pitch/tflite-default/S4lead.notes.csv --voice melody --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.692308,
+     "recall": 0.72973,
+     "f1": 0.710526,
+     "avg_overlap_ratio": 0.735271,
+     "n_matched": 27
+    },
+    "onset_offset": {
+     "precision": 0.179487,
+     "recall": 0.189189,
+     "f1": 0.184211,
+     "avg_overlap_ratio": 0.837676,
+     "n_matched": 7
+    },
+    "recall_by_voice": {
+     "melody": {
+      "n_truth": 37,
+      "onset_only_matched": 27,
+      "onset_only_recall": 0.72973,
+      "onset_offset_matched": 7,
+      "onset_offset_recall": 0.189189
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 27,
+     "median_s": 0.029301,
+     "mean_s": 0.028507,
+     "mean_abs_s": 0.028507,
+     "p95_abs_s": 0.039827,
+     "max_abs_s": 0.041928
+    }
+   },
+   "counts": {
+    "n_truth": 37,
+    "n_est": 39,
+    "n_truth_left_out": {
+     "drums": 194,
+     "bass": 61,
+     "chord": 369
+    },
+    "n_matched_onset_only": 27,
+    "n_matched_onset_offset": 7
+   }
+  },
+  "S5capo2": {
+   "eval_id": "e0507",
+   "args": "notes --truth S5capo2 --est /home/user/gtr/lanes/audio-to-notes/out/basic-pitch/tflite-default/S5capo2.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.647482,
+     "recall": 1.0,
+     "f1": 0.786026,
+     "avg_overlap_ratio": 0.862564,
+     "n_matched": 90
+    },
+    "onset_offset": {
+     "precision": 0.467626,
+     "recall": 0.722222,
+     "f1": 0.567686,
+     "avg_overlap_ratio": 0.948282,
+     "n_matched": 65
+    },
+    "recall_by_voice": {
+     "bass": {
+      "n_truth": 48,
+      "onset_only_matched": 48,
+      "onset_only_recall": 1.0,
+      "onset_offset_matched": 29,
+      "onset_offset_recall": 0.604167
+     },
+     "melody": {
+      "n_truth": 42,
+      "onset_only_matched": 42,
+      "onset_only_recall": 1.0,
+      "onset_offset_matched": 36,
+      "onset_offset_recall": 0.857143
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 90,
+     "median_s": 0.007783,
+     "mean_s": 0.008171,
+     "mean_abs_s": 0.009044,
+     "p95_abs_s": 0.019967,
+     "max_abs_s": 0.02178
+    }
+   },
+   "counts": {
+    "n_truth": 90,
+    "n_est": 139,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 90,
+    "n_matched_onset_offset": 65
+   }
+  },
+  "S5dropd": {
+   "eval_id": "e0510",
+   "args": "notes --truth S5dropd --est /home/user/gtr/lanes/audio-to-notes/out/basic-pitch/tflite-default/S5dropd.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.692308,
+     "recall": 1.0,
+     "f1": 0.818182,
+     "avg_overlap_ratio": 0.856306,
+     "n_matched": 90
+    },
+    "onset_offset": {
+     "precision": 0.453846,
+     "recall": 0.655556,
+     "f1": 0.536364,
+     "avg_overlap_ratio": 0.94825,
+     "n_matched": 59
+    },
+    "recall_by_voice": {
+     "bass": {
+      "n_truth": 48,
+      "onset_only_matched": 48,
+      "onset_only_recall": 1.0,
+      "onset_offset_matched": 23,
+      "onset_offset_recall": 0.479167
+     },
+     "melody": {
+      "n_truth": 42,
+      "onset_only_matched": 42,
+      "onset_only_recall": 1.0,
+      "onset_offset_matched": 36,
+      "onset_offset_recall": 0.857143
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 90,
+     "median_s": 0.008143,
+     "mean_s": 0.009074,
+     "mean_abs_s": 0.009355,
+     "p95_abs_s": 0.019967,
+     "max_abs_s": 0.026961
+    }
+   },
+   "counts": {
+    "n_truth": 90,
+    "n_est": 130,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 90,
+    "n_matched_onset_offset": 59
+   }
+  },
+  "S6taps": {
+   "eval_id": "e0512",
+   "args": "notes --truth S6taps --est /home/user/gtr/lanes/audio-to-notes/out/basic-pitch/tflite-default/S6taps.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.459184,
+     "recall": 1.0,
+     "f1": 0.629371,
+     "avg_overlap_ratio": 0.795721,
+     "n_matched": 90
+    },
+    "onset_offset": {
+     "precision": 0.280612,
+     "recall": 0.611111,
+     "f1": 0.384615,
+     "avg_overlap_ratio": 0.939462,
+     "n_matched": 55
+    },
+    "recall_by_voice": {
+     "bass": {
+      "n_truth": 48,
+      "onset_only_matched": 48,
+      "onset_only_recall": 1.0,
+      "onset_offset_matched": 25,
+      "onset_offset_recall": 0.520833
+     },
+     "melody": {
+      "n_truth": 42,
+      "onset_only_matched": 42,
+      "onset_only_recall": 1.0,
+      "onset_offset_matched": 30,
+      "onset_offset_recall": 0.714286
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 90,
+     "median_s": 0.009156,
+     "mean_s": 0.009719,
+     "mean_abs_s": 0.009869,
+     "p95_abs_s": 0.020278,
+     "max_abs_s": 0.02509
+    }
+   },
+   "counts": {
+    "n_truth": 90,
+    "n_est": 196,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 90,
+    "n_matched_onset_offset": 55
+   }
+  },
+  "S7flat30": {
+   "eval_id": "e0514",
+   "args": "notes --truth S7flat30 --est /home/user/gtr/lanes/audio-to-notes/out/basic-pitch/tflite-default/S7flat30.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.741071,
+     "recall": 0.456044,
+     "f1": 0.564626,
+     "avg_overlap_ratio": 0.70043,
+     "n_matched": 83
+    },
+    "onset_offset": {
+     "precision": 0.348214,
+     "recall": 0.214286,
+     "f1": 0.265306,
+     "avg_overlap_ratio": 0.906202,
+     "n_matched": 39
+    },
+    "recall_by_voice": {
+     "chord": {
+      "n_truth": 182,
+      "onset_only_matched": 83,
+      "onset_only_recall": 0.456044,
+      "onset_offset_matched": 39,
+      "onset_offset_recall": 0.214286
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 83,
+     "median_s": 0.00836,
+     "mean_s": 0.008524,
+     "mean_abs_s": 0.011345,
+     "p95_abs_s": 0.026243,
+     "max_abs_s": 0.044131
+    }
+   },
+   "counts": {
+    "n_truth": 182,
+    "n_est": 112,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 83,
+    "n_matched_onset_offset": 39
+   }
+  }
+ }
+}

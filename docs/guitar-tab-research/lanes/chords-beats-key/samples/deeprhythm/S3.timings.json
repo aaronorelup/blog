@@ -1,0 +1,11 @@
+{
+ "torch": "2.15.0+cpu",
+ "torch_threads": 1,
+ "import_s": 6.09,
+ "load_s": 0.476,
+ "predict_s": 18.798,
+ "outputs": {
+  "bpm": 95.0,
+  "confidence": 0.6475479602813721
+ }
+}

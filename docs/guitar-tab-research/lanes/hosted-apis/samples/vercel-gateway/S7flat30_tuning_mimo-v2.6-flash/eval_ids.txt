@@ -1,0 +1,1 @@
+[gtr-eval e0424] tuning truth=S7flat30 exit=0 (ledger /home/user/gtr/eval/ledger/evals.jsonl)

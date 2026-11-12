@@ -1,0 +1,687 @@
+[
+ {
+  "id": "K1",
+  "sec": "§3.1",
+  "url": "https://klang.io/terms/",
+  "quote": "the Klangio Apps for iOS and Android"
+ },
+ {
+  "id": "K2",
+  "sec": "§3.1",
+  "url": "https://klang.io/terms/",
+  "quote": "the Klangio Transcription Plugin (VST3)"
+ },
+ {
+  "id": "K3",
+  "sec": "§3.1",
+  "url": "https://klang.io/terms/",
+  "quote": "API endpoints that allow integration into external systems for automated or large-scale transcription workflows (https://klang.io/api)"
+ },
+ {
+  "id": "K4",
+  "sec": "§5.2.3",
+  "url": "https://klang.io/terms/",
+  "quote": "API access and Bulk Transcription are not included in the subscription plans; they are offered exclusively as separate business services subject to separate terms and require separate registration"
+ },
+ {
+  "id": "K5",
+  "sec": "§5.2.1",
+  "url": "https://klang.io/terms/",
+  "quote": "The Free Tier allows users to access Klangio Services without creating a user account and without incurring any costs. It is intended exclusively for non-commercial use ... (a) the number of Demo Transcriptions is limited to 30 per day, (b) the duration of each transcription is limited to 20 seconds, (c) export is restricted to sheet music in PDF format, which includes a watermark, (d) the Edit Mode is not available, (e) transcriptions remain available for a period of 30 days."
+ },
+ {
+  "id": "K6",
+  "sec": "§12.4",
+  "url": "https://klang.io/terms/",
+  "quote": "The use of Klangio Services and Apps is intended exclusively for private, non-commercial purposes, subject to the exception described below. Commercial use is permitted exclusively for original musical compositions created by the user, provided that the output is based on full transcriptions rather than a demo transcription (see § 5.2.1)."
+ },
+ {
+  "id": "K7",
+  "sec": "§12.5",
+  "url": "https://klang.io/terms/",
+  "quote": "Transcriptions may only be used by you in accordance with applicable laws, in particular copyright laws. They must not be used to train music transcription AI systems or similar technologies."
+ },
+ {
+  "id": "K8",
+  "sec": "§12.3",
+  "url": "https://klang.io/terms/",
+  "quote": "You are solely responsible for the use of the transcripts, which we only provide to you on the basis of your uploads. You undertake not to infringe the rights of third parties by using the transcriptions."
+ },
+ {
+  "id": "K9",
+  "sec": "§8.1",
+  "url": "https://klang.io/terms/",
+  "quote": "We do not use the content uploaded by you to train our AI models or for any other purposes beyond the provision of the Klangio Services in accordance with these Terms of Use."
+ },
+ {
+  "id": "K10",
+  "sec": "§7.5",
+  "url": "https://klang.io/terms/",
+  "quote": "You are not entitled to make the Software available to third parties for use, whether in return for payment or free of charge, to sublet it or otherwise transfer rights of use to third parties, unless we have given our express prior written consent."
+ },
+ {
+  "id": "K11",
+  "sec": "§5.1 (no number in survey)",
+  "url": "https://klang.io/terms/",
+  "quote": "Transcription Studio – enables multi-instrument transcription by analyzing multiple instrument tracks within a single audio file ... Transcription Plugin – a VST3 plugin ... API Access ... Bulk Transcription"
+ },
+ {
+  "id": "K12",
+  "sec": "footer",
+  "url": "https://klang.io/terms/",
+  "quote": "Copyright © 2026 Klangio GmbH"
+ },
+ {
+  "id": "S1",
+  "sec": "header",
+  "url": "https://www.songsterr.com/terms",
+  "quote": "Last Modified: June 10, 2026"
+ },
+ {
+  "id": "S1b",
+  "sec": "party",
+  "url": "https://www.songsterr.com/terms",
+  "quote": "Guitar Tabs LLC"
+ },
+ {
+  "id": "S2",
+  "sec": "user content",
+  "url": "https://www.songsterr.com/terms",
+  "quote": "You retain any and all of your rights to any Content you submit, post or display on or through the Service and you are responsible for protecting those rights. ... by posting Content using the Service you grant us the right and license to use, modify, publicly perform, publicly display, reproduce, and distribute such Content on and through the Service."
+ },
+ {
+  "id": "S3",
+  "sec": "site content",
+  "url": "https://www.songsterr.com/terms",
+  "quote": "Content found on or through this Service are the property of Guitartabs LLC or used with permission. You may not distribute, modify, transmit, reuse, download, repost, copy, or use said Content, whether in whole or in part, for commercial purposes or for personal gain, without express advance written permission from us."
+ },
+ {
+  "id": "S4",
+  "sec": "automated access",
+  "url": "https://www.songsterr.com/terms",
+  "quote": "You may not use, and may not instruct, enable, or permit any automated tool, script, browser extension, or AI agent to use, any means to circumvent, disable, or bypass paid (Plus) features ... Independent tools that do not modify, automate, or interfere with the Service or its tab player are not restricted by this section."
+ },
+ {
+  "id": "S5",
+  "sec": "ai.txt",
+  "url": "https://www.songsterr.com/ai.txt",
+  "quote": "AI model training: NOT permitted. Do not use Songsterr content (tabs, notation, song metadata, lyrics, audio, API responses) to train, fine-tune or evaluate AI models, or to build datasets for that purpose."
+ },
+ {
+  "id": "S5b",
+  "sec": "ai.txt date",
+  "url": "https://www.songsterr.com/ai.txt",
+  "quote": "Last updated: 2026-11-09"
+ },
+ {
+  "id": "SC1",
+  "sec": "intro",
+  "url": "https://playanything.com/terms",
+  "quote": "The Service includes the Songscription web application and the AnythingPiano mobile application"
+ },
+ {
+  "id": "SC1b",
+  "sec": "date",
+  "url": "https://playanything.com/terms",
+  "quote": "Last updated June 18, 2026"
+ },
+ {
+  "id": "SC1c",
+  "sec": "party",
+  "url": "https://playanything.com/terms",
+  "quote": "Songscription, Inc."
+ },
+ {
+  "id": "SC2",
+  "sec": "§5.1",
+  "url": "https://playanything.com/terms",
+  "quote": "Company grants you, solely for your personal, non-commercial use, a limited, non-exclusive, non-transferable, non-sublicensable, revocable license to: ... (b) access and use the Service."
+ },
+ {
+  "id": "SC3",
+  "sec": "Credits",
+  "url": "https://playanything.com/terms",
+  "quote": "You may not use Credits to generate, download, or access Digital Sheet Music Files or Outputs for any commercial purpose, including sale, sublicense, or redistribution, except as expressly permitted by Company."
+ },
+ {
+  "id": "SC4",
+  "sec": "§8.1",
+  "url": "https://playanything.com/terms",
+  "quote": "You retain any copyright and other proprietary rights that you may hold in the User Content that you Post to the Service, subject to the licenses granted in these Terms."
+ },
+ {
+  "id": "SC4b",
+  "sec": "§8.x license to company",
+  "url": "https://playanything.com/terms",
+  "quote": "train or improve our AI or machine learning models"
+ },
+ {
+  "id": "SC5",
+  "sec": "definition Output",
+  "url": "https://playanything.com/terms",
+  "quote": "transcribe audio files into sheet music and various digital formats (e.g., MIDI) (“Output”)"
+ },
+ {
+  "id": "SC5b",
+  "sec": "definition Transcription",
+  "url": "https://playanything.com/terms",
+  "quote": "created by a user within the App, as distinct from Output generated automatically by the Service’s AI"
+ },
+ {
+  "id": "SC6",
+  "sec": "pricing FAQ",
+  "url": "https://www.songscription.ai/pricing",
+  "quote": "By default, we may use the audio and transcriptions you submit to help improve our AI models. Plus and Pro subscribers can opt out at any time from their account settings, and we will not use your data for model training.",
+  "quote_first_pass": "By default, we may use the audio and transcriptions you submit to help improve our AI models. Plus and Pro subscribers can opt out at any time from their account settings."
+ },
+ {
+  "id": "T1",
+  "sec": "date",
+  "url": "https://tabtify.com/terms",
+  "quote": "Last updated: October 26, 2026"
+ },
+ {
+  "id": "T2",
+  "sec": "§2",
+  "url": "https://tabtify.com/terms",
+  "quote": "Tabtify grants you a limited, non-exclusive, non-transferable, revocable license to access and use the Service for personal, non-commercial purposes. You may not modify, copy, distribute, transmit, display, perform, reproduce, publish, license, create derivative works from, transfer, or sell any information or services obtained from the Service without prior written consent from Tabtify. This does not limit what you do with tabs of your own original music: those are yours to use however you like."
+ },
+ {
+  "id": "T3",
+  "sec": "§4",
+  "url": "https://tabtify.com/terms",
+  "quote": "Your uploads stay private to your account unless you choose to publish a tab, and we do not use them to train AI models. ... You are responsible for how you use the resulting tabs"
+ },
+ {
+  "id": "T4",
+  "sec": "limits",
+  "url": "https://tabtify.com/terms",
+  "quote": "a new version that only redraws an existing tab"
+ },
+ {
+  "id": "T5",
+  "sec": "limits",
+  "url": "https://tabtify.com/terms",
+  "quote": "MIDI imports ... do not count"
+ },
+ {
+  "id": "A1",
+  "sec": "date",
+  "url": "https://audio2guitar.com/terms",
+  "quote": "Last updated: August 14, 2026"
+ },
+ {
+  "id": "A2",
+  "sec": "limit",
+  "url": "https://audio2guitar.com/terms",
+  "quote": "The current limit is 35 new songs in any rolling 7-day period"
+ },
+ {
+  "id": "A3",
+  "sec": "ownership",
+  "url": "https://audio2guitar.com/terms",
+  "quote": "You retain all rights to audio files you upload. We do not claim ownership of your content."
+ },
+ {
+  "id": "A4",
+  "sec": "use of output",
+  "url": "https://audio2guitar.com/terms",
+  "quote": "Generated transcriptions are derived from your uploaded audio and are provided for personal, educational use."
+ },
+ {
+  "id": "A5a",
+  "sec": "prohibited",
+  "url": "https://audio2guitar.com/terms",
+  "quote": "Use automation, scripts, bots, or other tools to submit songs in bulk"
+ },
+ {
+  "id": "A5b",
+  "sec": "prohibited",
+  "url": "https://audio2guitar.com/terms",
+  "quote": "Operate a commercial transcription service using audio2guitar"
+ },
+ {
+  "id": "A5c",
+  "sec": "prohibited",
+  "url": "https://audio2guitar.com/terms",
+  "quote": "Resell or redistribute transcription results at scale without permission"
+ },
+ {
+  "id": "AP1",
+  "sec": "date",
+  "url": "https://aapamusic.com/terms",
+  "quote": "Last updated: January 14, 2025"
+ },
+ {
+  "id": "AP2",
+  "sec": "§2",
+  "url": "https://aapamusic.com/terms",
+  "quote": "Analyzes video recordings of guitar performances using machine vision ... Detects hand positions and finger placements on the fretboard ... Generates guitar tablature based on detected notes and timing ... Provides audio analysis including tempo, key, and chord detection"
+ },
+ {
+  "id": "AP3",
+  "sec": "§4.1",
+  "url": "https://aapamusic.com/terms",
+  "quote": "You retain ownership of videos you upload. By uploading content, you grant us a limited license to process it for tab generation. This license terminates when you delete your content."
+ },
+ {
+  "id": "AP4",
+  "sec": "§4.2",
+  "url": "https://aapamusic.com/terms",
+  "quote": "If you opt-in to share your video for ML training, you grant us a non-exclusive, royalty-free, perpetual license to use the video for improving our detection algorithms."
+ },
+ {
+  "id": "AP5a",
+  "sec": "§5",
+  "url": "https://aapamusic.com/terms",
+  "quote": "Resell or redistribute generated tabs commercially without permission"
+ },
+ {
+  "id": "AP5b",
+  "sec": "§5",
+  "url": "https://aapamusic.com/terms",
+  "quote": "Use automated tools to scrape or extract data"
+ },
+ {
+  "id": "G1",
+  "sec": "law",
+  "url": "https://grabtab.app/terms/",
+  "quote": "governed by the laws of Spain, where GrabTab is operated"
+ },
+ {
+  "id": "G1b",
+  "sec": "date",
+  "url": "https://grabtab.app/terms/",
+  "quote": "Last updated: 2 June 2026"
+ },
+ {
+  "id": "G2",
+  "sec": "free tier",
+  "url": "https://grabtab.app/terms/",
+  "quote": "a free tier with a limit on how many clips you can transcribe per week"
+ },
+ {
+  "id": "G3",
+  "sec": "ownership",
+  "url": "https://grabtab.app/terms/",
+  "quote": "You keep ownership of every recording you make. By using the service you grant GrabTab a limited licence to process your recording as needed to generate, store, and show transcriptions back to you."
+ },
+ {
+  "id": "G4",
+  "sec": "prohibited",
+  "url": "https://grabtab.app/terms/",
+  "quote": "attempt to disrupt, overload, reverse-engineer, or abuse the transcription pipeline or the API"
+ },
+ {
+  "id": "G5a",
+  "sec": "privacy",
+  "url": "https://grabtab.app/privacy/",
+  "quote": "Note detection (pitch and timing) and hand/fret tracking run on self-hosted models on our server"
+ },
+ {
+  "id": "G5b",
+  "sec": "privacy",
+  "url": "https://grabtab.app/privacy/",
+  "quote": "AI Tab Cleanup and the AI Practice Coach are optional features ... the text of your tab (not the audio or video) is sent to our AI provider, Anthropic"
+ },
+ {
+  "id": "G5c",
+  "sec": "privacy",
+  "url": "https://grabtab.app/privacy/",
+  "quote": "when you correct a tab and tap Submit correction ... stores that clip's audio together with your corrected tab so we can improve the model later"
+ },
+ {
+  "id": "SS1",
+  "sec": "§7.5",
+  "url": "https://www.soundslice.com/terms/",
+  "quote": "You retain any intellectual property rights in the content you upload or post to the Service. You hereby grant Soundslice a worldwide, non-exclusive, royalty-free license (with the right to sublicense) to use, copy, reproduce, process, adapt, modify, publish, transmit, display and distribute such Content in any and all media or distribution methods (now known or later developed)."
+ },
+ {
+  "id": "SS1b",
+  "sec": "footer",
+  "url": "https://www.soundslice.com/terms/",
+  "quote": "© 2026 Soundslice LLC"
+ },
+ {
+  "id": "SS2a",
+  "sec": "AUP",
+  "url": "https://www.soundslice.com/terms/aup/",
+  "quote": "Attempt to access or search or scrape or download content from Soundslice, or otherwise use Soundslice through any engine, software, tool, agent, device or mechanism (including automated scripts, spiders, robots, crawlers, data mining tools or the like) other than the software and/or search agents provided by Soundslice"
+ },
+ {
+  "id": "SS2b",
+  "sec": "AUP",
+  "url": "https://www.soundslice.com/terms/aup/",
+  "quote": "Use Soundslice for any commercial purpose or the benefit of any third party, except as otherwise explicitly permitted for you by Soundslice or in any manner not permitted by the Terms"
+ },
+ {
+  "id": "SS3",
+  "sec": "licensing",
+  "url": "https://www.soundslice.com/licensing/",
+  "quote": "you simply copy and paste our embed code into your site. It’s a simple <iframe> ... We also have a JavaScript API for advanced integration"
+ },
+ {
+  "id": "M1",
+  "sec": "date",
+  "url": "https://moises.ai/terms/",
+  "quote": "Last Updated: October 7, 2026"
+ },
+ {
+  "id": "M2",
+  "sec": "§1 definition",
+  "url": "https://moises.ai/terms/",
+  "quote": "Output includes any new or modified audio or text, stems, transcriptions, analyses, projects (whether final or in progress), and other generated or edited results."
+ },
+ {
+  "id": "M3",
+  "sec": "§8.1",
+  "url": "https://moises.ai/terms/",
+  "quote": "Moises grants you, solely for your personal use, a limited, non-exclusive, non-transferable, non- sublicensable, revocable license to ... (b) access and use the Website and Platform ... For clarity, this personal-use limitation does not prohibit you from using or distributing Output commercially, subject to Section 11.2 (Ownership and Limitations), any applicable feature-specific restrictions in these Terms, and any third-party rights."
+ },
+ {
+  "id": "M4",
+  "sec": "§11.2",
+  "url": "https://moises.ai/terms/",
+  "quote": "You ... retain(s) all rights, title, and interest in and to the User Content ... Furthermore, to the extent allowed in your jurisdiction you ... retain(s) all rights, title, and interest in and to your Output you generate using the Platform."
+ },
+ {
+  "id": "M5",
+  "sec": "§11.4",
+  "url": "https://moises.ai/terms/",
+  "quote": "WE DO NOT USE YOUR USER CONTENT OR OUTPUT TO TRAIN AI MODELS WITHOUT YOUR PERMISSION."
+ },
+ {
+  "id": "M6",
+  "sec": "§14.6",
+  "url": "https://moises.ai/terms/",
+  "quote": "access, search, or otherwise use any portion of the Service through the use of any engine, software, tool, agent, device, or mechanism (including spiders, robots, crawlers, and data mining tools) other than the software or search agents provided by Moises or Third-Party Agents connected through functionality expressly provided by Moises under Section 12.4 (AI Agent)"
+ },
+ {
+  "id": "U1",
+  "sec": "date",
+  "url": "https://www.ultimate-guitar.com/about/tos.htm",
+  "quote": "Last updated August 24, 2026"
+ },
+ {
+  "id": "U2",
+  "sec": "§6.3",
+  "url": "https://www.ultimate-guitar.com/about/tos.htm",
+  "quote": "Except as expressly stated in Section 7 (“User Generated Content”), the Content available through the Service is the property of Ultimate Guitar or its Content Providers and is protected by copyright and other intellectual property laws. Content received through the Service may be accessed for your personal, non-commercial use only."
+ },
+ {
+  "id": "U3",
+  "sec": "§7.3",
+  "url": "https://www.ultimate-guitar.com/about/tos.htm",
+  "quote": "The license you grant to Ultimate Guitar is non-exclusive (meaning you are free to license your User Generated Content to anyone else in addition to Ultimate Guitar)"
+ },
+ {
+  "id": "L1",
+  "sec": "§3 (no number in survey)",
+  "url": "https://lunaverus.com/tos",
+  "quote": "You retain all ownership rights to any audio files, musical works, or other content (\"User Content\") that you upload, submit, or process through the Service. However, by uploading User Content, you grant Lunaverus a limited, non-exclusive, royalty-free license to copy, process, store, and modify the User Content solely for the purpose of providing the transcription services to you."
+ },
+ {
+  "id": "L2",
+  "sec": "§13 (no number in survey)",
+  "url": "https://lunaverus.com/tos",
+  "quote": "Before using the AnthemScore desktop software, you must agree to the terms in the \"license.txt\" file, which is included in every download of the software."
+ },
+ {
+  "id": "GL1",
+  "sec": "LICENSE",
+  "url": "https://raw.githubusercontent.com/DecoudJuan/Guitar-Learning/main/LICENSE",
+  "quote": "MIT License ... Copyright (c) 2026 Malena ... Copyright (c) 2026 Juan Decoud"
+ },
+ {
+  "id": "CA1",
+  "sec": "README",
+  "url": "https://raw.githubusercontent.com/manbr21/Computer-Vision-Guitar-Tutor/main/README.md",
+  "quote": "Its README states the MIT license but the repository has no `LICENSE` file"
+ },
+ {
+  "id": "CH1",
+  "sec": "App Store link",
+  "url": "https://apps.apple.com/us/app/id1446177109",
+  "quote": "Terms of use: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
+ },
+ {
+  "id": "TR1",
+  "sec": "buy page",
+  "url": "https://www.seventhstring.com/xscribe/buy.html",
+  "quote": "Transcribe! is priced in US dollars, $39 for a single copy"
+ },
+ {
+  "id": "N1",
+  "sec": "§3",
+  "url": "https://www.note2tabs.com/terms",
+  "quote": "You own the files and tablature you create or upload."
+ },
+ {
+  "id": "N2",
+  "sec": "§3",
+  "url": "https://www.note2tabs.com/terms",
+  "quote": "You grant Note2Tabs a limited, non-exclusive license to host, process, and display your content solely to operate and improve the service, provide support, and comply with legal obligations."
+ },
+ {
+  "id": "N3",
+  "sec": "§5",
+  "url": "https://www.note2tabs.com/terms",
+  "quote": "Tabs created using the service may be used personally or commercially. We do not guarantee accuracy or legal clearance for distribution or commercial use. You are responsible for securing any necessary licenses, permissions, and clearances and for how you use exported tablature."
+ },
+ {
+  "id": "N4",
+  "sec": "§6",
+  "url": "https://www.note2tabs.com/terms",
+  "quote": "Do not automate bulk requests"
+ },
+ {
+  "id": "N5",
+  "sec": "§6",
+  "url": "https://www.note2tabs.com/terms",
+  "quote": "Do not use the service to build competing products"
+ },
+ {
+  "id": "N6",
+  "sec": "§8",
+  "url": "https://www.note2tabs.com/terms",
+  "quote": "You receive permission to use the service outputs personally."
+ },
+ {
+  "id": "N7",
+  "sec": "§12",
+  "url": "https://www.note2tabs.com/terms",
+  "quote": "These Terms are governed by the laws of Sweden."
+ },
+ {
+  "id": "N8",
+  "sec": "§13",
+  "url": "https://www.note2tabs.com/terms",
+  "quote": "Note2Tabs is operated by Note2Tabs AB, a Swedish private limited company (aktiebolag)"
+ },
+ {
+  "id": "N9",
+  "sec": "date",
+  "url": "https://www.note2tabs.com/terms",
+  "quote": "Last updated: October 2026"
+ },
+ {
+  "id": "F1",
+  "sec": "date",
+  "url": "https://fretwise.ai/terms-of-service",
+  "quote": "Last updated: February 3, 2026"
+ },
+ {
+  "id": "F2",
+  "sec": "§3",
+  "url": "https://fretwise.ai/terms-of-service",
+  "quote": "Use automated tools to access the service without permission"
+ },
+ {
+  "id": "F3",
+  "sec": "§3",
+  "url": "https://fretwise.ai/terms-of-service",
+  "quote": "Resell or redistribute transcriptions commercially without proper licensing"
+ },
+ {
+  "id": "F4",
+  "sec": "§4",
+  "url": "https://fretwise.ai/terms-of-service",
+  "quote": "You retain ownership of any content you upload to Fretwise.ai. By uploading audio files, you grant us a limited license to process and analyze the content solely to provide the transcription service."
+ },
+ {
+  "id": "F5",
+  "sec": "§12",
+  "url": "https://fretwise.ai/terms-of-service",
+  "quote": "These terms are governed by the laws of the United States."
+ },
+ {
+  "id": "F6",
+  "sec": "§1",
+  "url": "https://fretwise.ai/terms-of-service",
+  "quote": "export formats including Guitar Pro, MIDI, PDF, and MusicXML"
+ },
+ {
+  "id": "C1",
+  "sec": "terms",
+  "url": "https://cesure.app/terms",
+  "quote": "The app is designed for personal use."
+ },
+ {
+  "id": "C2",
+  "sec": "terms",
+  "url": "https://cesure.app/terms",
+  "quote": "acts at your request within what you allowed on the linking page — seeing, reading and saving scores"
+ },
+ {
+  "id": "C3",
+  "sec": "terms",
+  "url": "https://cesure.app/terms",
+  "quote": "What that assistant does with your scores falls under its provider's own terms."
+ },
+ {
+  "id": "C4",
+  "sec": "terms",
+  "url": "https://cesure.app/terms",
+  "quote": "You are prohibited from copying, modifying, reverse engineering, or creating derivative works of the app without explicit authorization from Cesure."
+ },
+ {
+  "id": "C5",
+  "sec": "terms of sale",
+  "url": "https://cesure.app/terms-of-sale",
+  "quote": "A score you buy gives you the personal, non-exclusive right to read it, play it, edit it and export it for your own use. It does not allow you to resell it, redistribute it or share it publicly."
+ },
+ {
+  "id": "R1",
+  "sec": "date",
+  "url": "https://rifftotab.com/terms",
+  "quote": "Last updated November 8, 2026"
+ },
+ {
+  "id": "R2",
+  "sec": "content",
+  "url": "https://rifftotab.com/terms",
+  "quote": "You keep ownership of content you upload or create through the service. That includes, for example, audio files, MIDI files, tab drafts, project metadata, exports, and support submissions."
+ },
+ {
+  "id": "R3",
+  "sec": "acceptable use",
+  "url": "https://rifftotab.com/terms",
+  "quote": "Abuse, scrape, reverse engineer, or bypass limits, protections, or access controls."
+ },
+ {
+  "id": "R4",
+  "sec": "acceptable use",
+  "url": "https://rifftotab.com/terms",
+  "quote": "Use automated systems in a way that harms reliability, performance, or other users."
+ },
+ {
+  "id": "R5",
+  "sec": "sharing",
+  "url": "https://rifftotab.com/terms",
+  "quote": "Only share tabs of music you wrote, music in the public domain, or music you have permission to share."
+ },
+ {
+  "id": "R6",
+  "sec": "operator",
+  "url": "https://rifftotab.com/terms",
+  "quote": "RiffToTab is run by the RiffToTab Team"
+ },
+ {
+  "id": "G1v",
+  "sec": "Liability",
+  "url": "https://latouchemusicale.com/en/legal/terms-and-conditions/",
+  "quote": "La Touche Musicale provides the Service for private use only. The Service may not be used for commercial purposes."
+ },
+ {
+  "id": "G2v",
+  "sec": "Liability",
+  "url": "https://latouchemusicale.com/en/legal/terms-and-conditions/",
+  "quote": "Any commercial use of the Deliverables generated by La Touche Musicale services is prohibited without express authorization. This includes the sale, distribution in any form whatsoever or reproduction of scores, tablatures, MusicXML files, MIDI files or any other type of files obtained via PianoConvert, GuitarConvert, BandConvert, SingConvert and all other Transcription Services offered by La Touche Musicale."
+ },
+ {
+  "id": "G3v",
+  "sec": "content",
+  "url": "https://latouchemusicale.com/en/legal/terms-and-conditions/",
+  "quote": "You retain all rights to the Content You submit to the Service."
+ },
+ {
+  "id": "G4v",
+  "sec": "content",
+  "url": "https://latouchemusicale.com/en/legal/terms-and-conditions/",
+  "quote": "Submitted Content will be stored for a maximum of 30 days before being deleted from La Touche Musicale’s servers for the Transcription Service"
+ },
+ {
+  "id": "T6",
+  "sec": "§5",
+  "url": "https://tabtify.com/terms",
+  "quote": "MIDI imports, a new version that only redraws an existing tab, and conversions that fail do not count."
+ },
+ {
+  "id": "T7",
+  "sec": "§5",
+  "url": "https://tabtify.com/terms",
+  "quote": "we may limit automated or bulk use that is not personal use."
+ },
+ {
+  "id": "S6",
+  "sec": "ai.txt",
+  "url": "https://www.songsterr.com/ai.txt",
+  "quote": "build independent tools that do not modify, automate, or interfere with this site or its tab player"
+ },
+ {
+  "id": "S7",
+  "sec": "ai.txt",
+  "url": "https://www.songsterr.com/ai.txt",
+  "quote": "Download (Guitar Pro, MIDI, MP3, WAV)"
+ },
+ {
+  "id": "OU1",
+  "sec": "README",
+  "url": "https://raw.githubusercontent.com/sigsep/open-unmix-pytorch/master/README.md",
+  "quote": "Note, that the weights are only licensed for non-commercial use (CC BY-NC-SA 4.0)."
+ },
+ {
+  "id": "OU2",
+  "sec": "LICENSE",
+  "url": "https://raw.githubusercontent.com/sigsep/open-unmix-pytorch/master/LICENSE",
+  "quote": "MIT License"
+ },
+ {
+  "id": "YT1",
+  "sec": "LICENSE",
+  "url": "https://raw.githubusercontent.com/marcelpanse/youtube-guitar-tab-parser/main/LICENSE",
+  "quote": "GNU GENERAL PUBLIC LICENSE ... Version 3, 29 June 2007"
+ },
+ {
+  "id": "CS1",
+  "sec": "LICENSE",
+  "url": "https://raw.githubusercontent.com/martijnversluis/ChordSheetJS/master/LICENSE",
+  "quote": "GNU GENERAL PUBLIC LICENSE ... Version 2, June 1991"
+ },
+ {
+  "id": "GP1",
+  "sec": "FAQ",
+  "url": "https://www.guitar-pro.com/pages/p/53350-lp-music-transcription-software",
+  "quote": "No, Guitar Pro 8 does not provide automatic audio-to-notation conversion"
+ }
+]

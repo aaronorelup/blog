@@ -1,0 +1,79 @@
+{
+ "input": "/home/user/gtr/inputs/S6taps/S6taps.wav",
+ "sample_rate": 44100,
+ "channels": 2,
+ "samples": 1294650,
+ "librosa": "1.0.0",
+ "settings": {
+  "default": {
+   "kwargs": {},
+   "seconds_hpss": 33.38,
+   "harmonic_rms_dbfs": -19.03,
+   "percussive_rms_dbfs": -29.91,
+   "residual_rms_dbfs": -159.29,
+   "input_rms_dbfs": -18.03,
+   "n_percussive_onsets": 53,
+   "first_onsets_s": [
+    2.148,
+    2.682,
+    3.228,
+    3.762,
+    4.296,
+    4.83,
+    5.364,
+    5.898,
+    6.177,
+    6.444
+   ]
+  },
+  "margin3": {
+   "kwargs": {
+    "margin": 3.0
+   },
+   "seconds_hpss": 17.47,
+   "harmonic_rms_dbfs": -21.17,
+   "percussive_rms_dbfs": -33.77,
+   "residual_rms_dbfs": -26.51,
+   "input_rms_dbfs": -18.03,
+   "n_percussive_onsets": 53,
+   "first_onsets_s": [
+    2.148,
+    2.682,
+    3.228,
+    3.75,
+    4.296,
+    4.83,
+    5.364,
+    5.898,
+    6.177,
+    6.432
+   ]
+  },
+  "margin1-5": {
+   "kwargs": {
+    "margin": [
+     1.0,
+     5.0
+    ]
+   },
+   "seconds_hpss": 16.57,
+   "harmonic_rms_dbfs": -19.03,
+   "percussive_rms_dbfs": -35.87,
+   "residual_rms_dbfs": -33.6,
+   "input_rms_dbfs": -18.03,
+   "n_percussive_onsets": 53,
+   "first_onsets_s": [
+    2.148,
+    2.682,
+    3.216,
+    3.75,
+    4.296,
+    4.818,
+    5.364,
+    5.898,
+    6.165,
+    6.432
+   ]
+  }
+ }
+}

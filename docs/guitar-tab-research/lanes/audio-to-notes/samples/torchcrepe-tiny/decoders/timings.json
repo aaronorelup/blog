@@ -1,0 +1,32 @@
+{
+ "R1b/viterbi": {
+  "seconds": 32.209,
+  "frames_ge_1500hz": 1657,
+  "n": 2934
+ },
+ "R1b/weighted_argmax": {
+  "seconds": 27.267,
+  "frames_ge_1500hz": 10,
+  "n": 2934
+ },
+ "R1b/argmax": {
+  "seconds": 21.418,
+  "frames_ge_1500hz": 10,
+  "n": 2934
+ },
+ "S2n/viterbi": {
+  "seconds": 18.421,
+  "frames_ge_1500hz": 2560,
+  "n": 2936
+ },
+ "S2n/weighted_argmax": {
+  "seconds": 18.512,
+  "frames_ge_1500hz": 200,
+  "n": 2936
+ },
+ "S2n/argmax": {
+  "seconds": 17.401,
+  "frames_ge_1500hz": 200,
+  "n": 2936
+ }
+}

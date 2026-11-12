@@ -1,0 +1,72 @@
+{
+ "input": {
+  "path": "/home/user/gtr/inputs/S6taps/S6taps.wav",
+  "sample_rate": 44100,
+  "channels": 2,
+  "frames": 1294650,
+  "subtype": "PCM_16",
+  "rms_dbfs": -18.031366096734494,
+  "seconds": 29.3571
+ },
+ "est_dir": "/home/user/gtr/lanes/source-separation/out/hpss/S6taps/margin3",
+ "stems": {
+  "harmonic": {
+   "file": "harmonic.wav",
+   "bytes": 10357288,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "FLOAT",
+   "format": "WAV",
+   "frames": 1294650,
+   "seconds": 29.3571,
+   "frames_minus_input": 0,
+   "rms_dbfs": -21.17,
+   "peak_dbfs": -5.62
+  },
+  "percussive": {
+   "file": "percussive.wav",
+   "bytes": 10357288,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "FLOAT",
+   "format": "WAV",
+   "frames": 1294650,
+   "seconds": 29.3571,
+   "frames_minus_input": 0,
+   "rms_dbfs": -33.77,
+   "peak_dbfs": -7.18
+  }
+ },
+ "sum_vs_mix": {
+  "common_rate": 44100,
+  "common_frames": 1294650,
+  "best_lag_samples": 0,
+  "residual_db_at_lag0": -8.48,
+  "note": "positive lag = the stems' sum is late relative to the mix"
+ },
+ "truth_dir": "/home/user/gtr/inputs/S6taps/stems",
+ "projection": {
+  "harmonic": {
+   "guitar": 0.6672,
+   "taps": 0.0279
+  },
+  "percussive": {
+   "guitar": 0.0235,
+   "taps": 0.6741
+  }
+ },
+ "projection_column_sums": {
+  "guitar": 0.6907,
+  "taps": 0.702
+ },
+ "si_sdr_db_cross": {
+  "harmonic": {
+   "guitar": 8.62,
+   "taps": -41.77
+  },
+  "percussive": {
+   "guitar": -16.93,
+   "taps": 3.86
+  }
+ }
+}

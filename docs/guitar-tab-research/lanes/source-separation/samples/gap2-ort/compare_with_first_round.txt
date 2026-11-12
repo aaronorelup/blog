@@ -1,0 +1,16 @@
+out/demucs-onnx-htdemucs_6s-fp16/S4/bass.wav vs gap2/ort/onnx-default/S4/bass.wav: frames 1708495 / 1708495, PCM_16 / PCM_16, max|diff| 0, diff level -inf dB
+gap2/ort/onnx-default/S4/bass.wav vs gap2/ort/onnx-ort2/S4/bass.wav: frames 1708495 / 1708495, PCM_16 / PCM_16, max|diff| 0, diff level -inf dB
+out/demucs-onnx-htdemucs_6s-fp16/S4/drums.wav vs gap2/ort/onnx-default/S4/drums.wav: frames 1708495 / 1708495, PCM_16 / PCM_16, max|diff| 0, diff level -inf dB
+gap2/ort/onnx-default/S4/drums.wav vs gap2/ort/onnx-ort2/S4/drums.wav: frames 1708495 / 1708495, PCM_16 / PCM_16, max|diff| 0, diff level -inf dB
+out/demucs-onnx-htdemucs_6s-fp16/S4/guitar.wav vs gap2/ort/onnx-default/S4/guitar.wav: frames 1708495 / 1708495, PCM_16 / PCM_16, max|diff| 0, diff level -inf dB
+gap2/ort/onnx-default/S4/guitar.wav vs gap2/ort/onnx-ort2/S4/guitar.wav: frames 1708495 / 1708495, PCM_16 / PCM_16, max|diff| 0, diff level -inf dB
+out/demucs-onnx-htdemucs_6s-fp16/S4/other.wav vs gap2/ort/onnx-default/S4/other.wav: frames 1708495 / 1708495, PCM_16 / PCM_16, max|diff| 0, diff level -inf dB
+gap2/ort/onnx-default/S4/other.wav vs gap2/ort/onnx-ort2/S4/other.wav: frames 1708495 / 1708495, PCM_16 / PCM_16, max|diff| 0, diff level -inf dB
+out/demucs-onnx-htdemucs_6s-fp16/S4/piano.wav vs gap2/ort/onnx-default/S4/piano.wav: frames 1708495 / 1708495, PCM_16 / PCM_16, max|diff| 0, diff level -inf dB
+gap2/ort/onnx-default/S4/piano.wav vs gap2/ort/onnx-ort2/S4/piano.wav: frames 1708495 / 1708495, PCM_16 / PCM_16, max|diff| 0, diff level -inf dB
+out/demucs-onnx-htdemucs_6s-fp16/S4/vocals.wav vs gap2/ort/onnx-default/S4/vocals.wav: frames 1708495 / 1708495, PCM_16 / PCM_16, max|diff| 0, diff level -inf dB
+gap2/ort/onnx-default/S4/vocals.wav vs gap2/ort/onnx-ort2/S4/vocals.wav: frames 1708495 / 1708495, PCM_16 / PCM_16, max|diff| 0, diff level -inf dB
+out/uvr/UVR-MDX-NET-Inst_HQ_3/S4/instrumental.wav vs gap2/ort/mdx-default/S4/instrumental.wav: frames 1708495 / 1708495, PCM_16 / PCM_16, max|diff| 0, diff level -inf dB
+gap2/ort/mdx-default/S4/instrumental.wav vs gap2/ort/mdx-ort2/S4/instrumental.wav: frames 1708495 / 1708495, PCM_16 / PCM_16, max|diff| 0, diff level -inf dB
+out/uvr/UVR-MDX-NET-Inst_HQ_3/S4/vocals.wav vs gap2/ort/mdx-default/S4/vocals.wav: frames 1708495 / 1708495, PCM_16 / PCM_16, max|diff| 0, diff level -inf dB
+gap2/ort/mdx-default/S4/vocals.wav vs gap2/ort/mdx-ort2/S4/vocals.wav: frames 1708495 / 1708495, PCM_16 / PCM_16, max|diff| 0, diff level -inf dB

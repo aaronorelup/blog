@@ -1,0 +1,35 @@
+{
+ "space": "lpeterl/sam-audio-webui",
+ "api_name": "/process",
+ "args": [
+  "sam-audio-small",
+  "file:/home/user/gtr/inputs/S4/S4.wav",
+  null,
+  "acoustic guitar",
+  30
+ ],
+ "token": null,
+ "runtime_before": {
+  "stage": "RUNNING",
+  "hardware": {
+   "current": "zero-a10g",
+   "requested": "zero-a10g"
+  }
+ },
+ "space_sha": "f4c654530d91a7907b9108d9c022d5ab6aeb681c",
+ "client_connect_s": 1.137,
+ "ok": false,
+ "error": "AppError('You have exceeded your ZeroGPU runs limit. Authenticate with a Hugging Face token for more quota - https://huggingface.co/settings/tokens')",
+ "wall_s": 3.152,
+ "status_changes": [
+  {
+   "t_s": 1.15,
+   "code": "Status.STARTING",
+   "rank": null,
+   "queue_size": null,
+   "eta": null,
+   "progress": null
+  }
+ ],
+ "result": null
+}

@@ -1,0 +1,64 @@
+name	status content_type bytes url
+alibaba-product-terms	200 text/html;charset=UTF-8 283478 https://www.alibabacloud.com/help/en/legal/latest/alibaba-cloud-international-website-product-terms-of-service-v-3-8-0
+aws-service-terms	200 text/html;charset=utf-8 1043487 https://aws.amazon.com/service-terms/
+byteplus-ai-terms	200 text/html; charset=UTF-8 215880 https://docs.byteplus.com/en/docs/legal/AI-Services-terms
+byteplus-tos	200 text/html; charset=UTF-8 264034 https://docs.byteplus.com/en/docs/legal/docs-terms-of-service
+cesure-assistants	200 text/html 23995 https://cesure.app/assistants
+cesure-format	200 text/html 52668 https://cesure.app/format
+cesure-terms	200 text/html 70927 https://cesure.app/terms
+fal-llms	200 text/plain; charset=utf-8 12185 https://fal.ai/llms.txt
+fal-mureka-llms	200 text/markdown; charset=utf-8 4377 https://fal.ai/models/mureka/api/song/transcribe/llms.txt
+fal-mureka-openapi	200 application/json 4351 https://fal.ai/api/openapi/queue/openapi.json?endpoint_id=mureka/api/song/transcribe
+fal-mureka-page	200 text/html; charset=utf-8 323685 https://fal.ai/models/mureka/api/song/transcribe
+fal-tos	200 text/html; charset=utf-8 231213 https://fal.ai/legal/terms-of-service
+flat-openapi	200 text/yaml; charset=utf-8 384800 https://flat.io/developers/docs/openapi.yaml
+gateway-models	200 application/json 572967 https://ai-gateway.vercel.sh/v1/models
+hf-api-mimo-mopd	200 application/json; charset=utf-8 17286 https://huggingface.co/api/models/XiaomiMiMo/MiMo-V2.6-Flash-MOPD
+hf-api-mimo-rl	200 application/json; charset=utf-8 14233 https://huggingface.co/api/models/XiaomiMiMo/MiMo-V2.6-Flash-RL
+hf-api-muse	200 application/json; charset=utf-8 32446 https://huggingface.co/api/models/meta-models/Muse-Spark-Open-816B-A42B
+hf-mimo-mopd-readme	200 text/plain; charset=utf-8 11013 https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Flash-MOPD/raw/main/README.md
+hf-mimo-rl-readme	200 text/plain; charset=utf-8 11559 https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Flash-RL/raw/main/README.md
+hf-muse-license-file	401 text/plain; charset=utf-8 145 https://huggingface.co/meta-models/Muse-Spark-Open-816B-A42B/raw/main/LICENSE
+meta-dev-tos	200 text/html; charset=utf-8 233731 https://dev.meta.ai/legal/terms-of-service
+mimo-agreement-html	200 text/html 13475 https://mimo.mi.com/docs/terms/user-agreement
+mimo-chunk-1995	200 application/javascript 70846 https://mimo.mi.com/static/1995.8b548d0e0b571f7c.chunk.js
+mimo-docs-main-js	200 application/javascript 616905 https://mimo.mi.com/static/main.56e28b1085fbd22b.chunk.js
+mimo-model-page	200 text/html 141588 https://mimo.mi.com/models/en-US/mimo-v2.6-flash
+mimo-platform-agreement	200 text/html 9035 https://platform.xiaomimimo.com/#/docs/terms/user-agreement
+mimo-platform-main-js	200 application/javascript 509152 https://platform.xiaomimimo.com/static/main.c1ac1587df61d000.chunk.js
+mureka-llms	200 text/plain; charset=utf-8 2391 https://www.mureka.ai/llms.txt
+mureka-terms	200 text/html; charset=utf-8 11587 https://www.mureka.ai/terms
+musicgpt-a2m	200 text/markdown; charset=utf-8 9836 https://docs.musicgpt.com/api-documentation/conversions/audiotomidi.md
+musicgpt-llms	200 text/plain; charset=utf-8 13505 https://docs.musicgpt.com/llms.txt
+musicgpt-pricing	200 text/markdown; charset=utf-8 10079 https://docs.musicgpt.com/api-documentation/index/pricing.md
+musicgpt-tos	200 text/html; charset=utf-8 115096 https://musicgpt.com/terms-of-service
+nova-what-is	200 text/html 29906 https://docs.aws.amazon.com/nova/latest/userguide/what-is-nova.html
+nova2-what-is	200 text/html 19340 https://docs.aws.amazon.com/nova/latest/nova2-userguide/what-is-nova-2.html
+openai-audio-cc	200 text/markdown; charset=utf-8 13645 https://developers.openai.com/api/docs/guides/audio-chat-completions.md
+openai-audio-guide	200 text/markdown; charset=utf-8 4927 https://developers.openai.com/api/docs/guides/audio.md
+openai-model-gpt-audio-1.5	200 text/html 464321 https://developers.openai.com/api/docs/models/gpt-audio-1.5
+openai-pricing-md	200 text/markdown; charset=utf-8 21006 https://developers.openai.com/api/docs/pricing.md
+openai-ref-chat-create	200 text/markdown; charset=utf-8 78328 https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create.md
+openai-your-data	200 text/markdown; charset=utf-8 88237 https://developers.openai.com/api/docs/guides/your-data.md
+pypi-gradio-client-053	200 application/json 9391 https://pypi.org/pypi/gradio_client/0.5.3/json
+pypi-gradio-client-272	200 application/json 9474 https://pypi.org/pypi/gradio_client/2.7.2/json
+qwen-omni	200 text/html;charset=UTF-8 431175 https://help.aliyun.com/en/model-studio/qwen-omni
+qwen-pricing-aliyun	200 text/html;charset=UTF-8 1271215 https://help.aliyun.com/en/model-studio/model-pricing
+qwen-pricing-intl	200 text/html;charset=UTF-8 508595 https://www.alibabacloud.com/help/en/model-studio/model-pricing
+vercel-ai-product-terms	200 text/markdown; charset=utf-8 28465 https://vercel.com/legal/ai-product-terms.md
+vercel-disallow-training	200 text/markdown; charset=utf-8 17198 https://vercel.com/docs/ai-gateway/security-and-compliance/disallow-prompt-training.md
+vercel-docs-ai-gateway	200 text/markdown; charset=utf-8 11191 https://vercel.com/docs/ai-gateway.md
+vercel-kb-provider-data	200 text/markdown; charset=utf-8 17362 https://vercel.com/kb/guide/control-ai-provider-data.md
+vercel-model-mimo-html	200 text/html; charset=utf-8 1478929 https://vercel.com/ai-gateway/models/mimo-v2.6-flash
+vercel-model-mimo-md	200 text/markdown; charset=utf-8 1542 https://vercel.com/ai-gateway/models/mimo-v2.6-flash.md
+vercel-model-muse-html	200 text/html; charset=utf-8 1512337 https://vercel.com/ai-gateway/models/muse-spark-open
+vercel-model-muse-md	200 text/markdown; charset=utf-8 1537 https://vercel.com/ai-gateway/models/muse-spark-open.md
+vercel-model-seed-html	200 text/html; charset=utf-8 1453770 https://vercel.com/ai-gateway/models/seed-2.1-turbo
+vercel-model-seed-md	200 text/markdown; charset=utf-8 1396 https://vercel.com/ai-gateway/models/seed-2.1-turbo.md
+vercel-notices	200 text/markdown; charset=utf-8 12866 https://vercel.com/legal/notices-and-license-information.md
+vercel-sec-compliance	200 text/markdown; charset=utf-8 6626 https://vercel.com/docs/ai-gateway/security-and-compliance.md
+vercel-terms	200 text/markdown; charset=utf-8 55231 https://vercel.com/legal/terms.md
+xai-faq-general	200 text/markdown; charset=utf-8 1040 https://docs.x.ai/developers/faq/general.md
+xai-faq-security	200 text/markdown; charset=utf-8 12497 https://docs.x.ai/developers/faq/security.md
+xai-pricing	200 text/markdown; charset=utf-8 10956 https://docs.x.ai/developers/pricing.md
+xai-stt	200 text/markdown; charset=utf-8 26320 https://docs.x.ai/developers/model-capabilities/audio/speech-to-text.md

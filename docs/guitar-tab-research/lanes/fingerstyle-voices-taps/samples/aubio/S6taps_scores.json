@@ -1,0 +1,330 @@
+[
+ {
+  "name": "aubio complex",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/aubio/S6taps/complex.txt",
+  "n_est": 54,
+  "taps": {
+   "eval_id": "e0077",
+   "f_measure": 0.744186,
+   "precision": 0.592593,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e0078",
+   "f_measure": 0.941176,
+   "precision": 0.888889,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 54,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 1,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "aubio energy",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/aubio/S6taps/energy.txt",
+  "n_est": 59,
+  "taps": {
+   "eval_id": "e0079",
+   "f_measure": 0.703297,
+   "precision": 0.542373,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e0080",
+   "f_measure": 0.897196,
+   "precision": 0.813559,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 59,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 6,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "aubio hfc",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/aubio/S6taps/hfc.txt",
+  "n_est": 53,
+  "taps": {
+   "eval_id": "e0081",
+   "f_measure": 0.752941,
+   "precision": 0.603774,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e0082",
+   "f_measure": 0.950495,
+   "precision": 0.90566,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 53,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 0,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "aubio kl",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/aubio/S6taps/kl.txt",
+  "n_est": 62,
+  "taps": {
+   "eval_id": "e0083",
+   "f_measure": 0.680851,
+   "precision": 0.516129,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e0084",
+   "f_measure": 0.872727,
+   "precision": 0.774194,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 62,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 9,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "aubio mkl",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/aubio/S6taps/mkl.txt",
+  "n_est": 54,
+  "taps": {
+   "eval_id": "e0085",
+   "f_measure": 0.744186,
+   "precision": 0.592593,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e0086",
+   "f_measure": 0.941176,
+   "precision": 0.888889,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 54,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 1,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "aubio phase",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/aubio/S6taps/phase.txt",
+  "n_est": 60,
+  "taps": {
+   "eval_id": "e0087",
+   "f_measure": 0.695652,
+   "precision": 0.533333,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e0088",
+   "f_measure": 0.888889,
+   "precision": 0.8,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 60,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 7,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "aubio specdiff",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/aubio/S6taps/specdiff.txt",
+  "n_est": 54,
+  "taps": {
+   "eval_id": "e0089",
+   "f_measure": 0.744186,
+   "precision": 0.592593,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e0090",
+   "f_measure": 0.941176,
+   "precision": 0.888889,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 54,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 1,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "aubio specflux",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/aubio/S6taps/specflux.txt",
+  "n_est": 58,
+  "taps": {
+   "eval_id": "e0091",
+   "f_measure": 0.711111,
+   "precision": 0.551724,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e0092",
+   "f_measure": 0.90566,
+   "precision": 0.827586,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 58,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 5,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ }
+]

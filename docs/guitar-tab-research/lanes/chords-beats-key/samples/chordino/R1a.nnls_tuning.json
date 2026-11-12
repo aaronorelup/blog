@@ -1,0 +1,16 @@
+{
+ "tuning_hz": 443.7,
+ "raw": {
+  "list": [
+   {
+    "timestamp": " 0.000000000",
+    "duration": " 29.350022675",
+    "label": "443.7 Hz",
+    "values": [
+     443.73321533203125
+    ]
+   }
+  ]
+ },
+ "call": "vamp.collect(librosa.load(file) [22050 Hz mono], 'nnls-chroma:tuning')"
+}

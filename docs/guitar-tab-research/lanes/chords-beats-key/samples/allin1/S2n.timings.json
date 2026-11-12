@@ -1,0 +1,36 @@
+{
+ "import": {
+  "wall_s": 2.119,
+  "cpu_self_s": 2.343,
+  "cpu_children_s": 0.0
+ },
+ "demix_htdemucs_subprocess": {
+  "wall_s": 36.5,
+  "cpu_self_s": 0.008,
+  "cpu_children_s": 58.405
+ },
+ "extract_spectrograms": {
+  "wall_s": 0.663,
+  "cpu_self_s": 0.032,
+  "cpu_children_s": 0.904
+ },
+ "load_pretrained_model": {
+  "wall_s": 1.563,
+  "cpu_self_s": 0.822,
+  "cpu_children_s": 0.0
+ },
+ "run_inference": {
+  "wall_s": 82.549,
+  "cpu_self_s": 87.553,
+  "cpu_children_s": 0.0
+ },
+ "save_results": {
+  "wall_s": 0.001,
+  "cpu_self_s": 0.001,
+  "cpu_children_s": 0.0
+ },
+ "total_in_script_wall_s": 123.414,
+ "torch_threads": 2,
+ "allin1_version": null,
+ "model": "harmonix-all"
+}

@@ -1,0 +1,16 @@
+id: "AO-082"
+title: "Testing the tools a guitar tab web app would need"
+summary: "I had Claude agents list every tool they could find for turning songs and guitar videos into tabs, run what they could on test clips and read each license. What went in, what came out, what it cost."
+date: 2026-11-10
+topic: "agents"
+project: []
+unlisted: true     # live at its URL only for now: listing it needs npm run ask:pin (docs/ASK.md) and starts the read-aloud
+preview:
+  verdict: "138 of 575 tools ran"
+  takeaway: "My agents' ten lists come to 575 tools for a guitar tab web app. 138 of them ran, 128 on a cloud computer with no graphics card."
+  points:
+    - "One chain turned a full band mix into a drawn tab, by way of a guitar track, notes, strings and frets, and a tab file."
+    - "With a capo on fret 2, no chord tool named it or the G and C shapes played. Xiaomi's MiMo said fret 2 in 2 of 3 tries."
+    - "It took [[ALL_AGENTS]] agents in two sittings. At API list prices that's about [[ALL_LOW]] to [[ALL_HIGH]] of tokens."
+  image: "/media/previews/guitar-tab-tools.webp"
+  alt: "Four fingertips on a straightened close-up of a guitar neck, each with a green dot and the string and fret a program gave it (index s4 f3, middle s5 f4, ring s2 f5, pinky s2 f5), magenta lines where it found fret-like lines and cyan fret numbers 0 to 6 along the top"

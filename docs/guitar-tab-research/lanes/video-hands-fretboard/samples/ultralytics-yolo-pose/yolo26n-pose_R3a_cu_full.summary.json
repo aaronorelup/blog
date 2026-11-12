@@ -1,0 +1,56 @@
+{
+ "clip": "R3a_cu",
+ "mode": "full",
+ "frames": 300,
+ "all": {
+  "frames": 300,
+  "frac_0_hands": 0.0,
+  "frac_1_hand": 0.88,
+  "frac_2_hands": 0.12,
+  "frac_more_than_2": 0.0,
+  "frac_at_least_1": 1.0,
+  "label_counts": {
+   "person_left": 300,
+   "person_right": 36
+  },
+  "infer_ms_mean": 138.88,
+  "infer_ms_median": 129.06,
+  "infer_ms_p90": 153.44,
+  "fps_from_mean": 7.2,
+  "score_mean": 0.8883,
+  "score_min": 0.5081,
+  "score_max": 0.9785
+ },
+ "per_shot": {
+  "close": {
+   "frames": 300,
+   "frac_0_hands": 0.0,
+   "frac_1_hand": 0.88,
+   "frac_2_hands": 0.12,
+   "frac_more_than_2": 0.0,
+   "frac_at_least_1": 1.0,
+   "label_counts": {
+    "person_left": 300,
+    "person_right": 36
+   },
+   "infer_ms_mean": 138.88,
+   "infer_ms_median": 129.06,
+   "infer_ms_p90": 153.44,
+   "fps_from_mean": 7.2,
+   "score_mean": 0.8883,
+   "score_min": 0.5081,
+   "score_max": 0.9785
+  }
+ },
+ "tool": "ultralytics YOLO pose",
+ "ultralytics_version": "8.4.209",
+ "weights": "yolo26n-pose.pt",
+ "init_s": 0.411,
+ "settings": {
+  "imgsz": 640,
+  "conf": 0.25,
+  "wrist_kpt_conf_min": 0.5
+ },
+ "frac_frames_with_person": 1.0,
+ "persons_per_frame_max": 2
+}

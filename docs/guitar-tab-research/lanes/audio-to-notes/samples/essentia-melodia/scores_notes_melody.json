@@ -1,0 +1,148 @@
+{
+ "tool": "essentia-melodia",
+ "kind": "notes",
+ "dir": "/home/user/gtr/lanes/audio-to-notes/out/essentia-melodia/f0",
+ "conf_threshold": null,
+ "results": {
+  "S2n": {
+   "eval_id": "e1048",
+   "args": "notes --truth S2n --est /home/user/gtr/lanes/audio-to-notes/out/essentia-melodia/f0/S2n.notes.csv --pitch-unit midi --voice melody",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.96875,
+     "recall": 0.738095,
+     "f1": 0.837838,
+     "avg_overlap_ratio": 0.562623,
+     "n_matched": 31
+    },
+    "onset_offset": {
+     "precision": 0.15625,
+     "recall": 0.119048,
+     "f1": 0.135135,
+     "avg_overlap_ratio": 0.854684,
+     "n_matched": 5
+    },
+    "recall_by_voice": {
+     "melody": {
+      "n_truth": 42,
+      "onset_only_matched": 31,
+      "onset_only_recall": 0.738095,
+      "onset_offset_matched": 5,
+      "onset_offset_recall": 0.119048
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 31,
+     "median_s": 0.011271,
+     "mean_s": 0.011901,
+     "mean_abs_s": 0.012124,
+     "p95_abs_s": 0.0248,
+     "max_abs_s": 0.026957
+    }
+   },
+   "counts": {
+    "n_truth": 42,
+    "n_est": 32,
+    "n_truth_left_out": {
+     "bass": 48
+    },
+    "n_matched_onset_only": 31,
+    "n_matched_onset_offset": 5
+   }
+  },
+  "S2s": {
+   "eval_id": "e1050",
+   "args": "notes --truth S2s --est /home/user/gtr/lanes/audio-to-notes/out/essentia-melodia/f0/S2s.notes.csv --pitch-unit midi --voice melody",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.69697,
+     "recall": 0.547619,
+     "f1": 0.613333,
+     "avg_overlap_ratio": 0.644765,
+     "n_matched": 23
+    },
+    "onset_offset": {
+     "precision": 0.242424,
+     "recall": 0.190476,
+     "f1": 0.213333,
+     "avg_overlap_ratio": 0.937729,
+     "n_matched": 8
+    },
+    "recall_by_voice": {
+     "melody": {
+      "n_truth": 42,
+      "onset_only_matched": 23,
+      "onset_only_recall": 0.547619,
+      "onset_offset_matched": 8,
+      "onset_offset_recall": 0.190476
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 23,
+     "median_s": 0.013743,
+     "mean_s": 0.015514,
+     "mean_abs_s": 0.015514,
+     "p95_abs_s": 0.040153,
+     "max_abs_s": 0.040371
+    }
+   },
+   "counts": {
+    "n_truth": 42,
+    "n_est": 33,
+    "n_truth_left_out": {
+     "bass": 48
+    },
+    "n_matched_onset_only": 23,
+    "n_matched_onset_offset": 8
+   }
+  },
+  "S4": {
+   "eval_id": "e1052",
+   "args": "notes --truth S4 --est /home/user/gtr/lanes/audio-to-notes/out/essentia-melodia/f0/S4.notes.csv --pitch-unit midi --voice melody",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.034483,
+     "recall": 0.054054,
+     "f1": 0.042105,
+     "avg_overlap_ratio": 0.612228,
+     "n_matched": 2
+    },
+    "onset_offset": {
+     "precision": 0.017241,
+     "recall": 0.027027,
+     "f1": 0.021053,
+     "avg_overlap_ratio": 0.849978,
+     "n_matched": 1
+    },
+    "recall_by_voice": {
+     "melody": {
+      "n_truth": 37,
+      "onset_only_matched": 2,
+      "onset_only_recall": 0.054054,
+      "onset_offset_matched": 1,
+      "onset_offset_recall": 0.027027
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 2,
+     "median_s": 0.028994,
+     "mean_s": 0.028994,
+     "mean_abs_s": 0.028994,
+     "p95_abs_s": 0.029378,
+     "max_abs_s": 0.029421
+    }
+   },
+   "counts": {
+    "n_truth": 37,
+    "n_est": 58,
+    "n_truth_left_out": {
+     "drums": 194,
+     "bass": 61,
+     "chord": 369
+    },
+    "n_matched_onset_only": 2,
+    "n_matched_onset_offset": 1
+   }
+  }
+ }
+}

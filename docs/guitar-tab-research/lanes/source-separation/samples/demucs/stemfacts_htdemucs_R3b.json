@@ -1,0 +1,73 @@
+{
+ "input": {
+  "path": "/home/user/gtr/inputs/R3b/R3b.wav",
+  "sample_rate": 44100,
+  "channels": 2,
+  "frames": 793800,
+  "subtype": "PCM_16",
+  "rms_dbfs": -30.97451516179173,
+  "seconds": 18.0
+ },
+ "est_dir": "/home/user/gtr/lanes/source-separation/out/htdemucs/R3b",
+ "stems": {
+  "bass": {
+   "file": "bass.wav",
+   "bytes": 3175244,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 793800,
+   "seconds": 18.0,
+   "frames_minus_input": 0,
+   "rms_dbfs": -45.98,
+   "peak_dbfs": -32.75
+  },
+  "drums": {
+   "file": "drums.wav",
+   "bytes": 3175244,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 793800,
+   "seconds": 18.0,
+   "frames_minus_input": 0,
+   "rms_dbfs": -88.21,
+   "peak_dbfs": -62.7
+  },
+  "other": {
+   "file": "other.wav",
+   "bytes": 3175244,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 793800,
+   "seconds": 18.0,
+   "frames_minus_input": 0,
+   "rms_dbfs": -31.28,
+   "peak_dbfs": -12.97
+  },
+  "vocals": {
+   "file": "vocals.wav",
+   "bytes": 3175244,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 793800,
+   "seconds": 18.0,
+   "frames_minus_input": 0,
+   "rms_dbfs": -92.57,
+   "peak_dbfs": -68.73
+  }
+ },
+ "sum_vs_mix": {
+  "common_rate": 44100,
+  "common_frames": 793800,
+  "best_lag_samples": 0,
+  "residual_db_at_lag0": -38.16,
+  "note": "positive lag = the stems' sum is late relative to the mix"
+ }
+}

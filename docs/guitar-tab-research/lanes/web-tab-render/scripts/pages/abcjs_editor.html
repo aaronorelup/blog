@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>abcjs Editor trial</title>
+<style>body{margin:0;background:#fff} textarea{width:1180px;height:260px;font:12px monospace} #paper{width:1200px}</style>
+<script src="/nm/abcjs/dist/abcjs-basic-min.js"></script>
+</head>
+<body>
+<textarea id="abc"></textarea>
+<div id="paper"></div>
+<div id="warnings"></div>
+<script>
+// abcjs's text-editor helper: ABCJS.Editor re-renders the score (with guitar tablature) whenever the textarea changes.
+// ?src=<abc file>. window.__tabNumbers() returns the fret numbers drawn in the tab staff, in document order.
+const q = new URLSearchParams(location.search);
+window.__tabNumbers = () => [...document.querySelectorAll('#paper svg text.abcjs-tab-number')].map((t) => t.textContent.trim());
+(async () => {
+  document.getElementById('abc').value = await (await fetch(q.get('src'))).text();
+  window.editor = new ABCJS.Editor('abc', {
+    canvas_id: 'paper', warnings_id: 'warnings',
+    abcjsParams: { add_classes: true, staffwidth: 1150,
+      tablature: [{ instrument: 'guitar', label: 'Guitar', tuning: ['E,', 'A,', 'D', 'G', 'B', 'e'], capo: 0 }] },
+  });
+  setTimeout(() => { window.__rendered = true; }, 500);
+})();
+</script>
+</body>
+</html>

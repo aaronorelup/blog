@@ -1,0 +1,9 @@
+{"file": "metronome_interval_busy0.json", "n": 122, "mean_ms": 2.175, "max_abs_ms": 42.63, "sd_ms": 4.525, "page_mean_ms": 2.175, "page_max_abs_ms": 42.63}
+{"file": "metronome_interval_busy100.json", "n": 122, "mean_ms": 30.724, "max_abs_ms": 91.202, "sd_ms": 31.493, "page_mean_ms": 30.724, "page_max_abs_ms": 91.202}
+{"file": "metronome_lookahead_busy0.json", "n": 122, "mean_ms": 0.0, "max_abs_ms": 0.0, "sd_ms": 0.0, "page_mean_ms": 0, "page_max_abs_ms": 0}
+{"file": "metronome_lookahead_busy100.json", "n": 122, "mean_ms": 0.856, "max_abs_ms": 42.132, "sd_ms": 5.393, "page_mean_ms": 0.856, "page_max_abs_ms": 42.132}
+{"file": "metronome_tone_busy0.json", "n": 122, "mean_ms": 0.0, "max_abs_ms": 0.0, "sd_ms": 0.0, "page_mean_ms": 0, "page_max_abs_ms": 0}
+{"file": "metronome_tone_busy100.json", "n": 122, "mean_ms": 2.195, "max_abs_ms": 5.17, "sd_ms": 1.381, "page_mean_ms": 2.195, "page_max_abs_ms": 5.17}
+{"file": "metronome_worklet_busy0.json", "n": 122, "mean_ms": 0.0, "max_abs_ms": 0.0, "sd_ms": 0.0, "page_mean_ms": 0, "page_max_abs_ms": 0}
+{"file": "metronome_worklet_busy100.json", "n": 122, "mean_ms": 0.0, "max_abs_ms": 0.0, "sd_ms": 0.0, "page_mean_ms": 0, "page_max_abs_ms": 0}
+{"file": "metronome_tone_busy100.json", "corrected_for": [{"atFrame": 752768, "frames": -128}], "n": 122, "mean_ms": 0.077, "mean_abs_ms": 0.077, "max_abs_ms": 2.268, "sd_ms": 0.351, "n_nonzero": 7, "nonzero_ms": [1.542, 1.179, 0.227, 1.995, 0.68, 2.268, 1.542]}

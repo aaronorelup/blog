@@ -1,0 +1,362 @@
+{
+ "status": "model test done",
+ "wall_s": 269.839,
+ "external": [
+  {
+   "url": "https://cdn.jsdelivr.net/npm/tone@15.1.22/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/standardized-audio-context@25.3.77/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/tslib@2.8.1/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/automation-events@7.0.9/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@spotify/basic-pitch@1.0.1/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.19.0/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tonejs/midi@2.0.28/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@3.19.0/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@3.19.0/dist/register_all_gradients/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@3.19.0/dist/public/chained_ops/register_all_chained_ops/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-layers@3.19.0/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter@3.19.0/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-data@3.19.0/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-cpu@3.19.0/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl@3.19.0/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/midi-file@1.2.2/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/array-flatten@3.0.0/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/long@4.0.0/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/seedrandom@3.0.5/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@3.19.0/dist/ops/ops_for_converter/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-cpu@3.19.0/dist/shared/+esm",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@spotify/basic-pitch@1.0.1/model/model.json",
+   "cached": true
+  },
+  {
+   "url": "https://cdn.jsdelivr.net/npm/@spotify/basic-pitch@1.0.1/model/group1-shard1of1.bin",
+   "cached": true
+  }
+ ],
+ "page_output": {
+  "page": "browser-timing-check v1 (2026-11-10)",
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.8010.12 Safari/537.36",
+  "hardwareConcurrency": 4,
+  "started": "2026-11-10T21:39:01.327Z",
+  "metronome": [
+   {
+    "method": "lookahead",
+    "busy_ms": 0,
+    "seconds": 15,
+    "sampleRate": 44100,
+    "baseLatency": 0.01,
+    "outputLatency": 0.032,
+    "clicks_expected": 30,
+    "clicks_found": 30,
+    "mean_ms": 0,
+    "largest_ms": 0,
+    "off_grid_over_0p1ms": 0,
+    "scheduled_late": 0,
+    "recorder_steps": [
+     [
+      128,
+      1408
+     ]
+    ],
+    "playbackStats": {
+     "underrunDuration": 0.01,
+     "underrunEvents": 1,
+     "totalDuration": 15.051066,
+     "averageLatency": 0.031296,
+     "minimumLatency": 0,
+     "maximumLatency": 0.032879
+    }
+   },
+   {
+    "method": "interval",
+    "busy_ms": 0,
+    "seconds": 15,
+    "sampleRate": 44100,
+    "baseLatency": 0.01,
+    "outputLatency": 0.032,
+    "clicks_expected": 30,
+    "clicks_found": 30,
+    "mean_ms": 0.141,
+    "largest_ms": 9.569,
+    "off_grid_over_0p1ms": 28,
+    "scheduled_late": null,
+    "recorder_steps": [
+     [
+      1024,
+      512
+     ]
+    ],
+    "playbackStats": {
+     "underrunDuration": 0,
+     "underrunEvents": 0,
+     "totalDuration": 15.055576,
+     "averageLatency": 0.031296,
+     "minimumLatency": 0,
+     "maximumLatency": 0.032879
+    }
+   },
+   {
+    "method": "tone",
+    "busy_ms": 0,
+    "seconds": 15,
+    "sampleRate": 44100,
+    "baseLatency": 0.01,
+    "outputLatency": 0.032,
+    "clicks_expected": 30,
+    "clicks_found": 30,
+    "mean_ms": 0,
+    "largest_ms": 0,
+    "off_grid_over_0p1ms": 0,
+    "scheduled_late": 0,
+    "recorder_steps": [
+     [
+      1024,
+      512
+     ]
+    ],
+    "playbackStats": {
+     "underrunDuration": 0,
+     "underrunEvents": 0,
+     "totalDuration": 15.06138,
+     "averageLatency": 0.031296,
+     "minimumLatency": 0,
+     "maximumLatency": 0.032879
+    }
+   },
+   {
+    "method": "worklet",
+    "busy_ms": 0,
+    "seconds": 15,
+    "sampleRate": 44100,
+    "baseLatency": 0.01,
+    "outputLatency": 0.032,
+    "clicks_expected": 30,
+    "clicks_found": 30,
+    "mean_ms": 0,
+    "largest_ms": 0,
+    "off_grid_over_0p1ms": 0,
+    "scheduled_late": null,
+    "recorder_steps": [
+     [
+      1024,
+      512
+     ]
+    ],
+    "playbackStats": {
+     "underrunDuration": 0,
+     "underrunEvents": 0,
+     "totalDuration": 15.052674,
+     "averageLatency": 0.031296,
+     "minimumLatency": 0,
+     "maximumLatency": 0.032879
+    }
+   },
+   {
+    "method": "lookahead",
+    "busy_ms": 100,
+    "seconds": 15,
+    "sampleRate": 44100,
+    "baseLatency": 0.01,
+    "outputLatency": 0.032,
+    "clicks_expected": 30,
+    "clicks_found": 30,
+    "mean_ms": 0.343,
+    "largest_ms": 9.524,
+    "off_grid_over_0p1ms": 3,
+    "scheduled_late": 3,
+    "recorder_steps": [
+     [
+      1024,
+      512
+     ]
+    ],
+    "playbackStats": {
+     "underrunDuration": 0.01,
+     "underrunEvents": 1,
+     "totalDuration": 15.04236,
+     "averageLatency": 0.031295,
+     "minimumLatency": 0,
+     "maximumLatency": 0.032879
+    }
+   },
+   {
+    "method": "interval",
+    "busy_ms": 100,
+    "seconds": 15,
+    "sampleRate": 44100,
+    "baseLatency": 0.01,
+    "outputLatency": 0.032,
+    "clicks_expected": 30,
+    "clicks_found": 30,
+    "mean_ms": 40.679,
+    "largest_ms": 102.63,
+    "off_grid_over_0p1ms": 29,
+    "scheduled_late": null,
+    "recorder_steps": [
+     [
+      1024,
+      896
+     ]
+    ],
+    "playbackStats": {
+     "underrunDuration": 0.02,
+     "underrunEvents": 2,
+     "totalDuration": 16.070962,
+     "averageLatency": 0.031315,
+     "minimumLatency": 0,
+     "maximumLatency": 0.032879
+    }
+   },
+   {
+    "method": "tone",
+    "busy_ms": 100,
+    "seconds": 15,
+    "sampleRate": 44100,
+    "baseLatency": 0.01,
+    "outputLatency": 0.032,
+    "clicks_expected": 30,
+    "clicks_found": 30,
+    "mean_ms": 1.619,
+    "largest_ms": 29.841,
+    "off_grid_over_0p1ms": 3,
+    "scheduled_late": 3,
+    "recorder_steps": [
+     [
+      2816,
+      512
+     ],
+     [
+      578432,
+      -128
+     ],
+     [
+      578432,
+      128
+     ]
+    ],
+    "playbackStats": {
+     "underrunDuration": 0,
+     "underrunEvents": 0,
+     "totalDuration": 16.030648,
+     "averageLatency": 0.031299,
+     "minimumLatency": 0,
+     "maximumLatency": 0.032879
+    }
+   },
+   {
+    "method": "worklet",
+    "busy_ms": 100,
+    "seconds": 15,
+    "sampleRate": 44100,
+    "baseLatency": 0.01,
+    "outputLatency": 0.032,
+    "clicks_expected": 30,
+    "clicks_found": 30,
+    "mean_ms": 0,
+    "largest_ms": 0,
+    "off_grid_over_0p1ms": 0,
+    "scheduled_late": null,
+    "recorder_steps": [
+     [
+      1024,
+      512
+     ]
+    ],
+    "playbackStats": {
+     "underrunDuration": 0.03,
+     "underrunEvents": 3,
+     "totalDuration": 15.082674,
+     "averageLatency": 0.031296,
+     "minimumLatency": 0,
+     "maximumLatency": 0.032879
+    }
+   }
+  ],
+  "basicPitch": [
+   {
+    "backend": "webgl",
+    "backend_set": true,
+    "active": "webgl",
+    "model_load_ms": 130,
+    "inference_ms": 139442,
+    "audio_seconds": 29.833015873015874,
+    "truth": 62,
+    "found": 62,
+    "matched": 62,
+    "precision": 1,
+    "recall": 1,
+    "onset_error_mean_ms": -3.92
+   }
+  ],
+  "gpu": {
+   "webgl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
+   "webgpu": null
+  }
+ },
+ "console": [
+  "warning: No available adapters.",
+  "log: %c * Tone.js v15.1.22 *  background: #000; color: #fff"
+ ]
+}

@@ -1,0 +1,102 @@
+{
+ "page": "/pages/mediapipe.html?file=/inputs/R3a/R3a.webm&delegate=GPU&max=60",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 211.449,
+ "external_requests": [
+  {
+   "url": "https://odml.pa.googleapis.com/v1/log",
+   "served_from_cache": false,
+   "aborted": true
+  }
+ ],
+ "result": {
+  "file": "/inputs/R3a/R3a.webm",
+  "delegate": "GPU",
+  "step": 1,
+  "create_ms": 858.8349999999627,
+  "frames_processed": 60,
+  "ms_per_frame": {
+   "n": 60,
+   "mean": 3480.6810833333216,
+   "mean_abs": 3480.6810833333216,
+   "sd": 1442.8518221714123,
+   "max_abs": 12985.424999999814,
+   "p95_abs": 4774.459999999963,
+   "min": 1849.8799999998882,
+   "max": 12985.424999999814
+  },
+  "ms_first5": [
+   12985.424999999814,
+   3053.7099999999627,
+   2081.125,
+   2694.2549999998882,
+   2768.9050000002608
+  ],
+  "ms_per_frame_excluding_first": {
+   "n": 59,
+   "mean": 3319.5837288135504,
+   "mean_abs": 3319.5837288135504,
+   "sd": 748.3081122742354,
+   "max_abs": 5341.465000000317,
+   "p95_abs": 4657.7750000003725,
+   "min": 1849.8799999998882,
+   "max": 5341.465000000317
+  },
+  "hands_per_frame_counts": {
+   "0": 0,
+   "1": 53,
+   "2": 7
+  },
+  "total_ms": 209929.5499999998,
+  "landmarks_file": "/home/user/gtr/lanes/browser-audio-sync/out/mediapipe/hands_R3a_webm_GPU.json",
+  "first3": [
+   {
+    "frame": 0,
+    "hands": 1,
+    "handedness": [
+     "Left:0.983"
+    ],
+    "wrist": [
+     [
+      0.5868,
+      0.5036,
+      0
+     ]
+    ]
+   },
+   {
+    "frame": 1,
+    "hands": 1,
+    "handedness": [
+     "Left:0.985"
+    ],
+    "wrist": [
+     [
+      0.5924,
+      0.5107,
+      0
+     ]
+    ]
+   },
+   {
+    "frame": 2,
+    "hands": 1,
+    "handedness": [
+     "Left:0.960"
+    ],
+    "wrist": [
+     [
+      0.5979,
+      0.5093,
+      0
+     ]
+    ]
+   }
+  ]
+ }
+}

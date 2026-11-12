@@ -1,0 +1,3279 @@
+{
+  "lane": "apps-survey",
+  "generated": "2026-11-11",
+  "tools": [
+    {
+      "name": "Klangio Guitar2Tabs",
+      "kind": "commercial-app",
+      "what": "Web, iOS and Android transcription app by Klangio GmbH (Karlsruhe, Germany): audio, .mp4, YouTube / Instagram / TikTok link or microphone in; PDF, MIDI, MusicXML, Guitar Pro (GP5 per its help article) and LilyPond out; user sets tuning and capo before the run; \"Retranscribe\" re-runs with new settings. Also a VST3 plugin and an API (separate business service).",
+      "url": "https://klang.io/guitar2tabs/",
+      "version": "iOS App Store 1.8.1 (Oct 6); terms carry no version date",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Web service (free demo without an account, 20 s, PDF only); Web service: using it means accepting its terms (and usually stating rights to the upload) on Aaron's behalf, which this session's permission system refused for AnthemScore Web (\"[Consent Given For The User]\"), so no other web app's upload was attempted (trials.md).",
+      "for_aaron": true,
+      "callable_via": [
+        "http",
+        "mobile-app"
+      ],
+      "inputs": [
+        ".wav",
+        ".mp3",
+        ".mpeg",
+        ".aiff",
+        ".ogg",
+        ".flac",
+        ".midi",
+        ".mid",
+        ".m4a (and variants)",
+        ".mp4",
+        "YouTube link",
+        "Instagram Reels link",
+        "microphone recording (limited to 5 minutes)",
+        "limits: files up to 15 minutes long and up to 100 MB; demo transcription only the first 20 seconds"
+      ],
+      "outputs": [
+        "PDF (guitar sheet music or bass tab)",
+        "MIDI (quantized and unquantized)",
+        "MusicXML",
+        "Guitar Pro (.gp file; formats article: GP5)",
+        "LilyPond (.ly)"
+      ],
+      "constraints_accepted": [
+        "tuning",
+        "capo",
+        "mode and instruments (Transcription Wizard; also re-chosen with \"Retranscribe\")",
+        "additional information, or let Klangio apply the settings"
+      ],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Free tier",
+            "quote": "The Free Tier allows users to access Klangio Services without creating a user account and without incurring any costs. It is intended exclusively for non-commercial use ... (a) the number of Demo Transcriptions is limited to 30 per day, (b) the duration of each transcription is limited to 20 seconds, (c) export is restricted to sheet music in PDF format, which includes a watermark, (d) the Edit Mode is not available, (e) transcriptions remain available for a period of 30 days.",
+            "url": "https://klang.io/terms/"
+          },
+          {
+            "topic": "Commercial use (§12.4)",
+            "quote": "The use of Klangio Services and Apps is intended exclusively for private, non-commercial purposes, subject to the exception described below. Commercial use is permitted exclusively for original musical compositions created by the user, provided that the output is based on full transcriptions rather than a demo transcription (see § 5.2.1).",
+            "url": "https://klang.io/terms/"
+          },
+          {
+            "topic": "Use of transcriptions / AI training (§12.5)",
+            "quote": "Transcriptions may only be used by you in accordance with applicable laws, in particular copyright laws. They must not be used to train music transcription AI systems or similar technologies.",
+            "url": "https://klang.io/terms/"
+          },
+          {
+            "topic": "Responsibility for transcripts (§12.3)",
+            "quote": "You are solely responsible for the use of the transcripts, which we only provide to you on the basis of your uploads. You undertake not to infringe the rights of third parties by using the transcriptions.",
+            "url": "https://klang.io/terms/"
+          },
+          {
+            "topic": "Uploads and training (§8.1)",
+            "quote": "We do not use the content uploaded by you to train our AI models or for any other purposes beyond the provision of the Klangio Services in accordance with these Terms of Use.",
+            "url": "https://klang.io/terms/"
+          },
+          {
+            "topic": "Sharing the software (§7.5)",
+            "quote": "You are not entitled to make the Software available to third parties for use, whether in return for payment or free of charge, to sublet it or otherwise transfer rights of use to third parties, unless we have given our express prior written consent.",
+            "url": "https://klang.io/terms/"
+          },
+          {
+            "topic": "API and bulk transcription (§3.1, §5.2.3)",
+            "quote": "API access and Bulk Transcription are not included in the subscription plans; they are offered exclusively as separate business services subject to separate terms and require separate registration",
+            "url": "https://klang.io/terms/"
+          }
+        ]
+      },
+      "pricing": "Free: \"Demo transcriptions\", \"Transcribe up to 30 seconds\", \"Download as PDF\". Guitar2Tabs Pro: \"$14.99\" struck through, \"$6.25 /month Billed annually\", \"50 transcriptions/month\", \"Transcribe songs up to 15 minutes long\", \"Download PDF, MIDI, Guitar Pro & MusicXML\". Klangio Ultimate: \"$29.99\" struck through, \"$12.50 /month Billed annually\", \"250 transcriptions/month\", Transcription Studio Pro and the DAW plugin included; banner \"60% DISCOUNT\"; \"14-day money-back guarantee\". App Store in-app purchases: \"Pro Monthly $9.99\", \"Pro Yearly $99.99\", \"Klangio Universe Monthly $24.99\", \"Klangio Universe Subscription $149.99\", \"Single Ticket $2.99\", \"3 Tickets Package $4.99\", \"10 Tickets Package $9.99\", \"50 Tickets Package $24.99\". API tiers (rendered page): Basic \"For Testing\" $0.00 \"Monthly\", \"Max 15s audio duration\"; Startup $99.00 \"Monthly\", \"Max 300s audio duration\"; Business $499.00 \"Monthly\", \"Max 300s audio duration\"; Enterprise \"Contact Sales\", \"Max 600s audio duration\".",
+      "handoffs_out": [
+        {
+          "to": "Guitar Pro 8",
+          "via_format": "Guitar Pro file (.gp / .gp5)",
+          "evidence": "Documented, not tested (survey.md handoff line 1): \"For Guitar2Tabs and our Klangio Transcription Studio, there is an exclusive download format: a Guitar Pro file\" (https://klang.io/help/download-formats/); Guitar Pro 8 import list includes \".gp5\" and \".gp\" (https://www.guitar-pro.com/c/14-guitar-pro-features); Klangio itself says it \"can be opened with the Guitar Pro Editor or TuxGuitar\"."
+        },
+        {
+          "to": "Tabtify",
+          "via_format": "Guitar Pro file (.gp / .gp5)",
+          "evidence": "Documented, not tested (survey.md handoff line 1): Tabtify opens \"GP3, GP4, GP5, GPX, and GP\" (https://tabtify.com/)."
+        },
+        {
+          "to": "Soundslice",
+          "via_format": "Guitar Pro file",
+          "evidence": "Documented, not tested (survey.md handoff line 1): Soundslice \"Import MusicXML and Guitar Pro files\" (https://www.soundslice.com/plans/)."
+        },
+        {
+          "to": "RiffToTab, Cesure",
+          "via_format": "Guitar Pro file",
+          "evidence": "Documented, not tested (survey.md handoff line 10): RiffToTab \"Opens Guitar Pro, MusicXML and alphaTex files\" (https://rifftotab.com/); Cesure \"Guitar Pro (.gp, .gp3, .gp4, .gp5)\" (https://cesure.app/)."
+        },
+        {
+          "to": "Guitar Pro 8, Tabtify, Soundslice",
+          "via_format": "MusicXML",
+          "evidence": "Documented, not tested (survey.md handoff line 2): Klangio's MusicXML \"is using the nominal tempo that was detected in the audio file\" (https://klang.io/help/download-formats/); Guitar Pro 8 imports \"MusicXML\", Tabtify opens \"MusicXML files including XML and MXL\", Soundslice imports MusicXML."
+        },
+        {
+          "to": "Tabtify, Guitar Pro 8, RiffToTab",
+          "via_format": "MIDI (quantized / unquantized)",
+          "evidence": "Documented, not tested (survey.md handoff lines 3 and 25): \"Unquantized MIDI exports preserve the original transcription and do not include edits made in the Sheet Viewer; edits are included only in quantized MIDI exports\" (https://klang.io/help/download-formats/); Tabtify: \"You can also upload MIDI, which already contains note and instrument data\" (https://tabtify.com/); Guitar Pro 8 imports \"MIDI\"; RiffToTab MIDI input \".mid or .midi\" (https://rifftotab.com/)."
+        }
+      ],
+      "unverified": [
+        "Which Guitar Pro version the exported file is (the Guitar2Tabs page says \".gp file\", the formats article heads its section \"Export GP5\", the App Store listing says \"Guitar Pro 5\"); settled by exporting one.",
+        "Automatic capo or tuning detection: not described on the pages read.",
+        "A single note edit re-running the analysis around it: not described.",
+        "Looping, metronome or count-in: not described on the pages read.",
+        "Video of the hands: not described.",
+        "No per-note confidence or JSON output is described on the app pages read; the API is covered in ../hosted-apis/.",
+        "Sources conflict on the demo length: the pricing table says \"30 seconds\"; the same page's text, the file-limitations article and the terms say 20 seconds.",
+        "The terms contain no sentence assigning ownership of the transcription to either party.",
+        "No benchmark number with a dataset was found for the vendor's accuracy claims."
+      ]
+    },
+    {
+      "name": "Klangio Transcription Studio",
+      "kind": "commercial-app",
+      "what": "Klangio GmbH web, iOS and Android app that transcribes several instruments in one pass from a single audio file; same exports as Guitar2Tabs; included with Klangio Ultimate.",
+      "url": "https://klang.io/transcription-studio/",
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Web service; Web service: using it means accepting its terms (and usually stating rights to the upload) on Aaron's behalf, which this session's permission system refused for AnthemScore Web (\"[Consent Given For The User]\"), so no other web app's upload was attempted (trials.md).",
+      "for_aaron": true,
+      "callable_via": [
+        "http",
+        "mobile-app"
+      ],
+      "inputs": [
+        "audio file",
+        "video file",
+        "YouTube link",
+        "Instagram link",
+        "TikTok link",
+        "microphone recording"
+      ],
+      "outputs": [
+        "PDF",
+        "MIDI (quantized and unquantized)",
+        "MusicXML",
+        "Guitar Pro (exclusive download format per formats article)",
+        "LilyPond (.ly)"
+      ],
+      "constraints_accepted": [
+        "tuning and capo when transcribing a guitar as a solo instrument",
+        "mode and instruments"
+      ],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Free tier",
+            "quote": "The Free Tier allows users to access Klangio Services without creating a user account and without incurring any costs. It is intended exclusively for non-commercial use ... (a) the number of Demo Transcriptions is limited to 30 per day, (b) the duration of each transcription is limited to 20 seconds, (c) export is restricted to sheet music in PDF format, which includes a watermark, (d) the Edit Mode is not available, (e) transcriptions remain available for a period of 30 days.",
+            "url": "https://klang.io/terms/"
+          },
+          {
+            "topic": "Commercial use (§12.4)",
+            "quote": "The use of Klangio Services and Apps is intended exclusively for private, non-commercial purposes, subject to the exception described below. Commercial use is permitted exclusively for original musical compositions created by the user, provided that the output is based on full transcriptions rather than a demo transcription (see § 5.2.1).",
+            "url": "https://klang.io/terms/"
+          },
+          {
+            "topic": "Use of transcriptions / AI training (§12.5)",
+            "quote": "Transcriptions may only be used by you in accordance with applicable laws, in particular copyright laws. They must not be used to train music transcription AI systems or similar technologies.",
+            "url": "https://klang.io/terms/"
+          },
+          {
+            "topic": "Responsibility for transcripts (§12.3)",
+            "quote": "You are solely responsible for the use of the transcripts, which we only provide to you on the basis of your uploads. You undertake not to infringe the rights of third parties by using the transcriptions.",
+            "url": "https://klang.io/terms/"
+          },
+          {
+            "topic": "Uploads and training (§8.1)",
+            "quote": "We do not use the content uploaded by you to train our AI models or for any other purposes beyond the provision of the Klangio Services in accordance with these Terms of Use.",
+            "url": "https://klang.io/terms/"
+          },
+          {
+            "topic": "Sharing the software (§7.5)",
+            "quote": "You are not entitled to make the Software available to third parties for use, whether in return for payment or free of charge, to sublet it or otherwise transfer rights of use to third parties, unless we have given our express prior written consent.",
+            "url": "https://klang.io/terms/"
+          },
+          {
+            "topic": "API and bulk transcription (§3.1, §5.2.3)",
+            "quote": "API access and Bulk Transcription are not included in the subscription plans; they are offered exclusively as separate business services subject to separate terms and require separate registration",
+            "url": "https://klang.io/terms/"
+          }
+        ]
+      },
+      "pricing": "Klangio Ultimate: \"$12.50 /month Billed annually\", \"250 transcriptions/month\", Transcription Studio Pro and the DAW plugin included (see Klangio Guitar2Tabs for the full table).",
+      "handoffs_out": [
+        {
+          "to": "Guitar Pro 8",
+          "via_format": "Guitar Pro file (.gp / .gp5)",
+          "evidence": "Documented, not tested (survey.md handoff line 1): \"For Guitar2Tabs and our Klangio Transcription Studio, there is an exclusive download format: a Guitar Pro file\" (https://klang.io/help/download-formats/); Guitar Pro 8 import list includes \".gp5\" and \".gp\" (https://www.guitar-pro.com/c/14-guitar-pro-features); Klangio itself says it \"can be opened with the Guitar Pro Editor or TuxGuitar\"."
+        }
+      ],
+      "unverified": [
+        "Which Guitar Pro version the exported file is (the Guitar2Tabs page says \".gp file\", the formats article heads its section \"Export GP5\", the App Store listing says \"Guitar Pro 5\"); settled by exporting one.",
+        "Automatic capo or tuning detection: not described on the pages read.",
+        "A single note edit re-running the analysis around it: not described."
+      ]
+    },
+    {
+      "name": "Klangio sibling apps (Piano2Notes, Sing2Notes, Drum2Notes, Violin2Notes, Wind2Notes, Scan2Notes, Melody Scanner)",
+      "kind": "commercial-app",
+      "what": "Other Klangio apps listed in the help center and terms; single-instrument transcription apps, plus Scan2Notes (sheet-music scanning) and Melody Scanner.",
+      "url": "https://klang.io/help/transcription-wizard/",
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Not run; listed in survey.md as one line only (no section of its own).",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [],
+      "outputs": [],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Commercial use (§12.4)",
+            "quote": "The use of Klangio Services and Apps is intended exclusively for private, non-commercial purposes, subject to the exception described below. Commercial use is permitted exclusively for original musical compositions created by the user, provided that the output is based on full transcriptions rather than a demo transcription (see § 5.2.1).",
+            "url": "https://klang.io/terms/"
+          },
+          {
+            "topic": "Use of transcriptions / AI training (§12.5)",
+            "quote": "Transcriptions may only be used by you in accordance with applicable laws, in particular copyright laws. They must not be used to train music transcription AI systems or similar technologies.",
+            "url": "https://klang.io/terms/"
+          },
+          {
+            "topic": "Uploads and training (§8.1)",
+            "quote": "We do not use the content uploaded by you to train our AI models or for any other purposes beyond the provision of the Klangio Services in accordance with these Terms of Use.",
+            "url": "https://klang.io/terms/"
+          }
+        ]
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "Only named in the terms and help center; no per-app inputs, outputs or limits were read."
+      ]
+    },
+    {
+      "name": "Songsterr AI",
+      "kind": "commercial-app",
+      "what": "Web tab player and editor with iOS and Android apps (Guitar Tabs LLC); \"Songsterr AI\" turns a YouTube link or audio upload into a multi-track tab that opens in the Songsterr editor and downloads as Guitar Pro or MIDI.",
+      "url": "https://www.songsterr.com/new",
+      "version": "iOS App Store 10.5.0 (Oct 26); terms \"Last Modified: June 10, 2026\"",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Web service; full length is Songsterr Plus; Web service: using it means accepting its terms (and usually stating rights to the upload) on Aaron's behalf, which this session's permission system refused for AnthemScore Web (\"[Consent Given For The User]\"), so no other web app's upload was attempted (trials.md).",
+      "for_aaron": true,
+      "callable_via": [
+        "mobile-app"
+      ],
+      "inputs": [
+        "YouTube link",
+        "audio file upload"
+      ],
+      "outputs": [
+        "Songsterr tab (interactive, opens in the Songsterr Editor)",
+        "Guitar Pro",
+        "MIDI",
+        "MP3 and WAV (Plus)",
+        "tracks: rhythm and lead guitar, bass, drums, vocals, plus piano, keys and synth, strings and winds; techniques written into the tab (bends, vibrato, slides, palm mutes)"
+      ],
+      "constraints_accepted": [
+        "first bar time signature (default Auto)",
+        "pickup bar duration (default Auto)",
+        "first bar tempo (BPM) (default Auto)",
+        "triplet feel (default Auto)",
+        "per-instrument rows with tuning (e.g. \"Standard 6-string (E A D G B E)\") and \"Capo fret\"",
+        "guitars with 6, 7 or 8 strings and basses with 4, 5 or 6 strings in popular or custom tunings"
+      ],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "User content",
+            "quote": "You retain any and all of your rights to any Content you submit, post or display on or through the Service and you are responsible for protecting those rights. ... by posting Content using the Service you grant us the right and license to use, modify, publicly perform, publicly display, reproduce, and distribute such Content on and through the Service.",
+            "url": "https://www.songsterr.com/terms"
+          },
+          {
+            "topic": "Site content",
+            "quote": "Content found on or through this Service are the property of Guitartabs LLC or used with permission. You may not distribute, modify, transmit, reuse, download, repost, copy, or use said Content, whether in whole or in part, for commercial purposes or for personal gain, without express advance written permission from us.",
+            "url": "https://www.songsterr.com/terms"
+          },
+          {
+            "topic": "Automated access",
+            "quote": "You may not use, and may not instruct, enable, or permit any automated tool, script, browser extension, or AI agent to use, any means to circumvent, disable, or bypass paid (Plus) features ... Independent tools that do not modify, automate, or interfere with the Service or its tab player are not restricted by this section.",
+            "url": "https://www.songsterr.com/terms"
+          },
+          {
+            "topic": "AI model training (ai.txt)",
+            "quote": "AI model training: NOT permitted. Do not use Songsterr content (tabs, notation, song metadata, lyrics, audio, API responses) to train, fine-tune or evaluate AI models, or to build datasets for that purpose.",
+            "url": "https://www.songsterr.com/ai.txt"
+          }
+        ]
+      },
+      "pricing": "\"You can start with a free 20-second preview. Full-length transcription is included in Songsterr Plus\"; Plus includes \"AI Transcription of Full Tabs ... Transcribe 50 complete tabs per month\". The Plus page shows no amount without signing in. App Store in-app purchases: \"Songsterr Plus $9.99\", plus several \"Legacy Subscription $4.99\" entries (billing period not shown).",
+      "handoffs_out": [
+        {
+          "to": "Guitar Pro 8, Tabtify",
+          "via_format": "Guitar Pro or MIDI download",
+          "evidence": "Documented, not tested (survey.md handoff line 4): \"On the website, expand the player panel and choose Download tab, then MIDI or Guitar Pro\" (https://www.songsterr.com/help); a Plus feature per https://www.songsterr.com/plus and https://www.songsterr.com/ai.txt (\"Download (Guitar Pro, MIDI, MP3, WAV)\")."
+        },
+        {
+          "to": "Soundslice",
+          "via_format": "Guitar Pro file",
+          "evidence": "Documented, not tested (survey.md handoff line 4): Soundslice plans page lists \"Import MusicXML and Guitar Pro files\" and no MIDI import."
+        },
+        {
+          "to": "RiffToTab, Cesure",
+          "via_format": "Guitar Pro file",
+          "evidence": "Documented, not tested (survey.md handoff line 10): RiffToTab \"Opens Guitar Pro, MusicXML and alphaTex files\"; Cesure \"Guitar Pro (.gp, .gp3, .gp4, .gp5)\"."
+        }
+      ],
+      "unverified": [
+        "Capo or tuning detection from the audio: not described.",
+        "A correction feeding back into the AI is not described (documented route is a new AI draft).",
+        "The terms do not say who owns a tab produced by Songsterr AI from a user's upload.",
+        "Developer API: none documented on the pages read; see ../hosted-apis/survey.md.",
+        "Plus billing period for \"Songsterr Plus $9.99\" not shown on the App Store page.",
+        "Video of the hands: not described."
+      ]
+    },
+    {
+      "name": "Songscription",
+      "kind": "commercial-app",
+      "what": "Web app by Songscription, Inc. that converts audio recordings into sheet music, MIDI, guitar and bass tab and MusicXML; its terms are served at playanything.com and cover the Songscription web app and the AnythingPiano mobile app.",
+      "url": "https://www.songscription.ai/",
+      "version": "terms \"Last updated June 18, 2026\"; pricing table \"Plans updated November 10, 2026\"",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Web service: using it means accepting its terms (and usually stating rights to the upload) on Aaron's behalf, which this session's permission system refused for AnthemScore Web (\"[Consent Given For The User]\"), so no other web app's upload was attempted (trials.md).",
+      "for_aaron": true,
+      "callable_via": [],
+      "inputs": [
+        "recording (audio)",
+        "video",
+        "YouTube, Instagram or TikTok link",
+        "microphone",
+        "photo or PDF of printed music",
+        "MusicXML",
+        "MIDI"
+      ],
+      "outputs": [
+        "sheet music",
+        "MIDI",
+        "MusicXML",
+        "guitar and bass tab",
+        "PDF",
+        "Guitar Pro"
+      ],
+      "constraints_accepted": [
+        "standard tuning only (\"At the moment, we only support standard tuning\")"
+      ],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Personal-use license (§5.1)",
+            "quote": "Company grants you, solely for your personal, non-commercial use, a limited, non-exclusive, non-transferable, non-sublicensable, revocable license to: ... (b) access and use the Service.",
+            "url": "https://playanything.com/terms"
+          },
+          {
+            "topic": "Credits restriction (§4.6)",
+            "quote": "You may not use Credits to generate, download, or access Digital Sheet Music Files or Outputs for any commercial purpose, including sale, sublicense, or redistribution, except as expressly permitted by Company.",
+            "url": "https://playanything.com/terms"
+          },
+          {
+            "topic": "User content (§8.1)",
+            "quote": "You retain any copyright and other proprietary rights that you may hold in the User Content that you Post to the Service, subject to the licenses granted in these Terms.",
+            "url": "https://playanything.com/terms"
+          },
+          {
+            "topic": "License to company (§8.2)",
+            "quote": "train or improve our AI or machine learning models",
+            "url": "https://playanything.com/terms"
+          },
+          {
+            "topic": "Training use of uploads (pricing FAQ)",
+            "quote": "By default, we may use the audio and transcriptions you submit to help improve our AI models. Plus and Pro subscribers can opt out at any time from their account settings, and we will not use your data for model training.",
+            "url": "https://www.songscription.ai/pricing"
+          }
+        ]
+      },
+      "pricing": "Free \"$0\", \"The first 30 seconds of each song, free\"; Plus \"$8.33 /month\", \"$99.90 billed yearly\", \"60 minutes of transcription a month\", \"Songs up to 15 minutes long\"; Pro \"$24.99 /month\", \"$299.90 billed yearly\", \"300 minutes of transcription a month\"; Enterprise \"API access\", \"Bulk transcriptions\", \"Contact sales\". FAQ: \"Start a 14-day free trial (no card required) for 2-minute transcriptions.\"",
+      "handoffs_out": [
+        {
+          "to": "Guitar Pro 8, Tabtify, Soundslice",
+          "via_format": "Guitar Pro / MusicXML / MIDI",
+          "evidence": "Documented, not tested (survey.md handoff line 5): \"MIDI, MusicXML, PDF, and Guitar Pro export\" (https://www.songscription.ai/pricing); Guitar Pro 8 and Tabtify import Guitar Pro, MusicXML or MIDI; Soundslice imports Guitar Pro or MusicXML."
+        }
+      ],
+      "unverified": [
+        "Capo: not described.",
+        "Re-running the transcription with a user constraint: not described.",
+        "Looping and metronome: not described on the pages read.",
+        "No clause assigning ownership of Output was found (searched 2026-11-10).",
+        "The TechCrunch article (2025-06-30) was not read; URL from search results only.",
+        "Video of the hands: not described (video files are accepted as input)."
+      ]
+    },
+    {
+      "name": "Tabtify",
+      "kind": "commercial-app",
+      "what": "Browser tab editor with AI conversion (page references alphaTab): audio, MIDI, public media link or recording in; editable tab, Guitar Pro (.gp), MIDI, PDF, MusicXML, alphaTex out.",
+      "url": "https://tabtify.com/",
+      "version": "terms \"Last updated: October 26, 2026\"",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Web service; AI conversion is paid (\"AI conversion is not included\" in Free); not run (trials.md: optional test).",
+      "for_aaron": true,
+      "callable_via": [],
+      "inputs": [
+        "audio",
+        "public media links (YouTube, TikTok, Instagram, Pinterest)",
+        "live recording",
+        "MIDI upload",
+        "PDF or photo pages",
+        "opens GP3, GP4, GP5, GPX, GP, plus MusicXML including XML and MXL",
+        "sources up to 15 minutes long"
+      ],
+      "outputs": [
+        "MIDI (.mid)",
+        "Guitar Pro (.gp) (a .gp file for Guitar Pro 7 and 8, not the older .gp5)",
+        "alphaTex (.alphatex)",
+        "PDF (.pdf)",
+        "MusicXML (.musicxml)"
+      ],
+      "constraints_accepted": [
+        "instruments heard and whether someone is singing",
+        "string count",
+        "tuning",
+        "capo",
+        "instrument profiles: Acoustic Guitar 6-string, Electric Guitar 6 & 7-string, Bass 4, 5 & 6-string, Ukulele G C E A"
+      ],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "License (§2)",
+            "quote": "Tabtify grants you a limited, non-exclusive, non-transferable, revocable license to access and use the Service for personal, non-commercial purposes. You may not modify, copy, distribute, transmit, display, perform, reproduce, publish, license, create derivative works from, transfer, or sell any information or services obtained from the Service without prior written consent from Tabtify. This does not limit what you do with tabs of your own original music: those are yours to use however you like.",
+            "url": "https://tabtify.com/terms"
+          },
+          {
+            "topic": "Uploads (§4)",
+            "quote": "Your uploads stay private to your account unless you choose to publish a tab, and we do not use them to train AI models. ... You are responsible for how you use the resulting tabs",
+            "url": "https://tabtify.com/terms"
+          },
+          {
+            "topic": "Plan limits (§5)",
+            "quote": "MIDI imports, a new version that only redraws an existing tab, and conversions that fail do not count.",
+            "url": "https://tabtify.com/terms"
+          },
+          {
+            "topic": "Automated use (§5)",
+            "quote": "we may limit automated or bulk use that is not personal use.",
+            "url": "https://tabtify.com/terms"
+          }
+        ]
+      },
+      "pricing": "Free \"$0\": \"The tab editor with playback, every export, and up to 3 saved tabs. AI conversion is not included.\" Pro \"$15/month\" or \"$99/year\" (\"$8.2/month\"), \"100 AI conversions a month\", \"10 PDF or photo pages a month\", \"Up to 15 min per song\". Max \"$25/month\" or \"$129/year\", \"Unlimited AI conversions*\", \"*Fair use: 300 AI conversions per 30 days. MIDI doesn't count.\" \"7-day money-back\".",
+      "handoffs_out": [
+        {
+          "to": "alphaTab (reads alphaTex), Cesure, RiffToTab",
+          "via_format": "alphaTex (.alphatex)",
+          "evidence": "Documented, not tested (survey.md handoff line 7): \"alphaTex is a plain-text notation format for alphaTab. You write a score as source code and alphaTab parses it into the same data model any other format produces\" (https://alphatab.net/docs/alphatex/introduction); Cesure \"Import MIDI, MusicXML, Guitar Pro (.gp, .gp3, .gp4, .gp5) and AlphaTex\"; RiffToTab \"Opens Guitar Pro, MusicXML and alphaTex files\"."
+        },
+        {
+          "to": "RiffToTab, Cesure",
+          "via_format": "Guitar Pro file (.gp)",
+          "evidence": "Documented, not tested (survey.md handoff line 10): Tabtify outputs \"Guitar Pro (.gp)\" (https://tabtify.com/); RiffToTab opens Guitar Pro files; Cesure imports \".gp\"."
+        }
+      ],
+      "unverified": [
+        "Detection of capo or tuning: not described.",
+        "Metronome, count-in, slow-down: not described on the pages read.",
+        "Video of the hands: not described.",
+        "API: none found on the pages read."
+      ]
+    },
+    {
+      "name": "audio2guitar",
+      "kind": "commercial-app",
+      "what": "Web app: audio upload in; tab, chords, synced lyrics, stems, per-stem MIDI and PDF out; vendor states \"source separation (based on the Open-Unmix architecture)\" and a \"97.8%\" GuitarSet string-assignment figure.",
+      "url": "https://audio2guitar.com/",
+      "version": "terms \"Last updated: August 14, 2026\"",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Web service; terms: not to \"Use automation, scripts, bots, or other tools to submit songs in bulk\"; Web service: using it means accepting its terms (and usually stating rights to the upload) on Aaron's behalf, which this session's permission system refused for AnthemScore Web (\"[Consent Given For The User]\"), so no other web app's upload was attempted (trials.md).",
+      "for_aaron": true,
+      "callable_via": [],
+      "inputs": [
+        "MP3, WAV, Suno, Udio, worship recordings, or voice memos",
+        "free plan MP3 only; Pro MP3, WAV, FLAC, M4A, OGG+",
+        "YouTube videos (source card linking to /youtube-to-guitar-tab; page not read)"
+      ],
+      "outputs": [
+        "note-by-note tablature with techniques (hammer-ons, pull-offs, slides, bends)",
+        "chord diagrams",
+        "synced lyrics",
+        "separated vocals, bass, drums, guitar, and piano as MP3 or per-stem MIDI",
+        "MIDI export",
+        "PDF"
+      ],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Ownership of uploads",
+            "quote": "You retain all rights to audio files you upload. We do not claim ownership of your content.",
+            "url": "https://audio2guitar.com/terms"
+          },
+          {
+            "topic": "Use of generated transcriptions",
+            "quote": "Generated transcriptions are derived from your uploaded audio and are provided for personal, educational use.",
+            "url": "https://audio2guitar.com/terms"
+          },
+          {
+            "topic": "Automation",
+            "quote": "Use automation, scripts, bots, or other tools to submit songs in bulk",
+            "url": "https://audio2guitar.com/terms"
+          },
+          {
+            "topic": "Commercial service",
+            "quote": "Operate a commercial transcription service using audio2guitar",
+            "url": "https://audio2guitar.com/terms"
+          },
+          {
+            "topic": "Resale",
+            "quote": "Resell or redistribute transcription results at scale without permission",
+            "url": "https://audio2guitar.com/terms"
+          },
+          {
+            "topic": "Rate limit",
+            "quote": "The current limit is 35 new songs in any rolling 7-day period",
+            "url": "https://audio2guitar.com/terms"
+          }
+        ]
+      },
+      "pricing": "\"ANNUAL\", \"$59.99/yr\", \"$5.00/mo\"; \"MONTHLY\", \"$8.99/mo\"; \"ONE-TIME\", \"$9.99\", \"10 transcription credits · no subscription\"; Free \"3 songs\".",
+      "handoffs_out": [],
+      "unverified": [
+        "Which Open-Unmix weights, if any, the service uses (the page does not say).",
+        "Whether tuning is detected or set (the demo card shows \"Tuning: Open G | Key: G | Tempo: 125 BPM\").",
+        "Re-analysis after a correction: not described.",
+        "No method, split or paper is given for the vendor's \"97.8% string assignment accuracy on the GuitarSet benchmark\".",
+        "The /youtube-to-guitar-tab page was not read."
+      ]
+    },
+    {
+      "name": "Open-Unmix",
+      "kind": "open-source",
+      "what": "Source-separation architecture (open-unmix-pytorch) named by audio2guitar as the basis of its guitar isolation. Code, weights and training data carry different licenses; the source-separation lane owns these facts (../source-separation/survey.md). Zenodo lists umxhq and umx weights under license id mit-license (records 3370489 and 3370486) and umxl under cc-by-nc-sa-4.0 (record 5069601); umxhq was trained on MUSDB18-HQ.",
+      "url": "https://github.com/sigsep/open-unmix-pytorch",
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Not run; context only (named by audio2guitar).",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [],
+      "outputs": [],
+      "constraints_accepted": [],
+      "license": {
+        "code": {
+          "spdx": "MIT",
+          "quote": "MIT License",
+          "url": "https://raw.githubusercontent.com/sigsep/open-unmix-pytorch/master/LICENSE"
+        },
+        "weights": {
+          "name": "umxl (default model)",
+          "quote": "Note, that the weights are only licensed for non-commercial use (CC BY-NC-SA 4.0)",
+          "url": "https://raw.githubusercontent.com/sigsep/open-unmix-pytorch/master/README.md"
+        },
+        "training_data": [
+          {
+            "name": "private stems dataset of compressed stems (umxl)",
+            "license": null,
+            "quote": "trained on private stems dataset of compressed stems",
+            "url": "https://raw.githubusercontent.com/sigsep/open-unmix-pytorch/master/README.md"
+          },
+          {
+            "name": "MUSDB18-HQ (umxhq)",
+            "license": "other-nc (Zenodo license id)",
+            "quote": "MUSDBHQ: is provided for educational purposes only and the material contained in them should not be used for any commercial purpose without the express permission of the copyright holders",
+            "url": "https://zenodo.org/api/records/3338373"
+          }
+        ],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "Calling modes (cli, python, ...) are not stated in these reports.",
+        "Which weights audio2guitar uses."
+      ]
+    },
+    {
+      "name": "MUSDB18-HQ",
+      "kind": "dataset",
+      "what": "Dataset on which Open-Unmix's umxhq weights were trained (Zenodo record 3338373).",
+      "url": "https://zenodo.org/api/records/3338373",
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Not run; context only.",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [],
+      "outputs": [],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [
+          {
+            "name": "MUSDB18-HQ",
+            "license": "other-nc (Zenodo license id)",
+            "quote": "MUSDBHQ: is provided for educational purposes only and the material contained in them should not be used for any commercial purpose without the express permission of the copyright holders",
+            "url": "https://zenodo.org/api/records/3338373"
+          }
+        ],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": []
+    },
+    {
+      "name": "GuitarSet",
+      "kind": "dataset",
+      "what": "Real acoustic guitar dataset with a per-string note annotation; the vendor audio2guitar quotes its accuracy on it; R1a, a shared test clip, is a GuitarSet recording.",
+      "url": null,
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Not run; used as test clip R1a (for-aaron.md, trials.md).",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [],
+      "outputs": [],
+      "constraints_accepted": [],
+      "license": {
+        "code": {
+          "spdx": "CC-BY-4.0",
+          "quote": "R1a is GuitarSet (CC BY 4.0)",
+          "url": null
+        },
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "License text not quoted from the dataset's own page; only the lane's INPUTS.md reference (\"CC BY 4.0\") appears in the reports."
+      ]
+    },
+    {
+      "name": "AnthemScore 6 (desktop)",
+      "kind": "commercial-app",
+      "what": "Desktop audio-to-notation program by Lunaverus LLC for Windows, macOS and Linux (Linux AppImage); guitar, bass guitar and ukulele tablature among its output options. The 6.3.0 Linux AppImage was downloaded and unpacked as data but not executed; it is no longer on the box on 2026-11-11 (the unpacked tree, about 499 MiB, was deleted earlier).",
+      "url": "https://www.lunaverus.com/download",
+      "version": "6.3.0 (version history: \"released 2026-09-29\"; AppImage last-modified 2026-09-30; no version string found in the binary)",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Executing the AppImage was refused by this session's permission system (\"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\"), so no clip went in and nothing came out: no run id, no timing, no scores.",
+      "for_aaron": true,
+      "callable_via": [
+        "desktop-gui"
+      ],
+      "inputs": [
+        "audio files (command-line parser text: \"Source file (mp3, wav, asdt, etc.)\")",
+        "trial limited to the first 30 seconds of each song"
+      ],
+      "outputs": [
+        "musicXML",
+        "MIDI (.mid) (options: auto-detected tempo map, user annotated tempos, constant tempo)",
+        "AnthemScore project (ASDT)",
+        "PDF (Professional edition)",
+        "Beat and Note Timing (.csv)"
+      ],
+      "constraints_accepted": [
+        "instrument (guitar, bass guitar, soprano and concert ukulele)",
+        "number of strings and frets",
+        "string tunings (written, not sounded, pitches)",
+        "Tablature staff",
+        "auto instrument detection"
+      ],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [
+          {
+            "name": "2.5 million training examples from 3,000 MIDI files (author's 2016 description)",
+            "license": null,
+            "quote": "To train the network, I created a dataset of 2.5 million training examples from 3,000 MIDI files spanning several different genres of music ... A MIDI-to-WAV utility created the actual audio data",
+            "url": "https://lunaverus.com/cnn"
+          }
+        ],
+        "service_terms": [
+          {
+            "topic": "Section 2",
+            "quote": "Permission is granted to temporarily download one copy of the materials (information or software) on Lunaverus LLC's web site. This is the grant of a license, not a transfer of title, and under this license you may not: modify or copy the materials, except as allowed by the software license; use the materials for any public display (commercial or non-commercial); remove any copyright or other proprietary notations from the materials; or transfer the materials to another person or \"mirror\" the materials on any other server.",
+            "url": "https://www.lunaverus.com/tos"
+          },
+          {
+            "topic": "Section 3: user content",
+            "quote": "You retain all ownership rights to any audio files, musical works, or other content (\"User Content\") that you upload, submit, or process through the Service.",
+            "url": "https://www.lunaverus.com/tos"
+          },
+          {
+            "topic": "Section 10: refunds",
+            "quote": "For desktop software, refunds are available for unused activation keys only. There are no refunds for used activation keys or software upgrades. Please use the free trial to evaluate the software before making a purchase.",
+            "url": "https://www.lunaverus.com/tos"
+          },
+          {
+            "topic": "Section 13: software license",
+            "quote": "Before using the AnthemScore desktop software, you must agree to the terms in the \"license.txt\" file, which is included in every download of the software. By using the software you are agreeing to these terms.",
+            "url": "https://www.lunaverus.com/tos"
+          },
+          {
+            "topic": "Uploads license (survey.md)",
+            "quote": "You retain all ownership rights to any audio files, musical works, or other content (\"User Content\") that you upload, submit, or process through the Service. However, by uploading User Content, you grant Lunaverus a limited, non-exclusive, royalty-free license to copy, process, store, and modify the User Content solely for the purpose of providing the transcription services to you.",
+            "url": "https://www.lunaverus.com/tos"
+          }
+        ]
+      },
+      "pricing": "Desktop: \"AnthemScore 6 Lite ... $29\", \"Professional ... $39\", \"Studio ... $99\" (one-time, Lite and Professional with one year of updates). Trial: \"In the trial, you are limited to the first 30 seconds of each song\" (compare editions: \"Limited to first 30 seconds of each song and 100 total transcriptions.\"). Web subscription Pro includes \"Free use of the AnthemScore desktop app while subscribed\".",
+      "handoffs_out": [
+        {
+          "to": "Guitar Pro 8, Tabtify, Soundslice",
+          "via_format": "MusicXML / MIDI",
+          "evidence": "Documented, not tested (survey.md handoff line 6): \"musicXML, MIDI, and AnthemScore project (ASDT) formats\" (https://lunaverus.com/compareEditions); Guitar Pro 8 and Tabtify accept MusicXML or MIDI; Soundslice accepts MusicXML."
+        }
+      ],
+      "unverified": [
+        "Whether 6.x exports without its window: 6.0.0 \"released 2026-05-07\" \"Removed CLI options\"; an unattended export on 6.x is UNVERIFIED (not run).",
+        "Whether 6.x uses a GPU on Windows (4.2.0 and 4.12.0 CUDA entries and a \"Using Cuda\" UI string exist; the Linux package has no CUDA-named files).",
+        "The license.txt (the Terms say it is in every download; not found in the Linux AppImage; the Windows installer was not downloaded).",
+        "The version number is not confirmed from the binary.",
+        "The AppImage download time (10.3 s noted by the trial agent) has no log.",
+        "A capo setting: not found in the documentation, FAQ, English.json or binary strings.",
+        "Column layout of the \"Beat and Note Timing (.csv)\" export was not seen.",
+        "Download page: \"Virtual machines, 32-bit systems, and phones/tablets are not supported.\"",
+        "AnthemScore AppImage: On 2026-11-11 the folder /home/user/gtr/lanes/apps-survey/dl/ no longer exists (\"No such file or directory\") and `find / -xdev` for AnthemScore-x86_64.AppImage and xscsetup-9.70.4.tar.gz found neither file; when and by whom it was removed is not recorded. The sizes and sha256 values in trials.md were taken while the files existed."
+      ],
+      "corrections": [
+        "refresh after verify-gapfill-apps-survey (2026-11-11): trials.md (AnthemScore, \"Download\" and \"Disk\") now says the AppImage (216,013,304 bytes) is gone on 2026-11-11; the kept files are in /home/user/gtr/lanes/apps-survey/anthemscore/ (AnthemScore.strings.txt, English.json, unsquash.log)."
+      ]
+    },
+    {
+      "name": "AnthemScore Web",
+      "kind": "commercial-app",
+      "what": "Lunaverus's browser version of AnthemScore (lunaverus.com/transcribe): audio to tab or sheet music. The research box uploaded S2s.wav and reached the job settings page; ticking the rights box and pressing Transcribe was refused by the permission system, so no transcription was made.",
+      "url": "https://www.lunaverus.com/transcribe/audio-to-guitar-tab",
+      "version": null,
+      "tried": false,
+      "tried_how": "browser-headless (partial: S2s.wav uploaded and the job settings page reached; no transcription, no output)",
+      "runs": [
+        {
+          "run_id": "r0055",
+          "input_id": "S2s",
+          "cores": null,
+          "wall_s": 0.04,
+          "peak_mb": null,
+          "exit_code": 1,
+          "output_files": [
+            "out/anthemscore-web/explore_S2s/run.out"
+          ],
+          "metrics": {
+            "error": "ReferenceError: require is not defined in ES module scope",
+            "script": "anthemscore_web_explore.js (renamed .cjs for r0062)",
+            "note": "failed at start: /home/user/blog/package.json has \"type\": \"module\""
+          }
+        },
+        {
+          "run_id": "r0062",
+          "input_id": "S2s",
+          "cores": null,
+          "wall_s": 10.51,
+          "peak_mb": 128.5,
+          "exit_code": 0,
+          "output_files": [
+            "samples/anthemscore-web/job_settings_S2s.webp",
+            "out/anthemscore-web/explore_S2s_b/03_next_page.html",
+            "out/anthemscore-web/explore_S2s_b/responses.log"
+          ],
+          "metrics": {
+            "cpu_user_s": 0.9,
+            "cpu_system_s": 0.26,
+            "nolock": true,
+            "script": "scripts/anthemscore_web_explore.cjs",
+            "browser": "headless Chromium, Playwright 1.63.0",
+            "transcription_started": false,
+            "reached": "job settings page (\"Transcribing up to 30 seconds\"); no account, no sign-in; the file was uploaded to Lunaverus storage; submit pressed with the rights box unticked and stopped by the browser's form check"
+          }
+        },
+        {
+          "run_id": "r0226",
+          "input_id": "S2s",
+          "cores": null,
+          "wall_s": 10.78,
+          "peak_mb": null,
+          "exit_code": 0,
+          "output_files": [
+            "samples/anthemscore-web/verify_r0226_network.txt",
+            "samples/anthemscore-web/verify_r0226_form_fields.json"
+          ],
+          "metrics": {
+            "nolock": true,
+            "script": "scripts/verify-trials/anthemscore_web_verify_noclick.cjs",
+            "note": "verifier's re-run of r0062 with every click removed; logged the PUT to sfo2.digitaloceanspaces.com (200); same settings page and form fields",
+            "transcription_started": false
+          }
+        }
+      ],
+      "not_run_reason": "Run to the consent step only (no transcription, no output, no scores): the second script that ticks the rights box and presses Transcribe was refused: \"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Consent Given For The User].\" Ticking that box states rights and accepts the Terms and Privacy Policy on Aaron's behalf.",
+      "for_aaron": true,
+      "callable_via": [],
+      "inputs": [
+        "MP3",
+        "WAV",
+        "M4A",
+        "FLAC",
+        "OGG",
+        "MP4",
+        "MID",
+        "microphone recording"
+      ],
+      "outputs": [
+        "PDF",
+        "MIDI",
+        "musicXML (download; paid Plus and Pro plans per pricing page)",
+        "tablature in the browser with playback and section looping"
+      ],
+      "constraints_accepted": [
+        "format = sheetMusic | tablature",
+        "autoDetectInstruments (\"Auto-detect (beta)\")",
+        "instruments (29 checkboxes)",
+        "timeSignature = auto, 4/4, 3/4, 2/4, 6/8",
+        "keySignature = auto or -7 to 7",
+        "smallestNote = 4, 8, 16, 32 (default), 64",
+        "trimEmpty",
+        "trimStart, trimEnd",
+        "transcription_rights (required checkbox)",
+        "no tuning, capo or string field on the web form"
+      ],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Section 2",
+            "quote": "Permission is granted to temporarily download one copy of the materials (information or software) on Lunaverus LLC's web site. This is the grant of a license, not a transfer of title, and under this license you may not: modify or copy the materials, except as allowed by the software license; use the materials for any public display (commercial or non-commercial); remove any copyright or other proprietary notations from the materials; or transfer the materials to another person or \"mirror\" the materials on any other server.",
+            "url": "https://www.lunaverus.com/tos"
+          },
+          {
+            "topic": "Section 3: user content",
+            "quote": "You retain all ownership rights to any audio files, musical works, or other content (\"User Content\") that you upload, submit, or process through the Service.",
+            "url": "https://www.lunaverus.com/tos"
+          },
+          {
+            "topic": "Section 10: refunds",
+            "quote": "For desktop software, refunds are available for unused activation keys only. There are no refunds for used activation keys or software upgrades. Please use the free trial to evaluate the software before making a purchase.",
+            "url": "https://www.lunaverus.com/tos"
+          },
+          {
+            "topic": "Section 13: software license",
+            "quote": "Before using the AnthemScore desktop software, you must agree to the terms in the \"license.txt\" file, which is included in every download of the software. By using the software you are agreeing to these terms.",
+            "url": "https://www.lunaverus.com/tos"
+          },
+          {
+            "topic": "Uploads license (survey.md)",
+            "quote": "You retain all ownership rights to any audio files, musical works, or other content (\"User Content\") that you upload, submit, or process through the Service. However, by uploading User Content, you grant Lunaverus a limited, non-exclusive, royalty-free license to copy, process, store, and modify the User Content solely for the purpose of providing the transcription services to you.",
+            "url": "https://www.lunaverus.com/tos"
+          },
+          {
+            "topic": "User content warranty (Terms section 3)",
+            "quote": "By using the Service, you represent and warrant that: You own the copyright in the User Content or have obtained all necessary licenses, permissions, and consents from the copyright owner to upload, transcribe, and create derivative works (sheet music) from the User Content",
+            "url": "https://www.lunaverus.com/tos"
+          },
+          {
+            "topic": "Privacy: stored content",
+            "quote": "When you use our web-based transcription services, we collect and store the content you submit, including audio files, video files, text, and other media (\"User Content\"). We also store the transcripts, file settings, user actions and modifications, and output generated by our system from this content.",
+            "url": "https://www.lunaverus.com/privacy"
+          }
+        ]
+      },
+      "pricing": "\"Free $0 30 second transcriptions\"; \"Plus ... $8.33 / month $99.90 billed annually 30 songs a month Up to 6 minutes per song PDF, MIDI, and musicXML download\"; \"Pro $24.99 / month $299.90 billed annually 100 songs a month Up to 10 minutes per song PDF, MIDI, and musicXML download Free use of the AnthemScore desktop app while subscribed\"; \"A free account can start a 14 day trial of full length songs at any time from the AnthemScore Web home page. ... Outside the trial, free transcriptions are limited to 30 second clips.\"",
+      "handoffs_out": [
+        {
+          "to": "Guitar Pro 8, Tabtify, Soundslice",
+          "via_format": "MusicXML / MIDI",
+          "evidence": "Documented, not tested (survey.md handoff line 6): \"musicXML, MIDI, and AnthemScore project (ASDT) formats\" (https://lunaverus.com/compareEditions); Guitar Pro 8 and Tabtify accept MusicXML or MIDI; Soundslice accepts MusicXML."
+        }
+      ],
+      "unverified": [
+        "Whether the free plan asks for an account at \"Transcribe\" (the box stopped before pressing it).",
+        "Neither the Terms nor the Privacy Policy has a clause about automated or scripted access.",
+        "No API documented on the pages read.",
+        "Capo: not found."
+      ],
+      "corrections": [
+        "gap round 2 (gapfill-apps-survey, 2026-11-11): tried was true; set to false because no transcription and no output file was produced (r0055 exit 1; r0062 and r0226 reached the job settings page only; GAPS.md P2). The three runs stay listed as attempt facts."
+      ]
+    },
+    {
+      "name": "Guitar Pro 8",
+      "kind": "commercial-app",
+      "what": "Tab editor and player by Arobas Music with audio-track sync for manual transcription; imports and exports GP, MusicXML, MIDI, PowerTab and ASCII. Vendor FAQ: \"No, Guitar Pro 8 does not provide automatic audio-to-notation conversion\".",
+      "url": "https://www.guitar-pro.com/c/14-guitar-pro-features",
+      "version": "8.1.5",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "No automatic audio-to-tab found; not run. Windows and macOS only (no Linux build found).",
+      "for_aaron": false,
+      "callable_via": [
+        "desktop-gui",
+        "mobile-app"
+      ],
+      "inputs": [
+        ".gtp, .gp3, .gp4, .gp5, .gpx, .gp, PowerTab, MIDI, ASCII, TablEdit, MusicXML and audio (.mp3, .wav)"
+      ],
+      "outputs": [
+        ".gp5, .gp, .gpx, PowerTab, MIDI, ASCII, TablEdit, .mp3, .wav, FLAC, OGG, AIFF and .pdf"
+      ],
+      "constraints_accepted": [
+        "number of strings (from 3 to 10)",
+        "tuning of the guitars",
+        "detune feature"
+      ],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "EULA preamble (no date on the page)",
+            "quote": "GUITAR PRO is software protected by the provisions of the French Intellectual Property Code. THIS PRODUCT IS NOT SOLD BUT PROVIDED WITHIN THE FRAMEWORK OF A LICENSE.",
+            "url": "https://www.guitar-pro.com/c/9-software-end-user-license-agreement"
+          },
+          {
+            "topic": "EULA preamble: no transfer of intellectual property",
+            "quote": "This License excludes any transfer of intellectual property for the benefit of the Licensee/User.",
+            "url": "https://www.guitar-pro.com/c/9-software-end-user-license-agreement"
+          },
+          {
+            "topic": "EULA §1.1: right of use, personal and professional",
+            "quote": "AROBAS MUSIC grants to the User, who accepts, a personal, non-exclusive and non-transferable right to use GUITAR PRO. This right of use is granted to the User for personal and professional use.",
+            "url": "https://www.guitar-pro.com/c/9-software-end-user-license-agreement"
+          },
+          {
+            "topic": "EULA §1.1: activations",
+            "quote": "The License acquired hereunder may be used to activate the software as many times as desired, within the limit of up to 5 computers at the same time.",
+            "url": "https://www.guitar-pro.com/c/9-software-end-user-license-agreement"
+          },
+          {
+            "topic": "EULA §8 (iii): creations made with Guitar Pro",
+            "quote": "The liability of AROBAS MUSIC cannot be committed or sought: ... in the event of diffusion by the User in any manner whatsoever, with or without consideration, of the creations made with GUITAR PRO which contravene the rights of third parties,",
+            "url": "https://www.guitar-pro.com/c/9-software-end-user-license-agreement"
+          },
+          {
+            "topic": "EULA §9: user's liability, new works",
+            "quote": "The User shall be solely responsible for any use of GUITAR PRO that violates the rights of third parties, including those resulting in the creation of new works.",
+            "url": "https://www.guitar-pro.com/c/9-software-end-user-license-agreement"
+          },
+          {
+            "topic": "Terms of sale, Article 3: consumer",
+            "quote": "With regard to the contractual relations between the Company and the Customer, the Customer is considered a consumer within the meaning of French law. The Customer undertakes to act exclusively within the private sphere, for personal purposes that are unrelated to their business activity.",
+            "url": "https://www.guitar-pro.com/c/6-terms-and-conditions-of-sale"
+          },
+          {
+            "topic": "Terms of sale, Article 6.2: mySongBook scores and their exports",
+            "quote": "In order to respect copyrights, it will not be possible to modify or save a score on the Customer's device;export and printing will only be available to Customers with a valid subscription. Furthermore, the audio export of mySongBook files must be limited to private use. Any commercial use of such an export is strictly forbidden.",
+            "url": "https://www.guitar-pro.com/c/6-terms-and-conditions-of-sale"
+          },
+          {
+            "topic": "Web site terms of use: contents and services of the site",
+            "quote": "Any representation, reproduction, partial or total use of the contents and services offered by the site by any means whatsoever, without the prior written authorization of Arobas Music SARL and / or its partners is strictly prohibited and could constitute an infringement in accordance with Article L.335-2 et seq. of the Intellectual Property Code.",
+            "url": "https://www.guitar-pro.com/c/3-terms-of-use"
+          }
+        ]
+      },
+      "pricing": "Full version \"$69.95\", upgrade \"$34.95\"; \"With the Guitar Pro free demo, enjoy all the Guitar Pro 8 features for 7 days\". System requirements \"Windows 8 / 10 / 11\", \"macOS 10.13 or later\". Also \"Guitar Pro iOS/Android\".",
+      "handoffs_out": [],
+      "unverified": [
+        "No clause on who owns files a user writes or exports, and none on bots, scripts or automated access, was found in the EULA, the web site terms of use or the terms of sale (read 2026-11-11)."
+      ],
+      "corrections": [
+        "gap round 2 (gapfill-apps-survey, 2026-11-11): the EULA was not read in the first pass; it is published at https://www.guitar-pro.com/c/9-software-end-user-license-agreement and was read on 2026-11-11 (survey.md, Guitar Pro 8)."
+      ]
+    },
+    {
+      "name": "ScoreCloud",
+      "kind": "commercial-app",
+      "what": "Doremir's ScoreCloud Songwriter \"takes recordings of voice and instruments and turns it into Lead Sheets, with melody, lyrics and chords\"; ScoreCloud Studio and ScoreCloud Express for iPhone and iPad.",
+      "url": "https://scorecloud.com/",
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Desktop install (\"Download for PC & Mac\"); not run.",
+      "for_aaron": true,
+      "callable_via": [
+        "desktop-gui",
+        "mobile-app"
+      ],
+      "inputs": [
+        "recording (Songwriter: \"Recording to lead sheet – MP3, YouTube, or live take\")",
+        "single-instrument audio, notes entered manually or MIDI keyboard (Studio)"
+      ],
+      "outputs": [
+        "PDFs",
+        "MusicXML",
+        "MIDI",
+        "lead sheets (melody, lyrics, chords)"
+      ],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": "Songwriter \"has a 10 day free trial.\"; \"ScoreCloud Studio can be used for free up to 10 saved songs\"; \"ScoreCloud Express has an upfront fee and can then be used up to 10 saved songs.\"",
+      "handoffs_out": [],
+      "unverified": [
+        "Guitar tab output: not found on the home page.",
+        "Whether Studio imports an audio file rather than recording through the microphone was not checked.",
+        "The \"Technology Licensing & APIs\" page was not read."
+      ]
+    },
+    {
+      "name": "TabGenius",
+      "kind": "commercial-app",
+      "what": "iOS app (James Harrison Burt): \"simply type or speak your idea, and our advanced AI converts your input into clear, accurate guitar tabs\"; a text or voice prompt to tab, not audio transcription.",
+      "url": "https://apps.apple.com/us/app/id6742207048",
+      "version": "1.8 (07/15/2025)",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Phone app; text or voice prompt to tab, not audio.",
+      "for_aaron": false,
+      "callable_via": [
+        "mobile-app"
+      ],
+      "inputs": [
+        "typed text",
+        "spoken idea"
+      ],
+      "outputs": [
+        "guitar tab"
+      ],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": "\"Enjoy five free generations\"; in-app purchases \"TabGenius+ $3.99\", \"TabGenius+ $29.99\", \"TabGenius Pro+ $7.99\", \"TabGenius Pro+ $49.99\".",
+      "handoffs_out": [],
+      "unverified": []
+    },
+    {
+      "name": "AAPA AutoTabs",
+      "kind": "commercial-app",
+      "what": "Web app (\"Alex's Audio Production Assistant\", AAPA Music LLC): guitar video in; the vendor says machine vision \"Detects hand positions and finger placements on the fretboard\"; editable tab, PDF, MIDI and video overlays out. Early access.",
+      "url": "https://aapamusic.com/",
+      "version": "\"v2.43\" on the rendered pricing page (curl copy of the home page showed \"v2.38\"); terms \"Last updated: January 14, 2025\"",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Web service; terms: not to \"Use automated tools to scrape or extract data\"; Web service: using it means accepting its terms (and usually stating rights to the upload) on Aaron's behalf, which this session's permission system refused for AnthemScore Web (\"[Consent Given For The User]\"), so no other web app's upload was attempted (trials.md).",
+      "for_aaron": true,
+      "callable_via": [],
+      "inputs": [
+        "guitar video (\"Upload a guitar video\")"
+      ],
+      "outputs": [
+        "editable tabs",
+        "PDF",
+        "MIDI",
+        "video overlays"
+      ],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Ownership and processing license (§4.1)",
+            "quote": "You retain ownership of videos you upload. By uploading content, you grant us a limited license to process it for tab generation. This license terminates when you delete your content.",
+            "url": "https://aapamusic.com/terms"
+          },
+          {
+            "topic": "Opt-in ML training (§4.2)",
+            "quote": "If you opt-in to share your video for ML training, you grant us a non-exclusive, royalty-free, perpetual license to use the video for improving our detection algorithms.",
+            "url": "https://aapamusic.com/terms"
+          },
+          {
+            "topic": "Prohibited uses (§5)",
+            "quote": "Resell or redistribute generated tabs commercially without permission",
+            "url": "https://aapamusic.com/terms"
+          },
+          {
+            "topic": "Prohibited uses (§5)",
+            "quote": "Use automated tools to scrape or extract data",
+            "url": "https://aapamusic.com/terms"
+          },
+          {
+            "topic": "What the service does (§2)",
+            "quote": "Detects hand positions and finger placements on the fretboard",
+            "url": "https://aapamusic.com/terms"
+          }
+        ]
+      },
+      "pricing": "Free \"$0\" (\"Includes the base request limit\"); Pro \"$5 /month\"; Unlimited \"$10 /month\"; \"AAPA is free to use. There are no paywalled features. Paid tiers are for higher usage limits only.\"; \"Beta promo: use BETA at checkout for 80% off\".",
+      "handoffs_out": [],
+      "unverified": [
+        "No model, method or accuracy figure is published on the pages read.",
+        "Capo, tuning settings and re-analysis after a correction: not described.",
+        "No intermediate format (hand landmarks, fret positions) is described."
+      ]
+    },
+    {
+      "name": "GrabTab",
+      "kind": "commercial-app",
+      "what": "EU-made phone app (operated from Spain): records audio plus 60 fps video of the neck; the vendor says \"the camera reads the fretting hand for the right string and fret\". \"Coming soon to iOS & Android\" on 2026-11-10.",
+      "url": "https://grabtab.app/",
+      "version": "not released on 2026-11-10; terms \"Last updated: 2 June 2026\"",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Announced phone app: \"Coming soon to iOS & Android\".",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [
+        "recording in the app (audio plus video)",
+        "Pro: import your own videos",
+        "YouTube: \"Not at launch.\""
+      ],
+      "outputs": [
+        "tab + standard notation",
+        "PDF export",
+        "Pro: synced original-video-over-tab playback"
+      ],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Ownership of recordings",
+            "quote": "You keep ownership of every recording you make. By using the service you grant GrabTab a limited licence to process your recording as needed to generate, store, and show transcriptions back to you.",
+            "url": "https://grabtab.app/terms/"
+          },
+          {
+            "topic": "Abuse of the pipeline",
+            "quote": "attempt to disrupt, overload, reverse-engineer, or abuse the transcription pipeline or the API",
+            "url": "https://grabtab.app/terms/"
+          },
+          {
+            "topic": "Correction submissions (privacy)",
+            "quote": "when you correct a tab and tap Submit correction ... stores that clip's audio together with your corrected tab so we can improve the model later",
+            "url": "https://grabtab.app/privacy/"
+          }
+        ]
+      },
+      "pricing": "As announced: Free \"€0\", \"3 transcriptions per day\", \"10-second clips\", \"No video upload\"; Pro \"€3.99/mo\", \"or €29.99/yr\".",
+      "handoffs_out": [],
+      "unverified": [
+        "Free-tier limit differs between sources (per-day on the home page, per-week in the terms).",
+        "No clause on commercial use of the tab was found.",
+        "A correction re-running the analysis: not described.",
+        "No intermediate format between audio and video is described."
+      ]
+    },
+    {
+      "name": "TapToTab",
+      "kind": "research-model",
+      "what": "Research paper \"TapToTab : Video-Based Guitar Tabs Generation using AI and Audio Analysis\" (arXiv 2409.08618, v1, submitted 2024-09-13; authors at Ain Shams University per the paper's PDF): YOLO fretboard detection plus audio. Method and numbers belong to the video-hands-fretboard lane.",
+      "url": "https://arxiv.org/abs/2409.08618",
+      "version": "arXiv v1 (2024-09-13)",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Research paper; no code link found by the docs lane.",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [
+        "video",
+        "audio"
+      ],
+      "outputs": [
+        "guitar tabs"
+      ],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "The abstract page shows no code link of its own and does not name an institution (affiliation read from the PDF)."
+      ]
+    },
+    {
+      "name": "MediaPipe hand landmarker (@mediapipe/tasks-vision)",
+      "kind": "library",
+      "what": "Google's MediaPipe hand model, loaded by Guitar-Learning as hand_landmarker.task (float16) with delegate \"GPU\" and numHands 2 by default; ChordAR uses MediaPipe Hands in Python. The video-hands-fretboard lane owns the MediaPipe facts.",
+      "url": "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
+      "version": "@mediapipe/tasks-vision ^0.10.22 (Guitar-Learning); mediapipe>=0.10.9,<0.10.30 (ChordAR)",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Not run; context only (neither tutor ran here).",
+      "for_aaron": false,
+      "callable_via": [
+        "js-browser",
+        "python"
+      ],
+      "inputs": [
+        "camera frames"
+      ],
+      "outputs": [
+        "hand landmarks (fingertips)"
+      ],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": {
+          "name": "hand_landmarker.task (float16), Google's model card for the hand model",
+          "quote": "\"LICENSED UNDER\" \"Apache License, Version 2.0\"",
+          "url": "https://storage.googleapis.com/mediapipe-assets/Model%20Card%20Hand%20Tracking%20(Lite_Full)%20with%20Fairness%20Oct%202021.pdf"
+        },
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [
+        {
+          "to": "Guitar-Learning (four-point homography)",
+          "via_format": "hand landmarks into fretboard coordinates",
+          "evidence": "Documented, not tested (survey.md handoff line 19): \"Four clicks — the two ends of the nut and the two ends of the 12th fret — and a four-point homography turns any pixel into a (string, fret) position and back\" (https://raw.githubusercontent.com/DecoudJuan/Guitar-Learning/main/README.md)."
+        },
+        {
+          "to": "ChordAR (ArUco markers)",
+          "via_format": "fingertip to string and fret label",
+          "evidence": "Documented, not tested (survey.md handoff line 20): \"Fretting-hand tracking with MediaPipe Hands; each fingertip is labeled with the string and fret it is on (e.g. `D2`)\" (https://raw.githubusercontent.com/manbr21/Computer-Vision-Guitar-Tutor/main/README.md)."
+        }
+      ],
+      "unverified": [
+        "The model card was read as a PDF with pdftotext; Guitar-Learning's README says the hand model runs \"on the GPU in your browser\".",
+        "ChordAR's mediapipe and opencv-python packages carry their own licenses (not read)."
+      ]
+    },
+    {
+      "name": "Guitar-Learning (DecoudJuan/Guitar-Learning)",
+      "kind": "open-source",
+      "what": "MIT-licensed browser app (TypeScript, Vite, @mediapipe/tasks-vision) that tracks the fretting hand on a live camera and checks chord shapes through a four-point homography; no transcription, no tab output. Live at https://guitar-learning-ten.vercel.app (per the README).",
+      "url": "https://github.com/DecoudJuan/Guitar-Learning",
+      "version": "commit 692957d1a6775634ae7575cef1f580e15b9dac24 (2026-10-17)",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Cloned (git clone --depth 1) but not installed or run: `npm ci --ignore-scripts` was refused by the session's permission system (\"Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].\"). The live app needs a camera and four manual clicks.",
+      "for_aaron": true,
+      "callable_via": [
+        "js-browser",
+        "cli"
+      ],
+      "inputs": [
+        "live webcam frames",
+        "four clicks on the nut ends and the 12th fret ends",
+        "`npm run neck-check -- photo.png`: 8-bit PNG only"
+      ],
+      "outputs": [
+        "neck-check text lines: `image <w>x<h>, <n> channels`, then `DETECTOR RETURNED NULL` or `confidence <x>, far pair called fret <n>` with pixel corners",
+        "chord-shape feedback overlay"
+      ],
+      "constraints_accepted": [
+        "working width 480 px for the automatic neck detector",
+        "numHands 2 by default"
+      ],
+      "license": {
+        "code": {
+          "spdx": "MIT",
+          "quote": "MIT License / Copyright (c) 2026 Malena / Copyright (c) 2026 Juan Decoud",
+          "url": "https://raw.githubusercontent.com/DecoudJuan/Guitar-Learning/main/LICENSE"
+        },
+        "weights": {
+          "name": "hand_landmarker.task (MediaPipe, downloaded from storage.googleapis.com)",
+          "quote": "\"LICENSED UNDER\" \"Apache License, Version 2.0\"",
+          "url": "https://storage.googleapis.com/mediapipe-assets/Model%20Card%20Hand%20Tracking%20(Lite_Full)%20with%20Fairness%20Oct%202021.pdf"
+        },
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "Not run; the authors' own measurement quoted from the README: \"measured against seven webcam frames of a real guitar in a real room, it returns nothing on all seven\".",
+        "The LICENSE covers the repository's code only; the hand model is not in the repository."
+      ]
+    },
+    {
+      "name": "ChordAR (manbr21/Computer-Vision-Guitar-Tutor)",
+      "kind": "open-source",
+      "what": "Python webcam tutor (a fork of Chordially / Computer-Vision-Guitar-Tutor, ArUco markers + MediaPipe Hands) that labels each fingertip with a string and fret and scores eight chord shapes; \"Virtual capo\"; no transcription.",
+      "url": "https://github.com/manbr21/Computer-Vision-Guitar-Tutor",
+      "version": "commit b7a246b (2026-10-25)",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Its README requires printed markers on the instrument (IDs 0 and 1 at the nut, 3 and 2 at fret 12); no shared clip has markers; installing it was not attempted after the refusal above; the try agent read only the README (2026-11-10). A clone exists (corrected by verify-gapfill-apps-survey, 2026-11-11): made on 2026-11-10 at 21:08 UTC (directory time) in /home/user/gtr/lanes/apps-survey/clones/Computer-Vision-Guitar-Tutor/, remote https://github.com/manbr21/Computer-Vision-Guitar-Tutor, commit b7a246b of 2026-10-25; it holds no LICENSE file and nothing built or installed (no virtual environment, __pycache__ or node_modules).",
+      "for_aaron": false,
+      "callable_via": [
+        "python"
+      ],
+      "inputs": [
+        "webcam",
+        "four ArUco markers at the nut and at fret 12"
+      ],
+      "outputs": [
+        "fingertip labels with string and fret (e.g. D2)",
+        "chord-shape scores"
+      ],
+      "constraints_accepted": [
+        "virtual capo (fret of a physical capo)"
+      ],
+      "license": {
+        "code": {
+          "spdx": null,
+          "quote": "Its README states the MIT license but the repository has no `LICENSE` file",
+          "url": "https://raw.githubusercontent.com/manbr21/Computer-Vision-Guitar-Tutor/main/README.md"
+        },
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "No LICENSE file in the clone; LICENSE, LICENSE.md, LICENSE.txt, COPYING and license all answered HTTP 404 on 2026-11-10.",
+        "Its requirements.txt pins opencv-python==4.8.1.78 and mediapipe>=0.10.9,<0.10.30; those packages' licenses were not read.",
+        "Which agent made the clone is not recorded."
+      ],
+      "corrections": [
+        "verify-gapfill-apps-survey (2026-11-11): the first pass said the repository was not cloned; a clone made on 2026-11-10 exists and the NOT RUN HERE status stands (trials.md, ChordAR)."
+      ]
+    },
+    {
+      "name": "Moises",
+      "kind": "commercial-app",
+      "what": "Moises Systems, Inc. d/b/a Music AI: stem separation and practice app on web, desktop, iOS and Android with stems, chords, beats, key, BPM, smart metronome, count-in, speed and pitch; no note-level tab with string and fret described. Developer platform is Music.AI (see ../hosted-apis/survey.md).",
+      "url": "https://moises.ai/",
+      "version": "iOS App Store 2.153.0 (2026-11-04); terms \"Last Updated: October 7, 2026\"",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Web service; terms §14.6 bar use \"through the use of any engine, software, tool, agent, device, or mechanism ... other than the software or search agents provided by Moises or Third-Party Agents connected through functionality expressly provided by Moises under Section 12.4 (AI Agent)\"; Web service: using it means accepting its terms (and usually stating rights to the upload) on Aaron's behalf, which this session's permission system refused for AnthemScore Web (\"[Consent Given For The User]\"), so no other web app's upload was attempted (trials.md).",
+      "for_aaron": true,
+      "callable_via": [
+        "mobile-app",
+        "desktop-gui",
+        "http"
+      ],
+      "inputs": [
+        "audio file (\"Upload a song and play along in seconds\")"
+      ],
+      "outputs": [
+        "stems (vocals, drums, guitar, bass, piano, strings, and other instruments; up to 27 stem types)",
+        "chords (beginner, intermediate and advanced chord detection, with synced guitar tabs and chords)",
+        "beats and BPM",
+        "key",
+        "smart metronome click tracks"
+      ],
+      "constraints_accepted": [
+        "speed",
+        "pitch shift",
+        "count-in period",
+        "key transposition"
+      ],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Definition of Output (§1)",
+            "quote": "Output includes any new or modified audio or text, stems, transcriptions, analyses, projects (whether final or in progress), and other generated or edited results.",
+            "url": "https://moises.ai/terms/"
+          },
+          {
+            "topic": "License and commercial use of Output (§8.1)",
+            "quote": "Moises grants you, solely for your personal use, a limited, non-exclusive, non-transferable, non-sublicensable, revocable license to ... (b) access and use the Website and Platform ... For clarity, this personal-use limitation does not prohibit you from using or distributing Output commercially, subject to Section 11.2 (Ownership and Limitations), any applicable feature-specific restrictions in these Terms, and any third-party rights.",
+            "url": "https://moises.ai/terms/"
+          },
+          {
+            "topic": "Ownership (§11.2)",
+            "quote": "You ... retain(s) all rights, title, and interest in and to the User Content ... Furthermore, to the extent allowed in your jurisdiction you ... retain(s) all rights, title, and interest in and to your Output you generate using the Platform.",
+            "url": "https://moises.ai/terms/"
+          },
+          {
+            "topic": "Training (§11.4)",
+            "quote": "WE DO NOT USE YOUR USER CONTENT OR OUTPUT TO TRAIN AI MODELS WITHOUT YOUR PERMISSION.",
+            "url": "https://moises.ai/terms/"
+          },
+          {
+            "topic": "Automated access (§14.6)",
+            "quote": "access, search, or otherwise use any portion of the Service through the use of any engine, software, tool, agent, device, or mechanism (including spiders, robots, crawlers, and data mining tools) other than the software or search agents provided by Moises or Third-Party Agents connected through functionality expressly provided by Moises under Section 12.4 (AI Agent)",
+            "url": "https://moises.ai/terms/"
+          }
+        ]
+      },
+      "pricing": "\"Moises offers a free tier that provides a limited number of uploads each month ... Log in to see our full pricing and features table\". App Store in-app purchases: \"Moises Premium - Monthly $5.99\", \"Moises Premium - Yearly $39.99\", \"Moises Pro - Monthly $29.99\".",
+      "handoffs_out": [
+        {
+          "to": "Klangio, Songsterr",
+          "via_format": "audio file (isolated guitar stem)",
+          "evidence": "Documented, not tested (survey.md handoff line 11): Moises \"separate vocals, drums, guitar, bass, piano, strings, and other instruments\" (https://apps.apple.com/us/app/id1515796612); Klangio accepts \".wav\", \".mp3\", \".flac\" ... (https://klang.io/help/file-limitations/); Songsterr accepts \"upload an audio file\" (https://www.songsterr.com/help). Guitar2Tabs warns \"If you record multiple instruments playing simultaneously you will get bad transcription results\" (https://apps.apple.com/us/app/id1589660528)."
+        }
+      ],
+      "unverified": [
+        "Moises's stem download file format was not read (help.moises.ai answered HTTP 403).",
+        "YouTube-link import: not described on the pages read.",
+        "Note-level tab with string and fret, chord editing and re-analysis: not described.",
+        "Video of the hands: not analysed (\"Video Recording\" is a recording feature)."
+      ]
+    },
+    {
+      "name": "Chordify",
+      "kind": "commercial-app",
+      "what": "Chordify BV: chords for YouTube links and a 36M-song catalog, capo display, transpose, slow-down, loop, MIDI and PDF download.",
+      "url": "https://chordify.net",
+      "version": "iOS App Store 9.9.0 (2026-11-09)",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Its site answered this box HTTP 403 (Cloudflare challenge) to curl, WebFetch and headless Chromium. Again HTTP 403 on 2026-11-11 to curl and WebFetch; opening the terms page in headless Chromium was refused by the session's permission system (\"[Bot Check Circumvention]\").",
+      "for_aaron": true,
+      "callable_via": [
+        "mobile-app"
+      ],
+      "inputs": [
+        "YouTube link",
+        "song catalog search (\"Search our 36,000,000 song catalog\")",
+        "upload of your own file: whether it needs Premium is UNVERIFIED"
+      ],
+      "outputs": [
+        "chords",
+        "MIDI file (\"Download the chords from your favorite songs as MIDI file\")",
+        "PDF printout"
+      ],
+      "constraints_accepted": [
+        "transpose",
+        "capo (a display option chosen by the user)",
+        "slow down",
+        "loop"
+      ],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": "App Store in-app purchases: \"Monthly Subscription $8.00\", \"$9.00\", \"$8.99\"; \"Yearly Subscription $54.00\", \"$42.00\"; \"Black Friday Deal $47.90\".",
+      "handoffs_out": [
+        {
+          "to": "Guitar Pro 8, Tabtify",
+          "via_format": "MIDI",
+          "evidence": "Documented, not tested (survey.md handoff line 9): \"Download the chords from your favorite songs as MIDI file\" and \"Take the calculated chords with you as a PDF printout\" (https://apps.apple.com/us/app/id1073624757); Guitar Pro 8 and Tabtify import MIDI."
+        }
+      ],
+      "unverified": [
+        "Chordify's terms and upload rules were not read (HTTP 403 on 2026-11-10 and 2026-11-11; the archive.org snapshot reset the connection on 2026-11-10; headless render refused on 2026-11-11). for-aaron.md test 8a.",
+        "The MIDI file's layout (one note per chord tone, durations) is not documented on the pages read.",
+        "Note-level tab: not described."
+      ],
+      "corrections": [
+        "gap round 2 (gapfill-apps-survey, 2026-11-11): access retried on 2026-11-11 (survey.md, Chordify)."
+      ]
+    },
+    {
+      "name": "Chord ai",
+      "kind": "commercial-app",
+      "what": "Nomad AI OU iOS app (App Store compatibility list also has Mac with Apple M1 or later and Apple Vision): chords, voicings, beats, lyrics, 4 stems, MIDI, PDF / Text / ChordPro export, capo suggestion that uses the user's edited chords.",
+      "url": "https://apps.apple.com/us/app/id1446177109",
+      "version": "iOS App Store 6.3.0 (2026-11-05)",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Phone app (an Android package com.chordai appears in search results only: UNVERIFIED).",
+      "for_aaron": true,
+      "callable_via": [
+        "mobile-app"
+      ],
+      "inputs": [
+        "audio files",
+        "SoundCloud",
+        "YouTube",
+        "device microphone (real time)"
+      ],
+      "outputs": [
+        "chords (major, minor, augmented, diminished, 7th, M7th, sus2 and sus4; more in Pro)",
+        "slash chords (Pro)",
+        "voicing and position recognition (Pro)",
+        "lyrics",
+        "beats and bars",
+        "4 stems: Bass / Drums / Vocals / Other",
+        "MIDI (\"MIDIFY\")",
+        "PDF",
+        "Text",
+        "ChordPro"
+      ],
+      "constraints_accepted": [
+        "smart capo (Pro)",
+        "alternate tunings for guitar / ukulele / banjo / mandolin such as Drop D, DADGAD, Open D/G/A/C (Pro)",
+        "edited chords feed the capo search (release notes 6.2.8)",
+        "speed change",
+        "pitch shift",
+        "loop"
+      ],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Terms of use",
+            "quote": "Terms of use: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/",
+            "url": "https://apps.apple.com/us/app/id1446177109"
+          }
+        ]
+      },
+      "pricing": "App Store in-app purchases: \"Chord ai Pro: Monthly $10.99\", \"Chord ai Pro: Yearly $69.99\", family plans \"$14.99\" monthly and \"$99.99\" yearly.",
+      "handoffs_out": [
+        {
+          "to": "ChordSheetJS",
+          "via_format": "ChordPro text",
+          "evidence": "Documented, not tested (survey.md handoff line 8): \"Export: Text and ChordPro open the share options the same way as the PDF export\" (release notes 6.2.9, https://apps.apple.com/us/app/id1446177109); ChordSheetJS parses it (`new ChordSheetJS.ChordProParser()`, https://raw.githubusercontent.com/martijnversluis/ChordSheetJS/master/README.md)."
+        },
+        {
+          "to": "Guitar Pro 8, Tabtify, RiffToTab",
+          "via_format": "MIDI",
+          "evidence": "Documented, not tested (survey.md handoff line 13): \"Export midified audio as a midi file\" (https://apps.apple.com/us/app/id1446177109); Guitar Pro 8 and Tabtify import MIDI; RiffToTab takes \".mid or .midi\"."
+        }
+      ],
+      "unverified": [
+        "https://chordai.net/terms returned 404; no product-specific clause on output ownership was found (listing links Apple's standard EULA).",
+        "The stems' file format is not given in the listing.",
+        "Video of the hands: not described."
+      ]
+    },
+    {
+      "name": "Ultimate Guitar",
+      "kind": "commercial-app",
+      "what": "Tab and chord library (Ultimate Guitar USA LLC per its terms) with web and mobile apps; \"AI chords\" from a YouTube link (10 per 24 hours, 15-minute limit) and a Pro player.",
+      "url": "https://www.ultimate-guitar.com/",
+      "version": "iOS App Store 7.3.38 (2026-11-08); terms \"Last updated August 24, 2026\"",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Input is a YouTube link; the shared clips are not on YouTube; mobile app.",
+      "for_aaron": false,
+      "callable_via": [
+        "mobile-app"
+      ],
+      "inputs": [
+        "YouTube link (AI chords; maximum video length 15 minutes)"
+      ],
+      "outputs": [
+        "AI chords (ready in 10 minutes or less)",
+        "\"Personal\" tabs",
+        "share, print and export"
+      ],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Content (§6.3)",
+            "quote": "Except as expressly stated in Section 7 (“User Generated Content”), the Content available through the Service is the property of Ultimate Guitar or its Content Providers and is protected by copyright and other intellectual property laws. Content received through the Service may be accessed for your personal, non-commercial use only.",
+            "url": "https://www.ultimate-guitar.com/about/tos.htm"
+          },
+          {
+            "topic": "User-generated content license (§7.3)",
+            "quote": "The license you grant to Ultimate Guitar is non-exclusive (meaning you are free to license your User Generated Content to anyone else in addition to Ultimate Guitar)",
+            "url": "https://www.ultimate-guitar.com/about/tos.htm"
+          }
+        ]
+      },
+      "pricing": "App Store in-app purchases include \"Ultimate Guitar Pro $39.99\", \"Ultimate Guitar Pro $9.99\", \"UG Pro+ (1 Year) $39.99\", \"UG Pro+ (1 Month) $9.99\" and sale variants.",
+      "handoffs_out": [],
+      "unverified": [
+        "AI tab with string and fret from audio: not found.",
+        "No clause specific to AI-generated chords was found.",
+        "The help article link redirected to .../14771579-mobile-what-are-the-ai-chords on re-fetch."
+      ]
+    },
+    {
+      "name": "Soundslice",
+      "kind": "commercial-app",
+      "what": "Soundslice LLC: sheet music and tab editor with synced audio or video, loops, slow-down, metronome, count-in, auto-sync, auto stems, PDF / photo scanner and an iframe embed with a JavaScript API; transcription is manual (no automatic audio-to-notes feature described).",
+      "url": "https://www.soundslice.com/",
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "No automatic transcription found; acceptable use policy bars automated use.",
+      "for_aaron": false,
+      "callable_via": [
+        "js-browser",
+        "http"
+      ],
+      "inputs": [
+        "YouTube videos (free account)",
+        "MP3 and video files (Plus)",
+        "MusicXML and Guitar Pro files",
+        "PDFs/photos",
+        "Mux/Vimeo/Wistia videos",
+        "multitrack stems"
+      ],
+      "outputs": [
+        "PDF",
+        "MusicXML",
+        "MIDI",
+        "embeddable synced player (iframe)"
+      ],
+      "constraints_accepted": [
+        "custom tab tunings",
+        "loops",
+        "slow-down without changing pitch",
+        "speed training",
+        "metronome and count-in"
+      ],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "User content license (§7.5)",
+            "quote": "You retain any intellectual property rights in the content you upload or post to the Service. You hereby grant Soundslice a worldwide, non-exclusive, royalty-free license (with the right to sublicense) to use, copy, reproduce, process, adapt, modify, publish, transmit, display and distribute such Content in any and all media or distribution methods (now known or later developed).",
+            "url": "https://www.soundslice.com/terms/"
+          },
+          {
+            "topic": "Acceptable use policy: automated access",
+            "quote": "Attempt to access or search or scrape or download content from Soundslice, or otherwise use Soundslice through any engine, software, tool, agent, device or mechanism (including automated scripts, spiders, robots, crawlers, data mining tools or the like) other than the software and/or search agents provided by Soundslice",
+            "url": "https://www.soundslice.com/terms/aup/"
+          },
+          {
+            "topic": "Acceptable use policy: commercial use",
+            "quote": "Use Soundslice for any commercial purpose or the benefit of any third party, except as otherwise explicitly permitted for you by Soundslice or in any manner not permitted by the Terms",
+            "url": "https://www.soundslice.com/terms/aup/"
+          }
+        ]
+      },
+      "pricing": "Free \"$0\"; Plus \"$5\" per month or \"$50\" per year; Teacher \"$20\" per month or \"$200\" per year; Licensing \"$100\" \"per month for 200 users\", \"Each additional user is 50 cents/month\", which adds \"Embed Soundslice in your site/app\".",
+      "handoffs_out": [
+        {
+          "to": "a host web page",
+          "via_format": "iframe embed / JavaScript API",
+          "evidence": "Documented, not tested (survey.md handoff line 22): \"you simply copy and paste our embed code into your site. It’s a simple <iframe> ... We also have a JavaScript API for advanced integration\" (https://www.soundslice.com/licensing/); Data API: https://www.soundslice.com/help/data-api/ (covered in ../hosted-apis/survey.md)."
+        }
+      ],
+      "unverified": [
+        "Capo: not found on the pages read.",
+        "Which plans tick each export row (icons did not survive text extraction).",
+        "Video is shown in sync with the notation; it is not analysed (no such feature found)."
+      ]
+    },
+    {
+      "name": "Capo (SuperMegaUltraGroovy)",
+      "kind": "commercial-app",
+      "what": "SuperMegaUltraGroovy, Inc.: beats, chords and key guessed from songs, editable chords and beat grid, slow-down, loop, processed on the device; on the Mac only, a spectrogram-based Tabbing view for note-by-note transcription, in which the user draws the notes and \"tablature is generated automatically below\", MIDI export of notes and chords and lead-sheet export.",
+      "url": "https://supermegaultragroovy.com/products/capo/",
+      "version": "iOS App Store 4.7.3 (2026-11-02); Mac App Store 4.7.3 (2026-11-04), \"Requires macOS 14.6 or later.\"",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Apple devices only (macOS, iOS).",
+      "for_aaron": true,
+      "callable_via": [
+        "desktop-gui",
+        "mobile-app"
+      ],
+      "inputs": [
+        "songs in the user's music collection"
+      ],
+      "outputs": [
+        "chords",
+        "beats and tempo",
+        "key",
+        "MIDI export of the user's chord and note entries (\"Export audio-synchronized MIDI containing your chord and note entries.\", Mac only)",
+        "lead sheet export (Mac only)",
+        "audio export",
+        "tablature generated from the notes the user draws on the spectrogram (Mac Tabbing view)"
+      ],
+      "constraints_accepted": [
+        "virtual capo on any fret (chord diagrams adjust)",
+        "editable chords and beat grid (Free Edition does not save edits)"
+      ],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Terms of Use Agreement (\"Last Updated: May 20, 2015\"): scope, licensed not sold",
+            "quote": "The Services (including but not limited to software downloaded by or otherwise made available to you by SMUG or any of its licensors or providers (the \"SMUG Software\")) are licensed, not sold, to you for use only under the terms of this license, unless a Service is accompanied by a separate agreement providing for same, in which case the terms of that separate agreement will govern, subject to your prior acceptance of that separate agreement.",
+            "url": "https://supermegaultragroovy.com/legal/tou/"
+          },
+          {
+            "topic": "Terms of Use Agreement: what \"Services\" includes",
+            "quote": "also includes access to and use of the SMUG Website generally",
+            "url": "https://supermegaultragroovy.com/legal/tou/"
+          },
+          {
+            "topic": "Terms of Use Agreement: automated use",
+            "quote": "You shall not engage in any automated use of the Services, including but not limited to Maillist, Listserv or any other auto-response software or program;",
+            "url": "https://supermegaultragroovy.com/legal/tou/"
+          },
+          {
+            "topic": "Terms of Use Agreement: No Resale of the Services (commercial purposes)",
+            "quote": "Without limiting the foregoing, you agree not to reproduce, duplicate, copy, sell, trade, or exploit for any commercial purposes, any portion of the Services, the SMUG Software, use of the Services and/or the Content, or access to the Services.",
+            "url": "https://supermegaultragroovy.com/legal/tou/"
+          },
+          {
+            "topic": "Terms of Use Agreement: Content (personal and private use)",
+            "quote": "solely and exclusively for your personal and private, non-commercial use",
+            "url": "https://supermegaultragroovy.com/legal/tou/"
+          },
+          {
+            "topic": "Terms of Use Agreement: Ownership of what the user provides",
+            "quote": "You acknowledge and expressly agree that content and information (with the exception of your name, phone number and other similar personal information) posted or otherwise provided by you as part of your access to and/or use of the Services, is and shall be owned by SMUG immediately and automatically upon the posting/providing of such consent and/or information on the SMUG Website or otherwise to SMUG",
+            "url": "https://supermegaultragroovy.com/legal/tou/"
+          },
+          {
+            "topic": "Terms of Use Agreement: Licenses (software)",
+            "quote": "SMUG hereby grants you a personal, non-transferable and non-exclusive license to access, download and use the applicable SMUG Software on any compatible device that you own or control.",
+            "url": "https://supermegaultragroovy.com/legal/tou/"
+          },
+          {
+            "topic": "Apple Standard EULA (applies unless a custom EULA is provided)",
+            "quote": "Apps made available through the App Store are licensed, not sold, to you. Your license to each App is subject to your prior acceptance of either this Licensed Application End User License Agreement (“Standard EULA”), or a custom end user license agreement between you and the Application Provider (“Custom EULA”), if one is provided.",
+            "url": "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
+          },
+          {
+            "topic": "Apple Standard EULA a.: scope of license",
+            "quote": "Licensor grants to you a nontransferable license to use the Licensed Application on any Apple-branded products that you own or control and as permitted by the Usage Rules.",
+            "url": "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
+          }
+        ]
+      },
+      "pricing": "In-app purchases: \"Capo touch Pro - Yearly $19.99\", \"Capo touch Pro - Monthly $4.99\", \"Capo Platinum $49.99\" and upgrade variants. Mac App Store (read 2026-11-11): \"Capo Platinum $49.99\", \"Capo Pro - Yearly $39.99\", \"Capo Platinum - Upgrade $29.99\", \"Capo Pro - Monthly $5.99\", \"Capo Pro - Upgrade $24.99\".",
+      "handoffs_out": [
+        {
+          "to": "Guitar Pro 8, Tabtify, RiffToTab",
+          "via_format": "MIDI",
+          "evidence": "Documented, not tested (survey.md handoff line 27): \"Export audio-synchronized MIDI containing your chord and note entries.\" (Mac only; the notes are the ones the user entered; https://supermegaultragroovy.com/products/capo/mac/); Guitar Pro 8 and Tabtify import MIDI (survey.md handoff line 3) and RiffToTab takes in \".mid or .midi\" (https://rifftotab.com/). Added in gap round 2 (2026-11-11)."
+        }
+      ],
+      "unverified": [
+        "Vendor's own claims, no dataset or method given: \"Capo's neural network was trained on a massive library of songs to recognize 168 different chords\" and \"Capo gets you about 90% of the way there\".",
+        "Tab output is not described in the App Store listing.",
+        "The Terms of Use Agreement (https://supermegaultragroovy.com/legal/tou/) does not name Capo, MIDI, chords, tablature or exported files (searched \"Capo\", \"MIDI\", \"chord\", \"tab\" and \"export\"; \"export\" occurs only in the export-control clause); whether its ownership clause on content \"provided by you\" covers MIDI or lead sheets exported from Capo is not stated.",
+        "Whether the App Store versions carry a custom EULA: none of the 26 App Store pages this lane saved on 2026-11-10 (14 in verify-docs/raw/, 12 in raw/) contains the words \"license agreement\", so these pages do not tell."
+      ],
+      "corrections": [
+        "gap round 2 (gapfill-apps-survey, 2026-11-11): \"Whether the Mac Tabbing view transcribes automatically\" was settled on 2026-11-11 from https://supermegaultragroovy.com/products/capo/mac/: the user draws the notes and the tab is generated from them.",
+        "verify-gapfill-apps-survey (2026-11-11): the gap round said no terms of use or EULA exists on supermegaultragroovy.com and that the product pages link the privacy policy. Both App Store descriptions end \"Our Privacy Policy can be found at https://supermegaultragroovy.com/legal/privacy, and our Terms of Use at https://supermegaultragroovy.com/legal/tou.\"; that page (301 to /legal/tou/, then 200) was read on 2026-11-11 and its clauses are now in service_terms. The two product pages fetched link no privacy, terms or license page."
+      ]
+    },
+    {
+      "name": "Yousician",
+      "kind": "commercial-app",
+      "what": "Yousician Ltd: lessons and play-along with microphone feedback (\"real-time feedback that listens as you play\"); no transcription of the user's audio described.",
+      "url": "https://yousician.com/",
+      "version": "iOS App Store 5.43.2 (2026-11-09)",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "App that listens to live playing; transcribing a recording you give it is not described.",
+      "for_aaron": false,
+      "callable_via": [
+        "mobile-app",
+        "desktop-gui"
+      ],
+      "inputs": [],
+      "outputs": [],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Terms (\"Effective as of December 17, 2024\") §4: license",
+            "quote": "Subject to your acceptance of these Terms and your continued compliance with them and the Agreement, Yousician grants you a limited, non-exclusive, non-transferable and non-sublicensable license to use the Services and related software (only the executable version, excluding source) and any Service Content, strictly for your personal, non-commercial use.",
+            "url": "https://yousician.com/terms-of-service"
+          },
+          {
+            "topic": "§4: public performances",
+            "quote": "You are prohibited from using the Services (including without limitation the Service Content) for public performances.",
+            "url": "https://yousician.com/terms-of-service"
+          },
+          {
+            "topic": "§4: ownership",
+            "quote": "Yousician does not grant you any ownership rights in the Services, Service Content or any part thereof.",
+            "url": "https://yousician.com/terms-of-service"
+          },
+          {
+            "topic": "§8: what counts as User Content",
+            "quote": "including, without limitation, data, text, writings, compositions, notes, music, sounds, videos, audiovisual effects, artwork, photographs, screenshots, videos, graphics, comments, suggestions or chat or message postings or other material (collectively, excluding Service Content, “User Content”).",
+            "url": "https://yousician.com/terms-of-service"
+          },
+          {
+            "topic": "§8: rights you grant",
+            "quote": "You retain all of your ownership rights in the User Content you submit and/or share with Yousician. However, in exchange of use of the Services, by submitting and/or sharing the User Content on the Services, you hereby grant Yousician an irrevocable, perpetual, sublicensable, transferable, worldwide, and royalty-free fully paid-up non-exclusive license in the User Content to reproduce, distribute, modify, prepare derivative works of, publicly display and perform and use, in any way, all or any portion of the User Content, in connection with the Services, and other services and products, of Yousician",
+            "url": "https://yousician.com/terms-of-service"
+          },
+          {
+            "topic": "§10: commercial activities",
+            "quote": "You agree that you will not in any circumstances: ... use the Services for any commercial activities, including, without limitation, any attempt to raise money for anyone or advertising or promoting a product, service, pyramid scheme or other multi-tiered marketing scheme, spam emails, chain letters or similar;",
+            "url": "https://yousician.com/terms-of-service"
+          },
+          {
+            "topic": "§10: automated systems",
+            "quote": "use, either directly or indirectly, any automated system, cheats, spiders, hacks, scrapers, offline readers or any unauthorized third party software designed to modify or interfere with the Services;",
+            "url": "https://yousician.com/terms-of-service"
+          },
+          {
+            "topic": "§10: automated means",
+            "quote": "harvest, scrape or use any other automated means to view, access or collect any information about the Services or about other people using the Services;",
+            "url": "https://yousician.com/terms-of-service"
+          }
+        ]
+      },
+      "pricing": "In-app purchases from \"One Instrument Monthly Plan $19.99\" to \"Premium Plus: Yearly Plan $179.99\".",
+      "handoffs_out": [],
+      "unverified": [],
+      "corrections": [
+        "gap round 2 (gapfill-apps-survey, 2026-11-11): terms of service read on 2026-11-11 (none had been quoted)."
+      ]
+    },
+    {
+      "name": "Fender Studio: Jam & Record",
+      "kind": "commercial-app",
+      "what": "Fender Digital recording app; \"Use the Chord Track to create your own chord progressions, or drag audio to it for automatic recognition\".",
+      "url": "https://apps.apple.com/us/app/id6742413894",
+      "version": "1.3 (Jul 30)",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Phone app (App Store listing read); iOS (other platforms not checked).",
+      "for_aaron": true,
+      "callable_via": [
+        "mobile-app"
+      ],
+      "inputs": [
+        "audio dragged onto the Chord Track"
+      ],
+      "outputs": [
+        "recognized chords"
+      ],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": "In-app purchase \"Complete Fender Amps & FX $49.99\".",
+      "handoffs_out": [],
+      "unverified": [
+        "Tab output: not described.",
+        "The App Store compatibility list also has Mac (\"Requires macOS 13.5 or later.\")."
+      ]
+    },
+    {
+      "name": "Yamaha Chord Tracker",
+      "kind": "commercial-app",
+      "what": "Yamaha Corporation of America iOS app: \"analyzing the audio songs stored in your iOS device and then displaying the chord symbols\" with \"guitar tab display options\"; will not work for songs in iCloud, DRM or music streaming services. Yamaha's page: \"Chord Tracker Android is now available at Google Play.\"; compatible devices \"iPhone / iPad / Android\". Two App Store listings: \"Chord Tracker - US\" (Yamaha Corporation of America, id992502589, US store) and \"Chord Tracker\" (Yamaha Corporation, id975438908, UK store).",
+      "url": "https://apps.apple.com/us/app/id992502589",
+      "version": "2.3.9 (May 25)",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Phone app (App Store listing read).",
+      "for_aaron": true,
+      "callable_via": [
+        "mobile-app"
+      ],
+      "inputs": [
+        "audio songs stored in the iOS device"
+      ],
+      "outputs": [
+        "chord symbols (piano keyboard or guitar tab display)",
+        "chord information sent to a connected Yamaha instrument",
+        "a recorded performance as an audio file shared by email (\"AAC or WAV format\")"
+      ],
+      "constraints_accepted": [
+        "user chord edits (\"choosing from two recommended chords or selecting the chord root and chord type\")",
+        "tempo and key changes"
+      ],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "App privacy policy",
+            "quote": "By using the Software, you are accepting and consenting to the terms of this Privacy Policy.",
+            "url": "https://www.yamaha.com/en/apps_docs/apps_dmi/dmi_PP_chordtracker20190827_us.html"
+          },
+          {
+            "topic": "Apple Standard EULA (applies unless a custom EULA is provided)",
+            "quote": "Apps made available through the App Store are licensed, not sold, to you. Your license to each App is subject to your prior acceptance of either this Licensed Application End User License Agreement (“Standard EULA”), or a custom end user license agreement between you and the Application Provider (“Custom EULA”), if one is provided.",
+            "url": "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
+          }
+        ]
+      },
+      "pricing": "Free; no in-app purchases listed.",
+      "handoffs_out": [],
+      "unverified": [
+        "No license agreement for the app was found on Yamaha's pages or the App Store listing; whether a custom EULA exists is not shown there. Yamaha's web site terms of use were not read.",
+        "No clause on the chord charts it shows, commercial use or automated access was found.",
+        "Whether the Android version also reads songs stored on the phone was not read (corrected by verify-gapfill-apps-survey, 2026-11-11: for-aaron.md had said test 17 also works on an Android phone)."
+      ],
+      "corrections": [
+        "gap round 2 (gapfill-apps-survey, 2026-11-11): platforms, features and terms checked on 2026-11-11 (survey.md, Yamaha Chord Tracker)."
+      ]
+    },
+    {
+      "name": "Positive Grid Spark app (Auto Chords)",
+      "kind": "commercial-app",
+      "what": "Positive Grid Inc app; \"Auto Chords\": \"Automatically display chords for millions of songs ... Easy controls let you slow down the song’s tempo or loop a difficult section\"; \"*Requires Spark Amp*\".",
+      "url": "https://apps.apple.com/us/app/id1457653921",
+      "version": "4.6.2 (Sep 17)",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Phone app: \"*Requires Spark Amp*\".",
+      "for_aaron": false,
+      "callable_via": [
+        "mobile-app"
+      ],
+      "inputs": [],
+      "outputs": [],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": []
+    },
+    {
+      "name": "ChordU",
+      "kind": "commercial-app",
+      "what": "Web chord finder; home page features: \"Your Personal Chord Finder\", \"Custom Chord Preference\", \"Change Speed and Scale\", \"Identify BPM Shifts\", \"Upload\", \"My Uploads\".",
+      "url": "https://chordu.com/",
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Web service; its terms bar automated access: \"You shall not collect content or information or access ChordU service using automated means (such as bots, robots, spiders or scrapers) without our permission.\"",
+      "for_aaron": true,
+      "callable_via": [],
+      "inputs": [],
+      "outputs": [],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Terms of use (no date; footer © 2023): User guidelines, automated access",
+            "quote": "You shall not collect content or information or access ChordU service using automated means (such as bots, robots, spiders or scrapers) without our permission.",
+            "url": "https://chordu.com/terms-of-use"
+          },
+          {
+            "topic": "Terms of use: Liability, personal non-commercial use",
+            "quote": "Usage of songs and chords are limited to your personal, non-commercial use in accordance with the terms of agreement. You may not reproduce (other than as authorized for your own personal usage), publish, transmit, distribute, publicly display, rent or lend, modify, create derivative works from, sell or participate in the sale of or exploit in any way, in whole or in part, directly or indirectly, any of the contents provided.",
+            "url": "https://chordu.com/terms-of-use"
+          },
+          {
+            "topic": "Terms of use: User Intellectual property rights",
+            "quote": "ChordU service contains material which is owned by us. This material includes, but is not limited to, the design, layout, look, sound, appearance and graphics.",
+            "url": "https://chordu.com/terms-of-use"
+          },
+          {
+            "topic": "Terms of use: footer",
+            "quote": "© 2023 ChordU. All contents are subject to copyright, provided for educational and personal non-commercial use only.",
+            "url": "https://chordu.com/terms-of-use"
+          }
+        ]
+      },
+      "pricing": "Not read: no chordu.com page was fetched after its terms, which bar automated access, were read (2026-11-11). The terms: \"Certain service options are free of cost whereas others are only accessible through premium subscriptions.\"",
+      "handoffs_out": [],
+      "unverified": [
+        "Prices: not read (for-aaron.md test 8b).",
+        "No clause on who owns a user's uploads or the chords computed from them was found.",
+        "ChordU's terms page links a \"Go Premium\" page (/gopremium), which was not fetched (the terms bar automated access); for-aaron.md test 8b asks Aaron to screenshot it."
+      ],
+      "corrections": [
+        "gap round 2 (gapfill-apps-survey, 2026-11-11): \"Terms not read\" (2026-11-10): the terms of use were read on 2026-11-11 (survey.md, ChordU)."
+      ]
+    },
+    {
+      "name": "Melodyne 5",
+      "kind": "commercial-app",
+      "what": "Celemony: polyphonic note detection (\"Melodyne also recognizes chords, keys, tunings and tempos\"); runs \"via ARA or as a plug-in directly in a DAW. Or even as a stand-alone program\". Trial page offers \"Melodyne 5 studio for macOS\" and \"for Windows\". Systems: macOS 10.12 (64-bit) or higher (natively on Apple Silicon from 5.2) and Windows 10 (64-bit) or 11; plug-in operation via VST3, AU or AAX and ARA; no Linux build listed.",
+      "url": "https://www.celemony.com/en/melodyne/what-is-melodyne",
+      "version": "5",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Desktop install (macOS or Windows; no Linux build listed).",
+      "for_aaron": true,
+      "callable_via": [
+        "desktop-gui"
+      ],
+      "inputs": [
+        "audio recordings and samples"
+      ],
+      "outputs": [
+        "MIDI file (\"Audio-to-MIDI – export notes to a MIDI file\": assistant, editor and studio editions, not essential)",
+        "chords (\"Chord Track and chord recognition – bring notes into line harmonically, extract chords from audio\": all four editions)",
+        "note editing of polyphonic guitar (\"DNA Direct Note Access – algorithms for polyphonic instruments such as piano and guitar\": editor and studio)"
+      ],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Help center: license and activations",
+            "quote": "The standard Melodyne license allows you to use Melodyne on one workstation only at a time. However, the license does allow you two activations, the second being an emergency one you can use to activate a substitute computer quickly and easily if, for example, your primary computer breaks down in the middle of a production.",
+            "url": "https://helpcenter.celemony.com/M5/doc/melodyneStudio5/en/M5tour_InstallationActivation"
+          },
+          {
+            "topic": "Webshop GTC: scope (files bought as downloads)",
+            "quote": "CELEMONY provides the Customer who has access to Internet the opportunity of downloading files of text, audio or video content against payment onto a computer of the Customer with Internet connection.",
+            "url": "https://www.celemony.com/en/service/legal/webshop-gtc"
+          },
+          {
+            "topic": "Webshop GTC: use of a downloaded file",
+            "quote": "Any use in excess of that granted by the licence, in particular the letting, broadcasting, public demonstration, re-licensing of the file, rendering it available in Internet or on other electronic networks (file sharing) or any other commercial use of the file is impermissible.",
+            "url": "https://www.celemony.com/en/service/legal/webshop-gtc"
+          }
+        ]
+      },
+      "pricing": "Celemony shop (https://www.celemony.com/en/shop, read 2026-11-11): Melodyne 5 studio \"US$699\" (\"retail price of US$849\"); essential \"US$99\", assistant \"US$249\" (\"retail price of US$299\"), editor \"US$399\" (\"retail price of US$499\"), in the page's column order. Trial: \"For a period of 30 days, free of charge, with no obligations or limitations.\"; \"By default, the trial version starts off as Melodyne studio\". Trial page (https://www.celemony.com/en/trial): \"To register the trial version and each time the program is launched, an Internet connection is necessary. The trial period can only be enjoyed once on each computer.\"",
+      "handoffs_out": [
+        {
+          "to": "Guitar Pro 8, Tabtify, RiffToTab",
+          "via_format": "MIDI",
+          "evidence": "Documented, not tested (survey.md handoff line 27): \"Audio-to-MIDI – export notes to a MIDI file\" in the assistant, editor and studio editions (https://www.celemony.com/en/melodyne/melodyne-5-editions); Guitar Pro 8 and Tabtify import MIDI (survey.md handoff line 3) and RiffToTab takes in \".mid or .midi\" (https://rifftotab.com/). Added in gap round 2 (2026-11-11)."
+        }
+      ],
+      "unverified": [
+        "Tab output: not found.",
+        "The EULA text was not read: no EULA page is linked from celemony.com (/en/service/legal/eula and /license-agreement answered 404); the only copy found, https://ec.crypton.co.jp/download/pdf/eula_celemonyme.pdf, was unreachable on 2026-11-11 (connection reset, then HTTP 503 maintenance page). Its clauses on exported files, commercial use and automated access are unknown.",
+        "The webshop GTC do not mention MIDI or files exported from Melodyne.",
+        "Whether the trial needs a Celemony account was not checked.",
+        "Whether the Melodyne installer or program shows a license agreement, and what it says (for-aaron.md test 11 asks Aaron to save it).",
+        "Where \"Audio-to-MIDI – export notes to a MIDI file\" sits in the menus was not read."
+      ],
+      "corrections": [
+        "gap round 2 (gapfill-apps-survey, 2026-11-11): \"MIDI export, price: not read (UNVERIFIED)\" and the unread operating systems were read on 2026-11-11 (editions, technical matters and shop pages; survey.md, Melodyne 5)."
+      ]
+    },
+    {
+      "name": "RipX DAW",
+      "kind": "commercial-app",
+      "what": "Hit'n'Mix: \"true note-level extraction\" from mixed audio, 6+ stem separation; \"Print Audio to Midi to load a specific part into a VST of your choice\". Systems: \"macOS 10.15+ (2012 & later models, including M1 onwards) / Windows 8/10/11 (64-bit)\"; \"Ability to see specific chords & notes being played in a particular part\".",
+      "url": "https://hitnmix.com/",
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Desktop install (macOS 10.15+ or Windows 8/10/11 64-bit; no Linux build listed).",
+      "for_aaron": true,
+      "callable_via": [
+        "desktop-gui"
+      ],
+      "inputs": [],
+      "outputs": [
+        "MIDI (Print Audio to Midi)",
+        "separated stems as WAVs"
+      ],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Terms of use: definition of HIT'N'MIX",
+            "quote": "For the purposes of these Terms of use, HIT’N’MIX is used to mean any version of Hit’n’Mix products and the hitnmix.com website.",
+            "url": "https://hitnmix.com/terms-of-use/"
+          },
+          {
+            "topic": "Terms of use: copyright of music processed",
+            "quote": "HIT’N’MIX is not intended for use by users which would infringe the copyright of any piece of music owned by a third party and is intended for lawful use only; ... Any use of HIT’N’MIX in conjunction with such music should only be carried out with the permission of the copyright owner in question.",
+            "url": "https://hitnmix.com/terms-of-use/"
+          },
+          {
+            "topic": "Terms of use: intellectual property and HIT'N'MIX content",
+            "quote": "All copyright, trade marks, design rights, patents and other intellectual property rights (registered and unregistered) in and on HIT’N’MIX and all content (including all applications) located on the site shall remain vested in Hit’n’Mix Ltd or its licensors (which includes other users). You may not copy, reproduce, republish, disassemble, decompile, reverse engineer, download, post, broadcast, transmit, or make available to the public any HIT’N’MIX content without the prior written permission of Hit’n’Mix Ltd.",
+            "url": "https://hitnmix.com/terms-of-use/"
+          },
+          {
+            "topic": "Store terms of service: the paragraph that differs from the site terms (three sentences)",
+            "quote": "You may not copy, reproduce, republish, disassemble, decompile, reverse engineer, download, post, broadcast, transmit, make available to the public, or otherwise use HIT’N’MIX content in any way except for your own personal, non-commercial use. You also agree not to adapt, alter or create a derivative work from HIT’N’MIX. Any other use of HIT’N’MIX content requires the prior written permission of Hit’n’Mix Ltd.",
+            "url": "https://buy.hitnmix.com/policies/terms-of-service"
+          },
+          {
+            "topic": "Activation",
+            "quote": "In order to check for a valid license, an internet connection is required to activate RipX for the first time, and at least once every 15 times it is run.",
+            "url": "https://buy.hitnmix.com/"
+          },
+          {
+            "topic": "Installations",
+            "quote": "RipX may be installed on up to two computers belonging to the registered license owner, for example a desktop and a laptop.",
+            "url": "https://buy.hitnmix.com/"
+          }
+        ]
+      },
+      "pricing": "RipX DAW \"$99.00 USD\"; RipX DAW PRO \"$198.00 USD\"; \"21-day trial\"; \"We offer license deactivation with a full refund within 14 days of purchase\" (https://buy.hitnmix.com/, read 2026-11-11). Earlier: \"Buy Now – Starting at $99\"; \"Try RipX DAW PRO Free for 21 Days\".",
+      "handoffs_out": [
+        {
+          "to": "Guitar Pro 8, Tabtify, RiffToTab",
+          "via_format": "MIDI",
+          "evidence": "Documented, not tested (survey.md handoff line 27): \"Print Audio to Midi to load a specific part onto a separate VST/Synth\" (https://hitnmix.com/ripx-daw/); Guitar Pro 8 and Tabtify import MIDI (survey.md handoff line 3) and RiffToTab takes in \".mid or .midi\" (https://rifftotab.com/). Added in gap round 2 (2026-11-11)."
+        }
+      ],
+      "unverified": [
+        "Tab output: the words tab, tabs and tablature are on neither the RipX DAW page nor the buy page (2026-11-11).",
+        "Whether \"HIT’N’MIX content\" in the terms covers stems or MIDI a user exports is not stated; no clause on bots, scripts or automated access was found.",
+        "No EULA page is linked from hitnmix.com or buy.hitnmix.com; whether the installer shows one, and its text, was not checked."
+      ],
+      "corrections": [
+        "gap round 2 (gapfill-apps-survey, 2026-11-11): \"Which operating systems: not read\" and the MIDI details were read on 2026-11-11 (buy.hitnmix.com, hitnmix.com/ripx-daw/; survey.md, RipX DAW).",
+        "verify-gapfill-apps-survey (2026-11-11): the store terms quote lacked its third sentence, \"Any other use of HIT’N’MIX content requires the prior written permission of Hit’n’Mix Ltd.\" (added; the two terms pages differ only in that paragraph and the footer)."
+      ]
+    },
+    {
+      "name": "Samplab",
+      "kind": "commercial-app",
+      "what": "samplab.com redirects to apple.com; the EU list of acquisitions, as quoted by 9to5Mac on 2026-10-19, says Apple \"will acquire certain assets of Samplab GmbH\".",
+      "url": "https://samplab.com/",
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Closed: site redirects to apple.com; nothing to run (for-aaron.md test 13 removed).",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [],
+      "outputs": [],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "The EU filing itself was not read."
+      ]
+    },
+    {
+      "name": "MIDI Guitar 2 and 3 (Jam Origin)",
+      "kind": "commercial-app",
+      "what": "Live guitar signal to polyphonic MIDI; MIDI Guitar 2 \"turn your guitar into a polyphonic MIDI controller\"; MIDI Guitar 3 is in open beta (www.jam.live) with MPE.",
+      "url": "https://www.jamorigin.com/",
+      "version": "MIDI Guitar 2; MIDI Guitar 3 (\"MIDI Guitar 3 is in beta testing phase.\", jam.live, 2026-11-11)",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Desktop install, real time (live audio in).",
+      "for_aaron": true,
+      "callable_via": [
+        "desktop-gui",
+        "mobile-app"
+      ],
+      "inputs": [
+        "live guitar signal"
+      ],
+      "outputs": [
+        "real-time MIDI (MPE in version 3)",
+        "JAM API (beta): notes as text on \"a WebSocket at localhost, port 8080\", one line per played note: \"note-id, age, string, pitch, bend, pressure, brightness\" (https://jam.live/developers/websocket/)"
+      ],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "License (FastSpring store page)",
+            "quote": "The license permits you to run MIDI GUITAR 3 or MIDI GUITAR 2, on two computers, and is possible to revoke when you buy a new computer.",
+            "url": "https://sites.fastspring.com/jamorigin/product/midi-guitar"
+          },
+          {
+            "topic": "License FAQ",
+            "quote": "Can i use the license on 2 or more computers? ... Yes, as long as they are yours.",
+            "url": "https://www.jamorigin.com/"
+          }
+        ]
+      },
+      "pricing": "\"The price is always USD 149.95 and there are never any discounts.\"; \"Pay once = Lifetime license + Lifetime free updates\" (https://jam.live/shop/, read 2026-11-11). FastSpring page: \"MIDI GUITAR, personal lifetime license\", \"$149.95\". iOS: \"features that are only available as in-app purchases via Apple's App Store\". Earlier: \"Personal license for Windows/Mac standalone and plugins\"; \"Download Free trial\" (MIDI Guitar 2).",
+      "handoffs_out": [],
+      "unverified": [
+        "No license agreement, EULA or terms page is linked from jamorigin.com or jam.live (2026-11-11), so nothing is stated on who owns the MIDI it outputs, commercial use or automated access; whether the installer shows a license text was not checked.",
+        "No tab output described; the WebSocket note stream has a field named \"string\", whose values are not described.",
+        "Whether version 3 has a free trial was not read."
+      ],
+      "corrections": [
+        "gap round 2 (gapfill-apps-survey, 2026-11-11): \"Prices: not shown in the page text\" was answered on 2026-11-11: USD 149.95 (jam.live shop; survey.md, MIDI Guitar 2 and 3)."
+      ]
+    },
+    {
+      "name": "Transcribe!",
+      "kind": "commercial-app",
+      "what": "Seventh String Software: closed-source slow-down, loop and study program with on-screen note and chord guesses; Windows, macOS and Linux. Linux x86-64 build downloaded and unpacked; not started; the download is no longer on the box on 2026-11-11.",
+      "url": "https://www.seventhstring.com/xscribe/download.html",
+      "version": "9.70.4 (Linux download page; tarball Last-Modified 2026-10-18)",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Not attempted: the trial agent did not start it because running a downloaded vendor binary is the step this session's permission system refused for AnthemScore (\"[Code from External]\"); the verifier did not try either. No attempt, so no refusal for this program.",
+      "for_aaron": true,
+      "callable_via": [
+        "desktop-gui"
+      ],
+      "inputs": [
+        "audio",
+        "video files (\"Transcribe! can usually display the video too\")",
+        "script files (.xscscpt) opened in the program"
+      ],
+      "outputs": [
+        "no notes as data: \"Transcribe! does not output MIDI at all.\"",
+        "processed sound or video (FileExportSound, FileExportVideo)",
+        "markers and text blocks text file (MarkersAndTextBlocksExport)",
+        "chord guesses copied to the clipboard or to text blocks"
+      ],
+      "constraints_accepted": [
+        "guitar positions: number of strings and tuning (right-click the piano keyboard)",
+        "capo: \"treat guitar-with-capo as a transposing instrument\"",
+        "tuning adjustment (Fx window, Tuning page)"
+      ],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Evaluation and purchase (license.htm)",
+            "quote": "When Transcribe! is installed for the first time on a computer which it has not been installed on before, you will normally find that it will run for 30 days without requiring a \"license key\". If you want to use it beyond the 30 day evaluation period you must buy a license to use Transcribe! (the license described here).",
+            "url": "license.htm inside the download (xscsetup-9.70.4.tar.gz)"
+          },
+          {
+            "topic": "Reverse engineering (license.htm)",
+            "quote": "You may not modify, decompile, reverse engineer, disassemble, or create derivative works of the Transcribe! software or any part of it.",
+            "url": "license.htm inside the download (xscsetup-9.70.4.tar.gz)"
+          }
+        ]
+      },
+      "pricing": "\"Transcribe! is priced in US dollars, $39 for a single copy (plus any local taxes).\" 30-day evaluation.",
+      "handoffs_out": [],
+      "unverified": [
+        "Whether the text-block export file carries each block's time.",
+        "Scripting: the help says starting it from the command line with a script file is \"particularly useful if you want to use Transcribe! without user intervention\"; not tried here.",
+        "Nothing in license.htm addresses the user's own transcriptions or exported files.",
+        "Download: xscsetup-9.70.4.tar.gz, 4,365,589 bytes, sha256 626c57dea5306eeb8131ed83b92cea56d96ad5cbcec40629de4845f2cc3836cd (equals the page's); needs 64-bit Linux with GStreamer-1.0, GTK-3.",
+        "Transcribe! tarball: On 2026-11-11 the folder /home/user/gtr/lanes/apps-survey/dl/ no longer exists (\"No such file or directory\") and `find / -xdev` for AnthemScore-x86_64.AppImage and xscsetup-9.70.4.tar.gz found neither file; when and by whom it was removed is not recorded. The sizes and sha256 values in trials.md were taken while the files existed."
+      ],
+      "corrections": [
+        "refresh after verify-gapfill-apps-survey (2026-11-11): trials.md (Transcribe!, \"Download\") now says the folder /home/user/gtr/lanes/apps-survey/dl/transcribe/ is gone on 2026-11-11; the help quotes were checked by the verifier on 2026-11-10, while it existed."
+      ]
+    },
+    {
+      "name": "Rocksmith+ (Ubisoft)",
+      "kind": "commercial-app",
+      "what": "Not read on 2026-11-10 (survey.md lists it under \"Not researched in this pass\"). The App Store page fetched for this lane (apps.apple.com/us/app/id1559226478) came back as a page shell with no text.",
+      "url": null,
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Not read, so whether it transcribes a given recording is UNVERIFIED.",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [],
+      "outputs": [],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "Not read on 2026-11-10."
+      ]
+    },
+    {
+      "name": "Fender Play",
+      "kind": "commercial-app",
+      "what": "Not read on 2026-11-10 (survey.md lists it under \"Not researched in this pass\"). The App Store page fetched for this lane came back without text.",
+      "url": null,
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Not read, so whether it transcribes a given recording is UNVERIFIED.",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [],
+      "outputs": [],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "Not read on 2026-11-10."
+      ]
+    },
+    {
+      "name": "Fender Tune",
+      "kind": "commercial-app",
+      "what": "Not read on 2026-11-10 (survey.md lists it under \"Not researched in this pass\"). Not fetched.",
+      "url": null,
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Not read, so whether it transcribes a given recording is UNVERIFIED.",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [],
+      "outputs": [],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "Not read on 2026-11-10."
+      ]
+    },
+    {
+      "name": "Gibson App",
+      "kind": "commercial-app",
+      "what": "Not read on 2026-11-10 (survey.md lists it under \"Not researched in this pass\").",
+      "url": null,
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Not read, so whether it transcribes a given recording is UNVERIFIED.",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [],
+      "outputs": [],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "Not read on 2026-11-10."
+      ]
+    },
+    {
+      "name": "Riffstation",
+      "kind": "commercial-app",
+      "what": "Not read on 2026-11-10 (survey.md lists it under \"Not researched in this pass\").",
+      "url": null,
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Not read, so whether it transcribes a given recording is UNVERIFIED.",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [],
+      "outputs": [],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "Not read on 2026-11-10."
+      ]
+    },
+    {
+      "name": "Fender Songs (with Apple Music)",
+      "kind": "commercial-app",
+      "what": "Not read on 2026-11-10 (survey.md lists it under \"Not researched in this pass\"). Fender.com newsroom page answered HTTP 403 / a \"Just a moment...\" challenge; appears in search results only.",
+      "url": null,
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Not read, so whether it transcribes a given recording is UNVERIFIED.",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [],
+      "outputs": [],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "Not read on 2026-11-10."
+      ]
+    },
+    {
+      "name": "Fender Studio Pro 8 (desktop DAW)",
+      "kind": "commercial-app",
+      "what": "Not read on 2026-11-10 (survey.md lists it under \"Not researched in this pass\"). Fender.com returned 403; appears in search results only.",
+      "url": null,
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Not read, so whether it transcribes a given recording is UNVERIFIED.",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [],
+      "outputs": [],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "Not read on 2026-11-10."
+      ]
+    },
+    {
+      "name": "Note2Tabs",
+      "kind": "commercial-app",
+      "what": "Note2Tabs AB (Sweden) web app: \"AI tabs built for guitarists\"; audio file or YouTube link in; browser tab editor with \"String and fret optimization\"; a \"Light\" and a \"Heavy\" model.",
+      "url": "https://www.note2tabs.com/",
+      "version": "terms \"Last updated: October 2026\"",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Web service: using it means accepting its terms (and usually stating rights to the upload) on Aaron's behalf, which this session's permission system refused for AnthemScore Web (\"[Consent Given For The User]\"), so no other web app's upload was attempted (trials.md).",
+      "for_aaron": true,
+      "callable_via": [],
+      "inputs": [
+        "Upload audio file (MP3, WAV, M4A)",
+        "Audio file YouTube link (\"Paste a public link, choose a riff or solo, and transcribe the focused section.\")",
+        "Import text-tabs"
+      ],
+      "outputs": [
+        "editable tab in the browser",
+        "\"Import and export tab files\" (export file formats are not named on the pages read)"
+      ],
+      "constraints_accepted": [
+        "Light or Heavy model",
+        "fingering selection and optimizer tools",
+        "playing-coordinate system (pick where on the fretboard to play)",
+        "key detection and snap to key",
+        "playback loops and speed training"
+      ],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Ownership and license (§3)",
+            "quote": "You own the files and tablature you create or upload.",
+            "url": "https://www.note2tabs.com/terms"
+          },
+          {
+            "topic": "License to Note2Tabs (§3)",
+            "quote": "You grant Note2Tabs a limited, non-exclusive license to host, process, and display your content solely to operate and improve the service, provide support, and comply with legal obligations.",
+            "url": "https://www.note2tabs.com/terms"
+          },
+          {
+            "topic": "Generated tablature (§5)",
+            "quote": "Tabs created using the service may be used personally or commercially. We do not guarantee accuracy or legal clearance for distribution or commercial use. You are responsible for securing any necessary licenses, permissions, and clearances and for how you use exported tablature.",
+            "url": "https://www.note2tabs.com/terms"
+          },
+          {
+            "topic": "Automation (§6)",
+            "quote": "Do not automate bulk requests",
+            "url": "https://www.note2tabs.com/terms"
+          },
+          {
+            "topic": "Competing products (§6)",
+            "quote": "Do not use the service to build competing products",
+            "url": "https://www.note2tabs.com/terms"
+          },
+          {
+            "topic": "Output use (§8)",
+            "quote": "You receive permission to use the service outputs personally.",
+            "url": "https://www.note2tabs.com/terms"
+          }
+        ]
+      },
+      "pricing": "Monthly view: Free \"$0/ month\", \"10 monthly credits\", \"Audio clips up to 60 seconds\"; Premium \"$5.99/ month\", \"100 monthly credits\", \"Full-length audio-file transcription\", \"Light and Heavy models\"; Pro \"$14.99/ month\", \"500 monthly credits\"; \"A 60-second recording uses 4 credits with Light or 10 with Heavy.\"",
+      "handoffs_out": [],
+      "unverified": [
+        "Tuning or capo set before the run, and re-analysis after a correction: not described.",
+        "Video of the hands: not described.",
+        "API: none found on the pages read.",
+        "§5 permits commercial use while §8 says \"You receive permission to use the service outputs personally.\"; both quoted from the same terms page."
+      ]
+    },
+    {
+      "name": "Fretwise",
+      "kind": "commercial-app",
+      "what": "Web app (fretwise.ai): \"Audio in. Tabs out.\"; vendor's own claim, \"The fastest audio to MIDI + Guitar Pro transcriber in the world.\" (no measurement given).",
+      "url": "https://fretwise.ai/",
+      "version": "terms \"Last updated: February 3, 2026\"",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Web service: using it means accepting its terms (and usually stating rights to the upload) on Aaron's behalf, which this session's permission system refused for AnthemScore Web (\"[Consent Given For The User]\"), so no other web app's upload was attempted (trials.md).",
+      "for_aaron": true,
+      "callable_via": [],
+      "inputs": [
+        "MP3, WAV, M4A, etc"
+      ],
+      "outputs": [
+        "PDF",
+        "MIDI",
+        "MusicXML",
+        "Guitar Pro",
+        "interactive tab and MIDI playback"
+      ],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Prohibited uses (§3)",
+            "quote": "Use automated tools to access the service without permission",
+            "url": "https://fretwise.ai/terms-of-service"
+          },
+          {
+            "topic": "Prohibited uses (§3)",
+            "quote": "Resell or redistribute transcriptions commercially without proper licensing",
+            "url": "https://fretwise.ai/terms-of-service"
+          },
+          {
+            "topic": "Ownership (§4)",
+            "quote": "You retain ownership of any content you upload to Fretwise.ai. By uploading audio files, you grant us a limited license to process and analyze the content solely to provide the transcription service.",
+            "url": "https://fretwise.ai/terms-of-service"
+          }
+        ]
+      },
+      "pricing": "Free \"$0 forever\", \"3 transcriptions per month\", \"Guest access without an account\"; Pro \"$9.99 / month\", \"50 transcriptions per month\"; \"No export paywalls\".",
+      "handoffs_out": [
+        {
+          "to": "Guitar Pro 8, Tabtify",
+          "via_format": "Guitar Pro / MIDI / MusicXML",
+          "evidence": "Documented, not tested (survey.md handoff line 26): \"PDF, MIDI, MusicXML, and Guitar Pro exports\" (https://fretwise.ai/pricing); Guitar Pro 8 and Tabtify import as in handoff lines 1 to 3."
+        }
+      ],
+      "unverified": [
+        "Tuning or capo settings, editing, re-analysis after a correction, video of the hands and an API: not described on the pages read.",
+        "The page text is short and mostly loaded by script."
+      ]
+    },
+    {
+      "name": "Cesure",
+      "kind": "commercial-app",
+      "what": "Browser, Android and iOS tab, staff and piano-roll editor (\"Tab · Staff · Piano roll — one score\"); audio to tab with BasicPitch on its servers; imports Guitar Pro, MIDI, MusicXML, AlphaTex; an MCP connector lets an AI assistant write, transpose and refinger scores (not audio).",
+      "url": "https://cesure.app/",
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Web service with an account required for AI transcription; Web service: using it means accepting its terms (and usually stating rights to the upload) on Aaron's behalf, which this session's permission system refused for AnthemScore Web (\"[Consent Given For The User]\"), so no other web app's upload was attempted (trials.md).",
+      "for_aaron": true,
+      "callable_via": [
+        "mobile-app"
+      ],
+      "inputs": [
+        "MP3, WAV or M4A",
+        "MIDI",
+        "MusicXML",
+        "Guitar Pro (.gp, .gp3, .gp4, .gp5)",
+        "AlphaTex"
+      ],
+      "outputs": [
+        ".cesure",
+        "MIDI",
+        "MusicXML",
+        "AlphaTex",
+        "PDF (free PDF carries a small watermark)",
+        "WAV (Pro)"
+      ],
+      "constraints_accepted": [
+        "capo in shared rooms (each player keeps their own view, track and capo)",
+        "speed trainer",
+        "loop a range of measures"
+      ],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Personal use",
+            "quote": "The app is designed for personal use.",
+            "url": "https://cesure.app/terms"
+          },
+          {
+            "topic": "Assistants",
+            "quote": "What that assistant does with your scores falls under its provider's own terms.",
+            "url": "https://cesure.app/terms"
+          },
+          {
+            "topic": "Reverse engineering",
+            "quote": "You are prohibited from copying, modifying, reverse engineering, or creating derivative works of the app without explicit authorization from Cesure.",
+            "url": "https://cesure.app/terms"
+          },
+          {
+            "topic": "Marketplace scores (terms of sale)",
+            "quote": "A score you buy gives you the personal, non-exclusive right to read it, play it, edit it and export it for your own use. It does not allow you to resell it, redistribute it or share it publicly.",
+            "url": "https://cesure.app/terms-of-sale"
+          }
+        ]
+      },
+      "pricing": "Free \"€0\", \"3 AI transcriptions a month — empty results don't count\"; Pro \"€4.99\" \"per month\", \"or €39.99 per year — save 33%\".",
+      "handoffs_out": [
+        {
+          "to": "alphaTab / importers of MIDI, MusicXML, AlphaTex",
+          "via_format": "MIDI, MusicXML, AlphaTex, PDF",
+          "evidence": "Documented, not tested (survey.md handoff line 24): \"Export to .cesure, MIDI, MusicXML, AlphaTex and PDF for free\" (https://cesure.app/ FAQ) for the importers in handoff lines 2, 3 and 7."
+        }
+      ],
+      "unverified": [
+        "Tuning or capo as a constraint on the transcription itself, and re-analysis after a correction: not described.",
+        "No clause on who owns, or may commercially use, a user's own transcriptions was found; the terms page has no date.",
+        "Video of the hands: not described.",
+        "Chord detection is \"computed entirely on your device, free and offline\"."
+      ]
+    },
+    {
+      "name": "Cesure MCP connector",
+      "kind": "api",
+      "what": "Model Context Protocol connector at https://api.cesure.app/mcp (ChatGPT, Claude, MCP): an AI assistant writes a score (\"Tab or standard notation, notes by fret or by pitch, in the open .cesure format.\"), reworks bars, transposes and refingers (\"Up to 24 semitones either way; notes placed on the neck again, with a capo if one helps.\"), searches the catalog and opens it in Cesure.",
+      "url": "https://cesure.app/assistants",
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Not connected or tried here.",
+      "for_aaron": false,
+      "callable_via": [
+        "http"
+      ],
+      "inputs": [
+        "assistant requests (\"No audio. Turning a recording into a tab happens in the app, from a sound.\")"
+      ],
+      "outputs": [
+        ".cesure score draft (\"a draft that Cesure keeps 14 days after its last use\") opened with a link"
+      ],
+      "constraints_accepted": [
+        "capo",
+        "transposition up to 24 semitones either way"
+      ],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Assistant access",
+            "quote": "acts at your request within what you allowed on the linking page — seeing, reading and saving scores",
+            "url": "https://cesure.app/terms"
+          }
+        ]
+      },
+      "pricing": null,
+      "handoffs_out": [
+        {
+          "to": "Cesure app exports (MIDI, MusicXML, AlphaTex, PDF)",
+          "via_format": ".cesure",
+          "evidence": "Documented, not tested (survey.md handoff line 24): the assistant opens the score in Cesure, which exports \"MIDI, MusicXML, AlphaTex and PDF\" (https://cesure.app/ FAQ)."
+        }
+      ],
+      "unverified": [
+        "The transport is not stated in the reports; the address is an https URL. callable_via http is taken from that address.",
+        "Without your account, it sees none of your scores."
+      ]
+    },
+    {
+      "name": "RiffToTab",
+      "kind": "commercial-app",
+      "what": "rifftotab.com (RiffToTab Team): audio to MIDI in the browser with Spotify's basic-pitch (free), then MIDI to tab with strings and frets chosen \"for the whole phrase, in your tuning and capo\" (paid); change tuning, capo or key, \"then convert again\".",
+      "url": "https://rifftotab.com/",
+      "version": "terms \"Last updated November 8, 2026\"",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Web service; tab step paid; Web service: using it means accepting its terms (and usually stating rights to the upload) on Aaron's behalf, which this session's permission system refused for AnthemScore Web (\"[Consent Given For The User]\"), so no other web app's upload was attempted (trials.md).",
+      "for_aaron": true,
+      "callable_via": [
+        "js-browser"
+      ],
+      "inputs": [
+        "MIDI (.mid or .midi)",
+        "audio (\"Turn audio into MIDI, free\")",
+        "YouTube, TikTok or Instagram link (free account)",
+        "microphone recording",
+        "Guitar Pro, MusicXML and alphaTex files, or a blank tab"
+      ],
+      "outputs": [
+        "Guitar Pro",
+        "MIDI",
+        "text tab",
+        "alphaTex",
+        "PDF (Pro)",
+        "MusicXML (Pro)"
+      ],
+      "constraints_accepted": [
+        "guitar or bass, 4 to 7 strings",
+        "standard, drop and open tunings, half step down",
+        "capo 1 to 12, key up or down 12 semitones",
+        "easier to play, or every note as written",
+        "highest fret and neck position",
+        "note sensitivity, note splitting and minimum length (re-run extraction instantly)"
+      ],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Ownership",
+            "quote": "You keep ownership of content you upload or create through the service. That includes, for example, audio files, MIDI files, tab drafts, project metadata, exports, and support submissions.",
+            "url": "https://rifftotab.com/terms"
+          },
+          {
+            "topic": "Prohibited uses",
+            "quote": "Abuse, scrape, reverse engineer, or bypass limits, protections, or access controls.",
+            "url": "https://rifftotab.com/terms"
+          },
+          {
+            "topic": "Prohibited uses",
+            "quote": "Use automated systems in a way that harms reliability, performance, or other users.",
+            "url": "https://rifftotab.com/terms"
+          },
+          {
+            "topic": "Shared links",
+            "quote": "Only share tabs of music you wrote, music in the public domain, or music you have permission to share.",
+            "url": "https://rifftotab.com/terms"
+          }
+        ]
+      },
+      "pricing": "Monthly \"$3.99\" \"first month\", \"Then $7.99 a month. Cancel anytime.\"; yearly \"$39\" \"a year\"; lifetime \"$59\" \"once\"; \"7-day money-back guarantee\".",
+      "handoffs_out": [
+        {
+          "to": "RiffToTab's own tab step",
+          "via_format": "piano roll (notes)",
+          "evidence": "Documented, not tested (survey.md handoff line 25): audio to MIDI \"outputs notes into its piano roll, which its tab step turns into strings and frets \"for your tuning and capo\"\" (https://rifftotab.com/audio-to-guitar-tab); its MIDI input (\".mid or .midi\") also takes MIDI made elsewhere, such as Klangio's two MIDI exports."
+        }
+      ],
+      "unverified": [
+        "The re-run is of the fingering from the same notes; a constraint feeding back into the pitch detection is not described.",
+        "Basic Pitch's own license is covered by the audio-to-notes lane.",
+        "API: none found on the pages read.",
+        "Video of the hands: not described."
+      ]
+    },
+    {
+      "name": "basic-pitch (Spotify)",
+      "kind": "open-source",
+      "what": "Spotify's open-source audio-to-notes model, \"compiled to run client-side\" in RiffToTab; also named by Cesure (\"BasicPitch\", run on its servers).",
+      "url": null,
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Not run; context only (used inside RiffToTab and Cesure).",
+      "for_aaron": false,
+      "callable_via": [
+        "js-browser"
+      ],
+      "inputs": [
+        "audio"
+      ],
+      "outputs": [
+        "notes (piano roll)"
+      ],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "Its own license is not in these reports (covered by the audio-to-notes lane).",
+        "callable_via js-browser is only how RiffToTab runs it (\"Transcription happens on your CPU\" in the browser)."
+      ]
+    },
+    {
+      "name": "GuitarConvert",
+      "kind": "commercial-app",
+      "what": "La Touche Musicale SAS (France) web app: YouTube link, audio or video file in; \"Transcription mode\" and \"Arrangement mode\"; PDF, MIDI, MusicXML out.",
+      "url": "https://latouchemusicale.com/en/apps/guitarconvert/",
+      "version": "terms carry no date",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Web service: using it means accepting its terms (and usually stating rights to the upload) on Aaron's behalf, which this session's permission system refused for AnthemScore Web (\"[Consent Given For The User]\"), so no other web app's upload was attempted (trials.md).",
+      "for_aaron": true,
+      "callable_via": [],
+      "inputs": [
+        "YouTube link, audio/video file, or direct recording on browser",
+        "wav, mp3, mp4, etc."
+      ],
+      "outputs": [
+        "PDF",
+        "MIDI",
+        "MusicXML (\"XML\")"
+      ],
+      "constraints_accepted": [
+        "Transcription mode or Arrangement mode"
+      ],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": [
+          {
+            "topic": "Private use",
+            "quote": "La Touche Musicale provides the Service for private use only. The Service may not be used for commercial purposes.",
+            "url": "https://latouchemusicale.com/en/legal/terms-and-conditions/"
+          },
+          {
+            "topic": "Commercial use of Deliverables",
+            "quote": "Any commercial use of the Deliverables generated by La Touche Musicale services is prohibited without express authorization. This includes the sale, distribution in any form whatsoever or reproduction of scores, tablatures, MusicXML files, MIDI files or any other type of files obtained via PianoConvert, GuitarConvert, BandConvert, SingConvert and all other Transcription Services offered by La Touche Musicale.",
+            "url": "https://latouchemusicale.com/en/legal/terms-and-conditions/"
+          },
+          {
+            "topic": "Content",
+            "quote": "You retain all rights to the Content You submit to the Service.",
+            "url": "https://latouchemusicale.com/en/legal/terms-and-conditions/"
+          },
+          {
+            "topic": "Retention",
+            "quote": "Submitted Content will be stored for a maximum of 30 days before being deleted from La Touche Musicale’s servers for the Transcription Service",
+            "url": "https://latouchemusicale.com/en/legal/terms-and-conditions/"
+          }
+        ]
+      },
+      "pricing": "Euros: Free \"€0/month\", \"Conversion limited to 30 seconds\", \"PDF, MIDI & musicXML export\", \"10 tab edits\"; Solo \"€9 billed monthly\", \"10 conversions/month\"; Galaxy \"€19 billed monthly\", \"100 conversions/month\"; Universe \"€29 billed monthly\", \"300 conversions/month\"; annual: Solo \"€48 billed annually\", Galaxy \"€108 billed annually\", Universe \"€168 billed annually\".",
+      "handoffs_out": [
+        {
+          "to": "Guitar Pro 8, Tabtify",
+          "via_format": "PDF / MIDI / MusicXML",
+          "evidence": "Documented, not tested (survey.md handoff line 26): GuitarConvert \"PDF, MIDI, and MusicXML\" (https://latouchemusicale.com/en/apps/guitarconvert/); Guitar Pro 8 and Tabtify import as in handoff lines 1 to 3."
+        }
+      ],
+      "unverified": [
+        "Vendor's accuracy claim with no dataset, metric or method: \"GuitarConvert transcribes your sheet music with up to 93% accuracy.\"",
+        "Tuning or capo settings, re-analysis after a correction, video of the hands: not described."
+      ]
+    },
+    {
+      "name": "Tabbers",
+      "kind": "commercial-app",
+      "what": "Platform described in a PyData Tel Aviv 2025 talk (\"You Just Play: Teach and learn any guitar riff just by playing it (HE)\", Nov. 5, 2025): \"We use audio and video analysis to generate tablature, color-coded finger visualizations, and other enhancements\"; includes a \"Computer vision application to detect finger placement on the fretboard\" and a \"Fusion pipeline for aligning visual hand positioning with note transcription\".",
+      "url": "https://cfp.pydata.org/pydata-tel-aviv-2025/talk/FA7JGZ/",
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "No product, app or code found (talk only).",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [
+        "video and audio of a guitar performance"
+      ],
+      "outputs": [
+        "tablature",
+        "color-coded finger visualizations"
+      ],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "No product page, app, code or license was found in a web search the same day."
+      ]
+    },
+    {
+      "name": "YouTube Guitar Tab Parser (marcelpanse/youtube-guitar-tab-parser)",
+      "kind": "open-source",
+      "what": "CLI that turns a YouTube guitar-lesson video into a PDF of the guitar tab: it downloads the video, samples frames, uses Claude vision to locate the tab region, crops, de-duplicates by bar number and stitches the tab lines into a PDF. It copies tab already drawn in the video; no transcription.",
+      "url": "https://github.com/marcelpanse/youtube-guitar-tab-parser",
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Not run: it copies a tab already drawn in a YouTube lesson video into a PDF and does not transcribe audio; no shared clip is such a video, and its README asks for yt-dlp and an Anthropic API key.",
+      "for_aaron": false,
+      "callable_via": [
+        "cli"
+      ],
+      "inputs": [
+        "YouTube guitar-lesson video"
+      ],
+      "outputs": [
+        "PDF of image crops of the tab"
+      ],
+      "constraints_accepted": [
+        "requirements: Node.js ≥ 20, yt-dlp, ffmpeg, an Anthropic API key"
+      ],
+      "license": {
+        "code": {
+          "spdx": "GPL-3.0",
+          "quote": "\"GNU GENERAL PUBLIC LICENSE\" \"Version 3, 29 June 2007\"",
+          "url": "https://raw.githubusercontent.com/marcelpanse/youtube-guitar-tab-parser/main/LICENSE"
+        },
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "Survey states the license as GPL-3.0; the LICENSE file was read only for its opening lines."
+      ]
+    },
+    {
+      "name": "NoteHound",
+      "kind": "commercial-app",
+      "what": "iOS by-ear practice and manual transcription app: \"Transcribe what you hear onto a piano roll, a 4-to-8-string guitar tab, or a live fretboard.\"; \"Automatic fret-position suggestions based on the previous and next notes\".",
+      "url": "https://apps.apple.com/us/app/id6761667456",
+      "version": "1.4.0 (2026-07-13)",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Mobile app; no automatic note transcription described.",
+      "for_aaron": false,
+      "callable_via": [
+        "mobile-app"
+      ],
+      "inputs": [
+        "audio (stays on the device)"
+      ],
+      "outputs": [
+        "MIDI",
+        "PDF",
+        "MusicXML",
+        "plain-text tab",
+        ".tab",
+        "ZIP bundle of all of them"
+      ],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": "\"No subscription. No account. Your audio and your transcriptions stay on your device.\"; in-app purchase \"NoteHound Pro $9.99\".",
+      "handoffs_out": [],
+      "unverified": [
+        "\"NoteHound detects both from your audio\" (key and time signature).",
+        "No automatic note transcription is described."
+      ]
+    },
+    {
+      "name": "FingerstylePal - Guitar Tab AI",
+      "kind": "commercial-app",
+      "what": "iOS app that takes Guitar Pro files, not audio (\"Upload any GuitarPro file and get instant guidance\"), and records \"your hands + animated sheet music together\".",
+      "url": "https://apps.apple.com/us/app/id6755329557",
+      "version": "1.3.8 (2026-05-18)",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Mobile app; no transcription described.",
+      "for_aaron": false,
+      "callable_via": [
+        "mobile-app"
+      ],
+      "inputs": [
+        "Guitar Pro file"
+      ],
+      "outputs": [],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "No transcription is described."
+      ]
+    },
+    {
+      "name": "alphaTab",
+      "kind": "library",
+      "what": "Open-source tab renderer that Tabtify's page references (\"alphatab.net\"); reads alphaTex and other formats into one data model. The web-tab-render lane owns it.",
+      "url": "https://alphatab.net/",
+      "version": "@coderline/alphatab 1.9.0 (npm registry, read 2026-11-10)",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Not run; context only.",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [
+        "alphaTex",
+        "other formats parsed into the same data model"
+      ],
+      "outputs": [],
+      "constraints_accepted": [],
+      "license": {
+        "code": {
+          "spdx": "MPL-2.0",
+          "quote": "MPL-2.0",
+          "url": "https://registry.npmjs.org/@coderline%2falphatab/latest"
+        },
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "Calling modes are not stated in these reports (owned by the web-tab-render lane).",
+        "License given by the npm registry field only; the repository's LICENSE was not read here."
+      ]
+    },
+    {
+      "name": "alphaTex",
+      "kind": "file-format",
+      "what": "alphaTab's plain-text notation format: \"alphaTex is a plain-text notation format for alphaTab. You write a score as source code and alphaTab parses it into the same data model any other format produces\".",
+      "url": "https://alphatab.net/docs/alphatex/introduction",
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Not run; context only.",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [
+        "plain text score source"
+      ],
+      "outputs": [
+        "alphaTab data model"
+      ],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "Written by Tabtify (.alphatex); imported by Cesure and RiffToTab per their pages."
+      ]
+    },
+    {
+      "name": "ChordSheetJS",
+      "kind": "library",
+      "what": "JavaScript chord-sheet library that parses ChordPro (`new ChordSheetJS.ChordProParser()`).",
+      "url": "https://github.com/martijnversluis/ChordSheetJS",
+      "version": "chordsheetjs 18.0.0 (npm registry, read 2026-11-10)",
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Not run; context only.",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [
+        "ChordPro text"
+      ],
+      "outputs": [],
+      "constraints_accepted": [],
+      "license": {
+        "code": {
+          "spdx": "GPL-2.0-only",
+          "quote": "GNU GENERAL PUBLIC LICENSE Version 2, June 1991",
+          "url": "https://raw.githubusercontent.com/martijnversluis/ChordSheetJS/master/LICENSE"
+        },
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "The npm registry gives its license as GPL-2.0-only; the repository LICENSE is the \"GNU GENERAL PUBLIC LICENSE Version 2, June 1991\".",
+        "Calling modes beyond the quoted JavaScript snippet are not stated."
+      ]
+    },
+    {
+      "name": "TuxGuitar",
+      "kind": "open-source",
+      "what": "Free tab editor named by Klangio (\"can be opened with the Guitar Pro Editor or TuxGuitar\") and shown opening a GP5 export; per its plugin description it opens \"Guitar Pro 6 (GPX) and 7 (GP) files\" (../web-tab-render/survey.md).",
+      "url": null,
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Not run; context only.",
+      "for_aaron": false,
+      "callable_via": [],
+      "inputs": [
+        "GP5",
+        "Guitar Pro 6 (GPX) and 7 (GP) files per its plugin description"
+      ],
+      "outputs": [],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "Guitar Pro 8 files in it: not checked.",
+        "License and platforms are not in these reports."
+      ]
+    },
+    {
+      "name": "Practice Pro - AI Music Tools",
+      "kind": "commercial-app",
+      "what": "iOS app (App Store id 6754810269) known only from a web search result quoted in GAPS.md row P3 (an \"AI Guitar Tab Generator ... synced with playback\"); not found in the App Store on 2026-11-10 or 2026-11-11.",
+      "url": "https://apps.apple.com/us/app/id6754810269",
+      "version": null,
+      "tried": false,
+      "tried_how": null,
+      "runs": [],
+      "not_run_reason": "Existence UNVERIFIED: the App Store URL answered HTTP 404 (2026-11-10 and 2026-11-11) and Apple's lookup API returned resultCount 0 for id 6754810269 in the us, gb, se, de, fr, ca, au, in and jp stores (2026-11-11).",
+      "for_aaron": true,
+      "callable_via": [
+        "mobile-app"
+      ],
+      "inputs": [],
+      "outputs": [],
+      "constraints_accepted": [],
+      "license": {
+        "code": null,
+        "weights": null,
+        "training_data": [],
+        "service_terms": []
+      },
+      "pricing": null,
+      "handoffs_out": [],
+      "unverified": [
+        "Whether the app exists, under id 6754810269 or another id; its input, output, price and terms."
+      ],
+      "corrections": [
+        "added in gap round 2 (gapfill-apps-survey, 2026-11-11) (GAPS.md P3)"
+      ]
+    }
+  ],
+  "updated": "2026-11-11 (gap round 2, gapfill-apps-survey; verified by verify-gapfill-apps-survey; refreshed from survey.md, trials.md and for-aaron.md)"
+}

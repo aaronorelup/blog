@@ -1,0 +1,34 @@
+Client.predict() Usage Info
+---------------------------
+Named API endpoints: 5
+
+ - predict(youtube_url, api_name="/process_audio_yt_temp") -> value_17
+    Parameters:
+     - [Textbox] youtube_url: str (required)  
+    Returns:
+     - [Html] value_17: str 
+
+ - predict(youtube_url, api_name="/play_video") -> value_10
+    Parameters:
+     - [Textbox] youtube_url: str (required)  
+    Returns:
+     - [Html] value_10: str 
+
+ - predict(api_name="/handle_load_event") -> 
+    Parameters:
+     - None
+    Returns:
+     - None
+
+ - predict(audio_filepath, api_name="/process_audio") -> value_27
+    Parameters:
+     - [Audio] audio_filepath: filepath (required)  
+    Returns:
+     - [Html] value_27: str 
+
+ - predict(api_name="/read_to_end") -> value_20
+    Parameters:
+     - None
+    Returns:
+     - [Log] value_20: str 
+

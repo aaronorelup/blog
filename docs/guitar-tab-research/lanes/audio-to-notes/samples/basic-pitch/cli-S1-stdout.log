@@ -1,0 +1,27 @@
+WARNING:root:Coremltools is not installed. If you plan to use a CoreML Saved Model, reinstall basic-pitch with `pip install 'basic-pitch[coreml]'`
+WARNING:root:Tensorflow is not installed. If you plan to use a TF Saved Model, reinstall basic-pitch with `pip install 'basic-pitch[tf]'`
+/home/user/gtr/lanes/audio-to-notes/venv-basicpitch/lib/python3.10/site-packages/resampy/filters.py:50: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+
+✨✨✨✨✨✨✨✨✨
+✨ Basic Pitch  ✨
+✨✨✨✨✨✨✨✨✨
+
+Importing the ML infrence library (this may take a few seconds)...
+
+Predicting MIDI for /home/user/gtr/inputs/S1/S1.wav...
+
+
+  Creating model output npz...
+  💁‍♀️ Saved to /home/user/gtr/lanes/audio-to-notes/out/basic-pitch/cli-tflite-default/S1/S1_basic_pitch.npz
+
+
+  Creating midi...
+  💅 Saved to /home/user/gtr/lanes/audio-to-notes/out/basic-pitch/cli-tflite-default/S1/S1_basic_pitch.mid
+
+
+  Creating note events...
+  🌸 Saved to /home/user/gtr/lanes/audio-to-notes/out/basic-pitch/cli-tflite-default/S1/S1_basic_pitch.csv
+
+✨ Done ✨
+

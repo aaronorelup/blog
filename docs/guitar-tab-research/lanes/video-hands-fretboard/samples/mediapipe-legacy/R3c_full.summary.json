@@ -1,0 +1,55 @@
+{
+ "clip": "R3c",
+ "mode": "full",
+ "frames": 450,
+ "all": {
+  "frames": 450,
+  "frac_0_hands": 0.0,
+  "frac_1_hand": 0.0,
+  "frac_2_hands": 1.0,
+  "frac_more_than_2": 0.0,
+  "frac_at_least_1": 1.0,
+  "label_counts": {
+   "Left": 450,
+   "Right": 450
+  },
+  "infer_ms_mean": 24.86,
+  "infer_ms_median": 23.82,
+  "infer_ms_p90": 29.75,
+  "fps_from_mean": 40.22,
+  "score_mean": 0.9888,
+  "score_min": 0.6817,
+  "score_max": 0.9986
+ },
+ "per_shot": {
+  "r3c_medium": {
+   "frames": 450,
+   "frac_0_hands": 0.0,
+   "frac_1_hand": 0.0,
+   "frac_2_hands": 1.0,
+   "frac_more_than_2": 0.0,
+   "frac_at_least_1": 1.0,
+   "label_counts": {
+    "Left": 450,
+    "Right": 450
+   },
+   "infer_ms_mean": 24.86,
+   "infer_ms_median": 23.82,
+   "infer_ms_p90": 29.75,
+   "fps_from_mean": 40.22,
+   "score_mean": 0.9888,
+   "score_min": 0.6817,
+   "score_max": 0.9986
+  }
+ },
+ "tool": "mediapipe legacy solutions.hands",
+ "mediapipe_version": "0.10.21",
+ "init_s": 0.051,
+ "settings": {
+  "static_image_mode": false,
+  "max_num_hands": 2,
+  "model_complexity": 1,
+  "min_detection_confidence": 0.5,
+  "min_tracking_confidence": 0.5
+ }
+}

@@ -1,0 +1,44 @@
+essentia 2.1-beta6-dev
+PitchYinProbabilistic defaults: {"frameSize": 2048, "hopSize": 256, "lowRMSThreshold": 0.10000000149011612, "outputUnvoiced": "negative", "preciseTime": false, "sampleRate": 44100.0}
+PitchYinProbabilities defaults: {"frameSize": 2048, "lowAmp": 0.10000000149011612, "preciseTime": false, "sampleRate": 44100.0}
+PitchYinProbabilitiesHMM defaults: {"minFrequency": 61.73500061035156, "numberBinsPerSemitone": 5, "selfTransition": 0.9900000095367432, "yinTrust": 0.5}
+
+sine 110.0 Hz
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=negative preciseTime=False: frames 166, >0 166, median 103.826, most frequent values (count, Hz) [(165, 103.82599639892578), (1, 110.0)]
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=negative preciseTime=True: frames 166, >0 166, median 110.0, most frequent values (count, Hz) [(166, 110.0)]
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=zero preciseTime=False: frames 166, >0 166, median 103.826, most frequent values (count, Hz) [(165, 103.82599639892578), (1, 110.0)]
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=zero preciseTime=True: frames 166, >0 166, median 110.0, most frequent values (count, Hz) [(166, 110.0)]
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=abs preciseTime=False: frames 166, >0 166, median 103.826, most frequent values (count, Hz) [(165, 103.82599639892578), (1, 110.0)]
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=abs preciseTime=True: frames 166, >0 166, median 110.0, most frequent values (count, Hz) [(166, 110.0)]
+  PitchYinProbabilities frame 83: candidates (as returned) [56.0, 44.0, 37.0, 32.0, 29.0], probabilities [0.20000000298023224, 0.20000000298023224, 0.20000000298023224, 0.20160000026226044, 0.03999999910593033]
+  PitchYinProbabilitiesHMM on those frames (defaults): frames 166, >0 166, median 103.826
+
+sine 220.0 Hz
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=negative preciseTime=False: frames 166, >0 166, median 138.591, most frequent values (count, Hz) [(165, 138.59100341796875), (1, 146.83200073242188)]
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=negative preciseTime=True: frames 166, >0 166, median 110.0, most frequent values (count, Hz) [(166, 110.0)]
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=zero preciseTime=False: frames 166, >0 166, median 138.591, most frequent values (count, Hz) [(165, 138.59100341796875), (1, 146.83200073242188)]
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=zero preciseTime=True: frames 166, >0 166, median 110.0, most frequent values (count, Hz) [(166, 110.0)]
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=abs preciseTime=False: frames 166, >0 166, median 138.591, most frequent values (count, Hz) [(165, 138.59100341796875), (1, 146.83200073242188)]
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=abs preciseTime=True: frames 166, >0 166, median 110.0, most frequent values (count, Hz) [(166, 110.0)]
+  PitchYinProbabilities frame 83: candidates (as returned) [68.0, 56.0, 49.0, 44.0, 40.0, 37.0, 35.0, 32.0, 30.0, 29.0], probabilities [0.10000000149011612, 0.10000000149011612, 0.10000000149011612, 0.10000000149011612, 0.10000000149011612, 0.10000000149011612, 0.10000000149011612, 0.10180000215768814, 0.009999999776482582, 0.009999999776482582]
+  PitchYinProbabilitiesHMM on those frames (defaults): frames 166, >0 166, median 138.591
+
+sine 369.99 Hz
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=negative preciseTime=False: frames 166, >0 166, median 146.832, most frequent values (count, Hz) [(166, 146.83200073242188)]
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=negative preciseTime=True: frames 166, >0 166, median 73.416, most frequent values (count, Hz) [(166, 73.41600036621094)]
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=zero preciseTime=False: frames 166, >0 166, median 146.832, most frequent values (count, Hz) [(166, 146.83200073242188)]
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=zero preciseTime=True: frames 166, >0 166, median 73.416, most frequent values (count, Hz) [(166, 73.41600036621094)]
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=abs preciseTime=False: frames 166, >0 166, median 146.832, most frequent values (count, Hz) [(166, 146.83200073242188)]
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=abs preciseTime=True: frames 166, >0 166, median 73.416, most frequent values (count, Hz) [(166, 73.41600036621094)]
+  PitchYinProbabilities frame 83: candidates (as returned) [78.0, 66.0, 59.0, 54.0, 50.0, 47.0, 44.0, 42.0, 40.0, 38.0, 36.0, 35.0, 33.0, 32.0, 31.0, 30.0, 29.0], probabilities [0.058800000697374344, 0.058800000697374344, 0.058800000697374344, 0.058800000697374344, 0.058800000697374344, 0.0649000033736229, 0.0035000001080334187, 0.0035000001080334187, 0.0035000001080334187, 0.0035000001080334187, 0.0035000001080334187, 0.0035000001080334187, 0.0035000001080334187, 0.0035000001080334187, 0.0035000001080334187, 0.0035000001080334187, 0.0035000001080334187]
+  PitchYinProbabilitiesHMM on those frames (defaults): frames 166, >0 166, median 146.832
+
+sine 440.0 Hz
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=negative preciseTime=False: frames 166, >0 166, median 293.665, most frequent values (count, Hz) [(166, 293.6650085449219)]
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=negative preciseTime=True: frames 166, >0 166, median 61.735, most frequent values (count, Hz) [(166, 61.73500061035156)]
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=zero preciseTime=False: frames 166, >0 166, median 293.665, most frequent values (count, Hz) [(166, 293.6650085449219)]
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=zero preciseTime=True: frames 166, >0 166, median 61.735, most frequent values (count, Hz) [(166, 61.73500061035156)]
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=abs preciseTime=False: frames 166, >0 166, median 293.665, most frequent values (count, Hz) [(166, 293.6650085449219)]
+  explicit sampleRate=44100 frameSize=2048 hopSize=256 lowRMSThreshold=0.1 outputUnvoiced=abs preciseTime=True: frames 166, >0 166, median 61.735, most frequent values (count, Hz) [(166, 61.73500061035156)]
+  PitchYinProbabilities frame 83: candidates (as returned) [81.0, 69.0, 62.0, 57.0, 53.0, 50.0, 47.0, 45.0, 42.0, 40.0, 39.0, 37.0, 36.0, 34.0, 33.0, 32.0, 31.0, 30.0, 29.0, 29.0], probabilities [0.05000000074505806, 0.05000000074505806, 0.05000000074505806, 0.05000000074505806, 0.05000000074505806, 0.05000000074505806, 0.05000000074505806, 0.05570000037550926, 0.0024999999441206455, 0.0024999999441206455, 0.0024999999441206455, 0.0024999999441206455, 0.0024999999441206455, 0.0024999999441206455, 0.0024999999441206455, 0.0024999999441206455, 0.0024999999441206455, 0.0024999999441206455, 0.0024999999441206455, 0.0024999999441206455]
+  PitchYinProbabilitiesHMM on those frames (defaults): frames 166, >0 166, median 293.665

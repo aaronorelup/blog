@@ -1,0 +1,57 @@
+[
+{
+"start_time": 0.0,
+"end_time": 2.51,
+"chord": "N"
+},
+{
+"start_time": 2.51,
+"end_time": 5.04,
+"chord": "G:maj"
+},
+{
+"start_time": 5.04,
+"end_time": 7.52,
+"chord": "E:min"
+},
+{
+"start_time": 7.52,
+"end_time": 10.01,
+"chord": "A:min"
+},
+{
+"start_time": 10.01,
+"end_time": 12.52,
+"chord": "D:7"
+},
+{
+"start_time": 12.52,
+"end_time": 15.02,
+"chord": "G:maj"
+},
+{
+"start_time": 15.02,
+"end_time": 17.53,
+"chord": "E:min"
+},
+{
+"start_time": 17.53,
+"end_time": 19.32,
+"chord": "C:maj"
+},
+{
+"start_time": 19.32,
+"end_time": 20.06,
+"chord": "D:maj"
+},
+{
+"start_time": 20.06,
+"end_time": 21.85,
+"chord": "G:maj"
+},
+{
+"start_time": 21.85,
+"end_time": 24.01,
+"chord": "N"
+}
+]

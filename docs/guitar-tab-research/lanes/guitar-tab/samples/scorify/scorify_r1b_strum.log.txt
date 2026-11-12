@@ -1,0 +1,2 @@
+scorify R1b.truthmidi.strum: status search-exhausted, arrange 1249.7 ms, notes in 70, notes placed 0, diagnostics: No valid path within the declared candidate and mechanics model  (node process 1.32 s)
+[gtr-run r0633] guitar-tab/scorify-0.4.0 "gap round 2: scorify 0.4.0 R1b with rightHand strum (exact mode, maestro otherwise)" wall=1.4s cpu=2.0s rss=136.1MB cores=2 exit=0 slot_wait=0.0s

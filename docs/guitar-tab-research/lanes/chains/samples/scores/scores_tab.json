@@ -1,0 +1,735 @@
+[
+ {
+  "label": "A tuttut S4sep6s-guitar",
+  "cmd": "gtr-eval tab --truth S4 --est out/tab/tuttut/S4sep6s-guitar.bp.gtreval.json --voice chord",
+  "eval_id": "e1450",
+  "exit": 0,
+  "counts": {
+   "n_truth": 369,
+   "n_est": 342,
+   "n_matched": 233,
+   "n_truth_left_out": {
+    "drums": 194,
+    "bass": 61,
+    "melody": 37
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.918455,
+   "same_string_fraction_of_matched": 0.918455,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.918455,
+   "same_string_and_fret_fraction_of_truth": 0.579946,
+   "string_difference_counts": {
+    "-1": 7,
+    "0": 214,
+    "+1": 7,
+    "+2": 5
+   }
+  }
+ },
+ {
+  "label": "A lilypond S4sep6s-guitar",
+  "cmd": "gtr-eval tab --truth S4 --est out/tab/lilypond/S4sep6s-guitar.bp.gtreval.json --voice chord",
+  "eval_id": "e1451",
+  "exit": 0,
+  "counts": {
+   "n_truth": 369,
+   "n_est": 329,
+   "n_matched": 229,
+   "n_truth_left_out": {
+    "drums": 194,
+    "bass": 61,
+    "melody": 37
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.868996,
+   "same_string_fraction_of_matched": 0.868996,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.868996,
+   "same_string_and_fret_fraction_of_truth": 0.539295,
+   "string_difference_counts": {
+    "-1": 4,
+    "0": 199,
+    "+1": 18,
+    "+2": 8
+   }
+  }
+ },
+ {
+  "label": "A tuttut S4becruily-Guitar",
+  "cmd": "gtr-eval tab --truth S4 --est out/tab/tuttut/S4becruily-Guitar.bp.gtreval.json --voice chord",
+  "eval_id": "e1452",
+  "exit": 0,
+  "counts": {
+   "n_truth": 369,
+   "n_est": 390,
+   "n_matched": 220,
+   "n_truth_left_out": {
+    "drums": 194,
+    "bass": 61,
+    "melody": 37
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.65,
+   "same_string_fraction_of_matched": 0.65,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.65,
+   "same_string_and_fret_fraction_of_truth": 0.387534,
+   "string_difference_counts": {
+    "-1": 10,
+    "0": 143,
+    "+1": 46,
+    "+2": 16,
+    "+3": 5
+   }
+  }
+ },
+ {
+  "label": "A lilypond S4becruily-Guitar",
+  "cmd": "gtr-eval tab --truth S4 --est out/tab/lilypond/S4becruily-Guitar.bp.gtreval.json --voice chord",
+  "eval_id": "e1453",
+  "exit": 0,
+  "counts": {
+   "n_truth": 369,
+   "n_est": 392,
+   "n_matched": 217,
+   "n_truth_left_out": {
+    "drums": 194,
+    "bass": 61,
+    "melody": 37
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.488479,
+   "same_string_fraction_of_matched": 0.488479,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.488479,
+   "same_string_and_fret_fraction_of_truth": 0.287263,
+   "string_difference_counts": {
+    "-1": 2,
+    "0": 106,
+    "+1": 75,
+    "+2": 24,
+    "+3": 10
+   }
+  }
+ },
+ {
+  "label": "B S6taps B1_threshold_T55 pooled all",
+  "cmd": "gtr-eval tab --truth S6taps --est out/tab/chainB/S6taps.B1_threshold_T55.pooled.all.gtreval.json",
+  "eval_id": "e1454",
+  "exit": 0,
+  "counts": {
+   "n_truth": 90,
+   "n_est": 171,
+   "n_matched": 81,
+   "n_truth_left_out": {},
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.814815,
+   "same_string_fraction_of_matched": 0.814815,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.814815,
+   "same_string_and_fret_fraction_of_truth": 0.733333,
+   "string_difference_counts": {
+    "0": 66,
+    "+1": 11,
+    "+2": 3,
+    "+3": 1
+   }
+  }
+ },
+ {
+  "label": "B S6taps B1_threshold_T55 pooled bass",
+  "cmd": "gtr-eval tab --truth S6taps --est out/tab/chainB/S6taps.B1_threshold_T55.pooled.bass.gtreval.json --voice bass",
+  "eval_id": "e1455",
+  "exit": 0,
+  "counts": {
+   "n_truth": 48,
+   "n_est": 48,
+   "n_matched": 40,
+   "n_truth_left_out": {
+    "melody": 42
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.875,
+   "same_string_fraction_of_matched": 0.875,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.875,
+   "same_string_and_fret_fraction_of_truth": 0.729167,
+   "string_difference_counts": {
+    "0": 35,
+    "+1": 4,
+    "+2": 1
+   }
+  }
+ },
+ {
+  "label": "B S6taps B1_threshold_T55 pooled melody",
+  "cmd": "gtr-eval tab --truth S6taps --est out/tab/chainB/S6taps.B1_threshold_T55.pooled.melody.gtreval.json --voice melody",
+  "eval_id": "e1456",
+  "exit": 0,
+  "counts": {
+   "n_truth": 42,
+   "n_est": 123,
+   "n_matched": 41,
+   "n_truth_left_out": {
+    "bass": 48
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.756098,
+   "same_string_fraction_of_matched": 0.756098,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.756098,
+   "same_string_and_fret_fraction_of_truth": 0.738095,
+   "string_difference_counts": {
+    "0": 31,
+    "+1": 7,
+    "+2": 2,
+    "+3": 1
+   }
+  }
+ },
+ {
+  "label": "B S6taps B1_threshold_T55 sep all",
+  "cmd": "gtr-eval tab --truth S6taps --est out/tab/chainB/S6taps.B1_threshold_T55.sep.all.gtreval.json",
+  "eval_id": "e1457",
+  "exit": 0,
+  "counts": {
+   "n_truth": 90,
+   "n_est": 175,
+   "n_matched": 83,
+   "n_truth_left_out": {},
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.843373,
+   "same_string_fraction_of_matched": 0.843373,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.843373,
+   "same_string_and_fret_fraction_of_truth": 0.777778,
+   "string_difference_counts": {
+    "0": 70,
+    "+1": 8,
+    "+2": 3,
+    "+4": 2
+   }
+  }
+ },
+ {
+  "label": "B S6taps B1_threshold_T55 sep bass",
+  "cmd": "gtr-eval tab --truth S6taps --est out/tab/chainB/S6taps.B1_threshold_T55.sep.bass.gtreval.json --voice bass",
+  "eval_id": "e1458",
+  "exit": 0,
+  "counts": {
+   "n_truth": 48,
+   "n_est": 49,
+   "n_matched": 41,
+   "n_truth_left_out": {
+    "melody": 42
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 1.0,
+   "same_string_fraction_of_matched": 1.0,
+   "same_string_and_absolute_fret_fraction_of_matched": 1.0,
+   "same_string_and_fret_fraction_of_truth": 0.854167,
+   "string_difference_counts": {
+    "0": 41
+   }
+  }
+ },
+ {
+  "label": "B S6taps B1_threshold_T55 sep melody",
+  "cmd": "gtr-eval tab --truth S6taps --est out/tab/chainB/S6taps.B1_threshold_T55.sep.melody.gtreval.json --voice melody",
+  "eval_id": "e1459",
+  "exit": 0,
+  "counts": {
+   "n_truth": 42,
+   "n_est": 126,
+   "n_matched": 42,
+   "n_truth_left_out": {
+    "bass": 48
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.690476,
+   "same_string_fraction_of_matched": 0.690476,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.690476,
+   "same_string_and_fret_fraction_of_truth": 0.690476,
+   "string_difference_counts": {
+    "0": 29,
+    "+1": 8,
+    "+2": 3,
+    "+4": 2
+   }
+  }
+ },
+ {
+  "label": "B S6taps M1_music21 pooled all",
+  "cmd": "gtr-eval tab --truth S6taps --est out/tab/chainB/S6taps.M1_music21.pooled.all.gtreval.json",
+  "eval_id": "e1460",
+  "exit": 0,
+  "counts": {
+   "n_truth": 90,
+   "n_est": 171,
+   "n_matched": 81,
+   "n_truth_left_out": {},
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.814815,
+   "same_string_fraction_of_matched": 0.814815,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.814815,
+   "same_string_and_fret_fraction_of_truth": 0.733333,
+   "string_difference_counts": {
+    "0": 66,
+    "+1": 11,
+    "+2": 3,
+    "+3": 1
+   }
+  }
+ },
+ {
+  "label": "B S6taps M1_music21 pooled bass",
+  "cmd": "gtr-eval tab --truth S6taps --est out/tab/chainB/S6taps.M1_music21.pooled.bass.gtreval.json --voice bass",
+  "eval_id": "e1461",
+  "exit": 0,
+  "counts": {
+   "n_truth": 48,
+   "n_est": 95,
+   "n_matched": 39,
+   "n_truth_left_out": {
+    "melody": 42
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.871795,
+   "same_string_fraction_of_matched": 0.871795,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.871795,
+   "same_string_and_fret_fraction_of_truth": 0.708333,
+   "string_difference_counts": {
+    "0": 34,
+    "+1": 4,
+    "+2": 1
+   }
+  }
+ },
+ {
+  "label": "B S6taps M1_music21 pooled melody",
+  "cmd": "gtr-eval tab --truth S6taps --est out/tab/chainB/S6taps.M1_music21.pooled.melody.gtreval.json --voice melody",
+  "eval_id": "e1462",
+  "exit": 0,
+  "counts": {
+   "n_truth": 42,
+   "n_est": 76,
+   "n_matched": 24,
+   "n_truth_left_out": {
+    "bass": 48
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.708333,
+   "same_string_fraction_of_matched": 0.708333,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.708333,
+   "same_string_and_fret_fraction_of_truth": 0.404762,
+   "string_difference_counts": {
+    "0": 17,
+    "+1": 5,
+    "+2": 2
+   }
+  }
+ },
+ {
+  "label": "B S6taps M1_music21 sep all",
+  "cmd": "gtr-eval tab --truth S6taps --est out/tab/chainB/S6taps.M1_music21.sep.all.gtreval.json",
+  "eval_id": "e1463",
+  "exit": 0,
+  "counts": {
+   "n_truth": 90,
+   "n_est": 175,
+   "n_matched": 83,
+   "n_truth_left_out": {},
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.879518,
+   "same_string_fraction_of_matched": 0.879518,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.879518,
+   "same_string_and_fret_fraction_of_truth": 0.811111,
+   "string_difference_counts": {
+    "0": 73,
+    "+1": 8,
+    "+2": 2
+   }
+  }
+ },
+ {
+  "label": "B S6taps M1_music21 sep bass",
+  "cmd": "gtr-eval tab --truth S6taps --est out/tab/chainB/S6taps.M1_music21.sep.bass.gtreval.json --voice bass",
+  "eval_id": "e1464",
+  "exit": 0,
+  "counts": {
+   "n_truth": 48,
+   "n_est": 98,
+   "n_matched": 40,
+   "n_truth_left_out": {
+    "melody": 42
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.95,
+   "same_string_fraction_of_matched": 0.95,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.95,
+   "same_string_and_fret_fraction_of_truth": 0.791667,
+   "string_difference_counts": {
+    "0": 38,
+    "+1": 1,
+    "+2": 1
+   }
+  }
+ },
+ {
+  "label": "B S6taps M1_music21 sep melody",
+  "cmd": "gtr-eval tab --truth S6taps --est out/tab/chainB/S6taps.M1_music21.sep.melody.gtreval.json --voice melody",
+  "eval_id": "e1465",
+  "exit": 0,
+  "counts": {
+   "n_truth": 42,
+   "n_est": 77,
+   "n_matched": 24,
+   "n_truth_left_out": {
+    "bass": 48
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.708333,
+   "same_string_fraction_of_matched": 0.708333,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.708333,
+   "same_string_and_fret_fraction_of_truth": 0.404762,
+   "string_difference_counts": {
+    "0": 17,
+    "+1": 6,
+    "+2": 1
+   }
+  }
+ },
+ {
+  "label": "B S2s B1_threshold_T55 pooled all",
+  "cmd": "gtr-eval tab --truth S2s --est out/tab/chainB/S2s.B1_threshold_T55.pooled.all.gtreval.json",
+  "eval_id": "e1466",
+  "exit": 0,
+  "counts": {
+   "n_truth": 90,
+   "n_est": 170,
+   "n_matched": 84,
+   "n_truth_left_out": {},
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.761905,
+   "same_string_fraction_of_matched": 0.761905,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.761905,
+   "same_string_and_fret_fraction_of_truth": 0.711111,
+   "string_difference_counts": {
+    "0": 64,
+    "+1": 14,
+    "+2": 5,
+    "+3": 1
+   }
+  }
+ },
+ {
+  "label": "B S2s B1_threshold_T55 pooled bass",
+  "cmd": "gtr-eval tab --truth S2s --est out/tab/chainB/S2s.B1_threshold_T55.pooled.bass.gtreval.json --voice bass",
+  "eval_id": "e1467",
+  "exit": 0,
+  "counts": {
+   "n_truth": 48,
+   "n_est": 48,
+   "n_matched": 43,
+   "n_truth_left_out": {
+    "melody": 42
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.813953,
+   "same_string_fraction_of_matched": 0.813953,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.813953,
+   "same_string_and_fret_fraction_of_truth": 0.729167,
+   "string_difference_counts": {
+    "0": 35,
+    "+1": 5,
+    "+2": 3
+   }
+  }
+ },
+ {
+  "label": "B S2s B1_threshold_T55 pooled melody",
+  "cmd": "gtr-eval tab --truth S2s --est out/tab/chainB/S2s.B1_threshold_T55.pooled.melody.gtreval.json --voice melody",
+  "eval_id": "e1468",
+  "exit": 0,
+  "counts": {
+   "n_truth": 42,
+   "n_est": 122,
+   "n_matched": 41,
+   "n_truth_left_out": {
+    "bass": 48
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.707317,
+   "same_string_fraction_of_matched": 0.707317,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.707317,
+   "same_string_and_fret_fraction_of_truth": 0.690476,
+   "string_difference_counts": {
+    "0": 29,
+    "+1": 9,
+    "+2": 2,
+    "+3": 1
+   }
+  }
+ },
+ {
+  "label": "B S2s B1_threshold_T55 sep all",
+  "cmd": "gtr-eval tab --truth S2s --est out/tab/chainB/S2s.B1_threshold_T55.sep.all.gtreval.json",
+  "eval_id": "e1469",
+  "exit": 0,
+  "counts": {
+   "n_truth": 90,
+   "n_est": 174,
+   "n_matched": 86,
+   "n_truth_left_out": {},
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.825581,
+   "same_string_fraction_of_matched": 0.825581,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.825581,
+   "same_string_and_fret_fraction_of_truth": 0.788889,
+   "string_difference_counts": {
+    "0": 71,
+    "+1": 10,
+    "+2": 3,
+    "+4": 2
+   }
+  }
+ },
+ {
+  "label": "B S2s B1_threshold_T55 sep bass",
+  "cmd": "gtr-eval tab --truth S2s --est out/tab/chainB/S2s.B1_threshold_T55.sep.bass.gtreval.json --voice bass",
+  "eval_id": "e1470",
+  "exit": 0,
+  "counts": {
+   "n_truth": 48,
+   "n_est": 49,
+   "n_matched": 44,
+   "n_truth_left_out": {
+    "melody": 42
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 1.0,
+   "same_string_fraction_of_matched": 1.0,
+   "same_string_and_absolute_fret_fraction_of_matched": 1.0,
+   "same_string_and_fret_fraction_of_truth": 0.916667,
+   "string_difference_counts": {
+    "0": 44
+   }
+  }
+ },
+ {
+  "label": "B S2s B1_threshold_T55 sep melody",
+  "cmd": "gtr-eval tab --truth S2s --est out/tab/chainB/S2s.B1_threshold_T55.sep.melody.gtreval.json --voice melody",
+  "eval_id": "e1471",
+  "exit": 0,
+  "counts": {
+   "n_truth": 42,
+   "n_est": 125,
+   "n_matched": 42,
+   "n_truth_left_out": {
+    "bass": 48
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.642857,
+   "same_string_fraction_of_matched": 0.642857,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.642857,
+   "same_string_and_fret_fraction_of_truth": 0.642857,
+   "string_difference_counts": {
+    "0": 27,
+    "+1": 10,
+    "+2": 3,
+    "+4": 2
+   }
+  }
+ },
+ {
+  "label": "B S2s M1_music21 pooled all",
+  "cmd": "gtr-eval tab --truth S2s --est out/tab/chainB/S2s.M1_music21.pooled.all.gtreval.json",
+  "eval_id": "e1472",
+  "exit": 0,
+  "counts": {
+   "n_truth": 90,
+   "n_est": 170,
+   "n_matched": 84,
+   "n_truth_left_out": {},
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.761905,
+   "same_string_fraction_of_matched": 0.761905,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.761905,
+   "same_string_and_fret_fraction_of_truth": 0.711111,
+   "string_difference_counts": {
+    "0": 64,
+    "+1": 14,
+    "+2": 5,
+    "+3": 1
+   }
+  }
+ },
+ {
+  "label": "B S2s M1_music21 pooled bass",
+  "cmd": "gtr-eval tab --truth S2s --est out/tab/chainB/S2s.M1_music21.pooled.bass.gtreval.json --voice bass",
+  "eval_id": "e1473",
+  "exit": 0,
+  "counts": {
+   "n_truth": 48,
+   "n_est": 147,
+   "n_matched": 42,
+   "n_truth_left_out": {
+    "melody": 42
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.809524,
+   "same_string_fraction_of_matched": 0.809524,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.809524,
+   "same_string_and_fret_fraction_of_truth": 0.708333,
+   "string_difference_counts": {
+    "0": 34,
+    "+1": 5,
+    "+2": 3
+   }
+  }
+ },
+ {
+  "label": "B S2s M1_music21 pooled melody",
+  "cmd": "gtr-eval tab --truth S2s --est out/tab/chainB/S2s.M1_music21.pooled.melody.gtreval.json --voice melody",
+  "eval_id": "e1474",
+  "exit": 0,
+  "counts": {
+   "n_truth": 42,
+   "n_est": 23,
+   "n_matched": 8,
+   "n_truth_left_out": {
+    "bass": 48
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.75,
+   "same_string_fraction_of_matched": 0.75,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.75,
+   "same_string_and_fret_fraction_of_truth": 0.142857,
+   "string_difference_counts": {
+    "0": 6,
+    "+1": 1,
+    "+2": 1
+   }
+  }
+ },
+ {
+  "label": "B S2s M1_music21 sep all",
+  "cmd": "gtr-eval tab --truth S2s --est out/tab/chainB/S2s.M1_music21.sep.all.gtreval.json",
+  "eval_id": "e1475",
+  "exit": 0,
+  "counts": {
+   "n_truth": 90,
+   "n_est": 170,
+   "n_matched": 84,
+   "n_truth_left_out": {},
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.785714,
+   "same_string_fraction_of_matched": 0.785714,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.785714,
+   "same_string_and_fret_fraction_of_truth": 0.733333,
+   "string_difference_counts": {
+    "0": 66,
+    "+1": 12,
+    "+2": 5,
+    "+3": 1
+   }
+  }
+ },
+ {
+  "label": "B S2s M1_music21 sep bass",
+  "cmd": "gtr-eval tab --truth S2s --est out/tab/chainB/S2s.M1_music21.sep.bass.gtreval.json --voice bass",
+  "eval_id": "e1476",
+  "exit": 0,
+  "counts": {
+   "n_truth": 48,
+   "n_est": 147,
+   "n_matched": 42,
+   "n_truth_left_out": {
+    "melody": 42
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.857143,
+   "same_string_fraction_of_matched": 0.857143,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.857143,
+   "same_string_and_fret_fraction_of_truth": 0.75,
+   "string_difference_counts": {
+    "0": 36,
+    "+1": 3,
+    "+2": 3
+   }
+  }
+ },
+ {
+  "label": "B S2s M1_music21 sep melody",
+  "cmd": "gtr-eval tab --truth S2s --est out/tab/chainB/S2s.M1_music21.sep.melody.gtreval.json --voice melody",
+  "eval_id": "e1477",
+  "exit": 0,
+  "counts": {
+   "n_truth": 42,
+   "n_est": 23,
+   "n_matched": 8,
+   "n_truth_left_out": {
+    "bass": 48
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.625,
+   "same_string_fraction_of_matched": 0.625,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.625,
+   "same_string_and_fret_fraction_of_truth": 0.119048,
+   "string_difference_counts": {
+    "0": 5,
+    "+1": 2,
+    "+2": 1
+   }
+  }
+ }
+]

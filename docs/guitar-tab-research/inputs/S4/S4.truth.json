@@ -1,0 +1,6168 @@
+{
+ "id": "S4",
+ "title": "Band: drums, bass, strummed guitar, lead line (singer stand-in)",
+ "what": "Synthesized band, D major, 116 BPM: one silent bar, one side-stick count-in bar, then 16 bars of drums (channel 10), electric bass (GM program 33), strummed steel guitar (program 25), lead line on Voice Oohs (program 53) standing in for a singer. Mix plus each stem alone under stems/.",
+ "audio": "S4.wav",
+ "duration_s": 38.741383,
+ "sample_rate": 44100,
+ "channels": 2,
+ "tempo_bpm": 116.0,
+ "time_signature": "4/4",
+ "key": "D major",
+ "tuning_midi": [
+  40,
+  45,
+  50,
+  55,
+  59,
+  64
+ ],
+ "capo": 0,
+ "tuning_offset_cents": 0,
+ "notes": [
+  {
+   "onset": 2.068966,
+   "offset": 2.198276,
+   "pitch": 37,
+   "velocity": 80,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 2.586207,
+   "offset": 2.715517,
+   "pitch": 37,
+   "velocity": 80,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 3.103448,
+   "offset": 3.232759,
+   "pitch": 37,
+   "velocity": 80,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 3.62069,
+   "offset": 3.75,
+   "pitch": 37,
+   "velocity": 80,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 4.137931,
+   "offset": 4.267241,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 4.137931,
+   "offset": 4.903556,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 4.137931,
+   "offset": 4.267241,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 4.137931,
+   "offset": 4.644935,
+   "pitch": 50,
+   "velocity": 82,
+   "voice": "chord",
+   "string": 4,
+   "fret": 0
+  },
+  {
+   "onset": 4.146013,
+   "offset": 4.653017,
+   "pitch": 57,
+   "velocity": 81,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 4.154634,
+   "offset": 4.661638,
+   "pitch": 62,
+   "velocity": 80,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 4.162716,
+   "offset": 4.66972,
+   "pitch": 66,
+   "velocity": 79,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 4.396552,
+   "offset": 4.525862,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 4.655172,
+   "offset": 4.784483,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 4.655172,
+   "offset": 4.784483,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 4.655172,
+   "offset": 5.679418,
+   "pitch": 50,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 4,
+   "fret": 0
+  },
+  {
+   "onset": 4.655172,
+   "offset": 5.112608,
+   "pitch": 66,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 4.663254,
+   "offset": 4.923491,
+   "pitch": 57,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 4.671875,
+   "offset": 4.913793,
+   "pitch": 62,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 4.679957,
+   "offset": 4.903556,
+   "pitch": 66,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 4.913793,
+   "offset": 5.162177,
+   "pitch": 38,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 4.913793,
+   "offset": 5.043103,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 4.913793,
+   "offset": 5.420797,
+   "pitch": 66,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 4.92403,
+   "offset": 5.431034,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 4.933728,
+   "offset": 5.440733,
+   "pitch": 57,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 5.172414,
+   "offset": 5.301724,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 5.172414,
+   "offset": 5.301724,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 5.172414,
+   "offset": 5.679418,
+   "pitch": 45,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 5.172414,
+   "offset": 5.629849,
+   "pitch": 69,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 5.431034,
+   "offset": 5.560345,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 5.431034,
+   "offset": 5.704203,
+   "pitch": 66,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 5.441272,
+   "offset": 5.696121,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 5.45097,
+   "offset": 5.6875,
+   "pitch": 57,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 5.689655,
+   "offset": 5.818966,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 5.689655,
+   "offset": 5.818966,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 5.689655,
+   "offset": 6.196659,
+   "pitch": 50,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 4,
+   "fret": 0
+  },
+  {
+   "onset": 5.689655,
+   "offset": 6.196659,
+   "pitch": 50,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 5.689655,
+   "offset": 6.147091,
+   "pitch": 71,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 5.697737,
+   "offset": 5.957974,
+   "pitch": 57,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 5.706358,
+   "offset": 5.948276,
+   "pitch": 62,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 5.71444,
+   "offset": 5.938039,
+   "pitch": 66,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 5.948276,
+   "offset": 6.077586,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 5.948276,
+   "offset": 6.196659,
+   "pitch": 66,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 5.958513,
+   "offset": 6.196659,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 5.968211,
+   "offset": 6.196659,
+   "pitch": 57,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 6.206897,
+   "offset": 6.972522,
+   "pitch": 33,
+   "velocity": 96,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 6.206897,
+   "offset": 6.336207,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 6.206897,
+   "offset": 6.336207,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 6.206897,
+   "offset": 6.713901,
+   "pitch": 45,
+   "velocity": 82,
+   "voice": "chord",
+   "string": 5,
+   "fret": 0
+  },
+  {
+   "onset": 6.206897,
+   "offset": 7.181573,
+   "pitch": 69,
+   "velocity": 100,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 6.213362,
+   "offset": 6.720366,
+   "pitch": 52,
+   "velocity": 81,
+   "voice": "chord",
+   "string": 4,
+   "fret": 2
+  },
+  {
+   "onset": 6.219289,
+   "offset": 6.726293,
+   "pitch": 57,
+   "velocity": 80,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 6.225754,
+   "offset": 6.732759,
+   "pitch": 61,
+   "velocity": 79,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 6.231681,
+   "offset": 6.738685,
+   "pitch": 64,
+   "velocity": 78,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 6.465517,
+   "offset": 6.594828,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 6.724138,
+   "offset": 6.853448,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 6.724138,
+   "offset": 6.853448,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 6.724138,
+   "offset": 7.748384,
+   "pitch": 45,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 5,
+   "fret": 0
+  },
+  {
+   "onset": 6.730603,
+   "offset": 7.754849,
+   "pitch": 52,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 4,
+   "fret": 2
+  },
+  {
+   "onset": 6.73653,
+   "offset": 6.992457,
+   "pitch": 57,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 6.742996,
+   "offset": 6.982759,
+   "pitch": 61,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 6.748922,
+   "offset": 6.972522,
+   "pitch": 64,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 6.982759,
+   "offset": 7.231142,
+   "pitch": 33,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 6.982759,
+   "offset": 7.112069,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 6.982759,
+   "offset": 7.489763,
+   "pitch": 64,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 6.992996,
+   "offset": 7.5,
+   "pitch": 61,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 7.002694,
+   "offset": 7.509698,
+   "pitch": 57,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 7.241379,
+   "offset": 7.37069,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 7.241379,
+   "offset": 7.748384,
+   "pitch": 40,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 7.241379,
+   "offset": 7.37069,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 7.241379,
+   "offset": 8.216056,
+   "pitch": 64,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 7.5,
+   "offset": 7.62931,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 7.5,
+   "offset": 7.773168,
+   "pitch": 64,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 7.510237,
+   "offset": 7.767241,
+   "pitch": 61,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 7.519935,
+   "offset": 7.760776,
+   "pitch": 57,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 7.758621,
+   "offset": 7.887931,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 7.758621,
+   "offset": 7.887931,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 7.758621,
+   "offset": 8.265625,
+   "pitch": 45,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 5,
+   "fret": 0
+  },
+  {
+   "onset": 7.758621,
+   "offset": 8.265625,
+   "pitch": 45,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 7.765086,
+   "offset": 8.265625,
+   "pitch": 52,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 4,
+   "fret": 2
+  },
+  {
+   "onset": 7.771013,
+   "offset": 8.02694,
+   "pitch": 57,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 7.777478,
+   "offset": 8.017241,
+   "pitch": 61,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 7.783405,
+   "offset": 8.007004,
+   "pitch": 64,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 8.017241,
+   "offset": 8.146552,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 8.017241,
+   "offset": 8.265625,
+   "pitch": 64,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 8.027478,
+   "offset": 8.265625,
+   "pitch": 61,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 8.037177,
+   "offset": 8.265625,
+   "pitch": 57,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 8.275862,
+   "offset": 9.041487,
+   "pitch": 35,
+   "velocity": 96,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 8.275862,
+   "offset": 8.405172,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 8.275862,
+   "offset": 8.405172,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 8.275862,
+   "offset": 8.782866,
+   "pitch": 47,
+   "velocity": 82,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 8.282328,
+   "offset": 8.789332,
+   "pitch": 54,
+   "velocity": 81,
+   "voice": "chord",
+   "string": 4,
+   "fret": 4
+  },
+  {
+   "onset": 8.288254,
+   "offset": 8.795259,
+   "pitch": 59,
+   "velocity": 80,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 8.29472,
+   "offset": 8.801724,
+   "pitch": 62,
+   "velocity": 79,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 8.300647,
+   "offset": 8.807651,
+   "pitch": 66,
+   "velocity": 78,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 8.534483,
+   "offset": 8.663793,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 8.793103,
+   "offset": 8.922414,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 8.793103,
+   "offset": 8.922414,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 8.793103,
+   "offset": 9.817349,
+   "pitch": 47,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 8.793103,
+   "offset": 9.250539,
+   "pitch": 66,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 8.799569,
+   "offset": 9.823815,
+   "pitch": 54,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 4,
+   "fret": 4
+  },
+  {
+   "onset": 8.805496,
+   "offset": 9.061422,
+   "pitch": 59,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 8.811961,
+   "offset": 9.051724,
+   "pitch": 62,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 8.817888,
+   "offset": 9.041487,
+   "pitch": 66,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 9.051724,
+   "offset": 9.300108,
+   "pitch": 35,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 9.051724,
+   "offset": 9.181034,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 9.051724,
+   "offset": 9.558728,
+   "pitch": 66,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 9.061961,
+   "offset": 9.568966,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 9.071659,
+   "offset": 9.578664,
+   "pitch": 59,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 9.310345,
+   "offset": 9.439655,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 9.310345,
+   "offset": 9.817349,
+   "pitch": 42,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 9.310345,
+   "offset": 9.439655,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 9.310345,
+   "offset": 9.76778,
+   "pitch": 62,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 9.568966,
+   "offset": 9.698276,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 9.568966,
+   "offset": 9.842134,
+   "pitch": 66,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 9.579203,
+   "offset": 9.836207,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 9.588901,
+   "offset": 9.829741,
+   "pitch": 59,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 9.827586,
+   "offset": 9.956897,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 9.827586,
+   "offset": 9.956897,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 9.827586,
+   "offset": 10.334591,
+   "pitch": 47,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 9.827586,
+   "offset": 10.334591,
+   "pitch": 47,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 9.827586,
+   "offset": 10.285022,
+   "pitch": 66,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 9.834052,
+   "offset": 10.334591,
+   "pitch": 54,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 4,
+   "fret": 4
+  },
+  {
+   "onset": 9.839978,
+   "offset": 10.095905,
+   "pitch": 59,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 9.846444,
+   "offset": 10.086207,
+   "pitch": 62,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 9.852371,
+   "offset": 10.07597,
+   "pitch": 66,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 10.086207,
+   "offset": 10.215517,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 10.086207,
+   "offset": 10.334591,
+   "pitch": 66,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 10.096444,
+   "offset": 10.334591,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 10.106142,
+   "offset": 10.334591,
+   "pitch": 59,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 10.344828,
+   "offset": 11.110453,
+   "pitch": 31,
+   "velocity": 96,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 10.344828,
+   "offset": 10.474138,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 10.344828,
+   "offset": 10.474138,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 10.344828,
+   "offset": 10.851832,
+   "pitch": 43,
+   "velocity": 82,
+   "voice": "chord",
+   "string": 6,
+   "fret": 3
+  },
+  {
+   "onset": 10.344828,
+   "offset": 11.836746,
+   "pitch": 67,
+   "velocity": 100,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 10.349677,
+   "offset": 10.856681,
+   "pitch": 47,
+   "velocity": 81,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 10.355065,
+   "offset": 10.862069,
+   "pitch": 50,
+   "velocity": 80,
+   "voice": "chord",
+   "string": 4,
+   "fret": 0
+  },
+  {
+   "onset": 10.359914,
+   "offset": 10.866918,
+   "pitch": 55,
+   "velocity": 79,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 10.364763,
+   "offset": 10.871767,
+   "pitch": 62,
+   "velocity": 78,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 10.369612,
+   "offset": 10.876616,
+   "pitch": 67,
+   "velocity": 77,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 10.603448,
+   "offset": 10.732759,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 10.862069,
+   "offset": 10.991379,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 10.862069,
+   "offset": 10.991379,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 10.862069,
+   "offset": 11.886315,
+   "pitch": 43,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 6,
+   "fret": 3
+  },
+  {
+   "onset": 10.866918,
+   "offset": 11.891164,
+   "pitch": 47,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 10.872306,
+   "offset": 11.896552,
+   "pitch": 50,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 4,
+   "fret": 0
+  },
+  {
+   "onset": 10.877155,
+   "offset": 11.130388,
+   "pitch": 55,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 10.882004,
+   "offset": 11.12069,
+   "pitch": 62,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 10.886853,
+   "offset": 11.110453,
+   "pitch": 67,
+   "velocity": 67,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 11.12069,
+   "offset": 11.369073,
+   "pitch": 31,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 11.12069,
+   "offset": 11.25,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 11.12069,
+   "offset": 11.627694,
+   "pitch": 67,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 11.130927,
+   "offset": 11.637931,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 11.140625,
+   "offset": 11.647629,
+   "pitch": 55,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 11.37931,
+   "offset": 11.508621,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 11.37931,
+   "offset": 11.886315,
+   "pitch": 38,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 11.37931,
+   "offset": 11.508621,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 11.637931,
+   "offset": 11.767241,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 11.637931,
+   "offset": 11.911099,
+   "pitch": 67,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 11.648168,
+   "offset": 11.90625,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 11.657866,
+   "offset": 11.901401,
+   "pitch": 55,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 11.896552,
+   "offset": 12.025862,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 11.896552,
+   "offset": 12.025862,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 11.896552,
+   "offset": 12.403556,
+   "pitch": 43,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 6,
+   "fret": 3
+  },
+  {
+   "onset": 11.896552,
+   "offset": 12.403556,
+   "pitch": 43,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 11.901401,
+   "offset": 12.403556,
+   "pitch": 47,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 11.906789,
+   "offset": 12.403556,
+   "pitch": 50,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 4,
+   "fret": 0
+  },
+  {
+   "onset": 11.911638,
+   "offset": 12.164871,
+   "pitch": 55,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 11.916487,
+   "offset": 12.155172,
+   "pitch": 62,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 11.921336,
+   "offset": 12.144935,
+   "pitch": 67,
+   "velocity": 67,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 12.155172,
+   "offset": 12.284483,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 12.155172,
+   "offset": 12.403556,
+   "pitch": 67,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 12.165409,
+   "offset": 12.403556,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 12.175108,
+   "offset": 12.403556,
+   "pitch": 55,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 12.413793,
+   "offset": 12.543103,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 12.413793,
+   "offset": 13.179418,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 12.413793,
+   "offset": 12.543103,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 12.413793,
+   "offset": 12.920797,
+   "pitch": 50,
+   "velocity": 82,
+   "voice": "chord",
+   "string": 4,
+   "fret": 0
+  },
+  {
+   "onset": 12.421875,
+   "offset": 12.928879,
+   "pitch": 57,
+   "velocity": 81,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 12.430496,
+   "offset": 12.9375,
+   "pitch": 62,
+   "velocity": 80,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 12.438578,
+   "offset": 12.945582,
+   "pitch": 66,
+   "velocity": 79,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 12.672414,
+   "offset": 12.801724,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 12.931034,
+   "offset": 13.060345,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 12.931034,
+   "offset": 13.060345,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 12.931034,
+   "offset": 13.95528,
+   "pitch": 50,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 4,
+   "fret": 0
+  },
+  {
+   "onset": 12.931034,
+   "offset": 13.38847,
+   "pitch": 66,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 12.939116,
+   "offset": 13.199353,
+   "pitch": 57,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 12.947737,
+   "offset": 13.189655,
+   "pitch": 62,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 12.955819,
+   "offset": 13.179418,
+   "pitch": 66,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 13.189655,
+   "offset": 13.438039,
+   "pitch": 38,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 13.189655,
+   "offset": 13.318966,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 13.189655,
+   "offset": 13.696659,
+   "pitch": 66,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 13.199892,
+   "offset": 13.706897,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 13.209591,
+   "offset": 13.716595,
+   "pitch": 57,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 13.448276,
+   "offset": 13.577586,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 13.448276,
+   "offset": 13.577586,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 13.448276,
+   "offset": 13.95528,
+   "pitch": 45,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 13.448276,
+   "offset": 13.905711,
+   "pitch": 69,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 13.706897,
+   "offset": 13.836207,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 13.706897,
+   "offset": 13.980065,
+   "pitch": 66,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 13.717134,
+   "offset": 13.971983,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 13.726832,
+   "offset": 13.963362,
+   "pitch": 57,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 13.965517,
+   "offset": 14.094828,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 13.965517,
+   "offset": 14.094828,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 13.965517,
+   "offset": 14.472522,
+   "pitch": 50,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 4,
+   "fret": 0
+  },
+  {
+   "onset": 13.965517,
+   "offset": 14.472522,
+   "pitch": 50,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 13.965517,
+   "offset": 14.422953,
+   "pitch": 74,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 13.973599,
+   "offset": 14.233836,
+   "pitch": 57,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 13.98222,
+   "offset": 14.224138,
+   "pitch": 62,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 13.990302,
+   "offset": 14.213901,
+   "pitch": 66,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 14.224138,
+   "offset": 14.353448,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 14.224138,
+   "offset": 14.472522,
+   "pitch": 66,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 14.234375,
+   "offset": 14.472522,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 14.244073,
+   "offset": 14.472522,
+   "pitch": 57,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 14.482759,
+   "offset": 15.248384,
+   "pitch": 33,
+   "velocity": 96,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 14.482759,
+   "offset": 14.612069,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 14.482759,
+   "offset": 14.612069,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 14.482759,
+   "offset": 14.989763,
+   "pitch": 45,
+   "velocity": 82,
+   "voice": "chord",
+   "string": 5,
+   "fret": 0
+  },
+  {
+   "onset": 14.482759,
+   "offset": 15.457435,
+   "pitch": 73,
+   "velocity": 100,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 14.489224,
+   "offset": 14.996228,
+   "pitch": 52,
+   "velocity": 81,
+   "voice": "chord",
+   "string": 4,
+   "fret": 2
+  },
+  {
+   "onset": 14.495151,
+   "offset": 15.002155,
+   "pitch": 57,
+   "velocity": 80,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 14.501616,
+   "offset": 15.008621,
+   "pitch": 61,
+   "velocity": 79,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 14.507543,
+   "offset": 15.014547,
+   "pitch": 64,
+   "velocity": 78,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 14.741379,
+   "offset": 14.87069,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 15.0,
+   "offset": 15.12931,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 15.0,
+   "offset": 15.12931,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 15.0,
+   "offset": 16.024246,
+   "pitch": 45,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 5,
+   "fret": 0
+  },
+  {
+   "onset": 15.006466,
+   "offset": 16.030711,
+   "pitch": 52,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 4,
+   "fret": 2
+  },
+  {
+   "onset": 15.012392,
+   "offset": 15.268319,
+   "pitch": 57,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 15.018858,
+   "offset": 15.258621,
+   "pitch": 61,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 15.024784,
+   "offset": 15.248384,
+   "pitch": 64,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 15.258621,
+   "offset": 15.507004,
+   "pitch": 33,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 15.258621,
+   "offset": 15.387931,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 15.258621,
+   "offset": 15.765625,
+   "pitch": 64,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 15.268858,
+   "offset": 15.775862,
+   "pitch": 61,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 15.278556,
+   "offset": 15.78556,
+   "pitch": 57,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 15.517241,
+   "offset": 15.646552,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 15.517241,
+   "offset": 16.024246,
+   "pitch": 40,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 15.517241,
+   "offset": 15.646552,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 15.517241,
+   "offset": 16.491918,
+   "pitch": 69,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 15.775862,
+   "offset": 15.905172,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 15.775862,
+   "offset": 16.04903,
+   "pitch": 64,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 15.786099,
+   "offset": 16.043103,
+   "pitch": 61,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 15.795797,
+   "offset": 16.036638,
+   "pitch": 57,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 16.034483,
+   "offset": 16.163793,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 16.034483,
+   "offset": 16.163793,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 16.034483,
+   "offset": 16.541487,
+   "pitch": 45,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 5,
+   "fret": 0
+  },
+  {
+   "onset": 16.034483,
+   "offset": 16.541487,
+   "pitch": 45,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 16.040948,
+   "offset": 16.541487,
+   "pitch": 52,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 4,
+   "fret": 2
+  },
+  {
+   "onset": 16.046875,
+   "offset": 16.302802,
+   "pitch": 57,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 16.053341,
+   "offset": 16.293103,
+   "pitch": 61,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 16.059267,
+   "offset": 16.282866,
+   "pitch": 64,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 16.293103,
+   "offset": 16.422414,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 16.293103,
+   "offset": 16.541487,
+   "pitch": 64,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 16.303341,
+   "offset": 16.541487,
+   "pitch": 61,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 16.313039,
+   "offset": 16.541487,
+   "pitch": 57,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 16.551724,
+   "offset": 17.317349,
+   "pitch": 31,
+   "velocity": 96,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 16.551724,
+   "offset": 16.681034,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 16.551724,
+   "offset": 16.681034,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 16.551724,
+   "offset": 17.058728,
+   "pitch": 43,
+   "velocity": 82,
+   "voice": "chord",
+   "string": 6,
+   "fret": 3
+  },
+  {
+   "onset": 16.556573,
+   "offset": 17.063578,
+   "pitch": 47,
+   "velocity": 81,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 16.561961,
+   "offset": 17.068966,
+   "pitch": 50,
+   "velocity": 80,
+   "voice": "chord",
+   "string": 4,
+   "fret": 0
+  },
+  {
+   "onset": 16.56681,
+   "offset": 17.073815,
+   "pitch": 55,
+   "velocity": 79,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 16.571659,
+   "offset": 17.078664,
+   "pitch": 62,
+   "velocity": 78,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 16.576509,
+   "offset": 17.083513,
+   "pitch": 67,
+   "velocity": 77,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 16.810345,
+   "offset": 16.939655,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 17.068966,
+   "offset": 17.198276,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 17.068966,
+   "offset": 17.198276,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 17.068966,
+   "offset": 18.093211,
+   "pitch": 43,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 6,
+   "fret": 3
+  },
+  {
+   "onset": 17.068966,
+   "offset": 17.526401,
+   "pitch": 71,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 17.073815,
+   "offset": 18.09806,
+   "pitch": 47,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 17.079203,
+   "offset": 18.103448,
+   "pitch": 50,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 4,
+   "fret": 0
+  },
+  {
+   "onset": 17.084052,
+   "offset": 17.337284,
+   "pitch": 55,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 17.088901,
+   "offset": 17.327586,
+   "pitch": 62,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 17.09375,
+   "offset": 17.317349,
+   "pitch": 67,
+   "velocity": 67,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 17.327586,
+   "offset": 17.57597,
+   "pitch": 31,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 17.327586,
+   "offset": 17.456897,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 17.327586,
+   "offset": 17.834591,
+   "pitch": 67,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 17.337823,
+   "offset": 17.844828,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 17.347522,
+   "offset": 17.854526,
+   "pitch": 55,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 17.586207,
+   "offset": 17.715517,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 17.586207,
+   "offset": 18.093211,
+   "pitch": 38,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 17.586207,
+   "offset": 17.715517,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 17.586207,
+   "offset": 18.043642,
+   "pitch": 69,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 17.844828,
+   "offset": 17.974138,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 17.844828,
+   "offset": 18.117996,
+   "pitch": 67,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 17.855065,
+   "offset": 18.113147,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 17.864763,
+   "offset": 18.108297,
+   "pitch": 55,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 18.103448,
+   "offset": 18.232759,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 18.103448,
+   "offset": 18.232759,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 18.103448,
+   "offset": 18.610453,
+   "pitch": 43,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 6,
+   "fret": 3
+  },
+  {
+   "onset": 18.103448,
+   "offset": 18.610453,
+   "pitch": 43,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 18.103448,
+   "offset": 18.560884,
+   "pitch": 67,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 18.108297,
+   "offset": 18.610453,
+   "pitch": 47,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 18.113685,
+   "offset": 18.610453,
+   "pitch": 50,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 4,
+   "fret": 0
+  },
+  {
+   "onset": 18.118534,
+   "offset": 18.371767,
+   "pitch": 55,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 18.123384,
+   "offset": 18.362069,
+   "pitch": 62,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 18.128233,
+   "offset": 18.351832,
+   "pitch": 67,
+   "velocity": 67,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 18.362069,
+   "offset": 18.491379,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 18.362069,
+   "offset": 18.610453,
+   "pitch": 67,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 18.372306,
+   "offset": 18.610453,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 18.382004,
+   "offset": 18.610453,
+   "pitch": 55,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 18.62069,
+   "offset": 19.386315,
+   "pitch": 33,
+   "velocity": 96,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 18.62069,
+   "offset": 18.75,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 18.62069,
+   "offset": 18.75,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 18.62069,
+   "offset": 19.127694,
+   "pitch": 45,
+   "velocity": 82,
+   "voice": "chord",
+   "string": 5,
+   "fret": 0
+  },
+  {
+   "onset": 18.62069,
+   "offset": 20.112608,
+   "pitch": 64,
+   "velocity": 100,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 18.627155,
+   "offset": 19.134159,
+   "pitch": 52,
+   "velocity": 81,
+   "voice": "chord",
+   "string": 4,
+   "fret": 2
+  },
+  {
+   "onset": 18.633082,
+   "offset": 19.140086,
+   "pitch": 57,
+   "velocity": 80,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 18.639547,
+   "offset": 19.146552,
+   "pitch": 61,
+   "velocity": 79,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 18.645474,
+   "offset": 19.152478,
+   "pitch": 64,
+   "velocity": 78,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 18.87931,
+   "offset": 19.008621,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 19.137931,
+   "offset": 19.267241,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 19.137931,
+   "offset": 19.267241,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 19.137931,
+   "offset": 20.162177,
+   "pitch": 45,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 5,
+   "fret": 0
+  },
+  {
+   "onset": 19.144397,
+   "offset": 20.168642,
+   "pitch": 52,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 4,
+   "fret": 2
+  },
+  {
+   "onset": 19.150323,
+   "offset": 19.40625,
+   "pitch": 57,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 19.156789,
+   "offset": 19.396552,
+   "pitch": 61,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 19.162716,
+   "offset": 19.386315,
+   "pitch": 64,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 19.396552,
+   "offset": 19.644935,
+   "pitch": 33,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 19.396552,
+   "offset": 19.525862,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 19.396552,
+   "offset": 19.903556,
+   "pitch": 64,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 19.406789,
+   "offset": 19.913793,
+   "pitch": 61,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 19.416487,
+   "offset": 19.923491,
+   "pitch": 57,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 19.655172,
+   "offset": 19.784483,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 19.655172,
+   "offset": 20.162177,
+   "pitch": 40,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 19.655172,
+   "offset": 19.784483,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 19.913793,
+   "offset": 20.043103,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 19.913793,
+   "offset": 20.186961,
+   "pitch": 64,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 19.92403,
+   "offset": 20.181034,
+   "pitch": 61,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 19.933728,
+   "offset": 20.174569,
+   "pitch": 57,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 20.172414,
+   "offset": 20.301724,
+   "pitch": 38,
+   "velocity": 70,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 20.172414,
+   "offset": 20.679418,
+   "pitch": 45,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 5,
+   "fret": 0
+  },
+  {
+   "onset": 20.172414,
+   "offset": 20.679418,
+   "pitch": 45,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 20.178879,
+   "offset": 20.679418,
+   "pitch": 52,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 4,
+   "fret": 2
+  },
+  {
+   "onset": 20.184806,
+   "offset": 20.440733,
+   "pitch": 57,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 20.191272,
+   "offset": 20.431034,
+   "pitch": 61,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 20.197198,
+   "offset": 20.420797,
+   "pitch": 64,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 20.301724,
+   "offset": 20.431034,
+   "pitch": 38,
+   "velocity": 76,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 20.431034,
+   "offset": 20.560345,
+   "pitch": 38,
+   "velocity": 84,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 20.431034,
+   "offset": 20.679418,
+   "pitch": 64,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 20.441272,
+   "offset": 20.679418,
+   "pitch": 61,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 20.45097,
+   "offset": 20.679418,
+   "pitch": 57,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 20.560345,
+   "offset": 20.689655,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 20.689655,
+   "offset": 21.45528,
+   "pitch": 35,
+   "velocity": 96,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 20.689655,
+   "offset": 20.818966,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 20.689655,
+   "offset": 21.196659,
+   "pitch": 47,
+   "velocity": 82,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 20.689655,
+   "offset": 20.818966,
+   "pitch": 49,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 20.689655,
+   "offset": 21.664332,
+   "pitch": 74,
+   "velocity": 100,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 20.696121,
+   "offset": 21.203125,
+   "pitch": 54,
+   "velocity": 81,
+   "voice": "chord",
+   "string": 4,
+   "fret": 4
+  },
+  {
+   "onset": 20.702047,
+   "offset": 21.209052,
+   "pitch": 59,
+   "velocity": 80,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 20.708513,
+   "offset": 21.215517,
+   "pitch": 62,
+   "velocity": 79,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 20.71444,
+   "offset": 21.221444,
+   "pitch": 66,
+   "velocity": 78,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 20.948276,
+   "offset": 21.077586,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 21.206897,
+   "offset": 21.336207,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 21.206897,
+   "offset": 21.336207,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 21.206897,
+   "offset": 22.231142,
+   "pitch": 47,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 21.213362,
+   "offset": 22.237608,
+   "pitch": 54,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 4,
+   "fret": 4
+  },
+  {
+   "onset": 21.219289,
+   "offset": 21.475216,
+   "pitch": 59,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 21.225754,
+   "offset": 21.465517,
+   "pitch": 62,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 21.231681,
+   "offset": 21.45528,
+   "pitch": 66,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 21.465517,
+   "offset": 21.713901,
+   "pitch": 35,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 21.465517,
+   "offset": 21.594828,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 21.465517,
+   "offset": 21.972522,
+   "pitch": 66,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 21.475754,
+   "offset": 21.982759,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 21.485453,
+   "offset": 21.992457,
+   "pitch": 59,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 21.724138,
+   "offset": 21.853448,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 21.724138,
+   "offset": 22.231142,
+   "pitch": 42,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 21.724138,
+   "offset": 21.853448,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 21.724138,
+   "offset": 22.181573,
+   "pitch": 73,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 21.982759,
+   "offset": 22.112069,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 21.982759,
+   "offset": 22.112069,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 21.982759,
+   "offset": 22.255927,
+   "pitch": 66,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 21.992996,
+   "offset": 22.25,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 22.002694,
+   "offset": 22.243534,
+   "pitch": 59,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 22.241379,
+   "offset": 22.37069,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 22.241379,
+   "offset": 22.37069,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 22.241379,
+   "offset": 22.748384,
+   "pitch": 47,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 22.241379,
+   "offset": 22.748384,
+   "pitch": 47,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 22.241379,
+   "offset": 22.698815,
+   "pitch": 71,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 22.247845,
+   "offset": 22.748384,
+   "pitch": 54,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 4,
+   "fret": 4
+  },
+  {
+   "onset": 22.253772,
+   "offset": 22.509698,
+   "pitch": 59,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 22.260237,
+   "offset": 22.5,
+   "pitch": 62,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 22.266164,
+   "offset": 22.489763,
+   "pitch": 66,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 22.5,
+   "offset": 22.62931,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 22.5,
+   "offset": 22.748384,
+   "pitch": 66,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 22.510237,
+   "offset": 22.748384,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 22.519935,
+   "offset": 22.748384,
+   "pitch": 59,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 22.758621,
+   "offset": 23.524246,
+   "pitch": 31,
+   "velocity": 96,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 22.758621,
+   "offset": 22.887931,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 22.758621,
+   "offset": 22.887931,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 22.758621,
+   "offset": 23.265625,
+   "pitch": 43,
+   "velocity": 82,
+   "voice": "chord",
+   "string": 6,
+   "fret": 3
+  },
+  {
+   "onset": 22.758621,
+   "offset": 23.733297,
+   "pitch": 71,
+   "velocity": 100,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 22.76347,
+   "offset": 23.270474,
+   "pitch": 47,
+   "velocity": 81,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 22.768858,
+   "offset": 23.275862,
+   "pitch": 50,
+   "velocity": 80,
+   "voice": "chord",
+   "string": 4,
+   "fret": 0
+  },
+  {
+   "onset": 22.773707,
+   "offset": 23.280711,
+   "pitch": 55,
+   "velocity": 79,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 22.778556,
+   "offset": 23.28556,
+   "pitch": 62,
+   "velocity": 78,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 22.783405,
+   "offset": 23.290409,
+   "pitch": 67,
+   "velocity": 77,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 23.017241,
+   "offset": 23.146552,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 23.275862,
+   "offset": 23.405172,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 23.275862,
+   "offset": 23.405172,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 23.275862,
+   "offset": 24.300108,
+   "pitch": 43,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 6,
+   "fret": 3
+  },
+  {
+   "onset": 23.280711,
+   "offset": 24.304957,
+   "pitch": 47,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 23.286099,
+   "offset": 24.310345,
+   "pitch": 50,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 4,
+   "fret": 0
+  },
+  {
+   "onset": 23.290948,
+   "offset": 23.544181,
+   "pitch": 55,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 23.295797,
+   "offset": 23.534483,
+   "pitch": 62,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 23.300647,
+   "offset": 23.524246,
+   "pitch": 67,
+   "velocity": 67,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 23.534483,
+   "offset": 23.782866,
+   "pitch": 31,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 23.534483,
+   "offset": 23.663793,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 23.534483,
+   "offset": 24.041487,
+   "pitch": 67,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 23.54472,
+   "offset": 24.051724,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 23.554418,
+   "offset": 24.061422,
+   "pitch": 55,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 23.793103,
+   "offset": 23.922414,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 23.793103,
+   "offset": 24.300108,
+   "pitch": 38,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 23.793103,
+   "offset": 23.922414,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 23.793103,
+   "offset": 24.250539,
+   "pitch": 69,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 24.051724,
+   "offset": 24.181034,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 24.051724,
+   "offset": 24.181034,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 24.051724,
+   "offset": 24.324892,
+   "pitch": 67,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 24.061961,
+   "offset": 24.320043,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 24.071659,
+   "offset": 24.315194,
+   "pitch": 55,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 24.310345,
+   "offset": 24.439655,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 24.310345,
+   "offset": 24.439655,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 24.310345,
+   "offset": 24.817349,
+   "pitch": 43,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 6,
+   "fret": 3
+  },
+  {
+   "onset": 24.310345,
+   "offset": 24.817349,
+   "pitch": 43,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 24.310345,
+   "offset": 24.76778,
+   "pitch": 67,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 24.315194,
+   "offset": 24.817349,
+   "pitch": 47,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 24.320582,
+   "offset": 24.817349,
+   "pitch": 50,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 4,
+   "fret": 0
+  },
+  {
+   "onset": 24.325431,
+   "offset": 24.578664,
+   "pitch": 55,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 24.33028,
+   "offset": 24.568966,
+   "pitch": 62,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 24.335129,
+   "offset": 24.558728,
+   "pitch": 67,
+   "velocity": 67,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 24.568966,
+   "offset": 24.698276,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 24.568966,
+   "offset": 24.817349,
+   "pitch": 67,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 24.579203,
+   "offset": 24.817349,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 24.588901,
+   "offset": 24.817349,
+   "pitch": 55,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 24.827586,
+   "offset": 24.956897,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 24.827586,
+   "offset": 25.593211,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 24.827586,
+   "offset": 24.956897,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 24.827586,
+   "offset": 25.334591,
+   "pitch": 50,
+   "velocity": 82,
+   "voice": "chord",
+   "string": 4,
+   "fret": 0
+  },
+  {
+   "onset": 24.827586,
+   "offset": 26.319504,
+   "pitch": 69,
+   "velocity": 100,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 24.835668,
+   "offset": 25.342672,
+   "pitch": 57,
+   "velocity": 81,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 24.844289,
+   "offset": 25.351293,
+   "pitch": 62,
+   "velocity": 80,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 24.852371,
+   "offset": 25.359375,
+   "pitch": 66,
+   "velocity": 79,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 25.086207,
+   "offset": 25.215517,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 25.344828,
+   "offset": 25.474138,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 25.344828,
+   "offset": 25.474138,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 25.344828,
+   "offset": 26.369073,
+   "pitch": 50,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 4,
+   "fret": 0
+  },
+  {
+   "onset": 25.352909,
+   "offset": 25.613147,
+   "pitch": 57,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 25.36153,
+   "offset": 25.603448,
+   "pitch": 62,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 25.369612,
+   "offset": 25.593211,
+   "pitch": 66,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 25.603448,
+   "offset": 25.851832,
+   "pitch": 38,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 25.603448,
+   "offset": 25.732759,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 25.603448,
+   "offset": 26.110453,
+   "pitch": 66,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 25.613685,
+   "offset": 26.12069,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 25.623384,
+   "offset": 26.130388,
+   "pitch": 57,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 25.862069,
+   "offset": 25.991379,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 25.862069,
+   "offset": 25.991379,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 25.862069,
+   "offset": 26.369073,
+   "pitch": 45,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 26.12069,
+   "offset": 26.25,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 26.12069,
+   "offset": 26.25,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 26.12069,
+   "offset": 26.393858,
+   "pitch": 66,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 26.130927,
+   "offset": 26.385776,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 26.140625,
+   "offset": 26.377155,
+   "pitch": 57,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 26.37931,
+   "offset": 26.508621,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 26.37931,
+   "offset": 26.508621,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 26.37931,
+   "offset": 26.886315,
+   "pitch": 50,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 4,
+   "fret": 0
+  },
+  {
+   "onset": 26.37931,
+   "offset": 26.886315,
+   "pitch": 50,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 26.37931,
+   "offset": 26.836746,
+   "pitch": 66,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 26.387392,
+   "offset": 26.647629,
+   "pitch": 57,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 26.396013,
+   "offset": 26.637931,
+   "pitch": 62,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 26.404095,
+   "offset": 26.627694,
+   "pitch": 66,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 26.637931,
+   "offset": 26.767241,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 26.637931,
+   "offset": 26.886315,
+   "pitch": 66,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 26.648168,
+   "offset": 26.886315,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 26.657866,
+   "offset": 26.886315,
+   "pitch": 57,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 26.896552,
+   "offset": 27.662177,
+   "pitch": 33,
+   "velocity": 96,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 26.896552,
+   "offset": 27.025862,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 26.896552,
+   "offset": 27.025862,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 26.896552,
+   "offset": 27.403556,
+   "pitch": 45,
+   "velocity": 82,
+   "voice": "chord",
+   "string": 5,
+   "fret": 0
+  },
+  {
+   "onset": 26.896552,
+   "offset": 28.905711,
+   "pitch": 64,
+   "velocity": 100,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 26.903017,
+   "offset": 27.410022,
+   "pitch": 52,
+   "velocity": 81,
+   "voice": "chord",
+   "string": 4,
+   "fret": 2
+  },
+  {
+   "onset": 26.908944,
+   "offset": 27.415948,
+   "pitch": 57,
+   "velocity": 80,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 26.915409,
+   "offset": 27.422414,
+   "pitch": 61,
+   "velocity": 79,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 26.921336,
+   "offset": 27.428341,
+   "pitch": 64,
+   "velocity": 78,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 27.155172,
+   "offset": 27.284483,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 27.413793,
+   "offset": 27.543103,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 27.413793,
+   "offset": 27.543103,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 27.413793,
+   "offset": 28.438039,
+   "pitch": 45,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 5,
+   "fret": 0
+  },
+  {
+   "onset": 27.420259,
+   "offset": 28.444504,
+   "pitch": 52,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 4,
+   "fret": 2
+  },
+  {
+   "onset": 27.426185,
+   "offset": 27.682112,
+   "pitch": 57,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 27.432651,
+   "offset": 27.672414,
+   "pitch": 61,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 27.438578,
+   "offset": 27.662177,
+   "pitch": 64,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 27.672414,
+   "offset": 27.920797,
+   "pitch": 33,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 27.672414,
+   "offset": 27.801724,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 27.672414,
+   "offset": 28.179418,
+   "pitch": 64,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 27.682651,
+   "offset": 28.189655,
+   "pitch": 61,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 27.692349,
+   "offset": 28.199353,
+   "pitch": 57,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 27.931034,
+   "offset": 28.060345,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 27.931034,
+   "offset": 28.438039,
+   "pitch": 40,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 27.931034,
+   "offset": 28.060345,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 28.189655,
+   "offset": 28.318966,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 28.189655,
+   "offset": 28.318966,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 28.189655,
+   "offset": 28.462823,
+   "pitch": 64,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 28.199892,
+   "offset": 28.456897,
+   "pitch": 61,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 28.209591,
+   "offset": 28.450431,
+   "pitch": 57,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 28.448276,
+   "offset": 28.577586,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 28.448276,
+   "offset": 28.577586,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 28.448276,
+   "offset": 28.95528,
+   "pitch": 45,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 5,
+   "fret": 0
+  },
+  {
+   "onset": 28.448276,
+   "offset": 28.95528,
+   "pitch": 45,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 28.454741,
+   "offset": 28.95528,
+   "pitch": 52,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 4,
+   "fret": 2
+  },
+  {
+   "onset": 28.460668,
+   "offset": 28.716595,
+   "pitch": 57,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 28.467134,
+   "offset": 28.706897,
+   "pitch": 61,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 28.47306,
+   "offset": 28.696659,
+   "pitch": 64,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 28.706897,
+   "offset": 28.836207,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 28.706897,
+   "offset": 28.95528,
+   "pitch": 64,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 28.717134,
+   "offset": 28.95528,
+   "pitch": 61,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 28.726832,
+   "offset": 28.95528,
+   "pitch": 57,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 28.965517,
+   "offset": 29.731142,
+   "pitch": 35,
+   "velocity": 96,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 28.965517,
+   "offset": 29.094828,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 28.965517,
+   "offset": 29.472522,
+   "pitch": 47,
+   "velocity": 82,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 28.965517,
+   "offset": 29.094828,
+   "pitch": 49,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 28.965517,
+   "offset": 29.940194,
+   "pitch": 74,
+   "velocity": 100,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 28.971983,
+   "offset": 29.478987,
+   "pitch": 54,
+   "velocity": 81,
+   "voice": "chord",
+   "string": 4,
+   "fret": 4
+  },
+  {
+   "onset": 28.977909,
+   "offset": 29.484914,
+   "pitch": 59,
+   "velocity": 80,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 28.984375,
+   "offset": 29.491379,
+   "pitch": 62,
+   "velocity": 79,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 28.990302,
+   "offset": 29.497306,
+   "pitch": 66,
+   "velocity": 78,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 29.224138,
+   "offset": 29.353448,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 29.482759,
+   "offset": 29.612069,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 29.482759,
+   "offset": 29.612069,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 29.482759,
+   "offset": 30.507004,
+   "pitch": 47,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 29.489224,
+   "offset": 30.51347,
+   "pitch": 54,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 4,
+   "fret": 4
+  },
+  {
+   "onset": 29.495151,
+   "offset": 29.751078,
+   "pitch": 59,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 29.501616,
+   "offset": 29.741379,
+   "pitch": 62,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 29.507543,
+   "offset": 29.731142,
+   "pitch": 66,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 29.741379,
+   "offset": 29.989763,
+   "pitch": 35,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 29.741379,
+   "offset": 29.87069,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 29.741379,
+   "offset": 30.248384,
+   "pitch": 66,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 29.751616,
+   "offset": 30.258621,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 29.761315,
+   "offset": 30.268319,
+   "pitch": 59,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 30.0,
+   "offset": 30.12931,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 30.0,
+   "offset": 30.507004,
+   "pitch": 42,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 30.0,
+   "offset": 30.12931,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 30.0,
+   "offset": 30.457435,
+   "pitch": 73,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 30.258621,
+   "offset": 30.387931,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 30.258621,
+   "offset": 30.387931,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 30.258621,
+   "offset": 30.531789,
+   "pitch": 66,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 30.268858,
+   "offset": 30.525862,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 30.278556,
+   "offset": 30.519397,
+   "pitch": 59,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 30.517241,
+   "offset": 30.646552,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 30.517241,
+   "offset": 30.646552,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 30.517241,
+   "offset": 31.024246,
+   "pitch": 47,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 30.517241,
+   "offset": 31.024246,
+   "pitch": 47,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 30.517241,
+   "offset": 30.974677,
+   "pitch": 71,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 30.523707,
+   "offset": 31.024246,
+   "pitch": 54,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 4,
+   "fret": 4
+  },
+  {
+   "onset": 30.529634,
+   "offset": 30.78556,
+   "pitch": 59,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 30.536099,
+   "offset": 30.775862,
+   "pitch": 62,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 30.542026,
+   "offset": 30.765625,
+   "pitch": 66,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 30.775862,
+   "offset": 30.905172,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 30.775862,
+   "offset": 31.024246,
+   "pitch": 66,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  },
+  {
+   "onset": 30.786099,
+   "offset": 31.024246,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 30.795797,
+   "offset": 31.024246,
+   "pitch": 59,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 31.034483,
+   "offset": 31.800108,
+   "pitch": 31,
+   "velocity": 96,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 31.034483,
+   "offset": 31.163793,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 31.034483,
+   "offset": 31.163793,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 31.034483,
+   "offset": 31.541487,
+   "pitch": 43,
+   "velocity": 82,
+   "voice": "chord",
+   "string": 6,
+   "fret": 3
+  },
+  {
+   "onset": 31.034483,
+   "offset": 32.009159,
+   "pitch": 71,
+   "velocity": 100,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 31.039332,
+   "offset": 31.546336,
+   "pitch": 47,
+   "velocity": 81,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 31.04472,
+   "offset": 31.551724,
+   "pitch": 50,
+   "velocity": 80,
+   "voice": "chord",
+   "string": 4,
+   "fret": 0
+  },
+  {
+   "onset": 31.049569,
+   "offset": 31.556573,
+   "pitch": 55,
+   "velocity": 79,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 31.054418,
+   "offset": 31.561422,
+   "pitch": 62,
+   "velocity": 78,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 31.059267,
+   "offset": 31.566272,
+   "pitch": 67,
+   "velocity": 77,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 31.293103,
+   "offset": 31.422414,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 31.551724,
+   "offset": 31.681034,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 31.551724,
+   "offset": 31.681034,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 31.551724,
+   "offset": 32.57597,
+   "pitch": 43,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 6,
+   "fret": 3
+  },
+  {
+   "onset": 31.556573,
+   "offset": 32.580819,
+   "pitch": 47,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 31.561961,
+   "offset": 32.586207,
+   "pitch": 50,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 4,
+   "fret": 0
+  },
+  {
+   "onset": 31.56681,
+   "offset": 31.820043,
+   "pitch": 55,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 31.571659,
+   "offset": 31.810345,
+   "pitch": 62,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 31.576509,
+   "offset": 31.800108,
+   "pitch": 67,
+   "velocity": 67,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 31.810345,
+   "offset": 32.058728,
+   "pitch": 31,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 31.810345,
+   "offset": 31.939655,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 31.810345,
+   "offset": 32.317349,
+   "pitch": 67,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 31.820582,
+   "offset": 32.327586,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 31.83028,
+   "offset": 32.337284,
+   "pitch": 55,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 32.068966,
+   "offset": 32.198276,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 32.068966,
+   "offset": 32.57597,
+   "pitch": 38,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 32.068966,
+   "offset": 32.198276,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 32.068966,
+   "offset": 33.043642,
+   "pitch": 74,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 32.327586,
+   "offset": 32.456897,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 32.327586,
+   "offset": 32.456897,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 32.327586,
+   "offset": 32.600754,
+   "pitch": 67,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 32.337823,
+   "offset": 32.595905,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 32.347522,
+   "offset": 32.591056,
+   "pitch": 55,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 32.586207,
+   "offset": 32.715517,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 32.586207,
+   "offset": 32.715517,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 32.586207,
+   "offset": 33.093211,
+   "pitch": 43,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 6,
+   "fret": 3
+  },
+  {
+   "onset": 32.586207,
+   "offset": 33.093211,
+   "pitch": 43,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 32.591056,
+   "offset": 33.093211,
+   "pitch": 47,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 32.596444,
+   "offset": 33.093211,
+   "pitch": 50,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 4,
+   "fret": 0
+  },
+  {
+   "onset": 32.601293,
+   "offset": 32.854526,
+   "pitch": 55,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 32.606142,
+   "offset": 32.844828,
+   "pitch": 62,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 32.610991,
+   "offset": 32.834591,
+   "pitch": 67,
+   "velocity": 67,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 32.844828,
+   "offset": 32.974138,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 32.844828,
+   "offset": 33.093211,
+   "pitch": 67,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 3
+  },
+  {
+   "onset": 32.855065,
+   "offset": 33.093211,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 32.864763,
+   "offset": 33.093211,
+   "pitch": 55,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 33.103448,
+   "offset": 33.232759,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 33.103448,
+   "offset": 33.610453,
+   "pitch": 40,
+   "velocity": 82,
+   "voice": "chord",
+   "string": 6,
+   "fret": 0
+  },
+  {
+   "onset": 33.103448,
+   "offset": 33.869073,
+   "pitch": 40,
+   "velocity": 96,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 33.103448,
+   "offset": 33.232759,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 33.103448,
+   "offset": 33.560884,
+   "pitch": 71,
+   "velocity": 100,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 33.108297,
+   "offset": 33.615302,
+   "pitch": 47,
+   "velocity": 81,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 33.113685,
+   "offset": 33.62069,
+   "pitch": 52,
+   "velocity": 80,
+   "voice": "chord",
+   "string": 4,
+   "fret": 2
+  },
+  {
+   "onset": 33.118534,
+   "offset": 33.625539,
+   "pitch": 55,
+   "velocity": 79,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 33.123384,
+   "offset": 33.630388,
+   "pitch": 62,
+   "velocity": 78,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 33.128233,
+   "offset": 33.635237,
+   "pitch": 64,
+   "velocity": 77,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 33.362069,
+   "offset": 33.491379,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 33.62069,
+   "offset": 33.75,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 33.62069,
+   "offset": 34.386315,
+   "pitch": 40,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 6,
+   "fret": 0
+  },
+  {
+   "onset": 33.62069,
+   "offset": 33.75,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 33.62069,
+   "offset": 34.078125,
+   "pitch": 67,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 33.625539,
+   "offset": 34.386315,
+   "pitch": 47,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 33.630927,
+   "offset": 34.386315,
+   "pitch": 52,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 4,
+   "fret": 2
+  },
+  {
+   "onset": 33.635776,
+   "offset": 33.889009,
+   "pitch": 55,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 33.640625,
+   "offset": 33.87931,
+   "pitch": 62,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 33.645474,
+   "offset": 33.869073,
+   "pitch": 64,
+   "velocity": 67,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 33.87931,
+   "offset": 34.127694,
+   "pitch": 40,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 33.87931,
+   "offset": 34.008621,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 33.87931,
+   "offset": 34.386315,
+   "pitch": 64,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 33.889547,
+   "offset": 34.386315,
+   "pitch": 62,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 33.899246,
+   "offset": 34.386315,
+   "pitch": 55,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 34.137931,
+   "offset": 34.903556,
+   "pitch": 33,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 34.137931,
+   "offset": 34.267241,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 34.137931,
+   "offset": 34.267241,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 34.137931,
+   "offset": 34.595366,
+   "pitch": 69,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 34.396552,
+   "offset": 34.525862,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 34.396552,
+   "offset": 34.525862,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 34.396552,
+   "offset": 34.66972,
+   "pitch": 64,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 34.406789,
+   "offset": 34.663793,
+   "pitch": 61,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 34.416487,
+   "offset": 34.657328,
+   "pitch": 55,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 34.655172,
+   "offset": 34.784483,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 34.655172,
+   "offset": 34.784483,
+   "pitch": 42,
+   "velocity": 72,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 34.655172,
+   "offset": 35.162177,
+   "pitch": 45,
+   "velocity": 72,
+   "voice": "chord",
+   "string": 5,
+   "fret": 0
+  },
+  {
+   "onset": 34.655172,
+   "offset": 35.112608,
+   "pitch": 73,
+   "velocity": 92,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 34.661638,
+   "offset": 35.162177,
+   "pitch": 52,
+   "velocity": 71,
+   "voice": "chord",
+   "string": 4,
+   "fret": 2
+  },
+  {
+   "onset": 34.667565,
+   "offset": 34.923491,
+   "pitch": 55,
+   "velocity": 70,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 34.67403,
+   "offset": 34.913793,
+   "pitch": 61,
+   "velocity": 69,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 34.679957,
+   "offset": 34.903556,
+   "pitch": 64,
+   "velocity": 68,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 34.913793,
+   "offset": 35.162177,
+   "pitch": 33,
+   "velocity": 84,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 34.913793,
+   "offset": 35.043103,
+   "pitch": 42,
+   "velocity": 56,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 34.913793,
+   "offset": 35.162177,
+   "pitch": 64,
+   "velocity": 56,
+   "voice": "chord",
+   "string": 1,
+   "fret": 0
+  },
+  {
+   "onset": 34.92403,
+   "offset": 35.162177,
+   "pitch": 61,
+   "velocity": 55,
+   "voice": "chord",
+   "string": 2,
+   "fret": 2
+  },
+  {
+   "onset": 34.933728,
+   "offset": 35.162177,
+   "pitch": 55,
+   "velocity": 54,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 35.172414,
+   "offset": 35.301724,
+   "pitch": 36,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 35.172414,
+   "offset": 37.231142,
+   "pitch": 38,
+   "velocity": 96,
+   "voice": "bass",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 35.172414,
+   "offset": 35.301724,
+   "pitch": 49,
+   "velocity": 100,
+   "voice": "drums",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 35.172414,
+   "offset": 37.231142,
+   "pitch": 50,
+   "velocity": 82,
+   "voice": "chord",
+   "string": 4,
+   "fret": 0
+  },
+  {
+   "onset": 35.172414,
+   "offset": 37.181573,
+   "pitch": 74,
+   "velocity": 100,
+   "voice": "melody",
+   "string": null,
+   "fret": null
+  },
+  {
+   "onset": 35.180496,
+   "offset": 37.231142,
+   "pitch": 57,
+   "velocity": 81,
+   "voice": "chord",
+   "string": 3,
+   "fret": 2
+  },
+  {
+   "onset": 35.189116,
+   "offset": 37.231142,
+   "pitch": 62,
+   "velocity": 80,
+   "voice": "chord",
+   "string": 2,
+   "fret": 3
+  },
+  {
+   "onset": 35.197198,
+   "offset": 37.231142,
+   "pitch": 66,
+   "velocity": 79,
+   "voice": "chord",
+   "string": 1,
+   "fret": 2
+  }
+ ],
+ "beats": [
+  2.068966,
+  2.586207,
+  3.103448,
+  3.62069,
+  4.137931,
+  4.655172,
+  5.172414,
+  5.689655,
+  6.206897,
+  6.724138,
+  7.241379,
+  7.758621,
+  8.275862,
+  8.793103,
+  9.310345,
+  9.827586,
+  10.344828,
+  10.862069,
+  11.37931,
+  11.896552,
+  12.413793,
+  12.931034,
+  13.448276,
+  13.965517,
+  14.482759,
+  15.0,
+  15.517241,
+  16.034483,
+  16.551724,
+  17.068966,
+  17.586207,
+  18.103448,
+  18.62069,
+  19.137931,
+  19.655172,
+  20.172414,
+  20.689655,
+  21.206897,
+  21.724138,
+  22.241379,
+  22.758621,
+  23.275862,
+  23.793103,
+  24.310345,
+  24.827586,
+  25.344828,
+  25.862069,
+  26.37931,
+  26.896552,
+  27.413793,
+  27.931034,
+  28.448276,
+  28.965517,
+  29.482759,
+  30.0,
+  30.517241,
+  31.034483,
+  31.551724,
+  32.068966,
+  32.586207,
+  33.103448,
+  33.62069,
+  34.137931,
+  34.655172,
+  35.172414,
+  35.689655,
+  36.206897,
+  36.724138
+ ],
+ "downbeats": [
+  2.068966,
+  4.137931,
+  6.206897,
+  8.275862,
+  10.344828,
+  12.413793,
+  14.482759,
+  16.551724,
+  18.62069,
+  20.689655,
+  22.758621,
+  24.827586,
+  26.896552,
+  28.965517,
+  31.034483,
+  33.103448,
+  35.172414
+ ],
+ "chords": [
+  {
+   "start": 0.0,
+   "end": 4.137931,
+   "label": "N"
+  },
+  {
+   "start": 4.137931,
+   "end": 6.206897,
+   "label": "D:maj"
+  },
+  {
+   "start": 6.206897,
+   "end": 8.275862,
+   "label": "A:maj"
+  },
+  {
+   "start": 8.275862,
+   "end": 10.344828,
+   "label": "B:min"
+  },
+  {
+   "start": 10.344828,
+   "end": 12.413793,
+   "label": "G:maj"
+  },
+  {
+   "start": 12.413793,
+   "end": 14.482759,
+   "label": "D:maj"
+  },
+  {
+   "start": 14.482759,
+   "end": 16.551724,
+   "label": "A:maj"
+  },
+  {
+   "start": 16.551724,
+   "end": 18.62069,
+   "label": "G:maj"
+  },
+  {
+   "start": 18.62069,
+   "end": 20.689655,
+   "label": "A:maj"
+  },
+  {
+   "start": 20.689655,
+   "end": 22.758621,
+   "label": "B:min"
+  },
+  {
+   "start": 22.758621,
+   "end": 24.827586,
+   "label": "G:maj"
+  },
+  {
+   "start": 24.827586,
+   "end": 26.896552,
+   "label": "D:maj"
+  },
+  {
+   "start": 26.896552,
+   "end": 28.965517,
+   "label": "A:maj"
+  },
+  {
+   "start": 28.965517,
+   "end": 31.034483,
+   "label": "B:min"
+  },
+  {
+   "start": 31.034483,
+   "end": 33.103448,
+   "label": "G:maj"
+  },
+  {
+   "start": 33.103448,
+   "end": 34.137931,
+   "label": "E:min7"
+  },
+  {
+   "start": 34.137931,
+   "end": 35.172414,
+   "label": "A:7"
+  },
+  {
+   "start": 35.172414,
+   "end": 38.741383,
+   "label": "D:maj"
+  }
+ ],
+ "taps": [],
+ "stems": {
+  "drums": "stems/drums.wav",
+  "bass": "stems/bass.wav",
+  "guitar": "stems/guitar.wav",
+  "lead": "stems/lead.wav"
+ },
+ "source": {
+  "kind": "synthesized",
+  "url": null,
+  "license": "Song (chords, bass line, lead melody, drum part) written for this test set. Audio rendered from MIDI for this test set with FluidSynth 2.3.4 and FluidR3_GM.sf2 (MIT license).",
+  "license_quote": "I hereby release Fluid under the MIT license, as described in COPYING.",
+  "attribution": "Rendered with the FluidR3_GM SoundFont by Frank Wen (MIT license)."
+ }
+}

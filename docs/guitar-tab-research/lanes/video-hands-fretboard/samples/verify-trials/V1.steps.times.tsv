@@ -1,0 +1,11 @@
+step	exit	wall_s	user_s	sys_s	max_rss_kb
+verify-mediapipe-hands_R3a_cu_full	0	10.74	10.01	0.50	219820
+verify-mediapipe-hands_R3a_full	0	20.35	19.46	0.64	227296
+verify-mediapipe-legacy_R3a_cu_full	0	11.46	10.33	0.66	282004
+verify-mediapipe-holistic_R3a_cu_full	0	16.12	19.43	0.67	314636
+verify-mediapipe-holistic_R3a_crop	1	12.25	15.04	0.71	325324
+verify-mediapipe-pose_R3a_full	0	43.04	40.84	0.72	324008
+verify-rtmlib-hand_R3a_full	0	87.01	219.53	0.87	242080
+verify-rtmlib-dwpose_R3a_cu_full_step5	0	52.77	131.87	0.70	625956
+verify-yolo-pose_yolo26n-pose_R3a_cu_full	0	36.58	35.52	7.31	469420
+verify-yoloe-26s_openvocab	0	6.85	7.29	0.80	750596

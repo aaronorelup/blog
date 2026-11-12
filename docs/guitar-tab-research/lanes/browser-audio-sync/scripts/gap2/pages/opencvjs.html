@@ -1,0 +1,148 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>OpenCV.js: fret and string lines on a guitar neck</title>
+<body>
+<script type="module">
+// The video-hands-fretboard lane's fret and string line steps (its scripts/run_opencv_lines.py: Canny + HoughLinesP
+// on the frame and on the neck rectified with getPerspectiveTransform + warpPerspective) ported to OpenCV.js
+// (@techstark/opencv-js 5.0.0-release.1), on the frames and quads of /frames/jobs.json (written from
+// scripts/gap2/opencv_lines_ref.py's output). Same parameters: Canny(50, 150); HoughLinesP(rho 1, theta pi/180,
+// threshold 30, minLineLength 20, maxLineGap 5); warpPerspective with INTER_CUBIC; the same classification and
+// clustering rules (cluster means are returned unrounded; rounding to 0.1 px is done in the comparison script).
+// ?input=raw feeds the RGB bytes cv2.imread decoded (identical input to the Python run); ?input=img lets the browser
+// decode the PNG / JPEG itself (createImageBitmap + canvas getImageData) and also counts how many bytes differ from raw.
+// The rectified image of each quad is uploaded as raw RGB for a pixel comparison.
+import { finish, fail, upload, fetchArrayBuffer } from '/pages/common.js';
+const q = new URLSearchParams(location.search);
+const INPUT = q.get('input') || 'raw';
+const REPEAT = Number(q.get('repeat') || 1);
+const now = () => performance.now();
+const R = { input: INPUT, repeat: REPEAT, crossOriginIsolated: self.crossOriginIsolated, hardwareConcurrency: navigator.hardwareConcurrency };
+window.__partial = R;
+
+function pymod(a, b) { let m = a % b; if (m !== 0 && (b < 0) !== (m < 0)) m += b; return m; }   // Python float %
+const DEG = Math.PI / 180;                                   // CPython: degrees(x) = x / (pi / 180)
+function classify(segs, axisDeg, widthPx, minLen) {
+  const strings = [], frets = [];
+  for (const [x1, y1, x2, y2] of segs) {
+    const ang = Math.atan2(y2 - y1, x2 - x1) / DEG;
+    const d = pymod(ang - axisDeg + 90, 180) - 90;
+    const length = Math.hypot(x2 - x1, y2 - y1);
+    if (Math.abs(d) <= 10 && length >= minLen) strings.push([x1, y1, x2, y2]);
+    else if (Math.abs(Math.abs(d) - 90) <= 20 && length >= 0.4 * widthPx) frets.push([x1, y1, x2, y2]);
+  }
+  return [strings, frets];
+}
+function clusterMeans(vals, tol) {
+  vals = vals.slice().sort((a, b) => a - b); const groups = [];
+  for (const v of vals) { if (groups.length && v - groups[groups.length - 1][groups[groups.length - 1].length - 1] <= tol) groups[groups.length - 1].push(v); else groups.push([v]); }
+  return groups.map((g) => g.reduce((s, v) => s + v, 0) / g.length);
+}
+// HoughLinesP's output Mat: its rows, cols, type and channels are recorded once (R.hough_mat_layout); the segments are
+// read as consecutive groups of 4 int32 values (x1, y1, x2, y2) from data32S, whatever the Mat's shape.
+function linesOf(mat) {
+  if (!R.hough_mat_layout) R.hough_mat_layout = { rows: mat.rows, cols: mat.cols, type: mat.type(), channels: mat.channels(), data32S_length: mat.data32S.length };
+  const d = mat.data32S, out = []; for (let i = 0; i + 3 < d.length; i += 4) out.push([d[i], d[i + 1], d[i + 2], d[i + 3]]); return out;
+}
+
+async function loadCv() {
+  const t0 = now();
+  await new Promise((res, rej) => { const s = document.createElement('script'); s.src = '/nm/@techstark/opencv-js/dist/opencv.js'; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+  const tScript = now() - t0;
+  let cv = globalThis.cv;
+  if (cv instanceof Promise) cv = await cv;
+  else if (!cv.Mat) await new Promise((r) => { cv.onRuntimeInitialized = r; });
+  return { cv, script_ms: tScript, ready_ms: now() - t0 };
+}
+
+async function rgbMat(cv, job) {
+  const raw = new Uint8Array(await fetchArrayBuffer(job.raw));
+  const info = {};
+  let bytes = raw;
+  if (INPUT === 'img') {
+    const t0 = now();
+    const bmp = await createImageBitmap(new Blob([await fetchArrayBuffer(job.img)]), { colorSpaceConversion: 'none', premultiplyAlpha: 'none' });
+    const cnv = new OffscreenCanvas(bmp.width, bmp.height); const ctx = cnv.getContext('2d', { willReadFrequently: true });
+    ctx.drawImage(bmp, 0, 0); const id = ctx.getImageData(0, 0, bmp.width, bmp.height);
+    bytes = new Uint8Array(job.w * job.h * 3);
+    for (let i = 0, j = 0; i < id.data.length; i += 4, j += 3) { bytes[j] = id.data[i]; bytes[j + 1] = id.data[i + 1]; bytes[j + 2] = id.data[i + 2]; }
+    info.browser_decode_ms = now() - t0;
+    let nd = 0, maxd = 0; for (let i = 0; i < raw.length; i++) { const dd = Math.abs(raw[i] - bytes[i]); if (dd) { nd++; if (dd > maxd) maxd = dd; } }
+    info.bytes_differing_from_cv2_imread = nd; info.max_abs_byte_diff = maxd; info.decoded_size = [bmp.width, bmp.height];
+  }
+  const m = new cv.Mat(job.h, job.w, cv.CV_8UC3); m.data.set(bytes);
+  return { m, info };
+}
+
+function runQuad(cv, rgb, quad8, size, timing) {
+  const [RW, RH] = size; const res = {};
+  const h = rgb.rows, w = rgb.cols;
+  const gray = new cv.Mat(); cv.cvtColor(rgb, gray, cv.COLOR_RGB2GRAY);
+  // unrectified: segments of the whole frame whose midpoint lies in the quad, angles against the quad's long axis
+  let t0 = now();
+  const mask = cv.Mat.zeros(h, w, cv.CV_8UC1);
+  const pts = cv.matFromArray(4, 1, cv.CV_32SC2, quad8.map((v) => Math.trunc(v)));   // numpy astype(int32) truncates
+  cv.fillConvexPoly(mask, pts, new cv.Scalar(255));
+  const edges = new cv.Mat(); cv.Canny(gray, edges, 50, 150);
+  const lines = new cv.Mat(); cv.HoughLinesP(edges, lines, 1, Math.PI / 180, 30, 20, 5);
+  const hough = linesOf(lines);
+  const tU = now() - t0;
+  const md = mask.data;
+  const inside = (s) => { const yy = Math.trunc(Math.min(Math.max((s[1] + s[3]) / 2, 0), h - 1)); const xx = Math.trunc(Math.min(Math.max((s[0] + s[2]) / 2, 0), w - 1)); return md[yy * w + xx] > 0; };
+  const f = Math.fround;
+  const axis = Math.atan2(f(quad8[7] - quad8[1]), f(quad8[6] - quad8[0])) / DEG;     // float32 subtraction as numpy
+  const dx = f(quad8[2] - quad8[0]), dy = f(quad8[3] - quad8[1]);
+  const width = f(Math.sqrt(f(f(dx * dx) + f(dy * dy))));                             // np.linalg.norm of a float32 pair
+  const segsIn = hough.filter(inside);
+  const [st, fr] = classify(segsIn, axis, width, 20);
+  res.unrectified = { neck_axis_deg: axis, fretboard_width_px: width, edge_pixels: cv.countNonZero(edges), mask_pixels: cv.countNonZero(mask),
+    hough: { segments_total: hough.length, segments_in_quad: segsIn.length, string_like: st.length, fret_like: fr.length },
+    hough_segments: hough, ms_canny_hough: tU, ms_total: now() - t0 };
+  // rectified
+  t0 = now();
+  const src = cv.matFromArray(4, 1, cv.CV_32FC2, quad8);
+  const dst = cv.matFromArray(4, 1, cv.CV_32FC2, [0, 0, 0, RH, RW, RH, RW, 0]);
+  const H = cv.getPerspectiveTransform(src, dst);
+  const tH = now();
+  const rect = new cv.Mat(); cv.warpPerspective(rgb, rect, H, new cv.Size(RW, RH), cv.INTER_CUBIC);
+  const tW = now();
+  const g2 = new cv.Mat(); cv.cvtColor(rect, g2, cv.COLOR_RGB2GRAY);
+  const e2 = new cv.Mat(); cv.Canny(g2, e2, 50, 150);
+  const l2 = new cv.Mat(); cv.HoughLinesP(e2, l2, 1, Math.PI / 180, 30, 20, 5);
+  const hough2 = linesOf(l2);
+  const [st2, fr2] = classify(hough2, 0.0, RH, 40);
+  res.homography_full = [0, 1, 2].map((r) => [0, 1, 2].map((c) => H.data64F[3 * r + c]));
+  res.rectified = { size: [RW, RH], edge_pixels: cv.countNonZero(e2),
+    hough: { segments_total: hough2.length, string_like: st2.length, fret_like: fr2.length,
+      fret_x_cluster_means: clusterMeans(fr2.map((s) => (s[0] + s[2]) / 2), 8), string_y_cluster_means: clusterMeans(st2.map((s) => (s[1] + s[3]) / 2), 4) },
+    hough_segments: hough2, ms_getPerspectiveTransform: tH - t0, ms_warpPerspective: tW - tH, ms_total: now() - t0 };
+  const rectBytes = rect.data.slice();
+  for (const m of [gray, mask, pts, edges, lines, src, dst, H, rect, g2, e2, l2]) m.delete();
+  return { res, rectBytes };
+}
+
+try {
+  const { cv, script_ms, ready_ms } = await loadCv();
+  R.cv_script_load_ms = script_ms; R.cv_ready_ms = ready_ms;
+  R.type_constants = { CV_32SC4: cv.CV_32SC4, CV_32SC1: cv.CV_32SC1, CV_8UC3: cv.CV_8UC3, CV_64F: cv.CV_64F };
+  const bi = cv.getBuildInformation();
+  R.build_information_lines = bi.split('\n').filter((l) => /General configuration|Version control|Platform|Timestamp|Host|Target|C\+\+ Compiler|CPU\/HW|Baseline|Dispatched|Parallel framework|Threads|Emscripten|WASM|SIMD|pthread|Other third-party|Trace|Extra modules|To be built|Disabled/.test(l)).slice(0, 60);
+  R.has = Object.fromEntries(['Canny', 'HoughLinesP', 'HoughLines', 'getPerspectiveTransform', 'warpPerspective', 'fillConvexPoly', 'cvtColor', 'createLineSegmentDetector', 'LineSegmentDetector', 'findContours', 'minAreaRect', 'boxPoints', 'perspectiveTransform', 'findHomography', 'Sobel', 'goodFeaturesToTrack', 'calcOpticalFlowPyrLK', 'imread', 'matFromImageData'].map((k) => [k, typeof cv[k]]));
+  const jobs = await (await fetch('/frames/jobs.json')).json();
+  R.frames = {};
+  for (const job of jobs) {
+    const { m: rgb, info } = await rgbMat(cv, job);
+    const out = { ...info, quads: {} };
+    for (const [tag, quad8] of Object.entries(job.quads)) {
+      let last = null; const times = [];
+      for (let r = 0; r < REPEAT; r++) { last = runQuad(cv, rgb, quad8, job.size, times); times.push([last.res.unrectified.ms_total, last.res.rectified.ms_total]); }
+      out.quads[tag] = { ...last.res, repeat_ms_unrect_rect: times };
+      out.quads[tag].rect_upload = await upload('opencvjs', `${job.label}_${tag}_${INPUT}_rect.rgb`, last.rectBytes);
+    }
+    rgb.delete();
+    R.frames[job.label] = out;
+  }
+  finish(R);
+} catch (e) { fail(e, R); }
+</script>
+</body>

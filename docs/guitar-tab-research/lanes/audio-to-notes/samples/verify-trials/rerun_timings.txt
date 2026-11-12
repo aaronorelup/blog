@@ -1,0 +1,25 @@
+# GNU time per tool inside the verifier's batch r0464 (gtr-run slot, cores 2-3, 2026-11-10 22:42:22 UTC), from verify/logs/time-<tool>.txt
+basic-pitch: wall_s=37.79 user_s=23.37 sys_s=0.61 max_rss_kb=368536 exit=0
+bytedance: wall_s=48.84 user_s=62.19 sys_s=8.24 max_rss_kb=1157616 exit=0
+essentia-crepe-tiny: wall_s=7.17 user_s=7.11 sys_s=0.23 max_rss_kb=339072 exit=0
+fcpe: wall_s=12.91 user_s=7.72 sys_s=0.64 max_rss_kb=565948 exit=0
+pesto: wall_s=15.05 user_s=7.50 sys_s=1.45 max_rss_kb=876816 exit=0
+pyin: wall_s=18.80 user_s=11.70 sys_s=0.67 max_rss_kb=389284 exit=0
+torchcrepe-decoders: wall_s=62.63 user_s=48.16 sys_s=4.24 max_rss_kb=808768 exit=0
+transkun: wall_s=40.94 user_s=45.62 sys_s=19.86 max_rss_kb=1482624 exit=0
+
+# per-clip seconds (timings.json of each re-run). In slot run r0464: basic-pitch, pyin, fcpe, pesto, torchcrepe-tiny-decoders, essentia-crepe-tiny, transkun, bytedance. gtr-run --nolock (unpinned): aubio r0426, swiftf0 r0427, essentia-melodia r0429, essentia-pyin r0430, essentia-klapuri and essentia-multimelodia r0431, contour-segmentation r0432.
+aubio {'S1': None, 'S2n': None, 'S2s': None, 'S4': None, 'S4lead': None, 'R1b': None, 'R2': None, 'R3a': None} setup_s None
+basic-pitch {'S1': 29.334, 'S2n': 3.019} setup_s 0.03
+bytedance {'S2n': 27.754} setup_s 20.065
+essentia-crepe-tiny {'S1': 5.995} setup_s 0.012
+essentia-klapuri {'S2n': 7.857} setup_s None
+essentia-melodia {'S1': 1.298, 'S2n': 1.413, 'S2s': 1.608, 'S4': 2.119, 'S4lead': 2.219, 'R1b': 1.982, 'R2': 1.788, 'R3a': 0.589} setup_s None
+essentia-multimelodia {'S2n': 1.371} setup_s None
+essentia-pyin {'S1': 0.474, 'S2n': 0.466, 'S2s': 0.396, 'S4': 0.61, 'S4lead': 0.549, 'R1b': 0.484, 'R2': 0.516, 'R3a': 0.291} setup_s None
+fcpe {'S1': 3.549} setup_s 7.945
+pesto {'S1': 8.937} setup_s 4.195
+pyin {'S1': 16.417} setup_s 1.365
+swiftf0 {'S1': 0.71, 'S2n': 0.448, 'S2s': 0.574, 'S4': 0.813, 'S4lead': 0.947, 'R1b': 0.62, 'R2': 0.718, 'R3a': 0.287} setup_s 0.543
+torchcrepe-tiny-decoders {'R1b/viterbi': 34.729, 'R1b/weighted_argmax': 10.967, 'R1b/argmax': 12.843} setup_s None
+transkun {'S1': 40.612} setup_s 0.0

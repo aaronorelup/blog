@@ -1,0 +1,8 @@
+R1b.wav
+/home/user/gtr/lanes/audio-to-notes/out/crepe-notes/tcfullz/R1b.wav
+Onsets file not found at R1b.onsets.npz
+Running onset detection...
+Tuning offset: 6.000000000000005 cents
+/home/user/gtr/lanes/audio-to-notes/venv-crepenotes/lib/python3.11/site-packages/librosa/core/convert.py:1094: RuntimeWarning: divide by zero encountered in log2
+  midi: np.ndarray = 12 * (np.log2(np.asanyarray(frequencies)) - np.log2(440.0)) + 69
+time tcfullz R1b wall 3.71 s user 3.34 s sys 0.31 s maxrss 433284 KiB exit 0

@@ -1,0 +1,20 @@
+{
+ "torch": "2.15.0+cpu",
+ "torch_threads": 1,
+ "import_s": 2.146,
+ "model": 1,
+ "offline_DBN_s": 1.651,
+ "n_rows_offline": 43,
+ "n_downbeats_offline": 21,
+ "positions_offline": [
+  1,
+  2
+ ],
+ "online_PF_s": 5.494,
+ "n_rows_online": 46,
+ "n_downbeats_online": 13,
+ "positions_online": [
+  1,
+  2
+ ]
+}

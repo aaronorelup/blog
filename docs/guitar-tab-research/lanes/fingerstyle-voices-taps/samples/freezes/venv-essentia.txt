@@ -1,0 +1,11 @@
+cffi==2.1.1
+decorator==5.3.1
+essentia==2.1b6.dev1389
+mir-eval==0.8.2
+numpy==2.4.6
+pycparser==3.12
+pyyaml==6.0.3
+scipy==1.17.1
+six==1.17.0
+soundfile==0.14.0
+typing-extensions==4.16.0

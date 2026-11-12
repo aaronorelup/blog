@@ -1,0 +1,31 @@
+{
+ "page": "/pages/stretch.html?method=soundtouch&rate=0.75",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 4.282,
+ "external_requests": [],
+ "result": {
+  "method": "soundtouch",
+  "rate": 0.75,
+  "preservesPitch": null,
+  "file": "/inputs/S1/S1.wav",
+  "input": {
+   "sampleRate": 44100,
+   "channels": 2,
+   "duration_s": 29.833333333333332
+  },
+  "out_sampleRate": 44100,
+  "processing_ms": 171.6649999995716,
+  "output": {
+   "samples": 1741311,
+   "seconds": 39.485510204081635,
+   "expected_seconds": 39.77777777777778,
+   "peak": 0.8912625312805176
+  },
+  "wav": "/home/user/gtr/lanes/browser-audio-sync/out/stretch/S1_soundtouch_0p75.wav"
+ }
+}

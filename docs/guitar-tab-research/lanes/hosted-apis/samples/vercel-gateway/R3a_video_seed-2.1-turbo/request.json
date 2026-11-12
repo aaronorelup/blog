@@ -1,0 +1,22 @@
+{
+ "model": "bytedance/seed-2.1-turbo",
+ "messages": [
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "file",
+     "file": {
+      "filename": "R3a.mp4",
+      "file_data": "<data:video/mp4;base64 of R3a.mp4: 2368626 bytes, sha256 9badbd52c96536733b8bcfe6ab896f43f765f9b691dc53fcac9d9e00efb0a31d>"
+     }
+    },
+    {
+     "type": "text",
+     "text": "This is a video of a person playing a guitar. Watch it and answer, as JSON matching the given schema:\n- \"capo\": is a capo clamped on the guitar neck? \"present\" is \"yes\", \"no\" or \"cannot_tell\"; \"fret\" is the fret it sits behind (an integer) or null; \"evidence\" says what in the video shows it.\n- \"tuning\": the tuning of the guitar if it can be determined (for example \"standard E A D G B E\" or \"drop D\"), or \"cannot_tell\", with the evidence.\n- \"fretting_hand\": a list of consecutive time spans covering the whole video. For each span give \"start\" and \"end\" in seconds from the start of the video, whether the fretting hand is \"visible\", and if it is, the lowest and highest fret numbers the fingers of the fretting hand cover in that span (\"lowest_fret\", \"highest_fret\", integers, 0 = open strings only) or null when the frets cannot be read, plus a short \"note\" on what is seen (camera angle, hand position).\n\nAnswer with JSON only, no other text, matching this JSON schema:\n{\"type\": \"object\", \"properties\": {\"capo\": {\"type\": \"object\", \"properties\": {\"present\": {\"type\": \"string\", \"enum\": [\"yes\", \"no\", \"cannot_tell\"]}, \"fret\": {\"type\": [\"integer\", \"null\"]}, \"evidence\": {\"type\": \"string\"}}, \"required\": [\"present\", \"fret\", \"evidence\"]}, \"tuning\": {\"type\": \"object\", \"properties\": {\"tuning\": {\"type\": \"string\"}, \"evidence\": {\"type\": \"string\"}}, \"required\": [\"tuning\", \"evidence\"]}, \"fretting_hand\": {\"type\": \"array\", \"items\": {\"type\": \"object\", \"properties\": {\"start\": {\"type\": \"number\"}, \"end\": {\"type\": \"number\"}, \"visible\": {\"type\": \"boolean\"}, \"lowest_fret\": {\"type\": [\"integer\", \"null\"]}, \"highest_fret\": {\"type\": [\"integer\", \"null\"]}, \"note\": {\"type\": \"string\"}}, \"required\": [\"start\", \"end\", \"visible\", \"lowest_fret\", \"highest_fret\", \"note\"]}}}, \"required\": [\"capo\", \"tuning\", \"fretting_hand\"]}"
+    }
+   ]
+  }
+ ],
+ "max_tokens": 24576
+}

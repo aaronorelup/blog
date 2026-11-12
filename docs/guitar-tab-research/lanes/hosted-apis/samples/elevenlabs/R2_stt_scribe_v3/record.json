@@ -1,0 +1,22 @@
+{
+ "mode": "stt",
+ "audio": "/home/user/gtr/inputs/R2/R2.wav",
+ "audio_bytes": 6350444,
+ "audio_sha256": "ea09b5bd29eaabdd7c502b47112ce5b81d84643f8eee248ec62138c7a1ae5f8f",
+ "audio_duration_s": 36.0,
+ "http_status": 200,
+ "wall_s": 0.922,
+ "content_type": "application/json",
+ "response_bytes": 5856,
+ "credits_used_measured": 11,
+ "headers_kept": {
+  "character-cost": "11"
+ },
+ "model_id": "scribe_v3",
+ "params": {
+  "timestamps_granularity": "word",
+  "tag_audio_events": true
+ },
+ "cost_usd_counted": 0.00242,
+ "cost_rule": "max(credits_used * 0.00022 USD (estimate), published per-hour rate for STT)"
+}

@@ -1,0 +1,114 @@
+{
+ "input": {
+  "path": "/home/user/gtr/inputs/S6taps/S6taps.wav",
+  "sample_rate": 44100,
+  "channels": 2,
+  "frames": 1294650,
+  "subtype": "PCM_16",
+  "rms_dbfs": -18.031366096734494,
+  "seconds": 29.3571
+ },
+ "est_dir": "/home/user/gtr/lanes/source-separation/out/msst-scnet-musdb18/S6taps",
+ "stems": {
+  "bass": {
+   "file": "bass.wav",
+   "bytes": 10357288,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "FLOAT",
+   "format": "WAV",
+   "frames": 1294650,
+   "seconds": 29.3571,
+   "frames_minus_input": 0,
+   "rms_dbfs": -75.7,
+   "peak_dbfs": -51.95
+  },
+  "drums": {
+   "file": "drums.wav",
+   "bytes": 10357288,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "FLOAT",
+   "format": "WAV",
+   "frames": 1294650,
+   "seconds": 29.3571,
+   "frames_minus_input": 0,
+   "rms_dbfs": -33.08,
+   "peak_dbfs": -8.52
+  },
+  "other": {
+   "file": "other.wav",
+   "bytes": 10357288,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "FLOAT",
+   "format": "WAV",
+   "frames": 1294650,
+   "seconds": 29.3571,
+   "frames_minus_input": 0,
+   "rms_dbfs": -18.24,
+   "peak_dbfs": -1.0
+  },
+  "vocals": {
+   "file": "vocals.wav",
+   "bytes": 10357288,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "FLOAT",
+   "format": "WAV",
+   "frames": 1294650,
+   "seconds": 29.3571,
+   "frames_minus_input": 0,
+   "rms_dbfs": -73.43,
+   "peak_dbfs": -51.46
+  }
+ },
+ "sum_vs_mix": {
+  "common_rate": 44100,
+  "common_frames": 1294650,
+  "best_lag_samples": 0,
+  "residual_db_at_lag0": -36.07,
+  "note": "positive lag = the stems' sum is late relative to the mix"
+ },
+ "truth_dir": "/home/user/gtr/inputs/S6taps/stems",
+ "projection": {
+  "bass": {
+   "guitar": -0.0005,
+   "taps": 0.0006
+  },
+  "drums": {
+   "guitar": 0.0034,
+   "taps": 0.7966
+  },
+  "other": {
+   "guitar": 0.9947,
+   "taps": 0.2129
+  },
+  "vocals": {
+   "guitar": -0.0004,
+   "taps": -0.0002
+  }
+ },
+ "projection_column_sums": {
+  "guitar": 0.9972,
+  "taps": 1.0099
+ },
+ "si_sdr_db_cross": {
+  "bass": {
+   "guitar": -7.76,
+   "taps": -19.69
+  },
+  "drums": {
+   "guitar": -34.44,
+   "taps": 7.57
+  },
+  "other": {
+   "guitar": 21.73,
+   "taps": -27.04
+  },
+  "vocals": {
+   "guitar": -12.01,
+   "taps": -31.01
+  }
+ }
+}

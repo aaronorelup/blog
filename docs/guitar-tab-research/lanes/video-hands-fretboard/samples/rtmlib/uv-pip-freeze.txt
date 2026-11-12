@@ -1,0 +1,10 @@
+flatbuffers==25.12.19
+numpy==2.4.6
+onnxruntime==1.31.1
+opencv-contrib-python==5.0.0.93
+opencv-python==5.0.0.93
+packaging==26.3
+pillow==13.0.0
+protobuf==7.36.2
+rtmlib==0.0.16
+tqdm==4.70.1

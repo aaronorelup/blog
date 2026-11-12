@@ -1,0 +1,6 @@
+ok wall=6.0s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/probe/probe_headless_shell.json
+ok wall=43.8s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/sync/sync_s4_buffer_busy0.json
+ok wall=39.6s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/video/video_mp4.json
+ok wall=65.5s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/metronome/metronome_lookahead_busy100.json
+ok wall=65.3s -> /home/user/gtr/lanes/browser-audio-sync/verify/out/metronome/metronome_tone_busy100.json
+[gtr-run r0433] browser-audio-sync/verify-rerun "verify: re-run of probe (r0042), S4 sync buffer (r0143), R3a.mp4 rVFC+seek (r0157), metronome look-ahead and Tone.js busy 61 s (r0199); unpinned like the originals (slot queue 8+ jobs)" wall=222.96s cpu=11.3s rss=416.7MB cores=None exit=0 slot_wait=0.0s

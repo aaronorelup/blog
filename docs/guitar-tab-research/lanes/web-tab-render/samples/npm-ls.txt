@@ -1,0 +1,12 @@
+web@1.0.0 /home/user/gtr/lanes/web-tab-render/web
++-- @coderline/alphatab@1.9.0
++-- abcjs@6.7.2
++-- chordsheetjs@18.0.0
++-- opensheetmusicdisplay@2.3.0
++-- svguitar@2.10.1
++-- tonal@6.5.1
++-- verovio@6.4.1
++-- vexchords@1.2.0
++-- vexflow@5.0.0
+`-- vextab@4.0.5
+

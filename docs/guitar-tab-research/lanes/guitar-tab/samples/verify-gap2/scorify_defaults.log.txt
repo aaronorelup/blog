@@ -1,0 +1,6 @@
+default {"level":"maestro","maxFretSpan":9,"maxShiftFretsPerSecond":100,"fingerSetupSeconds":0,"maxPolyphony":16,"maxAttacksPerSecond":32,"minDuration":[1,64],"maxFret":36,"rightHand":"pick"}
+amateur {"level":"amateur","maxFretSpan":4,"maxShiftFretsPerSecond":16,"fingerSetupSeconds":0.01666666666666667,"maxPolyphony":6,"maxAttacksPerSecond":7,"maxPickedPerBar":4,"minDuration":[1,4],"maxFret":36,"rightHand":"pick"}
+amateur keys mentioning fret: maxFretSpan=4; maxShiftFretsPerSecond=16; maxFret=36; highFretCosts=[{"above":8,"perFret":1},{"above":10,"perFret":4}]
+classicalGuitar strings: [{"id":"s6","number":6,"open":"E2","frets":19,"capo":0},{"id":"s5","number":5,"open":"A2","frets":19,"capo":0},{"id":"s4","number":4,"open":"D3","frets":19,"capo":0},{"id":"s3","number":3,"open":"G3","frets":19,"capo":0},{"id":"s2","number":2,"open":"B3","frets":19,"capo":0},{"id":"s1","number":1,"open":"E4","frets":19,"capo":0}]
+classicalGuitar keys: kind, id, name, strings
+[gtr-run r0689] guitar-tab/scorify-0.4.0 "verify (verify-gapfill-guitar-tab round 2): print scorify defaults (light job, no slot)" wall=0.06s cpu=0.1s rss=53.1MB cores=None exit=0 slot_wait=0.0s

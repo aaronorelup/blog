@@ -1,0 +1,31 @@
+{
+ "input_csv": "out/voicesplit/S6taps/B1_threshold_T55.csv",
+ "n_in": 175,
+ "n_in_bass": 49,
+ "n_in_melody": 126,
+ "pooled": {
+  "n_out": 171,
+  "tuttut_s": 0.057,
+  "unjoined": 0,
+  "collisions": 3
+ },
+ "sep": {
+  "bass": {
+   "n_in": 49,
+   "n_out": 49,
+   "tuttut_s": 0.002,
+   "unjoined": 0
+  },
+  "melody": {
+   "n_in": 126,
+   "n_out": 126,
+   "tuttut_s": 0.026,
+   "unjoined": 0
+  },
+  "collisions": 6
+ },
+ "pooled_vs_sep": {
+  "notes_in_both": 171,
+  "same_string_and_fret": 159
+ }
+}

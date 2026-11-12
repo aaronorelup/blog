@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>VexFlow TabStave trial</title>
+<style>body { margin: 0; background: #fff; } #out { padding: 10px; }</style>
+<script src="/nm/vexflow/build/cjs/vexflow.js"></script>
+</head>
+<body>
+<div id="out"></div>
+<script>
+// ?truth=/inputs/S2n/S2n.truth.json  draws the truth tab with VexFlow 5's low-level API:
+// one TabStave per bar, two Voices (melody, bass) of TabNotes, GhostNotes for rests, Formatter.joinVoices.
+const q = new URLSearchParams(location.search);
+window.__log = [];
+(async () => {
+  const t0 = performance.now();
+  try {
+    const VF = VexFlow;
+    if (VF.loadFonts) await VF.loadFonts('Bravura', 'Academico');
+    if (VF.setFonts) VF.setFonts('Bravura', 'Academico');
+    const t = await (await fetch(q.get('truth'))).json();
+    const bpm = t.tempo_bpm; const six = 60 / bpm / 4;
+    const [num, den] = t.time_signature.split('/').map(Number);
+    const barUnits = num * 16 / den;
+    const notes = t.notes.filter((n) => n.string && n.fret !== null);
+    const voices = [...new Set(notes.map((n) => n.voice))].sort((a, b) => (a === 'melody' ? -1 : b === 'melody' ? 1 : a.localeCompare(b)));
+    const nBars = Math.floor(Math.round(Math.max(...notes.map((n) => n.onset)) / six) / barUnits) + 1;
+    const dur = { 16: 'w', 12: 'hd', 8: 'h', 6: 'qd', 4: 'q', 3: '8d', 2: '8', 1: '16' };
+    const split = (u) => { const out = []; for (const s of [16, 12, 8, 6, 4, 3, 2, 1]) while (u >= s) { out.push(dur[s]); u -= s; } return out; };
+    const div = document.getElementById('out');
+    const renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
+    const perLine = 4, barW = 295, lineH = 130;
+    renderer.resize(40 + perLine * barW, 40 + Math.ceil(nBars / perLine) * lineH);
+    const ctx = renderer.getContext();
+    let drawn = 0;
+    for (let b = 0; b < nBars; b++) {
+      const x = 10 + (b % perLine) * barW, y = 10 + Math.floor(b / perLine) * lineH;
+      const stave = new VF.TabStave(x, y, barW);
+      if (b % perLine === 0) stave.addClef('tab');
+      stave.setContext(ctx).draw();
+      const b0 = b * barUnits, b1 = (b + 1) * barUnits;
+      const vfVoices = [];
+      for (const v of voices) {
+        const groups = new Map();
+        for (const n of notes.filter((n) => n.voice === v)) {
+          const k = Math.round(n.onset / six);
+          if (!groups.has(k)) groups.set(k, []);
+          groups.get(k).push(n);
+        }
+        const starts = [...groups.keys()].sort((a, c) => a - c);
+        const tickables = [];
+        let pos = b0;
+        for (const s of starts.filter((s) => s >= b0 && s < b1)) {
+          if (s > pos) split(s - pos).forEach((d) => tickables.push(new VF.GhostNote({ duration: d })));
+          const nxt = starts.find((x2) => x2 > s);
+          const end = Math.min(nxt === undefined ? b1 : nxt, b1);
+          const parts = split(end - s);
+          const tn = new VF.TabNote({ positions: groups.get(s).map((n) => ({ str: n.string, fret: n.fret })), duration: parts[0] });
+          tickables.push(tn); drawn += groups.get(s).length;
+          parts.slice(1).forEach((d) => tickables.push(new VF.GhostNote({ duration: d })));
+          pos = end;
+        }
+        if (pos < b1) split(b1 - pos).forEach((d) => tickables.push(new VF.GhostNote({ duration: d })));
+        const voice = new VF.Voice({ numBeats: num, beatValue: den });
+        voice.addTickables(tickables);
+        vfVoices.push(voice);
+      }
+      new VF.Formatter().joinVoices(vfVoices).format(vfVoices, barW - (b % perLine === 0 ? 50 : 20));
+      vfVoices.forEach((v) => v.draw(ctx, stave));
+    }
+    window.__info = { ok: true, ms: performance.now() - t0, version: VF.VERSION || null, bars: nBars, voices, notesDrawn: drawn,
+      svgBytes: div.querySelector('svg').outerHTML.length };
+  } catch (e) {
+    window.__info = { ok: false, error: String(e && e.stack || e).slice(0, 1200) };
+  }
+  window.__rendered = true;
+})();
+</script>
+</body>
+</html>

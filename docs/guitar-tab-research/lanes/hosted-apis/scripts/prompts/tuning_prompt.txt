@@ -1,0 +1,6 @@
+Listen to this audio recording of a guitar. From the sound alone, answer as JSON matching the given schema:
+- "open_strings_midi": the pitches of the six open strings, lowest string first, as MIDI note numbers (standard tuning E2 A2 D3 G3 B3 E4 is [40, 45, 50, 55, 59, 64]; drop D is [38, 45, 50, 55, 59, 64]); these are the strings without a capo.
+- "tuning_name": a short name for that tuning.
+- "offset_cents": how far the whole recording is tuned away from concert pitch A4 = 440 Hz, in cents (0 if in tune, negative if flat).
+- "capo_fret": the fret a capo sits on, or 0 if no capo is used.
+- "evidence": a short explanation.

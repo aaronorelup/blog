@@ -1,0 +1,4 @@
+#!/bin/sh
+# gtr-eval launcher: runs the scorer with its own Python venv, from any directory and from inside any other venv.
+# -I ignores PYTHON* variables, the user site and the current directory, so another venv cannot leak in; -B writes no .pyc.
+exec /home/user/gtr/eval/venv/bin/python -I -B /home/user/gtr/eval/gtr_eval.py "$@"

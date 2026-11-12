@@ -1,0 +1,7 @@
+{"type": "object",
+ "properties": {
+  "capo_used": {"type": "string", "enum": ["yes", "no", "cannot_tell"]},
+  "capo_fret": {"type": ["integer", "null"]},
+  "key": {"type": "string"},
+  "evidence": {"type": "string"}},
+ "required": ["capo_used", "capo_fret", "key", "evidence"]}

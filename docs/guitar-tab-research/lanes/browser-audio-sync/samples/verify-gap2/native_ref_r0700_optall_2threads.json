@@ -1,0 +1,50 @@
+{
+ "onnxruntime": "1.31.1",
+ "numpy": "2.4.6",
+ "providers": [
+  "CPUExecutionProvider"
+ ],
+ "inputs": [
+  {
+   "name": "mix",
+   "shape": [
+    1,
+    2,
+    343980
+   ],
+   "type": "tensor(float)"
+  }
+ ],
+ "outputs": [
+  {
+   "name": "stems",
+   "shape": [
+    1,
+    6,
+    2,
+    343980
+   ],
+   "type": "tensor(float)"
+  }
+ ],
+ "graph_optimization": "all",
+ "sources": [
+  "drums",
+  "bass",
+  "other",
+  "vocals",
+  "guitar",
+  "piano"
+ ],
+ "input_shape": [
+  2,
+  441000
+ ],
+ "native_sr": 44100,
+ "session_create_s": 8.788,
+ "separate_s": 8.379,
+ "affinity": [
+  0,
+  1
+ ]
+}

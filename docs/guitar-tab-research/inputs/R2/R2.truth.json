@@ -1,0 +1,31 @@
+{
+ "id": "R2",
+ "title": "Josh Woodward - I Want to Destroy Something Beautiful (excerpt from 32.0 s)",
+ "what": "Real full-band song with singing: Josh Woodward, 'I Want to Destroy Something Beautiful' (album Dirty Wings), excerpt 32.000-68.000 s of the song (R2full). No ground truth. The artist's song page lists Key D# minor, Tempo 72 bpm, Meter 4/4 Swing (artist's metadata, not checked here). stems/instrumental.wav is the artist's own instrumental version; stems/vocals_derived.wav = song minus instrumental, computed here.",
+ "audio": "R2.wav",
+ "duration_s": 36.0,
+ "sample_rate": 44100,
+ "channels": 2,
+ "tempo_bpm": null,
+ "time_signature": null,
+ "key": null,
+ "tuning_midi": null,
+ "capo": null,
+ "tuning_offset_cents": null,
+ "notes": [],
+ "beats": [],
+ "downbeats": [],
+ "chords": [],
+ "taps": [],
+ "stems": {
+  "instrumental": "stems/instrumental.wav",
+  "vocals_derived": "stems/vocals_derived.wav"
+ },
+ "source": {
+  "kind": "recording",
+  "url": "https://www.joshwoodward.com/song/IWantToDestroySomethingBeautiful",
+  "license": "CC BY 4.0",
+  "license_quote": "This work is licensed under a Creative Commons Attribution 4.0 License",
+  "attribution": "\"I Want to Destroy Something Beautiful\" by Josh Woodward (album Dirty Wings), https://www.joshwoodward.com/, licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)."
+ }
+}

@@ -1,0 +1,213 @@
+{
+ "model": "xiaomi/mimo-v2.6-flash",
+ "frames": [
+  {
+   "t_s": 0.0,
+   "file": "f_01.jpg",
+   "bytes": 86756,
+   "sha256": "e02c8a47f26022055e17bd66f4f47f614ca43d9a090a69cce0de33d1985be21b"
+  },
+  {
+   "t_s": 1.0,
+   "file": "f_02.jpg",
+   "bytes": 86371,
+   "sha256": "3da2f840fa387c9f2bc266f29281bd264e5d92db15cd624fe88e7fa118064b96"
+  },
+  {
+   "t_s": 2.0,
+   "file": "f_03.jpg",
+   "bytes": 87049,
+   "sha256": "eef2e3d3673f43c3252d4dc337abd5fef93616c8c1b21e4e539451e72e59f67b"
+  },
+  {
+   "t_s": 3.0,
+   "file": "f_04.jpg",
+   "bytes": 86814,
+   "sha256": "5b0f4ad933bdf76ca638bb966cc3068b628a564787ce1e3ffdaaf1aa74a70ef0"
+  },
+  {
+   "t_s": 4.0,
+   "file": "f_05.jpg",
+   "bytes": 84963,
+   "sha256": "7d3880a103b22737ef3a7f7aa37dd84ee793fffe8624cdafc0c186f26308b75b"
+  },
+  {
+   "t_s": 5.0,
+   "file": "f_06.jpg",
+   "bytes": 85611,
+   "sha256": "3972c957f6e178c4d3ab71bf817f2d9d5f91cd539d8fa6523827ba427fe4773a"
+  },
+  {
+   "t_s": 6.0,
+   "file": "f_07.jpg",
+   "bytes": 87781,
+   "sha256": "c6eb714adab0ec354a30b29c2e68cd5a51fa9efe39fed35942bdd26714f09ee0"
+  },
+  {
+   "t_s": 7.0,
+   "file": "f_08.jpg",
+   "bytes": 86812,
+   "sha256": "0ff6a3363c3eeaa92b7e78bfc89405b3e4a2038aa2ec88accdf30ec9a3e2a68c"
+  },
+  {
+   "t_s": 8.0,
+   "file": "f_09.jpg",
+   "bytes": 86259,
+   "sha256": "e5ebb68facef888df33f549623a93d4992cc72aa9e06a04a456000211d1e039a"
+  },
+  {
+   "t_s": 9.0,
+   "file": "f_10.jpg",
+   "bytes": 85974,
+   "sha256": "a1f7262deb1d09a1e3539dca298874b1d85b980e0edb552440ee826fb186595b"
+  },
+  {
+   "t_s": 10.0,
+   "file": "f_11.jpg",
+   "bytes": 86724,
+   "sha256": "f38fe7077df7e6d56e6ac9760f0e329276f46fb49483d96f64e87446c638e306"
+  },
+  {
+   "t_s": 11.0,
+   "file": "f_12.jpg",
+   "bytes": 86713,
+   "sha256": "ca53b8707ece2bf6504c91a011d5289ca99f3f180c3c316cf40abd7c8ee558b4"
+  },
+  {
+   "t_s": 12.0,
+   "file": "f_13.jpg",
+   "bytes": 86088,
+   "sha256": "d0094c40d7a861cf66fe683fd43f25b0bed1f154f88364d9ffbb91766e7c9bb2"
+  },
+  {
+   "t_s": 13.0,
+   "file": "f_14.jpg",
+   "bytes": 87909,
+   "sha256": "d795379ec88bf7b516b11f481e1ab6ae41e3e49652e750375145a68fd5fc26d9"
+  },
+  {
+   "t_s": 14.0,
+   "file": "f_15.jpg",
+   "bytes": 88159,
+   "sha256": "d7d8dd1c5999473026386efefc1a26138c06efa003e58b68228620e0b1d6b131"
+  },
+  {
+   "t_s": 15.0,
+   "file": "f_16.jpg",
+   "bytes": 87872,
+   "sha256": "7827e10099b1d3d9a9b0ef05a7f19ce3320b2740af6d2529f065c409648fa2be"
+  },
+  {
+   "t_s": 16.0,
+   "file": "f_17.jpg",
+   "bytes": 88753,
+   "sha256": "1fbe13db7a560f15ee70e5a0d5767325e73dbf19aaa69b9254791f6a91708c1e"
+  },
+  {
+   "t_s": 17.0,
+   "file": "f_18.jpg",
+   "bytes": 88729,
+   "sha256": "ca2288f04a1af7647962f799ea4ceb82a87337e9e2105f5e596d82f590c669dd"
+  }
+ ],
+ "prompt": "The images below are frames taken from the video at one frame per second; the label before each frame gives its time in seconds from the start of the video.\nThis is a video of a person playing a guitar. Watch it and answer, as JSON matching the given schema:\n- \"capo\": is a capo clamped on the guitar neck? \"present\" is \"yes\", \"no\" or \"cannot_tell\"; \"fret\" is the fret it sits behind (an integer) or null; \"evidence\" says what in the video shows it.\n- \"tuning\": the tuning of the guitar if it can be determined (for example \"standard E A D G B E\" or \"drop D\"), or \"cannot_tell\", with the evidence.\n- \"fretting_hand\": a list of consecutive time spans covering the whole video. For each span give \"start\" and \"end\" in seconds from the start of the video, whether the fretting hand is \"visible\", and if it is, the lowest and highest fret numbers the fingers of the fretting hand cover in that span (\"lowest_fret\", \"highest_fret\", integers, 0 = open strings only) or null when the frets cannot be read, plus a short \"note\" on what is seen (camera angle, hand position).\n",
+ "response_format": {
+  "type": "json_schema",
+  "json_schema": {
+   "name": "answer",
+   "schema": {
+    "type": "object",
+    "properties": {
+     "capo": {
+      "type": "object",
+      "properties": {
+       "present": {
+        "type": "string",
+        "enum": [
+         "yes",
+         "no",
+         "cannot_tell"
+        ]
+       },
+       "fret": {
+        "type": [
+         "integer",
+         "null"
+        ]
+       },
+       "evidence": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "present",
+       "fret",
+       "evidence"
+      ]
+     },
+     "tuning": {
+      "type": "object",
+      "properties": {
+       "tuning": {
+        "type": "string"
+       },
+       "evidence": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "tuning",
+       "evidence"
+      ]
+     },
+     "fretting_hand": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "start": {
+         "type": "number"
+        },
+        "end": {
+         "type": "number"
+        },
+        "visible": {
+         "type": "boolean"
+        },
+        "lowest_fret": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "highest_fret": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "note": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "start",
+        "end",
+        "visible",
+        "lowest_fret",
+        "highest_fret",
+        "note"
+       ]
+      }
+     }
+    },
+    "required": [
+     "capo",
+     "tuning",
+     "fretting_hand"
+    ]
+   }
+  }
+ },
+ "max_tokens": 16384
+}

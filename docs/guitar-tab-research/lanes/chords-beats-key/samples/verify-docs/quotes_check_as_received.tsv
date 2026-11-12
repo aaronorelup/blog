@@ -1,0 +1,619 @@
+section	status	found_in	quote	block_start
+Sections	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/LICENSE	Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 	- MIT grant sentence: "Permission is hereby granted, free of
+Sections	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/LICENSE	), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:	- MIT grant sentence: "Permission is hereby granted, free of
+Sections	WS	https://raw.githubusercontent.com/EvanPurkhiser/keyfinder-cli/main/LICENSE	c) You must license the entire work, as a whole, under this License to anyone who comes into possession of a copy. This License will therefore apply, along with any applicable section 7 additional terms, to the whole of the work, and all its parts, regardless of how they are packaged.	- GPL-3.0 section 5(c): "c) You must license the entire work
+Sections	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/COPYING	b) You must cause any work that you distribute or publish, that in whole or in part contains or is derived from the Program or any part thereof, to be licensed as a whole at no charge to all third parties under the terms of this License.	- GPL-2.0 section 2(b): "b) You must cause any work that you
+Sections	WS	https://raw.githubusercontent.com/MTG/essentia.js/master/LICENSE	Notwithstanding any other provision of this License, if you modify the Program, your modified version must prominently offer all users interacting with it remotely through a computer network (if your version supports such interaction) an opportunity to receive the Corresponding Source of your versio	- AGPL-3.0 section 13: "Notwithstanding any other provision 
+Sections	WS	https://raw.githubusercontent.com/mjhydri/BeatNet/main/LICENSE	Subject to the terms and conditions of this Public License, the Licensor hereby grants You a worldwide, royalty-free, non-sublicensable, non-exclusive, irrevocable license to exercise the Licensed Rights in the Licensed Material to: a. reproduce and Share the Licensed Material, in whole or in part; 	- CC BY 4.0 section 2(a)(1): "Subject to the terms and condi
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md	Beat This! Accurate Beat Tracking Without DBN Postprocessing	- What: beat and downbeat tracker from the ISMIR 2024 paper 
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md	beat_this path/to/audio.file -o path/to/output.beats	- CLI: "beat_this path/to/audio.file -o path/to/output.beats
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md	beat_this path/to/*.mp3 path/to/whole_directory/ -o path/to/output_directory	- CLI: "beat_this path/to/audio.file -o path/to/output.beats
+Beat This! (beat and downbea	MISSING	-	With `--gpu=-1` it will force the CPU.	- CLI: "beat_this path/to/audio.file -o path/to/output.beats
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md	If you want to use the DBN for postprocessing, add `--dbn`	- CLI: "beat_this path/to/audio.file -o path/to/output.beats
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md	from beat_this.inference import File2Beats	- Python: "from beat_this.inference import File2Beats", "fil
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md	file2beats = File2Beats(checkpoint_path=	- Python: "from beat_this.inference import File2Beats", "fil
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md	, device=	- Python: "from beat_this.inference import File2Beats", "fil
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md	, dbn=False)	- Python: "from beat_this.inference import File2Beats", "fil
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md	beats, downbeats = file2beats(audio_path)	- Python: "from beat_this.inference import File2Beats", "fil
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md	torch.hub.load('CPJKU/beat_this', 'beat_this', 'final0', device='cuda')	- torch.hub: "torch.hub.load('CPJKU/beat_this', 'beat_this',
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md	tqdm einops soxr rotary-embedding-torch	- Needs: PyTorch plus "tqdm einops soxr rotary-embedding-tor
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md	will use the first GPU in your system by default, and fall back to CPU if PyTorch does not have CUDA access.	- Needs: PyTorch plus "tqdm einops soxr rotary-embedding-tor
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md	Available models	- Models (README "Available models"): `final0..2` "trained o
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md	trained on all data except the GTZAN dataset ... About 78 MB per model	- Models (README "Available models"): `final0..2` "trained o
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md	About 8.1 MB per model	- Models (README "Available models"): `final0..2` "trained o
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md	https://cloud.cp.jku.at/index.php/s/7ik4RrBKTS273gp	- Models (README "Available models"): `final0..2` "trained o
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/beat_this/inference.py	if sr != 22050: signal = soxr.resample(signal, in_rate=sr, out_rate=22050)	- Input: an audio file path; the inference code resamples to
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/beat_this/utils.py	each line has a time in seconds, a tab, and a beat number (1 = downbeat)	- Output: two NumPy arrays of times in seconds, `beats` and 
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/LICENSE	Copyright (c) 2024 Institute of Computational Perception, JKU Linz, Austria	- a. Code: MIT, https://raw.githubusercontent.com/CPJKU/beat
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md	License	- b. Weights: README "License" section: "The code and the pu
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md	The code and the published model weights are released under the [MIT license](LICENSE). Note that some of the training files are fully copyrighted or under limited Creative Commons licenses, and it is up to the user to assess whether this may impact their use case.	- b. Weights: README "License" section: "The code and the pu
+Beat This! (beat and downbea	WS	https://zenodo.org/api/records/3371780	cc-by-4.0	- c. Training data: annotations listed at https://raw.github
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/urinieto/harmonixset/main/README.md	Users must agree to the License included before using these data.	- c. Training data: annotations listed at https://raw.github
+Beat This! (beat and downbea	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md	the results may be unfairly good if you run inference on any file from the training datasets	- c. Training data: annotations listed at https://raw.github
+BeatNet and BeatNet+ (beat, 	WS	https://raw.githubusercontent.com/mjhydri/BeatNet/main/README.md	BeatNet: Real-time and Offline Joint Music Beat, Downbeat, Tempo, and Meter Tracking System	- What: "BeatNet: Real-time and Offline Joint Music Beat, Do
+BeatNet and BeatNet+ (beat, 	WS	https://raw.githubusercontent.com/mjhydri/BeatNet/main/README.md	the original ISMIR-2021 paper	- What: "BeatNet: Real-time and Offline Joint Music Beat, Do
+BeatNet and BeatNet+ (beat, 	LOOSE	https://raw.githubusercontent.com/mjhydri/BeatNet/main/README.md	New in v1.2.0: The official training pipeline is now included	- What: "BeatNet: Real-time and Offline Joint Music Beat, Do
+BeatNet and BeatNet+ (beat, 	WS	https://raw.githubusercontent.com/mjhydri/BeatNet/main/README.md	from BeatNet.BeatNet import BeatNet	- How to call (README, https://raw.githubusercontent.com/mjh
+BeatNet and BeatNet+ (beat, 	WS	https://raw.githubusercontent.com/mjhydri/BeatNet/main/README.md	estimator = BeatNet(1, mode='offline', inference_model='DBN', plot=[], thread=False)	- How to call (README, https://raw.githubusercontent.com/mjh
+BeatNet and BeatNet+ (beat, 	WS	https://raw.githubusercontent.com/mjhydri/BeatNet/main/README.md	Output = estimator.process(	- How to call (README, https://raw.githubusercontent.com/mjh
+BeatNet and BeatNet+ (beat, 	WS	https://raw.githubusercontent.com/mjhydri/BeatNet/main/README.md	device: Type of device being used. Cuda or cpu (by default).	- How to call (README, https://raw.githubusercontent.com/mjh
+BeatNet and BeatNet+ (beat, 	WS	https://raw.githubusercontent.com/mjhydri/BeatNet/main/README.md	model_1_weights.pt # Pre-trained weights (GTZAN)	- Models: three CRNN weight files in the repository: "model_
+BeatNet and BeatNet+ (beat, 	WS	https://raw.githubusercontent.com/mjhydri/BeatNet/main/README.md	model_2_weights.pt # Pre-trained weights (Ballroom)	- Models: three CRNN weight files in the repository: "model_
+BeatNet and BeatNet+ (beat, 	WS	https://raw.githubusercontent.com/mjhydri/BeatNet/main/README.md	model_3_weights.pt # Pre-trained weights (Rock Corpus)	- Models: three CRNN weight files in the repository: "model_
+BeatNet and BeatNet+ (beat, 	WS	https://raw.githubusercontent.com/mjhydri/BeatNet/main/README.md	Raw audio waveform object or directory.	- Input: "Raw audio waveform object or directory." "By using
+BeatNet and BeatNet+ (beat, 	WS	https://raw.githubusercontent.com/mjhydri/BeatNet/main/README.md	By using the audio directory as the system input, the system automatically resamples the audio file to 22050 Hz. However, in the case of using an audio object as the input, make sure that the audio sample rate is equal to 22050 Hz.	- Input: "Raw audio waveform object or directory." "By using
+BeatNet and BeatNet+ (beat, 	WS	https://raw.githubusercontent.com/mjhydri/BeatNet/main/README.md	A vector including beats and downbeats columns, respectively with the following shape: numpy_array(num_beats, 2).	- Output: "A vector including beats and downbeats columns, r
+BeatNet and BeatNet+ (beat, 	WS	https://raw.githubusercontent.com/mjhydri/BeatNet/main/README.md	System Output	- Output: "A vector including beats and downbeats columns, r
+BeatNet and BeatNet+ (beat, 	WS	https://raw.githubusercontent.com/mjhydri/BeatNet/main/README.md	CC BY 4.0	- a. Code: the repository LICENSE file is the Creative Commo
+BeatNet and BeatNet+ (beat, 	WS	https://raw.githubusercontent.com/mjhydri/BeatNet/main/README.md	--dataset BALLROOM GTZAN BEATLES CMR ROCK_CORPUS	- c. Training data: the README names GTZAN, Ballroom and Roc
+All-In-One (`allin1`): tempo	WS	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/LICENSE	Taejun Kim	- What: music structure analyzer `allin1`; copyright holder 
+All-In-One (`allin1`): tempo	WS	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md	allin1 [-h] [-o OUT_DIR] [-v] [--viz-dir VIZ_DIR] [-s] [--sonif-dir SONIF_DIR] [-a] [-e] [-m MODEL] [-d DEVICE] [-k] [--demix-dir DEMIX_DIR] [--spec-dir SPEC_DIR]	- CLI: "allin1 [-h] [-o OUT_DIR] [-v] [--viz-dir VIZ_DIR] [-
+All-In-One (`allin1`): tempo	WS	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md	-d DEVICE ... (default: cuda if available else cpu)	- CLI: "allin1 [-h] [-o OUT_DIR] [-v] [--viz-dir VIZ_DIR] [-
+All-In-One (`allin1`): tempo	WS	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md	import allin1	- Python: "import allin1", `allin1.analyze(...)`, `allin1.lo
+All-In-One (`allin1`): tempo	WS	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md	It will mix metronome clicks for beats and downbeats, and event sounds for segment boundaries	- Python: "import allin1", `allin1.analyze(...)`, `allin1.lo
+All-In-One (`allin1`): tempo	WS	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md	Required for Linux and Windows; macOS will auto-install	- Needs: NATTEN ("Required for Linux and Windows; macOS will
+All-In-One (`allin1`): tempo	WS	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md	pip install git+https://github.com/CPJKU/madmom	- Needs: NATTEN ("Required for Linux and Windows; macOS will
+All-In-One (`allin1`): tempo	WS	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/src/allin1/demix.py	sys.executable, '-m', 'demucs.separate'	- Needs: NATTEN ("Required for Linux and Windows; macOS will
+All-In-One (`allin1`): tempo	WS	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/src/allin1/demix.py	'--name', 'htdemucs'	- Needs: NATTEN ("Required for Linux and Windows; macOS will
+All-In-One (`allin1`): tempo	WS	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md	Speed	- Speed claim (README "Speed", author's figure): "With an RT
+All-In-One (`allin1`): tempo	WS	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md	With an RTX 4090 GPU and Intel i9-10940X CPU (14 cores, 28 threads, 3.30 GHz), the `harmonix-all` model processed 10 songs (33 minutes) in 73 seconds.	- Speed claim (README "Speed", author's figure): "With an RT
+All-In-One (`allin1`): tempo	WS	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md	bpm	- Output: JSON per file with "bpm", "beats" (seconds), "down
+All-In-One (`allin1`): tempo	WS	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md	beats	- Output: JSON per file with "bpm", "beats" (seconds), "down
+All-In-One (`allin1`): tempo	WS	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md	downbeats	- Output: JSON per file with "bpm", "beats" (seconds), "down
+All-In-One (`allin1`): tempo	WS	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md	beat_positions	- Output: JSON per file with "bpm", "beats" (seconds), "down
+All-In-One (`allin1`): tempo	WS	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md	segments	- Output: JSON per file with "bpm", "beats" (seconds), "down
+All-In-One (`allin1`): tempo	WS	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md	label	- Output: JSON per file with "bpm", "beats" (seconds), "down
+All-In-One (`allin1`): tempo	MISSING	-	at 100 FPS, equivalent to 0.01 seconds per frame	- Output: JSON per file with "bpm", "beats" (seconds), "down
+All-In-One (`allin1`): tempo	MISSING	-	The models are trained on the [Harmonix Set] with 8-fold cross-validation.	- Models: "The models are trained on the [Harmonix Set] with
+All-In-One (`allin1`): tempo	WS	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md	`harmonix-all`: (Default) An ensemble model averaging the predictions of 8 models trained on each fold.	- Models: "The models are trained on the [Harmonix Set] with
+All-In-One (`allin1`): tempo	WS	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/LICENSE	Copyright (c) 2023 Taejun Kim	- a. Code: MIT, https://raw.githubusercontent.com/mir-aidj/a
+All-In-One (`allin1`): tempo	WS	https://huggingface.co/api/models/taejunkim/allinone	license:mit	- b. Weights: Hugging Face model repository `taejunkim/allin
+All-In-One (`allin1`): tempo	WS	https://huggingface.co/taejunkim/allinone/raw/main/README.md	license: mit	- b. Weights: Hugging Face model repository `taejunkim/allin
+All-In-One (`allin1`): tempo	WS	https://raw.githubusercontent.com/urinieto/harmonixset/main/README.md	YouTube URLs	- c. Training data: Harmonix Set (annotations repository MIT
+All-In-One (`allin1`): tempo	WS	https://raw.githubusercontent.com/urinieto/harmonixset/main/README.md	Users must agree to the License included before using these data.	- c. Training data: Harmonix Set (annotations repository MIT
+madmom (beats, downbeats, te	WS	https://raw.githubusercontent.com/CPJKU/madmom/main/README.rst	Python 2.7 or Python 3.5 or newer	- Install: "Python 2.7 or Python 3.5 or newer" with numpy, s
+madmom (beats, downbeats, te	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md	the current version on PyPI only supports Python<3.10 and numpy<1.20	- Install: "Python 2.7 or Python 3.5 or newer" with numpy, s
+madmom (beats, downbeats, te	WS	https://raw.githubusercontent.com/mjhydri/BeatNet/main/README.md	madmom 0.16.1 has compatibility issues with Python >= 3.10 and NumPy >= 1.24	- Install: "Python 2.7 or Python 3.5 or newer" with numpy, s
+madmom (beats, downbeats, te	WS	https://raw.githubusercontent.com/CPJKU/madmom/main/madmom/features/chords.py	array([(0. , 0.2, 'N'), (0.2, 1.6, 'F:maj'), (1.6, 2.4..., 'A:maj'), (2.4..., 4.1, 'D:min')]	- Chords: segments `(start, end, label)` in seconds, e.g. "a
+madmom (beats, downbeats, te	WS	https://raw.githubusercontent.com/CPJKU/madmom/main/madmom/features/chords.py	Ids 0-11 encode major chords starting with root 'A', 12-23 minor chords. Id 24 represents 'N', the no-chord class.	- Chords: segments `(start, end, label)` in seconds, e.g. "a
+madmom (beats, downbeats, te	WS	https://raw.githubusercontent.com/CPJKU/madmom/main/madmom/features/downbeats.py	int or list	- Downbeats: `DBNDownBeatTrackingProcessor` takes `beats_per
+madmom (beats, downbeats, te	WS	https://raw.githubusercontent.com/CPJKU/madmom/main/LICENSE	Unless indicated otherwise (either in the file directly or a LICENCE file inside any directory), all source code files are published under this license:	- a. Code: https://raw.githubusercontent.com/CPJKU/madmom/ma
+madmom (beats, downbeats, te	WS	https://raw.githubusercontent.com/CPJKU/madmom/main/LICENSE	Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:	- a. Code: https://raw.githubusercontent.com/CPJKU/madmom/ma
+madmom (beats, downbeats, te	WS	https://pypi.org/pypi/madmom/json	BSD, CC BY-NC-SA	- a. Code: https://raw.githubusercontent.com/CPJKU/madmom/ma
+madmom (beats, downbeats, te	WS	https://pypi.org/pypi/madmom/json	License :: Free for non-commercial use	- a. Code: https://raw.githubusercontent.com/CPJKU/madmom/ma
+madmom (beats, downbeats, te	WS	https://pypi.org/pypi/madmom/json	License :: OSI Approved :: BSD License	- a. Code: https://raw.githubusercontent.com/CPJKU/madmom/ma
+madmom (beats, downbeats, te	WS	https://raw.githubusercontent.com/CPJKU/madmom/main/LICENSE	All model and data files are distributed under the following license: Creative Commons Attribution-NonCommercial-ShareAlike 4.0	- b. Models: same LICENSE file: "All model and data files ar
+madmom (beats, downbeats, te	WS	https://raw.githubusercontent.com/CPJKU/madmom/main/LICENSE	NonCommercial: You must not use the material for commercial purposes.	- b. Models: same LICENSE file: "All model and data files ar
+madmom (beats, downbeats, te	WS	https://raw.githubusercontent.com/CPJKU/madmom/main/LICENSE	If you want to include any of these files (or a variation or modification thereof) or technology which utilises them in a commercial product, please contact Gerhard Widmer [...]. Please note that pickled Processors (i.e. saved models) fall into this category.	- b. Models: same LICENSE file: "All model and data files ar
+madmom (beats, downbeats, te	MISSING	-	Please note that pickled madmom Processors using any of the files included in this repository inherit the above license.	- b. Models: same LICENSE file: "All model and data files ar
+Chordino, NNLS Chroma and th	WS	https://www.vamp-plugins.org/download.html	Chordino and NNLS Chroma Matthias Mauch With source code Included in Vamp Plugin Pack	- What: three Vamp plugins in one library by Matthias Mauch 
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	Approximate Note Transcription for the Improved Identification of Difficult Chords	- What: three Vamp plugins in one library by Matthias Mauch 
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	nnls-chroma:chordino	- How to call: inside any Vamp host: the `vamp` Python modul
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	a single channel of audio using frame-wise spectral input from the Vamp host	- Input: "a single channel of audio using frame-wise spectra
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	Chord Estimate: estimated chord times and labels	- Outputs (README): Chordino: "Chord Estimate: estimated cho
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	Harmonic Change Value	- Outputs (README): Chordino: "Chord Estimate: estimated cho
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	Note Representation of Chord Estimate: a simple MIDI-like represenation of the estimated chord with bass note (if applicable) and chord notes	- Outputs (README): Chordino: "Chord Estimate: estimated cho
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	Semitone Spectrum	- Outputs (README): Chordino: "Chord Estimate: estimated cho
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	Bass Chromagram	- Outputs (README): Chordino: "Chord Estimate: estimated cho
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	Chromagram and Bass Chromagram	- Outputs (README): Chordino: "Chord Estimate: estimated cho
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	returns a single label (at time 0 seconds) containing an estimate of the concert pitch in Hz	- Outputs (README): Chordino: "Chord Estimate: estimated cho
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	Local Tuning ... at every analysis frame	- Outputs (README): Chordino: "Chord Estimate: estimated cho
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	Chord profiles given by the user in the file 	- Chord vocabulary: "Chord profiles given by the user in the
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	 are used	- Chord vocabulary: "Chord profiles given by the user in the
+Chordino, NNLS Chroma and th	MISSING	-	 (some profiles of the same name differ in bass note), with a second set of names in Harte syntax (	- Chord vocabulary: "Chord profiles given by the user in the
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	HMM (Viterbi decoding) (on or off; default: on)	- Parameters a re-run can take (README): "HMM (Viterbi decod
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	spectral roll on	- Parameters a re-run can take (README): "HMM (Viterbi decod
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	tuning mode (global or local; default: global)	- Parameters a re-run can take (README): "HMM (Viterbi decod
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	spectral whitening	- Parameters a re-run can take (README): "HMM (Viterbi decod
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	spectral shape	- Parameters a re-run can take (README): "HMM (Viterbi decod
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	chroma normalisation	- Parameters a re-run can take (README): "HMM (Viterbi decod
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	boost likelihood of the N (no chord) label (0.0 -- 1.0; default: 0.1)	- Parameters a re-run can take (README): "HMM (Viterbi decod
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	tuning, after which each centre bin (i.e. bin 2, 5, 8, ...) corresponds to a semitone, even if the tuning of the piece deviates from 440 Hz standard pitch.	- Parameters a re-run can take (README): "HMM (Viterbi decod
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 2 of the License, or (at your option) any later version.	- a. Code: GPL-2.0-or-later. README: "This program is free s
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/COPYING	You may copy and distribute the Program (or a work based on it, under Section 2) in object code or executable form under the terms of Sections 1 and 2 above provided that you also do one of the following: a) Accompany it with the complete corresponding machine-readable source code, ...	- Binaries: GPL-2.0 section 3: "You may copy and distribute 
+Chordino, NNLS Chroma and th	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	If you make use of this software for any public or commercial purpose, we ask you to kindly mention the authors and Queen Mary, University of London in your user-visible documentation. We're very happy to see this sort of use, but would much appreciate being credited, separately from the requirement	- Binaries: GPL-2.0 section 3: "You may copy and distribute 
+QM Vamp Plugins (key, tempo 	WS	https://raw.githubusercontent.com/c4dm/qm-vamp-plugins/master/README.md	Note onset detector	- What: Vamp plugin set from C4DM, Queen Mary University of 
+QM Vamp Plugins (key, tempo 	WS	https://raw.githubusercontent.com/c4dm/qm-vamp-plugins/master/README.md	Beat tracker and tempo estimator	- What: Vamp plugin set from C4DM, Queen Mary University of 
+QM Vamp Plugins (key, tempo 	WS	https://raw.githubusercontent.com/c4dm/qm-vamp-plugins/master/README.md	Key estimator and tonal change detector	- What: Vamp plugin set from C4DM, Queen Mary University of 
+QM Vamp Plugins (key, tempo 	WS	https://raw.githubusercontent.com/c4dm/qm-vamp-plugins/master/README.md	Polyphonic note transcription estimator	- What: Vamp plugin set from C4DM, Queen Mary University of 
+QM Vamp Plugins (key, tempo 	WS	https://raw.githubusercontent.com/c4dm/qm-vamp-plugins/master/README.md	Segmenter	- What: Vamp plugin set from C4DM, Queen Mary University of 
+QM Vamp Plugins (key, tempo 	WS	https://raw.githubusercontent.com/c4dm/qm-vamp-plugins/master/README.md	Chromagram, constant-Q spectrogram, and MFCC calculation plugins	- What: Vamp plugin set from C4DM, Queen Mary University of 
+QM Vamp Plugins (key, tempo 	WS	https://raw.githubusercontent.com/c4dm/qm-vamp-plugins/master/README.md	Ready-to-use binary builds of these plugins are provided for common platforms	- How to call: any Vamp host (vamp Python module, Sonic Anno
+QM Vamp Plugins (key, tempo 	WS	https://raw.githubusercontent.com/c4dm/qm-vamp-plugins/master/README.md	`./repoint install`	- How to call: any Vamp host (vamp Python module, Sonic Anno
+QM Vamp Plugins (key, tempo 	WS	https://raw.githubusercontent.com/c4dm/qm-vamp-plugins/master/README.md	make -f build/linux/Makefile.linux64	- How to call: any Vamp host (vamp Python module, Sonic Anno
+QM Vamp Plugins (key, tempo 	WS	https://raw.githubusercontent.com/c4dm/qm-vamp-plugins/master/README.md	Licence	- License facts: a. README "Licence" (https://raw.githubuser
+QM Vamp Plugins (key, tempo 	WS	https://raw.githubusercontent.com/c4dm/qm-vamp-plugins/master/README.md	These plugins are provided under the terms of the GNU General Public License. You may install and use the plugin binaries without fee for any purpose commercial or non-commercial. You may also modify and redistribute the plugins in source or binary form, provided you comply with the terms given by t	- License facts: a. README "Licence" (https://raw.githubuser
+QM Vamp Plugins (key, tempo 	WS	https://raw.githubusercontent.com/c4dm/qm-vamp-plugins/master/README.md	Further copyrights apply to the qm-dsp library used in these plugins. See the README for that library for details.	- License facts: a. README "Licence" (https://raw.githubuser
+vamp (Python Vamp host, "vam	WS	https://raw.githubusercontent.com/c4dm/vampy-host/master/README.rst	This module allows Python code to load and use native-code Vamp plugins	- What: "This module allows Python code to load and use nati
+vamp (Python Vamp host, "vam	WS	https://raw.githubusercontent.com/c4dm/vampy-host/master/README.rst	No code for loading audio files is included	- How to call: "No code for loading audio files is included"
+vamp (Python Vamp host, "vam	WS	https://raw.githubusercontent.com/c4dm/vampy-host/master/README.rst	expects to receive decoded audio data of one or more channels	- How to call: "No code for loading audio files is included"
+vamp (Python Vamp host, "vam	WS	https://raw.githubusercontent.com/c4dm/vampy-host/master/README.rst	import vamp	- How to call: "No code for loading audio files is included"
+vamp (Python Vamp host, "vam	WS	https://raw.githubusercontent.com/c4dm/vampy-host/master/README.rst	data, rate = librosa.load(	- How to call: "No code for loading audio files is included"
+vamp (Python Vamp host, "vam	WS	https://raw.githubusercontent.com/c4dm/vampy-host/master/README.rst	chroma = vamp.collect(data, rate, 	- How to call: "No code for loading audio files is included"
+vamp (Python Vamp host, "vam	WS	https://raw.githubusercontent.com/c4dm/vampy-host/master/COPYING.rst	Python Vamp Host Copyright (c) 2008-2015 Queen Mary, University of London Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 	- License: COPYING.rst (https://raw.githubusercontent.com/c4
+vamp (Python Vamp host, "vam	WS	https://raw.githubusercontent.com/c4dm/vampy-host/master/COPYING.rst	), to deal in the Software without restriction, ...	- License: COPYING.rst (https://raw.githubusercontent.com/c4
+vamp (Python Vamp host, "vam	WS	https://raw.githubusercontent.com/c4dm/vampy-host/master/COPYING.rst	MIT	- License: COPYING.rst (https://raw.githubusercontent.com/c4
+chord-extractor (Python wrap	WS	https://raw.githubusercontent.com/ohollo/chord-extractor/master/README.md	Python library for extracting chord sequences from sound files of multiple formats with the option of leveraging multiprocessing	- What: "Python library for extracting chord sequences from 
+chord-extractor (Python wrap	LOOSE	https://raw.githubusercontent.com/ohollo/chord-extractor/master/README.md	wraps Chordino	- What: "Python library for extracting chord sequences from 
+chord-extractor (Python wrap	MISSING	-	>=3.8, <3.12	- What: "Python library for extracting chord sequences from 
+chord-extractor (Python wrap	WS	https://raw.githubusercontent.com/ohollo/chord-extractor/master/README.md	from chord_extractor.extractors import Chordino	- How to call (README): "from chord_extractor.extractors imp
+chord-extractor (Python wrap	WS	https://raw.githubusercontent.com/ohollo/chord-extractor/master/README.md	chordino = Chordino(roll_on=1)	- How to call (README): "from chord_extractor.extractors imp
+chord-extractor (Python wrap	WS	https://raw.githubusercontent.com/ohollo/chord-extractor/master/README.md	chords = chordino.extract(conversion_file_path)	- How to call (README): "from chord_extractor.extractors imp
+chord-extractor (Python wrap	MISSING	-	Included in the installation is a compiled library for Chordino. If you are using a Linux 64-bit OS, chord-extractor will default to using this binary.	- How to call (README): "from chord_extractor.extractors imp
+chord-extractor (Python wrap	WS	https://pypi.org/pypi/chord-extractor/json	License :: OSI Approved :: GNU General Public License v2 (GPLv2)	- License facts: a. Code: LICENSE is the GPL v2 text (https:
+autochord (Bi-LSTM-CRF on NN	LOOSE	https://raw.githubusercontent.com/cjbayron/autochord/main/README.md	a Python library for automatic chord recognition (using TensorFlow)	- What: "a Python library for automatic chord recognition (u
+autochord (Bi-LSTM-CRF on NN	LOOSE	https://raw.githubusercontent.com/cjbayron/autochord/main/README.md	a Javascript app for visualization of chord transcriptions	- What: "a Python library for automatic chord recognition (u
+autochord (Bi-LSTM-CRF on NN	WS	https://raw.githubusercontent.com/cjbayron/autochord/main/README.md	import autochord	- How to call: "import autochord", "autochord.recognize('aud
+autochord (Bi-LSTM-CRF on NN	WS	https://raw.githubusercontent.com/cjbayron/autochord/main/README.md	autochord.recognize('audio.wav', lab_fn='chords.lab')	- How to call: "import autochord", "autochord.recognize('aud
+autochord (Bi-LSTM-CRF on NN	WS	https://raw.githubusercontent.com/cjbayron/autochord/main/README.md	Under the hood `autochord.recognize()` runs the NNLS-Chroma VAMP plugin to extract chroma features from the audio, and feeds it to a Bi-LSTM-CRF model in TensorFlow	- How to call: "import autochord", "autochord.recognize('aud
+autochord (Bi-LSTM-CRF on NN	WS	https://raw.githubusercontent.com/cjbayron/autochord/main/README.md	Upon import `autochord` takes care of setting up the VAMP plugin and downloading the pre-trained chord recognition model.	- How to call: "import autochord", "autochord.recognize('aud
+autochord (Bi-LSTM-CRF on NN	LOOSE	https://raw.githubusercontent.com/cjbayron/autochord/main/README.md	for Python 3 setup in Ubuntu (18.04)	- How to call: "import autochord", "autochord.recognize('aud
+autochord (Bi-LSTM-CRF on NN	LOOSE	https://raw.githubusercontent.com/cjbayron/autochord/main/README.md	Windows is unsupported	- How to call: "import autochord", "autochord.recognize('aud
+autochord (Bi-LSTM-CRF on NN	MISSING	-	a list of tuples in the format: (chord start, chord end, chord name)	- Output: "a list of tuples in the format: (chord start, cho
+autochord (Bi-LSTM-CRF on NN	WS	https://raw.githubusercontent.com/cjbayron/autochord/main/README.md	(0.0, 5.944308390022676, 'D:maj')	- Output: "a list of tuples in the format: (chord start, cho
+autochord (Bi-LSTM-CRF on NN	WS	https://raw.githubusercontent.com/cjbayron/autochord/main/README.md	follows the MIREX chord label format	- Output: "a list of tuples in the format: (chord start, cho
+autochord (Bi-LSTM-CRF on NN	WS	https://raw.githubusercontent.com/cjbayron/autochord/main/README.md	the model can recognize 25 chord classes: the 12 major triads, 12 minor triads, and no-chord ('N').	- Output: "a list of tuples in the format: (chord start, cho
+autochord (Bi-LSTM-CRF on NN	WS	https://raw.githubusercontent.com/cjbayron/autochord/main/README.md	The measured test accuracy of the TensorFlow model is 67.33%.	- Author measurement: "The measured test accuracy of the Ten
+autochord (Bi-LSTM-CRF on NN	WS	https://pypi.org/pypi/autochord/json	License :: OSI Approved :: MIT License	- a. Code: the repository LICENSE is the Apache License 2.0 
+autochord (Bi-LSTM-CRF on NN	WS	https://raw.githubusercontent.com/cjbayron/autochord/main/model-development/dataloader.py	Loader for Billboard data features and labels	- c. Training data: `model-development/dataloader.py` line 1
+BTC, Bi-directional Transfor	WS	https://raw.githubusercontent.com/jayg996/BTC-ISMIR19/master/README.md	A Bi-Directional Transformer for Musical Chord Recognition	- What: source code for "A Bi-Directional Transformer for Mu
+BTC, Bi-directional Transfor	WS	https://raw.githubusercontent.com/jayg996/BTC-ISMIR19/master/README.md	$ python test.py --audio_dir audio_folder --save_dir save_folder --voca False	- How to call (README, https://raw.githubusercontent.com/jay
+BTC, Bi-directional Transfor	WS	https://raw.githubusercontent.com/jayg996/BTC-ISMIR19/master/README.md	voca : False means major and minor label type, and True means large vocabulary label type (default: False)	- How to call (README, https://raw.githubusercontent.com/jay
+BTC, Bi-directional Transfor	WS	https://raw.githubusercontent.com/jayg996/BTC-ISMIR19/master/README.md	pytorch >= 1.0.0	- How to call (README, https://raw.githubusercontent.com/jay
+BTC, Bi-directional Transfor	WS	https://raw.githubusercontent.com/jayg996/BTC-ISMIR19/master/README.md	The resulting files are lab files ... and midi files	- Output: "The resulting files are lab files ... and midi fi
+BTC, Bi-directional Transfor	WS	https://raw.githubusercontent.com/jayg996/BTC-ISMIR19/master/LICENSE	Copyright (c) 2019 Jonggwon Park	- License facts: a. Code: MIT, "Copyright (c) 2019 Jonggwon 
+BTC, Bi-directional Transfor	WS	https://raw.githubusercontent.com/jayg996/BTC-ISMIR19/master/README.md	Data	- License facts: a. Code: MIT, "Copyright (c) 2019 Jonggwon 
+BTC, Bi-directional Transfor	WS	https://raw.githubusercontent.com/jayg996/BTC-ISMIR19/master/README.md	We used Isophonics[1], Robbie Williams[2], UsPop2002[3] dataset which consists of chord label files. Due to copyright issue, these datasets do not include audio files. The audio files used in this work were collected from online music service providers.	- License facts: a. Code: MIT, "Copyright (c) 2019 Jonggwon 
+CREMA (convolutional and rec	WS	https://raw.githubusercontent.com/bmcfee/crema/main/README.md	python -m crema.analyze file.mp3	- How to call (README, https://raw.githubusercontent.com/bmc
+CREMA (convolutional and rec	WS	https://raw.githubusercontent.com/bmcfee/crema/main/README.md	python -m crema.analyze file.mp3 -o file.jams	- How to call (README, https://raw.githubusercontent.com/bmc
+CREMA (convolutional and rec	WS	https://raw.githubusercontent.com/bmcfee/crema/main/README.md	from crema.analyze import analyze	- How to call (README, https://raw.githubusercontent.com/bmc
+CREMA (convolutional and rec	WS	https://raw.githubusercontent.com/bmcfee/crema/main/README.md	jam = analyze(filename='/path/to/file.mp3')	- How to call (README, https://raw.githubusercontent.com/bmc
+CREMA (convolutional and rec	WS	https://raw.githubusercontent.com/bmcfee/crema/main/README.md	jam = analyze(y=y, sr=sr)	- How to call (README, https://raw.githubusercontent.com/bmc
+CREMA (convolutional and rec	MISSING	-	BSD 2-Clause License, Copyright (c) 2017, Brian McFee	- License facts (sources differ): a. LICENSE.md is "BSD 2-Cl
+CREMA (convolutional and rec	WS	https://raw.githubusercontent.com/bmcfee/crema/main/README.md	license-BSD	- License facts (sources differ): a. LICENSE.md is "BSD 2-Cl
+CREMA (convolutional and rec	WS	https://raw.githubusercontent.com/bmcfee/crema/main/LICENSE.md	ISC	- License facts (sources differ): a. LICENSE.md is "BSD 2-Cl
+CREMA (convolutional and rec	WS	https://pypi.org/pypi/crema/json	License :: OSI Approved :: ISC License (ISCL)	- License facts (sources differ): a. LICENSE.md is "BSD 2-Cl
+lv-chordia and the ISMIR 201	LOOSE	https://raw.githubusercontent.com/music-x-lab/ISMIR2019-Large-Vocabulary-Chord-Recognition/master/README.MD	official repo for the ISMIR 2019 paper Large-Vocabulary Chord Transcription via Chord Structure Decomposition	- What: "official repo for the ISMIR 2019 paper Large-Vocabu
+lv-chordia and the ISMIR 201	WS	https://pypi.org/pypi/lv-chordia/json	inference-only	- What: "official repo for the ISMIR 2019 paper Large-Vocabu
+lv-chordia and the ISMIR 201	WS	https://pypi.org/pypi/lv-chordia/json	This package ships the pre-trained ensemble models and the code path needed to run chord recognition on audio	- What: "official repo for the ISMIR 2019 paper Large-Vocabu
+lv-chordia and the ISMIR 201	WS	https://pypi.org/pypi/lv-chordia/json	All pre-trained model weights (100% original)	- What: "official repo for the ISMIR 2019 paper Large-Vocabu
+lv-chordia and the ISMIR 201	WS	https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/README.md	Chord-CNN-LSTM	- What: "official repo for the ISMIR 2019 paper Large-Vocabu
+lv-chordia and the ISMIR 201	WS	https://raw.githubusercontent.com/music-x-lab/ISMIR2019-Large-Vocabulary-Chord-Recognition/master/README.MD	python3 chord_recognition.py path_to_audio_file path_to_output_file [chord_dict]	- Original repository: "python3 chord_recognition.py path_to
+lv-chordia and the ISMIR 201	WS	https://pypi.org/pypi/lv-chordia/json	lv-chordia input_audio.mp3	- lv-chordia CLI: "lv-chordia input_audio.mp3" ("outputs JSO
+lv-chordia and the ISMIR 201	WS	https://pypi.org/pypi/lv-chordia/json	outputs JSON to stdout	- lv-chordia CLI: "lv-chordia input_audio.mp3" ("outputs JSO
+lv-chordia and the ISMIR 201	WS	https://pypi.org/pypi/lv-chordia/json	lv-chordia input_audio.mp3 --chord-dict ismir2017	- lv-chordia CLI: "lv-chordia input_audio.mp3" ("outputs JSO
+lv-chordia and the ISMIR 201	WS	https://pypi.org/pypi/lv-chordia/json	from lv_chordia.chord_recognition import chord_recognition	- Python: "from lv_chordia.chord_recognition import chord_re
+lv-chordia and the ISMIR 201	MISSING	-	results = chord_recognition(audio_path=	- Python: "from lv_chordia.chord_recognition import chord_re
+lv-chordia and the ISMIR 201	WS	https://pypi.org/pypi/lv-chordia/json	, chord_dict_name=	- Python: "from lv_chordia.chord_recognition import chord_re
+lv-chordia and the ISMIR 201	WS	https://pypi.org/pypi/lv-chordia/json	start_time	- Output: lv-chordia: JSON list of {"start_time": seconds, "
+lv-chordia and the ISMIR 201	WS	https://pypi.org/pypi/lv-chordia/json	end_time	- Output: lv-chordia: JSON list of {"start_time": seconds, "
+lv-chordia and the ISMIR 201	WS	https://raw.githubusercontent.com/music-x-lab/ISMIR2019-Large-Vocabulary-Chord-Recognition/master/README.MD	chord	- Output: lv-chordia: JSON list of {"start_time": seconds, "
+lv-chordia and the ISMIR 201	WS	https://pypi.org/pypi/lv-chordia/json	C:maj	- Output: lv-chordia: JSON list of {"start_time": seconds, "
+lv-chordia and the ISMIR 201	WS	https://pypi.org/pypi/lv-chordia/json	Chord label in JAMS format	- Output: lv-chordia: JSON list of {"start_time": seconds, "
+lv-chordia and the ISMIR 201	WS	https://raw.githubusercontent.com/music-x-lab/ISMIR2019-Large-Vocabulary-Chord-Recognition/master/README.MD	chord_dict ... tells the HMM which chord dictionary to use for decoding	- Vocabulary (original README): "chord_dict ... tells the HM
+lv-chordia and the ISMIR 201	WS	https://raw.githubusercontent.com/music-x-lab/ISMIR2019-Large-Vocabulary-Chord-Recognition/master/README.MD	submission: the default value (recommended to use). It is the chord dictionary we used for ISMIR 2019 submission.	- Vocabulary (original README): "chord_dict ... tells the HM
+lv-chordia and the ISMIR 201	WS	https://raw.githubusercontent.com/music-x-lab/ISMIR2019-Large-Vocabulary-Chord-Recognition/master/README.MD	ismir2017: the chord dictionary for MIREX competition.	- Vocabulary (original README): "chord_dict ... tells the HM
+lv-chordia and the ISMIR 201	WS	https://raw.githubusercontent.com/music-x-lab/ISMIR2019-Large-Vocabulary-Chord-Recognition/master/README.MD	full: the list of all chords from MARL dataset. It is not tested and not recommended to use.	- Vocabulary (original README): "chord_dict ... tells the HM
+lv-chordia and the ISMIR 201	WS	https://pypi.org/pypi/lv-chordia/json	Ensemble model with 5 pre-trained networks	- Vocabulary (original README): "chord_dict ... tells the HM
+lv-chordia and the ISMIR 201	WS	https://raw.githubusercontent.com/music-x-lab/ISMIR2019-Large-Vocabulary-Chord-Recognition/master/LICENSE	Copyright (c) 2023 Music X Lab	- License facts: a. Code: MIT, "Copyright (c) 2023 Music X L
+lv-chordia and the ISMIR 201	WS	https://raw.githubusercontent.com/music-x-lab/ISMIR2019-Large-Vocabulary-Chord-Recognition/master/LICENSE	MIT License Copyright (c) 2023 Music X Lab	- License facts: a. Code: MIT, "Copyright (c) 2023 Music X L
+lv-chordia and the ISMIR 201	WS	https://pypi.org/pypi/lv-chordia/json	License :: OSI Approved :: MIT License	- License facts: a. Code: MIT, "Copyright (c) 2023 Music X L
+lv-chordia and the ISMIR 201	WS	https://raw.githubusercontent.com/music-x-lab/ISMIR2019-Large-Vocabulary-Chord-Recognition/master/README.MD	This repo contains the pretrained models that does not incorporate label reweighting	- License facts: a. Code: MIT, "Copyright (c) 2023 Music X L
+lv-chordia and the ISMIR 201	WS	https://raw.githubusercontent.com/music-x-lab/ISMIR2019-Large-Vocabulary-Chord-Recognition/master/README.MD	chord_data_1217/	- License facts: a. Code: MIT, "Copyright (c) 2023 Music X L
+ChordMini (ChordMiniApp)	WS	https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/README.md	Open-source music analysis tool for chord recognition, beat tracking, piano visualizer, guitar diagrams, lyrics synchronization, and experimental melody transcription	- What: "Open-source music analysis tool for chord recogniti
+ChordMini (ChordMiniApp)	WS	https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/README.md	Enhancing Automatic Chord Recognition via Pseudo-Labeling and Knowledge Distillation	- What: "Open-source music analysis tool for chord recogniti
+ChordMini (ChordMiniApp)	WS	https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/README.md	cd python_backend && python app.py	- How it runs: a Next.js front end plus a Python backend on 
+ChordMini (ChordMiniApp)	LOOSE	https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/README.md	Beat Detection: Beat-Transformer and madmom models	- How it runs: a Next.js front end plus a Python backend on 
+ChordMini (ChordMiniApp)	LOOSE	https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/README.md	Chord Recognition: Chord-CNN-LSTM, BTC-SL, BTC-PL models	- How it runs: a Next.js front end plus a Python backend on 
+ChordMini (ChordMiniApp)	WS	https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/README.md	Python 3.10.x	- How it runs: a Next.js front end plus a Python backend on 
+ChordMini (ChordMiniApp)	LOOSE	https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/README.md	Docker (recommended for the standalone Sheet Sage melody service)	- How it runs: a Next.js front end plus a Python backend on 
+ChordMini (ChordMiniApp)	LOOSE	https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/README.md	Firebase account (free tier)	- How it runs: a Next.js front end plus a Python backend on 
+ChordMini (ChordMiniApp)	LOOSE	https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/README.md	Gemini API (free tier)	- How it runs: a Next.js front end plus a Python backend on 
+ChordMini (ChordMiniApp)	WS	https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/README.md	spleeter	- How it runs: a Next.js front end plus a Python backend on 
+ChordMini (ChordMiniApp)	WS	https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/README.md	only required by the current Beat-Transformer source-separation path	- How it runs: a Next.js front end plus a Python backend on 
+ChordMini (ChordMiniApp)	WS	https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/README.md	@tombatossals/chords-db	- Outputs: shown in the UI as a beat-synchronised chord grid
+ChordMini (ChordMiniApp)	WS	https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/LICENSE	Copyright (c) 2025 ChordMini Project	- License facts: a. Code: MIT, "Copyright (c) 2025 ChordMini
+Omnizart chord (Harmony Tran	WS	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/README.md	Omnizart is a Python library that aims for democratizing automatic music transcription	- What: "Omnizart is a Python library that aims for democrat
+Omnizart chord (Harmony Tran	LOOSE	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/README.md	powered by the research outcomes from Music and Culture Technology (MCT) Lab	- What: "Omnizart is a Python library that aims for democrat
+Omnizart chord (Harmony Tran	WS	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/pyproject.toml	python = 	- What: "Omnizart is a Python library that aims for democrat
+Omnizart chord (Harmony Tran	WS	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/README.md	pip install omnizart	- How to call (README): "pip install omnizart", "omnizart do
+Omnizart chord (Harmony Tran	WS	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/README.md	omnizart download-checkpoints	- How to call (README): "pip install omnizart", "omnizart do
+Omnizart chord (Harmony Tran	WS	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/README.md	omnizart chord transcribe <path/to/audio.wav>	- How to call (README): "pip install omnizart", "omnizart do
+Omnizart chord (Harmony Tran	WS	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/README.md	mctlab/omnizart:latest	- How to call (README): "pip install omnizart", "omnizart do
+Omnizart chord (Harmony Tran	WS	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/omnizart/chord/app.py	This function transcribes chord progression in the audio and will outputs MIDI and CSV files	- How to call (README): "pip install omnizart", "omnizart do
+Omnizart chord (Harmony Tran	WS	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/README.md	chord	- Output: a MIDI file and a CSV with fieldnames `["chord", "
+Omnizart chord (Harmony Tran	WS	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/README.md	start	- Output: a MIDI file and a CSV with fieldnames `["chord", "
+Omnizart chord (Harmony Tran	WS	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/README.md	end	- Output: a MIDI file and a CSV with fieldnames `["chord", "
+Omnizart chord (Harmony Tran	WS	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/omnizart/chord/inference.py	C:maj	- Output: a MIDI file and a CSV with fieldnames `["chord", "
+Omnizart chord (Harmony Tran	WS	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/omnizart/chord/inference.py	B:maj	- Output: a MIDI file and a CSV with fieldnames `["chord", "
+Omnizart chord (Harmony Tran	WS	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/omnizart/chord/inference.py	C:min	- Output: a MIDI file and a CSV with fieldnames `["chord", "
+Omnizart chord (Harmony Tran	WS	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/omnizart/chord/inference.py	B:min	- Output: a MIDI file and a CSV with fieldnames `["chord", "
+Omnizart chord (Harmony Tran	WS	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/omnizart/defaults/chord.yaml	Each frame last for 0.046 seconds	- Output: a MIDI file and a CSV with fieldnames `["chord", "
+Omnizart chord (Harmony Tran	WS	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/omnizart/beat/app.py	beat tracking in MIDI domain	- Omnizart's `beat` application is "beat tracking in MIDI do
+Omnizart chord (Harmony Tran	WS	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/LICENSE	Copyright (c) 2020 MCTLab	- License facts: a. Code: MIT, "Copyright (c) 2020 MCTLab" (
+Omnizart chord (Harmony Tran	WS	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/LICENSE	MIT	- License facts: a. Code: MIT, "Copyright (c) 2020 MCTLab" (
+Omnizart chord (Harmony Tran	WS	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/omnizart/chord/app.py	Extract feature of McGill BillBoard dataset	- License facts: a. Code: MIT, "Copyright (c) 2020 MCTLab" (
+Harmony Transformer and Harm	WS	https://raw.githubusercontent.com/Tsung-Ping/Harmony-Transformer/master/README.md	Harmony transformer: incorporating chord segmentation into harmony recognition	- What: Tsung-Ping Chen and Li Su, "Harmony transformer: inc
+Harmony Transformer and Harm	WS	https://raw.githubusercontent.com/Tsung-Ping/Harmony-Transformer-v2/master/README.md	evaluated ... in terms of automatic chord recognition for symbolic music	- What: Tsung-Ping Chen and Li Su, "Harmony transformer: inc
+Harmony Transformer and Harm	WS	https://raw.githubusercontent.com/Tsung-Ping/Harmony-Transformer-v2/master/README.md	24 maj-min chord representations	- What: Tsung-Ping Chen and Li Su, "Harmony transformer: inc
+Harmony Transformer and Harm	WS	https://raw.githubusercontent.com/Tsung-Ping/Harmony-Transformer-v2/master/README.md	tensorflow >= 1.8.0	- What: Tsung-Ping Chen and Li Su, "Harmony transformer: inc
+ACR_seq2seq (event-based seq	WS	https://raw.githubusercontent.com/KimLeekyung/ACR_seq2seq/main/README.md	An Event-Based Sequence Modeling Approach to Recognizing Non-Triad Chords with Oversegmentation Minimization	- What: L. Kim and J. Park, "An Event-Based Sequence Modelin
+ChordFormer, BMACE and other	WS	https://arxiv.org/abs/2502.11840	A Conformer-Based Architecture for Large-Vocabulary Audio Chord Recognition	- ChordFormer (Muhammad Waseem Akram, Stefano Dettori, Valen
+ChordFormer, BMACE and other	WS	https://raw.githubusercontent.com/tangkk/pyace/master/LICENSE	Copyright 2017 Junqi Deng Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:	- pyace (Junqi Deng), https://github.com/tangkk/pyace (HEAD 
+librosa (beat tracking, temp	MISSING	-	requires_python >=3.12	- What: Python audio analysis library. https://github.com/li
+librosa (beat tracking, temp	WS	https://raw.githubusercontent.com/librosa/librosa/main/librosa/version.py	1.0.0	- What: Python audio analysis library. https://github.com/li
+librosa (beat tracking, temp	WS	https://raw.githubusercontent.com/librosa/librosa/main/librosa/beat.py	frames	- How to call (source at commit 6c9fe7c): `librosa.beat.beat
+librosa (beat tracking, temp	WS	https://raw.githubusercontent.com/librosa/librosa/main/librosa/beat.py	tempo : float [scalar, non-negative] or np.ndarray The estimated global tempo (in beats per minute)	- Outputs (docstrings): `beat_track` returns "tempo : float 
+librosa (beat tracking, temp	WS	https://raw.githubusercontent.com/librosa/librosa/main/librosa/beat.py	By default, the tempo is returned as an ndarray even for mono input	- Outputs (docstrings): `beat_track` returns "tempo : float 
+librosa (beat tracking, temp	WS	https://raw.githubusercontent.com/librosa/librosa/main/librosa/beat.py	beats : np.ndarray The estimated beat event locations	- Outputs (docstrings): `beat_track` returns "tempo : float 
+librosa (beat tracking, temp	WS	https://raw.githubusercontent.com/librosa/librosa/main/librosa/beat.py	in the specified units (default is frame indices)	- Outputs (docstrings): `beat_track` returns "tempo : float 
+librosa (beat tracking, temp	WS	https://raw.githubusercontent.com/librosa/librosa/main/librosa/beat.py	frames	- Outputs (docstrings): `beat_track` returns "tempo : float 
+librosa (beat tracking, temp	WS	https://raw.githubusercontent.com/librosa/librosa/main/librosa/beat.py	samples	- Outputs (docstrings): `beat_track` returns "tempo : float 
+librosa (beat tracking, temp	WS	https://raw.githubusercontent.com/librosa/librosa/main/librosa/beat.py	time	- Outputs (docstrings): `beat_track` returns "tempo : float 
+librosa (beat tracking, temp	WS	https://raw.githubusercontent.com/librosa/librosa/main/librosa/core/pitch.py	tuning: float in `[-0.5, 0.5)` estimated tuning deviation (fractions of a bin)	- Outputs (docstrings): `beat_track` returns "tempo : float 
+librosa (beat tracking, temp	WS	https://raw.githubusercontent.com/librosa/librosa/main/librosa/beat.py	If provided, ``start_bpm`` will be ignored	- Constraints a re-run can take: `bpm` ("If provided, ``star
+librosa (beat tracking, temp	WS	https://raw.githubusercontent.com/librosa/librosa/main/LICENSE.md	Copyright (c) 2013--2026, librosa development team.	- License: ISC, "Copyright (c) 2013--2026, librosa developme
+librosa (beat tracking, temp	WS	https://raw.githubusercontent.com/librosa/librosa/main/LICENSE.md	Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.	- License: ISC, "Copyright (c) 2013--2026, librosa developme
+Essentia (KeyExtractor, Tuni	WS	https://pypi.org/pypi/essentia/json	AGPL-3.0-only	- What: C++ audio analysis library with Python bindings, Mus
+Essentia (KeyExtractor, Tuni	WS	https://essentia.upf.edu/models.html	audio = MonoLoader(filename=	- How to call: Python `from essentia.standard import MonoLoa
+Essentia (KeyExtractor, Tuni	WS	https://essentia.upf.edu/models.html	, sampleRate=11025, resampleQuality=4)()	- How to call: Python `from essentia.standard import MonoLoa
+Essentia (KeyExtractor, Tuni	WS	https://essentia.upf.edu/models.html	model = TempoCNN(graphFilename=	- How to call: Python `from essentia.standard import MonoLoa
+Essentia (KeyExtractor, Tuni	WS	https://essentia.upf.edu/models.html	global_tempo, local_tempo, local_tempo_probabilities = model(audio)	- How to call: Python `from essentia.standard import MonoLoa
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/reference/std_KeyExtractor.html	audio ( vector_real )	- KeyExtractor: input "audio ( vector_real )"; outputs "key 
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/reference/std_KeyExtractor.html	key ( string )	- KeyExtractor: input "audio ( vector_real )"; outputs "key 
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/reference/std_KeyExtractor.html	scale ( string )	- KeyExtractor: input "audio ( vector_real )"; outputs "key 
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/reference/std_KeyExtractor.html	strength ( real )	- KeyExtractor: input "audio ( vector_real )"; outputs "key 
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/reference/std_KeyExtractor.html	profileType ( string ∈ {diatonic, krumhansl, temperley, weichai, tonictriad, temperley2005, thpcp, shaath, gomez, noland, faraldo, pentatonic, edmm, edma, bgate, braw}, default = bgate )	- KeyExtractor: input "audio ( vector_real )"; outputs "key 
+Essentia (KeyExtractor, Tuni	WS	https://essentia.upf.edu/models.html;https://essentia.upf.edu/reference/std_KeyExtractor.html	sampleRate ... default = 44100	- KeyExtractor: input "audio ( vector_real )"; outputs "key 
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/reference/std_KeyExtractor.html	tuningFrequency ( real ∈ (0, ∞), default = 440 ) : the tuning frequency of the input signal	- KeyExtractor: input "audio ( vector_real )"; outputs "key 
+Essentia (KeyExtractor, Tuni	WS	https://essentia.upf.edu/reference/std_KeyExtractor.html	Tuning frequency can be estimated in advance using TuningFrequency algorithm.	- KeyExtractor: input "audio ( vector_real )"; outputs "key 
+Essentia (KeyExtractor, Tuni	WS	https://essentia.upf.edu/reference/std_KeyExtractor.html	frequencies	- TuningFrequency: inputs spectral peak "frequencies" and "m
+Essentia (KeyExtractor, Tuni	WS	https://essentia.upf.edu/reference/std_TuningFrequency.html	magnitudes	- TuningFrequency: inputs spectral peak "frequencies" and "m
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/reference/std_TuningFrequency.html	tuningFrequency ( real ) - the tuning frequency [Hz]	- TuningFrequency: inputs spectral peak "frequencies" and "m
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/reference/std_TuningFrequency.html	tuningCents ( real ) - the deviation from 440 Hz (between -35 to 65 cents)	- TuningFrequency: inputs spectral peak "frequencies" and "m
+Essentia (KeyExtractor, Tuni	WS	https://essentia.upf.edu/models.html	signal	- RhythmExtractor2013: input "signal"; outputs "bpm ( real )
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/reference/std_RhythmExtractor2013.html	bpm ( real )	- RhythmExtractor2013: input "signal"; outputs "bpm ( real )
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/reference/std_RhythmExtractor2013.html	ticks ( vector_real ) - the estimated tick locations [s]	- RhythmExtractor2013: input "signal"; outputs "bpm ( real )
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/reference/std_RhythmExtractor2013.html	confidence ( real )	- RhythmExtractor2013: input "signal"; outputs "bpm ( real )
+Essentia (KeyExtractor, Tuni	WS	https://essentia.upf.edu/reference/std_TuningFrequency.html	estimates	- RhythmExtractor2013: input "signal"; outputs "bpm ( real )
+Essentia (KeyExtractor, Tuni	WS	https://essentia.upf.edu/reference/std_RhythmExtractor2013.html	bpmIntervals	- RhythmExtractor2013: input "signal"; outputs "bpm ( real )
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/reference/std_RhythmExtractor2013.html	maxTempo ( integer ∈ [60, 250], default = 208 )	- RhythmExtractor2013: input "signal"; outputs "bpm ( real )
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/reference/std_RhythmExtractor2013.html	method ( string ∈ {multifeature, degara}, default = multifeature )	- RhythmExtractor2013: input "signal"; outputs "bpm ( real )
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/reference/std_RhythmExtractor2013.html	minTempo ( integer ∈ [40, 180], default = 40 )	- RhythmExtractor2013: input "signal"; outputs "bpm ( real )
+Essentia (KeyExtractor, Tuni	WS	https://essentia.upf.edu/reference/std_RhythmExtractor2013.html	Note that the algorithm requires the sample rate of the input signal to be 44100 Hz in order to work correctly.	- RhythmExtractor2013: input "signal"; outputs "bpm ( real )
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/reference/std_ChordsDetection.html	pcp ( vector_vector_real )	- ChordsDetection: input "pcp ( vector_vector_real )" (HPCP 
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/reference/std_ChordsDetection.html	chords ( vector_string )	- ChordsDetection: input "pcp ( vector_vector_real )" (HPCP 
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/reference/std_ChordsDetection.html	strength ( vector_real )	- ChordsDetection: input "pcp ( vector_vector_real )" (HPCP 
+Essentia (KeyExtractor, Tuni	WS	https://essentia.upf.edu/reference/std_ChordsDetection.html	It finds the best matching major or minor triad and outputs the result as a string (e.g. A#, Bm, G#m, C)	- ChordsDetection: input "pcp ( vector_vector_real )" (HPCP 
+Essentia (KeyExtractor, Tuni	WS	https://essentia.upf.edu/reference/std_ChordsDetection.html	Quality: experimental (prone to errors, algorithm needs improvement)	- ChordsDetection: input "pcp ( vector_vector_real )" (HPCP 
+Essentia (KeyExtractor, Tuni	WS	https://essentia.upf.edu/reference/std_ChordsDetection.html;https://essentia.upf.edu/reference/std_KeyExtractor.html	hopSize ... default = 2048	- ChordsDetection: input "pcp ( vector_vector_real )" (HPCP 
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/reference/std_ChordsDetection.html	windowSize ( real ∈ (0, ∞), default = 2 ) : the size of the window on which to estimate the chords [s]	- ChordsDetection: input "pcp ( vector_vector_real )" (HPCP 
+Essentia (KeyExtractor, Tuni	WS	https://essentia.upf.edu/reference/std_TempoCNN.html	the input audio signal sampled at 11025 Hz	- TempoCNN: input "the input audio signal sampled at 11025 H
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/reference/std_TempoCNN.html	globalTempo ( real )	- TempoCNN: input "the input audio signal sampled at 11025 H
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/reference/std_TempoCNN.html	localTempo ( vector_real )	- TempoCNN: input "the input audio signal sampled at 11025 H
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/reference/std_TempoCNN.html	localTempoProbabilities ( vector_real )	- TempoCNN: input "the input audio signal sampled at 11025 H
+Essentia (KeyExtractor, Tuni	WS	https://essentia.upf.edu/reference/std_TempoCNN.html	localTempo is a vector containing the most likely BPM estimated each ~6 seconds by default.	- TempoCNN: input "the input audio signal sampled at 11025 H
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/licensing_information.html	Essentia is available under an open licence, Affero GPLv3 , for non-commercial applications, thus it is possible to test the library before deciding to licence it under a comercial licence. Contact Music Technology Group (UPF) for more information about licensing conditions	- a. Code: COPYING.txt is the AGPL v3 text (https://raw.gith
+Essentia (KeyExtractor, Tuni	NOWS	https://essentia.upf.edu/licensing_information.html	Some Essentia library algorithms use third-party libraries with licenses such as GPL , LGPL , and others for which UPF is not able to provide full sublicensing rights to third parties.	- a. Code: COPYING.txt is the AGPL v3 text (https://raw.gith
+Essentia (KeyExtractor, Tuni	WS	https://essentia.upf.edu/licensing_information.html	NNLS Chroma - http://www.isophonics.net/nnls-chroma – used by LogSpectrum and NNLSChroma algorithms.	- a. Code: COPYING.txt is the AGPL v3 text (https://raw.gith
+Essentia (KeyExtractor, Tuni	WS	https://essentia.upf.edu/licensing_information.html	All the models are available under the CC BY-NC-SA 4.0 license for non-commercial use, and are also available under a proprietary license upon request.	- b. Models (TempoCNN and other TensorFlow models): licensin
+Essentia (KeyExtractor, Tuni	WS	https://essentia.upf.edu/models.html	All the models created by the MTG are licensed under CC BY-NC-SA 4.0 and are also available under proprietary license upon request.	- b. Models (TempoCNN and other TensorFlow models): licensin
+Essentia (KeyExtractor, Tuni	WS	https://essentia.upf.edu/models.html	trained on the Extended Ballroom, LMDTempo, and MTGTempo datasets	- c. Training data for TempoCNN (models page): "trained on t
+aubio (onsets, beats, tempo)	WS	https://raw.githubusercontent.com/aubio/aubio/master/README.md	aubio is a library to label music and sounds	- What: "aubio is a library to label music and sounds" (READ
+aubio (onsets, beats, tempo)	WS	file:///home/user/gtr/lanes/chords-beats-key/verify/web/aubio_help_2026-11-10.txt	usage: aubiotrack [ options ]	- How to call: C command-line tools on the box: `aubiotrack`
+aubio (onsets, beats, tempo)	WS	file:///home/user/gtr/lanes/chords-beats-key/verify/web/aubio_help_2026-11-10.txt	-i --input input file	- How to call: C command-line tools on the box: `aubiotrack`
+aubio (onsets, beats, tempo)	WS	file:///home/user/gtr/lanes/chords-beats-key/verify/web/aubio_help_2026-11-10.txt	-o --output output file	- How to call: C command-line tools on the box: `aubiotrack`
+aubio (onsets, beats, tempo)	WS	file:///home/user/gtr/lanes/chords-beats-key/verify/web/aubio_help_2026-11-10.txt	-r --samplerate	- How to call: C command-line tools on the box: `aubiotrack`
+aubio (onsets, beats, tempo)	WS	file:///home/user/gtr/lanes/chords-beats-key/verify/web/aubio_help_2026-11-10.txt	-B --bufsize	- How to call: C command-line tools on the box: `aubiotrack`
+aubio (onsets, beats, tempo)	WS	file:///home/user/gtr/lanes/chords-beats-key/verify/web/aubio_help_2026-11-10.txt	-H --hopsize	- How to call: C command-line tools on the box: `aubiotrack`
+aubio (onsets, beats, tempo)	WS	file:///home/user/gtr/lanes/chords-beats-key/verify/web/aubio_help_2026-11-10.txt	-O --onset select onset detection algorithm <default|energy|hfc|complex|phase|specdiff|kl|mkl|specflux>	- How to call: C command-line tools on the box: `aubiotrack`
+aubio (onsets, beats, tempo)	WS	file:///home/user/gtr/lanes/chords-beats-key/verify/web/aubio_help_2026-11-10.txt	-T --time-format select time values output format (samples, ms, seconds) default=seconds	- How to call: C command-line tools on the box: `aubiotrack`
+aubio (onsets, beats, tempo)	WS	https://raw.githubusercontent.com/aubio/aubio/master/README.md	`aubiotrack` outputs the time stamp of detected beats	- How to call: C command-line tools on the box: `aubiotrack`
+aubio (onsets, beats, tempo)	WS	file:///home/user/gtr/lanes/chords-beats-key/verify/web/aubio_help_2026-11-10.txt	ModuleNotFoundError: No module named 'aubio._aubio'	- How to call: C command-line tools on the box: `aubiotrack`
+aubio (onsets, beats, tempo)	WS	https://pypi.org/pypi/aubio/json	GNU/GPL version 3	- License: GPL-3.0-or-later. COPYING is the GPL v3 text (htt
+aubio (onsets, beats, tempo)	WS	https://pypi.org/pypi/aubio/json	GNU General Public License v3 or later (GPLv3+)	- License: GPL-3.0-or-later. COPYING is the GPL v3 text (htt
+tempo-cnn (tempo and meter C	WS	https://raw.githubusercontent.com/hendriks73/tempo-cnn/main/README.rst	a tempo estimator	- What: Tempo-CNN, "a tempo estimator" (README). https://git
+tempo-cnn (tempo and meter C	MISSING	-	requires_python <3.12,>=3.9	- What: Tempo-CNN, "a tempo estimator" (README). https://git
+tempo-cnn (tempo and meter C	WS	https://raw.githubusercontent.com/hendriks73/tempo-cnn/main/README.rst	tempo -i my_audio.wav	- How to call (README, https://raw.githubusercontent.com/hen
+tempo-cnn (tempo and meter C	WS	https://raw.githubusercontent.com/hendriks73/tempo-cnn/main/README.rst	tempo -m ismir2018 --jams -i my_audio.wav	- How to call (README, https://raw.githubusercontent.com/hen
+tempo-cnn (tempo and meter C	WS	https://raw.githubusercontent.com/hendriks73/tempo-cnn/main/README.rst	--mirex	- How to call (README, https://raw.githubusercontent.com/hen
+tempo-cnn (tempo and meter C	WS	https://raw.githubusercontent.com/hendriks73/tempo-cnn/main/README.rst	tempo -m deeptemp --jams -i my_audio.wav	- How to call (README, https://raw.githubusercontent.com/hen
+tempo-cnn (tempo and meter C	WS	https://raw.githubusercontent.com/hendriks73/tempo-cnn/main/README.rst	tempo -m mazurka -i my_audio.wav	- How to call (README, https://raw.githubusercontent.com/hen
+tempo-cnn (tempo and meter C	WS	https://raw.githubusercontent.com/hendriks73/tempo-cnn/main/README.rst	--interpolate	- How to call (README, https://raw.githubusercontent.com/hen
+tempo-cnn (tempo and meter C	WS	https://raw.githubusercontent.com/hendriks73/tempo-cnn/main/README.rst	tempogram -p my_audio.wav	- How to call (README, https://raw.githubusercontent.com/hen
+tempo-cnn (tempo and meter C	WS	https://raw.githubusercontent.com/hendriks73/tempo-cnn/main/README.rst	meter -m fma2018-meter -i my_audio.wav	- How to call (README, https://raw.githubusercontent.com/hen
+tempo-cnn (tempo and meter C	MISSING	-	In a clean Python 3.9 environment, simply run: pip install tempocnn	- How to call (README, https://raw.githubusercontent.com/hen
+tempo-cnn (tempo and meter C	WS	https://raw.githubusercontent.com/hendriks73/tempo-cnn/main/README.rst	Note that some models may be downloaded (and cached) at execution time.	- How to call (README, https://raw.githubusercontent.com/hen
+tempo-cnn (tempo and meter C	WS	https://raw.githubusercontent.com/hendriks73/tempo-cnn/main/README.rst	License	- License facts: a and b: README "License": "Source code and
+tempo-cnn (tempo and meter C	MISSING	-	Source code and models can be licensed under the GNU AFFERO GENERAL PUBLIC LICENSE v3. For details, please see the LICENSE file.	- License facts: a and b: README "License": "Source code and
+tempo-cnn (tempo and meter C	WS	https://raw.githubusercontent.com/hendriks73/tempo-cnn/main/README.rst	AGPL	- License facts: a and b: README "License": "Source code and
+DeepRhythm (tempo CNN)	WS	https://raw.githubusercontent.com/bleugreen/deeprhythm/main/README.md	DeepRhythm is a convolutional neural network designed for rapid, precise tempo prediction for modern music	- What: "DeepRhythm is a convolutional neural network design
+DeepRhythm (tempo CNN)	WS	https://raw.githubusercontent.com/bleugreen/deeprhythm/main/README.md	pip install deeprhythm	- How to call: "pip install deeprhythm"; Python "from deeprh
+DeepRhythm (tempo CNN)	WS	https://raw.githubusercontent.com/bleugreen/deeprhythm/main/README.md	from deeprhythm import DeepRhythmPredictor	- How to call: "pip install deeprhythm"; Python "from deeprh
+DeepRhythm (tempo CNN)	WS	https://raw.githubusercontent.com/bleugreen/deeprhythm/main/README.md	model = DeepRhythmPredictor()	- How to call: "pip install deeprhythm"; Python "from deeprh
+DeepRhythm (tempo CNN)	WS	https://raw.githubusercontent.com/bleugreen/deeprhythm/main/README.md	tempo = model.predict('path/to/song.mp3')	- How to call: "pip install deeprhythm"; Python "from deeprh
+DeepRhythm (tempo CNN)	WS	https://raw.githubusercontent.com/bleugreen/deeprhythm/main/README.md	tempo, confidence = model.predict('path/to/song.mp3', include_confidence=True)	- How to call: "pip install deeprhythm"; Python "from deeprh
+DeepRhythm (tempo CNN)	WS	https://raw.githubusercontent.com/bleugreen/deeprhythm/main/README.md	python -m deeprhythm.batch_infer /path/to/dir	- How to call: "pip install deeprhythm"; Python "from deeprh
+DeepRhythm (tempo CNN)	WS	https://raw.githubusercontent.com/bleugreen/deeprhythm/main/README.md	will create in a jsonl file mapping filepath to predicted BPM	- How to call: "pip install deeprhythm"; Python "from deeprh
+DeepRhythm (tempo CNN)	LOOSE	https://raw.githubusercontent.com/bleugreen/deeprhythm/main/README.md	-d, --device [cuda/cpu/mps]	- How to call: "pip install deeprhythm"; Python "from deeprh
+DeepRhythm (tempo CNN)	LOOSE	https://raw.githubusercontent.com/bleugreen/deeprhythm/main/README.md	-c, --conf	- How to call: "pip install deeprhythm"; Python "from deeprh
+DeepRhythm (tempo CNN)	WS	https://raw.githubusercontent.com/bleugreen/deeprhythm/main/README.md	8 second clips	- Output: one tempo in BPM per file, optional confidence. It
+DeepRhythm (tempo CNN)	WS	https://raw.githubusercontent.com/bleugreen/deeprhythm/main/README.md	num_classes (256)	- Output: one tempo in BPM per file, optional confidence. It
+DeepRhythm (tempo CNN)	WS	https://raw.githubusercontent.com/bleugreen/deeprhythm/main/README.md	Benchmarks	- Author measurement (README "Benchmarks"): "DeepRhythm (cpu
+DeepRhythm (tempo CNN)	LOOSE	https://raw.githubusercontent.com/bleugreen/deeprhythm/main/README.md	DeepRhythm (cpu) | 95.91 | 96.54 | 0.12 | 115.02	- Author measurement (README "Benchmarks"): "DeepRhythm (cpu
+DeepRhythm (tempo CNN)	WS	https://raw.githubusercontent.com/bleugreen/deeprhythm/main/README.md	Test done on 953 songs, mostly Electronic, Hip Hop, Pop, and Rock	- Author measurement (README "Benchmarks"): "DeepRhythm (cpu
+DeepRhythm (tempo CNN)	WS	https://raw.githubusercontent.com/bleugreen/deeprhythm/main/README.md	Acc1 = Prediction within +/- 2% of actual bpm	- Author measurement (README "Benchmarks"): "DeepRhythm (cpu
+DeepRhythm (tempo CNN)	WS	https://pypi.org/pypi/deeprhythm/json	GNU Affero General Public License v3	- License: LICENSE is the AGPL v3 text (https://raw.githubus
+Beat Transformer (demixed be	WS	https://raw.githubusercontent.com/zhaojw1998/Beat-Transformer/main/README.md	Beat Transformer: Demixed Beat and Downbeat Tracking with Dilated Self-Attention	- What: "Beat Transformer: Demixed Beat and Downbeat Trackin
+Beat Transformer (demixed be	WS	https://raw.githubusercontent.com/zhaojw1998/Beat-Transformer/main/README.md	Proceedings of the 23rd International Society for Music Information Retrieval Conference (ISMIR 2022)	- What: "Beat Transformer: Demixed Beat and Downbeat Trackin
+Beat Transformer (demixed be	WS	https://raw.githubusercontent.com/zhaojw1998/Beat-Transformer/main/README.md	To quickly reproduce the accuracy reported in our paper, simply run `./code/eight_fold_test.py`	- How to call (README): "To quickly reproduce the accuracy r
+Beat Transformer (demixed be	WS	https://raw.githubusercontent.com/zhaojw1998/Beat-Transformer/main/LICENSE	Copyright (c) 2022 Zhao Jingwei	- License facts: a. Code: MIT, "Copyright (c) 2022 Zhao Jing
+Beat Transformer (demixed be	WS	https://raw.githubusercontent.com/zhaojw1998/Beat-Transformer/main/README.md	We use a total of 7 datasets for model training and testing	- License facts: a. Code: MIT, "Copyright (c) 2022 Zhao Jing
+Beat Transformer (demixed be	WS	https://raw.githubusercontent.com/zhaojw1998/Beat-Transformer/main/README.md	I used the Griffin-Lim algorithm in Librosa to convert mel-spectrogram to audio	- License facts: a. Code: MIT, "Copyright (c) 2022 Zhao Jing
+Beat Transformer (demixed be	WS	https://raw.githubusercontent.com/zhaojw1998/Beat-Transformer/main/README.md	seems NOT royalty-free so I'm afraid I cannot share the audio	- License facts: a. Code: MIT, "Copyright (c) 2022 Zhao Jing
+BEAST (online beat and downb	WS	https://raw.githubusercontent.com/WildHoneyPie/BEAST/main/README.md	BEAST: Online Joint Beat and Downbeat Tracking Based on Streaming Transformer	- What: "BEAST: Online Joint Beat and Downbeat Tracking Base
+BEAST (online beat and downb	WS	https://raw.githubusercontent.com/WildHoneyPie/BEAST/main/README.md	accepted by ICASSP 2024	- What: "BEAST: Online Joint Beat and Downbeat Tracking Base
+BEAST (online beat and downb	WS	https://raw.githubusercontent.com/WildHoneyPie/BEAST/main/README.md	the preprocessed GTZAN data	- How to call (README): download "the preprocessed GTZAN dat
+BEAST (online beat and downb	WS	https://raw.githubusercontent.com/WildHoneyPie/BEAST/main/README.md	the pretrained model	- How to call (README): download "the preprocessed GTZAN dat
+BEAST (online beat and downb	WS	https://raw.githubusercontent.com/WildHoneyPie/BEAST/main/README.md	Run `./code/eval.py`	- How to call (README): download "the preprocessed GTZAN dat
+BEAST (online beat and downb	WS	https://raw.githubusercontent.com/WildHoneyPie/BEAST/main/README.md	More information to be updated.	- How to call (README): download "the preprocessed GTZAN dat
+BEAST (online beat and downb	WS	https://raw.githubusercontent.com/WildHoneyPie/BEAST/main/LICENSE	Copyright (c) 2023 Chih-Cheng Chang	- License facts: a. Code: MIT, "Copyright (c) 2023 Chih-Chen
+realtime-bpm-analyzer (tempo	WS	https://raw.githubusercontent.com/dlepaux/realtime-bpm-analyzer/main/readme.md	A powerful TypeScript library for detecting beats-per-minute (BPM) in real-time	- What: "A powerful TypeScript library for detecting beats-p
+realtime-bpm-analyzer (tempo	WS	https://raw.githubusercontent.com/dlepaux/realtime-bpm-analyzer/main/readme.md	Apache-2.0	- What: "A powerful TypeScript library for detecting beats-p
+realtime-bpm-analyzer (tempo	WS	https://raw.githubusercontent.com/dlepaux/realtime-bpm-analyzer/main/readme.md	npm install realtime-bpm-analyzer	- How to call: "npm install realtime-bpm-analyzer"; "import 
+realtime-bpm-analyzer (tempo	WS	https://raw.githubusercontent.com/dlepaux/realtime-bpm-analyzer/main/readme.md	import { createRealtimeBpmAnalyzer } from 'realtime-bpm-analyzer';	- How to call: "npm install realtime-bpm-analyzer"; "import 
+realtime-bpm-analyzer (tempo	WS	https://raw.githubusercontent.com/dlepaux/realtime-bpm-analyzer/main/readme.md	const analyzer = await createRealtimeBpmAnalyzer(audioContext);	- How to call: "npm install realtime-bpm-analyzer"; "import 
+realtime-bpm-analyzer (tempo	WS	https://raw.githubusercontent.com/dlepaux/realtime-bpm-analyzer/main/readme.md	analyzer.on('bpm', (data) => { ... data.bpm[0].tempo	- How to call: "npm install realtime-bpm-analyzer"; "import 
+realtime-bpm-analyzer (tempo	WS	https://raw.githubusercontent.com/dlepaux/realtime-bpm-analyzer/main/readme.md	loads from a `blob:` URL by default	- How to call: "npm install realtime-bpm-analyzer"; "import 
+realtime-bpm-analyzer (tempo	WS	https://raw.githubusercontent.com/dlepaux/realtime-bpm-analyzer/main/readme.md	import {analyzeChannelData} from 'realtime-bpm-analyzer/node';	- How to call: "npm install realtime-bpm-analyzer"; "import 
+realtime-bpm-analyzer (tempo	WS	https://raw.githubusercontent.com/dlepaux/realtime-bpm-analyzer/main/readme.md	const tempos = await analyzeChannelData(channelData, 44100);	- How to call: "npm install realtime-bpm-analyzer"; "import 
+libKeyFinder and keyfinder-c	LOOSE	https://raw.githubusercontent.com/mixxxdj/libkeyfinder/main/README.md	libkeyfinder is a small C++11 library for estimating the musical key of digital audio. It is published under the GNU General Public License version 3 or later.	- What: "libkeyfinder is a small C++11 library for estimatin
+libKeyFinder and keyfinder-c	LOOSE	https://raw.githubusercontent.com/mixxxdj/libkeyfinder/main/README.md	In 2020, Ibrahim handed over maintenance of libkeyfinder to the Mixxx DJ software team	- What: "libkeyfinder is a small C++11 library for estimatin
+libKeyFinder and keyfinder-c	WS	https://raw.githubusercontent.com/EvanPurkhiser/keyfinder-cli/main/README.md	$ keyfinder-cli AMajor.mp3	- How to call (keyfinder-cli README): "$ keyfinder-cli AMajo
+libKeyFinder and keyfinder-c	WS	https://raw.githubusercontent.com/EvanPurkhiser/keyfinder-cli/main/README.md	In the case that there is no key (silence) nothing will be printed to stdout and the program will exit with a 0 status code.	- How to call (keyfinder-cli README): "$ keyfinder-cli AMajo
+libKeyFinder and keyfinder-c	WS	https://raw.githubusercontent.com/EvanPurkhiser/keyfinder-cli/main/README.md	-n standard	- How to call (keyfinder-cli README): "$ keyfinder-cli AMajo
+libKeyFinder and keyfinder-c	WS	https://raw.githubusercontent.com/EvanPurkhiser/keyfinder-cli/main/README.md	-n openkey	- How to call (keyfinder-cli README): "$ keyfinder-cli AMajo
+libKeyFinder and keyfinder-c	WS	https://raw.githubusercontent.com/EvanPurkhiser/keyfinder-cli/main/README.md	-n camelot	- How to call (keyfinder-cli README): "$ keyfinder-cli AMajo
+S-KEY (self-supervised key e	LOOSE	https://raw.githubusercontent.com/deezer/skey/main/README.md	`skey` is a Python package for state-of-the-art automatic musical key detection from audio recordings, based on the S-KEY model proposed by Yuexuan Kong et al.	- What: "`skey` is a Python package for state-of-the-art aut
+S-KEY (self-supervised key e	WS	https://raw.githubusercontent.com/deezer/skey/main/README.md	S-KEY: Self-supervised Learning of Major and Minor Keys from Audio	- What: "`skey` is a Python package for state-of-the-art aut
+S-KEY (self-supervised key e	WS	https://raw.githubusercontent.com/deezer/skey/main/README.md	poetry install	- What: "`skey` is a Python package for state-of-the-art aut
+S-KEY (self-supervised key e	WS	https://raw.githubusercontent.com/deezer/skey/main/README.md	poetry skey path/to/audio --device cpu	- How to call: CLI "poetry skey path/to/audio --device cpu" 
+S-KEY (self-supervised key e	WS	https://raw.githubusercontent.com/deezer/skey/main/README.md	The prediction will be printed if the path is an audio file, will be saved into a .csv file if the path is a directory	- How to call: CLI "poetry skey path/to/audio --device cpu" 
+S-KEY (self-supervised key e	WS	https://raw.githubusercontent.com/deezer/skey/main/README.md	--checkpoint	- How to call: CLI "poetry skey path/to/audio --device cpu" 
+S-KEY (self-supervised key e	WS	https://raw.githubusercontent.com/deezer/skey/main/README.md	--ext	- How to call: CLI "poetry skey path/to/audio --device cpu" 
+S-KEY (self-supervised key e	MISSING	-	--device (default: cpu, e.g., cuda, mps)	- How to call: CLI "poetry skey path/to/audio --device cpu" 
+S-KEY (self-supervised key e	WS	https://raw.githubusercontent.com/deezer/skey/main/README.md	from skey import detect_key	- How to call: CLI "poetry skey path/to/audio --device cpu" 
+S-KEY (self-supervised key e	NOWS	https://raw.githubusercontent.com/deezer/skey/main/README.md	detect_key(audio_dir=	- How to call: CLI "poetry skey path/to/audio --device cpu" 
+S-KEY (self-supervised key e	WS	https://raw.githubusercontent.com/deezer/skey/main/README.md	, extension=	- How to call: CLI "poetry skey path/to/audio --device cpu" 
+S-KEY (self-supervised key e	WS	https://raw.githubusercontent.com/deezer/skey/main/README.md	, device=	- How to call: CLI "poetry skey path/to/audio --device cpu" 
+S-KEY (self-supervised key e	WS	https://raw.githubusercontent.com/deezer/skey/main/README.md	CPU and GPU support	- How to call: CLI "poetry skey path/to/audio --device cpu" 
+S-KEY (self-supervised key e	WS	https://raw.githubusercontent.com/deezer/skey/main/README.md	License	- License facts (code and weights differ): README "License":
+S-KEY (self-supervised key e	LOOSE	https://raw.githubusercontent.com/deezer/skey/main/README.md	The code of SKEY is MIT-licensed. The MIT license does not apply to the model weights in skey.pt. You may use the model weights only for non-commercial research purposes.	- License facts (code and weights differ): README "License":
+S-KEY (self-supervised key e	WS	https://raw.githubusercontent.com/deezer/skey/main/LICENSE	Copyright (c) 2019-present, Deezer SA.	- License facts (code and weights differ): README "License":
+music21 key analysis on symb	MISSING	-	requires_python >=3.11	- What: Python toolkit for symbolic music (Michael Scott Asa
+music21 key analysis on symb	WS	https://pypi.org/pypi/music21/json	BSD-3-Clause	- What: Python toolkit for symbolic music (Michael Scott Asa
+music21 key analysis on symb	WS	https://raw.githubusercontent.com/cuthbertLab/music21/master/LICENSE	Copyright (c) 2006-2026 Michael Scott Asato Cuthbert	- License: BSD-3-Clause, "Copyright (c) 2006-2026 Michael Sc
+music21 key analysis on symb	WS	https://raw.githubusercontent.com/cuthbertLab/music21/master/LICENSE	Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:	- License: BSD-3-Clause, "Copyright (c) 2006-2026 Michael Sc
+Guitar open-string tuning an	WS	https://raw.githubusercontent.com/edhulme/guitar-tuning-classification/main/README.md	generated by sending guitar tablature data to a sample-based guitar plugin	- Hulme et al. (DLfM 2024, per search results; author list a
+Guitar open-string tuning an	WS	https://raw.githubusercontent.com/edhulme/guitar-tuning-classification/main/README.md	the 5-class chromagram system	- Hulme et al. (DLfM 2024, per search results; author list a
+Guitar open-string tuning an	WS	https://raw.githubusercontent.com/edhulme/guitar-tuning-classification/main/README.md	pip install tensorflow matplotlib scikit-learn seaborn	- Hulme et al. (DLfM 2024, per search results; author list a
+Guitar open-string tuning an	WS	https://hajim.rochester.edu/ece/sites/zduan/teaching/ece477/projects/2023/DeclanParker_McCormackChew_FinalReport.pdf	Guitar Tuning Detection	- University of Rochester ECE 477 student report, 2023, "Gui
+Guitar open-string tuning an	WS	https://hajim.rochester.edu/ece/sites/zduan/teaching/ece477/projects/2023/DeclanParker_McCormackChew_FinalReport.pdf	This paper presents a method for classifying seven different guitar tunings based solely on audio input.	- University of Rochester ECE 477 student report, 2023, "Gui
+Guitar open-string tuning an	WS	https://hajim.rochester.edu/ece/sites/zduan/teaching/ece477/projects/2023/DeclanParker_McCormackChew_FinalReport.pdf	feature embeddings are extracted using an L3 model. The method then utilizes support vector machines	- University of Rochester ECE 477 student report, 2023, "Gui
+Guitar open-string tuning an	WS	https://hajim.rochester.edu/ece/sites/zduan/teaching/ece477/projects/2023/DeclanParker_McCormackChew_FinalReport.pdf	Our complete dataset includes 260 ten second	- University of Rochester ECE 477 student report, 2023, "Gui
+Guitar open-string tuning an	WS	https://hajim.rochester.edu/ece/sites/zduan/teaching/ece477/projects/2023/DeclanParker_McCormackChew_FinalReport.pdf	Drop D, Drop C, E Standard, and FMaj9	- University of Rochester ECE 477 student report, 2023, "Gui
+Guitar open-string tuning an	WS	https://hajim.rochester.edu/ece/sites/zduan/teaching/ece477/projects/2023/DeclanParker_McCormackChew_FinalReport.pdf	achieved 83.6% accuracy on the test set	- University of Rochester ECE 477 student report, 2023, "Gui
+Guitar open-string tuning an	WS	https://hajim.rochester.edu/ece/sites/zduan/teaching/ece477/projects/2023/DeclanParker_McCormackChew_FinalReport.pdf	the overall accuracy of the combined models is 74.2%	- University of Rochester ECE 477 student report, 2023, "Gui
+Guitar open-string tuning an	MISSING	-	Guitar Tuning Identification	- University of Rochester ECE 477 project, 2019 (Lukas Dilli
+Guitar open-string tuning an	WS	file:///home/user/blog/docs/guitar-tab-research/PRIOR.md	Tabber	- Capo position from audio: no paper, dataset or code that e
+Guitar open-string tuning an	WS	file:///home/user/blog/docs/guitar-tab-research/PRIOR.md	capo 7 at 0.34 confidence (a coin-flip with capo 3 at 0.33)	- Capo position from audio: no paper, dataset or code that e
+Hosted services in this cate	MISSING	-	a link back to GetSongBPM.com is REQUIRED	- GetSongBPM API (https://getsongbpm.com/api): tempo and key
+Hosted services in this cate	MISSING	-	automatic music analysis	- Cyanite, Tunebat, Chordify, Chord ai, Capo (Mac/iOS app wi
+Handoff facts	MISSING	-	documented chain	 Each line: what one tool outputs, what the next accepts, an
+Handoff facts	WS	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/src/allin1/demix.py	sys.executable, '-m', 'demucs.separate'	1. Demucs `htdemucs` stems are what All-In-One analyses: All
+Handoff facts	WS	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/src/allin1/demix.py	'--name', 'htdemucs'	1. Demucs `htdemucs` stems are what All-In-One analyses: All
+Handoff facts	LOOSE	https://raw.githubusercontent.com/zhaojw1998/Beat-Transformer/main/README.md	./preprocessing/demixing.py, where we call Spleeter to demix each piece	2. Spleeter stems are what Beat Transformer analyses: "./pre
+Handoff facts	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/NNLSChroma.cpp	Chromagram and Bass Chromagram	3. NNLS Chroma outputs a 24-dim bass+treble chromagram ("Chr
+Handoff facts	WS	https://pypi.org/pypi/autochord/json	runs the NNLS-Chroma VAMP plugin to extract chroma features from the audio, and feeds it to a Bi-LSTM-CRF model	3. NNLS Chroma outputs a 24-dim bass+treble chromagram ("Chr
+Handoff facts	WS	https://pypi.org/pypi/vamp/json	data, rate = librosa.load(	4. The `vamp` Python host takes decoded audio as a NumPy arr
+Handoff facts	WS	https://pypi.org/pypi/vamp/json	vamp.collect(data, rate, 	4. The `vamp` Python host takes decoded audio as a NumPy arr
+Handoff facts	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/beat_this/utils.py	a time in seconds, a tab, and a beat number (1 = downbeat)	5. Beat This! outputs beat times and downbeat times in secon
+Handoff facts	LOOSE	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md	e.g., for importing into Sonic Visualizer	5. Beat This! outputs beat times and downbeat times in secon
+Handoff facts	WS	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md	If you want to use the DBN for postprocessing, add `--dbn`. The DBN parameters are the default ones from madmom.	6. Beat This! frame activations can be decoded by madmom's D
+Handoff facts	WS	https://raw.githubusercontent.com/mjhydri/BeatNet/main/README.md	we added madmom's DBN beat/downbeat inference model for the offline usages	6. Beat This! frame activations can be decoded by madmom's D
+Handoff facts	WS	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md	will mix metronome clicks for beats and downbeats	7. All-In-One outputs `beats` and `downbeats` (seconds) and 
+Handoff facts	WS	https://arxiv.org/abs/2307.16425	meter	8. User constraint "meter" and "tempo range" into madmom: `D
+Handoff facts	WS	https://raw.githubusercontent.com/CPJKU/madmom/main/madmom/features/downbeats.py	tempo range	8. User constraint "meter" and "tempo range" into madmom: `D
+Handoff facts	WS	file:///home/user/blog/docs/guitar-tab-research/PRIOR.md	tempo	9. User constraint "tempo" into librosa: `beat_track(..., bp
+Handoff facts	WS	https://raw.githubusercontent.com/librosa/librosa/main/librosa/beat.py	If provided, ``start_bpm`` will be ignored	9. User constraint "tempo" into librosa: `beat_track(..., bp
+Handoff facts	NOWS	https://essentia.upf.edu/reference/std_TuningFrequency.html	tuningFrequency ( real ) - the tuning frequency [Hz]	10. Essentia `TuningFrequency` outputs "tuningFrequency ( re
+Handoff facts	WS	https://essentia.upf.edu/reference/std_KeyExtractor.html	tuningFrequency	10. Essentia `TuningFrequency` outputs "tuningFrequency ( re
+Handoff facts	WS	https://essentia.upf.edu/reference/std_KeyExtractor.html	Tuning frequency can be estimated in advance using TuningFrequency algorithm	10. Essentia `TuningFrequency` outputs "tuningFrequency ( re
+Handoff facts	NOWS	https://essentia.upf.edu/reference/std_ChordsDetection.html	pcp ( vector_vector_real ) - the pitch class profile from which to detect the chord	11. Essentia HPCP frames are the input of Essentia `ChordsDe
+Handoff facts	WS	https://essentia.upf.edu/reference/std_ChordsDetection.html	The algorithm assumes that the sequence of the input HPCP frames has been computed with framesize = 2*hopsize	11. Essentia HPCP frames are the input of Essentia `ChordsDe
+Handoff facts	MISSING	-	allowed chords	12. User constraint "allowed chords" into lv-chordia / the I
+Handoff facts	WS	https://pypi.org/pypi/lv-chordia/json	submission	12. User constraint "allowed chords" into lv-chordia / the I
+Handoff facts	WS	https://pypi.org/pypi/lv-chordia/json	ismir2017	12. User constraint "allowed chords" into lv-chordia / the I
+Handoff facts	WS	https://arxiv.org/abs/2307.16425	full	12. User constraint "allowed chords" into lv-chordia / the I
+Handoff facts	WS	https://raw.githubusercontent.com/music-x-lab/ISMIR2019-Large-Vocabulary-Chord-Recognition/master/README.MD	the HMM which chord dictionary to use for decoding	12. User constraint "allowed chords" into lv-chordia / the I
+Handoff facts	WS	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README	boost likelihood of the N (no chord) label	12. User constraint "allowed chords" into lv-chordia / the I
+Handoff facts	WS	https://pypi.org/pypi/chord-extractor/json	(OPTIONAL) `sudo apt-get install timidity` - If wanting to extract chords from MIDIs (timidity converts midi to wav files)	13. Symbolic MIDI into chords: chord-extractor converts MIDI
+Handoff facts	MISSING	-	follow the MIREX chord label format	15. BTC writes `.lab` lines `start end label` and MIDI (test
+Handoff facts	WS	https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/README.md	from the official @tombatossals/chords-db database	16. Chord labels into guitar chord diagrams: ChordMini maps 
+Handoff facts	WS	https://essentia.upf.edu/reference/std_TempoCNN.html	the input audio signal sampled at 11025 Hz	17. TempoCNN (Essentia) takes audio at 11025 Hz ("the input 
+Handoff facts	WS	https://essentia.upf.edu/reference/std_RhythmExtractor2013.html	requires the sample rate of the input signal to be 44100 Hz	17. TempoCNN (Essentia) takes audio at 11025 Hz ("the input 
+
+# fetch status
+200	file:///home/user/blog/docs/guitar-tab-research/PRIOR.md
+200	file:///home/user/gtr/lanes/chords-beats-key/verify/web/aubio_help_2026-11-10.txt
+200	https://arxiv.org/abs/2307.16425
+200	https://arxiv.org/abs/2502.11840
+200	https://arxiv.org/abs/2509.18700
+200	https://arxiv.org/abs/2512.22621
+200	https://arxiv.org/abs/2601.02101
+200	https://arxiv.org/abs/2602.19778
+200	https://arxiv.org/abs/2604.24386
+200	https://arxiv.org/html/2501.12907v2
+200	https://arxiv.org/html/2602.19778v5
+200	https://ddmal.ca/research/The_McGill_Billboard_Project_(Chord_Analysis_Dataset)/
+200	https://developer.spotify.com/blog/2024-11-27-changes-to-the-web-api
+200	https://essentia.upf.edu/licensing_information.html
+200	https://essentia.upf.edu/models.html
+200	https://essentia.upf.edu/models/tempo/tempocnn/deeptemp-k4-3.json
+200	https://essentia.upf.edu/reference/std_ChordsDetection.html
+200	https://essentia.upf.edu/reference/std_ChordsDetectionBeats.html
+200	https://essentia.upf.edu/reference/std_KeyExtractor.html
+200	https://essentia.upf.edu/reference/std_PercivalBpmEstimator.html
+200	https://essentia.upf.edu/reference/std_RhythmExtractor2013.html
+200	https://essentia.upf.edu/reference/std_TempoCNN.html
+200	https://essentia.upf.edu/reference/std_TonalExtractor.html
+200	https://essentia.upf.edu/reference/std_TuningFrequency.html
+200	https://hajim.rochester.edu/ece/sites/zduan/teaching/ece477/projects/2023/DeclanParker_McCormackChew_FinalReport.pdf
+200	https://huggingface.co/api/models/taejunkim/allinone
+200	https://huggingface.co/taejunkim/allinone/raw/main/README.md
+200	https://isophonics.net/content/reference-annotations
+200	https://magenta.tensorflow.org/datasets/maestro
+200	https://nikhilsos.github.io/jangdan
+200	https://pypi.org/pypi/aubio/json
+200	https://pypi.org/pypi/autochord/json
+200	https://pypi.org/pypi/chord-extractor/json
+200	https://pypi.org/pypi/crema/json
+200	https://pypi.org/pypi/deeprhythm/json
+200	https://pypi.org/pypi/essentia/json
+200	https://pypi.org/pypi/librosa/json
+200	https://pypi.org/pypi/lv-chordia/json
+200	https://pypi.org/pypi/madmom/json
+200	https://pypi.org/pypi/music21/json
+200	https://pypi.org/pypi/omnizart/json
+200	https://pypi.org/pypi/tempocnn/json
+200	https://pypi.org/pypi/vamp/json
+200	https://raw.githubusercontent.com/CPJKU/beat_this/main/LICENSE
+200	https://raw.githubusercontent.com/CPJKU/beat_this/main/README.md
+200	https://raw.githubusercontent.com/CPJKU/beat_this/main/beat_this/inference.py
+200	https://raw.githubusercontent.com/CPJKU/beat_this/main/beat_this/utils.py
+200	https://raw.githubusercontent.com/CPJKU/beat_this/main/hubconf.py
+200	https://raw.githubusercontent.com/CPJKU/beat_this_annotations/main/LICENSE
+200	https://raw.githubusercontent.com/CPJKU/beat_this_annotations/main/README.md
+200	https://raw.githubusercontent.com/CPJKU/madmom/main/LICENSE
+200	https://raw.githubusercontent.com/CPJKU/madmom/main/README.rst
+200	https://raw.githubusercontent.com/CPJKU/madmom/main/bin/DBNBeatTracker
+200	https://raw.githubusercontent.com/CPJKU/madmom/main/madmom/features/beats.py
+200	https://raw.githubusercontent.com/CPJKU/madmom/main/madmom/features/chords.py
+200	https://raw.githubusercontent.com/CPJKU/madmom/main/madmom/features/downbeats.py
+200	https://raw.githubusercontent.com/CPJKU/madmom/main/madmom/features/key.py
+200	https://raw.githubusercontent.com/CPJKU/madmom/main/madmom/features/tempo.py
+200	https://raw.githubusercontent.com/CPJKU/madmom/main/madmom/processors.py
+200	https://raw.githubusercontent.com/CPJKU/madmom_models/master/LICENSE
+200	https://raw.githubusercontent.com/CPJKU/madmom_models/master/README.rst
+200	https://raw.githubusercontent.com/EvanPurkhiser/keyfinder-cli/main/LICENSE
+200	https://raw.githubusercontent.com/EvanPurkhiser/keyfinder-cli/main/README.md
+200	https://raw.githubusercontent.com/KimLeekyung/ACR_seq2seq/main/README.md
+200	https://raw.githubusercontent.com/MTG/essentia.js/master/LICENSE
+200	https://raw.githubusercontent.com/MTG/essentia/master/COPYING.txt
+200	https://raw.githubusercontent.com/MTG/essentia/master/Essentia%20Licensing.txt
+200	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/LICENSE
+200	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/README.md
+200	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/omnizart/beat/app.py
+200	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/omnizart/chord/app.py
+200	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/omnizart/chord/inference.py
+200	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/omnizart/constants/feature.py
+200	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/omnizart/defaults/chord.yaml
+200	https://raw.githubusercontent.com/Music-and-Culture-Technology-Lab/omnizart/main/pyproject.toml
+200	https://raw.githubusercontent.com/Tsung-Ping/Harmony-Transformer-v2/master/README.md
+200	https://raw.githubusercontent.com/Tsung-Ping/Harmony-Transformer/master/McGill-Billboard/readme.txt
+200	https://raw.githubusercontent.com/Tsung-Ping/Harmony-Transformer/master/README.md
+200	https://raw.githubusercontent.com/WildHoneyPie/BEAST/main/LICENSE
+200	https://raw.githubusercontent.com/WildHoneyPie/BEAST/main/README.md
+200	https://raw.githubusercontent.com/WildHoneyPie/ChordCoT/main/README.md
+200	https://raw.githubusercontent.com/aubio/aubio/master/COPYING
+200	https://raw.githubusercontent.com/aubio/aubio/master/README.md
+200	https://raw.githubusercontent.com/bleugreen/deeprhythm/main/LICENSE
+200	https://raw.githubusercontent.com/bleugreen/deeprhythm/main/README.md
+200	https://raw.githubusercontent.com/bleugreen/deeprhythm/main/pyproject.toml
+200	https://raw.githubusercontent.com/bleugreen/deeprhythm/main/src/deeprhythm/utils.py
+200	https://raw.githubusercontent.com/bmcfee/crema/main/LICENSE.md
+200	https://raw.githubusercontent.com/bmcfee/crema/main/README.md
+200	https://raw.githubusercontent.com/bmcfee/crema/main/crema/models/chord.py
+200	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/COPYING
+200	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/NNLSChroma.cpp
+200	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/README
+200	https://raw.githubusercontent.com/c4dm/nnls-chroma/master/chromamethods.cpp
+200	https://raw.githubusercontent.com/c4dm/qm-vamp-plugins/master/COPYING
+200	https://raw.githubusercontent.com/c4dm/qm-vamp-plugins/master/README.md
+200	https://raw.githubusercontent.com/c4dm/vampy-host/master/COPYING.rst
+200	https://raw.githubusercontent.com/c4dm/vampy-host/master/README.rst
+200	https://raw.githubusercontent.com/chrisguttandin/web-audio-beat-detector/master/LICENSE
+200	https://raw.githubusercontent.com/chrisguttandin/web-audio-beat-detector/master/README.md
+200	https://raw.githubusercontent.com/cjbayron/autochord/main/LICENSE
+200	https://raw.githubusercontent.com/cjbayron/autochord/main/README.md
+200	https://raw.githubusercontent.com/cjbayron/autochord/main/model-development/dataloader.py
+200	https://raw.githubusercontent.com/cjbayron/autochord/main/src/autochord/__init__.py
+200	https://raw.githubusercontent.com/csteinmetz1/wavebeat/main/LICENSE
+200	https://raw.githubusercontent.com/csteinmetz1/wavebeat/main/README.md
+200	https://raw.githubusercontent.com/cuthbertLab/music21/master/LICENSE
+200	https://raw.githubusercontent.com/cuthbertLab/music21/master/music21/analysis/discrete.py
+200	https://raw.githubusercontent.com/cuthbertLab/music21/master/music21/converter/subConverters.py
+200	https://raw.githubusercontent.com/deezer/skey/main/LICENSE
+200	https://raw.githubusercontent.com/deezer/skey/main/README.md
+200	https://raw.githubusercontent.com/deezer/skey/main/skey/key_detection.py
+200	https://raw.githubusercontent.com/deezer/stone/main/README.md
+200	https://raw.githubusercontent.com/dlepaux/realtime-bpm-analyzer/main/license.md
+200	https://raw.githubusercontent.com/dlepaux/realtime-bpm-analyzer/main/readme.md
+200	https://raw.githubusercontent.com/edhulme/guitar-tuning-classification/main/README.md
+200	https://raw.githubusercontent.com/edhulme/guitar-tuning-classification/main/eval_synthetic_songs.py
+200	https://raw.githubusercontent.com/gabolsgabs/DALI/master/README.md
+200	https://raw.githubusercontent.com/hendriks73/key-cnn/master/LICENSE
+200	https://raw.githubusercontent.com/hendriks73/key-cnn/master/README.rst
+200	https://raw.githubusercontent.com/hendriks73/key-cnn/master/setup.py
+200	https://raw.githubusercontent.com/hendriks73/tempo-cnn/main/LICENSE
+200	https://raw.githubusercontent.com/hendriks73/tempo-cnn/main/README.rst
+200	https://raw.githubusercontent.com/jayg996/BTC-ISMIR19/master/LICENSE
+200	https://raw.githubusercontent.com/jayg996/BTC-ISMIR19/master/README.md
+200	https://raw.githubusercontent.com/jayg996/BTC-ISMIR19/master/run_config.yaml
+200	https://raw.githubusercontent.com/jayg996/BTC-ISMIR19/master/test.py
+200	https://raw.githubusercontent.com/librosa/librosa/main/LICENSE.md
+200	https://raw.githubusercontent.com/librosa/librosa/main/librosa/beat.py
+200	https://raw.githubusercontent.com/librosa/librosa/main/librosa/core/pitch.py
+200	https://raw.githubusercontent.com/librosa/librosa/main/librosa/feature/rhythm.py
+200	https://raw.githubusercontent.com/librosa/librosa/main/librosa/version.py
+200	https://raw.githubusercontent.com/mdeff/fma/master/README.md
+200	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/LICENSE
+200	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/README.md
+200	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/TRAINING.md
+200	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/pyproject.toml
+200	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/src/allin1/demix.py
+200	https://raw.githubusercontent.com/mir-aidj/all-in-one/main/src/allin1/models/loaders.py
+200	https://raw.githubusercontent.com/mixxxdj/libkeyfinder/main/LICENSE
+200	https://raw.githubusercontent.com/mixxxdj/libkeyfinder/main/README.md
+200	https://raw.githubusercontent.com/mjhydri/BeatNet-Plus/main/README.md
+200	https://raw.githubusercontent.com/mjhydri/BeatNet-Plus/main/setup.py
+200	https://raw.githubusercontent.com/mjhydri/BeatNet/main/LICENSE
+200	https://raw.githubusercontent.com/mjhydri/BeatNet/main/README.md
+200	https://raw.githubusercontent.com/mjhydri/BeatNet/main/setup.py
+200	https://raw.githubusercontent.com/mjhydri/BeatNet/main/src/BeatNet/BeatNet.py
+200	https://raw.githubusercontent.com/music-x-lab/ISMIR2019-Large-Vocabulary-Chord-Recognition/master/LICENSE
+200	https://raw.githubusercontent.com/music-x-lab/ISMIR2019-Large-Vocabulary-Chord-Recognition/master/README.MD
+200	https://raw.githubusercontent.com/ohollo/chord-extractor/master/LICENSE
+200	https://raw.githubusercontent.com/ohollo/chord-extractor/master/README.md
+200	https://raw.githubusercontent.com/ohollo/chord-extractor/master/chord_extractor/base.py
+404	https://raw.githubusercontent.com/ohollo/chord-extractor/master/chord_extractor/extractors.py
+200	https://raw.githubusercontent.com/ohollo/chord-extractor/master/chord_extractor/extractors/chordino.py
+200	https://raw.githubusercontent.com/ptnghia-j/ChordMini/main/LICENSE
+200	https://raw.githubusercontent.com/ptnghia-j/ChordMini/main/README.md
+200	https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/LICENSE
+200	https://raw.githubusercontent.com/ptnghia-j/ChordMiniApp/main/README.md
+200	https://raw.githubusercontent.com/stefan-baumann/inceptionkeynet/main/LICENSE
+200	https://raw.githubusercontent.com/stefan-baumann/inceptionkeynet/main/README.md
+200	https://raw.githubusercontent.com/tangkk/pyace/master/LICENSE
+200	https://raw.githubusercontent.com/urinieto/harmonixset/main/LICENSE
+200	https://raw.githubusercontent.com/urinieto/harmonixset/main/README.md
+200	https://raw.githubusercontent.com/zhaojw1998/Beat-Transformer/main/LICENSE
+200	https://raw.githubusercontent.com/zhaojw1998/Beat-Transformer/main/README.md
+200	https://registry.npmjs.org/realtime-bpm-analyzer
+200	https://registry.npmjs.org/web-audio-beat-detector
+200	https://supermegaultragroovy.com/products/capo/
+200	https://transactions.ismir.net/articles/198
+200	https://vamp-plugins.org/plugin-doc/qm-vamp-plugins.html
+200	https://www.vamp-plugins.org/download.html
+200	https://zenodo.org/api/records/1117372
+200	https://zenodo.org/api/records/3371780

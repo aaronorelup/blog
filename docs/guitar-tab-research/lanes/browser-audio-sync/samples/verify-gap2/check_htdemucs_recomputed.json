@@ -1,0 +1,252 @@
+{
+ "sha_mismatch": [],
+ "sha_checked": 37,
+ "identical_to_t2": {
+  "t1_drums": true,
+  "t4_drums": true,
+  "t1_bass": true,
+  "t4_bass": true,
+  "t1_other": true,
+  "t4_other": true,
+  "t1_vocals": true,
+  "t4_vocals": true,
+  "t1_guitar": true,
+  "t4_guitar": true,
+  "t1_piano": true,
+  "t4_piano": true
+ },
+ "stems_t2": {
+  "drums": {
+   "frames": 441000,
+   "ch": 2,
+   "sr": 44100,
+   "subtype": "FLOAT",
+   "peak": 0.3908,
+   "rms_dbfs": -28.88
+  },
+  "bass": {
+   "frames": 441000,
+   "ch": 2,
+   "sr": 44100,
+   "subtype": "FLOAT",
+   "peak": 0.2843,
+   "rms_dbfs": -24.68
+  },
+  "other": {
+   "frames": 441000,
+   "ch": 2,
+   "sr": 44100,
+   "subtype": "FLOAT",
+   "peak": 0.0019,
+   "rms_dbfs": -80.25
+  },
+  "vocals": {
+   "frames": 441000,
+   "ch": 2,
+   "sr": 44100,
+   "subtype": "FLOAT",
+   "peak": 0.4007,
+   "rms_dbfs": -21.88
+  },
+  "guitar": {
+   "frames": 441000,
+   "ch": 2,
+   "sr": 44100,
+   "subtype": "FLOAT",
+   "peak": 0.2157,
+   "rms_dbfs": -31.37
+  },
+  "piano": {
+   "frames": 441000,
+   "ch": 2,
+   "sr": 44100,
+   "subtype": "FLOAT",
+   "peak": 0.324,
+   "rms_dbfs": -27.77
+  }
+ },
+ "sum_minus_mix_db_soundfile_mix": -12.93,
+ "sum_minus_mix_db_chromium_mix": -12.927,
+ "proj_browser": {
+  "drums": 0.022,
+  "bass": 0.0249,
+  "other": 0.0007,
+  "vocals": 0.1265,
+  "guitar": 0.2146,
+  "piano": 0.3507,
+  "sum": 0.7394
+ },
+ "proj_native": {
+  "drums": 0.0221,
+  "bass": 0.0251,
+  "other": 0.0007,
+  "vocals": 0.1265,
+  "guitar": 0.2129,
+  "piano": 0.3516,
+  "sum": 0.7389
+ },
+ "proj_demucsweb": {
+  "drums": 0.0164,
+  "bass": 0.0142,
+  "other": 0.8696,
+  "vocals": 0.0885,
+  "sum": 0.9887
+ },
+ "parity": {
+  "browser_vs_native_all_r0596": {
+   "drums": [
+    -61.0,
+    0.00058
+   ],
+   "bass": [
+    -61.4,
+    0.00059
+   ],
+   "other": [
+    -45.5,
+    4.9e-06
+   ],
+   "vocals": [
+    -59.3,
+    0.00078
+   ],
+   "guitar": [
+    -41.5,
+    0.0025
+   ],
+   "piano": [
+    -49.6,
+    0.00095
+   ]
+  },
+  "browser_vs_native_disabled_r0603": {
+   "drums": [
+    -60.9,
+    0.00058
+   ],
+   "bass": [
+    -61.4,
+    0.00059
+   ],
+   "other": [
+    -45.5,
+    4.9e-06
+   ],
+   "vocals": [
+    -59.2,
+    0.00078
+   ],
+   "guitar": [
+    -41.5,
+    0.0025
+   ],
+   "piano": [
+    -49.6,
+    0.00095
+   ]
+  },
+  "browser_vs_native_disabled_chromiuminput_r0611": {
+   "drums": [
+    -61.0,
+    0.00058
+   ],
+   "bass": [
+    -61.4,
+    0.00057
+   ],
+   "other": [
+    -45.6,
+    5e-06
+   ],
+   "vocals": [
+    -59.3,
+    0.00079
+   ],
+   "guitar": [
+    -41.4,
+    0.0025
+   ],
+   "piano": [
+    -49.5,
+    0.00095
+   ]
+  },
+  "native_chromiuminput_r0611_vs_soundfile_r0603": {
+   "drums": [
+    -91.4,
+    2.1e-05
+   ],
+   "bass": [
+    -92.3,
+    2.6e-05
+   ],
+   "other": [
+    -61.5,
+    7.8e-07
+   ],
+   "vocals": [
+    -95.2,
+    9.1e-06
+   ],
+   "guitar": [
+    -78.8,
+    4.5e-05
+   ],
+   "piano": [
+    -85.9,
+    1.9e-05
+   ]
+  },
+  "native_disabled_r0603_vs_all_r0596": {
+   "drums": [
+    -108.6,
+    2.9e-06
+   ],
+   "bass": [
+    -109.3,
+    3.5e-06
+   ],
+   "other": [
+    -81.7,
+    4.4e-08
+   ],
+   "vocals": [
+    -115.8,
+    1e-06
+   ],
+   "guitar": [
+    -89.2,
+    1.3e-05
+   ],
+   "piano": [
+    -102.4,
+    4.4e-06
+   ]
+  }
+ },
+ "decode": {
+  "n": 882000,
+  "n_differ_from_rule": 0,
+  "n_positive": 445024,
+  "n_zero": 87,
+  "n_negative": 436889,
+  "n_differ_from_div32768": 445024,
+  "soundfile_float32_equals_div32768": true,
+  "dec_format": [
+   "FLOAT",
+   [
+    441000,
+    2
+   ]
+  ],
+  "ratio_pos_median": 1.000030517578125,
+  "32768/32767": 1.000030518509476
+ },
+ "input": {
+  "frames": 441000,
+  "ch": 2,
+  "sr": 44100,
+  "sum_sq_chromium": 18200.75260174414,
+  "peak_chromium": 0.8358409404754639
+ }
+}

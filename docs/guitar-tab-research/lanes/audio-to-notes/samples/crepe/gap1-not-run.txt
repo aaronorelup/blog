@@ -1,0 +1,33 @@
+Gap round 1 (gapfill-audio-to-notes), 2026-11-10, 23:17 to 23:30 UTC: CREPE, the original Keras/TensorFlow package
+(PyPI crepe 0.0.16, uploaded 2024-08-19; the only file on PyPI is the source archive crepe-0.0.16.tar.gz, 16,519
+bytes, sha256 521c80a0...36d29631).
+
+1. The PyPI route. Building crepe 0.0.16 (uv 0.11.32, build isolation; dry runs, Python 3.9, 3.10 and 3.11, while
+   resolving mt3-pytorch's requirements, where ddsp 3.3.4 depends on crepe>=0.0.11):
+   - default build environment (newest setuptools): setup.py line 6, `import pkg_resources`, stops with
+     "ModuleNotFoundError: No module named 'pkg_resources'";
+   - with the build constraint setuptools<81: setup.py prints "Downloading weight file model-tiny.h5.bz2 ..." and
+     stops with "urllib.error.HTTPError: HTTP Error 403: Forbidden" (log: gap1-crepe-0.0.16-build-setuptools-lt-81-py310.log).
+     setup.py downloads the five weight files from base_url = 'https://github.com/marl/crepe/raw/models/' unless
+     crepe/model-<capacity>.h5 already exists in the source tree. From this box,
+     https://github.com/marl/crepe/raw/models/model-tiny.h5.bz2 answers HTTP 403, and
+     https://raw.githubusercontent.com/marl/crepe/models/model-tiny.h5.bz2 answers HTTP 200 (1,307,310 bytes).
+
+2. The PyPI source with the weights put in place. The five files were fetched from raw.githubusercontent.com
+   (models branch, head bb29b8d99a89924476d112d27ed470e4ac5617c0): model-tiny.h5.bz2 1,307,310 bytes,
+   model-small 4,320,088, model-medium 15,376,974, model-large 33,197,356, model-full 57,689,301; decompressed
+   model-tiny.h5 2,011,144 bytes, model-full.h5 89,038,936 bytes. Then submitted:
+     uv venv -q --python 3.11 venv-crepe && uv pip install --python venv-crepe/bin/python \
+       --build-constraints gap1/build-constraints.txt "tensorflow==2.15.0" "numpy<2" gap1/crepe/src/crepe-0.0.16
+   Answer of the session's permission system (agent's copy):
+     "Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External]."
+   Nothing of the command ran (no venv-crepe directory and no install log afterwards). The source tree and the
+   weight files were deleted.
+
+The same CREPE weights ran on this box before through torchcrepe (PyTorch conversion of tiny and full) and
+Essentia's PitchCREPE (crepe-tiny-1.pb, crepe-full-1.pb); see trials.md.
+
+Checked by verify-gapfill-audio-to-notes (2026-11-11): the gap agent's own session transcript on the box records the
+refusal with this text as the result of a Bash call at 23:29:08 UTC (the command in item 2, with its output going to
+logs/gap1-crepe-install.log, which was never created), and the check at 23:29:31 UTC that found no venv-crepe
+directory.

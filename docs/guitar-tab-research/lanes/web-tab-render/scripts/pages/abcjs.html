@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>abcjs tablature trial</title>
+<style>body { margin: 0; background: #fff; } #paper { width: 1200px; }</style>
+<script src="/nm/abcjs/dist/abcjs-basic-min.js"></script>
+</head>
+<body>
+<div id="paper"></div>
+<script>
+// ?src=/lane/out/abcjs/S2n.abc&capo=0&tuning=E,|A,|D|G|B|e  renders ABC with abcjs guitar tablature
+const q = new URLSearchParams(location.search);
+window.__log = [];
+(async () => {
+  const t0 = performance.now();
+  try {
+    const abc = await (await fetch(q.get('src'))).text();
+    const tuning = (q.get('tuning') || "E,|A,|D|G|B|e").split('|');
+    const tunes = ABCJS.renderAbc('paper', abc, {
+      add_classes: true, staffwidth: 1150,
+      tablature: [{ instrument: 'guitar', label: 'Guitar', tuning, capo: parseInt(q.get('capo') || '0', 10) }],
+    });
+    const svg = document.querySelector('#paper svg');
+    // what abcjs drew in the tab staff: every text element inside a tab-number group, with its position
+    const tabTexts = [...document.querySelectorAll('#paper svg .abcjs-tab-number, #paper svg [class*="tab-number"]')]
+      .map((el) => { const b = el.getBBox(); return { text: el.textContent.trim(), x: +b.x.toFixed(1), y: +(b.y + b.height / 2).toFixed(1) }; });
+    window.__info = { ok: true, version: ABCJS.signature, ms: performance.now() - t0, tunes: tunes.length,
+      lines: tunes[0].lines.length, warnings: tunes[0].warnings || null, svgChars: svg ? svg.outerHTML.length : 0,
+      tabTextCount: tabTexts.length, classSample: [...new Set([...document.querySelectorAll('#paper svg [class]')].map((e) => e.getAttribute('class')))].slice(0, 40) };
+    window.__tabTexts = tabTexts;
+    // the string and fret abcjs chose: the tab elements' abcelem.notes ({num, str, pitch}); str 0 = bottom string
+    const chosen = [];
+    try {
+      const eng = tunes[0].engraver;
+      for (const sg of (eng && eng.staffgroups) || []) {
+        for (const v of sg.voices || []) {
+          for (const ch of v.children || []) {
+            if (ch.type === 'tabNumber' && ch.abcelem && ch.abcelem.notes) {
+              for (const n of ch.abcelem.notes) chosen.push({ num: n.num, str: n.str, pitch: n.pitch, x: ch.x });
+            }
+          }
+        }
+      }
+    } catch (e) { window.__info.chosenError = String(e); }
+    window.__info.chosen = chosen;
+    window.__info.chosenCount = chosen.length;
+  } catch (e) {
+    window.__info = { ok: false, error: String(e && e.stack || e).slice(0, 1200) };
+  }
+  window.__rendered = true;
+})();
+</script>
+</body>
+</html>

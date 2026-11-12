@@ -1,0 +1,30 @@
+{
+ "tuningFrequency": 440.0,
+ "profiles": {
+  "bgate": {
+   "key": "C#",
+   "scale": "minor",
+   "strength": 0.7303
+  },
+  "krumhansl": {
+   "key": "E",
+   "scale": "major",
+   "strength": 0.7505
+  },
+  "temperley": {
+   "key": "E",
+   "scale": "major",
+   "strength": 0.7852
+  },
+  "edma": {
+   "key": "C#",
+   "scale": "minor",
+   "strength": 0.6539
+  },
+  "shaath": {
+   "key": "E",
+   "scale": "major",
+   "strength": 0.7462
+  }
+ }
+}

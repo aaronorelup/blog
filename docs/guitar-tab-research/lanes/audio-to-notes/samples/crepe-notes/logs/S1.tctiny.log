@@ -1,0 +1,6 @@
+S1.wav
+/home/user/gtr/lanes/audio-to-notes/out/crepe-notes/tctiny/S1.wav
+Onsets file not found at S1.onsets.npz
+Running onset detection...
+Tuning offset: 6.000000000000005 cents
+time tctiny S1 wall 3.75 s user 3.48 s sys 0.22 s maxrss 435656 KiB exit 0

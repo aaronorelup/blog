@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>abcjs Editor click trial</title>
+<style>body{margin:0;background:#fff} textarea{width:1180px;height:260px;font:12px monospace} #paper{width:1200px}</style>
+<script src="/nm/abcjs/dist/abcjs-basic-min.js"></script>
+</head>
+<body>
+<div id="paper"></div>
+<textarea id="abc"></textarea>
+<div id="warnings"></div>
+<script>
+// Gap round 2 (web-tab-render): abcjs 6.7.2's text-editor helper ABCJS.Editor with the guitar tablature option, as in
+// abcjs_editor.html, plus a clickListener that only records its arguments (the Editor keeps it as its "client" listener
+// and calls it after its own highlight(), which selects the clicked element's ABC text in the textarea).
+// ?src=<abc file>[&dragging=1]. The drawing is placed above the textarea so both are on screen.
+const q = new URLSearchParams(location.search);
+window.__events = [];
+window.__tabNumbers = () => [...document.querySelectorAll('#paper svg text.abcjs-tab-number')].map((t) => t.textContent.trim());
+window.__tabRead = () => {
+  const staves = [...document.querySelectorAll('#paper svg g.abcjs-staff')].map((g) => {
+    const ys = [...g.querySelectorAll('path')].map((pa) => { const bb = pa.getBBox(); return bb.y + bb.height / 2; }).sort((a, c) => a - c);
+    const lineCls = [...g.classList].find((c) => /^abcjs-l\d+$/.test(c));
+    return { line: lineCls ? parseInt(lineCls.slice(7), 10) : -1, ys };
+  }).filter((s) => s.ys.length === 6);
+  return [...document.querySelectorAll('#paper svg text.abcjs-tab-number')].map((t) => {
+    const fs = parseFloat(t.getAttribute('font-size') || '15');
+    const yc = parseFloat(t.getAttribute('y')) - fs * 0.35;
+    let best = null;
+    for (const s of staves) for (let i = 0; i < 6; i++) {
+      const d = Math.abs(s.ys[i] - yc);
+      if (!best || d < best.d) best = { d, line: s.line, string: i + 1 };
+    }
+    return { text: t.textContent.trim(), string: best ? best.string : null, line: best ? best.line : null,
+      x: +parseFloat(t.getAttribute('x')).toFixed(2) };
+  });
+};
+window.__textState = () => {
+  const t = document.getElementById('abc');
+  return { selectionStart: t.selectionStart, selectionEnd: t.selectionEnd,
+    selected: t.value.slice(t.selectionStart, t.selectionEnd), activeElement: document.activeElement ? document.activeElement.id || document.activeElement.tagName : null,
+    length: t.value.length };
+};
+(async () => {
+  document.getElementById('abc').value = await (await fetch(q.get('src'))).text();
+  const abcjsParams = { add_classes: true, staffwidth: 1150,
+    tablature: [{ instrument: 'guitar', label: 'Guitar', tuning: ['E,', 'A,', 'D', 'G', 'B', 'e'], capo: 0 }],
+    clickListener: (abcelem, tuneNumber, classes, analysis, drag, ev) => {
+      window.__events.push({ el_type: abcelem.el_type, startChar: abcelem.startChar, endChar: abcelem.endChar,
+        drag: drag ? { step: drag.step, max: drag.max, index: drag.index } : null, event: ev ? ev.type || null : null });
+    } };
+  if (q.get('dragging') === '1') abcjsParams.dragging = true;
+  window.editor = new ABCJS.Editor('abc', { canvas_id: 'paper', warnings_id: 'warnings', abcjsParams });
+  setTimeout(() => { window.__rendered = true; }, 500);
+})();
+</script>
+</body>
+</html>

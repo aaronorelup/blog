@@ -1,0 +1,34 @@
+{
+ "page": "/pages/stretch.html?method=signalsmith&rate=0.5",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 6.772,
+ "external_requests": [],
+ "result": {
+  "method": "signalsmith",
+  "rate": 0.5,
+  "preservesPitch": null,
+  "file": "/inputs/S1/S1.wav",
+  "input": {
+   "sampleRate": 44100,
+   "channels": 2,
+   "duration_s": 29.833333333333332
+  },
+  "signalsmith_start_s": 0.005804988662131519,
+  "addBuffers_end": 29.833333333333332,
+  "signalsmith_latency_s": 0.12,
+  "out_sampleRate": 44100,
+  "processing_ms": 2111.9500000001863,
+  "output": {
+   "samples": 2675400,
+   "seconds": 60.666666666666664,
+   "expected_seconds": 59.666666666666664,
+   "peak": 1.1050108671188354
+  },
+  "wav": "/home/user/gtr/lanes/browser-audio-sync/out/stretch/S1_signalsmith_0p5.wav"
+ }
+}

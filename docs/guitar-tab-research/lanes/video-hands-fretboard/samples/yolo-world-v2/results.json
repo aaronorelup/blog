@@ -1,0 +1,905 @@
+{
+ "tool": "yoloworld",
+ "model": "yolov8s-worldv2.pt",
+ "ultralytics": "8.4.209",
+ "torch": "2.15.0+cpu",
+ "init_s": 5.16,
+ "low_threshold": 0.05,
+ "prompts": [
+  "guitar",
+  "guitar neck",
+  "fretboard",
+  "headstock",
+  "capo",
+  "hand"
+ ],
+ "images": [
+  {
+   "id": "C1_full",
+   "path": "/home/user/gtr/lanes/video-hands-fretboard/inputs/capo/C1_kapodaster_960px.jpg",
+   "image_wh": [
+    960,
+    1706
+   ],
+   "view": {
+    "x0": 0,
+    "y0": 0,
+    "scale": 1.0,
+    "wh": [
+     960,
+     1706
+    ]
+   },
+   "infer_s": 0.266,
+   "per_prompt": {
+    "guitar": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "guitar neck": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "fretboard": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "headstock": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "capo": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "hand": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    }
+   },
+   "labels_outside_prompt_list": [],
+   "boxes": []
+  },
+  {
+   "id": "C1_lower",
+   "path": "/home/user/gtr/lanes/video-hands-fretboard/inputs/capo/C1_kapodaster_960px.jpg",
+   "image_wh": [
+    960,
+    1706
+   ],
+   "view": {
+    "x0": 250,
+    "y0": 1000,
+    "scale": 1.0,
+    "wh": [
+     510,
+     706
+    ]
+   },
+   "infer_s": 0.267,
+   "per_prompt": {
+    "guitar": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "guitar neck": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "fretboard": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "headstock": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "capo": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "hand": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    }
+   },
+   "labels_outside_prompt_list": [],
+   "boxes": []
+  },
+  {
+   "id": "R3a_f0100_full",
+   "path": "/home/user/gtr/lanes/video-hands-fretboard/gap2/frames/R3a_f0100.png",
+   "image_wh": [
+    640,
+    480
+   ],
+   "view": {
+    "x0": 0,
+    "y0": 0,
+    "scale": 1.0,
+    "wh": [
+     640,
+     480
+    ]
+   },
+   "infer_s": 0.235,
+   "per_prompt": {
+    "guitar": {
+     "n_ge_low": 2,
+     "n_ge_0.25": 1,
+     "n_ge_0.5": 1,
+     "top": [
+      {
+       "prompt": "guitar",
+       "score": 0.8554,
+       "box_image": [
+        200.5,
+        127.3,
+        409.4,
+        432.7
+       ]
+      },
+      {
+       "prompt": "guitar",
+       "score": 0.1332,
+       "box_image": [
+        198.5,
+        222.6,
+        576.3,
+        432.3
+       ]
+      }
+     ]
+    },
+    "guitar neck": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "fretboard": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "headstock": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "capo": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "hand": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    }
+   },
+   "labels_outside_prompt_list": [],
+   "boxes": [
+    {
+     "prompt": "guitar",
+     "score": 0.8554,
+     "box_image": [
+      200.5,
+      127.3,
+      409.4,
+      432.7
+     ]
+    },
+    {
+     "prompt": "guitar",
+     "score": 0.1332,
+     "box_image": [
+      198.5,
+      222.6,
+      576.3,
+      432.3
+     ]
+    }
+   ]
+  },
+  {
+   "id": "R3a_f0300_full",
+   "path": "/home/user/gtr/lanes/video-hands-fretboard/gap2/frames/R3a_f0300.png",
+   "image_wh": [
+    640,
+    480
+   ],
+   "view": {
+    "x0": 0,
+    "y0": 0,
+    "scale": 1.0,
+    "wh": [
+     640,
+     480
+    ]
+   },
+   "infer_s": 0.195,
+   "per_prompt": {
+    "guitar": {
+     "n_ge_low": 1,
+     "n_ge_0.25": 1,
+     "n_ge_0.5": 1,
+     "top": [
+      {
+       "prompt": "guitar",
+       "score": 0.7118,
+       "box_image": [
+        156.3,
+        115.0,
+        487.0,
+        337.5
+       ]
+      }
+     ]
+    },
+    "guitar neck": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "fretboard": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "headstock": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "capo": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "hand": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    }
+   },
+   "labels_outside_prompt_list": [],
+   "boxes": [
+    {
+     "prompt": "guitar",
+     "score": 0.7118,
+     "box_image": [
+      156.3,
+      115.0,
+      487.0,
+      337.5
+     ]
+    }
+   ]
+  },
+  {
+   "id": "R3a_f0500_full",
+   "path": "/home/user/gtr/lanes/video-hands-fretboard/gap2/frames/R3a_f0500.png",
+   "image_wh": [
+    640,
+    480
+   ],
+   "view": {
+    "x0": 0,
+    "y0": 0,
+    "scale": 1.0,
+    "wh": [
+     640,
+     480
+    ]
+   },
+   "infer_s": 0.237,
+   "per_prompt": {
+    "guitar": {
+     "n_ge_low": 2,
+     "n_ge_0.25": 1,
+     "n_ge_0.5": 1,
+     "top": [
+      {
+       "prompt": "guitar",
+       "score": 0.7609,
+       "box_image": [
+        200.9,
+        124.5,
+        412.0,
+        435.1
+       ]
+      },
+      {
+       "prompt": "guitar",
+       "score": 0.1305,
+       "box_image": [
+        166.6,
+        138.7,
+        598.9,
+        432.0
+       ]
+      }
+     ]
+    },
+    "guitar neck": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "fretboard": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "headstock": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "capo": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "hand": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    }
+   },
+   "labels_outside_prompt_list": [],
+   "boxes": [
+    {
+     "prompt": "guitar",
+     "score": 0.7609,
+     "box_image": [
+      200.9,
+      124.5,
+      412.0,
+      435.1
+     ]
+    },
+    {
+     "prompt": "guitar",
+     "score": 0.1305,
+     "box_image": [
+      166.6,
+      138.7,
+      598.9,
+      432.0
+     ]
+    }
+   ]
+  },
+  {
+   "id": "R3a_f0100_crop",
+   "path": "/home/user/gtr/lanes/video-hands-fretboard/gap2/frames/R3a_f0100.png",
+   "image_wh": [
+    640,
+    480
+   ],
+   "view": {
+    "x0": 200,
+    "y0": 110,
+    "scale": 3.0,
+    "wh": [
+     720,
+     720
+    ]
+   },
+   "infer_s": 0.308,
+   "per_prompt": {
+    "guitar": {
+     "n_ge_low": 4,
+     "n_ge_0.25": 2,
+     "n_ge_0.5": 1,
+     "top": [
+      {
+       "prompt": "guitar",
+       "score": 0.5267,
+       "box_image": [
+        250.6,
+        237.9,
+        439.9,
+        350.0
+       ]
+      },
+      {
+       "prompt": "guitar",
+       "score": 0.3628,
+       "box_image": [
+        305.8,
+        126.5,
+        399.4,
+        335.3
+       ]
+      },
+      {
+       "prompt": "guitar",
+       "score": 0.1019,
+       "box_image": [
+        200.0,
+        115.9,
+        244.7,
+        329.8
+       ]
+      }
+     ]
+    },
+    "guitar neck": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "fretboard": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "headstock": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "capo": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "hand": {
+     "n_ge_low": 1,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": [
+      {
+       "prompt": "hand",
+       "score": 0.0767,
+       "box_image": [
+        226.1,
+        242.5,
+        344.4,
+        309.4
+       ]
+      }
+     ]
+    }
+   },
+   "labels_outside_prompt_list": [],
+   "boxes": [
+    {
+     "prompt": "guitar",
+     "score": 0.5267,
+     "box_image": [
+      250.6,
+      237.9,
+      439.9,
+      350.0
+     ]
+    },
+    {
+     "prompt": "guitar",
+     "score": 0.3628,
+     "box_image": [
+      305.8,
+      126.5,
+      399.4,
+      335.3
+     ]
+    },
+    {
+     "prompt": "guitar",
+     "score": 0.1019,
+     "box_image": [
+      200.0,
+      115.9,
+      244.7,
+      329.8
+     ]
+    },
+    {
+     "prompt": "hand",
+     "score": 0.0767,
+     "box_image": [
+      226.1,
+      242.5,
+      344.4,
+      309.4
+     ]
+    },
+    {
+     "prompt": "guitar",
+     "score": 0.0552,
+     "box_image": [
+      200.4,
+      110.5,
+      394.9,
+      349.8
+     ]
+    }
+   ]
+  },
+  {
+   "id": "R3a_f0300_crop",
+   "path": "/home/user/gtr/lanes/video-hands-fretboard/gap2/frames/R3a_f0300.png",
+   "image_wh": [
+    640,
+    480
+   ],
+   "view": {
+    "x0": 200,
+    "y0": 100,
+    "scale": 3.0,
+    "wh": [
+     840,
+     660
+    ]
+   },
+   "infer_s": 0.241,
+   "per_prompt": {
+    "guitar": {
+     "n_ge_low": 2,
+     "n_ge_0.25": 1,
+     "n_ge_0.5": 1,
+     "top": [
+      {
+       "prompt": "guitar",
+       "score": 0.7739,
+       "box_image": [
+        210.3,
+        114.5,
+        480.0,
+        315.0
+       ]
+      },
+      {
+       "prompt": "guitar",
+       "score": 0.1098,
+       "box_image": [
+        252.6,
+        216.6,
+        479.7,
+        299.3
+       ]
+      }
+     ]
+    },
+    "guitar neck": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "fretboard": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "headstock": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "capo": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "hand": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    }
+   },
+   "labels_outside_prompt_list": [],
+   "boxes": [
+    {
+     "prompt": "guitar",
+     "score": 0.7739,
+     "box_image": [
+      210.3,
+      114.5,
+      480.0,
+      315.0
+     ]
+    },
+    {
+     "prompt": "guitar",
+     "score": 0.1098,
+     "box_image": [
+      252.6,
+      216.6,
+      479.7,
+      299.3
+     ]
+    }
+   ]
+  },
+  {
+   "id": "R3a_cu_f0000",
+   "path": "/home/user/gtr/lanes/video-hands-fretboard/gap2/frames/R3a_cu_f0000.png",
+   "image_wh": [
+    640,
+    480
+   ],
+   "view": {
+    "x0": 0,
+    "y0": 0,
+    "scale": 1.0,
+    "wh": [
+     640,
+     480
+    ]
+   },
+   "infer_s": 0.217,
+   "per_prompt": {
+    "guitar": {
+     "n_ge_low": 1,
+     "n_ge_0.25": 1,
+     "n_ge_0.5": 1,
+     "top": [
+      {
+       "prompt": "guitar",
+       "score": 0.7704,
+       "box_image": [
+        47.6,
+        37.4,
+        640.0,
+        478.1
+       ]
+      }
+     ]
+    },
+    "guitar neck": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "fretboard": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "headstock": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "capo": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "hand": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    }
+   },
+   "labels_outside_prompt_list": [],
+   "boxes": [
+    {
+     "prompt": "guitar",
+     "score": 0.7704,
+     "box_image": [
+      47.6,
+      37.4,
+      640.0,
+      478.1
+     ]
+    }
+   ]
+  },
+  {
+   "id": "R3a_cu_f0150",
+   "path": "/home/user/gtr/lanes/video-hands-fretboard/gap2/frames/R3a_cu_f0150.png",
+   "image_wh": [
+    640,
+    480
+   ],
+   "view": {
+    "x0": 0,
+    "y0": 0,
+    "scale": 1.0,
+    "wh": [
+     640,
+     480
+    ]
+   },
+   "infer_s": 0.189,
+   "per_prompt": {
+    "guitar": {
+     "n_ge_low": 1,
+     "n_ge_0.25": 1,
+     "n_ge_0.5": 1,
+     "top": [
+      {
+       "prompt": "guitar",
+       "score": 0.8399,
+       "box_image": [
+        56.4,
+        35.5,
+        640.0,
+        476.2
+       ]
+      }
+     ]
+    },
+    "guitar neck": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "fretboard": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "headstock": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "capo": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "hand": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    }
+   },
+   "labels_outside_prompt_list": [],
+   "boxes": [
+    {
+     "prompt": "guitar",
+     "score": 0.8399,
+     "box_image": [
+      56.4,
+      35.5,
+      640.0,
+      476.2
+     ]
+    }
+   ]
+  },
+  {
+   "id": "R3a_cu_f0280",
+   "path": "/home/user/gtr/lanes/video-hands-fretboard/gap2/frames/R3a_cu_f0280.png",
+   "image_wh": [
+    640,
+    480
+   ],
+   "view": {
+    "x0": 0,
+    "y0": 0,
+    "scale": 1.0,
+    "wh": [
+     640,
+     480
+    ]
+   },
+   "infer_s": 0.203,
+   "per_prompt": {
+    "guitar": {
+     "n_ge_low": 1,
+     "n_ge_0.25": 1,
+     "n_ge_0.5": 1,
+     "top": [
+      {
+       "prompt": "guitar",
+       "score": 0.7474,
+       "box_image": [
+        73.6,
+        33.2,
+        638.5,
+        480.0
+       ]
+      }
+     ]
+    },
+    "guitar neck": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "fretboard": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "headstock": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "capo": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    },
+    "hand": {
+     "n_ge_low": 0,
+     "n_ge_0.25": 0,
+     "n_ge_0.5": 0,
+     "top": []
+    }
+   },
+   "labels_outside_prompt_list": [],
+   "boxes": [
+    {
+     "prompt": "guitar",
+     "score": 0.7474,
+     "box_image": [
+      73.6,
+      33.2,
+      638.5,
+      480.0
+     ]
+    }
+   ]
+  }
+ ]
+}

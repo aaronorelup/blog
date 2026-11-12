@@ -1,0 +1,70 @@
+[
+ {
+  "label": "C tuttut dropDrange dropD",
+  "cmd": "gtr-eval tab --truth S5dropd --est out/chainC/tuttut/S5dropd.bpDropDrange.dropD.gtreval.json",
+  "eval_id": "e1511",
+  "exit": 0,
+  "counts": {
+   "n_truth": 90,
+   "n_est": 129,
+   "n_matched": 90,
+   "n_truth_left_out": {},
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.955556,
+   "same_string_fraction_of_matched": 0.955556,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.955556,
+   "same_string_and_fret_fraction_of_truth": 0.955556,
+   "string_difference_counts": {
+    "0": 86,
+    "+1": 4
+   }
+  }
+ },
+ {
+  "label": "C lilypond dropDrange dropD",
+  "cmd": "gtr-eval tab --truth S5dropd --est out/chainC/lilypond/S5dropd.bpDropDrange.dropD.gtreval.json",
+  "eval_id": "e1512",
+  "exit": 0,
+  "counts": {
+   "n_truth": 90,
+   "n_est": 129,
+   "n_matched": 90,
+   "n_truth_left_out": {},
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 1.0,
+   "same_string_fraction_of_matched": 1.0,
+   "same_string_and_absolute_fret_fraction_of_matched": 1.0,
+   "same_string_and_fret_fraction_of_truth": 1.0,
+   "string_difference_counts": {
+    "0": 90
+   }
+  }
+ },
+ {
+  "label": "C lilypond pinned",
+  "cmd": "gtr-eval tab --truth S5dropd --est out/chainC/lilypond/S5dropd.bp.dropD.pin1-55-s4.gtreval.json",
+  "eval_id": "e1513",
+  "exit": 0,
+  "counts": {
+   "n_truth": 90,
+   "n_est": 129,
+   "n_matched": 90,
+   "n_truth_left_out": {},
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.988889,
+   "same_string_fraction_of_matched": 0.988889,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.988889,
+   "same_string_and_fret_fraction_of_truth": 0.988889,
+   "string_difference_counts": {
+    "0": 89,
+    "+1": 1
+   }
+  }
+ }
+]

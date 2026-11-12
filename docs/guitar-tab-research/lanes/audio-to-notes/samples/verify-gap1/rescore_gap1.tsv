@@ -1,0 +1,13 @@
+e1478	IDENTICAL	0	est_sha_same=True		f0 --truth S1 --est f0/S1.f0.csv --conf-threshold 0.03 --out scores/S1.json
+e1479	IDENTICAL	0	est_sha_same=True		f0 --truth S2n --est f0/S2n.f0.csv --conf-threshold 0.03 --out scores/S2n.json
+e1480	IDENTICAL	0	est_sha_same=True		f0 --truth S2s --est f0/S2s.f0.csv --conf-threshold 0.03 --out scores/S2s.json
+e1481	IDENTICAL	0	est_sha_same=True		f0 --truth S4 --est f0/S4.f0.csv --conf-threshold 0.03 --out scores/S4.json
+e1482	IDENTICAL	0	est_sha_same=True		f0 --truth S4 --est f0/S4lead.f0.csv --conf-threshold 0.03 --out scores/S4lead.json
+e1483	IDENTICAL	0	est_sha_same=True		f0 --truth R1b --est f0/R1b.f0.csv --voice lead --conf-threshold 0.03 --out scores/R1b.json
+e1484	IDENTICAL	0	est_sha_same=True		f0 --truth S2n --est f0/S2n.f0.csv --voice bass --out scores/S2n-bass.json
+e1485	IDENTICAL	0	est_sha_same=True		f0 --truth S2s --est f0/S2s.f0.csv --voice bass --out scores/S2s-bass.json
+e1570	IDENTICAL	0	est_sha_same=True		notes --truth S1 --est S1.wav.midi --out scores/S1.json
+e1571	IDENTICAL	0	est_sha_same=True		notes --truth S2n --est S2n.wav.midi --out scores/S2n.json
+e1572	IDENTICAL	0	est_sha_same=True		notes --truth R1c --est R1c.wav.midi --out scores/R1c.json
+e1573	IDENTICAL	0	est_sha_same=True		notes --truth S4 --voice chord --est S4guitar.wav.midi --out scores/S4guitar.json
+e1574	IDENTICAL	0	est_sha_same=True		notes --truth R1c --est R1c.wav.midi --onset-tol 0.1 --out scores/R1c-tol100.json

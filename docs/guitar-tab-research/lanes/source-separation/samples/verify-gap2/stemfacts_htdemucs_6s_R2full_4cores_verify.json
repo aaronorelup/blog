@@ -1,0 +1,99 @@
+{
+ "input": {
+  "path": "/home/user/gtr/inputs/R2full/R2full.wav",
+  "sample_rate": 44100,
+  "channels": 2,
+  "frames": 10076073,
+  "subtype": "PCM_16",
+  "rms_dbfs": -12.129383032985121,
+  "seconds": 228.4824
+ },
+ "est_dir": "/home/user/gtr/lanes/source-separation/verify-gap2/r2b/out/v-4c/htdemucs_6s/R2full",
+ "stems": {
+  "bass": {
+   "file": "bass.wav",
+   "bytes": 40304336,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 10076073,
+   "seconds": 228.4824,
+   "frames_minus_input": 0,
+   "rms_dbfs": -20.88,
+   "peak_dbfs": -5.17
+  },
+  "drums": {
+   "file": "drums.wav",
+   "bytes": 40304336,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 10076073,
+   "seconds": 228.4824,
+   "frames_minus_input": 0,
+   "rms_dbfs": -25.28,
+   "peak_dbfs": -0.09
+  },
+  "guitar": {
+   "file": "guitar.wav",
+   "bytes": 40304336,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 10076073,
+   "seconds": 228.4824,
+   "frames_minus_input": 0,
+   "rms_dbfs": -19.21,
+   "peak_dbfs": -1.8
+  },
+  "other": {
+   "file": "other.wav",
+   "bytes": 40304336,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 10076073,
+   "seconds": 228.4824,
+   "frames_minus_input": 0,
+   "rms_dbfs": -47.07,
+   "peak_dbfs": -15.6
+  },
+  "piano": {
+   "file": "piano.wav",
+   "bytes": 40304336,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 10076073,
+   "seconds": 228.4824,
+   "frames_minus_input": 0,
+   "rms_dbfs": -49.94,
+   "peak_dbfs": -22.02
+  },
+  "vocals": {
+   "file": "vocals.wav",
+   "bytes": 40304336,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 10076073,
+   "seconds": 228.4824,
+   "frames_minus_input": 0,
+   "rms_dbfs": -15.8,
+   "peak_dbfs": -0.09
+  }
+ },
+ "sum_vs_mix": {
+  "common_rate": 44100,
+  "common_frames": 10076073,
+  "best_lag_samples": 0,
+  "residual_db_at_lag0": -21.68,
+  "note": "positive lag = the stems' sum is late relative to the mix"
+ }
+}

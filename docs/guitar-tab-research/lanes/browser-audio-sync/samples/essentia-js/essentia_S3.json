@@ -1,0 +1,117 @@
+{
+ "page": "/pages/essentia.html?clip=S3&algos=rhythm,key,tonal",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 3.658,
+ "external_requests": [],
+ "result": {
+  "clip": "S3",
+  "algos": [
+   "rhythm",
+   "key",
+   "tonal"
+  ],
+  "init_ms": 197.35499999998137,
+  "essentia_version": "2.1-beta6-dev",
+  "algorithmNames_count": 199,
+  "input": {
+   "sampleRate": 44100,
+   "channels": 2,
+   "seconds": 24
+  },
+  "rhythm": {
+   "ms": 2154.7900000000373,
+   "bpm": 95.60939025878906,
+   "confidence": 3.4978079795837402,
+   "n_ticks": 37,
+   "first10": [
+    0.6269387602806091,
+    1.2538775205612183,
+    1.8924262523651123,
+    2.519365072250366,
+    3.1579136848449707,
+    3.7848525047302246,
+    4.4117913246154785,
+    5.038730144500732,
+    5.665668964385986,
+    6.2809977531433105
+   ],
+   "beats_file": "/home/user/gtr/lanes/browser-audio-sync/out/essentia/S3_beats.txt",
+   "bpm_file": "/home/user/gtr/lanes/browser-audio-sync/out/essentia/S3_bpm.txt"
+  },
+  "key": {
+   "ms": 68.90000000037253,
+   "key": "G",
+   "scale": "major",
+   "strength": 0.9332228302955627,
+   "file": "/home/user/gtr/lanes/browser-audio-sync/out/essentia/S3_key.txt"
+  },
+  "tonal": {
+   "ms": 148.12999999988824,
+   "n_frames": 518,
+   "n_segments": 10,
+   "key_key": "C",
+   "key_scale": "major",
+   "chords_key": "G",
+   "chords_scale": "major",
+   "first_segments": [
+    [
+     0,
+     1.579,
+     "Am"
+    ],
+    [
+     1.579,
+     4.923,
+     "G"
+    ],
+    [
+     4.923,
+     7.941,
+     "Em"
+    ],
+    [
+     7.941,
+     10.588,
+     "Am"
+    ],
+    [
+     10.588,
+     12.353,
+     "D"
+    ],
+    [
+     12.353,
+     14.861,
+     "G"
+    ],
+    [
+     14.861,
+     17.508,
+     "Em"
+    ],
+    [
+     17.508,
+     19.876,
+     "C"
+    ],
+    [
+     19.876,
+     20.201,
+     "D"
+    ],
+    [
+     20.201,
+     24.056,
+     "G"
+    ]
+   ],
+   "lab": "/home/user/gtr/lanes/browser-audio-sync/out/essentia/S3_chords.lab"
+  },
+  "total_ms": 2896.935000000056
+ }
+}

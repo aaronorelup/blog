@@ -1,0 +1,78 @@
+{
+ "tool": "swiftf0",
+ "clips": {
+  "S1": {
+   "input": "/home/user/gtr/inputs/S1/S1.mono.wav",
+   "seconds": 0.516,
+   "n_frames": 1864,
+   "hop_s": 0.016,
+   "n_frames_freq_gt0": 1864,
+   "n_notes": 48
+  },
+  "S2n": {
+   "input": "/home/user/gtr/inputs/S2n/S2n.mono.wav",
+   "seconds": 0.395,
+   "n_frames": 1834,
+   "hop_s": 0.016,
+   "n_frames_freq_gt0": 1834,
+   "n_notes": 55
+  },
+  "S2s": {
+   "input": "/home/user/gtr/inputs/S2s/S2s.mono.wav",
+   "seconds": 0.577,
+   "n_frames": 1834,
+   "hop_s": 0.016,
+   "n_frames_freq_gt0": 1834,
+   "n_notes": 28
+  },
+  "S4": {
+   "input": "/home/user/gtr/inputs/S4/S4.mono.wav",
+   "seconds": 0.619,
+   "n_frames": 2421,
+   "hop_s": 0.016,
+   "n_frames_freq_gt0": 2421,
+   "n_notes": 8
+  },
+  "S4lead": {
+   "input": "/home/user/gtr/inputs/S4/stems/lead.wav",
+   "seconds": 0.802,
+   "n_frames": 2421,
+   "hop_s": 0.016,
+   "n_frames_freq_gt0": 2421,
+   "n_notes": 35
+  },
+  "R1b": {
+   "input": "/home/user/gtr/inputs/R1b/R1b.mono.wav",
+   "seconds": 0.457,
+   "n_frames": 1833,
+   "hop_s": 0.016,
+   "n_frames_freq_gt0": 1833,
+   "n_notes": 60
+  },
+  "R2": {
+   "input": "/home/user/gtr/inputs/R2/R2.mono.wav",
+   "seconds": 0.455,
+   "n_frames": 2250,
+   "hop_s": 0.016,
+   "n_frames_freq_gt0": 2250,
+   "n_notes": 47
+  },
+  "R3a": {
+   "input": "/home/user/gtr/inputs/R3a/R3a.mono.wav",
+   "seconds": 0.222,
+   "n_frames": 1124,
+   "hop_s": 0.016,
+   "n_frames_freq_gt0": 1124,
+   "n_notes": 33
+  }
+ },
+ "version": "0.3.0",
+ "settings": {
+  "fmin": "default 46.875",
+  "fmax": "default 2093.75",
+  "threads": 2,
+  "segment_notes": "pitch_hold_ms=80 (default)",
+  "voiced": "confidence >= 0.5 (tool's calibration)"
+ },
+ "setup_s": 0.121
+}

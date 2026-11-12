@@ -1,0 +1,129 @@
+{
+ "page": "/pages/alphatab_live.html?mode=external",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 13.813,
+ "external_requests": [],
+ "result": {
+  "mode": "external",
+  "alphaTab_npm_version": "1.9.0",
+  "tempo": 112,
+  "handler_calls": [
+   [
+    "seekTo",
+    0.5580357142857143,
+    593.7650000001304
+   ],
+   [
+    "play",
+    595.7200000002049
+   ],
+   [
+    "seekTo",
+    20000,
+    10598.320000000298
+   ],
+   [
+    "seekTo",
+    20892.857142857145,
+    12101.125
+   ],
+   [
+    "pause",
+    12101.649999999907
+   ]
+  ],
+  "after_seek": {
+   "audio_ms": 21414.534,
+   "api_timePosition": 21412.672000000002
+  },
+  "position_event_minus_audio_ms": {
+   "n": 504,
+   "mean": 0,
+   "mean_abs": 0,
+   "sd": 0,
+   "max_abs": 0,
+   "p95_abs": 0,
+   "min": 0,
+   "max": 0
+  },
+  "position_events": 661,
+  "events_first": [
+   {
+    "now": 0.024999999906867743,
+    "currentTime": 0,
+    "endTime": 0,
+    "isSeek": true
+   },
+   {
+    "now": 0.05000000027939677,
+    "state": 0,
+    "stopped": false
+   },
+   {
+    "now": 226.5449999999255,
+    "currentTime": 0,
+    "endTime": 27857.14285714288,
+    "isSeek": true
+   },
+   {
+    "now": 226.785000000149,
+    "currentTime": 0.5580357142857143,
+    "endTime": 27857.14285714288,
+    "isSeek": true
+   },
+   {
+    "now": 595.695000000298,
+    "state": 1,
+    "stopped": false
+   },
+   {
+    "now": 597.7350000003353,
+    "currentTime": 0.558,
+    "endTime": 27857.14285714288,
+    "isSeek": false
+   },
+   {
+    "now": 599.2200000002049,
+    "currentTime": 0.558,
+    "endTime": 27857.14285714288,
+    "isSeek": false
+   },
+   {
+    "now": 616.1000000000931,
+    "currentTime": 7.816,
+    "endTime": 27857.14285714288,
+    "isSeek": false
+   },
+   {
+    "now": 632.8600000003353,
+    "currentTime": 7.816,
+    "endTime": 27857.14285714288,
+    "isSeek": false
+   },
+   {
+    "now": 657.8950000000186,
+    "currentTime": 7.816,
+    "endTime": 27857.14285714288,
+    "isSeek": false
+   },
+   {
+    "now": 666.0100000002421,
+    "currentTime": 11.393,
+    "endTime": 27857.14285714288,
+    "isSeek": false
+   },
+   {
+    "now": 682.6300000003539,
+    "currentTime": 11.393,
+    "endTime": 27857.14285714288,
+    "isSeek": false
+   }
+  ],
+  "events_n": 666
+ }
+}

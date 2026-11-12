@@ -1,0 +1,73 @@
+{
+ "tool": "fcpe",
+ "clips": {
+  "S1": {
+   "input": "/home/user/gtr/inputs/S1/S1.mono.wav",
+   "seconds": 3.529,
+   "n_frames": 2984,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 2739
+  },
+  "S2n": {
+   "input": "/home/user/gtr/inputs/S2n/S2n.mono.wav",
+   "seconds": 4.157,
+   "n_frames": 2936,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 2630
+  },
+  "S2s": {
+   "input": "/home/user/gtr/inputs/S2s/S2s.mono.wav",
+   "seconds": 2.445,
+   "n_frames": 2936,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 2722
+  },
+  "S4": {
+   "input": "/home/user/gtr/inputs/S4/S4.mono.wav",
+   "seconds": 2.119,
+   "n_frames": 3875,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 3454
+  },
+  "S4lead": {
+   "input": "/home/user/gtr/inputs/S4/stems/lead.wav",
+   "seconds": 2.827,
+   "n_frames": 3875,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 3288
+  },
+  "R1b": {
+   "input": "/home/user/gtr/inputs/R1b/R1b.mono.wav",
+   "seconds": 2.41,
+   "n_frames": 2934,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 2357
+  },
+  "R2": {
+   "input": "/home/user/gtr/inputs/R2/R2.mono.wav",
+   "seconds": 2.942,
+   "n_frames": 3601,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 3544
+  },
+  "R3a": {
+   "input": "/home/user/gtr/inputs/R3a/R3a.mono.wav",
+   "seconds": 1.577,
+   "n_frames": 1800,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 1702
+  }
+ },
+ "version": "torchfcpe 0.0.4 (bundled model)",
+ "settings": {
+  "sr": "16000 input (resampled here with torchaudio)",
+  "decoder_mode": "local_argmax",
+  "threshold": 0.006,
+  "f0_min": 80,
+  "f0_max": 880,
+  "interp_uv": false,
+  "hop": "160 samples at 16 kHz = 10 ms (model's own hop)",
+  "confidence": "none: 0 Hz where the model's uv mask is set"
+ },
+ "setup_s": 9.13
+}

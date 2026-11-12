@@ -1,0 +1,44 @@
+{
+ "input": "/home/user/gtr/lanes/web-tab-render/out/alphatab-node/S2n.export.gp",
+ "format": "gp",
+ "ms_ready": 1090,
+ "ms_load": 274,
+ "musicxml": {
+  "bytes": 30923,
+  "ms": 14
+ },
+ "midi": {
+  "bytes": 687,
+  "ms": 7
+ },
+ "svg_p1": {
+  "bytes": 153515,
+  "ms": 42
+ },
+ "png_p1": {
+  "bytes": 272965,
+  "ms": 1010
+ },
+ "pdf": {
+  "bytes": 23176,
+  "ms": 55
+ },
+ "mscz": {
+  "bytes": 20566,
+  "ms": 162
+ },
+ "ms_total": 2657,
+ "metadata_summary": {
+  "title": "Twinkle (Ah! vous dirai-je, maman), fingerstyle, nylon",
+  "measures": 13,
+  "duration": 28,
+  "parts": [
+   {
+    "name": "Guitar",
+    "instrumentId": "guitar-steel",
+    "program": 24
+   }
+  ],
+  "excerpts": 0
+ }
+}
