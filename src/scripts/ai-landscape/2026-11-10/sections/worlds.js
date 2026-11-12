@@ -153,10 +153,12 @@ export function create(ctx, el, sec) {
       setChrome('light'); closePush(); toggle(caption, false); main.style.cursor = '';
       leaves.show = 0; leaves.update();
       if (st.cores) { st.cores.show = 0; st.cores.update(); }
-      if (st.sig) { st.sig.reset(); if (st.caught && st.sig.catch) st.sig.catch(0); }
+      // a jump out of the world (a rail link, reduced motion) skips the frames in which the signature fades:
+      // one update at amount 0 makes it hide what it drew, so nothing of it stands in the next section
+      if (st.sig) { st.sig.reset(); if (st.caught && st.sig.catch) st.sig.catch(0); if (st.sig.update) st.sig.update(0, 0); }
       st.stilled = false; st.caught = false;
       if (st.calls) st.calls.update(0);
-      st.beat = ''; delete el.dataset.beatNow;
+      st.beat = ''; delete el.dataset.beatNow; el.classList.remove('is-pushed');
       $$('[data-beat]', el).forEach((n) => n.classList.remove('is-on'));
       toggle(head, false);
     },
@@ -235,6 +237,7 @@ export function create(ctx, el, sec) {
       st.pushK = Math.max(0, Math.min(1, st.pushK + (st.pushed >= 0 ? dt : -dt) / 0.7));
       if (st.pushK > 0.001) rig.push = { point: tower.point(st.pushed >= 0 ? st.pushed : (st.lastPush ?? MODEL), 0, point), k: st.pushK };
       if (st.pushed >= 0) st.lastPush = st.pushed;
+      el.classList.toggle('is-pushed', st.pushed >= 0);            // the door tabs step aside: pushed in, they would lie over a callout
 
       // c: the signature moment. It plays once by itself (never under reduced motion), then waits
       const inC = win(u, 1.5, 2.5, 0.08);

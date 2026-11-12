@@ -96,6 +96,8 @@
 .ail-gl .ail-doors[data-beat] { position: fixed; left: 0; top: 0; z-index: 4; display: flex; gap: 4px; margin: 0; transform: none; }
 .ail-gl .ail-door { border: 0; flex: none; }          /* a tab keeps its width: the row scrolls, it never squeezes a name */
 .ail-gl .ail-world:not([data-beat-now='b']) .ail-door__tab { opacity: 0; visibility: hidden; pointer-events: none; }
+/* pushed in on a floor, the camera is close and the tabs would lie over a callout: they step aside (a phone lists them in the sheet) */
+@media (min-width: 600px) { .ail-gl .ail-world.is-pushed .ail-door__tab { opacity: 0; visibility: hidden; pointer-events: none; } }
 .ail-gl .ail-door__tab { position: relative; min-height: 34px; min-width: 34px; padding: 0 8px; justify-content: center; background: var(--w-scrim); box-shadow: inset 0 0 0 1px var(--ail-hair); transition: background-color 150ms, color 150ms, opacity var(--ail-t) var(--ail-ease); }
 .ail-gl .ail-door__tab .ail-glyph { width: 16px; height: 16px; }
 .ail-gl .ail-door:not([open]) .ail-door__name, .ail-gl .ail-door:not([open]) .ail-door__tab .ail-tag { position: absolute; left: 0; bottom: calc(100% + 6px); padding: 5px 8px; background: var(--ail-fg); color: var(--ail-bg); white-space: nowrap; opacity: 0; visibility: hidden; }
