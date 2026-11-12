@@ -1,5 +1,5 @@
 // The small line drawings, 16 by 16, stroked in currentColor: a topic's glyph (src/data/taxonomy.js names it) where a
-// post has no icon file, and the search box's lens. Read by components/chrome/Glyph.astro and, for rows the browser
+// post has no icon file, and the search box's lens and microphone. Read by components/chrome/Glyph.astro and, for rows the browser
 // draws, by src/scripts/cards/render.js.
 export const GLYPHS = {
   film: 'M2.5 3.5h11v9h-11zM5 3.5v9M11 3.5v9M2.5 6h2.5M2.5 10h2.5M11 6h2.5M11 10h2.5',
@@ -9,5 +9,6 @@ export const GLYPHS = {
   agent: 'M4 5.5h8a1.5 1.5 0 0 1 1.5 1.5v4.5A1.5 1.5 0 0 1 12 13H4a1.5 1.5 0 0 1-1.5-1.5V7A1.5 1.5 0 0 1 4 5.5zM8 5.5V3M8 2.5h.01M6 9h.01M10 9h.01M6.5 11h3',
   book: 'M2.5 4c2-.8 3.8-.8 5.5.5 1.7-1.3 3.5-1.3 5.5-.5v8.5c-2-.8-3.8-.8-5.5.5-1.7-1.3-3.5-1.3-5.5-.5zM8 4.5V13',
   house: 'M2.5 7.5 8 3l5.5 4.5M4 6.5v7h8v-7M6.8 13.5v-3.5h2.4v3.5',
+  mic: 'M8 2.5a2 2 0 0 1 2 2V8a2 2 0 0 1-4 0V4.5a2 2 0 0 1 2-2zM4 7.5a4 4 0 0 0 8 0M8 11.5v2M6 13.5h4',
   lens: 'M7 2.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9zM10.3 10.3l3.2 3.2',
 };

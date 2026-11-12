@@ -1,6 +1,6 @@
-// /api/session: GET says whether Ask is on, { ask }, cached 30 s. POST { turnstile } turns a Turnstile solve made
-// on one of the site's own pages into a 30-minute Ask token, { token, exp } (lib/session.js). siteverify gets the
-// secret and the response only, nothing about the visitor. There is no mint limiter: every mint costs a solve.
+// /api/session: GET says whether Ask is on, and Ask by voice, { ask, voice }, cached 30 s. POST { turnstile } turns
+// a Turnstile solve made on one of the site's own pages into a 30-minute Ask token, { token, exp } (lib/session.js).
+// siteverify gets the secret and the response only, nothing about the visitor. No mint limiter: every mint costs a solve.
 import { json, readJson, sameOrigin, status } from '../lib/http.js';
 import { flags as switches } from '../lib/flags.js';
 import { mint as mintToken } from '../lib/session.js';
@@ -9,8 +9,9 @@ const SITEVERIFY = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 const MAX_BODY = 3072; // a Turnstile response can be 2,048 characters long
 
 export async function flags(request, env) {
-  const { ask } = await switches(env);
-  return json({ ask: ask === 'on' && !!env.DEEPSEEK_API_KEY }, 200, { 'Cache-Control': 'max-age=30' });
+  const { ask, ask_voice } = await switches(env);
+  const on = ask === 'on' && !!env.DEEPSEEK_API_KEY;
+  return json({ ask: on, voice: on && ask_voice === 'on' }, 200, { 'Cache-Control': 'max-age=30' });
 }
 
 export async function mint(request, env) {

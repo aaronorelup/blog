@@ -35,7 +35,8 @@
     { "binding": "DB", "database_name": "blog-reads", "database_id": "f3f7223c-1bd1-467e-8d85-4b4f7f9bce97" }
   ],
 
-  // Search's meaning half: @cf/baai/bge-m3 embeddings (1024 dimensions) in the cosine index blog-search.
+  // Search's meaning half: @cf/baai/bge-m3 embeddings (1024 dimensions) in the cosine index blog-search; Ask by voice:
+  // @cf/openai/whisper-large-v3-turbo.
   "ai": { "binding": "AI", "remote": true },
   "vectorize": [
     { "binding": "SEARCH_INDEX", "index_name": "blog-search", "remote": true }
@@ -48,7 +49,9 @@
     { "name": "SEARCH_Q", "namespace_id": "1704", "simple": { "limit": 20, "period": 60 } },     // per query hash
     { "name": "SEARCH_ALL", "namespace_id": "1705", "simple": { "limit": 600, "period": 60 } },  // everyone
     { "name": "ASK_LIMIT", "namespace_id": "1706", "simple": { "limit": 6, "period": 60 } },     // per Ask session
-    { "name": "ASK_ALL", "namespace_id": "1707", "simple": { "limit": 60, "period": 60 } }       // everyone
+    { "name": "ASK_ALL", "namespace_id": "1707", "simple": { "limit": 60, "period": 60 } },      // everyone
+    { "name": "HEAR_LIMIT", "namespace_id": "1708", "simple": { "limit": 6, "period": 60 } },    // per Ask session
+    { "name": "HEAR_ALL", "namespace_id": "1709", "simple": { "limit": 30, "period": 60 } }      // everyone
   ],
 
   // Every minute: one step of the traffic snapshot, of the search index sync and of the daily cleanup. Every

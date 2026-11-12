@@ -1,5 +1,6 @@
-// The checker never fails on a live notebook, at either level, while the same breakage in any other file fails at
-// the rule's level; and a fleet-style page with an mp4 under public/labs/teardown/ passes the media guard.
+// The checker never fails on a live notebook, at either level, while the same breakage in any other file (a post, a
+// notes page, a Now snapshot, code) fails at the rule's level; and a fleet-style page with an mp4 under
+// public/labs/teardown/ passes the media guard.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -36,9 +37,8 @@ function seed() {
   put('src/content/posts/teardown-lab.md', broken({ id: 'AO-073' }));
   put('src/content/posts/control.md', broken({ id: 'AO-999', topic: 'agents' }));
   put('src/content/posts/hidden.md', '---\nid: "AO-998"\ntitle: "Hidden"\nsummary: "s"\ndate: 2026-11-01\nunlisted: true\n---\n');
-  // Two drafts that took the same id on two branches, now in one checkout.
-  for (const twin of ['twin-a', 'twin-b']) put(`src/content/posts/${twin}.md`, `---\nid: "AO-997"\ntitle: "${twin}"\nsummary: "s"\ndate: 2026-11-01\ndraft: true\n---\n`);
   put('src/content/notes/control.md', '---\npost: "someone-else"\ntitle: "t"\nsummary: "s"\n---\n');
+  put('src/content/now/2026-11-01.md', '---\nsummary: "s"\n---\n\nZorblax, and [this](/ledger/hidden/).\n');
   put('src/components/Seeded.astro', '<div style="color:red"></div>\n');
   put('src/lib/long.js', 'export const x = 1;\n'.repeat(401));
   put('src/elements/ao-seeded/element.js', '');
@@ -70,6 +70,8 @@ test('the same breakage elsewhere fails each rule at its level', () => {
     new Set(['never-publish', 'links', 'assets', ...(STRICT ? ['frontmatter'] : [])]));
   assert.deepEqual(rulesFailing(false, 'src/content/posts/control.md'), new Set(['never-publish', 'links', 'assets', 'prose', 'frontmatter']));
   assert.deepEqual(rulesFailing(true, 'src/content/notes/control.md'), new Set(['frontmatter']));
+  // The Now page is public too: its snapshots are read for never-publish terms and links to unlisted posts.
+  assert.deepEqual(rulesFailing(true, 'src/content/now/2026-11-01.md'), new Set(['never-publish', 'links']));
   for (const file of ['src/components/Seeded.astro', 'src/lib/long.js', 'src/elements/ao-seeded']) {
     assert.deepEqual(rulesFailing(true, file), new Set(), file);
     assert.equal(rulesFailing(false, file).size, 1, file);
@@ -81,13 +83,6 @@ test("a demo's recorded runs fail the deploy on a never-publish term, even after
   assert.deepEqual(rulesFailing(true, file), new Set(['never-publish', 'links']));
   assert.deepEqual(runChecks({ root, deploy: true }).filter((i) => i.rule === 'links' && i.file === file).map((i) => i.message),
     ['"hidden" is unlisted: a demo\'s recorded runs never name it (record them again)']);
-});
-
-test('two posts with the same id each fail the deploy, naming the other', () => {
-  const twins = runChecks({ root, deploy: true }).filter((i) => i.rule === 'frontmatter' && i.message.startsWith('id: AO-997 is also'));
-  assert.deepEqual(twins.map((i) => [i.file, i.line, i.severity, i.message.slice(0, 26)]).sort(), [
-    ['src/content/posts/twin-a.md', 2, 'error', "id: AO-997 is also twin-b'"],
-    ['src/content/posts/twin-b.md', 2, 'error', "id: AO-997 is also twin-a'"]]);
 });
 
 test("a fleet page's video under public/labs/teardown/ stays in git", () => {

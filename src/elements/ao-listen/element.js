@@ -99,7 +99,8 @@ class AoListen extends HTMLElement {
     };
     // Move to clip c at time t, keeping play state. Metadata may not be loaded yet.
     const select = (c, keepTime) => {
-      if (c === cur) { if (cur.audio.paused) start(); return; }
+      // The reference picked by its own row while A/B is on: A/B is over, and its button has to say so.
+      if (c === cur) { show(); if (cur.audio.paused) start(); return; }
       const t = keepTime ? pos() : 0;
       const wasPlaying = !cur.audio.paused || keepTime;
       halt(cur.audio);

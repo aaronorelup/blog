@@ -400,7 +400,7 @@ test('overlay-15 opening and closing every view leaves the homepage’s colours 
     .map((el) => { const s = getComputedStyle(el); return `${s.color} ${s.backgroundColor} ${s.borderTopColor}`; })));
   const before = await colours();
   await openLedger(page);
-  for (const key of ['projects', 'courses', 'about', 'ledger']) {
+  for (const key of ['projects', 'courses', 'about', 'now', 'ledger']) {
     await panel(page).locator(`a[data-nav="${key}"]`).click();
     await expect(view(page, key)).toBeVisible();
   }
@@ -581,7 +581,7 @@ test('overlay-24 no view brings a second copy of the site’s rules: the homepag
   const sheets = () => page.evaluate(() => [...document.styleSheets].filter((s) => s.href).length);
   const before = await sheets();
   await openLedger(page);
-  for (const key of ['projects', 'about', 'ledger']) {
+  for (const key of ['projects', 'about', 'now', 'ledger']) {
     await panel(page).locator(`a[data-nav="${key}"]`).click();
     await expect(view(page, key)).toBeVisible();
   }

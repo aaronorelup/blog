@@ -12,7 +12,7 @@ const here = (f) => new URL(f, import.meta.url);
 const SHAPES = JSON.parse(fs.readFileSync(here('fixtures/api.json'), 'utf8'));
 const DEFAULTS = { 'GET /api/reads': 'reads-200', 'POST /api/reads': 'reads-204', 'GET /api/stats': 'stats-200',
                    'GET /api/session': 'session-on', 'POST /api/session': 'session-mint', 'GET /api/search': 'search-200',
-                   'POST /api/ask': 'ask-200', 'GET /cdn-cgi/trace': 'trace' };
+                   'POST /api/ask': 'ask-200', 'POST /api/ask/hear': 'hear-200', 'GET /cdn-cgi/trace': 'trace' };
 
 // A media element is sent to the live file itself (a redirect), so it streams and seeks there in byte ranges as it
 // would on the site; scripts' requests (hls.js segments, ao-fetch) are fetched for them, the response passed through

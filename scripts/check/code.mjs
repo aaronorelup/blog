@@ -8,7 +8,7 @@ const MAX_LINES = 400;
 const CODE = /\.(?:js|mjs|cjs|ts|astro|css|sql)$/;
 const CSS_IMPORT = /\bimport\s*(?:\(\s*)?(?:[^'"();]*?\bfrom\s*)?['"][^'"]+\.css(?:\?[^'"]*)?['"]/;
 const STYLE_ATTR = /(?<![\w.-])style\s*=\s*["'{]/;
-const IP = /CF-Connecting-IP|remoteip/i;
+const IP = /CF-Connecting-IP|X-Forwarded-For|X-Real-IP|True-Client-IP|remoteip/i;
 const CONTENT_API = /['"]astro:content['"]/;
 const MAY_USE_CONTENT_API = (f) => f === 'src/lib/content.js' || f === 'src/content.config.ts' || f.startsWith('src/schemas/');
 

@@ -6,6 +6,7 @@ import * as stats from './stats/index.js';   import * as session from './session
 import * as search from './search/serve.js'; import * as sync from './search/sync.js';
 import * as ask from './ask/serve.js';       import * as read from './read/step.js';
 import * as cleanup from './cleanup.js';     import * as lantern from './lantern.js';
+import * as hear from './ask/hear.js';
 import { status } from './lib/http.js';
 
 const ROUTES = {
@@ -14,6 +15,7 @@ const ROUTES = {
   '/api/session': { GET: session.flags, POST: session.mint },
   '/api/search':  { GET: search.serve },
   '/api/ask':     { POST: ask.serve },
+  '/api/ask/hear': { POST: hear.serve },
   '/api/lantern': { GET: lantern.serve },
 };
 // Job names are what Workers Logs show, with the word each step returns ("stats.runStep idle").
@@ -26,8 +28,8 @@ export default {
   async fetch(request, env, ctx) {
     const { pathname } = new URL(request.url);
     const route = ROUTES[pathname];
-    if (!route) return pathname.startsWith('/api/') ? status(404) : media.serve(request, env);
-    const handler = route[request.method];
+    if (!route && pathname.startsWith('/api/')) return status(404);
+    const handler = route ? route[request.method] : media.serve;
     if (!handler) return status(405, { Allow: Object.keys(route).join(', ') });
     try { return await handler(request, env, ctx); }
     catch (e) { console.error(pathname, e.message); return status(503); }

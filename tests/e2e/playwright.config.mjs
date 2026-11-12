@@ -16,7 +16,9 @@ if (!process.env.TEST_WORKER_INDEX) {
 
 const base = process.env.E2E_BASE;
 const TIMING = /@timing/;
-const DESKTOP = { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } };
+// Chromium's fake microphone, granted without a prompt, for Ask by voice (voice.spec.mjs); no other spec records.
+const DESKTOP = { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 },
+  launchOptions: { args: ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream'] } };
 const PHONE = { ...devices['iPhone 13'] };
 // Worktrees share a box, so each serves its own dist on a port taken from its path, never another's server.
 const ROOT = fileURLToPath(new URL('../../', import.meta.url));

@@ -1,10 +1,10 @@
 ---
 import PanelPage from '../layouts/PanelPage.astro';
 import LedgerView from '../components/ledger/LedgerView.astro';
+import { PAGES } from '../data/pages.js';
 ---
 <PanelPage
-  title="The Ledger · Aaron Orelup"
-  description="A running ledger of what I'm learning about AI: agents, automation and whatever breaks along the way."
+  {...PAGES['/ledger/']}
   active="ledger"
   view="ledger"
 >

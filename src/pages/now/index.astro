@@ -1,0 +1,17 @@
+---
+// /now: the newest dated snapshot of src/content/now/, with History listing every one (each at /now/<date>/).
+// A NAV view, so the homepage overlay opens it too. To update it, add a new dated file (README.md, "The Now page").
+import PanelPage from '../../layouts/PanelPage.astro';
+import NowView from '../../components/now/NowView.astro';
+import { nowSnapshots } from '../../lib/content.js';
+import { PAGES } from '../../data/pages.js';
+
+const snaps = await nowSnapshots();
+---
+<PanelPage
+  {...PAGES['/now/']}
+  active="now"
+  view="now"
+>
+  <NowView snap={snaps[0]} snaps={snaps} />
+</PanelPage>
