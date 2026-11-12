@@ -69,13 +69,13 @@ export function createMaterials() {
     // mask: the texture is ink coverage and prints in `tint` (titles, glyphs, marks drawn in type).
     // self: lights out leaves it alone (a mark on its plate is never darkened). plain: no texture, `tint` with grain.
     // torn: [x, y, frequency, seed] tears the upright edges or the top edge. edge: [x0, x1, width] (see shaders.js).
-    paper(texture, { side = 1, tint = '#FFFFFF', blended = false, mask = false, opacity = 1, ground = null, fade = 0, depthTest = true, self = false, plain = false, torn = null, edge = null } = {}) {
+    paper(texture, { side = 1, tint = '#FFFFFF', blended = false, mask = false, opacity = 1, ground = null, fade = 0, depthTest = true, self = false, plain = false, torn = null, edge = null, foot = null } = {}) {
       return new ShaderMaterial({
         vertexShader: worldVert, fragmentShader: paperFrag, transparent: blended, depthWrite: !blended, depthTest, side: DoubleSide,
         uniforms: {
           ...shared, uMap: { value: texture }, uTint: { value: new Color(tint) }, uGround: ground ? { value: new Color(ground) } : shared.uWorld,
           uSide: { value: side }, uOpacity: { value: opacity }, uFade: { value: fade }, uMode: { value: plain ? 2 : mask ? 1 : 0 }, uDither: { value: blended ? 0 : 1 }, uSelf: { value: self ? 1 : 0 },
-          uTorn: { value: new Vector4(...(torn || [0, 0, 0, 0])) }, uEdge: { value: new Vector3(...(edge || [0, 0, 0])) },
+          uTorn: { value: new Vector4(...(torn || [0, 0, 0, 0])) }, uEdge: { value: new Vector3(...(edge || [0, 0, 0])) }, uFoot: { value: new Vector2(...(foot || [0, 0])) },
         },
       });
     },
@@ -110,10 +110,10 @@ export function createMaterials() {
       });
     },
 
-    dust(color, opacity = 0.5) {
+    dust(color, opacity = 0.5, { side = 1 } = {}) {
       return new ShaderMaterial({
         vertexShader: dustVert, fragmentShader: dustFrag, transparent: true, depthWrite: false,
-        uniforms: { ...shared, uColor: { value: new Color(color) }, uOpacity: { value: opacity }, uPx: { value: 1 }, uDrift: { value: 1 } },
+        uniforms: { ...shared, uColor: { value: new Color(color) }, uOpacity: { value: opacity }, uPx: { value: 1 }, uDrift: { value: 1 }, uSide: { value: side } },
       });
     },
 

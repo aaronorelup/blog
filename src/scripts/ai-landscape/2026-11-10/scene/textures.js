@@ -163,6 +163,19 @@ export function createTextures(ctx) {
       return t;
     },
 
+    // A soft-edged block as an ink mask: a flat's shadow on the wall behind it, a contact shadow under a cut-out.
+    soft(round = false) {
+      const key = `soft:${round}`;
+      if (cache.has(key)) return cache.get(key);
+      const [c, g] = canvas(128, 128);
+      g.fillStyle = '#000'; g.fillRect(0, 0, 128, 128);
+      g.filter = 'blur(13px)'; g.fillStyle = '#fff';
+      if (round) { g.beginPath(); g.ellipse(64, 64, 38, 38, 0, 0, Math.PI * 2); g.fill(); } else g.fillRect(22, 22, 84, 84);
+      const t = finish(new CanvasTexture(c), false);
+      cache.set(key, t);
+      return t;
+    },
+
     // A soft round glow, for cores with the lights out.
     halo() {
       if (cache.has('halo')) return cache.get('halo');

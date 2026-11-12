@@ -102,7 +102,8 @@ export function create(ctx, el, sec) {
       st.closed += ((st.want ? 1 : 0) - st.closed) * (reduced ? 1 : 1 - Math.exp(-5 * dt));
 
       towers.forEach((tw, n) => {
-        if (phone) { tw.shift = ROW_X[n] * (SQUEEZE - 1) * k; tw.char.show = 1 - k; } else tw.char.scale = 1 + 0.28 * k;
+        tw.spread = k;                                              // semi-open: floors 3, 7 and 8 read apart
+        if (phone) { tw.shift = ROW_X[n] * (SQUEEZE - 1) * k; tw.char.show = 1 - k; } else { tw.char.to = 'front'; tw.char.t = k; }      // the figure steps down in front, twice its size
         tw.floors.forEach((f, i) => { if (LIT.includes(i)) f.lit = 0.34 * k; else f.dim = Math.max(f.dim, 0.74 * k); });
       });
       lamps.forEach((l) => { l.show = k; l.update(); });

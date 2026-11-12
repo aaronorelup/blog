@@ -63,9 +63,9 @@ export function create(ctx, el, sec) {
     const lo = Math.min(x.from.x, x.to.x), hi = Math.max(x.from.x, x.to.x);
     const over = towers.some((tw) => tw.x + tw.shift > lo + 0.1 && tw.x + tw.shift < hi - 0.1);
     const y = (x.from.y + x.to.y) / 2;
-    return over ? 2 * ((phone ? 4.9 : 4.85) + 0.16 * (n % 6) - y) : 1.2 + 0.3 * (x.ka % 3);
+    return over ? 2 * ((phone ? 5.9 : 5.85) + 0.16 * (n % 6) - y) : 1.2 + 0.3 * (x.ka % 3);
   }
-  if (phone) towers.forEach((tw, n) => { tw.shift = ROW_X[n] * (SQUEEZE - 1); });     // lifts are worked out on the layout they draw on
+  towers.forEach((tw, n) => { tw.spread = 1; if (phone) tw.shift = ROW_X[n] * (SQUEEZE - 1); tw.layout(); });     // lifts are worked out on the layout they draw on: semi-open stacks
   const arcs = items.map((li, n) => {
     const d = li.dataset;
     const x = { li, n, kind: d.kind, ...ends[n], from: new Vector3(), to: new Vector3(), base: new Color(NIGHT[d.to] || NIGHT.outside) };
@@ -74,7 +74,7 @@ export function create(ctx, el, sec) {
     x.arc.show = 0; x.arc.update();
     return x;
   });
-  towers.forEach((tw) => { tw.shift = 0; });
+  towers.forEach((tw) => { tw.shift = 0; tw.spread = 0; tw.layout(); });
   // each kind's arcs in the order the scroll reads them: links between companies first, hand-offs to your own computer last
   const lists = Object.fromEntries(kinds.map((k) => [k, arcs.filter((x) => x.kind === k).sort((a, b) => (a.b.id === 'you') - (b.b.id === 'you'))]));
 
@@ -196,6 +196,7 @@ export function create(ctx, el, sec) {
       towers.forEach((tw, n) => {
         if (phone) tw.shift = ROW_X[n] * (SQUEEZE - 1) * k;
         tw.char.show = 1 - k;                    // the five characters leave together. The mark plates stay, at full value
+        tw.spread = k;                           // semi-open: an arc lands on a floor that reads apart
         tw.layout();
       });
       Object.values(blockMesh).forEach((m) => { m.visible = k > 0.01; m.material.uniforms.uShow.value = k; });

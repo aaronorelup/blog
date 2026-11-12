@@ -77,6 +77,7 @@ export function create(ctx, el, sec) {
       base.blocks.forEach((b, i) => { b.rise = reduced ? 1 : span(u, 0.04 + i * 0.032, 0.16 + i * 0.032); });
       for (const tw of row.towers) {
         tw.lift = base.under(tw.x - 1.2, tw.x + 1.2);
+        if (!phone) { tw.char.to = 'front'; tw.char.t = k; }       // the five figures step down onto the base, twice their size
       }
       row.datum = 0;
 

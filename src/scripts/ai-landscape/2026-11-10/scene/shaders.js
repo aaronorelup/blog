@@ -172,7 +172,7 @@ void main() {
 export const paperFrag = /* glsl */ `${COMMON}
 uniform sampler2D uMap; uniform vec3 uTint; uniform vec3 uGround;
 uniform float uSide; uniform float uOpacity; uniform float uFade; uniform float uMode; uniform float uDither; uniform float uSelf;
-uniform vec4 uTorn; uniform vec3 uEdge;
+uniform vec4 uTorn; uniform vec3 uEdge; uniform vec2 uFoot;
 varying vec3 vW; varying vec2 vUv;
 void main() {
   float band;
@@ -182,6 +182,7 @@ void main() {
   vec3 col = uMode > 0.5 ? uTint : t.rgb * uTint;
   if (uMode > 1.5) {
     col *= 1.0 + (ign(gl_FragCoord.xy) - 0.5) * 0.03;
+    if (uFoot.x > 0.0) col *= 1.0 - uFoot.y * (1.0 - smoothstep(0.0, uFoot.x, vUv.y));      // a wall darkens a little toward the floor
     if (uEdge.z > 0.0) col *= 1.0 - 0.17 * (1.0 - smoothstep(0.0, uEdge.z, max(uEdge.x - vUv.x, vUv.x - uEdge.y)));
   }
   if (uTorn.x > 0.0) { float e = min(vUv.x, 1.0 - vUv.x) / uTorn.x; if (e < 0.3 + 0.5 * vnoise(vec2(vUv.y * uTorn.z, step(0.5, vUv.x) * 9.0 + uTorn.w)) + 0.2 * vnoise(vec2(vUv.y * uTorn.z * 3.7, uTorn.w))) discard; }
@@ -332,12 +333,12 @@ void main() {
   gl_PointSize = uPx * (0.6 + fract(aPh * 7.0)) / max(-mv.z, 0.5);
 }`;
 export const dustFrag = /* glsl */ `${COMMON}
-uniform vec3 uColor; uniform float uOpacity;
+uniform vec3 uColor; uniform float uOpacity; uniform float uSide;
 varying float vA;
 void main() {
   float d = length(gl_PointCoord - 0.5);
   float a = smoothstep(0.5, 0.0, d);
-  float keep = irisAt().x;
+  float keep = uSide < 0.0 ? 1.0 - irisAt().x : irisAt().x;      // a world's motes inside the iris, the studio's outside
   gl_FragColor = vec4(uColor, a * a * vA * uOpacity * keep * (1.0 - uDark.x * 0.6));
   #include <colorspace_fragment>
 }`;

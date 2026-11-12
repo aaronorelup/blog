@@ -3,6 +3,7 @@
 // Sections set lamp, warmth, dark, glow and ink every frame. reset() puts back the daylight defaults.
 import { Color, CylinderGeometry, Mesh, PlaneGeometry, Vector3 } from 'three';
 import { damp } from '../core/clock.js';
+import { createSet } from './set.js';
 
 // Named lamp directions (toward the lamp). The studio stands at "hero": the lamp is behind and to the left,
 // so the coloured shadows fall toward the viewer. A world sets its own hour.
@@ -23,6 +24,7 @@ export function createStudio(ctx) {
   scene.add(cyc, ground);
   scene.background = PAPER.clone();
   const gu = ground.material.uniforms;
+  const set = createSet(ctx, [-8.4, -4.2, 0, 4.2, 8.4]);          // the house set: a wall, five bays and dust behind the row
   const lampNow = new Vector3(...HOURS.hero).normalize();
   const tmp = new Vector3();
   let warmNow = 0;
@@ -33,10 +35,11 @@ export function createStudio(ctx) {
     dark: 0, roomX: 0,                                              // lights out: the sweep 0..1 and the room it crosses
     glow: { amount: 0, radius: 0, color: new Color('#FFFFFF'), pos: new Vector3() },
     ink: 0,                                                         // how strongly the floor print shows (setInk)
+    bays: set.bays, set: 1,                                         // the house set: each bay's x (row.js), and 0 to step the set back
     casters: Array.from({ length: 8 }, () => ({ x: 0, z: 0, h: 2.7, gap: 0.045, amt: 0, inside: 0, color: new Color('#8C929C') })),
 
     reset() {
-      studio.lamp.set(...HOURS.hero); studio.warmth = 0; studio.dark = 0; studio.glow.amount = 0; studio.glow.radius = 0; studio.ink = 0;
+      studio.lamp.set(...HOURS.hero); studio.warmth = 0; studio.dark = 0; studio.glow.amount = 0; studio.glow.radius = 0; studio.ink = 0; studio.set = 1;
       for (const c of studio.casters) { c.amt = 0; c.inside = 0; }
     },
     // Print on the floor: a canvas texture (ink coverage in red) over the world rectangle [x0, z0, width, depth].
@@ -60,6 +63,7 @@ export function createStudio(ctx) {
       const bright = 0.2126 * g.r + 0.7152 * g.g + 0.0722 * g.b;
       if (bright > 0.5) g.multiplyScalar(0.5 / bright);
       scene.background.copy(PAPER).lerp(NIGHT, studio.dark);
+      set.update(studio.set);
       studio.casters.forEach((c, i) => {
         gu.uTPos.value[i].set(c.x, c.z);
         gu.uTCol.value[i].copy(c.color);

@@ -10,6 +10,9 @@ import { createTower, FLOOR } from './stack.js';
 export const ROW_X = [-8.4, -4.2, 0, 4.2, 8.4];
 const LEDGE = FLOOR.w / 2 + 0.62;
 const BIG_WIDE = 1.6;     // how much larger a character stands when a world opens (pose "beside")
+// How large a character stands in each pose, times its own size: on its lid (the opening, the ending), on its ledge,
+// and free on the ground at its stack's front left (the sections where the figures have the floor to themselves).
+const SCALE = { top: 2.1, tight: 1.6, floor: 1.3, front: 2.6 };      // (tight: on its lid in a 16:9 frame or wider, which has less head room)
 const PLATE_MIN = 28;     // CSS px: a plate that would be drawn narrower is absent, and the HTML list shows the mark
 const PLATE_OUT = 0.18;   // seconds a plate takes to leave or come back, by scale alone
 
@@ -29,7 +32,7 @@ export function createRow(ctx) {
     const plate = new Mesh(new PlaneGeometry(1, 1), mats.paper(null, { side: 0, blended: true, self: true }));
     plate.visible = false; plate.renderOrder = 8;
     scene.add(plate);
-    tower.lid = { mesh: plate, lift: 1, show: 1, size: 1.1, k: 1, px: 0 };
+    tower.lid = { mesh: plate, lift: 1, show: 1, size: 1.1, k: 1, px: 0, dx: 0 };
     const name = document.querySelector(`.ail-world[data-world="${id}"] .ail-mark img`)?.alt || document.querySelector(`.ail-world[data-world="${id}"] .ail-mark__name`)?.textContent || id;
     textures.markPlate({ url: cfg.marks.lid, name, plate: cfg.marks.plate, clear: cfg.marks.clear }).then((tex) => {
       plate.material.uniforms.uMap.value = tex; plate.visible = true;
@@ -74,21 +77,27 @@ export function createRow(ctx) {
   function pose(tower, name, out) {
     const c = tower.char;
     const x = tower.x + tower.shift;
-    if (name === 'top') return out.set(x, tower.height + tower.lift + c.size * 0.5, tower.z + 0.2);
+    if (name === 'top') return out.set(x, tower.height + tower.lift + c.size * onLid() * 0.5, tower.z + 0.2);
+    // front: on the ground left of the stack's front corner. On a raised base it steps back onto the base
+    if (name === 'front') return out.set(x - 2.0, tower.lift + c.size * SCALE.front * 0.5 + 0.02, tower.z + 1.6 - Math.min(0.6, tower.lift));
     // beside: large, on the ground to the right of the stack (on a phone, where there is no room, on its lid)
     if (name === 'beside') return ctx.phone ? out.set(x, tower.height + tower.lift + c.size * BIG * 0.5, tower.z + 0.2) : out.set(x + 2.9, c.size * BIG * 0.5 + 0.02, tower.z + 0.8);
-    return out.set(x - LEDGE, tower.floors[c.floor].y + tower.lift + FLOOR.h / 2 + c.size * 0.5, tower.z + 0.25);
+    return out.set(x - LEDGE, tower.floors[c.floor].y + tower.lift + FLOOR.h / 2 + c.size * SCALE.floor * 0.5, tower.z + 0.25);
   }
-  const big = (name) => (name === 'beside' ? BIG : name === 'top' ? 0.82 : 1);
+  // how much head room the frame has over the row seen from above: 1 at 16:10 and taller, 0 at 16:9 and wider
+  const roomy = () => Math.max(0, Math.min(1, (1.78 - ctx.camera.aspect) / 0.18));
+  const onLid = () => lerp(SCALE.tight, SCALE.top, roomy());
+  const big = (name) => (name === 'beside' ? BIG : name === 'top' ? onLid() : SCALE[name] || SCALE.floor);
 
   const row = {
+    roomy,
     towers, datum: 0,
     tower: (id) => towers.find((tw) => tw.id === id),
     reset() {
       row.datum = 0;
       for (const tw of towers) {
         tw.reset();
-        tw.lid.lift = 1; tw.lid.show = 1;
+        tw.lid.lift = 1; tw.lid.show = 1; tw.lid.dx = 0;
         tw.char.from = 'floor'; tw.char.to = 'floor'; tw.char.t = 1; tw.char.show = 1; tw.char.scale = 1;
       }
     },
@@ -110,10 +119,11 @@ export function createRow(ctx) {
 
         // the lid plate. It is wanted when its section shows it, its stack is there, it would be 28 px wide or
         // more, and no iris is about to cut across it. It leaves and returns by scale in 0.18 s, at full value
+        ctx.studio.bays[t].x = tw.x + tw.shift;                 // its bay of the house set follows it
         const lid = tw.lid;
         const full = lid.size * (0.55 + 0.45 * lid.lift);
         lid.mesh.quaternion.copy(cam.quaternion);
-        lid.mesh.position.set(tw.x + tw.shift, tw.height + tw.lift + 0.02 + lid.lift * (lid.size * 0.5 + 0.42), tw.z);
+        lid.mesh.position.set(tw.x + tw.shift + lid.dx, tw.height + tw.lift + 0.02 + lid.lift * (lid.size * 0.5 + 0.42), tw.z);
         const depth = a.copy(lid.mesh.position).sub(cam.position).dot(cam.getWorldDirection(b));
         lid.px = (full * window.innerHeight) / (2 * Math.max(0.1, depth) * Math.tan((cam.fov * Math.PI) / 360));
         const cut = tw.side < 0 && (mats.irisOpen || 0) > 0.02;
@@ -138,7 +148,9 @@ export function createRow(ctx) {
         const e = c2.t;
         c2.pos.lerpVectors(a, b, e);
         // it hops: high enough to clear the stack when it crosses from one side to the other
-        if (c2.from !== c2.to) c2.pos.y += Math.sin(Math.PI * e) * Math.max(0.35, ctx.phone ? 0.35 : tw.height + tw.lift + c2.size * 0.5 + 0.35 - (a.y + b.y) / 2);
+        // (a step down to the front stays on its own side of the stack: a small hop is enough)
+        const near = c2.from === 'front' || c2.to === 'front';
+        if (c2.from !== c2.to) c2.pos.y += Math.sin(Math.PI * e) * Math.max(0.35, ctx.phone || near ? 0.35 : tw.height + tw.lift + c2.size * 0.5 + 0.35 - (a.y + b.y) / 2);
         const breathe = ctx.reduced ? 0 : Math.sin(time * 2 * Math.PI * 0.4 + t) * 0.015;
         const sc = c2.size * lerp(big(c2.from), big(c2.to), e) * c2.scale;
         const m = c2.mesh;

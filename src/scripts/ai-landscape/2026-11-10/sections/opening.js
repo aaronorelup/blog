@@ -12,7 +12,7 @@ export const SUBJECT = [0, 2.7, 0];                 // the middle lid: what keep
 const HERO = { tilt: 69, turn: -7, look: [0.3, 0.7, 2.4], cy: 0.5 };
 const HERO_PHONE = { tilt: 72, turn: -9, look: [0, 1.6, 0.6], cy: 0.37 };
 const PX = 600;                                        // the size the floor print is drawn at, in pixels a letter
-export const LID = { flat: 1.56, high: 1.0, up: 1.9 };   // the mark plate: its width lying on the lid, and held over the character
+export const LID = { flat: 1.56, high: 0.92, up: 2.9, tight: 2.1 };  // the mark plate: its width lying on the lid, and held over the character
 
 // The poster as the stylesheet lays it out, read off one proof tile: u pixels to a world unit at the lids, how
 // many units the screen is tall, and z0, how far in front of the lids the screen's centre lies.
@@ -171,14 +171,17 @@ export function create(ctx, el, sec) {
       towers.forEach((tw, i) => {
         // the plate lifts off its lid and stays facing the screen. The character pops up under it, then steps down
         const lifted = backOut(span(tau, 0.16 + i * 0.03, 0.62 + i * 0.03));
+        const c = tw.char;
         const wide = lerp(lerp(LID.flat, LID.high, lifted), 1.1, drop);
         // a plate faces the screen, so its lower edge dips as the camera tilts: it keeps clear of the lid
-        place(tw.lid, wide, Math.max(lerp(LID.up * lifted, 0.97, drop), 0.5 * wide * Math.sin(hero.tilt) + (e > 0 ? 0.03 : 0)));
+        // (a character that stands small on a low floor keeps its plate a plate's width clear: Google's star and its G)
+        const up = lerp(LID.tight, LID.up, row.roomy()) + (c.size < 1 ? 0.3 : 0);
+        place(tw.lid, wide, Math.max(lerp(up * lifted, 0.97, drop), 0.5 * wide * Math.sin(hero.tilt) + (e > 0 ? 0.03 : 0)));
+        tw.lid.dx = -0.5 * lifted * (1 - drop);                         // held up, a plate hangs a little left of its figure: clear of the chrome at the right
         const pop = span(tau, 0.62 + i * 0.03, 0.86 + i * 0.03);        // late: a cut-out seen from above reads as lying down
-        const c = tw.char;
         c.from = 'top'; c.to = 'floor'; c.t = drop;
         c.show = first || pop > 0 ? 1 : 0;
-        c.scale = (first ? 1 : backOut(pop)) * lerp(1.22, 1, drop);
+        c.scale = first ? 1 : backOut(pop);
 
         const on = touring && i === turn;
         const want = on ? smooth(ph / 0.2) * (1 - smooth((ph - 0.78) / 0.2)) : st.hover === i && !touring ? 0.22 : 0;
