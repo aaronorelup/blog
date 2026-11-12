@@ -1,8 +1,8 @@
 // POST /api/ask end to end through serve.js and run.js, with stub bindings over a small built blog (ask-fixture.mjs)
 // and DeepSeek mocked: the guards before any paid call, the event stream and its order, the answer cache and the
-// live-hash rule, the reservation, its settle and release, the caps (spend() fixed), search_daily counting Ask's
-// embeddings, nothing about the visitor or the planner's queries in any request or event, the binding-call budget of a
-// cold isolate's first question.
+// live-hash rule, the reservation, its settle and release, the caps (spend() fixed), ask_search_daily counting Ask's
+// embeddings apart from /api/search's, nothing about the visitor or the planner's queries in any request or event,
+// the binding-call budget of a cold isolate's first question.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -12,7 +12,7 @@ import { built, env as stubEnv, id } from './ask-fixture.mjs';
 import { loadWorker } from './worker-env.mjs';
 
 const { serve } = await loadWorker('ask/serve.js');
-const { spend, today } = await loadWorker('lib/flags.js');
+const { flags, spend, today } = await loadWorker('lib/flags.js');
 const { sse, HEARTBEAT } = await loadWorker('ask/events.js');
 
 const blog = built();
@@ -115,7 +115,8 @@ test('an answer streams start, plan, found, read, write, cites and text, then on
   assert.deepEqual([answer.usage.tokens, answer.usage.hit, answer.cached], [1000, 900, false]);
   assert.equal(await total('ask_usd'), cost(USAGE, Date.now()) * 2, 'settled to the reported usage');
   assert.equal(await total('ask'), 1);
-  assert.equal(await total('search'), 2, 'two embedding calls a question, counted');
+  assert.equal(await total('ask_search'), 2, 'two embedding calls a question, counted');
+  assert.equal(await total('search'), 0, "none of them in /api/search's count");
   assert.equal(asked.ai - before.ai, 2);
   // Nothing about the visitor, no user_id, and the planner's queries go nowhere but the embedding.
   for (const b of bodies) {
@@ -177,13 +178,57 @@ test('a spent dollar cap rests with no DeepSeek call, the closest posts from one
   assert.equal(mock.mock.callCount(), 0);
   assert.equal(await total('ask'), 0);
   assert.equal(await total('ask_usd'), 0);
-  assert.equal(await total('search'), 1);
+  assert.deepEqual([await total('search'), await total('ask_search')], [1, 0], "the resting lookup is search_daily's, not the questions'");
   await setFlag('ask_daily_usd', 2);
   await setFlag('ask_daily', 0);
-  assert.equal((await ask('what did it all cost')).events[0].reason, 'resting');
+  await setFlag('ask_search_daily', 0);   // the day's questions used every call of theirs
+  assert.deepEqual((await ask('what did it all cost')).events, [{ t: 'end', reason: 'resting', related: ['post-2', 'post-3'] }]);
   assert.equal(await total('ask'), 0);
   await setFlag('search_daily', 1);
   assert.deepEqual((await ask('what did it all cost')).events[0].related, [], 'search_daily spent too');
+  await db.prepare("DELETE FROM flags").run();
+  fresh();
+});
+
+test("/api/search's spent cap leaves Ask its retrieval: the two counts are apart", async (t) => {
+  t.mock.method(console, 'log', () => {});
+  deepseek(t);
+  await clear();
+  await setFlag('search_daily', 3);
+  for (let i = 0; i < 3; i++) assert.equal(await spend(env, 'search', 1, 3), true);   // what tokenless /api/search traffic does
+  assert.equal(await spend(env, 'search', 1, 3), false, "search's day is spent");
+  const { events } = await ask('How long did post three take?');
+  assert.equal(events[2].t, 'found');
+  assert.equal(events[2].searches, 3, 'the question and the planner\'s queries were still looked up');
+  assert.equal(events.at(-1).t, 'answer');
+  assert.deepEqual([await total('ask_search'), await total('search')], [2, 3]);
+  await db.prepare("DELETE FROM flags").run();
+  fresh();
+});
+
+test("ask_search_daily is by default 2 calls for each of ask_daily's questions, which covers them exactly", async (t) => {
+  t.mock.method(console, 'log', () => {});
+  deepseek(t);
+  await clear();
+  const f = await flags(env);
+  assert.deepEqual([f.ask_daily, f.ask_search_daily, f.search_daily], [1000, 2000, 20000]);
+  assert.equal(f.ask_search_daily, 2 * f.ask_daily, 'the question, then the planner\'s queries: 2 embedding calls at most');
+  // The same ratio, small: each question the day's cap lets through has both its lookups, and none is left over.
+  await setFlag('ask_daily', 3);
+  await setFlag('ask_search_daily', 6);
+  for (const q of ['what did the first cost', 'what did the second cost', 'what did the third cost']) {
+    const before = asked.ai;
+    const { events } = await ask(q);
+    assert.equal(events[2].searches, 3, q);
+    assert.equal(events.at(-1).t, 'answer', q);
+    assert.equal(asked.ai - before, 2, `${q}: two embedding calls`);
+  }
+  assert.deepEqual([await total('ask'), await total('ask_search')], [3, 6]);
+  const before = asked.ai;
+  const rest = await ask('what did the fourth cost');
+  assert.deepEqual(rest.events, [{ t: 'end', reason: 'resting', related: ['post-2', 'post-3'] }],
+    "a rested Ask still shows the closest posts: its lookup is search_daily's, which has room");
+  assert.deepEqual([await total('ask_search'), await total('search'), asked.ai - before], [6, 1, 1], "the questions' cap is never passed");
   await db.prepare("DELETE FROM flags").run();
   fresh();
 });

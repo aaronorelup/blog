@@ -1,5 +1,5 @@
 ---
-id: "AO-079"
+id: "AO-082"
 title: "Testing the tools a guitar tab web app would need"
 summary: "I had Claude agents list every tool they could find for turning songs and guitar videos into tabs, run the ones that would run on test clips with known answers, and read each license. What went in, what came out and what it cost."
 date: 2026-11-10

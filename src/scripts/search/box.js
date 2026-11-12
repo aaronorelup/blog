@@ -34,6 +34,7 @@ export function mount(root) {
   let quietT = 0;
   let ask = null;
   let hear = null;          // hear.js, loaded on the microphone's first press
+  let live = true;          // false once unmounted: ask.js or hear.js still loading, or words still being heard, do nothing
   // The list on screen: its query, its <ol> and the pages in it.
   let shown = { q: null, list: null, paths: new Set() };
 
@@ -88,9 +89,9 @@ export function mount(root) {
   // Ask by voice: what was heard goes in the box and is asked as if typed.
   const onMic = async () => {
     hear ??= await lazy(() => import('./hear.js'));
-    if (mode !== 'ask') return;
+    if (!live || mode !== 'ask') return;
     hear.toggle(ui, { token: () => ask.token(ui), forget: ask.forget, draw,
-      heard: (text) => { if (mode !== 'ask') return; ui.input.value = text; ask.ask(ui, text, draw); } });
+      heard: (text) => { if (!live || mode !== 'ask') return; ui.input.value = text; ask.ask(ui, text, draw); } });
   };
 
   const setMode = (next) => {
@@ -120,7 +121,10 @@ export function mount(root) {
     if (!b || b.dataset.mode === mode) return;
     if (b.dataset.mode === 'search') return setMode('search');
     ask ??= await lazy(() => import('./ask.js'));
-    if (await ask.open(ui)) return setMode('ask');
+    if (!live) return;
+    const on = await ask.open(ui);
+    if (!live) return;
+    if (on) return setMode('ask');
     ui.modes.hidden = true;
     ui.note.textContent = 'RAG Goobie is resting.';
     ui.note.hidden = false;
@@ -146,6 +150,7 @@ export function mount(root) {
   if (ui.input.value.trim()) onInput();
   form.dataset.ready = '';
   return () => {
+    live = false;
     cycle.stop();
     hear?.cancel();
     delete form.dataset.ready;

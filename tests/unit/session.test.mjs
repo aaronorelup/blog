@@ -34,3 +34,15 @@ test('an altered, re-keyed or malformed token does not verify', async () => {
   }
   assert.equal(await verify(other, token), null);
 });
+
+test('with SESSION_KEY unset or empty no token is minted or accepted, and no empty key is ever imported', async (t) => {
+  const { token, exp } = await mint(env);
+  const imports = t.mock.method(crypto.subtle, 'importKey');
+  for (const none of [{}, { SESSION_KEY: undefined }, { SESSION_KEY: null }, { SESSION_KEY: '' }]) {
+    await assert.rejects(mint(none), { message: 'SESSION_KEY is not set' });
+    await assert.rejects(verify(none, token), { message: 'SESSION_KEY is not set' });
+  }
+  assert.equal(imports.mock.callCount(), 0, 'a runtime that takes a zero-length HMAC key is never asked to');
+  assert.equal(await verify({}, 'not a token'), null, 'a malformed token is still just not a token');
+  assert.deepEqual(await verify(env, token), { s: (await verify(env, token)).s, e: exp }, 'the real key still verifies after');
+});

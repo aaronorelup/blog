@@ -101,7 +101,9 @@ test('an AI error, a timeout or an answer without text is a bare 502, logged wit
   t.mock.timers.enable({ apis: ['setTimeout'] });
   answer = () => new Promise(() => {});
   const pending = hear();
-  await new Promise((res) => setImmediate(res));
+  // The model is asked, and its 20 s started, only after real async work (the token's HMAC, the body's stream): on a
+  // busy machine that is more turns than the ticks below last, so wait for the ask itself before any time passes.
+  for (let i = 0; runs.length < 3 && i < 1e4; i++) await new Promise((res) => setImmediate(res));
   for (let i = 0; i < 5; i++) { t.mock.timers.tick(5e3); await new Promise((res) => setImmediate(res)); }
   r = await pending;
   t.mock.timers.reset();
