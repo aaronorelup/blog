@@ -85,11 +85,20 @@
   @supports (height: 1svh) { .tea-hero[data-tea-hero] { --tea-hero-pt: max(76px, 61svh); } }
 }
 
-/* On a phone the box spans the screen and scrolls up under the fixed day/night switch (its top right corner, tea.css):
-   the box's text keeps out of the switch's column (12 px from the edge, 72 wide, and a gap), so no line runs under it. */
+/* Under 1024 px the box scrolls up under the fixed day/night switch (its top right corner, tea.css: 12 px from the
+   edge, 72 wide): the box's text keeps out of the switch's column and a gap, so no line runs under it. On a phone the
+   box spans the screen, so the gutter is the switch's width, and the counter's line keeps to one line (a smaller size,
+   breaking only between its parts where even that is too wide); from 561 px the box is 540 px wide and centred, its
+   right edge at 50vw + 270 px, so the gutter (and the skip link's offset) shrinks to nothing by about 680 px. */
 @media (max-width: 560px) {
   .tea-hero[data-tea-hero] .tea-hero-box { padding-right: 76px; }
+  .tea-hero[data-tea-hero] .tea-counter { font-size: clamp(10.5px, 3.15vw, 12.5px); letter-spacing: 0; }
 }
+@media (min-width: 561px) and (max-width: 1023px) {
+  .tea-hero[data-tea-hero] .tea-hero-box { padding-right: max(40px, calc(378px - 50vw)); }
+  .tea-hero[data-tea-hero] .tea-skip { right: max(22px, calc(380px - 50vw)); }
+}
+.tea-counter-part { white-space: nowrap; }
 
 /* The scene: one length of scroll for both layouts, so a switch between them moves nothing below the hero. */
 .tea-hero[data-3d='on'] { height: 300vh; }

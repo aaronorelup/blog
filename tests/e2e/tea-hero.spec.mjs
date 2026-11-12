@@ -733,27 +733,39 @@ test('tea-hero-28 a beforeunload that does not leave the page keeps the scene lo
   expect(errors).toEqual([]);
 });
 
-// On a phone the title box spans the screen and scrolls up under the fixed day/night switch (top right): none of its
-// text runs under the switch's column, on the static hero and over the scene (stage.css keeps a gutter there).
-test('tea-hero-29 on a phone no line of the title box runs under the fixed day/night switch', async ({ page, isMobile }) => {
-  test.skip(!isMobile, 'phones: under 561 px the box spans the screen');
-  for (const url of ['/tea/?hero=off', '/tea/?hero=on']) {
+// Under 1024 px the title box scrolls up under the fixed day/night switch (top right): none of its text runs under the
+// switch's column, on a phone (the box spans the screen; on the static hero and over the scene) and on the narrow
+// tablets and windows where the 540 px box still reaches the column (stage.css keeps a gutter there). On a phone the
+// counter keeps to one line.
+test('tea-hero-29 under 1024 px no line of the title box runs under the fixed day/night switch', async ({ page, isMobile }) => {
+  test.setTimeout(120_000);
+  const under = () => page.evaluate(() => {
+    const sw = document.querySelector('#mode-toggle').getBoundingClientRect();
+    const out = [];
+    const walker = document.createTreeWalker(document.querySelector('.tea-hero-box'), NodeFilter.SHOW_TEXT);
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+      if (!n.textContent.trim()) continue;
+      const range = document.createRange();
+      range.selectNodeContents(n);
+      for (const r of range.getClientRects()) if (r.right > sw.left) out.push(`${n.textContent.trim().slice(0, 24)}: ${Math.round(r.right)} > ${Math.round(sw.left)}`);
+    }
+    return out;
+  });
+  const pages = isMobile ? [[null, '/tea/?hero=off'], [null, '/tea/?hero=on']]
+    : [[[561, 900], '/tea/?hero=off'], [[600, 960], '/tea/?hero=off'], [[640, 900], '/tea/?hero=off']];
+  for (const [size, url] of pages) {
+    if (size) await page.setViewportSize({ width: size[0], height: size[1] });
     await page.goto(url);
     await settled(page);
     await holdScene(page);
-    const under = await page.evaluate(() => {
-      const sw = document.querySelector('#mode-toggle').getBoundingClientRect();
-      const out = [];
-      const walker = document.createTreeWalker(document.querySelector('.tea-hero-box'), NodeFilter.SHOW_TEXT);
-      for (let n = walker.nextNode(); n; n = walker.nextNode()) {
-        if (!n.textContent.trim()) continue;
-        const range = document.createRange();
-        range.selectNodeContents(n);
-        for (const r of range.getClientRects()) if (r.right > sw.left) out.push(`${n.textContent.trim().slice(0, 24)}: ${Math.round(r.right)} > ${Math.round(sw.left)}`);
-      }
-      return out;
+    expect(await under(), `${url} ${size || 'phone'}`).toEqual([]);
+    if (!isMobile) continue;
+    const lines = await page.locator('.tea-counter').evaluate((c) => {
+      const range = document.createRange();
+      range.selectNodeContents(c);
+      return new Set([...range.getClientRects()].filter((r) => r.width > 1).map((r) => Math.round(r.top))).size;
     });
-    expect(under, url).toEqual([]);
+    expect(lines, 'the counter on one line').toBe(1);
   }
 });
 

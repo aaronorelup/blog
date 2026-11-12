@@ -19,7 +19,7 @@ const { counter } = Astro.props;
       <p class="tea-kicker">{COPY.kicker}</p>
       <h1 class="tea-title" id="tea-title">{COPY.title}</h1>
       <p class="tea-statement">{COPY.statement}</p>
-      <p class="tea-counter">{counter}</p>
+      <p class="tea-counter">{counter.split(' · ').map((part, i) => <>{i > 0 && ' · '}<span class="tea-counter-part">{part}</span></>)}</p>
       <nav class="tea-toc" aria-label={COPY.contentsLabel}>
         <ol>
           {CHAPTERS.map((c, i) => (
