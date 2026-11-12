@@ -49,15 +49,16 @@
   .ail-open, .ail-end { --u: calc(100vw / 21); --lid: 31svh; --gap: 32px; }
   /* phone, 3D page: no caption is drawn over a stack. The five go in a list under the open line */
   .ail-gl .ail-open .ail-stage { display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; padding: 0 var(--ail-margin) 18px; }
-  .ail-gl .ail-open__words { position: static; max-width: none; gap: 8px; }
+  /* relative, not static: the words are in flow here and must still paint over the proof, which is positioned */
+  .ail-gl .ail-open__words { position: relative; left: auto; bottom: auto; max-width: none; gap: 8px; }
   /* a phone prints no word under 14 px in these sections (the label face is 12 px elsewhere) */
   .ail-open .ail-open__scope, .ail-open .ail-open__who, .ail-open .ail-tag, .ail-open__tour .ail-chip { font-size: 14px; letter-spacing: .04em; }
-  .ail-gl .ail-open__five { display: grid; grid-template-columns: 1fr; gap: 0; }
+  .ail-gl .ail-open__five { position: relative; display: grid; grid-template-columns: 1fr; gap: 0; }
   .ail-gl .ail-open__co { display: flex; align-items: baseline; justify-content: flex-start; gap: 10px; padding: 5px 0 4px; background: none; border-top: 1px solid var(--ail-hair); text-align: left; opacity: 1; }
   .ail-gl .ail-open__who { flex: 0 0 auto; min-width: 7.2em; justify-content: flex-start; }
   .ail-gl .ail-open__who::before { content: ''; flex: none; align-self: center; width: 9px; height: 9px; border-radius: 50%; background: var(--own); box-shadow: 0 0 0 1px var(--own-rim, transparent), 0 0 0 2px color-mix(in srgb, var(--ail-fg) 28%, transparent); }
   .ail-gl .ail-open__agent { font-size: 17px; }
-  .ail-gl .ail-open__tour { position: static; align-self: flex-start; order: -1; }
+  .ail-gl .ail-open__tour { position: relative; right: auto; bottom: auto; align-self: flex-start; order: -1; }
   .ail-open__co[data-p='anthropic'] { --own: var(--ail-own-anthropic); --own-rim: var(--ail-rim-anthropic); }
   .ail-open__co[data-p='openai'] { --own: var(--ail-own-openai); --own-rim: var(--ail-rim-openai); }
   .ail-open__co[data-p='google'] { --own: var(--ail-own-google); --own-rim: var(--ail-rim-google); }
