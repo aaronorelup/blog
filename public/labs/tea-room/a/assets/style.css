@@ -1,0 +1,325 @@
+/* SHOJI: two surfaces (the painted world, the paper) and one building. See NOTES.md for the rules. */
+:root {
+  --display: 'Zen Maru Gothic', sans-serif;
+  --body: Karla, system-ui, sans-serif;
+  --serif: Georgia, 'Times New Roman', serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --ink: #231f2b;
+  --ink-soft: #4b4553;
+  --ink-quiet: #7b7168;
+  --paper: #efe6d2;
+  --cream: #f4e8ce;            /* lamp-lit letters on the world */
+  --cream-soft: #d9cbb0;
+  --verm: #c8402a;             /* the one accent */
+  --night: #0e1020;
+
+  --ease: cubic-bezier(.4, 0, .2, 1);
+  --rail-w: 214px;
+  --gutter: clamp(16px, 4vw, 64px);
+  --sheet-l: calc(var(--rail-w) + 30px);
+  --shadow: 0 26px 60px -14px rgba(3, 3, 12, .72), 0 3px 10px rgba(3, 3, 12, .35);
+  --vh: 1vh;
+}
+@media (max-width: 1100px) { :root { --rail-w: 186px; } }
+@media (max-width: 820px)  { :root { --rail-w: 0px; --sheet-l: var(--gutter); } }
+
+* { box-sizing: border-box; }
+html { background: var(--night); -webkit-text-size-adjust: 100%; overflow-x: clip; }
+body { margin: 0; color: var(--cream); font: 400 15.5px/1.6 var(--body); overflow-x: clip; -webkit-font-smoothing: antialiased; }
+img, video, svg, canvas { display: block; }
+h1, h2, h3, p, ol, ul, figure, blockquote { margin: 0; padding: 0; }
+ol, ul { list-style: none; }
+a { color: inherit; }
+
+.frozen *, .frozen *::before, .frozen *::after { animation: none !important; transition: none !important; }
+
+.skip { position: fixed; left: 12px; top: -80px; z-index: 90; background: var(--paper); color: var(--ink); padding: 10px 14px; font: 600 14px var(--body); }
+.skip:focus { top: 12px; }
+:focus-visible { outline: 2px solid var(--verm); outline-offset: 3px; }
+.chapter .word-wrap :focus-visible, #world :focus-visible { outline-color: var(--cream); }
+
+/* ───────────────────────── THE WORLD ───────────────────────── */
+#world { position: fixed; inset: 0; z-index: 0; overflow: hidden; background: var(--night); contain: strict; }
+.scene { position: absolute; inset: 0; overflow: hidden; visibility: hidden; }
+.scene.on { visibility: visible; }
+.plate { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+.plate > img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.shade { position: absolute; inset: 0; pointer-events: none; }
+.shade-left { background: linear-gradient(90deg, rgba(8, 8, 22, .66) 0%, rgba(8, 8, 22, .44) 30%, rgba(8, 8, 22, 0) 62%); }
+.shade-soft { background: linear-gradient(90deg, rgba(8, 8, 22, .5) 0%, rgba(8, 8, 22, .22) 30%, rgba(8, 8, 22, 0) 55%); }
+
+/* one light per scene: it breathes */
+.glow { position: absolute; border-radius: 50%; pointer-events: none; opacity: .86; animation: breathe 4.4s ease-in-out infinite; }
+.glow-door { left: 38%; top: 32%; width: 24.5%; height: 40%; background: radial-gradient(closest-side, rgba(255, 208, 128, .30), rgba(255, 196, 110, .12) 55%, rgba(255, 196, 110, 0)); }
+.glow-lantern { left: 45.6%; top: 37%; width: 40%; height: 54%; background: radial-gradient(closest-side, rgba(255, 196, 112, .26), rgba(255, 180, 96, .09) 58%, rgba(255, 180, 96, 0)); }
+.glow-beam { left: 50%; top: 14%; width: 42%; height: 56%; background: radial-gradient(closest-side, rgba(255, 232, 204, .16), rgba(255, 226, 196, .05) 60%, rgba(255, 226, 196, 0)); animation-duration: 3.1s; }
+@keyframes breathe { 0%, 100% { opacity: .68; } 50% { opacity: 1; } }
+/* dust in the projector's beam: the one thing that drifts in the screening room */
+.mote { position: absolute; width: .22%; aspect-ratio: 1; border-radius: 50%; background: #fff3dc; opacity: .7; animation: mote 13s ease-in-out infinite alternate; }
+.m1 { left: 61%; top: 47%; } .m2 { left: 66.5%; top: 55%; animation-duration: 17s; animation-delay: -4s; width: .16%; }
+.m3 { left: 71%; top: 50%; animation-duration: 11s; animation-delay: -7s; } .m4 { left: 74.5%; top: 60%; animation-duration: 19s; animation-delay: -2s; width: .3%; opacity: .5; }
+.m5 { left: 78%; top: 56.5%; animation-duration: 15s; animation-delay: -9s; width: .16%; } .m6 { left: 68.5%; top: 43.5%; animation-duration: 21s; animation-delay: -12s; opacity: .45; }
+.m7 { left: 81%; top: 63%; animation-duration: 12s; animation-delay: -5s; }
+@keyframes mote { 0% { transform: translate3d(0, 0, 0); opacity: .25; } 40% { opacity: .8; } 100% { transform: translate3d(-260%, -900%, 0); opacity: .35; } }
+
+/* the little television: only its light changes */
+.tvset > img, .tvset > i { position: absolute; inset: 0; width: 100%; height: 100%; }
+.tvset .tv-glow { opacity: .13; animation: flick 2.9s steps(1, end) infinite; }
+.tvset .tv-halo { inset: -38% -46% -30% -52%; width: auto; height: auto; border-radius: 50%; opacity: .8;
+  background: radial-gradient(closest-side, rgba(176, 198, 255, .30), rgba(160, 186, 255, .10) 55%, rgba(160, 186, 255, 0)); animation: halo 2.9s steps(1, end) infinite; }
+.tvset .tv-pool { inset: 58% -75% -42% -95%; width: auto; height: auto; border-radius: 50%; opacity: .8;
+  background: radial-gradient(closest-side, rgba(150, 178, 255, .24), rgba(150, 178, 255, .09) 55%, rgba(150, 178, 255, 0)); animation: halo 2.9s steps(1, end) infinite; }
+.tvset .tv-shadow { inset: 84% 2% -6% 6%; width: auto; height: auto; border-radius: 50%; background: radial-gradient(closest-side, rgba(6, 6, 14, .6), rgba(6, 6, 14, 0)); }
+@keyframes flick { 0% { opacity: .10; } 6% { opacity: .19; } 11% { opacity: .09; } 19% { opacity: .15; } 27% { opacity: .08; } 38% { opacity: .17; } 44% { opacity: .11; } 57% { opacity: .2; } 63% { opacity: .10; } 71% { opacity: .14; } 84% { opacity: .07; } 92% { opacity: .16; } }
+@keyframes halo  { 0% { opacity: .72; } 6% { opacity: .9; } 11% { opacity: .7; } 19% { opacity: .82; } 27% { opacity: .68; } 38% { opacity: .86; } 44% { opacity: .74; } 57% { opacity: .92; } 63% { opacity: .72; } 71% { opacity: .8; } 84% { opacity: .66; } 92% { opacity: .84; } }
+.tvset-alcove { position: absolute; left: 62.9%; top: 55.2%; width: 15.4%; aspect-ratio: 1200 / 1093; }
+
+/* the set's painted face: it grows out of the little set's glass until it is the frame */
+#w-face { background: #4e3120; will-change: transform, opacity; box-shadow: 0 0 0 3px #17131f; }
+.tube { position: absolute; left: 3.4%; top: 5.2%; width: 80.9%; height: 89.6%; background: #c3cfee; overflow: hidden; }
+.tube .ep { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; visibility: hidden; }
+.scene.on .tube .ep.on { visibility: visible; }
+.tube .ep-turn { transform-origin: 50% 36%; will-change: transform; }
+.tube i { position: absolute; inset: 0; pointer-events: none; }
+.tube-flash { background: #cfd9f3; opacity: 0; will-change: opacity; }
+.tube-verm { background: #c8361f; opacity: 0; will-change: opacity; }
+.tube-glass { box-shadow: inset 0 0 110px 20px rgba(6, 5, 16, .5), inset 0 0 22px rgba(6, 5, 16, .5); border-radius: 7%/11%; }
+#w-face.pushing .knob, #w-face.pushing .tube i, #w-face.pushing .tube .ep { will-change: auto; }
+.face { position: absolute; inset: 0; width: 100%; height: 100%; }
+.face-tall { display: none; }
+.knob { position: absolute; left: 91.8%; top: 23.47%; width: 8.75vw; height: 8.75vw; margin: -4.375vw 0 0 -4.375vw; transform: rotate(-36deg); will-change: transform; }
+
+#petals { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+
+/* ───────────────────────── THE BUILDING ───────────────────────── */
+#shoji { position: fixed; inset: 0; z-index: 30; pointer-events: none; visibility: hidden; overflow: hidden; }
+#shoji.on { visibility: visible; }
+.panel { position: absolute; top: 0; bottom: 0; width: 50.2%; overflow: hidden; will-change: transform; box-shadow: 0 0 60px rgba(4, 4, 12, .7); background: #2a1a12; }
+.panel-l { left: 0; }
+.panel-r { right: 0; }
+.panel img { position: absolute; left: 0; top: 0; width: 100%; height: 116%; object-fit: cover; object-position: 100% 50%; visibility: hidden; }
+.panel-r img { transform: scaleX(-1); }
+/* shadow-play: the next room's light source, in silhouette on the paper of the right-hand screen */
+.sil { position: absolute; left: 7%; top: 30%; width: 84%; aspect-ratio: 900 / 760; background: 0 0 / 100% 100% no-repeat; visibility: hidden; will-change: transform; }
+.sil[data-v="amber"] { background-image: url(img/sil-amber.webp); }
+.sil[data-v="blue"] { background-image: url(img/sil-blue.webp); }
+.sil[data-v="pale"] { background-image: url(img/sil-pale.webp); }
+#shoji.on[data-v="amber"] [data-v="amber"], #shoji.on[data-v="blue"] [data-v="blue"], #shoji.on[data-v="pale"] [data-v="pale"] { visibility: visible; }
+
+/* ───────────────────────── THE PAPER ───────────────────────── */
+.paper { position: relative; color: var(--ink); background: var(--paper) url(img/washi.webp) 0 0 / 640px 640px; box-shadow: var(--shadow); }
+.paper::before { content: ''; position: absolute; inset: -20px; pointer-events: none;
+  background:
+    url(img/deckle-c-tl.webp) 0 0 / 22px 22px no-repeat, url(img/deckle-c-tr.webp) 100% 0 / 22px 22px no-repeat,
+    url(img/deckle-c-bl.webp) 0 100% / 22px 22px no-repeat, url(img/deckle-c-br.webp) 100% 100% / 22px 22px no-repeat,
+    url(img/deckle-top.webp) 20px 0 / calc(100% - 40px) 22px no-repeat,
+    url(img/deckle-bottom.webp) 20px 100% / calc(100% - 40px) 22px no-repeat,
+    url(img/deckle-left.webp) 0 20px / 22px calc(100% - 40px) no-repeat,
+    url(img/deckle-right.webp) 100% 20px / 22px calc(100% - 40px) no-repeat; }
+.slip::before, .bubble::before, .card::before, #rail::before, #clock::before, #tab::before {
+  background:
+    url(img/deckle-c-tl.webp) 0 0 / 22px 22px no-repeat, url(img/deckle-c-tr.webp) 100% 0 / 22px 22px no-repeat,
+    url(img/deckle-c-bl.webp) 0 100% / 22px 22px no-repeat, url(img/deckle-c-br.webp) 100% 100% / 22px 22px no-repeat,
+    url(img/deckle-top-s.webp) 20px 0 / calc(100% - 40px) 22px no-repeat,
+    url(img/deckle-bottom-s.webp) 20px 100% / calc(100% - 40px) 22px no-repeat,
+    url(img/deckle-left-s.webp) 0 20px / 22px calc(100% - 40px) no-repeat,
+    url(img/deckle-right-s.webp) 100% 20px / 22px calc(100% - 40px) no-repeat; }
+
+.seal { width: 34px; height: 34px; }
+.seal-bg { fill: var(--seal, var(--verm)); }
+.seal-mark { fill: none; stroke: var(--paper); stroke-width: 3.1; stroke-linecap: round; stroke-linejoin: round; }
+.arr { width: 26px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+.kicker, .lab, .state { font: 600 11.5px/1.5 var(--body); letter-spacing: .16em; text-transform: uppercase; }
+.meta { font: 500 11.5px/1.5 var(--mono); letter-spacing: .02em; color: var(--ink-quiet); display: flex; gap: 12px; align-items: baseline; }
+
+main { position: relative; z-index: 2; }
+
+/* 1. HERO ─────────────────────────────────────────────── */
+#hero { position: relative; height: calc(250 * var(--vh)); }
+.slip { position: absolute; left: clamp(18px, 3vw, 46px); top: calc(8 * var(--vh)); width: 262px; padding: 24px 20px 24px 24px; }
+.slip::after { content: ''; position: absolute; left: 50%; bottom: 100%; width: 1.5px; height: calc(8 * var(--vh) + 12px); margin-bottom: 8px; background: rgba(226, 214, 188, .5); }
+.slip .kicker { color: var(--ink-quiet); }
+.slip h1 { font: 700 28px/1.08 var(--display); letter-spacing: -.015em; margin-top: 9px; text-wrap: balance; }
+.slip .lede { font: 400 14px/1.5 var(--serif); color: var(--ink-soft); margin-top: 11px; }
+.slip .counter { font: 400 10.6px/1.5 var(--mono); color: var(--ink-quiet); margin-top: 12px; padding-top: 11px; border-top: 1px solid rgba(35, 31, 43, .22); white-space: nowrap; }
+.index { margin-top: 14px; }
+.index li > *, #rail li > * { display: flex; align-items: baseline; gap: 9px; text-decoration: none; }
+.index li { font: 600 12.5px/1.7 var(--body); color: var(--ink-quiet); white-space: nowrap; }
+.index li a { color: var(--ink); }
+.index li a .t { background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat; }
+.index li a:hover .t { background-size: 100% 2px; }
+.index .n, #rail .n { font: 400 9.5px/1 var(--mono); width: 26px; flex: none; color: var(--ink-quiet); letter-spacing: 0; }
+.slip .seal { position: absolute; right: 18px; bottom: 20px; width: 30px; height: 30px; }
+
+/* chapter openings: the giant word stands in the room while the screens part */
+.opening { height: calc(190 * var(--vh)); position: relative; }
+.opening-last { height: calc(230 * var(--vh)); }
+.js .word-wrap:not(.on) { visibility: hidden; }
+.word-wrap { position: sticky; top: 0; height: calc(100 * var(--vh)); display: flex; flex-direction: column; justify-content: center; padding: 0 var(--gutter) 0 calc(var(--rail-w) + 4.4vw); pointer-events: none; }
+.word { font: 700 clamp(56px, 10.6vw, 168px)/.92 var(--display); letter-spacing: -.025em; color: var(--cream); text-shadow: 0 2px 30px rgba(6, 6, 16, .55); }
+.word span { display: block; }
+.word-s { font-size: .285em; line-height: 1.2; letter-spacing: 0; margin: 0 0 .28em .12em; }
+.word-long { font-size: clamp(52px, 8.6vw, 138px); }
+.word-mid { font-size: clamp(54px, 8.8vw, 140px); }
+.statement { font: 400 clamp(19px, 1.7vw, 24px)/1.42 var(--serif); color: var(--cream); max-width: 34ch; margin-top: 1.2em; text-shadow: 0 1px 18px rgba(6, 6, 16, .8); }
+.statement.count { font: 400 clamp(13px, 1.05vw, 15px)/1.5 var(--mono); letter-spacing: .04em; color: var(--cream-soft); }
+
+/* 2. START HERE ───────────────────────────────────────── */
+.hello { --d: clamp(132px, 12.5vw, 176px); display: flex; align-items: flex-end; gap: 34px; padding: 0 var(--gutter) calc(9 * var(--vh)) calc(var(--sheet-l) + 26px); }
+.coin { position: relative; width: var(--d); height: var(--d); flex: none; margin-top: calc(var(--d) * .8); }
+.coin-back, .coin-front { position: absolute; inset: 0; border-radius: 50%; border: 3px solid #ffd892; }
+.coin-back { background: #3b2e44; box-shadow: 0 0 18px rgba(255, 216, 146, .5), 0 18px 34px -8px rgba(3, 3, 12, .8); }
+.coin-front { clip-path: inset(50% 0 0 0); }
+.coin-clip { position: absolute; left: 0; right: 0; bottom: 0; height: 180%; clip-path: ellipse(50% 27.78% at 50% 72.22%); }
+.coin-clip img { position: absolute; left: -9%; bottom: -6.5%; width: 118%; height: auto; transform-origin: 50% 100%; transition: transform .8s cubic-bezier(.22, .7, .2, 1); }
+.hello.out .coin-clip { clip-path: url(#coin-out); }
+.hello.out .coin-clip img { transform: translateY(-13%) scale(1.3); }
+.bubble { max-width: clamp(300px, 27vw, 430px); padding: 24px 28px 26px; margin-bottom: calc(var(--d) * .22); opacity: 0; transform: translateY(16px); transition: opacity .45s var(--ease) .38s, transform .6s var(--ease) .38s; }
+.hello.out .bubble { opacity: 1; transform: none; }
+.bubble p { font: 400 clamp(18px, 1.55vw, 22px)/1.45 var(--serif); }
+.bubble-tail { position: absolute; left: -29px; bottom: 26px; width: 0; height: 0; border-style: solid; border-color: transparent var(--paper) transparent transparent; border-width: 22px 32px 7px 0; }
+
+/* three prints, each its own sheet, laid across the room one after another: the room stays in the picture */
+.sheet { margin: 0 var(--gutter) 0 var(--sheet-l); max-width: 1240px; }
+.sheet > .seal { position: absolute; right: clamp(22px, 5vw, 76px); bottom: clamp(26px, 3.4vw, 46px); }
+.prints { padding: 0 var(--gutter) 0 var(--sheet-l); display: flex; flex-direction: column; align-items: flex-start; gap: calc(20 * var(--vh)); }
+.print { width: min(800px, 58vw); padding: clamp(14px, 1.5vw, 22px) clamp(14px, 1.5vw, 22px) clamp(20px, 2vw, 28px); will-change: transform; }
+.print-a { margin-left: 1.5vw; }
+.print-b { align-self: flex-end; margin-right: 2.5vw; width: min(740px, 54vw); }
+.print-c { margin-left: 12vw; width: min(660px, 50vw); }
+.pic { position: relative; display: block; background: #1b1722; outline: 1.5px solid var(--ink); box-shadow: 0 1px 2px rgba(35, 31, 43, .5), 0 8px 18px -8px rgba(35, 31, 43, .5); }
+.pic img, .pic video { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+.print .cap { display: grid; grid-template-columns: auto 1fr; column-gap: clamp(14px, 1.6vw, 24px); align-items: start; padding: clamp(16px, 1.7vw, 24px) clamp(44px, 4vw, 60px) 0 6px; }
+.print .num { font: 700 clamp(44px, 4.6vw, 66px)/.86 var(--display); letter-spacing: -.04em; color: var(--ink); }
+.print .meta { display: block; }
+.print h3 { font: 700 clamp(20px, 1.95vw, 28px)/1.16 var(--display); letter-spacing: -.012em; margin-top: 4px; text-wrap: balance; }
+.print h3 a { text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 2px no-repeat; transition: background-size .3s var(--ease); }
+.print h3 a:hover { background-size: 100% 2px; }
+.print .line { font: italic 400 clamp(15.5px, 1.25vw, 18px)/1.4 var(--serif); color: var(--ink-soft); margin-top: 7px; }
+.print .go { grid-column: 2; display: inline-block; justify-self: start; margin-top: 10px; color: var(--ink); padding: 6px 0; }
+.print > .seal { position: absolute; right: clamp(16px, 1.6vw, 24px); bottom: clamp(18px, 1.8vw, 26px); width: 30px; height: 30px; }
+.gap { height: calc(96 * var(--vh)); }
+
+/* 3. THE TELEVISION ───────────────────────────────────── */
+.push { height: calc(110 * var(--vh)); }
+.dial { height: calc((5 * 85 + 130 + 100) * var(--vh)); position: relative; }
+.hud { position: sticky; top: 0; height: calc(100 * var(--vh)); pointer-events: none; }
+.card { position: absolute; left: calc(var(--sheet-l) + 1.6vw); bottom: calc(7.5 * var(--vh)); width: min(430px, calc(100vw - 2 * var(--gutter))); padding: 24px 28px 26px; pointer-events: auto; display: grid; }
+.ch { grid-area: 1 / 1; opacity: 0; pointer-events: none; display: flex; flex-direction: column; align-items: flex-start; }
+.ch.on { opacity: 1; pointer-events: auto; }
+.ch .state { color: var(--ink-quiet); letter-spacing: .14em; }
+.ch .id { color: var(--ink); font-weight: 700; }
+.ch h3 { font: 700 clamp(30px, 3vw, 44px)/1.02 var(--display); letter-spacing: -.02em; margin-top: 8px; }
+.ch .line { font: 400 16.5px/1.45 var(--serif); color: var(--ink-soft); margin-top: 11px; }
+.ch .line-turn { font-size: 19px; color: var(--ink); margin-top: 8px; }
+.ch .more { display: inline; font: 600 13.5px/1.5 var(--body); color: var(--ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.ch .more:hover { text-decoration-thickness: 2px; }
+.ch .more .arr { display: inline-block; vertical-align: -1px; margin-left: 3px; }
+.nb { white-space: nowrap; }
+.ch .line { margin-bottom: 16px; }
+.ch .more { margin-top: auto; padding-right: 46px; }
+.card .seal { position: absolute; right: 20px; bottom: 20px; width: 28px; height: 28px; }
+
+#clock { position: fixed; z-index: 40; top: 0; right: clamp(18px, 3.2vw, 52px); padding: 30px 20px 14px; font: 500 25px/1 var(--mono); letter-spacing: -.02em; transform: translateY(-130%); transition: transform .5s var(--ease); white-space: nowrap; }
+#clock.on { transform: none; }
+#clock .ss { font-size: 13px; color: var(--ink-quiet); margin-left: 2px; }
+
+/* 4. THE STRIP ────────────────────────────────────────── */
+/* a handscroll, unrolled across the floor to close the chapter */
+.strip { padding: clamp(20px, 2.2vw, 30px) clamp(40px, 5vw, 76px) clamp(40px, 4vw, 58px) clamp(22px, 3.4vw, 52px); margin-right: calc(var(--gutter) + 22px); }
+.strip-tag { color: var(--ink-quiet); margin-bottom: clamp(16px, 1.8vw, 26px); }
+.roller { position: absolute; z-index: 1; right: -30px; top: -22px; bottom: -22px; width: 34px; border-radius: 7px; background: linear-gradient(90deg, #2c1b12 0%, #6d4830 34%, #573724 62%, #2c1b12 100%); box-shadow: 0 0 0 2.5px #17131f, -10px 0 16px -6px rgba(35, 31, 43, .45), 14px 18px 30px -8px rgba(3, 3, 12, .7); }
+.roller::before, .roller::after { content: ''; position: absolute; left: 6px; right: 6px; height: 16px; background: #1e120c; box-shadow: 0 0 0 2.5px #17131f; border-radius: 4px; }
+.roller::before { top: -17px; } .roller::after { bottom: -17px; }
+.also { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(18px, 3vw, 44px); }
+.also a { display: block; text-decoration: none; }
+.also .pic { display: block; }
+.also .lab { display: block; color: var(--ink-quiet); margin-top: 14px; }
+.also .ttl { display: inline; font: 700 clamp(16px, 1.45vw, 19.5px)/1.25 var(--display); letter-spacing: -.008em; background: linear-gradient(currentColor, currentColor) 0 100% / 0 2px no-repeat; transition: background-size .3s var(--ease); }
+.also a:hover .ttl { background-size: 100% 2px; }
+.strip .seal { right: clamp(22px, 4vw, 60px); bottom: 18px; width: 26px; height: 26px; }
+
+/* ───────────────────────── THE RAIL ───────────────────────── */
+/* paper in shadow: it hangs on the doorpost, away from every lamp */
+#rail { position: fixed; z-index: 40; left: clamp(12px, 1.5vw, 24px); bottom: calc(5 * var(--vh)); width: calc(var(--rail-w) - 36px); padding: 13px 12px 13px 15px; filter: sepia(.35) brightness(.8); box-shadow: 0 14px 30px -10px rgba(3, 3, 12, .8); transform: translateX(-140%); transition: transform .5s var(--ease); }
+#rail.on { transform: none; }
+#rail li { font: 600 11.5px/1.62 var(--body); color: #5d554f; position: relative; }
+#rail li a { color: #3a3440; }
+#rail li a:hover { color: #000; }
+#rail .n { width: 22px; font-size: 8.5px; color: #5d554f; }
+#rail .t { line-height: 1.22; padding: .2em 0; }
+#rail li.cur a { color: #000; }
+#rail li.cur::before { content: ''; position: absolute; left: -10px; top: .58em; width: 6px; height: 6px; background: #e2472d; }
+#tab { display: none; }
+
+/* the one sanctioned break: at 20:00 the vermilion leaves the seal and takes the picture */
+.turn .card .seal { --seal: var(--ink); }
+.turn #rail li.cur::before { background: var(--ink); }
+
+/* ───────────────────────── LARGE SCREENS: the paper grows with the room ───────────────────────── */
+@media (min-width: 1680px) {
+  :root { --rail-w: 252px; }
+  .slip { width: 320px; padding: 30px 26px 30px 30px; }
+  .slip h1 { font-size: 34px; }
+  .slip .lede { font-size: 16.5px; }
+  .slip .counter { font-size: 12.6px; }
+  .index li { font-size: 14.5px; }
+  .index .n, #rail .n { width: 30px; font-size: 10.5px; }
+  .kicker, .lab, .state, .meta { font-size: 13px; }
+  .card { width: 548px; padding: 30px 34px 32px; }
+  .ch .line { font-size: 19.5px; }
+  .ch .line-turn { font-size: 22.5px; }
+  .ch .more { font-size: 15.5px; }
+  .card .seal, .print > .seal, .slip .seal { width: 36px; height: 36px; }
+  #rail { padding: 16px 14px 16px 19px; }
+  #rail li { font-size: 13.5px; }
+  #clock { font-size: 31px; padding: 36px 24px 17px; }
+  #clock .ss { font-size: 16px; }
+}
+
+/* ───────────────────────── PHONE ───────────────────────── */
+@media (max-width: 820px) {
+  #rail { display: none; }
+  #tab { display: flex; gap: 8px; align-items: baseline; position: fixed; z-index: 40; left: 12px; top: 0; padding: 22px 12px 9px; font: 600 11.5px/1.3 var(--body); max-width: 70vw; transform: translateY(-140%); transition: transform .5s var(--ease); }
+  #tab.on { transform: none; }
+  #tab .n { font: 400 9.5px/1 var(--mono); color: var(--ink-quiet); }
+  #hero { height: calc(250 * var(--vh)); }
+  .slip { left: 14px; right: 14px; top: calc(69 * var(--vh)); width: auto; padding: 18px 20px 22px; }
+  .slip h1 { font-size: 26px; margin-top: 6px; }
+  .slip .lede { margin-top: 8px; }
+  .index { columns: 2; column-gap: 16px; margin-top: 12px; }
+  .index li { font-size: 12px; line-height: 1.7; break-inside: avoid; white-space: normal; }
+  #tv .word-wrap { justify-content: flex-start; padding-top: calc(12 * var(--vh)); padding-bottom: 0; }
+  #w-alcove .shade { background: linear-gradient(180deg, rgba(8, 8, 22, .78) 0%, rgba(8, 8, 22, .62) 34%, rgba(8, 8, 22, 0) 58%); }
+  .index .n { width: 22px; }
+  .word-wrap { padding: 0 18px; justify-content: flex-end; padding-bottom: calc(14 * var(--vh)); }
+  .word { font-size: clamp(50px, 15.5vw, 76px); }
+  .word-long { font-size: clamp(46px, 14.4vw, 70px); }
+  .hello { flex-direction: column; align-items: flex-start; gap: 20px; padding: 0 16px calc(7 * var(--vh)) 22px; }
+  .bubble { margin-bottom: 0; padding: 20px 22px; }
+  .bubble-tail { left: 30px; bottom: auto; top: -25px; border-color: transparent transparent var(--paper) transparent; border-width: 0 22px 26px 7px; }
+  .sheet { margin: 0 12px; }
+  .slip::after { display: none; }
+  .prints { padding: 0 14px; gap: calc(11 * var(--vh)); }
+  .print { width: auto; align-self: stretch; margin: 0 20px 0 0; }
+  .print-b { margin: 0 0 0 20px; }
+  .print-c { margin: 0 10px; }
+  .strip { margin: 0 34px 0 12px; padding: 20px 30px 44px 18px; }
+  .roller { right: -22px; width: 26px; }
+  .also { grid-template-columns: 1fr; gap: 22px; }
+  .also a { display: grid; grid-template-columns: 42% 1fr; column-gap: 14px; align-items: start; }
+  .also .pic { grid-row: 1 / span 2; }
+  .also .lab { margin-top: 0; font-size: 10px; }
+  .also .ttl { font-size: 15.5px; }
+  .tube { left: 4.2%; top: 12.9%; width: 91.6%; height: 32.6%; }
+  .face-wide { display: none; }
+  .face-tall { display: block; }
+  .knob { left: 17.95%; top: 52.69%; width: 14.36vw; height: 14.36vw; margin: -7.18vw 0 0 -7.18vw; }
+  .card { left: 14px; right: 14px; width: auto; bottom: calc(5 * var(--vh)); padding: 18px 20px 22px; }
+  .ch h3 { font-size: 30px; }
+  .ch .line { font-size: 15.5px; }
+  #clock { right: 12px; font-size: 20px; padding: 22px 14px 10px; }
+  .tvset-alcove { left: 60%; top: 52%; width: 21%; }
+}
