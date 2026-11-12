@@ -134,7 +134,19 @@ export function create(ctx, el, sec) {
   function askSignature() {
     if (st.sigAsked) return;
     st.sigAsked = true;
-    ctx.signature(cfg.signature).then((m) => { if (m && !st.gone) st.sig = m.create(ctx, api); });
+    ctx.signature(cfg.signature).then((m) => {
+      if (!m || st.gone) return;
+      const before = new Set();
+      ctx.scene.traverse((o) => before.add(o));
+      const sig = m.create(ctx, api);
+      ctx.scene.traverse((o) => { if (!before.has(o)) o.userData.sig = id; });      // whose furniture it is, for the tests
+      // a module that arrives after its world was left never gets the update that hides what it built: give it one
+      if (sec !== ctx.clock.current) { sig.reset(); if (sig.update) sig.update(0, 0); if (sig.catch) sig.catch(0); }
+      st.sig = sig;
+    }).catch((err) => {
+      console.warn('ai-landscape: signature', id, err);
+      $$('.ail-sig__ui button', el).forEach((b) => { b.hidden = true; });
+    });
   }
 
   function setChrome(mode, accent) {

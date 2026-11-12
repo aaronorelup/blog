@@ -42,6 +42,7 @@ export function create(ctx, world) {
   const options = which.map((k) => (data.doors[k] ? data.doors[k].m : []).filter((m) => m[2] === 'option'));
 
   const group = new Group();
+  group.visible = false;                                                      // built hidden: update() shows it, with an amount over 0
   tower.group.add(group);
   const lineMat = flat(line, true);
   // two tall doors in their frames, each over its small door
@@ -74,6 +75,7 @@ export function create(ctx, world) {
   });
   // the index: one low block at the foot of the stack, in this company's glass. It stands on the ground
   const slab = new Mesh(new BoxGeometry(2.7, 0.12, 0.95), mats.glass(tower.owner, { halfH: 0.06, side: 1, alpha: 0.94 }));
+  slab.visible = false;
   ctx.scene.add(slab);
   const threads = [ctx.thread, ctx.createThread()];
   const paths = xs.map(() => Array.from({ length: 11 }, () => new Vector3()));

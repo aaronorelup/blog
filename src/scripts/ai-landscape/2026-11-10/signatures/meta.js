@@ -33,6 +33,7 @@ export function create(ctx, world) {
 
   // the balcony, the gate on it, and the vault beside the gate with the key inside
   const group = new Group();
+  group.visible = false;                                      // built hidden: update() shows it, with an amount over 0
   tower.group.add(group);
   const ledge = new Mesh(new BoxGeometry(2.3, 0.05, 0.7), mats.glass(tower.owner, { halfH: 0.025, alpha: 0.82, side: 1 }));
   ledge.position.set(0.32, -0.03, 0);

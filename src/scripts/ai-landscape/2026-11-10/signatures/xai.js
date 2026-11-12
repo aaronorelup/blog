@@ -33,6 +33,7 @@ export function create(ctx, world) {
   const sats = hands.map(({ d }, n) => {
     const own = owner(d[0]);
     const mesh = new Mesh(new BoxGeometry(0.42, 0.2, 0.42), ctx.mats.glass(own, { halfH: 0.1, alpha: d[1] === 'yes' ? 0.92 : 0.5 }));
+    mesh.visible = false;                                                   // built hidden: update() shows it
     group.add(mesh);
     const from = new Vector3();
     const to = new Vector3();

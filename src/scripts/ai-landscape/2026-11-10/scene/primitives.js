@@ -1,6 +1,7 @@
 // The small glass and line pieces the five signature moments share (SPEC 2.4, 2.5, 3.4): doors on floor 1,
 // cores inside a floor, sockets, lamps, arcs between floors, and a gate. Each call returns an object with the
 // fields a signature sets, an update() it calls every frame, and a dispose(). All of them ride their tower.
+// Every piece is built hidden: it shows only once its owner has called update() with something to show.
 import { AdditiveBlending, BoxGeometry, BufferGeometry, Color, Float32BufferAttribute, Group, Line, LineBasicMaterial, LineDashedMaterial, Mesh, MeshBasicMaterial, PlaneGeometry, SphereGeometry, Sprite, SpriteMaterial, TorusGeometry, Vector3 } from 'three';
 import { smooth } from '../core/clock.js';
 import { owner as ownerOf } from '../worlds/index.js';
@@ -24,7 +25,7 @@ export function createPrims(ctx) {
       const items = list.map(([id, status], k) => {
         const own = ownerOf(id);
         const mesh = new Mesh(geo, mats.core(own, { side, ghost, hatch: status === 'announced' || status === 'preview' }));
-        mesh.renderOrder = 14;
+        mesh.renderOrder = 14; mesh.visible = false;
         const halo = new Sprite(new SpriteMaterial({ map: textures.halo(), color: new Color(own.glow), blending: AdditiveBlending, transparent: true, depthTest: false, opacity: 0 }));
         halo.renderOrder = 15;
         mesh.add(halo); group.add(mesh);
@@ -59,7 +60,7 @@ export function createPrims(ctx) {
       const geo = new BoxGeometry(w, 0.32, 0.03).translate(w / 2, 0.16, 0);
       const leaves = Array.from({ length: n }, (_, k) => {
         const mesh = new Mesh(geo, mats.glass(tower.owner, { halfH: 0.16, side, alpha: 0.8 }));
-        mesh.position.x = (k - n / 2) * (w + 0.05) + 0.025;
+        mesh.position.x = (k - n / 2) * (w + 0.05) + 0.025; mesh.visible = false;
         group.add(mesh);
         return { mesh, swing: 0 };
       });
@@ -90,7 +91,7 @@ export function createPrims(ctx) {
       const items = filled.map((on, k) => {
         const ring = new Mesh(ringGeo, new MeshBasicMaterial({ color: INK, transparent: true }));
         const disc = on ? new Mesh(discGeo, mats.core(tower.owner, { side })) : null;
-        ring.position.x = (k - (filled.length - 1) / 2) * 0.62;
+        ring.position.x = (k - (filled.length - 1) / 2) * 0.62; ring.visible = false;
         if (disc) ring.add(disc);
         group.add(ring);
         return { ring, disc };
@@ -117,7 +118,7 @@ export function createPrims(ctx) {
         const mesh = value === 'unknown'
           ? new Mesh(ringGeo, new MeshBasicMaterial({ color: INK, transparent: true }))
           : new Mesh(geo, mats.core(value === 'no' ? { ...off, glass: '#3A3D44' } : tower.owner, { side, hatch: value === 'partial' }));
-        mesh.position.set((k - (values.length - 1) / 2) * 0.34, 0, 0);
+        mesh.position.set((k - (values.length - 1) / 2) * 0.34, 0, 0); mesh.visible = false;
         group.add(mesh);
         return { mesh, value, lit: value === 'yes' ? 1 : value === 'partial' ? 0.5 : 0 };
       });
@@ -145,9 +146,9 @@ export function createPrims(ctx) {
       const dash = DASH[official] || null;
       const mat = dash ? new LineDashedMaterial({ color, dashSize: dash[0], gapSize: dash[1], transparent: true }) : new LineBasicMaterial({ color, transparent: true });
       const line = new Line(geo, mat);
-      line.frustumCulled = false; line.renderOrder = 16;
+      line.frustumCulled = false; line.renderOrder = 16; line.visible = false;
       const dotMat = new MeshBasicMaterial({ color, transparent: true });
-      const ends = dots ? [0, 1].map(() => new Mesh(new SphereGeometry(0.06, 14, 10), dotMat)) : [];
+      const ends = dots ? [0, 1].map(() => { const d = new Mesh(new SphereGeometry(0.06, 14, 10), dotMat); d.visible = false; return d; }) : [];
       ctx.scene.add(line, ...ends);
       const mid = new Vector3();
       let key = '';
@@ -187,7 +188,7 @@ export function createPrims(ctx) {
       tower.group.add(group);
       const ledge = new Mesh(new BoxGeometry(size + 0.5, 0.05, 0.8), mats.glass(tower.owner, { halfH: 0.025, alpha: 0.82, side: 1 }));
       const body = new Mesh(new PlaneGeometry(1, 1), mats.paper(null, { side: 1, blended: true }));
-      body.renderOrder = 7; body.visible = false;
+      body.renderOrder = 7; body.visible = false; ledge.visible = false;
       group.add(ledge); ctx.scene.add(body);
       let tall = 1;
       textures.load(url).then((tex) => { if (tex && group.parent) { body.material.uniforms.uMap.value = tex; tall = tex.image.height / tex.image.width; } });
@@ -216,7 +217,7 @@ export function createPrims(ctx) {
       const posts = [-0.34, 0.34].map((x) => { const m = new Mesh(new BoxGeometry(0.07, 0.42, 0.07).translate(0, 0.21, 0), glass()); m.position.x = x; group.add(m); return m; });
       const bar = new Mesh(new BoxGeometry(0.72, 0.05, 0.05).translate(0.36, 0, 0), new MeshBasicMaterial({ color: INK, transparent: true }));
       bar.position.set(-0.34, 0.3, 0);
-      group.add(bar);
+      group.add(bar); group.visible = false;
       const set = {
         group, lift: 0, show: 1, x: 0,
         update() {
