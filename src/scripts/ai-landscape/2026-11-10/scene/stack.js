@@ -7,6 +7,7 @@ import { lerp, smooth } from '../core/clock.js';
 export const FLOOR = { n: 9, w: 2.4, h: 0.26, r: 0.28, gap0: 0.045, gap1: 0.36 };
 export const CLOSED = FLOOR.n * FLOOR.h + (FLOOR.n - 1) * FLOOR.gap0;      // 2.70
 export const OPEN = FLOOR.n * FLOOR.h + (FLOOR.n - 1) * FLOOR.gap1;        // 5.22
+export const SEMI = 0.16;                                                  // the gap of a semi-open stack: 3.62 tall
 
 // What each state looks like: glass fill, hatching, frost, and the outline (0 none, dash 1 = dotted).
 const STATES = {
@@ -61,7 +62,7 @@ const coreGeo = new SphereGeometry(0.082, 20, 14);
 export function createTower(ctx, { id, x = 0, z = 0, owner, cells, ownerOf, ink = '#0C0D10' }) {
   const group = new Group();
   group.position.set(x, 0, z);
-  const tower = { id, x, z, group, owner, floors: [], open: 0, dim: 0, show: 1, lift: 0, side: 0, shift: 0, height: CLOSED, night: 0 };
+  const tower = { id, x, z, group, owner, floors: [], open: 0, spread: 0, dim: 0, show: 1, lift: 0, side: 0, shift: 0, height: CLOSED, night: 0 };
   const v = new Vector3();
 
   for (let i = 0; i < FLOOR.n; i++) {
@@ -104,12 +105,14 @@ export function createTower(ctx, { id, x = 0, z = 0, owner, cells, ownerOf, ink 
   tower.setOwner = (o) => { tower.owner = o; tower.edge = edged(o); tower.floors.forEach((f) => ctx.mats.setOwner(f.mat, o)); };
   tower.setInk = (hex) => tower.floors.forEach((f) => f.line.material.color.set(hex));
 
-  // Floor heights from `open`: the top floors start first, 0.09 apart.
+  // Floor heights from `open`: the top floors start first, 0.09 apart. `spread` 0..1 stands the closed stack
+  // semi-open (every gap 0.16, 3.6 units tall) for the level rows that compare floor by floor.
   tower.layout = () => {
+    const g0 = lerp(FLOOR.gap0, SEMI, tower.spread);
     let y = FLOOR.h / 2 + 0.004;
     for (let i = FLOOR.n - 1; i >= 0; i--) {
       tower.floors[i].y = y;
-      if (i > 0) y += FLOOR.h + lerp(FLOOR.gap0, FLOOR.gap1, smooth(tower.open * 1.7 - (i - 1) * 0.09));
+      if (i > 0) y += FLOOR.h + lerp(g0, FLOOR.gap1, smooth(tower.open * 1.7 - (i - 1) * 0.09));
     }
     tower.height = tower.floors[0].y + FLOOR.h / 2;
     tower.gap = (tower.height - FLOOR.n * FLOOR.h) / (FLOOR.n - 1);
@@ -179,7 +182,7 @@ export function createTower(ctx, { id, x = 0, z = 0, owner, cells, ownerOf, ink 
     }
     return { x: side * best, y: project(v.set(x, y, tower.z)).y };
   };
-  tower.reset = () => { tower.open = 0; tower.dim = 0; tower.show = 1; tower.lift = 0; tower.side = 0; tower.shift = 0; };
+  tower.reset = () => { tower.open = 0; tower.spread = 0; tower.dim = 0; tower.show = 1; tower.lift = 0; tower.side = 0; tower.shift = 0; };
   tower.dispose = () => {
     tower.floors.forEach((f) => { f.mat.dispose(); f.line.material.dispose(); f.guests.forEach((g) => g.material.dispose()); });
     group.removeFromParent();

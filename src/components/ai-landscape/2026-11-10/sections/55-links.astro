@@ -1,16 +1,17 @@
 ---
 // Cross-provider links (SPEC 2.7): every place where one company's product, agent or model reaches another owner.
 // Text version: the list, each link with its two ends, its kind, how official it is and the claim. 3D page
-// (sections/links.js): the lights go down and each entry is an arc between two floors, read one at a time.
+// (sections/links.js): the lights go down and the scroll reads the arcs of two kinds, one at a time, names at its ends.
 import '../../../../styles/ai-landscape/2026-11-10/compare.css';
 import Fact from '../Fact.astro';
 import { COPY } from '../data/copy.js';
 import { LINK_KINDS, links } from '../data/compare.js';
+import { ORDER, view } from '../data/view.js';
 
 const STYLES = [['yes', COPY.links.official], ['partial', COPY.links.partial], ['no', COPY.links.unofficial]];
 const OFFICIAL = Object.fromEntries(STYLES);
 ---
-<section id="links" class="ail-sec ail-ln" data-sec="links" data-screens="1.3" data-land="0.35" data-rail={COPY.links.title} aria-labelledby="links-title">
+<section id="links" class="ail-sec ail-ln" data-sec="links" data-screens="1.5" data-land="0.35" data-rail={COPY.links.title} aria-labelledby="links-title">
   <div class="ail-stage">
     <h2 id="links-title" class="ail-ln__title ail-title ail-cmp-h">{COPY.links.title}</h2>
     <div class="ail-ln__kinds" role="group" aria-labelledby="links-title">
@@ -19,6 +20,8 @@ const OFFICIAL = Object.fromEntries(STYLES);
     <ul class="ail-ln__styles ail-label">
       {STYLES.map(([o, w]) => <li data-official={o}><svg viewBox="0 0 40 6" aria-hidden="true" focusable="false"><path d="M1 3h38" /></svg>{w}</li>)}
     </ul>
+    <p class="ail-ln__out ail-label" data-at="you">{COPY.best.outside}</p>
+    <p class="ail-ln__out ail-label" data-at="outside">{COPY.best.outside}</p>
     <ol class="ail-ln__list">
       {links.map((l, n) => (
         <li class="ail-ln__item" data-n={n} data-kind={l.kind} data-official={l.official} data-from={l.from.owner} data-ff={l.from.floor} data-to={l.to.owner} data-tf={l.to.floor}>
@@ -27,6 +30,7 @@ const OFFICIAL = Object.fromEntries(STYLES);
             <svg class="ail-ln__arrow" viewBox="0 0 22 10" aria-hidden="true" focusable="false"><path d="M1 5h19M15 1l5 4-5 4" /></svg>
             <span class="ail-own" data-owner={l.to.owner}>{l.to.name}</span>
           </button>
+          {ORDER.includes(l.to.owner) && <span class="ail-ln__floor ail-label">{view.layers[l.to.floor - 1].name}</span>}
           <span class="ail-ln__kind-w ail-label">{COPY.links[l.kind]}</span>
           {l.official !== 'yes' && <span class="ail-tag" data-official={l.official}>{OFFICIAL[l.official]}</span>}
           <p class="ail-ln__say"><Fact fact={l.fact} tag={false} /></p>

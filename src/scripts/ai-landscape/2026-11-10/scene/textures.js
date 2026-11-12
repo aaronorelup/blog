@@ -144,6 +144,25 @@ export function createTextures(ctx) {
       return mesh;
     },
 
+    // A lamp as the page draws it in HTML: a paper disc with an ink ring. yes a filled disc, partial its left half,
+    // no a short dash, unknown a dotted ring. One ink for every company (colour is never a state).
+    lamp(value) {
+      const key = `lamp:${value}`;
+      if (cache.has(key)) return cache.get(key);
+      const [c, g] = canvas(96, 96);
+      g.fillStyle = '#F8F9FB'; g.beginPath(); g.arc(48, 48, 44, 0, Math.PI * 2); g.fill();
+      g.strokeStyle = '#0C0D10'; g.fillStyle = '#0C0D10'; g.lineWidth = 7;
+      if (value === 'unknown') g.setLineDash([5, 9]);
+      g.beginPath(); g.arc(48, 48, 39, 0, Math.PI * 2); g.stroke();
+      g.setLineDash([]);
+      if (value === 'yes') { g.beginPath(); g.arc(48, 48, 39, 0, Math.PI * 2); g.fill(); }
+      if (value === 'partial') { g.beginPath(); g.arc(48, 48, 39, Math.PI / 2, Math.PI * 1.5); g.fill(); }
+      if (value === 'no') g.fillRect(30, 44, 36, 8);
+      const t = finish(new CanvasTexture(c));
+      cache.set(key, t);
+      return t;
+    },
+
     // A soft round glow, for cores with the lights out.
     halo() {
       if (cache.has('halo')) return cache.get('halo');

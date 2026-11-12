@@ -30,7 +30,7 @@ export function createRig(ctx) {
   const read = (stop, out) => {
     out.pos.set(...stop.pos); out.look.set(...stop.look);
     out.fov = stop.fov || 24; out.fit = stop.fit || 0; out.cx = stop.cx ?? 0.5;
-    out.cy = ctx.phone ? stop.cy ?? 0.5 : 0.5;                    // only a phone moves the subject up, to leave room for the sheet
+    out.cy = ctx.phone ? stop.cy ?? 0.5 : stop.cyd ?? 0.5;        // a phone moves the subject up, to leave room for the sheet. `cyd` does it on a desktop
     return out;
   };
   const A = { pos: new Vector3(), look: new Vector3() }, B = { pos: new Vector3(), look: new Vector3() };

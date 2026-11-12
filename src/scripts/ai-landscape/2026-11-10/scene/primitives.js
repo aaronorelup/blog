@@ -108,9 +108,28 @@ export function createPrims(ctx) {
     },
 
     // Small lamps on the front of floor i, one per value: yes lit, partial half (hatched), no dark, unknown a dotted ring.
-    lamps(tower, i, values, { side = 0 } = {}) {
+    // flat: the page's own four lamp shapes in ink on a paper disc (textures.lamp), never the stack's colour.
+    lamps(tower, i, values, { side = 0, flat = false } = {}) {
       const group = new Group();
       tower.group.add(group);
+      if (flat) {
+        const geo = new PlaneGeometry(0.17, 0.17);
+        const items = values.map((value, k) => {
+          const mesh = new Mesh(geo, mats.paper(textures.lamp(value), { side, blended: true, self: true }));
+          mesh.position.set((k - (values.length - 1) / 2) * 0.3, 0, 0); mesh.visible = false; mesh.renderOrder = 9;
+          group.add(mesh);
+          return { mesh, value };
+        });
+        const set = {
+          items, show: 1, level: 1,
+          update() {
+            group.position.set(tower.floors[i].mesh.position.x + 0.3, tower.floors[i].mesh.position.y, FLOOR.w / 2 + 0.02);
+            items.forEach((l) => { l.mesh.visible = set.show > 0.01; l.mesh.material.uniforms.uOpacity.value = set.show; });
+          },
+          dispose() { items.forEach((l) => l.mesh.material.dispose()); geo.dispose(); group.removeFromParent(); },
+        };
+        return set;
+      }
       const geo = new SphereGeometry(0.075, 18, 12);
       const ringGeo = new TorusGeometry(0.07, 0.012, 6, 14);
       const off = ownerOf('outside');

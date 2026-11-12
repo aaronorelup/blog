@@ -3,14 +3,14 @@
 // and the unit test. Every word is data or COPY. The only page configuration is where each kind of link lands.
 import { COPY } from './copy.js';
 import { words } from './limits.js';
-import { fact, ORDER, ownerOf, stateOf, tagOf, thing, view } from './view.js';
+import { fact, gapFact, ORDER, ownerOf, stateOf, tagOf, thing, view } from './view.js';
 
 const D = view.data;
 const fail = (msg) => { throw new Error(`ai-landscape compare: ${msg}`); };
 const price = (usd) => `$${Number.isInteger(usd) ? usd : usd.toFixed(2)}`;
 // Words a visitor sees at first depth in every state of these sections, counted as the e2e helper counts them.
 // The chrome (title, stamp chip, sources chip) is always on screen too.
-export const CHROME_WORDS = words(`${COPY.frame.title} ${COPY.frame.snapshot} ${view.snapshot.date} ${COPY.stamp.sources} ${view.counts.sources}`);
+export const CHROME_WORDS = words(`${COPY.frame.title} ${COPY.frame.independent} ${COPY.frame.snapshot} ${view.snapshot.date} ${COPY.stamp.sources} ${view.counts.sources}`);
 export const MAX_WORDS = 60;
 
 // ---- 2.6 personal agents: the cheapest plan that includes the agent, how many computers, the lamps
@@ -20,11 +20,16 @@ export const agents = ORDER.map((id) => {
   const plan = p.plans.consumer.filter((x) => x.includesAgent && typeof x.usdPerMonth === 'number').sort((a, b) => a.usdPerMonth - b.usdPerMonth)[0] || fail(`${id}: no plan includes the agent`);
   const comp = p.cloudComputers.find((c) => c.primary) || null;
   const scope = comp && comp.scope;
-  const per = scope && scope.value === 'per-user' ? COPY.agents.perUser : scope && scope.value === 'per-agent' ? COPY.agents.perAgent : stateOf('none', (scope && scope.gap) || 'undisclosed').word;
+  // how many computers: one per person, one per agent, or not said (never "not found", which read as a missing price)
+  const counted = scope && (scope.value === 'per-user' || scope.value === 'per-agent');
+  const per = !counted ? COPY.state.undisclosed : scope.value === 'per-user' ? COPY.agents.perUser : COPY.agents.perAgent;
+  const cu = p.computerUse;
   return {
     id, name: v.name, agent: v.agent.name, status: v.agent.status, tag: v.agent.tag, access: v.agent.access,
     plan: { name: plan.name, price: price(plan.usdPerMonth), fact: fact(plan.claim) },
-    per, perFact: scope && scope.claim ? fact(scope.claim) : null, perReason: scope && !scope.claim ? scope.reason : null,
+    per, perFact: counted && scope.claim ? fact(scope.claim) : gapFact(`${id}-computers`, { reason: scope && scope.reason, gap: 'undisclosed' }),
+    // who controls a screen: the company's own sentence. `local`: it needs your computer (what "Close your laptop" dims)
+    screen: fact(cu.claim) || fail(`${id}: no computer-use claim`), local: cu.inCloud.value !== 'yes' && cu.onYourMachine.value === 'yes',
     computer: comp ? { name: comp.name, fact: fact(comp.machine && comp.machine.claim) } : null,
     lamps: v.lamps, alwaysOn: fact(p.personalAgent.alwaysOn.claim), approvals: fact(p.personalAgent.approvals),
     // floors (0-8) where a part needs your own machine: what "Close your laptop" darkens
@@ -98,14 +103,17 @@ function capability(c) {
   // a clear call whose strongest source was read after the snapshot day rests on that one reading: say which, and when
   const thin = c.verdict === 'clear' && lead && lead.readOn && lead.readOn > c.asOf ? { by: lead.ranBy, on: lead.readOn } : null;
   const stamp = [STAMP[c.verdict], c.verdict === 'clear' && c.margin ? COPY.best[c.margin] : null].filter(Boolean);
-  const fixed = words(`${COPY.best.title} ${GROUPS.map((g) => COPY.best[g]).join(' ')} ${c.name} ${stamp.join(' ')} ${COPY.best.asOf} ${c.asOf}`)
-    + places.reduce((n, x) => n + words(x.label), 0) + empty.reduce((n, x) => n + words(x.reason), 0) + (thin ? words(`${thin.by} ${thin.on}`) : 0)
+  // first depth keeps to 60 words with the chrome, and a verdict never stands without its reason. A capability's own
+  // state shows no section title and no "as of". The group tabs and Back are the first to go when the words run over
+  const body = words(`${c.name} ${stamp.join(' ')} ${c.confidence === 'reported' ? COPY.stamp.reported : ''} ${c.asOf} ${c.reason}`)
+    + places.reduce((n, x) => n + words(x.label) + (x.place ? 1 : 0), 0) + empty.reduce((n, x) => n + words(x.reason), 0) + (thin ? words(`${thin.by} ${thin.on}`) : 0)
     + (guess ? words(`${COPY.best.myGuess} ${guess.quote} ${OUTCOME[guess.outcome]}`) : 0);
-  // first depth keeps to 60 words with the chrome: the reason moves one tap away (to the stamp) when it would pass
-  const why = !guess && CHROME_WORDS + fixed + words(c.reason) <= MAX_WORDS;
+  const nav = words(`${GROUPS.map((g) => COPY.best[g]).join(' ')} ${COPY.frame.back}`);
+  const tabs = CHROME_WORDS + body + nav <= MAX_WORDS;
+  if (CHROME_WORDS + body > MAX_WORDS) fail(`${c.id}: ${CHROME_WORDS + body} words at first depth with its reason, over ${MAX_WORDS}`);
   return {
     id: c.id, name: c.name, question: c.question, group: c.group, floor, verdict: c.verdict, margin: c.margin, stamp, asOf: c.asOf,
-    places, empty, thin, why, words: CHROME_WORDS + fixed + (why ? words(c.reason) : 0),
+    places, empty, thin, tabs, words: CHROME_WORDS + body + (tabs ? nav : 0),
     reason: { id: c.id, text: c.reason, short: c.name, asOf: c.asOf, status: 'released', confidence: c.confidence, sources: [...new Set(c.evidence.map((e) => e.src).filter(Boolean))], gap: null },
     guess: guess ? { quote: guess.quote, outcome: guess.outcome, stamp: OUTCOME[guess.outcome], reason: guess.reason } : null,
     evidence: c.evidence.map((e) => ({ what: e.what, score: e.score, subject: e.subject, by: e.ranBy, date: e.date, readOn: e.readOn || null, note: e.note || null, basis: e.basis, confidence: e.confidence, src: e.src || null })),
@@ -117,8 +125,23 @@ export const best = (() => {
   const caps = D.bestAt.capabilities.map(capability);
   // the tour starts with the owner's four guesses, in his order
   const tour = [...D.bestAt.ownerGuesses.map((g) => caps.findIndex((c) => c.id === g.capabilityRef)), ...caps.map((_, k) => k)].filter((k, i, all) => k >= 0 && all.indexOf(k) === i);
+  // the board: one row a capability, a mark in each company's column and one for a leader or contender outside the
+  // five. lead, second, contest, tie (its cells joined by a line from the first to the last) or unknown (five rings)
+  const COLS = [...ORDER, 'outside'];
+  const row = (c) => {
+    const kind = (p) => {
+      const x = c.places.find((y) => y.provider === p);
+      if (x) return x.place === 1 ? 'lead' : x.place === 2 ? 'second' : c.verdict === 'tie' ? 'tie' : 'contest';
+      return c.verdict === 'unknown' && p !== 'outside' ? 'unknown' : null;
+    };
+    const marks = COLS.map(kind);
+    const tied = marks.map((m, k) => (m === 'tie' ? k : -1)).filter((k) => k >= 0);
+    const line = (k) => (tied.length < 2 || k < tied[0] || k > tied[tied.length - 1] ? null : k === tied[0] ? 'start' : k === tied[tied.length - 1] ? 'end' : 'mid');
+    return { id: c.id, name: c.name, verdict: c.verdict, cells: COLS.map((p, k) => ({ p, m: marks[k], line: line(k) })) };
+  };
   return {
     groups: GROUPS.map((g) => ({ id: g, name: COPY.best[g], caps: caps.filter((c) => c.group === g).map((c) => c.id) })),
+    board: GROUPS.map((g) => ({ id: g, name: COPY.best[g], rows: caps.filter((c) => c.group === g).map(row) })),
     caps, tour, caveats: D.bestAt.caveats.map(fact),
   };
 })();

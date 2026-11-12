@@ -1,47 +1,86 @@
 ---
-// Best at (SPEC 2.8): 22 capabilities in seven groups, each with its verdict as the data holds it. Text version:
-// the list, every row with its stamp, who leads, why and when, the owner's guess where he made one, and its
-// evidence one tap away. 3D page (sections/bestat.js): one capability at a time on the podium, fog for "nobody knows".
+// Best at (SPEC 2.8): 22 capabilities in seven groups, each with its verdict as the data holds it. Text version: the
+// board (one row a capability, who leads as a mark), then the list with every stamp, reason, date, guess and evidence.
+// 3D page (sections/bestat.js): the scroll shows the owner's four guesses on the podium, then the board of all 22.
 import '../../../../styles/ai-landscape/2026-11-10/compare.css';
+import '../../../../styles/ai-landscape/2026-11-10/board.css';
 import Fact from '../Fact.astro';
+import Mark from '../Mark.astro';
 import { COPY } from '../data/copy.js';
 import { best } from '../data/compare.js';
 import { view } from '../data/view.js';
 
-const nameOf = (id) => (id === 'outside' ? COPY.best.outside : view.provider(id).name);
+const B = COPY.best;
+const nameOf = (id) => (id === 'outside' ? B.outside : view.provider(id).name);
+const WORD = { lead: B.clear, second: B.second, contest: B.contested, tie: B.tie, unknown: B.unknown };
+const KEY = ['lead', 'second', 'contest', 'unknown'];
 ---
-<section id="best-at" class="ail-sec ail-ba" data-sec="bestat" data-screens="2" data-land="0.3" data-rail={COPY.best.title} data-tour={best.tour.join(' ')} aria-labelledby="best-at-title">
+<section id="best-at" class="ail-sec ail-ba" data-sec="bestat" data-screens="2.6" data-land="0.3" data-rail={B.title} data-tour={best.tour.slice(0, 4).join(' ')} aria-labelledby="best-at-title">
   <div class="ail-stage">
-    <h2 id="best-at-title" class="ail-ba__title ail-title ail-cmp-h">{COPY.best.title}</h2>
+    <h2 id="best-at-title" class="ail-ba__title ail-title ail-cmp-h">{B.title}</h2>
+
+    <div class="ail-bd">
+      <table class="ail-bd__table">
+        <thead>
+          <tr>
+            <td class="ail-bd__gn"></td><td class="ail-bd__nh"></td>
+            {view.providers.map((p) => <th scope="col" class="ail-bd__co" data-p={p.id}><Mark provider={p.id} name={p.name} size="s" /><span class="ail-bd__con ail-label">{p.name}</span></th>)}
+            <th scope="col" class="ail-bd__co ail-bd__out ail-label" data-p="outside">{B.outside}</th>
+          </tr>
+        </thead>
+        {best.board.map((g) => (
+          <tbody data-g={g.id}>
+            {g.rows.map((r, k) => (
+              <tr class="ail-bd__row" id={`cap-${r.id}`} data-verdict={r.verdict}>
+                {k === 0 && <th scope="rowgroup" rowspan={g.rows.length} class="ail-bd__gn ail-label"><span>{g.name}</span></th>}
+                <th scope="row" class="ail-bd__name"><button type="button" class="ail-bd__open" data-cap={r.id}>{r.name}</button></th>
+                {r.cells.map((c) => (
+                  <td class="ail-bd__cell" data-p={c.p} data-line={c.line || undefined}>
+                    {c.m && <span class="ail-bd__m" data-m={c.m} aria-hidden="true"></span>}{c.m && <span class="ail-vh">{WORD[c.m]}</span>}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        ))}
+      </table>
+      <p class="ail-bd__key ail-label">{KEY.map((m) => <span><span class="ail-bd__m" data-m={m} aria-hidden="true"></span>{WORD[m]}</span>)}</p>
+    </div>
+
     <div class="ail-ba__nav">
-      <div class="ail-ba__groups" role="group" aria-labelledby="best-at-title">
-        {best.groups.map((g) => <button type="button" class="ail-chip ail-ba__group" data-g={g.id} data-first={g.caps[0]} aria-pressed="false">{g.name}</button>)}
-      </div>
+      <button type="button" class="ail-chip ail-ba__back">{COPY.frame.back}</button>
       <p class="ail-ba__steps">
         <button type="button" class="ail-btn ail-ba__arrow" data-step="-1" aria-label={COPY.frame.back}><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7" /></svg></button>
         <button type="button" class="ail-btn ail-ba__arrow" data-step="1" aria-label={COPY.stamp.next}><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7" /></svg></button>
       </p>
+      <div class="ail-ba__groups" role="group" aria-labelledby="best-at-title">
+        {best.groups.map((g) => <button type="button" class="ail-chip ail-ba__group" data-g={g.id} data-first={g.caps[0]} aria-pressed="false">{g.name}</button>)}
+      </div>
     </div>
     <ol class="ail-ba__caps">
       {best.caps.map((c, n) => (
-        <li class="ail-ba__cap" id={c.id} data-n={n} data-g={c.group} data-verdict={c.verdict} data-floor={c.floor} data-why={c.why ? '' : undefined}>
+        <li class="ail-ba__cap" id={c.id} data-n={n} data-g={c.group} data-verdict={c.verdict} data-floor={c.floor} data-tabs={c.tabs ? '' : undefined}>
           <h3 class="ail-ba__name ail-title">{c.name}</h3>
           <details class="ail-ba__d" name="ail-ba">
-            <summary class="ail-ba__stamp ail-seal" data-verdict={c.verdict}>{c.stamp[0]}{c.stamp[1] && <i>{c.stamp[1]}</i>}</summary>
+            <summary class="ail-ba__stamp ail-seal" data-verdict={c.verdict}>{c.stamp[0]}{c.stamp[1] && <i> {c.stamp[1]}</i>}</summary>
             <div class="ail-ba__more ail-card">
               <p class="ail-ba__q">{c.question}</p>
-              {!c.why && <p><Fact fact={c.reason} tag={false} /></p>}
               {c.guess && <p class="ail-ba__gr">{c.guess.reason}</p>}
               {c.leadsOn.length > 0 && <ul class="ail-ba__leads">{c.leadsOn.map((x) => <li><span class="ail-own" data-owner={x.provider}>{x.label}</span> {x.leadsOn}</li>)}</ul>}
               <ul class="ail-ba__ev">
                 {c.evidence.map((e) => (
-                  <li data-basis={e.basis} data-conf={e.confidence}><span class="ail-label">{e.by} <time datetime={e.date}>{e.date}</time>{e.readOn && <time datetime={e.readOn}>{e.readOn}</time>}</span> {e.what}. <b>{e.score}</b> {e.subject}.{e.note && <span class="ail-note">{e.note}</span>}</li>
+                  <li data-basis={e.basis} data-conf={e.confidence}>
+                    <span class="ail-label">{e.by} {e.readOn
+                      ? <span class="ail-ba__dates">{B.table} <time datetime={e.date}>{e.date}</time>, {B.readAfter} <time datetime={e.readOn}>{e.readOn}</time></span>
+                      : <time datetime={e.date}>{e.date}</time>}</span> {e.what}. <b>{e.score}</b> {e.subject}.{e.note && <span class="ail-note">{e.note}</span>}
+                  </li>
                 ))}
               </ul>
               {c.notYetRated.length > 0 && <p class="ail-ba__nyr ail-label">{c.notYetRated.join(', ')}</p>}
               <ul class="ail-ba__cav">{best.caveats.map((f) => <li><Fact fact={f} tag={false} /></li>)}</ul>
             </div>
           </details>
+          {c.reason.confidence === 'reported' && <span class="ail-ba__conf ail-label">{COPY.stamp.reported}</span>}
           <ul class="ail-ba__who">
             {c.places.map((x) => (
               <li class="ail-ba__place" data-p={x.provider} data-place={x.place || undefined} data-h={x.h} data-step={x.step}>
@@ -53,10 +92,10 @@ const nameOf = (id) => (id === 'outside' ? COPY.best.outside : view.provider(id)
             ))}
           </ul>
           <p class="ail-ba__why"><Fact fact={c.reason} tag={false} /></p>
-          <p class="ail-ba__when ail-label">{COPY.best.asOf} <time datetime={c.asOf}>{c.asOf}</time>{c.thin && <span class="ail-ba__thin"> · {c.thin.by} <time datetime={c.thin.on}>{c.thin.on}</time></span>}</p>
+          <p class="ail-ba__when ail-label"><span class="ail-ba__asof">{B.asOf}</span> <time datetime={c.asOf}>{c.asOf}</time>{c.thin && <span class="ail-ba__thin"> · {c.thin.by} <time datetime={c.thin.on}>{c.thin.on}</time></span>}</p>
           {c.guess && (
             <figure class="ail-ba__guess" data-outcome={c.guess.outcome}>
-              <figcaption class="ail-label">{COPY.best.myGuess}</figcaption>
+              <figcaption class="ail-label">{B.myGuess}</figcaption>
               <blockquote class="ail-sentence">{c.guess.quote}</blockquote>
               <p class="ail-ba__verdict ail-seal">{c.guess.stamp}</p>
             </figure>

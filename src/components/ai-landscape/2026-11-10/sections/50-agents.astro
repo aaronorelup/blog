@@ -1,28 +1,30 @@
 ---
-// Personal agents (SPEC 2.6). Text version: a table of the five agents with the cheapest plan that includes each,
-// how many cloud computers it gets, and the four lamps. 3D page (sections/agents.js): floors 3, 7 and 8 lit, the
-// lamps on the stacks, a plate under each, and the switch that closes your laptop.
+// Personal agents (SPEC 2.6): one table, a row an agent. How many cloud computers it gets, what that computer has
+// (a terminal, a browser, a screen, always on) as glyphs in the page's four states, who controls a screen, and the
+// cheapest plan. 3D page (sections/agents.js): each row stands as a column under its stack, the heads at the left.
 import '../../../../styles/ai-landscape/2026-11-10/compare.css';
+import '../../../../styles/ai-landscape/2026-11-10/agents.css';
 import Fact from '../Fact.astro';
+import Glyph from '../Glyph.astro';
 import { COPY } from '../data/copy.js';
 import { agents } from '../data/compare.js';
-import { view } from '../data/view.js';
 
-const LAMPS = [['terminal', COPY.agents.terminal], ['browser', COPY.agents.browser], ['screen', COPY.agents.screen], ['alwaysOn', COPY.agents.alwaysOn]];
+const A = COPY.agents;
+const LAMPS = [['terminal', A.terminal, 'prompt'], ['browser', A.browser, 'browser'], ['screen', A.screen, 'pointer'], ['alwaysOn', A.alwaysOn, 'clock']];
 const SAY = { yes: COPY.architecture.yes, partial: COPY.best.partly, no: COPY.architecture.no, unknown: COPY.state.undisclosed };
-const compute = view.layers[6].name;
 ---
-<section id="agents" class="ail-sec ail-ag" data-sec="agents" data-screens="1.2" data-land="0.35" data-rail={COPY.agents.title} aria-labelledby="agents-title">
-  <div class="ail-stage">
-    <h2 id="agents-title" class="ail-ag__title ail-title ail-cmp-h">{COPY.agents.title}</h2>
+<section id="agents" class="ail-sec ail-ag" data-sec="agents" data-screens="1.2" data-land="0.35" data-rail={A.title} aria-labelledby="agents-title">
+  <div class="ail-stage" data-board>
+    <h2 id="agents-title" class="ail-ag__title ail-title ail-cmp-h">{A.title}</h2>
     <div class="ail-ag__wrap">
       <table class="ail-ag__table">
         <thead>
-          <tr>
+          <tr class="ail-ag__heads">
             <td></td>
-            <th scope="col" class="ail-ag__ph ail-label">{COPY.agents.from} <span aria-hidden="true">…</span> {COPY.agents.aMonth}</th>
-            <th scope="col" class="ail-ag__ch ail-label">{compute}</th>
-            {LAMPS.map(([k, w]) => <th scope="col" class="ail-ag__lh ail-label" data-lamp={k}>{w}</th>)}
+            <th scope="col" class="ail-ag__h ail-label">{A.howMany}</th>
+            {LAMPS.map(([k, w, g]) => <th scope="col" class="ail-ag__h ail-ag__lh ail-label" data-lamp={k}><Glyph name={g} />{w}</th>)}
+            <th scope="col" class="ail-ag__h ail-label">{A.screenControl}</th>
+            <th scope="col" class="ail-ag__h ail-ag__ph ail-label">{A.from} <span aria-hidden="true">…</span> {A.aMonth}</th>
           </tr>
         </thead>
         <tbody>
@@ -39,28 +41,23 @@ const compute = view.layers[6].name;
                 </details>
                 <span class="ail-ag__co ail-label">{a.name}</span>
               </th>
-              <td class="ail-ag__price"><Fact fact={a.plan.fact} full tag={false}>{a.plan.price}</Fact></td>
-              <td class="ail-ag__per ail-label">{a.perFact ? <Fact fact={a.perFact} full tag={false}>{a.per}</Fact> : <span class="ail-ag__gap" title={a.perReason}>{a.per}</span>}</td>
-              {LAMPS.map(([k]) => (
-                <td class="ail-ag__lamp" data-lamp={k}><span class="ail-lamp" data-v={a.lamps[k]} aria-hidden="true"></span><span class="ail-ag__lw ail-label">{SAY[a.lamps[k]]}</span></td>
+              <td class="ail-ag__per">{a.perFact ? <Fact fact={a.perFact} full tag={false}>{a.per}</Fact> : a.per}</td>
+              {LAMPS.map(([k, , g]) => (
+                <td class="ail-ag__lamp" data-lamp={k}><span class="ail-agt" data-v={a.lamps[k]} aria-hidden="true"><Glyph name={g} /></span><span class="ail-ag__lw ail-label">{SAY[a.lamps[k]]}</span></td>
               ))}
+              <td class="ail-ag__cu" data-local={a.local ? '' : undefined}><Fact fact={a.screen} full tag={false}>{a.screen.short}</Fact></td>
+              <td class="ail-ag__price"><Fact fact={a.plan.fact} full tag={false}>{a.plan.price}</Fact></td>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
-    <p class="ail-ag__brk ail-label" data-at="from" aria-hidden="true">{COPY.agents.from}</p>
-    <p class="ail-ag__brk ail-label" data-at="month" aria-hidden="true">{COPY.agents.aMonth}</p>
-    <p class="ail-ag__brk ail-label" data-at="per" aria-hidden="true">{compute}</p>
     <div class="ail-ag__console">
       <button type="button" class="ail-btn ail-ag__switch" aria-pressed="false">
         <svg class="ail-ag__laptop" viewBox="0 0 40 28" aria-hidden="true" focusable="false"><g class="ail-ag__lid"><rect x="7" y="2.5" width="26" height="17.5" rx="1.6" /><rect class="ail-ag__screen" x="9.6" y="5" width="20.8" height="12.4" /></g><path d="M2.5 22h35l-2.6 3.4H5.1z" /><circle class="ail-ag__port" cx="34" cy="23.6" r=".6" /></svg>
-        {COPY.agents.closeLaptop}
+        <span class="ail-ag__sww">{A.closeLaptop}</span>
       </button>
-      <div class="ail-ag__key" aria-hidden="true">
-        <p><span class="ail-ag__slab"><span class="ail-lamp" data-v="yes"></span><span class="ail-lamp" data-v="yes"></span><span class="ail-lamp" data-v="yes"></span></span>{LAMPS.slice(0, 3).map(([, w]) => <span class="ail-ag__kw">{w}</span>)}</p>
-        <p><span class="ail-ag__slab"><span class="ail-lamp" data-v="yes"></span></span><span class="ail-ag__kw">{COPY.agents.alwaysOn}</span></p>
-      </div>
+      <p class="ail-ag__needs ail-label"><span class="ail-ag__dim" aria-hidden="true"></span>{A.needsYou}</p>
     </div>
   </div>
 </section>

@@ -20,6 +20,10 @@ export const GLYPHS = {
   'creative-tool': 'M12 3l2.2 5.8L20 11l-5.8 2.2L12 19l-2.2-5.8L4 11l5.8-2.2z',
   search: 'M10.5 17a6.5 6.5 0 1 0 0-13a6.5 6.5 0 0 0 0 13M15.5 15.5L21 21',
   browser: 'M3 5h18v14H3zM3 9h18M6 7h1M9 7h1',
+  // what a cloud computer has: a prompt, a pointer on a screen, a clock (its browser is the window above)
+  prompt: 'M4 6l6 6-6 6M12 18h8',
+  pointer: 'M3 4h18v13H3zM8 21h8M12 17v4M10 7l1.6 6 1.4-2.2 2.6-.8z',
+  clock: 'M12 21a9 9 0 1 0 0-18a9 9 0 0 0 0 18M12 7v5l3.5 2',
   // small signs
   flag: 'M6 21V4M6 5h11l-2.5 3.5L17 12H6',
   question: 'M9 9a3 3 0 1 1 4.4 2.6c-.9.5-1.4 1.2-1.4 2.2v.7M12 18.2v.3',

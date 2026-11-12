@@ -1,7 +1,7 @@
-// Personal agents (SPEC 2.6): the row again with only floors 3, 7 and 8 lit, each character large on its floor,
-// three lamps on floor 7 (terminal, browser, screen) and the always-on lamp on floor 3. "Close your laptop" shuts the
-// paper laptop on the switch: the cables to every part that needs your own machine go dark, cloud floors stay lit.
-// It tours itself once. On a phone the plates are a list in the sheet and no cable is drawn.
+// Personal agents (SPEC 2.6): the row again with only floors 3, 7 and 8 lit, one table under it: every agent a
+// column under its stack, the row heads at the left. Three lamps on floor 7 and one on floor 3 repeat the table in
+// ink. "Close your laptop" shuts the paper laptop: the cables to every part that needs your own machine, and the
+// cells that do, fall to 15 percent. It tours itself once. On a phone the table is a list in the sheet, with no cable.
 import { Color, Vector3 } from 'three';
 import { smooth, span } from '../core/clock.js';
 import { $, $$, announce } from '../core/dom.js';
@@ -20,16 +20,23 @@ export function create(ctx, el, sec) {
   const towers = order.map((id) => row.tower(id));
   const plates = $$('.ail-ag__row', el);
   const sw = $('.ail-ag__switch', el);
-  const brk = { from: $('.ail-ag__brk[data-at="from"]', el), month: $('.ail-ag__brk[data-at="month"]', el), per: $('.ail-ag__brk[data-at="per"]', el) };
-  const prices = plates.map((p) => $('.ail-ag__price', p));
-  const pers = plates.map((p) => $('.ail-ag__per', p));
+  const heads = $('.ail-ag__heads', el);
   const st = { closed: 0, want: false, toured: false, tour: 0, touched: false, k: 0 };
+  // the row keeps clear of the table's row heads: they need 270 px left of the first stack, as the line-up's axis does
+  const WIDE = { ...rig.stops.row };
+  function seat() {
+    const W = window.innerWidth, base = rig.stops.row;
+    WIDE.fit = base.fit * Math.max(1, ((19.2 / base.fit) * W) / (W - 270 - 40));
+    WIDE.cx = 0.5 + Math.max(0, 270 - (0.5 - (9.6 + base.look[0]) / WIDE.fit) * W) / W;
+  }
+  seat();
+  window.addEventListener('resize', seat);
   const v = new Vector3();
 
   // the lamps: three on the compute floor from the primary cloud computer, one on the router floor from the agent
   const lamps = towers.flatMap((tw) => {
     const L = ctx.data.p[tw.id].lamps;
-    return [prims.lamps(tw, 6, [L.terminal, L.browser, L.screen]), prims.lamps(tw, 2, [L.alwaysOn])];
+    return [prims.lamps(tw, 6, [L.terminal, L.browser, L.screen], { flat: true }), prims.lamps(tw, 2, [L.alwaysOn], { flat: true })];
   });
   lamps.forEach((l) => { l.items[0].mesh.parent.scale.setScalar(phone ? 2.2 : 1.55); l.show = 0; l.update(); });
 
@@ -57,18 +64,9 @@ export function create(ctx, el, sec) {
     st.touched = true;
   });
 
-  // the words "from" and "a month" bracket the row of prices: one pair for five prices
-  function bracket() {
-    const a = prices[0].getBoundingClientRect(), b = prices[prices.length - 1].getBoundingClientRect();
-    const plateA = plates[0].getBoundingClientRect();
-    if (!a.width) return;
-    brk.from.style.transform = `translate3d(${(Math.min(a.left, plateA.left) - 12).toFixed(1)}px,${(a.top + a.height / 2).toFixed(1)}px,0) translate(-100%,-50%)`;
-    brk.month.style.transform = `translate3d(${(b.right + 10).toFixed(1)}px,${(b.top + b.height / 2).toFixed(1)}px,0) translate(0,-50%)`;
-    const c = pers[0].getBoundingClientRect();
-    brk.per.style.transform = `translate3d(${(Math.min(c.left, plateA.left) - 12).toFixed(1)}px,${(c.top + c.height / 2).toFixed(1)}px,0) translate(-100%,-50%)`;
-  }
-
+  // the table: every agent's row is a column under its stack, and the heads stand left of the first, on the same lines
   const pins = phone ? [] : plates.map((tr, t) => labels.pin(tr, () => v.set(towers[t].x + towers[t].shift, -0.02, 1.3), { ax: 0.5, ay: 0, dy: 10 }));
+  if (!phone) pins.push(labels.pin(heads, () => { const r = plates[0].getBoundingClientRect(); return { x: r.left - 6, y: r.top }; }, { ax: 1, ay: 0 }));
   pins.forEach((p) => { p.on = false; });
 
   ctx.state.compare = { ...(ctx.state.compare || {}), agents: {
@@ -92,7 +90,7 @@ export function create(ctx, el, sec) {
     update(t, dt, u) {
       const k = smooth(span(u, 0, 0.22)) * (1 - smooth(span(u, sec.screens - 0.22, sec.screens)));
       st.k = k;
-      if (phone) rig.mix(rig.stops.row, PHONE, k); else rig.to(rig.stops.row);
+      rig.mix(rig.stops.row, phone ? PHONE : WIDE, k);
 
       // it tours itself once: the laptop shuts, waits, opens. Any press, tap or key in the section ends the tour
       if (!st.toured && !reduced && k > 0.95) {
@@ -125,16 +123,18 @@ export function create(ctx, el, sec) {
           const m = core(c.x);
           if (!m) return;
           const p = labels.project(m.getWorldPosition(v));
-          const mx = (x0 + p.x) / 2, my = Math.max(y0, p.y) + 70;
-          c.path.setAttribute('d', `M${x0.toFixed(1)} ${y0.toFixed(1)}Q${mx.toFixed(1)} ${my.toFixed(1)} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`);
-          c.path.style.opacity = (k * (0.62 - 0.5 * st.closed)).toFixed(3);
+          // it runs under the table, up the lane left of its agent's column, then across to the part: never over a label
+          const plate = plates[towers.indexOf(c.x.tw)].getBoundingClientRect();
+          const under = Math.max(plate.bottom, plates[0].getBoundingClientRect().bottom) + 9, lane = plate.left - 5;
+          c.path.setAttribute('d', `M${x0.toFixed(1)} ${y0.toFixed(1)}V${under.toFixed(1)}H${lane.toFixed(1)}V${p.y.toFixed(1)}H${p.x.toFixed(1)}`);
+          c.path.style.opacity = (k * (0.62 - 0.53 * st.closed)).toFixed(3);
         });
       }
       pins.forEach((p) => { p.el.style.opacity = k.toFixed(3); });
-      if (!phone) { bracket(); Object.values(brk).forEach((b) => { b.style.opacity = k.toFixed(3); }); }
     },
     dispose() {
       sw.removeEventListener('click', onSwitch);
+      window.removeEventListener('resize', seat);
       stopTour();
       pins.forEach((p) => p.drop());
       lamps.forEach((l) => l.dispose());

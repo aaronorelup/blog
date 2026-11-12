@@ -1,7 +1,7 @@
-// Cross-provider links (SPEC 2.7): the lights go down and every link between two owners is an arc from the floor
-// of the thing that reaches out to the floor of the thing it reaches, in the colour of the target's owner. Solid,
-// long dash or short dash by how official it is. An end outside the five lands on a grey block at the row's end.
-// The arcs draw one kind at a time, the kind with most links first, 3 s each, until touched. Hover reads an arc.
+// Cross-provider links (SPEC 2.7): the lights go down and a link between two owners is an arc from the floor of the
+// thing that reaches out to the floor of the thing it reaches, in the colour of the target's owner, solid or dashed
+// by how official it is. The scroll is the tour: "Thinks with", then "Hands work to", one arc at a time with its two
+// names at its ends. Only the current kind is drawn. A chip, a hover or an arrow key holds until 0.15 screens of scroll.
 import { BoxGeometry, Color, Mesh, Vector2, Vector3 } from 'three';
 import { smooth, span } from '../core/clock.js';
 import { $, $$, announce } from '../core/dom.js';
@@ -9,7 +9,8 @@ import { ROW_X } from '../scene/row.js';
 import { FLOOR } from '../scene/stack.js';
 import { owner } from '../worlds/index.js';
 
-const STEP = 3;
+const PLAN = [['thinks', 0.2, 0.75], ['hands', 0.75, 1.3]];      // which kind the scroll reads, from where to where (screens)
+const HOLD = 0.15;
 const SQUEEZE = 2.85 / 4.2;
 const VIEW = { pos: [0, 2.7, 31], look: [0, 2.35, 0], fov: 24, fit: 26.6, cy: 0.27 };
 const PHONE = { pos: [0, 3.1, 30], look: [0, 2.5, 0], fov: 24, fit: 18.4, cy: 0.21 };
@@ -24,19 +25,20 @@ export function create(ctx, el, sec) {
   const items = $$('.ail-ln__item', el);
   const chips = $$('.ail-ln__kind', el);
   const kinds = chips.map((c) => c.dataset.kind).filter((k) => items.some((li) => li.dataset.kind === k));
-  // strongest first: the kind with the most links leads the tour
-  const tour = [...kinds].sort((a, b) => items.filter((li) => li.dataset.kind === b).length - items.filter((li) => li.dataset.kind === a).length);
   const edgeX = phone ? 8.2 : 11.75;
   const blocks = { you: -edgeX, outside: edgeX };
-  const st = { kind: tour[0], active: -1, hover: -1, touched: false, clock: 0, k: 0, drawn: new Map() };
+  const st = { kind: '', active: -1, pick: null, u: 0, k: 0, drawn: new Map(), pins: [] };
+  const outs = $$('.ail-ln__out', el);
 
   // the grey blocks: whatever is outside the five, and your own computer
-  const blockGeo = new BoxGeometry(0.9, 2.7, 0.9).translate(0, 1.35, 0);
+  // (the block is centred on its own middle: the glass shader lights a slab from its middle outward)
+  const blockGeo = new BoxGeometry(0.9, 2.7, 0.9);
   const blockMesh = Object.fromEntries(Object.entries(blocks).map(([id, x]) => {
     const m = new Mesh(blockGeo, ctx.mats.glass(owner(id), { halfH: 1.35, alpha: 0.92 }));
-    m.position.set(x, 0, 0); m.visible = false; ctx.scene.add(m);
+    m.position.set(x, 1.35, 0); m.visible = false; ctx.scene.add(m);
     return [id, m];
   }));
+  const outPins = phone ? [] : outs.map((node) => { const p = labels.pin(node, new Vector3(blocks[node.dataset.at], 2.82, 0), { ax: node.dataset.at === 'you' ? 0 : 1, ay: 1, dx: node.dataset.at === 'you' ? -22 : 22 }); p.on = false; return p; });
 
   // one arc per link. Its ends sit on the floors' side faces that look at each other, spread in depth when several share a floor
   const yAt = (id, f) => { const tw = row.tower(id); return tw ? tw.floors[f - 1].y + tw.lift : FLOOR.h / 2 + (FLOOR.n - f) * (FLOOR.h + FLOOR.gap0); };
@@ -68,41 +70,51 @@ export function create(ctx, el, sec) {
     const d = li.dataset;
     const x = { li, n, kind: d.kind, ...ends[n], from: new Vector3(), to: new Vector3(), base: new Color(NIGHT[d.to] || NIGHT.outside) };
     place(x);
-    x.arc = prims.arc(x.from, x.to, { color: NIGHT[d.to] || NIGHT.outside, official: d.official, lift: liftOf(x, n) });
+    x.arc = prims.arc(x.from, x.to, { color: NIGHT[d.to] || NIGHT.outside, official: d.official, lift: liftOf(x, n), dots: false });
     x.arc.show = 0; x.arc.update();
     return x;
   });
   towers.forEach((tw) => { tw.shift = 0; });
+  // each kind's arcs in the order the scroll reads them: links between companies first, hand-offs to your own computer last
+  const lists = Object.fromEntries(kinds.map((k) => [k, arcs.filter((x) => x.kind === k).sort((a, b) => (a.b.id === 'you') - (b.b.id === 'you'))]));
 
   function setKind(k, quiet) {
     st.kind = k;
     chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.kind === k)));
     const row = chips[0] && chips[0].parentElement, on = chips.find((c) => c.dataset.kind === k);
     if (phone && row && on) row.scrollLeft = Math.max(0, on.offsetLeft - row.clientWidth / 2 + on.offsetWidth / 2);
-    const first = arcs.find((x) => x.kind === k);
-    setActive(first ? first.n : -1, quiet);
     arcs.forEach((x) => { if (x.kind === k) st.drawn.set(x.n, 0); });
+    void quiet;
   }
+  // the arc being read: its sentence in the card, its two names at its two ends and the floor's name where it lands
   function setActive(n, quiet) {
     if (n === st.active) return;
     st.active = n;
+    st.pins.forEach((p) => p.drop()); st.pins = [];
     items.forEach((li, k) => li.classList.toggle('is-on', k === n));
+    const x = arcs[n];
+    if (x && !phone) {
+      const [a, b] = $$('.ail-ln__ends .ail-own', x.li), floor = $('.ail-ln__floor', x.li);
+      const dir = Math.sign(x.to.x - x.from.x) || 1;
+      st.pins.push(labels.pin(a, x.from, { ax: dir > 0 ? 1 : 0, ay: 1, dx: -dir * 6, dy: -8 }), labels.pin(b, x.to, { ax: dir > 0 ? 0 : 1, ay: 1, dx: dir * 6, dy: -8 }));
+      if (floor) st.pins.push(labels.pin(floor, x.to, { ax: dir > 0 ? 0 : 1, ay: 0, dx: dir * 6, dy: 8 }));
+    }
     if (!quiet && n >= 0) announce(items[n].textContent.replace(/\s+/g, ' ').trim());
   }
-  const touch = () => { st.touched = true; };
-  const onChip = (e) => { const c = e.target.closest('.ail-ln__kind'); if (c) { touch(); setKind(c.dataset.kind); } };
+  // a visitor's own pick: a kind (its first arc), or one arc. It holds until the scroll has moved 0.15 screens
+  const pick = (kind, n) => { const list = lists[kind] || []; st.pick = { kind, n: n ?? (list[0] ? list[0].n : -1), at: st.u }; };
+  const onChip = (e) => { const c = e.target.closest('.ail-ln__kind'); if (c) pick(c.dataset.kind); };
   const onKey = (e) => {
     if (sec !== ctx.clock.current || !el.contains(document.activeElement)) return;
     const step = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
     if (!step) return;
-    e.preventDefault(); touch();
-    const list = arcs.filter((x) => x.kind === st.kind);
+    e.preventDefault();
+    const list = lists[st.kind] || [];
     const i = list.findIndex((x) => x.n === st.active);
-    setActive(list[(i + step + list.length) % list.length].n);
+    if (list.length) pick(st.kind, list[(i + step + list.length) % list.length].n);
   };
   el.addEventListener('click', onChip);
   window.addEventListener('keydown', onKey);
-  setKind(st.kind, true);
 
   // hover: the arc nearest the pointer, within 14 px, is the one read
   const p2 = new Vector2(), q = new Vector3();
@@ -133,12 +145,17 @@ export function create(ctx, el, sec) {
     drawn: () => arcs.filter((x) => x.arc.line.visible).length,
     dashes: () => arcs.map((x) => ({ n: x.n, official: x.li.dataset.official, dashed: !!x.arc.line.material.isLineDashedMaterial })),
     showAll() { arcs.forEach((x) => st.drawn.set(x.n, 1)); st.all = true; },
-    show(n) { touch(); setKind(arcs[n].kind, true); setActive(n, true); },
+    show(n) { pick(arcs[n].kind, n); },
+    get active() { return st.active; },
+    get kind() { return st.kind; },
   } };
 
   return {
-    stops: [0.6],
+    stops: [0.31, 0.52, 0.7],
+    enter() { outPins.forEach((p) => { p.on = true; }); },
     leave() {
+      outPins.forEach((p) => { p.on = false; p.el.style.opacity = ''; });
+      st.pins.forEach((p) => p.drop()); st.pins = []; st.pick = null; st.kind = '';
       studio.dark = 0;
       delete document.documentElement.dataset.chrome;
       arcs.forEach((x) => { x.arc.show = 0; x.arc.update(); });
@@ -147,8 +164,8 @@ export function create(ctx, el, sec) {
       st.active = -1;
     },
     update(t, dt, u) {
-      const k = smooth(span(u, 0, 0.25)) * (1 - smooth(span(u, sec.screens - 0.25, sec.screens)));
-      st.k = k;
+      const k = smooth(span(u, 0, 0.2)) * (1 - smooth(span(u, 1.3, sec.screens)));
+      st.k = k; st.u = u;
       if (phone) rig.mix(rig.stops.row, PHONE, k); else rig.mix(rig.stops.row, VIEW, k);
       // lights down: the room sweeps dark, a low wash of light keeps the glass and the floor readable
       studio.dark = 0.999 * k; studio.roomX = 0;
@@ -158,16 +175,23 @@ export function create(ctx, el, sec) {
       const night = k > 0.34;
       if (night !== (document.documentElement.dataset.chrome === 'dark')) { if (night) document.documentElement.dataset.chrome = 'dark'; else delete document.documentElement.dataset.chrome; }
 
-      if (!st.touched && !reduced && k > 0.95) {
-        st.clock += dt;
-        if (st.clock > STEP) { st.clock = 0; setKind(tour[(tour.indexOf(st.kind) + 1) % tour.length], true); }
-      }
       if (!phone && !input.touch && input.moved && k > 0.9) {
         const n = nearest(input.px, input.py);
-        if (n >= 0) { touch(); setActive(n); }
+        if (n >= 0 && n !== st.active) pick(st.kind, n);
         ctx.canvas.style.cursor = n >= 0 ? 'pointer' : '';
       }
-      if (st.active < 0 && k > 0.5) setKind(st.kind, true);
+      // the scroll picks the kind and, inside it, the arc: every arc owns an equal share of its kind's stretch
+      if (st.pick && Math.abs(u - st.pick.at) > HOLD) st.pick = null;
+      let kind = st.pick ? st.pick.kind : '', n = st.pick ? st.pick.n : -1;
+      if (!st.pick) {
+        const seg = PLAN.find(([, , to]) => u < to) || PLAN[PLAN.length - 1];
+        const list = lists[seg[0]] || [];
+        kind = seg[0];
+        n = list.length ? list[Math.min(list.length - 1, Math.floor(span(u, seg[1], seg[2]) * list.length))].n : -1;
+      }
+      if (kind !== st.kind) setKind(kind, true);
+      setActive(k > 0.3 ? n : -1, !st.pick);
+      outPins.forEach((p) => { p.el.style.opacity = k.toFixed(3); });
 
       towers.forEach((tw, n) => {
         if (phone) tw.shift = ROW_X[n] * (SQUEEZE - 1) * k;
@@ -181,8 +205,8 @@ export function create(ctx, el, sec) {
         const d = Math.min(1, (st.drawn.get(x.n) ?? (mine ? 0 : 1)) + (reduced ? 1 : dt / 0.9));
         st.drawn.set(x.n, d);
         x.arc.draw = mine ? smooth(d * 1.4 - (x.n % 8) * 0.05) : 1;
-        // the arc being read is brightest, its kind stays readable, the other kinds are a faint web behind
-        x.arc.show = k * (x.n === st.active ? 1 : mine ? 0.5 : 0.09);
+        // only the current kind is drawn: thin at 35 percent, the arc being read full. The other kinds wait behind their chips
+        x.arc.show = k * (x.n === st.active ? 1 : mine ? 0.35 : 0);
         x.arc.color.copy(x.base);
         if (x.n === st.active) x.arc.color.lerp(white, 0.25);
         x.arc.update();
@@ -192,6 +216,7 @@ export function create(ctx, el, sec) {
       el.removeEventListener('click', onChip);
       window.removeEventListener('keydown', onKey);
       arcs.forEach((x) => x.arc.dispose());
+      st.pins.forEach((p) => p.drop()); outPins.forEach((p) => p.drop());
       Object.values(blockMesh).forEach((m) => { ctx.scene.remove(m); m.material.dispose(); });
       blockGeo.dispose();
       if (ctx.state.compare) delete ctx.state.compare.links;

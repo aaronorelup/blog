@@ -1,20 +1,33 @@
 ---
 // The line-up (SPEC 2.3). Text version: a real table, nine layers by five companies, each cell the personal agent's
-// answer in its state, the claim one tap away. 3D page (sections/lineup.js): one floor lit across the five stacks,
-// its name and sentence top left, the nine names as the left axis, the five answers standing under the stacks.
+// answer in its state, the claim one tap away. 3D page (sections/lineup.js): the scroll lights one floor after another
+// across the five stacks, its name and sentence top left, the nine names as the left axis, the five answers under
+// the stacks. Floor 2 adds one lamp a company: does its agent's own voice call tools itself.
 import '../../../../styles/ai-landscape/2026-11-10/compare.css';
 import Fact from '../Fact.astro';
 import { COPY } from '../data/copy.js';
-import { view } from '../data/view.js';
+import { fact, lamp, view } from '../data/view.js';
 
 const KEY = [['solid', COPY.state.released], ['hatch', COPY.state.preview], ['frost', COPY.state.undisclosed], ['dotted', COPY.state.notFound], ['hollow', COPY.state.absent]];
+const SAY = { yes: COPY.architecture.yes, partial: COPY.best.partly, no: COPY.architecture.no, unknown: COPY.state.undisclosed };
+const VOICE = 1, ROUTER = 2;
+// the agent's own voice (the entry that names its surface), never another product's answer under this name
+const voices = Object.fromEntries(view.providers.map((p) => {
+  const all = view.data.providers[p.id].voice.conversation;
+  const own = all.find((v) => (v.surfaceRefs || []).includes(p.agent.id)) || all.find((v) => v.name === p.stack[VOICE].name) || null;
+  return [p.id, { tools: own ? lamp(own.callsTools) : 'unknown', list: all.map((v) => ({ name: v.name, fact: fact(v.callsTools.claim) || fact(v.claim) })) }];
+}));
+const NOTE = { [VOICE]: COPY.lineup.voiceActs, [ROUTER]: COPY.lineup.stands };
 ---
-<section id="line-up" class="ail-sec ail-lu" data-sec="lineup" data-screens="1.4" data-land="0.3" data-rail={COPY.frame.scope} aria-labelledby="line-up-title">
+<section id="line-up" class="ail-sec ail-lu" data-sec="lineup" data-screens="2" data-land="0.2" data-rail={COPY.lineup.title} aria-labelledby="line-up-title">
   <div class="ail-stage">
-    <h2 id="line-up-title" class="ail-lu__title ail-title">{COPY.frame.scope}</h2>
+    <h2 id="line-up-title" class="ail-lu__title ail-title">{COPY.lineup.title}</h2>
     <div class="ail-lu__now">
       {view.layers.map((l, i) => (
-        <p class="ail-lu__say" data-i={i}><span class="ail-lu__head"><span class="ail-label">{l.n}</span> <span class="ail-title">{l.name}</span></span> <span class="ail-sentence">{l.sentence}</span></p>
+        <p class="ail-lu__say" data-i={i}>
+          <span class="ail-lu__head"><span class="ail-label">{l.n}</span> <span class="ail-title">{l.name}</span></span> <span class="ail-sentence">{l.sentence}</span>
+          {NOTE[i] && <span class="ail-lu__note ail-label">{i === VOICE && <span class="ail-lampx" data-v="yes" aria-hidden="true"></span>}{NOTE[i]}</span>}
+        </p>
       ))}
     </div>
     <div class="ail-lu__wrap">
@@ -28,20 +41,28 @@ const KEY = [['solid', COPY.state.released], ['hatch', COPY.state.preview], ['fr
               <th scope="row" class="ail-lu__th">
                 <button type="button" class="ail-lu__layer ail-label" data-i={i}><span class="ail-lu__tip"><span class="ail-lu__k">{l.n}</span> {l.name}</span></button>
                 <span class="ail-lu__sent">{l.sentence}</span>
+                {NOTE[i] && <span class="ail-lu__sent ail-lu__tnote">{i === VOICE && <span class="ail-lampx" data-v="yes" aria-hidden="true"></span>}{NOTE[i]}</span>}
               </th>
               {view.providers.map((p) => {
                 const c = p.stack[i];
+                const v = i === VOICE ? voices[p.id] : null;
                 return (
                   <td class="ail-lu__cell" data-p={p.id} data-state={c.state} data-guest={c.guests.join(' ') || undefined}>
                     <details class="ail-lu__d" name="ail-lu">
                       <summary class="ail-lu__a">
                         <span class="ail-lu__who ail-label">{p.name}</span>
-                        <span class="ail-lu__v"><span class="ail-sw" data-state={c.state} aria-hidden="true"></span><span class="ail-lu__ans">{c.name || c.word}</span>{c.tag && c.fact.status !== p.agent.status && <span class="ail-tag" data-status={c.fact.status}>{c.tag}</span>}</span>
+                        <span class="ail-lu__v"><span class="ail-sw" data-state={c.state} aria-hidden="true"></span><span class="ail-vh">{c.word} </span><span class="ail-lu__ans">{c.name || c.word}</span>{c.tag && c.fact.status !== p.agent.status && <span class="ail-tag" data-status={c.fact.status}>{c.tag}</span>}</span>
+                        {v && <span class="ail-lu__lamp"><span class="ail-lampx" data-v={v.tools} aria-hidden="true"></span><span class="ail-vh">{COPY.lineup.voiceActs}: {SAY[v.tools]}</span></span>}
                       </summary>
                       <div class="ail-lu__more ail-card">
                         {c.fact ? <p><Fact fact={c.fact} tag={false} /></p> : <p><span class="ail-label">{c.word}</span> {c.reason}</p>}
                         {c.parts.length > 0 && (
                           <p class="ail-chips">{c.parts.map((q) => <span class="ail-own" data-owner={q.owner} data-status={q.status} data-official={q.official}>{q.name}</span>)}</p>
+                        )}
+                        {v && (
+                          <ul class="ail-lu__voices">
+                            {v.list.map((x) => <li><b>{x.name}</b> <Fact fact={x.fact} full tag={false}>{x.fact.short}</Fact></li>)}
+                          </ul>
                         )}
                       </div>
                     </details>
