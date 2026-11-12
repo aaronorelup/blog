@@ -180,7 +180,7 @@ folder leaves the fallback; a chunk that fails to load leaves it too, and the ne
 
 | Attribute | |
 |---|---|
-| `name="synthid"` | the demo: the folder under `demos/` |
+| `name="synthid"` | the demo: the folder under `demos/` (`synthid`, `cf`, `goobie-lab`) |
 | `part="tournament"` | which part of it to mount; an unknown part leaves the fallback |
 | `data-slug="…"` | `cf`'s `count` only: the post whose reads it counts (default: the page's own slug) |
 
@@ -198,8 +198,24 @@ The demos:
   only on aaronorelup.com), masks the address until shown, and walks the visit through the post's funnel; `count` is
   the post's live reader counter from `/api/reads` (`worker/reads/`), one read per browser per day after a few
   seconds in view, never from an automated browser.
+- **`goobie-lab`** (`three-ways-to-search-my-blog`, AO-083): three ways to give an AI model the blog, on
+  recorded runs (`runs/*.json`, written by `scripts/eval/lab/record.mjs`, checked by the never-publish rule on each
+  string decoded and on the raw text, and by the links rule for any draft or unlisted post's slug). Parts:
+  `windows` (the three side by side: what each run saw of the blog, its tokens, time and cost), `context` (every post
+  in one cached prompt: question picker, window meter, the cold first question, a live growth slider), `rag` (the
+  nearest chunks with their scores and a live k slider) and `agent` (the model's tool calls turn by turn, each one
+  re-runnable live on the site's own `/ask/manifest.json`, packs and `/rss.xml` through `src/lib/goobie-lab/`, and a
+  playground for the reader's own words, searched as plain text). The model's words are only ever replayed: no part
+  calls a model or the Worker. A recorded call runs again first on the posts it searched (so "Same as the recorded
+  run" checks the recording, whatever was published since, this post included), then on every post listed today.
+  The weight: the parts mount as the post connects, like the other demos, and `windows`, at the top, needs all three
+  run files, so the post loads about 75 KB gzipped of demo code and runs (`agent.json` and `rag.json` 30 KB each)
+  soon after it opens; no budget measures demos. The first live run then fetches `/ask/manifest.json`, its pack
+  and `/rss.xml`, about 380 KB gzipped at 76 posts, growing with the blog. A live run leaves the live notebook out, as
+  the recording did, and the demo's foot says so under every part.
 
-Behaviours: demo-synthid-1 to demo-synthid-5, demo-cf-1, demo-cf-2. Used by 2 posts (`INVENTORY.md`).
+Behaviours: demo-synthid-1 to demo-synthid-5, demo-cf-1, demo-cf-2, demo-lab-1 to demo-lab-7. Used by 3 posts
+(`INVENTORY.md`).
 
 ## <ao-diff>
 

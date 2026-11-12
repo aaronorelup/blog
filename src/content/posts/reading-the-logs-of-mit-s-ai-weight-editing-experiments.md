@@ -5,15 +5,13 @@ summary: "An MIT team showed an AI reading and rewriting the weights of other ne
 date: 2026-11-04
 topic: "learning"
 preview:
-  verdict: "Real, but oversold"
-  takeaway: "The experiments are real and fully logged. Most of the edits are hand-wired rules or one bug fix, not an AI reading weights the way the headlines say."
-  points:
-    - "The 7.9% to 48.1% math jump came from fixing a looping bug. On a model that didn't loop, no edit helped."
-    - "The car fix that changed 3.5% of the weights comes down to about 50 hand-picked numbers."
-    - "Reading raw weights with no tools only worked on tiny networks, up to 172,000 weights."
+  verdict: "First take, since retracted"
+  takeaway: "What I concluded from the logs before I made a film of the experiments. Watching the film changed my mind about most of it."
   image: "/media/previews/reading-the-logs-of-mit-s-ai-weight-editing-experiments.webp"
   alt: "Heatmaps of four trained game networks' first-layer weights: a paddle row in Breakout, a paddle column in Pong, a maze in Pac-Man, road lanes in Freeway"
 ---
+
+**Update, November 11.** I second-guessed what's below, so I made [a 49-minute film of these experiments from the AI's side](/ledger/a-film-of-mit-s-ai-weight-editing-experiments-from-the-ai-s-side/). After watching it I changed my mind about pretty much all of it. This post is what I concluded before, left as I wrote it. Watch the film and come to your own conclusion.
 
 I had Claude go through the full logs of a new MIT study where GPT-6 Astra, OpenAI's newest model, read and rewrote the weights of other neural networks. Weights are the numbers inside an AI model, and normally only training changes them. **The results are real, but most are smaller than they sound.** The edits are mostly rules wired in by hand or one bug fix, and reading raw weights with no tools only worked on tiny networks.
 

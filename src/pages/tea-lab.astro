@@ -1,0 +1,41 @@
+---
+// The hero lab (/tea-lab/): the tea room's real hero and rail over empty chapter heads, so the 3D hero runs alone and
+// loads fast; no rail script, so /tea/'s own scripts stay inlined. Development only and temporary: noindex, linked
+// from nowhere, deleted once the hero's final models land (docs/TEA_HERO.md), so its own few words are not in
+// src/data/tea.js; the counter is /tea/'s, from the same helpers. ?manifest=<file>.json loads /tea/hero/<file>.json.
+import '../styles/tea/tea.css';
+import Head from '../components/chrome/Head.astro';
+import TeaChapter from '../components/tea/TeaChapter.astro';
+import TeaHero from '../components/tea/TeaHero.astro';
+import TeaRail from '../components/tea/TeaRail.astro';
+import { COURSES } from '../data/courses.js';
+import { CHAPTERS, COPY } from '../data/tea.js';
+import { listedPosts, projects } from '../lib/content.js';
+import { projectsPage } from '../lib/projects.js';
+import { counterLine } from '../lib/tea.js';
+
+const posts = await listedPosts();
+const { sections } = projectsPage(await projects(), posts);
+const counter = counterLine({ posts: posts.length, projects: sections.reduce((n, s) => n + s.cards.length, 0),
+  courses: COURSES.length }, COPY.counter);
+---
+
+<!doctype html>
+<html lang="en" class="tea-root">
+  <head><Head title="Tea room hero lab" description="The tea room hero on its own." noindex={true} /></head>
+  <body class="tea">
+    <TeaHero counter={counter} />
+    <script is:inline>
+      (function () {
+        var m = new URLSearchParams(location.search).get('manifest');
+        if (m && /^[\w-]+(\/[\w-]+)*\.json$/.test(m)) document.querySelector('[data-tea-stage]').dataset.manifest = '/tea/hero/' + m;
+      })();
+    </script>
+    <div class="tea-frame">
+      <TeaRail />
+      <main class="tea-main" id="chapters" tabindex="-1">
+        {CHAPTERS.map((c) => <TeaChapter id={c.id}><p>Nothing here in the lab.</p></TeaChapter>)}
+      </main>
+    </div>
+  </body>
+</html>

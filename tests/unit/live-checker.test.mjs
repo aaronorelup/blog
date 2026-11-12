@@ -45,6 +45,11 @@ function seed() {
   put('src/data/media-manifest.json', '{}');
   put('src/data/never-publish.json', JSON.stringify([hash('Zorblax')]));
   put('public/_redirects', '');
+  // A demo's recorded runs: a never-publish term at the start of a line of an answer, an unlisted post and a draft in
+  // its map.
+  put('src/content/posts/not-yet.md', '---\nid: "AO-996"\ntitle: "Not yet"\nsummary: "s"\ndate: 2026-11-01\ndraft: true\n---\n');
+  put('src/elements/ao-demo/demos/seeded/runs/run.json', `${JSON.stringify({ posts: [[998, 'hidden', 'Hidden'], [996, 'not-yet', 'Not yet']],
+    answer: 'First line.\nZorblax at a line start.' })}\n`);
   return root;
 }
 
@@ -73,6 +78,14 @@ test('the same breakage elsewhere fails each rule at its level', () => {
     assert.deepEqual(rulesFailing(true, file), new Set(), file);
     assert.equal(rulesFailing(false, file).size, 1, file);
   }
+});
+
+test("a demo's recorded runs fail the deploy on a never-publish term, even after a line break, an unlisted post and a draft", () => {
+  const file = 'src/elements/ao-demo/demos/seeded/runs/run.json';
+  assert.deepEqual(rulesFailing(true, file), new Set(['never-publish', 'links']));
+  assert.deepEqual(runChecks({ root, deploy: true }).filter((i) => i.rule === 'links' && i.file === file).map((i) => i.message).sort(), [
+    '"hidden" is unlisted: a demo\'s recorded runs never name it (record them again)',
+    '"not-yet" is a draft: a demo\'s recorded runs never name it (record them again)']);
 });
 
 test("a fleet page's video under public/labs/teardown/ stays in git", () => {

@@ -10,7 +10,7 @@ preview:
   verdict: "Whole blog beat snippets"
   takeaway: "RAG Goobie now reads every post on my ledger in full for each question. A cache keeps that near $0.002, and answers got 80% of the key facts, up from 63%."
   points:
-    - "In 2 of 80 test answers RAG Goobie spoke as me. A tune-up is fixing that now."
+    - "In 2 of 80 test answers RAG Goobie spoke as me. A tune-up meant to fix that didn't pass its tests."
     - "A question that misses the cache costs up to $0.085. A $2 daily cap makes the worst case an outage, not a bill."
     - "On 30 harder unseen questions, the new version scored 5.4 points under the main test, 0.4 past the 5 allowed."
   image: "/media/previews/how-rag-goobie-works.webp"
@@ -42,7 +42,8 @@ answer from what turned up. A token is the unit these models count text in, a wo
 - **The new version passed the main test and missed one bar on a blind test by 0.4 points.** Another Claude agent
   wrote those 30 questions. They were harder for the old version too, so after an independent check the new
   version shipped.
-- **There are still slips.** In 2 of 80 test answers, RAG Goobie spoke as me. A tune-up is fixing that now.
+- **There are still slips.** In 2 of 80 test answers, RAG Goobie spoke as me. A tune-up meant to fix that didn't
+  pass its tests, so it isn't live.
 
 <ao-compare cols="2" aspect="1170/1090">
 <figure><img src="/media/how-rag-goobie-works/working-phone.webp" alt="RAG Goobie on a phone, working on the question Is renting a cloud GPU worth it?: ticked steps for reading the catalog of 71 posts, picking 7, searching 5 ways and reading all 71 posts in full, then Writing, with the first words of the answer" loading="lazy"><figcaption><b>While RAG Goobie works.</b> <span class="ao-meta">A real answer recorded during testing, when the blog had 71 posts, replayed through the live page, which counted 72 by then.</span></figcaption></figure>
@@ -179,7 +180,7 @@ figure:has(> .rgd){margin-inline:0}
 At peak hours DeepSeek charges $0.30 per million tokens it reads fresh and $0.006 per million from its cache,
 which matches a prompt from its start up to the first thing that changed. A warm question reads about 283,000
 tokens from the cache and a few hundred fresh: $0.0022 at peak, about $0.0011 off-peak. The cache held through
-idle gaps of one and two hours. Longer gaps are still being measured.
+idle gaps of up to eight hours. Longer gaps haven't been measured.
 
 The old Ask cost $0.0006 a question, for about 160 times less text.
 
@@ -266,7 +267,7 @@ and DeepSeek behind it.
 
 In the design tests the cache held through idle gaps of 6, 10, 18 and 37 minutes. On the shipped prompt, about
 283,000 tokens, 99.93% came from the cache at the start, after an hour with no calls, and after a further two
-hours. Gaps of 4 and 8 hours are still running. DeepSeek's docs say an unused cache is cleared "usually within a
+hours. It did the same after gaps of 4 and 8 hours. DeepSeek's docs say an unused cache is cleared "usually within a
 few hours to a few days". A keep-warm call (a dummy question that keeps the cache full) stays unbuilt unless a
 gap empties it.
 
@@ -463,21 +464,23 @@ Both reviewers said ship it, with nothing to fix first.
 
 </details>
 
-<details><summary>What the tune-up is fixing</summary>
+<details><summary>What the tune-up tried to fix</summary>
 
 - The captions inside interactive parts of posts, about 14,000 to 21,000 more tokens in the prompt.
-- One answer said I hadn't written about something that a post does cover. A new rule says to check the posts in
+- One answer said I hadn't written about something that a post does cover. A new rule said to check the posts in
   the hint before saying that.
 - Speaking as me ("my...") in 2 of 80 answers, where the old Ask did it in none, and crediting Claude's sums and
   3D models to me.
 - Pointing at posts by citation number alone, which shows no title on a phone.
-- On a question that tried to make RAG Goobie list hidden pages, a new rule is to say RAG Goobie answers only from
+- On a question that tried to make RAG Goobie list hidden pages, a new rule was to say RAG Goobie answers only from
   published posts, and stop.
-- The judge will see whole posts, judge twice and average, and reject a malformed grade.
+- The judge now sees whole posts, judges twice and averages, and rejects a malformed grade.
 - A fresh blind test, since the 30 have been read now and aren't blind anymore.
 
-Apart from speaking as me, none of these is worse than the old Ask. Still not measured: CPU per question on the
-live site, answer quality past about 304,000 tokens, and the cache after idle gaps longer than two hours.
+The tune-up ran five rounds and the last one failed its tests, so only the judge's changes were kept, and the new
+blind test is written but unopened. Apart from speaking as me, none of these is worse than the old Ask. Still not
+measured: CPU per question on the live site, answer quality past about 304,000 tokens, and the cache after idle
+gaps longer than eight hours.
 
 </details>
 
@@ -495,7 +498,7 @@ The code is in the site's [public repo](https://github.com/aaronorelup/blog), un
 The pieces, in the order a question uses them:
 
 1. **A clean text copy of every post**, split at its headings, each section numbered for citing. Captions
-   included, even inside interactive parts. Mine missed those, and the tune-up is adding them.
+   included, even inside interactive parts. Mine misses those, and the tune-up that added them isn't live.
 2. **Who wrote what, in the text.** Skip it if one person writes everything in one voice.
 3. **One prompt in a fixed order**: rules, every post oldest first, what changes often after, the question last.
 4. **A model that can read a lot at once and has a prompt cache.** Send no visitor id with the request, since

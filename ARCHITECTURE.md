@@ -42,12 +42,17 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
      AO-057's demo uses.
    - `/api/stats` → `worker/stats/index.js` (D1 `DB`, limiter `STATS_LIMIT`). One stored snapshot; 503 until it
      exists.
-   - `/api/session` → `worker/session/serve.js`: whether Ask is on; a Turnstile solve becomes a 30-minute Ask token.
+   - `/api/session` → `worker/session/serve.js`: whether Ask (and Ask by voice) is on; a Turnstile solve becomes a
+     30-minute Ask token.
    - `/api/search` → `worker/search/serve.js` (`AI`, `SEARCH_INDEX`, limiters `SEARCH_ALL` and `SEARCH_Q`, the Cache
      API, D1): no token; the nearest chunks of the query.
    - `/api/ask` → `worker/ask/serve.js` (RAG Goobie, `docs/ASK.md`: limiters `ASK_LIMIT` keyed on the session and
      `ASK_ALL`, D1's answer cache and caps, a planner call and an answer call to DeepSeek at most, the build's
-     `/ask/*` through `ASSETS`, an event stream). Any other `/api/` path is 404, a wrong method 405.
+     `/ask/*` through `ASSETS`, an event stream).
+   - `/api/ask/hear` → `worker/ask/hear.js` (Ask by voice: the Ask token, limiters `HEAR_LIMIT` keyed on the session
+     and `HEAR_ALL`, the `ask_voice` switch, the `hear_daily` cap, one Workers AI Whisper call): a recording becomes
+     `{ text }`, which the page asks through `/api/ask`; neither is stored. Any other `/api/` path is 404, a wrong
+     method 405.
    - `/api/lantern` → `worker/lantern.js`: a 302 to the `LANTERN_URL` secret, the homepage's lantern door (the
      address is in no file of this public repo).
    - anything else → `worker/media/serve.js`: R2 `MEDIA` (bucket `aaronorelup-site-media`) first, with byte ranges
@@ -88,6 +93,7 @@ grandfather list that only shrinks (`scripts/check/grandfathered.mjs`).
 |---|---|---|
 | `/ledger/<slug>/`, `/ledger/<slug>/notes/` | `src/pages/ledger/[slug].astro`, `[slug]/notes.astro` | readers, the homepage overlay (it fetches the page and mounts its view, `article[data-post-article][data-panel-view]`) |
 | `/og/<slug>.jpg` | `src/pages/og/[slug].jpg.js`, drawn by `src/lib/og/` | X and other link previews: each listed post's `og:image`, `?v=<h8>` |
+| `/og/page/<name>.jpg` | `src/pages/og/page/[name].jpg.js`, drawn by `src/lib/og/` | the same for each listed page that isn't a post or a notes page (`src/lib/og/pages.js`), `?v=<h8>` |
 | `/ledger/previews.json` | `src/pages/ledger/previews.json.js` | `src/scripts/cards/data.js` (the hover card, search results, Goobie's related posts), `worker/reads/serve.js`, `worker/stats/index.js` |
 | `/pagefind/` | `scripts/build/pagefind.mjs` (Pagefind's Node API over `dist/ledger/**/*.html`) | `src/scripts/search/keyword.js`: only what carries `data-pagefind-body` (a listed post's or notes page's text) is in it |
 | `/stats-pages.txt` | `scripts/build/stats-pages.mjs` | `worker/stats/index.js`: the only pages `/stats` may name |
@@ -138,13 +144,14 @@ fails the build, or only warns in a live notebook.
 | `docs/WORKER.md`, `worker/CLAUDE.md` | the Worker: routes and their answers, crons, bindings, secrets, tables, flags; its rules |
 | `docs/COMPONENTS.md` | the post components: each `<ao-*>`'s markup, attributes and behaviours |
 | `docs/ASK.md` | RAG Goobie: how an answer is made, its caps and costs, the eval and its gates |
+| `docs/TEA_HERO.md` | the tea room's 3D hero: the first picture on every path, its layouts, the manifest, the loader, the tools, the steps to the final assets |
 | `ARCHITECTURE.md` | this map |
 | `astro.config.mjs` | site, `compressHTML: true` (Astro 7's default, `'jsx'`, drops the space between inline elements), integrations, the unified Markdown pipeline and its plugins, CSS minified by esbuild (Vite 8's Lightning CSS rewrites the tokens' `rgba()` colours, which the `/stats` canvas parses), the main-only guard |
 | `wrangler.jsonc` | the Worker `blog`, every binding, `run_worker_first`, both crons, the vars (secrets by name only) |
 | `.dev.vars.example` | the local test keys for `wrangler dev` (copy to the git-ignored `.dev.vars`) |
 | `.node-version` | 22.23.4, the Node Workers Builds uses. `astro` stays pinned at 7.4.1, the last release that runs on agent boxes' 22.22.0 (CLAUDE.md, Commands) |
 | `package.json`, `package-lock.json`, `tsconfig.json`, `src/env.d.ts`, `.gitignore` | the scripts and dependencies, TypeScript for the `.ts` schemas and Astro's types, what git leaves out |
-| `public/_headers` | noindex for two hidden pages; a year, `immutable`, for the content-hashed `/_astro/*` and `/fonts/*`; a day for `/media/icons/*` |
+| `public/_headers` | noindex for two hidden pages; a year, `immutable`, for the content-hashed `/_astro/*` and `/fonts/*`; five minutes for `/pagefind/*`; a day for `/media/icons/*` |
 | `archive/2026-10-29-before-rework/` | every post as it was before the rework (read only) |
 
 ### `src/content/` and `src/data/`
@@ -162,7 +169,8 @@ fails the build, or only warns in a live notebook.
 | `src/data/picks.js` | `START_HERE` (the ledger's five Start here posts) and `REEL` |
 | `src/data/limits.js` | every text cap and target, preview media, icon, project picture and og sizes |
 | `src/data/exempt.js` | `LIVE_NOTEBOOKS`, `isLive()`, `isLivePath()`: what no rule may fail or touch (and the project AO-073's file doesn't name); `HELD`, `isHeld()`: posts waiting for Aaron's own rewrite (AO-028), which the content rules only warn about |
-| `src/data/site.js` | `NAV` (key, href, label, overlay) and `SOCIAL`: the chrome's links; a NAV key is also a view's name |
+| `src/data/site.js` | `NAV` (key, href, label, overlay) and `SOCIAL`: the chrome's links; a NAV key is also a view's name. `OWNER`: the name and the About page that structured data names |
+| `src/data/pages.js` | `PAGES`: the `<title>` and description of `/`, `/ledger/`, `/projects/`, `/about/`, `/research/` and `/now/`, by address, read by the page and by its share card; `nowTitle()` for `/now/<date>/` |
 | `src/data/fonts.json` | written by `scripts/tools/fonts.mjs`: the font preload, each self-hosted face's range, the code points no family has |
 | `src/data/banned-phrases.js` | the phrases and dead links WRITING.md bans (plain: nothing private) |
 | `src/data/never-publish.json` | salted SHA-256 of the private never-publish terms (`npm run never-publish:hash`) |
@@ -182,26 +190,32 @@ fails the build, or only warns in a live notebook.
 | `src/lib/glyphs.js` | the line drawings: a topic's glyph (where a post has no icon) and the search lens; Astro and the browser read it |
 | `src/lib/text/rules.js`, `hash.js` | what a reader reads (shared with the browser's read-aloud), content hashes |
 | `src/lib/text/minutes.js` | reading minutes from `text.words` (the post header's, the card's and the ledger row's) |
-| `src/lib/og/` | `card.js` draws a share card with sharp (1200×630 JPEG: icon or glyph, id and topic, the title in Zen Maru Gothic from `src/assets/fonts/`, the verdict); `image.js` names it by hash, keeps it in `node_modules/.astro/og/`, and fails the build on a card that can't be drawn, except a live notebook's, which falls back to `public/og/default.jpg` |
+| `src/lib/og/` | `card.js` draws a share card with sharp (1200×630 JPEG: icon or glyph, id and topic, the title in Zen Maru Gothic from `src/assets/fonts/`, the verdict); `image.js` names it by hash, keeps it in `node_modules/.astro/og/`, and fails the build on a card that can't be drawn, except a live notebook's, which falls back to `public/og/default.jpg`; `pages.js` lists the listed pages that aren't posts or notes pages (`data/pages.js`, each Now snapshot and research document) and gives each the same card with its own title and, under it, its description (`pageImage`), which both layouts ask for by the page's address |
 | `src/lib/build.js` | `COMMIT`, the commit a build is made from (the `ao-build` meta) |
+| `src/lib/jsonld.js` | schema.org data for `chrome/Head`: `blogPosting` (a listed post: headline, description, datePublished, url, image, author `OWNER`; no author on a `voice: claude` post, whose page says Claude wrote it), `webSite` (the homepage), `scriptText` (the JSON with every `<` escaped) |
 | `src/lib/read/` | `posts.js` (`recordable`: the posts recorded, listed and never a live notebook; `ranked`, the cron's order), `sections.js` (a post → sections and their hashes), `speak.js` (the copy the voice reads: numbers, money, units, dates, clock times and lengths spelled out, with its map back to the screen), `align.js` (the voice's character times → words). `speak.js` and `align.js` run in the Worker too |
 | `src/lib/search/chunks.js`, `docs.js` | a listed post or its notes → search chunks (the short version, then each h2 section, at most 1,500 characters) and the manifest; `docs.js` reads the build's posts once |
+| `src/lib/goobie-lab/` | the Goobie lab's pure half, shared by `scripts/eval/lab/` and the `goobie-lab` demo: `corpus.js` (every listed post but the live notebooks, in full, with its date and projects, from `/ask/manifest.json`, its packs and `/rss.xml`, the project labels mapped by the caller so `src/data/taxonomy.js` stays out of the page; `within()`, the same corpus on a set of slugs), `tools.js` (the agent's `list_posts`, `grep` and `read`, and their schema) |
 | `src/lib/ask/` | RAG Goobie's build: `caps.js` (every cap, `est()`), `words.js` (every prompt word), `price.js` (DeepSeek's prices, peak, cost, worst), `docs.js` (listed posts and notes, the one astro:content reader here), `corpus.js` (numbering, cuts), `blocks.js` (doc blocks, the catalog, fragments), `packs.js` (whole or split, pinned ranges), `manifest.js` (`assemble()`: files and manifest), `build.js` (`askBuild()`, once a build) |
 | `src/lib/lore*.js` | the lore course's data and drawings |
 | `src/lib/projects.js` | the projects page's data: `SECTIONS`, order, state chips, needs glyphs, pictures or icons, `DERIVED` (the course's live lesson count); a card linking an unlisted post fails the build |
 | `src/pages/index.astro` + `src/layouts/Home.astro` | the homepage: the tea house scene's markup (classes from `home.css`, no inline style), `ModeToggle`, and its overlay frame (`PanelChrome` around an empty `[data-panel-host]`); `Home` links `site.css`, then `home.css` |
 | `src/pages/{ledger,projects,about,courses,stats,404}.astro`, `ledger/[slug].astro`, `ledger/[slug]/notes.astro`, `now/index.astro`, `now/[date].astro` | the panel pages |
-| `src/pages/og/[slug].jpg.js` | each listed post's share card (`src/lib/og/`) |
+| `src/pages/og/[slug].jpg.js`, `og/page/[name].jpg.js` | each listed post's share card, and each other listed page's (`src/lib/og/`) |
 | `src/pages/courses/**`, `src/pages/research/**` | the course and research pages; `research/[slug].md.js` writes each document's raw Markdown copy for agents |
 | `src/pages/search/` | `manifest.json.js`, `docs/[doc].json.js`: search's build files |
 | `src/pages/ask/` | `manifest.json.js`, `[file].txt.js`: RAG Goobie's build files |
 | `src/pages/read/` | `index.json.js`, `[slug].json.js`: read-aloud's build files |
 | `src/layouts/PanelPage.astro` | every panel page: `site.css`, `chrome/Head` (`published`: shared as an article), `ModeToggle`, `PanelChrome` (`active` lights the nav, `view` names the view), and `mountView` on its `[data-panel-view]` |
-| `src/components/chrome/` | `Head` (share tags, `ao-build` meta, font preload, the pre-paint mode script; both layouts), `PanelChrome` (header, nav, scroller, footer; `data-active-view`, and `data-panel-view` on a standalone page's view wrapper), `ModeToggle`, `Glyph` |
+| `src/components/chrome/` | `Head` (share tags, `ao-build` meta, font preload, the pre-paint mode script, one JSON-LD block on a listed post and on the homepage; both layouts), `PanelChrome` (header, nav, scroller, footer; `data-active-view`, and `data-panel-view` on a standalone page's view wrapper), `ModeToggle`, `Glyph` |
 | `src/components/ledger/` | `LedgerView` (`/ledger/`), `SearchBox` (the box and its Search \| Ask RAG Goobie switch, the line under it), `StartHere`, `PostCard` (icon or glyph, title, stamp: Start here's and a post's Read next), `Chips` (topic and project counts, real links `?topic=`), `LedgerRow` (icon or glyph, title link with `data-ledger-entry`, summary, meta, the stamp's `<details>` short version) |
 | `src/components/{about,courses,research,now}/` | `AboutView`; `CoursesView`, `LessonList`, `Coin`; `ResearchView`; `NowView` (a snapshot, then History) |
+| `src/pages/tea/index.astro`, `src/layouts/TeaPage.astro`, `src/components/tea/` | the tea room (`/tea/`): the whole site on one chaptered page, every list from the main site's own helpers (`listedPosts`, `START_HERE`, `projectsPage`, `COURSES`, `nowSnapshots`, `research`) and every item linking to its main-site page. `TeaPage` (the shared `Head` read through `teaSeo()`, `styles/tea/tea.css`, `scripts/tea/rail.js`; its head's mark `data-tea-arrive` lands an address with a chapter at once), `TeaHero` (the 3D hero's markup contract: `[data-tea-hero]` > `.tea-hero-pin` > `hero/Stage` + `.tea-hero-box`), `TeaRail`, `TeaChapter`, `TeaBreath`, one component per chapter; About renders `about/AboutView` itself. `hero/` belongs to the 3D hero |
+| `src/data/tea.js`, `src/lib/tea.js` | the tea room's copy and its SEO switch (`TEA_SEO`, `teaSeo()` → `{ noindex, canonical, inSitemap }`, read only by `TeaPage` and `sitemap.xml.js`; shipped `'pending'`, which is what any new page gets); its pure shaping (`ledgerByTopic`, `postRow`, `loreHub`, `projectHref`, `counterLine`, `roman`) |
+| `src/components/tea/hero/Stage.astro`, `public/tea/hero/` | the tea room's 3D hero (`docs/TEA_HERO.md`): the stage (the poster of the scene's opening frame, the first picture on every path, then the canvas) and `boot.js`; the scene's manifest, posters, picture layers and stand-in models |
+| `src/pages/tea-lab.astro` | the hero lab (`/tea-lab/`, noindex, linked from nowhere, in no sitemap, feed or index): the real hero over empty chapters, `?manifest=`. Temporary: deleted once the hero's final models land |
 | `src/components/projects/` | `ProjectsView` (`/projects`), `JumpRow`, `Highlights` (the reel from `picks.js REEL` and the cards marked `highlight`), `ProjectSection`, `ProjectCard`, `NeedsGlyph` |
-| `src/components/post/` | `PostView` (the article: `data-post-article`, `data-panel-view` `post` or `notes`, `data-slug`), `PostHeader` (icon or glyph, id · date · minutes, topic and project chips, title `data-r=t`, summary `data-r=s`, the byline on `voice: claude` pages, `ReadAloud`), `ShortVersion` (`#short`, the post's card; none on an unlisted post), `NotesLink`, `Contents` (4+ h2 or 900+ words), `Related` (three `ledger/PostCard`s), `PostNav`, `ElementStyles`, `ReadAloud` (the Listen button; `data-read-hash` names this version's recording, absent on a post never recorded) |
+| `src/components/post/` | `PostView` (the article: `data-post-article`, `data-panel-view` `post` or `notes`, `data-slug`), `PostHeader` (icon or glyph, id · date · minutes, topic and project chips, title `data-r=t`, summary `data-r=s`, the byline on `voice: claude` pages, `ReadAloud`), `ShortVersion` (`#short`, the post's card; none on an unlisted post), `NotesLink`, `Contents` (4+ h2, or 2+ h2 and 900+ words), `Related` (three `ledger/PostCard`s), `PostNav`, `ElementStyles`, `ReadAloud` (the Listen button; `data-read-hash` names this version's recording, absent on a post never recorded) |
 | `src/components/lore/` | the lore course |
 
 ### `src/scripts/` and `src/styles/` (the browser)
@@ -211,10 +225,10 @@ fails the build, or only warns in a live notebook.
 | `src/elements/` | the post components (`src/elements/CLAUDE.md`), one folder per tag (`ao-x/element.js`, `ao-x/style.css`): `enhance.js` (viewer hook, frames, `upgrade`), `registry.js` (a tag's `element.js` loads when a post has it), `_core/` (one player at a time, the now-playing bar, the viewer hook; the viewer and its zoom load on the first open), `_lib/` (times, tables, `h()`) |
 | `src/scripts/lazy.js` | `lazy(load, fallbackUrl)`: every dynamic import; a lost chunk (a deploy since the page loaded) navigates to `fallbackUrl` or reloads once |
 | `src/styles/elements.css` | the viewer, the now-playing bar, `.visually-hidden`, the components' caption convention: part of `site.css`; an element's own CSS is inlined into its articles by `components/post/ElementStyles.astro` |
-| `src/elements/ao-demo/demos/<name>/` | the two `<ao-demo>` demos, `synthid` (AO-040: `model.js` the watermark maths, `ui.js`, a file per part, `index.js` mounts) and `cf` (AO-057), each an `index.js` exporting `mount(host, part)` and a `style.css` |
+| `src/elements/ao-demo/demos/<name>/` | the three `<ao-demo>` demos, `synthid` (AO-040: `model.js` the watermark maths, `ui.js`, a file per part, `index.js` mounts), `cf` (AO-057) and `goobie-lab` (AO-083: `ui.js`, a file per part, `live.js` the agent's tools on the site's own files, `runs/*.json` the recorded runs), each an `index.js` exporting `mount(host, part)` and a `style.css` |
 | `src/scripts/cards/` + `src/styles/cards.css` | the hover card: `data.js` (`previews.json`, fetched once and shared), `render.js` (the element and where it goes; the icon when a card has no still; a link's own `data-card-line`), `hover.js` (when: listeners, timings, media; `stats.astro` and `views/projects.js` import it) |
 | `src/scripts/ledger/` | `filter.js` (the chips: one topic or project, `?topic=` read on load and kept with `replaceState`), `feed.js` (`bindFeedCopy`) |
-| `src/scripts/search/` + `src/styles/search.css` | `box.js` (the box, `/`, the switch), `keyword.js` (Pagefind, on first focus), `semantic.js` (`/api/search`, 400 ms after typing, at most 40 a page), `merge.js` (reciprocal rank, the words half's pages first), `results.js` (rows, `pagePath(slug, kind)` and deep links `?hl=&hs=#heading`), `terms.js`, `ask.js` (Ask RAG Goobie: `/api/session`, Turnstile only when Ask is on, the session in `sessionStorage`, `/api/ask`'s stream), `ask-stream.js` (the stream's events), `ask-trace.js` (the steps and the summary line), `ask-answer.js` (the words typing in, the answer; its `[n]` numbered by post, each link's `data-card-line` naming its passage for the card), `examples.js` (the cycling placeholder) |
+| `src/scripts/search/` + `src/styles/search.css` | `box.js` (the box, `/`, the switch), `keyword.js` (Pagefind, on first focus), `semantic.js` (`/api/search`, 400 ms after typing, at most 40 a page), `merge.js` (reciprocal rank, the words half's pages first), `results.js` (rows, `pagePath(slug, kind)` and deep links `?hl=&hs=#heading`), `terms.js`, `ask.js` (Ask RAG Goobie: `/api/session`, Turnstile only when Ask is on, the session in `sessionStorage`, `/api/ask`'s stream), `ask-stream.js` (the stream's events), `ask-trace.js` (the steps and the summary line), `ask-answer.js` (the words typing in, the answer; its `[n]` numbered by post, each link's `data-card-line` naming its passage for the card), `examples.js` (the cycling placeholder), `hear.js` (Ask by voice: MediaRecorder, 30 s at most, `/api/ask/hear`, loaded on the microphone's first press) |
 | `src/scripts/post/` | `target.js` (`targetOf(root, hash)`: the element a `#fragment` names, from the address, never `:target`), `highlight.js` (marks a deep link's sentence or words in its section, opens its `<details>`, centres it in `#panel-scroll`; loaded only for a `?hl=`/`?hs=` link), `contents.js` (the contents list: open beside the text from 1180 px, the heading read marked by an IntersectionObserver on `#panel-scroll`), `details.js` (opens the `<details>` holding the `#target`) |
 | `src/scripts/views/index.js` | `mountView(root, fallbackUrl)`: imports `./<data-panel-view>.js` (through `lazy`) and runs its `mount(root, fallbackUrl)`; no module, no-op. `PanelPage` calls it, and the homepage overlay on each view it mounts, with the real page as `fallbackUrl`, which the post view hands to `enhance()` for its components' chunks |
 | `src/scripts/views/post.js`, `notes.js` | the post view: `enhance()`, the contents list, folded details, where a link lands once the components drew (after Reload or Back the place kept in `history.state`, for a `?hl=`/`?hs=` link the passage `highlight` marks, else the `#heading`; a place is held while the article grows, until the reader moves), the hover card (mouse only), and the Listen button (`read-aloud/listen.js`); `notes.js` is the same without Listen |
@@ -237,6 +251,8 @@ fails the build, or only warns in a live notebook.
 | `src/styles/ledger.css` | the ledger (`.row-*`, `.chip*`, `.post-card*`, `.start-*`, `.month`, `.ledger-feed*`), on `--pc-*` tokens only |
 | `src/styles/fonts.css`, `public/fonts/` | written by `scripts/tools/fonts.mjs`: Google's own woff2 slices, self-hosted under content-hashed names |
 | `src/styles/{lore,courses}.css` | the course looks |
+| `src/scripts/tea/rail.js`, `src/styles/tea/` | the tea room's one module (the rail's current chapter, a one-time fade under `.tea-js`, none under reduced motion) and its stylesheets (`tea.css` on `tokens.css`, never `site.css`: `cover.css`, `chapters.css`, `sections.css`; `stage.css` is the 3D hero's) |
+| `src/scripts/tea/hero/`, `src/styles/tea/stage.css` | the 3D hero, its own chunks: `boot.js` (after first paint, no reduced motion, Save-Data or small device, WebGL: imports `stage.js`; else the poster stays, `data-3d-off` says why; a page left while the scene loads aborts its loads), `stage.js` (`mount()`: the scene from the manifest, the frame loop, a lost context, reduced motion turned on, `window.__teaHero`, the tools' hook; `data-hero-settled` once the hero changes no layout by itself), `three.js` (three and GLTFLoader through `<ao-model>`'s own dynamic imports, so the shared three chunk keeps its exports and hash: never import from `'three'` here), `pin.js` (`data-3d` only when pinning moves nothing on screen, the `dock` or `flow` layout, the lead, the place kept for a reload), `actors`, `tracks`, `camera`, `backdrop`, `lights`, `crt`, `motes`, `deform`, `input`, `manifest`; `stage.css`, the stage (one screen on every path) and both pinned layouts, the box where the static layout has it, low on a portrait screen |
 
 ### `scripts/` (Node)
 
@@ -245,7 +261,8 @@ fails the build, or only warns in a live notebook.
 | `scripts/check/` | the checker: `index.mjs` (CLI), `run.mjs` (levels), `repo.mjs`, `text.mjs`, one file per rule, `grandfathered.mjs` |
 | `scripts/build/verify-dist.mjs` | at `astro:build:done`: `contracts.mjs` and `ask-dist.mjs` over `dist/`, then the budgets |
 | `scripts/build/ask-dist.mjs` | RAG Goobie's files: listed docs only, sections that resolve, files that round-trip, the caps' sums; prints the mode, sizes, reservation and suggested cap, the pins and the re-gate line |
-| `scripts/eval/` | RAG Goobie's eval (`docs/ASK.md`): `spend.mjs` (the ledger, the only DeepSeek client), `run.mjs` + `client.mjs` (`npm run ask:eval`), `judge.mjs` (full posts, `--passes`) + `judged.mjs` (its file, the passes merged), `report.mjs` (the gates; `--g2`, a round against the baseline on both dev sets) + `flags.mjs` (the hand reading's flags), `compare.mjs` (the hold-out's non-inferiority CI), `packs-compare.mjs`, `scale.mjs` (1,000 posts), `probe.mjs` (eviction, stall), `sections.mjs` |
+| `scripts/eval/` | RAG Goobie's eval (`docs/ASK.md`): `spend.mjs` (the ledger; its `chat()` and the lab's `llm.mjs` are the only DeepSeek clients, every call reserved and settled on it), `run.mjs` + `client.mjs` (`npm run ask:eval`), `judge.mjs` (full posts, `--passes`) + `judged.mjs` (its file, the passes merged), `report.mjs` (the gates; `--g2`, a round against the baseline on both dev sets) + `flags.mjs` (the hand reading's flags), `compare.mjs` (the hold-out's non-inferiority CI), `packs-compare.mjs`, `scale.mjs` (1,000 posts), `probe.mjs` (eviction, stall), `sections.mjs` |
+| `scripts/eval/lab/` | the Goobie lab (never in production): `load.mjs` (the corpus, the in-context pack and the RAG chunks from `dist/`), `llm.mjs` (the live Ask's model and client through the eval's ledger, and the search index's embedding model, whose calls are not on the ledger), `words.mjs` (the one set of rules), `methods.mjs` (in-context, classic RAG, agentic search), `questions.json`, `run.mjs`, `judge.mjs`, `report.mjs`, `record.mjs` (the demo's `runs/*.json`, refusing a never-publish term in any string as it decodes, the live notebook's slug or id, or an IPv4 or IPv6 address) |
 | `scripts/tools/ask-pin.mjs` | `npm run ask:pin`: the build's pack starts into `src/data/ask-packs.json` |
 | `scripts/build/contracts.mjs` | pure checks of the frozen contracts over `dist/` |
 | `scripts/build/stats-pages.mjs`, `dev-stats-fixture.mjs` | `/stats-pages.txt`; `/api/stats` for `astro dev` |
@@ -261,23 +278,24 @@ fails the build, or only warns in a live notebook.
 | `scripts/tools/element-usage.mjs`, `dist-diff.mjs` | every `<ao-*>`, video and iframe per built page (`--diff` for rewrites); two builds compared |
 | `scripts/lib/{secrets,cfapi}.mjs`, `scripts/tools/put-secret.mjs` | `secret(NAME)` from the environment or Infisical; the Cloudflare API client that finds or makes the Worker's resources; `put-secret` sets one Worker secret, never printing it |
 | `scripts/tools/preview-media.mjs` | every resize-to-a-cap job: a post's card still and loop (`PREVIEWS.md`), and with `--out --size --cap` one still (post icons, project pictures; `docs/MEDIA.md`) |
+| `scripts/tools/tea-hero/` | the tea room hero's tools (`docs/TEA_HERO.md`): `shots.mjs` (contact sheets of the scroll), `poster.mjs` (the posters), `silhouettes.mjs` (the actors' overlap and their share behind the title box, per size and scroll), `verify.mjs` (behaviour checks), `standins.mjs`, `paint.mjs` |
 
 ### `worker/` and `tests/`
 
 | Path | What |
 |---|---|
 | `worker/index.js` | `ROUTES` and `CRONS`: the routes and jobs above |
-| `worker/lib/` | `http.js` (json, status, sameOrigin, readJson), `sql.js` (ensure), `flags.js` + `flags.sql` (switches, daily caps), `memo.js` (a read shared for 30 s), `session.js` (Ask tokens), `text.js` (normalize, scrub, sha256), `build-files.js` |
+| `worker/lib/` | `http.js` (json, status, sameOrigin, readBytes, readJson), `sql.js` (ensure), `flags.js` + `flags.sql` (switches, daily caps), `memo.js` (a read shared for 30 s), `session.js` (Ask tokens), `text.js` (normalize, scrub, sha256), `build-files.js` |
 | `worker/media/serve.js` | video, audio, HLS and `/read/*`: R2 first, then the asset, with byte ranges |
 | `worker/reads/` | `serve.js` + `reads.sql`: the reader counter |
 | `worker/stats/` | `index.js` (serve and `runStep`), `shape.js` (pure), `stats.sql`: the traffic snapshot |
 | `worker/session/serve.js` | `GET`, `POST /api/session` |
 | `worker/search/` | `serve.js` (`GET /api/search`), `retrieve.js` (embed and query; `nearest()`, ids only, for Ask), `sync.js` (the index cron), `counts.js` (anonymous counts), `search.sql` |
-| `worker/ask/` | RAG Goobie (`docs/WORKER.md` has each file): `serve.js` (the guards, cache, caps, stream), `run.js` (one question's steps and settle), `plan.js`, `rank.js`, `context.js`, `body.js`, `prompt.js`, `deepseek.js`, `cite.js`, `corpus.js`, `events.js`, `cache.js`, `ask.sql` |
+| `worker/ask/` | RAG Goobie (`docs/WORKER.md` has each file): `serve.js` (the guards, cache, caps, stream), `run.js` (one question's steps and settle), `plan.js`, `rank.js`, `context.js`, `body.js`, `prompt.js`, `deepseek.js`, `cite.js`, `corpus.js`, `events.js`, `cache.js`, `ask.sql`; `hear.js` (`POST /api/ask/hear`, Ask by voice) |
 | `worker/cleanup.js` | the daily sweep of old counts, answers and totals |
 | `worker/lantern.js` | `GET /api/lantern`: the lantern door's redirect to `LANTERN_URL` |
 | `worker/read/` | `step.js` (`read.step`: one post's missing sections a run, then its post file; capped by credit), `voice.js` (the ElevenLabs calls), `read.sql` |
-| `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list), `text.test.mjs` (the extraction on five archived posts), `chunks.test.mjs` (search chunks), `sync.test.mjs` (the index sync), `citations.test.mjs` (RAG Goobie's marks to cites, streamed too), `ask-serve.test.mjs` (`/api/ask` end to end: guards, stream, cache, caps, settle), `ask-build.test.mjs`, `ask-context.test.mjs`, `ask-eval.test.mjs` (the eval's flags, passes, judge message, bootstrap), `ask-price.test.mjs`, `ask-stream.test.mjs`, `ask-scale.test.mjs` (1,000 posts), `ask-fixture.mjs` (a small built blog), `schema.test.mjs` (the posts schema's `voice`; every post through the schema and the strict rules; `STRICT`'s rollout), `search-merge.test.mjs` (the words half first), `budgets.test.mjs`, `contracts.test.mjs` (over the last build), `read.test.mjs` (the spoken copy and its map, alignment, section hashes, the read-aloud cron); `worker-env.mjs` loads a Worker module with its `.sql` and gives an in-memory D1 |
+| `tests/unit/` | `live.test.mjs` (AO-073 through every rule), `live-checker.test.mjs`, `duplicate-ids.test.mjs` (one id on two posts), `never-publish.test.mjs`, `session.test.mjs` (Ask tokens), `media.test.mjs` (byte ranges without a sizes list), `text.test.mjs` (the extraction on five archived posts), `chunks.test.mjs` (search chunks), `sync.test.mjs` (the index sync), `citations.test.mjs` (RAG Goobie's marks to cites, streamed too), `ask-serve.test.mjs` (`/api/ask` end to end: guards, stream, cache, caps, settle), `ask-hear.test.mjs` (`/api/ask/hear`: guards, switch, cap, Whisper's call and errors), `ask-build.test.mjs`, `ask-context.test.mjs`, `ask-eval.test.mjs` (the eval's flags, passes, judge message, bootstrap), `ask-price.test.mjs`, `ask-stream.test.mjs`, `ask-scale.test.mjs` (1,000 posts), `ask-fixture.mjs` (a small built blog), `schema.test.mjs` (the posts schema's `voice`; every post through the schema and the strict rules; `STRICT`'s rollout), `search-merge.test.mjs` (the words half first), `budgets.test.mjs`, `fonts.test.mjs` (`fonts.mjs`'s `misses()`, then the last build), `contracts.test.mjs` (over the last build), `jsonld.test.mjs` (a post's and the homepage's structured data, and its escaping), `read.test.mjs` (the spoken copy and its map, alignment, section hashes, the read-aloud cron); `worker-env.mjs` loads a Worker module with its `.sql` and gives an in-memory D1; `content-schema.mjs` loads the collections' schemas in plain Node (`live.test.mjs`, `schema.test.mjs`) |
 | `tests/e2e/` | the behaviour suite: `INVENTORY.md`, `targets.json` (from `element-usage`), specs, fixtures; the wall-clock checks (`@timing`) run in the `*-timing` projects, after the parallel ones |
 | `tests/baseline/urls.txt` | every page and contract file a build must still produce |
 | `tests/ask/` | RAG Goobie's eval set (`eval.json`, 50 questions with gold posts, sections and must-haves) and the example candidates (`examples.json`); the blind hold-out is private |
@@ -290,14 +308,14 @@ about a second; run it before every landing, and with paths to see one post (`np
 
 | Rule | Checks | Fails |
 |---|---|---|
-| `frontmatter.mjs` | YAML parses; a notes file's `post` is its own name and a built post; `START_HERE` empty or 5 unique listed slugs | deploy |
+| `frontmatter.mjs` | YAML parses; no two posts (drafts included) share an `id`; a notes file's `post` is its own name and a built post; `START_HERE` empty or 5 unique listed slugs | deploy |
 | `frontmatter.mjs`, strict part | on every post, `src/schemas/strict.js`'s v2 rules and no leftover `series`, `status` or `tags` (a live notebook keeps those; a `HELD` post only warns) | check while `STRICT` is false, then deploy |
 | `prose.mjs` | on what a reader reads: no em dash, no spaced en dash, no `;`, no banned phrase, takeaway at most 2 sentences. Targets, nested parentheses and `style=` only warn (the caps are `strict.js`'s) | check (a `HELD` post: warning) |
-| `never-publish.mjs` | whole words (case-sensitive), runs of 2 or 3, hosts and URL prefixes, hashed and compared; reports the words with `file:line` | deploy |
-| `links.mjs` | `/ledger/<slug>/` goes to a listed post, `/notes/` to its notes; nothing under `public/ledger/`; no banned link | deploy |
+| `never-publish.mjs` | whole words (case-sensitive), runs of 2 or 3, hosts and URL prefixes, hashed and compared, in posts, notes, Now snapshots, research, projects, About, the Now components, `src/data/*.js` and the demos' recorded `.json` (each string decoded, and the raw text); reports the words with `file:line` | deploy |
+| `links.mjs` | `/ledger/<slug>/` (and the old `/posts/<slug>/`, which redirects there) goes to a listed post, `/notes/` to its notes; nothing under `public/ledger/`; no banned link; a demo's recorded `.json` names no draft or unlisted post | deploy |
 | `elements.mjs` | each `src/elements/ao-*/` has its section in `docs/COMPONENTS.md` | check |
 | `assets.mjs` | preview stills and loops exist and are under their caps, icon and project picture caps, every named video or audio is in R2 or in a `STAYS_IN_GIT` folder | deploy |
-| `code.mjs` | 400 lines, no CSS imported by browser JS, no `style=` in components, layouts or pages, `astro:content` only in `lib/content.js` and the schemas, no IP under `worker/` | check |
+| `code.mjs` | 400 lines, no CSS imported by browser JS, no `style=` in components, layouts or pages, `astro:content` only in `lib/content.js`, `content.config.ts` and the schemas, no IP under `worker/` | check |
 
 Anything in a live notebook's paths is at most a warning, at either level. `npm run check -- --strict` fails on
 warnings too, except those a live notebook or a `HELD` post may keep.
@@ -311,7 +329,7 @@ names from a reader of the repo, not from someone set on guessing them.
 
 **Budgets** (`scripts/tools/budgets.mjs`, gzipped, without fonts and media): a post page minus its prose ≤ 20 KB
 (chrome HTML 4, CSS 15, JS up front 8: the page's scripts, their static imports and its view's module), each element's own chunks and inlined CSS ≤ 6 KB (`ao-series`, `ao-game`
-10; one row names the element nearest its budget), the ledger's chrome ≤ 6 KB and ≤ 360 B a row (each row carries its card), the homepage before the
+10; one row names the element nearest its budget), the JS Listen loads ≤ 8 KB, the ledger's chrome ≤ 6 KB and ≤ 360 B a row (each row carries its card), the homepage before the
 scene chunk ≤ 30 KB (HTML 12, entry JS 12). Printed by every build, never failing it. A display code point the
 self-hosted fonts miss is a warning in the build and a failure of `node scripts/tools/budgets.mjs` and of
 `tests/unit/fonts.test.mjs`; `node scripts/tools/fonts.mjs` fixes it.
@@ -327,6 +345,9 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
 |---|---|
 | `/ledger/<slug>/` for every post, `public/_redirects`, RSS guid = `https://aaronorelup.com/ledger/<slug>/` | `verify-dist` against `tests/baseline/urls.txt` |
 | the `<ao-*>` tag names and attributes (72 posts use them) | the e2e suite; an unknown tag fails the build (`rehype-post-text`) |
+| every listed post's page has one `<link rel="canonical">` and one `og:url`, both `https://aaronorelup.com/ledger/<slug>/` (`chrome/Head.astro`) | `verify-dist` |
+| every listed post's page has one `<script type="application/ld+json">` that parses, its `url` that same address, its `author` exactly `OWNER`, and no author at all on a `voice: claude` post (`src/lib/jsonld.js`) | `verify-dist` |
+| a page of `/sitemap.xml` that has an `og:image` has it once, with one `twitter:card` (`summary_large_image`), and the picture is a file of the build: under `/og/` a JPEG of exactly 1200×630, anywhere else a JPEG or PNG between 300×157 and 4096×4096. A page with no `og:image` passes | `verify-dist` |
 | `/ledger/previews.json` = `{ posts: { slug: card } }`, keys = listed slugs | `verify-dist` |
 | `/stats-pages.txt`: no unlisted slug, nothing deeper than `/ledger/<slug>/` except `/ledger/<listed>/notes/` | `verify-dist`, `agg.test.mjs` |
 | `/version.json` and the main-only guard in `astro.config.mjs` | unchanged |
@@ -352,7 +373,8 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
   merges the two by reciprocal rank, the words half's pages first, drawing as they come: a row on screen never moves
   or changes, so a later draw for the same query only adds rows at the end; a result links `/ledger/<slug>/?hl=<words>&hs=<passage>#<heading>`, which
   `post/highlight.js` marks. Ask RAG Goobie loads `search/ask.js` only when opened: `GET /api/session` first, and only
-  when that says `ask: true`, Turnstile and a 30-minute token; the answer streams in after its steps, as text, `[n]` linked to their passages
+  when that says `ask: true`, Turnstile and a 30-minute token (with `voice: true` and a browser that can record, a
+  microphone beside the box loads `search/hear.js` on its first press and asks what Whisper heard); the answer streams in after its steps, as text, `[n]` linked to their passages
   (a cite's `kind` puts a notes passage on `/ledger/<slug>/notes/`, through the same `pagePath` as search results).
   The page numbers the cites by post (1, 2, 3 in order of first mention, a run showing each post once) and each
   link's hover card is its post's, with a line naming the passage (`PREVIEWS.md`); the Worker's cites are numbered

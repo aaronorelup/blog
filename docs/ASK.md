@@ -60,7 +60,22 @@ full · 283k tokens, 99.9% from cache · 5.2 s · $0.0011"), `ask-answer.js` (th
 frame and patched in place, so a cite drawn stays the same link under a press, then the answer, numbered by post as
 T2.2c made it; `ask.js` puts the answer in around that same paragraph, never taking it out of the page, so a cite
 pressed as the answer comes stays the same link; the step list above it goes then, moving the paragraph up once),
-`examples.js` (the placeholder's example questions).
+`examples.js` (the placeholder's example questions), `hear.js` (Ask by voice, below).
+
+**Ask by voice** (`POST /api/ask/hear`, `worker/ask/hear.js`; `src/scripts/search/hear.js`). With `GET /api/session`'s
+`voice: true` (the `ask_voice` flag, default on, and Ask itself on) and a browser with `getUserMedia` and
+`MediaRecorder`, a microphone shows beside the Ask box. Its first press loads `hear.js`; a press records (Chrome and
+Firefox give `audio/webm` or `audio/ogg` with opus at 32 kbit/s, Safari `audio/mp4`), showing the seconds and the line
+"Your recording is turned into text, then thrown away. 30 seconds at most."; a second press, or 30 s, stops it and
+sends it once, with the Ask token, to `/api/ask/hear`. The Worker checks origin, type, size (1 MB), token, the
+switches, `HEAR_LIMIT` (6 a minute a session) and `HEAR_ALL` (30 a minute) and the day's cap (`hear_daily`, 1,000
+calls), then calls Workers AI's `@cf/openai/whisper-large-v3-turbo` once (`task: 'transcribe', language: 'en',
+vad_filter: true`, 20 s, no retry) and answers `{ text }`. The page puts the text in the box and asks it through
+`/api/ask` exactly as if it had been typed; the pipeline above never knows. The audio and the text are never stored
+or logged (the question then goes through `/api/ask`'s usual anonymous count, like a typed one); `usage_day` counts
+`hear` calls. Measured 2026-11-10 against the real binding under `wrangler dev`: webm/opus, mp4 (whole and
+fragmented, as Safari writes it) and ogg/opus all transcribe, a 4 s question in 0.8 to 3.2 s; Whisper costs
+$0.000513 an audio minute, so the default cap is at most about $0.26 a day.
 
 ## The prompt, and why its order
 
@@ -99,7 +114,7 @@ first use and turns em dashes into commas. The streaming citer holds back only w
 | extras a question (flag `ask_extra_tokens`) | 40,000 est. (focus outside the pack always fits; G3) | none (whole) | |
 | planner | 1 call, 300 tokens out, 8 s, JSON, temperature 0 | | |
 | answer | 1 call, 600 tokens out, temperature 0.2, first token 30 s, total 60 s | | |
-| embeddings | 2 Workers AI calls a question (1 resting), counted in `search_daily` | | |
+| embeddings | 2 Workers AI calls a question, counted in `ask_search_daily` (2,000: 2 for each of `ask_daily`'s 1,000 questions), apart from `/api/search`'s `search_daily`; 1 a resting answer, counted in `search_daily` | | |
 | Worker CPU a question | p99 <= 50 ms in production (auditor) | | 4-12 ms in node, the manifest's parse 5.7 ms once an isolate |
 
 The build fails on the caps' sums, never on content: `WHOLE_CAP` + rules + 10k of catalog + `LIVE_CAP` + 2k <=
@@ -267,7 +282,8 @@ score of 8 or more, must-haves 0.8 or more, their gold post cited and no attribu
 **G4 cost, cache, ledger** (local D1): from the 2nd question 99.9% of the prompt is a cache hit; a warm question
 $0.0024 at peak at most; `usage_day` `ask_usd` equals the settled costs exactly; a cap under one reservation rests
 the first question with no DeepSeek call and gives its count back; a cap of two reservations lets exactly 2 of 6
-parallel questions from 6 sessions through; `search_daily` rises by 2 a question and 1 a resting one.
+parallel questions from 6 sessions through; the embedding count rises by 2 a question (`usage_day` `ask_search` since
+2026-11-11, `search` when this was measured) and 1 a resting one (`search`, then and now).
 
 **G5 latency** (wrangler dev on the box, remote AI and Vectorize): first event p90 41 ms; plan p90 2.0 s; first
 words p50 4.4 s; the answer p50 5.5 s, p90 6.2 s; cold 8.9 s.

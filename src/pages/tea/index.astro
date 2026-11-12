@@ -1,0 +1,48 @@
+---
+// /tea/: the tea room, the whole site on one long chaptered page. Every list comes from the main site's own helpers
+// (listed posts only, START_HERE, projectsPage, COURSES, nowSnapshots, research) and every item links to its page on
+// the main site, so one edit updates both views on the next deploy. Copy: src/data/tea.js; shaping: src/lib/tea.js.
+import TeaPage from '../../layouts/TeaPage.astro';
+import TeaAbout from '../../components/tea/TeaAbout.astro';
+import TeaBreath from '../../components/tea/TeaBreath.astro';
+import TeaCourses from '../../components/tea/TeaCourses.astro';
+import TeaFooter from '../../components/tea/TeaFooter.astro';
+import TeaHero from '../../components/tea/TeaHero.astro';
+import TeaLedger from '../../components/tea/TeaLedger.astro';
+import TeaNow from '../../components/tea/TeaNow.astro';
+import TeaProjects from '../../components/tea/TeaProjects.astro';
+import TeaRail from '../../components/tea/TeaRail.astro';
+import TeaStart from '../../components/tea/TeaStart.astro';
+import { COURSES } from '../../data/courses.js';
+import { START_HERE } from '../../data/picks.js';
+import { COPY, TEA_PAGE } from '../../data/tea.js';
+import { listedPosts, notesBySlug, nowSnapshots, projects, research, slugOf } from '../../lib/content.js';
+import { projectsPage } from '../../lib/projects.js';
+import { counterLine, ledgerByTopic, postRow } from '../../lib/tea.js';
+
+const posts = await listedPosts();
+const notes = await notesBySlug();
+const { sections } = projectsPage(await projects(), posts);
+const picks = START_HERE.map((slug) => posts.find((p) => slugOf(p) === slug)).filter(Boolean).map((p) => postRow(p, notes));
+const projectTotal = sections.reduce((n, s) => n + s.cards.length, 0);
+const counter = counterLine({ posts: posts.length, projects: projectTotal, courses: COURSES.length }, COPY.counter);
+---
+
+<TeaPage title={TEA_PAGE.title} description={TEA_PAGE.description}>
+  <TeaHero counter={counter} />
+  <div class="tea-frame">
+    <TeaRail />
+    <main class="tea-main" id="chapters" tabindex="-1">
+      {picks.length > 0 && <TeaStart picks={picks} />}
+      <TeaBreath n={2} />
+      <TeaLedger topics={ledgerByTopic(posts, notes)} total={posts.length} />
+      <TeaBreath n={3} />
+      <TeaProjects sections={sections} />
+      <TeaBreath n={4} />
+      <TeaCourses />
+      <TeaNow snaps={await nowSnapshots()} docs={await research()} />
+      <TeaAbout />
+      <TeaFooter />
+    </main>
+  </div>
+</TeaPage>

@@ -3,7 +3,8 @@
 // words from Pagefind and meaning from /api/search, merged; Ask loads search/ask.js only once it is opened, cycles the
 // example questions of src/data/ask.js in the empty box, and shows the line under it. Results and answers are written
 // into [data-search-out]; Turnstile, when Ask needs it, draws into [data-turnstile]. The Ask button shows the
-// how-it-works post's card once that post is listed (PREVIEWS.md).
+// how-it-works post's card once that post is listed (PREVIEWS.md). The microphone (Ask by voice, search/hear.js) shows
+// only while Ask is open, switched on and the browser can record.
 import Glyph from '../chrome/Glyph.astro';
 import { ABOUT_POST, EXAMPLES } from '../../data/ask.js';
 import { askBuild } from '../../lib/ask/build.js';
@@ -25,6 +26,9 @@ const line = m.mode === 'whole' ? `RAG Goobie reads all ${all} of Aaron's posts 
     </span>
     <input class="search-input" name="q" type="search" autocomplete="off" spellcheck="false" enterkeyhint="search"
       aria-label="Search the ledger" placeholder="Search the ledger" data-examples={JSON.stringify(EXAMPLES)} />
+    <button class="search-mic" type="button" aria-label="Ask by voice" aria-pressed="false" data-mic hidden>
+      <Glyph name="mic" class="search-mic-glyph" /><span class="search-mic-time" data-mic-time></span>
+    </button>
     <button class="search-go" type="submit" hidden>Ask</button>
   </div>
   <div class="search-modes" role="group" aria-label="What the box does">
@@ -34,6 +38,7 @@ const line = m.mode === 'whole' ? `RAG Goobie reads all ${all} of Aaron's posts 
   </div>
   <p class="search-note" data-search-note hidden></p>
   <p class="search-line" data-ask-line hidden>{line}</p>
+  <p class="search-line" data-voice-line hidden>Your recording is turned into text, then thrown away. 30 seconds at most.</p>
   <div class="search-turnstile" data-turnstile></div>
   <div class="search-out" data-search-out aria-live="polite"></div>
 </form>

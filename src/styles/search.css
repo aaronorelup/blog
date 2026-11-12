@@ -28,6 +28,24 @@
 }
 .search-go:hover { background: var(--pc-accent); color: var(--pc-bg); }
 .search-go:disabled { opacity: 0.5; cursor: progress; background: none; color: var(--pc-accent); }
+/* Ask by voice (scripts/search/hear.js): a round microphone; recording, it lights up and counts the seconds. */
+.search-mic {
+  flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 40px; height: 40px;
+  padding: 0 10px; border: 1.5px solid var(--pc-line2); border-radius: var(--radius-pill); background: none;
+  color: var(--pc-quiet); font: inherit; font-size: 14px; font-variant-numeric: tabular-nums; cursor: pointer;
+  transition: color 180ms ease, border-color 180ms ease;
+}
+.search-mic[hidden] { display: none; }
+.search-mic:hover { color: var(--pc-strong); border-color: var(--pc-head); }
+.search-mic-glyph { width: 18px; height: 18px; }
+.search-mic-time:empty { display: none; }
+.search-mic[aria-pressed='true'] { border-color: var(--pc-accent); color: var(--pc-accent); }
+.search-mic[aria-pressed='true'] .search-mic-glyph { animation: mic-on 900ms ease-in-out infinite alternate; }
+.search-mic:disabled { opacity: 0.5; cursor: progress; }
+@keyframes mic-on { to { opacity: 0.35; } }
+@media (prefers-reduced-motion: reduce) {
+  .search-mic[aria-pressed='true'] .search-mic-glyph { animation: none; }
+}
 
 /* The switch: two small pills under the bar; the lit one is aria-pressed. */
 .search-modes { display: flex; gap: var(--space-2); margin: var(--space-3) 0 0 6px; }

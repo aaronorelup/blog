@@ -1,0 +1,18 @@
+---
+// The tea room hero's stage: the whole .tea-hero-stage element, a static poster (one image for the mode and the
+// screen's shape, chosen in stage.css, so no JS is needed to see it) and the boot script that may load the 3D scene
+// over it. It goes inside .tea-hero-pin, before the title box. manifest: the scene's manifest URL.
+import '../../../styles/tea/stage.css';
+
+interface Props { manifest?: string }
+const { manifest = '/tea/hero/manifest.json' } = Astro.props;
+---
+
+<div class="tea-hero-stage" data-tea-stage data-manifest={manifest} aria-hidden="true">
+  <div class="tea-stage-poster"></div>
+  <div class="tea-stage-shade"></div>
+</div>
+
+<script>
+  import '../../../scripts/tea/hero/boot.js';
+</script>

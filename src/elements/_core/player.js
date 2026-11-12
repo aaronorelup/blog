@@ -24,7 +24,10 @@ export const AO_STOP = 'ao-stop'; // the homepage closing the reader: stop every
 const GROUPS = 'ao-cues, ao-compare[sync], ao-listen, ao-game';
 const playerOf = (el) => (el.closest && el.closest(GROUPS)) || frameOf.get(el.ownerDocument) || el;
 const frameOf = new WeakMap(); // an iframe's document -> the iframe, for media inside it
-const frames = new Set();
+// The iframes hooked as players (hookFrame), the ones in the page. Weak: the homepage's reader drops a post when it
+// moves on, and a Set kept every hooked frame, and through it its whole post, for as long as the page stayed open.
+const hooked = new WeakSet();
+const frames = () => [...document.querySelectorAll('iframe')].filter((f) => hooked.has(f));
 export let current = null;
 
 export function claim(p) {
@@ -37,7 +40,7 @@ export function claim(p) {
   // Anything else still playing stops too: a player that started before this module loaded,
   // or one inside a frame that was never seen starting.
   for (const m of document.querySelectorAll('video, audio')) if (!m.paused && playerOf(m) !== p) m.pause();
-  for (const f of frames) if (f !== p) mediaOf(f).forEach((m) => { if (!m.paused) m.pause(); });
+  for (const f of frames()) if (f !== p) mediaOf(f).forEach((m) => { if (!m.paused) m.pause(); });
   if (changed) document.dispatchEvent(new CustomEvent(AO_LISTEN_PLAY, { detail: p }));
   watch(p);
   nowPlaying.update(current);
@@ -51,7 +54,7 @@ for (const type of ['pause', 'ended', 'timeupdate', 'volumechange']) {
 }
 document.addEventListener(AO_STOP, () => {
   for (const m of document.querySelectorAll('video, audio')) if (!m.paused) m.pause();
-  for (const f of frames) mediaOf(f).forEach((m) => m.pause());
+  for (const f of frames()) mediaOf(f).forEach((m) => m.pause());
   if (current) { current._aoResume = null; pausePlayer(current); }
   nowPlaying.update(current);
 });
@@ -59,11 +62,11 @@ document.addEventListener(AO_STOP, () => {
 // A same-origin iframe (the BLACKWATER player page, say) is a player too: its media are
 // reachable, so starting one pauses the post's and the other way round.
 function hookFrame(f) {
-  if (frames.has(f) || f.closest('ao-game')) return;
+  if (hooked.has(f) || f.closest('ao-game')) return;
   let doc;
   try { doc = f.contentDocument; } catch (e) { return; }
   if (!doc || doc.URL === 'about:blank') return;
-  frames.add(f);
+  hooked.add(f);
   frameOf.set(doc, f);
   doc.addEventListener('play', (e) => { if (isMediaEl(e.target)) claim(f); }, true);
   for (const type of ['pause', 'ended', 'timeupdate']) doc.addEventListener(type, () => { if (current === f) nowPlaying.update(current); }, true);

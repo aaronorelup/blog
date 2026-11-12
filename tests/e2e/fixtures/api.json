@@ -64,13 +64,15 @@
   "session-on": {
     "status": 200,
     "json": {
-      "ask": true
+      "ask": true,
+      "voice": true
     }
   },
   "session-off": {
     "status": 200,
     "json": {
-      "ask": false
+      "ask": false,
+      "voice": false
     }
   },
   "session-mint": {
@@ -642,6 +644,28 @@
     ]
   },
   "ask-429": {
+    "status": 429
+  },
+  "session-novoice": {
+    "status": 200,
+    "json": {
+      "ask": true,
+      "voice": false
+    }
+  },
+  "hear-200": {
+    "status": 200,
+    "json": {
+      "text": "How much faster is a rented GPU than my laptop?"
+    }
+  },
+  "hear-empty": {
+    "status": 200,
+    "json": {
+      "text": ""
+    }
+  },
+  "hear-429": {
     "status": 429
   }
 }

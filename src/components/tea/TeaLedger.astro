@@ -1,0 +1,31 @@
+---
+// Chapter II, the ledger: every listed post, grouped by topic (lib/tea.js ledgerByTopic), each topic opening with its
+// glyph, name and count, then two half cards and the dense index for the rest. The topic pills are plain anchors.
+import { COPY } from '../../data/tea.js';
+import { plural } from '../../lib/tea.js';
+import Glyph from '../chrome/Glyph.astro';
+import TeaChapter from './TeaChapter.astro';
+import TeaPostCard from './TeaPostCard.astro';
+import TeaRow from './TeaRow.astro';
+
+interface Props { topics: any[]; total: number }
+const { topics, total } = Astro.props;
+---
+
+<TeaChapter id="ledger">
+  <nav slot="nav" class="tea-pills" aria-label={COPY.topicsLabel}>
+    {topics.map((t) => <a class="tea-pill-s" href={`#${t.anchor}`}>{t.label} <span class="tea-pill-n">{t.count}</span></a>)}
+  </nav>
+  {topics.map((t) => (
+    <section class="tea-group tea-reveal" id={t.anchor} aria-labelledby={`${t.anchor}-title`}>
+      <header class="tea-group-head">
+        <span class="tea-group-glyph"><Glyph name={t.glyph} /></span>
+        <h3 class="tea-group-title" id={`${t.anchor}-title`}>{t.label}</h3>
+        <p class="tea-group-count">{plural(t.count, COPY.postCount)}</p>
+      </header>
+      {t.features.length > 0 && <ol class="tea-halves">{t.features.map((row) => <TeaPostCard row={row} />)}</ol>}
+      {t.rows.length > 0 && <ol class="tea-rows">{t.rows.map((row) => <TeaRow row={row} />)}</ol>}
+    </section>
+  ))}
+  <p class="tea-more"><a class="tea-link" href="/ledger/">{COPY.readAll} ({plural(total, COPY.postCount)}) <span aria-hidden="true">→</span></a></p>
+</TeaChapter>

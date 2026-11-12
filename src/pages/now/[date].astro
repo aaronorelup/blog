@@ -4,6 +4,7 @@ import PanelPage from '../../layouts/PanelPage.astro';
 import NowView from '../../components/now/NowView.astro';
 import { nowSnapshots } from '../../lib/content.js';
 import { shortDate } from '../../lib/dates.js';
+import { nowTitle } from '../../data/pages.js';
 
 export async function getStaticPaths() {
   const snaps = await nowSnapshots();
@@ -13,7 +14,7 @@ export async function getStaticPaths() {
 const { snap, snaps } = Astro.props;
 ---
 <PanelPage
-  title={`Now + Setup, ${shortDate(new Date(snap.id))} · Aaron Orelup`}
+  title={nowTitle(shortDate(new Date(snap.id)))}
   description={snap.data.summary}
   active="now"
   view="now"

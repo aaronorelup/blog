@@ -12,8 +12,12 @@ interface Props {
   overlay?: boolean;
   // The footer's line after the copyright. The 404 page leaves it out.
   tagline?: string;
+  // The scrolling body is the page's main landmark (the skip link's target), unless the page brings its own
+  // (/stats passes false). In the overlay it is a region named Content: the homepage keeps its own <main>.
+  main?: boolean;
 }
-const { active = 'ledger', view, overlay = false, tagline = 'Notes on learning AI, filed as I go.' } = Astro.props;
+const { active = 'ledger', view, overlay = false, tagline = 'Notes on learning AI, filed as I go.', main = true } =
+  Astro.props;
 ---
 
 <div id="panel-inner" class:list={['pc-inner', { 'is-overlay': overlay }]} data-active-view={active}>
@@ -26,7 +30,12 @@ const { active = 'ledger', view, overlay = false, tagline = 'Notes on learning A
     </div>
   </header>
 
-  <div id="panel-scroll" class="pc-scroll">
+  <div
+    id="panel-scroll"
+    class="pc-scroll"
+    role={overlay ? 'region' : main ? 'main' : undefined}
+    aria-label={overlay ? 'Content' : undefined}
+  >
     {view ? <div class="pc-view" data-panel-view={view}><slot /></div> : <slot />}
   </div>
 
@@ -35,6 +44,7 @@ const { active = 'ledger', view, overlay = false, tagline = 'Notes on learning A
       <p class="pc-copy">© {new Date().getFullYear()} Aaron Orelup.{tagline && ` ${tagline}`}</p>
       <div class="pc-foots">
         <a href="/rss.xml" class="pc-foot">RSS</a>
+        <a href="/tea/" class="pc-foot">Tea room</a>
         {SOCIAL.map((s) => <a href={s.href} target="_blank" rel="noreferrer noopener" class="pc-foot">{s.label}</a>)}
       </div>
     </div>
