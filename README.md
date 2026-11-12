@@ -50,6 +50,16 @@ and the page's History lists them all by date. To update it, copy the newest fil
 `src/content/now/YYYY-MM-DD.md` (today's date), rewrite it and its one-line `summary`, and push. Leave the old files
 as they are: they are the history. A snapshot an agent writes keeps `draft: true` until Aaron OKs it, as a post does.
 
+## The AI landscape
+
+`/ai-landscape/` shows the newest snapshot, and each one stays readable at `/ai-landscape/<date>/`. A snapshot is a
+data file, `src/data/ai-landscape/<date>.json`, and four dated folders, `ai-landscape/<date>/` under
+`src/components/`, `src/scripts/`, `src/styles/` and `src/assets/`. To add one, copy the four folders to the new
+date and edit the copies, add `src/pages/ai-landscape/<date>.astro` and `<date>/sources.astro`, a share picture at
+`public/ai-landscape/<date>/og.jpg`, put the date first in `SNAPSHOTS` (`src/data/ai-landscape.js`, which the
+sitemap reads) and point `src/pages/ai-landscape/index.astro` at the new `Page.astro`. Never edit an old snapshot:
+the only thing that changes on an old page is its list of editions.
+
 ## Post URLs
 
 Posts live at `/ledger/<slug>/`. They used to live at `/posts/<slug>/`; `public/_redirects` sends the old paths on
