@@ -2,7 +2,7 @@
 // three loaded the way the page loads it: the manifest's defaults, and the new fields only where they are written; the
 // track maths of every channel; one actor swapped for another (follow, a visible cut, an opacity dissolve that always
 // comes back, scrolled down and back like the page); a skinned mesh's skeleton freed; and the shipped manifest held to
-// what the runtime knows. The browser side of the same swap is e2e tea-hero-26.
+// what the runtime knows, its own leap swap included. The browser side of the same swaps is e2e tea-hero-26 and 27.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -32,7 +32,9 @@ function actor(spec, nodes = []) {
 test('a manifest without follow or fade normalises as before: every old field and default, the new two off', () => {
   const OLD = ['id', 'src', 'scale', 'position', 'rotation', 'portraitPosition', 'rig', 'deform', 'materials', 'tint',
     'envIntensity', 'props'];
-  const m = normalise(SHIPPED, '/tea/hero/manifest.json');
+  // the shipped manifest in the old form: its actors without the two new fields (its leap mesh then an actor of its own)
+  const old = { ...SHIPPED, actors: SHIPPED.actors.map(({ follow, fade, ...a }) => a) };
+  const m = normalise(old, '/tea/hero/manifest.json');
   assert.equal(m.actors.length, SHIPPED.actors.length);
   for (const a of m.actors) {
     assert.deepEqual(Object.keys(a).sort(), [...OLD, 'follow', 'fade'].sort(), a.id);
@@ -228,3 +230,40 @@ test('the shipped manifest: every channel is one the runtime knows, a whole-acto
   }
   assert.doesNotThrow(() => normalise(SHIPPED, '/tea/hero/manifest.json'));
 });
+
+// The shipped manifest's own swap (the leap: a pose-baked mesh that follows Jefrie, cut in and out with visible), over
+// the real manifest and the real modules, each model an empty glTF scene (no WebGL, no files). A runtime without follow
+// or visible draws both figures all the time with the leap mesh at the scene's origin, and nothing else notices: every
+// name still binds (tea-hero-24). So: every follower keeps its leader, and down the scroll and back, a step either side
+// of every visible key and at 0, 0.3, 0.6 and 1, exactly one of each pair is drawn, the follower on its leader's root.
+// The page's side of it is e2e tea-hero-27.
+const FOLLOWERS = (SHIPPED.actors || []).filter((a) => a.follow);
+test('the shipped swap: exactly one of each pair drawn down the scroll and back, the follower on its leader\'s root',
+  { skip: !FOLLOWERS.length && 'the shipped manifest has no follower' }, async () => {
+    const m = normalise(SHIPPED, '/tea/hero/manifest.json');
+    for (const f of FOLLOWERS) {
+      assert.ok(SHIPPED.actors.some((a) => a.id === f.follow), `${f.id} follows ${f.follow}, which is not an actor`);
+      assert.equal(m.actors.find((a) => a.id === f.id).follow, f.follow, `${f.id}: the runtime's manifest.js drops "follow"`);
+    }
+    const EMPTY = JSON.stringify({ asset: { version: '2.0' }, scene: 0, scenes: [{ nodes: [] }] });
+    const fetched = globalThis.fetch;
+    globalThis.fetch = async () => new Response(EMPTY, { status: 200 });
+    let actors;
+    try { actors = await loadActors(m, false); } finally { globalThis.fetch = fetched; }
+    const bound = bindTracks(m, actors);
+    const byId = new Map(actors.map((a) => [a.spec.id, a]));
+    const cuts = SHIPPED.tracks.filter((t) => t.channel === 'visible').flatMap((t) => t.keys.map(([p]) => p));
+    assert.ok(cuts.length, 'a follower with no visible track is drawn together with its leader all the time');
+    const ps = [...new Set([0, 0.3, 0.6, 1, ...cuts.flatMap((p) => [p - 0.001, p + 0.001])])]
+      .filter((p) => p >= 0 && p <= 1).sort((a, b) => a - b);
+    for (const f of FOLLOWERS) {
+      const [fa, la] = [byId.get(f.id), byId.get(f.follow)];
+      for (const p of [...ps, ...ps.slice().reverse()]) {
+        applyTracks(bound, p, 0);
+        const drawn = [la, fa].filter((a) => a.root.visible).map((a) => a.spec.id);
+        assert.equal(drawn.length, 1, `at progress ${p}: ${drawn.length ? drawn.join(' and ') : 'neither'} drawn`);
+        assert.ok(fa.root.position.distanceTo(la.root.position) < 1e-9 && fa.root.quaternion.angleTo(la.root.quaternion) < 1e-6
+          && fa.inner.scale.distanceTo(la.inner.scale) < 1e-9, `at progress ${p}: ${f.id} is not on ${f.follow}'s root`);
+      }
+    }
+  });

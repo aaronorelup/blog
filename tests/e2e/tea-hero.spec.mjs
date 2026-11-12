@@ -567,23 +567,26 @@ test('tea-hero-25 leaving the page while the scene loads leaves no console error
   expect(errors).toEqual([]);
 });
 
-// The swap the final cast uses (docs/TEA_HERO.md, "One actor in place of another"), on /tea/ itself with the shipped
-// manifest plus a follower, served in its place: a second Yusef riding Jefrie that dissolves in (fade, opacity) while
-// she dissolves out and back, and the TV cut away (visible) late in the scroll; down to 0.8 and back to 0.
+// The swap the runtime offers (docs/TEA_HERO.md, "One actor in place of another"), on /tea/ itself with the shipped
+// manifest plus a follower, served in its place: a second model riding Yusef that dissolves in (fade, opacity) while
+// he dissolves out and back, and the TV cut away (visible) late in the scroll; down to 0.8 and back to 0. The shipped
+// manifest's own swap (Jefrie's leap) runs as it is keyed, alongside: tea-hero-27 checks it on its own.
 test('tea-hero-26 one actor swapped for another rides its leader and cuts and dissolves as keyed, down and back', async ({ page }) => {
   test.setTimeout(180_000);
   const errors = [];
   page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
   page.on('pageerror', (e) => errors.push(e.message));
   const KEYS = {
-    jefrie: { channel: 'opacity', keys: [[0.18, 1], [0.21, 0], [0.5, 0], [0.53, 1]] },
+    yusef: { channel: 'opacity', keys: [[0.18, 1], [0.21, 0], [0.5, 0], [0.53, 1]] },
     swap: { channel: 'opacity', keys: [[0.18, 0], [0.21, 1], [0.5, 1], [0.53, 0]] },
     tv: { channel: 'visible', keys: [[0.699, 1], [0.701, 0]] },
   };
+  let shipped = [];   // the shipped manifest's own visible tracks (the leap's cuts), as served
   await page.route('**/tea/hero/manifest.json', async (route) => {
     const response = await route.fetch();
     const m = await response.json();
-    m.actors.push({ id: 'swap', src: 'standin-angel.glb', follow: 'jefrie', fade: true, position: [0.3, 0, 0.1],
+    shipped = m.tracks.filter((t) => t.channel === 'visible' && !t.node);
+    m.actors.push({ id: 'swap', src: 'lantern_rig.glb', follow: 'yusef', fade: true, position: [0.3, 0, 0.1],
       rotation: [0, 40, 0], scale: 0.5 });
     for (const [actor, t] of Object.entries(KEYS)) m.tracks.push({ actor, ease: 'linear', ...t });
     await route.fulfill({ response, json: m });
@@ -598,14 +601,14 @@ test('tea-hero-26 one actor swapped for another rides its leader and cuts and di
       h.setProgress(raw);
       const st = h.state;
       const by = Object.fromEntries(st.actors.map((a) => [a.spec.id, a]));
-      const [j, s] = [by.jefrie, by.swap];
+      const [y, s] = [by.yusef, by.swap];
       return {
         p: Math.min(1, Math.max(0, (st.input.st.p - st.lead) / (1 - st.lead))),
         shown: Object.fromEntries(st.actors.map((a) => [a.spec.id, a.root.visible])),
         opacity: s.fadeMats.map(([m, base]) => m.opacity / base),
         hashed: s.fadeMats.every(([m]) => m.alphaHash && !m.transparent),
-        rides: j.root.position.distanceTo(s.root.position) + j.root.quaternion.angleTo(s.root.quaternion)
-          + j.inner.scale.distanceTo(s.inner.scale),
+        rides: y.root.position.distanceTo(s.root.position) + y.root.quaternion.angleTo(s.root.quaternion)
+          + y.inner.scale.distanceTo(s.inner.scale),
       };
     }, raw);
     // the keys, sampled as tracks.js does (linear) at the scene's own progress
@@ -616,13 +619,67 @@ test('tea-hero-26 one actor swapped for another rides its leader and cuts and di
       const [[t0, a], [t1, b]] = [keys[i - 1], keys[i]];
       return a + (b - a) * (got.p - t0) / (t1 - t0);
     };
-    const [oj, os, vt] = [at(KEYS.jefrie.keys), at(KEYS.swap.keys), at(KEYS.tv.keys)];
+    const [oy, os, vt] = [at(KEYS.yusef.keys), at(KEYS.swap.keys), at(KEYS.tv.keys)];
+    const want = { yusef: oy > 0.004, tv: vt >= 0.5, swap: os > 0.004 };
+    for (const id of Object.keys(got.shown)) {
+      if (id in want) continue;
+      const own = shipped.filter((t) => t.actor === id);
+      want[id] = own.length ? own.reduce((n, t) => n + at(t.keys), 0) >= 0.5 : true;
+    }
     const where = `raw ${raw}, scene ${got.p.toFixed(3)}`;
-    expect(got.shown, where).toEqual({ jefrie: oj > 0.004, yusef: true, tv: vt >= 0.5, swap: os > 0.004 });
+    expect(got.shown, where).toEqual(want);
     expect(got.opacity.length, where).toBeGreaterThan(0);
     for (const o of got.opacity) expect(Math.abs(o - os), where).toBeLessThan(1e-6);
     expect(got.hashed, where).toBe(true);
     expect(got.rides, where).toBeLessThan(1e-6);
   }
   expect(errors).toEqual([]);
+});
+
+// The shipped manifest's own swap on the page (tests/unit/tea-hero.test.mjs checks the runtime's modules; this checks
+// the scene the page really mounts): Jefrie handed over to her leap mesh, which follows her. Every follower the
+// manifest names is one the runtime knows (a runtime without "follow" drops them all); down the scroll and back, a
+// step either side of every visible key and at 0, 0.3 and 0.6, exactly one of each pair is drawn, the follower on its
+// leader's root; and the number of point lights drawn never changes (a light under a hidden actor is not drawn, so the
+// leap actor carries its own pair: a change would recompile every lit material in the middle of the leap).
+test('tea-hero-27 the shipped leap: exactly one of a character and her leap mesh drawn, on one root, the lights the same', async ({ page }) => {
+  test.setTimeout(180_000);
+  await page.goto('/tea/?hero=on');
+  await settled(page);
+  await expect(hero(page)).toHaveAttribute('data-3d', 'on');
+  await holdScene(page);
+  const out = await page.evaluate(async () => {
+    const H = window.__teaHero;
+    H.freeze(0.45); H.pointer([0, 0]);
+    const s = H.state;
+    const raw = await (await fetch(document.querySelector('[data-tea-stage]').dataset.manifest || '/tea/hero/manifest.json')).json();
+    const wanted = (raw.actors || []).filter((a) => a.follow).map((a) => `${a.follow}>${a.id}`);
+    const pairs = s.actors.filter((a) => a.spec.follow).map((a) => [a, s.actors.find((b) => b.spec.id === a.spec.follow)]);
+    const cuts = raw.tracks.filter((t) => t.channel === 'visible').flatMap((t) => t.keys.map(([p]) => p));
+    const ps = [...new Set([0, 0.3, 0.6, ...cuts.flatMap((p) => [p - 0.001, p + 0.001])])]
+      .filter((p) => p >= 0 && p <= 1).sort((a, b) => a - b);
+    const drawn = (o) => { for (let q = o; q; q = q.parent) if (!q.visible) return false; return true; };
+    const bad = [];
+    let lights = null;
+    for (const p of [...ps, ...ps.slice().reverse()]) {
+      // the scene's progress p: in the flow layout the scroll's first share is the title box's lead
+      H.setProgress(s.lead + p * (1 - s.lead));
+      for (const [f, l] of pairs) {
+        const n = [l.root, f.root].filter(drawn).length;
+        if (n !== 1) bad.push(`progress ${p.toFixed(4)}: ${n} of ${l.spec.id} and ${f.spec.id} drawn`);
+        if (f.root.position.distanceTo(l.root.position) > 1e-6 || f.root.quaternion.angleTo(l.root.quaternion) > 1e-6) {
+          bad.push(`progress ${p.toFixed(4)}: ${f.spec.id} is off ${l.spec.id}'s root`);
+        }
+      }
+      let n = 0;
+      s.scene.traverse((o) => { if (o.isPointLight && drawn(o)) n++; });
+      if (lights === null) lights = n;
+      else if (n !== lights) bad.push(`progress ${p.toFixed(4)}: ${n} point lights drawn, ${lights} at the top`);
+    }
+    H.setProgress(null);
+    return { wanted, got: pairs.map(([f, l]) => `${l.spec.id}>${f.spec.id}`), bad };
+  });
+  test.skip(!out.wanted.length, 'the manifest hands no character over to another');
+  expect(out.got.sort()).toEqual(out.wanted.sort());
+  expect(out.bad).toEqual([]);
 });
