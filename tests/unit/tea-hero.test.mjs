@@ -2,7 +2,8 @@
 // three loaded the way the page loads it: the manifest's defaults, and the new fields only where they are written; the
 // track maths of every channel; one actor swapped for another (follow, a visible cut, an opacity dissolve that always
 // comes back, scrolled down and back like the page); a skinned mesh's skeleton freed; and the shipped manifest held to
-// what the runtime knows, its own leap swap included. The browser side of the same swaps is e2e tea-hero-26 and 27.
+// what the runtime knows, its own leap swap included, and its picture to covering every frame (edges.mjs). The browser
+// side of the same swaps is e2e tea-hero-26 and 27.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -32,10 +33,11 @@ function actor(spec, nodes = []) {
 test('a manifest without follow or fade normalises as before: every old field and default, the new two off', () => {
   const OLD = ['id', 'src', 'scale', 'position', 'rotation', 'portraitPosition', 'rig', 'deform', 'materials', 'tint',
     'envIntensity', 'props'];
-  // the shipped manifest in the old form: its actors without the two new fields (its leap mesh then an actor of its own)
-  const old = { ...SHIPPED, actors: SHIPPED.actors.map(({ follow, fade, ...a }) => a) };
-  const m = normalise(old, '/tea/hero/manifest.json');
-  assert.equal(m.actors.length, SHIPPED.actors.length);
+  // the shipped manifest with any follow or fade taken out, so this holds once the cast's leap follows Jefrie
+  const plain = structuredClone(SHIPPED);
+  for (const a of plain.actors) { delete a.follow; delete a.fade; }
+  const m = normalise(plain, '/tea/hero/manifest.json');
+  assert.equal(m.actors.length, plain.actors.length);
   for (const a of m.actors) {
     assert.deepEqual(Object.keys(a).sort(), [...OLD, 'follow', 'fade'].sort(), a.id);
     assert.deepEqual([a.follow, a.fade], [null, false], a.id);
@@ -144,33 +146,38 @@ test('visible and opacity on a node are skipped; the actor\'s other tracks still
   assert.equal(a.model.children[0].visible, true);
 });
 
-test('a follower takes its leader\'s root and inner scale after every track, its own whole-actor ones included', () => {
+test('a follower takes its leader\'s root and inner scale after every track, its own whole-actor ones included, while the leader is cut away too', () => {
   const m = man(SWAP, [
     { actor: 'jefrie', channel: 'position', ease: 'linear', keys: [[0, [0, 0, 0]], [1, [1.2, 0.5, 0]]] },
     { actor: 'jefrie', channel: 'rotation', ease: 'linear', keys: [[0, [0, 0, 0]], [1, [0, 0, -22]]] },
     { actor: 'jefrie', channel: 'squash', ease: 'linear', keys: [[0, 0], [1, 0.1]] },
+    // the leader cut away from 0.5 (the leap mesh drawn in its place) while its tracks go on moving it
+    { actor: 'jefrie', channel: 'visible', ease: 'linear', keys: [[0.499, 1], [0.501, 0]] },
     { actor: 'jefrie_leap', channel: 'position', keys: [[0, [5, 5, 5]], [1, [5, 5, 5]]] },
   ]);
   const [j, l] = m.actors.map((s) => actor(s));
   l.inner.scale.setScalar(1);   // a follower's inner group is the leader's, every frame
   const bound = bindTracks(m, [j, l]);
   assert.deepEqual(bound.follow.map(([f, lead]) => [f.spec.id, lead.spec.id]), [['jefrie_leap', 'jefrie']]);
-  for (const p of [0.3, 0.7, 0]) {
+  for (const p of [0.3, 0.7, 0.9, 0]) {
     applyTracks(bound, p, 1.5);
+    assert.equal(j.root.visible, p < 0.5, `the leader shown at p ${p}`);
     assert.deepEqual(l.root.position.toArray(), j.root.position.toArray(), `position at p ${p}`);
     assert.deepEqual(l.root.quaternion.toArray(), j.root.quaternion.toArray(), `rotation at p ${p}`);
     assert.deepEqual(l.inner.scale.toArray(), j.inner.scale.toArray(), `scale at p ${p}`);
   }
 });
 
-// A GLB in memory: one triangle under hips > head, its material half see-through; fetch answers it for any address.
+// A GLB in memory: two triangles under hips > head, one opaque (its factor's alpha 0.9, which an opaque material
+// doesn't draw) and one see-through (BLEND, 0.8); fetch answers it for any address.
 function glb() {
   const pos = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
   const json = {
     asset: { version: '2.0' }, scene: 0, scenes: [{ nodes: [0] }],
     nodes: [{ name: 'hips', children: [1] }, { name: 'head', mesh: 0, translation: [0, 1, 0] }],
-    meshes: [{ primitives: [{ attributes: { POSITION: 0 }, material: 0 }] }],
-    materials: [{ pbrMetallicRoughness: { baseColorFactor: [1, 1, 1, 0.8] }, alphaMode: 'BLEND' }],
+    meshes: [{ primitives: [{ attributes: { POSITION: 0 }, material: 0 }, { attributes: { POSITION: 0 }, material: 1 }] }],
+    materials: [{ pbrMetallicRoughness: { baseColorFactor: [1, 1, 1, 0.9] } },
+      { pbrMetallicRoughness: { baseColorFactor: [1, 1, 1, 0.8] }, alphaMode: 'BLEND' }],
     accessors: [{ bufferView: 0, componentType: 5126, count: 3, type: 'VEC3', min: [0, 0, 0], max: [1, 1, 0] }],
     bufferViews: [{ buffer: 0, byteLength: 36 }], buffers: [{ byteLength: 36 }],
   };
@@ -183,13 +190,14 @@ function glb() {
   return Buffer.concat([head, chunk(j.length, 'JSON'), j, chunk(d.length, 'BIN\0'), d]);
 }
 
-test('loadActors: a follower\'s model sits inside its leader\'s frame by its own numbers, faded materials are alpha-hashed', async () => {
+test('loadActors: a follower\'s model sits inside its leader\'s frame by its own numbers; fade alpha-hashes the opaque materials only, none dithered while shown', async () => {
   const fetched = globalThis.fetch;
   const body = glb();
   globalThis.fetch = async () => new Response(body, { status: 200 });
   try {
     const m = man([{ id: 'a', src: 'a.glb', position: [2, 0, 0], rotation: [0, 30, 0], scale: 2 },
-      { id: 'b', src: 'b.glb', follow: 'a', fade: true, position: [0.1, 0.2, 0.3], rotation: [0, 90, 0], scale: 0.5 }]);
+      { id: 'b', src: 'b.glb', follow: 'a', fade: true, position: [0.1, 0.2, 0.3], rotation: [0, 90, 0], scale: 0.5 }],
+    [{ actor: 'b', channel: 'opacity', keys: [[0, 0.5], [1, 0.5]] }]);
     const [a, b] = await loadActors(m, false);
     assert.deepEqual([a.root.position.toArray(), a.inner.scale.toArray()], [[2, 0, 0], [2, 2, 2]]);
     assert.deepEqual([a.model.position.toArray(), a.fadeMats.length], [[0, 0, 0], 0]);
@@ -197,11 +205,18 @@ test('loadActors: a follower\'s model sits inside its leader\'s frame by its own
       [[0, 0, 0], [0, 0, 0, 1], [1, 1, 1]]);
     assert.deepEqual([b.model.position.toArray(), b.model.scale.toArray()], [[0.1, 0.2, 0.3], [0.5, 0.5, 0.5]]);
     near(b.model.rotation.y, Math.PI / 2, 'the model turned by the follower\'s rotation');
-    assert.equal(b.fadeMats.length, 1);
-    const [[mat, base]] = b.fadeMats;
-    assert.deepEqual([mat.alphaHash, mat.transparent, base], [true, false, 0.8]);
+    // [alphaHash, transparent, opacity, the base an opacity track multiplies]: the opaque material hashed and drawn whole
+    // at 1, the see-through one blended at its own 0.8 as loaded, so neither is dithered at full opacity; the leader's
+    // own materials untouched
+    const mats = (x) => { const r = []; x.model.traverse((o) => { if (o.isMesh) r.push(o.material); }); return r; };
+    assert.deepEqual(b.fadeMats.map(([mat, base]) => [mat.alphaHash, mat.transparent, mat.opacity, base]),
+      [[true, false, 1, 1], [false, true, 0.8, 0.8]]);
+    assert.deepEqual(mats(a).map((mat) => [mat.alphaHash, mat.transparent, mat.opacity]), [[false, false, 0.9], [false, true, 0.8]]);
     orientActors([a, b], { camera: { portrait: { spread: 0.5 } } }, true);
     assert.deepEqual([a.root.position.toArray(), b.root.position.toArray()], [[1, 0, 0], [0, 0, 0]]);
+    // half way through a dissolve each is drawn at half its own opacity
+    applyTracks(bindTracks(m, [a, b]), 0.3, 0);
+    assert.deepEqual([b.root.visible, ...b.fadeMats.map(([mat]) => mat.opacity)], [true, 0.5, 0.4]);
   } finally {
     globalThis.fetch = fetched;
   }
@@ -290,3 +305,17 @@ test('the shipped swap: exactly one of each pair drawn down the scroll and back,
       }
     }
   });
+// A manifest copied over whole (the cast's, which carries the painter's own fit of the picture) or a new camera key can
+// let a layer's edge into the frame: the shipped one is traced at every size edges.mjs knows, and the painter's fit,
+// which shows the far plate's left edge on a docked desktop and its foot on a portrait tablet, has to fail.
+test('the shipped picture covers every frame: 17 sizes, the whole scroll, the pointer anywhere, docked or not (edges.mjs)', async () => {
+  const { edges } = await import('../../scripts/tools/tea-hero/edges.mjs');
+  const shipped = await edges(SHIPPED);
+  assert.equal(shipped.faults, 0, shipped.lines.join('\n'));
+  const painter = structuredClone(SHIPPED);
+  const layer = (id) => painter.background.layers.find((l) => l.id === id);
+  Object.assign(layer('far'), { size: [28.16, 15.84], y: 0.65 });
+  Object.assign(layer('mid'), { size: [18, 12] });
+  const fit = await edges(painter, { sizes: ['1280x800:dock:1.12', '768x1024'] });
+  assert.ok(fit.faults > 0, fit.lines.join('\n'));
+});

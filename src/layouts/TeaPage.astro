@@ -5,7 +5,8 @@
 // An address with a chapter (/tea/#projects) lands on it at once: the inline script marks the arrival
 // (data-tea-arrive, tea.css), as WebKit otherwise glides its own scroll there while the page loads and, with the page
 // busy, stops the glide part way down the ledger. The first link followed on the page gives the glide back.
-// Without script the day/night switch (scripts/mode.js) could do nothing, so it isn't shown (the noscript style).
+// Without script the day/night switch (scripts/mode.js) could do nothing, so it isn't shown, and the phone's strip keeps
+// no room for it (the noscript style; .tea .tea-rail outranks tea.css, whose link comes after it).
 import '../styles/tea/tea.css';
 import Head from '../components/chrome/Head.astro';
 import { teaSeo } from '../data/tea.js';
@@ -27,7 +28,10 @@ const seo = teaSeo();
         }, true);
       }
     </script>
-    <noscript><style is:inline>.tea .mode-toggle { display: none; }</style></noscript>
+    <noscript><style is:inline>
+      .tea .mode-toggle { display: none; }
+      @media (max-width: 1023px) { .tea .tea-rail { padding-right: 10px; } }
+    </style></noscript>
     <slot name="head" />
   </head>
   <body class="tea">

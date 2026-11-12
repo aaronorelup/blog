@@ -142,7 +142,7 @@ the static and the pinned hero, and sits in the strip's reserved right end once 
 | `public/tea/hero/*.webp, *.glb` | the painted picture's layers (`bg-*`, final: see "The picture"), posters (`poster-*`), stand-in models (`standin-*`) |
 | `scripts/tools/tea-hero/` | `shots.mjs`, `poster.mjs`, `silhouettes.mjs` (overlap and behind-the-box per size and scroll), `edges.mjs` (the picture covers every frame), `verify.mjs`; `standins.mjs` (stand-in GLBs) |
 | `tests/e2e/tea-hero.spec.mjs` | the e2e spec (tea-hero-1 to 26, listed in `tests/e2e/INVENTORY.md`) |
-| `tests/unit/tea-hero.test.mjs` | the runtime's maths in plain node: the manifest's defaults and new fields, every channel, the swap (follow, a cut, a dissolve down and back), `loadActors` on a GLB made in memory, the skeleton freed, the shipped manifest's channels |
+| `tests/unit/tea-hero.test.mjs` | the runtime's maths in plain node: the manifest's defaults and new fields, every channel, the swap (follow, a cut, a dissolve down and back), `loadActors` on a GLB made in memory, the skeleton freed, the shipped manifest's channels, and its picture covering every frame (`edges.mjs`) |
 | `src/pages/tea-lab.astro` | the lab: the real hero and rail over empty chapter heads; `?manifest=`. Temporary: deleted once the final models land |
 
 Outside these, the slice touched `src/styles/tea/cover.css` (the padding variables; the SVG garden's rules and the
@@ -161,7 +161,7 @@ Relative URLs resolve against the manifest's own URL. Every optional field has a
 | `version` | must be `1` |
 | `reference.aspect` | the aspect the scene is composed for (1.6). Wider screens keep its horizontal field of view (crop top and bottom), narrower landscape screens keep its vertical one (crop the sides): like `object-fit: cover`, so the poster matches. Portrait screens use `camera.portrait` |
 | `background.layers[]` | the picture: `id`, `night` and `day` image URLs (`src` is an alias for both), `z` (depth, e.g. -10 far, -6 mid), `size` `[w, h]` in units (keep the image's aspect), `x`, `y` (centre), `cutout` (true for a layer with alpha: transparent, no depth write), `fog` (0..1, tint toward the fog colour), `portraitScale` (default 1.5: how much the layer grows on a portrait screen to cover the taller view). The current mode's images load first, the other mode's after the first frame |
-| `actors[]` | `id`, `src` (GLB), `scale` (uniform), `position`, `rotation` (the rest pose of the actor's root), `portraitPosition` (optional; else `x` is multiplied by `camera.portrait.spread`), `rig` (`kind`: `"nodes"` or `"baked"`, informational; `map`: `{ "conventionName": "nameInTheGLB" }` aliases), `deform`, `materials`, `tint` (hex multiplied into every material colour), `envIntensity` (default 0.6), `props[]`, `follow` (another actor's `id`: see "One actor in place of another"), `fade` (true: alpha-hashed materials, for an `opacity` track) |
+| `actors[]` | `id`, `src` (GLB), `scale` (uniform), `position`, `rotation` (the rest pose of the actor's root), `portraitPosition` (optional; else `x` is multiplied by `camera.portrait.spread`), `rig` (`kind`: `"nodes"` or `"baked"`, informational; `map`: `{ "conventionName": "nameInTheGLB" }` aliases), `deform`, `materials`, `tint` (hex multiplied into every material colour), `envIntensity` (default 0.6), `props[]`, `follow` (another actor's `id`: see "One actor in place of another"), `fade` (true: for an `opacity` track, its opaque materials alpha-hashed) |
 | `actors[].deform` | for meshes with no skeleton: `{ "kind": "bend", "start": -0.15, "y": -0.42, "rest": 0.35 }`. In the mesh's own space (for a quantized mesh: model units divided by its node's scale, see below), everything past `start` along -z (a tail behind the body) curls up toward +y around height `y`; `rest` is the resting curvature (1/units). The `bend` channel adds to it |
 | `actors[].materials` | `{ "<node name>": { "shader": "crt" } }`: every mesh at or under that node gets the TV screen shader (the node needs UVs) |
 | `actors[].props[]` | separately loaded rigid GLBs: `id` (the prop's root is renamed to it, so tracks, lights and glows can name it), `src`, `parent` (a node of the actor, e.g. `hand.R`; missing or absent: the actor's model root), `scale`, `position`, `rotation`, `materials` |
@@ -196,7 +196,11 @@ lens shift docked or not (at the docked box's measured share of the width: at mo
 passes too), at 17 sizes from 360x640 to 1920x1080, no frame shows past the far plate, and the mid layer's side edges
 never come into view where its paint reaches them (rows 921 to 1051 of its 1200; its top and bottom bands are fully
 transparent). A portrait screen grows each layer by `portraitScale` (1.5) about its centre. The stand-in plates showed
-their left edge from progress 0.2 to 0.3 on a docked desktop even with the pointer centred.
+their left edge from progress 0.2 to 0.3 on a docked desktop even with the pointer centred. `npm test` traces the
+shipped manifest the same way (`tests/unit/tea-hero.test.mjs`, about 7 s) and fails on any frame past an edge, as it
+does on the painter's fit: so **keep these `background.layers` when another manifest comes in whole** (the cast's
+carries the painter's fit), and after any change to the camera keys, `camera.dock`, `camera.portrait`, the parallax or
+a layer, read the margins `edges.mjs` prints.
 
 ### Composition (as tuned on the stand-ins)
 
@@ -225,7 +229,7 @@ different rest pose keeps working):
 | `squash` | number (0.1 = 10% taller and thinner, -0.1 = squashed) | volume-keeping scale on y |
 | `bend` | number (curvature) | added to the actor's `deform.rest`; whole-actor only |
 | `visible` | number: drawn while 0.5 or more (keys `[[p - 0.001, 1], [p + 0.001, 0]]`, `"ease": "linear"`, make a cut at p) | whole actor only (a track with a `node` is skipped) |
-| `opacity` | number 0..1 | whole actor only: an actor with `fade` dissolves (alpha-hashed materials, so no sorting and no transparent pass; the material's own opacity times this); any actor is hidden at 0.004 or less |
+| `opacity` | number 0..1 | whole actor only: an actor with `fade` dissolves (its opaque materials alpha-hashed, so no sorting and no transparent pass, and drawn whole at 1; a see-through one keeps its blending; each material's own opacity times this); any actor is hidden at 0.004 or less |
 
 Shown or hidden is worked out afresh every frame from that frame's `visible` and `opacity` values alone, so an actor cut
 away or faded out comes back when the reader scrolls back (an actor with neither channel is never touched).
@@ -250,10 +254,17 @@ in where the standing rig's pose is closest to it). Give it its own actor with `
   (`portraitPosition` is not read).
 - **A cut** is `visible` on both, the other way round; at exactly the cut's middle both values are 0.5 and both draw for
   that one frame. **A dissolve** is `opacity` on both with `fade` (keys such as `[[0.18, 1], [0.21, 0], [0.5, 0],
-  [0.53, 1]]` and the reverse): alpha hashing dithers while it runs.
+  [0.53, 1]]` and the reverse): alpha hashing dithers the opaque materials while it runs, and only then (an opaque
+  material is drawn at opacity 1; but a see-through texel of its texture, which an opaque material otherwise ignores,
+  dithers all the time: give a fade actor's opaque materials opaque textures).
 - **Lights and glows hanging from a hidden actor are not drawn.** Give the stand-in actor its own lights, as many as the
   one it replaces, so the scene's light count never changes at a cut: a change recompiles every lit material in the
   middle of the scroll. The TV's screen shader is not faded by `opacity`.
+- **So cut an actor that carries lights or glows; dissolve only one that carries none.** Through a dissolve both
+  actors are drawn, and their lights and glows are not faded with them: both actors' lights shine at full strength, so
+  the light on the scene doubles, and the light count changes, so the first time the scroll enters the overlap every
+  lit material on screen is compiled again (one frame took 0.57 s under SwiftShader with a light on each stand-in,
+  0.68 s with the final cast's two light pairs; not measured on a real GPU).
 - Tools that isolate an actor (`silhouettes.mjs`) hide meshes, never an actor's root, which its tracks set.
 
 ### Node naming convention for rigs
@@ -369,8 +380,8 @@ and restores the poster.
 ## Measured (2026-11-12, this branch)
 
 - Boot entry (Stage's script): 1,448 B, **858 B gzip -9**, plus the site's existing shared preload helper.
-- 3D chunk `stage.*.js`: 52,639 B, **17.6 KB gzip -9** (all of `src/scripts/tea/hero/` plus the meshopt decoder,
-  which is 22.4 KB of it, 6.1 KB gzip; the actor swap added 1,169 B, 404 B gzip). Loads only after first paint, only
+- 3D chunk `stage.*.js`: 52,651 B, **17.6 KB gzip -9** (all of `src/scripts/tea/hero/` plus the meshopt decoder,
+  which is 22.4 KB of it, 6.1 KB gzip; the actor swap added 1,181 B, 410 B gzip). Loads only after first paint, only
   on the 3D path.
 - It also loads `three.module.*.js` (166.6 KB gzip) and `GLTFLoader.*.js` (13.1 KB gzip), byte-identical to the
   chunks the site already ships, so cached for anyone who has seen the homepage or a post with a model.
@@ -393,16 +404,17 @@ and restores the poster.
   part the manifest names found in the models (24), leaving the page while the scene loads (25), one actor swapped
   for another on `/tea/` itself, the shipped manifest plus a follower served in its place (26). The arrival at a
   chapter address itself is tea-17 (`tea.spec.mjs`).
-- `tests/unit/tea-hero.test.mjs` (in `npm test`): each of six broken runtimes (the round-2 opacity bug, no follow, no
-  skeleton freed, a follower moved by `orientActors`, a `visible` on a node bound, no `fade`) fails one of its tests.
+- `tests/unit/tea-hero.test.mjs` (in `npm test`): each of eight broken runtimes (the round-2 opacity bug, no follow, no
+  skeleton freed, a follower moved by `orientActors`, a `visible` on a node bound, no `fade`, a follower left behind
+  while its leader is cut away, `fade` dithering a fully shown actor) fails one of its tests.
 - `verify.mjs` against `/tea/` and `/tea-lab/` (both layouts; see its header).
 - The posters, re-rendered over the final picture, against the scene's opening frame at 1440x900 (night and day),
   1280x720, 1440x700, 768x1024, 390x844 (night and day) and 360x640: best aligned at offset 0 everywhere, mean
   difference 1.11 to 1.63 of 255 (the screen's grain and the motes); the actors' silhouettes as above
   (`silhouettes.mjs`, on the stand-ins); the title box's text contrast by day and by night over the poster and the
   scene (by day title 3.1, kicker 5.1, the rest 5.5 or more; measured on the stand-in picture).
-- The picture's edges with `edges.mjs` (see "The picture"); it fails on the painter's own fit and on the stand-in
-  plates.
+- The picture's edges with `edges.mjs` (see "The picture"), in `npm test` on the shipped manifest; it fails on the
+  painter's own fit and on the stand-in plates.
 - The loader on the spike's compressed models and a skinned test model (above).
 
 ## Not verified
@@ -440,9 +452,10 @@ and restores the poster.
    in tracks and idle; `follow` and `visible` or `opacity` for the leap). Look at it in the lab with a variant first,
    then on `/tea/`; adjust the keys, `camera.dock.shift` and `camera.portrait.travel` with `shots.mjs --sheet` (the
    title box in the frame), then run `poster.mjs`, and hold the result to `silhouettes.mjs` at 390x844, 360x740,
-   768x1024, 1280x800 and 1440x900: no overlap between the actors, nothing behind the docked box. After any change to
-   the camera or the lens shift, run `edges.mjs` again. Delete the `standin-*.glb` no longer referenced and stop
-   pointing at `jefrie-v2.glb`. Commit the final binaries once.
+   768x1024, 1280x800 and 1440x900: no overlap between the actors, nothing behind the docked box. Keep
+   `background.layers` as they are (`npm test` fails on the painter's own fit, which the cast's manifest carries) and
+   run `npm test` after any change to the camera or the lens shift (it runs `edges.mjs`). Delete the `standin-*.glb`
+   no longer referenced and stop pointing at `jefrie-v2.glb`. Commit the final binaries once.
 3. **Delete `src/pages/tea-lab.astro`** once the final models are in, build, confirm `/tea-lab/` is gone from
    `dist/stats-pages.txt`, run `verify.mjs` and the e2e spec, compare budgets and run `dist-diff` against an
    untouched build, then land per `CLAUDE.md`.
