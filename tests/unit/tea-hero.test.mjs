@@ -317,6 +317,16 @@ test('the shipped swap: exactly one of each pair drawn down the scroll and back,
       }
     }
   });
+// The opening frame is every visitor's first picture (the posters are made from it): Jefrie stands in a stance there,
+// her arms lowered from her rig's bind pose (an A-pose, the arms out at about 45 degrees), not in the bind pose itself.
+test('the shipped opening frame: Jefrie stands with her arms lowered from her rig\'s A-pose', () => {
+  for (const [node, down] of [['upperarm.L', -1], ['upperarm.R', 1]]) {
+    const t = SHIPPED.tracks.find((x) => x.actor === 'jefrie' && x.node === node && x.channel === 'rotation');
+    const z = t ? sample(t.keys, 0, t.ease || 'smooth')[2] : 0;
+    assert.ok(z * down >= 20, `${node} at progress 0: lowered ${z * down} degrees from the bind pose`);
+  }
+});
+
 // A manifest copied over whole (the cast's, which carries the painter's own fit of the picture) or a new camera key can
 // let a layer's edge into the frame: the shipped one is traced at every size edges.mjs knows, and the painter's fit,
 // which shows the far plate's left edge on a docked desktop and its foot on a portrait tablet, has to fail.
