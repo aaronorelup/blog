@@ -6,6 +6,7 @@ import { Color, GLTFLoader, Group, MathUtils } from './three.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { crtMaterial } from './crt.js';
 import { addBend } from './deform.js';
+import { patient } from './manifest.js';
 import { findNode } from './tracks.js';
 
 // The page being left (signal, boot.js) must leave nothing in the console. So a GLB is fetched here, with the signal,
@@ -28,22 +29,39 @@ function gltf(signal) {
   return loader;
 }
 
+// A link that starts to leave the page and doesn't (a mailto) cuts WebKit's loads too (manifest.js patient): a picture
+// that fails, or whose image element WebKit cut without a word (neither load nor error, STALL ms on), is tried once
+// more; one that fails again is reported after the grace.
+const STALL = 4000;
 function quiet(inner, signal) {
   return {
     isImageBitmapLoader: inner.isImageBitmapLoader === true,   // GLTFLoader reads it to know what onLoad is given
     load(url, onLoad, onProgress, onError) {
-      if (signal.aborted) return;
-      inner.load(url, onLoad, onProgress, (e) => {
-        if (!signal.aborted) setTimeout(() => { if (!signal.aborted) onError(e); }, LEAVE_GRACE);
-      });
+      let done = false;
+      const attempt = (again) => {
+        if (signal.aborted || done) return;
+        const stall = again && setTimeout(() => attempt(false), STALL);
+        inner.load(url, (t) => {
+          clearTimeout(stall);
+          if (!done) { done = true; onLoad(t); }
+        }, onProgress, (e) => {
+          clearTimeout(stall);
+          if (signal.aborted || done) return;
+          if (again) setTimeout(() => attempt(false), 500);
+          else setTimeout(() => { if (!signal.aborted && !done) { done = true; onError(e); } }, LEAVE_GRACE);
+        });
+      };
+      attempt(true);
     },
   };
 }
 
 async function load(loader, url, signal) {
-  const res = await fetch(url, { credentials: 'same-origin', signal });
-  if (!res.ok) throw new Error(`model ${res.status}: ${url}`);
-  const data = await res.arrayBuffer();
+  const data = await patient(async () => {
+    const res = await fetch(url, { credentials: 'same-origin', signal });
+    if (!res.ok) throw new Error(`model ${res.status}: ${url}`);
+    return res.arrayBuffer();
+  }, signal);
   // the folder of the file, as GLTFLoader.load gives parse
   return (await loader.parseAsync(data, url.slice(0, url.lastIndexOf('/') + 1))).scene;
 }

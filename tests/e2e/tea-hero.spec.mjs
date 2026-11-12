@@ -258,7 +258,7 @@ test('tea-hero-11 the day/night switch pressed while the scene loads is the mode
   const st = await page.evaluate(() => {
     const s = window.__teaHero.state;
     return { night: document.documentElement.dataset.mode !== 'day', target: s.target, mix: s.mix,
-      pics: s.backdrop.layers.map((l) => [l.mat.uniforms.uNight.value.image.src, l.mat.uniforms.uDay.value.image.src]) };
+      pics: s.backdrop.layers.map((l) => [l.mat.uniforms.uNight.value.userData.src, l.mat.uniforms.uDay.value.userData.src]) };
   });
   // the scene's mode, its blend and the picture it shows are the page's (1 is night)
   expect(st.target).toBe(st.night ? 1 : 0);
@@ -755,4 +755,24 @@ test('tea-hero-29 on a phone no line of the title box runs under the fixed day/n
     });
     expect(under, url).toEqual([]);
   }
+});
+
+// A link that starts to leave the page and then doesn't (its mailto link) must not cost the scene: Chromium sends a
+// beforeunload (tea-hero-28) and goes on loading; WebKit sends nothing and cancels the loads in flight, which the scene
+// tries again (manifest.js patient). The page's own mailto link is clicked while a model is held.
+test('tea-hero-30 a mailto link clicked while the scene loads keeps the scene loading', async ({ page }) => {
+  const errors = [];
+  page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+  page.on('pageerror', (e) => errors.push(e.message));
+  const release = await gate(page, '**/*.glb');
+  const asked = page.waitForRequest(/\.glb$/, { timeout: 60_000 });
+  await page.goto('/tea/?hero=on');
+  await asked;
+  await page.evaluate(() => document.querySelector('a[href^="mailto:"]').click());
+  await page.waitForTimeout(1200);
+  release();
+  await settled(page);
+  await expect(hero(page)).toHaveAttribute('data-3d', 'on');
+  await expect(hero(page)).not.toHaveAttribute('data-3d-off', /./);
+  expect(errors).toEqual([]);
 });

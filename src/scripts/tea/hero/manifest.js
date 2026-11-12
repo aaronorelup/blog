@@ -3,10 +3,28 @@
 // runtime cannot use throws, which leaves the poster.
 const V3 = (v, d = [0, 0, 0]) => (Array.isArray(v) && v.length === 3 ? v.map(Number) : d.slice());
 
+// WebKit cancels a page's loads as a link starts to leave it, a mailto link too, and that page stays: no pagehide comes
+// (boot.js), and the load fails as a network error (a TypeError). So one is tried again, twice, 0.5 s and then 1.5 s
+// later, unless the page is being left (signal). An answer (a 404) or bad data is never tried again.
+export async function patient(work, signal, waits = [500, 1500]) {
+  for (let i = 0; ; i++) {
+    try {
+      return await work();
+    } catch (e) {
+      if (!(e instanceof TypeError) || i >= waits.length || (signal && signal.aborted)) throw e;
+      await new Promise((r) => setTimeout(r, waits[i]));
+      if (signal && signal.aborted) throw e;
+    }
+  }
+}
+
 export async function loadManifest(url, signal) {
-  const res = await fetch(url, { credentials: 'same-origin', signal });   // signal: the page being left (boot.js)
-  if (!res.ok) throw new Error('manifest ' + res.status);
-  return normalise(await res.json(), url);
+  const json = await patient(async () => {
+    const res = await fetch(url, { credentials: 'same-origin', signal });   // signal: the page being left (boot.js)
+    if (!res.ok) throw new Error('manifest ' + res.status);
+    return res.json();
+  }, signal);
+  return normalise(json, url);
 }
 
 export function normalise(m, url) {

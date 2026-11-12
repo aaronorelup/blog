@@ -60,7 +60,7 @@ export async function mount(section, stage, opts = {}) {
     const anis = Math.min(4, renderer.capabilities.getMaxAnisotropy());
     const [actors, backdrop] = await unless(Promise.all([
       loadActors(manifest, s.camRig.portrait, signal),
-      loadBackdrop(manifest, night, anis),
+      loadBackdrop(manifest, night, anis, signal),
     ]));
     if (opts.loaded) opts.loaded();
     s.actors = actors;
