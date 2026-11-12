@@ -4664,7 +4664,7 @@
 "tried": false,
 "tried_how": null,
 "runs": [],
-"not_run_reason": "Not run (gap round 2, 2026-11-12: the task was one README read). RUNNABLE? not as installed from PyPI on Python 3: setup.py declares Python 2.7, pyace/__init__.py imports with \"from pyace import simpleace\" (a Python 2 implicit relative import; a synthetic copy of the layout failed under Python 3.13.18 with \"ImportError: cannot import name 'simpleace' from 'pyace'\", scripts/gap2/test_pyace_import_layout.py), and pyace.py imports keras at module level even for simple mode; requirements.txt pins hmmlearn==0.2.5 (PyPI wheels cp35 to cp39 only). The fcnn and rnn models are in a Dropbox zip (link answered HTTP 200 to a HEAD request, 57,054,721 bytes, not downloaded).",
+"not_run_reason": "Not run (gap round 2, 2026-11-12: the task was one README read). RUNNABLE? not as installed from PyPI on Python 3: setup.py declares Python 2.7, pyace/__init__.py imports with \"from pyace import simpleace\" (a Python 2 implicit relative import; a synthetic copy of the layout failed under Python 3.13.18 with \"ImportError: cannot import name 'simpleace' from 'pyace'\", scripts/gap2/test_pyace_import_layout.py), and pyace.py imports keras at module level even for simple mode; requirements.txt pins hmmlearn==0.2.5 (PyPI wheels cp35 to cp39 only). The fcnn and rnn models are in a Dropbox zip (link answered HTTP 200 to a HEAD request, 57,054,721 bytes, not downloaded). The PyPI sdist's own pyace/pyace.py is older than the GitHub HEAD's: it still has `import cPickle` and Python 2 print statements (e.g. `print st, et, ochord`), and Python 3.13.18's ast.parse rejects it (\"Missing parentheses in call to 'print'\", line 89); HEAD 4321145's pyace.py parses (verifier, 2026-11-12).",
 "for_aaron": false,
 "callable_via": [
 "python",
@@ -4697,7 +4697,7 @@
 "handoffs_out": [],
 "unverified": [
 "README: \"This software is under BSD License. For commercial use of this software, please contact the author.\"; no license statement found for the Dropbox models",
-"the README's script route (python pyace.py from inside the source folder, with Keras installed) was not run; its imports resolve in a synthetic copy of the layout"
+"the README's script route (python pyace.py from inside a clone of the GitHub source at HEAD 4321145, with Keras installed; the PyPI sdist's pyace.py does not parse under Python 3) was not run; its imports resolve in a synthetic copy of the layout"
 ]
 },
 {
@@ -7423,7 +7423,7 @@
 ],
 "unverified": [
 "the LiveChord application repository (JJ110112/LiveChord) is AGPL-3.0; the PyPI package and the weights are Apache-2.0 per the model card",
-"author measurements (model card): beat F1 0.920 / downbeat F1 0.936 on a 510-song gold subset and 0.881 / 0.914 on the 7,389-song holdout, at +-93 ms, against filtered Beat This! final0 output as labels",
+"author measurements (model card): beat F1 0.920 / downbeat F1 0.936 on a 510-song gold subset and 0.881 / 0.914 on the 7,389-song holdout, at +-93 ms, against filtered Beat This! final0 output as labels; the README's \"Split\" line says \"70% train / 15% val / 15% test\", but 7,389 is 56.8 % of 13,017 (15 % would be 1,953) and the README does not explain the difference (verifier, 2026-11-12)",
 "the first run in the venv (r0726) took 26.2 s inside refine() against 1.8 s in r0727; the cause was not isolated"
 ]
 },
@@ -7436,7 +7436,7 @@
 "tried": false,
 "tried_how": null,
 "runs": [],
-"not_run_reason": "Gated: the files need an access request the author approves (Hub API gated \"manual\"; page: \"You need to agree to share your Hugging Face information to access this model\"), a consent step this lane does not take; no public inference code found (PyPI 404 for audioestimate, audio-estimate, audio_estimate; no public GitHub repository under the names tried). Steps for Aaron: for-aaron.md section 13.",
+"not_run_reason": "Gated: the files need an access request the author approves (Hub API gated \"manual\"; page: \"You need to agree to share your Hugging Face information to access this model\"), a consent step this lane does not take; no public inference code found (PyPI 404 for audioestimate, audio-estimate, audio_estimate; git ls-remote on three github.com/DionTimmer spellings ended with \"remote: Invalid username or token. Password authentication is not supported for Git operations.\" and \"fatal: Authentication failed\", the same reply this box gets for a made-up repository name, while public repositories answer without credentials; the author's Hub account lists no Space). Steps for Aaron: for-aaron.md section 13.",
 "for_aaron": true,
 "callable_via": [],
 "inputs": [
@@ -7509,7 +7509,7 @@
 "handoffs_out": [],
 "unverified": [
 "author measurements in profiles.go comments (273-track rekordbox-labelled corpus, 85% harmonically compatible agreement for the default profile) were not rerun",
-"the lane's glue main.go was never compiled"
+"the lane's glue main.go was never built against mixedkey itself; it passes go vet against a stub that holds only the declarations it uses, copied from v0.1.0's detect.go and profiles.go (verifier, 2026-11-12, scripts/verify/gap2/typecheck_mixedkey_glue.sh)"
 ]
 }
 ]

@@ -183,7 +183,8 @@ evaluation code's five classes are DADGAD, Drop D, Open D, Open G and Standard.
 
 Not run here (not attempted): STONE installs from its cloned repository (no PyPI package), the kind of step this box's
 permission system refused each time this lane tried one (trials.md, "Not run here"), and its pinned torch 2.0.0 and
-tensorflow 2.12 downloads (195 MB and 586 MB) are over the 200 MB the shared disk allowed (trials.md, "Gap round 2").
+tensorflow 2.12 downloads are 195 MB and 586 MB, where the shared disk's notice allowed no single download or install over
+200 MB (trials.md, "Gap round 2").
 Facts below are from the repository at commit 0c5f72d (2025-10-24), read 2026-11-11 and again 2026-11-12: the
 README, `pyproject.toml`, `Dockerfile`, `inference.py` and the file list. The README says Python 3.10 and Poetry, and
 gives a Docker route; `pyproject.toml` pins torch 2.0.0, torchaudio 2.0.1 and tensorflow 2.12.*, and `inference.py`
@@ -294,7 +295,10 @@ Not run here: the box has Go 1.24.7, but the `go get` and `go build` of the modu
 system ("Reason: [Code from External]"; trials.md, "Gap round 2"). The lane's glue program is ready:
 `docs/guitar-tab-research/lanes/chords-beats-key/scripts/gap2/mixedkey_run/main.go` (standard library only; it reads
 16-bit PCM WAV files, mixes to mono, runs the four key profiles). It parses (`gofmt -e`) and uses only names defined in
-mixedkey v0.1.0, but it was never compiled, so a first build may need a small fix (UNVERIFIED).
+mixedkey v0.1.0; a type check (`go vet`) against a stub holding only those declarations, copied from v0.1.0's
+`detect.go` and `profiles.go`, passed on 2026-11-12 (verifier, `scripts/verify/gap2/typecheck_mixedkey_glue.sh`). It was
+never built against mixedkey itself, so a first build may still need a small fix (UNVERIFIED). All ten clips below are
+16-bit PCM WAV (format 1), which is what the program reads.
 
 1. Install Go 1.24 or later for Windows from https://go.dev/dl/ (mixedkey's README: "Requires Go 1.24 or later.").
 2. In PowerShell, in an empty folder `mixedkey_run`, copy `main.go` there, then run:
@@ -333,7 +337,10 @@ commits unchanged). Changed then: the "Not run here" line of each (these three w
 11's TensorFlow 1.15.2 wheel list (Python 3.5, 3.6 and 3.7, not only 3.6 and 3.7) and the `deepsquare` model file;
 section 12's third install command (numpy named so it stays at 1.23.5, and uv's `--torch-backend cpu` instead of a
 PyTorch index URL). Sections 13 (AudioEstimate, gated) and 14 (mixedkey, whose build was refused here) were added on
-2026-11-12. Not yet checked by a second agent.
+2026-11-12. Checked the same day by verify-gapfill-chords-beats-key (round 2; log at the end of trials.md) against the
+sources fetched again: every command, file name, size, option and quote in sections 10 to 14 matches them. Changed then:
+section 10's disk sentence (the tensorflow wheel alone is over 200 MB, the torch wheel is not), section 14's note on
+the glue program (a stub type check passed; the clips are 16-bit PCM). The glue's header comment was corrected too.
 
 ## Verification log (verify-trials-chords-beats-key, 2026-11-10)
 

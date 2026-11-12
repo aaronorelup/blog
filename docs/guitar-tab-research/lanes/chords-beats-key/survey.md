@@ -18,7 +18,10 @@ trials.md, "Verification log (verify-gapfill-chords-beats-key, round 1, 2026-11-
 
 Gap round 2 (2026-11-11 and 2026-11-12, gapfill-chords-beats-key; trials.md, "Gap round 2"): items marked "Gap round 2"
 or "(... gap round 2 ...)" were added then, from pages read on 2026-11-12 unless the line says otherwise; raw copies in
-`/home/user/gtr/lanes/chords-beats-key/raw/gap2/` (not committed). Not yet checked by a second agent.
+`/home/user/gtr/lanes/chords-beats-key/raw/gap2/` (not committed). Checked on 2026-11-12 against the sources fetched again
+by verify-gapfill-chords-beats-key (trials.md, "Verification log (verify-gapfill-chords-beats-key, round 2,
+2026-11-12)"; its copies are in `/home/user/gtr/lanes/chords-beats-key/verify-gap2/raw/`); that log lists what it
+changed in this file.
 
 Marks used in the tool list:
 
@@ -972,10 +975,15 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
     (`scripts/gap2/test_pyace_import_layout.py`, no pyace code) under Python 3.13.18: `import pyace` failed with
     "ImportError: cannot import name 'simpleace' from 'pyace'", and running `pyace.py` from inside the folder (the
     README's second route) resolved its imports.
-  - Mark: RUNNABLE? Not as installed from PyPI on Python 3 (the `__init__.py` import above); the README's script route
-    from inside the source folder, with Keras installed, is the route left (not run here: the round's task was a README
-    read). License: README "This software is under BSD License. For commercial use of this software, please contact
-    the author." (LICENSE as quoted above).
+  - The PyPI sdist (pyace-0.1.1.tar.gz, SHA-256 equal to PyPI's, read by the verifier on 2026-11-12) has the same
+    `__init__.py`, but its `pyace/pyace.py` is older than HEAD's: it still has `import cPickle` and Python 2 `print`
+    statements (e.g. `print st, et, ochord`), and Python 3.13.18's `ast.parse` rejects it ("Missing parentheses in call
+    to 'print'", line 89). HEAD 4321145's `pyace.py` has `print(...)` calls and the `cPickle` import commented out, and
+    parses.
+  - Mark: RUNNABLE? Not as installed from PyPI on Python 3 (the `__init__.py` import above, and the sdist's `pyace.py`
+    does not parse); the README's script route from inside a clone of the GitHub source (HEAD 4321145), with Keras
+    installed, is the route left (not run here: the round's task was a README read). License: README "This software
+    is under BSD License. For commercial use of this software, please contact the author." (LICENSE as quoted above).
 
 ## librosa (beat tracking, tempo, PLP, tuning estimation)
 
@@ -1266,7 +1274,9 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   frames), `checkpoint_path`. No tempo range or meter argument.
 - Author measurements (README "Metrics"): "Held-out test set: **7,389 songs** (15% stratified holdout from a
   13,017-song corpus). Tolerance: **±1 frame ≈ ±93 ms** (mir_eval-style F-measure; standard is 70 ms)."; gold-quality
-  subset (n=510) beat F1 0.920 and downbeat F1 0.936; full holdout beat F1 0.881 and downbeat F1 0.914. The README's
+  subset (n=510) beat F1 0.920 and downbeat F1 0.936; full holdout beat F1 0.881 and downbeat F1 0.914 (7,389 is 56.8 %
+  of 13,017, while 15 % would be 1,953, and the README's "Split" line says "70% train / 15% val / 15% test"; the README
+  does not explain the difference; noted by the verifier, 2026-11-12). The README's
   "Note on baseline": "The training corpus uses each song's own prior-tracker output as the supervision target whenever
   that output passed the filter." and "An independent ground-truth comparison (MIREX Beatles, GTZAN_rhythm) is on the v2
   roadmap." The Hub's `config.json` `training_metadata`: epoch 5, global_step 9235, `val_metrics` with "n_songs": 6,
@@ -1307,8 +1317,10 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   access this model" and "This repository is publicly accessible, but you have to accept the conditions to access its
   files and content."
 - How to call: no public code found. PyPI has no `audioestimate`, `audio-estimate` or `audio_estimate` project (HTTP
-  404, 2026-11-12); `git ls-remote` on github.com/DionTimmer/audioestimate (and two spellings) asked for credentials,
-  i.e. no public repository answers there; the author's Hub account lists no Space.
+  404, 2026-11-12); `git ls-remote` on github.com/DionTimmer/audioestimate (and two spellings) ended with "remote:
+  Invalid username or token. Password authentication is not supported for Git operations." and "fatal: Authentication
+  failed", the same reply this box gets for a made-up repository name (public repositories answer without
+  credentials); the author's Hub account lists no Space (Hub API, `[]`).
 - Output (card): Camelot key and BPM with confidence values; "Current project convention: normalize low BPM
   predictions below 90 BPM by doubling keep raw BPM as diagnostic metadata keep key and tempo confidence for
   review/fallback workflows" (list items run together in the page text).
@@ -1482,7 +1494,8 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   - Output, from `inference.py` (main, 0c5f72d): the README says the command writes "`/results/ckpt_name/results.npz`";
     the code writes `np.savez(os.path.join(path_results, "values.npz"), **results)` with `path_results =
     os.path.join(audio_path, "results", ckpt_name)` (lines 217-220), one entry per audio file keyed by its absolute path,
-    holding `torch.mean(yh, dim=0).argmax()` over the file's 15 s segments (line 156), i.e. one class number. It runs with
+    holding `torch.mean(yh, dim=0).argmax()` over the file's segments (line 156; the segment length is the checkpoint's
+    `dur`, line 169, and the comment at line 151 calls the training segment length 15 s), i.e. one class number. It runs with
     `device = "cpu"` (line 167). The README's "Mapping" section turns class numbers into labels, e.g. for `semitone_ks.pt`
     "0: 'Bb Major/G minor'" (twelve key signatures, each a major key and its relative minor) and for the 24-class
     checkpoint "0: 'B minor'" ... "23: 'C# Major'".
@@ -1757,7 +1770,8 @@ see trials.md):
     file (`tempocnn/commands.py`, `_write_tempo_result`); with `--jams` the tempo goes into a JAMS `tempo` annotation
     (`_create_tempo_jam`), the same container CREMA writes for chords (CREMA section).
 
-Added in gap round 2 (2026-11-12, gapfill-chords-beats-key; not yet checked by a second agent):
+Added in gap round 2 (2026-11-12, gapfill-chords-beats-key; checked the same day by verify-gapfill-chords-beats-key:
+the README lines match the 0.1.0 README on the Hub and on PyPI, and e1837 to e1856 re-score identically):
 
 27. Beat This! and madmom beat and downbeat times (seconds) are what the LiveChord refiner takes, together with the
     audio file: "Run any beat tracker (beat_this, madmom, librosa, ...) → beats / downbeats lists" then "Pass them to

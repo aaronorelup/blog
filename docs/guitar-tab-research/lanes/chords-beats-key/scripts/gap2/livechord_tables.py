@@ -32,7 +32,7 @@ def cells(r):
 print("| clip | prior | beats in: F / CMLt / AMLt | est / truth | median offset ms | downbeats in: F / CMLt | est / truth "
       "| eval | refined: F / CMLt / AMLt | est / truth | median offset ms | downbeats refined: F / CMLt | est / truth "
       "| eval |")
-print("|" + "---|" * 15)
+print("|" + "---|" * 14)  # 14 columns (was 15, one more than the header; fixed by the round's verifier)
 for key, label, tool, variant in PRIORS:
     for c in CLIPS:
         a = cells(rows[(tool, variant, c, "beats")])

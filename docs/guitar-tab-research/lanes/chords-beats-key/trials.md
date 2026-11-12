@@ -1165,16 +1165,17 @@ six gaps listed for this lane in `docs/guitar-tab-research/resume/gaps/chords-be
 for Aaron for STONE, key-cnn and BeatNet+; (2) the LiveChord beat refiner (PyPI `livechord-beat-refiner` 0.1.0),
 surveyed and run on Beat This! and madmom beats; (3) the training data of DeepRhythm, CREMA, lv-chordia and the madmom
 models, and CREMA's chord vocabulary size; (4) pyace; (5) unquoted source wording in `tools.json`; (6) AudioEstimate and
-mixedkey, survey only. A first start of this round at about 01:21 UTC on 2026-11-11 was cut off by the stop at about
-01:25 UTC (ENVIRONMENT.md, "Interruptions"); it had fetched sources into `/home/user/gtr/lanes/chords-beats-key/raw/gap2/`,
-written `for-aaron.md` sections 10 to 12 and the scripts `scripts/beatnetplus_run.py` and `scripts/stone_npz_labels.py`,
+mixedkey, survey only. A first start of this round at 01:20 UTC on 2026-11-11 (its transcript runs from 01:20:24 to
+01:25:35 UTC) was cut off by the stop at about 01:25 UTC (ENVIRONMENT.md, "Interruptions"); it had fetched sources
+into `/home/user/gtr/lanes/chords-beats-key/raw/gap2/`, written `for-aaron.md` sections 10 to 12 and the scripts `scripts/beatnetplus_run.py` and `scripts/stone_npz_labels.py`,
 and nothing in this file. Those were checked again on 2026-11-12 (first item below). Conventions as in "Gap round 1":
 `rNNNN` run ids, `eNNNN` gtr-eval ids, outputs in `/home/user/gtr/lanes/chords-beats-key/out/<tool>/<clip>/`; this round's
 scripts are in `scripts/gap2/` (the two named above stay in `scripts/`), its copies of fetched pages in
 `/home/user/gtr/lanes/chords-beats-key/raw/gap2/` (not in git). The shared disk had 6,132 MB free when the round
 started (`df`, before 03:53 UTC), so the orchestrator's DISK LOW notice (no new download or install over 200 MB) applied
 throughout.
-No second agent has checked this round.
+(Checked afterwards by verify-gapfill-chords-beats-key on 2026-11-12: "Verification log (verify-gapfill-chords-beats-key,
+round 2, 2026-11-12)" at the end of this file, which lists what it changed here.)
 
 ### STONE, key-cnn and BeatNet+: NOT RUN HERE (not attempted); steps for Aaron in for-aaron.md sections 10 to 12
 
@@ -1207,7 +1208,8 @@ No second agent has checked this round.
     (3,712,064 bytes).
   - BeatNet+: `BeatNetPlusInference(weights, mode='online', inference_model='PF', plot=[], device='cpu', ...)`
     (`src/BeatNetPlus/inference.py` line 48); offline decoding is madmom's `DBNDownBeatTrackingProcessor(beats_per_bar=[3,
-    4], fps=50, observation_lambda=16)` (lines 69-70); audio is read with `librosa.load(audio_path, sr=22050)`; weights
+    4], fps=50, observation_lambda=16)` (lines 69-70); audio is read with
+    `librosa.load(audio_path, sr=self.sample_rate)`, where `self.sample_rate = 22050` (lines 111 and 55); weights
     `generic_weights.pt` 3,072,825 bytes, `generic_main_weights.pt` 3,072,890, `af_non_percussive_weights.pt`
     3,073,019 (HEAD requests); `setup.py`: `python_requires='>=3.8'`, `numpy>=1.21.0`, `madmom>=0.16.1`, `torch>=1.9.0`.
 - Scripts for Aaron. `scripts/stone_npz_labels.py` (numpy only; the README's two mappings) was tested here with
@@ -1233,8 +1235,8 @@ No second agent has checked this round.
 - Install (venv-livechord, Python 3.11.15): `uv pip install "livechord-beat-refiner==0.1.0" "torch==2.15.0" soundfile`,
   4.15 s wall; uv "Resolved 48 packages", "Prepared 2 packages", the rest from the shared cache (torch 2.15.0+cpu,
   librosa 0.11.0, numpy 2.4.6, huggingface-hub 2.4.0, safetensors 0.8.0, soundfile 0.14.0; log
-  `/home/user/gtr/lanes/chords-beats-key/logs/gap2/install_livechord.log`). Venv 1.2 GB by `du` (hard links into the
-  cache). Freeze: `samples/livechord/venv-livechord.freeze.txt`. The weights were fetched with curl from the pinned
+  `/home/user/gtr/lanes/chords-beats-key/logs/gap2/install_livechord.log`). Venv 1.3 GB by `du -sh` at 04:07 UTC (hard
+  links into the cache). Freeze: `samples/livechord/venv-livechord.freeze.txt`. The weights were fetched with curl from the pinned
   revision before the timed runs and passed as `checkpoint_path`, so no run downloaded anything. The venv and the
   weights were deleted after the runs.
 - Runs (all on 2 cores):
@@ -1289,7 +1291,7 @@ No second agent has checked this round.
   `scripts/gap2/livechord_tables.py`:
 
 | clip | prior | beats in: F / CMLt / AMLt | est / truth | median offset ms | downbeats in: F / CMLt | est / truth | eval | refined: F / CMLt / AMLt | est / truth | median offset ms | downbeats refined: F / CMLt | est / truth | eval |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | S3 | Beat This! final0 | 0.906 / 0.906 / 0.906 | 32 / 32 | +25 | 0.941 / 0.889 | 9 / 8 | e1837 | 0.892 / 0.909 / 0.909 | 33 / 32 | +21 | 0.941 / 0.889 | 9 / 8 | e1839 |
 | S4 | Beat This! final0 | 0.956 / 0.956 / 0.956 | 68 / 68 | +12 | 0.971 / 0.944 | 18 / 17 | e1841 | 0.971 / 0.957 / 0.957 | 70 / 68 | +13 | 0.971 / 0.944 | 18 / 17 | e1843 |
 | R1a | Beat This! final0 | 0.990 / 0.981 / 0.981 | 52 / 53 | +7 | 0.963 / 0.929 | 13 / 14 | e1845 | 0.981 / 0.962 / 0.962 | 51 / 53 | +10 | 0.889 / 0.857 | 13 / 14 | e1847 |
@@ -1326,7 +1328,10 @@ No second agent has checked this round.
 - Item 4: pyace was read, not run (the task was one README read): PyPI 0.1.1 is a 2017 sdist of Python 2.7 code whose
   `__init__.py` import fails under Python 3 (shown on a synthetic copy of its package layout with stub files,
   `scripts/gap2/test_pyace_import_layout.py`: "ImportError: cannot import name 'simpleace' from 'pyace'" under Python
-  3.13.18); its "simple" mode has no trained weights; details in survey.md ("pyace").
+  3.13.18); its "simple" mode has no trained weights; details in survey.md ("pyace"). (Verifier, 2026-11-12: the sdist's
+  own `pyace/pyace.py` differs from the GitHub HEAD's: it still has `import cPickle` and Python 2 `print` statements,
+  e.g. `print st, et, ochord`, and Python 3.13.18's `ast.parse` rejects it, "Missing parentheses in call to 'print'",
+  line 89; HEAD 4321145's `pyace.py` has `print(...)` calls, the `cPickle` import commented out, and parses.)
 - Item 5: the three unquoted source phrases in `tools.json` (Essentia's "best matching major or minor triad",
   ChordMini's "Docker (recommended for the standalone Sheet Sage melody service)", STONE's "the best Semi-TONE model"
   and "the best STONE model") are now quoted with their source;
@@ -1341,7 +1346,10 @@ No second agent has checked this round.
 - The model's files need an accepted access request (Hub API `gated`: "manual"; the page: "You need to agree to share
   your Hugging Face information to access this model"), a consent step this lane does not take; no public inference
   code was found (PyPI 404 for `audioestimate`, `audio-estimate`, `audio_estimate`; `git ls-remote` on three
-  github.com/DionTimmer spellings asked for credentials). Survey facts: survey.md, "AudioEstimate"; steps for Aaron:
+  github.com/DionTimmer spellings ended with "remote: Invalid username or token. Password authentication is not
+  supported for Git operations." and "fatal: Authentication failed"; the verifier got the same reply on 2026-11-12, and
+  the same again for a made-up repository name, while public repositories answer `git ls-remote` from this box without
+  credentials). Survey facts: survey.md, "AudioEstimate"; steps for Aaron:
   `for-aaron.md` section 13.
 
 ### mixedkey v0.1.0 (Go): NOT RUN HERE (the build was refused)
@@ -1350,10 +1358,14 @@ No second agent has checked this round.
   linux/amd64` at `/usr/local/go/bin/go`), and mixedkey's README asks for "Go 1.24 or later", so a run was tried.
 - Glue written for it: `scripts/gap2/mixedkey_run/main.go` (Go standard library only: reads 16-bit PCM WAV, mixes the
   channels to mono, scales to [-1, 1], calls `mixedkey.DetectWith` with each of the four profiles and
-  `mixedkey.DetectCandidates`, writes one JSON and one key file per clip). It was checked with `gofmt -e` (it parses)
+  `mixedkey.DetectCandidates`, writes per clip one JSON file and four key files, one per profile; the header comment's
+  description of the key files was corrected by the verifier). It was checked with `gofmt -e` (it parses)
   and against mixedkey's source at 723a590 (every identifier it uses, `DetectWith`, `DetectCandidates`, `Options`,
   `ProfileAardenEssen`, `ProfileKrumhansl`, `ProfileTemperley`, `ProfileBellmanBudge`, `Minor`, `Key.Tonic`,
-  `Key.Camelot`, `Candidate.Support` and `Candidate.Confidence`, is defined there); it was never compiled.
+  `Key.Camelot`, `Candidate.Support` and `Candidate.Confidence`, is defined there); it was never compiled. (Verifier,
+  2026-11-12: `go vet` passes on it against a stub that holds only these declarations, copied from v0.1.0's `detect.go`
+  and `profiles.go` with empty bodies, with `GOPROXY=off`; no mixedkey code was fetched or compiled;
+  `scripts/verify/gap2/typecheck_mixedkey_glue.sh`.)
 - The one attempt (about 04:25 UTC): one shell command with `go mod init chordsbeatskey/mixedkeyrun`, `go get
   github.com/cabbagekobe/mixedkey@v0.1.0` and `go build -o <lane>/bin/mixedkey_run .` (module and build caches pointed
   into the lane folder, `GOTOOLCHAIN=local`) was refused before it ran: "Permission for this action was denied by the
@@ -1426,12 +1438,12 @@ position or an open-string tuning.
 | QM Vamp plugins (Key Detector, Bar and Beat Tracker, Tempo and Beat Tracker) | Binaries come from the Vamp plugin download page or a source build of a cloned repository; neither is a package-manager route; not attempted. Not in Ubuntu 24.04 apt (`apt-cache search vamp`, re-checked by the verifier). The download page's link for them, https://code.soundsoftware.ac.uk/projects/qm-vamp-plugins/files, gave "Connection reset by peer" to the verifier's curl on 2026-11-10; after the Omnizart refusal above the verifier did not try a downloaded binary or a source build. (Gap round 1: still not run. The site reset the connection again at 23:30:27 UTC; no Debian, Ubuntu or PyPI package; the Vamp Plugin Pack's Linux AppImage holds the plugins only inside its GUI installer program, which was not run; see "Gap round 1".) |
 | Guitar tuning classifier (Hulme et al., edhulme/guitar-tuning-classification) | Repository code with TensorFlow models on Google Drive (survey.md); not attempted (repository code). (Gap round 1: still the case; no other tuning or capo detector with weights or a package was found, see "Gap round 1".) |
 | BEAST | Evaluation script plus a Google Drive model (survey.md); not attempted. |
-| STONE (deezer/stone, 0c5f72d) | (added in gap round 2) Not attempted. No package (PyPI `stone` is an unrelated Dropbox project); installs from its cloned repository with Poetry or its Dockerfile, the kind of step refused here three times ("[Code from External]": madmom git build, BTC run, libKeyFinder CMake build); its pins (torch 2.0.0, tensorflow 2.12.*) need downloads of 195 MB and 586 MB, over the disk notice's 200 MB. Steps: `for-aaron.md` section 10; details in "Gap round 2". |
+| STONE (deezer/stone, 0c5f72d) | (added in gap round 2) Not attempted. No package (PyPI `stone` is an unrelated Dropbox project); installs from its cloned repository with Poetry or its Dockerfile, the kind of step refused here three times ("[Code from External]": madmom git build, BTC run, libKeyFinder CMake build); its pins (torch 2.0.0, tensorflow 2.12.*) need downloads of 195 MB and 586 MB; the tensorflow wheel alone is over the disk notice's 200 MB per download or install. Steps: `for-aaron.md` section 10; details in "Gap round 2". |
 | key-cnn (hendriks73/key-cnn, 9715d6f) | (added in gap round 2) Not attempted. No PyPI project; installs from its cloned repository with `setup.py install` (README, "using Python 3.6"), pinning tensorflow 1.15.2, numpy 1.16.0 and librosa 0.6.2; the cloned-repository step is the kind refused here three times. Steps: `for-aaron.md` section 11. |
 | BeatNet+ (mjhydri/BeatNet-Plus, bb90eb0) | (added in gap round 2) Not attempted. No PyPI project; installs from its cloned repository with `pip install -e .`, the kind of step refused here three times. Steps and a run script (`scripts/beatnetplus_run.py`, not run): `for-aaron.md` section 12. |
 | mixedkey (Go, v0.1.0) | (added in gap round 2) The `go get` and `go build` of the module with the lane's glue (`scripts/gap2/mixedkey_run/main.go`) was refused before it ran, "Reason: [Code from External]"; nothing was built. Go 1.24.7 is on the box. Steps: `for-aaron.md` section 14. |
 | AudioEstimate (HF DionTimmer/audioestimate-1.0) | (added in gap round 2) Files gated behind a manually approved access request; no public inference code found. Steps: `for-aaron.md` section 13. |
-| pyace (0.1.1) | (added in gap round 2) Not run: the round's task was a README read. The PyPI package is Python 2.7 code whose `__init__.py` import fails under Python 3 (synthetic-layout test); survey.md, "pyace". |
+| pyace (0.1.1) | (added in gap round 2) Not run: the round's task was a README read. The PyPI package is Python 2.7 code whose `__init__.py` import fails under Python 3 (synthetic-layout test); survey.md, "pyace". (Verifier, 2026-11-12: the sdist's `pyace.py` also has Python 2 `print` statements and does not parse under Python 3.13.18; the GitHub HEAD's does.) |
 | realtime-bpm-analyzer, web-audio-beat-detector, essentia.js | Browser libraries; in-browser analysis belongs to the browser-audio-sync lane; not run here. |
 
 ## Media kept outside git
@@ -1648,3 +1660,127 @@ Still UNVERIFIED after this check:
 - The venv sizes (1.4 GB, 2.5 GB, 926 MB) are the gap agent's `du` readings in its transcript; those venvs are gone.
 
 Verifier's runs: r0665, r0671, r0675, r0693.
+
+## Verification log (verify-gapfill-chords-beats-key, round 2, 2026-11-12)
+
+Checks of "Gap round 2" and of the round's notes in this file, survey.md, for-aaron.md, tools.json, `samples/` and
+`scripts/`, by an independent agent, against the run ledger, the gtr-eval ledger, the saved outputs, a re-run, the
+sources fetched again on 2026-11-12 (04:39 to 04:47 UTC) and the gap agent's two session transcripts (the cut-off first
+start, 2026-11-11 01:20:24 to 01:25:35 UTC, and the round, 2026-11-12 03:50:17 to 04:31:39 UTC). "Before the round" means
+commit aa1c1d0; the orchestrator's commit b5ab516 (04:38 UTC) already holds the round's files. Scripts:
+`scripts/verify/gap2/`; outputs, logs and page copies: `/home/user/gtr/lanes/chords-beats-key/verify-gap2/` (not in
+git). The venv and the weights file the re-run used were deleted afterwards.
+
+What was checked, and the result:
+
+- Run ledger: r0726, r0727 and r0729 are the only runs of this lane after r0693 (2026-11-11) and before the verifier's;
+  each is in `/home/user/gtr/ledger/runs.jsonl` with the command described, 2 cores (cores 0-1, locked), exit 0, and the
+  wall-clock, CPU (user + system), peak RSS and slot wait the text gives (r0726: 40.23 s, 24.46 s, 585.8 MB, 41.2 s;
+  r0727: 37.8 s, 41.05 s, 478.0 MB; r0729: 10.69 s, 691.5 MB). r0728 is a source-separation run. The 10 + 2 per-job lines
+  of `logs/gap2/batch_livechord*.jsonl` (all exit 0, affinity cores 0-1) are the files copied to `samples/livechord/`, and
+  give the quoted ranges (3.654 to 3.924 s, 473.5 to 478.0 MB; R2full 688.9 and 691.5 MB). No failed run is described as
+  a success; the mixedkey build has no run id because it was refused before it ran.
+- Scores: the 20 gtr-eval ledger entries e1837 to e1856 (agent_hint gapfill-chords-beats-key-round2, exit 0, gtr-eval
+  0.12.1) were re-run as separate processes with `--no-ledger` from their stored argv and working directory
+  (`rerun_gap2_evals.py`): 20 of 20 results identical in full, and the estimate files unchanged (SHA-256). The ten "in"
+  evals have the same estimate SHA-256, options and metrics as the first-round evals the text names (e1364, e1366, e1373,
+  e1375, e1376, e0210, e0240, e1086, e1121, e1158; gtr-eval 0.11.1). The rows of `samples/scores/scores_livechord.jsonl`,
+  `scores_beat_this.jsonl` and `scores_madmom.jsonl` with these ids equal the ledger results; the two older score files
+  only gained five rows each.
+- Table and text, recomputed with the verifier's own code: all 10 rows x 14 cells of the LiveChord table equal the ledger
+  results. The R1a "off-beat variant" was checked per variant with mir_eval's continuity code: AMLt 1.0 comes from the
+  off-beat variant alone, for the prior and the refined beats. `check_livechord_files.py`: the 12 per-clip JSON samples
+  are identical to the files in `out/livechord/`; the beat and downbeat text files equal the JSON lists; all counts in and
+  out as written; 636 refined times in the 10 batch outputs (and those of R2full) lie on the 2048 / 22050 s grid after
+  4-decimal rounding; downbeats are a subset of beats in 12 of 12 outputs; the prior lists equal the first-round files;
+  import 1.119 to 1.223 s, model load 0.031 to 0.057 s, refine() 1.692 to 1.889 s, audio 24.0 to 38.741 s; R2full 266 to
+  305 and 265 to 313 beats, 71 to 70 and 67 to 69 downbeats, median inter-beat interval 0.8359 s (71.78 BPM) for both
+  priors; the r0726 output's counts and first 8 beats and 4 downbeats equal the batch's S3 output to 3 decimals.
+- Re-run (labels starting "verify"): r0730, 2 cores, 31.9 s wall, exit 0: a new venv from the shared uv cache (freeze
+  identical to `samples/livechord/venv-livechord.freeze.txt`) and `model.safetensors` fetched again from revision
+  faa1ce0f (SHA-256 equal); `scripts/gap2/livechord_run.py` on S3 with both priors and on R1b with the Beat This! prior.
+  The refined beat and downbeat files are byte-identical to r0727's. refine() took 19.70 s in the first job of the fresh
+  venv, then 1.97 s and 1.75 s (r0727: 1.80, 1.69 and 1.89 s), the same first-run pattern as r0726.
+- Files: every path named in "Gap round 2" exists, except what the text says was deleted (venv, `model.safetensors`);
+  `models/livechord/` still holds the Hub's `README.md`, `LICENSE` and `config.json` (32 KB). No audio file was written by
+  the round. The scripts and plans parse (`ast.parse`, `bash -n`, JSON), `test_stone_npz_labels.py` prints the four
+  labels the text quotes, and `test_pyace_import_layout.py` gives the quoted ImportError under Python 3.13.18.
+- Sources, fetched again by the verifier (`fetch_sources.sh`; 116 lines in `verify-gap2/raw/status.tsv`) and compared
+  with the text (`check_quotes.py`: 109 quoted passages found as written; the other 47 read by hand: section names,
+  lines of the install log, the r0726 output and the refusal text in the gap transcript, passages around inline code,
+  and paper quotes whose footnote marks the text says were dropped; all match). Also equal to the text: the PyPI 404s
+  (ten names), `stone` 3.5.5's summary; TensorFlow 1.15.2's nine wheels (cp35 to cp37; cp37 Linux 110,452,574 bytes),
+  numpy 1.16.0's Windows wheels (2.7, 3.5, 3.6, 3.7), torch 2.0.0+cpu cp310 (195,412,802 bytes) and tensorflow 2.12.1
+  cp310 x86_64 (585,912,145 bytes); the HEAD commits and dates (blob-less clones: LiveChord ba989e5 2026-09-06, STONE
+  0c5f72d 2025-10-24, key-cnn 9715d6f 2020-07-30, BeatNet+ bb90eb0 2026-04-13, mixedkey 723a590 2026-07-20, crema
+  051c916, pyace 4321145; DeepRhythm b1f6116, whose shallow clone has no training code and `weights/` 0.5 and 0.7); the 15
+  item-1 files have the same SHA-256 on 2026-11-11, 2026-11-12 and in the verifier's copies (12 of the 15 fetched); STONE's
+  `pyproject.toml`, `Dockerfile`, README lines and `inference.py` line numbers; key-cnn's `setup.py`, `bin/key`, aliases
+  and model sizes (`deepsquare_k8` 3,712,064 bytes); BeatNet+'s `setup.py`, constructor (line 48), DBN (lines 69-70),
+  weights and README lines; LiveChord's PyPI JSON and wheel (SHA-256 equal), Hub API data, README (equal to the PyPI
+  description after line-ending normalisation), LICENSE (identical in the wheel and on the Hub), the code lines the text
+  cites, and the application repository's AGPL-3.0 LICENSE and README sentence; AudioEstimate's Hub API data and page
+  text (the README needs a login, HTTP 401; no Space); mixedkey's proxy.golang.org data, README, LICENSE, `go.mod`, file
+  list, `profiles.go` comments and `detect.go` constants; the seven papers (pdftotext): every quoted passage, the ISMIR 2016
+  Table 1 test-only marks (GTZAN, Klapuri, SMC), the ISMIR 2018 "unseen" test sets and its "625 songs with key
+  annotations"; CREMA's training README, `index_train.json` (973 ids) and `index_test.json` (244; no id in both; 1217
+  together), `test_scores.json` (keyed by exactly the 244 test ids), `metadata_test.json` ("The Box Tops"),
+  `docs/models.rst` ("602 classes"), `model.h5` (`chord_tag` 170 softmax units, kernel 294 x 170, with h5py in a
+  temporary venv, deleted) and `pump.pkl` (walked with `pickletools.genops`, not loaded: the set after `chord_tag`'s
+  `_classes` holds 170 labels, 12 roots x 14 qualities plus N and X); DeepRhythm's page quote, date and `benchmarks.md`;
+  the GiantSteps READMEs (the files are named `README`, without an extension; no license statement); Slakh2100's
+  license id; the FMA README lines; Ballroom's page (HTTP 403 again); the RWC page (connection reset again); pyace's
+  README, `setup.py`, `requirements.txt`, PyPI files, hmmlearn 0.2.5's wheels and the Dropbox HEAD (57,054,721 bytes);
+  Essentia's ChordsDetection page; ChordMini's README requirement lines (its markdown bold is dropped in the quotes).
+  Code, weights and data licenses stay apart as written: LiveChord code and weights Apache-2.0 by its README and Hub tag,
+  its application AGPL-3.0, its training data unpublished; AudioEstimate no license found; mixedkey MIT code, no weights;
+  dataset lines separate.
+- NOT RUN HERE reasons: the three earlier "[Code from External]" refusals the text cites are in the agents' transcripts
+  (madmom git build 2026-11-10 20:55:55 UTC, BTC run 21:34:02, libKeyFinder CMake build 2026-11-11 00:13:55; the
+  verifier's Omnizart install attempt, 22:50:33, was refused the same way). The mixedkey refusal is in the round's
+  transcript at 04:25:40 UTC with the quoted text; the command was the one described, and the listing after it shows no
+  `go.mod`, module cache, `bin/` or log. AudioEstimate's gate is "manual" in the Hub API. The STONE, key-cnn and BeatNet+
+  reasons ("not attempted") are as described.
+- Wording, secrets, size: no judging word outside quotation marks in the round's additions or in the tools.json entries
+  it changed; no key, token, e-mail address, personal detail or IP address; no audio, video or binary file; the largest
+  file is tools.json (275,630 bytes after the change below).
+- Earlier record: against aa1c1d0, all earlier headings of the three files are present in order and both earlier
+  verification logs are unchanged; the only earlier lines that changed are two lines of this file, which keep their text
+  with a gap-round note added, twelve survey.md lines extended with gap-round notes, and in for-aaron.md eleven lines of
+  sections 10 to 12, text that the first start of this round wrote. tools.json against aa1c1d0: 3 entries added, 11 changed, none removed, order
+  kept, the other 71 identical in content; `json.dumps(indent=0, ensure_ascii=False)` reproduces the file byte for byte.
+
+What was changed:
+
+- This file: the LiveChord table's separator row had 15 cells for a 14-cell header (a table GitHub does not render) and
+  now has 14 (also in `scripts/gap2/livechord_tables.py`); the first start's time (01:20 UTC, from its transcript); the
+  venv size (1.3 GB, the transcript's only `du` reading, not 1.2 GB); BeatNet+'s `librosa.load` call as written in the
+  code; the AudioEstimate `git ls-remote` reply quoted instead of "asked for credentials" (a made-up repository name gets
+  the same reply); the mixedkey glue writes four key files per clip, not one; the STONE "Not run here" row (the
+  tensorflow wheel alone is over the 200 MB); pyace notes on the sdist's `pyace.py` (Python 2 `print` statements, does
+  not parse under Python 3; HEAD's does); a note on the stub type check of the mixedkey glue; the "not checked" sentence.
+- survey.md: header note; STONE's segment length (the checkpoint's `dur`; "15 s" is the code comment's training length);
+  pyace (the sdist's `pyace.py`, and the script route needs the GitHub source); the AudioEstimate `git ls-remote` reply;
+  LiveChord's README numbers (7,389 is 56.8 % of 13,017 while its split says 15 % test); the handoff header.
+- for-aaron.md: section 10's disk sentence; section 14's note on the glue (stub type check; the ten clips are 16-bit PCM,
+  format 1); the gap note.
+- tools.json (`scripts/verify/gap2/fix_tools_json.py`): pyace `not_run_reason` and `unverified` (the sdist's `pyace.py`);
+  mixedkey `unverified` (the stub type check).
+- `scripts/gap2/mixedkey_run/main.go`: the header comment now names the per-clip key files and says that the output folder
+  must exist (comment only; `gofmt` and the type check pass as before).
+- Added: `scripts/verify/gap2/` (`rerun_gap2_evals.py`, `check_livechord_files.py`, `check_quotes.py`, `fetch_sources.sh`,
+  `fix_tools_json.py`, `typecheck_mixedkey_glue.sh` and `mixedkey_stub/`, a stub with only the exported declarations the
+  glue uses, empty bodies, no mixedkey code).
+
+Still UNVERIFIED after this check:
+
+- That the mixedkey glue builds and runs against the real module: it passed `go vet` against the stub only (`GOPROXY=off`;
+  nothing was fetched or compiled from mixedkey).
+- Which pickle object the "3567s" vocab entry in `pump.pkl` belongs to was not traced; the 170-label class set follows
+  `chord_tag` in the stream.
+- The 1.3 GB venv size is the gap agent's `du` reading in its transcript; that venv is gone.
+- What the first refine() call in a fresh venv spends its extra time on (26.2 s in r0726, 19.7 s in r0730).
+- The terms of RWC, Ballroom and MARL, and the access conditions of AudioEstimate (behind a login), as the text says.
+- The steps in for-aaron.md sections 10 to 14 were checked against their sources, not run.
+
+Verifier's runs: r0730.

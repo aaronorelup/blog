@@ -4,8 +4,9 @@
 // channels to mono as the README asks ("Stereo sources must be mixed to mono by the caller (`(L+R)/2`)"), scales the
 // samples to [-1, 1] (divides by 32768), and calls mixedkey.DetectWith once per profile (Aarden-Essen, the default;
 // Krumhansl; Temperley; Bellman-Budge) and mixedkey.DetectCandidates once (default profile). Each call is timed with
-// time.Since. One JSON object per file goes to <outdir>/<clip>.mixedkey.json and one line per profile to
-// <outdir>/key_mixedkey_<profile>.txt as "<tonic> <major|minor>" with sharps (C, C#, ..., B).
+// time.Since. One JSON object per file goes to <outdir>/<clip>.mixedkey.json, and for each profile one file
+// <outdir>/<clip>.key_mixedkey_<profile>.txt holds one line "<tonic> <major|minor>" with sharps (C, C#, ..., B).
+// <outdir> must exist: the program does not create it.
 //
 // Usage: mixedkey_run <outdir> <file.wav> [<file.wav> ...]
 package main
