@@ -12,7 +12,6 @@ import { plan } from '../scripts/tea/room/engine/plan.js';
 import { cameraAt, poseScene, slotRect } from '../scripts/tea/room/engine/pose.js';
 import { CLOSE, IN, OUT } from '../scripts/tea/room/engine/screens.js';
 import { compOf, coverScale, grow, holds, moved, overlap, portScale, SHARP, windowRect } from '../scripts/tea/room/engine/project.js';
-import { compileRoom, roomJson, TeaSceneError } from './tea-scene.js';
 
 // The window sizes every cover and opening is checked at (CSS px), and the ones sharpness is checked at.
 export const SIZES = Object.freeze([[1920, 1080], [1536, 864], [1440, 900], [1366, 768], [1280, 800], [1280, 720], [1440, 700],
@@ -118,7 +117,8 @@ const slotOn = (S, k, u) => u !== null && u > S.part.from && u >= k.show[0] && u
 
 // A slot is checked wherever it is on, and at the end of its show (it is on just before), by its width (a picture
 // is fitted to its slot's width). The picture it holds is the current item's: the item of the last `each` camera
-// key at or before the place, the first item before any; with no `each` key, the narrowest it may hold. A slot
+// key at or before the place, the first item before any, and the first picture with no `each` key (as plan.js
+// fits it). A slot
 // inside the hole of a front flat whose port is fully uncovered is behind that port (the front stage is over the
 // slots) and is not checked.
 function slotSharp(S, k, si, u, prev, pose, L, win, note, warnings) {
@@ -131,7 +131,7 @@ function slotSharp(S, k, si, u, prev, pose, L, win, note, warnings) {
   if (f.hole && f.front && fp.tr.wipe >= 1 && fp.tr.o >= 1 && holds(moveHole(S, f, fp), rect)) return;
   const items = S.camera.filter((c) => c.item > 0);
   const now = items.filter((c) => c.u <= u).pop() ?? items[0];
-  const px = now ? k.px[Math.min(k.px.length, now.item) - 1] : k.px.reduce((a, b) => (b[0] < a[0] ? b : a));
+  const px = k.px[Math.min(k.px.length, now?.item ?? 1) - 1];
   const scale = rect.w / px[0];
   note(`k${si}`, scale, SHARP, () => `${where(S, L, u)}: slot ${k.name} draws its ${px[0]}x${px[1]} picture at ${fmt(scale)} CSS px a pixel, above ${SHARP}`);
   return null;
@@ -243,12 +243,4 @@ export function checkRoom(room, { marks = null, fns = null } = {}) {
   pieces(room, fns, errors);
   spacing(room, errors);
   return { errors: [...new Set(errors)], warnings: [...new Set(warnings)] };
-}
-
-// What the build calls: compile, check, and the JSON for the page. Throws a TeaSceneError on any error.
-export function buildRoom(chapters, modules, { art, night, marks, fns } = {}) {
-  const { room, warnings } = compileRoom(chapters, modules, { art, night });
-  const checked = checkRoom(room, { marks, fns });
-  if (checked.errors.length) throw new TeaSceneError(checked.errors);
-  return { room, json: roomJson(room), warnings: [...warnings, ...checked.warnings] };
 }

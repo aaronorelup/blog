@@ -10,8 +10,9 @@ import { fileURLToPath } from 'node:url';
 import matter from 'gray-matter';
 import { collections } from './content-schema.mjs';
 import { TEA_CHAPTERS } from '../../src/data/tea-chapters.js';
-import { checkRoom, estimateMarks, markNames } from '../../src/lib/tea-scene-check.js';
-import { compileRoom, PICKS, ROOM_BLOCK, roomJson, TeaSceneError } from '../../src/lib/tea-scene.js';
+import { isLive } from '../../src/data/exempt.js';
+import { estimateMarks, markNames } from '../../src/lib/tea-scene-check.js';
+import { buildRoom, checkRoom, compileRoom, PICKS, ROOM_BLOCK, roomJson, TeaSceneError } from '../../src/lib/tea-scene.js';
 import { chapterLength, itemCount, pageLengths } from '../../src/scripts/tea/room/engine/lengths.js';
 import { plan } from '../../src/scripts/tea/room/engine/plan.js';
 import { MARKS } from './fixtures/tea/room.mjs';
@@ -34,7 +35,15 @@ function errorsOf(id, base, edit, { marks = { all: MARKS }, fns, art = { tv: tvA
 }
 const has = (errors, re) => assert.ok(errors.some((e) => re.test(e)), `no error matches ${re}:\n${errors.join('\n')}`);
 
-test('the passing fixtures pass every check, with measured and with estimated marks', () => {
+test('the passing fixtures pass every check, with measured and with estimated marks; buildRoom fails the build on any', () => {
+  const [chapters, modules] = page('tv', tv);
+  const built = buildRoom(chapters, modules, { art: { tv: tvArt } });
+  assert.deepEqual(JSON.parse(built.json), built.room);
+  const blurred = structuredClone(start);
+  blurred.scene.d.flats[2].px = [100, 172];
+  assert.throws(() => buildRoom(...page('start', blurred)), (e) => e instanceof TeaSceneError && /lantern is drawn at/.test(e.message));
+  const bare = buildRoom([ch('hero'), { ...ch('tv'), shelves: [{ id: 'episodes', rows: [] }] }], { hero, tv }, { art: { tv: tvArt } });
+  assert.equal(bare.room.chapters[1].n.d, 0, 'a television with no episodes still checks out');
   for (const [id, mod] of [['start', start], ['tv', tv]]) {
     assert.deepEqual(errorsOf(id, mod, () => {}), []);
     assert.deepEqual(errorsOf(id, mod, () => {}, { marks: null }), []);
@@ -184,7 +193,15 @@ test('two neighbours with one phone layout are named in a warning', () => {
 const read = (rel) => fs.readFileSync(path.join(REPO, rel), 'utf8');
 const names = (dir, ext) => fs.readdirSync(path.join(REPO, dir)).filter((f) => f.endsWith(ext)).sort().map((f) => f.slice(0, -ext.length));
 const site = {
-  posts: names('src/content/posts', '.md').map((id) => ({ id, data: collections.posts.schema.parse(matter(read(`src/content/posts/${id}.md`)).data) })),
+  // the live notebook is rewritten by other sessions at any time: a moment it can't be read never fails this file
+  posts: names('src/content/posts', '.md').flatMap((id) => {
+    try {
+      return [{ id, data: collections.posts.schema.parse(matter(read(`src/content/posts/${id}.md`)).data) }];
+    } catch (error) {
+      if (isLive(id)) return [];
+      throw error;
+    }
+  }),
   notes: new Map(),
   cards: names('src/content/projects', '.yaml').map((key) => {
     const p = matter.engines.yaml.parse(read(`src/content/projects/${key}.yaml`));
@@ -235,19 +252,32 @@ test('every chapter with its shelf at the maximum still checks out', () => {
   assert.equal(tvc.n.d, chapters.find((c) => c.id === 'tv').shelves.find((s) => s.id === 'episodes').rows.length);
 });
 
+// Every mark the page's scenes name that its own chapter's section does not carry, as "<chapter>: <mark>".
+function marksMissing(html) {
+  const block = new RegExp(`<script[^>]*id="${ROOM_BLOCK}"[^>]*>([\\s\\S]*?)</script>`).exec(html);
+  if (!block) return [`the page carries no #${ROOM_BLOCK}`];
+  const room = JSON.parse(block[1]);
+  const sections = html.split(/(?=<section[^>]*data-room-chapter=")/);
+  return room.chapters.flatMap((c) => {
+    const own = sections.find((s) => new RegExp(`^<section[^>]*data-room-chapter="${c.id}"`).test(s)) ?? '';
+    const named = new Set(['d', 'p'].flatMap((comp) => markNames(room, c, comp, c.n[comp])));
+    return [...named].filter((m) => !own.includes(`data-room-mark="${m}"`)).map((m) => `${c.id}: ${m}`);
+  });
+}
+
+test('the marks check finds a mark missing from its chapter, and one that is in another chapter', () => {
+  const { room } = compileRoom(...page('start', start, 3));
+  const sheets = (ids) => ids.map((m) => `<p data-room-mark="${m}"></p>`).join('');
+  const html = (a, b) => `<script type="application/json" id="${ROOM_BLOCK}">${roomJson(room)}</script>` +
+    `<section data-room-chapter="hero"></section><section data-room-chapter="start">${a}</section>${b}`;
+  assert.deepEqual(marksMissing(html(sheets(['sheet-1', 'sheet-2', 'sheet-3']), '')), []);
+  assert.deepEqual(marksMissing(html(sheets(['sheet-1', 'sheet-3']), '<section data-room-chapter="x">' + sheets(['sheet-2']))), ['start: sheet-2']);
+  assert.deepEqual(marksMissing('<html></html>'), [`the page carries no #${ROOM_BLOCK}`]);
+  assert.deepEqual(Object.keys(estimateMarks(room, 'd').start), ['sheet-1', 'sheet-2', 'sheet-3']);
+});
+
 test('every mark a scene names is on the built page, in its own chapter', (t) => {
   const file = path.join(REPO, 'dist/tea-next/index.html');
   if (!fs.existsSync(file)) return t.skip('no dist/tea-next/index.html yet: npm run build makes it once the page exists');
-  const html = fs.readFileSync(file, 'utf8');
-  const block = new RegExp(`<script[^>]*id="${ROOM_BLOCK}"[^>]*>([\\s\\S]*?)</script>`).exec(html);
-  assert.ok(block, `the page carries its scenes in #${ROOM_BLOCK}`);
-  const room = JSON.parse(block[1]);
-  const sections = html.split(/(?=<section[^>]*data-room-chapter=")/);
-  for (const c of room.chapters) {
-    const own = sections.find((s) => s.startsWith('<section') && new RegExp(`^<section[^>]*data-room-chapter="${c.id}"`).test(s)) ?? '';
-    for (const comp of ['d', 'p']) {
-      for (const m of markNames(room, c, comp, c.n[comp])) assert.ok(own.includes(`data-room-mark="${m}"`), `${c.id} names mark ${m}, which its section lacks`);
-    }
-  }
-  assert.ok(estimateMarks(room, 'd'));
+  assert.deepEqual(marksMissing(fs.readFileSync(file, 'utf8')), []);
 });

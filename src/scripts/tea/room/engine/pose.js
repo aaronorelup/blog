@@ -1,7 +1,7 @@
 // A scene's pose at one place in its chapter (pure): where each flat stands, whether it is shown, and what each
 // of its openings shows. frame.js asks for the scene that is on; the port of an opening asks for the scene behind
 // at its own opening frame; plan.js asks for the shadow's place. One function, so all three agree to the pixel.
-import { grow, leanOf, moved, overlap, placeRect, portScale, pushScale, windowRect } from './project.js';
+import { grow, leanOf, moved, overlap, placeRect, portScale, windowRect } from './project.js';
 import { valueAt } from './tracks.js';
 
 // The camera's push at u: its keys are numbers by now (plan.js resolved 'through' and 'fit:<slot>').
@@ -22,7 +22,8 @@ export function trackAt(S, fi, u) {
 export function placeFlat(S, fi, u, m, ptr, L) {
   const f = S.flats[fi];
   const tr = trackAt(S, fi, u);
-  const lean = leanOf(f.r, ptr, L.lean);
+  // A flat with an opening never leans: its hole must cover the window exactly at the handover.
+  const lean = f.through ? [0, 0] : leanOf(f.r, ptr, L.lean);
   const p = placeRect(f.rest, f.r, m, S.fit, L.vw, L.vh, { slide: tr.slide, lift: tr.lift, lean });
   if (!p) {
     return { out: { name: f.name, x: f.rest.x, y: f.rest.y, w: f.rest.w, h: f.rest.h, k: 1, tx: 0, ty: 0, o: tr.o, shown: false },
@@ -52,15 +53,15 @@ export function poseScene(S, u, ptr, L, depth = 2) {
 }
 
 // One port. Its clip is the hole on the screen (null for an open hole: the flats in front are the mask). Its
-// content is the scene behind in window px, grown by k about the aim of S: screen = (x, y) + k * point.
+// content is the scene behind in window px, grown by k about the aim of S: screen = (x, y) + k * point. The port
+// itself does not lean: the flats it holds lean as they will once their scene is on, so the handover holds.
 function portOf(S, p, flat, m, ptr, L, depth) {
   const f = S.flats[p.flat];
   const T = L.scenes[p.to];
   const k = portScale(p.at, p.mh, m);
-  const lean = leanOf(p.at, ptr, L.lean);
   const base = {
     flat: f.name, to: p.to, shown: false,
-    clip: null, x: S.fit.ax * (1 - k) + lean[0], y: S.fit.ay * (1 - k) + lean[1], k, o: flat.tr.o, wipe: flat.tr.wipe,
+    clip: null, x: S.fit.ax * (1 - k), y: S.fit.ay * (1 - k), k, o: flat.tr.o, wipe: flat.tr.wipe,
   };
   if (p.hole && Number.isFinite(flat.s)) base.clip = moved(grow(p.hole, S.fit.ax, S.fit.ay, flat.s), flat.dx, flat.dy);
   else if (p.hole) base.clip = { x: 0, y: 0, w: 0, h: 0 };
@@ -84,6 +85,3 @@ export function slotRect(S, slot, placed) {
   return moved(grow(slot.rest, S.fit.ax, S.fit.ay, fp.s), fp.dx, fp.dy);
 }
 
-// The scale a flat is drawn at relative to its own pixels (CSS px per picture px), for the sharpness checks.
-export const drawScale = (f, s) => (f.px ? (f.rest.w * s) / f.px[0] : 0);
-export { pushScale };

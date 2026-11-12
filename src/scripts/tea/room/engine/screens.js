@@ -6,9 +6,9 @@
 import { easeEnds } from './tracks.js';
 
 export const SCREEN_W = 0.52; // each screen's share of the window's width; they overlap a little at the post
-export const IN = [-0.5, -0.1];
-export const OUT = [0.1, 0.5];
-export const CLOSE = [-1.5, -1.1]; // from the end of the last section
+export const IN = Object.freeze([-0.5, -0.1]);
+export const OUT = Object.freeze([0.1, 0.5]);
+export const CLOSE = Object.freeze([-1.5, -1.1]); // from the end of the last section
 
 // How far shut the screens are (0 open, 1 shut) at u vh from a boundary.
 export function shutAt(u) {

@@ -1,7 +1,8 @@
 // The tea room's scene data at build time (pure): each chapter's src/data/tea/<id>/scene.js read, checked for its
 // shape, its openings joined up for the picks as saved, and compiled into the one compact JSON block the page's
-// engine reads. lib/tea-scene-check.js then checks what can be checked from the data (sharpness, cover, openings,
-// rest values) with the engine's own projection; buildRoom() does both and fails the build on any error.
+// engine reads. checkRoom() (kept in lib/tea-scene-check.js for length) then checks what can be checked from the
+// data (sharpness, cover, openings, rest values) with the engine's own projection; buildRoom() does both and fails
+// the build on any error.
 //
 // A chapter module exports `scene` (one scene) or `scenes` (by name) and `run` (their order). The chapter's own
 // fields are read from its first scene: light { colour, name }, shadow { src, flat } (the flat of the first scene
@@ -9,6 +10,9 @@
 // count (which shelves make n: { shelves, pair }, or { d, p } of those). Each scene has a composition d and p:
 // { aim, layout (p), flats, slots, camera, tracks, rest } in board units (src/scripts/tea/room/engine/project.js).
 import { itemCount } from '../scripts/tea/room/engine/lengths.js';
+import { checkRoom } from './tea-scene-check.js';
+
+export { checkRoom };
 
 export const ROOM_VERSION = 1;
 export const NIGHT = '#101220'; // the night ground: tokens' --night-page
@@ -208,4 +212,13 @@ export function roomJson(room) {
     if (typeof v === 'function' || v === undefined) throw new TeaSceneError([`${k} is not data`]);
     return v;
   });
+}
+
+// What the build calls: compile, check, and the JSON for the page. Throws a TeaSceneError on any error. marks and
+// fns as checkRoom takes them.
+export function buildRoom(chapters, modules, { art, night, marks, fns } = {}) {
+  const { room, warnings } = compileRoom(chapters, modules, { art, night });
+  const checked = checkRoom(room, { marks, fns });
+  if (checked.errors.length) throw new TeaSceneError(checked.errors);
+  return { room, json: roomJson(room), warnings: [...warnings, ...checked.warnings] };
 }

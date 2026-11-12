@@ -81,10 +81,13 @@ const roomD = {
     plate('room', '#141a38'),
     { name: 'face', fill: '#2b2b2b', box: [520, 300, 560, 420], r: 0.32, front: true, px: [3456, 2592],
       through: { to: 'g1', hole: [84, 60, 392, 294], at: 1.6 } },
+    // a near lamp in front of the port, slid out to the left wing before the camera pushes
+    { name: 'lamp', fill: '#e0b070', box: [100, 600, 200, 280], r: 0.31, front: true, px: [1600, 2240] },
   ],
   slots: [{ name: 'glass', flat: 'face', box: [604, 360, 392, 294], show: ['dial', 'twenty'] }],
   camera: [{ at: 0, m: 0 }, { each: 'ep', m: 'fit:glass' }, { at: 'twenty', off: 0.4, m: 'fit:glass' }, { at: 'fall-1', m: 'through' }],
-  tracks: [{ flat: 'face', wipe: [{ at: 'twenty', v: 0 }, { at: 'twenty', off: 0.4, v: 1 }] }],
+  tracks: [{ flat: 'face', wipe: [{ at: 'twenty', v: 0 }, { at: 'twenty', off: 0.4, v: 1 }] },
+    { flat: 'lamp', slide: [{ at: 'dial', v: 0 }, { at: 'ep-1', v: -1 }] }],
   rest: { clock: { minute: 0 } },
   marks: ['dial', 'ep', 'twenty', 'fall-1'],
 };

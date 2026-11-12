@@ -107,7 +107,7 @@ function sceneLayout(scene, key, index, ch, L) {
 }
 
 // A camera key's push as a number for this window. 'through': the push at which the scene's (first) box hole
-// covers the window. 'fit:<slot>': as far as the slot's item-th picture allows.
+// covers the window. 'fit:<slot>': as far as the slot's item-th picture allows (the first, with no `each` key).
 // A push that cannot be had (an aim outside the hole) stops just short of the flat, and tea-scene.js fails it.
 function pushOf(m, item, S, L) {
   if (typeof m === 'number') return m;

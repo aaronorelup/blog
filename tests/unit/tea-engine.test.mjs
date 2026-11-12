@@ -35,7 +35,7 @@ function positions(L, seed = 7) {
 }
 const at = (L, y, t = STILL_T, ptr = [0, 0]) => frame(y, t, ptr, L);
 
-test('the pure modules hold no state and read no clock, no random and no page', () => {
+test('the pure modules hold no state and read no clock, no random and no page', async () => {
   for (const file of PURE) {
     const src = fs.readFileSync(fileURLToPath(new URL(file, ENGINE)), 'utf8');
     const code = src.replace(/\/\/.*$/gm, '');
@@ -44,6 +44,9 @@ test('the pure modules hold no state and read no clock, no random and no page', 
     assert.doesNotMatch(code, /^(?:export\s+)?(?:let|var)\s/m, `${file}: a module-level let or var`);
     assert.doesNotMatch(code, /^(?:export\s+)?const\s+\w+\s*=\s*new\s/m, `${file}: a module-level object made with new`);
     for (const [, from] of code.matchAll(/from\s+'([^']+)'/g)) assert.match(from, /^\.\/[a-z]+\.js$/, `${file} imports ${from}`);
+    for (const [name, v] of Object.entries(await import(new URL(file, ENGINE)))) {
+      if (v && typeof v === 'object') assert.ok(Object.isFrozen(v), `${file}: ${name} is an object anyone could change`);
+    }
   }
 });
 
@@ -95,6 +98,24 @@ test('every frame: one scene on, the same keys, every slot and every piece eleme
   }
 });
 
+test('small pages hold every rule too: a television with no episodes, the hero alone, the hero and one chapter', () => {
+  const tvBare = CHAPTERS.map((c) => (c.id === 'tv' ? { ...c, shelves: [{ id: 'episodes', rows: [] }] } : c));
+  for (const chapters of [tvBare, CHAPTERS.slice(0, 1), CHAPTERS.slice(0, 2)]) {
+    for (const view of VIEWS) {
+      const L = fixtureLayout(view, { chapters });
+      for (const y of positions(L, 3).slice(0, 300)) {
+        const f = at(L, y);
+        assert.deepEqual(f.groups.filter((g) => !g.hidden).map((g) => g.key), [f.on]);
+        for (const [path, v] of leaves(f)) if (typeof v === 'number') assert.ok(Number.isFinite(v), `${path} at ${y}`);
+      }
+      const last = L.chapters[L.chapters.length - 1];
+      assert.equal(at(L, last.top + (last.len - 1) * L.vh).screens.shut, 1, 'the house closes whichever chapter is last');
+    }
+  }
+  const one = fixtureLayout([1440, 900], { chapters: CHAPTERS.slice(0, 2) });
+  assert.equal(one.chapters[1].len, 2.4 + 0.7 * 3 - 0.2 + 1.0, 'after the hero and last at once');
+});
+
 test('a set piece is asked within a screen of its section, and its values lie over its rest values', () => {
   const L = L0;
   const c = L.chapters.find((x) => x.id === 'start');
@@ -136,15 +157,15 @@ function handovers(L) {
   return L.sceneKeys.flatMap((key) => L.scenes[key].ports.map((p) => ({ S: L.scenes[key], to: p.to })));
 }
 
-test('at every handover the frame on both sides is the same picture, at six window sizes', () => {
-  for (const view of VIEWS) {
-    const L = fixtureLayout(view);
+test('at every handover the frame on both sides is the same picture, at six window sizes, with the lean on too', () => {
+  for (const [view, lean, ptr] of [...VIEWS.map((v) => [v, 0, [0, 0]]), ...VIEWS.map((v) => [v, 1, [1, -1]])]) {
+    const L = fixtureLayout(view, { lean });
     const hs = handovers(L);
     assert.equal(hs.length, 3);
     const win = windowRect(L.vw, L.vh);
     for (const { S, to } of hs) {
       const yh = L.chapters[S.chapter].top + S.part.to * L.vh;
-      const before = at(L, yh - 0.01), after = at(L, yh);
+      const before = at(L, yh - 0.01, STILL_T, ptr), after = at(L, yh, STILL_T, ptr);
       assert.equal(before.on, S.key);
       assert.equal(after.on, to);
       const port = before.ports[0];

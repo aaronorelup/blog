@@ -64,15 +64,16 @@ export function coverScale(rect, ax, ay, vw, vh) {
   return Math.max(ax / (ax - rect.x), (vw - ax) / (rect.x + rect.w - ax), ay / (ay - rect.y), (vh - ay) / (rect.y + rect.h - ay));
 }
 
-// Where a flat stands for a camera push m, a slide (x toward a wing, -1 left, +1 right), a lift (y, -1 off the
-// top, +1 off the bottom) and a lean in px. A slide of +-1 puts the flat just outside the frame, whatever the push.
+// Where a flat stands for a camera push m, a lean in px, a slide (x toward a wing, -1 left, +1 right) and a lift
+// (y, -1 off the top, +1 off the bottom). The slide is measured after the lean, so a slide of +-1 puts the flat
+// just outside the frame whatever the push and the pointer. dx, dy: the whole offset from the pushed place.
 export function placeRect(rest, r, m, fit, vw, vh, { slide = 0, lift = 0, lean = [0, 0] } = {}) {
   const s = pushScale(r, m);
   if (!Number.isFinite(s)) return null;
-  const g = grow(rest, fit.ax, fit.ay, s);
+  const g = moved(grow(rest, fit.ax, fit.ay, s), lean[0], lean[1]);
   const dx = (slide < 0 ? slide * (g.x + g.w) : slide * (vw - g.x)) + lean[0];
   const dy = (lift < 0 ? lift * (g.y + g.h) : lift * (vh - g.y)) + lean[1];
-  return { rect: moved(g, dx, dy), s, dx, dy };
+  return { rect: moved(g, dx - lean[0], dy - lean[1]), s, dx, dy };
 }
 
 // The pointer lean of a flat at distance r: 8 px at most, the nearest most, nothing for the far plates (r >= 1).
