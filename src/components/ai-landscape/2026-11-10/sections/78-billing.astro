@@ -43,7 +43,7 @@ const rows = B.providers.map((bp) => {
                 <summary class="ail-ar-more"><svg class="ail-ar-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h.5M12 12h.5M19 12h.5" /></svg><span class="ail-ar-morew ail-label">{r.plans.length + 1} {COPY.world.more}</span></summary>
                 <ul class="ail-bill__plans ail-card">
                   <li><Fact fact={r.third} /></li>
-                  {r.plans.map((x) => <li><b>{x.name}</b> {typeof x.usd === 'number' && <span class="ail-label">${x.usd}</span>} <Fact fact={x.fact} full>{x.fact.short}</Fact></li>)}
+                  {r.plans.map((x) => <li><b>{x.name}</b> {typeof x.usd === 'number' && <span class="ail-label">${x.usd}</span>} <span class="ail-note">{x.fact.short}</span></li>)}
                 </ul>
               </details>
             </td>

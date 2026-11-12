@@ -69,6 +69,7 @@ export function create(ctx, el, sec) {
     p.li.addEventListener('pointerleave', () => { p.hover = 0; });
   });
   const byId = new Map(pieces.map((p) => [p.id, p]));
+  pieces[0].li.dataset.edge = 'start'; pieces[pieces.length - 1].li.dataset.edge = 'end';      // cards at the ends open inward
   const swapped = { router: pieces.find((p) => p.swap === 'router'), worker: pieces.find((p) => p.swap === 'worker') };
   st.r = Math.max(0, opts.router.findIndex((o) => o.ref === mineR));
   st.w = Math.max(0, opts.worker.findIndex((o) => o.ref === mineW));
@@ -99,7 +100,7 @@ export function create(ctx, el, sec) {
   function verdict(quiet) {
     const r = opts.router[st.r], w = opts.worker[st.w];
     const mine = r.ref === mineR && w.ref === mineW;
-    const say = says.find((li) => li.dataset.r === r.ref && li.dataset.w === w.ref);
+    const say = says.find((li) => li.dataset.r === r.ref && li.dataset.w === w.ref) || says.find((li) => li.dataset.r === r.ref && 'none' in li.dataset);
     says.forEach((li) => li.classList.toggle('is-on', li === say && !mine));
     quote.classList.toggle('is-gone', !mine);
     pairsEl.classList.toggle('is-on', !mine);
@@ -131,6 +132,10 @@ export function create(ctx, el, sec) {
   buttons.forEach((b) => { b.hidden = false; b.addEventListener('click', onSwap); });
   pieces.forEach((p) => { if (p.swap) dress(p, opts[p.swap][p.swap === 'router' ? st.r : st.w]); });
   verdict(true);
+  // pieces past first depth leave their bands for the list behind the "more" button, and go back on dispose
+  const restList = $('.ail-ms__restlist', el);
+  const later = $$('.ail-ms__piece:not([data-first])', el).map((li) => [li, li.parentNode, li.nextSibling]);
+  if (restList) later.forEach(([li]) => restList.append(li));
   // Escape steps back: every card this section opened closes
   const onEsc = (e) => { if (e.key === 'Escape' && sec === ctx.clock.current) $$('details[open]:not(.ail-ms__pairs)', el).forEach((d) => { d.open = false; }); };
   window.addEventListener('keydown', onEsc);
@@ -168,7 +173,9 @@ export function create(ctx, el, sec) {
       base.blocks.forEach((b, i) => { b.rise = 1 - span(u, 0.02 + (8 - i) * 0.017, 0.11 + (8 - i) * 0.017); });
       base.update();
       const back = smooth(span(u, 0.06, 0.3));
-      for (const tw of row.towers) { tw.lift = base.under(tw.x - 1.2, tw.x + 1.2); tw.dim = 0.74 * back; tw.char.show = 1 - back; tw.lid.show = 1 - back * 0.45; }
+      // an open card hides the lids: a mark is never covered, and one drawn as an image would sit over the card
+      const carded = el.querySelector('details[open]:not(.ail-ms__pairs)') ? 0 : 1;
+      for (const tw of row.towers) { tw.lift = base.under(tw.x - 1.2, tw.x + 1.2); tw.dim = 0.74 * back; tw.char.show = 1 - back; tw.lid.show = (1 - back * 0.45) * carded; }
 
       // the bench rises, then the pieces fly in once, 70 ms apart, and settle with a small overshoot
       const rise = smooth(span(u, 0.14, 0.3)) * (1 - smooth(span(u, 1.12, 1.28)));
@@ -226,6 +233,7 @@ export function create(ctx, el, sec) {
     dispose() {
       buttons.forEach((b) => { b.removeEventListener('click', onSwap); b.hidden = true; });
       window.removeEventListener('keydown', onEsc);
+      later.forEach(([li, parent, next]) => parent.insertBefore(li, next && next.parentNode === parent ? next : null));
       pairsEl.open = false;
       pins.forEach((p) => p.drop());
       leads.forEach((l) => l && l.drop());

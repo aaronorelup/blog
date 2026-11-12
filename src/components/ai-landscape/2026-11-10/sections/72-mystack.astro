@@ -40,10 +40,9 @@ const routers = [...new Set([routerNode.productRef, ...ORDER.map((id) => view.pr
 const workers = [...new Set([coderNode.productRef, ...shipped.map((s) => s.workerRef)])].map(thing);
 // a router's own delegation claim: a personal agent's floor 8, or what its shipped pairs say
 const ownClaim = (r) => (ORDER.includes(r.owner) && view.provider(r.owner).agent.id === r.id ? view.provider(r.owner).stack[7].fact : fact(shipped.find((s) => s.routerRef === r.id).claim));
-const pairs = routers.flatMap((r) => workers.map((w) => {
-  const s = shipped.find((x) => x.routerRef === r.id && x.workerRef === w.id);
-  return { r, w, shipped: !!s, official: s ? s.official : 'none', stamp: s ? OFFICIAL[s.official] : COPY.links.none, fact: s ? fact(s.claim) : ownClaim(r) };
-}));
+// every shipped pair, then for each router the line a pair with no entry reads: the stamp and its own claim
+const pairs = shipped.map((s) => ({ r: thing(s.routerRef), w: thing(s.workerRef), official: s.official, stamp: OFFICIAL[s.official], fact: fact(s.claim) }));
+const nones = routers.map((r) => ({ r, stamp: COPY.links.none, fact: ownClaim(r) }));
 const arrows = me.arrows.filter((a) => first.has(a.fromRef) && first.has(a.toRef)).map((a) => [a.fromRef, a.toRef, a.state]);
 const date = me.permalink.match(/\d{4}-\d{2}-\d{2}/)[0];          // on hover only: the bench prints no number 01 to 09
 const arrow = 'M3 12h17M14 6l6 6-6 6';
@@ -96,9 +95,15 @@ const METER = 'M4 16a8 8 0 0 1 16 0M12 16l4-5M3 19h18';             // paid by u
       <summary class="ail-label">{COPY.links.title}</summary>
       <ul>
         {pairs.map((x) => (
-          <li class="ail-ms__say" data-r={x.r.id} data-w={x.w.id} data-official={x.official} data-shipped={x.shipped ? '' : undefined}>
+          <li class="ail-ms__say" data-r={x.r.id} data-w={x.w.id} data-official={x.official}>
             <span class="ail-ms__pair"><span class="ail-own" data-owner={x.r.owner}>{x.r.name}</span><svg class="ail-ar-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d={arrow} /></svg><span class="ail-own" data-owner={x.w.owner}>{x.w.name}</span></span>
             <span class="ail-ms__stamp ail-label" data-official={x.official}>{x.stamp}</span>
+            <span class="ail-ms__line"><Fact fact={x.fact} /></span>
+          </li>
+        ))}
+        {nones.map((x) => (
+          <li class="ail-ms__say" data-r={x.r.id} data-official="none" data-none>
+            <span class="ail-ms__stamp ail-label" data-official="none">{x.stamp}</span>
             <span class="ail-ms__line"><Fact fact={x.fact} /></span>
           </li>
         ))}
@@ -107,16 +112,7 @@ const METER = 'M4 16a8 8 0 0 1 16 0M12 16l4-5M3 19h18';             // paid by u
     {rest.length > 0 && (
       <details class="ail-ms__rest">
         <summary class="ail-ms__restbtn"><svg class="ail-ar-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h.5M12 12h.5M19 12h.5" /></svg><span class="ail-ms__restw ail-label">{rest.length} {COPY.world.more}</span></summary>
-        <ul class="ail-ms__restlist">
-          {rest.map((p) => (
-            <li>
-              <span class="ail-own" data-owner={p.owner}>{p.name || p.node}</span> <span class="ail-label">{p.role}</span>
-              {p.tank && <svg class="ail-ar-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d={TANK} /></svg>}
-              {p.meter && <svg class="ail-ar-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d={METER} /></svg>}
-              <Fact fact={p.fact} full>{p.fact.short}</Fact>
-            </li>
-          ))}
-        </ul>
+        <ul class="ail-ms__restlist"></ul>
       </details>
     )}
   </div>
