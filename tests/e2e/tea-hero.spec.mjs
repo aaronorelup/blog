@@ -230,7 +230,8 @@ test('tea-hero-9 a scene that arrives late moves nothing on screen', async ({ pa
 });
 
 test('tea-hero-10 arriving at a chapter address lands on the chapter with the scene', async ({ page }) => {
-  // the scene's files held until the page has begun its scroll to the chapter, so the scene is ready mid-scroll
+  // the scene's files held until the page has left the top for the chapter (an address with a chapter lands on it at
+  // once, TeaPage's data-tea-arrive, tea-17), so the scene gets ready with the reader already there and pins below them
   await page.route('**/tea/hero/manifest.json', async (route) => {
     await page.waitForFunction(() => scrollY > 0, null, { timeout: 15_000 }).catch(() => {});
     await route.continue().catch(() => {});

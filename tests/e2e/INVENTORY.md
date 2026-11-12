@@ -541,7 +541,7 @@ for `data-hero-settled` (the hero will change no layout by itself any more) befo
 | Every chapter link in the title box lands on its chapter at its scroll margin | tea-hero-7 |
 | The title box holds within 1 px of its static place on every frame while the scene takes over | tea-hero-8 |
 | A scene that arrives late moves nothing on screen: with the box still on screen it waits; with the reader on the first chapter it pins with the chapter left where it is | tea-hero-9 |
-| Arriving at `/tea/#projects` with the scene ready mid-scroll lands on the chapter | tea-hero-10 |
+| Arriving at `/tea/#projects` lands on the chapter, and the scene, ready only once the page has left the top for it, pins without moving the reader off it | tea-hero-10 |
 | The day/night switch pressed while the models load is the mode the scene comes up in, its pictures included | tea-hero-11 |
 | A lost WebGL context shows the poster until it is back, then the scene with its light made again | tea-hero-12 |
 | Reduced motion turned on while the scene runs puts the poster back, the page where it was | tea-hero-13 |
