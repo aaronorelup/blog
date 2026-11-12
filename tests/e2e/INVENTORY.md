@@ -544,7 +544,7 @@ for `data-hero-settled` (the hero will change no layout by itself any more) befo
 | Arriving at `/tea/#projects` lands on the chapter, and the scene, ready only once the page has left the top for it, pins without moving the reader off it | tea-hero-10 |
 | The day/night switch pressed while the models load is the mode the scene comes up in, its pictures included | tea-hero-11 |
 | A lost WebGL context shows the poster until it is back, then the scene with its light made again | tea-hero-12 |
-| Reduced motion turned on while the scene runs puts the poster back, the page where it was | tea-hero-13 |
+| Reduced motion turned on while the scene runs puts the poster back, the page where it was, and frees every geometry and picture the scene put on the GPU | tea-hero-13 |
 | With the scene up the switch fetches no poster under the canvas | tea-hero-14 |
 | The poster and the scene take the same shape of frame, a square window included | tea-hero-15 |
 | A missing manifest or model keeps the poster and the hero one screen, with no page error | tea-hero-16 |
@@ -553,14 +553,15 @@ for `data-hero-settled` (the hero will change no layout by itself any more) befo
 | The stage is one screen on every path, and the hero's foot fades into the page (static always, with the scene only as the pin lets go) | tea-hero-19 |
 | The title box is the same box static and over the scene: no backdrop blur, an opaque card by day | tea-hero-20 |
 | The box docks only where it leaves most of the frame to the scene (1024x768 flows, 1366x768 docks with the lens shift scaled) | tea-hero-21 (desktop) |
-| On a portrait screen the box waits low and the cast stands clear above it, and the scene keeps the portrait frame's full height | tea-hero-22 |
+| On a portrait screen the box waits low and the cast stands clear above it, the scene keeps the portrait frame's full height, and it plays over a screen and a half of scroll at least after the box has gone | tea-hero-22 |
 | A chapter link tapped in the last moments before the scene pins lands on its chapter, from a chapter (the pin no longer cuts the jump short) and from the top (nor lands it two screens early) | tea-hero-23 |
 | Every part the manifest names (the nodes its tracks and idle waves move, the nodes lights and glows hang from, each prop's parent and each material override's node) is in the loaded models: the runtime would skip a missing one without a word | tea-hero-24 |
 | Leaving the page while the scene loads (a reload as the manifest arrives, and as the models do) leaves no console error: once the page is being left the scene starts no load and reports none it loses | tea-hero-25 |
 | One actor in place of another, on `/tea/` with the shipped manifest (its own followers and whole-actor `visible` and `opacity` tracks left out) plus a follower made of another of its actors' models, served in its place, so it holds whatever the cast is: down the scroll to 0.8 and back, the follower rides its leader's root and scale, an opacity dissolve (with `fade`) and a visible cut show and hide each actor as keyed, the dissolved-out actor comes back, and nothing reaches the console | tea-hero-26 |
-| The shipped manifest's own swap (Jefrie and her leap mesh) on the page: every follower it names is one the runtime knows, down the scroll and back (a step either side of every cut) exactly one of the two is drawn on one root, and the number of point lights drawn never changes | tea-hero-27 |
+| The shipped manifest's own swap (Jefrie and her leap mesh) on the page: an actor hidden at the top by its own track follows someone, every follower it names is one the runtime knows, down the scroll and back (a step either side of every cut) exactly one of the two is drawn on one root, and neither the number of point lights drawn nor the number of pictures on the GPU ever changes | tea-hero-27 |
 | A beforeunload that does not lead to leaving (a mailto link fires it in some browsers) while the models load costs nothing: the scene comes up, nothing logged (the scene stops its loads on pagehide only, so the page stays eligible for the back/forward cache) | tea-hero-28 |
-| On a phone no line of the title box (statement, counter, chapter numerals) runs under the fixed day/night switch's column as the box scrolls up under it, static or over the scene | tea-hero-29 (phone) |
+| Under 1024 px no line of the title box (skip link, statement, counter, chapter numerals) runs under the fixed day/night switch's column as the box scrolls up under it: on a phone, static or over the scene, with the counter on one line, and at 561, 600 and 640 px wide | tea-hero-29 |
+| The page's own mailto link clicked while the models load costs nothing: Chromium sends a beforeunload and the scene loads on; WebKit cancels the loads in flight, which the scene tries again, and comes up with nothing logged | tea-hero-30 |
 
 ## The live site (`live.spec.mjs`, `npm run e2e:live`)
 

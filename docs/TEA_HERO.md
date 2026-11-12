@@ -17,15 +17,18 @@ The top of `/tea/` copies the structure of the Shopify Editions Winter '26 hero:
 object, in front of one picture placed in 3D space, with a framed title box. Ours: the tea house garden at night,
 Jefrie (left) and Yusef (right, with a lantern) around a small CRT television. Everything is real-time Three.js:
 
-- **Scroll timeline.** With the scene the section is 300vh and pinned (two layouts, below). One progress value (0 to
-  1) drives the camera along a Catmull-Rom path (wide shot; as the title box docks a drift left and in, which slides
-  the TV out from under the docked box; then in between the characters toward the tea house door; a portrait screen
-  has a path of its own) and every character track at once. The moment the brief asks for: Jefrie crouches while the
-  box is still centred (0.03 to 0.09), springs as it docks, is cut to her pose-baked leap mesh in the air (0.135),
-  flies across the garden toward the path, is cut back to her rig as she comes down (0.375), lands with her weight
-  taken (to 0.45), turns and walks to the door (0.55 to 1) with her tail coiled at her heels. Yusef flutters from the
-  right edge of the opening frame to his place as the box docks, then waits by the door with the lantern; by 1 both
-  flank the door.
+- **Scroll timeline.** With the scene the section is 300vh (400vh on a portrait screen) and pinned (two layouts,
+  below). One progress value (0 to 1) drives the camera along a Catmull-Rom path (wide shot; as the title box docks a
+  drift left and in, done by 0.135, which slides the TV out from under the docked box; then in between the characters
+  toward the tea house door; a portrait screen has a path of its own) and every character track at once. The moment
+  the brief asks for is the leap, in poses: Jefrie stands with her arms lowered (the opening frame and the posters),
+  winds up (0.022 to 0.062: a crouch, her arms swung back), springs (0.062 to 0.09, her arms thrown up) so she is in
+  the air as the box docks at 0.1, rises stretched out (to 0.135), tucks (0.148) and is cut to her pose-baked leap mesh
+  (0.15), which tumbles over the garden toward the path until it is cut back to her rig (0.35); she opens out of the
+  tuck and reaches for the ground (0.372), lands with her weight taken (0.39 to 0.45), turns and walks to the door
+  (0.55 to 1) with her tail coiled at her heels. Yusef flutters in from the right edge of the opening frame as the box
+  docks (0.09 to 0.125), then waits by the door with the lantern; the TV turns and scoots right to watch her leap and
+  leaves the frame at the bottom as the camera comes in; by 1 both characters flank the door.
 - **Idle loop on top:** breathing bob, sway, wing beats, lantern swing, tail curl, antenna wobble, the TV screen's
   emissive shader (moon, scanlines, rolling bar, grain, flicker shared with its light and glow), drifting motes
   (fireflies and petals, one Points draw).
@@ -46,6 +49,12 @@ Jefrie (left) and Yusef (right, with a lantern) around a small CRT television. E
   picture that fails is reported only 1.5 s later, and not at all once the page is being left. `beforeunload` itself
   is not listened for: it may not lead anywhere (a mailto link fires it in some browsers, and the page stays: the
   scene comes up all the same, tea-hero-28), and a listener keeps Firefox from caching the page for the way back.
+  WebKit sends no event at all for such a link: it cancels the loads in flight (the fetches fail as network errors)
+  and cuts image elements' loads without a load or error event. So a network error is tried again twice, 0.5 s and
+  1.5 s later, unless the page is being left (`patient` in `manifest.js`: the manifest, the models and the picture
+  layers; an answer such as a 404 is not tried again, tea-hero-16), the picture layers are fetched and decoded from
+  their own bytes, and a picture whose decode has not settled in 4 s is started once more, the models' too: the page's
+  own mailto link clicked while a model loads costs nothing (tea-hero-30).
 - **Nothing moves under the reader.** The section grows by two screens when the scene pins, so the pin waits for a
   moment when that moves nothing the reader reads (`whenPinnable` in `pin.js`): the scroll at rest (no scroll for 200 ms
   and none over the next two frames, so a chapter link tapped just before the pin gets its jump), and the page at its
@@ -74,7 +83,7 @@ other poster under the canvas.
 | no JavaScript | the poster behind the title box, one screen | the page is all there; nothing else loads |
 | reduced motion | the same | `data-3d-off="reduced motion"`, none of the 3D is fetched (e2e tea-hero-1) |
 | no WebGL (also Save-Data, a small device, `?hero=off`, any failure) | the same | `data-3d-off` says why (tea-hero-2) |
-| the scene loads | the poster, then the canvas fades in over the same frame (700 ms) | the posters are the opening frame (mean difference 1.2 to 3.6 of 255, best aligned at offset 0, at 1440x900, 1280x800, 1024x768, 768x1024 and 390x844, night and day), so nothing jumps; re-run `poster.mjs` after any change to the opening composition or the assets |
+| the scene loads | the poster, then the canvas fades in over the same frame (700 ms) | the posters are the opening frame (mean difference 1.6 to 2.7 of 255, best aligned at offset 0, at 1440x900, 1280x800, 1024x768, 768x1024 and 390x844, night and day), so nothing jumps; re-run `poster.mjs` after any change to the opening composition or the assets |
 
 Why one picture: whoever arrives sees the same place and the same characters, with motion added where it can run;
 the 3D path's first seconds show the frame the scene comes alive from. Phase 1's SVG garden (`TeaNight.astro`) was
@@ -89,7 +98,8 @@ starts after first paint.
 `cover.css` (tea-core) lays out the static hero: the section at least one screen tall (`min-height: 100svh`), the box
 centred in `.tea-hero-pin`'s padding, which lives in `--tea-hero-pt`, `--tea-hero-pb` and `--tea-hero-px` on
 `.tea-hero` (84/56 px and the page's side padding; 76/40/14 px under 561 px). With the scene (`data-3d="on"`),
-`stage.css` makes the section 300vh and `pin.js` picks `data-hero-layout`, again on every resize:
+`stage.css` makes the section 300vh (400vh on a portrait screen, below) and `pin.js` picks `data-hero-layout`, again on
+every resize:
 
 - **`dock`** (a landscape screen where the box fits, its height plus the two paddings at most the window's, and where
   docked it would cover at most 37% of the width: 1280 and wider; a 4:3 screen such as 1024x768 or 1180x820 flows):
@@ -103,7 +113,10 @@ centred in `.tea-hero-pin`'s padding, which lives in `--tea-hero-pt`, `--tea-her
 - **`flow`** (a portrait screen, a box that doesn't fit, or a 4:3 one): the pin becomes a grid as tall as the
   section, the stage sticks (100svh) and the box keeps the static layout's place in the first screen and scrolls away
   with the page. The scene holds its opening frame until the box's foot has passed 30% of the screen (`leadOf` in
-  `pin.js`, the "lead", a share of the scroll, at most half), then plays over the rest.
+  `pin.js`, the "lead", a share of the scroll, at most half), then plays over the rest. A portrait screen's section is
+  400vh, a screen longer than a landscape one's (whose 300vh both layouts share, so a switch between them moves
+  nothing below the hero): with 300vh the lead took half a phone's scroll and the leap went by in about a third of a
+  screen; now the scene plays over about 1.8 screens on a phone (tea-hero-22 asks for 1.5 at least).
 
 On a portrait screen the box waits low in the first screen (`--tea-hero-pt` max(76px, 61svh) in `stage.css`, on every
 path): the portrait camera stands the cast in the top 60% of the frame, so the first screen shows the characters and
@@ -124,7 +137,11 @@ input is read on `window`, so the box stays clickable. tea-core may react to `da
 1024 px the rail is the sticky chapter strip, and its backdrop-filter used to make the strip the fixed switch's
 containing block, so the switch scrolled with the strip, off screen all through the hero. The strip's frosted ground
 is now a `::before` layer (`tea.css`), so the switch is fixed to the screen's top right from the first screen, over
-the static and the pinned hero, and sits in the strip's reserved right end once the strip sticks (tea-hero-5).
+the static and the pinned hero, and sits in the strip's reserved right end once the strip sticks (tea-hero-5). The box
+scrolls up under it there, so `stage.css` keeps the box's text out of the switch's column: on a phone a 76 px gutter,
+with the counter set a little smaller so it keeps to one line (it breaks, where even that is too wide, only between
+its parts); from 561 px a gutter and a skip-link offset that follow the centred 540 px box and are gone by about
+680 px (tea-hero-29, at 561, 600 and 640 px and on the phone).
 
 ## Files
 
@@ -147,8 +164,8 @@ the static and the pinned hero, and sits in the strip's reserved right end once 
 | `public/tea/hero/manifest.json` | the scene, all of it |
 | `public/tea/hero/*.webp, *.glb` | the painted picture's layers (`bg-*`, final: see "The picture"), posters (`poster-*`), the cast's models (`jefrie_rig.glb`, `jefrie_leap_rig.glb`, `yusef_rig.glb`, `tv_rig.glb`, `lantern_rig.glb`; see "The cast") |
 | `scripts/tools/tea-hero/` | `shots.mjs`, `poster.mjs`, `silhouettes.mjs` (overlap and behind-the-box per size and scroll), `edges.mjs` (the picture covers every frame), `verify.mjs` |
-| `tests/e2e/tea-hero.spec.mjs` | the e2e spec (tea-hero-1 to 29, listed in `tests/e2e/INVENTORY.md`) |
-| `tests/unit/tea-hero.test.mjs` | the runtime's maths in plain node: the manifest's defaults and new fields, every channel, the swap (follow, a cut, a dissolve down and back), `loadActors` on a GLB made in memory, the skeleton freed, the shipped manifest's channels, its own leap swap, a portrait camera path, and its picture covering every frame (`edges.mjs`) |
+| `tests/e2e/tea-hero.spec.mjs` | the e2e spec (tea-hero-1 to 30, listed in `tests/e2e/INVENTORY.md`) |
+| `tests/unit/tea-hero.test.mjs` | the runtime's maths in plain node: the manifest's defaults and new fields, every channel, the swap (follow, a cut, a dissolve down and back), `loadActors` on a GLB made in memory, the skeleton freed, the shipped manifest's channels, its own leap swap and every stand-in of it following someone, Jefrie's opening stance (not her rig's A-pose), a portrait camera path, and its picture covering every frame (`edges.mjs`) |
 | `src/pages/tea-lab.astro` | the lab: the real hero and rail over empty chapter heads; `?manifest=`. Temporary (see the top of this file) |
 
 Outside these, the slice touched `src/styles/tea/cover.css` (the padding variables; the SVG garden's rules and the
@@ -212,48 +229,52 @@ a layer, read the margins `edges.mjs` prints.
 ### Composition (the final cast)
 
 Directed on the page with contact sheets at 1440x900, 1280x800, 1024x768, 768x1024 and 390x844, night and day, and
-measured with `silhouettes.mjs` (each actor drawn alone as a flat silhouette at a raw scroll progress: its share
-behind the title box, and the overlap between two actors as a share of the smaller).
+measured on flat masks of the actors (each actor drawn in one flat colour at an exact scroll progress, the lens shift
+and the box at their places there: its share behind the title box's rectangle, and its pixels on each edge of the
+frame; `silhouettes.mjs` measures the same, actor by actor).
 
-- **The opening frame** (progress 0: the posters, and every path's first picture). The TV stands in front of Jefrie
-  at the left (TV at (-1.3, -0.2, 1.7), scale 0.72; Jefrie at (-2.05, 0, 0.8): her leap path is rescaled so she
-  still lands on the path), Yusef at the right ((1.05, 0.15, -0.65), with the lantern), the centred box between
-  them; she crouches in it (0.03 to 0.09) while the box is still centred. Behind the open box: Jefrie 0.1% at
-  1440x900; Jefrie 2.5%, Yusef 0.6% and the TV 6.5% at 1280x800; on 4:3 (1024x768, whose box is 53% of the width)
-  Jefrie 5.7%, Yusef 3.6% (a wing tip) and the TV 18.6%; on a portrait screen the TV 0.6%. The TV covers the front of
-  her legs (7.4% of the TV's silhouette on landscape screens, 25% on a portrait one): it is staged in front of her.
-- **Docked desktop** (1280 and wider). The box docks at 0.1; from 0.1 to 0.25 the camera drifts left and in (no
-  further left than x -0.9, where the far plate's edge would show) so the TV slides out from under the docked box, and
-  `camera.dock.shift` is 0.14 to 0.22 through the leap (0.1 to 0.3), 0.05 at 0.62 and 0.14 to 0.16 at the door
-  (`cover` 0.33). Yusef flutters from the right of the opening frame to his place by 0.14 (his position track),
-  clear of the box open and docked. Behind the docked box: at the moment the box docks (0.1, while it glides there
-  for 900 ms and the lens shift eases in) Jefrie 34.5% and the TV 28.9% at 1440x900 (52% and 34% at 1280x800); by
-  0.135 Jefrie 0 and the TV 8.3% (14.3%); nothing at 0.2; the TV 15.7% (16.9%) at 0.3 and 6.3% (5.3%) at 0.375 as it
-  leaves the frame at the bottom left; from 0.45 to the door nothing (Jefrie 0.3% at most at 1280x800). The two
-  characters touch nowhere (0.27% at 0.55, as she turns).
+- **The opening frame** (progress 0: the posters, and every path's first picture). Jefrie stands at the left in a
+  stance (arms lowered from her rig's A-pose, forearms bent, her right knee easy), the TV (scale 0.62) in front of her
+  feet, Yusef at the right ((1.05, 0.15, -0.65), with the lantern), the centred box between them. Behind the open
+  box: nothing at 1440x900; Jefrie 2%, Yusef 0.4% and the TV 2.5% at 1280x800; on 4:3 (1024x768, whose box is 53% of
+  the width) Jefrie 5.4%, Yusef 3.4% (a wing tip) and the TV 15%; on a portrait screen the TV 1.5%.
+- **The take-off** (still the open box, 0.022 to 0.1). She crouches at her place (behind the open box 0.2% at 0.03,
+  3% at 0.062 at 1440x900) and springs up and to the right: at 0.09 her raised arm and side are 8.9% behind the open
+  box (14% at 1280x800), the moment before it docks.
+- **Docked desktop** (1280 and wider). The box docks at 0.1; she is already in the air: behind its docked place 4.2%
+  at 0.1 (13.7% at 1280x800, while the box glides there for 900 ms), nothing from 0.11 (0.7% at 1280x800) through the
+  leap and the landing, at most 1.7% on the walk (her tail, at 1280x800). The camera drifts left and in from 0.1 to
+  0.135 (no further left than x -0.9 at 0.25, where the far plate's edge would show), sliding the TV out from under
+  the docked box: 23% under it at 0.1 (29% at 1280x800), 4% (10%) at 0.122, nothing from 0.135; it then scoots right
+  as it turns to watch her and leaves the frame at the bottom, clear of the box (0 to 0.39; it was 7 to 23% under it
+  at 0.115 to 0.35). `camera.dock.shift` is 0.14 to 0.22 through the leap (0.1 to 0.3), 0.05 at 0.62 and 0.14 to 0.16
+  at the door (`cover` 0.33). Yusef flutters in from the right of the opening frame from 0.09 to 0.125 and stands 0.2
+  further left through the leap: past the right edge 63 px at 0.1 (68 at 1280x800), inside the frame from 0.11 at
+  1440x900, 31 px at most after 0.11 at 1280x800. The two characters touch nowhere.
 - **Portrait screens** have a camera path of their own (`camera.portrait.keys`, `fov` 50 at `aspect` 0.75, `travel`
-  0.18; `portraitPosition` Jefrie (-0.6, 0, 1.0), Yusef (0.62, 0.15, -0.8), the TV (-0.2, -0.2, 1.4)): the cast
-  stands in the top 60% above the low box at first; while the box scrolls away the scene holds its opening frame (the
-  lead: on 390x844 the box covers the cast wholly from raw 0.2 to 0.375); then the camera comes in and drops low to
-  look up at the spring and the flight (0.1 to 0.3), rises for the landing, lets the TV leave at the bottom as it
-  moves in (0.43 to 0.55), and follows the walk to the door from behind. Overlaps: her leap mesh's arm in front of Yusef's robe, 4.3%
-  of his silhouette at 390x844 at scene 0.3 (0.7% at 768x1024), otherwise none.
-- **The edges.** Heads stay in frame everywhere. Yusef's wing tips stay inside the frame (on 4:3 the right one
-  touches the edge as the scene starts, until the camera moves in). Jefrie's tail coils at her heels on the walk
-  (0.6 to 1) so it stays in frame on narrow screens (it ran out of a phone's left edge for the whole walk before);
-  on a docked desktop the coil sits on the path beside the box's right edge, grazing the frame's foot.
+  0.18; `portraitPosition` Jefrie (-0.6, 0, 1.0), Yusef (0.62, 0.15, -0.8), the TV (-0.55, -0.2, 1.45)): the cast
+  stands in the top 60% above the low box at first, the TV at her feet at the left; while the box scrolls away the
+  scene holds its opening frame (the lead: on 390x844 the box covers the cast wholly at raw 0.2, and her head is under
+  its foot as the scene starts, 6.9% of her, clear by 0.03); the camera comes in and drops low to look up at the spring
+  and the flight, rises for the landing, and follows the walk to the door from behind. The TV leaves at the bottom left
+  from 0.25 (5.7 to 8.5% of the frame, against 11 to 15% centred at the bottom before); Yusef's wing tip touches the
+  right edge from 0.062 to 0.15 as he flutters in.
+- **The edges.** Heads stay in frame everywhere. On 4:3 Jefrie's cape and tail touch the left edge in the opening frame
+  (until 0.03) and Yusef's wing tip the right edge (until 0.09). On the walk her tail is coiled at her heels and the
+  landscape camera looks a little lower than it did, so her tail and boots stay inside the frame to the door.
 - **Night and dusk.** Jefrie carries a key and a rim light (`jefrie_key`, `jefrie_rim`; her leap mesh the same pair,
   brighter, to match her) so she reads against the dark garden at night and the bright dusk plate; Yusef carries
   `yusef_dusk`, a warm point light in front of him that is off at night and on by day (3.0), which separates his
   white robe and wings from the dusk plate; the lantern hangs from his right hand with its light and glow (5 at
-  night, 4.5 by day), held out at his side, never over Jefrie's head; her tail stays off his robe (the one place
-  they meet is her outstretched arm in front of his robe on a phone, above).
-- **The cuts** (frames either side, `cutcheck`-style: Jefrie's flat silhouette and her mean brightness in the lit
-  frame). At 1440x900 the silhouettes either side of a cut overlap by 0.81 (cut 1) and 0.77 (cut 2), against 0.75 to
-  0.92 between neighbouring frames of the same mesh; her centre moves 6.2 and 13.7 px (7.6 to 15.5 between
-  neighbours); area within 2%. Brightness: at night +3.8% and +1.3%, by day -14% into the leap and +14% out of it (the
-  leap mesh's grey armour against the rig's black). At 390x844: overlap 0.81 and 0.78 against 0.89 to 0.99, centre
-  3.7 and 2.9 px, brightness -3% and -18% at night, -9% and -3% by day. See "Known issues" 1.
+  night, 4.5 by day), held out at his side, never over Jefrie's head. The title box's text meets 4.5:1 over the scene
+  at night at 1440x900 and 1280x800 from the opening to 0.13 (the chapter numerals lowest, 4.99 at the worst 5% of
+  their pixels; they fell to 4.44 at 0.13 while the TV's screen stood under the docked box).
+- **The cuts** (the frames 0.00025 either side of each: Jefrie's flat silhouette and her mean brightness in the lit
+  frame). The silhouettes either side of a cut overlap by 0.79 (cut 1, 0.15) and 0.78 (cut 2, 0.35) at 1440x900, 0.79
+  and 0.77 at 390x844, against 0.99 for the same step either side; her centre moves 5.8 and 6.5 px (2.1 and 2.2 at
+  390x844); area within 1.3%. Brightness: at 1440x900 +7% and -4% at night, -15% into the leap and +12% out of it by
+  day (the leap mesh's grey armour against the rig's black); at 390x844 +12% and -18% at night, 0 and +3% by day. See
+  "Known issues" 1.
 
 Channels (scroll tracks and idle waves add together, both as **deltas from the rest pose**, so a final asset with a
 different rest pose keeps working):
@@ -279,8 +300,8 @@ in where the standing rig's pose is closest to it). Give it its own actor with `
 ```json
 { "id": "jefrie_leap", "src": "jefrie_leap_rig.glb", "follow": "jefrie", "envIntensity": 1.45,
   "position": [-0.0467, 0.013, 0.0453], "rotation": [-12.96, -12.09, -13.35], "scale": 0.9623, "rig": { "kind": "nodes" } }
-{ "actor": "jefrie", "channel": "visible", "ease": "linear", "keys": [[0, 1], [0.13462, 1], [0.135, 0], [0.37486, 0], [0.375, 1]] }
-{ "actor": "jefrie_leap", "channel": "visible", "ease": "linear", "keys": [[0, 0], [0.13462, 0], [0.135, 1], [0.37486, 1], [0.375, 0]] }
+{ "actor": "jefrie", "channel": "visible", "ease": "linear", "keys": [[0, 1], [0.14962, 1], [0.15, 0], [0.34986, 0], [0.35, 1]] }
+{ "actor": "jefrie_leap", "channel": "visible", "ease": "linear", "keys": [[0, 0], [0.14962, 0], [0.15, 1], [0.34986, 1], [0.35, 0]] }
 ```
 
 - **`follow`:** every frame, after every track, the follower's root takes its leader's position and rotation and its
@@ -288,7 +309,8 @@ in where the standing rig's pose is closest to it). Give it its own actor with `
   them, in the leader's model units: the offset a pose match gives. Its own whole-actor position, rotation and scale
   tracks are overridden; its node tracks, idle waves, `visible` and `opacity` are its own. A follower must name another
   actor that follows no one, or the manifest fails and the poster stays. A follower has no rest place of its own
-  (`portraitPosition` is not read).
+  (`portraitPosition` is not read). An actor hidden at the top of the scroll by its own whole-actor `visible` or
+  `opacity` track stands in for another: `npm test` and tea-hero-27 fail on one that follows no one.
 - **A cut** is `visible` on both, the other way round; at exactly the cut's middle both values are 0.5 and both draw for
   that one frame. **A dissolve** is `opacity` on both with `fade` (keys such as `[[0.18, 1], [0.21, 0], [0.5, 0],
   [0.53, 1]]` and the reverse): alpha hashing dithers the opaque materials while it runs, and only then (an opaque
@@ -304,11 +326,14 @@ in where the standing rig's pose is closest to it). Give it its own actor with `
   lit material on screen is compiled again (one frame took 0.57 s under SwiftShader with a light on each stand-in,
   0.68 s with the final cast's two light pairs; not measured on a real GPU).
 - Tools that isolate an actor (`silhouettes.mjs`) hide meshes, never an actor's root, which its tracks set.
-- **Where the shipped cast cuts.** Both cuts sit on the leap's fastest moments, where a change of shape reads least:
-  0.135 is the spring's last frames (her root moves 0.075 units, 0.033 of it up, and turns 1.2 degrees over the last
-  0.004 of scroll before it, the box just docked and the lens shift easing in), 0.375 the fall before the landing
-  (0.035 units, 0.017 of it down, over 0.0014). The standing rig is keyed into the leap mesh's silhouette on both sides
-  of each cut (the rig builder's poses, retimed with the rest of the leap). What still changes at a cut is the leap mesh's own detail, not its place or size: see "Known issues".
+- **Where the shipped cast cuts.** At the top of the arc, where she is tucked: 0.15, after her rig has risen stretched
+  out and tucked (its tuck reached at 0.148), and 0.35, just before her rig opens out of the tuck and reaches for the
+  ground (the tuck held to 0.352). The leap mesh holds 0.2 of the scroll (0.15 to 0.35; it held 0.24 before), and the
+  rig shows the rise and the reach on either side, so the air phase is a sequence of poses: stretched, tucked and
+  tumbling, reaching. The rig's tuck is the rig builder's pose-matched one, so place and size carry over at both cuts;
+  the cuts are no longer on the leap's fastest moments (her root moves about 10 units of the scroll's progress at
+  0.15 and 11 at 0.35, against 20 and 25 at the old 0.135 and 0.375), so until the leap mesh is made from the standing
+  picture its change of picture shows a little longer at a slow scroll: see "Known issues".
 
 ### Node naming convention for rigs
 
@@ -421,56 +446,65 @@ and restores the poster.
 
 ## Measured (2026-11-12, this branch)
 
-- Boot entry (Stage's script): 1,448 B, **858 B gzip -9**, plus the site's existing shared preload helper.
-- 3D chunk `stage.*.js`: 52,952 B, **17.7 KB gzip -9** (all of `src/scripts/tea/hero/` plus the meshopt decoder,
+- Boot entry (Stage's script): 1,375 B, **836 B gzip -9**, plus the site's existing shared preload helper.
+- 3D chunk `stage.*.js`: 54,301 B, **18.1 KB gzip -9** (all of `src/scripts/tea/hero/` plus the meshopt decoder,
   which is 22.4 KB of it, 6.1 KB gzip; the actor swap added 1,181 B, 410 B gzip; the portrait camera path and the
-  leave-the-page grace 301 B more). Loads only after first paint, only on the 3D path.
+  leave-the-page grace 301 B more; the loads tried again, the pictures uploaded at the mount and freed at the dispose
+  1,349 B, 419 B gzip). Loads only after first paint, only on the 3D path.
 - It also loads `three.module.*.js` (166.6 KB gzip) and `GLTFLoader.*.js` (13.1 KB gzip), byte-identical to the
   chunks the site already ships, so cached for anyone who has seen the homepage or a post with a model.
-- Files on the 3D path per visit: 2.77 MB, 2,765,602 B (the five models 2,083,772 B: `jefrie_rig.glb` 518,348,
+- Files on the 3D path per visit: 2.77 MB, 2,769,884 B (the five models 2,083,772 B: `jefrie_rig.glb` 518,348,
   `jefrie_leap_rig.glb` 537,944, `yusef_rig.glb` 562,412, `tv_rig.glb` 229,364, `lantern_rig.glb` 235,704; the four
-  picture layers 594,260 B, the other mode's two among them fetched after the first frame; the manifest 87,570 B,
-  9.9 KB gzip) plus the one poster (51 to 100 KB: tall 51,198 / 63,676 B, wide 81,924 / 99,732 B) and the scripts
-  above: 3.06 MB at most with the scripts gzipped, 3.62 MB with them counted whole. The page no longer fetches
+  picture layers 594,260 B, the other mode's two among them fetched after the first frame; the manifest 91,852 B,
+  10.1 KB gzip) plus the one poster (51 to 97 KB: tall 50,878 / 63,878 B, wide 79,480 / 97,008 B) and the scripts
+  above: 3.06 MB at most with the scripts gzipped, 3.63 MB with them counted whole. The page no longer fetches
   anything under `/media/jefrie-3d/` (the published post's model stays where it is). `public/tea/hero/` holds
-  3,062,132 B.
+  3,061,128 B.
 - `/tea/` itself: HTML 24.4 KB gzip (25.8 before the hero: the SVG garden went), CSS 8.6 KB gzip.
   Main-site budgets identical to the baseline.
 
 ## Verified
 
-- e2e `tea-hero.spec.mjs` (tea-hero-1 to 29) in both projects, desktop (Chromium 1440x900) and phone (WebKit,
+- e2e `tea-hero.spec.mjs` (tea-hero-1 to 30) in both projects, desktop (Chromium 1440x900) and phone (WebKit,
   iPhone 13); each test seen failing on a build broken on purpose. Among them: the box holds still through the mount
   (8), a late scene moves nothing on screen (9), arriving at `/tea/#projects` lands there (10), the switch pressed
   while loading (11), a lost and restored context (12), reduced motion turned on (13), no poster fetched under the
   canvas (14), a square window (15), a missing manifest or model (16), Save-Data and a small device (17), a reload
   inside the scene (18), the stage one screen and the foot's fade (19), the same box on both paths (20), where the
-  box docks (21), the box low on a portrait screen (22), a chapter link tapped just as the scene pins (23), every
-  part the manifest names found in the models (24), leaving the page while the scene loads (25), one actor swapped
-  for another on `/tea/` itself, the shipped manifest plus a follower served in its place (26), the shipped leap's
-  own swap with the point lights counted through both cuts (27), a beforeunload that does not leave the page (28:
-  failed with the scene stopping its loads on beforeunload), the title box's lines clear of the switch on a phone
-  (29). The arrival at a chapter address itself is tea-17 (`tea.spec.mjs`).
+  box docks (21), the box low on a portrait screen, and the scene's own scroll there (22: failed at 1.0 and 1.17
+  screens with 300vh), a chapter link tapped just as the scene pins (23), every part the manifest names found in the
+  models (24), leaving the page while the scene loads (25), one actor swapped for another on `/tea/` itself, the
+  shipped manifest plus a follower served in its place (26), the shipped leap's own swap with the point lights and
+  the pictures on the GPU counted through both cuts and every stand-in following someone (27: failed with 12 then 14
+  pictures before the mount uploaded them, and with "follow" taken out), a beforeunload that does not leave the page
+  (28: failed with the scene stopping its loads on beforeunload), the title box's lines clear of the switch on a phone
+  and at 561, 600 and 640 px, the counter on one line (29: failed at 561 px and on the counter before the gutter
+  followed the box), the page's real mailto link clicked while a model loads (30: failed on WebKit before the loads
+  were tried again). Reduced motion turned on (13) also checks the GPU holds nothing of the scene afterwards (failed
+  with 5 pictures left). The arrival at a chapter address itself is tea-17 (`tea.spec.mjs`).
 - `tests/unit/tea-hero.test.mjs` (in `npm test`): each of eight broken runtimes (the round-2 opacity bug, no follow, no
   skeleton freed, a follower moved by `orientActors`, a `visible` on a node bound, no `fade`, a follower left behind
   while its leader is cut away, `fade` dithering a fully shown actor) fails one of its tests; the shipped manifest's
-  own leap swap (exactly one of the pair drawn, a step either side of every cut, down and back) and a portrait screen
-  following `camera.portrait.keys` are checked too.
+  own leap swap (exactly one of the pair drawn, a step either side of every cut, down and back), every stand-in of it
+  following someone (failed with "follow" taken out), Jefrie's opening stance (failed on the bind pose) and a portrait
+  screen following `camera.portrait.keys` are checked too.
 - `verify.mjs` against `/tea/` and `/tea-lab/` (both layouts; see its header).
-- The posters, re-rendered with `poster.mjs` from the final cast's opening frame, against that frame on the page
-  (box, switch, shade, rail and foot hidden) at 1440x900, 1280x800, 1024x768, 768x1024 and 390x844, night and day:
-  best aligned at offset 0 everywhere, mean difference 1.2 to 3.6 of 255 (the poster's resampling at the edges, the
-  screen's grain, the motes); the actors' silhouettes as in "Composition" (`silhouettes.mjs`, on the final cast); the
-  title box's text contrast by day and by night over the poster and the scene (by day title 3.1, kicker 5.1, the rest
-  5.5 or more; measured before the cast came in, not measured again with it).
+- The posters, re-rendered with `poster.mjs` from the opening frame (Jefrie in her stance), against that frame on the
+  page (box, switch, shade, rail and foot hidden) at 1440x900, 1280x800, 1024x768, 768x1024 and 390x844, night and day:
+  best aligned at offset 0 everywhere, mean difference 1.6 to 2.7 of 255 (the poster's resampling at the edges, the
+  screen's grain, the motes); the actors' places as in "Composition" (flat masks on the page, on the final cast); the
+  title box's text contrast over the scene at night at 1440x900 and 1280x800 from the opening to 0.13 (4.5:1 or more
+  everywhere, the chapter numerals lowest at 4.99); by day measured before the cast came in (title 3.1, kicker 5.1,
+  the rest 5.5 or more), not again with it: by day the box is an opaque card.
 - The picture's edges with `edges.mjs` (see "The picture"), in `npm test` on the shipped manifest (the final cast's
   camera: 0 faults at 17 sizes); it fails on the painter's own fit and on the stand-in plates.
 - The loader on the spike's compressed models and a skinned test model (above).
 
 ## Not verified
 
-- Frame rate on real hardware: only SwiftShader here (a few fps by design). Expect the costs to be the Jefrie GLB's
-  2048 textures and one full-screen draw; there are no shadows or post-processing.
+- Frame rate on real hardware: only SwiftShader here (a few fps by design). Every character's texture is 1024x1024,
+  the TV's and the lantern's 512x512; expect the costs to be the skinned characters and one full-screen draw of the
+  picture; there are no shadows or post-processing.
 - Real phones: iOS Safari's `svh` while pinned or with the stage sticky, its dynamic toolbar, device tilt on a real
   Android phone (the handling of a reading is checked with synthetic events in Chromium), a real GPU. Headless WebKit
   ran the phone e2e project.
@@ -478,19 +512,20 @@ and restores the poster.
 
 ## Known issues
 
-1. **The leap mesh is another picture of Jefrie.** At both cuts her place, size and brightness carry over on a
-   desktop (see "Composition"), but the leap mesh (`jefrie_leap_rig.glb`, from the leap still) is not the standing
-   rig's picture: its armour is grey with silver kneepads where hers is black, its helmet has dark spikes where hers
-   has the red fin and white grin, and its tail hooks where hers hangs. Scrolled slowly, each cut (0.135 into the
-   leap, 0.375 out of it) reads as one figure turning into another in one frame; at 0.375 her legs also go from the
-   leap's tuck to the rig's stretch for the landing. On a phone the second cut also darkens her by about a quarter
-   (the leap mesh catches more of her riding key light from the portrait camera's side). A leap mesh made from the
-   standing still would remove all of it (see "Next steps").
-2. **The TV under the docked box** on a docked desktop: as the box docks (0.1 to 0.135) the TV still stands partly
-   under it, and again as it leaves the frame at the bottom left (0.25 to 0.375); see "Composition" for the shares.
+1. **The leap mesh is another picture of Jefrie.** At both cuts her place and size carry over (see "Composition"), but
+   the leap mesh (`jefrie_leap_rig.glb`, from the leap still) is not the standing rig's picture: its armour is grey
+   with silver kneepads where hers is black, its helmet has dark spikes where hers has the red fin and white grin, and
+   its tail hooks where hers hangs. Scrolled slowly, each cut (0.15 into the leap, 0.35 out of it) reads as one figure
+   turning into another in one frame, and by day her brightness jumps at both cuts (see "The cuts"). Since the cuts
+   moved to the top of the arc they sit on slower moments of the leap than before, so this shows a little longer at a
+   slow scroll. A leap mesh made from the standing picture removes it (see "Next steps"); nothing in the lights, the
+   timing or the camera can.
+2. **The TV and the dock.** At the moment the box docks (0.1, while it glides there for 900 ms) the TV still stands
+   under the box's docked place (23% of it at 1440x900, 29% at 1280x800), and Yusef, who flutters in from the right
+   as the box docks, is past the right edge by 63 px (68 at 1280x800) if the reader stops right there; both are clear
+   by 0.122 and 0.11.
 3. **4:3 screens** (1024x768, flow): the box is 53% of the width, so in the opening frame it covers part of the TV and
-   the edge of Yusef's wing; once it has scrolled away Jefrie's hand and cape touch the frame's left edge and Yusef's
-   wing tip its right edge until the camera moves in.
+   Jefrie's cape and tail touch the frame's left edge, Yusef's wing tip its right edge, until the camera moves in.
 4. **Phones:** the box rises over the cast as the reader scrolls it away (the scene holds its opening frame until the
    box's foot has passed 30% of the screen), so for a moment the heads are under the box, and Jefrie's crouch starts
    as its foot leaves them.
@@ -499,16 +534,21 @@ and restores the poster.
 6. **The lab page** is live (noindex, linked from nowhere, but a line of `stats-pages.txt`) until it is deleted.
 7. At load, before the scene, tea-core's title moves about 10 px when its web font swaps in (CLS 0.0004, scene or
    not). The scene's arrival moves nothing on screen (tea-hero-8 and 9).
+8. **Her fused sleeves.** Her rig's arms are fused to her body (TRELLIS), so a raised or lowered arm opens a seam at
+   the armpit (lined: dark, no see-through): 0.15 world units in the opening stance (hidden behind the lowered arm),
+   up to 0.40 as she throws her arms up at the spring. The motion check (`hero_work/rig/src/fragcheck.mjs`, not in the
+   repository) finds no stretch over 5 anywhere in the leap (4.99 as she reaches for the ground).
 
 ## Next steps
 
 1. **A leap mesh made from the standing still** (recommended, see "Known issues" 1): the leap pose drawn from
    `jefrie_apose`'s picture (her black armour, red fin, white grin, cape and tail as they are), meshed, rigged and pose
    matched to the standing rig as `jefrie_leap_rig.glb` was, under 900 KB. It replaces that file and the
-   `jefrie_leap` actor's `position`, `rotation`, `scale` and node tracks; the cuts (0.135, 0.375), the riding lights
-   and every other key stay. Then key the standing rig's legs into its tuck at 0.375, check both cuts frame by frame on
-   a desktop and a phone (silhouette, place and brightness against the frames either side), and run the e2e spec
-   (tea-hero-24 and 27 hold the names and the swap). The posters stay: the leap mesh first shows at 0.135.
+   `jefrie_leap` actor's `position`, `rotation`, `scale` and node tracks; the cuts (0.15 and 0.35, with the rig's tuck
+   held from 0.148 to 0.352), the riding lights and every other key stay. Fit the pose at those cuts (the rise before
+   and the reach after are the rig's own), check both cuts frame by frame on a desktop and a phone (silhouette, place
+   and brightness against the frames either side), and run the e2e spec (tea-hero-24 and 27 hold the names and the
+   swap). The posters stay: the leap mesh first shows at 0.15.
 2. **Delete `src/pages/tea-lab.astro`** when no more variants are to be tried, build, confirm `/tea-lab/` is gone
    from `dist/stats-pages.txt`, drop tea-16 or turn it into a check that the page is gone, run `verify.mjs` and the
    e2e spec, compare budgets and run `dist-diff` against an untouched build, then land per `CLAUDE.md`.
