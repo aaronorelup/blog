@@ -17,7 +17,7 @@ import { hash } from '../../scripts/check/never-publish.mjs';
 import { TOPICS } from '../../src/data/taxonomy.js';
 import { TEA_CHAPTERS } from '../../src/data/tea-chapters.js';
 import { isListed, ledgerOrder } from '../../src/lib/posts.js';
-import { asPost, picksFile, readPicks } from '../../src/lib/tea-picks.js';
+import { asPost, fromPicker, picksFile, readPicks } from '../../src/lib/tea-picks.js';
 
 // src/lib/paths.js reads the __PUBLIC_DIR__ define Astro gives the build; tea.js reaches it through icons.js.
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
@@ -101,13 +101,13 @@ const posts = [post('v1', '2026-10-01'), post('v2', '2026-10-02'), post('v3', '2
   post('ep1', '2026-09-01', { topic: 'agents', project: ['evening-television'] }),
   post('teardown-lab', '2026-12-01', { id: 'AO-073', topic: 'agents', project: ['evening-television'] })];
 const cards = [{ key: 'game', section: 'play', main: { href: '/games/x/', external: false } },
-  { key: 'film', section: 'watch', posts: [{ slug: 'v1' }] }];
+  { key: 'film', section: 'play', posts: [{ slug: 'v1' }] }, { key: 'reel', section: 'watch' }];
 const REG = [
   { id: 'hero', dom: 'top', kind: 'hero', title: 'H', shelves: [] },
   { id: 'a', dom: 'topic-video', kind: 'topic', topic: 'video', title: 'A', shelves: [{ id: 'leads', max: 2, holds: 'post', auto: { topic: 'video' } }] },
   { id: 'tv', dom: 'tv', kind: 'series', title: 'T', shelves: [{ id: 'episodes', max: 3, holds: 'post', auto: { project: 'evening-television' } },
     { id: 'machines', max: 2, holds: 'machine' }] },
-  { id: 'b', dom: 'b', kind: 'projects', title: 'B', shelves: [{ id: 'play', max: 1, holds: 'project' }] },
+  { id: 'b', dom: 'b', kind: 'projects', title: 'B', shelves: [{ id: 'play', max: 1, holds: 'project', section: 'play' }] },
   { id: 'c', dom: 'c', kind: 'now', title: 'C', shelves: [] },
 ];
 const site = { posts, notes: new Map(), cards, hasMachine: (m) => ['dray', 'hab3'].includes(m) };
@@ -133,9 +133,30 @@ test("a picked shelf shows its picks in order, cut to the shelf's max; one not i
   assert.deepEqual(keysOf(tv), [[], []]);
   assert.deepEqual(a.shelves[0].rows.map((r) => [r.kind, r.href]), [['post', '/ledger/v3/'], ['post', '/ledger/v1/']]);
   // a project card that links a post nobody may see never comes out either (lib/projects.js refuses one upstream too)
-  const leaky = [{ key: 'film', section: 'watch', posts: [{ slug: 'newest-unlisted' }] }];
+  const leaky = [{ key: 'film', section: 'play', posts: [{ slug: 'newest-unlisted' }] }];
   assert.throws(() => resolveChapters(doc({ shelves: { 'b/play': shelf(['j-film']) } }), REG, { ...site, cards: leaky }),
     /project "film" links "newest-unlisted", which is not a listed post/);
+  // nor one whose own main link is such a post: the link the row would carry
+  for (const href of ['/ledger/newest-unlisted/', '/ledger/newest-draft/#top']) {
+    const main = [{ key: 'film', section: 'play', main: { href, external: false }, posts: [] }];
+    assert.throws(() => resolveChapters(doc({ shelves: { 'b/play': shelf(['j-film']) } }), REG, { ...site, cards: main }),
+      /project "film" links "newest-(unlisted|draft)", which is not a listed post/, href);
+  }
+});
+
+test("more picks than a shelf shows are cut to its max with a warning that names them, which fails --strict", () => {
+  const warnings = [];
+  const [, a] = run(doc({ shelves: { 'a/leads': shelf(['p-v3', 'p-v1', 'p-v4', 'p-v2'], { count: 4 }) } }), (w) => warnings.push(w));
+  assert.deepEqual(keysOf(a), [['v3', 'v1']]);
+  assert.deepEqual(warnings, ['shelf a/leads shows at most 2 picks, so "p-v4", "p-v2" are left out']);
+  // an auto shelf shows count, as the picker does: nothing to warn about
+  const quiet = [];
+  run(doc({ shelves: { 'a/leads': shelf([], { auto: true, count: 4 }) } }), (w) => quiet.push(w));
+  assert.deepEqual(quiet, []);
+  // the reader says which warnings are about the live notebook (they never fail anything) and which are not
+  const { warnings: kinds } = readPicks(doc({ shelves: { 'a/leads': shelf(['p-v3', 'p-v1', 'p-v4']),
+    'tv/machines': shelf(['m-gone']) } }), REG, { ...site, projects: new Map() });
+  assert.deepEqual(kinds.map((w) => w.live), [false, true]);
 });
 
 test("an auto shelf shows the newest count listed posts of its topic in ledger order, never a draft or unlisted one", () => {
@@ -173,12 +194,22 @@ test('every document the page could not show is refused, naming the key and the 
   // a pick on an auto shelf is checked too: switching auto off would show it
   refuses(on('a/leads', shelf(['p-newest-draft'], { auto: true, count: 2 })), /is a draft/);
   refuses(on('b/play', shelf(['j-nope'])), /"j-nope" in shelf b\/play is not a project/);
+  // a project shows only on its own section's shelf, as the picker offers it
+  refuses(on('b/play', shelf(['j-reel'])), /"j-reel" in shelf b\/play is a project of the "watch" section, and this shelf shows the "play" section/);
   refuses(on('b/play', shelf(['p-v1'])), /"p-v1" in shelf b\/play is a post, and this shelf holds projects/);
   refuses(on('b/play', shelf(['j-game', 'j-game'])), /"j-game" is picked twice in shelf b\/play/);
   refuses(on('b/play', shelf(['x-game'])), /"x-game" in shelf b\/play is not a key/);
   refuses(on('tv/machines', shelf(['m-../x'])), /not a machine name/);
   refuses(on('b/play', shelf([], { auto: true })), /b\/play cannot fill itself/);
   refuses(on('b/play', shelf([], { count: 0 })), /b\/play: count is 0/);
+  // the picker asks for at most 12, and a fraction is the tool's to round (fromPicker), never the repo file's
+  refuses(on('a/leads', shelf([], { auto: true, count: 13 })), /a\/leads: count is 13, not a whole number from 1 to 12/);
+  refuses(on('a/leads', shelf([], { auto: true, count: 2.5 })), /a\/leads: count is 2.5/);
+  // a shelf holds auto, count and picks only: a note there would be published
+  refuses(on('a/leads', { ...shelf([]), notes: 'private' }), /shelf a\/leads: "notes" is not a field of a shelf/);
+  refuses(on('a/leads', { ...shelf([]), extra: 1 }), /shelf a\/leads: "extra" is not a field of a shelf/);
+  refuses(on('a/leads/x', shelf([])), /shelf "a\/leads\/x" is not a shelf of chapter "a"/);
+  refuses(doc({ hidden: Object.fromEntries(REG.map((c) => [c.id, true])) }), /every chapter is hidden/);
   refuses(on('nope/leads', shelf([])), /shelf "nope\/leads" names chapter "nope"/);
   refuses(on('a/other', shelf([])), /shelf "a\/other" is not a shelf of chapter "a"/);
   refuses(on('c/x', shelf([])), /shelf "c\/x" is not a shelf of chapter "c" \(it has none\)/);
@@ -192,8 +223,40 @@ test('every document the page could not show is refused, naming the key and the 
   refuses(doc({ extra: 1 }), /"extra" is not a field/);
   // the saved document may hold the private fields when the tool reads it, never anything else
   const saved = { ...doc(), notes: { a: 'x' }, general: 'y', savedAt: 'z' };
-  assert.doesNotThrow(() => readPicks(saved, REG, { ...site, projects: new Set() }, { allowPrivate: true }));
-  assert.throws(() => readPicks({ ...saved, extra: 1 }, REG, { ...site, projects: new Set() }, { allowPrivate: true }), /"extra"/);
+  assert.doesNotThrow(() => readPicks(saved, REG, { ...site, projects: new Map() }, { allowPrivate: true }));
+  assert.throws(() => readPicks({ ...saved, extra: 1 }, REG, { ...site, projects: new Map() }, { allowPrivate: true }), /"extra"/);
+  assert.throws(() => readPicks({ ...saved, shelves: { 'a/leads': { ...shelf([]), notes: 'x' } } }, REG, { ...site, projects: new Map() },
+    { allowPrivate: true }), /"notes" is not a field of a shelf/);
+});
+
+test('fromPicker gives a count the picker keeps as a fraction the whole number of posts it shows, and nothing else', () => {
+  const d = doc({ shelves: { 'a/leads': shelf([], { auto: true, count: 2.5 }), 'tv/episodes': shelf([], { auto: true, count: 3 }) } });
+  assert.deepEqual(fromPicker(d).shelves, { 'a/leads': shelf([], { auto: true, count: 2 }), 'tv/episodes': shelf([], { auto: true, count: 3 }) });
+  assert.equal(d.shelves['a/leads'].count, 2.5);
+  for (const bad of [0.5, -1, '2', 13.5]) {
+    const out = fromPicker(doc({ shelves: { 'a/leads': shelf([], { count: bad }) } }));
+    assert.throws(() => run(out), /count is/, String(bad));
+  }
+});
+
+test('the live notebook picked while it can not be shown is left out with a warning; any other such post fails', () => {
+  const live = (data) => ({ ...site, posts: [...posts.filter((p) => p.id !== 'teardown-lab'), ...(data ? [post('teardown-lab', '2026-12-01', { id: 'AO-073', ...data })] : [])] });
+  const d = doc({ shelves: { 'a/leads': shelf(['p-teardown-lab', 'p-v1']) } });
+  for (const [name, s, why] of [['unlisted', live({ unlisted: true }), /is unlisted/], ['draft', live({ draft: true }), /is a draft/],
+    ['gone', live(null), /is not a post/], ['unreadable', { ...live(null), unreadable: new Set(['teardown-lab']) }, /has no valid YAML/]]) {
+    const { chapters, warnings } = readPicks(d, REG, { ...s, projects: new Map() });
+    assert.deepEqual(chapters[1].shelves[0].keys, ['v1'], name);
+    assert.deepEqual(warnings.map((w) => w.live), [true], name);
+    assert.match(warnings[0].text, /"p-teardown-lab" is the live notebook/, name);
+    assert.match(warnings[0].text, why, name);
+  }
+  // and the page, which hands every warning on
+  const shown = [];
+  const [, a] = resolveChapters(d, REG, { ...live({ unlisted: true }), warn: (w) => shown.push(w) });
+  assert.deepEqual([keysOf(a), shown.length], [[['v1']], 1]);
+  // an ordinary post whose frontmatter can't be read says so, rather than that its file is missing
+  const broken = { ...site, posts: posts.filter((p) => p.id !== 'v1'), unreadable: new Set(['v1']), projects: new Map() };
+  assert.throws(() => readPicks(d, REG, broken), /"p-v1" in shelf a\/leads is not a post the page can read: src\/content\/posts\/v1\.md has no valid YAML/);
 });
 
 // A repo on disk with two posts, a project and a lab machine, for the tool and the checker.
@@ -213,7 +276,7 @@ function seed(t) {
   put('src/data/never-publish.json', '[]');
   put('src/data/media-manifest.json', '{}');
   put('public/_redirects', '');
-  return { root, put };
+  return { root, put, md };
 }
 const saved = { v: 1, order: ['hero', 'start'], hidden: { now: true }, notes: { start: 'a private note' }, general: 'private too',
   shelves: { 'tv/machines': { auto: false, count: 1, picks: ['m-dray'] }, 'start/leads': { auto: false, count: 1, picks: ['p-shown'] },
@@ -242,6 +305,24 @@ test('npm run tea:picks: the private fields left out, keys in a fixed order, the
   assert.deepEqual(runChecks({ root }).filter((i) => i.rule === 'tea-picks'), []);
 });
 
+test('npm run tea:picks rounds a fractional count down as the picker shows it, and says what each auto shelf shows', async (t) => {
+  const { root, put } = seed(t);
+  put('src/content/posts/older.md', '---\nid: "AO-602"\ntitle: "T"\nsummary: "s"\ndate: 2026-10-01\ntopic: "agents"\n---\n\nText.\n');
+  put('saved.json', JSON.stringify({ ...saved, shelves: { ...saved.shelves, 'agents/leads': { auto: true, count: 2.7, picks: [] } } }));
+  const r = await tool(root, path.join(root, 'saved.json'));
+  assert.equal(r.code, 0, r.stderr);
+  assert.equal(JSON.parse(fs.readFileSync(path.join(root, 'src/data/tea-picks.json'), 'utf8')).shelves['agents/leads'].count, 2);
+  // the page's own order (src/lib/posts.js ledgerOrder), the live notebook included and warned about
+  assert.match(r.stdout, /^auto {2}agents\/leads shows teardown-lab, shown$/m);
+  assert.match(r.stdout, /^warn {2}shelf agents\/leads shows the live notebook "teardown-lab"/m);
+});
+
+test('npm run tea:picks with --root and no folder says so plainly', async () => {
+  const r = await promisify(execFile)(process.execPath, [path.join(REPO, 'scripts/tools/tea-picks.mjs'), 'saved.json', '--root'])
+    .then(() => ({ code: 0 }), (e) => ({ code: e.code, stderr: e.stderr }));
+  assert.deepEqual(r, { code: 1, stderr: 'tea:picks: --root needs the folder of the repo to write into: --root <dir>\n' });
+});
+
 test('npm run tea:picks refuses a bad document with the reason and writes nothing', async (t) => {
   const { root, put } = seed(t);
   put('bad.json', JSON.stringify({ ...saved, shelves: { 'start/leads': { auto: false, count: 1, picks: ['p-hidden'] } } }));
@@ -255,7 +336,7 @@ test('npm run tea:picks refuses a bad document with the reason and writes nothin
 });
 
 test("npm run check: picks the page would refuse fail, the live notebook and a missing machine warn, the scan covers the file", (t) => {
-  const { root, put } = seed(t);
+  const { root, put, md } = seed(t);
   const ours = () => runChecks({ root }).filter((i) => i.file === 'src/data/tea-picks.json').map((i) => [i.rule, i.severity, i.message]);
   assert.deepEqual(ours(), []);
   const write = (d) => put('src/data/tea-picks.json', JSON.stringify(d));
@@ -268,6 +349,38 @@ test("npm run check: picks the page would refuse fail, the live notebook and a m
     ['tea-picks', 'warn', 'shelf tv/machines: '], ['tea-picks', 'warn', 'shelf agents/leads shows the live notebook ']]);
   // warnings about the live notebook, which not even npm run check -- --strict fails (scripts/check/index.mjs)
   assert.ok(runChecks({ root }).filter((i) => i.rule === 'tea-picks').every((i) => i.live === true));
+  // more picks than a shelf shows: a plain warning, which --strict fails
+  write({ v: 1, order: [], hidden: {}, shelves: { 'start/leads': { auto: false, count: 1, picks: ['p-shown', 'p-teardown-lab', 'p-older', 'p-newer'] } } });
+  put('src/content/posts/older.md', md('AO-602'));
+  put('src/content/posts/newer.md', md('AO-603'));
+  assert.deepEqual(ours(), [['tea-picks', 'warn', 'shelf start/leads shows at most 3 picks, so "p-newer" is left out'],
+    ['tea-picks', 'warn', 'shelf start/leads shows the live notebook "teardown-lab" (src/data/exempt.js), which other sessions rewrite at any time']]);
+  assert.deepEqual(runChecks({ root }).filter((i) => i.rule === 'tea-picks').map((i) => i.live ?? false), [false, true]);
+  // a note inside a shelf is refused like one at the top
+  write({ v: 1, order: [], hidden: {}, shelves: { 'start/leads': { auto: false, count: 1, picks: [], notes: 'private' } } });
+  assert.deepEqual(ours(), [['tea-picks', 'error', 'shelf start/leads: "notes" is not a field of a shelf (auto, count, picks) (the page could not be built from it)']]);
+  // a project on another section's shelf
+  write({ v: 1, order: [], hidden: {}, shelves: { 'projects/watch': { auto: false, count: 1, picks: ['j-game'] } } });
+  assert.match(ours()[0][2], /"j-game" in shelf projects\/watch is a project of the "play" section/);
+  // the live notebook pinned while another session leaves its frontmatter broken, or makes it unlisted: left out, a
+  // warning only, at every level (the frontmatter rule only warns about it as well)
+  write({ v: 1, order: [], hidden: {}, shelves: { 'start/leads': { auto: false, count: 1, picks: ['p-teardown-lab', 'p-shown'] } } });
+  for (const lab of ['---\nid: "AO-073\ntitle: [\n---\n', '---\nid: "AO-073"\ntitle: "Lab"\nsummary: "s"\ndate: 2026-12-01\nunlisted: true\n---\n']) {
+    put('src/content/posts/teardown-lab.md', lab);
+    for (const deploy of [false, true]) {
+      const all = runChecks({ root, deploy }).filter((i) => i.file === 'src/data/tea-picks.json');
+      assert.deepEqual(all.map((i) => [i.severity, i.live]), [['warn', true]], lab);
+      assert.match(all[0].message, /"p-teardown-lab" is the live notebook .* so it is left out today/);
+    }
+  }
+  // any other post whose frontmatter can't be read is named as such, and one with no id can't crash the checker
+  put('src/content/posts/shown.md', '---\nid: "AO-600\n---\n');
+  assert.match(ours().find(([rule]) => rule === 'tea-picks')[2], /"p-shown" in shelf start\/leads is not a post the page can read/);
+  put('src/content/posts/shown.md', '---\ntitle: "T"\ndate: 2026-11-01\n---\n');
+  put('src/content/posts/twin.md', '---\ntitle: "T"\ndate: 2026-11-01\n---\n');
+  write({ v: 1, order: [], hidden: {}, shelves: { 'start/leads': { auto: true, count: 3, picks: [] } } });
+  assert.doesNotThrow(() => runChecks({ root }));
+  put('src/content/posts/teardown-lab.md', `---\nid: "AO-073"\ntitle: "Lab"\nsummary: "s"\ndate: 2026-12-01\n---\n`);
   put('src/data/tea-picks.json', '{ "v": 1,');
   assert.match(ours()[0][2], /isn't valid JSON/);
   // a never-publish term in the picks fails like one anywhere else
