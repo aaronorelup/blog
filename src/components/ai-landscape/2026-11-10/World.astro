@@ -12,19 +12,22 @@ import { world } from '../../../scripts/ai-landscape/2026-11-10/worlds/index.js'
 const { p } = Astro.props;
 const cfg = world(p.id);
 const sig = COPY.signature[cfg.signature] || {};
+const ACTS = ['go', 'dialA', 'dialB', 'approve', 'dark'].filter((k) => sig[k]);      // the keys that are buttons
+const A = COPY.a11y;
 // the myth beat c answers: the id a world file names (a wrong id fails the build), or the first when it names none
 const myth = cfg.myth ? p.myths.find((m) => m.id === cfg.myth) : p.myths[0];
 if (!myth) throw new Error(`ai-landscape: worlds/${p.id}.js asks for the myth "${cfg.myth}". The data holds: ${p.myths.map((m) => m.id).join(', ')}`);
 const others = p.myths.filter((m) => m !== myth);
 const markName = cfg.marks.of === 'name' ? p.name : p.brand;
+const model = p.stack[4];                                                             // floor 5: what the agent thinks with
 ---
-<section id={p.id} class="ail-sec ail-world" data-sec="worlds" data-world={p.id} data-screens="3" data-land="0.62" data-rail={p.name}
+<section id={p.id} class="ail-sec ail-world" data-sec="worlds" data-world={p.id} data-screens="3" data-land="0.9" data-rail={p.name}
   data-chrome={cfg.theme.chrome} data-brand={cfg.brandMode} data-catch={cfg.catchFloor} aria-labelledby={`${p.id}-name`}>
   <div class="ail-stage">
     <header class="ail-world__head">
       <Mark provider={p.id} name={markName} />
       <p class="ail-kicker ail-label">
-        <span>{p.name}</span>{p.nameNote && <span class="ail-kicker__note">{p.nameNote}</span>}<span>{p.brand}</span>
+        <span>{p.name}</span>{p.nameNote && <span class="ail-kicker__note">{p.rename ? <Fact fact={p.rename} full tag={false}>{p.nameNote}</Fact> : p.nameNote}</span>}<span>{p.brand}</span>
       </p>
       <h2 id={`${p.id}-name`} class="ail-world__name ail-display">{p.name}</h2>
     </header>
@@ -40,15 +43,36 @@ const markName = cfg.marks.of === 'name' ? p.name : p.brand;
 
     <div class="ail-world__intro" data-beat="a">
       <p class="ail-known"><span class="ail-label">{COPY.world.knownFor}</span> <span class="ail-sentence"><Fact fact={p.signature.fact} full tag={false}>{p.signature.line}</Fact></span></p>
+      <p class="ail-leads">
+        <span class="ail-label">{COPY.world.leads}</span>
+        {p.leads.length > 0
+          ? <span class="ail-leads__caps">{p.leads.map((c) => <a class="ail-leads__cap" href={`#cap-${c.id}`} data-cap={c.id}>{c.name}</a>)}</span>
+          : <span class="ail-word">{COPY.world.noneOutright}</span>}
+        {p.contends > 0 && <span class="ail-leads__run"><span class="ail-label">{COPY.world.contends}</span> <b>{p.contends}</b></span>}
+      </p>
       <p class="ail-agent">
         <span class="ail-agent__name">{p.agent.name}</span>{p.agent.tag && <span class="ail-tag" data-status={p.agent.status}>{p.agent.tag}</span>}
       </p>
-      <p class="ail-flagship ail-label">
-        <Fact fact={p.flagship.fact} full>{p.flagship.name}</Fact> <time datetime={p.flagship.released}>{p.flagship.released}</time> <span>{p.flagship.price || p.flagship.access}</span>
+      <p class="ail-thinks">
+        <span class="ail-label">{COPY.links.thinks}</span>
+        <span class="ail-thinks__v">{model.fact ? <Fact fact={model.fact} tag={false}>{model.name}</Fact> : <span class="ail-word">{model.word}</span>}</span>
       </p>
+      <p class="ail-top">
+        <span class="ail-label">{COPY.world.topModels}</span>
+        <span class="ail-top__list">
+          {p.top.map((m) => <span class="ail-top__m">{m.fact ? <Fact fact={m.fact} full tag={false}>{m.name}</Fact> : m.name}{m.released && <time class="ail-label" datetime={m.released}>{m.released}</time>}</span>)}
+        </span>
+      </p>
+      {p.flagship.price && (
+        <p class="ail-flagship ail-label">
+          <span>{p.flagship.name}</span> <span>{p.flagship.price}</span>
+          {p.flagship.until && <span class="ail-until" data-until={p.flagship.until}><span class="ail-until__w">{COPY.world.until}</span><span class="ail-until__x">{COPY.world.expired}</span> <time datetime={p.flagship.until}>{p.flagship.until}</time></span>}
+        </p>
+      )}
     </div>
 
     <div class="ail-doors" data-beat="b c d" role="group" aria-label={p.brand}>
+      <p class="ail-doors__cap ail-label">{COPY.world.products}</p>
       {p.doors.map((d) => (
         <details class="ail-door" name={`${p.id}-door`} open={d.agent} data-door={d.id} data-kind={d.kind} data-agent={d.agent ? '' : undefined}>
           <summary class="ail-door__tab">
@@ -68,22 +92,26 @@ const markName = cfg.marks.of === 'name' ? p.name : p.brand;
     </div>
 
     <div class="ail-sig" data-beat="c" data-sig={cfg.signature}>
+      {sig.dialHead && <p class="ail-sig__head ail-label">{sig.dialHead}</p>}
       <p class="ail-sig__ui">
-        {Object.entries(sig).filter(([k]) => k !== 'note').map(([k, label]) => <button type="button" class="ail-btn" data-act={k}>{label}</button>)}
+        {ACTS.map((k) => <button type="button" class="ail-btn" data-act={k}>{sig[k]}</button>)}
       </p>
-      <p class="ail-myth"><s>{myth.myth}</s> <Fact fact={myth.truth} /></p>
+      <p class="ail-myth"><s><span class="ail-vh">{A.myth} </span>{myth.myth}</s> <span class="ail-vh">{A.fact} </span><Fact fact={myth.truth} /></p>
       {sig.note && <p class="ail-sig__note ail-label">{sig.note}</p>}
       <div class="ail-sig__lists">
         {p.lists.map((l, k) => (
           <div class="ail-sig__list" data-list={k}>
-            <h3 class="ail-label">{l.title}</h3>
+            <p class="ail-sig__title ail-label">{l.title}</p>
             <ul data-ordered={l.ordered ? '' : undefined}>
               {l.items.map((it, n) => (
                 <li class="ail-sig__item" data-n={n}>
+                  {it.lead && <span class="ail-sig__lead ail-label">{it.lead}</span>}
                   <span class="ail-own" data-owner={it.owner || p.id} data-official={it.dashed ? 'no' : undefined}>
                     {it.fact ? <Fact fact={it.fact} full={it.fact.text !== it.text} tag={false}>{it.text}</Fact> : it.text}
                   </span>
-                  {it.note && <span class="ail-note">{it.note}</span>}{it.tag && <span class="ail-tag">{it.tag}</span>}
+                  {it.tail && <span class="ail-sig__tail ail-label">{it.tail}</span>}
+                  {it.note && <span class="ail-note">{it.note}</span>}
+                  {it.tag && (it.tagFact ? <Fact fact={it.tagFact} full tag={false}><span class="ail-tag">{it.tag}</span></Fact> : <span class="ail-tag">{it.tag}</span>)}
                 </li>
               ))}
             </ul>
@@ -100,7 +128,7 @@ const markName = cfg.marks.of === 'name' ? p.name : p.brand;
             <li class="ail-catch__item" data-n={n} data-kind={it.kind} data-until={it.until}>
               {it.was && <s class="ail-catch__was">{it.was}</s>}
               <span class="ail-own" data-owner={p.id}>{it.fact ? <Fact fact={it.fact} full tag={false}>{it.text}</Fact> : it.text}</span>
-              {it.until && <time class="ail-catch__until ail-label" datetime={it.until}>{it.until}</time>}
+              {it.until && <span class="ail-until ail-catch__until ail-label"><span class="ail-until__w">{COPY.world.until}</span><span class="ail-until__x">{COPY.world.expired}</span> <time datetime={it.until}>{it.until}</time></span>}
               {it.note && <span class="ail-note">{it.note}</span>}{it.tag && <span class="ail-tag">{it.tag}</span>}
             </li>
           ))}
@@ -112,8 +140,8 @@ const markName = cfg.marks.of === 'name' ? p.name : p.brand;
           {others.map((m) => (
             <li>
               <details class="ail-flag" name={`${p.id}-flag`}>
-                <summary><Glyph name="flag" /><span class="ail-flag__myth">{m.myth}</span></summary>
-                <p class="ail-flag__truth"><s>{m.myth}</s> <Fact fact={m.truth} /></p>
+                <summary><Glyph name="flag" /><span class="ail-flag__myth"><span class="ail-vh">{A.myth} </span>{m.myth}</span></summary>
+                <p class="ail-flag__truth"><s><span class="ail-vh">{A.myth} </span>{m.myth}</s> <span class="ail-vh">{A.fact} </span><Fact fact={m.truth} /></p>
               </details>
             </li>
           ))}

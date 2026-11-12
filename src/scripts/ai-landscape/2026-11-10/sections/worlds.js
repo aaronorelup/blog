@@ -1,6 +1,7 @@
 // One world section (SPEC 2.4): the same four beats for all five companies, driven by the scroll.
-// a Enter 0 to 0.6: truck along the row, the iris opens. b Open 0.6 to 1.5: the stack pulls apart, callouts, doors.
-// c Signature 1.5 to 2.5: the section holds and signatures/<name>.js plays. d The catch 2.5 to 3.0, then the iris shuts.
+// a Enter 0 to 0.8: truck along the row, the iris opens, the entry card. b Open 0.8 to 1.62: nine callouts and the
+// product tabs, held. c Signature 1.62 to 2.5: signatures/<name>.js plays. d The catch 2.5 to 3.0, then the iris shuts.
+// Words are triggered at a scroll position and then run on time (SPEC 4.3): nothing rests half-faded.
 // Everything world-specific comes from worlds/<id>.js and the page's data: this file never names a company.
 import { Raycaster, Vector2, Vector3 } from 'three';
 import { easeIO, lerp, smooth, span, win } from '../core/clock.js';
@@ -8,7 +9,7 @@ import { $, $$, announce, rove, setBeat, toggle } from '../core/dom.js';
 import { HOURS } from '../scene/studio.js';
 import { world } from '../worlds/index.js';
 
-const BEATS = [['a', 0.6], ['b', 1.5], ['c', 2.5], ['d', 3.01]];
+const BEATS = [['a', 0.8], ['b', 1.62], ['c', 2.5], ['d', 3.01]];
 const MODEL = 4;
 
 export function create(ctx, el, sec) {
@@ -47,7 +48,7 @@ export function create(ctx, el, sec) {
     const box = nameEl.getBoundingClientRect();
     st.rect = { left: ink.left, width: ink.width, top: box.top, height: box.height };
   };
-  const onResize = () => { st.rect = null; };
+  const onResize = () => { st.rect = null; st.doorsCol = -99; };
   window.addEventListener('resize', onResize);
 
   // ---- doors: this company's products. Picking one relabels the nine callouts from that product's own stack
@@ -127,6 +128,9 @@ export function create(ctx, el, sec) {
     if (hit) push(hit.i); else closePush();
   };
   window.addEventListener('click', onCanvas);
+  // a capability this company leads is a link to its row of the board in "best at"
+  const onCap = (e) => { if (e.target.closest('a[data-cap]')) { e.preventDefault(); ctx.scrollTo('best-at', 2.25); } };
+  el.addEventListener('click', onCap);
 
   // ---- the signature: loaded when the world is entered, plays once by itself, then waits for the visitor
   const api = { id, cfg, el, tower, inst, data, sec, ui: $('.ail-sig', el), calls: () => st.calls, button: (act) => $(`.ail-sig [data-act="${act}"]`, el),
@@ -168,7 +172,8 @@ export function create(ctx, el, sec) {
       // a jump out of the world (a rail link, reduced motion) skips the frames in which the signature fades:
       // one update at amount 0 makes it hide what it drew, so nothing of it stands in the next section
       if (st.sig) { st.sig.reset(); if (st.caught && st.sig.catch) st.sig.catch(0); if (st.sig.update) st.sig.update(0, 0); }
-      st.stilled = false; st.caught = false;
+      st.stilled = false; st.caught = false; st.nameK = 0; st.callK = 0; st.callOn = false;
+      stage.removeAttribute('data-board');
       if (st.calls) st.calls.update(0);
       st.beat = ''; delete el.dataset.beatNow; el.classList.remove('is-pushed');
       $$('[data-beat]', el).forEach((n) => n.classList.remove('is-on'));
@@ -200,7 +205,10 @@ export function create(ctx, el, sec) {
       // the iris opens from the stack over 0.35 screens and shuts in the last 0.2
       const open = smooth(span(u, 0.25, 0.6)) * (1 - smooth(span(u, 2.8, 2.98)));
       st.open = open;
-      setBeat(el, (beat === 'a' || beat === 'd') && open < 0.4 ? '' : beat);   // the words of a world arrive and leave with the world
+      // the entry card comes in at 0.25 and leaves at 0.74, the callouts and the tabs come at 0.8, and the catch
+      // leaves with the world. The open beat is a board: nine rows and the tabs, up to 80 words
+      setBeat(el, beat === 'a' ? (u >= 0.25 && u < 0.74 ? 'a' : '') : beat === 'd' && open < 0.4 ? '' : beat);
+      stage.toggleAttribute('data-board', beat === 'b');
       inst.open = open;
       for (const tw of row.towers) if (tw !== tower) tw.side = -1;
       studio.lamp.copy(hero).lerp(lamp.set(...cfg.hour.lamp), open);
@@ -210,27 +218,50 @@ export function create(ctx, el, sec) {
       toggle(head, open > 0.35);
       nameEl.style.visibility = inst.nameShow > 0.02 || ctx.phone ? '' : 'hidden';
       inst.nameRect = st.rect;
-      inst.nameShow = open * (1 - smooth(span(u, 0.6, 0.92)));        // the name is the entrance. It leaves when the stack opens
+      // the name is the entrance. It appears whole, once the iris edge has passed its far end (an edge never
+      // slices it), and leaves when the stack opens
+      const iris = ctx.mats.shared.uIris.value;
+      let clear = iris.z >= 9;
+      if (!clear && iris.z > 0 && st.rect) {
+        const ratio = ctx.renderer.getPixelRatio(), cx = iris.x / ratio, cy = window.innerHeight - iris.y / ratio;
+        const far = Math.hypot(Math.max(Math.abs(st.rect.left - cx), Math.abs(st.rect.left + st.rect.width - cx)), Math.max(Math.abs(st.rect.top - cy), Math.abs(st.rect.top + st.rect.height - cy)));
+        clear = iris.z > (far * ratio * iris.w) / 1.2 + 0.16;
+      }
+      st.nameK = ctx.reduced ? (clear ? 1 : 0) : Math.max(0, Math.min(1, (st.nameK || 0) + (clear ? dt / 0.3 : -dt / 0.12)));
+      inst.nameShow = smooth(st.nameK) * (1 - smooth(span(u, 0.6, 0.92)));
       tower.lid.show = 1 - smooth(open / 0.08);                         // the plate leaves before the art arrives: a mark is never on art
 
       // the stack pulls apart from the top. The character stands large beside it, then hops onto its floor
-      tower.open = smooth(span(u, 0.6, 1.25)) * (1 - smooth(span(u, 2.72, 2.9)));
+      tower.open = smooth(span(u, 0.6, 1.0)) * (1 - smooth(span(u, 2.72, 2.9)));
       const c = tower.char;
       if (u < 0.62) { c.from = 'floor'; c.to = 'beside'; c.t = smooth(span(u, 0.22, 0.52)); }
       else { c.from = 'beside'; c.to = 'floor'; c.t = easeIO(span(u, 0.62, 1.0)); }
 
       // callouts on leader lines, and the doors above them. A signature or the catch keeps only the lit floor's words
       const sig = st.sig;
-      const amount = smooth(span(u, 0.85, 1.35)) * (1 - smooth(span(u, 2.74, 2.88)));
+      // triggered at 0.8 and held: nine rows on time. Scrolling back above 0.76 or shutting the world takes them out in 200 ms
+      if (u >= 0.8) st.callOn = true; else if (u < 0.76) st.callOn = false;
+      const want = st.callOn && u < 2.8;
+      st.callK = ctx.reduced ? (want ? 1 : 0) : Math.max(0, Math.min(1, (st.callK || 0) + (want ? dt / 0.77 : -dt / 0.2)));
+      const amount = st.callK;
       const lit = beat === 'c' && sig ? sig.lit ?? -1 : beat === 'd' ? catchFloor : st.pushed >= 0 ? st.pushed : st.hover;
       const calls = st.calls;
       if (calls) {
         calls.rows[0].parentElement.classList.toggle('is-compact', beat === 'c' || beat === 'd');
         calls.update(amount, lit);
-        if (!ctx.phone && calls.anchors.length && beat === 'b') { doorsEl.style.left = `${calls.column.toFixed(0)}px`; doorsEl.style.top = `${Math.max(64, calls.anchors[0].y - 78).toFixed(0)}px`; }
-      } else if (!ctx.phone && beat === 'b') {
-        const a0 = tower.anchor(0, 1, labels.project);
-        doorsEl.style.left = `${(a0.x + 46).toFixed(0)}px`; doorsEl.style.top = `${Math.max(64, a0.y - 78).toFixed(0)}px`;
+      }
+      // the tabs stand above the first callout, as wide as the room to the window's edge, on one line or two
+      if (!ctx.phone && beat === 'b') {
+        const a0 = calls && calls.anchors.length ? { x: calls.column, y: calls.anchors[0].y } : tower.anchor(0, 1, labels.project);
+        const col = calls && calls.anchors.length ? a0.x : a0.x + 46;
+        if (Math.abs(col - (st.doorsCol ?? -99)) > 6) {
+          st.doorsCol = col;
+          doorsEl.style.maxWidth = `${Math.max(260, window.innerWidth - col - 28).toFixed(0)}px`;
+          doorsEl.removeAttribute('data-tight');
+          if (doorsEl.offsetHeight > 76) doorsEl.setAttribute('data-tight', '');
+          st.doorsH = doorsEl.offsetHeight;
+        }
+        doorsEl.style.left = `${col.toFixed(0)}px`; doorsEl.style.top = `${Math.max(64, a0.y - 32 - st.doorsH).toFixed(0)}px`;
       }
       if (st.cardPin) st.cardPin.el.style.opacity = amount.toFixed(2);
       if (!ctx.phone) doorsEl.style.visibility = beat === 'b' && amount < 0.02 ? 'hidden' : '';
@@ -252,10 +283,10 @@ export function create(ctx, el, sec) {
       el.classList.toggle('is-pushed', st.pushed >= 0);            // the door tabs step aside: pushed in, they would lie over a callout
 
       // c: the signature moment. It plays once by itself (never under reduced motion), then waits
-      const inC = win(u, 1.5, 2.5, 0.08);
+      const inC = win(u, 1.62, 2.5, 0.08);
       let dark = false;
       if (sig) {
-        if (beat === 'c' && !st.played && !ctx.reduced && u > 1.62 && u < 2.4 && Math.abs(ctx.clock.target - ctx.clock.s) < 0.02) { st.played = true; sig.play(); }
+        if (beat === 'c' && !st.played && !ctx.reduced && u > 1.7 && u < 2.4 && Math.abs(ctx.clock.target - ctx.clock.s) < 0.02) { st.played = true; sig.play(); }
         // reduced motion: the end state, set again on every visit, because leaving the beat resets the signature
         if (beat === 'c' && ctx.reduced && !st.stilled) { st.stilled = true; if (sig.still) sig.still(); }
         if (sig.update) sig.update(dt, inC);
@@ -276,6 +307,7 @@ export function create(ctx, el, sec) {
       st.gone = true;
       window.removeEventListener('keydown', onKey);
       window.removeEventListener('click', onCanvas);
+      el.removeEventListener('click', onCap);
       doorsEl.removeEventListener('click', onRow);
       doorsEl.removeEventListener('click', onTab);
       doorsEl.removeEventListener('keydown', onRowKey);

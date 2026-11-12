@@ -2,8 +2,8 @@
    the --w-* properties. Everything here is scoped to [data-world="anthropic"]. */
 /* text version: the frame hangs on this plate's plain wall, left of centre, as it does in the 3D room */
 .ail-world[data-world='anthropic'] .ail-world__portrait { right: auto; left: 25%; top: 15%; }
-.ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='0'] h3 { display: block; margin: 0; padding: 4px 8px 5px; background: var(--w-scrim); color: var(--ail-fg); white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity 300ms var(--ail-ease); }
-.ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='0'] h3.is-on { opacity: 1; visibility: visible; }
+.ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='0'] .ail-sig__title { display: block; margin: 0; padding: 4px 8px 5px; background: var(--w-scrim); color: var(--ail-fg); white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity 300ms var(--ail-ease); }
+.ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='0'] .ail-sig__title.is-on { opacity: 1; visibility: visible; }
 /* a lid's words stand under it: its company, the answer once the plug has been there, and its own names for the two */
 .ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='0'] .ail-sig__item { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; max-width: 14.5svh; white-space: normal; }
 .ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='0'] .ail-sig__item:not([data-seen]) .ail-tag { display: none; }
@@ -26,8 +26,8 @@
 
 @media (max-width: 899px) {
   /* in the phone's sheet the two standards head the row of lids, and a picked lid keeps its ring on the line */
-  .ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='0'] h3 { display: none; flex-basis: 100%; padding: 0; background: none; opacity: 1; visibility: visible; color: var(--ail-fg-2); }
-  .ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='0'] h3.is-on { display: block; }
+  .ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='0'] .ail-sig__title { display: none; flex-basis: 100%; padding: 0; background: none; opacity: 1; visibility: visible; color: var(--ail-fg-2); }
+  .ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='0'] .ail-sig__title.is-on { display: block; }
   .ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='0'] .ail-sig__item { display: none; justify-content: flex-start; max-width: none; }
   .ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='0'] .ail-sig__item.is-on { display: flex; }
   .ail-gl .ail-world[data-world='anthropic'] .ail-sig__item[data-picked] { padding: 2px 6px 3px; margin: -2px -6px -3px; }

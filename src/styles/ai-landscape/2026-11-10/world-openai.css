@@ -10,6 +10,6 @@
   /* in the phone's sheet the ring grows outward, so the pick stays on the line of the names beside it */
   .ail-gl .ail-world[data-world='openai'] .ail-sig__item[data-picked] { padding: 2px 6px 3px; margin: -2px -6px -3px; }
   /* the workers are a second list under the two voices: it gets its heading once the thread has arrived */
-  .ail-gl .ail-world[data-world='openai'] .ail-sig__list[data-list='1'] h3 { flex-basis: 100%; margin: 4px 0 0; color: var(--ail-fg-2); }
-  .ail-gl .ail-world[data-world='openai'] .ail-sig__list[data-list='1'] h3.is-on { display: block; }
+  .ail-gl .ail-world[data-world='openai'] .ail-sig__list[data-list='1'] .ail-sig__title { flex-basis: 100%; margin: 4px 0 0; color: var(--ail-fg-2); }
+  .ail-gl .ail-world[data-world='openai'] .ail-sig__list[data-list='1'] .ail-sig__title.is-on { display: block; }
 }

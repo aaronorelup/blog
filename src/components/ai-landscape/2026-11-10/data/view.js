@@ -39,6 +39,9 @@ export function fact(c) {
     sources: c.sources || [], gap: c.gap || null, staleAfter: c.staleAfter || null, quote: c.quote || null, quoteBy: c.quoteBy || null };
 }
 
+// A gap as a fact: a cell with no answer still has a reason, and a proof card can open it (status "none").
+export const gapFact = (id, node) => (!node || !node.reason ? null : { id, text: node.reason, short: null, asOf: raw.snapshot.date, status: 'none', confidence: null, sources: [], gap: node.gap || 'absent', staleAfter: null, quote: null, quoteBy: null });
+
 // ---- things: any id to its printed name, its owner and its status
 export const ownerOf = (ref) => (!ref ? null : ORDER.find((p) => ref.startsWith(`${p}-`)) || (ref === 'ext-your-computer' ? 'you' : 'outside'));
 for (const id of ORDER) {
@@ -108,13 +111,13 @@ const SIGNATURE = {
   ],
   openai: (p) => [
     { title: p.voice.conversation[0].name,
-      items: p.voice.conversation.slice(0, 2).map((v) => ({ text: v.name, note: (fact(v.callsTools.claim) || fact(v.claim)).short, tag: v.modelRef ? null : COPY.state.undisclosed, fact: fact(v.claim) })) },
+      items: p.voice.conversation.slice(0, 2).map((v) => ({ text: v.name, note: (fact(v.callsTools.claim) || fact(v.claim)).short, tag: v.modelRef ? null : COPY.state.undisclosed, tagFact: v.modelRef ? null : gapFact(`${v.id}-model`, v.kind), fact: fact(v.claim) })) },
     { title: COPY.links.hands, items: p.personalAgent.delegatesTo.map((d) => ({ text: d.toName, owner: d.toOwner, fact: fact(d.claim) })) },
   ],
   google: (p) => [
     { title: p.search.dataMoat.line,
       items: ['google-gemini-app', 'google-ai-mode'].map((id) => p.surfaces.find((s) => s.id === id)).filter(Boolean)
-        .map((s) => ({ text: s.name, note: s.poweredBy.filter((m) => m.role === 'option').map((m) => thing(m.modelRef).name).join(', '), fact: fact(s.poweredByNote) || fact(s.claim) })) },
+        .map((s) => ({ text: s.name, tail: COPY.signature.google.picks, note: s.poweredBy.filter((m) => m.role === 'option').map((m) => thing(m.modelRef).name).join(', '), fact: fact(s.poweredByNote) || fact(s.claim) })) },
     { title: stateOf('none', fact(p.media.image.architectureClaim).gap).word,
       items: [{ ...said(p.media.image.architectureClaim), note: raw.architecture.vocabulary.find((t) => t.id === 'arch-term-image-method').definition }, said(p.media.image.lineage)] },
   ],
@@ -123,7 +126,8 @@ const SIGNATURE = {
       items: [{ text: stack[0].name, fact: stack[0].fact }, { text: stack[3].fact.text, fact: stack[3].fact }, { text: fact(p.personalAgent.approvals).text, fact: fact(p.personalAgent.approvals) }] },
   ],
   xai: (p, stack) => [
-    { title: COPY.links.thinks, items: stack[4].parts.map((q) => ({ text: q.name, owner: q.owner, tag: tagOf(q.status) })) },
+    // each model it may think with, and whose it is: the pick that lights the room prints "Lit by", the model and its owner
+    { title: COPY.links.thinks, items: stack[4].parts.map((q) => ({ lead: COPY.signature.xai.litBy, text: q.name, owner: q.owner, note: ORDER.includes(q.owner) ? raw.providers[q.owner].identity.name : null, tag: tagOf(q.status) })) },
     { title: COPY.links.hands,
       items: p.personalAgent.delegatesTo.filter((d) => d.kind === 'coding-agent').map((d) => ({ text: d.toName, owner: d.toOwner, tag: d.official === 'yes' ? null : OFFICIAL[d.official], dashed: d.official !== 'yes', fact: fact(d.claim) })) },
   ],
@@ -152,13 +156,27 @@ function provider(id) {
   const access = fact(pa.access);
   const fl = raw.bestAt.flagships.find((f) => f.provider === id);
   const computer = p.cloudComputers.find((c) => c.primary) || null;
+  // what it leads outright and where it is in the running: read from the best-at cells, so the card and the board agree
+  const caps = raw.bestAt.capabilities;
+  const leads = caps.filter((c) => c.verdict === 'clear' && c.leader && c.leader.provider === id).map((c) => ({ id: c.id, name: c.name }));
+  const contends = caps.filter((c) => (c.verdict === 'contested' || c.verdict === 'tie') && (c.contenders || []).some((x) => x.provider === id)).length;
+  // the flagship's price is second depth: the proof card and the text version print it, with its end date when it has one
+  const flFact = fact(fl.claim);
+  const price = fl.priceIn == null ? null : `$${fl.priceIn} / $${fl.priceOut} ${COPY.world.perMillion}`;
+  const until = fl.priceUntil || null;
+  const priced = price ? { ...flFact, text: `${flFact.text} ${price}${until ? ` ${COPY.world.until} ${until}` : ''}.` } : flFact;
+  // its top models: released language models of the four main tiers, the flagship always among them, newest first
+  const main = p.models.filter((m) => ['flagship', 'workhorse', 'fast', 'small'].includes(m.tier) && m.modality === 'language' && (resolve(m.claim) || {}).status === 'released');
+  const byNew = [...main].sort((a, b) => String(b.released || '').localeCompare(String(a.released || '')));
+  const kept = [...main.filter((m) => m.tier === 'flagship'), ...byNew.filter((m) => m.tier !== 'flagship')].slice(0, 4);
+  const top = byNew.filter((m) => kept.includes(m)).map((m, k) => ({ name: m.name, released: k === 0 ? m.released : null, fact: m.id === fl.modelRef ? priced : fact(m.claim) }));
   return {
     id, name: p.identity.name, nameNote: p.identity.nameNote, brand: p.identity.assistantBrand, homepage: p.identity.homepage,
+    rename: p.identity.rename ? fact(p.identity.rename) : null, leads, contends, top,
     signature: { line: p.signature.line, fact: fact(p.signature.claim) },
     tension: { line: p.tension.line, fact: fact(p.tension.claim) },
     agent: { id: pa.surfaceRef, name: pa.name, status: access.status, tag: tagOf(access.status), access },
-    flagship: { name: fl.name, released: fl.released, access: fl.access, fact: fact(fl.claim),
-      price: fl.priceIn == null ? null : `$${fl.priceIn} / $${fl.priceOut} ${COPY.world.perMillion}` },
+    flagship: { name: fl.name, released: fl.released, access: fl.access, fact: priced, price, until },
     stack,
     doors: p.surfaces.filter((s) => DOOR_KINDS.includes(s.kind)).slice(0, 7).map((s) => door(s, id, pa.surfaceRef)),
     myths: p.misconceptions.map((m) => ({ id: m.id, myth: m.myth, truth: fact(m.truth) })),

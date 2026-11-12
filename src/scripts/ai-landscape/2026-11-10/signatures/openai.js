@@ -22,7 +22,7 @@ export function create(ctx, world) {
   const talks = world.items(0);                // [0] the voice product the myth is about, [1] this agent's own voice
   const works = world.items(1);                // the workers the agent hands work to
   const empty = world.catchItems();            // the reason beside the empty media socket
-  const worksTitle = ctx.phone ? $('.ail-sig__list[data-list="1"] h3', world.el) : null;      // in the phone's sheet the workers get their heading
+  const worksTitle = ctx.phone ? $('.ail-sig__list[data-list="1"] .ail-sig__title', world.el) : null;      // in the phone's sheet the workers get their heading
   const go = world.button('go');
   const st = { held: false, manual: false, auto: 0, lift: 0, level: 0, t: -1, free: -1, said: false, step: 0, floor: -1, back: false, told: false, age: 0, caught: 0 };
   const sig = { lit: -1, dark: false };

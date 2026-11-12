@@ -20,7 +20,7 @@ export function create(ctx, world) {
   const clay = owner(world.id);
   const lids = world.items(0);                                // the other four companies, as words in the page
   const reasons = world.items(1);                             // why each media socket is empty
-  const title = $('.ail-sig__list[data-list="0"] h3', el);    // the two standards, by name
+  const title = $('.ail-sig__list[data-list="0"] .ail-sig__title', el);    // the two standards, by name
   const go = world.button('go');
   const st = { run: [], hop: null, rest: 0, at: -1, cardAt: -1, mode: '', tour: false, auto: false, ledge: 0, hold: 0, catching: false, sel: -1, drag: null, dragged: false, step: 0, hung: 0, on: false, age: 0, column: false, lids: 1, gone: false };
   const sig = { lit: -1, dark: false };

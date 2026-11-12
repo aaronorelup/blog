@@ -1,20 +1,29 @@
 // Every word on the page that is not read from the data file: fixed chrome and labels, never a fact.
-// SPEC section 2 says where each key shows. The unit test caps the total at 290 words.
-// Read as COPY.frame.title. Browser modules read words from the DOM instead of importing this.
+// SPEC section 2 says where each key shows. The unit test caps the visible words at 370, and the words under
+// `a11y` (read only by a screen reader) at 60. Read as COPY.frame.title. Browser modules read words from the DOM.
 export const COPY = {
   frame: {
     title: 'AI Landscape',
     snapshot: 'Snapshot',
+    independent: 'Independent',
     scope: 'Five companies. Nine layers under each.',
     openLine: 'You talk to the one on top. Scroll to see what it stands on.',
-    skip: 'Skip to the text version',
+    by: 'by',
+    name: 'Aaron Orelup',
+    skip: 'Text version: the whole page as lists and tables',
     tourOn: 'Auto tour. Touch to take over.',
     tourResume: 'Resume tour',
     back: 'Back',
   },
   grammar: {
     request: 'Fix the typo on my homepage and tell me when it\'s live.',
+    thesis: 'The one doing the thinking. Often not the one you talk to.',
     close: 'Nine layers for one typo. Most days you only see the top two.',
+  },
+  lineup: {
+    title: 'Nine layers, side by side',
+    stands: 'The character stands on its router.',
+    voiceActs: 'Calls tools itself',
   },
   state: {
     released: 'Shipped',
@@ -28,22 +37,31 @@ export const COPY = {
   },
   world: {
     knownFor: 'Known for',
+    leads: 'Leads',
+    noneOutright: 'Nothing outright',
+    contends: 'In the running for',
+    topModels: 'Top models',
+    products: 'Products',
     catch: 'The catch',
     peopleSay: 'People say',
     more: 'more',
     perMillion: 'per 1M tokens',
+    until: 'until',
+    expired: 'Expired',
   },
   signature: {
     anthropic: { go: 'Try the plug' },
     openai: { go: 'Hold to talk' },
-    google: { go: 'Pick a door', dialA: 'Piece by piece', dialB: 'From noise' },
+    google: { go: 'Pick a door', dialHead: 'Two ways to paint', dialA: 'Token by token', dialB: 'Diffusion, from noise', picks: 'picks' },
     meta: { go: 'Ask it to pay', approve: 'Approve' },
-    xai: { go: 'Send a task', dark: 'Lights out', note: 'The route is an illustration. The app never shows it.' },
+    xai: { go: 'Send a task', dark: 'Lights out', litBy: 'Lit by', note: 'The route is an illustration. The app never shows it.' },
   },
   agents: {
     title: 'Five agents that keep working when you leave.',
     from: 'from',
     aMonth: 'a month',
+    howMany: 'How many computers',
+    screenControl: 'Screen control',
     terminal: 'Terminal',
     browser: 'Browser',
     screen: 'Screen',
@@ -51,6 +69,7 @@ export const COPY = {
     perUser: 'One per person',
     perAgent: 'One per agent',
     closeLaptop: 'Close your laptop',
+    needsYou: 'Needs your computer',
   },
   links: {
     title: 'Whose agent runs on whose',
@@ -73,12 +92,13 @@ export const COPY = {
     media: 'Media',
     think: 'Think',
     platform: 'Platform',
-    clear: 'Clear',
+    clear: 'Clear lead',
     contested: 'Contested',
     tie: 'Tie',
     unknown: 'Nobody knows',
-    wide: 'wide',
-    narrow: 'narrow',
+    wide: 'wide margin',
+    narrow: 'narrow margin',
+    second: 'Second',
     outside: 'Outside the five',
     myGuess: 'My guess',
     upheld: 'Held up',
@@ -86,6 +106,8 @@ export const COPY = {
     notSupported: 'Not supported',
     cantTell: 'Can\'t tell yet',
     asOf: 'as of',
+    table: 'table',
+    readAfter: 'read after the snapshot',
   },
   architecture: {
     title: 'Agent management architecture',
@@ -105,6 +127,8 @@ export const COPY = {
     stale: 'Most of this will be out of date in a month. That\'s why it\'s dated.',
     since: 'changes since the snapshot',
     expiring: 'facts carry an expiry date',
+    gathered: 'Facts gathered',
+    utc: 'UTC',
     editions: 'Editions',
     next: 'Next',
     newest: 'Newest',
@@ -119,5 +143,15 @@ export const COPY = {
     home: 'Home',
     now: 'Now',
     projects: 'Projects',
+  },
+  // read only by a screen reader (.ail-vh, aria-label, title, the live region): counted apart, 60 words or fewer
+  a11y: {
+    myth: 'Myth:',
+    fact: 'In fact:',
+    textOn: '3D is off on this device. This is the text version.',
+    next: 'Next:',
+    sources: 'Shows its sources',
+    jump: 'Jump to a company',
+    sideways: 'Scroll sideways for more',
   },
 };

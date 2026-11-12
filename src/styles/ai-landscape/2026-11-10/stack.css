@@ -31,7 +31,7 @@
 .ail-gl .ail-world .ail-floor { position: fixed; left: 0; top: 0; display: block; min-height: 0; width: max-content; max-width: min(30vw, 400px); padding: 5px 9px 6px; background: var(--w-scrim, var(--ail-veil)); opacity: 0; visibility: hidden; pointer-events: none; cursor: pointer; will-change: transform, opacity; }
 .ail-gl .ail-world .ail-floor.is-on { visibility: visible; pointer-events: auto; }
 .ail-gl .ail-world .ail-floor__slab { display: none; }
-.ail-gl .ail-world .ail-floor__k { display: block; font-size: 11px; }
+.ail-gl .ail-world .ail-floor__k { display: block; }
 .ail-gl .ail-world .ail-floor__v { display: block; margin-top: 2px; font-size: var(--ail-fs-body); line-height: 1.12; }
 .ail-gl .ail-world .ail-floor__more { display: none; width: min(30vw, 380px); padding: 8px 0 4px; border-top: 1px solid var(--ail-hair); margin-top: 7px; font-size: 17px; }
 .ail-gl .ail-world .ail-floor.is-open { z-index: 4; background: var(--w-card, var(--ail-card)); box-shadow: 0 0 0 1px var(--ail-fg); }

@@ -51,6 +51,15 @@
 .ail-own[data-status='announced']::before, .ail-own[data-status='preview']::before { background: repeating-linear-gradient(135deg, transparent 0 2px, var(--ail-bg) 2px 4px), var(--own, var(--ail-mid)); }
 .ail-own[data-official='no'] { text-decoration: underline dashed 1px; text-underline-offset: .3em; }
 .ail-note { color: var(--ail-fg-2); font-size: .8em; margin-left: .5em; }
+/* a lamp tells its state by shape, in one ink for every company (--lamp: paper white on a dark ground): yes a filled
+   disc, partly a disc half filled, no a ring with a short dash, not said a dotted ring. A colour is never a state */
+.ail-lampx { --i: var(--lamp, var(--ail-fg)); display: inline-block; flex: none; box-sizing: border-box; width: 14px; height: 14px; margin-right: 7px; border-radius: 50%; vertical-align: -2px; border: 1.5px solid var(--i); background: var(--i); }
+.ail-lampx[data-v='partial'] { background: linear-gradient(90deg, var(--i) calc(50% - .75px), transparent calc(50% - .75px)); }
+.ail-lampx[data-v='no'] { background: linear-gradient(var(--i), var(--i)) center / 46% 1.5px no-repeat; }
+.ail-lampx[data-v='unknown'] { background: none; border-style: dotted; }
+/* a fact with an end date carries both words. [data-past] (set on it, or on what holds it) shows "Expired" */
+.ail-until__x, [data-past] .ail-until__w, [data-past].ail-until .ail-until__w { display: none; }
+[data-past] .ail-until__x, [data-past].ail-until .ail-until__x { display: inline; }
 
 /* ---- the text version */
 .ail-canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: none; z-index: 0; touch-action: pan-y; }

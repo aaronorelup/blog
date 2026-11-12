@@ -1,5 +1,5 @@
 // /ai-landscape against its frozen data and its registry: five providers with 45 floors that each have a state, every
-// first-depth string inside its word limit, the fixed copy at 290 words or fewer, a registry newest first that matches
+// first-depth string inside its word limit, the fixed copy at 370 words or fewer, a registry newest first that matches
 // the page files, and the published snapshots still in it. With a dist/, the built pages agree (stamp, sources, editions).
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -64,11 +64,15 @@ test('every first-depth string is inside its word limit and prints in the page f
   }
 });
 
-test('the fixed copy is 290 words or fewer, and prints in the page fonts', () => {
-  const all = copyStrings(COPY);
+test('the fixed copy is 370 words or fewer, the screen-reader words 60 or fewer, and all print in the page fonts', () => {
+  const { a11y, ...seen } = COPY;
+  const all = copyStrings(seen);
+  const hidden = copyStrings(a11y || {});
   const total = all.reduce((n, s) => n + words(s), 0);
-  assert.ok(total <= 290, `data/copy.js holds ${total} words, over 290`);
-  for (const s of all) assert.ok(printable(s), `"${s}" has a character the page fonts lack`);
+  const quiet = hidden.reduce((n, s) => n + words(s), 0);
+  assert.ok(total <= 370, `data/copy.js holds ${total} visible words, over 370`);
+  assert.ok(quiet <= 60, `data/copy.js holds ${quiet} screen-reader words, over 60`);
+  for (const s of [...all, ...hidden]) assert.ok(printable(s), `"${s}" has a character the page fonts lack`);
 });
 
 test('the registry is newest first, matches the page files, and keeps every published snapshot', () => {

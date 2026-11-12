@@ -30,7 +30,7 @@ export function create(ctx, world) {
   const flat = (color, over) => new MeshBasicMaterial({ color, transparent: true, depthTest: !over });
   const names = world.items(0);                                               // the two doors, as words
   const [sentence] = world.items(1);                                          // how its pictures are made
-  const [indexName, stamp] = $$('.ail-sig__list h3', el);                     // the index's label, and the state word
+  const [indexName, stamp] = $$('.ail-sig__title', el);                     // the index's label, and the state word
   const plates = world.catchItems();
   const go = world.button('go');
   const dial = { a: world.button('dialA'), b: world.button('dialB') };

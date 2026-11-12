@@ -44,7 +44,8 @@ export function createLabels(ctx) {
     },
 
     // The nine rows of `list` (an .ail-stack) as callouts beside `tower`. update(amount, lit) every frame:
-    // amount 0..1 brings them in from the top, lit is the floor index that shows as active (or -1).
+    // amount 0..1 brings them in from the top, 450 ms a row and 40 ms apart when it runs 0 to 1 in 0.77 s (the
+    // caller drives it by time, never by scroll). lit is the floor index that shows as active (or -1).
     callouts(tower, list) {
       const rows = [...list.querySelectorAll(':scope > .ail-floor')];
       const lines = ctx.phone ? [] : rows.map((row) => labels.line(row.dataset.state === 'solid' || row.dataset.state === 'hatch' ? '' : 'dash'));
@@ -65,7 +66,7 @@ export function createLabels(ctx) {
           set.anchors = anchors; set.column = column;
           const compact = list.classList.contains('is-compact');
           rows.forEach((row, i) => {
-            const o = smooth(amount * 2.1 - i * 0.11);
+            const o = smooth((amount * 0.77 - i * 0.04) / 0.45);
             row.classList.toggle('is-on', o > 0.01);
             row.style.opacity = o.toFixed(3);
             row.style.transform = `translate3d(${column.toFixed(1)}px,${anchors[i].y.toFixed(1)}px,0) translateY(-50%)`;
