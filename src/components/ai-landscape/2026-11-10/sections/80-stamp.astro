@@ -48,6 +48,9 @@ const SURE = { confirmed: COPY.stamp.confirmed, reported: COPY.stamp.reported };
         </ol>
         {dated && <a class="ail-shelf__newest ail-label" href="/ai-landscape/">{COPY.stamp.newest}</a>}
       </nav>
+    </div>
+
+    <div class="ail-stamp__more">
 
       <details class="ail-disc" name="ail-stamp">
         <summary><b class="ail-disc__n">{since.length}</b> <span class="ail-label">{COPY.stamp.since}</span> <span class="ail-disc__as ail-label">{COPY.best.asOf} <time datetime={view.snapshot.compiledAt}>{checked}</time></span></summary>

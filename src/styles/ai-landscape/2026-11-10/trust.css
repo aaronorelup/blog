@@ -11,10 +11,11 @@
 .ail-stamp__date { font: 400 var(--ail-fs-display)/.84 var(--ail-display); letter-spacing: .01em; white-space: nowrap; }
 .ail-stamp { --ail-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='2' seed='11'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -12.5 0 0 0 10'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23g)'/%3E%3C/svg%3E"); }
 .ail-stamp__say { display: grid; gap: 14px; max-width: 40rem; margin-bottom: 26px; }
-.ail-stamp__side { display: grid; gap: 0; max-width: 40rem; }
+.ail-stamp__side, .ail-stamp__more { display: grid; gap: 0; max-width: 40rem; }
 
 /* the shelf of editions: this one a solid slab, the next an empty dashed slot */
-.ail-shelf { display: grid; gap: 8px; margin-bottom: 18px; }
+.ail-shelf { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px 16px; margin-bottom: 18px; }
+.ail-shelf__row { grid-column: 1 / -1; }
 .ail-shelf__row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; padding: 10px 0 0; border-bottom: 2px solid var(--ail-fg); }
 .ail-shelf__row li { display: flex; }
 .ail-slab { position: relative; display: inline-flex; align-items: center; justify-content: center; min-width: 128px; min-height: 48px; margin-top: 8px; padding: 0 14px;
@@ -22,7 +23,7 @@
 .ail-slab[aria-current] { background: var(--ail-fg); color: var(--ail-bg); box-shadow: inset 0 -5px 0 color-mix(in srgb, var(--ail-bg) 22%, transparent); }
 a.ail-slab:hover { background: var(--ail-fg); color: var(--ail-bg); }
 .ail-slab--next { box-shadow: none; outline: 1.5px dashed var(--ail-fg-2); outline-offset: -1.5px; color: var(--ail-fg-2); font: 400 var(--ail-fs-label)/1 var(--ail-mono); letter-spacing: .14em; text-transform: uppercase; }
-.ail-shelf__newest { justify-self: start; display: inline-flex; align-items: center; min-height: 32px; }
+.ail-shelf__newest { grid-row: 1; grid-column: 2; display: inline-flex; align-items: center; min-height: 32px; }
 
 /* a disclosure: a number, its words, and a chevron. Its card holds the list */
 .ail-disc summary { position: relative; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; min-height: 48px; padding: 12px 34px 10px 0; border-top: 1px solid var(--ail-hair); }
@@ -51,19 +52,22 @@ a.ail-slab:hover { background: var(--ail-fg); color: var(--ail-bg); }
 .ail-expiring__say { font-size: 16px; line-height: 1.3; color: var(--ail-fg); }
 
 /* ---- the stamp in the 3D page: the date pressed into the floor in front of the five, words at the edges */
-.ail-gl .ail-stamp__mark { position: absolute; left: 50%; bottom: 4svh; margin: 0; transform: translateX(-50%) perspective(1100px) rotateX(42deg) rotateZ(-1.5deg); transform-origin: 50% 100%; pointer-events: none; }
+.ail-gl .ail-stamp__mark { position: absolute; left: 42%; bottom: 4svh; margin: 0; transform: translateX(-50%) perspective(1100px) rotateX(42deg) rotateZ(-1.5deg); transform-origin: 50% 100%; pointer-events: none; }
 .ail-gl .ail-stamp__ink { color: rgba(12, 13, 16, .84); padding: 18px 40px 6px; border-width: 5px; gap: 0; }
 .ail-gl .ail-stamp__ink::after { inset: 7px; border-width: 2px; }
 .ail-gl .ail-stamp__k { font-size: 20px; letter-spacing: .5em; justify-self: center; }
-.ail-gl .ail-stamp__date { font-size: clamp(120px, 16vw, 250px); }
+.ail-gl .ail-stamp__date { font-size: clamp(110px, 15vw, 240px); }
 .ail-gl .ail-stage.is-on .ail-stamp__ink { animation: ail-press 700ms var(--ail-ease) both; }
 @keyframes ail-press { from { opacity: 0; transform: scale(1.14); } 60% { opacity: 1; } to { transform: none; } }
 .ail-gl .ail-stamp__say { position: absolute; left: var(--ail-margin); top: var(--ail-top); width: min(40vw, 540px); margin: 0; }
 .ail-gl .ail-stamp__side { position: absolute; right: var(--ail-margin); top: var(--ail-top); width: min(31vw, 420px); }
-.ail-gl .ail-shelf, .ail-gl .ail-stamp__side > .ail-disc summary { background: var(--ail-veil); }
+.ail-gl .ail-stamp__more { position: absolute; right: var(--ail-margin); bottom: var(--ail-margin); width: min(28vw, 380px); }
+.ail-gl .ail-shelf, .ail-gl .ail-stamp__more > .ail-disc summary { background: var(--ail-veil); }
 .ail-gl .ail-stamp__say > .ail-sentence { text-wrap: balance; }
 .ail-gl .ail-shelf { padding: 6px 10px 10px; margin: 0 0 6px; }
-.ail-gl .ail-stamp__side > .ail-disc summary { padding-left: 10px; }
+.ail-gl .ail-stamp__more > .ail-disc summary { padding-left: 10px; }
+.ail-gl .ail-stamp__more > .ail-disc:first-child summary { border-top: 0; }
+.ail-gl .ail-stamp__more .ail-disc__card { top: auto; bottom: calc(100% + 10px); max-height: calc(100svh - var(--ail-top) - 176px); }
 .ail-gl .ail-stamp__counts summary { justify-self: start; display: inline-flex; align-items: center; padding: 6px 34px 6px 10px; background: var(--ail-veil); box-shadow: inset 0 0 0 1px var(--ail-hair); }
 .ail-gl .ail-disc__card { position: absolute; z-index: 2; left: 0; right: 0; top: calc(100% + 10px); max-height: min(58svh, 540px); overflow: auto; overscroll-behavior: contain; pointer-events: auto;
   padding: 6px 18px 16px; background: var(--ail-card); box-shadow: 0 0 0 1px var(--ail-fg), 0 18px 40px -16px rgba(12, 13, 16, .4); animation: ail-lift 220ms var(--ail-ease) both; }
@@ -78,16 +82,16 @@ a.ail-slab:hover { background: var(--ail-fg); color: var(--ail-bg); }
   .ail-slab:not(.ail-slab--next) { font-size: 22px; }
   .ail-since__src { min-height: 44px; min-width: 44px; }
   .ail-gl .ail-stamp .ail-stage { display: flex; flex-direction: column; justify-content: flex-end; gap: 10px; padding: 0 var(--ail-margin) 14px; }
-  .ail-gl .ail-stamp__mark, .ail-gl .ail-stamp__say, .ail-gl .ail-stamp__side { position: relative; inset: auto; width: auto; max-width: none; }
+  .ail-gl .ail-stamp__mark, .ail-gl .ail-stamp__say, .ail-gl .ail-stamp__side, .ail-gl .ail-stamp__more { position: relative; inset: auto; width: auto; max-width: none; }
   .ail-gl .ail-stamp__mark { align-self: center; transform: perspective(700px) rotateX(38deg); margin-bottom: 2px; }
   .ail-gl .ail-stamp__ink { padding: 12px 22px 4px; border-width: 4px; }
   .ail-gl .ail-stamp__k { font-size: 13px; }
   .ail-gl .ail-stamp__date { font-size: 21vw; }
   .ail-gl .ail-stamp__say { gap: 6px; }
   .ail-gl .ail-stamp__say > .ail-sentence { font-size: 22px; }
-  .ail-gl .ail-disc__card, .ail-gl .ail-stamp__counts .ail-disc__card { position: relative; top: auto; width: auto; max-height: 46svh; margin-top: 6px; }
+  .ail-gl .ail-disc__card, .ail-gl .ail-stamp__counts .ail-disc__card, .ail-gl .ail-stamp__more .ail-disc__card { position: relative; top: auto; bottom: auto; width: auto; max-height: 46svh; margin-top: 6px; }
   .ail-gl .ail-stamp:has(.ail-disc[open]) .ail-stamp__mark, .ail-gl .ail-stamp:has(.ail-disc[open]) .ail-stamp__say > .ail-sentence { display: none; }
-  .ail-gl .ail-stamp:has(.ail-stamp__side .ail-disc[open]) :is(.ail-stamp__say, .ail-shelf) { display: none; }
+  .ail-gl .ail-stamp:has(.ail-stamp__more .ail-disc[open]) :is(.ail-stamp__say, .ail-stamp__side) { display: none; }
 }
 
 /* ---- the proof card: a paper slip in house ink, the same in every world, light or dark */

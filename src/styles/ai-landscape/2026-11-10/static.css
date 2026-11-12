@@ -33,7 +33,7 @@
   .ail-gl .ail-sec { height: auto !important; min-height: 0; padding: 28px var(--ail-margin); border-top: 1px solid #C9CDD5; pointer-events: auto; break-inside: auto; }
   .ail-gl .ail-stage, .ail-gl [data-beat] { position: static !important; visibility: visible !important; opacity: 1 !important; transform: none !important; }
   .ail-gl .ail-at-tl, .ail-gl .ail-at-bl, .ail-gl .ail-at-r, .ail-gl .ail-pin { position: static !important; transform: none !important; width: auto; max-width: none; }
-  .ail-gl .ail-stamp__mark, .ail-gl .ail-stamp__say, .ail-gl .ail-stamp__side { position: static; transform: none; width: auto; margin-bottom: 18px; }
+  .ail-gl .ail-stamp__mark, .ail-gl .ail-stamp__say, .ail-gl .ail-stamp__side, .ail-gl .ail-stamp__more { position: static; transform: none; width: auto; margin-bottom: 18px; }
   .ail-gl .ail-disc__card { position: static; max-height: none; overflow: visible; box-shadow: none; animation: none; }
   .ail-stamp__ink { -webkit-mask: none; mask: none; animation: none !important; }
   .ail-disc summary::after { display: none; }
