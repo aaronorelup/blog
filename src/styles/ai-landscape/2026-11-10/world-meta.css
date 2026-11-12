@@ -5,17 +5,19 @@
 .ail-world[data-world='meta'] .ail-mark { --h: 14px; }
 .ail-world[data-world='meta'] .ail-mark--type { padding: 10px 12px; }
 
+/* the three steps: a number, then its sentence beside it at every width (a sentence is one piece and would drop under it) */
+.ail-world[data-world='meta'] .ail-sig__list ul[data-ordered] li { display: flex; align-items: flex-start; gap: .35em; }
+.ail-world[data-world='meta'] .ail-sig__list ul[data-ordered] li::before { font: inherit; color: var(--ail-fg-2); white-space: pre; }
+.ail-world[data-world='meta'] .ail-sig__item .ail-own::before { display: none; }
 /* beat c: the sentence is the gate's own. One numbered step at a time stands where the myth stands in other worlds */
 .ail-gl .ail-world[data-world='meta'] .ail-sig .ail-myth { display: none; }
-.ail-gl .ail-world[data-world='meta'] .ail-sig__item { position: static; display: none; padding: 0; background: none; white-space: normal; opacity: 1; visibility: visible; transform: none; pointer-events: auto; font-size: clamp(20px, 1.7vw, 26px); line-height: 1.14; }
-.ail-gl .ail-world[data-world='meta'] .ail-sig__item.is-on { display: flex; align-items: flex-start; gap: .3em; }
-.ail-gl .ail-world[data-world='meta'] .ail-sig__list ul[data-ordered] li::before { font: inherit; color: var(--ail-fg-2); white-space: pre; }
-.ail-gl .ail-world[data-world='meta'] .ail-sig__item .ail-own::before { display: none; }
+.ail-gl .ail-world[data-world='meta'] .ail-sig__list .ail-sig__item { position: static; display: none; padding: 0; background: none; white-space: normal; opacity: 1; visibility: visible; transform: none; pointer-events: auto; font-size: clamp(20px, 1.7vw, 26px); line-height: 1.14; }
+.ail-gl .ail-world[data-world='meta'] .ail-sig__list .ail-sig__item.is-on { display: flex; }
 /* only one step is listed at a time, and a step that is not listed does not count: each keeps its own number */
 .ail-gl .ail-world[data-world='meta'] .ail-sig__item[data-n='1'] { counter-increment: step 2; }
 .ail-gl .ail-world[data-world='meta'] .ail-sig__item[data-n='2'] { counter-increment: step 3; }
 /* before anything is asked the sentence stands alone: it is not a step yet */
-.ail-gl .ail-world[data-world='meta'] .ail-sig[data-idle] .ail-sig__item::before { display: none; }
+.ail-gl .ail-world[data-world='meta'] .ail-sig[data-idle] .ail-sig__list .ail-sig__item::before { display: none; }
 /* the gate asks: the approve button arrives with a ring that breathes until it is pressed */
 .ail-gl .ail-world[data-world='meta'] .ail-btn[data-act='approve']:not([disabled]) { animation: ail-meta-ask 1.6s ease-in-out infinite; }
 @keyframes ail-meta-ask { 0%, 100% { box-shadow: 0 0 0 0 var(--w-line); } 50% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--w-line) 38%, transparent); } }
@@ -33,7 +35,7 @@
 .ail-gl .ail-world[data-world='meta'] .ail-myth s { opacity: .78; }
 
 @media (max-width: 599px) {
-  .ail-gl .ail-world[data-world='meta'] .ail-sig__item { font-size: 18px; }
+  .ail-gl .ail-world[data-world='meta'] .ail-sig__list .ail-sig__item { font-size: 18px; }
   .ail-gl .ail-world[data-world='meta'] .ail-catch__item { width: auto; max-width: none; padding: 0; background: none; box-shadow: none; font-size: 15px; }
   /* in the sheet the struck myth is the first line, and the catch starts under it */
   .ail-gl .ail-world[data-world='meta'][data-beat-now='d'] .ail-myth { position: absolute; left: var(--ail-margin); right: var(--ail-margin); top: 12px; padding: 0; background: none; font-size: 16px; white-space: normal; }

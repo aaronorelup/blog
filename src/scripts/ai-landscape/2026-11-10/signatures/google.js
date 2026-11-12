@@ -2,7 +2,7 @@
 // one: its thread drops to its own picker on the model floor, and on to the one index at the foot of the stack.
 // Then a picture is painted two ways under a dial that never settles, because the maker has not said which.
 // The catch: name plates that were renamed, shut down or are about to expire. Every word is read from the page.
-import { BoxGeometry, CanvasTexture, CircleGeometry, Group, Mesh, MeshBasicMaterial, Raycaster, SRGBColorSpace, TorusGeometry, Vector2, Vector3 } from 'three';
+import { BoxGeometry, CanvasTexture, CircleGeometry, Group, Mesh, MeshBasicMaterial, SRGBColorSpace, TorusGeometry, Vector3 } from 'three';
 import { backOut, clamp01, smooth } from '../core/clock.js';
 import { $, $$, announce } from '../core/dom.js';
 import { FLOOR } from '../scene/stack.js';
@@ -125,9 +125,9 @@ export function create(ctx, world) {
   const st = { runs: xs.map(() => -1), last: -1, press: 0, tour: -1, part: 1, paint: null, stamped: false, lean: 0, vel: 0, step: 0, more: false, ct: 0, inked: false, floor: -1 };
   const sig = { lit: -1, dark: false };
   const v = new Vector3();
-  const ray = new Raycaster();
 
-  function pick(k) { st.runs[k] = 0; st.last = k; st.part = 1; st.floor = -1; if (names[k]) announce(names[k].textContent.trim()); }
+  // reduced motion: a door picked by hand is drawn whole, down to the index, with no flight
+  function pick(k) { st.runs[k] = ctx.reduced ? AT_INDEX : 0; st.last = k; st.part = 1; st.floor = -1; if (names[k]) announce(names[k].textContent.trim()); }
   function paint(mode) {
     st.part = 2;
     if (!ctx.reduced) st.paint = { mode, t: 0 };
@@ -138,17 +138,24 @@ export function create(ctx, world) {
   const mine = () => { st.tour = -1; };                                       // the tour stops for good on the first input
   const onGo = () => { mine(); if (ctx.reduced) sig.step(); else pick(st.press++ % xs.length); };
   const onDial = { a: () => { mine(); paint('a'); }, b: () => { mine(); paint('b'); } };
-  const hit = (e) => {
-    ray.setFromCamera(new Vector2((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1), ctx.camera);
-    return doors.findIndex((d) => ray.intersectObject(d.leaf).length > 0);
-  };
-  const onCanvas = (e) => { if (!group.visible) return; const k = hit(e); if (k >= 0) { mine(); st.press = k + 1; pick(k); } };
+  // which tall door a point of the screen is on, with a finger's width of grace around it (or -1)
+  const hit = (e) => doors.findIndex((d) => {
+    const p = labels.project(v.set(tower.x + tower.shift + d.x, tower.floors[0].y + tower.lift + FLOOR.h / 2 + 0.28, tower.z + FLOOR.w / 2 - 0.15));
+    return Math.abs(e.clientX - p.x) < 30 && Math.abs(e.clientY - p.y) < 46;
+  });
+  const choose = (k) => { mine(); st.press = k + 1; pick(k); };
+  const main = el.closest('main');
+  const point = (on) => { for (const n of [ctx.canvas, main]) if (n) n.style.cursor = on ? 'pointer' : ''; };      // the pointer over a door shows it can be picked
+  // a click on the scene itself, wherever it lands in the page: not one on a control or a callout
+  const onScene = (e) => { if (!group.visible || e.target.closest('button, a, summary, li, [data-hit]')) return; const k = hit(e); if (k >= 0) choose(k); };
+  const onName = names.map((n, k) => () => choose(k));
   const setMore = (on) => { st.more = on; if (stamp) stamp.setAttribute('aria-expanded', String(on)); };
   const onStamp = (e) => { if (e.type === 'click' || e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setMore(!st.more); } };
   const onKey = (e) => { if (e.key === 'Escape') setMore(false); };
   if (go) go.addEventListener('click', onGo);
   for (const m of ['a', 'b']) if (dial[m]) { dial[m].addEventListener('click', onDial[m]); dial[m].setAttribute('aria-pressed', 'false'); }
-  ctx.canvas.addEventListener('click', onCanvas);
+  window.addEventListener('click', onScene);
+  names.forEach((n, k) => n.addEventListener('click', onName[k]));
   window.addEventListener('keydown', onKey);
   if (stamp) { stamp.tabIndex = 0; stamp.setAttribute('role', 'button'); stamp.dataset.hit = ''; stamp.addEventListener('click', onStamp); stamp.addEventListener('keydown', onStamp); setMore(false); }
 
@@ -174,7 +181,7 @@ export function create(ctx, world) {
     [...names, indexName, stamp].forEach((n) => n && n.classList.remove('is-on'));
     for (const n of [indexName, stamp]) if (n) n.style.transform = '';
     if (world.ui) delete world.ui.dataset.part;
-    ctx.canvas.style.cursor = '';
+    point(false);
     draw('', 1);
     threads[1].show = 0; threads[1].update();
   };
@@ -246,7 +253,7 @@ export function create(ctx, world) {
       p.cores.items.forEach((c) => c.mesh.position.set(cx, cy + c.dy, FRONT));
     });
     lineMat.opacity = amount;
-    if (ctx.input.moved && !ctx.input.touch) ctx.canvas.style.cursor = hit({ clientX: ctx.input.px, clientY: ctx.input.py }) >= 0 ? 'pointer' : '';
+    if (ctx.input.moved && !ctx.input.touch) point(hit({ clientX: ctx.input.px, clientY: ctx.input.py }) >= 0);
     slab.material.uniforms.uPulse.value = arrived ? 0.25 : 0;
     if (!ctx.phone) for (const [n, k] of names.map((n, k) => [n, k])) n.style.transform = pinned(v.set(base + xs[k] + (k ? 0.08 : -0.08), top + tower.lift + 0.6, tower.z + FLOOR.w / 2 - 0.15), 0.5, 1);
     if (ctx.phone) names.forEach((n, k) => n.classList.toggle('is-on', st.runs[k] >= 0 && st.part === 1));
@@ -297,7 +304,7 @@ export function create(ctx, world) {
       const drop = kind === 'shut-down' ? backOut(e) : 0;
       const turn = kind === 'stale' ? (n % 2 ? -3 : 3.5) * smooth(e) : -11 * drop;
       const flip = kind === 'renamed' ? Math.max(0.05, Math.abs(Math.cos(e * Math.PI))) : 1;
-      v.set(tower.x + tower.shift + 2.85 + (n % 3) * 1.62, 2.85 - Math.floor(n / 3) * 0.86, tower.z - 2.4);
+      v.set(tower.x + tower.shift + 2.85 + (n % 3) * 1.62, 2.66 - Math.floor(n / 3) * 0.86, tower.z - 2.4);
       p.style.transform = `${pinned(v, 0.5, 0.5, 0, drop * 14)} rotate(${turn.toFixed(2)}deg) scaleY(${flip.toFixed(3)})`;
     });
   };
@@ -306,7 +313,8 @@ export function create(ctx, world) {
     sig.reset(); sig.catch(0);
     if (go) go.removeEventListener('click', onGo);
     for (const m of ['a', 'b']) if (dial[m]) dial[m].removeEventListener('click', onDial[m]);
-    ctx.canvas.removeEventListener('click', onCanvas);
+    window.removeEventListener('click', onScene);
+    names.forEach((n, k) => n.removeEventListener('click', onName[k]));
     window.removeEventListener('keydown', onKey);
     if (stamp) { stamp.removeEventListener('click', onStamp); stamp.removeEventListener('keydown', onStamp); stamp.removeAttribute('tabindex'); stamp.removeAttribute('role'); stamp.removeAttribute('aria-expanded'); delete stamp.dataset.hit; }
     pickers.forEach((p) => p.cores.dispose());

@@ -23,7 +23,7 @@ export default {
   props: [
     { file: 2, z: -6, x: -4.1, y: 1.2, w: 1.55 },               // prop-2: a white paper gate, at the left
     { file: 1, z: -3.5, x: 7.3, y: 0.62, w: 2.2 },              // prop-1: glasses on a stand, low on the right
-    { file: 3, z: -9, x: 10.55, y: 4.95, w: 1.9 },              // prop-3: blank speech panels and an envelope, afloat at the upper right
+    { file: 3, z: -9, x: 10.95, y: 4.7, w: 1.8 },               // prop-3: blank speech panels and an envelope, afloat at the upper right
   ],
   fore: { z: 3.2, x: 3.3, y: 0.3, w: 5.4 },                    // a bank of cloud with a loop of blue ribbon
   portrait: { x: 12.4, y: 5.6 },
