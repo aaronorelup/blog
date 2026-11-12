@@ -4,11 +4,6 @@
 /* the line under the kicker carries this world's glass: the one gradient on the page. Marks-only keeps the house line */
 .ail-world[data-world='google'][data-brand='full'] .ail-kicker { border-image: var(--ail-own-google) 1; }
 
-/* this glass is a gradient, which a pattern cannot take as one of its colours: hatched and frosted slabs and the
-   dots of preview parts are drawn as a layer over it instead (the text version's stack, the parts of a floor) */
-.ail-world[data-world='google'] .ail-floor[data-state='hatch'] .ail-floor__slab { background: repeating-linear-gradient(135deg, transparent 0 3.5px, var(--w-hatch, var(--ail-floor)) 3.5px 6.5px), var(--w-glass); }
-.ail-world[data-world='google'] .ail-floor[data-state='frost'] .ail-floor__slab { background: linear-gradient(rgba(248, 249, 251, .78), rgba(248, 249, 251, .78)), var(--w-glass); }
-.ail-world[data-world='google'] .ail-own[data-owner='google']:is([data-status='preview'], [data-status='announced'])::before { background: repeating-linear-gradient(135deg, transparent 0 2px, var(--ail-bg) 2px 4px), var(--ail-own-google); }
 /* a whole sentence starts at the margin: its owner's dot would stand alone on a line above it */
 .ail-world[data-world='google'] .ail-sig__list[data-list='1'] .ail-own::before { display: none; }
 

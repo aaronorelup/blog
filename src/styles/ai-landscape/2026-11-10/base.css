@@ -48,7 +48,7 @@
 .ail-own[data-owner='google'] { --own: var(--ail-own-google); --own-rim: var(--ail-rim-google); }
 .ail-own[data-owner='meta'] { --own: var(--ail-own-meta); --own-rim: var(--ail-rim-meta); }
 .ail-own[data-owner='xai'] { --own: var(--ail-own-xai); --own-rim: var(--ail-rim-xai); }
-.ail-own[data-status='announced']::before, .ail-own[data-status='preview']::before { background: repeating-linear-gradient(135deg, var(--own, var(--ail-mid)) 0 2px, transparent 2px 4px); }
+.ail-own[data-status='announced']::before, .ail-own[data-status='preview']::before { background: repeating-linear-gradient(135deg, transparent 0 2px, var(--ail-bg) 2px 4px), var(--own, var(--ail-mid)); }
 .ail-own[data-official='no'] { text-decoration: underline dashed 1px; text-underline-offset: .3em; }
 .ail-note { color: var(--ail-fg-2); font-size: .8em; margin-left: .5em; }
 

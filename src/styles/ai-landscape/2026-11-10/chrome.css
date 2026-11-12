@@ -23,8 +23,9 @@
 .ail-map__col[data-p='meta'] { --c: var(--ail-own-meta); }
 .ail-map__col[data-p='xai'] { --c: var(--ail-own-xai); --edge: var(--ail-rim-xai); }
 .ail-map__col i { display: block; background: var(--c); box-shadow: 0 0 0 .5px color-mix(in srgb, var(--ail-fg) 34%, transparent); }
-.ail-map__col i[data-state='hatch'] { background: repeating-linear-gradient(135deg, var(--c) 0 1.4px, transparent 1.4px 2.8px); }
-.ail-map__col i[data-state='frost'] { background: color-mix(in srgb, var(--c) 30%, var(--ail-floor)); }
+/* a pattern lies over the glass, never mixes with it: one company's glass is a gradient, which is not a colour */
+.ail-map__col i[data-state='hatch'] { background: repeating-linear-gradient(135deg, transparent 0 1.4px, var(--ail-bg) 1.4px 2.8px), var(--c); }
+.ail-map__col i[data-state='frost'] { background: linear-gradient(rgba(248, 249, 251, .7), rgba(248, 249, 251, .7)), var(--c); }
 .ail-map__col i[data-state='dotted'] { background: none; box-shadow: none; border-bottom: 1px dotted var(--ail-fg-2); }
 .ail-map__col i[data-state='hollow'] { background: none; }
 .ail-map[data-here] .ail-map__col { opacity: .34; }
