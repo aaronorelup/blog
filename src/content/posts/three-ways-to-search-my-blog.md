@@ -17,7 +17,7 @@ preview:
   alt: "Three bars of the 72 posts tested: reading it all lights every post, the passage search slivers of 5, the agent parts of 16"
 ---
 
-My blog has an Ask box, [RAG Goobie](/ledger/), that answers questions from my posts. I'd been calling it RAG without being sure, and I keep hearing the best AI agents have dropped RAG for agentic search. So I had Claude test the three ways an AI model can work from a pile of documents, on the 72 posts my blog had on 6 November, each on the questions it should be best at. **RAG Goobie mostly reads every post on every question, the first of the three ways.** Each way was the best pick for its own kind of question, and every run below is real.
+My blog has an Ask box, [RAG Goobie](/ledger/), that answers questions from my posts. I'd been calling it RAG without being sure, and I keep hearing the best AI agents have dropped RAG for agentic search. So on 6 November I had Claude test the three ways an AI model can work from a pile of documents, on 72 of my posts, each on the questions it should be best at. **RAG Goobie mostly reads every post on every question, the first of the three ways.** Each way was the best pick for its own kind of question, and every run below is real.
 
 An AI model answers from its context window, the text it reads right before it writes. That's counted in tokens, a word or a piece of one. RAG, short for retrieval-augmented generation, means looking things up first and handing the model what turned up. The three ways differ in what goes into the window, who picks it, and when.
 
@@ -35,7 +35,7 @@ This way is best when the answer is spread over the whole blog: what lessons I k
 <ao-demo name="goobie-lab" part="context">Every post in one prompt: 240,083 tokens, 99.9% of them from the cache, an answer in 3.4 seconds for $0.0009. The first question, with nothing cached yet, read them all at full price, $0.036.</ao-demo>
 
 - **The cache is the whole trick.** Every question starts with the same 240,000 tokens, so the model's provider keeps them and charges a fiftieth. The first question paid full price, about 3.6 cents off-peak.
-- **The agent got about as far, slowly.** It read post after post for 17 to 29 seconds, at 2.5 to 5.5 times the cost. Classic RAG's 8 chunks came from just 3 to 6 posts, mostly my long film making-ofs.
+- **The agent got about as far, slowly.** It read post after post for 17 to 29 seconds, at 2.5 to 5.4 times the cost. Classic RAG's 8 chunks came from just 3 to 6 posts, mostly my long film making-ofs.
 - **It miscounts.** Asked how many posts I published in September, it said 15. It was 12.
 - **It has a ceiling.** On 6 November the blog filled a quarter of the model's window, and somewhere around 300 posts it won't fit at all. Anthropic's advice is to skip RAG under about 200,000 tokens ([Anthropic](https://www.anthropic.com/news/contextual-retrieval)), and my blog is already over that.
 
@@ -79,7 +79,7 @@ For Claude Code and Cursor, not anymore.
 <details><summary>How it was tested</summary>
 
 - **One model for all three**, the one RAG Goobie already runs on, with one set of rules and settings and a 200-word limit for all three (not RAG Goobie's own), so the only thing that changed was how the posts reached it. Its window holds a million tokens, so the whole blog fits.
-- **The posts**: the 72 listed on 6 November. The live notebook other agents write all day was left out of all three.
+- **The posts**: 72 of the 73 listed on 6 November. The live notebook other agents write all day was left out of all three.
 - **In-context**: every post in full, in post-number order, with its date, topic and author, then the question.
 - **Classic RAG**: every section cut into chunks of at most 1,500 characters the way the site's own search cuts them, 1,005 chunks, turned into numbers by the same embedding model the site's search uses. The 8 closest to the question went to the model.
 - **Agentic search**: list_posts, grep and read, up to 12 turns. The same tool code runs in this page.

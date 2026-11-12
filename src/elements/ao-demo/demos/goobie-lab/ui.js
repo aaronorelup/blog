@@ -157,5 +157,5 @@ export const eyebrow = (method) => h('p', { class: 'gl-eyebrow' }, NAMES[method]
 // The live notebook is left out of the recording and of every live run (corpus.js), so a count here is one under the
 // ledger's: the foot says so for both.
 export const foot = (blog) => h('p', { class: 'gl-foot', text: `Recorded on ${blog.recorded} against the ${blog.posts.length} posts `
-  + 'listed then. The live notebook other agents write is left out, then and in every live run. The model\'s words are '
-  + 'replayed from that run, not written in your browser.' });
+  + 'listed then, all but the live notebook other agents write, which every live run leaves out too. The model\'s words '
+  + 'are replayed from that run, not written in your browser.' });
