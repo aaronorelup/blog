@@ -39,7 +39,7 @@ export function create(ctx, el, sec) {
   const raise = new Array(N).fill(0);
   const lamp = new Vector3();
   const tmp = new Vector3();
-  const st = { a: -2, reached: -1 };
+  const st = { a: -2, reached: -1, sign: -1 };
   const yOf = (k) => sp.floors[k].y + raise[k];
   const askPin = ctx.phone ? null : labels.pin(ask, pts[0], { ax: 0.5, ay: 1, dy: -16 });
   // under reduced motion the thread is drawn whole, so the chip marks the floor being read and not the thread's end
@@ -50,7 +50,6 @@ export function create(ctx, el, sec) {
     if (a === st.a) return;
     st.a = a;
     items.forEach((li, k) => { li.classList.toggle('is-on', k === a); if (k !== a) $('details', li).open = false; });
-    icons.forEach((svg, k) => svg.classList.toggle('is-on', k === a));
     cols.forEach((col) => [...col.children].forEach((cell, k) => cell.toggleAttribute('data-row', k === a)));
     if (a >= 0) announce(['n', 'name', 'say'].map((part) => $(`.ail-layer__${part}`, items[a]).textContent.trim()).join(' '));
   }
@@ -116,6 +115,9 @@ export function create(ctx, el, sec) {
       const a = u >= LEAD && u < END ? i : -1;
       const reached = Math.floor(pf + 0.04);
       if (reached !== st.reached) { if (reached > st.reached && sp.floors[reached]) sp.floors[reached].pulse = 0.85; st.reached = reached; }
+      // the chip shows what the request has become: the sign of the floor its head is in, changed on arrival
+      const sign = Math.max(0, Math.min(N - 1, Math.round(pf)));
+      if (sign !== st.sign) { st.sign = sign; icons.forEach((svg, k) => svg.classList.toggle('is-on', k === sign)); }
       sp.floors.forEach((fl, k) => {
         fl.raise = raise[k];
         if (k === a) fl.lit = 0.26; else if (a >= 0) fl.dim = 0.12;
@@ -138,7 +140,7 @@ export function create(ctx, el, sec) {
       // on the delegation floor two lines leave the stack, one to each side: the work handed to other agents
       const out = a === 7 ? easeIO(span((u - LEAD - 7 * STEP) / STEP, 0.36, 0.86)) : 0;
       for (const h of hands) {
-        h.line.points = [pts[9], h.to.set(h.dir * 5.6, pts[9].y, 0)];
+        h.line.points = [pts[9], h.to.set(h.dir * 4.4, pts[9].y, 0)];
         h.line.at(out); h.line.show = out > 0 ? drawn : 0;
         h.line.update();
       }

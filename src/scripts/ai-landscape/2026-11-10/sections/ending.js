@@ -5,16 +5,16 @@ import { Vector3 } from 'three';
 import { easeIO, lerp, smooth, span } from '../core/clock.js';
 import { $, fade } from '../core/dom.js';
 import { HOURS } from '../scene/studio.js';
-import { LID, place, pose, print } from './opening.js';
+import { LID, ground, place, pose, print } from './opening.js';
 
 export function create(ctx, el) {
   const { rig, row, studio } = ctx;
   const ruler = $('.ail-print span', el);
   const quote = $('.ail-end__quote', el);
   const foot = $('.ail-end__foot', el);
-  const st = { type: null, laid: false, z0: 0 };
+  const st = { type: null, laid: false, g: null };
   const v = new Vector3();
-  const layout = () => { st.z0 = Number(getComputedStyle(el).getPropertyValue('--z0')) || 0; st.type = print(ctx, ruler, st.z0, st.type); st.laid = true; };
+  const layout = () => { st.g = ground(ctx); st.type = print(ctx, ruler, st.g, st.type); st.laid = true; };
   const onResize = () => { st.laid = false; };
   window.addEventListener('resize', onResize);
 
@@ -29,7 +29,7 @@ export function create(ctx, el) {
       if (!st.laid) layout();
       const p = span(u, 0, 0.5);
       const e = 1 - easeIO(p);                                  // 1 the three-quarter row, 0 the poster from above
-      const top = pose(ctx, e, st.z0);
+      const top = pose(ctx, e, st.g);
       rig.mix(rig.stops.row, top, smooth(span(p, 0, 0.3)));
       rig.yaw = 0.06 * smooth(span(e, 0.3, 0.9));
       rig.pitch = 0.025 * smooth(span(e, 0.3, 0.9));

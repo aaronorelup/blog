@@ -9,26 +9,33 @@ import { HOURS } from '../scene/studio.js';
 
 const RAD = Math.PI / 180;
 export const SUBJECT = [0, 2.7, 0];                 // the middle lid: what keeps its width through the dolly zoom
-const ACROSS = { wide: 24, phone: 21, tall: 14.4 };  // world units the screen holds on the poster (--u in frame.css)
 const HERO = { tilt: 69, turn: -7, look: [0.3, 0.7, 2.4], cy: 0.5 };
 const HERO_PHONE = { tilt: 72, turn: -9, look: [0, 1.6, 0.6], cy: 0.37 };
 const PX = 600;                                        // the size the floor print is drawn at, in pixels a letter
 export const LID = { flat: 1.56, high: 1.0, up: 1.9 };   // the mark plate: its width lying on the lid, and held over the character
 
+// The poster as the stylesheet lays it out, read off one proof tile: u pixels to a world unit at the lids, how
+// many units the screen is tall, and z0, how far in front of the lids the screen's centre lies.
+export function ground(ctx) {
+  const tile = document.querySelector('.ail-open__proof > i').getBoundingClientRect();
+  const box = ctx.canvas.getBoundingClientRect();
+  const u = tile.width / 2.4 || Math.min(box.width / 24, box.height / 14.4);
+  return { u, h: box.height, tall: box.height / u, z0: tile.width ? (box.top + box.height / 2 - tile.top - tile.height / 2) / u : 3.9 };
+}
+
 // The camera between the poster (e = 0, lens 5 degrees, straight above) and the three-quarter row (e = 1, lens 24).
 // It stays on a sphere around SUBJECT whose radius follows the lens, so the lids keep their width on screen.
-// z0 is how far in front of the lids the poster is centred, in world units (--z0 in frame.css).
-export function pose(ctx, e, z0) {
+export function pose(ctx, e, g) {
   const h = ctx.phone ? HERO_PHONE : HERO;
-  const aspect = ctx.camera.aspect;
-  const tall = Math.max(ctx.phone ? ACROSS.phone : ACROSS.wide, ACROSS.tall * aspect) / aspect;
   const fov = lerp(5, 24, Math.pow(e, 1.6));
-  const r = tall / (2 * Math.tan((fov * RAD) / 2));
-  const tilt0 = Math.asin((z0 + 0.6) / (tall / (2 * Math.tan(2.5 * RAD))));
+  const r = g.tall / (2 * Math.tan((fov * RAD) / 2));
+  const tilt0 = Math.asin((g.z0 + 0.6) / (g.tall / (2 * Math.tan(2.5 * RAD))));
   const tilt = lerp(tilt0, h.tilt * RAD, e), turn = h.turn * RAD * e;
+  // a short screen: the row moves up so the print under it clears the words at the bottom (their size is in pixels)
+  const lift = ctx.phone ? 0 : (g.h / 2 - 5.5 * g.u - 74 - Math.max(0, (g.h - 302 - 9.2 * g.u) / 2)) / (0.93 * g.u);
   return {
     pos: [SUBJECT[0] + r * Math.sin(tilt) * Math.sin(turn), SUBJECT[1] + r * Math.cos(tilt), SUBJECT[2] + r * Math.sin(tilt) * Math.cos(turn)],
-    look: [h.look[0] * e, h.look[1] * e, lerp(z0, h.look[2], e)],
+    look: [h.look[0] * e, (h.look[1] - lift) * e, lerp(g.z0, h.look[2], e)],
     fov, cy: lerp(0.5, h.cy, e), tilt,
   };
 }
@@ -42,7 +49,7 @@ export function place(lid, s, up) {
 
 // Print on the floor the words of `el`, exactly where the page shows them on the poster. The element is the ruler:
 // its letters are measured, then carried through the poster's camera down to the floor. Returns the printed type.
-export function print(ctx, el, z0, made) {
+export function print(ctx, el, g, made) {
   const cs = getComputedStyle(el);
   const text = cs.textTransform === 'uppercase' ? el.textContent.toUpperCase() : el.textContent;
   const type = made || ctx.textures.title(text, PX);
@@ -52,11 +59,11 @@ export function print(ctx, el, z0, made) {
   el.prepend(probe);
   const pen = probe.getBoundingClientRect();
   probe.remove();
-  const g = document.createElement('canvas').getContext('2d');
-  g.font = `400 ${PX}px ${cs.fontFamily}`;
-  const m = g.measureText(text), k = parseFloat(cs.fontSize) / PX;
+  const pen2d = document.createElement('canvas').getContext('2d');
+  pen2d.font = `400 ${PX}px ${cs.fontFamily}`;
+  const m = pen2d.measureText(text), k = parseFloat(cs.fontSize) / PX;
   const left = pen.left - (m.actualBoundingBoxLeft + 4) * k, top = pen.bottom - (m.actualBoundingBoxAscent + 4) * k;
-  const stop = pose(ctx, 0, z0);
+  const stop = pose(ctx, 0, g);
   const cam = new PerspectiveCamera(stop.fov, ctx.camera.aspect, 0.5, 700);
   cam.position.set(...stop.pos); cam.up.set(0, 0, -1); cam.lookAt(...stop.look); cam.updateMatrixWorld();
   const box = ctx.canvas.getBoundingClientRect();
@@ -78,11 +85,11 @@ export function create(ctx, el, sec) {
   const list = $('.ail-open__five', el);
   const caps = $$('.ail-open__co', el).map((li) => { const at = new Vector3(); return { li, at, pin: ctx.phone ? null : labels.pin(li, at, { ax: 0.5, ay: 0 }) }; });
   const skip = ctx.reduced || !!window.location.hash || window.scrollY > 100;
-  const st = { t0: -1, born: -1, last: -1, heard: -1, type: null, laid: false, z0: 0, tour: '', tt: 0, grace: 0, dim: 0, hover: -1, lifts: towers.map(() => 0) };
+  const st = { live: false, clock: 0, born: -1, last: -1, heard: -1, type: null, laid: false, g: null, tour: '', tt: 0, grace: 0, dim: 0, hover: -1, lifts: towers.map(() => 0) };
   const v = new Vector3();
   ctx.state.opening = { t: 0, tour: '' };
 
-  const layout = () => { st.z0 = Number(getComputedStyle(el).getPropertyValue('--z0')) || 0; st.type = print(ctx, ruler, st.z0, st.type); st.laid = true; };
+  const layout = () => { st.g = ground(ctx); st.type = print(ctx, ruler, st.g, st.type); st.laid = true; };
   const onResize = () => { st.laid = false; };
   window.addEventListener('resize', onResize);
   // any real input ends the tour (SPEC 4.6). A short grace after "Resume" keeps the hand that pressed it from ending it
@@ -110,22 +117,31 @@ export function create(ctx, el, sec) {
       ctx.canvas.style.cursor = '';
       st.hover = -1;
       if (st.tour === 'on') st.tour = 'off';
+      if (st.live) st.clock = 60;                                  // left mid-intro: it does not resume on the way back
     },
     update(t, dt, u) {
       if (!st.laid) layout();
       if (st.born < 0) st.born = st.heard = ctx.time;
-      // the poster goes live once the five mark plates can be drawn (or after 1.2 s, whatever has loaded)
-      const first = st.t0 < 0;
-      if (first && (ctx.time - st.born > 1.2 || towers.every((tw) => tw.lid.mesh.material.uniforms.uMap.value))) {
-        st.t0 = ctx.time - (skip ? 60 : 0);
+      // the poster goes live once the plates and the characters have been drawn under the proof (or after 4 s,
+      // whatever has loaded): the tilt then meets no new picture or shader, so its first frames do not stall
+      const first = !st.live;
+      const drawn = towers.every((tw) => tw.lid.mesh.material.uniforms.uMap.value && (tw.char.kind === 'orb3d' || tw.char.mesh.material.uniforms.uMap.value));
+      if (drawn) st.warm = (st.warm || 0) + 1;
+      if (first && (ctx.time - st.born > 4 || st.warm > 3)) {
+        st.live = true;
         el.classList.add('is-live');
       }
-      const time = ctx.state.opening.at ?? (st.t0 < 0 ? (skip ? 60 : 0) : ctx.time - st.t0);     // a test may pin the intro: opening.at = seconds
+      // the intro's clock: real seconds, but a frame that took longer than 0.1 s counts as 0.1 s, so a machine that
+      // stalls (a first shader, a busy tab) still shows the whole move. A test may pin it: opening.at = seconds
+      const real = st.last < 0 ? 0 : Math.min(0.25, ctx.time - st.last);
+      st.last = ctx.time;
+      if (skip) st.clock = 60; else if (st.live) st.clock += Math.min(0.1, real);
+      const time = ctx.state.opening.at ?? st.clock;
       const tau = span(time, 0.9, 3.5), e = easeIO(tau);          // hold 0.9 s, then the dolly zoom takes 2.6 s
       const down = easeIO(span(u, 0, 1));
       const drop = easeIO(span(u, 0.25, 0.85));
 
-      const hero = pose(ctx, e, st.z0);
+      const hero = pose(ctx, e, st.g);
       hero.fit = 24.3 * Math.min(1, down * 5);                    // on the way down the row keeps its width, as at both ends
       rig.mix(hero, rig.stops.row, down);
       if (tau < 1) rig.cut();                                      // the intro is already eased: no lag, so the width holds exactly
@@ -138,8 +154,6 @@ export function create(ctx, el, sec) {
 
       // the tour: after 4 s with no input each stack in turn rises one unit, 3.5 s each, until any input.
       // It runs on real seconds (the engine's dt is capped), so a slow machine still stops it within 400 ms
-      const real = st.last < 0 ? 0 : Math.min(0.25, ctx.time - st.last);
-      st.last = ctx.time;
       const calm = time > 3.6 && u < 0.03 && !ctx.reduced;
       st.grace = Math.max(0, st.grace - real);
       if (!st.tour && calm && ctx.time - st.heard > 4) { st.tour = 'on'; st.tt = 0; }
@@ -163,8 +177,8 @@ export function create(ctx, el, sec) {
         const pop = span(tau, 0.62 + i * 0.03, 0.86 + i * 0.03);        // late: a cut-out seen from above reads as lying down
         const c = tw.char;
         c.from = 'top'; c.to = 'floor'; c.t = drop;
-        c.show = pop > 0 ? 1 : 0;
-        c.scale = backOut(pop) * lerp(1.22, 1, drop);
+        c.show = first || pop > 0 ? 1 : 0;
+        c.scale = (first ? 1 : backOut(pop)) * lerp(1.22, 1, drop);
 
         const on = touring && i === turn;
         const want = on ? smooth(ph / 0.2) * (1 - smooth((ph - 0.78) / 0.2)) : st.hover === i && !touring ? 0.22 : 0;
@@ -182,7 +196,7 @@ export function create(ctx, el, sec) {
       });
 
       // words: the captions sit under the lids and leave before the next section, the open line leaves first
-      const seen = st.t0 < 0 ? 0 : 1;
+      const seen = st.live ? 1 : 0;
       const capO = seen * (1 - smooth(span(u, 1.2, 1.5)));
       if (ctx.phone) fade(list, seen * (1 - smooth(span(u, 0.55, 0.85))));
       else for (const cap of caps) { cap.li.style.opacity = capO.toFixed(3); cap.li.style.visibility = capO < 0.01 ? 'hidden' : 'visible'; }

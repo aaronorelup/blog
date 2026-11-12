@@ -1,9 +1,10 @@
 /* The frame around the five worlds (SPEC 2.1, 2.2, 2.12): the opening, the nine layers taught once, the ending.
    House style only: ink, paper and the three faces. Text version first, then the 3D page (.ail-gl), then a phone.
-   --u is one world unit in pixels on the poster. sections/opening.js works out the same number: keep them equal. */
+   The poster is laid out here: --u is one world unit in pixels, --lid the top of the lids, --gap the room under
+   them for a caption. sections/opening.js measures a proof tile and frames the scene to match, at any screen size. */
 
 /* ---- opening, text version */
-.ail-open { --u: min(100vw / 24, 100svh / 14.4); --z0: 3.9; --zt: 4.1; }
+.ail-open, .ail-end { --u: min(100vw / 24, (100svh - 322px) / 9.2); --lid: max(70px, min(50svh - 5.1 * var(--u), 100svh - 348px - 5.98 * var(--u))); --gap: 172px; }
 .ail-open__proof, .ail-open__tour { display: none; }
 .ail-open__words { display: grid; gap: 10px; max-width: 46rem; }
 .ail-open__scope { color: var(--ail-fg-2); }
@@ -21,14 +22,14 @@
    the same picture under it, then fades. Its title is also the ruler the floor print is laid against */
 .ail-gl .ail-open__proof { display: block; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, var(--ail-floor) 30%, #F3F4F7 100%); transition: opacity 420ms linear, visibility 0s linear 420ms; }
 .ail-gl .ail-open.is-live .ail-open__proof { opacity: 0; visibility: hidden; }
-.ail-open__proof > i { position: absolute; left: calc(50% + (var(--x) - 1.2) * var(--u)); top: calc(50% - (var(--z0) + 1.2) * var(--u)); width: calc(2.4 * var(--u)); height: calc(2.4 * var(--u)); border-radius: calc(.28 * var(--u)); box-shadow: inset 0 0 0 1px var(--ail-line); }
+.ail-open__proof > i { position: absolute; left: calc(50% + (var(--x) - 1.2) * var(--u)); top: var(--lid); width: calc(2.4 * var(--u)); height: calc(2.4 * var(--u)); border-radius: calc(.28 * var(--u)); box-shadow: inset 0 0 0 1px var(--ail-line); }
 .ail-open__proof > i::after { content: ''; position: absolute; inset: 17.5%; border-radius: 11.2%; box-shadow: inset 0 0 0 1px var(--ail-line); }
 .ail-open__proof > i[data-p='anthropic'] { --x: -8.4; }
 .ail-open__proof > i[data-p='openai'] { --x: -4.2; }
 .ail-open__proof > i[data-p='google'] { --x: 0; }
 .ail-open__proof > i[data-p='meta'] { --x: 4.2; }
 .ail-open__proof > i[data-p='xai'] { --x: 8.4; }
-.ail-gl .ail-print { position: absolute; left: 50%; top: calc(50% + (var(--zt) - var(--z0)) * var(--u) * .985 - .12em); transform: translateX(-50%); margin: 0; font: 400 calc(var(--u) * 4.76)/1 var(--ail-display); letter-spacing: 0; text-transform: uppercase; white-space: nowrap; color: var(--ail-ink); }
+.ail-gl .ail-print { position: absolute; left: 50%; top: calc(var(--lid) + 2.4 * var(--u) + var(--gap) - .12em); transform: translateX(-50%); margin: 0; font: 400 calc(var(--u) * 4.76)/1 var(--ail-display); letter-spacing: 0; text-transform: uppercase; white-space: nowrap; color: var(--ail-ink); }
 .ail-gl .ail-open__words { position: absolute; left: var(--ail-margin); bottom: var(--ail-margin); max-width: min(34vw, 520px); gap: 12px; }
 .ail-gl .ail-open__five { display: block; margin: 0; }
 .ail-gl .ail-open:not(.is-live) .ail-open__five, .ail-gl .ail-open:not(.is-live) .ail-open__tour { visibility: hidden; }
@@ -45,7 +46,7 @@
 @keyframes ail-blink { from { opacity: 1; } to { opacity: .2; } }
 
 @media (max-width: 599px) {
-  .ail-open { --u: calc(100vw / 21); --z0: 7.4; --zt: 3; }
+  .ail-open, .ail-end { --u: calc(100vw / 21); --lid: 31svh; --gap: 32px; }
   /* phone, 3D page: no caption is drawn over a stack. The five go in a list under the open line */
   .ail-gl .ail-open .ail-stage { display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; padding: 0 var(--ail-margin) 18px; }
   .ail-gl .ail-open__words { position: static; max-width: none; gap: 8px; }
@@ -110,7 +111,6 @@
 .ail-end__prov { color: var(--ail-fg-2); }
 
 /* ---- the ending, 3D page: the poster again. The date is printed on the floor: its element is only the ruler */
-.ail-end { --u: min(100vw / 24, 100svh / 14.4); --z0: 3.9; --zt: 4.1; }
 .ail-gl .ail-end .ail-print { visibility: hidden; letter-spacing: 0; }
 .ail-gl .ail-end__quote { position: absolute; left: var(--ail-margin); bottom: var(--ail-margin); max-width: min(34vw, 520px); margin: 0; }
 .ail-gl .ail-end__foot { position: absolute; right: var(--ail-margin); bottom: var(--ail-margin); width: min(27vw, 380px); margin: 0; gap: 8px; }
@@ -128,7 +128,6 @@
   .ail-gl .ail-gram__ask { order: 2; margin-top: 10px; color: var(--ail-fg-2); }
   .ail-gl .ail-gram__chip { width: 34px; height: 34px; }
   .ail-gram__chip svg { width: 20px; height: 20px; }
-  .ail-end { --u: calc(100vw / 21); --z0: 7.4; --zt: 3; }
   .ail-gl .ail-end__quote, .ail-gl .ail-end__foot { position: static; width: auto; max-width: none; }
   .ail-gl .ail-end__foot { margin-top: 14px; }
 }
