@@ -154,7 +154,7 @@ export function create(ctx, world) {
     const asked = waiting && st.t >= ASK;
     if (ok) { ok.hidden = !(asked || passed); ok.disabled = passed; }
     const show = [playing && !waiting && !passed, waiting || !playing, passed];
-    steps.forEach((n, k) => n.classList.toggle('is-on', show[k]));
+    steps.forEach((n, k) => n.classList.toggle('is-on', show[k] && on));
     if (world.ui) world.ui.toggleAttribute('data-idle', !playing);
     const say = passed ? 2 : waiting ? 1 : 0;
     if (say && say !== st.said) { st.said = say; announce(steps[say].textContent.trim()); }
