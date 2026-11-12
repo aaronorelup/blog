@@ -1,0 +1,68 @@
+---
+// Best at (SPEC 2.8): 22 capabilities in seven groups, each with its verdict as the data holds it. Text version:
+// the list, every row with its stamp, who leads, why and when, the owner's guess where he made one, and its
+// evidence one tap away. 3D page (sections/bestat.js): one capability at a time on the podium, fog for "nobody knows".
+import '../../../../styles/ai-landscape/2026-11-10/compare.css';
+import Fact from '../Fact.astro';
+import { COPY } from '../data/copy.js';
+import { best } from '../data/compare.js';
+import { view } from '../data/view.js';
+
+const nameOf = (id) => (id === 'outside' ? COPY.best.outside : view.provider(id).name);
+---
+<section id="best-at" class="ail-sec ail-ba" data-sec="bestat" data-screens="2" data-land="0.3" data-rail={COPY.best.title} data-tour={best.tour.join(' ')} aria-labelledby="best-at-title">
+  <div class="ail-stage">
+    <h2 id="best-at-title" class="ail-ba__title ail-title ail-cmp-h">{COPY.best.title}</h2>
+    <div class="ail-ba__nav">
+      <div class="ail-ba__groups" role="group" aria-labelledby="best-at-title">
+        {best.groups.map((g) => <button type="button" class="ail-chip ail-ba__group" data-g={g.id} data-first={g.caps[0]} aria-pressed="false">{g.name}</button>)}
+      </div>
+      <p class="ail-ba__steps">
+        <button type="button" class="ail-btn ail-ba__arrow" data-step="-1" aria-label={COPY.frame.back}><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7" /></svg></button>
+        <button type="button" class="ail-btn ail-ba__arrow" data-step="1" aria-label={COPY.stamp.next}><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7" /></svg></button>
+      </p>
+    </div>
+    <ol class="ail-ba__caps">
+      {best.caps.map((c, n) => (
+        <li class="ail-ba__cap" id={c.id} data-n={n} data-g={c.group} data-verdict={c.verdict} data-floor={c.floor} data-why={c.why ? '' : undefined}>
+          <h3 class="ail-ba__name ail-title">{c.name}</h3>
+          <details class="ail-ba__d" name="ail-ba">
+            <summary class="ail-ba__stamp ail-stamp" data-verdict={c.verdict}>{c.stamp[0]}{c.stamp[1] && <i>{c.stamp[1]}</i>}</summary>
+            <div class="ail-ba__more ail-card">
+              <p class="ail-ba__q">{c.question}</p>
+              {!c.why && <p><Fact fact={c.reason} tag={false} /></p>}
+              {c.guess && <p class="ail-ba__gr">{c.guess.reason}</p>}
+              {c.leadsOn.length > 0 && <ul class="ail-ba__leads">{c.leadsOn.map((x) => <li><span class="ail-own" data-owner={x.provider}>{x.label}</span> {x.leadsOn}</li>)}</ul>}
+              <ul class="ail-ba__ev">
+                {c.evidence.map((e) => (
+                  <li data-basis={e.basis} data-conf={e.confidence}><span class="ail-label">{e.by} <time datetime={e.date}>{e.date}</time>{e.readOn && <time datetime={e.readOn}>{e.readOn}</time>}</span> {e.what}. <b>{e.score}</b> {e.subject}.{e.note && <span class="ail-note">{e.note}</span>}</li>
+                ))}
+              </ul>
+              {c.notYetRated.length > 0 && <p class="ail-ba__nyr ail-label">{c.notYetRated.join(', ')}</p>}
+              <ul class="ail-ba__cav">{best.caveats.map((f) => <li><Fact fact={f} tag={false} /></li>)}</ul>
+            </div>
+          </details>
+          <ul class="ail-ba__who">
+            {c.places.map((x) => (
+              <li class="ail-ba__place" data-p={x.provider} data-place={x.place || undefined} data-h={x.h} data-step={x.step}>
+                <span class="ail-own" data-owner={x.provider}><span class="ail-vh">{nameOf(x.provider)}</span>{x.place > 0 && <b class="ail-ba__pn">{x.place}</b>}{x.label}</span>
+              </li>
+            ))}
+            {c.empty.map((x) => (
+              <li class="ail-ba__empty" data-p={x.id} data-state={x.state}><span class="ail-sw" data-state={x.state} aria-hidden="true"></span><span class="ail-vh">{nameOf(x.id)} {x.word}</span>{x.reason}</li>
+            ))}
+          </ul>
+          <p class="ail-ba__why"><Fact fact={c.reason} tag={false} /></p>
+          <p class="ail-ba__when ail-label">{COPY.best.asOf} <time datetime={c.asOf}>{c.asOf}</time>{c.thin && <span class="ail-ba__thin"> · {c.thin.by} <time datetime={c.thin.on}>{c.thin.on}</time></span>}</p>
+          {c.guess && (
+            <figure class="ail-ba__guess" data-outcome={c.guess.outcome}>
+              <figcaption class="ail-label">{COPY.best.myGuess}</figcaption>
+              <blockquote class="ail-sentence">{c.guess.quote}</blockquote>
+              <p class="ail-ba__verdict ail-stamp">{c.guess.stamp}</p>
+            </figure>
+          )}
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>

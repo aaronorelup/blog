@@ -1,0 +1,64 @@
+---
+// The line-up (SPEC 2.3). Text version: a real table, nine layers by five companies, each cell the personal agent's
+// answer in its state, the claim one tap away. 3D page (sections/lineup.js): one floor lit across the five stacks,
+// its name and sentence top left, the nine names as the left axis, the five answers standing under the stacks.
+import '../../../../styles/ai-landscape/2026-11-10/compare.css';
+import Fact from '../Fact.astro';
+import { COPY } from '../data/copy.js';
+import { view } from '../data/view.js';
+
+const KEY = [['solid', COPY.state.released], ['hatch', COPY.state.preview], ['frost', COPY.state.undisclosed], ['dotted', COPY.state.notFound], ['hollow', COPY.state.absent]];
+---
+<section id="line-up" class="ail-sec ail-lu" data-sec="lineup" data-screens="1.4" data-land="0.3" data-rail={COPY.frame.scope} aria-labelledby="line-up-title">
+  <div class="ail-stage">
+    <h2 id="line-up-title" class="ail-lu__title ail-title">{COPY.frame.scope}</h2>
+    <div class="ail-lu__now">
+      {view.layers.map((l, i) => (
+        <p class="ail-lu__say" data-i={i}><span class="ail-lu__head"><span class="ail-label">{l.n}</span> <span class="ail-title">{l.name}</span></span> <span class="ail-sentence">{l.sentence}</span></p>
+      ))}
+    </div>
+    <div class="ail-lu__wrap">
+      <table class="ail-lu__table">
+        <thead>
+          <tr><td></td>{view.providers.map((p) => <th scope="col" class="ail-lu__co ail-label" data-p={p.id}>{p.name}</th>)}</tr>
+        </thead>
+        <tbody>
+          {view.layers.map((l, i) => (
+            <tr class="ail-lu__row" data-i={i} data-guest={view.providers.some((p) => p.stack[i].guests.length) ? '' : undefined}>
+              <th scope="row" class="ail-lu__th">
+                <button type="button" class="ail-lu__layer ail-label" data-i={i}><span class="ail-lu__tip"><span class="ail-lu__k">{l.n}</span> {l.name}</span></button>
+                <span class="ail-lu__sent">{l.sentence}</span>
+              </th>
+              {view.providers.map((p) => {
+                const c = p.stack[i];
+                return (
+                  <td class="ail-lu__cell" data-p={p.id} data-state={c.state} data-guest={c.guests.join(' ') || undefined}>
+                    <details class="ail-lu__d" name="ail-lu">
+                      <summary class="ail-lu__a">
+                        <span class="ail-lu__who ail-label">{p.name}</span>
+                        <span class="ail-lu__v"><span class="ail-sw" data-state={c.state} aria-hidden="true"></span><span class="ail-lu__ans">{c.name || c.word}</span>{c.tag && c.fact.status !== p.agent.status && <span class="ail-tag" data-status={c.fact.status}>{c.tag}</span>}</span>
+                      </summary>
+                      <div class="ail-lu__more ail-card">
+                        {c.fact ? <p><Fact fact={c.fact} tag={false} /></p> : <p><span class="ail-label">{c.word}</span> {c.reason}</p>}
+                        {c.parts.length > 0 && (
+                          <p class="ail-chips">{c.parts.map((q) => <span class="ail-own" data-owner={q.owner} data-status={q.status} data-official={q.official}>{q.name}</span>)}</p>
+                        )}
+                      </div>
+                    </details>
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <div class="ail-lu__foot">
+      <ul class="ail-lu__key">
+        {KEY.map(([state, word]) => <li data-state={state}><span class="ail-sw" data-state={state} aria-hidden="true"></span>{word}</li>)}
+      </ul>
+      <p class="ail-lu__guest"><span class="ail-sw ail-sw--guest" aria-hidden="true"></span>{COPY.state.guest}</p>
+    </div>
+    <div class="ail-lens" aria-hidden="true"><canvas></canvas></div>
+  </div>
+</section>
