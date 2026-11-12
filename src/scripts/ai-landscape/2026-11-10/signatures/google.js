@@ -170,7 +170,7 @@ export function create(ctx, world) {
   sig.step = () => {
     st.step = (st.step % 4) + 1;
     if (st.step === 1) st.runs.fill(-1);
-    const k = st.step < 3 ? 0 : 1;
+    const k = st.step < 3 || xs.length < 2 ? 0 : 1;
     st.runs[k] = st.step % 2 ? AT_PICK + 0.6 : AT_INDEX; st.last = k; st.part = 1;
   };
   sig.still = () => { st.runs.fill(AT_INDEX); st.step = 4; st.last = xs.length - 1; st.part = 1; st.paint = null; st.stamped = true; };
@@ -180,7 +180,7 @@ export function create(ctx, world) {
     unink();
     [...names, indexName, stamp].forEach((n) => n && n.classList.remove('is-on'));
     for (const n of [indexName, stamp]) if (n) n.style.transform = '';
-    if (world.ui) delete world.ui.dataset.part;
+    if (world.ui) { delete world.ui.dataset.part; world.ui.removeAttribute('data-more'); }
     point(false);
     draw('', 1);
     threads[1].show = 0; threads[1].update();
