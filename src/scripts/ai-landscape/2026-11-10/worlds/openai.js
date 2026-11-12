@@ -17,7 +17,7 @@ export default {
     person: 'Sam Altman',                                       // the caption a tap on the portrait shows: the name only
   },
   character: { kind: 'sprite', floor: 3, size: 1.15 },
-  backdrop: { y: -3.8, turn: -0.1 },                            // the plain wall inside the right arch stands right of the callouts
+  backdrop: { y: -4.7, turn: -0.1 },                            // the plain wall inside the right arch stands right of the callouts
   props: [
     { file: 3, z: -3.5, x: 7.6, y: 1.1, w: 2.6 },               // prop-3: an empty frame under a dust sheet, low on the right
     { file: 2, z: -12, x: -5.9, y: 0.68, w: 1.7 },              // prop-2: three fuzzy balls on the floor, far back on the left

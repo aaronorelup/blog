@@ -58,7 +58,7 @@ void main() {
 // Cast glass. uHatch, uFrost and uAlpha make the five states with the outline that stack.js draws.
 export const glassFrag = /* glsl */ `${COMMON}
 uniform vec3 uColor; uniform vec3 uRim; uniform vec3 uHot; uniform vec3 uPaper; uniform vec3 uLight;
-uniform vec4 uHatchCol;  // the second tone of the hatching. a 0: the gap is see-through. a 1: it is painted
+uniform vec4 uHatchCol;  // the second tone of the hatching: grey on a pale glass (a 1), paper on any other (a 0)
 uniform vec3 uP0; uniform vec3 uP1; uniform vec3 uP2; uniform vec3 uP3;
 uniform float uAlpha; uniform float uHatch; uniform float uFrost; uniform float uPulse; uniform float uDim;
 uniform float uHalfH; uniform float uSide; uniform float uPrism; uniform float uShow;
@@ -102,11 +102,18 @@ void main() {
     a *= 0.62;
   }
 
-  // hatched glass: preview or announced. Bands at 45 degrees, the gaps in a second tone
-  float s = fract((vO.x + vO.y * 1.15 + vO.z) * 4.6);
-  float gap = (1.0 - smoothstep(0.0, 0.07, s) * (1.0 - smoothstep(0.5, 0.57, s))) * uHatch;
-  col = mix(col, uHatchCol.rgb, gap * uHatchCol.a);
-  a *= mix(1.0, mix(0.14, 0.92, uHatchCol.a), gap);
+  // hatched glass: preview or announced. A quiet twill at 45 degrees on the upright faces that look at the camera,
+  // about five bands across a slab. Never on a top, a chamfer or a back face, and never see-through. Its edges are
+  // one pixel soft, and where a period falls under about six pixels the pattern is its mean tone: no interference
+  if (uHatch > 0.0 && front) {
+    float ph = (vO.x + vO.y * 1.15 + vO.z) * 2.1;
+    float px = clamp(fwidth(ph), 0.001, 0.5);
+    float s = fract(ph);
+    float gap = 1.0 - smoothstep(0.0, px, s) * (1.0 - smoothstep(0.5, 0.5 + px, s));
+    gap = mix(gap, 0.5, smoothstep(0.11, 0.2, px)) * uHatch * (1.0 - smoothstep(0.25, 0.4, abs(N.y)));
+    col = mix(col, uHatchCol.rgb, gap * mix(0.13, 0.34, uHatchCol.a));
+    a *= mix(1.0, mix(0.92, 1.0, uHatchCol.a), gap);
+  }
 
   // frosted glass: it exists and the maker has not said what it is. Milky, matte, nothing shows through
   vec3 milk = mix(base, uPaper * 1.04 + 0.02, 0.7) + (ign(gl_FragCoord.xy) - 0.5) * 0.04;
@@ -159,17 +166,26 @@ void main() {
 }`;
 
 // Paper: the plate, the portrait, props and cut-out characters. Unlit, and darkened only by lights out.
-// uMode 1 reads the texture as an ink mask (titles, glyphs) and prints it in uTint.
+// uMode 1 reads the texture as an ink mask (titles, glyphs) and prints it in uTint. uMode 2 is plain paper in
+// uTint with 3 percent grain and no texture. uTorn tears the upright edges (x: depth in uv) or the top edge (y).
+// uEdge darkens plain paper beside and behind a plate that hangs in front of it (x0, x1, width, in uv).
 export const paperFrag = /* glsl */ `${COMMON}
 uniform sampler2D uMap; uniform vec3 uTint; uniform vec3 uGround;
 uniform float uSide; uniform float uOpacity; uniform float uFade; uniform float uMode; uniform float uDither; uniform float uSelf;
+uniform vec4 uTorn; uniform vec3 uEdge;
 varying vec3 vW; varying vec2 vUv;
 void main() {
   float band;
   float keep = irisKeep(uSide, band);
-  vec4 t = texture2D(uMap, vUv);
+  vec4 t = uMode > 1.5 ? vec4(1.0) : texture2D(uMap, vUv);
   float a = (uMode > 0.5 ? t.r : t.a) * uOpacity;
   vec3 col = uMode > 0.5 ? uTint : t.rgb * uTint;
+  if (uMode > 1.5) {
+    col *= 1.0 + (ign(gl_FragCoord.xy) - 0.5) * 0.03;
+    if (uEdge.z > 0.0) col *= 1.0 - 0.17 * (1.0 - smoothstep(0.0, uEdge.z, max(uEdge.x - vUv.x, vUv.x - uEdge.y)));
+  }
+  if (uTorn.x > 0.0) { float e = min(vUv.x, 1.0 - vUv.x) / uTorn.x; if (e < 0.3 + 0.5 * vnoise(vec2(vUv.y * uTorn.z, step(0.5, vUv.x) * 9.0 + uTorn.w)) + 0.2 * vnoise(vec2(vUv.y * uTorn.z * 3.7, uTorn.w))) discard; }
+  if (uTorn.y > 0.0) { float e = (1.0 - vUv.y) / uTorn.y; if (e < 0.3 + 0.5 * vnoise(vec2(vUv.x * uTorn.z, uTorn.w)) + 0.2 * vnoise(vec2(vUv.x * uTorn.z * 3.7, uTorn.w + 5.0))) discard; }
   // opaque paper is alpha tested and dithers at the iris edge. Blended paper (cut-outs, type) keeps soft edges
   if (uDither > 0.5) { if (a < 0.2 || keep < ign(gl_FragCoord.xy) * 0.98 + 0.01) discard; a = 1.0; }
   else { a *= keep; if (a < 0.004) discard; }
@@ -181,8 +197,8 @@ void main() {
   #include <colorspace_fragment>
 }`;
 
-// The studio floor. Each caster throws a coloured shadow along the lamp direction, softer the further it falls
-// and cut into stripes when the floors are pulled apart, and is mirrored faintly in the polish.
+// The studio floor. Each caster throws a coloured shadow along the lamp direction, softer the further it falls,
+// in one piece (stripes there read as a second hatch), and is mirrored faintly in the polish, in one piece too.
 export const groundFrag = /* glsl */ `${COMMON}
 #define N_T 8
 uniform vec3 uNear; uniform vec3 uFar; uniform vec3 uInkColor; uniform vec3 uLight; uniform vec3 uWorld;
@@ -211,11 +227,8 @@ void main() {
     float pen = mix(0.1, 0.9, t);
     float I = 1.0 - smoothstep(uHalf - pen * 0.4, uHalf + pen, d);
     float cell = uFloorH + uTGap[i];
-    float f = mod(t * uTH[i], cell);
-    float edge = mix(0.03, 0.14, t);
-    float slab = smoothstep(0.0, edge, f) * (1.0 - smoothstep(uFloorH - edge, uFloorH, f));
     float gapVis = smoothstep(0.05, 0.2, uTGap[i]);
-    I *= mix(1.0, slab, gapVis) * amt * (1.0 - t * 0.4);
+    I *= mix(1.0, uFloorH / cell, gapVis) * amt * (1.0 - t * 0.4);       // a stack pulled apart lets light through: a paler shadow, never a striped one
     lit *= mix(vec3(1.0), uTCol[i] * 0.9 + 0.06, I * 0.86);
     lit *= 1.0 - (1.0 - smoothstep(uHalf * 0.7, uHalf * 1.9, length(P - T))) * 0.14 * amt;
     // a polished floor: mirror the view ray and see whether it meets this caster
@@ -223,8 +236,7 @@ void main() {
     float tb = -dot(o, Rr.xz) / max(dot(Rr.xz, Rr.xz), 1e-5);
     float hy = Rr.y * tb;
     float m = (1.0 - smoothstep(uHalf * 0.72, uHalf * 1.08, length(o + Rr.xz * tb))) * step(0.0, tb) * (1.0 - smoothstep(uTH[i] * 0.55, uTH[i], hy));
-    float fy = mod(hy, cell);
-    m *= mix(1.0, smoothstep(0.0, 0.05, fy) * (1.0 - smoothstep(uFloorH - 0.05, uFloorH, fy)), gapVis);
+    m *= mix(1.0, uFloorH / cell, gapVis);
     refl += (uTCol[i] * 0.85 + 0.1) * m * amt;
     reflA += m * amt;
   }

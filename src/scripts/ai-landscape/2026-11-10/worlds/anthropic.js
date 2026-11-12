@@ -17,7 +17,7 @@ export default {
     person: 'Dario Amodei',                                     // the caption a tap on the portrait shows: the name only
   },
   character: { kind: 'sprite', floor: 3, size: 1.15 },
-  backdrop: { y: -2.8, turn: -0.09 },                           // the room's own floor line meets the ground, the plain wall stands left
+  backdrop: { y: -3.45, turn: -0.1 },                           // the room's own floor line meets the ground, the plain wall stands left
   props: [
     { file: 2, z: -3.5, x: 6.6, y: 0.42, w: 2.0 },              // prop-2: a plug on its cord, lying on the floor at the right
     { file: 3, z: -12, x: -5.3, y: 0.92, w: 2.0 },              // prop-3: the folder of cards, far back on the left under the frame

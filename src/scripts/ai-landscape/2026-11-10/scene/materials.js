@@ -14,7 +14,7 @@ export function createMaterials() {
     uWorld: { value: new Color('#E6E8ED') },
   };
 
-  // Write an owner's colours into a glass or core material. Pale glass hatches in grey, any other in clear gaps.
+  // Write an owner's colours into a glass or core material. Pale glass hatches toward grey, any other toward paper.
   function setOwner(mat, owner) {
     const u = mat.uniforms;
     u.uColor.value.set(owner.glass);
@@ -40,7 +40,7 @@ export function createMaterials() {
     // Cast glass for one floor (or a step, a door, a plinth). side: 0 always, 1 inside the iris, -1 outside.
     glass(owner, { halfH = 0.13, side = 0, alpha = 0.9 } = {}) {
       const mat = new ShaderMaterial({
-        vertexShader: worldVert, fragmentShader: glassFrag, transparent: true, side: DoubleSide, depthWrite: true,
+        vertexShader: worldVert, fragmentShader: glassFrag, transparent: true, side: DoubleSide, depthWrite: true, extensions: { derivatives: true },
         uniforms: {
           ...shared,
           uColor: { value: new Color() }, uRim: { value: new Color() }, uHot: { value: new Color() }, uHatchCol: { value: new Vector4(1, 1, 1, 0) },
@@ -67,13 +67,15 @@ export function createMaterials() {
 
     // Paper. blended: soft edges for cut-outs and type (sorted, no depth write). Otherwise opaque and dithered.
     // mask: the texture is ink coverage and prints in `tint` (titles, glyphs, marks drawn in type).
-    // self: lights out leaves it alone (a mark on its plate is never darkened).
-    paper(texture, { side = 1, tint = '#FFFFFF', blended = false, mask = false, opacity = 1, ground = null, fade = 0, depthTest = true, self = false } = {}) {
+    // self: lights out leaves it alone (a mark on its plate is never darkened). plain: no texture, `tint` with grain.
+    // torn: [x, y, frequency, seed] tears the upright edges or the top edge. edge: [x0, x1, width] (see shaders.js).
+    paper(texture, { side = 1, tint = '#FFFFFF', blended = false, mask = false, opacity = 1, ground = null, fade = 0, depthTest = true, self = false, plain = false, torn = null, edge = null } = {}) {
       return new ShaderMaterial({
         vertexShader: worldVert, fragmentShader: paperFrag, transparent: blended, depthWrite: !blended, depthTest, side: DoubleSide,
         uniforms: {
           ...shared, uMap: { value: texture }, uTint: { value: new Color(tint) }, uGround: ground ? { value: new Color(ground) } : shared.uWorld,
-          uSide: { value: side }, uOpacity: { value: opacity }, uFade: { value: fade }, uMode: { value: mask ? 1 : 0 }, uDither: { value: blended ? 0 : 1 }, uSelf: { value: self ? 1 : 0 },
+          uSide: { value: side }, uOpacity: { value: opacity }, uFade: { value: fade }, uMode: { value: plain ? 2 : mask ? 1 : 0 }, uDither: { value: blended ? 0 : 1 }, uSelf: { value: self ? 1 : 0 },
+          uTorn: { value: new Vector4(...(torn || [0, 0, 0, 0])) }, uEdge: { value: new Vector3(...(edge || [0, 0, 0])) },
         },
       });
     },

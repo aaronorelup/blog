@@ -4,10 +4,13 @@
 // One generic scene for all five: a world is this plus its configuration (worlds/<id>.js) and its pictures.
 import { BufferGeometry, Color, CylinderGeometry, Float32BufferAttribute, Group, Mesh, PlaneGeometry, Points, Vector3 } from 'three';
 
-// The curved wall. Its arc and height are tuned so a 24 degree lens sees about nine tenths of the plate.
-const WALL = { radius: 34, arc: (52 * Math.PI) / 180, behind: 22 };
-WALL.height = (WALL.radius * WALL.arc) / 2;
+// The curved wall the plate hangs on: 64 degrees of arc (SPEC 4.1), which covers a 16:9 frame at the open stop with
+// the pointer at either end. Behind it stands one plain back wall in the world's ground colour, wide enough for
+// 21:9: where the plate ends, it ends in a torn paper edge with a soft shadow, never in bare studio.
 const RAD = Math.PI / 180;
+const WALL = { radius: 34, arc: 64 * RAD, behind: 22 };
+WALL.height = (WALL.radius * WALL.arc) / 2;
+const BACK = { radius: 36.5, arc: 150 * RAD, height: 26, torn: 0.4, shade: 1.2 };
 
 export function createWorlds(ctx) {
   const { scene, mats, textures } = ctx;
@@ -32,12 +35,22 @@ export function createWorlds(ctx) {
     const full = cfg.backdrop.full ? 9 / 8 : 1;
     const geo = new CylinderGeometry(WALL.radius, WALL.radius, WALL.height * full, 48, 1, true, Math.PI - WALL.arc / 2, WALL.arc);
     const uv = geo.attributes.uv;
-    for (let i = 0; i < uv.count; i++) uv.setXY(i, 1 - uv.getX(i), uv.getY(i) * (8 / 9) * full);
-    const wall = new Mesh(geo, mats.paper(null, { side: 1 }));
+    // backdrop.flip hangs the picture mirrored, for a plate whose subject would stand behind the stack
+    for (let i = 0; i < uv.count; i++) uv.setXY(i, cfg.backdrop.flip ? uv.getX(i) : 1 - uv.getX(i), uv.getY(i) * (8 / 9) * full);
+    const wall = new Mesh(geo, mats.paper(null, { side: 1, torn: [BACK.torn / (WALL.radius * WALL.arc), 0, 46, cfg.id.length] }));
     wall.position.set(0, cfg.backdrop.y + (WALL.height * full) / 2, WALL.radius - WALL.behind);
     wall.rotation.y = cfg.backdrop.turn || 0;
     wall.visible = false; wall.renderOrder = -8;
     group.add(wall);
+    // the plain back wall: the world's ground, 6 percent darker, with grain, and a soft shadow where the plate ends
+    const half = WALL.arc / BACK.arc / 2;
+    const tone = new Color(ground).multiplyScalar(0.94);
+    const back = new Mesh(new CylinderGeometry(BACK.radius, BACK.radius, BACK.height, 56, 1, true, Math.PI - BACK.arc / 2, BACK.arc),
+      mats.paper(null, { side: 1, plain: true, tint: `#${tone.getHexString()}`, edge: [0.5 - half, 0.5 + half, BACK.shade / (BACK.radius * BACK.arc)] }));
+    back.position.set(0, BACK.height / 2 - 5, WALL.radius - WALL.behind);
+    back.rotation.y = wall.rotation.y;
+    back.renderOrder = -9;
+    group.add(back);
     inst.ready = use(ctx.quality.small ? cfg.art.plateSmall || cfg.art.plate : cfg.art.plate || cfg.art.plateSmall).then((tex) => {
       if (!tex || !inst.group.parent) return;
       wall.material.uniforms.uMap.value = tex; wall.visible = true;

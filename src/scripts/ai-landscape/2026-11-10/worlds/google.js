@@ -19,7 +19,7 @@ export default {
     person: 'Sundar Pichai',
   },
   character: { kind: 'sprite', floor: 1, size: 0.9 },           // no router floor to stand on: the lantern floats at floor 1
-  backdrop: { y: -3.6, turn: 0 },
+  backdrop: { y: -4.45, turn: -0.1 },
   props: [
     { file: 3, z: -3.5, x: 7.2, y: 0.98, w: 2.2 },              // prop-3: the drawers of the index under a magnifying glass, low on the right
     { file: 2, z: -6, x: -4.0, y: 0.84, w: 1.35 },              // prop-2: a banana on a stool, at the left

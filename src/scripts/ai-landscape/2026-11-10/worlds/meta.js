@@ -20,7 +20,7 @@ export default {
     person: 'Mark Zuckerberg',
   },
   character: { kind: 'sprite', floor: 3, size: 1.05 },
-  backdrop: { y: -3.4, turn: 0 },
+  backdrop: { y: -4.2, turn: -0.1 },
   props: [
     { file: 2, z: -6, x: -4.1, y: 1.2, w: 1.55 },               // prop-2: a white paper gate, at the left
     { file: 1, z: -3.5, x: 7.3, y: 0.62, w: 2.2 },              // prop-1: glasses on a stand, low on the right

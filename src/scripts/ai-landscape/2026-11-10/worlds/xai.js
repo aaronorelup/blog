@@ -6,7 +6,7 @@ export default {
   id: 'xai',
   brandMode: 'full',                       // or 'marks-only': glass, glow and line go house grey (SPEC 10)
   theme: { chrome: 'light', ground: '#F9F8F6', ink: '#0A0A0A', glass: '#0A0A0A', rim: '#FFFFFF', glow: '#FFFFFF', line: '#E04A26' },
-  hour: { lamp: [-0.5, 0.35, 0.8], warmth: 0.15 },             // low, hard dawn light from the upper left
+  hour: { lamp: [0.5, 0.35, 0.8], warmth: 0.15 },              // low, hard dawn light from the upper right, as in the mirrored plate
   marks: { lid: mark('xai', 'grok-mark'), of: 'brand', plate: 'white', clear: 0.5 },
   art: artOf('xai'),
   alt: {
@@ -16,7 +16,9 @@ export default {
     person: 'Elon Musk',                                        // the caption a tap on the portrait shows: the name only
   },
   character: { kind: 'orb3d', floor: 3, size: 1.0 },            // a real sphere whose eyes follow the pointer
-  backdrop: { y: -5.0, turn: -0.03, full: true },              // hung low and a little right: the name stands on the pale wall, above the black racks and left of the gantry
+  // hung low and mirrored, turned so the black stack and the black sphere stand against the pale wall and the
+  // coloured discs. The gantry and the rocket stand right of the stack, behind the callouts, never behind the stack
+  backdrop: { y: -6.15, turn: -0.17, full: true, flip: true },
   props: [
     { file: 2, z: -9, x: 11.0, y: 2.45, w: 2.0 },               // prop-2: the rocket and its gantry, far right
     { file: 3, z: -6, x: -4.3, y: 1.44, w: 1.6 },               // prop-3: a server rack, at the left edge
