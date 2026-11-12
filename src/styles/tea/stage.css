@@ -85,6 +85,12 @@
   @supports (height: 1svh) { .tea-hero[data-tea-hero] { --tea-hero-pt: max(76px, 61svh); } }
 }
 
+/* On a phone the box spans the screen and scrolls up under the fixed day/night switch (its top right corner, tea.css):
+   the box's text keeps out of the switch's column (12 px from the edge, 72 wide, and a gap), so no line runs under it. */
+@media (max-width: 560px) {
+  .tea-hero[data-tea-hero] .tea-hero-box { padding-right: 76px; }
+}
+
 /* The scene: one length of scroll for both layouts, so a switch between them moves nothing below the hero. */
 .tea-hero[data-3d='on'] { height: 300vh; }
 

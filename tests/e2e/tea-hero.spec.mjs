@@ -702,3 +702,27 @@ test('tea-hero-28 a beforeunload that does not leave the page keeps the scene lo
   await expect(hero(page)).not.toHaveAttribute('data-3d-off', /./);
   expect(errors).toEqual([]);
 });
+
+// On a phone the title box spans the screen and scrolls up under the fixed day/night switch (top right): none of its
+// text runs under the switch's column, on the static hero and over the scene (stage.css keeps a gutter there).
+test('tea-hero-29 on a phone no line of the title box runs under the fixed day/night switch', async ({ page, isMobile }) => {
+  test.skip(!isMobile, 'phones: under 561 px the box spans the screen');
+  for (const url of ['/tea/?hero=off', '/tea/?hero=on']) {
+    await page.goto(url);
+    await settled(page);
+    await holdScene(page);
+    const under = await page.evaluate(() => {
+      const sw = document.querySelector('#mode-toggle').getBoundingClientRect();
+      const out = [];
+      const walker = document.createTreeWalker(document.querySelector('.tea-hero-box'), NodeFilter.SHOW_TEXT);
+      for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+        if (!n.textContent.trim()) continue;
+        const range = document.createRange();
+        range.selectNodeContents(n);
+        for (const r of range.getClientRects()) if (r.right > sw.left) out.push(`${n.textContent.trim().slice(0, 24)}: ${Math.round(r.right)} > ${Math.round(sw.left)}`);
+      }
+      return out;
+    });
+    expect(under, url).toEqual([]);
+  }
+});

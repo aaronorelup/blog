@@ -560,6 +560,7 @@ for `data-hero-settled` (the hero will change no layout by itself any more) befo
 | One actor in place of another, on `/tea/` with the shipped manifest plus a follower (riding Yusef) served in its place: down the scroll to 0.8 and back, the follower rides its leader's root and scale, an opacity dissolve (with `fade`: alpha-hashed) and a visible cut show and hide each actor as keyed, the dissolved-out actor comes back, the shipped leap's cuts run as keyed beside them, and nothing reaches the console | tea-hero-26 |
 | The shipped manifest's own swap (Jefrie and her leap mesh) on the page: every follower it names is one the runtime knows, down the scroll and back (a step either side of every cut) exactly one of the two is drawn on one root, and the number of point lights drawn never changes | tea-hero-27 |
 | A beforeunload that does not lead to leaving (a mailto link fires it in some browsers) while the models load costs nothing: the scene comes up, nothing logged (the scene stops its loads on pagehide only, so the page stays eligible for the back/forward cache) | tea-hero-28 |
+| On a phone no line of the title box (statement, counter, chapter numerals) runs under the fixed day/night switch's column as the box scrolls up under it, static or over the scene | tea-hero-29 (phone) |
 
 ## The live site (`live.spec.mjs`, `npm run e2e:live`)
 
