@@ -164,14 +164,16 @@ test('a follower takes its leader\'s root and inner scale after every track, its
   }
 });
 
-// A GLB in memory: one triangle under hips > head, its material half see-through; fetch answers it for any address.
+// A GLB in memory: two triangles under hips > head, one opaque (its factor's alpha 0.9, which an opaque material
+// doesn't draw) and one see-through (BLEND, 0.8); fetch answers it for any address.
 function glb() {
   const pos = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]);
   const json = {
     asset: { version: '2.0' }, scene: 0, scenes: [{ nodes: [0] }],
     nodes: [{ name: 'hips', children: [1] }, { name: 'head', mesh: 0, translation: [0, 1, 0] }],
-    meshes: [{ primitives: [{ attributes: { POSITION: 0 }, material: 0 }] }],
-    materials: [{ pbrMetallicRoughness: { baseColorFactor: [1, 1, 1, 0.8] }, alphaMode: 'BLEND' }],
+    meshes: [{ primitives: [{ attributes: { POSITION: 0 }, material: 0 }, { attributes: { POSITION: 0 }, material: 1 }] }],
+    materials: [{ pbrMetallicRoughness: { baseColorFactor: [1, 1, 1, 0.9] } },
+      { pbrMetallicRoughness: { baseColorFactor: [1, 1, 1, 0.8] }, alphaMode: 'BLEND' }],
     accessors: [{ bufferView: 0, componentType: 5126, count: 3, type: 'VEC3', min: [0, 0, 0], max: [1, 1, 0] }],
     bufferViews: [{ buffer: 0, byteLength: 36 }], buffers: [{ byteLength: 36 }],
   };
@@ -184,13 +186,14 @@ function glb() {
   return Buffer.concat([head, chunk(j.length, 'JSON'), j, chunk(d.length, 'BIN\0'), d]);
 }
 
-test('loadActors: a follower\'s model sits inside its leader\'s frame by its own numbers, faded materials are alpha-hashed', async () => {
+test('loadActors: a follower\'s model sits inside its leader\'s frame by its own numbers; fade alpha-hashes the opaque materials only, none dithered while shown', async () => {
   const fetched = globalThis.fetch;
   const body = glb();
   globalThis.fetch = async () => new Response(body, { status: 200 });
   try {
     const m = man([{ id: 'a', src: 'a.glb', position: [2, 0, 0], rotation: [0, 30, 0], scale: 2 },
-      { id: 'b', src: 'b.glb', follow: 'a', fade: true, position: [0.1, 0.2, 0.3], rotation: [0, 90, 0], scale: 0.5 }]);
+      { id: 'b', src: 'b.glb', follow: 'a', fade: true, position: [0.1, 0.2, 0.3], rotation: [0, 90, 0], scale: 0.5 }],
+    [{ actor: 'b', channel: 'opacity', keys: [[0, 0.5], [1, 0.5]] }]);
     const [a, b] = await loadActors(m, false);
     assert.deepEqual([a.root.position.toArray(), a.inner.scale.toArray()], [[2, 0, 0], [2, 2, 2]]);
     assert.deepEqual([a.model.position.toArray(), a.fadeMats.length], [[0, 0, 0], 0]);
@@ -198,11 +201,18 @@ test('loadActors: a follower\'s model sits inside its leader\'s frame by its own
       [[0, 0, 0], [0, 0, 0, 1], [1, 1, 1]]);
     assert.deepEqual([b.model.position.toArray(), b.model.scale.toArray()], [[0.1, 0.2, 0.3], [0.5, 0.5, 0.5]]);
     near(b.model.rotation.y, Math.PI / 2, 'the model turned by the follower\'s rotation');
-    assert.equal(b.fadeMats.length, 1);
-    const [[mat, base]] = b.fadeMats;
-    assert.deepEqual([mat.alphaHash, mat.transparent, base], [true, false, 0.8]);
+    // [alphaHash, transparent, opacity, the base an opacity track multiplies]: the opaque material hashed and drawn whole
+    // at 1, the see-through one blended at its own 0.8 as loaded, so neither is dithered at full opacity; the leader's
+    // own materials untouched
+    const mats = (x) => { const r = []; x.model.traverse((o) => { if (o.isMesh) r.push(o.material); }); return r; };
+    assert.deepEqual(b.fadeMats.map(([mat, base]) => [mat.alphaHash, mat.transparent, mat.opacity, base]),
+      [[true, false, 1, 1], [false, true, 0.8, 0.8]]);
+    assert.deepEqual(mats(a).map((mat) => [mat.alphaHash, mat.transparent, mat.opacity]), [[false, false, 0.9], [false, true, 0.8]]);
     orientActors([a, b], { camera: { portrait: { spread: 0.5 } } }, true);
     assert.deepEqual([a.root.position.toArray(), b.root.position.toArray()], [[1, 0, 0], [0, 0, 0]]);
+    // half way through a dissolve each is drawn at half its own opacity
+    applyTracks(bindTracks(m, [a, b]), 0.3, 0);
+    assert.deepEqual([b.root.visible, ...b.fadeMats.map(([mat]) => mat.opacity)], [true, 0.5, 0.4]);
   } finally {
     globalThis.fetch = fetched;
   }

@@ -159,7 +159,7 @@ Relative URLs resolve against the manifest's own URL. Every optional field has a
 | `version` | must be `1` |
 | `reference.aspect` | the aspect the scene is composed for (1.6). Wider screens keep its horizontal field of view (crop top and bottom), narrower landscape screens keep its vertical one (crop the sides): like `object-fit: cover`, so the poster matches. Portrait screens use `camera.portrait` |
 | `background.layers[]` | the picture: `id`, `night` and `day` image URLs (`src` is an alias for both), `z` (depth, e.g. -10 far, -6 mid), `size` `[w, h]` in units (keep the image's aspect), `x`, `y` (centre), `cutout` (true for a layer with alpha: transparent, no depth write), `fog` (0..1, tint toward the fog colour), `portraitScale` (default 1.5: how much the layer grows on a portrait screen to cover the taller view). The current mode's images load first, the other mode's after the first frame |
-| `actors[]` | `id`, `src` (GLB), `scale` (uniform), `position`, `rotation` (the rest pose of the actor's root), `portraitPosition` (optional; else `x` is multiplied by `camera.portrait.spread`), `rig` (`kind`: `"nodes"` or `"baked"`, informational; `map`: `{ "conventionName": "nameInTheGLB" }` aliases), `deform`, `materials`, `tint` (hex multiplied into every material colour), `envIntensity` (default 0.6), `props[]`, `follow` (another actor's `id`: see "One actor in place of another"), `fade` (true: alpha-hashed materials, for an `opacity` track) |
+| `actors[]` | `id`, `src` (GLB), `scale` (uniform), `position`, `rotation` (the rest pose of the actor's root), `portraitPosition` (optional; else `x` is multiplied by `camera.portrait.spread`), `rig` (`kind`: `"nodes"` or `"baked"`, informational; `map`: `{ "conventionName": "nameInTheGLB" }` aliases), `deform`, `materials`, `tint` (hex multiplied into every material colour), `envIntensity` (default 0.6), `props[]`, `follow` (another actor's `id`: see "One actor in place of another"), `fade` (true: for an `opacity` track, its opaque materials alpha-hashed) |
 | `actors[].deform` | for meshes with no skeleton: `{ "kind": "bend", "start": -0.15, "y": -0.42, "rest": 0.35 }`. In the mesh's own space (for a quantized mesh: model units divided by its node's scale, see below), everything past `start` along -z (a tail behind the body) curls up toward +y around height `y`; `rest` is the resting curvature (1/units). The `bend` channel adds to it |
 | `actors[].materials` | `{ "<node name>": { "shader": "crt" } }`: every mesh at or under that node gets the TV screen shader (the node needs UVs) |
 | `actors[].props[]` | separately loaded rigid GLBs: `id` (the prop's root is renamed to it, so tracks, lights and glows can name it), `src`, `parent` (a node of the actor, e.g. `hand.R`; missing or absent: the actor's model root), `scale`, `position`, `rotation`, `materials` |
@@ -223,7 +223,7 @@ different rest pose keeps working):
 | `squash` | number (0.1 = 10% taller and thinner, -0.1 = squashed) | volume-keeping scale on y |
 | `bend` | number (curvature) | added to the actor's `deform.rest`; whole-actor only |
 | `visible` | number: drawn while 0.5 or more (keys `[[p - 0.001, 1], [p + 0.001, 0]]`, `"ease": "linear"`, make a cut at p) | whole actor only (a track with a `node` is skipped) |
-| `opacity` | number 0..1 | whole actor only: an actor with `fade` dissolves (alpha-hashed materials, so no sorting and no transparent pass; the material's own opacity times this); any actor is hidden at 0.004 or less |
+| `opacity` | number 0..1 | whole actor only: an actor with `fade` dissolves (its opaque materials alpha-hashed, so no sorting and no transparent pass, and drawn whole at 1; a see-through one keeps its blending; each material's own opacity times this); any actor is hidden at 0.004 or less |
 
 Shown or hidden is worked out afresh every frame from that frame's `visible` and `opacity` values alone, so an actor cut
 away or faded out comes back when the reader scrolls back (an actor with neither channel is never touched).
@@ -248,7 +248,9 @@ in where the standing rig's pose is closest to it). Give it its own actor with `
   (`portraitPosition` is not read).
 - **A cut** is `visible` on both, the other way round; at exactly the cut's middle both values are 0.5 and both draw for
   that one frame. **A dissolve** is `opacity` on both with `fade` (keys such as `[[0.18, 1], [0.21, 0], [0.5, 0],
-  [0.53, 1]]` and the reverse): alpha hashing dithers while it runs.
+  [0.53, 1]]` and the reverse): alpha hashing dithers the opaque materials while it runs, and only then (an opaque
+  material is drawn at opacity 1; but a see-through texel of its texture, which an opaque material otherwise ignores,
+  dithers all the time: give a fade actor's opaque materials opaque textures).
 - **Lights and glows hanging from a hidden actor are not drawn.** Give the stand-in actor its own lights, as many as the
   one it replaces, so the scene's light count never changes at a cut: a change recompiles every lit material in the
   middle of the scroll. The TV's screen shader is not faded by `opacity`.
@@ -391,8 +393,9 @@ and restores the poster.
   part the manifest names found in the models (24), leaving the page while the scene loads (25), one actor swapped
   for another on `/tea/` itself, the shipped manifest plus a follower served in its place (26). The arrival at a
   chapter address itself is tea-17 (`tea.spec.mjs`).
-- `tests/unit/tea-hero.test.mjs` (in `npm test`): each of six broken runtimes (the round-2 opacity bug, no follow, no
-  skeleton freed, a follower moved by `orientActors`, a `visible` on a node bound, no `fade`) fails one of its tests.
+- `tests/unit/tea-hero.test.mjs` (in `npm test`): each of eight broken runtimes (the round-2 opacity bug, no follow, no
+  skeleton freed, a follower moved by `orientActors`, a `visible` on a node bound, no `fade`, a follower left behind
+  while its leader is cut away, `fade` dithering a fully shown actor) fails one of its tests.
 - `verify.mjs` against `/tea/` and `/tea-lab/` (both layouts; see its header).
 - The posters, re-rendered over the final picture, against the scene's opening frame at 1440x900 (night and day),
   1280x720, 1440x700, 768x1024, 390x844 (night and day) and 360x640: best aligned at offset 0 everywhere, mean

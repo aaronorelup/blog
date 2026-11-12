@@ -69,9 +69,13 @@ function finishMaterials(model, spec, actor) {
       seen.add(mat);
       if (tint && mat.color) mat.color.multiply(tint);
       if ('envMapIntensity' in mat) mat.envMapIntensity = spec.envIntensity;
-      // fade: alpha-hashed, so an opacity track dissolves the actor in the opaque pass (no sorting); its own opacity
-      // is kept as the base the track multiplies
-      if (spec.fade) { mat.alphaHash = true; mat.transparent = false; actor.fadeMats.push([mat, mat.opacity]); }
+      // fade: an opacity track dissolves the actor. An opaque material is alpha-hashed (the opaque pass, no sorting)
+      // at opacity 1, drawn whole as before; a see-through one keeps its blending. Either one's opacity is the base
+      // the track multiplies, so nothing is dithered while the actor is fully shown
+      if (spec.fade) {
+        if (!mat.transparent) { mat.alphaHash = true; mat.opacity = 1; }
+        actor.fadeMats.push([mat, mat.opacity]);
+      }
       if (spec.deform && spec.deform.kind === 'bend') {
         // every material of one actor shares the one bend uniform
         if (!actor.bend) { actor.bendRest = Number(spec.deform.rest ?? 0); actor.bend = { value: actor.bendRest }; }
