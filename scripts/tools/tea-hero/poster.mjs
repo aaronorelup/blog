@@ -1,6 +1,7 @@
 // The hero's posters (node scripts/tools/tea-hero/poster.mjs [--url U] [--out DIR]): the opening frame of the 3D scene,
 // rendered in headless Chromium (SwiftShader WebGL) from /tea/ (served by `npx astro dev --port 4392` or a preview),
-// with the title box hidden, idle time at 0 and the pointer centred. Writes poster-{night,day}.webp (16:10) and
+// with the title box hidden, idle time at 0 and the pointer centred. Writes poster-{night,day}.webp (1600 wide, in the
+// shape of the manifest's reference.aspect) and
 // poster-{night,day}-tall.webp (portrait screens, in the shape of the manifest's camera.portrait.aspect, which phones
 // crop at the sides), each under 150 KB, to public/tea/hero/ or --out (to compare, not commit).
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -14,8 +15,11 @@ const OUT = arg('out', null) ? pathToFileURL(arg('out') + '/') : new URL('../../
 const CAP = 150 * 1024;
 const MANIFEST = JSON.parse(readFileSync(new URL('../../../public/tea/hero/manifest.json', import.meta.url), 'utf8'));
 const TALL = (MANIFEST.camera.portrait && MANIFEST.camera.portrait.aspect) || 430 / 932;
+// the wide poster in the shape the scene is composed for (reference.aspect): a wider screen crops its top and bottom,
+// a narrower landscape one its sides, as the camera does
+const WIDE = (MANIFEST.reference && MANIFEST.reference.aspect) || 1.6;
 const SHOTS = [
-  { suffix: '', width: 1600, height: 1000, scale: 1 },
+  { suffix: '', width: 1600, height: Math.round(1600 / WIDE), scale: 1 },
   { suffix: '-tall', width: Math.round(1000 * TALL), height: 1000, scale: 1.4 },
 ];
 
@@ -29,7 +33,8 @@ for (const mode of ['night', 'day']) {
     await ctx.addInitScript((m) => { try { localStorage.setItem('scene-mode', m); } catch {} }, mode);
     const page = await ctx.newPage();
     await page.goto(URL_, { waitUntil: 'networkidle' });
-    await page.waitForFunction(() => window.__teaHero && document.querySelector('[data-tea-stage][data-ready]'),
+    // covered: the canvas has faded in all the way and the old poster is gone, so none of it shows through
+    await page.waitForFunction(() => window.__teaHero && document.querySelector('[data-tea-stage][data-covered]'),
       null, { timeout: 90000 });
     await page.addStyleTag({ content: '.tea-hero-box,.mode-toggle,.tea-stage-shade,.tea-hero-stage::after{visibility:hidden!important}astro-dev-toolbar{display:none!important}' });
     await page.evaluate(() => {

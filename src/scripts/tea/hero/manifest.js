@@ -1,12 +1,30 @@
-// The hero's manifest (public/tea/hero/manifest.json; its format is documented in the hero-runtime status file):
+// The hero's manifest (public/tea/hero/manifest.json; its format is documented in docs/TEA_HERO.md):
 // fetched once, then every optional field given its default so the other modules read plain values. A manifest the
 // runtime cannot use throws, which leaves the poster.
 const V3 = (v, d = [0, 0, 0]) => (Array.isArray(v) && v.length === 3 ? v.map(Number) : d.slice());
 
+// WebKit cancels a page's loads as a link starts to leave it, a mailto link too, and that page stays: no pagehide comes
+// (boot.js), and the load fails as a network error (a TypeError). So one is tried again, twice, 0.5 s and then 1.5 s
+// later, unless the page is being left (signal). An answer (a 404) or bad data is never tried again.
+export async function patient(work, signal, waits = [500, 1500]) {
+  for (let i = 0; ; i++) {
+    try {
+      return await work();
+    } catch (e) {
+      if (!(e instanceof TypeError) || i >= waits.length || (signal && signal.aborted)) throw e;
+      await new Promise((r) => setTimeout(r, waits[i]));
+      if (signal && signal.aborted) throw e;
+    }
+  }
+}
+
 export async function loadManifest(url, signal) {
-  const res = await fetch(url, { credentials: 'same-origin', signal });   // signal: the page being left (boot.js)
-  if (!res.ok) throw new Error('manifest ' + res.status);
-  return normalise(await res.json(), url);
+  const json = await patient(async () => {
+    const res = await fetch(url, { credentials: 'same-origin', signal });   // signal: the page being left (boot.js)
+    if (!res.ok) throw new Error('manifest ' + res.status);
+    return res.json();
+  }, signal);
+  return normalise(json, url);
 }
 
 export function normalise(m, url) {
@@ -15,6 +33,7 @@ export function normalise(m, url) {
   const abs = (u) => (u ? new URL(u, base).href : null);
   const cam = m.camera || {};
   if (!Array.isArray(cam.keys) || cam.keys.length < 2) throw new Error('manifest camera keys');
+  followsOf(m.actors || []);
   return {
     reference: { aspect: (m.reference && m.reference.aspect) || 1.6 },
     background: ((m.background && m.background.layers) || []).map((l, i) => ({
@@ -29,6 +48,9 @@ export function normalise(m, url) {
       rig: { kind: (a.rig && a.rig.kind) || 'baked', map: (a.rig && a.rig.map) || {} },
       deform: a.deform || null, materials: a.materials || {}, tint: a.tint || null,
       envIntensity: Number(a.envIntensity ?? 0.6),
+      // follow: the id of the actor this one rides (its position, rotation and scale then place the model inside the
+      // leader's root and inner group); fade: alpha-hashed materials, for an opacity track
+      follow: a.follow || null, fade: !!a.fade,
       props: (a.props || []).map((p) => ({
         id: p.id, src: abs(p.src), parent: p.parent || null, scale: Number(p.scale ?? 1),
         position: V3(p.position), rotation: V3(p.rotation), materials: p.materials || {},
@@ -71,13 +93,27 @@ export function normalise(m, url) {
 // travel: how much of a whole actor's own sideways travel (its position track's x) a portrait screen keeps. aspect:
 // the portrait frame (the tall poster's shape): narrower screens keep its height and crop its sides, wider ones crop
 // its top and bottom
+// keys: the portrait screen's own camera path ({ t, pos, look } as camera.keys, at least two), or null: then pull and
+// drop adapt the landscape path
 const portraitOf = (p) => {
   const o = { fov: 46, spread: 0.55, pull: 1.6, drop: 0.9, aspect: 430 / 932, ...p };
-  return { ...o, travel: Number(p.travel ?? o.spread) };
+  const keys = Array.isArray(p.keys) && p.keys.length >= 2
+    ? p.keys.map((k) => ({ t: Number(k.t), pos: V3(k.pos), look: V3(k.look) })).sort((a, b) => a.t - b.t) : null;
+  return { ...o, travel: Number(p.travel ?? o.spread), keys };
 };
 
 const keysOf = (v) => (Array.isArray(v) ? v.map(([t, x]) => [Number(t), Number(x)]).sort((a, b) => a[0] - b[0])
   : [[0, Number(v) || 0]]);
+
+// A follower must name another actor of the manifest that follows no one: a missing leader would leave its model at
+// the scene's origin and a chain would depend on the order of the actors, so either one fails the manifest.
+function followsOf(actors) {
+  const lead = new Map(actors.map((a) => [a.id, a.follow || null]));
+  for (const a of actors) {
+    if (!a.follow) continue;
+    if (a.follow === a.id || !lead.has(a.follow) || lead.get(a.follow)) throw new Error('manifest follow: ' + a.id);
+  }
+}
 
 function litState(s) {
   return {
