@@ -167,7 +167,7 @@ fails the build, or only warns in a live notebook.
 | `src/content/projects/<name>.yaml` | one card of `/projects` (`src/schemas/project.ts`): section, state, needs, picture, links, posts; private cards link only to this site |
 | `src/data/taxonomy.js` | `TOPICS`, `PROJECTS`: the only place their names live |
 | `src/data/picks.js` | `START_HERE` (the ledger's five Start here posts) and `REEL` |
-| `src/data/tea-chapters.js`, `tea-picks.json` | the chapters of the tea room being rebuilt (`TEA_CHAPTERS`: the picker's id, the section's `dom` id, `kind`, `topic`, the title from `COPY` and the taxonomy, each shelf's `max`, the kind it holds and what fills it when `auto`); the owner's picks for them, written only by `npm run tea:picks` ("The tea room's picks" below) |
+| `src/data/tea-chapters.js`, `tea-picks.json` | the chapters of the tea room being rebuilt (`TEA_CHAPTERS`: the picker's id, the section's `dom` id, `kind`, `topic`, the title from `COPY` and the taxonomy, each shelf's `max`, the kind it holds, a projects shelf's `section`, and what fills it when `auto`); the owner's picks for them, written only by `npm run tea:picks` ("The tea room's picks" below) |
 | `src/data/limits.js` | every text cap and target, preview media, icon, project picture and og sizes |
 | `src/data/exempt.js` | `LIVE_NOTEBOOKS`, `isLive()`, `isLivePath()`: what no rule may fail or touch (and the project AO-073's file doesn't name); `HELD`, `isHeld()`: posts waiting for Aaron's own rewrite (AO-028), which the content rules only warn about |
 | `src/data/site.js` | `NAV` (key, href, label, overlay) and `SOCIAL`: the chrome's links; a NAV key is also a view's name. `OWNER`: the name and the About page that structured data names |
@@ -450,6 +450,6 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
 - **The owner saved new picks.** Put the picker's saved document (the `tea/picks` doc of its database) in a JSON file
   outside the repo (the picker's "Copy my choices as text" box is a summary, not that JSON), run
   `npm run tea:picks -- <file>`, read what it says changed, then `npm run check` and the usual
-  landing. A refusal names the key and the shelf: a post since made a draft or unlisted, a project renamed. The
+  landing. A refusal names the key and the shelf: a post since made a draft or unlisted, a project renamed or moved to another section. The
   owner fixes it in the picker and saves again; never edit `src/data/tea-picks.json` by hand.
 - **A cron job.** A named entry in `CRONS` (`worker/index.js`): one bounded step a run, returning a word to log.

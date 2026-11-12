@@ -54,8 +54,9 @@ export function fromPicker(doc) {
 // Checks a picks document and works out what each visible chapter's shelves show.
 // site: { posts: post entries (drafts and unlisted ones may be among them: they never come out), unreadable: an
 // optional Set of slugs whose file is there but whose frontmatter can't be read, projects: a Map of project id to
-// its section, hasMachine(name): whether public/labs/teardown/<name>/ is there }. allowPrivate takes the picker's
-// saved document as it is (npm run tea:picks); the repo's file may not hold the private fields.
+// its section (anything but a string when its file can't be read), hasMachine(name): whether
+// public/labs/teardown/<name>/ is there }. allowPrivate takes the picker's saved document as it is (npm run
+// tea:picks); the repo's file may not hold the private fields.
 // Returns { chapters: [{ ...registry chapter, shelves: [{ ...registry shelf, auto, count, keys }] }], warnings };
 // keys are post slugs, project ids or machine names; a warning is { text, live }, live when it is about the live
 // notebook (src/data/exempt.js), which never fails anything. Throws a PicksError on anything the page could not show.
@@ -129,8 +130,9 @@ export function readPicks(doc, registry, site, { source = PICKS_FILE, allowPriva
       }
       if (why) fail(`"${pick}" in shelf ${key} ${why}`);
     } else if (kind === 'j') {
+      if (!site.projects.has(name)) fail(`"${pick}" in shelf ${key} is not a project: no src/content/projects/${name}.yaml`);
       const section = site.projects.get(name);
-      if (section === undefined) fail(`"${pick}" in shelf ${key} is not a project: no src/content/projects/${name}.yaml`);
+      if (typeof section !== 'string') fail(`"${pick}" in shelf ${key} is not a project the page can read: src/content/projects/${name}.yaml has no readable section`);
       if (section !== shelf.section) fail(`"${pick}" in shelf ${key} is a project of the ${quote(section)} section, and this shelf shows the ${quote(shelf.section)} section`);
     } else {
       if (!NAME.test(name)) fail(`"${pick}" in shelf ${key} is not a machine name`);
