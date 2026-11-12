@@ -63,6 +63,8 @@
 
 /* ---- the 3D page ---- */
 .ail-gl .ail-world .ail-stage { color: var(--ail-fg); }
+/* a signature that sets `dark` (lights out): the words flip to paper, on the ink scrim, in any world */
+.ail-gl .ail-world[data-dark] { --w-scrim: rgba(12, 13, 16, .88); --w-card: #16171B; --w-ground: #0C0D10; }
 .ail-gl .ail-world__pic { display: none; }
 .ail-gl .ail-world__head { position: absolute; left: var(--ail-margin); top: var(--ail-top); max-width: 54vw; opacity: 0; transition: opacity var(--ail-t) var(--ail-ease); }
 .ail-gl .ail-kicker { padding: 7px 10px; background: var(--w-scrim); }
