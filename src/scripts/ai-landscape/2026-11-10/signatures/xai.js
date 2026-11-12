@@ -4,6 +4,7 @@
 // Everything shown is read from the page's data (the model floor's parts, the agent's delegates) and its HTML.
 import { Group, Mesh, BoxGeometry, Vector3 } from 'three';
 import { smooth, span } from '../core/clock.js';
+import { announce } from '../core/dom.js';
 import { owner } from '../worlds/index.js';
 import { FLOOR } from '../scene/stack.js';
 
@@ -98,6 +99,7 @@ export function create(ctx, world) {
     const picking = playing && t >= AT_MODEL && st.picked >= 0;
     cores.items.forEach((c, k) => { c.active += ((picking && k === st.picked ? 1 : 0) - c.active) * (1 - Math.exp(-5 * dt)); });
     names.forEach((n, k) => { const on = picking && k === st.picked && amount > 0.5; n.classList.toggle('is-on', on); n.toggleAttribute('data-picked', on); });
+    if (picking && st.said !== st.press && names[st.picked]) { st.said = st.press; announce(names[st.picked].textContent.trim()); }      // the live region names the pick
 
     // lights out: the lamp is cut by a falloff that sweeps the room in 0.6 s, then the owner's colour blooms from
     // the model floor, radius 0 to 14 in 0.9 s. The play-through does it once by itself

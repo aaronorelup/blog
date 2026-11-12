@@ -122,7 +122,7 @@ export function createTower(ctx, { id, x = 0, z = 0, owner, cells, ownerOf, ink 
     group.visible = tower.show > 0.004;
     const k = 1 - Math.exp(-6 * dt);
     // a stack outside an open world: its glass is cut by the iris in the shader, its lines fade with it here
-    const out = tower.side < 0 ? 1 - Math.min(1, (ctx.mats.irisOpen || 0) * 1.6) : 1;
+    const out = tower.side < 0 ? 1 - Math.min(1, (ctx.mats.irisOpen || 0) * 4) : 1;
     for (const f of tower.floors) {
       for (const key of EASED) f.cur[key] += (f.target[key] - f.cur[key]) * k;
       f.pulse = Math.max(0, f.pulse - dt * 1.6);

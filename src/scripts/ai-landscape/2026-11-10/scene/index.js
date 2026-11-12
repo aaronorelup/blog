@@ -96,7 +96,7 @@ export async function mount(boot) {
     if (next !== active) {
       if (active && active.ctl.leave) active.ctl.leave();
       if (next && next.ctl.enter) next.ctl.enter();
-      if (active || next) ctx.rig.cut();
+      if (!active || !next) ctx.rig.cut();          // a scene arriving or leaving cuts. Between two sections the rig eases
       active = next;
     }
     if (active) {

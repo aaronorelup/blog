@@ -34,7 +34,7 @@ const markName = cfg.marks.of === 'name' ? p.name : p.brand;
         <img class="ail-world__portrait" src={cfg.art.portrait} alt={cfg.alt.portrait} width="600" height="800" loading="lazy" decoding="async" />
       )}
     </figure>
-    {cfg.portrait && <p class="ail-world__caption ail-label" hidden>{cfg.alt.portrait}</p>}
+    {cfg.portrait && cfg.art.portrait && <p class="ail-world__caption ail-label">{cfg.alt.portrait}</p>}
 
     <div class="ail-world__intro" data-beat="a">
       <p class="ail-known"><span class="ail-label">{COPY.world.knownFor}</span> <span class="ail-sentence"><Fact fact={p.signature.fact} full tag={false}>{p.signature.line}</Fact></span></p>

@@ -2,7 +2,7 @@
 // a Enter 0 to 0.6: truck along the row, the iris opens. b Open 0.6 to 1.5: the stack pulls apart, callouts, doors.
 // c Signature 1.5 to 2.5: the section holds and signatures/<name>.js plays. d The catch 2.5 to 3.0, then the iris shuts.
 // Everything world-specific comes from worlds/<id>.js and the page's data: this file never names a company.
-import { Vector3 } from 'three';
+import { Raycaster, Vector2, Vector3 } from 'three';
 import { easeIO, lerp, smooth, span, win } from '../core/clock.js';
 import { $, $$, announce, rove, setBeat, toggle } from '../core/dom.js';
 import { HOURS } from '../scene/studio.js';
@@ -39,6 +39,8 @@ export function create(ctx, el, sec) {
   leaves.show = 0; leaves.update();
   inst.setName(nameEl.textContent.trim());
   const measure = () => { st.rect = nameEl.getBoundingClientRect(); };
+  const onResize = () => { st.rect = null; };
+  window.addEventListener('resize', onResize);
 
   // ---- doors: this company's products. Picking one relabels the nine callouts from that product's own stack
   function select(k, quiet = false) {
@@ -53,6 +55,7 @@ export function create(ctx, el, sec) {
     if (d.info.stack) {
       tower.setCells(d.info.stack);
       st.calls = labels.callouts(tower, d.list);
+      st.calls.rows.forEach((r) => { r.tabIndex = 0; r.setAttribute('aria-expanded', 'false'); });      // a floor opens by keyboard too
     } else {
       // a product with no stack of its own: only the model floor is lit, with one core for each model it runs on
       tower.setCells(data.stack.map((c, i) => (i === MODEL ? { s: 'solid', g: [] } : { s: 'hollow', g: [] })));
@@ -70,7 +73,7 @@ export function create(ctx, el, sec) {
   function closePush() {
     if (st.pushed < 0) return;
     const rows = st.calls ? st.calls.rows : [];
-    if (rows[st.pushed]) rows[st.pushed].classList.remove('is-open');
+    if (rows[st.pushed]) { rows[st.pushed].classList.remove('is-open'); rows[st.pushed].setAttribute('aria-expanded', 'false'); }
     st.pushed = -1;
   }
   function push(i) {
@@ -80,6 +83,7 @@ export function create(ctx, el, sec) {
     if (same) return;
     st.pushed = i;
     st.calls.rows[i].classList.add('is-open');
+    st.calls.rows[i].setAttribute('aria-expanded', 'true');
     tower.floors[i].pulse = 0.8;
   }
   const onRow = (e) => {
@@ -89,10 +93,27 @@ export function create(ctx, el, sec) {
     if (i >= 0) push(i);
   };
   doorsEl.addEventListener('click', onRow);
+  const onRowKey = (e) => {
+    if (!e.target.classList.contains('ail-floor') || !st.calls) return;
+    const i = st.calls.rows.indexOf(e.target);
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); push(i); }
+    const next = e.key === 'ArrowDown' ? i + 1 : e.key === 'ArrowUp' ? i - 1 : -1;
+    if (st.calls.rows[next]) { e.preventDefault(); st.calls.rows[next].focus(); }
+  };
+  doorsEl.addEventListener('keydown', onRowKey);
   const onKey = (e) => { if (e.key === 'Escape' && sec === ctx.clock.current) { closePush(); $$('.ail-flag[open]', el).forEach((f) => { f.open = false; }); } };
   window.addEventListener('keydown', onKey);
+  // tap the portrait: its alt text shows as a caption under the frame (the name only)
+  const caption = $('.ail-world__caption', el);
+  const ray = new Raycaster();
+  const capPin = caption && inst.parts.portrait ? labels.pin(caption, () => point.copy(inst.parts.portrait.position).add(inst.group.position).setY(inst.parts.portrait.position.y - 2.3), { ax: 0.5, ay: 0 }) : null;
   const onCanvas = (e) => {
-    if (sec !== ctx.clock.current || st.beat !== 'b') return;
+    if (sec !== ctx.clock.current) return;
+    if (capPin && st.open > 0.9) {
+      ray.setFromCamera(new Vector2((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1), ctx.camera);
+      toggle(caption, ray.intersectObject(inst.parts.portrait).length > 0 && !caption.classList.contains('is-on'));
+    }
+    if (st.beat !== 'b') return;
     const hit = row.pick(e.clientX, e.clientY, tower);
     if (hit) push(hit.i); else closePush();
   };
@@ -119,7 +140,7 @@ export function create(ctx, el, sec) {
     stops: [0.14, 0.42, 0.66, 0.9],
     enter() { measure(); askSignature(); select(agentDoor, true); },
     leave() {
-      setChrome('light'); closePush();
+      setChrome('light'); closePush(); toggle(caption, false);
       leaves.show = 0; leaves.update();
       if (st.cores) { st.cores.show = 0; st.cores.update(); }
       if (st.sig) st.sig.reset();
@@ -162,9 +183,10 @@ export function create(ctx, el, sec) {
       studio.roomX = tower.x;
       stage.style.setProperty('--sheet', open.toFixed(3));
       toggle(head, open > 0.35);
+      nameEl.style.visibility = inst.nameShow > 0.02 || ctx.phone ? '' : 'hidden';
       inst.nameRect = st.rect;
-      inst.nameShow = open * (1 - (ctx.phone ? 1 : 0.9) * smooth(span(u, 0.6, 0.92)));      // the name is the entrance. It steps back when the stack opens
-      tower.lid.show = 1 - smooth(open * 2);
+      inst.nameShow = open * (1 - smooth(span(u, 0.6, 0.92)));        // the name is the entrance. It leaves when the stack opens
+      tower.lid.show = 1 - smooth(open / 0.08);                         // the plate leaves before the art arrives: a mark is never on art
 
       // the stack pulls apart from the top. The character stands large beside it, then hops onto its floor
       tower.open = smooth(span(u, 0.6, 1.25)) * (1 - smooth(span(u, 2.72, 2.9)));
@@ -227,11 +249,14 @@ export function create(ctx, el, sec) {
       ctx.canvas.removeEventListener('click', onCanvas);
       doorsEl.removeEventListener('click', onRow);
       doorsEl.removeEventListener('click', onTab);
+      doorsEl.removeEventListener('keydown', onRowKey);
+      window.removeEventListener('resize', onResize);
       unrove();
       if (st.sig) st.sig.dispose();
       if (st.calls) st.calls.drop();
       if (st.cores) st.cores.dispose();
       if (st.cardPin) st.cardPin.drop();
+      if (capPin) capPin.drop();
       leaves.dispose();
       tower.setCells(data.stack, true);
       ctx.worlds.unmount(id);

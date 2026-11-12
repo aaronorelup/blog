@@ -24,6 +24,7 @@
 .ail-world__pic { position: relative; margin: 28px 0 32px; background: var(--w-ground, var(--ail-floor)); overflow: hidden; }
 .ail-world__plate { width: 100%; height: auto; }
 .ail-world__hero { position: absolute; left: 6%; bottom: 4%; width: 22%; height: auto; filter: drop-shadow(0 10px 14px rgba(12, 13, 16, .22)); }
+.ail-world__caption { display: none; }
 .ail-world__portrait { position: absolute; right: 5%; top: 8%; width: 11%; height: auto; border: 6px solid #FFFFFF; box-shadow: 0 0 0 1.5px #0C0D10, 0 8px 16px rgba(12, 13, 16, .2); }
 
 .ail-world__intro, .ail-sig, .ail-catch { margin-top: 28px; display: grid; gap: 10px; max-width: 46rem; }
@@ -68,7 +69,7 @@
 .ail-gl .ail-world__head.is-on { opacity: 1; }
 .ail-gl .ail-world__name { font-size: var(--ail-fs-display); margin-top: 4px; white-space: nowrap; }
 .ail-3d .ail-world__name { color: transparent; user-select: none; }
-.ail-gl .ail-world__caption { display: block !important; padding: 5px 8px; background: var(--w-scrim); opacity: 0; visibility: hidden; }
+.ail-gl .ail-world__caption { display: block; padding: 5px 8px; background: var(--w-scrim); opacity: 0; visibility: hidden; }
 .ail-gl .ail-world__caption.is-on { opacity: 1; visibility: visible; }
 
 .ail-gl .ail-world__intro, .ail-gl .ail-sig, .ail-gl .ail-catch { position: absolute; left: var(--ail-margin); bottom: var(--ail-margin); width: min(28vw, 404px); margin: 0; padding: 16px 18px 18px; background: var(--w-scrim); }

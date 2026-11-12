@@ -85,7 +85,7 @@ void main() {
   float wrap = dot(N, normalize(uLight)) * 0.5 + 0.5;
   vec3 col = mix(base * vec3(0.58, 0.6, 0.66), base, smoothstep(0.1, 0.9, wrap));
   col = mix(col, mix(base, vec3(1.0), 0.1), top);
-  float e = abs(vO.y) / uHalfH;
+  float e = min(abs(vO.y) / uHalfH, 1.0);
   col += base * pow(e, 10.0) * 0.3 * (1.0 - top);
 
   vec3 R = reflect(-V, N);

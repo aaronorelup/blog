@@ -50,7 +50,7 @@ export const printable = (s) => [...String(s)].every((ch) => {
   return (c >= 0x20 && c <= 0xff) || (c >= 0x2000 && c <= 0x206f);
 });
 
-// Cuts a display string to `limit` words. Official names are never cut: callers pass only free text.
+// A display string that must fit `limit` words: returns it, or throws. Official names are never passed here.
 export function within(s, limit) {
   if (words(s) > limit) throw new Error(`ai-landscape: "${s}" is over its ${limit}-word limit`);
   return s;

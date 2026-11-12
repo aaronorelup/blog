@@ -122,7 +122,7 @@ const SIGNATURE = {
   xai: (p, stack) => [
     { title: COPY.links.thinks, items: stack[4].parts.map((q) => ({ text: q.name, owner: q.owner, tag: tagOf(q.status) })) },
     { title: COPY.links.hands,
-      items: p.personalAgent.delegatesTo.filter((d) => d.kind === 'coding-agent').map((d) => ({ text: d.toName, owner: d.toOwner, tag: OFFICIAL[d.official], dashed: d.official !== 'yes', fact: fact(d.claim) })) },
+      items: p.personalAgent.delegatesTo.filter((d) => d.kind === 'coding-agent').map((d) => ({ text: d.toName, owner: d.toOwner, tag: d.official === 'yes' ? null : OFFICIAL[d.official], dashed: d.official !== 'yes', fact: fact(d.claim) })) },
   ],
 };
 
