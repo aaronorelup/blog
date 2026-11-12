@@ -658,13 +658,17 @@ test('tea-hero-26 one actor swapped for another rides its leader and cuts and di
 // manifest names is one the runtime knows (a runtime without "follow" drops them all); down the scroll and back, a
 // step either side of every visible key and at 0, 0.3 and 0.6, exactly one of each pair is drawn, the follower on its
 // leader's root; the number of point lights drawn never changes (a light under a hidden actor is not drawn, so the
-// leap actor carries its own pair: a change would recompile every lit material in the middle of the leap).
-test('tea-hero-27 the shipped leap: exactly one of a character and her leap mesh drawn, on one root, the lights the same', async ({ page }) => {
+// leap actor carries its own pair: a change would recompile every lit material in the middle of the leap), and nor
+// does the number of pictures on the GPU (a hidden actor's are uploaded with the rest at the mount, not on its first
+// frame in the middle of the leap).
+test('tea-hero-27 the shipped leap: exactly one of a character and her leap mesh drawn, on one root, the lights and pictures the same', async ({ page }) => {
   test.setTimeout(180_000);
   await page.goto('/tea/?hero=on');
   await settled(page);
   await expect(hero(page)).toHaveAttribute('data-3d', 'on');
   await holdScene(page);
+  // the other mode's picture layers load after the first frame: in, so they are not counted as the leap's
+  await page.waitForFunction(() => window.__teaHero.state.backdrop.tried, null, { timeout: 60_000 });
   const out = await page.evaluate(async () => {
     const H = window.__teaHero;
     H.freeze(0.45); H.pointer([0, 0]);
@@ -682,6 +686,7 @@ test('tea-hero-27 the shipped leap: exactly one of a character and her leap mesh
     const drawn = (o) => { for (let q = o; q; q = q.parent) if (!q.visible) return false; return true; };
     const bad = [];
     let lights = null;
+    let pictures = null;
     for (const p of [...ps, ...ps.slice().reverse()]) {
       // the scene's progress p: in the flow layout the scroll's first share is the title box's lead
       H.setProgress(s.lead + p * (1 - s.lead));
@@ -696,6 +701,9 @@ test('tea-hero-27 the shipped leap: exactly one of a character and her leap mesh
       s.scene.traverse((o) => { if (o.isPointLight && drawn(o)) n++; });
       if (lights === null) lights = n;
       else if (n !== lights) bad.push(`progress ${p.toFixed(4)}: ${n} point lights drawn, ${lights} at the top`);
+      const t = s.renderer.info.memory.textures;
+      if (pictures === null) pictures = t;
+      else if (t !== pictures) bad.push(`progress ${p.toFixed(4)}: ${t} pictures on the GPU, ${pictures} at the top`);
     }
     H.setProgress(null);
     return { wanted, loose, standins: standins.length, got: pairs.map(([f, l]) => `${l.spec.id}>${f.spec.id}`), bad };

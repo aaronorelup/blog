@@ -3,7 +3,7 @@
 // runs the frame loop only while the hero is on screen and the tab is visible. Any failure throws before the pin,
 // leaving the poster. window.__teaHero is the screenshot and console hook (setProgress, freeze, pointer, dispose).
 import { ACESFilmicToneMapping, Color, Fog, Scene, WebGLRenderer } from './three.js';
-import { disposeTree, loadActors, orientActors } from './actors.js';
+import { disposeTree, loadActors, orientActors, uploadTextures } from './actors.js';
 import { loadBackdrop, paintBackdrop } from './backdrop.js';
 import { createCamera, fitCamera, placeCamera } from './camera.js';
 import { tickCrt } from './crt.js';
@@ -71,6 +71,7 @@ export async function mount(section, stage, opts = {}) {
     scene.environment = s.env.texture;
     s.lights = buildLights(manifest, actors, scene);
     s.bound = bindTracks(manifest, actors);
+    uploadTextures(renderer, actors);
     s.motes = createMotes(manifest.motes, coarse || small ? manifest.motes.mobile : manifest.motes.count,
       renderer.getPixelRatio());
     scene.add(s.motes);
@@ -214,6 +215,7 @@ function wire(s, section, stage) {
     s.lost = false;
     s.env = skyEnvironment(s.renderer, ...SKY);
     s.scene.environment = s.env.texture;
+    uploadTextures(s.renderer, s.actors);
     frame(s, section, 0);
     requestAnimationFrame(() => { if (!s.lost && !s.disposed) reveal(s, stage); });
     s.play();

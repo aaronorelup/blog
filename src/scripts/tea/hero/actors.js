@@ -149,6 +149,23 @@ export function texturesOf(mat) {
   return out;
 }
 
+// Every actor's pictures on the GPU at once, the hidden ones' too, and a skinned mesh's bone texture (which three makes
+// on its first draw): a stand-in first drawn mid-scroll (the leap mesh) would otherwise upload them in the middle of the
+// leap (a long frame).
+export function uploadTextures(renderer, actors) {
+  const seen = new Set();
+  const up = (t) => { if (!seen.has(t)) { seen.add(t); renderer.initTexture(t); } };
+  for (const a of actors) {
+    a.root.traverse((o) => {
+      for (const mat of [].concat(o.material || [])) texturesOf(mat).forEach(up);
+      if (o.isSkinnedMesh && o.skeleton && renderer.capabilities.floatVertexTextures) {
+        if (!o.skeleton.boneTexture) o.skeleton.computeBoneTexture();
+        up(o.skeleton.boneTexture);
+      }
+    });
+  }
+}
+
 export function disposeTree(obj) {
   obj.traverse((o) => {
     if (o.isSkinnedMesh && o.skeleton) o.skeleton.dispose();   // a rigged character's bone texture
