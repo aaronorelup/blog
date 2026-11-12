@@ -18,9 +18,10 @@ function lead(a) {
 
 // The glide is the strip's own, an instant move a frame, never the browser's smooth scroll: in Chromium a link to a
 // chapter followed while a smooth scroll runs on the strip lands with the chapter centred in the window instead of at
-// its top (the ledger, some 17,000 px tall on a phone, 8,292 px down it), from anywhere on the page, by tap, keyboard
-// or script, and the strip glides after every change of chapter, so a link followed within a third of a second of one
-// met it (tea-hero-23). Snapping waits for the glide's end (data-gliding, tea.css); a hand on the strip stops it.
+// its top (the ledger, some 17,000 px tall on a phone, 8,292 px down it), from anywhere on the page, followed by the
+// keyboard or by script (a tap not measured), and the strip glides after every change of chapter, so a link followed
+// within a third of a second of one met it (tea-hero-23, tea-hero-7). Snapping waits for the glide's end (data-gliding,
+// tea.css: the snap then lands at once, in one frame); a hand on the strip stops it.
 const GLIDE = 320;
 let glide = 0;
 function slide(to) {
