@@ -30,14 +30,15 @@ export function create(ctx, el, sec) {
   // every label under a stack (or on the plinth) is pinned once. Only the shown capability's are switched on
   const foot = (id) => { const t = order.indexOf(id); return t < 0 ? null : () => v.set(towers[t].x + towers[t].shift, -0.02, 1.62); };
   const pins = caps.map((li) => {
-    let outside = 0;
-    return $$('.ail-ba__place, .ail-ba__empty', li).map((node) => {
+    const nodes = $$('.ail-ba__place, .ail-ba__empty', li);
+    const out = nodes.filter((x) => x.dataset.p === 'outside');
+    return nodes.map((node) => {
       const id = node.dataset.p;
-      const at = id === 'outside'
-        ? ((k) => () => v.set(plinthX + podium.shift, Math.max(0.15, podium.plinthTop() * 0.55), 1.3 + k * 0.001))(outside++)
-        : foot(id);
-      const dy = id === 'outside' ? (outside - 1) * 30 : 10;
-      const pin = phone ? null : labels.pin(node, at, { ax: 0.5, ay: id === 'outside' ? 0.5 : 0, dy });
+      // labels outside the five sit on the plinth's face: one in its middle, two above and below its middle
+      const k = out.indexOf(node);
+      const at = id === 'outside' ? () => v.set(plinthX, Math.max(0.15, podium.plinthTop() * 0.5), 1.0) : foot(id);
+      const place = id !== 'outside' ? { ax: 0.5, ay: 0, dy: 10 } : out.length === 1 ? { ax: 0.5, ay: 0.5 } : { ax: 0.5, ay: k === 0 ? 1 : 0, dy: k === 0 ? -2 : 2 };
+      const pin = phone ? null : labels.pin(node, at, place);
       if (pin) pin.on = false;
       return pin;
     }).filter(Boolean);
@@ -59,8 +60,8 @@ export function create(ctx, el, sec) {
     caps.forEach((c, k) => c.classList.toggle('is-on', k === n));
     caps.forEach((c) => { const d = $('details', c); if (d) d.open = false; });
     groups.forEach((g) => g.setAttribute('aria-pressed', String(g.dataset.g === li.dataset.g)));
-    const nav = $('.ail-ba__nav', el), on = groups.find((g) => g.dataset.g === li.dataset.g);
-    if (phone && nav && on) nav.scrollLeft = Math.max(0, on.offsetLeft - nav.clientWidth / 2 + on.offsetWidth / 2);
+    const row = $('.ail-ba__groups', el), on = groups.find((g) => g.dataset.g === li.dataset.g);
+    if (phone && row && on) row.scrollLeft = Math.max(0, on.offsetLeft - row.offsetLeft - row.clientWidth / 2 + on.offsetWidth / 2);
     pins[n].forEach((p) => { p.on = true; });
     const places = $$('.ail-ba__place', li).map((x) => ({ p: x.dataset.p, h: Number(x.dataset.h), step: x.dataset.step, place: Number(x.dataset.place) || 0 }));
     podium.set(places, li.dataset.verdict);

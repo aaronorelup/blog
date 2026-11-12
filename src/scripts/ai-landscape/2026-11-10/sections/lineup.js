@@ -120,7 +120,7 @@ export function create(ctx, el, sec) {
 
   // the test hook: where each datum line and each floor land on screen, in CSS pixels
   const probe = () => towers.map((tw) => Array.from({ length: N }, (_, i) => {
-    const f = labels.project(v.set(edge(tw, -1), yOf(tw, i), 0));
+    const f = labels.project(tw.floors[i].mesh.getWorldPosition(v).setX(v.x - FLOOR.w / 2));       // the drawn slab itself
     const pos = geo.attributes.position;
     const t = towers.indexOf(tw);
     const k = (i * (towers.length + 1) + t) * 2 + 1;              // the segment that ends at this stack's left side
