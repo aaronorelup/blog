@@ -21,7 +21,9 @@ function lead(a) {
 // its top (the ledger, some 17,000 px tall on a phone, 8,292 px down it), from anywhere on the page, followed by the
 // keyboard or by script (a tap not measured), and the strip glides after every change of chapter, so a link followed
 // within a third of a second of one met it (tea-hero-23, tea-hero-7). Snapping waits for the glide's end (data-gliding,
-// tea.css: the snap then lands at once, in one frame); a hand on the strip stops it.
+// tea.css: the snap then lands at once, in one frame); a hand on the strip stops it. A scroll of the strip the reader
+// starts (the arrow keys on a pill, a drag) is still the browser's own: a script's click during one still lands
+// centred, while Enter, a mouse click and a tap during one all landed at the top (Chromium as a phone; WebKit not run).
 const GLIDE = 320;
 let glide = 0;
 function slide(to) {
