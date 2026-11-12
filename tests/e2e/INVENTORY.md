@@ -563,6 +563,27 @@ for `data-hero-settled` (the hero will change no layout by itself any more) befo
 | Under 1024 px no line of the title box (skip link, statement, counter, chapter numerals) runs under the fixed day/night switch's column as the box scrolls up under it: on a phone, static or over the scene, with the counter on one line, and at 561, 600 and 640 px wide | tea-hero-29 |
 | The page's own mailto link clicked while the models load costs nothing: Chromium sends a beforeunload and the scene loads on; WebKit cancels the loads in flight, which the scene tries again, and comes up with nothing logged | tea-hero-30 |
 
+## The AI landscape (`ai-landscape.spec.mjs`)
+
+`/ai-landscape/`, every dated snapshot and its sources page: a document of its own (`src/components/ai-landscape/<date>/`,
+`src/scripts/ai-landscape/<date>/`). The scene is pinned to `?tier=low` (no stepping down under software WebGL) and
+read through `window.__landscape`. The walks draw the 3D at a pixel ratio of 0.5: what they measure is HTML.
+
+| Behaviour | Listener or attribute | Spec |
+|---|---|---|
+| Every page and sources page answers 200 with no console error or page error, carries `ao-build` and none of the site's chrome, and nothing it fetches (each section's module and art included) comes from another origin | `<meta name="ao-build">`, the page's own `<head>` | landscape-1 |
+| `/ai-landscape/` is the newest snapshot; each dated page shows its own date, links back as Newest and marks itself among the editions; each has its 1200×630 share card; the sitemap lists them all | `data-snapshot`, `data-dated`, `.ail-strip`, `#ail-editions`, `SNAPSHOTS` | landscape-2 |
+| WebGL draws: frames rise and the canvas is not one flat colour | `window.__landscape.frames` | landscape-3 |
+| Scrolling moves the story forward and back (the wheel; a scroll on a phone) | the story clock (native scroll), `progress`, `section` | landscape-4 |
+| The pointer turns the camera, and it comes back with the pointer | window `pointermove` → the camera rig's orbit | landscape-5 (desktop: a phone has no pointer) |
+| Without WebGL every section reads as text: its heading, its words, each world's picture and nine floors | `hasWebGL()` → `toText()` | landscape-6 (desktop: a Chromium flag) |
+| The skip link, first on the page, switches to the same text version | `[data-ail-text]` `click` → `toText()` | landscape-6b |
+| Reduced motion: the page scrolls natively, the story arrives unlagged, nothing moves by itself, and no position shows an empty screen | `prefers-reduced-motion` | landscape-7 |
+| Nothing runs off the side of the screen, in any section, 3D or text | | landscape-8 |
+| The five companies are reachable by keyboard (the minimap's columns land on each world), and every link answers: an address of the site 200 with its fragment there, a hash an element of the page | document `click` on `a[href^="#"]`, `hashchange` | landscape-9 |
+| Never more than 60 words on screen at first depth, at every beat of a walk through the page | SPEC 2.0 | landscape-10 |
+| Every string on the page (text, `alt`, `aria-label`, `title`, the 3D page's own words) is found in the snapshot's view model or copy file; a picture's description in its world config | `data/view.js`, `data/copy.js`, `worlds/*.js` `alt` | landscape-11 |
+
 ## The live site (`live.spec.mjs`, `npm run e2e:live`)
 
 GET and HEAD only: `/version.json` is a main build (live-1), every baseline path answers (live-2), media come from
