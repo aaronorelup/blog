@@ -1,0 +1,167 @@
+{
+  "v": 1,
+  "order": [
+    "hero",
+    "start",
+    "tv",
+    "film",
+    "games",
+    "art",
+    "3d",
+    "agents",
+    "learning",
+    "site",
+    "projects",
+    "courses",
+    "now",
+    "about"
+  ],
+  "hidden": {},
+  "shelves": {
+    "start/leads": {
+      "auto": false,
+      "count": 3,
+      "picks": [
+        "p-crimson-coil",
+        "p-storm-bell-fighter",
+        "p-jefrie-in-3d"
+      ]
+    },
+    "tv/episodes": {
+      "auto": false,
+      "count": 5,
+      "picks": [
+        "p-crimson-coil",
+        "p-earthlight",
+        "p-context-window",
+        "p-touch-move",
+        "p-the-small-one-harness"
+      ]
+    },
+    "tv/machines": {
+      "auto": false,
+      "count": 4,
+      "picks": [
+        "m-dray",
+        "m-hab3",
+        "m-lander",
+        "m-mole1"
+      ]
+    },
+    "film/leads": {
+      "auto": false,
+      "count": 4,
+      "picks": [
+        "p-bad-very-bad",
+        "p-moonlight-five-times",
+        "p-still-on-shift-music-video",
+        "p-a-film-of-mit-s-ai-weight-editing-experiments-from-the-ai-s-side"
+      ]
+    },
+    "games/leads": {
+      "auto": false,
+      "count": 4,
+      "picks": [
+        "p-storm-bell-fighter",
+        "p-modding-megabonk",
+        "p-characters-in-inscryption",
+        "p-blackwater-weekend"
+      ]
+    },
+    "art/leads": {
+      "auto": false,
+      "count": 6,
+      "picks": [
+        "p-echo-the-borrowed-voice",
+        "p-claude-paints-in-oil",
+        "p-nine-claudes-one-painting",
+        "p-jefrie-lora",
+        "p-moss-image-on-8gb",
+        "p-daily-candy"
+      ]
+    },
+    "3d/leads": {
+      "auto": false,
+      "count": 4,
+      "picks": [
+        "p-jefrie-in-3d",
+        "p-props-three-budgets",
+        "p-paper-jefrie",
+        "p-clawd-growth-montage"
+      ]
+    },
+    "agents/leads": {
+      "auto": false,
+      "count": 4,
+      "picks": [
+        "p-sonnet-vs-opus-gauntlet",
+        "p-what-drives-claude-code-cost",
+        "p-the-planted-lie",
+        "p-the-clock-nobody-checked"
+      ]
+    },
+    "learning/leads": {
+      "auto": false,
+      "count": 4,
+      "picks": [
+        "p-no-vs-code-no-terminal",
+        "p-monster-hunter-was-my-degree",
+        "p-the-missing-map",
+        "p-loom-and-information-flow"
+      ]
+    },
+    "site/leads": {
+      "auto": false,
+      "count": 4,
+      "picks": [
+        "p-what-my-website-runs-on",
+        "p-three-ways-to-search-my-blog",
+        "p-who-visits-a-new-website",
+        "p-the-branch-that-went-live"
+      ]
+    },
+    "projects/play": {
+      "auto": false,
+      "count": 4,
+      "picks": [
+        "j-storm-bell-fighter",
+        "j-blackwater",
+        "j-armies-of-gielinor",
+        "j-mini-loom"
+      ]
+    },
+    "projects/watch": {
+      "auto": false,
+      "count": 4,
+      "picks": [
+        "j-evening-television",
+        "j-claude-paints-in-oil",
+        "j-bad-very-bad",
+        "j-blackwater-songs"
+      ]
+    },
+    "projects/download": {
+      "auto": false,
+      "count": 3,
+      "picks": [
+        "j-blood-helix",
+        "j-llm-monster-hunter",
+        "j-reading-pacer"
+      ]
+    },
+    "projects/read": {
+      "auto": false,
+      "count": 3,
+      "picks": [
+        "j-my-characters",
+        "j-episode-5-and-the-small-one",
+        "j-wallpaper-breaker"
+      ]
+    },
+    "projects/stopped": {
+      "auto": false,
+      "count": 3,
+      "picks": []
+    }
+  }
+}
