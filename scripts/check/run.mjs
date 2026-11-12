@@ -11,9 +11,10 @@ import links from './links.mjs';
 import elements from './elements.mjs';
 import assets from './assets.mjs';
 import code from './code.mjs';
+import teaPicks from './tea-picks.mjs';
 
 export const ROOT = fileURLToPath(new URL('../../', import.meta.url));
-const RULES = { frontmatter, prose, 'never-publish': neverPublish, links, elements, assets, code };
+const RULES = { frontmatter, prose, 'never-publish': neverPublish, links, elements, assets, code, 'tea-picks': teaPicks };
 
 const severity = (level, file, deploy) =>
   level === 'warn' || (deploy && level === 'check') || isLivePath(file) ? 'warn' : 'error';

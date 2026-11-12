@@ -95,4 +95,6 @@ export const COPY = {
   mainNavLabel: 'The main site',
   elsewhere: 'Elsewhere',
   copyright: (year) => `© ${year} Aaron Orelup.`,
+  // The chapter list of the page being rebuilt (src/data/tea-chapters.js): the one title not named elsewhere
+  gardenTitle: 'The garden',
 };

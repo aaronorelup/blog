@@ -15,7 +15,8 @@ import { TEXT } from '../../src/data/limits.js';
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
 // index.mjs and everything it imports, but picks.js: Start here names real posts, and these are made up.
 const CHECKER = [...fs.readdirSync(path.join(REPO, 'scripts/check')).map((f) => `scripts/check/${f}`), 'scripts/media/files.mjs',
-  'src/data/banned-phrases.js', 'src/data/exempt.js', 'src/data/limits.js', 'src/lib/dates.js', 'src/lib/posts.js', 'src/schemas/strict.js'];
+  'src/data/banned-phrases.js', 'src/data/exempt.js', 'src/data/limits.js', 'src/lib/dates.js', 'src/lib/posts.js', 'src/schemas/strict.js',
+  'src/data/tea.js', 'src/data/tea-chapters.js', 'src/data/taxonomy.js', 'src/lib/tea-picks.js'];
 
 const post = (id, { title = 'A post', extra = '', body = 'Text.' } = {}) =>
   `---\nid: "${id}"\ntitle: "${title}"\nsummary: "s"\ndate: 2026-11-01\ntopic: "agents"\npreview:\n  verdict: "Works"\n  takeaway: "It ran."${extra}\n---\n\n${body}\n`;
