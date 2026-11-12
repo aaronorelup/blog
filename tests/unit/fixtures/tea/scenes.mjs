@@ -103,7 +103,8 @@ const g1D = {
 const g2D = {
   aim: [800, 450],
   flats: [plate('garden', '#30203a'), { name: 'word', text: true, box: [150, 150, 700, 230], r: 0.8 }],
-  slots: [],
+  // shown from the very place its scene comes on: still off at that first frame
+  slots: [{ name: 'machine', flat: 'garden', box: [700, 400, 200, 100], show: ['fall-2', 'moon'], px: [[1280, 720]] }],
   camera: [{ at: 'fall-2', m: 0 }, { at: 'moon', m: 0.1 }],
   tracks: [],
   marks: ['fall-2', 'moon'],

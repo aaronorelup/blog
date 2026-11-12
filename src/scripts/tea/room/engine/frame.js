@@ -86,9 +86,9 @@ function ask(c, y, t, ptr, L) {
 
 // One slot, on or OFF. On only while its scene is on, inside its show span, after its scene's first frame (no
 // slot is on at a scene's opening frame: a port holds a copy of that frame without any real element in it), and
-// while its flat is shown.
+// while its flat is shown. "After" is by a millionth of a vh, so a place recomputed from px is not mistaken.
 function slotValue(k, on, u, S, pose) {
-  if (k.scene !== on || !within(k.show, u) || u <= S.part.from) return OFF;
+  if (k.scene !== on || !within(k.show, u) || u <= S.part.from + 1e-6) return OFF;
   const fp = pose.placed[k.flat];
   if (!fp.out.shown) return OFF;
   const r = slotRect(S, k, pose.placed);

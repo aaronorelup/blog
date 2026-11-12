@@ -124,6 +124,8 @@ test('a slot is on only in its scene, inside its show, after the scene\'s first 
   assert.ok(Math.abs(f.slots[glass].w - S.slots[0].rest.w * face.k) < 1e-6);
   assert.ok(Math.abs(f.slots[glass].x - (face.x + (S.slots[0].rest.x - S.flats[1].rest.x) * face.k)) < 1e-6);
   const film = L.chapters[3];
+  const machine = L.slots.findIndex((s) => s.key === 'tv/g2/machine');
+  assert.equal(at(L, y(5.41)).slots[machine].on, true);
   const cloth = L.slots.findIndex((s) => s.key === 'film/main/film');
   assert.deepEqual(at(L, film.top).slots[cloth], OFF);
   assert.equal(at(L, film.top + 5 * L.vh).slots[cloth].on, true);
@@ -156,6 +158,7 @@ test('at every handover the frame on both sides is the same picture, at six wind
         if (inFront || (i === fi && !port.clip)) assert.equal(f.shown, false, `${S.key}: ${f.name} still in the frame`);
       });
       before.slots.forEach((s) => assert.deepEqual(s, OFF));
+      after.slots.forEach((s) => assert.deepEqual(s, OFF, 'no slot is on at a scene\'s first frame'));
       const near = (a, b, what) => assert.ok(Math.abs(a - b) < 0.01, `${S.key} ${view} ${what}: ${a} vs ${b}`);
       port.inner.flats.forEach((g, i) => {
         const h = after.flats[i];

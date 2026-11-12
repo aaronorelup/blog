@@ -22,24 +22,19 @@ export const BACK_GROWTH = 1.5; // the most a back plate (r >= 1) may grow
 export const NEAR_THIRD = 0.35;
 const EPS = 1e-6;
 
-// Every mark a chapter's keys name: first the order its compositions declare (`marks`: names or stems of an
-// each, in page order), then any other in the order the keys name them.
-function markNames(room, c, comp, n) {
+// Every mark a chapter's keys name for a composition: first the order its scenes declare (`marks`, names or the
+// stem of an `each`, in page order), then any other in the order the keys name them.
+export function markNames(room, c, comp, n) {
   const names = [];
-  for (const key of c.run) {
-    for (const m of room.scenes[key][comp].marks ?? []) {
-      const stem = room.scenes[key][comp].camera.concat(...room.scenes[key][comp].tracks.flatMap((t) => Object.values(t).filter(Array.isArray)))
-        .some((k) => k.each === m);
-      if (stem) for (let i = 1; i <= n; i++) names.push(`${m}-${i}`);
-      else names.push(m);
-    }
-  }
   const add = (k) => {
     if (k.each) for (let i = 1; i <= n; i++) names.push(`${k.each}-${i}`);
     else if (typeof k.at === 'string') names.push(k.at);
   };
-  for (const key of c.run) {
-    const sc = room.scenes[key][comp];
+  const scenes = c.run.map((key) => room.scenes[key][comp]);
+  const keys = scenes.flatMap((sc) => [...sc.camera, ...sc.tracks.flatMap((t) => ['slide', 'lift', 'opacity', 'wipe'].flatMap((p) => t[p] ?? []))]);
+  const stems = new Set(keys.filter((k) => k.each).map((k) => k.each));
+  for (const sc of scenes) for (const m of sc.marks ?? []) add(stems.has(m) ? { each: m } : { at: m });
+  for (const sc of scenes) {
     sc.camera.forEach(add);
     for (const s of sc.slots) s.show.filter((x) => typeof x === 'string').forEach((at) => add({ at }));
     for (const t of sc.tracks) for (const p of ['slide', 'lift', 'opacity', 'wipe']) (t[p] ?? []).forEach(add);
@@ -77,7 +72,8 @@ function layouts(room, sizes, marks) {
 const where = (S, L, u) => `${S.key} at ${L.vw}x${L.vh}, ${u.toFixed(2)} vh into ${L.chapters[S.chapter].id}`;
 const fmt = (x) => x.toFixed(2);
 
-// Sharpness, the phone's rest density and the back plates' growth.
+// Sharpness, the phone's rest density and the back plates' growth. Each is reported once for each flat, slot and
+// window, at the place where it is worst.
 function sharpness(room, marks, errors, warnings) {
   for (const comp of ['d', 'p']) {
     for (const L of layouts(room, SHARP_SIZES[comp], marks)) {
@@ -85,7 +81,8 @@ function sharpness(room, marks, errors, warnings) {
       for (const key of L.sceneKeys) {
         const S = L.scenes[key];
         const places = placesOf(S, 48);
-        const seen = new Map();
+        const worst = new Map();
+        const note = (id, value, limit, say) => { if (value > limit + EPS && !(worst.get(id)?.value >= value)) worst.set(id, { value, say }); };
         places.forEach((u, j) => {
           const pose = poseScene(S, u, [0, 0], L, 0);
           const before = j > 0 ? poseScene(S, places[j - 1], [0, 0], L, 0) : null;
@@ -95,26 +92,21 @@ function sharpness(room, marks, errors, warnings) {
             const rect = { x: p.out.x, y: p.out.y, w: p.out.w, h: p.out.h };
             const hole = f.hole && moveHole(S, f, p);
             const opaqueInFrame = overlap(rect, win) && !(hole && holds(hole, win));
-            const drawn = opaqueInFrame && (p.out.o > 0 || (before && before.placed[fi].out.o > 0));
-            if (!drawn) return;
+            if (!(opaqueInFrame && (p.out.o > 0 || (before && before.placed[fi].out.o > 0)))) return;
             if (f.px) {
-              const scale = Math.max((rect.w / f.px[0]), rect.h / f.px[1]);
-              if (scale > SHARP + EPS && !seen.has(`s${fi}`)) {
-                seen.set(`s${fi}`, 1);
-                errors.push(`${where(S, L, u)}: flat ${f.name} is drawn at ${fmt(scale)} CSS px a pixel, above ${SHARP}`);
-              }
-              if (comp === 'p' && u === S.part.from && scale > 1 / PHONE_REST + EPS && !seen.has(`r${fi}`)) {
-                seen.set(`r${fi}`, 1);
-                errors.push(`${where(S, L, u)}: flat ${f.name} rests at ${fmt(1 / scale)} pixels a CSS px, under ${PHONE_REST}`);
+              const scale = Math.max(rect.w / f.px[0], rect.h / f.px[1]);
+              note(`s${fi}`, scale, SHARP, () => `${where(S, L, u)}: flat ${f.name} is drawn at ${fmt(scale)} CSS px a pixel, above ${SHARP}`);
+              if (comp === 'p' && u === S.part.from) {
+                note(`r${fi}`, scale, 1 / PHONE_REST, () => `${where(S, L, u)}: flat ${f.name} rests at ${fmt(1 / scale)} pixels a CSS px, under ${PHONE_REST}`);
               }
             }
-            if (f.r >= 1 && S.flats.some((g) => g.hole) && p.s > BACK_GROWTH + EPS && !seen.has(`b${fi}`)) {
-              seen.set(`b${fi}`, 1);
-              errors.push(`${where(S, L, u)}: back plate ${f.name} has grown ${fmt(p.s)} times, above ${BACK_GROWTH}`);
+            if (f.r >= 1 && S.flats.some((g) => g.hole)) {
+              note(`b${fi}`, p.s, BACK_GROWTH, () => `${where(S, L, u)}: back plate ${f.name} has grown ${fmt(p.s)} times, above ${BACK_GROWTH}`);
             }
           });
-          S.slots.forEach((k, si) => slotSharp(S, k, si, u, j > 0 ? places[j - 1] : null, pose, L, win, seen, errors, warnings));
+          S.slots.forEach((k, si) => slotSharp(S, k, si, u, j > 0 ? places[j - 1] : null, pose, L, win, note, warnings));
         });
+        for (const { say } of worst.values()) errors.push(say());
       }
     }
   }
@@ -125,13 +117,11 @@ const slotOn = (S, k, u) => u !== null && u > S.part.from && u >= k.show[0] && u
 
 // A slot is checked wherever it is on, and at the end of its show (it is on just before), by its width (a picture
 // is fitted to its slot's width). The picture it holds is the current item's: the item of the last `each` camera
-// key at or before the place, the first item before any; with no `each` key, the narrowest it may hold. A slot inside the hole of a
-// front flat whose port is fully uncovered is behind that port (front stage over slots) and not checked.
-function slotSharp(S, k, si, u, prev, pose, L, win, seen, errors, warnings) {
-  if (!k.px.length) {
-    if (!seen.has(`n${si}`)) { seen.set(`n${si}`, 1); warnings.push(`${S.key}: slot ${k.name} names no picture size (art.js), so its sharpness is not checked`); }
-    return;
-  }
+// key at or before the place, the first item before any; with no `each` key, the narrowest it may hold. A slot
+// inside the hole of a front flat whose port is fully uncovered is behind that port (the front stage is over the
+// slots) and is not checked.
+function slotSharp(S, k, si, u, prev, pose, L, win, note, warnings) {
+  if (!k.px.length) return warnings.push(`${S.key}: slot ${k.name} names no picture size (art.js), so its sharpness is not checked`);
   if (!slotOn(S, k, u) && !slotOn(S, k, prev)) return;
   const rect = slotRect(S, k, pose.placed);
   if (!rect || !overlap(rect, win)) return;
@@ -142,10 +132,8 @@ function slotSharp(S, k, si, u, prev, pose, L, win, seen, errors, warnings) {
   const now = items.filter((c) => c.u <= u).pop() ?? items[0];
   const px = now ? k.px[Math.min(k.px.length, now.item) - 1] : k.px.reduce((a, b) => (b[0] < a[0] ? b : a));
   const scale = rect.w / px[0];
-  if (scale > SHARP + EPS && !seen.has(`k${si}`)) {
-    seen.set(`k${si}`, 1);
-    errors.push(`${where(S, L, u)}: slot ${k.name} draws its ${px[0]}x${px[1]} picture at ${fmt(scale)} CSS px a pixel, above ${SHARP}`);
-  }
+  note(`k${si}`, scale, SHARP, () => `${where(S, L, u)}: slot ${k.name} draws its ${px[0]}x${px[1]} picture at ${fmt(scale)} CSS px a pixel, above ${SHARP}`);
+  return null;
 }
 
 // Some fully opaque back plate covers the window at every place checked, at every window size.

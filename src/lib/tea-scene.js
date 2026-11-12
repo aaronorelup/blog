@@ -13,6 +13,8 @@ import { itemCount } from '../scripts/tea/room/engine/lengths.js';
 export const ROOM_VERSION = 1;
 export const NIGHT = '#101220'; // the night ground: tokens' --night-page
 export const PICKS = 'src/data/tea-picks.json';
+// The id of the <script type="application/json"> that carries roomJson() in the page.
+export const ROOM_BLOCK = 'tea-room-scenes';
 const COMPS = ['d', 'p'];
 const PROPS = ['slide', 'lift', 'opacity', 'wipe'];
 
@@ -86,6 +88,7 @@ function compProblems(at, sc, { names, j, last }) {
       if (t.to !== want) say(`flat ${f.name}: its opening goes to "${t.to}", and the run's next is "${want}"`);
     }
   }
+  if (sc.marks !== undefined && !(Array.isArray(sc.marks) && sc.marks.every((m) => typeof m === 'string' && m))) say('marks is not a list of mark names');
   const holes = sc.flats.filter((f) => f.through);
   if (holes.length > 1) say('a scene has one opening at most');
   if (!last && !holes.length) say('a scene that is not the last of its run must open on the next');
