@@ -230,7 +230,8 @@ test('tea-hero-9 a scene that arrives late moves nothing on screen', async ({ pa
 });
 
 test('tea-hero-10 arriving at a chapter address lands on the chapter with the scene', async ({ page }) => {
-  // the scene's files held until the page has begun its scroll to the chapter, so the scene is ready mid-scroll
+  // the scene's files held until the page has left the top for the chapter (an address with a chapter lands on it at
+  // once, TeaPage's data-tea-arrive, tea-17), so the scene gets ready with the reader already there and pins below them
   await page.route('**/tea/hero/manifest.json', async (route) => {
     await page.waitForFunction(() => scrollY > 0, null, { timeout: 15_000 }).catch(() => {});
     await route.continue().catch(() => {});
@@ -257,7 +258,7 @@ test('tea-hero-11 the day/night switch pressed while the scene loads is the mode
   const st = await page.evaluate(() => {
     const s = window.__teaHero.state;
     return { night: document.documentElement.dataset.mode !== 'day', target: s.target, mix: s.mix,
-      pics: s.backdrop.layers.map((l) => [l.mat.uniforms.uNight.value.image.src, l.mat.uniforms.uDay.value.image.src]) };
+      pics: s.backdrop.layers.map((l) => [l.mat.uniforms.uNight.value.userData.src, l.mat.uniforms.uDay.value.userData.src]) };
   });
   // the scene's mode, its blend and the picture it shows are the page's (1 is night)
   expect(st.target).toBe(st.night ? 1 : 0);
@@ -291,7 +292,7 @@ test('tea-hero-12 a lost WebGL context shows the poster until it is back, then t
   expect(errors).toEqual([]);
 });
 
-test('tea-hero-13 reduced motion asked for while the scene runs puts the poster back, the page where it was', async ({ page }) => {
+test('tea-hero-13 reduced motion asked for while the scene runs puts the poster back, the page where it was, the GPU freed', async ({ page }) => {
   await page.goto('/tea/?hero=on');
   await expect(hero(page)).toHaveAttribute('data-hero-settled', '', { timeout: 60_000 });
   await expect(hero(page)).toHaveAttribute('data-3d', 'on');
@@ -303,6 +304,12 @@ test('tea-hero-13 reduced motion asked for while the scene runs puts the poster 
   await expect(hero(page)).not.toHaveAttribute('data-3d', /./);
   await posterShown(page);
   expect(Math.abs(await top() - before)).toBeLessThanOrEqual(1);
+  // every picture and geometry the scene put on the GPU is freed with it (the picture layers' night and day images
+  // and the sky light's render target included)
+  expect(await page.evaluate(() => {
+    const m = window.__teaHero.state.renderer.info.memory;
+    return { geometries: m.geometries, textures: m.textures };
+  })).toEqual({ geometries: 0, textures: 0 });
 });
 
 test('tea-hero-14 with the scene up the day/night switch fetches no poster under it', async ({ page }) => {
@@ -473,6 +480,13 @@ test('tea-hero-22 on a portrait screen the cast stands clear above the title box
   }
   // and the scene keeps the portrait frame's full height on this screen (no crop of the characters' heads)
   expect(await page.evaluate(() => Math.round(window.__teaHero.state.camRig.cam.fov))).toBe(50);
+  // the scene plays over a screen and a half of scroll at least, after the box has scrolled away (the lead): with the
+  // landscape screens' 300vh a phone's leap went by in about a third of a screen
+  const play = await hero(page).evaluate((s) => {
+    const st = window.__teaHero.state;
+    return (1 - st.lead) * (s.offsetHeight - innerHeight) / innerHeight;
+  });
+  expect(play).toBeGreaterThan(1.5);
 });
 
 // A chapter link tapped in the last moments before the scene pins lands on its chapter all the same. The pin waits for
@@ -641,5 +655,143 @@ test('tea-hero-26 one actor swapped for another rides its leader and cuts and di
     }
     expect(got.rides, where).toBeLessThan(1e-6);
   }
+  expect(errors).toEqual([]);
+});
+
+// The shipped manifest's own swap on the page (tests/unit/tea-hero.test.mjs checks the runtime's modules; this checks
+// the scene the page really mounts): Jefrie handed over to her leap mesh, which follows her. An actor hidden at the top
+// of the scroll by its own whole-actor visible or opacity track stands in for another for part of it, so it must
+// follow someone (one that doesn't is drawn at its own place while the other is cut away), and every follower the
+// manifest names is one the runtime knows (a runtime without "follow" drops them all); down the scroll and back, a
+// step either side of every visible key and at 0, 0.3 and 0.6, exactly one of each pair is drawn, the follower on its
+// leader's root; the number of point lights drawn never changes (a light under a hidden actor is not drawn, so the
+// leap actor carries its own pair: a change would recompile every lit material in the middle of the leap), and nor
+// does the number of pictures on the GPU (a hidden actor's are uploaded with the rest at the mount, not on its first
+// frame in the middle of the leap).
+test('tea-hero-27 the shipped leap: exactly one of a character and her leap mesh drawn, on one root, the lights and pictures the same', async ({ page }) => {
+  test.setTimeout(180_000);
+  await page.goto('/tea/?hero=on');
+  await settled(page);
+  await expect(hero(page)).toHaveAttribute('data-3d', 'on');
+  await holdScene(page);
+  // the other mode's picture layers load after the first frame: in, so they are not counted as the leap's
+  await page.waitForFunction(() => window.__teaHero.state.backdrop.tried, null, { timeout: 60_000 });
+  const out = await page.evaluate(async () => {
+    const H = window.__teaHero;
+    H.freeze(0.45); H.pointer([0, 0]);
+    const s = H.state;
+    const raw = await (await fetch(document.querySelector('[data-tea-stage]').dataset.manifest || '/tea/hero/manifest.json')).json();
+    const wanted = (raw.actors || []).filter((a) => a.follow).map((a) => `${a.follow}>${a.id}`);
+    const first = (t) => [...t.keys].sort((a, b) => a[0] - b[0])[0][1];
+    const standins = (raw.actors || []).filter((a) => (raw.tracks || []).some((t) => t.actor === a.id && !t.node
+      && t.keys && t.keys.length && ((t.channel === 'visible' && first(t) < 0.5) || (t.channel === 'opacity' && first(t) <= 0.004))));
+    const loose = standins.filter((a) => !a.follow).map((a) => a.id);
+    const pairs = s.actors.filter((a) => a.spec.follow).map((a) => [a, s.actors.find((b) => b.spec.id === a.spec.follow)]);
+    const cuts = raw.tracks.filter((t) => t.channel === 'visible').flatMap((t) => t.keys.map(([p]) => p));
+    const ps = [...new Set([0, 0.3, 0.6, ...cuts.flatMap((p) => [p - 0.001, p + 0.001])])]
+      .filter((p) => p >= 0 && p <= 1).sort((a, b) => a - b);
+    const drawn = (o) => { for (let q = o; q; q = q.parent) if (!q.visible) return false; return true; };
+    const bad = [];
+    let lights = null;
+    let pictures = null;
+    for (const p of [...ps, ...ps.slice().reverse()]) {
+      // the scene's progress p: in the flow layout the scroll's first share is the title box's lead
+      H.setProgress(s.lead + p * (1 - s.lead));
+      for (const [f, l] of pairs) {
+        const n = [l.root, f.root].filter(drawn).length;
+        if (n !== 1) bad.push(`progress ${p.toFixed(4)}: ${n} of ${l.spec.id} and ${f.spec.id} drawn`);
+        if (f.root.position.distanceTo(l.root.position) > 1e-6 || f.root.quaternion.angleTo(l.root.quaternion) > 1e-6) {
+          bad.push(`progress ${p.toFixed(4)}: ${f.spec.id} is off ${l.spec.id}'s root`);
+        }
+      }
+      let n = 0;
+      s.scene.traverse((o) => { if (o.isPointLight && drawn(o)) n++; });
+      if (lights === null) lights = n;
+      else if (n !== lights) bad.push(`progress ${p.toFixed(4)}: ${n} point lights drawn, ${lights} at the top`);
+      const t = s.renderer.info.memory.textures;
+      if (pictures === null) pictures = t;
+      else if (t !== pictures) bad.push(`progress ${p.toFixed(4)}: ${t} pictures on the GPU, ${pictures} at the top`);
+    }
+    H.setProgress(null);
+    return { wanted, loose, standins: standins.length, got: pairs.map(([f, l]) => `${l.spec.id}>${f.spec.id}`), bad };
+  });
+  test.skip(!out.wanted.length && !out.standins, 'the manifest hands no character over to another');
+  expect(out.loose, 'hidden at the top, following no one').toEqual([]);
+  expect(out.got.sort()).toEqual(out.wanted.sort());
+  expect(out.bad).toEqual([]);
+});
+
+// A beforeunload that does not lead to leaving (a mailto link fires it in some browsers, and the page stays) must not
+// cost the scene: the scene stops its loads on pagehide only (boot.js), which also keeps the page eligible for the
+// back/forward cache. The event comes while the models load; the scene comes up all the same, with nothing logged.
+test('tea-hero-28 a beforeunload that does not leave the page keeps the scene loading', async ({ page }) => {
+  const errors = [];
+  page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+  page.on('pageerror', (e) => errors.push(e.message));
+  const release = await gate(page, '**/*.glb');
+  const asked = page.waitForRequest(/\.glb$/, { timeout: 60_000 });
+  await page.goto('/tea/?hero=on');
+  await asked;
+  await page.evaluate(() => window.dispatchEvent(new Event('beforeunload')));
+  release();
+  await settled(page);
+  await expect(hero(page)).toHaveAttribute('data-3d', 'on');
+  await expect(hero(page)).not.toHaveAttribute('data-3d-off', /./);
+  expect(errors).toEqual([]);
+});
+
+// Under 1024 px the title box scrolls up under the fixed day/night switch (top right): none of its text runs under the
+// switch's column, on a phone (the box spans the screen; on the static hero and over the scene) and on the narrow
+// tablets and windows where the 540 px box still reaches the column (stage.css keeps a gutter there). On a phone the
+// counter keeps to one line.
+test('tea-hero-29 under 1024 px no line of the title box runs under the fixed day/night switch', async ({ page, isMobile }) => {
+  test.setTimeout(120_000);
+  const under = () => page.evaluate(() => {
+    const sw = document.querySelector('#mode-toggle').getBoundingClientRect();
+    const out = [];
+    const walker = document.createTreeWalker(document.querySelector('.tea-hero-box'), NodeFilter.SHOW_TEXT);
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+      if (!n.textContent.trim()) continue;
+      const range = document.createRange();
+      range.selectNodeContents(n);
+      for (const r of range.getClientRects()) if (r.right > sw.left) out.push(`${n.textContent.trim().slice(0, 24)}: ${Math.round(r.right)} > ${Math.round(sw.left)}`);
+    }
+    return out;
+  });
+  const pages = isMobile ? [[null, '/tea/?hero=off'], [null, '/tea/?hero=on']]
+    : [[[561, 900], '/tea/?hero=off'], [[600, 960], '/tea/?hero=off'], [[640, 900], '/tea/?hero=off']];
+  for (const [size, url] of pages) {
+    if (size) await page.setViewportSize({ width: size[0], height: size[1] });
+    await page.goto(url);
+    await settled(page);
+    await holdScene(page);
+    expect(await under(), `${url} ${size || 'phone'}`).toEqual([]);
+    if (!isMobile) continue;
+    const lines = await page.locator('.tea-counter').evaluate((c) => {
+      const range = document.createRange();
+      range.selectNodeContents(c);
+      return new Set([...range.getClientRects()].filter((r) => r.width > 1).map((r) => Math.round(r.top))).size;
+    });
+    expect(lines, 'the counter on one line').toBe(1);
+  }
+});
+
+// A link that starts to leave the page and then doesn't (its mailto link) must not cost the scene: Chromium sends a
+// beforeunload (tea-hero-28) and goes on loading; WebKit sends nothing and cancels the loads in flight, which the scene
+// tries again (manifest.js patient). The page's own mailto link is clicked while a model is held.
+test('tea-hero-30 a mailto link clicked while the scene loads keeps the scene loading', async ({ page }) => {
+  const errors = [];
+  page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+  page.on('pageerror', (e) => errors.push(e.message));
+  const release = await gate(page, '**/*.glb');
+  const asked = page.waitForRequest(/\.glb$/, { timeout: 60_000 });
+  await page.goto('/tea/?hero=on');
+  await asked;
+  await page.evaluate(() => document.querySelector('a[href^="mailto:"]').click());
+  await page.waitForTimeout(1200);
+  release();
+  await settled(page);
+  await expect(hero(page)).toHaveAttribute('data-3d', 'on');
+  await expect(hero(page)).not.toHaveAttribute('data-3d-off', /./);
   expect(errors).toEqual([]);
 });

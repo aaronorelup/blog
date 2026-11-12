@@ -2,7 +2,8 @@
 // three loaded the way the page loads it: the manifest's defaults, and the new fields only where they are written; the
 // track maths of every channel; one actor swapped for another (follow, a visible cut, an opacity dissolve that always
 // comes back, scrolled down and back like the page); a skinned mesh's skeleton freed; and the shipped manifest held to
-// what the runtime knows, its picture to covering every frame (edges.mjs). The browser side of the swap is tea-hero-26.
+// what the runtime knows, its own leap swap included, and its picture to covering every frame (edges.mjs). The browser
+// side of the same swaps is e2e tea-hero-26 and 27.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -243,6 +244,87 @@ test('the shipped manifest: every channel is one the runtime knows, a whole-acto
     assert.ok(!(t.node && ['visible', 'opacity'].includes(t.channel)), `${t.actor}/${t.node}: ${t.channel} is skipped on a node`);
   }
   assert.doesNotThrow(() => normalise(SHIPPED, '/tea/hero/manifest.json'));
+});
+
+// A portrait screen's own camera path (camera.portrait.keys): read and sorted like camera.keys; on a portrait screen the
+// camera follows it as it is (no pull, no drop), on a landscape one the landscape path. Without it a portrait screen
+// pulls the landscape path back and aims lower, as before.
+test('camera.portrait.keys: a portrait screen follows its own path, a landscape one the landscape path', async () => {
+  const { createCamera, fitCamera, placeCamera } = await import('../../src/scripts/tea/hero/camera.js');
+  const P_KEYS = [{ t: 1, pos: [0, 3, 2], look: [0, 1, -4] }, { t: 0, pos: [1, 2, 9], look: [1, 1, 0] }];
+  const cam = (portrait) => ({ version: 1, camera: { ...CAM, portrait: { pull: 2, drop: 1, ...portrait } }, actors: [] });
+  const own = normalise(cam({ keys: P_KEYS }), '/tea/hero/m.json');
+  assert.deepEqual(own.camera.portrait.keys.map((k) => k.t), [0, 1]);
+  assert.equal(normalise(cam({ keys: [P_KEYS[0]] }), '/tea/hero/m.json').camera.portrait.keys, null, 'one key is no path');
+  const at = (m, w, h, p) => {
+    const rig = createCamera(m);
+    fitCamera(rig, 1.6, w, h);
+    placeCamera(rig, p, { x: 0, y: 0 });
+    return rig.cam.position.toArray().map((v) => +v.toFixed(6) + 0);
+  };
+  assert.deepEqual(at(own, 390, 844, 0), [1, 2, 9], 'portrait: its own first key, not pulled back');
+  assert.deepEqual(at(own, 390, 844, 1), [0, 3, 2]);
+  assert.deepEqual(at(own, 1440, 900, 0), [0, 1, 6], 'landscape: the landscape path');
+  const pulled = at(normalise(cam({}), '/tea/hero/m.json'), 390, 844, 0);
+  assert.deepEqual(pulled, [0, 1, 8], 'no portrait keys: the landscape path pulled back along the view');
+});
+
+// The shipped manifest's own swap (the leap: a pose-baked mesh that follows Jefrie, cut in and out with visible), over
+// the real manifest and the real modules, each model an empty glTF scene (no WebGL, no files). A runtime without follow
+// or visible draws both figures all the time with the leap mesh at the scene's origin, and nothing else notices: every
+// name still binds (tea-hero-24). So: every follower keeps its leader, and down the scroll and back, a step either side
+// of every visible key and at 0, 0.3, 0.6 and 1, exactly one of each pair is drawn, the follower on its leader's root.
+// The page's side of it is e2e tea-hero-27.
+const FOLLOWERS = (SHIPPED.actors || []).filter((a) => a.follow);
+// An actor hidden at the top of the scroll by its own whole-actor visible or opacity track stands in for another for
+// part of it (the leap mesh in Jefrie's place): read from the file as written, so a manifest that has lost a "follow"
+// fails here rather than leaving the swap test below nothing to check.
+const hiddenAtTop = (id) => (SHIPPED.tracks || []).some((t) => t.actor === id && !t.node && t.keys && t.keys.length
+  && ((t.channel === 'visible' && sample(t.keys, 0, 'linear') < 0.5) || (t.channel === 'opacity' && sample(t.keys, 0, 'linear') <= 0.004)));
+const STANDINS = (SHIPPED.actors || []).filter((a) => hiddenAtTop(a.id));
+test('every stand-in of the shipped manifest follows the actor it stands in for', () => {
+  for (const a of STANDINS) {
+    assert.ok(a.follow && SHIPPED.actors.some((b) => b.id === a.follow && b !== a),
+      `${a.id} is hidden at the top of the scroll by its own track and follows no one: it is drawn at its own place`);
+  }
+});
+test('the shipped swap: exactly one of each pair drawn down the scroll and back, the follower on its leader\'s root',
+  { skip: !FOLLOWERS.length && !STANDINS.length && 'the shipped manifest hands no actor over to another' }, async () => {
+    const m = normalise(SHIPPED, '/tea/hero/manifest.json');
+    for (const f of FOLLOWERS) {
+      assert.ok(SHIPPED.actors.some((a) => a.id === f.follow), `${f.id} follows ${f.follow}, which is not an actor`);
+      assert.equal(m.actors.find((a) => a.id === f.id).follow, f.follow, `${f.id}: the runtime's manifest.js drops "follow"`);
+    }
+    const EMPTY = JSON.stringify({ asset: { version: '2.0' }, scene: 0, scenes: [{ nodes: [] }] });
+    const fetched = globalThis.fetch;
+    globalThis.fetch = async () => new Response(EMPTY, { status: 200 });
+    let actors;
+    try { actors = await loadActors(m, false); } finally { globalThis.fetch = fetched; }
+    const bound = bindTracks(m, actors);
+    const byId = new Map(actors.map((a) => [a.spec.id, a]));
+    const cuts = SHIPPED.tracks.filter((t) => t.channel === 'visible').flatMap((t) => t.keys.map(([p]) => p));
+    assert.ok(cuts.length, 'a follower with no visible track is drawn together with its leader all the time');
+    const ps = [...new Set([0, 0.3, 0.6, 1, ...cuts.flatMap((p) => [p - 0.001, p + 0.001])])]
+      .filter((p) => p >= 0 && p <= 1).sort((a, b) => a - b);
+    for (const f of FOLLOWERS) {
+      const [fa, la] = [byId.get(f.id), byId.get(f.follow)];
+      for (const p of [...ps, ...ps.slice().reverse()]) {
+        applyTracks(bound, p, 0);
+        const drawn = [la, fa].filter((a) => a.root.visible).map((a) => a.spec.id);
+        assert.equal(drawn.length, 1, `at progress ${p}: ${drawn.length ? drawn.join(' and ') : 'neither'} drawn`);
+        assert.ok(fa.root.position.distanceTo(la.root.position) < 1e-9 && fa.root.quaternion.angleTo(la.root.quaternion) < 1e-6
+          && fa.inner.scale.distanceTo(la.inner.scale) < 1e-9, `at progress ${p}: ${f.id} is not on ${f.follow}'s root`);
+      }
+    }
+  });
+// The opening frame is every visitor's first picture (the posters are made from it): Jefrie stands in a stance there,
+// her arms lowered from her rig's bind pose (an A-pose, the arms out at about 45 degrees), not in the bind pose itself.
+test('the shipped opening frame: Jefrie stands with her arms lowered from her rig\'s A-pose', () => {
+  for (const [node, down] of [['upperarm.L', -1], ['upperarm.R', 1]]) {
+    const t = SHIPPED.tracks.find((x) => x.actor === 'jefrie' && x.node === node && x.channel === 'rotation');
+    const z = t ? sample(t.keys, 0, t.ease || 'smooth')[2] : 0;
+    assert.ok(z * down >= 20, `${node} at progress 0: lowered ${z * down} degrees from the bind pose`);
+  }
 });
 
 // A manifest copied over whole (the cast's, which carries the painter's own fit of the picture) or a new camera key can
