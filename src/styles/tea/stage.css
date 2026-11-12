@@ -100,8 +100,13 @@
 }
 .tea-counter-part { white-space: nowrap; }
 
-/* The scene: one length of scroll for both layouts, so a switch between them moves nothing below the hero. */
+/* The scene: one length of scroll for both layouts on a screen of one shape, so a switch between them moves nothing
+   below the hero. A portrait screen's is a screen longer: the box scrolls away there before the scene plays (the lead,
+   pin.js), which left the leap about a third of a phone's screen of scroll. */
 .tea-hero[data-3d='on'] { height: 300vh; }
+@media (max-aspect-ratio: 1/1) {
+  .tea-hero[data-3d='on'] { height: 400vh; }
+}
 
 /* dock: the pin sticks; the box opens where the static layout centres it, then docks lower left, clear of the
    day/night switch at the foot of the screen on a wide one. Only where the docked box leaves most of the frame to the

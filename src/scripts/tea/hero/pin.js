@@ -25,13 +25,13 @@ export function unpinSection(section) {
   keepPlace(section, before, y);
 }
 
-// Pinning grows the section by two screens, so it waits for a moment when that moves nothing the reader reads: the
-// page at its very top, or the title box above the screen (the scroll then moves by the growth, keepPlace, so what is
-// below the hero stays put; a strip of picture left at the top shows the scene's end instead of the poster), and the
-// scroll at rest (a smooth scroll to a #chapter, or a fling, would be cut short by that move). A reader with the box
-// still on screen keeps the poster until they go back to the top or past the box. At rest means no scroll for REST ms
-// and none over the next two frames: a chapter link tapped just before the timer starts its scroll on the next frame,
-// and a pin in between would cut that jump short (or, at the top, land it two screens early).
+// Pinning grows the section by two screens (three on a portrait one), so it waits for a moment when that moves nothing
+// the reader reads: the page at its very top, or the title box above the screen (the scroll then moves by the growth,
+// keepPlace, so what is below the hero stays put; a strip of picture left at the top shows the scene's end instead of
+// the poster), and the scroll at rest (a smooth scroll to a #chapter, or a fling, would be cut short by that move). A
+// reader with the box still on screen keeps the poster until they go back to the top or past the box. At rest means no
+// scroll for REST ms and none over the next two frames: a chapter link tapped just before the timer starts its scroll
+// on the next frame, and a pin in between would cut that jump short (or, at the top, land it two screens early).
 export const REST = 200;
 export function whenPinnable(section) {
   const box = section.querySelector('.tea-hero-box') || section;

@@ -480,6 +480,13 @@ test('tea-hero-22 on a portrait screen the cast stands clear above the title box
   }
   // and the scene keeps the portrait frame's full height on this screen (no crop of the characters' heads)
   expect(await page.evaluate(() => Math.round(window.__teaHero.state.camRig.cam.fov))).toBe(50);
+  // the scene plays over a screen and a half of scroll at least, after the box has scrolled away (the lead): with the
+  // landscape screens' 300vh a phone's leap went by in about a third of a screen
+  const play = await hero(page).evaluate((s) => {
+    const st = window.__teaHero.state;
+    return (1 - st.lead) * (s.offsetHeight - innerHeight) / innerHeight;
+  });
+  expect(play).toBeGreaterThan(1.5);
 });
 
 // A chapter link tapped in the last moments before the scene pins lands on its chapter all the same. The pin waits for
