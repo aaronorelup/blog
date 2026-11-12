@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadRepo } from '../check/repo.mjs';
+import { picksSite } from '../check/tea-picks.mjs';
 import { TEA_CHAPTERS } from '../../src/data/tea-chapters.js';
 import { PICKS_FILE, picksFile, readPicks } from '../../src/lib/tea-picks.js';
 
@@ -19,13 +20,8 @@ let doc;
 try { doc = JSON.parse(fs.readFileSync(input, 'utf8')); } catch (e) { stop(`${input}: ${e.code === 'ENOENT' ? 'no such file' : e.message}`); }
 
 const repo = loadRepo(root);
-const site = {
-  posts: repo.posts.filter((p) => !p.yamlError).map((p) => ({ id: p.slug, data: p.data })),
-  projects: new Set(repo.projects.map((p) => path.basename(p.file, '.yaml'))),
-  hasMachine: (name) => repo.exists(`public/labs/teardown/${name}`),
-};
 let warnings;
-try { ({ warnings } = readPicks(doc, TEA_CHAPTERS, site, { source: input, allowPrivate: true })); } catch (e) { stop(e.message); }
+try { ({ warnings } = readPicks(doc, TEA_CHAPTERS, picksSite(repo), { source: input, allowPrivate: true })); } catch (e) { stop(e.message); }
 
 const text = picksFile(doc, TEA_CHAPTERS);
 const before = repo.exists(PICKS_FILE) ? repo.read(PICKS_FILE) : null;

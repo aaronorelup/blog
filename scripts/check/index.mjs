@@ -9,13 +9,13 @@ import { ROOT, runChecks } from './run.mjs';
 const args = process.argv.slice(2);
 const deploy = args.includes('--deploy');
 const strict = args.includes('--strict');
-const mayWarn = (file) => isLivePath(file) || isHeld(path.basename(file, '.md'));
+const mayWarn = (i) => i.live || isLivePath(i.file) || isHeld(path.basename(i.file, '.md'));
 const only = args.filter((a) => !a.startsWith('--'))
   .map((a) => path.relative(ROOT, path.resolve(a)).split(path.sep).join('/'));
 
 const started = performance.now();
 const issues = runChecks({ deploy })
-  .map((i) => (strict && i.severity === 'warn' && !mayWarn(i.file) ? { ...i, severity: 'error' } : i))
+  .map((i) => (strict && i.severity === 'warn' && !mayWarn(i) ? { ...i, severity: 'error' } : i))
   .filter((i) => !only.length || only.some((p) => i.file === p || i.file.startsWith(p + '/')))
   .sort((a, b) => a.file.localeCompare(b.file) || (a.line ?? 0) - (b.line ?? 0));
 const errors = issues.filter((i) => i.severity === 'error');

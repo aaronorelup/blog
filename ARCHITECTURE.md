@@ -319,7 +319,7 @@ about a second; run it before every landing, and with paths to see one post (`np
 | `links.mjs` | `/ledger/<slug>/` (and the old `/posts/<slug>/`, which redirects there) goes to a listed post, `/notes/` to its notes; nothing under `public/ledger/`; no banned link; a demo's recorded `.json` names no draft or unlisted post | deploy |
 | `elements.mjs` | each `src/elements/ao-*/` has its section in `docs/COMPONENTS.md` | check |
 | `assets.mjs` | preview stills and loops exist and are under their caps, icon and project picture caps, every named video or audio is in R2 or in a `STAYS_IN_GIT` folder | deploy |
-| `tea-picks.mjs` | `src/data/tea-picks.json` is what `readPicks()` takes: version 1, known chapters and shelves, listed posts, real projects, no private field. An auto or picked shelf showing the live notebook, or a machine gone from the lab, only warns. No file, nothing to check | deploy |
+| `tea-picks.mjs` | `src/data/tea-picks.json` is what `readPicks()` takes: version 1, known chapters and shelves, listed posts, real projects, no private field. An auto or picked shelf showing the live notebook, or a machine gone from the lab, only warns, even under `--strict` (the `live` level in `run.mjs`). No file, nothing to check | deploy |
 | `code.mjs` | 400 lines, no CSS imported by browser JS, no `style=` in components, layouts or pages, `astro:content` only in `lib/content.js`, `content.config.ts` and the schemas, no IP under `worker/` | check |
 
 Anything in a live notebook's paths is at most a warning, at either level. `npm run check -- --strict` fails on

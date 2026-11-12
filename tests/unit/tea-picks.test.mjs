@@ -40,17 +40,22 @@ const real = { posts: realPosts, notes: new Map(), cards: realCards, hasMachine:
 const shipped = JSON.parse(read('src/data/tea-picks.json'));
 const PREFIX = { post: 'p', project: 'j', machine: 'm' };
 
-test('the shipped picks resolve on the real site: every chapter in order, each shelf its picks, nothing warned', () => {
+// The lab is another session's live notebook: a machine it drops is left out with a warning, never a failure here.
+const inLab = (key) => !key.startsWith('m-') || realMachine(key.slice(2));
+
+test('the shipped picks resolve on the real site: every chapter in order, each shelf its picks, nothing else warned', () => {
   const warnings = [];
   const chapters = resolveChapters(shipped, TEA_CHAPTERS, { ...real, warn: (w) => warnings.push(w) });
-  assert.deepEqual(warnings, []);
+  const gone = Object.values(shipped.shelves).flatMap((s) => s.picks).filter((k) => !inLab(k));
+  assert.equal(warnings.length, gone.length);
+  for (const k of gone) assert.ok(warnings.some((w) => w.includes(`"${k}" is not in the teardown lab`)), k);
   assert.deepEqual(chapters.map((c) => c.id), shipped.order);
   assert.deepEqual(chapters.map((c) => c.numeral), ['', ...chapters.slice(1).map((c, i) => ['I', 'II', 'III', 'IV', 'V', 'VI',
     'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII'][i])]);
   const listed = new Set(realPosts.filter((p) => isListed(p.data)).map((p) => p.id));
   for (const c of chapters) {
     for (const s of c.shelves) {
-      const picks = shipped.shelves[`${c.id}/${s.id}`].picks;
+      const picks = shipped.shelves[`${c.id}/${s.id}`].picks.filter(inLab);
       assert.deepEqual(s.rows.map((r) => `${PREFIX[r.kind]}-${r.slug ?? r.key}`), picks.slice(0, s.max), `${c.id}/${s.id}`);
       for (const r of s.rows.filter((r) => r.kind === 'post')) {
         assert.ok(listed.has(r.slug));
@@ -75,7 +80,9 @@ test("the chapter list: the picker's ids, a valid and unique CSS id each, topics
   for (const c of TEA_CHAPTERS.filter((c) => c.kind === 'topic')) {
     assert.deepEqual([c.dom, c.title, c.shelves[0].auto], [`topic-${c.topic}`, TOPICS[c.topic].label, { topic: c.topic }]);
   }
-  for (const c of TEA_CHAPTERS) assert.ok(c.title, c.id);
+  assert.deepEqual(TEA_CHAPTERS.map((c) => c.title), ['The garden', 'Start here', 'I Love My Evening Television', 'AI video & film',
+    'Games', 'AI art & images', '3D & animation', 'Working with AI agents', 'Learning to build with AI', 'This website', 'Projects',
+    'Courses', 'Now', 'About']);
 });
 
 test('asPost gives the topic, projects and date the schema gives, from the raw frontmatter the checker reads', () => {
@@ -125,6 +132,10 @@ test("a picked shelf shows its picks in order, cut to the shelf's max; one not i
   assert.deepEqual(b.shelves[0].rows[0], { kind: 'project', key: 'film', card: cards[1], href: '/ledger/v1/', external: false });
   assert.deepEqual(keysOf(tv), [[], []]);
   assert.deepEqual(a.shelves[0].rows.map((r) => [r.kind, r.href]), [['post', '/ledger/v3/'], ['post', '/ledger/v1/']]);
+  // a project card that links a post nobody may see never comes out either (lib/projects.js refuses one upstream too)
+  const leaky = [{ key: 'film', section: 'watch', posts: [{ slug: 'newest-unlisted' }] }];
+  assert.throws(() => resolveChapters(doc({ shelves: { 'b/play': shelf(['j-film']) } }), REG, { ...site, cards: leaky }),
+    /project "film" links "newest-unlisted", which is not a listed post/);
 });
 
 test("an auto shelf shows the newest count listed posts of its topic in ledger order, never a draft or unlisted one", () => {
@@ -255,6 +266,8 @@ test("npm run check: picks the page would refuse fail, the live notebook and a m
     'tv/machines': { auto: false, count: 1, picks: ['m-gone'] } } });
   assert.deepEqual(ours().map(([rule, severity, m]) => [rule, severity, m.replace(/".*/, '')]), [
     ['tea-picks', 'warn', 'shelf tv/machines: '], ['tea-picks', 'warn', 'shelf agents/leads shows the live notebook ']]);
+  // warnings about the live notebook, which not even npm run check -- --strict fails (scripts/check/index.mjs)
+  assert.ok(runChecks({ root }).filter((i) => i.rule === 'tea-picks').every((i) => i.live === true));
   put('src/data/tea-picks.json', '{ "v": 1,');
   assert.match(ours()[0][2], /isn't valid JSON/);
   // a never-publish term in the picks fails like one anywhere else

@@ -16,7 +16,12 @@ export function resolveChapters(doc, registry, { posts, notes, cards, hasMachine
   warnings.forEach((w) => warn(w));
   const row = {
     post: (slug) => ({ kind: 'post', ...postRow(listed.get(slug), notes) }),
-    project: (key) => ({ kind: 'project', key, card: byKey.get(key), ...projectHref(byKey.get(key)) }),
+    project: (key) => {
+      const card = byKey.get(key);
+      const hidden = (card.posts ?? []).find((p) => !listed.has(p.slug));
+      if (hidden) throw new Error(`src/data/tea-picks.json: project "${key}" links "${hidden.slug}", which is not a listed post`);
+      return { kind: 'project', key, card, ...projectHref(card) };
+    },
     machine: (name) => ({ kind: 'machine', key: name, href: `/labs/teardown/${name}/` }),
   };
   let n = 0;
