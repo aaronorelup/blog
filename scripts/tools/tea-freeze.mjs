@@ -75,7 +75,7 @@ function scanText(dist, text, base) {
 }
 
 // A string in a script or stylesheet pointed at the copy: a file of the copy, Vite's "_astro/…" preload names, or
-// a folder of the copy that a script joins a name to ('/tea/hero/' + m). Relative names need nothing: the tree is
+// a folder the copy holds whole that a script joins a name to ('/tea/hero/' + m; foldersOf). Relative names need nothing: the tree is
 // kept as it was.
 function rewriteText(text, map, dirs, base, dist) {
   return text.replace(STRINGS, (whole, q, s, uq, us) => {
@@ -163,15 +163,20 @@ export function filesOf(dist, html, page) {
   return [...want].sort();
 }
 
-// The folders of the copy that a script may join a name to: each copied file's folder, two levels deep or more
-// ('/tea/hero/', never '/' or '/fonts/', which a script could use for anything).
-function foldersOf(files, assets) {
-  const dirs = new Map();
-  for (const f of files) {
-    const d = f.slice(0, f.lastIndexOf('/') + 1);
-    if (d.split('/').length > 3) dirs.set(d, assets + d);
+// The folders of the copy that a script may join a name to ('/tea/hero/' + m): each copied file's folder, two levels
+// deep or more (never '/' or '/fonts/'), and only when the copy holds every file the build has there, so any name
+// joined to it is a file of the copy. A folder the copy holds in part ('/media/previews/', which also serves video and
+// the previews of other posts) stays live: its string may be a prefix for anything. Returns [rewritten, left live].
+function foldersOf(files, assets, assetsAt, dist) {
+  const dirs = new Map(), live = [];
+  const have = new Set(files);
+  for (const d of new Set(files.map((f) => f.slice(0, f.lastIndexOf('/') + 1)))) {
+    if (d.split('/').length <= 3) continue;
+    const all = fs.readdirSync(path.join(dist, d), { withFileTypes: true }).filter((e) => e.isFile()).map((e) => d + e.name);
+    if (all.every((f) => have.has(f) || fs.existsSync(path.join(assets, f)))) dirs.set(d, assetsAt + d);
+    else live.push(`${d} (the copy holds ${all.filter((f) => have.has(f)).length} of its ${all.length} files)`);
   }
-  return dirs;
+  return [dirs, live];
 }
 
 export function freeze({ page, folder, assets = path.join(folder, 'assets'), dist = 'dist', log = console.log }) {
@@ -189,7 +194,7 @@ export function freeze({ page, folder, assets = path.join(folder, 'assets'), dis
 
   const files = filesOf(dist, html, page);
   const map = new Map(files.map((f) => [f, assetsAt + f]));
-  const dirs = foldersOf(files, assetsAt);
+  const [dirs, live] = foldersOf(files, assets, assetsAt, dist);
   let added = 0, kept = 0, bytes = 0;
   const plan = files.map((f) => {
     const from = path.join(dist, f);
@@ -216,6 +221,7 @@ export function freeze({ page, folder, assets = path.join(folder, 'assets'), dis
   log(`${page} (build ${commit.slice(0, 8)}) frozen at ${address}/: ${files.length} files under ${assetsAt}/ ` +
     `(${added} written, ${kept} already there), ${bytes} bytes written`);
   for (const [d, to] of dirs) log(`  folder ${d} → ${to}`);
+  for (const d of live) log(`  folder ${d} left live: a script naming it still reaches the site`);
   return { files, address, assetsAt, bytes };
 }
 

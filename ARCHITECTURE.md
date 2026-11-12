@@ -436,7 +436,9 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
   `--assets <folder>` shares an existing copy's files, `--dist` reads another build). It writes `<folder>/index.html`
   and copies every file the page loads, its scripts' later fetches included (the 3D runtime, the models, the manifest,
   the posters), its stylesheets, fonts and pictures, under `<folder>/assets/` at their old paths, and points every
-  reference there; links to other pages stay live and video stays at `/media/`. It refuses a folder that already has
+  reference there; links to other pages stay live and video stays at `/media/`. A script's folder string
+  (`'/tea/hero/' + m`) is pointed at the copy only when the copy holds every file of that folder; the tool prints the
+  folders it left live (`/media/previews/`, which serves video too). It refuses a folder that already has
   a page and never writes over a file with other bytes. The copy says robots noindex and carries `ao-frozen` for
   `ao-build`, so `stats-pages.txt` leaves it out (it never shows in `/stats`) and the font check skips it. It exits 1
   if the copy still names a file under `/_astro/`, `/fonts/` or `/tea/hero/` outside itself. Then build and land it
