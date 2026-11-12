@@ -33,12 +33,14 @@ Jefrie (left) and Yusef (right, with a lantern) around a small CRT television. E
   motion`, `save data`, `small device`, `no webgl`, `failed`). Reduced motion turned on while the scene runs puts the
   poster back the same way; a lost WebGL context shows the poster until the context is back. Drawing stops when the
   hero is off screen or the tab is hidden. Pixel ratio capped at 1.75 (1.5 on touch or small screens; fewer motes).
-  Leaving the page while the scene loads leaves nothing in the console (tea-hero-25): WebKit cancels the page's loads
-  right after `beforeunload`, before `pagehide`, and refuses with a console error any fetch the page starts after
-  that, so from `beforeunload` (listened for only until the scene's files are in) `boot.js` aborts its loads: the
-  manifest and the models are fetched with that signal (not by three's FileLoader, whose streamed read leaves a cut
-  body as an unhandled rejection), a model's own pictures load through a texture loader that then starts none and
-  reports no failure, and `mount` stops waiting (`data-3d-off="failed"` on the page being left).
+  Leaving the page while the scene loads leaves nothing in the console (tea-hero-25): from `pagehide` (listened for
+  only until the scene's files are in) `boot.js` aborts its loads: the manifest and the models are fetched with that
+  signal (not by three's FileLoader, whose streamed read leaves a cut body as an unhandled rejection), a model's own
+  pictures load through a texture loader that then starts none and reports no failure, and `mount` stops waiting
+  (`data-3d-off="failed"` on the page being left). WebKit cuts a page's loads earlier, at `beforeunload`: a model
+  picture that fails is reported only 1.5 s later, and not at all once the page is being left. `beforeunload` itself
+  is not listened for: it may not lead anywhere (a mailto link fires it in some browsers, and the page stays: the
+  scene comes up all the same, tea-hero-28), and a listener keeps Firefox from caching the page for the way back.
 - **Nothing moves under the reader.** The section grows by two screens when the scene pins, so the pin waits for a
   moment when that moves nothing the reader reads (`whenPinnable` in `pin.js`): the scroll at rest (no scroll for 200 ms
   and none over the next two frames, so a chapter link tapped just before the pin gets its jump), and the page at its

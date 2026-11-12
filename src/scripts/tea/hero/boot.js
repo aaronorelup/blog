@@ -35,18 +35,18 @@ function off(reason) {
   section.dataset.heroSettled = '';
 }
 
-// Leaving the page while the scene loads: WebKit cancels the page's loads right after beforeunload, before pagehide,
-// and refuses any fetch the page starts after that with a console error, so from beforeunload the scene starts no load
-// and reports none (leave, passed to mount). Listened for only until the scene's files are in (a beforeunload
-// listener keeps Firefox from caching the page for the way back).
+// Leaving the page while the scene loads (leave, passed to mount): from pagehide the scene starts no load and reports
+// none it loses. Only pagehide: a beforeunload may not lead anywhere (a mailto link fires it in some browsers, and the
+// page stays), and a beforeunload listener keeps Firefox from caching the page for the way back. WebKit cuts a page's
+// loads at beforeunload already, before pagehide: a model picture lost in between is reported only if it is still
+// missing once a leave would have shown (actors.js).
 function start() {
   const no = why();
   if (no) { off(no); return; }
   const leave = new AbortController();
   const stop = () => leave.abort();
-  addEventListener('beforeunload', stop);
   addEventListener('pagehide', stop);
-  const loaded = () => { removeEventListener('beforeunload', stop); removeEventListener('pagehide', stop); };
+  const loaded = () => { removeEventListener('pagehide', stop); };
   import('./stage.js')
     .then((m) => m.mount(section, stage, { signal: leave.signal, loaded }))
     .then(loaded, () => { loaded(); off('failed'); });

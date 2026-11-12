@@ -12,6 +12,10 @@ import { findNode } from './tracks.js';
 // and not by three's FileLoader, whose streamed read turns a body the leaving cuts into an unhandled rejection; and the
 // model's own pictures go through the parser's texture loader wrapped so that, once the page is being left, it starts
 // none and passes on no failure (GLTFLoader logs one for every picture the leaving cuts; stage.js stops waiting then).
+// The signal comes with pagehide, and WebKit cuts a page's loads earlier, as the leave begins (beforeunload): so a
+// picture that fails is reported only after LEAVE_GRACE ms, and not at all if the page was being left by then (the
+// pictures are in the GLB itself: one that fails for good, its data bad, is still reported, that much later).
+const LEAVE_GRACE = 1500;
 function gltf(signal) {
   const loader = new GLTFLoader();
   loader.setMeshoptDecoder(MeshoptDecoder);
@@ -29,7 +33,9 @@ function quiet(inner, signal) {
     isImageBitmapLoader: inner.isImageBitmapLoader === true,   // GLTFLoader reads it to know what onLoad is given
     load(url, onLoad, onProgress, onError) {
       if (signal.aborted) return;
-      inner.load(url, onLoad, onProgress, (e) => { if (!signal.aborted) onError(e); });
+      inner.load(url, onLoad, onProgress, (e) => {
+        if (!signal.aborted) setTimeout(() => { if (!signal.aborted) onError(e); }, LEAVE_GRACE);
+      });
     },
   };
 }

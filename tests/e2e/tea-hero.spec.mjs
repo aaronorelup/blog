@@ -683,3 +683,22 @@ test('tea-hero-27 the shipped leap: exactly one of a character and her leap mesh
   expect(out.got.sort()).toEqual(out.wanted.sort());
   expect(out.bad).toEqual([]);
 });
+
+// A beforeunload that does not lead to leaving (a mailto link fires it in some browsers, and the page stays) must not
+// cost the scene: the scene stops its loads on pagehide only (boot.js), which also keeps the page eligible for the
+// back/forward cache. The event comes while the models load; the scene comes up all the same, with nothing logged.
+test('tea-hero-28 a beforeunload that does not leave the page keeps the scene loading', async ({ page }) => {
+  const errors = [];
+  page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+  page.on('pageerror', (e) => errors.push(e.message));
+  const release = await gate(page, '**/*.glb');
+  const asked = page.waitForRequest(/\.glb$/, { timeout: 60_000 });
+  await page.goto('/tea/?hero=on');
+  await asked;
+  await page.evaluate(() => window.dispatchEvent(new Event('beforeunload')));
+  release();
+  await settled(page);
+  await expect(hero(page)).toHaveAttribute('data-3d', 'on');
+  await expect(hero(page)).not.toHaveAttribute('data-3d-off', /./);
+  expect(errors).toEqual([]);
+});
