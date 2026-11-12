@@ -32,8 +32,11 @@ function actor(spec, nodes = []) {
 test('a manifest without follow or fade normalises as before: every old field and default, the new two off', () => {
   const OLD = ['id', 'src', 'scale', 'position', 'rotation', 'portraitPosition', 'rig', 'deform', 'materials', 'tint',
     'envIntensity', 'props'];
-  const m = normalise(SHIPPED, '/tea/hero/manifest.json');
-  assert.equal(m.actors.length, SHIPPED.actors.length);
+  // the shipped manifest with any follow or fade taken out, so this holds once the cast's leap follows Jefrie
+  const plain = structuredClone(SHIPPED);
+  for (const a of plain.actors) { delete a.follow; delete a.fade; }
+  const m = normalise(plain, '/tea/hero/manifest.json');
+  assert.equal(m.actors.length, plain.actors.length);
   for (const a of m.actors) {
     assert.deepEqual(Object.keys(a).sort(), [...OLD, 'follow', 'fade'].sort(), a.id);
     assert.deepEqual([a.follow, a.fade], [null, false], a.id);
