@@ -165,13 +165,15 @@ export function filesOf(dist, html, page) {
 
 // The folders of the copy that a script may join a name to ('/tea/hero/' + m): each copied file's folder, two levels
 // deep or more (never '/' or '/fonts/'), and only when the copy holds every file the build has there, so any name
-// joined to it is a file of the copy. A folder the copy holds in part ('/media/previews/', which also serves video and
-// the previews of other posts) stays live: its string may be a prefix for anything. Returns [rewritten, left live].
+// joined to it is a file of the copy. A folder the copy holds in part ('/media/previews/': other posts' previews)
+// stays live, and so does any folder under /media/ or /read/: their video and audio live in R2 (docs/MEDIA.md), so
+// dist/ cannot show the folder whole. Returns [rewritten, left live].
 function foldersOf(files, assets, assetsAt, dist) {
   const dirs = new Map(), live = [];
   const have = new Set(files);
   for (const d of new Set(files.map((f) => f.slice(0, f.lastIndexOf('/') + 1)))) {
     if (d.split('/').length <= 3) continue;
+    if (/^\/(media|read)\//.test(d)) { live.push(`${d} (video and audio live in R2)`); continue; }
     const all = fs.readdirSync(path.join(dist, d), { withFileTypes: true }).filter((e) => e.isFile()).map((e) => d + e.name);
     if (all.every((f) => have.has(f) || fs.existsSync(path.join(assets, f)))) dirs.set(d, assetsAt + d);
     else live.push(`${d} (the copy holds ${all.filter((f) => have.has(f)).length} of its ${all.length} files)`);

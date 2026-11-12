@@ -1,5 +1,6 @@
 // scripts/tools/tea-freeze.mjs on a made-up build: a script's folder string ('/x/y/' + name) is pointed at the copy
-// only when the copy holds every file of that folder, so a prefix of video or of other pages stays live.
+// only when the copy holds every file of that folder, and never under /media/ (its video is in R2, not in dist/), so a
+// prefix of video or of other pages stays live.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -17,9 +18,11 @@ test('a folder string is pointed at the copy only when the copy holds the whole 
   put('dist/media/previews/b.webp', 'b');
   put('dist/media/previews/clip.mp4', 'v');
   put('dist/x/hero/one.webp', '1');
+  put('dist/media/post/still.webp', 's'); // the post's film, /media/post/film.mp4, is in R2: dist/ holds the still alone
   put('dist/p/index.html', '<html><head><meta name="viewport" content="width=device-width">' +
     '<meta name="ao-build" content="abc"></head><body><img src="/media/previews/a.webp"><img src="/x/hero/one.webp">' +
-    "<script>const clip = '/media/previews/'; const hero = '/x/hero/';</script></body></html>");
+    '<img src="/media/post/still.webp">' +
+    "<script>const clip = '/media/previews/'; const hero = '/x/hero/'; const film = '/media/post/';</script></body></html>");
   const cwd = process.cwd();
   process.chdir(root);
   try {
@@ -31,5 +34,7 @@ test('a folder string is pointed at the copy only when the copy holds the whole 
   assert.match(out, /src="\/c\/assets\/media\/previews\/a\.webp"/);
   assert.match(out, /const clip = '\/media\/previews\/'/);
   assert.match(out, /const hero = '\/c\/assets\/x\/hero\/'/);
+  assert.match(out, /const film = '\/media\/post\/'/);
+  assert.match(out, /src="\/c\/assets\/media\/post\/still\.webp"/);
   assert.ok(!fs.existsSync(path.join(root, 'public/c/assets/media/previews/clip.mp4')));
 });

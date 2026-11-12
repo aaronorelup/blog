@@ -437,12 +437,13 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
   and copies every file the page loads, its scripts' later fetches included (the 3D runtime, the models, the manifest,
   the posters), its stylesheets, fonts and pictures, under `<folder>/assets/` at their old paths, and points every
   reference there; links to other pages stay live and video stays at `/media/`. A script's folder string
-  (`'/tea/hero/' + m`) is pointed at the copy only when the copy holds every file of that folder; the tool prints the
-  folders it left live (`/media/previews/`, which serves video too). It refuses a folder that already has
-  a page and never writes over a file with other bytes. The copy says robots noindex and carries `ao-frozen` for
-  `ao-build`, so `stats-pages.txt` leaves it out (it never shows in `/stats`) and the font check skips it. It exits 1
-  if the copy still names a file under `/_astro/`, `/fonts/` or `/tea/hero/` outside itself. Then build and land it
-  before the replacing commit. Commit the copy as it came out: a frozen file is never edited.
+  (`'/tea/hero/' + m`) is pointed at the copy only when the copy holds every file of that folder, and never under
+  `/media/` or `/read/` (their video and audio are in R2, not in `dist/`); the tool prints the folders it left live.
+  It refuses a folder that already has a page and never writes over a file with other bytes. The copy says robots
+  noindex and carries `ao-frozen` for `ao-build`, so `stats-pages.txt` leaves it out (it never shows in `/stats`) and
+  the font check skips it. It exits 1 if the copy still names a file under `/_astro/`, `/fonts/` or `/tea/hero/`
+  outside itself. Then build and land it before the replacing commit. Commit the copy as it came out: a frozen file
+  is never edited.
 - **A content kind.** A collection in `src/content.config.ts` with a schema in `src/schemas/`, read only through
   `src/lib/content.js`, and its files added to the checker's scopes (`never-publish.mjs`, `links.mjs`).
 - **A Worker route.** A line in `ROUTES` (`worker/index.js`), its handler in its feature folder, the path in
