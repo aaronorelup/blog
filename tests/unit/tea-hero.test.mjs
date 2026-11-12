@@ -142,19 +142,22 @@ test('visible and opacity on a node are skipped; the actor\'s other tracks still
   assert.equal(a.model.children[0].visible, true);
 });
 
-test('a follower takes its leader\'s root and inner scale after every track, its own whole-actor ones included', () => {
+test('a follower takes its leader\'s root and inner scale after every track, its own whole-actor ones included, while the leader is cut away too', () => {
   const m = man(SWAP, [
     { actor: 'jefrie', channel: 'position', ease: 'linear', keys: [[0, [0, 0, 0]], [1, [1.2, 0.5, 0]]] },
     { actor: 'jefrie', channel: 'rotation', ease: 'linear', keys: [[0, [0, 0, 0]], [1, [0, 0, -22]]] },
     { actor: 'jefrie', channel: 'squash', ease: 'linear', keys: [[0, 0], [1, 0.1]] },
+    // the leader cut away from 0.5 (the leap mesh drawn in its place) while its tracks go on moving it
+    { actor: 'jefrie', channel: 'visible', ease: 'linear', keys: [[0.499, 1], [0.501, 0]] },
     { actor: 'jefrie_leap', channel: 'position', keys: [[0, [5, 5, 5]], [1, [5, 5, 5]]] },
   ]);
   const [j, l] = m.actors.map((s) => actor(s));
   l.inner.scale.setScalar(1);   // a follower's inner group is the leader's, every frame
   const bound = bindTracks(m, [j, l]);
   assert.deepEqual(bound.follow.map(([f, lead]) => [f.spec.id, lead.spec.id]), [['jefrie_leap', 'jefrie']]);
-  for (const p of [0.3, 0.7, 0]) {
+  for (const p of [0.3, 0.7, 0.9, 0]) {
     applyTracks(bound, p, 1.5);
+    assert.equal(j.root.visible, p < 0.5, `the leader shown at p ${p}`);
     assert.deepEqual(l.root.position.toArray(), j.root.position.toArray(), `position at p ${p}`);
     assert.deepEqual(l.root.quaternion.toArray(), j.root.quaternion.toArray(), `rotation at p ${p}`);
     assert.deepEqual(l.inner.scale.toArray(), j.inner.scale.toArray(), `scale at p ${p}`);
