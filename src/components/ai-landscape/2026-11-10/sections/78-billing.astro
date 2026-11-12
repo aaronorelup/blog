@@ -1,0 +1,55 @@
+---
+// Billing (SPEC 2.9.5): a monthly plan, pay per use, and what happens at the limit, for each company. Text version:
+// the trends, then a table of the five with their plan lines. 3D page (sections/agnostic.js, kind "rail"): a rail along
+// the front of the floor, a tank and a meter for each company, a bead that switches to the meter when the tank is dry.
+import '../../../../styles/ai-landscape/2026-11-10/architecture.css';
+import Fact from '../Fact.astro';
+import { COPY } from '../data/copy.js';
+import { fact, view } from '../data/view.js';
+
+const B = view.data.architecture.billing;
+const HEADS = [['plan', COPY.architecture.plan], ['meter', COPY.architecture.meter], ['limit', COPY.architecture.atLimit]];
+const rows = B.providers.map((bp) => {
+  const p = view.data.providers[bp.provider];
+  const all = [...(p.plans.consumer || []), ...(p.plans.other || [])];
+  return {
+    id: bp.provider, name: view.provider(bp.provider).name,
+    cells: { plan: fact(bp.subscription), meter: fact(bp.payAsYouGo), limit: fact(bp.atLimit) },
+    third: fact(bp.thirdPartyUse.claim),
+    plans: bp.planRefs.map((ref) => all.find((x) => x.id === ref)).filter(Boolean).map((x) => ({ name: x.name, fact: fact(x.claim), usd: x.usdPerMonth })),
+  };
+});
+---
+<section id="billing" class="ail-sec ail-bill" data-sec="agnostic" data-kind="rail" data-screens="0.7" data-land="0.35" data-rail={B.claim.short} aria-labelledby="billing-title">
+  <div class="ail-stage">
+    <h2 id="billing-title" class="ail-bill__claim ail-sentence"><Fact fact={fact(B.claim)} /></h2>
+    <ol class="ail-bill__trends">
+      {B.trends.map((t, i) => <li class="ail-bill__trend" data-i={i}><Fact fact={fact(t)} /></li>)}
+    </ol>
+    <p class="ail-bill__pager" hidden>{B.trends.map((_, i) => <button type="button" class="ail-bill__dot" data-i={i} aria-label={String(i + 1)} aria-pressed="false"></button>)}</p>
+    <table class="ail-bill__table">
+      <thead>
+        <tr><td></td>{HEADS.map(([k, w]) => <th scope="col" class="ail-label" data-k={k}>{w}</th>)}<td></td></tr>
+      </thead>
+      <tbody>
+        {rows.map((r) => (
+          <tr class="ail-bill__row" data-p={r.id}>
+            <th scope="row" class="ail-bill__name"><button type="button" class="ail-bill__pick ail-label" aria-pressed="false"><span class="ail-bill__pn">{r.name}</span></button><span class="ail-bill__nm ail-title" aria-hidden="true">{r.name}</span></th>
+            {HEADS.map(([k, w]) => (
+              <td class="ail-bill__cell" data-k={k}><span class="ail-bill__h ail-label" aria-hidden="true">{w}</span><Fact fact={r.cells[k]} full>{r.cells[k].short}</Fact></td>
+            ))}
+            <td class="ail-bill__x">
+              <details class="ail-bill__more">
+                <summary class="ail-ar-more"><svg class="ail-ar-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h.5M12 12h.5M19 12h.5" /></svg><span class="ail-ar-morew ail-label">{r.plans.length + 1} {COPY.world.more}</span></summary>
+                <ul class="ail-bill__plans ail-card">
+                  <li><Fact fact={r.third} /></li>
+                  {r.plans.map((x) => <li><b>{x.name}</b> {typeof x.usd === 'number' && <span class="ail-label">${x.usd}</span>} <Fact fact={x.fact} full>{x.fact.short}</Fact></li>)}
+                </ul>
+              </details>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</section>
