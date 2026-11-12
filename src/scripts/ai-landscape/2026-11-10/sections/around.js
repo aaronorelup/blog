@@ -44,14 +44,15 @@ export function create(ctx, el, sec) {
     const h = ray.intersectObjects(base.blocks.map((b) => b.mesh), false)[0];
     return h ? base.blocks.findIndex((b) => b.mesh === h.object) : -1;
   };
+  // <main> lies over the canvas, so the click is heard on the window. A control keeps its own click
   const onClick = (e) => {
-    if (sec !== ctx.clock.current || st.k < 0.9) return;
+    if (sec !== ctx.clock.current || st.k < 0.9 || e.target.closest('a, button, summary, details, header, nav, dialog')) return;
     const k = hit(e.clientX, e.clientY);
     if (k < 0) return;
     touch(); pick(k);
     tags.forEach((t, i) => { t.open = i === k && !t.open; });
   };
-  ctx.canvas.addEventListener('click', onClick);
+  window.addEventListener('click', onClick);
   // Escape steps back: every card this section opened closes
   const onEsc = (e) => { if (e.key === 'Escape' && sec === ctx.clock.current) $$('details[open]:not(.ail-ms__pairs)', el).forEach((d) => { d.open = false; }); };
   window.addEventListener('keydown', onEsc);
@@ -106,7 +107,7 @@ export function create(ctx, el, sec) {
       stopTour(); unrove(); window.removeEventListener('keydown', onEsc);
       list.removeEventListener('focusin', onFocus);
       list.removeEventListener('toggle', onToggle, true);
-      ctx.canvas.removeEventListener('click', onClick);
+      window.removeEventListener('click', onClick);
       pins.forEach((p) => p.drop());
       base.dispose();
     },

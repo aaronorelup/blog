@@ -23,6 +23,7 @@ export function create(ctx, el, sec) {
   const last = order.indexOf(id) === order.length - 1;
   const before = first ? null : row.tower(order[order.indexOf(id) - 1]);
   const root = document.documentElement;
+  const main = el.closest('main');
   const stage = $('.ail-stage', el);
   const head = $('.ail-world__head', el);
   const nameEl = $('.ail-world__name', el);
@@ -114,8 +115,9 @@ export function create(ctx, el, sec) {
   const caption = $('.ail-world__caption', el);
   const ray = new Raycaster();
   const capPin = caption && inst.parts.portrait ? labels.pin(caption, () => point.copy(inst.parts.portrait.position).add(inst.group.position).setY(inst.parts.portrait.position.y - 2.3), { ax: 0.5, ay: 0 }) : null;
+  // <main> lies over the canvas, so the click is heard on the window. A control or a word keeps its own click
   const onCanvas = (e) => {
-    if (sec !== ctx.clock.current) return;
+    if (sec !== ctx.clock.current || e.target.closest('a, button, summary, details, li, header, nav, dialog, .ail-card, [data-hit]')) return;
     if (capPin && st.open > 0.9) {
       ray.setFromCamera(new Vector2((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1), ctx.camera);
       toggle(caption, ray.intersectObject(inst.parts.portrait).length > 0 && !caption.classList.contains('is-on'));
@@ -124,7 +126,7 @@ export function create(ctx, el, sec) {
     const hit = row.pick(e.clientX, e.clientY, tower);
     if (hit) push(hit.i); else closePush();
   };
-  ctx.canvas.addEventListener('click', onCanvas);
+  window.addEventListener('click', onCanvas);
 
   // ---- the signature: loaded when the world is entered, plays once by itself, then waits for the visitor
   const api = { id, cfg, el, tower, inst, data, sec, ui: $('.ail-sig', el), calls: () => st.calls, button: (act) => $(`.ail-sig [data-act="${act}"]`, el),
@@ -148,7 +150,7 @@ export function create(ctx, el, sec) {
     stops: [0.14, 0.42, 0.66, 0.9],
     enter() { measure(); askSignature(); select(agentDoor, true); },
     leave() {
-      setChrome('light'); closePush(); toggle(caption, false);
+      setChrome('light'); closePush(); toggle(caption, false); main.style.cursor = '';
       leaves.show = 0; leaves.update();
       if (st.cores) { st.cores.show = 0; st.cores.update(); }
       if (st.sig) { st.sig.reset(); if (st.caught && st.sig.catch) st.sig.catch(0); }
@@ -184,7 +186,7 @@ export function create(ctx, el, sec) {
       // the iris opens from the stack over 0.35 screens and shuts in the last 0.2
       const open = smooth(span(u, 0.25, 0.6)) * (1 - smooth(span(u, 2.8, 2.98)));
       st.open = open;
-      setBeat(el, beat === 'a' && open < 0.4 ? '' : beat);             // the words of a world arrive with the world
+      setBeat(el, (beat === 'a' || beat === 'd') && open < 0.4 ? '' : beat);   // the words of a world arrive and leave with the world
       inst.open = open;
       for (const tw of row.towers) if (tw !== tower) tw.side = -1;
       studio.lamp.copy(hero).lerp(lamp.set(...cfg.hour.lamp), open);
@@ -217,11 +219,12 @@ export function create(ctx, el, sec) {
         doorsEl.style.left = `${(a0.x + 46).toFixed(0)}px`; doorsEl.style.top = `${Math.max(64, a0.y - 78).toFixed(0)}px`;
       }
       if (st.cardPin) st.cardPin.el.style.opacity = amount.toFixed(2);
+      if (!ctx.phone) doorsEl.style.visibility = beat === 'b' && amount < 0.02 ? 'hidden' : '';
       leaves.show = smooth(span(tower.open, 0.5, 0.9)); leaves.update(dt);
 
       // hover: that floor lights and the others fall back. A product with no stack keeps only its model floor
-      if (beat === 'b' && !input.touch && input.moved) { const hit = row.pick(input.px, input.py, tower); st.hover = hit ? hit.i : -1; ctx.canvas.style.cursor = hit ? 'pointer' : ''; }
-      if (beat !== 'b') st.hover = -1;
+      if (beat === 'b' && !input.touch && input.moved) { const hit = row.pick(input.px, input.py, tower); st.hover = hit ? hit.i : -1; main.style.cursor = hit ? 'pointer' : ''; }
+      if (beat !== 'b') { st.hover = -1; main.style.cursor = ''; }
       const focus = beat === 'b' ? (st.pushed >= 0 ? st.pushed : st.hover) : -1;
       const bare = !doors[st.door].info.stack;
       tower.floors.forEach((f, i) => {
@@ -257,7 +260,7 @@ export function create(ctx, el, sec) {
     dispose() {
       st.gone = true;
       window.removeEventListener('keydown', onKey);
-      ctx.canvas.removeEventListener('click', onCanvas);
+      window.removeEventListener('click', onCanvas);
       doorsEl.removeEventListener('click', onRow);
       doorsEl.removeEventListener('click', onTab);
       doorsEl.removeEventListener('keydown', onRowKey);
