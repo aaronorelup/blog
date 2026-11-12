@@ -2,8 +2,8 @@
 // three loaded the way the page loads it: the manifest's defaults, and the new fields only where they are written; the
 // track maths of every channel; one actor swapped for another (follow, a visible cut, an opacity dissolve that always
 // comes back, scrolled down and back like the page); a skinned mesh's skeleton freed; and the shipped manifest held to
-// what the runtime knows, its own leap swap included, and its picture to covering every frame (edges.mjs). The browser
-// side of the same swaps is e2e tea-hero-26 and 27.
+// what the runtime knows (the TV alone now: no actor handed over to another), its camera's move to the tea house door,
+// and its picture to covering every frame (edges.mjs). The browser side of the same swaps is e2e tea-hero-26 and 27.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -33,7 +33,7 @@ function actor(spec, nodes = []) {
 test('a manifest without follow or fade normalises as before: every old field and default, the new two off', () => {
   const OLD = ['id', 'src', 'scale', 'position', 'rotation', 'portraitPosition', 'rig', 'deform', 'materials', 'tint',
     'envIntensity', 'props'];
-  // the shipped manifest with any follow or fade taken out, so this holds once the cast's leap follows Jefrie
+  // the shipped manifest with any follow or fade taken out, so this holds whatever cast it carries
   const plain = structuredClone(SHIPPED);
   for (const a of plain.actors) { delete a.follow; delete a.fade; }
   const m = normalise(plain, '/tea/hero/manifest.json');
@@ -92,16 +92,16 @@ test('the old channels move nodes and roots as deltas from rest, and leave every
   assert.deepEqual(bound.follow, []);
 });
 
-const SWAP = [{ id: 'jefrie', src: 'j.glb', position: [-1.8, 1.05, 0.8], scale: 2 },
-  { id: 'jefrie_leap', src: 'l.glb', follow: 'jefrie', fade: true, position: [0.066, 0.0308, 0.0026],
+const SWAP = [{ id: 'figure', src: 'j.glb', position: [-1.8, 1.05, 0.8], scale: 2 },
+  { id: 'standin', src: 'l.glb', follow: 'figure', fade: true, position: [0.066, 0.0308, 0.0026],
     rotation: [-1.06, -36.11, 11.97], scale: 1.0164 }];
 // down to 0.8 and back to 0, as the rig harness's swap check runs the page
 const STEPS = [0, 0.1, 0.17, 0.19, 0.2, 0.25, 0.4, 0.5, 0.52, 0.6, 0.8, 0.45, 0.2, 0.1, 0];
 
 test('a cut: the visible channel shows one actor or the other, scrolled down and back', () => {
   const m = man(SWAP, [
-    { actor: 'jefrie', channel: 'visible', ease: 'linear', keys: [[0.499, 1], [0.501, 0]] },
-    { actor: 'jefrie_leap', channel: 'visible', ease: 'linear', keys: [[0.499, 0], [0.501, 1]] },
+    { actor: 'figure', channel: 'visible', ease: 'linear', keys: [[0.499, 1], [0.501, 0]] },
+    { actor: 'standin', channel: 'visible', ease: 'linear', keys: [[0.499, 0], [0.501, 1]] },
   ]);
   const [j, l] = m.actors.map((s) => actor(s));
   const bound = bindTracks(m, [j, l]);
@@ -114,8 +114,8 @@ test('a cut: the visible channel shows one actor or the other, scrolled down and
 
 test('a dissolve: opacity hides an actor only while it is near 0, and brings it back on the way back (N1)', () => {
   const m = man(SWAP, [
-    { actor: 'jefrie', channel: 'opacity', ease: 'linear', keys: [[0.18, 1], [0.21, 0], [0.5, 0], [0.53, 1]] },
-    { actor: 'jefrie_leap', channel: 'opacity', ease: 'linear', keys: [[0.18, 0], [0.21, 1], [0.5, 1], [0.53, 0]] },
+    { actor: 'figure', channel: 'opacity', ease: 'linear', keys: [[0.18, 1], [0.21, 0], [0.5, 0], [0.53, 1]] },
+    { actor: 'standin', channel: 'opacity', ease: 'linear', keys: [[0.18, 0], [0.21, 1], [0.5, 1], [0.53, 0]] },
   ]);
   const [j, l] = m.actors.map((s) => actor(s));
   const mat = new MeshStandardMaterial({ opacity: 0.8 });
@@ -126,9 +126,9 @@ test('a dissolve: opacity hides an actor only while it is near 0, and brings it 
     const oj = sample(bound.scroll[0].keys, p, 'linear');
     const ol = sample(bound.scroll[1].keys, p, 'linear');
     assert.deepEqual([j.root.visible, l.root.visible], [oj > 0.004, ol > 0.004], `p ${p}`);
-    near(mat.opacity, 0.8 * ol, `leap opacity at p ${p}`);
+    near(mat.opacity, 0.8 * ol, `stand-in opacity at p ${p}`);
   }
-  assert.equal(j.root.visible, true, 'back at the top, Jefrie shows again');
+  assert.equal(j.root.visible, true, 'back at the top, the figure shows again');
   assert.deepEqual([shownBy(null, null), shownBy(0.5, null), shownBy(0.49, null), shownBy(null, 0.004), shownBy(1, 0.01)],
     [true, true, false, false, true]);
 });
@@ -148,17 +148,17 @@ test('visible and opacity on a node are skipped; the actor\'s other tracks still
 
 test('a follower takes its leader\'s root and inner scale after every track, its own whole-actor ones included, while the leader is cut away too', () => {
   const m = man(SWAP, [
-    { actor: 'jefrie', channel: 'position', ease: 'linear', keys: [[0, [0, 0, 0]], [1, [1.2, 0.5, 0]]] },
-    { actor: 'jefrie', channel: 'rotation', ease: 'linear', keys: [[0, [0, 0, 0]], [1, [0, 0, -22]]] },
-    { actor: 'jefrie', channel: 'squash', ease: 'linear', keys: [[0, 0], [1, 0.1]] },
-    // the leader cut away from 0.5 (the leap mesh drawn in its place) while its tracks go on moving it
-    { actor: 'jefrie', channel: 'visible', ease: 'linear', keys: [[0.499, 1], [0.501, 0]] },
-    { actor: 'jefrie_leap', channel: 'position', keys: [[0, [5, 5, 5]], [1, [5, 5, 5]]] },
+    { actor: 'figure', channel: 'position', ease: 'linear', keys: [[0, [0, 0, 0]], [1, [1.2, 0.5, 0]]] },
+    { actor: 'figure', channel: 'rotation', ease: 'linear', keys: [[0, [0, 0, 0]], [1, [0, 0, -22]]] },
+    { actor: 'figure', channel: 'squash', ease: 'linear', keys: [[0, 0], [1, 0.1]] },
+    // the leader cut away from 0.5 (the stand-in drawn in its place) while its tracks go on moving it
+    { actor: 'figure', channel: 'visible', ease: 'linear', keys: [[0.499, 1], [0.501, 0]] },
+    { actor: 'standin', channel: 'position', keys: [[0, [5, 5, 5]], [1, [5, 5, 5]]] },
   ]);
   const [j, l] = m.actors.map((s) => actor(s));
   l.inner.scale.setScalar(1);   // a follower's inner group is the leader's, every frame
   const bound = bindTracks(m, [j, l]);
-  assert.deepEqual(bound.follow.map(([f, lead]) => [f.spec.id, lead.spec.id]), [['jefrie_leap', 'jefrie']]);
+  assert.deepEqual(bound.follow.map(([f, lead]) => [f.spec.id, lead.spec.id]), [['standin', 'figure']]);
   for (const p of [0.3, 0.7, 0.9, 0]) {
     applyTracks(bound, p, 1.5);
     assert.equal(j.root.visible, p < 0.5, `the leader shown at p ${p}`);
@@ -269,16 +269,9 @@ test('camera.portrait.keys: a portrait screen follows its own path, a landscape 
   assert.deepEqual(pulled, [0, 1, 8], 'no portrait keys: the landscape path pulled back along the view');
 });
 
-// The shipped manifest's own swap (the leap: a pose-baked mesh that follows Jefrie, cut in and out with visible), over
-// the real manifest and the real modules, each model an empty glTF scene (no WebGL, no files). A runtime without follow
-// or visible draws both figures all the time with the leap mesh at the scene's origin, and nothing else notices: every
-// name still binds (tea-hero-24). So: every follower keeps its leader, and down the scroll and back, a step either side
-// of every visible key and at 0, 0.3, 0.6 and 1, exactly one of each pair is drawn, the follower on its leader's root.
-// The page's side of it is e2e tea-hero-27.
-const FOLLOWERS = (SHIPPED.actors || []).filter((a) => a.follow);
-// An actor hidden at the top of the scroll by its own whole-actor visible or opacity track stands in for another for
-// part of it (the leap mesh in Jefrie's place): read from the file as written, so a manifest that has lost a "follow"
-// fails here rather than leaving the swap test below nothing to check.
+// The shipped scene has no characters: the garden, the tea house and the TV. An actor hidden at the top of the scroll
+// by its own whole-actor visible or opacity track would stand in for another for part of it, so it would have to
+// follow someone (read from the file as written: a stand-in that has lost its "follow" fails here).
 const hiddenAtTop = (id) => (SHIPPED.tracks || []).some((t) => t.actor === id && !t.node && t.keys && t.keys.length
   && ((t.channel === 'visible' && sample(t.keys, 0, 'linear') < 0.5) || (t.channel === 'opacity' && sample(t.keys, 0, 'linear') <= 0.004)));
 const STANDINS = (SHIPPED.actors || []).filter((a) => hiddenAtTop(a.id));
@@ -288,56 +281,85 @@ test('every stand-in of the shipped manifest follows the actor it stands in for'
       `${a.id} is hidden at the top of the scroll by its own track and follows no one: it is drawn at its own place`);
   }
 });
-test('the shipped swap: exactly one of each pair drawn down the scroll and back, the follower on its leader\'s root',
-  { skip: !FOLLOWERS.length && !STANDINS.length && 'the shipped manifest hands no actor over to another' }, async () => {
-    const m = normalise(SHIPPED, '/tea/hero/manifest.json');
-    for (const f of FOLLOWERS) {
-      assert.ok(SHIPPED.actors.some((a) => a.id === f.follow), `${f.id} follows ${f.follow}, which is not an actor`);
-      assert.equal(m.actors.find((a) => a.id === f.id).follow, f.follow, `${f.id}: the runtime's manifest.js drops "follow"`);
-    }
-    const EMPTY = JSON.stringify({ asset: { version: '2.0' }, scene: 0, scenes: [{ nodes: [] }] });
-    const fetched = globalThis.fetch;
-    globalThis.fetch = async () => new Response(EMPTY, { status: 200 });
-    let actors;
-    try { actors = await loadActors(m, false); } finally { globalThis.fetch = fetched; }
-    const bound = bindTracks(m, actors);
-    const byId = new Map(actors.map((a) => [a.spec.id, a]));
-    const cuts = SHIPPED.tracks.filter((t) => t.channel === 'visible').flatMap((t) => t.keys.map(([p]) => p));
-    assert.ok(cuts.length, 'a follower with no visible track is drawn together with its leader all the time');
-    const ps = [...new Set([0, 0.3, 0.6, 1, ...cuts.flatMap((p) => [p - 0.001, p + 0.001])])]
-      .filter((p) => p >= 0 && p <= 1).sort((a, b) => a - b);
-    for (const f of FOLLOWERS) {
-      const [fa, la] = [byId.get(f.id), byId.get(f.follow)];
-      for (const p of [...ps, ...ps.slice().reverse()]) {
-        applyTracks(bound, p, 0);
-        const drawn = [la, fa].filter((a) => a.root.visible).map((a) => a.spec.id);
-        assert.equal(drawn.length, 1, `at progress ${p}: ${drawn.length ? drawn.join(' and ') : 'neither'} drawn`);
-        assert.ok(fa.root.position.distanceTo(la.root.position) < 1e-9 && fa.root.quaternion.angleTo(la.root.quaternion) < 1e-6
-          && fa.inner.scale.distanceTo(la.inner.scale) < 1e-9, `at progress ${p}: ${f.id} is not on ${f.follow}'s root`);
-      }
-    }
-  });
-// The opening frame is every visitor's first picture (the posters are made from it): Jefrie stands in a stance there,
-// her arms lowered from her rig's bind pose (an A-pose, the arms out at about 45 degrees), not in the bind pose itself.
-test('the shipped opening frame: Jefrie stands with her arms lowered from her rig\'s A-pose', () => {
-  for (const [node, down] of [['upperarm.L', -1], ['upperarm.R', 1]]) {
-    const t = SHIPPED.tracks.find((x) => x.actor === 'jefrie' && x.node === node && x.channel === 'rotation');
-    const z = t ? sample(t.keys, 0, t.ease || 'smooth')[2] : 0;
-    assert.ok(z * down >= 20, `${node} at progress 0: lowered ${z * down} degrees from the bind pose`);
+
+// The cast is the TV alone (Jefrie, Yusef, her leap mesh and his lantern are gone): its screen keeps the CRT shader,
+// its light and its glow; nothing in the manifest names an actor or a model that is not there, and every model file in
+// public/tea/hero/ is one the manifest loads (so a removed character's GLB is not shipped for nothing).
+test('the shipped cast: the TV alone, with its screen shader, light and glow; nothing names a missing actor or model', () => {
+  assert.deepEqual(SHIPPED.actors.map((a) => a.id), ['tv']);
+  const [tv] = SHIPPED.actors;
+  assert.deepEqual(tv.materials, { screen: { shader: 'crt' } });
+  assert.ok(SHIPPED.lights.some((l) => l.attach && l.attach.actor === 'tv' && l.flicker === 'crt'), 'the TV\'s light');
+  assert.ok(SHIPPED.glows.some((g) => g.attach && g.attach.actor === 'tv' && g.flicker === 'crt'), 'the TV\'s glow');
+  const ids = new Set(SHIPPED.actors.map((a) => a.id));
+  const named = [...SHIPPED.tracks, ...SHIPPED.idle].map((t) => t.actor)
+    .concat([...SHIPPED.lights, ...SHIPPED.glows].filter((x) => x.attach).map((x) => x.attach.actor))
+    .concat(SHIPPED.actors.filter((a) => a.follow).map((a) => a.follow));
+  for (const id of named) assert.ok(ids.has(id), `${id} is named but is not an actor`);
+  const dir = new URL('../../public/tea/hero/', import.meta.url);
+  const srcs = SHIPPED.actors.flatMap((a) => [a.src, ...(a.props || []).map((p) => p.src)]);
+  for (const f of srcs) assert.ok(fs.existsSync(new URL(f, dir)), `${f} is missing`);
+  assert.deepEqual(fs.readdirSync(dir).filter((f) => f.endsWith('.glb')).sort(), [...new Set(srcs)].sort());
+});
+
+// No actor is handed over or hidden: over the real manifest and modules (each model an empty glTF scene, no WebGL),
+// down the scroll and back, every actor is drawn at every step. The page's side of it is e2e tea-hero-27.
+test('the shipped scene: no actor follows another, and every actor is drawn down the scroll and back', async () => {
+  const m = normalise(SHIPPED, '/tea/hero/manifest.json');
+  assert.deepEqual(m.actors.filter((a) => a.follow).map((a) => a.id), []);
+  const EMPTY = JSON.stringify({ asset: { version: '2.0' }, scene: 0, scenes: [{ nodes: [] }] });
+  const fetched = globalThis.fetch;
+  globalThis.fetch = async () => new Response(EMPTY, { status: 200 });
+  let actors;
+  try { actors = await loadActors(m, false); } finally { globalThis.fetch = fetched; }
+  const bound = bindTracks(m, actors);
+  assert.deepEqual(bound.follow, []);
+  const ps = [0, 0.05, 0.1, 0.13, 0.2, 0.35, 0.5, 0.7, 0.9, 1];
+  for (const p of [...ps, ...ps.slice().reverse()]) {
+    applyTracks(bound, p, 0);
+    for (const a of actors) assert.ok(a.root.visible, `at progress ${p}: ${a.spec.id} is not drawn`);
   }
 });
 
-// A manifest copied over whole (the cast's, which carries the painter's own fit of the picture) or a new camera key can
-// let a layer's edge into the frame: the shipped one is traced at every size edges.mjs knows, and the painter's fit,
-// which shows the far plate's left edge on a docked desktop and its foot on a portrait tablet, has to fail.
+// The camera's move: at the opening frame (the posters, every path's first picture) the TV stands inside the frame, a
+// landscape and a portrait screen alike, and by the end of the scroll the camera has eased in to the tea house door
+// (the doorway of the far plate, about world (0.07, 1.58) at z -10): looking straight at it, nearer than it started.
+test('the shipped camera: the TV in frame at the start, the tea house door ahead at the end', async () => {
+  const { createCamera, fitCamera, placeCamera } = await import('../../src/scripts/tea/hero/camera.js');
+  const { Vector3 } = await import('three');
+  const m = normalise(SHIPPED, '/tea/hero/manifest.json');
+  const [tv] = m.actors;
+  for (const [w, h] of [[1440, 900], [1280, 800], [1024, 768], [768, 1024], [390, 844]]) {
+    const rig = createCamera(m);
+    fitCamera(rig, m.reference.aspect, w, h);
+    placeCamera(rig, 0, { x: 0, y: 0 });
+    rig.cam.updateMatrixWorld();
+    const at = rig.portrait && tv.portraitPosition ? tv.portraitPosition
+      : rig.portrait ? [tv.position[0] * m.camera.portrait.spread, tv.position[1], tv.position[2]] : tv.position;
+    // the TV's middle (it is 0.83 units tall at scale 1, so about 0.25 above its origin at its scale)
+    const ndc = new Vector3(at[0], at[1] + 0.25 * tv.scale / 0.62, at[2]).project(rig.cam);
+    assert.ok(Math.abs(ndc.x) < 0.95 && Math.abs(ndc.y) < 0.95, `${w}x${h}: the TV at ${ndc.x.toFixed(2)}, ${ndc.y.toFixed(2)}`);
+    const door = new Vector3(0.07, 1.58, -10);
+    const start = rig.cam.position.distanceTo(door);
+    placeCamera(rig, 1, { x: 0, y: 0 });
+    rig.cam.updateMatrixWorld();
+    const d = door.clone().project(rig.cam);
+    assert.ok(Math.abs(d.x) < 0.3 && Math.abs(d.y) < 0.5, `${w}x${h}: the door at ${d.x.toFixed(2)}, ${d.y.toFixed(2)} at the end`);
+    assert.ok(rig.cam.position.distanceTo(door) < start * 0.7, `${w}x${h}: the camera ends nearer the door`);
+  }
+});
+
+// A manifest copied over whole or a new camera key can let a layer's edge into the frame: the shipped one is traced at
+// every size edges.mjs knows, and a far plate a tenth smaller has to fail. (The painter's own fit, which failed under
+// the cast's camera, which drifted left over the leap, passes under the calmer camera without the characters.)
 test('the shipped picture covers every frame: 17 sizes, the whole scroll, the pointer anywhere, docked or not (edges.mjs)', async () => {
   const { edges } = await import('../../scripts/tools/tea-hero/edges.mjs');
   const shipped = await edges(SHIPPED);
   assert.equal(shipped.faults, 0, shipped.lines.join('\n'));
-  const painter = structuredClone(SHIPPED);
-  const layer = (id) => painter.background.layers.find((l) => l.id === id);
-  Object.assign(layer('far'), { size: [28.16, 15.84], y: 0.65 });
-  Object.assign(layer('mid'), { size: [18, 12] });
-  const fit = await edges(painter, { sizes: ['1280x800:dock:1.12', '768x1024'] });
+  // and a picture too small for it is caught: the far plate a tenth smaller shows its foot on a portrait tablet
+  const small = structuredClone(SHIPPED);
+  const far = small.background.layers.find((l) => l.id === 'far');
+  far.size = far.size.map((v) => v * 0.9);
+  const fit = await edges(small, { sizes: ['1280x800:dock:1.12', '768x1024'] });
   assert.ok(fit.faults > 0, fit.lines.join('\n'));
 });

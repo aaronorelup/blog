@@ -468,25 +468,28 @@ test('tea-hero-21 the box docks only where it leaves most of the frame to the sc
   }
 });
 
-test('tea-hero-22 on a portrait screen the cast stands clear above the title box in the first screen', async ({ page, isMobile }) => {
+test('tea-hero-22 on a portrait screen the scene stands clear above the title box in the first screen', async ({ page, isMobile }) => {
   if (!isMobile) await page.setViewportSize({ width: 768, height: 1024 });
   for (const url of ['/tea/?hero=off', '/tea/?hero=on']) {
     await page.goto(url);
     await settled(page);
-    // the box waits low (the portrait camera stands the cast in the top 60% of the frame), on both paths
+    // the box waits low (the portrait camera stands the TV and the tea house in the top 60% of the frame), on both paths
     const top = await page.locator('.tea-hero-box').evaluate((b) => b.getBoundingClientRect().top / innerHeight);
     expect(top, url).toBeGreaterThan(0.55);
     expect(top, url).toBeLessThan(0.7);
   }
-  // and the scene keeps the portrait frame's full height on this screen (no crop of the characters' heads)
+  // and the scene keeps the portrait frame's full height on this screen (no crop of the tea house's roof)
   expect(await page.evaluate(() => Math.round(window.__teaHero.state.camRig.cam.fov))).toBe(50);
-  // the scene plays over a screen and a half of scroll at least, after the box has scrolled away (the lead): with the
-  // landscape screens' 300vh a phone's leap went by in about a third of a screen
-  const play = await hero(page).evaluate((s) => {
+  // the pinned scene is three screens on every shape (the 400vh a portrait screen had gave the leap room; the camera's
+  // slow move to the door needs no more), and after the box has scrolled away (the lead) the move plays over most of a
+  // screen of scroll at least
+  const { tall, play } = await hero(page).evaluate((s) => {
     const st = window.__teaHero.state;
-    return (1 - st.lead) * (s.offsetHeight - innerHeight) / innerHeight;
+    return { tall: s.offsetHeight / innerHeight, play: (1 - st.lead) * (s.offsetHeight - innerHeight) / innerHeight };
   });
-  expect(play).toBeGreaterThan(1.5);
+  expect(tall).toBeGreaterThan(2.95);
+  expect(tall).toBeLessThan(3.05);
+  expect(play).toBeGreaterThan(0.8);
 });
 
 // A chapter link tapped in the last moments before the scene pins lands on its chapter all the same. The pin waits for
@@ -581,20 +584,21 @@ test('tea-hero-25 leaving the page while the scene loads leaves no console error
   expect(errors).toEqual([]);
 });
 
-// The swap the final cast uses (docs/TEA_HERO.md, "One actor in place of another"), on /tea/ itself with the shipped
-// manifest plus a follower, served in its place: a follower riding Jefrie, made of another actor's model, that
-// dissolves in (fade, opacity) while she dissolves out and back, and the last actor cut away (visible) late in the
-// scroll; down to 0.8 and back to 0. The manifest's own followers and whole-actor visible and opacity tracks are left
-// out, so these keys alone show or hide an actor, and no file name is assumed: it holds whatever the cast is.
+// The runtime's swap (docs/TEA_HERO.md, "One actor in place of another"), on /tea/ itself with the shipped manifest
+// plus two actors, served in its place: a follower riding the manifest's first actor (the TV, now the only one), made
+// of the same model, that dissolves in (fade, opacity) while its leader dissolves out and back, and a second copy of it
+// standing apart that is cut away (visible) late in the scroll; down to 0.8 and back to 0. The manifest's own
+// followers and whole-actor visible and opacity tracks are left out, so these keys alone show or hide an actor, and no
+// actor id or file name is assumed: it holds whatever the cast is.
 test('tea-hero-26 one actor swapped for another rides its leader and cuts and dissolves as keyed, down and back', async ({ page }) => {
   test.setTimeout(180_000);
   const errors = [];
   page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
   page.on('pageerror', (e) => errors.push(e.message));
-  const LEAD = 'jefrie';
+  let LEAD = null;
   const KEYS = {
-    [LEAD]: { channel: 'opacity', keys: [[0.18, 1], [0.21, 0], [0.5, 0], [0.53, 1]] },
     swap: { channel: 'opacity', keys: [[0.18, 0], [0.21, 1], [0.5, 1], [0.53, 0]] },
+    apart: { channel: 'visible', keys: [[0.699, 1], [0.701, 0]] },
   };
   let cast = [];
   await page.route('**/tea/hero/manifest.json', async (route) => {
@@ -604,10 +608,11 @@ test('tea-hero-26 one actor swapped for another rides its leader and cuts and di
     m.actors = m.actors.filter((a) => !a.follow);
     m.tracks = m.tracks.filter(keep);
     m.idle = (m.idle || []).filter(keep);
-    const others = m.actors.filter((a) => a.id !== LEAD);
-    KEYS[others[others.length - 1].id] = { channel: 'visible', keys: [[0.699, 1], [0.701, 0]] };
-    m.actors.push({ id: 'swap', src: others[0].src, follow: LEAD, fade: true, position: [0.3, 0, 0.1],
+    LEAD = m.actors[0].id;
+    KEYS[LEAD] = { channel: 'opacity', keys: [[0.18, 1], [0.21, 0], [0.5, 0], [0.53, 1]] };
+    m.actors.push({ id: 'swap', src: m.actors[0].src, follow: LEAD, fade: true, position: [0.3, 0, 0.1],
       rotation: [0, 40, 0], scale: 0.5 });
+    m.actors.push({ id: 'apart', src: m.actors[0].src, position: [1.2, 0, 0.5], scale: 0.5 });
     for (const [actor, t] of Object.entries(KEYS)) m.tracks.push({ actor, ease: 'linear', ...t });
     cast = m.actors.map((a) => a.id);
     await route.fulfill({ response, json: m });
@@ -615,7 +620,7 @@ test('tea-hero-26 one actor swapped for another rides its leader and cuts and di
   await page.goto('/tea/?hero=on');
   await settled(page);
   await expect(hero(page)).toHaveAttribute('data-3d', 'on');
-  expect(cast).toContain(LEAD);
+  expect(cast).toEqual(expect.arrayContaining([LEAD, 'swap', 'apart']));
   await holdScene(page);
   for (const raw of [0, 0.1, 0.19, 0.2, 0.25, 0.4, 0.52, 0.6, 0.75, 0.8, 0.6, 0.45, 0.2, 0.1, 0]) {
     const got = await page.evaluate(([raw, LEAD]) => {
@@ -658,23 +663,19 @@ test('tea-hero-26 one actor swapped for another rides its leader and cuts and di
   expect(errors).toEqual([]);
 });
 
-// The shipped manifest's own swap on the page (tests/unit/tea-hero.test.mjs checks the runtime's modules; this checks
-// the scene the page really mounts): Jefrie handed over to her leap mesh, which follows her. An actor hidden at the top
-// of the scroll by its own whole-actor visible or opacity track stands in for another for part of it, so it must
-// follow someone (one that doesn't is drawn at its own place while the other is cut away), and every follower the
-// manifest names is one the runtime knows (a runtime without "follow" drops them all); down the scroll and back, a
-// step either side of every visible key and at 0, 0.3 and 0.6, exactly one of each pair is drawn, the follower on its
-// leader's root; the number of point lights drawn never changes (a light under a hidden actor is not drawn, so the
-// leap actor carries its own pair: a change would recompile every lit material in the middle of the leap), and nor
-// does the number of pictures on the GPU (a hidden actor's are uploaded with the rest at the mount, not on its first
-// frame in the middle of the leap).
-test('tea-hero-27 the shipped leap: exactly one of a character and her leap mesh drawn, on one root, the lights and pictures the same', async ({ page }) => {
+// The shipped scene on the page (tests/unit/tea-hero.test.mjs checks the runtime's modules; this checks the scene the
+// page really mounts). The cast is the TV alone, so no actor is handed over to another: none hidden at the top of the
+// scroll by its own whole-actor visible or opacity track (one would stand in for another, so it would have to follow
+// someone), no follower, every actor drawn; and down the scroll and back (at 0 to 1 in tenths, and a step either side of
+// any visible key) the number of point lights drawn never changes (a change would recompile every lit material in the
+// middle of the scroll), and nor does the number of pictures on the GPU (all uploaded at the mount, none mid-scroll).
+test('tea-hero-27 the shipped scene: no actor handed over or hidden, every one drawn, the lights and pictures the same down the scroll and back', async ({ page }) => {
   test.setTimeout(180_000);
   await page.goto('/tea/?hero=on');
   await settled(page);
   await expect(hero(page)).toHaveAttribute('data-3d', 'on');
   await holdScene(page);
-  // the other mode's picture layers load after the first frame: in, so they are not counted as the leap's
+  // the other mode's picture layers load after the first frame: in, so they are not counted as the scroll's
   await page.waitForFunction(() => window.__teaHero.state.backdrop.tried, null, { timeout: 60_000 });
   const out = await page.evaluate(async () => {
     const H = window.__teaHero;
@@ -688,7 +689,7 @@ test('tea-hero-27 the shipped leap: exactly one of a character and her leap mesh
     const loose = standins.filter((a) => !a.follow).map((a) => a.id);
     const pairs = s.actors.filter((a) => a.spec.follow).map((a) => [a, s.actors.find((b) => b.spec.id === a.spec.follow)]);
     const cuts = raw.tracks.filter((t) => t.channel === 'visible').flatMap((t) => t.keys.map(([p]) => p));
-    const ps = [...new Set([0, 0.3, 0.6, ...cuts.flatMap((p) => [p - 0.001, p + 0.001])])]
+    const ps = [...new Set([0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, ...cuts.flatMap((p) => [p - 0.001, p + 0.001])])]
       .filter((p) => p >= 0 && p <= 1).sort((a, b) => a - b);
     const drawn = (o) => { for (let q = o; q; q = q.parent) if (!q.visible) return false; return true; };
     const bad = [];
@@ -697,6 +698,7 @@ test('tea-hero-27 the shipped leap: exactly one of a character and her leap mesh
     for (const p of [...ps, ...ps.slice().reverse()]) {
       // the scene's progress p: in the flow layout the scroll's first share is the title box's lead
       H.setProgress(s.lead + p * (1 - s.lead));
+      for (const a of s.actors) if (!a.spec.follow && !drawn(a.root)) bad.push(`progress ${p.toFixed(4)}: ${a.spec.id} not drawn`);
       for (const [f, l] of pairs) {
         const n = [l.root, f.root].filter(drawn).length;
         if (n !== 1) bad.push(`progress ${p.toFixed(4)}: ${n} of ${l.spec.id} and ${f.spec.id} drawn`);
@@ -713,9 +715,12 @@ test('tea-hero-27 the shipped leap: exactly one of a character and her leap mesh
       else if (t !== pictures) bad.push(`progress ${p.toFixed(4)}: ${t} pictures on the GPU, ${pictures} at the top`);
     }
     H.setProgress(null);
-    return { wanted, loose, standins: standins.length, got: pairs.map(([f, l]) => `${l.spec.id}>${f.spec.id}`), bad };
+    return { wanted, loose, standins: standins.length, got: pairs.map(([f, l]) => `${l.spec.id}>${f.spec.id}`), bad,
+      cast: s.actors.map((a) => a.spec.id), lights };
   });
-  test.skip(!out.wanted.length && !out.standins, 'the manifest hands no character over to another');
+  expect(out.cast).toEqual(['tv']);
+  expect(out.lights, 'the TV\'s own light').toBeGreaterThan(0);
+  expect([out.wanted, out.standins], 'no actor handed over to another').toEqual([[], 0]);
   expect(out.loose, 'hidden at the top, following no one').toEqual([]);
   expect(out.got.sort()).toEqual(out.wanted.sort());
   expect(out.bad).toEqual([]);
