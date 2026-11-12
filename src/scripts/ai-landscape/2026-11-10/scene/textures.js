@@ -44,7 +44,6 @@ export function createTextures(ctx) {
         g.strokeStyle = ink ? '#33363D' : '#C9CDD5'; g.lineWidth = 3; g.stroke();
         return [c, g];
       };
-      const [c, g] = blank();
       let img = null;
       let iw = 0;
       let ih = 0;
@@ -69,6 +68,9 @@ export function createTextures(ctx) {
           iw = img.naturalWidth; ih = img.naturalHeight;
         } catch { img = null; }
       }
+      // the plate is drawn only now, in one go with its mark: a canvas left waiting across the load above can
+      // come back without what was drawn on it first (seen in Chromium: the mark alone, on no plate)
+      const [c, g] = blank();
       if (img && iw && ih) {
         const pad = clear === 'own' ? 0 : clear;                  // 'own': the file carries its own clear space
         const h = Math.min((S * 0.94) / (1 + 2 * pad), ((S * 0.94) * ih) / (iw + 2 * pad * ih));

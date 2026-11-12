@@ -1,0 +1,39 @@
+/* Anthropic's world only (SPEC 2.5.1): the words of "the plug". Colours come from worlds/anthropic.js through
+   the --w-* properties. Everything here is scoped to [data-world="anthropic"]. */
+/* text version: the frame hangs on this plate's plain wall, left of centre, as it does in the 3D room */
+.ail-world[data-world='anthropic'] .ail-world__portrait { right: auto; left: 25%; top: 15%; }
+.ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='0'] h3 { display: block; margin: 0; padding: 4px 8px 5px; background: var(--w-scrim); color: var(--ail-fg); white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity 300ms var(--ail-ease); }
+.ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='0'] h3.is-on { opacity: 1; visibility: visible; }
+/* a lid's words stand under it: its company, the answer once the plug has been there, and its own names for the two */
+.ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='0'] .ail-sig__item { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; max-width: 14.5svh; white-space: normal; }
+.ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='0'] .ail-sig__item:not([data-seen]) .ail-tag { display: none; }
+.ail-gl .ail-world[data-world='anthropic'] .ail-sig__item[data-picked] { z-index: 4; box-shadow: inset 0 0 0 1px var(--ail-fg); }
+.ail-gl .ail-world[data-world='anthropic'] .ail-sig__item[data-picked] .ail-note { display: block; order: 3; flex-basis: 100%; margin: 3px 0 0; text-align: center; font: 400 11px/1.3 var(--ail-mono); letter-spacing: .06em; text-transform: uppercase; }
+/* a narrow window: the lids stand in a column and each one's words sit to its right */
+.ail-gl .ail-world[data-world='anthropic'] .ail-sig[data-column] .ail-sig__list[data-list='0'] .ail-sig__item { justify-content: flex-start; max-width: 24vw; }
+.ail-gl .ail-world[data-world='anthropic'] .ail-sig[data-column] .ail-sig__item[data-picked] .ail-note { text-align: left; }
+/* the three reasons are one list beside the model floor: each keeps its own scrim, and a long one may wrap */
+@media (min-width: 600px) {
+  .ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='1'] ul { justify-items: start; }
+  .ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='1'] .ail-sig__item { position: static; white-space: normal; }
+}
+/* the three reasons say "no" by themselves while the myth is on screen. The catch has room for the state word */
+.ail-gl .ail-world[data-world='anthropic'][data-beat-now='c'] .ail-sig__list[data-list='1'] .ail-tag { display: none; }
+/* the catch is that same list: it stays through beat d, when the button and the myth have gone */
+.ail-gl .ail-world[data-world='anthropic'] .ail-sig > :not(.ail-sig__lists) { transition: opacity var(--ail-t) var(--ail-ease); }
+.ail-gl .ail-world[data-world='anthropic'][data-beat-now='d'] .ail-sig { opacity: 1; transform: none; background-color: transparent; transition: background-color var(--ail-t), visibility 0s linear var(--ail-t); }
+.ail-gl .ail-world[data-world='anthropic'][data-beat-now='d'] .ail-sig > :not(.ail-sig__lists) { opacity: 0; }
+
+@media (max-width: 599px) {
+  /* in the phone's sheet the two standards head the row of lids, and a picked lid keeps its ring on the line */
+  .ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='0'] h3 { display: none; flex-basis: 100%; padding: 0; background: none; opacity: 1; visibility: visible; color: var(--ail-fg-2); }
+  .ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='0'] h3.is-on { display: block; }
+  .ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='0'] .ail-sig__item { display: none; justify-content: flex-start; max-width: none; }
+  .ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='0'] .ail-sig__item.is-on { display: flex; }
+  .ail-gl .ail-world[data-world='anthropic'] .ail-sig__item[data-picked] { padding: 2px 6px 3px; margin: -2px -6px -3px; }
+  .ail-gl .ail-world[data-world='anthropic'] .ail-sig__item[data-picked] .ail-note { font-size: 10px; text-align: left; }
+  /* beat d: the reasons sit at the foot of the sheet, under the catch and its flags */
+  .ail-gl .ail-world[data-world='anthropic'][data-beat-now='d'] .ail-sig { display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 14px; }
+  .ail-gl .ail-world[data-world='anthropic'][data-beat-now='d'] .ail-sig > :not(.ail-sig__lists) { display: none; }
+  .ail-gl .ail-world[data-world='anthropic'] .ail-sig__list[data-list='1'] .ail-tag { display: none; }       /* three long lines: the state word would wrap under each */
+}

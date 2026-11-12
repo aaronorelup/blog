@@ -66,7 +66,7 @@ export function createPrims(ctx) {
       const set = {
         leaves, open: 0, show: 1,
         update(dt = 0.016) {
-          group.position.set(tower.floors[0].mesh.position.x, tower.floors[0].y + FLOOR.h / 2, FLOOR.w / 2 - 0.2);
+          group.position.set(tower.floors[0].mesh.position.x, tower.floors[0].mesh.position.y + FLOOR.h / 2, FLOOR.w / 2 - 0.2);     // where the floor was drawn: a raised floor keeps its doors
           leaves.forEach((d, k) => {
             d.swing += ((k === set.open ? 1 : 0) - d.swing) * (1 - Math.exp(-9 * dt));
             d.mesh.rotation.y = -d.swing * 1.15;
@@ -124,7 +124,7 @@ export function createPrims(ctx) {
       const set = {
         items, show: 1, level: 1,
         update() {
-          group.position.set(tower.floors[i].mesh.position.x + 0.3, tower.floors[i].y, FLOOR.w / 2 + 0.09);
+          group.position.set(tower.floors[i].mesh.position.x + 0.3, tower.floors[i].mesh.position.y, FLOOR.w / 2 + 0.09);                 // a raised floor keeps its lamps
           items.forEach((l) => {
             l.mesh.visible = set.show > 0.01;
             const u = l.mesh.material.uniforms;
