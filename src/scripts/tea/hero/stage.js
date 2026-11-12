@@ -20,11 +20,20 @@ import { applyTracks, bindTracks, sample } from './tracks.js';
 const isNight = () => document.documentElement.dataset.mode !== 'day';
 const SKY = ['#20284F', '#B98A6A', '#151726'];   // the painted sky the models are lit by: top, horizon, ground
 
+// opts.signal: the page being left (boot.js). From then on the scene loads nothing more and the mount stops waiting:
+// what can't be stopped itself (an import, a picture, a model being parsed) is raced against it. opts.loaded() is
+// called once every file the scene needs is in.
 export async function mount(section, stage, opts = {}) {
-  await loadThree();
+  const { signal } = opts;
+  const left = signal && new Promise((_, no) => {
+    if (signal.aborted) no(signal.reason);
+    else signal.addEventListener('abort', () => no(signal.reason), { once: true });
+  });
+  const unless = (work) => (left ? Promise.race([work, left]) : work);
+  await unless(loadThree());
   const coarse = matchMedia('(pointer: coarse)').matches;
   const small = Math.min(innerWidth, innerHeight) < 600;
-  const manifest = await loadManifest(stage.dataset.manifest || '/tea/hero/manifest.json');
+  const manifest = await loadManifest(stage.dataset.manifest || '/tea/hero/manifest.json', signal);
   const canvas = document.createElement('canvas');
   canvas.className = 'tea-stage-canvas';
   canvas.setAttribute('aria-hidden', 'true');
@@ -49,10 +58,11 @@ export async function mount(section, stage, opts = {}) {
     const h0 = stage.clientHeight || innerHeight;
     fitCamera(s.camRig, manifest.reference.aspect, w0, h0);
     const anis = Math.min(4, renderer.capabilities.getMaxAnisotropy());
-    const [actors, backdrop] = await Promise.all([
-      loadActors(manifest, s.camRig.portrait),
+    const [actors, backdrop] = await unless(Promise.all([
+      loadActors(manifest, s.camRig.portrait, signal),
       loadBackdrop(manifest, night, anis),
-    ]);
+    ]));
+    if (opts.loaded) opts.loaded();
     s.actors = actors;
     s.backdrop = backdrop;
     for (const l of backdrop.layers) scene.add(l.mesh);

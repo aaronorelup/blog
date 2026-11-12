@@ -8,13 +8,39 @@ import { crtMaterial } from './crt.js';
 import { addBend } from './deform.js';
 import { findNode } from './tracks.js';
 
-let loader = null;
-function gltf() {
-  if (!loader) { loader = new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder); }
+// The page being left (signal, boot.js) must leave nothing in the console. So a GLB is fetched here, with the signal,
+// and not by three's FileLoader, whose streamed read turns a body the leaving cuts into an unhandled rejection; and the
+// model's own pictures go through the parser's texture loader wrapped so that, once the page is being left, it starts
+// none and passes on no failure (GLTFLoader logs one for every picture the leaving cuts; stage.js stops waiting then).
+function gltf(signal) {
+  const loader = new GLTFLoader();
+  loader.setMeshoptDecoder(MeshoptDecoder);
+  if (signal) {
+    loader.register((parser) => {
+      parser.textureLoader = quiet(parser.textureLoader, signal);
+      return { name: 'tea_quiet_textures' };
+    });
+  }
   return loader;
 }
 
-const load = (url) => gltf().loadAsync(url).then((g) => g.scene);
+function quiet(inner, signal) {
+  return {
+    isImageBitmapLoader: inner.isImageBitmapLoader === true,   // GLTFLoader reads it to know what onLoad is given
+    load(url, onLoad, onProgress, onError) {
+      if (signal.aborted) return;
+      inner.load(url, onLoad, onProgress, (e) => { if (!signal.aborted) onError(e); });
+    },
+  };
+}
+
+async function load(loader, url, signal) {
+  const res = await fetch(url, { credentials: 'same-origin', signal });
+  if (!res.ok) throw new Error(`model ${res.status}: ${url}`);
+  const data = await res.arrayBuffer();
+  // the folder of the file, as GLTFLoader.load gives parse
+  return (await loader.parseAsync(data, url.slice(0, url.lastIndexOf('/') + 1))).scene;
+}
 
 function place(obj, position, rotation) {
   obj.position.fromArray(position);
@@ -63,9 +89,11 @@ export function orientActors(actors, manifest, portrait) {
   }
 }
 
-export async function loadActors(manifest, portrait) {
+export async function loadActors(manifest, portrait, signal) {
+  const loader = gltf(signal);
   const actors = await Promise.all(manifest.actors.map(async (spec) => {
-    const [model, ...props] = await Promise.all([load(spec.src), ...spec.props.map((p) => load(p.src))]);
+    const urls = [spec.src, ...spec.props.map((p) => p.src)];
+    const [model, ...props] = await Promise.all(urls.map((u) => load(loader, u, signal)));
     const root = new Group();
     const inner = new Group();
     root.name = 'actor:' + spec.id;

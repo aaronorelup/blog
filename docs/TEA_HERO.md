@@ -33,6 +33,12 @@ Jefrie (left) and Yusef (right, with a lantern) around a small CRT television. E
   motion`, `save data`, `small device`, `no webgl`, `failed`). Reduced motion turned on while the scene runs puts the
   poster back the same way; a lost WebGL context shows the poster until the context is back. Drawing stops when the
   hero is off screen or the tab is hidden. Pixel ratio capped at 1.75 (1.5 on touch or small screens; fewer motes).
+  Leaving the page while the scene loads leaves nothing in the console (tea-hero-25): WebKit cancels the page's loads
+  right after `beforeunload`, before `pagehide`, and refuses with a console error any fetch the page starts after
+  that, so from `beforeunload` (listened for only until the scene's files are in) `boot.js` aborts its loads: the
+  manifest and the models are fetched with that signal (not by three's FileLoader, whose streamed read leaves a cut
+  body as an unhandled rejection), a model's own pictures load through a texture loader that then starts none and
+  reports no failure, and `mount` stops waiting (`data-3d-off="failed"` on the page being left).
 - **Nothing moves under the reader.** The section grows by two screens when the scene pins, so the pin waits for a
   moment when that moves nothing the reader reads (`whenPinnable` in `pin.js`): the scroll at rest (no scroll for 200 ms
   and none over the next two frames, so a chapter link tapped just before the pin gets its jump), and the page at its
@@ -285,13 +291,14 @@ and restores the poster.
 
 ## Verified
 
-- e2e `tea-hero.spec.mjs` (tea-hero-1 to 24) in both projects, desktop (Chromium 1440x900) and phone (WebKit,
+- e2e `tea-hero.spec.mjs` (tea-hero-1 to 25) in both projects, desktop (Chromium 1440x900) and phone (WebKit,
   iPhone 13); each test seen failing on a build broken on purpose. Among them: the box holds still through the mount
   (8), a late scene moves nothing on screen (9), arriving at `/tea/#projects` lands there (10), the switch pressed
   while loading (11), a lost and restored context (12), reduced motion turned on (13), no poster fetched under the
   canvas (14), a square window (15), a missing manifest or model (16), Save-Data and a small device (17), a reload
   inside the scene (18), the stage one screen and the foot's fade (19), the same box on both paths (20), where the
-  box docks (21), the box low on a portrait screen (22), a chapter link tapped just as the scene pins (23), every part the manifest names found in the models (24).
+  box docks (21), the box low on a portrait screen (22), a chapter link tapped just as the scene pins (23), every
+  part the manifest names found in the models (24), leaving the page while the scene loads (25).
 - `verify.mjs` against `/tea/` and `/tea-lab/` (both layouts; see its header).
 - The poster against the scene's opening frame at 1440x900, 1280x720, 1440x700, 768x1024, 390x844 and 360x640 (offset
   0, mean difference 1.0 to 1.5 of 255); the actors' silhouettes as above (`silhouettes.mjs`); the title box's text

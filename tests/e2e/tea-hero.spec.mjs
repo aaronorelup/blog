@@ -533,3 +533,29 @@ test('tea-hero-24 every part the manifest names is in the loaded models', async 
   });
   expect(missing).toEqual([]);
 });
+
+// Leaving the page while the scene loads leaves nothing in the console. WebKit cancels the page's loads as a navigation
+// starts and refuses, with a console error, any fetch the page starts after that; three's loaders report a cut load as
+// an unhandled rejection (a model's body) or a console error (a model's picture). Each visit holds the scene's next
+// file, lets it go and reloads `after` ms later, so the reload comes while the scene loads: as the manifest arrives (the
+// models are asked for next) and as the models do (their bodies and pictures are cut).
+test('tea-hero-25 leaving the page while the scene loads leaves no console error', async ({ page }) => {
+  test.setTimeout(300_000);
+  const errors = [];
+  page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+  page.on('pageerror', (e) => errors.push(e.message));
+  for (const [held, file] of [['**/tea/hero/manifest.json', /\/tea\/hero\/manifest\.json$/], ['**/*.glb', /\.glb$/]]) {
+    for (const after of [0, 5, 10, 20, 40]) {
+      await page.unrouteAll();
+      const release = await gate(page, held);
+      const asked = page.waitForRequest((r) => file.test(new URL(r.url()).pathname), { timeout: 60_000 });
+      await page.goto('/tea/?hero=on');
+      await asked;
+      release();
+      if (after) await page.waitForTimeout(after);
+      await page.reload();
+      await settled(page);   // the page reloaded, its scene loaded with nothing held
+    }
+  }
+  expect(errors).toEqual([]);
+});

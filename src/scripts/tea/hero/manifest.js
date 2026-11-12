@@ -3,8 +3,8 @@
 // runtime cannot use throws, which leaves the poster.
 const V3 = (v, d = [0, 0, 0]) => (Array.isArray(v) && v.length === 3 ? v.map(Number) : d.slice());
 
-export async function loadManifest(url) {
-  const res = await fetch(url, { credentials: 'same-origin' });
+export async function loadManifest(url, signal) {
+  const res = await fetch(url, { credentials: 'same-origin', signal });   // signal: the page being left (boot.js)
   if (!res.ok) throw new Error('manifest ' + res.status);
   return normalise(await res.json(), url);
 }

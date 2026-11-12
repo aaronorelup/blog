@@ -545,6 +545,7 @@ for `data-hero-settled` (the hero will change no layout by itself any more) befo
 | On a portrait screen the box waits low and the cast stands clear above it, and the scene keeps the portrait frame's full height | tea-hero-22 |
 | A chapter link tapped in the last moments before the scene pins lands on its chapter, from a chapter (the pin no longer cuts the jump short) and from the top (nor lands it two screens early) | tea-hero-23 |
 | Every part the manifest names (the nodes its tracks and idle waves move, the nodes lights and glows hang from, each prop's parent and each material override's node) is in the loaded models: the runtime would skip a missing one without a word | tea-hero-24 |
+| Leaving the page while the scene loads (a reload as the manifest arrives, and as the models do) leaves no console error: once the page is being left the scene starts no load and reports none it loses | tea-hero-25 |
 
 ## The live site (`live.spec.mjs`, `npm run e2e:live`)
 
