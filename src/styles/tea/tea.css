@@ -145,6 +145,8 @@ body.tea {
   .tea-rail-list::after { content: ''; flex: none; width: 12%; }
   .tea-rail-list::-webkit-scrollbar { display: none; }
   .tea-rail-list li { flex: none; scroll-snap-align: start; }
+  /* rail.js glides the strip itself, an instant move a frame: snapping each of them would shake it */
+  .tea-rail-list[data-gliding] { scroll-snap-type: none; }
   .tea-rail-link {
     padding: 6px 12px; gap: 7px; border: 1px solid var(--pc-line2); border-radius: var(--radius-pill);
     font-size: var(--text-md); white-space: nowrap;
