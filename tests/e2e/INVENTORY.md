@@ -353,7 +353,7 @@ its static rung mid-test.
 | No view brings a second copy of the site's rules: the homepage links site.css, so opening the ledger, projects, about, now and a post adopts no stylesheet | overlay-24 |
 | A view in the panel has the colours it has on its own page, by day and by night, and its focused search box looks the same | overlay-25 |
 | While the panel is up the day/night switch sits in its header, clear of the card's corner and the nav, and still switches; it goes back on close | overlay-26 |
-| On a phone the panel's footer is two short lines (under a tenth of the window), every link kept | overlay-27 (phone) |
+| On a phone the panel's footer is two short lines (under a tenth of the window), every link kept: exactly the feed, the tea room and every elsewhere | overlay-27 (phone) |
 
 ## Pages (`ledger.spec.mjs`, `pages.spec.mjs`)
 
@@ -475,6 +475,33 @@ Ask streams Aaron's two answers (`fixtures/answers.mjs`) on a kept session, so n
 | A card's post link opens its hover card | projects-5 (desktop) |
 | In the homepage overlay the projects view has the same cards in the same sections, and a post link opens in the reader with no document load | projects-6 |
 
+## The tea room (`tea.spec.mjs`)
+
+`/tea/`, the whole site on one chaptered page (`src/pages/tea/`, `src/components/tea/`, `src/scripts/tea/rail.js`).
+Every expectation comes from the build or the source (the ledger page, the content files' frontmatter,
+`src/data/tea.js`), so the rows hold while posts land on main; chapters are reached by their anchors, so they hold
+once the 3D hero pins the top.
+
+| Behaviour | Spec |
+|---|---|
+| The page loads with every chapter of `CHAPTERS`, in order, each with its word, lede and numeral, and the hero's contents and the rail list them all with the same numerals | tea-1 |
+| Its post links are exactly the ledger's listed posts; each sits once under its topic with its AO id; the topic pills, group counts, the counter line ("N posts · N projects · N courses") and "Open the ledger" carry the real counts; Start here is `START_HERE` in order; every listed post's notes page is linked and no other, from each card and index row of a post that has one | tea-2 |
+| Projects (each section's cards, in order), courses, the newest Now snapshot and About (its lede and prose, all of `/about/` but its title) show what `/projects/`, `/courses/`, `/now/` and `/about/` show | tea-3 |
+| Every internal link and picture resolves: page anchors are ids on the page, every other address answers 200, an anchor on another page is an id there | tea-4 |
+| No draft or unlisted post anywhere: no slug in the HTML; no title and no AO id of its own in the page's text or any attribute, outside Now's and About's own words (the main site's, tea-3) | tea-5 |
+| Canonical, robots and the sitemap follow the shipped `TEA_SEO` through `teaSeo()` (`'pending'`: self canonical, no robots tag, not in the sitemap); never a feed item, no `data-pagefind-body`, and semantic search and Ask hold only the listed posts and their notes; og:url says what the canonical says, and no share card (`/og/page/tea.jpg` 404), `og:image`, `twitter:card` or JSON-LD block names the page | tea-6 |
+| The panel footer's "Tea room" link and the homepage gate's button reach `/tea/`; the gate's `data-no-fly` leaves at once (the scene doesn't hold the click to fly) | tea-7 |
+| The hero, the rail and the footer lead back to `/`; the footer carries every `NAV` link | tea-8 |
+| The rail marks the chapter being read (`aria-current`), none over the hero; a rail link or strip pill takes the reader to its chapter; a chapter reached by its anchor shows its opener (the one-time fade was set off, or never waited, and ends fully shown; no frame of it is timed) | tea-9 |
+| With JavaScript off every chapter shows, nothing waits to fade in, every link shows on a wide window, and on a phone every address is on a link that shows | tea-10 |
+| Day or night chosen on a panel page is what `/tea/` opens in, and the reverse (the shared `scene-mode`) | tea-11 |
+| The first Tab is the skip link, in view; it takes the keyboard past the hero and the rail into the first chapter; no positive tabindex | tea-12 |
+| No console error, no sideways scroll at 1440 and 390 wide by day and by night (at the top and at every chapter), every picture loads | tea-13 |
+| Under 1024 px the strip keeps the chapter being read in view: at every chapter, going down and back up, its pill sits whole inside the strip and clear of its fading end; Tab from "Main site" brings each pill in turn whole into view, clear of the fade, with room for its focus ring; with reduced motion (the strip moves at once) and without (it glides; WebKit starts the glide up to about 0.7 s late, so the pass waits for the pill to arrive and stay) | tea-14 (desktop at 390 wide, and phone) |
+| One `h1`, the hero's title, first; each chapter's word an `h2` and the first heading in it; About's sections (`AboutView level={2} title={false}`) at `h3` with no title of their own; no heading skips a level | tea-15 |
+| The hero lab `/tea-lab/` (live until the final models land) answers with its own robots noindex and no share picture or JSON-LD; the sitemap, the feed, the hover cards' list, search, Ask and read-aloud never name it, and no page links it (`/tea/`, the 404 page, every page of the sitemap) | tea-16 |
+| An address with a chapter (`/tea/#projects`) lands on it at once: every frame from the first has the window at the top or at the chapter, never between (phone WebKit glides there while the page loads and, the page busy, stops part way); the first link followed on the page glides to its chapter | tea-17 |
+
 ## Read-aloud (`read-aloud.spec.mjs`)
 
 Recordings are fixtures the spec makes from the build's `/read/<slug>.json` (silent audio in byte ranges, a word
@@ -495,6 +522,41 @@ every 200 ms), so nothing waits for the Worker's key.
 | A post never recorded (unlisted, a live notebook) has no `data-read-hash`: Listen reads in the browser's voice, with no choice of voice, no word of a recording and no `/read/` request | `listen.js`, `bar.js` | read-7 |
 | Every tap that reads plays inside itself, as iOS and strict Android autoplay need: Listen speaks a silent utterance and plays the one `<audio>` before its import and fetch, and that element alone then reads the recording; a word, the bar's play, a change of voice and the speed start the recording or the voice within the tap | `listen.js` `unlock()`, `index.js` `play()`, `HTMLMediaElement.play` / `speechSynthesis.speak` (stand-ins that mark the tap) | read-8 |
 | The bar is drawn again on every play, pause and next part; the speed button only when the speed changes, so its content is never touched as the reading moves to its next part or pauses (listen-5), and its own click still steps it | `bar.js` `show()` | read-9 |
+
+## The tea room's hero (`tea-hero.spec.mjs`)
+
+The 3D hero at the top of `/tea/` (`src/components/tea/hero/`, `src/scripts/tea/hero/`, `docs/TEA_HERO.md`). Both
+projects have WebGL (desktop Chromium, phone WebKit), so the scene runs in both; on a box with a software GPU every
+frame is a long task, so a test that checks layout holds the scene's loop through its own hook first, and tests wait
+for `data-hero-settled` (the hero will change no layout by itself any more) before they act.
+
+| Behaviour | Spec |
+|---|---|
+| With reduced motion the poster stays and none of the 3D (its chunk, three, the loader, the manifest, models, picture layers) is fetched | tea-hero-1 |
+| Without WebGL the same | tea-hero-2 (desktop: a Chromium flag) |
+| Nothing of the 3D is fetched before first paint; where the scene runs its files do come, after it | tea-hero-3 |
+| Where WebGL runs the scene mounts, pins and draws with no console error, and what sticks stays at the top mid-scroll | tea-hero-4 |
+| On a phone the day/night switch is on screen and on top through the static and the pinned hero, works, and is the only one | tea-hero-5 (phone) |
+| The title box's skip link takes the keyboard past the pinned hero to the chapters | tea-hero-6 |
+| Every chapter link in the title box lands on its chapter at its scroll margin | tea-hero-7 |
+| The title box holds within 1 px of its static place on every frame while the scene takes over | tea-hero-8 |
+| A scene that arrives late moves nothing on screen: with the box still on screen it waits; with the reader on the first chapter it pins with the chapter left where it is | tea-hero-9 |
+| Arriving at `/tea/#projects` with the scene ready mid-scroll lands on the chapter | tea-hero-10 |
+| The day/night switch pressed while the models load is the mode the scene comes up in, its pictures included | tea-hero-11 |
+| A lost WebGL context shows the poster until it is back, then the scene with its light made again | tea-hero-12 |
+| Reduced motion turned on while the scene runs puts the poster back, the page where it was | tea-hero-13 |
+| With the scene up the switch fetches no poster under the canvas | tea-hero-14 |
+| The poster and the scene take the same shape of frame, a square window included | tea-hero-15 |
+| A missing manifest or model keeps the poster and the hero one screen, with no page error | tea-hero-16 |
+| Save-Data and a small device keep the poster and fetch none of the 3D | tea-hero-17 |
+| A reload inside the scene comes back to the same place in it; a new visit starts at the top | tea-hero-18 |
+| The stage is one screen on every path, and the hero's foot fades into the page (static always, with the scene only as the pin lets go) | tea-hero-19 |
+| The title box is the same box static and over the scene: no backdrop blur, an opaque card by day | tea-hero-20 |
+| The box docks only where it leaves most of the frame to the scene (1024x768 flows, 1366x768 docks with the lens shift scaled) | tea-hero-21 (desktop) |
+| On a portrait screen the box waits low and the cast stands clear above it, and the scene keeps the portrait frame's full height | tea-hero-22 |
+| A chapter link tapped in the last moments before the scene pins lands on its chapter, from a chapter (the pin no longer cuts the jump short) and from the top (nor lands it two screens early) | tea-hero-23 |
+| Every part the manifest names (the nodes its tracks and idle waves move, the nodes lights and glows hang from, each prop's parent and each material override's node) is in the loaded models: the runtime would skip a missing one without a word | tea-hero-24 |
+| Leaving the page while the scene loads (a reload as the manifest arrives, and as the models do) leaves no console error: once the page is being left the scene starts no load and reports none it loses | tea-hero-25 |
 
 ## The live site (`live.spec.mjs`, `npm run e2e:live`)
 

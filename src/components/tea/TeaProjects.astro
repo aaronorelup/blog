@@ -1,0 +1,48 @@
+---
+// Chapter III, projects: the projects page's own sections and cards (lib/projects.js projectsPage), all of them.
+// Play it here and Watch get pictures (two half cards, then thirds); Download, Read about it and Stopped are index rows.
+import { COPY } from '../../data/tea.js';
+import { plural, projectHref } from '../../lib/tea.js';
+import TeaChapter from './TeaChapter.astro';
+import TeaProjectCard from './TeaProjectCard.astro';
+
+interface Props { sections: any[] }
+const { sections } = Astro.props;
+const PICTURED = new Set(['play', 'watch']);
+const ext = (go) => (go.external ? { target: '_blank', rel: 'noreferrer noopener' } : {});
+---
+
+<TeaChapter id="projects">
+  <nav slot="nav" class="tea-pills" aria-label={COPY.sectionsLabel}>
+    {sections.map((s) => <a class="tea-pill-s" href={`#tea-proj-${s.key}`}>{s.title} <span class="tea-pill-n">{s.cards.length}</span></a>)}
+  </nav>
+  {sections.map((s) => (
+    <section class:list={['tea-group tea-reveal', `is-${s.key}`]} id={`tea-proj-${s.key}`} aria-labelledby={`tea-proj-${s.key}-title`}>
+      <header class="tea-group-head">
+        <h3 class="tea-group-title" id={`tea-proj-${s.key}-title`}><a class="tea-head-link" href={`/projects/#proj-${s.key}`}>{s.title}</a></h3>
+        <p class="tea-group-count">{plural(s.cards.length, COPY.projectCount)}</p>
+        <p class="tea-group-intro">{s.intro}</p>
+      </header>
+      {PICTURED.has(s.key) ? (
+        <>
+          <ol class="tea-halves">{s.cards.slice(0, 2).map((c) => <TeaProjectCard card={c} />)}</ol>
+          {s.cards.length > 2 && <ol class="tea-thirds">{s.cards.slice(2).map((c) => <TeaProjectCard card={c} size="third" />)}</ol>}
+        </>
+      ) : (
+        <ol class="tea-rows">
+          {s.cards.map((c) => {
+            const go = projectHref(c);
+            return (
+              <li class="tea-row">
+                <p class="tea-row-meta"><span>{c.chip}</span></p>
+                <h4 class="tea-row-title"><a class="tea-stretch" href={go.href} {...ext(go)}>{c.name}{go.external && <span aria-hidden="true"> ↗</span>}</a></h4>
+                <p class="tea-row-line">{c.line}</p>
+              </li>
+            );
+          })}
+        </ol>
+      )}
+    </section>
+  ))}
+  <p class="tea-more"><a class="tea-link" href="/projects/">{COPY.projectsPage} <span aria-hidden="true">→</span></a></p>
+</TeaChapter>

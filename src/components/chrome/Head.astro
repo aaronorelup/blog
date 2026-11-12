@@ -22,9 +22,13 @@ interface Props {
   voice?: string;
   // The homepage: it carries the WebSite.
   home?: boolean;
+  // A site path to name as canonical (and og:url) instead of the page itself (the tea room's SEO switch,
+  // src/data/tea.js). Left out, as on every other page, both name the page.
+  canonical?: string;
 }
-const { title, description, noindex = false, image, published, headline, voice, home = false } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const { title, description, noindex = false, image, published, headline, voice, home = false, canonical: named } =
+  Astro.props;
+const canonical = new URL(named ?? Astro.url.pathname, Astro.site).href;
 const shareImage = image && new URL(image, Astro.site).href;
 const data = noindex ? null
   : headline && published ? blogPosting({ headline, description, published, url: canonical, image: shareImage, voice })

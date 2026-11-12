@@ -1,0 +1,39 @@
+---
+// The tea room's hero: the framed title box over the 3D hero's stage (hero/Stage.astro: the poster of the scene's
+// opening frame, then the scene itself once it can run). The markup is the contract with the 3D hero:
+// .tea-hero[data-tea-hero] > .tea-hero-pin > .tea-hero-stage[data-tea-stage] (poster and canvas) + .tea-hero-box
+// (kicker, h1, statement, counter, the chapter list, the way out). One viewport without the scene, pinned with it.
+import { CHAPTERS, COPY } from '../../data/tea.js';
+import { roman } from '../../lib/tea.js';
+import Stage from './hero/Stage.astro';
+
+interface Props { counter: string }
+const { counter } = Astro.props;
+---
+
+<section class="tea-hero" id="top" data-tea-hero aria-labelledby="tea-title">
+  <div class="tea-hero-pin">
+    <Stage />
+    <div class="tea-hero-box">
+      <a class="tea-skip" href="#chapters">{COPY.skip}</a>
+      <p class="tea-kicker">{COPY.kicker}</p>
+      <h1 class="tea-title" id="tea-title">{COPY.title}</h1>
+      <p class="tea-statement">{COPY.statement}</p>
+      <p class="tea-counter">{counter}</p>
+      <nav class="tea-toc" aria-label={COPY.contentsLabel}>
+        <ol>
+          {CHAPTERS.map((c, i) => (
+            <li>
+              <a href={`#${c.id}`}>
+                <span class="tea-toc-name">{c.label}</span>
+                <span class="tea-toc-lead" aria-hidden="true"></span>
+                <span class="tea-toc-num" aria-hidden="true">{roman(i + 1)}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+      <a class="tea-pill" href="/" data-no-fly>{COPY.toMain} <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,15 @@
+---
+// One post as an index row (the ledger's dense list): AO id and day in mono, the title as the row's link, the summary
+// on one line, and a notes link where the post has its full making-of. Only listed posts reach here (lib/tea.js).
+import { COPY } from '../../data/tea.js';
+
+interface Props { row: any; topic?: boolean }
+const { row, topic = false } = Astro.props;
+---
+
+<li class="tea-row">
+  <p class="tea-row-meta"><span>{row.id}</span><span>{row.day}</span>{topic && <span>{row.topicLabel}</span>}</p>
+  <h4 class="tea-row-title"><a class="tea-stretch" href={row.href}>{row.title}</a></h4>
+  <p class="tea-row-line">{row.summary}</p>
+  {row.notesHref && <a class="tea-row-notes" href={row.notesHref} title={COPY.notesTitle}>{COPY.notes} <span aria-hidden="true">→</span></a>}
+</li>
