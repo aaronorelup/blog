@@ -1,0 +1,119 @@
+---
+// My stack (SPEC 2.9.2): the owner's setup as five bands of pieces, never a tower. Text version: the bands as lists,
+// each piece opening what it is, his words and its proof, then the router and coding-agent pairs that are known.
+// 3D page (sections/mystack.js): a low grey bench, pieces in their owner's glass, and the swap with its stamp.
+import '../../../../styles/ai-landscape/2026-11-10/architecture.css';
+import Fact from '../Fact.astro';
+import { COPY } from '../data/copy.js';
+import { fact, ORDER, thing, view } from '../data/view.js';
+
+const D = view.data;
+const A = D.architecture;
+const me = D.aaron;
+const FIRST = ['you', 'router', 'harness', 'model', 'context', 'repos', 'skills', 'secrets', 'gpu', 'storage', 'hosting'];
+const OFFICIAL = { yes: COPY.links.official, partial: COPY.links.partial, no: COPY.links.unofficial };
+// current nodes only. The feedback node names a private dashboard, which this public page leaves out
+const nodes = me.nodes.filter((n) => n.state === 'current' && n.layer !== 'feedback');
+const first = new Set(FIRST.map((layer) => nodes.find((n) => n.layer === layer)).filter(Boolean).map((n) => n.id));
+const role = (n, band) => (A.stackLayers.find((l) => l.id === n.layer) || A.aroundLayers.find((l) => l.id === n.layer) || band).name;
+const billing = new Set(nodes.filter((n) => n.layer === 'billing').map((n) => n.id));
+const tank = (id) => me.arrows.some((a) => (a.fromRef === id && billing.has(a.toRef)) || (a.toRef === id && billing.has(a.fromRef)));
+const label = (n) => (n.productRef ? thing(n.productRef).name : null);
+const who = (n) => (n.layer === 'you' ? 'you' : n.productRef ? thing(n.productRef).owner : 'outside');
+const verbs = (n) => me.arrows.filter((a) => a.fromRef === n.id && a.state === 'documented')
+  .map((a) => [a.verb, nodes.find((x) => x.id === a.toRef)]).filter(([, to]) => to).map(([verb, to]) => `${verb} ${label(to) || to.name}`);
+const bands = me.bands.map((b) => ({
+  ...b,
+  pieces: b.nodeRefs.map((id) => nodes.find((n) => n.id === id)).filter(Boolean).map((n) => ({
+    id: n.id, layer: n.layer, name: label(n), node: n.name, role: role(n, b), owner: who(n), what: n.what, quote: n.quote,
+    fact: fact(n.claim), first: first.has(n.id), tank: tank(n.id), meter: n.id.startsWith('aaron-api-'), verbs: verbs(n),
+    swap: n.layer === 'router' ? 'router' : n.layer === 'harness' ? 'worker' : null,
+  })),
+}));
+const rest = bands.flatMap((b) => b.pieces.filter((p) => !p.first));
+
+// the swap: the five personal agents and the outside routers that ship a pair, then the coding agents those pairs name
+const routerNode = me.nodes.find((n) => n.layer === 'router' && n.state === 'current');
+const coderNode = me.nodes.find((n) => n.layer === 'harness' && n.state === 'current');
+const shipped = A.routerPattern.shipped;
+const routers = [...new Set([routerNode.productRef, ...ORDER.map((id) => view.provider(id).agent.id), ...shipped.map((s) => s.routerRef)])].map(thing);
+const workers = [...new Set([coderNode.productRef, ...shipped.map((s) => s.workerRef)])].map(thing);
+// a router's own delegation claim: a personal agent's floor 8, or what its shipped pairs say
+const ownClaim = (r) => (ORDER.includes(r.owner) && view.provider(r.owner).agent.id === r.id ? view.provider(r.owner).stack[7].fact : fact(shipped.find((s) => s.routerRef === r.id).claim));
+// every shipped pair, then for each router the line a pair with no entry reads: the stamp and its own claim
+const pairs = shipped.map((s) => ({ r: thing(s.routerRef), w: thing(s.workerRef), official: s.official, stamp: OFFICIAL[s.official], fact: fact(s.claim) }));
+const nones = routers.map((r) => ({ r, stamp: COPY.links.none, fact: ownClaim(r) }));
+const arrows = me.arrows.filter((a) => first.has(a.fromRef) && first.has(a.toRef)).map((a) => [a.fromRef, a.toRef, a.state]);
+const date = me.permalink.match(/\d{4}-\d{2}-\d{2}/)[0];          // on hover only: the bench prints no number 01 to 09
+const arrow = 'M3 12h17M14 6l6 6-6 6';
+const TANK = 'M7 4h10v16H7zM7 12h10M10 2h4';                       // a monthly plan pays for it
+const METER = 'M4 16a8 8 0 0 1 16 0M12 16l4-5M3 19h18';             // paid by use
+---
+<section id="my-stack" class="ail-sec ail-ms" data-sec="mystack" data-screens="1.3" data-land="0.55" data-rail={COPY.architecture.myStack}
+  data-arrows={JSON.stringify(arrows)} data-mine={`${routerNode.productRef} ${coderNode.productRef}`} aria-labelledby="ms-title">
+  <div class="ail-stage">
+    <header class="ail-ms__head">
+      <h2 id="ms-title" class="ail-title">{COPY.architecture.myStack} <a class="ail-ms__date ail-label" href={me.permalink} title={date}>{COPY.ending.now}</a></h2>
+      <p class="ail-ms__quote ail-sentence"><Fact fact={fact(routerNode.claim)} full tag={false}>&ldquo;{routerNode.quote}&rdquo;</Fact></p>
+    </header>
+    <ol class="ail-ms__bands">
+      {bands.map((b) => (
+        <li class="ail-ms__band" data-band={b.order}>
+          <h3 class="ail-ms__bandname ail-label">{b.name}</h3>
+          <ul class="ail-ms__pieces">
+            {b.pieces.map((p) => (
+              <li class="ail-ms__piece" data-node={p.id} data-layer={p.layer} data-owner={p.owner} data-first={p.first ? '' : undefined} data-swap={p.swap || undefined}>
+                <details class="ail-ms__d" name="ail-ms">
+                  <summary class="ail-ms__tag">
+                    <span class="ail-ms__name ail-own" data-owner={p.owner}>{p.name || p.node}</span>
+                    <span class="ail-ms__role ail-label">{p.role}</span>
+                    {p.tank && <svg class="ail-ar-glyph ail-ms__tank" viewBox="0 0 24 24" aria-hidden="true"><path d={TANK} /></svg>}
+                    {p.meter && <svg class="ail-ar-glyph ail-ms__meter" viewBox="0 0 24 24" aria-hidden="true"><path d={METER} /></svg>}
+                  </summary>
+                  <div class="ail-ms__more ail-card">
+                    {p.name && <p class="ail-ms__node">{p.node}</p>}
+                    <p>{p.what}</p>
+                    {p.quote && <p class="ail-ms__his">&ldquo;{p.quote}&rdquo;</p>}
+                    {p.verbs.length > 0 && <ul class="ail-ms__verbs">{p.verbs.map((x) => <li>{x}</li>)}</ul>}
+                    <p class="ail-ms__proof"><Fact fact={p.fact} full>{p.fact.short}</Fact></p>
+                  </div>
+                </details>
+                {p.swap && (
+                  <button type="button" class="ail-ms__swap" data-swap={p.swap} aria-label={`${COPY.architecture.swap} ${p.role}`} hidden>
+                    <svg class="ail-ar-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h14l-4-4M20 15H6l4 4" /></svg>
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))}
+    </ol>
+    <ul class="ail-ms__opts" data-for="router" hidden>{routers.map((r) => <li data-ref={r.id} data-owner={r.owner} data-status={r.status}>{r.name}</li>)}</ul>
+    <ul class="ail-ms__opts" data-for="worker" hidden>{workers.map((w) => <li data-ref={w.id} data-owner={w.owner} data-status={w.status}>{w.name}</li>)}</ul>
+    <details class="ail-ms__pairs">
+      <summary class="ail-label">{COPY.links.title}</summary>
+      <ul>
+        {pairs.map((x) => (
+          <li class="ail-ms__say" data-r={x.r.id} data-w={x.w.id} data-official={x.official}>
+            <span class="ail-ms__pair"><span class="ail-own" data-owner={x.r.owner}>{x.r.name}</span><svg class="ail-ar-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d={arrow} /></svg><span class="ail-own" data-owner={x.w.owner}>{x.w.name}</span></span>
+            <span class="ail-ms__stamp ail-label" data-official={x.official}>{x.stamp}</span>
+            <span class="ail-ms__line"><Fact fact={x.fact} /></span>
+          </li>
+        ))}
+        {nones.map((x) => (
+          <li class="ail-ms__say" data-r={x.r.id} data-official="none" data-none>
+            <span class="ail-ms__stamp ail-label" data-official="none">{x.stamp}</span>
+            <span class="ail-ms__line"><Fact fact={x.fact} /></span>
+          </li>
+        ))}
+      </ul>
+    </details>
+    {rest.length > 0 && (
+      <details class="ail-ms__rest">
+        <summary class="ail-ms__restbtn"><svg class="ail-ar-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h.5M12 12h.5M19 12h.5" /></svg><span class="ail-ms__restw ail-label">{rest.length} {COPY.world.more}</span></summary>
+        <ul class="ail-ms__restlist"></ul>
+      </details>
+    )}
+  </div>
+</section>
