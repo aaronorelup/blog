@@ -1,4 +1,4 @@
-// The hero's manifest (public/tea/hero/manifest.json; its format is documented in the hero-runtime status file):
+// The hero's manifest (public/tea/hero/manifest.json; its format is documented in docs/TEA_HERO.md):
 // fetched once, then every optional field given its default so the other modules read plain values. A manifest the
 // runtime cannot use throws, which leaves the poster.
 const V3 = (v, d = [0, 0, 0]) => (Array.isArray(v) && v.length === 3 ? v.map(Number) : d.slice());
@@ -15,6 +15,7 @@ export function normalise(m, url) {
   const abs = (u) => (u ? new URL(u, base).href : null);
   const cam = m.camera || {};
   if (!Array.isArray(cam.keys) || cam.keys.length < 2) throw new Error('manifest camera keys');
+  followsOf(m.actors || []);
   return {
     reference: { aspect: (m.reference && m.reference.aspect) || 1.6 },
     background: ((m.background && m.background.layers) || []).map((l, i) => ({
@@ -29,6 +30,9 @@ export function normalise(m, url) {
       rig: { kind: (a.rig && a.rig.kind) || 'baked', map: (a.rig && a.rig.map) || {} },
       deform: a.deform || null, materials: a.materials || {}, tint: a.tint || null,
       envIntensity: Number(a.envIntensity ?? 0.6),
+      // follow: the id of the actor this one rides (its position, rotation and scale then place the model inside the
+      // leader's root and inner group); fade: alpha-hashed materials, for an opacity track
+      follow: a.follow || null, fade: !!a.fade,
       props: (a.props || []).map((p) => ({
         id: p.id, src: abs(p.src), parent: p.parent || null, scale: Number(p.scale ?? 1),
         position: V3(p.position), rotation: V3(p.rotation), materials: p.materials || {},
@@ -78,6 +82,16 @@ const portraitOf = (p) => {
 
 const keysOf = (v) => (Array.isArray(v) ? v.map(([t, x]) => [Number(t), Number(x)]).sort((a, b) => a[0] - b[0])
   : [[0, Number(v) || 0]]);
+
+// A follower must name another actor of the manifest that follows no one: a missing leader would leave its model at
+// the scene's origin and a chain would depend on the order of the actors, so either one fails the manifest.
+function followsOf(actors) {
+  const lead = new Map(actors.map((a) => [a.id, a.follow || null]));
+  for (const a of actors) {
+    if (!a.follow) continue;
+    if (a.follow === a.id || !lead.has(a.follow) || lead.get(a.follow)) throw new Error('manifest follow: ' + a.id);
+  }
+}
 
 function litState(s) {
   return {

@@ -69,6 +69,9 @@ function finishMaterials(model, spec, actor) {
       seen.add(mat);
       if (tint && mat.color) mat.color.multiply(tint);
       if ('envMapIntensity' in mat) mat.envMapIntensity = spec.envIntensity;
+      // fade: alpha-hashed, so an opacity track dissolves the actor in the opaque pass (no sorting); its own opacity
+      // is kept as the base the track multiplies
+      if (spec.fade) { mat.alphaHash = true; mat.transparent = false; actor.fadeMats.push([mat, mat.opacity]); }
       if (spec.deform && spec.deform.kind === 'bend') {
         // every material of one actor shares the one bend uniform
         if (!actor.bend) { actor.bendRest = Number(spec.deform.rest ?? 0); actor.bend = { value: actor.bendRest }; }
@@ -79,10 +82,12 @@ function finishMaterials(model, spec, actor) {
 }
 
 // Where an actor's root rests: its manifest position, or on a portrait screen its portraitPosition, else the same
-// with x drawn in by camera.portrait.spread. Set again when the screen turns (stage.js).
+// with x drawn in by camera.portrait.spread. Set again when the screen turns (stage.js). A follower rests wherever its
+// leader is (tracks.js puts it there every frame).
 export function orientActors(actors, manifest, portrait) {
   const spread = portrait ? manifest.camera.portrait.spread : 1;
   for (const a of actors) {
+    if (a.spec.follow) continue;
     const { position: p, portraitPosition: pp } = a.spec;
     a.restPos.fromArray(portrait && pp ? pp : [p[0] * spread, p[1], p[2]]);
     a.root.position.copy(a.restPos);
@@ -97,11 +102,20 @@ export async function loadActors(manifest, portrait, signal) {
     const root = new Group();
     const inner = new Group();
     root.name = 'actor:' + spec.id;
-    place(root, spec.position, spec.rotation);
-    inner.scale.setScalar(spec.scale);
+    if (spec.follow) {
+      // a follower's root and inner group take its leader's every frame: its own numbers place its model inside them,
+      // in the leader's units (a pose-baked leap mesh fitted to the standing rig)
+      place(model, spec.position, spec.rotation);
+      model.scale.setScalar(spec.scale);
+    } else {
+      place(root, spec.position, spec.rotation);
+      inner.scale.setScalar(spec.scale);
+    }
     inner.add(model);
     root.add(inner);
-    const actor = { spec, root, inner, model, shaders: [], bend: null, bendRest: 0, restPos: root.position.clone() };
+    const actor = {
+      spec, root, inner, model, shaders: [], bend: null, bendRest: 0, restPos: root.position.clone(), fadeMats: [],
+    };
     spec.props.forEach((p, i) => {
       const prop = props[i];
       prop.name = p.id || prop.name;
@@ -120,6 +134,7 @@ export async function loadActors(manifest, portrait, signal) {
 
 export function disposeTree(obj) {
   obj.traverse((o) => {
+    if (o.isSkinnedMesh && o.skeleton) o.skeleton.dispose();   // a rigged character's bone texture
     if (o.geometry) o.geometry.dispose();
     for (const mat of [].concat(o.material || [])) {
       for (const v of Object.values(mat)) if (v && v.isTexture) v.dispose();
