@@ -89,7 +89,8 @@ if (root) {
     e.preventDefault();
     e.stopPropagation();
     const card = t.closest('[data-ail-card]');                       // a card that stands in for what opened it
+    const from = (card && card.ailFrom) || t;
     window.dispatchEvent(new CustomEvent('ail:sources'));           // the proof card steps aside
-    openSources(Number(t.dataset.ailSrc) || 0, (card && card.ailFrom) || t);
+    openSources(Number(t.dataset.ailSrc) || 0, from);
   }, true);
 }

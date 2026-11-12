@@ -147,6 +147,10 @@ a.ail-src__t:hover { text-decoration-color: currentColor; }
 .ail-src__m { display: flex; flex-wrap: wrap; gap: 4px 10px; color: var(--ail-ink-2); font-size: 11px; }
 .ail-src__k { color: var(--ail-ink); }
 .ail-src.is-hit, .ail-src:target { background: #FFFFFF; box-shadow: inset 4px 0 0 var(--ail-ink); }
+/* withheld with the unverified leads: the number, kind and date stay, the title is a redaction bar */
+.ail-src[data-withheld] .ail-src__t { display: block; width: min(62%, 22em); height: .82em; margin: .28em 0 .16em; background: var(--ail-ink); }
+.ail-src[data-withheld]:nth-child(3n) .ail-src__t { width: min(44%, 15em); }
+.ail-src[data-withheld]:nth-child(3n+1) .ail-src__t { width: min(74%, 27em); }
 .ail-srcs__end { display: grid; gap: 10px; margin-top: 28px; padding-top: 16px; border-top: 2px solid var(--ail-ink); }
 .ail-srcs__end h2 b, .ail-srcs__left b { font-weight: 400; color: var(--ail-ink); }
 .ail-srcs__open { display: grid; gap: 6px; font-size: 17px; line-height: 1.3; }

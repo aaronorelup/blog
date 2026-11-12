@@ -1,7 +1,7 @@
 ---
-// /ai-landscape/2026-11-10/sources/ : every numbered source of the snapshot as plain HTML (SPEC 2.11). The sources
-// drawer loads this page and shows its list and its end. Only an https address becomes a link, a source of kind
-// "request" never does. The end names the questions still open and only the count of unverified leads.
+// /ai-landscape/2026-11-10/sources/ : every numbered source of the snapshot as plain HTML (SPEC 2.11), which the
+// drawer loads. Only an https address is a link, and a "request" never is. A source that nothing published cites was
+// read only for an unverified lead: it keeps its number, kind and date, and its title is withheld with the leads.
 import '../../../styles/ai-landscape/2026-11-10/tokens.css';
 import '../../../styles/ai-landscape/2026-11-10/base.css';
 import '../../../styles/ai-landscape/2026-11-10/chrome.css';
@@ -18,6 +18,12 @@ const title = `${COPY.stamp.sources}, ${COPY.frame.title}, ${COPY.frame.snapshot
 const description = `${view.counts.sources} ${COPY.stamp.sources.toLowerCase()}, ${view.counts.claims} ${COPY.stamp.claims}. ${COPY.frame.scope}`;
 const link = (s) => (s.kind !== 'request' && typeof s.url === 'string' && s.url.startsWith('https://') ? s.url : null);
 const open = view.data.conflicts.filter((c) => c.state !== 'resolved');
+const cited = new Set();
+(function walk(node, key) {
+  if (Array.isArray(node)) return node.forEach((v) => (typeof v === 'number' && key === 'sources' ? cited.add(v) : walk(v, key)));
+  if (!node || typeof node !== 'object') return;
+  for (const [k, v] of Object.entries(node)) (k === 'src' && typeof v === 'number' ? cited.add(v) : walk(v, k));
+})({ ...view.data, sources: null, conflicts: null });
 ---
 <!doctype html>
 <html lang="en" class="ail ail-srcpage" data-snapshot={DATE}>
@@ -45,9 +51,10 @@ const open = view.data.conflicts.filter((c) => c.state !== 'resolved');
       <h1 class="ail-srcs__h ail-title">{COPY.stamp.sources} <b>{view.counts.sources}</b></h1>
       <ol class="ail-srcs" id="ail-srcs">
         {view.data.sources.map((s) => (
-          <li class="ail-src" id={`s-${s.n}`} data-kind={s.kind} tabindex="-1">
+          <li class="ail-src" id={`s-${s.n}`} data-kind={s.kind} data-withheld={cited.has(s.n) ? undefined : ''} tabindex="-1">
             <span class="ail-src__n ail-label">{s.n}</span>
-            {link(s) ? <a class="ail-src__t" href={link(s)} target="_blank" rel="noopener noreferrer">{s.title}</a> : <span class="ail-src__t">{s.title}</span>}
+            {!cited.has(s.n) ? <span class="ail-src__t"><span class="ail-vh">{COPY.stamp.unverified}</span></span>
+              : link(s) ? <a class="ail-src__t" href={link(s)} target="_blank" rel="noopener noreferrer">{s.title}</a> : <span class="ail-src__t">{s.title}</span>}
             <span class="ail-src__m ail-label"><span class="ail-src__k">{s.kind}</span> <span>{s.dateIs}</span> <time datetime={s.date}>{s.date}</time></span>
           </li>
         ))}

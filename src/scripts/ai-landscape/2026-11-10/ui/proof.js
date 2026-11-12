@@ -49,6 +49,16 @@ function fill(fact) {
   return text;
 }
 
+// The live region's one sentence: the card's label is the claim itself, so this says how it stands.
+// "Shipped, Confirmed, as of 2026-10-29, Sources 2". A claim with no date or sources says the rest.
+function summary(text) {
+  const n = $$('.ail-proof__list li', card).length;
+  const parts = [$('.ail-proof__state', card).textContent, $('.ail-proof__conf', card).textContent,
+    $('.ail-proof__date', card).hidden ? '' : clean($('.ail-proof__date', card).textContent),
+    n ? `${clean($('.ail-proof__src > .ail-label', card).textContent)} ${n}` : ''].filter(Boolean);
+  return parts.length ? parts.join(', ') : text;
+}
+
 // Where the fact is now: its first line box, or null when it is hidden or off the screen.
 function anchor() {
   if (!from || !from.isConnected) return null;
@@ -95,7 +105,7 @@ export function openProof(fact) {
   fact.setAttribute('aria-expanded', 'true');
   place();
   card.focus({ preventScroll: true });
-  announce(text);
+  announce(summary(text));
   if (!raf) raf = requestAnimationFrame(follow);
 }
 

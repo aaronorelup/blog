@@ -21,7 +21,7 @@ function open(from) {
   place();
   const here = $('[aria-current]', pop);
   (here || pop).focus({ preventScroll: true });
-  announce(clean(`${$('#ail-eds-h', pop).textContent} ${here ? here.textContent : ''}`));
+  announce(clean(`${$('#ail-eds-h', pop).textContent} ${here ? $('time', here).textContent : ''}`));
 }
 
 function close(refocus) {
