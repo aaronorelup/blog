@@ -1,0 +1,68 @@
+---
+// The whole document of one snapshot: its own <html> and <head>, none of the site's chrome or styles.
+// Sections and overlays are every file in ./sections and ./overlays, in file-name order, so a package adds
+// one by adding a file. `dated` is the permanent /ai-landscape/<date>/ page, `snapshots` the registry.
+import '../../../styles/ai-landscape/2026-11-10/tokens.css';
+import '../../../styles/ai-landscape/2026-11-10/base.css';
+import displayFont from '../../../assets/ai-landscape/2026-11-10/fonts/LeagueGothic-Regular.woff2?url';
+import labelFont from '../../../assets/ai-landscape/2026-11-10/fonts/JetBrainsMono-Regular.woff2?url';
+import Chrome from './Chrome.astro';
+import { COPY } from './data/copy.js';
+import { view } from './data/view.js';
+import { COMMIT } from '../../../lib/build.js';
+import { inPublic } from '../../../lib/paths.js';
+import { themeCss } from '../../../scripts/ai-landscape/2026-11-10/worlds/index.js';
+
+const { dated = false, snapshots = [] } = Astro.props;
+const DATE = view.snapshot.date;
+const inOrder = (found) => Object.entries(found).sort(([a], [b]) => a.localeCompare(b)).map(([, m]) => m.default);
+const sections = inOrder(import.meta.glob('./sections/*.astro', { eager: true }));
+const overlays = inOrder(import.meta.glob('./overlays/*.astro', { eager: true }));
+const home = 'https://aaronorelup.com/ai-landscape/';
+const canonical = dated ? `${home}${DATE}/` : home;
+const title = `${COPY.frame.title}, ${COPY.frame.snapshot.toLowerCase()} ${DATE}`;
+const description = `${COPY.frame.scope} ${COPY.frame.openLine}`;
+const og = `ai-landscape/${DATE}/og.jpg`;
+const hasOg = inPublic(og);
+const prePaint = "(function(){var q=new URLSearchParams(location.search);if(q.get('tier')!=='static')document.documentElement.classList.add('ail-gl')})()";
+---
+<!doctype html>
+<html lang="en" class="ail" data-snapshot={DATE} data-dated={dated ? '' : undefined}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="ao-build" content={COMMIT} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    {hasOg && <meta property="og:image" content={`https://aaronorelup.com/${og}`} />}
+    {hasOg && <meta name="twitter:card" content="summary_large_image" />}
+    <meta name="theme-color" content="#E6E8ED" />
+    <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={labelFont} as="font" type="font/woff2" crossorigin />
+    <style is:inline set:html={themeCss()}></style>
+    <script is:inline set:html={prePaint}></script>
+  </head>
+  <body>
+    <Chrome />
+    <canvas class="ail-canvas" id="ail-gl" aria-hidden="true"></canvas>
+    <main id="ail-main" class="ail-main">
+      {sections.map((Section) => <Section dated={dated} snapshots={snapshots} />)}
+    </main>
+    <nav class="ail-strip ail-label" aria-label={COPY.stamp.editions}>
+      <span>{COPY.stamp.editions}</span>
+      {snapshots.map((s) => <a href={`/ai-landscape/${s.date}/`} aria-current={s.date === DATE ? 'page' : undefined}>{s.date}</a>)}
+      {dated && <a href="/ai-landscape/">{COPY.stamp.newest}</a>}
+    </nav>
+    {overlays.map((Overlay) => <Overlay dated={dated} snapshots={snapshots} />)}
+    <svg class="ail-leaders" id="ail-leaders" aria-hidden="true"></svg>
+    <script type="application/json" id="ail-data" set:html={view.json}></script>
+    <script>
+      import '../../../scripts/ai-landscape/2026-11-10/index.js';
+    </script>
+  </body>
+</html>

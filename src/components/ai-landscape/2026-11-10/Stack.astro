@@ -1,0 +1,30 @@
+---
+// The nine layers of one product as a list (SPEC 3.4, 7.3). In the text version it is a grid of nine rows
+// with the five states as CSS patterns. In the 3D page the same rows are the callouts pinned to the floors.
+// `full` adds each floor's sentence and its parts (the personal agent's stack). `quiet` is the product's own
+// status: a row in that same status shows it by its pattern alone, since the product already carries the tag.
+import Fact from './Fact.astro';
+import '../../../styles/ai-landscape/2026-11-10/stack.css';
+const { cells, full = false, quiet = null } = Astro.props;
+---
+<ol class="ail-stack" data-full={full ? '' : undefined}>
+  {cells.map((c, i) => (
+    <li class="ail-floor" data-i={i} data-layer={c.layer} data-state={c.state} data-guest={c.guests.join(' ') || undefined}>
+      <span class="ail-floor__slab" aria-hidden="true"></span>
+      <span class="ail-floor__k ail-label"><b>{c.n}</b> {c.label}</span>
+      <span class="ail-floor__v">
+        {c.fact ? <Fact fact={c.fact} tag={c.fact.status !== quiet}>{c.name}</Fact> : <span class="ail-word">{c.word}</span>}
+      </span>
+      {(full || !c.fact) && (
+        <span class="ail-floor__more">
+          <span class="ail-floor__why">{c.fact ? c.fact.text : c.reason}</span>
+          {full && c.parts.length > 0 && (
+            <span class="ail-chips">
+              {c.parts.map((q) => <span class="ail-own" data-owner={q.owner} data-status={q.status} data-official={q.official}>{q.name}</span>)}
+            </span>
+          )}
+        </span>
+      )}
+    </li>
+  ))}
+</ol>

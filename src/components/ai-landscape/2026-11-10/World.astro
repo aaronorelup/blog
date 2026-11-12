@@ -1,0 +1,110 @@
+---
+// One company's world as HTML (SPEC 2.4, 7.3). Without JavaScript this is the text version: name, mark,
+// picture, nine rows, products, the signature as short lists, the catch. In the 3D page the same elements
+// are the words of the four beats (data-beat), placed by sections/worlds.js. Every word is data or COPY.
+import Fact from './Fact.astro';
+import Glyph from './Glyph.astro';
+import Mark from './Mark.astro';
+import Stack from './Stack.astro';
+import { COPY } from './data/copy.js';
+import { world } from '../../../scripts/ai-landscape/2026-11-10/worlds/index.js';
+
+const { p } = Astro.props;
+const cfg = world(p.id);
+const sig = COPY.signature[cfg.signature] || {};
+const myth = p.myths.find((m) => m.id === cfg.myth) || p.myths[0];
+const others = p.myths.filter((m) => m !== myth);
+const markName = cfg.marks.of === 'name' ? p.name : p.brand;
+---
+<section id={p.id} class="ail-sec ail-world" data-sec="worlds" data-world={p.id} data-screens="3" data-rail={p.name}
+  data-chrome={cfg.theme.chrome} data-brand={cfg.brandMode} data-catch={cfg.catchFloor} aria-labelledby={`${p.id}-name`}>
+  <div class="ail-stage">
+    <header class="ail-world__head">
+      <Mark provider={p.id} name={markName} />
+      <p class="ail-kicker ail-label">
+        <span>{p.name}</span>{p.nameNote && <span class="ail-kicker__note">{p.nameNote}</span>}<span>{p.brand}</span>
+      </p>
+      <h2 id={`${p.id}-name`} class="ail-world__name ail-display">{p.name}</h2>
+    </header>
+
+    <figure class="ail-world__pic">
+      <img class="ail-world__plate" src={cfg.art.plateSmall} alt={cfg.alt.plate} width="1280" height="720" loading="lazy" decoding="async" />
+      {cfg.art.hero && <img class="ail-world__hero" src={cfg.art.hero} alt={cfg.alt.hero} width="1024" height="1024" loading="lazy" decoding="async" />}
+      {cfg.portrait && cfg.art.portrait && (
+        <img class="ail-world__portrait" src={cfg.art.portrait} alt={cfg.alt.portrait} width="600" height="800" loading="lazy" decoding="async" />
+      )}
+    </figure>
+    {cfg.portrait && <p class="ail-world__caption ail-label" hidden>{cfg.alt.portrait}</p>}
+
+    <div class="ail-world__intro" data-beat="a">
+      <p class="ail-known"><span class="ail-label">{COPY.world.knownFor}</span> <span class="ail-sentence"><Fact fact={p.signature.fact} full tag={false}>{p.signature.line}</Fact></span></p>
+      <p class="ail-agent">
+        <span class="ail-agent__name">{p.agent.name}</span>{p.agent.tag && <span class="ail-tag" data-status={p.agent.status}>{p.agent.tag}</span>}
+      </p>
+      <p class="ail-flagship ail-label">
+        <Fact fact={p.flagship.fact} full>{p.flagship.name}</Fact> <time datetime={p.flagship.released}>{p.flagship.released}</time> <span>{p.flagship.price || p.flagship.access}</span>
+      </p>
+    </div>
+
+    <div class="ail-doors" data-beat="b c d" role="group" aria-label={p.brand}>
+      {p.doors.map((d) => (
+        <details class="ail-door" name={`${p.id}-door`} open={d.agent} data-door={d.id} data-kind={d.kind} data-agent={d.agent ? '' : undefined}>
+          <summary class="ail-door__tab">
+            <Glyph name={d.kind} /><span class="ail-door__name">{d.name}</span>{d.tag && <span class="ail-tag" data-status={d.status}>{d.tag}</span>}
+          </summary>
+          {d.stack ? <Stack cells={d.stack} full={d.agent} quiet={d.status} /> : (
+            <div class="ail-card ail-door__card">
+              <p><Fact fact={d.fact} tag={false} /></p>
+              <p class="ail-label">{d.access}</p>
+              {d.models.length > 0 && (
+                <p class="ail-chips">{d.models.map((m) => <span class="ail-own" data-owner={m.owner} data-status={m.status}>{m.name}</span>)}</p>
+              )}
+            </div>
+          )}
+        </details>
+      ))}
+    </div>
+
+    <div class="ail-sig" data-beat="c" data-sig={cfg.signature}>
+      <p class="ail-sig__ui">
+        {Object.entries(sig).filter(([k]) => k !== 'note').map(([k, label]) => <button type="button" class="ail-btn" data-act={k}>{label}</button>)}
+      </p>
+      <p class="ail-myth"><s>{myth.myth}</s> <Fact fact={myth.truth} /></p>
+      {sig.note && <p class="ail-sig__note ail-label">{sig.note}</p>}
+      <div class="ail-sig__lists">
+        {p.lists.map((l, k) => (
+          <div class="ail-sig__list" data-list={k}>
+            <h3 class="ail-label">{l.title}</h3>
+            <ul data-ordered={l.ordered ? '' : undefined}>
+              {l.items.map((it, n) => (
+                <li class="ail-sig__item" data-n={n}>
+                  <span class="ail-own" data-owner={it.owner || p.id} data-official={it.dashed ? 'no' : undefined}>
+                    {it.fact ? <Fact fact={it.fact} full={it.fact.text !== it.text} tag={false}>{it.text}</Fact> : it.text}
+                  </span>
+                  {it.note && <span class="ail-note">{it.note}</span>}{it.tag && <span class="ail-tag">{it.tag}</span>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="ail-catch" data-beat="d">
+      <p class="ail-catch__line"><span class="ail-label">{COPY.world.catch}</span> <span class="ail-sentence"><Fact fact={p.tension.fact} full tag={false}>{p.tension.line}</Fact></span></p>
+      <div class="ail-flags">
+        <p class="ail-label">{COPY.world.peopleSay} <span class="ail-flags__more">{others.length} {COPY.world.more}</span></p>
+        <ul>
+          {others.map((m) => (
+            <li>
+              <details class="ail-flag" name={`${p.id}-flag`}>
+                <summary><Glyph name="flag" /><span class="ail-flag__myth">{m.myth}</span></summary>
+                <p class="ail-flag__truth"><s>{m.myth}</s> <Fact fact={m.truth} /></p>
+              </details>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

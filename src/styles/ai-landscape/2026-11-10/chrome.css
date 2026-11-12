@@ -1,0 +1,59 @@
+/* The chrome (SPEC 2.0, 3.3 rule 4): ink and paper only, in every frame, so no world passes for an official
+   page. Text version: a plain header row. 3D page: fixed, each cluster on its own veil. A world flips it
+   light or dark through --ail-fg and --ail-veil on <html>. Nothing else in it ever changes. */
+.ail-skip { position: fixed; left: 12px; top: 12px; z-index: 30; transform: translateY(-200%); }
+.ail-skip:focus-visible { transform: none; }
+
+.ail-chrome { position: relative; z-index: 20; display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 14px var(--ail-margin); color: var(--ail-fg); pointer-events: none; }
+.ail-chrome__side { display: flex; align-items: center; gap: 14px; padding: 7px 10px; background: var(--ail-veil); pointer-events: auto; transition: background-color var(--ail-t), color var(--ail-t); }
+.ail-chrome__title { letter-spacing: .12em; }
+.ail-chrome__title a { text-decoration: none; display: inline-flex; align-items: center; min-height: 30px; }
+.ail-chrome__chip { display: inline-flex; align-items: center; gap: .7em; min-height: 30px; padding: 0 9px; border: 1px solid var(--ail-hair); text-decoration: none; color: var(--ail-fg-2); transition: background-color 150ms, color 150ms; }
+.ail-chrome__chip:hover { background: var(--ail-fg); color: var(--ail-bg); border-color: var(--ail-fg); }
+.ail-chrome__chip b { font-weight: 400; color: var(--ail-fg); }
+.ail-chrome__chip:hover b { color: inherit; }
+.ail-gl .ail-chrome { position: fixed; left: 0; right: 0; top: 0; }
+
+/* the 5 by 9 minimap: five companies across, nine layers down, each cell in its owner's glass and state */
+.ail-map { display: flex; gap: 3px; align-items: stretch; height: 34px; padding: 0 2px; }
+.ail-map__col { --c: var(--ail-mid); display: grid; grid-template-rows: repeat(9, 1fr); gap: 1px; width: 9px; padding: 0 0 3px; border-bottom: 2px solid transparent; text-decoration: none; opacity: .92; transition: opacity 150ms, border-color 150ms; }
+.ail-map__col[data-p='anthropic'] { --c: var(--ail-own-anthropic); }
+.ail-map__col[data-p='openai'] { --c: var(--ail-own-openai); --edge: var(--ail-rim-openai); }
+.ail-map__col[data-p='google'] { --c: var(--ail-own-google); }
+.ail-map__col[data-p='meta'] { --c: var(--ail-own-meta); }
+.ail-map__col[data-p='xai'] { --c: var(--ail-own-xai); --edge: var(--ail-rim-xai); }
+.ail-map__col i { display: block; background: var(--c); box-shadow: 0 0 0 .5px color-mix(in srgb, var(--ail-fg) 34%, transparent); }
+.ail-map__col i[data-state='hatch'] { background: repeating-linear-gradient(135deg, var(--c) 0 1.4px, transparent 1.4px 2.8px); }
+.ail-map__col i[data-state='frost'] { background: color-mix(in srgb, var(--c) 30%, var(--ail-floor)); }
+.ail-map__col i[data-state='dotted'] { background: none; box-shadow: none; border-bottom: 1px dotted var(--ail-fg-2); }
+.ail-map__col i[data-state='hollow'] { background: none; }
+.ail-map[data-here] .ail-map__col { opacity: .34; }
+.ail-map[data-here] .ail-map__col[data-here] { opacity: 1; border-bottom-color: var(--ail-fg); }
+.ail-map__col:hover, .ail-map__col:focus-visible { opacity: 1 !important; }
+.ail-map__col i[data-row] { outline: 1px solid var(--ail-fg); outline-offset: 1px; }
+
+/* the section rail: one dot per section on the left edge, names on hover and focus (desktop, 3D page only) */
+.ail-rail { display: none; }
+.ail-gl .ail-rail { display: block; position: fixed; left: 6px; top: 50%; z-index: 20; transform: translateY(-50%); }
+.ail-rail ol { display: flex; flex-direction: column; gap: 1px; }
+.ail-rail a { position: relative; display: flex; align-items: center; width: 24px; height: 17px; text-decoration: none; color: var(--ail-fg); }
+.ail-rail a::before { content: ''; width: 5px; height: 5px; margin-left: 9px; border-radius: 50%; background: currentColor; opacity: .32; transition: transform 150ms, opacity 150ms; }
+.ail-rail a[aria-current='true']::before { opacity: 1; transform: scale(1.7); }
+.ail-rail a:hover::before, .ail-rail a:focus-visible::before { opacity: 1; }
+.ail-rail a span { position: absolute; left: 26px; top: 50%; transform: translate(-4px, -50%); padding: 5px 8px; background: var(--ail-fg); color: var(--ail-bg); white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity 150ms, transform 150ms; font: 400 11px/1 var(--ail-mono); letter-spacing: .08em; text-transform: uppercase; }
+.ail-rail a:hover span, .ail-rail a:focus-visible span { opacity: 1; visibility: visible; transform: translate(0, -50%); }
+.ail-rail li[data-gap] { margin-top: 7px; }
+
+@media (max-width: 599px) {
+  .ail-chrome { padding: 8px 10px; gap: 8px; }
+  .ail-chrome__side { gap: 7px; padding: 5px 6px; white-space: nowrap; }
+  .ail-chrome__chip { padding: 0 5px; letter-spacing: .02em; font-size: 10.5px; }
+  .ail-chrome__title { letter-spacing: .04em; font-size: 10.5px; }
+  .ail-chrome__w { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .ail-gl .ail-rail { display: none; }
+  .ail-map { height: 30px; }
+  .ail-map__col { width: 7px; }
+}
+@media (max-width: 380px) {
+  .ail-chrome__chip[data-ail-open='sources'] { display: none; }
+}

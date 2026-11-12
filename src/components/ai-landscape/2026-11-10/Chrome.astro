@@ -1,0 +1,28 @@
+---
+// The frame on every screen (SPEC 2.0): the skip link, the title and stamp chip, the 5 by 9 minimap that is
+// also the "you are here" mark, the sources chip, the section rail and the live region. Ink and paper only.
+// index.js fills the rail from the sections and moves the minimap's mark. Overlays answer data-ail-open.
+import '../../../styles/ai-landscape/2026-11-10/chrome.css';
+import { COPY } from './data/copy.js';
+import { view } from './data/view.js';
+const DATE = view.snapshot.date;
+---
+<a class="ail-skip ail-btn" href="#ail-main" data-ail-text>{COPY.frame.skip}</a>
+<header class="ail-chrome">
+  <div class="ail-chrome__side">
+    <h1 class="ail-chrome__title ail-label"><a href="#top">{COPY.frame.title}</a></h1>
+    <a class="ail-chrome__chip ail-label" href="#snapshot" data-ail-open="editions"><span class="ail-chrome__w">{COPY.frame.snapshot}</span> <time datetime={DATE}>{DATE}</time></a>
+  </div>
+  <div class="ail-chrome__side">
+    <nav class="ail-map" aria-label={COPY.frame.scope}>
+      {view.providers.map((p) => (
+        <a class="ail-map__col" href={`#${p.id}`} data-p={p.id} aria-label={p.name}>
+          {p.stack.map((c) => <i data-state={c.state}></i>)}
+        </a>
+      ))}
+    </nav>
+    <a class="ail-chrome__chip ail-label" href={`/ai-landscape/${DATE}/sources/`} data-ail-open="sources">{COPY.stamp.sources} <b>{view.counts.sources}</b></a>
+  </div>
+</header>
+<nav class="ail-rail" aria-label={COPY.frame.title} hidden><ol></ol></nav>
+<p class="ail-live ail-vh" aria-live="polite"></p>

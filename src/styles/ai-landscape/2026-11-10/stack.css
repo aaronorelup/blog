@@ -1,0 +1,55 @@
+/* The nine layers as a list (SPEC 3.4, 7.3). Text version: a grid of nine rows, each with a slab that shows
+   its state as a pattern, so the five states read in greyscale and in any glass colour. 3D page: the same rows
+   are callouts that scene/labels.js pins to the floors (.ail-floor gets a transform). Colours: --w-glass, --w-edge. */
+.ail-stack { display: grid; gap: 3px; counter-reset: none; }
+.ail-floor { display: grid; grid-template-columns: 64px minmax(7.5em, 10em) 1fr; column-gap: 14px; align-items: center; min-height: 30px; }
+.ail-floor__k { color: var(--ail-fg-2); white-space: nowrap; }
+.ail-floor__k b { font-weight: 400; color: var(--ail-fg); margin-right: .5em; }
+.ail-floor__v { min-width: 0; }
+.ail-floor__more { grid-column: 3; display: block; padding: 2px 0 8px; color: var(--ail-fg-2); font-size: 16px; line-height: 1.3; }
+.ail-floor__why { display: block; }
+.ail-floor__more .ail-chips { margin-top: 6px; }
+
+/* the slab: solid, hatched, frosted with a dotted edge, a dotted outline with a question mark, an open outline */
+.ail-floor__slab { --g: var(--w-glass, var(--ail-mid)); --e: var(--w-edge, var(--ail-mid)); position: relative; display: block; height: 18px; border-radius: 4px; border: 1.5px solid var(--e); background: var(--g); }
+.ail-floor[data-state='hatch'] .ail-floor__slab { background: repeating-linear-gradient(135deg, var(--g) 0 3.5px, var(--w-hatch, var(--ail-floor)) 3.5px 6.5px); }
+.ail-floor[data-state='frost'] .ail-floor__slab { background: color-mix(in srgb, var(--g) 22%, var(--ail-floor)); border-style: dotted; border-color: var(--ail-fg-2); }
+.ail-floor[data-state='dotted'] .ail-floor__slab { background: none; border: 1.5px dotted color-mix(in srgb, var(--ail-fg) 45%, transparent); }
+.ail-floor[data-state='dotted'] .ail-floor__slab::before { content: '?'; position: absolute; inset: 0; display: grid; place-items: center; font: 400 11px/1 var(--ail-mono); color: var(--ail-fg-2); }
+.ail-floor[data-state='hollow'] .ail-floor__slab { background: none; border: 1.5px solid color-mix(in srgb, var(--ail-fg) 55%, transparent); }
+/* another colour inside the glass is someone else's part */
+.ail-floor[data-guest] .ail-floor__slab::after { content: ''; position: absolute; right: 6px; top: 50%; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 50%; background: var(--guest, var(--ail-mid)); box-shadow: 0 0 0 1.5px var(--ail-floor); }
+.ail-floor[data-guest~='anthropic'] { --guest: var(--ail-own-anthropic); }
+.ail-floor[data-guest~='openai'] { --guest: var(--ail-own-openai); }
+.ail-floor[data-guest~='google'] { --guest: var(--ail-own-google); }
+.ail-floor[data-guest~='meta'] { --guest: var(--ail-own-meta); }
+.ail-floor[data-guest~='xai'] { --guest: var(--ail-own-xai); }
+
+/* ---- 3D page: callouts on leader lines. One line of label, one of value, the card at second depth */
+.ail-gl .ail-world .ail-stack { display: block; position: fixed; left: 0; top: 0; z-index: 3; pointer-events: none; }
+.ail-gl .ail-world .ail-floor { position: fixed; left: 0; top: 0; display: block; min-height: 0; width: max-content; max-width: min(30vw, 400px); padding: 5px 9px 6px; background: var(--w-scrim, var(--ail-veil)); opacity: 0; visibility: hidden; pointer-events: none; cursor: pointer; will-change: transform, opacity; }
+.ail-gl .ail-world .ail-floor.is-on { visibility: visible; pointer-events: auto; }
+.ail-gl .ail-world .ail-floor__slab { display: none; }
+.ail-gl .ail-world .ail-floor__k { display: block; font-size: 11px; }
+.ail-gl .ail-world .ail-floor__v { display: block; margin-top: 2px; font-size: var(--ail-fs-body); line-height: 1.12; }
+.ail-gl .ail-world .ail-floor__more { display: none; width: min(30vw, 380px); padding: 8px 0 4px; border-top: 1px solid var(--ail-hair); margin-top: 7px; font-size: 17px; }
+.ail-gl .ail-world .ail-floor.is-open { z-index: 4; background: var(--w-card, var(--ail-card)); box-shadow: 0 0 0 1px var(--ail-fg); }
+.ail-gl .ail-world .ail-floor.is-open .ail-floor__more { display: block; }
+.ail-gl .ail-world .ail-floor.is-lit .ail-floor__k b { background: var(--ail-fg); color: var(--ail-bg); padding: 1px 4px; margin-left: -4px; }
+.ail-gl .ail-world .ail-floor:hover .ail-floor__k, .ail-gl .ail-world .ail-floor:focus-visible .ail-floor__k { color: var(--ail-fg); }
+/* compact: while a signature plays only the lit floor keeps its words, so the screen stays under 60 */
+.ail-gl .ail-world .ail-stack.is-compact .ail-floor:not(.is-lit):not(.is-open) { opacity: 0 !important; visibility: hidden; pointer-events: none; }
+.ail-gl .ail-world .ail-door:not([open]) .ail-stack { display: none; }
+
+@media (max-width: 599px) {
+  .ail-floor { grid-template-columns: 44px minmax(6.5em, 8em) 1fr; column-gap: 10px; }
+  .ail-floor__more { grid-column: 1 / -1; }
+  /* phone, 3D page: no label is drawn over a stack. The nine rows sit as a list in the sheet under it */
+  .ail-gl .ail-world .ail-stack { position: static; display: grid; gap: 0; pointer-events: auto; }
+  .ail-gl .ail-world .ail-floor { position: static; display: grid; grid-template-columns: 6.6em 1fr; column-gap: 8px; align-items: baseline; width: auto; max-width: none; padding: 3px 0; background: none; opacity: 1 !important; visibility: visible; pointer-events: auto; transform: none !important; border-bottom: 1px solid var(--ail-hair); }
+  .ail-gl .ail-world .ail-floor__k { font-size: 10px; }
+  .ail-gl .ail-world .ail-floor__v { margin: 0; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ail-gl .ail-world .ail-floor__v .ail-tag { font-size: 9px; padding: .2em .4em; }
+  .ail-gl .ail-world .ail-floor__more { grid-column: 1 / -1; width: auto; }
+  .ail-gl .ail-world .ail-stack.is-compact .ail-floor:not(.is-lit):not(.is-open) { opacity: .32 !important; visibility: visible; }
+}

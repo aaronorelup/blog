@@ -1,0 +1,8 @@
+/* xAI's world only (SPEC 2.5.5): the lights-out look of its signature. Colours come from worlds/xai.js
+   through the --w-* properties. This file is the pattern for world-<id>.css: only what the generic
+   world.css cannot know, scoped to [data-world="xai"]. */
+.ail-world[data-world='xai'] .ail-kicker { letter-spacing: .1em; }
+/* lights out: the room goes to night and the words flip to paper, on the ink scrim */
+.ail-gl .ail-world[data-world='xai'][data-dark] { --w-scrim: rgba(12, 13, 16, .88); --w-card: #16171B; --w-ground: #0C0D10; }
+.ail-gl .ail-world[data-world='xai'] .ail-btn[data-act='dark'][aria-pressed='true'] { background: var(--ail-fg); color: var(--ail-bg); }
+.ail-gl .ail-world[data-world='xai'] .ail-sig__item[data-picked] { box-shadow: inset 0 0 0 1px var(--ail-fg); }

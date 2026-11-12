@@ -1,0 +1,71 @@
+/* The AI landscape's own tokens and faces (SPEC 3.1), on the root class .ail. Two neutrals and no hue: every
+   colour on the page is some owner's colour, written into <head> from the world configurations (--ail-own-*).
+   The three faces are SIL OFL, Latin subsets, self-hosted beside this snapshot. */
+@font-face {
+  font-family: 'League Gothic';
+  src: url('../../../assets/ai-landscape/2026-11-10/fonts/LeagueGothic-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  src: url('../../../assets/ai-landscape/2026-11-10/fonts/InstrumentSerif-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  src: url('../../../assets/ai-landscape/2026-11-10/fonts/InstrumentSerif-Italic.woff2') format('woff2');
+  font-weight: 400; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('../../../assets/ai-landscape/2026-11-10/fonts/JetBrainsMono-Regular.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+
+.ail {
+  --ail-paper: #E6E8ED;
+  --ail-floor: #F8F9FB;
+  --ail-ink: #0C0D10;
+  --ail-ink-2: #4A4E57;
+  --ail-mid: #8C929C;
+  --ail-line: #C9CDD5;
+  --ail-night: #050608;
+  --ail-scrim: rgba(248, 249, 251, .9);
+  --ail-scrim-dark: rgba(12, 13, 16, .88);
+
+  /* what the chrome and the words sit on right now: a world or lights-out flips these (index.js, sections) */
+  --ail-fg: var(--ail-ink);
+  --ail-fg-2: var(--ail-ink-2);
+  --ail-bg: var(--ail-paper);
+  --ail-card: var(--ail-floor);
+  --ail-hair: var(--ail-line);
+  --ail-veil: var(--ail-scrim);
+  --ail-accent: transparent;
+
+  --ail-display: 'League Gothic', 'Arial Narrow', Impact, sans-serif;
+  --ail-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --ail-mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+
+  --ail-fs-display: clamp(72px, 13vw, 200px);
+  --ail-fs-title: clamp(36px, 4.4vw, 64px);
+  --ail-fs-sentence: clamp(24px, 2.6vw, 40px);
+  --ail-fs-body: 20px;
+  --ail-fs-label: 12px;
+
+  --ail-gutter: clamp(12px, 1vw, 16px);
+  --ail-margin: clamp(16px, 2.4vw, 36px);
+  --ail-top: 76px;
+  --ail-ease: cubic-bezier(.2, .7, .1, 1);
+  --ail-t: 450ms;
+}
+.ail[data-chrome='dark'] {
+  --ail-fg: #F8F9FB;
+  --ail-fg-2: #B7BBC4;
+  --ail-bg: var(--ail-night);
+  --ail-card: #16171B;
+  --ail-hair: #33363D;
+  --ail-veil: var(--ail-scrim-dark);
+}
+@media (max-width: 599px) {
+  .ail { --ail-fs-body: 18px; --ail-top: 60px; }
+}

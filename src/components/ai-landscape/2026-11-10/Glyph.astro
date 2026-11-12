@@ -1,0 +1,8 @@
+---
+// One of the page's symbols as inline SVG (the fonts hold none). `name` is a key of GLYPHS: a layer id,
+// a surface kind, or a small sign. Decorative: it never carries meaning that the words beside it lack.
+import { GLYPHS } from '../../../scripts/ai-landscape/2026-11-10/scene/glyphs.js';
+const { name, class: cls } = Astro.props;
+const d = GLYPHS[name] || GLYPHS.lamp;
+---
+<svg class:list={['ail-glyph', cls]} viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d={d} /></svg>

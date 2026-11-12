@@ -1,0 +1,11 @@
+---
+// A company's official mark on a plain plate, facing the screen, with its clear space (SPEC 3.3 rule 7).
+// It is never tilted, tinted, cropped or set on art. With no official file yet, the plate carries the name
+// set in the house type, plainly a placeholder and never a drawn imitation.
+import { world } from '../../../scripts/ai-landscape/2026-11-10/worlds/index.js';
+const { provider, name, size = 'm' } = Astro.props;
+const { marks } = world(provider);
+---
+<span class:list={['ail-mark', `ail-mark--${size}`, !marks.lid && 'ail-mark--type']} data-plate={marks.plate} data-clear={String(marks.clear)}>
+  {marks.lid ? <img src={marks.lid} alt={name} decoding="async" /> : <span class="ail-mark__name">{name}</span>}
+</span>

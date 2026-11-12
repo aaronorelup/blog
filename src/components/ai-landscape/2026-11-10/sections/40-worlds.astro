@@ -1,0 +1,9 @@
+---
+// The five worlds, in the owner's order (SPEC 2.5): one generic World per company, 3.0 screens each.
+// Every world-<id>.css beside world.css is picked up here, so a world package adds its styles by adding a file.
+import '../../../../styles/ai-landscape/2026-11-10/world.css';
+import World from '../World.astro';
+import { view } from '../data/view.js';
+import.meta.glob('../../../../styles/ai-landscape/2026-11-10/world-*.css', { eager: true });
+---
+{view.providers.map((p) => <World p={p} />)}
