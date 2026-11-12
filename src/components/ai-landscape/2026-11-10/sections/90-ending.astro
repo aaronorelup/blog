@@ -1,0 +1,31 @@
+---
+// The ending as HTML (SPEC 2.12): the snapshot's date, the owner's own line, the disclaimer and three ways out.
+// 3D page: the camera rises back to the poster and the date is printed on the floor under the lids. Its element
+// is the ruler the print is laid against (sections/ending.js). COPY.ending.provenance shows once integration adds it.
+import '../../../../styles/ai-landscape/2026-11-10/frame.css';
+import Fact from '../Fact.astro';
+import { COPY } from '../data/copy.js';
+import { fact, view } from '../data/view.js';
+
+const DATE = view.snapshot.date;
+const WORDS = 'aaron-opinion-pick-by-output';
+const say = view.data.aaron.opinions.find((o) => o.id === WORDS);
+if (!say) throw new Error(`ai-landscape: the ending needs aaron.opinions "${WORDS}", and the data has none`);
+---
+<section id="end" class="ail-sec ail-end" data-sec="ending" data-screens="0.8" data-land="0.6" data-rail={DATE} aria-labelledby="end-say">
+  <div class="ail-stage">
+    <p class="ail-print ail-end__date"><span><time datetime={DATE}>{DATE}</time></span></p>
+    <blockquote class="ail-end__quote">
+      <h2 id="end-say" class="ail-sentence"><Fact fact={fact(say.claim)} full tag={false}>{say.quote}</Fact></h2>
+    </blockquote>
+    <div class="ail-end__foot">
+      <p class="ail-end__fine">{COPY.ending.disclaimer}</p>
+      <nav class="ail-end__links ail-label" aria-label={COPY.frame.title}>
+        <a href="/">{COPY.ending.home}</a>
+        <a href={view.data.aaron.permalink}>{COPY.ending.now}</a>
+        <a href="/projects/">{COPY.ending.projects}</a>
+      </nav>
+      {COPY.ending.provenance && <p class="ail-end__prov ail-label">{COPY.ending.provenance}</p>}
+    </div>
+  </div>
+</section>
