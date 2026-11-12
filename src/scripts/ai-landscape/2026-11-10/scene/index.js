@@ -86,7 +86,7 @@ export async function mount(boot) {
   function frame(dt, time) {
     if (!live) return;
     ctx.time = time; ctx.dt = dt;
-    ctx.mats.shared.uTime.value = time;
+    ctx.mats.shared.uTime.value = reduced ? 0 : time;          // reduced motion: the dust and the iris edge hold still
     ctx.row.reset(); ctx.studio.reset(); ctx.rig.reset(); ctx.thread.reset(); ctx.worlds.reset();
 
     let slot = null;
