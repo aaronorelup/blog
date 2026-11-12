@@ -1,0 +1,37 @@
+---
+// The tea room's frame (/tea/): the shared Head, read through the SEO switch (src/data/tea.js teaSeo), its own
+// stylesheet (styles/tea/tea.css on tokens.css, never site.css) and the one small module that marks the current
+// chapter (scripts/tea/rail.js). The day/night switch lives in the rail. Everything renders and links without script.
+// An address with a chapter (/tea/#projects) lands on it at once: the inline script marks the arrival
+// (data-tea-arrive, tea.css), as WebKit otherwise glides its own scroll there while the page loads and, with the page
+// busy, stops the glide part way down the ledger. The first link followed on the page gives the glide back.
+import '../styles/tea/tea.css';
+import Head from '../components/chrome/Head.astro';
+import { teaSeo } from '../data/tea.js';
+
+interface Props { title: string; description: string }
+const { title, description } = Astro.props;
+const seo = teaSeo();
+---
+
+<!doctype html>
+<html lang="en" class="tea-root">
+  <head>
+    <Head title={title} description={description} noindex={seo.noindex} canonical={seo.canonical ?? undefined} />
+    <script is:inline>
+      if (location.hash.length > 1) {
+        document.documentElement.dataset.teaArrive = '';
+        addEventListener('click', function (e) {
+          if (e.target.closest && e.target.closest('a[href^="#"]')) delete document.documentElement.dataset.teaArrive;
+        }, true);
+      }
+    </script>
+    <slot name="head" />
+  </head>
+  <body class="tea">
+    <slot />
+    <script>
+      import '../scripts/tea/rail.js';
+    </script>
+  </body>
+</html>

@@ -1,7 +1,8 @@
 // The eval's DeepSeek ledger (docs/ASK.md "The eval"): every paid call from scripts/eval/ and every Worker answer the
 // runner gets is reserved at its worst case first and settled to its real price (src/lib/ask/price.js, at its start),
 // in $ASK_EVAL_LEDGER (JSONL), and a call that could take the total past $ASK_EVAL_USD (default 3) is refused. A
-// lock file serialises processes (the runner, the judge, the probe). chat() is the only way the scripts call DeepSeek.
+// lock file serialises processes (the runner, the judge, the probe). chat() is how the scripts call DeepSeek, but for
+// the Goobie lab's llm.mjs, which reserves and settles its own calls here too.
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';

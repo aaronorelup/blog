@@ -1,0 +1,29 @@
+---
+// The end of the page: the utilities as headline + one line rows, then the footer (the way back to the main site,
+// the main nav, social links, the copyright line). Links only.
+import { NAV, SOCIAL } from '../../data/site.js';
+import { COPY } from '../../data/tea.js';
+---
+
+<section class="tea-utils tea-reveal" aria-labelledby="tea-utils-title">
+  <h2 class="tea-utils-title" id="tea-utils-title">{COPY.utilitiesLabel}</h2>
+  <ul class="tea-utils-list">
+    {COPY.utilities.map((u) => (
+      <li class="tea-row"><h3 class="tea-row-title"><a class="tea-stretch" href={u.href}>{u.label}</a></h3><p class="tea-row-line">{u.line}</p></li>
+    ))}
+  </ul>
+</section>
+
+<footer class="tea-foot">
+  <div class="tea-joint" aria-hidden="true"></div>
+  <p class="tea-foot-line">{COPY.footerLine}</p>
+  <a class="tea-pill is-big" href="/" data-no-fly>{COPY.toMain} <span aria-hidden="true">→</span></a>
+  <nav class="tea-foot-nav" aria-label={COPY.mainNavLabel}>
+    {NAV.map((n) => <a href={n.href}>{n.label}</a>)}
+    <a href="/rss.xml">RSS</a>
+  </nav>
+  <ul class="tea-foot-social">
+    {SOCIAL.map((s) => <li><a href={s.href} target="_blank" rel="noreferrer noopener">{s.label}</a></li>)}
+  </ul>
+  <p class="tea-foot-copy">{COPY.copyright(new Date().getFullYear())} <a href="#top">{COPY.backToTop}</a></p>
+</footer>

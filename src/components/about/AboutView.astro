@@ -1,10 +1,15 @@
 ---
-// About, in the homepage overlay and on /about. Its text is set as prose (prose.css), so it reads like the post
-// reader: one publication.
+// About, in the homepage overlay, on /about and in the tea room. Its text is set as prose (prose.css), so it reads
+// like the post reader: one publication. level: its title's rank (the page's h1 by default), its sections one rank
+// below; title={false} leaves the title out where the page's own heading of that rank names it (the tea room's).
+interface Props { level?: 1 | 2 | 3 | 4 | 5; title?: boolean }
+const { level = 1, title = true } = Astro.props;
+const Title = `h${level}`;
+const Section = `h${level + 1}`;
 ---
 
 <div class="page">
-  <h1 class="page-title">About me</h1>
+  {title && <Title class="page-title">About me</Title>}
   <p class="page-lede">
     I build things with AI agents to find out where they actually hold up. Most of it is about
     making learning fun and open to anyone who wants it.
@@ -18,7 +23,7 @@
       what broke. That's what this site is for.
     </p>
 
-    <h2>What I'm making</h2>
+    <Section>What I'm making</Section>
     <p>
       The big one right now is <strong>I Love My Evening Television</strong>,
       a series of half-hour films made by crews of Claude agents from one prompt each. Every episode
@@ -46,7 +51,7 @@
       <a href="/projects">the projects page</a>.
     </p>
 
-    <h2>Why I write it down</h2>
+    <Section>Why I write it down</Section>
     <p>
       <a href="/ledger">The ledger</a> is where I file what I tried and what came of it,
       dead ends included. The prompt that seemed obviously right and wasn't. The agent that did
@@ -54,14 +59,14 @@
       honest write-up of a failure is worth more than another launch announcement.
     </p>
 
-    <h2>Away from the keyboard</h2>
+    <Section>Away from the keyboard</Section>
     <p>
       I'm learning Japanese and I volunteer with a local Japanese club, including a bilingual
       Studio Ghibli storytime. I play fingerstyle guitar and write songs. I'm also in Toastmasters,
       which has done more for my writing than any style guide.
     </p>
 
-    <h2>Say hello</h2>
+    <Section>Say hello</Section>
     <p>
       If you're building something close to any of this, or you just want to talk about where
       agents break, I'd like to hear from you.

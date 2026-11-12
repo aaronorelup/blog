@@ -1,0 +1,29 @@
+---
+// A project with its picture (Play and Watch): state chip, name as the one stretched link (its main link, else its
+// write-up, lib/tea.js projectHref), its line, and the write-up below when the main link goes elsewhere.
+import { COPY } from '../../data/tea.js';
+import { projectHref } from '../../lib/tea.js';
+import Glyph from '../chrome/Glyph.astro';
+
+interface Props { card: any; size?: 'half' | 'third' }
+const { card, size = 'half' } = Astro.props;
+const go = projectHref(card);
+const out = go.external ? { target: '_blank', rel: 'noreferrer noopener' } : {};
+const post = card.posts?.[0];
+---
+
+<li class:list={['tea-card', `is-${size}`, 'is-project']}>
+  <div class:list={['tea-card-plate', { 'is-icon': card.picture?.icon || !card.picture }]}>
+    {card.picture
+      ? <img src={card.picture.src} alt={card.picture.alt} width={card.picture.icon ? 256 : 640} height={card.picture.icon ? 256 : 360} loading="lazy" decoding="async" />
+      : <Glyph name="book" />}
+  </div>
+  <div class="tea-card-body">
+    <p class="tea-card-meta"><span>{card.chip}</span></p>
+    <h4 class="tea-card-title"><a class="tea-stretch" href={go.href} {...out}>{card.name}{go.external && <span aria-hidden="true"> ↗</span>}</a></h4>
+    <p class="tea-card-line">{card.line}</p>
+    {post && go.href !== `/ledger/${post.slug}/` && (
+      <a class="tea-card-extra" href={`/ledger/${post.slug}/`}>{COPY.writeUp}: {post.title}</a>
+    )}
+  </div>
+</li>

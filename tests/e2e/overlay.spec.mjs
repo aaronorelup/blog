@@ -646,5 +646,7 @@ test('overlay-27 on a phone the panel’s footer is two short lines, every link 
   const { height } = await foot.boundingBox();
   expect(height / page.viewportSize().height).toBeLessThan(0.1);
   for (const a of await foot.locator('a').all()) await expect(a).toBeInViewport();
-  expect(await foot.locator('a').count()).toBe(SOCIAL.length + 1);   // the feed and every elsewhere
+  // exactly these: the feed, the tea room (every panel page's way to /tea/) and every elsewhere
+  const hrefs = await foot.locator('a').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+  expect(hrefs.sort()).toEqual(['/rss.xml', '/tea/', ...SOCIAL.map((s) => s.href)].sort());
 });

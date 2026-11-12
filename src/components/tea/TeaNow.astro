@@ -1,0 +1,50 @@
+---
+// Chapter V, now: the newest Now snapshot rendered in full from its file (nowSnapshots + renderEntry, as /now does),
+// links to the older ones, and the research documents as index rows.
+import { COPY } from '../../data/tea.js';
+import { renderEntry, slugOf } from '../../lib/content.js';
+import { shortDate } from '../../lib/dates.js';
+import TeaChapter from './TeaChapter.astro';
+
+interface Props { snaps: any[]; docs: any[] }
+const { snaps, docs } = Astro.props;
+const [snap, ...older] = snaps;
+const Content = snap && (await renderEntry(snap)).Content;
+const day = (s) => shortDate(new Date(s.id));
+---
+
+<TeaChapter id="now" small>
+  <div class="tea-now tea-reveal">
+    {snap && (
+      <article class="tea-sheet">
+        <p class="tea-sheet-kicker"><a href="/now/">{COPY.updated} {day(snap)}</a></p>
+        <p class="tea-sheet-lede">{snap.data.summary}</p>
+        <div class="tea-prose"><Content /></div>
+        {older.length > 0 && (
+          <>
+            <h3 class="tea-sheet-sub">{COPY.olderSnapshots}</h3>
+            <ul class="tea-plain">{older.map((s) => <li><a href={`/now/${s.id}/`}>{day(s)}</a>: {s.data.summary}</li>)}</ul>
+          </>
+        )}
+        <p class="tea-sheet-foot"><a class="tea-link" href="/now/">{COPY.nowPage} <span aria-hidden="true">→</span></a></p>
+      </article>
+    )}
+    {docs.length > 0 && (
+      <section class="tea-group tea-research" aria-labelledby="tea-research-title">
+        <header class="tea-group-head">
+          <h3 class="tea-group-title" id="tea-research-title"><a class="tea-head-link" href="/research/">{COPY.researchTitle}</a></h3>
+          <p class="tea-group-intro">{COPY.researchLede}</p>
+        </header>
+        <ol class="tea-rows is-single">
+          {docs.map((d) => (
+            <li class="tea-row">
+              <p class="tea-row-meta"><span>{d.data.id}</span><span>{shortDate(d.data.date)}</span></p>
+              <h4 class="tea-row-title"><a class="tea-stretch" href={`/research/${slugOf(d)}/`}>{d.data.title}</a></h4>
+              <p class="tea-row-line">{d.data.summary}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+    )}
+  </div>
+</TeaChapter>
