@@ -12,17 +12,16 @@ const A = D.architecture;
 const me = D.aaron;
 const FIRST = ['you', 'router', 'harness', 'model', 'context', 'repos', 'skills', 'secrets', 'gpu', 'storage', 'hosting'];
 const OFFICIAL = { yes: COPY.links.official, partial: COPY.links.partial, no: COPY.links.unofficial };
-const nodes = me.nodes.filter((n) => n.state === 'current');
+// current nodes only. The feedback node names a private dashboard, which this public page leaves out
+const nodes = me.nodes.filter((n) => n.state === 'current' && n.layer !== 'feedback');
 const first = new Set(FIRST.map((layer) => nodes.find((n) => n.layer === layer)).filter(Boolean).map((n) => n.id));
 const role = (n, band) => (A.stackLayers.find((l) => l.id === n.layer) || A.aroundLayers.find((l) => l.id === n.layer) || band).name;
 const billing = new Set(nodes.filter((n) => n.layer === 'billing').map((n) => n.id));
 const tank = (id) => me.arrows.some((a) => (a.fromRef === id && billing.has(a.toRef)) || (a.toRef === id && billing.has(a.fromRef)));
 const label = (n) => (n.productRef ? thing(n.productRef).name : null);
 const who = (n) => (n.layer === 'you' ? 'you' : n.productRef ? thing(n.productRef).owner : 'outside');
-const verbs = (n) => me.arrows.filter((a) => a.fromRef === n.id && a.state === 'documented').map((a) => {
-  const to = me.nodes.find((x) => x.id === a.toRef);
-  return `${a.verb} ${label(to) || to.name}`;
-});
+const verbs = (n) => me.arrows.filter((a) => a.fromRef === n.id && a.state === 'documented')
+  .map((a) => [a.verb, nodes.find((x) => x.id === a.toRef)]).filter(([, to]) => to).map(([verb, to]) => `${verb} ${label(to) || to.name}`);
 const bands = me.bands.map((b) => ({
   ...b,
   pieces: b.nodeRefs.map((id) => nodes.find((n) => n.id === id)).filter(Boolean).map((n) => ({
@@ -46,14 +45,16 @@ const pairs = routers.flatMap((r) => workers.map((w) => {
   return { r, w, shipped: !!s, official: s ? s.official : 'none', stamp: s ? OFFICIAL[s.official] : COPY.links.none, fact: s ? fact(s.claim) : ownClaim(r) };
 }));
 const arrows = me.arrows.filter((a) => first.has(a.fromRef) && first.has(a.toRef)).map((a) => [a.fromRef, a.toRef, a.state]);
-const date = me.permalink.match(/\d{4}-\d{2}-\d{2}/)[0];
+const date = me.permalink.match(/\d{4}-\d{2}-\d{2}/)[0];          // on hover only: the bench prints no number 01 to 09
 const arrow = 'M3 12h17M14 6l6 6-6 6';
+const TANK = 'M7 4h10v16H7zM7 12h10M10 2h4';                       // a monthly plan pays for it
+const METER = 'M4 16a8 8 0 0 1 16 0M12 16l4-5M3 19h18';             // paid by use
 ---
 <section id="my-stack" class="ail-sec ail-ms" data-sec="mystack" data-screens="1.3" data-land="0.55" data-rail={COPY.architecture.myStack}
   data-arrows={JSON.stringify(arrows)} data-mine={`${routerNode.productRef} ${coderNode.productRef}`} aria-labelledby="ms-title">
   <div class="ail-stage">
     <header class="ail-ms__head">
-      <h2 id="ms-title" class="ail-title">{COPY.architecture.myStack} <a class="ail-ms__date ail-label" href={me.permalink}><time datetime={date}>{date}</time></a></h2>
+      <h2 id="ms-title" class="ail-title">{COPY.architecture.myStack} <a class="ail-ms__date ail-label" href={me.permalink} title={date}>{COPY.ending.now}</a></h2>
       <p class="ail-ms__quote ail-sentence"><Fact fact={fact(routerNode.claim)} full tag={false}>&ldquo;{routerNode.quote}&rdquo;</Fact></p>
     </header>
     <ol class="ail-ms__bands">
@@ -65,16 +66,16 @@ const arrow = 'M3 12h17M14 6l6 6-6 6';
               <li class="ail-ms__piece" data-node={p.id} data-layer={p.layer} data-owner={p.owner} data-first={p.first ? '' : undefined} data-swap={p.swap || undefined}>
                 <details class="ail-ms__d" name="ail-ms">
                   <summary class="ail-ms__tag">
-                    {p.name && <span class="ail-ms__name ail-own" data-owner={p.owner}>{p.name}</span>}
+                    <span class="ail-ms__name ail-own" data-owner={p.owner}>{p.name || p.node}</span>
                     <span class="ail-ms__role ail-label">{p.role}</span>
-                    {p.tank && <svg class="ail-ar-glyph ail-ms__tank" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v16H7zM7 12h10M10 2h4" /></svg>}
-                    {p.meter && <svg class="ail-ar-glyph ail-ms__meter" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16a8 8 0 0 1 16 0M12 16l4-5M3 19h18" /></svg>}
+                    {p.tank && <svg class="ail-ar-glyph ail-ms__tank" viewBox="0 0 24 24" aria-hidden="true"><path d={TANK} /></svg>}
+                    {p.meter && <svg class="ail-ar-glyph ail-ms__meter" viewBox="0 0 24 24" aria-hidden="true"><path d={METER} /></svg>}
                   </summary>
                   <div class="ail-ms__more ail-card">
-                    <p class="ail-ms__node">{p.node}</p>
+                    {p.name && <p class="ail-ms__node">{p.node}</p>}
                     <p>{p.what}</p>
                     {p.quote && <p class="ail-ms__his">&ldquo;{p.quote}&rdquo;</p>}
-                    {p.verbs.length > 0 && <p class="ail-ms__verbs ail-label">{p.verbs.join(' / ')}</p>}
+                    {p.verbs.length > 0 && <ul class="ail-ms__verbs">{p.verbs.map((x) => <li>{x}</li>)}</ul>}
                     <p class="ail-ms__proof"><Fact fact={p.fact} full>{p.fact.short}</Fact></p>
                   </div>
                 </details>
@@ -108,7 +109,12 @@ const arrow = 'M3 12h17M14 6l6 6-6 6';
         <summary class="ail-ms__restbtn"><svg class="ail-ar-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h.5M12 12h.5M19 12h.5" /></svg><span class="ail-ms__restw ail-label">{rest.length} {COPY.world.more}</span></summary>
         <ul class="ail-ms__restlist">
           {rest.map((p) => (
-            <li><span class="ail-own" data-owner={p.owner}>{p.name || p.node}</span> <span class="ail-label">{p.role}</span> <Fact fact={p.fact} full>{p.fact.short}</Fact></li>
+            <li>
+              <span class="ail-own" data-owner={p.owner}>{p.name || p.node}</span> <span class="ail-label">{p.role}</span>
+              {p.tank && <svg class="ail-ar-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d={TANK} /></svg>}
+              {p.meter && <svg class="ail-ar-glyph" viewBox="0 0 24 24" aria-hidden="true"><path d={METER} /></svg>}
+              <Fact fact={p.fact} full>{p.fact.short}</Fact>
+            </li>
           ))}
         </ul>
       </details>

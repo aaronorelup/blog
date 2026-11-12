@@ -110,7 +110,7 @@ function rail(ctx, el, sec) {
     const units = rows.map((tr, c) => {
       const id = tr.dataset.p;
       const x = ROW_X[c];
-      const shell = block(ctx, shellGeo, owner(id), 1.1, { alpha: 0.26 });
+      const shell = block(ctx, shellGeo, owner(id), 1.1, { alpha: 0.4 });
       shell.position.set(x - 0.66, 0.12 + 0.55, RZ);
       const fill = block(ctx, fillGeo, owner(id), 1);
       fill.position.set(x - 0.66, 0.16, RZ);

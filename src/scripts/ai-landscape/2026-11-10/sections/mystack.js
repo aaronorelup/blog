@@ -168,10 +168,10 @@ export function create(ctx, el, sec) {
       for (const tw of row.towers) { tw.lift = base.under(tw.x - 1.2, tw.x + 1.2); tw.dim = 0.74 * back; tw.char.show = 1 - back; tw.lid.show = 1 - back * 0.45; }
 
       // the bench rises, then the pieces fly in once, 70 ms apart, and settle with a small overshoot
-      const rise = smooth(span(u, 0.08, 0.26)) * (1 - smooth(span(u, 1.12, 1.28)));
+      const rise = smooth(span(u, 0.14, 0.3)) * (1 - smooth(span(u, 1.12, 1.28)));
       bench.forEach((m) => { m.position.y = H * (rise - 0.5); setGlass(m, { show: Math.min(1, rise * 4) }); });
       shade.material.opacity = 0.2 * rise;
-      if (!st.flown && u > 0.2) {
+      if (!st.flown && u > 0.24) {
         st.flown = true;
         if (!reduced) pieces.forEach((p) => { if (p.t < 1) source(p, p.owner, p.from); });
       }

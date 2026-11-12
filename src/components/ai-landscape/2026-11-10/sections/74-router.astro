@@ -45,7 +45,7 @@ const chips = R.shipped.map((s) => ({ r: thing(s.routerRef), w: thing(s.workerRe
       <p class="ail-rt__rule ail-sentence"><Fact fact={rule} /></p>
       <p class="ail-rt__cav"><Fact fact={caveat} /></p>
       <details class="ail-rt__src">
-        <summary class="ail-label">{essay.org} &middot; {essay.form} &middot; <time datetime={essay.date}>{essay.date}</time></summary>
+        <summary class="ail-label">{essay.org} &middot; {essay.form} &middot;{' '}<time datetime={essay.date}>{essay.date}</time></summary>
         <div class="ail-rt__card ail-card">
           <table class="ail-rt__costs">
             <tbody>

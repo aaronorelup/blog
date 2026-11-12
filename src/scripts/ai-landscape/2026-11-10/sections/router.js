@@ -150,10 +150,10 @@ export function create(ctx, el, sec) {
       // the cut: when the third lights, the dashed line shows, holds, then is snipped and pulls back to both ends
       if (lit === shapes.length - 1) st.cutT += dt;
       const shown = lit === shapes.length - 1 ? k : 0;
-      const cut = reduced ? 1 : clamp01((st.cutT - 0.7) / 0.6);
+      const cut = reduced ? 1 : clamp01((st.cutT - 0.35) / 0.5);
       cutA.draw = 1 - cut; cutB.draw = 1 - cut;
       cutA.show = cutB.show = shown * 0.5 * (cutA.draw > 0.01 ? 1 : 0);
-      snip.forEach((r) => { r.show = shown * (reduced ? 0 : smooth(cut * 3) * (1 - smooth((st.cutT - 1.8) / 0.5))); r.draw = 1; });
+      snip.forEach((r) => { r.show = shown * (reduced ? 0 : smooth(cut * 3) * (1 - smooth((st.cutT - 1.6) / 0.5))); r.draw = 1; });
       [cutA, cutB, ...snip].forEach((r) => r.update());
 
       pins.forEach((p) => { p.el.style.opacity = k.toFixed(3); });
