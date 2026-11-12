@@ -16,7 +16,7 @@ export default {
     person: 'Elon Musk',                                        // the caption a tap on the portrait shows: the name only
   },
   character: { kind: 'orb3d', floor: 3, size: 1.0 },            // a real sphere whose eyes follow the pointer
-  backdrop: { y: -3.8, turn: 0 },
+  backdrop: { y: -5.0, turn: 0, full: true },                  // hung low, so the name stands on the pale wall above the black racks
   props: [
     { file: 2, z: -9, x: 11.0, y: 2.45, w: 2.0 },               // prop-2: the rocket and its gantry, far right
     { file: 3, z: -6, x: -4.3, y: 1.44, w: 1.6 },               // prop-3: a server rack, at the left edge

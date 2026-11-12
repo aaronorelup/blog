@@ -27,12 +27,14 @@ export function createWorlds(ctx) {
     const ground = cfg.theme.ground;
     const inst = { id: cfg.id, cfg, tower, group, open: 0, name: null, nameRect: null, nameShow: 0, ready: null, parts: {} };
 
-    // the plate on the inside of a curved wall, 2:1 from the 16:9 picture (the top of the picture is cropped)
-    const geo = new CylinderGeometry(WALL.radius, WALL.radius, WALL.height, 48, 1, true, Math.PI - WALL.arc / 2, WALL.arc);
+    // the plate on the inside of a curved wall, 2:1 from the 16:9 picture (the top of the picture is cropped).
+    // backdrop.full keeps the whole picture: the wall grows upward by an eighth, so it can hang lower
+    const full = cfg.backdrop.full ? 9 / 8 : 1;
+    const geo = new CylinderGeometry(WALL.radius, WALL.radius, WALL.height * full, 48, 1, true, Math.PI - WALL.arc / 2, WALL.arc);
     const uv = geo.attributes.uv;
-    for (let i = 0; i < uv.count; i++) uv.setXY(i, 1 - uv.getX(i), uv.getY(i) * (8 / 9));
+    for (let i = 0; i < uv.count; i++) uv.setXY(i, 1 - uv.getX(i), uv.getY(i) * (8 / 9) * full);
     const wall = new Mesh(geo, mats.paper(null, { side: 1 }));
-    wall.position.set(0, cfg.backdrop.y + WALL.height / 2, WALL.radius - WALL.behind);
+    wall.position.set(0, cfg.backdrop.y + (WALL.height * full) / 2, WALL.radius - WALL.behind);
     wall.rotation.y = cfg.backdrop.turn || 0;
     wall.visible = false; wall.renderOrder = -8;
     group.add(wall);
