@@ -122,39 +122,33 @@
     },
     "projects/play": {
       "auto": false,
-      "count": 4,
+      "count": 2,
       "picks": [
-        "j-storm-bell-fighter",
         "j-blackwater",
-        "j-armies-of-gielinor",
-        "j-mini-loom"
+        "j-armies-of-gielinor"
       ]
     },
     "projects/watch": {
       "auto": false,
-      "count": 4,
+      "count": 2,
       "picks": [
-        "j-evening-television",
         "j-claude-paints-in-oil",
-        "j-bad-very-bad",
         "j-blackwater-songs"
       ]
     },
     "projects/download": {
       "auto": false,
-      "count": 3,
+      "count": 2,
       "picks": [
         "j-blood-helix",
-        "j-llm-monster-hunter",
-        "j-reading-pacer"
+        "j-llm-monster-hunter"
       ]
     },
     "projects/read": {
       "auto": false,
-      "count": 3,
+      "count": 2,
       "picks": [
         "j-my-characters",
-        "j-episode-5-and-the-small-one",
         "j-wallpaper-breaker"
       ]
     },
