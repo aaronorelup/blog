@@ -1,0 +1,14 @@
+audio:        /home/user/gtr/inputs/S3/S3.wav
+input  beats: 32 (cv=0.0140)
+input  downbeats: 9 (cv=0.0846)
+
+applied:      True
+reason:       ok
+elapsed:      26.195s
+output beats: 33 (in=32) cv=0.0669
+output downbeats: 9 (in=9) cv=0.0886
+
+first 8 beats   in : 0.640, 1.280, 1.900, 2.520, 3.160, 3.780, 4.400, 5.020
+first 8 beats   out: 0.650, 1.300, 1.858, 2.508, 3.158, 3.808, 4.365, 5.016
+first 4 downbts in : 0.640, 2.520, 5.020, 7.520
+first 4 downbts out: 0.650, 2.508, 5.016, 7.523

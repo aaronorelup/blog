@@ -403,8 +403,9 @@ list was tried anywhere in this research.
 6. `conda activate musicldm_env`, then
    `CUDA_VISIBLE_DEVICES=0 python integrated_train.py --config config/MSG-LD/integrated_musicldm_test_inference.yaml --separate_only`
    (the README's single-audio separation command; it runs Demucs first when its output folder does not exist yet).
-7. Find the `val_0` folder the run wrote (the README's example path is `inference_outputs/val_0/mix/<name>.wav`, with
-   `stem_0` to `stem_4` beside `mix`; where this config writes it was not checked). Then `conda activate onset_detect`
+7. Find the `val_0` folder the run wrote (the example path in the repository's `SINGLE_AUDIO_ONSET_DETECTION_README.md`
+   is `/PATH/TO/PROJECT/inference_outputs/val_0/mix/<name>.wav`, with `stem_0` to `stem_4` beside `mix`; where this
+   config writes it was not checked). Then `conda activate onset_detect`
    and for each file in `val_0/mix/`:
    `python single_audio_onset_detection.py --input_audio <full path>/val_0/mix/<name>.wav --output_dir ./transcription_results`
 8. Send back: the `*_transcription.txt` files (lines `timestamp    drum_type`, types Kick, Snare, Toms, Hi_Hats,

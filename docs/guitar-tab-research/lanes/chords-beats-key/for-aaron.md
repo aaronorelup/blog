@@ -181,8 +181,10 @@ evaluation code's five classes are DADGAD, Drop D, Open D, Open G and Standard.
 
 ## 10. STONE (Deezer, ISMIR 2024): key signature, and key and mode (added in gap round 2)
 
-Not run here: STONE installs from its cloned repository (no PyPI package), and this box refuses to run repository code
-(trials.md, "Not run here"). Facts below are from the repository at commit 0c5f72d (2025-10-24), read 2026-11-11: the
+Not run here (not attempted): STONE installs from its cloned repository (no PyPI package), the kind of step this box's
+permission system refused each time this lane tried one (trials.md, "Not run here"), and its pinned torch 2.0.0 and
+tensorflow 2.12 downloads (195 MB and 586 MB) are over the 200 MB the shared disk allowed (trials.md, "Gap round 2").
+Facts below are from the repository at commit 0c5f72d (2025-10-24), read 2026-11-11 and again 2026-11-12: the
 README, `pyproject.toml`, `Dockerfile`, `inference.py` and the file list. The README says Python 3.10 and Poetry, and
 gives a Docker route; `pyproject.toml` pins torch 2.0.0, torchaudio 2.0.1 and tensorflow 2.12.*, and `inference.py`
 imports both PyTorch and TensorFlow and sets `device = "cpu"` (line 167), so a GPU is not used for inference.
@@ -214,13 +216,16 @@ imports both PyTorch and TensorFlow and sets `device = "cpu"` (line 167), so a G
 
 ## 11. key-cnn (Hendrik Schreiber): global key (added in gap round 2)
 
-Not run here: key-cnn installs from its cloned repository (no PyPI project `keycnn`), and this box refuses to run
-repository code. Facts below are from the repository at commit 9715d6f (2020-07-30), read 2026-11-11: the README
+Not run here (not attempted): key-cnn installs from its cloned repository (no PyPI project `keycnn` or `key-cnn`), the
+kind of step this box's permission system refused each time this lane tried one (trials.md, "Not run here"). Facts below
+are from the repository at commit 9715d6f (2020-07-30), read 2026-11-11 and again 2026-11-12: the README
 ("Clone this repo and run ``setup.py install`` using Python 3.6"), `setup.py` (it requires `numpy==1.16.0`,
 `tensorflow==1.15.2`, `librosa==0.6.2`, `jams>=0.3.1`, `matplotlib>=3.0.0`, `h5py>=2.7.0`) and `bin/key` (default
-model `deepspec`, which `keycnn/classifier.py` maps to `deepspec_k16`, a 3,659,832-byte `.h5` file in the repository).
-PyPI has TensorFlow 1.15.2 wheels for Windows only for Python 3.6 and 3.7 (`cp36` and `cp37` `win_amd64`), and numpy
-1.16.0 likewise (PyPI JSON, read 2026-11-11).
+model `deepspec`, which `keycnn/classifier.py` maps to `deepspec_k16`, a 3,659,832-byte `.h5` file in the repository;
+`deepsquare` maps to `deepsquare_k8`, 3,712,064 bytes). PyPI has TensorFlow 1.15.2 wheels for Windows for Python 3.5,
+3.6 and 3.7 (`cp35`, `cp36`, `cp37` `win_amd64`) and numpy 1.16.0 Windows wheels for Python 2.7, 3.5, 3.6 and 3.7, so
+3.7 is the newest Python that has both (PyPI JSON, read 2026-11-11 and 2026-11-12; corrected on 2026-11-12, the
+2026-11-11 text said "only for Python 3.6 and 3.7").
 
 1. Install Python 3.7.9, "Windows x86-64 executable installer", from python.org
    (https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe answered HTTP 200 on 2026-11-11), and Git.
@@ -240,8 +245,9 @@ PyPI has TensorFlow 1.15.2 wheels for Windows only for Python 3.6 and 3.7 (`cp36
 
 ## 12. BeatNet+ (Heydari and Duan, TISMIR 2024): beats and downbeats (added in gap round 2)
 
-Not run here: BeatNet+ installs from its cloned repository (`pip install -e .`; no PyPI project), and this box refuses to
-run repository code. Facts below are from the repository at commit bb90eb0 (2026-04-13), read 2026-11-11: the README,
+Not run here (not attempted): BeatNet+ installs from its cloned repository (`pip install -e .`; no PyPI project), the
+kind of step this box's permission system refused each time this lane tried one (trials.md, "Not run here"). Facts below
+are from the repository at commit bb90eb0 (2026-04-13), read 2026-11-11 and again 2026-11-12: the README,
 `setup.py` (`python_requires='>=3.8'`; numpy, cython, librosa, scipy, mido, pytest, madmom>=0.16.1, torch, matplotlib,
 tensorboard, pyyaml) and `src/BeatNetPlus/inference.py`. The three weight files are in `src/BeatNetPlus/models/`
 (`generic_weights.pt` 3,072,825 bytes, `generic_main_weights.pt` 3,072,890, `af_non_percussive_weights.pt` 3,073,019).
@@ -252,8 +258,10 @@ that README also says "Alternatively, use Python 3.9 where these aliases still e
 1. In WSL (Ubuntu): `sudo apt install git build-essential`, then install uv (https://docs.astral.sh/uv/).
 2. `uv venv --python 3.9 bnp`, `source bnp/bin/activate`, `uv pip install "numpy==1.23.5" "scipy<1.11" mido "cython<3"
    "setuptools<81" wheel soundfile`, `uv pip install --no-build-isolation madmom==0.16.1`, `uv pip install torch
-   "librosa==0.10.2.post1" matplotlib pyyaml tensorboard` (with numpy held at 1.23.5; add `--index-url
-   https://download.pytorch.org/whl/cpu` for a CPU-only torch).
+   "librosa==0.10.2.post1" matplotlib pyyaml tensorboard "numpy==1.23.5"` (naming numpy again keeps it at 1.23.5; for a
+   CPU-only torch add uv's `--torch-backend cpu` to that command, which this box sets with `UV_TORCH_BACKEND=cpu`).
+   (Changed on 2026-11-12: the 2026-11-11 text asked to hold numpy without naming it in the command, and suggested
+   `--index-url https://download.pytorch.org/whl/cpu`, which would also send numpy and librosa to that index.)
 3. `git clone https://github.com/mjhydri/BeatNet-Plus.git`, `cd BeatNet-Plus` (the README writes `cd beatnet_plus`; the
    clone's folder is `BeatNet-Plus`), `uv pip install --no-deps -e .` (README: `pip install -e .`; `--no-deps` keeps
    the numpy and madmom above).
@@ -264,6 +272,42 @@ that README also says "Alternatively, use Python 3.9 where these aliases still e
    `timings_bnp.json`. The script was written here and not run (no BeatNet+ code ran on this box).
 5. Send back: the whole `out` folder and the console output. License: no license file and no license statement in the
    repository (survey.md, BeatNet+); the README's training data include MUSDB18 ("other-nc") and the RWC databases.
+
+## 13. AudioEstimate (Hugging Face `DionTimmer/audioestimate-1.0`): key and BPM (added in gap round 2)
+
+Not run here: the model's files sit behind a manual access request ("You need to agree to share your Hugging Face
+information to access this model"), a consent step this lane does not take for you, and no public inference code was
+found (no PyPI project, no public GitHub repository under the names tried; survey.md, AudioEstimate). The card says the
+model "is used by the AudioEstimate Python package and Electron desktop app".
+
+1. While logged in to Hugging Face, open https://huggingface.co/DionTimmer/audioestimate-1.0 and read the access
+   conditions.
+   Request access only if you accept them; the gate is "manual", so the author approves each request.
+2. Send back: the conditions text (copy or screenshot) and whether access was granted. If it was, download the four
+   small files `README.md`, `config.yaml`, `metrics.json` and `VERSION.md` (`model.pt` is 37,738,542 bytes and is not
+   needed yet) and send them, with any link you find to the AudioEstimate Python package or desktop app. With those the
+   lane can tell whether `model.pt` can be run on the test clips (S3, S4, R1a, R1b, R1c, R2) and under what license.
+
+## 14. mixedkey (Go module, v0.1.0): key from mono PCM (added in gap round 2)
+
+Not run here: the box has Go 1.24.7, but the `go get` and `go build` of the module were refused by the box's permission
+system ("Reason: [Code from External]"; trials.md, "Gap round 2"). The lane's glue program is ready:
+`docs/guitar-tab-research/lanes/chords-beats-key/scripts/gap2/mixedkey_run/main.go` (standard library only; it reads
+16-bit PCM WAV files, mixes to mono, runs the four key profiles). It parses (`gofmt -e`) and uses only names defined in
+mixedkey v0.1.0, but it was never compiled, so a first build may need a small fix (UNVERIFIED).
+
+1. Install Go 1.24 or later for Windows from https://go.dev/dl/ (mixedkey's README: "Requires Go 1.24 or later.").
+2. In PowerShell, in an empty folder `mixedkey_run`, copy `main.go` there, then run:
+   `go mod init mixedkeyrun`
+   `go get github.com/cabbagekobe/mixedkey@v0.1.0`
+   `go build -o mixedkey_run.exe .`
+3. Copy the clips into a `clips` folder and make an empty `out` folder (the program does not create it), then run once,
+   timed: `Measure-Command { .\mixedkey_run.exe out clips\S3.wav clips\S4.wav clips\S2n.wav clips\S5capo2.wav
+   clips\S5dropd.wav clips\S7flat30.wav clips\R1a.wav clips\R1b.wav clips\R1c.wav clips\R2.wav }`.
+4. Send back: the `out` folder (per clip `<clip>.mixedkey.json` and four `<clip>.key_mixedkey_<profile>.txt` files),
+   the console output and the `Measure-Command` time; if the build fails, the error text. Truth keys: S3 G major, S4 D
+   major, S2n G major, S5capo2 A major, S5dropd G major, S7flat30 G major, R1a Ab minor, R1b C# major, R1c G major; R2
+   none (the artist's page lists D# minor, per INPUTS.md). License: MIT (survey.md, mixedkey).
 
 ## Nothing to run (no released model or needs keys)
 
@@ -280,6 +324,16 @@ match the READMEs (main, and libkeyfinder's tag 2.2.8 has the same build command
 section 5 matches. No step was changed; three notes were reworded (section 3: which clips the ONNX run covered; section 4:
 the Mixxx remark is about Ubuntu's package, not Linux in general; section 7: "a stale copy" replaced by what the cached
 copy held).
+
+## Gap round 2 note (gapfill-chords-beats-key, 2026-11-11 and 2026-11-12)
+
+Sections 10 (STONE), 11 (key-cnn) and 12 (BeatNet+) were written on 2026-11-11 by the first start of this round, which
+was cut off at the run's stop, and were checked on 2026-11-12 against the same files fetched again (all unchanged; HEAD
+commits unchanged). Changed then: the "Not run here" line of each (these three were not attempted, and why); section
+11's TensorFlow 1.15.2 wheel list (Python 3.5, 3.6 and 3.7, not only 3.6 and 3.7) and the `deepsquare` model file;
+section 12's third install command (numpy named so it stays at 1.23.5, and uv's `--torch-backend cpu` instead of a
+PyTorch index URL). Sections 13 (AudioEstimate, gated) and 14 (mixedkey, whose build was refused here) were added on
+2026-11-12. Not yet checked by a second agent.
 
 ## Verification log (verify-trials-chords-beats-key, 2026-11-10)
 

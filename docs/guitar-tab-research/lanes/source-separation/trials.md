@@ -926,7 +926,7 @@ its slot.
 
 Added 2026-11-11 (from 00:20 UTC) by `gapfill-source-separation`, to close the gaps the `completeness-critic` listed
 for this lane (`GAPS.md`, rows S1 and S2) and to run the tools the first round left out because of the disk notice.
-Disk at the start: 8.6 GB free (`df -h /`, 00:20 UTC); `env.sh` still printed the "DISK LOW" notice quoted under "NOT
+Disk at the start: 8.6 GB free (`df -h /`, 00:19 UTC; corrected by the verifier from "00:20"); `env.sh` still printed the "DISK LOW" notice quoted under "NOT
 RUN HERE" (it is printed below 9,000 MB). The orchestrator's task for this round asked for these runs as long as 4 GB
 stays free, one tool at a time, deleting each venv and its weights afterwards; the free disk is quoted below wherever
 a download was made or considered. Same scoring, file layout and conventions as the sections above.
@@ -1040,15 +1040,22 @@ a download was made or considered. Same scoring, file layout and conventions as 
 - **What a query is, and what comes back** (read from that code, head `79ed5bb`; not run): the query is the audio
   file given as `--query_path` (anything `torchaudio.load` reads), resampled to 44.1 kHz if needed and cut or repeated
   to exactly 10 s (441,000 samples; `assert query_length_seconds == 10.0`). The separator never sees the query audio
-  itself: `core/models/e2e/querier/passt.py` averages its channels to mono (`torch.mean(qaudio, dim=1)`), resamples
-  it to 32 kHz, takes PaSST's mel spectrogram cut to 998 frames, and keeps the 768-number embedding of the PaSST model
-  `get_basic_model(mode="embed_only", arch="openmic")` (the paper: "a PaSST model [27] trained on the OpenMIC-2018
-  dataset"), projected to the conditioning size and applied to the separator through FiLM layers (model class
+  itself: class `Passt` in `core/models/e2e/querier/passt.py`, the query encoder that `PasstFiLMConditionedBandit`
+  builds (`core/models/e2e/bandit/bandit.py`), averages its channels to mono (`x = torch.mean(x, dim=1)`; the
+  file's `torch.mean(qaudio, dim=1)` is in the other class, `PasstWrapper`, which that model does not use; corrected
+  by the verifier, round 2), resamples it to 32 kHz, takes PaSST's mel spectrogram cut to 998 frames, and keeps the
+  768-number embedding of the PaSST model `get_basic_model(mode="embed_only", arch="openmic")` (the paper: "a PaSST
+  model [27] trained on the OpenMIC-2018 dataset"), which the FiLM module (`core/models/e2e/conditioners/film.py`,
+  depth 2) maps through linear layers to a scale and a shift of the mixture's band embeddings (`emb_dim: 128`) (model class
   `PasstFiLMConditionedBandit`, `additive_film: true`, `multiplicative_film: true` in `config/models/bandit-query.yml`). The mixture is cut into overlapping chunks (default test config
   `config/data/moisesdb-test.yml`: `chunk_size_seconds: 6.0`, `hop_size_seconds: 0.5`, `batch_size: 12`; for S4's
-  1,708,495 samples that is 111 chunks by the formula in `core/models/ebase.py` `chunked_inference`), each chunk is
+  1,708,495 samples the formula in `core/models/ebase.py` `chunked_inference` gives `n_chunks` 111, but the padding
+  computed from it is added on top of the 4 x 242,550 samples of reflect padding, so `F.unfold` cuts 155 chunks from
+  the 3,660,300 padded samples and the loop runs over those 155, 13 batches of 12; corrected by the verifier, round 2,
+  from the code's own steps re-typed with plain torch on a zero signal, r0723, `samples/verify-gap2/banquet_chunks_S4.json`), each chunk is
   separated with the same query embedding, and the chunks are overlap-added with a Hann window and trimmed to the
-  mixture's length. What comes back is one waveform, the estimate of "the stem that sounds like the query", with
+  mixture's length. What comes back is one waveform, the estimate of the stem "of the “same” stem type as the query
+  signal" (paper, section 3), with
   the mixture's channels and length, resampled back to the mixture's rate when that is not 44.1 kHz, and written with
   `ta.save(output_path, estimate, fsm)` to `--output_path`. One call gives one stem; another stem needs another call with another query.
   `inference_byoq`'s default config is `./expt/bandit-everything-test.yml` and its default `stem_name` is "target".
@@ -1129,7 +1136,7 @@ a download was made or considered. Same scoring, file layout and conventions as 
 ### AudioSep: NOT RUN HERE, the 4 GB of free disk this round had to keep would not have stayed free
 
 - **Disk, measured** (2026-11-11 00:42 UTC): 7,403 MB free (`df -BM /`; `df -h /` printed 6.6 to 8.6 GB between
-  00:20 and 00:42 UTC while other lanes worked). The two checkpoints in the Hugging Face Space `Audio-AGI/AudioSep`
+  00:19 and 00:42 UTC while other lanes worked). The two checkpoints in the Hugging Face Space `Audio-AGI/AudioSep`
   (API with `blobs=true`, same time) are `checkpoint/audiosep_base_4M_steps.ckpt` 1,264,844,076 bytes and
   `checkpoint/music_speech_audioset_epoch_15_esc_89.98.pt` 2,352,471,003 bytes, 3,617,315,079 bytes (3,450 MB in
   `df -BM` units) together. After the download about 3,950 MB would have been left: under the 4 GB this round's task
@@ -1177,7 +1184,12 @@ a download was made or considered. Same scoring, file layout and conventions as 
   that overlap r0659 are four short `--nolock` runs of under 3 s). With 4 cores the htdemucs runs used about twice
   the CPU time of the 2-core runs for the same song (684.6 and 819.0 s against 347.1 and 356.8 s); htdemucs_6s used
   334.0 s against 251.0 s. Why the CPU time grew was not isolated. One run per setting except htdemucs (two 4-core,
-  two 2-core runs): these are single measurements on a shared box, not averages.
+  two 2-core runs): these are single measurements on a shared box, not averages. (Verifier, round 2, 2026-11-12, with
+  the same box sampler: r0660 re-run as r0725, 4 cores, load1 0.30 at the start, other processes 14.1 CPU s in 84.1 s:
+  wall 81.49 s, CPU 276.2 s, peak RSS 2148.6 MB; then the same command on 2 cores, CPUs 2-3, as r0728, while another
+  lane's jobs held CPUs 0-1, other processes 111.3 CPU s in 124.1 s: wall 123.26 s, CPU 233.5 s, peak RSS 2146.3 MB.
+  Stems as described below, residuals -21.68 and -21.70 dB. `samples/verify-gap2/boxsampler_htdemucs_6s_R2full_*_verify.json`,
+  `stemfacts_htdemucs_6s_R2full_*_verify.json`; audio deleted.)
 - **Output:** each run wrote its stems as 44,100 Hz, 2 channel PCM_16 WAVs of 10,076,073 frames (the input's), stem
   sum at lag 0; r0659: residual -25.74 dB, stem levels vocals -15.80, other -18.64, bass -21.25, drums -24.61 dBFS;
   r0660: residual -22.01 dB, vocals -15.76, guitar -19.20, bass -20.93, drums -25.08, other -46.49, piano -49.95 dBFS
@@ -1490,3 +1502,142 @@ Items are appended as they are finished.
   `samples/demucs/stemfacts_*_R2full.json`.
 - Media list: `scripts/media_list.py` run again (01:21 UTC) gives 2,097.8 MB in 281 files, the six new rows exactly
   as in the table.
+
+**Continued 2026-11-12, after the stop** (this check was cut off with the rest of the run at about 01:25 UTC on
+2026-11-11, after the last item above; it was resumed on 2026-11-12 from 03:50 UTC on the same box, which had
+restarted. The items above were kept and not repeated.) Sources were fetched again on 2026-11-12 (list:
+`scripts/verify-gap2-r2-urls.tsv`; copies and HTTP codes in `/home/user/gtr/lanes/source-separation/verify-gap2/r2b/fetched/`,
+`_fetch_log.tsv`). Where a fact could only come from the gap agent's own shell (clone sizes, install output, the
+refusals), it was read in that agent's session transcript, which the box keeps.
+
+**NOT RUN HERE reasons**
+
+- Gaborformer: the refusal is in the gap agent's transcript: its command `uv pip install --python
+  .../venv-gaborformer/bin/python --no-deps .../gap2/src/gaborformer` got "Permission for this action was denied by the
+  Claude Code auto mode classifier. Reason: [Code from External]." at 00:21:19 UTC, and the next command printed
+  "gaborformer importable: False" (00:21:44). The same transcript shows the clone (head `123a1c9`, "40M") and the
+  install output (torch 2.15.0+cpu, huggingface-hub 1.33.0, soxr 1.1.0, safetensors 0.8.0). No freeze of that venv
+  was saved. Reason specific and true.
+- Banquet: refused at 00:32:59 UTC with the same message, for the command the text gives (`CONFIG_ROOT=./config
+  .../venv-banquet/bin/python train.py inference_byoq --ckpt_path=/nonexistent.ckpt ... --use_cuda=false`, run from
+  the clone under `timeout 300`). Clone `79ed5bb` "103M", venv "1.4G" and the 74-line freeze are in the transcript;
+  `samples/banquet/uv-pip-freeze-not-run.txt` has 74 lines and the seven versions the text names. Reason specific
+  and true.
+- AudioSep: the disk figures are in the transcript (`df -BM`: 7403M at 00:42:20 UTC, 7695M at 01:06:22); the two
+  Space files are 1,264,844,076 and 2,352,471,003 bytes (Space API with `blobs=true`, 2026-11-12), 3,449.7 MiB
+  together, so 3,953 and 4,245 MiB would have been left; `env.sh` prints "DISK CRITICAL ... No download over 100 MB"
+  below 4,500 MB, as quoted. The Space's runtime stage is still `RUNTIME_ERROR` (2026-11-12, `errorMessage`
+  "Scheduling failure: unable to schedule space"). Reason specific and true.
+
+**Facts in the gap round's tool sections, against the sources (2026-11-12)**
+
+- Gaborformer: `pyproject.toml` at head `123a1c9` (still the head) has `license = "MIT"`, `requires-python =
+  ">=3.10"` and the dependency list exactly as quoted; PyPI `gaborformer`, `audiosep` and `audio-sep` answer 404;
+  Hub sizes 533,469,856 / 1,066,666,912 / 1,067,423,581 bytes, `gated` false, fp16 LFS SHA-256 `cd586fa4...8c4a`;
+  revision `d0fccf6e...` exists and `pretrained.py` pins it and checks that hash; `config.json` `length` 352,800;
+  `separate.py` options, defaults, the two docstring quotes and `sf.write(..., 44100, subtype="FLOAT")`, and
+  `audio.py` (soundfile, ffmpeg fallback, soxr `quality="HQ"`, mono repeated to stereo) as written; the
+  `docs/usage.md` sentences quoted in `survey.md` and `for-aaron.md` item 8 are verbatim, and the README has the
+  install lines and "Requires Python 3.10+ and PyTorch 2.4+". The copies under `gap2/fetched/gaborformer-web/` equal
+  today's files. Code (MIT) and weights (non-commercial, `weights/LICENSE` = the Hub `LICENSE`) are kept apart in
+  every new line.
+- Banquet: Zenodo record 13694558 still `cc-by-nc-sa-4.0`, 14 files; the five 551,785,899-byte files are the ones
+  named. The PaSST file is 341,546,630 bytes (HTTP HEAD after the release redirect, 2026-11-12), and hear21passt 0.0.26
+  (wheel SHA-256 equal to PyPI's) maps `arch="openmic"` to that URL; its PyPI license field is `Apache-2.0` and it
+  requires `timm >=0.4.12`, `torchaudio >=0.7.0`. The paper quote is verbatim (v2 PDF, section 3.2). `train.py`
+  (`inference_byoq` defaults, asserts, resampling, `ta.save`), the two YAML files and `chunked_inference`'s Hann
+  overlap-add and trim match the text. Two corrections, made in place: (1) the query encoder of
+  `PasstFiLMConditionedBandit` (`core/models/e2e/bandit/bandit.py`) is class `Passt`, whose line is `x =
+  torch.mean(x, dim=1)`; the quoted `torch.mean(qaudio, dim=1)` belongs to `PasstWrapper`, which that class does not
+  use, and the 768 numbers go to the FiLM module's linear layers (`conditioners/film.py`), not to a separate
+  projection (`trials.md` and `survey.md`). (2) "111 chunks" for S4 is the value of the code's `n_chunks` formula,
+  but the code pads by 4 x 242,550 samples plus a pad computed from that count and then sets `n_chunks` from
+  `F.unfold`, which gives 155 chunks of 264,600 samples from 3,660,300 padded samples (r0723, 2 cores, 14.79 s:
+  `scripts/verify-gap2-banquet-chunks.py` re-types those lines with plain torch on zeros; output length 1,708,495;
+  `samples/verify-gap2/banquet_chunks_S4.json`). Also replaced: a phrase in quotation marks that was not a quote
+  ("the stem that sounds like the query") by the paper's words.
+- AudioSep: `pipeline.py` at head `944583f` (still the head) defines `build_audiosep` and `separate_audio(model,
+  audio_file, text, output_file, device='cuda', use_chunk=False)` and no `inference`; the README imports `inference`
+  from `pipeline`; `librosa.load(audio_file, sr=32000, mono=True)`, the int16 write at 32,000 Hz and
+  `clap_encoder.py`'s default `pretrained_path` are as written.
+- Guitar fine-tune: Hub API (2026-11-12): sha `9d3ade8...`, `gated` false, card `license: apache-2.0`, `datasets:
+  [MoisesDB]`, file sizes 329,654,071 / 9,062 / 1,218 / 162 bytes, LFS SHA-256 `4fde369e...260e`; `requirements.txt`
+  pins `demucs==4.0.1`. `inference.py` has the steps `scripts/gap2_guitar_ft.py` copies (snapshot key, `models.0.`
+  rule, soundfile, no normalisation, `SEGMENT_SECONDS = 7.8` with no option to change it, `OVERLAP = 0.25`, clamp,
+  PCM_24, source index 4) and the options `--checkpoint`, `--device auto|cuda|cpu`, `--shifts`, `--overlap`. The
+  script also seeds torch (`torch.manual_seed`), besides Python's generator. The download facts (6.9 GB free before,
+  6.6 GB after, 12.39 s, the SHA-256) are in the gap agent's transcript. Parameter count: the stock `htdemucs_6s`
+  that the snapshot loaded into strictly ("<All keys matched successfully>", 525 tensors) has 525 state-dict tensors,
+  all parameters, no buffers, 27,414,996 elements (r0724, 2 cores; `scripts/verify-gap2-htdemucs6s-count.py`,
+  `samples/verify-gap2/htdemucs6s_stock_counts.json`), so the snapshot's 525 tensors hold the same count. Their
+  dtype in the file (float32) stays unverified: loading copies any dtype into the float32 model.
+- ONNX Runtime section: both sentences quoted from the threading page are verbatim (fetched 2026-11-12); `lscpu`: 4
+  CPUs, 1 thread per core, 4 cores per socket. `mdx_separator.py` lines 115 to 123 (in `venv-uvr`) and
+  `demucs_onnx/inference.py` `_make_session` lines 194 to 199 (wheel 0.3.4 from PyPI, SHA-256 equal to PyPI's) read
+  as quoted; only `mdx_separator.py` calls `ort.InferenceSession` in the installed audio-separator; `dim_t = 2 **
+  mdx_dim_t_set`, the default segment size is 256, and `mdx_model_data.json` gives `mdx_dim_t_set` 8 for the hash that
+  r0487's log prints for `UVR-MDX-NET-Inst_HQ_3.onnx` (`55657dd7...`); that log (`logs/batch_B.log`) has no "converted
+  from onnx" line. The probe columns of the table and the sentences under it were recomputed from the per-thread
+  records of the four `samples/gap2-ort/probe_*_S4.json` files (`scripts/verify-gap2-probe-tables.py`,
+  `samples/verify-gap2/probe_tables_recomputed.json`): threads at once 7, 5, 15, 13; every "CPU s by allowed CPUs"
+  figure; 43.75 and 56.06 s on CPUs 2 and 3; single-CPU threads from 1.01 s and 8.37 s after the start to 1.01 s and
+  1.51 s before the end, each reading its own CPU in every sample; probe CPU 0.46 to 0.75 s; with 2 threads every
+  thread on CPUs 0-1. All as written.
+- gtr-eval note: `si_sdr` is at line 2221 of `gtr_eval.py` 0.12.1 and checks the residual energy before the target
+  energy as described; the eval ledger's only lines that name this lane's folders and hold an infinite value are e1431,
+  e1564 and e1836; in `samples/scores/` only the files of e1431 and e1836 hold one; e1836's file records gtr-eval
+  0.12.1, e1831 to e1835 record 0.12.0; the gtr-eval README says 0.12.1 changed `f0` only.
+
+**Other parts of the round**
+
+- Re-run of a 4-core trial (the round's other new runs were re-run above, or refused): r0660 again as r0725
+  (`gtr-run --all-cores`, CPUs 0-3, 81.49 s) and the same command on 2 cores as r0728 (CPUs 2-3, 123.26 s),
+  `scripts/verify-gap2-allcores-rerun.sh`; figures in a note under the round's 4-core table. In the same session the
+  4-core run used 276.2 CPU s against 233.5 on 2 cores (1.18 times); the round's 334.0 against 251.0 (1.33 times) came
+  from runs in different sessions, started at load1 6.22 and 5.98. Stems: 6 x 10,076,073 frames, PCM_16, lag 0;
+  levels within 0.58 dB of r0660's (`other` differs most; the random shift of `--shifts 1`). r0726 and r0727 between
+  them are another lane's runs (chords-beats-key) in the other slot.
+- `tools.json`: compared with commit `d2e9a17`, exactly the eight entries the round names changed; none added or
+  removed. Every new run's wall, peak RSS, exit code, CPU time and core count matches the ledger (r0471, r0487 and
+  r0503 keep `cores: 2`, the slot of the batch job they ran in as `--nolock` lines, and now carry the "not a 2-core
+  figure" note); the guitar fine-tune's scores equal e1831 to e1835 (R2's `vocals` is gtr-eval's `vocals_derived`); no
+  judging words in the new strings. Changed: the Banquet entry's `inputs` and `outputs`, with the two Banquet
+  corrections above (format kept: one-space indent, UTF-8).
+- `for-aaron.md`: items 2, 3, 5 and 8 agree with the sources checked above; the queries added to item 2 are those the
+  round's task asked for ("a 10 s cut of S4 and of R2 with the text queries acoustic guitar, bass, drums and singing",
+  in the task text the transcript holds). Changed: the description of Aaron's own computer (its Windows version, GPU
+  model and GPU memory, in the opening paragraph, item 1's memory sentence and item 3's batch-size note, written in
+  the first round) replaced by "a Windows computer with an NVIDIA GPU (CUDA)" and neutral wording, as other lanes'
+  verifiers did; "on the laptop" twice; "so it is now optional" and "only needed" replaced by what the item would
+  add; a checked-by line added to the opening.
+- `survey.md`: the round's additions (three tool-list cells, Gaborformer, Banquet, AudioSep, the handoff line, the
+  closing summary) agree with the sources, except the `PasstWrapper` line corrected above. Code and weights licenses
+  are not mixed up: `license = "MIT"` is Gaborformer's code package and `Apache-2.0` hear21passt's PyPI field, while
+  the weights' terms stay in the LICENSE FACTS lines (Gaborformer non-commercial, Banquet `cc-by-nc-sa-4.0`,
+  re-checked above).
+- New samples and scripts: every path the round names exists. `samples/gap2-ort/compare_with_first_round.txt` holds
+  16 comparisons, each max |diff| 0, which cover all four thread runs; the three freezes hold the versions quoted;
+  `gap2_ort_threads.py`, `gap2_thread_probe.py` (0.25 s, `Cpus_allowed_list`, `stat` fields 39, 14 and 15),
+  `gap2_guitar_ft.py` and the drivers do what the text says.
+- Wording, privacy, sizes: no judging or advice words in the round's additions outside quotes and stem class names
+  ("clean electric"); no key, token, password, private link or personal detail in the lane folder (pattern search,
+  2026-11-12); 240 files, all text or JSON by `file --mime-type`, none over 300 KB (largest `tools.json` 203,736 bytes).
+- Earlier parts: against `d2e9a17`, the only lines gone from `trials.md` (11), `survey.md` (5) and `for-aaron.md`
+  (18) are ones the round or this check replaced on purpose; every heading and table is there; the two earlier
+  verification logs and the first part of this log are unchanged.
+
+**Changed in this part:** `trials.md` (Banquet query and chunk count, a non-quote in quotation marks, the 4-core
+re-run note, the time of the round's first disk reading, 00:19 UTC in the transcript, not 00:20, this log), `survey.md` (Banquet `Passt` line), `tools.json` (Banquet `inputs`, `outputs`),
+`for-aaron.md` (personal hardware, two phrasings, checked-by line). Added: `scripts/verify-gap2-r2-urls.tsv`,
+`verify-gap2-banquet-chunks.py`, `verify-gap2-htdemucs6s-count.py`, `verify-gap2-probe-tables.py`,
+`verify-gap2-allcores-rerun.sh`; `samples/verify-gap2/banquet_chunks_S4.json`, `htdemucs6s_stock_counts.json`,
+`probe_tables_recomputed.json`, `boxsampler_htdemucs_6s_R2full_{4,2}cores_verify.json`,
+`stemfacts_htdemucs_6s_R2full_{4,2}cores_verify.json`. Runs: r0723, r0724, r0725, r0728, all exit 0. Disk: the
+re-run audio (462 MB) was deleted; the copies read are 1.2 MB in `verify-gap2/r2b/`; 6,061 MB free at the end.
+
+**Still UNVERIFIED after this part:** the guitar fine-tune's run r0636 was not repeated (refused, see the first part)
+and the dtype of its checkpoint's tensors was not read; why r0610 peaked at 8,051.0 MB; the sizes of the deleted
+clones and venvs (40 MB, 103 MB, 8.3 MB, 1.4 GB) rest on the gap agent's own `du` output in its transcript; whether
+AudioSep, Banquet and Gaborformer run on a CPU here.
+
+Completed on 2026-11-12, after the stop of 2026-11-11 at about 01:25 UTC (`ENVIRONMENT.md`, "Interruptions").

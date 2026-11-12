@@ -11,7 +11,10 @@ is in the verification log at the end. Text marked "(gap round 1 ...)" was added
 by the lane's gap-round agent, from the sources it names, after that verification; the verification log at the end
 of this file does not cover it. It was checked against the live sources on 2026-11-11 (UTC) by the gap-round
 verifier, whose log is at the end of `trials.md` ("Verification log (verify-gapfill-fingerstyle-voices-taps, round
-1, ...)").
+1, ...)"). Text marked "(gap round 2 ...)" or "(corrected in gap round 2 ...)" was added on 2026-11-11 from 00:27 UTC
+by the lane's second gap-round agent; it was checked against the sources again on 2026-11-12 by the round-2 verifier
+(log at the end of `trials.md`, "Verification log (verify-gapfill-fingerstyle-voices-taps, round 2, ...)"), whose
+corrections are marked "round-2 verifier".
 
 How dates and versions were read: PyPI versions and upload dates from `https://pypi.org/pypi/<package>/json`; the
 last commit of a repository from a blobless `git clone --depth 1` (`git log -1 --format=%cI`), done with
@@ -502,7 +505,11 @@ Abbreviations: "clone" = the blobless clone made by `scripts/repo_facts.sh` on 2
   `experiment_hrps_parameter` load audio with `Fs = 22050` and `x, Fs = librosa.load(fn_wav, sr=Fs)` (installed
   package 1.3.0). PyPI 1.3.0's `requires_dist` also lists `ipython<9.0.0,>=8.10.0`, `matplotlib<4.0.0,>=3.3.0`,
   `numba<1.0.0,>=0.58.1`, `pandas<3.0.0,>=1.1.0`, `pretty_midi<1.0.0,>=0.2.0`, `soundfile<1.0.0,>=0.9.0` and
-  `scipy<2.0.0,>=1.5.0` (PyPI JSON, 2026-11-11).
+  `scipy<2.0.0,>=1.5.0` (PyPI JSON, 2026-11-11). (Round-2 verifier, read 2026-11-12: cell In [3] passes its
+  `param_list` to `libfmp.c8.experiment_hrps_parameter`, whose 1.3.0 code calls `hrps(x, Fs=Fs, N=1024, H=512,
+  L_h=L_h_sec, L_p=L_p_Hz, beta=beta)` whatever N and H the list holds, line 319 of `c8s1_hps.py`; the list's N and H
+  only feed the L_h and L_p values it prints. The HPS notebook's `experiment_hps_pieces` passes its own N and H to
+  `hps`.)
 - License facts: a. Code: LICENSE (raw file) "MIT License", "Copyright (c) 2020 Meinard Müller and Frank Zalkow,
   International Audio Laboratories Erlangen, Germany."; the module header: "License: The MIT license,
   https://opensource.org/licenses/MIT"; PyPI license field "MIT". b-d. No weights, no training data, no service.
@@ -834,7 +841,8 @@ Abbreviations: "clone" = the blobless clone made by `scripts/repo_facts.sh` on 2
   `ADTLib/utils/__init__.py` line 16: `from tensorflow.contrib import rnn`, with TF1 graph code (`tf.placeholder`,
   `tf.Session`, `tf.nn.bidirectional_dynamic_rnn`). TensorFlow's `RELEASE.md` (https://raw.githubusercontent.com/tensorflow/tensorflow/master/RELEASE.md ,
   "Release 2.0.0"): "`tf.contrib` has been deprecated, and functionality has been either migrated to the core
-  TensorFlow API, to an ecosystem project such as tensorflow/addons or tensorflow/io, or removed entirely." PyPI
+  TensorFlow API, to an ecosystem project such as tensorflow/addons or tensorflow/io, or removed entirely." (the raw
+  file has Markdown link markup around "tensorflow/addons" and "tensorflow/io"; round-2 verifier) PyPI
   `tensorflow` 1.15.5 (the last 1.x, 2021-01-06): wheels for `cp36` and `cp37` only, `numpy (<1.19.0,>=1.16.0)`. The
   model weights ship in the package (`ADTLib/files/`, TensorFlow checkpoints `KickADTLibAll`, `SnareADTLibAll`,
   `HihatADTLibAll`, and `PPParams.npy`); no license statement for them beyond the repository's LICENSE.txt was found.
@@ -1272,9 +1280,11 @@ All read through the Zenodo API (`https://zenodo.org/api/records/<id>`) on 2026-
   original Google Drive." "We checked our local backups and only managed to find the pretrained model and the melody
   fine-tuned model." with a new folder https://drive.google.com/drive/folders/1MniVSDTdB0Vv0Ey_MllnN9mAEK279eQN ; a
   user, 2026-07-20: "However, I found that these checkpoints expect a 6-field CP representation." and "Therefore, the
-  checkpoint cannot be loaded with the current code."; owner, 2026-10-12: "We've thoroughly checked our machines,
+  checkpoint cannot be loaded with the current code."; owner, 2026-10-12: "We’ve thoroughly checked our machines,
   servers, and Google Drive, but unfortunately couldn't find any alternative checkpoints" "—it appears the original
-  model checkpoint has been lost." The new folder ("MIDI-BERT Checkpoint") holds `melody_model_best.ckpt`
+  model checkpoint has been lost." (Round-2 verifier, re-read 2026-11-12: "We’ve" has a curly apostrophe on the page,
+  was typed straight; "pretrained model" and "melody fine-tuned model" are in bold there.) The new folder ("MIDI-BERT
+  Checkpoint") holds `melody_model_best.ckpt`
   (1,340,894,149 bytes) and `pretrain_model.ckpt` (1,340,468,461 bytes), sizes from the `content-range` of 1 KB range
   requests; the melody file's `data.pkl` (read without unpickling, trials.md "Gap round 2") has six token tables and an
   input layer of shape (768, 1536), where the published `MidiBERT/model.py` builds four tables (Bar, Position, Pitch,

@@ -3,9 +3,11 @@
 Written 2026-11-10 by `try-source-separation`, checked and corrected on 2026-11-10/11 (UTC) by
 `verify-trials-source-separation` (what changed is listed at the end of `trials.md`). Each item below could not be run
 on the research box (4 CPU cores, no GPU, 6 to 7 GB of free disk shared by about 20 agents during the work). The
-reason is in `trials.md` under "NOT RUN HERE". The laptop is assumed to be Windows 11 with an 8 GB RTX 4070.
+reason is in `trials.md` under "NOT RUN HERE". The steps are written for a Windows computer with an NVIDIA GPU (CUDA).
 Updated 2026-11-11 by `gapfill-source-separation` (gap round 2, `trials.md` "Gap round 2"): items 2, 3 and 5 have
-corrected reasons (item 5 then ran on the box's CPU, so it is now optional), and item 8 (Gaborformer) is new.
+corrected reasons (item 5 then ran on the box's CPU, through a script that follows the repository's `inference.py`),
+and item 8 (Gaborformer) is new. Checked on 2026-11-12 by `verify-gapfill-source-separation` (round 2; the
+changes are listed in its verification log at the end of `trials.md`).
 
 **The test clips** (all made or licensed for this research, described in `docs/guitar-tab-research/inputs/INPUTS.md`):
 `S4.wav` (38.7 s synthesized band: drums, bass, strummed steel guitar, a "Voice Oohs" lead; the true stems exist, so
@@ -13,7 +15,7 @@ results can be scored), `S6taps.wav` (29.4 s, one steel guitar plus percussive t
 (29.4 s, one synthesized steel guitar), `S3.wav` (24 s, strummed steel guitar alone), `R2.wav` (36 s real band song
 with singing, CC BY 4.0) and `R2full.wav` (the whole song, 3:48), `R3a.wav` (18 s real classical guitar, CC BY-SA
 4.0). They are on the research box under `/home/user/gtr/inputs/<id>/`; ask the orchestrator for the files if they
-are not on the laptop yet.
+are not on Aaron's computer yet.
 
 **What to send back for every item:** the output audio files exactly as the tool wrote them (do not convert or
 rename; zip the folder), a screenshot of the tool's window or console at the end of the run, how long it took (the
@@ -36,7 +38,7 @@ account and a request that Meta approves) and the smallest model repository is 5
    email. Then follow the "Setup" and "Usage" sections of the README at https://github.com/facebookresearch/sam-audio
    (it asks for Python 3.11 or newer, `pip install .` in the cloned repository, and `hf auth login` with an access
    token before the checkpoints download), in a Python 3.11 environment with CUDA PyTorch. Whether
-   `sam-audio-small` fits in 8 GB of GPU memory is not known (UNVERIFIED): note it if it runs out of memory.
+   `sam-audio-small` fits in the GPU's memory is not known (UNVERIFIED): note it if it runs out of memory.
 
 ## 2. AudioSep, text-queried separation
 
@@ -94,8 +96,8 @@ rate.
 4. Use `S3.wav` (strummed steel guitar alone) as the query and `S4.wav` as the mixture:
    `set CONFIG_ROOT=./config` then
    `python train.py inference_byoq --ckpt_path=ev-pre-aug.ckpt --input_path=S4.wav --output_path=out\S4_guitar.wav --query_path=S3.wav --batch_size=4 --use_cuda=true`
-   (batch size 4 instead of the README's 12 because the README says 12 "usually fits on a RTX 4090", which has more
-   memory than the laptop's 8 GB 4070). The code truncates or repeats the query to 10 s. If the run stops with an
+   (batch size 4 instead of the README's 12, because the README says 12 "usually fits on a RTX 4090"; use a smaller
+   batch on a GPU with less memory than that card). The code truncates or repeats the query to 10 s. If the run stops with an
    error that names `DATA_ROOT` (the default config's data file reads `${oc.env:DATA_ROOT}`), run `set DATA_ROOT=.`
    and start it again; note it in what you send back.
 5. Repeat with `--input_path=R2.wav` and the same query. Send back both outputs, the console text and the time.
@@ -125,7 +127,8 @@ user would wait. The same Python package as on the box, with a GPU build of PyTo
 Run here in gap round 2, on the CPU (`trials.md`, "Gap round 2": r0636 to r0644, scored as e1831 to e1835), but not
 with the repository's own `inference.py`: its steps were run by a script with demucs 4.1.0 instead of the pinned
 4.0.1. (The first round's reason, the 330 MB checkpoint during the disk notice, is no longer the reason; corrected in
-gap round 2.) This item is now only needed for the repository's own script as written, and for a GPU timing.
+gap round 2.) What this item would add: the repository's own script as written, with its pinned demucs 4.0.1, and a
+GPU timing.
 
 1. From https://huggingface.co/adityalakhani/htdemucs-6s-guitar-ft/tree/main download `guitar_htdemucs_6s.pt`,
    `inference.py` and `requirements.txt` into one folder.
@@ -141,7 +144,7 @@ gap round 2.) This item is now only needed for the repository's own script as wr
 Not run here: the box has no GPU, and the `demucs-rs` README names Metal, Vulkan and WebGPU back ends only (its
 prerequisites list "A GPU with Metal (macOS), Vulkan (Linux/Windows), or WebGPU (browser) support").
 
-1. Open https://nikhilunni.github.io/demucs-rs/ in Chrome on the laptop (not opened by the research agents).
+1. Open https://nikhilunni.github.io/demucs-rs/ in Chrome (not opened by the research agents).
 2. Load `S4.wav`, choose the 6-stem model (`htdemucs_6s`) if offered, run, and time it with a stopwatch. Then
    `R2full.wav` (the whole song).
 3. Download the stems. Send back the files, the times, and a screenshot of `chrome://gpu` (top section).

@@ -59,12 +59,15 @@ What ran here (sections below, in this order), with the runs that hold the timin
 | tempo-cnn (gap round 1) | tempocnn 0.0.8, tensorflow 2.17.0 | global tempo (8 models), meter | r0584 (2 cores) |
 | S-KEY via ONNX (gap round 1) | `aaatmy/skey-onnx` c04b6a2b, onnxruntime 1.31.1 | global key | r0588 (2 cores) |
 | autochord, CREMA, lv-chordia on S5capo2 (gap round 1) | as above, venvs rebuilt from the freezes | chords | r0605 (2 cores) |
+| LiveChord beat refiner (gap round 2) | livechord-beat-refiner 0.1.0, torch 2.15.0 | beats, downbeats refined from Beat This! and madmom outputs | r0726 r0727 r0729 (2 cores) |
 
 Not run here, with reasons: BTC, madmom from GitHub, libKeyFinder, S-KEY, All-In-One, tempo-cnn, Omnizart, Beat
 Transformer, Harmony Transformer, ACR_seq2seq, ChordMini, QM Vamp plugins, the Hulme et al. tuning classifier, BEAST,
 and the browser libraries (section "Not run here"; steps for Aaron in `for-aaron.md`). (corrected in gap round 1:
 All-In-One, tempo-cnn and S-KEY, the last through its ONNX export, ran in "Gap round 1"; libKeyFinder, the QM Vamp
-plugins and Omnizart were tried again there and still did not run.) The last four tools in the first-round table
+plugins and Omnizart were tried again there and still did not run.) (Gap round 2: STONE, key-cnn and BeatNet+, which the
+survey's verifier added, were not attempted either and now have steps in `for-aaron.md`; the LiveChord beat refiner, new
+in this round, ran; see "Gap round 2".) The last four tools in the first-round table
 ran with `--nolock` on one thread because both CPU slots were held by other lanes' jobs: two video-hands-fretboard jobs
 whose commands started at 22:01:23 and 22:01:24 UTC after waiting in the slot queue since 21:12 and 21:31 UTC (start times
 of the jobs' child processes, read with `ps` by the verifier at about 22:27 UTC, when `/proc/locks` showed the two jobs
@@ -1155,6 +1158,208 @@ D:maj, E:maj); S2n's are G:maj, C:maj, D:maj.
   once (Essentia), B minor. No tool here outputs a capo position, and none takes a capo or transposition input (each
   tool's "Constraint inputs" line above; Essentia takes a tuning frequency).
 
+## Gap round 2
+
+Agent: gapfill-chords-beats-key, gap round 2. Date: 2026-11-12 (`date -u +%F`), from about 03:50 UTC. Task: close the
+six gaps listed for this lane in `docs/guitar-tab-research/resume/gaps/chords-beats-key.txt`, in that order: (1) steps
+for Aaron for STONE, key-cnn and BeatNet+; (2) the LiveChord beat refiner (PyPI `livechord-beat-refiner` 0.1.0),
+surveyed and run on Beat This! and madmom beats; (3) the training data of DeepRhythm, CREMA, lv-chordia and the madmom
+models, and CREMA's chord vocabulary size; (4) pyace; (5) unquoted source wording in `tools.json`; (6) AudioEstimate and
+mixedkey, survey only. A first start of this round at about 01:21 UTC on 2026-11-11 was cut off by the stop at about
+01:25 UTC (ENVIRONMENT.md, "Interruptions"); it had fetched sources into `/home/user/gtr/lanes/chords-beats-key/raw/gap2/`,
+written `for-aaron.md` sections 10 to 12 and the scripts `scripts/beatnetplus_run.py` and `scripts/stone_npz_labels.py`,
+and nothing in this file. Those were checked again on 2026-11-12 (first item below). Conventions as in "Gap round 1":
+`rNNNN` run ids, `eNNNN` gtr-eval ids, outputs in `/home/user/gtr/lanes/chords-beats-key/out/<tool>/<clip>/`; this round's
+scripts are in `scripts/gap2/` (the two named above stay in `scripts/`), its copies of fetched pages in
+`/home/user/gtr/lanes/chords-beats-key/raw/gap2/` (not in git). The shared disk had 6,132 MB free when the round
+started (`df`, before 03:53 UTC), so the orchestrator's DISK LOW notice (no new download or install over 200 MB) applied
+throughout.
+No second agent has checked this round.
+
+### STONE, key-cnn and BeatNet+: NOT RUN HERE (not attempted); steps for Aaron in for-aaron.md sections 10 to 12
+
+- Why not attempted. None of the three is a package: PyPI answered HTTP 404 for `keycnn`, `key-cnn`, `deezer-stone`,
+  `beatnetplus`, `beatnet-plus` and `BeatNetPlus` on 2026-11-12 (`stone` on PyPI is Dropbox's interface description
+  language, 3.5.5, home page https://github.com/dropbox/stone, unrelated). Each installs from its cloned repository:
+  STONE with Poetry or the repository's Dockerfile, key-cnn with `setup.py install`, BeatNet+ with `pip install -e .`.
+  In this lane the box's permission system refused each step that built or ran a cloned repository's code ("Reason:
+  [Code from External]": the madmom git build and the BTC run in the first round, the libKeyFinder CMake build in gap
+  round 1; "Not run here" below), so no attempt was made. Also: STONE's `pyproject.toml` pins `python = "3.10.*"`,
+  `torch = "2.0.0"`, `torchaudio = "2.0.1"`, `torchvision = "0.15.1"` and `tensorflow = "2.12.*"`; the CPU wheel
+  `torch-2.0.0+cpu-cp310-cp310-linux_x86_64.whl` is 195,412,802 bytes (download.pytorch.org, HEAD request) and PyPI's
+  `tensorflow-2.12.1-cp310-cp310-manylinux_2_17_x86_64...whl` is 585,912,145 bytes (PyPI JSON), together over the 200 MB
+  a download could have under the disk notice. key-cnn's `setup.py` pins `tensorflow==1.15.2`, `numpy==1.16.0` and
+  `librosa==0.6.2` (its README: "Clone this repo and run ``setup.py install`` using Python 3.6"); PyPI's TensorFlow
+  1.15.2 Linux wheels are cp35, cp36 and cp37 only (cp37: 110,452,574 bytes).
+- What the steps rest on: the sources were fetched again on 2026-11-12 (`scripts/gap2/fetch_item1_sources.sh`;
+  statuses in `raw/gap2/2026-11-12/status.tsv`); all 15 files read on 2026-11-11 have the same SHA-256 on 2026-11-12,
+  and `git ls-remote` gives the same HEAD commits (STONE 0c5f72d, key-cnn 9715d6f, BeatNet+ bb90eb0).
+  - STONE: the README's command `poetry run python -m inference /checkpoint/path /audio/path -e mp3 -tt ks`.
+    `inference.py` passes both paths through `os.path.abspath` (lines 254-255), reads every `*.<extension>` file in the
+    folder (line 210), runs with `device = "cpu"` (line 167), and saves `values.npz` in `<audio folder>/results/<checkpoint
+    file name without .pt>/` (lines 170 and 217-220) with one entry per file, `torch.mean(yh, dim=0).argmax()` over the
+    file's segments (line 156; `-a/--average` has `default=True, action="store_true"`, line 240, so it is always on).
+    `ckpt/` holds `semisupervised_ks_mode.pt` (764,986 bytes) and `semitone_ks.pt` (1,307,770 bytes); the name the README
+    uses, `semisupervised_key_mode.pt`, answered HTTP 404. The class-to-label mappings are the README's "Mapping" section.
+  - key-cnn: `bin/key` takes `-m` (default `deepspec`), `--mirex` (prints "tonic<TAB>mode"), `--jams`, `-i` (several
+    files), `-d` (an output folder, which it does not create) and `-e` (an extension appended to each file name);
+    `keycnn/classifier.py` maps `deepspec` to `deepspec_k16` (3,659,832 bytes) and `deepsquare` to `deepsquare_k8`
+    (3,712,064 bytes).
+  - BeatNet+: `BeatNetPlusInference(weights, mode='online', inference_model='PF', plot=[], device='cpu', ...)`
+    (`src/BeatNetPlus/inference.py` line 48); offline decoding is madmom's `DBNDownBeatTrackingProcessor(beats_per_bar=[3,
+    4], fps=50, observation_lambda=16)` (lines 69-70); audio is read with `librosa.load(audio_path, sr=22050)`; weights
+    `generic_weights.pt` 3,072,825 bytes, `generic_main_weights.pt` 3,072,890, `af_non_percussive_weights.pt`
+    3,073,019 (HEAD requests); `setup.py`: `python_requires='>=3.8'`, `numpy>=1.21.0`, `madmom>=0.16.1`, `torch>=1.9.0`.
+- Scripts for Aaron. `scripts/stone_npz_labels.py` (numpy only; the README's two mappings) was tested here with
+  `scripts/gap2/test_stone_npz_labels.py`, which writes a `values.npz` the way `inference.py` does (absolute-path keys,
+  0-d int64 values) with made-up classes: 9 and 10 with `ks` gave "G Major/E minor" and "G# Major/F minor", 17 and 9
+  with `ks_mode` gave "G Major" and "G# minor", which are the README mapping's entries. `scripts/beatnetplus_run.py` was
+  only compiled (`py_compile`); no BeatNet+, STONE or key-cnn code ran here.
+- Steps: `for-aaron.md` section 10 (STONE), 11 (key-cnn) and 12 (BeatNet+), each on S3, S4, R1a, R1b, R1c and R2, with
+  what to send back. Changed there on 2026-11-12 after the check above: the "Not run here" line of each section (not
+  attempted, and why); section 11's TensorFlow wheel list (PyPI's 1.15.2 has Windows wheels for Python 3.5, 3.6 and 3.7,
+  not only 3.6 and 3.7); section 12's third install command, which now names `numpy==1.23.5` so that numpy stays there.
+
+### LiveChord beat refiner 0.1.0 (PyPI `livechord-beat-refiner`): Beat This! and madmom beats and downbeats, refined
+
+- What: "Bidirectional Transformer beat / downbeat / chord-boundary refiner — denoises beat_this, madmom, or librosa
+  output using full audio context." (PyPI summary; survey.md, "LiveChord beat refiner"). It takes an audio file plus a
+  prior tracker's beat and downbeat times and returns new beat and downbeat times. PyPI `livechord-beat-refiner` 0.1.0,
+  wheel `livechord_beat_refiner-0.1.0-py3-none-any.whl` (30,622 bytes, sha256 10d5279a...69dfa2, equal to PyPI's
+  digest), uploaded 2026-05-09. Weights: `model.safetensors` from Hugging Face `livechord-music/livechord-beat-refiner`,
+  revision faa1ce0f (not gated), 12,767,108 bytes, SHA-256 03e206cf...ccca459, equal to the Hub's LFS hash
+  (`samples/livechord/weights_fetch_and_sha256.txt`). The wheel's code was read before installing: features
+  (`features.py`), model (`model.py`, 6 Transformer encoder layers, d_model 256), `refine()` (`infer.py`).
+- Install (venv-livechord, Python 3.11.15): `uv pip install "livechord-beat-refiner==0.1.0" "torch==2.15.0" soundfile`,
+  4.15 s wall; uv "Resolved 48 packages", "Prepared 2 packages", the rest from the shared cache (torch 2.15.0+cpu,
+  librosa 0.11.0, numpy 2.4.6, huggingface-hub 2.4.0, safetensors 0.8.0, soundfile 0.14.0; log
+  `/home/user/gtr/lanes/chords-beats-key/logs/gap2/install_livechord.log`). Venv 1.2 GB by `du` (hard links into the
+  cache). Freeze: `samples/livechord/venv-livechord.freeze.txt`. The weights were fetched with curl from the pinned
+  revision before the timed runs and passed as `checkpoint_path`, so no run downloaded anything. The venv and the
+  weights were deleted after the runs.
+- Runs (all on 2 cores):
+  - The package's own command line once, run r0726 (the first run in the new venv; 40.23 s wall, 24.5 s CPU, 585.8 MB
+    peak RSS; 41.2 s wait for a slot): `python -I -m livechord_beat_refiner.infer --audio S3.wav --beats <the 32 Beat
+    This! final0 beats of S3> --downbeats <its 9 downbeats> --checkpoint model.safetensors`. It printed "applied:
+    True", "reason: ok", "elapsed: 26.195s", 33 output beats and 9 downbeats, and the first 8 beats and 4 downbeats
+    (`samples/livechord/S3.cli_r0726_stdout.txt`). The same call inside the batch below took 1.80 s; what the first run
+    spent the other time on was not isolated (this lane measured librosa's first-run numba cost in r0468).
+  - `scripts/gap2/livechord_run.py` (calls `infer._get_model(checkpoint)`, then `refine(audio, beats, downbeats,
+    checkpoint_path=...)` with the package defaults: threshold 0.5, `min_distance_beat` 2, `min_distance_downbeat` 4)
+    with two priors read from this lane's first-round outputs, nothing re-run: Beat This! final0 (`final0_beats.txt`,
+    `final0_downbeats.txt`, run r0397) and madmom's downbeat tracker (`downbeats.txt` of RNNDownBeatProcessor +
+    DBNDownBeatTrackingProcessor, r0063 / r0072 / r0316: beats = every row, downbeats = position 1). Batch run r0727
+    (37.8 s wall in total, 41.1 s CPU, 478.0 MB peak RSS; plan `scripts/plans/gap2_livechord_batch.json`): 10 jobs, S3,
+    S4, R1a, R1b, R1c with each prior, 3.65 to 3.92 s wall per job (import 1.12 to 1.22 s, model load 0.031 to 0.057 s,
+    `refine()` 1.69 to 1.89 s for 24.0 to 38.7 s of audio), 473.5 to 478.0 MB peak RSS, torch 2 threads
+    (`samples/livechord/batch_gap2_livechord_timings.jsonl`, per-job JSON in `samples/livechord/<clip>.livechord_<prior>.json`).
+    Every job returned `applied: True`, `reason: "ok"` (the script exits with an error otherwise, because `refine()`
+    returns its input unchanged with `applied: False` instead of raising).
+  - R2full, the whole song (228.5 s, no truth), run r0729 (10.69 s wall for both jobs; plan
+    `scripts/plans/gap2_livechord_r2full.json`): `refine()` 3.24 s (Beat This! prior) and 3.49 s (madmom prior), 689 and
+    692 MB peak RSS; beats 266 in, 305 out and 265 in, 313 out; downbeats 71 in, 70 out and 67 in, 69 out; median
+    inter-beat interval of the refined beats 0.8359 s (71.78 BPM) with both priors (the artist's page lists 72 bpm, per
+    INPUTS.md).
+- Output format: a dict with `refined_beats` and `refined_downbeats` (lists of seconds), `applied`, `reason`,
+  `n_beats_in` / `n_beats_out`, `n_downbeats_in` / `n_downbeats_out`, `elapsed_sec`; no tempo, meter, bar position or
+  confidence. Every refined time is a whole number of model frames of 2048 / 22050 s (92.88 ms), rounded to 4 decimals
+  (`round(f / FRAMES_PER_SEC, 4)` in `infer.py`; 636 times of the 10 batch outputs checked, and the R2full outputs).
+  The refined downbeats were a subset of the refined beats in all 12 outputs. The lane script writes
+  `beats_<prior>.txt`, `downbeats_<prior>.txt` and `livechord_<prior>.json` per clip in
+  `/home/user/gtr/lanes/chords-beats-key/out/livechord/<clip>/`.
+- Input facts: an audio path, read with soundfile (librosa as fallback), channels averaged, resampled to 22050 Hz with
+  `librosa.resample` (`features.py`); features are an 84-bin CQT from C1, a 12-bin chroma, onset strength and RMS at a
+  2048-sample hop; the prior beats and downbeats are each turned into a one-hot frame channel at the nearest frame
+  (`rasterize_times`). Audio past 900 s is cut off (`MAX_AUDIO_SECONDS`). The 44.1 kHz WAV files were accepted as they
+  are (stereo; mono for R1).
+- Output excerpts: S3 with the Beat This! prior, refined beats 0.6502, 1.3003, 1.8576, 2.5078, 3.1579, ... (33; the
+  prior's three beats in the silent count-in bar stay, at 0.6502, 1.3003, 1.8576); S3 with the madmom prior, refined beats
+  2.5078, 3.1579, 3.8081, 4.3654, ... (30; the madmom prior has no beat in the count-in bar, and the refined output has
+  none there either). The package's
+  command line (r0726) printed the same 33 / 9 counts and the same first 8 beats and 4 downbeats, to its 3 decimals, as
+  the batch's S3 Beat This! output.
+- Constraint inputs: `refine(audio_path, beats, downbeats, *, threshold=0.5, min_distance_beat=2,
+  min_distance_downbeat=4, checkpoint_path=None)`; the command line also takes `--chord-json` (beats and downbeats from
+  a LiveChord chord JSON) and `--threshold`. No tempo range, meter or tempo hint.
+- Scores (gtr-eval 0.12.1, `beats` with `--downbeats-est`, or `--downbeat-col 2` for the madmom file; e1837 to e1856).
+  "in" is the prior file as given to the refiner, re-scored with the same gtr-eval version (every metric equals the
+  first round's gtr-eval 0.11.1 result for the same file: e1364, e1366, e1373, e1375, e1376 for Beat This!, e0210, e0240,
+  e1086, e1121, e1158 for madmom; same estimate SHA-256); "median offset" is the
+  median of estimated minus truth time over the beats matched within 70 ms (positive = late); generated by
+  `scripts/gap2/livechord_tables.py`:
+
+| clip | prior | beats in: F / CMLt / AMLt | est / truth | median offset ms | downbeats in: F / CMLt | est / truth | eval | refined: F / CMLt / AMLt | est / truth | median offset ms | downbeats refined: F / CMLt | est / truth | eval |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| S3 | Beat This! final0 | 0.906 / 0.906 / 0.906 | 32 / 32 | +25 | 0.941 / 0.889 | 9 / 8 | e1837 | 0.892 / 0.909 / 0.909 | 33 / 32 | +21 | 0.941 / 0.889 | 9 / 8 | e1839 |
+| S4 | Beat This! final0 | 0.956 / 0.956 / 0.956 | 68 / 68 | +12 | 0.971 / 0.944 | 18 / 17 | e1841 | 0.971 / 0.957 / 0.957 | 70 / 68 | +13 | 0.971 / 0.944 | 18 / 17 | e1843 |
+| R1a | Beat This! final0 | 0.990 / 0.981 / 0.981 | 52 / 53 | +7 | 0.963 / 0.929 | 13 / 14 | e1845 | 0.981 / 0.962 / 0.962 | 51 / 53 | +10 | 0.889 / 0.857 | 13 / 14 | e1847 |
+| R1b | Beat This! final0 | 0.644 / 0.705 / 0.705 | 43 / 44 | -23 | 0.438 / 0.143 | 21 / 11 | e1849 | 0.636 / 0.705 / 0.705 | 44 / 44 | -24 | 0.320 / 0.286 | 14 / 11 | e1851 |
+| R1c | Beat This! final0 | 1.000 / 1.000 / 1.000 | 56 / 56 | +11 | 1.000 / 1.000 | 14 / 14 | e1853 | 0.923 / 0.770 / 0.770 | 61 / 56 | +13 | 0.929 / 0.929 | 14 / 14 | e1855 |
+| S3 | madmom downbeat tracker | 0.951 / 0.906 / 0.906 | 29 / 32 | +20 | 1.000 / 1.000 | 8 / 8 | e1838 | 0.968 / 0.938 / 0.938 | 30 / 32 | +15 | 1.000 / 1.000 | 8 / 8 | e1840 |
+| S4 | madmom downbeat tracker | 0.977 / 0.956 / 0.956 | 65 / 68 | +6 | 1.000 / 1.000 | 17 / 17 | e1842 | 0.993 / 0.985 / 0.985 | 67 / 68 | +5 | 1.000 / 1.000 | 17 / 17 | e1844 |
+| R1a | madmom downbeat tracker | 0.000 / 0.000 / 1.000 | 52 / 53 | (none matched) | 0.000 / 0.000 | 13 / 14 | e1846 | 0.000 / 0.000 / 1.000 | 52 / 53 | (none matched) | 0.000 / 0.000 | 13 / 14 | e1848 |
+| R1b | madmom downbeat tracker | 0.818 / 0.955 / 0.955 | 44 / 44 | -37 | 0.000 / 0.000 | 11 / 11 | e1850 | 0.759 / 0.977 / 0.977 | 43 / 44 | -33 | 0.000 / 0.000 | 11 / 11 | e1852 |
+| R1c | madmom downbeat tracker | 0.180 / 0.161 / 0.764 | 55 / 56 | +4 | 0.148 / 0.929 | 13 / 14 | e1854 | 0.180 / 0.179 / 0.745 | 55 / 56 | +20 | 0.148 / 0.929 | 13 / 14 | e1856 |
+
+  On R1a the madmom prior's beats all fall between the truth beats (beat F 0.000, AMLt 1.000, the off-beat variant), and
+  so do the refined beats (the same three numbers). On R1c with the madmom prior the beat and downbeat F are the same
+  before and after (0.180, 0.148). With the Beat This! prior on R1c, 56 beats in became 61 out. The refined downbeat
+  counts equal the prior's in 9 of the 10 pairs; R1b with the Beat This! prior went from 21 to 14 (truth 11).
+- Author measurements, for comparison of setup only (model card, survey.md): beat F1 0.920 and downbeat F1 0.936 on its
+  "gold-quality" holdout subset with "±1 frame ≈ ±93 ms" tolerance, against labels that are "prior-tracker output
+  (beat_this `final0` checkpoint) filtered"; the numbers above use a 70 ms tolerance against this test set's truth.
+- Samples: `samples/livechord/` (per-clip JSON with inputs, outputs, counts and timings for both priors on S3, S4, R1a,
+  R1b, R1c and R2full; batch timings; the r0726 command-line output; the Hub's `config.json`; weight hashes; freeze);
+  scores in `samples/scores/scores_livechord.jsonl`, and the re-scored priors in `scores_beat_this.jsonl` and
+  `scores_madmom.jsonl`.
+
+### Training data, CREMA's vocabulary, pyace and the tools.json wording (items 3 to 5; no runs)
+
+- Item 3: the training data of the madmom models this lane ran, CREMA, lv-chordia and DeepRhythm, from the papers the
+  docstrings and READMEs cite (DAFx 2011, ISMIR 2016, MLSP 2016, ISMIR 2016, ISMIR 2018, ISMIR 2017, ISMIR 2019) and
+  DeepRhythm's project page, with the dataset license lines that could be found, is in survey.md (the four tools'
+  sections, "Gap round 2"); copies of the papers and pages are in `/home/user/gtr/lanes/chords-beats-key/raw/gap2/item3/`.
+  CREMA's chord vocabulary is 170 classes (its paper, its training README, and the 0.2.0 package's `model.h5` and
+  `pump.pkl`, read without running CREMA: h5py for the layer shapes in a temporary venv, deleted, and Python's
+  `pickletools` disassembler for the pickle, which does not load it). CREMA's released model was trained on 973 of the
+  1217 tracks its paper names and tested on the other 244 (its `index_train.json` and `index_test.json`).
+- Item 4: pyace was read, not run (the task was one README read): PyPI 0.1.1 is a 2017 sdist of Python 2.7 code whose
+  `__init__.py` import fails under Python 3 (shown on a synthetic copy of its package layout with stub files,
+  `scripts/gap2/test_pyace_import_layout.py`: "ImportError: cannot import name 'simpleace' from 'pyace'" under Python
+  3.13.18); its "simple" mode has no trained weights; details in survey.md ("pyace").
+- Item 5: the three unquoted source phrases in `tools.json` (Essentia's "best matching major or minor triad",
+  ChordMini's "Docker (recommended for the standalone Sheet Sage melody service)", STONE's "the best Semi-TONE model"
+  and "the best STONE model") are now quoted with their source;
+  a scan of every string in `tools.json` for judging words outside quotation marks found no others (the remaining
+  matches are inside quote fields or a file name, `..._s0..s4.best.sdict`).
+- `tools.json` is now written with no indentation (`indent=0`, one value per line) by `scripts/gap2/gap2_tools_json.py`,
+  which makes every change of this round: with two-space indentation the file was 322,292 bytes before this round,
+  over the 300 KB limit for files in this folder. Entries this round did not touch are unchanged in content.
+
+### AudioEstimate (Hugging Face `DionTimmer/audioestimate-1.0`): NOT RUN HERE (gated, no public code)
+
+- The model's files need an accepted access request (Hub API `gated`: "manual"; the page: "You need to agree to share
+  your Hugging Face information to access this model"), a consent step this lane does not take; no public inference
+  code was found (PyPI 404 for `audioestimate`, `audio-estimate`, `audio_estimate`; `git ls-remote` on three
+  github.com/DionTimmer spellings asked for credentials). Survey facts: survey.md, "AudioEstimate"; steps for Aaron:
+  `for-aaron.md` section 13.
+
+### mixedkey v0.1.0 (Go): NOT RUN HERE (the build was refused)
+
+- The gap list expected no run because "mixedkey needs a Go toolchain"; the box has one (`go version go1.24.7
+  linux/amd64` at `/usr/local/go/bin/go`), and mixedkey's README asks for "Go 1.24 or later", so a run was tried.
+- Glue written for it: `scripts/gap2/mixedkey_run/main.go` (Go standard library only: reads 16-bit PCM WAV, mixes the
+  channels to mono, scales to [-1, 1], calls `mixedkey.DetectWith` with each of the four profiles and
+  `mixedkey.DetectCandidates`, writes one JSON and one key file per clip). It was checked with `gofmt -e` (it parses)
+  and against mixedkey's source at 723a590 (every identifier it uses, `DetectWith`, `DetectCandidates`, `Options`,
+  `ProfileAardenEssen`, `ProfileKrumhansl`, `ProfileTemperley`, `ProfileBellmanBudge`, `Minor`, `Key.Tonic`,
+  `Key.Camelot`, `Candidate.Support` and `Candidate.Confidence`, is defined there); it was never compiled.
+- The one attempt (about 04:25 UTC): one shell command with `go mod init chordsbeatskey/mixedkeyrun`, `go get
+  github.com/cabbagekobe/mixedkey@v0.1.0` and `go build -o <lane>/bin/mixedkey_run .` (module and build caches pointed
+  into the lane folder, `GOTOOLCHAIN=local`) was refused before it ran: "Permission for this action was denied by the
+  Claude Code auto mode classifier. Reason: [Code from External]." Nothing was created (no `go.mod`, no module cache, no
+  binary, no log, no run id), and it was not tried again in another way. Steps for Aaron: `for-aaron.md` section 14.
+
 ## S3 versus S7flat30 (the same notes rendered 30 cents flat): what changed
 
 Collected from the sections above (same eval ids); S3 value / S7flat30 value.
@@ -1221,6 +1426,12 @@ position or an open-string tuning.
 | QM Vamp plugins (Key Detector, Bar and Beat Tracker, Tempo and Beat Tracker) | Binaries come from the Vamp plugin download page or a source build of a cloned repository; neither is a package-manager route; not attempted. Not in Ubuntu 24.04 apt (`apt-cache search vamp`, re-checked by the verifier). The download page's link for them, https://code.soundsoftware.ac.uk/projects/qm-vamp-plugins/files, gave "Connection reset by peer" to the verifier's curl on 2026-11-10; after the Omnizart refusal above the verifier did not try a downloaded binary or a source build. (Gap round 1: still not run. The site reset the connection again at 23:30:27 UTC; no Debian, Ubuntu or PyPI package; the Vamp Plugin Pack's Linux AppImage holds the plugins only inside its GUI installer program, which was not run; see "Gap round 1".) |
 | Guitar tuning classifier (Hulme et al., edhulme/guitar-tuning-classification) | Repository code with TensorFlow models on Google Drive (survey.md); not attempted (repository code). (Gap round 1: still the case; no other tuning or capo detector with weights or a package was found, see "Gap round 1".) |
 | BEAST | Evaluation script plus a Google Drive model (survey.md); not attempted. |
+| STONE (deezer/stone, 0c5f72d) | (added in gap round 2) Not attempted. No package (PyPI `stone` is an unrelated Dropbox project); installs from its cloned repository with Poetry or its Dockerfile, the kind of step refused here three times ("[Code from External]": madmom git build, BTC run, libKeyFinder CMake build); its pins (torch 2.0.0, tensorflow 2.12.*) need downloads of 195 MB and 586 MB, over the disk notice's 200 MB. Steps: `for-aaron.md` section 10; details in "Gap round 2". |
+| key-cnn (hendriks73/key-cnn, 9715d6f) | (added in gap round 2) Not attempted. No PyPI project; installs from its cloned repository with `setup.py install` (README, "using Python 3.6"), pinning tensorflow 1.15.2, numpy 1.16.0 and librosa 0.6.2; the cloned-repository step is the kind refused here three times. Steps: `for-aaron.md` section 11. |
+| BeatNet+ (mjhydri/BeatNet-Plus, bb90eb0) | (added in gap round 2) Not attempted. No PyPI project; installs from its cloned repository with `pip install -e .`, the kind of step refused here three times. Steps and a run script (`scripts/beatnetplus_run.py`, not run): `for-aaron.md` section 12. |
+| mixedkey (Go, v0.1.0) | (added in gap round 2) The `go get` and `go build` of the module with the lane's glue (`scripts/gap2/mixedkey_run/main.go`) was refused before it ran, "Reason: [Code from External]"; nothing was built. Go 1.24.7 is on the box. Steps: `for-aaron.md` section 14. |
+| AudioEstimate (HF DionTimmer/audioestimate-1.0) | (added in gap round 2) Files gated behind a manually approved access request; no public inference code found. Steps: `for-aaron.md` section 13. |
+| pyace (0.1.1) | (added in gap round 2) Not run: the round's task was a README read. The PyPI package is Python 2.7 code whose `__init__.py` import fails under Python 3 (synthetic-layout test); survey.md, "pyace". |
 | realtime-bpm-analyzer, web-audio-beat-detector, essentia.js | Browser libraries; in-browser analysis belongs to the browser-audio-sync lane; not run here. |
 
 ## Media kept outside git
@@ -1229,7 +1440,8 @@ None. No tool run in this lane writes audio or video (allin1's sonification, whi
 are text, JSON, `.lab` and `.jams` files under `/home/user/gtr/lanes/chords-beats-key/out/`. (Gap round 1: still none.
 All-In-One's Demucs separation wrote four stems per clip under `out/allin1/<clip>/demix/` (the CLI run r0576: under
 `out/allin1_cli/S4/demix/`), and they were deleted at the end of each run, as allin1 does by default; `sonify` and
-`visualize` were not run. Verifier, 2026-11-11: no audio file is left under `out/`.)
+`visualize` were not run. Verifier, 2026-11-11: no audio file is left under `out/`.) (Gap round 2: still none. The
+LiveChord refiner writes text and JSON only, under `out/livechord/` and `out/livechord_cli/`.)
 
 ## Verification log (verify-trials-chords-beats-key, 2026-11-10)
 

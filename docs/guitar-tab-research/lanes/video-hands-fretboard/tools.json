@@ -1,7 +1,7 @@
 {
  "lane": "video-hands-fretboard",
- "generated": "2026-11-10",
- "updated": "2026-11-11 (gap round 2; scripts/gap-round-2/fix_tools_json_*.py; verifier edits: scripts/verify-gap-round-2/fix_tools_json_verify.py)",
+ "generated": "2026-11-12",
+ "updated": "2026-11-12 (refreshed from survey.md, trials.md \"Gap round 2\" and both round-2 verification logs, and for-aaron.md)",
  "tools": [
   {
    "name": "MediaPipe Hand Landmarker (Tasks API)",
@@ -24,7 +24,7 @@
       "samples/mediapipe-hand-landmarker/"
      ],
      "metrics": {
-      "peak_unit": "MB",
+      "peak_unit": "MiB",
       "cpu_s": 23.2,
       "frames": 540,
       "infer_ms_mean": 36.94,
@@ -55,7 +55,7 @@
       "samples/mediapipe-hand-landmarker/"
      ],
      "metrics": {
-      "peak_unit": "MB",
+      "peak_unit": "MiB",
       "cpu_s": 25.2,
       "frames": 540,
       "infer_ms_mean": 36.88,
@@ -83,7 +83,7 @@
       "samples/mediapipe-hand-landmarker/"
      ],
      "metrics": {
-      "peak_unit": "MB",
+      "peak_unit": "MiB",
       "cpu_s": 11.5,
       "frames": 300,
       "infer_ms_mean": 32.56,
@@ -111,7 +111,7 @@
       "samples/mediapipe-hand-landmarker/"
      ],
      "metrics": {
-      "peak_unit": "MB",
+      "peak_unit": "MiB",
       "cpu_s": 13.5,
       "frames": 300,
       "infer_ms_mean": 29.41,
@@ -288,7 +288,7 @@
     {
      "to": "Basic Pitch (audio-to-notes lane)",
      "via_format": "per-frame timestamp_ms vs note_events (start_time_s, end_time_s, pitch_midi, amplitude, pitch_bends) in seconds",
-     "evidence": "survey.md Handoff fact 9: the two share a time axis once frame index / fps and audio seconds are put on one clock; an alignment step, no tool in this lane does it; (gap round 2) run r0609 (2 cores, wall 27.09 s) put both on one clock for R3c (frame n at n/25 s; R3c.wav and the mp4's audio track cross-correlate at lag 0) and measured picking-hand ('Right') fingertip speed in the frames within 40 ms of the 63 merged Basic Pitch onsets of run r0264 against the other frames (trials.md 'Gap round 2'); descriptive, no ground truth"
+     "evidence": "survey.md Handoff fact 9: the two share a time axis once frame index / fps and audio seconds are put on one clock; an alignment step, no tool in this lane does it; (gap round 2) run r0609 (2 cores, wall 27.09 s) put both on one clock for R3c (frame n at n/25 s; R3c.wav and the mp4's audio track cross-correlate at lag 0) and measured picking-hand ('Right') fingertip speed in the frames within 40 ms of the 63 merged Basic Pitch onsets of run r0264 against the other frames (trials.md 'Gap round 2'); descriptive, no ground truth (round-2 verifier: r0609 CPU 21.2 s, peak RSS 407.3 MiB, exit 0; its time is mostly module imports with numba compilation reached through librosa, 27.6 s of 30.6 s in a cProfile re-run, r0709 (2 cores, 31.62 s wall), and the numpy dot and norm calls of the A/V lag search take 1.9 s; re-run r0695 gave identical JSON, CSV and npz)"
     }
    ],
    "unverified": [
@@ -297,7 +297,8 @@
     "Model card scope: out-of-scope applications include predicting hand landmarks with gloves or occlusions (quoted in survey.md).",
     "Trials: every run logs 'landmark_projection_calculator.cc:81] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI' and a TypeError in HandLandmarker.__del__ at exit (exit code still 0).",
     "First two runs r0057 and r0061 failed with OSError libGLESv2.so.2 until libgles2 and libegl1 were installed with apt.",
-    "mediapipe 1.2.2 has no mp.solutions attribute (survey: the repository tree at HEAD still has mediapipe/python/solutions/)."
+    "mediapipe 1.2.2 has no mp.solutions attribute (survey: the repository tree at HEAD still has mediapipe/python/solutions/).",
+    "Whether the numba cache folder of the picking-hand run r0609 was empty is not recorded."
    ]
   },
   {
@@ -2170,7 +2171,7 @@
       "samples/openpose-hand/"
      ],
      "metrics": {
-      "peak_unit": "MB",
+      "peak_unit": "MiB",
       "cpu_s": 522.4,
       "slot_wait_s": 1800.7,
       "hands_run": 30,
@@ -2304,9 +2305,9 @@
       "url": "https://arxiv.org/pdf/1704.07809"
      },
      {
-      "name": "synthetically rendered hand images (about 11000)",
+      "name": "synthetically rendered hand images (about 11000); the PDF has a footnote mark \"3\" after \"rendered\", left out of the quote",
       "license": null,
-      "quote": "an initial set of synthetically rendered images of hands, totalling around 11000 examples (footnote mark '3' after 'rendered' left out)",
+      "quote": "an initial set of synthetically rendered images of hands, totalling around 11000 examples",
       "url": "https://arxiv.org/pdf/1704.07809"
      },
      {
@@ -2378,9 +2379,9 @@
       "url": "https://arxiv.org/pdf/1704.07809"
      },
      {
-      "name": "synthetically rendered hand images (about 11000)",
+      "name": "synthetically rendered hand images (about 11000); the PDF has a footnote mark \"3\" after \"rendered\", left out of the quote",
       "license": null,
-      "quote": "an initial set of synthetically rendered images of hands, totalling around 11000 examples (footnote mark '3' after 'rendered' left out)",
+      "quote": "an initial set of synthetically rendered images of hands, totalling around 11000 examples",
       "url": "https://arxiv.org/pdf/1704.07809"
      },
      {
@@ -2495,7 +2496,7 @@
      ],
      "metrics": {
       "note": "minimum-area rectangle of the largest component of the frame-150 mask used as a second quad: corners (434.5,186.5), (471.9,245.8), (223.5,402.5), (186.1,343.1), long axis 147.76 degrees, width 70.2 px; because the largest component stops at the hand, x = 0 of this rectification is at the hand, not the nut; rectified 800x116: LSD 13 fret-like / 50 string-like segments, fret clusters at x = 117.5, 210.9, 304.2, 390.4, 473.3, 620.2, 696.8, 759.1; Hough 9 / 27; --nolock",
-      "peak_unit": "MB"
+      "peak_unit": "MiB"
      },
      "step": null,
      "note": null
@@ -2804,7 +2805,7 @@
       "samples/opencv-lines/"
      ],
      "metrics": {
-      "peak_unit": "MB",
+      "peak_unit": "MiB",
       "cpu_s": 0.8,
       "nolock": "--nolock: a light job, no CPU slot and no core pinning",
       "per_frame_unrectified_s": "0.13-0.45",
@@ -2878,7 +2879,7 @@
       "samples/opencv-lines-R3b/opencv_lines_R3b.json"
      ],
      "metrics": {
-      "peak_unit": "MB",
+      "peak_unit": "MiB",
       "cpu_s": 1.5,
       "nolock": "--nolock",
       "per_frame_unrectified_s": "0.51-0.79",
@@ -2963,7 +2964,7 @@
       "samples/handoff/handoff_R3a_cu_f0150_rectified.webp"
      ],
      "metrics": {
-      "peak_unit": "MB",
+      "peak_unit": "MiB",
       "cpu_s": 0.4,
       "nolock": "--nolock",
       "fit": "12-TET fit without the drop rule: k0 = 4, s = 1584.4 px, RMS 5.96 px (k0 = 3: RMS 32.07 px; k0 = 5: RMS 14.88 px)"
@@ -2986,7 +2987,7 @@
       "fit": "lowest RMS with 2 leading clusters dropped and k0 = 6 (341.2 and 410.6 at model frets 4 and 5), s = 1581.3 px, RMS residual 5.04 px, max 7.86 px; model frets 1-4 at x = 94.5, 178.2, 257.3, 331.9",
       "cells": "thumb tip (490.56, 221.13) -> rectified (202.0, 115.3) -> fret 3, string 1; index tip (482.76, 186.02) -> (175.8, 49.9) -> fret 2, string 4; middle tip (435.65, 196.79) -> (266.7, 18.9) -> fret 4, string 6; ring tip (423.57, 217.63) -> (309.5, 40.9) -> fret 4, string 4; pinky tip (430.49, 241.06) -> (323.0, 86.1) -> fret 4, string 2",
       "string_rule": "six equal lanes across the 116 px width, string 6 at the upper edge (not checked against string thickness); the thumb tip lands at v = 115.3 of 116, the lower edge, and is not a fretted position (no check made)",
-      "peak_unit": "MB"
+      "peak_unit": "MiB"
      },
      "step": null,
      "note": null
@@ -3007,7 +3008,7 @@
       "fit": "nut cluster (x < 20) left out; clusters right of the widest gap (389.9 to 496.2): 496.2 ... 1168.0 (14); lowest RMS dropping the first two and fitting 645.5 ... 1168.0 (12 clusters) as frets 8-19: s = 1754.2 px, RMS 3.52 px, max 7.70 px, putting 496.2 at fret 6 (without dropping: k0 = 6 RMS 7.52 px, k0 = 5 RMS 20.48 px)",
       "cells": "thumb tip (1031.74, 140.00) -> (265.6, -20.4) outside the fretboard -> fret 3, string 6; index (1082.59, 200.67) -> (255.6, 58.9) -> fret 3, string 4; middle (992.45, 234.35) -> (351.3, 41.4) -> fret 4, string 5; ring (983.43, 295.62) -> (391.1, 88.7) -> fret 5, string 2; pinky (970.30, 327.14) -> (418.4, 108.3) -> fret 5, string 2",
       "disagreement": "counting wires by eye from the nut puts 496.2 at fret 5 (the shared manifest describes the frame as 'frets 5 to 18 by their spacing, with frets 2-4 under the fingers'); the 12-TET fit puts it at fret 6; which is right is UNVERIFIED (no ground truth)",
-      "peak_unit": "MB"
+      "peak_unit": "MiB"
      },
      "step": null,
      "note": null
@@ -3025,7 +3026,7 @@
      "metrics": {
       "nolock": "--nolock",
       "note": "see the SAM 2.1 entry",
-      "peak_unit": "MB"
+      "peak_unit": "MiB"
      },
      "step": null,
      "note": null
@@ -3041,7 +3042,7 @@
      "metrics": {
       "nolock": "--nolock",
       "note": "per-frame JSON identical to r0149 except timings",
-      "peak_unit": "MB"
+      "peak_unit": "MiB"
      },
      "step": null,
      "note": "verifier re-run"
@@ -3057,7 +3058,7 @@
      "metrics": {
       "nolock": "--nolock",
       "note": "per-frame JSON identical to r0214 except timings",
-      "peak_unit": "MB"
+      "peak_unit": "MiB"
      },
      "step": null,
      "note": "verifier re-run"
@@ -3073,7 +3074,7 @@
      "metrics": {
       "nolock": "--nolock",
       "note": "per-frame JSON identical to r0400 except timings",
-      "peak_unit": "MB"
+      "peak_unit": "MiB"
      },
      "step": null,
      "note": "verifier re-run"
@@ -3089,7 +3090,7 @@
      "metrics": {
       "nolock": "--nolock",
       "note": "JSON identical to r0218 (same fits, model frets and cells)",
-      "peak_unit": "MB"
+      "peak_unit": "MiB"
      },
      "step": null,
      "note": "verifier re-run"
@@ -3105,7 +3106,7 @@
      "metrics": {
       "nolock": "--nolock",
       "note": "JSON identical to r0402 (same fits, model frets and cells)",
-      "peak_unit": "MB"
+      "peak_unit": "MiB"
      },
      "step": null,
      "note": "verifier re-run"
@@ -3124,7 +3125,7 @@
       "samples/opencv-lines-C1/*.webp"
      ],
      "metrics": {
-      "peak_unit": "MB",
+      "peak_unit": "MiB",
       "cpu_s": 1.68,
       "nolock": "--nolock",
       "script": "scripts/run_opencv_lines.py unchanged, through scripts/gap-round-2/run_opencv_lines_image.py",
@@ -3247,7 +3248,7 @@
        }
       ],
       "by_eye": "no capo is on the guitar in these frames; on R3a_cu frame 150 the one 'hand' box is (417,170)-(565,345) while the 21 MediaPipe fretting-hand landmarks span x 423.57-546.70, y 177.72-322.99; the two 'capo' boxes lie at y 405-479 in the music-stand area",
-      "peak_unit": "MB"
+      "peak_unit": "MiB"
      },
      "step": null,
      "note": null
@@ -3263,7 +3264,7 @@
      "metrics": {
       "nolock": "--nolock",
       "note": "same labels, mask boxes and mask pixel counts for all three images (19.52, 19.02 and 22.27 s per image)",
-      "peak_unit": "MB"
+      "peak_unit": "MiB"
      },
      "step": null,
      "note": "verifier re-run"
@@ -3282,7 +3283,7 @@
       "samples/owlv2-space/C1_kapodaster_owlv2_space_boxes.webp"
      ],
      "metrics": {
-      "peak_unit": "MB",
+      "peak_unit": "MiB",
       "cpu_s": 2.09,
       "nolock": "--nolock",
       "remote": "model runs on Hugging Face's cpu-basic Space; time is network plus remote inference",
@@ -3302,7 +3303,7 @@
      "exit_code": 1,
      "output_files": [],
      "metrics": {
-      "peak_unit": "MB",
+      "peak_unit": "MiB",
       "cpu_s": 5.18,
       "error": "OSError: Can't load image processor for 'google/owlv2-base-patch16-ensemble' (offline mode; the snapshot had been fetched by commit hash, no refs/main)"
      }
@@ -3318,7 +3319,7 @@
      "exit_code": 1,
      "output_files": [],
      "metrics": {
-      "peak_unit": "MB",
+      "peak_unit": "MiB",
       "cpu_s": 19.05,
       "error": "AttributeError: 'Owlv2Processor' object has no attribute 'post_process_object_detection'. Did you mean: 'post_process_grounded_object_detection'?"
      }
@@ -3337,12 +3338,12 @@
       "samples/owlv2-local/*.webp"
      ],
      "metrics": {
-      "peak_unit": "MB",
+      "peak_unit": "MiB",
       "cpu_s": 141.6,
       "settings": "queries 'a photo of a <prompt>' for guitar, guitar neck, fretboard, headstock, capo, hand; boxes >= 0.1; image_processor.post_process_object_detection with target size max(h, w) squared",
       "model_load_s": 3.16,
       "per_view_s": "7.07-10.03",
-      "C1_full": "22 boxes; guitar 1 (0.4838), guitar neck 11 (top 0.2092), fretboard 8 (top 0.2837), capo 2 (0.2539 and 0.1454, both on the clamp at the neck's right edge by eye), headstock 0, hand 0",
+      "C1_full": "22 boxes; guitar 1 (0.4838), guitar neck 11 (top 0.2092), fretboard 8 (top 0.2837), capo 2 (top 0.2539; both on the clamp at the neck's right edge by eye), headstock 0, hand 0",
       "C1_lower": "4 boxes; capo 0.2154 and 0.1475 (clamp), fretboard 0.1821, guitar 0.1536",
       "capo_on_capo_less_views": "top 'capo' score per view 0.1919 to 0.3682; 4 of the 8 views above C1's 0.2539",
       "no_ground_truth": "capo position read by eye; no gtr-eval"
@@ -3413,7 +3414,9 @@
     "No ground truth for any clip; the numbers are counts, rates and times, not accuracy (trials.md header).",
     "Training data licenses are not stated on the card beyond the lines quoted ('(to be updated for v2)').",
     "Steps for Aaron (for-aaron.md section 4 step 4) are optional: the box already has these results.",
-    "(gap round 2) The scored transformers output was observed in run r0639 (boxes, scores, label indices). The Space's own query handling (it got 'guitar neck, fretboard, ...' without 'a photo of a') was not read; its C1 boxes differ from the local run's."
+    "(gap round 2) The scored transformers output was observed in run r0639 (boxes, scores, label indices). The Space's own query handling (it got 'guitar neck, fretboard, ...' without 'a photo of a') was not read; its C1 boxes differ from the local run's.",
+    "(round-2 verifier) The local OWLv2 output (r0639) was not reproduced: not re-run, because it needs a new download over 200 MB (619,918,824 bytes), which the orchestrator's disk notice rules out unless a lane cannot finish without it. Checked instead: the HF API's repo commit, last-modified date, apache-2.0 tag, size and LFS sha256 (equal to the sha256 the ledger computed at run time); in venv-ultra (transformers 5.22.2) Owlv2Processor has no post_process_object_detection and calling it prints the AttributeError text quoted for r0634; the two clamp boxes of the Space (r0629 and r0690) lie within 5 px of the two local r0639 'capo' boxes.",
+    "(round-2 verifier) The r0632 error text: no log was kept (the ledger has r0632 with exit 1 and 5.23 s)."
    ]
   },
   {
@@ -3484,7 +3487,7 @@
       "samples/grounding-dino-local/*.webp"
      ],
      "metrics": {
-      "peak_unit": "MB",
+      "peak_unit": "MiB",
       "cpu_s": 193.21,
       "settings": "text 'guitar. guitar neck. fretboard. headstock. capo. hand.', threshold 0.2, text_threshold 0.2",
       "model_load_s": 3.72,
@@ -3555,7 +3558,8 @@
     "PyPI groundingdino-py's homepage is github.com/giswqs/GroundingDINO (a third-party packaging).",
     "Author measurement: README 'COCO zero-shot 52.5 AP (training without COCO data!). COCO fine-tune 63.0 AP.'",
     "Space merve/Grounding_DINO_demo state RUNNING on cpu-basic (2026-11-10 and 2026-11-11); its API could not be called from the box (r0193, r0488, r0629: 'Unknown protocol: ws'); the model itself ran locally in r0648 (gap round 2).",
-    "(gap round 2) Gap V1 first set this entry to tried=false (the Space attempts r0193 and r0488 gave no output); the local run r0648 then gave output, so tried is true again, with tried_how local-cpu."
+    "(gap round 2) Gap V1 first set this entry to tried=false (the Space attempts r0193 and r0488 gave no output); the local run r0648 then gave output, so tried is true again, with tried_how local-cpu.",
+    "(round-2 verifier) The local Grounding DINO tiny output (r0648) was not reproduced: not re-run, because it needs a new download over 200 MB (689,359,096 bytes), which the orchestrator's disk notice rules out unless a lane cannot finish without it. Checked instead: the HF API's repo commit, last-modified date, apache-2.0 tag, size and LFS sha256 (equal to the sha256 the ledger computed at run time)."
    ]
   },
   {
@@ -3708,7 +3712,7 @@
       "samples/yoloe-26s/gap2/C1_*.webp"
      ],
      "metrics": {
-      "peak_unit": "MB",
+      "peak_unit": "MiB",
       "cpu_s": 9.98,
       "setup_s": 3.43,
       "per_view_s": "0.23-0.41",
@@ -3785,7 +3789,8 @@
     "When the 200 MB disk notice first appeared relative to the mobileclip2_b.ts download (file time 21:14:08 UTC): UNVERIFIED.",
     "Separately downloaded mobileclip_blt.ts (599,764,649 bytes) was deleted unused after the model's config showed it uses MobileCLIP2.",
     "The 'fretboard' top scores (0.091, 0.097) and 'hand' scores (0.071, 0.096) are below the 0.25 count threshold; 'guitar neck', 'headstock' and 'capo' returned nothing >= 0.05.",
-    "(gap round 2) The licenses of Objects365, GQA and Flickr30k were not read."
+    "(gap round 2) The licenses of Objects365, GQA and Flickr30k were not read.",
+    "Whether the ultralytics/assets repository LICENSE covers its release files (the release page answers 403 here) was not verified."
    ]
   },
   {
@@ -4631,7 +4636,7 @@
       "samples/yolo-world-v2/*.webp"
      ],
      "metrics": {
-      "peak_unit": "MB",
+      "peak_unit": "MiB",
       "cpu_s": 11.95,
       "settings": "set_classes(guitar, guitar neck, fretboard, headstock, capo, hand); conf 0.05",
       "setup_s": 5.16,
@@ -4697,7 +4702,9 @@
     "The OpenAI CLIP ViT-B/32 text encoder's license was not read (UNVERIFIED).",
     "README badge 'License-GPLv3.0'; the copies inside the Ultralytics package are part of that AGPL-3.0 package.",
     "CPU use not stated in its README.",
-    "(gap round 2) The two demo Spaces were not checked again; for-aaron.md section 5 is now optional."
+    "(gap round 2) The two demo Spaces were not checked again; for-aaron.md section 5 is now optional.",
+    "(round-2 verifier) The local YOLO-World v2 output (r0650) was not reproduced: not re-run, because it needs new downloads over 200 MB (25,923,032 + 353,976,522 bytes), which the orchestrator's disk notice rules out unless a lane cannot finish without it. Checked instead: yolov8s-worldv2.pt was downloaded again (25,923,032 bytes), hashed (the sha256 of r0650's input) and deleted; the CLIP URL in openai-clip 1.0.1's clip/clip.py carries the sha256 the ledger gives; Ultralytics 8.4.209 set_classes calls build_text_model('clip:ViT-B/32') and its settings file has weights_dir 'weights' (relative).",
+    "Whether the ultralytics/assets repository LICENSE covers its release files (the release page answers 403 here) was not verified."
    ]
   },
   {
@@ -5231,7 +5238,7 @@
    "kind": "dataset",
    "what": "'Official dataset release for **GuiFiR** (IEEE Access, 2026), a guitar finger reading dataset for **hand pose estimation**, **fretboard pose estimation**, and **guitar tablature / fingering recognition** from guitar performance videos.' (README). GuiFiR-Synth: 'synthetic composite images with hand and guitar fretboard coordinate annotations.'; GuiFiR-Vid: 'real guitar performance video clips with ground-truth or pseudo-ground-truth tablature.'; 10-second clips; splits train 900 clips / 29,051 annotated frames (no keypoint ground truth), val 30 / 543, test 100 / 2,048 (with keypoint ground truth).",
    "url": "https://github.com/kmu-ee-ailab/guifir_dataset",
-   "version": "repository HEAD e707e5167ec3e495ebffe539c5d6060ec203b9ce (2026-10-29); IEEE Access 2026, doi 10.1109/ACCESS.2026.3713562",
+   "version": "repository HEAD e707e5167ec3e495ebffe539c5d6060ec203b9ce (2026-10-29); IEEE Access 2026",
    "tried": false,
    "tried_how": null,
    "runs": [],
@@ -6072,7 +6079,7 @@
    "pricing": null,
    "handoffs_out": [],
    "unverified": [
-    "Fretted-instrument content: instruction_script.json has scene 'Playing mini instruments' with activity 'Playing the Ukulele' (16 actions, e.g. 'Place your left-hand fingers on the fretboard to form chords.'); 119 of 13,787 rows of annotations_v2.jsonl mention 'ukulele', in 11 sessions named '*instrument*'. No guitar in the script.",
+    "Fretted-instrument content: instruction_script.json has scene 'Playing mini instruments' with activity 'Playing the Ukulele' (16 actions, e.g. 'Place your left-hand fingers on the fretboard to form chords.'); 119 of 13,787 rows of annotations_v2.jsonl mention 'ukulele', in 11 sessions named '*instrument*'. No guitar in the script. Of the 119 ukulele rows, 109 give a frame span (end_frame_id minus start_frame_id: 65 to 868 frames each, 21,023 frames in all) and 10 run to the end of their sequence (end_frame_id -1).",
     "Whether object poses include the ukulele, whether any fret or string labels exist, and how the ukulele clips look on video were not checked (videos not downloaded).",
     "The 2025 venue claim from the gap list: the arXiv comment reads 'CVPR 2025 Highlight'."
    ]

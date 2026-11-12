@@ -630,7 +630,9 @@ Not a separation tool despite the name: PyPI `uvr` (Oorteo, 0.2.6) is a runner f
   the query signal" (paper section 3), resampled back to the mixture's rate and written with `ta.save(output_path,
   estimate, fsm)` to `--output_path`.
 - Query and output in the code (gap round 2, read 2026-11-11 from a clone at head 79ed5bb; not run, see `trials.md`):
-  `core/models/e2e/querier/passt.py` averages the query's channels (`x = torch.mean(qaudio, dim=1)`), resamples it to
+  class `Passt` in `core/models/e2e/querier/passt.py`, the query encoder of the model class `PasstFiLMConditionedBandit`,
+  averages the query's channels (`x = torch.mean(x, dim=1)`; corrected by the verifier on 2026-11-12: the line first
+  quoted here, `x = torch.mean(qaudio, dim=1)`, is in `PasstWrapper`, which that model class does not use), resamples it to
   32 kHz, cuts PaSST's mel spectrogram to 998 frames and uses the embedding of
   `get_basic_model(mode="embed_only", arch="openmic")`, whose weights hear21passt 0.0.26 downloads from
   `https://github.com/kkoutini/PaSST/releases/download/v0.0.5/openmic-passt-s-f128-10sec-p16-s10-ap.85.pt`

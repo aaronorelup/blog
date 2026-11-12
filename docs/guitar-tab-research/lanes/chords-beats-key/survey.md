@@ -16,6 +16,10 @@ then checked against the sources, fetched again on 2026-11-11, by verify-gapfill
 trials.md, "Verification log (verify-gapfill-chords-beats-key, round 1, 2026-11-11)"; its copies are in
 `/home/user/gtr/lanes/chords-beats-key/verify-gap1/raw/`).
 
+Gap round 2 (2026-11-11 and 2026-11-12, gapfill-chords-beats-key; trials.md, "Gap round 2"): items marked "Gap round 2"
+or "(... gap round 2 ...)" were added then, from pages read on 2026-11-12 unless the line says otherwise; raw copies in
+`/home/user/gtr/lanes/chords-beats-key/raw/gap2/` (not committed). Not yet checked by a second agent.
+
 Marks used in the tool list:
 
 - `RUNNABLE`: looks installable and runnable on the CPU-only Linux research box (pip / apt / npm package or a
@@ -34,15 +38,18 @@ in the sections below. Each line is a pointer; the section is what counts. Dates
 1. Chordino + NNLS Chroma + Tuning (Vamp plugins, C4DM QMUL). HEAD 2020-04-22. GPL-2.0-or-later. RUNNABLE (build
    from source, or the binary bundled in chord-extractor). 18 built-in chord profiles per root, or a user chord.dict.
 2. madmom chords (DeepChroma + CRF, CNN + CRF), JKU Linz. HEAD 2024-08-25; PyPI 0.16.1 of 2018-11-14. Code BSD-2 /
-   models CC BY-NC-SA 4.0. RUNNABLE (from GitHub source). 25 classes (12 maj, 12 min, N), 10 fps.
+   models CC BY-NC-SA 4.0. RUNNABLE (from GitHub source). 25 classes (12 maj, 12 min, N), 10 fps. (Gap round 2:
+   training data of each shipped model, from the papers its docstrings cite, in the section.)
 3. autochord (Bi-LSTM-CRF on NNLS chroma). HEAD 2023-02-22; PyPI 0.1.4 of 2021-10-07. Repo LICENSE Apache-2.0, PyPI
    classifier MIT; bundles `nnls-chroma.so`; model from Google Drive. RUNNABLE? (TensorFlow). 25 classes.
 4. chord-extractor (Chordino wrapper). HEAD 2025-08-14; PyPI 0.1.3 of 2025-08-14 (Python <3.12). GPL-2.0. RUNNABLE.
 5. BTC (Bi-directional Transformer). HEAD 2020-05-23. MIT, weights in the repository. RUNNABLE (PyTorch, CPU
    fallback). 25 or 170 classes.
 6. CREMA. HEAD 2022-04-19; PyPI 0.2.0 of 2022-04-21. LICENSE.md BSD-2, PyPI ISC. RUNNABLE? (old pins). JAMS output.
+   (Gap round 2: 170-class vocabulary `3567s`; trained on 973 of Humphrey and Bello's 1217 tracks; section.)
 7. lv-chordia / ISMIR 2019 large-vocabulary model (Chord-CNN-LSTM). HEAD 2024-04-09; PyPI lv-chordia 1.1.0 of
-   2026-07-11. MIT. RUNNABLE. JSON output, selectable chord dictionaries.
+   2026-07-11. MIT. RUNNABLE. JSON output, selectable chord dictionaries. (Gap round 2: the paper's 1217 songs from
+   Isophonics, Billboard and MARL; section.)
 8. ChordMini (ChordMiniApp). HEAD 2026-07-30. MIT (app; its model repository ptnghia-j/ChordMini is also MIT, but
    the paper's pseudo-label training audio includes CC BY-NC-SA 4.0 datasets, see section). Needs Firebase and Gemini
    keys for the full app; NEEDS-ACCOUNT. Uses BTC variants, Chord-CNN-LSTM, Beat-Transformer, madmom.
@@ -59,7 +66,10 @@ in the sections below. Each line is a pointer; the section is what counts. Dates
 15. QM Vamp Plugins (key, beat, bar-beat, chromagram, tonal change). HEAD 2021-06-02. GPL; README says binaries may be
     used "for any purpose commercial or non-commercial". RUNNABLE (binaries or source build). (Gap round 1: no package
     route on Linux; the download site resets; see section.)
-16. pyace (2017 to 2021). HEAD 2021-06-01. BSD-3-style. Not examined further.
+16. pyace (2017 to 2021). HEAD 2021-06-01. BSD-3-style. Not examined further. (corrected in gap round 2: examined;
+    PyPI 0.1.1 sdist of 2017, Python 2.7 code; its "simple" mode has no trained weights; the deep modes need Keras
+    models from a Dropbox zip. RUNNABLE? only with code changes on Python 3; see "pyace" in the section on papers
+    without code.)
 
 ### Beat, downbeat and tempo
 
@@ -81,7 +91,8 @@ in the sections below. Each line is a pointer; the section is what counts. Dates
 24. tempo-cnn. HEAD 2024-10-17; PyPI tempocnn 0.0.8 of 2024-10-17 (Python 3.9 to 3.11). AGPL-3.0 code and models.
     RUNNABLE. Global tempo, tempogram, meter. (Gap round 1: ran here; the wheel has no key model.)
 25. DeepRhythm. HEAD 2026-07-21; PyPI deeprhythm 0.0.13 of 2024-12-07. AGPL-3.0 (weights are files in the same
-    repository). RUNNABLE. Global tempo with confidence. (Added.)
+    repository). RUNNABLE. Global tempo with confidence. (Added.) (Gap round 2: training data from the author's
+    project page: GiantSteps, Ballroom, Slakh2100, part of FMA; section.)
 26. Beat Transformer. HEAD 2024-04-07. MIT. RUNNABLE? (repository targets 8-fold evaluation and Colab; Spleeter
     stems). Beats and downbeats.
 27. BEAST (ICASSP 2024). HEAD 2024-09-11. MIT. Evaluation script and Google Drive model only.
@@ -120,15 +131,32 @@ in the sections below. Each line is a pointer; the section is what counts. Dates
 ### Added by the verifier (2026-11-10)
 
 42. BeatNet+ (TISMIR 2024). https://github.com/mjhydri/BeatNet-Plus HEAD 2026-04-13. No license file and no license
-    statement found. Weights in the repository. Beats and downbeats (online, offline, realtime, streaming).
+    statement found. Weights in the repository. Beats and downbeats (online, offline, realtime, streaming). (Gap round 2:
+    not run here, not attempted; steps for Aaron in for-aaron.md section 12.)
 43. STONE (Deezer, ISMIR 2024; the predecessor of S-KEY). https://github.com/deezer/stone HEAD 2025-10-24. No license
-    file and no license statement found. Two checkpoints in the repository. Key signature and mode.
+    file and no license statement found. Two checkpoints in the repository. Key signature and mode. (Gap round 2: not
+    run here, not attempted; steps for Aaron in for-aaron.md section 10.)
 44. key-cnn (Hendrik Schreiber). https://github.com/hendriks73/key-cnn HEAD 2020-07-30. AGPL-3.0 ("Source code and
-    models"). Not on PyPI. Global key.
+    models"). Not on PyPI. Global key. (Gap round 2: not run here, not attempted; steps for Aaron in for-aaron.md
+    section 11.)
 45. web-audio-beat-detector (npm). npm 8.2.39 of 2026-08-26; HEAD 2026-08-30. MIT. RUNNABLE (browser). Tempo and
     first-beat offset from an `AudioBuffer`.
 46. Essentia ChordsDetectionBeats (one chord per beat interval), TonalExtractor (key, chords, HPCP in one call) and
     PercivalBpmEstimator (tempo). Same AGPL-3.0 code license as item 9; no trained weights. RUNNABLE.
+
+### Added in gap round 2 (2026-11-12)
+
+47. LiveChord beat refiner (PyPI `livechord-beat-refiner` 0.1.0 of 2026-05-09; weights on Hugging Face
+    livechord-music/livechord-beat-refiner, not gated). Apache-2.0 code and weights (the LiveChord application it comes
+    from is AGPL-3.0). RUNNABLE (PyTorch, CPU). Beats and downbeats, refined from another tracker's beats and
+    downbeats plus the audio. Ran here (trials.md, "Gap round 2").
+48. AudioEstimate (Hugging Face DionTimmer/audioestimate-1.0, created 2026-06-26). Gated (manual approval); no
+    license tag and no license text on the model page. Key (24 Camelot classes) and BPM from audio. NEEDS-ACCOUNT (the
+    files need an accepted access request). Not run here; for-aaron.md section 13.
+49. mixedkey (Go module github.com/cabbagekobe/mixedkey v0.1.0 of 2026-07-20). MIT. Pure-Go key detection from mono
+    PCM (chroma plus key-profile correlation; Camelot output). RUNNABLE (Go 1.24 or later; the box has Go 1.24.7). Not
+    run here: the module build was refused by the box's permission system (trials.md, "Gap round 2"); for-aaron.md
+    section 14.
 
 ---
 
@@ -286,6 +314,15 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   read 2026-11-10): license id "other-nc", and its description says "MUSDB18 is provided for educational purposes only
   and the material contained in them should not be used for any commercial purpose without the express permission of
   the copyright holders". RWC terms: UNVERIFIED (page not reachable, see Beat This!). Others not read.
+- Gap round 2 (read 2026-11-11 and again 2026-11-12, same files; trials.md "Gap round 2"): `setup.py` lists `numpy>=1.21.0`,
+  cython, `librosa>=0.8.0`, scipy, `mido>=1.2.6`, pytest, `madmom>=0.16.1`, `torch>=1.9.0`, Matplotlib,
+  `tensorboard>=2.0`, `pyyaml>=5.0` and `python_requires='>=3.8'`. `src/BeatNetPlus/inference.py`: constructor
+  `BeatNetPlusInference(weights, mode='online', inference_model='PF', plot=[], device='cpu', dim_in=288, num_cells=150,
+  num_layers=4)` (line 48); audio read with `librosa.load(audio_path, sr=self.sample_rate)`, `self.sample_rate = 22050`;
+  offline decoding `DBNDownBeatTrackingProcessor(beats_per_bar=[3, 4], fps=50, observation_lambda=16)` (lines 69-70).
+  Weight files (HEAD requests to raw.githubusercontent.com): `generic_weights.pt` 3,072,825 bytes,
+  `generic_main_weights.pt` 3,072,890, `af_non_percussive_weights.pt` 3,073,019. The README's install block writes
+  "cd beatnet_plus" after cloning `BeatNet-Plus.git`. Not run here; steps for Aaron in for-aaron.md section 12.
 
 ## All-In-One (`allin1`): tempo, beats, downbeats, sections
 
@@ -416,7 +453,62 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   - c. Training data of the shipped models: not stated in the code or license files read today (UNVERIFIED; the
     papers cited in the docstrings would settle it). Second-hand, for the key model only: the S-KEY paper describes
     madmom's key CNN as "trained on a varied corpus (electronic dance music, pop/rock, and classical music)"
-    (https://arxiv.org/html/2501.12907v2, section III-C, read 2026-11-10).
+    (https://arxiv.org/html/2501.12907v2, section III-C, read 2026-11-10). (corrected in gap round 2: the cited papers
+    were read; next item.)
+  - Gap round 2 (read 2026-11-12): for each processor this lane ran, the model files madmom 0.16.1 loads
+    (`madmom/models/__init__.py` of the PyPI sdist), the paper its docstring cites (madmom main, 27f032e) and what that
+    paper says it trained on. Whether a shipped file is the exact model of its paper is not stated in the files read
+    (UNVERIFIED), and the papers do not name a license for any dataset.
+    - `RNNBeatProcessor` (beats; also the input of `TempoEstimationProcessor`, which has no trained model of its own):
+      `beats/2015/beats_blstm_[1-8].pkl`. Cited: Böck and Schedl, "Enhanced Beat Tracking with Context-Aware Neural
+      Networks", DAFx 2011 (https://www.dafx.de/paper-archive/2011/Papers/31_e.pdf): "The used training set consists of
+      88 audio excerpts taken from the ISMIR 2004 tempo induction contest (also known as the "Ballroom set") with lengths
+      of 10 seconds each, the 26 training and bonus files from the MIREX 2006 beat tracking contest with lengths of 30
+      seconds, and 6 musical pieces of the set introduced by Bello in [8] with lengths from 3 to 15 seconds." (footnote
+      marks after the two "contest" words dropped) and "The 120 files have a total length of 28.5 minutes and 3,595
+      annotated beats." That paper trains five networks; madmom
+      0.16.1 loads eight files from a folder named 2015.
+    - `RNNDownBeatProcessor` (the downbeat tracker): `downbeats/2016/downbeats_blstm_[1-8].pkl`. Cited: Böck, Krebs and
+      Widmer, "Joint Beat and Downbeat Tracking with Recurrent Neural Networks", ISMIR 2016
+      (https://archives.ismir.net/ismir2016/paper/000186.pdf): "We train the network on the datasets described in
+      Section 3.1 — except the ones marked with an asterisk (*) which are used for testing only — with 8-fold cross
+      validation based on a random splits." Its Table 1 lists Ballroom, Beatles, Hainsworth, HJDB, RWC Popular, Robbie
+      Williams, Rock, Carnatic, Cretan and Turkish, and, marked as held out for testing, GTZAN, Klapuri and SMC.
+    - `CNNChordFeatureProcessor` + `CRFChordRecognitionProcessor`: `chords/2016/chords_cnnfeat.pkl` and
+      `chords_cnncrf.pkl`. Cited: Korzeniowski and Widmer, "A Fully Convolutional Deep Auditory Model for Musical Chord
+      Recognition", MLSP 2016 (https://arxiv.org/abs/1612.05082): "We evaluate the proposed system using 8-fold
+      cross-validation on a compound dataset that comprises the following subsets: Isophonics: 180 songs by The Beatles,
+      19 songs by Queen, and 18 songs by Zweieck, totalling 10:21 hours of audio. RWC Popular [22]: 100 songs in the
+      style of American and Japanese pop music originally recorded for this data set, totalling 6:46 hours of audio.
+      Robbie Williams [23]: 65 songs by Robbie Williams, totalling 4:30 hours of audio." (a footnote mark after
+      "Isophonics" dropped)
+    - `DeepChromaProcessor` + `DeepChromaChordRecognitionProcessor`: `chroma/2016/chroma_dnn.pkl` and
+      `chords/2016/chords_dccrf.pkl`. Cited: Korzeniowski and Widmer, "Feature Learning for Chord Recognition: The Deep
+      Chroma Extractor", ISMIR 2016 (https://arxiv.org/abs/1612.05065): "Our compound evaluation dataset comprises the
+      Beatles [13], Queen and Zweieck [18] datasets (which form the “Isophonics” dataset used in the MIREX 3
+      competition), the RWC pop dataset 4 [12], and the Robbie Williams dataset [8]. The datasets total 383 songs or
+      approx. 21 hours and 39 minutes of music. We perform 8-fold cross validation with random splits." (the "3" and "4"
+      are footnote marks in the extracted text).
+    - `CNNKeyRecognitionProcessor`: `key/2018/key_cnn.pkl`. Cited: Korzeniowski and Widmer, "Genre-Agnostic Key
+      Classification with Convolutional Neural Networks", ISMIR 2018 (https://arxiv.org/abs/1808.05340), section 3.1
+      "Data": "Electronic Dance Music: Here, we use songs from the GiantSteps MTG Key dataset, collected by Ángel Faraldo.
+      It comprises 1486 distinct two-minute audio previews from www.beatport.com" ... "We only use excerpts labelled
+      with a single key and a high confidence (1077 pieces), and split them into 80 % training and 20 % validation.";
+      "Pop/Rock Music: For this genre, we use the McGill Billboard dataset [3]. It consists of 742 unique songs sampled
+      from the American Billboard charts between 1958 and 1991. We split these songs into subsets of 62.5% for training,
+      12.5% for validation, and 25% for testing."; "Classical Music: To cover this genre, we collected 1504 (mostly piano)
+      pieces from our internal database for which we could derive the key from the piece’s title." ... "We then select
+      81 % for training, 9 % for validation, and 10 % for testing." (footnote marks after "dataset" dropped). Test-only
+      sets in the paper: GiantSteps Key, KeyFinder, Isophonics, Robbie Williams, Rock.
+    - License lines found for these datasets: Isophonics (Beatles, Queen, Zweieck), no license statement on its page
+      (BTC section); McGill Billboard annotations CC0, audio not distributed (autochord section); the GiantSteps Key and
+      Tempo READMEs (https://github.com/GiantSteps/giantsteps-key-dataset, HEAD 6bcd492, and giantsteps-tempo-dataset,
+      HEAD d51ab24, read 2026-11-12) carry no license statement and fetch the audio as previews from beatport.com with a
+      script ("The audio files (604 files, size ~850Mb) can be downloaded from http://www.beatport.com/"); the GiantSteps
+      MTG Key README is a title line only; RWC, UNVERIFIED (page did not connect on 2026-11-10 or 2026-11-12); the
+      Ballroom (ISMIR 2004 contest) page at mtg.upf.edu answered HTTP 403 on 2026-11-12 (UNVERIFIED); the other sets
+      (Hainsworth, HJDB, Robbie Williams, Rock, Carnatic, Cretan, Turkish, MIREX 2006 files, Bello's set) were not read;
+      the classical pieces are the authors' "internal database".
 - Output on the box: in the try agent's madmom run on S3 (ledger run r0063), the madmom segments came out with labels
   such as "G:maj" and "E:min" on a 0.1 s grid, and `key_prediction_to_label` gave "G major"
   (`/home/user/gtr/lanes/chords-beats-key/out/madmom/S3/`, read 2026-11-10), consistent with the docstrings above. The
@@ -639,11 +731,36 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   analyze", "jam = analyze(filename='/path/to/file.mp3')" or "jam = analyze(y=y, sr=sr)".
 - Output: a JAMS document (JSON) whose chord annotation uses `namespace='chord'` (`crema/models/chord.py` line 42 at
   HEAD). The vocabulary size was not determined (UNVERIFIED; the model resources sit behind the symlink
-  `crema/models/chord`, not read).
+  `crema/models/chord`, not read). (corrected in gap round 2: determined, 170 classes; next item.)
+- Gap round 2, vocabulary (read 2026-11-12): the repository's `training/chords/README.md` (HEAD 051c916): "The output
+  chord vocabulary is pumpp's `3567s` set (170)." In the installed 0.2.0 package (the copy in the box's uv cache),
+  `crema/models/chord/model.h5` has a `chord_tag` output layer with 170 softmax units (kernel 294 x 170), next to
+  `chord_root` (13), `chord_bass` (13) and `chord_pitch` (12, sigmoid), read with h5py; `pump.pkl`, disassembled with
+  Python's `pickletools` without loading it, holds a `chord_tag` task with vocab "3567s" and 170 entries in `_classes`.
+  The paper (McFee and Bello, "Structured Training for Large-Vocabulary Chord Recognition", ISMIR 2017,
+  https://archives.ismir.net/ismir2017/paper/000077.pdf): "The set of active pitch classes is matched against 14
+  templates: min, maj, dim, aug, min6, maj6, min7, minmaj7, maj7, 7, dim7, hdim7, sus2, sus4." and "The final vocabulary
+  contains 170 classes: 2 special symbols (N, X), and 12 × 14 = 168 combinations of root and quality." The package
+  docs (`docs/models.rst`): "The implementation here has been enhanced to support inversion (bass) tracking, and
+  predicts chords out of an effective vocabulary of 602 classes." (inversions come from the bass output; this lane's
+  CREMA outputs include labels such as `C:maj/3`, trials.md).
+- Gap round 2, training data (read 2026-11-12): the paper: "For evaluation, we used the dataset provided by Humphrey
+  and Bello [11], which includes 1217 tracks from the Isophonics, Billboard, RWC Pop, and MARL collections. To
+  facilitate comparison with previous work, we retain the same 5-fold cross-validation splits, and randomly hold out
+  1/4 of each training set for validation." The repository's `training/chords/README.md`: "This model is based on the
+  paper by McFee and Bello, originally implemented in [this repository](https://github.com/bmcfee/ismir2017_chords/),
+  with a few extensions" and "We use MUDA for data augmentation: +- 6 semitones for each training track."
+  `training/chords/index_train.json` lists 973 track ids and `index_test.json` 244 (973 + 244 = 1217; no id in both;
+  `metadata_*.json` give artist and title, e.g. "The Box Tops"), and the package's `test_scores.json` scores exactly
+  those 244 test ids. `training/README.md` describes `index_train.json` as "a json file listing the identifiers
+  (`track_id`) of training data". License lines of the four collections: Isophonics, no license statement on its page (BTC section); McGill
+  Billboard annotations CC0, audio not distributed (autochord section); RWC Pop, UNVERIFIED (the RWC page did not
+  connect on 2026-11-10 or on 2026-11-12); MARL (the uspop2002 chord annotations), not found today (UNVERIFIED).
 - License facts (sources differ): a. LICENSE.md begins "BSD 2-Clause License" then "Copyright (c) 2017, Brian McFee"
   (https://raw.githubusercontent.com/bmcfee/crema/main/LICENSE.md, read 2026-11-10); the README badge says "license-BSD";
   PyPI 0.2.0 says license "ISC" with classifier "License :: OSI Approved :: ISC License (ISCL)". Both quoted as found.
   b. Weights ship inside the package; no separate weights license found. c. Training data: not read today (UNVERIFIED).
+  (corrected in gap round 2: read; see "Gap round 2, training data" above.)
 
 ## lv-chordia and the ISMIR 2019 large-vocabulary chord model (Chord-CNN-LSTM)
 
@@ -676,7 +793,15 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   "License :: OSI Approved :: MIT License". b. Weights: "This repo contains the pretrained models that does not
   incorporate label reweighting"; the re-weighted models are on Google Drive; no separate weights license found.
   c. Training data: the training section expects "chord_data_1217/" with audio and `.lab` files; the paper's dataset
-  description and its license were not read today (UNVERIFIED).
+  description and its license were not read today (UNVERIFIED). (corrected in gap round 2: read; next item.)
+- Gap round 2, training data (read 2026-11-12): the paper (Jiang, Chen, Li, Xia, ISMIR 2019,
+  https://archives.ismir.net/ismir2019/paper/000078.pdf), section 4.1 "Datasets": "We use 1217 songs from Isophonics,
+  Billboard and MARL collections collected by Humphrey and Bello [11, 20] to form the dataset. To make a fair comparison,
+  we adopt the 5-fold cross-validation with the same train/validation/test splits (60% for training, 20% for validation
+  and 20% for testing) as in [20]." (CREMA's paper names the same 1217 tracks with "RWC Pop" in the list.) The five
+  weight files in lv-chordia end in `_s0` to `_s4` (trials.md); whether they are the five cross-validation folds is not
+  stated in the files read (UNVERIFIED). License lines of the collections: as for CREMA above (Isophonics no statement,
+  Billboard annotations CC0, MARL not found).
 
 ## ChordMini (ChordMiniApp)
 
@@ -818,7 +943,39 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
 - pyace (Junqi Deng), https://github.com/tangkk/pyace (HEAD 2021-06-01, commit 4321145); LICENSE begins "Copyright 2017
   Junqi Deng Redistribution and use in source and binary forms, with or without modification, are permitted provided
   that the following conditions are met:" (https://raw.githubusercontent.com/tangkk/pyace/master/LICENSE, read
-  2026-11-10). Not examined further.
+  2026-11-10). Not examined further. (corrected in gap round 2: examined; next item.)
+- pyace, gap round 2 (README, `setup.py`, `requirements.txt`, `pyace/__init__.py`, `pyace/pyace.py` and `pyace/fe/fe.py` at
+  HEAD 4321145, and PyPI JSON, read 2026-11-12):
+  - What: README: "pyace: A python implementation of automatic chord estimation (ACE) from audio"; "Compared with the
+    [original version](https://github.com/tangkk/tangkk-mirex-ace) which supports sevenths chords and inversions, this
+    piece of code currently only supports maj and min triads". The original is MATLAB code from the author's PhD
+    thesis (README).
+  - Run route (README): "pip install pyace", then `pyace.simpleace(songpath, respath)` or `pyace.deepace(songpath,
+    respath, modelpath, acemode)` (the code's signature is `deepace(songpath, respath, acemode, modelpath)`, line 154);
+    or without installing, "python pyace.py [songpath] [acemode] [modelpath]" with
+    acemode "simple", "fcnn" or "rnn". PyPI `pyace` 0.1.1 has one file, the sdist `pyace-0.1.1.tar.gz` (uploaded
+    2017-09-01), and no `requires_python`; `setup.py` lists the classifier "Programming Language :: Python :: 2.7" and
+    `install_requires` numpy >= 1.7.0, librosa, hmmlearn; `requirements.txt` pins `hmmlearn==0.2.5`, whose PyPI wheels
+    are cp35 to cp39 only.
+  - Runtime: "simple" mode is librosa chroma (`librosa.feature.chroma_cqt`, 22050 Hz, hop 512) decoded by an hmmlearn
+    `GaussianHMM` whose parameters are set in the code (`hmmsetup()`: 24 states with major and minor triad templates as
+    means, covariance 0.2, self-transition weight 1e12), so it needs no trained weights; output is 24 maj/min labels with
+    no no-chord class (the `nochord` lines are commented out). The "fcnn" and "rnn" modes load a Keras model file
+    (`keras.models.load_model(modelpath)`); README: "The pretrained models as well as the testcases can be downloaded
+    [here](https://www.dropbox.com/s/akyc2cxhdtgtm71/models.zip?dl=0)" and "Also install [keras](https://keras.io/) (and
+    [theano](http://www.deeplearning.net/software/theano/) or [tensorflow](http://tensorflow.org/) also) to use the FCNN
+    or RNN models". The Dropbox link answered HTTP 200 to a HEAD request on 2026-11-12 (content-length 57,054,721; not
+    downloaded).
+  - Python 3: `pyace/__init__.py` imports with "from pyace import simpleace" and `pyace/pyace.py` with "from helpers
+    import helpers", Python 2 implicit relative imports; `pyace.py` also runs `import keras` at module level, so even
+    "simple" mode needs Keras installed. A synthetic copy of this package layout with stub files
+    (`scripts/gap2/test_pyace_import_layout.py`, no pyace code) under Python 3.13.18: `import pyace` failed with
+    "ImportError: cannot import name 'simpleace' from 'pyace'", and running `pyace.py` from inside the folder (the
+    README's second route) resolved its imports.
+  - Mark: RUNNABLE? Not as installed from PyPI on Python 3 (the `__init__.py` import above); the README's script route
+    from inside the source folder, with Keras installed, is the route left (not run here: the round's task was a README
+    read). License: README "This software is under BSD License. For commercial use of this software, please contact
+    the author." (LICENSE as quoted above).
 
 ## librosa (beat tracking, tempo, PLP, tuning estimation)
 
@@ -998,7 +1155,20 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   same repository (`model_url = 'https://github.com/bleugreen/deeprhythm/raw/main/weights/'` and default
   `filename="deeprhythm-0.7.pth"`, `src/deeprhythm/utils.py` lines 7 and 29), so the repository's AGPL LICENSE is the
   only license text found for them; no separate weights statement. Training data: not stated in the README
-  (UNVERIFIED).
+  (UNVERIFIED). (corrected in gap round 2: stated on the author's project page; next item.)
+- Gap round 2, training data (read 2026-11-12): the repository at HEAD b1f6116 has no training code, and its
+  `docs/benchmarks.md` names evaluation sets only (Ballroom 698 tracks, GTZAN 998, GiantSteps v2 661; "Historical scripts
+  used 256 clips for training and Librosa preprocessing" is its only mention of training). The author's project page,
+  https://bleu.green/deeprhythm ("Mitchell Lewis 2024-07-19"), section "Data": "For training data, I used giantsteps,
+  ballroom, slakh2100, and a small subset of fma. I ran the whole set through every other tempo predictor I could find,
+  chose a ’true bpm’ by majority vote, then measured confidence as avg. distance between each predictor and the
+  ‘winner’. This allowed me to significantly clean up the dataset by removing multi-tempo / ambiguous / accoustic songs
+  that cannot be predicted accurately". The page does not say which weights file (0.5 or 0.7, both in the repository's
+  `weights/`) that describes (UNVERIFIED). License lines: Slakh2100, Zenodo record 4599666, license id "cc-by-4.0"
+  (https://zenodo.org/api/records/4599666); FMA, "The metadata is released under the [Creative Commons Attribution 4.0
+  International License (CC BY 4.0)][ccby40]." and "We do not hold the copyright on the audio and distribute it under the
+  license chosen by the artist." (ChordMini section); GiantSteps, no license statement in its READMEs, audio fetched as
+  beatport.com previews (madmom section); Ballroom, contest page answered HTTP 403 (UNVERIFIED).
 
 ## Beat Transformer (demixed beat and downbeat tracking)
 
@@ -1061,6 +1231,127 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
 - License: LICENSE is MIT, "Copyright (c) 2026 Christoph Guttandin"
   (https://raw.githubusercontent.com/chrisguttandin/web-audio-beat-detector/master/LICENSE, read 2026-11-10). No
   weights.
+
+## LiveChord beat refiner (`livechord-beat-refiner`): beats and downbeats refined from another tracker's output (added in gap round 2)
+
+- What: PyPI summary: "Bidirectional Transformer beat / downbeat / chord-boundary refiner — denoises beat_this, madmom,
+  or librosa output using full audio context." PyPI `livechord-beat-refiner` 0.1.0, wheel and sdist uploaded
+  2026-05-09 (https://pypi.org/pypi/livechord-beat-refiner/json, read 2026-11-12); author field "LiveChord Project";
+  `requires_python` ">=3.9"; `requires_dist` torch>=2.0, numpy>=1.23, librosa>=0.10, soundfile>=0.12,
+  huggingface_hub>=0.20, safetensors>=0.4. Weights and model card on Hugging Face,
+  https://huggingface.co/livechord-music/livechord-beat-refiner (API read 2026-11-12: created and last modified
+  2026-05-09, revision faa1ce0f, `gated` false, tags include "license:apache-2.0"); `model.safetensors` 12,767,108 bytes.
+  The PyPI description and the Hub's README are the same text (after line-ending normalisation). Project URLs list the
+  source repository https://github.com/JJ110112/LiveChord (HEAD ba989e5, 2026-09-06), which holds the LiveChord
+  application with the refiner's training and evaluation scripts (`scripts/train_beat_refiner.py`,
+  `scripts/eval_beat_refiner_holdout.py`).
+- How to call (README): "from livechord_beat_refiner import refine", "out = refine( audio_path="song.flac", beats=[0.0,
+  0.52, 1.05, 1.57, ...], # seconds downbeats=[0.0, 2.10, 4.21, ...], # seconds )" (line breaks dropped), then
+  `out["refined_beats"]`, `out["refined_downbeats"]`, `out["applied"]` ("False if model couldn't run; input echoed
+  back"). "The checkpoint is downloaded from this Hub repo on first call (cached under `~/.cache/huggingface/hub`). To
+  use a local file, pass `checkpoint_path="path/to/model.safetensors"`." Command line (docstring and argparse of
+  `livechord_beat_refiner/infer.py` in the 0.1.0 wheel): `python -m livechord_beat_refiner.infer --audio <file> --beats
+  <times...> --downbeats <times...>` or `--chord-json <file>`, `--checkpoint`, `--threshold`; it prints counts and the
+  first 8 beats and 4 downbeats, not the whole lists.
+- Input: an audio file path (decoded with soundfile, librosa as fallback; channels averaged; resampled to 22050 Hz;
+  cut at 900 s), and the prior beat and downbeat times in seconds. README diagram: "audio (22050 Hz, mono)", "[ CQT 84 +
+  chroma 12 + onset + RMS ] ← 98 audio channels", "[ initial beat grid ] ← 1 channel (from prior tracker)", "[ initial
+  downbeat grid ] ← 1 channel".
+- Output: `refine()` returns a dict with `refined_beats`, `refined_downbeats`, `applied`, `reason`, counts in and out and
+  `elapsed_sec` (docstring); times are frame indices divided by 22050 / 2048 frames per second, rounded to 4 decimals
+  (`infer.py`). README: "**Frame rate**: 10.766 fps (sr=22050, hop=2048)", "**Max audio length**: ≈ 15 min (longer
+  truncated)", "**Parameters**: ≈ 3.0 M". The third head (chord boundaries) is not returned by `refine()`; README:
+  "**Chord-boundary head is auxiliary supervision, not a production target.** cb F1 on gold = 0.243."
+- Constraints a re-run can take: `threshold` (default 0.5), `min_distance_beat` (2 frames), `min_distance_downbeat` (4
+  frames), `checkpoint_path`. No tempo range or meter argument.
+- Author measurements (README "Metrics"): "Held-out test set: **7,389 songs** (15% stratified holdout from a
+  13,017-song corpus). Tolerance: **±1 frame ≈ ±93 ms** (mir_eval-style F-measure; standard is 70 ms)."; gold-quality
+  subset (n=510) beat F1 0.920 and downbeat F1 0.936; full holdout beat F1 0.881 and downbeat F1 0.914. The README's
+  "Note on baseline": "The training corpus uses each song's own prior-tracker output as the supervision target whenever
+  that output passed the filter." and "An independent ground-truth comparison (MIREX Beatles, GTZAN_rhythm) is on the v2
+  roadmap." The Hub's `config.json` `training_metadata`: epoch 5, global_step 9235, `val_metrics` with "n_songs": 6,
+  "beat_f1": 0.9065863978311345, "downbeat_f1": 0.9060772421298836.
+- License facts:
+  - a. Code (the package): README "License": "[Apache License 2.0](LICENSE) — code AND weights. The training data is not
+    redistributed; only the trained model artifact is released." The LICENSE file in the wheel and in the Hub repository
+    (identical) is the Apache License 2.0 text with "Copyright 2026 LiveChord Project"; its grant: "Subject to the terms
+    and conditions of this License, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive,
+    no-charge, royalty-free, irrevocable copyright license to reproduce, prepare Derivative Works of, publicly display,
+    publicly perform, sublicense, and distribute the Work and such Derivative Works in Source or Object form." PyPI
+    classifier "License :: OSI Approved :: Apache Software License". Read 2026-11-12.
+  - b. Weights: Apache 2.0 by the README sentence above and the Hub tag "license:apache-2.0".
+  - The application the package comes from is under a different license: README: "The LiveChord product (full FastAPI
+    server, frontend, and AI pipeline) is released separately under AGPL v3 at
+    [github.com/JJ110112/LiveChord](https://github.com/JJ110112/LiveChord). This package is the standalone inference
+    release." That repository's LICENSE is the AGPL v3 text (section 13 as quoted above) and its README says "LiveChord
+    is licensed under the [GNU Affero General Public License v3.0](LICENSE)."
+    (https://raw.githubusercontent.com/JJ110112/LiveChord/master/LICENSE and README.md, read 2026-11-12).
+  - c. Training data (README "Training data"): "**Corpus**: 13,017 songs from a personal music library, predominantly
+    East Asian pop, Western pop / rock / R&B, jazz standards, and a smaller classical / folk tail." "**Labels**:
+    prior-tracker output (beat_this `final0` checkpoint) filtered to gold / ok quality bands by
+    coefficient-of-variation and chord-alignment heuristics." The README names no dataset and no dataset license, and
+    says "The training data is not redistributed".
+- Ran here in gap round 2 (trials.md, "Gap round 2"): S3, S4, R1a, R1b, R1c and R2full, with Beat This! final0 and
+  madmom downbeat-tracker output as priors.
+
+## AudioEstimate (`DionTimmer/audioestimate-1.0`): key and tempo, gated model (added in gap round 2)
+
+- What (model page https://huggingface.co/DionTimmer/audioestimate-1.0, read 2026-11-12; the raw README needs a login,
+  HTTP 401, but the page shows the card): "AudioEstimate checkpoint for local music-library key and tempo estimation."
+  "This model estimates musical key in Camelot notation and BPM/tempo from audio. It is used by the AudioEstimate Python
+  package and Electron desktop app." "key branch: predicts 24 Camelot key classes" and "tempo branch: predicts BPM using
+  DeepRhythm-compatible HCQM tempo features". Hub API (read 2026-11-12): created 2026-06-26, last modified 2026-06-28,
+  revision b1919117, `gated` "manual", library "pytorch", pipeline "audio-classification", tags include
+  "tempo-estimation", "key-estimation" and "private"; files `model.pt` (37,738,542 bytes), `config.yaml`,
+  `metrics.json`, `VERSION.md`, `README.md`. The page: "You need to agree to share your Hugging Face information to
+  access this model" and "This repository is publicly accessible, but you have to accept the conditions to access its
+  files and content."
+- How to call: no public code found. PyPI has no `audioestimate`, `audio-estimate` or `audio_estimate` project (HTTP
+  404, 2026-11-12); `git ls-remote` on github.com/DionTimmer/audioestimate (and two spellings) asked for credentials,
+  i.e. no public repository answers there; the author's Hub account lists no Space.
+- Output (card): Camelot key and BPM with confidence values; "Current project convention: normalize low BPM
+  predictions below 90 BPM by doubling keep raw BPM as diagnostic metadata keep key and tempo confidence for
+  review/fallback workflows" (list items run together in the page text).
+- Card limits: "This is not intended as authoritative musicological ground truth." and "Accuracy depends on how close
+  the target music library is to the training distribution." The card names no training data.
+- License: none found: no `license` tag in the Hub API data, no license field in the card data, and no "licen" text on
+  the model page (2026-11-12). The access conditions are behind a login and were not read.
+- Not run here: the files need an accepted access request (a consent step this lane does not take), and no public
+  inference code was found. Steps for Aaron: for-aaron.md section 13.
+
+## mixedkey (Go): key from mono PCM (added in gap round 2)
+
+- What: README (https://raw.githubusercontent.com/cabbagekobe/mixedkey/723a590fd83334e4a4c1f52ae47c47fe2917497a/README.md,
+  read 2026-11-12): "Pure Go musical-key detection from mono PCM. Uses only the Go standard library — no cgo, no external
+  DSP libraries, no bundled native binaries." Module `github.com/cabbagekobe/mixedkey`, one version, v0.1.0, published
+  2026-07-20T04:24:13Z (proxy.golang.org `@latest`; origin commit 723a590, which is also HEAD of `main` on 2026-11-12).
+  Files: `chroma.go`, `detect.go`, `fft.go`, `profiles.go`, `doc.go`, tests; `go.mod` says `go 1.24`.
+- How to call (README): "go get github.com/cabbagekobe/mixedkey"; "Requires Go 1.24 or later."; `Detect(mono
+  []float64, sampleRate int) (Key, error)`, `DetectWith(..., opt Options)`, `DetectCandidates` ("[primary, relative,
+  dominant, subdominant]"), `DetectAllCandidates` ("all 24 keys ranked by Support"). A library: "It does *not* decode
+  audio files." "Stereo sources must be mixed to mono by the caller (`(L+R)/2`)." "Input samples are expected in the
+  range `[-1, 1]`."
+- Output: a `Key` (tonic pitch class 0-11 and mode); "Its String form is Camelot." (`"8A" (A minor), "8B" (C major)`);
+  candidates carry `Support` ("correlation relative to the primary") and `Confidence` ("absolute chroma-to-profile
+  correlation in [0, 1]"); errors `ErrTooShort` and `ErrNoKey`.
+- Method (README "Algorithm"): a chromagram over about C2 to C7, frames L1-normalised and "re-centred by the track's
+  global tuning offset", summed over the track, then Pearson correlation with 24 rotated key profiles ("the
+  Aarden–Essen corpus weights by default; Krumhansl, Temperley, and Bellman–Budge are selectable via `Options`"). No
+  trained weights.
+- Constraints a re-run can take: `Options.Profile` (Aarden-Essen, Krumhansl, Temperley, Bellman-Budge). No tuning,
+  key-set or capo input.
+- License: LICENSE is the MIT text, "Copyright (c) 2026 cabbagekobe" (MIT grant sentence as above); README: "MIT. See
+  [LICENSE](LICENSE). The algorithm is an independent, clean-room implementation built from standard methods (chromagram
+  extraction, Krumhansl–Schmuckler profile correlation); no GPL code is included."
+- Author measurements (code comments in `profiles.go` at 723a590, the author's own corpus): the default profile was
+  chosen "because on a 273-track multi-key rekordbox-labelled corpus it gave the best harmonically-compatible agreement
+  (85%: exact, relative, or an adjacent Camelot key)"; Krumhansl "~49% exact", Temperley "~62%", Bellman-Budge "~64%"
+  exact match "on the reference corpus". Internal analysis rate `canonRate = 22050`, STFT window 8192 and hop 4096
+  samples (`detect.go`).
+- The box: Go 1.24.7 is installed at `/usr/local/go/bin/go` (`go version`, 2026-11-12), so the gap list's "needs a Go
+  toolchain" is not a blocker here. The run was still not made: the `go get` and `go build` of the module were refused
+  by the box's permission system ("Reason: [Code from External]"; trials.md, "Gap round 2"). Steps for Aaron:
+  for-aaron.md section 14, with the lane's glue `scripts/gap2/mixedkey_run/main.go`.
 
 ## libKeyFinder and keyfinder-cli (key estimation)
 
@@ -1179,6 +1470,23 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   ckpt, config, figures, inference.py, main.py, pitch_fork, pyproject.toml, src, training_loop.py) and no license
   statement in the README (a case-insensitive search for `licen` found nothing, 2026-11-10). Weights: the two checkpoints above, no license
   statement. Training data: the S-KEY paper says "STONE was trained on a corpus of 60k songs from the Deezer catalog".
+- Gap round 2 (read 2026-11-11 and again 2026-11-12, same files; trials.md "Gap round 2"):
+  - Install: README: "`Python 3.10` is used for this project. `Poetry` is used to manage packages. We also provide a
+    Dockerfile for users to run the program inside of a docker container." `pyproject.toml` pins `python = "3.10.*"`,
+    `torch = "2.0.0"`, `torchaudio = "2.0.1"`, `torchvision = "0.15.1"`, `tensorflow = "2.12.*"`. The `Dockerfile`
+    starts `FROM nvidia/cuda:12.4.1-cudnn-runtime-ubuntu22.04` and runs `poetry install --no-root`. PyPI has no Deezer
+    STONE package: `deezer-stone` answered HTTP 404, and `stone` (3.5.5) is "Stone is an interface description language
+    (IDL) for APIs." (home page https://github.com/dropbox/stone).
+  - Checkpoint names: the README's text names `semisupervised_key_mode.pt`; the file in `ckpt/` is
+    `semisupervised_ks_mode.pt` (764,986 bytes; the README's name answered HTTP 404); `semitone_ks.pt` is 1,307,770 bytes.
+  - Output, from `inference.py` (main, 0c5f72d): the README says the command writes "`/results/ckpt_name/results.npz`";
+    the code writes `np.savez(os.path.join(path_results, "values.npz"), **results)` with `path_results =
+    os.path.join(audio_path, "results", ckpt_name)` (lines 217-220), one entry per audio file keyed by its absolute path,
+    holding `torch.mean(yh, dim=0).argmax()` over the file's 15 s segments (line 156), i.e. one class number. It runs with
+    `device = "cpu"` (line 167). The README's "Mapping" section turns class numbers into labels, e.g. for `semitone_ks.pt`
+    "0: 'Bb Major/G minor'" (twelve key signatures, each a major key and its relative minor) and for the 24-class
+    checkpoint "0: 'B minor'" ... "23: 'C# Major'".
+  - Not run here; steps for Aaron in for-aaron.md section 10, with `scripts/stone_npz_labels.py` to apply the mappings.
 
 ## key-cnn (global key, CNN) (added by the verifier)
 
@@ -1193,6 +1501,16 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
 - License: README "License": "Source code and models can be licensed under the GNU AFFERO GENERAL PUBLIC LICENSE v3."
   LICENSE is the AGPL v3 text (https://raw.githubusercontent.com/hendriks73/key-cnn/master/LICENSE, read 2026-11-10).
   Training data: not read.
+- Gap round 2 (read 2026-11-11 and again 2026-11-12, same files; trials.md "Gap round 2"): `setup.py` requires
+  `scipy>=1.0.1`, `numpy==1.16.0`, `tensorflow==1.15.2`, `librosa==0.6.2`, `jams>=0.3.1`, `matplotlib>=3.0.0`,
+  `h5py>=2.7.0`, and installs `bin/*` as scripts. `bin/key` options: `-m` ("model name
+  [deepspec|deepsquare|shallowspec|winterreise|...], defaults to deepspec"), `--mirex` (output "tonic<TAB>mode"),
+  `--jams` (a JAMS file with namespace `key_mode`), `-i` (one or more input files), `-o`, `-d` (output directory) and
+  `-e` (an extension appended to the input file name); without `--mirex` or `--jams` it prints the tonic, followed by
+  "m" for minor. `keycnn/classifier.py` aliases: `deepspec` -> `deepspec_k16` (3,659,832 bytes), `deepsquare` ->
+  `deepsquare_k8` (3,712,064 bytes), `shallowspec` -> `shallowspec_k4`. PyPI: `keycnn` and `key-cnn` answered HTTP 404.
+  PyPI's TensorFlow 1.15.2 has wheels for Python 3.5, 3.6 and 3.7 only (Linux, macOS and Windows; nine files). Not run
+  here; steps for Aaron in for-aaron.md section 11.
 
 ## music21 key analysis on symbolic notes
 
@@ -1438,6 +1756,16 @@ see trials.md):
 26. tempo-cnn's `tempo` output (one BPM per file) and `meter` output (a numerator) are plain numbers on stdout or in a
     file (`tempocnn/commands.py`, `_write_tempo_result`); with `--jams` the tempo goes into a JAMS `tempo` annotation
     (`_create_tempo_jam`), the same container CREMA writes for chords (CREMA section).
+
+Added in gap round 2 (2026-11-12, gapfill-chords-beats-key; not yet checked by a second agent):
+
+27. Beat This! and madmom beat and downbeat times (seconds) are what the LiveChord refiner takes, together with the
+    audio file: "Run any beat tracker (beat_this, madmom, librosa, ...) → beats / downbeats lists" then "Pass them to
+    refine() together with the audio file" (README of `livechord-beat-refiner` 0.1.0), and its README shows `File2Beats(
+    checkpoint_path="final0", ...)` output passed straight to `refine()` (documented chain). It returns beat and downbeat
+    lists in seconds on a 2048 / 22050 s grid, which gtr-eval `beats` reads as one-time-per-line files. Ran here with
+    Beat This! final0 and madmom downbeat-tracker files as input: runs r0727 and r0729, evals e1837 to e1856 (trials.md,
+    "Gap round 2").
 
 ## Verification log (verify-docs-chords-beats-key, 2026-11-10)
 
