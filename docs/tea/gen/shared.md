@@ -7,6 +7,30 @@ each picture was made (every generation request, kept or rejected, is at the foo
 shared system can be built against real pictures. Their names, their alpha and the way they are drawn will not
 change. Their pixels will: each is replaced by a final version, and this file then says so.
 
+The generation log is the last section. Every request is there, kept or rejected.
+
+## What a `4k` generation is worth (measured, 2026-11-12)
+
+The same prompt (the screen plate, below as S1 and S2) was sent twice to Higgsfield `generate_image`, model id
+`nano_banana_pro`, aspect 4:5, once at `4k` and once at `2k`, with the same two references. **Size:** `2k`
+returned 1856 x 2304 and `4k` returned 3712 x 4608, exactly twice each way (so 16:9 is 2752 x 1536 at `2k` and
+5504 x 3072 at `4k`). **Cost:** 2 credits at `2k`, 4 credits at `4k` (the balance went from 530.37 to 524.37 for
+the pair). **Sharpness**, as the width in pixels over which an ink line's edge goes from 10% to 90% of its step
+(median over every strong edge on rows and columns 7 px apart; `edges.py` in the painter's working folder): the
+garden plate 1.54 to 1.60 px, the `2k` result 1.50 px, the `4k` result 2.04 px (quartiles 1.87 and 2.14), and
+the `2k` result enlarged twice by Lanczos 2.74 px. So `4k` is **not** the `2k` picture enlarged: it holds real
+extra detail, about one and a half times the `2k` picture's detail each way, not twice. Pixel for pixel it is a
+little softer than the garden plate. Reduced to 75% (2784 x 3456, or 4128 x 2304 for 16:9) its edge measures
+1.53 px, the garden plate's own. Looked at 100% beside the garden plate, that is what the eye says too: the
+`2k` line is as crisp as the plate's, the `4k` line is a touch soft at full size and crisp at three quarters.
+
+**Ruling for every later painter.** Make masters at `4k`. Treat a `4k` master as a picture whose honest size is
+75% of its pixels: 4128 x 2304 for 16:9, 2304 x 4128 for 9:16. Write plates from it at that size or smaller,
+never at its full 5504 px. That covers both widths `plates.mjs` writes without the upscaler. A `4k` request
+costs twice a `2k` one, and two requests never return the same picture, so a composition cannot be settled at
+`2k` and then made again at `4k`: ask at `4k` from the first try for any plate the camera pushes into, and at
+`2k` only for a plate that will never be drawn above 2752 px.
+
 ## The files
 
 | File | Pixels | Alpha | What it is |
@@ -96,3 +120,38 @@ No generation. All three by script from files already in the repo.
   paper was found by its colour and replaced by see-through plum, keeping each pane's own shading and dropping
   the light that was painted across the whole plate.
 - `sheet-shadow.webp`: drawn. Two blurred squares, one wide and soft, one tight and dark.
+
+## Generation log
+
+Tool: Higgsfield `generate_image`, model id `nano_banana_pro` (the job reports its engine as `nano_banana_2`).
+References on every request, role `image_references`: (1) the garden plate `public/tea/hero/bg-far-night.webp`
+scaled to 2048 x 1152, as the style reference, and (2) a crop of the same plate round the house, enlarged
+twice, to show the line. No name and no site name is in any prompt.
+
+| # | For | Size asked | Returned | Credits | Kept |
+|---|---|---|---|---|---|
+| S1 | the screen plate, and the `4k` measurement | 4:5, `4k` | 3712 x 4608 | 4 | see the screen's section |
+| S2 | the same prompt, for the measurement | 4:5, `2k` | 1856 x 2304 | 2 | measurement only |
+
+### S1 and S2: the screen (jobs `7602002a-178b-4b1e-a751-a91128bd806f` and `2be226db-1603-4c3c-b77e-5cfbb2db6bae`)
+
+> Use the two attached pictures only as the STYLE reference (look at the lit paper windows of the house in them)
+> and paint a new picture in exactly the same hand: flat gouache colour shapes, an uneven hand-drawn dark ink
+> outline of the same weight around every shape, soft shading inside the shapes, clean and simple like a 2D
+> animation background. Not photorealistic, no texture noise, not a 3D render.
+>
+> Subject: ONE single Japanese shoji sliding screen, seen perfectly flat and frontal like an architectural
+> elevation, filling the whole upright picture exactly from edge to edge: its dark cedar outer frame runs along
+> all four edges of the picture. Inside the frame, a regular grid lattice of thin dark cedar bars over paper:
+> five columns and seven rows of panes, all the same size, each pane a little wider than it is tall. Below the
+> lattice, the bottom seventh of the screen is one plain dark cedar board. The paper in every pane is plain, pale
+> warm cream paper, evenly and softly lit from behind, with only a faint soft shadow along the top and left
+> inside edge of each pane. The cedar is dark warm brown with plum in its shadows. No perspective, no floor, no
+> wall, no room, no shadow shapes on the paper, nothing else in the picture: only the one flat screen.
+>
+> No people, no animals, no characters, no silhouettes, no text, no lettering, no signature, no watermark, no
+> border.
+
+Both came back in the garden's hand: flat cedar, one dark uneven outline, soft shade inside each pane. Both drew
+five panes across and six down, not seven. S1 (`4k`) left a white margin round the screen. S2 (`2k`) drew a
+second frame outside the screen.
