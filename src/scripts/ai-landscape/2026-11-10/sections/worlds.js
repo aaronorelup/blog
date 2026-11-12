@@ -34,11 +34,18 @@ export function create(ctx, el, sec) {
   const hero = new Vector3(...HOURS.hero);
   const point = new Vector3();
 
-  const st = { door: agentDoor, calls: null, cores: null, cardPin: null, pushed: -1, pushK: 0, hover: -1, beat: '', sig: null, sigAsked: false, played: false, u: 0, open: 0, rect: null, chrome: '' };
+  const st = { door: agentDoor, calls: null, cores: null, cardPin: null, pushed: -1, pushK: 0, hover: -1, beat: '', sig: null, sigAsked: false, played: false, stilled: false, caught: false, u: 0, open: 0, rect: null, chrome: '' };
   const leaves = prims.doors(tower, doors.length, { side: 0 });
   leaves.show = 0; leaves.update();
   inst.setName(nameEl.textContent.trim());
-  const measure = () => { st.rect = nameEl.getBoundingClientRect(); };
+  // the box of the name's letters, not of its h2: a grid item is as wide as its column, whatever its word is
+  const letters = document.createRange();
+  const measure = () => {
+    letters.selectNodeContents(nameEl);
+    const ink = letters.getBoundingClientRect();
+    const box = nameEl.getBoundingClientRect();
+    st.rect = { left: ink.left, width: ink.width, top: box.top, height: box.height };
+  };
   const onResize = () => { st.rect = null; };
   window.addEventListener('resize', onResize);
 
@@ -120,7 +127,8 @@ export function create(ctx, el, sec) {
   ctx.canvas.addEventListener('click', onCanvas);
 
   // ---- the signature: loaded when the world is entered, plays once by itself, then waits for the visitor
-  const api = { id, cfg, el, tower, inst, data, sec, ui: $('.ail-sig', el), calls: () => st.calls, button: (act) => $(`.ail-sig [data-act="${act}"]`, el), items: (k) => $$(`.ail-sig__list[data-list="${k}"] .ail-sig__item`, el) };
+  const api = { id, cfg, el, tower, inst, data, sec, ui: $('.ail-sig', el), calls: () => st.calls, button: (act) => $(`.ail-sig [data-act="${act}"]`, el),
+    items: (k) => $$(`.ail-sig__list[data-list="${k}"] .ail-sig__item`, el), catchItems: () => $$('.ail-catch__item', el) };
   function askSignature() {
     if (st.sigAsked) return;
     st.sigAsked = true;
@@ -143,7 +151,8 @@ export function create(ctx, el, sec) {
       setChrome('light'); closePush(); toggle(caption, false);
       leaves.show = 0; leaves.update();
       if (st.cores) { st.cores.show = 0; st.cores.update(); }
-      if (st.sig) st.sig.reset();
+      if (st.sig) { st.sig.reset(); if (st.caught && st.sig.catch) st.sig.catch(0); }
+      st.stilled = false; st.caught = false;
       if (st.calls) st.calls.update(0);
       st.beat = ''; delete el.dataset.beatNow;
       $$('[data-beat]', el).forEach((n) => n.classList.remove('is-on'));
@@ -153,7 +162,7 @@ export function create(ctx, el, sec) {
       st.u = u;
       const beat = BEATS.find(([, end]) => u < end)[0];
       if (beat !== st.beat) {
-        if (st.beat === 'c' && st.sig) st.sig.reset();
+        if (st.beat === 'c') { if (st.sig) st.sig.reset(); st.stilled = false; }
         if (beat !== 'b' && st.door !== agentDoor) select(agentDoor, true);
         if (beat !== 'b') closePush();
         st.beat = beat;
@@ -229,7 +238,8 @@ export function create(ctx, el, sec) {
       let dark = false;
       if (sig) {
         if (beat === 'c' && !st.played && !ctx.reduced && u > 1.62 && u < 2.4 && Math.abs(ctx.clock.target - ctx.clock.s) < 0.02) { st.played = true; sig.play(); }
-        if (beat === 'c' && ctx.reduced && !st.played) { st.played = true; if (sig.still) sig.still(); }
+        // reduced motion: the end state, set again on every visit, because leaving the beat resets the signature
+        if (beat === 'c' && ctx.reduced && !st.stilled) { st.stilled = true; if (sig.still) sig.still(); }
         if (sig.update) sig.update(dt, inC);
         dark = !!sig.dark && beat === 'c';
       }
@@ -239,8 +249,9 @@ export function create(ctx, el, sec) {
       if (out > 0.001) {
         tower.floors[catchFloor].slide = out * (ctx.phone ? 0.55 : 0.95);
         tower.floors[catchFloor].lit = Math.max(tower.floors[catchFloor].lit, out * 0.18);
-        if (sig && sig.catch) sig.catch(out);
       }
+      // the signature dresses the catch while the floor is out, then hears one 0 so it can clear what it showed
+      if (sig && sig.catch && (out > 0.001 || st.caught)) { st.caught = out > 0.001; sig.catch(st.caught ? out : 0); }
       setChrome(dark || (open > 0.5 && cfg.theme.chrome === 'dark') ? 'dark' : 'light', dark);
     },
     dispose() {

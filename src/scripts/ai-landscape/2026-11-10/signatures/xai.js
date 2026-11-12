@@ -43,7 +43,7 @@ export function create(ctx, world) {
   const pickPin = ctx.phone ? null : names.map((node, k) => labels.pin(node, () => tower.anchor(MODEL, -1, labels.project), { dx: -14, ax: 1, ay: 0.5 }));
   const go = world.button('go');
   const darkBtn = world.button('dark');
-  const st = { t: -1, auto: false, press: 0, picked: -1, darkWant: 0, dark: 0, glow: 0, floor: -1, step: 0 };
+  const st = { t: -1, auto: false, press: 0, picked: -1, lit: -1, darkWant: 0, dark: 0, glow: 0, floor: -1, step: 0 };
   const sig = { lit: -1, dark: false };
 
   function start(auto) {
@@ -57,16 +57,21 @@ export function create(ctx, world) {
     if (darkBtn) darkBtn.setAttribute('aria-pressed', String(on));
   }
   const onGo = () => { if (ctx.reduced) sig.step(); else start(false); };
-  const onDark = () => setDark(!st.darkWant);
+  const onDark = () => {
+    st.auto = false;                                                          // the switch is the visitor's from here on
+    setDark(!st.darkWant);
+    if (st.darkWant && st.t < 0 && !ctx.reduced) start(false);                // nothing sent yet: send one, so a pick can light the room
+  };
   if (go) go.addEventListener('click', onGo);
   if (darkBtn) { darkBtn.addEventListener('click', onDark); darkBtn.setAttribute('aria-pressed', 'false'); }
 
   sig.play = () => start(true);
   // Reduced motion: no flight. Each press of the button walks one stop: floor 1, the router, the model, the pick, the hand-off.
   sig.step = () => { st.step = (st.step % 5) + 1; st.t = [0, DROP, DROP * 3, AT_MODEL + 0.6, AT_HANDS + 2.2][st.step - 1]; st.auto = false; if (st.step === 1) { st.picked = order[st.press % Math.max(1, order.length)] ?? -1; st.press++; } };
-  sig.still = () => { st.step = 4; st.picked = order[0] ?? -1; st.press = 1; st.t = AT_HANDS + 2.2; };
+  // the end state is the fifth stop, so the first press of the button walks on to stop one of the next task
+  sig.still = () => { st.step = 5; st.picked = order[0] ?? -1; st.press = 1; st.t = AT_HANDS + 2.2; };
   sig.reset = () => {
-    st.t = -1; st.picked = -1; st.dark = 0; st.glow = 0; st.step = 0; sig.lit = -1; sig.dark = false;
+    st.t = -1; st.picked = -1; st.lit = -1; st.auto = false; st.dark = 0; st.glow = 0; st.step = 0; sig.lit = -1; sig.dark = false;
     setDark(false);
     names.concat(handNames).forEach((n) => { n.classList.remove('is-on'); n.removeAttribute('data-picked'); });
     sats.forEach((s) => { s.arc.draw = 0; s.arc.update(); });
@@ -97,17 +102,22 @@ export function create(ctx, world) {
 
     // the pick: one released core glows, and its name stands beside the floor
     const picking = playing && t >= AT_MODEL && st.picked >= 0;
+    if (picking) st.lit = st.picked;                                 // whose light it is: only ever a pick that has been shown
     cores.items.forEach((c, k) => { c.active += ((picking && k === st.picked ? 1 : 0) - c.active) * (1 - Math.exp(-5 * dt)); });
     names.forEach((n, k) => { const on = picking && k === st.picked && amount > 0.5; n.classList.toggle('is-on', on); n.toggleAttribute('data-picked', on); });
     if (picking && st.said !== st.press && names[st.picked]) { st.said = st.press; announce(names[st.picked].textContent.trim()); }      // the live region names the pick
 
     // lights out: the lamp is cut by a falloff that sweeps the room in 0.6 s, then the owner's colour blooms from
-    // the model floor, radius 0 to 14 in 0.9 s. The play-through does it once by itself
-    if (st.auto && playing) { if (t > AT_MODEL + 0.5 && t < AT_HANDS + 3.2) st.darkWant = 1; else if (t >= AT_HANDS + 3.2 && st.darkWant) setDark(false); if (darkBtn) darkBtn.setAttribute('aria-pressed', String(!!st.darkWant)); }
+    // the model floor, radius 0 to 14 in 0.9 s. The play-through does it once by itself, then hands the switch over
+    if (st.auto && playing) {
+      if (t > AT_MODEL + 0.5 && t < AT_HANDS + 3.2) st.darkWant = 1; else if (t >= AT_HANDS + 3.2) { st.auto = false; st.darkWant = 0; }
+      if (darkBtn) darkBtn.setAttribute('aria-pressed', String(!!st.darkWant));
+    }
     const quick = ctx.reduced ? 1000 : 1;
     st.dark = Math.max(0, Math.min(1, st.dark + (st.darkWant ? dt / 0.6 : -dt / 0.45) * quick));
-    st.glow = Math.max(0, Math.min(1, st.glow + (st.darkWant && st.dark > 0.4 ? dt / 0.9 : -dt / 0.3) * quick));
-    const who = owner(st.picked >= 0 ? parts[st.picked][0] : world.id);
+    // the colour blooms only from a pick on show: a task sent in the dark draws it back in until its own pick is made
+    st.glow = Math.max(0, Math.min(1, st.glow + (st.darkWant && st.dark > 0.4 && picking ? dt / 0.9 : -dt / 0.3) * quick));
+    const who = owner(st.lit >= 0 ? parts[st.lit][0] : world.id);
     studio.dark = st.dark * amount;
     studio.glow.amount = amount; studio.glow.radius = 14 * smooth(st.glow);
     studio.glow.color.set(who.glow);

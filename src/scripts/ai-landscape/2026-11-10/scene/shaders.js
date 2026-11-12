@@ -270,10 +270,10 @@ void main() {
 export const orbFrag = /* glsl */ `${COMMON}
 uniform vec3 uLook; uniform vec3 uLight; uniform vec3 uBody; uniform float uBlink; uniform float uSide;
 varying vec3 vN; varying vec3 vW; varying vec3 vL;
-float slit(vec2 q, float len) {
+float slit(vec2 q, float len) {      // the distance to an eye slit of half length len
   q = vec2(q.x * 0.993 + q.y * 0.12, q.y * 0.993 - q.x * 0.12);
   q.y = max(abs(q.y) - len, 0.0);
-  return 1.0 - smoothstep(0.046, 0.058, length(q));
+  return length(q);
 }
 void main() {
   float band;
@@ -283,16 +283,20 @@ void main() {
   vec3 V = normalize(cameraPosition - vW);
   float fres = pow(1.0 - clamp(dot(N, V), 0.0, 1.0), 2.6);
   vec3 R = reflect(-V, N);
-  float key = smoothstep(0.9, 0.992, dot(R, normalize(uLight + vec3(-0.25, 0.5, 0.35))));
-  float soft = smoothstep(0.3, 1.0, dot(R, normalize(uLight))) * 0.06;
-  float strip = (1.0 - smoothstep(0.0, 0.07, abs(R.y - 0.5 + R.x * 0.25))) * smoothstep(0.1, 0.7, -R.x) * 0.2;
-  vec3 col = uBody + vec3(1.0) * (key * 0.9 + soft + strip + fres * 0.34);
   vec3 f = normalize(uLook);
   vec3 r = normalize(cross(vec3(0.0, 1.0, 0.0), f));
   vec3 u = cross(f, r);
   vec3 n = normalize(vL);
   vec2 p = vec2(dot(n, r), dot(n, u));
-  float eyes = (slit(p - vec2(-0.2, 0.1), 0.115 * uBlink) + slit(p - vec2(0.2, 0.1), 0.115 * uBlink)) * step(0.0, dot(n, f));
+  float front = step(0.0, dot(n, f));
+  float d = min(slit(p - vec2(-0.2, 0.1), 0.115 * uBlink), slit(p - vec2(0.2, 0.1), 0.115 * uBlink));
+  float eyes = (1.0 - smoothstep(0.046, 0.058, d)) * front;
+  // the gloss sits high on the sphere and keeps off the eyes wherever they look: white on white reads as a smudge
+  float clear = mix(1.0, smoothstep(0.07, 0.2, d), front);
+  float key = smoothstep(0.95, 0.995, dot(R, normalize(uLight + vec3(-0.35, 1.5, 0.0)))) * clear;
+  float soft = smoothstep(0.3, 1.0, dot(R, normalize(uLight))) * 0.06;
+  float strip = (1.0 - smoothstep(0.0, 0.07, abs(R.y - 0.5 + R.x * 0.25))) * smoothstep(0.1, 0.7, -R.x) * 0.2 * clear;
+  vec3 col = uBody + vec3(1.0) * (key * 0.9 + soft + strip + fres * 0.34);
   col = mix(col, vec3(0.97), clamp(eyes, 0.0, 1.0));
   float dk = darkAt(vW);
   vec3 night = vec3(0.004) + vec3(1.0) * fres * 0.85 + glowAt(vW) * (0.02 + fres * 0.5) + vec3(0.97) * clamp(eyes, 0.0, 1.0);

@@ -1,7 +1,7 @@
 ---
 // One company's world as HTML (SPEC 2.4, 7.3). Without JavaScript this is the text version: name, mark,
-// picture, nine rows, products, the signature as short lists, the catch. In the 3D page the same elements
-// are the words of the four beats (data-beat), placed by sections/worlds.js. Every word is data or COPY.
+// picture, nine rows, products, the signature as short lists, the catch and its pieces. In the 3D page the same
+// elements are the words of the four beats (data-beat), placed by sections/worlds.js. Every word is data or COPY.
 import Fact from './Fact.astro';
 import Glyph from './Glyph.astro';
 import Mark from './Mark.astro';
@@ -12,7 +12,9 @@ import { world } from '../../../scripts/ai-landscape/2026-11-10/worlds/index.js'
 const { p } = Astro.props;
 const cfg = world(p.id);
 const sig = COPY.signature[cfg.signature] || {};
-const myth = p.myths.find((m) => m.id === cfg.myth) || p.myths[0];
+// the myth beat c answers: the id a world file names (a wrong id fails the build), or the first when it names none
+const myth = cfg.myth ? p.myths.find((m) => m.id === cfg.myth) : p.myths[0];
+if (!myth) throw new Error(`ai-landscape: worlds/${p.id}.js asks for the myth "${cfg.myth}". The data holds: ${p.myths.map((m) => m.id).join(', ')}`);
 const others = p.myths.filter((m) => m !== myth);
 const markName = cfg.marks.of === 'name' ? p.name : p.brand;
 ---
@@ -34,7 +36,7 @@ const markName = cfg.marks.of === 'name' ? p.name : p.brand;
         <img class="ail-world__portrait" src={cfg.art.portrait} alt={cfg.alt.portrait} width="600" height="800" loading="lazy" decoding="async" />
       )}
     </figure>
-    {cfg.portrait && cfg.art.portrait && <p class="ail-world__caption ail-label">{cfg.alt.portrait}</p>}
+    {cfg.portrait && cfg.art.portrait && cfg.alt.person && <p class="ail-world__caption ail-label">{cfg.alt.person}</p>}
 
     <div class="ail-world__intro" data-beat="a">
       <p class="ail-known"><span class="ail-label">{COPY.world.knownFor}</span> <span class="ail-sentence"><Fact fact={p.signature.fact} full tag={false}>{p.signature.line}</Fact></span></p>
@@ -92,6 +94,18 @@ const markName = cfg.marks.of === 'name' ? p.name : p.brand;
 
     <div class="ail-catch" data-beat="d">
       <p class="ail-catch__line"><span class="ail-label">{COPY.world.catch}</span> <span class="ail-sentence"><Fact fact={p.tension.fact} full tag={false}>{p.tension.line}</Fact></span></p>
+      {p.catch.length > 0 && (
+        <ul class="ail-catch__list">
+          {p.catch.map((it, n) => (
+            <li class="ail-catch__item" data-n={n} data-kind={it.kind} data-until={it.until}>
+              {it.was && <s class="ail-catch__was">{it.was}</s>}
+              <span class="ail-own" data-owner={p.id}>{it.fact ? <Fact fact={it.fact} full tag={false}>{it.text}</Fact> : it.text}</span>
+              {it.until && <time class="ail-catch__until ail-label" datetime={it.until}>{it.until}</time>}
+              {it.note && <span class="ail-note">{it.note}</span>}{it.tag && <span class="ail-tag">{it.tag}</span>}
+            </li>
+          ))}
+        </ul>
+      )}
       <div class="ail-flags">
         <p class="ail-label">{COPY.world.peopleSay} <span class="ail-flags__more">{others.length} {COPY.world.more}</span></p>
         <ul>

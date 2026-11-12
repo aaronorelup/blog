@@ -13,6 +13,7 @@ export default {
     plate: 'A white paper hangar at dawn: a rocket and gantry through the door, black server racks, a shelf of coloured discs with eye slits.',
     hero: 'A glossy black sphere with two white eye slits, cut from paper.',
     portrait: 'Cut-paper illustration of Elon Musk',
+    person: 'Elon Musk',                                        // the caption a tap on the portrait shows: the name only
   },
   character: { kind: 'orb3d', floor: 3, size: 1.0 },            // a real sphere whose eyes follow the pointer
   backdrop: { y: -3.8, turn: 0 },

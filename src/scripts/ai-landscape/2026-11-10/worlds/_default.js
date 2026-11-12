@@ -8,9 +8,10 @@ const ROOT = '../../../../assets/ai-landscape/2026-11-10';
 export const HOUSE = { paper: '#E6E8ED', floor: '#F8F9FB', ink: '#0C0D10', ink2: '#4A4E57', mid: '#8C929C', line: '#C9CDD5', night: '#050608' };
 
 // One picture of a world, or null: art('xai', 'plate'). Names: plate, plate-s, hero, prop-1..3, fore, portrait.
-export const art = (id, name) => ART[`${ROOT}/art/${id}/${name}.webp`] || null;
+const bare = (name) => String(name).replace(/\.(webp|svg|png)$/, '');        // 'grok-mark' and 'grok-mark.svg' both find the file
+export const art = (id, name) => ART[`${ROOT}/art/${id}/${bare(name)}.webp`] || null;
 // One official mark file, or null: mark('xai', 'grok-mark'). A world with no file gets its name set in type.
-export const mark = (id, name) => MARKS[`${ROOT}/marks/${id}/${name}.svg`] || MARKS[`${ROOT}/marks/${id}/${name}.png`] || null;
+export const mark = (id, name) => MARKS[`${ROOT}/marks/${id}/${bare(name)}.svg`] || MARKS[`${ROOT}/marks/${id}/${bare(name)}.png`] || null;
 // Every picture of one world, with null for a piece that was left out.
 export const artOf = (id) => ({
   plate: art(id, 'plate'), plateSmall: art(id, 'plate-s'), hero: art(id, 'hero'),
@@ -43,7 +44,7 @@ export function defaults(id) {
     hour: { lamp: [-0.34, 0.8, -0.5], warmth: 0 },
     marks: { lid: mark(id, lid), of, plate: 'white', clear },
     art: artOf(id),
-    alt: { plate: 'A paper stage set for this company.', hero: 'The character of its personal agent, as a paper cut-out.', portrait: 'A framed cut-paper portrait.' },
+    alt: { plate: 'A paper stage set for this company.', hero: 'The character of its personal agent, as a paper cut-out.', portrait: 'A framed cut-paper portrait.', person: null },
     character: { kind: 'sprite', floor: 3, size: 1.1 },
     backdrop: { y: -3.8, turn: 0 },
     props: [{ file: 1, z: -9, x: 11, y: 2.2, w: 2.4 }, { file: 2, z: -6, x: -4.3, y: 1.5, w: 1.8 }, { file: 3, z: -3.5, x: 7.5, y: 0.9, w: 2.6 }],

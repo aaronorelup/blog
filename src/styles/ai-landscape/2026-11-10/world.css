@@ -6,7 +6,8 @@
 .ail-kicker { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; padding-bottom: 7px; border-bottom: 2px solid var(--w-line, var(--ail-ink-2)); justify-self: start; }
 .ail-kicker span + span::before { content: '/'; margin-right: 12px; color: var(--ail-fg-2); }
 .ail-kicker__note { color: var(--ail-fg-2); }
-.ail-world__name { grid-column: 1 / -1; font-size: clamp(64px, 11vw, 150px); }
+/* justify-self: the h2 is as wide as its word, not as its grid column (the 3D name is laid over its letters) */
+.ail-world__name { grid-column: 1 / -1; justify-self: start; font-size: clamp(64px, 11vw, 150px); }
 
 /* a mark on its plate: paper white or ink, facing the screen, with its clear space. Never tilted or tinted */
 .ail-mark { --h: 26px; display: inline-grid; place-items: center; padding: calc(var(--h) * .5); background: #FFFFFF; box-shadow: 0 0 0 1px var(--ail-line); line-height: 0; }
@@ -52,8 +53,12 @@
 .ail-sig__list ul[data-ordered] { counter-reset: step; }
 .ail-sig__list ul[data-ordered] li { counter-increment: step; }
 .ail-sig__list ul[data-ordered] li::before { content: counter(step) '. '; font: 400 var(--ail-fs-label)/1 var(--ail-mono); }
-.ail-sig__item .ail-own { text-transform: none; font: inherit; letter-spacing: 0; display: inline; }
-.ail-sig__item .ail-own::before { display: inline-block; margin-right: .5em; transform: translateY(-1px); }
+.ail-sig__item .ail-own, .ail-catch__item .ail-own { text-transform: none; font: inherit; letter-spacing: 0; display: inline; }
+.ail-sig__item .ail-own::before, .ail-catch__item .ail-own::before { display: inline-block; margin-right: .5em; transform: translateY(-1px); }
+/* the pieces of the catch: an empty socket, a locked drawer, a plate that was renamed, shut down or about to expire */
+.ail-catch__list { display: grid; gap: 5px; }
+.ail-catch__was { margin-right: .5em; }
+.ail-catch__until { margin-left: .7em; color: var(--ail-fg-2); }
 .ail-flags { margin-top: 10px; }
 .ail-flags ul { display: grid; gap: 2px; margin-top: 6px; }
 .ail-flag summary { display: flex; align-items: center; gap: 10px; min-height: 44px; }
@@ -80,14 +85,16 @@
 .ail-gl .ail-myth { font-size: clamp(20px, 1.7vw, 26px); line-height: 1.14; }
 .ail-gl .ail-sig__lists { display: block; margin: 0; }
 .ail-gl .ail-sig__list h3 { display: none; }
-.ail-gl .ail-sig__item { position: fixed; left: 0; top: 0; z-index: 3; padding: 4px 8px 5px; background: var(--w-scrim); white-space: nowrap; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 300ms var(--ail-ease); font-size: 17px; }
-.ail-gl .ail-sig__item.is-on { opacity: 1; visibility: visible; }
-.ail-gl .ail-sig__item .ail-note { display: none; }
-.ail-gl .ail-sig__item .ail-tag { font-size: 10px; }
+/* a signature's words and the catch's pieces wait unseen until their signature pins one and gives it is-on */
+.ail-gl .ail-catch__list { position: absolute; }
+.ail-gl .ail-sig__item, .ail-gl .ail-catch__item { position: fixed; left: 0; top: 0; z-index: 3; padding: 4px 8px 5px; background: var(--w-scrim); white-space: nowrap; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 300ms var(--ail-ease); font-size: 17px; }
+.ail-gl .ail-sig__item.is-on, .ail-gl .ail-catch__item.is-on { opacity: 1; visibility: visible; }
+.ail-gl .ail-sig__item .ail-note, .ail-gl .ail-catch__item .ail-note { display: none; }
+.ail-gl .ail-sig__item .ail-tag, .ail-gl .ail-catch__item .ail-tag { font-size: 10px; }
 
 /* doors: a short row of tiles above the callouts. A closed door shows its glyph, and its name on hover */
 .ail-gl .ail-doors[data-beat] { position: fixed; left: 0; top: 0; z-index: 4; display: flex; gap: 4px; margin: 0; transform: none; }
-.ail-gl .ail-door { border: 0; }
+.ail-gl .ail-door { border: 0; flex: none; }          /* a tab keeps its width: the row scrolls, it never squeezes a name */
 .ail-gl .ail-world:not([data-beat-now='b']) .ail-door__tab { opacity: 0; visibility: hidden; pointer-events: none; }
 .ail-gl .ail-door__tab { position: relative; min-height: 34px; min-width: 34px; padding: 0 8px; justify-content: center; background: var(--w-scrim); box-shadow: inset 0 0 0 1px var(--ail-hair); transition: background-color 150ms, color 150ms, opacity var(--ail-t) var(--ail-ease); }
 .ail-gl .ail-door__tab .ail-glyph { width: 16px; height: 16px; }
@@ -122,10 +129,13 @@
   .ail-gl .ail-door[open] > .ail-stack { position: fixed; left: var(--ail-margin); right: var(--ail-margin); top: calc(55svh + 50px); }
   .ail-gl .ail-door > .ail-card { left: var(--ail-margin); right: var(--ail-margin); top: calc(55svh + 50px); width: auto; transform: none !important; }
   .ail-gl .ail-myth { font-size: 18px; }
-  .ail-gl .ail-sig__lists { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+  /* each list keeps its own width and height in the sheet: one that does not fit beside the last starts a new line */
+  .ail-gl .ail-sig__lists { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 4px 14px; }
   .ail-gl .ail-sig__list { display: contents; }
-  .ail-gl .ail-sig__item { position: static; display: none; padding: 0; background: none; font-size: 15px; transform: none !important; }
-  .ail-gl .ail-sig__item.is-on { display: block; }
+  .ail-gl .ail-sig__list ul { flex: none; max-width: 100%; justify-items: start; }
+  .ail-gl .ail-catch__list { display: contents; }
+  .ail-gl .ail-sig__item, .ail-gl .ail-catch__item { position: static; display: none; padding: 0; background: none; font-size: 15px; white-space: normal; justify-self: start; transform: none !important; }
+  .ail-gl .ail-sig__item.is-on, .ail-gl .ail-catch__item.is-on { display: block; }
   .ail-gl .ail-door__tab { min-height: 44px; min-width: 44px; }
   .ail-gl .ail-world[data-beat-now='b'] .ail-doors, .ail-gl .ail-world[data-beat-now='b'] .ail-stack { opacity: 1; }
   .ail-gl .ail-world:not([data-beat-now='b']) .ail-door > .ail-stack, .ail-gl .ail-world:not([data-beat-now='b']) .ail-door > .ail-card { display: none; }

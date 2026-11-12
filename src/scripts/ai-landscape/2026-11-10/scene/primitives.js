@@ -1,7 +1,7 @@
 // The small glass and line pieces the five signature moments share (SPEC 2.4, 2.5, 3.4): doors on floor 1,
 // cores inside a floor, sockets, lamps, arcs between floors, and a gate. Each call returns an object with the
 // fields a signature sets, an update() it calls every frame, and a dispose(). All of them ride their tower.
-import { AdditiveBlending, BoxGeometry, BufferGeometry, Color, Float32BufferAttribute, Group, Line, LineBasicMaterial, LineDashedMaterial, Mesh, MeshBasicMaterial, SphereGeometry, Sprite, SpriteMaterial, TorusGeometry, Vector3 } from 'three';
+import { AdditiveBlending, BoxGeometry, BufferGeometry, Color, Float32BufferAttribute, Group, Line, LineBasicMaterial, LineDashedMaterial, Mesh, MeshBasicMaterial, PlaneGeometry, SphereGeometry, Sprite, SpriteMaterial, TorusGeometry, Vector3 } from 'three';
 import { smooth } from '../core/clock.js';
 import { owner as ownerOf } from '../worlds/index.js';
 import { FLOOR } from './stack.js';
@@ -176,6 +176,34 @@ export function createPrims(ctx) {
           if (ends.length) { ends[0].position.copy(a); ends[1].position.copy(b); ends[1].scale.setScalar(smooth(set.draw * 2 - 1)); }
         },
         dispose() { ctx.scene.remove(line, ...ends); geo.dispose(); mat.dispose(); dotMat.dispose(); ends.forEach((d) => d.geometry.dispose()); },
+      };
+      return set;
+    },
+
+    // A second figure: the paper cut-out `url` (one of the world's pictures) on its own glass ledge beside floor i,
+    // like the character on its floor. at: -1 left, 1 right. `size` is its width in world units. It lives in the world.
+    figure(tower, i, url, { size = 0.6, at = -1 } = {}) {
+      const group = new Group();
+      tower.group.add(group);
+      const ledge = new Mesh(new BoxGeometry(size + 0.5, 0.05, 0.8), mats.glass(tower.owner, { halfH: 0.025, alpha: 0.82, side: 1 }));
+      const body = new Mesh(new PlaneGeometry(1, 1), mats.paper(null, { side: 1, blended: true }));
+      body.renderOrder = 7; body.visible = false;
+      group.add(ledge); ctx.scene.add(body);
+      let tall = 1;
+      textures.load(url).then((tex) => { if (tex && group.parent) { body.material.uniforms.uMap.value = tex; tall = tex.image.height / tex.image.width; } });
+      const set = {
+        body, show: 1,
+        update() {
+          const x = tower.floors[i].mesh.position.x + at * (FLOOR.w / 2 + 0.3 + size / 2), y = tower.floors[i].y + FLOOR.h / 2;
+          ledge.position.set(x, y - 0.03, 0.25);
+          ledge.material.uniforms.uShow.value = set.show * tower.show; ledge.material.uniforms.uDim.value = tower.dim;
+          body.position.set(tower.x + tower.shift + x, tower.lift + y + (size * tall) / 2, tower.z + 0.25);
+          body.quaternion.copy(ctx.camera.quaternion);
+          body.scale.set(size, size * tall, 1);
+          body.material.uniforms.uOpacity.value = set.show * tower.show;
+          ledge.visible = set.show > 0.01; body.visible = ledge.visible && !!body.material.uniforms.uMap.value;
+        },
+        dispose() { ctx.scene.remove(body); body.geometry.dispose(); body.material.dispose(); drop(group); },
       };
       return set;
     },

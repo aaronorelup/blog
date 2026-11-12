@@ -96,6 +96,7 @@ function door(s, provider, agentId) {
 const YESNO = { yes: COPY.architecture.yes, partial: COPY.best.partly, no: COPY.architecture.no, unknown: COPY.state.undisclosed };
 const OFFICIAL = { yes: COPY.links.official, partial: COPY.links.partial, no: COPY.links.unofficial };
 const mediaItem = (m) => (m.primaryRef ? { text: thing(m.primaryRef).name, fact: fact(m.claim) } : { text: m.reason, tag: stateOf('none', m.gap).word });
+const said = (c) => ({ text: fact(c).text, fact: fact(c) });                 // a claim printed as its own sentence
 const SIGNATURE = {
   anthropic: (p) => [
     { title: p.extensibility.standards.filter((s) => s.role === 'created').map((s) => s.name).join(', '),
@@ -113,7 +114,9 @@ const SIGNATURE = {
   google: (p) => [
     { title: p.search.dataMoat.line,
       items: ['google-gemini-app', 'google-ai-mode'].map((id) => p.surfaces.find((s) => s.id === id)).filter(Boolean)
-        .map((s) => ({ text: s.name, note: s.poweredBy.filter((m) => m.role === 'option').map((m) => thing(m.modelRef).name).join(', '), fact: fact(s.claim) })) },
+        .map((s) => ({ text: s.name, note: s.poweredBy.filter((m) => m.role === 'option').map((m) => thing(m.modelRef).name).join(', '), fact: fact(s.poweredByNote) || fact(s.claim) })) },
+    { title: stateOf('none', fact(p.media.image.architectureClaim).gap).word,
+      items: [{ ...said(p.media.image.architectureClaim), note: raw.architecture.vocabulary.find((t) => t.id === 'arch-term-image-method').definition }, said(p.media.image.lineage)] },
   ],
   meta: (p, stack) => [
     { title: stack[3].name || stack[3].word, ordered: true,
@@ -124,6 +127,21 @@ const SIGNATURE = {
     { title: COPY.links.hands,
       items: p.personalAgent.delegatesTo.filter((d) => d.kind === 'coding-agent').map((d) => ({ text: d.toName, owner: d.toOwner, tag: d.official === 'yes' ? null : OFFICIAL[d.official], dashed: d.official !== 'yes', fact: fact(d.claim) })) },
   ],
+};
+
+// ---- what the catch floor shows in beat d (SPEC 2.5, "The catch"), where the words are not already in `lists`.
+// kind is how the piece behaves: an `empty` socket, a `locked` drawer, a plate that is `renamed` (was: its old
+// name), `shut-down` (it falls) or `stale` (until: the day its claim expires, it tilts). Anthropic's three empty
+// sockets are its second list, and xAI's catch is the frosted floor itself, so neither has one.
+const dated = (p) => [...p.surfaces, ...p.models].map((t) => ({ name: t.name, f: fact(t.claim) })).filter((t) => t.f);
+const CATCH = {
+  openai: (p) => (p.media.video.primaryRef ? [] : [{ ...mediaItem(p.media.video), kind: 'empty' }]),
+  google: (p) => [
+    ...p.surfaces.flatMap((s) => (s.formerNames || []).map((was) => ({ text: s.name, was, kind: 'renamed', fact: fact(s.claim) }))),
+    ...dated(p).filter((t) => t.f.status === 'shut-down').map((t) => ({ text: t.name, kind: 'shut-down', tag: TAG['shut-down'], fact: t.f })),
+    ...dated(p).filter((t) => t.f.staleAfter).map((t) => ({ text: t.name, kind: 'stale', until: t.f.staleAfter, fact: t.f })),
+  ],
+  meta: (p, fl) => [{ text: fl.name, note: fl.access, kind: 'locked', fact: fact(fl.claim) }],
 };
 
 function provider(id) {
@@ -150,6 +168,7 @@ function provider(id) {
     media: ['image', 'video', 'audio'].map((k) => (p.media[k].primaryRef ? stateOf(fact(p.media[k].claim).status).state : stateOf('none', p.media[k].gap).state)),
     voice: p.voice.conversation.slice(0, 3).map((v) => ({ tools: lamp(v.callsTools), agents: lamp(v.startsAgents), named: !!v.modelRef })),
     lists: SIGNATURE[id](p, stack),
+    catch: CATCH[id] ? CATCH[id](p, fl) : [],
   };
 }
 

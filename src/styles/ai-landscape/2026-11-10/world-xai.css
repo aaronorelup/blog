@@ -3,4 +3,9 @@
    world.css cannot know, scoped to [data-world="xai"]. */
 .ail-world[data-world='xai'] .ail-kicker { letter-spacing: .1em; }
 .ail-gl .ail-world[data-world='xai'] .ail-btn[data-act='dark'][aria-pressed='true'] { background: var(--ail-fg); color: var(--ail-bg); }
-.ail-gl .ail-world[data-world='xai'] .ail-sig__item[data-picked] { box-shadow: inset 0 0 0 1px var(--ail-fg); }
+/* the picked model wears a ring, with room inside it at every width */
+.ail-gl .ail-world[data-world='xai'] .ail-sig__item[data-picked] { padding: 4px 8px 5px; box-shadow: inset 0 0 0 1px var(--ail-fg); }
+@media (max-width: 599px) {
+  /* in the phone's sheet the ring grows outward, so the pick stays on the line of the names beside it */
+  .ail-gl .ail-world[data-world='xai'] .ail-sig__item[data-picked] { margin: -4px 0 -5px; }
+}
