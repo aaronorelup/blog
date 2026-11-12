@@ -566,3 +566,63 @@ test('tea-hero-25 leaving the page while the scene loads leaves no console error
   }
   expect(errors).toEqual([]);
 });
+
+// The swap the final cast uses (docs/TEA_HERO.md, "One actor in place of another"), on /tea/ itself with the shipped
+// manifest plus a follower, served in its place: a second Yusef riding Jefrie that dissolves in (fade, opacity) while
+// she dissolves out and back, and the TV cut away (visible) late in the scroll; down to 0.8 and back to 0.
+test('tea-hero-26 one actor swapped for another rides its leader and cuts and dissolves as keyed, down and back', async ({ page }) => {
+  test.setTimeout(180_000);
+  const errors = [];
+  page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+  page.on('pageerror', (e) => errors.push(e.message));
+  const KEYS = {
+    jefrie: { channel: 'opacity', keys: [[0.18, 1], [0.21, 0], [0.5, 0], [0.53, 1]] },
+    swap: { channel: 'opacity', keys: [[0.18, 0], [0.21, 1], [0.5, 1], [0.53, 0]] },
+    tv: { channel: 'visible', keys: [[0.699, 1], [0.701, 0]] },
+  };
+  await page.route('**/tea/hero/manifest.json', async (route) => {
+    const response = await route.fetch();
+    const m = await response.json();
+    m.actors.push({ id: 'swap', src: 'standin-angel.glb', follow: 'jefrie', fade: true, position: [0.3, 0, 0.1],
+      rotation: [0, 40, 0], scale: 0.5 });
+    for (const [actor, t] of Object.entries(KEYS)) m.tracks.push({ actor, ease: 'linear', ...t });
+    await route.fulfill({ response, json: m });
+  });
+  await page.goto('/tea/?hero=on');
+  await settled(page);
+  await expect(hero(page)).toHaveAttribute('data-3d', 'on');
+  await holdScene(page);
+  for (const raw of [0, 0.1, 0.19, 0.2, 0.25, 0.4, 0.52, 0.6, 0.75, 0.8, 0.6, 0.45, 0.2, 0.1, 0]) {
+    const got = await page.evaluate((raw) => {
+      const h = window.__teaHero;
+      h.setProgress(raw);
+      const st = h.state;
+      const by = Object.fromEntries(st.actors.map((a) => [a.spec.id, a]));
+      const [j, s] = [by.jefrie, by.swap];
+      return {
+        p: Math.min(1, Math.max(0, (st.input.st.p - st.lead) / (1 - st.lead))),
+        shown: Object.fromEntries(st.actors.map((a) => [a.spec.id, a.root.visible])),
+        opacity: s.fadeMats.map(([m, base]) => m.opacity / base),
+        hashed: s.fadeMats.every(([m]) => m.alphaHash && !m.transparent),
+        rides: j.root.position.distanceTo(s.root.position) + j.root.quaternion.angleTo(s.root.quaternion)
+          + j.inner.scale.distanceTo(s.inner.scale),
+      };
+    }, raw);
+    // the keys, sampled as tracks.js does (linear) at the scene's own progress
+    const at = (keys) => {
+      if (got.p <= keys[0][0]) return keys[0][1];
+      const i = keys.findIndex(([t]) => t >= got.p);
+      if (i < 0) return keys[keys.length - 1][1];
+      const [[t0, a], [t1, b]] = [keys[i - 1], keys[i]];
+      return a + (b - a) * (got.p - t0) / (t1 - t0);
+    };
+    const [oj, os, vt] = [at(KEYS.jefrie.keys), at(KEYS.swap.keys), at(KEYS.tv.keys)];
+    const where = `raw ${raw}, scene ${got.p.toFixed(3)}`;
+    expect(got.shown, where).toEqual({ jefrie: oj > 0.004, yusef: true, tv: vt >= 0.5, swap: os > 0.004 });
+    expect(got.opacity.length, where).toBeGreaterThan(0);
+    for (const o of got.opacity) expect(Math.abs(o - os), where).toBeLessThan(1e-6);
+    expect(got.hashed, where).toBe(true);
+    expect(got.rides, where).toBeLessThan(1e-6);
+  }
+  expect(errors).toEqual([]);
+});
