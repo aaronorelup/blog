@@ -1,0 +1,68 @@
+---
+// /ai-landscape/2026-11-10/sources/ : every numbered source of the snapshot as plain HTML (SPEC 2.11). The sources
+// drawer loads this page and shows its list and its end. Only an https address becomes a link, a source of kind
+// "request" never does. The end names the questions still open and only the count of unverified leads.
+import '../../../styles/ai-landscape/2026-11-10/tokens.css';
+import '../../../styles/ai-landscape/2026-11-10/base.css';
+import '../../../styles/ai-landscape/2026-11-10/chrome.css';
+import '../../../styles/ai-landscape/2026-11-10/trust.css';
+import '../../../styles/ai-landscape/2026-11-10/static.css';
+import { COPY } from '../../../components/ai-landscape/2026-11-10/data/copy.js';
+import { view } from '../../../components/ai-landscape/2026-11-10/data/view.js';
+import { COMMIT } from '../../../lib/build.js';
+
+const DATE = view.snapshot.date;
+const page = `/ai-landscape/${DATE}/`;
+const canonical = `https://aaronorelup.com${page}sources/`;
+const title = `${COPY.stamp.sources}, ${COPY.frame.title}, ${COPY.frame.snapshot.toLowerCase()} ${DATE}`;
+const description = `${view.counts.sources} ${COPY.stamp.sources.toLowerCase()}, ${view.counts.claims} ${COPY.stamp.claims}. ${COPY.frame.scope}`;
+const link = (s) => (s.kind !== 'request' && typeof s.url === 'string' && s.url.startsWith('https://') ? s.url : null);
+const open = view.data.conflicts.filter((c) => c.state !== 'resolved');
+---
+<!doctype html>
+<html lang="en" class="ail ail-srcpage" data-snapshot={DATE}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="ao-build" content={COMMIT} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta name="theme-color" content="#E6E8ED" />
+  </head>
+  <body>
+    <header class="ail-chrome">
+      <div class="ail-chrome__side">
+        <p class="ail-chrome__title ail-label"><a href={page}>{COPY.frame.title}</a></p>
+        <a class="ail-chrome__chip ail-label" href={`${page}#snapshot`}><span class="ail-chrome__w">{COPY.frame.snapshot}</span> <time datetime={DATE}>{DATE}</time></a>
+      </div>
+    </header>
+    <main id="ail-main" class="ail-srcpage__main">
+      <h1 class="ail-srcs__h ail-title">{COPY.stamp.sources} <b>{view.counts.sources}</b></h1>
+      <ol class="ail-srcs" id="ail-srcs">
+        {view.data.sources.map((s) => (
+          <li class="ail-src" id={`s-${s.n}`} data-kind={s.kind} tabindex="-1">
+            <span class="ail-src__n ail-label">{s.n}</span>
+            {link(s) ? <a class="ail-src__t" href={link(s)} target="_blank" rel="noopener noreferrer">{s.title}</a> : <span class="ail-src__t">{s.title}</span>}
+            <span class="ail-src__m ail-label"><span class="ail-src__k">{s.kind}</span> <span>{s.dateIs}</span> <time datetime={s.date}>{s.date}</time></span>
+          </li>
+        ))}
+      </ol>
+      <div class="ail-srcs__end" id="ail-srcs-end">
+        <h2 class="ail-label">{COPY.best.contested} <b>{open.length}</b></h2>
+        <ul class="ail-srcs__open">
+          {open.map((c) => <li><span>{c.topic}</span>{c.state === 'open' && <span class="ail-tag">{COPY.best.cantTell}</span>}</li>)}
+        </ul>
+        <p class="ail-srcs__left ail-label"><b>{view.counts.unverified}</b> {COPY.stamp.unverified}</p>
+      </div>
+    </main>
+    <footer class="ail-srcpage__foot">
+      <p>{COPY.ending.disclaimer}</p>
+      <p class="ail-label"><a href={page}>{COPY.frame.title}</a> <a href="/">{COPY.ending.home}</a></p>
+    </footer>
+  </body>
+</html>
