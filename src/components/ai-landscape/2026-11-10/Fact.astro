@@ -1,9 +1,9 @@
 ---
 // One fact, as a button that opens its proof (SPEC 2.11). It carries what a proof card needs: the claim id,
-// its date, status, confidence and source numbers. `full` adds the claim's sentence when the slot shows other
-// words. A status of preview, announced or shut-down prints its tag unless `tag` is false.
+// its date, status, confidence, source numbers and gap, and its sentence whenever a slot shows other words
+// (`full` forces it). A status of preview, announced or shut-down prints its tag unless `tag` is false.
 import { tagOf } from './data/view.js';
 const { fact, full = false, tag = true } = Astro.props;
 const label = tag ? tagOf(fact.status) : null;
 ---
-<button type="button" class="ail-fact" data-fact={fact.id} data-as-of={fact.asOf} data-status={fact.status} data-conf={fact.confidence} data-src={fact.sources.join(' ')} data-text={full ? fact.text : undefined}><slot>{fact.text}</slot></button>{label && <span class="ail-tag" data-status={fact.status}>{label}</span>}
+<button type="button" class="ail-fact" data-fact={fact.id} data-as-of={fact.asOf} data-status={fact.status} data-conf={fact.confidence} data-src={fact.sources.join(' ')} data-gap={fact.gap || undefined} data-text={full || Astro.slots.has('default') ? fact.text : undefined}><slot>{fact.text}</slot></button>{label && <span class="ail-tag" data-status={fact.status}>{label}</span>}
