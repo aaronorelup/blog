@@ -4,12 +4,14 @@ Built on branch `feat/alt-view-hero` (the hero runtime, 2026-11-10) and wired in
 (2026-11-11), on top of tea-core's `/tea/` page. This file is meant to be enough on its own for a session that only
 has the repo.
 
-**The lab page, `src/pages/tea-lab.astro` (`/tea-lab/`), is temporary.** It is a development page kept so the hero
-can run alone and try a variant manifest (`?manifest=`). The final models are in; it stays, hidden, while the scene
-is still being tuned, and deleting it is a step of "Next steps". It carries its own robots noindex, is in no sitemap,
-feed or search index, and nothing links to it (tea-16); like every built page it is a line of `stats-pages.txt`, so
-`/stats` may name it if it gets visits. It doesn't rename the main site's stylesheet (it imports `tea.css`, not
-`site.css`).
+**The lab page, `/tea-lab/`, is a frozen copy.** It was a development page (`src/pages/tea-lab.astro`) that ran the
+hero alone over empty chapter heads and tried variant manifests (`?manifest=`). On 2026-11-12 it was frozen as it was
+live (build `c3d2ea01`) into `public/tea-lab/index.html` by `scripts/tools/tea-freeze.mjs`, sharing the files of
+`/labs/tea-room/v1/` (the frozen `/tea/`), and the route was deleted. It shows the hero as it was that day, never the
+current one, and reads only those frozen files: its `?manifest=` looks in `/labs/tea-room/v1/assets/tea/hero/`, which
+holds the frozen `manifest.json` alone, so it tries no variant any more. It carries its own robots noindex, is in no
+sitemap, feed or search index, and nothing links to it (tea-16); as a frozen copy (`ao-frozen`) it is not a line of
+`stats-pages.txt`, so `/stats` never names it.
 
 ## What it is
 
@@ -166,7 +168,7 @@ its parts); from 561 px a gutter and a skip-link offset that follow the centred 
 | `scripts/tools/tea-hero/` | `shots.mjs`, `poster.mjs`, `silhouettes.mjs` (overlap and behind-the-box per size and scroll), `edges.mjs` (the picture covers every frame), `verify.mjs` |
 | `tests/e2e/tea-hero.spec.mjs` | the e2e spec (tea-hero-1 to 30, listed in `tests/e2e/INVENTORY.md`) |
 | `tests/unit/tea-hero.test.mjs` | the runtime's maths in plain node: the manifest's defaults and new fields, every channel, the swap (follow, a cut, a dissolve down and back), `loadActors` on a GLB made in memory, the skeleton freed, the shipped manifest's channels, its own leap swap and every stand-in of it following someone, Jefrie's opening stance (not her rig's A-pose), a portrait camera path, and its picture covering every frame (`edges.mjs`) |
-| `src/pages/tea-lab.astro` | the lab: the real hero and rail over empty chapter heads; `?manifest=`. Temporary (see the top of this file) |
+| `public/tea-lab/index.html` | the lab as it was on 2026-11-12, frozen (see the top of this file): the hero of that day and its rail over empty chapter heads |
 
 Outside these, the slice touched `src/styles/tea/cover.css` (the padding variables; the SVG garden's rules and the
 old stage rules removed; the box's backdrop blur removed), `src/styles/tea/tea.css` (the strip's `::before`) and deleted
@@ -422,8 +424,7 @@ name to its list). A top-level `await import('three')` there instead re-splits t
 ```bash
 npm run build && npx astro preview --port 4411   # or: npx astro dev --port 4392 (the tools' default URLs)
 # /tea/?hero=on skips the device checks (not WebGL or reduced motion), ?hero=off keeps the poster
-# /tea-lab/?hero=on&manifest=<file>.json loads /tea/hero/<file>.json: put a variant (and its models) in dist/ after a
-# build, never in public/. Stop a preview started by an agent with: npx astro preview stop (or kill it)
+# Stop a preview started by an agent with: npx astro preview stop (or kill it)
 node scripts/tools/tea-hero/shots.mjs --url http://localhost:4411/tea/?hero=on --out <dir> --sheet
 #   1440x900 and 390x844, night and day, p 0 0.1 0.2 0.25 0.3 0.45 0.6 0.8 1; one contact sheet a size and mode
 node scripts/tools/tea-hero/poster.mjs --url http://localhost:4411/tea/?hero=on [--out <dir>]   # rewrites the posters
@@ -431,7 +432,7 @@ node scripts/tools/tea-hero/silhouettes.mjs --url http://localhost:4411/tea/?her
 #   per size and scroll position: overlap between the actors, each one's share behind the title box (JSON lines)
 node scripts/tools/tea-hero/edges.mjs [--sizes 1440x900:dock:1,390x844] [--ptr 1] [--manifest <file>]   # no browser
 #   every frame of the scroll, pointer and lens shift: does the picture cover it? exit 1 if a layer's edge shows
-node scripts/tools/tea-hero/verify.mjs --url http://localhost:4411/tea/   # behaviour checks, also against /tea-lab/
+node scripts/tools/tea-hero/verify.mjs --url http://localhost:4411/tea/   # behaviour checks
 npm run e2e -- --project=desktop --project=phone tests/e2e/tea-hero.spec.mjs   # --workers=2 on a busy box
 ```
 
@@ -531,7 +532,8 @@ and restores the poster.
    as its foot leaves them.
 5. The picture is final; its stepping stones still read as a regular ladder of ovals, most of all on a phone, where
    they fill the lower half of the frame.
-6. **The lab page** is live (noindex, linked from nowhere, but a line of `stats-pages.txt`) until it is deleted.
+6. **The lab page** is a frozen copy now (noindex, linked from nowhere, not in `stats-pages.txt`): the hero of
+   2026-11-12, not the current one.
 7. At load, before the scene, tea-core's title moves about 10 px when its web font swaps in (CLS 0.0004, scene or
    not). The scene's arrival moves nothing on screen (tea-hero-8 and 9).
 8. **Her fused sleeves.** Her rig's arms are fused to her body (TRELLIS), so a raised or lowered arm opens a seam at
@@ -549,6 +551,5 @@ and restores the poster.
    and the reach after are the rig's own), check both cuts frame by frame on a desktop and a phone (silhouette, place
    and brightness against the frames either side), and run the e2e spec (tea-hero-24 and 27 hold the names and the
    swap). The posters stay: the leap mesh first shows at 0.15.
-2. **Delete `src/pages/tea-lab.astro`** when no more variants are to be tried, build, confirm `/tea-lab/` is gone
-   from `dist/stats-pages.txt`, drop tea-16 or turn it into a check that the page is gone, run `verify.mjs` and the
-   e2e spec, compare budgets and run `dist-diff` against an untouched build, then land per `CLAUDE.md`.
+2. **`src/pages/tea-lab.astro` is deleted**: on 2026-11-12 `/tea-lab/` became a frozen copy at the same address
+   (the top of this file), out of `dist/stats-pages.txt`; tea-16 holds for the copy unchanged.

@@ -213,7 +213,7 @@ fails the build, or only warns in a live notebook.
 | `src/pages/tea/index.astro`, `src/layouts/TeaPage.astro`, `src/components/tea/` | the tea room (`/tea/`): the whole site on one chaptered page, every list from the main site's own helpers (`listedPosts`, `START_HERE`, `projectsPage`, `COURSES`, `nowSnapshots`, `research`) and every item linking to its main-site page. `TeaPage` (the shared `Head` read through `teaSeo()`, `styles/tea/tea.css`, `scripts/tea/rail.js`; its head's mark `data-tea-arrive` lands an address with a chapter at once), `TeaHero` (the 3D hero's markup contract: `[data-tea-hero]` > `.tea-hero-pin` > `hero/Stage` + `.tea-hero-box`), `TeaRail`, `TeaChapter`, `TeaBreath`, one component per chapter; About renders `about/AboutView` itself. `hero/` belongs to the 3D hero |
 | `src/data/tea.js`, `src/lib/tea.js` | the tea room's copy and its SEO switch (`TEA_SEO`, `teaSeo()` → `{ noindex, canonical, inSitemap }`, read only by `TeaPage` and `sitemap.xml.js`; shipped `'pending'`, which is what any new page gets); its pure shaping (`ledgerByTopic`, `postRow`, `loreHub`, `projectHref`, `counterLine`, `roman`) |
 | `src/components/tea/hero/Stage.astro`, `public/tea/hero/` | the tea room's 3D hero (`docs/TEA_HERO.md`): the stage (the poster of the scene's opening frame, the first picture on every path, then the canvas) and `boot.js`; the scene's manifest, posters, picture layers and models (the final cast: Jefrie, her leap mesh, Yusef, the TV, the lantern) |
-| `src/pages/tea-lab.astro` | the hero lab (`/tea-lab/`, noindex, linked from nowhere, in no sitemap, feed or index): the real hero over empty chapters, `?manifest=`. Temporary: deleted once the hero's final models land |
+| `public/tea-lab/`, `public/labs/tea-room/v1/` | frozen copies (`scripts/tools/tea-freeze.mjs`, recipe "A frozen copy of a page"), noindex, in no sitemap, feed, index or `stats-pages.txt`: `/tea-lab/`, the hero lab as it was on 2026-11-12 (the route `src/pages/tea-lab.astro` is gone), and `/labs/tea-room/v1/`, `/tea/` as it was that day. `v1/assets/` holds every file both load, under its old path. Never edit either |
 | `src/components/projects/` | `ProjectsView` (`/projects`), `JumpRow`, `Highlights` (the reel from `picks.js REEL` and the cards marked `highlight`), `ProjectSection`, `ProjectCard`, `NeedsGlyph` |
 | `src/components/post/` | `PostView` (the article: `data-post-article`, `data-panel-view` `post` or `notes`, `data-slug`), `PostHeader` (icon or glyph, id · date · minutes, topic and project chips, title `data-r=t`, summary `data-r=s`, the byline on `voice: claude` pages, `ReadAloud`), `ShortVersion` (`#short`, the post's card; none on an unlisted post), `NotesLink`, `Contents` (4+ h2, or 2+ h2 and 900+ words), `Related` (three `ledger/PostCard`s), `PostNav`, `ElementStyles`, `ReadAloud` (the Listen button; `data-read-hash` names this version's recording, absent on a post never recorded) |
 | `src/components/lore/` | the lore course |
@@ -275,6 +275,7 @@ fails the build, or only warns in a live notebook.
 | `scripts/tools/budgets.mjs` | the page-weight budgets (section "Budgets") and the font check |
 | `scripts/tools/fonts.mjs` | `node scripts/tools/fonts.mjs` after a build: fetches Google's slices for the code points the pages show, rewrites `public/fonts/`, `fonts.css`, `fonts.json`; `misses(dist)` |
 | `scripts/tools/searches.mjs` | `npm run searches [-- days]`: the top search and Ask queries, for Aaron only (D1 through the API) |
+| `scripts/tools/tea-freeze.mjs` | `node scripts/tools/tea-freeze.mjs <page> <folder>`: a built page and every file it loads, copied into a folder of `public/` that later builds never change (recipe "A frozen copy of a page") |
 | `scripts/tools/element-usage.mjs`, `dist-diff.mjs` | every `<ao-*>`, video and iframe per built page (`--diff` for rewrites); two builds compared |
 | `scripts/lib/{secrets,cfapi}.mjs`, `scripts/tools/put-secret.mjs` | `secret(NAME)` from the environment or Infisical; the Cloudflare API client that finds or makes the Worker's resources; `put-secret` sets one Worker secret, never printing it |
 | `scripts/tools/preview-media.mjs` | every resize-to-a-cap job: a post's card still and loop (`PREVIEWS.md`), and with `--out --size --cap` one still (post icons, project pictures; `docs/MEDIA.md`) |
@@ -429,6 +430,17 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
   `style=`), colours and type from `tokens.css`. If the homepage overlay should open it, pass `view="<name>"` to
   `PanelPage` (its wrapper gets `data-panel-view`) and add it to `NAV` in `src/data/site.js`. It goes into
   `stats-pages.txt` automatically if it is a public page.
+- **A frozen copy of a page** (the tea room's versions: `/labs/tea-room/v1/` is `/tea/` on 2026-11-12). Before a commit
+  replaces a live page, on a checkout of the commit that is live (`curl -s https://aaronorelup.com/version.json`):
+  `npm run build`, then `node scripts/tools/tea-freeze.mjs /tea/ public/labs/tea-room/v2` (the next free `vN`;
+  `--assets <folder>` shares an existing copy's files, `--dist` reads another build). It writes `<folder>/index.html`
+  and copies every file the page loads, its scripts' later fetches included (the 3D runtime, the models, the manifest,
+  the posters), its stylesheets, fonts and pictures, under `<folder>/assets/` at their old paths, and points every
+  reference there; links to other pages stay live and video stays at `/media/`. It refuses a folder that already has
+  a page and never writes over a file with other bytes. The copy says robots noindex and carries `ao-frozen` for
+  `ao-build`, so `stats-pages.txt` leaves it out (it never shows in `/stats`) and the font check skips it. It exits 1
+  if the copy still names a file under `/_astro/`, `/fonts/` or `/tea/hero/` outside itself. Then build and land it
+  before the replacing commit. Commit the copy as it came out: a frozen file is never edited.
 - **A content kind.** A collection in `src/content.config.ts` with a schema in `src/schemas/`, read only through
   `src/lib/content.js`, and its files added to the checker's scopes (`never-publish.mjs`, `links.mjs`).
 - **A Worker route.** A line in `ROUTES` (`worker/index.js`), its handler in its feature folder, the path in

@@ -1,5 +1,5 @@
 // Hero screenshots (node scripts/tools/tea-hero/shots.mjs [--url U] [--out DIR] [--p 0,0.25,...] [--sizes 1440x900,390x844]
-// [--modes night,day] [--t 2.4] [--sheet]), against a running preview or dev server of /tea/ (default) or /tea-lab/:
+// [--modes night,day] [--t 2.4] [--sheet]), against a running preview or dev server of /tea/ (default):
 // scrolls the real page to each progress, freezes idle time and the pointer, saves <size>-<mode>-p<NNN>.png, and with
 // --sheet one contact sheet a size and mode (sheet-<size>-<mode>.jpg). The title box stays in: it is the composition.
 import { mkdirSync } from 'node:fs';
