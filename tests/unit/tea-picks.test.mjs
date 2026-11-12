@@ -196,6 +196,9 @@ test('every document the page could not show is refused, naming the key and the 
   refuses(on('b/play', shelf(['j-nope'])), /"j-nope" in shelf b\/play is not a project/);
   // a project shows only on its own section's shelf, as the picker offers it
   refuses(on('b/play', shelf(['j-reel'])), /"j-reel" in shelf b\/play is a project of the "watch" section, and this shelf shows the "play" section/);
+  // a project file that is there but whose section can't be read says so, rather than that the file is missing
+  assert.throws(() => resolveChapters(on('b/play', shelf(['j-odd'])), REG, { ...site, cards: [...cards, { key: 'odd' }] }),
+    /"j-odd" in shelf b\/play is not a project the page can read: src\/content\/projects\/odd\.yaml has no readable section/);
   refuses(on('b/play', shelf(['p-v1'])), /"p-v1" in shelf b\/play is a post, and this shelf holds projects/);
   refuses(on('b/play', shelf(['j-game', 'j-game'])), /"j-game" is picked twice in shelf b\/play/);
   refuses(on('b/play', shelf(['x-game'])), /"x-game" in shelf b\/play is not a key/);
@@ -362,6 +365,9 @@ test("npm run check: picks the page would refuse fail, the live notebook and a m
   // a project on another section's shelf
   write({ v: 1, order: [], hidden: {}, shelves: { 'projects/watch': { auto: false, count: 1, picks: ['j-game'] } } });
   assert.match(ours()[0][2], /"j-game" in shelf projects\/watch is a project of the "play" section/);
+  put('src/content/projects/game.yaml', 'name: "Game"\nsection: [\n');
+  assert.match(ours()[0][2], /"j-game" in shelf projects\/watch is not a project the page can read/);
+  put('src/content/projects/game.yaml', 'name: "Game"\nsection: play\n');
   // the live notebook pinned while another session leaves its frontmatter broken, or makes it unlisted: left out, a
   // warning only, at every level (the frontmatter rule only warns about it as well)
   write({ v: 1, order: [], hidden: {}, shelves: { 'start/leads': { auto: false, count: 1, picks: ['p-teardown-lab', 'p-shown'] } } });
