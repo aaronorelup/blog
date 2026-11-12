@@ -267,8 +267,8 @@ streams the same two films.
 
 ### `ao-demo`: claude-text-watermark (`synthid`), who-visits-a-new-website (`cf`), three-ways-to-search-my-blog (`goobie-lab`)
 
-`goobie-lab`'s post (AO-083) is a draft, so the build has no page of it: until it's out, `demo.spec.mjs` mounts the
-parts into the first built page with an `<ao-demo>`, with the demo's own stylesheet, as the post's article would.
+`goobie-lab`'s specs open its own post's page (AO-083), so a live run there sees that post among the ones listed since
+the recording.
 
 | Behaviour | Listener or attribute | Spec |
 |---|---|---|
@@ -283,7 +283,7 @@ parts into the first built page with an `<ao-demo>`, with the demo's own stylesh
 | goobie-lab `context`: another question redraws the figures and the answer; past the window the growth slider says it no longer fits, and by how much | question `click`, range `input` | demo-lab-2 |
 | goobie-lab `rag`: the k slider moves the cut through the chunks and the window's tokens; a chunk opens | range `input`, `details` | demo-lab-3 |
 | goobie-lab `agent`: Next, Back and Show every turn step through the turns; the answer and grade come at the last; a button that turns itself off hands the keyboard's focus to the other way; an answer's "- " lines are a list | button `click`, Enter | demo-lab-4 |
-| goobie-lab `agent`: a recorded call runs again live on the site's files, the same as recorded on the posts it searched (whatever was listed since); its result and an opened result stay as you step | Run this call live `click`, Next `click` | demo-lab-5 |
+| goobie-lab `agent`: a recorded call runs again live on the site's files, the same as recorded on the posts it searched (whatever was listed since); on all the posts listed today it says how many came since, this post among them, and what it returns now; its result and an opened result stay as you step | Run this call live `click`, Next `click` | demo-lab-5 |
 | goobie-lab `agent`: the playground searches the reader's own words live, as plain text; cites link to their passages | form `submit` | demo-lab-6 |
 | goobie-lab `agent`: a live run that can't read the site's files says so, and the next try reads them | Run this call live `click` | demo-lab-7 |
 

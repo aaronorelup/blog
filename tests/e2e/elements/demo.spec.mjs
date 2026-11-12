@@ -1,9 +1,8 @@
 // <ao-demo>: the per-post demos, loaded as their own chunk. synthid (AO-0 claude-text-watermark) has five parts, cf
 // (who-visits-a-new-website) two, goobie-lab (three-ways-to-search-my-blog) four; /cdn-cgi/trace and /api/reads are
 // answered by the fixtures, goobie-lab's live tools by the build's own /ask/ files and /rss.xml.
-import fs from 'node:fs';
 import { test, expect } from '../fixtures.mjs';
-import { open, pagesWith, pageWith } from '../helpers.mjs';
+import { open, pageWith } from '../helpers.mjs';
 
 const demo = (page, name, part) => page.locator(`ao-demo[name="${name}"][part="${part}"]`);
 const mounted = (d) => expect(d.locator(':scope > .sid, :scope > .cfd, :scope > div').first()).toBeVisible();
@@ -104,32 +103,12 @@ test.describe('cf', () => {
   });
 });
 
-// goobie-lab's post (AO-083) is a draft, so no built page has it: until it's out its four parts are mounted into the
-// first built page with an <ao-demo>, with the demo's own stylesheet, as the post's article would hold them.
-const LAB_CSS = fs.readFileSync(new URL('../../../src/elements/ao-demo/demos/goobie-lab/style.css', import.meta.url), 'utf8');
-async function openLab(page) {
-  const own = pagesWith('ao-demo', (a) => a.name === 'goobie-lab');
-  if (own.length) return open(page, own[0]);
-  await open(page, pageWith('ao-demo'));
-  return page.evaluate((css) => {
-    const prose = document.querySelector('[data-post-article] .pc-prose, [data-post-article] .prose');
-    for (const part of ['agent', 'rag', 'context', 'windows']) {
-      const d = document.createElement('ao-demo');
-      d.setAttribute('name', 'goobie-lab');
-      d.setAttribute('part', part);
-      d.textContent = `The goobie-lab ${part} part needs JavaScript.`;
-      prose.prepend(d);
-    }
-    const style = document.createElement('style');
-    style.textContent = css;
-    prose.prepend(style);
-  }, LAB_CSS);
-}
+// goobie-lab's four parts, on its post's own page (AO-083), as a reader gets them.
 const lab = (page, part) => page.locator(`ao-demo[name="goobie-lab"][part="${part}"] > .gl`);
 const slide = (range, value) => range.evaluate((r, v) => { r.value = String(v === 'max' ? r.max : v); r.dispatchEvent(new Event('input', { bubbles: true })); }, value);
 
 test.describe('goobie-lab', () => {
-  test.beforeEach(async ({ page }) => openLab(page));
+  test.beforeEach(async ({ page }) => open(page, pageWith('ao-demo', (a) => a.name === 'goobie-lab')));
 
   test('demo-lab-1 windows: the three ways, each with its map, in-context seeing every post and RAG a few', async ({ page }) => {
     const d = lab(page, 'windows');
@@ -208,12 +187,26 @@ test.describe('goobie-lab', () => {
     await expect(live).toContainText(/^Same as the recorded run/);
     const [, searched] = /on the (\d+) posts/.exec(await live.textContent());
     expect(Number(searched)).toBeGreaterThanOrEqual(72);   // every post of the recording is still listed
+    // This post says RunPod too, so on all the posts listed today the same call returns more: the note counts the
+    // posts listed since the recording, this one among them, and those and the ones it searched add up to today's.
+    const note = await live.locator('.gl-note').textContent();
+    const since = /on the (\d+) posts it searched\. (?:(\d+) posts have been listed since, this one among them|This post has been listed since), so on all (\d+) listed today it returns something new\.$/.exec(note);
+    expect(since, note).not.toBeNull();
+    expect(Number(since[1]) + Number(since[2] ?? 1)).toBe(Number(since[3]));
+    const today = call.locator('details.gl-result', { hasText: 'What it returns on all' });
+    await today.locator('summary').click();
+    await expect(today.locator('pre')).toContainText('three-ways-to-search-my-blog [83.');
     const result = call.locator('details.gl-result').first();
     await result.locator('summary').click();
     await d.getByRole('button', { name: 'Next turn' }).click();
     await expect(d.locator('.gl-turn')).toHaveCount(2);
     await expect(live).toContainText(/^Same as the recorded run/);
     await expect(result).toHaveAttribute('open', '');
+    // A call no post since has changed, the September list: the same on every post listed today.
+    await d.locator('button.gl-q').nth(1).click();
+    const sept = d.locator('.gl-call').first();
+    await sept.getByRole('button', { name: 'Run this call live' }).click();
+    await expect(sept.locator('.gl-live .gl-note')).toHaveText(/^Same as the recorded run\. Run just now on the \d+ posts listed today\.$/);
   });
 
   test('demo-lab-7 agent: a live run that can\'t read the site\'s files says so, and the next try works', async ({ page }) => {
