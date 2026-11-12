@@ -27,7 +27,7 @@ const nameOf = (id) => (id === 'outside' ? COPY.best.outside : view.provider(id)
         <li class="ail-ba__cap" id={c.id} data-n={n} data-g={c.group} data-verdict={c.verdict} data-floor={c.floor} data-why={c.why ? '' : undefined}>
           <h3 class="ail-ba__name ail-title">{c.name}</h3>
           <details class="ail-ba__d" name="ail-ba">
-            <summary class="ail-ba__stamp ail-stamp" data-verdict={c.verdict}>{c.stamp[0]}{c.stamp[1] && <i>{c.stamp[1]}</i>}</summary>
+            <summary class="ail-ba__stamp ail-seal" data-verdict={c.verdict}>{c.stamp[0]}{c.stamp[1] && <i>{c.stamp[1]}</i>}</summary>
             <div class="ail-ba__more ail-card">
               <p class="ail-ba__q">{c.question}</p>
               {!c.why && <p><Fact fact={c.reason} tag={false} /></p>}
@@ -58,7 +58,7 @@ const nameOf = (id) => (id === 'outside' ? COPY.best.outside : view.provider(id)
             <figure class="ail-ba__guess" data-outcome={c.guess.outcome}>
               <figcaption class="ail-label">{COPY.best.myGuess}</figcaption>
               <blockquote class="ail-sentence">{c.guess.quote}</blockquote>
-              <p class="ail-ba__verdict ail-stamp">{c.guess.stamp}</p>
+              <p class="ail-ba__verdict ail-seal">{c.guess.stamp}</p>
             </figure>
           )}
         </li>

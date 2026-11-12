@@ -15,8 +15,8 @@
 [data-p='meta'] .ail-sw, .ail-sw[data-p='meta'] { --g: var(--ail-own-meta); }
 [data-p='xai'] .ail-sw, .ail-sw[data-p='xai'] { --g: var(--ail-own-xai); }
 .ail-cmp-h { margin-bottom: 14px; }
-.ail-stamp { display: inline-flex; align-items: center; gap: .55em; padding: 6px 10px 5px; border: 2px solid currentColor; outline: 1px solid currentColor; outline-offset: 2px; font: 400 15px/1 var(--ail-mono); letter-spacing: .14em; text-transform: uppercase; transform: rotate(-3deg); white-space: nowrap; }
-.ail-stamp i { font-style: normal; opacity: .7; }
+.ail-seal { display: inline-flex; align-items: center; gap: .55em; padding: 6px 10px 5px; border: 2px solid currentColor; outline: 1px solid currentColor; outline-offset: 2px; font: 400 15px/1 var(--ail-mono); letter-spacing: .14em; text-transform: uppercase; transform: rotate(-3deg); white-space: nowrap; }
+.ail-seal i { font-style: normal; opacity: .7; }
 
 /* ---- 2.3 line-up. Text version: a table, sideways scroll inside its own box on a narrow screen */
 .ail-lu__now, .ail-lens { display: none; }
