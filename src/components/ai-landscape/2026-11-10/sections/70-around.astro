@@ -1,0 +1,40 @@
+---
+// Around the five (SPEC 2.9.1): the nine things a person adds around the providers, with his one sentence about
+// his whole setup. Text version: a list of nine, each opening what goes wrong without it and what fills it.
+// 3D page (sections/around.js): nine grey blocks rise as a base under the row, one lit at a time with its sentence.
+import '../../../../styles/ai-landscape/2026-11-10/architecture.css';
+import Fact from '../Fact.astro';
+import { COPY } from '../data/copy.js';
+import { fact, ownerOf, view } from '../data/view.js';
+
+const A = view.data.architecture;
+const frame = view.data.aaron.frame;
+const layers = A.aroundLayers.map((l) => ({
+  ...l,
+  fills: l.fills.map((f) => ({ name: f.name, owner: ownerOf(f.refs[0]) || 'outside' })),
+  proof: l.proof ? fact(l.proof) : null,
+}));
+---
+<section id="around" class="ail-sec ail-ar" data-sec="around" data-screens="0.9" data-land="0.45" data-rail={COPY.architecture.title} aria-labelledby="around-title">
+  <div class="ail-stage">
+    <header class="ail-ar__head">
+      <h2 id="around-title" class="ail-title">{COPY.architecture.title}</h2>
+      <p class="ail-ar__quote ail-sentence"><Fact fact={fact(frame.claim)} full tag={false}>&ldquo;{frame.quote}&rdquo;</Fact></p>
+    </header>
+    <ol class="ail-ar__list">
+      {layers.map((l, i) => (
+        <li class="ail-ar__item" data-i={i} data-layer={l.id}>
+          <details class="ail-ar__d" name="ail-around">
+            <summary class="ail-ar__name ail-label">{l.name}</summary>
+            <div class="ail-ar__more ail-card">
+              <p>{l.without}</p>
+              <p class="ail-chips">{l.fills.map((f) => <span class="ail-own" data-owner={f.owner}>{f.name}</span>)}</p>
+              {l.proof && <p class="ail-ar__proof"><Fact fact={l.proof} full>{l.proof.short}</Fact></p>}
+            </div>
+          </details>
+          <p class="ail-ar__say">{l.sentence}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
