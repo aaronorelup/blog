@@ -92,6 +92,9 @@ export function create(ctx, el, sec) {
   const onPick = (e) => { const b = e.target.closest('.ail-rt__name'); if (!b) return; st.chosen = items.indexOf(b.closest('.ail-rt__shape')); light(st.chosen, false); };
   list.addEventListener('click', onPick);
   const unrove = rove(list, '.ail-rt__name');
+  // Escape steps back: every card this section opened closes
+  const onEsc = (e) => { if (e.key === 'Escape' && sec === ctx.clock.current) $$('details[open]:not(.ail-ms__pairs)', el).forEach((d) => { d.open = false; }); };
+  window.addEventListener('keydown', onEsc);
 
   const pins = phone ? [] : items.map((li, i) => labels.pin(li, () => v.set(CX[i] - 0.3, 0, CZ + 2.25), { ax: 0.5, ay: 0, dy: 6 }));
   pins.forEach((p) => { p.on = false; });
@@ -161,7 +164,7 @@ export function create(ctx, el, sec) {
     },
     dispose() {
       list.removeEventListener('click', onPick);
-      unrove();
+      unrove(); window.removeEventListener('keydown', onEsc);
       pins.forEach((p) => p.drop());
       all.forEach((r) => r.dispose());
       shapes.forEach((s) => { drop(s.you.mesh); s.lines.forEach((l) => drop(l.bead)); });

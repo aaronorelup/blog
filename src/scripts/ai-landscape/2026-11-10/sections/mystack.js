@@ -131,6 +131,9 @@ export function create(ctx, el, sec) {
   buttons.forEach((b) => { b.hidden = false; b.addEventListener('click', onSwap); });
   pieces.forEach((p) => { if (p.swap) dress(p, opts[p.swap][p.swap === 'router' ? st.r : st.w]); });
   verdict(true);
+  // Escape steps back: every card this section opened closes
+  const onEsc = (e) => { if (e.key === 'Escape' && sec === ctx.clock.current) $$('details[open]:not(.ail-ms__pairs)', el).forEach((d) => { d.open = false; }); };
+  window.addEventListener('keydown', onEsc);
 
   // ---- labels: names under the bench in two staggered rows on a desktop. A phone lists them in the sheet
   const v = new Vector3();
@@ -222,6 +225,7 @@ export function create(ctx, el, sec) {
     },
     dispose() {
       buttons.forEach((b) => { b.removeEventListener('click', onSwap); b.hidden = true; });
+      window.removeEventListener('keydown', onEsc);
       pairsEl.open = false;
       pins.forEach((p) => p.drop());
       leads.forEach((l) => l && l.drop());

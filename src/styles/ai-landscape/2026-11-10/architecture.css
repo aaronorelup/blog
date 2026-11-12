@@ -25,9 +25,9 @@
 .ail-gl .ail-ar__item:first-child .ail-ar__more { left: 0; transform: none; }
 .ail-gl .ail-ar__item:last-child .ail-ar__more { left: auto; right: 0; transform: none; }
 .ail-gl .ail-ar__say { position: absolute; left: var(--ail-margin); bottom: var(--ail-margin); max-width: min(40vw, 580px); padding: 8px 12px 10px; background: var(--ail-veil); color: var(--ail-fg);
-  font: italic 400 var(--ail-fs-sentence)/1.08 var(--ail-serif); letter-spacing: -.01em; opacity: 0; visibility: hidden; transform: translate3d(0, 8px, 0);
-  transition: opacity var(--ail-t) var(--ail-ease), transform var(--ail-t) var(--ail-ease), visibility 0s linear var(--ail-t); }
-.ail-gl .ail-ar__list.is-up .ail-ar__item.is-active .ail-ar__say { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+  font: italic 400 var(--ail-fs-sentence)/1.08 var(--ail-serif); letter-spacing: -.01em; opacity: 0; visibility: hidden; transform: translate3d(0, 8px, 0); }
+/* words arrive with a fade and leave at once, so two never share the screen */
+.ail-gl .ail-ar__list.is-up .ail-ar__item.is-active .ail-ar__say { opacity: 1; visibility: visible; transform: none; transition: opacity var(--ail-t) var(--ail-ease), transform var(--ail-t) var(--ail-ease); }
 
 @media (max-width: 599px) {
   .ail-gl .ail-ar__head { right: var(--ail-margin); max-width: none; }
@@ -88,8 +88,8 @@
 .ail-gl .ail-ms__piece[data-layer='you'] .ail-ms__name { display: none; }
 .ail-gl .ail-ms__piece:first-child .ail-ms__d[open] > .ail-ms__more { left: 0; transform: none; }
 .ail-gl .ail-ms__swap { width: 34px; height: 34px; }
-.ail-gl .ail-ms__pairs { position: absolute; left: var(--ail-margin); bottom: var(--ail-margin); margin: 0; max-width: min(42vw, 600px); opacity: 0; visibility: hidden; transition: opacity var(--ail-t) var(--ail-ease), visibility 0s linear var(--ail-t); }
-.ail-gl .ail-ms__pairs.is-on { opacity: var(--ms-on, 0); visibility: visible; transition-delay: 0s; }
+.ail-gl .ail-ms__pairs { position: absolute; left: var(--ail-margin); bottom: var(--ail-margin); margin: 0; max-width: min(42vw, 600px); opacity: 0; visibility: hidden; }
+.ail-gl .ail-ms__pairs.is-on { opacity: var(--ms-on, 0); visibility: visible; }
 .ail-gl .ail-ms__pairs > summary { display: none; }
 .ail-gl .ail-ms__pairs ul { display: block; margin: 0; }
 .ail-gl .ail-ms__say { display: none; padding: 10px 14px 12px; background: var(--ail-veil); }
@@ -160,9 +160,8 @@
 .ail-gl .ail-rt__name[aria-pressed='true'] { background: var(--ail-fg); color: var(--ail-bg); box-shadow: none; }
 .ail-gl .ail-rt__limit { display: none; max-width: 300px; padding: 6px 10px 7px; background: var(--ail-veil); color: var(--ail-fg); text-align: center; font-size: 18px; line-height: 1.2; }
 .ail-gl .ail-rt__shape.is-lit .ail-rt__limit { display: block; animation: ail-ar-in var(--ail-t) var(--ail-ease); }
-.ail-gl .ail-rt__more { position: absolute; left: var(--ail-margin); top: var(--ail-top); width: min(46vw, 640px); margin: 0; gap: 10px; opacity: 0; visibility: hidden; transform: translate3d(0, 10px, 0);
-  transition: opacity var(--ail-t) var(--ail-ease), transform var(--ail-t) var(--ail-ease), visibility 0s linear var(--ail-t); }
-.ail-gl .ail-rt__more.is-on { opacity: var(--rt-on, 0); visibility: visible; transform: none; transition-delay: 0s; }
+.ail-gl .ail-rt__more { position: absolute; left: var(--ail-margin); top: var(--ail-top); width: min(46vw, 640px); margin: 0; gap: 10px; opacity: 0; visibility: hidden; transform: translate3d(0, 10px, 0); }
+.ail-gl .ail-rt__more.is-on { opacity: var(--rt-on, 0); visibility: visible; transform: none; transition: transform var(--ail-t) var(--ail-ease); }
 .ail-gl .ail-rt__more > p { padding: 8px 12px 10px; background: var(--ail-veil); }
 .ail-gl .ail-rt__cav { font-size: 18px; line-height: 1.25; }
 .ail-gl .ail-rt__src { justify-self: start; background: var(--ail-veil); padding: 0 10px; }

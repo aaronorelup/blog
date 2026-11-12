@@ -52,6 +52,9 @@ export function create(ctx, el, sec) {
     tags.forEach((t, i) => { t.open = i === k && !t.open; });
   };
   ctx.canvas.addEventListener('click', onClick);
+  // Escape steps back: every card this section opened closes
+  const onEsc = (e) => { if (e.key === 'Escape' && sec === ctx.clock.current) $$('details[open]:not(.ail-ms__pairs)', el).forEach((d) => { d.open = false; }); };
+  window.addEventListener('keydown', onEsc);
 
   return {
     stops: [0.55],
@@ -100,7 +103,7 @@ export function create(ctx, el, sec) {
       list.classList.toggle('is-up', up > 0.5);
     },
     dispose() {
-      stopTour(); unrove();
+      stopTour(); unrove(); window.removeEventListener('keydown', onEsc);
       list.removeEventListener('focusin', onFocus);
       list.removeEventListener('toggle', onToggle, true);
       ctx.canvas.removeEventListener('click', onClick);

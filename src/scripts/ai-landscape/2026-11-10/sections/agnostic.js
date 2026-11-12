@@ -19,6 +19,9 @@ function frame(ctx, el, sec, build) {
   const pins = [];
   const pin = (node, at, o) => { if (ctx.phone) return; const p = ctx.labels.pin(node, at, o); p.on = false; pins.push(p); };
   const api = build(group, pin);
+  // Escape steps back: every card this section opened closes
+  const onEsc = (e) => { if (e.key === 'Escape' && sec === ctx.clock.current) $$('details[open]:not(.ail-ms__pairs)', el).forEach((d) => { d.open = false; }); };
+  window.addEventListener('keydown', onEsc);
   const hide = () => { group.visible = false; if (api.hide) api.hide(); pins.forEach((p) => { p.on = false; p.el.style.opacity = '0'; }); };
   hide();
   return {
@@ -30,7 +33,7 @@ function frame(ctx, el, sec, build) {
       pins.forEach((p) => { p.el.style.opacity = k.toFixed(3); });
       el.style.setProperty('--an-on', k.toFixed(3));
     },
-    dispose() { if (api.dispose) api.dispose(); pins.forEach((p) => p.drop()); drop(group); },
+    dispose() { window.removeEventListener('keydown', onEsc); if (api.dispose) api.dispose(); pins.forEach((p) => p.drop()); drop(group); },
   };
 }
 
