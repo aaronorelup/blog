@@ -1,0 +1,134 @@
+/* The frame around the five worlds (SPEC 2.1, 2.2, 2.12): the opening, the nine layers taught once, the ending.
+   House style only: ink, paper and the three faces. Text version first, then the 3D page (.ail-gl), then a phone.
+   --u is one world unit in pixels on the poster. sections/opening.js works out the same number: keep them equal. */
+
+/* ---- opening, text version */
+.ail-open { --u: min(100vw / 24, 100svh / 14.4); --z0: 3.9; --zt: 4.1; }
+.ail-open__proof, .ail-open__tour { display: none; }
+.ail-open__words { display: grid; gap: 10px; max-width: 46rem; }
+.ail-open__scope { color: var(--ail-fg-2); }
+.ail-open__five { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 28px 16px; margin-top: 40px; }
+.ail-open__co { display: grid; gap: 8px; justify-items: start; align-content: start; }
+.ail-open__co .ail-mark { width: 54px; height: 54px; padding: 0; }
+.ail-open__co .ail-mark__name { font-size: 16px; }
+.ail-open__who { display: flex; flex-wrap: wrap; gap: 2px 10px; }
+.ail-open__name { text-decoration: none; }
+.ail-open__name:hover { text-decoration: underline; }
+.ail-open__note { color: var(--ail-fg-2); }
+.ail-open__agent { font-size: var(--ail-fs-body); line-height: 1.15; }
+
+/* ---- opening, 3D page. The proof is the poster in plain lines: it hides the canvas until the scene has drawn
+   the same picture under it, then fades. Its title is also the ruler the floor print is laid against */
+.ail-gl .ail-open__proof { display: block; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, var(--ail-floor) 30%, #F3F4F7 100%); transition: opacity 420ms linear, visibility 0s linear 420ms; }
+.ail-gl .ail-open.is-live .ail-open__proof { opacity: 0; visibility: hidden; }
+.ail-open__proof > i { position: absolute; left: calc(50% + (var(--x) - 1.2) * var(--u)); top: calc(50% - (var(--z0) + 1.2) * var(--u)); width: calc(2.4 * var(--u)); height: calc(2.4 * var(--u)); border-radius: calc(.28 * var(--u)); box-shadow: inset 0 0 0 1px var(--ail-line); }
+.ail-open__proof > i::after { content: ''; position: absolute; inset: 17.5%; border-radius: 11.2%; box-shadow: inset 0 0 0 1px var(--ail-line); }
+.ail-open__proof > i[data-p='anthropic'] { --x: -8.4; }
+.ail-open__proof > i[data-p='openai'] { --x: -4.2; }
+.ail-open__proof > i[data-p='google'] { --x: 0; }
+.ail-open__proof > i[data-p='meta'] { --x: 4.2; }
+.ail-open__proof > i[data-p='xai'] { --x: 8.4; }
+.ail-gl .ail-print { position: absolute; left: 50%; top: calc(50% + (var(--zt) - var(--z0)) * var(--u) * .985 - .12em); transform: translateX(-50%); margin: 0; font: 400 calc(var(--u) * 4.76)/1 var(--ail-display); letter-spacing: 0; text-transform: uppercase; white-space: nowrap; color: var(--ail-ink); }
+.ail-gl .ail-open__words { position: absolute; left: var(--ail-margin); bottom: var(--ail-margin); max-width: min(34vw, 520px); gap: 12px; }
+.ail-gl .ail-open__five { display: block; margin: 0; }
+.ail-gl .ail-open:not(.is-live) .ail-open__five, .ail-gl .ail-open:not(.is-live) .ail-open__tour { visibility: hidden; }
+.ail-gl .ail-open__co { justify-items: center; gap: 3px; padding: 6px 10px 7px; background: var(--ail-veil); text-align: center; white-space: nowrap; opacity: 0; transition: opacity 320ms linear, background-color 150ms, color 150ms; }
+.ail-gl .ail-open__co .ail-mark { display: none; }
+.ail-gl .ail-open__who { justify-content: center; }
+.ail-gl .ail-open__co.is-hot { background: var(--ail-ink); color: var(--ail-floor); }
+.ail-gl .ail-open__co.is-hot .ail-open__note { color: inherit; }
+.ail-gl .ail-open__tour { display: block; position: absolute; right: var(--ail-margin); bottom: var(--ail-margin); margin: 0; opacity: 0; visibility: hidden; transition: opacity 200ms linear, visibility 0s linear 200ms; }
+.ail-gl .ail-open__tour[data-state] { opacity: 1; visibility: visible; transition-delay: 0s; }
+.ail-open__tour .ail-chip { background: var(--ail-veil); }
+.ail-open__tour[data-state='on'] button, .ail-open__tour[data-state='off'] span { display: none; }
+.ail-open__tour[data-state='on'] span::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: ail-blink 1.4s steps(2, jump-none) infinite; }
+@keyframes ail-blink { from { opacity: 1; } to { opacity: .2; } }
+
+@media (max-width: 599px) {
+  .ail-open { --u: calc(100vw / 21); --z0: 7.4; --zt: 3; }
+  /* phone, 3D page: no caption is drawn over a stack. The five go in a list under the open line */
+  .ail-gl .ail-open .ail-stage { display: flex; flex-direction: column; justify-content: flex-end; gap: 12px; padding: 0 var(--ail-margin) 18px; }
+  .ail-gl .ail-open__words { position: static; max-width: none; gap: 8px; }
+  /* a phone prints no word under 14 px in these sections (the label face is 12 px elsewhere) */
+  .ail-open .ail-open__scope, .ail-open .ail-open__who, .ail-open .ail-tag, .ail-open__tour .ail-chip { font-size: 14px; letter-spacing: .04em; }
+  .ail-gl .ail-open__five { display: grid; grid-template-columns: 1fr; gap: 0; }
+  .ail-gl .ail-open__co { display: flex; align-items: baseline; justify-content: flex-start; gap: 10px; padding: 5px 0 4px; background: none; border-top: 1px solid var(--ail-hair); text-align: left; opacity: 1; }
+  .ail-gl .ail-open__who { flex: 0 0 auto; min-width: 7.2em; justify-content: flex-start; }
+  .ail-gl .ail-open__who::before { content: ''; flex: none; align-self: center; width: 9px; height: 9px; border-radius: 50%; background: var(--own); box-shadow: 0 0 0 1px var(--own-rim, transparent), 0 0 0 2px color-mix(in srgb, var(--ail-fg) 28%, transparent); }
+  .ail-gl .ail-open__agent { font-size: 17px; }
+  .ail-gl .ail-open__tour { position: static; align-self: flex-start; order: -1; }
+  .ail-open__co[data-p='anthropic'] { --own: var(--ail-own-anthropic); --own-rim: var(--ail-rim-anthropic); }
+  .ail-open__co[data-p='openai'] { --own: var(--ail-own-openai); --own-rim: var(--ail-rim-openai); }
+  .ail-open__co[data-p='google'] { --own: var(--ail-own-google); --own-rim: var(--ail-rim-google); }
+  .ail-open__co[data-p='meta'] { --own: var(--ail-own-meta); --own-rim: var(--ail-rim-meta); }
+  .ail-open__co[data-p='xai'] { --own: var(--ail-own-xai); --own-rim: var(--ail-rim-xai); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ail-open__proof > i, .ail-open__proof .ail-print { visibility: hidden; }
+}
+
+/* ---- the nine layers, text version: the closing line, the request, then the nine in order */
+.ail-gram__close { max-width: 34rem; }
+.ail-gram__ask { margin-top: 20px; max-width: 34rem; color: var(--ail-fg-2); }
+.ail-gram__ask::before { content: '\201C'; }
+.ail-gram__ask::after { content: '\201D'; }
+.ail-gram__list { display: grid; gap: 26px; max-width: 46rem; margin-top: 44px; }
+.ail-gram__chip { display: none; }
+.ail-layer { display: grid; gap: 8px; }
+.ail-layer__head { display: flex; align-items: center; gap: 12px; }
+.ail-layer__head .ail-glyph { width: 26px; height: 26px; }
+.ail-layer__n { color: var(--ail-fg-2); }
+.ail-layer__name { font-size: clamp(30px, 3.4vw, 44px); text-decoration: underline dotted 1px; text-underline-offset: .16em; text-decoration-color: var(--ail-mid); }
+.ail-layer__d[open] .ail-layer__name { text-decoration-style: solid; text-decoration-color: currentColor; }
+.ail-layer__say { font-size: clamp(21px, 2vw, 26px); line-height: 1.16; }
+.ail-layer__more { display: grid; gap: 8px; margin: 10px 0 4px; padding: 13px 16px 14px; max-width: 30rem; background: var(--ail-card); box-shadow: 0 0 0 1px var(--ail-fg); font-size: 18px; line-height: 1.25; }
+.ail-layer__more dfn { font-style: normal; display: block; margin-bottom: 2px; color: var(--ail-fg-2); }
+
+/* ---- the nine layers, 3D page: one layer at a time bottom left, the request over the stack, the chip on the thread */
+.ail-gl .ail-gram__list { display: block; margin: 0; max-width: none; }
+.ail-gl .ail-layer { position: absolute; left: var(--ail-margin); bottom: var(--ail-margin); width: min(34vw, 520px); gap: 12px; visibility: hidden; opacity: 0; }
+.ail-gl .ail-layer.is-on { visibility: visible; opacity: 1; animation: ail-rise 420ms var(--ail-ease) both; }
+@keyframes ail-rise { from { opacity: .06; transform: translate3d(0, 14px, 0); } to { opacity: 1; transform: none; } }
+.ail-gl .ail-layer__name { font-size: var(--ail-fs-title); }
+.ail-gl .ail-layer__say { font-size: var(--ail-fs-sentence); line-height: 1.08; }
+.ail-gl .ail-gram__ask, .ail-gl .ail-gram__close { margin: 0; opacity: 0; visibility: hidden; color: var(--ail-fg); }
+.ail-gl .ail-gram__ask.is-on, .ail-gl .ail-gram__close.is-on { visibility: visible; }
+.ail-gl .ail-gram__ask { max-width: none; white-space: nowrap; font-size: clamp(22px, 2.3vw, 34px); }
+.ail-gl .ail-gram__close { position: absolute; left: var(--ail-margin); bottom: var(--ail-margin); max-width: min(34vw, 520px); }
+.ail-gl .ail-gram__chip { display: grid; place-items: center; width: 46px; height: 46px; margin: 0; border-radius: 50%; background: var(--ail-floor); box-shadow: 0 0 0 1.5px var(--ail-ink); color: var(--ail-ink); opacity: 0; visibility: hidden; }
+.ail-gl .ail-gram__chip.is-on { visibility: visible; }
+.ail-gram__chip svg { grid-area: 1 / 1; width: 26px; height: 26px; opacity: 0; transform: scale(.5) rotate(-30deg); transition: opacity 220ms linear, transform 320ms var(--ail-ease); }
+.ail-gram__chip svg.is-on { opacity: 1; transform: none; }
+
+/* ---- the ending, text version: the date, his line, the disclaimer and the three ways out */
+.ail-end__date { font: 400 var(--ail-fs-title)/.95 var(--ail-display); letter-spacing: .015em; }
+.ail-end__quote { margin: 18px 0 0; max-width: 34rem; }
+.ail-end__foot { display: grid; gap: 14px; margin-top: 28px; max-width: 30rem; }
+.ail-end__fine { font-size: 17px; line-height: 1.3; color: var(--ail-fg-2); }
+.ail-end__links { display: flex; flex-wrap: wrap; gap: 6px 22px; }
+.ail-end__links a { display: inline-flex; align-items: center; min-height: 44px; }
+.ail-end__prov { color: var(--ail-fg-2); }
+
+/* ---- the ending, 3D page: the poster again. The date is printed on the floor: its element is only the ruler */
+.ail-end { --u: min(100vw / 24, 100svh / 14.4); --z0: 3.9; --zt: 4.1; }
+.ail-gl .ail-end .ail-print { visibility: hidden; letter-spacing: 0; }
+.ail-gl .ail-end__quote { position: absolute; left: var(--ail-margin); bottom: var(--ail-margin); max-width: min(34vw, 520px); margin: 0; }
+.ail-gl .ail-end__foot { position: absolute; right: var(--ail-margin); bottom: var(--ail-margin); width: min(27vw, 380px); margin: 0; gap: 8px; }
+.ail-gl .ail-end__fine { font-size: 16px; }
+
+@media (max-width: 599px) {
+  .ail-gl .ail-gram .ail-stage, .ail-gl .ail-end .ail-stage { display: flex; flex-direction: column; justify-content: flex-end; padding: 0 var(--ail-margin) 20px; }
+  .ail-gl .ail-layer { position: static; display: none; width: auto; gap: 8px; }
+  .ail-gl .ail-layer.is-on { display: grid; }
+  .ail-gram .ail-layer__n, .ail-gram .ail-layer__more dfn, .ail-end .ail-end__links, .ail-end .ail-end__prov { font-size: 14px; }
+  .ail-gl .ail-layer__name { font-size: 40px; }
+  .ail-gl .ail-layer__say, .ail-gl .ail-gram__close, .ail-gl .ail-gram__ask { font-size: 23px; line-height: 1.12; }
+  .ail-gl .ail-gram__ask, .ail-gl .ail-gram__close { position: static; display: none; max-width: none; white-space: normal; }
+  .ail-gl .ail-gram__ask.is-on, .ail-gl .ail-gram__close.is-on { display: block; }
+  .ail-gl .ail-gram__ask { order: 2; margin-top: 10px; color: var(--ail-fg-2); }
+  .ail-gl .ail-gram__chip { width: 34px; height: 34px; }
+  .ail-gram__chip svg { width: 20px; height: 20px; }
+  .ail-end { --u: calc(100vw / 21); --z0: 7.4; --zt: 3; }
+  .ail-gl .ail-end__quote, .ail-gl .ail-end__foot { position: static; width: auto; max-width: none; }
+  .ail-gl .ail-end__foot { margin-top: 14px; }
+}
