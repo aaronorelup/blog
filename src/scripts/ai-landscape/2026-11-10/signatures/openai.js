@@ -5,7 +5,7 @@
 import { BufferGeometry, DoubleSide, Float32BufferAttribute, Mesh, MeshBasicMaterial, PlaneGeometry, SphereGeometry, TorusGeometry, Vector3 } from 'three';
 import { damp, smooth, span } from '../core/clock.js';
 import { $, announce } from '../core/dom.js';
-import { owner } from '../worlds/index.js';
+import { HOUSE, owner } from '../worlds/index.js';
 import { FLOOR } from '../scene/stack.js';
 
 const VOICE = 1, MODEL = 4, HANDS = 7;
@@ -26,7 +26,7 @@ export function create(ctx, world) {
   const go = world.button('go');
   const st = { held: false, manual: false, auto: 0, lift: 0, level: 0, t: -1, free: -1, said: false, step: 0, floor: -1, back: false, told: false, age: 0, caught: 0 };
   const sig = { lit: -1, dark: false };
-  const v = new Vector3(), at = new Vector3();
+  const at = new Vector3();
   const say = (li) => [...li.querySelectorAll('.ail-own, .ail-note, .ail-tag')].map((n) => n.textContent.trim()).filter(Boolean).join('. ');
 
   // ---- the ring of sound: three thin ribbons round the head of the visitor's thread, shaken by seeded noise
@@ -80,7 +80,7 @@ export function create(ctx, world) {
   // ball. The strip is house paper, like a mark's plate, so the hoops read against any backdrop
   const hoopGeo = new TorusGeometry(0.105, 0.012, 8, 40);
   const hoopMat = new MeshBasicMaterial({ color: cfg.theme.ink, transparent: true });
-  const strip = new Mesh(new PlaneGeometry(0.3 * data.media.length + 0.08, 0.31), new MeshBasicMaterial({ color: '#F8F9FB', transparent: true }));
+  const strip = new Mesh(new PlaneGeometry(0.3 * data.media.length + 0.08, 0.31), new MeshBasicMaterial({ color: HOUSE.floor, transparent: true }));
   strip.visible = false;
   tower.group.add(strip);
   const hoops = data.media.map((state) => {

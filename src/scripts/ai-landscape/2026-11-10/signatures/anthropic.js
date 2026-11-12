@@ -5,7 +5,7 @@
 import { BoxGeometry, CylinderGeometry, Group, Mesh, MeshBasicMaterial, PlaneGeometry, SphereGeometry, TorusGeometry, Vector3 } from 'three';
 import { damp, easeIO, easeOut, lerp, smooth, span } from '../core/clock.js';
 import { $, announce } from '../core/dom.js';
-import { owner, world as configOf } from '../worlds/index.js';
+import { HOUSE, owner, world as configOf } from '../worlds/index.js';
 import { FLOOR, slabGeometry } from '../scene/stack.js';
 
 const MODEL = 4, TOOLS = 5, HANDS = 7;
@@ -93,7 +93,7 @@ export function create(ctx, world) {
   // one holds nothing. The strip is house paper, like a mark's plate, so the hoops read against any backdrop
   const hoopGeo = new TorusGeometry(0.105, 0.012, 8, 40);
   const hoopMat = new MeshBasicMaterial({ color: cfg.theme.ink, transparent: true });
-  const strip = new Mesh(new PlaneGeometry(0.3 * data.media.length + 0.08, 0.31), new MeshBasicMaterial({ color: '#F8F9FB', transparent: true }));
+  const strip = new Mesh(new PlaneGeometry(0.3 * data.media.length + 0.08, 0.31), new MeshBasicMaterial({ color: HOUSE.floor, transparent: true }));
   strip.visible = false;
   tower.group.add(strip);
   const hoops = data.media.map((state) => {
@@ -183,7 +183,7 @@ export function create(ctx, world) {
     const s = free(e) && stations.find((x) => near(e, v.copy(x.pos).add(root.position).setY(x.pos.y + 0.3), ctx.phone ? 34 : 54));
     if (s) plugTo(s.k);
   };
-  if (go) { go.addEventListener('click', onGo); go.addEventListener('keydown', onKey); }
+  if (go) { go.addEventListener('click', onGo); go.addEventListener('keydown', onKey); go.setAttribute('aria-keyshortcuts', 'ArrowLeft ArrowRight'); }
   const heard = [['pointerdown', onDown], ['pointermove', onMove], ['pointerup', onUp], ['pointercancel', onUp], ['click', onClick]];
   heard.forEach(([name, fn]) => window.addEventListener(name, fn));
   // the play-through stops for good on the first press, touch or key. The flight in the air still lands
@@ -311,18 +311,19 @@ export function create(ctx, world) {
 
     // then the model floor slides out its three sockets, each with the reason it is empty
     st.ledge = quick ? (st.mode === 'sockets' ? 1 : 0) : damp(st.ledge, st.mode === 'sockets' ? 1 : 0, 5, dt);
-    sockets(st.on ? st.ledge : 0);
+    sockets(st.on ? st.ledge : st.hold);                          // on the way into the catch the floor stays where it was
   };
 
   sig.dispose = () => {
     st.gone = true;
     sig.reset(); sig.catch(0);
-    if (go) { go.removeEventListener('click', onGo); go.removeEventListener('keydown', onKey); }
+    if (go) { go.removeEventListener('click', onGo); go.removeEventListener('keydown', onKey); go.removeAttribute('aria-keyshortcuts'); }
     heard.forEach(([name, fn]) => window.removeEventListener(name, fn));
     window.removeEventListener('resize', layout);
     unhear();
     stations.forEach((s) => { if (s.pin) s.pin.drop(); if (s.img) s.img.remove(); if (s.tex) s.tex.dispose(); });
     if (reasonPin) { reasonPin.drop(); reasonList.style.maxWidth = ''; }
+    world.ui.removeAttribute('data-column');
     if (titlePin) titlePin.drop();
     // the slab is the stack's own shared shape: its materials go, the shape stays
     root.traverse((o) => { if (o.material) o.material.dispose(); if (o.geometry && o.geometry !== slabGeometry()) o.geometry.dispose(); });
