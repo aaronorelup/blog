@@ -316,7 +316,7 @@ void main() {
   p.z += cos(uTime * 0.09 + aPh * 2.0) * 0.7 * uDrift;
   vec4 mv = viewMatrix * modelMatrix * vec4(p, 1.0);
   gl_Position = projectionMatrix * mv;
-  vA = 0.35 + 0.65 * pow(0.5 + 0.5 * sin(uTime * (0.6 + fract(aPh) * 1.3) + aPh * 9.0), 3.0);
+  vA = mix(0.6, 0.35 + 0.65 * pow(0.5 + 0.5 * sin(uTime * (0.6 + fract(aPh) * 1.3) + aPh * 9.0), 3.0), uDrift);   // still under reduced motion
   gl_PointSize = uPx * (0.6 + fract(aPh * 7.0)) / max(-mv.z, 0.5);
 }`;
 export const dustFrag = /* glsl */ `${COMMON}
