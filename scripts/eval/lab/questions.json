@@ -1,0 +1,284 @@
+{
+  "about": "The Goobie lab's questions (scripts/eval/lab/). `for` is the method each one is meant to show off; every method answers every question, so each showcase is checked against the other two. gold = the posts that hold the answer; must = the facts a good answer states, graded by judge.mjs; built on the 72 listed posts of 0106adb (AO-073, the live notebook, is never in the lab's corpus).",
+  "questions": [
+    {
+      "id": "c1",
+      "for": "context",
+      "type": "synthesis",
+      "q": "What lessons does Aaron keep relearning across his posts?",
+      "gold": [
+        "wallpapers-nobody-saw",
+        "remora-voice-lab",
+        "characters-in-inscryption",
+        "clawd-growth-montage",
+        "mvp-before-i-knew",
+        "stopped-keeping-agents-fed",
+        "a-bad-previs",
+        "moonlight-five-times",
+        "every-ai-film-so-far",
+        "the-missing-map",
+        "sonnet-vs-opus-gauntlet",
+        "the-clock-nobody-checked"
+      ],
+      "must": [
+        "Agents that can't see, hear or play what they made pass their checks while the output is wrong, which Aaron calls the same blind spot or lesson (e.g. wallpapers-nobody-saw, remora-voice-lab, clawd-growth-montage, characters-in-inscryption, blackwater-2-postmortem)",
+        "Handing the deciding to an agent costs review time and he decides anyway, the same mistake as keeping agents busy (mvp-before-i-knew, stopped-keeping-agents-fed)",
+        "AI models copy what they are shown, mistakes included (e.g. a-bad-previs, moonlight-five-times, nine-claudes-one-painting, crimson-coil, echo-the-borrowed-voice)",
+        "Results depend on saying exactly what he wants: his notes, specs and what a tool is for (e.g. every-ai-film-so-far, the-wall-that-stopped-me, moonlight-two-cuts, showreel-rebuilt, grind-and-grimoire)",
+        "A second checker or a measurement catches what the maker missed (e.g. the-missing-map, first-lesson-on-the-new-map, the-planted-lie, paper-jefrie)",
+        "Agents lose track of time, and of when to stop or wait (e.g. opus-55-on-x-alone, the-clock-nobody-checked, sonnet-vs-opus-gauntlet's nine-hour session)"
+      ],
+      "notes": "Each must is one recurring lesson: 1 when the answer states it with at least one post that really shows it, 0.5 when it states it with no right example. Rows 1, 2 and 6 are ones the posts themselves call 'the same blind spot', 'the same lesson' or 'the same mistake'. Other lessons the posts support are fine but score nothing."
+    },
+    {
+      "id": "c2",
+      "for": "context",
+      "type": "synthesis",
+      "q": "Where did a later post change or overturn something an earlier post concluded?",
+      "gold": [
+        "sonnet-vs-opus-gauntlet",
+        "what-drives-claude-code-cost",
+        "characters-in-inscryption",
+        "modding-megabonk"
+      ],
+      "must": [
+        "what-drives-claude-code-cost corrects sonnet-vs-opus-gauntlet on price: since the 8 October cache-read price cut Sonnet is 33% cheaper on his long tests, not 2%",
+        "what-drives-claude-code-cost: the effort numbers he used to quote (9x the actions for 1.7x the thinking, effort as a work dial) came from one test, Lockkeeper; on the others thinking per request rose 8 to 18 times",
+        "modding-megabonk revisits characters-in-inscryption's call that an IL2CPP game is a much bigger job: it was, but the code was the small part",
+        "what-drives-claude-code-cost: he had said Claude Code shows no cost, which was wrong: it shows a session's cost but no weekly or monthly history"
+      ],
+      "notes": "These four are every place a later post says an earlier one was wrong or only partly right (a grep of the 72 posts for correction words, read by hand). A later round inside the same post (ai-rigging-vs-a-script's 8 October round, props-three-budgets' retest of Claude's earlier advice) is fine but scores nothing."
+    },
+    {
+      "id": "c3",
+      "for": "context",
+      "type": "synthesis",
+      "q": "How did the way Aaron works with AI agents change between August and November?",
+      "gold": [
+        "stopped-keeping-agents-fed",
+        "mvp-before-i-knew",
+        "reading-my-own-agents",
+        "opus-55-on-x-alone",
+        "the-clock-nobody-checked",
+        "loom-and-information-flow",
+        "the-planted-lie",
+        "the-naughty-list"
+      ],
+      "must": [
+        "August: he checked in on agents about every hour, then switched to bursts, one big run and then a review day (stopped-keeping-agents-fed), and kept the deciding himself (mvp-before-i-knew)",
+        "September: he read back the transcripts of an 80-agent overnight run (reading-my-own-agents), which found a silent $22 failure",
+        "October: agents worked alone or as crews from one request, e.g. a post published alone in 4 h 21 min (opus-55-on-x-alone), crews of 49 to 84 agents making films (the-clock-nobody-checked, touch-move, earthlight), 153 agents making a lesson (loom-and-information-flow)",
+        "Late October: experiments on the agents themselves (the-planted-lie, the-naughty-list, the-small-one-harness, the-thought-it-denied)"
+      ],
+      "notes": "Dates matter: a stage told in the wrong month scores at most 0.5."
+    },
+    {
+      "id": "c4",
+      "for": "context",
+      "type": "synthesis",
+      "q": "What are AI agents still bad at, going by everything Aaron has tried?",
+      "gold": [
+        "wallpapers-nobody-saw",
+        "remora-voice-lab",
+        "opus-55-on-x-alone",
+        "the-clock-nobody-checked",
+        "blackwater-weekend",
+        "ai-rigging-vs-a-script",
+        "the-confession-that-spread",
+        "lessons-sent-back",
+        "showreel-rebuilt",
+        "a-bad-previs"
+      ],
+      "must": [
+        "Seeing, hearing or playing what they made, so they build to whatever their check measures (e.g. wallpapers-nobody-saw, remora-voice-lab, clawd-growth-montage, blackwater-2-postmortem, characters-in-inscryption)",
+        "Keeping track of time and of their own usage (e.g. opus-55-on-x-alone, the-clock-nobody-checked)",
+        "Fixing their own 3D problems or rigging an unusual body (e.g. blackwater-weekend, ai-rigging-vs-a-script, jefrie-in-3d)",
+        "Knowing what other sessions or the rest of the machine are doing, so one blames itself for others' changes (e.g. the-confession-that-spread, every-video-can-seek)",
+        "Judging what's worth doing: a topic out of date or a weak concept, even with the facts right (e.g. lessons-sent-back, curriculum-from-sources, still-on-shift-concept)",
+        "Reading intent: they take words literally and copy what they're shown, mistakes included (e.g. showreel-rebuilt, moonlight-two-cuts, a-bad-previs, moonlight-five-times)"
+      ],
+      "notes": "Each must: 1 when the answer states it with at least one post that really shows it, 0.5 with no right example. Other weaknesses the posts support are fine but score nothing."
+    },
+    {
+      "id": "c5",
+      "for": "context",
+      "type": "synthesis",
+      "q": "Which of Aaron's experiments didn't work out, and what went wrong?",
+      "gold": [
+        "grind-and-grimoire",
+        "blackwater-2-postmortem",
+        "a-bad-previs",
+        "wallpapers-nobody-saw",
+        "ai-rigging-vs-a-script",
+        "still-on-shift-concept",
+        "the-thought-it-denied",
+        "d1-free-tier-cutoff"
+      ],
+      "must": [
+        "grind-and-grimoire: asking for six districts instead of two made the whole game worse",
+        "blackwater-2-postmortem: both agent-built sequels passed their tests and neither was playable",
+        "a-bad-previs: the rough Blender guide made the video's motion worse than no guide",
+        "wallpapers-nobody-saw: 13 scenes were built against an app that had crashed",
+        "ai-rigging-vs-a-script: her tail and cape broke the AI rigging tools, so the scripted rig won",
+        "still-on-shift-concept: three versions fixed the craft but kept a concept that felt lame",
+        "the-thought-it-denied: the model mostly didn't notice the planted thoughts and denied them",
+        "d1-free-tier-cutoff: the free database plan cut every query off on day four"
+      ],
+      "notes": "These eight are the posts whose own verdict is a failure. Other failures the posts support (the-branch-that-went-live, the-confession-that-spread, props-three-budgets, the-small-one-harness) are fine but score nothing. 1 for a post named with what went wrong, 0.5 for the post with the cause wrong or missing."
+    },
+    {
+      "id": "r1",
+      "for": "rag",
+      "type": "lookup",
+      "q": "did a cloud agent ever push something broken to the real site?",
+      "gold": [
+        "the-branch-that-went-live"
+      ],
+      "must": [
+        "the-branch-that-went-live: on 8 October a cloud agent started from the stale August branch and its push went live",
+        "for eight minutes aaronorelup.com was the site as it stood on 2 August (rolled back in 8 minutes)",
+        "three settings nobody had checked since August let it through (old default branch, every branch built for the live site), and four stops now prevent it"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "r2",
+      "for": "rag",
+      "type": "lookup",
+      "q": "the post about getting back an old video game account",
+      "gold": [
+        "blood-helix-and-the-lost-skin"
+      ],
+      "must": [
+        "blood-helix-and-the-lost-skin: from one vague message Claude found his original Minecraft skin on Mojang's servers",
+        "his old account was still alive and holding his name (BloodTailor), tied to an old email he can't get into",
+        "his old worlds were never stored online, and Claude rebuilt the Blood Helix effect as a datapack"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "r3",
+      "for": "rag",
+      "type": "lookup",
+      "q": "did Aaron ever make a music video without a camera or any AI video?",
+      "gold": [
+        "still-on-shift-music-video"
+      ],
+      "must": [
+        "still-on-shift-music-video: a music video for his game BLACKWATER, cut to its song Still on Shift",
+        "Claude wrote a script that runs inside the game and filmed every shot with the game's own models, no footage and no AI video",
+        "it worked because the game already had testing tools a script could drive"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "r4",
+      "for": "rag",
+      "type": "lookup",
+      "q": "how many actual humans read this website?",
+      "gold": [
+        "who-visits-a-new-website"
+      ],
+      "must": [
+        "who-visits-a-new-website: in 30 days the site served 11,637 pages",
+        "about 9,000 went to bots and about 1,600 to Aaron and his agents",
+        "290 to 980 pages went to other people, 10 to 33 pages a day read by real people"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "r5",
+      "for": "rag",
+      "type": "lookup",
+      "q": "when the free database plan stopped working",
+      "gold": [
+        "d1-free-tier-cutoff"
+      ],
+      "must": [
+        "d1-free-tier-cutoff: on the fourth day Cloudflare cut off every database on his account (the D1 free plan's daily limit)",
+        "D1 counts every row a query looks through, and one page read all 68,000 rows on every load",
+        "the fix: queries using the index (68,687 rows a load to 1,062), and the $5 a month plan has no daily cutoff"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "a1",
+      "for": "agent",
+      "type": "exhaustive",
+      "q": "Which posts used RunPod, which graphics cards did each rent, and what did each spend?",
+      "gold": [
+        "renting-a-gpu",
+        "context-window",
+        "touch-move",
+        "the-clock-nobody-checked",
+        "the-naughty-list"
+      ],
+      "must": [
+        "renting-a-gpu: a 48 GB Nvidia L40S at $1.09 an hour, and a music video's whole render list for $2.44",
+        "context-window: one pod with two RTX 4090s, 26 minutes, about $0.78, for 784 frames of the watermelon film",
+        "touch-move: about $10.57, 28 pods (RTX 3090, 4090, 5090, RTX 6000 Ada, L40S and H100), 11.5 pod-hours",
+        "the-clock-nobody-checked: RunPod got $50, it spent about $7 to $8 an hour, and $100 more was asked for",
+        "the-naughty-list: an agent wanted a RunPod machine for a 20-minute encoder test and the check refused it"
+      ],
+      "notes": "These five are every post that names RunPod. moonlight-five-times used a rented L40S without naming RunPod: fine either way."
+    },
+    {
+      "id": "a2",
+      "for": "agent",
+      "type": "structured",
+      "q": "How many posts did Aaron publish in September 2026, and how many were there of each topic?",
+      "gold": [
+        "reading-my-own-agents",
+        "sonnet-vs-opus-gauntlet",
+        "wallpapers-nobody-saw"
+      ],
+      "must": [
+        "12 posts in September",
+        "agents 4, the most (reading-my-own-agents, the-confession-that-spread, sonnet-vs-opus-gauntlet, wallpapers-nobody-saw)",
+        "games 2, 3D 2, video 2, art 2",
+        "none in learning or site"
+      ],
+      "notes": "From the posts' dates: AO-014 (Sep 1) to AO-027 (Sep 29), AO-028 is unlisted and not in the corpus. A wrong total scores 0 on the first must."
+    },
+    {
+      "id": "a3",
+      "for": "agent",
+      "type": "multi-hop",
+      "q": "The graphics card Aaron rented for his AI videos: which other posts used that same card, and how did it go there?",
+      "gold": [
+        "renting-a-gpu",
+        "moonlight-five-times",
+        "touch-move"
+      ],
+      "must": [
+        "the card: a 48 GB Nvidia L40S rented for $1.09 an hour, 4 to 5 times faster than his laptop (renting-a-gpu)",
+        "moonlight-five-times: a rented 48 GB L40S did the music video's work, 37 clips at 1344x768 plus paintings",
+        "touch-move: the one L40S machine never started a container, three pods for about $0.91 for nothing, so the crew rented an H100 instead",
+        "touch-move lists the L40S among the 28 pods' cards"
+      ],
+      "notes": ""
+    },
+    {
+      "id": "a4",
+      "for": "agent",
+      "type": "structured",
+      "q": "Which posts did Claude write itself, in its own first person, and when?",
+      "gold": [
+        "echo-the-borrowed-voice",
+        "crimson-coil",
+        "earthlight",
+        "bad-very-bad",
+        "context-window",
+        "touch-move",
+        "the-small-one-harness"
+      ],
+      "must": [
+        "7 posts",
+        "echo-the-borrowed-voice (Sep 27), crimson-coil (Oct 11), earthlight (Oct 14), bad-very-bad (Oct 16)",
+        "context-window (Oct 20), touch-move (Oct 22), the-small-one-harness (Oct 27)",
+        "no other post (none in August)"
+      ],
+      "notes": "From each post's author. A missing or extra post scores 0.5 at most on its must."
+    }
+  ]
+}
