@@ -286,6 +286,15 @@ test.describe('without JavaScript', () => {
     // footer carry those addresses, so no address is out of reach.
     if (!isMobile) expect(hidden).toEqual([]);
     expect(hidden.filter((h) => !shown.has(h))).toEqual([]);
+    // the day/night switch needs its script, so without it there is no dead button (TeaPage's noscript style), and the
+    // phone's strip keeps no room for it: its pills run to the strip's end, padded as its start is
+    await expect(page.locator('#mode-toggle')).toBeHidden();
+    if (isMobile) {
+      const [end, start] = await page.locator('.tea-rail').evaluate((r) => [
+        r.getBoundingClientRect().right - r.querySelector('.tea-rail-list').getBoundingClientRect().right,
+        parseFloat(getComputedStyle(r).paddingLeft)]);
+      expect(Math.round(end)).toBe(start);
+    }
   });
 });
 

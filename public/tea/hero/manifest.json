@@ -1,6 +1,6 @@
 {
  "version": 1,
- "note": "Stand-ins: jefrie-v2.glb (pose-baked, bend deform), standin-angel.glb (part nodes) for Yusef, standin-tv.glb. Format: docs/TEA_HERO.md",
+ "note": "Stand-in cast: jefrie-v2.glb (pose-baked, bend deform), standin-angel.glb (part nodes) for Yusef, standin-tv.glb. The picture (bg-*) is the final painted one. Format: docs/TEA_HERO.md",
  "reference": {
   "aspect": 1.6
  },
@@ -12,10 +12,11 @@
     "day": "bg-far-day.webp",
     "z": -10,
     "size": [
-     24,
-     15
+     29.568,
+     16.632
     ],
-    "y": 0.65
+    "x": 0,
+    "y": 0.6
    },
    {
     "id": "mid",
@@ -23,9 +24,10 @@
     "day": "bg-mid-day.webp",
     "z": -6,
     "size": [
-     17,
-     10.6
+     19.08,
+     12.72
     ],
+    "x": -1.1,
     "y": 1.0,
     "cutout": true
    }
