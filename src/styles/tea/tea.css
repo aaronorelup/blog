@@ -156,6 +156,9 @@ body.tea {
   }
   .tea-rail-link[aria-current='true']::before { display: none; }
   .tea .mode-toggle { top: 10px; right: 12px; }
+  /* The first chapter sits right under the strip: landing on it with the strip's height as its margin leaves the strip
+     stuck at the top, in line with the fixed switch, and none of the hero's foot above it. */
+  #start { scroll-margin-top: var(--tea-strip-h); }
 }
 
 /* ---------------------------------------------------------------- motion */

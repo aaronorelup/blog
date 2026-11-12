@@ -493,7 +493,7 @@ once the 3D hero pins the top.
 | The panel footer's "Tea room" link and the homepage gate's button reach `/tea/`; the gate's `data-no-fly` leaves at once (the scene doesn't hold the click to fly) | tea-7 |
 | The hero, the rail and the footer lead back to `/`; the footer carries every `NAV` link | tea-8 |
 | The rail marks the chapter being read (`aria-current`), none over the hero; a rail link or strip pill takes the reader to its chapter; a chapter reached by its anchor shows its opener (the one-time fade was set off, or never waited, and ends fully shown; no frame of it is timed) | tea-9 |
-| With JavaScript off every chapter shows, nothing waits to fade in, every link shows on a wide window, and on a phone every address is on a link that shows | tea-10 |
+| With JavaScript off every chapter shows, nothing waits to fade in, every link shows on a wide window, and on a phone every address is on a link that shows; the day/night switch, which needs its script, isn't shown | tea-10 |
 | Day or night chosen on a panel page is what `/tea/` opens in, and the reverse (the shared `scene-mode`) | tea-11 |
 | The first Tab is the skip link, in view; it takes the keyboard past the hero and the rail into the first chapter; no positive tabindex | tea-12 |
 | No console error, no sideways scroll at 1440 and 390 wide by day and by night (at the top and at every chapter), every picture loads | tea-13 |
@@ -536,7 +536,7 @@ for `data-hero-settled` (the hero will change no layout by itself any more) befo
 | Without WebGL the same | tea-hero-2 (desktop: a Chromium flag) |
 | Nothing of the 3D is fetched before first paint; where the scene runs its files do come, after it | tea-hero-3 |
 | Where WebGL runs the scene mounts, pins and draws with no console error, and what sticks stays at the top mid-scroll | tea-hero-4 |
-| On a phone the day/night switch is on screen and on top through the static and the pinned hero, works, and is the only one | tea-hero-5 (phone) |
+| On a phone the day/night switch is on screen and on top through the static and the pinned hero, works, and is the only one; landed on the first chapter, the strip is already stuck at the top with the switch inside it | tea-hero-5 (phone) |
 | The title box's skip link takes the keyboard past the pinned hero to the chapters | tea-hero-6 |
 | Every chapter link in the title box lands on its chapter at its scroll margin | tea-hero-7 |
 | The title box holds within 1 px of its static place on every frame while the scene takes over | tea-hero-8 |

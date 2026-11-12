@@ -286,6 +286,8 @@ test.describe('without JavaScript', () => {
     // footer carry those addresses, so no address is out of reach.
     if (!isMobile) expect(hidden).toEqual([]);
     expect(hidden.filter((h) => !shown.has(h))).toEqual([]);
+    // the day/night switch needs its script, so without it there is no dead button (TeaPage's noscript style)
+    await expect(page.locator('#mode-toggle')).toBeHidden();
   });
 });
 

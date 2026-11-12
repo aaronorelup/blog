@@ -124,6 +124,13 @@ test('tea-hero-5 on a phone the day/night switch is on screen and works while th
     const before = await page.evaluate(() => document.documentElement.dataset.mode || 'night');
     await page.locator('#mode-toggle').tap();
     await expect.poll(() => page.evaluate(() => document.documentElement.dataset.mode || 'night')).not.toBe(before);
+    // landed on the first chapter, the strip is already stuck at the top, the switch inside it and in line with it
+    await page.locator('#start').evaluate((s) => s.scrollIntoView({ block: 'start', behavior: 'instant' }));
+    await expect.poll(() => page.evaluate(() => {
+      const strip = document.querySelector('[data-tea-rail]').getBoundingClientRect();
+      const sw = document.querySelector('#mode-toggle').getBoundingClientRect();
+      return [Math.round(strip.top), sw.top >= strip.top && sw.bottom <= strip.bottom];
+    }), { timeout: 20_000 }).toEqual([0, true]);
   }
 });
 
