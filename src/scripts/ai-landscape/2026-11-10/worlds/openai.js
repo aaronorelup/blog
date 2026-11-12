@@ -13,8 +13,8 @@ export default {
   alt: {
     plate: 'A white paper gallery at noon: low plinths, a pill-shaped bar on the wall, a shelf of fuzzy balls in many colours, a laptop and a phone.',
     hero: 'A round yellow felt figure with round black glasses and a small bow tie.',
-    // no portrait file exists for this world. When art/openai/portrait.webp lands, name its subject here:
-    // portrait: 'Cut-paper illustration of <name>', person: '<name>'. Until then no frame is hung
+    portrait: 'Cut-paper illustration of Sam Altman',
+    person: 'Sam Altman',                                       // the caption a tap on the portrait shows: the name only
   },
   character: { kind: 'sprite', floor: 3, size: 1.15 },
   backdrop: { y: -3.8, turn: -0.1 },                            // the plain wall inside the right arch stands right of the callouts
@@ -23,7 +23,7 @@ export default {
     { file: 2, z: -12, x: -5.9, y: 0.68, w: 1.7 },              // prop-2: three fuzzy balls on the floor, far back on the left
   ],                                                            // prop-1, a second laptop on a plinth, is left out: the plate has one, and two crowded the frame
   fore: { z: 3.2, x: 6.0, y: -0.3, w: 5 },
-  portrait: { x: 12.0, y: 5.9 },                                // where the frame hangs once its picture exists
+  portrait: { x: 12.5, y: 5.9 },                                // on the plain wall inside the right arch
   dust: '#C9CDD5',
   signature: 'openai',
   myth: 'openai-myth-voice',

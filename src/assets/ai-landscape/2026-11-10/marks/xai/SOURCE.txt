@@ -10,6 +10,8 @@ Not obtained:
   and the x.ai pages answered HTTP 403 to a script on 2026-11-12. The refusal was not worked around.
   spacexsi-mark.svg is therefore NOT shipped. A Wikimedia Commons search for a current SpaceXSI/xAI file was cut
   short by Commons' rate limit (HTTP 429) and was not pushed further. Print the name in house type instead.
+  Second try, 2026-11-12 (art pass 2): one Commons API search for the mark answered HTTP 429 again ("You are
+  making too many requests to the API"). It was not retried or worked around, so the file is still missing.
 
 Rule kept (read first-hand by the director on x.ai/legal/brand-guidelines): use the logos exactly as provided, with
 no alteration or adjustment, only to refer accurately to the company, never to imply endorsement, and add nothing

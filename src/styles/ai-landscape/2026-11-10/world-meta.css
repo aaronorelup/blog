@@ -1,8 +1,9 @@
 /* Meta's world only (SPEC 2.5.4): the gate's three steps in the console, the approve button, the locked
    drawer and the myth it answers. Colours come from worlds/meta.js through the --w-* properties, so
    brandMode "marks-only" needs no edit here. */
-/* the plate: twice the mark's height clear on every side once the official file is in. A name set in type needs none */
-.ail-world[data-world='meta'] .ail-mark { --h: 14px; }
+/* the plate: the file's box is half again as tall as the symbol, so the symbol is 13 px high here (never under 12)
+   with close to twice its height clear on every side. A name set in type needs none */
+.ail-world[data-world='meta'] .ail-mark { --h: 20px; }
 .ail-world[data-world='meta'] .ail-mark--type { padding: 10px 12px; }
 
 /* the three steps: a number, then its sentence beside it at every width (a sentence is one piece and would drop under it) */

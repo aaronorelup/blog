@@ -8,9 +8,10 @@ export default {
   brandMode: 'full',                       // or 'marks-only': glass, glow and line go house grey, the rest stays
   theme: { chrome: 'light', ground: '#F1F4F7', ink: '#1C2B33', glass: '#0064D4', rim: '#DBECFF', glow: '#0064D4', line: '#0064D4' },
   hour: { lamp: [-0.55, 0.6, 0.4], warmth: 0.2 },              // morning sun, low from the front left
-  // the company logo, primary variation, when the official file is in marks/meta/. Until then the plate
-  // prints the name in house type. Clear space: twice the symbol's height
-  marks: { lid: mark('meta', 'meta-logo'), of: 'name', plate: 'white', clear: 2 },
+  // the company logo in one ink colour (the file in marks/meta/ and where it came from: its SOURCE.txt).
+  // The file's own box is half again as tall as the symbol, so one box height clear on every side leaves close
+  // to twice the symbol's height, and the symbol stays over 12 px on a lid in the row
+  marks: { lid: mark('meta', 'meta-logo'), of: 'name', plate: 'white', clear: 1 },
   art: artOf('meta'),
   alt: {
     plate: 'A morning sky in pale blue and white paper: layers of cloud, one blue ribbon looping across like handwriting, floating blank panels and a felt hill.',

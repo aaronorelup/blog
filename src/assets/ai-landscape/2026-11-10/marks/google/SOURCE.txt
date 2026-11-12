@@ -1,4 +1,4 @@
-Official mark. The page shows a smaller copy of it, scaled in proportion and changed in no other way.
+Official marks. The page shows a smaller copy of the G, scaled in proportion and changed in no other way.
 
 source/GoogleG_FullColor_RGB.png
   Google G, full colour, the gradient version, as downloaded from the official guidelines page
@@ -7,9 +7,11 @@ source/GoogleG_FullColor_RGB.png
   Fetched 2026-11-12. Byte-identical to the download. 2820x2820 RGBA PNG, 137,714 bytes.
   The G fills about a third of that canvas: the file carries its own clear space of one G width.
   It sits in source/ so that no page loads it. Nothing imports it.
-  The same page offers GoogleG_FullColor_RGB.eps. No EPS-to-SVG converter was available on the build machine, so
-  the plan's fallback applies: "Keep the PNG as google-g.png if no clean vector comes out of the EPS." There is
-  therefore no google-g.svg.
+  No official SVG of the G exists on Google's brand pages: checked again 2026-11-12, that page and
+  https://about.google/brand-resource-center/brand-elements/ offer the G only as PNG, EPS, TIF and JPG. No
+  EPS-to-SVG converter was available on the build machine, and a converted or hand-rebuilt file would not be
+  Google's own, so the plan's fallback applies: "Keep the PNG as google-g.png if no clean vector comes out of the
+  EPS." There is therefore no google-g.svg.
 
 google-g.png
   The web copy the page loads: the file above scaled down to 512x512 (Lanczos, full-colour RGBA, no palette),
@@ -17,9 +19,38 @@ google-g.png
   The lid plate is drawn 512 pixels wide, so nothing on the page shows the mark larger than this copy.
   To remake it: sharp(source).resize(512, 512, { kernel: 'lanczos3' }).png({ compressionLevel: 9, palette: false }).
 
-gemini-spark.svg is NOT shipped. Plan rule: "Google says product icons need a Partner Marketing Hub account and an
-approval form. Owner decision needed (SPEC 10). Until then the Google G is the lid mark and this file is not
-shipped."
+Rule kept for the G (read first-hand by the director on that page): full colour only, on white or black, clear
+space of one G width, never modified or recoloured, use to refer to Google and never to imply endorsement. The
+page, read again 2026-11-12: "Use the Google G to refer to Google (the company). For example, you can use it in news
+articles or classroom teaching materials - so long as it's not being used for marketing or business purposes."
 
-Rule kept (read first-hand by the director on that page): full colour only, on white or black, clear space of one
-G width, never modified or recoloured, use to refer to Google and never to imply endorsement.
+source/gemini-spark.svg and source/gemini-spark.png (the Gemini spark) - HELD, NOT ON THE PAGE, THE OWNER DECIDES
+  Both are the spark exactly as Google's Gemini site serves it, fetched 2026-11-12, byte-identical, never edited.
+  They sit in source/ so that no page loads them and the build does not emit them. Nothing imports them.
+  gemini-spark.svg
+    https://www.gstatic.com/lamda/images/gemini_sparkle_aurora_33f86dc0c0257da337c63.svg
+    The og:logo of https://gemini.google.com/ (meta property="og:logo"). 27794 bytes, viewBox 0 0 192 192,
+    SHA-1 44b6416d2c0b47875bc345b4adc093655f701033. A vector spark outline used as a clip path over an embedded
+    JPEG of the colour blend (that is how Google built it). No script.
+  gemini-spark.png
+    https://www.gstatic.com/lamda/images/gemini_sparkle_4g_512_lt_f94943af3be039176192d.png
+    The icon and apple-touch-icon of https://gemini.google.com/ (512x512 RGBA PNG). 61823 bytes,
+    SHA-1 a5e60ad13bcad32c445051a045b83ffc639c2dd2.
+  Google's usage rule for product icons, quoted from
+  https://partnermarketinghub.withgoogle.com/brands/google/branding-guidelines/ (same text on
+  https://about.google/brand-resource-center/brand-elements/), read 2026-11-12:
+    "We use product icons to represent specific Google products."
+    "To use a Google product icon in your work, create a Partner Marketing Hub account to find assets and request
+    permission through our approval form. We're in the process of redesigning our product icons, so be sure to
+    use the most up-to-date versions."
+    "Make sure your brand is more prominent than Google's product icon."
+    "Don't incorporate a Google product icon out of context, without the proper information for your audience to
+    understand what it means."
+  And on colours, same page: "Never use Google's brand colors or brand fonts in your work. Make it clear that the
+  work is coming from you, not from Google."
+  Nobody on this job filed Google's approval form. The owner's direction is to show each provider's real marks.
+  Weighing it against the rule above is his decision (SPEC 10, open item 1). Until he decides, the Google G is
+  the lid mark. To show the spark: move one of the two files up into this folder and set
+  lid: mark('google', 'gemini-spark') in src/scripts/ai-landscape/2026-11-10/worlds/google.js. Then keep it
+  unaltered, never recoloured, cropped, animated or placed on art, with the page's own name and the
+  "independent, marks belong to their owners" line more prominent than the icon.

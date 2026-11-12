@@ -1,23 +1,32 @@
-No Meta mark is shipped in this folder. Both planned files are missing on purpose.
+Two marks in this folder. One is an official Meta file; the other is a labelled stopgap from Simple Icons.
 
-meta-logo.svg (Meta logo, primary variation) - NOT SHIPPED
-  Official source: https://www.meta.com/brand/resources/meta/company-brand/ (page "Updated June 2026", read
-  2026-11-12). Its download (Meta_Company-Lockup.zip) sits behind the checkbox "I have read and accept the
-  applicable guidelines and other terms for use." Accepting Meta's terms is the owner's decision, not the art
-  builder's, so the file was not downloaded. The same page says to "work closely with your Meta counterpart for
-  detailed guidelines and approvals through the internal Brand Review process" (SPEC 10 open item).
-  Fallback checked: Wikimedia Commons "File:Meta Platforms Inc. logo.svg" (public domain, trademarked, credit
-  about.meta.com/brand/resources/meta/company-brand). It was not used: the file itself says "Graphic created by"
-  a Commons contributor, so it is a third-party recreation, not Meta's file.
-  To ship it: the owner accepts the terms on that page, downloads the zip, and the primary-colour SVG goes here
-  unaltered as meta-logo.svg.
-  Rule to keep then (read first-hand by the director): primary colour variation where possible, never under 12 px,
-  clear space of twice the symbol height, never to represent Facebook. Editorials are a listed use; the page also
-  says all use needs approval.
+meta-logo.svg (Meta logo) - STOPGAP, FROM SIMPLE ICONS, NOT FROM META
+  This file comes from Simple Icons, not from Meta. Replace it with Meta's official file once the owner downloads it.
+  Package: simple-icons 16.37.0 on the npm registry (licence CC0-1.0), file package/icons/meta.svg, fetched
+  2026-11-12 with `npm pack simple-icons`. Copied byte-for-byte: SHA-1 5fb5e98a72a488dd0cbb234e56c14264b15f9982,
+  1324 bytes, viewBox 0 0 24 24. Simple Icons' data entry for it: title "Meta", source https://www.meta.com,
+  guidelines https://www.facebook.com/brand/resources/meta/company-brand.
+  One colour as supplied: the file has no fill, so it draws in the default colour (black) or in CSS currentColor.
+  It was not recoloured, and Meta's gradient was not rebuilt. Simple Icons' own disclaimer: the set is CC0, but the
+  brands' trademarks still belong to them, and "We ask that our users seek the correct permissions to use the
+  icons relevant to their project."
+  Why a stopgap: Meta's official download (Meta_Company-Lockup.zip on
+  https://www.meta.com/brand/resources/meta/company-brand/, page "Updated June 2026") sits behind the checkbox
+  "I have read and accept the applicable guidelines and other terms for use." Accepting Meta's terms is the
+  owner's decision, so nobody on this job ticked it.
+  To replace it: the owner accepts the terms on that page, downloads the zip, and the primary-colour SVG goes here
+  unaltered under the same name. Then delete this paragraph.
+  Rule to keep (read first-hand by the director on that page): primary colour variation where possible, never
+  under 12 px, clear space of twice the symbol height, never to represent Facebook. Editorials are a listed use;
+  the page also says all use needs approval (SPEC 10). Until the official file arrives the page should show this
+  mark in one ink colour (ink or paper), never tinted blue or given a gradient.
 
-muse-mark.svg (Muse mark, the blue looping M) - NOT SHIPPED
-  Seen in the header of https://muse.ai/ on 2026-11-12; no public download exists. Plan rule: "Ship it only if an
-  official vector file can be obtained. Never redraw or trace it. Without the file, print "Muse" in the house type
-  beside the Meta logo."
-
-Until a file arrives, print the names in house type.
+muse-mark.svg (Muse mark, the blue looping M) - OFFICIAL FILE, UNALTERED
+  Published openly by Meta on its Muse site, https://muse.ai/ (its page title ends "Your Personal AI Agent from
+  Meta"), at https://muse.ai/images/landing/brand/muse-logo.svg (the same bytes are also served at
+  https://muse.ai/images/hatch/muse-logo.svg). No login, no terms checkbox. Fetched 2026-11-12, byte-identical:
+  SHA-1 aa4653ce1f342a40d818ceaac228f63ba23a2077, 2628 bytes, viewBox 0 0 100 100, blue gradient as supplied.
+  The same site also serves the app icon (the mark on a white rounded tile) at
+  https://muse.ai/images/landing/brand/muse-app-icon.svg; it is not shipped.
+  Plan rule kept: an official file, never redrawn or traced. No written usage rule for the Muse mark was found on
+  muse.ai; keep Meta's logo rules above (clear space, no recolouring, never to stand for another Meta app).
