@@ -13,7 +13,7 @@ ORDER = ['source-separation', 'audio-to-notes', 'chords-beats-key', 'guitar-tab'
 MARK = re.compile(r'^<!-- (RUNDOWN|SECTION|IMAGES|PENDING MEDIA|NUMBERS) -->\s*$', re.M)
 
 
-BRIEF = {'source-separation', 'audio-to-notes', 'chords-beats-key'}   # full drafts exist but were not fact-checked
+BRIEF = set()   # every section is a full, fact-checked fragment now
 
 
 def parts(lane):
@@ -51,6 +51,12 @@ def main():
     body = body.replace('{{SECTIONS}}', '\n\n'.join(sections))
     for m in re.findall(r'\{\{FILE:([\w.-]+)\}\}', body):
         body = body.replace('{{FILE:%s}}' % m, open(f'{SP}/{m}', encoding='utf-8').read().strip('\n'))
+    fp = f'{SP}/_fills.json'
+    if os.path.exists(fp):
+        import json
+        for k, v in json.load(open(fp, encoding='utf-8')).items():
+            body = body.replace('[[%s]]' % k, v)
+            front = front.replace('[[%s]]' % k, v)
     left = re.findall(r'\{\{[^}]+\}\}|\[\[[^\]]+\]\]', body)
     body = body.replace('github.com/aaronorelup/blog/tree/main/docs/guitar-tab-research', 'github.com/aaronorelup/blog/tree/research/guitar-tab-tools/docs/guitar-tab-research')
     body = body.replace('github.com/aaronorelup/blog/blob/main/docs/guitar-tab-research', 'github.com/aaronorelup/blog/blob/research/guitar-tab-tools/docs/guitar-tab-research')

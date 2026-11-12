@@ -3,9 +3,8 @@
 Written 2026-11-12 by the `handoff-graph` agent from the ten lanes' `tools.json`, `trials.md` and `survey.md`
 files, the chains lane's `trials.md`, the run ledger (`/home/user/gtr/ledger/runs.jsonl`, copied to
 `ledger/runs.jsonl.gz`) and the scoring ledger (`/home/user/gtr/eval/ledger/evals.jsonl`, copied to
-`ledger/evals.jsonl.gz`). The gzipped copies were made on 2026-11-11 and end at r0722 and e1836; the later runs and
-scores cited here (r0726, r0727, r0729, e1837 to e1856, gap round 2 of the chords-beats-key lane) are in the live
-ledgers on the box only. It states what each tool the lanes looked at takes in and gives out, where it ran, and
+`ledger/evals.jsonl.gz`). The gzipped copies were refreshed on 2026-11-12, after this file was
+written, and hold every run and score cited here (through r0730 and e1856). It states what each tool the lanes looked at takes in and gives out, where it ran, and
 which outputs other tools accept, with the evidence for each connection. It does not choose tools for the finished
 program.
 

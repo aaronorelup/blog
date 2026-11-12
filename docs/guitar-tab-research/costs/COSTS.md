@@ -42,3 +42,32 @@ The playback lens plugin is not installed in cloud sessions, so this was compute
 0.96 US dollars in total (`lanes/hosted-apis/trials.md`): ElevenLabs credits at an assumed price per credit
 (ElevenLabs publishes none), a few cents of Vercel AI Gateway credit and a fraction of a cent at xAI. The
 Gemini API key answered HTTP 402, so no Gemini call was billed. No GPU was rented.
+
+## The second sitting
+
+Measured the same way for everything after the first window: 2026-11-11T01:26:31.433Z to 2026-11-12T07:46:07.696Z
+(raw output: [`agent-metrics-window2.json`](agent-metrics-window2.json)). The window holds the orchestrator's last stretch of the
+first sitting (assembling and publishing the post, to about 01:50 UTC on 2026-11-11) and the whole second sitting, which
+began at about 03:45 UTC on 2026-11-12. 44 more agents ran in it (40 on Opus 5.5, 4 on Sonnet 5.5), directed by the same Fable 5.2
+orchestrator. 3,913 assistant messages in 45 transcripts.
+
+| Model | More agents | Output tokens | Cache reads | Cache writes | Uncached input |
+|---|---|---|---|---|---|
+| Claude Opus 5.5 | 40 | 5,562,232 | 1,283,599,814 | 17,266,799 | 7,448 |
+| Claude Sonnet 5.5 | 4 | 76,056 | 10,779,527 | 780,437 | 154 |
+| Claude Fable 5.2 | 0 (the same orchestrator) | 159,944 | 43,784,394 | 414,346 | 234 |
+| Total | 44 | 5,798,232 | 1,338,163,735 | 18,461,582 | 7,836 |
+
+At the same list prices:
+
+| Model | Cache reads | Output | Cache writes (5 min to 1 h price) | Total |
+|---|---|---|---|---|
+| Opus 5.5 | $256.72 | $111.24 | $86.33 to $138.13 | $454.33 to $506.13 |
+| Sonnet 5.5 | $1.08 | $0.76 | $1.95 to $3.12 | $3.79 to $4.96 |
+| Fable 5.2 | $8.76 | $6.40 | $4.14 to $6.63 | $19.30 to $21.79 |
+| All | | | | $477 to $533 |
+
+Both windows together: 183 agents, 26,611,598 output tokens, 7,284,576,457 cache-read tokens,
+91,791,584 cache-write tokens, 42,341 uncached input tokens: $2,428 to $2,699 at API list prices.
+Uncached input is included in each total at the input price. Like the first sitting, this ran on the Claude subscription and
+was not billed this way.

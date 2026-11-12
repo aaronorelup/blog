@@ -1,0 +1,14 @@
+{
+ "HANDOFF_PICTURE": "<ao-compare cols=\"1\" aspect=\"16/5\">\n<figure><img src=\"/media/guitar-tab-tools/handoffs-overview.webp\" width=\"1400\" height=\"429\" alt=\"Eleven rounded boxes in a row, one per step from Input and Source separation through to Metronome and sync and User corrections, and a twelfth above them for hosts, runtimes and other tools that aren't a step of their own, joined by many curved lines. Each box gives its number of tools and how many ran here, ran elsewhere, have steps for me or didn't run. Some lines are solid and dark, others dashed and grey, and each carries two small counts.\"><figcaption><b>The handoffs between the app's steps</b><span class=\"ao-meta\">Each box is a step, or at the top the tools that aren't one, with its tool count and how many ran, have steps for me or didn't run. A solid line means at least one handoff between those two steps was tested, a dashed line means documentation only. The numbers on a line are how many of each.</span></figcaption></figure>\n</ao-compare>",
+ "ALL_AGENTS": "183",
+ "S2_AGENTS": "44",
+ "S2_HOURS": "four",
+ "ALL_OUTPUT_M": "26.6",
+ "ALL_CACHE_B": "7.3",
+ "ALL_LOW": "$2,430",
+ "ALL_HIGH": "$2,700",
+ "S2_LOW": "$480",
+ "S2_HIGH": "$530",
+ "ALL_INPUT": "42,341",
+ "S2_ROWS": "| Second | Claude Opus 5.5 | 40 | 5,562,232 | 1,283,599,814 | 17,266,799 |\n| Second | Claude Sonnet 5.5 | 4 | 76,056 | 10,779,527 | 780,437 |\n| Second | Claude Fable 5.2 | the same 1 | 159,944 | 43,784,394 | 414,346 |"
+}

@@ -1,15 +1,46 @@
 <details><summary>The outputs still to upload, section by section</summary>
 
+**Splitting a song into instruments**
+
+~~~text
+All ten checked present at 01:12 UTC on 2026-11-11, and again at 04:30 UTC on 2026-11-12 after the box restarted, with the same sizes and durations. Nothing new to add: the verifier's later re-runs (r0713, r0718, r0719, r0725, r0728) deleted their audio after the checks, and nothing under `out/` is newer than this list. All are 44.1 kHz stereo WAV. R2 is an excerpt of Josh Woodward's "I Want to Destroy Something Beautiful", CC BY 4.0, so a caption on an R2 stem must credit him.
+
+1. `/home/user/gtr/lanes/source-separation/out/htdemucs_6s/S4/guitar.wav`: Demucs htdemucs_6s guitar stem of S4, the synthesized band (r0021). It holds 0.358 of the true guitar. 38.741 s, 16-bit, 6,834,024 bytes.
+2. `/home/user/gtr/lanes/source-separation/out/htdemucs_6s/S4/piano.wav`: the piano stem of the same run (r0021), which holds 0.232 of the true guitar. 38.741 s, 16-bit, 6,834,024 bytes.
+3. `/home/user/gtr/lanes/source-separation/out/htdemucs/S4/other.wav`: Demucs htdemucs `other` stem of S4 (r0019), which holds 0.883 of the true guitar and 0.456 of the lead line. 38.741 s, 16-bit, 6,834,024 bytes.
+4. `/home/user/gtr/lanes/source-separation/out/htdemucs-6s-guitar-ft/S4/guitar.wav`: the guitar fine-tune's guitar stem of S4 (r0636), which holds 0.898 of the true guitar. 38.741 s, 24-bit, 10,251,014 bytes.
+5. `/home/user/gtr/lanes/source-separation/out/uvr/BS-Roformer-SW/S4_0-10s/guitar.wav`: BS-RoFormer-SW guitar stem of the first 10 s of S4, through audio-separator (r0489), which holds 0.939 of the true guitar. 10.000 s, 16-bit, 1,764,078 bytes.
+6. `/home/user/gtr/lanes/source-separation/out/msst-becruily-guitar/S4/Guitar.wav`: becruily Mel-Band RoFormer guitar stem of S4 through MSST (r0491), at -39.19 dBFS, holding 0.0773 of the true guitar. 38.741 s, 32-bit float, 13,668,048 bytes.
+7. `/home/user/gtr/lanes/source-separation/out/htdemucs_6s/S2s/piano.wav`: Demucs htdemucs_6s piano stem of S2s, the synthesized steel-string guitar alone, where the guitar went (r0099, -19.06 dBFS). 29.357 s, 16-bit, 5,178,644 bytes.
+8. `/home/user/gtr/lanes/source-separation/out/htdemucs_6s/R2/guitar.wav`: Demucs htdemucs_6s guitar stem of R2, the real band song (r0428, -19.36 dBFS). 36.000 s, 16-bit, 6,350,444 bytes. Credit Josh Woodward.
+9. `/home/user/gtr/lanes/source-separation/out/htdemucs-6s-guitar-ft/R2/guitar.wav`: the guitar fine-tune's guitar stem of R2 (r0637, -18.80 dBFS). 36.000 s, 24-bit, 9,525,644 bytes. Credit Josh Woodward.
+10. `/home/user/gtr/lanes/source-separation/out/htdemucs_6s/S6taps/drums.wav`: Demucs htdemucs_6s drums stem of S6taps, whose 32 onsets each fell within 50 ms of one of the 32 taps (r0054, e0928). 29.357 s, 16-bit, 5,178,644 bytes.
+~~~
+
+**Turning sound into notes**
+
+~~~text
+- `/home/user/gtr/lanes/audio-to-notes/out/sox/S7flat30.plus30c.r0602.wav`: S7flat30 (the S3 chords rendered 30 cents flat) shifted up 30 cents with SoX 14.4.2, run r0602. 24.00 s, 44.1 kHz, 2 channels, 16-bit, 4,233,644 bytes. Exists (checked 2026-11-12, SHA-256 4f54aac7...ed91933b, as `trials.md` "Media kept outside git" records). The file Basic Pitch actually read in run r0319 is the same command's output from the day before, `/home/user/gtr/lanes/audio-to-notes/inputs/S7flat30.plus30c.wav` (24.00 s, 4,233,644 bytes, also present on 2026-11-12 with SHA-256 31f6f3a9...42c42eef as recorded, but under `inputs/`, not `out/`). The two differ only by SoX's dither (at most 2 in 16-bit units).
+- No new file since the gap rounds: the verifier's re-run of the same SoX command (run r0691) wrote audio that was deleted afterwards (`trials.md`, "Verification log (verify-gapfill-audio-to-notes, round 2, 2026-11-11)": "the re-run's SoX audio ... were deleted afterwards"), and `/home/user/gtr/lanes/audio-to-notes/verify-gap2/sox/` is empty (checked 2026-11-12). A search of `/home/user/gtr/lanes/audio-to-notes/` for WAV, MP3, FLAC, OGG, M4A, MP4, MOV and WebM files on 2026-11-12 found only the two files above, besides symlinks to the shared inputs.
+- Nothing else to hear or watch: no tool in this step wrote audio or video (`trials.md`, "Media kept outside git"). Basic Pitch's `--sonify-midi` was not used. The transcribers wrote MIDI, CSV and NPZ files. The `.wav` entries in `out/onsets-frames/` and `out/crepe-notes/<cfg>/` are symlinks to the shared input clips, not outputs.
+~~~
+
+**Chords, beat, key and tuning**
+
+~~~text
+None. This lane wrote no audio or video. Checked at 01:21 UTC on 2026-11-11: `/home/user/gtr/lanes/chords-beats-key/out/` holds only 981 `.txt`, 413 `.json`, 130 `.lab`, 11 `.jams` and 1 `.jsonl` files (9.3 MB), with no audio or video file. Checked again at 05:20 UTC on 2026-11-12, after the third round: `out/` holds only 1,031 `.txt`, 425 `.json`, 130 `.lab`, 11 `.jams` and 1 `.jsonl` files (9.6 MB), and a search of the whole `/home/user/gtr/lanes/chords-beats-key/` folder for wav, mp3, flac, ogg, m4a, aif, mp4, webm, mov, avi and gif files finds none. All-In-One's Demucs stems were deleted at the end of each run, as allin1 does by default, and its click-track option (`sonify`) wasn't run. The LiveChord refiner writes text and JSON only, under `out/livechord/` and `out/livechord_cli/`. trials.md, "Media kept outside git", says the same, the gap-round verifier found no audio file left under `out/`, and the third round's verifier found no audio file written by that round. Nothing to add or remove.
+~~~
+
 **Choosing the string and fret**
 
 ~~~text
-None. This lane wrote no audio or video files (trials.md, "Media kept outside git"), and `/home/user/gtr/lanes/guitar-tab/out/` holds no audio or video file (checked 2026-11-10: its folders hold JSON, text, TSV, LilyPond, CSV, GP5, MIDI and PNG files only).
+None. This lane wrote no audio or video files (trials.md, "Media kept outside git"), and `/home/user/gtr/lanes/guitar-tab/out/` holds no audio or video file (checked 2026-11-10: its folders hold JSON, text, TSV, LilyPond, CSV, GP5, MIDI and PNG files only). Gap round 2 wrote none either (trials.md, same section), and neither `/home/user/gtr/lanes/guitar-tab/gap2/` nor `/home/user/gtr/lanes/guitar-tab/verify-gap2/` holds a file with an audio or video extension (checked 2026-11-12). The 5 PNG files in `gap2/` are images inside the gtrsnipe repository clone, not outputs.
 ~~~
 
 **Melody, bass and taps from one guitar**
 
 ~~~text
-All nine checked present at 00:02 UTC on 2026-11-11. Float32 files are 44.1 kHz mono, the others 16-bit 44.1 kHz stereo.
+All twelve entries' files checked present at 04:37 UTC on 2026-11-12 (the first nine also at 00:02 UTC on 2026-11-11). Float32 files are 44.1 kHz mono, except the libfmp parts (10 to 12), which are 22,050 Hz mono. The others are 16-bit 44.1 kHz stereo.
 
 1. `/home/user/gtr/lanes/fingerstyle-voices-taps/out/librosa-hpss/S6taps/m4/percussive.wav`: librosa HPSS percussive part of S6taps at margin 4 (r0031), float32, 29.357 s, 5,178,680 bytes.
 2. `/home/user/gtr/lanes/fingerstyle-voices-taps/out/librosa-hpss/S6taps/m4/harmonic.wav`: the harmonic part from the same split (r0031), float32, 29.357 s, 5,178,680 bytes.
@@ -20,12 +51,15 @@ All nine checked present at 00:02 UTC on 2026-11-11. Float32 files are 44.1 kHz 
 7. `/home/user/gtr/lanes/fingerstyle-voices-taps/out/demucs-real/htdemucs/R3c/drums.wav`: Demucs htdemucs drums stem of R3c, the real lesson video, which has no taps seen in its frames (-42.5 dB from the mix, peak -23.5 dBFS, 55 librosa onsets) (r0330), 18.000 s, 3,175,244 bytes.
 8. `/home/user/gtr/lanes/fingerstyle-voices-taps/out/gap1-RT1/demucs/htdemucs_6s/RT1/drums.wav`: Demucs htdemucs_6s drums stem of RT1, the real recording tagged tapping (-40.0 dB from the mix, 351 librosa onsets, its loudest moments at 0:31.8, 1:05.8, 1:08.4, 1:10.4 and 3:25.8) (r0554), 233.509 s, 41,190,956 bytes. Not listened to. RT1 is CC BY 3.0, so a caption must credit Chris Smuck. These figures are one run's. A second run of the same command (r0571, its stems deleted after the check) gave -37.3 dB, 23 librosa onsets and 7 of 180 peaks above -40 dBFS (0:31.8, 1:05.8, 1:08.3, 1:10.4, 2:00.8, 2:18.8, 3:25.8), so any caption must say the figures differ between two runs of one command.
 9. Outside this lane's `out/` folder, the source-separation lane's file: `/home/user/gtr/lanes/source-separation/out/htdemucs_6s/S6taps/drums.wav`, Demucs htdemucs_6s drums stem of S6taps (r0054), the one whose librosa onsets were the 32 taps, 29.357 s, 5,178,644 bytes.
+10. `/home/user/gtr/lanes/fingerstyle-voices-taps/out/gap2-libfmp/S6taps/hrps_beta2/percussive.wav`: libfmp `hrps` percussive part of S6taps at beta 2 (r0620), float32, 22,050 Hz, 29.357 s, 2,589,380 bytes. Its onset list starts with the excerpt in the libfmp entry.
+11. `/home/user/gtr/lanes/fingerstyle-voices-taps/out/gap2-libfmp/S6taps/hrps_beta2/residual.wav`: the residual part from the same split (r0620), float32, 22,050 Hz, 29.357 s, 2,589,380 bytes.
+12. The other 14 libfmp parts of S6taps (r0620), each float32, 22,050 Hz, 29.357 s, 2,589,380 bytes: `/home/user/gtr/lanes/fingerstyle-voices-taps/out/gap2-libfmp/S6taps/{hps_binary,hps_soft}/{harmonic,percussive}.wav`, `/home/user/gtr/lanes/fingerstyle-voices-taps/out/gap2-libfmp/S6taps/hrps_beta2/harmonic.wav` and `/home/user/gtr/lanes/fingerstyle-voices-taps/out/gap2-libfmp/S6taps/hrps_beta{1.1,4,32}/{harmonic,percussive,residual}.wav`.
 ~~~
 
 **Reading hands and the fretboard from video**
 
 ~~~text
-All four exist (checked with ls and ffprobe on 2026-11-10). H.264, no audio. Made by drawing run r0227 (R3a_cu, R3a) and by steps `overlay-video_R3b_mediapipe` and `overlay-video_R3c_mediapipe` of group run r0408 (R3b, R3c).
+All four exist (checked with ls and ffprobe on 2026-11-10, and again on 2026-11-12: the same byte counts, durations and frame sizes, one H.264 video stream each). H.264, no audio. Gap round 2 made no audio or video: a search of `/home/user/gtr/lanes/video-hands-fretboard/` on 2026-11-12 for mp4, wav, mp3, webm, mov, avi, gif, m4a, flac and ogg files finds nothing dated after 2026-11-10 22:28 UTC, and its capo input C1 is a still JPEG. Nothing to add or remove. Made by drawing run r0227 (R3a_cu, R3a) and by steps `overlay-video_R3b_mediapipe` and `overlay-video_R3c_mediapipe` of group run r0408 (R3b, R3c).
 
 1. `/home/user/gtr/lanes/video-hands-fretboard/out/videos/R3a_cu_mediapipe_hands.mp4`: R3a_cu with MediaPipe Hand Landmarker's landmarks drawn (output of r0078). 10.01 s, 925,707 bytes, 640x480. CC BY-SA 4.0 derivative.
 2. `/home/user/gtr/lanes/video-hands-fretboard/out/videos/R3a_mediapipe_hands_full.mp4`: R3a full frame with MediaPipe Hand Landmarker's landmarks (output of r0071). Shows the detection on the sheet music in the wide shot. 18.02 s (ffprobe 18.018 s), 927,653 bytes, 640x480. CC BY-SA 4.0 derivative.
@@ -38,7 +72,7 @@ Left out: `/home/user/gtr/lanes/video-hands-fretboard/out/sam2/R3a_cu_f150-179.m
 **Showing, editing and playing a tab in the browser**
 
 ~~~text
-All four files exist (checked 2026-11-10 with ffprobe). All are WAV, 44.1 kHz, 2 channels, 32-bit float, so they need converting for the web. Listed in trials.md, "Media kept outside git".
+All four files exist (checked 2026-11-10 with ffprobe, and again on 2026-11-12 with the same sizes and durations). Gap round 2 made no audio or video (trials.md, "Files of this round"). All are WAV, 44.1 kHz, 2 channels, 32-bit float, so they need converting for the web. Listed in trials.md, "Media kept outside git".
 
 1. `/home/user/gtr/lanes/web-tab-render/out/alphatab-player/S2n_plain.export.wav`: alphaTab 1.9.0's `api.exportAudio()` of S2n.gp5 with its bundled SONiVOX sound bank, click off (run r0128). The known S2n tab played back by alphaTab. 27.858 s, 9,828,396 bytes.
 2. `/home/user/gtr/lanes/web-tab-render/out/alphatab-transpose/S2n.plain.wav`: the first 4 s of the same export (run r0328). 4.005 s, 1,413,164 bytes.
@@ -49,7 +83,7 @@ All four files exist (checked 2026-11-10 with ffprobe). All are WAV, 44.1 kHz, 2
 **Metronome and sync in the browser**
 
 ~~~text
-All checked on 2026-11-10 with `ffprobe` and `stat`: every file exists. All are 44.1 kHz 32-bit float WAV.
+All checked on 2026-11-12 with `ffprobe` and `stat`: every file exists. All are 44.1 kHz 32-bit float WAV.
 
 1. `/home/user/gtr/lanes/browser-audio-sync/out/metronome/metronome_interval_busy100.wav`: the setInterval click track with the page busy, no clip (r0199). Mono, 62.04 s, 10,944,044 bytes.
 2. `/home/user/gtr/lanes/browser-audio-sync/out/metronome/metronome_lookahead_busy100.wav`: the look-ahead loop's click track with the page busy, no clip (r0199). Mono, 61.96 s, 10,930,220 bytes.
@@ -61,6 +95,14 @@ All checked on 2026-11-10 with `ffprobe` and `stat`: every file exists. All are 
 8. `/home/user/gtr/lanes/browser-audio-sync/out/synths/S2n_smplr.wav`: S2n's 90 notes played by smplr 1.2.0 with the FluidR3_GM nylon guitar sounds (r0229). 2 channels, 31.18 s, 11,000,876 bytes.
 9. `/home/user/gtr/lanes/browser-audio-sync/out/stretch/S1_element_0p75_pp1.wav`: S1 at 0.75x through an `<audio>` element with `preservesPitch` true (r0225). 2 channels, 40.27 s, 14,208,044 bytes.
 10. `/home/user/gtr/lanes/browser-audio-sync/out/stretch/S1_element_0p75_pp0.wav`: the same at 0.75x with `preservesPitch` false (r0225). 2 channels, 40.31 s, 14,221,356 bytes.
+11. `/home/user/gtr/lanes/browser-audio-sync/out/htdemucs6s-web/S4_10s_t2_optdisabled_drums.wav`: the drums stem htdemucs_6s made of S4_10s in ONNX Runtime Web 1.31.1, 2 threads, graph optimization `disabled` (r0597, gap round 2). 2 channels, 10.00 s, 3,528,044 bytes.
+12. `/home/user/gtr/lanes/browser-audio-sync/out/htdemucs6s-web/S4_10s_t2_optdisabled_bass.wav`: the bass stem of the same run (r0597). 2 channels, 10.00 s, 3,528,044 bytes.
+13. `/home/user/gtr/lanes/browser-audio-sync/out/htdemucs6s-web/S4_10s_t2_optdisabled_other.wav`: the `other` stem of the same run (r0597), RMS -80.25 dBFS. 2 channels, 10.00 s, 3,528,044 bytes.
+14. `/home/user/gtr/lanes/browser-audio-sync/out/htdemucs6s-web/S4_10s_t2_optdisabled_vocals.wav`: the `vocals` stem of the same run, paired with S4's lead line (r0597). 2 channels, 10.00 s, 3,528,044 bytes.
+15. `/home/user/gtr/lanes/browser-audio-sync/out/htdemucs6s-web/S4_10s_t2_optdisabled_guitar.wav`: the guitar stem of the same run (r0597). 2 channels, 10.00 s, 3,528,044 bytes.
+16. `/home/user/gtr/lanes/browser-audio-sync/out/htdemucs6s-web/S4_10s_t2_optdisabled_piano.wav`: the piano stem of the same run (r0597). 2 channels, 10.00 s, 3,528,044 bytes.
+
+Not listed, also on disk: the 1-thread and 4-thread stem sets in the same folder (`S4_10s_t1_optdisabled_*.wav`, r0613, and `S4_10s_t4_optdisabled_*.wav`, r0607), sample-identical to items 11 to 16. The native demucs-onnx stems of r0596, r0603 and r0611 in `out/htdemucs6s-native/`, `out/htdemucs6s-native-optdisabled/` and `out/htdemucs6s-native-chromiuminput-optdisabled/`, six each, 2 channels, 10.00 s, 3,528,088 bytes each. `out/htdemucs6s-web/S4_10s_decoded_by_chromium.wav`, S4_10s as Chrome decoded it (r0608). S4 was synthesized for the test set. The htdemucs_6s weights' license is in the license table of *Metronome and sync in the browser*.
 ~~~
 
 **Tools handing off to each other**
@@ -76,7 +118,7 @@ All three under `/home/user/gtr/lanes/chains/out/chainE/`, checked present on 20
 **Services an agent can call over the internet**
 
 ~~~text
-All checked present on the box (sizes and durations from `ls` and ffprobe, matching trials.md "Media kept outside git"). Licenses follow the input: S clips synthesized for this research, R2 CC BY 4.0 ("I Want to Destroy Something Beautiful" by Josh Woodward, credit required), R1c GuitarSet CC BY 4.0 (credit required).
+All checked present on the box (sizes and durations from `ls` and ffprobe, matching trials.md "Media kept outside git"). Rechecked 2026-11-12 with `stat` after gap round 2: all nine still present with the same byte sizes. Gap round 2 made no new audio or video (its ffmpeg copies, r0599 and r0600, were deleted after the check, and its Cesure output is JSON: trials.md "Gap round 2"), so nothing was added here. Licenses follow the input: S clips synthesized for this research, R2 CC BY 4.0 ("I Want to Destroy Something Beautiful" by Josh Woodward, credit required), R1c GuitarSet CC BY 4.0 (credit required).
 
 1. `/home/user/gtr/lanes/hosted-apis/out/elevenlabs/S4_six_stems/stems/guitar.mp3`: ElevenLabs `six_stems_v1` guitar stem of S4 (r0064). MP3 192 kb/s 44.1 kHz stereo, 38.79 s, 931,048 bytes.
 2. `/home/user/gtr/lanes/hosted-apis/out/elevenlabs/S4_six_stems/stems/other.mp3`: ElevenLabs `other` stem of S4, the one the lead line was measured in (r0064). 38.79 s, 931,048 bytes.

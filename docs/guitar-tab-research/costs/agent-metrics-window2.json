@@ -1,0 +1,1924 @@
+{
+ "project": "-home-user-blog",
+ "sessions": [
+  "59564c1e-7fb4-5384-ab71-b563810cf682"
+ ],
+ "generatedFrom": "measure-agents.mjs",
+ "bill": {
+  "perModel": [
+   {
+    "model": "opus-5-5",
+    "agents": 158,
+    "output": 24795902,
+    "wall": 4596.584316666666
+   },
+   {
+    "model": "sonnet-5-5",
+    "agents": 24,
+    "output": 1321853,
+    "wall": 137.58535
+   },
+   {
+    "model": "fable-5-2",
+    "agents": 1,
+    "output": 489674,
+    "wall": 2174.2074166666666
+   }
+  ],
+  "perAgent": [
+   [
+    "main orchestrator",
+    "fable-5-2",
+    489674,
+    241,
+    344,
+    2174.2,
+    "max/xhigh",
+    "main"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [2bb58b22]",
+    "opus-5-5",
+    321234,
+    279,
+    283,
+    71.2,
+    "max",
+    "wf_7a97ade3-95e"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [f0913df5]",
+    "opus-5-5",
+    310460,
+    318,
+    354,
+    113.4,
+    "max",
+    "wf_0b490893-5a1"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [cc731a40]",
+    "opus-5-5",
+    302804,
+    337,
+    351,
+    93.3,
+    "max",
+    "wf_8ea70378-f88"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [48cf6de4]",
+    "opus-5-5",
+    281907,
+    332,
+    343,
+    93.4,
+    "max",
+    "wf_6b42e671-938"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [0ef68a33]",
+    "opus-5-5",
+    270274,
+    311,
+    313,
+    63.2,
+    "max",
+    "wf_20a9a9a3-e85"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [65e3417d]",
+    "opus-5-5",
+    269766,
+    104,
+    123,
+    39.8,
+    "max",
+    "wf_8be4443e-ad2"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [f7861b67]",
+    "opus-5-5",
+    262574,
+    235,
+    276,
+    46.4,
+    "max",
+    "wf_8ea70378-f88"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [2d7e9deb]",
+    "opus-5-5",
+    260955,
+    300,
+    342,
+    78.5,
+    "max",
+    "wf_78504b8f-cec"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [af1ce8ad]",
+    "opus-5-5",
+    248634,
+    113,
+    124,
+    36.4,
+    "max",
+    "wf_4ff96b12-fde"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [cae44495]",
+    "opus-5-5",
+    244547,
+    298,
+    308,
+    105.2,
+    "max",
+    "wf_c32537f5-0b9"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [db54b07b]",
+    "opus-5-5",
+    241636,
+    119,
+    151,
+    35.1,
+    "max",
+    "wf_7263046c-bd2"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [61370e49]",
+    "opus-5-5",
+    238036,
+    232,
+    263,
+    44,
+    "max",
+    "wf_da1fccf5-18a"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [28c7dfc1]",
+    "opus-5-5",
+    236060,
+    133,
+    138,
+    80.9,
+    "max",
+    "wf_26e60d08-56d"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [61c9b5f5]",
+    "opus-5-5",
+    234708,
+    274,
+    310,
+    39.3,
+    "max",
+    "wf_c32537f5-0b9"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [fdf7ed77]",
+    "opus-5-5",
+    234659,
+    97,
+    100,
+    37.6,
+    "max",
+    "wf_5d640ef8-a10"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [e094fcb4]",
+    "opus-5-5",
+    232133,
+    237,
+    293,
+    40.3,
+    "max",
+    "wf_7bac4b3b-9a4"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [aa0d88e2]",
+    "opus-5-5",
+    231668,
+    191,
+    218,
+    41.4,
+    "max",
+    "wf_57158982-a11"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [a788129c]",
+    "opus-5-5",
+    231556,
+    248,
+    312,
+    50.4,
+    "max",
+    "wf_7a97ade3-95e"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [705d789a]",
+    "opus-5-5",
+    229234,
+    167,
+    200,
+    41.9,
+    "max",
+    "wf_2d587bee-b55"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [76a92564]",
+    "opus-5-5",
+    228574,
+    281,
+    300,
+    151,
+    "max",
+    "wf_7bac4b3b-9a4"
+   ],
+   [
+    "try-hosted-apis",
+    "opus-5-5",
+    226628,
+    235,
+    256,
+    52.8,
+    "max",
+    "wf_bec2a1db-792"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [abff4654]",
+    "opus-5-5",
+    226137,
+    255,
+    286,
+    44.1,
+    "max",
+    "wf_7a97ade3-95e"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [59523378]",
+    "opus-5-5",
+    222069,
+    198,
+    254,
+    36.6,
+    "max",
+    "wf_c32537f5-0b9"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [65cee8c0]",
+    "opus-5-5",
+    221262,
+    266,
+    334,
+    40.3,
+    "max",
+    "wf_20a9a9a3-e85"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [52e98878]",
+    "opus-5-5",
+    218536,
+    227,
+    271,
+    37.6,
+    "max",
+    "wf_c0a842ae-cd1"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [92eb5c9c]",
+    "opus-5-5",
+    214681,
+    138,
+    181,
+    39.7,
+    "max",
+    "wf_e35c7080-b51"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [f1fbdb18]",
+    "opus-5-5",
+    214219,
+    264,
+    307,
+    42.2,
+    "max",
+    "wf_b667c976-bc4"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [4752e419]",
+    "opus-5-5",
+    213609,
+    217,
+    235,
+    67.9,
+    "max",
+    "wf_b667c976-bc4"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [687eb50b]",
+    "opus-5-5",
+    212935,
+    116,
+    128,
+    30.9,
+    "max",
+    "wf_10a8a2e2-8d0"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [b1ba9b30]",
+    "opus-5-5",
+    209468,
+    207,
+    262,
+    36.1,
+    "max",
+    "wf_0b490893-5a1"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [e21ec966]",
+    "opus-5-5",
+    207773,
+    230,
+    273,
+    37.5,
+    "max",
+    "wf_6b42e671-938"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [a8302c09]",
+    "opus-5-5",
+    207325,
+    245,
+    285,
+    38.9,
+    "max",
+    "wf_b667c976-bc4"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [abfc9131]",
+    "opus-5-5",
+    206711,
+    197,
+    247,
+    34.1,
+    "max",
+    "wf_7bac4b3b-9a4"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [06fbcd08]",
+    "opus-5-5",
+    204070,
+    76,
+    97,
+    29.9,
+    "max",
+    "wf_23618e41-458"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [42b69e2c]",
+    "opus-5-5",
+    203046,
+    176,
+    203,
+    40.9,
+    "max",
+    "wf_f7f83b16-26f"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [4349ad32]",
+    "opus-5-5",
+    201965,
+    81,
+    100,
+    28.9,
+    "max",
+    "wf_9d2cd92f-723"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [6caacc30]",
+    "opus-5-5",
+    201662,
+    192,
+    237,
+    43.2,
+    "max",
+    "wf_a7d1ac27-d50"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [0de93472]",
+    "opus-5-5",
+    200887,
+    174,
+    200,
+    38.4,
+    "max",
+    "wf_f5367e26-b16"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [f40ee6e6]",
+    "opus-5-5",
+    200340,
+    77,
+    103,
+    28.5,
+    "max",
+    "wf_a9ebce6b-a39"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [95a39e75]",
+    "opus-5-5",
+    200226,
+    260,
+    312,
+    34.1,
+    "max",
+    "wf_20a9a9a3-e85"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [568d7c9c]",
+    "opus-5-5",
+    198118,
+    205,
+    255,
+    34.2,
+    "max",
+    "wf_6b42e671-938"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [454cae06]",
+    "opus-5-5",
+    197033,
+    214,
+    238,
+    41.5,
+    "max",
+    "wf_78504b8f-cec"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [5b218aba]",
+    "opus-5-5",
+    195397,
+    84,
+    96,
+    27.9,
+    "max",
+    "wf_df736123-70c"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [8d2dd863]",
+    "opus-5-5",
+    194825,
+    197,
+    224,
+    39.3,
+    "max",
+    "wf_93ad9b2a-31f"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [558c11ac]",
+    "opus-5-5",
+    192602,
+    213,
+    236,
+    33.3,
+    "max",
+    "wf_bec2a1db-792"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [fd1d5f70]",
+    "opus-5-5",
+    190558,
+    191,
+    240,
+    33.5,
+    "max",
+    "wf_0b490893-5a1"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [65b02d36]",
+    "opus-5-5",
+    190003,
+    119,
+    192,
+    28.7,
+    "max",
+    "wf_fc6a2495-99e"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [083c0427]",
+    "opus-5-5",
+    189904,
+    176,
+    200,
+    30.2,
+    "max",
+    "wf_8ea70378-f88"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [2be45325]",
+    "opus-5-5",
+    187358,
+    216,
+    256,
+    39,
+    "max",
+    "wf_bec2a1db-792"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [ff639042]",
+    "opus-5-5",
+    183169,
+    79,
+    107,
+    26.8,
+    "max",
+    "wf_b26d9fb9-25d"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [0f96a7dd]",
+    "opus-5-5",
+    180356,
+    232,
+    268,
+    31.8,
+    "max",
+    "wf_b61ed36f-0c2"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [c6f401be]",
+    "opus-5-5",
+    180064,
+    129,
+    164,
+    34.5,
+    "max",
+    "wf_32fbf770-0bb"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [9c09bc1c]",
+    "opus-5-5",
+    179641,
+    66,
+    88,
+    25.4,
+    "max",
+    "wf_0262c475-c5f"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [42e8a0a1]",
+    "opus-5-5",
+    177939,
+    61,
+    71,
+    25.2,
+    "max",
+    "wf_45baa4e3-c22"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [66c9a149]",
+    "opus-5-5",
+    176753,
+    216,
+    244,
+    30.9,
+    "max",
+    "wf_afb8acac-942"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [a82d9a29]",
+    "opus-5-5",
+    176404,
+    156,
+    163,
+    28.6,
+    "max",
+    "wf_7a97ade3-95e"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [a39f9f90]",
+    "opus-5-5",
+    176184,
+    176,
+    221,
+    29.9,
+    "max",
+    "wf_cc43e0db-1ac"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [35241bb6]",
+    "opus-5-5",
+    175708,
+    82,
+    105,
+    25.3,
+    "max",
+    "wf_6da9fe56-123"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [aa5a8049]",
+    "opus-5-5",
+    175624,
+    70,
+    113,
+    25.2,
+    "max",
+    "wf_551ce136-b9d"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [ff172d50]",
+    "opus-5-5",
+    173695,
+    176,
+    220,
+    49.7,
+    "max",
+    "wf_f90fc63e-e58"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [955e1e9e]",
+    "opus-5-5",
+    173511,
+    80,
+    82,
+    31.5,
+    "max",
+    "wf_5d640ef8-a10"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [272cdbed]",
+    "opus-5-5",
+    172876,
+    108,
+    137,
+    25.6,
+    "max",
+    "wf_26d0bb23-2e7"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [d0e66c25]",
+    "opus-5-5",
+    171467,
+    146,
+    183,
+    25.9,
+    "max",
+    "wf_ae624f89-084"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [7d9e38f5]",
+    "opus-5-5",
+    171215,
+    150,
+    177,
+    27.2,
+    "max",
+    "wf_42e9b209-626"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [5e5bc688]",
+    "opus-5-5",
+    171162,
+    148,
+    192,
+    25.6,
+    "max",
+    "wf_8be4443e-ad2"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [9c1bf499]",
+    "opus-5-5",
+    169784,
+    104,
+    133,
+    25.3,
+    "max",
+    "wf_48707ad7-b02"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [ed820bc3]",
+    "opus-5-5",
+    168408,
+    202,
+    222,
+    28.7,
+    "max",
+    "wf_da1fccf5-18a"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [07e8d649]",
+    "opus-5-5",
+    165645,
+    140,
+    164,
+    28.3,
+    "max",
+    "wf_ef847667-b85"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [f7c520a4]",
+    "opus-5-5",
+    163785,
+    166,
+    173,
+    25.9,
+    "max",
+    "wf_8be4443e-ad2"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [0520f50b]",
+    "opus-5-5",
+    163463,
+    186,
+    216,
+    28,
+    "max",
+    "wf_57158982-a11"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [5ed40739]",
+    "opus-5-5",
+    162140,
+    163,
+    243,
+    26.7,
+    "max",
+    "wf_4ff96b12-fde"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [dccd005f]",
+    "opus-5-5",
+    161761,
+    192,
+    254,
+    29.1,
+    "max",
+    "wf_b61ed36f-0c2"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [11c0a09b]",
+    "opus-5-5",
+    161116,
+    144,
+    151,
+    29.8,
+    "max",
+    "wf_cc43e0db-1ac"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [0afa1f06]",
+    "opus-5-5",
+    160955,
+    122,
+    202,
+    24.3,
+    "max",
+    "wf_45baa4e3-c22"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [be5a3688]",
+    "opus-5-5",
+    159493,
+    175,
+    195,
+    27.5,
+    "max",
+    "wf_2d587bee-b55"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [94b80a17]",
+    "opus-5-5",
+    154267,
+    92,
+    121,
+    23.1,
+    "max",
+    "wf_9e7fbd60-4a5"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [2bcbcd02]",
+    "opus-5-5",
+    153077,
+    185,
+    194,
+    28.3,
+    "max",
+    "wf_8ea70378-f88"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [434d4a44]",
+    "opus-5-5",
+    152760,
+    41,
+    43,
+    21.6,
+    "max",
+    "wf_551ce136-b9d"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [00b50a2a]",
+    "opus-5-5",
+    152317,
+    99,
+    125,
+    23.2,
+    "max",
+    "wf_93b895b9-dcc"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [f1cb22bd]",
+    "opus-5-5",
+    152229,
+    161,
+    188,
+    26.7,
+    "max",
+    "wf_b667c976-bc4"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [687a47d9]",
+    "opus-5-5",
+    151375,
+    48,
+    57,
+    21,
+    "max",
+    "wf_6da9fe56-123"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [d943d58e]",
+    "opus-5-5",
+    151203,
+    167,
+    184,
+    28.1,
+    "max",
+    "wf_e35c7080-b51"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [426a0753]",
+    "opus-5-5",
+    149312,
+    78,
+    106,
+    21.6,
+    "max",
+    "wf_99495c2b-d5f"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [1c3fc566]",
+    "opus-5-5",
+    147725,
+    69,
+    77,
+    20.4,
+    "max",
+    "wf_26d0bb23-2e7"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [b498422b]",
+    "opus-5-5",
+    147712,
+    167,
+    169,
+    23.9,
+    "max",
+    "wf_10a8a2e2-8d0"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [63618cf4]",
+    "opus-5-5",
+    147578,
+    180,
+    196,
+    28.1,
+    "max",
+    "wf_0b490893-5a1"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [a796ed42]",
+    "opus-5-5",
+    147186,
+    148,
+    161,
+    24.8,
+    "max",
+    "wf_f5367e26-b16"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [592011bf]",
+    "opus-5-5",
+    147167,
+    165,
+    188,
+    28.1,
+    "max",
+    "wf_93ad9b2a-31f"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [9b9c5681]",
+    "opus-5-5",
+    145200,
+    35,
+    39,
+    20.3,
+    "max",
+    "wf_26e60d08-56d"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [4f893521]",
+    "opus-5-5",
+    144821,
+    181,
+    199,
+    24.3,
+    "max",
+    "wf_c0a842ae-cd1"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [851a0410]",
+    "opus-5-5",
+    144792,
+    87,
+    102,
+    24.8,
+    "max",
+    "wf_32fbf770-0bb"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [3d4be3ce]",
+    "opus-5-5",
+    143597,
+    34,
+    39,
+    20.1,
+    "max",
+    "wf_9d2cd92f-723"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [2d4cfee4]",
+    "opus-5-5",
+    142999,
+    175,
+    190,
+    24.4,
+    "max",
+    "wf_afb8acac-942"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [e7c4545c]",
+    "opus-5-5",
+    142017,
+    149,
+    170,
+    24.9,
+    "max",
+    "wf_a7d1ac27-d50"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [f127bbe5]",
+    "opus-5-5",
+    141806,
+    72,
+    76,
+    19.4,
+    "max",
+    "wf_9d2cd92f-723"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [2a17b152]",
+    "opus-5-5",
+    141744,
+    41,
+    46,
+    20.2,
+    "max",
+    "wf_a9ebce6b-a39"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [8e987991]",
+    "opus-5-5",
+    141505,
+    133,
+    160,
+    25.4,
+    "max",
+    "wf_b61ed36f-0c2"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [f85868d0]",
+    "opus-5-5",
+    140043,
+    58,
+    63,
+    20.5,
+    "max",
+    "wf_26d0bb23-2e7"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [db56e8be]",
+    "opus-5-5",
+    137777,
+    90,
+    159,
+    20.6,
+    "max",
+    "wf_6da9fe56-123"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [6ac51a4a]",
+    "opus-5-5",
+    137150,
+    135,
+    173,
+    37.3,
+    "max",
+    "wf_bd9615d6-9ce"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [a7f38146]",
+    "opus-5-5",
+    136854,
+    75,
+    101,
+    20.4,
+    "max",
+    "wf_26f0c19e-1f8"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [97a0a191]",
+    "opus-5-5",
+    136275,
+    44,
+    49,
+    19,
+    "max",
+    "wf_26d0bb23-2e7"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [8d92d217]",
+    "opus-5-5",
+    135729,
+    87,
+    96,
+    20.8,
+    "max",
+    "wf_10a8a2e2-8d0"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [121a49c4]",
+    "opus-5-5",
+    135613,
+    58,
+    68,
+    19.1,
+    "max",
+    "wf_b26d9fb9-25d"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [5def9908]",
+    "opus-5-5",
+    132659,
+    61,
+    74,
+    18.5,
+    "max",
+    "wf_23618e41-458"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [c8f23420]",
+    "opus-5-5",
+    132622,
+    49,
+    128,
+    18.5,
+    "max",
+    "wf_a9ebce6b-a39"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [3705f2fd]",
+    "opus-5-5",
+    132123,
+    133,
+    146,
+    22.4,
+    "max",
+    "wf_ae624f89-084"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [81f87851]",
+    "opus-5-5",
+    129635,
+    163,
+    174,
+    21.9,
+    "max",
+    "wf_7bac4b3b-9a4"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [58834eb7]",
+    "opus-5-5",
+    126328,
+    49,
+    53,
+    17.3,
+    "max",
+    "wf_26e60d08-56d"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [8016c533]",
+    "opus-5-5",
+    126032,
+    39,
+    44,
+    18.1,
+    "max",
+    "wf_8c51bf0e-451"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [68278ba6]",
+    "opus-5-5",
+    125441,
+    122,
+    123,
+    19.7,
+    "max",
+    "wf_8be4443e-ad2"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [f8c2c8dd]",
+    "opus-5-5",
+    124337,
+    80,
+    109,
+    18.4,
+    "max",
+    "wf_45baa4e3-c22"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [a2c625c2]",
+    "opus-5-5",
+    122275,
+    61,
+    62,
+    17.2,
+    "max",
+    "wf_9d2cd92f-723"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [bace5721]",
+    "opus-5-5",
+    120936,
+    25,
+    31,
+    16.9,
+    "max",
+    "wf_23618e41-458"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [cd904957]",
+    "opus-5-5",
+    120151,
+    37,
+    42,
+    16.7,
+    "max",
+    "wf_3b38b055-82a"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [3ae235a0]",
+    "opus-5-5",
+    118653,
+    71,
+    75,
+    16.8,
+    "max",
+    "wf_23618e41-458"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [56396d87]",
+    "opus-5-5",
+    117902,
+    59,
+    60,
+    17.4,
+    "max",
+    "wf_3b38b055-82a"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [ca906180]",
+    "opus-5-5",
+    117668,
+    150,
+    164,
+    23.2,
+    "max",
+    "wf_20a9a9a3-e85"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [a748608a]",
+    "opus-5-5",
+    117208,
+    63,
+    69,
+    16.7,
+    "max",
+    "wf_a9ebce6b-a39"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [0542e716]",
+    "opus-5-5",
+    116946,
+    81,
+    85,
+    17.5,
+    "max",
+    "wf_26e60d08-56d"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [d2dfb48d]",
+    "opus-5-5",
+    115515,
+    128,
+    143,
+    19.4,
+    "max",
+    "wf_75859663-85f"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [efa4e2f6]",
+    "opus-5-5",
+    113728,
+    60,
+    62,
+    16.5,
+    "max",
+    "wf_8c51bf0e-451"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [e1d8b4b5]",
+    "opus-5-5",
+    113584,
+    30,
+    35,
+    16.3,
+    "max",
+    "wf_b26d9fb9-25d"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [de8381c7]",
+    "sonnet-5-5",
+    112460,
+    19,
+    20,
+    11,
+    "high",
+    "wf_8ea70378-f88"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [c6a51b03]",
+    "sonnet-5-5",
+    112384,
+    26,
+    28,
+    11.4,
+    "high",
+    "wf_0b490893-5a1"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [7f33a3ec]",
+    "sonnet-5-5",
+    111772,
+    20,
+    22,
+    10.8,
+    "high",
+    "wf_7a97ade3-95e"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [ab396891]",
+    "opus-5-5",
+    111610,
+    152,
+    167,
+    22.2,
+    "max",
+    "wf_b61ed36f-0c2"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [daa01070]",
+    "opus-5-5",
+    110978,
+    56,
+    67,
+    15.2,
+    "max",
+    "wf_6da9fe56-123"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [742f8571]",
+    "opus-5-5",
+    109948,
+    59,
+    118,
+    16.1,
+    "max",
+    "wf_8c51bf0e-451"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [ca217b2c]",
+    "opus-5-5",
+    109065,
+    57,
+    60,
+    15.3,
+    "max",
+    "wf_45baa4e3-c22"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [d9603a62]",
+    "sonnet-5-5",
+    108019,
+    26,
+    27,
+    10.8,
+    "high",
+    "wf_c32537f5-0b9"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [745ccb80]",
+    "opus-5-5",
+    107575,
+    53,
+    65,
+    14.9,
+    "max",
+    "wf_551ce136-b9d"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [34cb52d0]",
+    "opus-5-5",
+    106643,
+    97,
+    114,
+    20,
+    "max",
+    "wf_c32537f5-0b9"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [fa4e9e64]",
+    "opus-5-5",
+    103538,
+    65,
+    120,
+    14.9,
+    "max",
+    "wf_b26d9fb9-25d"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [c714448e]",
+    "opus-5-5",
+    103140,
+    36,
+    52,
+    14.4,
+    "max",
+    "wf_3b38b055-82a"
+   ],
+   [
+    "docs-hosted-apis",
+    "opus-5-5",
+    100853,
+    159,
+    178,
+    17.7,
+    "max",
+    "wf_bec2a1db-792"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [9003f3d1]",
+    "opus-5-5",
+    100778,
+    123,
+    129,
+    19.7,
+    "max",
+    "wf_f7f83b16-26f"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [e662f3c5]",
+    "opus-5-5",
+    98376,
+    48,
+    118,
+    14,
+    "max",
+    "wf_551ce136-b9d"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [8e1e66b4]",
+    "sonnet-5-5",
+    98320,
+    20,
+    21,
+    9.9,
+    "high",
+    "wf_20a9a9a3-e85"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [5e29e341]",
+    "sonnet-5-5",
+    95656,
+    16,
+    17,
+    9.2,
+    "high",
+    "wf_6b42e671-938"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [b583fb6c]",
+    "opus-5-5",
+    95625,
+    55,
+    82,
+    14.2,
+    "max",
+    "wf_fff22293-677"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [dd76e8d9]",
+    "sonnet-5-5",
+    94519,
+    21,
+    22,
+    9.1,
+    "high",
+    "wf_bec2a1db-792"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [9554d330]",
+    "sonnet-5-5",
+    90685,
+    17,
+    18,
+    9,
+    "high",
+    "wf_7bac4b3b-9a4"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [9f6ece57]",
+    "opus-5-5",
+    90540,
+    60,
+    76,
+    13.4,
+    "max",
+    "wf_8c51bf0e-451"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [a6abe7e4]",
+    "opus-5-5",
+    88446,
+    45,
+    61,
+    12.5,
+    "max",
+    "wf_5d640ef8-a10"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [bd6f57fc]",
+    "opus-5-5",
+    88245,
+    98,
+    103,
+    17.1,
+    "max",
+    "wf_f90fc63e-e58"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [9881d140]",
+    "opus-5-5",
+    87253,
+    94,
+    107,
+    15.9,
+    "max",
+    "wf_6b42e671-938"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [9fa75eb8]",
+    "opus-5-5",
+    86699,
+    57,
+    83,
+    12.6,
+    "max",
+    "wf_48707ad7-b02"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [78f7cb6a]",
+    "opus-5-5",
+    85488,
+    68,
+    79,
+    13.1,
+    "max",
+    "wf_9376277c-869"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [420e0298]",
+    "opus-5-5",
+    82200,
+    67,
+    87,
+    12.6,
+    "max",
+    "wf_9e7fbd60-4a5"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [23177c87]",
+    "opus-5-5",
+    80601,
+    76,
+    86,
+    12.1,
+    "max",
+    "wf_fc6a2495-99e"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [e71fde65]",
+    "sonnet-5-5",
+    79698,
+    14,
+    16,
+    7.8,
+    "high",
+    "wf_b667c976-bc4"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [0a991948]",
+    "opus-5-5",
+    77581,
+    52,
+    66,
+    11.7,
+    "max",
+    "wf_93b895b9-dcc"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [abcced08]",
+    "opus-5-5",
+    75251,
+    49,
+    63,
+    11,
+    "max",
+    "wf_99495c2b-d5f"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [72de5b61]",
+    "opus-5-5",
+    71732,
+    39,
+    48,
+    10.4,
+    "max",
+    "wf_26f0c19e-1f8"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [e0645410]",
+    "opus-5-5",
+    70366,
+    34,
+    38,
+    9.9,
+    "max",
+    "wf_3b38b055-82a"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [6cd0511e]",
+    "opus-5-5",
+    67286,
+    49,
+    50,
+    9.7,
+    "max",
+    "wf_0262c475-c5f"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [0db20c32]",
+    "opus-5-5",
+    66789,
+    24,
+    28,
+    9.7,
+    "max",
+    "wf_0262c475-c5f"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [f25b5222]",
+    "opus-5-5",
+    64495,
+    59,
+    62,
+    10.3,
+    "max",
+    "wf_9376277c-869"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [784f6aef]",
+    "opus-5-5",
+    62590,
+    38,
+    48,
+    9.1,
+    "max",
+    "wf_da4bc1af-a6c"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [6ee7bc89]",
+    "sonnet-5-5",
+    55487,
+    38,
+    40,
+    6.2,
+    "high",
+    "wf_afb8acac-942"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [6ec72fbf]",
+    "sonnet-5-5",
+    54101,
+    14,
+    15,
+    5.4,
+    "high",
+    "wf_b61ed36f-0c2"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [a3d4f62c]",
+    "opus-5-5",
+    53617,
+    39,
+    44,
+    7.3,
+    "max",
+    "wf_df736123-70c"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [edf56a7c]",
+    "opus-5-5",
+    50980,
+    12,
+    17,
+    7.3,
+    "max",
+    "wf_df736123-70c"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [58ba071d]",
+    "sonnet-5-5",
+    50663,
+    21,
+    29,
+    5.5,
+    "high",
+    "wf_78504b8f-cec"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [99e8c118]",
+    "opus-5-5",
+    40127,
+    40,
+    44,
+    6.4,
+    "max",
+    "wf_fff22293-677"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [8ef73a7c]",
+    "sonnet-5-5",
+    33946,
+    28,
+    30,
+    4,
+    "high",
+    "wf_a7d1ac27-d50"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [2f8f0a9c]",
+    "opus-5-5",
+    33270,
+    32,
+    35,
+    5.1,
+    "max",
+    "wf_5fc19dab-b40"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [00346568]",
+    "opus-5-5",
+    32096,
+    33,
+    49,
+    5.2,
+    "max",
+    "wf_1858b37c-019"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [1650855a]",
+    "sonnet-5-5",
+    32084,
+    25,
+    29,
+    3.7,
+    "high",
+    "wf_75859663-85f"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [3a20e47d]",
+    "sonnet-5-5",
+    31433,
+    20,
+    23,
+    3.5,
+    "high",
+    "wf_f5367e26-b16"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [c73f5baf]",
+    "sonnet-5-5",
+    28509,
+    31,
+    32,
+    3.4,
+    "high",
+    "wf_c0a842ae-cd1"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [cd531eeb]",
+    "sonnet-5-5",
+    26468,
+    22,
+    25,
+    3.1,
+    "high",
+    "wf_93ad9b2a-31f"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [102cd961]",
+    "opus-5-5",
+    22384,
+    26,
+    30,
+    5.2,
+    "max",
+    "wf_6c344067-174"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [352ed837]",
+    "opus-5-5",
+    21080,
+    29,
+    31,
+    5.2,
+    "max",
+    "wf_17b7da93-d7b"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [97bb7de1]",
+    "sonnet-5-5",
+    19325,
+    22,
+    27,
+    2.4,
+    "high",
+    "wf_b4cfb945-506"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [df9afc13]",
+    "sonnet-5-5",
+    17007,
+    15,
+    17,
+    2.1,
+    "high",
+    "wf_ef847667-b85"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [e35a2818]",
+    "sonnet-5-5",
+    16784,
+    22,
+    24,
+    2.1,
+    "high",
+    "wf_2d587bee-b55"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [4eca791e]",
+    "sonnet-5-5",
+    15798,
+    28,
+    31,
+    2.1,
+    "high",
+    "wf_ae624f89-084"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [735a2ae9]",
+    "sonnet-5-5",
+    15495,
+    16,
+    20,
+    1.9,
+    "high",
+    "wf_e35c7080-b51"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [007a669d]",
+    "sonnet-5-5",
+    13600,
+    23,
+    25,
+    2.2,
+    "high",
+    "wf_da1fccf5-18a"
+   ],
+   [
+    "? Workflow harness \u2014 user reques\u2026 [e91575e0]",
+    "sonnet-5-5",
+    7640,
+    15,
+    19,
+    1,
+    "high",
+    "wf_57158982-a11"
+   ]
+  ],
+  "perAgentColumns": [
+   "agent",
+   "model",
+   "output",
+   "messages",
+   "toolUses",
+   "minutes",
+   "effort",
+   "group"
+  ],
+  "agentTotal": 26607429,
+  "totals": {
+   "input": 7836,
+   "output": 5798232,
+   "cacheCreate": 18461582,
+   "cacheRead": 1338163735,
+   "transcripts": 45,
+   "messages": 3913,
+   "wallMinutes": 2174
+  }
+ },
+ "window": {
+  "since": "2026-11-11T01:26:31.433Z",
+  "until": "2026-11-12T07:46:07.696Z",
+  "scope": "every project, by time",
+  "files": 45,
+  "messages": 3913,
+  "totals": {
+   "input": 7836,
+   "output": 5798232,
+   "cacheCreate": 18461582,
+   "cacheRead": 1338163735
+  },
+  "byModel": {
+   "claude-opus-5-5": {
+    "messages": 3720,
+    "input": 7448,
+    "output": 5562232,
+    "cacheCreate": 17266799,
+    "cacheRead": 1283599814
+   },
+   "claude-sonnet-5-5": {
+    "messages": 77,
+    "input": 154,
+    "output": 76056,
+    "cacheCreate": 780437,
+    "cacheRead": 10779527
+   },
+   "claude-fable-5-2": {
+    "messages": 116,
+    "input": 234,
+    "output": 159944,
+    "cacheCreate": 414346,
+    "cacheRead": 43784394
+   }
+  }
+ },
+ "notes": [
+  "Per-agent rows attribute every assistant message to the agent that produced it. The window totals instead sum every transcript in the time range, so a second session running concurrently is counted there and not in the per-agent table. The two figures answer different questions and are not expected to match.",
+  "Summed agent wall-clock exceeds real elapsed time whenever agents ran concurrently \u2014 the workflow runtime caps parallelism, it does not serialise.",
+  "Cache-read tokens dominate every other figure by orders of magnitude and are billed at a fraction of output. They are the honest measure of how much context the session moved.",
+  "A row labelled \"(interrupted)\" is an agent that ran twice under one name: the earlier attempt died and was retried or resumed.",
+  "Rows beginning \"?\" are agents whose prompt carried no [AGENT: name] tag \u2014 the label is the first clause of the prompt."
+ ]
+}
