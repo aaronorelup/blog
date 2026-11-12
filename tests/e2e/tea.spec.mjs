@@ -160,8 +160,8 @@ test('tea-4 every internal link and picture on /tea/ resolves in the build', asy
 test('tea-5 no draft or unlisted post shows on the page: no slug anywhere, no title or id of its own outside Now’s and About’s words', async ({ page, request }) => {
   const html = await (await request.get(TEA)).text();
   for (const { slug } of HIDDEN) expect(html, slug).not.toMatch(new RegExp(`(^|[^a-z0-9-])${slug}([^a-z0-9-]|$)`));
-  // an id a listed post also carries (two posts filed under one AO number) tells nothing, so only the others count
-  const listedIds = new Set(Object.values((await (await request.get('/ledger/previews.json')).json()).posts).map((p) => p.id));
+  // No two posts share an id (npm run check and the build fail on one, scripts/check/frontmatter.mjs), so a hidden
+  // post's id anywhere here could only be its own.
   await page.goto(TEA);
   // All the page says, its text and every attribute (alt text, titles, addresses), but Now and About: those are the
   // main site's own words, which tea-3 holds equal to /now/ and /about/, not a list of posts.
@@ -175,7 +175,7 @@ test('tea-5 no draft or unlisted post shows on the page: no slug anywhere, no ti
   const at = (re) => [...said.matchAll(new RegExp(re, 'g'))].map((m) => said.slice(Math.max(0, m.index - 40), m.index + m[0].length + 40));
   const literal = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   for (const { data } of HIDDEN) {
-    if (!listedIds.has(data.id)) expect(at(`(?<![A-Za-z0-9-])${data.id}(?![0-9])`), data.id).toEqual([]);
+    expect(at(`(?<![A-Za-z0-9-])${data.id}(?![0-9])`), data.id).toEqual([]);
     expect(at(literal(squash(data.title))), data.title).toEqual([]);
   }
 });
@@ -202,6 +202,14 @@ test(`tea-6 canonical, robots and the sitemap are what the shipped switch says (
   expect(Math.min(search.length, ask.length)).toBeGreaterThan(0);
   expect(search.filter((k) => !/^(post|notes):/.test(k) || !listed.has(k.replace(/^\w+:/, '')))).toEqual([]);
   expect(ask.filter((slug) => !listed.has(slug))).toEqual([]);
+  // nor in a share set: og:url says what the canonical says, as on every page (chrome/Head.astro), and no share
+  // card, picture or structured data names the page (src/lib/og/pages.js lists the pages with a card, and
+  // chrome/Head.astro writes JSON-LD only on a listed post and the homepage)
+  await expect(page.locator('meta[property="og:url"]'))
+    .toHaveAttribute('content', await page.locator('link[rel="canonical"]').getAttribute('href'));
+  await expect(page.locator('meta[property="og:image"], meta[name="twitter:card"], script[type="application/ld+json"]'))
+    .toHaveCount(0);
+  expect((await request.get('/og/page/tea.jpg')).status()).toBe(404);
 });
 
 test('tea-7 the main site reaches the tea room: the panel footer, and the homepage gate leaving at once', async ({ page }) => {
