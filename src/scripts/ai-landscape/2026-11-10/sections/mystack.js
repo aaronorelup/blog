@@ -175,7 +175,7 @@ export function create(ctx, el, sec) {
       const back = smooth(span(u, 0.06, 0.3));
       // an open card hides the lids: a mark is never covered, and one drawn as an image would sit over the card
       const carded = el.querySelector('details[open]:not(.ail-ms__pairs)') ? 0 : 1;
-      for (const tw of row.towers) { tw.lift = base.under(tw.x - 1.2, tw.x + 1.2); tw.dim = 0.74 * back; tw.char.show = 1 - back; tw.lid.show = (1 - back * 0.45) * carded; }
+      for (const tw of row.towers) { tw.lift = base.under(tw.x - 1.2, tw.x + 1.2); tw.dim = 0.74 * back; tw.char.show = 1 - back; tw.lid.show = back > 0.3 ? 0 : carded; }      // a mark is full or absent: it leaves when its stack becomes background (u 0.15)
 
       // the bench rises, then the pieces fly in once, 70 ms apart, and settle with a small overshoot
       const rise = smooth(span(u, 0.14, 0.3)) * (1 - smooth(span(u, 1.12, 1.28)));

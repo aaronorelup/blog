@@ -39,7 +39,7 @@ export function create(ctx, world) {
     const ext = ctx.data.p[id].ext;                           // that company's own answers: mcp, skills
     const slab = new Mesh(slabGeometry(), mats.glass(owner(id), { side: 1, alpha: 0.62 }));
     slab.scale.set(0.36, 0.62, 0.26);
-    const plate = new Mesh(new PlaneGeometry(PLATE, PLATE), mats.paper(null, { side: 1, blended: true }));
+    const plate = new Mesh(new PlaneGeometry(PLATE, PLATE), mats.paper(null, { side: 1, blended: true, self: true }));
     plate.renderOrder = 8; plate.visible = false;
     const seat = new Mesh(seatGeo, mats.core(clay, { side: 1, ghost: true, hatch: ext.mcp === 'partial' }));
     const chip = new Mesh(chipGeo, mats.core(clay, { side: 1, ghost: true }));

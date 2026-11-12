@@ -171,8 +171,7 @@ export function create(ctx, el, sec) {
 
       towers.forEach((tw, n) => {
         if (phone) tw.shift = ROW_X[n] * (SQUEEZE - 1) * k;
-        tw.char.show = 1 - k;
-        tw.lid.show = 1 - 0.55 * k;
+        tw.char.show = 1 - k;                    // the five characters leave together. The mark plates stay, at full value
         tw.layout();
       });
       Object.values(blockMesh).forEach((m) => { m.visible = k > 0.01; m.material.uniforms.uShow.value = k; });

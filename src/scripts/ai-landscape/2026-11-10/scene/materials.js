@@ -67,12 +67,13 @@ export function createMaterials() {
 
     // Paper. blended: soft edges for cut-outs and type (sorted, no depth write). Otherwise opaque and dithered.
     // mask: the texture is ink coverage and prints in `tint` (titles, glyphs, marks drawn in type).
-    paper(texture, { side = 1, tint = '#FFFFFF', blended = false, mask = false, opacity = 1, ground = null, fade = 0, depthTest = true } = {}) {
+    // self: lights out leaves it alone (a mark on its plate is never darkened).
+    paper(texture, { side = 1, tint = '#FFFFFF', blended = false, mask = false, opacity = 1, ground = null, fade = 0, depthTest = true, self = false } = {}) {
       return new ShaderMaterial({
         vertexShader: worldVert, fragmentShader: paperFrag, transparent: blended, depthWrite: !blended, depthTest, side: DoubleSide,
         uniforms: {
           ...shared, uMap: { value: texture }, uTint: { value: new Color(tint) }, uGround: ground ? { value: new Color(ground) } : shared.uWorld,
-          uSide: { value: side }, uOpacity: { value: opacity }, uFade: { value: fade }, uMode: { value: mask ? 1 : 0 }, uDither: { value: blended ? 0 : 1 },
+          uSide: { value: side }, uOpacity: { value: opacity }, uFade: { value: fade }, uMode: { value: mask ? 1 : 0 }, uDither: { value: blended ? 0 : 1 }, uSelf: { value: self ? 1 : 0 },
         },
       });
     },

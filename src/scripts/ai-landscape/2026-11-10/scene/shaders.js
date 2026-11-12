@@ -158,11 +158,11 @@ void main() {
   #include <colorspace_fragment>
 }`;
 
-// Paper: the plate, the portrait, props and cut-out characters. Unlit, and lit only by lights out.
+// Paper: the plate, the portrait, props and cut-out characters. Unlit, and darkened only by lights out.
 // uMode 1 reads the texture as an ink mask (titles, glyphs) and prints it in uTint.
 export const paperFrag = /* glsl */ `${COMMON}
 uniform sampler2D uMap; uniform vec3 uTint; uniform vec3 uGround;
-uniform float uSide; uniform float uOpacity; uniform float uFade; uniform float uMode; uniform float uDither;
+uniform float uSide; uniform float uOpacity; uniform float uFade; uniform float uMode; uniform float uDither; uniform float uSelf;
 varying vec3 vW; varying vec2 vUv;
 void main() {
   float band;
@@ -175,7 +175,7 @@ void main() {
   else { a *= keep; if (a < 0.004) discard; }
   col = mix(col, uGround, uFade);
   float n = darkAt(vW);
-  if (n > 0.0) col = mix(col, col * (vec3(0.03, 0.034, 0.044) + glowAt(vW) * 1.05), n);
+  if (n > 0.0 && uSelf < 0.5) col = mix(col, col * (vec3(0.03, 0.034, 0.044) + glowAt(vW) * 1.05), n);      // uSelf: a mark's plate keeps its own light
   col += uIrisTint * band * 1.5;
   gl_FragColor = vec4(col, a);
   #include <colorspace_fragment>

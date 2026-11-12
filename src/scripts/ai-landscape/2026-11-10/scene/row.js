@@ -1,6 +1,7 @@
 // The row of five (SPEC 4.1): one tower per company at x = -8.4 to 8.4, each with its lid plate (the official
 // mark, always facing the screen) and its character. row.reset() restores every per-frame field, the active
 // section sets what it needs, and row.update() draws that state and feeds the floor shadows.
+// A plate has two states, full or absent (SPEC 3.3 rule 7): it is never dimmed, tinted or cut by the iris.
 import { BoxGeometry, BufferGeometry, Color, Float32BufferAttribute, LineBasicMaterial, LineSegments, Mesh, PlaneGeometry, Raycaster, SphereGeometry, Vector2, Vector3 } from 'three';
 import { lerp } from '../core/clock.js';
 import { owner, world, ORDER } from '../worlds/index.js';
@@ -9,6 +10,8 @@ import { createTower, FLOOR } from './stack.js';
 export const ROW_X = [-8.4, -4.2, 0, 4.2, 8.4];
 const LEDGE = FLOOR.w / 2 + 0.62;
 const BIG_WIDE = 1.6;     // how much larger a character stands when a world opens (pose "beside")
+const PLATE_MIN = 28;     // CSS px: a plate that would be drawn narrower is absent, and the HTML list shows the mark
+const PLATE_OUT = 0.18;   // seconds a plate takes to leave or come back, by scale alone
 
 export function createRow(ctx) {
   const BIG = ctx.phone ? 1.15 : BIG_WIDE;
@@ -23,10 +26,10 @@ export function createRow(ctx) {
     scene.add(tower.group);
 
     // the lid plate: the official mark on its plate. It never tilts: it is always turned to the camera
-    const plate = new Mesh(new PlaneGeometry(1, 1), mats.paper(null, { side: 0, blended: true }));
+    const plate = new Mesh(new PlaneGeometry(1, 1), mats.paper(null, { side: 0, blended: true, self: true }));
     plate.visible = false; plate.renderOrder = 8;
     scene.add(plate);
-    tower.lid = { mesh: plate, lift: 1, show: 1, size: 1.1 };
+    tower.lid = { mesh: plate, lift: 1, show: 1, size: 1.1, k: 1, px: 0 };
     const name = document.querySelector(`.ail-world[data-world="${id}"] .ail-mark img`)?.alt || document.querySelector(`.ail-world[data-world="${id}"] .ail-mark__name`)?.textContent || id;
     textures.markPlate({ url: cfg.marks.lid, name, plate: cfg.marks.plate, clear: cfg.marks.clear }).then((tex) => {
       plate.material.uniforms.uMap.value = tex; plate.visible = true;
@@ -105,21 +108,27 @@ export function createRow(ctx) {
         c.x = tw.x + tw.shift; c.z = tw.z; c.h = tw.height + tw.lift; c.gap = tw.gap; c.color.copy(tw.shadow);
         c.amt = tw.show * (1 - tw.dim * 0.72); c.inside = tw.side < 0 ? 0 : 1;
 
+        // the lid plate. It is wanted when its section shows it, its stack is there, it would be 28 px wide or
+        // more, and no iris is about to cut across it. It leaves and returns by scale in 0.18 s, at full value
         const lid = tw.lid;
-        const s = lid.size * (0.55 + 0.45 * lid.lift);
+        const full = lid.size * (0.55 + 0.45 * lid.lift);
         lid.mesh.quaternion.copy(cam.quaternion);
-        lid.mesh.scale.set(s, s, 1);
         lid.mesh.position.set(tw.x + tw.shift, tw.height + tw.lift + 0.02 + lid.lift * (lid.size * 0.5 + 0.42), tw.z);
-        lid.mesh.material.uniforms.uOpacity.value = lid.show * tw.show * (1 - tw.dim * 0.8);
-        lid.mesh.material.uniforms.uSide.value = tw.side;
-        lid.mesh.visible = !!lid.mesh.material.uniforms.uMap.value && lid.show * tw.show > 0.01;
+        const depth = a.copy(lid.mesh.position).sub(cam.position).dot(cam.getWorldDirection(b));
+        lid.px = (full * window.innerHeight) / (2 * Math.max(0.1, depth) * Math.tan((cam.fov * Math.PI) / 360));
+        const cut = tw.side < 0 && (mats.irisOpen || 0) > 0.02;
+        const want = lid.show * tw.show > 0.5 && lid.px >= PLATE_MIN && !cut ? 1 : 0;
+        lid.k = ctx.reduced ? want : Math.max(0, Math.min(1, lid.k + (want ? dt : -dt) / PLATE_OUT));
+        const s = full * (0.6 + 0.4 * lid.k);
+        lid.mesh.scale.set(s, s, 1);
+        lid.mesh.material.uniforms.uOpacity.value = 1;
+        lid.mesh.material.uniforms.uSide.value = 0;
+        lid.mesh.visible = !!lid.mesh.material.uniforms.uMap.value && lid.k > 0.001;
         if (lid.dom) {
-          const o = lid.show * tw.show * (1 - tw.dim * 0.8) * (tw.side < 0 ? 1 - Math.min(1, (mats.irisOpen || 0) * 3) : 1);
-          lid.dom.style.opacity = o.toFixed(3);
-          if (o > 0.01) {
+          lid.dom.style.opacity = lid.mesh.visible ? '1' : '0';
+          if (lid.mesh.visible) {
             const p = ctx.labels.project(lid.mesh.position);
-            const depth = a.copy(lid.mesh.position).sub(cam.position).dot(cam.getWorldDirection(b));
-            const px = (s * lid.domK * window.innerHeight) / (2 * depth * Math.tan((cam.fov * Math.PI) / 360));
+            const px = lid.px * lid.domK * (0.6 + 0.4 * lid.k);
             lid.dom.style.transform = `translate3d(${p.x.toFixed(1)}px,${p.y.toFixed(1)}px,0) translate(-50%,-50%) scale(${(px / 100).toFixed(4)})`;
           }
         }
