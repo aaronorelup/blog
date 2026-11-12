@@ -3,13 +3,22 @@
 // portrait screen has its own shot and poster), and the pointer's parallax, an eased offset in screen space.
 import { CatmullRomCurve3, MathUtils, PerspectiveCamera, Vector3 } from './three.js';
 
+// A path through keys on the scene's progress: Catmull-Rom curves of the camera's place and of the point it looks at.
+function path(keys) {
+  return {
+    times: keys.map((k) => k.t),
+    pos: new CatmullRomCurve3(keys.map((k) => new Vector3().fromArray(k.pos)), false, 'centripetal'),
+    look: new CatmullRomCurve3(keys.map((k) => new Vector3().fromArray(k.look)), false, 'centripetal'),
+  };
+}
+
+// The landscape path (camera.keys), and a portrait screen's own when the manifest gives one (camera.portrait.keys: a
+// composition of its own for the tall frame); without it a portrait screen pulls the landscape path back (placeCamera).
 export function createCamera(manifest) {
   const c = manifest.camera;
   const cam = new PerspectiveCamera(c.fov, 1, c.near, c.far);
-  const times = c.keys.map((k) => k.t);
-  const pos = new CatmullRomCurve3(c.keys.map((k) => new Vector3().fromArray(k.pos)), false, 'centripetal');
-  const look = new CatmullRomCurve3(c.keys.map((k) => new Vector3().fromArray(k.look)), false, 'centripetal');
-  return { cam, times, pos, look, spec: c, portrait: false, par: { x: 0, y: 0 }, shift: 0 };
+  const tall = c.portrait.keys ? path(c.portrait.keys) : null;
+  return { cam, wide: path(c.keys), tall, spec: c, portrait: false, par: { x: 0, y: 0 }, shift: 0 };
 }
 
 // progress (0..1) to the curves' own parameter: linear between key times, so keys may be spaced unevenly
@@ -41,10 +50,12 @@ const scratch = () => V || (V = {
 // p: smoothed progress; par: eased pointer offset, -1..1 each axis
 export function placeCamera(rig, p, par) {
   const { p: _p, l: _l, f: _f, r: _r, u: _u, up: UP } = scratch();
-  const t = curveT(rig.times, p);
-  rig.pos.getPoint(t, _p);
-  rig.look.getPoint(t, _l);
-  if (rig.portrait) {
+  const own = rig.portrait && rig.tall;
+  const way = own ? rig.tall : rig.wide;
+  const t = curveT(way.times, p);
+  way.pos.getPoint(t, _p);
+  way.look.getPoint(t, _l);
+  if (rig.portrait && !own) {
     // pulled back along the view on a tall screen, more at the start than once the camera is in close
     _f.subVectors(_p, _l).normalize();
     _p.addScaledVector(_f, rig.spec.portrait.pull * (1 - p * 0.7));

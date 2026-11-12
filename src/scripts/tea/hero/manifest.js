@@ -75,9 +75,13 @@ export function normalise(m, url) {
 // travel: how much of a whole actor's own sideways travel (its position track's x) a portrait screen keeps. aspect:
 // the portrait frame (the tall poster's shape): narrower screens keep its height and crop its sides, wider ones crop
 // its top and bottom
+// keys: the portrait screen's own camera path ({ t, pos, look } as camera.keys, at least two), or null: then pull and
+// drop adapt the landscape path
 const portraitOf = (p) => {
   const o = { fov: 46, spread: 0.55, pull: 1.6, drop: 0.9, aspect: 430 / 932, ...p };
-  return { ...o, travel: Number(p.travel ?? o.spread) };
+  const keys = Array.isArray(p.keys) && p.keys.length >= 2
+    ? p.keys.map((k) => ({ t: Number(k.t), pos: V3(k.pos), look: V3(k.look) })).sort((a, b) => a.t - b.t) : null;
+  return { ...o, travel: Number(p.travel ?? o.spread), keys };
 };
 
 const keysOf = (v) => (Array.isArray(v) ? v.map(([t, x]) => [Number(t), Number(x)]).sort((a, b) => a[0] - b[0])

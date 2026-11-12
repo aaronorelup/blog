@@ -231,6 +231,29 @@ test('the shipped manifest: every channel is one the runtime knows, a whole-acto
   assert.doesNotThrow(() => normalise(SHIPPED, '/tea/hero/manifest.json'));
 });
 
+// A portrait screen's own camera path (camera.portrait.keys): read and sorted like camera.keys; on a portrait screen the
+// camera follows it as it is (no pull, no drop), on a landscape one the landscape path. Without it a portrait screen
+// pulls the landscape path back and aims lower, as before.
+test('camera.portrait.keys: a portrait screen follows its own path, a landscape one the landscape path', async () => {
+  const { createCamera, fitCamera, placeCamera } = await import('../../src/scripts/tea/hero/camera.js');
+  const P_KEYS = [{ t: 1, pos: [0, 3, 2], look: [0, 1, -4] }, { t: 0, pos: [1, 2, 9], look: [1, 1, 0] }];
+  const cam = (portrait) => ({ version: 1, camera: { ...CAM, portrait: { pull: 2, drop: 1, ...portrait } }, actors: [] });
+  const own = normalise(cam({ keys: P_KEYS }), '/tea/hero/m.json');
+  assert.deepEqual(own.camera.portrait.keys.map((k) => k.t), [0, 1]);
+  assert.equal(normalise(cam({ keys: [P_KEYS[0]] }), '/tea/hero/m.json').camera.portrait.keys, null, 'one key is no path');
+  const at = (m, w, h, p) => {
+    const rig = createCamera(m);
+    fitCamera(rig, 1.6, w, h);
+    placeCamera(rig, p, { x: 0, y: 0 });
+    return rig.cam.position.toArray().map((v) => +v.toFixed(6) + 0);
+  };
+  assert.deepEqual(at(own, 390, 844, 0), [1, 2, 9], 'portrait: its own first key, not pulled back');
+  assert.deepEqual(at(own, 390, 844, 1), [0, 3, 2]);
+  assert.deepEqual(at(own, 1440, 900, 0), [0, 1, 6], 'landscape: the landscape path');
+  const pulled = at(normalise(cam({}), '/tea/hero/m.json'), 390, 844, 0);
+  assert.deepEqual(pulled, [0, 1, 8], 'no portrait keys: the landscape path pulled back along the view');
+});
+
 // The shipped manifest's own swap (the leap: a pose-baked mesh that follows Jefrie, cut in and out with visible), over
 // the real manifest and the real modules, each model an empty glTF scene (no WebGL, no files). A runtime without follow
 // or visible draws both figures all the time with the leap mesh at the scene's origin, and nothing else notices: every
