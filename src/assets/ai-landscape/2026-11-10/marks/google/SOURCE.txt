@@ -1,13 +1,21 @@
-Official mark, unaltered.
+Official mark. The page shows a smaller copy of it, scaled in proportion and changed in no other way.
 
-google-g.png
+source/GoogleG_FullColor_RGB.png
   Google G, full colour, the gradient version, as downloaded from the official guidelines page
   https://partnermarketinghub.withgoogle.com/brands/google/branding-guidelines/
   (its download link: storage.googleapis.com/pe-portal-consumer-prod-wagtail-static/original_images/GoogleG_FullColor_RGB.png)
-  Fetched 2026-11-12. Byte-identical to the download. 2820x2820 RGBA PNG.
+  Fetched 2026-11-12. Byte-identical to the download. 2820x2820 RGBA PNG, 137,714 bytes.
+  The G fills about a third of that canvas: the file carries its own clear space of one G width.
+  It sits in source/ so that no page loads it. Nothing imports it.
   The same page offers GoogleG_FullColor_RGB.eps. No EPS-to-SVG converter was available on the build machine, so
   the plan's fallback applies: "Keep the PNG as google-g.png if no clean vector comes out of the EPS." There is
   therefore no google-g.svg.
+
+google-g.png
+  The web copy the page loads: the file above scaled down to 512x512 (Lanczos, full-colour RGBA, no palette),
+  19,866 bytes. Same picture, same colours, same clear space. Not cropped, recoloured, redrawn or sharpened.
+  The lid plate is drawn 512 pixels wide, so nothing on the page shows the mark larger than this copy.
+  To remake it: sharp(source).resize(512, 512, { kernel: 'lanczos3' }).png({ compressionLevel: 9, palette: false }).
 
 gemini-spark.svg is NOT shipped. Plan rule: "Google says product icons need a Partner Marketing Hub account and an
 approval form. Owner decision needed (SPEC 10). Until then the Google G is the lid mark and this file is not
