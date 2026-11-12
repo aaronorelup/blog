@@ -42,6 +42,9 @@
 
 /* ---------------------------------------------------------------- base */
 html { background: var(--pc-page); color-scheme: dark; scroll-behavior: smooth; }
+/* An address with a chapter lands on it at once (layouts/TeaPage.astro): WebKit's glide there while the page loads
+   stops part way when the page is busy. Links followed on the page glide. */
+html[data-tea-arrive] { scroll-behavior: auto; }
 :root[data-mode='day'] { color-scheme: light; }
 body.tea {
   margin: 0; background: var(--pc-page); color: var(--pc-body); font-family: var(--font-body);

@@ -445,3 +445,33 @@ test('tea-16 the hero lab (/tea-lab/, live until the final models land) says noi
   }
   expect(naming).toEqual([]);
 });
+
+// An address with a chapter lands on it at once. With `scroll-behavior: smooth` phone WebKit glides its own scroll
+// there while the page loads, and with the page busy it stops part way down the ledger (tea-hero-10 saw readers left
+// 3,000 to 10,000 px short). So every frame from the first has the window at the top or at the chapter, never between;
+// and the first link followed on the page glides, as every chapter link does: through between, to its chapter.
+test('tea-17 an address with a chapter lands on it at once; a link followed on the page glides', async ({ page }) => {
+  await page.addInitScript(() => {
+    window.__ys = [];
+    const frame = () => { window.__ys.push(Math.round(scrollY)); requestAnimationFrame(frame); };
+    requestAnimationFrame(frame);
+  });
+  const there = (id) => page.locator(`#${id}`).evaluate((el) =>
+    Math.abs(el.getBoundingClientRect().top - parseFloat(getComputedStyle(el).scrollMarginTop)));
+  const [to, next] = [CHAPTERS[2].id, CHAPTERS[3].id];
+  await page.goto(`${TEA}?hero=off#${to}`);   // no scene, so nothing else moves the page
+  await expect.poll(() => there(to), { timeout: 30_000 }).toBeLessThan(2);
+  const between = await page.evaluate(() => {
+    const end = Math.round(scrollY);
+    return window.__ys.filter((y) => y > 0 && Math.abs(y - end) > innerHeight);
+  });
+  expect(between).toEqual([]);
+  const from = await page.evaluate(() => { window.__ys = []; return Math.round(scrollY); });
+  await page.locator(`[data-tea-link="${next}"]`).click();
+  await expect.poll(() => there(next), { timeout: 30_000 }).toBeLessThan(2);
+  const glided = await page.evaluate((from) => {
+    const [lo, hi] = [from, Math.round(scrollY)].sort((a, b) => a - b);
+    return window.__ys.filter((y) => y > lo + 2 && y < hi - 2).length;
+  }, from);
+  expect(glided).toBeGreaterThan(0);
+});

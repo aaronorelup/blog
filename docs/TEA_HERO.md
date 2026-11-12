@@ -46,7 +46,10 @@ Jefrie (left) and Yusef (right, with a lantern) around a small CRT television. E
   the poster until they go back to the top or past it. A reload or a way back to a place inside the pinned scene
   lands there again (`onLeave`/`placeBack`). `data-hero-settled` on the section says the hero will change no layout
   by itself any more: set with `data-3d-off` on the static path, and once the scene is pinned and its first frame is
-  up. Tests that need the page to hold still wait for it (or open `/tea/?hero=off`).
+  up. Tests that need the page to hold still wait for it (or open `/tea/?hero=off`). An address with a chapter
+  (`/tea/#projects`) lands on it at once, before the scene pins (`layouts/TeaPage.astro`, tea-17): with the page's
+  `scroll-behavior: smooth`, phone WebKit glides its own scroll there while the page loads and, the page busy, stops
+  part way down the ledger (with the scene or without it); the first link followed on the page glides again.
 
 ## The first picture, on every path
 
@@ -298,7 +301,8 @@ and restores the poster.
   canvas (14), a square window (15), a missing manifest or model (16), Save-Data and a small device (17), a reload
   inside the scene (18), the stage one screen and the foot's fade (19), the same box on both paths (20), where the
   box docks (21), the box low on a portrait screen (22), a chapter link tapped just as the scene pins (23), every
-  part the manifest names found in the models (24), leaving the page while the scene loads (25).
+  part the manifest names found in the models (24), leaving the page while the scene loads (25). The arrival at a
+  chapter address itself is tea-17 (`tea.spec.mjs`).
 - `verify.mjs` against `/tea/` and `/tea-lab/` (both layouts; see its header).
 - The poster against the scene's opening frame at 1440x900, 1280x720, 1440x700, 768x1024, 390x844 and 360x640 (offset
   0, mean difference 1.0 to 1.5 of 255); the actors' silhouettes as above (`silhouettes.mjs`); the title box's text

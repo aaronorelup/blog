@@ -490,6 +490,7 @@ once the 3D hero pins the top.
 | Under 1024 px the strip keeps the chapter being read in view: at every chapter, going down and back up, its pill sits whole inside the strip and clear of its fading end; Tab from "Main site" brings each pill in turn whole into view, clear of the fade, with room for its focus ring; with reduced motion (the strip moves at once) and without (it glides; WebKit starts the glide up to about 0.7 s late, so the pass waits for the pill to arrive and stay) | tea-14 (desktop at 390 wide, and phone) |
 | One `h1`, the hero's title, first; each chapter's word an `h2` and the first heading in it; About's sections (`AboutView level={2} title={false}`) at `h3` with no title of their own; no heading skips a level | tea-15 |
 | The hero lab `/tea-lab/` (live until the final models land) answers with its own robots noindex and no share picture or JSON-LD; the sitemap, the feed, the hover cards' list, search, Ask and read-aloud never name it, and no page links it (`/tea/`, the 404 page, every page of the sitemap) | tea-16 |
+| An address with a chapter (`/tea/#projects`) lands on it at once: every frame from the first has the window at the top or at the chapter, never between (phone WebKit glides there while the page loads and, the page busy, stops part way); the first link followed on the page glides to its chapter | tea-17 |
 
 ## Read-aloud (`read-aloud.spec.mjs`)
 
