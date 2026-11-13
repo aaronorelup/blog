@@ -1,0 +1,150 @@
+/* THE ENDING: the page's last three chapters. The fonts are the site's own, by their own addresses; the card is the
+   working copy's floating card (the homepage's: a navy ground, round corners, one soft shadow, a gold kicker), made
+   solid enough that nothing behind it needs blurring. */
+
+@font-face { font-family: 'Karla'; font-style: normal; font-weight: 400 700; font-display: swap; src: url('/fonts/karla-latin.3b1eb09a.woff2') format('woff2'); }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-latin.2c5953da.woff2') format('woff2'); }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-latin.9d65f92a.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/jetbrains-mono-latin.83c005d4.woff2') format('woff2'); }
+
+:root {
+  color-scheme: dark;
+  --night: #0b0d1b; --cream: #f6e7c8; --cream-2: #e9dcc3;
+  --pc-head: rgb(240, 192, 106); --pc-strong: rgb(242, 231, 213); --pc-soft: rgb(156, 145, 127);
+  --pc-line: rgb(48, 46, 62); --pc-line2: rgb(74, 68, 90); --pc-accent: rgb(226, 121, 92); --pc-gold: rgb(201, 162, 39);
+  --pc-tile: rgb(32, 31, 44);
+  --home-card: rgba(21, 23, 38, 0.95); --home-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  --home-body: rgb(198, 194, 212); --home-quiet: rgb(143, 138, 163);
+  --font-display: 'Zen Maru Gothic', sans-serif;
+  --font-body: Karla, system-ui, sans-serif;
+  --font-serif: Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --gutter: clamp(16px, 4vw, 72px);
+}
+* { box-sizing: border-box; }
+html { background: var(--night); -webkit-text-size-adjust: 100%; }
+body { margin: 0; color: var(--home-body); font-family: var(--font-body); overflow-x: hidden; overflow-x: clip; }
+:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; border-radius: 4px; }
+a { color: var(--pc-accent); }
+.skip { position: fixed; left: 12px; top: -80px; z-index: 20; padding: 10px 14px; background: rgb(21, 23, 38); color: var(--pc-strong); font: 600 13px var(--font-body); border-radius: 10px; text-decoration: none; }
+.skip:focus { top: 12px; }
+.back {
+  position: fixed; left: 14px; top: 12px; z-index: 5; padding: 6px 12px 7px; border-radius: 999px;
+  background: rgba(21, 23, 38, 0.8); color: var(--home-quiet); text-decoration: none;
+  font: 600 11px/1 var(--font-body); letter-spacing: 0.12em; text-transform: uppercase;
+}
+.back:hover { color: var(--pc-strong); }
+.debug { position: fixed; right: 10px; top: 10px; z-index: 30; margin: 0; padding: 6px 9px; border-radius: 8px; background: rgba(0, 0, 0, 0.7); color: #cfe; font: 11px/1.4 var(--font-mono); }
+
+/* ---------------------------------------------------------------- the pictures (js/scene.js) */
+#stage { position: fixed; inset: 0; z-index: 0; overflow: hidden; background: #151b30; }
+.end-scene { position: absolute; inset: 0; overflow: hidden; visibility: hidden; contain: strict; }
+.end-plate { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+.end-layer { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; user-select: none; }
+img.end-layer { object-fit: fill; }
+.end-room-foot { display: none; }
+.tall .end-room-foot { display: block; background: linear-gradient(to bottom, rgba(29, 21, 32, 0) 84%, #1d1520 99%); }
+/* the veranda's view: the lawn of the far plate below the line where the tea house stood, the near tree over it */
+.end-lawn { -webkit-mask-image: linear-gradient(to bottom, transparent 57%, #000 66%); mask-image: linear-gradient(to bottom, transparent 57%, #000 66%); }
+.end-tree { left: -1%; top: -14%; width: 88%; height: auto; }
+.end-moonlight { background:
+  radial-gradient(circle at 44% 24%, rgba(170, 182, 232, 0.10), rgba(170, 182, 232, 0) 34%),
+  linear-gradient(to bottom, rgba(10, 12, 26, 0) 60%, rgba(10, 12, 26, 0.35) 100%); }
+.end-veranda { transform-origin: 50% 70%; }
+/* the dawn: the sky above the hills stays the night's colour; one band of warm light lies along the hills */
+.end-sky { background: linear-gradient(to bottom, rgba(18, 22, 46, 0.97) 0%, rgba(24, 28, 58, 0.86) 18%, rgba(34, 36, 70, 0.45) 30%, rgba(40, 40, 76, 0) 39%); opacity: 0; }
+.end-band { background: linear-gradient(to bottom, rgba(255, 196, 150, 0) 27%, rgba(255, 196, 150, 0.16) 34%, rgba(255, 204, 160, 0.2) 38%, rgba(255, 196, 150, 0) 44%); opacity: 0; }
+
+/* ---------------------------------------------------------------- the chapters (everything read) */
+main { position: relative; z-index: 1; }
+.chap { position: relative; }
+.chap .lead { height: 52vh; height: 52svh; }
+.chap .tail { height: 110vh; }
+#now .tail { height: 60vh; }
+#about .tail { height: 135vh; }
+
+.card {
+  position: relative; border-radius: 24px; background: var(--home-card); box-shadow: var(--home-shadow);
+  color: var(--home-body); padding: 26px 28px 28px;
+}
+.kicker { margin: 0; font: 600 11.5px/1.4 var(--font-body); letter-spacing: 0.14em; text-transform: uppercase; color: var(--pc-gold); }
+.kicker a { color: inherit; text-decoration: none; }
+.kicker a:hover { color: var(--pc-head); }
+.card h2 { margin: 6px 0 10px; font: 700 31px/1.08 var(--font-display); letter-spacing: -0.015em; color: var(--pc-head); text-wrap: balance; }
+.say { margin: 0; font: 400 16px/1.5 var(--font-serif); color: var(--pc-strong); text-wrap: pretty; }
+.go { color: var(--pc-accent); text-decoration: none; font: 600 14px/1.3 var(--font-body); }
+.go:hover { text-decoration: underline; }
+.go::after { content: '\00a0\2192'; }
+
+/* Courses: at the left, over the dark of the room */
+.c-card { width: min(470px, calc(100vw - 2 * var(--gutter))); margin-left: var(--gutter); }
+.courses { list-style: none; margin: 20px 0 0; padding: 18px 0 0; border-top: 1px solid var(--pc-line2); display: grid; gap: 14px; }
+.course { display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: 4px 16px; align-items: center; }
+.course img { grid-row: 1 / span 3; width: 132px; height: auto; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 10px; background: var(--pc-tile); box-shadow: inset 0 0 0 1px var(--pc-line2); }
+.course .code { font: 500 10.5px/1.2 var(--font-mono); color: var(--pc-gold); letter-spacing: 0.04em; }
+.course h3 { margin: 0; font: 700 17px/1.25 var(--font-display); color: var(--pc-strong); }
+.course .go { font-size: 13px; }
+
+/* Now: at the right, at most 640 px, with wide margins; the garden beside it */
+.n-card { width: min(640px, calc(100vw - 2 * var(--gutter))); margin-left: auto; margin-right: max(var(--gutter), 6vw); padding: 30px 36px 32px; }
+.n-card .lede { margin: 4px 0 0; font: italic 400 18px/1.45 var(--font-serif); color: var(--pc-strong); text-wrap: pretty; }
+.prose { margin-top: 18px; padding-top: 6px; border-top: 1px solid var(--pc-line2); font: 400 16px/1.6 var(--font-serif); color: var(--home-body); }
+.prose h3 { margin: 22px 0 8px; font: 700 19px/1.25 var(--font-display); color: var(--pc-strong); }
+.prose h4 { margin: 18px 0 6px; font: 700 16px/1.3 var(--font-display); color: var(--pc-strong); }
+.prose p { margin: 0 0 10px; }
+.prose ul { margin: 0 0 8px; padding-left: 1.1em; }
+.prose li { margin: 0 0 8px; }
+.prose li::marker { color: var(--pc-gold); }
+.prose strong { color: var(--pc-strong); }
+.prose a { color: var(--pc-accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+.foot { margin: 16px 0 0; }
+.research { margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--pc-line2); }
+.research h3 { margin: 0; font: 700 19px/1.25 var(--font-display); }
+.research h3 a { color: var(--pc-strong); text-decoration: none; }
+.research h3 a:hover { color: var(--pc-head); }
+.research .intro { margin: 4px 0 12px; font: 400 14.5px/1.45 var(--font-serif); color: var(--home-quiet); }
+.rows { list-style: none; margin: 0; padding: 0; }
+.row { position: relative; padding: 13px 16px 14px; border-radius: 14px; background: var(--pc-tile); box-shadow: inset 0 0 0 1px var(--pc-line); }
+.row:hover { box-shadow: inset 0 0 0 1px var(--pc-head); }
+.row-meta { margin: 0 0 4px; display: flex; gap: 12px; font: 500 10.5px/1.2 var(--font-mono); color: var(--pc-gold); letter-spacing: 0.04em; }
+.row h4 { margin: 0; font: 700 16px/1.3 var(--font-display); }
+.row h4 a { color: var(--pc-strong); text-decoration: none; }
+.row h4 a::after { content: ''; position: absolute; inset: 0; border-radius: 14px; }
+.row p { margin: 5px 0 0; font: 400 14.5px/1.5 var(--font-serif); color: var(--home-body); }
+
+/* About: at the left; the right is left open to the garden */
+.a-card { width: min(560px, calc(100vw - 2 * var(--gutter))); margin-left: var(--gutter); padding: 30px 34px 32px; }
+.a-head { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 18px; align-items: center; }
+.a-head img { width: 92px; height: 92px; border-radius: 50%; box-shadow: 0 0 0 3px var(--pc-line2); background: var(--pc-tile); }
+.a-head h2 { margin: 4px 0 0; }
+.a-card .lede { margin: 16px 0 0; font: italic 400 18px/1.45 var(--font-serif); color: var(--pc-strong); text-wrap: pretty; }
+.elsewhere { margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--pc-line2); }
+.pills { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.pills a {
+  display: inline-block; padding: 7px 14px 8px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--pc-line2);
+  color: var(--pc-strong); text-decoration: none; font: 600 13px/1.2 var(--font-body);
+}
+.pills a:hover { box-shadow: inset 0 0 0 1px var(--pc-head); color: var(--pc-head); }
+
+/* the end of the page: the garden, and one quiet way back */
+.fin { position: absolute; left: 0; right: 0; bottom: 22px; text-align: center; }
+.fin a { display: inline-block; padding: 7px 14px 8px; border-radius: 999px; background: rgba(21, 23, 38, 0.8); color: var(--home-quiet); text-decoration: none; font: 600 11px/1 var(--font-body); letter-spacing: 0.12em; text-transform: uppercase; }
+.fin a:hover { color: var(--pc-strong); }
+
+/* a phone: each chapter is its card across the width, with half a screen of its scene above it */
+@media (max-width: 760px) {
+  :root { --gutter: 12px; }
+  .chap .lead { height: 50vh; height: 50svh; }
+  .card { padding: 22px 20px 24px; border-radius: 20px; }
+  .card h2 { font-size: 27px; }
+  .c-card, .n-card, .a-card { width: auto; margin: 0 var(--gutter); }
+  .n-card, .a-card { padding: 24px 20px 26px; }
+  .course { grid-template-columns: 104px minmax(0, 1fr); gap: 3px 13px; }
+  .course img { width: 104px; }
+  .a-head { grid-template-columns: 72px minmax(0, 1fr); gap: 14px; }
+  .a-head img { width: 72px; height: 72px; }
+  #about .tail { height: 110vh; }
+}
+
+/* without the scene (no script, or it failed): the cards on the night colour */
+html:not(.live) #stage { background: linear-gradient(#151b30, #0b0d1b); }

@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0d1b">
+<title>The ending: Courses, Now and About · a tea room test</title>
+<link rel="stylesheet" href="css/ending.css">
+</head>
+<body>
+<a class="skip" href="#now">Skip to Now</a>
+<a class="back" href="../">Tea room tests</a>
+
+<!-- The pictures: js/scene.js draws the back room, the veranda and the dawn in here, behind the cards. -->
+<div id="stage" aria-hidden="true"></div>
+
+<main>
+<!-- Every word below is copied from the site's own sources at the time of building (a static test page cannot read
+     them): the finished page reads them live instead. Courses: names, links and pictures from src/data/courses.js
+     (COURSES). Now: src/content/now/2026-11-08.md as /now/ renders it, laid out as src/components/tea/TeaNow.astro
+     does, its labels from src/data/tea.js (COPY), the research row from src/content/research/. About:
+     src/components/about/AboutView.astro, the links from src/data/site.js (SOCIAL), the portrait /aaron.webp. -->
+
+<section class="chap" id="courses" aria-labelledby="courses-title">
+<div class="lead"></div>
+<article class="card c-card" data-mark="card">
+<p class="kicker">Courses</p>
+<!-- DRAFT: these two lines are a draft in Aaron's voice, written for this test. The wording is his to approve. -->
+<h2 id="courses-title">Still being built</h2>
+<p class="say">Both of my courses are still being made. You're welcome to look around inside them, but they aren't ready to take yet.</p>
+<ul class="courses">
+<li class="course"><img src="/courses/the-hidden-curriculum/engine/assets/teahouse-night.jpg" alt="" width="132" height="83" loading="lazy" decoding="async"><span class="code">C-01</span><h3>The Hidden Curriculum</h3><a class="go" href="/courses/the-hidden-curriculum/">Have a look</a></li>
+<li class="course"><img src="/courses/i-love-my-evening-television/card.webp" alt="" width="132" height="83" loading="lazy" decoding="async"><span class="code">C-02</span><h3>I Love My Evening Television</h3><a class="go" href="/courses/i-love-my-evening-television/">Have a look</a></li>
+</ul>
+</article>
+<div class="tail"></div>
+</section>
+
+<section class="chap" id="now" aria-labelledby="now-title">
+<div class="lead"></div>
+<article class="card n-card" data-mark="card">
+<p class="kicker"><a href="/now/">Updated Nov 08, 2026</a></p>
+<h2 id="now-title">Now</h2>
+<p class="lede">Blog work and my AI-made TV series, the Wordhord idea, and the cloud setup my agents work in.</p>
+<div class="prose">
+<h3>Current focus</h3>
+<ul>
+<li><strong>This blog.</strong> It’s been my main focus lately, and I’m still improving it.</li>
+<li><strong><a href="/courses/i-love-my-evening-television/">I Love My Evening Television</a>.</strong> My AI-made TV series, and a demo
+of what Opus 5.5 can animate.</li>
+</ul>
+<h3>Wordhord (still an idea)</h3>
+<ul>
+<li><strong>A shared language core.</strong> One API and database any language-learning app can read and write to track a
+learner’s level, streaks and vocabulary. No app has to relearn what you already know.</li>
+<li><strong>Not a translator.</strong> It isn’t any-language-to-any-language translation.</li>
+<li><strong>Vectors, not raw meaning.</strong> The core holds words as embeddings instead of raw semantics or prosody, and a
+closest-vector check tells it which words you’ve learned. Learn one word in a neighborhood (big, large, giant,
+huge, humongous) and apps can prioritize words outside it.</li>
+</ul>
+<h3>Current setup</h3>
+<p>Everything lives in the cloud. Each part is modular and replaceable, so the whole thing can keep expanding, and my
+agents work inside it.</p>
+<ul>
+<li><strong>Stack.</strong> Cloudflare R2 for storage, Infisical for API keys, GitHub for repos and skills, Notion as my
+<a href="/ledger/second-brain-v2/">second brain</a>, <a href="/ledger/renting-a-gpu/">Runpod</a> for GPUs and Cloudflare for hosting.</li>
+<li><strong>Interface.</strong> Gages, my Grok bot, which dispatches Claude Code agents.</li>
+<li><strong>Subscriptions.</strong> Two Anthropic Max 20x plans, ChatGPT Plus and a paid xAI plan.</li>
+<li><strong>Paid APIs.</strong> ElevenLabs (AI voices) is the most important. Hugging Face is the biggest, about $57 a month, and
+its Seedance video model is expensive, so it’s likely the first cut. DeepSeek runs the agents inside my own code,
+like RAG Goobie, the Ask box on <a href="/ledger/">the ledger</a>. I also have a Gemini key I probably don’t use.</li>
+<li><strong>Game dev.</strong> Godot for now. Unity and Unreal are worth another look as their MCP support (how AI agents drive
+them) improves, and Blender MCP for rendering deserves a second look too.</li>
+</ul>
+</div>
+<p class="foot"><a class="go" href="/now/">Open the Now page</a></p>
+<section class="research" aria-labelledby="research-title">
+<h3 id="research-title"><a href="/research/">Research notes</a></h3>
+<p class="intro">Longer reading I did for my own projects, kept as documents.</p>
+<ol class="rows">
+<li class="row"><p class="row-meta"><span>RE-001</span><span>Aug 15, 2026</span></p><h4><a href="/research/second-brain-builders/">The Second Brain Builders</a></h4><p>Fifteen named case studies of people who built and documented a personal knowledge system — big tech, creators, and practitioners — and what actually transfers to an agent-facing second brain.</p></li>
+</ol>
+</section>
+</article>
+<div class="tail"></div>
+</section>
+
+<section class="chap" id="about" aria-labelledby="about-title">
+<div class="lead"></div>
+<article class="card a-card" data-mark="card">
+<div class="a-head">
+<img src="/aaron.webp" alt="Portrait of Aaron: smiling, round glasses, dark hair" width="92" height="92" loading="lazy" decoding="async">
+<div><p class="kicker">About</p><h2 id="about-title">About me</h2></div>
+</div>
+<p class="lede">I build things with AI agents to find out where they actually hold up. Most of it is about
+making learning fun and open to anyone who wants it.</p>
+<div class="prose">
+<p>Most of what gets said about AI comes from people selling something. I'm not selling
+anything. I'd rather find out for myself, so I build real projects with it and write down
+what broke. That's what this site is for.</p>
+<h3>What I'm making</h3>
+<p>The big one right now is <strong>I Love My Evening Television</strong>,
+a series of half-hour films made by crews of Claude agents from one prompt each. Every episode
+starts as a calm little programme and turns strange at minute 20. The first two are on
+YouTube, and <a href="/courses/i-love-my-evening-television/">the lore course</a>
+keeps track of the whole world.</p>
+<p><strong>The Hidden Curriculum</strong> is a free video course
+on the small stuff nobody tells you when you start building with AI, like what a folder path
+is. Agents write, fact-check, narrate and animate every lesson.
+<a href="/courses/the-hidden-curriculum/">Start it here</a>.</p>
+<p>Then there are my original characters. <strong>Jefrie</strong>,
+<strong>BloodTailor</strong> and the rest of the cast keep
+showing up in everything I make. They get drawn, painted in oil, animated and dropped into games.</p>
+<p>On the game side there's <strong>BLACKWATER</strong>, zombies
+but you're cave diving, which I built in a weekend and you can play in your browser. And
+<strong>LLM Monster Hunter</strong>, a monster-catching game
+where no monster exists until you meet it. The AI writes, paints and referees each one while
+the code keeps every number. It's paused for now. Everything else is on
+<a href="/projects">the projects page</a>.</p>
+<h3>Why I write it down</h3>
+<p><a href="/ledger">The ledger</a> is where I file what I tried and what came of it,
+dead ends included. The prompt that seemed obviously right and wasn't. The agent that did
+something so strange I had to screenshot it. If you're learning this stuff too, I think an
+honest write-up of a failure is worth more than another launch announcement.</p>
+<h3>Away from the keyboard</h3>
+<p>I'm learning Japanese and I volunteer with a local Japanese club, including a bilingual
+Studio Ghibli storytime. I play fingerstyle guitar and write songs. I'm also in Toastmasters,
+which has done more for my writing than any style guide.</p>
+<h3>Say hello</h3>
+<p>If you're building something close to any of this, or you just want to talk about where
+agents break, I'd like to hear from you.
+Email <a href="mailto:Aaronjorelup@gmail.com">Aaronjorelup@gmail.com</a>, or find
+me on <a href="https://github.com/aaronorelup" target="_blank" rel="noreferrer noopener">GitHub</a>
+and <a href="https://www.linkedin.com/in/aaron-orelup/" target="_blank" rel="noreferrer noopener">LinkedIn</a>.</p>
+</div>
+<div class="elsewhere">
+<p class="kicker">Elsewhere</p>
+<ul class="pills">
+<li><a href="https://github.com/aaronorelup" target="_blank" rel="noreferrer noopener">GitHub <span aria-hidden="true">↗</span></a></li>
+<li><a href="https://dev.to/aaron_orelup" target="_blank" rel="noreferrer noopener">DEV <span aria-hidden="true">↗</span></a></li>
+<li><a href="https://x.com/AaronOrelup" target="_blank" rel="noreferrer noopener">X <span aria-hidden="true">↗</span></a></li>
+<li><a href="https://www.linkedin.com/in/aaron-orelup/" target="_blank" rel="noreferrer noopener">LinkedIn <span aria-hidden="true">↗</span></a></li>
+</ul>
+</div>
+</article>
+<div class="tail"></div>
+<p class="fin"><a href="../">Tea room tests</a></p>
+</section>
+</main>
+
+<pre class="debug" id="debug" hidden></pre>
+<script src="js/host.js" defer></script>
+</body>
+</html>
