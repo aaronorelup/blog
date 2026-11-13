@@ -26,7 +26,7 @@ export function createLive(machine, holder, { onReady, onFail, onWheel }) {
   let applied = { view: null };
   let cool = 0, tick = null, keep = null, failTimer = null;
   let userHeld = false;
-  let sliderValue = null, sliderSent = null;
+  let sliderValue = null, sliderSent = null, wantSetup = false;
 
   const fail = (why) => {
     if (dead) return;
@@ -102,25 +102,34 @@ export function createLive(machine, holder, { onReady, onFail, onWheel }) {
     } catch (e) { fail('reconcile'); }
   };
 
+  const pressStrip = (index, f, padPx) => {
+    const hit = doc.querySelectorAll('.hit')[index];
+    if (!hit) return false;
+    const r = hit.getBoundingClientRect();
+    const pad = padPx * scaleOf();
+    const x = r.left + pad + Math.max(0, Math.min(1, f)) * (r.width - 2 * pad);
+    const y = r.top + r.height / 2;
+    const P = win.PointerEvent || win.MouseEvent;
+    const o = { bubbles: true, cancelable: true, clientX: x, clientY: y, pointerId: 1, isPrimary: true, button: 0, buttons: 1 };
+    hit.dispatchEvent(new P('pointerdown', o));
+    win.dispatchEvent(new P('pointerup', { ...o, buttons: 0 }));
+    return true;
+  };
+  let setupDone = false;
+  const setup = () => {
+    const su = machine.breakIt.setup;
+    if (!ready || !su || setupDone) return;
+    setupDone = true;
+    try { pressStrip(su.hit, su.at, 8); } catch (e) { /* fine */ }
+  };
+
   const sendSlider = () => {
     if (!ready || sliderValue == null || sliderValue === sliderSent) return;
     sliderSent = sliderValue;
     const br = machine.breakIt;
     try {
       if (br.drive === 'setG' && win.LIVE && typeof win.LIVE.setG === 'function') { win.LIVE.setG(sliderValue); return; }
-      const hit = doc.querySelectorAll('.hit')[br.hit];
-      if (!hit) return;
-      const r = hit.getBoundingClientRect();
-      // the strip reaches 8-10 design px past the slider at each end: measure the slider from its own drawn width
-      const pad = (br.hitPad ?? 8) * scaleOf();
-      const inner = r.width - 2 * pad;
-      const f = (sliderValue - br.min) / (br.max - br.min);
-      const x = r.left + pad + Math.max(0, Math.min(1, f)) * inner;
-      const y = r.top + r.height / 2;
-      const P = win.PointerEvent || win.MouseEvent;
-      const o = { bubbles: true, cancelable: true, clientX: x, clientY: y, pointerId: 1, isPrimary: true, button: 0, buttons: 1 };
-      hit.dispatchEvent(new P('pointerdown', o));
-      win.dispatchEvent(new P('pointerup', { ...o, buttons: 0 }));
+      pressStrip(br.hit, (sliderValue - br.min) / (br.max - br.min), br.hitPad ?? 8);
     } catch (e) { /* the slider is a nicety: the machine stays */ }
   };
   const scaleOf = () => {
@@ -169,7 +178,7 @@ export function createLive(machine, holder, { onReady, onFail, onWheel }) {
     }, { capture: true, passive: false });
     win.addEventListener('keydown', (e) => { if (!userHeld) { e.stopPropagation(); } }, { capture: true });
     ready = true;
-    tick = setInterval(() => { reconcile(); sendSlider(); }, 140);
+    tick = setInterval(() => { reconcile(); if (wantSetup) setup(); sendSlider(); }, 140);
     keep = setInterval(() => { try { if (!userHeld) win.LIVE.takeOver(); } catch (e) { fail('gone'); } }, 4000);
     // give the first state a moment to land before showing the frame
     setTimeout(() => { if (!dead) { iframe.classList.add('on'); onReady && onReady(); } }, 900);
@@ -207,6 +216,7 @@ export function createLive(machine, holder, { onReady, onFail, onWheel }) {
     get debug() { return { want, applied, cool, userHeld }; },
     set(state) { want = { ...want, ...state }; },
     slide(v) { sliderValue = v; },
+    breakSetup(on) { wantSetup = on; if (!on) setupDone = false; },
     reading,
     hold(on) {
       userHeld = on;
