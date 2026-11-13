@@ -145,7 +145,7 @@ function mountStage(host, opt) {
   let live = null, liveI = -1, liveTimer = null, pendingI = -1;
   const failed = new Set();
   let held = false, heldQ = 0, lastQ = 0;
-  let filmOn = false, sliderVal = {}, readTimer = null;
+  let filmOn = false, sliderVal = {}, readTimer = null, tvOn = false;
   let picShown = { a: '', b: '' }, picFront = 'a';
   let crop = MACHINES[0].crop, viewW = 0, viewH = 0;
 
@@ -307,7 +307,6 @@ function mountStage(host, opt) {
     $('.b-marks').innerHTML = br.marks.map(([v, w]) => `<i style="left:${((v - br.min) / (br.max - br.min)) * 100}%">${w}</i>`).join('');
     tvStill.src = m.poster;
     tvFilm.classList.remove('on');
-    if (!opt.still && active) { if (tvFilm.getAttribute('src') !== m.film) { tvFilm.src = m.film; } tvFilm.play().catch(() => {}); }
   }
   function fillStep(p) {
     const m = MACHINES[p.i];
@@ -355,6 +354,13 @@ function mountStage(host, opt) {
       applyLive();
     }
     if (p.step === 'intro') dropLive(); else wantLive(p.i);
+    // the television plays the machine's film with no sound, once the machine is on the table (never at the top)
+    const wantTv = !opt.still && p.step !== 'intro';
+    if (wantTv !== tvOn || (wantTv && tvFilm.getAttribute('src') !== m.film)) {
+      tvOn = wantTv;
+      if (wantTv) { if (tvFilm.getAttribute('src') !== m.film) tvFilm.src = m.film; tvFilm.play().catch(() => {}); }
+      else tvFilm.pause();
+    }
 
     // which card is up
     lead.classList.toggle('up', p.step === 'intro');
@@ -396,7 +402,7 @@ function mountStage(host, opt) {
     active = on;
     root.classList.toggle('off', !on);
     if (!on) {
-      dropLive(); tvFilm.pause(); if (filmOn) openFilm(false);
+      dropLive(); tvFilm.pause(); tvOn = false; if (filmOn) openFilm(false);
       clearInterval(readTimer); readTimer = null;
     } else {
       cur.i = -1; // fill again on the next frame
@@ -446,7 +452,8 @@ function mountList(host, opt) {
     sec.querySelector('.snd-off').addEventListener('click', () => { video.muted = true; sec.querySelector('.snd-on').setAttribute('aria-pressed', 'false'); sec.querySelector('.snd-off').setAttribute('aria-pressed', 'true'); });
     sec._fit = () => {
       const box = pic.parentElement, w = box.clientWidth, h = box.clientHeight;
-      const r = cropRect(w, h, w < 600 ? m.cropNarrow : m.crop);
+      const c = w < 600 ? m.cropNarrow : m.crop;
+      const r = cropRect(w, h, { cx: c.cx, cy: c.cy, vh: 900, vw: c.vw });
       Object.assign(pic.style, { left: r.left + 'px', top: r.top + 'px', width: r.W + 'px', height: r.H + 'px' });
     };
     root.appendChild(sec);
