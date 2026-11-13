@@ -14,8 +14,8 @@
 // scroll: the host does. onSeek(q) is how the book asks the host to go somewhere (a link focused by the keyboard
 // on a page that is turned away).
 import {
-  AdditiveBlending, BoxGeometry, CanvasTexture, CircleGeometry, Group, Matrix4, Mesh, MeshBasicMaterial,
-  PerspectiveCamera, PointLight, Quaternion, Scene, Vector3, WebGLRenderer,
+  AdditiveBlending, BoxGeometry, BufferGeometry, CanvasTexture, CircleGeometry, DoubleSide, Float32BufferAttribute, Group, Matrix4,
+  Mesh, MeshBasicMaterial, PerspectiveCamera, Plane, PointLight, Quaternion, Scene, Vector3, WebGLRenderer,
 } from '../vendor/three.module.min.js';
 import { buildBook, TIME, stopOf } from './book.js';
 import { MORE, POSTS } from './posts.js';
@@ -81,7 +81,37 @@ export function mount(host, options = {}) {
     scene.add(m);
     return m;
   };
-  pool(ANDON[0], 0.372, ANDON[1], 2.4, 0xC97A32, 0.3);
+  pool(ANDON[0], 0.372, ANDON[1], 2.4, 0xC97A32, 0.22);
+  const andon = lamps.lights[0];                          // the floor lantern's light: it is turned down as the camera comes to the desk
+
+  // Moonlight through the two open windows of the west wall: a soft-edged patch of cool light on whatever it
+  // falls on (the mats, the desk's top), each the window's own shape thrown along the moon's direction.
+  renderer.localClippingEnabled = true;
+  const pane = (() => {
+    const c = document.createElement('canvas'); c.width = c.height = 64;
+    const g = c.getContext('2d');
+    g.shadowColor = '#fff'; g.shadowBlur = 4; g.fillStyle = '#fff'; g.fillRect(5, 5, 54, 54);
+    return new CanvasTexture(c);
+  })();
+  const MOON = { tan: 0.6, turn: rad(40.5) };             // how steeply it comes down, and how far it leans along the wall
+  const moonlight = (z0, z1, Y, strength, clip) => {
+    const hit = (yw, zw) => { const t = (yw - Y) / MOON.tan; return [-6.31 + t * Math.cos(MOON.turn), Y, zw - t * Math.sin(MOON.turn)]; };
+    const a = hit(1.86, z1), b = hit(1.86, z0), c = hit(3.24, z0), d = hit(3.24, z1);
+    const g = new BufferGeometry();
+    g.setAttribute('position', new Float32BufferAttribute([...a, ...b, ...c, ...a, ...c, ...d], 3));
+    g.setAttribute('uv', new Float32BufferAttribute([0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1], 2));
+    const m = new Mesh(g, new MeshBasicMaterial({ map: pane, color: 0x6488E2, transparent: true, opacity: strength, blending: AdditiveBlending, depthWrite: false, side: DoubleSide, clippingPlanes: clip || null }));
+    m.renderOrder = 1;
+    scene.add(m);
+    return m;
+  };
+  const dk = DESK.at, deskClip = [
+    new Plane(new Vector3(1, 0, 0), -(dk[0] - 0.51)), new Plane(new Vector3(-1, 0, 0), dk[0] + 0.51),
+    new Plane(new Vector3(0, 0, 1), -(dk[2] - 0.97)), new Plane(new Vector3(0, 0, -1), dk[2] + 0.97),
+  ];
+  moonlight(1.1, 3.06, 0.372, 0.34);
+  moonlight(-3.06, -1.1, 0.372, 0.34);
+  moonlight(1.1, 3.06, DESK.at[1] + DESK.top + 0.0015, 0.6, deskClip);
 
   // the desk's own frame: the book and what lies beside it are built in it
   const deskGL = new Group(), deskCSS = new Group();
@@ -166,22 +196,23 @@ export function mount(host, options = {}) {
       const cx = sx + (fw < 0.7 ? 0.005 : 0);
       const c = toWorld(cx, DESK.top + 0.03, -0.03);
       const p = toWorld(cx, DESK.top + 0.03 + d * Math.sin(el), -0.03 + d * Math.cos(el));
-      lantern.visible = true; lantern.position.set(-0.81, DESK.top, -0.16);
+      lantern.position.set(-0.81, DESK.top, -0.16);
       aim(rest, p, c, up.set(0, 1, 0));
       aim(from, v.set(-2.43, 2.44, 1.93).clone(), new Vector3(-4.76, 1.52, 1.92), up.set(0, 1, 0));
       from.fov = W / H < 1.2 ? 78 : 70;
     } else {
       // The phone: straight above, the book turned a quarter so the spread stands upright and fills the screen.
-      const mt = Math.max(58, safeH * 0.085), mb = Math.max(26, safeH * 0.04), mx = Math.max(12, W * 0.034);
-      lantern.visible = false;
+      // Above the book the desk's end keeps room for the lantern; below it, for the brush and the ink pot.
+      const mt = Math.max(80, safeH * 0.12), mb = Math.max(48, safeH * 0.08), mx = Math.max(12, W * 0.034);
       const ah = safeH - mt - mb, aw = W - 2 * mx;
       PH = 0.76;
-      PW = (clamp(ah / aw, 1.6, 1.96) * (PH + 2 * M) - 2 * M) / 2;
+      PW = (clamp(ah / aw, 1.68, 1.86) * (PH + 2 * M) - 2 * M) / 2;
       sx = 0;
       px = Math.min(aw / (PH + 2 * M), ah / (2 * (PW + M)));
       const d = H / (px * t2);
       // the spread's middle is put at the middle of the room it has: mt from the top, mb from the foot of safeH
       const off = ((mt + (safeH - mb)) / 2 - H / 2) / px;
+      lantern.position.set(-(PW + M) - 0.092, DESK.top, -0.25);
       const c = toWorld(sx - off, DESK.top, 0);
       aim(rest, toWorld(sx - off, DESK.top + d, 0), c, up.set(0, 0, 1));
       aim(from, new Vector3(-3.9, 2.35, -0.5), new Vector3(-4.3, 1.25, 2.3), up.set(0, 1, 0));
@@ -189,7 +220,7 @@ export function mount(host, options = {}) {
     }
     restNear = Math.max(0.1, H / (px * t2) - 2.2);
     restInk = Math.min(OUTLINE, 4 / px);                   // about four pixels of line at the desk
-    book.layout({ tall, PW, PH, sx, top: DESK.top, px });
+    book.layout({ tall, PW, PH, sx, top: DESK.top, px, ink: restInk });
   }
 
   // ---------------------------------------------------------------- one frame
@@ -211,7 +242,7 @@ export function mount(host, options = {}) {
       kit.ink.uniforms.uW.value = OUTLINE + (restInk - OUTLINE) * e;
       glDirty = true;
     }
-    book.pose(q, RM);
+    if (book.pose(q, RM)) glDirty = true;
 
     const gone = RM ? (q > 0.04 ? 1 : 0) : ss(0.015, 0.075, q);
     if (gone !== lastWord.o) {
@@ -226,7 +257,7 @@ export function mount(host, options = {}) {
     // The room is drawn again only when it has changed: while the camera moves, every frame; once it rests, only
     // the lamps' flicker and the petals move, and twenty-four pictures a second carry those.
     if (glDirty || time - lastGL >= 1 / 24 || time < lastGL) {
-      lamps.lights.forEach((l, i) => { l.light.intensity = l.base * (1 + 0.045 * Math.sin(time * 6.1 + i * 2.3) * Math.sin(time * 2.7 + i * 1.1)); });
+      lamps.lights.forEach((l, i) => { l.light.intensity = l.base * (l === andon ? 1 - 0.55 * lastE : 1) * (1 + 0.045 * Math.sin(time * 6.1 + i * 2.3) * Math.sin(time * 2.7 + i * 1.1)); });
       petals.update(time);
       renderer.render(scene, camera);
       lastGL = time; glDirty = false;

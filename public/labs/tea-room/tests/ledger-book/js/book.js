@@ -13,7 +13,9 @@
 // measures and the way their words are set change (layout()).
 //
 // pose(q) puts every turner where the chapter's progress q says: nothing is remembered between calls.
-import { BoxGeometry, CylinderGeometry, Group, Matrix4, MeshBasicMaterial, Object3D, Vector3 } from '../vendor/three.module.min.js';
+import {
+  BoxGeometry, CanvasTexture, CylinderGeometry, Group, Matrix4, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, Vector3,
+} from '../vendor/three.module.min.js';
 
 const PI = Math.PI;
 const clamp = (x, a = 0, b = 1) => (x < a ? a : x > b ? b : x);
@@ -69,6 +71,7 @@ function rightPage(p) {
   const b = el('div', 'lb-in lb-right');
   if (p.verdict) b.append(el('p', 'lb-stamp', p.verdict));
   b.append(el('p', 'lb-takeaway', p.takeaway));
+  if (!p.points.length) b.classList.add('lb-solo');      // no points on its card: the takeaway carries the page
   if (p.points.length) {
     const ul = el('ul', 'lb-points');
     p.points.forEach(t => ul.append(el('li', '', t)));
@@ -98,7 +101,7 @@ function moreLeft(more) {
 }
 function moreRight(more) {
   const f = el('section', 'lb-face lb-page lb-front');
-  const b = el('div', 'lb-in lb-right lb-more');
+  const b = el('div', 'lb-in lb-right lb-more lb-solo');
   b.append(el('p', 'lb-stamp', more.stamp), el('p', 'lb-takeaway', more.line));
   const go = el('p', 'lb-go');
   const a = el('a', 'lb-btn');
@@ -150,6 +153,24 @@ export function buildBook({ posts, more, part, onSeek }) {
   pot.add(well);
   gl.add(board, block, brush, pot);
 
+  // Soft shadows lying on the desk under the book and the things beside it: drawn shade, a blurred dark shape
+  // each, away from the lantern. The left-hand one comes as the cover opens onto the desk.
+  const soft = (() => {
+    const c = document.createElement('canvas'); c.width = c.height = 128;
+    const g = c.getContext('2d');
+    // (the dark shape is drawn off the canvas and only its blurred shadow lands on it, clear of the edges)
+    g.shadowColor = 'rgba(14,6,4,1)'; g.shadowBlur = 12; g.shadowOffsetX = 300; g.fillStyle = '#000';
+    g.fillRect(26 - 300, 26, 76, 76);
+    return new CanvasTexture(c);
+  })();
+  const shadow = (o) => {
+    const m = new Mesh(new PlaneGeometry(1, 1), new MeshBasicMaterial({ map: soft, transparent: true, opacity: o, depthWrite: false }));
+    m.rotation.x = -PI / 2; m.userData.o = o; m.renderOrder = 2;
+    gl.add(m);
+    return m;
+  };
+  const shR = shadow(0.8), shL = shadow(0.8), shPot = shadow(0.6), shBrush = shadow(0.5);
+
   // What is laid over the room: the turners and their faces.
   const css = new Group();
   const n = posts.length;
@@ -189,20 +210,29 @@ export function buildBook({ posts, more, part, onSeek }) {
 
   // tall: the phone's book. PW: a page across the turn (from the spine out); PH: a page along the spine.
   // sx: where the spine lies along the desk. px: how many screen pixels a metre of the page takes at rest.
-  function layout({ tall, PW, PH, sx, top, px }) {
+  function layout({ tall, PW, PH, sx, top, px, ink }) {
     L = { tall, PW, PH, sx, top, px };
     gl.position.set(sx, top, 0); css.position.set(sx, top, 0);
-    board.scale.set(PW + M, TB, PH + 2 * M); board.position.set((PW + M) / 2, TB / 2, 0);
-    block.scale.set(PW, TP, PH); block.position.set(PW / 2, TB + TP / 2, 0);
-    if (tall) { brush.position.set(PW + 0.1, 0.03, 0.12); brush.rotation.y = 1.45; pot.position.set(PW + 0.13, 0.062, -0.3); }
+    // (the back board is drawn with the room and its ink line is added outside its shape; it is made that much
+    // smaller, so its edge meets the open cover's, which is an element of the page with its line inside)
+    board.scale.set(PW + M - ink, TB, PH + 2 * M - 2 * ink); board.position.set((PW + M - ink) / 2, TB / 2, 0);
+    block.scale.set(PW - ink, TP, PH - 2 * ink); block.position.set((PW - ink) / 2, TB + TP / 2, 0);
+    if (tall) { brush.position.set(PW + M + 0.07, 0.02, 0.12); brush.rotation.y = -0.1; pot.position.set(PW + M + 0.088, 0.03, -0.27); }
     else { brush.position.set(PW + 0.13, 0.02, 0.1); brush.rotation.y = 0.16; pot.position.set(PW + 0.235, 0.04, -0.2); }
-    brush.scale.setScalar(tall ? 0.8 : 0.66); pot.scale.setScalar(tall ? 0.8 : 0.62);
+    brush.scale.setScalar(tall ? 0.6 : 0.66); pot.scale.setScalar(tall ? 0.42 : 0.62);
+    const bw = (PW + M) * 1.76, bh = (PH + 2 * M) * 1.76, ox = tall ? 0.014 : 0.035, oz = tall ? -0.014 : 0.045;
+    shR.scale.set(bw, bh, 1); shR.position.set((PW + M) / 2 + ox, 0.003, oz);
+    shL.scale.set(bw, bh, 1); shL.position.set(-(PW + M) / 2 + ox, 0.003, oz);
+    const ps = pot.scale.x;
+    shPot.scale.set(0.56 * ps, 0.56 * ps, 1); shPot.position.set(pot.position.x + 0.035 * ps, 0.004, pot.position.z + 0.03 * ps);
+    shBrush.scale.set(0.13 * ps, 0.95 * ps, 1);
+    shBrush.position.set(brush.position.x + 0.014, 0.004, brush.position.z + 0.01 - 0.04 * ps * Math.cos(brush.rotation.y)); shBrush.rotation.z = brush.rotation.y;
     for (const f of faces) {
       const w = f.board ? PW + M : PW, h = f.board ? PH + 2 * M : PH;       // the face's reach from the spine, and along it
       const ww = tall ? h : w, wh = tall ? w : h;                            // the element's own width and height
       const pw = Math.max(1, Math.round(ww * px)), ph = Math.max(1, Math.round(wh * px));
       f.el.style.width = pw + 'px'; f.el.style.height = ph + 'px'; f.w = pw; f.h = ph;
-      f.el.style.fontSize = ((tall ? PH : PW) * px / (tall ? 27 : 30)).toFixed(2) + 'px';
+      f.el.style.fontSize = ((tall ? PH : PW) * px / (tall ? 27.4 : 30)).toFixed(2) + 'px';
       f.obj.scale.setScalar(ww / pw);
       const up = f.side === 'front' ? 1 : -1;
       if (!tall) orient(f.obj, [up, 0, 0], [0, 0, -1], [0, up, 0]);
@@ -235,6 +265,7 @@ export function buildBook({ posts, more, part, onSeek }) {
   const dimOf = (f, o) => { const oo = Math.round(clamp(o) * 200) / 200; if (f.dm !== oo) { f.dm = oo; f.dim.style.opacity = oo; } };
 
   const want = new Map();
+  let changed = true;
   // q: the chapter's progress. rm: no turning, the pages dissolve (a narrow band of q in the middle of each turn).
   function pose(q, rm) {
     want.clear();
@@ -289,9 +320,13 @@ export function buildBook({ posts, more, part, onSeek }) {
       }
       shadeOf(f, reach, o); dimOf(f, dm);
     }
+    // the open cover's shadow on the desk comes as it lands
+    const so = shL.userData.o * ss(PI * 0.55, PI, turners[0].a);
+    if (shL.material.opacity !== so) { shL.material.opacity = so; shL.visible = so > 0.004; changed = true; }
     // which spread is open (for the keyboard): the one a reader would say is showing
     spreadNow = j === 0 ? (turners[0].a > PI / 2 ? 1 : 0) : j > LEAVES ? LEAVES + 1 : j + (turners[j].a > PI / 2 ? 1 : 0);
-    return spreadNow;
+    const c = changed; changed = false;
+    return c;                                       // true: something drawn with the room has changed
   }
 
   return { gl, css, layout, pose, faces, M, ink, measures: () => L };
