@@ -167,6 +167,7 @@ section { position: relative; }
   background: var(--ground); -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
 }
 .paper > .face > .body { position: relative; }
+#rail > .face, #clock > .face { -webkit-backdrop-filter: none; backdrop-filter: none; }
 
 /* an eyebrow: small, spaced capitals in the quiet gold */
 .label {
@@ -211,7 +212,8 @@ a.go::after { content: '\00a0\2192'; font-family: var(--font-body); font-weight:
 
 /* --- the rail: a card docked on the left edge --- */
 /* The rail and the clock stay on while every scene passes under them, the brightest too: they take the site's
-   chrome ground (--pc-bg), which lets less through, so the quiet names still read. */
+   chrome ground (--pc-bg), which lets less through, so the quiet names still read. They do not blur what is behind
+   them: at 4 percent it would not show, and they are in the frame for two thirds of the page. */
 #rail {
   --r: 0 18px 18px 0; --ground: var(--pc-bg);
   position: fixed; left: 0; top: 50%; z-index: 5;
