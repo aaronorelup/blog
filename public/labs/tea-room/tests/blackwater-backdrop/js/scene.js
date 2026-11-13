@@ -15,7 +15,7 @@ const ss = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 
 function rng(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
 
 // ---- the game's numbers (src/main.ts, src/effects/atmosphere.ts, src/tuning.ts)
-const LAMP = { color: 0xcfe0d4, intensity: 55, distance: 65, decay: 2 };
+const LAMP = { color: 0xcfe0d4, intensity: 15, distance: 65, decay: 1.3 }; // the game: 90 with decay 2; a gentler falloff here, so a near wall is not a white disc
 // the game's beam is 84 degrees across; here it is narrowed to 50, so that where the reader points it is plain to see
 const LAMP_HALF = THREE.MathUtils.degToRad(25);
 const FOG = {
@@ -336,7 +336,7 @@ export async function mount(host, options = {}) {
   function resize() {
     w = Math.max(1, host.clientWidth); h = Math.max(1, host.clientHeight);
     renderer.setPixelRatio(dprCap * scale);
-    renderer.setSize(w, h, false);
+    renderer.setSize(w, h);
     const aspect = w / h;
     camera.aspect = aspect;
     // a tall screen keeps about the same width of cave in view as a wide one would show in its middle
