@@ -156,11 +156,16 @@ main { position: relative; }
   .count { top: 16px; right: 12px; font-size: 10px; }
 }
 
-/* nothing glides or tumbles for readers who ask for less motion: the room, the box open, the toys in their huddle */
+/* nothing glides or tumbles for readers who ask for less motion: the room, the box open, the toys in their huddle.
+   No words lie over that picture (they would cross the open box); the card says them. */
 @media (prefers-reduced-motion: reduce) {
   :root { --track: 200vh; }
   .tagcard, .hint { transition: none; }
+  .word, .say { display: none; }
 }
+.rm .word, .rm .say { display: none; }
+.rm { --track: 200vh; }
+@media (max-width: 720px) { .rm { --track: 130vh; } }
 @media (prefers-reduced-motion: reduce) and (max-width: 720px) {
   :root { --track: 130vh; }
 }
