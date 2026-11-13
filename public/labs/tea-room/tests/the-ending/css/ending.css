@@ -30,8 +30,9 @@ a { color: var(--pc-accent); }
 .skip:focus { top: 12px; }
 .back {
   position: fixed; left: 14px; top: 12px; z-index: 5; padding: 6px 12px 7px; border-radius: 999px;
-  background: rgba(21, 23, 38, 0.8); color: var(--home-quiet); text-decoration: none;
+  background: rgb(21, 23, 38); color: var(--home-quiet); text-decoration: none;
   font: 600 11px/1 var(--font-body); letter-spacing: 0.12em; text-transform: uppercase;
+  box-shadow: 0 0 0 1px var(--pc-line2), 0 4px 14px rgba(0, 0, 0, 0.35);
 }
 .back:hover { color: var(--pc-strong); }
 .debug { position: fixed; right: 10px; top: 10px; z-index: 30; margin: 0; padding: 6px 9px; border-radius: 8px; background: rgba(0, 0, 0, 0.7); color: #cfe; font: 11px/1.4 var(--font-mono); }

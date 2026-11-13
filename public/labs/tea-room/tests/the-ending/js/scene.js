@@ -50,7 +50,7 @@ export function mount(host, options) {
   var A = scene('room', 2752, 1536, '#1d1520');
   img(A.plate, IMG + 'room.webp');
   layer(A.plate, svg(2752, 1536, roomProps()));
-  layer(A.plate, '', 'end-layer end-room-foot');                 // the plate's foot fades to the floor (phone)
+  var foot = layer(A.plate, '', 'end-layer end-room-foot');                 // the plate's foot fades to the floor (phone)
 
   // --- Now: the veranda. The sky and its hills, the moon, the garden's lawn and path (the far plate with the tea house
   // and its lit windows masked away: the moon is the only light), the near tree, the veranda's frame.
@@ -96,7 +96,7 @@ export function mount(host, options) {
     var o = (op == null ? 1 : op).toFixed(3);
     if (o !== s.op) { s.el.style.opacity = o; s.op = o; }
   }
-  var lastDay = '', lastSky = '', lastBand = '', lastVer = '';
+  var lastFoot = '', lastDay = '', lastSky = '', lastBand = '', lastVer = '';
 
   function frame(q) {
     q = clamp(q || 0, 0, 1);
@@ -115,7 +115,12 @@ export function mount(host, options) {
     show(A, slide < 1 && q < 0.5);
     if (slide < 1) {
       var push = RM ? 0 : ss(0, 0.72, uA);
-      if (tall) place(A, mix(0.62, 0.66, push), 0.6, 0.62, 0.5, 0.29, false, -slide * W);
+      // a phone: the props in the half screen above the card; as the card goes up and away the room grows to fill the
+      // screen, so no empty floor opens under the card
+      var fill = RM ? (uA >= 0.12 ? 1 : 0) : ss(0, 0.24, uA);
+      var fo = (1 - fill).toFixed(3);
+      if (fo !== lastFoot) { foot.style.opacity = fo; lastFoot = fo; }
+      if (tall) place(A, mix(mix(0.62, 0.66, push), 1.0, fill), 0.6, 0.62, 0.5, mix(0.29, 0.62, fill), false, -slide * W);
       else place(A, mix(1.0, 1.07, push), 0.62, 0.6, 0.68, 0.6, true, -slide * W);
     }
 
