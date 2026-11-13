@@ -392,7 +392,7 @@ export function mount(host, options = {}) {
     const gxs = (X, d) => cx + f * (X - camX) / d, gy = (Y, d) => hY - f * (Y - camY) / d;
 
     // --- what was started stops when its project is no longer in front
-    for (const p of P) if (p.on && (Math.abs(k - p.s.i) > 0.5)) stop(p.s.i);
+    for (const p of P) if (p.on && (Math.abs(k - p.s.i) > 0.28)) stop(p.s.i);   // as soon as its window leaves its place
 
     // --- the sky
     stars.style.backgroundPosition = (-lean * 0.4 - camZ * 0.4).toFixed(1) + 'px 0';
@@ -555,6 +555,7 @@ export function mount(host, options = {}) {
             const wo = Math.round((1 - gone) * (1 - ss(FAR - 8, FAR, d)) * 100) / 100;
             if (wo !== p.lastWo) { p.win.style.opacity = wo; p.lastWo = wo; }
             if (u < 2.4) wantPic(p);
+            const front = hold > 0.9; if (front !== p.isFront) { p.win.classList.toggle('pw-front', front); p.isFront = front; }
           }
         }
         if (still && u < 2.4) wantPic(p);
