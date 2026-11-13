@@ -215,8 +215,9 @@ git, clips in R2).
 **A chapter builder writes only in its own places**: `src/components/tea/room/chapters/<Id>.astro` and
 `chapters/<id>/**`, `src/data/tea/<id>/**`, `src/styles/tea/room/chapters/<id>.css`,
 `src/scripts/tea/room/chapters/<id>.js` and `<id>/**`, `public/tea/scenes/<id>/**`, `public/media/tea/<id>/**`,
-`scripts/tools/tea/<id>/**`, `tests/unit/tea-<id>.test.mjs`, `tests/e2e/tea/<id>.spec.mjs`,
-`tests/e2e/inventory/tea-<id>.md`, `docs/tea/rounds/<id>.md`, `docs/tea/gen/<id>.md`. Every line a chapter needs in
+`scripts/tools/tea/<id>/**`, `tests/unit/tea-<id>.test.mjs` (the hero's is `tests/unit/tea-room-hero.test.mjs`:
+`tea-hero.test.mjs` is today's page's, and `tea-today.test.mjs` holds every file of today's page to its bytes),
+`tests/e2e/tea/<id>.spec.mjs`, `tests/e2e/inventory/tea-<id>.md`, `docs/tea/rounds/<id>.md`, `docs/tea/gen/<id>.md`. Every line a chapter needs in
 a shared file is already written. The one shared file many write is `src/data/media-manifest.json`, and only by
 `npm run media:push`.
 
