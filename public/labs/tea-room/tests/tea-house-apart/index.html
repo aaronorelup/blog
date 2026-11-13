@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#101220">
 <title>This website: the tea house, taken apart · a tea room test</title>
 <link rel="stylesheet" href="css/apart.css">
 <script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}</script>
@@ -31,6 +32,8 @@
 </section>
 
 <section id="read">
+<!-- Shown only where the picture cannot be drawn (no WebGL, or no script): one frame of the finished drawing. -->
+<img class="poster" src="img/apart.webp" width="1600" height="1000" alt="The tea house from the homepage at night, taken apart into floating layers under the moon: roof, paper ceiling, beams, paper screens, walls, furniture and floor." loading="lazy" decoding="async">
 <article class="card" id="card">
 <p class="eyebrow">Chapter nine</p>
 <h2>This website</h2>
@@ -52,7 +55,11 @@
 </section>
 </main>
 
-<noscript><style>#stage { display: none; } #track { display: none; }</style></noscript>
-<script type="module" src="js/apart.js"></script>
+<noscript><style>#stage, #track { display: none; } #read { flex-direction: column; justify-content: center; align-items: center; gap: 22px; } .poster { display: block; }</style></noscript>
+<script>
+// If the picture's script cannot start (a browser too old for it), show the still picture and the card instead.
+addEventListener('error', function (e) { if (!window.__apartBoot && e.target === window) document.documentElement.classList.add('flat'); });
+</script>
+<script type="module" src="js/apart.js" onerror="document.documentElement.classList.add('flat')"></script>
 </body>
 </html>

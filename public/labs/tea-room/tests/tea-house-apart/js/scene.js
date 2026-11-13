@@ -1,7 +1,7 @@
 // The tea house of the homepage, by night, built piece by piece so it can be taken apart.
-// mount(canvas) builds the world once and returns a view whose render(T, time, safe) draws one frame: everything
-// in it is a function of T (the track's progress, 0 to 1), of time (seconds, for the petals and the lamps'
-// flicker) and of safe (the part of the window the drawing may use). Nothing is remembered from one frame to the
+// mount(canvas) builds the world once and returns a view whose render(T, time, safe, sway) draws one frame:
+// everything in it is a function of T (the track's progress, 0 to 1), of time (seconds, for the petals and the
+// lamps' flicker), of safe (the part of the window the drawing may use) and of sway (where the pointer is). Nothing is remembered from one frame to the
 // next, so any T can be drawn at any moment, in any order.
 import {
   AdditiveBlending, CanvasTexture, CircleGeometry, Mesh, MeshBasicMaterial, PCFSoftShadowMap, PerspectiveCamera,
@@ -114,11 +114,19 @@ export function mount(canvas) {
   }
 
   // safe: { x0, y0, x1, y1 } in CSS pixels, the part of the window the drawing may use (the card takes the rest)
-  function render(T, time, safe) {
+  // sway: { x, y } from -1 to 1, where the pointer is; outside the house the camera leans a few degrees with it
+  function render(T, time, safe, sway) {
     const u = clamp((T - ACT.apart0) / (ACT.apart1 - ACT.apart0));
     pose(pieces, pl, u);
 
     cameraAt(T, tall, cam);
+    const out = sway ? ss(0.17, ACT.whole, T) : 0;
+    if (out > 0 && (sway.x || sway.y)) {
+      const dx = cam.p[0] - cam.q[0], dy = cam.p[1] - cam.q[1], dz = cam.p[2] - cam.q[2];
+      const flat = Math.hypot(dx, dz), len = Math.hypot(flat, dy);
+      const a = Math.atan2(dx, dz) - sway.x * 0.075 * out, el = Math.min(1.2, Math.max(0.12, Math.atan2(dy, flat) + sway.y * 0.04 * out));
+      cam.p[0] = cam.q[0] + Math.sin(a) * Math.cos(el) * len; cam.p[1] = cam.q[1] + Math.sin(el) * len; cam.p[2] = cam.q[2] + Math.cos(a) * Math.cos(el) * len;
+    }
     camera.position.set(cam.p[0], cam.p[1], cam.p[2]);
     look.set(cam.q[0], cam.q[1], cam.q[2]);
     camera.lookAt(look);
@@ -165,8 +173,10 @@ export function mount(canvas) {
     renderer.render(scene, camera);
   }
 
+  let lastDpr = 0;
   function resize(w, h, dpr) {
-    W = w; H = h;
+    if (w === W && h === H && dpr === lastDpr) return;      // (a phone's address bar sliding away asks for this often)
+    W = w; H = h; lastDpr = dpr;
     const was = tall;
     tall = w / h < 0.8;
     renderer.setPixelRatio(dpr);
