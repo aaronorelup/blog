@@ -119,7 +119,7 @@ export function mount(host, options) {
   var top = options.top;
   top.innerHTML =
     '<div class="fm-dock">' +
-      '<div class="fm-card fm-sound"><p class="fm-sound-say">The reel has sound. It stays off until you turn it on.</p>' +
+      '<div class="fm-card fm-sound"><div class="fm-fog"></div><p class="fm-sound-say">The reel has sound. It stays off until you turn it on.</p>' +
         '<div class="fm-switch" role="group" aria-label="Sound"><button type="button" aria-pressed="true">Sound off</button><button type="button" aria-pressed="false">Sound on</button></div></div>' +
       '<article class="fm-card fm-now" aria-label="Now playing">' +
         '<p class="fm-now-meta"><span>Now playing</span><span data-k="count"></span><span data-k="id"></span></p>' +
@@ -128,7 +128,7 @@ export function mount(host, options) {
         '<ol class="fm-ticks" aria-hidden="true"></ol></article>' +
     '</div>' +
     '<button class="fm-play" type="button" hidden><span class="fm-play-mark" aria-hidden="true"></span><span data-k="play-word">Play the reel</span></button>';
-  var dock = top.querySelector('.fm-dock'), nowCard = top.querySelector('.fm-now'), soundCard = top.querySelector('.fm-sound');
+  var dock = top.querySelector('.fm-dock'), nowCard = top.querySelector('.fm-now'), soundCard = top.querySelector('.fm-sound'), fog = top.querySelector('.fm-fog');
   var sndOff = top.querySelectorAll('.fm-switch button')[0], sndOn = top.querySelectorAll('.fm-switch button')[1];
   var nowCount = top.querySelector('[data-k=count]'), nowId = top.querySelector('[data-k=id]'), nowTitle = top.querySelector('.fm-now-title'), nowWhat = top.querySelector('.fm-now-what');
   var nowGo = top.querySelector('.fm-now-go a'), nowNone = top.querySelector('.fm-none'), ticksEl = top.querySelector('.fm-ticks');
@@ -150,7 +150,7 @@ export function mount(host, options) {
   // where it stands sideways and in height (plate pixels from the plate's middle), m how far in it has come. It always
   // looks straight ahead, so a move between two places is a straight walk and every flat keeps true to it.
   var W = 0, H = 0, tall = false, narrow = false, S0 = 1, CD = 1, DPR = 1, span = 1;
-  var K0, K1, K1b, K2, K3, PJ0, PJ1, BU0, wordB = [0, 0], sayB = [0, 0], wordPx = 100, sayPx = 20, wordW = 100, sayW = 50, leftEdge = 0;
+  var K0, K1, K1b, K2, K3, PJ0, PJ1, PJ2, BU0, wordB = [0, 0], sayB = [0, 0], wordPx = 100, sayPx = 20, wordW = 100, sayW = 50, leftEdge = 0;
   var T = { a0: 0.1, a1: 1.5, b0: 3, b1: 4, dockA: 1.42, dockB: 1.72 };
   function camOf(s, fx, fy) {                      // the camera from which the plate is as large as s, the middle of the cloth at (fx, fy)
     return { m: 1 - S0 / s, C: [(W / 2 - (fx - FOCUS[0] * s)) / s - CX, (H / 2 - (fy - FOCUS[1] * s)) / s - CY] };
@@ -195,8 +195,7 @@ export function mount(host, options) {
       K2 = camOf(s2, tx2 + FOCUS[0] * s2, ty2 + FOCUS[1] * s2);
     } else {
       K1 = camOf(0.965 * W / 650, 0.5 * W, 0.325 * H); K1b = camOf(0.99 * W / 650, 0.5 * W, 0.322 * H);
-      K3 = camOf(0.88 * W / 752, 0.5 * W, 0.56 * H);
-      K2 = K3;
+      // (K2 and K3 on a tall screen: below, with the projector's place, which the cloth is fitted around)
     }
 
     // the flats that stand nearer than the plate. At the title shot they are where look B has them; before the cloth
@@ -205,6 +204,37 @@ export function mount(host, options) {
     PJ0 = { x: tall ? W * 0.24 : leftEdge + pw0 * 0.75, y: H * 1.1, w: pw0 };
     var pw1 = tall ? Math.min(W * 0.42, H * 0.2) : clamp(W * 0.235, 210, 470);
     PJ1 = tall ? { x: W * 0.2, y: H * 0.83, w: pw1 } : { x: W * 0.1 + rail * 0.5, y: H * 1.19, w: pw1 };
+    wordPx = clamp(W * (tall ? 0.15 : 0.115), 52, 190);
+    // 2: once the camera has stepped back, the projector stands in the foreground where nothing read passes over
+    // it. A wide screen: in the lane between the posts' column and the cards at the foot, its beam fanning up to the
+    // cloth. A tall screen: low on the left, under the cloth, its stool behind the cards at the foot.
+    var dockPad = parseFloat(getComputedStyle(dock).left) || 20, dockTop = H - dockPad - dock.offsetHeight;
+    if (!tall) {
+      var picksEl = section.querySelector('.film-picks');
+      var laneL = leftEdge + (picksEl ? picksEl.offsetWidth : 372) + 18, laneR = W - dockPad - nowCard.offsetWidth - 10, lane = laneR - laneL;
+      // (at the lane's left, low: its lens throws across the open lawn of the lane, up to the cloth, and the beam
+      // passes neither behind its own reels nor behind the cards.) A screen too narrow for a lane: in the corner
+      // under the rail, left of the posts, its beam crossing behind them to the cloth
+      var pw2 = clamp(Math.min(lane * 0.62, H * 0.3), 150, 280);
+      if (lane >= 200) PJ2 = { x: laneL + pw2 * 0.5, y: H * 1.09, w: pw2 };
+      else {
+        var railEl = document.getElementById('rail'), railBot = (H + (railEl ? railEl.offsetHeight : 320)) / 2;
+        pw2 = clamp((H * 1.08 - railBot - 14) * 618 / 1009, 110, leftEdge - 24);
+        PJ2 = { x: 8 + pw2 * 0.5, y: H * 1.08, w: pw2 };
+      }
+    } else {
+      // (the cards' top is reckoned for the tallest card that names a film, a title on two lines, never measured:
+      // the card's height changes with the film, and the picture must not)
+      var pw3 = clamp(W * 0.34, 120, 210), ph3 = pw3 * 1009 / 618, dockTall = H - dockPad - soundCard.offsetHeight - 8 - 182;
+      var pjTop = dockTall - 40 - ph3 * LENS[1];                 // its lens stands clear above the cards
+      PJ2 = { x: W * 0.16, y: pjTop + ph3, w: pw3 };
+      // the cloth fits between the next chapter's name (with its line and note: chapters.css, .closing-note) and the
+      // projector's reels, which may stand in front of its bare lower edge but never in front of the film
+      var clothTop = H * 0.11 + wordPx * 0.9 + 104, clothBot = pjTop + ph3 * 0.035 + 14;
+      var s3t = clamp((clothBot - clothTop) / 546, 0.5 * W / 752, 0.9 * W / 752);
+      K3 = camOf(s3t, 0.52 * W, (clothTop + clothBot) / 2);
+      K2 = K3;
+    }
     var bw = tall ? W * 0.6 : W * 0.27;
     BU0 = { x: W * 0.94, y: H * 0.99, w: bw };
 
@@ -218,8 +248,10 @@ export function mount(host, options) {
 
     // when things happen, in screens from the section's top
     var picksIn = (marks.picks ? marks.picks.top : 4) - 1;                 // the first post's card is at the foot of the screen
-    T.b0 = picksIn - 0.2; T.b1 = picksIn + (tall ? 1.1 : 0.8);
-    T.rm1 = 0.7; T.rm2 = picksIn + 0.25;
+    // a wide screen: the camera steps back (and the projector goes to its lane) before the first post comes up the
+    // left side, so no card ever passes over it. A tall screen: the posts come up while the camera steps back
+    if (tall) { T.b0 = picksIn - 0.2; T.b1 = picksIn + 1.1; } else { T.b0 = picksIn - 0.85; T.b1 = picksIn + 0.2; }
+    T.rm1 = 0.7; T.rm2 = tall ? picksIn + 0.25 : picksIn - 0.1;
 
     CD = Math.min(window.devicePixelRatio || 1, W > 1200 ? 1 : 2);          // (look B's own rule for its air)
     DPR = Math.min(window.devicePixelRatio || 1, W > 1200 ? 1.5 : 2);
@@ -598,7 +630,7 @@ export function mount(host, options) {
     setV(wordEl, wl < 0.9995); setV(sayEl, wsl < 0.9995);
 
     // the projector and the near leaves
-    var kp = e2 <= 0 ? io(e1) : 1 - io(e2), pjP = mixP(PJ0, PJ1, kp);
+    var pjP = e2 <= 0 ? mixP(PJ0, PJ1, io(e1)) : mixP(PJ1, PJ2, io(e2));
     var pj = { x: pjP.x - pjP.w / 2, y: pjP.y - pjP.w * 1009 / 618, w: pjP.w, h: pjP.w * 1009 / 618 };
     setT(projEl, box(pj.x, pj.y, pj.w, 618));
     var bk = clamp(e2 <= 0 ? e1 : 1 - e2), bw2 = BU0.w * (1 + 1.4 * bk), bxp = BU0.x + bk * W * 0.5, byp = BU0.y + bk * H * 0.42;
@@ -638,16 +670,19 @@ export function mount(host, options) {
     // on a wide screen the sound's card stands beside the other one; before the posts come up the left side it
     // steps over it, out of their way
     if (!tall) {
-      var sk = RM ? e2 : io(ss(T.b0 - 0.25, T.b0 + 0.18, p));
+      var sk = RM ? e2 : io(ss(0.42, 0.8, (p - T.b0) / (T.b1 - T.b0)));
       setT(soundCard, sk <= 0 ? 'none' : 'translate3d(' + (sk * (soundCard.offsetWidth + 12)).toFixed(1) + 'px,' + (-sk * (nowCard.offsetHeight + 10)).toFixed(1) + 'px,0)');
     } else {
       // on a tall screen the card that names the film steps down behind the sound while the posts pass, and comes
       // back for the page's last picture
       var nk = RM ? (e2 > 0 && p < span - 0.2 ? 1 : 0) : io(ss(T.b0 - 0.05, T.b0 + 0.22, p)) * (1 - io(ss(span - 0.42, span - 0.08, p)));
       setT(nowCard, nk <= 0 ? 'none' : 'translate3d(0,' + (nk * (nowCard.offsetHeight + soundCard.offsetHeight + 60)).toFixed(1) + 'px,0)');
+      // while it is down, what rises from the foot of the screen (the posts) comes out of the night above the sound,
+      // never from behind a hard edge
+      setO(fog, nk);
     }
     if (RM) {                                          // the play button stands on the bare cloth under the picture, not on the picture
-      var show = e1 > 0;
+      var show = e1 > 0 && !(tall && e2 > 0 && p < span - 0.3);      // (on a tall screen the posts pass over the cloth: not then)
       if (playBtn.hidden === show) playBtn.hidden = !show;
       if (show) {
         var pb = plateXY(onFilm(0.5, 1), cam), pc = plateXY(carry(clothH, 0.5, 1), cam), mid = [(pb[0] + pc[0]) / 2, (pb[1] + pc[1]) / 2 - 2];

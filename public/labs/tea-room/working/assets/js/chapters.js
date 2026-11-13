@@ -28,7 +28,9 @@
      over: true   the chapter is drawn over the last picture of the chapter before it, which stays on and active
      lead: n      the chapter is on the screen for n screens before its own top; q runs from -n up to 0 there
 
-   A scene is loaded when the reader is within a screen and a half of its section, and let go four screens away.
+   A scene is loaded when the reader is within a screen and a half of its section, and let go four screens away. A
+   picture of the section written as <img data-src> is asked for at the same moment, and only if it is shown (one in
+   a part that is display: none, as the film's stills are with motion on, is never fetched).
    Addresses: ?y=0.4 (that fraction of the whole page) and ?still=1 are look B's; ?c=film&q=0.4 opens one chapter
    at an exact frame. */
 (function () {
@@ -91,7 +93,12 @@
   }
   function load(c) {
     c.state = 1;
-    Array.prototype.forEach.call(c.section.querySelectorAll('img[data-src]'), function (im) { im.src = im.dataset.src; im.removeAttribute('data-src'); });
+    // (a picture in a part of the section that is not shown, display: none, is not asked for at all: the film's
+    // fourteen stills are shown only with motion turned off)
+    Array.prototype.forEach.call(c.section.querySelectorAll('img[data-src]'), function (im) {
+      if (!im.getClientRects().length) return;
+      im.src = im.dataset.src; im.removeAttribute('data-src');
+    });
     var waits = [import(here + 'chapters/' + c.id + '.js')];
     if (c.css && !c.cssIn) { c.cssIn = true; waits.push(sheet(here + '../css/chapters/' + c.css)); }
     Promise.all(waits).then(function (got) {

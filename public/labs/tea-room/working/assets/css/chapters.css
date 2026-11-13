@@ -24,7 +24,7 @@
 /* ---------------------------------------------------------------- AI video & film */
 /* The section is the camera's road: the walk from look B's title shot to the cloth and a while before it (the
    reel plays, its card comes up), then the four posts pass in a column while the camera steps back. */
-.film-walk { height: 400vh; }
+.film-walk { height: 440vh; }   /* (phone and motion off: below) */
 /* four small post cards, look B's own (.strip), standing in a column beside the cloth, one at a time */
 .film-picks { width: min(372px, calc(100vw - 28px)); max-width: none; margin-right: 0; }
 .film-all { margin: 26vh 0 0 var(--content-l); width: fit-content; }
@@ -56,7 +56,8 @@
 /* ---------------------------------------------------------------- the closing beat (a draft: see chapters/closing.js) */
 /* its one small line stands under the name: the section's last screen is the page's last picture */
 #closing { height: 150vh; }
-.closing-rest { position: absolute; left: 0; right: 0; bottom: 0; height: 100vh; height: 100svh; pointer-events: none; }
+/* (sticky: from the section's top on, the note stands still on the screen; closing.js brings it on with the name) */
+.closing-rest { position: sticky; top: 0; height: 100vh; height: 100svh; pointer-events: none; }
 .closing-note { position: absolute; left: var(--content-l); top: calc(10vh + clamp(52px, 11.5vw, 190px) * 0.9 + 64px); width: fit-content; max-width: calc(100vw - 28px); pointer-events: auto; }
 .closing-note .body { padding: 14px 20px 15px; }
 .closing-note p { font: 400 16px/1.4 var(--font-serif); color: var(--pc-strong); }
@@ -66,7 +67,7 @@
   .film-picks { width: auto; margin-right: var(--gutter); }
   .film-all { margin-top: 18px; }
   .film-foot { height: 70vh; }
-  .closing-note { top: calc(11vh + clamp(52px, 15vw, 190px) * 0.9 + 52px); }
+  .closing-note { top: calc(11vh + clamp(52px, 15vw, 190px) * 0.9 + 40px); }   /* (film.js fits the cloth under it: clothTop) */
 }
 @media (max-width: 820px) and (prefers-reduced-motion: reduce) {
   .film-walk { height: 300vh; }
