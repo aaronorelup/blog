@@ -11,6 +11,8 @@ const RAD = Math.PI / 180;
 const WALL = { radius: 34, arc: 64 * RAD, behind: 22 };
 WALL.height = (WALL.radius * WALL.arc) / 2;
 const BACK = { radius: 36.5, arc: 150 * RAD, height: 26, torn: 0.4, shade: 1.2 };
+export const FRAME = { w: 2.6, h: 3.37 };      // a portrait in its frame. One size for all five
+const CORNERS = [[-1, -1], [1, -1], [-1, 1], [1, 1]];
 
 export function createWorlds(ctx) {
   const { scene, mats, textures } = ctx;
@@ -20,6 +22,7 @@ export function createWorlds(ctx) {
   const fwd = new Vector3();
   const HOUSE = new Color('#E6E8ED');
   const size = { w: 1, h: 1, ratio: 1 };
+  let chrome = null;                               // the boxes of the page chrome, measured once a resize
 
   function build(cfg, tower) {
     const group = new Group();
@@ -60,7 +63,7 @@ export function createWorlds(ctx) {
     if (cfg.portrait && cfg.art.portrait) {
       const px = cfg.portrait.x;
       const z = WALL.radius - WALL.behind - Math.sqrt(WALL.radius * WALL.radius - px * px) + 0.25;
-      const frame = new Mesh(new PlaneGeometry(3.36, 4.36), mats.paper(null, { side: 1 }));
+      const frame = new Mesh(new PlaneGeometry(FRAME.w, FRAME.h), mats.paper(null, { side: 1 }));
       frame.position.set(px, cfg.portrait.y, cfg.portrait.z ?? z);
       frame.rotation.y = -Math.asin(px / WALL.radius);
       frame.visible = false; frame.renderOrder = -7; frame.userData.portrait = true;
@@ -69,9 +72,28 @@ export function createWorlds(ctx) {
       textures.framed(cfg.art.portrait).then((tex) => { if (tex && inst.group.parent) { frame.material.uniforms.uMap.value = tex; frame.visible = true; inst.parts.portraitTex = tex; } });
     }
 
-    // props: flat cut-outs parallel to the screen at their depths, like a paper theatre. The far ones fade a little
+    // a piece drawn in code that hangs flat on the curved wall, placed by the world's file (sign)
+    if (cfg.sign) {
+      const s = cfg.sign;
+      const mesh = new Mesh(new PlaneGeometry(s.w, s.h), mats.paper(textures[s.draw](), { side: 1, blended: true }));
+      mesh.position.set(s.x, s.y, WALL.radius - WALL.behind - Math.sqrt(WALL.radius * WALL.radius - s.x * s.x) + 0.18);
+      mesh.rotation.y = -Math.asin(s.x / WALL.radius);
+      mesh.renderOrder = -7.5;
+      group.add(mesh);
+      inst.parts.sign = mesh;
+    }
+    // a line painted on the floor itself, across the room (stripe)
+    if (cfg.stripe) {
+      const mesh = new Mesh(new PlaneGeometry(70, cfg.stripe.w), mats.paper(null, { side: 1, plain: true, tint: cfg.stripe.colour, depthTest: false }));
+      mesh.rotation.x = -Math.PI / 2; mesh.position.set(0, 0.02, cfg.stripe.z); mesh.renderOrder = -6.8;
+      group.add(mesh);
+    }
+
+    // props: flat cut-outs parallel to the screen at their depths, like a paper theatre. The far ones fade a little.
+    // One that stands on the ground gets a soft contact shadow, and the foreground piece fades toward its quad's edge
+    const dusk = cfg.theme.chrome === 'dark' ? '#000000' : cfg.theme.ink;
     const cut = (url, place, order) => {
-      const mesh = new Mesh(new PlaneGeometry(1, 1), mats.paper(null, { side: 1, blended: true, ground, fade: Math.max(0, Math.min(0.14, -place.z * 0.012)) }));
+      const mesh = new Mesh(new PlaneGeometry(1, 1), mats.paper(null, { side: 1, blended: true, ground, fade: Math.max(0, Math.min(0.14, -place.z * 0.012)), soft: order === 12 ? 0.06 : 0 }));
       mesh.position.set(place.x, place.y, place.z);
       mesh.visible = false; mesh.renderOrder = order;
       group.add(mesh);
@@ -80,6 +102,11 @@ export function createWorlds(ctx) {
         mesh.material.uniforms.uMap.value = tex;
         mesh.scale.set(place.w, (place.w * tex.image.height) / tex.image.width, 1);
         mesh.visible = true;
+        if (order === 12 || place.shadow === false || place.y - mesh.scale.y / 2 > 0.35) return;
+        const shade = new Mesh(new PlaneGeometry(1, 1), mats.paper(textures.soft(true), { side: 1, blended: true, mask: true, tint: dusk, opacity: 0.22 }));
+        shade.rotation.x = -Math.PI / 2; shade.position.set(place.x, 0.03, place.z + 0.08);
+        shade.scale.set(place.w * 1.5, place.w * 0.42, 1); shade.renderOrder = -6.5;
+        group.add(shade);
       });
       return mesh;
     };
@@ -137,7 +164,7 @@ export function createWorlds(ctx) {
     },
     unmount(id) { const inst = mounted.get(id); if (inst) { inst.dispose(); mounted.delete(id); if (worlds.active === inst) worlds.active = null; } },
     reset() { for (const inst of mounted.values()) { inst.open = 0; inst.nameShow = 0; } },
-    resize(w, h, ratio) { size.w = w; size.h = h; size.ratio = ratio; },
+    resize(w, h, ratio) { size.w = w; size.h = h; size.ratio = ratio; chrome = null; },
 
     // Write the iris and the world's ground for whichever world is open this frame. inst.open: 0 shut .. 1 open.
     update() {
@@ -162,6 +189,27 @@ export function createWorlds(ctx) {
       sh.uWorld.value.set(top.cfg.theme.ground);
       sh.uPaper.value.copy(HOUSE).lerp(sh.uWorld.value, Math.min(1, top.open * 1.5));
       if (top.parts.dust) top.parts.dust.material.uniforms.uPx.value = size.ratio * size.h * 0.26;      // motes about 0.25 units across, soft
+
+      // a portrait shows only whole: inside the window, 24 px clear of the chrome, with the iris quite open. It
+      // comes and goes by scale in 0.18 s at full value (a little slack once shown, so a pointer swing never flickers it)
+      const f = top.parts.portrait;
+      if (f && top.parts.portraitTex) {
+        if (!chrome) chrome = [...document.querySelectorAll('.ail-chrome__side')].map((n) => n.getBoundingClientRect());
+        let l = 1e9, r = -1e9, hi = 1e9, lo = -1e9;
+        for (const [sx, sy] of CORNERS) {
+          v.set((sx * FRAME.w) / 2, (sy * FRAME.h) / 2, 0).applyEuler(f.rotation).add(f.position).add(top.group.position).project(cam);
+          const x = (v.x * 0.5 + 0.5) * size.w, y = (0.5 - v.y * 0.5) * size.h;
+          l = Math.min(l, x); r = Math.max(r, x); hi = Math.min(hi, y); lo = Math.max(lo, y);
+        }
+        const m = top.portraitOn ? 10 : 24, e = top.portraitOn ? -16 : 4;      // (the pointer's far swing may take a shown frame's mat to the window's edge)
+        top.portraitOn = top.open >= 0.999 && l >= e && r <= size.w - e && hi >= e && lo <= size.h - e
+          && !chrome.some((c) => c.width > 0 && l < c.right + m && r > c.left - m && hi < c.bottom + m && lo > c.top - m);
+        top.portraitK = ctx.reduced ? (top.portraitOn ? 1 : 0) : Math.max(0, Math.min(1, (top.portraitK || 0) + (top.portraitOn ? ctx.dt : -ctx.dt) / 0.18));
+        f.visible = top.portraitK > 0.001;
+        f.scale.setScalar(0.6 + 0.4 * top.portraitK);
+      }
+      // a sign on the wall steps back while the name stands in front of it
+      if (top.parts.sign) top.parts.sign.material.uniforms.uOpacity.value = 1 - top.nameShow;
 
       // the name: a camera-facing plane behind the stack, sized so it covers the DOM box given in nameRect
       const r = top.nameRect;

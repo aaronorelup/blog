@@ -53,9 +53,12 @@ export function createRow(ctx) {
     body.renderOrder = 7; body.visible = kind === 'orb3d';
     scene.add(body);
     if (kind !== 'orb3d') textures.load(cfg.art.hero).then((tex) => { if (tex) { body.material.uniforms.uMap.value = tex; body.visible = true; } });
-    const ledge = new Mesh(new BoxGeometry(1.5, 0.05, 0.95).translate(-0.17, 0, 0), mats.glass(owner(id), { halfH: 0.025, alpha: 0.82 }));
+    const ledge = new Mesh(new BoxGeometry(1.3, 0.05, 0.95).translate(-0.07, 0, 0), mats.glass(owner(id), { halfH: 0.025, alpha: 0.82 }));
     tower.group.add(ledge);
-    tower.char = { mesh: body, ledge, kind, size, floor: cfg.character.floor - 1, from: 'floor', to: 'floor', t: 1, show: 1, scale: 1, pos: new Vector3(), blink: 2 + t };
+    const shade = new Mesh(new PlaneGeometry(1, 1), mats.paper(textures.soft(true), { side: 0, blended: true, mask: true, tint: '#0C0D10', opacity: 0.22 }));
+    shade.rotation.x = -Math.PI / 2; shade.renderOrder = -6.5; shade.visible = false;
+    scene.add(shade);
+    tower.char = { mesh: body, ledge, shade, kind, size, floor: cfg.character.floor - 1, from: 'floor', to: 'floor', t: 1, show: 1, scale: 1, pos: new Vector3(), blink: 2 + t };
     return tower;
   });
 
@@ -169,6 +172,15 @@ export function createRow(ctx) {
           m.rotateZ(-input.x * 0.07);                                                       // it leans up to 4 degrees toward the pointer
           m.scale.set(sc, sc * (1 + breathe), 1);
           m.material.uniforms.uOpacity.value = c2.show * tw.show * (1 - tw.dim * 0.8);
+        }
+        // on the ground (front, or beside its open stack) it throws a soft contact shadow
+        const grounded = (n) => n === 'front' || (n === 'beside' && !ctx.phone);
+        const down = ((grounded(c2.to) ? e : 0) + (grounded(c2.from) ? 1 - e : 0)) * c2.show * tw.show;
+        c2.shade.visible = down > 0.02;
+        if (c2.shade.visible) {
+          c2.shade.position.set(c2.pos.x, (c2.to === 'front' || c2.from === 'front' ? tw.lift : 0) + 0.03, c2.pos.z + 0.06);
+          c2.shade.scale.set(sc * 1.4, sc * 0.42, 1);
+          c2.shade.material.uniforms.uOpacity.value = 0.22 * down; c2.shade.material.uniforms.uSide.value = tw.side;
         }
         const onLedge = (c2.to === 'floor' ? e : 0) + (c2.from === 'floor' ? 1 - e : 0);
         c2.ledge.visible = onLedge * c2.show > 0.02;

@@ -87,7 +87,7 @@
 .ail-gl .ail-world__head.is-on { opacity: 1; }
 .ail-gl .ail-world__name { font-size: var(--ail-fs-display); margin-top: 4px; white-space: nowrap; }
 .ail-3d .ail-world__name { color: transparent; user-select: none; }
-.ail-gl .ail-world__caption { display: block; padding: 5px 8px; background: var(--w-scrim); opacity: 0; visibility: hidden; }
+.ail-gl .ail-world__caption { display: block; padding: 3px 7px; background: var(--w-scrim); font-size: 12px; white-space: nowrap; opacity: 0; visibility: hidden; }
 .ail-gl .ail-world__caption.is-on { opacity: 1; visibility: visible; }
 
 .ail-gl .ail-world__intro, .ail-gl .ail-sig, .ail-gl .ail-catch { position: absolute; left: var(--ail-margin); bottom: var(--ail-margin); width: min(28vw, 404px); margin: 0; padding: 16px 18px 18px; background: var(--w-scrim); }

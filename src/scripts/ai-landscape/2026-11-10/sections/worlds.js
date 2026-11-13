@@ -3,10 +3,11 @@
 // product tabs, held. c Signature 1.62 to 2.5: signatures/<name>.js plays. d The catch 2.5 to 3.0, then the iris shuts.
 // Words are triggered at a scroll position and then run on time (SPEC 4.3): nothing rests half-faded.
 // Everything world-specific comes from worlds/<id>.js and the page's data: this file never names a company.
-import { Raycaster, Vector2, Vector3 } from 'three';
+import { Vector3 } from 'three';
 import { easeIO, lerp, smooth, span, win } from '../core/clock.js';
 import { $, $$, announce, rove, setBeat, toggle } from '../core/dom.js';
 import { HOURS } from '../scene/studio.js';
+import { FRAME } from '../scene/world.js';
 import { world } from '../worlds/index.js';
 
 const BEATS = [['a', 0.8], ['b', 1.62], ['c', 2.5], ['d', 3.01]];
@@ -112,17 +113,13 @@ export function create(ctx, el, sec) {
   doorsEl.addEventListener('keydown', onRowKey);
   const onKey = (e) => { if (e.key === 'Escape' && sec === ctx.clock.current) { closePush(); $$('.ail-flag[open]', el).forEach((f) => { f.open = false; }); } };
   window.addEventListener('keydown', onKey);
-  // tap the portrait: its alt text shows as a caption under the frame (the name only)
+  // the name under the portrait, as a gallery label: with its frame, in beats b and d (in c the signature's own
+  // words need the room under the 60-word cap). Not on a phone
   const caption = $('.ail-world__caption', el);
-  const ray = new Raycaster();
-  const capPin = caption && inst.parts.portrait ? labels.pin(caption, () => point.copy(inst.parts.portrait.position).add(inst.group.position).setY(inst.parts.portrait.position.y - 2.3), { ax: 0.5, ay: 0 }) : null;
+  const capPin = caption && inst.parts.portrait ? labels.pin(caption, () => point.copy(inst.parts.portrait.position).add(inst.group.position).setY(inst.parts.portrait.position.y - FRAME.h / 2 - 0.14), { ax: 0.5, ay: 0 }) : null;
   // <main> lies over the canvas, so the click is heard on the window. A control or a word keeps its own click
   const onCanvas = (e) => {
     if (sec !== ctx.clock.current || e.target.closest('a, button, summary, details, li, header, nav, dialog, .ail-card, [data-hit]')) return;
-    if (capPin && st.open > 0.9) {
-      ray.setFromCamera(new Vector2((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1), ctx.camera);
-      toggle(caption, ray.intersectObject(inst.parts.portrait).length > 0 && !caption.classList.contains('is-on'));
-    }
     if (st.beat !== 'b') return;
     const hit = row.pick(e.clientX, e.clientY, tower);
     if (hit) push(hit.i); else closePush();
@@ -229,6 +226,7 @@ export function create(ctx, el, sec) {
       }
       st.nameK = ctx.reduced ? (clear ? 1 : 0) : Math.max(0, Math.min(1, (st.nameK || 0) + (clear ? dt / 0.3 : -dt / 0.12)));
       inst.nameShow = smooth(st.nameK) * (1 - smooth(span(u, 0.6, 0.92)));
+      if (capPin) toggle(caption, !ctx.phone && (beat === 'b' || beat === 'd') && (inst.portraitK || 0) > 0.9);
       tower.lid.show = 1 - smooth(open / 0.08);                         // the plate leaves before the art arrives: a mark is never on art
 
       // the stack pulls apart from the top. The character stands large beside it, then hops onto its floor

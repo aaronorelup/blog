@@ -12,7 +12,7 @@ const MODEL = 4, TOOLS = 5, HANDS = 7;
 const HOP = 0.5, REST = 0.25;                  // seconds a flight, and seated before the next one
 const SEATED = { yes: 1, partial: 0.5 };       // how far the plug goes in. Any other answer keeps it out
 const FILLED = { solid: 1, hatch: 1 };         // the states of a media socket that hold something
-const PLATE = 0.66;                            // a lid's mark plate, in world units
+const PLATE = 1.1;                             // a lid's mark plate, in world units: 120 px at 1440 by 900
 
 export function create(ctx, world) {
   const { tower, cfg, el, inst, data } = world;
@@ -38,7 +38,7 @@ export function create(ctx, world) {
     const id = $('.ail-own', li).dataset.owner;
     const ext = ctx.data.p[id].ext;                           // that company's own answers: mcp, skills
     const slab = new Mesh(slabGeometry(), mats.glass(owner(id), { side: 1, alpha: 0.62 }));
-    slab.scale.set(0.36, 0.62, 0.26);
+    slab.scale.set(0.46, 0.62, 0.3);
     const plate = new Mesh(new PlaneGeometry(PLATE, PLATE), mats.paper(null, { side: 1, blended: true, self: true }));
     plate.renderOrder = 8; plate.visible = false;
     const seat = new Mesh(seatGeo, mats.core(clay, { side: 1, ghost: true, hatch: ext.mcp === 'partial' }));
@@ -85,6 +85,7 @@ export function create(ctx, world) {
   const pinGeo = new BoxGeometry(0.13, 0.034, 0.034);
   for (const y of [-0.052, 0.052]) { const pin = new Mesh(pinGeo, pinMat); pin.position.set(0.215, y, 0); plug.add(pin); }
   const card = new Mesh(new BoxGeometry(0.2, 0.26, 0.035), mats.glass(clay, { side: 1, alpha: 0.96 }));
+  plug.scale.setScalar(1.45); card.scale.setScalar(1.45);              // the two pieces read at a glance: 36 px or more
   root.add(plug, card);
   const cord = prims.arc(cordA, cordB, { color: cfg.theme.ink, lift: -0.42, side: 1, dots: false });
   const titlePin = title && !ctx.phone ? labels.pin(title, () => v.copy(home).add(root.position), { dx: 40, ay: 0.5 }) : null;
@@ -125,7 +126,11 @@ export function create(ctx, world) {
   const pet = new Mesh(new PlaneGeometry(1, 1), mats.paper(null, { side: 1, blended: true }));
   pet.renderOrder = 7; pet.visible = false;
   tower.group.add(pet);
-  textures.load(cfg.art.props[0]).then((tex) => { if (tex && !st.gone) { pet.material.uniforms.uMap.value = tex; pet.scale.set(0.44, (0.44 * tex.image.height) / tex.image.width, 1); } });
+  const petShade = new Mesh(new PlaneGeometry(1, 1), mats.paper(textures.soft(true), { side: 1, blended: true, mask: true, tint: cfg.theme.ink, opacity: 0.22 }));
+  petShade.rotation.x = -Math.PI / 2; petShade.renderOrder = -6.5; petShade.visible = false;
+  tower.group.add(petShade);
+  const PET = { door: 'anthropic-claude-code', big: 0.95, small: 0.7, x: 4.4, z: 0.8, wide: 1, was: false, hop: 0 };
+  textures.load(cfg.art.props[0]).then((tex) => { if (tex && !st.gone) { pet.material.uniforms.uMap.value = tex; PET.wide = tex.image.width / tex.image.height; } });
 
   // ---- flights. A seat is decided by the lid's own data, never by the visitor
   const homeAt = (out) => out.set(FLOOR.w / 2 + 0.42, tower.floors[TOOLS].y + tower.lift, 0.5);
@@ -204,7 +209,7 @@ export function create(ctx, world) {
     Object.assign(st, { run: [], hop: null, rest: 0, at: -1, cardAt: -1, mode: '', tour: false, auto: false, ledge: 0, sel: -1, drag: null, step: 0, on: false });
     stations.forEach((s) => { s.in = 0; s.inK = 0; s.card = 0; s.cardK = 0; s.seen = false; s.pulse = 0; s.li.classList.remove('is-on'); s.li.removeAttribute('data-picked'); s.li.removeAttribute('data-seen'); if (s.img) s.img.style.opacity = '0'; });
     if (title) title.classList.remove('is-on');
-    root.visible = false; cord.draw = 0; cord.update(); pet.visible = false; document.body.style.cursor = '';
+    root.visible = false; cord.draw = 0; cord.update(); pet.visible = false; petShade.visible = false; document.body.style.cursor = '';
     sockets(0);
   };
   // The catch (beat d): the same three sockets, on the floor the section slides out
@@ -226,11 +231,26 @@ export function create(ctx, world) {
       if (inst.open > 0.02) st.hung = ctx.phone || !gone ? 0 : ctx.reduced ? 1 : smooth(span(world.sec.u, 0.9, 1.22));      // a phone has no clear wall beside the stack
       frame.position.y = lerp(cfg.portrait.y, cfg.portrait.hangs, easeOut(st.hung));
     }
-    pet.visible = tower.open > 0.6 && !!pet.material.uniforms.uMap.value;
+    // the creature: 1.5 units tall on the ground beside the Duet figure while the world opens, then it hops up to
+    // floor 8 with the figure and stands there 0.7 tall. It hops once more when its own product's tab is opened
+    const here = ctx.phone ? smooth(span(tower.open, 0.6, 0.95)) : smooth(span(inst.open, 0.3, 0.6));
+    pet.visible = here > 0.01 && !!pet.material.uniforms.uMap.value;
+    petShade.visible = false;
     if (pet.visible) {
-      pet.position.set(0.72, tower.floors[HANDS].y + FLOOR.h / 2 + pet.scale.y / 2, 0.98);
+      const k = ctx.phone ? 1 : easeIO(span(world.sec.u, 0.62, 1.0));
+      const tall = lerp(PET.big, PET.small, k);
+      const now = !!$(`.ail-door[open][data-door="${PET.door}"]`, el);
+      if (now && !PET.was && k >= 1 && !ctx.reduced) PET.hop = 0.5;
+      PET.was = now; PET.hop = Math.max(0, PET.hop - dt);
+      const up = Math.sin(Math.PI * k) * 1.4 + Math.sin(Math.PI * (PET.hop / 0.5)) * 0.4;
+      pet.scale.set(tall * PET.wide, tall, 1);
+      pet.position.set(lerp(PET.x, 0.72, k), lerp(0.02, tower.floors[HANDS].y + FLOOR.h / 2, k) + tall / 2 + up, lerp(PET.z, 0.98, k));
       pet.quaternion.copy(camera.quaternion);
-      pet.material.uniforms.uOpacity.value = smooth(span(tower.open, 0.6, 0.95)) * tower.show;
+      pet.material.uniforms.uOpacity.value = here * tower.show;
+      petShade.visible = k < 0.5;
+      petShade.position.set(pet.position.x, 0.03, pet.position.z + 0.06);
+      petShade.scale.set(tall * PET.wide * 1.4, tall * PET.wide * 0.42, 1);
+      petShade.material.uniforms.uOpacity.value = 0.22 * here * (1 - k * 2);
     }
     // words wait half a second after the beat's own block has settled: until then a pinned word would sit askew
     st.age = amount > 0.01 ? st.age + dt : 0;
@@ -288,7 +308,7 @@ export function create(ctx, world) {
       s.slab.position.copy(s.pos);
       const u = s.slab.material.uniforms;
       u.uShow.value = show; u.uPulse.value = smooth(s.pulse); u.uHatch.value = s.in === 0.5 ? 1 : 0; u.uFrost.value = s.seen && !(s.ext.mcp in { yes: 1, partial: 1, no: 1 }) ? 1 : 0;
-      s.plate.position.set(s.pos.x, s.pos.y + 0.7, s.pos.z);
+      s.plate.position.set(s.pos.x, s.pos.y + 0.93, s.pos.z);
       s.plate.quaternion.copy(camera.quaternion);
       s.plate.material.uniforms.uOpacity.value = show;
       s.seat.position.set(s.pos.x - 0.22, s.pos.y, s.pos.z + 0.3);
@@ -329,7 +349,7 @@ export function create(ctx, world) {
     root.traverse((o) => { if (o.material) o.material.dispose(); if (o.geometry && o.geometry !== slabGeometry()) o.geometry.dispose(); });
     root.removeFromParent();
     cord.dispose();
-    for (const mesh of [...hoops, pet, strip]) { mesh.traverse((o) => { if (o.material && o.material !== hoopMat) o.material.dispose(); if (o.geometry !== hoopGeo) o.geometry.dispose(); }); mesh.removeFromParent(); }
+    for (const mesh of [...hoops, pet, petShade, strip]) { mesh.traverse((o) => { if (o.material && o.material !== hoopMat) o.material.dispose(); if (o.geometry !== hoopGeo) o.geometry.dispose(); }); mesh.removeFromParent(); }
     hoopGeo.dispose(); hoopMat.dispose();
     textures.release(cfg.art.props[0]);
   };

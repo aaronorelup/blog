@@ -172,7 +172,7 @@ void main() {
 export const paperFrag = /* glsl */ `${COMMON}
 uniform sampler2D uMap; uniform vec3 uTint; uniform vec3 uGround;
 uniform float uSide; uniform float uOpacity; uniform float uFade; uniform float uMode; uniform float uDither; uniform float uSelf;
-uniform vec4 uTorn; uniform vec3 uEdge; uniform vec2 uFoot;
+uniform vec4 uTorn; uniform vec3 uEdge; uniform vec2 uFoot; uniform float uSoft;
 varying vec3 vW; varying vec2 vUv;
 void main() {
   float band;
@@ -189,7 +189,10 @@ void main() {
   if (uTorn.y > 0.0) { float e = (1.0 - vUv.y) / uTorn.y; if (e < 0.3 + 0.5 * vnoise(vec2(vUv.x * uTorn.z, uTorn.w)) + 0.2 * vnoise(vec2(vUv.x * uTorn.z * 3.7, uTorn.w + 5.0))) discard; }
   // opaque paper is alpha tested and dithers at the iris edge. Blended paper (cut-outs, type) keeps soft edges
   if (uDither > 0.5) { if (a < 0.2 || keep < ign(gl_FragCoord.xy) * 0.98 + 0.01) discard; a = 1.0; }
-  else { a *= keep; if (a < 0.004) discard; }
+  else {
+    if (uSoft > 0.0) a *= smoothstep(0.0, uSoft, min(min(vUv.x, 1.0 - vUv.x), min(vUv.y, 1.0 - vUv.y)));      // no straight sprite edge
+    a *= keep; if (a < 0.004) discard;
+  }
   col = mix(col, uGround, uFade);
   float n = darkAt(vW);
   if (n > 0.0 && uSelf < 0.5) col = mix(col, col * (vec3(0.03, 0.034, 0.044) + glowAt(vW) * 1.05), n);      // uSelf: a mark's plate keeps its own light

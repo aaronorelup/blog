@@ -88,7 +88,7 @@ export function create(ctx, world) {
   const tex = new CanvasTexture(canvas);
   tex.colorSpace = SRGBColorSpace;
   const url = art(world.id, 'paint');
-  const pic = url ? prims.figure(tower, MODEL, url, { size: ctx.phone ? 1.25 : 1.05, at: -1 }) : null;
+  const pic = url ? prims.figure(tower, MODEL, url, { size: ctx.phone ? 1.25 : 1.85, at: -1 }) : null;
   let img = null;
   let drawn = '';
   const noise = document.createElement('canvas');
@@ -257,7 +257,7 @@ export function create(ctx, world) {
     lineMat.opacity = amount;
     if (ctx.input.moved && !ctx.input.touch) point(hit({ clientX: ctx.input.px, clientY: ctx.input.py }) >= 0);
     slab.material.uniforms.uPulse.value = arrived ? 0.25 : 0;
-    if (!ctx.phone) for (const [n, k] of names.map((n, k) => [n, k])) n.style.transform = pinned(v.set(base + xs[k] + (k ? 0.08 : -0.08), top + tower.lift + 0.6, tower.z + FLOOR.w / 2 - 0.15), 0.5, 1);
+    if (!ctx.phone) for (const [n, k] of names.map((n, k) => [n, k])) n.style.transform = pinned(v.set(base + xs[k] + (k ? 0.08 : -0.08), top + tower.lift + 0.6, tower.z + FLOOR.w / 2 - 0.15), k ? 0.12 : 0.88, 1);      // the two spread outward from their doors
     if (ctx.phone) names.forEach((n, k) => n.classList.toggle('is-on', st.runs[k] >= 0 && st.part === 1));
     if (indexName) {
       indexName.classList.toggle('is-on', arrived > 0 && st.part === 1 && amount > 0.5);

@@ -86,7 +86,7 @@ export function create(ctx, world) {
   const onGo = () => { if (ctx.reduced) sig.step(); else start(); };
   const onOk = () => { if (st.t >= ASK && st.ta < 0) st.ta = ctx.reduced ? DONE : 0; };
   if (go) go.addEventListener('click', onGo);
-  if (ok) { ok.addEventListener('click', onOk); ok.hidden = true; }
+  if (ok) { ok.addEventListener('click', onOk); ok.disabled = true; }
 
   sig.play = () => start();
   // Reduced motion: no flight. The button walks three stops: the door, the router, the closed gate with the token on
@@ -97,7 +97,7 @@ export function create(ctx, world) {
     steps.forEach((n) => n.classList.remove('is-on'));
     if (world.ui) world.ui.removeAttribute('data-idle');
     token.visible = false;
-    if (ok) { ok.hidden = true; ok.disabled = false; }
+    if (ok) ok.disabled = true;
   };
 
   sig.update = (dt, amount) => {
@@ -117,7 +117,9 @@ export function create(ctx, world) {
 
     st.bar += ((passed ? 1 : 0) - st.bar) * (ctx.reduced ? 1 : 1 - Math.exp(-7 * dt));
     gate.show = amount; gate.lift = st.bar; gate.update();
-    gate.group.position.z = OUT; gate.group.scale.setScalar(SCALE);
+    // the gate's posts (0.42 tall) fit inside the gap over the floor it stands before
+    const fit = Math.min(SCALE, (0.9 * (f[HARNESS - 1].y - f[HARNESS].y - FLOOR.h)) / 0.42);
+    gate.group.position.z = OUT; gate.group.scale.setScalar(Math.max(0.4, fit));
 
     // the thread runs down the front of the stack: 0.42 s a floor, and it stops at the bar until the visitor approves
     const x = tower.x + tower.shift + f[HARNESS].mesh.position.x;
@@ -125,7 +127,7 @@ export function create(ctx, world) {
     const at = !playing ? 0 : !passed ? Math.min(4, st.t / DROP) : 4 + Math.max(0, Math.min(3, (st.ta - 0.35) / DROP));
     pts[0].set(x, f[0].y + tower.lift + 1.05, z);
     [0, 1, 2].forEach((i) => pts[i + 1].set(x, f[i].y + tower.lift, z));
-    pts[4].set(x, top + tower.lift + BAR + 0.15, z);
+    pts[4].set(x, top + tower.lift + (BAR / SCALE) * Math.max(0.4, fit) + 0.12, z);
     [4, 5, 6].forEach((i) => pts[i + 1].set(x, f[i].y + tower.lift, z));
     if (playing) {
       thread.points = pts;
@@ -153,8 +155,9 @@ export function create(ctx, world) {
     // the words and the button, one step at a time in the console: where it came in, the harness sentence while the
     // gate waits (and before anything is asked: it is what the gate and the key are), the approval sentence once given
     const asked = waiting && st.t >= ASK;
-    if (ok) { ok.hidden = !(asked || passed); ok.disabled = passed; }
-    const show = [playing && !waiting && !passed, waiting || !playing, passed];
+    if (ok) ok.disabled = !asked || passed;
+    // all three stand from the start. Each is lit when the thread reaches it (before a press: the harness sentence)
+    const show = [playing, waiting || passed || !playing, passed];
     steps.forEach((n, k) => n.classList.toggle('is-on', show[k] && on));
     if (world.ui) world.ui.toggleAttribute('data-idle', !playing);
     const say = passed ? 2 : waiting ? 1 : 0;
@@ -171,7 +174,7 @@ export function create(ctx, world) {
     if (drawer) drawer.classList.toggle('is-on', k > 0.6);
     // the myth this drawer answers sits struck through on top of the catch, where the truth is the catch itself
     if (!myth) return;
-    myth.classList.toggle('is-on', k > 0.6);
+    myth.classList.toggle('is-on', k > 0.6 && !$('.ail-flag[open]', el));      // an open flag has the place to itself: one card at a time
     if (k <= 0 || ctx.phone || !card) { myth.style.transform = ''; myth.style.width = ''; return; }
     const r = card.getBoundingClientRect();
     myth.style.width = `${r.width.toFixed(0)}px`;
@@ -181,7 +184,7 @@ export function create(ctx, world) {
   sig.dispose = () => {
     sig.reset();
     if (go) go.removeEventListener('click', onGo);
-    if (ok) { ok.removeEventListener('click', onOk); ok.hidden = false; }
+    if (ok) { ok.removeEventListener('click', onOk); ok.disabled = false; }
     sig.catch(0);
     if (pin) pin.drop();
     gate.dispose();

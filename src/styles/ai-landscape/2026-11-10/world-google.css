@@ -7,9 +7,15 @@
 /* a whole sentence starts at the margin: its owner's dot would stand alone on a line above it */
 .ail-world[data-world='google'] .ail-sig__list[data-list='1'] .ail-own::before { display: none; }
 
-/* the console: picking a door is one control, the two ways of painting are a pair on their own line */
-.ail-gl .ail-world[data-world='google'] .ail-sig__ui::after { content: ''; flex: 0 0 100%; order: 1; }
-.ail-gl .ail-world[data-world='google'] .ail-sig__ui .ail-btn:not([data-act='go']) { order: 2; }
+/* the console: picking a door is one control. Under it the head says what the pair below it is: two ways to paint */
+.ail-gl .ail-world[data-world='google'] .ail-sig { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.ail-gl .ail-world[data-world='google'] .ail-sig > * { flex: 0 0 100%; order: 3; }
+.ail-gl .ail-world[data-world='google'] .ail-sig__ui { display: contents; }
+.ail-gl .ail-world[data-world='google'] .ail-sig__ui .ail-btn { flex: 0 0 auto; order: 2; }
+.ail-gl .ail-world[data-world='google'] .ail-sig__ui .ail-btn[data-act='go'] { order: 0; }
+.ail-gl .ail-world[data-world='google'] .ail-sig__head { order: 1; margin-top: 4px; }
+/* a picker says what it does: the product's name, then "picks" */
+.ail-gl .ail-world[data-world='google'] .ail-sig__list[data-list='0'] .ail-sig__tail { display: inline; margin-left: 6px; color: var(--ail-fg-2); }
 /* part one: a name over each tall door, and the label of the one index at the foot of the stack */
 .ail-gl .ail-world[data-world='google'] .ail-sig__item.is-on .ail-fact { pointer-events: auto; }
 .ail-gl .ail-world[data-world='google'] .ail-sig__list .ail-sig__title { display: block; position: fixed; left: 0; top: 0; z-index: 3; padding: 5px 9px; background: var(--w-scrim); color: var(--ail-fg); white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity 300ms var(--ail-ease); will-change: transform; }

@@ -176,6 +176,21 @@ export function createTextures(ctx) {
       return t;
     },
 
+    // A message bar with no words: a white pill with an ink outline and a round ink send button, arrow up.
+    bar() {
+      if (cache.has('bar')) return cache.get('bar');
+      const W = 1140, H = 216, r = 100;
+      const [c, g] = canvas(W, H);
+      g.fillStyle = '#FFFFFF'; g.strokeStyle = '#0C0D10'; g.lineWidth = 8;
+      g.beginPath(); g.arc(W - 8 - r, H / 2, r, -Math.PI / 2, Math.PI / 2); g.arc(8 + r, H / 2, r, Math.PI / 2, Math.PI * 1.5); g.closePath(); g.fill(); g.stroke();
+      g.fillStyle = '#0C0D10'; g.beginPath(); g.arc(W - 108, H / 2, 72, 0, Math.PI * 2); g.fill();
+      g.strokeStyle = '#FFFFFF'; g.lineWidth = 16; g.lineCap = 'round'; g.lineJoin = 'round';
+      g.beginPath(); g.moveTo(W - 108, 144); g.lineTo(W - 108, 74); g.moveTo(W - 138, 104); g.lineTo(W - 108, 74); g.lineTo(W - 78, 104); g.stroke();
+      const t = finish(new CanvasTexture(c));
+      cache.set('bar', t);
+      return t;
+    },
+
     // A soft round glow, for cores with the lights out.
     halo() {
       if (cache.has('halo')) return cache.get('halo');

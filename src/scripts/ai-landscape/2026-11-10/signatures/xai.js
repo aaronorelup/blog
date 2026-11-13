@@ -12,6 +12,7 @@ const MODEL = 4;
 const HANDS = 7;
 const DROP = 0.42;          // seconds a floor
 const STOP = 1.25;          // seconds at the model floor
+const PAIR = 1.6;           // seconds each of the two picks of the play-through is shown
 const AT_MODEL = DROP * (MODEL + 1);
 const GO_ON = AT_MODEL + STOP;
 const AT_HANDS = GO_ON + DROP * (HANDS - MODEL);
@@ -22,9 +23,12 @@ export function create(ctx, world) {
   const parts = data.stack[MODEL].p;                                        // [owner, status, official] for each model
   const cores = prims.cores(tower, MODEL, parts, { ghost: true, ring: 0.62 });
   const names = world.items(0);                                             // the same parts as words, in the HTML
-  // which core a press picks: released models only, another company's first, then alternating
-  const order = parts.map((p, k) => k).filter((k) => parts[k][1] === 'released' && parts[k][0] !== 'outside')
-    .sort((a, b) => (parts[a][0] === world.id) - (parts[b][0] === world.id));
+  // which core a press picks: released models only. Its own first, then the other companies' in turn, then the rest of its own
+  const mine = (k) => parts[k][0] === world.id;
+  const released = parts.map((p, k) => k).filter((k) => parts[k][1] === 'released' && parts[k][0] !== 'outside');
+  const own = released.find(mine);
+  const order = [...(own === undefined ? [] : [own]), ...released.filter((k) => !mine(k)), ...released.filter((k) => mine(k) && k !== own)];
+  let goOn = GO_ON, atHands = AT_HANDS;                                     // the play-through stops longer: it shows two picks
   // the three lines from the delegation floor: its coding agents, solid when documented, dashed when not
   const hands = data.to.map((d, k) => ({ d, k })).filter(({ d }) => d[2] === 'coding-agent');
   const handNames = world.items(1);
@@ -49,8 +53,11 @@ export function create(ctx, world) {
 
   function start(auto) {
     st.t = 0; st.auto = auto; st.floor = -1;
+    st.two = auto && order.length > 1;
+    if (st.two) st.press = 0;
     st.picked = order.length ? order[st.press % order.length] : -1;
     st.press++;
+    goOn = AT_MODEL + (st.two ? PAIR * 2 : STOP); atHands = goOn + DROP * (HANDS - MODEL);
     cores.items.forEach((c) => { c.active = 0; });
   }
   function setDark(on) {
@@ -61,20 +68,21 @@ export function create(ctx, world) {
   const onDark = () => {
     st.auto = false;                                                          // the switch is the visitor's from here on
     setDark(!st.darkWant);
-    if (st.darkWant && st.t < 0 && !ctx.reduced) start(false);                // nothing sent yet: send one, so a pick can light the room
+    if (st.darkWant && st.t < 0) { if (ctx.reduced) sig.still(); else start(false); }      // nothing sent yet: send one, so the dark room always has a pick to light it
   };
   if (go) go.addEventListener('click', onGo);
   if (darkBtn) { darkBtn.addEventListener('click', onDark); darkBtn.setAttribute('aria-pressed', 'false'); }
 
   sig.play = () => start(true);
   // Reduced motion: no flight. Each press of the button walks one stop: floor 1, the router, the model, the pick, the hand-off.
-  sig.step = () => { st.step = (st.step % 5) + 1; st.t = [0, DROP, DROP * 3, AT_MODEL + 0.6, AT_HANDS + 2.2][st.step - 1]; st.auto = false; if (st.step === 1) { st.picked = order[st.press % Math.max(1, order.length)] ?? -1; st.press++; } };
+  sig.step = () => { goOn = GO_ON; atHands = AT_HANDS; st.two = false; st.step = (st.step % 5) + 1; st.t = [0, DROP, DROP * 3, AT_MODEL + 0.6, AT_HANDS + 2.2][st.step - 1]; st.auto = false; if (st.step === 1) { st.picked = order[st.press % Math.max(1, order.length)] ?? -1; st.press++; } };
   // the end state is the fifth stop, so the first press of the button walks on to stop one of the next task
-  sig.still = () => { st.step = 5; st.picked = order[0] ?? -1; st.press = 1; st.t = AT_HANDS + 2.2; };
+  sig.still = () => { goOn = GO_ON; atHands = AT_HANDS; st.two = false; st.step = 5; st.picked = order[0] ?? -1; st.press = 1; st.t = AT_HANDS + 2.2; };
   sig.reset = () => {
     st.t = -1; st.picked = -1; st.lit = -1; st.auto = false; st.dark = 0; st.glow = 0; st.step = 0; sig.lit = -1; sig.dark = false;
     setDark(false);
     names.concat(handNames).forEach((n) => { n.classList.remove('is-on'); n.removeAttribute('data-picked'); });
+    if (world.ui) world.ui.removeAttribute('data-handoff');
     sats.forEach((s) => { s.arc.draw = 0; s.arc.update(); });
   };
   // The catch (beat d): the model floor slides out, still frosted. You cannot see which model it is.
@@ -89,16 +97,18 @@ export function create(ctx, world) {
     const playing = st.t >= 0;
     if (playing && !ctx.reduced) st.t += dt;
     const t = st.t;
+    // the play-through shows two picks, 1.6 s apart: its own model, then another company's
+    if (st.two && t >= AT_MODEL + PAIR && st.picked === order[0]) { st.picked = order[1]; st.press = 2; }
 
     // the thread: 0.42 s a floor, 1.25 s stopped at the model floor, then on to the delegation floor
     if (playing && amount > 0.01) {
       const pts = thread.through(tower, HANDS, 0.9);
-      const at = t < AT_MODEL ? t / DROP : t < GO_ON ? MODEL + 1 : Math.min(HANDS + 1, MODEL + 1 + (t - GO_ON) / DROP);
+      const at = t < AT_MODEL ? t / DROP : t < goOn ? MODEL + 1 : Math.min(HANDS + 1, MODEL + 1 + (t - goOn) / DROP);
       thread.at(Math.min(at, pts.length - 1));
-      thread.show = amount * (1 - smooth(span(t, AT_HANDS + 3.6, AT_HANDS + 4.4)));
+      thread.show = amount * (1 - smooth(span(t, atHands + 3.6, atHands + 4.4)));
       const floor = Math.min(HANDS, Math.floor(at + 0.001) - 1);
       if (floor !== st.floor && floor >= 0) { st.floor = floor; tower.floors[floor].pulse = 1; }
-      sig.lit = t < AT_HANDS ? Math.max(0, floor) : -1;            // at the hand-off the three names take the callout's place
+      sig.lit = t < atHands ? Math.max(0, floor) : -1;            // at the hand-off the three names take the callout's place
     } else sig.lit = -1;
 
     // the pick: one released core glows, and its name stands beside the floor
@@ -111,7 +121,7 @@ export function create(ctx, world) {
     // lights out: the lamp is cut by a falloff that sweeps the room in 0.6 s, then the owner's colour blooms from
     // the model floor, radius 0 to 14 in 0.9 s. The play-through does it once by itself, then hands the switch over
     if (st.auto && playing) {
-      if (t > AT_MODEL + 0.5 && t < AT_HANDS + 3.2) st.darkWant = 1; else if (t >= AT_HANDS + 3.2) { st.auto = false; st.darkWant = 0; }
+      if (t > AT_MODEL - 0.4 && t < atHands + 3.2) st.darkWant = 1; else if (t >= atHands + 3.2) { st.auto = false; st.darkWant = 0; }
       if (darkBtn) darkBtn.setAttribute('aria-pressed', String(!!st.darkWant));
     }
     const quick = ctx.reduced ? 1000 : 1;
@@ -128,10 +138,11 @@ export function create(ctx, world) {
     cores.update();
     sig.dark = st.dark > 0.5;
 
-    // the hand-off: three lines from the delegation floor to its coding agents
+    // the hand-off: three lines from the delegation floor to its coding agents. Their names need the room: the pick keeps its model and owner
+    if (world.ui) world.ui.toggleAttribute('data-handoff', playing && t >= atHands);
     const y = tower.floors[HANDS].y;
     sats.forEach((s) => {
-      const k = playing ? smooth(span(t, AT_HANDS + s.n * 0.25, AT_HANDS + 0.6 + s.n * 0.25)) * amount : 0;
+      const k = playing ? smooth(span(t, atHands + s.n * 0.25, atHands + 0.6 + s.n * 0.25)) * amount : 0;
       // the three stand to the right of the delegation floor, where the callouts are quiet during the signature
       s.mesh.position.set(FLOOR.w / 2 + (ctx.phone ? 0.55 : 1.25), y + (1 - s.n) * (ctx.phone ? 0.34 : 0.56) + 0.1, 0.5);
       s.mesh.visible = k > 0.01;

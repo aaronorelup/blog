@@ -13,18 +13,18 @@ export default {
     plate: 'A white paper hangar at dawn: a rocket and gantry through the door, black server racks, a shelf of coloured discs with eye slits.',
     hero: 'A glossy black sphere with two white eye slits, cut from paper.',
     portrait: 'Cut-paper illustration of Elon Musk',
-    person: 'Elon Musk',                                        // the caption a tap on the portrait shows: the name only
+    person: 'Elon Musk',                                        // the gallery label under the frame: the name only
   },
   character: { kind: 'orb3d', floor: 3, size: 1.0 },            // a real sphere whose eyes follow the pointer
   // hung low and mirrored, turned so the black stack and the black sphere stand against the pale wall and the
   // coloured discs. The gantry and the rocket stand right of the stack, behind the callouts, never behind the stack
   backdrop: { y: -6.15, turn: -0.17, full: true, flip: true },
   props: [
-    { file: 2, z: -9, x: 11.0, y: 2.45, w: 2.0 },               // prop-2: the rocket and its gantry, far right
     { file: 3, z: -6, x: -4.3, y: 1.44, w: 1.6 },               // prop-3: a server rack, at the left edge
     { file: 1, z: -3.5, x: 7.5, y: 0.55, w: 3.0 },              // prop-1: the car with no badge, low on the right
   ],
-  fore: { z: 3.2, x: 3.2, y: 0.12, w: 5 },
+  fore: null,
+  stripe: { z: 3.1, w: 0.12, colour: '#D4583A' },               // the pad's safety line, painted on the floor itself
   portrait: { x: 12.4, y: 5.5 },
   dust: '#FFFFFF',
   signature: 'xai',
