@@ -1,4 +1,5 @@
-// The page: the scroll is the camera. Everything drawn is a function of the scroll position and of the time.
+// The page: the scroll is the camera. Everything drawn is a function of the scroll position, of the time (petals,
+// the lamps' flicker) and, with a mouse, of where the pointer is (the drawing leans a little toward it).
 //   ?y=0.37     sets the scroll to that share of the page
 //   ?still=1    holds the time and draws exactly the frame the scroll asks for (no glide)
 //   ?t=12.4     holds the time at that second but leaves the scroll and its glide alive
@@ -189,7 +190,7 @@ function draw(y, t, yCard) {
       return;
     }
     if (n.shown !== true) { n.shown = true; n.el.style.visibility = 'visible'; n.line.style.visibility = 'visible'; n.dot.style.visibility = 'visible'; }
-    const off = inCol ? [colX - 8 - ax, n.ty - ay, 'l'] : tall ? n.tall : n.wide;
+    const off = inCol ? [colX - 8 - ax, n.ty - ay, 'l'] : tall || !n.wide ? n.tall : n.wide;
     let jx = ax + off[0];                                          // where the line meets the name
     const jy = ay + off[1];
     let lx = off[2] === 'r' ? jx - n.w - 8 : jx + 8;
