@@ -1,5 +1,6 @@
 /* Paper (1.1 "The paper"): washi (the painter's 512 px tile, one tile px to a CSS px, over the paper colour), tinted
-   6% by its chapter's light, cut by hand (six clip-path polygons a pixel or two uneven, set once, never animated),
+   6% by its chapter's light, cut by hand (six clip-path polygons, each side two straight runs a whole pixel apart, set once, never animated:
+   no slanted edge, so the browser draws the cut the same however the page was scrolled there),
    with one soft shadow down and to the right: the pre-blurred picture as a nine-slice sibling under the face,
    never a CSS filter. Paper is z 4 in the page's one order (2.3). A picture on paper is a window cut in the sheet. */
 .room-paper {
@@ -17,12 +18,12 @@
   background-image: linear-gradient(var(--room-tint), var(--room-tint)), url(/tea/shared/washi.webp);
   background-size: auto, 512px 512px;
 }
-.room-edge-1 { clip-path: polygon(0 1px, 46% 0, 100% 1.5px, calc(100% - 1px) 52%, 100% 100%, 51% calc(100% - 1.5px), 0.5px 100%, 1px 48%); }
-.room-edge-2 { clip-path: polygon(1px 0, 55% 1px, calc(100% - 0.5px) 0, 100% 47%, calc(100% - 1px) 100%, 44% 100%, 0 calc(100% - 1px), 0 55%); }
-.room-edge-3 { clip-path: polygon(0 0, 38% 1.5px, 100% 0.5px, 100% 61%, calc(100% - 1.5px) calc(100% - 0.5px), 62% 100%, 1.5px calc(100% - 1px), 0 36%); }
-.room-edge-4 { clip-path: polygon(0.5px 1.5px, 61% 0.5px, calc(100% - 1px) 1px, 100% 39%, 100% calc(100% - 1.5px), 35% 100%, 0 100%, 1px 64%); }
-.room-edge-5 { clip-path: polygon(1.5px 0.5px, 50% 0, 100% 1px, calc(100% - 0.5px) 70%, calc(100% - 1px) 100%, 58% calc(100% - 1px), 0 calc(100% - 0.5px), 0 30%); }
-.room-edge-6 { clip-path: polygon(0 0.5px, 42% 1px, calc(100% - 1.5px) 0, 100% 33%, 100% 100%, 47% calc(100% - 0.5px), 1px 100%, 0.5px 58%); }
+.room-edge-1 { clip-path: polygon(0 1px, 46% 1px, 46% 0, calc(100% - 1px) 0, calc(100% - 1px) 52%, 100% 52%, 100% calc(100% - 1px), 51% calc(100% - 1px), 51% 100%, 1px 100%, 1px 48%, 0 48%); }
+.room-edge-2 { clip-path: polygon(0 1px, 55% 1px, 55% 0, calc(100% - 0px) 0, calc(100% - 0px) 47%, 100% 47%, 100% calc(100% - 1px), 44% calc(100% - 1px), 44% 100%, 1px 100%, 1px 55%, 0 55%); }
+.room-edge-3 { clip-path: polygon(0 2px, 38% 2px, 38% 0, calc(100% - 1px) 0, calc(100% - 1px) 61%, 100% 61%, 100% calc(100% - 1px), 62% calc(100% - 1px), 62% 100%, 0px 100%, 0px 36%, 0 36%); }
+.room-edge-4 { clip-path: polygon(0 1px, 61% 1px, 61% 0, calc(100% - 1px) 0, calc(100% - 1px) 39%, 100% 39%, 100% calc(100% - 2px), 35% calc(100% - 2px), 35% 100%, 1px 100%, 1px 64%, 0 64%); }
+.room-edge-5 { clip-path: polygon(0 1px, 50% 1px, 50% 0, calc(100% - 1px) 0, calc(100% - 1px) 70%, 100% 70%, 100% calc(100% - 1px), 58% calc(100% - 1px), 58% 100%, 2px 100%, 2px 30%, 0 30%); }
+.room-edge-6 { clip-path: polygon(0 1px, 42% 1px, 42% 0, calc(100% - 2px) 0, calc(100% - 2px) 33%, 100% 33%, 100% calc(100% - 1px), 47% calc(100% - 1px), 47% 100%, 1px 100%, 1px 58%, 0 58%); }
 
 /* the one link and the one button: ink words, the vermilion underline and arrow (the accent's first place) */
 .room-link {
@@ -36,7 +37,7 @@
   display: inline-flex; align-items: center; min-height: 44px; margin: 14px 0 0; padding: 10px 18px; border: 0;
   background: var(--room-paper) url(/tea/shared/washi.webp) 0 0 / 512px 512px; color: var(--room-ink); cursor: pointer;
   font: 600 calc(14px * var(--room-u)) / 1.2 var(--font-body);
-  clip-path: polygon(0 1px, 50% 0, 100% 1px, calc(100% - 1px) 100%, 0 calc(100% - 0.5px));
+  clip-path: polygon(0 1px, 50% 1px, 50% 0, 100% 0, 100% 100%, 0 100%);
 }
 .room-button-label { text-decoration: underline; text-decoration-color: var(--room-red); text-decoration-thickness: 1.5px; text-underline-offset: 0.22em; }
 /* the keyboard's ring on paper: 2 px vermilion (the accent's fourth place); on the world it is lamp-cream */

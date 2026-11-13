@@ -55,7 +55,9 @@ body.room {
 .room-skip:focus-visible { transform: none; outline: 2px solid var(--room-red); outline-offset: 2px; }
 
 /* a chapter: book mode first (book.css has the rest), its anchor a zero-size mark */
-.room-chapter { position: relative; display: block; }
+/* overflow-x: clip keeps a sheet's shadow at the window's edge from widening the page; it makes no scroll box and
+   no stacking context, and a fixed slot is not clipped by it */
+.room-chapter { position: relative; display: block; overflow-x: clip; }
 .room-anchor { position: absolute; left: 0; top: 0; width: 0; height: 0; }
 
 /* ?words=0: every word on paper and on the world hidden, the paper and the pictures kept (the bar, 1.12) */

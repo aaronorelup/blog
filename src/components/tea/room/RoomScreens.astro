@@ -7,8 +7,8 @@
 <div class="room-screens">
   {['l', 'r'].map((side) => (
     <div class={`room-screen is-${side}`} data-screen={side}>
-      <img class="room-screen-shadow" alt="" decoding="async" hidden />
-      <img class="room-screen-plate" data-src="/tea/shared/screen.webp" alt="" width="1776" height="2000" decoding="async" />
+      <img class="room-screen-shadow" alt="" decoding="sync" hidden />
+      <img class="room-screen-plate" data-src="/tea/shared/screen.webp" alt="" width="1776" height="2000" decoding="sync" />
     </div>
   ))}
 </div>

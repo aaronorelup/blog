@@ -37,7 +37,7 @@ async function start() {
   const pieces = {};
   const pending = new Set();
   const mouse = { x: 0, y: 0, moved: false };
-  let L = null, page = null, m = null, last = null, asked = 0, fresh = false;
+  let L = null, page = null, m = null, last = null, asked = 0, fresh = false, drawnAt = NaN, fonts = false;
   const load = loader(doc, () => ask());
 
   const ask = () => { asked ||= requestAnimationFrame(draw); };
@@ -67,7 +67,8 @@ async function start() {
   function draw() {
     asked = 0;
     const t = clockOf({ now: performance.now(), still, reduced: reduced.matches });
-    const f = frame(scrollY, t, pointer(), L);
+    drawnAt = scrollY;
+    const f = frame(drawnAt, t, pointer(), L);
     apply(f, page, L);
     last = f;
     fresh = true;
@@ -77,7 +78,10 @@ async function start() {
     if (timed && !still && !reduced.matches && !doc.hidden) ask();
   }
 
+  layout();
+  root.dataset.roomPlaced = '';
   await doc.fonts.ready;
+  fonts = true;
   layout();
   load.shared();
   watch(doc, () => layout());
@@ -97,7 +101,7 @@ async function start() {
   });
   ask();
 
-  hooks.settled = () => Boolean(L && last && fresh && !asked && !pending.size && load.decoded(last.on, page) &&
+  hooks.settled = () => Boolean(fonts && L && last && fresh && drawnAt === scrollY && !pending.size && load.decoded(last.on, page) &&
     L.chapters.every((c, j) => Math.abs(j - last.index.i) > 1 || !PIECES[c.id] || pieces[c.id]));
   hooks.state = () => (L && last ? readBack(page, L, last.on) : null);
   Object.defineProperty(hooks, 'frame', { get: () => last, configurable: true });

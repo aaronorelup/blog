@@ -54,14 +54,35 @@ export function loader(doc, onReady) {
     for (const el of doc.querySelectorAll('.room-screen-plate[data-src]')) if (!el.getAttribute('src')) el.src = el.dataset.src;
   }
 
-  // Every picture the frame shows has decoded: the scene that is on, what its ports hold, the screens and shadow.
+  // Every picture the frame shows has decoded, for painting too (an <img decoding="async"> may be complete and not
+  // yet painted): the scene that is on, what its ports hold, the screens and the shadow. An element's picture is
+  // asked to decode once for each address it holds; until that answers, the frame is not settled.
+  const painted = new WeakMap(); // img -> the address whose decode() has answered, or { src } while it is asked
+  let before = new Set();         // the pictures shown at the last ask: one that was not is asked again (a picture
+  // under display: none may have been dropped by the browser, and is decoded again before it is painted)
   function decoded(key, page) {
     if (state.get(key) !== 'ready') return false;
     const E = page.scenes[key];
     const shown = (el) => el && !el.closest('[hidden]') && el.offsetParent !== null;
     const imgs = [...E.groups.flatMap((g) => [...g.querySelectorAll('img')]),
       ...['l', 'r'].flatMap((s) => [page.screens[s].plate, page.screens[s].shadow])].filter(shown);
-    return imgs.every((el) => el.complete && el.naturalWidth > 0);
+    const now = new Set(imgs);
+    let all = true;
+    for (const el of imgs) {
+      if (!el.getAttribute('src')) { all = false; continue; }
+      const src = el.currentSrc || el.src;
+      if (!before.has(el) && painted.get(el) === src) painted.delete(el);
+      const got = painted.get(el);
+      if (got === src) continue;
+      all = false;
+      if (got?.src !== src) {
+        const p = { src };
+        painted.set(el, p);
+        el.decode().catch(() => {}).then(() => { if (painted.get(el) === p) painted.set(el, src); });
+      }
+    }
+    before = now;
+    return all;
   }
 
   return { near, shared, decoded, ready: (key) => state.get(key) === 'ready' };

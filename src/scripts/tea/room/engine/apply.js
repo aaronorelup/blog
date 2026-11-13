@@ -189,7 +189,7 @@ function screens(s, E, L) {
   for (const [side, x, local] of [['l', s.left, s.shadow?.lx], ['r', s.right, s.shadow?.rx]]) {
     const e = E[side];
     if (!e.el) continue;
-    put(e.el, 'hidden', open);
+    put(e.el, 'data-open', open ? '' : null);
     put(e.el, 'transform', `translateX(${px(x)}px)`);
     put(e.el, 'backgroundColor', s.field);
     if (s.shadow) {
@@ -221,7 +221,7 @@ export function readBack(page, L, on) {
     pieces: page.pieces.map((els) => Object.fromEntries(Object.entries(els).map(([k, el]) => [k, el ? el.getAttribute('style') : null]))),
     screens: ['l', 'r'].map((s) => {
       const e = page.screens[s];
-      return { shown: !e.el.hidden, t: e.el.style.transform, field: e.el.style.backgroundColor,
+      return { shown: !e.el.hasAttribute('data-open'), t: e.el.style.transform, field: e.el.style.backgroundColor,
         shadow: e.shadow.hidden ? null : { src: e.shadow.getAttribute('src'), t: e.shadow.style.transform } };
     }),
     index: page.index?.dataset.on ?? null,
