@@ -323,17 +323,17 @@ export function buildBook({ posts, more, part, onSeek }) {
 
   const want = new Map();
   let changed = true;
-  // q: the chapter's progress. rm: no turning, the pages dissolve (a narrow band of q in the middle of each turn).
+  // q: the chapter's progress. rm: no turning. Both pages of a spread change at one place (the middle of what
+  // would be the turn), so no place a reader can stop at shows one post's title beside another's words; the
+  // change itself is a short dissolve (a transition on the pages, the one thing here that takes time of its own).
+  let rmSpread = -1;
   function pose(q, rm) {
     want.clear();
-    let j = turners.length, fading = -1, fadeV = 0;
+    let j = turners.length;
     for (let i = 0; i < turners.length; i++) {
       const t = turners[i], [t0, t1] = win(i), u = clamp((q - t0) / (t1 - t0));
-      if (rm) {
-        const v = clamp((u - 0.5) / 0.3 + 0.5);
-        t.a = v >= 0.5 ? PI : 0;
-        if (v > 0 && v < 1) { fading = i; fadeV = v; }
-      } else t.a = PI * ss(0, 1, u);
+      if (rm) t.a = u >= 0.5 ? PI : 0;
+      else t.a = PI * ss(0, 1, u);
       if (t.a < PI && j === turners.length) j = i;
       const s = t.a / PI;
       // a leaf lies on the right-hand stack at 0 and on the left-hand one at PI: its hinge sinks from one to the other
@@ -345,10 +345,6 @@ export function buildBook({ posts, more, part, onSeek }) {
     if (rm) {
       if (j >= 1) want.set(turners[j - 1].back, 1);
       want.set(under(j), 1);
-      if (fading >= 0) {
-        if (fadeV < 0.5) { want.set(turners[fading].front, 1 - fadeV * 2); want.set(under(fading + 1), 1); }
-        else { want.set(turners[fading].back, fadeV * 2 - 1); if (fading >= 1) want.set(turners[fading - 1].back, 1); }
-      }
     } else {
       if (j >= 1) want.set(turners[j - 1].back, 1);
       if (j <= LEAVES) {
@@ -381,8 +377,20 @@ export function buildBook({ posts, more, part, onSeek }) {
     // the open cover's board stays under the left-hand pages, its pink edge round them
     if (turners[0].a >= PI && !want.has(inside)) want.set(inside, 1);
     const turning = !rm && j <= LEAVES && turners[j].a > 0 ? turners[j] : null;
-    const lifted = turning || (rm && fading >= 0 ? turners[fading] : null);
-    for (const f of faces) set(f, want.get(f) || 0, lifted && (f === lifted.front || f === lifted.back) ? 3 : f === inside && turners[0].a >= PI ? 1 : 2);
+    if (rm) {
+      // The dissolve. On each side the page that lies on top is the one that fades (in or out); the page under it
+      // is simply there, or goes once the fade is over. Which is on top depends on the way the book is going.
+      const dir = rmSpread < 0 ? 0 : Math.sign(j - rmSpread);
+      rmSpread = j;
+      for (const f of faces) {
+        const now = want.get(f) || 0, was = f.vis > 0 ? 1 : 0;
+        if (f.vis < 0 || now === was) continue;
+        const right = f.side === 'front', showing = now > 0;
+        const fades = dir !== 0 && (dir > 0 ? right !== showing : right === showing);
+        f.el.style.transition = dir === 0 ? 'none' : fades ? 'opacity 0.26s ease' : showing ? 'none' : 'opacity 0s linear 0.26s';
+      }
+    }
+    for (const f of faces) set(f, want.get(f) || 0, turning && (f === turning.front || f === turning.back) ? 3 : f === inside && turners[0].a >= PI ? 1 : 2);
 
     // the light: a turning leaf darkens as it stands up, and lays a soft shadow on the page it leaves and the
     // page it comes down on
