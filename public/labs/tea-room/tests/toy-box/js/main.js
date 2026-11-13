@@ -333,7 +333,7 @@ function start() {
     if (state === 'closed') { if (overBox()) tap = { id: e.pointerId, x: e.clientX, y: e.clientY }; return; }
     if (state !== 'open') return;
     const hit = pick(e.pointerType === 'mouse' ? 1.15 : 1.5);
-    if (!hit) return;
+    if (!hit) { if (RM || STILL) { tagUntil = 0; dirty = true; } return; }   // a click on nothing puts the name card away
     if (RM || STILL) { tagToy = hit.toy; tagUntil = 1e9; showTag(hit.toy); dirty = true; return; }
     grab(hit, e);
   });
@@ -376,7 +376,7 @@ function start() {
   let hinted = false, lastHint = null;
   function hint() {
     let s = '';
-    if (RM) s = toys.length ? 'Tap a toy to see where it came from' : '';
+    if (RM) s = toys.length ? (phone ? 'Tap a toy to see where it came from' : 'Click a toy to see where it came from') : '';
     else if (state === 'closed') s = prog < 0.02 ? 'Scroll, or open the box' : 'Open the box';
     else if (state === 'open' && !hinted && prog < 0.9) s = phone ? 'Pick one up. Throw it.' : 'Pick one up and throw it';
     if (STILL) s = '';
@@ -410,6 +410,7 @@ function start() {
     elTag.style.transform = `translate(${Math.round(left)}px, ${Math.round(clamp(y, 8, vh - th - 8))}px)`;
   }
   function words(t) {
+    if (RM) return;   // the still version has no words over the picture: they would lie across the open box, and the card says them
     // the word stands on the left wall while the room is seen whole, and leaves as the camera goes to the box
     const o = 1 - ss(0.05, 0.16, t), dx = -ss(0.03, 0.2, t) * vw * 0.08;
     const wx = phone ? vw * 0.07 : vw * 0.075, wy = phone ? vh * 0.2 : vh * 0.36;
@@ -481,7 +482,9 @@ function start() {
     }
     firstFrame = false;
 
-    rectAt(RM ? 0.6 : prog, rect);
+    // with less motion asked for, the picture does not move at all: it is the last framing, where the card that
+    // scrolls in over the left of the screen hides nothing of the huddle
+    rectAt(RM ? 1 : prog, rect);
     simT += dt;
 
     // the toys
@@ -522,10 +525,10 @@ function start() {
           if (Math.abs(b.squashV) > 0.02 || Math.abs(s) > 0.002) moving = true;
         }
       } else t.pivot.scale.setScalar(t.pop);
-      if (t.tick && t.pivot.visible && dt > 0 && t.tick(dt, b)) anim = true;
+      if (t.tick && t.pivot.visible && dt > 0 && !RM && t.tick(dt, b)) anim = true;   // nobody sways or waddles for a reader who asked for less motion
     }
 
-    if (dirty || moving || playing || anim || hold || tagToy) need = true;
+    if (dirty || moving || playing || anim || hold || (tagToy && !RM)) need = true;
   }
   function draw() {
     camera.setViewOffset(PAINT.FW, PAINT.FH, rect.x + PAINT.OX, rect.y + PAINT.OY, rect.w, rect.h);
@@ -559,6 +562,7 @@ function start() {
     const go = () => window.scrollTo(0, Math.round(clamp(yq, 0, 1) * (document.documentElement.scrollHeight - window.innerHeight)));
     history.scrollRestoration = 'manual'; go(); requestAnimationFrame(go);
   }
+  if (RM) document.documentElement.classList.add('rm');
   room.ready.then(() => { document.documentElement.classList.add('ready'); dirty = true; });
   last = performance.now();
   requestAnimationFrame(frame);
