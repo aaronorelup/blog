@@ -22,6 +22,18 @@ export function loadToys(THREE, renderer, scene, roster, onToy, onDone) {
   next();
 }
 
+/* a pale edge on every toy, where its surface turns away from the eye: it keeps a dark Jefrie from sinking into
+   the dark wall, the way the room's drawing keeps a line round everything */
+function rim(m) {
+  if (m.userData.rim || !m.isMeshStandardMaterial) return;
+  m.userData.rim = true;
+  m.onBeforeCompile = (sh) => {
+    sh.fragmentShader = sh.fragmentShader.replace('#include <emissivemap_fragment>',
+      '#include <emissivemap_fragment>\n\tfloat toyRim = pow(1.0 - clamp(dot(normalize(normal), normalize(vViewPosition)), 0.0, 1.0), 3.0);\n\ttotalEmissiveRadiance += vec3(0.62, 0.6, 0.86) * toyRim * 0.38;');
+  };
+  m.customProgramCacheKey = () => 'toyrim';
+}
+
 function build(THREE, scene, def, gltf, maxAniso) {
   const root = gltf.scene;
   let skinned = false;
@@ -34,6 +46,7 @@ function build(THREE, scene, def, gltf, maxAniso) {
       if (m.metalness > 0.85 && !m.metalnessMap) m.metalness = 0.85;
       m.envMapIntensity = 1.0;
       if (def.tint) m.color.multiplyScalar(def.tint);
+      rim(m);
     }
   });
   root.updateMatrixWorld(true);

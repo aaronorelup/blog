@@ -5,7 +5,10 @@
    in ../models/ (how each was made is in ../models/README.txt).
    h: standing height in metres (the paper lamp in the room is about 0.55). face: turn, in degrees, that makes the
    model look at the camera. shape: how it is held up in the physics (fig = two stacked balls, box = four or eight balls, ball = one).
-   cx, cz: where its feet are, in parts of its own width and depth, when that is not the middle of the model. */
+   cx, cz: where its feet are, in parts of its own width and depth, when that is not the middle of the model.
+   side, back: a prop's place in the huddle: which end of a row (-1 left, 1 right) and how far back (0 the front
+   row, 1 the last). Jefrie and Yusef have neither: they stand in the middle, by height.
+   desk: true for a prop that only comes out on a wide screen (a phone's picture has no room for it). */
 
 const TEA = '/labs/tea-room/v1/assets/tea/hero/';
 
@@ -76,37 +79,37 @@ export const ROSTER = [
     how: 'Jefrie’s company in the tea room. Made from one drawing, with bones in the wings and arms.',
   },
   {
-    id: 'tv', url: '/tea/hero/tv_rig.glb', h: 0.24, shape: 'box',
+    id: 'tv', side: -1, back: 0, url: '/tea/hero/tv_rig.glb', h: 0.24, shape: 'box',
     name: 'The little television', from: 'The tea room',
     how: 'The set from the room’s far corner. Made from one drawing; the screen is its own piece so it can light up.',
   },
   {
-    id: 'lantern', url: TEA + 'lantern_rig.glb', h: 0.3,
+    id: 'lantern', desk: true, side: 1, back: 0.67, url: TEA + 'lantern_rig.glb', h: 0.3,
     name: 'Yusef’s lantern', from: 'The first tea room page',
     how: 'Made from one drawing. The glass is a separate material so it can glow.',
   },
   {
-    id: 'crate-3k', url: '/media/props-three-budgets/crate-3k.glb', h: 0.115, shape: 'box',
+    id: 'crate-3k', side: -1, back: 0.34, url: '/media/props-three-budgets/crate-3k.glb', h: 0.115, shape: 'box',
     name: 'Crate, 3,000 triangles', from: 'Props on three budgets · AO-059',
     how: 'A generated crate cut down in Blender to 3,000 triangles. This one held together.',
   },
   {
-    id: 'crate-300', url: '/media/props-three-budgets/crate-300.glb', h: 0.115, shape: 'box',
+    id: 'crate-300', desk: true, side: 1, back: 0.34, url: '/media/props-three-budgets/crate-300.glb', h: 0.115, shape: 'box',
     name: 'Crate, 300 triangles', from: 'Props on three budgets · AO-059',
     how: 'The same crate at 300 triangles. Charming from here, rough up close.',
   },
   {
-    id: 'diver', url: 'models/toy-diver.glb', h: 0.2, clips: true,
+    id: 'diver', side: 1, back: 0, url: 'models/toy-diver.glb', h: 0.2, clips: true,
     name: 'Toy diver', from: 'Blackwater, the diving game',
     how: 'A wind-up toy from my underwater horror game, about a thousand triangles, with a waddle.',
   },
   {
-    id: 'recorder', url: 'models/tape-recorder.glb', h: 0.13, shape: 'box',
+    id: 'recorder', desk: true, side: 1, back: 0, url: 'models/tape-recorder.glb', h: 0.13, shape: 'box',
     name: 'Tape recorder', from: 'Blackwater, the diving game',
     how: 'Another prop from the game, about 1,500 triangles. Its two reels are separate pieces so they can turn.',
   },
   {
-    id: 'jukebox', url: 'models/jukebox.glb', h: 0.38, shape: 'box',
+    id: 'jukebox', side: -1, back: 1, url: 'models/jukebox.glb', h: 0.38, shape: 'box',
     name: 'Jukebox', from: 'Blackwater, the diving game',
     how: 'A prop from the same game, made game-ready at 3,500 triangles.',
   },

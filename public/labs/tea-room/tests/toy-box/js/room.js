@@ -53,15 +53,18 @@ export function makeRoom(THREE, scene, renderer, opt) {
 
   // the light of this evening: the paper lamp in the corner, the night through the screens, and a soft key from
   // the reader's side so the toys are the lit thing in the room
-  const hemi = new THREE.HemisphereLight(0x8f8fd8, 0x4a3038, 1.15);
+  const hemi = new THREE.HemisphereLight(0xa3a0e6, 0x5a3a40, 1.5);
   scene.add(hemi);
-  const lamp = new THREE.PointLight(0xffb060, 9, 7, 1.6);
+  const lamp = new THREE.PointLight(0xffb060, 11, 7, 1.6);
   lamp.position.set(PAINT.LAMP.x, 0.36, PAINT.LAMP.z + 0.05);
   scene.add(lamp);
-  const key = new THREE.DirectionalLight(0xffeedd, 1.5);
-  key.position.set(-1.6, 2.6, 2.2); scene.add(key);
-  const moon = new THREE.DirectionalLight(0x7f8cff, 0.9);
+  const key = new THREE.DirectionalLight(0xfff0e0, 2.5);
+  key.position.set(-1.2, 2.4, 2.6); scene.add(key);
+  const moon = new THREE.DirectionalLight(0x8f9cff, 1.3);
   moon.position.set(3, 1.6, -0.6); scene.add(moon);
+  // from behind and above, so every head and shoulder has a pale edge against the dark wall
+  const back = new THREE.DirectionalLight(0xc9d0ff, 1.6);
+  back.position.set(-0.6, 2.2, -3.2); scene.add(back);
 
   // what shiny things reflect: a small made-up room in the same colours
   const env = new THREE.Scene();
