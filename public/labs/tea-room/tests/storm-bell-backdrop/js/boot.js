@@ -86,6 +86,8 @@
   function load() {
     if (loading) return;
     loading = true;
+    var plate = $('plate');
+    if (plate) plate.src = plate.getAttribute('data-src');
     import('./scene.js').then(function (m) { return m.mount(canvas, {}); }).then(function (a) {
       api = a;
       window.__sb = a;
@@ -175,7 +177,7 @@
 
   var near = new IntersectionObserver(function (es) {
     for (var i = 0; i < es.length; i++) if (es[i].isIntersecting) { near.disconnect(); load(); return; }
-  }, { rootMargin: '30% 0px 30% 0px' });
+  }, { rootMargin: '15% 0px 15% 0px' });
   near.observe(chapter);
   new IntersectionObserver(function (es) { visible = es[es.length - 1].isIntersecting; if (visible) { last = performance.now(); kick(); } }).observe(stage);
 
