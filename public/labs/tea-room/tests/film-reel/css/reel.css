@@ -72,6 +72,11 @@ video.shot.on { opacity: 1; }
 .layer { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
 .flat { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; max-width: none; user-select: none; }
 img.flat { pointer-events: none; }
+/* the projector, and the faces of its two reels, which turn while the film runs */
+.proj { width: 618px; height: 1009px; pointer-events: none; }
+.proj img { position: absolute; left: 0; top: 0; max-width: none; }
+#reel-a { left: 334px; top: 35px; }
+#reel-b { left: 19px; top: 222px; }
 .shade { position: absolute; inset: 0; pointer-events: none; opacity: 0;
   background: radial-gradient(120% 105% at 50% 44%, rgba(5, 6, 14, 0) 52%, rgba(5, 6, 14, 0.5) 100%); }
 
@@ -156,6 +161,22 @@ img.flat { pointer-events: none; }
   .sound-say { font-size: 12.5px; max-width: 13.5em; }
   .switch button { padding: 9px 12px; font-size: 13.5px; }
   .hint { bottom: 14px; }
+}
+
+/* a short wide screen: the card is smaller, so it stays under the film */
+@media (max-height: 760px) and (min-aspect-ratio: 9/10) {
+  .now { width: min(300px, 100%); padding: 11px 16px 12px; }
+  .now-title { font-size: 21px; }
+  .now-what { display: none; }
+  .now-go { margin-top: 4px; }
+  .ticks { margin-top: 8px; }
+  .sound { padding: 8px 8px 8px 14px; }
+  .sound-say { font-size: 12.5px; }
+}
+/* an upright tablet: the cards do not run the whole width */
+@media (max-aspect-ratio: 9/10) and (min-width: 600px) {
+  .dock { align-items: flex-end; }
+  .now, .sound { width: min(500px, 100%); }
 }
 
 /* motion off: nothing is held and nothing glides. The screen is the close view, the reel waits for its button */
