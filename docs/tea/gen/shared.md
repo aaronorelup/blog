@@ -24,6 +24,8 @@ File names are the same. A builder who read the first version of this page needs
   two plates, and the CSS is the same (the screen's section).
 - `shadow-example.webp`: the same size and box, a new picture. The recipe changed: a shadow only darkens.
   A chapter's own `shadow.mjs` should be copied again from this page.
+- `washi.webp` is 1024 px, not 512. It is still drawn as a 512 px tile: the CSS on this page already says so.
+- `sheet-shadow.webp`: the same size and the same nine-slice. Plum, not blue-black, and a little lighter.
 
 ## What a `4k` generation is worth (measured, 2026-11-12)
 
@@ -74,10 +76,10 @@ def crisp(rgb, radius=1.6, amount=1.6, reach=2):          # rgb: float array, he
 
 | File | Pixels | Bytes | Alpha | What it is |
 |---|---|---|---|---|
-| `washi.webp` | 512, 512 | 6,320 | no | the paper tile. Tiles both ways. Its mean colour is the paper colour `#F1E6D0` |
+| `washi.webp` | 1024, 1024 | 29,464 | no | the paper tile, drawn at 512 CSS px. Tiles both ways. Its mean colour is the paper colour `#F1E6D0` |
 | `screen.webp` | 1776, 2000 | 283,004 | yes | one sliding screen: cedar frame and lattice opaque, the paper see-through |
 | `screen-p.webp` | 902, 3300 | 249,576 | yes | the same screen re-laid for an upright frame (a phone): three panes across, twelve down |
-| `sheet-shadow.webp` | 384, 384 | 4,284 | yes | the one shadow under a sheet or a slip, as a nine-slice |
+| `sheet-shadow.webp` | 384, 384 | 4,198 | yes | the one shadow under a sheet or a slip, as a nine-slice |
 | `tv.webp` | 2254, 2048 | 135,520 | yes | the little television, three-quarter view, cut out, its glass a hole |
 | `tv-face.webp` | 3602, 3330 | 293,296 | yes | the same set seen from the front, whole, cut out, its glass a hole |
 | `tv-face-p.webp` | 2160, 3840 | 153,914 | yes | the same front picture at a phone's size, on a 9:16 canvas |
@@ -87,16 +89,31 @@ No file is video or audio. The largest is under 1 MiB.
 
 ## washi.webp
 
-Draw it at its own size, one tile pixel to one CSS pixel, over the paper colour:
+The file is 1024 px for a tile of 512 CSS px, so its fibres are crisp on a dense screen. Draw it at 512 px,
+over the paper colour:
 
 ```css
 background: #F1E6D0 url(/tea/shared/washi.webp) 0 0 / 512px 512px;
 ```
 
-The tile's mean is `rgb(240.3, 230.3, 208.4)`, the paper colour to within one level a channel, so a sheet looks
-the same before and after the tile arrives. Its fibres are long and faint (the tile's luminance has a standard
-deviation of 1.77 levels), so 16 px text reads on it as on plain paper. A chapter's 6% tint goes
-over it as a flat layer of the chapter's light colour.
+The tile's mean is `rgb(241.4, 232.1, 207.7)`, the paper colour to within about one level a channel, so a sheet
+looks the same before and after the tile arrives. Its fibres are long and faint (the tile's luminance has a
+standard deviation of 1.67 levels), so 16 px text reads on it as on plain paper. It holds nothing
+wider than a fibre: what is left of it when blurred over 40 px varies by 0.3 of a level, so the repeat cannot be
+seen on a sheet of any size. A chapter's 6% tint goes over it as a flat layer of the chapter's light colour.
+
+**A picture window cut in the sheet**, as the paper round drew it (look B's recipe, which is right on this
+paper): the hole's lit cut edge is a hair of pale light below and to the right, its near edge a hair of shade
+above and to the left, and inside the hole the shade falls a few pixels onto the picture from the top and the
+left. No keyline, no rounded corner.
+
+```css
+.win { box-shadow: 0 1.5px 0 rgba(255,252,240,.75), 1.5px 0 0 rgba(255,252,240,.5),
+                   0 -1px 0 rgba(35,31,43,.35), -1px 0 0 rgba(35,31,43,.3); }
+.win::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(20,16,30,.42), rgba(20,16,30,0) 12px),
+              linear-gradient(90deg, rgba(20,16,30,.34), rgba(20,16,30,0) 10px); }
+```
 
 ## screen.webp, and screen-p.webp for an upright frame
 
@@ -170,7 +187,8 @@ pale `#F6E7C8`, and the night ground `rgb(16, 18, 32)`, each over a dark room, s
 One picture for every sheet and slip, whatever its size. It is a pre-blurred shadow drawn round a square that
 stands for the sheet: the square is the middle 192 px, and there are 96 px of margin on every side. The fall
 (10 px right, 14 px down, with a tighter, darker shadow close under the edge) is already in the picture. Its
-colour is `rgb(3, 3, 12)` and only its alpha varies. Its alpha is 0 on all four edges.
+colour is an indigo plum, `rgb(14, 9, 26)`, as every shadow on the page is, and only its alpha varies: at most
+162 of 255 under the sheet's edge, and 0 on all four edges.
 
 Draw it as a nine-slice on an element that is a sibling of the sheet, under it, and 96 px larger on every side:
 
@@ -604,6 +622,31 @@ The three weakest things:
 3. **The paper was one flat fill from corner to corner**, where the garden's own lit windows fall away toward
    their edges. The paper's veil now thickens toward the top rail and the outer stile (from 0.09 to about 0.2),
    so both screens are brightest low down beside the post, as if the lamp stood there.
+
+### Round 5: washi with real text on it, and a picture window
+
+Frames drawn by a headless browser: a sheet 640 px wide over look B's two rooms, with a kicker in Karla 600 at
+12 px, a title in Zen Maru Gothic, a line at 16 px, a link, and a window cut in it with a picture behind; a small
+slip beside it; the same sheet full width on a 390 x 844 phone; at one, two and three device pixels. The line is
+set in Gelasio, an open face cut to Georgia's widths, because Georgia is not on this machine. The sheet's edge
+is cut by a `clip-path` and its shadow is the nine-slice, both as this page says. Sheets: `r5-paper-whole.jpg`,
+`r5-paper-100.png` (before), `r5-paper-after.png`, `r5-sheet-shadow.png`, and the owner's `paper-compare.jpg`.
+
+Text at 16 px and at 12 px reads on the tile as on plain paper at every density. The window reads as a hole,
+with the picture behind it. The shadow falls 10 px right and 14 px down and dies away inside its picture.
+
+The three weakest things:
+
+1. **On a dense screen the paper was blotchy and its fibres soft.** The 512 px tile was enlarged twice on a
+   laptop of two device pixels, which is where the owner will look: its fibres went soft and its clouds read as
+   stains. The tile is drawn again at 1024 px for the same 512 CSS px: long pale fibres about a pixel and a half
+   wide in the file, a few dark ones, flecks.
+2. **The tile's repeat.** At six times its contrast the first tile showed one dark cloud in every 512 px, a
+   grid of faint patches on any large sheet. The new tile has no cloud wider than a fibre's length (what is
+   left of it over 40 px is 0.3 of a level, where the first tile had 1.25).
+3. **The sheet's shadow was blue-black, and heavy on a light world.** Over the cinema's lit cloth it was a grey
+   band, the look of a drop-shadowed card. It is now the page's own shadow colour, an indigo plum, and a
+   seventh lighter (at most 162 of 255 under the edge, where it had 186). On the dark rooms it reads as before.
 
 ## Generation log
 
