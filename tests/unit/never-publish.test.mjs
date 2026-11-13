@@ -69,3 +69,20 @@ test('a .json file is read as its strings, decoded: a term after a line break, a
   assert.deepEqual([...new Set(lines)], [1, 2]);   // reported at the line of its string
   assert.ok(offered(jsonKeys('["Zorblax", "rules"]')).has('Zorblax rules'));   // a run across two strings, as raw text reads it
 });
+
+test("the tea room's builders' words are scanned: chapter copy, chapter components and the generation and round logs", async () => {
+  const { default: neverPublish, hash } = await import('../../scripts/check/never-publish.mjs');
+  const files = {
+    'src/data/never-publish.json': JSON.stringify([hash('Zorblax')]),
+    'src/data/tea/film/copy.js': "export const copy = { line: 'Zorblax' };",
+    'src/components/tea/room/chapters/Film.astro': '<p>Zorblax</p>',
+    'src/components/tea/room/chapters/film/Reel.astro': '<p>Zorblax</p>',
+    'docs/tea/gen/film.md': 'A prompt that names Zorblax.',
+    'docs/tea/rounds/film.md': 'Zorblax.',
+  };
+  const repo = { posts: [], notes: [], now: [], research: [], projects: [], read: (f) => files[f],
+    list: (dir, keep = () => true) => Object.keys(files).filter((f) => f.startsWith(`${dir}/`) && keep(f)) };
+  const hit = [];
+  neverPublish(repo, (file) => hit.push(file));
+  assert.deepEqual(hit.sort(), Object.keys(files).filter((f) => !f.endsWith('.json')).sort());
+});

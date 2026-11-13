@@ -365,15 +365,26 @@ test('tea-next-4 every internal link and picture on the page resolves (the live 
   expect(bad).toEqual([]);
 });
 
-test('tea-next-5 no draft or unlisted post anywhere on the page', async ({ request }) => {
-  const html = await (await request.get(TEA)).text();
+test('tea-next-5 no draft or unlisted post anywhere on the page: no slug, and no title or id of its own in its text or any attribute, outside Now\'s and About\'s words', async ({ page, request }) => {
   const dir = new URL('../../src/content/posts/', import.meta.url);
   const hidden = fs.readdirSync(dir).filter((f) => f.endsWith('.md'))
     .map((f) => ({ slug: f.slice(0, -3), data: matter(fs.readFileSync(new URL(f, dir), 'utf8')).data }))
     .filter(({ data }) => data.draft === true || data.unlisted === true);
-  const text = html.replace(/<[^>]+>/g, ' ');
-  for (const { slug, data } of hidden) {
-    expect(html, slug).not.toContain(slug);
-    if (data.title) expect(text, slug).not.toContain(data.title);
+  const html = await (await request.get(TEA)).text();
+  for (const { slug } of hidden) expect(html, slug).not.toMatch(new RegExp(`(^|[^a-z0-9-])${slug}([^a-z0-9-]|$)`));
+  // the page as the browser reads it (entities decoded): its text and every attribute's value, but Now and About,
+  // the main site's own words, which their chapters hold equal to /now/ and /about/
+  await page.goto(TEA);
+  const said = squash(await page.evaluate(() => {
+    const doc = document.documentElement.cloneNode(true);
+    for (const el of doc.querySelectorAll('.tea-prose, .tea-about-text')) el.remove();
+    return [doc.textContent, ...[...doc.querySelectorAll('*')].flatMap((e) => [...e.attributes].map((a) => a.value))].join('\n');
+  }));
+  expect(said.length).toBeGreaterThan(5_000);
+  const at = (re) => [...said.matchAll(new RegExp(re, 'g'))].map((m) => said.slice(Math.max(0, m.index - 40), m.index + m[0].length + 40));
+  const literal = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const { data } of hidden) {
+    if (data.id) expect(at(`(?<![A-Za-z0-9-])${data.id}(?![0-9])`), data.id).toEqual([]);
+    if (data.title) expect(at(literal(squash(data.title))), data.title).toEqual([]);
   }
 });

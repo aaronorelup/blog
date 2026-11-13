@@ -98,25 +98,44 @@ export const sections = (page) => page.evaluate(() => [...document.querySelector
   return { id: s.dataset.roomChapter, top: r.top + scrollY, height: r.height, vh: document.querySelector('.room-lvh')?.getBoundingClientRect().height || innerHeight };
 }));
 
-// Console messages and failed requests, the live notebook's only warned about.
+// Console messages and failed requests, the live notebook's only warned about (section 5's first rule): a request
+// for a live address that fails, and the console's "Failed to load resource" for it (the address is the message's
+// location), are warnings, never problems.
 export function watchConsole(page) {
   const problems = [];
-  page.on('console', (m) => { if (['error', 'warning'].includes(m.type())) problems.push(`console ${m.type()}: ${m.text()}`); });
+  const warn = (m) => console.warn(`(live notebook, warned only) ${m}`);
+  page.on('console', (m) => {
+    if (!['error', 'warning'].includes(m.type())) return;
+    const at = m.location()?.url;
+    if (/Failed to load resource/.test(m.text()) && at && live(at)) return warn(`${m.text()} ${at}`);
+    problems.push(`console ${m.type()}: ${m.text()}${at ? ` (${at})` : ''}`);
+  });
   page.on('pageerror', (e) => problems.push(`page error: ${e.message}`));
   // a picture whose address the engine changed before it arrived is abandoned, not failed
-  page.on('requestfailed', (r) => { if (!live(r.url()) && !/ERR_ABORTED/.test(r.failure()?.errorText ?? '')) problems.push(`failed: ${r.url()}`); });
-  page.on('response', (r) => { if (r.status() >= 400 && !live(r.url())) problems.push(`${r.status()}: ${r.url()}`); });
+  page.on('requestfailed', (r) => {
+    if (/ERR_ABORTED/.test(r.failure()?.errorText ?? '')) return;
+    if (live(r.url())) warn(`failed: ${r.url()}`); else problems.push(`failed: ${r.url()}`);
+  });
+  page.on('response', (r) => {
+    if (r.status() < 400) return;
+    if (live(r.url())) warn(`${r.status()}: ${r.url()}`); else problems.push(`${r.status()}: ${r.url()}`);
+  });
   return problems;
 }
 
-// Every <img> that is displayed and within one screen of the frame has decoded.
-export const undecoded = (page) => page.evaluate(() => [...document.images].filter((img) => {
-  if (!img.getAttribute('src') && !img.currentSrc) return false;
-  if (img.closest('[hidden]') || getComputedStyle(img).display === 'none' || img.offsetParent === null && getComputedStyle(img).position !== 'fixed') return false;
-  const r = img.getBoundingClientRect();
-  if (r.width === 0 || r.bottom < -innerHeight || r.top > 2 * innerHeight) return false;
-  return !(img.complete && img.naturalWidth > 0);
-}).map((img) => img.currentSrc || img.src));
+// Every <img> that is displayed and within one screen of the frame has decoded. A live notebook's picture that has
+// not is warned about and left out (section 5's first rule).
+export async function undecoded(page) {
+  const all = await page.evaluate(() => [...document.images].filter((img) => {
+    if (!img.getAttribute('src') && !img.currentSrc) return false;
+    if (img.closest('[hidden]') || getComputedStyle(img).display === 'none' || img.offsetParent === null && getComputedStyle(img).position !== 'fixed') return false;
+    const r = img.getBoundingClientRect();
+    if (r.width === 0 || r.bottom < -innerHeight || r.top > 2 * innerHeight) return false;
+    return !(img.complete && img.naturalWidth > 0);
+  }).map((img) => img.currentSrc || img.src));
+  for (const u of all.filter(live)) console.warn(`(live notebook, warned only) not decoded: ${u}`);
+  return all.filter((u) => !live(u));
+}
 
 // The shared checks every chapter's spec runs on its stub (and keeps when it is built): its section, anchor and
 // heading; at its opening frame the screens are open, its scene is on, nothing is logged, nothing scrolls sideways
