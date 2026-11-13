@@ -228,7 +228,10 @@ function mountStage(host, opt) {
     const m = MACHINES[cur.i];
     if (cur.step === 'part') live.set({ view: m.hero.view, part: m.parts[cur.k].button, mode: cur.mode });
     else live.set({ view: m.hero.view, part: null, mode: null });
-    if (cur.step === 'break' && sliderVal[m.key] != null) live.slide(sliderVal[m.key]);
+    const br = m.breakIt;
+    live.breakSetup(cur.step === 'break');
+    if (cur.step === 'break') live.slide(sliderVal[m.key] ?? br.value);
+    else if (br.resetOnLeave) live.slide(br.value);
   }
 
   // ---- "Turn it yourself": the frame takes the pointer only when asked, and gives it back on scroll
@@ -276,7 +279,7 @@ function mountStage(host, opt) {
     const v = sliderVal[m.key] ?? br.value;
     $('.b-val').textContent = `${br.label}: ${fmt(v, br)}`;
     const r = live && live.ready ? live.reading() : null;
-    $('.b-read').textContent = r ? `${br.readout.label} · ${r.toLowerCase()}` : br.offline(v);
+    $('.b-read').textContent = r ? `${br.readout.label}: ${r}` : br.offline(v);
     if (!live || !live.ready) showPic(m.stills[br.stills[v >= br.at ? 1 : 0]]);
   }
 

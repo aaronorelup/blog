@@ -30,8 +30,8 @@ export const MACHINES = [
         still: 0,
       },
       {
-        button: 'BATTERY', name: 'The battery pack', num: '933 kg', unit: 'on five wheels',
-        say: 'Cut the deck open and the battery lies flat underneath it, as low as it will go, to keep the weight down by the wheels.',
+        button: 'BATTERY', name: 'The battery pack', num: '1.1 × 1.05 m', unit: 'under the deck',
+        say: 'Cut the deck open and there it is: one flat pack lying under the load bed, between the wheels.',
         still: 2,
       },
       {
@@ -43,11 +43,14 @@ export const MACHINES = [
     breakIt: {
       label: 'Gravity', min: 1.62, max: 9.81, step: 0.01, value: 1.62, unit: 'm/s²',
       marks: [[1.62, 'Moon'], [3.71, 'Mars'], [9.81, 'Earth']],
-      say: 'It is missing its rear right wheel. Raise the gravity and watch the margin shrink until it tips over the gap.',
+      say: 'It is missing its rear right wheel, and the crane is swinging a 135 kg bag. Raise the gravity from the Moon’s towards Earth’s and watch the margin go.',
       readout: { after: 'TIP MARGIN · COM TO NEAREST SUPPORT EDGE', take: 3, label: 'Tip margin' },
       // with no live page: what the page says at the ends (its own tip point is 8.2 m/s²)
       offline: (v) => (v < 8.2 ? 'Stable on five wheels' : 'Tips over the missing wheel'),
       drive: 'setG',
+      // the task scrubbed to the crane swinging down with its bag (the page's own scrub bar, 51 %): where it can tip
+      setup: { hit: 0, at: 0.512 },
+      resetOnLeave: true,
       stills: [0, 2],
       at: 8.2,
     },
@@ -135,6 +138,7 @@ export const MACHINES = [
       drive: 'hit',
       hit: 0,
       hitPad: 10,
+      resetOnLeave: true,
       stills: [0, 1],
       at: 6.6,
     },
