@@ -25,7 +25,11 @@
 .pw-moon::before { left: 56%; top: 22%; width: 20%; height: 20%; }
 .pw-moon::after { left: 24%; top: 58%; width: 13%; height: 13%; }
 .pw-clouds { z-index: 3; opacity: 0.55; }
-.pw-house { z-index: 5; -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 40%, transparent 52%); mask-image: linear-gradient(to bottom, #000 0, #000 40%, transparent 52%); }
+.pw-house {
+  z-index: 7;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 36%, transparent 62%), linear-gradient(to right, transparent 0, #000 22%, #000 78%, transparent 100%); -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to bottom, #000 0, #000 36%, transparent 62%), linear-gradient(to right, transparent 0, #000 22%, #000 78%, transparent 100%); mask-composite: intersect;
+}
 .pw-ground { z-index: 6; }
 .pw-air { z-index: 200000; }
 .pw-vignette { position: absolute; inset: 0; z-index: 200001; pointer-events: none; background: radial-gradient(125% 100% at 50% 46%, rgba(5, 7, 20, 0) 52%, rgba(5, 7, 20, 0.55) 100%); }
