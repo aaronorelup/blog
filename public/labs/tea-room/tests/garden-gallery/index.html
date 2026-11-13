@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI art &amp; images: the garden gallery · a tea room test</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preload" as="image" href="img/cinema-garden.webp">
+<link rel="stylesheet" href="css/scene.css" data-gg-scene>
+<link rel="stylesheet" href="css/host.css">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+<a class="skip" href="#posts">Skip the garden gallery</a>
+
+<section class="chapter" id="chapter" aria-label="AI art and images">
+  <div class="stage" id="stage">
+    <!-- the scene is mounted here by js/host.js when the chapter is near; until then, the garden as the films left it -->
+    <div class="scene" id="scene"><img class="poster" id="poster" src="img/cinema-garden.webp" width="2752" height="1536" alt=""></div>
+
+    <header class="card lead" id="lead">
+      <p class="kicker">The tea room · a test</p>
+      <h1>AI art &amp; images</h1>
+      <p class="say">The same garden, later the same evening. Turn from the cloth to the trees: the pictures hang there as lanterns.<span class="when-moving"> Scroll in.</span></p>
+    </header>
+
+    <div class="dock" id="dock">
+      <article class="card now" id="now" aria-label="The picture in front of you">
+        <p class="now-meta"><span id="now-count">1 of 55</span><span id="now-hint">Click a picture to bring it forward</span></p>
+        <h2 class="now-title" id="now-title">Tea house under the cherry tree</h2>
+        <p class="steps" id="steps" hidden><button type="button" id="prev">Previous</button><button type="button" id="next">Next picture</button></p>
+      </article>
+    </div>
+
+    <p class="hint" id="hint" aria-hidden="true">Scroll</p>
+    <pre class="debug" id="debug" hidden></pre>
+  </div>
+
+  <div class="track" id="track" aria-hidden="true"></div>
+
+  <section class="posts" id="posts" aria-label="Posts about making the pictures">
+    <p class="kicker">How they were made</p>
+    <div class="post-grid">
+      <article class="post">
+        <div class="win"><img src="/media/previews/echo-the-borrowed-voice.webp" width="640" height="360" loading="lazy" decoding="async" alt="Echo, a white porcelain church-bell helm with a glowing red slit and a ruffled collar, holds a red-sealed letter to its helm in a ruined post office"></div>
+        <div class="cap">
+          <p class="label">AO-022</p>
+          <h3><a href="/ledger/echo-the-borrowed-voice/">Echo, the character Claude designed for itself</a></h3>
+          <p class="line">Start frame sets the look</p>
+        </div>
+      </article>
+      <article class="post">
+        <div class="win"><img src="/media/previews/claude-paints-in-oil.webp" width="640" height="360" loading="lazy" decoding="async" alt="Claude's oil painting of a pink-haired girl with red strawberry spots in her hair, an orange sun and a small red crab behind her"></div>
+        <div class="cap">
+          <p class="label">AO-038</p>
+          <h3><a href="/ledger/claude-paints-in-oil/">Claude paints in oil on a simulator, one stroke at a time</a></h3>
+          <p class="line">Worked, mistakes and all</p>
+        </div>
+      </article>
+      <article class="post">
+        <div class="win"><img src="/media/previews/jefrie-lora.webp" width="640" height="360" loading="lazy" decoding="async" alt="A LoRA render of Jefrie standing on a path through a sunny flower field: half mask, red cape, grey armour and a scaly tail"></div>
+        <div class="cap">
+          <p class="label">AO-025</p>
+          <h3><a href="/ledger/jefrie-lora/">Training a LoRA so my AI image model can draw my character</a></h3>
+          <p class="line">Worked: 27 of 30</p>
+        </div>
+      </article>
+      <article class="post">
+        <div class="win"><img src="/media/previews/moss-image-on-8gb.webp" width="640" height="360" loading="lazy" decoding="async" alt="A slow pan along a painted street at dusk: a lantern-lit market with a crowd under its awnings"></div>
+        <div class="cap">
+          <p class="label">AO-060</p>
+          <h3><a href="/ledger/moss-image-on-8gb/">Trying a brand-new AI image model on my 8 GB laptop</a></h3>
+          <p class="line">Works on 8 GB, 8:1 max</p>
+        </div>
+      </article>
+    </div>
+    <p class="all"><a class="pill" href="/ledger/?topic=art">All the art posts</a></p>
+  </section>
+</section>
+
+<footer class="tail" id="after">
+  <p class="kicker">About this test</p>
+  <p class="tail-say">Fifty-five pictures, one per idea, chosen from the library to stand in for a showcase tag. Any of them can be struck from the list.</p>
+  <p class="tail-links"><a href="/labs/tea-room/tests/">All tests</a><a href="/labs/tea-room/working/">The working copy</a></p>
+</footer>
+
+<script type="module" src="js/host.js"></script>
+</body>
+</html>
