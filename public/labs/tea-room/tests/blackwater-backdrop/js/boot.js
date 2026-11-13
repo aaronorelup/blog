@@ -13,6 +13,8 @@
   var FROZEN = STILL || RM;
   var T_HELD = qs.has('t') ? parseFloat(qs.get('t')) : 6.0;
   var HELD_AIM = { x: -0.04, y: 0.08 };    // a held picture has the lamp on the drowned man
+  if (qs.has('ax')) HELD_AIM.x = parseFloat(qs.get('ax')) || 0;  // ?ax=&ay=: hold the lamp somewhere else (for looking)
+  if (qs.has('ay')) HELD_AIM.y = parseFloat(qs.get('ay')) || 0;
 
   var root = document.documentElement;
   var $ = function (id) { return document.getElementById(id); };
@@ -108,8 +110,8 @@
       else if (tapped) { tx = tapped.x + (tilt ? tilt.x * 0.6 : 0); ty = tapped.y + (tilt ? tilt.y * 0.5 : 0); }
       else {
         // nothing to follow: the lamp sweeps the cave slowly by itself, and the scroll leans on it
-        tx = Math.sin(t * 0.33) * 0.55 - 0.15 + (tilt ? tilt.x * 0.8 : 0);
-        ty = Math.sin(t * 0.23 + 1.1) * 0.22 + 0.05 + (tilt ? tilt.y * 0.6 : 0);
+        tx = Math.sin(t * 0.33) * 0.45 - 0.15 + Math.sin(m.q * 9.0) * 0.35 + (tilt ? tilt.x * 0.8 : 0);
+        ty = Math.sin(t * 0.23 + 1.1) * 0.2 + 0.05 + Math.cos(m.q * 7.0) * 0.12 + (tilt ? tilt.y * 0.6 : 0);
       }
       var k = 1 - Math.exp(-dt * 5);
       at.x += (clamp(tx, -1, 1) - at.x) * k; at.y += (clamp(ty, -1, 1) - at.y) * k;
