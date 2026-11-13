@@ -130,6 +130,7 @@ export function createLive(machine, holder, { onReady, onFail, onWheel }) {
     try {
       if (br.drive === 'setG' && win.LIVE && typeof win.LIVE.setG === 'function') { win.LIVE.setG(sliderValue); return; }
       pressStrip(br.hit, (sliderValue - br.min) / (br.max - br.min), br.hitPad ?? 8);
+      if (br.pause) setTimeout(() => { try { const p = find(br.pause); if (p && !dead) p.click(); } catch (e) { /* fine */ } }, 60);
     } catch (e) { /* the slider is a nicety: the machine stays */ }
   };
   const scaleOf = () => {
@@ -150,11 +151,12 @@ export function createLive(machine, holder, { onReady, onFail, onWheel }) {
       if (rd.after) {
         const i = lines.indexOf(rd.after);
         if (i < 0) return null;
-        return lines.slice(i + 1, i + 1 + rd.take).join(' ').replace(/\s+/g, ' ');
+        const got = lines.slice(i + 1, i + 1 + rd.take);
+        return { big: got.slice(0, rd.big).join(' '), small: got.slice(rd.big).join(' ') };
       }
       const a = lines.find((l) => rd.find.test(l));
       const b = lines.find((l) => rd.also.test(l));
-      return [a, b].filter(Boolean).join(' · ') || null;
+      return a || b ? { big: a ? a.split(' · ')[0] : '', small: [a && a.split(' · ').slice(1).join(' · '), b].filter(Boolean).join(' · ') } : null;
     } catch (e) { return null; }
   };
 
