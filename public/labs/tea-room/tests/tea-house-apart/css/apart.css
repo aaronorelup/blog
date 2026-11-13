@@ -57,10 +57,11 @@ body { margin: 0; color: var(--body); font-family: var(--font-body); overflow-x:
 }
 .chip b { display: block; font: 700 15px/1.15 var(--font-display); color: var(--head); letter-spacing: -0.005em; }
 .chip span { display: block; margin-top: 2px; font: 600 10.5px/1.2 var(--font-body); letter-spacing: 0.13em; text-transform: uppercase; color: var(--quiet); }
-/* a layer of the drawing, named: plain type beside it */
+/* a layer of the drawing, named as it lifts: a passing caption, the same card smaller still */
 .tag {
   position: absolute; left: 0; top: 0; visibility: hidden; white-space: nowrap; will-change: transform, opacity;
-  font: 600 11.5px/1 var(--font-body); letter-spacing: 0.16em; text-transform: uppercase; color: var(--cream-2);
+  padding: 6px 11px 6px; border-radius: 999px; background: var(--card);
+  font: 600 11px/1 var(--font-body); letter-spacing: 0.15em; text-transform: uppercase; color: var(--cream-2);
 }
 
 /* the chapter's word and its line, as look B sets them over the world */
@@ -142,7 +143,7 @@ main { position: relative; z-index: 1; pointer-events: none; }
   .chip { padding: 6px 11px 7px; border-radius: 13px; }
   .chip b { font-size: 13px; }
   .chip span { font-size: 9.5px; }
-  .tag { font-size: 10px; }
+  .tag { font-size: 10px; padding: 5px 9px; }
   .back { font-size: 10px; }
 }
 
