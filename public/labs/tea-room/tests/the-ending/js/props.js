@@ -83,15 +83,29 @@ export function veranda() {
     '</g>';
 }
 
-// The moon, flat and inked, with two rings of its light round it (painted rings, not a glow)
+// The moon, flat and inked, with two rings of its light round it (painted rings, not a glow), its shaded side kept
+// inside its disc, and a thin wisp of cloud passing in front of its lower edge, so it stands in the sky, not on it
 export function moon(cx, cy, r) {
+  var wisp = function (x, y, w, h, c, o) {
+    return '<g fill="' + c + '" opacity="' + o + '">' +
+      '<ellipse cx="' + x + '" cy="' + y + '" rx="' + w + '" ry="' + h + '"/>' +
+      '<ellipse cx="' + (x - w * 0.45) + '" cy="' + (y - h * 0.45) + '" rx="' + (w * 0.42) + '" ry="' + (h * 0.9) + '"/>' +
+      '<ellipse cx="' + (x + w * 0.2) + '" cy="' + (y - h * 0.7) + '" rx="' + (w * 0.36) + '" ry="' + (h * 1.0) + '"/>' +
+      '</g>';
+  };
   return '<g>' +
+    '<defs><clipPath id="moon-disc"><circle cx="' + cx + '" cy="' + cy + '" r="' + r + '"/></clipPath></defs>' +
     '<circle cx="' + cx + '" cy="' + cy + '" r="' + (r * 2.6) + '" fill="#8d97c8" opacity="0.07"/>' +
     '<circle cx="' + cx + '" cy="' + cy + '" r="' + (r * 1.7) + '" fill="#aab3dc" opacity="0.1"/>' +
-    '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="#f1ead6" stroke="#2a2a44" stroke-width="5"/>' +
-    '<path d="M' + (cx + r * 0.2) + ' ' + (cy - r) + ' A ' + r + ' ' + r + ' 0 0 1 ' + (cx + r * 0.2) + ' ' + (cy + r) + ' A ' + (r * 0.82) + ' ' + r + ' 0 0 0 ' + (cx + r * 0.2) + ' ' + (cy - r) + 'z" fill="#d9cfb9" opacity="0.8"/>' +
+    '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="#f1ead6"/>' +
+    '<g clip-path="url(#moon-disc)">' +
+    '<circle cx="' + (cx + r * 0.42) + '" cy="' + (cy + r * 0.1) + '" r="' + r + '" fill="#d6ccb6" opacity="0.75"/>' +
     '<circle cx="' + (cx - r * 0.3) + '" cy="' + (cy - r * 0.2) + '" r="' + (r * 0.16) + '" fill="#ddd3bd"/>' +
-    '<circle cx="' + (cx + r * 0.1) + '" cy="' + (cy + r * 0.35) + '" r="' + (r * 0.11) + '" fill="#ddd3bd"/>' +
+    '<circle cx="' + (cx + r * 0.1) + '" cy="' + (cy + r * 0.35) + '" r="' + (r * 0.11) + '" fill="#cfc4ad"/>' +
     '<circle cx="' + (cx - r * 0.05) + '" cy="' + (cy - r * 0.55) + '" r="' + (r * 0.07) + '" fill="#ddd3bd"/>' +
+    '</g>' +
+    '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#2a2a44" stroke-width="5"/>' +
+    wisp(cx + r * 0.5, cy + r * 0.92, r * 1.9, r * 0.26, '#7b76b0', 0.96) +
+    wisp(cx - r * 1.4, cy + r * 1.25, r * 1.2, r * 0.18, '#6c68a3', 0.9) +
     '</g>';
 }
