@@ -48,8 +48,9 @@
 .pw-frame {
   position: absolute; inset: 0; border-radius: 12px; padding: var(--ft);
   background: linear-gradient(to bottom, #6b4a2e, #4c3220); box-shadow: 0 0 0 3px #12131d, 0 22px 40px rgba(0, 0, 0, 0.45);
-  pointer-events: auto;
+  pointer-events: none;
 }
+.pw-front .pw-frame { pointer-events: auto; }
 .pw-frame::after {                        /* the night on it while it is not the one in front */
   content: ''; position: absolute; inset: -3px; border-radius: 14px; background: #0a0d22; opacity: var(--dim); pointer-events: none;
 }
