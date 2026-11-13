@@ -356,7 +356,10 @@ are ready (`data-room-fonts`), so a late face moves no line a reader has seen, a
 stands at fractional heights, and a cut edge at a fractional height was drawn one way or another depending on which
 layer the browser had put it in, which depended on where the page had been scrolled from: a 1 px stripe along
 sheets' tops and feet, 0.2% of the frame at 760 and 390 wide, enough to fail purity. Not `transform`: that would
-trap a fixed slot inside a sheet.
+trap a fixed slot inside a sheet. Every flat and port is likewise in a layer of its own from the start
+(`will-change: transform`, stage.css): the door's halves and the port were drawn a pixel apart after real wheel turns
+and loaded directly. What is left: after a long run of wheel turns, the giant word's glyph edges can differ from a
+direct load by up to 1.2% of the frame at 390 wide (0.6% at 1440), the state equal; the purity tests' spots pass.
 
 **What plays** is listed in `src/data/tea/embeds.js`, keyed by the row's own key (a post's slug, a project's key, a
 machine's folder): every film, project to play or watch and machine the picks name has an entry today, with a
