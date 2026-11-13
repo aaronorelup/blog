@@ -1,7 +1,8 @@
 // The camera's path, a pure function of the track's progress T (0 at the top of the page, 1 when the house is
 // fully apart). It starts inside the room by the lit andon, backs out through the open front bay under the head
-// beam and the eaves, rises over the roof line, and settles on a long-lens three-quarter view that drifts back as
-// the drawing grows. A wide window and a tall one (a phone) have their own framings.
+// beam and the eaves, down the stepping stones to the homepage's own first view of the house, on out under the
+// torii, and up; then it swings round to a long-lens three-quarter view that drifts back as the drawing grows.
+// A wide window and a tall one (a phone) have their own framings.
 //
 // The acts, in T: until `inside` the camera barely moves; by `whole` the whole house and garden are in frame;
 // from `apart0` to `apart1` the house comes apart; after that the drawing holds while the card comes up.
@@ -11,24 +12,26 @@ export const ACT = { inside: 0.045, whole: 0.25, apart0: 0.285, apart1: 0.94 };
 const WIDE = [
   { t: 0.00,  p: [1.75, 1.66, 2.15],  q: [-4.7, 1.22, 1.35],  fov: 60 },
   { t: 0.045, p: [1.55, 1.72, 2.75],  q: [-4.6, 1.25, 1.2],   fov: 59 },
-  { t: 0.105, p: [0.55, 2.05, 6.1],   q: [-2.2, 1.6, -1.2],   fov: 54 },
-  { t: 0.155, p: [3.2, 4.6, 13.2],    q: [-0.2, 2.3, 0.4],    fov: 47 },
-  { t: 0.25,  p: [20.5, 20.0, 29.0],  q: [0.0, 1.6, 2.6],     fov: 35 },
-  { t: 0.30,  p: [22.0, 21.2, 31.0],  q: [0.2, 2.8, 2.0],     fov: 34.5 },
-  { t: 0.62,  p: [28.0, 24.5, 39.0],  q: [0.6, 7.2, 1.0],     fov: 33 },
-  { t: 0.94,  p: [33.0, 27.0, 46.0],  q: [0.8, 10.4, 0.4],    fov: 32 },
-  { t: 1.00,  p: [33.4, 27.2, 46.6],  q: [0.8, 10.5, 0.4],    fov: 32 },
+  { t: 0.105, p: [0.45, 2.0, 6.1],    q: [-1.6, 1.6, -1.6],   fov: 54 },
+  { t: 0.165, p: [0.0, 3.1, 19.0],    q: [0.0, 2.3, 3.0],     fov: 46 },   // the homepage's first view
+  { t: 0.195, p: [0.15, 3.45, 23.6],  q: [0.0, 2.4, 3.0],     fov: 44 },   // out under the torii
+  { t: 0.25,  p: [1.6, 9.2, 34.5],    q: [0.0, 2.9, 2.0],     fov: 39 },
+  { t: 0.31,  p: [5.0, 12.0, 34.0],   q: [0.2, 4.0, 1.6],     fov: 37 },
+  { t: 0.62,  p: [18.0, 20.0, 35.0],  q: [0.6, 8.6, 1.0],     fov: 34 },
+  { t: 0.94,  p: [26.5, 25.0, 38.0],  q: [0.8, 12.6, 0.4],    fov: 32 },
+  { t: 1.00,  p: [26.9, 25.2, 38.5],  q: [0.8, 12.7, 0.4],    fov: 32 },
 ];
 const TALL = [
   { t: 0.00,  p: [-0.9, 2.15, 1.25],  q: [-4.9, 1.2, 3.25],   fov: 68 },
   { t: 0.045, p: [-0.6, 2.15, 1.6],   q: [-4.9, 1.2, 3.2],    fov: 68 },
-  { t: 0.105, p: [0.2, 2.1, 6.1],     q: [-2.4, 1.6, -0.6],   fov: 64 },
-  { t: 0.155, p: [1.6, 4.6, 15.5],    q: [0, 2.4, 0.4],       fov: 56 },
-  { t: 0.25,  p: [19.0, 26.0, 44.0],  q: [0.2, 2.6, 2.4],     fov: 40 },
-  { t: 0.30,  p: [20.0, 27.5, 46.5],  q: [0.2, 4.6, 1.6],     fov: 40 },
-  { t: 0.62,  p: [24.0, 33.0, 56.0],  q: [0.3, 11.5, 0.8],    fov: 39 },
-  { t: 0.94,  p: [27.0, 38.0, 64.0],  q: [0.4, 17.0, 0.4],    fov: 38 },
-  { t: 1.00,  p: [27.4, 38.4, 65.0],  q: [0.4, 17.1, 0.4],    fov: 38 },
+  { t: 0.105, p: [0.2, 2.1, 6.1],     q: [-1.8, 1.6, -1.2],   fov: 64 },
+  { t: 0.165, p: [0.0, 3.4, 21.0],    q: [0.0, 2.8, 3.0],     fov: 60 },   // the homepage's first view, a phone's
+  { t: 0.195, p: [0.1, 3.6, 25.0],    q: [0.0, 2.9, 3.0],     fov: 58 },
+  { t: 0.25,  p: [1.0, 13.0, 50.0],   q: [0.0, 3.4, 2.0],     fov: 44 },
+  { t: 0.31,  p: [3.0, 19.0, 55.0],   q: [0.1, 5.0, 1.6],     fov: 42 },
+  { t: 0.62,  p: [9.0, 30.0, 63.0],   q: [0.3, 11.5, 0.8],    fov: 40 },
+  { t: 0.94,  p: [14.0, 37.0, 70.0],  q: [0.4, 17.0, 0.4],    fov: 38 },
+  { t: 1.00,  p: [14.2, 37.3, 70.8],  q: [0.4, 17.1, 0.4],    fov: 38 },
 ];
 
 // tangents the monotone way (Fritsch and Carlson): the path has no corners and never overshoots a key, so the

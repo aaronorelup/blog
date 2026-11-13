@@ -75,7 +75,7 @@ export function buildHouse({ M, part, merge, at, piece }) {
     const P3 = (lx, ly, dz) => [cx + lx * c + dz * s, cy + ly, cz - lx * s + dz * c];
     const pw = len / n, shut = n - open.length;
     out.push(piece('rail-' + id + '-top', 'screens', [merge([box(len, 0.17, 0.3, P3(0, ph / 2 + 0.085, 0), [0, ry, 0])], M.beam)],
-      { dir: normal, up: 0.85, seq: order++ }));
+      { dir: normal, up: 0.5, seq: order++ }));
     let k = 0;
     for (let i = 0; i < n; i++) {
       if (open.indexOf(i) >= 0) continue;
@@ -97,7 +97,7 @@ export function buildHouse({ M, part, merge, at, piece }) {
       k++;
     }
     out.push(piece('rail-' + id + '-bottom', 'screens', [merge([box(len, 0.15, 0.3, P3(0, -ph / 2 - 0.075, 0), [0, ry, 0])], M.beam)],
-      { dir: normal, up: -0.85, seq: order++ }));
+      { dir: normal, up: -0.5, seq: order++ }));
   };
   run('front-r', 4.4, 1.805, D, 0, 3.6, 2.94, 2, [], [0, 1]);                       // front, either side of the open bay
   run('front-l', -4.4, 1.805, D, 0, 3.6, 2.94, 2, [], [0, 1]);
@@ -130,7 +130,7 @@ export function buildHouse({ M, part, merge, at, piece }) {
   const rw = W * 2 + 3.2, rd = D * 2 + 3.2, rh = 3.1, ry0 = H + 0.80;
   const x = rw / 2, z = rd / 2, r = Math.max(0.2, x - z);
   const v = [[-x, ry0, z], [x, ry0, z], [x, ry0, -z], [-x, ry0, -z], [-r, ry0 + rh, 0], [r, ry0 + rh, 0]];
-  out.push(piece('ridge', 'roof', [part(new BoxGeometry(rw - rd + 0.5, 0.34, 0.6), M.roofRidge, [0, ry0 + rh + 0.04, 0])], { up: 2.6, seq: 0 }));
+  out.push(piece('ridge', 'roof', [part(new BoxGeometry(rw - rd + 0.5, 0.34, 0.6), M.roofRidge, [0, ry0 + rh + 0.04, 0])], { up: 2.0, seq: 0 }));
   out.push(piece('roof-front', 'roof', [part(slab([v[0], v[1], v[5], v[4]], 0.2), M.roof)], { dir: [0, 1], seq: 1 }));
   out.push(piece('roof-right', 'roof', [part(slab([v[1], v[2], v[5]], 0.2), M.roof)], { dir: [1, 0], seq: 2 }));
   out.push(piece('roof-back', 'roof', [part(slab([v[2], v[3], v[4], v[5]], 0.2), M.roof)], { dir: [0, -1], seq: 3 }));

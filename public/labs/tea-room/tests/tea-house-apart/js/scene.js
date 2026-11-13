@@ -1,13 +1,14 @@
 // The tea house of the homepage, by night, built piece by piece so it can be taken apart.
-// mount(canvas) builds the world once and returns a view whose render(T, time, o) draws one frame: everything in
-// it is a function of T (the track's progress, 0 to 1), of time (seconds, for the petals and the lamps' flicker)
-// and of o (where the picture sits in the window). Nothing is remembered from one frame to the next, so any T can
-// be drawn at any moment, in any order.
+// mount(canvas) builds the world once and returns a view whose render(T, time, safe) draws one frame: everything
+// in it is a function of T (the track's progress, 0 to 1), of time (seconds, for the petals and the lamps'
+// flicker) and of safe (the part of the window the drawing may use). Nothing is remembered from one frame to the
+// next, so any T can be drawn at any moment, in any order.
 import {
   AdditiveBlending, CanvasTexture, CircleGeometry, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, Vector3,
   WebGLRenderer,
 } from 'three';
 import { ACT, cameraAt } from './camera.js';
+import { plan, pose } from './plan.js';
 import { buildGarden } from './world/garden.js';
 import { buildHouse } from './world/house.js';
 import { buildInterior } from './world/interior.js';
@@ -18,22 +19,8 @@ import { buildPetals } from './world/petals.js';
 import { buildSky } from './world/sky.js';
 
 const clamp = (x, a = 0, b = 1) => (x < a ? a : x > b ? b : x);
-const io = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 const ss = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
 const rnd = (seed) => { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; };
-
-// The layers of the exploded drawing, top down, which is also the order they leave in.
-// lift: how high the layer ends above where it stood (metres); out: how far its pieces slide away from the house;
-// win: when the layer moves, as a share of the take-apart; span: how much of that window one piece takes.
-export const TIERS = {
-  roof:      { lift: 16.4, out: 1.7, win: [0.00, 0.17], span: 0.62 },
-  ceiling:   { lift: 14.0, out: 0,   win: [0.14, 0.25], span: 1 },
-  beams:     { lift: 11.7, out: 1.3, win: [0.22, 0.37], span: 0.5 },
-  screens:   { lift: 8.7,  out: 2.9, win: [0.33, 0.57], span: 0.3 },
-  walls:     { lift: 5.9,  out: 2.1, win: [0.53, 0.69], span: 0.45 },
-  furniture: { lift: 3.3,  out: 0,   win: [0.65, 0.87], span: 0.32 },
-  floor:     { lift: 1.0,  out: 1.2, win: [0.83, 1.00], span: 0.42 },
-};
 
 export function mount(canvas) {
   setPalette(1);                                    // the same evening as the tea room: night
@@ -77,75 +64,65 @@ export function mount(canvas) {
   pool(3.2, 8.2, 3.4, 3.4, 0xD9822E, 0.42);
   pool(-9.6, 5.4, 3.0, 3.0, 0xD9822E, 0.38);
 
-  let W = 1, H = 1, tall = false;
-
-  // Where every piece ends up, and when it goes. A tall window stacks the layers higher and spreads them less.
-  function plan() {
-    const V = tall ? 1.3 : 1, S = tall ? 0.5 : 1;
-    const tiers = {};
-    pieces.forEach(p => { if (!p.follow) (tiers[p.tier] = tiers[p.tier] || []).push(p); });
-    for (const name of Object.keys(tiers)) {
-      const T = TIERS[name], list = tiers[name];
-      const seqs = [...new Set(list.map(p => p.seq || 0))].sort((a, b) => a - b);
-      const n = seqs.length, a = T.win[0], b = T.win[1], d = n > 1 ? (b - a) * T.span : b - a;
-      list.forEach(p => {
-        const i = seqs.indexOf(p.seq || 0);
-        p.t0 = n > 1 ? a + (b - a - d) * i / (n - 1) : a;
-        p.t1 = p.t0 + d;
-        const dir = p.dir || [0, 0], al = p.along || [0, 0], out = (p.out !== undefined ? p.out : T.out) * S;
-        p.away = new Vector3(dir[0] * out + al[0] * S, (T.lift + (p.up || 0)) * V, dir[1] * out + al[1] * S);
-      });
-    }
-    pieces.forEach(p => {
-      if (p.follow) { const f = byName.get(p.follow); p.t0 = f.t0; p.t1 = f.t1; p.away = f.away; }
-      // the lean a piece takes in mid-flight: the leading edge lifts, small things lean more
-      const hx = p.away.x, hz = p.away.z, hl = Math.hypot(hx, hz);
-      p.tx = hl > 0.05 ? hx / hl : 0.6; p.tz = hl > 0.05 ? hz / hl : 0.8;
-      p.lean = Math.max(p.size.x, p.size.z) > 3 ? 0.035 : 0.09;
-      p.k = -1;
-    });
-  }
-
-  // Every piece at take-apart progress u: first it lifts clear, then it slides to its place, and it rests square.
-  function pose(u) {
-    for (const p of pieces) {
-      const k = clamp((u - p.t0) / (p.t1 - p.t0));
-      if (k === p.k) continue;
-      p.k = k;
-      const ky = io(clamp(k * 1.22)), kh = io(clamp((k - 0.22) / 0.78));
-      p.obj.position.set(p.home.x + p.away.x * kh, p.home.y + p.away.y * ky, p.home.z + p.away.z * kh);
-      const a = Math.sin(Math.PI * k) * p.lean;
-      p.obj.rotation.set(a * p.tz, 0, -a * p.tx);
-    }
-  }
-
+  let W = 1, H = 1, tall = false, pl = null;
   const cam = { p: [0, 0, 0], q: [0, 0, 0], fov: 46 };
-  const moon0 = rig.dir.intensity, MOON = 1.15;
-  const look = new Vector3();
+  const look = new Vector3(), v = new Vector3();
+  const moon0 = rig.dir.intensity, MOON = 2.0;
   const bounce = lamps.lights.find(l => l.follow === 'bounce');
   const wallBack = byName.get('wall-back');
+  const box = { x0: 0, y0: 0, x1: 0, y1: 0 };
+  let lastZoom = 1;
 
-  function render(T, time, o) {
+  // the rectangle of the window the house covers, every piece of it, as the camera stands
+  function extent() {
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (const p of pieces) {
+      const c = p.obj.position, hx = p.size.x / 2, hy = p.size.y / 2, hz = p.size.z / 2;
+      for (let i = 0; i < 8; i++) {
+        v.set(c.x + (i & 1 ? hx : -hx), c.y + (i & 2 ? hy : -hy), c.z + (i & 4 ? hz : -hz)).project(camera);
+        if (v.x < x0) x0 = v.x; if (v.x > x1) x1 = v.x; if (v.y < y0) y0 = v.y; if (v.y > y1) y1 = v.y;
+      }
+    }
+    box.x0 = (x0 * 0.5 + 0.5) * W; box.x1 = (x1 * 0.5 + 0.5) * W; box.y0 = (-y1 * 0.5 + 0.5) * H; box.y1 = (-y0 * 0.5 + 0.5) * H;
+    return box;
+  }
+
+  // safe: { x0, y0, x1, y1 } in CSS pixels, the part of the window the drawing may use (the card takes the rest)
+  function render(T, time, safe) {
     const u = clamp((T - ACT.apart0) / (ACT.apart1 - ACT.apart0));
-    pose(u);
+    pose(pieces, pl, u);
 
     cameraAt(T, tall, cam);
     camera.position.set(cam.p[0], cam.p[1], cam.p[2]);
     look.set(cam.q[0], cam.q[1], cam.q[2]);
     camera.lookAt(look);
     camera.fov = cam.fov;
-    // where the picture sits in the window: sx and sy slide it, as shares of the window, without bending it
-    const sx = (o && o.sx) || 0, sy = (o && o.sy) || 0;
-    if (sx || sy) camera.setViewOffset(W, H, sx * W, sy * H, W, H); else camera.clearViewOffset();
+    camera.clearViewOffset();
     camera.updateProjectionMatrix();
+
+    // Once the camera is outside and the house starts to open, the drawing is kept whole inside the space it is
+    // given, whatever the window's shape: the picture is slid, and made smaller if it must be, without bending it.
+    let zoom = 1;
+    const w = ss(ACT.whole, ACT.apart0 + 0.07, T);
+    if (w > 0 && safe) {
+      camera.updateMatrixWorld();
+      const b = extent(), bw = b.x1 - b.x0, bh = b.y1 - b.y0;
+      const fit = Math.min(1, (safe.x1 - safe.x0) / bw, (safe.y1 - safe.y0) / bh);
+      zoom = 1 + (fit - 1) * w;
+      const cx = W / 2 + ((b.x0 + b.x1) / 2 - W / 2) * zoom, cy = H / 2 + ((b.y0 + b.y1) / 2 - H / 2) * zoom;
+      const dx = ((safe.x0 + safe.x1) / 2 - cx) * w, dy = ((safe.y0 + safe.y1) / 2 - cy) * w;
+      camera.setViewOffset(W, H, (W - W / zoom) / 2 - dx / zoom, (H - H / zoom) / 2 - dy / zoom, W / zoom, H / zoom);
+    }
+
+    lastZoom = zoom;
 
     // the ink line holds its weight on screen: never under the homepage's 3.5 cm, never under about 1.5 pixels
     const dist = camera.position.distanceTo(look);
-    kit.ink.uniforms.uW.value = Math.max(OUTLINE, 1.5 * 2 * dist * Math.tan(cam.fov * Math.PI / 360) / H);
+    kit.ink.uniforms.uW.value = Math.max(OUTLINE, 1.5 * 2 * dist * Math.tan(cam.fov * Math.PI / 360) / (H * zoom));
 
     // each lantern's light goes where its lantern went; the room's soft bounce rises to sit among the walls
     lamps.lights.forEach((l, i) => {
-      if (l.follow === 'bounce') {
+      if (l === bounce) {
         l.light.position.y = l.home.y + (wallBack.obj.position.y - wallBack.home.y) * 0.72;
       } else if (l.follow) {
         const p = byName.get(l.follow);
@@ -156,7 +133,7 @@ export function mount(canvas) {
 
     // outside, the moon does the drawing: it comes up as the camera leaves the room, and the light on the path
     // goes with the room that cast it
-    rig.dir.intensity = moon0 + (MOON - moon0) * ss(0.085, ACT.whole, T);
+    rig.dir.intensity = moon0 + (MOON - moon0) * ss(0.1, 0.2, T);
     spill.material.opacity = spill.userData.strength * (1 - 0.75 * ss(0.12, 0.7, u));
 
     petals.update(time);
@@ -171,11 +148,10 @@ export function mount(canvas) {
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     sky.stars.material.size = 1.7 * dpr;
-    if (was !== tall || !pieces[0].away) plan();
+    if (was !== tall || !pl) pl = plan(pieces, tall);
   }
 
   // a point of the world on the window, in CSS pixels (after the last render)
-  const v = new Vector3();
   function project(x, y, z, out) {
     v.set(x, y, z).project(camera);
     out.x = (v.x * 0.5 + 0.5) * W; out.y = (-v.y * 0.5 + 0.5) * H; out.behind = v.z > 1;
@@ -186,7 +162,7 @@ export function mount(canvas) {
     render, resize, project, pieces,
     piece: (name) => byName.get(name),
     isTall: () => tall,
-    info: () => ({ calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, pieces: pieces.length, lights: lamps.lights.length + 3 }),
+    info: () => ({ calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, pieces: pieces.length, lights: lamps.lights.length + 3, zoom: +lastZoom.toFixed(3) }),
     dispose: () => renderer.dispose(),
   };
 }
