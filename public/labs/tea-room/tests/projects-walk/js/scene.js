@@ -360,7 +360,7 @@ export function mount(host, options = {}) {
       if (t.off && t.shown) { t.el.style.visibility = 'hidden'; t.shown = false; }
     }
     for (const b of bushes) { b.X = pathAt(b.Z) + b.side * ((tall ? 1.15 : 1.9) + b.xr * 0.6); b.w = (tall ? 1.3 : 2.1) * b.wr; b.last = ''; }
-    moon.style.width = moon.style.height = (tall ? 0.16 * W : 0.06 * W) * 2 + 'px';
+    moon.style.width = moon.style.height = (tall ? 0.1 * W : 0.06 * W) * 2 + 'px';
     lastQ = -9;
   }
   function pathAt(z) {
@@ -396,9 +396,9 @@ export function mount(host, options = {}) {
 
     // --- the sky
     stars.style.backgroundPosition = (-lean * 0.4 - camZ * 0.4).toFixed(1) + 'px 0';
-    const mr = (tall ? 0.16 * W : 0.06 * W);
+    const mr = (tall ? 0.1 * W : 0.06 * W);
     moon.style.opacity = tall ? '1' : (1 - (walking ? 1 - ss(0.62, 0.9, Math.abs(k - front)) : 0) * (k > -0.6 && k < N - 0.4 ? 1 : 0)).toFixed(3);
-    moon.style.transform = 'translate3d(' + ((tall ? 0.74 : 0.8) * W - mr - lean * 0.5).toFixed(1) + 'px,' + (hY - (tall ? 0.5 : 0.36) * H - mr).toFixed(1) + 'px,0)';
+    moon.style.transform = 'translate3d(' + ((tall ? 0.74 : 0.8) * W - mr - lean * 0.5).toFixed(1) + 'px,' + (hY - (tall ? 0.3 : 0.36) * H - mr).toFixed(1) + 'px,0)';
     {
       const cw = (tall ? 3.2 : 1.6) * W, ch = cw * 350 / 2816;
       clouds.style.transform = 'translate3d(' + (cx - cw * 0.5 - lean - camZ * 0.9 % cw + Math.sin(time * 0.05) * 14).toFixed(1) + 'px,' + (hY - (tall ? 0.5 : 0.3) * H - ch / 2).toFixed(1) + 'px,0) scale(' + (cw / 2816).toFixed(4) + ')';
@@ -424,13 +424,24 @@ export function mount(host, options = {}) {
       // pools of light first, so the stones sit in them
       g.globalCompositeOperation = 'lighter';
       for (const p of P) {
-        const u = Math.abs(k - p.s.i); if (u > 0.55) continue;
+        const u = p.s.i === 0 && k < 0 ? 0 : Math.abs(k - p.s.i); if (u > 0.55) continue;
         const d = p.lZ - camZ; if (d < 0.5) continue;
         const al = 0.55 * (1 - ss(0.3, 0.55, u));
         const x = gxs(p.lX, d), y = gy(0, d), rx = f * 2.4 / d, ry = rx * clamp(camY * 0.75 / d, 0.1, 0.6);
         g.save(); g.translate(x, y); g.scale(1, ry / rx);
         const rg = g.createRadialGradient(0, 0, 0, 0, 0, rx);
         rg.addColorStop(0, 'rgba(255,214,150,' + al.toFixed(3) + ')'); rg.addColorStop(0.3, 'rgba(240,184,112,' + (al * 0.5).toFixed(3) + ')'); rg.addColorStop(0.7, 'rgba(210,150,90,' + (al * 0.12).toFixed(3) + ')'); rg.addColorStop(1, 'rgba(200,140,80,0)');
+        g.fillStyle = rg; g.beginPath(); g.arc(0, 0, rx, 0, 6.3); g.fill(); g.restore();
+      }
+      for (const p of P) {
+        if (p.kind !== 'watch') continue;
+        const u = Math.abs(k - p.s.i); if (u > 0.6) continue;
+        const d = p.wZ - 0.8 - camZ; if (d < 0.5) continue;
+        const al = 0.3 * (1 - ss(0.3, 0.6, u));
+        const x = gxs(p.wX + p.ww / 2, d), y = gy(0, d), rx = f * p.ww * 0.75 / d, ry = rx * clamp(camY * 0.75 / d, 0.1, 0.5);
+        g.save(); g.translate(x, y); g.scale(1, ry / rx);
+        const rg = g.createRadialGradient(0, 0, 0, 0, 0, rx);
+        rg.addColorStop(0, 'rgba(170,186,255,' + al.toFixed(3) + ')'); rg.addColorStop(0.45, 'rgba(140,150,230,' + (al * 0.4).toFixed(3) + ')'); rg.addColorStop(1, 'rgba(120,130,210,0)');
         g.fillStyle = rg; g.beginPath(); g.arc(0, 0, rx, 0, 6.3); g.fill(); g.restore();
       }
       g.globalCompositeOperation = 'source-over';
@@ -496,7 +507,7 @@ export function mount(host, options = {}) {
     // --- the stations: lantern, window, card
     for (const p of P) {
       const i = p.s.i, u = Math.abs(k - i);
-      const litO = Math.round((1 - ss(0.3, 0.5, u)) * 100) / 100;
+      const litO = Math.round((i === 0 && k < 0 ? 1 : 1 - ss(0.3, 0.5, u)) * 100) / 100;
       // the lantern
       {
         const d = p.lZ - camZ;
