@@ -174,6 +174,7 @@ export function mount(canvas) {
       let burn = 1;
       if (l === bounce) {
         l.light.position.y = l.home.y + (wallBack.obj.position.y - wallBack.home.y) * 0.72;
+        burn = 1 + l.gain * wallBack.k;
       } else if (l.follow) {
         const p = byName.get(l.follow);
         l.light.position.set(l.home.x + p.obj.position.x - p.home.x, l.home.y + p.obj.position.y - p.home.y, l.home.z + p.obj.position.z - p.home.z);

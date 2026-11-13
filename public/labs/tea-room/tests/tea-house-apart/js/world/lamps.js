@@ -6,6 +6,7 @@
 // the layer under it. The number of lights never changes while the page runs.
 import { BoxGeometry, ConeGeometry, CylinderGeometry, Group, PlaneGeometry, PointLight, SphereGeometry } from 'three';
 
+const GAIN = 1.5;       // lifted out into the night with its layer, a lantern burns up: it is that layer's light now
 export function buildLamps({ M, part, merge, at, piece }) {
   const pieces = [], lights = [], fixed = new Group();
   // follow: the piece the light travels with (null: it stays put)
@@ -33,7 +34,7 @@ export function buildLamps({ M, part, merge, at, piece }) {
   {
     const bounce = new PointLight(0xFFC98A, 2.6, 34, 1.4);
     bounce.position.set(-1.0, 3.3, -1.0);
-    lamp(bounce, 'bounce');
+    lamp(bounce, 'bounce', GAIN);
   }
 
   // chochin: a round paper lantern
@@ -53,13 +54,13 @@ export function buildLamps({ M, part, merge, at, piece }) {
   {
     const pl = new PointLight(0xFFB765, 5.5, 34, 1.35);
     pl.position.set(0, 3.13, 0);
-    lamp(pl, 'chochin');
+    lamp(pl, 'chochin', GAIN);
   }
   [[-4.4, 'l'], [4.4, 'r']].forEach(([x, id]) => {                                   // under the front eaves
     chochin('eave-' + id, x, 6.25, 0.8, 2.86, 'roof', { follow: 'roof-front' });
     const pl = new PointLight(0xFFB765, 3.4, 22, 1.5);
     pl.position.set(x, 2.76, 6.25);
-    lamp(pl, 'eave-' + id);
+    lamp(pl, 'eave-' + id, GAIN);
   });
 
   // shokudai: a single candle on the tokonoma floor board, lighting the scroll
