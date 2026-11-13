@@ -36,7 +36,7 @@
 }
 /* with motion turned off the reel does not play by itself: its fourteen moments stand here as stills, each a way
    to put that moment on the cloth */
-.film-stills { display: none; margin: 0 var(--gutter) 60vh var(--content-l); max-width: 1060px; }
+.film-stills { display: none; z-index: 4; margin: 0 var(--gutter) 60vh var(--content-l); max-width: 1060px; }   /* (it passes over the sound switch, not under it) */
 .film-stills .body { padding: 20px 22px 22px; }
 .film-stills-say { margin-top: 6px; font: 400 15px/1.4 var(--font-serif); color: var(--pc-strong); }
 .film-stills ol { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: 12px; margin-top: 14px; }
