@@ -100,7 +100,7 @@ function mountStage(host, opt) {
         <h2 class="b-title"></h2>
         <p class="b-say"></p>
         <label class="b-range"><span class="b-label"></span><input type="range" class="b-input"><span class="b-marks"></span></label>
-        <p class="b-out"><span class="b-val"></span><b class="b-read"></b></p>
+        <p class="b-out"><span class="b-val"></span><b class="b-read"></b><span class="b-small"></span></p>
       </article>
       <article class="card end">
         <p class="meta"><span class="m-name"></span><span>The film and the page</span></p>
@@ -169,8 +169,8 @@ function mountStage(host, opt) {
     root.style.setProperty('--bench-bottom', (by + bh) + 'px');
     // the television stands on the floor at the back, half behind the frame (the frame is nearer)
     if (!phone) {
-      const tw = Math.round(Math.min(260, W * 0.155)), th = tw * 1093 / 1200;
-      Object.assign(tv.style, { width: tw + 'px', left: Math.round(bx + bw - tw * 0.3) + 'px', top: Math.round(H * 0.6 - th) + 'px' });
+      const tw = Math.round(Math.min(230, W * 0.13)), th = tw * 1093 / 1200;
+      Object.assign(tv.style, { width: tw + 'px', left: Math.round(bx + bw - tw * 0.5) + 'px', top: Math.round(H * 0.6 - th) + 'px' });
     }
     placeAll();
   }
@@ -228,6 +228,7 @@ function mountStage(host, opt) {
     if (!live) return;
     const m = MACHINES[cur.i];
     if (cur.step === 'part') live.set({ view: m.hero.view, part: m.parts[cur.k].button, mode: cur.mode });
+    else if (cur.step === 'break') live.set({ view: m.breakIt.view || m.hero.view, part: null, mode: null });
     else live.set({ view: m.hero.view, part: null, mode: null });
     const br = m.breakIt;
     live.breakSetup(cur.step === 'break');
@@ -280,7 +281,11 @@ function mountStage(host, opt) {
     const v = sliderVal[m.key] ?? br.value;
     $('.b-val').textContent = `${br.label}: ${fmt(v, br)}`;
     const r = live && live.ready ? live.reading() : null;
-    $('.b-read').textContent = r ? `${br.readout.label}: ${r}` : br.offline(v);
+    const big = $('.b-read'), small = $('.b-small');
+    if (r && r.big) {
+      big.textContent = r.big.replace(/ M$/, ' m').replace(/ M /, ' m ');
+      small.textContent = `${br.readout.label}${r.small ? ' · ' + r.small : ''}`;
+    } else { big.textContent = br.offline(v); small.textContent = ''; }
     if (!live || !live.ready) showPic(m.stills[br.stills[v >= br.at ? 1 : 0]]);
   }
 
