@@ -34,3 +34,15 @@ script at 390x844.
    and the light is only in the pool and on the papered panels it falls on.
 3. **Titles broke at their hyphens.** "Crimson Coil, a 30-" over "minute oil painting show" reads as a typo. A
    hyphenated word in an item's link now stays whole.
+
+## Round 3: the phone only (390x844)
+
+Frames: the top (`?y=0`), `#projects`, `?y=0.5` (the 3D chapter with a slip), `?y=0.021` (the door half open).
+
+1. **The door was a picture torn in two.** On the phone the garden's halves parted with a raw seam through the
+   house and nothing to say they were panels. Each half now has a cut edge, a dark ink line and a little shade
+   where it parts, as B's sets got in its sixth round.
+2. **The subject was small on an upright frame.** The stub lantern stood 105 px tall on a phone, a speck in the
+   middle of a wall. It is half as large again on `p`, and the aim moves with it.
+3. **The tab's numeral read as a close button.** "X PROJECTS" at the top left of a phone looks like a way out. The
+   numeral is now set off by a thin rule from the chapter's name.

@@ -59,7 +59,9 @@
 .room-tab-paper { position: absolute; inset: 0; clip-path: polygon(0 1px, 55% 1px, 55% 0, 100% 0, 100% 100%, 0 100%); }
 .room-tab-label { position: relative; }
 .room-tab-now { display: none; }
-.room-tab-num { font: 500 11px / 1 'JetBrains Mono', var(--font-mono); letter-spacing: 0.02em; margin-right: 6px; color: rgb(35 31 43 / 0.62); }
+.room-tab-num { font: 500 11px / 1 'JetBrains Mono', var(--font-mono); letter-spacing: 0.02em; color: rgb(35 31 43 / 0.62); }
+/* the numeral is set off by a thin rule, so a lone X reads as a chapter's number and never as a close button */
+.room-tab-now .room-tab-num { display: inline-block; padding-right: 8px; margin-right: 8px; border-right: 1px solid rgb(35 31 43 / 0.3); }
 .room-index[data-on] .room-tab-default { display: none; }
 .room-tab-now[data-current] { display: inline; }
 .room-tab[open] .room-tab-face { position: fixed; inset: 0 auto auto 0; z-index: 2; margin: 10px; }
