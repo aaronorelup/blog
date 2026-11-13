@@ -104,13 +104,13 @@ export function mount(host, options) {
   function plateXY(p, cam) { var s = scaleOf(cam); return [W / 2 + (p[0] - CX - cam.C[0]) * s, H / 2 + (p[1] - CY - cam.C[1]) * s]; }
 
   // ------------------------------------------------------------------ the layout
-  var tall = false, narrow = false, span = 1, aLead = A_LEAD, KD, KE, PJE, PJI, T = {}, laid = false;
+  var tall = false, narrow = false, span = 1, aLead = A_LEAD, aFrom = 0, KD, KE, PJE, PJI, T = {}, laid = false;
   function layout() {
     W = root.clientWidth; H = window.innerHeight;
     tall = W / H < 0.9; narrow = W <= 820;
     host.classList.toggle('tall', tall);
     // (a tall screen's arena starts past the trench's wire posts, which would stand across the fighters on the cloth)
-    aLead = W / H < 0.82 ? 0.44 : A_LEAD;
+    aLead = W / H < 0.82 ? 0.44 : A_LEAD; aFrom = W / H < 0.82 ? 0.34 : 0;
     span = options.span();
     var cover = Math.max(W / PW, H / PH);
     var de = diveEnd(W, H);
@@ -120,19 +120,21 @@ export function mount(host, options) {
     if (!tall) {
       // the cloth stands right of the next chapter's name (its widest line, measured in the name's own type)
       // (never smaller than the screen: the plate's own edges must stay outside the frame)
-      var right = W - Math.max(10, W * 0.008), left = Math.max(W * 0.5, nameRight() + W * 0.025);
-      var s3 = clamp((right - left) / 752, cover * 1.0, cover * 1.15);
+      // (the plate's left edge at the screen's: the larger it is drawn, the further right the cloth stands)
+      var right = W - Math.max(8, W * 0.006), left = Math.max(W * 0.5, nameRight() + W * 0.035);
+      // (on a narrow wide screen the cloth's right pole may pass the screen's edge, never the picture on it)
+      var s3 = Math.max(cover, Math.min(left / 1447, Math.max(right / 2199, (W - 6) / 2172)));
       var tx = clamp(right - 2199 * s3, W - PW * s3, 0), ty = clamp(0.5 * H - FOCUS[1] * s3, H - PH * s3, 0);
       KE = camOf(s3, tx + FOCUS[0] * s3, ty + FOCUS[1] * s3);
       var pw = clamp(H * 0.3, 150, 280);
       PJE = { x: Math.max(rail + 40 + pw * 0.5, W * 0.43), y: H * 1.08, w: pw };
     } else {
       // (the name is two lines here: "AI art / & images", its line and the note under it)
-      var wordPx = clamp(W * 0.15, 52, 190), clothTop = H * 0.11 + wordPx * 0.9 * 2 + 136, clothBot = H * 0.68;
+      var wordPx = clamp(W * 0.15, 52, 190), clothTop = H * 0.11 + wordPx * 0.9 * 2 + 150, clothBot = H * 0.7;
       var st = clamp((clothBot - clothTop) / 546, 0.5 * W / 752, 0.95 * W / 752);
       KE = camOf(st, 0.52 * W, (clothTop + clothBot) / 2);
       var pw3 = clamp(W * 0.34, 120, 210);
-      PJE = { x: W * 0.17, y: H * 0.99, w: pw3 };
+      PJE = { x: Math.max(W * 0.26, pw3 * 0.62), y: H * 0.99, w: pw3 };
     }
     PJI = { x: PJE.x - (tall ? W * 0.5 : W * 0.32), y: PJE.y + H * 0.95, w: PJE.w * 2.2 };
     // when things happen, in screens from the section's top
@@ -152,7 +154,7 @@ export function mount(host, options) {
     var px = clamp(W * 0.115, 52, 190), left = (parseFloat(getComputedStyle(root).getPropertyValue('--rail-w')) || 172) + Math.max(16, Math.min(46, W * 0.032)) * 2;
     var c = document.createElement('canvas').getContext('2d'), w = 0;
     c.font = '700 ' + px + 'px "Zen Maru Gothic", sans-serif';
-    lines.forEach(function (l) { w = Math.max(w, c.measureText(l).width * 0.97); });     // (its letters are set 0.025em closer)
+    lines.forEach(function (l) { w = Math.max(w, c.measureText(l).width); });
     return left + w;
   }
   var cache = new Map();
@@ -231,7 +233,7 @@ export function mount(host, options) {
       var oc = onCloth(JOIN.quad, JOIN.mid, JOIN.h, RM ? 1 : squared(k), a);
       view = oc.view; clip = oc.clip;
       setV(arenaBox, true); setO(arenaBox, 1);
-      aq = aLead * clamp((p + 2.5) / 2.5);
+      aq = lerp(aFrom, aLead, clamp((p + 2.5) / 2.5));
       if (!arena && !failed) { JOIN.arena = 0; return false; }
       if (failed && !got.wide) { JOIN.arena = 0; return false; }
       JOIN.arena = a;
