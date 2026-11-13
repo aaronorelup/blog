@@ -70,7 +70,7 @@ export function track(keys) {
     const a = keys[Math.max(0, i - 1)], b = keys[Math.min(n - 1, i + 1)];
     const dq = b[0] - a[0] || 1;
     const out = new Array(dim);
-    for (let d = 0; d < dim; d++) out[d] = (b[d + 1] - a[d + 1]) / dq;
+    for (let d = 0; d < dim; d++) out[d] = 0.6 * (b[d + 1] - a[d + 1]) / dq;
     return out;
   });
   const out = new Array(dim);

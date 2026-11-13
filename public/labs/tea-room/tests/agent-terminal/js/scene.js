@@ -17,7 +17,7 @@
 // of ten music videos, and the watcher.
 import * as THREE from 'three';
 import { PAL, FOG, clamp, lerp, ss, io, twelve, hash, rng, track, glowSprite, glow, decal, box, lit, flat } from './kit.js';
-import { makePlane, makeLog, makeCursor, makeEvening, makeWind } from './ground.js';
+import { makePlane, makeLog, makeCursor, makeEvening, makeWind, makeFar } from './ground.js';
 import { makeFigure, makeRing } from './origami.js';
 import { makeSwarm } from './swarm.js';
 import { makeWatcher } from './watcher.js';
@@ -33,13 +33,13 @@ const UP = new THREE.Vector3(0, 1, 0);
 // [back from the stop, height, to the side, then the point looked at: beyond, to the side, height, and the lens].
 const STOPS = [
   { key: 'entry', th: 0, R: 0, q: [0, 0.058], wide: [[3.3, 0.85, 0.9, 4, -0.2, 0.3, 40], [4.4, 1.5, 0.3, 3, 0.6, 0.2, 40]], tall: [[4.6, 1.5, 0.3, 5, 0, 0.3, 60], [5.6, 2.3, 0, 3, 0, 0.2, 60]] },
-  { key: 'helper', th: 38, R: 10, q: [0.088, 0.215], post: 'cost', wide: [[7.4, 2.7, -0.7, 0.5, 0.8, 0.6, 38], [5.8, 2.15, 0.2, 0.5, 1.25, 0.7, 38]], tall: [[9.6, 4.3, 0.2, 0.2, 0.4, 0.3, 58], [8.2, 3.7, 0.4, 0.2, 0.5, 0.4, 58]] },
-  { key: 'fanout', th: 84, R: 17, q: [0.25, 0.352], wide: [[16.5, 7.2, -1, 0, 0, 0, 40], [13, 5.6, 1, 0.5, 0, 0, 40]], tall: [[19, 9.5, 0, -1, 0, 0, 60], [16.5, 8.2, 0.6, -0.5, 0, 0, 60]] },
+  { key: 'helper', th: 38, R: 10, q: [0.088, 0.215], post: 'cost', wide: [[7.4, 2.7, -0.7, 0.5, 0.8, 0.6, 38], [6, 2.2, 0.3, 0.5, 1.5, 0.7, 38]], tall: [[9.8, 4.4, 0.3, 0.6, 0.4, 0.3, 58], [8.6, 3.9, 0.5, 0.6, 0.5, 0.4, 58]] },
+  { key: 'fanout', th: 84, R: 17, q: [0.25, 0.352], wide: [[16.5, 7.2, -1, 0, 0, 0, 40], [13, 5.6, 1, 0.5, 0, 0, 40]], tall: [[20, 9.5, 0, -4, 0, 0, 60], [17.6, 8.4, 0.6, -3.6, 0, 0, 60]] },
   { key: 'pipeline', th: 128, R: 11, q: [0.386, 0.476], wide: [[9.6, 2.9, -1.2, 0, 0, 0.55, 38], [8.2, 2.4, 1, 0, 0, 0.55, 38]], tall: [[11, 4.6, -1.6, 0, 0, 0.2, 58], [9.8, 4.1, -0.8, 0, 0, 0.3, 58]] },
   { key: 'orchestrator', th: 170, R: 13, q: [0.51, 0.592], wide: [[11.4, 3.7, -1.2, 0, 0, 1.2, 38], [9.6, 3.1, 1, 0, 0, 1.3, 38]], tall: [[13, 5.4, 0, 0, 0, 0.9, 58], [11.4, 4.7, 0.4, 0, 0, 1, 58]] },
   { key: 'writers', th: 214, R: 10, q: [0.626, 0.716], post: 'lie', wide: [[7.2, 3.1, -0.9, 0, 0.9, 0.7, 36], [5.8, 2.6, 0.2, 0, 1.3, 0.8, 36]], tall: [[9.4, 4.6, 0, 0, 0, 0.4, 58], [8, 3.9, 0.3, 0, 0, 0.5, 58]] },
-  { key: 'wall', th: 260, R: 18, q: [0.75, 0.888], post: 'gauntlet', wide: [[10.5, 2.3, -5.6, 0, -4.4, 1.4, 38], [16.2, 2.7, 0, 0, 0, 2.25, 40], [14.8, 2.5, 0.5, 0, 0, 2.2, 40]], tall: [[10, 3.4, 0, 0, 0, 1, 58], [17.5, 5.6, 0, 0, 0, 5.3, 60], [16.4, 5.4, 0, 0, 0, 5.3, 60]], mid: 0.42 },
-  { key: 'watcher', th: 306, R: 10, q: [0.922, 1], post: 'clock', wide: [[6.4, 2.6, 2.3, -0.6, 0.3, 0.95, 36], [4.9, 2.1, 2.5, -0.8, 1, 1, 36]], tall: [[8, 3.8, 1.7, -0.6, 0, 0.6, 58], [6.8, 3.3, 1.9, -0.6, 0.2, 0.7, 58]] },
+  { key: 'wall', th: 260, R: 18, q: [0.75, 0.888], post: 'gauntlet', wide: [[17.2, 3.5, 0, 0, 0, 1.25, 40], [15.4, 3.2, 0.3, 0, 0, 1.2, 40]], tall: [[21.5, 5.4, 0, 0, 0, 5.6, 60], [20, 5.2, 0, 0, 0, 5.6, 60]] },
+  { key: 'watcher', th: 306, R: 10, q: [0.922, 1], post: 'clock', wide: [[6.6, 2.7, 2.6, -0.6, 0.5, 0.85, 36], [5.4, 2.25, 2.9, -0.8, 0.8, 0.9, 36]], tall: [[8, 3.8, 1.7, -0.6, 0, 0.6, 58], [6.8, 3.3, 1.9, -0.6, 0.2, 0.7, 58]] },
 ];
 STOPS.forEach((s) => {
   const a = s.th * DEG;
@@ -88,15 +88,16 @@ export function mount(host, options = {}) {
 
     // ---- the ground: log, cursor, the evening's window, wind
     const R = rng(20261113), spots = [];
-    for (let i = 0; i < 34; i++) {
-      const a = R() * 6.283, r = 3.2 + R() * R() * 46, x = Math.sin(a) * r, z = -Math.cos(a) * r, w = 3.4 + R() * 2.6;
-      if (STOPS.some((s) => s.R && Math.hypot(x - s.C.x, z - s.C.z) < 3.4)) continue;
-      spots.push({ x, z, w, i, rot: -a, o: 0.34 + R() * 0.34 });
+    for (let i = 0; i < 70; i++) {
+      const a = R() * 6.283, r = 5.2 + R() * R() * 46, x = Math.sin(a) * r, z = -Math.cos(a) * r, w = (2.6 + R() * 2.2) * (tall ? 0.72 : 1);
+      if (STOPS.some((s) => s.R && (Math.hypot(x - s.C.x, z - s.C.z) < 4.2 || Math.hypot(x - s.C.x + s.fwd.x * 4, z - s.C.z + s.fwd.z * 4) < 4.6 || Math.hypot(x - s.C.x + s.fwd.x * 7.5, z - s.C.z + s.fwd.z * 7.5) < 3.4))) continue;
+      spots.push({ x, z, w, i, rot: -a, o: 0.42 + R() * 0.4 });
     }
     const log = makeLog(spots); flatland.add(log.group); texts.push(log);
     const cursor = makeCursor(); add(cursor.group);
     const evening = makeEvening(invalidate); evening.group.position.set(-3, 0, -84); add(evening.group);
     const wind = makeWind(); scene.add(wind.lines);
+    add(makeFar());
 
     // a helper that comes down out of the dark with a card and sets it on the glass at L
     function courier(L, s, perchSide = 0.85) {
@@ -124,7 +125,7 @@ export function mount(host, options = {}) {
     {
       const s = S.helper, ring = makeRing(0.95); ring.group.position.copy(s.C); add(ring.group);
       const fig = makeFigure('crane'); fig.group.scale.setScalar(0.82); const g = new THREE.Group(); g.add(fig.group); add(g);
-      const I = at(s, 21, -6.5), L = tall ? at(s, -1.5, 1.2) : at(s, -0.2, 2.2), perch = L.clone().addScaledVector(s.side, tall ? -1 : 0.9).addScaledVector(s.fwd, 0.5);
+      const I = at(s, 21, -6.5), L = tall ? at(s, -2.3, 0.2) : at(s, -0.2, 2.2), perch = L.clone().addScaledVector(s.side, 0.9).addScaledVector(s.fwd, 0.5);
       const isle = decal(3.2, 3.2, flat(0x1d1f28, { transparent: true, opacity: 0.9, fog: true })); isle.position.set(I.x, 0.003, I.z); isle.rotation.z = -s.th * DEG; flatland.add(isle);
       const fire = glowSprite(PAL.ember, 2.2, 0.8); fire.position.set(I.x + 0.7, 0.35, I.z); add(fire);
       const sheet = decal(0.7, 0.46, flat(0x1a1c2a)), edge = decal(0.74, 0.5, flat(PAL.amber, { transparent: true, opacity: 0.85 })); edge.position.y = -0.001;
@@ -291,20 +292,20 @@ export function mount(host, options = {}) {
       const s = S.wall;
       wall = makeWall({ tall, canPlay: !still && !calm, invalidate, holder });
       wall.group.position.copy(s.C); wall.group.rotation.y = -s.th * DEG; add(wall.group);
-      const L = tall ? at(s, -5.2, 0) : at(s, -4.2, -6.4); const drop = courier(L, s, 0.95);
-      s.lamp = at(s, -6, 0, 3.4); s.card = L; s.label = tall ? null : at(s, -5.2, 2.6);
+      const L = tall ? at(s, -5.2, 0) : at(s, -9.6, -4.3); const drop = courier(L, s, 0.95);
+      s.lamp = at(s, -6, 0, 3.4); s.card = L; s.label = tall ? null : at(s, -7.6, -0.6);
       s.wall = wall;
       parts.push((q, t) => {
-        const p = s.p, rise = ss(0.3, 0.62, p);
+        const p = s.p, rise = ss(-0.12, 0.34, p);
         s.rise = rise;
         if (q > s.q[0] - 0.09 && q < s.q[1] + 0.06) wall.load();
         wall.setPlaying(active && s.a > 0.12 && rise > 0.04);
         wall.update(rise, t, 0.35 + 0.65 * s.a);
-        drop(ss(0.02, 0.2, p), t);
+        drop(ss(0.2, 0.42, p), t);
         const k = rise * (0.3 + 0.7 * s.a), w = wall.size.w;
         for (let i = -1; i <= 1; i++) plane.pool(s.C.x - s.fwd.x * 2 + s.side.x * i * w * 0.3, s.C.z - s.fwd.z * 2 + s.side.z * i * w * 0.3, tall ? 4 : 5, i === 0 ? [0.5, 0.42, 0.85] : i < 0 ? [0.85, 0.4, 0.7] : [0.4, 0.55, 0.9], 0.085 * k);
-        plane.pool(L.x, L.z, 2.2, [0.55, 0.6, 0.9], 0.07 * ss(0.16, 0.3, p) * s.a);
-        s.u = ss(0.2, 0.33, p);
+        plane.pool(L.x, L.z, 2.2, [0.55, 0.6, 0.9], 0.07 * ss(0.38, 0.5, p) * s.a);
+        s.u = ss(0.42, 0.56, p);
       });
       disposers.push(() => wall.dispose());
     }
@@ -313,8 +314,8 @@ export function mount(host, options = {}) {
     {
       const s = S.watcher, watcher = makeWatcher(); watcher.group.position.copy(s.C); watcher.group.rotation.y = -s.th * DEG; add(watcher.group); texts.push(watcher);
       watcher.group.updateMatrixWorld(true); s.lamp = watcher.group.localToWorld(watcher.lamp.clone());
-      const L = tall ? at(s, -2.9, 0.9) : at(s, -0.9, 3.3); const drop = courier(L, s, tall ? -1 : 0.9);
-      s.card = L; s.label = tall ? null : at(s, -2.5, 0.3);
+      const L = tall ? at(s, -2.9, 0.9) : at(s, -1.2, 2.9); const drop = courier(L, s, tall ? -1 : 0.9);
+      s.card = L; s.label = tall ? null : at(s, -2.3, 0.9);
       parts.push((q, t) => {
         const p = s.p;
         watcher.update(t, ss(0.74, 0.94, p), s.a > 0.05 && !still && !calm);
@@ -379,7 +380,7 @@ export function mount(host, options = {}) {
     plane.end();
     let wsum = 0; tmp.set(0, 0, 0);
     S.forEach((s) => { const w = s.a * s.a; if (s.lamp && w > 0) { tmp.addScaledVector(s.lamp, w); wsum += w; } });
-    if (wsum > 0.0001) { key.position.copy(tmp.multiplyScalar(1 / wsum)); key.intensity = 22 * Math.min(1, wsum); } else key.intensity = 0;
+    if (wsum > 0.0001) { key.position.copy(tmp.multiplyScalar(1 / wsum)); key.intensity = 60 * Math.min(1, wsum); } else key.intensity = 0;
     // draw: first the world upside down, which is what the glass mirrors; then the glass over it, and the world
     renderer.info.reset();
     renderer.clear();
@@ -399,10 +400,10 @@ export function mount(host, options = {}) {
     ui.place(ui.lead, 0, -(1 - la) * 40, la);
     // the labels: under each scene on a wide window; on a tall one, in a fixed place under the picture
     Object.entries(ui.labels).forEach(([k, e]) => {
-      const s = S[k], a = s.a * (k === 'wall' ? ss(0.28, 0.4, s.p) : ss(0.02, 0.12, s.p));
+      const s = S[k], a = s.a * ss(0.02, 0.12, s.p);
       if (a <= 0.01) { ui.place(e, 0, 0, 0); return; }
       const b = ui.size(e);
-      if (tall || !s.label) { ui.place(e, Math.round((W - b.w) / 2), Math.round(H * (k === 'wall' ? 0.715 : 0.565)), a); return; }
+      if (tall || !s.label) { ui.place(e, Math.round((W - b.w) / 2), Math.round(H * (k === 'wall' ? 0.688 : 0.68)), a); return; }
       const p = project(s.label);
       ui.place(e, clamp(p.x - b.w / 2, 16, W - b.w - 16), Math.min(p.y, H - b.h - 18), p.behind ? 0 : a);
     });
@@ -415,13 +416,14 @@ export function mount(host, options = {}) {
       const w = ui.size(card.a).w, h = ui.size(card.a).h;
       if (tall) {
         // docked at the foot of the window; at the wall it makes room for the screens once they are up
-        const away = k === 'gauntlet' ? ss(0.36, 0.5, s.p) : 0;
+        const away = k === 'gauntlet' ? ss(0.7, 0.8, s.p) : 0;
         ui.place(card.a, Math.round((W - w) / 2), H - h - 14 + away * (h + 30), a * (1 - away));
         return;
       }
-      const p = project(s.card), dist = camera.position.distanceTo(s.card), sc = clamp(7.2 / dist, 0.6, 1);
+      const p = project(s.card), dist = camera.position.distanceTo(s.card), sc = clamp(7.2 / dist, 0.74, 1);
       if (k === 'gauntlet') a *= 1 - ss(0.82, 0.97, s.p) * 0;
-      ui.place(card.a, p.x - w / 2, p.y - h + 4, p.behind ? 0 : a, sc);
+      const half = w * sc / 2, cx = s.a > 0.98 ? clamp(p.x, half + 20, W - half - 20) : p.x;
+      ui.place(card.a, cx - w / 2, Math.min(p.y + 4, H - 16) - h, p.behind ? 0 : a, sc);
     });
     // the wall: the names under the ten screens, the key, the sound switch
     const ws = S.wall, wall = built.wall, wa = ws.a * (ws.rise || 0);
@@ -436,14 +438,14 @@ export function mount(host, options = {}) {
       quad[0].set(-SW / 2, 0, 0).applyMatrix4(m); quad[1].set(SW / 2, 0, 0).applyMatrix4(m); quad[2].set(SW / 2, SH, 0).applyMatrix4(m); quad[3].set(-SW / 2, SH, 0).applyMatrix4(m);
       const a = project(quad[0]), ax = a.x, ay = a.y, b = project(quad[1]), bx = b.x, by = b.y, c2 = project(quad[2]), cx = c2.x, cy = c2.y, d = project(quad[3]), dx = d.x, dy = d.y;
       if (px >= Math.min(ax, dx) && px <= Math.max(bx, cx) && py >= Math.min(cy, dy) && py <= Math.max(ay, by)) over = i;
-      ui.place(e, (ax + bx) / 2 - ui.size(e).w / 2, Math.max(ay, by) + (tall ? 3 : 6), wa * ss(0.9, 1, up));
+      ui.place(e, Math.min(ax, dx) + 1, Math.max(ay, by) + (tall ? 3 : 6), wa * ss(0.9, 1, up));
     });
     hot = wa > 0.3 ? over : -1;
     if (!('ontouchstart' in window) && hot >= 0 && hot !== wall.picked) choose(hot);
     canvas.style.cursor = hot >= 0 ? 'pointer' : '';
-    const keyA = wa * ss(0.75, 1, ws.rise || 0);
+    const keyA = wa * ss(0.75, 1, ws.rise || 0) * (tall ? ss(0.78, 0.88, ws.p) : 1);
     const sb = ui.size(ui.sound), kb = ui.size(ui.key);
-    if (tall) { ui.place(ui.key, 14, Math.round(H * 0.775), keyA); ui.place(ui.sound, 14, H - sb.h - 14, keyA); ui.place(ui.now, 0, 0, 0); }
+    if (tall) { ui.place(ui.key, 14, H - sb.h - kb.h - 22, keyA); ui.place(ui.sound, 14, H - sb.h - 14, keyA); ui.place(ui.now, 0, 0, 0); }
     else {
       ui.place(ui.sound, W - sb.w - 24, H - sb.h - 22, keyA);
       ui.place(ui.key, W - kb.w - 24, H - sb.h - kb.h - 36, keyA);

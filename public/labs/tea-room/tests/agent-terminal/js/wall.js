@@ -11,7 +11,7 @@ const HERE = new URL('../img/wall/', import.meta.url).href;
 
 export function makeWall({ tall, canPlay, invalidate, holder }) {
   const group = new THREE.Group();
-  const GX = 0.42, GY = 0.82, FOOT = 0.5;
+  const GX = 0.42, GY = tall ? 0.74 : 0.82, FOOT = 0.5;
   const postM = lit(0x15161c), bezelM = lit(0x0b0c11);
   const loader = new THREE.TextureLoader();
   const screens = WALL.map((w, i) => {
@@ -32,17 +32,18 @@ export function makeWall({ tall, canPlay, invalidate, holder }) {
     rim.geometry.translate(0, SH / 2, 0); rim.position.z = 0.045;
     const fig = makeFigure(FOLD_OF_LEVEL[w.level], { paper: w.row === 0 ? PAL.cream : PAL.blue, line: w.row === 0 ? 0x6b5f4a : 0xdfe6ff, lineOpacity: 0.95, glowAmt: 0.5, print: false });
     fig.group.scale.setScalar(w.level === 4 ? 0.3 : w.level === 3 ? 0.3 : 0.34);
-    fig.group.position.set(-SW / 2 + 0.42, SH + 0.075, 0.02); fig.group.rotation.y = -0.55;
+    fig.group.position.set(SW / 2 - 0.44, SH + 0.075, 0.02); fig.group.rotation.y = -0.55;
     g.add(bezel, rim, pic, fig.group);
     group.add(g);
     return { w, i, g, pic, mat, rim, fig, poster, by, video: null, vtex: null };
   });
   // one post behind each column
+  const posts = [];
   const cols = tall ? 2 : 5, topY = tall ? FOOT + 4 * (SH + GY) + SH : FOOT + SH + GY + SH;
   for (let c = 0; c < cols; c++) {
     const s = screens.find((x) => (tall ? x.w.row : x.w.level) === c);
-    const p = box(0.1, topY, 0.1, postM); p.position.set(s.g.position.x, topY / 2, s.g.position.z - 0.1);
-    group.add(p);
+    const p = box(0.1, topY, 0.1, postM); p.geometry.translate(0, topY / 2, 0); p.position.set(s.g.position.x, 0, s.g.position.z - 0.1);
+    group.add(p); posts.push(p);
   }
   const size = { w: tall ? 2 * SW + GX : 5 * SW + 4 * GX, h: topY + 0.5 };
 
@@ -116,6 +117,7 @@ export function makeWall({ tall, canPlay, invalidate, holder }) {
     get picked() { return picked; }, get heard() { return heard; }, get soundOn() { return soundOn; },
     // rise: 0 nothing stands yet, 1 all ten are up; they unroll upward one after another, Low first
     update(rise, t, dim) {
+      posts.forEach((p, c) => { const e = ss(0, 1, clamp(rise * 2.6 - c * (tall ? 0.1 : 0.2))); p.scale.y = Math.max(0.001, e); p.visible = e > 0.002; });
       screens.forEach((s) => {
         const e = ss(0, 1, clamp(rise * 1.9 - s.w.level * 0.18 - s.w.row * 0.08));
         const pop = s.i === picked ? 1 : 0;

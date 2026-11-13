@@ -16,20 +16,21 @@ export function buildUI(host) {
 
   const labels = {};
   Object.entries(LABELS).forEach(([k, v]) => {
-    const d = el('div', 'at-label'); d.append(el('b', '', v.name), el('span', '', v.line));
+    const d = el('div', 'at-label at-label-' + k); d.append(el('b', '', v.name), el('span', '', v.line));
     labels[k] = d; ui.append(d);
   });
 
   const posts = {};
   Object.entries(POSTS).forEach(([k, p]) => {
     const a = el('a', 'at-post'); a.href = '/ledger/' + p.slug + '/';
-    const pic = el('span', 'at-post-pic');
+    const pic = el('span', 'at-post-pic'); pic.dataset.id = p.id;
+    const leaf = el('span', 'at-post-fold');
     const img = el('img'); img.src = p.img; img.alt = ''; img.width = 640; img.height = 360; img.decoding = 'async'; img.loading = 'lazy';
     pic.append(img);
     const cap = el('span', 'at-post-cap');
     const label = el('span', 'at-post-label'); label.append(el('i', '', p.id), document.createTextNode(p.verdict));
     cap.append(label, el('strong', 'at-post-title', p.title), el('span', 'at-post-line', p.line), el('span', 'at-post-go', 'Read the post'));
-    a.append(pic, cap);
+    leaf.append(pic, cap); a.append(leaf);
     posts[k] = { a, pic, cap }; ui.append(a);
   });
 
