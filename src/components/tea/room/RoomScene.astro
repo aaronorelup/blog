@@ -4,10 +4,7 @@
 // layer. An opening's port stands directly behind the flat with the hole, in the same group, and holds a copy of
 // the scene behind at its opening frame (its flats, its word), and two deep only that scene's still (2.3). Plates
 // carry data-src (decoded before they get it, and drawn with decoding="sync", so a frame never shows one half
-// drawn). A port's copy asks for its plates at their own address with ?in=port: a browser that has drawn one
-// picture at two sizes may reuse the first size's decode for the second, and the frame at the handover would then
-// differ by the way the page was reached (the purity test saw it); a separate address costs a second fetch of
-// what the opening shows and load.js gives them their picture (the first chapter's carry src, for the first paint).
+// drawn), and load.js gives them their picture (the first chapter's carry src, for the first paint).
 // The engine (apply.js) places every element: nothing here has a place of its own.
 interface Props { room: any; sceneKey: string; layer: 'back' | 'front'; words: Record<string, any>; eager?: boolean }
 const { room, sceneKey, layer, words, eager = false } = Astro.props;
@@ -35,7 +32,7 @@ const backIndex = (sc: any) => sc.flats.findIndex((f: any) => f.r >= 1 && !f.thr
                 {[...T[comp].flats.map((g: any, j: number) => [g, j]).filter(([g]: any) => !g.front),
                   ...T[comp].flats.map((g: any, j: number) => [g, j]).filter(([g]: any) => g.front)].map(([g, j]: any) => (
                   <Fragment>
-                    {g.src && <img class="room-flat" data-i={j} data-src={`${g.src}?in=port`} alt="" width={g.px[0]} height={g.px[1]} decoding="sync" />}
+                    {g.src && <img class="room-flat" data-i={j} data-src={g.src} alt="" width={g.px[0]} height={g.px[1]} decoding="sync" />}
                     {g.fill && <div class="room-flat" data-i={j} data-fill={g.fill}></div>}
                     {g.text && (
                       <div class="room-flat room-word" data-i={j}>

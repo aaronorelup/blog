@@ -75,6 +75,7 @@
 }
 :where(.room-end) .tea-foot-copy a { color: var(--pc-soft); }
 @media (max-width: 1180px) { :where(.room-end) .tea-utils-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 720px) { :where(.room-end) .tea-row { padding-left: 12px; } }
 @media (max-width: 560px) { :where(.room-end) .tea-utils-list { grid-template-columns: minmax(0, 1fr); } }
 
 /* /tea/'s `.tea a { color: inherit }` comes after these rules there and outranks the footer's own link colours; it

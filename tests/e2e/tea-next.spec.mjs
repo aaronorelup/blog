@@ -47,6 +47,16 @@ test('tea-next-2 each chapter shows exactly its shelves\' posts, in order, each 
     if (c.kind === 'topic') expect(got.filter((h) => h.startsWith('/ledger/?topic=')), c.id).toHaveLength(1);
     all.push(...posts);
   }
+  // the machines: each its own address in the lab; projects: one link to each picked project
+  const machines = (PICKS.shelves['tv/machines']?.picks ?? []).map((m) => `/labs/teardown/${m.slice(2)}/`);
+  if (CHAPTERS.some((c) => c.id === 'tv')) {
+    const got = await page.locator('[data-room-chapter="tv"] a[href^="/labs/teardown/"]').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+    expect(got).toEqual(machines);
+  }
+  if (CHAPTERS.some((c) => c.id === 'projects')) {
+    const picked = Object.entries(PICKS.shelves).filter(([k]) => k.startsWith('projects/')).flatMap(([, s]) => s.picks);
+    expect(await page.locator('[data-room-chapter="projects"] .room-slip-title a').count()).toBe(picked.length);
+  }
   const outside = await page.locator('a[href^="/ledger/"]:not([data-room-chapter] a)').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
   expect(outside.filter((h) => /^\/ledger\/[^/?]+\/$/.test(h))).toEqual([]);
 });
@@ -159,6 +169,8 @@ test('tea-next-17 an address with a chapter lands on its opening frame in one st
 test('tea-next-13 no console message, no sideways scroll, and every picture in reach has decoded, at every chapter\'s opening frame and every half screen', async ({ page }) => {
   test.setTimeout(300_000);
   const problems = watchConsole(page);
+  const heavy = [];
+  page.on('request', (r) => { if (/\.glb(\?|$)|\/three\.|GLTFLoader/.test(r.url())) heavy.push(r.url()); });
   await page.goto(`${TEA}?still=1`);
   await settle(page);
   const secs = await sections(page);
@@ -175,6 +187,30 @@ test('tea-next-13 no console message, no sideways scroll, and every picture in r
   }
   expect(bad).toEqual([]);
   expect(problems).toEqual([]);
+  expect(heavy, 'no three and no model before the 3D chapter asks (the stub never does)').toEqual([]);
+});
+
+test('tea-next-8 the room leads back to the main site: one link to / in the hero slip, in the index as shown, and in the footer, which carries the main nav', async ({ page }) => {
+  await page.goto(`${TEA}?still=1`);
+  await settle(page);
+  await expect(page.locator('.room-title-slip a[href="/"]')).toHaveCount(1);
+  // under 1024 px the index's way back is in the tab's sheet: open it
+  if (await page.locator('.room-tab > summary').isVisible()) await page.locator('.room-tab > summary').click();
+  const shown = await page.locator('.room-index a[href="/"]').evaluateAll((as) => as.filter((a) => a.getClientRects().length && getComputedStyle(a).display !== 'none' && !a.closest('details:not([open])')).length);
+  expect(shown).toBe(1);
+  await expect(page.locator('.tea-foot a[href="/"]')).toHaveCount(1);
+  const { NAV } = await import('../../src/data/site.js');
+  for (const n of NAV) await expect(page.locator(`.tea-foot-nav a[href="${n.href}"]`)).toHaveCount(1);
+});
+
+test('tea-next-24 the page\'s planned places are its real ones: the screens are fully shut at every section\'s top from the third chapter on', async ({ page, isMobile }) => {
+  await page.goto(`${TEA}?still=1`);
+  await settle(page);
+  for (const s of (await sections(page)).slice(2)) {
+    await page.evaluate((y) => scrollTo(0, Math.round(y)), s.top);
+    await settle(page);
+    expect(await page.evaluate(() => window.__room.frame.screens.shut), s.id).toBe(1);
+  }
 });
 
 test('tea-next-18 head and tail: each chapter\'s first paper begins 1.2 vh in (1.0 after the hero) and its last ends 0.6 vh before its end (1.6 when last); the screens are shut when the footer comes in', async ({ page }) => {

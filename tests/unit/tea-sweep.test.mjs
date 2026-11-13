@@ -10,7 +10,7 @@ const frame = (name) => fs.readFileSync(new URL(`./fixtures/tea/sweep/b-${name}.
 const judged = (name) => judgePicture(frame(name), { phone: name.startsWith('p-') });
 
 test('the sweep fails B at 0.82 to 0.84 on a desktop and its dark phone frames, and passes its dark good frames', async () => {
-  for (const name of ['d-0.82', 'd-0.83', 'd-0.84', 'p-0.45', 'p-0.5', 'p-0.55', 'p-0.6', 'p-0.83']) {
+  for (const name of ['d-0.82', 'd-0.83', 'd-0.84', 'p-0.45', 'p-0.5', 'p-0.55', 'p-0.58', 'p-0.6', 'p-0.66', 'p-0.83']) {
     assert.equal((await judged(name)).ok, false, `${name} should fail`);
   }
   for (const name of ['d-0.58', 'd-0.66', 'd-0.3', 'p-0.2']) {
