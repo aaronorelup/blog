@@ -18,8 +18,10 @@ File names are the same. A builder who read the first version of this page needs
 - `tv.webp`: the same size and the same glass box. The glass's corners moved by a few px. It now has the
   garden's night painted into it, and a heavier ink line.
 - All three sets have new colours (the table in the television's section) and no wood grain.
-- `screen.webp`: the same size and the same geometry. Its paper is thinner (alpha 0.09 where plain, not 0.2),
-  so the field's colour comes through clean, and the pale pixels along its ink lines are gone.
+- `screen.webp`: the same size and the same geometry. Its paper is thinner (alpha 0.09 beside the post, not
+  0.2), so the field's colour comes through clean, and the pale pixels along its ink lines are gone.
+- **`screen-p.webp` is new**: the screen for an upright frame (a phone). One `<picture>` chooses between the
+  two plates, and the CSS is the same (the screen's section).
 - `shadow-example.webp`: the same size and box, a new picture. The recipe changed: a shadow only darkens.
   A chapter's own `shadow.mjs` should be copied again from this page.
 
@@ -73,12 +75,13 @@ def crisp(rgb, radius=1.6, amount=1.6, reach=2):          # rgb: float array, he
 | File | Pixels | Bytes | Alpha | What it is |
 |---|---|---|---|---|
 | `washi.webp` | 512, 512 | 6,320 | no | the paper tile. Tiles both ways. Its mean colour is the paper colour `#F1E6D0` |
-| `screen.webp` | 1776, 2000 | 292,690 | yes | one sliding screen: cedar frame and lattice opaque, the paper see-through |
+| `screen.webp` | 1776, 2000 | 283,004 | yes | one sliding screen: cedar frame and lattice opaque, the paper see-through |
+| `screen-p.webp` | 902, 3300 | 249,576 | yes | the same screen re-laid for an upright frame (a phone): three panes across, twelve down |
 | `sheet-shadow.webp` | 384, 384 | 4,284 | yes | the one shadow under a sheet or a slip, as a nine-slice |
 | `tv.webp` | 2254, 2048 | 135,520 | yes | the little television, three-quarter view, cut out, its glass a hole |
 | `tv-face.webp` | 3602, 3330 | 293,296 | yes | the same set seen from the front, whole, cut out, its glass a hole |
 | `tv-face-p.webp` | 2160, 3840 | 153,914 | yes | the same front picture at a phone's size, on a 9:16 canvas |
-| `shadow-example.webp` | 1620, 720 | 22,112 | yes | the worked example of a screen shadow: a lantern and a kettle |
+| `shadow-example.webp` | 1620, 720 | 22,696 | yes | the worked example of a screen shadow: a lantern and a kettle |
 
 No file is video or audio. The largest is under 1 MiB.
 
@@ -95,54 +98,72 @@ the same before and after the tile arrives. Its fibres are long and faint (the t
 deviation of 1.77 levels), so 16 px text reads on it as on plain paper. A chapter's 6% tint goes
 over it as a flat layer of the chapter's light colour.
 
-## screen.webp
+## screen.webp, and screen-p.webp for an upright frame
 
 **What is in it.** The left-hand screen, seen flat: five panes across and six down. Its right edge is the stile
 that meets the other screen at the post. The right-hand screen is the same picture mirrored (`scaleX(-1)`).
 
-- Frame, lattice bars, the rail and the board at the foot: opaque.
-- Paper: alpha 0.09 where it is plain, rising to about 0.43 in the
-  soft shade a bar throws on it. Its colour is a dark plum, so paper only ever dims what is behind it. Put one
-  flat field of colour behind the screen and the paper takes that colour. No blend mode is needed.
+- Frame, lattice bars, the rail and the board at the foot: opaque. The cedar is `rgb(64, 39, 41)` and its
+  ink line `rgb(19, 12, 17)` whatever the field, because wood lets nothing through.
+- Paper: alpha 0.13 where it is plain (0.09 beside the post and low down, rising to about
+  0.2 toward the top rail and the outer stile, so the light seems to stand low behind the post), and about
+  0.45 in the soft shade a bar throws on it. Its colour is a dark plum, so paper only
+  ever dims what is behind it. Put one flat field of colour behind the screen and the paper takes that
+  colour. No blend mode is needed.
 - The stack, from the back: the field (a `background-color` on the screen's own box), then the chapter's
   shadow, then this plate. So the lattice crosses the shadow, as it would.
 
-**Its geometry, as shares of the plate** (measured from the file):
+**Its geometry, as shares of the plate** (measured from the files):
 
-| Part | Across (x) | Down (y) |
-|---|---|---|
-| Outer stile (left) | 0 to 0.061 | |
-| Five panes | 0.061 to 0.939 | |
-| Meeting stile (right) | 0.939 to 1 | |
-| Top rail | | 0 to 0.051 |
-| Six rows of panes | | 0.051 to 0.844 |
-| Rail under the lattice | | 0.844 to 0.886 |
-| Board at the foot | | 0.886 to 1 |
+| Part | `screen.webp` across (x) | down (y) | `screen-p.webp` across (x) | down (y) |
+|---|---|---|---|---|
+| Outer stile (left) | 0 to 0.061 | | none: the plate starts in a bar | |
+| Panes | five, 0.061 to 0.939 | | three, 0.017 to 0.897 | |
+| Meeting stile (right) | 0.939 to 1 | | 0.897 to 1 | |
+| Top rail | | 0 to 0.051 | | 0 to 0.027 |
+| Rows of panes | | six, 0.051 to 0.844 | | twelve, 0.027 to 0.854 |
+| Rail under the lattice | | 0.844 to 0.886 | | 0.854 to 0.876 |
+| Board at the foot | | 0.886 to 1 | | 0.876 to 1 |
 
 **How to draw it.** Each screen's box is 52% of the frame wide and 116% of it tall, with its top at the top of
-the frame. The plate covers the box, anchored to its top and to the meeting stile:
+the frame. The plate covers the box, anchored to its top and to the meeting stile. The same rule draws both
+plates: use `screen-p.webp` where the frame is upright and narrower than three fifths of its height (a phone),
+and `screen.webp` everywhere else.
 
 ```css
 .screen img { width: 100%; height: 100%; object-fit: cover; object-position: 100% 0; }
 .screen-r img { transform: scaleX(-1); }
 ```
 
-The plate is a little squarer than the box (0.888 against 0.797 at 16:9), on purpose. Wherever the box is the
-narrower shape, which is every window up to 16:9 and every phone, the plate is fitted by its height: the
-frame's foot then falls at 86.2% of the plate, in the middle of the rail under the lattice, so the frame ends on
-a strip of cedar and the plain board is never seen. The spare width is cut at the outer edge, which is at or
-past the window's edge when the screens are shut. On a window wider than 16:9 the plate is fitted by its width
-and the foot cuts through the last row of panes instead.
+```html
+<picture><source media="(max-aspect-ratio: 3/5)" srcset="/tea/shared/screen-p.webp"><img src="/tea/shared/screen.webp" alt=""></picture>
+```
 
-| Window | Box (CSS px) | Plate drawn at | Shows |
-|---|---|---|---|
-| 1920 x 1080 | 998 x 1253 | 0.63 of its size | 4.5 panes across, 6 down |
-| 2560 x 1440 | 1331 x 1670 | 0.84 | the same |
-| 1440 x 900 at two device pixels | 749 x 1044 | 1.04 device px to a plate px | 4.2 panes across |
-| 390 x 844 | 203 x 979 | 0.49 (2.04 plate px to a CSS px) | the stile and one pane |
+`screen.webp` is a little squarer than the box (0.888 against 0.797 at 16:9), on purpose. Wherever the box is
+the narrower shape, which is every window up to 16:9, the plate is fitted by its height: the frame's foot then
+falls at 86.2% of the plate, in the middle of the rail under the lattice, so the frame ends on a strip of
+cedar and the plain board is never seen. The spare width is cut at the outer edge, which is at or past the
+window's edge when the screens are shut. On a window wider than 16:9 the plate is fitted by its width and the
+foot cuts through the last row of panes instead. `screen-p.webp` (0.273) is fitted by its height on any frame
+narrower than three fifths of its height, and the foot again falls in its rail (85.4% to 87.6%).
 
-**Checked** over lantern amber `#FFD892`, the television's `#9FB8FF`, a pale `#F6E7C8`, and the night ground
-`rgb(16, 18, 32)`, each over a dark room (the rounds below).
+**Why a phone has its own plate.** Drawn on a 390 px phone, `screen.webp` gives each screen one column of
+panes 136 px wide and a double post a quarter of the screen across, and at three device pixels it is enlarged
+1.47 times. `screen-p.webp` is the same painting re-laid by script for an upright frame: the three columns
+beside the meeting stile, and twelve rows (the six painted rows, each with half the bar above and below it,
+laid in a new order and cross-faded over 28 px where they join). Nothing in it was generated.
+
+| Window | Plate | Box (CSS px) | Plate drawn at | Shows |
+|---|---|---|---|---|
+| 1920 x 1080 | `screen.webp` | 998 x 1253 | 0.63 of its size | 4.5 panes across, 6 down |
+| 2560 x 1440 | `screen.webp` | 1331 x 1670 | 0.84 | the same |
+| 1440 x 900 at two device pixels | `screen.webp` | 749 x 1044 | 1.04 device px to a plate px | 4.2 panes across |
+| 390 x 844 at three device pixels | `screen-p.webp` | 203 x 979 | 0.89 device px to a plate px | the stile and 2.3 panes across (72 x 56 px each), 10 down |
+| 430 x 932 at three device pixels | `screen-p.webp` | 224 x 1081 | 0.98 | the same |
+
+**Checked** in a browser with exactly this CSS, over lantern amber `#FFD892`, the television's `#9FB8FF`, a
+pale `#F6E7C8`, and the night ground `rgb(16, 18, 32)`, each over a dark room, shut and half open, at
+1440 x 900, 1920 x 1080, 2560 x 1440, 390 x 844 and 430 x 932 (the screens' round).
 
 ## sheet-shadow.webp
 
@@ -305,8 +326,9 @@ cold blue, pale. The script refuses to write a picture whose lightest colour is 
    with a fainter second edge at 1.2% (its penumbra). Colour: ink plum `#261A2A`. Density: 0.78.
 2. **A lamp is the same shadow, thinner, never a hole.** The parts of the object that are its lamp are named in
    the config (`lit`). A paper shade lit from inside (a lantern) has density 0.40. A lamp that shines straight
-   at the paper (a television's tube, a lens: `"tube": true`) has 0.13, which is what "its tube glowing" means
-   here: the tube is nearly the field's own light, with the dark case round it.
+   at the paper (a television's tube, a lens: `"tube": true`) has 0.20, which is what "its tube glowing" means
+   here: the tube is nearly the field's own light, with the dark case round it. The lamp's edge inside the
+   silhouette is blurred by 0.9% of the picture's width, so it is a glow and never a cut-out.
 3. **Warmth near the lamp.** The shadow of whatever stands beside a lamp is thinner and warmer on the lamp's
    side: its density falls by up to a third, and its colour moves from ink plum toward the lamp's colour (a warm
    umber `#6A452C`, or for a cold lamp `"lamp": "#3B4868"`), over a distance of 9% of the picture's width. This
@@ -335,7 +357,7 @@ const W = Math.round(bw * 3 * px), H = Math.round(bh * 3 * px);
 const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
 const INK = hex('#261A2A');                                 // the shadow: ink plum
 const LAMP = hex(cfg.lamp ?? '#6A452C');                    // the shadow where a lamp warms it (a cold lamp: '#3B4868')
-const DARK = 0.78, THIN = 0.40, TUBE = 0.13, WARM = 0.34;   // fixed strengths: the object, a paper shade lit from inside, a tube or a lens
+const DARK = 0.78, THIN = 0.40, TUBE = 0.20, WARM = 0.34;   // fixed strengths: the object, a paper shade lit from inside, a tube or a lens
 const SHADE = cfg.shade ?? 0;                               // the dusk a beam cuts through (a projector): 0.16, else none
 const smooth = (lo, hi, x) => { const t = Math.min(1, Math.max(0, (x - lo) / (hi - lo))); return t * t * (3 - 2 * t); };
 
@@ -363,8 +385,8 @@ const blur = async (f, sigma) => {                          // a blurred copy of
 };
 const edge = await blur(solid, W * 0.0035);                 // the silhouette, a little soft, as through paper
 const pen = await blur(solid, W * 0.012);                   // and its penumbra
-const lamp = await blur(lit, W * 0.0035);                   // the lamp's own part of the silhouette
-const tubeS = await blur(tube, W * 0.0035);
+const lamp = await blur(lit, W * 0.009);                    // the lamp's own part of the silhouette: a soft edge, never a cut-out
+const tubeS = await blur(tube, W * 0.009);
 const near = await blur(lit, W * 0.09);                     // the lamp's warmth, which reaches the things beside it
 const dusk = SHADE ? await blur(solid, W * 0.11) : null, beam = SHADE ? await blur(clear, W * 0.006) : null;
 let nmax = 0; for (const v of near) nmax = Math.max(nmax, v);
@@ -553,6 +575,35 @@ The three weakest things:
 What is not this piece's to fix, and is written into the television's section for the hero's builder: the
 pool of light on the grass and the contact shadow. With them the set stands on the lawn. Without them it
 floats (the sheet's last tile).
+
+### Round 4: the screens in the three light colours, at every size
+
+Frames drawn by a headless browser with the CSS of this page: the two screens over lantern amber, the
+television's blue, the pale light and the night ground, shut and half open, each with its shadow (the lantern
+and kettle, the television, the projector and its beam), over look B's rooms, at 1440 x 900, 1920 x 1080,
+2560 x 1440, 390 x 844 and 430 x 932 at three device pixels. Sheets: `r4-screens-sizes.png` (before),
+`r4-screens-phone.png`, `r4-screens-after-b.png`, `r4-screens-lights.jpg`.
+
+**What the brief asks, checked.** Each screen's box is 52% of the frame wide and 116% of it tall in every
+frame. The two overlap by 4% of the frame at the post: on a desktop that is the meeting stile's own width (58
+px of 1440), so the two stiles read as one post. The frame's foot falls in the rail under the lattice at every
+size, so the plain board is never seen. At 2560 x 1440 the plate is drawn at 0.84 of its size and its bars
+are as crisp as the garden plate's. The cedar measures the same in all three lights and over the night
+ground, and the paper is clean amber, clean blue and clean cream.
+
+The three weakest things:
+
+1. **On a phone the screen was the desktop's, cut down to a strip.** One column of panes 136 px wide to a
+   screen, a double post a quarter of the screen across, and at three device pixels the plate enlarged 1.47
+   times, so its bars were soft. A phone now has its own plate, `screen-p.webp`, re-laid by script from the same
+   painting: two columns and a part of a third to a screen, ten rows down, 0.89 device px to a plate px.
+2. **The television's shadow had a hole in it after all.** Its tube was a crisp-edged window of plain field
+   inside the dark case: the lantern's fault again, in a quieter form. A lamp's edge inside a silhouette is now
+   blurred nearly three times as far, and a tube is a fifth as dense as the case, not an eighth: a glow inside
+   a shadow.
+3. **The paper was one flat fill from corner to corner**, where the garden's own lit windows fall away toward
+   their edges. The paper's veil now thickens toward the top rail and the outer stile (from 0.09 to about 0.2),
+   so both screens are brightest low down beside the post, as if the lamp stood there.
 
 ## Generation log
 
