@@ -34,8 +34,7 @@
         "p-crimson-coil",
         "p-earthlight",
         "p-context-window",
-        "p-touch-move",
-        "p-the-small-one-harness"
+        "p-touch-move"
       ]
     },
     "tv/machines": {
@@ -62,10 +61,10 @@
       "auto": false,
       "count": 4,
       "picks": [
-        "p-storm-bell-fighter",
         "p-modding-megabonk",
         "p-characters-in-inscryption",
-        "p-blackwater-weekend"
+        "p-blackwater-weekend",
+        "p-grind-and-grimoire"
       ]
     },
     "art/leads": {
@@ -74,10 +73,8 @@
       "picks": [
         "p-echo-the-borrowed-voice",
         "p-claude-paints-in-oil",
-        "p-nine-claudes-one-painting",
         "p-jefrie-lora",
-        "p-moss-image-on-8gb",
-        "p-daily-candy"
+        "p-moss-image-on-8gb"
       ]
     },
     "3d/leads": {
@@ -107,7 +104,7 @@
         "p-no-vs-code-no-terminal",
         "p-monster-hunter-was-my-degree",
         "p-the-missing-map",
-        "p-loom-and-information-flow"
+        "p-reading-the-logs-of-mit-s-ai-weight-editing-experiments"
       ]
     },
     "site/leads": {
@@ -125,31 +122,35 @@
       "count": 2,
       "picks": [
         "j-blackwater",
-        "j-armies-of-gielinor"
+        "j-grind-and-grimoire",
+        "j-storm-bell-fighter"
       ]
     },
     "projects/watch": {
       "auto": false,
       "count": 2,
       "picks": [
-        "j-claude-paints-in-oil",
-        "j-blackwater-songs"
+        "j-evening-television",
+        "j-bad-very-bad",
+        "j-showreel",
+        "j-clawd-growth-montage"
       ]
     },
     "projects/download": {
       "auto": false,
       "count": 2,
       "picks": [
-        "j-blood-helix",
-        "j-llm-monster-hunter"
+        "j-claude-playback-lens",
+        "j-reading-pacer",
+        "j-wordhord"
       ]
     },
     "projects/read": {
       "auto": false,
       "count": 2,
       "picks": [
-        "j-my-characters",
-        "j-wallpaper-breaker"
+        "j-wallpaper-breaker",
+        "j-second-brain"
       ]
     },
     "projects/stopped": {
