@@ -119,6 +119,14 @@ a { color: inherit; }
 .rm .lead-rain { display: none; }
 .is-still .lead-rain { animation: none; }
 
+/* a short, wide window: a tighter card, so that it stays under the fighters' feet */
+@media (max-height: 760px) and (min-width: 700px) {
+  .card { padding: 14px 20px 16px; }
+  .card-meta { margin-bottom: 5px; }
+  .card-title { font-size: 25px; margin-bottom: 6px; }
+  .card-line { font-size: 15px; }
+  .card-actions { margin-top: 12px; }
+}
 @media (max-width: 560px) {
   .card { padding: 15px 17px 17px; }
   .card-line { font-size: 15px; }
