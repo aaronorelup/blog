@@ -161,6 +161,7 @@
 
     DPR = Math.min(window.devicePixelRatio || 1, W > 1200 ? 1.5 : 2);
     [lightCv, airCv].forEach(function (c) { c.width = Math.round(W * DPR); c.height = Math.round(H * DPR); });
+    beamCv.width = Math.ceil(W / BS); beamCv.height = Math.ceil(H / BS);
     for (var k in F) { F[k].last = ''; F[k].lo = -1; }
     worldTr = '';
   }
@@ -389,54 +390,58 @@
   }
 
   // ------------------------------------------------------------------ the beam
-  function hull(pts) {                                 // the outline round a handful of points
-    var p = pts.slice().sort(function (a, b) { return a[0] - b[0] || a[1] - b[1]; }), lo = [], up = [], i;
-    var cr = function (o, a, b) { return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]); };
-    for (i = 0; i < p.length; i++) { while (lo.length >= 2 && cr(lo[lo.length - 2], lo[lo.length - 1], p[i]) <= 0) lo.pop(); lo.push(p[i]); }
-    for (i = p.length - 1; i >= 0; i--) { while (up.length >= 2 && cr(up[up.length - 2], up[up.length - 1], p[i]) <= 0) up.pop(); up.push(p[i]); }
-    lo.pop(); up.pop(); return lo.concat(up);
-  }
-  function drawBeam(cam, t, lens, k, wide) {
-    // six shafts, one for each sixth of the picture, each in that part's own colour: the beam is the film on its way.
-    // Over the picture itself the beam is nearly nothing (the picture outshines it); in the air beside it, it shows
-    var fl = HELD ? 1 : 0.94 + 0.06 * Math.sin(t * 23.0) * Math.sin(t * 7.3);
-    var fq = FILMQ.map(function (p) { return plateXY(p, cam); });
-    for (var pass = 0; pass < 2; pass++) {
-      lx.save();
-      lx.beginPath();
-      if (pass === 0) { lx.rect(-10, -10, W + 20, H + 20); }
-      lx.moveTo(fq[0][0], fq[0][1]); lx.lineTo(fq[1][0], fq[1][1]); lx.lineTo(fq[2][0], fq[2][1]); lx.lineTo(fq[3][0], fq[3][1]); lx.closePath();
-      lx.clip('evenodd');
-      for (var j = 0; j < 6; j++) {
-        var cu = j % 3, cv = j < 3 ? 0 : 1;
-        var r = cells[j * 3], g = cells[j * 3 + 1], b = cells[j * 3 + 2], mx = Math.max(r, g, b, 0.06), l = 0.3 * r + 0.59 * g + 0.11 * b;
-        var a = k * fl * (0.1 + 0.62 * Math.pow(l, 0.6)) * (pass === 0 ? 1 : 0.16);
-        if (a < 0.004) continue;
-        var col = Math.round(255 * (0.62 * r / mx + 0.38)) + ',' + Math.round(255 * (0.62 * g / mx + 0.36)) + ',' + Math.round(255 * (0.62 * b / mx + 0.32));
-        var c = [plateXY(onFilm(cu / 3, cv / 2), cam), plateXY(onFilm((cu + 1) / 3, cv / 2), cam), plateXY(onFilm((cu + 1) / 3, (cv + 1) / 2), cam), plateXY(onFilm(cu / 3, (cv + 1) / 2), cam)];
-        var mxp = (c[0][0] + c[2][0]) / 2, myp = (c[0][1] + c[2][1]) / 2;
-        var gr = lx.createLinearGradient(lens[0], lens[1], mxp, myp);
-        gr.addColorStop(0, 'rgba(' + col + ',' + (a * 0.6).toFixed(3) + ')'); gr.addColorStop(0.5, 'rgba(' + col + ',' + (a * 0.34).toFixed(3) + ')'); gr.addColorStop(1, 'rgba(' + col + ',' + (a * 0.12).toFixed(3) + ')');
-        var hp = hull([lens, c[0], c[1], c[2], c[3]]);
-        lx.fillStyle = gr; lx.beginPath(); lx.moveTo(hp[0][0], hp[0][1]);
-        for (var q = 1; q < hp.length; q++) lx.lineTo(hp[q][0], hp[q][1]);
-        lx.closePath(); lx.fill();
+  // The beam is painted small and laid over the screen three times larger, so it has no edge anywhere: a fan of light
+  // from the lens, in the colours of the picture it carries, thinning out as it nears the cloth.
+  var beamCv = document.createElement('canvas'), bx = beamCv.getContext('2d'), BS = 3, canConic = !!bx.createConicGradient;
+  function wrapA(a) { while (a > Math.PI) a -= 6.2832; while (a < -Math.PI) a += 6.2832; return a; }
+  function drawBeam(cam, t, lens, k, wide, pj) {
+    var fq = FILMQ.map(function (p) { return plateXY(p, cam); }), i, j;
+    var fl = HELD ? 1 : 0.94 + 0.06 * Math.sin(t * 23.0) * Math.sin(t * 7.3);          // the lamp is never quite steady
+    var mid = plateXY(FOCUS, cam), ac = Math.atan2(mid[1] - lens[1], mid[0] - lens[0]), dist = Math.hypot(mid[0] - lens[0], mid[1] - lens[1]);
+    var lo = 9, hi = -9;
+    for (i = 0; i < 4; i++) { var d = wrapA(Math.atan2(fq[i][1] - lens[1], fq[i][0] - lens[0]) - ac); if (d < lo) lo = d; if (d > hi) hi = d; }
+    var span = hi - lo, soft = span * 0.2;
+    // the shadow the stool throws on the lawn
+    if (pj) {
+      var sx = pj.x + pj.w * 0.47, sy = pj.y + pj.h * 0.985, rx = pj.w * 0.42, ry = pj.w * 0.085;
+      if (sy - ry < H) {
+        lx.save(); lx.translate(sx, sy); lx.scale(1, ry / rx);
+        var sh = lx.createRadialGradient(0, 0, 0, 0, 0, rx);
+        sh.addColorStop(0, 'rgba(6,8,14,0.62)'); sh.addColorStop(0.55, 'rgba(6,8,14,0.34)'); sh.addColorStop(1, 'rgba(6,8,14,0)');
+        lx.fillStyle = sh; lx.beginPath(); lx.arc(0, 0, rx, 0, 6.2832); lx.fill(); lx.restore();
       }
-      lx.restore();
     }
-    // the light that spills off the picture onto the bare cloth round it
-    var cq = CLOTH.map(function (p) { return plateXY(p, cam); });
-    var mid = plateXY(FOCUS, cam), rr = Math.hypot(fq[1][0] - fq[3][0], fq[1][1] - fq[3][1]) * 0.5;
-    lx.save();
-    lx.beginPath();
-    lx.moveTo(cq[0][0], cq[0][1]); lx.lineTo(cq[1][0], cq[1][1]); lx.lineTo(cq[2][0], cq[2][1]); lx.lineTo(cq[3][0], cq[3][1]); lx.closePath();
-    lx.moveTo(fq[0][0], fq[0][1]); lx.lineTo(fq[1][0], fq[1][1]); lx.lineTo(fq[2][0], fq[2][1]); lx.lineTo(fq[3][0], fq[3][1]); lx.closePath();
-    lx.clip('evenodd');
-    var sp = lx.createRadialGradient(mid[0], mid[1], rr * 0.72, mid[0], mid[1], rr * 1.18);
-    var sa = k * (0.1 + 0.5 * Math.pow(lumS, 0.6));
-    sp.addColorStop(0, 'rgba(' + beamCol.join(',') + ',' + (sa * 0.6).toFixed(3) + ')'); sp.addColorStop(1, 'rgba(' + beamCol.join(',') + ',0)');
-    lx.fillStyle = sp; lx.fillRect(0, 0, W, H);
-    lx.restore();
+    if (canConic && span > 0.02 && span < 3) {
+      var bw = beamCv.width, bh = beamCv.height, L0 = lens[0] / BS, L1 = lens[1] / BS;
+      bx.setTransform(1, 0, 0, 1, 0, 0); bx.globalCompositeOperation = 'source-over'; bx.globalAlpha = 1; bx.clearRect(0, 0, bw, bh);
+      // where across the fan each sixth of the picture lies
+      var ca = [];
+      for (j = 0; j < 6; j++) { var cc = plateXY(onFilm((j % 3 + 0.5) / 3, (j < 3 ? 0.5 : 1.5) / 2), cam); ca.push((wrapA(Math.atan2(cc[1] - lens[1], cc[0] - lens[0]) - ac) - lo) / span); }
+      var a0 = ac + lo - soft, cg = bx.createConicGradient(a0, L0, L1), n = 18, turn = 6.2832;
+      cg.addColorStop(0, 'rgba(255,240,210,0)');
+      for (i = 0; i <= n; i++) {
+        var u = i / n, r = 0, g = 0, b = 0, ws = 0;
+        for (j = 0; j < 6; j++) { var w = Math.exp(-Math.pow((u - ca[j]) / 0.24, 2)) + 0.02; r += cells[j * 3] * w; g += cells[j * 3 + 1] * w; b += cells[j * 3 + 2] * w; ws += w; }
+        r /= ws; g /= ws; b /= ws;
+        var mx = Math.max(r, g, b, 0.06), l = 0.3 * r + 0.59 * g + 0.11 * b;
+        var edge = ss(0, 0.16, u) * ss(1, 0.84, u);
+        var ray = HELD ? 0.86 + 0.14 * Math.sin(u * 23) : 0.84 + 0.16 * Math.sin(u * 23 + t * 0.4) * Math.sin(u * 7.1 - t * 0.23);
+        var al = clamp((0.24 + 0.9 * Math.pow(l, 0.6)) * edge * ray);
+        cg.addColorStop((soft + u * span) / turn, 'rgba(' + Math.round(255 * (0.6 * r / mx + 0.4)) + ',' + Math.round(255 * (0.6 * g / mx + 0.38)) + ',' + Math.round(255 * (0.6 * b / mx + 0.34)) + ',' + al.toFixed(3) + ')');
+      }
+      cg.addColorStop(Math.min(0.999, (2 * soft + span) / turn + 0.0005), 'rgba(255,240,210,0)');
+      bx.fillStyle = cg; bx.fillRect(0, 0, bw, bh);
+      // along its length: brightest at the lens, nearly gone where it meets the cloth
+      var D = dist / BS, rg = bx.createRadialGradient(L0, L1, 0, L0, L1, D * 1.12);
+      rg.addColorStop(0, 'rgba(0,0,0,1)'); rg.addColorStop(0.1, 'rgba(0,0,0,0.8)'); rg.addColorStop(0.45, 'rgba(0,0,0,0.5)'); rg.addColorStop(0.82, 'rgba(0,0,0,0.24)'); rg.addColorStop(1, 'rgba(0,0,0,0)');
+      bx.globalCompositeOperation = 'destination-in'; bx.fillStyle = rg; bx.fillRect(0, 0, bw, bh);
+      // the picture outshines the beam that crosses it
+      bx.globalCompositeOperation = 'destination-out'; bx.fillStyle = 'rgba(0,0,0,0.82)';
+      bx.beginPath(); bx.moveTo(fq[0][0] / BS, fq[0][1] / BS); bx.lineTo(fq[1][0] / BS, fq[1][1] / BS); bx.lineTo(fq[2][0] / BS, fq[2][1] / BS); bx.lineTo(fq[3][0] / BS, fq[3][1] / BS); bx.closePath(); bx.fill();
+      lx.globalAlpha = clamp(k * fl * (wide ? 0.95 : 0.8)); lx.imageSmoothingEnabled = true; lx.imageSmoothingQuality = 'high';
+      lx.drawImage(beamCv, 0, 0, bw, bh, 0, 0, bw * BS, bh * BS);
+      lx.globalAlpha = 1;
+    }
     // dust turning over in the light
     var bc = 'rgb(' + beamCol[0] + ',' + beamCol[1] + ',' + beamCol[2] + ')';
     lx.fillStyle = bc;
@@ -498,7 +503,7 @@
     // the beam and what floats in it
     lx.setTransform(DPR, 0, 0, DPR, 0, 0); lx.clearRect(0, 0, W, H);
     var lens = pj ? [pj.x + pj.w * LENS[0], pj.y + pj.h * LENS[1]] : [-W * 0.2, H * 1.2];
-    drawBeam(cam, t, lens, (0.55 + 0.45 * (1 - pulse)) * (0.75 + 0.25 * e), e < 0.5);
+    drawBeam(cam, t, lens, (0.55 + 0.45 * (1 - pulse)) * (0.75 + 0.25 * e), e < 0.5, pj);
 
     ax.setTransform(DPR, 0, 0, DPR, 0, 0); ax.clearRect(0, 0, W, H);
     if (tall) drawStars(cam, t);
