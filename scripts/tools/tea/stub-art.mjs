@@ -164,15 +164,8 @@ async function start() {
 async function hero() {
   const src = path.join(ROOT, 'public/tea/hero/bg-far-night.webp');
   fs.mkdirSync(path.dirname(out('hero', 'x')), { recursive: true });
-  // each half gets a cut edge where it parts: a dark ink line and a little shade, so it reads as a panel sliding,
-  // not as a picture torn in two
-  const edge = (w, side) => Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="1584">
-    <defs><linearGradient id="s" x1="${side === 'r' ? 0 : 1}" y1="0" x2="${side === 'r' ? 1 : 0}" y2="0">
-    <stop offset="0" stop-color="#140f1c" stop-opacity="0.55"/><stop offset="1" stop-color="#140f1c" stop-opacity="0"/></linearGradient></defs>
-    <rect x="${side === 'r' ? 0 : w - 40}" y="0" width="40" height="1584" fill="url(#s)"/>
-    <rect x="${side === 'r' ? 0 : w - 6}" y="0" width="6" height="1584" fill="#140f1c"/></svg>`);
-  await webp(sharp(src).extract({ left: 0, top: 0, width: 1420, height: 1584 }).composite([{ input: edge(1420, 'l') }]), out('hero', 'garden-l.webp'), 90);
-  await webp(sharp(src).extract({ left: 1420, top: 0, width: 1396, height: 1584 }).composite([{ input: edge(1396, 'r') }]), out('hero', 'garden-r.webp'), 90);
+  await webp(sharp(src).extract({ left: 0, top: 0, width: 1420, height: 1584 }), out('hero', 'garden-l.webp'), 90);
+  await webp(sharp(src).extract({ left: 1420, top: 0, width: 1396, height: 1584 }), out('hero', 'garden-r.webp'), 90);
   await webp(sharp(src).extract({ left: 974, top: 0, width: 891, height: 1584 }), out('hero', 'still-p.webp'), 88);
   console.log('hero: the garden\'s two halves and a portrait still in public/tea/scenes/hero/');
 }

@@ -46,3 +46,17 @@ Frames: the top (`?y=0`), `#projects`, `?y=0.5` (the 3D chapter with a slip), `?
    middle of a wall. It is half as large again on `p`, and the aim moves with it.
 3. **The tab's numeral read as a close button.** "X PROJECTS" at the top left of a phone looks like a way out. The
    numeral is now set off by a thin rule from the chapter's name.
+
+## Round 4: 2560x1440
+
+Frames: the top, `#topic-art`, `?y=0.31` (a room between items), `?y=0.026` (the door half open).
+
+1. **Round 3's cut edge drew a line through the house at rest.** The garden's two halves lie exactly on the plate
+   until they part, so an ink line on their edges stood in the first frame, down the middle of the house and the
+   path. Taken out: the halves are plain again, and making the door a pair of panels is the hero's (3.1).
+2. **The room behind the door lost its word.** Start here's word stood at the left of its wall, so while the
+   door's halves parted only "art here" showed between them. The stub's word now stands over the middle of the
+   wall, where the door opens first.
+3. **The index shrank beside everything else.** At 2560 the paper and its type had grown by a quarter (1.2) but the
+   bookmark had not, so it read as a thin strip of ticks. It grows with the paper now, and still stays inside its
+   gutter (110 of 120 px).

@@ -74,3 +74,6 @@
 }
 .room-tab-list a[aria-current='true'] { box-shadow: inset 4px 0 0 var(--room-red); padding-left: 12px; }
 .room-tab-main { display: inline-block; margin-top: 18px; min-height: 44px; line-height: 44px; font: 600 15px / 44px var(--font-body); text-decoration: underline !important; text-decoration-color: var(--room-red) !important; }
+
+/* from 1680 px wide paper grows by a quarter (1.2), and the bookmark is paper: it stays inside its gutter */
+@media (min-width: 1680px) { .room-bookmark { zoom: 1.25; } }

@@ -12,7 +12,7 @@ export const scene = {
     aim: [1158, 546],
     flats: [
       { name: 'room', src: '/tea/scenes/start/room.webp', px: [2752, 1536], box: [-64, -32.2, 1728, 964.4], r: 1 },
-      { name: 'word', text: true, box: [150, 120, 760, 320], r: 0.8 },
+      { name: 'word', text: true, box: [480, 110, 760, 320], r: 0.8 },
       { name: 'lantern', src: '/tea/scenes/start/lantern.webp', px: [236, 330], box: [1083.8, 442.5, 148.2, 207.2], r: 0.62 },
     ],
     slots: [],
