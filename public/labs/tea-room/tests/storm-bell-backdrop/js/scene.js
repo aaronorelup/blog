@@ -56,7 +56,8 @@ const BEATS = [
 ];
 // a click or a tap on a fighter: the next of these, in turn
 const ON_TAP = { jefrie: ['heavy', 'special_d', 'special_n', 'special_u', 'taunt'], tailor: ['heavy_whip', 'special_u', 'heavy', 'special_d', 'taunt'] };
-const LANDS = { heavy_whip: 0.27, heavy: 0.24 };      // seconds into a move at which it lands, where the fighters stand close
+// a heavy blow lands if the other fighter stands within its reach (metres): at: seconds into the move
+const LANDS = { heavy_whip: { at: 0.27, reach: 3.4 }, heavy: { at: 0.24, reach: 2.7 } };
 const STRIKES = [{ at: 11.3, x: -9, i: 1.0 }, { at: 22.1, x: 14, i: 0.8 }, { at: 36.2, x: 3.5, i: 1.0 }];
 const FLICKER = [[0, 0], [0.025, 1], [0.07, 0.25], [0.1, 0.85], [0.16, 0.35], [0.22, 0.55], [0.5, 0]];
 function flicker(t) {
@@ -233,23 +234,62 @@ class Fighter {
   }
 }
 
+// ------------------------------------------------------------------ the staging: fitted to the window's shape
+// The close view must be a whole picture in any window: both fighters with their scythe, tail and cape inside the
+// frame, as large as the shape allows, and each fire either wholly in the picture or wholly outside it.
+// d: the camera's distance from the fighters in the close view. sx: how far each fighter stands from the middle.
+const TAN_WIDE = Math.tan(16 * Math.PI / 180), TAN_TALL = Math.tan(23 * Math.PI / 180);
+const FIRES = [{ x: -5.9, z: -3.0, half: 0.5, inset: 0 }, { x: 6.3, z: -4.2, half: 0.45, inset: 0.15 }];     // where the game stands its two braziers
+function stagingFor(aspect, height = 900) {
+  // lift: on a short window the camera looks a little lower, so the fighters' feet stay clear of the card
+  const S = { portrait: aspect < 0.82, aspect, lift: 0.28 * clamp((840 - height) / 120) };
+  if (S.portrait) {
+    S.fov = 46;
+    S.sx = lerp(1.08, 1.5, clamp((aspect - 0.462) / 0.36));
+    S.d = (S.sx + 1.22) / (TAN_TALL * Math.max(aspect, 0.4));
+    S.tan = TAN_TALL;
+  } else {
+    S.fov = 32; S.tan = TAN_WIDE;
+    if (aspect >= 1.55) {
+      // room for a fire on each side of the fighters: 2.9 m beyond each fighter (tail, a gap, the brazier, and a
+      // margin for the way the picture leans with the pointer)
+      // (they never stand further apart than a thrown sickle reaches, so that a heavy blow can land)
+      S.d = clamp((1.5 + 2.9) / (TAN_WIDE * aspect) + 0.25, 8.4, 10.2);
+      S.sx = clamp((S.d - 0.25) * TAN_WIDE * aspect - 2.9, 1.5, 1.7);
+    } else {
+      S.sx = lerp(1.1, 1.55, clamp((aspect - 1) / 0.55));
+      S.d = (S.sx + 1.6) / 0.93 / (TAN_WIDE * aspect);
+    }
+  }
+  // the fires: where there is room beside the fighters each stands just inside the frame's edge (never further out
+  // than the game stands it); where there is none it is left, or pushed, clear outside, and only its light comes in
+  const near = S.d - 0.25, half0 = near * S.tan * aspect;               // the closest the camera comes; half the frame's width there
+  const seenAt = half0 - 0.82, inFrame = !S.portrait && seenAt >= S.sx + 2.0;
+  S.fires = FIRES.map((f) => {
+    const dist = near - f.z, nat = Math.abs(f.x);
+    const x = inFrame ? Math.min(nat, (seenAt - f.inset) * dist / near) : Math.max(nat, dist * S.tan * aspect + f.half + 0.5);
+    return Math.sign(f.x) * x;
+  });
+  return S;
+}
+
 // ------------------------------------------------------------------ the camera: wide, then in, then it holds
-function cameraAt(q, portrait) {
+function cameraAt(q, S) {
   // the push: it starts moving at once (the first screen of scroll, while the picture is still coming up, must not
   // be a still), and eases into the hold
   const e = 0.3 * clamp(q / 0.62) + 0.7 * ss(0.0, 0.62, q);
   const h = clamp((q - 0.62) / 0.38);           // the hold: a slow drift
-  if (portrait) {
+  if (S.portrait) {
     return {
-      fov: 46,
-      pos: [lerp(-1.0, -0.18, e) + h * 0.25, lerp(1.25, 2.55, e) - h * 0.1, lerp(22, 11.0, e) - h * 0.4],
+      fov: S.fov,
+      pos: [lerp(-1.0, -0.18, e) + h * 0.25, lerp(1.25, 0.8 + S.d * 0.158, e) - h * 0.1, lerp(Math.max(22, S.d + 8), S.d - 0.1, e) - h * 0.4],
       look: [lerp(0.1, -0.18, e), lerp(4.2, 0.8, e), 0],
     };
   }
   return {
-    fov: 32,
-    pos: [lerp(-3.4, 0, e) + h * 0.5, lerp(1.9, 1.42, e) - h * 0.05, lerp(24, 9.6, e) - h * 0.55],
-    look: [lerp(0.4, 0, e), lerp(3.0, 0.78, e), 0],
+    fov: S.fov,
+    pos: [lerp(-3.4, 0, e) + h * 0.3, lerp(1.9, 1.42, e) - h * 0.05, lerp(Math.max(24, S.d + 10), S.d + 0.3, e) - h * 0.55],
+    look: [lerp(0.4, 0, e), lerp(3.0, 0.78 - S.lift, e), 0],
   };
 }
 
@@ -372,7 +412,20 @@ export async function mount(canvas, opts = {}) {
   scene.add(floor);
 
   // ---- the props: sandbags, stakes, wire, two braziers
+  // The braziers are cut out of the one props mesh (everything within half a metre of a flame's axis), so that each
+  // can stand where the window's shape wants it.
+  function cutNear(geo, cx, cz, r) {
+    const pos = geo.attributes.position, idx = geo.index.array;
+    const near = (i) => Math.hypot(pos.getX(i) - cx, pos.getZ(i) - cz) < r;
+    const keep = [], take = [];
+    for (let i = 0; i < idx.length; i += 3) (near(idx[i]) && near(idx[i + 1]) && near(idx[i + 2]) ? take : keep).push(idx[i], idx[i + 1], idx[i + 2]);
+    const g = new THREE.BufferGeometry();
+    for (const k in geo.attributes) g.setAttribute(k, geo.attributes[k]);
+    g.setIndex(take); geo.setIndex(keep);
+    return g;
+  }
   const flames = [], propMeshes = [];
+  propsG.scene.updateMatrixWorld(true);
   propsG.scene.traverse((o) => {
     if (!o.isMesh) return;
     o.frustumCulled = false;
@@ -380,12 +433,21 @@ export async function mount(canvas, opts = {}) {
     if (/^Flame_/.test(o.name)) flames.push({ node: o, base: o.scale.clone(), x: o.position.x });
     else propMeshes.push(o);
   });
+  flames.sort((a, b) => a.x - b.x);
+  const braziers = [];
+  if (propMeshes.length === 1 && propMeshes[0].geometry.index && flames.length === 2) {
+    const all = propMeshes[0];
+    flames.forEach((f) => {
+      const m = new THREE.Mesh(cutNear(all.geometry, f.node.position.x, f.node.position.z, 0.5), all.material);
+      m.frustumCulled = false;
+      all.parent.add(m); propMeshes.push(m); braziers.push(m);
+    });
+  }
   for (const o of propMeshes) {
     const sh = new THREE.Mesh(o.geometry, shared.shadowMat);
     sh.frustumCulled = false; sh.renderOrder = -5;
-    o.parent.add(sh);
+    o.add(sh);
   }
-  flames.sort((a, b) => a.x - b.x);
   scene.add(propsG.scene);
 
   // ---- the fighters
@@ -401,6 +463,7 @@ export async function mount(canvas, opts = {}) {
       uniforms: { color: { value: new THREE.Vector3(1.0, 0.2, 0.26) }, level: { value: 0.3 }, falloff: { value: 2.2 } },
     }));
     m.position.copy(f.node.position).add(new THREE.Vector3(0, 0.25, 0.05));
+    m.userData.x = m.position.x;
     m.scale.setScalar(i === 0 ? 3.4 : 3.0);
     m.renderOrder = 5; m.frustumCulled = false;
     scene.add(m);
@@ -509,12 +572,26 @@ export async function mount(canvas, opts = {}) {
   gradeScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), gradeMat));
 
   // ---- size
-  let W = 1, H = 1, portrait = false, fine = 1, fineWas = 1, slow = 0, quick = 0, ema = 16;
+  let W = 1, H = 1, portrait = false, S = stagingFor(1.6), fine = 1, fineWas = 1, slow = 0, quick = 0, ema = 16;
+  const FIRE_A = floorMat.uniforms.fireA.value.x, FIRE_B = floorMat.uniforms.fireB.value.x, FIRE_P = shared.firePos.value.x;
+  function stand() {
+    // the fires, their light and their glow go where this window's shape puts them
+    S.fires.forEach((x, i) => {
+      const dx = x - FIRES[i].x;
+      if (braziers[i]) braziers[i].position.x = dx;
+      if (flames[i]) flames[i].node.position.x = flames[i].x + dx;
+      if (glows[i]) glows[i].position.x = glows[i].userData.x + dx;
+    });
+    const dxL = S.fires[0] - FIRES[0].x, dxR = S.fires[1] - FIRES[1].x;
+    floorMat.uniforms.fireA.value.x = FIRE_A + dxL; floorMat.uniforms.fireB.value.x = FIRE_B + dxR;
+    shared.firePos.value.x = FIRE_P + dxL;
+  }
   function resize() {
     const r = canvas.getBoundingClientRect();
     const w = Math.max(1, Math.round(r.width)), h = Math.max(1, Math.round(r.height));
     if (w === W && h === H && fine === fineWas) return false;
-    W = w; H = h; fineWas = fine; portrait = W / H < 0.82;
+    W = w; H = h; fineWas = fine;
+    S = stagingFor(W / H, H); portrait = S.portrait; stand();
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxDpr) * fine);
     renderer.setSize(W, H, false);
     camera.aspect = W / H;
@@ -533,7 +610,7 @@ export async function mount(canvas, opts = {}) {
     shared.time.value = t;
 
     // camera
-    const c = cameraAt(q, portrait);
+    const c = cameraAt(q, S);
     camera.fov = c.fov;
     camera.position.set(c.pos[0], c.pos[1], c.pos[2]);
     look.set(c.look[0], c.look[1], c.look[2]);
@@ -563,15 +640,16 @@ export async function mount(canvas, opts = {}) {
     floorMat.uniforms.fireFlicker.value.set(flick[0], flick[1]);
     shared.fireCol.value.copy(FIRE_LIN).multiplyScalar(FIRE_ENERGY * flick[0]);
 
-    // fighters: on a tall screen they stand closer, at striking distance
-    const sx = portrait ? 1.08 : START_X;
+    // fighters: how far apart they stand depends on the window's shape
+    const sx = S.sx;
     jefrie.root.position.x = -sx; tailor.root.position.x = sx;
     floorMat.uniforms.blobA.value.x = -sx; floorMat.uniforms.blobB.value.x = sx;
     let mj = force || jefrie.moveAt(t), mt = force || tailor.moveAt(t);
-    if (portrait && !force) {
-      // at striking distance a heavy blow lands: the other one takes it
-      if (mt && LANDS[mt.name] !== undefined && mt.t >= LANDS[mt.name] && !mj) mj = { name: 'hit_high', t: mt.t - LANDS[mt.name] };
-      if (mj && LANDS[mj.name] !== undefined && mj.t >= LANDS[mj.name] && !mt) mt = { name: 'hit_high', t: mj.t - LANDS[mj.name] };
+    if (!force) {
+      // where they stand within reach a heavy blow lands: the other one takes it
+      const lt = mt && LANDS[mt.name], lj = mj && LANDS[mj.name];
+      if (lt && sx * 2 <= lt.reach && mt.t >= lt.at && !mj) mj = { name: 'hit_high', t: mt.t - lt.at };
+      if (lj && sx * 2 <= lj.reach && mj.t >= lj.at && !mt) mt = { name: 'hit_high', t: mj.t - lj.at };
     }
     jefrie.pose(t, mj);
     tailor.pose(t + 0.37, mt);
