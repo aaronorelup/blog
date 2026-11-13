@@ -183,7 +183,7 @@
     r /= 6; g /= 6; b /= 6;
     var lr = Math.pow(r, 1.5), lg = Math.pow(g, 1.5), lb = Math.pow(b, 1.5), mx = Math.max(lr, lg, lb, 0.02);
     lum = 0.3 * lr + 0.59 * lg + 0.11 * lb;
-    var strength = 0.13 + 1.7 * Math.pow(lum, 0.75);
+    var strength = 0.15 + 3.0 * Math.pow(lum, 0.75);
     want[0] = clamp(strength * (0.82 * lr / mx + 0.18) * LAMP[0]);
     want[1] = clamp(strength * (0.82 * lg / mx + 0.18) * LAMP[1]);
     want[2] = clamp(strength * (0.82 * lb / mx + 0.18) * LAMP[2]);
@@ -191,27 +191,29 @@
     beamCol[0] = Math.round(255 * (0.55 * r / m2 + 0.45)); beamCol[1] = Math.round(255 * (0.55 * g / m2 + 0.42)); beamCol[2] = Math.round(255 * (0.55 * b / m2 + 0.36));
   }
 
-  // the lawn's light: the night plate, plus the lamp's light once for each colour, as strong as the film is in it
-  var nightImg = $('plate'), glowImg = new Image(), chan = null, glowAt = -1;
+  // the lawn's light: the lamp's own light, kept as a separate picture, is added to the night plate once for each
+  // colour, as strong as the film is in that colour. It is painted at half size (light has no sharp edges of its own;
+  // the plate under it keeps the lines) and only when the colour has changed.
+  var nightImg = $('plate'), glowImg = new Image(), chan = null, glowAt = -1, GS = 0.5;
+  glow.width = Math.round(GLOW.w * GS); glow.height = Math.round(GLOW.h * GS);
   glowImg.decoding = 'async'; glowImg.src = 'img/garden-glow.webp';
   function makeChannels() {
     if (chan || !glowImg.complete || !glowImg.naturalWidth) return;
     chan = ['#ff0000', '#00ff00', '#0000ff'].map(function (col) {
-      var c = document.createElement('canvas'); c.width = GLOW.w; c.height = GLOW.h;
+      var c = document.createElement('canvas'); c.width = glow.width; c.height = glow.height;
       var x = c.getContext('2d');
-      x.drawImage(glowImg, 0, 0, GLOW.w, GLOW.h);
-      x.globalCompositeOperation = 'multiply'; x.fillStyle = col; x.fillRect(0, 0, GLOW.w, GLOW.h);
+      x.imageSmoothingQuality = 'high';
+      x.drawImage(glowImg, 0, 0, c.width, c.height);
+      x.globalCompositeOperation = 'multiply'; x.fillStyle = col; x.fillRect(0, 0, c.width, c.height);
       return c;
     });
   }
   function paintGlow(now) {
     if (!chan) { makeChannels(); if (!chan) return; }
-    if (!nightImg.complete || !nightImg.naturalWidth) return;
     var d = Math.max(Math.abs(kNow[0] - kDone[0]), Math.abs(kNow[1] - kDone[1]), Math.abs(kNow[2] - kDone[2]));
     if (d < 0.008 || (now - glowAt < 55 && kDone[0] >= 0 && !HELD)) return;
     glowAt = now;
-    gx.globalCompositeOperation = 'copy'; gx.globalAlpha = 1;
-    gx.drawImage(nightImg, GLOW.x, GLOW.y, GLOW.w, GLOW.h, 0, 0, GLOW.w, GLOW.h);
+    gx.globalCompositeOperation = 'source-over'; gx.globalAlpha = 1; gx.fillStyle = '#000'; gx.fillRect(0, 0, glow.width, glow.height);
     gx.globalCompositeOperation = 'lighter';
     for (var c = 0; c < 3; c++) { if (kNow[c] > 0.004) { gx.globalAlpha = kNow[c]; gx.drawImage(chan[c], 0, 0); } kDone[c] = kNow[c]; }
     gx.globalAlpha = 1;
@@ -552,7 +554,7 @@
   if (qs.has('y')) {
     try { history.scrollRestoration = 'manual'; } catch (err) { /* older browsers */ }
     var wantY = clamp(parseFloat(qs.get('y')) || 0);
-    var jump = function () { window.scrollTo(0, Math.round(wantY * (root.scrollHeight - window.innerHeight))); };
+    var jump = function () { window.scrollTo(0, Math.round(wantY * (root.scrollHeight - window.innerHeight))); yS = null; };
     jump(); window.addEventListener('load', function () { jump(); render(); });
   }
   layout();

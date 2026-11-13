@@ -56,13 +56,10 @@ button { font: inherit; color: inherit; }
 .lawn-ext { top: 1380px; height: 3000px; background: linear-gradient(to bottom, rgb(39, 50, 46) 0, rgb(33, 43, 41) 220px, rgb(20, 27, 30) 1100px); }
 .tall .plate { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 230px, #000 1400px, transparent 1532px); mask-image: linear-gradient(to bottom, transparent 0, #000 230px, #000 1400px, transparent 1532px); }
 
-/* the lamp's light on the lawn, the poles and the cushions, repainted in the colour of the film */
-.glow { left: 638px; top: 290px; width: 1899px; height: 1246px; opacity: 0;
-  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%), linear-gradient(to bottom, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
-  -webkit-mask-composite: source-in; mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%), linear-gradient(to bottom, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%); mask-composite: intersect; }
+/* the lamp's light on the lawn, the poles, the cushions and the bare cloth, in the colour of the film: a picture of
+   light only (black where there is none), added to the plate under it */
+.glow { left: 638px; top: 290px; width: 1899px; height: 1246px; opacity: 0; mix-blend-mode: screen; mix-blend-mode: plus-lighter; }
 .glow.on { opacity: 1; }
-.tall .glow { -webkit-mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%), linear-gradient(to bottom, transparent 0, #000 16px, #000 1110px, transparent 1242px);
-  mask-image: linear-gradient(to right, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%), linear-gradient(to bottom, transparent 0, #000 16px, #000 1110px, transparent 1242px); }
 
 /* the picture on the cloth: 1280 x 720, leaned onto the cloth by one matrix; its edge is soft, as thrown light is */
 .film { left: 0; top: 0; width: 1280px; height: 720px; transform-origin: 0 0; overflow: hidden; background: rgb(8, 9, 18);
