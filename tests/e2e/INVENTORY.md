@@ -530,7 +530,7 @@ picks (`src/data/tea-picks.json`), the registry and `COPY.room`. The live notebo
 | The closed bookmark covers no text at any chapter's rest places | tea-next-22 |
 | The footer's computed styles equal `/tea/`'s (until the swap) | tea-next-23 |
 | Purity: the frame at a place is the same loaded directly, flicked to from the top and from the bottom (scrollTo) and turned to with the wheel, in state read back from the page and in pixels (under 0.1% apart), at 1440x900, 760 wide, 390x844 and on the phone; also at the door, before and after every screens change, and the house closing | tea-engine: purity |
-| No frame is nearly all dark and no band is dark and flat (on a phone the lower 40%), at 240 places (200 on a phone); the floors measured on look B | tea-engine: the empty-frame sweep |
+| No frame is nearly all dark, no band is dark and flat, no dark flat area is over 0.49 of the frame, and on a phone no more than a fifth of the lower 40% is dark and flat, paper or none, at 240 places (200 on a phone); the floors measured on looks A and B (`scripts/tools/tea/sweep.mjs`, `docs/TEA_ROOM.md`) | tea-engine: the empty-frame sweep |
 | At every half screen the page is no wider than the window, and `html` and `body` never set overflow | tea-engine: nothing scrolls sideways |
 
 Each chapter's own rows are in its own file:

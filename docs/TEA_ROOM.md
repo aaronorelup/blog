@@ -396,7 +396,45 @@ last build's page.
 
 ### Calibration
 
-CALIBRATION_PLACEHOLDER
+The floors of the sweep and of `differ.mjs` are measured, not guessed. They were set by running the tools on
+looks A and B on 2026-11-13 (both looks loaded at `?y=<share>&still=1`, one page load a frame, at 1440x900 and
+390x844 in Chromium; B is 20.6 screens long on a desktop and 20.4 on a phone, A 20.5 and 19.8, so 0.01 of either
+page is about 0.2 vh). The frames they were measured on are kept in `tests/unit/fixtures/tea/sweep/` and
+`tests/unit/fixtures/tea/differ/`, and `tests/unit/tea-sweep.test.mjs` and `tea-calibration.test.mjs` hold the
+floors to them.
+
+**The sweep** (`sweep.mjs`, the frame read at 96 px wide, luminance of 255):
+
+| Floor | Value | Measured |
+|---|---|---|
+| bright: share of the frame brighter than 40 | at least 0.30 | B's dead stretch on a desktop, y 0.82 to 0.85: 0.21, 0.12, 0.10, 0.15. Its dark but good frames 0.58 and 0.66: 0.39 and 0.50 |
+| band: a quarter-height band, mean under 30 and spread under 8, is dead | | the darkest band of B's good desktop frames has a spread of 20 or more; B's phone television chapter has a lower 40% of mean 13.1 and spread 1.5 |
+| region: the largest dark flat area (6 px cells of the copy, joined edge to edge) | at most 0.49 of the frame | B at 0.86 (the film garden sliding in at the right of the dark): 0.54. B's dark good frames 0.56 to 0.69 (night sky over the city, the clock's dial): 0.30 to 0.44 |
+| lower (phone): share of the lower 40% that is dark and flat, paper or none | at most 0.20 | B's television chapter from 0.40 to 0.84: 0.29 to 1.00, including 0.48, 0.52 and 0.62, where an episode's card lies across the dark (0.43, 0.36, 0.29). Every other B phone frame: 0.11 or less |
+| rows (phone): share of the lower 40%'s rows dark and flat | at most 0.5 | the page builder's first floor, kept |
+
+So B fails from 0.82 to 0.86 on a desktop and from 0.40 to 0.84 on a phone (its whole television chapter after
+the lit room), and passes everywhere else, its night frames included. A passes on a desktop, and fails at one
+phone frame (0.50). The bar's own words ask for no dark flat area over a quarter of the frame; on this measure
+B's night skies, which the brief names as good pictures, are 0.30 to 0.44, so the floor sits half way between them and the
+first dead frame at 0.54 (0.49), and the reviewer judges the rest.
+
+**differ** (`differ.mjs`, with every word hidden: `?words=0` on the room, a style that makes every glyph
+transparent on the looks; a 16 x 9 grid, 9 x 16 on a phone, each cell its mean colour):
+
+| Floor | Value | Measured |
+|---|---|---|
+| cell: a cell has changed when its colour moved this far (RGB distance of 441) | 24 | the purity test's allowance for one channel; a cell dark (under 40) in both frames never counts, so a dark field sliding over dark is no change |
+| cells: share of cells changed, for frames a step apart and for two chapters | at least 0.30 | must pass, neighbouring chapters' opening frames: B start 0.16 against television 0.36, 72% (phone 0.18 / 0.37: 88%); A 0.2 against 0.5, 69% (phone 77%). Must fail, one held picture 0.1 vh apart: B 0.16 8 to 10%, B 0.36 0%, B phone 0.37 0%, A 0.46 0% (and phone 0%). Must fail, B's flat dark slide between the television and film: 0.82 / 0.84 17%, 0.83 / 0.85 13%, phone 0.82 / 0.83 15 to 17% |
+| mean: two chapters' opening frames, distance between their mean colours | at least 7 | half the smallest distance measured between neighbouring chapters in A and B (A desktop 0.15 against 0.45: 14.0; the others 20 to 77) |
+
+For scale, B's own steps one screen apart on a desktop run from 0% to 96% of cells: its held title of the
+television chapter (0.32 to 0.37, 0%), its held first episode (0.42 to 0.47, 21%) and its held film title (0.91
+to 0.96, 13%) fail, which is the fault the bar names. Within its dark stretch B's frames are less than a screen
+apart, so a step across it compares a lit frame with a dark one and passes: the sweep is what catches the stretch
+itself, and differ the slide's frames compared with each other.
+
+**Run on the stub page** (the shared system's stubs, before any chapter is built): STUB_RESULTS
 
 ---
 
