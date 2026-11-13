@@ -66,6 +66,9 @@ function build(THREE, scene, def, gltf, maxAniso) {
       const zs = dd / 2 - r > 0.01 ? [-(dd / 2 - r), dd / 2 - r] : [0];
       com = h / 2;
       for (const x of xs) for (const y of ys) for (const z of zs) spheres.push({ x, y: y - com, z, r });
+    } else if (def.shape === 'ball') {
+      com = h * 0.5;
+      spheres.push({ x: 0, y: 0, z: 0, r: h * 0.48 });
     } else {
       const r0 = Math.max(0.2 * h, Math.min(0.33 * h, Math.min(ww, dd) * 0.5));
       const r1 = r0 * 0.82;
