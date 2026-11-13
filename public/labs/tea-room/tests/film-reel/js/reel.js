@@ -82,7 +82,7 @@
     var tx = fx - FOCUS[0] * s, ty = fy - FOCUS[1] * s;
     return { s: s, tx: tx, ty: ty, m: 1 - S0 / s, C: [(W / 2 - tx) / s - PW / 2, (H / 2 - ty) / s - PH / 2], o: [0, 0] };
   }
-  function camAt(e, px, py) {
+  function camAt(e) {
     // an even pace for the eye: the cloth grows by the same share with every step
     var s = cam0.s * Math.pow(cam1.s / cam0.s, e), m = 1 - S0 / s, g = cam1.m > 0 ? m / cam1.m : 0;
     // what the plate does on the screen: the middle of the cloth travels from where it is far to where it is close
@@ -90,9 +90,7 @@
     // where the camera itself stands: it ends on the cloth's own line, and starts off it by RISE
     var k = 1 - io(g);
     var Cb = [cam1.C[0] + RISE[0] * k, cam1.C[1] + RISE[1] * k];
-    c.o = [(c.C[0] - Cb[0]) * s / S0, (c.C[1] - Cb[1]) * s / S0];
-    // the pointer leans the camera a little: the plate gives a few pixels, whatever is nearer gives more
-    c.C = [Cb[0] + px, Cb[1] + py]; c.tx -= px * s; c.ty -= py * s;
+    c.o = [(c.C[0] - Cb[0]) * s / S0, (c.C[1] - Cb[1]) * s / S0]; c.C = Cb;
     return c;
   }
   function proj(b, r, cam) { var dz = r - cam.m; return { x: W / 2 + ((b[0] * r - cam.C[0]) / dz - cam.o[0]) * S0, y: H / 2 + ((b[1] * r - cam.C[1]) / dz - cam.o[1]) * S0, z: r / dz, dz: dz }; }
@@ -141,7 +139,7 @@
     cam0 = camOf(s0, f0[0], f0[1]); cam1 = camOf(s1, f1[0], f1[1]);
     cam0.fx = f0[0]; cam0.fy = f0[1]; cam1.fx = f1[0]; cam1.fy = f1[1];
     RISE = tall ? [-270, 25] : [900, -600];
-    cam0 = camAt(0, 0, 0); cam0.fx = f0[0]; cam0.fy = f0[1];
+    cam0 = camAt(0); cam0.fx = f0[0]; cam0.fy = f0[1];
 
     // the projector stands on the lawn between the camera and the cloth. Where it ends up when the camera is close
     // decides where it stands: low in the left corner, seen from behind its shoulder
@@ -247,7 +245,7 @@
   function onPlaying(e) {
     var v = e.target;
     if (v !== P || (reel.vis === P && reel.shown === reel.i)) return;
-    if (v.requestVideoFrameCallback) v.requestVideoFrameCallback(function () { show(v); }); else show(v);
+    if (v.requestVideoFrameCallback) { v.requestVideoFrameCallback(function () { show(v); }); setTimeout(function () { show(v); }, 260); } else show(v);
   }
   function advance(to) {
     // the players change places. The one that has just ended keeps its last frame on the cloth until the new one has
@@ -472,7 +470,7 @@
 
   // ------------------------------------------------------------------ the frame
   var reelA = $('reel-a'), reelB = $('reel-b'), spin = 0;
-  var worldTr = '', yS = null, last = 0, raf = 0, visible = true, ptr = { x: 0, y: 0, tx: 0, ty: 0 }, dockK = -1, hintO = -1, shadeO = -1;
+  var worldTr = '', yS = null, last = 0, raf = 0, visible = true, dockK = -1, hintO = -1, shadeO = -1;
   var stats = { n: 0, since: 0, fps: 0, worst: 0, glow: 0 };
   function scrollQ(dt) {
     if (RM) return 1;
@@ -486,8 +484,7 @@
     var dt = Math.min(0.1, (now - last) / 1000 || 0.016); last = now;
     var t = HELD ? T_HELD : now / 1000;
     var q = scrollQ(dt), e = io(ss(0.03, 0.64, q));
-    if (HELD) { ptr.x = 0; ptr.y = 0; } else { var pk = 1 - Math.exp(-dt * 3.5); ptr.x += (ptr.tx - ptr.x) * pk; ptr.y += (ptr.ty - ptr.y) * pk; }
-    var cam = camAt(e, ptr.x * 16 * (1 - e * 0.55), ptr.y * 9 * (1 - e * 0.55));
+    var cam = camAt(e);
 
     var tr = 'translate3d(' + cam.tx.toFixed(2) + 'px,' + cam.ty.toFixed(2) + 'px,0) scale(' + cam.s.toFixed(5) + ')';
     if (tr !== worldTr) { world.style.transform = tr; worldTr = tr; }
@@ -575,10 +572,6 @@
   window.addEventListener('scroll', render, { passive: true });
   var rz = 0;
   window.addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(function () { layout(); kDone[0] = -1; render(); }, 90); });
-  window.addEventListener('pointermove', function (ev) {
-    if (ev.pointerType !== 'mouse' || HELD) return;
-    ptr.tx = clamp(ev.clientX / W * 2 - 1, -1, 1); ptr.ty = clamp(ev.clientY / H * 2 - 1, -1, 1);
-  }, { passive: true });
   document.addEventListener('visibilitychange', function () { sync(); kick(); });
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(function (en) {
