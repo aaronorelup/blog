@@ -146,7 +146,7 @@
     card.style.transform = arrived ? 'none' : 'translate3d(0,' + ((1 - show) * 26).toFixed(1) + 'px,0)';
     card.style.willChange = arrived ? 'auto' : 'transform, opacity';
     card.style.pointerEvents = show > 0.6 ? 'auto' : 'none';
-    veil.style.opacity = ss(0, 0.3, m.leave).toFixed(3);
+    veil.style.opacity = ss(0, 0.06, m.leave).toFixed(3);
     hint.style.opacity = (api && !FROZEN ? ss(0.3, 0.4, m.q) * (moved ? 0 : 1) : 0).toFixed(3);
   }
 
