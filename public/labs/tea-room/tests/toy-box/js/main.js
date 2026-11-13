@@ -49,7 +49,7 @@ if (renderer) start();
 function start() {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.0;
+  renderer.toneMappingExposure = 1.12;
   renderer.setClearColor(0x1a1424, 1);
 
   const scene = new THREE.Scene();
@@ -75,30 +75,34 @@ function start() {
     const asp = vw / vh;
     const wMax = Math.min(PAINT.W, PAINT.H * asp);
     if (!phone) {
+      // a desk: the box on the left, the huddle in the middle and right, the paper lamp behind it. Rows of the
+      // huddle, front first: how deep each stands and from where to where it may spread (metres).
       lay = {
         scale: 1,
-        box: { x: -0.5, z: -2.36 },
-        home: { x: 0.4, z: -1.88 }, rows: [7, 7, 6], rowW: [1.42, 1.26, 1.04], rowDz: 0.26,
+        box: { x: -0.62, z: -2.3 },
+        rows: [{ z: -1.5, x0: 0.02, x1: 1.02 }, { z: -1.8, x0: -0.06, x1: 1.24 }, { z: -2.1, x0: -0.1, x1: 1.4 }, { z: -2.4, x0: -0.06, x1: 1.0 }],
         keys: [
           { t: 0.0, cx: PAINT.W / 2, cy: PAINT.H / 2, w: wMax * 0.985 },
-          { t: 0.07, cx: PAINT.W / 2, cy: PAINT.H / 2, w: wMax * 0.985 },
-          { t: 0.31, cx: 1235, cy: 985, w: 1120 },
-          { t: 0.5, cx: 1545, cy: 990, w: 1400 },
-          { t: 0.8, cx: 1545, cy: 990, w: 1400 },
-          { t: 1.0, cx: 1330, cy: 990, w: 1460 },
+          { t: 0.06, cx: PAINT.W / 2, cy: PAINT.H / 2, w: wMax * 0.985 },
+          { t: 0.3, cx: 1190, cy: 985, w: 1240 },
+          { t: 0.46, cx: 1500, cy: 1000, w: 1560 },
+          { t: 0.78, cx: 1500, cy: 1000, w: 1560 },
+          { t: 1.0, cx: 1440, cy: 1010, w: 1760 },     // the camera steps back and to the left: the card takes the left of the screen, the huddle keeps the right
         ],
       };
     } else {
+      // a phone: a tall picture, so the huddle is deep instead of wide: a wedge coming toward the reader, the box
+      // open behind it
       lay = {
-        scale: 1.12,
-        box: { x: 0.5, z: -2.62 },
-        home: { x: 0.5, z: -1.9 }, rows: [5, 5, 4, 3, 3], rowW: [1.02, 0.92, 0.78, 0.6, 0.5], rowDz: 0.2,
+        scale: 0.9,
+        box: { x: -0.14, z: -2.44 },
+        rows: [{ z: -1.42, x0: -0.28, x1: 0.31 }, { z: -1.64, x0: -0.33, x1: 0.36 }, { z: -1.87, x0: -0.38, x1: 0.41 }, { z: -2.11, x0: -0.43, x1: 0.46 }, { z: -2.4, x0: 0.2, x1: 0.56 }],
         keys: [
-          { t: 0.0, cx: 1700, cy: PAINT.H / 2, w: wMax },
-          { t: 0.07, cx: 1700, cy: PAINT.H / 2, w: wMax },
-          { t: 0.31, cx: 1650, cy: 1000, w: wMax * 0.7 },
-          { t: 0.5, cx: 1660, cy: 2000, w: wMax * 0.86 },
-          { t: 1.0, cx: 1660, cy: 2000, w: wMax * 0.86 },
+          { t: 0.0, cx: 1420, cy: PAINT.H / 2, w: wMax },
+          { t: 0.06, cx: 1420, cy: PAINT.H / 2, w: wMax },
+          { t: 0.3, cx: 1330, cy: 1010, w: wMax * 0.6 },
+          { t: 0.46, cx: 1410, cy: 2000, w: wMax * 0.77 },
+          { t: 1.0, cx: 1410, cy: 2000, w: wMax * 0.77 },
         ],
       };
     }
@@ -128,28 +132,34 @@ function start() {
   const mouth = new THREE.Vector3();
 
   function slots() {
-    // the huddle: a class photograph. Tallest at the back and in the middle, the small ones in front.
-    const list = toys.slice().sort((a, b) => b.def.h - a.def.h || a.index - b.index);
-    const rows = lay.rows, n = list.length, total = rows.reduce((s, x) => s + x, 0);
+    // the huddle: a class photograph. Jefrie and Yusef in the middle, the small ones in front and the tall ones
+    // behind; the props stand at the ends of the rows (js/roster.js says which end, and how far back). Each row
+    // is as wide as the picture has room for at that depth.
+    const rows = lay.rows, nr = rows.length;
+    const need = (t) => (Math.min(t.w0, t.def.h * 0.74) + 0.03) * lay.scale;
+    const cast = toys.filter((t) => !t.def.side).sort((a, b) => a.def.h - b.def.h || a.index - b.index);
+    const ends = rows.map(() => ({ l: [], r: [], w: 0 }));
+    for (const t of toys) if (t.def.side) { const e = ends[Math.min(nr - 1, Math.round((t.def.back || 0) * (nr - 1)))]; (t.def.side < 0 ? e.l : e.r).push(t); e.w += need(t); }
+    const room = rows.reduce((s, r, i) => s + Math.max(0.1, r.x1 - r.x0 - ends[i].w), 0), want = cast.reduce((s, t) => s + need(t), 0);
     let k = 0;
-    for (let r = 0; r < rows.length && k < n; r++) {
-      const cap = Math.max(1, Math.round(rows[r] * n / total)), row = list.slice(k, r === rows.length - 1 ? n : k + cap);
-      k += row.length;
-      // tallest in the middle, then out to the sides in turn
-      const order = []; row.forEach((t, i) => { if (i % 2) order.push(t); else order.unshift(t); });
-      const zRow = lay.home.z - ((rows.length - 1) / 2 - r) * lay.rowDz;
-      // each takes the room its body needs; if the row is too long for the picture they squeeze up
-      const need = order.map((t) => (Math.min(t.w0, t.def.h * 0.8) + 0.035) * lay.scale);
-      const sum = need.reduce((s, x) => s + x, 0), fit = Math.min(1, lay.rowW[r] / sum);
-      let x = lay.home.x - sum * fit / 2 + (r % 2 ? 0.04 : -0.03);
-      order.forEach((t, i) => {
-        const cx = x + need[i] * fit / 2; x += need[i] * fit;
-        const u = sum > 0 ? (cx - lay.home.x) / Math.max(lay.rowW[r], 0.3) : 0;
-        const j = ((t.index * 7919) % 13) / 13 - 0.5;                // the same small untidiness every time
-        const zz = zRow + Math.abs(u) * -0.1 + j * 0.035;            // the row bends round a little
-        t.body.slot = { x: cx, z: zz, yaw: Math.atan2(-cx, -zz) * 0.6 - u * 0.4 + j * 0.2 };
+    for (let r = 0; r < nr; r++) {
+      const R = rows[r], cap = Math.max(0.1, R.x1 - R.x0 - ends[r].w) * Math.max(1, want / room) + 0.02;
+      const row = []; let sum = 0;
+      while (k < cast.length && (r === nr - 1 || sum + need(cast[k]) <= cap)) { sum += need(cast[k]); row.push(cast[k++]); }
+      // tallest in the middle, then out to the sides in turn; the props outside them
+      const mid = []; row.slice().reverse().forEach((t, i) => { if (i % 2) mid.push(t); else mid.unshift(t); });
+      const order = [...ends[r].l, ...mid, ...ends[r].r];
+      const all = sum + ends[r].w, fit = Math.min(1, (R.x1 - R.x0) / all), c = (R.x0 + R.x1) / 2;
+      let x = c - all * fit / 2;
+      order.forEach((t) => {
+        const w = need(t) * fit, cx = x + w / 2; x += w;
+        const u = (cx - c) / Math.max(R.x1 - R.x0, 0.3);
+        const j = ((t.index * 7919) % 13) / 13 - 0.5;                 // the same small untidiness every time
+        const zz = R.z - Math.abs(u) * 0.12 + j * 0.03;                // each row bends round a little
+        t.body.slot = { x: cx, z: zz, yaw: Math.atan2(-cx, -zz) * 0.5 - u * 0.5 + j * 0.24 + (t.def.turn || 0) * (t.def.side || 0) };
       });
     }
+    const n = toys.length;
     // no two may stand inside each other: any pair that would is eased apart, more sideways than in depth
     for (let it = 0; it < 40; it++) {
       let moved = false;
@@ -173,7 +183,7 @@ function start() {
     const b = t.body, s = b.slot;
     b.on = false; t.kin = null; t.launchAt = world.t + delay;
     t.launch = () => {
-      const g = world.g, vy = 3.3 + rand() * 1.3, T = 2 * vy / g * 0.93;
+      const g = world.g, vy = 2.5 + rand() * 0.75, T = 2 * vy / g * 0.93;
       b.px = mouth.x + (rand() - 0.5) * 0.22; b.py = mouth.y - 0.08; b.pz = mouth.z + (rand() - 0.5) * 0.1;
       const tx = s.x + (rand() - 0.5) * 0.5, tz = s.z + (rand() - 0.3) * 0.4;
       b.vx = (tx - b.px) / T; b.vy = vy; b.vz = (tz - b.pz) / T;
@@ -206,7 +216,10 @@ function start() {
     box.closeAt = simT + 0.42 + toys.length * 0.022;
   }
 
-  loadToys(THREE, renderer, scene, ROSTER, (toy) => {
+  layout();
+  // a phone's picture is narrow: three of the props stay in the box there
+  const CAST = ROSTER.filter((d) => !(phone && d.desk));
+  loadToys(THREE, renderer, scene, CAST, (toy) => {
     toy.index = toys.length; toy.pop = 1; toy.kin = null; toy.launch = null;
     toys.push(toy); world.bodies.push(toy.body);
     slots();
@@ -215,7 +228,7 @@ function start() {
       if (STILL || RM) { const s = toy.body.slot; toy.body.place(s.x, s.z, s.yaw + toy.body.yaw0); }
       else { launch(toy, 0.1); for (const t of toys) if (t !== toy && t.body.on) t.body.wake(); }   // a late one jumps out of the open box by itself
     }
-    elCount.textContent = toys.length < ROSTER.length ? `${toys.length} of ${ROSTER.length} toys in the box` : '';
+    elCount.textContent = toys.length < CAST.length ? `${toys.length} of ${CAST.length} toys in the box` : '';
     dirty = true;
   }, () => { window.__toybox.loaded = true; dirty = true; });
 
