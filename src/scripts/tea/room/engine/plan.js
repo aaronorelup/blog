@@ -3,7 +3,7 @@
 // scene gets its part of its chapter. frame() reads the result and nothing else. layout.js (the impure half)
 // measures the marks and the sections and calls plan() again when they change.
 import { chapterLength } from './lengths.js';
-import { cameraAt, poseScene } from './pose.js';
+import { cameraAt } from './pose.js';
 import { compOf, fitBoard, fitPush, rectOf, throughPush } from './project.js';
 import { keyPlace, placeKeys } from './tracks.js';
 
@@ -15,7 +15,9 @@ const PROPS = ['slide', 'lift', 'opacity', 'wipe'];
 // lens: optional measured section heights in vh, by chapter index (a section whose paper is taller grew).
 // pieces: { [chapter id]: piece(u, n, t, ptr, L) } for the set pieces that have loaded. lean: 0 as built.
 export function plan(room, view, { marks = {}, lens = null, pieces = {}, lean = 0 } = {}) {
-  const vw = view.w, vh = view.h;
+  // A window not laid out yet can measure 0: it is drawn as 1 px, never as a division by zero.
+  const side = (x) => (Number.isFinite(x) && x >= 1 ? x : 1);
+  const vw = side(view.w), vh = side(view.h);
   const comp = compOf(vw, vh);
   const count = room.chapters.length;
   const L = { vw, vh, comp, lean, night: room.night, total: 0, chapters: [], scenes: {}, sceneKeys: [], slots: [] };
@@ -56,16 +58,25 @@ export function plan(room, view, { marks = {}, lens = null, pieces = {}, lean = 
     for (const p of S.ports) p.mh = cameraAt(S, S.part.to);
   }
 
-  // The shadow on the screens before each chapter: where its object stands in that chapter's opening frame.
+  // The shadow on the screens before each chapter: which flat of its first scene it stands for. screens.js places
+  // it from that flat's own pose on every frame, so shadow and object never part.
   room.chapters.forEach((c, i) => {
     if (!c.shadow) return;
     const S = L.scenes[c.run[0]];
     const fi = S.flats.findIndex((f) => f.name === c.shadow.flat);
-    if (fi < 0) return;
-    const f = poseScene(S, S.part.from, [0, 0], { ...L, lean: 0 }, 0).flats[fi];
-    L.chapters[i].shadow = { src: c.shadow.src, x: f.x, y: f.y, w: f.w, h: f.h };
+    if (fi >= 0) L.chapters[i].shadow = { src: c.shadow.src, key: c.run[0], flat: fi };
   });
-  return L;
+  // Frozen whole: frame() and the set pieces it asks can read the layout and never change it. A new measurement
+  // makes a new layout.
+  return freeze(L);
+}
+
+function freeze(o) {
+  if (o && typeof o === 'object' && !Object.isFrozen(o)) {
+    Object.freeze(o);
+    for (const v of Object.values(o)) freeze(v);
+  }
+  return o;
 }
 
 // One scene for this window: its fit, its flats at rest, its keys placed, its named pushes as numbers.
@@ -90,7 +101,7 @@ function sceneLayout(scene, key, index, ch, L) {
     r[prop] ? placeKeys(r[prop], ch.marks, ch.n).map(({ u, key: k }) => ({ u, v: k.v })) : null])));
   const slots = (sc.slots ?? []).map((s) => ({
     key: `${key}/${s.name}`, chapter: index, scene: key, name: s.name, flat: byName.get(s.flat) ?? -1,
-    rest: rectOf(s.box, fit), px: s.px ?? [],
+    rest: rectOf(s.box, fit), px: s.px ?? [], fit: s.fit === 'cover' ? 'cover' : 'contain',
     show: [keyPlace(s.show[0], ch.marks) ?? Infinity, keyPlace(s.show[1], ch.marks) ?? Infinity],
   })).filter((s) => s.flat >= 0);
   const S = { key, chapter: index, fit, flats, tracks, slots, ports: [], camera: [], part: null, still: scene.still?.[L.comp] ?? null };
@@ -98,12 +109,21 @@ function sceneLayout(scene, key, index, ch, L) {
   let current = 1;
   S.camera = placeKeys(sc.camera, ch.marks, ch.n).map(({ u, key: k, item }) => {
     if (item > 0) current = item;
-    return { u, v: pushOf(k.m, item || current, S, L), item };
+    return { u, v: pushOf(k.m, item || current, S, L), item, ...(k.m === 'through' && { through: true }) };
   });
-  S.ports = flats.map((f, fi) => (f.through ? { flat: fi, to: f.through.to, hole: f.hole, at: f.through.at, mh: 0 } : null))
+  S.ports = flats.map((f, fi) => (f.through ? { flat: fi, to: f.through.to, hole: f.hole, door: f.hole ? null : doorOf(flats, fi), at: f.through.at, mh: 0 } : null))
     .filter(Boolean);
   L.slots.push(...slots);
   return S;
+}
+
+// An open door's frame at rest: the box round the flat with the opening and every flat drawn in front of it in
+// its layer (the lintel and the panels). The port is clipped to it, grown with the camera but never slid, so the
+// scene behind shows only between the panels as they part, and never over the walls beside them.
+function doorOf(flats, fi) {
+  const mine = flats.filter((g, gi) => gi >= fi && g.front === flats[fi].front).map((g) => g.rest);
+  const x = Math.min(...mine.map((r) => r.x)), y = Math.min(...mine.map((r) => r.y));
+  return { x, y, w: Math.max(...mine.map((r) => r.x + r.w)) - x, h: Math.max(...mine.map((r) => r.y + r.h)) - y };
 }
 
 // A camera key's push as a number for this window. 'through': the push at which the scene's (first) box hole
@@ -122,7 +142,7 @@ function pushOf(m, item, S, L) {
     const slot = S.slots.find((s) => s.name === m.slice(4));
     if (!slot) return 0;
     const px = slot.px[Math.max(0, Math.min(slot.px.length - 1, item - 1))];
-    return fitPush(slot.rest, S.flats[slot.flat].r, px ? px[0] : 0, S.fit, L.vw, L.vh);
+    return fitPush(slot.rest, S.flats[slot.flat].r, px ?? null, slot.fit, S.fit, L.vw, L.vh);
   }
   return 0;
 }

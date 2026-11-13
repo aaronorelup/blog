@@ -70,7 +70,7 @@ export function frame(y, t, ptr, L) {
     ports: pose.ports,
     slots: L.slots.map((k) => slotValue(k, key, u, S, pose)),
     pieces: L.chapters.map((c) => ({ id: c.id, values: pieceValues(c.rest, c.piece && near(c, y, L) ? ask(c, y, t, ptr, L) : null) })),
-    screens: screensAt(y, L),
+    screens: screensAt(y, L, ptr),
     ambient: { scene: key, u, t, breath: breathAt(t), flicker: flickerAt(t) },
     index: { i, id: L.chapters[i].id },
   };

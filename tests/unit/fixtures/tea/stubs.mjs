@@ -27,7 +27,7 @@ function stub(id) {
     camera: [{ at: 0, m: 0 }],
   };
   return { scene: {
-    light: { colour: LIGHT[id], name: 'stub' }, shadow: { src: `/tea/scenes/${id}/shadow.webp`, flat: 'object' },
+    light: { colour: LIGHT[id], name: 'stub' }, still: { d: `/tea/scenes/${id}/still.webp`, p: `/tea/scenes/${id}/still-p.webp` }, shadow: { src: `/tea/scenes/${id}/shadow.webp`, flat: 'object' },
     length: LENGTHS[id], count: COUNT[id], d, p: { ...upright(d), layout: LAYOUT[id] },
   } };
 }

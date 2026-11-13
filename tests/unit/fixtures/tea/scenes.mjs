@@ -116,10 +116,10 @@ const tvScene = (d, extra = {}) => ({ d, p: upright(d), ...extra });
 export const tv = {
   run: ['room', 'g1', 'g2'],
   scenes: {
-    room: tvScene(roomD, { light: { colour: '#9FB8FF', name: 'the screen' }, shadow: { src: '/fixture/tv-shadow.webp', flat: 'face' },
+    room: tvScene(roomD, { light: { colour: '#9FB8FF', name: 'the screen' }, still: { d: '/fixture/tv.webp', p: '/fixture/tv-p.webp' }, shadow: { src: '/fixture/tv-shadow.webp', flat: 'face' },
       length: { d: [5.4, 1.0], p: [5.4, 1.0] }, count: { shelves: ['episodes'] } }),
-    g1: tvScene(g1D),
-    g2: tvScene(g2D),
+    g1: tvScene(g1D, { still: { d: '/fixture/tv-g1.webp', p: '/fixture/tv-g1-p.webp' } }),
+    g2: tvScene(g2D, { still: { d: '/fixture/tv-g2.webp', p: '/fixture/tv-g2-p.webp' } }),
   },
 };
 tv.scenes.room.p.layout = 'set-above';
@@ -137,7 +137,7 @@ const filmD = {
   marks: ['item'],
 };
 export const film = { scene: {
-  light: { colour: '#EDE6D6', name: "the projector's beam" }, shadow: { src: '/fixture/film-shadow.webp', flat: 'cloth' },
+  light: { colour: '#EDE6D6', name: "the projector's beam" }, still: { d: '/fixture/film.webp', p: '/fixture/film-p.webp' }, shadow: { src: '/fixture/film-shadow.webp', flat: 'cloth' },
   length: { d: [1.8, 1.0], p: [1.8, 1.0] }, d: filmD, p: { ...upright(filmD), layout: 'cloth' },
 } };
 

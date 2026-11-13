@@ -52,7 +52,7 @@ export function poseScene(S, u, ptr, L, depth = 2) {
   return { m, placed, flats: placed.map((p) => p.out), ports };
 }
 
-// One port. Its clip is the hole on the screen (null for an open hole: the flats in front are the mask). Its
+// One port. Its clip is the hole on the screen, or for an open door its frame (grown, never slid). Its
 // content is the scene behind in window px, grown by k about the aim of S: screen = (x, y) + k * point. The port
 // itself does not lean: the flats it holds lean as they will once their scene is on, so the handover holds.
 function portOf(S, p, flat, m, ptr, L, depth) {
@@ -64,12 +64,13 @@ function portOf(S, p, flat, m, ptr, L, depth) {
     clip: null, x: S.fit.ax * (1 - k), y: S.fit.ay * (1 - k), k, o: flat.tr.o, wipe: flat.tr.wipe,
   };
   if (p.hole && Number.isFinite(flat.s)) base.clip = moved(grow(p.hole, S.fit.ax, S.fit.ay, flat.s), flat.dx, flat.dy);
-  else if (p.hole) base.clip = { x: 0, y: 0, w: 0, h: 0 };
+  else if (p.door && Number.isFinite(flat.s)) base.clip = grow(p.door, S.fit.ax, S.fit.ay, flat.s);
+  else base.clip = { x: 0, y: 0, w: 0, h: 0 };
   // The port is the hole flat's sibling, not its child: it stays shown when an open door's own panels have left
   // the frame. It takes its flat's opacity (an open door comes in with the house front it is cut in), and it is
   // not shown while its wipe has not begun, once its flat is behind the lens, or when its hole is outside the window.
   base.shown = Boolean(T) && Number.isFinite(flat.s) && flat.tr.o > 0 && flat.tr.wipe > 0 &&
-    (base.clip === null || overlap(base.clip, windowRect(L.vw, L.vh)) !== null);
+    overlap(base.clip, windowRect(L.vw, L.vh)) !== null;
   if (!T) return { ...base, inner: { flats: [], ports: [] }, still: null };
   if (depth > 1) {
     const inner = poseScene(T, T.part.from, ptr, L, depth - 1);

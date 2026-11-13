@@ -3,6 +3,7 @@
 // behind them) and slide apart from +0.10 to +0.50. There are none where the hero ends: the house's own panels
 // open round the door instead. After the last chapter they shut once more, dark and with no shadow: in from 1.5
 // to 1.1 vh before the end of the last section, and they stay shut under the footer.
+import { placeFlat, cameraAt } from './pose.js';
 import { easeEnds } from './tracks.js';
 
 export const SCREEN_W = 0.52; // each screen's share of the window's width; they overlap a little at the post
@@ -41,8 +42,10 @@ export function changes(L) {
 // The screens at scroll position y (px): how far shut, where each screen stands (its translateX in px from its
 // own place: the left screen's is 0, the right's 0.48 of the window), the field behind the paper (the coming
 // chapter's light, or the night ground when the house closes) and the shadow of the coming chapter's object, in
-// window px and in each screen's own px (the shadow does not travel: each screen wipes its own half away).
-export function screensAt(y, L) {
+// window px and in each screen's own px (the shadow does not travel: each screen wipes its own half away). The
+// shadow is the object's own place in the frame: before the boundary its first frame, after it its live pose (the
+// same push, slide and lean), so the real object is uncovered exactly where its shadow was.
+export function screensAt(y, L, ptr = [0, 0]) {
   const list = changes(L);
   const c = list.find((e) => y < e.ends) ?? list[list.length - 1];
   const u = (y - c.at) / L.vh;
@@ -51,9 +54,17 @@ export function screensAt(y, L) {
   const left = -(1 - shut) * w;
   const right = (1 - shut) * w;
   const into = c.into < 0 ? null : L.chapters[c.into];
-  const s = into?.shadow;
+  const s = into?.shadow ? shadowAt(into, u, ptr, L) : null;
   return {
     shut, into: c.into, field: into ? into.light : L.night, left, right, width: w,
     shadow: s ? { src: s.src, x: s.x, y: s.y, w: s.w, h: s.h, lx: s.x - left, rx: s.x - (L.vw - w) - right } : null,
   };
+}
+
+// Where the object of a chapter's shadow stands, u vh from the chapter's top (held inside its first scene's part).
+function shadowAt(ch, u, ptr, L) {
+  const S = L.scenes[ch.shadow.key];
+  const v = Math.min(S.part.to, Math.max(S.part.from, u));
+  const { out } = placeFlat(S, ch.shadow.flat, v, cameraAt(S, v), ptr, L);
+  return { src: ch.shadow.src, x: out.x, y: out.y, w: out.w, h: out.h };
 }

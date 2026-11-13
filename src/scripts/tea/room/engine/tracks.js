@@ -43,17 +43,16 @@ export function placeKeys(keys, marks, n) {
 }
 
 // The value of placed numeric keys [{ u, v }] at u: held before the first and after the last, eased between.
-// Keys at the same place make a step, never a division by zero. fallback when there are no keys.
+// Keys at the same place make a step, never a division by zero: from that place on the later key wins, at the
+// first key as at any other. fallback when there are no keys.
 export function valueAt(keys, u, fallback = 0) {
   if (!keys || !keys.length) return fallback;
-  if (u <= keys[0].u) return keys[0].v;
-  const last = keys[keys.length - 1];
-  if (u >= last.u) return last.v;
-  for (let i = 0; i < keys.length - 1; i++) {
-    const a = keys[i], b = keys[i + 1];
-    if (u >= a.u && u < b.u) return a.v + (b.v - a.v) * ease((u - a.u) / (b.u - a.u));
-  }
-  return last.v;
+  if (u < keys[0].u) return keys[0].v;
+  let i = 0;
+  while (i + 1 < keys.length && keys[i + 1].u <= u) i++;
+  if (i === keys.length - 1) return keys[i].v;
+  const a = keys[i], b = keys[i + 1];
+  return a.v + (b.v - a.v) * ease((u - a.u) / (b.u - a.u));
 }
 
 // Whether u is inside a span [from, to) of placed numbers.

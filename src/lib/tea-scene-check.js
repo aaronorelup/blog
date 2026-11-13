@@ -11,7 +11,7 @@ import { chapterLength, paperSpan } from '../scripts/tea/room/engine/lengths.js'
 import { plan } from '../scripts/tea/room/engine/plan.js';
 import { cameraAt, poseScene, slotRect } from '../scripts/tea/room/engine/pose.js';
 import { CLOSE, IN, OUT } from '../scripts/tea/room/engine/screens.js';
-import { compOf, coverScale, grow, holds, moved, overlap, portScale, SHARP, windowRect } from '../scripts/tea/room/engine/project.js';
+import { compOf, coverScale, drawScale, grow, holds, moved, overlap, portScale, SHARP, windowRect } from '../scripts/tea/room/engine/project.js';
 
 // The window sizes every cover and opening is checked at (CSS px), and the ones sharpness is checked at.
 export const SIZES = Object.freeze([[1920, 1080], [1536, 864], [1440, 900], [1366, 768], [1280, 800], [1280, 720], [1440, 700],
@@ -81,6 +81,9 @@ function sharpness(room, marks, errors, warnings) {
       for (const key of L.sceneKeys) {
         const S = L.scenes[key];
         const places = placesOf(S, 48);
+        // A chain (the walk): several back plates, each a closer view handed over by a dissolve, held by the 1.25
+        // rule alone. Every other scene's back plate grows 1.5 times at most.
+        const chain = S.flats.filter((g) => g.r >= 1 && !g.through && g.px).length > 1;
         const worst = new Map();
         const note = (id, value, limit, say) => { if (value > limit + EPS && !(worst.get(id)?.value >= value)) worst.set(id, { value, say }); };
         places.forEach((u, j) => {
@@ -100,7 +103,7 @@ function sharpness(room, marks, errors, warnings) {
                 note(`r${fi}`, scale, 1 / PHONE_REST, () => `${where(S, L, u)}: flat ${f.name} rests at ${fmt(1 / scale)} pixels a CSS px, under ${PHONE_REST}`);
               }
             }
-            if (f.r >= 1 && S.flats.some((g) => g.hole)) {
+            if (f.r >= 1 && !chain) {
               note(`b${fi}`, p.s, BACK_GROWTH, () => `${where(S, L, u)}: back plate ${f.name} has grown ${fmt(p.s)} times, above ${BACK_GROWTH}`);
             }
           });
@@ -115,8 +118,8 @@ function sharpness(room, marks, errors, warnings) {
 const moveHole = (S, f, p) => moved(grow(f.hole, S.fit.ax, S.fit.ay, p.s), p.dx, p.dy);
 const slotOn = (S, k, u) => u !== null && u > S.part.from && u >= k.show[0] && u < k.show[1];
 
-// A slot is checked wherever it is on, and at the end of its show (it is on just before), by its width (a picture
-// is fitted to its slot's width). The picture it holds is the current item's: the item of the last `each` camera
+// A slot is checked wherever it is on, and at the end of its show (it is on just before), at the scale its picture
+// is really drawn at: fitted whole inside the slot ('contain', the default, which RoomSlot draws) or covering it. The picture it holds is the current item's: the item of the last `each` camera
 // key at or before the place, the first item before any, and the first picture with no `each` key (as plan.js
 // fits it). A slot
 // inside the hole of a front flat whose port is fully uncovered is behind that port (the front stage is over the
@@ -132,8 +135,8 @@ function slotSharp(S, k, si, u, prev, pose, L, win, note, warnings) {
   const items = S.camera.filter((c) => c.item > 0);
   const now = items.filter((c) => c.u <= u).pop() ?? items[0];
   const px = k.px[Math.min(k.px.length, now?.item ?? 1) - 1];
-  const scale = rect.w / px[0];
-  note(`k${si}`, scale, SHARP, () => `${where(S, L, u)}: slot ${k.name} draws its ${px[0]}x${px[1]} picture at ${fmt(scale)} CSS px a pixel, above ${SHARP}`);
+  const scale = drawScale(rect.w, rect.h, px, k.fit);
+  note(`k${si}`, scale, SHARP, () => `${where(S, L, u)}: slot ${k.name} draws its ${px[0]}x${px[1]} picture at ${fmt(scale)} CSS px a pixel (${k.fit}), above ${SHARP}`);
   return null;
 }
 
@@ -143,7 +146,11 @@ function cover(room, marks, errors) {
     const win = windowRect(L.vw, L.vh);
     for (const key of L.sceneKeys) {
       const S = L.scenes[key];
-      const bad = placesOf(S).find((u) => {
+      // every key, just after every key (a step), and 48 places between: a cross-fade can leave the night
+      // ground showing between keys that are all covered
+      const keys = placesOf(S);
+      const us = [...new Set([...placesOf(S, 48), ...keys.map((u) => Math.min(S.part.to, u + 1e-4))])].sort((a, b) => a - b);
+      const bad = us.find((u) => {
         const pose = poseScene(S, u, [0, 0], L, 0);
         return !S.flats.some((f, fi) => f.r >= 1 && !f.through && pose.placed[fi].out.o >= 1 &&
           Number.isFinite(pose.placed[fi].s) && holds(pose.placed[fi].out, win, 0.5));
@@ -161,6 +168,10 @@ function openings(room, marks, errors) {
     const win = windowRect(L.vw, L.vh);
     for (const key of L.sceneKeys) {
       const S = L.scenes[key];
+      const ch = L.chapters[S.chapter];
+      if (S.part.to <= S.part.from && ch.parts[ch.parts.length - 1].key !== key) {
+        errors.push(`${S.key} at ${L.vw}x${L.vh}: the scene has no part of its chapter (a mark its camera names is missing, or its keys fall before the scene before it ends), so the run skips it`);
+      }
       for (const port of S.ports) {
         const f = S.flats[port.flat];
         const T = L.scenes[port.to];
@@ -179,6 +190,10 @@ function openings(room, marks, errors) {
           if (!Number.isFinite(p.s)) return true;
           // Where the port shows anything: inside the hole (once the wipe has begun), or for an open door the whole
           // window at the handover (its panels are the mask before that).
+          // (An open door's port is clipped to the door's frame, so it never paints over the walls; before the
+          // handover the walls behind the port show where the scene behind does not reach, as through a doorway.)
+          const door = f.hole ? null : grow(port.door, S.fit.ax, S.fit.ay, p.s);
+          if (door && u >= S.part.to && !holds(door, win, 0.5)) return true;
           const see = p.tr.wipe <= 0 || p.out.o <= 0 ? null : f.hole ? overlap(moveHole(S, f, p), win) : (u >= S.part.to ? win : null);
           if (!see) return false;
           if (!back) return true;
@@ -187,6 +202,18 @@ function openings(room, marks, errors) {
         });
         if (bad !== undefined) errors.push(`${where(S, L, bad)}: the scene behind ${f.name} does not cover its hole (a larger at, or a hole nearer the frame's shape)`);
         const end = poseScene(S, S.part.to, [0, 0], L, 0);
+        // The handover: the camera's last key is the through key, and there the hole is the whole frame, opaque and
+        // fully uncovered (the scene is changed for the one behind only at that moment).
+        if (f.hole) {
+          const last = S.camera[S.camera.length - 1];
+          if (!S.camera.some((k) => k.through)) errors.push(`${S.key} at ${L.vw}x${L.vh}: its through key names a mark the page does not have, so it never goes through`);
+          else if (!last?.through) errors.push(`${where(S, L, last.u)}: a camera key after the through key is the scene's last key, so its handover is not at the through push`);
+          const e = end.placed[port.flat];
+          const hole = Number.isFinite(e.s) ? moveHole(S, f, e) : null;
+          if (!hole || !holds(hole, win, 0.5) || e.out.o < 1 || e.tr.wipe < 1) {
+            errors.push(`${where(S, L, S.part.to)}: at the handover the hole of ${f.name} is not the whole frame, opaque and uncovered`);
+          }
+        }
         S.flats.forEach((g, gi) => {
           const inFront = gi > port.flat ? g.front === f.front || (g.front && !f.front) : g.front && !f.front;
           const self = gi === port.flat && !f.hole;
@@ -209,8 +236,10 @@ function pieces(room, fns, errors) {
     for (const [w, h] of [[1440, 900], [390, 844]]) {
       const L = plan(room, { w, h }, { pieces: fns });
       const ch = L.chapters.find((x) => x.id === c.id);
-      for (const u of [-1, 0, ch.len / 2, ch.len, ch.len + 1]) {
-        const out = fn(u, ch.n, 12.4, [0, 0], L) ?? {};
+      const us = Array.from({ length: Math.ceil((ch.len + 2) / 0.05) + 1 }, (_, i) => -1 + i * 0.05);
+      for (const [u, t] of us.flatMap((u) => [0, 2.5, 12.4, 30, 120].map((t) => [u, t]))) {
+        let out;
+        try { out = fn(u, ch.n, t, [0, 0], L) ?? {}; } catch { continue; }
         for (const [el, props] of Object.entries(out)) {
           if (!ch.rest[el]) { errors.push(`${c.id}: its piece drives ${el}, which has no rest value`); continue; }
           for (const p of Object.keys(props ?? {})) if (!(p in ch.rest[el])) errors.push(`${c.id}: its piece drives ${el}.${p}, which has no rest value`);
@@ -233,10 +262,37 @@ function spacing(room, errors) {
   }
 }
 
+// Data-only checks: a 'fit:<slot>' key whose slot names no picture size (it would fit nothing and push to the
+// cover), and a back plate that covers the board but without the 4% spare of 2.4 (a warning: the cover check is
+// what fails a frame).
+const SPARE = 0.04;
+function data(room, errors, warnings) {
+  for (const S of Object.values(room.scenes)) {
+    for (const comp of ['d', 'p']) {
+      const sc = S[comp];
+      const [bw, bh] = comp === 'd' ? [1600, 900] : [900, 1600];
+      for (const k of sc.camera) {
+        if (typeof k.m === 'string' && k.m.startsWith('fit:')) {
+          const slot = sc.slots.find((x) => x.name === k.m.slice(4));
+          if (slot && !slot.px.length) errors.push(`${S.key} ${comp}: slot ${slot.name} is fitted by a camera key (${k.m}) and gives no picture size (art.js)`);
+        }
+      }
+      for (const f of sc.flats) {
+        const [x, y, w, h] = f.box;
+        if (f.r < 1 || f.through || f.text || !(x <= 0 && y <= 0 && x + w >= bw && y + h >= bh)) continue;
+        if (-x < SPARE * bw - 0.5 || -y < SPARE * bh - 0.5 || x + w - bw < SPARE * bw - 0.5 || y + h - bh < SPARE * bh - 0.5) {
+          warnings.push(`${S.key} ${comp}: back plate ${f.name} covers the board with less than 4% spare on a side`);
+        }
+      }
+    }
+  }
+}
+
 // Every check over a compiled room. marks: { d, p } measured marks by composition, or { all } (estimated when
 // absent). fns: the set pieces by chapter id. Returns { errors, warnings }, each a list of sentences.
 export function checkRoom(room, { marks = null, fns = null } = {}) {
   const errors = [], warnings = [];
+  data(room, errors, warnings);
   sharpness(room, marks, errors, warnings);
   cover(room, marks, errors);
   openings(room, marks, errors);

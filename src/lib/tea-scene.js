@@ -20,6 +20,8 @@ export const PICKS = 'src/data/tea-picks.json';
 // The id of the <script type="application/json"> that carries roomJson() in the page.
 export const ROOM_BLOCK = 'tea-room-scenes';
 const COMPS = ['d', 'p'];
+// A formula's base holds the head (1.2 vh) and the tail (0.6 vh) of the screens, so it is never under 1.8.
+export const MIN_BASE = 1.8;
 const PROPS = ['slide', 'lift', 'opacity', 'wipe'];
 
 export class TeaSceneError extends Error {
@@ -52,6 +54,7 @@ export function shapeProblems(id, mod) {
   for (const c of COMPS) {
     const l = first.length?.[c];
     if (!(Array.isArray(l) && l.length === 2 && l.every(num) && l[0] > 0 && l[1] >= 0)) out.push(`${id}: length.${c} is not [base, per]`);
+    else if (l[0] < MIN_BASE) out.push(`${id}: length.${c} starts at ${l[0]} vh, under ${MIN_BASE} (the head and the tail of the screens)`);
   }
   if (first.shadow !== undefined && first.shadow !== null) {
     if (typeof first.shadow.src !== 'string') out.push(`${id}: shadow.src is not a path`);
@@ -103,6 +106,7 @@ function compProblems(at, sc, { names, j, last }) {
     if (!flats.has(s.flat)) say(`slot ${s.name}: flat "${s.flat}" does not exist`);
     if (!box4(s.box)) say(`slot ${s.name}: box is not [x, y, w, h]`);
     if (!(Array.isArray(s.show) && s.show.length === 2 && s.show.every(place))) say(`slot ${s.name}: show is not [from, to]`);
+    if (s.fit !== undefined && s.fit !== 'contain' && s.fit !== 'cover') say(`slot ${s.name}: fit is "${s.fit}", and a picture is fitted 'contain' (the default) or 'cover'`);
   }
   const key = (k, what) => {
     if (!isObj(k) || (k.each === undefined) === (k.at === undefined)) return say(`${what}: give at or each`);
@@ -188,7 +192,7 @@ export function compileRoom(chapters, modules, { art = {}, night = NIGHT } = {})
         });
         out[k] = {
           aim: [...sc.aim], flats,
-          slots: (sc.slots ?? []).map((s) => ({ name: s.name, flat: s.flat, box: [...s.box], show: [...s.show], px: slotPx(s, art[c.id]) })),
+          slots: (sc.slots ?? []).map((s) => ({ name: s.name, flat: s.flat, box: [...s.box], show: [...s.show], fit: s.fit ?? 'contain', px: slotPx(s, art[c.id]) })),
           camera: (sc.camera ?? []).map((key) => ({ ...key })),
           tracks: (sc.tracks ?? []).map((t) => Object.fromEntries(Object.entries(t).map(([p, v]) => [p, Array.isArray(v) ? v.map((x) => ({ ...x })) : v]))),
         };
@@ -198,6 +202,11 @@ export function compileRoom(chapters, modules, { art = {}, night = NIGHT } = {})
       room.scenes[out.key] = out;
     }
   });
+  // A scene seen through an opening is drawn two deep as its still, so every scene an opening shows has one.
+  const shown = new Set(Object.values(room.scenes).flatMap((sc) => COMPS.flatMap((k) => sc[k].flats.filter((f) => f.through).map((f) => f.through.to))));
+  const still = [...shown].filter((key) => !(room.scenes[key]?.still?.d && room.scenes[key]?.still?.p))
+    .map((key) => `${key}: an opening shows it, so it needs its still for d and for p`);
+  if (still.length) throw new TeaSceneError(still);
   room.chapters.forEach((c, i) => {
     const next = room.chapters[i + 1];
     if (next && c.layout && c.layout === next.layout) warnings.push(`${c.id} and ${next.id} are neighbours with the same phone layout "${c.layout}"`);

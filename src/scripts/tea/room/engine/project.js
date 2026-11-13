@@ -92,12 +92,18 @@ export function throughPush(holeRest, r, fit, vw, vh) {
   return Number.isFinite(s) ? Math.max(0, pushFor(r, s)) : Infinity;
 }
 
+// How a picture of px [w, h] pixels is drawn in a box w x h CSS px: fitted whole inside it ('contain', the
+// default: as wide as the box for a wider picture) or covering it ('cover'). The CSS px for each of its pixels.
+export const drawScale = (w, h, px, fit = 'contain') =>
+  (fit === 'cover' ? Math.max(w / px[0], h / px[1]) : Math.min(w / px[0], h / px[1]));
+
 // The push for 'fit:<slot>': the smaller of the push at which the slot covers the window and the push at which
-// it is 1.25 CSS px wide for each pixel of the picture it holds (pw, the picture's width in pixels).
+// the picture it holds (px, fitted as the slot says) is drawn at 1.25 CSS px for each of its pixels.
 export const SHARP = 1.25;
-export function fitPush(slotRest, r, pw, fit, vw, vh) {
+export function fitPush(slotRest, r, px, mode, fit, vw, vh) {
   const cover = coverScale(slotRest, fit.ax, fit.ay, vw, vh);
-  const sharp = pw > 0 ? (SHARP * pw) / slotRest.w : Infinity;
+  const at = px && px[0] > 0 ? drawScale(slotRest.w, slotRest.h, px, mode) : 0;
+  const sharp = at > 0 ? SHARP / at : Infinity;
   const s = Math.min(cover, sharp);
   return Number.isFinite(s) ? Math.max(0, pushFor(r, s)) : 0;
 }

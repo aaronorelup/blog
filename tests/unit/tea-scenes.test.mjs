@@ -15,6 +15,7 @@ import { estimateMarks, markNames } from '../../src/lib/tea-scene-check.js';
 import { buildRoom, checkRoom, compileRoom, PICKS, ROOM_BLOCK, roomJson, TeaSceneError } from '../../src/lib/tea-scene.js';
 import { chapterLength, itemCount, pageLengths } from '../../src/scripts/tea/room/engine/lengths.js';
 import { plan } from '../../src/scripts/tea/room/engine/plan.js';
+import { poseScene } from '../../src/scripts/tea/room/engine/pose.js';
 import { MARKS } from './fixtures/tea/room.mjs';
 import { hero, start, startPiece, tv, tvArt } from './fixtures/tea/scenes.mjs';
 import { STUBS } from './fixtures/tea/stubs.mjs';
@@ -178,7 +179,13 @@ test('lengths: base + per x n, known before layout; the chapter after the hero a
 test('a chapter too short for its screens to open on it and shut after it is refused', () => {
   const short = structuredClone(STUBS.now);
   short.scene.length = { d: [0.9, 0], p: [1.8, 0] };
-  const { room } = compileRoom([ch('hero'), ch('start'), ch('now'), ch('about')], { hero, start: STUBS.start, now: short, about: STUBS.about });
+  const chapters = [ch('hero'), ch('start'), ch('now'), ch('about')];
+  // the scene data's own rule refuses it first (finding 10: a base is never under 1.8)...
+  assert.throws(() => compileRoom(chapters, { hero, start: STUBS.start, now: short, about: STUBS.about }),
+    (e) => e instanceof TeaSceneError && e.problems.some((p) => /now: length\.d starts at 0\.9 vh, under 1\.8/.test(p)));
+  // ...and the spacing check still holds for a compiled room whose length came out short
+  const { room } = compileRoom(chapters, { hero, start: STUBS.start, now: STUBS.now, about: STUBS.about });
+  room.chapters[2].len.d = [0.9, 0];
   assert.deepEqual(checkRoom(room).errors, ['now d: 0.90 vh is too short for the screens to open on it and shut after it']);
 });
 
@@ -280,4 +287,118 @@ test('every mark a scene names is on the built page, in its own chapter', (t) =>
   const file = path.join(REPO, 'dist/tea-next/index.html');
   if (!fs.existsSync(file)) return t.skip('no dist/tea-next/index.html yet: npm run build makes it once the page exists');
   assert.deepEqual(marksMissing(fs.readFileSync(file, 'utf8')), []);
+});
+
+// ---------------------------------------------------------------- what the adversarial review of the engine found
+// (each of these was green before its fix, and is named by the review's finding number)
+
+test('finding 1: a box-hole handover that does not cover the frame is refused, whatever moved the hole', () => {
+  // (a) a numeric key authored before the through key, placed after it once the marks fall
+  has(errorsOf('tv', tv, (m) => { m.scenes.room.d.camera.splice(3, 0, { at: 4.6, m: 0.05 }); }), /tv\/room.*(handover|last key)/);
+  // (b) the set lifted at the handover
+  has(errorsOf('tv', tv, (m) => { m.scenes.room.d.tracks.push({ flat: 'face', lift: [{ at: 'fall-1', off: -0.6, v: 0 }, { at: 'fall-1', v: 0.3 }] }); }),
+    /tv\/room.*handover/);
+  // (c) the set half faded at the handover
+  has(errorsOf('tv', tv, (m) => { m.scenes.room.d.tracks.push({ flat: 'face', opacity: [{ at: 'fall-1', off: -0.5, v: 1 }, { at: 'fall-1', v: 0.5 }] }); }),
+    /tv\/room.*handover/);
+  // (d) the wipe still running at the handover
+  has(errorsOf('tv', tv, (m) => { m.scenes.room.d.tracks[0].wipe[1] = { at: 'fall-1', off: 0.5, v: 1 }; }), /tv\/room.*handover/);
+  // and the marks of the television falling so that twenty + 0.4 lands after fall-1
+  const marks = { all: { ...MARKS, tv: { ...MARKS.tv, twenty: 4.2 } } };
+  has(errorsOf('tv', tv, () => {}, { marks }), /tv\/room.*(handover|last key)/);
+});
+
+test('finding 2: cover is checked between keys and just after a step, and a step at the first key steps', () => {
+  const mod = structuredClone(hero);
+  const at = (u) => u;
+  mod.scene.d.tracks = mod.scene.d.tracks.filter((t) => t.flat !== 'near' && t.flat !== 'wide');
+  mod.scene.d.tracks.push({ flat: 'near', opacity: [{ at: at(0.88), v: 0 }, { at: at(1.28), v: 1 }, { at: 1.65, v: 1 }, { at: 1.65, v: 0 }] },
+    { flat: 'wide', opacity: [{ at: at(1.08), v: 1 }, { at: at(1.08), v: 0 }] });
+  const { room } = compileRoom([ch('hero'), ch('start', 3)], { hero: mod, start });
+  has(checkRoom(room, { marks: { all: MARKS } }).errors, /hero\/main.*no back plate covers the window/);
+  // a cross-fade whose keys are all covered, with the night ground showing between them
+  const fade = structuredClone(hero);
+  fade.scene.d.tracks = fade.scene.d.tracks.filter((t) => t.flat !== 'near' && t.flat !== 'wide');
+  fade.scene.d.tracks.push({ flat: 'near', opacity: [{ at: 0.8, v: 0 }, { at: 1.2, v: 1 }, { at: 1.65, v: 1 }, { at: 1.65, v: 0 }] },
+    { flat: 'wide', opacity: [{ at: 0.8, v: 1 }, { at: 1.2, v: 0 }] });
+  const faded = compileRoom([ch('hero'), ch('start', 3)], { hero: fade, start }).room;
+  has(checkRoom(faded, { marks: { all: MARKS } }).errors, /hero\/main.*no back plate covers the window/);
+});
+
+test('finding 4: a scene of a run left with no part, or a through key whose mark is missing, is refused', () => {
+  const marks = { all: { ...MARKS, tv: Object.fromEntries(Object.entries(MARKS.tv).filter(([k]) => k !== 'fall-2')) } };
+  has(errorsOf('tv', tv, () => {}, { marks }), /tv\/g1.*(no part|through)/);
+});
+
+test('finding 5: a back plate may grow 1.5 times at most in every scene but a chain', () => {
+  has(errorsOf('start', start, (m) => { m.scene.d.camera = [{ at: 0, m: 0 }, { at: 'sheet-3', m: 0.36 }]; m.scene.d.flats[3].r = 0.5; m.scene.d.flats[2].r = 0.7; m.scene.d.flats[1].r = 0.8; }),
+    /start\/main.*back plate room has grown/);
+});
+
+test('finding 6: a scene that an opening shows needs its still for d and for p', () => {
+  const mod = structuredClone(tv);
+  delete mod.scenes.g2.still;
+  assert.throws(() => compileRoom(...page('tv', mod)), (e) => e instanceof TeaSceneError && e.problems.some((p) => /tv\/g2.*still/.test(p)));
+});
+
+test('finding 7: an open door clips its port to the door frame, so the scene behind never paints over the walls', () => {
+  for (const at of [1.3, 2, 4]) {
+    const mod = structuredClone(hero);
+    mod.scene.d.flats[3].through.at = at;
+    mod.scene.p.flats[3].through.at = at;
+    const { room } = compileRoom([ch('hero'), ch('start', 3)], { hero: mod, start });
+    for (const [w, h] of [[1440, 900], [390, 844], [2560, 1440]]) {
+      const L = plan(room, { w, h }, { marks: MARKS });
+      const S = L.scenes['hero/main'];
+      const comp = L.comp;
+      const box = comp === 'd' ? [462.5, 260.2, 675, 380] : [260.2, 462.5, 380, 675];
+      for (let u = 0; u < S.part.to; u += 0.02) {
+        const pose = poseScene(S, u, [0, 0], L, 1);
+        const p = pose.ports[0];
+        if (!p.shown) continue;
+        assert.ok(p.clip, `${at} ${w}x${h} ${u}: an open door has a clip`);
+        const s = 1 / (1 - pose.m);
+        const door = { x: S.fit.ax + (S.fit.ox + box[0] * S.fit.c - S.fit.ax) * s, y: S.fit.ay + (S.fit.oy + box[1] * S.fit.c - S.fit.ay) * s,
+          w: box[2] * S.fit.c * s, h: box[3] * S.fit.c * s };
+        for (const k of ['x', 'y', 'w', 'h']) assert.ok(Math.abs(p.clip[k] - door[k]) < 0.01, `${at} ${w}x${h} ${u.toFixed(2)} clip.${k}: ${p.clip[k]} vs ${door[k]}`);
+      }
+    }
+  }
+});
+
+test('finding 10: a fit slot needs its picture size, a piece is sampled over the chapter and the clock, a formula is 1.8 or more', () => {
+  has(errorsOf('tv', tv, () => {}, { art: {} }), /slot glass.*fit.*picture size/);
+  const ghost = { start: (u, n, t) => ({ ...startPiece(u, n, t), ...(u > 1.0 && u < 1.1 ? { ghost: { a: 1 } } : {}) }) };
+  has(errorsOf('start', start, () => {}, { fns: ghost }), /drives ghost/);
+  const late = { start: (u, n, t) => ({ ...startPiece(u, n, t), ...(t > 20 ? { ghost2: { a: 1 } } : {}) }) };
+  has(errorsOf('start', start, () => {}, { fns: late }), /drives ghost2/);
+  assert.throws(() => compileRoom(...page('start', { scene: { ...structuredClone(start.scene), length: { d: [1.0, 0], p: [2.4, 0.9] } } })),
+    (e) => e instanceof TeaSceneError && e.problems.some((p) => /length\.d.*1\.8/.test(p)));
+  // a back plate that covers the board with no spare is named in a warning
+  const mod = structuredClone(start);
+  mod.scene.d.flats[0].box = [0, 0, 1600, 900];
+  const { room } = compileRoom(...page('start', mod));
+  assert.ok(checkRoom(room, { marks: { all: MARKS } }).warnings.some((w) => /start\/main.*room.*spare/.test(w)));
+});
+
+test('finding 12: a slot says how its picture is fitted, and is judged by the scale it is really drawn at', () => {
+  // the cup (4:3) holds a very wide 16:3 picture: fitted whole it is sharp, fitted to cover it is not
+  const wide = (fit) => errorsOf('start', start, (m) => { Object.assign(m.scene.d.slots[0], { px: [[640, 120]], fit }); });
+  assert.deepEqual(wide('contain'), []);
+  has(wide('cover'), /slot cup draws its 640x120 picture at 1\.\d+ CSS px a pixel \(cover\), above 1\.25/);
+  // a 'fit:<slot>' push stops where the picture, fitted as the slot says, reaches 1.25
+  for (const mode of ['contain', 'cover']) {
+    const mod = structuredClone(tv);
+    mod.scenes.room.d.slots[0].fit = mode;
+    const { room } = compileRoom(...page('tv', mod), { art: { tv: tvArt } });
+    const L = plan(room, { w: 2560, h: 1440 }, { marks: MARKS });
+    const S = L.scenes['tv/room'];
+    const key = S.camera.find((k) => k.item === 1);
+    const s = S.flats[1].r / (S.flats[1].r - key.v);
+    const r = S.slots[0].rest;
+    const drawn = mode === 'cover' ? Math.max((r.w * s) / 1600, (r.h * s) / 900) : Math.min((r.w * s) / 1600, (r.h * s) / 900);
+    assert.ok(Math.abs(drawn - 1.25) < 1e-6, `${mode}: ${drawn}`);
+  }
+  assert.throws(() => compileRoom(...page('tv', (() => { const m = structuredClone(tv); m.scenes.room.d.slots[0].fit = 'stretch'; return m; })())),
+    (e) => e instanceof TeaSceneError && e.problems.some((p) => /slot glass: fit/.test(p)));
 });

@@ -12,7 +12,8 @@ import { holds, windowRect } from '../../src/scripts/tea/room/engine/project.js'
 import { CLOSE, closeAt, shutAt } from '../../src/scripts/tea/room/engine/screens.js';
 import { stateOf } from '../../src/scripts/tea/room/engine/state.js';
 import { ease, easeEnds, placeKeys, valueAt } from '../../src/scripts/tea/room/engine/tracks.js';
-import { CHAPTERS, fixtureLayout, leaves, seeded, VIEWS } from './fixtures/tea/room.mjs';
+import { plan } from '../../src/scripts/tea/room/engine/plan.js';
+import { CHAPTERS, fixtureLayout, fixtureRoom, leaves, MARKS, seeded, VIEWS } from './fixtures/tea/room.mjs';
 import { startPiece } from './fixtures/tea/scenes.mjs';
 
 const ENGINE = new URL('../../src/scripts/tea/room/engine/', import.meta.url);
@@ -326,4 +327,67 @@ test('the clock and the pointer as the engine takes them, and the state as the p
   assert.equal(s.ambient, undefined);
   assert.deepEqual(stateOf(s), s);
   for (const [, v] of leaves(s)) if (typeof v === 'number') assert.equal(Math.round(v * 100) / 100, v);
+});
+
+// ---------------------------------------------------------------- what the adversarial review of the engine found
+
+test('finding 2: a step at the first key steps like any other: the later value wins from that place on', () => {
+  const step = [{ u: 1, v: 1 }, { u: 1, v: 0 }];
+  assert.equal(valueAt(step, 0.999), 1);
+  assert.equal(valueAt(step, 1), 0);
+  assert.equal(valueAt([{ u: 0, v: 5 }, { u: 1, v: 1 }, { u: 1, v: 0 }], 1), 0, 'as after an earlier key');
+});
+
+test('finding 3: the shadow stands on its object in every frame the screens show it, with the lean on too', () => {
+  for (const view of VIEWS) {
+    for (const lean of [0, 1]) {
+      const L = fixtureLayout(view, { lean });
+      for (const c of L.chapters.slice(2)) {
+        const named = { tv: 'face', film: 'cloth' }[c.id];
+        if (!named) continue;
+        for (const u of [0.1, 0.2, 0.3, 0.4, 0.49]) {
+          const f = frame(c.top + u * L.vh, STILL_T, [1, -1], L);
+          const obj = f.flats.find((x) => x.name === named);
+          for (const p of ['x', 'y', 'w', 'h']) {
+            assert.ok(Math.abs(f.screens.shadow[p] - obj[p]) < 0.01, `${c.id} ${view} lean ${lean} +${u} vh ${p}: ${f.screens.shadow[p]} vs ${obj[p]}`);
+          }
+        }
+        // before the boundary the coming scene is not on: the shadow stands where its object stands at its first frame
+        const before = frame(c.top - 0.3 * L.vh, STILL_T, [1, -1], L).screens.shadow;
+        const first = frame(c.top, STILL_T, [1, -1], L).flats.find((x) => x.name === named);
+        for (const p of ['x', 'y', 'w', 'h']) assert.ok(Math.abs(before[p] - first[p]) < 0.01, `${c.id} ${view} before ${p}`);
+      }
+    }
+  }
+});
+
+test('finding 6: a port two deep holds a real still, placed where the scene behind it will stand', () => {
+  for (const view of VIEWS) {
+    const L = fixtureLayout(view);
+    const room = L.chapters.find((c) => c.id === 'tv');
+    const f = frame(room.top + 1.0 * L.vh, STILL_T, [0, 0], L);
+    assert.equal(f.on, 'tv/room');
+    const deep = f.ports[0].inner.ports[0];
+    assert.equal(typeof deep.still.src, 'string', `${view}: the still of tv/g2 inside the glass of tv/g1`);
+  }
+});
+
+test('finding 9: a window with no height or width gives a finite frame', () => {
+  const { room } = fixtureRoom();
+  for (const [w, h] of [[0, 0], [1440, 0], [NaN, 900], [0, 844]]) {
+    const L = plan(room, { w, h }, { marks: MARKS });
+    for (const y of [0, 500, 1e6]) {
+      const bad = leaves(stateOf(frame(y, STILL_T, [0, 0], L))).filter(([, v]) => typeof v === 'number' && !Number.isFinite(v));
+      assert.deepEqual(bad, [], `${w}x${h} at ${y}`);
+    }
+  }
+});
+
+test('finding 11: the layout a set piece is handed is frozen, so a piece cannot change the next frame', () => {
+  const { room } = fixtureRoom();
+  const meddle = (u, n, t, ptr, L) => { L.chapters[1].n += 1; return { coin: { rise: n / 100 } }; };
+  const L = plan(room, { w: 1440, h: 900 }, { marks: MARKS, pieces: { start: meddle } });
+  assert.ok(Object.isFrozen(L) && Object.isFrozen(L.chapters[1]) && Object.isFrozen(L.scenes['tv/room'].flats[0]));
+  const y = L.chapters[1].top + 1.5 * L.vh;
+  assert.deepEqual(frame(y, 1, [0, 0], L), frame(y, 1, [0, 0], L));
 });
