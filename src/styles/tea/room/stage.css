@@ -17,6 +17,11 @@ html[data-comp='d'] .room-comp[data-comp='p'], html[data-comp='p'] .room-comp[da
 .room-port { position: absolute; left: 0; top: 0; overflow: hidden; transform-origin: 0 0; }
 .room-port-in { position: absolute; left: 0; top: 0; width: 0; height: 0; transform-origin: 0 0; }
 .room-port-still { position: absolute; left: 0; top: 0; max-width: none; transform-origin: 0 0; }
+/* every flat and port in a layer of its own from the start: without it the browser chose a layer for a moving flat
+   by what had moved before, so the same frame after real wheel turns and loaded directly differed by a pixel along
+   the door's halves and the port (1 to 3% of the frame at 760 and 390 wide, the state equal). Only transforms change
+   on them, so nothing is re-laid out. */
+.room-flat, .room-port, .room-port-in, .room-port-still { will-change: transform; }
 .room-word { white-space: nowrap; }
 .room-word .room-word-say { white-space: normal; width: max-content; max-width: 34ch; }
 .room-ambient { position: absolute; left: 0; top: 0; }
