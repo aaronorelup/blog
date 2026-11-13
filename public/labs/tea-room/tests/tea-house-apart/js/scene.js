@@ -1,8 +1,9 @@
 // The tea house of the homepage, by night, built piece by piece so it can be taken apart.
-// mount(canvas) builds the world once and returns a view whose render(T, time, safe, sway) draws one frame:
-// everything in it is a function of T (the track's progress, 0 to 1), of time (seconds, for the petals and the
-// lamps' flicker), of safe (the part of the window the drawing may use) and of sway (where the pointer is). Nothing is remembered from one frame to the
-// next, so any T can be drawn at any moment, in any order.
+// mount(canvas) builds the world once and returns a view whose render(T, time, safe, sway, close) draws one
+// frame: everything in it is a function of T (the track's progress, 0 to 1), of time (seconds, for the petals and
+// the lamps' flicker), of safe (the part of the window the drawing may use), of sway (where the pointer is) and
+// of close (how far the card under the drawing has come up). Nothing is remembered from one frame to the next,
+// so any frame can be drawn at any moment, in any order.
 import {
   AdditiveBlending, CanvasTexture, CircleGeometry, Mesh, MeshBasicMaterial, PCFSoftShadowMap, PerspectiveCamera,
   Scene, Vector3, WebGLRenderer,
@@ -90,7 +91,7 @@ export function mount(canvas) {
     pieces.forEach(p => lit(p.obj, true));
   }
 
-  let W = 1, H = 1, tall = false, pl = null, lastU = -1;
+  let W = 1, H = 1, tall = false, pl = null, lastU = -1, lastGaps = -1;
   const cam = { p: [0, 0, 0], q: [0, 0, 0], fov: 46 };
   const look = new Vector3(), v = new Vector3();
   rig.dir.intensity = 2.2;
@@ -115,9 +116,11 @@ export function mount(canvas) {
 
   // safe: { x0, y0, x1, y1 } in CSS pixels, the part of the window the drawing may use (the card takes the rest)
   // sway: { x, y } from -1 to 1, where the pointer is; outside the house the camera leans a few degrees with it
-  function render(T, time, safe, sway) {
+  // close: how far the finished drawing has closed its gaps to make room for the card under it (0 to 1)
+  function render(T, time, safe, sway, close = 0) {
     const u = clamp((T - ACT.apart0) / (ACT.apart1 - ACT.apart0));
-    pose(pieces, pl, u);
+    const gaps = 1 - 0.3 * close;
+    pose(pieces, pl, u, gaps);
 
     cameraAt(T, tall, cam);
     const out = sway ? ss(0.17, ACT.whole, T) : 0;
@@ -169,7 +172,7 @@ export function mount(canvas) {
     spill.material.opacity = spill.userData.strength * (1 - 0.75 * ss(0.12, 0.7, u));
 
     petals.update(time);
-    if (u !== lastU) { lastU = u; renderer.shadowMap.needsUpdate = true; }    // shadows move only when pieces do
+    if (u !== lastU || gaps !== lastGaps) { lastU = u; lastGaps = gaps; renderer.shadowMap.needsUpdate = true; }    // shadows move only when pieces do
     renderer.render(scene, camera);
   }
 
