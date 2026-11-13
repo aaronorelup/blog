@@ -423,13 +423,13 @@ varying vec2 vUv2;
 void main() { vUv2 = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }`;
 
 export const GRADE_FRAG = /* glsl */ `
-uniform float time, grain, vignette, aspect;
+uniform float time, grain, vignette, aspect, cell;
 uniform vec2 res;
 varying vec2 vUv2;
 float h2(vec2 p) { vec3 p3 = fract(vec3(p.xyx) * 0.1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
 void main() {
   // drawn with a doubling multiply: 0.5 leaves the picture as it is
-  vec2 px = floor(vUv2 * res);
+  vec2 px = floor(vUv2 * res / cell);
   float t = floor(time * 24.0);
   float n = h2(px + vec2(t * 17.0, t * 29.0)) + h2(px * 1.7 + vec2(t * 7.0, -t * 13.0)) - 1.0;
   vec2 q = (vUv2 - 0.5) * vec2(min(aspect, 1.6) / 1.6, 1.0);
