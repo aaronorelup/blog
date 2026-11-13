@@ -17,7 +17,7 @@ export function rng(seed) {
 // The world's few colours: the terminal's night, its paper and ink, the cursor's amber.
 export const PAL = {
   night: 0x07080b, plane: 0x141518, ink: 0xe9e4da, amber: 0xffc870, ember: 0xff9a4a,
-  paper: 0x262832, cream: 0xefe6d4, blue: 0x4a5fa8, chalk: 0xf4f6ff, cold: 0x8fb4ff,
+  paper: 0x343745, cream: 0xefe6d4, blue: 0x4a5fa8, chalk: 0xf4f6ff, cold: 0x8fb4ff,
   felt: 0x34343f, desk: 0x5a4632, clay: 0x46506a, cap: 0x232a3d,
 };
 export const FOG = 0.021;

@@ -8,7 +8,7 @@ const qs = new URLSearchParams(location.search);
 const STILL = qs.get('still') === '1';
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const SHOW = qs.get('fps') === '1';
-const T_HELD = 7.3;
+const T_HELD = 8.9;
 const root = document.documentElement, chapter = document.getElementById('chapter'), stage = document.getElementById('stage'), hint = document.getElementById('hint');
 if (RM) root.classList.add('rm');
 
