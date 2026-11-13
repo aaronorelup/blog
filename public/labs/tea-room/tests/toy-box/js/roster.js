@@ -4,7 +4,7 @@
    model was made. Models the site already serves are loaded from their own addresses; the others are light copies
    in ../models/ (how each was made is in ../models/README.txt).
    h: standing height in metres (the paper lamp in the room is about 0.55). face: turn, in degrees, that makes the
-   model look at the camera. shape: how it is held up in the physics (fig = two stacked balls, box = four balls).
+   model look at the camera. shape: how it is held up in the physics (fig = two stacked balls, box = four or eight balls, ball = one).
    cx, cz: where its feet are, in parts of its own width and depth, when that is not the middle of the model. */
 
 const TEA = '/labs/tea-room/v1/assets/tea/hero/';
@@ -41,6 +41,31 @@ export const ROSTER = [
     how: 'The generated model again, with its 685,000-triangle skin redrawn as about 5,000.',
   },
   {
+    id: 'code', url: 'models/jefrie-built-in-code.glb', h: 0.4, jefrie: true,
+    name: 'Jefrie built in code', from: 'An agent, Blender and no pictures',
+    how: 'Nobody sculpted her and nothing generated her: an AI agent wrote the Blender script that builds her, part by part. 833,000 triangles in the original, 33,000 here.',
+  },
+  {
+    id: 'hand-a', url: 'models/jefrie-hand-built-a.glb', h: 0.33, jefrie: true,
+    name: 'Hand-built Jefrie, walking', from: 'Jefrie in 3D · AO-018',
+    how: 'Built shape by shape in Blender by an AI agent, from her reference sheet. She could walk within a day, scythe and all.',
+  },
+  {
+    id: 'hand-b', url: 'models/jefrie-hand-built-b.glb', h: 0.47, jefrie: true,
+    name: 'Hand-built Jefrie, second opinion', from: 'Jefrie in 3D · AO-018',
+    how: 'The same job given to a different AI model: the same reference sheet, built by hand again, in another hand.',
+  },
+  {
+    id: 'picture', url: 'models/jefrie-from-one-picture.glb', h: 0.35, jefrie: true,
+    name: 'Jefrie from one picture', from: 'Jefrie in 3D · AO-018',
+    how: 'One picture in, a whole model out, from a second image-to-3D generator. 696,000 triangles in the original, 33,000 here.',
+  },
+  {
+    id: 'head', url: 'models/jefrie-head.glb', h: 0.25, jefrie: true, shape: 'ball',
+    name: 'Jefrie’s head', from: 'Jefrie in 3D · AO-018',
+    how: 'Generated from a close-up of her face alone, to be grafted onto a body whose own head came out wrong.',
+  },
+  {
     id: 'leap', url: TEA + 'jefrie_leap_rig.glb', h: 0.3, jefrie: true,
     name: 'Leaping Jefrie', from: 'The first tea room page',
     how: 'Generated already in mid-air from a drawing of her jumping, for the page’s opening.',
@@ -74,6 +99,11 @@ export const ROSTER = [
     id: 'diver', url: 'models/toy-diver.glb', h: 0.2, clips: true,
     name: 'Toy diver', from: 'Blackwater, the diving game',
     how: 'A wind-up toy from my underwater horror game, about a thousand triangles, with a waddle.',
+  },
+  {
+    id: 'recorder', url: 'models/tape-recorder.glb', h: 0.13, shape: 'box',
+    name: 'Tape recorder', from: 'Blackwater, the diving game',
+    how: 'Another prop from the game, about 1,500 triangles. Its two reels are separate pieces so they can turn.',
   },
   {
     id: 'jukebox', url: 'models/jukebox.glb', h: 0.38, shape: 'box',
