@@ -17,7 +17,7 @@ export const KEYS = [
 ];
 
 // the things of the game that live in the chamber (positions checked against the cave's field: see the notes in scene.js)
-export const FIGURE = [-9.6, -26.0, -16.4];   // one of the drowned crew, in the mouth of the west passage
+export const FIGURE = [-6.6, -25.6, -15.1];   // one of the drowned crew, in the mouth of the west passage
 export const CHEMLIGHT = [-1.6, null, -14.2]; // a dropped chemlight; y is found on the floor at mount
 // the guide line, tied off at the pool's lip and run down the shaft into the chamber and on into the dark
 export const LINE = [

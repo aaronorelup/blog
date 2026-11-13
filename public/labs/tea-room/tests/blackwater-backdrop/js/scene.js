@@ -119,6 +119,39 @@ const moteFrag = /* glsl */`
     if (gl_FragColor.a < 0.004) discard;
   }`;
 
+const dotVert = /* glsl */`
+  uniform float uSize, uScale, uMax;
+  varying float vA;
+  #include <fog_pars_vertex>
+  void main() {
+    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+    float d = length(mvPosition.xyz);
+    vA = smoothstep(0.6, 2.2, d);
+    gl_PointSize = min(uSize * uScale / max(d, 0.3), uMax);
+    gl_Position = projectionMatrix * mvPosition;
+    #include <fog_vertex>
+  }`;
+const dotFrag = /* glsl */`
+  uniform sampler2D uMap; uniform vec3 uColor; uniform float uOpacity;
+  varying float vA;
+  #include <fog_pars_fragment>
+  void main() {
+    gl_FragColor = vec4(uColor, texture2D(uMap, gl_PointCoord).a * uOpacity * vA);
+    if (gl_FragColor.a < 0.004) discard;
+    #include <fog_fragment>
+  }`;
+
+// ------------------------------------------------------------------ moonlight falling through the open water: a few soft shafts
+const shaftFrag = /* glsl */`
+  uniform vec3 uColor; uniform float uOpacity, uLen;
+  varying float vAlong; varying vec3 vN; varying vec3 vV;
+  void main() {
+    float a = clamp(vAlong / uLen, 0.0, 1.0);
+    float fall = smoothstep(0.0, 0.1, a) * (1.0 - smoothstep(0.2, 1.0, a));
+    float rim = pow(abs(dot(vN, vV)), 2.2);
+    gl_FragColor = vec4(uColor, fall * rim * uOpacity);
+  }`;
+
 // ------------------------------------------------------------------ the lamp's beam in the water: a faint cone, no glare
 const beamVert = /* glsl */`
   varying float vAlong; varying vec3 vN; varying vec3 vV;
@@ -240,11 +273,34 @@ export async function mount(host, options = {}) {
   scene.add(beam);
   disposables.push(beamGeo, beamMat);
 
+  // ---- moonlight shafts in the open pool
+  const shaftU = { uColor: { value: new THREE.Color(0x9fb8dc) }, uOpacity: { value: 0 }, uLen: { value: 15 } };
+  const shaftMat = new THREE.ShaderMaterial({ uniforms: shaftU, vertexShader: beamVert, fragmentShader: shaftFrag, transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending });
+  {
+    const r = rng(23);
+    for (let i = 0; i < 6; i++) {
+      const g = new THREE.CylinderGeometry(0.5 + r() * 0.5, 1.4 + r() * 1.2, 15, 24, 1, true);
+      g.translate(0, -7.5, 0);
+      const m = new THREE.Mesh(g, shaftMat);
+      const a = i * 1.05 + r(), d = 2 + r() * 5.5;
+      m.position.set(Math.cos(a) * d, WATER_Y, Math.sin(a) * d - 1);
+      m.rotation.set((r() - 0.5) * 0.25, 0, (r() - 0.5) * 0.25 + 0.12);
+      m.frustumCulled = false;
+      scene.add(m);
+      disposables.push(g);
+    }
+    disposables.push(shaftMat);
+  }
+
   // ---- the guide line
   const L = buildLine();
   const lineMat = new THREE.LineBasicMaterial({ color: 0xf4f4ec, transparent: true, opacity: 0.9 });
-  const dotsMat = new THREE.PointsMaterial({ map: dot, color: 0xf4f4ec, size: 0.07, transparent: true, opacity: 0.85, depthWrite: false });
-  const pinsMat = new THREE.PointsMaterial({ map: dot, color: 0xffe9a8, size: 0.24, transparent: true, opacity: 0.95, depthWrite: false });
+  // the dots and pins keep a modest size close to the lens, and fade there, so the line never swells into blobs
+  const dotU = (color, size, opacity) => ({ uMap: { value: dot }, uColor: { value: new THREE.Color(color) }, uSize: { value: size }, uScale: moteU.uScale, uOpacity: { value: opacity }, uMax: { value: 9 } });
+  const dotsMat = new THREE.ShaderMaterial({ uniforms: dotU(0xf4f4ec, 0.07, 0.85), vertexShader: dotVert, fragmentShader: dotFrag, transparent: true, depthWrite: false, fog: true });
+  const pinsMat = new THREE.ShaderMaterial({ uniforms: dotU(0xffe9a8, 0.2, 0.95), vertexShader: dotVert, fragmentShader: dotFrag, transparent: true, depthWrite: false, fog: true });
+  pinsMat.uniforms.uMax.value = 16;
+  for (const m of [dotsMat, pinsMat]) Object.assign(m.uniforms, THREE.UniformsUtils.clone(THREE.UniformsLib.fog));
   scene.add(new THREE.LineSegments(L.lg, lineMat), new THREE.Points(L.dg, dotsMat), new THREE.Points(L.pg, pinsMat));
   disposables.push(L.lg, L.dg, L.pg, lineMat, dotsMat, pinsMat);
 
@@ -254,7 +310,7 @@ export async function mount(host, options = {}) {
   chemStick.position.copy(chemPos); chemStick.rotation.set(0.2, 0.7, Math.PI / 2 - 0.15);
   const chemGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: dot, color: 0x2fe86a, transparent: true, opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending }));
   chemGlow.position.copy(chemPos); chemGlow.scale.setScalar(0.9);
-  const chemLight = new THREE.PointLight(0x2fe86a, 1.6, 5, 2);
+  const chemLight = new THREE.PointLight(0x2fe86a, 1.1, 4.5, 2);
   chemLight.position.copy(chemPos).y += 0.25;
   scene.add(chemStick, chemGlow, chemLight);
   disposables.push(chemStick.geometry, chemStick.material, chemGlow.material);
@@ -314,21 +370,23 @@ export async function mount(host, options = {}) {
     headlamp.target.position.copy(headlamp.position).addScaledVector(aimDir, 10);
     headlamp.target.updateMatrixWorld();
     // the lamp comes on as the diver goes under; above the water it is still the night's
-    headlamp.intensity = LAMP.intensity * lerp(0.25, 1, under);
+    headlamp.intensity = LAMP.intensity * lerp(0.6, 1, under);
     beam.position.copy(headlamp.position).addScaledVector(aimDir, 0.35);
     beam.quaternion.setFromUnitVectors(v.set(0, -1, 0), aimDir);
     beamU.uOpacity.value = 0.09 * under;
+    shaftU.uOpacity.value = 0.16 * under * (1 - ss(0.38, 0.52, q));
 
     // water, fog and light change with the depth
     const deep = ss(0.42, 0.72, q);
     fog.color.copy(FOG.night).lerp(FOG.sinkhole, under).lerp(FOG.galleries, deep);
     fog.density = lerp(0.012, 0.035, under);
     scene.background.copy(fog.color);
-    ambient.intensity = lerp(0.42, 0.3, under);
+    ambient.intensity = lerp(0.42, 0.3, under) + 0.16 * ss(0.62, HOLD_AT, q);
     moon.intensity = 260 * (1 - deep);
     lantern.intensity = 26 * (1 - ss(0.3, 0.45, q));
     lanternGlow.visible = q < 0.45;
-    waterMat.opacity = camera.position.y > WATER_Y ? 0.5 : 0.3;
+    // from above, night water: dark, the lamp's pool and the rock below just showing through; from below, the lit roof of the world
+    if (camera.position.y > WATER_Y) { waterMat.color.setHex(0x0a1c24); waterMat.opacity = 0.5; } else { waterMat.color.setHex(0x3d7584); waterMat.opacity = 0.42; }
     moteU.uTime.value = time;
     moteU.uOpacity.value = 0.75 * under;
     moteU.uLampPos.value.copy(headlamp.position);
@@ -336,7 +394,7 @@ export async function mount(host, options = {}) {
 
     // the chemlight's slow pulse
     const pulse = 0.85 + 0.15 * Math.sin(time * 0.9);
-    chemLight.intensity = 1.6 * pulse * ss(0.45, 0.6, q);
+    chemLight.intensity = 1.1 * pulse * ss(0.45, 0.6, q);
     chemGlow.material.opacity = 0.42 * pulse;
 
     // the drowned man: a slow drift, his head turning in the dark; caught in the lamp, he looks at the reader
