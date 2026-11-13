@@ -1,0 +1,14 @@
+---
+// The two sliding paper screens (1.6), in front of the whole world and behind paper: each the painter's plate
+// (public/tea/shared/screen.webp, the right one mirrored) over a field of the coming chapter's light, with that
+// chapter's shadow between the field and the plate, so the lattice crosses it. The shadow is drawn on both screens
+// and does not travel: each screen wipes its own half away. apply.js writes all of it on every frame.
+---
+<div class="room-screens">
+  {['l', 'r'].map((side) => (
+    <div class={`room-screen is-${side}`} data-screen={side}>
+      <img class="room-screen-shadow" alt="" decoding="async" hidden />
+      <img class="room-screen-plate" data-src="/tea/shared/screen.webp" alt="" width="1776" height="2000" decoding="async" />
+    </div>
+  ))}
+</div>

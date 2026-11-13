@@ -1,0 +1,15 @@
+---
+// A sheet (reading, at most 720 px wide) or a slip (small: a card, a tag, a label) of washi, cut by hand: its edge
+// is one of six clip-path polygons a pixel or two uneven (paper.css), set once and never animated. Its one soft
+// shadow is the painter's pre-blurred picture, a sibling under the paper, never a CSS filter. mark: the
+// data-room-mark the engine measures (2.3). as: the element the paper is.
+interface Props { kind?: 'sheet' | 'slip'; mark?: string; as?: string; class?: string; id?: string; edge?: number }
+const { kind = 'slip', mark, as: Tag = 'div', class: cls, id, edge } = Astro.props;
+let h = 0;
+for (const c of mark ?? id ?? cls ?? kind) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+const cut = edge ?? (h % 6) + 1;
+---
+<Tag class:list={['room-paper', `is-${kind}`, cls]} data-room-mark={mark} id={id}>
+  <span class="room-paper-shadow" aria-hidden="true"></span>
+  <div class:list={['room-paper-face', `room-edge-${cut}`]}><slot /></div>
+</Tag>

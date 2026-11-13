@@ -13,9 +13,10 @@ import elements from './elements.mjs';
 import assets from './assets.mjs';
 import code from './code.mjs';
 import teaPicks from './tea-picks.mjs';
+import teaArt from './tea-art.mjs';
 
 export const ROOT = fileURLToPath(new URL('../../', import.meta.url));
-const RULES = { frontmatter, prose, 'never-publish': neverPublish, links, elements, assets, code, 'tea-picks': teaPicks };
+const RULES = { frontmatter, prose, 'never-publish': neverPublish, links, elements, assets, code, 'tea-picks': teaPicks, 'tea-art': teaArt };
 
 const severity = (level, file, deploy) =>
   level === 'warn' || level === 'live' || (deploy && level === 'check') || isLivePath(file) ? 'warn' : 'error';

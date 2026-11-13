@@ -1,0 +1,10 @@
+---
+// A picture on paper: a window cut in the sheet, the picture standing a little way behind the hole (a thin inner
+// shadow at its top and left, a lit cut edge at its bottom and right; paper.css). Never a card, never a keyline.
+// width and height are the picture's drawn size in the markup (tea-scenes compares them with its file).
+interface Props { src: string; alt: string; width: number; height: number; srcset?: string; sizes?: string; eager?: boolean }
+const { src, alt, width, height, srcset, sizes, eager = false } = Astro.props;
+---
+<span class="room-window">
+  <img src={src} srcset={srcset} sizes={sizes} alt={alt} width={width} height={height} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+</span>

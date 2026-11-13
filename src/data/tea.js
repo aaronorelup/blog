@@ -2,6 +2,22 @@
 // never-publish scan. Lists and counts never live here: they come from the same helpers the main site uses (lib/tea.js).
 // TEA_SEO is the one switch for how /tea/ meets search engines; teaSeo() turns it into what the layout and the sitemap
 // read. Policy is Aaron's call, not made yet: 'pending' ships, which is what any new page gets.
+// The rebuilt page's chapters (/tea-next/ until the swap): each chapter's words live in its own copy.js.
+import { copy as heroCopy } from './tea/hero/copy.js';
+import { copy as startCopy } from './tea/start/copy.js';
+import { copy as tvCopy } from './tea/tv/copy.js';
+import { copy as filmCopy } from './tea/film/copy.js';
+import { copy as gamesCopy } from './tea/games/copy.js';
+import { copy as artCopy } from './tea/art/copy.js';
+import { copy as threeDCopy } from './tea/3d/copy.js';
+import { copy as agentsCopy } from './tea/agents/copy.js';
+import { copy as learningCopy } from './tea/learning/copy.js';
+import { copy as siteCopy } from './tea/site/copy.js';
+import { copy as projectsCopy } from './tea/projects/copy.js';
+import { copy as coursesCopy } from './tea/courses/copy.js';
+import { copy as nowCopy } from './tea/now/copy.js';
+import { copy as aboutCopy } from './tea/about/copy.js';
+
 export const TEA_BASE = '/tea';
 export const TEA_SEO = 'pending';   // 'pending' | 'canonical-main' | 'noindex' | 'index'
 export const TEA_CANONICAL_TWIN = '/';
@@ -98,4 +114,25 @@ export const COPY = {
   // The chapter titles of the page being rebuilt (src/data/tea-chapters.js), as the picker shows them; the topic
   // chapters and the series take theirs from src/data/taxonomy.js
   chapterTitles: { hero: 'The garden', start: 'Start here', projects: 'Projects', courses: 'Courses', now: 'Now', about: 'About' },
+};
+
+// The rebuilt page (/tea-next/ until the swap): its shared words, and every chapter's own copy.js. Drafts until the
+// owner approves them (src/data/tea/<id>/copy.js carries `approved`).
+COPY.room = {
+  skip: 'Skip to the first chapter',
+  chapters: { hero: heroCopy, start: startCopy, tv: tvCopy, film: filmCopy, games: gamesCopy, art: artCopy, '3d': threeDCopy, agents: agentsCopy, learning: learningCopy, site: siteCopy, projects: projectsCopy, courses: coursesCopy, now: nowCopy, about: aboutCopy },
+  index: 'Chapters',
+  indexOpen: 'All chapters',
+  toMain: 'Main site',
+  // the counter line under the hero's statement: computed numbers, then these words
+  counter: { posts: ['post', 'posts'], projects: ['project', 'projects'], courses: ['course', 'courses'] },
+  // a topic chapter's statement while it has no line of its own, and its closing link to the rest of the topic
+  count: ['post', 'posts'],
+  allPosts: (n) => `All ${n} posts`,
+  open: 'Open it',
+  play: 'Play it here',
+  watch: 'Watch it here',
+  close: 'Close',
+  size: (mb) => `${mb} MB`,
+  meter: { start: 'Measure the frame rate', median: 'median', worst: 'worst second', longest: 'longest frame' },
 };

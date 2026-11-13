@@ -1,0 +1,53 @@
+---
+// The index (2.6). From 1024 px wide a bookmark: a narrow slip hanging at the left edge, centred on the frame's
+// height, 56 px wide when closed (one mark per chapter, the current one in vermilion, its name on a tag along the
+// spine), open to 232 px under the pointer or the keyboard (CSS alone): every numeral and name, and the way back
+// to the main site. Under 1024 px a tab at the top left: the current numeral and short name; it opens (a
+// <details>, so without script too) as a full sheet of paper, one row of at least 44 px per chapter. Script only
+// marks the current chapter (engine/index.js), closes the sheet on a choice and keeps focus inside it.
+import { COPY } from '../../../data/tea.js';
+
+interface Props { chapters: { id: string; dom: string; numeral: string; title: string; short: string }[] }
+const { chapters } = Astro.props;
+const R = COPY.room;
+---
+<nav class="room-index" aria-label={R.index} data-room-index>
+  <div class="room-bookmark">
+    <span class="room-paper-shadow" aria-hidden="true"></span>
+    <div class="room-bookmark-face">
+      <ol class="room-bookmark-list">
+        {chapters.map((c) => (
+          <li>
+            <a href={`#${c.dom}`} data-room-link={c.id}>
+              <span class="room-bookmark-tick" aria-hidden="true"></span>
+              <span class="room-bookmark-num">{c.numeral}</span>
+              <span class="room-bookmark-name">{c.title}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+      <a class="room-bookmark-main" href="/">{R.toMain}<span aria-hidden="true"> →</span></a>
+    </div>
+    <span class="room-bookmark-tag" aria-hidden="true">
+      {chapters.map((c) => <span data-room-now={c.id}>{c.short}</span>)}
+    </span>
+  </div>
+  <details class="room-tab">
+    <summary class="room-tab-face">
+      <span class="room-paper-shadow" aria-hidden="true"></span>
+      <span class="room-tab-paper"></span>
+      <span class="room-tab-label">
+        <span class="room-tab-default">{R.index}</span>
+        {chapters.map((c) => <span class="room-tab-now" data-room-now={c.id} aria-hidden="true"><span class="room-tab-num">{c.numeral}</span> {c.short}</span>)}
+      </span>
+    </summary>
+    <div class="room-tab-sheet">
+      <ol class="room-tab-list">
+        {chapters.map((c) => (
+          <li><a href={`#${c.dom}`} data-room-link={c.id}><span class="room-tab-num">{c.numeral}</span><span>{c.title}</span></a></li>
+        ))}
+      </ol>
+      <a class="room-tab-main" href="/">{R.toMain}<span aria-hidden="true"> →</span></a>
+    </div>
+  </details>
+</nav>

@@ -1,0 +1,45 @@
+---
+// One chapter's <section>: its anchor (the dom id, on a zero-size mark that sits 0.5 vh in where the screens have
+// just opened, at the top in book mode and for the chapter after the hero), its real h2 and statement (the giant
+// word and its line, written from the same string the stage's word flat holds), its still (book mode's picture,
+// never rendered in live mode), and a slot for its paper. data-n and data-n-p are the item counts that size it
+// (stage.css), the classes say which chapter follows the hero and which is last (1.6). Never a transform, an
+// opacity, a filter or a z-index on the section: it makes no stacking context.
+import { publicFile } from '../../../lib/paths.js';
+import sharp from 'sharp';
+
+interface Props { ctx: any }
+const { ctx } = Astro.props;
+const { chapter, copy, n, afterHero, last, ledger, statement, still } = ctx;
+const hero = chapter.id === 'hero';
+const size = async (src: string) => {
+  const m = await sharp(publicFile(src)).metadata();
+  return { w: m.width, h: m.height };
+};
+const sd = still?.d ? await size(still.d) : null;
+const sp = still?.p ? await size(still.p) : null;
+---
+<section
+  class:list={['room-chapter', `is-${chapter.id}`, { 'is-hero': hero, 'is-after-hero': afterHero, 'is-last': last }]}
+  data-room-chapter={chapter.id} data-n={n.d} data-n-p={n.p}
+  aria-labelledby={`${chapter.dom}-title`}
+>
+  {sd && (
+    <picture class="room-still">
+      {sp && <source media="(orientation: portrait)" srcset={still.p} width={sp.w} height={sp.h} />}
+      <img src={still.d} alt="" width={sd.w} height={sd.h} loading={hero ? 'eager' : 'lazy'} decoding="async" />
+    </picture>
+  )}
+  <span class="room-anchor" id={chapter.dom}></span>
+  {ledger && <span class="room-anchor" id="ledger"></span>}
+  {!hero && (
+    <header class="room-head">
+      <h2 class="room-title" id={`${chapter.dom}-title`}>
+        {copy.small && <span class="room-title-small">{copy.small} </span>}
+        {copy.lines.map((l: string, i: number) => <span class="room-title-line">{l}{i < copy.lines.length - 1 ? ' ' : ''}</span>)}
+      </h2>
+      <p class="room-statement">{statement}</p>
+    </header>
+  )}
+  <slot />
+</section>

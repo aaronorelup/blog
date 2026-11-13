@@ -1,0 +1,4 @@
+/* The site chapter's own rules. Stub (piece 1): its scroll length (base + per x n viewport heights, the same
+   numbers as its scene.js length, which tea.test checks) and its light, which tints its paper 6%. */
+[data-room-chapter='site'] { --base: 2.4; --per: 0.7; --light: #FFD892; }
+@media (orientation: portrait) { [data-room-chapter='site'] { --base: 2.4; --per: 0.8; } }

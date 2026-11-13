@@ -1,0 +1,108 @@
+---
+// /tea-next/: the tea room being rebuilt, beside the live /tea/ until the swap (piece 6a moves this content to
+// src/pages/tea/index.astro). The chapters come only from teaChapters() (the picks over the real site: the one way
+// a post reaches the page); each chapter's scene, copy and component are its own files, and the scenes are compiled
+// and checked at build time (src/lib/tea-scene.js), which fails the build on any broken rule. Nothing on the site
+// links to this page (tea-16's twin).
+import TeaRoomPage from '../../layouts/TeaRoomPage.astro';
+import TeaFooter from '../../components/tea/TeaFooter.astro';
+import RoomIndex from '../../components/tea/room/RoomIndex.astro';
+import RoomStage from '../../components/tea/room/RoomStage.astro';
+import Hero from '../../components/tea/room/chapters/Hero.astro';
+import Start from '../../components/tea/room/chapters/Start.astro';
+import Tv from '../../components/tea/room/chapters/Tv.astro';
+import Film from '../../components/tea/room/chapters/Film.astro';
+import Games from '../../components/tea/room/chapters/Games.astro';
+import Art from '../../components/tea/room/chapters/Art.astro';
+import ThreeD from '../../components/tea/room/chapters/ThreeD.astro';
+import Agents from '../../components/tea/room/chapters/Agents.astro';
+import Learning from '../../components/tea/room/chapters/Learning.astro';
+import Site from '../../components/tea/room/chapters/Site.astro';
+import Projects from '../../components/tea/room/chapters/Projects.astro';
+import Courses from '../../components/tea/room/chapters/Courses.astro';
+import Now from '../../components/tea/room/chapters/Now.astro';
+import About from '../../components/tea/room/chapters/About.astro';
+import * as hero from '../../data/tea/hero/scene.js';
+import * as start from '../../data/tea/start/scene.js';
+import * as tv from '../../data/tea/tv/scene.js';
+import * as film from '../../data/tea/film/scene.js';
+import * as games from '../../data/tea/games/scene.js';
+import * as art from '../../data/tea/art/scene.js';
+import * as threeD from '../../data/tea/3d/scene.js';
+import * as agents from '../../data/tea/agents/scene.js';
+import * as learning from '../../data/tea/learning/scene.js';
+import * as site from '../../data/tea/site/scene.js';
+import * as projects from '../../data/tea/projects/scene.js';
+import * as courses from '../../data/tea/courses/scene.js';
+import * as now from '../../data/tea/now/scene.js';
+import * as about from '../../data/tea/about/scene.js';
+import { slots as heroArt } from '../../data/tea/hero/art.js';
+import { slots as startArt } from '../../data/tea/start/art.js';
+import { slots as tvArt } from '../../data/tea/tv/art.js';
+import { slots as filmArt } from '../../data/tea/film/art.js';
+import { slots as gamesArt } from '../../data/tea/games/art.js';
+import { slots as artArt } from '../../data/tea/art/art.js';
+import { slots as threeDArt } from '../../data/tea/3d/art.js';
+import { slots as agentsArt } from '../../data/tea/agents/art.js';
+import { slots as learningArt } from '../../data/tea/learning/art.js';
+import { slots as siteArt } from '../../data/tea/site/art.js';
+import { slots as projectsArt } from '../../data/tea/projects/art.js';
+import { slots as coursesArt } from '../../data/tea/courses/art.js';
+import { slots as nowArt } from '../../data/tea/now/art.js';
+import { slots as aboutArt } from '../../data/tea/about/art.js';
+import { COURSES } from '../../data/courses.js';
+import { COPY, TEA_PAGE } from '../../data/tea.js';
+import { listedPosts, projects as projectEntries } from '../../lib/content.js';
+import { projectsPage } from '../../lib/projects.js';
+import { counterLine } from '../../lib/tea.js';
+import { teaChapters } from '../../lib/tea-room.js';
+import { buildRoom } from '../../lib/tea-scene.js';
+
+const PARTS = { hero: Hero, start: Start, tv: Tv, film: Film, games: Games, art: Art, '3d': ThreeD, agents: Agents,
+  learning: Learning, site: Site, projects: Projects, courses: Courses, now: Now, about: About };
+const MODULES = { hero, start, tv, film, games, art, '3d': threeD, agents, learning, site, projects, courses, now, about };
+const ART = { hero: heroArt, start: startArt, tv: tvArt, film: filmArt, games: gamesArt, art: artArt, '3d': threeDArt,
+  agents: agentsArt, learning: learningArt, site: siteArt, projects: projectsArt, courses: coursesArt, now: nowArt, about: aboutArt };
+
+const chapters = await teaChapters();
+const { room, json, warnings } = buildRoom(chapters, MODULES, { art: ART });
+warnings.forEach((w) => console.warn(`[tea-next] ${w}`));
+
+const posts = await listedPosts();
+const byTopic = (key) => posts.filter((p) => p.data.topic === key).length;
+const projectTotal = projectsPage(await projectEntries(), posts).sections.reduce((n, s) => n + s.cards.length, 0);
+const counter = counterLine({ posts: posts.length, projects: projectTotal, courses: COURSES.length }, COPY.room.counter);
+const copyOf = (id) => COPY.room.chapters[id];
+const index = chapters.map((c) => ({ id: c.id, dom: c.dom, numeral: c.numeral, title: copyOf(c.id).title, short: copyOf(c.id).short }));
+const page = { chapters: index, counter };
+const firstTopic = chapters.find((c) => c.kind === 'topic')?.id;
+const words = Object.fromEntries(chapters.map((c) => {
+  const copy = copyOf(c.id);
+  const n = c.topic ? byTopic(c.topic) : 0;
+  const statement = copy.statement ?? (c.topic ? `${n} ${COPY.room.count[n === 1 ? 0 : 1]}` : '');
+  return [c.id, { small: copy.small, lines: copy.lines, statement }];
+}));
+const ctxOf = (c, i) => {
+  const R = room.chapters[i];
+  const scene = MODULES[c.id];
+  const first = scene.scene ?? scene.scenes[scene.run[0]];
+  return {
+    chapter: c, copy: copyOf(c.id), n: R.n, afterHero: i === 1, last: i === chapters.length - 1, ledger: c.id === firstTopic,
+    statement: words[c.id].statement, still: first.still ?? null, topicCount: c.topic ? byTopic(c.topic) : 0, page,
+  };
+};
+---
+<TeaRoomPage title={TEA_PAGE.title} description={TEA_PAGE.description} staging first={chapters[0]?.id}>
+  <a class="room-skip" href={`#${chapters[1]?.dom ?? chapters[0].dom}`}>{COPY.room.skip}</a>
+  <RoomIndex chapters={index} />
+  <RoomStage room={room} json={json} words={words} />
+  <main class="room-main" id="chapters" tabindex="-1">
+    {chapters.map((c, i) => {
+      const Part = PARTS[c.id];
+      return <Part ctx={ctxOf(c, i)} />;
+    })}
+  </main>
+  <div class="room-end">
+    <TeaFooter />
+  </div>
+</TeaRoomPage>

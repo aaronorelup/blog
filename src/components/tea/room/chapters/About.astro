@@ -1,0 +1,13 @@
+---
+// The about chapter's paper. Stub (piece 1): its section, heading and length from RoomChapter, its picks as plain
+// slips with their real links (RoomStub). The chapter's builder replaces this file (section 3).
+import RoomChapter from '../RoomChapter.astro';
+import RoomStub from '../RoomStub.astro';
+import { COPY } from '../../../../data/tea.js';
+
+interface Props { ctx: any }
+const { ctx } = Astro.props;
+---
+<RoomChapter ctx={ctx}>
+  <RoomStub ctx={ctx} side={'right'} extra={[{ title: COPY.room.chapters.about.title, href: '/about/' }]} />
+</RoomChapter>

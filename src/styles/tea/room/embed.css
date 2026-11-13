@@ -1,0 +1,21 @@
+/* The embed (2.3): a poster in a window and one paper button before a press; after it, the thing in the same window
+   or in a sheet of paper (a <dialog>, the top layer) with a Close button. <ao-game>'s own poster and button are
+   never seen (RoomEmbed loads it at once), and its bar is restyled as paper. Its own CSS is inlined by the layout
+   (ElementStyles), so nothing of the main site's stylesheet is loaded here. */
+.room-embed { position: relative; }
+.room-embed[data-running] > .room-button { display: none; }
+.room-embed-frame { position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; background: var(--room-night); }
+.room-embed-frame > * { position: absolute; inset: 0; width: 100%; height: 100%; }
+.room-sheet {
+  width: min(96vw, 1280px); max-height: 92vh; padding: 14px 14px 18px; border: 0; box-sizing: border-box;
+  background: var(--room-paper) url(/tea/shared/washi.webp) 0 0 / 512px 512px; color: var(--room-ink);
+}
+.room-sheet::backdrop { background: rgb(16 18 32 / 0.82); }
+.room-sheet .room-button { margin: 0 0 10px; }
+.room-sheet .room-embed-frame { aspect-ratio: auto; height: min(78vh, 56vw); }
+.room-embed ao-game, .room-sheet ao-game { --pc-tile: var(--room-paper); font-family: var(--font-body); }
+
+/* the frame-rate meter behind ?meter=1 (engine/meter.js) */
+.room-meter { position: fixed; right: 16px; bottom: 16px; z-index: 6; display: flex; gap: 12px; align-items: center;
+  font: 500 12px / 1.3 'JetBrains Mono', var(--font-mono); color: var(--room-cream); }
+.room-meter[hidden] { display: none; }

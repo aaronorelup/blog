@@ -1,0 +1,66 @@
+/* Paper (1.1 "The paper"): washi (the painter's 512 px tile, one tile px to a CSS px, over the paper colour), tinted
+   6% by its chapter's light, cut by hand (six clip-path polygons a pixel or two uneven, set once, never animated),
+   with one soft shadow down and to the right: the pre-blurred picture as a nine-slice sibling under the face,
+   never a CSS filter. Paper is z 4 in the page's one order (2.3). A picture on paper is a window cut in the sheet. */
+.room-paper {
+  position: relative; z-index: 4; display: block; box-sizing: border-box; width: min(100%, calc(400px * var(--room-u)));
+  --room-tint: color-mix(in srgb, var(--light, #FFD892) 6%, transparent);
+}
+.room-paper.is-sheet { width: min(100%, calc(720px * var(--room-u))); }
+.room-paper-shadow {
+  position: absolute; inset: -96px; pointer-events: none; box-sizing: border-box;
+  border: 96px solid transparent; border-image: url(/tea/shared/sheet-shadow.webp) 96 fill / 96px;
+}
+.room-paper-face {
+  position: relative; box-sizing: border-box; padding: calc(22px * var(--room-u)) calc(26px * var(--room-u)) calc(24px * var(--room-u));
+  background-color: var(--room-paper);
+  background-image: linear-gradient(var(--room-tint), var(--room-tint)), url(/tea/shared/washi.webp);
+  background-size: auto, 512px 512px;
+}
+.room-edge-1 { clip-path: polygon(0 1px, 46% 0, 100% 1.5px, calc(100% - 1px) 52%, 100% 100%, 51% calc(100% - 1.5px), 0.5px 100%, 1px 48%); }
+.room-edge-2 { clip-path: polygon(1px 0, 55% 1px, calc(100% - 0.5px) 0, 100% 47%, calc(100% - 1px) 100%, 44% 100%, 0 calc(100% - 1px), 0 55%); }
+.room-edge-3 { clip-path: polygon(0 0, 38% 1.5px, 100% 0.5px, 100% 61%, calc(100% - 1.5px) calc(100% - 0.5px), 62% 100%, 1.5px calc(100% - 1px), 0 36%); }
+.room-edge-4 { clip-path: polygon(0.5px 1.5px, 61% 0.5px, calc(100% - 1px) 1px, 100% 39%, 100% calc(100% - 1.5px), 35% 100%, 0 100%, 1px 64%); }
+.room-edge-5 { clip-path: polygon(1.5px 0.5px, 50% 0, 100% 1px, calc(100% - 0.5px) 70%, calc(100% - 1px) 100%, 58% calc(100% - 1px), 0 calc(100% - 0.5px), 0 30%); }
+.room-edge-6 { clip-path: polygon(0 0.5px, 42% 1px, calc(100% - 1.5px) 0, 100% 33%, 100% 100%, 47% calc(100% - 0.5px), 1px 100%, 0.5px 58%); }
+
+/* the one link and the one button: ink words, the vermilion underline and arrow (the accent's first place) */
+.room-link {
+  color: var(--room-ink); text-decoration: underline; text-decoration-color: var(--room-red);
+  text-decoration-thickness: 1.5px; text-underline-offset: 0.22em;
+}
+.room-link-end { white-space: nowrap; }
+.room-link-arrow { color: var(--room-red); text-decoration: none; display: inline-block; }
+.room-link:hover { text-decoration-thickness: 2.5px; }
+.room-button {
+  display: inline-flex; align-items: center; min-height: 44px; margin: 14px 0 0; padding: 10px 18px; border: 0;
+  background: var(--room-paper) url(/tea/shared/washi.webp) 0 0 / 512px 512px; color: var(--room-ink); cursor: pointer;
+  font: 600 calc(14px * var(--room-u)) / 1.2 var(--font-body);
+  clip-path: polygon(0 1px, 50% 0, 100% 1px, calc(100% - 1px) 100%, 0 calc(100% - 0.5px));
+}
+.room-button-label { text-decoration: underline; text-decoration-color: var(--room-red); text-decoration-thickness: 1.5px; text-underline-offset: 0.22em; }
+/* the keyboard's ring on paper: 2 px vermilion (the accent's fourth place); on the world it is lamp-cream */
+.room-paper :focus-visible, .room-button:focus-visible, .room-index :focus-visible {
+  outline: 2px solid var(--room-red); outline-offset: 3px; border-radius: 0;
+}
+:focus-visible { outline: 2px solid var(--room-cream); outline-offset: 3px; }
+
+/* a window cut in the sheet: the picture a little way behind the hole */
+.room-window { position: relative; display: block; margin: 0 0 16px; background: var(--room-night); }
+.room-window img, .room-window video { display: block; width: 100%; height: auto; }
+.room-window::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  box-shadow: inset 2px 3px 5px rgb(35 31 43 / 0.5), inset -1px -1px 0 rgb(255 250 236 / 0.85);
+}
+
+/* the hero's title slip (3.1): at most 300 px wide; its chapters in two columns */
+.room-title-slip { width: min(100%, calc(300px * var(--room-u))); }
+.room-slip-index {
+  list-style: none; margin: 1em 0 0; padding: 0.8em 0 0; border-top: 1px solid rgb(35 31 43 / 0.16);
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.25em 1em; font: 600 calc(12.5px * var(--room-u)) / 1.3 var(--font-body);
+}
+.room-slip-index a { color: var(--room-ink); text-decoration: none; display: block; padding: 2px 0; }
+.room-slip-index a:hover { text-decoration: underline; text-decoration-color: var(--room-red); }
+.room-slip-index .room-num { display: inline-block; min-width: 2.2em; font-size: calc(11px * var(--room-u)); color: rgb(35 31 43 / 0.62); }
+.room-slip-main { margin: 1em 0 0; font: 600 calc(13px * var(--room-u)) / 1.3 var(--font-body); }
+.room-close { margin: 0; font: 600 calc(14px * var(--room-u)) / 1.3 var(--font-body); }

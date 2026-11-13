@@ -1,0 +1,65 @@
+/* The tea room being rebuilt (/tea-next/, layouts/TeaRoomPage.astro): its only stylesheet entry, on tokens.css and
+   never site.css. Written book mode first: everything for live mode is under html[data-room='live'] (2.2).
+   Never overflow on html, body, the frame or main: the stage clips itself. Parts: type, paper, stage, index,
+   book, embed, foot (the footer's rules, copied), then each chapter's own file. No chapter sets a z-index:
+   the page's one stacking order is set here and in stage.css and paper.css (2.3). */
+@import '../../tokens.css';
+@import './type.css';
+@import './paper.css';
+@import './stage.css';
+@import './index.css';
+@import './book.css';
+@import './embed.css';
+@import './foot.css';
+@import './chapters/hero.css';
+@import './chapters/start.css';
+@import './chapters/tv.css';
+@import './chapters/film.css';
+@import './chapters/games.css';
+@import './chapters/art.css';
+@import './chapters/3d.css';
+@import './chapters/agents.css';
+@import './chapters/learning.css';
+@import './chapters/site.css';
+@import './chapters/projects.css';
+@import './chapters/courses.css';
+@import './chapters/now.css';
+@import './chapters/about.css';
+
+:root {
+  --room-night: rgb(16, 18, 32);
+  --room-cream: #F6E7C8;
+  --room-say: #E9DCC3;
+  --room-paper: #F1E6D0;
+  --room-ink: #231F2B;
+  --room-amber: #FFD892;
+  --room-red: #B5482E;
+  --room-ease: cubic-bezier(.4, 0, .2, 1);
+  --room-gutter: 24px;       /* the reading area's left edge: the bookmark's gutter from 1024 px (index.css) */
+  --room-u: 1;               /* paper and its type grow by a quarter from 1680 px wide (1.2) */
+}
+@media (min-width: 1024px) { :root { --room-gutter: 120px; } }
+@media (min-width: 1680px) { :root { --room-u: 1.25; } }
+
+html.room-root { background: var(--room-night); color-scheme: dark; }
+body.room {
+  margin: 0; background: var(--room-night); color: var(--room-cream); font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+.room-main { display: block; }
+.room-main:focus { outline: none; }
+.room-skip {
+  position: absolute; left: 12px; top: 12px; z-index: 7; padding: 12px 18px; background: var(--room-paper);
+  color: var(--room-ink); font: 600 14px/1.2 var(--font-body); transform: translateY(-200%);
+}
+.room-skip:focus-visible { transform: none; outline: 2px solid var(--room-red); outline-offset: 2px; }
+
+/* a chapter: book mode first (book.css has the rest), its anchor a zero-size mark */
+.room-chapter { position: relative; display: block; }
+.room-anchor { position: absolute; left: 0; top: 0; width: 0; height: 0; }
+
+/* ?words=0: every word on paper and on the world hidden, the paper and the pictures kept (the bar, 1.12) */
+html[data-words='0'] .room-paper-face, html[data-words='0'] .room-paper-face *,
+html[data-words='0'] .room-word, html[data-words='0'] .room-word * {
+  color: transparent !important; text-decoration-color: transparent !important;
+}

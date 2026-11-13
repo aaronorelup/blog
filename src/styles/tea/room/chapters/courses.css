@@ -1,0 +1,4 @@
+/* The courses chapter's own rules. Stub (piece 1): its scroll length (base + per x n viewport heights, the same
+   numbers as its scene.js length, which tea.test checks) and its light, which tints its paper 6%. */
+[data-room-chapter='courses'] { --base: 2.6; --per: 0; --light: #D9B8A0; }
+@media (orientation: portrait) { [data-room-chapter='courses'] { --base: 2.8; --per: 0; } }

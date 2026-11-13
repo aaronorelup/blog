@@ -1,0 +1,28 @@
+---
+// The hero's paper. Stub (piece 1): the one title slip (3.1), small and low at the right of the first frame, at most
+// 300 px wide: the kicker, the page's only h1, the statement, the counter line (its numbers computed), the
+// chapters in two columns as links, and the way back to the main site. The hero's builder replaces this file.
+import RoomChapter from '../RoomChapter.astro';
+import RoomPaper from '../RoomPaper.astro';
+import RoomLink from '../RoomLink.astro';
+import { COPY } from '../../../../data/tea.js';
+
+interface Props { ctx: any }
+const { ctx } = Astro.props;
+const { chapters, counter } = ctx.page;
+const rest = chapters.filter((c: any) => c.id !== 'hero');
+---
+<RoomChapter ctx={ctx}>
+  <div class="room-hero-paper">
+    <RoomPaper kind="slip" mark="slip" class="room-title-slip" as="header">
+      <p class="room-label">{COPY.kicker}</p>
+      <h1 class="room-h1" id={`${ctx.chapter.dom}-title`}>{COPY.title}</h1>
+      <p class="room-line">{COPY.statement}</p>
+      <p class="room-count">{counter}</p>
+      <ol class="room-slip-index">
+        {rest.map((c: any) => <li><a href={`#${c.dom}`}><span class="room-num">{c.numeral}</span> {c.title}</a></li>)}
+      </ol>
+      <p class="room-slip-main"><RoomLink href="/" data-no-fly>{COPY.room.toMain}</RoomLink></p>
+    </RoomPaper>
+  </div>
+</RoomChapter>

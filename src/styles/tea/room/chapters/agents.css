@@ -1,0 +1,4 @@
+/* The agents chapter's own rules. Stub (piece 1): its scroll length (base + per x n viewport heights, the same
+   numbers as its scene.js length, which tea.test checks) and its light, which tints its paper 6%. */
+[data-room-chapter='agents'] { --base: 3; --per: 0.8; --light: #E39A4A; }
+@media (orientation: portrait) { [data-room-chapter='agents'] { --base: 3.2; --per: 0.9; } }

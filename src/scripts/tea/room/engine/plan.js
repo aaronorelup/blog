@@ -85,7 +85,7 @@ function sceneLayout(scene, key, index, ch, L) {
   const fit = fitBoard(L.vw, L.vh, L.comp, sc.aim);
   const flats = sc.flats.map((f) => ({
     name: f.name, r: f.r, front: Boolean(f.front), px: f.px ?? null, src: f.src ?? null, fill: f.fill ?? null,
-    text: Boolean(f.text), through: f.through ?? null, rest: rectOf(f.box, fit),
+    text: Boolean(f.text), through: f.through ?? null, rest: f.text ? clearOf(rectOf(f.box, fit), L.vw) : rectOf(f.box, fit),
     hole: f.through && Array.isArray(f.through.hole)
       ? rectOf([f.box[0] + f.through.hole[0], f.box[1] + f.through.hole[1], f.through.hole[2], f.through.hole[3]], fit) : null,
   }));
@@ -116,6 +116,14 @@ function sceneLayout(scene, key, index, ch, L) {
   L.slots.push(...slots);
   return S;
 }
+
+// The reading area's left edge (2.6): from 1024 px wide the index's bookmark keeps a gutter that no word enters, so a
+// giant word (a text flat) rests at least GUTTER px from the left edge whatever the board's crop; under 1024 px, 16.
+export const GUTTER = 120;
+const clearOf = (r, vw) => {
+  const g = vw >= 1024 ? GUTTER : 16;
+  return r.x < g ? { ...r, x: g } : r;
+};
 
 // An open door's frame at rest: the box round the flat with the opening and every flat drawn in front of it in
 // its layer (the lintel and the panels). The port is clipped to it, grown with the camera but never slid, so the

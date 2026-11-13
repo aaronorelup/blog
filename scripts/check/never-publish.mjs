@@ -84,6 +84,7 @@ const scope = (repo) => [
   ...repo.list('src/components/about'), ...repo.list('src/components/now'),
   ...repo.list('src/data', (f) => /^src\/data\/[^/]+\.js$/.test(f)),
   ...repo.list('src/data', (f) => f === 'src/data/tea-picks.json'),       // the tea room's picks (not the hashes file)
+  ...repo.list('src/data/tea', (f) => /^src\/data\/tea\/.+\.js$/.test(f)),   // the tea room's chapters' copy, scenes and art
   ...repo.list('src/elements/ao-demo/demos', (f) => f.endsWith('.json')),   // recorded model output a demo replays
 ].map((e) => (typeof e === 'string' ? { file: e, raw: repo.read(e) } : e));
 

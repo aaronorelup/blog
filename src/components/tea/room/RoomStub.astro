@@ -1,0 +1,36 @@
+---
+// A stub chapter's paper (piece 1): its picks as plain slips, one to an item, each with its real link, a title and
+// one line, in the column the chapter's composition leaves for paper, and a topic's one closing link to the rest of
+// its posts. Every slip carries the mark item-<k> its scene's keys name. A chapter's builder replaces its
+// component, and with it this.
+import RoomLink from './RoomLink.astro';
+import RoomPaper from './RoomPaper.astro';
+import { COPY } from '../../../data/tea.js';
+
+interface Props { ctx: any; side?: 'left' | 'right'; extra?: { title: string; line?: string; href: string }[] }
+const { ctx, side = 'right', extra = [] } = Astro.props;
+const { chapter, topicCount } = ctx;
+const rows = chapter.shelves.flatMap((s: any) => s.rows.map((r: any) => ({ shelf: s.id, ...r })));
+const items = [
+  ...rows.map((r: any) => r.kind === 'post'
+    ? { id: r.id, title: r.title, line: r.verdict ?? r.summary, href: r.href }
+    : r.kind === 'project'
+      ? { id: r.card.chip ?? '', title: r.card.name, line: r.card.line, href: r.href, external: r.external }
+      : { id: '', title: r.key.toUpperCase(), line: null, href: r.href }),
+  ...extra,
+];
+const close = Boolean(chapter.topic && topicCount > 0);
+---
+<div class:list={['room-items', `is-${side}`]}>
+  {items.map((it: any, i: number) => (
+    <div class="room-item">
+      <RoomPaper kind="slip" mark={`item-${i + 1}`} class="room-stub-slip">
+        {it.id && <p class="room-label">{it.id}</p>}
+        <h3 class="room-slip-title"><RoomLink href={it.href} external={it.external}>{it.title}</RoomLink></h3>
+        {it.line && <p class="room-line">{it.line}</p>}
+      </RoomPaper>
+      {i === items.length - 1 && close && <RoomPaper kind="slip" class="room-stub-slip is-close"><p class="room-close"><RoomLink href={`/ledger/?topic=${chapter.topic}`}>{COPY.room.allPosts(topicCount)}</RoomLink></p></RoomPaper>}
+    </div>
+  ))}
+  {!items.length && close && <div class="room-item"><RoomPaper kind="slip" class="room-stub-slip is-close"><p class="room-close"><RoomLink href={`/ledger/?topic=${chapter.topic}`}>{COPY.room.allPosts(topicCount)}</RoomLink></p></RoomPaper></div>}
+</div>

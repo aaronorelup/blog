@@ -1,0 +1,47 @@
+---
+// The tea room being rebuilt (/tea-next/ until the swap, then /tea/): <html>, the shared Head, the head script that
+// picks the mode before the first layout, the three Latin faces preloaded, the page's one stylesheet entry
+// (styles/tea/room/room.css, on tokens.css, never site.css), <ao-game>'s own CSS for the embed, and the engine.
+// The mode: data-room="live" on <html> unless the reader prefers reduced motion, has Save-Data on, is on a 2g
+// connection or asks for ?book=1. With no script the attribute is absent, and absent is book mode (1.9). The head
+// script also sets data-comp (the composition by the window's shape) and data-words="0" for ?words=0.
+// staging: the page is noindex whatever TEA_SEO says (2.0), and in no sitemap. Piece 6a removes it.
+// The hero must be the first chapter: the page's h1, its top anchor, the door and the first frame rest on it.
+import '../styles/tea/room/room.css';
+import Head from '../components/chrome/Head.astro';
+import ElementStyles from '../components/post/ElementStyles.astro';
+import FONTS from '../data/fonts.json';
+import { PICKS } from '../lib/tea-scene.js';
+import { teaSeo } from '../data/tea.js';
+
+interface Props { title: string; description: string; staging?: boolean; first: string }
+const { title, description, staging = false, first } = Astro.props;
+if (first !== 'hero') throw new Error(`${PICKS}: the tea room's first chapter must be the hero, and it is "${first}"`);
+const seo = teaSeo();
+const face = (family: string, weight: number) => FONTS.faces.find((f) => f.family === family && f.weight === weight && /-latin\./.test(f.file))?.file;
+const preload = [face('Zen Maru Gothic', 700), face('JetBrains Mono', 500)].filter(Boolean);
+---
+<!doctype html>
+<html lang="en" class="room-root">
+  <head>
+    <Head title={title} description={description} noindex={staging || seo.noindex} canonical={seo.canonical ?? undefined} />
+    {preload.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
+    <script is:inline>
+      (function () {
+        var d = document.documentElement, q = new URLSearchParams(location.search), c = navigator.connection;
+        var slow = c && (c.saveData || /2g/.test(c.effectiveType || ''));
+        var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (!(still || slow || q.get('book') === '1')) d.dataset.room = 'live';
+        if (q.get('words') === '0') d.dataset.words = '0';
+        d.dataset.comp = innerWidth > innerHeight ? 'd' : 'p';
+      })();
+    </script>
+  </head>
+  <body class="room">
+    <ElementStyles tags={['ao-game']} />
+    <slot />
+    <script>
+      import '../scripts/tea/room/engine/boot.js';
+    </script>
+  </body>
+</html>

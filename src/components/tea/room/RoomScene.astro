@@ -1,0 +1,73 @@
+---
+// One scene's flats in one stage layer (back or front), for both compositions (the one not in use is never shown:
+// html[data-comp], stage.css). Flats are drawn back to front; a flat that says front: true lives in the front
+// layer. An opening's port stands directly behind the flat with the hole, in the same group, and holds a copy of
+// the scene behind at its opening frame (its flats, its word), and two deep only that scene's still (2.3). Plates
+// carry data-src and load.js gives them their picture (the first chapter's carry src, for the first paint).
+// The engine (apply.js) places every element: nothing here has a place of its own.
+interface Props { room: any; sceneKey: string; layer: 'back' | 'front'; words: Record<string, any>; eager?: boolean }
+const { room, sceneKey, layer, words, eager = false } = Astro.props;
+const S = room.scenes[sceneKey];
+const front = layer === 'front';
+const wordOf = (key: string) => words[room.scenes[key].chapter];
+const inLayer = (f: any) => Boolean(f.front) === front;
+const backIndex = (sc: any) => sc.flats.findIndex((f: any) => f.r >= 1 && !f.through);
+---
+<div class="room-group" data-scene={sceneKey} data-layer={layer} hidden={!eager}>
+  {['d', 'p'].map((comp) => {
+    const sc = S[comp];
+    return (
+      <div class="room-comp" data-comp={comp}>
+        {!front && S.still?.[comp] && backIndex(sc) >= 0 && (
+          eager ? <img class="room-flat room-under" data-under src={S.still[comp]} alt="" decoding="async" />
+            : <img class="room-flat room-under" data-under data-src={S.still[comp]} alt="" decoding="async" />
+        )}
+        {sc.flats.map((f: any, i: number) => {
+          if (!inLayer(f)) return null;
+          const T = f.through ? room.scenes[f.through.to] : null;
+          const port = T && (
+            <div class="room-port" data-port={sc.flats.filter((g: any) => g.through).indexOf(f)}>
+              <div class="room-port-in">
+                {[...T[comp].flats.map((g: any, j: number) => [g, j]).filter(([g]: any) => !g.front),
+                  ...T[comp].flats.map((g: any, j: number) => [g, j]).filter(([g]: any) => g.front)].map(([g, j]: any) => (
+                  <Fragment>
+                    {g.src && <img class="room-flat" data-i={j} data-src={g.src} alt="" width={g.px[0]} height={g.px[1]} decoding="async" />}
+                    {g.fill && <div class="room-flat" data-i={j} data-fill={g.fill}></div>}
+                    {g.text && (
+                      <div class="room-flat room-word" data-i={j}>
+                        {wordOf(f.through.to).small && <span class="room-word-small">{wordOf(f.through.to).small}</span>}
+                        {wordOf(f.through.to).lines.map((l: string) => <span class="room-word-line">{l}</span>)}
+                        <span class="room-word-say">{wordOf(f.through.to).statement}</span>
+                      </div>
+                    )}
+                    {g.through && room.scenes[g.through.to]?.still?.[comp] && (
+                      <div class="room-port" data-port="0"><div class="room-port-in">
+                        <img class="room-port-still" data-src={room.scenes[g.through.to].still[comp]} alt="" decoding="async" />
+                      </div></div>
+                    )}
+                  </Fragment>
+                ))}
+              </div>
+            </div>
+          );
+          return (
+            <Fragment>
+              {port}
+              {f.src && (eager
+                ? <img class="room-flat" data-i={i} src={f.src} alt="" width={f.px[0]} height={f.px[1]} decoding="async" />
+                : <img class="room-flat" data-i={i} data-src={f.src} alt="" width={f.px[0]} height={f.px[1]} decoding="async" />)}
+              {f.fill && <div class="room-flat" data-i={i} data-fill={f.fill}></div>}
+              {f.text && (
+                <div class="room-flat room-word" data-i={i}>
+                  {wordOf(sceneKey).small && <span class="room-word-small">{wordOf(sceneKey).small}</span>}
+                  {wordOf(sceneKey).lines.map((l: string) => <span class="room-word-line">{l}</span>)}
+                  <span class="room-word-say">{wordOf(sceneKey).statement}</span>
+                </div>
+              )}
+            </Fragment>
+          );
+        })}
+      </div>
+    );
+  })}
+</div>

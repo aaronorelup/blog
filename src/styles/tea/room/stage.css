@@ -1,0 +1,80 @@
+/* Live mode (2.2): the stage, its flats and ports, the screens, and each chapter's section as tall as its scroll
+   length. Only transform and opacity change on the stage, written by engine/apply.js; no transition, no animation,
+   no filter, no blend mode on anything in it. No rule here gives a group, a flat or a port display or visibility:
+   apply.js writes `hidden` on every group on every frame. */
+.room-stage, .room-lvh { display: none; }
+html[data-room='live'] .room-stage {
+  display: block; position: fixed; inset: 0; overflow: clip; contain: strict; pointer-events: none;
+}
+html[data-room='live'] .room-stage.is-back { z-index: 1; }
+html[data-room='live'] .room-stage.is-front { z-index: 3; }
+html[data-room='live'] .room-lvh {
+  display: block; position: fixed; left: 0; top: 0; width: 0; height: 100lvh; visibility: hidden; pointer-events: none;
+}
+.room-group, .room-comp { position: absolute; inset: 0; }
+html[data-comp='d'] .room-comp[data-comp='p'], html[data-comp='p'] .room-comp[data-comp='d'] { display: none; }
+.room-flat { position: absolute; left: 0; top: 0; margin: 0; max-width: none; transform-origin: 0 0; box-sizing: border-box; }
+.room-port { position: absolute; left: 0; top: 0; overflow: hidden; transform-origin: 0 0; }
+.room-port-in { position: absolute; left: 0; top: 0; width: 0; height: 0; transform-origin: 0 0; }
+.room-port-still { position: absolute; left: 0; top: 0; max-width: none; transform-origin: 0 0; }
+.room-word { white-space: nowrap; }
+.room-word .room-word-say { white-space: normal; width: max-content; max-width: 34ch; }
+.room-ambient { position: absolute; left: 0; top: 0; }
+
+/* the screens: the field is the screen's own colour, then the shadow, then the painter's plate (its paper is
+   see-through, so it takes the field's colour); the right one is the plate mirrored. Their sizes and places are
+   set by apply.js when the page is measured; their slide is a transform. */
+.room-screens { position: absolute; inset: 0; }
+.room-screen { position: absolute; left: 0; top: 0; overflow: hidden; background-color: var(--room-night); }
+.room-screen-plate { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 100% 0; max-width: none; }
+.room-screen.is-r .room-screen-plate { transform: scaleX(-1); }
+.room-screen-shadow { position: absolute; left: 0; top: 0; width: 100px; height: 100px; max-width: none; transform-origin: 0 0; }
+
+/* a section in live mode: as tall as its scroll length, base + per x n viewport heights (the chapter's own css sets
+   --base and --per for d and p; data-n and data-n-p give --n), less the head it does not need after the hero, one
+   screen more when it is last (1.6). Its paper begins after the head and leaves the tail clear. It takes no
+   pointer itself, so what lies behind it can be pressed; its paper and its slots take it back. */
+.room-chapter { --base: 1.8; --per: 0; --n: 0; --after: 0; --more: 0; --head: 1.2; --tail: 0.6; }
+.room-chapter.is-after-hero { --after: 0.2; --head: 1; }
+.room-chapter.is-last { --more: 1; --tail: 1.6; }
+.room-chapter.is-hero { --head: 0; --tail: 0; }
+html[data-room='live'] .room-chapter {
+  box-sizing: border-box; pointer-events: none;
+  min-height: calc((var(--base) + var(--per) * var(--n) - var(--after) + var(--more)) * 100lvh);
+  padding: calc(var(--head) * 100lvh) 0 calc(var(--tail) * 100lvh);
+}
+html[data-room='live'] .room-chapter :is(.room-paper, .room-slot, .room-embed, a, button) { pointer-events: auto; }
+html[data-room='live'] .room-still { display: none; }
+html[data-room='live'] .room-head {
+  position: absolute; left: 0; top: 0; width: 1px; height: 1px; margin: 0; padding: 0; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}
+html[data-room='live'] .room-anchor { top: 50lvh; }
+html[data-room='live'] :is(.is-after-hero, .is-hero) > .room-anchor { top: 0; }
+html[data-room='live'] .room-slot { position: fixed; left: 0; top: 0; z-index: 2; transform-origin: 0 0; }
+
+/* the items of a chapter: one to a stretch of per viewport heights, in the column its composition leaves for paper */
+.room-items { position: relative; box-sizing: border-box; padding: 0 12px; }
+html[data-room='live'] .room-item { min-height: calc(var(--per) * 100lvh); }
+.room-item > .room-paper + .room-paper { margin-top: 18px; }
+@media (min-width: 768px) {
+  .room-items { padding: 0 6vw 0 var(--room-gutter); }
+  html[data-room='live'] .room-items.is-right { padding-left: max(var(--room-gutter), 56vw); }
+  html[data-room='live'] .room-items.is-left { padding-left: max(var(--room-gutter), 10vw); }
+}
+@media (min-width: 768px) and (orientation: portrait) {
+  html[data-room='live'] .room-items.is-right, html[data-room='live'] .room-items.is-left { padding-left: max(var(--room-gutter), 8vw); }
+}
+@media (max-width: 767px) { .room-items .room-paper { width: 100%; } }
+
+/* the hero: its slip small and low at the right of the first frame; on a phone at 60% of the first screen */
+.room-hero-paper { position: relative; box-sizing: border-box; display: flex; justify-content: flex-end; padding: 0 5vw; }
+html[data-room='live'] .room-hero-paper { height: 100lvh; align-items: flex-end; padding-bottom: 7lvh; }
+@media (orientation: portrait) {
+  html[data-room='live'] .room-hero-paper { height: auto; align-items: flex-start; padding: 60lvh 12px 0; }
+  .room-hero-paper .room-title-slip { width: 100%; }
+}
+
+/* the item count, from the markup (RoomChapter): data-n for d, data-n-p for p, one rule per count */
+[data-n='0'] { --n: 0; } [data-n='1'] { --n: 1; } [data-n='2'] { --n: 2; } [data-n='3'] { --n: 3; } [data-n='4'] { --n: 4; } [data-n='5'] { --n: 5; } [data-n='6'] { --n: 6; } [data-n='7'] { --n: 7; } [data-n='8'] { --n: 8; } [data-n='9'] { --n: 9; } [data-n='10'] { --n: 10; } [data-n='11'] { --n: 11; } [data-n='12'] { --n: 12; } [data-n='13'] { --n: 13; } [data-n='14'] { --n: 14; } [data-n='15'] { --n: 15; } [data-n='16'] { --n: 16; } [data-n='17'] { --n: 17; } [data-n='18'] { --n: 18; } [data-n='19'] { --n: 19; } [data-n='20'] { --n: 20; } [data-n='21'] { --n: 21; } [data-n='22'] { --n: 22; } [data-n='23'] { --n: 23; } [data-n='24'] { --n: 24; }
+@media (orientation: portrait) { [data-n-p='0'] { --n: 0; } [data-n-p='1'] { --n: 1; } [data-n-p='2'] { --n: 2; } [data-n-p='3'] { --n: 3; } [data-n-p='4'] { --n: 4; } [data-n-p='5'] { --n: 5; } [data-n-p='6'] { --n: 6; } [data-n-p='7'] { --n: 7; } [data-n-p='8'] { --n: 8; } [data-n-p='9'] { --n: 9; } [data-n-p='10'] { --n: 10; } [data-n-p='11'] { --n: 11; } [data-n-p='12'] { --n: 12; } [data-n-p='13'] { --n: 13; } [data-n-p='14'] { --n: 14; } [data-n-p='15'] { --n: 15; } [data-n-p='16'] { --n: 16; } [data-n-p='17'] { --n: 17; } [data-n-p='18'] { --n: 18; } [data-n-p='19'] { --n: 19; } [data-n-p='20'] { --n: 20; } [data-n-p='21'] { --n: 21; } [data-n-p='22'] { --n: 22; } [data-n-p='23'] { --n: 23; } [data-n-p='24'] { --n: 24; } }
