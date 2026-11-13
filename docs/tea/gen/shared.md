@@ -11,10 +11,10 @@ answer is recorded in the log's table.
 
 File names are the same. A builder who read the first version of this page needs only this list.
 
-- `tv-face-p.webp` is a different picture: the front set itself, not a re-laid upright set. Its geometry is all
-  new (set 1536 x 1420 at the top of the canvas, glass box 157, 407, 1108, 1185).
-- `tv-face.webp` is 2752 x 2544, not 2752 x 2476: the plinth is 68 px taller, to the model's height. Nothing
-  above the plinth moved, so the glass's box is unchanged.
+- `tv-face-p.webp` is a different picture and a different size: the front set itself, not a re-laid upright
+  set, on a 2160 x 3840 canvas (it was 1536 x 2752). Its geometry is all new: the table in its section.
+- `tv-face.webp` is 3602 x 3330 (it was 2752 x 2476): the same picture at its master's full size, with its
+  plinth lengthened to the model's height. Every number of its geometry is new: the table in its section.
 - `tv.webp`: the same size and the same glass box. The glass's corners moved by up to 3 px.
 - All three sets have new colours (the table in the television's section) and no wood grain.
 - `screen.webp`: the same size and the same geometry. Its paper is thinner (alpha 0.09 where plain, not 0.2),
@@ -45,6 +45,28 @@ costs twice a `2k` one, and two requests never return the same picture, so a com
 `2k` and then made again at `4k`: ask at `4k` from the first try for any plate the camera pushes into, and at
 `2k` only for a plate that will never be drawn above 2752 px.
 
+**Added in the rounds: a `4k` master of flat shapes and ink lines holds at its full size, once its edges are
+tightened.** The softness measured above is in the edges, and the edges of flat ink art can be put back without
+inventing anything: an unsharp mask (radius 1.6 px, amount 1.6) whose result is held, pixel by pixel, between
+the darkest and the lightest value the pixel already had within 2 px. An edge gets steeper and nothing
+overshoots, so there is no halo. Measured on the front television master at its full size: 1.83 px before,
+1.33 px after, against the garden plate's 1.60, and at 100% beside the garden plate its line is as crisp as
+the plate's. `tv-face.webp` is written that way, at its master's full 3602 px. This was tried on the television
+only: flat shapes, ink lines, soft shading. A scenery plate with painted texture was not tried: look at yours at
+100% beside the garden plate before you rely on it.
+
+```py
+def crisp(rgb, radius=1.6, amount=1.6, reach=2):          # rgb: float array, height x width x channels
+    out = np.empty_like(rgb)
+    for c in range(rgb.shape[2]):
+        ch = rgb[..., c]
+        sharp = ch + amount * (ch - scipy.ndimage.gaussian_filter(ch, radius))
+        lo = scipy.ndimage.minimum_filter(ch, size=2 * reach + 1)
+        hi = scipy.ndimage.maximum_filter(ch, size=2 * reach + 1)
+        out[..., c] = np.clip(sharp, lo, hi)
+    return out
+```
+
 ## The files
 
 | File | Pixels | Bytes | Alpha | What it is |
@@ -52,9 +74,9 @@ costs twice a `2k` one, and two requests never return the same picture, so a com
 | `washi.webp` | 512, 512 | 6,320 | no | the paper tile. Tiles both ways. Its mean colour is the paper colour `#F1E6D0` |
 | `screen.webp` | 1776, 2000 | 292,690 | yes | one sliding screen: cedar frame and lattice opaque, the paper see-through |
 | `sheet-shadow.webp` | 384, 384 | 4,284 | yes | the one shadow under a sheet or a slip, as a nine-slice |
-| `tv.webp` | 2254, 2048 | 148,476 | yes | the little television, three-quarter view, cut out, its glass a hole |
-| `tv-face.webp` | 2752, 2544 | 175,760 | yes | the same set seen from the front, whole, cut out, its glass a hole |
-| `tv-face-p.webp` | 1536, 2752 | 91,998 | yes | the same front picture at a phone's size, on a 9:16 canvas |
+| `tv.webp` | 2254, 2048 | 168,960 | yes | the little television, three-quarter view, cut out, its glass a hole |
+| `tv-face.webp` | 3602, 3330 | 293,296 | yes | the same set seen from the front, whole, cut out, its glass a hole |
+| `tv-face-p.webp` | 2160, 3840 | 153,914 | yes | the same front picture at a phone's size, on a 9:16 canvas |
 | `shadow-example.webp` | 1620, 720 | 22,112 | yes | the worked example of a screen shadow: a lantern and a kettle |
 
 No file is video or audio. The largest is under 1 MiB.
@@ -160,12 +182,12 @@ same side, both boxes fitted to one another:
 | | Three-quarter | Front |
 |---|---|---|
 | Outline over the model's outline (1 is the same shape) | 0.994 | 0.986 |
-| Whole set, width to height (model, painting) | 1.104, 1.102 | 1.083, 1.082 |
+| Whole set, width to height (model, painting) | 1.104, 1.101 | 1.083, 1.082 |
 | Body without the aerial, width to height (model, painting) | 1.372, 1.37 | 1.315, 1.325 |
 | Aerial's height as a share of the body's (model, painting) | 0.183, 0.183 | 0.214, 0.223 |
 | Glass's width as a share of the body's (model, painting) | 0.515, 0.512 | 0.623, 0.619 |
 | Glass, width to height (model, painting) | 1.086, 1.091 | 1.164, 1.221 |
-| Plinth's height as a share of the set's width (model, painting) | | 0.0715, 0.0712 |
+| Plinth's height as a share of the set's width (model, painting) | | 0.0715, 0.0714 |
 
 The front painting came back with its plinth a third too low. It was lengthened by script to the model's
 height (89 rows put into the plinth's plain middle; its two ink lines are as painted). The front glass is 5%
@@ -180,7 +202,7 @@ of that material in the file, in the night key the set has in the garden:
 | Wood in shade (the side, the plinth) | `rgb(62, 39, 43)` |
 | Control panel | `rgb(103, 68, 47)` |
 | Cream frame | `rgb(218, 196, 160)` |
-| Knobs | `rgb(74, 62, 78)` |
+| Knobs, and the pointer bar across each | `rgb(74, 62, 78)`, `rgb(132, 120, 130)` |
 | Aerial rods, and their base | `rgb(174, 165, 156)`, `rgb(50, 40, 50)` |
 | Ink line | `rgb(21, 14, 18)` (the garden plate's is `rgb(16, 13, 14)`) |
 
@@ -193,15 +215,15 @@ All numbers are pixels of the file, `x, y` from its top left.
 | | `tv.webp` | `tv-face.webp` | `tv-face-p.webp` |
 |---|---|---|---|
 | View | three-quarter, the hero's own angle | front on, no perspective | the same front picture, smaller |
-| Canvas | 2254, 2048 | 2752, 2544 | 1536, 2752 |
-| The set fills | the whole canvas | the whole canvas | the full width, from the top down to y = 1420. Transparent below |
-| Top of the case (under the aerial) | y = 302 | y = 464 | y = 259 |
-| Glass: its box `x0, y0, x1, y1` | 205, 698, 1359, 1756 | 282, 729, 1985, 2124 | 157, 407, 1108, 1185 |
-| Glass: width x height | 1154 x 1058 | 1703 x 1395 | 951 x 778 |
-| Glass: its four corners, clockwise from top left | (237, 717) (1294, 799) (1341, 1709) (321, 1661) | (355, 800) (1907, 794) (1915, 2038) (347, 2033) | (196, 448) (1064, 443) (1068, 1138) (192, 1133) |
-| Largest upright rectangle wholly inside the glass | 316, 799, 1248, 1655 | 368, 799, 1899, 2054 | 205, 446, 1060, 1146 |
-| Ink line round the glass, at its thinnest | 10 px | 11 px | 6 px |
-| Made from its master at | 0.70 of its pixels | 0.764 | 0.426 |
+| Canvas | 2254, 2048 | 3602, 3330 | 2160, 3840 |
+| The set fills | the whole canvas | the whole canvas | the full width, from the top down to y = 1997. Transparent below |
+| Top of the case (under the aerial) | y = 301 | y = 607 | y = 364 |
+| Glass: its box `x0, y0, x1, y1` | 205, 698, 1359, 1756 | 369, 954, 2598, 2780 | 221, 572, 1558, 1667 |
+| Glass: width x height | 1154 x 1058 | 2229 x 1826 | 1337 x 1095 |
+| Glass: its four corners, clockwise from top left | (239, 716) (1294, 799) (1337, 1713) (322, 1662) | (462, 1050) (2501, 1044) (2507, 2667) (455, 2662) | (282, 625) (1502, 628) (1506, 1596) (270, 1593) |
+| Largest upright rectangle wholly inside the glass | 316, 799, 1248, 1655 | 482, 1046, 2485, 2688 | 289, 627, 1490, 1612 |
+| Ink line round the glass, at its thinnest | 10 px | 15 px | 8 px |
+| Made from its master at | 0.70 of its pixels | its full size | 0.60 |
 
 **The glass is a hole with a painted edge.** One unbroken ink line runs round it on the set's side, drawn by
 script exactly on the hole's boundary, so the hole's soft edge shows nothing but ink over any picture, light
@@ -213,23 +235,23 @@ masks it to the glass's rounded shape. On `tv.webp` the glass is turned 14 degre
 is right to within a few pixels at the size it stands in the garden (under 200 px wide); for anything larger map
 the picture's corners to the four corners given.
 
-**How the faces differ from the brief's numbers, and why.** The brief asked for the front view on a 16:9 canvas
-with a glass at least 1700 px wide. The model's own front, measured from a front-on render, is 1.08 times as
-wide as it is tall with its aerial, its glass is 1.16 times as wide as tall, and the glass is 62% of the set's
-width. A whole set with a 1700 px glass is therefore about 2750 x 2550, and cannot be 1536 tall unless the set
-is redrawn wide, which would be a new set. So:
+**How the faces differ from the brief's numbers, and why.** The brief asked for the front view at 2752 x 1536
+with a glass at least 1700 px wide, and 1536 x 2752 for a phone, and says its sizes are the smallest a plate may
+be. The model's own front, measured from a front-on render, is 1.08 times as wide as it is tall with its aerial,
+its glass is 1.16 times as wide as tall, and the glass is 62% of the set's width. A whole set cannot have a
+1700 px glass and be 1536 px tall unless it is redrawn wide, which would be a new set. So:
 
-- `tv-face.webp` keeps the set and grows the canvas: 2752 wide as asked, 2544 tall, glass
-  1703 px wide. The glass is taller than 16:9, so when its width matches a 16:9 window its
-  height more than covers it. A 16:9 episode stood in the glass at the glass's full width is letterboxed in the
-  tube at rest and fills the window exactly when the glass does.
-- To reach a 1700 px glass the master was written at 0.764 of its pixels, a hair over the 0.75 ruling above.
-  Its ink edge measures the garden plate's own figure (the rounds give the number).
+- `tv-face.webp` is the whole set at its master's full size, 3602 x
+  3330, glass 2229 x 1826. The glass is taller
+  than 16:9, so when its width matches a 16:9 window its height more than covers it. A 16:9 episode stood in
+  the glass at the glass's full width is letterboxed in the tube at rest and fills the window exactly when the
+  glass does.
 - `tv-face-p.webp` is **not** a second design. The brief's phone layout (3.3) describes the set with "its knobs
   in a row under" the glass, which is look A's own upright set, and the first version painted one. Beside the
-  other two it was a different television, so it was withdrawn. The file is now the front picture itself, at
-  1536 px wide, at the top of the 9:16 canvas the brief asks for. What that costs on a phone is the glass's
-  width: see the poses below.
+  other two it was a different television, so it was withdrawn. The file is now the front picture itself,
+  2160 px wide at the top of a 9:16 canvas (2160 x
+  3840: larger than the brief's smallest, so that the glass holds when it grows to the
+  whole screen). What the one set costs on a phone is the glass's width: see the poses.
 
 **The phone's poses** (`set-above`), for a frame `W` wide. Both keep the glass in the top 42% at 390 x 844 and
 430 x 932.
@@ -237,13 +259,14 @@ is redrawn wide, which would be a new set. So:
 | Pose | Draw the file | The glass is | On 390 x 844 |
 |---|---|---|---|
 | Whole set | `W` wide, its top at the frame's top | 62% of `W` wide, from 26.5% to 77% of `W` down | 241 px wide, from y = 103 to 301 (12% to 36%) |
-| Closer | to be measured in the phone round | | |
+| Closer | measured in the phone round |  |  |
 
-**Sharpness limits these give** (1.25 CSS px to a file px): the glass of `tv-face.webp` may be drawn up to
-2129 CSS px wide, which covers a 1920 px window and not a 2560 px one: there the glass stops at 2129 px and the
-set's own bezel is seen round it, 215 px each side. Drawn the width of a 390 px phone, `tv-face-p.webp` has 3.9
-file px to a CSS px. Its glass is 951 x 778, so it may grow
-to 972 CSS px tall: enough to cover an 844 px screen (at 1.08) and a 932 px one (at 1.20), and no taller.
+**Sharpness limits these give** (1.25 CSS px to a file px). The glass of `tv-face.webp` may be drawn up to
+2786 CSS px wide, so it covers a 2560 px window at 1.15. On a laptop of 1512 px at two device pixels it covers
+the window at 1.36 device px to a file px. The glass of `tv-face-p.webp` is 1337 x
+1095: it covers an 844 px screen at 0.77 CSS px to a file px and a 932 px one at 0.85,
+which on a screen of three device pixels is 2.3 and 2.6 device px to a file px. Drawn the width of a 390 px
+phone at rest the file has 5.5 of its pixels to a CSS px.
 
 ## The screens' shadows: the rule, the template, a worked example
 
@@ -462,6 +485,32 @@ The three weakest things:
 3. **The front picture still had streaks in its wooden rim and plinth while the three-quarter picture had
    none**, so the two did not look like one piece of wood. Painted out to a quarter of their strength: what is
    left reads as the rim's own shading, not as grain.
+
+### Round 2: the television at the close-up, where the camera reaches its glass
+
+Frames drawn by a headless browser with this page's own geometry, the set's face over look B's television
+room, a picture standing behind the glass: at 1920 x 1080 and 2560 x 1440 with the glass 92% to 100% of the
+window's width, at the moment the glass is as tall as the window (its four corners in view), and on a laptop
+of two device pixels. Sheets: `r2-closeup.png`, `r2-closeup-corners.png`, `r2-closeup-before-after.png`,
+`r2-ring-after.png`. Over a bright picture, over the dark garden and over a pale tube the hole's edge shows no
+halo and no jagged step, and the ink line is unbroken all the way round.
+
+The three weakest things:
+
+1. **The picture was softest exactly where the camera goes closest**, which is the fault of look B this piece
+   was told not to repeat. The face was 2752 px wide with a 1703 px glass. At 2560 x 1440 the glass could not
+   cover the window inside the limit (it stopped at 2129 px with the bezel in view), and on a dense laptop the
+   glass at full width stood at 1.8 device px to a file px. The face is now written at its master's full size
+   with its edges tightened (the measurement is in the first section): glass 2229 px, which covers 2560 at 1.15
+   and a 1512 px laptop of two device pixels at 1.36. Its ink edge measures 1.38 px at 100% (garden 1.60).
+2. **The phone's file at the same moment.** At 20:00 the glass grows to the whole phone screen. From a 1536 px
+   file that is 3.25 device px to a file px on a screen of three, about twice as soft as the garden plate is
+   at rest on the same phone. `tv-face-p.webp` is now 2160 px wide on a 2160 x 3840 canvas: 2.3.
+3. **A dirty strip beside the glass.** With the hole over a pale tube, a few pixels of grey speckle ran along
+   the outside of the new ink line near the lower right corner: what was left of the first line's ragged
+   edge, and the last of the key colour in the cream there. The stained cream beside the glass is now evened
+   in its light as well as its colour, and the strip the old line stood on is repainted from the paint just
+   beyond it before the new line is drawn.
 
 ## Generation log
 
