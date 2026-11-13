@@ -168,3 +168,14 @@ export function makeDusk() {
   m.position.y = 75; m.renderOrder = -20; m.frustumCulled = false;
   return m;
 }
+
+// DRAFT, the owner's to rewrite: the line already typed when the reader arrives. It ends where the cursor lies.
+export function makeTyped(width = 3, text = 'good evening.') {
+  const tex = canvasTex(1024, 160, (g) => {
+    g.font = '500 112px "JetBrains Mono", ui-monospace, monospace'; g.textBaseline = 'middle'; g.textAlign = 'right';
+    g.fillStyle = 'rgba(233, 228, 218, 0.62)'; g.fillText(text, 1010, 84);
+  }, { aniso: 16 });
+  const mesh = decal(width, width * 0.15625, new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, fog: true }));
+  mesh.position.set(-width / 2 - 0.3, 0.004, 0.02); mesh.renderOrder = -4;
+  return { mesh, redraw() { tex.userData.redraw(); } };
+}

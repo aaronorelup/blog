@@ -31,8 +31,8 @@ export function makeWall({ tall, canPlay, invalidate, holder }) {
     const rim = new THREE.Mesh(new THREE.PlaneGeometry(SW + 0.2, SH + 0.2), new THREE.MeshBasicMaterial({ color: PAL.amber, transparent: true, opacity: 0 }));
     rim.geometry.translate(0, SH / 2, 0); rim.position.z = 0.045;
     const fig = makeFigure(FOLD_OF_LEVEL[w.level], { paper: w.row === 0 ? PAL.cream : PAL.blue, line: w.row === 0 ? 0x6b5f4a : 0xdfe6ff, lineOpacity: 0.95, glowAmt: 0.5, print: false });
-    fig.group.scale.setScalar(w.level === 4 ? 0.3 : w.level === 3 ? 0.3 : 0.34);
-    fig.group.position.set(SW / 2 - 0.44, SH + 0.075, 0.02); fig.group.rotation.y = -0.55;
+    fig.group.scale.setScalar((w.level >= 3 ? 0.3 : 0.34) * (tall ? 0.86 : 1));
+    fig.group.position.set(SW / 2 - (tall ? 0.2 : 0.44), SH + 0.075, 0.02); fig.group.rotation.y = -0.55;
     g.add(bezel, rim, pic, fig.group);
     group.add(g);
     return { w, i, g, pic, mat, rim, fig, poster, by, video: null, vtex: null };

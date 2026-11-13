@@ -63,10 +63,11 @@ export function decal(w, d, mat) {
   return m;
 }
 
-// values along the scroll: keys are [q, value...]; in between, a smooth curve through them
-export function track(keys) {
+// values along the scroll: keys are [q, value...]; in between, a smooth curve through them. slopes, if given, are
+// the speed of each value at each key (left out, the curve finds its own)
+export function track(keys, slopes) {
   const n = keys.length, dim = keys[0].length - 1;
-  const m = keys.map((k, i) => {
+  const m = slopes || keys.map((k, i) => {
     const a = keys[Math.max(0, i - 1)], b = keys[Math.min(n - 1, i + 1)];
     const dq = b[0] - a[0] || 1;
     const out = new Array(dim);
