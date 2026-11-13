@@ -30,7 +30,7 @@
   color: var(--room-ink); text-decoration: underline; text-decoration-color: var(--room-red);
   text-decoration-thickness: 1.5px; text-underline-offset: 0.22em;
 }
-.room-link-end { white-space: nowrap; }
+.room-link-end, .room-nowrap { white-space: nowrap; }
 .room-link-arrow { color: var(--room-red); text-decoration: none; display: inline-block; }
 .room-link:hover { text-decoration-thickness: 2.5px; }
 .room-button {

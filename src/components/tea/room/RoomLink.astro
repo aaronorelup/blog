@@ -5,7 +5,9 @@ interface Props { href: string; class?: string; external?: boolean; arrow?: bool
 const { href, class: cls, external = false, arrow = true, ...rest } = Astro.props;
 const text = (await Astro.slots.render('default')).trim();
 const cut = text.lastIndexOf(' ');
-const [head, tail] = cut > 0 ? [text.slice(0, cut + 1), text.slice(cut + 1)] : ['', text];
+// a hyphenated word never breaks at its hyphen ("30-minute" stays whole)
+const whole = (t: string) => t.replace(/(\S+-\S+)/g, '<span class="room-nowrap">$1</span>');
+const [head, tail] = (cut > 0 ? [text.slice(0, cut + 1), text.slice(cut + 1)] : ['', text]).map(whole);
 ---
 <a class:list={['room-link', cls]} href={href} {...(external ? { rel: 'noopener', target: '_blank' } : {})} {...rest}>
   <Fragment set:html={head} /><span class="room-link-end"><Fragment set:html={tail} />{arrow && <span class="room-link-arrow" aria-hidden="true"> →</span>}</span>

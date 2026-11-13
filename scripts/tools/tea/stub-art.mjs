@@ -40,8 +40,10 @@ function lantern(light, { lit = false } = {}) {
 // The field: a back wall and a floor in the night, the chapter's light pooled round the lantern's foot and washed
 // up the wall behind it, with a little grain so it reads as paint and never as a flat colour.
 function field(light, [w, h], lamp) {
-  const L = hex(light), wall = mix(NIGHT, L, 0.13), floor = mix(NIGHT, L, 0.2), ink = '#140f1c';
-  const wood = css(mix([42, 28, 30], L, 0.08)), paper = css(mix(wall, L, 0.22));
+  // shadows stay indigo and plum (1.3): the wall and floor are the night's own colours, the light only in the pool
+  // and on the papered panels it falls on
+  const L = hex(light), PLUM = [62, 42, 66], wall = mix(mix(NIGHT, PLUM, 0.45), L, 0.05), floor = mix(mix(NIGHT, PLUM, 0.6), L, 0.09), ink = '#140f1c';
+  const wood = css(mix([42, 28, 30], L, 0.05)), paper = css(mix(wall, L, 0.16));
   const fy = lamp.foot - lamp.h * 0.09, lw = Math.max(3, w * 0.0022);
   const upright = h > w;
   // the room: a beam under the ceiling, posts that frame the back wall, papered panels between them that the
@@ -154,7 +156,7 @@ async function start() {
   const obj = await sharp(lampPng).ensureAlpha().raw().toBuffer();
   const litMask = await sharp(Buffer.from(lantern('#FFD892', { lit: true }))).extractChannel(0).raw().toBuffer();
   await shadow(obj, litMask, [600, 900], '#FFD892', out('start', 'shadow.webp'));
-  await webp(sharp(src).extract({ left: 1100, top: 0, width: 864, height: 1536 }), out('start', 'still-p.webp'), 86);
+  await webp(sharp(src).extract({ left: 1514, top: 0, width: 864, height: 1536 }), out('start', 'still-p.webp'), 86);
   console.log('start: room, lantern, shadow and portrait still in public/tea/scenes/start/');
 }
 
