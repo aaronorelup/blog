@@ -72,7 +72,7 @@ export function pose(pieces, pl, u, close = 1) {
     const ky = io(clamp(k * 1.22)), kh = io(clamp((k - 0.22) / 0.78));
     p.obj.position.set(p.home.x + p.slide[0] * kh, p.home.y + c + p.rise * close * ky, p.home.z + p.slide[1] * kh);
     const a = Math.sin(Math.PI * k) * p.lean;
-    p.obj.rotation.set(a * p.tz, 0, -a * p.tx);
+    p.obj.rotation.set(a * p.tz, (p.turn || 0) * kh, -a * p.tx);       // (turn: a piece that ends facing another way)
   }
   return acc;                             // how far the top of the drawing has risen
 }

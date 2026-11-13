@@ -62,15 +62,15 @@ export function buildInterior({ M, part, merge, at, piece }) {
     { geo: new BoxGeometry(1.2, aInner, 0.32), pos: [6.75, (0.42 + aTop) / 2, -aW] },
     { geo: new BoxGeometry(1.2, aInner, 0.32), pos: [6.75, (0.42 + aTop) / 2, aW] },
     { geo: new BoxGeometry(1.2, 0.08, aW * 2 + 0.04), pos: [6.75, aH - 0.19, 0] },               // recess ceiling
-  ], M.cream)], { corner: 'projects', dir: [1, 0], out: 4.4, seq: 0 }));
+  ], M.cream)], { corner: 'projects', dir: [1, 0], out: 2.2, seq: 0 }));
   out.push(piece('alcove-floor', 'furniture', [part(new BoxGeometry(1.06, 0.12, aW * 2 - 0.26), M.wood, [6.83, 0.48, 0])],
-    { corner: 'projects', dir: [1, 0], out: 3.1, up: -0.5, seq: 2 }));
+    { corner: 'projects', dir: [1, 0], out: 3.9, up: -0.5, seq: 2 }));
   out.push(piece('alcove-frame', 'furniture', [merge([
     { geo: new BoxGeometry(0.36, 0.34, aW * 2 + 0.36), pos: [6.26, aH, 0] },                    // otoshigake
     { geo: new BoxGeometry(0.36, 0.34, aW * 2 + 0.36), pos: [6.26, 0.55, 0] },                  // sill
     { geo: new BoxGeometry(0.36, aH - 0.89, 0.36), pos: [6.26, aMid, -aW] },                    // posts
     { geo: new BoxGeometry(0.36, aH - 0.89, 0.36), pos: [6.26, aMid, aW] },
-  ], M.beam)], { corner: 'projects', dir: [1, 0], out: 1.6, seq: 4 }));
+  ], M.beam)], { corner: 'projects', dir: [1, 0], out: 0.9, seq: 4 }));
 
   // hanging painting: mounted paper, sumi mountain, vermilion sun
   const dy = aMid - 1.80;
@@ -80,14 +80,14 @@ export function buildInterior({ M, part, merge, at, piece }) {
     part(new ConeGeometry(0.58, 0.72, 4), M.mtnNear, [7.06, 1.62 + dy, 0.16 * kz], [0, Math.PI / 4, 0]),
     part(new ConeGeometry(0.34, 0.44, 4), M.mtnFar, [7.06, 1.48 + dy, 0.82 * kz], [0, Math.PI / 4, 0]),
     part(new CircleGeometry(0.2, 12), M.verm, [7.15, 2.3 + dy, -0.42 * kz], [0, -Math.PI / 2, 0]),
-  ], { corner: 'projects', dir: [1, 0], out: 3.0, up: 0.4, seq: 1 }));
+  ], { corner: 'projects', dir: [1, 0], out: 4.7, up: 1.0, turn: 2.2, seq: 1 }));   // it comes out past its recess and turns to face the garden
 
   // vase and single bloom on the alcove floor
   out.push(piece('vase', 'furniture', [
     part(new CylinderGeometry(0.16, 0.22, 0.5, 10), M.clay, [6.85, 0.79, -1.0 * kz]),
     part(new CylinderGeometry(0.02, 0.02, 0.5, 5), M.leafDark, [6.85, 1.04, -1.0 * kz], null, 0),
     part(new SphereGeometry(0.13, 8, 6), M.petal, [6.85, 1.16, -1.0 * kz]),
-  ], { corner: 'projects', dir: [1, 0], out: 2.3, up: 0.1, seq: 3 }));
+  ], { corner: 'projects', dir: [1, 0], out: 3.9, up: 0.1, seq: 3 }));
 
   // writing desk: the ledger
   const K = [-4.14, 0.56, 2.14], KR = 1.57;
