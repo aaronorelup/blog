@@ -58,9 +58,9 @@ p, h1, h2, h3, ul, ol { margin: 0; padding: 0; }
 .at-ui > * { position: absolute; left: 0; top: 0; visibility: hidden; will-change: transform, opacity; }
 
 /* the chapter's name */
-.at-lead { left: clamp(20px, 6vw, 96px); top: clamp(76px, 15vh, 150px); max-width: min(660px, calc(100% - 40px)); }
+.at-lead { left: clamp(20px, 6vw, 96px); top: clamp(76px, 13vh, 130px); max-width: min(600px, calc(100% - 40px)); }
 .at-kicker { font: 500 11px/1.4 var(--font-mono); letter-spacing: 0.2em; text-transform: uppercase; color: var(--pc-head); }
-.at-word { margin: 10px 0 14px; font: 700 clamp(44px, 7.4vw, 108px)/0.98 var(--font-display); letter-spacing: -0.02em; color: var(--cream); text-shadow: 0 2px 30px rgba(0, 0, 0, 0.6); }
+.at-word { margin: 10px 0 14px; font: 700 clamp(44px, 6.4vw, 96px)/0.98 var(--font-display); letter-spacing: -0.02em; color: var(--cream); text-shadow: 0 2px 30px rgba(0, 0, 0, 0.6); }
 .at-word span { display: block; }
 .at-say { max-width: 27em; font: 400 clamp(15px, 1.35vw, 19px)/1.5 var(--font-body); color: var(--home-body); text-wrap: pretty; text-shadow: 0 1px 12px rgba(0, 0, 0, 0.9); }
 
