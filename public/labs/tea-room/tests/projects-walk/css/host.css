@@ -93,7 +93,7 @@ html:not(.js) .hint, .rm .hint, .still .hint { display: none; }
 /* motion off: the walk does not follow the scroll; two buttons step from one lantern to the next */
 .steps-bar { position: absolute; left: 50%; bottom: 14px; z-index: 7; transform: translateX(-50%); display: flex; gap: 8px; padding: 8px; border-radius: 999px; }
 .steps-bar[hidden] { display: none; }
-.steps-bar button { padding: 9px 18px; border: 1px solid var(--line2); border-radius: 999px; background: none; color: var(--strong); font: 600 14px/1.3 var(--font-body); cursor: pointer; }
+.steps-bar button { white-space: nowrap; padding: 9px 18px; border: 1px solid var(--line2); border-radius: 999px; background: none; color: var(--strong); font: 600 14px/1.3 var(--font-body); cursor: pointer; }
 .steps-bar button:hover { border-color: var(--wood); color: var(--head); }
 .steps-bar button:disabled { opacity: 0.4; cursor: default; }
 
