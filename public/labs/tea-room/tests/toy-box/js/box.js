@@ -107,8 +107,10 @@ export function makeBox(THREE, scene) {
       Object.assign(api.bounds, { x0: x - BW * s / 2, x1: x + BW * s / 2, y0: 0, y1: BH * s, z0: z - BD * s / 2, z1: z + BD * s / 2 });
     },
     setOpen(v, now) { tgt = v; if (now) { a = v * OPEN; va = 0; hinge.rotation.x = -a; } },
-    burst(T) {
-      tgt = 1; va += 26; joltV = -3.2; confT = T; conf.visible = true; seed = 99;
+    burst(T, again) {
+      tgt = 1;
+      if (again && a > OPEN * 0.5) return;   // the lid had not come down yet: no second flash, the toys simply turn round
+      va += 26; joltV = -3.2; confT = T; conf.visible = true; seed = 99;
       for (const p of P) {
         const an = rnd() * 6.283, sp = 0.5 + rnd() * 1.6;
         p.x = g.position.x + (rnd() - 0.5) * BW * 0.6 * scale; p.y = BH * scale; p.z = g.position.z + (rnd() - 0.5) * BD * 0.5 * scale;

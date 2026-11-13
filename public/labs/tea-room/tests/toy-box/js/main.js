@@ -33,8 +33,8 @@ const ss = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t
 const lerp = (a, b, t) => a + (b - a) * t;
 
 /* ---------------------------------------------------------------- the scroll's marks (parts of the track) */
-const Y_BURST = 0.34;   // scrolled this far, the box bursts
-const Y_CLOSE = 0.3;    // scrolled back above this, the toys go home and the lid shuts
+const Y_BURST = 0.34;   // scrolled this far, the box bursts; scrolled back above it, the toys go home and the lid shuts.
+const Y_CLOSE = Y_BURST; // One line, not two: the same place on the page is the same picture whichever way it was reached.
 const H = 1 / 120;      // the physics' step
 
 let renderer;
@@ -68,10 +68,11 @@ function start() {
   world.balls.push({ x: PAINT.LAMP.x, y: 0.16, z: PAINT.LAMP.z, r: 0.17 }, { x: PAINT.LAMP.x, y: 0.42, z: PAINT.LAMP.z, r: 0.15 });
 
   /* -------------------------------------------------------------- the two pictures: a desk's and a phone's */
+  const PHONE = window.matchMedia('(max-width: 720px), (max-aspect-ratio: 4/5)');
   let vw = 1, vh = 1, phone = false, lay = null;
   function layout() {
     vw = stage.clientWidth; vh = stage.clientHeight;
-    phone = vw <= 720 || vw / vh < 0.8;
+    phone = PHONE.matches;   // the same rule as the style sheet's, so the picture and the card always agree
     const asp = vw / vh;
     const wMax = Math.min(PAINT.W, PAINT.H * asp);
     if (!phone) {
@@ -100,9 +101,9 @@ function start() {
         keys: [
           { t: 0.0, cx: 1692, cy: PAINT.H / 2, w: wMax },          // the box and the paper lamp, the whole height of the room
           { t: 0.06, cx: 1692, cy: PAINT.H / 2, w: wMax },
-          { t: 0.3, cx: 1490, cy: 890, w: wMax * 0.6 },            // the box, low in the picture: what comes out needs the room above it
-          { t: 0.46, cx: 1574, cy: 2000, w: wMax * 0.77 },
-          { t: 1.0, cx: 1574, cy: 2000, w: wMax * 0.77 },
+          { t: 0.3, cx: 1490, cy: 890, w: Math.min(wMax * 0.6, 470) },    // (the caps keep a tall tablet as close to the toys as a phone is)            // the box, low in the picture: what comes out needs the room above it
+          { t: 0.46, cx: 1574, cy: 2000, w: Math.min(wMax * 0.77, 640) },
+          { t: 1.0, cx: 1574, cy: 2000, w: Math.min(wMax * 0.77, 640) },
         ],
       };
     }
@@ -199,7 +200,7 @@ function start() {
     if (state === 'open') return;
     const was = state;
     slots();
-    state = 'open'; burstT = world.t; box.burst(simT);
+    state = 'open'; burstT = world.t; box.burst(simT, was === 'returning');
     const order = toys.slice().sort((a, b) => a.def.h - b.def.h);
     let i = 0;
     for (const t of order) {
@@ -575,6 +576,7 @@ function start() {
     loaded: false, state, prog: 0, frames: 0, awake: 0, fps: 0, toys, world, renderer, rect,
     info: () => ({ triangles: renderer.info.render.triangles, calls: renderer.info.render.calls, textures: renderer.info.memory.textures, geometries: renderer.info.memory.geometries }),
     held: () => (hold ? hold.toy.def.id : null),
+    slow: () => { for (let i = 0; i < 46; i++) pace(0.05, true); return ratioCap; },
     lid: () => box.open,
     calm: () => { for (const t of toys) if (t.calm) t.calm(); dirty = true; need = true; draw(); },
     busy: () => (state === 'open' && world.awake > 0) || state === 'returning' || toys.some((t) => t.launch) || boxBusy,

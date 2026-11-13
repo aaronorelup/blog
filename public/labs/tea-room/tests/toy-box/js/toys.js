@@ -134,7 +134,7 @@ function build(THREE, scene, def, gltf, maxAniso) {
           toy.wantMove -= dt;
           if (toy.wantMove <= 0.9 && !cur && moves.length) {
             cur = mixer.clipAction(clips[moves[n++ % moves.length]]); cur.reset(); cur.setLoop(THREE.LoopOnce, 1); cur.clampWhenFinished = true;
-            cur.fadeIn(0.12).play(); idle.fadeOut(0.12); toy.wantMove = 0;
+            cur.fadeIn(0.12).play(); idle.fadeOut(0.12); toy.wantMove = 0; toy.lastMove = cur.getClip().name;
           }
         }
         mixer.update(dt);

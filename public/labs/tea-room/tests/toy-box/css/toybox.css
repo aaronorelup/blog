@@ -138,8 +138,9 @@ main { position: relative; }
 }
 .btn:hover { background: var(--pink); color: var(--night); border-color: var(--pink); }
 
-/* a phone: its own picture (js/main.js), and the card is the page's last screen, under the room */
-@media (max-width: 720px) {
+/* a phone, or any screen much taller than wide: its own picture (js/main.js asks the same question), and the card
+   is the page's last screen, under the room */
+@media (max-width: 720px), (max-aspect-ratio: 4/5) {
   :root { --track: 460vh; }
   #read { margin-top: 0; min-height: 0; align-items: flex-start; justify-content: center; padding: 18px 12px 28px; background: var(--night); }
   .card { border-radius: 22px; padding: 22px 20px 20px; }
@@ -149,7 +150,7 @@ main { position: relative; }
   .posts img { width: 84px; }
   .posts .t { font-size: 14px; }
   .btn { margin-top: 16px; font-size: 14.5px; }
-  .word { font-size: 30vw; }
+  .word { font-size: min(30vw, 190px); }
   .say { max-width: 13em; font-size: 17px; }
   .back { font-size: 10px; }
   .hint { bottom: 20px; font-size: 12.5px; }
@@ -168,8 +169,8 @@ main { position: relative; }
 }
 .rm .word, .rm .say { display: none; }
 .rm { --track: 200vh; }
-@media (max-width: 720px) { .rm { --track: 130vh; } }
-@media (prefers-reduced-motion: reduce) and (max-width: 720px) {
+@media (max-width: 720px), (max-aspect-ratio: 4/5) { .rm { --track: 130vh; } }
+@media (prefers-reduced-motion: reduce) and (max-width: 720px), (prefers-reduced-motion: reduce) and (max-aspect-ratio: 4/5) {
   :root { --track: 130vh; }
 }
 

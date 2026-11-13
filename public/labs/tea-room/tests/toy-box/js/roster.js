@@ -45,8 +45,8 @@ export const ROSTER = [
   },
   {
     id: 'code', url: 'models/jefrie-built-in-code.glb', h: 0.4, jefrie: true,
-    name: 'Jefrie built in code', from: 'An agent, Blender and no pictures',
-    how: 'Nobody sculpted her and nothing generated her: an AI agent wrote the Blender script that builds her, part by part. 833,000 triangles in the original, 33,000 here.',
+    name: 'Jefrie built in code', from: 'An experiment: Jefrie as a script',
+    how: 'Not sculpted and not generated from a picture: an AI agent wrote the Blender script that builds her, part by part. 833,000 triangles in the original, 33,000 here.',
   },
   {
     id: 'hand-a', url: 'models/jefrie-hand-built-a.glb', h: 0.33, jefrie: true,
