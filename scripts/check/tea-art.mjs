@@ -42,7 +42,7 @@ const strip = (key) => key;
 
 // The rebuilt page (its art and scenes are this repo's own files): a repo without it, such as a test's seeded one,
 // has nothing to check. The swap (piece 6a) points PAGE at src/pages/tea/index.astro.
-export const PAGE = 'src/pages/tea-next/index.astro';
+export const PAGE = 'src/pages/labs/tea-room/engine/index.astro';
 
 // The picks as saved, read as the check reads them: the visible chapters with their shelves, or null when the
 // rebuilt page or the picks file is not in this repo, or the picks cannot be read (the tea-picks rule says why).

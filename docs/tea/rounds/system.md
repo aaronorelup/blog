@@ -1,6 +1,6 @@
 # The shared system (piece 1): improvement rounds on the stub page
 
-Each round: at least three frames of `/tea-next/` with `?y=` (or a chapter's anchor) and `?still=1`, two on a
+Each round: at least three frames of `/labs/tea-room/engine/` with `?y=` (or a chapter's anchor) and `?still=1`, two on a
 desktop at 1440x900 from different parts of the page and one on a phone at 390x844, read at full size as a harsh
 art director would, beside the garden plate. The three weakest things are named, then fixed. The stub chapters'
 pictures are placeholders (`scripts/tools/tea/stub-art.mjs`) that each chapter's builder replaces, so a round

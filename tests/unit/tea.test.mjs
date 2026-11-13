@@ -170,7 +170,7 @@ test("the tea room's own copy keeps WRITING.md's rules a script can see", () => 
   assert.deepEqual(all.flatMap((s) => rules.filter(([re]) => re.test(s)).map(([, what]) => `${what}: ${s}`)), []);
 });
 
-// ---------------------------------------------------------------- the rebuilt page (/tea-next/ until the swap)
+// ---------------------------------------------------------------- the rebuilt page (/labs/tea-room/engine/ until the swap)
 const ROOM_IDS = ['hero', 'start', 'tv', 'film', 'games', 'art', '3d', 'agents', 'learning', 'site', 'projects', 'courses', 'now', 'about'];
 const roomScene = async (id) => (await import(`../../src/data/tea/${id}/scene.js`));
 const roomFirst = (mod) => mod.scene ?? mod.scenes[mod.run[0]];

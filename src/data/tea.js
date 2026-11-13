@@ -2,7 +2,7 @@
 // never-publish scan. Lists and counts never live here: they come from the same helpers the main site uses (lib/tea.js).
 // TEA_SEO is the one switch for how /tea/ meets search engines; teaSeo() turns it into what the layout and the sitemap
 // read. Policy is Aaron's call, not made yet: 'pending' ships, which is what any new page gets.
-// The rebuilt page's chapters (/tea-next/ until the swap): each chapter's words live in its own copy.js.
+// The rebuilt page's chapters (/labs/tea-room/engine/ until the swap): each chapter's words live in its own copy.js.
 import { copy as heroCopy } from './tea/hero/copy.js';
 import { copy as startCopy } from './tea/start/copy.js';
 import { copy as tvCopy } from './tea/tv/copy.js';
@@ -116,7 +116,7 @@ export const COPY = {
   chapterTitles: { hero: 'The garden', start: 'Start here', projects: 'Projects', courses: 'Courses', now: 'Now', about: 'About' },
 };
 
-// The rebuilt page (/tea-next/ until the swap): its shared words, and every chapter's own copy.js. Drafts until the
+// The rebuilt page (/labs/tea-room/engine/ until the swap): its shared words, and every chapter's own copy.js. Drafts until the
 // owner approves them (src/data/tea/<id>/copy.js carries `approved`).
 COPY.room = {
   skip: 'Skip to the first chapter',

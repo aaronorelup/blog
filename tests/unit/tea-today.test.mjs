@@ -3,7 +3,9 @@
 // builder of the new page who writes over one of them (as the hero chapter's stub once wrote over
 // tests/unit/tea-hero.test.mjs, because 2.1's tea-<id> name for id 'hero' is that file) fails here. And no chapter's
 // own test may take a name that is one of today's files: the hero's is tests/unit/tea-room-hero.test.mjs.
-// The swap (6a) and the removal (6b) are the only pieces that change this list, with this file.
+// The swap (6a) and the removal (6b) are the only pieces that change this list, with this file. One change came
+// before them: on 2026-11-13 the owner had the hero lab (/tea-lab/) removed, so tea-16 in tests/e2e/tea.spec.mjs
+// and the lab's lines in docs/TEA_HERO.md say it is gone, and their two hashes here are those files' new ones.
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
 import fs from 'node:fs';

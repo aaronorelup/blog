@@ -499,12 +499,12 @@ once the 3D hero pins the top.
 | No console error, no sideways scroll at 1440 and 390 wide by day and by night (at the top and at every chapter), every picture loads | tea-13 |
 | Under 1024 px the strip keeps the chapter being read in view: at every chapter, going down and back up, its pill sits whole inside the strip and clear of its fading end; Tab from "Main site" brings each pill in turn whole into view, clear of the fade, with room for its focus ring; with reduced motion (the strip moves at once) and without (it glides; WebKit starts the glide up to about 0.7 s late, so the pass waits for the pill to arrive and stay) | tea-14 (desktop at 390 wide, and phone) |
 | One `h1`, the hero's title, first; each chapter's word an `h2` and the first heading in it; About's sections (`AboutView level={2} title={false}`) at `h3` with no title of their own; no heading skips a level | tea-15 |
-| The hero lab `/tea-lab/` (a frozen copy of 2026-11-12 since then) answers with its own robots noindex and no share picture or JSON-LD; the sitemap, the feed, the hover cards' list, search, Ask and read-aloud never name it, and no page links it (`/tea/`, the 404 page, every page of the sitemap) | tea-16 |
+| The hero lab `/tea-lab/` is gone (removed 2026-11-13; it answers 404); the sitemap, the feed, the hover cards' list, search, Ask and read-aloud never name it, and no page links it (`/tea/`, the 404 page, every page of the sitemap) | tea-16 |
 | An address with a chapter (`/tea/#projects`) lands on it at once: every frame from the first has the window at the top or at the chapter, never between (phone WebKit glides there while the page loads and, the page busy, stops part way); the first link followed on the page glides to its chapter | tea-17 |
 
 ## The tea room being rebuilt (`tea-next.spec.mjs`, `tea-engine.spec.mjs`, `tea/<id>.spec.mjs`)
 
-`/tea-next/` until the swap (the address is one constant in `tests/e2e/tea/base.mjs`). Every expectation comes from the
+`/labs/tea-room/engine/` until the swap (the address is one constant in `tests/e2e/tea/base.mjs`). Every expectation comes from the
 picks (`src/data/tea-picks.json`), the registry and `COPY.room`. The live notebook only warns.
 
 | Behaviour | Spec |
@@ -518,7 +518,7 @@ picks (`src/data/tea-picks.json`), the registry and `COPY.room`. The live notebo
 | Without JavaScript the page is book mode: every chapter, word, still and link shows, no stage | tea-next-10 |
 | One `h1`; each chapter's first heading its `h2`; the first Tab is the skip link; nine Tab stops in the frame with a ring | tea-next-12 |
 | Under 1024 px the tab shows the current numeral and short name whole; its sheet lists every chapter in rows of 44 px or more and closes on a choice | tea-next-14 |
-| `/tea-next/` says noindex; no sitemap, feed, index or other page names it | tea-next-16 |
+| `/labs/tea-room/engine/` says noindex; no sitemap, feed, index or other page names it | tea-next-16 |
 | One link to `/` in the hero slip, in the index as shown, and in the footer, which carries the main nav | tea-next-8 |
 | The planned places are the real ones: the screens are fully shut at every section's top from the third chapter on | tea-next-24 |
 | An address with a chapter lands on its opening frame in one step (screens open, its word in view); `#ledger` lands on the first topic | tea-next-17 |

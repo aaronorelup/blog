@@ -1,6 +1,6 @@
 // Frames of the tea room (4.3 "How you work"): stills at given places and sizes, each loaded directly with ?y= and
 // ?still=1, optionally laid out as a contact sheet; and with --weigh, the bytes a stretch of the page loads, beside
-// the targets in 2.9. Works on /tea-next/ and on the two looks (/labs/tea-room/a/, /labs/tea-room/b/).
+// the targets in 2.9. Works on /labs/tea-room/engine/ and on the two looks (/labs/tea-room/a/, /labs/tea-room/b/).
 import fs from 'node:fs';
 import path from 'node:path';
 import {

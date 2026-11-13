@@ -7,7 +7,7 @@ import { isLivePath } from '../../../src/data/exempt.js';
 import { TEA_CHAPTERS } from '../../../src/data/tea-chapters.js';
 import { COPY } from '../../../src/data/tea.js';
 
-export const TEA = '/tea-next/';
+export const TEA = '/labs/tea-room/engine/';
 export { expect, test };
 
 // The chapters on the page, as the picks put them (the page reads them through teaChapters(); a spec reads the

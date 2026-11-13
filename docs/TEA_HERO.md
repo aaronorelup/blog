@@ -4,14 +4,10 @@ Built on branch `feat/alt-view-hero` (the hero runtime, 2026-11-10) and wired in
 (2026-11-11), on top of tea-core's `/tea/` page. This file is meant to be enough on its own for a session that only
 has the repo.
 
-**The lab page, `/tea-lab/`, is a frozen copy.** It was a development page (`src/pages/tea-lab.astro`) that ran the
-hero alone over empty chapter heads and tried variant manifests (`?manifest=`). On 2026-11-12 it was frozen as it was
-live (build `c3d2ea01`) into `public/tea-lab/index.html` by `scripts/tools/tea-freeze.mjs`, sharing the files of
-`/labs/tea-room/v1/` (the frozen `/tea/`), and the route was deleted. It shows the hero as it was that day, never the
-current one, and reads only those frozen files: its `?manifest=` looks in `/labs/tea-room/v1/assets/tea/hero/`, which
-holds the frozen `manifest.json` alone, so it tries no variant any more. It carries its own robots noindex, is in no
-sitemap, feed or search index, and nothing links to it (tea-16); as a frozen copy (`ao-frozen`) it is not a line of
-`stats-pages.txt`, so `/stats` never names it.
+**The lab page, `/tea-lab/`, is gone.** It was a development page (`src/pages/tea-lab.astro`) that ran the hero alone
+over empty chapter heads and tried variant manifests (`?manifest=`). On 2026-11-12 it was frozen as it was live, and on
+2026-11-13 the owner had it removed: the hero of that day, with its characters, is still to be seen on the frozen
+`/labs/tea-room/v1/`. tea-16 holds that the address answers 404 and that nothing names it.
 
 ## What it is
 
@@ -164,7 +160,6 @@ its parts); from 561 px a gutter and a skip-link offset that follow the centred 
 | `scripts/tools/tea-hero/` | `shots.mjs`, `poster.mjs`, `silhouettes.mjs` (overlap and behind-the-box per size and scroll, actor by actor: with the TV alone, its share behind the box), `edges.mjs` (the picture covers every frame), `verify.mjs` |
 | `tests/e2e/tea-hero.spec.mjs` | the e2e spec (tea-hero-1 to 30, listed in `tests/e2e/INVENTORY.md`) |
 | `tests/unit/tea-hero.test.mjs` | the runtime's maths in plain node: the manifest's defaults and new fields, every channel, the swap (follow, a cut, a dissolve down and back, on made-up actors), `loadActors` on a GLB made in memory, the skeleton freed, the shipped manifest's channels, its cast (the TV alone, its shader, light and glow, nothing naming a missing actor, no unused GLB in `public/tea/hero/`), every actor drawn down the scroll and back, its camera (the TV in frame at the start, the door ahead at the end, at five sizes), a portrait camera path, and its picture covering every frame (`edges.mjs`) |
-| `public/tea-lab/index.html` | the lab as it was on 2026-11-12, frozen (see the top of this file): the hero of that day and its rail over empty chapter heads |
 
 Outside these, the slice touched `src/styles/tea/cover.css` (the padding variables; the SVG garden's rules and the
 old stage rules removed; the box's backdrop blur removed), `src/styles/tea/tea.css` (the strip's `::before`) and deleted
@@ -480,8 +475,7 @@ since (no cast) and were not seen failing on a broken build again.
    the camera moves in.
 5. The picture is final; its stepping stones still read as a regular ladder of ovals, most of all on a phone, where
    they fill the lower half of the frame, now with nothing on them.
-6. **The lab page** is a frozen copy now (noindex, linked from nowhere, not in `stats-pages.txt`): the hero of
-   2026-11-12, not the current one.
+6. **The lab page** is gone (the top of this file).
 7. At load, before the scene, tea-core's title moves about 10 px when its web font swaps in (CLS 0.0004, scene or
    not). The scene's arrival moves nothing on screen (tea-hero-8 and 9).
 
@@ -490,5 +484,4 @@ since (no cast) and were not seen failing on a broken build again.
 1. **Run the phone e2e project** (WebKit, iPhone 13) on a box that has WebKit: tea-hero-22 (now 300vh on a portrait
    screen and at least 0.8 of a screen of play) and the rest were only run in the desktop project after the
    characters came out.
-2. **`src/pages/tea-lab.astro` is deleted**: on 2026-11-12 `/tea-lab/` became a frozen copy at the same address
-   (the top of this file), out of `dist/stats-pages.txt`; tea-16 holds for the copy unchanged.
+2. **`/tea-lab/` is removed** (the top of this file); tea-16 holds that it is gone.

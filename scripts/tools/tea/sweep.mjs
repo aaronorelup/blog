@@ -139,7 +139,7 @@ if (process.argv[1] && import.meta.url === `file://${(await import('node:path'))
 The empty-frame sweep: n frames evenly spaced, each with ?still=1, judged at 96 px wide. A frame fails when less
 than ${FLOORS.bright * 100}% of it is brighter than ${FLOORS.lum} of 255, or (desktop) a band a quarter of the frame tall has a mean
 under ${FLOORS.bandMean} and a spread under ${FLOORS.bandSpread}, or (phone) more than ${FLOORS.rows * 100}% of the rows of its lower 40% are
-dark and flat. The floors were measured on look B (docs/TEA_ROOM.md). The address defaults to /tea-next/.
+dark and flat. The floors were measured on look B (docs/TEA_ROOM.md). The address defaults to /labs/tea-room/engine/.
   e.g. node scripts/tools/tea/sweep.mjs --phone --from tv --to film`,
       flags: {
         phone: { type: 'boolean', help: 'at 390x844 (else 1440x900)' },

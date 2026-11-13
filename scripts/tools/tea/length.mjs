@@ -70,14 +70,14 @@ The tea room's length in screens on a desktop and a phone, per chapter and in al
 for the picks in src/data/tea-picks.json. Reads files only: no server, no browser.`,
       flags: {
         json: { type: 'boolean', help: 'print JSON instead of the table' },
-        built: { type: 'boolean', help: 'also count the buttons on the last build (dist/tea-next/index.html)' },
+        built: { type: 'boolean', help: 'also count the buttons on the last build (dist/labs/tea-room/engine/index.html)' },
       },
     });
     const chapters = roomChapters(loadRepo(ROOT));
     if (!chapters) { console.error('the picks cannot be read, or the rebuilt page is not in this checkout (npm run check says why)'); return 2; }
     let built;
     if (values.built) {
-      const file = path.join(ROOT, 'dist', 'tea-next', 'index.html');
+      const file = path.join(ROOT, 'dist', 'labs', 'tea-room', 'engine', 'index.html');
       if (!fs.existsSync(file)) { console.error('no build: run npm run build first'); return 2; }
       built = builtButtons(fs.readFileSync(file, 'utf8'));
     }

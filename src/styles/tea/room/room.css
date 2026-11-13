@@ -1,4 +1,4 @@
-/* The tea room being rebuilt (/tea-next/, layouts/TeaRoomPage.astro): its only stylesheet entry, on tokens.css and
+/* The tea room being rebuilt (/labs/tea-room/engine/, layouts/TeaRoomPage.astro): its only stylesheet entry, on tokens.css and
    never site.css. Written book mode first: everything for live mode is under html[data-room='live'] (2.2).
    Never overflow on html, body, the frame or main: the stage clips itself. Parts: type, paper, stage, index,
    book, embed, foot (the footer's rules, copied), then each chapter's own file. No chapter sets a z-index:

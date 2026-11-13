@@ -21,10 +21,10 @@ test('lib: sizes, number lists and ranges, addresses', () => {
   assert.deepEqual(numbers('0:1:0.25'), [0, 0.25, 0.5, 0.75, 1]);
   assert.deepEqual(numbers('0.1,0.5'), [0.1, 0.5]);
   assert.throws(() => numbers('a,b'));
-  assert.equal(withQuery('/tea-next/', { still: 1, words: 0, book: false }), '/tea-next/?still=1&words=0');
-  assert.equal(withQuery('/tea-next/?meter=1', { y: '0.5' }), '/tea-next/?meter=1&y=0.5');
+  assert.equal(withQuery('/labs/tea-room/engine/', { still: 1, words: 0, book: false }), '/labs/tea-room/engine/?still=1&words=0');
+  assert.equal(withQuery('/labs/tea-room/engine/?meter=1', { y: '0.5' }), '/labs/tea-room/engine/?meter=1&y=0.5');
   assert.equal(pageKind('/labs/tea-room/b/?y=1'), 'look-b');
-  assert.equal(pageKind('/tea-next/'), 'room');
+  assert.equal(pageKind('/labs/tea-room/engine/'), 'room');
 });
 
 test('lib: a place is a share, a chapter\'s opening, a point into it, or its end', () => {
@@ -57,7 +57,7 @@ test('frames --weigh: a response by kind and chapter, and the sums', () => {
   assert.deepEqual(classify('http://x/tea/scenes/tv/room.webp', 'image/webp'), { chapter: 'tv', kind: 'image', text: false });
   assert.equal(classify('http://x/media/tea/film/loop.mp4', 'video/mp4').kind, 'media');
   assert.equal(classify('http://x/_astro/a.css', 'text/css').text, true);
-  assert.equal(classify('http://x/tea-next/', 'text/html').kind, 'html');
+  assert.equal(classify('http://x/labs/tea-room/engine/', 'text/html').kind, 'html');
   assert.equal(classify('http://x/fonts/k.woff2', 'font/woff2').kind, 'font');
   const t = tally([{ bytes: 10, kind: 'image', chapter: 'tv', phase: 'scroll' }, { bytes: 5, kind: 'css', chapter: 'shared', phase: 'first paint' }]);
   assert.deepEqual(t, { total: 15, phase: { 'first paint': 5, scroll: 10 }, kind: { css: 5, image: 10 }, chapter: { shared: 5, tv: 10 } });

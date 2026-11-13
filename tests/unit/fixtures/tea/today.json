@@ -1,5 +1,5 @@
 {
- "docs/TEA_HERO.md": "02e4e2bfa6c7abe81b31ff0a12356cf1cacb1cd2ea16e005377b20aa00538460",
+ "docs/TEA_HERO.md": "229876c81b1da43b83e44f95e65a7e1901977487449522403e28f720be89f22e",
  "public/tea/hero/bg-far-day.webp": "d3cc7de7a4b38aa97f6d2bf0fd572c956611227b62b0c04f6cbac82025883f3f",
  "public/tea/hero/bg-far-night.webp": "f6c1ca7eb2f442f628647b6cee4847582a45a7970da6956bff06163b51b88e40",
  "public/tea/hero/bg-mid-day.webp": "1be8f686aee5b62fdda9e4d4c8265008609a8d8ab25cd991a2d5a95a3bca0844",
@@ -54,6 +54,6 @@
  "src/styles/tea/stage.css": "e9f6ebf986ba3cbcd2ff356af4b7848da1be874b18901ef779f0a52ffa4237f0",
  "src/styles/tea/tea.css": "09d4616d516370fd72060c8b454d79c24e636cf905c10fdf8e78cd570a27608f",
  "tests/e2e/tea-hero.spec.mjs": "6e43bf652d3ecdc5f4fcf65a43e7c88fbbbf5d323a3f30266ff20b1554de1ecf",
- "tests/e2e/tea.spec.mjs": "a09f9c68d4778a0050c792376b9cd6230886db35b1d8e9436d4eee17f2f85ff2",
+ "tests/e2e/tea.spec.mjs": "c61651fcea615fbe292e9db693767ea0928e5b02088cc03d095606f804556eec",
  "tests/unit/tea-hero.test.mjs": "6646306ff34c362b42cbe9aca8e3536352bcedec22bf7c1afe0e64593b4b19fc"
 }

@@ -1,7 +1,7 @@
 # The tea room
 
 How the rebuilt tea room works: the look as rules, the code, the tests, and the tools every builder runs. It is
-built at `/tea-next/` (`src/pages/tea-next/index.astro`) beside today's `/tea/`, which is untouched until the
+built at `/labs/tea-room/engine/` (`src/pages/labs/tea-room/engine/index.astro`) beside today's `/tea/`, which is untouched until the
 swap; the swap moves the page to `/tea/` and this document stays. `docs/TEA_HERO.md` describes today's 3D hero and
 is retired with it. The two prototypes this page was chosen from are frozen and live at `/labs/tea-room/a/` (A,
 "paper screens") and `/labs/tea-room/b/` (B, "walk through the house"); their notes and generation logs, and the
@@ -180,7 +180,7 @@ driving everything, a chapter index at the left, each chapter showing its conten
 
 Items 1 to 3 are checked by scripts (the sweep, `tea-scenes.test`, the index test). Item 4 is checked by a number
 (`differ.mjs`, below) and, with items 5 and 6, by a reviewer who did not build the frame, from a reel
-(`reel.mjs`), and by the owner on his own laptop and phone at `/tea-next/?words=0`.
+(`reel.mjs`), and by the owner on his own laptop and phone at `/labs/tea-room/engine/?words=0`.
 
 **Avoid**: a blog list in costume (a grid or column of thumbnail cards); rounded cards, shadow tiles, glass, blur,
 gradients, anything that reads as a dashboard; flat colour where a picture should be; an empty dark frame; a
@@ -200,7 +200,7 @@ covered text, and a flat dark slide between chapters.
 ### Where things are
 
 Everything new has `room` in its path, and nothing of today's page is edited before the swap. The page:
-`src/pages/tea-next/index.astro`, `src/layouts/TeaRoomPage.astro` (the head script that picks the mode, the CSS,
+`src/pages/labs/tea-room/engine/index.astro`, `src/layouts/TeaRoomPage.astro` (the head script that picks the mode, the CSS,
 the engine entry), `src/components/tea/room/` (`RoomStage`, `RoomScene`, `RoomScreens`, `RoomChapter`,
 `RoomPaper`, `RoomWindow`, `RoomLink`, `RoomButton`, `RoomSlot`, `RoomLoop`, `RoomEmbed`, `RoomIndex`, and
 `chapters/<Id>.astro`, one a chapter), `src/styles/tea/room/` (`room.css` the entry, `stage`, `paper`, `type`,
@@ -228,8 +228,8 @@ audio under `public/` when the build runs, no file over 25 MiB; never import `th
 `.glb` at load; never set `overflow` on `html`, `body`, `.tea-frame` or `.tea-main`; never touch the live notebook
 (`src/content/posts/teardown-lab.md`, `public/media/teardown-lab/`, `public/labs/teardown/`), the courses' files or
 the lore files, and every check of this page asks `isLivePath()` and at most warns about them; no draft or
-unlisted post anywhere; `TEA_SEO` stays `'pending'`; `/tea-next/` carries `noindex`, is in no sitemap and is linked
-from nowhere. The frozen copies (`public/labs/tea-room/**`, `public/tea-lab/`) are never edited.
+unlisted post anywhere; `TEA_SEO` stays `'pending'`; `/labs/tea-room/engine/` carries `noindex`, is in no sitemap and is linked
+only from the owner's own development pages under `/labs/tea-room/`. The frozen copies (`public/labs/tea-room/a/`, `b/`, `c/`, `v1/`) are never edited.
 
 **The picks.** `src/data/tea-picks.json` (written only by `npm run tea:picks`) holds the chapter order, hidden
 chapters and each shelf's items; `teaChapters()` (`src/lib/tea-room.js`) is the only way a post reaches the page.
@@ -382,7 +382,7 @@ runs, and are hidden from the site's `player.js` by a capturing `play` listener.
 
 Only `transform` and `opacity` change on the stage: no filter, blend mode, backdrop blur or mask on anything that
 moves; at most eight flats moving at once and three larger than the frame; a fully covered flat is hidden. **Frame
-rate is measured two ways.** On the owner's hardware, `/tea-next/?meter=1` is the gate: a median of 60 and no
+rate is measured two ways.** On the owner's hardware, `/labs/tea-room/engine/?meter=1` is the gate: a median of 60 and no
 second under 50 on a laptop, at least 50 on a phone. On an agent's machine, `fps.mjs` is a tripwire only (below).
 
 ---
@@ -390,7 +390,7 @@ second under 50 on a laptop, at least 50 on a phone. On an agent's machine, `fps
 ## 3. The tools
 
 `scripts/tools/tea/`. Each takes `--help`, exits 0 when its check passed, 1 when it failed, 2 when it could not
-run, and prints lines a builder can paste. An address is a path on the last build (default `/tea-next/`; the
+run, and prints lines a builder can paste. An address is a path on the last build (default `/labs/tea-room/engine/`; the
 looks are `/labs/tea-room/a/` and `/labs/tea-room/b/`, which take `?y=<0..1>&still=1`) or a whole URL. For a path
 the tools use `TEA_BASE` if it is set, else a server already on this checkout's own tools port, else they start
 `astro preview` themselves and stop it at the end. A place is a share of the page (`0.37`), a chapter's opening
@@ -519,10 +519,10 @@ has an entry); `tests/unit/tea-today.test.mjs` (every file of today's `/tea/` he
 `tea-calibration.test.mjs`); and, turned on at the swap, every chapter's copy and every kept picture approved.
 
 **Unchanged**: every link and picture resolves (warning for the live notebook); no draft or unlisted post anywhere;
-`TEA_SEO` `'pending'`; the main site reaches the tea room and it leads back; nothing names `/tea-lab/`, and nothing
-links or names `/tea-next/`; the copy test; the picks' tests; every code rule, the font check, the media guard, the
+`TEA_SEO` `'pending'`; the main site reaches the tea room and it leads back; `/tea-lab/` is gone and nothing names it, and no page in the sitemap
+links or names `/labs/tea-room/engine/`; the copy test; the picks' tests; every code rule, the font check, the media guard, the
 never-publish scan, the post page's and homepage's budgets, and the frozen contracts.
 
-**The swap** is one small commit (the page moves to `/tea/`, the staging prop and `/tea-next/` go, the tests'
+**The swap** is one small commit (the page moves to `/tea/`, the staging prop and `/labs/tea-room/engine/` go, the tests'
 address changes, today's two e2e specs are replaced and deleted), so one `git revert` puts the old page back. The
 old page's files are removed in a later commit, after the new page has been live and right for a day.

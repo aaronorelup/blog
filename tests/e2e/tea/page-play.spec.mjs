@@ -118,7 +118,7 @@ test('tea-next-32 weight: the top of the page fetches only what 2.9 lists, and t
   await settle(page);
   await page.waitForTimeout(1000);
   const [hero, door, next] = CHAPTERS;
-  const allowed = [/^\/tea-next\/$/, /^\/_astro\//, /^\/fonts\//, /^\/tea\/hero\//, /^\/tea\/shared\//, /^\/favicon/,
+  const allowed = [/^\/labs\/tea-room\/engine\/$/, /^\/_astro\//, /^\/fonts\//, /^\/tea\/hero\//, /^\/tea\/shared\//, /^\/favicon/,
     new RegExp(`^/tea/scenes/(${hero.id}|${door.id})/`), new RegExp(`^/tea/scenes/${next?.id}/shadow\\.webp$`)];
   const extra = got.filter(([u]) => !allowed.some((re) => re.test(u)));
   const total = got.reduce((n, [, b]) => n + b, 0);

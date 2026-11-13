@@ -431,13 +431,10 @@ test('tea-15 one h1, the hero’s title; each chapter’s word an h2; About’s 
   expect(outline.filter((h, i) => i > 0 && h.level > outline[i - 1].level + 1)).toEqual([]);
 });
 
-test('tea-16 the hero lab (/tea-lab/, live until the final models land) says noindex, and no sitemap, feed, index or page names it', async ({ request }) => {
+// The owner had the hero lab removed on 2026-11-13 (the old page with its characters stays at /labs/tea-room/v1/).
+test('tea-16 the hero lab (/tea-lab/) is gone, and no sitemap, feed, index or page names it', async ({ request }) => {
   const LAB = '/tea-lab/';
-  const lab = await request.get(LAB);
-  expect(lab.status()).toBe(200);
-  const head = (await lab.text()).split('</head>')[0];
-  expect(head).toMatch(/<meta name="robots" content="[^"]*\bnoindex\b/);
-  expect(head).not.toMatch(/property="og:image"|name="twitter:card"|application\/ld\+json/);
+  expect((await request.get(LAB)).status()).toBe(404);
   const sitemap = await (await request.get('/sitemap.xml')).text();
   for (const [file, text] of [['/sitemap.xml', sitemap], ...await Promise.all(['/rss.xml', '/ledger/previews.json',
     '/search/manifest.json', '/ask/manifest.json', '/read/index.json'].map(async (f) => [f, await (await request.get(f)).text()]))]) {

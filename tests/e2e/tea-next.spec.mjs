@@ -1,4 +1,4 @@
-// The tea room being rebuilt, page-level (5.1, 5.2, 5.3), at /tea-next/ until the swap (piece 6a renames this file
+// The tea room being rebuilt, page-level (5.1, 5.2, 5.3), at /labs/tea-room/engine/ until the swap (piece 6a renames this file
 // tea.spec.mjs and changes the address in tea/base.mjs). Every expectation comes from the picks, the registry and
 // the copy, so the rows hold whatever the owner picks. The live notebook only ever warns (tea/base.mjs).
 import fs from 'node:fs';
@@ -331,7 +331,7 @@ test('tea-next-23 the footer is today\'s: every element\'s computed style equals
   ours.forEach((s, i) => expect(s, `footer element ${i}`).toEqual(today[i]));
 });
 
-test('tea-next-16 /tea-next/ says noindex, and no sitemap, feed, index or other page names it', async ({ request }) => {
+test('tea-next-16 /labs/tea-room/engine/ says noindex, and no sitemap, feed, index or other page names it', async ({ request }) => {
   const page = await request.get(TEA);
   expect(page.status()).toBe(200);
   const head = (await page.text()).split('</head>')[0];
@@ -339,13 +339,13 @@ test('tea-next-16 /tea-next/ says noindex, and no sitemap, feed, index or other 
   expect(head).not.toMatch(/property="og:image"|name="twitter:card"|application\/ld\+json/);
   const sitemap = await (await request.get('/sitemap.xml')).text();
   for (const f of ['/sitemap.xml', '/rss.xml', '/ledger/previews.json', '/search/manifest.json', '/ask/manifest.json', '/read/index.json']) {
-    expect(f === '/sitemap.xml' ? sitemap : await (await request.get(f)).text(), f).not.toContain('/tea-next');
+    expect(f === '/sitemap.xml' ? sitemap : await (await request.get(f)).text(), f).not.toContain('/labs/tea-room/engine');
   }
   const pages = ['/tea/', '/404.html', ...[...sitemap.matchAll(/<loc>[a-z]+:\/\/[^/]+(\/[^<]*)<\/loc>/g)].map((m) => m[1])];
   expect(pages.length).toBeGreaterThan(100);
   const naming = [];
   for (let i = 0; i < pages.length; i += 25) {
-    await Promise.all(pages.slice(i, i + 25).map(async (p) => { if ((await (await request.get(p)).text()).includes('/tea-next')) naming.push(p); }));
+    await Promise.all(pages.slice(i, i + 25).map(async (p) => { if ((await (await request.get(p)).text()).includes('/labs/tea-room/engine')) naming.push(p); }));
   }
   expect(naming).toEqual([]);
 });

@@ -217,8 +217,8 @@ test('the marks check finds a mark missing from its chapter, and one that is in 
 });
 
 test('every mark a scene names is on the built page, in its own chapter', (t) => {
-  const file = path.join(REPO, 'dist/tea-next/index.html');
-  if (!fs.existsSync(file)) return t.skip('no dist/tea-next/index.html yet: npm run build makes it once the page exists');
+  const file = path.join(REPO, 'dist/labs/tea-room/engine/index.html');
+  if (!fs.existsSync(file)) return t.skip('no dist/labs/tea-room/engine/index.html yet: npm run build makes it once the page exists');
   assert.deepEqual(marksMissing(fs.readFileSync(file, 'utf8')), []);
 });
 

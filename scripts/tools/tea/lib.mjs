@@ -2,7 +2,7 @@
 // opening a page at a size and waiting until its frame is drawn, places on the page by share or by chapter, contact
 // sheets, and where their pictures go. The pure parts are tested in tests/unit/tea-tools.test.mjs.
 //
-// An address is a path on the last build (/tea-next/, /labs/tea-room/b/) or a whole URL. For a path the tools use
+// An address is a path on the last build (/labs/tea-room/engine/, /labs/tea-room/b/) or a whole URL. For a path the tools use
 // TEA_BASE if it is set, else a server already answering on this checkout's own tools port, else they start
 // `astro preview` on that port themselves and stop it when they finish. Exit codes, the same for every tool:
 // 0 the check passed (or there was nothing to check), 1 it failed, 2 the tool could not run (a wrong flag, no build,
@@ -16,7 +16,7 @@ import { parseArgs } from 'node:util';
 import zlib from 'node:zlib';
 
 export const ROOT = fileURLToPath(new URL('../../../', import.meta.url));
-export const DEFAULT_PAGE = '/tea-next/';
+export const DEFAULT_PAGE = '/labs/tea-room/engine/';
 export const DESKTOP = Object.freeze({ width: 1440, height: 900 });
 export const PHONE = Object.freeze({ width: 390, height: 844 });
 // Port of this checkout's own (as the e2e config does, but a different range, so a tool never takes the suite's).
