@@ -57,7 +57,7 @@ const BEATS = [
 // a click or a tap on a fighter: the next of these, in turn
 const ON_TAP = { jefrie: ['heavy', 'special_d', 'special_n', 'special_u', 'taunt'], tailor: ['heavy_whip', 'special_u', 'heavy', 'special_d', 'taunt'] };
 // a heavy blow lands if the other fighter stands within its reach (metres): at: seconds into the move
-const LANDS = { heavy_whip: { at: 0.27, reach: 3.4 }, heavy: { at: 0.24, reach: 2.7 } };
+const LANDS = { heavy_whip: { at: 0.27, reach: 3.4 }, heavy: { at: 0.24, reach: 3.1 } };
 const STRIKES = [{ at: 11.3, x: -9, i: 1.0 }, { at: 22.1, x: 14, i: 0.8 }, { at: 36.2, x: 3.5, i: 1.0 }];
 const FLICKER = [[0, 0], [0.025, 1], [0.07, 0.25], [0.1, 0.85], [0.16, 0.35], [0.22, 0.55], [0.5, 0]];
 function flicker(t) {
@@ -265,10 +265,12 @@ function stagingFor(aspect, height = 900) {
   // than the game stands it); where there is none it is left, or pushed, clear outside, and only its light comes in
   const near = S.d - 0.25, half0 = near * S.tan * aspect;               // the closest the camera comes; half the frame's width there
   const seenAt = half0 - 0.82, inFrame = !S.portrait && seenAt >= S.sx + 2.0;
-  S.fires = FIRES.map((f) => {
+  S.fires = FIRES.map((f, i) => {
+    // a tall screen has no room beside the fighters: one fire stands between and behind them, under the dome
+    if (S.portrait) return i === 0 ? { x: -0.18, z: -7.5 } : { x: Math.max(Math.abs(f.x), (near - f.z) * S.tan * aspect + f.half + 0.5), z: f.z };
     const dist = near - f.z, nat = Math.abs(f.x);
     const x = inFrame ? Math.min(nat, (seenAt - f.inset) * dist / near) : Math.max(nat, dist * S.tan * aspect + f.half + 0.5);
-    return Math.sign(f.x) * x;
+    return { x: Math.sign(f.x) * x, z: f.z };
   });
   return S;
 }
@@ -289,8 +291,8 @@ function cameraAt(q, S) {
   }
   return {
     fov: S.fov,
-    pos: [lerp(-3.4, 0, e) + h * 0.3, lerp(1.9, 1.42, e) - h * 0.05, lerp(Math.max(24, S.d + 10), S.d + 0.3, e) - h * 0.55],
-    look: [lerp(0.4, 0, e), lerp(3.0, 0.78 - S.lift, e), 0],
+    pos: [lerp(-3.4, 0, e) + h * 0.3, lerp(1.7, 1.42, e) - h * 0.05, lerp(Math.max(24, S.d + 10), S.d + 0.3, e) - h * 0.55],
+    look: [lerp(0.4, 0, e), lerp(3.9, 0.78 - S.lift, e), 0],
   };
 }
 
@@ -460,11 +462,11 @@ export async function mount(canvas, opts = {}) {
   const glows = flames.map((f, i) => {
     const m = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.ShaderMaterial({
       vertexShader: G.GLOW_VERT, fragmentShader: G.GLOW_FRAG, transparent: true, depthWrite: false,
-      blending: THREE.CustomBlending, blendSrc: THREE.OneFactor, blendDst: THREE.OneFactor,
-      uniforms: { color: { value: new THREE.Vector3(1.0, 0.2, 0.26) }, level: { value: 0.3 }, falloff: { value: 2.2 } },
+      blending: THREE.CustomBlending, blendSrc: THREE.OneFactor, blendDst: THREE.OneMinusSrcAlphaFactor,
+      uniforms: { color: { value: new THREE.Vector3(1.0, 0.16, 0.22) }, level: { value: 0.3 }, falloff: { value: 2.2 }, cover: { value: 0.75 } },
     }));
     m.position.copy(f.node.position).add(new THREE.Vector3(0, 0.25, 0.05));
-    m.userData.x = m.position.x;
+    m.userData.x = m.position.x; m.userData.z = m.position.z;
     m.scale.setScalar(i === 0 ? 3.4 : 3.0);
     m.renderOrder = 5; m.frustumCulled = false;
     scene.add(m);
@@ -521,8 +523,8 @@ export async function mount(canvas, opts = {}) {
   const bolts = STRIKES.map((s, i) => boltMesh(s, 77 + i * 131));
   const boltGlow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.ShaderMaterial({
     vertexShader: G.GLOW_VERT, fragmentShader: G.GLOW_FRAG, transparent: true, depthWrite: false,
-    blending: THREE.CustomBlending, blendSrc: THREE.OneFactor, blendDst: THREE.OneFactor,
-    uniforms: { color: { value: new THREE.Vector3(0.79, 0.82, 0.86) }, level: { value: 0 }, falloff: { value: 3 } },
+    blending: THREE.CustomBlending, blendSrc: THREE.OneFactor, blendDst: THREE.OneMinusSrcAlphaFactor,
+    uniforms: { color: { value: new THREE.Vector3(0.79, 0.82, 0.86) }, level: { value: 0 }, falloff: { value: 3 }, cover: { value: 0 } },
   }));
   boltGlow.scale.setScalar(26); boltGlow.renderOrder = -16; boltGlow.frustumCulled = false; boltGlow.visible = false;
   scene.add(boltGlow);
@@ -574,18 +576,19 @@ export async function mount(canvas, opts = {}) {
 
   // ---- size
   let W = 1, H = 1, portrait = false, S = stagingFor(1.6), fine = 1, fineWas = 1, slow = 0, quick = 0, ema = 16;
-  const FIRE_A = floorMat.uniforms.fireA.value.x, FIRE_B = floorMat.uniforms.fireB.value.x, FIRE_P = shared.firePos.value.x;
+  const fireA0 = floorMat.uniforms.fireA.value.clone(), fireB0 = floorMat.uniforms.fireB.value.clone(), fireP0 = shared.firePos.value.clone();
+  flames.forEach((f) => { f.z = f.node.position.z; });
   function stand() {
     // the fires, their light and their glow go where this window's shape puts them
-    S.fires.forEach((x, i) => {
-      const dx = x - FIRES[i].x;
-      if (braziers[i]) braziers[i].position.x = dx;
-      if (flames[i]) flames[i].node.position.x = flames[i].x + dx;
-      if (glows[i]) glows[i].position.x = glows[i].userData.x + dx;
+    const d = S.fires.map((p, i) => ({ x: p.x - FIRES[i].x, z: p.z - FIRES[i].z }));
+    d.forEach((o, i) => {
+      if (braziers[i]) braziers[i].position.set(o.x, 0, o.z);
+      if (flames[i]) { flames[i].node.position.x = flames[i].x + o.x; flames[i].node.position.z = flames[i].z + o.z; }
+      if (glows[i]) { glows[i].position.x = glows[i].userData.x + o.x; glows[i].position.z = glows[i].userData.z + o.z; }
     });
-    const dxL = S.fires[0] - FIRES[0].x, dxR = S.fires[1] - FIRES[1].x;
-    floorMat.uniforms.fireA.value.x = FIRE_A + dxL; floorMat.uniforms.fireB.value.x = FIRE_B + dxR;
-    shared.firePos.value.x = FIRE_P + dxL;
+    floorMat.uniforms.fireA.value.set(fireA0.x + d[0].x, fireA0.y, fireA0.z + d[0].z, fireA0.w);
+    floorMat.uniforms.fireB.value.set(fireB0.x + d[1].x, fireB0.y, fireB0.z + d[1].z, fireB0.w);
+    shared.firePos.value.set(fireP0.x + d[0].x, fireP0.y, fireP0.z + d[0].z, fireP0.w);
   }
   function resize() {
     const r = canvas.getBoundingClientRect();

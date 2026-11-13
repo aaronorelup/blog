@@ -487,12 +487,14 @@ void main() {
 
 export const GLOW_FRAG = /* glsl */ `
 uniform vec3 color;
-uniform float level, falloff;
+uniform float level, falloff, cover;
 varying vec2 vUv2;
 void main() {
+  // cover 0: light added to the picture. cover towards 1: the colour laid over it, so that a red glow over grey
+  // stays red and does not turn pink
   float r = length(vUv2 - 0.5) * 2.0;
   float g = pow(max(1.0 - r, 0.0), falloff) * level;
-  gl_FragColor = vec4(color * g, 0.0);
+  gl_FragColor = vec4(color * g, g * cover);
 }`;
 
 // ---------------------------------------------------------------- rain meeting the mud: small crowns that open and fade
