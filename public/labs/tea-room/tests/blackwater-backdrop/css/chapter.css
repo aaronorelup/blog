@@ -59,7 +59,8 @@ a { color: inherit; }
 /* the dark water comes up out of the garden's night: a soft edge that rides on the chapter's top and bottom */
 .chapter::before { content: ''; position: absolute; left: 0; right: 0; height: 30vh; z-index: 2; pointer-events: none; }
 .chapter::before { top: -1px; background: linear-gradient(to bottom, var(--storm) 0, rgba(6, 17, 22, 0.9) 24%, rgba(6, 17, 22, 0.5) 56%, rgba(6, 17, 22, 0)); }
-/* on the way out the picture's lower part sinks into the dark, under the card, which stays as it is */
+/* on the way out the picture's lower part sinks into the dark, under the card, which stays as it is: it is there as
+   soon as the screen starts to leave, so the picture never ends in a hard edge */
 .veil { position: absolute; left: 0; right: 0; bottom: 0; height: 55%; background: linear-gradient(to top, var(--storm) 0, var(--storm) 13%, rgba(6, 17, 22, 0.84) 40%, rgba(6, 17, 22, 0)); opacity: 0; pointer-events: none; }
 .host { position: absolute; inset: 0; }
 .stage { position: sticky; top: 0; height: var(--vh); overflow: hidden; background: var(--storm); }

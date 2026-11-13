@@ -212,8 +212,8 @@ export async function mount(host, options = {}) {
   const moon = new THREE.PointLight(0x8fa6cc, 260, 85, 2);
   moon.position.set(-2, 20, 2);
   scene.add(moon);
-  const lantern = new THREE.PointLight(0xffc27a, 26, 26, 2);
-  lantern.position.set(8.6, 2.5, 2.4);
+  const lantern = new THREE.PointLight(0xffc27a, 44, 28, 2);
+  lantern.position.set(9.6, -0.62, 1.4); // standing on the camp platform's floor, by the water
   scene.add(lantern);
   const headlamp = new THREE.SpotLight(LAMP.color, LAMP.intensity, LAMP.distance, LAMP_HALF, 0.85, LAMP.decay);
   scene.add(headlamp, headlamp.target);
@@ -223,8 +223,12 @@ export async function mount(host, options = {}) {
 
   // the lantern itself, a warm point on the rim
   const lanternGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: dot, color: 0xffd08a, transparent: true, opacity: 0.9, depthWrite: false, blending: THREE.AdditiveBlending, fog: false }));
-  lanternGlow.position.copy(lantern.position); lanternGlow.scale.setScalar(1.1);
+  lanternGlow.position.copy(lantern.position); lanternGlow.scale.setScalar(1.0);
   scene.add(lanternGlow);
+  const lanternBody = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.24, 0.16), new THREE.MeshBasicMaterial({ color: 0xffe2a8 }));
+  lanternBody.position.copy(lantern.position);
+  scene.add(lanternBody);
+  disposables.push(lanternBody.geometry, lanternBody.material);
   disposables.push(lanternGlow.material);
 
   // ---- the open water's surface (src/main.ts: the same colour and the same see-through)
@@ -236,11 +240,13 @@ export async function mount(host, options = {}) {
   disposables.push(water.geometry, waterMat);
 
   // ---- stars over the shaft
+  let starsMat = null;
   {
-    const r = rng(7), n = 160, p = new Float32Array(n * 3);
-    for (let i = 0; i < n; i++) { const a = r() * 6.283, d = Math.sqrt(r()) * 34; p[i * 3] = Math.cos(a) * d; p[i * 3 + 1] = 70 + r() * 6; p[i * 3 + 2] = Math.sin(a) * d; }
+    const r = rng(7), n = 420, p = new Float32Array(n * 3);
+    for (let i = 0; i < n; i++) { const a = r() * 6.283, el = 0.08 + Math.pow(r(), 0.7) * 1.4; p[i * 3] = Math.cos(a) * Math.cos(el) * 120; p[i * 3 + 1] = 8 + Math.sin(el) * 120; p[i * 3 + 2] = Math.sin(a) * Math.cos(el) * 120; }
     const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(p, 3));
-    const m = new THREE.PointsMaterial({ map: dot, color: 0xe6ecff, size: 0.9, transparent: true, opacity: 0.85, depthWrite: false, fog: false });
+    const m = new THREE.PointsMaterial({ map: dot, color: 0xe6ecff, size: 1.5, sizeAttenuation: false, transparent: true, opacity: 0.8, depthWrite: false, fog: false });
+    starsMat = m;
     scene.add(new THREE.Points(g, m));
     disposables.push(g, m);
   }
@@ -370,7 +376,7 @@ export async function mount(host, options = {}) {
     headlamp.target.position.copy(headlamp.position).addScaledVector(aimDir, 10);
     headlamp.target.updateMatrixWorld();
     // the lamp comes on as the diver goes under; above the water it is still the night's
-    headlamp.intensity = LAMP.intensity * lerp(0.6, 1, under);
+    headlamp.intensity = LAMP.intensity;
     beam.position.copy(headlamp.position).addScaledVector(aimDir, 0.35);
     beam.quaternion.setFromUnitVectors(v.set(0, -1, 0), aimDir);
     beamU.uOpacity.value = 0.09 * under;
@@ -381,12 +387,13 @@ export async function mount(host, options = {}) {
     fog.color.copy(FOG.night).lerp(FOG.sinkhole, under).lerp(FOG.galleries, deep);
     fog.density = lerp(0.012, 0.035, under);
     scene.background.copy(fog.color);
-    ambient.intensity = lerp(0.42, 0.3, under) + 0.16 * ss(0.62, HOLD_AT, q);
-    moon.intensity = 260 * (1 - deep);
-    lantern.intensity = 26 * (1 - ss(0.3, 0.45, q));
-    lanternGlow.visible = q < 0.45;
+    ambient.intensity = lerp(0.3, 0.3, under) + 0.16 * ss(0.62, HOLD_AT, q);
+    moon.intensity = lerp(150, 260, under) * (1 - deep);
+    lantern.intensity = 44 * (1 - ss(0.3, 0.45, q));
+    lanternGlow.visible = lanternBody.visible = q < 0.45;
+    starsMat.opacity = 0.8 * (1 - under);
     // from above, night water: dark, the lamp's pool and the rock below just showing through; from below, the lit roof of the world
-    if (camera.position.y > WATER_Y) { waterMat.color.setHex(0x0a1c24); waterMat.opacity = 0.5; } else { waterMat.color.setHex(0x3d7584); waterMat.opacity = 0.42; }
+    if (camera.position.y > WATER_Y) { waterMat.color.setHex(0x0a1c24); waterMat.opacity = 0.4; } else { waterMat.color.setHex(0x3d7584); waterMat.opacity = 0.42; }
     moteU.uTime.value = time;
     moteU.uOpacity.value = 0.75 * under;
     moteU.uLampPos.value.copy(headlamp.position);
