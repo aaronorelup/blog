@@ -11,7 +11,8 @@ export const HOLD_AT = 0.8; // from here on the camera has arrived and holds
 // [q, position, look-at]
 export const KEYS = [
   [0.0, [14.2, 0.7, 5.6], [2.0, 0.5, -1.5]],        // the camp on the shore shelf, looking across the pool to the open sky
-  [0.1, [9.0, 0.35, 4.2], [0.6, -5.2, -1.2]],       // walking to the water's edge
+  [0.07, [14.0, 0.68, 5.5], [2.0, 0.3, -1.5]],      // (still there while the chapter comes into view)
+  [0.13, [9.0, 0.35, 4.2], [0.6, -5.2, -1.2]],      // walking to the water's edge
   [0.2, [1.5, -4.5, 2.5], [0.0, -9.0, -6.0]],       // under: the pool's pale bowl, the sun coming down, the throat below
   [0.31, [0.0, -8.6, 0.9], [0.0, -14.2, -5.6]],     // the throat opens below
   [0.43, [0.0, -12.2, -3.6], [0.0, -17.6, -9.0]],   // down the throat

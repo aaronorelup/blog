@@ -339,7 +339,7 @@ export async function mount(host, options = {}) {
 
     // the camera on its route, breathing
     const p = camAt(q), l = lookAt(q);
-    const under = ss(0.135, 0.17, q); // 0 above the water, 1 below
+    const under = ss(WATER_Y + 0.12, WATER_Y - 0.25, p[1]); // 0 above the water, 1 below
     const breath = Math.sin(time * 1.37) * 0.05 * (0.4 + 0.6 * under);
     camera.position.set(p[0], p[1] + breath, p[2]);
     v.set(l[0], l[1], l[2]);
