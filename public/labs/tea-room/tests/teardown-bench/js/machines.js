@@ -19,7 +19,7 @@ export const MACHINES = [
     poster: '/media/teardown-lab/dray/hero.webp',
     stills: ['/media/teardown-lab/dray/hero.webp', '/media/teardown-lab/dray/eye.webp', '/media/teardown-lab/dray/poster.webp'],
     crop: { cx: 810, cy: 440, vh: 700, vw: 840 },
-    cropNarrow: { cx: 840, cy: 470, vh: 560 },
+    cropNarrow: { cx: 810, cy: 450, vh: 900, vw: 820 },
     hero: { view: 'HERO' },
     kind: 'toggle', // parts and modes toggle; a mode needs a part
     modes: { isolate: 'ISOLATE', cut: 'CUT' },
@@ -65,7 +65,7 @@ export const MACHINES = [
     poster: '/media/teardown-lab/hab3/power-off.webp',
     stills: ['/media/teardown-lab/hab3/power-off.webp', '/media/teardown-lab/hab3/halted.webp', '/media/teardown-lab/hab3/poster.webp'],
     crop: { cx: 790, cy: 340, vh: 600, vw: 760 },
-    cropNarrow: { cx: 760, cy: 330, vh: 480 },
+    cropNarrow: { cx: 790, cy: 330, vh: 900, vw: 860 },
     hero: { view: 'HERO' },
     kind: 'hab', // a part is isolated by picking it; "cut" is the page's section view
     cutView: 'SECTION',
@@ -108,7 +108,7 @@ export const MACHINES = [
     poster: '/media/teardown-lab/lander/landed-upright.webp',
     stills: ['/media/teardown-lab/lander/landed-upright.webp', '/media/teardown-lab/lander/on-its-side.webp', '/media/teardown-lab/lander/poster.webp'],
     crop: { cx: 790, cy: 430, vh: 620, vw: 760 },
-    cropNarrow: { cx: 790, cy: 440, vh: 520 },
+    cropNarrow: { cx: 790, cy: 440, vh: 900, vw: 780 },
     hero: { view: 'HERO' },
     kind: 'toggle',
     modes: { isolate: 'ISOLATE', cut: 'CUT' },
@@ -153,7 +153,7 @@ export const MACHINES = [
     poster: '/media/teardown-lab/mole1/step3-with-picture.webp',
     stills: ['/media/teardown-lab/mole1/step3-with-picture.webp', '/media/teardown-lab/mole1/hero-3m.webp', '/media/teardown-lab/mole1/poster.webp'],
     crop: { cx: 770, cy: 430, vh: 640, vw: 800 },
-    cropNarrow: { cx: 820, cy: 430, vh: 500 },
+    cropNarrow: { cx: 780, cy: 440, vh: 900, vw: 780 },
     hero: { view: 'HERO' },
     kind: 'set', // the mode is set (not toggled) first, then a part is picked
     modes: { isolate: 'ISOLATE', cut: 'CUT' },
