@@ -519,6 +519,8 @@ picks (`src/data/tea-picks.json`), the registry and `COPY.room`. The live notebo
 | One `h1`; each chapter's first heading its `h2`; the first Tab is the skip link; nine Tab stops in the frame with a ring | tea-next-12 |
 | Under 1024 px the tab shows the current numeral and short name whole; its sheet lists every chapter in rows of 44 px or more and closes on a choice | tea-next-14 |
 | `/tea-next/` says noindex; no sitemap, feed, index or other page names it | tea-next-16 |
+| One link to `/` in the hero slip, in the index as shown, and in the footer, which carries the main nav | tea-next-8 |
+| The planned places are the real ones: the screens are fully shut at every section's top from the third chapter on | tea-next-24 |
 | An address with a chapter lands on its opening frame in one step (screens open, its word in view); `#ledger` lands on the first topic | tea-next-17 |
 | No console message, no sideways scroll, every picture in reach decoded, at every chapter's opening frame and every half screen | tea-next-13 |
 | Head and tail: each chapter's paper begins 1.2 vh in (1.0 after the hero) and ends 0.6 vh before its end (1.6 when last); the screens are shut when the footer comes in | tea-next-18 |
@@ -527,7 +529,7 @@ picks (`src/data/tea-picks.json`), the registry and `COPY.room`. The live notebo
 | Save-Data: book mode, no request for a loop, a film, three or a model | tea-next-21 |
 | The closed bookmark covers no text at any chapter's rest places | tea-next-22 |
 | The footer's computed styles equal `/tea/`'s (until the swap) | tea-next-23 |
-| Purity: the frame at a place is the same loaded directly, flicked to from the top and from the bottom (scrollTo) and turned to with the wheel, in state read back from the page and in pixels (under 0.1% apart), at 1440x900, 760 wide and on the phone; also at the door, a screens change half shut and shut, and the house closing | tea-engine: purity |
+| Purity: the frame at a place is the same loaded directly, flicked to from the top and from the bottom (scrollTo) and turned to with the wheel, in state read back from the page and in pixels (under 0.1% apart), at 1440x900, 760 wide, 390x844 and on the phone; also at the door, before and after every screens change, and the house closing | tea-engine: purity |
 | No frame is nearly all dark and no band is dark and flat (on a phone the lower 40%), at 240 places (200 on a phone); the floors measured on look B | tea-engine: the empty-frame sweep |
 | At every half screen the page is no wider than the window, and `html` and `body` never set overflow | tea-engine: nothing scrolls sideways |
 

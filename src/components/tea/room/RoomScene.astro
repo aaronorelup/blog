@@ -6,6 +6,9 @@
 // carry data-src (decoded before they get it, and drawn with decoding="sync", so a frame never shows one half
 // drawn), and load.js gives them their picture (the first chapter's carry src, for the first paint).
 // The engine (apply.js) places every element: nothing here has a place of its own.
+import sharp from 'sharp';
+import { publicFile } from '../../../lib/paths.js';
+
 interface Props { room: any; sceneKey: string; layer: 'back' | 'front'; words: Record<string, any>; eager?: boolean }
 const { room, sceneKey, layer, words, eager = false } = Astro.props;
 const S = room.scenes[sceneKey];
@@ -13,15 +16,27 @@ const front = layer === 'front';
 const wordOf = (key: string) => words[room.scenes[key].chapter];
 const inLayer = (f: any) => Boolean(f.front) === front;
 const backIndex = (sc: any) => sc.flats.findIndex((f: any) => f.r >= 1 && !f.through);
+// The picture under a scene's back plate while its plates load: whichever of its two stills has the back plate's
+// shape (a phone's composition may use the wide plate under an upright camera), so it is never stretched.
+const ratio = async (src: string) => { const m = await sharp(publicFile(src)).metadata(); return m.width / m.height; };
+const under: Record<string, string | null> = {};
+for (const comp of ['d', 'p']) {
+  const b = S[comp].flats[backIndex(S[comp])];
+  if (!S.still || !b?.box) { under[comp] = null; continue; }
+  const want = b.box[2] / b.box[3];
+  const cands = await Promise.all([S.still.d, S.still.p].filter(Boolean).map(async (src: string) => [src, Math.abs(Math.log((await ratio(src)) / want))] as const));
+  cands.sort((x, y) => x[1] - y[1]);
+  under[comp] = cands[0] && cands[0][1] < 0.05 ? cands[0][0] : null;
+}
 ---
 <div class="room-group" data-scene={sceneKey} data-layer={layer} hidden={!eager}>
   {['d', 'p'].map((comp) => {
     const sc = S[comp];
     return (
       <div class="room-comp" data-comp={comp}>
-        {!front && S.still?.[comp] && backIndex(sc) >= 0 && (
-          eager ? <img class="room-flat room-under" data-under src={S.still[comp]} alt="" decoding="sync" />
-            : <img class="room-flat room-under" data-under data-src={S.still[comp]} alt="" decoding="sync" />
+        {!front && under[comp] && backIndex(sc) >= 0 && (
+          eager ? <img class="room-flat room-under" data-under src={under[comp]} alt="" decoding="sync" />
+            : <img class="room-flat room-under" data-under data-src={under[comp]} alt="" decoding="sync" />
         )}
         {sc.flats.map((f: any, i: number) => {
           if (!inLayer(f)) return null;

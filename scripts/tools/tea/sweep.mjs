@@ -1,6 +1,6 @@
 // The empty-frame sweep (1.12, 5.2): is a frame a picture, or nearly all dark, or does it leave a band dark and flat?
 // A frame is judged from a small copy of it (96 px wide, RGB). Two floors, measured on look B and not guessed
-// (tests/unit/fixtures/tea/sweep/ keeps the frames; docs/TEA_ROOM.md has the numbers):
+// (tests/unit/fixtures/tea/sweep/ keeps the frames; the numbers are here):
 //   BRIGHT: the share of pixels brighter than 40 (of 255). B's dead stretch on a desktop (y 0.82, 0.83, 0.84) is 0.21,
 //     0.12 and 0.10; its dark but good frames (0.58, 0.66) are 0.39 and 0.50. Under 0.3 fails.
 //   BAND: a band a quarter of the frame tall whose mean is under 30 and whose spread (standard deviation) is under 8

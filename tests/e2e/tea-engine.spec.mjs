@@ -17,14 +17,14 @@ async function hardSpots(page) {
   const at = (y) => Math.min(1, Math.max(0, y / max));
   const out = [];
   if (secs[1]) out.push(['the door, mid way', at(secs[1].top - 0.6 * secs[1].vh)], ['the door, its handover', at(secs[1].top)]);
-  if (secs[2]) out.push(['a screens change, half shut', at(secs[2].top - 0.3 * secs[2].vh)], ['a screens change, shut', at(secs[2].top)]);
-  if (secs[5]) out.push(['a screens change, half open', at(secs[5].top + 0.3 * secs[5].vh)]);
+  // every screens change: half shut before it, and half open after it
+  secs.slice(2).forEach((s) => out.push([`before ${s.id}, half shut`, at(s.top - 0.3 * s.vh)], [`into ${s.id}, half open`, at(s.top + 0.3 * s.vh)]));
   const last = secs[secs.length - 1];
   if (last) out.push(['the house closing', at(last.top + last.height - 1.3 * last.vh)]);
   return out;
 }
 
-const SIZES = [{ width: 1440, height: 900 }, { width: 760, height: 1000 }];
+const SIZES = [{ width: 1440, height: 900 }, { width: 760, height: 1000 }, { width: 390, height: 844 }];
 
 for (const size of SIZES) {
   test.describe(`purity at ${size.width} wide`, () => {
@@ -54,7 +54,7 @@ for (const size of SIZES) {
     }
 
     test(`the hard places (the door, the screens half shut, the house closing) are the same however you arrive (${size.width})`, async ({ page, isMobile }) => {
-      test.setTimeout(180_000);
+      test.setTimeout(600_000);
       if (!isMobile) await page.setViewportSize(size);
       for (const [name, p] of await hardSpots(page)) {
         await page.goto(`${TEA}?still=1&y=${p}`);

@@ -215,8 +215,9 @@ export function readBack(page, L, on) {
     on,
     groups: L.sceneKeys.map((k) => [k, ...page.scenes[k].groups.map((g) => g.hidden)]),
     flats: E.flats.map(tfOf),
-    ports: E.ports.map((p) => p && { ...tfOf(p.el), inner: p.shown === false ? null : p.inner.style.transform,
-      flats: p.flats.map(tfOf), deep: p.deep.map((d) => d && { ...tfOf(d.el), inner: d.inner.style.transform }) }),
+    // a hidden port's contents are not written while it is hidden, so they are not part of the state
+    ports: E.ports.map((p) => p && (p.el.hidden ? { shown: false } : { ...tfOf(p.el), inner: p.inner.style.transform,
+      flats: p.flats.map(tfOf), deep: p.deep.map((d) => d && (d.el.hidden ? { shown: false } : { ...tfOf(d.el), inner: d.inner.style.transform })) })),
     slots: page.slots.map((el) => el && { off: el.hasAttribute('data-off'), t: el.style.transform, o: el.style.opacity }),
     pieces: page.pieces.map((els) => Object.fromEntries(Object.entries(els).map(([k, el]) => [k, el ? el.getAttribute('style') : null]))),
     screens: ['l', 'r'].map((s) => {

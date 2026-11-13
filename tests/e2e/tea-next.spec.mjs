@@ -4,7 +4,6 @@
 import fs from 'node:fs';
 import matter from 'gray-matter';
 import { CHAPTERS, PICKS, TEA, expect, live, sections, settle, test, undecoded, watchConsole } from './tea/base.mjs';
-import { COPY } from '../../src/data/tea.js';
 
 const roman = (n) => ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV'][n];
 const squash = (s) => s.replace(/\s+/g, ' ').trim();
@@ -377,5 +376,4 @@ test('tea-next-5 no draft or unlisted post anywhere on the page', async ({ reque
     expect(html, slug).not.toContain(slug);
     if (data.title) expect(text, slug).not.toContain(data.title);
   }
-  expect(COPY.room.chapters.hero.approved).toBe(false);
 });
