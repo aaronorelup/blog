@@ -513,7 +513,7 @@ picks (`src/data/tea-picks.json`), the registry and `COPY.room`. The live notebo
 | Each chapter shows exactly its shelves' posts, in order, and a topic its one closing link; no other post link on the page | tea-next-2 |
 | Courses: the two courses, their names and links | tea-next-3 |
 | Every internal link and picture resolves (the live notebook only warns) | tea-next-4 |
-| No draft or unlisted post anywhere: no slug in the HTML, no title in its text | tea-next-5 |
+| No draft or unlisted post anywhere: no slug in the HTML, no title or id of its own in the page's text or any attribute (decoded), outside Now's and About's words | tea-next-5 |
 | The index marks the chapter whose section holds the scroll position | tea-next-9 |
 | Without JavaScript the page is book mode: every chapter, word, still and link shows, no stage | tea-next-10 |
 | One `h1`; each chapter's first heading its `h2`; the first Tab is the skip link; nine Tab stops in the frame with a ring | tea-next-12 |
@@ -527,7 +527,17 @@ picks (`src/data/tea-picks.json`), the registry and `COPY.room`. The live notebo
 | No layout shift from load to settled and through a scripted scroll | tea-next-19 |
 | Reduced motion: book mode, nothing running or playing, two frames 700 ms apart identical at six places | tea-next-20 |
 | Save-Data: book mode, no request for a loop, a film, three or a model | tea-next-21 |
-| The closed bookmark covers no text at any chapter's rest places | tea-next-22 |
+| The closed index (the bookmark, under 1024 px the tab) covers no text at any chapter's rest places | tea-next-22 |
+| A jump to a chapter far off shows its room at once (its inlined preview) while its plates are held, never the night ground, never a broken picture | tea-next-25 |
+| A picture that fails to load is never a broken box, and its scene comes back when the network does | tea-next-26 |
+| A window fetches only its own composition's pictures, the scene on screen first, and the other after a turn | tea-next-27 |
+| Book mode fetches no picture only the stage draws | tea-next-28 |
+| On a slow network the first paint is a picture and nothing shifts from load to settled | tea-next-29 |
+| One button: an embed shows one paper button and nothing of the thing before a press; a game mounts with none of its own; a machine opens in a sheet the wheel cannot scroll past, and Esc closes it | tea-next-30 |
+| One thing plays: a film pauses a running game; with `?still=1` no video plays (loops: added with the first loop) | tea-next-31 |
+| Weight: the top of the page fetches only 2.9's list; the bytes printed | tea-next-32 |
+| 3D stays lazy: no `three`, GLTFLoader or `.glb` at load, live, reduced motion, Save-Data, no WebGL | tea-next-33 |
+| Not the frame before, per chapter (waits while the chapter is a stub; `TEA_DIFFER_STUBS=1` runs it on stubs) | tea-next-34 |
 | The footer's computed styles equal `/tea/`'s (until the swap) | tea-next-23 |
 | Purity: the frame at a place is the same loaded directly, flicked to from the top and from the bottom (scrollTo) and turned to with the wheel, in state read back from the page and in pixels (under 0.1% apart), at 1440x900, 760 wide, 390x844 and on the phone; also at the door, before and after every screens change, and the house closing | tea-engine: purity |
 | No frame is nearly all dark, no band is dark and flat, no dark flat area is over 0.49 of the frame, and on a phone no more than a fifth of the lower 40% is dark and flat, paper or none, at 240 places (200 on a phone); the floors measured on looks A and B (`scripts/tools/tea/sweep.mjs`, `docs/TEA_ROOM.md`) | tea-engine: the empty-frame sweep |

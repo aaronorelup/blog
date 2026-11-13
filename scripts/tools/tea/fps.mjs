@@ -33,6 +33,7 @@ async function run(b, base, address, size, from, to, gl0) {
   const page = await openPage(b, urlOf(base, withQuery(address, q)), size);
   const M = await measure(page);
   const [a, z] = [px(from, M, false), px(to, M, true)];
+  console.log(`    ${address}: ${(Math.abs(z - a) / SPEED).toFixed(0)} s of scroll at ${SPEED} px a second...`);
   await page.evaluate((y) => scrollTo(0, y), a);
   await ready(page);
   await page.waitForTimeout(800);
@@ -84,6 +85,9 @@ to ${DEFAULT_PAGE}; the 3D chapter is measured on its posters (?gl=0).
     const runs = Number(values.runs);
     if (!(runs >= 1)) throw new Usage('--runs takes a number from 1');
     console.log(`CAVEAT: ${CAVEAT}\n`);
+    if (String(values.from) === '0' && String(values.to) === '1') {
+      console.log(`The whole page, ${runs} run(s) of it and of look B at each size: on this box about 3 minutes for one run of both\nat one size, so about ${runs * sizesOf(values.sizes).length * 3} minutes in all. One stretch is quicker: --from start --to tv.\n`);
+    }
     const srv = await server();
     const b = await browser();
     let low = false;

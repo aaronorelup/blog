@@ -341,6 +341,28 @@ walk's closer plates and the room behind the door; a scene's pictures load withi
 and are given back beyond two; nothing of a film, game, machine or model before its press, no `three` or `.glb`
 before the 3D chapter; no picture over 4096 px on its long side.
 
+**While pictures come** (`engine/load.js`, `src/lib/tea-preview.js`). Every plate is fetched by the engine, for the
+composition in use only (a desktop never fetches the phone's plates; a turn fetches the other's), and the scene on
+screen goes first, its neighbours after its still. Until its picture has come a flat holds a blank picture (never
+a broken box), and the picture under each scene's back plate holds a 40 px preview of its still, inlined in the
+page, so a jump to any chapter shows its room at once, blurred, and never the night ground. A picture that fails is
+never given to its element: the scene keeps its preview or still and is asked for again after 2, 4, 8 ... 32 s, and
+at once when the browser is back online. Book mode fetches nothing that only the stage draws. On a slow network
+the first paint is the hero's still over its own inlined preview; paper and the index stay hidden until the fonts
+are ready (`data-room-fonts`), so a late face moves no line a reader has seen, and the stage is shown
+(`data-room-placed`) once the fonts and the plates of the scene that is on have come, or the reader scrolls.
+
+**Paper is drawn in a layer of its own** (`will-change: opacity` on `.room-paper-face` and `.room-button`). Paper
+stands at fractional heights, and a cut edge at a fractional height was drawn one way or another depending on which
+layer the browser had put it in, which depended on where the page had been scrolled from: a 1 px stripe along
+sheets' tops and feet, 0.2% of the frame at 760 and 390 wide, enough to fail purity. Not `transform`: that would
+trap a fixed slot inside a sheet.
+
+**What plays** is listed in `src/data/tea/embeds.js`, keyed by the row's own key (a post's slug, a project's key, a
+machine's folder): every film, project to play or watch and machine the picks name has an entry today, with a
+placeholder poster; `mb: null` means its cost is not yet measured. A stub slip mounts its row's `RoomEmbed`; on a
+phone the stub shows the button alone. Esc closes a machine's sheet even while the machine has the keyboard.
+
 | Target (gzip for text) | |
 |---|---|
 | First paint | 800 KB (HTML 40, CSS 14, engine 14, fonts 67, plates and television 600) |
@@ -475,12 +497,21 @@ bottom, and after real wheel turns, in state exactly and in pixels within 0.001 
 screens change, every opening and every handover, desktop and phone); the empty-frame sweep; not the frame before;
 nothing sideways; head and tail of every chapter at both sizes, and the screens shut when the footer enters; no
 layout shift; reduced motion and Save-Data are book mode with nothing playing or loading; the index covers no text;
-one thing plays at a time; one button an embed; the footer's computed styles equal `/tea/`'s until the swap; the
+one thing plays at a time (not yet the loops: no chapter has landed a loop, and the first that does adds
+"three loops in view play together, a loop never pauses a running game, no loop plays while a film plays"); one
+button an embed; the footer's computed styles equal `/tea/`'s until the swap; the
 weight of the first paint and each chapter; the 3D chapter stays lazy; each chapter's acceptance list
 (`tests/e2e/tea/<id>.spec.mjs`); the engine alone (`tests/unit/tea-engine.test.mjs`: deterministic, one scene on,
 no missing value, off slots off, far chapters at `rest`, seamless handovers, tracks hold their ends, screens shut
 at every boundary); the scenes (`tests/unit/tea-scenes.test.mjs`: sharpness at the three sizes, cover at 17 sizes,
-every opening, every shadow and mark, any picks, the hero first, neighbours' phone layouts); each set piece
+every opening, every shadow and mark, the hero first, neighbours' phone layouts; `tea-scenes-picks.test.mjs`: any
+picks, with the stub fixtures and with every chapter's real `scene.js` and `art.js`); loading (`tests/e2e/tea/
+page-load.spec.mjs`: a jump shows its room at once, a failed picture is never broken and comes back, one
+composition fetched and the scene on screen first, book mode fetches no stage plate, no shift on a slow network);
+what plays and loads (`tests/e2e/tea/page-play.spec.mjs`: one button, one thing plays, the weight of the top of the
+page, 3D lazy in four modes, and not the frame before, which waits for each chapter until its stub is replaced, or
+runs on stubs too with `TEA_DIFFER_STUBS=1`); `tests/unit/tea-embeds.test.mjs` (every playable thing the picks name
+has an entry); `tests/unit/tea-today.test.mjs` (every file of today's `/tea/` held to its bytes until the swap); each set piece
 (`tests/unit/tea-<id>.test.mjs`); the tools and their floors (`tea-tools.test.mjs`, `tea-sweep.test.mjs`,
 `tea-calibration.test.mjs`); and, turned on at the swap, every chapter's copy and every kept picture approved.
 

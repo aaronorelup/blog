@@ -20,3 +20,6 @@
   font: 500 12px / 1.3 'JetBrains Mono', var(--font-mono); color: var(--room-cream); }
 .room-meter[hidden] { display: none; }
 .room-embed[data-running][data-in='window'] > .room-window { display: none; }
+/* a stub chapter's slip (RoomStub) on a phone carries its embed's button alone, no poster: a stub's item is one
+   per screen there, and a poster would push the slip under the index's tab while the next item is being read */
+@media (max-width: 767px) { .room-stub-slip .room-embed > .room-window { display: none; } }

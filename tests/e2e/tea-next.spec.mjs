@@ -275,12 +275,12 @@ test('tea-next-21 Save-Data: book mode, and no request for a loop, a film, three
   expect(asked).toEqual([]);
 });
 
-test('tea-next-22 the closed bookmark covers no text at any chapter\'s rest places', async ({ page, isMobile }) => {
-  test.skip(isMobile, 'the bookmark is for 1024 px and wider');
+test('tea-next-22 the closed index (the bookmark, under 1024 px the tab) covers no text at any chapter\'s rest places', async ({ page }) => {
   test.setTimeout(180_000);
   await page.goto(`${TEA}?still=1`);
   await settle(page);
-  const box = await page.locator('.room-bookmark-face').boundingBox();
+  const wide = await page.evaluate(() => innerWidth >= 1024);
+  const box = await page.locator(wide ? '.room-bookmark-face' : '.room-tab-face').boundingBox();
   const places = await page.evaluate(() => [...document.querySelectorAll('[data-room-chapter]')].flatMap((s) => {
     const top = s.getBoundingClientRect().top + scrollY;
     const vh = document.querySelector('.room-lvh').getBoundingClientRect().height;
