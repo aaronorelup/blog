@@ -3,6 +3,8 @@
 // the garden plates are 2400 x 1350), so it stays locked to the painting as the camera moves.
 
 var INK = '#1b1219';
+// a colour between a cold one and the one the floor lantern's light gives it
+function tint(a, b, t) { return 'rgb(' + a.map(function (v, i) { return Math.round(v + (b[i] - v) * t); }).join(',') + ')'; }
 
 // one paper lantern (a chochin), not lit: cx, cy its middle, w and h its size, tilt in degrees, warm 0..1 how much of
 // the floor lantern's light falls on its right side
@@ -15,8 +17,8 @@ function chochin(cx, cy, w, h, tilt, warm, id) {
   }
   return '<g transform="translate(' + cx + ' ' + cy + ') rotate(' + tilt + ')">' +
     '<defs><linearGradient id="' + id + '" x1="0" x2="1" y1="0" y2="0">' +
-    '<stop offset="0" stop-color="#6e5d66"/><stop offset="0.55" stop-color="#a08b86"/>' +
-    '<stop offset="1" stop-color="' + (warm > 0.5 ? '#d4a77e' : '#b39a8a') + '"/></linearGradient></defs>' +
+    '<stop offset="0" stop-color="#5f4f5c"/><stop offset="0.5" stop-color="' + tint([150, 128, 128], [196, 158, 128], warm) + '"/>' +
+    '<stop offset="1" stop-color="' + tint([170, 148, 140], [240, 190, 132], warm) + '"/></linearGradient></defs>' +
     '<ellipse rx="' + rx + '" ry="' + ry + '" fill="url(#' + id + ')" stroke="' + INK + '" stroke-width="6"/>' +
     '<g fill="none" stroke="#4e3d45" stroke-width="3" opacity="0.8">' + ribs + '</g>' +
     '<path d="M' + (-cw / 2) + ' ' + (-ry - cap * 0.4) + 'h' + cw + 'v' + cap + 'h' + (-cw) + 'z" fill="#2a1d24" stroke="' + INK + '" stroke-width="5"/>' +
@@ -34,6 +36,7 @@ export function roomProps() {
     rails += '<path d="M' + r[0] + ' ' + yb + ' L' + r[1] + ' ' + yt + '" stroke="' + INK + '" stroke-width="30" stroke-linecap="round"/>' +
              '<path d="M' + r[0] + ' ' + yb + ' L' + r[1] + ' ' + yt + '" stroke="' + (i ? '#7a5546' : '#5d4140') + '" stroke-width="19" stroke-linecap="round"/>';
   });
+  rails += '<path d="M' + (x1 + 7) + ' ' + yb + ' L' + (x1 + lean + 7) + ' ' + yt + '" stroke="#c8895c" stroke-width="5" stroke-linecap="round" opacity="0.75"/>';
   for (var k = 1; k < 8; k++) {
     var t = k / 8, y = yb + (yt - yb) * t, xa = x0 + lean * t, xb = x1 + lean * t;
     rungs += '<path d="M' + (xa + 6) + ' ' + y + ' L' + (xb - 6) + ' ' + y + '" stroke="' + INK + '" stroke-width="20" stroke-linecap="round"/>' +
@@ -45,11 +48,12 @@ export function roomProps() {
   // the ladder's shadow on the floor and the wall, away from the lantern
   var shade = '<path d="M' + (x0 - 30) + ' ' + (yb + 8) + ' L' + (x1 - 10) + ' ' + (yb + 8) + ' L' + (x1 - 120) + ' ' + (yb + 40) + ' L' + (x0 - 150) + ' ' + (yb + 40) + 'z" fill="#120b10" opacity="0.35"/>';
   // the stack: two lanterns side by side on the floor, one on top, one lying on its side in front
-  var stack = '<ellipse cx="1772" cy="1102" rx="190" ry="26" fill="#120b10" opacity="0.4"/>' +
-    chochin(1700, 1012, 128, 160, -3, 0.2, 'lg1') +
-    chochin(1836, 1016, 124, 154, 4, 0.8, 'lg2') +
-    chochin(1768, 862, 118, 148, 2, 0.6, 'lg3') +
-    chochin(1560, 1110, 104, 128, 84, 0.1, 'lg4');
+  var stack = '<ellipse cx="1990" cy="1080" rx="520" ry="80" fill="#ffb877" opacity="0.08"/>' +
+    '<ellipse cx="1740" cy="1100" rx="200" ry="24" fill="#120b10" opacity="0.45"/>' +
+    chochin(1700, 1012, 128, 160, -3, 0.45, 'lg1') +
+    chochin(1836, 1016, 124, 154, 4, 1, 'lg2') +
+    chochin(1768, 862, 118, 148, 2, 0.75, 'lg3') +
+    chochin(1560, 1110, 104, 128, 84, 0.25, 'lg4');
   // a folded cloth on the floor, for the room still being made
   var cloth = '<path d="M1080 1150 l210 -14 l40 40 l-226 18z" fill="#3c3048" stroke="' + INK + '" stroke-width="5"/>' +
               '<path d="M1100 1168 l200 -12" stroke="#55456a" stroke-width="4"/>';

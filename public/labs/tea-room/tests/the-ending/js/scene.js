@@ -54,10 +54,10 @@ export function mount(host, options) {
 
   // --- Now: the veranda. The sky and its hills, the moon, the garden's lawn and path (the far plate with the tea house
   // and its lit windows masked away: the moon is the only light), the near tree, the veranda's frame.
-  var B = scene('now', 2400, 1350, '#151b30');
+  var B = scene('now', 2400, 1350, '#211a26');        // under the plate: the veranda's boards
   img(B.plate, IMG + 'garden-sky.webp');
-  layer(B.plate, svg(2400, 1350, moon(1060, 330, 74)));
   img(B.plate, HERO + 'bg-far-night.webp', 'end-layer end-lawn');
+  layer(B.plate, svg(2400, 1350, moon(1060, 300, 74)));
   img(B.plate, HERO + 'bg-mid-night.webp', 'end-layer end-tree');
   layer(B.plate, '', 'end-layer end-moonlight');
   var ver = layer(B.plate, svg(2400, 1350, veranda()), 'end-layer end-veranda');
@@ -123,7 +123,7 @@ export function mount(host, options) {
     var bOn = slide > 0 && step < 1;
     show(B, bOn, 1 - step);
     if (bOn) {
-      if (tall) place(B, 1.0, 0.4, 0.4, 0.5, 0.4, true, (1 - slide) * W);
+      if (tall) place(B, 0.82, 0.44, 0.222, 0.5, 0.17, false, (1 - slide) * W);
       else place(B, 1.0, 0.42, 0.5, 0.38, 0.5, true, (1 - slide) * W);
       var vk = 'scale(' + (1 + step * 0.18).toFixed(4) + ')';
       if (vk !== lastVer) { ver.style.transform = vk; lastVer = vk; }
@@ -133,7 +133,10 @@ export function mount(host, options) {
     var cOn = step > 0;
     show(C, cOn);
     if (cOn) {
-      if (tall) place(C, mix(1.0, 1.0, rest), 0.5, 0.42, 0.5, 0.36, true);
+      // a phone: the house in the half screen above the card while it is read, the whole screen once it has gone
+      if (tall) place(C, mix(0.8, 1.0, rest), 0.5, 0.4, 0.5, mix(0.22, 0.4, rest), rest > 0.999);
+      var g = 'rgb(' + [mix(20, 79, dawn), mix(30, 85, dawn), mix(35, 61, dawn)].map(Math.round).join(',') + ')';
+      if (g !== C.bg) { C.el.style.background = g; C.bg = g; }
       else place(C, mix(1.14, 1.0, rest), 0.5, 0.45, mix(0.68, 0.5, rest), 0.5, true);
       var d = dawn.toFixed(3);
       if (d !== lastDay) { day.style.opacity = d; lastDay = d; }

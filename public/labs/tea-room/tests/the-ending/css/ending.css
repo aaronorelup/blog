@@ -13,7 +13,7 @@
   --pc-head: rgb(240, 192, 106); --pc-strong: rgb(242, 231, 213); --pc-soft: rgb(156, 145, 127);
   --pc-line: rgb(48, 46, 62); --pc-line2: rgb(74, 68, 90); --pc-accent: rgb(226, 121, 92); --pc-gold: rgb(201, 162, 39);
   --pc-tile: rgb(32, 31, 44);
-  --home-card: rgba(21, 23, 38, 0.95); --home-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  --home-card: rgba(21, 23, 38, 0.975); --home-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
   --home-body: rgb(198, 194, 212); --home-quiet: rgb(143, 138, 163);
   --font-display: 'Zen Maru Gothic', sans-serif;
   --font-body: Karla, system-ui, sans-serif;
@@ -45,7 +45,10 @@ img.end-layer { object-fit: fill; }
 .end-room-foot { display: none; }
 .tall .end-room-foot { display: block; background: linear-gradient(to bottom, rgba(29, 21, 32, 0) 84%, #1d1520 99%); }
 /* the veranda's view: the lawn of the far plate below the line where the tea house stood, the near tree over it */
-.end-lawn { -webkit-mask-image: linear-gradient(to bottom, transparent 57%, #000 66%); mask-image: linear-gradient(to bottom, transparent 57%, #000 66%); }
+.end-lawn {
+  -webkit-mask-image: radial-gradient(ellipse 18% 23% at 50% 40%, transparent 78%, #000 100%);
+  mask-image: radial-gradient(ellipse 18% 23% at 50% 40%, transparent 78%, #000 100%);
+}
 .end-tree { left: -1%; top: -14%; width: 88%; height: auto; }
 .end-moonlight { background:
   radial-gradient(circle at 44% 24%, rgba(170, 182, 232, 0.10), rgba(170, 182, 232, 0) 34%),
