@@ -74,7 +74,10 @@ const projectTotal = projectsPage(await projectEntries(), posts).sections.reduce
 const counter = counterLine({ posts: posts.length, projects: projectTotal, courses: COURSES.length }, COPY.room.counter);
 const copyOf = (id) => COPY.room.chapters[id];
 const index = chapters.map((c) => ({ id: c.id, dom: c.dom, numeral: c.numeral, title: copyOf(c.id).title, short: copyOf(c.id).short }));
-const page = { chapters: index, counter };
+// the row keys each chapter shows (a post's slug, a project's or a machine's key): what embeds.js needs to say which
+// chapter plays a thing
+const shows = Object.fromEntries(chapters.map((c) => [c.id, new Set(c.shelves.flatMap((s) => s.rows.map((r) => r.slug ?? r.key)))]));
+const page = { chapters: index, counter, shows };
 const firstTopic = chapters.find((c) => c.kind === 'topic')?.id;
 const words = Object.fromEntries(chapters.map((c) => {
   const copy = copyOf(c.id);

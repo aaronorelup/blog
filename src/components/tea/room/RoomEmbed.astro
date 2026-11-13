@@ -2,7 +2,8 @@
 // Everything that starts on a press (2.3): a game, a lab machine or a film, by its key in src/data/tea/embeds.js.
 // Before a press: its poster in a window and one paper button; nothing of the thing is fetched. On a press media.js
 // mounts it (an <ao-game> loaded at once, or a <video controls>) in the window or in a sheet (a <dialog>). It plays
-// in the first chapter its entry names that is on the page; anywhere else the button is a link to that chapter.
+// in the first chapter its entry names that is on the page and shows it (shows: the row keys each chapter shows,
+// from the picks); anywhere else the button is a link to that chapter.
 // A lab machine is one more entry (embeds.js machine()), mounted as an <ao-game> in a sheet.
 import { EMBEDS, homeOf } from '../../../data/tea/embeds.js';
 import { COPY } from '../../../data/tea.js';
@@ -10,11 +11,11 @@ import RoomButton from './RoomButton.astro';
 import RoomLink from './RoomLink.astro';
 import RoomWindow from './RoomWindow.astro';
 
-interface Props { name: string; chapter: string; onPage: { id: string; dom: string }[] }
-const { name, chapter, onPage } = Astro.props;
+interface Props { name: string; chapter: string; onPage: { id: string; dom: string }[]; shows?: Record<string, Set<string>> }
+const { name, chapter, onPage, shows } = Astro.props;
 const e = EMBEDS[name];
 if (!e) throw new Error(`src/data/tea/embeds.js: no embed named "${name}"`);
-const home = homeOf(name, onPage.map((c) => c.id));
+const home = homeOf(name, onPage.map((c) => c.id), shows);
 const here = home === chapter;
 const to = onPage.find((c) => c.id === home);
 const label = e.kind === 'film' || e.watch ? COPY.room.watch : COPY.room.play;

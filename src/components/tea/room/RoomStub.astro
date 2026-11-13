@@ -32,7 +32,7 @@ const close = Boolean(chapter.topic && topicCount > 0);
       <RoomPaper kind="slip" mark={`item-${i + 1}`} class="room-stub-slip">
         <h3 class="room-slip-title"><RoomLink href={it.href} external={it.external}>{it.title}</RoomLink></h3>
         {it.line && <p class="room-line">{it.line}</p>}
-        {it.embed && <RoomEmbed name={it.embed} chapter={chapter.id} onPage={page.chapters} />}
+        {it.embed && <RoomEmbed name={it.embed} chapter={chapter.id} onPage={page.chapters} shows={page.shows} />}
       </RoomPaper>
       {i === items.length - 1 && close && <RoomPaper kind="slip" class="room-stub-slip is-close"><p class="room-close"><RoomLink href={`/ledger/?topic=${chapter.topic}`}>{COPY.room.allPosts(topicCount)}</RoomLink></p></RoomPaper>}
     </div>

@@ -9,6 +9,7 @@
 // folder (tv/machines). Every row the picks name today has an entry, with the post's or project's own poster as a
 // placeholder each chapter's builder may replace in its art.js; a row picked later without one is shown with its
 // link alone. watch: a page that plays a film in its own frame (an <ao-game>), labelled to watch, not to play.
+// row: where another chapter plays the thing under a row of another key ({ chapterId: thatKey }).
 // mb: null where the cost is not yet measured (the chapter's builder measures it); nothing is said on the button.
 // The lab's machines live in the live notebook (public/labs/teardown/): they are named here by their own address
 // and never copied, and a check of them only warns (src/data/exempt.js).
@@ -25,7 +26,7 @@ export const EMBEDS = {
   },
   // films (film/leads)
   'bad-very-bad': film('/media/bad-very-bad/making-of/a/final_720p.mp4', 9,
-    still('/media/bad-very-bad/making-of/a/poster.webp', 'Bad. Very Bad., the first frame of the short')),
+    still('/media/bad-very-bad/making-of/a/poster.webp', 'Bad. Very Bad., the first frame of the short'), ['film', 'projects']),
   'moonlight-five-times': film('/media/moonlight-v4/moonlight_v4_720.mp4', 22,
     still('/media/moonlight-v4/poster.webp', 'Moonlight, the version made with AI models')),
   'still-on-shift-music-video': { kind: 'game', watch: true, in: 'window', src: '/media/still-on-shift/?embed', mb: null,
@@ -40,9 +41,17 @@ export const EMBEDS = {
     poster: still('/media/projects/armies-of-gielinor.webp', 'A match in progress: small armies on a green map', 640, 360) },
   'claude-paints-in-oil': film('/media/oil-paintings/stack-timelapse.mp4', 3,
     still('/media/oil-paintings/stack-3-twilight-feast.webp', 'An oil painting of a twilight feast, painted by Claude', 1600, 900), ['projects']),
-  // the songs' videos: the one that plays is Still on Shift, which Film plays when it is on the page
+  'grind-and-grimoire': { kind: 'game', in: 'sheet', src: '/games/grind-and-grimoire/', mb: null, chapters: ['games', 'projects'],
+    poster: still('/media/projects/grind-and-grimoire.webp', 'The wizard on a skateboard on the boardwalk', 640, 360) },
+  showreel: film('/media/showreel/showreel-v3-30.mp4', 8,
+    still('/media/projects/showreel.webp', 'The first station of the showreel, a course for building with AI', 640, 360), ['projects']),
+  'clawd-growth-montage': film('/games/clawd-growth-montage/clawd-growth-montage.mp4', 5,
+    still('/games/clawd-growth-montage/poster.jpg', 'Clawd on a hilltop in front of a rising sun', 1920, 1080), ['projects']),
+  // the songs' videos: the one that plays is Still on Shift, which Film plays, under that post's own row, when it
+  // shows it
   'blackwater-songs': { kind: 'game', watch: true, in: 'window', src: '/media/still-on-shift/?embed', mb: null,
-    chapters: ['film', 'projects'], poster: still('/media/projects/blackwater-songs.webp', 'A red crystal heart from the Still on Shift video', 640, 360) },
+    chapters: ['film', 'projects'], row: { film: 'still-on-shift-music-video' },
+    poster: still('/media/projects/blackwater-songs.webp', 'A red crystal heart from the Still on Shift video', 640, 360) },
   // the lab's machines (tv/machines)
   dray: lab('dray', 'DRAY, the six-wheel hauler, in the lab'),
   hab3: lab('hab3', 'HAB 3, the habitat, cut away in the lab'),
@@ -50,8 +59,16 @@ export const EMBEDS = {
   mole1: lab('mole1', 'MOLE-1, the drum digger, in its cut'),
 };
 
-// The chapter that plays a thing, given the ids of the chapters on the page in order, or null.
-export function homeOf(name, onPage) {
+// A row of the play and watch shelves that nothing on the site can play: it is shown with its link alone, and why.
+export const LINK_ONLY = {
+  'evening-television': 'its episodes play on YouTube, so the row links out',
+};
+
+// The chapter that plays a thing, or null: the first chapter its entry names that is on the page (onPage: their ids
+// in order) and, when shows is given ({ chapterId: Set of the row keys that chapter shows }), that shows the row
+// that plays it there (the entry's row[chapterId], or its own key). The picks decide what a chapter shows, so a
+// game picked for Projects alone plays in Projects, and its button is never a link to a chapter that lacks it.
+export function homeOf(name, onPage, shows) {
   const e = EMBEDS[name];
-  return e?.chapters.find((id) => onPage.includes(id)) ?? null;
+  return e?.chapters.find((id) => onPage.includes(id) && (!shows || Boolean(shows[id]?.has(e.row?.[id] ?? name)))) ?? null;
 }

@@ -5,18 +5,32 @@
 import fs from 'node:fs';
 import { CHAPTERS, TEA, expect, settle, test } from './base.mjs';
 import { CALM, FLOORS, comparePictures, verdict } from '../../../scripts/tools/tea/differ.mjs';
+import { EMBEDS } from '../../../src/data/tea/embeds.js';
 
 const go = async (page, id) => {
   const c = CHAPTERS.find((x) => x.id === id);
   await page.evaluate((dom) => { location.hash = dom; }, c.dom);
   await settle(page);
 };
-const press = async (page, key) => {
-  const button = page.locator(`[data-room-embed="${key}"] [data-room-play]`);
+// A thing's box in the chapter that plays it (the same key can stand in another chapter as a link to this one).
+const boxOf = (page, { key, chapter }) => page.locator(`[data-room-chapter="${chapter}"] [data-room-embed="${key}"]`);
+const press = async (page, key, chapter) => {
+  const button = (chapter ? boxOf(page, { key, chapter }) : page.locator(`[data-room-embed="${key}"]`)).locator('[data-room-play]');
   await button.scrollIntoViewIfNeeded();
   await settle(page);
   await button.click();
 };
+// The first thing on the page that a press starts where it stands (a button, not a link to another chapter) and that
+// want() takes: { key, chapter, kind, in, e: its entry }. The owner's picks decide which games and films are on the
+// page and where, so a test finds its game on the page and never names one.
+const findAll = async (page, want) => {
+  const all = await page.evaluate(() => [...document.querySelectorAll('[data-room-embed]')]
+    .filter((el) => el.querySelector('[data-room-play]'))
+    .map((el) => ({ key: el.dataset.roomEmbed, kind: el.dataset.kind, in: el.dataset.in, chapter: el.closest('[data-room-chapter]')?.dataset.roomChapter })));
+  return all.map((x) => ({ ...x, e: EMBEDS[x.key] })).filter((x) => x.chapter && x.e && want(x));
+};
+const find = async (page, want) => (await findAll(page, want))[0] ?? null;
+const aGame = (x) => x.kind === 'game' && x.in === 'window' && !x.e.watch;
 
 test('tea-next-30 one button: an embed shows one paper button and nothing of the thing before a press, and a game mounts with none of its own', async ({ page, isMobile }) => {
   test.skip(isMobile, 'a game is for a desktop');
@@ -25,12 +39,14 @@ test('tea-next-30 one button: an embed shows one paper button and nothing of the
   page.on('request', (r) => asked.push(new URL(r.url()).pathname));
   await page.goto(`${TEA}?still=1`);
   await settle(page);
-  await go(page, 'games');
-  const box = page.locator('[data-room-embed="storm-bell-fighter"]');
+  const game = await find(page, aGame);
+  test.skip(!game, 'the picks put no game that plays in a window on the page');
+  await go(page, game.chapter);
+  const box = boxOf(page, game);
   await expect(box.locator('button')).toHaveCount(1);
   await expect(box.locator('ao-game')).toHaveCount(0);
-  expect(asked.filter((u) => u.startsWith('/games/storm-bell/'))).toEqual([]);
-  await press(page, 'storm-bell-fighter');
+  expect(asked.filter((u) => u.startsWith(game.e.src))).toEqual([]);
+  await press(page, game.key, game.chapter);
   await expect(box.locator('ao-game iframe')).toHaveCount(1);
   await expect(box.locator('.ao-game-load, .ao-game-poster')).toHaveCount(0);
   await expect(box.locator('[data-room-play]')).toBeHidden();
@@ -43,8 +59,10 @@ test('tea-next-30 one button: a machine opens in a sheet, the wheel over the she
   test.setTimeout(300_000);
   await page.goto(`${TEA}?still=1`);
   await settle(page);
-  await go(page, 'tv');
-  await press(page, 'dray');
+  const machine = await find(page, (x) => x.kind === 'machine');
+  test.skip(!machine, 'the picks put no lab machine on the page');
+  await go(page, machine.chapter);
+  await press(page, machine.key, machine.chapter);
   const sheet = page.locator('dialog.room-sheet[open]');
   await expect(sheet.locator('ao-game iframe')).toHaveCount(1);
   const y = await page.evaluate(() => scrollY);
@@ -69,14 +87,18 @@ test('tea-next-31 one thing plays: starting a film pauses a running game, and wi
     await settle(page);
     expect(await page.evaluate(() => [...document.querySelectorAll('video')].filter((v) => !v.paused).length), `at ${s}`).toBe(0);
   }
-  await go(page, 'games');
-  await press(page, 'storm-bell-fighter');
-  const game = page.locator('[data-room-embed="storm-bell-fighter"] ao-game');
+  const found = await find(page, aGame);
+  // the lightest film on the page: the test starts it, and one of them is a gigabyte
+  const film = (await findAll(page, (x) => x.kind === 'film')).sort((a, b) => (a.e.mb ?? 0) - (b.e.mb ?? 0))[0] ?? null;
+  test.skip(!found || !film, 'the picks put no window game, or no film, on the page');
+  await go(page, found.chapter);
+  await press(page, found.key, found.chapter);
+  const game = boxOf(page, found).locator('ao-game');
   await expect(game.locator('iframe')).toHaveCount(1);
   expect(await game.evaluate((g) => g.aoPlaying())).toBe(true);
-  await go(page, 'film');
-  await press(page, 'bad-very-bad');
-  await expect(page.locator('[data-room-embed="bad-very-bad"] video')).toHaveCount(1);
+  await go(page, film.chapter);
+  await press(page, film.key, film.chapter);
+  await expect(boxOf(page, film).locator('video')).toHaveCount(1);
   await expect.poll(() => game.evaluate((g) => g.aoPlaying())).toBe(false);
 });
 
