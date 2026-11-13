@@ -58,7 +58,7 @@
   background: radial-gradient(closest-side, rgba(255, 222, 164, 0.6) 0, rgba(255, 210, 140, 0.4) 30%, rgba(255, 198, 122, 0.16) 58%, rgba(255, 190, 110, 0.05) 80%, rgba(255, 190, 110, 0) 100%);
 }
 /* the lantern's light in the air round it: a ring, so the picture itself stays clear */
-.gg-glow { width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 208, 138, 0) 0, rgba(255, 208, 138, 0) 25%, rgba(255, 208, 138, 0.2) 38%, rgba(255, 198, 122, 0.09) 64%, rgba(255, 190, 110, 0) 100%); }
+.gg-glow { width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 208, 138, 0) 0, rgba(255, 208, 138, 0) 40%, rgba(255, 208, 138, 0.15) 50%, rgba(255, 198, 122, 0.07) 72%, rgba(255, 190, 110, 0) 100%); }
 /* the corners of the frame fall away into the night */
 .gg-vignette { position: absolute; inset: 0; z-index: 250000; pointer-events: none; background: radial-gradient(125% 100% at 50% 46%, rgba(5, 7, 20, 0) 50%, rgba(5, 7, 20, 0.58) 100%); }
 .gg-string { position: absolute; left: 50%; bottom: 100%; width: 2.5px; margin-left: -1.25px; background: linear-gradient(to bottom, #0a0c1a 0, #0a0c1a 70%, #3a2c2e 100%); pointer-events: none; }
