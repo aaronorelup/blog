@@ -108,15 +108,14 @@ function buildCamp(floorAt) {
   const shade = new THREE.Mesh(new THREE.ConeGeometry(0.26, 0.2, 8), iron); shade.position.set(px, py + 2.06, pz); g.add(shade);
   const lamp = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.15, 0.13), bulb); lamp.position.set(px, py + 1.9, pz); g.add(lamp);
   // a cot, and a crate with a kit on it
-  put(wood, 1.9, 0.08, 0.72, 13.6, 2.2, 0.36, 0.5);
-  put(canvasM, 1.6, 0.06, 0.62, 13.6, 2.2, 0.44, 0.5);
+  put(wood, 1.9, 0.08, 0.72, 13.0, 2.0, 0.36, 0.5);
+  put(canvasM, 1.6, 0.06, 0.62, 13.0, 2.0, 0.44, 0.5);
   for (const [dx, dz] of [[-0.8, -0.28], [0.8, -0.28], [-0.8, 0.28], [0.8, 0.28]]) {
     const c = Math.cos(0.5), s = Math.sin(0.5);
-    put(wood, 0.07, 0.38, 0.07, 13.6 + dx * c + dz * s, 2.2 - dx * s + dz * c, 0);
+    put(wood, 0.07, 0.38, 0.07, 13.0 + dx * c + dz * s, 2.0 - dx * s + dz * c, 0);
   }
-  put(wood, 0.6, 0.5, 0.5, 12.3, 5.0, 0, -0.3);
-  put(canvasM, 0.36, 0.14, 0.26, 12.3, 5.0, 0.5, -0.1);
-  put(wood, 0.36, 0.7, 0.36, 10.9, 4.6, 0, 0.2); // a barrel-ish drum
+  put(wood, 0.6, 0.5, 0.5, 12.1, 2.2, 0, -0.3);
+  put(canvasM, 0.36, 0.14, 0.26, 12.1, 2.2, 0.5, -0.1);
   return { group: g, lampPos: new THREE.Vector3(px, py + 1.9, pz), geos: [box, shade.geometry, lamp.geometry], mats: [wood, canvasM, iron, bulb] };
 }
 
@@ -351,7 +350,8 @@ export async function mount(host, options = {}) {
     const dist = v.distanceTo(camera.position);
     const room = q > 0.38 && q < 0.74 ? 0.05 : 0.12;
     camera.position.addScaledVector(right, px * room).addScaledVector(upv, -py * room * 0.6);
-    v.addScaledVector(right, px * dist * 0.3).addScaledVector(upv, -py * dist * 0.2);
+    const swing = tall ? 0.55 : 1; // a narrow screen has less room to look about
+    v.addScaledVector(right, px * dist * 0.3 * swing).addScaledVector(upv, -py * dist * 0.2 * swing);
     // on a tall screen the card covers the lower third: the picture's subject sits higher
     if (tall) v.addScaledVector(upv, -dist * 0.12 * ss(0.62, HOLD_AT, q));
     camera.lookAt(v);
@@ -405,9 +405,9 @@ export async function mount(host, options = {}) {
 
     // the drowned man: the game's swim, drifting slowly up the passage and back, never quite arriving
     const g = fig.group;
-    const drift = Math.sin(time * 0.19) * 0.35;
+    const drift = Math.sin(time * 0.19) * 0.2;
     g.position.set(FIGURE[0] - drift * 0.9, FIGURE[1] + Math.sin(time * 0.41) * 0.08 - drift * 0.2, FIGURE[2] - drift * 0.25);
-    g.rotation.set(0, figFace + 0.55 + Math.sin(time * 0.13) * 0.12, 0);
+    g.rotation.set(0, figFace + 0.8 + Math.sin(time * 0.13) * 0.12, 0);
     poseSwim(fig, time, 0.5);
     g.visible = q > 0.55;
 

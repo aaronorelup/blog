@@ -110,8 +110,8 @@
       else if (tapped) { tx = tapped.x + (tilt ? tilt.x * 0.6 : 0); ty = tapped.y + (tilt ? tilt.y * 0.5 : 0); }
       else {
         // nothing to follow: the lamp sweeps the cave slowly by itself, and the scroll leans on it
-        tx = Math.sin(t * 0.33) * 0.45 - 0.15 + Math.sin(m.q * 9.0) * 0.35 + (tilt ? tilt.x * 0.8 : 0);
-        ty = Math.sin(t * 0.23 + 1.1) * 0.2 + 0.05 + Math.cos(m.q * 7.0) * 0.12 + (tilt ? tilt.y * 0.6 : 0);
+        tx = Math.sin(t * 0.33) * 0.35 - 0.05 + Math.sin(m.q * 9.0) * 0.2 + (tilt ? tilt.x * 0.8 : 0);
+        ty = Math.sin(t * 0.23 + 1.1) * 0.15 + 0.05 + Math.cos(m.q * 7.0) * 0.08 + (tilt ? tilt.y * 0.6 : 0);
       }
       var k = 1 - Math.exp(-dt * 5);
       at.x += (clamp(tx, -1, 1) - at.x) * k; at.y += (clamp(ty, -1, 1) - at.y) * k;
