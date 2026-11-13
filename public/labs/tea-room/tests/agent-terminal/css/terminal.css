@@ -72,12 +72,15 @@ p, h1, h2, h3, ul, ol { margin: 0; padding: 0; }
 
 /* a post card: the picture above, the words under it. It unfolds in two folds (--e1 the words, --e2 the picture). */
 .at-post { --e1: 1; --e2: 1; display: block; width: 318px; color: inherit; text-decoration: none; perspective: 900px; transform-origin: 50% 100%; }
+.at-post-fold { display: block; transform-style: preserve-3d; transform-origin: 50% 100%; transform: rotateX(calc((1 - var(--e1)) * 86deg)); }
 .at-post-pic, .at-post-cap { display: block; position: relative; background: var(--tea-card); box-shadow: inset 0 0 0 1px var(--pc-line2), var(--shadow); }
 .at-post-pic { aspect-ratio: 16 / 9; overflow: hidden; border-radius: 14px 14px 0 0; transform-origin: 50% 100%; transform: rotateX(calc((1 - var(--e2)) * -179deg)); z-index: 1; }
 .at-post-pic img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .at-post-pic::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px var(--pc-line2); }
 .at-post-pic[data-back='1'] img { visibility: hidden; }
-.at-post-cap { padding: 13px 18px 15px; border-radius: 0 0 14px 14px; transform-origin: 50% 100%; transform: rotateX(calc((1 - var(--e1)) * 88deg)); }
+/* the cover of the card while it is still folded: its number */
+.at-post-pic[data-back='1']::before { content: attr(data-id); position: absolute; inset: 0; display: grid; place-items: center; font: 500 15px var(--font-mono); letter-spacing: 0.16em; color: var(--pc-head); transform: rotateX(180deg); }
+.at-post-cap { padding: 13px 18px 15px; border-radius: 0 0 14px 14px; }
 .at-post-cap::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 0 0 0 14px; background: var(--tea-lamp); box-shadow: var(--tea-glow); transform: scaleY(0); transform-origin: top; transition: transform 160ms ease; }
 .at-post-label { display: block; font: 600 10.5px/1.45 var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--pc-head); }
 .at-post-label i { margin-right: 9px; font: 500 10.5px var(--font-mono); font-style: normal; letter-spacing: 0.04em; color: var(--pc-soft); }
@@ -92,7 +95,7 @@ p, h1, h2, h3, ul, ol { margin: 0; padding: 0; }
 .at-post:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 4px; border-radius: 14px; }
 
 /* the names under the ten screens */
-.at-tag { appearance: none; margin: 0; padding: 3px 0 4px; border: 0; background: none; color: var(--home-body); text-align: center; cursor: pointer; pointer-events: auto; width: max-content; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.95), 0 0 2px #000; }
+.at-tag { appearance: none; margin: 0; padding: 3px 0 4px; border: 0; background: none; color: var(--home-body); text-align: left; cursor: pointer; pointer-events: auto; width: max-content; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.95), 0 0 2px #000; }
 .at-tag b { display: block; font: 500 11px/1.25 var(--font-mono); letter-spacing: 0.02em; color: var(--pc-strong); }
 .at-tag span { display: block; font: 400 11.5px/1.25 var(--font-body); color: var(--home-quiet); }
 .at-tag[aria-pressed='true'] b { color: var(--pc-head); }
@@ -120,7 +123,9 @@ p, h1, h2, h3, ul, ol { margin: 0; padding: 0; }
 .at-tall .at-say { font-size: 15px; }
 .at-tall .at-label { max-width: calc(100vw - 32px); }
 .at-tall .at-label b { font-size: 21px; }
-.at-tall .at-post { width: min(372px, calc(100vw - 24px)); display: grid; grid-template-columns: 37% 1fr; align-items: stretch; perspective: 800px; }
+.at-tall .at-post { width: min(372px, calc(100vw - 24px)); perspective: 800px; }
+.at-tall .at-post-fold { display: grid; grid-template-columns: 37% 1fr; align-items: stretch; }
+.at-tall .at-post-pic[data-back='1']::before { transform: rotateY(180deg); font-size: 12.5px; }
 .at-tall .at-post-pic { aspect-ratio: auto; border-radius: 14px 0 0 14px; transform-origin: 100% 50%; transform: rotateY(calc((1 - var(--e2)) * 179deg)); }
 .at-tall .at-post-cap { padding: 10px 13px 11px; border-radius: 0 14px 14px 0; }
 .at-tall .at-post-cap::after { display: none; }
@@ -128,7 +133,8 @@ p, h1, h2, h3, ul, ol { margin: 0; padding: 0; }
 .at-tall .at-post-line { font-size: 12.5px; line-height: 1.36; }
 .at-tall .at-post-go { margin-top: 6px; padding-top: 6px; font-size: 12px; }
 .at-tall .at-tag b { font-size: 9.5px; }
-.at-tall .at-tag span { font-size: 10.5px; }
+.at-tall .at-tag span { display: none; }
+.at-tall .at-label-wall span { display: none; }
 .at-tall .at-key { padding: 8px 12px 9px; border-radius: 13px; }
 .at-tall .at-key p { font-size: 11.5px; line-height: 1.5; white-space: normal; }
 .at-tall .at-key .folds { max-width: 250px; }

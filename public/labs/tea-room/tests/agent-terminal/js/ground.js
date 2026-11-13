@@ -1,7 +1,7 @@
 // The terminal itself: a dark glass plane to the horizon, the log lying on it, the amber cursor, a little wind, and
 // far off the lit window of the evening the reader has just left.
 import * as THREE from 'three';
-import { PAL, FOG, canvasTex, glow, glowSprite, decal, hash, twelve } from './kit.js';
+import { PAL, FOG, canvasTex, glow, glowSprite, decal, hash, twelve, rng } from './kit.js';
 import { LOG } from './data.js';
 
 const MAX_POOLS = 14;
@@ -139,4 +139,18 @@ export function makeWind(n = 46) {
       geo.attributes.position.needsUpdate = true;
     },
   };
+}
+
+// Far out, other work goes on: a scatter of small lights along the horizon, each a process someone left running.
+export function makeFar(n = 320) {
+  const R = rng(515), pos = new Float32Array(n * 3), col = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) {
+    const a = R() * 6.283, r = 58 + R() * R() * 170, warm = R() < 0.62, k = 0.25 + R() * 0.75;
+    pos.set([Math.sin(a) * r, 0.15 + R() * R() * 1.6, -Math.cos(a) * r], i * 3);
+    col.set(warm ? [1 * k, 0.74 * k, 0.42 * k] : [0.55 * k, 0.68 * k, 1 * k], i * 3);
+  }
+  const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(pos, 3)); geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+  const pts = new THREE.Points(geo, new THREE.PointsMaterial({ size: 2.4, sizeAttenuation: false, vertexColors: true, transparent: true, opacity: 0.8, fog: false, depthWrite: false }));
+  pts.frustumCulled = false;
+  return pts;
 }
