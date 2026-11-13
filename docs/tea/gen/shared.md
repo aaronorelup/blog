@@ -17,6 +17,10 @@ File names are the same. A builder who read the first version of this page needs
   above the plinth moved, so the glass's box is unchanged.
 - `tv.webp`: the same size and the same glass box. The glass's corners moved by up to 3 px.
 - All three sets have new colours (the table in the television's section) and no wood grain.
+- `screen.webp`: the same size and the same geometry. Its paper is thinner (alpha 0.09 where plain, not 0.2),
+  so the field's colour comes through clean, and the pale pixels along its ink lines are gone.
+- `shadow-example.webp`: the same size and box, a new picture. The recipe changed: a shadow only darkens.
+  A chapter's own `shadow.mjs` should be copied again from this page.
 
 ## What a `4k` generation is worth (measured, 2026-11-12)
 
@@ -46,12 +50,12 @@ costs twice a `2k` one, and two requests never return the same picture, so a com
 | File | Pixels | Bytes | Alpha | What it is |
 |---|---|---|---|---|
 | `washi.webp` | 512, 512 | 6,320 | no | the paper tile. Tiles both ways. Its mean colour is the paper colour `#F1E6D0` |
-| `screen.webp` | 1776, 2000 | 239,218 | yes | one sliding screen: cedar frame and lattice opaque, the paper see-through |
+| `screen.webp` | 1776, 2000 | 292,690 | yes | one sliding screen: cedar frame and lattice opaque, the paper see-through |
 | `sheet-shadow.webp` | 384, 384 | 4,284 | yes | the one shadow under a sheet or a slip, as a nine-slice |
 | `tv.webp` | 2254, 2048 | 147,394 | yes | the little television, three-quarter view, cut out, its glass a hole |
 | `tv-face.webp` | 2752, 2544 | 178,590 | yes | the same set seen from the front, whole, cut out, its glass a hole |
 | `tv-face-p.webp` | 1536, 2752 | 93,404 | yes | the same front picture at a phone's size, on a 9:16 canvas |
-| `shadow-example.webp` | 1620, 720 | 31,256 | yes | the worked example of a screen shadow: a lantern and a kettle |
+| `shadow-example.webp` | 1620, 720 | 22,112 | yes | the worked example of a screen shadow: a lantern and a kettle |
 
 No file is video or audio. The largest is under 1 MiB.
 
@@ -74,7 +78,7 @@ over it as a flat layer of the chapter's light colour.
 that meets the other screen at the post. The right-hand screen is the same picture mirrored (`scaleX(-1)`).
 
 - Frame, lattice bars, the rail and the board at the foot: opaque.
-- Paper: alpha 0.2 where it is plain, rising to about 0.57 in the
+- Paper: alpha 0.09 where it is plain, rising to about 0.43 in the
   soft shade a bar throws on it. Its colour is a dark plum, so paper only ever dims what is behind it. Put one
   flat field of colour behind the screen and the paper takes that colour. No blend mode is needed.
 - The stack, from the back: the field (a `background-color` on the screen's own box), then the chapter's
@@ -84,11 +88,11 @@ that meets the other screen at the post. The right-hand screen is the same pictu
 
 | Part | Across (x) | Down (y) |
 |---|---|---|
-| Outer stile (left) | 0 to 0.063 | |
-| Five panes | 0.063 to 0.936 | |
-| Meeting stile (right) | 0.936 to 1 | |
-| Top rail | | 0 to 0.053 |
-| Six rows of panes | | 0.053 to 0.844 |
+| Outer stile (left) | 0 to 0.061 | |
+| Five panes | 0.061 to 0.939 | |
+| Meeting stile (right) | 0.939 to 1 | |
+| Top rail | | 0 to 0.051 |
+| Six rows of panes | | 0.051 to 0.844 |
 | Rail under the lattice | | 0.844 to 0.886 |
 | Board at the foot | | 0.886 to 1 |
 
@@ -246,29 +250,41 @@ to 972 CSS px tall: enough to cover an 844 px screen (at 1.08) and a 932 px one 
 **The rule for the picture, so the engine needs no number of its own.** A shadow's picture is exactly three
 times as wide and three times as tall as the box of the flat it belongs to, with the object in the middle
 third each way. So if the flat's box at rest is `[x, y, w, h]`, the shadow is drawn at `[x - w, y - h, 3w, 3h]`,
-by the same projection, on both screens, between the field and the plate. The margin is where the glow dies
-away. If an object's glow or beam needs more room than that, give its flat a larger box with transparent
-margin; do not change the rule.
+by the same projection, on both screens, between the field and the plate. The margin is where the shadow dies
+away. If an object's beam needs more room than that, give its flat a larger box with transparent margin; do
+not change the rule.
 
-**What a shadow is made of.**
+**A shadow only ever darkens the paper.** The first version put a pale patch where the lantern's paper is, and
+on the screen it read as a hole cut in the shadow. A shadow on paper is one soft dark shape. So the picture
+holds dark colours only, and what varies is how dense they are. That also makes it right on any field: amber,
+cold blue, pale. The script refuses to write a picture whose lightest colour is brighter than a dark brown.
 
-1. The silhouette: the object's own alpha, so the real object is uncovered in exactly the shadow's outline. It
-   is blurred by 0.4% of the picture's width, as a shadow through paper is, in ink plum `#261A2A` at 80%.
-2. The object's own light: the parts of the object that are its lamp (the lantern's paper, the television's
-   glass, the projector's lens) are not dark. They are pale (`#FFF4DE` for a warm lamp, `#EEF3FF` for the
-   television) and lie under the silhouette, so the lantern's bars cross its lit paper.
-3. The glow: the lit parts blurred at 3% and at 9% of the picture's width, added together, at most 80%. It is
-   the only light on the screens, and there is no second one.
-4. The window: every alpha is multiplied by a smooth ramp that is 0 at each edge and 1 from a tenth of the way
-   in. This is what makes rule 3 of the screens true, and the script refuses to write a file whose outermost
-   rows or columns are not all 0.
+**What a shadow is made of.** Every number is fixed in the script, so that twelve painters' shadows match.
+
+1. **The silhouette** is the object's own alpha, lamp and all, as one shape, so the real object is uncovered in
+   exactly the shadow's outline. It is blurred by 0.35% of the picture's width, as a shadow through paper is,
+   with a fainter second edge at 1.2% (its penumbra). Colour: ink plum `#261A2A`. Density: 0.78.
+2. **A lamp is the same shadow, thinner, never a hole.** The parts of the object that are its lamp are named in
+   the config (`lit`). A paper shade lit from inside (a lantern) has density 0.40. A lamp that shines straight
+   at the paper (a television's tube, a lens: `"tube": true`) has 0.13, which is what "its tube glowing" means
+   here: the tube is nearly the field's own light, with the dark case round it.
+3. **Warmth near the lamp.** The shadow of whatever stands beside a lamp is thinner and warmer on the lamp's
+   side: its density falls by up to a third, and its colour moves from ink plum toward the lamp's colour (a warm
+   umber `#6A452C`, or for a cold lamp `"lamp": "#3B4868"`), over a distance of 9% of the picture's width. This
+   is the only light in the picture, and it is made of less shadow, not of added light.
+4. **A beam** (the projector) is also made of less shadow. `"shade": 0.16` lays a faint dusk round the object,
+   and a part marked `"clear": true` (a white wedge from the lens) is where the dusk is left out.
+5. **The window.** Every alpha is multiplied by a smooth ramp that is 0 at each edge and 1 from a tenth of the
+   way in. This is what makes rule 3 of the screens true, and the script refuses to write a file whose
+   outermost rows or columns are not all 0.
 
 **The template.** One script makes any chapter's shadow from its own cut-outs. Copy it into the chapter's tools
 (`scripts/tools/tea/<id>/shadow.mjs`), write the small config beside it, and run it with the repo's `sharp`.
 
 ```js
 // A screen shadow from an object's own cut-out: node shadow.mjs <config.json> <out.webp>
-// The picture is three times the object's box each way, the object in the middle third. Alpha is 0 on all four edges.
+// One soft dark silhouette. The picture is three times the object's box each way, the object in the middle third.
+// It only ever darkens the paper: no pixel of it is pale. Alpha is 0 on all four edges.
 import fs from 'node:fs/promises';
 import sharp from 'sharp';
 
@@ -278,71 +294,95 @@ const px = cfg.px ?? 1.2;                                   // pixels for each b
 const [bw, bh] = cfg.box;                                   // the object's box, in board units
 const W = Math.round(bw * 3 * px), H = Math.round(bh * 3 * px);
 const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
-const INK = hex(cfg.ink ?? '#261A2A'), GLOW = hex(cfg.glow ?? '#FFF4DE');
+const INK = hex('#261A2A');                                 // the shadow: ink plum
+const LAMP = hex(cfg.lamp ?? '#6A452C');                    // the shadow where a lamp warms it (a cold lamp: '#3B4868')
+const DARK = 0.78, THIN = 0.40, TUBE = 0.13, WARM = 0.34;   // fixed strengths: the object, a paper shade lit from inside, a tube or a lens
+const SHADE = cfg.shade ?? 0;                               // the dusk a beam cuts through (a projector): 0.16, else none
 const smooth = (lo, hi, x) => { const t = Math.min(1, Math.max(0, (x - lo) / (hi - lo))); return t * t * (3 - 2 * t); };
 
-const solid = new Float32Array(W * H), lit = new Float32Array(W * H);
+const solid = new Float32Array(W * H), lit = new Float32Array(W * H), tube = new Float32Array(W * H), clear = new Float32Array(W * H);
 for (const part of cfg.parts) {                             // each part: its cut-out and where it stands in the box
   const [x, y, w, h] = part.at.map((v) => Math.round(v * px));
   const { data } = await sharp(part.src).ensureAlpha().resize(w, h, { fit: 'fill' }).raw().toBuffer({ resolveWithObject: true });
-  const mask = part.lit && typeof part.lit === 'string'
+  const mask = typeof part.lit === 'string'
     ? await sharp(part.lit).resize(w, h, { fit: 'fill' }).greyscale().extractChannel(0).raw().toBuffer() : null;
   for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) {
     const s = (j * w + i) * 4, X = Math.round(bw * px) + x + i, Y = Math.round(bh * px) + y + j;
+    if (X < 0 || Y < 0 || X >= W || Y >= H) continue;
     const a = data[s + 3] / 255, luma = 0.299 * data[s] + 0.587 * data[s + 1] + 0.114 * data[s + 2];
     const l = mask ? mask[j * w + i] / 255 : (part.lit ? smooth(part.lit - 25, part.lit + 25, luma) : 0);
     const k = Y * W + X;
-    solid[k] = Math.max(solid[k], a * (1 - l)); lit[k] = Math.max(lit[k], a * l);
+    if (part.clear) { clear[k] = Math.max(clear[k], a); continue; }       // a beam: where the dusk is left out
+    solid[k] = Math.max(solid[k], a); lit[k] = Math.max(lit[k], a * l);
+    if (part.tube) tube[k] = Math.max(tube[k], a * l);                   // this lamp shines straight at the paper
   }
 }
 const blur = async (f, sigma) => {                          // a blurred copy of one channel
-  const b = Buffer.from(Uint8Array.from(f, (v) => Math.round(v * 255)));
+  const b = Buffer.from(Uint8Array.from(f, (v) => Math.round(Math.min(1, v) * 255)));
   const r = await sharp(b, { raw: { width: W, height: H, channels: 1 } }).blur(Math.max(0.3, sigma)).extractChannel(0).raw().toBuffer();
   return Float32Array.from(r, (v) => v / 255);
 };
-const soft = await blur(solid, W * 0.004);                  // the silhouette, a little soft, as through paper
-const core = await blur(lit, W * 0.004);                    // the object's own light
-const near = await blur(lit, W * 0.03), far = await blur(lit, W * 0.09);
+const edge = await blur(solid, W * 0.0035);                 // the silhouette, a little soft, as through paper
+const pen = await blur(solid, W * 0.012);                   // and its penumbra
+const lamp = await blur(lit, W * 0.0035);                   // the lamp's own part of the silhouette
+const tubeS = await blur(tube, W * 0.0035);
+const near = await blur(lit, W * 0.09);                     // the lamp's warmth, which reaches the things beside it
+const dusk = SHADE ? await blur(solid, W * 0.11) : null, beam = SHADE ? await blur(clear, W * 0.006) : null;
+let nmax = 0; for (const v of near) nmax = Math.max(nmax, v);
 
 const rgba = Buffer.alloc(W * H * 4);
+let lumaMax = 0;
 for (let Y = 0; Y < H; Y++) for (let X = 0; X < W; X++) {
   const k = Y * W + X;
-  const edge = smooth(0, 0.1, Math.min(X, W - 1 - X) / W) * smooth(0, 0.1, Math.min(Y, H - 1 - Y) / H);
-  const g = Math.min(1, 0.92 * core[k] + 0.9 * near[k] + 1.6 * far[k]) * (cfg.glowStrength ?? 0.8);
-  const d = Math.min(1, soft[k]) * (cfg.inkStrength ?? 0.8);
-  const a = (1 - (1 - g) * (1 - d)) * edge;                 // the dark silhouette lies over the glow
-  const mix = d + g * (1 - d) > 0 ? d / (d + g * (1 - d)) : 0;
-  for (let c = 0; c < 3; c++) rgba[k * 4 + c] = Math.round(INK[c] * mix + GLOW[c] * (1 - mix));
-  rgba[k * 4 + 3] = Math.round(a * 255);
+  const win = smooth(0, 0.1, Math.min(X, W - 1 - X) / W) * smooth(0, 0.1, Math.min(Y, H - 1 - Y) / H);
+  const warm = nmax ? near[k] / nmax : 0;                   // 1 at the lamp, falling away round it
+  const body = Math.min(1, 0.8 * edge[k] + 0.3 * pen[k]);   // the whole object, lamp included: one shape
+  const thin = body > 0 ? Math.min(1, lamp[k] / Math.max(body, 0.05)) : 0;
+  const isTube = lamp[k] > 0.02 ? Math.min(1, tubeS[k] / lamp[k]) : 0;
+  const lampA = THIN + (TUBE - THIN) * isTube;
+  let a = body * (DARK - (DARK - lampA) * thin) * (1 - WARM * warm * (1 - thin));
+  if (SHADE) a = 1 - (1 - a) * (1 - SHADE * Math.min(1, dusk[k] * 3.2) * (1 - beam[k]));
+  const t = Math.min(1, 0.75 * warm + 0.6 * thin);
+  const c = [0, 1, 2].map((i) => INK[i] + (LAMP[i] - INK[i]) * t);
+  for (let i = 0; i < 3; i++) rgba[k * 4 + i] = Math.round(c[i]);
+  rgba[k * 4 + 3] = Math.round(a * win * 255);
+  if (rgba[k * 4 + 3]) lumaMax = Math.max(lumaMax, 0.299 * c[0] + 0.587 * c[1] + 0.114 * c[2]);
 }
 for (let X = 0; X < W; X++) if (rgba[X * 4 + 3] || rgba[((H - 1) * W + X) * 4 + 3]) throw new Error('alpha on the top or bottom edge');
 for (let Y = 0; Y < H; Y++) if (rgba[Y * W * 4 + 3] || rgba[(Y * W + W - 1) * 4 + 3]) throw new Error('alpha on a side edge');
-await sharp(rgba, { raw: { width: W, height: H, channels: 4 } }).webp({ quality: 86, alphaQuality: 90, effort: 6 }).toFile(out);
+if (lumaMax > 100) throw new Error('a shadow may only darken: its lightest colour is ' + lumaMax.toFixed(0));
+await sharp(rgba, { raw: { width: W, height: H, channels: 4 } }).webp({ quality: 88, alphaQuality: 92, effort: 6 }).toFile(out);
 console.log(out, W + 'x' + H, 'object box in the picture:', [W / 3, H / 3, W / 3, H / 3].map(Math.round).join(', '));
 ```
 
-The config names the box of the flat in board units, how many pixels to give each unit, the glow's colour, and
-each part with the place it has inside the box. A part's `lit` is either a luminance (pixels of the cut-out
-brighter than it are the object's lamp) or the path of a mask picture, white where the lamp is.
+The config names the box of the flat in board units, how many pixels to give each unit, and each part with the
+place it has inside the box (`at`: x, y, width, height, and a part may reach outside the box). A part's `lit` is
+either a luminance (pixels of the cut-out brighter than it are the object's lamp) or the path of a mask picture,
+white where the lamp is. Three configs, one for each kind of object the brief names:
 
 ```json
-{
-  "box": [450, 200],
-  "px": 1.2,
-  "glow": "#FFF4DE",
-  "parts": [
-    { "src": "lantern.png", "at": [0, 6, 107, 194], "lit": 150 },
-    { "src": "kettle.png", "at": [196, 0, 254, 200] }
-  ]
-}
+{ "box": [450, 200], "px": 1.2,
+  "parts": [ { "src": "lantern.png", "at": [0, 6, 107, 194], "lit": 150 },
+             { "src": "table-and-kettle.png", "at": [196, 0, 254, 200] } ] }
+
+{ "box": [260, 240], "px": 2.0, "lamp": "#3B4868",
+  "parts": [ { "src": "set-with-its-glass-filled.png", "at": [0, 0, 260, 240], "lit": "glass-mask.png", "tube": true } ] }
+
+{ "box": [150, 245], "px": 2.4, "shade": 0.16,
+  "parts": [ { "src": "projector.png", "at": [0, 0, 150, 245] },
+             { "src": "beam-wedge.png", "at": [140, 59, 160, 120], "clear": true } ] }
 ```
 
-**The worked example** is `shadow-example.webp`, made by exactly that script and that config: a floor lantern
-and a low table with its kettle, standing together as one group 450 by 200 board units. The lantern was cut
-from look B's room plate and the table is look B's own prop, both read from the frozen copies. The picture is
-1620 x 720, the group stands in its middle third (x 540 to 1080, y 240 to 480), and its alpha is 0 on all four
-edges. It is an example and a placeholder for the stub. The chapter that owns the lantern makes its own from
-its own flats.
+For the television the cut-out given to the script has its glass filled in (alpha 1 in the hole), because the
+shadow is of the whole set, and the mask says which part of it is the tube.
+
+**The worked example** is `shadow-example.webp`, made by exactly that script and the first config: a floor
+lantern and a low table with its kettle, standing together as one group 450 by 200 board units. The lantern was
+cut from look B's room plate and the table is look B's own prop, both read from the frozen copies. The picture
+is 1620 x 720, the group stands in its middle third (x 540 to 1080, y 240 to 480), its alpha is 0 on all four
+edges and at most 199 of 255. It is an example and a placeholder for the stub.
+The chapter that owns the lantern makes its own from its own flats. The other two configs were run on the
+painted set and on look B's projector for the rounds' sheets, and are not shipped.
 
 ## The rounds
 
@@ -383,9 +423,23 @@ machine restart). The paper, the screens and the shadow are answered in the roun
      kept a rim of the magenta ground it was cut from: the ink is `21, 14, 18` and the rim is gone.
 3. **"The glass."** `tv-face.webp`'s glass measures 1703 px of 2752. The first version's hole had a fault the
    sheet did not show: along the glass's right edge the key colour had run into the paint, so the ink line was
-   green and thin there, broken for about 250 px near the lower corner, and the cream beside it had a green
+   green and thin there, broken for a stretch above the lower corner, and the cream beside it had a green
    cast 60 px wide. The cast is taken out of the cream, and one unbroken ink line is now drawn round the whole
    hole (at its thinnest 11 px on `tv-face.webp`). The build refuses a file with a gap in that line.
+4. **"The shadow example: the lantern's paper shows as a pale rectangle, which reads as a hole."** True, and it
+   was the recipe's fault, not the example's: it painted every lamp pale. The recipe is rewritten on one rule,
+   a shadow only darkens, with fixed numbers (the section above). The lantern is now one warm-dark shape whose
+   shade is thinner than its frame, the table beside it is thinner and warmer on the lantern's side, and no
+   pixel of the picture is pale. The same script was run for the television (its tube nearly the field's own
+   blue inside a dark case) and for the projector and its beam, to see that one recipe carries all three.
+5. **"The screens."** The lattice holds. Two faults were found in the plate when it was drawn by a browser with
+   this page's own CSS. Over a dark field (the house closing) about a thousand pale pixels showed along the
+   ink lines: the soft edge between paper and ink had been left as opaque grey. And the paper's plum veil
+   (alpha 0.2) took a fifth of the light out of every field, so lantern amber came out tan and the pale light
+   came out grey-beige beside the room's own lamp. The plate was made again from the same master with the
+   same geometry: the paper is cut pane by pane at the master's size, its soft edge is ink and paper only (the
+   script counts pale pixels over the night ground and refuses any), and the veil is 0.09. The cedar is
+   `rgb(64, 39, 41)` in every light, because wood is opaque. The sizes are checked in the screens' round.
 
 ## Generation log
 
