@@ -76,7 +76,7 @@ void main() {
 export const LAYER_FRAG = /* glsl */ `
 uniform sampler2D map;
 uniform vec4 crop;
-uniform float mirror, edgeFade, topFade, flash, drift, time, gain, veil;
+uniform float mirror, edgeFade, topFade, flash, drift, time, gain, soft;
 uniform vec2 flashResponse;
 uniform vec3 zenith;
 uniform vec4 haze;
@@ -88,18 +88,19 @@ void main() {
   vec2 dx = dFdx(wuv), dy = dFdy(wuv);
   float inside;
   vec2 uv = wrapU(wuv, mirror, inside);
-  if (topFade > 0.5) { inside = 1.0; uv.y = max(uv.y, 0.001); }
-  vec4 c = cropTex(map, crop, uv, dx, dy);
+  // above the painting's top edge the storm goes on: the same clouds, turned over
+  if (topFade > 0.5) { inside = 1.0; uv.y = max(abs(uv.y), 0.001); }
+  vec4 c = cropTex(map, crop, uv, dx * soft, dy * soft);
   c.rgb = mix(c.rgb * gain, haze.rgb, haze.a);
   if (drift > 0.0) {
     vec2 dm = (uv - MOON.xy) * vec2(3.5556, 1.0);
-    float m = (1.0 - smoothstep(0.2, 0.32, uv.y)) * smoothstep(MOON.z, MOON.z * 2.4, length(dm));
+    float m = (1.0 - smoothstep(0.2, 0.32, uv.y)) * smoothstep(MOON.z, MOON.z * 2.4, length(dm)) * step(0.0, wuv.y);
     vec2 q = wuv * vec2(7.0, 2.2) - time * DRIFT_SPEED * vec2(7.0, 2.2);
     float n = vnoise(q) * 0.65 + vnoise(q * 2.3 + vec2(5.3, 1.7)) * 0.35;
     c.rgb *= 1.0 + drift * m * (n - 0.5) * 2.0;
   }
   c.rgb = stageFlash(c.rgb, flash, flashResponse);
-  if (topFade > 0.5) c.rgb = mix(c.rgb, zenith, smoothstep(0.0, -0.3, wuv.y));
+  if (topFade > 0.5) c.rgb = mix(c.rgb, zenith, smoothstep(-0.16, -0.5, wuv.y));
   float a = c.a * inside;
   if (edgeFade > 0.0) a *= smoothstep(0.0, edgeFade, wuv.x) * smoothstep(1.0, 1.0 - edgeFade, wuv.x);
   vec3 o = gameOut(s2l(c.rgb));
@@ -428,7 +429,7 @@ varying vec2 vUv2;
 float h2(vec2 p) { vec3 p3 = fract(vec3(p.xyx) * 0.1031); p3 += dot(p3, p3.yzx + 33.33); return fract((p3.x + p3.y) * p3.z); }
 void main() {
   // drawn with a doubling multiply: 0.5 leaves the picture as it is
-  vec2 px = floor(vUv2 * res / 1.5);
+  vec2 px = floor(vUv2 * res);
   float t = floor(time * 24.0);
   float n = h2(px + vec2(t * 17.0, t * 29.0)) + h2(px * 1.7 + vec2(t * 7.0, -t * 13.0)) - 1.0;
   vec2 q = (vUv2 - 0.5) * vec2(min(aspect, 1.6) / 1.6, 1.0);
@@ -520,7 +521,7 @@ void main() {
   q.y = q.y * 2.6 + 1.0;                     // a flat crown, seen from the side: only its upper rim shows
   float r = length(q);
   float ring = smoothstep(0.45, 0.8, r) * (1.0 - smoothstep(0.8, 1.0, r)) * smoothstep(0.75, 0.2, q.y);
-  float a = ring * 0.42 * (1.0 - vLife);
+  float a = ring * 0.3 * (1.0 - vLife);
   if (a < 0.01) discard;
   gl_FragColor = vec4(vec3(0.93, 0.918, 0.894) * a, a);
 }`;

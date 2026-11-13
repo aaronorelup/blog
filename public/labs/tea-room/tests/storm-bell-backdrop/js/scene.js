@@ -245,8 +245,8 @@ function cameraAt(q, portrait) {
   }
   return {
     fov: 32,
-    pos: [lerp(-3.4, 0, e) + h * 0.5, lerp(2.7, 1.42, e) - h * 0.05, lerp(24, 9.6, e) - h * 0.55],
-    look: [lerp(0.6, 0, e), lerp(2.1, 0.78, e), 0],
+    pos: [lerp(-3.4, 0, e) + h * 0.5, lerp(1.9, 1.42, e) - h * 0.05, lerp(24, 9.6, e) - h * 0.55],
+    look: [lerp(0.4, 0, e), lerp(3.0, 0.78, e), 0],
   };
 }
 
@@ -305,7 +305,7 @@ export async function mount(canvas, opts = {}) {
           map: { value: pics[i][j].tex }, crop: { value: pics[i][j].crop }, layerRect: { value: layerRect(L.depth, L.k) },
           mirror: { value: L.mirror || 0 }, edgeFade: { value: L.edgeFade || 0 }, topFade: { value: L.topFade || 0 },
           flash: shared.flash, flashResponse: { value: new THREE.Vector2(...L.flash) }, drift: { value: L.drift || 0 },
-          time: shared.time, gain: { value: 1 }, veil: { value: 0 }, zenith: { value: new THREE.Vector3(...ZENITH) },
+          time: shared.time, gain: { value: 1 }, soft: { value: 1 }, zenith: { value: new THREE.Vector3(...ZENITH) },
           haze: { value: new THREE.Vector4(...HAZE, L.haze || 0) },
         },
       });
@@ -314,6 +314,33 @@ export async function mount(canvas, opts = {}) {
       mesh.renderOrder = L.order; mesh.frustumCulled = false;
       scene.add(mesh); layerMats.push(mat);
     });
+  });
+
+  // ---- two wings near the lens: the game's trench-edge painting once more, dark and a little soft, so the wide
+  //      view has something close to look past and the push in has something to pass
+  const WING = { s: 0.0072, ground: 985 };            // metres a picture pixel; the picture row that meets the mud
+  const wings = [0, 1].map((j) => {
+    const [qx, qy, qw, qh] = LAYERS[3].parts[j].quad, s = WING.s;
+    const mat = new THREE.ShaderMaterial({
+      vertexShader: G.LAYER_VERT, fragmentShader: G.LAYER_FRAG, transparent: true, depthWrite: false, side: THREE.DoubleSide,
+      blending: THREE.CustomBlending, blendSrc: THREE.OneFactor, blendDst: THREE.OneMinusSrcAlphaFactor,
+      uniforms: {
+        map: { value: pics[3][j].tex }, crop: { value: pics[3][j].crop }, layerRect: { value: new THREE.Vector4(0, WING.ground * s, PIC.w * s, PIC.h * s) },
+        mirror: { value: 0 }, edgeFade: { value: 0 }, topFade: { value: 0 }, flash: shared.flash, flashResponse: { value: new THREE.Vector2(0.02, 0.2) },
+        drift: { value: 0 }, time: shared.time, gain: { value: 0.5 }, soft: { value: 3.2 }, zenith: { value: new THREE.Vector3(...ZENITH) },
+        haze: { value: new THREE.Vector4(...HAZE, 0) },
+      },
+    });
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(qw * s, qh * s), mat);
+    mesh.renderOrder = 12; mesh.frustumCulled = false;
+    scene.add(mesh);
+    // put the wing so that its inner edge stands at world x = edge, at depth z
+    mesh.userData.put = (edge, z) => {
+      const left = j === 0 ? edge - qw * s : edge;                    // world x of the crop's left side
+      mat.uniforms.layerRect.value.x = left - qx * s;
+      mesh.position.set(left + qw * s * 0.5, (WING.ground - qy - qh * 0.5) * s, z);
+    };
+    return mesh;
   });
 
   // ---- the mud
@@ -471,7 +498,7 @@ export async function mount(canvas, opts = {}) {
   const gradeMat = new THREE.ShaderMaterial({
     vertexShader: G.GRADE_VERT, fragmentShader: G.GRADE_FRAG, depthTest: false, depthWrite: false, transparent: true,
     blending: THREE.CustomBlending, blendSrc: THREE.DstColorFactor, blendDst: THREE.SrcColorFactor,
-    uniforms: { time: shared.time, grain: { value: 0.035 }, vignette: { value: 0.17 }, aspect: { value: 1.6 }, res: { value: new THREE.Vector2(1, 1) } },
+    uniforms: { time: shared.time, grain: { value: 0.02 }, vignette: { value: 0.2 }, aspect: { value: 1.6 }, res: { value: new THREE.Vector2(1, 1) } },
   });
   const gradeScene = new THREE.Scene();
   const gradeCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
@@ -515,6 +542,9 @@ export async function mount(canvas, opts = {}) {
     camera.updateProjectionMatrix();
     camera.updateMatrixWorld();
     camera.getWorldDirection(fwd);
+
+    wings[0].userData.put(portrait ? -1.5 : -3.7, portrait ? 15 : 12.5);
+    wings[1].userData.put(portrait ? 1.9 : 1.3, portrait ? 16.5 : 14.5);
 
     // fires
     const flick = [1, 1];
