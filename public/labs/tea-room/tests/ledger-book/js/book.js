@@ -12,6 +12,11 @@
 // screen, the left page stands over the right one, and a leaf turns from the bottom up. Only the pages' own
 // measures and the way their words are set change (layout()).
 //
+// A leaf bends as it turns. A page's own element cannot bend, so while a leaf is in the air it is shown as STRIPS:
+// narrow slices of the same page (copies, hidden from readers of the page's words), each on its own segment of an
+// arch, shaded by how it stands to the lantern. At rest the page's own element lies there again, flat and whole.
+// The cover is a board and stays stiff.
+//
 // pose(q) puts every turner where the chapter's progress q says: nothing is remembered between calls.
 import {
   BoxGeometry, CanvasTexture, CylinderGeometry, Group, Matrix4, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, Vector3,
@@ -26,6 +31,8 @@ const ss = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 
 const ARRIVE = 0.13, OPEN = 0.085, HOLD = 0.10, TURN = 0.07;
 export const TIME = { arrive: ARRIVE, open: [ARRIVE, ARRIVE + OPEN], hold: HOLD, turn: TURN };
 const LEAVES = 4;                                   // the posts; with the cover, five turners
+const SEGS = 7;                                     // the strips a turning leaf is shown as
+const BEND = 1.15;                                  // how far a leaf bends from its spine to its edge at the top of its turn (radians)
 const win = (i) => (i === 0 ? [ARRIVE, ARRIVE + OPEN] : [ARRIVE + OPEN + HOLD + (i - 1) * (HOLD + TURN), ARRIVE + OPEN + HOLD + (i - 1) * (HOLD + TURN) + TURN]);
 // where to stand to read spread s (1 to 5): the middle of its hold. 0: the shut book.
 export const stopOf = (s) => (s <= 0 ? 0 : ARRIVE + OPEN + HOLD / 2 + (s - 1) * (HOLD + TURN));
@@ -193,6 +200,35 @@ export function buildBook({ posts, more, part, onSeek }) {
     turners.push({ hinge, front, back, a: 0 });
   }
   const inset = pagesL[0], inside = turners[0].back;
+
+  // the strips of each leaf (not the cover): N segments in a chain from the spine out, each with a slice of the
+  // leaf's front and of its back
+  const strips = [];
+  const slice = (f, k) => {
+    const box = el('div', 'lb-strip ' + (f.side === 'front' ? 'lb-front' : 'lb-back'));
+    box.setAttribute('aria-hidden', 'true'); box.inert = true;
+    const copy = f.el.cloneNode(true);
+    copy.removeAttribute('style'); copy.classList.add('lb-copy');
+    copy.querySelectorAll('a').forEach(a => { a.tabIndex = -1; });
+    const dim = el('i', 'lb-dim');
+    box.append(copy, dim);
+    const sp = { el: box, copy, dim, obj: new Object3D(), side: f.side, k, w: 1, h: 1, tf: '', dm: -1, z: -1, on: false, facing: null };
+    strips.push(sp);
+    return sp;
+  };
+  for (let i = 1; i <= LEAVES; i++) {
+    const t = turners[i];
+    t.curl = new Group(); t.segs = []; t.fronts = []; t.backs = [];
+    let parent = t.curl;
+    for (let k = 0; k < SEGS; k++) {
+      const seg = new Group();
+      const a = slice(t.front, k), b = slice(t.back, k);
+      seg.add(a.obj, b.obj);
+      parent.add(seg); parent = seg;
+      t.segs.push(seg); t.fronts.push(a); t.backs.push(b);
+    }
+    css.add(t.curl);
+  }
   const base = face(pagesR[LEAVES], LEAVES + 1, 'front', false, LEAVES + 1);
   css.add(base.obj);
 
@@ -239,6 +275,27 @@ export function buildBook({ posts, more, part, onSeek }) {
       else orient(f.obj, [0, 0, -1], [-up, 0, 0], [0, up, 0]);
       f.obj.position.set(w / 2, f === base ? TB + TP + 0.001 : up * E, 0);
     }
+    // the strips: slice k of a face is the k-th from the spine; each runs three pixels under the next so no seam shows
+    const fw = tall ? Math.round(PH * px) : Math.round(PW * px), fh = tall ? Math.round(PW * px) : Math.round(PH * px);
+    const run = tall ? fh : fw, cut = run / SEGS, sc = (tall ? PH : PW) / (tall ? Math.round(PH * px) : Math.round(PW * px));
+    const fs = ((tall ? PH : PW) * px / (tall ? 27.4 : 30)).toFixed(2) + 'px';
+    for (const sp of strips) {
+      const from = Math.round(sp.k * cut), to = Math.min(run, Math.round((sp.k + 1) * cut) + 3), len = to - from;
+      const front = sp.side === 'front';
+      // where the slice starts on the page: a front page runs from the spine out, a back page from its edge in
+      const at = front ? from : run - to;
+      sp.w = tall ? fw : len; sp.h = tall ? len : fh;
+      sp.el.style.width = sp.w + 'px'; sp.el.style.height = sp.h + 'px';
+      sp.copy.style.width = fw + 'px'; sp.copy.style.height = fh + 'px'; sp.copy.style.fontSize = fs;
+      sp.copy.style.left = (tall ? 0 : -at) + 'px'; sp.copy.style.top = (tall ? -at : 0) + 'px';
+      sp.obj.scale.setScalar(sc);
+      const up = front ? 1 : -1;
+      if (!tall) orient(sp.obj, [up, 0, 0], [0, 0, -1], [0, up, 0]);
+      else orient(sp.obj, [0, 0, -1], [-up, 0, 0], [0, up, 0]);
+      sp.obj.position.set(len * sc / 2, up * E, 0);
+      sp.tf = ''; sp.dm = -1; sp.z = -1;
+    }
+    for (let i = 1; i <= LEAVES; i++) turners[i].segs.forEach((seg, k) => seg.position.set(k === 0 ? 0 : (Math.round(k * cut) - Math.round((k - 1) * cut)) * sc, 0, 0));
     // the page pasted inside the cover lies exactly where the leaves will lie on it
     const m = Math.round(M * px) + 'px';
     inset.style.inset = tall ? `${m} ${m} 0 ${m}` : `${m} 0 ${m} ${m}`;
@@ -300,6 +357,27 @@ export function buildBook({ posts, more, part, onSeek }) {
         if (t.a > 0) want.set(under(j + 1), 1);
       } else want.set(base, 1);
     }
+    // a leaf in the air is shown as its strips, bent round an arch (its own flat element is hidden meanwhile)
+    const air = !rm && j >= 1 && j <= LEAVES && turners[j].a > 0 ? turners[j] : null;
+    for (let i = 1; i <= LEAVES; i++) {
+      const t = turners[i], on = t === air;
+      if (on) {
+        const bend = BEND * Math.sin(t.a), a0 = t.a - bend / 2, step = bend / (SEGS - 1);
+        t.curl.position.y = t.hinge.position.y;
+        for (let k = 0; k < SEGS; k++) {
+          t.segs[k].rotation.z = k === 0 ? a0 : step;
+          const ak = a0 + step * k, lit = 0.6 * Math.sin(ak) + 0.8 * Math.cos(ak);      // how the strip's front stands to the lantern
+          const f = t.fronts[k], b = t.backs[k];
+          const df = Math.round(clamp(0.5 * (0.8 - lit) / 1.6 + 0.03 * Math.sin(t.a)) * 200) / 200;
+          const db = Math.round(clamp(0.6 * (0.8 + lit) / 1.6) * 200) / 200;
+          if (f.dm !== df) { f.dm = df; f.dim.style.opacity = df; }
+          if (b.dm !== db) { b.dm = db; b.dim.style.opacity = db; }
+          if (f.z !== 10 + k) { f.z = b.z = 10 + k; f.el.style.zIndex = b.el.style.zIndex = 10 + k; }
+        }
+        want.set(t.front, 0); want.set(t.back, 0);
+      }
+      if (t.on !== on) { t.on = on; [...t.fronts, ...t.backs].forEach(sp => { sp.on = on; if (!on && sp.facing !== null) { sp.facing = null; sp.el.style.visibility = ''; } }); }
+    }
     // the open cover's board stays under the left-hand pages, its pink edge round them
     if (turners[0].a >= PI && !want.has(inside)) want.set(inside, 1);
     const turning = !rm && j <= LEAVES && turners[j].a > 0 ? turners[j] : null;
@@ -316,7 +394,7 @@ export function buildBook({ posts, more, part, onSeek }) {
         if (f === t.front) dm = 0.34 * s;
         else if (f === t.back) dm = 0.1 + 0.3 * s;
         else if (f === under(j + 1)) { reach = Math.max(c, 0) + 0.42 * s; o = 0.62 * ss(0, 0.2, a) * (1 - 0.45 * ss(1.2, PI, a)) * ss(PI, PI - 0.5, a); }
-        else if (j >= 1 && f === turners[j - 1].back) { reach = Math.max(-c, 0) + 0.06; o = 0.5 * ss(PI / 2, PI / 2 + 0.3, a) * ss(PI, PI - 0.35, a); }
+        else if (j >= 1 && f === turners[j - 1].back) { reach = Math.max(-c, 0) + 0.1; o = 0.5 * ss(PI * 0.42, PI * 0.42 + 0.3, a) * ss(PI, PI - 0.3, a); }
       }
       shadeOf(f, reach, o); dimOf(f, dm);
     }
@@ -329,5 +407,5 @@ export function buildBook({ posts, more, part, onSeek }) {
     return c;                                       // true: something drawn with the room has changed
   }
 
-  return { gl, css, layout, pose, faces, M, ink, measures: () => L };
+  return { gl, css, layout, pose, faces, strips, M, ink, measures: () => L };
 }

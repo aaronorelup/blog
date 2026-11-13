@@ -142,34 +142,62 @@ export function mount(host, options = {}) {
     lantern.add(halo);
   }
   deskGL.add(lantern);
+
+  // Cherry petals that have come in by the open window and lie on the desk and on the mats behind it: one set for
+  // the wide picture, one for the upright one (the book covers different ground). Each is a flat pink shape on
+  // its own ink shape, as the homepage would draw it.
+  const scatter = (list) => {
+    const r = rnd(23), ink = [], pink = [];
+    for (const [x, z, onMat] of list) {
+      const y = onMat ? 0.374 - DESK.at[1] : DESK.top + 0.0025, yaw = r() * 6.28, a = 0.021 * (0.85 + r() * 0.4), b = a * 0.56, edge = 0.0034;
+      const leaf = new CircleGeometry(a, 12); leaf.scale(1, b / a, 1);
+      const rim = new CircleGeometry(a + edge, 12); rim.scale(1, (b + edge) / (a + edge), 1);
+      pink.push({ geo: leaf, pos: [x, y + 0.0012, z], rot: [-Math.PI / 2, 0, yaw] });
+      ink.push({ geo: rim, pos: [x, y, z], rot: [-Math.PI / 2, 0, yaw] });
+    }
+    const g = new Group();
+    g.add(kit.merge(ink, new MeshBasicMaterial({ color: P.ink }), 0), kit.merge(pink, new MeshBasicMaterial({ color: 0xE39AB2 }), 0));
+    deskGL.add(g);
+    return g;
+  };
+  const petalsWide = scatter([[0.6, -0.44], [0.9, -0.34], [0.67, -0.39], [0.87, 0.38], [-0.45, -0.445], [-0.2, -1.3, 1], [0.24, -1.4, 1], [0.6, -1.27, 1], [0.48, -1.36, 1], [-0.6, -1.38, 1], [0.03, -1.23, 1]]);
+  const petalsTall = scatter([[-0.87, 0.22], [-0.9, 0.02], [-0.84, 0.38], [-0.9, 0.31], [0.92, -0.06]]);
+  // the chapter's word, there when you arrive, gone as the camera comes down to the desk
+  const word = document.createElement('h2');
+  word.className = 'lb-word'; word.textContent = options.word || 'Learning';
+  const say = document.createElement('p');
+  say.className = 'lb-say'; say.textContent = options.say || 'The ledger on the writing desk, opened.';
+  host.append(word, say);                                 // (before the pages in the page's own order; over them on screen)
+
   // The pages' own elements, in reading order. Each is laid onto its leaf by one transform of its own (the
   // camera's and the leaf's together), so the page decides which lies over which.
   const layer = document.createElement('div');
   layer.className = 'lb-css';
   book.faces.forEach(f => layer.append(f.el));
+  book.strips.forEach(sp => layer.append(sp.el));         // the slices a bending leaf is shown as (book.js): no words for a reader
   host.append(layer);
-  const vw = new Matrix4();
+  const vw = new Matrix4(), placed = [...book.faces, ...book.strips];
   const n6 = (x) => (Math.abs(x) < 1e-9 ? 0 : +x.toFixed(7));
   function lay() {
     deskCSS.updateMatrixWorld(true);
     const fov = camera.projectionMatrix.elements[5] * H / 2;
     const head = `translate(${W / 2}px,${H / 2}px) perspective(${fov.toFixed(3)}px) translateZ(${fov.toFixed(3)}px) matrix3d(`;
-    for (const f of book.faces) {
+    for (const f of placed) {
+      if (f.on === false) continue;                       // a strip of a leaf that is not in the air
       const e = vw.multiplyMatrices(camera.matrixWorldInverse, f.obj.matrixWorld).elements;
       // the page's y runs down, the world's up: the middle row and the middle column change sign
       const t = head + n6(e[0]) + ',' + n6(-e[1]) + ',' + n6(e[2]) + ',' + n6(e[3]) + ',' + n6(-e[4]) + ',' + n6(e[5]) + ',' + n6(-e[6]) + ',' + n6(-e[7]) + ','
         + n6(e[8]) + ',' + n6(-e[9]) + ',' + n6(e[10]) + ',' + n6(e[11]) + ',' + n6(e[12]) + ',' + n6(-e[13]) + ',' + n6(e[14]) + ',' + n6(e[15])
         + `) translate(${-f.w / 2}px,${-f.h / 2}px)`;
       if (f.tf !== t) { f.tf = t; f.el.style.transform = t; }
+      // a strip is shown only while its own side is turned to the camera (worked out here, not left to the
+      // browser, which let parts of a turned-away slice show through)
+      if (f.on === true) {
+        const facing = e[8] * e[12] + e[9] * e[13] + e[10] * e[14] < 0;
+        if (f.facing !== facing) { f.facing = facing; f.el.style.visibility = facing ? 'visible' : ''; }
+      }
     }
   }
-
-  // the chapter's word, there when you arrive, gone as the camera comes down to the desk
-  const word = document.createElement('h2');
-  word.className = 'lb-word'; word.textContent = options.word || 'Learning';
-  const say = document.createElement('p');
-  say.className = 'lb-say'; say.textContent = options.say || 'The ledger on the writing desk, opened.';
-  host.append(word, say);
 
   // ---------------------------------------------------------------- the camera
   // Two places: where it arrives from (the homepage's own view of this corner) and where it rests, over the
@@ -182,13 +210,15 @@ export function mount(host, options = {}) {
 
   function fit() {
     deskGL.updateMatrixWorld(true);
-    const M = book.M, t2 = 2 * Math.tan(rad(rest.fov) / 2);
+    const M = book.M;
+    rest.fov = tall ? 15 : 24;
+    const t2 = 2 * Math.tan(rad(rest.fov) / 2);
     let PW, PH, sx, px;
     if (!tall) {
       // The reader's seat: above the desk's room side, looking down at the spread and a little away, so the
       // pages read without leaning and the desk still has depth.
       // The desk is seen whole: the lantern at its left end, the book, the brush and the ink pot at its right.
-      PW = 0.54; PH = 0.63; sx = -0.07;
+      PW = 0.54; PH = 0.63; sx = -0.07; rest.fov = 24;
       const el = rad(58), w = 2 * (PW + M), h = (PH + 2 * M) * Math.sin(el);
       const fw = clamp(0.92 - 0.29 * (W / H - 0.9) / 0.7, 0.63, 0.92), fh = 0.64;
       const d = Math.max(w / (fw * t2 * W / H), h / (fh * t2));
@@ -197,6 +227,7 @@ export function mount(host, options = {}) {
       const c = toWorld(cx, DESK.top + 0.03, -0.03);
       const p = toWorld(cx, DESK.top + 0.03 + d * Math.sin(el), -0.03 + d * Math.cos(el));
       lantern.position.set(-0.81, DESK.top, -0.16);
+      petalsWide.visible = true; petalsTall.visible = false;
       aim(rest, p, c, up.set(0, 1, 0));
       aim(from, v.set(-2.43, 2.44, 1.93).clone(), new Vector3(-4.76, 1.52, 1.92), up.set(0, 1, 0));
       from.fov = W / H < 1.2 ? 78 : 70;
@@ -204,6 +235,7 @@ export function mount(host, options = {}) {
       // The phone: straight above, the book turned a quarter so the spread stands upright and fills the screen.
       // Above the book the desk's end keeps room for the lantern; below it, for the brush and the ink pot.
       const mt = Math.max(80, safeH * 0.12), mb = Math.max(48, safeH * 0.08), mx = Math.max(12, W * 0.034);
+      rest.fov = 15;                                      // a long lens: a leaf rising toward the camera swells little
       const ah = safeH - mt - mb, aw = W - 2 * mx;
       PH = 0.76;
       PW = (clamp(ah / aw, 1.68, 1.86) * (PH + 2 * M) - 2 * M) / 2;
@@ -213,6 +245,7 @@ export function mount(host, options = {}) {
       // the spread's middle is put at the middle of the room it has: mt from the top, mb from the foot of safeH
       const off = ((mt + (safeH - mb)) / 2 - H / 2) / px;
       lantern.position.set(-(PW + M) - 0.092, DESK.top, -0.25);
+      petalsWide.visible = false; petalsTall.visible = true;
       const c = toWorld(sx - off, DESK.top, 0);
       aim(rest, toWorld(sx - off, DESK.top + d, 0), c, up.set(0, 0, 1));
       aim(from, new Vector3(-3.9, 2.35, -0.5), new Vector3(-4.3, 1.25, 2.3), up.set(0, 1, 0));
