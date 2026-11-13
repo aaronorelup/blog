@@ -44,15 +44,36 @@ const strip = (key) => key;
 // has nothing to check. The swap (piece 6a) points PAGE at src/pages/tea/index.astro.
 export const PAGE = 'src/pages/tea-next/index.astro';
 
-export default function teaArt(repo, report) {
-  if (!repo.exists(PICKS_FILE) || !repo.exists(PAGE)) return;
-  let chapters;
+// The picks as saved, read as the check reads them: the visible chapters with their shelves, or null when the
+// rebuilt page or the picks file is not in this repo, or the picks cannot be read (the tea-picks rule says why).
+export function roomChapters(repo) {
+  if (!repo.exists(PICKS_FILE) || !repo.exists(PAGE)) return null;
   try {
-    chapters = readPicks(JSON.parse(repo.read(PICKS_FILE)), TEA_CHAPTERS, picksSite(repo)).chapters;
+    return readPicks(JSON.parse(repo.read(PICKS_FILE)), TEA_CHAPTERS, picksSite(repo)).chapters;
   } catch {
-    return; // the tea-picks rule says why
+    return null;
   }
+}
+
+// Each chapter's length for the picks as saved (2.10): [{ id, shelves, len: { d, p }, n: { d, p } }] and the page's
+// totals in vh, from each chapter's scene data (its length and count) and lengths.js, the formula the page uses.
+// length.mjs prints the same numbers.
+export function roomLengths(chapters) {
   const lens = [];
+  for (const c of chapters) {
+    const first = runOf(SCENES[c.id])[0]?.scene;
+    if (!first) continue;
+    const shelves = c.shelves.map((s) => ({ id: s.id, rows: s.keys }));
+    const rule = first.count?.d || first.count?.p ? first.count : { d: first.count, p: first.count };
+    lens.push({ id: c.id, shelves: c.shelves, len: first.length, n: { d: itemCount(shelves, rule.d ?? {}), p: itemCount(shelves, rule.p ?? {}) } });
+  }
+  const d = pageLengths(lens, 'd'), p = pageLengths(lens, 'p');
+  return { chapters: lens.map((c, i) => ({ ...c, vh: { d: d.chapters[i].len, p: p.chapters[i].len } })), total: { d: d.total, p: p.total } };
+}
+
+export default function teaArt(repo, report) {
+  const chapters = roomChapters(repo);
+  if (!chapters) return;
   for (const c of chapters) {
     const art = ART[c.id] ?? {};
     for (const s of c.shelves) {
@@ -60,12 +81,7 @@ export default function teaArt(repo, report) {
         if (!(strip(key) in art)) report(`src/data/tea/${c.id}/art.js`, null, `${c.id}/${s.id}: "${strip(key)}" has no entry, so it is shown in the chapter's plain form`, 'warn');
       }
     }
-    const first = runOf(SCENES[c.id])[0]?.scene;
-    if (!first) continue;
-    const shelves = c.shelves.map((s) => ({ id: s.id, rows: s.keys }));
-    const rule = first.count?.d || first.count?.p ? first.count : { d: first.count, p: first.count };
-    lens.push({ id: c.id, len: first.length, n: { d: itemCount(shelves, rule.d ?? {}), p: itemCount(shelves, rule.p ?? {}) } });
   }
-  const d = pageLengths(lens, 'd').total, p = pageLengths(lens, 'p').total;
-  report(PICKS_FILE, null, `note: the tea room is ${d.toFixed(1)} screens long on a desktop and ${p.toFixed(1)} on a phone, for the picks as saved`, 'warn');
+  const { total } = roomLengths(chapters);
+  report(PICKS_FILE, null, `note: the tea room is ${total.d.toFixed(1)} screens long on a desktop and ${total.p.toFixed(1)} on a phone, for the picks as saved`, 'warn');
 }
