@@ -3,6 +3,7 @@
 // Before a press: its poster in a window and one paper button; nothing of the thing is fetched. On a press media.js
 // mounts it (an <ao-game> loaded at once, or a <video controls>) in the window or in a sheet (a <dialog>). It plays
 // in the first chapter its entry names that is on the page; anywhere else the button is a link to that chapter.
+// A lab machine is one more entry (embeds.js machine()), mounted as an <ao-game> in a sheet.
 import { EMBEDS, homeOf } from '../../../data/tea/embeds.js';
 import { COPY } from '../../../data/tea.js';
 import RoomButton from './RoomButton.astro';
@@ -16,8 +17,8 @@ if (!e) throw new Error(`src/data/tea/embeds.js: no embed named "${name}"`);
 const home = homeOf(name, onPage.map((c) => c.id));
 const here = home === chapter;
 const to = onPage.find((c) => c.id === home);
-const label = e.kind === 'film' ? COPY.room.watch : COPY.room.play;
-const cost = e.mb > 5 ? `, ${COPY.room.size(e.mb)}` : '';
+const label = e.kind === 'film' || e.watch ? COPY.room.watch : COPY.room.play;
+const cost = e.mb !== null && e.mb > 5 ? `, ${COPY.room.size(e.mb)}` : '';
 ---
 <div class="room-embed" data-room-embed={name} data-kind={e.kind} data-in={e.in} data-src={e.src} data-close={COPY.room.close}>
   <RoomWindow src={e.poster.src} alt={e.poster.alt} width={e.poster.w} height={e.poster.h} />

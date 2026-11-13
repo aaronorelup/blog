@@ -19,3 +19,4 @@
 .room-meter { position: fixed; right: 16px; bottom: 16px; z-index: 6; display: flex; gap: 12px; align-items: center;
   font: 500 12px / 1.3 'JetBrains Mono', var(--font-mono); color: var(--room-cream); }
 .room-meter[hidden] { display: none; }
+.room-embed[data-running][data-in='window'] > .room-window { display: none; }

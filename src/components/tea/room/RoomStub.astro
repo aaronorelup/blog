@@ -2,21 +2,26 @@
 // A stub chapter's paper (piece 1): its picks as plain slips, one to an item, each with its real link on its title and
 // one line (nothing else: one item is one title, one line and one link), in the column the chapter's composition leaves for paper, and a topic's one closing link to the rest of
 // its posts. Every slip carries the mark item-<k> its scene's keys name. A chapter's builder replaces its
-// component, and with it this.
+// component, and with it this. An item that embeds.js can play here (a film, a game, a project to play or watch, a
+// lab machine) carries its RoomEmbed under its slip: its poster in a window and its one button, or the link to
+// the chapter that plays it.
+import RoomEmbed from './RoomEmbed.astro';
 import RoomLink from './RoomLink.astro';
+import { EMBEDS } from '../../../data/tea/embeds.js';
 import RoomPaper from './RoomPaper.astro';
 import { COPY } from '../../../data/tea.js';
 
 interface Props { ctx: any; side?: 'left' | 'right'; extra?: { title: string; line?: string; href: string }[] }
 const { ctx, side = 'right', extra = [] } = Astro.props;
-const { chapter, topicCount } = ctx;
+const { chapter, topicCount, page } = ctx;
+const embedOf = (key: string) => (key && EMBEDS[key]?.chapters.includes(chapter.id) ? key : null);
 const rows = chapter.shelves.flatMap((s: any) => s.rows.map((r: any) => ({ shelf: s.id, ...r })));
 const items = [
   ...rows.map((r: any) => r.kind === 'post'
-    ? { id: r.id, title: r.title, line: r.verdict ?? r.summary, href: r.href }
+    ? { id: r.id, title: r.title, line: r.verdict ?? r.summary, href: r.href, embed: embedOf(r.slug) }
     : r.kind === 'project'
-      ? { id: r.card.chip ?? '', title: r.card.name, line: r.card.line, href: r.href, external: r.external }
-      : { id: '', title: r.key.toUpperCase(), line: null, href: r.href }),
+      ? { id: r.card.chip ?? '', title: r.card.name, line: r.card.line, href: r.href, external: r.external, embed: embedOf(r.key) }
+      : { id: '', title: r.key.toUpperCase(), line: null, href: r.href, embed: embedOf(r.key) }),
   ...extra,
 ];
 const close = Boolean(chapter.topic && topicCount > 0);
@@ -27,6 +32,7 @@ const close = Boolean(chapter.topic && topicCount > 0);
       <RoomPaper kind="slip" mark={`item-${i + 1}`} class="room-stub-slip">
         <h3 class="room-slip-title"><RoomLink href={it.href} external={it.external}>{it.title}</RoomLink></h3>
         {it.line && <p class="room-line">{it.line}</p>}
+        {it.embed && <RoomEmbed name={it.embed} chapter={chapter.id} onPage={page.chapters} />}
       </RoomPaper>
       {i === items.length - 1 && close && <RoomPaper kind="slip" class="room-stub-slip is-close"><p class="room-close"><RoomLink href={`/ledger/?topic=${chapter.topic}`}>{COPY.room.allPosts(topicCount)}</RoomLink></p></RoomPaper>}
     </div>

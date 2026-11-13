@@ -71,6 +71,15 @@ export function media(doc, { live, still }) {
       });
     }
     const end = () => { running = Math.max(0, running - 1); delete box.dataset.running; frame.remove(); sheet?.remove(); sync(); };
-    if (sheet) { sheet.addEventListener('close', end); sheet.showModal(); }
+    if (sheet) {
+      // Esc closes the sheet even while the machine inside it has the keyboard: a key pressed in the machine's own
+      // page never reaches the dialog, so the page (same origin, never edited) is listened to from here.
+      sheet.addEventListener('load', (e) => {
+        if (e.target.tagName !== 'IFRAME') return;
+        try { e.target.contentWindow.addEventListener('keydown', (k) => { if (k.key === 'Escape') sheet.close(); }); } catch {}
+      }, true);
+      sheet.addEventListener('close', end);
+      sheet.showModal();
+    }
   }
 }
