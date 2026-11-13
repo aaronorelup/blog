@@ -84,7 +84,7 @@ async function start() {
   fonts = true;
   layout();
   load.shared();
-  watch(doc, () => layout());
+  watch(doc, () => { layout(); load.shared(); });
   const y = parseFloat(q.get('y'));
   if (Number.isFinite(y)) scrollTo(0, Math.round(Math.min(1, Math.max(0, y)) * (root.scrollHeight - innerHeight)));
   addEventListener('scroll', () => { fresh = false; ask(); }, { passive: true });

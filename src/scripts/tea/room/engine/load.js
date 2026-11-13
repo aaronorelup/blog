@@ -50,8 +50,13 @@ export function loader(doc, onReady) {
     });
   }
 
+  // the screens' plate: the painter's upright one on a frame narrower than three fifths of its height (a phone)
   function shared() {
-    for (const el of doc.querySelectorAll('.room-screen-plate[data-src]')) if (!el.getAttribute('src')) el.src = el.dataset.src;
+    const upright = matchMedia('(max-aspect-ratio: 3/5)').matches;
+    for (const el of doc.querySelectorAll('.room-screen-plate[data-src]')) {
+      const src = upright && el.dataset.srcP ? el.dataset.srcP : el.dataset.src;
+      if (el.getAttribute('src') !== src) el.src = src;
+    }
   }
 
   // Every picture the frame shows has decoded, for painting too (an <img decoding="async"> may be complete and not
