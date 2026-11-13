@@ -73,6 +73,7 @@ export function mount(host, options) {
   function resize() {
     W = host.clientWidth || window.innerWidth; H = host.clientHeight || window.innerHeight;
     tall = W / H < 0.9;
+    host.classList.toggle('tall', tall);
     [A, B, C].forEach(function (s) { s.tr = ''; });
   }
 
@@ -103,7 +104,7 @@ export function mount(host, options) {
     var uA = clamp(q * 3, 0, 1), uC = clamp(q * 3 - 2, 0, 1);
 
     // Courses -> Now: the view slides over to the veranda once the card has gone
-    var slide = RM ? (uA >= 0.86 ? 1 : 0) : ss(0.72, 1, uA);
+    var slide = RM ? (uA >= 0.88 ? 1 : 0) : ss(0.8, 1, uA);
     // Now -> About: the veranda falls away as the reader steps down into the garden
     var step = RM ? (uC >= 0.06 ? 1 : 0) : ss(0, 0.13, uC);
     // the dawn itself: the reader's way through the About card
@@ -126,7 +127,7 @@ export function mount(host, options) {
 
     // --- the veranda: still. It is placed the same for every q.
     var bOn = slide > 0 && step < 1;
-    show(B, bOn, 1 - step);
+    show(B, bOn);
     if (bOn) {
       if (tall) place(B, 0.82, 0.44, 0.222, 0.5, 0.17, false, (1 - slide) * W);
       else place(B, 1.0, 0.42, 0.5, 0.38, 0.5, true, (1 - slide) * W);
@@ -136,7 +137,7 @@ export function mount(host, options) {
 
     // --- the dawn
     var cOn = step > 0;
-    show(C, cOn);
+    show(C, cOn, step);          // the garden comes up over the veranda
     if (cOn) {
       // a phone: the house in the half screen above the card while it is read, the whole screen once it has gone
       if (tall) place(C, mix(0.8, 1.0, rest), 0.5, 0.4, 0.5, mix(0.22, 0.4, rest), rest > 0.999);
