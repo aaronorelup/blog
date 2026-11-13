@@ -1,12 +1,14 @@
 /* Blackwater's cave as a living backdrop. The rock is the game's own: its map (layout.json) and its own code (cave/cave.js,
-   ported from the game's public repository) build it here, flat-shaded in its zone colours, lit the way the game lights
-   it: a diver's head lamp, a low ambient, exponential fog that eats the distance, motes in the water.
+   ported from the game's public repository) build it here, flat-shaded in its zone colours, and it is lit with the game's
+   own numbers: the diver's head lamp (an 84 degree cone at the eye, 90 with a square falloff, turned down near rock the
+   way the game does), the zone's ambient, the sun over the open pool, exponential fog that eats the distance, motes.
 
    mount(host, options) -> { frame(q, time, pointer), resize(), setActive(on), dispose(), pace(ms), stats() }
    Everything on screen is a function of q (0..1, how far through the chapter), time (seconds) and pointer ({x, y} in
-   -1..1, where the lamp points). Nothing here keeps a clock of its own: any frame can be asked for again and comes out
+   -1..1, where the reader looks). Nothing here keeps a clock of its own: any frame can be asked for again and comes out
    the same. Nothing listens to the window: the host page reads the scroll and the mouse and hands them in. */
 import * as THREE from '../lib/three.module.min.js';
+import { initSdf, sdf } from './cave/cave.js';
 import { camAt, lookAt, HOLD_AT, WATER_Y, FIGURE, CHEMLIGHT, LINE } from './route.js';
 
 const clamp = (x, a = 0, b = 1) => (x < a ? a : x > b ? b : x);
@@ -14,161 +16,136 @@ const lerp = (a, b, t) => a + (b - a) * t;
 const ss = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
 function rng(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
 
-// ---- the game's numbers (src/main.ts, src/effects/atmosphere.ts, src/tuning.ts)
-const LAMP = { color: 0xcfe0d4, intensity: 15, distance: 65, decay: 1.3 }; // the game: 90 with decay 2; a gentler falloff here, so a near wall is not a white disc
-// the game's beam is 84 degrees across; here it is narrowed to 50, so that where the reader points it is plain to see
-const LAMP_HALF = THREE.MathUtils.degToRad(25);
-const FOG = {
-  night: new THREE.Color(0x0a1322), // above the water: the same evening as the tea house
-  sinkhole: new THREE.Color(0x0d3640),
-  galleries: new THREE.Color(0x08211e),
+// ---- the game's numbers (src/main.ts, src/tuning.ts, src/effects/atmosphere.ts)
+const LAMP = { color: 0xcfe0d4, intensity: 90, distance: 65, half: THREE.MathUtils.degToRad(84 / 2), penumbra: 0.65, decay: 2 };
+const FOG_K = 1.7, CLEAR_VIS = 35;                // fog density = fogK / visibility (FogExp2)
+const ZONE = {
+  sinkhole: { fog: new THREE.Color(0x0d3640), ambient: new THREE.Color(0x3a4a50), mote: new THREE.Color(0xc8d8d2) },
+  galleries: { fog: new THREE.Color(0x08211e), ambient: new THREE.Color(0x33443f), mote: new THREE.Color(0xb8c8bc) },
 };
-const MOTE = new THREE.Color(0xc8d8d2);
+const ABOVE = { bg: new THREE.Color(0x8fb6c4), fog: new THREE.Color(0x9fc3cf), density: 0.012, ambient: 0.65 };
+const DEPTH_DARK = { start: 6, end: 45, floor: 0.12 };
+const MOTES = { fadeNear: 1.6, fadeFar: 7.5, box: 10, size: 0.1, opacity: 0.55 };
 const BOX = { min: [-20, -34, -26], max: [20, 12, 14] }; // the part of the cave that is built: around the route
 
-// ------------------------------------------------------------------ small textures, drawn by code
+// ------------------------------------------------------------------ small textures, drawn by code (as the game draws them)
 function softDot() {
   const c = document.createElement('canvas');
   c.width = c.height = 32;
   const g = c.getContext('2d');
-  const r = g.createRadialGradient(16, 16, 2, 16, 16, 15);
-  r.addColorStop(0, 'rgba(255,255,255,0.9)'); r.addColorStop(0.5, 'rgba(255,255,255,0.35)'); r.addColorStop(1, 'rgba(255,255,255,0)');
+  const r = g.createRadialGradient(16, 16, 0, 16, 16, 16);
+  r.addColorStop(0, 'rgba(255,255,255,1)'); r.addColorStop(0.4, 'rgba(255,255,255,0.5)'); r.addColorStop(1, 'rgba(255,255,255,0)');
   g.fillStyle = r; g.fillRect(0, 0, 32, 32);
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
   return t;
 }
+function rayTexture() {
+  const c = document.createElement('canvas');
+  c.width = 64; c.height = 256;
+  const g = c.getContext('2d');
+  const v = g.createLinearGradient(0, 0, 0, 256);
+  v.addColorStop(0, 'rgba(235,250,240,0.85)'); v.addColorStop(0.55, 'rgba(190,230,220,0.30)'); v.addColorStop(1, 'rgba(160,210,200,0)');
+  g.fillStyle = v; g.fillRect(0, 0, 64, 256);
+  const h = g.createLinearGradient(0, 0, 64, 0);
+  h.addColorStop(0, 'rgba(0,0,0,1)'); h.addColorStop(0.25, 'rgba(0,0,0,0)'); h.addColorStop(0.75, 'rgba(0,0,0,0)'); h.addColorStop(1, 'rgba(0,0,0,1)');
+  g.globalCompositeOperation = 'destination-out';
+  g.fillStyle = h; g.fillRect(0, 0, 64, 256);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
 
-// ------------------------------------------------------------------ one of the drowned crew (src/zombies/drowned.ts, its boxes and its colours)
+// ------------------------------------------------------------------ one of the drowned crew (src/zombies/drowned.ts: its boxes, its kit colours, its swim)
 function buildDrowned() {
   const box = new THREE.BoxGeometry(1, 1, 1);
   const mat = (c) => new THREE.MeshStandardMaterial({ color: c, roughness: 0.92, flatShading: true });
-  const skin = mat(0x5f6d58), shirt = mat(0x1e2b38), pants = mat(0x1b2530), accent = mat(0x120e09), pale = mat(0x6e7263);
+  // the denim coverall kit, nudged the way the game nudges each man's colours; he is on the drill crew (the hard hat)
+  const skin = mat(0x66765d), shirt = mat(0x22374a), pants = mat(0x1d2b39), accent = mat(0x3a2a1a), pale = mat(0x6e7263);
   const group = new THREE.Group(), body = new THREE.Group();
   group.add(body);
+  const torsoW = 1.06, limbLen = 1.02;
   const part = (m, sx, sy, sz, x, y, z, parent) => { const o = new THREE.Mesh(box, m); o.scale.set(sx, sy, sz); o.position.set(x, y, z); parent.add(o); return o; };
-  const tw = 1.02;
-  part(shirt, 0.52 * tw, 0.62, 0.3, 0, 0, 0, body);
-  part(pants, 0.44 * tw, 0.34, 0.27, 0, -0.48, 0, body);
-  part(accent, 0.5 * tw, 0.09, 0.33, 0, -0.33, 0, body);
-  const neck = new THREE.Group(); neck.position.set(0, 0.36, 0.02); body.add(neck);
-  const head = part(skin, 0.24, 0.28, 0.25, 0, 0.14, 0, neck);
-  part(accent, 0.3, 0.1, 0.31, 0, 0.32, 0, neck); // the drill crew's hard hat
-  // two pale eyes: the only thing that catches the lamp
-  const eyeM = new THREE.MeshBasicMaterial({ color: 0xd8e6c8 });
-  part(eyeM, 0.045, 0.03, 0.02, -0.055, 0.16, 0.128, neck); part(eyeM, 0.045, 0.03, 0.02, 0.055, 0.16, 0.128, neck);
+  part(shirt, 0.52 * torsoW, 0.62, 0.3, 0, 0, 0, body);
+  part(pants, 0.44 * torsoW, 0.34, 0.27, 0, -0.48, 0, body);
+  part(accent, 0.5 * torsoW, 0.09, 0.33, 0, -0.33, 0, body); // the belt
+  const head = part(skin, 0.24, 0.28, 0.25, 0, 0.5, 0.02, body);
+  part(accent, 0.3, 0.1, 0.31, 0, 0.68, 0.02, body); // the drill crew's hard hat
   const limb = (m, mEnd, x, y, len, th) => {
     const g = new THREE.Group(); g.position.set(x, y, 0);
     part(m, th, len * 0.72, th, 0, -len * 0.36, 0, g); part(mEnd, th * 0.85, len * 0.3, th * 0.85, 0, -len * 0.85, 0, g);
     body.add(g); return g;
   };
-  const armL = limb(shirt, skin, -0.33 * tw, 0.26, 0.62, 0.13), armR = limb(shirt, skin, 0.33 * tw, 0.26, 0.62, 0.13);
-  const legL = limb(pants, accent, -0.14, -0.66, 0.7, 0.15), legR = limb(pants, accent, 0.14, -0.66, 0.7, 0.15);
-  part(pale, 0.14, 0.44, 0.14, -0.12, 0.02, -0.25, body); // a spare bottle on his back
-  return { group, body, neck, head, armL, armR, legL, legR, geos: [box], mats: [skin, shirt, pants, accent, pale, eyeM] };
+  const armX = 0.33 * torsoW;
+  const armL = limb(shirt, skin, -armX, 0.26, 0.62 * limbLen, 0.13), armR = limb(shirt, skin, armX, 0.26, 0.62 * limbLen, 0.13);
+  const legL = limb(pants, accent, -0.14, -0.66, 0.7 * limbLen, 0.15), legR = limb(pants, accent, 0.14, -0.66, 0.7 * limbLen, 0.15);
+  part(pale, 0.16, 0.42, 0.16, 0, 0.05, -0.26, body); // a canister on his back
+  return { group, body, head, armL, armR, legL, legR, geos: [box], mats: [skin, shirt, pants, accent, pale] };
+}
+// the game's 'swim' pose (animateDrowned), as a pure function of time
+function poseSwim(rig, t, speed) {
+  const s = Math.sin(t * 1.7), c = Math.sin(t * 1.7 + Math.PI / 2);
+  rig.body.rotation.set(1.15, 0, 0.1 * Math.sin(t * 0.9));
+  rig.armL.rotation.set(-1.3 + 0.25 * s * (0.4 + speed), 0, 0.2);
+  rig.armR.rotation.set(-1.3 + 0.25 * c * (0.4 + speed), 0, -0.2);
+  rig.legL.rotation.set(0.3 * s * (0.5 + speed), 0, 0.06);
+  rig.legR.rotation.set(-0.3 * s * (0.5 + speed), 0, -0.06);
+  rig.head.rotation.set(-0.75 + 0.1 * c, 0, 0);
 }
 
-// ------------------------------------------------------------------ the guide line (src/player/lineRender.ts): white nylon, dots along it, yellow tie-off pins
-function buildLine() {
-  const pts = [];
-  for (let i = 1; i < LINE.length; i++) {
-    const a = LINE[i - 1], b = LINE[i];
-    const n = Math.max(2, Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1], b[2] - a[2]) / 0.25));
-    for (let s = i === 1 ? 0 : 1; s <= n; s++) {
-      const t = s / n, sag = Math.sin(Math.PI * t) * 0.18; // a little slack between tie-offs
-      pts.push(a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t - sag, a[2] + (b[2] - a[2]) * t);
-    }
+// ------------------------------------------------------------------ the camp on the shore shelf: a lamp post, a cot, a crate (as in the game's camp)
+function buildCamp(floorAt) {
+  const g = new THREE.Group(), box = new THREE.BoxGeometry(1, 1, 1);
+  const wood = new THREE.MeshStandardMaterial({ color: 0x4a3c2a, roughness: 0.9, flatShading: true });
+  const canvasM = new THREE.MeshStandardMaterial({ color: 0x4d5a3a, roughness: 0.95, flatShading: true });
+  const iron = new THREE.MeshStandardMaterial({ color: 0x1c1f22, roughness: 0.6, metalness: 0.3, flatShading: true });
+  const bulb = new THREE.MeshBasicMaterial({ color: 0xffe2a8 });
+  const put = (m, sx, sy, sz, x, z, y0, ry = 0) => { const o = new THREE.Mesh(box, m); o.scale.set(sx, sy, sz); o.position.set(x, floorAt(x, z) + y0 + sy / 2, z); o.rotation.y = ry; g.add(o); return o; };
+  // the lamp post at the water's edge, its lamp lit
+  const px = 11.6, pz = 2.9, py = floorAt(px, pz);
+  put(iron, 0.07, 1.9, 0.07, px, pz, 0);
+  put(iron, 0.34, 0.06, 0.34, px, pz, 0);
+  const shade = new THREE.Mesh(new THREE.ConeGeometry(0.26, 0.2, 8), iron); shade.position.set(px, py + 2.06, pz); g.add(shade);
+  const lamp = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.15, 0.13), bulb); lamp.position.set(px, py + 1.9, pz); g.add(lamp);
+  // a cot, and a crate with a kit on it
+  put(wood, 1.9, 0.08, 0.72, 13.6, 2.2, 0.36, 0.5);
+  put(canvasM, 1.6, 0.06, 0.62, 13.6, 2.2, 0.44, 0.5);
+  for (const [dx, dz] of [[-0.8, -0.28], [0.8, -0.28], [-0.8, 0.28], [0.8, 0.28]]) {
+    const c = Math.cos(0.5), s = Math.sin(0.5);
+    put(wood, 0.07, 0.38, 0.07, 13.6 + dx * c + dz * s, 2.2 - dx * s + dz * c, 0);
   }
-  const seg = [];
-  for (let i = 3; i < pts.length; i += 3) seg.push(pts[i - 3], pts[i - 2], pts[i - 1], pts[i], pts[i + 1], pts[i + 2]);
-  const lg = new THREE.BufferGeometry(); lg.setAttribute('position', new THREE.Float32BufferAttribute(seg, 3));
-  const dg = new THREE.BufferGeometry(); dg.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
-  const pg = new THREE.BufferGeometry(); pg.setAttribute('position', new THREE.Float32BufferAttribute(LINE.flat(), 3));
-  return { lg, dg, pg };
+  put(wood, 0.6, 0.5, 0.5, 12.3, 5.0, 0, -0.3);
+  put(canvasM, 0.36, 0.14, 0.26, 12.3, 5.0, 0.5, -0.1);
+  put(wood, 0.36, 0.7, 0.36, 10.9, 4.6, 0, 0.2); // a barrel-ish drum
+  return { group: g, lampPos: new THREE.Vector3(px, py + 1.9, pz), geos: [box, shade.geometry, lamp.geometry], mats: [wood, canvasM, iron, bulb] };
 }
 
-// ------------------------------------------------------------------ motes in the water: brighter where the lamp is
+// ------------------------------------------------------------------ motes in the water (src/effects/atmosphere.ts): a box that rides with the camera,
+// bright close to the lens and gone by 7.5 m. Here they drift with time instead of being stepped, so a frame can be asked for again.
 const moteVert = /* glsl */`
-  uniform float uTime, uSize, uScale;
-  uniform vec3 uLampPos, uLampDir;
-  uniform float uCos;
+  uniform float uTime, uSize, uScale, uBox, uNear, uFar;
+  uniform vec3 uCam;
   attribute vec4 seed;
-  varying float vA;
+  varying float vFade;
   void main() {
-    vec3 p = position;
-    p.x += sin(uTime * 0.11 * (0.6 + seed.x) + seed.y * 6.28) * 0.45;
-    p.y += sin(uTime * 0.07 * (0.6 + seed.z) + seed.x * 6.28) * 0.35 + uTime * 0.03 * (seed.w - 0.3);
-    p.z += cos(uTime * 0.09 * (0.6 + seed.y) + seed.z * 6.28) * 0.45;
-    vec4 mv = modelViewMatrix * vec4(p, 1.0);
+    vec3 drift = vec3(0.06, 0.012, -0.035) * uTime + vec3(sin(uTime * 0.21 + seed.x * 6.28), sin(uTime * 0.17 + seed.y * 6.28), cos(uTime * 0.19 + seed.z * 6.28)) * 0.25;
+    vec3 p = position + drift - uCam + 0.5 * uBox;
+    p = mod(p, uBox) - 0.5 * uBox + uCam;
+    vec4 mv = viewMatrix * vec4(p, 1.0);
     float d = length(mv.xyz);
-    vec3 toP = p - uLampPos;
-    float dl = length(toP);
-    float inBeam = smoothstep(uCos - 0.06, uCos + 0.04, dot(toP / max(dl, 1e-3), uLampDir)) * (1.0 - smoothstep(4.0, 22.0, dl));
-    vA = (0.12 + 0.88 * inBeam) * smoothstep(0.25, 0.9, d) * (1.0 - smoothstep(9.0, 26.0, d)) * (0.45 + 0.55 * seed.w);
-    gl_PointSize = uSize * uScale * (0.6 + seed.x) / max(d, 0.4);
+    vFade = (1.0 - smoothstep(uNear, uFar, d)) * smoothstep(0.15, 0.5, d) * (0.5 + 0.5 * seed.w);
+    gl_PointSize = uSize * uScale * (0.7 + 0.6 * seed.x) / max(d, 0.4);
     gl_Position = projectionMatrix * mv;
   }`;
 const moteFrag = /* glsl */`
   uniform sampler2D uMap;
   uniform vec3 uColor;
   uniform float uOpacity;
-  varying float vA;
+  varying float vFade;
   void main() {
     vec4 t = texture2D(uMap, gl_PointCoord);
-    gl_FragColor = vec4(uColor, t.a * vA * uOpacity);
+    gl_FragColor = vec4(uColor, uOpacity * vFade * t.a);
     if (gl_FragColor.a < 0.004) discard;
-  }`;
-
-const dotVert = /* glsl */`
-  uniform float uSize, uScale, uMax;
-  varying float vA;
-  #include <fog_pars_vertex>
-  void main() {
-    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-    float d = length(mvPosition.xyz);
-    vA = smoothstep(0.6, 2.2, d);
-    gl_PointSize = min(uSize * uScale / max(d, 0.3), uMax);
-    gl_Position = projectionMatrix * mvPosition;
-    #include <fog_vertex>
-  }`;
-const dotFrag = /* glsl */`
-  uniform sampler2D uMap; uniform vec3 uColor; uniform float uOpacity;
-  varying float vA;
-  #include <fog_pars_fragment>
-  void main() {
-    gl_FragColor = vec4(uColor, texture2D(uMap, gl_PointCoord).a * uOpacity * vA);
-    if (gl_FragColor.a < 0.004) discard;
-    #include <fog_fragment>
-  }`;
-
-// ------------------------------------------------------------------ moonlight falling through the open water: a few soft shafts
-const shaftFrag = /* glsl */`
-  uniform vec3 uColor; uniform float uOpacity, uLen;
-  varying float vAlong; varying vec3 vN; varying vec3 vV;
-  void main() {
-    float a = clamp(vAlong / uLen, 0.0, 1.0);
-    float fall = smoothstep(0.0, 0.1, a) * (1.0 - smoothstep(0.2, 1.0, a));
-    float rim = pow(abs(dot(vN, vV)), 2.2);
-    gl_FragColor = vec4(uColor, fall * rim * uOpacity);
-  }`;
-
-// ------------------------------------------------------------------ the lamp's beam in the water: a faint cone, no glare
-const beamVert = /* glsl */`
-  varying float vAlong; varying vec3 vN; varying vec3 vV;
-  void main() {
-    vAlong = -position.y;           // the cone's apex is at the lamp, its axis runs down -y before it is turned
-    vec4 mv = modelViewMatrix * vec4(position, 1.0);
-    vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz);
-    gl_Position = projectionMatrix * mv;
-  }`;
-const beamFrag = /* glsl */`
-  uniform vec3 uColor; uniform float uOpacity, uLen;
-  varying float vAlong; varying vec3 vN; varying vec3 vV;
-  void main() {
-    float a = clamp(vAlong / uLen, 0.0, 1.0);
-    float fall = smoothstep(0.0, 0.08, a) * (1.0 - smoothstep(0.25, 1.0, a));
-    float rim = pow(abs(dot(vN, vV)), 1.6);
-    gl_FragColor = vec4(uColor, fall * rim * uOpacity);
   }`;
 
 // ------------------------------------------------------------------ mount
@@ -184,19 +161,23 @@ export async function mount(host, options = {}) {
   renderer.setPixelRatio(dprCap);
 
   const scene = new THREE.Scene();
-  scene.background = FOG.night.clone();
-  const fog = new THREE.FogExp2(FOG.night.clone(), 0.012);
+  scene.background = ABOVE.bg.clone();
+  const fog = new THREE.FogExp2(ABOVE.fog.clone(), ABOVE.density);
   scene.fog = fog;
-  const camera = new THREE.PerspectiveCamera(62, 1, 0.05, 160);
+  const camera = new THREE.PerspectiveCamera(75, 1, 0.05, 300);
   scene.add(camera);
 
-  // ---- the cave, built by the game's own code in a worker
-  const built = await new Promise((resolve, reject) => {
-    const w = new Worker(new URL('./cave/worker.js', import.meta.url), { type: 'module' });
-    w.onmessage = (e) => { w.terminate(); e.data.error ? reject(new Error(e.data.error)) : resolve(e.data); };
-    w.onerror = (e) => { w.terminate(); reject(new Error(e.message || 'the cave could not be built')); };
-    w.postMessage({ box: BOX, chem: [CHEMLIGHT[0], 0, CHEMLIGHT[2]] });
-  });
+  // ---- the cave, built by the game's own code in a worker; the same code here answers "how far to the rock" for the lamp
+  const layoutUrl = new URL('./cave/layout.json', import.meta.url);
+  const [built] = await Promise.all([
+    new Promise((resolve, reject) => {
+      const w = new Worker(new URL('./cave/worker.js', import.meta.url), { type: 'module' });
+      w.onmessage = (e) => { w.terminate(); e.data.error ? reject(new Error(e.data.error)) : resolve(e.data); };
+      w.onerror = (e) => { w.terminate(); reject(new Error(e.message || 'the cave could not be built')); };
+      w.postMessage({ box: BOX, chem: [CHEMLIGHT[0], 0, CHEMLIGHT[2]] });
+    }),
+    fetch(layoutUrl).then((r) => r.json()).then((layout) => initSdf(layout)),
+  ]);
   const caveGeo = new THREE.BufferGeometry();
   caveGeo.setAttribute('position', new THREE.BufferAttribute(built.positions, 3));
   caveGeo.setAttribute('color', new THREE.BufferAttribute(built.colors, 3));
@@ -205,61 +186,76 @@ export async function mount(host, options = {}) {
   const cave = new THREE.Mesh(caveGeo, caveMat);
   cave.frustumCulled = false;
   scene.add(cave);
+  const floorAt = (x, z, from = 3) => { let y = from; while (sdf(x, y, z) < 0 && y > -40) y -= 0.05; return y; };
+  // from a point in the open, march along a direction to the rock
+  const toRock = (p, d, max = 12) => {
+    let acc = 0;
+    for (let i = 0; i < 40 && acc < max; i++) {
+      const s = -sdf(p.x + d.x * acc, p.y + d.y * acc, p.z + d.z * acc);
+      if (s < 0.05) return acc;
+      acc += Math.max(0.12, s * 0.9);
+    }
+    return max;
+  };
 
-  // ---- lights: the game's ambient and its head lamp; the open shaft's sky is the night's, with the camp's lantern on the rim
-  const ambient = new THREE.AmbientLight(0x3a4a50, 0.5);
+  // ---- lights: the game's ambient, its sun over the cenote, its head lamp; the camp's lamp on the shore
+  const ambient = new THREE.AmbientLight(0x3a4a50, ABOVE.ambient);
   scene.add(ambient);
-  const moon = new THREE.PointLight(0x8fa6cc, 260, 85, 2);
-  moon.position.set(-2, 20, 2);
-  scene.add(moon);
-  const lantern = new THREE.PointLight(0xffc27a, 44, 28, 2);
-  lantern.position.set(9.6, -0.62, 1.4); // standing on the camp platform's floor, by the water
-  scene.add(lantern);
-  const headlamp = new THREE.SpotLight(LAMP.color, LAMP.intensity, LAMP.distance, LAMP_HALF, 0.85, LAMP.decay);
+  const sun = new THREE.PointLight(0xfff2d6, 700, 85, 2);
+  sun.position.set(0, 18, 0);
+  scene.add(sun);
+  const headlamp = new THREE.SpotLight(LAMP.color, LAMP.intensity, LAMP.distance, LAMP.half, LAMP.penumbra, LAMP.decay);
   scene.add(headlamp, headlamp.target);
 
   const dot = softDot();
   const disposables = [caveGeo, caveMat, dot];
 
-  // the lantern itself, a warm point on the rim
-  const lanternGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: dot, color: 0xffd08a, transparent: true, opacity: 0.9, depthWrite: false, blending: THREE.AdditiveBlending, fog: false }));
-  lanternGlow.position.copy(lantern.position); lanternGlow.scale.setScalar(1.0);
-  scene.add(lanternGlow);
-  const lanternBody = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.24, 0.16), new THREE.MeshBasicMaterial({ color: 0xffe2a8 }));
-  lanternBody.position.copy(lantern.position);
-  scene.add(lanternBody);
-  disposables.push(lanternBody.geometry, lanternBody.material);
-  disposables.push(lanternGlow.material);
+  const camp = buildCamp((x, z) => floorAt(x, z));
+  scene.add(camp.group);
+  disposables.push(...camp.geos, ...camp.mats);
+  const campLight = new THREE.PointLight(0xffc27a, 6, 9, 2);
+  campLight.position.copy(camp.lampPos);
+  scene.add(campLight);
+  const campGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: dot, color: 0xffd08a, transparent: true, opacity: 0.85, depthWrite: false, blending: THREE.AdditiveBlending }));
+  campGlow.position.copy(camp.lampPos); campGlow.scale.setScalar(0.7);
+  scene.add(campGlow);
+  disposables.push(campGlow.material);
 
-  // ---- the open water's surface (src/main.ts: the same colour and the same see-through)
-  // unlit here, so the lamp does not make a glaring disc on it as the diver goes through
-  const waterMat = new THREE.MeshBasicMaterial({ color: 0x2a5a66, transparent: true, opacity: 0.55, side: THREE.DoubleSide, depthWrite: false });
-  const water = new THREE.Mesh(new THREE.CircleGeometry(15, 48), waterMat);
+  // ---- the open water's surface (src/main.ts: the same colour, the same see-through, lit)
+  const waterMat = new THREE.MeshStandardMaterial({ color: 0x2a5a66, transparent: true, opacity: 0.55, side: THREE.DoubleSide, roughness: 0.25, metalness: 0.1 });
+  const water = new THREE.Mesh(new THREE.CircleGeometry(16, 48), waterMat);
   water.rotation.x = -Math.PI / 2; water.position.y = WATER_Y;
   scene.add(water);
   disposables.push(water.geometry, waterMat);
 
-  // ---- stars over the shaft
-  let starsMat = null;
+  // ---- god rays under the cenote mouth (atmosphere.ts buildGodRays: six additive planes, slanted like sun through water)
+  const rays = new THREE.Group();
   {
-    const r = rng(7), n = 420, p = new Float32Array(n * 3);
-    for (let i = 0; i < n; i++) { const a = r() * 6.283, el = 0.08 + Math.pow(r(), 0.7) * 1.4; p[i * 3] = Math.cos(a) * Math.cos(el) * 120; p[i * 3 + 1] = 8 + Math.sin(el) * 120; p[i * 3 + 2] = Math.sin(a) * Math.cos(el) * 120; }
-    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(p, 3));
-    const m = new THREE.PointsMaterial({ map: dot, color: 0xe6ecff, size: 1.5, sizeAttenuation: false, transparent: true, opacity: 0.8, depthWrite: false, fog: false });
-    starsMat = m;
-    scene.add(new THREE.Points(g, m));
-    disposables.push(g, m);
+    const tex = rayTexture();
+    disposables.push(tex);
+    for (let i = 0; i < 6; i++) {
+      const w = 2.5 + (i % 3) * 1.6;
+      const m = new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: 0.09 + (i % 2) * 0.045, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false });
+      const plane = new THREE.Mesh(new THREE.PlaneGeometry(w, 24), m);
+      const ang = (i / 6) * Math.PI * 2 + 0.4, r = 10 * (0.15 + 0.55 * ((i * 0.37) % 1));
+      plane.position.set(Math.cos(ang) * r, -9, Math.sin(ang) * r);
+      plane.rotation.y = ang + Math.PI / 2 + (i - 3) * 0.12;
+      plane.rotation.z = 0.1 + (i % 3) * 0.05;
+      rays.add(plane);
+      disposables.push(plane.geometry, m);
+    }
+    scene.add(rays);
   }
 
   // ---- motes
   const moteU = {
-    uTime: { value: 0 }, uSize: { value: 0.11 }, uScale: { value: 240 }, uMap: { value: dot }, uColor: { value: MOTE.clone() },
-    uOpacity: { value: 0.0 }, uLampPos: { value: new THREE.Vector3() }, uLampDir: { value: new THREE.Vector3(0, 0, -1) }, uCos: { value: Math.cos(LAMP_HALF) },
+    uTime: { value: 0 }, uSize: { value: MOTES.size }, uScale: { value: 240 }, uMap: { value: dot }, uColor: { value: ZONE.sinkhole.mote.clone() },
+    uOpacity: { value: 0 }, uCam: { value: new THREE.Vector3() }, uBox: { value: MOTES.box }, uNear: { value: MOTES.fadeNear }, uFar: { value: MOTES.fadeFar },
   };
   {
-    const r = rng(11), n = 2600, p = new Float32Array(n * 3), s = new Float32Array(n * 4);
+    const r = rng(11), n = 3600, p = new Float32Array(n * 3), s = new Float32Array(n * 4);
     for (let i = 0; i < n; i++) {
-      p[i * 3] = lerp(-12, 12, r()); p[i * 3 + 1] = lerp(-30, WATER_Y - 0.4, r()); p[i * 3 + 2] = lerp(-21, 6, r());
+      p[i * 3] = r() * MOTES.box; p[i * 3 + 1] = r() * MOTES.box; p[i * 3 + 2] = r() * MOTES.box;
       s[i * 4] = r(); s[i * 4 + 1] = r(); s[i * 4 + 2] = r(); s[i * 4 + 3] = r();
     }
     const g = new THREE.BufferGeometry();
@@ -270,156 +266,150 @@ export async function mount(host, options = {}) {
     disposables.push(g, m);
   }
 
-  // ---- the beam
-  const beamU = { uColor: { value: new THREE.Color(0xcfe0d4) }, uOpacity: { value: 0 }, uLen: { value: 16 } };
-  const beamGeo = new THREE.ConeGeometry(Math.tan(LAMP_HALF * 0.9) * 16, 16, 40, 1, true);
-  beamGeo.translate(0, -8, 0); // apex at the origin, opening down -y
-  const beamMat = new THREE.ShaderMaterial({ uniforms: beamU, vertexShader: beamVert, fragmentShader: beamFrag, transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending });
-  const beam = new THREE.Mesh(beamGeo, beamMat); beam.frustumCulled = false;
-  scene.add(beam);
-  disposables.push(beamGeo, beamMat);
-
-  // ---- moonlight shafts in the open pool
-  const shaftU = { uColor: { value: new THREE.Color(0x9fb8dc) }, uOpacity: { value: 0 }, uLen: { value: 15 } };
-  const shaftMat = new THREE.ShaderMaterial({ uniforms: shaftU, vertexShader: beamVert, fragmentShader: shaftFrag, transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending });
+  // ---- the guide line: white nylon as a real cord, tied off at yellow pins, laid low along the passage wall
+  const pins = [];
   {
-    const r = rng(23);
-    for (let i = 0; i < 6; i++) {
-      const g = new THREE.CylinderGeometry(0.5 + r() * 0.5, 1.4 + r() * 1.2, 15, 24, 1, true);
-      g.translate(0, -7.5, 0);
-      const m = new THREE.Mesh(g, shaftMat);
-      const a = i * 1.05 + r(), d = 2 + r() * 5.5;
-      m.position.set(Math.cos(a) * d, WATER_Y, Math.sin(a) * d - 1);
-      m.rotation.set((r() - 0.5) * 0.25, 0, (r() - 0.5) * 0.25 + 0.12);
-      m.frustumCulled = false;
-      scene.add(m);
-      disposables.push(g);
-    }
-    disposables.push(shaftMat);
+    const v = new THREE.Vector3(), d = new THREE.Vector3();
+    const pts = LINE.map((c, i) => {
+      v.set(c[0], c[1], c[2]);
+      const next = LINE[Math.min(LINE.length - 1, i + 1)], prev = LINE[Math.max(0, i - 1)];
+      const along = new THREE.Vector3(next[0] - prev[0], next[1] - prev[1], next[2] - prev[2]).normalize();
+      // low and to the right of the way down: the side of the passage the lamp sweeps past
+      const side = new THREE.Vector3().crossVectors(along, new THREE.Vector3(0, 1, 0));
+      if (side.lengthSq() < 1e-4) side.set(1, 0, 0);
+      side.normalize();
+      d.copy(side).multiplyScalar(0.75).add(new THREE.Vector3(0, -0.65, 0)).normalize();
+      const reach = toRock(v, d, 6);
+      return v.clone().addScaledVector(d, Math.max(0, reach - 0.28));
+    });
+    const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal');
+    // a little slack between the tie-offs
+    const sag = (u) => { const k = u * (pts.length - 1), f = k - Math.floor(k); return Math.sin(Math.PI * f) * 0.12; };
+    const samples = [];
+    const N = 420;
+    for (let i = 0; i <= N; i++) { const u = i / N; const p = curve.getPoint(u); p.y -= sag(u); samples.push(p); }
+    const rope = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(samples), 1200, 0.016, 6, false);
+    const ropeMat = new THREE.MeshStandardMaterial({ color: 0xf4f4ec, roughness: 0.7, emissive: 0x3a3c38 });
+    scene.add(new THREE.Mesh(rope, ropeMat));
+    disposables.push(rope, ropeMat);
+    const pinGeo = new THREE.BoxGeometry(0.07, 0.07, 0.07), pinMat = new THREE.MeshStandardMaterial({ color: 0xffe9a8, emissive: 0x6a5420, roughness: 0.5 });
+    for (const p of pts) { const m = new THREE.Mesh(pinGeo, pinMat); m.position.copy(p); m.rotation.set(0.6, 0.8, 0.2); scene.add(m); pins.push(m); }
+    disposables.push(pinGeo, pinMat);
   }
 
-  // ---- the guide line
-  const L = buildLine();
-  const lineMat = new THREE.LineBasicMaterial({ color: 0xf4f4ec, transparent: true, opacity: 0.9 });
-  // the dots and pins keep a modest size close to the lens, and fade there, so the line never swells into blobs
-  const dotU = (color, size, opacity) => ({ uMap: { value: dot }, uColor: { value: new THREE.Color(color) }, uSize: { value: size }, uScale: moteU.uScale, uOpacity: { value: opacity }, uMax: { value: 9 } });
-  const dotsMat = new THREE.ShaderMaterial({ uniforms: dotU(0xf4f4ec, 0.07, 0.85), vertexShader: dotVert, fragmentShader: dotFrag, transparent: true, depthWrite: false, fog: true });
-  const pinsMat = new THREE.ShaderMaterial({ uniforms: dotU(0xffe9a8, 0.2, 0.95), vertexShader: dotVert, fragmentShader: dotFrag, transparent: true, depthWrite: false, fog: true });
-  pinsMat.uniforms.uMax.value = 16;
-  for (const m of [dotsMat, pinsMat]) Object.assign(m.uniforms, THREE.UniformsUtils.clone(THREE.UniformsLib.fog));
-  scene.add(new THREE.LineSegments(L.lg, lineMat), new THREE.Points(L.dg, dotsMat), new THREE.Points(L.pg, pinsMat));
-  disposables.push(L.lg, L.dg, L.pg, lineMat, dotsMat, pinsMat);
-
   // ---- the dropped chemlight (src/player/chemlightRender.ts: cold green glow and a real light on the rock around it)
-  const chemPos = new THREE.Vector3(CHEMLIGHT[0], built.chemY + 0.12, CHEMLIGHT[2]);
+  const chemPos = new THREE.Vector3(CHEMLIGHT[0], built.chemY + 0.06, CHEMLIGHT[2]);
   const chemStick = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.32, 8), new THREE.MeshBasicMaterial({ color: 0xbaffcf }));
   chemStick.position.copy(chemPos); chemStick.rotation.set(0.2, 0.7, Math.PI / 2 - 0.15);
-  const chemGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: dot, color: 0x2fe86a, transparent: true, opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending }));
-  chemGlow.position.copy(chemPos); chemGlow.scale.setScalar(0.9);
-  const chemLight = new THREE.PointLight(0x2fe86a, 1.1, 4.5, 2);
-  chemLight.position.copy(chemPos).y += 0.25;
+  const chemGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: dot, color: 0x2fe86a, transparent: true, opacity: 0.5, depthWrite: false, blending: THREE.AdditiveBlending }));
+  chemGlow.position.copy(chemPos); chemGlow.scale.setScalar(0.8);
+  const chemLight = new THREE.PointLight(0x2fe86a, 1.4, 6, 2);
+  chemLight.position.copy(chemPos).y += 0.3;
   scene.add(chemStick, chemGlow, chemLight);
   disposables.push(chemStick.geometry, chemStick.material, chemGlow.material);
 
-  // ---- the far shape: one of the drowned, standing in the mouth of the west passage
+  // ---- one of the drowned, swimming up the west passage towards the reader
   const fig = buildDrowned();
-  fig.group.position.set(FIGURE[0], FIGURE[1], FIGURE[2]);
   scene.add(fig.group);
   disposables.push(...fig.geos, ...fig.mats);
-  const figFace = Math.atan2(camAt(1)[0] - FIGURE[0], camAt(1)[2] - FIGURE[2]); // the yaw that faces the reader at the hold
+  const holdCam = camAt(1);
+  const figFace = Math.atan2(holdCam[0] - FIGURE[0], holdCam[2] - FIGURE[2]); // the yaw that brings him towards the reader
 
   // ------------------------------------------------------------------ one frame
-  const v = new THREE.Vector3(), fwd = new THREE.Vector3(), right = new THREE.Vector3(), upv = new THREE.Vector3(), aimDir = new THREE.Vector3();
-  const toFig = new THREE.Vector3();
-  let active = true, w = 1, h = 1;
+  const v = new THREE.Vector3(), fwd = new THREE.Vector3(), right = new THREE.Vector3(), upv = new THREE.Vector3();
+  const aimDir = new THREE.Vector3(), probe = new THREE.Vector3(), beamDir = new THREE.Vector3(), zfog = new THREE.Color();
+  let active = true, w = 1, h = 1, tall = false;
 
   function resize() {
     w = Math.max(1, host.clientWidth); h = Math.max(1, host.clientHeight);
     renderer.setPixelRatio(dprCap * scale);
     renderer.setSize(w, h);
     const aspect = w / h;
+    tall = aspect < 0.8;
     camera.aspect = aspect;
-    // a tall screen keeps about the same width of cave in view as a wide one would show in its middle
-    camera.fov = aspect >= 1 ? 62 : lerp(84, 62, clamp((aspect - 0.45) / 0.55));
+    // the game's 75 degrees on a wide screen; a tall screen opens up so the lamp's oval still sits inside the frame
+    camera.fov = aspect >= 1 ? 75 : lerp(100, 75, clamp((aspect - 0.45) / 0.55));
     camera.updateProjectionMatrix();
-    moteU.uScale.value = h * renderer.getPixelRatio() * 0.5 / Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) * 0.28;
+    moteU.uScale.value = renderer.getPixelRatio() * (h / 900) * 240 * (Math.tan(THREE.MathUtils.degToRad(37.5)) / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));
   }
 
   function frame(q, time = 0, pointer) {
     if (!active) return;
     q = clamp(q);
     const px = pointer ? clamp(pointer.x, -1, 1) : 0, py = pointer ? clamp(pointer.y, -1, 1) : 0;
-    const tall = w / h < 0.8;
 
     // the camera on its route, breathing
     const p = camAt(q), l = lookAt(q);
-    const under = ss(0.15, 0.24, q); // 0 above the water, 1 below
-    const breath = Math.sin(time * 1.37) * 0.07 * (0.4 + 0.6 * under);
+    const under = ss(0.135, 0.17, q); // 0 above the water, 1 below
+    const breath = Math.sin(time * 1.37) * 0.05 * (0.4 + 0.6 * under);
     camera.position.set(p[0], p[1] + breath, p[2]);
-    // the pointer leans the head a little (parallax), and less in the tight shaft
-    const room = q > 0.42 && q < 0.74 ? 0.06 : 0.15;
-    v.set(l[0], l[1] + (tall ? -1.3 * ss(0.6, HOLD_AT, q) : 0), l[2]);
+    v.set(l[0], l[1], l[2]);
     camera.lookAt(v);
     camera.updateMatrixWorld();
     right.setFromMatrixColumn(camera.matrixWorld, 0); upv.setFromMatrixColumn(camera.matrixWorld, 1);
+    // the reader turns the diver's head: a little parallax, and the look follows the pointer
+    const dist = v.distanceTo(camera.position);
+    const room = q > 0.38 && q < 0.74 ? 0.05 : 0.12;
     camera.position.addScaledVector(right, px * room).addScaledVector(upv, -py * room * 0.6);
-    camera.lookAt(v.addScaledVector(right, px * 0.9).addScaledVector(upv, -py * 0.5));
-    camera.rotateZ(Math.sin(time * 0.31) * 0.012 * under);
+    v.addScaledVector(right, px * dist * 0.3).addScaledVector(upv, -py * dist * 0.2);
+    // on a tall screen the card covers the lower third: the picture's subject sits higher
+    if (tall) v.addScaledVector(upv, -dist * 0.12 * ss(0.62, HOLD_AT, q));
+    camera.lookAt(v);
+    camera.rotateZ(Math.sin(time * 0.31) * 0.01 * under);
     camera.updateMatrixWorld();
 
-    // the head lamp: on the diver's brow, aimed where the pointer is
+    // the head lamp: at the eye, as in the game; it leads the look a few degrees towards the pointer
     fwd.set(0, 0, -1).applyQuaternion(camera.quaternion);
     right.setFromMatrixColumn(camera.matrixWorld, 0); upv.setFromMatrixColumn(camera.matrixWorld, 1);
-    const yaw = px * 0.62, pitch = -py * 0.42;
-    aimDir.copy(fwd).applyAxisAngle(upv, -yaw).applyAxisAngle(right, pitch).normalize();
-    headlamp.position.copy(camera.position).addScaledVector(upv, 0.12).addScaledVector(right, 0.08);
+    aimDir.copy(fwd).applyAxisAngle(upv, -px * 0.12).applyAxisAngle(right, -py * 0.08);
+    if (tall) aimDir.applyAxisAngle(right, 0.08 * ss(0.62, HOLD_AT, q));
+    aimDir.normalize();
+    headlamp.position.copy(camera.position);
     headlamp.target.position.copy(headlamp.position).addScaledVector(aimDir, 10);
     headlamp.target.updateMatrixWorld();
-    // the lamp comes on as the diver goes under; above the water it is still the night's
-    headlamp.intensity = LAMP.intensity;
-    beam.position.copy(headlamp.position).addScaledVector(aimDir, 0.35);
-    beam.quaternion.setFromUnitVectors(v.set(0, -1, 0), aimDir);
-    beamU.uOpacity.value = 0.09 * under;
-    shaftU.uOpacity.value = 0.16 * under * (1 - ss(0.38, 0.52, q));
+    // close-wall exposure (src/main.ts): the lamp is turned down as the nearest lit rock in its cone comes close,
+    // so point-blank rock never blows out; full power beyond about 4.5 m
+    let wallT = 8;
+    for (let ray = 0; ray < 5; ray++) {
+      beamDir.copy(aimDir);
+      if (ray === 1) beamDir.addScaledVector(right, 0.6); else if (ray === 2) beamDir.addScaledVector(right, -0.6);
+      else if (ray === 3) beamDir.addScaledVector(upv, 0.6); else if (ray === 4) beamDir.addScaledVector(upv, -0.6);
+      beamDir.normalize();
+      probe.copy(headlamp.position);
+      wallT = Math.min(wallT, toRock(probe, beamDir, wallT));
+    }
+    headlamp.intensity = LAMP.intensity * clamp((wallT * wallT) / 20, 0.03, 1);
 
-    // water, fog and light change with the depth
-    const deep = ss(0.42, 0.72, q);
-    fog.color.copy(FOG.night).lerp(FOG.sinkhole, under).lerp(FOG.galleries, deep);
-    fog.density = lerp(0.012, 0.035, under);
-    scene.background.copy(fog.color);
-    ambient.intensity = lerp(0.3, 0.3, under) + 0.16 * ss(0.62, HOLD_AT, q);
-    moon.intensity = lerp(150, 260, under) * (1 - deep);
-    lantern.intensity = 44 * (1 - ss(0.3, 0.45, q));
-    lanternGlow.visible = lanternBody.visible = q < 0.45;
-    starsMat.opacity = 0.8 * (1 - under);
-    // from above, night water: dark, the lamp's pool and the rock below just showing through; from below, the lit roof of the world
-    if (camera.position.y > WATER_Y) { waterMat.color.setHex(0x0a1c24); waterMat.opacity = 0.4; } else { waterMat.color.setHex(0x3d7584); waterMat.opacity = 0.42; }
+    // water, fog and light: the game's above-water daylight, then its zone grades under, darker with depth
+    const deep = ss(0.5, 0.68, q); // sinkhole -> galleries
+    const depth = Math.max(0, -camera.position.y);
+    const dark = lerp(1, DEPTH_DARK.floor, clamp((depth - DEPTH_DARK.start) / (DEPTH_DARK.end - DEPTH_DARK.start)));
+    zfog.copy(ZONE.sinkhole.fog).lerp(ZONE.galleries.fog, deep);
+    fog.color.copy(ABOVE.fog).lerp(zfog, under);
+    fog.density = lerp(ABOVE.density, FOG_K / CLEAR_VIS, under);
+    scene.background.copy(ABOVE.bg).lerp(zfog, under);
+    ambient.color.copy(ZONE.sinkhole.ambient).lerp(ZONE.galleries.ambient, deep);
+    ambient.intensity = lerp(ABOVE.ambient, 0.55 * dark, under);
+    rays.visible = under > 0 && q < 0.5;
+    campLight.intensity = 6 * (1 - under);
+    campGlow.visible = q < 0.3;
     moteU.uTime.value = time;
-    moteU.uOpacity.value = 0.75 * under;
-    moteU.uLampPos.value.copy(headlamp.position);
-    moteU.uLampDir.value.copy(aimDir);
+    moteU.uOpacity.value = MOTES.opacity * under;
+    moteU.uColor.value.copy(ZONE.sinkhole.mote).lerp(ZONE.galleries.mote, deep);
+    moteU.uCam.value.copy(camera.position);
 
     // the chemlight's slow pulse
     const pulse = 0.85 + 0.15 * Math.sin(time * 0.9);
-    chemLight.intensity = 1.1 * pulse * ss(0.45, 0.6, q);
-    chemGlow.material.opacity = 0.42 * pulse;
+    chemLight.intensity = 1.4 * pulse * ss(0.6, 0.72, q);
+    chemGlow.material.opacity = 0.45 * pulse;
 
-    // the drowned man: a slow drift, his head turning in the dark; caught in the lamp, he looks at the reader
-    toFig.set(FIGURE[0], FIGURE[1] + 0.4, FIGURE[2]).sub(headlamp.position);
-    const dist = toFig.length();
-    const lit = ss(Math.cos(LAMP_HALF * 1.25), Math.cos(LAMP_HALF * 0.55), toFig.normalize().dot(aimDir)) * ss(0.62, 0.76, q);
+    // the drowned man: the game's swim, drifting slowly up the passage and back, never quite arriving
     const g = fig.group;
-    g.position.set(FIGURE[0] + Math.sin(time * 0.23) * 0.12, FIGURE[1] + Math.sin(time * 0.41) * 0.1, FIGURE[2]);
-    g.rotation.set(0, figFace + 0.9 + Math.sin(time * 0.13) * 0.25, 0);
-    fig.body.rotation.set(0.12 + Math.sin(time * 0.37) * 0.04, 0, Math.sin(time * 0.29) * 0.05);
-    const idle = Math.sin(time * 0.21) * 0.9 + Math.sin(time * 0.53) * 0.25; // looking about, unhurried
-    fig.neck.rotation.set(lerp(Math.sin(time * 0.33) * 0.12, -0.08, lit), lerp(idle, -0.9 - Math.sin(time * 0.13) * 0.25, lit), 0);
-    const reach = lit * 0.5;
-    fig.armL.rotation.set(-0.35 - reach + Math.sin(time * 0.6) * 0.12, 0, -0.12);
-    fig.armR.rotation.set(-0.25 - reach * 0.8 + Math.sin(time * 0.6 + 1.7) * 0.12, 0, 0.12);
-    fig.legL.rotation.set(Math.sin(time * 0.5) * 0.18, 0, 0);
-    fig.legR.rotation.set(Math.sin(time * 0.5 + Math.PI) * 0.18, 0, 0);
-    g.visible = q > 0.5 && dist < 40;
+    const drift = Math.sin(time * 0.19) * 0.35;
+    g.position.set(FIGURE[0] - drift * 0.9, FIGURE[1] + Math.sin(time * 0.41) * 0.08 - drift * 0.2, FIGURE[2] - drift * 0.25);
+    g.rotation.set(0, figFace + 0.55 + Math.sin(time * 0.13) * 0.12, 0);
+    poseSwim(fig, time, 0.5);
+    g.visible = q > 0.55;
 
     renderer.render(scene, camera);
   }

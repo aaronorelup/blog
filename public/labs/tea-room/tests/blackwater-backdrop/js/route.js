@@ -1,28 +1,34 @@
 /* The dive: where the camera is and where it looks, as a function of the chapter's progress q. Plain numbers, in the
    game's own world coordinates (metres; the open water's surface is at y = -1.5). The route is the game's own first
-   descent: the sinkhole's open pool, the shaft (sink-pool to sink-shaft), and the first chamber, gal-entry. */
+   descent, and the camera keeps to the middle of the game's own passages (the node centres in layout.json), so the
+   rock is always a few metres away and the lamp always has something to light:
+   the camp on the shore shelf (sink-platform), the open pool (sink-pool), the throat down to sink-shaft, the passage on
+   to the first chamber (gal-entry), and the west passage out of it (gal-entry to gal-ring-w), where the camera holds. */
 
 export const WATER_Y = -1.5;
 export const HOLD_AT = 0.8; // from here on the camera has arrived and holds
 
 // [q, position, look-at]
 export const KEYS = [
-  [0.0, [-4.2, 5.2, 6.4], [7.4, -1.6, 1.4]],
-  [0.16, [-1.2, 0.9, 3.6], [1.2, -7.5, -3.0]],
-  [0.3, [0.0, -4.2, 0.2], [-0.3, -12.5, -6.2]],
-  [0.44, [0.0, -10.4, -2.2], [0.0, -17.5, -9.2]],
-  [0.57, [0.0, -15.6, -7.2], [-0.2, -22.5, -12.4]],
-  [0.69, [0.15, -20.3, -10.9], [-2.6, -24.6, -14.6]],
-  [HOLD_AT, [0.9, -23.2, -12.4], [-6.5, -25.4, -15.9]],
+  [0.0, [16.4, 1.15, 7.4], [3.0, -2.6, -1.6]],      // the camp on the shore shelf, looking across the pool
+  [0.1, [9.0, 0.35, 4.2], [0.6, -5.2, -1.2]],       // walking to the water's edge
+  [0.2, [2.6, -3.4, 1.4], [0.0, -10.5, -3.0]],      // under: the open pool, the sun coming down through it
+  [0.31, [0.0, -8.6, 0.9], [0.0, -14.2, -5.6]],     // the throat opens below
+  [0.43, [0.0, -12.2, -3.6], [0.0, -17.6, -9.0]],   // down the throat
+  [0.55, [0.0, -16.6, -8.0], [0.0, -22.4, -12.6]],  // through sink-shaft, the next passage below
+  [0.67, [-0.2, -21.4, -11.7], [-2.6, -24.6, -14.2]], // into the first chamber
+  [HOLD_AT, [-1.25, -24.15, -13.95], [-9.5, -26.25, -16.05]], // in the mouth of the west passage, looking along it
 ];
 
-// the things of the game that live in the chamber (positions checked against the cave's field: see the notes in scene.js)
-export const FIGURE = [-6.6, -25.6, -15.1];   // one of the drowned crew, in the mouth of the west passage
-export const CHEMLIGHT = [-1.6, null, -14.2]; // a dropped chemlight; y is found on the floor at mount
-// the guide line, tied off at the pool's lip and run down the shaft into the chamber and on into the dark
+// one of the drowned crew, swimming up the west passage towards the reader (about 3.7 m from the hold)
+export const FIGURE = [-4.95, -25.05, -14.85];
+// a dropped chemlight far down the west passage, on its floor (y is found on the floor at mount)
+export const CHEMLIGHT = [-10.4, null, -16.2];
+// the guide line's tie-offs, from the shore down the dive and on into the west passage; at mount each is pushed out
+// from the passage's middle to rest near its wall, low and to the right, the way a diver lays it
 export const LINE = [
-  [3.6, -1.9, 1.6], [2.2, -7.5, -2.4], [1.0, -12.4, -5.6], [0.6, -16.6, -8.6], [0.2, -20.4, -11.4],
-  [-1.2, -23.6, -13.4], [-4.6, -25.0, -15.6], [-8.4, -26.1, -16.4], [-13.0, -27.4, -17.0],
+  [7.6, -1.2, 2.6], [3.2, -6.0, 0.8], [0.0, -9.8, -1.0], [0.0, -13.0, -4.4], [0.0, -16.2, -7.7],
+  [0.0, -19.6, -10.4], [0.0, -22.4, -12.4], [-1.6, -24.3, -14.0], [-5.4, -25.2, -15.0], [-9.4, -26.2, -16.0], [-13.0, -27.1, -16.8],
 ];
 
 const clamp = (x, a = 0, b = 1) => (x < a ? a : x > b ? b : x);
