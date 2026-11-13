@@ -50,6 +50,14 @@ a { color: inherit; }
 .lead h1 { margin: 0; font: 700 clamp(56px, 11vw, 124px)/0.95 var(--font-display); color: var(--lamp); letter-spacing: 0.01em; text-shadow: 0 2px 0 rgba(16, 18, 32, 0.5); }
 .lead-say { margin: 20px auto 0; max-width: 34em; font: 400 17px/1.5 Georgia, 'Times New Roman', serif; color: var(--strong); text-wrap: pretty; }
 
+@media (max-aspect-ratio: 4/5) {
+  /* a tall screen: the plate is laid smaller, so its tree lines stay below the words */
+  .lead-plate { width: max(100vw, 210vh); top: 9vh; }
+  .lead { background: rgb(13, 20, 55); }
+  .lead-sky::after { top: 34vh; }
+  .lead-text { top: 27vh; }
+}
+
 /* ---------------------------------------------------------------- the chapter: a tall track with one pinned screen */
 .chapter { position: relative; height: calc(var(--vh) * 4.4); background: var(--storm); }
 /* the storm comes up out of the garden's night: a soft edge that rides on the chapter's top and bottom */

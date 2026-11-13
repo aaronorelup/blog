@@ -22,7 +22,7 @@ function layerRect(depth, k) {
 // store: the part of the picture kept in memory.
 const LAYERS = [
   { key: 'sky', file: 'img/layer-0-sky.webp', depth: 160, k: 0.59, mirror: 1, topFade: 1, flash: [0.08, 0.9], drift: 0.14, order: -40,
-    parts: [{ quad: [-2120, -864, 8080, 1944], store: [0, 0, 3840, 1080] }] },
+    parts: [{ quad: [-2120, -2600, 8080, 3680], store: [0, 0, 3840, 1080] }] },      // taller than the game's: a tall screen looks further up
   { key: 'city', file: 'img/layer-1-city.webp', depth: 75, k: 0.59, mirror: 1, flash: [0.03, 0.3], order: -30,
     parts: [{ quad: [-2220, 358, 8280, 534], store: [0, 354, 3840, 542] }] },
   { key: 'dome', file: 'img/layer-2-dome.webp', depth: 45, k: 0.59, haze: 0.16, flash: [0.02, 0.16], order: -20,
@@ -31,7 +31,7 @@ const LAYERS = [
     parts: [{ quad: [0, 540, 672, 540], store: [0, 540, 672, 540] }, { quad: [3196, 540, 644, 540], store: [3196, 540, 644, 540] }] },
 ];
 const HAZE = [0.52, 0.52, 0.54];
-const ZENITH = [0.2, 0.2, 0.21];
+const ZENITH = [0.135, 0.135, 0.15];
 
 // ---- the game's light rig (src/fx/light_rig.tscn, fight_environment.tres), colours linear times energy
 const LIGHT_DIR = [new THREE.Vector3(-0.4467, 0.7444, 0.4963), new THREE.Vector3(0.6046, 0.2519, 0.7557), new THREE.Vector3(0.303, 0.5051, -0.8081)];
@@ -56,6 +56,7 @@ const BEATS = [
 ];
 // a click or a tap on a fighter: the next of these, in turn
 const ON_TAP = { jefrie: ['heavy', 'special_d', 'special_n', 'special_u', 'taunt'], tailor: ['heavy_whip', 'special_u', 'heavy', 'special_d', 'taunt'] };
+const LANDS = { heavy_whip: 0.27, heavy: 0.24 };      // seconds into a move at which it lands, where the fighters stand close
 const STRIKES = [{ at: 11.3, x: -9, i: 1.0 }, { at: 22.1, x: 14, i: 0.8 }, { at: 36.2, x: 3.5, i: 1.0 }];
 const FLICKER = [[0, 0], [0.025, 1], [0.07, 0.25], [0.1, 0.85], [0.16, 0.35], [0.22, 0.55], [0.5, 0]];
 function flicker(t) {
@@ -239,8 +240,8 @@ function cameraAt(q, portrait) {
   if (portrait) {
     return {
       fov: 46,
-      pos: [lerp(-1.6, 0, e) + h * 0.3, lerp(5.2, 2.7, e) - h * 0.1, lerp(27, 9.6, e) - h * 0.4],
-      look: [lerp(0.4, 0, e), lerp(2.6, 0.6, e), 0],
+      pos: [lerp(-1.0, -0.18, e) + h * 0.25, lerp(1.25, 2.55, e) - h * 0.1, lerp(22, 11.0, e) - h * 0.4],
+      look: [lerp(0.1, -0.18, e), lerp(4.2, 0.8, e), 0],
     };
   }
   return {
@@ -334,11 +335,12 @@ export async function mount(canvas, opts = {}) {
     const mesh = new THREE.Mesh(new THREE.PlaneGeometry(qw * s, qh * s), mat);
     mesh.renderOrder = 12; mesh.frustumCulled = false;
     scene.add(mesh);
-    // put the wing so that its inner edge stands at world x = edge, at depth z
-    mesh.userData.put = (edge, z) => {
-      const left = j === 0 ? edge - qw * s : edge;                    // world x of the crop's left side
-      mat.uniforms.layerRect.value.x = left - qx * s;
-      mesh.position.set(left + qw * s * 0.5, (WING.ground - qy - qh * 0.5) * s, z);
+    // put the wing at depth z with one side at world x = edge: side -1, it reaches left from there; +1, right
+    mesh.userData.put = (edge, z, side, k = 1) => {
+      const m = s * k, left = side < 0 ? edge - qw * m : edge;        // world x of the crop's left side
+      mat.uniforms.layerRect.value.set(left - qx * m, WING.ground * m, PIC.w * m, PIC.h * m);
+      mesh.scale.set(k, k, 1);
+      mesh.position.set(left + qw * m * 0.5, (WING.ground - qy - qh * 0.5) * m, z);
     };
     return mesh;
   });
@@ -543,8 +545,10 @@ export async function mount(canvas, opts = {}) {
     camera.updateMatrixWorld();
     camera.getWorldDirection(fwd);
 
-    wings[0].userData.put(portrait ? -1.5 : -3.7, portrait ? 15 : 12.5);
-    wings[1].userData.put(portrait ? 1.9 : 1.3, portrait ? 16.5 : 14.5);
+    // on a tall screen they are smaller and lower and cross under the fighters, so that their stakes stand in the frame
+    if (portrait) { wings[0].userData.put(0.38, 17, -1, 0.56); wings[1].userData.put(-1.8, 16.2, 1, 0.6); }
+    else { wings[0].userData.put(-3.7, 12.5, -1); wings[1].userData.put(1.3, 14.5, 1); }
+    for (const w of wings) w.material.uniforms.soft.value = portrait ? 2.4 : 3.2;
 
     // fires
     const flick = [1, 1];
@@ -558,11 +562,17 @@ export async function mount(canvas, opts = {}) {
     shared.fireCol.value.copy(FIRE_LIN).multiplyScalar(FIRE_ENERGY * flick[0]);
 
     // fighters: on a tall screen they stand closer, at striking distance
-    const sx = portrait ? 1.2 : START_X;
+    const sx = portrait ? 1.08 : START_X;
     jefrie.root.position.x = -sx; tailor.root.position.x = sx;
     floorMat.uniforms.blobA.value.x = -sx; floorMat.uniforms.blobB.value.x = sx;
-    jefrie.pose(t, force || jefrie.moveAt(t));
-    tailor.pose(t + 0.37, force || tailor.moveAt(t));
+    let mj = force || jefrie.moveAt(t), mt = force || tailor.moveAt(t);
+    if (portrait && !force) {
+      // at striking distance a heavy blow lands: the other one takes it
+      if (mt && LANDS[mt.name] !== undefined && mt.t >= LANDS[mt.name] && !mj) mj = { name: 'hit_high', t: mt.t - LANDS[mt.name] };
+      if (mj && LANDS[mj.name] !== undefined && mj.t >= LANDS[mj.name] && !mt) mt = { name: 'hit_high', t: mj.t - LANDS[mj.name] };
+    }
+    jefrie.pose(t, mj);
+    tailor.pose(t + 0.37, mt);
 
     // lightning: the timetable's strikes, and the one that greets the reader
     let level = 0, lit = -1;
@@ -623,12 +633,12 @@ export async function mount(canvas, opts = {}) {
     }
     return best ? best.who : null;
   }
-  function tap(who, t) { (who === 'jefrie' ? jefrie : tailor).throwNext(who === 'jefrie' ? t : t + 0.37); }
+  function tap(who, t) { (who === 'jefrie' ? jefrie : tailor).throwNext(t); }
   // the reader has just arrived at the close view: the sky answers, and both fighters with it
   function arrive(t) {
     arrival = { at: t + 0.15, bolt: 2 };
     jefrie.tap = { name: 'taunt', at: t + 0.55 };
-    tailor.tap = { name: 'taunt', at: t + 0.37 + 0.95 };
+    tailor.tap = { name: 'taunt', at: t + 0.95 };
   }
 
   function dispose() {
