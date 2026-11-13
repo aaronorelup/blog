@@ -1,0 +1,157 @@
+/* "Learning": the ledger opens. Everything the chapter draws in the page, scoped under .lb (the element the scene
+   is mounted in). The pages are the site's own cards by day (src/styles/tokens.css, ledger.css, cards.css): a flat
+   cream ground, the ledger's type, its stamp, its points and the homepage's button. Flat colour and an ink line,
+   as the homepage draws things: no grain, no texture. A page's sizes are in em: the scene sets each page's font
+   size from the room the page has on screen, so one page pixel is one screen pixel whatever the window. */
+
+.lb {
+  position: relative; overflow: hidden; background: rgb(16, 18, 32);
+  --lb-ink: #15131c;
+  --lb-page: rgb(251, 243, 232);
+  --lb-head: rgb(190, 122, 16);
+  --lb-strong: rgb(58, 58, 66);
+  --lb-body: rgb(74, 74, 80);
+  --lb-quiet: rgb(122, 108, 93);
+  --lb-line: rgb(226, 213, 192);
+  --lb-line2: rgb(208, 190, 163);
+  --lb-accent: rgb(168, 94, 43);
+  --lb-gold: rgb(150, 112, 22);
+  --lb-tile: rgb(243, 231, 210);
+  --lb-pink: #c97b90;
+  --lb-pink-deep: #a95f76;
+  --lb-display: 'Zen Maru Gothic', sans-serif;
+  --lb-text: Karla, system-ui, sans-serif;
+  --lb-serif: Georgia, 'Times New Roman', serif;
+  --lb-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.lb-gl { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; opacity: 0; }
+.lb-live .lb-gl { opacity: 1; }
+.lb-css { position: absolute; inset: 0; overflow: hidden; pointer-events: none; visibility: hidden; }
+.lb-live .lb-css { visibility: visible; }
+.lb-probe { position: absolute; left: 0; top: 0; width: 1px; height: 100vh; height: 100svh; visibility: hidden; pointer-events: none; }
+
+/* the chapter's word and its line, as the tea room sets them over the world */
+.lb-word {
+  position: absolute; left: clamp(20px, 7vw, 120px); bottom: clamp(120px, 21vh, 220px); margin: 0; z-index: 2;
+  font-family: var(--lb-display); font-weight: 700; color: #f6e7c8; pointer-events: none;
+  font-size: clamp(56px, 9.4vw, 170px); line-height: 0.9; letter-spacing: -0.02em; white-space: nowrap;
+  text-shadow: 0 2px 30px rgba(10, 8, 20, 0.5);
+}
+.lb-say {
+  position: absolute; left: clamp(24px, calc(7vw + 6px), 126px); bottom: clamp(70px, 13vh, 150px); margin: 0; z-index: 2;
+  max-width: min(22em, 80vw); pointer-events: none;
+  font: italic 400 clamp(17px, 1.75vw, 26px)/1.34 var(--lb-serif); color: #e9dcc3;
+  text-shadow: 0 1px 16px rgba(10, 8, 20, 0.6);
+}
+
+/* ------------------------------------------------------------------ a face of a leaf */
+.lb-face {
+  position: absolute; left: 0; top: 0; transform-origin: 0 0; box-sizing: border-box; overflow: hidden; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  font-family: var(--lb-text); color: var(--lb-body); -webkit-font-smoothing: antialiased;
+}
+.lb-face *, .lb-face *::before, .lb-face *::after { box-sizing: border-box; }
+.lb-face ::selection { background: rgb(247, 201, 212); color: var(--lb-strong); }
+.lb-page {
+  background: var(--lb-page); border: 0.17em solid var(--lb-ink);
+  --r: 1.05em;
+}
+/* the corners away from the spine are round; the spine's side is square, a soft fold of shade along it */
+.lb[data-layout='wide'] .lb-page.lb-front, .lb[data-layout='wide'] .lb-board.lb-front { border-radius: 0 var(--r) var(--r) 0; border-left-width: 0.09em; }
+.lb[data-layout='wide'] .lb-page.lb-back, .lb[data-layout='wide'] .lb-board.lb-back { border-radius: var(--r) 0 0 var(--r); border-right-width: 0.09em; }
+.lb[data-layout='tall'] .lb-page.lb-front, .lb[data-layout='tall'] .lb-board.lb-front { border-radius: 0 0 var(--r) var(--r); border-top-width: 0.09em; }
+.lb[data-layout='tall'] .lb-page.lb-back, .lb[data-layout='tall'] .lb-board.lb-back { border-radius: var(--r) var(--r) 0 0; border-bottom-width: 0.09em; }
+.lb-page::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+}
+.lb[data-layout='wide'] .lb-front.lb-page::before { background: linear-gradient(to right, rgba(86, 52, 40, 0.2), rgba(86, 52, 40, 0.05) 5%, rgba(86, 52, 40, 0) 12%); }
+.lb[data-layout='wide'] .lb-back.lb-page::before, .lb[data-layout='wide'] .lb-back .lb-inset::before { background: linear-gradient(to left, rgba(86, 52, 40, 0.2), rgba(86, 52, 40, 0.05) 5%, rgba(86, 52, 40, 0) 12%); }
+.lb[data-layout='tall'] .lb-front.lb-page::before { background: linear-gradient(to bottom, rgba(86, 52, 40, 0.2), rgba(86, 52, 40, 0.05) 5%, rgba(86, 52, 40, 0) 12%); }
+.lb[data-layout='tall'] .lb-back.lb-page::before, .lb[data-layout='tall'] .lb-back .lb-inset::before { background: linear-gradient(to top, rgba(86, 52, 40, 0.2), rgba(86, 52, 40, 0.05) 5%, rgba(86, 52, 40, 0) 12%); }
+
+/* the lantern's light, from the desk's left end (the top of an upright screen): warm where it falls, cooler away */
+.lb-page::after { content: ''; position: absolute; inset: 0; pointer-events: none; }
+.lb[data-layout='wide'] .lb-page::after { background: linear-gradient(96deg, rgba(255, 176, 84, 0.2), rgba(255, 190, 110, 0.05) 46%, rgba(60, 40, 90, 0.1)); }
+.lb[data-layout='wide'] .lb-front.lb-page::after { background: linear-gradient(96deg, rgba(255, 190, 110, 0.07), rgba(120, 90, 110, 0.03) 50%, rgba(60, 40, 90, 0.14)); }
+.lb[data-layout='tall'] .lb-page::after { background: linear-gradient(to bottom, rgba(255, 176, 84, 0.16), rgba(255, 190, 110, 0.04) 60%, rgba(60, 40, 90, 0.05)); }
+.lb[data-layout='tall'] .lb-front.lb-page::after { background: linear-gradient(to bottom, rgba(255, 190, 110, 0.05), rgba(60, 40, 90, 0.1)); }
+
+/* the boards: the pink cover, outside and in */
+.lb-board { background: var(--lb-pink); border: 0.17em solid var(--lb-ink); --r: 1.3em; }
+.lb-cover { display: flex; align-items: center; justify-content: center; }
+.lb-label {
+  margin: 0; padding: 0.7em 1.5em 0.8em; border: 0.14em solid var(--lb-ink); border-radius: 0.9em; background: var(--lb-page);
+  font: 700 2.3em/1 var(--lb-display); letter-spacing: -0.01em; color: var(--lb-strong);
+}
+.lb-label span { display: block; }
+.lb[data-layout='tall'] .lb-label { font-size: 2em; }
+.lb-inset { position: absolute; overflow: hidden; }
+.lb[data-layout='wide'] .lb-inset { border-radius: var(--r) 0 0 var(--r); border-right-width: 0.09em; --r: 1.05em; }
+.lb[data-layout='tall'] .lb-inset { border-radius: var(--r) var(--r) 0 0; border-bottom-width: 0.09em; --r: 1.05em; }
+
+/* the light: the shadow a turning leaf lays on the page under it, grown from the spine; and a leaf's own shade */
+.lb-shade, .lb-dim { position: absolute; inset: 0; pointer-events: none; opacity: 0; }
+.lb-dim { background: rgb(38, 24, 44); }
+.lb[data-layout='wide'] .lb-front > .lb-shade { transform-origin: 0 50%; background: linear-gradient(to right, rgba(30, 18, 40, 0.85), rgba(30, 18, 40, 0.5) 62%, rgba(30, 18, 40, 0)); }
+.lb[data-layout='wide'] .lb-back > .lb-shade { transform-origin: 100% 50%; background: linear-gradient(to left, rgba(30, 18, 40, 0.85), rgba(30, 18, 40, 0.5) 62%, rgba(30, 18, 40, 0)); }
+.lb[data-layout='tall'] .lb-front > .lb-shade { transform-origin: 50% 0; background: linear-gradient(to bottom, rgba(30, 18, 40, 0.85), rgba(30, 18, 40, 0.5) 62%, rgba(30, 18, 40, 0)); }
+.lb[data-layout='tall'] .lb-back > .lb-shade { transform-origin: 50% 100%; background: linear-gradient(to top, rgba(30, 18, 40, 0.85), rgba(30, 18, 40, 0.5) 62%, rgba(30, 18, 40, 0)); }
+
+/* ------------------------------------------------------------------ what a page says */
+.lb-in { position: absolute; inset: 0; display: flex; flex-direction: column; padding: 1.55em 1.6em 1.35em; }
+.lb-in p, .lb-in h3, .lb-in ul { margin: 0; }
+.lb-vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* left: picture, number and date, title; the icon and the folio at the foot */
+.lb-pic { flex: none; border: 0.13em solid var(--lb-ink); border-radius: 0.75em; overflow: hidden; background: var(--lb-tile); aspect-ratio: 16 / 9; }
+.lb-pic img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.lb-meta { display: flex; align-items: baseline; justify-content: space-between; gap: 1em; margin-top: 1.15em !important; }
+.lb-id { font: 500 1.02em/1 var(--lb-mono); letter-spacing: 0.02em; color: var(--lb-gold); }
+.lb-date { font: 400 0.86em/1 var(--lb-text); letter-spacing: 0.14em; text-transform: uppercase; color: var(--lb-quiet); }
+.lb-title {
+  margin-top: 0.42em !important; font: 700 2.3em/1.15 var(--lb-display); letter-spacing: -0.015em; color: var(--lb-strong);
+  text-wrap: balance;
+}
+.lb-foot { display: flex; align-items: center; gap: 0.8em; margin-top: auto !important; padding-top: 0.8em; }
+.lb-icon { width: 3.3em; height: 3.3em; border-radius: 0.7em; border: 0.11em solid var(--lb-ink); background: var(--lb-tile); }
+.lb-topic {
+  padding: 0.36em 0.85em 0.4em; border: 1px solid var(--lb-line2); border-radius: 999px;
+  font: 400 0.9em/1.2 var(--lb-text); color: var(--lb-body);
+}
+.lb-folio { margin-left: auto; font: 500 0.8em/1 var(--lb-mono); color: var(--lb-quiet); }
+
+/* right: the stamp, the takeaway, the points, the way in */
+.lb-stamp {
+  align-self: flex-start; padding: 0.3em 0.75em 0.22em; border: 0.14em solid var(--lb-accent); border-radius: 0.5em;
+  font: 600 0.88em/1.25 var(--lb-text); letter-spacing: 0.07em; text-transform: uppercase; color: var(--lb-accent);
+}
+.lb-takeaway { margin-top: 0.8em !important; font: 400 1.36em/1.46 var(--lb-serif); color: var(--lb-strong); text-wrap: pretty; }
+.lb-points { list-style: none; margin-top: 1.05em !important; padding: 0.95em 0 0 !important; border-top: 1px solid var(--lb-line2); }
+.lb-points li { position: relative; margin: 0 0 0.62em; padding-left: 1.15em; font-size: 1.04em; line-height: 1.46; color: var(--lb-body); text-wrap: pretty; }
+.lb-points li::before { content: ''; position: absolute; left: 0.12em; top: 0.56em; width: 0.4em; height: 0.4em; border-radius: 50%; background: var(--lb-accent); opacity: 0.85; }
+.lb-go { margin-top: auto !important; padding-top: 0.7em; }
+.lb-btn {
+  display: inline-block; padding: 0.62em 1.25em 0.68em; border: 0.11em solid var(--lb-strong); border-radius: 999px;
+  background: var(--lb-page); color: var(--lb-strong); text-decoration: none;
+  font: 600 1.06em/1.2 var(--lb-text); letter-spacing: 0.01em;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+.lb-btn:hover { background: rgb(247, 201, 212); }
+.lb-btn:focus-visible { outline: 0.2em solid var(--lb-head); outline-offset: 0.16em; }
+
+/* the last spread: a wall of the other posts' icons, and the way to all of them */
+.lb-wall { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.7em; }
+.lb-wall img { display: block; width: 100%; height: auto; aspect-ratio: 1; border-radius: 0.7em; border: 0.11em solid var(--lb-ink); background: var(--lb-tile); }
+.lb-more .lb-title { margin-top: auto !important; padding-top: 0.6em; }
+
+/* ------------------------------------------------------------------ the phone: the spread upright */
+.lb[data-layout='tall'] .lb-in { padding: 1.15em 1.25em 1.05em; }
+.lb[data-layout='tall'] .lb-meta { margin-top: 0.75em !important; }
+.lb[data-layout='tall'] .lb-title { font-size: 1.5em; line-height: 1.18; margin-top: 0.35em !important; }
+.lb[data-layout='tall'] .lb-foot { display: none; }
+.lb[data-layout='tall'] .lb-takeaway { font-size: 1.12em; line-height: 1.4; margin-top: 0.6em !important; }
+.lb[data-layout='tall'] .lb-points { margin-top: 0.65em !important; padding-top: 0.6em !important; }
+.lb[data-layout='tall'] .lb-points li { font-size: 0.95em; line-height: 1.38; margin-bottom: 0.38em; }
+.lb[data-layout='tall'] .lb-btn { font-size: 1em; padding: 0.55em 1.1em 0.6em; }
+.lb[data-layout='tall'] .lb-wall { grid-template-columns: repeat(6, 1fr); gap: 0.5em; }
+.lb[data-layout='tall'] .lb-wall img:nth-child(n + 13) { display: none; }
+.lb[data-layout='tall'] .lb-more .lb-title { font-size: 1.7em; }
