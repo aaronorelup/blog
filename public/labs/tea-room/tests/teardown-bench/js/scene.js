@@ -1,4 +1,4 @@
-// The teardowns, on the low table: one chapter of the tea room, as a module the host page drives.
+// The teardowns, in the tea room: one chapter of the tea room, as a module the host page drives.
 //
 //   const ch = mount(hostElement, { reduced, still, live });
 //   ch.frame(q, time, pointer)   q: the chapter's progress 0..1; time: seconds (stopped when still)
@@ -33,7 +33,7 @@ export function placeOf(q) {
   if (t < PARTS_END) {
     const n = m.parts.length, u = (t - ARRIVE) / (PARTS_END - ARRIVE) * n;
     const k = Math.min(n - 1, Math.floor(u));
-    return { i, t, step: 'part', k, mode: u - k < 0.5 ? 'isolate' : 'cut' };
+    return { i, t, step: 'part', k, mode: u - k < 0.5 ? 'isolate' : (m.parts[k].second || 'cut') };
   }
   if (t < BREAK_END) return { i, t, step: 'break' };
   return { i, t, step: 'end' };
@@ -85,7 +85,7 @@ function mountStage(host, opt) {
       <header class="card lead">
         <p class="kicker">The tea room · a test</p>
         <h1 class="lead-title">The teardowns</h1>
-        <p class="lead-say">Four machines from the Moon base of <em>Earthlight</em>, taken apart one part at a time on the low table, under the lamp.</p>
+        <p class="lead-say">Four machines from the Moon base of <em>Earthlight</em>, taken apart one part at a time in the tea room, under the lamp.</p>
         <p class="lead-go">Scroll, and the first one arrives.</p>
       </header>
       <article class="card part" aria-live="polite">
@@ -283,7 +283,8 @@ function mountStage(host, opt) {
     const r = live && live.ready ? live.reading() : null;
     const big = $('.b-read'), small = $('.b-small');
     if (r && r.big) {
-      big.textContent = r.big.replace(/ M$/, ' m').replace(/ M /, ' m ');
+      const b = br.readout.tidy ? br.readout.tidy(r.big) : r.big;
+      big.textContent = b.replace(/ MM$/, ' mm').replace(/ CM$/, ' cm').replace(/ M$/, ' m').replace(/ M /, ' m ');
       small.textContent = `${br.readout.label}${r.small ? ' · ' + r.small : ''}`;
     } else { big.textContent = br.offline(v); small.textContent = ''; }
     if (!live || !live.ready) showPic(m.stills[br.stills[v >= br.at ? 1 : 0]]);
@@ -311,7 +312,7 @@ function mountStage(host, opt) {
   function fillStep(p) {
     const m = MACHINES[p.i];
     if (p.step === 'arrive') {
-      $('.m-step').textContent = 'On the table';
+      $('.m-step').textContent = 'Arrived whole';
       $('.p-name').textContent = m.name;
       $('.p-num b').textContent = '';
       $('.p-num span').textContent = m.what;
@@ -327,7 +328,8 @@ function mountStage(host, opt) {
       $('.p-say').textContent = part.say;
       cPart.classList.remove('whole');
       $('.c-iso').classList.toggle('on', p.mode === 'isolate');
-      $('.c-cut').classList.toggle('on', p.mode === 'cut');
+      $('.c-cut').classList.toggle('on', p.mode !== 'isolate');
+      $('.c-cut').textContent = part.second === 'alone' ? 'Shown alone' : 'Cut open';
       showPic(m.stills[part.still]);
     } else if (p.step === 'break') {
       paintBreak();
@@ -355,7 +357,7 @@ function mountStage(host, opt) {
     }
     if (p.step === 'intro') dropLive(); else wantLive(p.i);
     // the television plays the machine's film with no sound, once the machine is on the table (never at the top)
-    const wantTv = !opt.still && p.step !== 'intro';
+    const wantTv = !opt.still && !phone && p.step !== 'intro';
     if (wantTv !== tvOn || (wantTv && tvFilm.getAttribute('src') !== m.film)) {
       tvOn = wantTv;
       if (wantTv) { if (tvFilm.getAttribute('src') !== m.film) tvFilm.src = m.film; tvFilm.play().catch(() => {}); }

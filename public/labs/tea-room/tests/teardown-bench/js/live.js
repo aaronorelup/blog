@@ -66,7 +66,7 @@ export function createLive(machine, holder, { onReady, onFail, onWheel }) {
     if (cool > 0) return;
     try {
       const k = machine.kind;
-      const partNames = machine.parts.map((p) => p.button);
+      const partNames = machine.allParts || machine.parts.map((p) => p.button);
       if (k === 'hab') {
         const view = want.mode === 'cut' ? machine.cutView : want.view;
         if (applied.view !== view || !isOn(find(view, true))) { press(find(view, true)); applied.view = view; return; }
@@ -160,9 +160,26 @@ export function createLive(machine, holder, { onReady, onFail, onWheel }) {
     } catch (e) { return null; }
   };
 
-  const prepare = () => {
+  // every control this chapter will press must be there, or the machine stays on its film and stills
+  const controlsOk = () => {
+    const br = machine.breakIt;
+    const words = [machine.hero.view, ...machine.parts.map((p) => p.button), ...Object.values(machine.modes || {})];
+    if (machine.cutView) words.push(machine.cutView);
+    if (br.view) words.push(br.view);
+    if (br.pause) words.push(br.pause);
+    if (words.some((w) => !find(w))) return false;
+    const hits = doc.querySelectorAll('.hit');
+    if (br.drive === 'hit' && !hits[br.hit]) return false;
+    if (br.setup && !hits[br.setup.hit]) return false;
+    if (br.drive === 'setG' && typeof win.LIVE.setG !== 'function') return false;
+    return true;
+  };
+
+  const prepare = () => { try { prepareNow(); } catch (e) { fail('prepare'); } };
+  const prepareNow = () => {
     win = iframe.contentWindow; doc = iframe.contentDocument;
-    if (!win || !doc || !win.LIVE || typeof win.LIVE.takeOver !== 'function' || !doc.getElementById('gl')) return fail('missing');
+    if (!win || !doc || !win.LIVE || typeof win.LIVE.takeOver !== 'function' || !doc.getElementById('gl') || !doc.querySelector('.ui')) return fail('missing');
+    if (!controlsOk()) return fail('controls');
     const st = doc.createElement('style');
     st.setAttribute('data-tea-bench', '');
     st.textContent = `.ui{opacity:0!important;pointer-events:none!important}.turn,.tourchip,.cur,.ring{display:none!important}
@@ -192,7 +209,12 @@ export function createLive(machine, holder, { onReady, onFail, onWheel }) {
     const poll = () => {
       if (dead) return;
       let shown = false;
-      try { shown = !!iframe.contentWindow.SIM_SHOWN; } catch (e) { return fail('blocked'); }
+      try {
+        const d = iframe.contentDocument;
+        // not the machine's page (a missing page, an error page): give up at once
+        if (d && d.readyState === 'complete' && !d.getElementById('app')) return fail('not-a-teardown');
+        shown = !!iframe.contentWindow.SIM_SHOWN;
+      } catch (e) { return fail('blocked'); }
       if (shown) { clearTimeout(failTimer); prepare(); return; }
       waited += 250;
       if (waited > READY_TIMEOUT) return fail('slow');

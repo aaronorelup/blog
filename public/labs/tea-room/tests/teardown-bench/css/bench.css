@@ -1,4 +1,4 @@
-/* The teardowns, on the low table: one chapter of the tea room, as a test.
+/* The teardowns, in the tea room: one chapter of the tea room, as a test.
    The colours and the type are the site's own (src/styles/tokens.css, the film reel's test); the fonts come from /fonts/. */
 @font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-latin.9d65f92a.woff2') format('woff2'); }
 @font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-latin.2c5953da.woff2') format('woff2'); }

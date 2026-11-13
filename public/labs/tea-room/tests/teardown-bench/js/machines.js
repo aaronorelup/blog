@@ -22,11 +22,14 @@ export const MACHINES = [
     cropNarrow: { cx: 810, cy: 450, vh: 900, vw: 820 },
     hero: { view: 'HERO' },
     kind: 'toggle', // parts and modes toggle; a mode needs a part
-    modes: { isolate: 'ISOLATE', cut: 'CUT' },
+    // DRAY's cut is one plane through the deck (it opens the battery): its crane and its lamp are shown alone instead
+    modes: { isolate: 'ISOLATE', cut: 'CUT', alone: 'ALONE' },
+    allParts: ['CHASSIS', 'WHEELS', 'CRANE', 'MAST & LAMP', 'BATTERY', 'BAG'],
     parts: [
       {
         button: 'CRANE', name: 'The folding crane', num: '2.30 m', unit: 'of reach, three fingers',
         say: 'Two folding arms and a three-fingered hand lift the regolith bags off HAB 3’s window well, 135 kg at a time.',
+        second: 'alone',
         still: 0,
       },
       {
@@ -37,6 +40,7 @@ export const MACHINES = [
       {
         button: 'MAST & LAMP', name: 'The mast and its lamp', num: '6,000 cd', unit: 'one round eye',
         say: 'The end of the job: the lamp on the mast lights HAB 3’s cracked window from across the yard.',
+        second: 'alone',
         still: 1,
       },
     ],
@@ -44,7 +48,7 @@ export const MACHINES = [
       label: 'Gravity', min: 1.62, max: 9.81, step: 0.01, value: 1.62, unit: 'm/s²',
       marks: [[1.62, 'Moon'], [3.71, 'Mars'], [9.81, 'Earth']],
       say: 'It is missing its rear right wheel, and the crane is swinging a 135 kg bag. Raise the gravity from the Moon’s towards Earth’s and watch the margin go.',
-      readout: { after: 'TIP MARGIN · COM TO NEAREST SUPPORT EDGE', take: 3, label: 'Tip margin', big: 2 },
+      readout: { after: 'TIP MARGIN · COM TO NEAREST SUPPORT EDGE', take: 3, label: 'Tip margin', big: 2, tidy: (b) => (/^TIP\b/.test(b) ? 'Tipped over' : b) },
       // with no live page: what the page says at the ends (its own tip point is 8.2 m/s²)
       offline: (v) => (v < 8.2 ? 'Stable on five wheels' : 'Tips over the missing wheel'),
       drive: 'setG',
@@ -69,6 +73,7 @@ export const MACHINES = [
     hero: { view: 'HERO' },
     kind: 'hab', // a part is isolated by picking it; "cut" is the page's section view
     cutView: 'SECTION',
+    allParts: ['SHIELDING', 'WINDOW', 'SCRUBBER', 'POWER', 'RADIATORS', 'HATCH + TUNNEL'],
     parts: [
       {
         button: 'SHIELDING', name: 'The shielding', num: 'Step 1 of 9', unit: 'strip the outer shielding',
@@ -112,6 +117,7 @@ export const MACHINES = [
     hero: { view: 'HERO' },
     kind: 'toggle',
     modes: { isolate: 'ISOLATE', cut: 'CUT' },
+    allParts: ['CARGO BAY', 'LEGS + STRUTS', 'ENGINE + TANKS'],
     parts: [
       {
         button: 'CARGO BAY', name: 'The cargo bay', num: '2 shelves', unit: 'of food',
@@ -157,6 +163,7 @@ export const MACHINES = [
     hero: { view: 'HERO' },
     kind: 'set', // the mode is set (not toggled) first, then a part is picked
     modes: { isolate: 'ISOLATE', cut: 'CUT' },
+    allParts: ['DRUMS', 'ARMS', 'HOPPER', 'CHASSIS', 'WHEELS', 'SENSOR BAR', 'BATTERY', 'RADIATOR'],
     parts: [
       {
         button: 'DRUMS', name: 'The drums', num: '0.48 kg/s', unit: 'while the drum cuts',
