@@ -235,7 +235,9 @@ class Fighter {
 
 // ------------------------------------------------------------------ the camera: wide, then in, then it holds
 function cameraAt(q, portrait) {
-  const e = ss(0.0, 0.62, q);                   // the push
+  // the push: it starts moving at once (the first screen of scroll, while the picture is still coming up, must not
+  // be a still), and eases into the hold
+  const e = 0.3 * clamp(q / 0.62) + 0.7 * ss(0.0, 0.62, q);
   const h = clamp((q - 0.62) / 0.38);           // the hold: a slow drift
   if (portrait) {
     return {

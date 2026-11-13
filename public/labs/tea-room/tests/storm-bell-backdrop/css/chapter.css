@@ -29,7 +29,8 @@
 @supports (height: 100lvh) { :root { --vh: 100lvh; --svh: 100svh; } }
 
 * { box-sizing: border-box; }
-html { background: var(--page); }
+/* the colour seen for an instant where a very fast scroll outruns the painting of the page: the storm's, not the garden's */
+html { background: var(--storm); }
 body { margin: 0; background: var(--page); color: var(--body); font: 16px/1.5 var(--font-body); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 a { color: inherit; }
 
@@ -59,11 +60,12 @@ a { color: inherit; }
 }
 
 /* ---------------------------------------------------------------- the chapter: a tall track with one pinned screen */
-.chapter { position: relative; height: calc(var(--vh) * 4.4); background: var(--storm); }
+.chapter { position: relative; height: calc(var(--vh) * 4); background: var(--storm); }
 /* the storm comes up out of the garden's night: a soft edge that rides on the chapter's top and bottom */
-.chapter::before, .chapter::after { content: ''; position: absolute; left: 0; right: 0; height: 40vh; z-index: 2; pointer-events: none; }
+.chapter::before { content: ''; position: absolute; left: 0; right: 0; height: 40vh; z-index: 2; pointer-events: none; }
 .chapter::before { top: -1px; background: linear-gradient(to bottom, var(--storm) 0, rgba(23, 23, 27, 0.9) 24%, rgba(23, 23, 27, 0.5) 56%, rgba(23, 23, 27, 0)); }
-.chapter::after { bottom: -1px; background: linear-gradient(to top, var(--storm) 0, rgba(23, 23, 27, 0.8) 26%, rgba(23, 23, 27, 0)); }
+/* on the way out the picture's lower part sinks into the dark, under the card, which stays as it is */
+.veil { position: absolute; left: 0; right: 0; bottom: 0; height: 55%; background: linear-gradient(to top, var(--storm) 0, var(--storm) 13%, rgba(23, 23, 27, 0.84) 40%, rgba(23, 23, 27, 0)); opacity: 0; pointer-events: none; }
 /* the game's own title plate, standing in the dark where the garden's night turns into the storm */
 .plate { position: absolute; left: 50%; top: -17vh; z-index: 3; width: min(760px, 86vw); height: auto; transform: translateX(-50%); pointer-events: none; filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.6)); }
 .plate:not([src]) { visibility: hidden; }

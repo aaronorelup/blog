@@ -18,7 +18,7 @@
   var root = document.documentElement;
   var $ = function (id) { return document.getElementById(id); };
   var chapter = $('chapter'), stage = $('stage'), canvas = $('scene'), card = $('card'), hint = $('hint'), dbg = $('debug');
-  var clouds = $('lead-clouds');
+  var clouds = $('lead-clouds'), veil = $('veil');
   var clamp = function (x, a, b) { a = a === undefined ? 0 : a; b = b === undefined ? 1 : b; return x < a ? a : x > b ? b : x; };
   var ss = function (a, b, x) { var t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
 
@@ -35,7 +35,8 @@
     var travel = Math.max(1, r.height - stage.offsetHeight);
     var pin = clamp(-r.top / travel);
     var q = RM ? 0.8 : enter * 0.1 + pin * 0.9;
-    return { q: q, pin: RM ? 1 : pin, onScreen: r.bottom > 0 && r.top < vh };
+    var leave = clamp((vh - r.bottom) / vh);
+    return { q: q, pin: RM ? 1 : pin, leave: leave, onScreen: r.bottom > 0 && r.top < vh };
   }
 
   // ------------------------------------------------------------------ ?y
@@ -104,7 +105,7 @@
 
   function ready() { root.dataset.ready = '1'; }
   function now() { return FROZEN ? T_HELD : (performance.now() - t0) / 1000; }
-  var wasClose = null, tapped = false;
+  var wasClose = null, tapped = false, arrivedAt = -100;
 
   function draw(now) {
     raf = 0;
@@ -115,8 +116,9 @@
     last = now;
     var t = FROZEN ? T_HELD : (now - t0) / 1000;
     // arriving at the close view sets off a strike and a flourish; a page opened already there does not
+    // (scrolling back and forth over that point does not set it off again and again)
     var close = m.q > 0.6;
-    if (wasClose === false && close && !FROZEN) api.arrive(t);
+    if (wasClose === false && close && !FROZEN && t - arrivedAt > 9) { api.arrive(t); arrivedAt = t; }
     wasClose = close;
     if (STILL || RM) { at.x = 0; at.y = 0; } else {
       var tx = aim.x, ty = aim.y;
@@ -168,6 +170,7 @@
     card.style.visibility = show > 0.01 ? 'visible' : 'hidden';
     card.style.transform = 'translate3d(0,' + ((1 - show) * 26).toFixed(1) + 'px,0)';
     card.style.pointerEvents = show > 0.6 ? 'auto' : 'none';
+    veil.style.opacity = ss(0, 0.3, m.leave).toFixed(3);
     hint.style.opacity = (api && !FROZEN ? show * (tapped ? 0 : 1) : 0).toFixed(3);
     if (clouds && !RM) {
       var y = window.scrollY || 0;
