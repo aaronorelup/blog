@@ -39,18 +39,22 @@ if (!view) root.classList.add('flat');
 // A chip names a corner of the room with the meaning the homepage gave it; a tag names a layer of the drawing.
 // piece: the piece it points at; at: a point on that piece, in metres from its middle; wide and tall: where the
 // name sits from that point on the window, in pixels, and which of its sides the line meets (l or r).
+// On a wide window the tags stand in one column to the right of the drawing, as on an exploded drawing, each
+// level with its own layer; col: the piece of the layer's east side the line goes to, and where on it (in half
+// sizes of the piece). On a phone there is no room beside the drawing, and a tag is a passing caption.
 const NAMES = [
-  { kind: 'tag', piece: 'roof-left', at: [-2.2, 0.4, 2.2], text: 'Roof', wide: [-46, -18, 'r'], tall: [-14, -34, 'r'] },
-  { kind: 'tag', piece: 'ceiling', at: [-6.9, 0, 5.7], text: 'Paper ceiling', wide: [-46, 0, 'r'], tall: [-10, 26, 'r'] },
-  { kind: 'tag', piece: 'frieze-left', at: [0, 0, 5.2], text: 'Beams', wide: [-46, 0, 'r'], tall: [-8, 24, 'r'] },
-  { kind: 'tag', piece: 'shoji-front-l-0', at: [-0.95, 0, 0], text: 'Shoji screens', wide: [-46, 0, 'r'], tall: [-6, 60, 'r'] },
-  { kind: 'tag', piece: 'wall-left', at: [0, 0, 5.2], text: 'Plaster walls', wide: [-46, 0, 'r'], tall: [-6, 30, 'r'] },
-  { kind: 'tag', piece: 'mat-0', at: [-0.7, 0, 5.1], text: 'Tatami', wide: [-46, 8, 'r'], tall: [-6, 26, 'r'] },
+  { kind: 'tag', piece: 'roof-left', at: [-2.2, 0.4, 2.2], text: 'Roof', tall: [-14, -34, 'r'], col: ['roof-right', [0.55, -0.55, -0.55]] },
+  { kind: 'tag', piece: 'ceiling', at: [-6.9, 0, 5.7], text: 'Paper ceiling', tall: [-10, 26, 'r'], col: ['ceiling', [1, 0, -0.8]] },
+  { kind: 'tag', piece: 'frieze-left', at: [0, 0, 5.2], text: 'Beams', tall: [-8, 24, 'r'], col: ['frieze-right', [0, 0, -0.8]] },
+  { kind: 'tag', piece: 'shoji-front-l-0', at: [-0.95, 0, 0], text: 'Shoji screens', tall: [-6, 60, 'r'], col: ['shoji-right-b-1', [0, 0, -0.6]] },
+  { kind: 'tag', piece: 'wall-left', at: [0, 0, 5.2], text: 'Plaster walls', tall: [-6, 30, 'r'], col: ['wall-right-b', [0, 0, -0.6]] },
+  { kind: 'tag', piece: 'mat-0', at: [-0.7, 0, 5.1], text: 'Tatami floor', tall: [-6, 26, 'r'], col: ['platform-right', [1, 1, -0.2]] },
   { kind: 'chip', piece: 'painting', at: [0, 0.6, 0], title: 'Projects', sub: 'The alcove', wide: [24, 64, 'l'], tall: [-4, -58, 'r'] },
   { kind: 'chip', piece: 'desk', at: [0, 0.3, 0], title: 'The Ledger & Courses', sub: 'The writing desk', wide: [-64, -22, 'r'], tall: [-18, 58, 'l'] },
   { kind: 'chip', piece: 'table', at: [0, 0.6, 0], title: 'Right now', sub: 'The tea table', wide: [36, -72, 'l'], tall: [-30, -50, 'l'] },
   { kind: 'chip', fixed: [0, 5.15, 22], after: 'cabinet', title: 'On your way out', sub: 'The gate', wide: [44, -34, 'l'], tall: [26, 30, 'l'] },
 ];
+const TAGS = NAMES.filter(n => n.kind === 'tag');
 const SVG = 'http://www.w3.org/2000/svg';
 NAMES.forEach((n) => {
   const el = document.createElement('div');
@@ -73,6 +77,7 @@ NAMES.forEach((n) => {
 const DPR_MAX = 2;
 let W = 1, H = 1, trackLen = 1, readLen = 1, maxScroll = 1, dprCap = DPR_MAX, tall = false, stacked = false;
 const cardBox = { left: 0, top: 0, h: 0 };
+let colW = 0;
 const safe = { x0: 0, y0: 0, x1: 1, y1: 1 };
 function layout() {
   W = stage.clientWidth; H = stage.clientHeight;
@@ -86,6 +91,7 @@ function layout() {
   cardBox.left = cr.left; cardBox.h = cr.height;
   cardBox.top = cr.top + window.scrollY - maxScroll;      // where its top edge rests when the page is at its end
   NAMES.forEach((n) => { n.w = n.el.offsetWidth; n.h = n.el.offsetHeight; });
+  colW = Math.max(...TAGS.map(n => n.w)) + 52;                    // the room the column of layer names takes
   // the word stands on the room's dark wall: left of centre on a wide window, low on a tall one
   word.w = word.offsetWidth; word.h = word.offsetHeight; say.h = say.offsetHeight;
 }
@@ -128,6 +134,8 @@ function draw(y, t, yCard) {
   else if (!stacked) e = io(clamp((H * 1.15 - cardTop) / (H * 0.3)));
   else if (room) e = clamp((safe.y1 - (cardTop - 10)) / Math.max(1, safe.y1 - rest));
   else e = io(c);
+  const column = !stacked && !tall;                               // the layer names stand beside the drawing
+  if (column) safe.x1 -= colW * ss(ACT.apart0, ACT.apart0 + 0.06, T);
   if (!stacked) safe.x1 += (cardBox.left - 30 - safe.x1) * e;
   else if (room) { safe.y1 += (rest - safe.y1) * e; close = e; }
   if (view) view.render(T, t, safe, FROZEN ? null : sway, close);
@@ -146,15 +154,31 @@ function draw(y, t, yCard) {
 
   // the names: each appears as its piece lifts and rides with it
   if (!view) return;
+  // the column of layer names: it stands just right of the rightmost layer, and no name sits on another
+  let colX = 0, lastY = -1e9;
+  if (column) {
+    TAGS.forEach((n) => {
+      const p = view.piece(n.col[0]), q = p.obj.position, g = n.col[1];
+      view.project(q.x + g[0] * p.size.x / 2, q.y + g[1] * p.size.y / 2, q.z + g[2] * p.size.z / 2, pt);
+      n.cx = pt.x; n.cy = pt.y; n.ty = Math.max(pt.y, lastY + n.h + 6); lastY = n.ty;
+      if (pt.x > colX) colX = pt.x;
+    });
+    colX = Math.min(colX + 44, W - 14 - (colW - 52));
+  }
+  const edge = stacked ? W - 12 : W - 12 + (cardBox.left - 10 - (W - 12)) * e;
   NAMES.forEach((n) => {
-    const p = view.piece(n.piece || n.after);
-    // a tag is a passing caption: it comes with its layer and goes once the layer has settled; a chip stays
+    const inCol = column && n.kind === 'tag';
+    const p = view.piece(inCol ? n.col[0] : n.piece || n.after);
+    // in its column a tag stays once its layer has lifted; as a caption (a phone) it comes with its layer and
+    // goes once the layer has settled; a chip stays. Tags leave when the card comes.
     let a = ss(0.25, 0.8, p.k);
-    if (n.kind === 'tag') a *= (1 - ss(p.t1 + 0.035, p.t1 + 0.1, u)) * (1 - e);
+    if (inCol) a *= 1 - e;
+    else if (n.kind === 'tag') a *= (1 - ss(p.t1 + 0.035, p.t1 + 0.1, u)) * (1 - e);
     else if (stacked) a *= 1 - e;
     let ax = 0, ay = 0;
     if (a > 0.004) {
-      if (n.fixed) view.project(n.fixed[0], n.fixed[1], n.fixed[2], pt);
+      if (inCol) { pt.x = n.cx; pt.y = n.cy; }
+      else if (n.fixed) view.project(n.fixed[0], n.fixed[1], n.fixed[2], pt);
       else { const q = p.obj.position; view.project(q.x + n.at[0], q.y + n.at[1], q.z + n.at[2], pt); }
       ax = pt.x; ay = pt.y;
       // a name whose thing has left the window goes with it
@@ -165,12 +189,12 @@ function draw(y, t, yCard) {
       return;
     }
     if (n.shown !== true) { n.shown = true; n.el.style.visibility = 'visible'; n.line.style.visibility = 'visible'; n.dot.style.visibility = 'visible'; }
-    const off = tall ? n.tall : n.wide;
+    const off = inCol ? [colX - 8 - ax, n.ty - ay, 'l'] : tall ? n.tall : n.wide;
     let jx = ax + off[0];                                          // where the line meets the name
     const jy = ay + off[1];
     let lx = off[2] === 'r' ? jx - n.w - 8 : jx + 8;
-    if (lx < 12) { jx += 12 - lx; lx = 12; }                       // never off the window's edge
-    if (lx + n.w > W - 12) { jx -= lx + n.w - (W - 12); lx = W - 12 - n.w; }
+    if (lx < 12) { jx += 12 - lx; lx = 12; }                       // never off the window's edge, nor under the card
+    if (lx + n.w > edge) { jx -= lx + n.w - edge; lx = edge - n.w; }
     // names sit on whole device pixels, so their type is drawn crisp and the same however the page got here
     n.el.style.transform = `translate3d(${snap(lx)}px,${snap(jy - n.h / 2)}px,0)`;
     n.el.style.opacity = a.toFixed(3);
