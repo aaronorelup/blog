@@ -105,7 +105,7 @@
 
   function ready() { root.dataset.ready = '1'; }
   function now() { return FROZEN ? T_HELD : (performance.now() - t0) / 1000; }
-  var wasClose = null, tapped = false, arrivedAt = -100;
+  var wasClose = null, tapped = false, arrivedAt = -100, drawn = null;
 
   function draw(now) {
     raf = 0;
@@ -131,6 +131,10 @@
       at.x += (clamp(tx, -1, 1) - at.x) * k; at.y += (clamp(ty, -1, 1) - at.y) * k;
     }
     if (!FROZEN && !FIXED) api.pace(dt * 1000);
+    // with the time held, the same place and the same size are the same picture: it is not drawn twice
+    var key = FROZEN ? m.q.toFixed(5) + ':' + stage.offsetWidth + 'x' + stage.offsetHeight : '';
+    if (FROZEN && key === drawn) return;
+    drawn = key;
     api.frame(m.q, t, at.x, at.y, FORCE);
     if (!stage.classList.contains('is-live')) { stage.classList.add('is-live'); ready(); }
     if (DEBUG) meter(now, dt);

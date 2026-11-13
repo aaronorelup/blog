@@ -111,8 +111,12 @@ a { color: inherit; }
 .tail-links a { color: var(--accent); text-underline-offset: 3px; }
 
 /* ---------------------------------------------------------------- nothing moving: one screen, one still picture */
-.rm .chapter { height: var(--vh); }
-@media (prefers-reduced-motion: reduce) { .lead-rain { animation: none; } }
+/* the picture is held for two fifths of a screen of scroll, so that it can be looked at whole; the title plate stands
+   above it, not on it, and the soft edge made for the moving version is only a sliver */
+.rm .chapter { height: calc(var(--vh) * 1.4); }
+.rm .chapter::before { height: 9vh; }
+.rm .plate { top: auto; bottom: calc(100% + 3vh); }
+.rm .lead-rain { display: none; }
 .is-still .lead-rain { animation: none; }
 
 @media (max-width: 560px) {
