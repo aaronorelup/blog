@@ -44,7 +44,7 @@ html[data-room='live'] .room-chapter {
   padding: calc(var(--head) * 100lvh) 0 calc(var(--tail) * 100lvh);
 }
 html[data-room='live'] .room-chapter :is(.room-paper, .room-slot, .room-embed, a, button) { pointer-events: auto; }
-html[data-room='live'] .room-still { display: none; }
+html[data-room='live'] :is(.room-still, .room-still-lq) { display: none; }
 html[data-room='live'] .room-head {
   position: absolute; left: 0; top: 0; width: 1px; height: 1px; margin: 0; padding: 0; overflow: hidden;
   clip-path: inset(50%); white-space: nowrap;
@@ -82,6 +82,9 @@ html[data-room='live'] .room-hero-paper { height: 100lvh; align-items: flex-end;
 /* until the engine has placed the stage (boot.js sets data-room-placed), the hero's still stands in for its opening
    frame, fixed over the window, so the first paint is the garden and nothing on the stage is seen unplaced */
 html[data-room='live']:not([data-room-placed]) .room-stage { visibility: hidden; }
-html[data-room='live']:not([data-room-placed]) .is-hero > .room-still {
+html[data-room='live']:not([data-room-placed]) .is-hero > :is(.room-still, .room-still-lq) {
   display: block; position: fixed; inset: 0; z-index: 1; height: auto; margin: 0;
 }
+/* until the fonts are ready (boot.js sets data-room-fonts) paper and the index are not shown, so a face that arrives
+   late moves no line a reader has seen (no layout shift on a slow network, 2.2) */
+html[data-room='live']:not([data-room-fonts]) :is(.room-chapter > :not(.room-still, .room-still-lq), .room-index) { visibility: hidden; }

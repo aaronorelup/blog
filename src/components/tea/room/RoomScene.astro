@@ -4,10 +4,12 @@
 // layer. An opening's port stands directly behind the flat with the hole, in the same group, and holds a copy of
 // the scene behind at its opening frame (its flats, its word), and two deep only that scene's still (2.3). Plates
 // carry data-src (decoded before they get it, and drawn with decoding="sync", so a frame never shows one half
-// drawn), and load.js gives them their picture (the first chapter's carry src, for the first paint).
+// drawn), and load.js gives them their picture.
 // The engine (apply.js) places every element: nothing here has a place of its own.
-import sharp from 'sharp';
-import { publicFile } from '../../../lib/paths.js';
+// Every picture is fetched by load.js, for the composition in use only, so book mode fetches nothing the stage
+// alone draws: a plate holds BLANK until then, and the picture under the back plate holds the still's inlined
+// preview, so a scene that is on before its pictures have come shows its room, blurred, never the night ground.
+import { BLANK, preview, ratioOf } from '../../../lib/tea-preview.js';
 
 interface Props { room: any; sceneKey: string; layer: 'back' | 'front'; words: Record<string, any>; eager?: boolean }
 const { room, sceneKey, layer, words, eager = false } = Astro.props;
@@ -18,15 +20,24 @@ const inLayer = (f: any) => Boolean(f.front) === front;
 const backIndex = (sc: any) => sc.flats.findIndex((f: any) => f.r >= 1 && !f.through);
 // The picture under a scene's back plate while its plates load: whichever of its two stills has the back plate's
 // shape (a phone's composition may use the wide plate under an upright camera), so it is never stretched.
-const ratio = async (src: string) => { const m = await sharp(publicFile(src)).metadata(); return m.width / m.height; };
-const under: Record<string, string | null> = {};
-for (const comp of ['d', 'p']) {
-  const b = S[comp].flats[backIndex(S[comp])];
-  if (!S.still || !b?.box) { under[comp] = null; continue; }
+async function underOf(scene: any, comp: string) {
+  const b = scene[comp].flats[backIndex(scene[comp])];
+  if (!scene.still || !b?.box) return null;
   const want = b.box[2] / b.box[3];
-  const cands = await Promise.all([S.still.d, S.still.p].filter(Boolean).map(async (src: string) => [src, Math.abs(Math.log((await ratio(src)) / want))] as const));
+  const cands = await Promise.all([scene.still.d, scene.still.p].filter(Boolean).map(async (src: string) => [src, Math.abs(Math.log((await ratioOf(src)) / want))] as const));
   cands.sort((x, y) => x[1] - y[1]);
-  under[comp] = cands[0] && cands[0][1] < 0.05 ? cands[0][0] : null;
+  return cands[0] && cands[0][1] < 0.05 ? { src: cands[0][0], lq: await preview(cands[0][0]) } : null;
+}
+const under: Record<string, any> = {};
+for (const comp of ['d', 'p']) under[comp] = front ? null : await underOf(S, comp);
+// what a port's copy of the scene behind holds on its back plate until its plates come: that scene's preview
+const portLq: Record<string, any> = {};
+for (const comp of ['d', 'p']) {
+  for (const f of S[comp].flats) {
+    if (!f.through || !inLayer(f)) continue;
+    const u = await underOf(room.scenes[f.through.to], comp);
+    portLq[`${comp}/${f.through.to}`] = u?.lq ?? null;
+  }
 }
 ---
 <div class="room-group" data-scene={sceneKey} data-layer={layer} hidden={!eager}>
@@ -34,9 +45,8 @@ for (const comp of ['d', 'p']) {
     const sc = S[comp];
     return (
       <div class="room-comp" data-comp={comp}>
-        {!front && under[comp] && backIndex(sc) >= 0 && (
-          eager ? <img class="room-flat room-under" data-under src={under[comp]} alt="" decoding="sync" />
-            : <img class="room-flat room-under" data-under data-src={under[comp]} alt="" decoding="sync" />
+        {under[comp] && backIndex(sc) >= 0 && (
+          <img class="room-flat room-under" data-under src={under[comp].lq} data-src={under[comp].src} alt="" decoding="sync" />
         )}
         {sc.flats.map((f: any, i: number) => {
           if (!inLayer(f)) return null;
@@ -47,7 +57,7 @@ for (const comp of ['d', 'p']) {
                 {[...T[comp].flats.map((g: any, j: number) => [g, j]).filter(([g]: any) => !g.front),
                   ...T[comp].flats.map((g: any, j: number) => [g, j]).filter(([g]: any) => g.front)].map(([g, j]: any) => (
                   <Fragment>
-                    {g.src && <img class="room-flat" data-i={j} data-src={g.src} alt="" width={g.px[0]} height={g.px[1]} decoding="sync" />}
+                    {g.src && <img class="room-flat" data-i={j} src={(j === backIndex(T[comp]) && portLq[`${comp}/${f.through.to}`]) || BLANK} data-src={g.src} alt="" width={g.px[0]} height={g.px[1]} decoding="sync" />}
                     {g.fill && <div class="room-flat" data-i={j} data-fill={g.fill}></div>}
                     {g.text && (
                       <div class="room-flat room-word" data-i={j}>
@@ -58,7 +68,7 @@ for (const comp of ['d', 'p']) {
                     )}
                     {g.through && room.scenes[g.through.to]?.still?.[comp] && (
                       <div class="room-port" data-port="0"><div class="room-port-in">
-                        <img class="room-port-still" data-src={room.scenes[g.through.to].still[comp]} alt="" decoding="sync" />
+                        <img class="room-port-still" src={BLANK} data-src={room.scenes[g.through.to].still[comp]} alt="" decoding="sync" />
                       </div></div>
                     )}
                   </Fragment>
@@ -69,9 +79,7 @@ for (const comp of ['d', 'p']) {
           return (
             <Fragment>
               {port}
-              {f.src && (eager
-                ? <img class="room-flat" data-i={i} src={f.src} alt="" width={f.px[0]} height={f.px[1]} decoding="sync" />
-                : <img class="room-flat" data-i={i} data-src={f.src} alt="" width={f.px[0]} height={f.px[1]} decoding="sync" />)}
+              {f.src && <img class="room-flat" data-i={i} src={BLANK} data-src={f.src} alt="" width={f.px[0]} height={f.px[1]} decoding="sync" />}
               {f.fill && <div class="room-flat" data-i={i} data-fill={f.fill}></div>}
               {f.text && (
                 <div class="room-flat room-word" data-i={i}>

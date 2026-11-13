@@ -17,6 +17,12 @@
   background-color: var(--room-paper);
   background-image: linear-gradient(var(--room-tint), var(--room-tint)), url(/tea/shared/washi.webp);
   background-size: auto, 512px 512px;
+  /* its own layer, always: paper stands at fractional heights (lengths in lvh, text at line-heights of half
+     pixels), and a cut edge at a fractional height was drawn one way or another by whichever layer the browser had
+     put the sheet in, which depended on where the page had been scrolled from (a stripe of 1 px along a sheet's top
+     or foot, 0.2% of the frame at 760 and 390 wide). In a layer of its own it is drawn the same way however the
+     page got there. Not transform: that would trap a fixed child (a slot) in the sheet. */
+  will-change: opacity;
 }
 .room-edge-1 { clip-path: polygon(0 1px, 46% 1px, 46% 0, calc(100% - 1px) 0, calc(100% - 1px) 52%, 100% 52%, 100% calc(100% - 1px), 51% calc(100% - 1px), 51% 100%, 1px 100%, 1px 48%, 0 48%); }
 .room-edge-2 { clip-path: polygon(0 1px, 55% 1px, 55% 0, calc(100% - 0px) 0, calc(100% - 0px) 47%, 100% 47%, 100% calc(100% - 1px), 44% calc(100% - 1px), 44% 100%, 1px 100%, 1px 55%, 0 55%); }
@@ -37,7 +43,7 @@
   display: inline-flex; align-items: center; min-height: 44px; margin: 14px 0 0; padding: 10px 18px; border: 0;
   background: var(--room-paper) url(/tea/shared/washi.webp) 0 0 / 512px 512px; color: var(--room-ink); cursor: pointer;
   font: 600 calc(14px * var(--room-u)) / 1.2 var(--font-body);
-  clip-path: polygon(0 1px, 50% 1px, 50% 0, 100% 0, 100% 100%, 0 100%);
+  clip-path: polygon(0 1px, 50% 1px, 50% 0, 100% 0, 100% 100%, 0 100%); will-change: opacity;
 }
 .room-button-label { text-decoration: underline; text-decoration-color: var(--room-red); text-decoration-thickness: 1.5px; text-underline-offset: 0.22em; }
 /* the keyboard's ring on paper: 2 px vermilion (the accent's fourth place); on the world it is lamp-cream */

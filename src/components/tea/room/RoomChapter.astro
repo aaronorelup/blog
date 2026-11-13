@@ -7,6 +7,7 @@
 // opacity, a filter or a z-index on the section: it makes no stacking context.
 import { publicFile } from '../../../lib/paths.js';
 import sharp from 'sharp';
+import { preview } from '../../../lib/tea-preview.js';
 
 interface Props { ctx: any }
 const { ctx } = Astro.props;
@@ -18,12 +19,21 @@ const size = async (src: string) => {
 };
 const sd = still?.d ? await size(still.d) : null;
 const sp = still?.p ? await size(still.p) : null;
+// the hero's still as a tiny inlined picture under it, so the very first paint on a slow network is the garden,
+// blurred, while the still itself comes (2.9's first paint)
+const lq = hero && sd ? { d: await preview(still.d), p: still.p ? await preview(still.p) : null } : null;
 ---
 <section
   class:list={['room-chapter', `is-${chapter.id}`, { 'is-hero': hero, 'is-after-hero': afterHero, 'is-last': last }]}
   data-room-chapter={chapter.id} data-n={n.d} data-n-p={n.p}
   aria-labelledby={`${chapter.dom}-title`}
 >
+  {lq && (
+    <picture class="room-still-lq">
+      {lq.p && <source media="(orientation: portrait)" srcset={lq.p} />}
+      <img src={lq.d} alt="" width={sd.w} height={sd.h} decoding="sync" />
+    </picture>
+  )}
   {sd && (
     <picture class="room-still">
       {sp && <source media="(orientation: portrait)" srcset={still.p} width={sp.w} height={sp.h} />}

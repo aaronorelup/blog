@@ -72,16 +72,28 @@ async function start() {
     apply(f, page, L);
     last = f;
     fresh = true;
-    load.near(f.index.i, L, page);
+    load.near(f.index.i, f.on, L, page);
     want(f.index.i);
     const timed = drawAmbient(page.canvas, f.ambient, L);
     if (timed && !still && !reduced.matches && !doc.hidden) ask();
   }
 
+  // The stage is shown (data-room-placed) once the fonts are ready and the plates of the scene that is on have come
+  // (or failed), or as soon as the reader scrolls: until then the hero's still stands in for it, fixed over the
+  // window (stage.css). Paper is shown (data-room-fonts) once the fonts are ready, so a face that arrives late
+  // never moves a line a reader has seen.
+  const placed = () => { if (!('roomPlaced' in root.dataset)) root.dataset.roomPlaced = ''; };
+  const waitFirst = () => {
+    if ('roomPlaced' in root.dataset) return;
+    if (fonts && last && (scrollY > 0 || load.ready(last.on, L.comp) || load.failed(last.on, L.comp))) placed();
+    else requestAnimationFrame(waitFirst);
+  };
+  addEventListener('scroll', placed, { passive: true, once: true });
   layout();
-  root.dataset.roomPlaced = '';
+  waitFirst();
   await doc.fonts.ready;
   fonts = true;
+  root.dataset.roomFonts = '';
   layout();
   load.shared();
   watch(doc, () => { layout(); load.shared(); });
@@ -101,7 +113,7 @@ async function start() {
   });
   ask();
 
-  hooks.settled = () => Boolean(fonts && L && last && fresh && drawnAt === scrollY && !pending.size && load.decoded(last.on, page) &&
+  hooks.settled = () => Boolean(fonts && 'roomPlaced' in root.dataset && L && last && fresh && drawnAt === scrollY && !pending.size && load.decoded(last.on, L.comp, page) &&
     L.chapters.every((c, j) => Math.abs(j - last.index.i) > 1 || !PIECES[c.id] || pieces[c.id]));
   hooks.state = () => (L && last ? readBack(page, L, last.on) : null);
   Object.defineProperty(hooks, 'frame', { get: () => last, configurable: true });

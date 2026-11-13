@@ -4,8 +4,8 @@
    its paper in normal flow. Chapters change by a plain cut. Nothing moves. Everything here is undone or replaced
    under html[data-room='live'] (stage.css). */
 .room-chapter { min-height: 100vh; padding-bottom: 14vh; }
-.room-still { display: block; position: sticky; top: 0; height: 100vh; margin-bottom: -100vh; overflow: hidden; }
-.room-still img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.room-still, .room-still-lq { display: block; position: sticky; top: 0; height: 100vh; margin-bottom: -100vh; overflow: hidden; }
+.room-still img, .room-still-lq img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .room-head { position: relative; box-sizing: border-box; padding: 16vh 6vw 10vh var(--room-gutter); }
 .room-items { display: flex; flex-direction: column; gap: 9vh; }
 .is-hero { padding-bottom: 0; }
