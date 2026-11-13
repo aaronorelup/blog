@@ -5,7 +5,7 @@
 // of close (how far the card under the drawing has come up). Nothing is remembered from one frame to the next,
 // so any frame can be drawn at any moment, in any order.
 import {
-  AdditiveBlending, CanvasTexture, CircleGeometry, Mesh, MeshBasicMaterial, PCFSoftShadowMap, PerspectiveCamera,
+  AdditiveBlending, CanvasTexture, CircleGeometry, Group, Mesh, MeshBasicMaterial, PCFSoftShadowMap, PerspectiveCamera,
   Scene, Vector3, WebGLRenderer,
 } from 'three';
 import { ACT, cameraAt } from './camera.js';
@@ -34,7 +34,9 @@ export function mount(canvas) {
   const rig = makeRig(1);
   scene.add(rig.amb, rig.hemi, rig.dir);
   const sky = buildSky(kit, rnd(7));
-  scene.add(sky.dome, sky.clouds, sky.stars, sky.moon);
+  const heavens = new Group();                      // what turns with the evening: the clouds, the stars, the moon
+  heavens.add(sky.clouds, sky.stars, sky.moon);
+  scene.add(sky.dome, heavens);
   const ground = kit.part(new CircleGeometry(70, 40), kit.M.grass, [0, -0.02, 4], [-Math.PI / 2, 0, 0], 0);
   scene.add(ground);
   const garden = buildGarden(kit);
@@ -104,7 +106,9 @@ export function mount(canvas) {
   function extent() {
     let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
     for (const p of pieces) {
-      const c = p.obj.position, hx = p.size.x / 2, hy = p.size.y / 2, hz = p.size.z / 2;
+      const c = p.obj.position, hy = p.size.y / 2;
+      let hx = p.size.x / 2, hz = p.size.z / 2;
+      if (p.turn) hx = hz = Math.max(hx, hz);                 // a piece that turns: room for it either way round
       for (let i = 0; i < 8; i++) {
         v.set(c.x + (i & 1 ? hx : -hx), c.y + (i & 2 ? hy : -hy), c.z + (i & 4 ? hz : -hz)).project(camera);
         if (v.x < x0) x0 = v.x; if (v.x > x1) x1 = v.x; if (v.y < y0) y0 = v.y; if (v.y > y1) y1 = v.y;
@@ -121,6 +125,10 @@ export function mount(canvas) {
     const u = clamp((T - ACT.apart0) / (ACT.apart1 - ACT.apart0));
     const gaps = 1 - 0.3 * close;
     pose(pieces, pl, u, gaps);
+
+    // The sky turns a little as the scroll goes on, as it does over an evening, so the moon keeps company with
+    // the drawing while the camera walks round it. (A phone's narrow window starts with the moon nearer the roof.)
+    heavens.rotation.y = (tall ? -0.227 : 0) + (tall ? 0.183 : 0.384) * ss(0.3, 0.62, T);
 
     cameraAt(T, tall, cam);
     const out = sway ? ss(0.17, ACT.whole, T) : 0;
@@ -146,8 +154,12 @@ export function mount(canvas) {
       const b = extent(), bw = b.x1 - b.x0, bh = b.y1 - b.y0;
       const fit = Math.min(1, (safe.x1 - safe.x0) / bw, (safe.y1 - safe.y0) / bh);
       zoom = 1 + (fit - 1) * w;
-      const cx = W / 2 + ((b.x0 + b.x1) / 2 - W / 2) * zoom, cy = H / 2 + ((b.y0 + b.y1) / 2 - H / 2) * zoom;
-      const dx = ((safe.x0 + safe.x1) / 2 - cx) * w, dy = ((safe.y0 + safe.y1) / 2 - cy) * w;
+      // across, the drawing takes the middle of its space; up and down, it stays where the camera put it (so
+      // the sky, the moon and the garden keep their places) and is moved only as far as it must be to fit
+      const cx = W / 2 + ((b.x0 + b.x1) / 2 - W / 2) * zoom;
+      const top = H / 2 + (b.y0 - H / 2) * zoom, bottom = H / 2 + (b.y1 - H / 2) * zoom;
+      const dx = ((safe.x0 + safe.x1) / 2 - cx) * w;
+      const dy = (top < safe.y0 ? safe.y0 - top : bottom > safe.y1 ? safe.y1 - bottom : 0) * w;
       camera.setViewOffset(W, H, (W - W / zoom) / 2 - dx / zoom, (H - H / zoom) / 2 - dy / zoom, W / zoom, H / zoom);
     }
 
@@ -159,13 +171,15 @@ export function mount(canvas) {
 
     // each lantern's light goes where its lantern went; the room's soft bounce rises to sit among the walls
     lamps.lights.forEach((l, i) => {
+      let burn = 1;
       if (l === bounce) {
         l.light.position.y = l.home.y + (wallBack.obj.position.y - wallBack.home.y) * 0.72;
       } else if (l.follow) {
         const p = byName.get(l.follow);
         l.light.position.set(l.home.x + p.obj.position.x - p.home.x, l.home.y + p.obj.position.y - p.home.y, l.home.z + p.obj.position.z - p.home.z);
+        if (l.gain) burn = 1 + l.gain * p.k;
       }
-      l.light.intensity = l.base * (1 + 0.035 * Math.sin(time * 6.1 + i * 2.3) * Math.sin(time * 2.7 + i * 1.1));
+      l.light.intensity = l.base * burn * (1 + 0.035 * Math.sin(time * 6.1 + i * 2.3) * Math.sin(time * 2.7 + i * 1.1));
     });
 
     // the light on the path goes with the room that cast it

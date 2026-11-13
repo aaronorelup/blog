@@ -115,15 +115,21 @@ function draw(y, t, yCard) {
   let c = clamp((yCard - trackLen) / readLen);                            // the card coming up
   if (RM) { const s = stills(yCard); T = s.T; c = s.c; }
   const u = clamp((T - ACT.apart0) / (ACT.apart1 - ACT.apart0));
-  const e = io(c);
-  // the part of the window the drawing may use: all of it, less a margin, until the card comes up; then the
-  // drawing makes room, aside on a wide window, upward when the card sits under it
+  // The part of the window the drawing may use: all of it, less a margin, until the card comes; then the drawing
+  // makes room, and it goes by where the card's top edge is at this moment, so the two never overlap. Beside the
+  // card (a wide window) the drawing starts to move over just before the card shows and is clear of it when the
+  // card is a fifth of the way up. Over the card (a phone) the drawing's foot rides on the card's top edge.
+  // (On a phone too short to show both, the drawing keeps its place and the card comes up over it like a sheet.)
   const mx = Math.max(14, W * 0.045), my = Math.max(14, H * 0.055);
   safe.x0 = mx; safe.y0 = my; safe.x1 = W - mx; safe.y1 = H - my;
-  // (on a phone too short to show both, the drawing keeps its place and the card comes up over it like a sheet)
-  let close = 0;
-  if (stacked) { if (cardBox.top - 10 - safe.y0 >= 150) { safe.y1 += (cardBox.top - 10 - safe.y1) * e; close = e; } }
-  else safe.x1 += (cardBox.left - 30 - safe.x1) * e;
+  const cardTop = cardBox.top + (maxScroll - yCard), rest = cardBox.top - 10, room = rest - safe.y0 >= 150;
+  let e, close = 0;
+  if (RM) e = c;
+  else if (!stacked) e = io(clamp((H * 1.15 - cardTop) / (H * 0.3)));
+  else if (room) e = clamp((safe.y1 - (cardTop - 10)) / Math.max(1, safe.y1 - rest));
+  else e = io(c);
+  if (!stacked) safe.x1 += (cardBox.left - 30 - safe.x1) * e;
+  else if (room) { safe.y1 += (rest - safe.y1) * e; close = e; }
   if (view) view.render(T, t, safe, FROZEN ? null : sway, close);
   seen.T = T; seen.c = c; seen.y = y; seen.yCard = yCard;
 
@@ -146,14 +152,20 @@ function draw(y, t, yCard) {
     let a = ss(0.25, 0.8, p.k);
     if (n.kind === 'tag') a *= (1 - ss(p.t1 + 0.035, p.t1 + 0.1, u)) * (1 - e);
     else if (stacked) a *= 1 - e;
+    let ax = 0, ay = 0;
+    if (a > 0.004) {
+      if (n.fixed) view.project(n.fixed[0], n.fixed[1], n.fixed[2], pt);
+      else { const q = p.obj.position; view.project(q.x + n.at[0], q.y + n.at[1], q.z + n.at[2], pt); }
+      ax = pt.x; ay = pt.y;
+      // a name whose thing has left the window goes with it
+      a *= clamp((ax - 6) / 40) * clamp((W - 6 - ax) / 40) * clamp((ay - 6) / 40) * clamp((H - 6 - ay) / 40);
+    }
     if (a <= 0.004) {
       if (n.shown !== false) { n.shown = false; n.el.style.visibility = 'hidden'; n.line.style.visibility = 'hidden'; n.dot.style.visibility = 'hidden'; }
       return;
     }
     if (n.shown !== true) { n.shown = true; n.el.style.visibility = 'visible'; n.line.style.visibility = 'visible'; n.dot.style.visibility = 'visible'; }
-    if (n.fixed) view.project(n.fixed[0], n.fixed[1], n.fixed[2], pt);
-    else { const q = p.obj.position; view.project(q.x + n.at[0], q.y + n.at[1], q.z + n.at[2], pt); }
-    const off = tall ? n.tall : n.wide, ax = pt.x, ay = pt.y;
+    const off = tall ? n.tall : n.wide;
     let jx = ax + off[0];                                          // where the line meets the name
     const jy = ay + off[1];
     let lx = off[2] === 'r' ? jx - n.w - 8 : jx + 8;

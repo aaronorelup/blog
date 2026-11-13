@@ -9,7 +9,8 @@ import { BoxGeometry, ConeGeometry, CylinderGeometry, Group, PlaneGeometry, Poin
 export function buildLamps({ M, part, merge, at, piece }) {
   const pieces = [], lights = [], fixed = new Group();
   // follow: the piece the light travels with (null: it stays put)
-  const lamp = (light, follow) => { lights.push({ light, follow, home: light.position.clone(), base: light.intensity }); fixed.add(light); };
+  // gain: how much brighter it burns once its piece has reached its place in the drawing (0: no brighter)
+  const lamp = (light, follow, gain) => { lights.push({ light, follow, gain: gain || 0, home: light.position.clone(), base: light.intensity }); fixed.add(light); };
 
   // andon: slim wood frame, paper on four sides, warm core inside
   {
@@ -66,11 +67,11 @@ export function buildLamps({ M, part, merge, at, piece }) {
     part(new CylinderGeometry(0.16, 0.2, 0.05, 8), M.woodDark, [0, 0.03, 0]),
     part(new CylinderGeometry(0.035, 0.035, 0.34, 6), M.paper, [0, 0.22, 0], null, 0),
     part(new ConeGeometry(0.05, 0.16, 6), M.flame, [0, 0.47, 0], null, 0),
-  ])], { corner: 'projects', dir: [1, 0], out: 2.3, up: 0.1, seq: 3 }));
+  ])], { corner: 'projects', dir: [1, 0], out: 4.9, up: 0.7, along: [0.3, 1.2], seq: 3 }));   // it ends in front of the painting
   {
     const cl = new PointLight(0xFFCE86, 1.8, 9, 2);
     cl.position.set(6.7, 1.15, 1.15);
-    lamp(cl, 'candle');
+    lamp(cl, 'candle', 1.6);          // out in the open it has only the painting to light, and burns up a little
   }
 
   // garden toro: light the existing stone lanterns from inside their boxes
