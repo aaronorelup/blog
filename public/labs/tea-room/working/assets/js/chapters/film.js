@@ -9,6 +9,7 @@
    Everything drawn is a function of three things: q (the chapter's progress, which is the camera), the time (what
    moves by itself) and which moment of the reel is on (the light). ?m=3 picks the moment a held frame shows. */
 import { REEL } from './film-reel.js';
+import { PW, PH, FOCUS, FILM_UV, GLOW, homography, carry, clothH, FILMQ, FILM_MID, FILM_HGT, JOIN, diveEnd } from './join.js';
 
 var IMG = new URL('../../img/', import.meta.url).href;
 var CLIPS = REEL.clips, N = CLIPS.length;
@@ -21,42 +22,16 @@ var io = function (t) { t = clamp(t); return t < 0.5 ? 2 * t * t : 1 - Math.pow(
 var rnd = function (seed) { var s = seed >>> 0; return function () { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; };
 
 // ------------------------------------------------------------------ the plate's geometry (in its own pixels)
-var PW = 2752, PH = 1536, CX = PW / 2, CY = PH / 2;
-var CLOTH = [[1447, 398], [2199, 362], [2199, 908], [1447, 872]];   // the cloth's corners: it hangs a little turned, its right edge nearer
-var FOCUS = [1823, 634];                                            // the middle of the cloth: what the camera goes to
-var GLOW = { x: 638, y: 290, w: 1899, h: 1246 };                    // where the lamp's light lies on the plate
+// (the plate's size, the cloth's corners, the middle of the cloth the camera goes to, and where the film lies on the
+// cloth are in join.js: the games chapter throws its arena onto the same cloth)
+var CX = PW / 2, CY = PH / 2;
 var LAMP = [0.69, 0.50, 0.56];                                      // how much of each colour of that light a white picture throws
 var LENS = [0.948, 0.467];                                          // the lens, within the projector's picture
+// the arena's light, once it is on the cloth: the storm's grey, a little blue, a breath of its red fires
+var ARENA_LIGHT = [0.30, 0.30, 0.36], ARENA_BEAM = [214, 218, 232];
 // look B's own numbers for the title shot (diorama.js: layoutCinema, drawCinema, drawBeam)
 var B_CLOTH = [[1453, 404], [2202, 370], [2207, 929], [1445, 877]], B_M = 0.03, B_WORD_R = 0.96, B_K = 1.4;
 
-// a flat picture seen in perspective: the 3 x 3 matrix that carries four points to four points
-function homography(src, dst) {
-  var A = [], i, j, k;
-  for (i = 0; i < 4; i++) {
-    var x = src[i][0], y = src[i][1], X = dst[i][0], Y = dst[i][1];
-    A.push([x, y, 1, 0, 0, 0, -x * X, -y * X, X]);
-    A.push([0, 0, 0, x, y, 1, -x * Y, -y * Y, Y]);
-  }
-  for (i = 0; i < 8; i++) {
-    var best = i;
-    for (j = i + 1; j < 8; j++) if (Math.abs(A[j][i]) > Math.abs(A[best][i])) best = j;
-    var tmp = A[i]; A[i] = A[best]; A[best] = tmp;
-    for (j = 0; j < 8; j++) {
-      if (j === i) continue;
-      var f = A[j][i] / A[i][i];
-      for (k = i; k < 9; k++) A[j][k] -= f * A[i][k];
-    }
-  }
-  var h = [];
-  for (i = 0; i < 8; i++) h.push(A[i][8] / A[i][i]);
-  return h;
-}
-function carry(h, x, y) { var w = h[6] * x + h[7] * y + 1; return [(h[0] * x + h[1] * y + h[2]) / w, (h[3] * x + h[4] * y + h[5]) / w]; }
-var clothH = homography([[0, 0], [1, 0], [1, 1], [0, 1]], CLOTH);
-// the picture is thrown onto the middle of the cloth, 16 to 9 where it is widest, a band of bare cloth above and below
-var FILM_UV = [0.045, 0.1225, 0.955, 0.8775];
-var FILMQ = [carry(clothH, FILM_UV[0], FILM_UV[1]), carry(clothH, FILM_UV[2], FILM_UV[1]), carry(clothH, FILM_UV[2], FILM_UV[3]), carry(clothH, FILM_UV[0], FILM_UV[3])];
 var filmH = homography([[0, 0], [1280, 0], [1280, 720], [0, 720]], FILMQ);
 function onFilm(u, v) { return carry(clothH, lerp(FILM_UV[0], FILM_UV[2], u), lerp(FILM_UV[1], FILM_UV[3], v)); }
 function flick(t, seed) {                 // look B's lamp: steps, unevenly, about eight times a second
@@ -149,8 +124,8 @@ export function mount(host, options) {
   // Look B's model: the plate stands at distance 1; a flat at distance r passes faster. The camera is at (C, m): C
   // where it stands sideways and in height (plate pixels from the plate's middle), m how far in it has come. It always
   // looks straight ahead, so a move between two places is a straight walk and every flat keeps true to it.
-  var W = 0, H = 0, tall = false, narrow = false, S0 = 1, CD = 1, DPR = 1, span = 1;
-  var K0, K1, K1b, K2, K3, PJ0, PJ1, PJ2, BU0, wordB = [0, 0], sayB = [0, 0], wordPx = 100, sayPx = 20, wordW = 100, sayW = 50, leftEdge = 0;
+  var W = 0, H = 0, tall = false, narrow = false, S0 = 1, CD = 1, DPR = 1, span = 1, spanOld = 1, diveLen = 0;
+  var K0, K1, K1b, K2, K3, KD, PJ0, PJ1, PJ2, PJD, BU0, wordB = [0, 0], sayB = [0, 0], wordPx = 100, sayPx = 20, wordW = 100, sayW = 50, leftEdge = 0;
   var T = { a0: 0.1, a1: 1.5, b0: 3, b1: 4, dockA: 1.42, dockB: 1.72 };
   function camOf(s, fx, fy) {                      // the camera from which the plate is as large as s, the middle of the cloth at (fx, fy)
     return { m: 1 - S0 / s, C: [(W / 2 - (fx - FOCUS[0] * s)) / s - CX, (H / 2 - (fy - FOCUS[1] * s)) / s - CY] };
@@ -176,6 +151,9 @@ export function mount(host, options) {
     tall = W / H < 0.9; narrow = W <= 820;
     host.classList.toggle('tall', tall); top.classList.toggle('tall', tall);
     span = options.span();
+    // the dive into the cloth, at the chapter's end (the section's last part, .film-dive): everything before it is
+    // timed on the chapter as it was without it (spanOld), so the approved reel and its walk are as they were
+    diveLen = marks.dive ? clamp(span - (marks.dive.top - 1), 0, span) : 0; spanOld = span - diveLen;
     var cover = Math.max(W / PW, H / PH);
     S0 = cover * (tall ? 1.03 : 1.2);
     var rail = narrow ? 0 : (parseFloat(getComputedStyle(root).getPropertyValue('--rail-w')) || 172);
@@ -237,6 +215,11 @@ export function mount(host, options) {
     }
     var bw = tall ? W * 0.6 : W * 0.27;
     BU0 = { x: W * 0.94, y: H * 0.99, w: bw };
+    // the dive's end (join.js): the film's picture as tall as the screen, in its middle. The projector, nearer than
+    // the cloth, passes out of the frame low on its side while the camera goes in
+    var de = diveEnd(W, H);
+    KD = camOf(de.s, de.o[0] + FOCUS[0] * de.s, de.o[1] + FOCUS[1] * de.s);
+    PJD = { x: PJ2.x - (tall ? W * 0.5 : W * 0.32), y: PJ2.y + H * 0.95, w: PJ2.w * 2.2 };
 
     // the chapter's name and its one line, sized and placed by look B's rule
     wordPx = clamp(W * (tall ? 0.15 : 0.115), 52, 190); sayPx = clamp(W * 0.0175, 17, 27) * 0.8;
@@ -320,7 +303,7 @@ export function mount(host, options) {
   function clipUrl(i) { return '/media/tea/film/' + CLIPS[i].file + '.mp4'; }
   function posterUrl(i) { return IMG + 'film/poster/' + CLIPS[i].file + '.webp'; }
   function load(v, i) { v.dataset.i = String(i); v.muted = !reel.soundOn; v.preload = 'auto'; v.src = clipUrl(i); v.load(); }
-  function wantsPlay() { return alive && reel.started && reel.active && reel.seen && !document.hidden && !STILL && (!RM || reel.rmPlaying); }
+  function wantsPlay() { return alive && reel.started && reel.active && reel.seen && !reel.covered && !document.hidden && !STILL && (!RM || reel.rmPlaying); }
   function tryPlay(v) {
     var pr = v.play();
     if (pr && pr.catch) pr.catch(function (err) {
@@ -587,12 +570,17 @@ export function mount(host, options) {
     if (!alive) return false;
     if (!laid) { layout(); laid = true; setCard(reel.i); }
     var now = performance.now(), dt = Math.min(0.1, (now - lastNow) / 1000 || 0.016); lastNow = now;
-    var p = q * span, e1, e2, e3;
+    var p = q * span, e1, e2, e3, pd = diveLen > 0 ? clamp((p - spanOld) / diveLen) : 0, ed;
     if (RM) { e1 = p < T.rm1 ? 0 : 1; e2 = p < T.rm2 ? 0 : 1; e3 = e2; }            // nothing glides: three stills, changed by a cut
-    else { e1 = io(ss(T.a0, T.a1, p)); e2 = io(ss(T.b0, T.b1, p)); e3 = ss(T.b1, Math.max(T.b1 + 0.5, span), p); }
+    else { e1 = io(ss(T.a0, T.a1, p)); e2 = io(ss(T.b0, T.b1, p)); e3 = ss(T.b1, Math.max(T.b1 + 0.5, spanOld), p); }
+    ed = RM ? (pd < 0.5 ? 0 : 1) : io(pd);
     // (before the cloth the camera never quite stands still: it creeps in while the reel is watched, as look B's does)
     var creep = RM ? 0 : ss(T.a1, T.b0 + 0.1, p), K1c = creep > 0 ? between(K1, K1b, creep) : K1;
-    var cam = e2 <= 0 ? (e1 < 1 ? between(K0, K1, e1) : K1c) : e3 <= 0 ? between(K1c, K2, e2) : between(K2, K3, e3);
+    var cam = e2 <= 0 ? (e1 < 1 ? between(K0, K1, e1) : K1c) : e3 <= 0 ? between(K1c, K2, e2) : ed <= 0 ? between(K2, K3, e3) : between(K3, KD, ed);
+    // what the games chapter needs to throw its arena onto the cloth in this same frame (join.js)
+    JOIN.k = pd; JOIN.quad = FILMQ.map(function (c) { return plateXY(c, cam); }); JOIN.mid = plateXY(FILM_MID, cam); JOIN.h = FILM_HGT * scaleOf(cam);
+    var cover = JOIN.arena;                       // how much of the cloth the arena covered in the last frame (0 without it)
+    if ((cover > 0.995) !== !!reel.covered) { reel.covered = cover > 0.995; sync(); }
     var s = scaleOf(cam), o = plateXY([0, 0], cam), close = e1 * (1 - e2);
 
     // look B's white light gives way to the film
@@ -614,6 +602,7 @@ export function mount(host, options) {
       var pulse = HELD ? 0 : Math.exp(-(now / 1000 - cutAt) * 9);          // a splice passing the gate: the lamp dips for a blink
       var cur = reel.shown >= 0 ? reel.shown : reel.i;
       sample(cur, clipTime()); readLight();
+      if (cover > 0) for (var ac = 0; ac < 3; ac++) { want[ac] = lerp(want[ac], ARENA_LIGHT[ac], cover); beamCol[ac] = Math.round(lerp(beamCol[ac], ARENA_BEAM[ac], cover)); }
       var rate = HELD ? 1 : 1 - Math.exp(-dt * 9);
       for (var c = 0; c < 3; c++) kNow[c] += (want[c] * (1 - 0.3 * pulse) - kNow[c]) * rate;
       paintGlow(now);
@@ -630,7 +619,7 @@ export function mount(host, options) {
     setV(wordEl, wl < 0.9995); setV(sayEl, wsl < 0.9995);
 
     // the projector and the near leaves
-    var pjP = e2 <= 0 ? mixP(PJ0, PJ1, io(e1)) : mixP(PJ1, PJ2, io(e2));
+    var pjP = e2 <= 0 ? mixP(PJ0, PJ1, io(e1)) : ed <= 0 ? mixP(PJ1, PJ2, io(e2)) : mixP(PJ2, PJD, ed);
     var pj = { x: pjP.x - pjP.w / 2, y: pjP.y - pjP.w * 1009 / 618, w: pjP.w, h: pjP.w * 1009 / 618 };
     setT(projEl, box(pj.x, pj.y, pj.w, 618));
     var bk = clamp(e2 <= 0 ? e1 : 1 - e2), bw2 = BU0.w * (1 + 1.4 * bk), bxp = BU0.x + bk * W * 0.5, byp = BU0.y + bk * H * 0.42;
@@ -649,6 +638,7 @@ export function mount(host, options) {
     var lens = [pj.x + pj.w * LENS[0], pj.y + pj.h * LENS[1]];
     lx.setTransform(DPR, 0, 0, DPR, 0, 0); lx.clearRect(0, 0, W, H);
     var kD = ss(0.1, 0.45, e1);
+    kD *= 1 - ss(0.35, 0.8, ed);
     if (kD > 0.003) drawBeam(cam, t, lens, kD * (0.55 + 0.45 * (1 - (HELD ? 0 : Math.exp(-(now / 1000 - cutAt) * 9)))) * (0.75 + 0.25 * close), close < 0.5, pj);
     ax.setTransform(CD, 0, 0, CD, 0, 0); ax.clearRect(0, 0, W, H);
     if (tall) drawStars(cam, t, 1 - lit);
@@ -660,7 +650,7 @@ export function mount(host, options) {
     // the page's own furniture
     var so = Math.round(close * 0.9 * 100) / 100;
     if (so !== shadeO) { shade.style.opacity = so; shadeO = so; }
-    var dk = RM ? (e1 > 0 ? 1 : 0) : Math.round(io(ss(T.dockA, T.dockB, p)) * 200) / 200;
+    var dk = RM ? (e1 > 0 && pd < 0.5 ? 1 : 0) : Math.round(io(ss(T.dockA, T.dockB, p)) * (1 - io(ss(0, 0.28, pd))) * 200) / 200;
     if (dk !== dockK) {
       // the cards come up from under the frame, whole: never half-transparent over the lawn
       dock.style.visibility = dk > 0.005 ? '' : 'hidden';
@@ -675,14 +665,14 @@ export function mount(host, options) {
     } else {
       // on a tall screen the card that names the film steps down behind the sound while the posts pass, and comes
       // back for the page's last picture
-      var nk = RM ? (e2 > 0 && p < span - 0.2 ? 1 : 0) : io(ss(T.b0 - 0.05, T.b0 + 0.22, p)) * (1 - io(ss(span - 0.42, span - 0.08, p)));
+      var nk = RM ? (e2 > 0 && p < spanOld - 0.2 ? 1 : 0) : io(ss(T.b0 - 0.05, T.b0 + 0.22, p)) * (1 - io(ss(spanOld - 0.42, spanOld - 0.08, p)));
       setT(nowCard, nk <= 0 ? 'none' : 'translate3d(0,' + (nk * (nowCard.offsetHeight + soundCard.offsetHeight + 60)).toFixed(1) + 'px,0)');
       // while it is down, what rises from the foot of the screen (the posts) comes out of the night above the sound,
       // never from behind a hard edge
       setO(fog, nk);
     }
     if (RM) {                                          // the play button stands on the bare cloth under the picture, not on the picture
-      var show = e1 > 0 && !(tall && e2 > 0 && p < span - 0.3);      // (on a tall screen the posts pass over the cloth: not then)
+      var show = e1 > 0 && pd <= 0 && !(tall && e2 > 0 && p < spanOld - 0.3);      // (on a tall screen the posts pass over the cloth: not then)
       if (playBtn.hidden === show) playBtn.hidden = !show;
       if (show) {
         var pb = plateXY(onFilm(0.5, 1), cam), pc = plateXY(carry(clothH, 0.5, 1), cam), mid = [(pb[0] + pc[0]) / 2, (pb[1] + pc[1]) / 2 - 2];
@@ -690,7 +680,9 @@ export function mount(host, options) {
       }
     }
     // whole: look B's plate is in; and once the film shows, the night plate, its light and the first frame are in too
-    return got.lit && (!seen || (got.night && got.glow && got.poster && (kDone[0] >= 0 || !glowImg.naturalWidth)));
+    var whole = got.lit && (!seen || (got.night && got.glow && got.poster && (kDone[0] >= 0 || !glowImg.naturalWidth)));
+    JOIN.fresh = whole;                            // (the games chapter draws over this frame only if it is whole)
+    return whole;
   }
 
   wait(litImg, 'lit'); wait(nightImg, 'night'); wait(glowImg, 'glow');
@@ -704,7 +696,7 @@ export function mount(host, options) {
       sync();
     },
     dispose: function () {
-      alive = false;
+      alive = false; JOIN.fresh = false; JOIN.quad = null;
       cancelAnimationFrame(rmRaf);
       document.removeEventListener('visibilitychange', onVisibility);
       if (stillsEl) stillsEl.removeEventListener('click', onStill);

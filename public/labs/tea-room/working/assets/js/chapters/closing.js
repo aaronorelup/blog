@@ -5,7 +5,9 @@
    there it rises a little from below instead, and is whole after the first few steps.
    The note under it ("More chapters are on their way", in the page: .closing-note) stands still at the top of the
    screen (chapters.css makes it sticky): it comes on there, just after the name, in a few steps of scroll.
-   The words are the section's own: <section id="closing" data-word="Games" data-say="7 posts">.
+   The words are the section's own: <section id="closing" data-word="AI art|&amp; images" data-say="6 posts"> (a |
+   breaks the name into lines, as look B breaks "AI video / & film"). The note stands under the name, however many
+   lines it has: its place is set here from the name's height.
    When the next chapter is built its line goes above this one in chapters.js, and this beat names the one after. */
 var clamp = function (x, a, b) { return x < a ? a : x > b ? b : x; };
 var ss = function (a, b, x) { var t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
@@ -16,7 +18,8 @@ export function mount(host, options) {
   host.innerHTML = '<div class="flat word"></div><div class="flat say mono"></div>';
   var word = host.firstChild, say = host.lastChild, W = 0, H = 0, left = 0, wy = 0, sx = 0, sy = 0, laid = false, lastW = '', lastS = '', narrow = false;
   var note = options.section.querySelector('.closing-note'), lastN = -1;
-  word.textContent = options.section.dataset.word || ''; say.textContent = options.section.dataset.say || '';
+  (options.section.dataset.word || '').split('|').forEach(function (line) { var l = document.createElement('span'); l.className = 'l'; l.textContent = line; word.appendChild(l); });
+  say.textContent = options.section.dataset.say || '';
 
   function layout() {
     W = root.clientWidth; H = window.innerHeight;
@@ -27,6 +30,7 @@ export function mount(host, options) {
     word.style.fontSize = (wp * K) + 'px'; say.style.fontSize = (sp * 0.8 * K) + 'px';
     wy = H * (narrow ? 0.11 : 0.1);
     sx = left + wp * 0.08; sy = wy + word.offsetHeight / K + sp * 0.7;
+    if (note) note.style.top = Math.round(sy + say.offsetHeight / K + (narrow ? 22 : 30)) + 'px';
     lastW = lastS = '';
   }
   function put(el, x, y, k, was) {            // k: 0 off in the left wing (narrow: a little below, unseen), 1 in its place
@@ -59,6 +63,6 @@ export function mount(host, options) {
     },
     resize: function () { if (laid) layout(); },
     setActive: function () {},
-    dispose: function () { if (note) { note.style.opacity = ''; note.style.visibility = ''; note.style.transform = ''; } }
+    dispose: function () { if (note) { note.style.opacity = ''; note.style.visibility = ''; note.style.transform = ''; note.style.top = ''; } }
   };
 }

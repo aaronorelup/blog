@@ -8,6 +8,8 @@
 <link rel="stylesheet" href="assets/fonts/fonts.css">
 <link rel="stylesheet" href="assets/css/diorama.css">
 <link rel="stylesheet" href="assets/css/chapters.css">
+<!-- (the 3D chapters' library, by its plain name: fetched only when such a chapter is near) -->
+<script type="importmap">{ "imports": { "three": "./assets/lib/three.module.min.js" } }</script>
 </head>
 <body>
 <a class="skip" href="#start">Skip to the chapters</a>
@@ -72,8 +74,8 @@
 <nav class="paper small " id="rail" aria-label="Chapters"><div class="shadow"></div><div class="face"><div class="body"><ol><li><a href="#start">Start here</a></li>
 <li><a href="#tv">I Love My Evening Television</a></li>
 <li><a href="#film">AI video &amp; film</a></li>
-<li class="soon first"><span>Games</span></li>
-<li class="soon"><span>AI art &amp; images</span></li>
+<li><a href="#games">Games</a></li>
+<li class="soon first"><span>AI art &amp; images</span></li>
 <li class="soon"><span>3D &amp; animation</span></li>
 <li class="soon"><span>Working with AI agents</span></li>
 <li class="soon"><span>Learning to build with AI</span></li>
@@ -95,7 +97,7 @@
 <li><i>I</i><a href="#start">Start here</a></li>
 <li><i>II</i><a href="#tv">I Love My Evening Television</a></li>
 <li><i>III</i><a href="#film">AI video &amp; film</a></li>
-<li class="soon"><i>IV</i><span>Games</span><span class="c">to come</span></li>
+<li><i>IV</i><a href="#games">Games</a></li>
 <li class="soon"><i>V</i><span>AI art &amp; images</span></li>
 <li class="soon"><i>VI</i><span>3D &amp; animation</span></li>
 <li class="soon"><i>VII</i><span>Working with AI agents</span></li>
@@ -204,13 +206,37 @@
 <div><p class="label">Watching it changed my mind</p><h3><a class="go" href="https://aaronorelup.com/ledger/a-film-of-mit-s-ai-weight-editing-experiments-from-the-ai-s-side/">A film of MIT&#x27;s AI weight-editing experiments, from the AI&#x27;s side</a></h3></div></li></ul></div></div></div>
 <div class="paper small film-all"><div class="shadow"></div><div class="face"><div class="body"><p><a class="go" href="https://aaronorelup.com/ledger/?topic=video">All 16 posts</a></p></div></div></div>
 <div class="film-foot"></div>
+<div class="film-dive" data-mark="dive"></div>
+</section>
+
+<section id="games" class="chapter">
+<h2 class="vh">Games</h2><p class="vh">7 posts. Storm Bell Fighter&#x27;s own arena, alive on the cloth in the garden.</p>
+<div class="games-walk"></div>
+<div class="games-bell-track" data-mark="bell"><div class="games-bell-hold">
+<article class="paper games-bell"><div class="shadow"></div><div class="face"><div class="body">
+<p class="games-bell-meta"><span class="mono">AO-024</span><span>Games</span><span>Plays in the browser</span></p>
+<h3>Storm Bell Fighter</h3>
+<p class="games-bell-line">Jefrie and BloodTailor, three rounds in the mud under the cage dome. This is the game&#x27;s own arena, not a film of it.</p>
+<p class="games-bell-go"><a class="games-play" href="/games/storm-bell/">Play it <span aria-hidden="true">&#x2192;</span></a><a class="games-read" href="https://aaronorelup.com/ledger/storm-bell-fighter/">Read the post</a><span class="games-hint" aria-hidden="true"><span class="for-mouse">Click a fighter</span><span class="for-touch">Tap a fighter</span></span></p>
+</div></div></article>
+</div></div>
+<div class="paper strip games-picks" data-mark="picks"><div class="shadow"></div><div class="face"><div class="body"><p class="label">Games</p><ul><li><div class="win"><img class="media" data-src="/media/previews/modding-megabonk.webp" alt="Jefrie&#x27;s 3D model in Megabonk&#x27;s character select, scythe beside her, next to the panel listing her Heavy Scythe and Tail Spring" width="640" height="360"></div>
+<div><p class="label">Works, still in a test copy</p><h3><a class="go" href="https://aaronorelup.com/ledger/modding-megabonk/">Modding my own character into the game Megabonk</a></h3></div></li>
+<li><div class="win"><img class="media" data-src="/media/previews/characters-in-inscryption.webp" alt="Ichigo, Jefrie, Yusef and Siloam as ink-drawn Inscryption cards on Leshy&#x27;s table, under his Bullfrog and Grizzly cards" width="640" height="360"></div>
+<div><p class="label">Worked in three hours</p><h3><a class="go" href="https://aaronorelup.com/ledger/characters-in-inscryption/">Claude modded my characters into the card game Inscryption</a></h3></div></li>
+<li><div class="win"><img class="media" data-src="/media/previews/blackwater-weekend.webp" alt="A blocky green-faced zombie in a dark flooded cave, a pistol in the foreground" width="640" height="360"></div>
+<div><p class="label">Ask for tools, not fixes</p><h3><a class="go" href="https://aaronorelup.com/ledger/blackwater-weekend/">I built a cave-diving zombie game with AI in four days</a></h3></div></li>
+<li><div class="win"><img class="media" data-src="/media/previews/grind-and-grimoire.webp" alt="A blocky wizard in a purple robe and pointed hat skateboarding on a boardwalk outside a coffee shop" width="640" height="360"></div>
+<div><p class="label">Bigger prompt, worse game</p><h3><a class="go" href="https://aaronorelup.com/ledger/grind-and-grimoire/">How big a game one AI prompt can build</a></h3></div></li></ul></div></div></div>
+<div class="paper small games-all" data-mark="all"><div class="shadow"></div><div class="face"><div class="body"><p><a class="go" href="https://aaronorelup.com/ledger/?topic=games">All 7 games posts</a></p></div></div></div>
+<div class="games-foot" data-mark="foot"></div>
 </section>
 
 <!-- THE CLOSING BEAT, a draft (assets/js/chapters/closing.js): it names the chapter that comes next and says the page
      is still being built. "More chapters are on their way." is a draft line the owner has not read yet. The next
      chapter's section goes above this one, and this one then names the chapter after it. -->
-<section id="closing" class="chapter" data-word="Games" data-say="7 posts">
-<h2 class="vh">Next: Games</h2><p class="vh">7 posts</p>
+<section id="closing" class="chapter" data-word="AI art|&amp; images" data-say="6 posts">
+<h2 class="vh">Next: AI art &amp; images</h2><p class="vh">6 posts</p>
 <div class="closing-rest"><div class="paper small closing-note"><div class="shadow"></div><div class="face"><div class="body"><p>More chapters are on their way.</p></div></div></div></div>
 </section>
 </main>
