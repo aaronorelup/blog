@@ -344,10 +344,12 @@ export function mount(host, options = {}) {
     for (const t of trees) {
       const base = t.row === 0 ? (tall ? 2.3 : 3.2) + t.xr * 1.2 : (tall ? 4.5 : 6) + t.xr * 6;
       t.X = pathAt(t.Z) + t.side * base; t.last = '';
-      t.off = false;
+      // the wood opens round the tea house: nothing stands between the path's end and its door
+      t.off = t.Z > zHouse - 3.5 - (t.row ? 0 : 6) && Math.abs(t.X) < (t.row ? 9 : 12);
     }
     // a tree that would stand between the eye and a window, or in front of the card, is not planted
     for (const t of trees) {
+      if (t.off) continue;
       for (const p of P) {
         const cam = camAt(p.s.i), d = t.Z - cam.z; if (d < 0.6 || t.Z > p.wZ + 0.5) continue;
         const sc = f / d, hpx = t.h * sc, wpx = hpx * TREE.w / TREE.h, sx = cx + (t.X - cam.x) * sc;
@@ -395,6 +397,7 @@ export function mount(host, options = {}) {
     // --- the sky
     stars.style.backgroundPosition = (-lean * 0.4 - camZ * 0.4).toFixed(1) + 'px 0';
     const mr = (tall ? 0.16 * W : 0.06 * W);
+    moon.style.opacity = tall ? '1' : (1 - (walking ? 1 - ss(0.62, 0.9, Math.abs(k - front)) : 0) * (k > -0.6 && k < N - 0.4 ? 1 : 0)).toFixed(3);
     moon.style.transform = 'translate3d(' + ((tall ? 0.74 : 0.8) * W - mr - lean * 0.5).toFixed(1) + 'px,' + (hY - (tall ? 0.5 : 0.36) * H - mr).toFixed(1) + 'px,0)';
     {
       const cw = (tall ? 3.2 : 1.6) * W, ch = cw * 350 / 2816;
@@ -403,7 +406,7 @@ export function mount(host, options = {}) {
 
     // --- the tea house at the end of the path
     {
-      const d = zHouse - camZ, hw = 11, w = f * hw / d, s = w / HOUSE.w;
+      const d = zHouse - camZ, hw = 17, w = f * hw / d, s = w / HOUSE.w;
       const sx = gxs(0, d) - lean * 0.6, y = hY + f * camY / d - HOUSE.lawn * s;
       house.style.transform = 'translate3d(' + (sx - HOUSE.door * s).toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) scale(' + s.toFixed(5) + ')';
     }
@@ -536,14 +539,14 @@ export function mount(host, options = {}) {
             show(p, 'winShown', p.win); flats++;
             const tr = hold >= 1 ? 'translate(' + Math.round(x) + 'px,' + Math.round(y) + 'px)' : 'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) scale(' + s.toFixed(5) + ')';
             if (tr !== p.lastW) { p.win.style.transform = tr; p.win.style.zIndex = String(Math.round(100000 - p.wZ * 100)); p.lastW = tr; }
-            const dim = Math.round((1 - litO) * 0.55 * 100) / 100;
+            const dim = Math.round((1 - litO) * 0.3 * 100) / 100;
             if (dim !== p.lastWin) { p.win.style.setProperty('--dim', dim); p.lastWin = dim; }
             const wo = Math.round((1 - gone) * (1 - ss(FAR - 8, FAR, d)) * 100) / 100;
             if (wo !== p.lastWo) { p.win.style.opacity = wo; p.lastWo = wo; }
-            if (u < 1.6) wantPic(p);
+            if (u < 2.4) wantPic(p);
           }
         }
-        if (still && u < 1.6) wantPic(p);
+        if (still && u < 2.4) wantPic(p);
       }
       // the card
       {
@@ -566,7 +569,7 @@ export function mount(host, options = {}) {
       else {
         endCard.style.visibility = 'visible'; endCard.style.opacity = eo.toFixed(3);
         const ew = endCard.offsetWidth, eh = endCard.offsetHeight;
-        const ey = tall ? 0.16 * H : 0.2 * H;
+        const ey = tall ? 0.1 * H : 0.08 * H;
         endCard.style.transform = 'translate3d(' + Math.round((W - ew) / 2) + 'px,' + Math.round(ey + (1 - eo) * 14 - (tall ? 0 : eh * 0)) + 'px,0)';
       }
     }
