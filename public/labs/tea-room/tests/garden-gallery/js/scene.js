@@ -54,10 +54,12 @@ export function mount(host, options = {}) {
   const moon = make('div', 'gg-flat gg-moon');
   const cloudsA = picture('gg-flat gg-clouds', IMG('clouds.webp'));
   const cloudsB = picture('gg-flat gg-clouds', IMG('clouds.webp'));
+  const far = make('canvas', 'gg-layer gg-far'); const fx = far.getContext('2d');
   const ground = make('canvas', 'gg-layer gg-ground'); const gx = ground.getContext('2d');
   const house = picture('gg-flat gg-house', IMG('tea-house.webp'));
   const plate = picture('gg-flat gg-plate', IMG('cinema-garden.webp'));
   const air = make('canvas', 'gg-layer gg-air'); const ax = air.getContext('2d');
+  make('div', 'gg-vignette');
   const shade = make('div', 'gg-shade');
   const caption = make('div', 'gg-caption'); const capTitle = make('b', '', caption); const capSay = make('span', '', caption);
 
@@ -77,6 +79,14 @@ export function mount(host, options = {}) {
     g.addColorStop(0, 'rgba(255,246,190,1)'); g.addColorStop(0.18, 'rgba(240,226,130,0.75)'); g.addColorStop(0.5, 'rgba(190,210,90,0.16)'); g.addColorStop(1, 'rgba(160,200,80,0)');
     x.fillStyle = g; x.fillRect(0, 0, 48, 48);
   })();
+  // a lantern too far away to be a picture: a warm point of light
+  const dot = doc.createElement('canvas'); dot.width = dot.height = 32;
+  (function () {
+    const x = dot.getContext('2d'); const g = x.createRadialGradient(16, 16, 0, 16, 16, 16);
+    g.addColorStop(0, 'rgba(255,236,190,1)'); g.addColorStop(0.25, 'rgba(255,200,120,0.8)'); g.addColorStop(0.6, 'rgba(240,150,80,0.18)'); g.addColorStop(1, 'rgba(230,130,70,0)');
+    x.fillStyle = g; x.fillRect(0, 0, 32, 32);
+  })();
+  const dots = (function () { const R = rnd(77), a = []; for (let i = 0; i < 130; i++) a.push({ e: R(), xr: R(), v: 0.004 + R() * 0.004, ph: R() * 6.28, r: 0.6 + R() * 0.8 }); return a; })();
 
   // the trees: two rows that make the avenue, and on a wide screen the wood behind them
   const TR = rnd(20261113);
@@ -103,6 +113,15 @@ export function mount(host, options = {}) {
     t.el.style.visibility = 'hidden'; t.shown = false; t.last = ''; t.lo = -1;
   }
 
+  // bushes close to the camera, dark and out of focus, along the edges of the avenue
+  const bushes = [];
+  for (let z = 1, j = 0; z < zEndOfWood + 8; z += 2.3 + TR() * 1.4, j++) {
+    const side = j % 2 ? 1 : -1, b = { side, Z: z, xr: TR(), wr: 0.8 + TR() * 0.5, shown: false, last: '', lo: -1 };
+    b.el = picture('gg-flat', IMG(side < 0 ? 'near-bush-l.webp' : 'near-bush-r.webp'));
+    b.el.width = 550 / 2; b.el.height = (side < 0 ? 250 : 250) / 2; b.el.style.zIndex = String(Math.round(100000 - z * 100)); b.el.style.visibility = 'hidden';
+    bushes.push(b);
+  }
+
   // the pictures
   const P = pics.map((d, i) => {
     const b = make('button', 'gg-pic'); b.type = 'button'; b.setAttribute('aria-label', d.title + '. Bring this picture forward'); b._i = i;
@@ -112,7 +131,8 @@ export function mount(host, options = {}) {
     const hi = make('img', 'gg-hi', frame); hi.alt = ''; hi.decoding = 'async'; hi.draggable = false;
     const dim = make('i', 'gg-dim', frame);
     b.style.visibility = 'hidden';
-    return { d, i, a: d.w / d.h, s: i % 2 ? -1 : 1, el: b, halo, string, cap, tassel, lo, hi, dim, hiState: 0, shown: false, last: '', lz: -1, lDim: -1, lHalo: -1, lStr: -1, lOp: -1, rect: null };
+    const glow = make('i', 'gg-flat gg-glow'); glow.style.visibility = 'hidden';
+    return { d, i, a: d.w / d.h, s: i % 2 ? -1 : 1, el: b, halo, string, cap, tassel, lo, hi, dim, glow, gShown: false, gLast: '', gOp: -1, hiState: 0, shown: false, last: '', lz: -1, lDim: -1, lHalo: -1, lStr: -1, lOp: -1, rect: null };
   });
 
   host.appendChild(world);
@@ -128,16 +148,22 @@ export function mount(host, options = {}) {
   const env = (k) => ss(-1.1, -0.1, k) * (1 - ss(N - 0.8, N + 0.2, k));
   const camAt = (k) => { const wv = Math.cos(Math.PI * k) * env(k); return { x: A * wv, y: EYE + B * wv, z: Z0 - DH + k * DZ }; };
   const zHouse = Z0 - DH + (kEnd + SLOPE * (1 - QB) / 2) * DZ + 13;
+  // The sky's river of lanterns, from its foot (t = 0) to its head (t = 1). Low and near, they are large and spread
+  // wide; high and far, they are small and draw together beside the moon.
+  const river = (t) => {
+    const n = 1 - t;
+    return { n, e: E0 + (Emax - E0) * Math.pow(t, 0.75), x: lerp(0.5, tall ? 0.36 : 0.4, t) + (tall ? 0.06 : 0.05) * Math.sin(t * 5.2 + 0.8), spread: lerp(tall ? 0.5 : 0.34, tall ? 0.9 : 0.98, Math.pow(n, 0.85)) };
+  };
 
   function layout() {
     W = host.clientWidth || 1; H = host.clientHeight || 1; tall = W / H < 0.9;
     DPR = Math.min((doc.defaultView && doc.defaultView.devicePixelRatio) || 1, 1.5);
     const heroPx = tall ? 0.88 * W : Math.min(0.46 * W, 0.92 * H);
-    f = heroPx * DH / 1.5; cx = W / 2; cy = (tall ? 0.46 : 0.47) * H;
-    A = tall ? 0 : 0.5; B = tall ? 0.5 : 0; EYE = tall ? 1.75 : 1.6;
-    const off = tall ? 0.3 : 0.62;
+    f = heroPx * DH / 1.5; cx = W / 2; cy = (tall ? 0.48 : 0.53) * H;
+    A = tall ? 0 : 0.5; B = tall ? 0.66 : 0; EYE = tall ? 1.85 : 1.6;
+    const off = tall ? 0.22 : 0.62;
     Emax = tall ? 2.55 : 1.72; Tmax = (Emax + 0.12) * H - cy;
-    moonE = tall ? 2.2 : 1.5; moonX = tall ? 0.66 : 0.7; moonR = tall ? 0.15 * W : 0.062 * W;
+    moonE = tall ? 2.18 : 1.46; moonX = tall ? 0.68 : 0.64; moonR = tall ? 0.17 * W : 0.068 * W;
     houseW = (tall ? 4.2 : 2.2) * W * 13 / f;
     panDist = (tall ? 1.5 : 1.12) * W;
     plateS = tall ? 0.9 * W / 752 : Math.max(W / PLATE.w, H / PLATE.h) * 1.04;
@@ -146,9 +172,10 @@ export function mount(host, options = {}) {
     plateY = cy - PLATE.horizon * plateS;
     plate.style.width = PLATE.w * plateS + 'px'; plate.style.height = PLATE.h * plateS + 'px';
 
-    for (const c of [ground, air]) {
-      const dp = c === air ? 1 : DPR; c.width = Math.round(W * dp); c.height = Math.round(H * dp);
+    for (const c of [ground, air, far]) {
+      const dp = c === ground ? DPR : 1; c.width = Math.round(W * dp); c.height = Math.round(H * dp);
     }
+    for (const b of bushes) { b.X = b.side * ((tall ? 1.3 : 2.1) + b.xr * (tall ? 0.3 : 0.6)); b.w = (tall ? 1.5 : 2.3) * b.wr; b.last = ''; }
     sky.style.height = (H + Tmax + 0.3 * H) + 'px';
     moon.style.width = moon.style.height = 2 * moonR + 'px'; moon.style.fontSize = moonR / 4 + 'px';
 
@@ -161,13 +188,12 @@ export function mount(host, options = {}) {
     const SR = rnd(tall ? 99 : 42);
     const order = P.map((_, i) => i);
     for (let i = N - 1; i > 0; i--) { const j = Math.floor(SR() * (i + 1)); const o = order[i]; order[i] = order[j]; order[j] = o; }
-    const cols = tall ? 4 : 8, rows = Math.ceil(N / cols);
     order.forEach((i, j) => {
-      const p = P[i], r = Math.floor(j / cols), c = j % cols;
-      p.e = E0 + (r + 0.12 + 0.76 * SR()) / rows * (Emax - E0);
-      p.xs = clamp((c + 0.5 + (SR() - 0.5) * 0.7 + (r % 2 ? 0.22 : -0.22)) / cols, 0.07, 0.93);
-      p.n = SR(); p.v = 0.006 + SR() * 0.006; p.ph = SR() * 6.28;
-      p.skyW = (tall ? lerp(54, 112, p.n) : lerp(72, 168, Math.pow(p.n, 1.3)) * Math.sqrt(W / 1440)) * Math.sqrt(Math.min(p.a, 1.8) / 1.5);
+      const p = P[i];
+      p.e = (j + 0.2 + 0.6 * SR()) / N;                           // its place in the river's height, 0 to 1
+      p.xs = mod(j * 0.618034 + 0.13, 1);                         // and across it: neighbours in height stand apart
+      p.ph = SR() * 6.28;
+      p.af = Math.sqrt(Math.min(p.a, 1.8) / 1.5);
     });
 
     for (const p of P) {
@@ -245,6 +271,7 @@ export function mount(host, options = {}) {
   const state = { index: -1, k: 0, phase: 'turn', open: -1, flats: 0 };
 
   function hide(o) { if (o.shown) { o.el.style.visibility = 'hidden'; o.shown = false; } }
+  function glowOff(p) { if (p.gShown) { p.glow.style.visibility = 'hidden'; p.gShown = false; } }
   function show(o) { if (!o.shown) { o.el.style.visibility = 'visible'; o.shown = true; } }
 
   function frame(q, time, pointer) {
@@ -304,10 +331,11 @@ export function mount(host, options = {}) {
       const z0s = Math.ceil((camZ + 0.9) / 1.3) * 1.3;
       for (let z = z0s + 26; z >= z0s; z -= 1.3) {
         if (z > zEndOfWood + 12) continue;
-        const d = z - camZ, rx = f * 0.42 / d, ry = Math.max(0.6, f * 0.42 * camY * 0.55 / (d * d)), x = gxs(0.22 * Math.sin(z * 1.7), d), y = gy(d);
+        const d = z - camZ, rx = f * 0.36 / d, ry = Math.max(0.6, f * 0.36 * camY * 0.55 / (d * d)), x = gxs(0.22 * Math.sin(z * 1.7), d), y = gy(d);
         const fade = (1 - ss(16, 26, d)) * grove;
         g.globalAlpha = fade; g.fillStyle = '#0e1320'; g.beginPath(); g.ellipse(x, y + ry * 0.18, rx + 2.5, ry + 2.5, 0, 0, 6.3); g.fill();
-        g.fillStyle = '#39424c'; g.beginPath(); g.ellipse(x, y, rx, ry, 0, 0, 6.3); g.fill();
+        g.fillStyle = '#28313c'; g.beginPath(); g.ellipse(x, y, rx, ry, 0, 0, 6.3); g.fill();
+        g.fillStyle = '#343f4b'; g.beginPath(); g.ellipse(x - rx * 0.06, y - ry * 0.16, rx * 0.84, ry * 0.7, 0, 0, 6.3); g.fill();
       }
       g.globalAlpha = 1;
       // pools of light
@@ -315,10 +343,10 @@ export function mount(host, options = {}) {
       for (let i = Math.max(0, hero - 1); i < Math.min(N, hero + 8); i++) {
         const p = P[i], u = clamp((k - i) / 1.3); if (u >= 0.6) continue;
         const d = p.Z - camZ; if (d < 0.7) continue;
-        const x = gxs(p.X, d), y = gy(d), rx = f * 1.9 / d, ry = f * 1.9 * camY * 0.6 / (d * d), al = 0.34 * (1 - u / 0.6) * (1 - ss(8, 20, d)) * grove;
+        const x = gxs(p.X, d), y = gy(d), rx = f * 2.2 / d, ry = f * 2.2 * camY * 0.6 / (d * d), al = 0.5 * (1 - u / 0.6) * (1 - ss(8, 20, d)) * grove;
         g.save(); g.translate(x, y); g.scale(1, ry / rx);
         const rg = g.createRadialGradient(0, 0, 0, 0, 0, rx);
-        rg.addColorStop(0, 'rgba(255,206,130,' + al.toFixed(3) + ')'); rg.addColorStop(0.5, 'rgba(230,170,100,' + (al * 0.4).toFixed(3) + ')'); rg.addColorStop(1, 'rgba(200,140,80,0)');
+        rg.addColorStop(0, 'rgba(255,214,150,' + al.toFixed(3) + ')'); rg.addColorStop(0.3, 'rgba(240,184,112,' + (al * 0.55).toFixed(3) + ')'); rg.addColorStop(0.65, 'rgba(210,150,90,' + (al * 0.18).toFixed(3) + ')'); rg.addColorStop(1, 'rgba(200,140,80,0)');
         g.fillStyle = rg; g.beginPath(); g.arc(0, 0, rx, 0, 6.3); g.fill(); g.restore();
       }
       g.globalCompositeOperation = 'source-over';
@@ -354,6 +382,19 @@ export function mount(host, options = {}) {
       if (op !== t.lo) { t.el.style.opacity = op; t.lo = op; }
     }
 
+    // --- bushes close to the camera
+    for (let i = 0; i < bushes.length; i++) {
+      const b = bushes[i], d = b.Z - camZ;
+      const op = d > 1 && d < 5.4 ? Math.round(ss(1.2, 2.2, d) * (1 - ss(3.6, 5.2, d)) * grove * 40) / 40 : 0;   // only while it is close
+      if (op <= 0) { hide(b); continue; }
+      const sc = f / d, wpx = b.w * sc, hpx = wpx * 250 / 550, left = cx + pan + (b.X - camX) * sc - wpx / 2, top = hY + camY * sc - hpx * 0.8;
+      if (left > W || left + wpx < 0 || top > H) { hide(b); continue; }
+      show(b); flats++;
+      const tr = 'translate3d(' + left.toFixed(1) + 'px,' + top.toFixed(1) + 'px,0) scale(' + (wpx / 275).toFixed(4) + ')';
+      if (tr !== b.last) { b.el.style.transform = tr; b.last = tr; }
+      if (op !== b.lo) { b.el.style.opacity = op; b.lo = op; }
+    }
+
     // --- a picture brought forward
     let fwd = 0;
     if (openIdx >= 0) {
@@ -364,15 +405,16 @@ export function mount(host, options = {}) {
     shade.classList.toggle('gg-on', fwd > 0.02);
 
     // --- the pictures
-    const skyOn = T > 0 || k > 1.4;
+    const skyIn = ss(N - 3.2, N - 1.4, k);                // the sky fills as the grove thins
+    const skyMin = tall ? 40 : 54 * Math.sqrt(W / 1440), skyMax = tall ? 118 : 156 * Math.sqrt(W / 1440);
     for (let i = 0; i < N; i++) {
       const p = P[i], kr = k - i, u = clamp(kr / 1.3);
-      let sx, sy, wpx, ang = 0, dimO = 0, haloO = 1, strO = 1, op = 1, z;
+      let sx, sy, wpx, ang = 0, dimO = 0, haloO = 1, strO = 1, op = 1, z, gO = 0;
       if (u < 1) {                                                   // hanging in the avenue, or just let go
         let d;
         if (u <= 0) {
           d = p.Z - camZ;
-          if (d > FAR_PIC) { hide(p); continue; }
+          if (d > FAR_PIC) { hide(p); glowOff(p); continue; }
           sx = cx + pan + f * (p.X - camX) / d; sy = hY - f * (p.Y - camY) / d;
           ang = 0.9 * Math.sin(time * 0.7 + i * 1.7) + 0.5 * Math.sin(time * 1.13 + i);
           op = (1 - ss(FAR_PIC - 5, FAR_PIC, d)) * grove;
@@ -389,27 +431,28 @@ export function mount(host, options = {}) {
         wpx = f * p.ww / d;
         dimO = 0.66 * ss(DH + 0.2, 9, d);
         haloO = 0.5 + 0.5 * (1 - ss(DH, 10, d));
+        gO = u < 0.5 ? (1 - ss(5, 12, d)) * (1 - u * 2) * grove * (tall ? 0.75 : 1) : 0;
       } else {                                                       // in the sky
-        const vis = ss(i + 1.5, i + 2.6, k);
-        if (!skyOn || vis <= 0.002) { hide(p); continue; }
-        const span = Emax + 0.42 - (E0 - 0.14), e = E0 - 0.14 + mod(p.e - (E0 - 0.14) + time * p.v, span), pf = 0.86 + 0.3 * p.n;
-        sx = cx + (p.xs - 0.5) * W * (0.94 + 0.14 * p.n) - px * (8 + 24 * p.n) + Math.sin(time * 0.27 + p.ph) * 7 * (0.4 + p.n);
-        sy = hY - e * H * pf + Math.sin(time * 0.41 + p.ph * 2) * 4;
-        wpx = p.skyW; ang = 2.2 * Math.sin(time * 0.33 + p.ph);
-        op = vis * ss(E0 - 0.14, E0 + 0.04, e) * (1 - ss(Emax + 0.22, Emax + 0.42, e));
-        dimO = 0.22 * (1 - p.n); haloO = 1; strO = 0;
-        z = 10 + Math.round(p.n * 80);
+        const vis = ss(i + 1.5, i + 2.6, k) * skyIn;
+        if (vis <= 0.002) { hide(p); glowOff(p); continue; }
+        const t = mod(p.e + time * 0.0045, 1), r = river(t);     // it drifts up the river, and comes round again
+        sx = (r.x + (p.xs - 0.5) * r.spread) * W - px * (6 + 26 * r.n) + Math.sin(time * 0.27 + p.ph) * 6 * (0.3 + r.n);
+        sy = hY - r.e * H + Math.sin(time * 0.41 + p.ph * 2) * 4 * (0.3 + r.n);
+        wpx = lerp(skyMin, skyMax, Math.pow(r.n, 1.8)) * p.af; ang = 2.4 * Math.sin(time * 0.33 + p.ph);
+        op = vis * ss(0, 0.05, t) * (1 - ss(0.93, 1, t));
+        dimO = 0.16 * (1 - r.n); haloO = 1; strO = 0;
+        z = 10 + Math.round(r.n * 80);
       }
       let hpx = wpx / p.a;
       if (i === openIdx && fwd > 0) {
         const tw = Math.min(0.92 * W, 0.78 * H * p.a), th = tw / p.a;
         sx = lerp(sx, W / 2, fwd); sy = lerp(sy, 0.445 * H, fwd); wpx = lerp(wpx, tw, fwd); hpx = wpx / p.a;
-        ang *= 1 - fwd; dimO *= 1 - fwd; strO *= 1 - fwd; op = lerp(op, 1, fwd); haloO = lerp(haloO, 0.5, fwd); z = 300001;
+        ang *= 1 - fwd; dimO *= 1 - fwd; strO *= 1 - fwd; op = lerp(op, 1, fwd); haloO = lerp(haloO, 0.5, fwd); gO *= 1 - fwd; z = 300001;
         p.cap.style.opacity = p.tassel.style.opacity = (1 - fwd).toFixed(3);
         caption.style.opacity = fwd.toFixed(3);
         caption.style.transform = 'translate3d(' + (W / 2).toFixed(1) + 'px,' + (0.445 * H + th / 2 + 20).toFixed(1) + 'px,0) translateX(-50%)';
       }
-      if (op <= 0.003 || sx + wpx < -80 || sx - wpx > W + 80 || sy + hpx * 0.5 + 60 < 0 || sy - hpx * 0.5 - p.L * (wpx / p.bw) > H) { hide(p); continue; }
+      if (op <= 0.003 || sx + wpx < -80 || sx - wpx > W + 80 || sy + hpx * 0.5 + 60 < 0 || sy - hpx * 0.5 - p.L * (wpx / p.bw) > H) { hide(p); glowOff(p); continue; }
       show(p); flats++;
       const s = wpx / p.bw, top = sy - hpx / 2;
       const tr = 'translate3d(' + (sx - p.bw / 2).toFixed(2) + 'px,' + (top - p.L * s + p.L).toFixed(2) + 'px,0) scale(' + s.toFixed(5) + ') rotate(' + ang.toFixed(3) + 'deg)';
@@ -419,9 +462,30 @@ export function mount(host, options = {}) {
       haloO = Math.round(haloO * 50) / 50; if (haloO !== p.lHalo) { p.halo.style.opacity = haloO; p.lHalo = haloO; }
       strO = Math.round(strO * 50) / 50; if (strO !== p.lStr) { p.string.style.opacity = strO; p.lStr = strO; }
       op = Math.round(op * 100) / 100; if (op !== p.lOp) { p.el.style.opacity = op; p.lOp = op; }
-      p.rect = { x: sx - wpx / 2, y: top, w: wpx, h: hpx };
+      // the lantern's light in the air, in front of the trees just this side of it
+      gO = Math.round(gO * 40) / 40;
+      if (gO > 0) {
+        const gs = wpx * (tall ? 2.5 : 3), gt = 'translate3d(' + (sx - gs / 2).toFixed(1) + 'px,' + (sy - gs / 2).toFixed(1) + 'px,0) scale(' + (gs / 400).toFixed(4) + ')';
+        if (!p.gShown) { p.glow.style.visibility = 'visible'; p.gShown = true; }
+        if (gt !== p.gLast) { p.glow.style.transform = gt; p.glow.style.zIndex = String(z + 240); p.gLast = gt; }
+        if (gO !== p.gOp) { p.glow.style.opacity = gO; p.gOp = gO; }
+      } else glowOff(p);
     }
     if (openIdx < 0) caption.style.opacity = '0';
+
+    // --- lanterns too far to be pictures: points of light up the river
+    fx.setTransform(1, 0, 0, 1, 0, 0); fx.clearRect(0, 0, far.width, far.height);
+    if (skyIn > 0.01) {
+      fx.globalCompositeOperation = 'lighter';
+      for (let i = 0; i < dots.length; i++) {
+        const dt = dots[i], t = mod(dt.e + time * dt.v, 1), r = river(0.3 + 0.7 * t);
+        const y = hY - (r.e + 0.22 * t + 0.05 * Math.sin(dt.ph)) * H; if (y < -12 || y > H + 12) continue;
+        const x = (r.x + (dt.xr - 0.5) * r.spread * 1.3) * W - px * 4, rad = (tall ? 3 : 4) * dt.r * (0.7 + 1.6 * r.n);
+        fx.globalAlpha = skyIn * ss(0, 0.06, t) * (1 - ss(0.9, 1, t)) * (0.6 + 0.4 * Math.sin(time * 0.9 + dt.ph));
+        fx.drawImage(dot, x - rad, y - rad, 2 * rad, 2 * rad);
+      }
+      fx.globalAlpha = 1; fx.globalCompositeOperation = 'source-over';
+    }
 
     // --- which pictures are wanted large
     const walking = k > -0.8 && k < N - 0.2;
