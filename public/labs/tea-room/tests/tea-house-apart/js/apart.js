@@ -2,7 +2,7 @@
 //   ?y=0.37     sets the scroll to that share of the page
 //   ?still=1    holds the time and draws exactly the frame the scroll asks for (no glide)
 //   ?t=12.4     holds the time at that second but leaves the scroll and its glide alive
-// With prefers-reduced-motion nothing glides: the page shows four still pictures, one to a screen.
+// With prefers-reduced-motion nothing glides: the page shows still pictures, one to a screen, with a dissolve between.
 import { ACT } from './camera.js';
 import { mount } from './scene.js';
 
@@ -96,18 +96,24 @@ const seen = { T: 0, c: 0, y: 0, yCard: 0 };        // what the last frame was d
 function setStyle(el, key, val) { if (el['_' + key] !== val) { el['_' + key] = val; el.style[key] = val; } }
 const snap = (x) => { const d = window.devicePixelRatio || 1; return Math.round(x * d) / d; };
 
+// Readers who asked for less motion get still pictures, one to a screen: inside the room, the whole house, the
+// house half apart, the house apart; and a fifth, the drawing moved over to make room for the card. Beside the
+// drawing, the card gets its room the moment its top edge comes into the window, so it never lies over the
+// drawing; under the drawing (a phone), when it has come a good third of the way up, so the screen is never
+// left half empty. key names the picture.
+const STILLS = [0, ACT.apart0, ACT.apart0 + (ACT.apart1 - ACT.apart0) * 0.47, 1];
+function stills(y) {
+  const s = clamp(y / trackLen), i = s < 0.2 ? 0 : s < 0.4 ? 1 : s < 0.6 ? 2 : 3;
+  const c = i === 3 && cardBox.top + (maxScroll - y) < (stacked ? H * 0.62 : H - 6) ? 1 : 0;
+  return { T: STILLS[i], c, key: i * 2 + c };
+}
+
 // y: where the camera is on the page (it glides after the scroll); yCard: where the page itself is. The card is
 // part of the page, so the room the drawing leaves for it follows the page, and the two move as one.
 function draw(y, t, yCard) {
   let T = clamp(y / trackLen);
   let c = clamp((yCard - trackLen) / readLen);                            // the card coming up
-  // readers who asked for less motion get four still pictures, one to a screen, changed by a cut: inside the
-  // room, the whole house, the house half apart, the house apart; and the drawing makes room for the card in
-  // one step, when the card is half way up
-  if (RM) {
-    T = T < 0.2 ? 0 : T < 0.4 ? ACT.whole : T < 0.6 ? ACT.apart0 + (ACT.apart1 - ACT.apart0) * 0.47 : 1;
-    c = clamp((yCard - (trackLen - window.innerHeight)) / (readLen + window.innerHeight)) > 0.55 ? 1 : 0;
-  }
+  if (RM) { const s = stills(yCard); T = s.T; c = s.c; }
   const u = clamp((T - ACT.apart0) / (ACT.apart1 - ACT.apart0));
   const e = io(c);
   // the part of the window the drawing may use: all of it, less a margin, until the card comes up; then the
@@ -115,9 +121,10 @@ function draw(y, t, yCard) {
   const mx = Math.max(14, W * 0.045), my = Math.max(14, H * 0.055);
   safe.x0 = mx; safe.y0 = my; safe.x1 = W - mx; safe.y1 = H - my;
   // (on a phone too short to show both, the drawing keeps its place and the card comes up over it like a sheet)
-  if (stacked) { if (cardBox.top - 10 - safe.y0 >= 150) safe.y1 += (cardBox.top - 10 - safe.y1) * e; }
+  let close = 0;
+  if (stacked) { if (cardBox.top - 10 - safe.y0 >= 150) { safe.y1 += (cardBox.top - 10 - safe.y1) * e; close = e; } }
   else safe.x1 += (cardBox.left - 30 - safe.x1) * e;
-  if (view) view.render(T, t, safe, FROZEN ? null : sway);
+  if (view) view.render(T, t, safe, FROZEN ? null : sway, close);
   seen.T = T; seen.c = c; seen.y = y; seen.yCard = yCard;
 
   // the chapter's word, there when you arrive, gone as the camera backs away
@@ -202,14 +209,25 @@ function frame(now) {
   if (!FROZEN) requestAnimationFrame(frame);
 }
 
+// Held still (?still=1, or less motion asked for): a frame is drawn when the page has scrolled, not on a clock.
+// One still picture gives way to the next by a short dissolve through the night, never by a move.
+let shown = -1, cut = 0;
+function paint() { yS = window.scrollY; if (RM) shown = stills(yS).key; draw(yS, time(0), yS); }
+function once() {
+  if (RM && !STILL && shown !== -1 && stills(window.scrollY).key !== shown) {
+    if (!cut) { stage.classList.add('cut'); cut = setTimeout(() => { cut = 0; paint(); stage.classList.remove('cut'); }, 170); }
+    return;
+  }
+  paint();
+}
+
 function start() {
   layout();
   const yq = parseFloat(qs.get('y'));
   if (!isNaN(yq)) window.scrollTo(0, Math.round(clamp(yq) * maxScroll));
   if (FROZEN) {
-    const once = () => { yS = window.scrollY; draw(yS, time(0), yS); };
     window.addEventListener('scroll', once, { passive: true });
-    once();
+    paint();
   } else requestAnimationFrame(frame);
   requestAnimationFrame(() => requestAnimationFrame(() => {
     root.classList.add('ready');
@@ -221,7 +239,7 @@ function start() {
 }
 
 let rz = 0;
-window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { layout(); if (FROZEN) draw(window.scrollY, time(0), window.scrollY); }, 80); });
-if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layout(); if (FROZEN) draw(window.scrollY, time(0), window.scrollY); });
+window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { layout(); if (FROZEN) paint(); }, 80); });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { layout(); if (FROZEN) paint(); });
 if ('scrollRestoration' in history && !isNaN(parseFloat(qs.get('y')))) history.scrollRestoration = 'manual';
 start();

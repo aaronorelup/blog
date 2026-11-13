@@ -55,20 +55,22 @@ export function plan(pieces, tall) {
 }
 
 // Puts every piece where it is at u. First a piece lifts clear, then it slides, and it rests square.
+// close: 1 leaves the drawing as planned; less than 1 closes the gaps between its layers by that share (on a
+// phone the finished drawing closes up a little to sit, still whole, above the card).
 const carry = {};
-export function pose(pieces, pl, u) {
+export function pose(pieces, pl, u, close = 1) {
   let acc = 0;
   for (let i = ORDER.length - 1; i >= 0; i--) {
     const name = ORDER[i], T = TIERS[name];
     carry[name] = acc;
-    acc += T.gap * pl.V * io(clamp((u - T.win[0]) / pl.lead[name] * 1.22));
+    acc += T.gap * pl.V * close * io(clamp((u - T.win[0]) / pl.lead[name] * 1.22));
   }
   for (const p of pieces) {
     const k = clamp((u - p.t0) / (p.t1 - p.t0)), c = carry[p.tier];
-    if (k === p.k && c === p.c) continue;
-    p.k = k; p.c = c;
+    if (k === p.k && c === p.c && close === p.cl) continue;
+    p.k = k; p.c = c; p.cl = close;
     const ky = io(clamp(k * 1.22)), kh = io(clamp((k - 0.22) / 0.78));
-    p.obj.position.set(p.home.x + p.slide[0] * kh, p.home.y + c + p.rise * ky, p.home.z + p.slide[1] * kh);
+    p.obj.position.set(p.home.x + p.slide[0] * kh, p.home.y + c + p.rise * close * ky, p.home.z + p.slide[1] * kh);
     const a = Math.sin(Math.PI * k) * p.lean;
     p.obj.rotation.set(a * p.tz, 0, -a * p.tx);
   }

@@ -165,10 +165,12 @@ main { position: relative; z-index: 1; pointer-events: none; }
   .back { font-size: 10px; }
 }
 
-/* nothing glides for readers who ask for less motion: four still pictures, one to a screen (js/apart.js) */
+/* nothing glides for readers who ask for less motion: still pictures, one to a screen, and a short dissolve
+   through the night from one to the next (js/apart.js) */
 @media (prefers-reduced-motion: reduce) {
   :root { --track: 500vh; }
-  .hint { display: none; }
+  #scene, #leaders, #labels, .word, .say, .hint { transition: opacity 0.17s linear; }
+  #stage.cut #scene, #stage.cut #leaders, #stage.cut #labels, #stage.cut .word, #stage.cut .say, #stage.cut .hint { opacity: 0 !important; }
 }
 
 /* where the picture cannot be drawn, the page is one frame of the finished drawing and the card under it */
