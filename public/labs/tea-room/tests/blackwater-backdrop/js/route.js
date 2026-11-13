@@ -11,8 +11,8 @@ export const HOLD_AT = 0.8; // from here on the camera has arrived and holds
 // [q, position, look-at]
 export const KEYS = [
   [0.0, [13.0, 1.6, 7.0], [9.4, -1.0, 2.8]],        // the camp on the shore shelf: the table, the cot, the lamp post, the pool beyond
-  [0.07, [12.9, 1.55, 6.9], [9.3, -1.1, 2.7]],      // (still there while the chapter comes into view)
-  [0.13, [8.8, 0.4, 5.4], [1.0, -5.5, -1.0]],      // walking to the water's edge
+  [0.12, [12.85, 1.55, 6.85], [9.3, -1.1, 2.7]],    // (still there while the chapter comes into view and a little after)
+  [0.165, [8.8, 0.4, 5.4], [1.0, -5.5, -1.0]],      // walking to the water's edge
   [0.2, [1.0, -7.0, 1.8], [0.0, -13.0, -5.0]],      // under: the pool's bowl, and the lamp finds the throat in its floor
   [0.31, [0.2, -10.8, -0.6], [0.0, -16.0, -6.6]],     // the throat opens below, in the lamp's oval
   [0.43, [0.0, -12.2, -3.6], [0.0, -17.6, -9.0]],   // down the throat
