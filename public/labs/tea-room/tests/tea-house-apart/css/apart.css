@@ -165,13 +165,14 @@ main { position: relative; z-index: 1; pointer-events: none; }
   .back { font-size: 10px; }
 }
 
-/* nothing glides for readers who ask for less motion: three still pictures, one to a screen (js/apart.js) */
+/* nothing glides for readers who ask for less motion: four still pictures, one to a screen (js/apart.js) */
 @media (prefers-reduced-motion: reduce) {
-  :root { --track: 300vh; }
+  :root { --track: 500vh; }
   .hint { display: none; }
 }
 
-/* without WebGL the page is the card on the night ground */
-.flat #stage { display: none; }
-.flat #track { display: none; }
-.flat #read { justify-content: center; }
+/* where the picture cannot be drawn, the page is one frame of the finished drawing and the card under it */
+.poster { display: none; width: min(100%, 980px); height: auto; border-radius: 24px; }
+.flat #stage, .flat #track { display: none; }
+.flat #read { flex-direction: column; justify-content: center; align-items: center; gap: 22px; }
+.flat .poster { display: block; }
