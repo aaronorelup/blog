@@ -66,8 +66,8 @@ button { font: inherit; color: inherit; }
 
 /* the picture on the cloth: 1280 x 720, leaned onto the cloth by one matrix; its edge is soft, as thrown light is */
 .film { left: 0; top: 0; width: 1280px; height: 720px; transform-origin: 0 0; overflow: hidden; background: rgb(8, 9, 18);
-  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 9px, #000 calc(100% - 9px), transparent 100%), linear-gradient(to bottom, transparent 0, #000 9px, #000 calc(100% - 9px), transparent 100%);
-  -webkit-mask-composite: source-in; mask-image: linear-gradient(to right, transparent 0, #000 9px, #000 calc(100% - 9px), transparent 100%), linear-gradient(to bottom, transparent 0, #000 9px, #000 calc(100% - 9px), transparent 100%); mask-composite: intersect; }
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 5px, #000 calc(100% - 5px), transparent 100%), linear-gradient(to bottom, transparent 0, #000 5px, #000 calc(100% - 5px), transparent 100%);
+  -webkit-mask-composite: source-in; mask-image: linear-gradient(to right, transparent 0, #000 5px, #000 calc(100% - 5px), transparent 100%), linear-gradient(to bottom, transparent 0, #000 5px, #000 calc(100% - 5px), transparent 100%); mask-composite: intersect; }
 .shot { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; }
 video.shot { opacity: 0; }
 video.shot.on { opacity: 1; }

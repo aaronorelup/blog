@@ -495,7 +495,7 @@
     paintGlow(now);
 
     // the flats
-    place(F.lead, cam, 1 - ss(0.16, 0.42, e));
+    place(F.lead, cam, 1 - ss(0.012, 0.075, e));        // the name is gone before the edge of the screen can cut it
     var pj = place(F.proj, cam, 1);
     place(F.bl, cam, ss(0.015, 0.07, F.bl.r - cam.m));
     place(F.br, cam, ss(0.015, 0.07, F.br.r - cam.m));
@@ -518,8 +518,9 @@
     if (so !== shadeO) { shade.style.opacity = so; shadeO = so; }
     var dk = Math.round(io(ss(0.5, 0.66, q)) * 200) / 200;
     if (dk !== dockK) {
-      dock.style.visibility = dk > 0.005 ? 'visible' : 'hidden'; dock.style.opacity = dk;
-      dock.style.transform = dk >= 1 ? 'none' : 'translate3d(0,' + ((1 - dk) * 34).toFixed(1) + 'px,0)';
+      // the cards come up from under the frame, whole: never half-transparent over the lawn
+      dock.style.visibility = dk > 0.005 ? 'visible' : 'hidden'; dock.style.opacity = 1;
+      dock.style.transform = dk >= 1 ? 'none' : 'translate3d(0,' + ((1 - dk) * (dock.offsetHeight + 60)).toFixed(1) + 'px,0)';
       dockK = dk;
     }
     if (RM) {                                          // the play button stands in the middle of the picture
