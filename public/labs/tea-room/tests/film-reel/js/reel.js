@@ -392,9 +392,10 @@
   }
 
   // ------------------------------------------------------------------ the beam
-  // The beam is painted small and laid over the screen three times larger, so it has no edge anywhere: a fan of light
-  // from the lens, in the colours of the picture it carries, thinning out as it nears the cloth.
-  var beamCv = document.createElement('canvas'), bx = beamCv.getContext('2d'), BS = 3, canConic = !!bx.createConicGradient;
+  // The beam is painted small and laid over the screen four times larger, so it has no edge anywhere: a fan of light
+  // from the lens, in the colours of the picture it carries, thinning out as it nears the cloth. It is the dearest
+  // thing on the page to paint, so while the camera stands still it is painted afresh twenty times a second, not sixty.
+  var beamCv = document.createElement('canvas'), bx = beamCv.getContext('2d'), BS = 4, canConic = !!bx.createConicGradient, beamAt = -1, beamKey = '';
   function wrapA(a) { while (a > Math.PI) a -= 6.2832; while (a < -Math.PI) a += 6.2832; return a; }
   function drawBeam(cam, t, lens, k, wide, pj) {
     var fq = FILMQ.map(function (p) { return plateXY(p, cam); }), i, j;
@@ -415,6 +416,9 @@
     }
     if (canConic && span > 0.02 && span < 3) {
       var bw = beamCv.width, bh = beamCv.height, L0 = lens[0] / BS, L1 = lens[1] / BS;
+      var key = cam.s.toFixed(4) + ':' + cam.tx.toFixed(1) + ':' + cam.ty.toFixed(1) + ':' + lens[0].toFixed(1) + ':' + bw, nowMs = performance.now();
+      if (key !== beamKey || nowMs - beamAt > 48 || HELD) {
+      beamKey = key; beamAt = nowMs;
       bx.setTransform(1, 0, 0, 1, 0, 0); bx.globalCompositeOperation = 'source-over'; bx.globalAlpha = 1; bx.clearRect(0, 0, bw, bh);
       // where across the fan each sixth of the picture lies
       var ca = [];
@@ -440,7 +444,8 @@
       // the picture outshines the beam that crosses it
       bx.globalCompositeOperation = 'destination-out'; bx.fillStyle = 'rgba(0,0,0,0.82)';
       bx.beginPath(); bx.moveTo(fq[0][0] / BS, fq[0][1] / BS); bx.lineTo(fq[1][0] / BS, fq[1][1] / BS); bx.lineTo(fq[2][0] / BS, fq[2][1] / BS); bx.lineTo(fq[3][0] / BS, fq[3][1] / BS); bx.closePath(); bx.fill();
-      lx.globalAlpha = clamp(k * fl * (wide ? (tall ? 0.7 : 1) : 1)); lx.imageSmoothingEnabled = true; lx.imageSmoothingQuality = 'high';
+      }
+      lx.globalAlpha = clamp(k * fl * (wide ? (tall ? 0.7 : 1) : 1)); lx.imageSmoothingEnabled = true;
       lx.drawImage(beamCv, 0, 0, bw, bh, 0, 0, bw * BS, bh * BS);
       lx.globalAlpha = 1;
     }
