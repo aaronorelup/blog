@@ -15,7 +15,8 @@ File names are the same. A builder who read the first version of this page needs
   set, on a 2160 x 3840 canvas (it was 1536 x 2752). Its geometry is all new: the table in its section.
 - `tv-face.webp` is 3602 x 3330 (it was 2752 x 2476): the same picture at its master's full size, with its
   plinth lengthened to the model's height. Every number of its geometry is new: the table in its section.
-- `tv.webp`: the same size and the same glass box. The glass's corners moved by up to 3 px.
+- `tv.webp`: the same size and the same glass box. The glass's corners moved by a few px. It now has the
+  garden's night painted into it, and a heavier ink line.
 - All three sets have new colours (the table in the television's section) and no wood grain.
 - `screen.webp`: the same size and the same geometry. Its paper is thinner (alpha 0.09 where plain, not 0.2),
   so the field's colour comes through clean, and the pale pixels along its ink lines are gone.
@@ -74,7 +75,7 @@ def crisp(rgb, radius=1.6, amount=1.6, reach=2):          # rgb: float array, he
 | `washi.webp` | 512, 512 | 6,320 | no | the paper tile. Tiles both ways. Its mean colour is the paper colour `#F1E6D0` |
 | `screen.webp` | 1776, 2000 | 292,690 | yes | one sliding screen: cedar frame and lattice opaque, the paper see-through |
 | `sheet-shadow.webp` | 384, 384 | 4,284 | yes | the one shadow under a sheet or a slip, as a nine-slice |
-| `tv.webp` | 2254, 2048 | 168,960 | yes | the little television, three-quarter view, cut out, its glass a hole |
+| `tv.webp` | 2254, 2048 | 135,520 | yes | the little television, three-quarter view, cut out, its glass a hole |
 | `tv-face.webp` | 3602, 3330 | 293,296 | yes | the same set seen from the front, whole, cut out, its glass a hole |
 | `tv-face-p.webp` | 2160, 3840 | 153,914 | yes | the same front picture at a phone's size, on a 9:16 canvas |
 | `shadow-example.webp` | 1620, 720 | 22,112 | yes | the worked example of a screen shadow: a lantern and a kettle |
@@ -206,9 +207,24 @@ of that material in the file, in the night key the set has in the garden:
 | Aerial rods, and their base | `rgb(174, 165, 156)`, `rgb(50, 40, 50)` |
 | Ink line | `rgb(21, 14, 18)` (the garden plate's is `rgb(16, 13, 14)`) |
 
+That table is `tv-face.webp` and `tv-face-p.webp`, which are lit evenly so that each chapter can light them.
 The stage has no filter and no blend mode, so a chapter that needs the set in another light (the cold room,
 the three gardens of the fall) makes its own graded copy of `tv-face.webp` by script and keeps the geometry
 below unchanged.
+
+**`tv.webp` has the garden's night painted into it**, because it stands in one place only, the garden at the
+top of the page, and nothing on the stage can tint it. Every colour of the table is multiplied by 0.72 (the
+wood, the knobs) to 0.80 (the pale frame) and cooled by `(0.95, 0.98, 1.12)`, so the wood in the light is
+`rgb(67, 46, 36)` and the frame `rgb(166, 154, 143)`. The frame takes up to 30% more light, a little blue,
+within 124 px of the glass: the tube's light on its own bezel. Its ink line is 3 px heavier each side than
+the faces', because it is only ever drawn small (the garden round says by how much).
+
+**What the hero adds round `tv.webp`** (3.1), as this page's sheets drew it. For a set drawn `w` wide and `h`
+tall with its top left at `x, y`: a contact shadow, a soft dark ellipse `1.02w` by `0.17h` at
+`x + 0.02w, y + 0.885h`, colour `rgb(8, 10, 18)`, alpha 0.8 at its middle and 0 at its edge; and the pool of
+the tube's light on the grass, a soft ellipse `1.9w` by `0.52h` at `x - 0.62w, y + 0.80h`, colour
+`rgb(150, 175, 235)`, alpha 0.3 at its middle and 0 at its edge, behind the set. Both are the hero's to make
+and tune. Without them the set floats: the last tile of the garden round's sheet shows it bare.
 
 All numbers are pixels of the file, `x, y` from its top left.
 
@@ -222,7 +238,7 @@ All numbers are pixels of the file, `x, y` from its top left.
 | Glass: width x height | 1154 x 1058 | 2229 x 1826 | 1337 x 1095 |
 | Glass: its four corners, clockwise from top left | (239, 716) (1294, 799) (1337, 1713) (322, 1662) | (462, 1050) (2501, 1044) (2507, 2667) (455, 2662) | (282, 625) (1502, 628) (1506, 1596) (270, 1593) |
 | Largest upright rectangle wholly inside the glass | 316, 799, 1248, 1655 | 482, 1046, 2485, 2688 | 289, 627, 1490, 1612 |
-| Ink line round the glass, at its thinnest | 10 px | 15 px | 8 px |
+| Ink line round the glass, at its thinnest | 12 px | 15 px | 8 px |
 | Made from its master at | 0.70 of its pixels | its full size | 0.60 |
 
 **The glass is a hole with a painted edge.** One unbroken ink line runs round it on the set's side, drawn by
@@ -511,6 +527,32 @@ The three weakest things:
    edge, and the last of the key colour in the cream there. The stained cream beside the glass is now evened
    in its light as well as its colour, and the strip the old line stood on is repainted from the paint just
    beyond it before the new line is drawn.
+
+### Round 3: the set standing small in the garden plate
+
+Frames drawn by a headless browser: the garden plate covering 1440 x 900, 1920 x 1080 and 2560 x 1440, the set
+at the place and size it has in the hero (lower left, 18.3% of the frame's width, as in look B and on the live
+page), an episode's picture behind its glass, and a pool of light and a contact shadow of the kind the hero
+will add. Beside them the live page's own poster at the same size. Sheets: `r3-garden-whole.jpg`,
+`r3-garden-100.png` (before), `r3-garden-after.png`.
+
+The three weakest things:
+
+1. **The set was lit from nowhere.** Its cream frame was the brightest thing in the garden after the house's
+   windows, and its wood a warm daylight brown on a lawn that is nearly black-green. It read as a sticker.
+   Nothing on the stage can tint a flat, so the night is painted into `tv.webp` itself: the whole set brought
+   down and cooled as the lawn round it is, the pale frame a little less than the wood.
+2. **Its ink line was half the garden's weight at the size it is drawn.** At 1440 x 900 the garden plate's
+   line is 2.3 px on the screen and the set's was 1.2 px, so the set looked drawn with a finer pen. The line in
+   `tv.webp` is now 3 px heavier each side (13 px in the file: 1.5 px on the screen at 1440, 2.7 px at 2560,
+   where the garden's is 3.6). Twice that was tried and thrown away: at 100% it filled in the slot and the
+   switch. A scrap of cream that the heavier lines closed in on beside the glass is inked over.
+3. **The tube lit nothing of its own set.** The frame beside a lit glass was as dark as the frame's far side.
+   The bezel nearest the glass now takes a little cool light from the tube, falling away within 124 px.
+
+What is not this piece's to fix, and is written into the television's section for the hero's builder: the
+pool of light on the grass and the contact shadow. With them the set stands on the lawn. Without them it
+floats (the sheet's last tile).
 
 ## Generation log
 
