@@ -126,6 +126,7 @@ img.flat { pointer-events: none; }
 /* ---------------------------------------------------------------- with motion off: the stills, each a way into the reel */
 .stills { padding: 34px var(--pad) 10px; background: var(--page); }
 .stills[hidden] { display: none; }
+.stills-say { margin-top: 8px; font: 400 15px/1.4 var(--font-serif); color: var(--strong); }
 .strip { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 168px), 1fr)); gap: 12px; margin-top: 16px; }
 .strip button { appearance: none; display: block; width: 100%; padding: 0; border: 0; border-radius: 12px; overflow: hidden; background: rgb(21, 23, 38); text-align: left; cursor: pointer; box-shadow: inset 0 0 0 1px var(--line2); }
 .strip img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
@@ -159,6 +160,12 @@ img.flat { pointer-events: none; }
 
 /* motion off: nothing is held and nothing glides. The screen is the close view, the reel waits for its button */
 .rm .chapter { height: 100vh; height: 100svh; }
-.rm .hint, .rm .lead { display: none; }
+.rm .hint, .rm .when-moving { display: none; }
+/* the chapter's name does not float in the air here: it is a small card in the corner, as still as the rest */
+.rm .lead { left: var(--pad); top: var(--pad); width: auto; max-width: min(430px, calc(100% - 2 * var(--pad))); padding: 14px 20px 15px; border-radius: 20px; background: var(--card); box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(74, 68, 90, 0.85); transform: none !important; opacity: 1 !important; visibility: visible !important; will-change: auto; }
+.rm .lead .kicker { margin: 0 0 6px; text-shadow: none; }
+.rm .word { font-size: clamp(27px, 3vw, 36px); line-height: 1.1; letter-spacing: -0.01em; color: var(--head); text-shadow: none; white-space: normal; }
+.rm .word span { display: inline; }
+.rm .say { margin: 5px 0 0; max-width: none; font-size: 15px; color: var(--strong); text-shadow: none; }
 .rm .dock, .still .dock { transition: none; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

@@ -498,7 +498,7 @@
     paintGlow(now);
 
     // the flats
-    place(F.lead, cam, 1 - ss(0.012, 0.075, e));        // the name is gone before the edge of the screen can cut it
+    if (!RM) place(F.lead, cam, 1 - ss(0.012, 0.075, e));        // the name is gone before the edge of the screen can cut it
     var pj = place(F.proj, cam, 1);
     place(F.bl, cam, ss(0.015, 0.07, F.bl.r - cam.m));
     place(F.br, cam, ss(0.015, 0.07, F.br.r - cam.m));
@@ -526,8 +526,8 @@
       dock.style.transform = dk >= 1 ? 'none' : 'translate3d(0,' + ((1 - dk) * (dock.offsetHeight + 60)).toFixed(1) + 'px,0)';
       dockK = dk;
     }
-    if (RM) {                                          // the play button stands in the middle of the picture
-      var mid = plateXY(onFilm(0.5, 0.5), cam);
+    if (RM) {                                          // the play button stands on the bare cloth under the picture, not on the picture
+      var pb = plateXY(onFilm(0.5, 1), cam), pc = plateXY(carry(clothH, 0.5, 1), cam), mid = [(pb[0] + pc[0]) / 2, (pb[1] + pc[1]) / 2 - 2];
       playBtn.style.transform = 'translate3d(' + Math.round(mid[0] - playBtn.offsetWidth / 2) + 'px,' + Math.round(mid[1] - playBtn.offsetHeight / 2) + 'px,0)';
     }
     setTick(cur, reel.vis && reel.vis.duration ? reel.vis.currentTime / reel.vis.duration : (HELD ? 0.4 : 0));
