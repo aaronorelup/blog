@@ -31,8 +31,8 @@ needs only this list.
 
 ## What a `4k` generation is worth (measured, 2026-11-12)
 
-The same prompt (the screen plate, below as S1 and S2) was sent twice to Higgsfield `generate_image`, model id
-`nano_banana_pro`, aspect 4:5, once at `4k` and once at `2k`, with the same two references. **Size:** `2k`
+The same prompt (the screen plate, below as S1 and S2) was sent twice to Higgsfield `generate_image`, with the image model the
+brief names, aspect 4:5, once at `4k` and once at `2k`, with the same two references. **Size:** `2k`
 returned 1856 x 2304 and `4k` returned 3712 x 4608, exactly twice each way (so 16:9 is 2752 x 1536 at `2k` and
 5504 x 3072 at `4k`; 1:1 at `4k` measured 4096 x 4096). **Cost:** 2 credits at `2k`, 4 credits at `4k` (the
 balance went from 530.37 to 524.37 for the pair). **Sharpness**, as the width in pixels over which an ink line's
@@ -740,7 +740,8 @@ said yes to the first.
 
 ## Generation log
 
-Tool: Higgsfield `generate_image`, model id `nano_banana_pro` (every job reports its engine as `nano_banana_2`).
+Tool: Higgsfield `generate_image`, with the image model the brief names (each job reports its engine under
+another id). Model names are not written in this repo's logs: see docs/tea/gen/README.md.
 The garden plate `public/tea/hero/bg-far-night.webp`, scaled to 2048 x 1152, is a reference on every request,
 as the style reference. No name and no site name is in any prompt. No video model was used. References are
 written below by these names:
