@@ -7,6 +7,17 @@ painter's rounds, and the log of every generation request, kept or rejected (the
 final until he has seen them beside the model's render and the garden plate and said yes in his own words. His
 answer is recorded in the log's table.
 
+## Changed since the first version (commit `d5f4efdb`)
+
+File names are the same. A builder who read the first version of this page needs only this list.
+
+- `tv-face-p.webp` is a different picture: the front set itself, not a re-laid upright set. Its geometry is all
+  new (set 1536 x 1420 at the top of the canvas, glass box 157, 407, 1108, 1185).
+- `tv-face.webp` is 2752 x 2544, not 2752 x 2476: the plinth is 68 px taller, to the model's height. Nothing
+  above the plinth moved, so the glass's box is unchanged.
+- `tv.webp`: the same size and the same glass box. The glass's corners moved by up to 3 px.
+- All three sets have new colours (the table in the television's section) and no wood grain.
+
 ## What a `4k` generation is worth (measured, 2026-11-12)
 
 The same prompt (the screen plate, below as S1 and S2) was sent twice to Higgsfield `generate_image`, model id
@@ -37,9 +48,9 @@ costs twice a `2k` one, and two requests never return the same picture, so a com
 | `washi.webp` | 512, 512 | 6,320 | no | the paper tile. Tiles both ways. Its mean colour is the paper colour `#F1E6D0` |
 | `screen.webp` | 1776, 2000 | 239,218 | yes | one sliding screen: cedar frame and lattice opaque, the paper see-through |
 | `sheet-shadow.webp` | 384, 384 | 4,284 | yes | the one shadow under a sheet or a slip, as a nine-slice |
-| `tv.webp` | 2254, 2048 | 181,734 | yes | the little television, three-quarter view, cut out, its glass a hole |
-| `tv-face.webp` | 2752, 2476 | 197,010 | yes | the same set seen from the front, whole, cut out, its glass a hole |
-| `tv-face-p.webp` | 1536, 2752 | 144,766 | yes | the same set laid out upright for a phone, on a 9:16 canvas |
+| `tv.webp` | 2254, 2048 | 147,394 | yes | the little television, three-quarter view, cut out, its glass a hole |
+| `tv-face.webp` | 2752, 2544 | 178,590 | yes | the same set seen from the front, whole, cut out, its glass a hole |
+| `tv-face-p.webp` | 1536, 2752 | 93,404 | yes | the same front picture at a phone's size, on a 9:16 canvas |
 | `shadow-example.webp` | 1620, 720 | 31,256 | yes | the worked example of a screen shadow: a lantern and a kettle |
 
 No file is video or audio. The largest is under 1 MiB.
@@ -130,25 +141,68 @@ still works: the corners do not overlap until it is under 1 px.
 
 ## The television: tv.webp, tv-face.webp, tv-face-p.webp
 
-One set, painted three times from the existing model (`public/tea/hero/tv_rig.glb`): the wooden case, the cream
-frame round the whole front, the two knobs one above the other, the speaker grille, the slot and the small
-switch, the dark plinth, the rabbit-ear aerial at the right of the top. Every picture is a cut-out: alpha 0
-outside the set, and the glass is a hole, so whatever stands behind the picture shows through it. The alpha and
-the hole were cut from the painted picture itself, not from the model's mask.
+One set, the owner's: the little television of the live page, painted from its model
+(`public/tea/hero/tv_rig.glb`). The walnut case, the cream frame round the whole front, the two knobs one above
+the other, the speaker grille, the slot and the small switch, the dark plinth, the rabbit-ear aerial at the
+right of the top. Two paintings, three files: `tv.webp` is the three-quarter view, `tv-face.webp` is the same
+set seen front on, and `tv-face-p.webp` is that same front picture, whole, at a phone's size on an upright
+canvas. Every picture is a cut-out: alpha 0 outside the set, and the glass is a hole, so whatever stands behind
+the picture shows through it. The alpha and the hole were cut from the painted picture itself, not from the
+model's mask.
+
+**How close it is to the model, measured.** Each file's outline was laid over the model's own render from the
+same side, both boxes fitted to one another:
+
+| | Three-quarter | Front |
+|---|---|---|
+| Outline over the model's outline (1 is the same shape) | 0.994 | 0.986 |
+| Whole set, width to height (model, painting) | 1.104, 1.102 | 1.083, 1.082 |
+| Body without the aerial, width to height (model, painting) | 1.372, 1.37 | 1.315, 1.325 |
+| Aerial's height as a share of the body's (model, painting) | 0.183, 0.183 | 0.214, 0.223 |
+| Glass's width as a share of the body's (model, painting) | 0.515, 0.512 | 0.623, 0.619 |
+| Glass, width to height (model, painting) | 1.086, 1.091 | 1.164, 1.221 |
+| Plinth's height as a share of the set's width (model, painting) | | 0.0715, 0.0712 |
+
+The front painting came back with its plinth a third too low. It was lengthened by script to the model's
+height (89 rows put into the plinth's plain middle; its two ink lines are as painted). The front glass is 5%
+wider for its height than the model's: left as painted.
+
+**Its colours are one table, the same in every file** (the rounds say why each was moved). Each is the median
+of that material in the file, in the night key the set has in the garden:
+
+| Material | Colour |
+|---|---|
+| Wood in the light (the top, the rim) | `rgb(98, 64, 44)` |
+| Wood in shade (the side, the plinth) | `rgb(62, 39, 43)` |
+| Control panel | `rgb(103, 68, 47)` |
+| Cream frame | `rgb(218, 196, 160)` |
+| Knobs | `rgb(74, 62, 78)` |
+| Aerial rods, and their base | `rgb(174, 165, 156)`, `rgb(50, 40, 50)` |
+| Ink line | `rgb(21, 14, 18)` (the garden plate's is `rgb(16, 13, 14)`) |
+
+The stage has no filter and no blend mode, so a chapter that needs the set in another light (the cold room,
+the three gardens of the fall) makes its own graded copy of `tv-face.webp` by script and keeps the geometry
+below unchanged.
 
 All numbers are pixels of the file, `x, y` from its top left.
 
 | | `tv.webp` | `tv-face.webp` | `tv-face-p.webp` |
 |---|---|---|---|
-| View | three-quarter, the hero's own angle | front on, no perspective | front on, re-laid upright |
-| Canvas | 2254, 2048 | 2752, 2476 | 1536, 2752 |
-| The set fills | the whole canvas | the whole canvas | the full width, from the top down to y = 2125. Transparent below |
-| Top of the case (under the aerial) | y = 302 | y = 464 | y = 306 |
-| Glass: its box `x0, y0, x1, y1` | 205, 698, 1359, 1756 | 282, 729, 1985, 2124 | 194, 478, 1349, 1385 |
-| Glass: width x height | 1154 x 1058 | 1703 x 1395 | 1155 x 907 |
-| Glass: its four corners, clockwise from top left | (240, 715) (1296, 801) (1340, 1710) (321, 1661) | (354, 801) (1908, 795) (1913, 2040) (347, 2033) | (244, 525) (1302, 527) (1305, 1325) (236, 1324) |
-| Largest upright rectangle wholly inside the glass | 316, 799, 1248, 1655 | 369, 800, 1898, 2053 | 252, 523, 1291, 1340 |
-| Made from the master at | 0.70 of its pixels | 0.76 | 0.48 |
+| View | three-quarter, the hero's own angle | front on, no perspective | the same front picture, smaller |
+| Canvas | 2254, 2048 | 2752, 2544 | 1536, 2752 |
+| The set fills | the whole canvas | the whole canvas | the full width, from the top down to y = 1420. Transparent below |
+| Top of the case (under the aerial) | y = 302 | y = 464 | y = 259 |
+| Glass: its box `x0, y0, x1, y1` | 205, 698, 1359, 1756 | 282, 729, 1985, 2124 | 157, 407, 1108, 1185 |
+| Glass: width x height | 1154 x 1058 | 1703 x 1395 | 951 x 778 |
+| Glass: its four corners, clockwise from top left | (237, 717) (1294, 799) (1341, 1709) (321, 1661) | (355, 800) (1907, 794) (1915, 2038) (347, 2033) | (196, 448) (1064, 443) (1068, 1138) (192, 1133) |
+| Largest upright rectangle wholly inside the glass | 316, 799, 1248, 1655 | 368, 799, 1899, 2054 | 205, 446, 1060, 1146 |
+| Ink line round the glass, at its thinnest | 10 px | 11 px | 6 px |
+| Made from its master at | 0.70 of its pixels | 0.764 | 0.426 |
+
+**The glass is a hole with a painted edge.** One unbroken ink line runs round it on the set's side, drawn by
+script exactly on the hole's boundary, so the hole's soft edge shows nothing but ink over any picture, light
+or dark. The script that writes the files refuses a file with a gap in that line, with anything but ink in the
+hole's soft edge, or (for `tv-face.webp`) with a glass under 1700 px wide.
 
 **How to put a picture in the glass.** Stand it behind the set, covering the glass's box. The set's own frame
 masks it to the glass's rounded shape. On `tv.webp` the glass is turned 14 degrees, so a flat picture behind it
@@ -158,25 +212,34 @@ the picture's corners to the four corners given.
 **How the faces differ from the brief's numbers, and why.** The brief asked for the front view on a 16:9 canvas
 with a glass at least 1700 px wide. The model's own front, measured from a front-on render, is 1.08 times as
 wide as it is tall with its aerial, its glass is 1.16 times as wide as tall, and the glass is 62% of the set's
-width. A whole set with a 1700 px glass is therefore about 2750 x 2500, and cannot be 1536 tall unless the set
+width. A whole set with a 1700 px glass is therefore about 2750 x 2550, and cannot be 1536 tall unless the set
 is redrawn wide, which would be a new set. So:
 
-- `tv-face.webp` keeps the set and grows the canvas: 2752 wide as asked, 2476 tall, glass
+- `tv-face.webp` keeps the set and grows the canvas: 2752 wide as asked, 2544 tall, glass
   1703 px wide. The glass is taller than 16:9, so when its width matches a 16:9 window its
   height more than covers it. A 16:9 episode stood in the glass at the glass's full width is letterboxed in the
   tube at rest and fills the window exactly when the glass does.
-- To reach a 1700 px glass the master was written at 0.76 of its pixels, a hair over the 0.75 ruling above. Its
-  ink edge measures the garden plate's own figure (the rounds give the number).
-- `tv-face-p.webp` is the one sanctioned re-lay: the glass across the width with the two knobs in a row under
-  it. The canvas is 9:16 as asked and holds the whole set with its aerial at the top. For the pose with the
-  glass in the top 42% of an upright frame, draw the file at the frame's width with its top
-  306 of its 2752 px above the frame's top (the aerial is then out of the frame):
-  the glass lies between 6% and 39% of the frame's height.
+- To reach a 1700 px glass the master was written at 0.764 of its pixels, a hair over the 0.75 ruling above.
+  Its ink edge measures the garden plate's own figure (the rounds give the number).
+- `tv-face-p.webp` is **not** a second design. The brief's phone layout (3.3) describes the set with "its knobs
+  in a row under" the glass, which is look A's own upright set, and the first version painted one. Beside the
+  other two it was a different television, so it was withdrawn. The file is now the front picture itself, at
+  1536 px wide, at the top of the 9:16 canvas the brief asks for. What that costs on a phone is the glass's
+  width: see the poses below.
+
+**The phone's poses** (`set-above`), for a frame `W` wide. Both keep the glass in the top 42% at 390 x 844 and
+430 x 932.
+
+| Pose | Draw the file | The glass is | On 390 x 844 |
+|---|---|---|---|
+| Whole set | `W` wide, its top at the frame's top | 62% of `W` wide, from 26.5% to 77% of `W` down | 241 px wide, from y = 103 to 301 (12% to 36%) |
+| Closer | to be measured in the phone round | | |
 
 **Sharpness limits these give** (1.25 CSS px to a file px): the glass of `tv-face.webp` may be drawn up to
-1703 x 1.25 CSS px wide, which covers a 1920 px window and not a 2560 px one. Drawn the
-width of a 390 px phone, `tv-face-p.webp` has 3.9 file px to a CSS px, and its glass
-(1155 px) may grow to 1155 x 1.25 CSS px wide.
+2129 CSS px wide, which covers a 1920 px window and not a 2560 px one: there the glass stops at 2129 px and the
+set's own bezel is seen round it, 215 px each side. Drawn the width of a 390 px phone, `tv-face-p.webp` has 3.9
+file px to a CSS px. Its glass is 951 x 778, so it may grow
+to 972 CSS px tall: enough to cover an 844 px screen (at 1.08) and a 932 px one (at 1.20), and no taller.
 
 ## The screens' shadows: the rule, the template, a worked example
 
@@ -292,6 +355,38 @@ the repo. A different crop each round.
 Seven pictures, end to end, before any polish: the tile drawn by script, the screen from the `4k` master with
 its paper made see-through, the sheet shadow, the set painted three times, one screen shadow from the template.
 
+### The art director's read of the first version, and what was done
+
+The first version was read by the person who briefed the painter. Five things, each checked against the files
+before anything was changed. The work was then taken over by a second painter (the first was cut off by a
+machine restart). The paper, the screens and the shadow are answered in the rounds below. The television first:
+
+1. **"The three television pictures are not one set."** True. The three-quarter and the front pictures agreed.
+   The upright one was another television: its controls in a strip under the glass, a taller cabinet. It was
+   withdrawn. `tv-face-p.webp` is now the front picture itself at a phone's size, so there are two paintings
+   and one set. This leaves the brief's phone layout (3.3, "its knobs in a row under it") unmet on purpose:
+   the same set seen front on has its knobs beside the glass.
+2. **"Is it the owner's television?"** Measured against the model's own renders from the same two sides. The
+   shape was already his: the three-quarter outline lies over the model's at 0.994, with the same aerial, the
+   same glass, the same proportions. The front's cabinet matched too, but its plinth was a third too low
+   (0.047 of the set's width where the model has 0.072): lengthened by script. What had drifted was the
+   surface, and all of it was brought back by script, the same way in both paintings, with no new generation:
+   - the wood was plum-rose with swirls and knots, where the model is plain walnut: the strokes are painted
+     out (the garden plate puts no strokes inside its shapes either) and the wood is a dark warm brown, with
+     plum only where it is in shade;
+   - the aerial's rods were cream on a large blue base, where the model's are grey metal on a small dark one:
+     pale grey rods, a dark base;
+   - the knobs were a light grey-violet, where the model's are dark: darkened;
+   - the two creams did not agree (`228, 205, 165` and `244, 222, 190`): one cream now, and no longer a lit
+     white, because the set stands in the dark;
+   - the ink line was purple (`32, 12, 31`) where the garden's is near black (`16, 13, 14`), and the outline
+     kept a rim of the magenta ground it was cut from: the ink is `21, 14, 18` and the rim is gone.
+3. **"The glass."** `tv-face.webp`'s glass measures 1703 px of 2752. The first version's hole had a fault the
+   sheet did not show: along the glass's right edge the key colour had run into the paint, so the ink line was
+   green and thin there, broken for about 250 px near the lower corner, and the cream beside it had a green
+   cast 60 px wide. The cast is taken out of the cream, and one unbroken ink line is now drawn round the whole
+   hole (at its thinnest 11 px on `tv-face.webp`). The build refuses a file with a gap in that line.
+
 ## Generation log
 
 Tool: Higgsfield `generate_image`, model id `nano_banana_pro` (every job reports its engine as `nano_banana_2`).
@@ -314,14 +409,16 @@ written below by these names:
 | T3 | the set, front, to match T1 | style, T1, model front | 1:1, `4k` | nothing: the service's content filter stopped the job | 0 | no | |
 | T4 | T3 again, the same prompt | style, T1, model front | 1:1, `4k` | 4096 x 4096 | 4 | yes: `tv-face.webp` | waiting |
 | T5 | the set, upright, for a phone | style, T4 | 4:5, `4k` | 3712 x 4608 | 4 | no: the control strip came out grey-violet, not brown | |
-| T6 | the same, the strip's colour spelled out | style, T4 | 4:5, `4k` | 3712 x 4608 | 4 | yes: `tv-face-p.webp` | waiting |
+| T6 | the same, the strip's colour spelled out | style, T4 | 4:5, `4k` | 3712 x 4608 | 4 | no: kept at first, then withdrawn. A set with its controls under the glass is a second design, not the owner's set | |
 
-Tries: the screen 2 of 8 (one was the measurement), the three-quarter set 1, the front set 3 (one stopped by
-the filter), the upright set 2.
+Tries, of eight a plate: the screen 2 (one was the measurement), the three-quarter set 1, the front set 3 (one
+stopped by the filter), the upright set 2 (both withdrawn: the upright file is made from the front set).
 
 Not generated, made by script: the paper tile (drawn: clouds and long fibres, seeded), the sheet shadow (two
 blurred squares), the screen's see-through paper and its shortened board, every cut-out's alpha and glass hole,
-the example shadow (from look B's lantern and table), every resize.
+the sets' colours, the painting-out of their wood grain, the ink line round each glass, the front set's longer
+plinth, `tv-face-p.webp` (the front picture, smaller), the example shadow (from look B's lantern and table),
+every resize.
 
 ### S1 and S2: the screen (jobs `7602002a-178b-4b1e-a751-a91128bd806f` and `2be226db-1603-4c3c-b77e-5cfbb2db6bae`)
 
@@ -527,4 +624,6 @@ out and the strip is not the brown panel of T1 and T4.
 > No people, no animals, no characters, no text, no lettering, no numbers, no brand, no logo, no signature, no
 > watermark, no border.
 
-Kept. A brown strip, the two knobs side by side, the grille, the slot and the switch.
+Kept in the first version: a brown strip, the two knobs side by side, the grille, the slot and the switch. Withdrawn
+afterwards: laid beside T1 and T4 it is another television (its controls in a strip under the glass, a taller
+cabinet), and the set must be one set. `tv-face-p.webp` is now made from T4.
