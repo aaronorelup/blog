@@ -140,9 +140,10 @@ export function mount(host, options) {
     if (cOn) {
       // a phone: the house in the half screen above the card while it is read, the whole screen once it has gone
       if (tall) place(C, mix(0.8, 1.0, rest), 0.5, 0.4, 0.5, mix(0.22, 0.4, rest), rest > 0.999);
+      else place(C, mix(1.14, 1.0, rest), 0.5, 0.45, mix(0.68, 0.5, rest), 0.5, true);
+      // under the plate (a phone, while the card is read): the lawn's own colour, by night and by morning
       var g = 'rgb(' + [mix(20, 79, dawn), mix(30, 85, dawn), mix(35, 61, dawn)].map(Math.round).join(',') + ')';
       if (g !== C.bg) { C.el.style.background = g; C.bg = g; }
-      else place(C, mix(1.14, 1.0, rest), 0.5, 0.45, mix(0.68, 0.5, rest), 0.5, true);
       var d = dawn.toFixed(3);
       if (d !== lastDay) { day.style.opacity = d; lastDay = d; }
       var sk = (dawn * 0.82).toFixed(3);
