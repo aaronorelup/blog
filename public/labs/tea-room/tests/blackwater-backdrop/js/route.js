@@ -10,9 +10,9 @@ export const HOLD_AT = 0.8; // from here on the camera has arrived and holds
 
 // [q, position, look-at]
 export const KEYS = [
-  [0.0, [16.4, 1.15, 7.4], [3.0, -2.6, -1.6]],      // the camp on the shore shelf, looking across the pool
+  [0.0, [14.2, 0.7, 5.6], [2.0, 0.5, -1.5]],        // the camp on the shore shelf, looking across the pool to the open sky
   [0.1, [9.0, 0.35, 4.2], [0.6, -5.2, -1.2]],       // walking to the water's edge
-  [0.2, [2.6, -3.4, 1.4], [0.0, -10.5, -3.0]],      // under: the open pool, the sun coming down through it
+  [0.2, [1.5, -4.5, 2.5], [0.0, -9.0, -6.0]],       // under: the pool's pale bowl, the sun coming down, the throat below
   [0.31, [0.0, -8.6, 0.9], [0.0, -14.2, -5.6]],     // the throat opens below
   [0.43, [0.0, -12.2, -3.6], [0.0, -17.6, -9.0]],   // down the throat
   [0.55, [0.0, -16.6, -8.0], [0.0, -22.4, -12.6]],  // through sink-shaft, the next passage below
@@ -20,15 +20,15 @@ export const KEYS = [
   [HOLD_AT, [-1.25, -24.15, -13.95], [-9.5, -26.25, -16.05]], // in the mouth of the west passage, looking along it
 ];
 
-// one of the drowned crew, swimming up the west passage towards the reader (about 3.7 m from the hold)
-export const FIGURE = [-4.95, -25.05, -14.85];
+// one of the drowned crew, swimming up the west passage towards the reader (about 2.8 m from the hold)
+export const FIGURE = [-3.95, -24.8, -14.6];
 // a dropped chemlight far down the west passage, on its floor (y is found on the floor at mount)
 export const CHEMLIGHT = [-10.4, null, -16.2];
 // the guide line's tie-offs, from the shore down the dive and on into the west passage; at mount each is pushed out
 // from the passage's middle to rest near its wall, low and to the right, the way a diver lays it
 export const LINE = [
   [7.6, -1.2, 2.6], [3.2, -6.0, 0.8], [0.0, -9.8, -1.0], [0.0, -13.0, -4.4], [0.0, -16.2, -7.7],
-  [0.0, -19.6, -10.4], [0.0, -22.4, -12.4], [-1.6, -24.3, -14.0], [-5.4, -25.2, -15.0], [-9.4, -26.2, -16.0], [-13.0, -27.1, -16.8],
+  [0.0, -19.6, -10.4], [-0.3, -22.9, -12.9], [-2.7, -24.5, -14.3], [-5.4, -25.2, -15.0], [-9.4, -26.2, -16.0], [-13.0, -27.1, -16.8],
 ];
 
 const clamp = (x, a = 0, b = 1) => (x < a ? a : x > b ? b : x);
