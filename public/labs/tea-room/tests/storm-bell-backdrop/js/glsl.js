@@ -89,7 +89,7 @@ void main() {
   float inside;
   vec2 uv = wrapU(wuv, mirror, inside);
   // above the painting's top edge the storm goes on: the same clouds, turned over
-  if (topFade > 0.5) { inside = 1.0; uv.y = max(abs(uv.y), 0.001); }
+  if (topFade > 0.5) { inside = 1.0; uv.y = clamp(abs(uv.y), 0.001, 0.999); }
   vec4 c = cropTex(map, crop, uv, dx * soft, dy * soft);
   c.rgb = mix(c.rgb * gain, haze.rgb, haze.a);
   if (drift > 0.0) {
