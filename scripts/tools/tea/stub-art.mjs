@@ -40,18 +40,41 @@ function lantern(light, { lit = false } = {}) {
 // The field: a back wall and a floor in the night, the chapter's light pooled round the lantern's foot and washed
 // up the wall behind it, with a little grain so it reads as paint and never as a flat colour.
 function field(light, [w, h], lamp) {
-  const L = hex(light), wall = mix(NIGHT, L, 0.13), floor = mix(NIGHT, L, 0.2), line = '#140f1c';
-  const fy = lamp.foot - lamp.h * 0.09;
+  const L = hex(light), wall = mix(NIGHT, L, 0.13), floor = mix(NIGHT, L, 0.2), ink = '#140f1c';
+  const wood = css(mix([42, 28, 30], L, 0.08)), paper = css(mix(wall, L, 0.22));
+  const fy = lamp.foot - lamp.h * 0.09, lw = Math.max(3, w * 0.0022);
+  const upright = h > w;
+  // the room: a beam under the ceiling, posts that frame the back wall, papered panels between them that the
+  // lamp lights faintly, mats on the floor; all in the same ink line, softly shaded inside
+  const posts = (upright ? [0.04, 0.96] : [0.06, 0.34, 0.66, 0.94]).map((x) => x * w);
+  const pw = w * (upright ? 0.05 : 0.026), beam = h * (upright ? 0.07 : 0.12);
+  const panels = posts.slice(0, -1).map((x, i) => [x + pw / 2, posts[i + 1] - pw / 2]);
+  const lattice = (x0, x1) => {
+    const out = [];
+    const cols = Math.max(2, Math.round((x1 - x0) / (w * (upright ? 0.22 : 0.075))));
+    for (let i = 1; i < cols; i++) out.push(`M${x0 + ((x1 - x0) * i) / cols} ${beam} L${x0 + ((x1 - x0) * i) / cols} ${fy}`);
+    for (let j = 1; j < 5; j++) out.push(`M${x0} ${beam + ((fy - beam) * j) / 5} L${x1} ${beam + ((fy - beam) * j) / 5}`);
+    return out.join(' ');
+  };
+  const mats = [0.33, 0.66].map((k) => `M0 ${fy + (h - fy) * k} L${w} ${fy + (h - fy) * k + 4}`).join(' ') +
+    ` M${w * 0.5} ${fy} L${w * 0.47} ${h}`;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
   <defs><filter id="b" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="${w * 0.03}"/></filter>
   <filter id="g"><feTurbulence type="fractalNoise" baseFrequency="${2.2 / w} ${1.4 / h}" numOctaves="3" seed="7"/>
-  <feColorMatrix values="0 0 0 0 0.5  0 0 0 0 0.45  0 0 0 0 0.5  0 0 0 0.09 0"/></filter></defs>
+  <feColorMatrix values="0 0 0 0 0.5  0 0 0 0 0.45  0 0 0 0 0.5  0 0 0 0.09 0"/></filter>
+  <linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity="0.35"/><stop offset="1" stop-color="#000" stop-opacity="0"/></linearGradient></defs>
   <rect width="${w}" height="${h}" fill="${css(wall)}"/>
+  ${panels.map(([a, b]) => `<rect x="${a}" y="${beam}" width="${b - a}" height="${fy - beam}" fill="${paper}"/>`).join('')}
+  <path d="${panels.map(([a, b]) => lattice(a, b)).join(' ')}" stroke="${wood}" stroke-width="${lw * 1.6}" fill="none" opacity="0.9"/>
   <rect y="${fy}" width="${w}" height="${h - fy}" fill="${css(floor)}"/>
+  <path d="${mats}" stroke="${ink}" stroke-width="${lw * 0.8}" fill="none" opacity="0.55"/>
   <ellipse cx="${lamp.cx}" cy="${lamp.cy}" rx="${lamp.h * 1.1}" ry="${lamp.h * 0.95}" fill="${light}" opacity="0.2" filter="url(#b)"/>
   <ellipse cx="${lamp.cx}" cy="${lamp.foot}" rx="${lamp.h * 1.25}" ry="${lamp.h * 0.26}" fill="${light}" opacity="0.32" filter="url(#b)"/>
+  ${posts.map((x) => `<rect x="${x - pw / 2}" y="0" width="${pw}" height="${fy + lw}" fill="${wood}" stroke="${ink}" stroke-width="${lw}"/>`).join('')}
+  <rect x="${-lw}" y="${-lw}" width="${w + 2 * lw}" height="${beam}" fill="${wood}" stroke="${ink}" stroke-width="${lw}"/>
+  <rect y="${beam}" width="${w}" height="${h * 0.08}" fill="url(#s)"/>
   <rect width="${w}" height="${h}" filter="url(#g)"/>
-  <path d="M0 ${fy} L${w} ${fy + 3}" stroke="${line}" stroke-width="${w * 0.0022}" fill="none"/></svg>`;
+  <path d="M0 ${fy} L${w} ${fy + 3}" stroke="${ink}" stroke-width="${lw}" fill="none"/></svg>`;
 }
 
 // A shadow picture for an object of size [w, h] px (rgba raw) whose lit part is litMask (one channel, same size):

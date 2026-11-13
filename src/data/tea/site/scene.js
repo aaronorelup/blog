@@ -8,11 +8,11 @@ export const scene = {
   still: { d: '/tea/scenes/site/still.webp', p: '/tea/scenes/site/still-p.webp' },
   length: { d: [2.4, 0.7], p: [2.4, 0.8] },
   d: {
-    aim: [545, 582],
+    aim: [715, 582],
     flats: [
       { name: 'field', src: '/tea/scenes/site/field.webp', px: [2752, 1548], box: [-64, -36, 1728, 972], r: 1 },
       { name: 'word', text: true, box: [200, 110, 900, 330], r: 0.8 },
-      { name: 'lamp', src: '/tea/scenes/site/lamp.webp', px: [600, 900], box: [470, 470, 150, 225], r: 0.6 },
+      { name: 'lamp', src: '/tea/scenes/site/lamp.webp', px: [600, 900], box: [640, 470, 150, 225], r: 0.6 },
     ],
     slots: [],
     camera: [{ at: 0, m: 0 }, { at: 6, m: 0.05 }],
