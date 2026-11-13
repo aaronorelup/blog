@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>This website: the tea house, taken apart · a tea room test</title>
+<link rel="stylesheet" href="css/apart.css">
+<script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}</script>
+</head>
+<body>
+<a class="skip" href="#read">Skip to the posts</a>
+
+<!-- The picture: one canvas the scroll drives, the names of the room's corners over it, the chapter's word. -->
+<div id="stage" aria-hidden="true">
+<canvas id="scene"></canvas>
+<svg id="leaders" xmlns="http://www.w3.org/2000/svg"></svg>
+<div id="labels"></div>
+<div class="word" id="word"><span class="l">This</span><span class="l">website</span></div>
+<!-- DRAFT line, Aaron's to rewrite. -->
+<div class="say" id="say">The tea house from my homepage, taken apart.</div>
+<div class="hint" id="hint">Scroll</div>
+</div>
+<a class="back" href="../">Tea room tests</a>
+
+<main id="main">
+<!-- The track: its height is how long the camera's move and the take-apart last. -->
+<section id="track">
+<h1 class="vh">This website</h1>
+<p class="vh">The tea house from my homepage, seen from inside at night, then from above, then taken apart piece by piece: roof, ceiling, beams, paper screens, walls, furniture and floor.</p>
+</section>
+
+<section id="read">
+<article class="card" id="card">
+<p class="eyebrow">Chapter nine</p>
+<h2>This website</h2>
+<!-- DRAFT: these three sentences are Aaron's to write. This is a plain stand-in in his voice, put together from
+     what the four posts below say (the site was made with an AI coding agent and he has not read the code; the
+     tea house is about 1,200 lines of three.js with no model files and no textures; nearly all of the site runs on
+     a $5 a month plan; he writes about the site so others can make their own). -->
+<p>I made this whole website with an AI coding agent, and I've never really looked at the code.</p>
+<p>The tea house you just watched come apart is about 1,200 lines of it, with no 3D model files and no textures, and nearly all of the site runs on a $5 a month plan.</p>
+<p>I write up how each part works, and what broke along the way, so you can make one of your own.</p>
+<ul class="posts">
+<li><a href="/ledger/what-my-website-runs-on/"><img src="/media/previews/what-my-website-runs-on.webp" width="640" height="360" alt="" loading="lazy" decoding="async"><span class="t">Everything my AI-built website runs on</span><span class="stamp">AO-079 · $5 a month on Cloudflare</span></a></li>
+<li><a href="/ledger/three-ways-to-search-my-blog/"><img src="/media/previews/three-ways-to-search-my-blog.webp" width="640" height="360" alt="" loading="lazy" decoding="async"><span class="t">Three ways an AI can answer questions from my blog</span><span class="stamp">AO-083 · Three ways, three jobs</span></a></li>
+<li><a href="/ledger/who-visits-a-new-website/"><img src="/media/previews/who-visits-a-new-website.webp" width="640" height="360" alt="" loading="lazy" decoding="async"><span class="t">Who really visits a brand-new website</span><span class="stamp">AO-057 · Mostly machines, and me</span></a></li>
+<li><a href="/ledger/the-branch-that-went-live/"><img src="/media/previews/the-branch-that-went-live.webp" width="640" height="360" alt="" loading="lazy" decoding="async"><span class="t">How an AI agent's post briefly rolled my site back two months</span><span class="stamp">AO-043 · Rolled back in 8 minutes</span></a></li>
+</ul>
+<a class="btn" href="/ledger/?topic=site">Every post about this site</a>
+</article>
+</section>
+</main>
+
+<noscript><style>#stage { display: none; } #track { display: none; }</style></noscript>
+<script type="module" src="js/apart.js"></script>
+</body>
+</html>
