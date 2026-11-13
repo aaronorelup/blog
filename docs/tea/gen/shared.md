@@ -9,7 +9,8 @@ answer is recorded in the log's table.
 
 ## Changed since the first version (commit `d5f4efdb`)
 
-File names are the same. A builder who read the first version of this page needs only this list.
+The seven file names are the same, and one file is new. A builder who read the first version of this page
+needs only this list.
 
 - `tv-face-p.webp` is a different picture and a different size: the front set itself, not a re-laid upright
   set, framed on a 2304 x 4096 canvas (it was 1536 x 2752). Its geometry is all new: the table in its section,
@@ -81,7 +82,7 @@ def crisp(rgb, radius=1.6, amount=1.6, reach=2):          # rgb: float array, he
 | `screen.webp` | 1776, 2000 | 283,004 | yes | one sliding screen: cedar frame and lattice opaque, the paper see-through |
 | `screen-p.webp` | 902, 3300 | 249,576 | yes | the same screen re-laid for an upright frame (a phone): three panes across, twelve down |
 | `sheet-shadow.webp` | 384, 384 | 4,198 | yes | the one shadow under a sheet or a slip, as a nine-slice |
-| `tv.webp` | 2254, 2048 | 135,520 | yes | the little television, three-quarter view, cut out, its glass a hole |
+| `tv.webp` | 2254, 2048 | 135,790 | yes | the little television, three-quarter view, cut out, its glass a hole |
 | `tv-face.webp` | 3602, 3330 | 293,296 | yes | the same set seen from the front, whole, cut out, its glass a hole |
 | `tv-face-p.webp` | 2304, 4096 | 157,972 | yes | the same front picture at a phone's size, on a 9:16 canvas |
 | `shadow-example.webp` | 1620, 720 | 22,696 | yes | the worked example of a screen shadow: a lantern and a kettle |
@@ -690,6 +691,41 @@ What this round found and could not fix in a picture: at 20:00 on a phone the la
 bezel as two cream bands across the top and the foot, because the glass is wider than tall and the phone is
 not. It is written into the television's section for the chapter's builder.
 
+### Where it stands after the rounds
+
+Measured on the files as shipped (the ink line's edge, 10% to 90% of its step, and the line's weight, both in
+the file's own pixels; the garden plate is 1.60 px and 4 px):
+
+| File | Edge | Line |
+|---|---|---|
+| `tv.webp` | 1.57 px | 13 px (drawn about a seventh of its size) |
+| `tv-face.webp` | 1.39 px | 16 px |
+| `tv-face-p.webp` | 1.55 px | 10 px |
+| `screen.webp` | 1.57 px | 8 px |
+| `screen-p.webp` | 1.55 px | 7 px |
+
+**The three weakest things still in it.**
+
+1. **The front picture is not quite the model's front.** It was painted to match the three-quarter picture, and
+   its glass is a twentieth wider for its height than the model's (1.22 against 1.16), its body a hair wider
+   (1.325 against 1.315). Its outline lies over the model's at 0.986, where the three-quarter one reaches 0.994.
+   It reads as the same set. It is the one difference that is not on purpose, and the owner's sheet says so.
+2. **The one true set is small on a phone.** Its glass is 227 px wide at rest on a 390 px screen, and at 20:00
+   the last of it to leave is the bezel as two cream bands, its ink line enlarged 2.3 times in device pixels at
+   that moment. A wider glass would be another television.
+3. **`tv.webp` is still drawn with a finer pen than the garden**, 1.5 px on the screen where the plate's line
+   is 2.3 px, because a heavier line filled in its slot and switch. And it has the garden's night painted into
+   it, so it is right in that one place only: any other scene uses the front picture and lights it itself.
+
+Smaller: `screen-p.webp`'s twelve rows are the six painted rows used twice, so two rows of every screen on a
+phone are a pair. The television's and the projector's shadows were made only to test the recipe: each chapter
+makes its own.
+
+**For the owner.** Three sheets were made for him, outside the repo, in the painter's working folder:
+`tv-compare.jpg` (the model, the painting, the painting in the garden, each with a piece at actual pixels),
+`screens-compare.jpg` and `paper-compare.jpg`. Nothing may be built on the television as final until he has
+said yes to the first.
+
 ## Generation log
 
 Tool: Higgsfield `generate_image`, model id `nano_banana_pro` (every job reports its engine as `nano_banana_2`).
@@ -716,6 +752,10 @@ written below by these names:
 
 Tries, of eight a plate: the screen 2 (one was the measurement), the three-quarter set 1, the front set 3 (one
 stopped by the filter), the upright set 2 (both withdrawn: the upright file is made from the front set).
+
+**Count and cost.** Eight requests, seven pictures returned, 26 credits: the Higgsfield balance was 530.37
+before S1 and 504.37 after T6. Nothing was requested after T6. Everything the rounds changed was changed by
+script from the masters of S1, T1 and T4, so the balance is still 504.37.
 
 Not generated, made by script: the paper tile (drawn: clouds and long fibres, seeded), the sheet shadow (two
 blurred squares), the screen's see-through paper and its shortened board, every cut-out's alpha and glass hole,
