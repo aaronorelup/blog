@@ -436,3 +436,91 @@ void main() {
   float k = 0.5 + n * grain - v * vignette;
   gl_FragColor = vec4(vec3(k), 1.0);
 }`;
+
+// ---------------------------------------------------------------- shadows on the mud: each figure pressed flat along the moonlight
+export const SHADOW_VERT = /* glsl */ `
+#include <common>
+#include <skinning_pars_vertex>
+uniform vec3 lightTravel;
+void main() {
+  #include <begin_vertex>
+  #include <skinbase_vertex>
+  #include <skinning_vertex>
+  vec4 wp = modelMatrix * vec4(transformed, 1.0);
+  float k = max(wp.y, 0.0) / -lightTravel.y;
+  wp.xz += lightTravel.xz * k;
+  wp.y = 0.012;
+  gl_Position = projectionMatrix * viewMatrix * wp;
+}`;
+
+export const SHADOW_FRAG = /* glsl */ `
+uniform float strength;
+void main() { gl_FragColor = vec4(0.0, 0.0, 0.0, strength); }`;
+
+// ---------------------------------------------------------------- lightning: the bolt and the glow at its head
+export const BOLT_VERT = /* glsl */ `
+attribute float side;
+varying float vSide;
+void main() { vSide = side; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`;
+
+export const BOLT_FRAG = /* glsl */ `
+uniform float level;
+varying float vSide;
+void main() {
+  float core = 1.0 - smoothstep(0.0, 0.35, abs(vSide));
+  float edge = 1.0 - smoothstep(0.3, 1.0, abs(vSide));
+  vec3 c = mix(vec3(0.867, 0.886, 0.925), vec3(1.0, 0.973, 0.949), core);
+  float a = edge * level;
+  gl_FragColor = vec4(c * a, a * 0.7);
+}`;
+
+export const GLOW_VERT = /* glsl */ `
+varying vec2 vUv2;
+void main() {
+  vUv2 = uv;
+  vec4 mv = modelViewMatrix * vec4(0.0, 0.0, 0.0, 1.0);
+  vec2 sc = vec2(length(modelMatrix[0].xyz), length(modelMatrix[1].xyz));
+  mv.xy += position.xy * sc;
+  gl_Position = projectionMatrix * mv;
+}`;
+
+export const GLOW_FRAG = /* glsl */ `
+uniform vec3 color;
+uniform float level, falloff;
+varying vec2 vUv2;
+void main() {
+  float r = length(vUv2 - 0.5) * 2.0;
+  float g = pow(max(1.0 - r, 0.0), falloff) * level;
+  gl_FragColor = vec4(color * g, 0.0);
+}`;
+
+// ---------------------------------------------------------------- rain meeting the mud: small crowns that open and fade
+export const SPLASH_VERT = /* glsl */ `
+attribute float seed;
+uniform float time, pxPerM;
+uniform vec3 centre, extent;
+varying float vLife;
+float h1(float n) { return fract(sin(n * 12.9898 + 4.1414) * 43758.5453); }
+void main() {
+  float life = 0.22 + 0.1 * h1(seed * 3.1);
+  float u = time / life + seed * 17.0;
+  float cyc = floor(u);
+  vLife = fract(u);
+  vec3 p = centre + vec3((h1(cyc * 0.731 + seed * 91.7) - 0.5) * 2.0 * extent.x, 0.02, (h1(cyc * 1.177 + seed * 47.3) - 0.5) * 2.0 * extent.z);
+  vec4 mv = viewMatrix * vec4(p, 1.0);
+  gl_Position = projectionMatrix * mv;
+  float size = mix(0.05, 0.1, h1(seed * 7.7)) * mix(0.3, 1.15, sqrt(vLife));
+  gl_PointSize = max(1.0, size * pxPerM / max(-mv.z, 0.1));
+}`;
+
+export const SPLASH_FRAG = /* glsl */ `
+varying float vLife;
+void main() {
+  vec2 q = gl_PointCoord * 2.0 - 1.0;
+  q.y = q.y * 2.6 + 1.0;                     // a flat crown, seen from the side: only its upper rim shows
+  float r = length(q);
+  float ring = smoothstep(0.45, 0.8, r) * (1.0 - smoothstep(0.8, 1.0, r)) * smoothstep(0.75, 0.2, q.y);
+  float a = ring * 0.42 * (1.0 - vLife);
+  if (a < 0.01) discard;
+  gl_FragColor = vec4(vec3(0.93, 0.918, 0.894) * a, a);
+}`;
