@@ -67,7 +67,8 @@ function draw(nowMs) {
     const on = near();
     if (on !== live) { live = on; scene.setActive(on); }
     if (on) {
-      at.x += (aim.x - at.x) * 0.07; at.y += (aim.y - at.y) * 0.07;
+      const ease = 1 - Math.exp(-Math.min(nowMs - last || 16, 200) / 220);       // the same lean however fast the frames come
+      at.x += (aim.x - at.x) * ease; at.y += (aim.y - at.y) * ease;
       const st = scene.frame(q, HELD ? T_HELD : (nowMs - t0) / 1000, HELD ? null : at);
       // the card under the pictures: which one is in front, or that they are all in the sky
       const sky = st.k > N - 0.3;

@@ -29,7 +29,7 @@ const rnd = (seed) => { let s = seed >>> 0; return () => { s = (s * 1664525 + 10
 const DH = 2.2, DZ = 2.6, Z0 = 7;
 // q: 0..QA the camera turns from the cloth to the trees; QA..QB it drifts down the avenue; QB..1 it looks up.
 const QA = 0.055, QB = 0.845;
-const FAR = 27, FAR_PIC = 21;
+const FAR = 24, FAR_PIC = 21;
 const TREE = { w: 1180, h: 1271, ax: 0.30, ay: 0.967 };       // the painted tree: where its trunk meets the ground
 const PLATE = { w: 2752, h: 1536, horizon: 812, cloth: 1823 };  // the cinema's garden
 const HOUSE = { w: 2816, h: 1297, lawn: 462 };                  // the tea house on its lawn
@@ -48,7 +48,8 @@ export function mount(host, options = {}) {
   // ------------------------------------------------------------------ what stands in the scene
   const world = doc.createElement('div'); world.className = 'gg-world';
   const make = (tag, cls, parent) => { const e = doc.createElement(tag); e.className = cls; (parent || world).appendChild(e); return e; };
-  const picture = (cls, src) => { const e = make('img', cls); e.alt = ''; e.decoding = 'async'; e.draggable = false; e.src = src; return e; };
+  // the world's own plates are drawn in the frame that first shows them, never a frame late
+  const picture = (cls, src) => { const e = make('img', cls); e.alt = ''; e.decoding = 'sync'; e.draggable = false; e.src = src; return e; };
 
   const sky = make('div', 'gg-sky'); const stars = make('div', 'gg-stars', sky);
   const moon = make('div', 'gg-flat gg-moon');
@@ -100,12 +101,12 @@ export function mount(host, options = {}) {
       trees.push({ row: 0, side, xr: TR(), Z: Z0 + (i + 0.5 + side * 0.16 + (TR() - 0.5) * 0.14) * DZ, h: 5.5 + TR() * 1.6, pink: TR() < blossom(Z0 + i * DZ), flip: TR() < 0.5 });
     }
   }
-  for (let z = -3; z < zEndOfWood + 22; z += 2.1) {
+  for (let z = -3; z < zEndOfWood + 22; z += 2.6) {
     const open = z > zEndOfWood;                                  // past the avenue: only the wood round the clearing
     for (const side of [-1, 1]) {
       if (open) { trees.push({ row: 3, side, xr: TR(), Z: z + TR() * 1.6, h: 6 + TR() * 2.4, pink: TR() < 0.3, flip: TR() < 0.5 }); continue; }
       trees.push({ row: 1, side, xr: TR(), Z: z + TR() * 1.6, h: 5.8 + TR() * 2.1, pink: TR() < blossom(z) * 0.8, flip: TR() < 0.5 });
-      if (TR() < 0.8) trees.push({ row: 2, side, xr: TR(), Z: z + TR() * 2, h: 6.2 + TR() * 2.6, pink: TR() < blossom(z) * 0.7, flip: TR() < 0.5 });
+      if (TR() < 0.6) trees.push({ row: 2, side, xr: TR(), Z: z + TR() * 2, h: 6.2 + TR() * 2.6, pink: TR() < blossom(z) * 0.7, flip: TR() < 0.5 });
     }
   }
   trees.sort((a, b) => a.Z - b.Z);
@@ -455,7 +456,7 @@ export function mount(host, options = {}) {
         caption.style.opacity = fwd.toFixed(3);
         caption.style.transform = 'translate3d(' + (W / 2).toFixed(1) + 'px,' + (0.445 * H + th / 2 + 20).toFixed(1) + 'px,0) translateX(-50%)';
       }
-      if (op <= 0.003 || sx + wpx < -80 || sx - wpx > W + 80 || sy + hpx * 0.5 + 60 < 0 || sy - hpx * 0.5 - p.L * (wpx / p.bw) > H) { hide(p); glowOff(p); continue; }
+      if (op <= 0.003 || sx + wpx < -80 || sx - wpx > W + 80 || sy + hpx * 0.5 + 60 < 0 || sy - hpx * 0.5 - (u < 1 ? p.L * (wpx / p.bw) : 12) > H) { hide(p); glowOff(p); continue; }
       show(p); flats++;
       const s = wpx / p.bw, top = sy - hpx / 2;
       const tr = 'translate3d(' + (sx - p.bw / 2).toFixed(2) + 'px,' + (top - p.L * s + p.L).toFixed(2) + 'px,0) scale(' + s.toFixed(5) + ') rotate(' + ang.toFixed(3) + 'deg)';
@@ -496,7 +497,7 @@ export function mount(host, options = {}) {
     for (let i = 0; i < N; i++) {
       const p = P[i], near = walking && Math.abs(i - hero) <= 1;
       if (i === openIdx || (near && slow)) wantHi(p);
-      else if (p.hiState === 2 && !(walking && Math.abs(i - hero) <= 3)) dropHi(p);
+      else if (p.hiState === 2 && !near) dropHi(p);            // so what is sharp depends on the place alone
     }
 
     // --- the fireflies
