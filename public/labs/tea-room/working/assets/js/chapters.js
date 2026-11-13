@@ -38,6 +38,7 @@
 
   var LIST = [
     { id: 'film', css: 'film.css' },
+    { id: 'games', css: 'games.css', lead: 2.5 },   // (its lead: it is thrown onto the film's cloth during the film's dive, join.js)
     { id: 'closing', over: true, lead: 1 }      // the page's last beat for now: the next builder's chapter goes above this line
   ];
 
@@ -167,7 +168,9 @@
     // the rail: which chapter the middle of the screen is in
     var mid = y + H * 0.5, now = -1;
     for (i = 0; i < LIST.length; i++) if (LIST[i].rail && mid >= LIST[i].top - H * 0.6) now = i;
-    if (now !== railNow) {
+    // (look B's own stage marks its three chapters in the rail too, only when its own reckoning changes: so the mark
+    // is checked every frame here, not only when this reckoning changes)
+    if (now !== railNow || (now >= 0 && LIST[now].rail && !LIST[now].rail.classList.contains('now'))) {
       if (now >= 0) railItems.forEach(function (li) { li.classList.toggle('now', li === LIST[now].rail); });
       railNow = now;
     }
