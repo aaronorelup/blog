@@ -533,7 +533,7 @@ picks (`src/data/tea-picks.json`), the registry and `COPY.room`. The live notebo
 | A window fetches only its own composition's pictures, the scene on screen first, and the other after a turn | tea-next-27 |
 | Book mode fetches no picture only the stage draws | tea-next-28 |
 | On a slow network the first paint is a picture and nothing shifts from load to settled | tea-next-29 |
-| One button: an embed shows one paper button and nothing of the thing before a press; a game mounts with none of its own; a machine opens in a sheet the wheel cannot scroll past, and Esc closes it | tea-next-30 |
+| One button: an embed shows one paper button and nothing of the thing before a press; a game mounts with none of its own; a machine opens in a sheet, the wheel over its paper or its machine never scrolls the page, and Esc closes it | tea-next-30 (two tests) |
 | One thing plays: a film pauses a running game; with `?still=1` no video plays (loops: added with the first loop) | tea-next-31 |
 | Weight: the top of the page fetches only 2.9's list; the bytes printed | tea-next-32 |
 | 3D stays lazy: no `three`, GLTFLoader or `.glb` at load, live, reduced motion, Save-Data, no WebGL | tea-next-33 |

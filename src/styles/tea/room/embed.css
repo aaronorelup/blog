@@ -9,6 +9,8 @@
 .room-sheet {
   width: min(96vw, 1280px); max-height: 92vh; padding: 14px 14px 18px; border: 0; box-sizing: border-box;
   background: var(--room-paper) url(/tea/shared/washi.webp) 0 0 / 512px 512px; color: var(--room-ink);
+  /* a scroll container that keeps the wheel: turned over the sheet's paper, it never scrolls the page behind */
+  overflow: auto; overscroll-behavior: contain;
 }
 .room-sheet::backdrop { background: rgb(16 18 32 / 0.82); }
 .room-sheet .room-button { margin: 0 0 10px; }

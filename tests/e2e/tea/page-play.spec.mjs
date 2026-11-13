@@ -18,8 +18,8 @@ const press = async (page, key) => {
   await button.click();
 };
 
-test('tea-next-30 one button: an embed shows one paper button and nothing of the thing before a press; a game mounts with none of its own; a machine opens in a sheet the wheel cannot scroll past, and Esc closes it', async ({ page, isMobile }) => {
-  test.skip(isMobile, 'a game and the lab\'s machines are for a desktop');
+test('tea-next-30 one button: an embed shows one paper button and nothing of the thing before a press, and a game mounts with none of its own', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'a game is for a desktop');
   test.setTimeout(120_000);
   const asked = [];
   page.on('request', (r) => asked.push(new URL(r.url()).pathname));
@@ -34,16 +34,27 @@ test('tea-next-30 one button: an embed shows one paper button and nothing of the
   await expect(box.locator('ao-game iframe')).toHaveCount(1);
   await expect(box.locator('.ao-game-load, .ao-game-poster')).toHaveCount(0);
   await expect(box.locator('[data-room-play]')).toBeHidden();
+});
 
+// A lab machine draws in WebGL, which this box does in software: under four workers a wheel event waits for the
+// machine's frame, so this test has room to run.
+test('tea-next-30 one button: a machine opens in a sheet, the wheel over the sheet (its paper and its machine) never scrolls the page behind, and Esc closes it', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'the lab\'s machines are for a desktop');
+  test.setTimeout(300_000);
+  await page.goto(`${TEA}?still=1`);
+  await settle(page);
   await go(page, 'tv');
   await press(page, 'dray');
   const sheet = page.locator('dialog.room-sheet[open]');
   await expect(sheet.locator('ao-game iframe')).toHaveCount(1);
   const y = await page.evaluate(() => scrollY);
   const r = await sheet.boundingBox();
-  await page.mouse.move(r.x + r.width / 2, r.y + r.height / 2);
-  for (let i = 0; i < 5; i++) { await page.mouse.wheel(0, 400); await page.waitForTimeout(60); }
-  expect(await page.evaluate(() => scrollY)).toBe(y);
+  const f = await sheet.locator('ao-game iframe').boundingBox();
+  for (const [x, yy] of [[r.x + r.width - 30, r.y + 8], [f.x + f.width / 2, f.y + f.height / 2]]) {
+    await page.mouse.move(x, yy);
+    for (let i = 0; i < 3; i++) { await page.mouse.wheel(0, 400); await page.waitForTimeout(80); }
+    expect(await page.evaluate(() => scrollY), `wheel at ${Math.round(x)},${Math.round(yy)}`).toBe(y);
+  }
   await page.keyboard.press('Escape');
   await expect(page.locator('dialog.room-sheet')).toHaveCount(0);
 });
