@@ -1,0 +1,170 @@
+/* The toy box: one chapter of the tea room page, as a test.
+   The world is a canvas the scroll drives (js/). What is read sits on cards in the homepage's night style:
+   clean, digital, a little cartoony. The fonts are the site's own, by their own addresses. */
+
+@font-face { font-family: 'Karla'; font-style: normal; font-weight: 400 600; font-display: swap; src: url('/fonts/karla-latin.3b1eb09a.woff2') format('woff2'); }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-latin.2c5953da.woff2') format('woff2'); }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-latin.9d65f92a.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/jetbrains-mono-latin.83c005d4.woff2') format('woff2'); }
+
+:root {
+  color-scheme: dark;
+  /* the homepage's night card (src/styles/home.css, tokens.css) */
+  --night: rgb(16, 18, 32);
+  --card: rgb(21, 23, 38);
+  --head: rgb(240, 192, 106);
+  --strong: rgb(242, 231, 213);
+  --body: rgb(198, 194, 212);
+  --quiet: rgb(143, 138, 163);
+  --gold: rgb(201, 162, 39);
+  --tile: rgb(32, 31, 44);
+  --line: rgb(74, 68, 90);
+  --btn-line: rgb(198, 194, 212);
+  --btn-text: rgb(242, 236, 223);
+  --pink: rgb(240, 166, 184);
+  /* the tea room's type over the world (look B) */
+  --cream: #f6e7c8;
+  --cream-2: #e9dcc3;
+  --font-display: 'Zen Maru Gothic', sans-serif;
+  --font-body: Karla, system-ui, sans-serif;
+  --font-serif: Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --track: 520vh;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--night); -webkit-text-size-adjust: 100%; }
+body { margin: 0; color: var(--body); font-family: var(--font-body); overflow-x: hidden; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+:focus-visible { outline: 3px solid var(--head); outline-offset: 3px; }
+.skip { position: fixed; left: 12px; top: -80px; z-index: 20; padding: 10px 14px; background: var(--card); color: var(--strong); font: 600 13px var(--font-body); border-radius: 10px; text-decoration: none; }
+.skip:focus { top: 12px; }
+.back {
+  position: fixed; left: 14px; top: 12px; z-index: 5; padding: 6px 12px 7px; border-radius: 999px;
+  background: rgba(21, 23, 38, 0.72); color: var(--quiet); text-decoration: none;
+  font: 600 11px/1 var(--font-body); letter-spacing: 0.12em; text-transform: uppercase;
+}
+.back:hover { color: var(--strong); }
+
+/* ------------------------------------------------------------------ the picture */
+main { position: relative; }
+#track { position: relative; height: var(--track); }
+#stage {
+  position: sticky; top: 0; width: 100%; height: 100vh; height: 100lvh; overflow: hidden;
+  background: #241a2c url('/labs/tea-room/b/assets/img/room.webp') 50% 50% / cover no-repeat;
+}
+#scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; touch-action: pan-y; -webkit-tap-highlight-color: transparent; }
+.ready #scene { opacity: 1; }
+.grab #scene { cursor: grab; }
+.grabbing #scene { cursor: grabbing; }
+
+/* the chapter's word and its line, as look B sets them over the world */
+.word {
+  position: absolute; left: 0; top: 0; will-change: transform, opacity; transform-origin: 0 50%; pointer-events: none;
+  font-family: var(--font-display); font-weight: 700; color: var(--cream);
+  font-size: clamp(64px, 11vw, 190px); line-height: 0.9; letter-spacing: -0.02em; white-space: nowrap;
+  text-shadow: 0 3px 0 rgba(20, 12, 28, 0.35);
+}
+.say {
+  position: absolute; left: 0; top: 0; will-change: transform, opacity; max-width: 17em; pointer-events: none;
+  font: italic 400 clamp(17px, 1.75vw, 26px)/1.34 var(--font-serif); color: var(--cream-2);
+}
+
+/* the toy in the hand, named: the homepage's card, very small */
+.tagcard {
+  position: absolute; left: 0; top: 0; visibility: hidden; opacity: 0; pointer-events: none; will-change: transform, opacity;
+  width: max-content; max-width: min(300px, calc(100vw - 24px));
+  padding: 11px 16px 13px; border-radius: 18px; background: var(--card);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+  transition: opacity 140ms ease;
+}
+.tagcard.on { visibility: visible; opacity: 1; }
+.tagcard::after {
+  content: ''; position: absolute; left: var(--tip, 50%); bottom: -7px; width: 16px; height: 16px; margin-left: -8px;
+  background: var(--card); border-radius: 3px; transform: rotate(45deg);
+}
+.tagcard.below::after { bottom: auto; top: -7px; }
+.tagcard.pinned::after { display: none; }
+.tag-from { margin: 0 0 4px; font: 600 10.5px/1.2 var(--font-body); letter-spacing: 0.13em; text-transform: uppercase; color: var(--gold); }
+.tag-name { display: block; font: 700 18px/1.15 var(--font-display); color: var(--head); letter-spacing: -0.005em; }
+.tag-how { margin: 5px 0 0; font: 400 14px/1.4 var(--font-body); color: var(--body); text-wrap: pretty; }
+
+.hint {
+  position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); will-change: opacity; z-index: 2;
+  appearance: none; border: 0; cursor: pointer; white-space: nowrap;
+  padding: 10px 18px 11px; border-radius: 999px; background: var(--card); color: var(--strong);
+  font: 600 13px/1 var(--font-body); letter-spacing: 0.04em; box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+  transition: opacity 200ms ease;
+}
+.hint:hover { color: var(--head); }
+.hint.off { opacity: 0; pointer-events: none; }
+.count {
+  position: absolute; right: 16px; top: 14px; margin: 0; z-index: 2; pointer-events: none;
+  font: 500 10.5px/1 var(--font-mono); letter-spacing: 0.02em; color: var(--cream-2); opacity: 0.75;
+}
+
+/* ------------------------------------------------------------------ the card, over the picture's last screen */
+#read {
+  position: relative; z-index: 2; pointer-events: none;
+  margin-top: -100vh; margin-top: -100lvh; min-height: 100vh; min-height: 100lvh;
+  display: flex; align-items: center; justify-content: flex-start; padding: 40px clamp(20px, 5.5vw, 96px);
+}
+.card {
+  pointer-events: auto; width: min(100%, 500px); border-radius: 24px; padding: clamp(24px, 3vw, 36px);
+  background: var(--card); box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+}
+.card .eyebrow { margin: 0 0 10px; font: 400 12.5px/1 var(--font-body); letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
+.card h2 { margin: 0; font: 700 clamp(28px, 3.4vw, 40px)/1.1 var(--font-display); color: var(--head); }
+.card p { margin: 12px 0 0; font-size: 16.5px; line-height: 1.58; color: var(--body); text-wrap: pretty; }
+.card h2 + p { margin-top: 14px; }
+.card ::selection { background: rgb(247, 201, 212); color: var(--night); }
+.posts { list-style: none; margin: 20px 0 0; padding: 0; border-top: 1px solid var(--line); }
+.posts li { border-bottom: 1px solid var(--line); }
+.posts a {
+  display: grid; grid-template-columns: 104px minmax(0, 1fr); column-gap: 16px; align-items: center;
+  margin: 0 -10px; padding: 11px 10px; border-radius: 12px; text-decoration: none;
+}
+.posts a:hover { background: var(--tile); }
+.posts img { grid-row: 1 / span 2; display: block; width: 104px; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 10px; background: var(--tile); }
+.posts .t { align-self: end; font: 700 15px/1.32 var(--font-display); letter-spacing: -0.01em; color: var(--strong); text-wrap: pretty; }
+.posts a:hover .t { color: var(--head); }
+.posts .stamp { align-self: start; margin-top: 4px; font: 500 10.5px/1.3 var(--font-mono); letter-spacing: 0.02em; color: var(--gold); }
+.btn {
+  display: inline-block; margin-top: 20px; padding: 11px 20px; border: 2px solid var(--btn-line); border-radius: 999px;
+  text-decoration: none; font: 600 15px/1.2 var(--font-body); color: var(--btn-text); background: rgba(240, 192, 106, 0.1);
+}
+.btn:hover { background: var(--pink); color: var(--night); border-color: var(--pink); }
+
+/* a phone: its own picture (js/main.js), and the card is the page's last screen, under the room */
+@media (max-width: 720px) {
+  :root { --track: 460vh; }
+  #read { margin-top: 0; min-height: 0; align-items: flex-start; justify-content: center; padding: 18px 12px 28px; background: var(--night); }
+  .card { border-radius: 22px; padding: 22px 20px 20px; }
+  .card p { font-size: 16px; line-height: 1.55; margin-top: 11px; }
+  .posts { margin-top: 16px; }
+  .posts a { grid-template-columns: 84px minmax(0, 1fr); column-gap: 13px; padding: 10px; }
+  .posts img { width: 84px; }
+  .posts .t { font-size: 14px; }
+  .btn { margin-top: 16px; font-size: 14.5px; }
+  .word { font-size: 30vw; }
+  .say { max-width: 13em; font-size: 17px; }
+  .back { font-size: 10px; }
+  .hint { bottom: 20px; font-size: 12.5px; }
+  .tagcard { max-width: calc(100vw - 24px); padding: 10px 14px 12px; border-radius: 16px; }
+  .tag-name { font-size: 16.5px; }
+  .tag-how { font-size: 13.5px; }
+  .count { top: 16px; right: 12px; font-size: 10px; }
+}
+
+/* nothing glides or tumbles for readers who ask for less motion: the room, the box open, the toys in their huddle */
+@media (prefers-reduced-motion: reduce) {
+  :root { --track: 200vh; }
+  .tagcard, .hint { transition: none; }
+}
+@media (prefers-reduced-motion: reduce) and (max-width: 720px) {
+  :root { --track: 130vh; }
+}
+
+/* without WebGL the page is the room's painting and the card */
+.flat .hint, .flat .count { display: none; }
+.flat { --track: 100vh; }
