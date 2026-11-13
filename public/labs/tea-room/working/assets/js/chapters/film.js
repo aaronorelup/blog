@@ -9,7 +9,7 @@
    Everything drawn is a function of three things: q (the chapter's progress, which is the camera), the time (what
    moves by itself) and which moment of the reel is on (the light). ?m=3 picks the moment a held frame shows. */
 import { REEL } from './film-reel.js';
-import { PW, PH, FOCUS, FILM_UV, GLOW, homography, carry, clothH, FILMQ, FILM_MID, FILM_HGT, JOIN, diveEnd } from './join.js';
+import { PW, PH, FOCUS, FILM_UV, GLOW, homography, carry, clothH, FILMQ, FILM_MID, FILM_HGT, JOIN, diveEnd, arenaAt } from './join.js';
 
 var IMG = new URL('../../img/', import.meta.url).href;
 var CLIPS = REEL.clips, N = CLIPS.length;
@@ -579,7 +579,7 @@ export function mount(host, options) {
     var cam = e2 <= 0 ? (e1 < 1 ? between(K0, K1, e1) : K1c) : e3 <= 0 ? between(K1c, K2, e2) : ed <= 0 ? between(K2, K3, e3) : between(K3, KD, ed);
     // what the games chapter needs to throw its arena onto the cloth in this same frame (join.js)
     JOIN.k = pd; JOIN.quad = FILMQ.map(function (c) { return plateXY(c, cam); }); JOIN.mid = plateXY(FILM_MID, cam); JOIN.h = FILM_HGT * scaleOf(cam);
-    var cover = JOIN.arena;                       // how much of the cloth the arena covered in the last frame (0 without it)
+    var cover = JOIN.ready ? arenaAt(pd, RM) : 0;  // how much of the cloth the arena covers (0 until the games chapter is ready)
     if ((cover > 0.995) !== !!reel.covered) { reel.covered = cover > 0.995; sync(); }
     var s = scaleOf(cam), o = plateXY([0, 0], cam), close = e1 * (1 - e2);
 

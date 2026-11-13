@@ -88,7 +88,7 @@
 .games-all { margin: 26vh 0 0 var(--content-l); width: fit-content; }
 .games-all .body { padding: 13px 20px 14px; }
 .games-all a { font: 600 15px/1.3 var(--font-body); }
-.games-foot { height: 175vh; }
+.games-foot { height: 265vh; }   /* (the way back out of the cloth: about two screens, as slow as the dive in) */
 @media (min-width: 821px) {
   .games-picks ul { grid-template-columns: minmax(0, 1fr); gap: 26vh; }
 }
@@ -96,7 +96,7 @@
   .games-bell { left: 14px; right: 14px; width: auto; bottom: 18px; }
   .games-picks { width: auto; margin-right: var(--gutter); }
   .games-all { margin-top: 18px; }
-  .games-foot { height: 165vh; }
+  .games-foot { height: 255vh; }
 }
 
 /* ---------------------------------------------------------------- the closing beat (a draft: see chapters/closing.js) */

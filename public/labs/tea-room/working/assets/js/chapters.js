@@ -157,17 +157,21 @@
     for (i = 0; i < LIST.length; i++) {
       c = LIST[i];
       var on = i === base, guest = false;
+      c.owns = false;
       if (!on && c.scene && y >= c.top - (c.lead || 0) * H && (c.over ? holder < i : y < c.top - 1)) {
         guest = true;
         c.whole = !!c.scene.frame(y < c.top ? (y - c.top) / H : clamp((y - c.top) / travel(c), 0, 1), t, ptr);
         on = c.whole;
+        // (a guest whose picture already fills the screen, as the arena does once the film's cloth has left the frame,
+        // is the chapter the reader is in: the rail names it)
+        c.owns = on && !c.over && !!c.scene.owns && c.scene.owns();
       }
       show(c, on);
       setActive(c, on && (!guest || !!c.over));
     }
     // the rail: which chapter the middle of the screen is in
     var mid = y + H * 0.5, now = -1;
-    for (i = 0; i < LIST.length; i++) if (LIST[i].rail && mid >= LIST[i].top - H * 0.6) now = i;
+    for (i = 0; i < LIST.length; i++) if (LIST[i].rail && (mid >= LIST[i].top - H * 0.6 || LIST[i].owns)) now = i;
     // (look B's own stage marks its three chapters in the rail too, only when its own reckoning changes: so the mark
     // is checked every frame here, not only when this reckoning changes)
     if (now !== railNow || (now >= 0 && LIST[now].rail && !LIST[now].rail.classList.contains('now'))) {

@@ -52,4 +52,9 @@ export function arenaOver(k) { k = k < 0 ? 0 : k > 1 ? 1 : k; var t = Math.min(1
 // how far the arena's picture has squared up from the cloth's lean (the cloth faces the camera as it comes close)
 export function squared(k) { var t = Math.min(1, Math.max(0, (k - 0.45) / 0.55)); return t * t * (3 - 2 * t); }
 
-export var JOIN = { fresh: false, quad: null, mid: null, h: 0, k: 0, arena: 0 };
+// how much of the cloth the arena covers at a point of the dive, with motion on or off (both chapters reckon it from
+// k alone, so neither waits a frame for the other)
+export function arenaAt(k, reduced) { return reduced ? (k >= 0.5 ? 1 : 0) : arenaOver(k); }
+
+// ready: the games chapter has its arena (or its still) in, and will draw over the film's frames
+export var JOIN = { fresh: false, quad: null, mid: null, h: 0, k: 0, arena: 0, ready: false };
