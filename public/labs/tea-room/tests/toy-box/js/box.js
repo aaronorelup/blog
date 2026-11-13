@@ -83,8 +83,12 @@ export function makeBox(THREE, scene) {
   const bed = new THREE.Mesh(new THREE.PlaneGeometry(BW - TH * 2, BD - TH * 2), new THREE.MeshBasicMaterial({ map: gtex, color: 0xffffff, transparent: true, opacity: 0, depthWrite: false, toneMapped: false }));
   bed.rotation.x = -Math.PI / 2; bed.position.y = BH * 0.62; body.add(bed);
 
+  // the light that spills out of it onto the mats
+  const pool = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: gtex, color: 0xffb060, transparent: true, opacity: 0, depthWrite: false, toneMapped: false, blending: THREE.AdditiveBlending }));
+  pool.rotation.x = -Math.PI / 2; pool.position.set(0, 0.003, 0.1); pool.renderOrder = -6; g.add(pool);
+
   // paper stars for the burst
-  const N = 46;
+  const N = 64;
   const conf = new THREE.InstancedMesh(new THREE.PlaneGeometry(0.03, 0.03), new THREE.MeshBasicMaterial({ side: THREE.DoubleSide, toneMapped: false }), N);
   conf.frustumCulled = false; conf.visible = false; scene.add(conf);
   const pal = [0xf6e7c8, 0xf0c06a, 0xf0a6b8, 0xe2795c, 0xf6e7c8, 0xc9a227].map((c) => new THREE.Color(c));
@@ -112,7 +116,7 @@ export function makeBox(THREE, scene) {
         p.a = rnd() * 6.283; p.w = (rnd() - 0.5) * 22; p.ax = rnd() * 3; p.life = 1.5 + rnd() * 1.1;
       }
     },
-    update(T, dt, state, rattle) {
+    update(T, dt, state, rattle, ajar) {
       if (state === 'closed') tgt = 0; else if (state === 'returning') tgt = T >= api.closeAt - 0.12 ? 0 : 1; else tgt = 1;
       let busy = false;
       if (dt > 0) {
@@ -131,11 +135,18 @@ export function makeBox(THREE, scene) {
         rz = Math.sin(T * 27) * 0.03 * env; ry = Math.abs(Math.sin(T * 13.5)) * 0.016 * env; ra = Math.max(0, Math.sin(T * 9)) * 0.11 * env;
         busy = true;
       }
+      // scrolled close to the burst, the lid no longer shuts: a line of light shows under it
+      const gap = state === 'closed' ? (ajar || 0) * 0.15 : 0;
+      ra = Math.max(ra, gap);
       hinge.rotation.x = -(a + ra);
       body.rotation.z = rz; body.position.y = ry;
       body.scale.set(1 - jolt * 0.5, 1 + jolt, 1 - jolt * 0.5);
       const o = Math.min(1, (a + ra) / 0.9);
-      bed.material.opacity = o; inside.emissiveIntensity = 0.55 * o; glow.intensity = 5.5 * o * scale;
+      // the burst itself is a flash that dies away in half a second
+      const flash = confT >= 0 ? Math.exp(-(T - confT) * 4.2) : 0;
+      if (flash > 0.004) busy = true;
+      bed.material.opacity = o; inside.emissiveIntensity = 0.55 * o + flash; glow.intensity = (5.5 * o + 26 * flash) * scale;
+      pool.material.opacity = Math.min(1, 0.34 * o + 0.6 * flash); pool.scale.setScalar(1.7 + 0.5 * o + 1.6 * flash);
       // the stars
       if (confT >= 0) {
         const age = T - confT;

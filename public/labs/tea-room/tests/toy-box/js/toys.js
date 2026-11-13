@@ -162,12 +162,12 @@ export function placeShadows(S, toys, box, lamp) {
   const put = (x, z, h, r, strength) => {
     // away from the lamp, longer the further from it, fainter the higher the toy is
     let dx = x - lamp.x, dz = z - lamp.z; const dl = Math.hypot(dx, dz) || 1; dx /= dl; dz /= dl;
-    const lift = 1 + h * 2.2, len = 1.25 + Math.min(dl, 3) * 0.1 + h * 0.5;
+    const lift = 1 + h * 1.1, len = 1.25 + Math.min(dl, 3) * 0.1 + h * 0.3;
     S.q.setFromAxisAngle(S.up, Math.atan2(dx, dz));
     S.p.set(x + dx * (r * 0.3 + h * 0.35), 0.004, z + dz * (r * 0.3 + h * 0.35));
     S.s.set(r * 2 * lift, 1, r * 2 * lift * len);
     S.m.compose(S.p, S.q, S.s); S.mesh.setMatrixAt(n, S.m);
-    S.op.array[n] = strength / (1 + h * 3.2); n++;
+    S.op.array[n] = strength / (1 + h * 3 + h * h * 14); n++;   // a toy in the air hardly darkens the floor
   };
   const b = box.bounds;
   put((b.x0 + b.x1) / 2, (b.z0 + b.z1) / 2, 0, (b.x1 - b.x0) * 0.66, 0.85);
