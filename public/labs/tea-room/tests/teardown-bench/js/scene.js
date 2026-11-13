@@ -103,8 +103,9 @@ function mountStage(host, opt) {
         <p class="b-out"><span class="b-val"></span><b class="b-read"></b></p>
       </article>
       <article class="card end">
-        <p class="meta"><span class="m-name"></span><span>The whole teardown</span></p>
+        <p class="meta"><span class="m-name"></span><span>The film and the page</span></p>
         <h2 class="e-title"></h2>
+        <p class="e-say"></p>
         <div class="e-btns">
           <button type="button" class="btn e-film">Watch its film</button>
           <a class="btn e-open" target="_self">Open the full teardown</a>
@@ -155,7 +156,7 @@ function mountStage(host, opt) {
     root.classList.toggle('phone', phone);
     let bx, by, bw, bh;
     if (phone) {
-      bx = 12; by = 58; bw = W - 24; bh = Math.round(Math.min(H * 0.47, bw * 1.15));
+      bx = 12; by = 58; bw = W - 24; bh = Math.round(Math.min(H * 0.45, bw * 1.0));
     } else {
       const dockW = Math.min(400, W * 0.3);
       bx = Math.round(W * 0.04); by = Math.round(H * 0.11);
@@ -288,7 +289,8 @@ function mountStage(host, opt) {
     $$('.m-name').forEach((e) => (e.textContent = `${m.name} · ${i + 1} of ${MACHINES.length}`));
     $('.plate-name').textContent = m.name;
     $('.plate-what').textContent = m.what;
-    $('.e-title').textContent = `${m.name}, all of it`;
+    $('.e-title').textContent = `${m.name}: the whole teardown`;
+    $('.e-say').textContent = `Its ${m.filmLength} film, and its own page, where every part, view and number is yours to try.`;
     $('.e-open').href = m.page;
     filmBtn.textContent = 'Watch its film';
     const br = m.breakIt;
@@ -374,12 +376,11 @@ function mountStage(host, opt) {
     roomImg.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${sBase})`;
 
     // the table between two machines: the lamp dims, the next one is set down
-    const edge = p.step === 'intro' ? 0 : Math.min(p.i === 0 ? 1 : p.t / 0.025, p.i === MACHINES.length - 1 ? 1 : (1 - p.t) / 0.025);
+    const edge = p.step === 'intro' ? 1 - 0.3 * p.intro : Math.min(p.i === 0 ? 1 : p.t / 0.025, p.i === MACHINES.length - 1 ? 1 : (1 - p.t) / 0.025);
     dim.style.opacity = String(1 - smooth(edge));
     // the intro: the frame comes up from the table
     const rise = p.step === 'intro' ? smooth(1 - p.intro * 1.0) : 1;
     bench.style.transform = `translate3d(0, ${(1 - rise) * 26}px, 0)`;
-    bench.style.opacity = String(lerp(0.55, 1, rise));
     // the still under the page turns a little, as the machine does, when the page is not there
     const kb = 1 + 0.035 * smooth(p.step === 'arrive' ? p.t / ARRIVE : 1);
     picA.style.transform = picB.style.transform = `scale(${kb})`;
