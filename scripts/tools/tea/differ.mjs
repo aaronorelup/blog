@@ -14,15 +14,17 @@ import {
   placeOf, ready, server, sizeName, sizesOf, urlOf, withQuery,
 } from './lib.mjs';
 
-// cell: a cell has changed when its mean colour moved by more than this (RGB distance, of 441).
+// cell: a cell has changed when its mean colour moved by more than this (RGB distance, of 441), unless it is
+//   darker than dark (luminance, of 255) in both frames.
 // cells: a step (one screen apart) passes when at least this share of cells changed.
 // mean: two chapters' opening frames must also be at least this far apart in mean colour.
 // (The numbers and how they were measured: docs/TEA_ROOM.md, "Calibration".)
-export const FLOORS = Object.freeze({ cell: 24, cells: 0.25, mean: 8 });
+export const FLOORS = Object.freeze({ cell: 24, dark: 40, cells: 0.3, mean: 7 });
 export const CALM = Object.freeze(['now', 'about']); // calm on purpose: exempt inside themselves (1.12)
 
 export const gridOf = (w, h) => (h > w ? [9, 16] : [16, 9]);
 const dist = (a, i, b, j) => Math.hypot(a[i] - b[j], a[i + 1] - b[j + 1], a[i + 2] - b[j + 2]);
+const lum = (a, i) => 0.2126 * a[i] + 0.7152 * a[i + 1] + 0.0722 * a[i + 2];
 
 // a, b: RGB bytes of two grids, gw x gh cells each (a frame downscaled by area to its grid). Pure.
 export function compareGrids(a, b, gw, gh, floors = FLOORS) {
@@ -30,7 +32,10 @@ export function compareGrids(a, b, gw, gh, floors = FLOORS) {
   let changed = 0;
   const ma = [0, 0, 0], mb = [0, 0, 0];
   for (let c = 0; c < n; c++) {
-    if (dist(a, c * 3, b, c * 3) > floors.cell) changed++;
+    // a cell that is dark in both frames has not changed in a way you can name, however far its colour moved: a
+    // dark field sliding over dark is B's flat dark slide, not a new picture
+    const dark = Math.max(lum(a, c * 3), lum(b, c * 3)) < floors.dark;
+    if (!dark && dist(a, c * 3, b, c * 3) > floors.cell) changed++;
     for (let k = 0; k < 3; k++) { ma[k] += a[c * 3 + k] / n; mb[k] += b[c * 3 + k] / n; }
   }
   return { cells: changed / n, mean: dist(ma, 0, mb, 0) };
