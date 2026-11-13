@@ -10,7 +10,7 @@ const METER = [[0, 0], [0.1, 6], [0.2, 13], [0.27, 27], [0.37, 51], [0.385, 1], 
 
 export function makeWatcher() {
   const group = new THREE.Group();
-  const felt = lit(PAL.felt), wood = lit(PAL.desk), dark = lit(0x17181f), clay = lit(PAL.clay), capM = lit(PAL.cap);
+  const felt = lit(PAL.felt), wood = lit(PAL.desk), dark = lit(0x17181f), clay = lit(0x56648c, { emissive: 0x141a2c }), capM = lit(0x2c3550, { emissive: 0x0a0d18 });
   // the floor of the cubicle and its two felt walls
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(3.6, 3.2), lit(0x22222b)); floor.rotation.x = -Math.PI / 2; floor.position.set(0, 0.012, -0.05);
   const back = box(3.6, 1.55, 0.09, felt); back.position.set(0, 0.775, -1.6);
@@ -107,7 +107,7 @@ export function makeWatcher() {
   drawFeed(7.3);
   let fedAt = -1;
   return {
-    group, lamp: new THREE.Vector3(-0.77, 1.9, -0.5), tris: 0,
+    group, lamp: new THREE.Vector3(-1.1, 2.9, 0.9), tris: 0,
     redraw() { note.userData.redraw(); fedAt = -1; },
     // glance: 0 he watches the feed, 1 he has turned to look back at the reader
     update(t, glance, live) {

@@ -17,8 +17,8 @@
 // of ten music videos, and the watcher.
 import * as THREE from 'three';
 import { PAL, FOG, clamp, lerp, ss, io, twelve, hash, rng, track, glowSprite, glow, decal, box, lit, flat } from './kit.js';
-import { makePlane, makeLog, makeCursor, makeEvening, makeWind, makeFar } from './ground.js';
-import { makeFigure, makeRing } from './origami.js';
+import { makePlane, makeLog, makeCursor, makeEvening, makeWind, makeFar, makeDusk } from './ground.js';
+import { makeFigure, makeRing, strokeWindow, forgetStrokes } from './origami.js';
 import { makeSwarm } from './swarm.js';
 import { makeWatcher } from './watcher.js';
 import { makeWall, SW, SH } from './wall.js';
@@ -33,13 +33,13 @@ const UP = new THREE.Vector3(0, 1, 0);
 // [back from the stop, height, to the side, then the point looked at: beyond, to the side, height, and the lens].
 const STOPS = [
   { key: 'entry', th: 0, R: 0, q: [0, 0.058], wide: [[3.3, 0.85, 0.9, 4, -0.2, 0.3, 40], [4.4, 1.5, 0.3, 3, 0.6, 0.2, 40]], tall: [[4.6, 1.5, 0.3, 5, 0, 0.3, 60], [5.6, 2.3, 0, 3, 0, 0.2, 60]] },
-  { key: 'helper', th: 38, R: 10, q: [0.088, 0.215], post: 'cost', wide: [[7.4, 2.7, -0.7, 0.5, 0.8, 0.6, 38], [6, 2.2, 0.3, 0.5, 1.5, 0.7, 38]], tall: [[9.8, 4.4, 0.3, 0.6, 0.4, 0.3, 58], [8.6, 3.9, 0.5, 0.6, 0.5, 0.4, 58]] },
-  { key: 'fanout', th: 84, R: 17, q: [0.25, 0.352], wide: [[16.5, 7.2, -1, 0, 0, 0, 40], [13, 5.6, 1, 0.5, 0, 0, 40]], tall: [[20, 9.5, 0, -4, 0, 0, 60], [17.6, 8.4, 0.6, -3.6, 0, 0, 60]] },
-  { key: 'pipeline', th: 128, R: 11, q: [0.386, 0.476], wide: [[9.6, 2.9, -1.2, 0, 0, 0.55, 38], [8.2, 2.4, 1, 0, 0, 0.55, 38]], tall: [[11, 4.6, -1.6, 0, 0, 0.2, 58], [9.8, 4.1, -0.8, 0, 0, 0.3, 58]] },
-  { key: 'orchestrator', th: 170, R: 13, q: [0.51, 0.592], wide: [[11.4, 3.7, -1.2, 0, 0, 1.2, 38], [9.6, 3.1, 1, 0, 0, 1.3, 38]], tall: [[13, 5.4, 0, 0, 0, 0.9, 58], [11.4, 4.7, 0.4, 0, 0, 1, 58]] },
-  { key: 'writers', th: 214, R: 10, q: [0.626, 0.716], post: 'lie', wide: [[7.2, 3.1, -0.9, 0, 0.9, 0.7, 36], [5.8, 2.6, 0.2, 0, 1.3, 0.8, 36]], tall: [[9.4, 4.6, 0, 0, 0, 0.4, 58], [8, 3.9, 0.3, 0, 0, 0.5, 58]] },
-  { key: 'wall', th: 260, R: 18, q: [0.75, 0.888], post: 'gauntlet', wide: [[17.2, 3.5, 0, 0, 0, 1.25, 40], [15.4, 3.2, 0.3, 0, 0, 1.2, 40]], tall: [[21.5, 5.4, 0, 0, 0, 5.6, 60], [20, 5.2, 0, 0, 0, 5.6, 60]] },
-  { key: 'watcher', th: 306, R: 10, q: [0.922, 1], post: 'clock', wide: [[6.6, 2.7, 2.6, -0.6, 0.5, 0.85, 36], [5.4, 2.25, 2.9, -0.8, 0.8, 0.9, 36]], tall: [[8, 3.8, 1.7, -0.6, 0, 0.6, 58], [6.8, 3.3, 1.9, -0.6, 0.2, 0.7, 58]] },
+  { key: 'helper', th: 38, R: 10, q: [0.088, 0.215], post: 'cost', wide: [[7.2, 3, -0.7, 0.5, 0.8, 0.2, 38], [5.9, 2.5, 0.3, 0.5, 1.5, 0.35, 38]], tall: [[9.8, 4.4, 0.3, 0.6, 0.4, 0.3, 58], [8.6, 3.9, 0.5, 0.6, 0.5, 0.4, 58]], labelY: 0.68 },
+  { key: 'fanout', th: 84, R: 17, q: [0.25, 0.352], wide: [[16.5, 7.6, -1, 0, 0, -0.6, 40], [13, 6, 1, 0.5, 0, -0.5, 40]], tall: [[19, 9.5, 0, 0.5, 0, 0, 60], [16.6, 8.4, 0.6, 1, 0, 0, 60]], labelY: 0.83 },
+  { key: 'pipeline', th: 128, R: 11, q: [0.386, 0.476], wide: [[9.8, 3.4, -1.2, 0, 0, 0.25, 38], [8.8, 3, 1, 0, 0, 0.3, 38]], tall: [[9.6, 4.6, -1.6, 2.2, 0, 0.2, 58], [8.6, 4.1, -0.8, 2.2, 0, 0.3, 58]], labelY: 0.83 },
+  { key: 'orchestrator', th: 170, R: 13, q: [0.51, 0.592], wide: [[10.6, 4, -1.2, 0, 0, 0.9, 38], [9, 3.4, 1, 0, 0, 1, 38]], tall: [[11.6, 5.4, 0, 2.6, 0, 0.9, 58], [10.2, 4.7, 0.4, 2.6, 0, 1, 58]], labelY: 0.83 },
+  { key: 'writers', th: 214, R: 10, q: [0.626, 0.716], post: 'lie', wide: [[7, 3.4, -0.9, 0, 0.9, 0.45, 36], [5.7, 2.9, 0.2, 0, 1.3, 0.55, 36]], tall: [[9.4, 4.6, 0, 0, 0, 0.4, 58], [8, 3.9, 0.3, 0, 0, 0.5, 58]], labelY: 0.68 },
+  { key: 'wall', th: 260, R: 18, q: [0.75, 0.888], post: 'gauntlet', wide: [[17.2, 3.5, 0, 0, 0, 1.25, 40], [15.4, 3.2, 0.3, 0, 0, 1.2, 40]], tall: [[21.5, 5.4, 0, 0, 0, 5.6, 60], [20, 5.2, 0, 0, 0, 5.6, 60]], labelY: 0.688 },
+  { key: 'watcher', th: 306, R: 10, q: [0.922, 1], post: 'clock', wide: [[6.6, 2.9, 2.6, -0.6, 0.5, 0.7, 36], [5.4, 2.45, 2.9, -0.8, 0.8, 0.75, 36]], tall: [[8.4, 3.9, 1.5, -0.6, -0.5, 0.6, 58], [7.3, 3.4, 1.7, -0.6, -0.4, 0.7, 58]], labelY: 0.68 },
 ];
 STOPS.forEach((s) => {
   const a = s.th * DEG;
@@ -89,15 +89,15 @@ export function mount(host, options = {}) {
     // ---- the ground: log, cursor, the evening's window, wind
     const R = rng(20261113), spots = [];
     for (let i = 0; i < 70; i++) {
-      const a = R() * 6.283, r = 5.2 + R() * R() * 46, x = Math.sin(a) * r, z = -Math.cos(a) * r, w = (2.6 + R() * 2.2) * (tall ? 0.72 : 1);
+      const a = R() * 6.283, r = 5.2 + R() * R() * 46, x = Math.sin(a) * r, z = -Math.cos(a) * r, w = (3 + R() * 2.4) * (tall ? 0.7 : 1);
       if (STOPS.some((s) => s.R && (Math.hypot(x - s.C.x, z - s.C.z) < 4.2 || Math.hypot(x - s.C.x + s.fwd.x * 4, z - s.C.z + s.fwd.z * 4) < 4.6 || Math.hypot(x - s.C.x + s.fwd.x * 7.5, z - s.C.z + s.fwd.z * 7.5) < 3.4))) continue;
-      spots.push({ x, z, w, i, rot: -a, o: 0.42 + R() * 0.4 });
+      spots.push({ x, z, w, i, rot: -a, o: 0.55 + R() * 0.4 });
     }
     const log = makeLog(spots); flatland.add(log.group); texts.push(log);
     const cursor = makeCursor(); add(cursor.group);
     const evening = makeEvening(invalidate); evening.group.position.set(-3, 0, -84); add(evening.group);
     const wind = makeWind(); scene.add(wind.lines);
-    add(makeFar());
+    add(makeFar()); add(makeDusk());
 
     // a helper that comes down out of the dark with a card and sets it on the glass at L
     function courier(L, s, perchSide = 0.85) {
@@ -108,8 +108,9 @@ export function mount(host, options = {}) {
       const from = L.clone().addScaledVector(s.fwd, 9).addScaledVector(s.side, -4).addScaledVector(UP, 8.5);
       const perch = L.clone().addScaledVector(s.side, perchSide).addScaledVector(s.fwd, 0.25);
       const mid = L.clone().addScaledVector(s.fwd, 3).addScaledVector(UP, 1.2);
-      return (u, t) => {
-        const on = u > 0.001; g.visible = on; sg.visible = on; if (!on) return;
+      return (u, t, gone = 0) => {
+        const on = u > 0.001; g.visible = on; sg.visible = on && gone < 0.99; if (!on) return;
+        sg.scale.setScalar(1 - gone);
         const e = io(clamp(u / 0.86)), land = ss(0.86, 1, u);
         bez(tmp, from, mid, perch, e); tmp.y += 0.02 + (1 - land) * 0.12 * Math.sin(twelve(t) * 5);
         g.position.copy(tmp);
@@ -141,7 +142,7 @@ export function mount(host, options = {}) {
         else { bez(g.position, Iu, M2, perch, home); g.position.y += 0.02; g.rotation.y = lerp(yawTo(perch.x - I.x, perch.z - I.z), yawTo(-s.fwd.x - s.side.x, -s.fwd.z - s.side.z), land); }
         const flying = ss(0.36, 0.4, p) * (1 - land);
         fig.set(fold, flying * Math.sin(tw * 11) * 0.6 + (1 - flying) * Math.sin(tw * 1.4) * 0.06);
-        const carry = p > 0.6; sg.visible = carry;
+        const gone = tall ? ss(0.86, 0.95, p) : 0, carry = p > 0.6 && gone < 0.99; sg.visible = carry; sg.scale.setScalar(1 - gone);
         if (carry) { bez(tmp, Iu, M2, L, home); tmp.y = Math.max(0.006, g.position.y - 0.5) * (1 - land) + 0.006; sg.position.copy(tmp); sg.rotation.y = lerp(g.rotation.y, -s.th * DEG, land); }
         const flick = 0.75 + 0.25 * hash(Math.floor(t * 12)), there = ss(0.5, 0.58, p) * (1 - ss(0.62, 0.7, p));
         fire.material.opacity = (0.5 + 0.5 * there) * flick; fire.scale.setScalar(1.8 + 1.2 * there + flick * 0.3);
@@ -180,7 +181,7 @@ export function mount(host, options = {}) {
         g.rotation.y = yawTo(dir.x + toCam.x * 0.5, dir.z + toCam.z * 0.5); add(g);
         return { ring, fig, g };
       });
-      const piece = makeFigure('crane', { paper: 0x30333f, glowAmt: 0.45 }); const pg = new THREE.Group(); pg.add(piece.group); add(pg);
+      const piece = makeFigure('crane', { paper: PAL.cream, line: 0x6b5f4a, glowAmt: 0.55, print: false }); const pg = new THREE.Group(); pg.add(piece.group); add(pg);
       const start = P[0].clone().addScaledVector(dir, -gap), carry = toCam.clone().multiplyScalar(0.55).addScaledVector(dir, 0.55);
       s.lamp = at(s, -2.4, 0, 2.8); s.label = tall ? null : at(s, -1.7, 0);
       parts.push((q, t) => {
@@ -196,10 +197,10 @@ export function mount(host, options = {}) {
           if (k < N) {
             const a = k === 0 ? start : P[k - 1], b = P[k], e = io(clamp(f / 0.6));
             tmp.copy(a).lerp(b, e).add(carry); tmp.y = 0.62 + Math.sin(Math.PI * e) * 0.75;
-            piece.set((k + ss(0.6, 0.95, f)) / N, 0); pg.scale.setScalar(0.5 * on);
+            piece.set((k + ss(0.6, 0.95, f)) / N, 0); pg.scale.setScalar(0.62 * on);
           } else {
             tmp.copy(P[N - 1]).add(carry).addScaledVector(dir, 2.6 * f).addScaledVector(UP, 0.62 + 3.2 * f * f);
-            piece.set(1, Math.sin(tw * 11) * 0.6); pg.scale.setScalar(0.5 * on * (1 - ss(0.6, 1, f)));
+            piece.set(1, Math.sin(tw * 11) * 0.6); pg.scale.setScalar(0.62 * on * (1 - ss(0.6, 1, f)));
           }
           pg.position.copy(tmp); pg.rotation.y = yawTo(dir.x, dir.z);
         }
@@ -272,14 +273,14 @@ export function mount(host, options = {}) {
         const from = new THREE.Vector3(seats[k].x, 0.95, seats[k].z), to = new THREE.Vector3(seats[0].x * 0.52 + (k - 3) * 0.075, 0.69, seats[0].z * 0.52 + ((k * 7) % 5 - 2) * 0.045);
         return { f, from, to, mid: from.clone().lerp(to, 0.5).setY(1.7) };
       });
-      const L = tall ? at(s, -2.9, 0.2) : at(s, -0.5, 2.9); const drop = courier(L, s, tall ? -1.1 : 0.95);
+      const L = tall ? at(s, -2.9, -0.3) : at(s, -0.5, 2.9); const drop = courier(L, s, 0.95);
       s.lamp = at(s, -0.6, 0.3, 2.3); s.card = L; s.label = tall ? null : at(s, -2.4, -0.4);
       parts.push((q, t) => {
         const p = s.p, tw = twelve(t);
         seats.forEach((w, k) => { w.fig.set(ss(k * 0.04, 0.2 + k * 0.04, p)); w.g.rotation.z = Math.sin(tw * (1.3 + k * 0.23) + k * 2) * 0.05; });
         flags.forEach((fl, i) => { const e = ss(0.3 + i * 0.045, 0.4 + i * 0.045, p); fl.f.visible = e > 0.001; bez(fl.f.position, fl.from, fl.mid, fl.to, io(e)); fl.f.rotation.y = i * 1.3 + (1 - e) * 4; });
         const k = 0.35 + 0.65 * s.a; bulb.material.opacity = 0.95 * k; poolM.opacity = 0.5 * k;
-        drop(ss(0.5, 0.78, p), t);
+        drop(ss(0.5, 0.78, p), t, tall ? ss(0.78, 0.9, p) : 0);
         plane.pool(s.C.x, s.C.z, 3.6, [1, 0.72, 0.4], 0.13 * k);
         plane.pool(L.x, L.z, 2.2, [0.55, 0.6, 0.9], 0.07 * ss(0.74, 0.9, p) * s.a);
         s.u = ss(0.78, 0.93, p);
@@ -301,7 +302,7 @@ export function mount(host, options = {}) {
         if (q > s.q[0] - 0.09 && q < s.q[1] + 0.06) wall.load();
         wall.setPlaying(active && s.a > 0.12 && rise > 0.04);
         wall.update(rise, t, 0.35 + 0.65 * s.a);
-        drop(ss(0.2, 0.42, p), t);
+        drop(ss(0.2, 0.42, p), t, tall ? ss(0.42, 0.52, p) : 0);
         const k = rise * (0.3 + 0.7 * s.a), w = wall.size.w;
         for (let i = -1; i <= 1; i++) plane.pool(s.C.x - s.fwd.x * 2 + s.side.x * i * w * 0.3, s.C.z - s.fwd.z * 2 + s.side.z * i * w * 0.3, tall ? 4 : 5, i === 0 ? [0.5, 0.42, 0.85] : i < 0 ? [0.85, 0.4, 0.7] : [0.4, 0.55, 0.9], 0.085 * k);
         plane.pool(L.x, L.z, 2.2, [0.55, 0.6, 0.9], 0.07 * ss(0.38, 0.5, p) * s.a);
@@ -314,12 +315,12 @@ export function mount(host, options = {}) {
     {
       const s = S.watcher, watcher = makeWatcher(); watcher.group.position.copy(s.C); watcher.group.rotation.y = -s.th * DEG; add(watcher.group); texts.push(watcher);
       watcher.group.updateMatrixWorld(true); s.lamp = watcher.group.localToWorld(watcher.lamp.clone());
-      const L = tall ? at(s, -2.9, 0.9) : at(s, -1.2, 2.9); const drop = courier(L, s, tall ? -1 : 0.9);
+      const L = tall ? at(s, -3, -0.2) : at(s, -1.2, 2.9); const drop = courier(L, s, 0.95);
       s.card = L; s.label = tall ? null : at(s, -2.3, 0.9);
       parts.push((q, t) => {
         const p = s.p;
         watcher.update(t, ss(0.74, 0.94, p), s.a > 0.05 && !still && !calm);
-        drop(ss(0.2, 0.46, p), t);
+        drop(ss(0.2, 0.46, p), t, tall ? ss(0.46, 0.58, p) : 0);
         const k = 0.3 + 0.7 * s.a;
         plane.pool(s.C.x - s.fwd.x * 0.6, s.C.z - s.fwd.z * 0.6, 3.6, [1, 0.72, 0.4], 0.12 * k);
         plane.pool(L.x, L.z, 2.2, [0.55, 0.6, 0.9], 0.07 * ss(0.42, 0.6, p) * s.a);
@@ -403,7 +404,7 @@ export function mount(host, options = {}) {
       const s = S[k], a = s.a * ss(0.02, 0.12, s.p);
       if (a <= 0.01) { ui.place(e, 0, 0, 0); return; }
       const b = ui.size(e);
-      if (tall || !s.label) { ui.place(e, Math.round((W - b.w) / 2), Math.round(H * (k === 'wall' ? 0.688 : 0.68)), a); return; }
+      if (tall || !s.label) { ui.place(e, Math.round((W - b.w) / 2), Math.round(H * s.labelY), a); return; }
       const p = project(s.label);
       ui.place(e, clamp(p.x - b.w / 2, 16, W - b.w - 16), Math.min(p.y, H - b.h - 18), p.behind ? 0 : a);
     });
@@ -420,7 +421,7 @@ export function mount(host, options = {}) {
         ui.place(card.a, Math.round((W - w) / 2), H - h - 14 + away * (h + 30), a * (1 - away));
         return;
       }
-      const p = project(s.card), dist = camera.position.distanceTo(s.card), sc = clamp(7.2 / dist, 0.74, 1);
+      const p = project(s.card), dist = camera.position.distanceTo(s.card), sc = clamp(7.2 / dist, 0.74, k === 'gauntlet' ? 0.8 : 1);
       if (k === 'gauntlet') a *= 1 - ss(0.82, 0.97, s.p) * 0;
       const half = w * sc / 2, cx = s.a > 0.98 ? clamp(p.x, half + 20, W - half - 20) : p.x;
       ui.place(card.a, cx - w / 2, Math.min(p.y + 4, H - 16) - h, p.behind ? 0 : a, sc);
@@ -482,13 +483,13 @@ export function mount(host, options = {}) {
     const wasTall = tall; tall = W / H < 0.8;
     host.classList.toggle('at-tall', tall);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, options.maxDpr || 2));
-    renderer.setSize(W, H, false);
+    renderer.setSize(W, H, false); strokeWindow(W, H);
     camera.aspect = tall ? W / (H * 1.3) : W / H;
     // on a tall window the picture's middle sits in the upper part, and the words have the foot
     if (tall) camera.setViewOffset(W, H * 1.3, 0, H * 0.3, W, H); else camera.clearViewOffset();
     ui.forget();
     if (!built || wasTall !== tall) {
-      if (built) { built.dispose(); world.clear(); world.add(key); flatland.clear(); texts.length = 0; holder.textContent = ''; scene.children.filter((o) => o.isLineSegments).forEach((o) => scene.remove(o)); }
+      if (built) { built.dispose(); forgetStrokes(); world.clear(); world.add(key); flatland.clear(); texts.length = 0; holder.textContent = ''; scene.children.filter((o) => o.isLineSegments).forEach((o) => scene.remove(o)); }
       built = build();
     }
   }

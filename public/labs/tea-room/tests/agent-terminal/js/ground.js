@@ -34,12 +34,13 @@ export function makePlane() {
           vec2 e = (vW.xz - uPool[i].xy) / uPool[i].z;
           col += uPoolC[i] * uPool[i].w * exp(-dot(e, e) * 2.4);
         }
-        col += vec3(0.030, 0.034, 0.048) * graze;
+        col += vec3(0.040, 0.040, 0.085) * graze;
         col += (h(floor(vW.xz * 90.0)) - 0.5) * 0.006;
         float fog = 1.0 - exp(-pow(d * uFog, 2.0));
         col = mix(col, vec3(0.027, 0.031, 0.043), fog);
+        col = mix(col, vec3(0.150, 0.140, 0.300), smoothstep(70.0, 250.0, d) * 0.85);
         float alpha = mix(0.93, 0.6, graze);
-        alpha = mix(alpha, 1.0, smoothstep(0.25, 0.85, fog));
+        alpha = mix(alpha, 0.72, smoothstep(0.25, 0.85, fog));
         gl_FragColor = vec4(col, alpha);
       }`,
   });
@@ -62,18 +63,18 @@ export function makePlane() {
 export function makeLog(spots) {
   const group = new THREE.Group();
   const texs = LOG.map((lines, i) => canvasTex(1024, 512, (g, w, h) => {
-    const panel = i % 3 === 0;
+    const panel = i % 2 === 0;
     if (panel) {
-      g.fillStyle = 'rgba(54, 70, 104, 0.34)'; g.strokeStyle = 'rgba(190, 205, 235, 0.3)'; g.lineWidth = 3;
+      g.fillStyle = 'rgba(52, 66, 104, 0.42)'; g.strokeStyle = 'rgba(190, 205, 235, 0.42)'; g.lineWidth = 3;
       g.beginPath(); g.roundRect(8, 8, w - 16, h - 16, 18); g.fill(); g.stroke();
     }
-    g.font = '500 44px "JetBrains Mono", ui-monospace, monospace'; g.textBaseline = 'middle';
-    lines.forEach((s, k) => {
+    g.font = '500 50px "JetBrains Mono", ui-monospace, monospace'; g.textBaseline = 'middle';
+    lines.slice(0, 4).forEach((s, k) => {
       const head = s.startsWith('•');
-      g.fillStyle = head ? 'rgba(233, 228, 218, 0.95)' : 'rgba(170, 180, 200, 0.8)';
-      g.fillText(s.length > 36 ? s.slice(0, 35) + '…' : s, 40, 74 + k * 84);
+      g.fillStyle = head ? 'rgba(240, 235, 225, 1)' : 'rgba(176, 188, 212, 0.92)';
+      g.fillText(s.length > 32 ? s.slice(0, 31) + '…' : s, 40, 88 + k * 112);
     });
-  }));
+  }, { aniso: 16 }));
   spots.forEach((s, i) => {
     const m = decal(s.w, s.w / 2, new THREE.MeshBasicMaterial({ map: texs[s.i % texs.length], transparent: true, opacity: s.o, depthWrite: false, fog: true }));
     m.position.set(s.x, 0.003, s.z); m.rotation.z = s.rot; m.renderOrder = -5;
@@ -142,15 +143,28 @@ export function makeWind(n = 46) {
 }
 
 // Far out, other work goes on: a scatter of small lights along the horizon, each a process someone left running.
-export function makeFar(n = 320) {
+export function makeFar(n = 620) {
   const R = rng(515), pos = new Float32Array(n * 3), col = new Float32Array(n * 3);
   for (let i = 0; i < n; i++) {
-    const a = R() * 6.283, r = 58 + R() * R() * 170, warm = R() < 0.62, k = 0.25 + R() * 0.75;
+    const a = R() * 6.283, r = 46 + R() * R() * 190, warm = R() < 0.62, k = 0.3 + R() * 0.7;
     pos.set([Math.sin(a) * r, 0.15 + R() * R() * 1.6, -Math.cos(a) * r], i * 3);
     col.set(warm ? [1 * k, 0.74 * k, 0.42 * k] : [0.55 * k, 0.68 * k, 1 * k], i * 3);
   }
   const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.BufferAttribute(pos, 3)); geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-  const pts = new THREE.Points(geo, new THREE.PointsMaterial({ size: 2.4, sizeAttenuation: false, vertexColors: true, transparent: true, opacity: 0.8, fog: false, depthWrite: false }));
+  const pts = new THREE.Points(geo, new THREE.PointsMaterial({ size: 5.5, sizeAttenuation: false, map: glow(), vertexColors: true, transparent: true, opacity: 1, fog: false, depthWrite: false, blending: THREE.AdditiveBlending }));
   pts.frustumCulled = false;
   return pts;
+}
+
+// The evening is still out there: a band of deep indigo along the horizon, the colour of the tea house's night sky,
+// fading up into the terminal's black.
+export function makeDusk() {
+  const tex = canvasTex(8, 256, (g) => {
+    const v = g.createLinearGradient(0, 256, 0, 0);
+    v.addColorStop(0, 'rgba(70, 62, 132, 0.62)'); v.addColorStop(0.12, 'rgba(52, 50, 112, 0.42)'); v.addColorStop(0.4, 'rgba(30, 32, 78, 0.16)'); v.addColorStop(1, 'rgba(12, 14, 40, 0)');
+    g.fillStyle = v; g.fillRect(0, 0, 8, 256);
+  });
+  const m = new THREE.Mesh(new THREE.CylinderGeometry(300, 300, 150, 48, 1, true), new THREE.MeshBasicMaterial({ map: tex, side: THREE.BackSide, transparent: true, depthWrite: false, fog: false }));
+  m.position.y = 75; m.renderOrder = -20; m.frustumCulled = false;
+  return m;
 }

@@ -3,6 +3,14 @@
 // up fold by fold; fold 0 is the flat sheet, fold 1 the finished animal.
 import * as THREE from 'three';
 import { PAL, clamp, canvasTex } from './kit.js';
+import { LineSegments2 } from '../vendor/lines/LineSegments2.js';
+import { LineSegmentsGeometry } from '../vendor/lines/LineSegmentsGeometry.js';
+import { LineMaterial } from '../vendor/lines/LineMaterial.js';
+
+// The creases are drawn as strokes with a width in pixels, so they need to know the window's size.
+const strokes = new Set(), window_ = { w: 1440, h: 900 };
+export function strokeWindow(w, h) { window_.w = w; window_.h = h; strokes.forEach((m) => m.resolution.set(w, h)); }
+export function forgetStrokes() { strokes.clear(); }
 
 const R = Math.PI / 180;
 function fan() {
@@ -63,7 +71,7 @@ function paperPrint() {
   return printTex;
 }
 
-export function makeFigure(kind, { paper = PAL.paper, line = PAL.amber, lineOpacity = 0.9, glowAmt = 0.22, print = true } = {}) {
+export function makeFigure(kind, { paper = PAL.paper, line = PAL.amber, lineOpacity = 0.95, glowAmt = 0.3, print = true, stroke = 1.7 } = {}) {
   const fig = FIGS[kind], nV = fig.V.length, nF = fig.F.length;
   const flatV = fig.V.map(fig.flat);
   const stages = Math.max(...fig.st) + 1;
@@ -73,15 +81,16 @@ export function makeFigure(kind, { paper = PAL.paper, line = PAL.amber, lineOpac
   geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
   geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
   const col = new THREE.Color(paper);
-  const mat = new THREE.MeshLambertMaterial({ color: paper, emissive: col.clone().multiplyScalar(glowAmt), side: THREE.DoubleSide, map: print ? paperPrint() : null });
+  const mat = new THREE.MeshLambertMaterial({ color: paper, emissive: col.clone().multiplyScalar(glowAmt), side: THREE.DoubleSide, map: print ? paperPrint() : null, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 3 });
   const mesh = new THREE.Mesh(geo, mat);
   // every edge once: the creases and the outline, which catch the light
   const seen = new Set(), edges = [];
   fig.F.forEach((f) => [[f[0], f[1]], [f[1], f[2]], [f[2], f[0]]].forEach(([a, b]) => { const k = a < b ? a + '_' + b : b + '_' + a; if (!seen.has(k)) { seen.add(k); edges.push([a, b]); } }));
-  const lpos = new Float32Array(edges.length * 6);
-  const lgeo = new THREE.BufferGeometry(); lgeo.setAttribute('position', new THREE.BufferAttribute(lpos, 3));
-  const lmat = new THREE.LineBasicMaterial({ color: line, transparent: true, opacity: lineOpacity });
-  const lines = new THREE.LineSegments(lgeo, lmat);
+  const lgeo = new LineSegmentsGeometry(); lgeo.setPositions(new Float32Array(edges.length * 6));
+  const lbuf = lgeo.attributes.instanceStart.data, lpos = lbuf.array;
+  const lmat = new LineMaterial({ color: line, linewidth: stroke, transparent: true, opacity: lineOpacity });
+  lmat.resolution.set(window_.w, window_.h); strokes.add(lmat);
+  const lines = new LineSegments2(lgeo, lmat); lines.frustumCulled = false;
   const group = new THREE.Group(); group.add(mesh, lines);
   const cur = fig.V.map(() => [0, 0, 0]);
   let last = '';
@@ -100,7 +109,7 @@ export function makeFigure(kind, { paper = PAL.paper, line = PAL.amber, lineOpac
     for (let i = 0; i < nF; i++) for (let k = 0; k < 3; k++) { const v = cur[fig.F[i][k]]; pos[i * 9 + k * 3] = v[0]; pos[i * 9 + k * 3 + 1] = v[1]; pos[i * 9 + k * 3 + 2] = v[2]; }
     for (let i = 0; i < edges.length; i++) { const a = cur[edges[i][0]], b = cur[edges[i][1]]; lpos.set(a, i * 6); lpos.set(b, i * 6 + 3); }
     geo.attributes.position.needsUpdate = true; geo.computeVertexNormals(); geo.computeBoundingSphere();
-    lgeo.attributes.position.needsUpdate = true; lgeo.computeBoundingSphere();
+    lbuf.needsUpdate = true;
   }
   set(1, 0);
   return { group, set, kind, tris: nF, mat, lmat, folds: FOLDS[kind] };
