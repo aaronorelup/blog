@@ -333,7 +333,7 @@ that opens a `<details>` sheet of every chapter. Numerals I, II, III in page ord
 
 ### Loading, weight and frame rate
 
-Best quality first, optimise afterwards: laziness is a limit from the first day, bytes are targets until the
+Pictures come at their best first and weight is worked on later: laziness is a limit from the first day, bytes are targets until the
 whole-page pass turns what the page really weighs into limits. **Limits now**: the first paint fetches only the
 HTML, CSS, the engine, three font files and the hero's first plates and television, and straight after it the
 walk's closer plates and the room behind the door; a scene's pictures load within one and a half chapters of it
@@ -424,7 +424,8 @@ transparent on the looks; a 16 x 9 grid, 9 x 16 on a phone, each cell its mean c
 
 | Floor | Value | Measured |
 |---|---|---|
-| cell: a cell has changed when its colour moved this far (RGB distance of 441) | 24 | the purity test's allowance for one channel; a cell dark (under 40) in both frames never counts, so a dark field sliding over dark is no change |
+| cell: a cell has changed when its colour moved this far (RGB distance of 441) | 24 | not measured: borrowed from the purity test's allowance for one channel |
+| dark: a cell darker than this (luminance of 255) in both frames never counts as changed | 40 | not measured: borrowed from the sweep's brightness line. It adds margin, not a verdict: without it the slide's pairs below measure 26%, 17% and 22% (still under the floor) and 0.82 / 0.85 31%. It costs B's night steps (0.51 to 0.70 on a desktop) up to 20 points, and the lowest of them stays at 55% |
 | cells: share of cells changed, for frames a step apart and for two chapters | at least 0.30 | must pass, neighbouring chapters' opening frames: B start 0.16 against television 0.36, 72% (phone 0.18 / 0.37: 88%); A 0.2 against 0.5, 69% (phone 77%). Must fail, one held picture 0.1 vh apart: B 0.16 8 to 10%, B 0.36 0%, B phone 0.37 0%, A 0.46 0% (and phone 0%). Must fail, B's flat dark slide between the television and film: 0.82 / 0.84 17%, 0.83 / 0.85 13%, phone 0.82 / 0.83 15 to 17% |
 | mean: two chapters' opening frames, distance between their mean colours | at least 7 | half the smallest distance measured between neighbouring chapters in A and B (A desktop 0.15 against 0.45: 14.0; the others 20 to 77) |
 
@@ -434,10 +435,15 @@ to 0.96, 13%) fail, which is the fault the bar names. Within its dark stretch B'
 apart, so a step across it compares a lit frame with a dark one and passes: the sweep is what catches the stretch
 itself, and differ the slide's frames compared with each other.
 
+**What differ cannot tell.** Paper is kept with the words hidden, so a sheet moving over a held picture counts as
+change: pairs of B and A only 0.1 vh apart with a sheet in the frame measured 30% to 72%. A held picture under
+moving paper passes a step; the reviewer's reel is what catches it.
+
 **Run on the stub page** (the shared system's stubs, before any chapter is built, 2026-11-13). The sweep: 236 of
 240 desktop frames are pictures and 4 are the house closing or the footer; on a phone 195 of 200, 4 not judged,
 and one dead: y = 0.98, the house closing half way shut, whose dark panes fill 23% of the lower 40% (the spec
-judges a closing frame unless the screens are fully shut). differ: 92 pairs too alike (59 of 84 on a desktop, 33 on
+judges a closing frame unless the screens are fully shut; its own phone run, at the iPhone 13's 390x664,
+passes all its frames). differ: 92 pairs too alike (59 of 84 on a desktop, 33 on
 a phone). Inside every stub chapter the frame holds, and the stub rooms are one placeholder room in different
 lights, so of the chapters' opening frames only start to television and agents to learning pass (and courses to
 now on a phone). That is what the stubs are; each chapter's builder makes its own pass.

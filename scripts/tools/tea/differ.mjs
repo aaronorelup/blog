@@ -18,6 +18,7 @@ import {
 //   darker than dark (luminance, of 255) in both frames.
 // cells: a step (one screen apart) passes when at least this share of cells changed.
 // mean: two chapters' opening frames must also be at least this far apart in mean colour.
+// cell and dark are borrowed (the purity allowance, the sweep's brightness line); cells and mean are measured.
 // (The numbers and how they were measured: docs/TEA_ROOM.md, "Calibration".)
 export const FLOORS = Object.freeze({ cell: 24, dark: 40, cells: 0.3, mean: 7 });
 export const CALM = Object.freeze(['now', 'about']); // calm on purpose: exempt inside themselves (1.12)
