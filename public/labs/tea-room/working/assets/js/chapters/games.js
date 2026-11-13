@@ -12,7 +12,7 @@
    Everything drawn is a function of q (the chapter's progress, which is the camera) and the time (the rain, the
    fires, the fighters' timetable). With motion turned off there is no 3D at all: a still of the arena, changed by
    cuts. */
-import { PW, PH, FOCUS, GLOW, FILMQ, FILM_MID, FILM_HGT, JOIN, diveEnd, arenaOver, squared } from './join.js';
+import { PW, PH, FOCUS, GLOW, FILMQ, FILM_MID, FILM_HGT, JOIN, diveEnd, arenaAt, squared } from './join.js';
 
 var IMG = new URL('../../img/', import.meta.url).href;
 var clamp = function (x, a, b) { a = a === undefined ? 0 : a; b = b === undefined ? 1 : b; return x < a ? a : x > b ? b : x; };
@@ -21,9 +21,13 @@ var ss = function (a, b, x) { var t = clamp((x - a) / (b - a)); return t * t * (
 var io = function (t) { t = clamp(t); return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; };
 var CX = PW / 2, CY = PH / 2, GS = 0.5, LENS = [0.948, 0.467];
 var T_HELD = 9.0;                                 // a held frame shows the arena at this moment (the test's own)
+var SHIFT = 0.24;                                  // how far the fighters step right while the posts pass (of the screen's width)
 var A_LEAD = 0.26;                                // how far into the arena the camera has come when the dive ends
 // the arena's light on the lawn: the storm's grey, a little blue (film.js lights the lawn the same while it dives)
 var LIGHT = [154, 154, 184];
+var POLE_L = 1390, POLE_R = 2250, PIC_R = 2170;    // the cloth's two bamboo poles, and the picture's right edge (plate pixels)
+var EDGE = 600;                                   // how far left of the plate the plain sky and lawn reach (plate pixels; on under
+                                                  // the plate's faded first 260, games.css)
 
 export function mount(host, options) {
   var RM = options.reduced, HELD = options.held, section = options.section, marks = options.marks;
@@ -31,23 +35,23 @@ export function mount(host, options) {
 
   host.innerHTML =
     '<div class="gm-garden">' +
-      '<div class="gm-ext gm-sky"></div><div class="gm-ext gm-lawn"></div>' +
+      '<div class="gm-ext gm-sky"></div><div class="gm-ext gm-lawn"></div><canvas class="gm-edge" width="60" height="768"></canvas>' +
       '<img class="gm-plate" src="' + IMG + 'film/garden-night.webp" width="2752" height="1536" alt="" decoding="async">' +
       '<canvas class="gm-glow"></canvas>' +
     '</div>' +
-    '<div class="gm-arena"><canvas class="gm-gl"></canvas><img class="gm-still" data-k="wide" alt="" decoding="async" hidden><img class="gm-still" data-k="tall" alt="" decoding="async" hidden></div>' +
+    '<div class="gm-arena"><canvas class="gm-gl"></canvas><img class="gm-still" data-k="wide" alt="" decoding="async" hidden><img class="gm-still" data-k="tall" alt="" decoding="async" hidden><img class="gm-still" data-k="aside" alt="" decoding="async" hidden></div>' +
     '<canvas class="gm-light"></canvas>' +
     '<div class="gm-proj"><img src="' + IMG + 'prop-projector.webp" width="618" height="1009" alt="">' +
       '<img class="gm-reel gm-reel-a" src="' + IMG + 'film/reel-a.webp" width="206" height="230" alt="">' +
       '<img class="gm-reel gm-reel-b" src="' + IMG + 'film/reel-b.webp" width="176" height="216" alt=""></div>';
   var pick = function (sel) { return host.querySelector(sel); };
-  var garden = pick('.gm-garden'), sky = pick('.gm-sky'), lawn = pick('.gm-lawn'), plate = pick('.gm-plate'), glow = pick('.gm-glow');
-  var arenaBox = pick('.gm-arena'), canvas = pick('.gm-gl'), stillW = pick('.gm-still[data-k=wide]'), stillT = pick('.gm-still[data-k=tall]'), still = null, lightCv = pick('.gm-light'), proj = pick('.gm-proj');
+  var edge = pick('.gm-edge'), garden = pick('.gm-garden'), sky = pick('.gm-sky'), lawn = pick('.gm-lawn'), plate = pick('.gm-plate'), glow = pick('.gm-glow');
+  var arenaBox = pick('.gm-arena'), canvas = pick('.gm-gl'), stillW = pick('.gm-still[data-k=wide]'), stillT = pick('.gm-still[data-k=tall]'), stillA = pick('.gm-still[data-k=aside]'), still = null, lightCv = pick('.gm-light'), proj = pick('.gm-proj');
   var reelA = pick('.gm-reel-a'), reelB = pick('.gm-reel-b');
   var lx = lightCv.getContext('2d'), gx = glow.getContext('2d');
 
   // ------------------------------------------------------------------ what has come in
-  var got = { plate: false, glow: false, wide: false, tall: false }, arena = null, failed = false, flash = 0;
+  var got = { plate: false, glow: false, wide: false, tall: false, aside: false }, arena = null, failed = false, flash = 0;
   function wait(im, key) {
     var done = function () { if (!alive) return; got[key] = true; options.redraw(); };
     if (im.complete && im.naturalWidth) { (im.decode ? im.decode() : Promise.resolve()).then(done, done); return; }
@@ -55,6 +59,24 @@ export function mount(host, options) {
     im.addEventListener('error', done, { once: true });
   }
   wait(plate, 'plate');
+  // (what the end's camera sees left of the plate: plain sky over plain lawn, each row the colour of the plate's own
+  // left part without its clouds, stars and petals (a darker-than-most pixel of the row); the plate's left edge fades
+  // into it, games.css)
+  var edgeDone = false;
+  function drawEdge() {
+    if (edgeDone || !plate.naturalWidth) return; edgeDone = true;
+    var c = document.createElement('canvas'), SW = 200, x = c.getContext('2d', { willReadFrequently: true }), ex = edge.getContext('2d');
+    c.width = SW; c.height = edge.height;
+    x.drawImage(plate, 0, 0, 400, PH, 0, 0, SW, edge.height);
+    var px = x.getImageData(0, 0, SW, edge.height).data, row = new Array(SW), out = ex.createImageData(1, edge.height);
+    for (var y = 0; y < edge.height; y++) {
+      for (var i = 0; i < SW; i++) { var o = (y * SW + i) * 4; row[i] = [px[o] * 0.3 + px[o + 1] * 0.59 + px[o + 2] * 0.11, o]; }
+      row.sort(function (a, b) { return a[0] - b[0]; });
+      var p = row[Math.floor(SW * 0.3)][1];
+      out.data[y * 4] = px[p]; out.data[y * 4 + 1] = px[p + 1]; out.data[y * 4 + 2] = px[p + 2]; out.data[y * 4 + 3] = 255;
+    }
+    ex.putImageData(out, 0, 0); ex.imageSmoothingEnabled = false; ex.drawImage(edge, 0, 0, 1, edge.height, 0, 0, edge.width, edge.height);
+  }
   // the lamp's light, once, in the arena's colour (added to the night plate; the lightning brightens it)
   var glowImg = new Image();
   glow.width = Math.round(GLOW.w * GS); glow.height = Math.round(GLOW.h * GS);
@@ -75,6 +97,7 @@ export function mount(host, options) {
     failed = true; canvas.hidden = true;
     stillW.src = IMG + 'games/still-hold-wide.webp'; wait(stillW, 'wide');
     if (W / H < 0.82) { stillT.src = IMG + 'games/still-hold-tall.webp'; wait(stillT, 'tall'); }
+    if (W > 820) { stillA.src = IMG + 'games/still-aside-wide.webp'; wait(stillA, 'aside'); }
   }
   var W = root.clientWidth, H = window.innerHeight;
   if (RM) useStill();
@@ -118,13 +141,16 @@ export function mount(host, options) {
     // the end: the night garden, the cloth to one side, room for the next chapter's name (closing.js) where it comes
     var rail = narrow ? 0 : (parseFloat(getComputedStyle(root).getPropertyValue('--rail-w')) || 172);
     if (!tall) {
-      // the cloth stands right of the next chapter's name (its widest line, measured in the name's own type)
-      // (never smaller than the screen: the plate's own edges must stay outside the frame)
-      // (the plate's left edge at the screen's: the larger it is drawn, the further right the cloth stands)
-      var right = W - Math.max(8, W * 0.006), left = Math.max(W * 0.5, nameRight() + W * 0.035);
-      // (on a narrow wide screen the cloth's right pole may pass the screen's edge, never the picture on it)
-      var s3 = Math.max(cover, Math.min(left / 1447, Math.max(right / 2199, (W - 6) / 2172)));
-      var tx = clamp(right - 2199 * s3, W - PW * s3, 0), ty = clamp(0.5 * H - FOCUS[1] * s3, H - PH * s3, 0);
+      // the cloth, its two poles too, stands in the room right of the next chapter's name (its widest line, measured
+      // in the name's own type), with a clear gap between the name and the left pole
+      // (the plate is at least as tall as the screen; left of it the plate's own first column is drawn out, .gm-edge,
+      // so the cloth may stand further right than the plate's left edge allows)
+      // (when there is not room for all of it, the right pole may pass the screen's edge, never the picture)
+      var right = W - Math.max(8, W * 0.006), left = Math.max(W * 0.5, nameRight() + Math.max(24, W * 0.02));
+      var s3 = Math.max(H / PH, Math.min((right - left) / (POLE_R - POLE_L), (W - 6) / 2172));
+      var tx = Math.max((left + right) / 2 - (POLE_L + POLE_R) / 2 * s3, left - POLE_L * s3);
+      tx = Math.max(W - PW * s3, Math.min(tx, right - PIC_R * s3, EDGE * s3 * 0.9));
+      var ty = clamp(0.5 * H - FOCUS[1] * s3, H - PH * s3, 0);
       KE = camOf(s3, tx + FOCUS[0] * s3, ty + FOCUS[1] * s3);
       var pw = clamp(H * 0.3, 150, 280);
       PJE = { x: Math.max(rail + 40 + pw * 0.5, W * 0.43), y: H * 1.08, w: pw };
@@ -145,7 +171,8 @@ export function mount(host, options) {
     var d = Math.min(window.devicePixelRatio || 1, W > 1200 ? 1.5 : 2);
     lightCv.width = Math.round(W * d); lightCv.height = Math.round(H * d); lightCv.dpr = d;
     if (failed && W / H < 0.82 && !stillT.getAttribute('src')) { stillT.src = IMG + 'games/still-hold-tall.webp'; wait(stillT, 'tall'); }
-    cache.clear();
+    if (failed && W > 820 && !stillA.getAttribute('src')) { stillA.src = IMG + 'games/still-aside-wide.webp'; wait(stillA, 'aside'); }
+    cache.clear(); projWas = '';
   }
 
   // where the closing beat's name ends on a wide screen (closing.js sets it: look B's size, left of it the rail)
@@ -162,6 +189,13 @@ export function mount(host, options) {
   function setV(el, yes) { if (el.v_ !== yes) { el.style.visibility = yes ? '' : 'hidden'; el.v_ = yes; } }   // ('' never 'visible')
   function setO(el, o) { o = Math.round(o * 500) / 500; if (el.o_ !== o) { el.style.opacity = o; el.o_ = o; } }
   function box(x, y, w, lw) { return 'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) scale(' + (w / lw).toFixed(5) + ')'; }
+  var projWas = '';
+  function placeProj(pj) {                          // (moved and sized, never scaled: games.css)
+    var k = [pj.x.toFixed(2), pj.y.toFixed(2), pj.w.toFixed(2), pj.h.toFixed(2)].join();
+    if (k === projWas) return; projWas = k;
+    proj.style.width = pj.w.toFixed(2) + 'px'; proj.style.height = pj.h.toFixed(2) + 'px';
+    proj.style.transform = 'translate3d(' + pj.x.toFixed(2) + 'px,' + pj.y.toFixed(2) + 'px,0)';
+  }
   function mixP(A, B, k) { return { x: lerp(A.x, B.x, k), y: lerp(A.y, B.y, k), w: lerp(A.w, B.w, k) }; }
 
   // the arena's picture on the cloth: quad (the film's place, leaning with the cloth), mid and h (its middle and
@@ -178,11 +212,25 @@ export function mount(host, options) {
   }
   var clipWas = '';
   function setClip(c) { if (c !== clipWas) { arenaBox.style.clipPath = c === 'none' ? '' : c; clipWas = c; } }
-  function placeStill(view) {                       // the still covers the arena's frame, as the 3D picture would
-    var fw = view.h * W / H * Math.max(1, view.wide || 1) * 1.04, use = fw / view.h < 0.82 && got.tall ? stillT : stillW;
+  // (aside: the fighters stepped aside while the posts pass up the left, its own still)
+  function placeStill(view, clip, aside) {
+    var use, iw, ih, k, x, y;
+    if (clip === 'none') {
+      // the arena is the world: the still is fitted to the screen, not to the lens (a tall screen's lens is wide here,
+      // and the middle of the wide still is bare mud between the fighters)
+      use = aside && got.aside ? stillA : W / H < 0.82 && got.tall ? stillT : stillW;
+      iw = use === stillT ? 780 : use === stillA ? 1440 : 1600; ih = use === stillT ? 1688 : use === stillA ? 900 : 1000;
+      k = Math.max(W * 1.04 / iw, H * 1.04 / ih);
+      // (the aside still keeps its right side, where the fighters stand, when the screen is narrower than it)
+      x = use === stillA ? W - iw * k : (W - iw * k) / 2; y = (H - ih * k) / 2;
+    } else {                                         // on the cloth: it covers the arena's frame, as the 3D picture would
+      var fw = view.h * W / H * Math.max(1, view.wide || 1) * 1.04;
+      use = fw / view.h < 0.82 && got.tall ? stillT : stillW;
+      iw = use === stillT ? 780 : 1600; ih = use === stillT ? 1688 : 1000; k = Math.max(fw / iw, view.h / ih);
+      x = view.cx - iw * k / 2; y = view.cy - ih * k / 2;
+    }
     if (use !== still) { if (still) still.hidden = true; use.hidden = false; still = use; }
-    var iw = use === stillT ? 780 : 1600, ih = use === stillT ? 1688 : 1000, k = Math.max(fw / iw, view.h / ih);
-    setT(use, box(view.cx - iw * k / 2, view.cy - ih * k / 2, iw * k, iw));
+    setT(use, box(x, y, iw * k, iw));
   }
 
   // ------------------------------------------------------------------ the beam (the end, in the garden)
@@ -224,29 +272,33 @@ export function mount(host, options) {
     var tm = HELD ? T_HELD : t; lastTm = tm;
     // where the reader is, in screens from the section's top (the lead: from -2.5 to 0, the film's dive above it)
     var p = q < 0 ? q : q * span, lead = q < 0;
-    var view = null, clip = 'none', aq, garden_ = false, quad = null, cam = null, e = 0;
+    var view = null, clip = 'none', aq, garden_ = false, quad = null, cam = null, e = 0, shift = 0;
     if (lead) {
+      owns = false;
       if (!JOIN.fresh || !JOIN.quad) { JOIN.arena = 0; return false; }      // the film did not draw this frame: nothing to throw onto
       JOIN.fresh = false;
-      var k = JOIN.k, a = RM ? (k >= 0.5 ? 1 : 0) : arenaOver(k);
+      var k = JOIN.k, a = arenaAt(k, RM);
       if (a <= 0.002) { setV(arenaBox, false); JOIN.arena = 0; setV(garden, false); setV(proj, false); setV(lightCv, false); return true; }
       var oc = onCloth(JOIN.quad, JOIN.mid, JOIN.h, RM ? 1 : squared(k), a);
       view = oc.view; clip = oc.clip;
       setV(arenaBox, true); setO(arenaBox, 1);
       aq = lerp(aFrom, aLead, clamp((p + 2.5) / 2.5));
-      if (!arena && !failed) { JOIN.arena = 0; return false; }
-      if (failed && !got.wide) { JOIN.arena = 0; return false; }
+      if (!arena && !failed) { JOIN.arena = 0; JOIN.ready = false; return false; }
+      if (failed && !got.wide) { JOIN.arena = 0; JOIN.ready = false; return false; }
+      if (!JOIN.ready) { JOIN.ready = true; options.redraw(); }   // (the film lights its lawn for the arena from its next frame)
       JOIN.arena = a;
     } else {
       setV(arenaBox, true); setO(arenaBox, 1);
       // on into the arena until the card is under the fighters, then a slow drift while the posts pass
       // (a wide screen: while the posts pass up the left the camera steps back a little and the picture slides right,
       // so both fighters stand clear of the column)
-      var shift = narrow ? 0 : io(ss(T.picks - 1.05, T.picks - 0.25, p)) * (1 - io(ss(T.out0 - 0.3, T.out0 + 0.3, p)));
+      // (it is done before the game's card leaves its place under them and goes up the column: T.picks - 1)
+      shift = narrow ? 0 : io(ss(T.picks - 1.6, T.picks - 1.0, p)) * (1 - io(ss(T.out0 - 0.3, T.out0 + 0.3, p)));
+      if (RM || failed) shift = shift >= 0.5 ? 1 : 0;   // (stills: changed by a cut)
       aq = p < T.bell ? lerp(aLead, 0.62, io(clamp(p / T.bell))) : lerp(0.62, 0.8, ss(T.bell, T.out0 + 0.6, p)) - shift * 0.26;
-      view = { h: H, cx: W / 2 + shift * W * 0.2, cy: H / 2 };
+      view = { h: H, cx: W / 2 + shift * W * SHIFT, cy: H / 2 };
       // and back out of the cloth into the garden
-      e = RM ? (p < (T.out0 + span) / 2 ? 0 : 1) : io(ss(T.out0, span, p));
+      e = RM ? (p < (T.out0 + span) / 2 ? 0 : 1) : ss(T.out0, span, p);
       if (e > 0) {
         garden_ = true;
         cam = between(KD, KE, e);
@@ -259,7 +311,8 @@ export function mount(host, options) {
     }
     // the arena: its picture for this frame
     if (arena) flash = arena.frame(aq, tm, 0, 0, null, view) || 0;
-    else if (failed) placeStill(view);
+    else if (failed) placeStill(view, clip, !lead && shift >= 0.5 && !garden_);
+    owns = lead ? clip === 'none' && JOIN.arena >= 1 : true;
     setClip(clip);
 
     // the garden (only on the way out)
@@ -267,12 +320,14 @@ export function mount(host, options) {
     if (garden_) {
       var sc = scaleOf(cam), o = plateXY([0, 0], cam);
       setT(plate, box(o[0], o[1], PW * sc, PW));
+      drawEdge();
+      setT(edge, 'translate3d(' + (o[0] - EDGE * sc).toFixed(2) + 'px,' + o[1].toFixed(2) + 'px,0) scale(' + ((EDGE + 260) * sc / edge.width).toFixed(5) + ',' + (PH * sc / edge.height).toFixed(5) + ')');
       setT(sky, 'translate3d(' + (o[0] - 3000 * sc).toFixed(2) + 'px,' + (o[1] - 3000 * sc).toFixed(2) + 'px,0) scale(' + sc.toFixed(5) + ')');
       setT(lawn, 'translate3d(' + (o[0] - 3000 * sc).toFixed(2) + 'px,' + (o[1] + 1380 * sc).toFixed(2) + 'px,0) scale(' + sc.toFixed(5) + ')');
       setT(glow, 'translate3d(' + (o[0] + GLOW.x * sc).toFixed(2) + 'px,' + (o[1] + GLOW.y * sc).toFixed(2) + 'px,0) scale(' + (sc / GS).toFixed(5) + ')');
       setO(glow, clamp(0.5 + 0.35 * Math.min(flash, 1.2)));
       var pjP = mixP(PJI, PJE, e), pj = { x: pjP.x - pjP.w / 2, y: pjP.y - pjP.w * 1009 / 618, w: pjP.w, h: pjP.w * 1009 / 618 };
-      setT(proj, box(pj.x, pj.y, pj.w, 618));
+      placeProj(pj);
       if (!HELD) {
         var spin = tm * 1.15;
         reelA.style.transform = 'scaleX(0.8919) rotate(' + (spin % 6.2832).toFixed(3) + 'rad) scaleX(1.1212)';
@@ -282,13 +337,13 @@ export function mount(host, options) {
     } else if (beamOn) { lx.setTransform(1, 0, 0, 1, 0, 0); lx.clearRect(0, 0, lightCv.width, lightCv.height); beamOn = false; }
 
     // whole: the arena (or its still) is in; on the way out the garden's plate and light too
-    var arenaIn = !!arena || (failed && got.wide && (W / H >= 0.82 || got.tall));
+    var arenaIn = !!arena || (failed && got.wide && (W / H >= 0.82 || got.tall) && (W <= 820 || got.aside));
     return arenaIn && (!garden_ || (got.plate && got.glow));
   }
 
   // ------------------------------------------------------------------ a fighter pressed throws a move
   // (the arena is behind the page: a press anywhere that is not on a card or a link goes to the fighter under it)
-  var lastTm = 0;
+  var lastTm = 0, owns = false;
   function onPress(ev) {
     if (!active || !arena || RM || HELD || ev.button) return;
     if (ev.target.closest && ev.target.closest('a, button, input, .paper, #rail, .chapter-top')) return;
@@ -301,10 +356,11 @@ export function mount(host, options) {
     frame: frame,
     resize: function () { if (laid) layout(); if (arena) arena.resize(); },
     setActive: function (on) { active = on; },
+    owns: function () { return owns; },        // (the arena is the whole world on the screen: the rail names Games)
     arena: function () { return arena; },      // (for tests: the arena, and the time of the last frame drawn)
     time: function () { return lastTm; },
     dispose: function () {
-      alive = false; JOIN.arena = 0;
+      alive = false; JOIN.arena = 0; JOIN.ready = false;
       document.removeEventListener('click', onPress);
       if (arena) { try { arena.dispose(); } catch (err) { /* it is going anyway */ } arena = null; }
     }

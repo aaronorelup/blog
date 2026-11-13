@@ -7,7 +7,11 @@
 .gm-ext { position: absolute; left: 0; top: 0; width: 8752px; transform-origin: 0 0; will-change: transform; }
 .gm-sky { height: 3240px; background: linear-gradient(to bottom, rgb(9, 12, 34) 0, rgb(14, 19, 50) 70%, rgb(18, 24, 59) 93%); }
 .gm-lawn { height: 3000px; background: linear-gradient(to bottom, rgb(39, 50, 46) 0, rgb(33, 43, 41) 220px, rgb(20, 27, 30) 1100px); }
+/* (left of the plate: its own first column drawn wide, plain sky over plain lawn, where the end's camera shows past
+   the plate's left edge, under the next chapter's name) */
+.gm-edge { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
 .gm-plate { position: absolute; left: 0; top: 0; width: 2752px; height: 1536px; max-width: none; transform-origin: 0 0; will-change: transform; }
+.chapter-stage:not(.tall) .gm-plate { -webkit-mask-image: linear-gradient(to right, transparent 0, #000 260px); mask-image: linear-gradient(to right, transparent 0, #000 260px); }
 .tall .gm-plate { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 230px, #000 1400px, transparent 1532px); mask-image: linear-gradient(to bottom, transparent 0, #000 230px, #000 1400px, transparent 1532px); }
 .gm-glow { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; pointer-events: none; mix-blend-mode: screen; mix-blend-mode: plus-lighter; }
 
@@ -18,8 +22,10 @@
 .gm-still[hidden], .gm-gl[hidden] { display: none; }
 .gm-light { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
 
-/* the projector, nearer than the cloth, its two reels turning */
-.gm-proj { position: absolute; left: 0; top: 0; width: 618px; height: 1009px; transform-origin: 0 0; will-change: transform; }
-.gm-proj img { position: absolute; left: 0; top: 0; max-width: none; }
-.gm-proj .gm-reel-a { left: 334px; top: 35px; }
-.gm-proj .gm-reel-b { left: 19px; top: 222px; }
+/* the projector, nearer than the cloth, its two reels turning. It is laid out at the size it is drawn (games.js sets
+   its width and height; the pictures in it are in parts of that) and only moved, never scaled: a scaled layer keeps
+   the sharpness of the size it was first drawn at, so a fresh load and a scroll to the same place would differ. */
+.gm-proj { position: absolute; left: 0; top: 0; width: 618px; height: 1009px; }
+.gm-proj img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; max-width: none; }
+.gm-proj .gm-reel-a { left: 54.045%; top: 3.469%; width: 33.333%; height: 22.795%; }
+.gm-proj .gm-reel-b { left: 3.074%; top: 22.002%; width: 28.479%; height: 21.407%; }
