@@ -394,9 +394,11 @@
     Cn.sNext.b = bAt(leftEdge + wp * 0.08, wy + wh + sp * 0.7, Cn.sNext.r, cHome, Cn.S0);
   }
   var beam = null;
-  // a: 0..1 as the closing strip crosses; n: viewports into the next chapter
-  function drawCinema(a, n, t) {
-    var S0 = Cn.S0, m = 0.03 + 0.2 * io(ss(0.15, 2.0, n)), cam = camC(m, cLook());
+  // a: 0..1 as the closing strip crosses. The camera comes to rest on this title shot: from the top of the film
+  // chapter on, that chapter's own scene draws the garden and takes the camera to the cloth (chapters/film.js opens
+  // on this picture, from the numbers of layoutCinema above; change them there too).
+  function drawCinema(a, t) {
+    var S0 = Cn.S0, m = 0.03, cam = camC(m, cLook());
     var inP = io(ss(0.06, 0.5, a)), inJ = io(ss(0.36, 0.78, a)), inW = io(ss(0.4, 0.82, a)), inN = io(ss(0.5, 0.9, a));
     var pl = place(Cn.plate, cam, S0, 0, 0, 1, 1 - inP);
     place(Cn.wNext, cam, S0, 0, 0, 1, -(1 - inW));
@@ -588,12 +590,15 @@
     var inGarden = !!gcam;
     var inRoom = gcam ? gcam.m > 0.33 : (portrait ? alsoA < 0.56 : !inside);
     var inBox = pushing && alsoA < 0.52;
-    var inCinema = alsoA > 0.04;
+    // past look B's part the chapters draw (chapters.js): they are given the camera's place on the page, and say
+    // when a chapter's own picture covers this stage
+    var covered = window.TEA ? window.TEA.frame(y, t) : false;
+    var inCinema = alsoA > 0.04 && !covered;
     sceneOn('sky', inGarden); sceneOn('garden', inGarden); sceneOn('room', inRoom); sceneOn('front', inRoom && !gcam);
     sceneOn('box', inBox); sceneOn('cinema', inCinema);
     light.k = 0;
     if (inCinema) {
-      var cc = drawCinema(clamp(alsoA), n, t);
+      var cc = drawCinema(clamp(alsoA), t);
       drawBeam(t); drawPetals(cc, Cn.S0, t, io(ss(0.45, 0.9, alsoA)) * 0.9, 16); canvasDirty = true;
     }
     if (inBox) {
@@ -620,6 +625,7 @@
     layout();
     var yq = parseFloat(qs.get('y'));
     if (!isNaN(yq)) window.scrollTo(0, Math.round(clamp(yq) * docH));
+    if (window.TEA) window.TEA.start();          // the chapters after look B's part measure themselves (?c=film&q=0.4 opens one at a frame)
     render();
     if (FROZEN) {
       window.addEventListener('scroll', render, { passive: true });
