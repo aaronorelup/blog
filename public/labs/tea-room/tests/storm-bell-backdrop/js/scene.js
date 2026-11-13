@@ -556,7 +556,7 @@ export async function mount(canvas, opts = {}) {
       },
     });
     const m = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), mat);
-    m.renderOrder = order; m.frustumCulled = false; m.userData.alpha = o.alpha;
+    m.renderOrder = order; m.frustumCulled = false; m.userData.alpha = o.alpha; m.userData.thick = o.thick;
     camera.add(m);
     return m;
   }
@@ -568,7 +568,7 @@ export async function mount(canvas, opts = {}) {
   const gradeMat = new THREE.ShaderMaterial({
     vertexShader: G.GRADE_VERT, fragmentShader: G.GRADE_FRAG, depthTest: false, depthWrite: false, transparent: true,
     blending: THREE.CustomBlending, blendSrc: THREE.DstColorFactor, blendDst: THREE.SrcColorFactor,
-    uniforms: { time: shared.time, grain: { value: 0.02 }, vignette: { value: 0.2 }, aspect: { value: 1.6 }, res: { value: new THREE.Vector2(1, 1) } },
+    uniforms: { time: shared.time, grain: { value: 0.02 }, vignette: { value: 0.2 }, aspect: { value: 1.6 }, res: { value: new THREE.Vector2(1, 1) }, cell: { value: 1 } },
   });
   const gradeScene = new THREE.Scene();
   const gradeCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
@@ -602,6 +602,10 @@ export async function mount(canvas, opts = {}) {
     const buf = renderer.getDrawingBufferSize(new THREE.Vector2());
     shared.outlineMat.uniforms.viewH.value = buf.y;
     gradeMat.uniforms.res.value.copy(buf); gradeMat.uniforms.aspect.value = W / H;
+    // on a dense screen a rain streak and a grain of the film keep their size on the glass, not in the screen's dots
+    const dots = Math.max(1, buf.y / H);
+    gradeMat.uniforms.cell.value = dots;
+    for (const r of [rainFar, rainNear]) r.material.uniforms.thicknessPx.value = r.userData.thick * dots;
     return true;
   }
 
@@ -736,7 +740,7 @@ export async function mount(canvas, opts = {}) {
   try {
     const c0 = cameraAt(0, S);
     camera.position.set(c0.pos[0], c0.pos[1], c0.pos[2]); camera.updateMatrixWorld();
-    if (renderer.compileAsync && gl.getExtension('KHR_parallel_shader_compile')) await renderer.compileAsync(scene, camera); else renderer.compile(scene, camera);
+    renderer.compile(scene, camera);
     renderer.compile(gradeScene, gradeCam);
     for (const set of pics) for (const pc of set) renderer.initTexture(pc.tex);
     renderer.initTexture(mud); renderer.initTexture(wet);

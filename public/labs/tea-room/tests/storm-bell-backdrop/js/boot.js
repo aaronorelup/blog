@@ -112,7 +112,10 @@
     raf = 0;
     var m = measure();
     place(m);
-    if (!api || !m.onScreen || document.hidden) return;
+    // the very first frame is drawn wherever the reader is, even with the chapter still below the screen: everything
+    // a first frame costs is paid then, and the page can say it is ready. After that, only while it is on screen.
+    var first = !!api && !stage.classList.contains('is-live');
+    if (!api || document.hidden || !(m.onScreen || first)) return;
     var dt = Math.min(0.1, (now - last) / 1000 || 0.016);
     last = now;
     var t = FROZEN ? T_HELD : (now - t0) / 1000;
