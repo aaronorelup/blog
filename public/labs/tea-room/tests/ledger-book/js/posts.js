@@ -93,6 +93,8 @@ export const MORE = {
     "/media/icons/AO-060-96.webp",
     "/media/icons/AO-059-96.webp",
     "/media/icons/AO-058-96.webp",
-    "/media/icons/AO-057-96.webp"
+    "/media/icons/AO-057-96.webp",
+    "/media/icons/AO-056-96.webp",
+    "/media/icons/AO-055-96.webp"
   ]
 };
