@@ -74,7 +74,7 @@ function draw(nowMs) {
       if (st.index !== shown.i || sky !== shown.sky) {
         shown = { i: st.index, sky };
         if (sky) { nowCount.textContent = 'All ' + N; nowTitle.textContent = 'They let go, and rise past the moon'; nowHint.textContent = WORD + ' any of them'; }
-        else if (st.index >= 0) { nowCount.textContent = (st.index + 1) + ' of ' + N; nowTitle.textContent = PICTURES[st.index].title; nowHint.textContent = WORD + ' a picture to bring it forward'; }
+        else if (st.index >= 0) { nowCount.textContent = (st.index + 1) + ' of ' + N; nowTitle.textContent = PICTURES[st.index].title; nowHint.textContent = st.index < 3 ? WORD + ' a picture to bring it forward' : ''; }
       }
       const dockO = RM ? 1 : ss(QA - 0.012, QA + 0.006, q) * (1 - ss(postsQ - 0.012, postsQ + 0.004, q)) * (st.open >= 0 ? 0 : 1);
       dock.style.opacity = dockO.toFixed(3); dock.style.visibility = dockO > 0.01 ? 'visible' : 'hidden';
@@ -82,7 +82,7 @@ function draw(nowMs) {
       last = nowMs;
     }
   }
-  const leadO = RM ? (step < 0 ? 1 : 0) : 1 - ss(0.01, 0.04, q);
+  const leadO = RM ? (step < 0 ? 1 : 0) : 1 - ss(0.004, 0.018, q);
   lead.style.opacity = leadO.toFixed(3); lead.style.visibility = leadO > 0.01 ? 'visible' : 'hidden';
   hint.style.opacity = (1 - ss(0.002, 0.012, q)).toFixed(3);
 }

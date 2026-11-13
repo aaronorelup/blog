@@ -93,17 +93,19 @@ export function mount(host, options = {}) {
   const trees = [];
   const treeSrc = [IMG('tree-night.webp'), IMG('tree-blossom.webp')];
   const zEndOfWood = Z0 + (N - 1) * DZ + 3.4;
+  // the wood changes along the walk: a stretch under blossom, a stretch of dark wood, and blossom again at the end
+  const blossom = (z) => { const w = 0.5 + 0.5 * Math.sin(z / 9.5 + 0.6); return 0.04 + 0.9 * w * w; };
   for (let i = -3; i < N; i++) {
     for (const side of [-1, 1]) {
-      trees.push({ row: 0, side, xr: TR(), Z: Z0 + (i + 0.5 + side * 0.16 + (TR() - 0.5) * 0.14) * DZ, h: 5.5 + TR() * 1.6, pink: TR() < 0.3, flip: TR() < 0.5 });
+      trees.push({ row: 0, side, xr: TR(), Z: Z0 + (i + 0.5 + side * 0.16 + (TR() - 0.5) * 0.14) * DZ, h: 5.5 + TR() * 1.6, pink: TR() < blossom(Z0 + i * DZ), flip: TR() < 0.5 });
     }
   }
   for (let z = -3; z < zEndOfWood + 22; z += 2.1) {
     const open = z > zEndOfWood;                                  // past the avenue: only the wood round the clearing
     for (const side of [-1, 1]) {
       if (open) { trees.push({ row: 3, side, xr: TR(), Z: z + TR() * 1.6, h: 6 + TR() * 2.4, pink: TR() < 0.3, flip: TR() < 0.5 }); continue; }
-      trees.push({ row: 1, side, xr: TR(), Z: z + TR() * 1.6, h: 5.8 + TR() * 2.1, pink: TR() < 0.24, flip: TR() < 0.5 });
-      if (TR() < 0.8) trees.push({ row: 2, side, xr: TR(), Z: z + TR() * 2, h: 6.2 + TR() * 2.6, pink: TR() < 0.2, flip: TR() < 0.5 });
+      trees.push({ row: 1, side, xr: TR(), Z: z + TR() * 1.6, h: 5.8 + TR() * 2.1, pink: TR() < blossom(z) * 0.8, flip: TR() < 0.5 });
+      if (TR() < 0.8) trees.push({ row: 2, side, xr: TR(), Z: z + TR() * 2, h: 6.2 + TR() * 2.6, pink: TR() < blossom(z) * 0.7, flip: TR() < 0.5 });
     }
   }
   trees.sort((a, b) => a.Z - b.Z);
@@ -132,7 +134,7 @@ export function mount(host, options = {}) {
     const dim = make('i', 'gg-dim', frame);
     b.style.visibility = 'hidden';
     const glow = make('i', 'gg-flat gg-glow'); glow.style.visibility = 'hidden';
-    return { d, i, a: d.w / d.h, s: i % 2 ? -1 : 1, el: b, halo, string, cap, tassel, lo, hi, dim, glow, gShown: false, gLast: '', gOp: -1, hiState: 0, shown: false, last: '', lz: -1, lDim: -1, lHalo: -1, lStr: -1, lOp: -1, rect: null };
+    return { d, i, a: d.w / d.h, s: i % 2 ? -1 : 1, el: b, halo, string, cap, tassel, lo, hi, dim, glow, gShown: false, gLast: '', gOp: -1, hiState: 0, shown: false, last: '', lz: -1, lDim: -1, lHalo: -1, lStr: -1, lOp: -1 };
   });
 
   host.appendChild(world);
@@ -285,7 +287,7 @@ export function mount(host, options = {}) {
 
     const k = kOf(q), cam = camAt(k);
     const camX = cam.x + px * 0.12, camY = cam.y - py * 0.05, camZ = cam.z;
-    const turn = io(q / QA), pan = -(1 - turn) * panDist, grove = ss(0.12, 0.8, turn);
+    const turn = io(q / QA), pan = -(1 - turn) * panDist, grove = ss(0.16, 0.7, turn);
     const tq0 = QB - 0.02, T = Tmax * io((q - tq0) / (0.985 - tq0));
     const hY = cy + T;                                   // the horizon on the screen
     const hero = clamp(Math.round(k), 0, N - 1);
@@ -300,8 +302,8 @@ export function mount(host, options = {}) {
     cloudsB.style.transform = 'translate3d(' + (cx + cw * 0.6 + pan * 0.55 - px * 12 - Math.sin(time * 0.04) * 18).toFixed(1) + 'px,' + (hY - (tall ? 1.72 : 1.22) * H - ch / 2).toFixed(1) + 'px,0) scale(' + (-cw * 1.15 / 2816).toFixed(4) + ',' + (cw * 1.15 / 2816).toFixed(4) + ')';
 
     // --- the cinema's garden, turning out of sight
-    if (turn < 0.999) {
-      plate.style.visibility = 'visible'; plate.style.opacity = (1 - ss(0.72, 1, turn)).toFixed(3);
+    if (turn < 0.8) {
+      plate.style.visibility = 'visible'; plate.style.opacity = (1 - ss(0.38, 0.8, turn)).toFixed(3);
       plate.style.transform = 'translate3d(' + (plateX + turn * panDist - px * 5).toFixed(1) + 'px,' + plateY.toFixed(1) + 'px,0)';
     } else plate.style.visibility = 'hidden';
 
@@ -405,6 +407,7 @@ export function mount(host, options = {}) {
     shade.classList.toggle('gg-on', fwd > 0.02);
 
     // --- the pictures
+    const clear = [];                                     // where a picture hangs: no firefly is drawn across it
     const skyIn = ss(N - 3.2, N - 1.4, k);                // the sky fills as the grove thins
     const skyMin = tall ? 40 : 54 * Math.sqrt(W / 1440), skyMax = tall ? 118 : 156 * Math.sqrt(W / 1440);
     for (let i = 0; i < N; i++) {
@@ -431,7 +434,7 @@ export function mount(host, options = {}) {
         wpx = f * p.ww / d;
         dimO = 0.66 * ss(DH + 0.2, 9, d);
         haloO = 0.5 + 0.5 * (1 - ss(DH, 10, d));
-        gO = u < 0.5 ? (1 - ss(5, 12, d)) * (1 - u * 2) * grove * (tall ? 0.75 : 1) : 0;
+        gO = u < 0.5 ? (1 - ss(3.5, 9, d)) * (1 - u * 2) * grove * (tall ? 0.8 : 1) : 0;
       } else {                                                       // in the sky
         const vis = ss(i + 1.5, i + 2.6, k) * skyIn;
         if (vis <= 0.002) { hide(p); glowOff(p); continue; }
@@ -462,10 +465,11 @@ export function mount(host, options = {}) {
       haloO = Math.round(haloO * 50) / 50; if (haloO !== p.lHalo) { p.halo.style.opacity = haloO; p.lHalo = haloO; }
       strO = Math.round(strO * 50) / 50; if (strO !== p.lStr) { p.string.style.opacity = strO; p.lStr = strO; }
       op = Math.round(op * 100) / 100; if (op !== p.lOp) { p.el.style.opacity = op; p.lOp = op; }
+      if (u < 1) clear.push(sx - wpx / 2 - 4, top - 4, sx + wpx / 2 + 4, top + hpx + 4, i === hero || i === openIdx || wpx > 0.3 * W ? 0 : f * p.ww / wpx);
       // the lantern's light in the air, in front of the trees just this side of it
       gO = Math.round(gO * 40) / 40;
       if (gO > 0) {
-        const gs = wpx * (tall ? 2.5 : 3), gt = 'translate3d(' + (sx - gs / 2).toFixed(1) + 'px,' + (sy - gs / 2).toFixed(1) + 'px,0) scale(' + (gs / 400).toFixed(4) + ')';
+        const gs = 2.5 * Math.sqrt(wpx * wpx + hpx * hpx), gt = 'translate3d(' + (sx - gs / 2).toFixed(1) + 'px,' + (sy - gs / 2).toFixed(1) + 'px,0) scale(' + (gs / 400).toFixed(4) + ')';
         if (!p.gShown) { p.glow.style.visibility = 'visible'; p.gShown = true; }
         if (gt !== p.gLast) { p.glow.style.transform = gt; p.glow.style.zIndex = String(z + 240); p.gLast = gt; }
         if (gO !== p.gOp) { p.glow.style.opacity = gO; p.gOp = gO; }
@@ -504,6 +508,9 @@ export function mount(host, options = {}) {
         const X = fl.X + 0.35 * Math.sin(time * fl.w + fl.ph), Y = fl.Y + 0.22 * Math.sin(time * fl.w * 1.3 + fl.ph * 2);
         const x = cx + pan * 0.9 + f * (X - camX) / d, y = hY - f * (Y - camY) / d;
         if (x < -30 || x > W + 30 || y < -30 || y > H + 30) continue;
+        let over = false;
+        for (let c = 0; c < clear.length; c += 5) if (x > clear[c] && y > clear[c + 1] && x < clear[c + 2] && y < clear[c + 3] && clear[c + 4] < d) { over = true; break; }
+        if (over) continue;
         const pulse = 0.35 + 0.65 * Math.pow(0.5 + 0.5 * Math.sin(time * 1.1 + fl.ph * 3), 2);
         const r = clamp(f * 0.05 * fl.r / d, 2.5, 26);
         ax.globalAlpha = pulse * ss(1.4, 3, d) * (1 - ss(11, 16.4, d)) * (1 - fwd) * 0.9;
