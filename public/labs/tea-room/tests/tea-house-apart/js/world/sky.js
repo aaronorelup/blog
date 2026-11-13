@@ -2,8 +2,8 @@
 // and puffy clouds, clustered spheres merged per cloud and unlit. Added for this page: the stars of the same
 // evening as the tea room's painted garden, fixed points that keep their places from one visit to the next.
 import {
-  BackSide, BufferGeometry, Color, Float32BufferAttribute, Group, Mesh, MeshBasicMaterial, Points, PointsMaterial,
-  SphereGeometry,
+  AdditiveBlending, BackSide, BufferGeometry, CanvasTexture, CircleGeometry, Color, Float32BufferAttribute, Group, Mesh,
+  MeshBasicMaterial, Points, PointsMaterial, SphereGeometry,
 } from 'three';
 import { P } from './palette.js';
 
@@ -20,7 +20,27 @@ export function buildSky({ reg, merge }, rnd) {
   geo.setAttribute('color', new Float32BufferAttribute(col, 3));
   const dome = new Mesh(geo, new MeshBasicMaterial({ vertexColors: true, side: BackSide, fog: false }));
   const stars = buildStars(rnd);
-  return { dome, clouds: buildClouds({ reg, merge }), stars };
+  return { dome, clouds: buildClouds({ reg, merge }), stars, moon: buildMoon() };
+}
+
+// The moon, low over the hills behind the house: a flat pale disc with its outline, and a soft ring of light
+// round it drawn by code. It is where the moonlight in scene.js comes from, near enough.
+function buildMoon() {
+  const g = new Group();
+  const az = -20 * Math.PI / 180, el = 6.5 * Math.PI / 180, r = 168;
+  g.position.set(Math.sin(az) * Math.cos(el) * r, Math.sin(el) * r, -Math.cos(az) * Math.cos(el) * r);
+  g.lookAt(0, 6, 0);
+  const c = document.createElement('canvas'); c.width = c.height = 128;
+  const x = c.getContext('2d'), gr = x.createRadialGradient(64, 64, 6, 64, 64, 64);
+  gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(0.3, 'rgba(255,255,255,0.4)');
+  gr.addColorStop(0.65, 'rgba(255,255,255,0.1)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+  x.fillStyle = gr; x.fillRect(0, 0, 128, 128);
+  const halo = new Mesh(new CircleGeometry(22, 40), new MeshBasicMaterial({ map: new CanvasTexture(c), color: 0x6E7FD0, transparent: true, opacity: 0.55, blending: AdditiveBlending, depthWrite: false, fog: false }));
+  const rim = new Mesh(new CircleGeometry(4.0, 40), new MeshBasicMaterial({ color: 0x0E1019, fog: false }));
+  const disc = new Mesh(new CircleGeometry(3.75, 40), new MeshBasicMaterial({ color: 0xF4ECD2, fog: false }));
+  halo.position.z = -0.4; rim.position.z = 0.2; disc.position.z = 0.4;
+  g.add(halo, rim, disc);
+  return g;
 }
 
 function buildStars(rnd) {

@@ -114,7 +114,7 @@ function draw(y, t) {
     const p = view.piece(n.piece || n.after);
     // a tag is a passing caption: it comes with its layer and goes once the layer has settled; a chip stays
     let a = ss(0.25, 0.8, p.k);
-    if (n.kind === 'tag') a *= 0.92 * (1 - ss(p.t1 + 0.035, p.t1 + 0.1, u)) * (1 - e);
+    if (n.kind === 'tag') a *= (1 - ss(p.t1 + 0.035, p.t1 + 0.1, u)) * (1 - e);
     else if (stacked) a *= 1 - e;
     if (a <= 0.004) {
       if (n.shown !== false) { n.shown = false; n.el.style.visibility = 'hidden'; n.line.style.visibility = 'hidden'; n.dot.style.visibility = 'hidden'; }

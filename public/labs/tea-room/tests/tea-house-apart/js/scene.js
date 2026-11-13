@@ -4,8 +4,8 @@
 // flicker) and of safe (the part of the window the drawing may use). Nothing is remembered from one frame to the
 // next, so any T can be drawn at any moment, in any order.
 import {
-  AdditiveBlending, CanvasTexture, CircleGeometry, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, Vector3,
-  WebGLRenderer,
+  AdditiveBlending, CanvasTexture, CircleGeometry, Mesh, MeshBasicMaterial, PCFSoftShadowMap, PerspectiveCamera,
+  Scene, Vector3, WebGLRenderer,
 } from 'three';
 import { ACT, cameraAt } from './camera.js';
 import { plan, pose } from './plan.js';
@@ -33,9 +33,11 @@ export function mount(canvas) {
   const rig = makeRig(1);
   scene.add(rig.amb, rig.hemi, rig.dir);
   const sky = buildSky(kit, rnd(7));
-  scene.add(sky.dome, sky.clouds, sky.stars);
-  scene.add(kit.part(new CircleGeometry(70, 40), kit.M.grass, [0, -0.02, 4], [-Math.PI / 2, 0, 0], 0));   // the ground
-  scene.add(buildGarden(kit));
+  scene.add(sky.dome, sky.clouds, sky.stars, sky.moon);
+  const ground = kit.part(new CircleGeometry(70, 40), kit.M.grass, [0, -0.02, 4], [-Math.PI / 2, 0, 0], 0);
+  scene.add(ground);
+  const garden = buildGarden(kit);
+  scene.add(garden);
   const lamps = buildLamps(kit);
   scene.add(lamps.fixed);
   const pieces = [...buildHouse(kit), ...buildInterior(kit), ...lamps.pieces];
@@ -64,10 +66,34 @@ export function mount(canvas) {
   pool(3.2, 8.2, 3.4, 3.4, 0xD9822E, 0.42);
   pool(-9.6, 5.4, 3.0, 3.0, 0xD9822E, 0.38);
 
-  let W = 1, H = 1, tall = false, pl = null;
+  // The moon stands behind the house, a little to the west, and is the one light that casts shadows: every
+  // floating layer of the drawing lays its shadow on the layer below and on the lawn, toward the viewer. The
+  // homepage has no shadows; out here, with the house in the air, they are what gives the drawing its depth.
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = PCFSoftShadowMap;
+  renderer.shadowMap.autoUpdate = false;
+  {
+    const d = rig.dir, c = d.shadow.camera;
+    d.target.position.set(3, 4, 8);
+    d.position.set(3 - 0.25 * 100, 4 + 0.74 * 100, 8 - 0.62 * 100);
+    scene.add(d.target);
+    d.castShadow = true;
+    d.shadow.mapSize.set(2048, 2048);
+    c.left = -46; c.right = 46; c.top = 46; c.bottom = -46; c.near = 20; c.far = 190;
+    c.updateProjectionMatrix();
+    d.shadow.bias = -0.0005; d.shadow.normalBias = 0.045;
+    const lit = (o, cast) => o.traverse(m => {
+      if (!m.isMesh || !m.material.isMeshLambertMaterial) return;
+      m.castShadow = cast; m.receiveShadow = true;
+    });
+    lit(ground, false); lit(garden, true); lit(lamps.fixed, false);
+    pieces.forEach(p => lit(p.obj, true));
+  }
+
+  let W = 1, H = 1, tall = false, pl = null, lastU = -1;
   const cam = { p: [0, 0, 0], q: [0, 0, 0], fov: 46 };
   const look = new Vector3(), v = new Vector3();
-  const moon0 = rig.dir.intensity, MOON = 2.0;
+  rig.dir.intensity = 2.2;
   const bounce = lamps.lights.find(l => l.follow === 'bounce');
   const wallBack = byName.get('wall-back');
   const box = { x0: 0, y0: 0, x1: 0, y1: 0 };
@@ -131,12 +157,11 @@ export function mount(canvas) {
       l.light.intensity = l.base * (1 + 0.035 * Math.sin(time * 6.1 + i * 2.3) * Math.sin(time * 2.7 + i * 1.1));
     });
 
-    // outside, the moon does the drawing: it comes up as the camera leaves the room, and the light on the path
-    // goes with the room that cast it
-    rig.dir.intensity = moon0 + (MOON - moon0) * ss(0.1, 0.2, T);
+    // the light on the path goes with the room that cast it
     spill.material.opacity = spill.userData.strength * (1 - 0.75 * ss(0.12, 0.7, u));
 
     petals.update(time);
+    if (u !== lastU) { lastU = u; renderer.shadowMap.needsUpdate = true; }    // shadows move only when pieces do
     renderer.render(scene, camera);
   }
 
@@ -148,7 +173,7 @@ export function mount(canvas) {
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     sky.stars.material.size = 1.7 * dpr;
-    if (was !== tall || !pl) pl = plan(pieces, tall);
+    if (was !== tall || !pl) { pl = plan(pieces, tall); lastU = -1; }
   }
 
   // a point of the world on the window, in CSS pixels (after the last render)
