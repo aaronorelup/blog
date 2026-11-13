@@ -135,7 +135,7 @@
       var lead = (c.lead || 0) * H;
       if (c.state === 0 && y > c.top - lead - 1.5 * H && y < c.top + c.h + 1.5 * H) load(c);
       else if (c.state === 2 && (y < c.top - lead - 4 * H || y > c.top + c.h + 4 * H)) letGo(c);
-      if (!c.over && y >= c.top) holder = i;
+      if (!c.over && y >= c.top - 1) holder = i;        // (a section's top is seldom a whole pixel: its own address must land in it)
     }
     // the chapter that holds the screen; while its picture is not whole yet, the one before it stays
     var base = -1;
@@ -149,7 +149,7 @@
     for (i = 0; i < LIST.length; i++) {
       c = LIST[i];
       var on = i === base, guest = false;
-      if (!on && c.scene && y >= c.top - (c.lead || 0) * H && (c.over ? holder < i : y < c.top)) {
+      if (!on && c.scene && y >= c.top - (c.lead || 0) * H && (c.over ? holder < i : y < c.top - 1)) {
         guest = true;
         c.whole = !!c.scene.frame(y < c.top ? (y - c.top) / H : clamp((y - c.top) / travel(c), 0, 1), t, ptr);
         on = c.whole;

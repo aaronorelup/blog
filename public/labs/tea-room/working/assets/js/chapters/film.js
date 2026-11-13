@@ -119,7 +119,7 @@ export function mount(host, options) {
   var top = options.top;
   top.innerHTML =
     '<div class="fm-dock">' +
-      '<div class="fm-card fm-sound"><p class="fm-sound-say">The reel has sound. It stays off until&nbsp;you turn it on.</p>' +
+      '<div class="fm-card fm-sound"><p class="fm-sound-say">The reel has sound. It stays off until you turn it on.</p>' +
         '<div class="fm-switch" role="group" aria-label="Sound"><button type="button" aria-pressed="true">Sound off</button><button type="button" aria-pressed="false">Sound on</button></div></div>' +
       '<article class="fm-card fm-now" aria-label="Now playing">' +
         '<p class="fm-now-meta"><span>Now playing</span><span data-k="count"></span><span data-k="id"></span></p>' +
@@ -150,7 +150,7 @@ export function mount(host, options) {
   // where it stands sideways and in height (plate pixels from the plate's middle), m how far in it has come. It always
   // looks straight ahead, so a move between two places is a straight walk and every flat keeps true to it.
   var W = 0, H = 0, tall = false, narrow = false, S0 = 1, CD = 1, DPR = 1, span = 1;
-  var K0, K1, K2, K3, PJ0, PJ1, BU0, wordB = [0, 0], sayB = [0, 0], wordPx = 100, sayPx = 20, leftEdge = 0;
+  var K0, K1, K1b, K2, K3, PJ0, PJ1, BU0, wordB = [0, 0], sayB = [0, 0], wordPx = 100, sayPx = 20, wordW = 100, sayW = 50, leftEdge = 0;
   var T = { a0: 0.1, a1: 1.5, b0: 3, b1: 4, dockA: 1.42, dockB: 1.72 };
   function camOf(s, fx, fy) {                      // the camera from which the plate is as large as s, the middle of the cloth at (fx, fy)
     return { m: 1 - S0 / s, C: [(W / 2 - (fx - FOCUS[0] * s)) / s - CX, (H / 2 - (fy - FOCUS[1] * s)) / s - CY] };
@@ -178,21 +178,23 @@ export function mount(host, options) {
     span = options.span();
     var cover = Math.max(W / PW, H / PH);
     S0 = cover * (tall ? 1.03 : 1.2);
-    leftEdge = narrow ? 16 : (parseFloat(getComputedStyle(root).getPropertyValue('--rail-w')) || 172) + Math.max(16, Math.min(46, W * 0.032)) * 2;
+    var rail = narrow ? 0 : (parseFloat(getComputedStyle(root).getPropertyValue('--rail-w')) || 172);
+    leftEdge = narrow ? 16 : rail + Math.max(16, Math.min(46, W * 0.032)) * 2;
 
     // 0: look B's title shot. The camera stands where look B's stands.
     K0 = { m: B_M, C: tall ? [455, -60] : [-225, -24] };
-    // 1: before the cloth. Wide screens: the cloth is most of the frame, a band of lawn under it for the film's light
-    // to fall on. Tall screens: the picture runs edge to edge, sky above it and the lawn below.
+    // 1: before the cloth. Wide screens: the cloth is most of the frame beside the rail, a band of lawn under it for the
+    // film's light to fall on. Tall screens: the picture runs edge to edge, sky above it and the lawn below.
     // 2, 3: the whole garden again, the cloth to one side, while the four posts pass and the page closes.
     if (!tall) {
-      K1 = camOf(Math.min(0.74 * W / 752, 0.86 * H / 546), 0.5 * W, (H < 760 ? 0.405 : 0.43) * H);
+      var s1 = Math.min(0.74 * W / 752, 0.84 * (W - rail) / 752, 0.86 * H / 546), f1y = (H < 760 ? 0.405 : 0.43) * H;
+      K1 = camOf(s1, 0.5 * W + rail * 0.5, f1y); K1b = camOf(s1 * 1.035, 0.5 * W + rail * 0.5, f1y - H * 0.004);
       var s3 = cover * 1.1, tx = clamp(0.957 * W - 2240 * s3, W - PW * s3, 0), ty = clamp(0.5 * H - 800 * s3, H - PH * s3, 0);
       K3 = camOf(s3, tx + FOCUS[0] * s3, ty + FOCUS[1] * s3);
       var s2 = s3 * 1.09, tx2 = clamp(0.975 * W - 2240 * s2, W - PW * s2, 0), ty2 = clamp(0.47 * H - 800 * s2, H - PH * s2, 0);
       K2 = camOf(s2, tx2 + FOCUS[0] * s2, ty2 + FOCUS[1] * s2);
     } else {
-      K1 = camOf(0.965 * W / 650, 0.5 * W, 0.325 * H);
+      K1 = camOf(0.965 * W / 650, 0.5 * W, 0.325 * H); K1b = camOf(0.99 * W / 650, 0.5 * W, 0.322 * H);
       K3 = camOf(0.88 * W / 752, 0.5 * W, 0.56 * H);
       K2 = K3;
     }
@@ -202,7 +204,7 @@ export function mount(host, options) {
     var pw0 = tall ? W * 0.5 : clamp(W * 0.2, 190, 400);
     PJ0 = { x: tall ? W * 0.24 : leftEdge + pw0 * 0.75, y: H * 1.1, w: pw0 };
     var pw1 = tall ? Math.min(W * 0.42, H * 0.2) : clamp(W * 0.235, 210, 470);
-    PJ1 = tall ? { x: W * 0.2, y: H * 0.83, w: pw1 } : { x: W * 0.1, y: H * 1.19, w: pw1 };
+    PJ1 = tall ? { x: W * 0.2, y: H * 0.83, w: pw1 } : { x: W * 0.1 + rail * 0.5, y: H * 1.19, w: pw1 };
     var bw = tall ? W * 0.6 : W * 0.27;
     BU0 = { x: W * 0.94, y: H * 0.99, w: bw };
 
@@ -210,6 +212,7 @@ export function mount(host, options) {
     wordPx = clamp(W * (tall ? 0.15 : 0.115), 52, 190); sayPx = clamp(W * 0.0175, 17, 27) * 0.8;
     wordEl.style.fontSize = (wordPx * B_K) + 'px'; sayEl.style.fontSize = (sayPx * B_K) + 'px';
     var wy = H * 0.1, wh = wordEl.offsetHeight / B_K;
+    wordW = wordEl.offsetWidth / B_K; sayW = sayEl.offsetWidth / B_K;
     wordB = bAt(leftEdge, wy, B_WORD_R, K0);
     sayB = bAt(leftEdge + wordPx * 0.08, wy + wh + sayPx / 0.8 * 0.7, B_WORD_R, K0);
 
@@ -223,7 +226,7 @@ export function mount(host, options) {
     airCv.width = Math.round(W * CD); airCv.height = Math.round(H * CD);
     lightCv.width = Math.round(W * DPR); lightCv.height = Math.round(H * DPR);
     beamCv.width = Math.ceil(W / BS); beamCv.height = Math.ceil(H / BS);
-    cache.clear(); kDone[0] = -1; dockK = -2; beamKey = ''; soundCard.style.transform = '';
+    cache.clear(); kDone[0] = -1; dockK = -2; beamKey = ''; soundCard.style.transform = ''; nowCard.style.transform = '';
   }
 
   // ------------------------------------------------------------------ the reel's light
@@ -555,7 +558,9 @@ export function mount(host, options) {
     var p = q * span, e1, e2, e3;
     if (RM) { e1 = p < T.rm1 ? 0 : 1; e2 = p < T.rm2 ? 0 : 1; e3 = e2; }            // nothing glides: three stills, changed by a cut
     else { e1 = io(ss(T.a0, T.a1, p)); e2 = io(ss(T.b0, T.b1, p)); e3 = ss(T.b1, Math.max(T.b1 + 0.5, span), p); }
-    var cam = e2 <= 0 ? between(K0, K1, e1) : e3 <= 0 ? between(K1, K2, e2) : between(K2, K3, e3);
+    // (before the cloth the camera never quite stands still: it creeps in while the reel is watched, as look B's does)
+    var creep = RM ? 0 : ss(T.a1, T.b0 + 0.1, p), K1c = creep > 0 ? between(K1, K1b, creep) : K1;
+    var cam = e2 <= 0 ? (e1 < 1 ? between(K0, K1, e1) : K1c) : e3 <= 0 ? between(K1c, K2, e2) : between(K2, K3, e3);
     var s = scaleOf(cam), o = plateXY([0, 0], cam), close = e1 * (1 - e2);
 
     // look B's white light gives way to the film
@@ -583,15 +588,14 @@ export function mount(host, options) {
       setTick(cur, reel.vis && reel.vis.duration ? reel.vis.currentTime / reel.vis.duration : (HELD ? 0.4 : 0));
     }
 
-    // the name leaves as look B's words do when the camera goes in: up, and gone before the edge can cut it
-    var wOut = tall ? ss(0.04, 0.4, e1) : 0, wo = e2 > 0 ? 0 : 1 - ss(0.07, tall ? 0.34 : 0.27, e1);
-    if (wo > 0.003) {
+    // the name leaves as look B's words do: whole, to the left wing, as the camera sets off
+    var wl = e2 > 0 ? 1 : io(ss(0.015, 0.3, e1)), wsl = e2 > 0 ? 1 : io(ss(0.005, 0.24, e1));
+    if (wl < 0.9995) {
       var wp = proj(wordB, B_WORD_R, cam), sp2 = proj(sayB, B_WORD_R, cam), zk = wp.z / (B_WORD_R / (B_WORD_R - B_M));
-      setT(wordEl, 'translate3d(' + wp.x.toFixed(2) + 'px,' + (wp.y - wOut * H * 0.05).toFixed(2) + 'px,0) scale(' + (zk / B_K).toFixed(5) + ')');
-      setT(sayEl, 'translate3d(' + sp2.x.toFixed(2) + 'px,' + (sp2.y - wOut * H * 0.05).toFixed(2) + 'px,0) scale(' + (zk / B_K).toFixed(5) + ')');
-      setO(wordEl, wo); setO(sayEl, 1 - ss(0.03, 0.2, e1));
+      setT(wordEl, 'translate3d(' + (wp.x - wl * (Math.max(wp.x, 0) + wordW * zk + 30)).toFixed(2) + 'px,' + wp.y.toFixed(2) + 'px,0) scale(' + (zk / B_K).toFixed(5) + ')');
+      setT(sayEl, 'translate3d(' + (sp2.x - wsl * (Math.max(sp2.x, 0) + sayW * zk + 30)).toFixed(2) + 'px,' + sp2.y.toFixed(2) + 'px,0) scale(' + (zk / B_K).toFixed(5) + ')');
     }
-    setV(wordEl, wo > 0.003); setV(sayEl, wo > 0.003);
+    setV(wordEl, wl < 0.9995); setV(sayEl, wsl < 0.9995);
 
     // the projector and the near leaves
     var kp = e2 <= 0 ? io(e1) : 1 - io(e2), pjP = mixP(PJ0, PJ1, kp);
@@ -636,6 +640,11 @@ export function mount(host, options) {
     if (!tall) {
       var sk = RM ? e2 : io(ss(T.b0 - 0.25, T.b0 + 0.18, p));
       setT(soundCard, sk <= 0 ? 'none' : 'translate3d(' + (sk * (soundCard.offsetWidth + 12)).toFixed(1) + 'px,' + (-sk * (nowCard.offsetHeight + 10)).toFixed(1) + 'px,0)');
+    } else {
+      // on a tall screen the card that names the film steps down behind the sound while the posts pass, and comes
+      // back for the page's last picture
+      var nk = RM ? (e2 > 0 && p < span - 0.2 ? 1 : 0) : io(ss(T.b0 - 0.05, T.b0 + 0.22, p)) * (1 - io(ss(span - 0.42, span - 0.08, p)));
+      setT(nowCard, nk <= 0 ? 'none' : 'translate3d(0,' + (nk * (nowCard.offsetHeight + soundCard.offsetHeight + 60)).toFixed(1) + 'px,0)');
     }
     if (RM) {                                          // the play button stands on the bare cloth under the picture, not on the picture
       var show = e1 > 0;
@@ -669,7 +678,8 @@ export function mount(host, options) {
     // for tests: hold the reel on one moment's first frame, so two pictures of the same place can be compared
     hold: function (i) {
       reel.started = false; [P, Q].forEach(function (v) { if (!v.paused) v.pause(); v.classList.remove('on'); });
-      reel.i = i || 0; reel.shown = -1; reel.vis = null; cardFor = -1; setCard(reel.i); kDone[0] = -1; options.redraw();
+      reel.i = i || 0; reel.shown = -1; reel.vis = null; cardFor = -1; setCard(reel.i); kDone[0] = -1;
+      spin = 0; reelA.style.transform = ''; reelB.style.transform = ''; options.redraw();
     },
     reel: reel
   };
