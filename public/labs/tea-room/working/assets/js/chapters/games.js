@@ -301,7 +301,8 @@ export function mount(host, options) {
     frame: frame,
     resize: function () { if (laid) layout(); if (arena) arena.resize(); },
     setActive: function (on) { active = on; },
-    arena: function () { return arena; },      // (for tests)
+    arena: function () { return arena; },      // (for tests: the arena, and the time of the last frame drawn)
+    time: function () { return lastTm; },
     dispose: function () {
       alive = false; JOIN.arena = 0;
       document.removeEventListener('click', onPress);
