@@ -3,8 +3,9 @@
    own numbers: the diver's head lamp (an 84 degree cone at the eye, 90 with a square falloff, turned down near rock the
    way the game does), the zone's ambient, the sun over the open pool, exponential fog that eats the distance, motes.
    The daylight fills the pool and is gone a few metres down the throat, so from there on every frame is the lamp's oval
-   on the rock with black all round it, as in the game's own tunnel shots. This chapter's garden is at night, so above
-   the water the sun is turned down to moonlight and the camp is lit by its own lantern and the diver's lamp.
+   on the rock with black all round it, as in the game's own tunnel shots. (The game keeps its sun on at every depth;
+   here it fades with depth, the open pool's water is clearer than the game's 35 m, the far fog is held towards the
+   sinkhole's teal, and the god rays are dimmer. Everything else is the game's number.)
 
    mount(host, options) -> { frame(q, time, pointer), resize(), setActive(on), dispose(), pace(ms), stats() }
    Everything on screen is a function of q (0..1, how far through the chapter), time (seconds) and pointer ({x, y} in
@@ -27,8 +28,6 @@ const ZONE = {
   galleries: { fog: new THREE.Color(0x08211e), ambient: new THREE.Color(0x33443f), mote: new THREE.Color(0xb8c8bc) },
 };
 const ABOVE = { bg: new THREE.Color(0x8fb6c4), fog: new THREE.Color(0x9fc3cf), density: 0.012, ambient: 0.65 };
-// this chapter's garden is at night: above the water the sinkhole has moonlight, not the game's noon (its sun, turned down)
-const NIGHT = { sun: 0.3, ambient: 0.32 };
 const DEPTH_DARK = { start: 6, end: 45, floor: 0.12 };
 const MOTES = { fadeNear: 1.6, fadeFar: 7.5, box: 10, size: 0.1, opacity: 0.55 };
 const BOX = { min: [-20, -34, -26], max: [20, 12, 14] }; // the part of the cave that is built: around the route
@@ -314,8 +313,8 @@ export async function mount(host, options = {}) {
     const samples = [];
     const N = 420;
     for (let i = 0; i <= N; i++) { const u = i / N; const p = curve.getPoint(u); p.y -= sag(u); samples.push(p); }
-    const rope = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(samples), 1200, 0.024, 6, false);
-    const ropeMat = new THREE.MeshStandardMaterial({ color: 0xf4f4ec, roughness: 0.7, emissive: 0x3a3c38 });
+    const rope = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(samples), 1200, 0.018, 6, false);
+    const ropeMat = new THREE.MeshStandardMaterial({ color: 0xf4f4ec, roughness: 0.7, emissive: 0x1c1d1a });
     scene.add(new THREE.Mesh(rope, ropeMat));
     disposables.push(rope, ropeMat);
     const pinGeo = new THREE.BoxGeometry(0.07, 0.07, 0.07), pinMat = new THREE.MeshStandardMaterial({ color: 0xffe9a8, emissive: 0x6a5420, roughness: 0.5 });
@@ -344,7 +343,7 @@ export async function mount(host, options = {}) {
   // ------------------------------------------------------------------ one frame
   const v = new THREE.Vector3(), fwd = new THREE.Vector3(), right = new THREE.Vector3(), upv = new THREE.Vector3();
   const aimDir = new THREE.Vector3(), probe = new THREE.Vector3(), beamDir = new THREE.Vector3(), zfog = new THREE.Color();
-  let active = true, w = 1, h = 1, tall = false, viewShifted = false;
+  let active = true, w = 1, h = 1, tall = false, viewShifted = false, resizeDue = false;
 
   function resize() {
     w = Math.max(1, host.clientWidth); h = Math.max(1, host.clientHeight);
@@ -363,6 +362,7 @@ export async function mount(host, options = {}) {
     if (!active) return;
     q = clamp(q);
     // shift (pixels): where the visible part of the screen is centred, when only part of it shows; the picture follows
+    if (resizeDue) { resizeDue = false; resize(); }
     if (Math.abs(shift) > 0.5) { camera.setViewOffset(w, h, 0, -shift, w, h); viewShifted = true; }
     else if (viewShifted) { camera.clearViewOffset(); viewShifted = false; }
     const px = pointer ? clamp(pointer.x, -1, 1) : 0, py = pointer ? clamp(pointer.y, -1, 1) : 0;
@@ -385,7 +385,7 @@ export async function mount(host, options = {}) {
     // on a tall screen the card covers the lower third: the picture's subject sits higher
     if (tall) v.addScaledVector(upv, -dist * 0.12 * ss(0.62, HOLD_AT, q));
     // and at the water's edge a tall screen looks down into the pool, not up at the wall
-    if (tall) v.addScaledVector(upv, -dist * 0.32 * ss(0.08, 0.13, q) * (1 - ss(0.19, 0.25, q)));
+    if (tall) v.addScaledVector(upv, -dist * 0.32 * ss(0.12, 0.165, q) * (1 - ss(0.19, 0.25, q)));
     camera.lookAt(v);
     camera.rotateZ(Math.sin(time * 0.31) * 0.01 * under);
     camera.updateMatrixWorld();
@@ -423,10 +423,10 @@ export async function mount(host, options = {}) {
     const vis = lerp(SHALLOW_VIS, CLEAR_VIS, ss(-4, -11, camera.position.y));
     fog.density = lerp(ABOVE.density, FOG_K / vis, under);
     // the daylight is a cenote's: it fills the pool and is gone a few metres down the throat, where the lamp takes over
-    sun.intensity = SUN * NIGHT.sun * (1 - ss(-1.6, -9.0, camera.position.y));
+    sun.intensity = SUN * (1 - ss(-1.6, -9.0, camera.position.y));
     scene.background.copy(ABOVE.bg).lerp(zfog, under);
     ambient.color.copy(ZONE.sinkhole.ambient).lerp(ZONE.galleries.ambient, deep);
-    ambient.intensity = lerp(NIGHT.ambient, 0.55 * dark, under);
+    ambient.intensity = lerp(ABOVE.ambient, 0.55 * dark, under);
     rays.visible = under > 0 && q < 0.5;
     campLight.intensity = 6 * (1 - under);
     campGlow.visible = q < 0.3;
@@ -459,7 +459,9 @@ export async function mount(host, options = {}) {
     let next = scale;
     if (slow > 8) next = Math.max(0.5, scale - 0.1);
     if (quick > 90) next = Math.min(1, scale + 0.1);
-    if (next !== scale) { scale = next; slow = quick = 0; resize(); }
+    // the new size is taken at the start of the next frame: resizing now would clear the picture just drawn and leave
+    // the canvas blank until then
+    if (next !== scale) { scale = next; slow = quick = 0; resizeDue = true; }
   }
   function stats() { return { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles, caveTris: built.tris, buildMs: Math.round(built.ms), w: canvas.width, h: canvas.height }; }
   function dispose() {
