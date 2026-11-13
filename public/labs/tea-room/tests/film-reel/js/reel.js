@@ -134,18 +134,19 @@
       s1 = Math.min(0.74 * W / 752, 0.86 * H / 546); f1 = [0.5 * W, 0.43 * H];
     } else {
       // tall: the cloth across the frame, sky above it and the lawn below. Close, the picture runs edge to edge
-      s0 = 0.74 * W / 752; f0 = [0.5 * W, 0.5 * H];
+      s0 = 0.88 * W / 752; f0 = [0.5 * W, 0.585 * H];
       s1 = 0.965 * W / 650; f1 = [0.5 * W, 0.325 * H];
     }
     S0 = s0;
     cam0 = camOf(s0, f0[0], f0[1]); cam1 = camOf(s1, f1[0], f1[1]);
     cam0.fx = f0[0]; cam0.fy = f0[1]; cam1.fx = f1[0]; cam1.fy = f1[1];
-    RISE = tall ? [60, -520] : [900, -600];
+    RISE = tall ? [-270, 25] : [900, -600];
+    if (DEBUG && qs.has('rise')) RISE = qs.get('rise').split(',').map(Number);
     cam0 = camAt(0, 0, 0); cam0.fx = f0[0]; cam0.fy = f0[1];
 
     // the projector stands on the lawn between the camera and the cloth. Where it ends up when the camera is close
     // decides where it stands: low in the left corner, seen from behind its shoulder
-    var grow = tall ? 2.5 : 3.2;                                        // how many times larger it is close than far
+    var grow = tall ? 1.85 : 3.2;                                       // how many times larger it is close than far
     F.proj.r = cam1.m * grow / (grow - 1);
     var pw = tall ? W * 0.42 : clamp(W * 0.235, 210, 470);
     if (tall) fit(F.proj, cam1, W * 0.2, H * 0.83, pw, 1009 / 618); else fit(F.proj, cam1, W * 0.1, H * 1.19, pw, 1009 / 618);
@@ -438,7 +439,7 @@
       // the picture outshines the beam that crosses it
       bx.globalCompositeOperation = 'destination-out'; bx.fillStyle = 'rgba(0,0,0,0.82)';
       bx.beginPath(); bx.moveTo(fq[0][0] / BS, fq[0][1] / BS); bx.lineTo(fq[1][0] / BS, fq[1][1] / BS); bx.lineTo(fq[2][0] / BS, fq[2][1] / BS); bx.lineTo(fq[3][0] / BS, fq[3][1] / BS); bx.closePath(); bx.fill();
-      lx.globalAlpha = clamp(k * fl * (wide ? 0.95 : 0.8)); lx.imageSmoothingEnabled = true; lx.imageSmoothingQuality = 'high';
+      lx.globalAlpha = clamp(k * fl * (wide ? (tall ? 0.6 : 0.95) : 0.8)); lx.imageSmoothingEnabled = true; lx.imageSmoothingQuality = 'high';
       lx.drawImage(beamCv, 0, 0, bw, bh, 0, 0, bw * BS, bh * BS);
       lx.globalAlpha = 1;
     }
