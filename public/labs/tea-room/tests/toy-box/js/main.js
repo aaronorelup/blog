@@ -439,6 +439,17 @@ function start() {
 
   /* -------------------------------------------------------------- the frame */
   let boxBusy = false;
+  // A device that cannot keep up at its full sharpness gets a slightly softer picture rather than a slow one:
+  // when most of a run of frames took longer than two screen refreshes, the sharpness goes down one step.
+  let ratioCap = 2, runN = 0, runSlow = 0;
+  function pace(dt, drew) {
+    if (!drew || dt <= 0 || dt > 1.5) { runN = 0; runSlow = 0; return; }
+    runN++; if (dt > 0.034) runSlow++;
+    if (runN < 45) return;
+    const now = Math.min(window.devicePixelRatio || 1, 2, ratioCap);
+    if (runSlow > 30 && now > 1) { ratioCap = Math.max(1, now - (now > 1.5 ? 0.5 : 0.25)); resize(); }
+    runN = 0; runSlow = 0;
+  }
   let prog = 0, lastProg = -1, visible = true, last = 0, acc = 0, frames = 0, fpsT = 0, fps = 0;
   function progress() {
     const max = track.offsetHeight - vh;
@@ -446,7 +457,7 @@ function start() {
   }
   function resize() {
     layout();
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2, ratioCap);
     renderer.setPixelRatio(dpr); renderer.setSize(vw, vh, false);
     box.setPlace(lay.box.x, lay.box.z, lay.scale);
     mouth.set(lay.box.x, box.bounds.y1 + 0.05, lay.box.z);
@@ -477,7 +488,9 @@ function start() {
     if (STILL || MANUAL) dt = 0;
     const was = dirty;
     tick(dt);
-    if (MANUAL ? was || dirty : need) draw();
+    const drew = MANUAL ? was || dirty : need;
+    if (drew) draw();
+    if (!MANUAL && !STILL) pace(dt, drew);
     if (SHOWFPS) {
       fpsT += (now - fpsLast) / 1000; fpsLast = now; fpsN++;
       if (fpsT >= 1) { fps = fpsN / fpsT; fpsT = 0; fpsN = 0; const i = renderer.info.render; elCount.textContent = `${fps.toFixed(1)} fps · ${i.triangles.toLocaleString('en')} triangles · ${i.calls} draw calls`; }
