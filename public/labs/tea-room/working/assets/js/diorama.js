@@ -1,4 +1,4 @@
-/* DIORAMA: a paper theatre whose camera is the scroll.
+/* DIORAMA: a painted theatre whose camera is the scroll.
    Everything drawn here is a function of two numbers: the scroll position and the time.
    ?still=1 holds the time; ?y=0.37 sets the scroll to that fraction of the page. */
 (function () {
@@ -17,7 +17,7 @@
   var io = function (t) { t = clamp(t); return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; };
   var rnd = function (seed) { var s = seed >>> 0; return function () { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; };
 
-  var W = 0, H = 0, portrait = false, narrow = false;   // portrait: the camera's framing; narrow: the paper's layout (as the CSS)
+  var W = 0, H = 0, portrait = false, narrow = false;   // portrait: the camera's framing; narrow: the cards' layout (as the CSS)
   var T = {};            // tracks: document top and height of the sections that drive the stage
   var docH = 1;
 
@@ -490,66 +490,10 @@
   }
   var canvasDirty = false;
 
-  // ------------------------------------------------------------------ paper: edges, light, small motions
-  var light = { x: 0, y: 0, k: 0, cold: false }, lits = [], smalls = [], deckled = false;
-  function deckle(only) {
-    // each sheet is cut by hand: its edge wanders a pixel or two
-    var all = only ? [only] : document.querySelectorAll('.paper > .face');
-    for (var i = 0; i < all.length; i++) {
-      var el = all[i], w = el.offsetWidth, h = el.offsetHeight; if (!w || !h) continue;
-      var r = rnd(977 + i * 31), pts = [], step = 26, amp = Math.min(3.2, Math.max(1.4, w / 260));
-      var x, y;
-      var nx = Math.max(2, Math.round(w / step)), ny = Math.max(2, Math.round(h / step)), q;
-      pts.push((r() * amp * 0.6).toFixed(1) + 'px ' + (r() * amp * 0.6).toFixed(1) + 'px');
-      for (q = 1; q < nx; q++) pts.push((q * w / nx + (r() - 0.5) * 6).toFixed(1) + 'px ' + (r() * amp).toFixed(1) + 'px');
-      pts.push((w - r() * amp * 0.6).toFixed(1) + 'px ' + (r() * amp * 0.6).toFixed(1) + 'px');
-      for (q = 1; q < ny; q++) pts.push((w - r() * amp).toFixed(1) + 'px ' + (q * h / ny + (r() - 0.5) * 6).toFixed(1) + 'px');
-      pts.push((w - r() * amp * 0.6).toFixed(1) + 'px ' + (h - r() * amp * 0.6).toFixed(1) + 'px');
-      for (q = nx - 1; q > 0; q--) pts.push((q * w / nx + (r() - 0.5) * 6).toFixed(1) + 'px ' + (h - r() * amp).toFixed(1) + 'px');
-      pts.push((r() * amp * 0.6).toFixed(1) + 'px ' + (h - r() * amp * 0.6).toFixed(1) + 'px');
-      for (q = ny - 1; q > 0; q--) pts.push((r() * amp).toFixed(1) + 'px ' + (q * h / ny + (r() - 0.5) * 6).toFixed(1) + 'px');
-      el.style.clipPath = 'polygon(' + pts.join(',') + ')';
-    }
-  }
-  function measurePaper() {
-    lits = Array.prototype.map.call(document.querySelectorAll('.paper > .face > .lit'), function (el) {
-      var host = el.parentNode.parentNode, rc = host.getBoundingClientRect();
-      return { el: el, top: rc.top + window.scrollY, h: rc.height, last: '', cold: null };
-    });
-    smalls = Array.prototype.map.call(document.querySelectorAll('.paper.small'), function (el) {
-      var rc = el.getBoundingClientRect(), fixed = getComputedStyle(el).position === 'fixed';
-      return { el: el, top: rc.top + (fixed ? 0 : window.scrollY), left: rc.left, w: rc.width, h: rc.height, fixed: fixed, lit: -1, tilt: el.classList.contains('settles'), ltr: '' };
-    });
-  }
-  function drawPaper(y) {
-    var Rr = Math.max(W, H) * 0.62;
-    for (var i = 0; i < lits.length; i++) {
-      var L = lits[i];
-      if (L.top - y > H || L.top + L.h - y < 0) continue;
-      var k = light.k;
-      var tr = 'translate3d(' + (light.x - Rr).toFixed(1) + 'px,' + (light.y - Rr).toFixed(1) + 'px,0) scale(' + (Rr / 300).toFixed(4) + ')';
-      if (tr !== L.last) { L.el.style.transform = tr; L.last = tr; }
-      if (L.k !== k) { L.el.style.opacity = k.toFixed(3); L.k = k; }
-      if (L.cold !== light.cold) {
-        L.el.style.background = light.cold ? 'radial-gradient(closest-side, rgba(226,236,255,0.9), rgba(214,226,255,0.45) 45%, rgba(214,226,255,0) 100%)' : '';
-        L.cold = light.cold;
-      }
-    }
-    for (i = 0; i < smalls.length; i++) {
-      var s = smalls[i], top = s.fixed ? s.top : s.top - y;
-      if (top > H + 40 || top + s.h < -40) continue;
-      var dx = (s.left + s.w / 2 - light.x), dy = (top + s.h / 2 - light.y);
-      var lit = clamp(1 - Math.sqrt(dx * dx + dy * dy) / (Rr * 1.05)) * light.k;
-      lit = Math.round((0.12 + 0.88 * lit) * 50) / 50;
-      if (lit !== s.lit) { s.el.style.setProperty('--lit', lit); s.lit = lit; }
-      if (s.tilt) {
-        // a held card settles: a degree and a half of tilt easing to square as it comes up the frame
-        var e = RM ? 1 : ss(H * 1.02, H * 0.58, top + s.h * 0.3);
-        var tr2 = 'rotate(' + ((1 - e) * (i % 2 ? -1.6 : 1.6)).toFixed(3) + 'deg)';
-        if (tr2 !== s.ltr) { s.el.style.transform = tr2; s.ltr = tr2; }
-      }
-    }
-  }
+  // ------------------------------------------------------------------ the scene's light
+  // Where the lit thing of the scene stands in the frame (the doorway, the lamp, the television, the projector's
+  // screen): the room's dust rises round it. The cards take no light from the scene: they are the site's own cards.
+  var light = { x: 0, y: 0, k: 0, cold: false };
 
   // ------------------------------------------------------------------ the page's own furniture
   var slip = $('title-slip'), rail = $('rail'), clock = $('clock'), clockB = clock.querySelector('b');
@@ -561,7 +505,7 @@
     coin = { el: c, top: rc.top + window.scrollY, h: rc.height, imgs: c.querySelectorAll('img'), last: '' };
     wins = Array.prototype.map.call(document.querySelectorAll('.win'), function (el) {
       var r2 = el.getBoundingClientRect(), m = el.querySelector('.media');
-      return { m: m, top: r2.top + window.scrollY, h: r2.height, last: '', vid: m && m.tagName === 'VIDEO' ? m : null };
+      return { top: r2.top + window.scrollY, h: r2.height, vid: m && m.tagName === 'VIDEO' ? m : null };
     });
   }
   function drawFurniture(y, heroP, e) {
@@ -571,13 +515,14 @@
     // the title slip leaves to the right wing; the rail comes on from the left
     var out = RM ? 0 : io(ss(0.045, 0.2, heroP));
     var tr = narrow ? 'translate3d(0,' + (out * (H * 1.7)).toFixed(1) + 'px,0)' : 'translate3d(' + (out * (W * 0.42 + 60)).toFixed(1) + 'px,-50%,0)';
-    if (tr !== slipTr) { slip.style.transform = tr; slipTr = tr; }
+    // (on a narrow screen it leaves downward, and would come to rest in the next chapter: gone from the frame, it is hidden)
+    if (tr !== slipTr) { slip.style.transform = tr; slip.style.visibility = narrow && out > 0.999 ? 'hidden' : ''; slipTr = tr; }
     var rin = (narrow || RM) ? (y >= T.startHead.top - 2 ? 1 : 0) : io(ss(0.12, 0.3, heroP));
     var rt = narrow ? 'translate3d(' + ((rin - 1) * 260).toFixed(1) + 'px,0,0)' : 'translate3d(' + ((rin - 1) * 220).toFixed(1) + 'px,-50%,0)';
     if (rt !== railTr) { rail.style.transform = rt; railTr = rt; }
     var mid = y + H * 0.5, now = -1;
     if (mid >= T.next.top - H * 0.6) now = 2; else if (mid >= T.tvHead.top - H * 0.9) now = 1; else if (mid >= T.startHead.top) now = 0;
-    if (now !== railNow) { railItems.forEach(function (li, i) { li.classList.toggle('now', i === now); }); railNow = now; if (narrow) deckle(rail.querySelector('.face')); }
+    if (now !== railNow) { railItems.forEach(function (li, i) { li.classList.toggle('now', i === now); }); railNow = now; }
     // the clock: 19:40 when the chapter opens, a minute at a time, 20:00 when the fifth film ends
     var a = T.tvHead.top - H * 0.5, b = T.tvTurn.top - H * 0.5, q = clamp((y - a) / (b - a));
     var mins = Math.floor(q * 20 + 0.0001), txt = mins >= 20 ? '20:00' : '19:' + (40 + mins);
@@ -595,17 +540,12 @@
         if (ctr !== coin.last) { for (var i = 0; i < coin.imgs.length; i++) coin.imgs[i].style.transform = ctr; coin.last = ctr; }
       }
     }
-    // a picture on paper stands behind its window: it travels a little slower than the sheet
+    // a card's clip plays while its picture is in the frame
     for (var j = 0; j < wins.length; j++) {
       var wv = wins[j], top = wv.top - y, vis = top < H && top + wv.h > 0;
-      if (wv.vid) {
-        if (vis && !FROZEN) { if (wv.vid.paused) { var pr = wv.vid.play(); if (pr && pr.catch) pr.catch(function () {}); } }
-        else if (!wv.vid.paused) wv.vid.pause();
-      }
-      if (!vis) continue;
-      var k = RM ? 0 : (top + wv.h / 2 - H / 2) / H;
-      var wt = 'translate3d(0,' + (-k * wv.h * 0.055).toFixed(2) + 'px,0)';
-      if (wt !== wv.last) { wv.m.style.transform = wt; wv.last = wt; }
+      if (!wv.vid) continue;
+      if (vis && !FROZEN) { if (wv.vid.paused) { var pr = wv.vid.play(); if (pr && pr.catch) pr.catch(function () {}); } }
+      else if (!wv.vid.paused) wv.vid.pause();
     }
   }
 
@@ -619,7 +559,7 @@
     T.eps = Array.prototype.map.call(document.querySelectorAll('.ep'), function (el) { var rc = el.getBoundingClientRect(); return rc.top + window.scrollY + rc.height / 2; });
     docH = Math.max(1, document.documentElement.scrollHeight - H);
     layoutGarden(); layoutRoom(); layoutBox(); layoutCinema(); layoutCanvas();
-    deckle(); measurePaper(); measureFurniture();
+    measureFurniture();
     [G, R, Cn].forEach(function (S) { for (var k in S) if (S[k] && S[k].el) { S[k].last = ''; S[k].lo = -1; } });
     boxTr = ''; boxClip = '';
   }
@@ -672,7 +612,6 @@
       if (ga > 0) { drawPetals(gcam, G.S0, t, ga, portrait ? 26 : 46); drawFlies(gcam, G.S0, t, ga * (1 - ss(0.3, 0.6, heroP))); canvasDirty = true; }
     }
     drawFurniture(y, heroP, e);
-    drawPaper(window.scrollY);
     if (!FROZEN) requestAnimationFrame(frame);
   }
   function render() { frame(performance.now()); }
