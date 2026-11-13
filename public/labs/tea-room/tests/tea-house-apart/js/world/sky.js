@@ -56,7 +56,11 @@ function buildStars(rnd) {
   const g = new BufferGeometry();
   g.setAttribute('position', new Float32BufferAttribute(pos, 3));
   g.setAttribute('color', new Float32BufferAttribute(col, 3));
-  const mat = new PointsMaterial({ size: 2, sizeAttenuation: false, vertexColors: true, fog: false, depthWrite: false });
+  // each star is a small round dot (a point drawn with a round mask), not the square a bare point would be
+  const dot = document.createElement('canvas'); dot.width = dot.height = 32;
+  const x = dot.getContext('2d');
+  x.fillStyle = '#fff'; x.beginPath(); x.arc(16, 16, 13, 0, Math.PI * 2); x.fill();
+  const mat = new PointsMaterial({ size: 2, sizeAttenuation: false, vertexColors: true, fog: false, depthWrite: false, map: new CanvasTexture(dot), alphaTest: 0.5, transparent: true });
   const p = new Points(g, mat);
   p.frustumCulled = false;
   return p;

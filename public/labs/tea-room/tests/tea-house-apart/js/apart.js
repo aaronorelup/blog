@@ -35,10 +35,10 @@ const NAMES = [
   { kind: 'tag', piece: 'shoji-front-l-0', at: [-0.95, 0, 0], text: 'Shoji screens', wide: [-46, 0, 'r'], tall: [-6, 60, 'r'] },
   { kind: 'tag', piece: 'wall-left', at: [0, 0, 5.2], text: 'Plaster walls', wide: [-46, 0, 'r'], tall: [-6, 30, 'r'] },
   { kind: 'tag', piece: 'mat-0', at: [-0.7, 0, 5.1], text: 'Tatami', wide: [-46, 8, 'r'], tall: [-6, 26, 'r'] },
-  { kind: 'chip', piece: 'painting', at: [0, 0.6, 0], title: 'Projects', sub: 'The alcove', wide: [24, 64, 'l'], tall: [14, -44, 'r'] },
-  { kind: 'chip', piece: 'desk', at: [0, 0.3, 0], title: 'The Ledger & Courses', sub: 'The writing desk', wide: [-64, -22, 'r'], tall: [-10, 46, 'l'] },
-  { kind: 'chip', piece: 'table', at: [0, 0.6, 0], title: 'Right now', sub: 'The tea table', wide: [36, -72, 'l'], tall: [-24, -52, 'l'] },
-  { kind: 'chip', fixed: [0, 5.15, 22], after: 'cabinet', title: 'On your way out', sub: 'The gate', wide: [44, -34, 'l'], tall: [-6, 44, 'l'] },
+  { kind: 'chip', piece: 'painting', at: [0, 0.6, 0], title: 'Projects', sub: 'The alcove', wide: [24, 64, 'l'], tall: [-4, -58, 'r'] },
+  { kind: 'chip', piece: 'desk', at: [0, 0.3, 0], title: 'The Ledger & Courses', sub: 'The writing desk', wide: [-64, -22, 'r'], tall: [-18, 58, 'l'] },
+  { kind: 'chip', piece: 'table', at: [0, 0.6, 0], title: 'Right now', sub: 'The tea table', wide: [36, -72, 'l'], tall: [-30, -50, 'l'] },
+  { kind: 'chip', fixed: [0, 5.15, 22], after: 'cabinet', title: 'On your way out', sub: 'The gate', wide: [44, -34, 'l'], tall: [26, 30, 'l'] },
 ];
 const SVG = 'http://www.w3.org/2000/svg';
 NAMES.forEach((n) => {
@@ -92,8 +92,9 @@ function draw(y, t) {
   // the part of the window the drawing may use: all of it, less a margin, until the card comes up; then the
   // drawing makes room, aside on a wide window, upward when the card sits under it
   const mx = Math.max(14, W * 0.045), my = Math.max(14, H * 0.055);
-  safe.x0 = mx; safe.y0 = my + (stacked ? 16 : 0); safe.x1 = W - mx; safe.y1 = H - my;
-  if (stacked) safe.y1 += (Math.max(H * 0.3, cardBox.top - 14) - safe.y1) * e;
+  safe.x0 = mx; safe.y0 = my; safe.x1 = W - mx; safe.y1 = H - my;
+  // (on a phone too short to show both, the drawing keeps its place and the card comes up over it like a sheet)
+  if (stacked) { if (cardBox.top - 10 - safe.y0 >= 150) safe.y1 += (cardBox.top - 10 - safe.y1) * e; }
   else safe.x1 += (cardBox.left - 30 - safe.x1) * e;
   if (view) view.render(T, t, safe);
 

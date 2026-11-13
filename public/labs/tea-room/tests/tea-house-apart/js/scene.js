@@ -172,7 +172,7 @@ export function mount(canvas) {
     renderer.setPixelRatio(dpr);
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
-    sky.stars.material.size = 1.7 * dpr;
+    sky.stars.material.size = 2.3 * dpr;
     if (was !== tall || !pl) { pl = plan(pieces, tall); lastU = -1; }
   }
 
