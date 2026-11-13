@@ -18,6 +18,11 @@ nav { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0 0; }
 nav a { color: #101220; background: #F1E6D0; padding: 8px 14px; text-decoration: none; font: 600 14px system-ui, sans-serif; }
 nav a:hover, nav a:focus-visible { background: #FFD892; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr)); gap: 18px; margin-top: 18px; }
+.demos { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 14px; margin-top: 16px; }
+.demo { display: block; background: #1C1F36; border: 1px solid #343A5C; border-radius: 14px; padding: 16px 18px; text-decoration: none; color: #E9DCC3; }
+.demo strong { display: block; font: 700 18px/1.25 system-ui, sans-serif; color: #FFD892; margin-bottom: 6px; }
+.demo span { font: 14px/1.45 system-ui, sans-serif; color: #C9BDA6; }
+.demo:hover, .demo:focus-visible { border-color: #FFD892; }
 figure { margin: 0; background: #181A2C; }
 figure img { display: block; width: 100%; height: auto; }
 figcaption { font: 13px/1.4 system-ui, sans-serif; color: #C9BDA6; padding: 8px 10px 10px; }
@@ -35,6 +40,10 @@ a:focus-visible { outline: 2px solid #FFD892; outline-offset: 2px; }
 <a href="/labs/tea-room/c/">Look C</a>
 <a href="/labs/tea-room/v1/">The page before</a>
 </nav>
+<section><h2>Things to try</h2><p class="lead">Each of these is one idea for one chapter, built as its own small page so it can be opened, scrolled and played with before it goes into the working copy.</p><div class="demos">
+<a class="demo" href="tea-house-apart/"><strong>The tea house, taken apart</strong><span>For the chapter about this website: the homepage tea house seen from above, coming apart piece by piece as you scroll. First version.</span></a>
+<a class="demo" href="storm-bell-backdrop/"><strong>Storm Bell Fighter as a living backdrop</strong><span>For the games chapter: the game's own painted layers, rain, fires and both fighters as one 3D scene that answers the mouse. First version.</span></a>
+</div></section>
 <section><h2>The little television, painted (a candidate, not in use)</h2><p class="lead">The set in the working copy is the 3D one from look B. This painted version was made so the set would stay sharp when the camera goes through its glass. It waits for a yes or a no. The first try, the fixes, and the model beside the painting.</p><div class="grid">
 <figure><a href="img/001.webp"><img src="img/001.webp" width="1904" height="2318" loading="lazy" decoding="async" alt="The 3D model beside the painted set, and the set standing in the garden"></a><figcaption>The 3D model beside the painted set, and the set standing in the garden</figcaption></figure>
 <figure><a href="img/002.webp"><img src="img/002.webp" width="2000" height="711" loading="lazy" decoding="async" alt="First try. The upright one on the right came out as a different set and was thrown away"></a><figcaption>First try. The upright one on the right came out as a different set and was thrown away</figcaption></figure>
