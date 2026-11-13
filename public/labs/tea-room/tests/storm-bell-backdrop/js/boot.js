@@ -36,7 +36,8 @@
     var pin = clamp(-r.top / travel);
     var q = RM ? 0.8 : enter * 0.1 + pin * 0.9;
     var leave = clamp((vh - r.bottom) / vh);
-    return { q: q, pin: RM ? 1 : pin, leave: leave, onScreen: r.bottom > 0 && r.top < vh };
+    // on screen: at least a pixel of it (a chapter that only touches the screen's edge is not)
+    return { q: q, pin: RM ? 1 : pin, leave: leave, onScreen: r.bottom > 1 && r.top < vh - 1 };
   }
 
   // ------------------------------------------------------------------ ?y
@@ -111,7 +112,7 @@
     raf = 0;
     var m = measure();
     place(m);
-    if (!api || !(visible || m.onScreen) || document.hidden) return;
+    if (!api || !m.onScreen || document.hidden) return;
     var dt = Math.min(0.1, (now - last) / 1000 || 0.016);
     last = now;
     var t = FROZEN ? T_HELD : (now - t0) / 1000;
@@ -172,7 +173,10 @@
     var show = RM ? 1 : ss(0.53, 0.65, m.q);
     card.style.opacity = show.toFixed(3);
     card.style.visibility = show > 0.01 ? 'visible' : 'hidden';
-    card.style.transform = 'translate3d(0,' + ((1 - show) * 26).toFixed(1) + 'px,0)';
+    // once it has arrived it is an ordinary, still element again, so its letters are drawn as sharp as any on the page
+    var arrived = show > 0.999;
+    card.style.transform = arrived ? 'none' : 'translate3d(0,' + ((1 - show) * 26).toFixed(1) + 'px,0)';
+    card.style.willChange = arrived ? 'auto' : 'transform, opacity';
     card.style.pointerEvents = show > 0.6 ? 'auto' : 'none';
     veil.style.opacity = ss(0, 0.3, m.leave).toFixed(3);
     hint.style.opacity = (api && !FROZEN ? show * (tapped ? 0 : 1) : 0).toFixed(3);
