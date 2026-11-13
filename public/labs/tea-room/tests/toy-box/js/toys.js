@@ -107,6 +107,17 @@ function build(THREE, scene, def, gltf, maxAniso) {
   };
   toy.setScale(1);
 
+  // the little television is on: its screen is its own piece, and it glows a cold blue that wavers a little
+  if (def.id === 'tv') {
+    let screen = null;
+    root.traverse((o) => { if (o.isMesh && /screen/i.test(o.name + ' ' + (o.material.name || ''))) screen = o.material; });
+    if (screen) {
+      screen.emissive = new THREE.Color(0x4f74d6); screen.emissiveIntensity = 0.2; screen.emissiveMap = screen.map;   // its own picture, lit from behind
+      let T = 0;
+      toy.tick = (dt) => { T += dt; screen.emissiveIntensity = 0.2 + 0.035 * Math.sin(T * 9.1) * Math.sin(T * 2.3) + (Math.sin(T * 31) > 0.96 ? 0.05 : 0); return true; };
+    }
+  }
+
   // the ones that can move by themselves
   if (def.clips && gltf.animations.length) {
     const mixer = new THREE.AnimationMixer(root), clips = {};
@@ -177,8 +188,10 @@ export function placeShadows(S, toys, box, lamp) {
   put((b.x0 + b.x1) / 2, (b.z0 + b.z1) / 2, 0, (b.x1 - b.x0) * 0.66, 0.85);
   for (const t of toys) {
     if (!t.pivot.visible) continue;
-    const p = t.pivot.position;
-    put(p.x, p.z, Math.max(0, p.y - t.body.com), t.shadowR * (t.pop || 1), 0.78);
+    const p = t.pivot.position, h = Math.max(0, p.y - t.body.com);
+    put(p.x, p.z, h, t.shadowR * (t.pop || 1), 0.7);
+    // and a small dark one right under its feet, so it stands on the mat and not above it
+    if (h < 0.12) { const k = n; put(p.x, p.z, h * 4, t.shadowR * 0.55 * (t.pop || 1), 0.62); S.p.set(p.x, 0.005, p.z); S.s.set(t.shadowR * 1.15, 1, t.shadowR * 1.15); S.q.identity(); S.m.compose(S.p, S.q, S.s); S.mesh.setMatrixAt(k, S.m); }
   }
   S.mesh.count = n; S.mesh.instanceMatrix.needsUpdate = true; S.op.needsUpdate = true;
 }

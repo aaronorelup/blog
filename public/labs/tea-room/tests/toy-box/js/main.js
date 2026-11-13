@@ -121,7 +121,7 @@ function start() {
 
   /* -------------------------------------------------------------- the box and what is in it */
   const box = makeBox(THREE, scene);
-  const shadows = makeShadows(THREE, scene, ROSTER.length + 2);
+  const shadows = makeShadows(THREE, scene, ROSTER.length * 2 + 2);
   const toys = [];           // in the order they arrive
   const rand = rng(7);
   let state = 'closed';      // closed | open | returning
@@ -303,7 +303,7 @@ function start() {
     hold = { toy: hit.toy, s: hit.s, z, zWant: z, samples: [], id: e.pointerId, t0: performance.now(), x0: e.clientX, y0: e.clientY };
     target(hold, 0);
     for (const t of toys) if (t.body.on) t.body.wake();
-    tagToy = hit.toy; tagUntil = 1e9; showTag(hit.toy);
+    hover = null; tagToy = hit.toy; tagUntil = 1e9; showTag(hit.toy);
     document.documentElement.classList.add('grabbing');
     try { canvas.setPointerCapture(e.pointerId); } catch (err) { /* fine */ }
     hinted = true; hint();
@@ -341,10 +341,18 @@ function start() {
     setRay(e.clientX, e.clientY);
     if (hold && e.pointerId === hold.id) { target(hold, 0); hold.toy.body.wake(); dirty = true; return; }
     if (e.pointerType === 'mouse') {
-      const over = state === 'closed' ? overBox() : canPlay() && !!pick(1.15);
+      const hit = state === 'open' ? pick(1.15) : null;
+      const over = state === 'closed' ? overBox() : canPlay() && !!hit;
       document.documentElement.classList.toggle('grab', !!over);
+      // a mouse that rests on a toy is told its name; the whole card comes when the toy is picked up
+      if (state === 'open' && !RM && !STILL) {
+        if (hit && hit.toy !== hover) { hover = hit.toy; tagToy = hover; tagUntil = 1e9; showTag(hover, true); dirty = true; }
+        else if (!hit && hover) { if (tagToy === hover) tagUntil = simT + 0.12; hover = null; dirty = true; }
+      }
     }
   });
+  let hover = null; // the toy the mouse rests on
+  canvas.addEventListener('pointerleave', () => { if (hover) { if (tagToy === hover) tagUntil = simT + 0.12; hover = null; dirty = true; } });
   let tap = null;   // a press that began on the shut box: if it ends where it began, it opens the box
   const up = (e) => {
     if (tap && e.pointerId === tap.id) { if (e.type === 'pointerup' && state === 'closed' && Math.hypot(e.clientX - tap.x, e.clientY - tap.y) < 14) openByHand(); tap = null; }
@@ -368,21 +376,32 @@ function start() {
   }, { passive: false });
 
   function openByHand() { forced = true; forcedAt = prog; burst(); hinted = false; hint(); }
+  // The pill at the foot of the picture opens the box; once it is open it calls the roll: each press names the
+  // next toy (and the toy hops, to say "here"). It is also how a keyboard reaches the toys.
+  let roll = -1;
   elHint.addEventListener('click', () => {
-    if (state === 'closed') openByHand();
+    if (state === 'closed') { openByHand(); return; }
+    if (state !== 'open' || !toys.length) return;
+    roll = (roll + 1) % toys.length;
+    const t = toys[roll], b = t.body;
+    hover = null; tagToy = t; tagUntil = RM || STILL ? 1e9 : simT + 4.5; showTag(t);
+    if (!RM && !STILL && b.on && !b.held) { b.wake(); b.vy = 1.75; b.squashV += 2.4; b.rest = 0; }
+    hinted = true; hint(); dirty = true;
   });
 
   /* -------------------------------------------------------------- the words over the picture */
   let hinted = false, lastHint = null;
   function hint() {
     let s = '';
-    if (RM) s = toys.length ? (phone ? 'Tap a toy to see where it came from' : 'Click a toy to see where it came from') : '';
+    if (RM) s = !toys.length ? '' : roll >= 0 ? `Roll call · ${roll + 1} of ${toys.length}` : phone ? 'Tap a toy to see where it came from' : 'Click a toy to see where it came from';
     else if (state === 'closed') s = prog < 0.02 ? 'Scroll, or open the box' : 'Open the box';
     else if (state === 'open' && !hinted && prog < 0.9) s = phone ? 'Pick one up. Throw it.' : 'Pick one up and throw it';
+    else if (state === 'open' && (phone || prog < 0.9)) s = roll < 0 ? 'Roll call' : `Roll call · ${roll + 1} of ${toys.length}`;
     if (STILL) s = '';
-    if (s !== lastHint) { lastHint = s; if (s) elHintText.textContent = s; elHint.classList.toggle('off', !s); elHint.tabIndex = state === 'closed' && s ? 0 : -1; }
+    if (s !== lastHint) { lastHint = s; if (s) elHintText.textContent = s; elHint.classList.toggle('off', !s); elHint.tabIndex = s ? 0 : -1; }
   }
-  function showTag(toy) {
+  function showTag(toy, small) {
+    elTag.classList.toggle('mini', !!small);
     elTag.querySelector('.tag-from').textContent = toy.def.from;
     elTag.querySelector('.tag-name').textContent = toy.def.name;
     elTag.querySelector('.tag-how').textContent = toy.def.how;

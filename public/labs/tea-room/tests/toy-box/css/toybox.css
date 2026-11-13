@@ -85,6 +85,9 @@ main { position: relative; }
 }
 .tagcard.below::after { bottom: auto; top: -7px; }
 .tagcard.pinned::after { display: none; }
+.tagcard.mini { padding: 8px 13px 9px; border-radius: 14px; }
+.tagcard.mini .tag-how { display: none; }
+.tagcard.mini .tag-name { font-size: 15.5px; }
 .tag-from { margin: 0 0 4px; font: 600 10.5px/1.2 var(--font-body); letter-spacing: 0.13em; text-transform: uppercase; color: var(--gold); }
 .tag-name { display: block; font: 700 18px/1.15 var(--font-display); color: var(--head); letter-spacing: -0.005em; }
 .tag-how { margin: 5px 0 0; font: 400 14px/1.4 var(--font-body); color: var(--body); text-wrap: pretty; }
