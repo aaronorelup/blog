@@ -202,7 +202,7 @@ button { font: inherit; color: inherit; }
 .tb-list .lead { padding: 22px 24px; }
 .li-head h2 { font: 700 34px/1.1 var(--font-display); color: var(--head); }
 .li-head p { font: 400 17px/1.4 var(--font-serif); color: var(--strong); }
-.li-pic { position: relative; margin-top: 14px; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 22px; background: rgb(236, 230, 220); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); }
+.li-pic { position: relative; margin-top: 14px; aspect-ratio: 4 / 3; max-width: 860px; overflow: hidden; border-radius: 22px; background: rgb(236, 230, 220); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); }
 .li-pic img { position: absolute; max-width: none; filter: sepia(0.16) saturate(1.06) brightness(0.98); }
 .li-film { margin-top: 12px; border-radius: 18px; overflow: hidden; background: #000; }
 .li-film[hidden] { display: none; }
