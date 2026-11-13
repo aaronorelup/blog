@@ -23,11 +23,11 @@ export const scene = {
   },
   p: {
     layout: 'set-above',
-    aim: [450, 1000],
+    aim: [450, 1240],
     flats: [
       { name: 'field', src: '/tea/scenes/tv/field-p.webp', px: [1548, 2752], box: [-36, -64, 972, 1728], r: 1 },
       { name: 'word', text: true, box: [60, 170, 780, 420], r: 0.8 },
-      { name: 'lamp', src: '/tea/scenes/tv/lamp.webp', px: [600, 900], box: [330, 820, 240, 360], r: 0.6 },
+      { name: 'lamp', src: '/tea/scenes/tv/lamp.webp', px: [600, 900], box: [330, 1060, 240, 360], r: 0.6 },
     ],
     slots: [],
     camera: [{ at: 0, m: 0 }, { at: 6, m: 0.05 }],

@@ -19,7 +19,8 @@ const webp = (img, file, q = 86) => img.webp({ quality: q, effort: 6, smartSubsa
 
 // The lantern, 600 x 900, its paper lit from inside. lit: only the paper (the shadow's lit part).
 function lantern(light, { lit = false } = {}) {
-  const L = hex(light), deep = mix(L, [60, 40, 46], 0.42), warm = mix(L, [255, 252, 240], 0.55);
+  // no pure white (1.3): the lit centre is the light warmed a little, never blown out
+  const L = hex(light), deep = mix(L, [60, 40, 46], 0.42), warm = mix(mix(L, [255, 236, 196], 0.3), [92, 70, 72], 0.06);
   const ink = '#1d1620', wood = '#4a3329', dark = '#33241f';
   if (lit) return `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="900"><rect x="184" y="150" width="232" height="488" fill="#fff"/></svg>`;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="900" viewBox="0 0 600 900">

@@ -60,3 +60,17 @@ Frames: the top, `#topic-art`, `?y=0.31` (a room between items), `?y=0.026` (the
 3. **The index shrank beside everything else.** At 2560 the paper and its type had grown by a quarter (1.2) but the
    bookmark had not, so it read as a thin strip of ticks. It grows with the paper now, and still stays inside its
    gutter (110 of 120 px).
+
+## Round 5: after real fast wheel turns, down and up
+
+Frames: thirty fast wheel turns down from the top then fifteen up and six down, at 1440x900 with `?still=1` and
+without it; forty-five from the middle; a fast flick on the phone. Nothing was left half way: no screen half shut,
+no stray flat, the bookmark's mark and tag on the chapter in view, every picture drawn. What was weak:
+
+1. **On the phone a slip lay across the lantern** at the place it is read, the one thing the bar keeps paper off.
+   The upright stub room's lantern now stands low, in the lower third, where the slips have passed by the time
+   they are read.
+2. **The slips carried metadata.** An id ("AO-061") or a project's state over every title made each slip a row of
+   a list. A stub slip is now what an item is in this book: its title as its link, and one line.
+3. **The palest lights were blown out.** The Learning and Film lanterns' paper drew pure white, which the colour
+   rules forbid. The lit centre is now the light warmed a little, never white.
