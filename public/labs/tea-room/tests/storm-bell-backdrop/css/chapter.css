@@ -35,12 +35,17 @@ body { margin: 0; background: var(--page); color: var(--body); font: 16px/1.5 va
 a { color: inherit; }
 
 /* ---------------------------------------------------------------- the way in: the tea garden's night sky, and the rain setting in */
-.lead { position: relative; height: 118vh; min-height: 600px; overflow: hidden; background: rgb(27, 30, 50); }
+.lead { position: relative; height: 100vh; height: var(--svh); min-height: 560px; overflow: hidden; background: rgb(27, 30, 50); }
 .lead-sky { position: absolute; inset: 0; }
-/* only the top third of look B's sky plate is sky: it is laid so that its hills end two thirds down the first screen */
-.lead-plate { position: absolute; left: 50%; top: 0; width: max(100vw, 300vh); max-width: none; height: auto; transform: translateX(-50%); }
-.lead-clouds { position: absolute; left: 50%; top: 7vh; width: max(128%, 1500px); max-width: none; transform: translateX(-50%); will-change: transform; }
-.lead-sky::after { content: ''; position: absolute; left: 0; right: 0; top: 30vh; bottom: 0; background: linear-gradient(to bottom, rgba(27, 30, 50, 0), rgba(27, 30, 50, 0.9) 26vh, rgb(27, 30, 50) 33vh, rgb(24, 25, 36) 60vh, var(--storm) 86vh); }
+/* only the top fifth of look B's sky plate is open sky (the rest stands behind the tea house there): that part is
+   shown, and it melts into the night below it before its hills begin */
+.lead-plate { position: absolute; left: 50%; top: 0; width: max(100vw, 300vh); max-width: none; height: auto; transform: translateX(-50%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 22vh, transparent 34vh); mask-image: linear-gradient(to bottom, #000 0, #000 22vh, transparent 34vh); }
+/* look B's cloud sheet has a roof-shaped and a tree-shaped piece in its lower half (they stand behind the house and
+   a tree there): only its upper half is shown */
+.lead-clouds { position: absolute; left: 50%; top: 7vh; width: max(128%, 1500px); max-width: none; transform: translateX(-50%); will-change: transform;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 43%, transparent 52%); mask-image: linear-gradient(to bottom, #000 0, #000 43%, transparent 52%); }
+.lead-sky::after { content: ''; position: absolute; left: 0; right: 0; top: 30vh; bottom: 0; background: linear-gradient(to bottom, rgba(27, 30, 50, 0), rgb(26, 28, 46) 22vh, rgb(24, 25, 36) 44vh, var(--storm) 68vh); }
 .lead-rain { position: absolute; left: 0; right: 0; top: 34vh; bottom: 0; z-index: 1;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='640'%3E%3Cg stroke='%23cfd3dc' stroke-linecap='round' fill='none'%3E%3Cpath d='M173 89l-5.3 38' stroke-width='1.0' opacity='0.27'/%3E%3Cpath d='M194 34l-4.8 34' stroke-width='0.9' opacity='0.26'/%3E%3Cpath d='M43 54l-4.5 32' stroke-width='0.8' opacity='0.46'/%3E%3Cpath d='M121 371l-6.3 45' stroke-width='0.9' opacity='0.39'/%3E%3Cpath d='M504 28l-6.0 43' stroke-width='0.8' opacity='0.32'/%3E%3Cpath d='M68 183l-5.8 42' stroke-width='1.0' opacity='0.30'/%3E%3Cpath d='M333 220l-4.9 35' stroke-width='0.7' opacity='0.27'/%3E%3Cpath d='M113 403l-4.5 32' stroke-width='1.0' opacity='0.33'/%3E%3Cpath d='M238 177l-5.7 41' stroke-width='0.8' opacity='0.42'/%3E%3Cpath d='M300 311l-6.0 43' stroke-width='0.8' opacity='0.43'/%3E%3Cpath d='M506 70l-4.5 32' stroke-width='0.8' opacity='0.44'/%3E%3Cpath d='M256 23l-5.3 38' stroke-width='1.0' opacity='0.44'/%3E%3Cpath d='M453 186l-5.4 39' stroke-width='1.0' opacity='0.40'/%3E%3Cpath d='M240 497l-6.3 45' stroke-width='1.0' opacity='0.37'/%3E%3Cpath d='M39 415l-5.3 38' stroke-width='1.1' opacity='0.50'/%3E%3Cpath d='M153 228l-5.3 38' stroke-width='0.9' opacity='0.26'/%3E%3Cpath d='M93 69l-3.3 23' stroke-width='0.8' opacity='0.44'/%3E%3Cpath d='M134 231l-6.0 43' stroke-width='0.9' opacity='0.27'/%3E%3Cpath d='M287 523l-5.8 42' stroke-width='0.8' opacity='0.47'/%3E%3Cpath d='M219 212l-6.1 43' stroke-width='0.8' opacity='0.49'/%3E%3Cpath d='M98 137l-3.9 28' stroke-width='1.0' opacity='0.37'/%3E%3Cpath d='M141 2l-4.5 32' stroke-width='1.0' opacity='0.34'/%3E%3Cpath d='M492 409l-4.8 34' stroke-width='1.0' opacity='0.40'/%3E%3Cpath d='M35 533l-5.7 41' stroke-width='1.1' opacity='0.47'/%3E%3Cpath d='M207 236l-3.4 24' stroke-width='0.7' opacity='0.41'/%3E%3Cpath d='M42 124l-3.6 26' stroke-width='0.7' opacity='0.34'/%3E%3Cpath d='M8 90l-3.4 24' stroke-width='0.7' opacity='0.34'/%3E%3Cpath d='M452 364l-3.6 26' stroke-width='0.9' opacity='0.31'/%3E%3Cpath d='M193 73l-5.9 42' stroke-width='0.9' opacity='0.50'/%3E%3Cpath d='M254 51l-3.4 24' stroke-width='0.8' opacity='0.34'/%3E%3Cpath d='M429 96l-3.2 23' stroke-width='1.0' opacity='0.49'/%3E%3Cpath d='M82 322l-3.2 23' stroke-width='1.2' opacity='0.38'/%3E%3Cpath d='M447 412l-4.0 28' stroke-width='0.8' opacity='0.34'/%3E%3Cpath d='M400 315l-5.7 41' stroke-width='0.8' opacity='0.33'/%3E%3Cpath d='M420 583l-5.9 42' stroke-width='1.1' opacity='0.45'/%3E%3Cpath d='M384 134l-4.8 34' stroke-width='0.7' opacity='0.34'/%3E%3Cpath d='M22 165l-4.0 28' stroke-width='1.2' opacity='0.42'/%3E%3Cpath d='M235 555l-6.4 46' stroke-width='0.9' opacity='0.49'/%3E%3Cpath d='M120 134l-3.7 27' stroke-width='1.0' opacity='0.30'/%3E%3Cpath d='M465 498l-4.7 34' stroke-width='1.1' opacity='0.41'/%3E%3Cpath d='M51 391l-6.1 44' stroke-width='1.1' opacity='0.45'/%3E%3Cpath d='M251 106l-5.7 41' stroke-width='1.1' opacity='0.33'/%3E%3Cpath d='M502 234l-4.4 32' stroke-width='1.1' opacity='0.49'/%3E%3Cpath d='M94 75l-3.6 26' stroke-width='1.1' opacity='0.48'/%3E%3Cpath d='M82 489l-6.4 46' stroke-width='0.9' opacity='0.41'/%3E%3Cpath d='M287 78l-3.1 22' stroke-width='1.0' opacity='0.49'/%3E%3C/g%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='380' height='460'%3E%3Cg stroke='%23cfd3dc' stroke-linecap='round' fill='none'%3E%3Cpath d='M348 406l-4.0 28' stroke-width='1.0' opacity='0.18'/%3E%3Cpath d='M164 227l-2.3 16' stroke-width='0.9' opacity='0.20'/%3E%3Cpath d='M89 195l-2.0 14' stroke-width='1.1' opacity='0.18'/%3E%3Cpath d='M163 219l-3.6 26' stroke-width='0.7' opacity='0.23'/%3E%3Cpath d='M296 252l-3.4 25' stroke-width='1.2' opacity='0.28'/%3E%3Cpath d='M142 325l-2.8 20' stroke-width='1.0' opacity='0.27'/%3E%3Cpath d='M124 37l-3.0 22' stroke-width='1.0' opacity='0.29'/%3E%3Cpath d='M173 275l-2.4 17' stroke-width='0.9' opacity='0.20'/%3E%3Cpath d='M308 84l-2.2 16' stroke-width='0.7' opacity='0.19'/%3E%3Cpath d='M109 245l-3.8 27' stroke-width='0.9' opacity='0.23'/%3E%3Cpath d='M114 130l-3.7 26' stroke-width='0.8' opacity='0.26'/%3E%3Cpath d='M47 335l-3.5 25' stroke-width='0.8' opacity='0.31'/%3E%3Cpath d='M209 393l-3.3 23' stroke-width='0.8' opacity='0.33'/%3E%3Cpath d='M367 24l-2.9 21' stroke-width='1.1' opacity='0.17'/%3E%3Cpath d='M261 417l-3.8 27' stroke-width='1.0' opacity='0.33'/%3E%3Cpath d='M372 321l-2.7 20' stroke-width='0.9' opacity='0.34'/%3E%3Cpath d='M79 32l-3.0 21' stroke-width='1.2' opacity='0.20'/%3E%3Cpath d='M358 92l-2.2 16' stroke-width='0.8' opacity='0.26'/%3E%3Cpath d='M208 348l-2.5 18' stroke-width='1.2' opacity='0.24'/%3E%3Cpath d='M172 147l-4.0 28' stroke-width='1.1' opacity='0.31'/%3E%3Cpath d='M261 177l-3.5 25' stroke-width='1.0' opacity='0.31'/%3E%3Cpath d='M96 126l-2.9 21' stroke-width='1.0' opacity='0.30'/%3E%3Cpath d='M210 354l-2.2 16' stroke-width='0.9' opacity='0.28'/%3E%3Cpath d='M214 358l-2.5 18' stroke-width='0.7' opacity='0.33'/%3E%3Cpath d='M215 232l-2.5 18' stroke-width='0.9' opacity='0.27'/%3E%3Cpath d='M173 307l-2.0 14' stroke-width='1.1' opacity='0.23'/%3E%3Cpath d='M60 371l-2.4 17' stroke-width='0.8' opacity='0.29'/%3E%3Cpath d='M173 181l-2.1 15' stroke-width='0.9' opacity='0.29'/%3E%3Cpath d='M262 231l-3.2 23' stroke-width='0.8' opacity='0.26'/%3E%3Cpath d='M339 37l-3.9 28' stroke-width='0.9' opacity='0.32'/%3E%3C/g%3E%3C/svg%3E");
   background-size: 520px 640px, 380px 460px; animation: lead-rain 0.9s linear infinite;
@@ -53,27 +58,27 @@ a { color: inherit; }
 
 @media (max-aspect-ratio: 4/5) {
   /* a tall screen: the plate is laid smaller, so its tree lines stay below the words */
-  .lead-plate { width: max(100vw, 210vh); top: 9vh; }
+  .lead-plate { width: max(100vw, 210vh); top: 9vh; -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 14vh, transparent 23vh); mask-image: linear-gradient(to bottom, #000 0, #000 14vh, transparent 23vh); }
   .lead { background: rgb(13, 20, 55); }
-  .lead-sky::after { top: 34vh; }
+  .lead-sky::after { top: 34vh; background: linear-gradient(to bottom, rgba(13, 20, 55, 0), rgb(17, 21, 46) 18vh, rgb(22, 23, 34) 40vh, var(--storm) 62vh); }
   .lead-text { top: 27vh; }
 }
 
 /* ---------------------------------------------------------------- the chapter: a tall track with one pinned screen */
 .chapter { position: relative; height: calc(var(--vh) * 4); background: var(--storm); }
 /* the storm comes up out of the garden's night: a soft edge that rides on the chapter's top and bottom */
-.chapter::before { content: ''; position: absolute; left: 0; right: 0; height: 40vh; z-index: 2; pointer-events: none; }
+.chapter::before { content: ''; position: absolute; left: 0; right: 0; height: 30vh; z-index: 2; pointer-events: none; }
 .chapter::before { top: -1px; background: linear-gradient(to bottom, var(--storm) 0, rgba(23, 23, 27, 0.9) 24%, rgba(23, 23, 27, 0.5) 56%, rgba(23, 23, 27, 0)); }
 /* on the way out the picture's lower part sinks into the dark, under the card, which stays as it is */
 .veil { position: absolute; left: 0; right: 0; bottom: 0; height: 55%; background: linear-gradient(to top, var(--storm) 0, var(--storm) 13%, rgba(23, 23, 27, 0.84) 40%, rgba(23, 23, 27, 0)); opacity: 0; pointer-events: none; }
 /* the game's own title plate, standing in the dark where the garden's night turns into the storm */
-.plate { position: absolute; left: 50%; top: -17vh; z-index: 3; width: min(760px, 86vw); height: auto; transform: translateX(-50%); pointer-events: none; filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.6)); }
+.plate { position: absolute; left: 50%; top: calc(min(760px, 86vw) * -0.375 - 5vh); z-index: 3; width: min(760px, 86vw); height: auto; transform: translateX(-50%); pointer-events: none; filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.6)); }
 .plate:not([src]) { visibility: hidden; }
 .stage { position: sticky; top: 0; height: var(--vh); overflow: hidden; background: var(--storm); }
 #scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity 500ms ease; }
 .stage.is-live #scene { opacity: 1; }
 .poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 60%; }
-.stage.is-live .poster { visibility: hidden; }
+.stage.is-live .poster { visibility: hidden; transition: visibility 0s linear 560ms; }
 .poster[hidden] { display: none; }
 
 /* the card: the site's own hover card, standing still */

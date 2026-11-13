@@ -169,7 +169,7 @@
   function place(m) {
     poster(m);
     // the card comes up once the camera has arrived, and stays
-    var show = RM ? 1 : ss(0.56, 0.68, m.q);
+    var show = RM ? 1 : ss(0.53, 0.65, m.q);
     card.style.opacity = show.toFixed(3);
     card.style.visibility = show > 0.01 ? 'visible' : 'hidden';
     card.style.transform = 'translate3d(0,' + ((1 - show) * 26).toFixed(1) + 'px,0)';
