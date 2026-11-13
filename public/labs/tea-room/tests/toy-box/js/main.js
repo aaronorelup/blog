@@ -95,14 +95,14 @@ function start() {
       // open behind it
       lay = {
         scale: 0.9,
-        box: { x: -0.14, z: -2.44 },
-        rows: [{ z: -1.42, x0: -0.28, x1: 0.31 }, { z: -1.64, x0: -0.33, x1: 0.36 }, { z: -1.87, x0: -0.38, x1: 0.41 }, { z: -2.11, x0: -0.43, x1: 0.46 }, { z: -2.4, x0: 0.2, x1: 0.56 }],
+        box: { x: 0.18, z: -2.44 },
+        rows: [{ z: -1.42, x0: -0.01, x1: 0.53 }, { z: -1.64, x0: -0.05, x1: 0.58 }, { z: -1.87, x0: -0.1, x1: 0.63 }, { z: -2.11, x0: -0.15, x1: 0.68 }, { z: -2.4, x0: 0.52, x1: 0.86 }],
         keys: [
-          { t: 0.0, cx: 1420, cy: PAINT.H / 2, w: wMax },
-          { t: 0.06, cx: 1420, cy: PAINT.H / 2, w: wMax },
-          { t: 0.3, cx: 1330, cy: 1010, w: wMax * 0.6 },
-          { t: 0.46, cx: 1410, cy: 2000, w: wMax * 0.77 },
-          { t: 1.0, cx: 1410, cy: 2000, w: wMax * 0.77 },
+          { t: 0.0, cx: 1692, cy: PAINT.H / 2, w: wMax },          // the box and the paper lamp, the whole height of the room
+          { t: 0.06, cx: 1692, cy: PAINT.H / 2, w: wMax },
+          { t: 0.3, cx: 1490, cy: 890, w: wMax * 0.6 },            // the box, low in the picture: what comes out needs the room above it
+          { t: 0.46, cx: 1574, cy: 2000, w: wMax * 0.77 },
+          { t: 1.0, cx: 1574, cy: 2000, w: wMax * 0.77 },
         ],
       };
     }
@@ -285,7 +285,7 @@ function start() {
     b.centres(); b.wake();
     const z = clamp(b.wc[hit.s * 3 + 2], -PAINT.D + 0.3, -1.25);
     b.held = { s: hit.s, tx: 0, ty: 0, tz: z };
-    hold = { toy: hit.toy, s: hit.s, z, zWant: z, samples: [], id: e.pointerId };
+    hold = { toy: hit.toy, s: hit.s, z, zWant: z, samples: [], id: e.pointerId, t0: performance.now(), x0: e.clientX, y0: e.clientY };
     target(hold, 0);
     for (const t of toys) if (t.body.on) t.body.wake();
     tagToy = hit.toy; tagUntil = 1e9; showTag(hit.toy);
@@ -315,7 +315,7 @@ function start() {
   canvas.addEventListener('pointerdown', (e) => {
     if (e.button > 0) return;
     setRay(e.clientX, e.clientY);
-    if (state === 'closed') { if (overBox()) { openByHand(); e.preventDefault(); } return; }
+    if (state === 'closed') { if (overBox()) tap = { id: e.pointerId, x: e.clientX, y: e.clientY }; return; }
     if (state !== 'open') return;
     const hit = pick(e.pointerType === 'mouse' ? 1.15 : 1.5);
     if (!hit) return;
@@ -330,17 +330,27 @@ function start() {
       document.documentElement.classList.toggle('grab', !!over);
     }
   });
-  const up = (e) => { if (hold && e.pointerId === hold.id) drop(e.type === 'pointerup'); };
+  let tap = null;   // a press that began on the shut box: if it ends where it began, it opens the box
+  const up = (e) => {
+    if (tap && e.pointerId === tap.id) { if (e.type === 'pointerup' && state === 'closed' && Math.hypot(e.clientX - tap.x, e.clientY - tap.y) < 14) openByHand(); tap = null; }
+    if (hold && e.pointerId === hold.id) drop(e.type === 'pointerup');
+  };
   canvas.addEventListener('pointerup', up);
   canvas.addEventListener('pointercancel', up);
   canvas.addEventListener('lostpointercapture', (e) => { if (hold && e.pointerId === hold.id) drop(false); });
-  // a finger on a toy plays with the toy; a finger anywhere else scrolls the page
-  canvas.addEventListener('touchstart', (e) => {
-    if (e.touches.length !== 1) return;
-    setRay(e.touches[0].clientX, e.touches[0].clientY);
-    if ((state === 'closed' && overBox()) || (canPlay() && !RM && pick(1.5))) e.preventDefault();
+  // A finger on a toy plays with the toy; a finger anywhere else scrolls the page. And so that the huddle is
+  // never a trap for a thumb: a quick swipe up or down that merely starts on a toy is a scroll too. Only a
+  // finger that rests a moment, or moves sideways, picks the toy up.
+  canvas.addEventListener('touchmove', (e) => {
+    if (!hold) return;
+    if (hold.flick === undefined) {
+      const t = e.touches[0], dx = t.clientX - hold.x0, dy = t.clientY - hold.y0;
+      const ms = performance.now() - hold.t0;
+      hold.flick = ms < 400 && Math.abs(dy) / Math.max(ms, 1) > 0.12 && Math.abs(dy) > Math.abs(dx) * 1.3;   // fast and upright: a scroll
+      if (hold.flick) { drop(false); tagUntil = 0; return; }
+    }
+    e.preventDefault();
   }, { passive: false });
-  canvas.addEventListener('touchmove', (e) => { if (hold) e.preventDefault(); }, { passive: false });
 
   function openByHand() { forced = true; forcedAt = prog; burst(); hinted = false; hint(); }
   elHint.addEventListener('click', () => {
@@ -513,11 +523,13 @@ function start() {
     loaded: false, state, prog: 0, frames: 0, awake: 0, fps: 0, toys, world, renderer, rect,
     info: () => ({ triangles: renderer.info.render.triangles, calls: renderer.info.render.calls, textures: renderer.info.memory.textures, geometries: renderer.info.memory.geometries }),
     held: () => (hold ? hold.toy.def.id : null),
+    live: () => ({ visible, state, prog: progress(), hinted }),
+    boxScreen: () => { const X = box.bounds, p = [0, 0]; toPaint((X.x0 + X.x1) / 2, X.y1 * 0.5, X.z1, p); const r = canvas.getBoundingClientRect(); return { x: r.left + (p[0] - rect.x) / rect.w * r.width, y: r.top + (p[1] - rect.y) / rect.h * r.height }; },
     advance: (sec) => { const n = Math.round(sec * 60); for (let i = 0; i < n; i++) tick(1 / 60); dirty = true; need = true; draw(); return { state, awake: world.awake, t: +world.t.toFixed(2) }; },
     screenOf: (id) => { const t = toys.find((x) => x.def.id === id); if (!t) return null; const b = t.body, p = [0, 0]; toPaint(b.px, b.py, b.pz, p); const r = canvas.getBoundingClientRect(); return { x: r.left + (p[0] - rect.x) / rect.w * r.width, y: r.top + (p[1] - rect.y) / rect.h * r.height, on: b.on, asleep: b.asleep }; },
   };
 
-  new IntersectionObserver((es) => { visible = es[0].isIntersecting && !document.hidden; if (visible) { last = performance.now(); dirty = true; } }).observe(stage);
+  new IntersectionObserver((es) => { visible = es[es.length - 1].isIntersecting && !document.hidden; if (visible) { last = performance.now(); dirty = true; } }).observe(stage);
   document.addEventListener('visibilitychange', () => { visible = !document.hidden; last = performance.now(); dirty = true; });
   window.addEventListener('resize', resize);
   resize();
