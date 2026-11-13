@@ -399,7 +399,7 @@ export function buildBook({ posts, more, part, onSeek }) {
       shadeOf(f, reach, o); dimOf(f, dm);
     }
     // the open cover's shadow on the desk comes as it lands
-    const so = shL.userData.o * ss(PI * 0.55, PI, turners[0].a);
+    const so = Math.round(shL.userData.o * ss(PI * 0.55, PI, turners[0].a) * 24) / 24;      // (in steps: each one redraws the room)
     if (shL.material.opacity !== so) { shL.material.opacity = so; shL.visible = so > 0.004; changed = true; }
     // which spread is open (for the keyboard): the one a reader would say is showing
     spreadNow = j === 0 ? (turners[0].a > PI / 2 ? 1 : 0) : j > LEAVES ? LEAVES + 1 : j + (turners[j].a > PI / 2 ? 1 : 0);

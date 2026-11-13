@@ -61,6 +61,13 @@ export function mount(host, options = {}) {
   scene.add(kit.part(new CircleGeometry(70, 40), kit.M.grass, [0, -0.02, 4], [-Math.PI / 2, 0, 0], 0));
   scene.add(buildGarden(kit));
   const lamps = buildLamps(kit);
+  // (the lanterns keep their shades, but the lights that never reach this corner are not lit: the two under the
+  // front eaves, the alcove's candle and the stone lantern in the front garden)
+  lamps.lights = lamps.lights.filter((l) => {
+    const far = l.follow === 'eave-l' || l.follow === 'eave-r' || l.follow === 'candle' || (!l.follow && l.light.position.x > 0);
+    if (far) l.light.removeFromParent();
+    return !far;
+  });
   scene.add(lamps.fixed);
   [...buildHouse(kit), ...buildInterior(kit), ...lamps.pieces].forEach(p => scene.add(p.obj));
   const petals = buildPetals(rnd(11), 130);
@@ -259,10 +266,26 @@ export function mount(host, options = {}) {
   // ---------------------------------------------------------------- one frame
   let active = true, lastE = -1, lastGL = -1e9, glDirty = true, shown = false;
   const lastWord = { o: -1 };
+  // Pace: how long frames take here (only while the host's time runs; a held time is a still and is drawn whole).
+  // A machine that cannot keep up gets the room at a lower resolution while the camera moves, and the whole
+  // picture again the moment it stops; and it does without the lamps' flicker, so a turning leaf has the machine.
+  const pace = { ms: 16, at: 0, time: NaN, scale: 1, since: 0, n: 0, slow: false };
+  const setScale = (k) => { if (k !== pace.scale) { pace.scale = k; renderer.setPixelRatio(dpr * k); renderer.setSize(W, H, false); glDirty = true; } };
   function frame(q, time = 0) {
     if (!active || !sized) return;
     q = clamp(q);
     const e = RM ? 1 : ss(0, 1, clamp(q / TIME.arrive));
+    const running = time !== pace.time;
+    pace.time = time;
+    if (running) {
+      const now = performance.now(), dt = now - pace.at;
+      if (pace.at && dt > 0) { pace.ms += (Math.min(dt, 250) - pace.ms) * 0.12; pace.n++; }
+      pace.at = now;
+      if (pace.n > 5 && pace.ms > 50) pace.slow = true;   // (it stays so: the flicker does not come and go)
+      if (e !== lastE && lastE >= 0) {                    // the camera is moving
+        if (pace.n > 3 && pace.ms > 60 && now - pace.since > 400 && pace.scale > 0.5) { pace.since = now; setScale(pace.scale - 0.25); }
+      } else if (pace.scale < 1) setScale(1);             // it has stopped: the whole picture again
+    } else if (pace.scale < 1) setScale(1);
     if (e !== lastE) {
       lastE = e;
       camera.position.lerpVectors(from.p, rest.p, e);
@@ -288,8 +311,9 @@ export function mount(host, options = {}) {
     }
 
     // The room is drawn again only when it has changed: while the camera moves, every frame; once it rests, only
-    // the lamps' flicker and the petals move, and twenty-four pictures a second carry those.
-    if (glDirty || time - lastGL >= 1 / 24 || time < lastGL) {
+    // the lamps' flicker moves in it, and ten pictures a second carry that (a leaf turning is the page's own work).
+    const flicker = !pace.slow && time - lastGL >= (lastE < 1 ? 1 / 30 : 1 / 10);
+    if (glDirty || flicker || time < lastGL) {
       lamps.lights.forEach((l, i) => { l.light.intensity = l.base * (l === andon ? 1 - 0.55 * lastE : 1) * (1 + 0.045 * Math.sin(time * 6.1 + i * 2.3) * Math.sin(time * 2.7 + i * 1.1)); });
       petals.update(time);
       renderer.render(scene, camera);
@@ -308,7 +332,7 @@ export function mount(host, options = {}) {
     W = w; H = h; dpr = d; safeH = s; sized = true;
     tall = w / h < 0.8;
     host.dataset.layout = tall ? 'tall' : 'wide';
-    renderer.setPixelRatio(dpr);
+    renderer.setPixelRatio(dpr * pace.scale);
     renderer.setSize(w, h, false);
     camera.aspect = w / h;
     sky.stars.material.size = 2.3 * dpr;
@@ -316,7 +340,7 @@ export function mount(host, options = {}) {
     lastE = -1; glDirty = true;
   }
 
-  function setActive(on) { active = !!on; if (active) glDirty = true; }
+  function setActive(on) { on = !!on; if (on && !active) glDirty = true; active = on; }
   function dispose() {
     active = false;
     renderer.dispose();
