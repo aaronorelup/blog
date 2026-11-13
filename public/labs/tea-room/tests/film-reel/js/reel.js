@@ -141,7 +141,6 @@
     cam0 = camOf(s0, f0[0], f0[1]); cam1 = camOf(s1, f1[0], f1[1]);
     cam0.fx = f0[0]; cam0.fy = f0[1]; cam1.fx = f1[0]; cam1.fy = f1[1];
     RISE = tall ? [-270, 25] : [900, -600];
-    if (DEBUG && qs.has('rise')) RISE = qs.get('rise').split(',').map(Number);
     cam0 = camAt(0, 0, 0); cam0.fx = f0[0]; cam0.fy = f0[1];
 
     // the projector stands on the lawn between the camera and the cloth. Where it ends up when the camera is close
@@ -282,7 +281,7 @@
   function clipTime() { return reel.vis ? reel.vis.currentTime : 0; }
 
   // ------------------------------------------------------------------ the card that names what is on, and the sound
-  var nowCount = $('now-count'), nowId = $('now-id'), nowTitle = $('now-title'), nowWhat = $('now-what'), nowGo = $('now-go'), ticksEl = $('ticks');
+  var nowCount = $('now-count'), nowId = $('now-id'), nowTitle = $('now-title'), nowWhat = $('now-what'), nowGo = $('now-go'), nowNone = $('now-none'), ticksEl = $('ticks');
   var ticks = [], cardFor = -1;
   for (var ti = 0; ti < N; ti++) { var li = document.createElement('li'), bar = document.createElement('i'); li.appendChild(bar); ticksEl.appendChild(li); ticks.push({ li: li, bar: bar, last: '' }); }
   function setCard(i) {
@@ -291,7 +290,7 @@
     var c = CLIPS[i];
     nowCount.textContent = (i + 1) + ' of ' + N; nowId.textContent = c.id;
     nowTitle.textContent = c.title; nowWhat.textContent = c.what;
-    if (c.href) { nowGo.hidden = false; nowGo.href = c.href; nowGo.setAttribute('aria-label', 'Read the post about ' + c.title); } else nowGo.hidden = true;
+    if (c.href) { nowGo.hidden = false; nowNone.hidden = true; nowGo.href = c.href; nowGo.setAttribute('aria-label', 'Read the post about ' + c.title); } else { nowGo.hidden = true; nowNone.hidden = false; }
     for (var j = 0; j < N; j++) { ticks[j].li.className = j < i ? 'done' : ''; if (j !== i) { ticks[j].bar.style.transform = ''; ticks[j].last = ''; } }
     if (poster.getAttribute('src') !== posterUrl(i) && !reel.vis) poster.src = posterUrl(i);
     markStill(i);
@@ -436,12 +435,12 @@
       bx.fillStyle = cg; bx.fillRect(0, 0, bw, bh);
       // along its length: brightest at the lens, nearly gone where it meets the cloth
       var D = dist / BS, rg = bx.createRadialGradient(L0, L1, 0, L0, L1, D * 1.12);
-      rg.addColorStop(0, 'rgba(0,0,0,1)'); rg.addColorStop(0.1, 'rgba(0,0,0,0.8)'); rg.addColorStop(0.45, 'rgba(0,0,0,0.5)'); rg.addColorStop(0.82, 'rgba(0,0,0,0.24)'); rg.addColorStop(1, 'rgba(0,0,0,0)');
+      rg.addColorStop(0, 'rgba(0,0,0,1)'); rg.addColorStop(0.1, 'rgba(0,0,0,0.86)'); rg.addColorStop(0.45, 'rgba(0,0,0,0.62)'); rg.addColorStop(0.85, 'rgba(0,0,0,0.36)'); rg.addColorStop(1, 'rgba(0,0,0,0)');
       bx.globalCompositeOperation = 'destination-in'; bx.fillStyle = rg; bx.fillRect(0, 0, bw, bh);
       // the picture outshines the beam that crosses it
       bx.globalCompositeOperation = 'destination-out'; bx.fillStyle = 'rgba(0,0,0,0.82)';
       bx.beginPath(); bx.moveTo(fq[0][0] / BS, fq[0][1] / BS); bx.lineTo(fq[1][0] / BS, fq[1][1] / BS); bx.lineTo(fq[2][0] / BS, fq[2][1] / BS); bx.lineTo(fq[3][0] / BS, fq[3][1] / BS); bx.closePath(); bx.fill();
-      lx.globalAlpha = clamp(k * fl * (wide ? (tall ? 0.6 : 0.95) : 0.8)); lx.imageSmoothingEnabled = true; lx.imageSmoothingQuality = 'high';
+      lx.globalAlpha = clamp(k * fl * (wide ? (tall ? 0.7 : 1) : 1)); lx.imageSmoothingEnabled = true; lx.imageSmoothingQuality = 'high';
       lx.drawImage(beamCv, 0, 0, bw, bh, 0, 0, bw * BS, bh * BS);
       lx.globalAlpha = 1;
     }
@@ -499,7 +498,7 @@
     paintGlow(now);
 
     // the flats
-    if (!RM) place(F.lead, cam, 1 - ss(0.012, 0.075, e));        // the name is gone before the edge of the screen can cut it
+    if (!RM) place(F.lead, cam, 1 - ss(0.004, 0.034, e));        // the name is gone before the edge of the screen can cut it
     var pj = place(F.proj, cam, 1);
     place(F.bl, cam, ss(0.015, 0.07, F.bl.r - cam.m));
     place(F.br, cam, ss(0.015, 0.07, F.br.r - cam.m));
