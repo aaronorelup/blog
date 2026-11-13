@@ -169,3 +169,35 @@ test("the tea room's own copy keeps WRITING.md's rules a script can see", () => 
   assert.ok(all.length > 50);
   assert.deepEqual(all.flatMap((s) => rules.filter(([re]) => re.test(s)).map(([, what]) => `${what}: ${s}`)), []);
 });
+
+// ---------------------------------------------------------------- the rebuilt page (/tea-next/ until the swap)
+const ROOM_IDS = ['hero', 'start', 'tv', 'film', 'games', 'art', '3d', 'agents', 'learning', 'site', 'projects', 'courses', 'now', 'about'];
+const roomScene = async (id) => (await import(`../../src/data/tea/${id}/scene.js`));
+const roomFirst = (mod) => mod.scene ?? mod.scenes[mod.run[0]];
+
+test("every chapter's copy: its title is the registry's, its giant word's lines read the title, it has a short name", async () => {
+  const { TEA_CHAPTERS } = await import('../../src/data/tea-chapters.js');
+  for (const id of ROOM_IDS) {
+    const c = COPY.room.chapters[id];
+    assert.ok(c, `${id}: COPY.room.chapters.${id}`);
+    assert.equal(c.title, TEA_CHAPTERS.find((x) => x.id === id).title, `${id}: the title is the registry's`);
+    assert.equal([c.small, ...c.lines].filter(Boolean).join(' '), c.title, `${id}: small + lines read the title`);
+    assert.equal(typeof c.short, 'string');
+    assert.equal(typeof c.approved, 'boolean');
+  }
+});
+
+test("every chapter's css gives the scroll length and the light its scene.js gives (they are kept in two places)", async () => {
+  for (const id of ROOM_IDS) {
+    const first = roomFirst(await roomScene(id));
+    const css = fs.readFileSync(new URL(`../../src/styles/tea/room/chapters/${id}.css`, import.meta.url), 'utf8');
+    const [d, p] = [...css.matchAll(/--base: ([\d.]+); --per: ([\d.]+);/g)].map((m) => [Number(m[1]), Number(m[2])]);
+    assert.deepEqual(d, first.length.d, `${id}: d`);
+    assert.deepEqual(p, first.length.p, `${id}: p`);
+    assert.equal(/--light: (#[0-9A-Fa-f]{6})/.exec(css)?.[1], first.light.colour, `${id}: light`);
+  }
+});
+
+test('the approved test (turned on by the swap, piece 6a): every chapter\'s copy has the owner\'s yes', { skip: 'until the swap (6a)' }, () => {
+  for (const id of ROOM_IDS) assert.equal(COPY.room.chapters[id].approved, true, id);
+});

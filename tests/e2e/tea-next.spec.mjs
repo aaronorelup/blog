@@ -145,7 +145,7 @@ test('tea-next-17 an address with a chapter lands on its opening frame in one st
   expect(state.on).toBe(`${c.id}/main`);
   expect(state.screens.every((s) => !s.shown)).toBe(true);
   const word = await page.evaluate(() => {
-    const w = document.querySelector('.room-group:not([hidden]) .room-comp:not([hidden]) .room-word');
+    const w = document.querySelector(`.room-group:not([hidden]) .room-comp[data-comp="${document.documentElement.dataset.comp}"] .room-word`);
     const r = w?.getBoundingClientRect();
     return r && r.right > 0 && r.left < innerWidth && r.bottom > 0 && r.top < innerHeight;
   });
@@ -258,7 +258,7 @@ test('tea-next-22 the closed bookmark covers no text at any chapter\'s rest plac
     hits.push(...await page.evaluate((b) => {
       const meets = (r) => r.width > 0 && r.height > 0 && r.left < b.x + b.width && r.right > b.x && r.top < b.y + b.height && r.bottom > b.y;
       const out = [];
-      const texts = [...document.querySelectorAll('.room-paper, .room-group:not([hidden]) .room-comp:not([hidden]) > .room-word')]
+      const texts = [...document.querySelectorAll(`.room-paper, .room-group:not([hidden]) .room-comp[data-comp="${document.documentElement.dataset.comp}"] > .room-word`)]
         .filter((el) => !el.closest('[hidden]') && !el.closest('.room-index'));
       for (const el of texts) {
         const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);

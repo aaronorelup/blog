@@ -1,0 +1,4 @@
+# The tv chapter: improvement rounds
+
+Empty until the chapter's builder starts (section 4.3): each round, the frames read, the three weakest things, and
+what was done about each.

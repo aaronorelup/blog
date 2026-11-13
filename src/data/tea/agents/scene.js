@@ -18,7 +18,7 @@ export const scene = {
     camera: [{ at: 0, m: 0 }, { at: 6, m: 0.05 }],
     tracks: [{ flat: 'word', lift: word }],
     rest: {},
-    marks: ['item'],
+    marks: ['item-1'],
   },
   p: {
     layout: 'tally',
@@ -32,6 +32,6 @@ export const scene = {
     camera: [{ at: 0, m: 0 }, { at: 6, m: 0.05 }],
     tracks: [{ flat: 'word', lift: word }],
     rest: {},
-    marks: ['item'],
+    marks: ['item-1'],
   },
 };

@@ -13,6 +13,7 @@
 }
 .room-end :focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; border-radius: 4px; }
 .room-end [id] { scroll-margin-top: calc(0px + 12px); }
+@media (max-width: 1023px) { .room-end [id] { scroll-margin-top: calc(calc(56px + 8px) + 12px); } }
 
 :where(.room-end) .tea-joint { position: relative; height: 2px; background: var(--tea-wood); }
 :where(.room-end) .tea-joint::before {

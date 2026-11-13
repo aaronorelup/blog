@@ -40,8 +40,12 @@ export const ART = { hero: heroArt, start: startArt, tv: tvArt, film: filmArt, g
 export const SCENES = { hero: heroScene, start: startScene, tv: tvScene, film: filmScene, games: gamesScene, art: artScene, '3d': threeDScene, agents: agentsScene, learning: learningScene, site: siteScene, projects: projectsScene, courses: coursesScene, now: nowScene, about: aboutScene };
 const strip = (key) => key;
 
+// The rebuilt page (its art and scenes are this repo's own files): a repo without it, such as a test's seeded one,
+// has nothing to check. The swap (piece 6a) points PAGE at src/pages/tea/index.astro.
+export const PAGE = 'src/pages/tea-next/index.astro';
+
 export default function teaArt(repo, report) {
-  if (!repo.exists(PICKS_FILE)) return;
+  if (!repo.exists(PICKS_FILE) || !repo.exists(PAGE)) return;
   let chapters;
   try {
     chapters = readPicks(JSON.parse(repo.read(PICKS_FILE)), TEA_CHAPTERS, picksSite(repo)).chapters;
