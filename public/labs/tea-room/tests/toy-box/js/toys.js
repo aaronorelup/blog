@@ -129,6 +129,9 @@ function build(THREE, scene, def, gltf, maxAniso) {
         mixer.update(dt);
         return true;
       };
+      // one fixed pose, for a still picture: the first frame of her idle
+      toy.calm = () => { if (cur) { cur.stop(); cur = null; } toy.wantMove = 0; idle.stop(); idle.reset().play(); mixer.setTime(0); };
+      toy.calm();
     } else if (clips['wind-up-waddle']) {
       const wad = mixer.clipAction(clips['wind-up-waddle']); wad.play(); wad.paused = true;
       toy.tick = (dt, b) => {
@@ -136,6 +139,7 @@ function build(THREE, scene, def, gltf, maxAniso) {
         if (going) { wad.paused = false; mixer.update(dt * 1.6); return true; }
         return false;
       };
+      toy.calm = () => { wad.paused = false; mixer.setTime(0); wad.paused = true; };
     }
   }
   return toy;
