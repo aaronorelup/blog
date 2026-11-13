@@ -131,7 +131,7 @@
       var tx0 = clamp(0.94 * W - 2262 * s0, W - PW * s0, 0), ty0 = clamp(0.52 * H - 800 * s0, H - PH * s0, 0);
       f0 = [tx0 + FOCUS[0] * s0, ty0 + FOCUS[1] * s0];
       // close: the cloth is most of the frame, a band of lawn under it for the film's light to fall on
-      s1 = Math.min(0.74 * W / 752, 0.86 * H / 546); f1 = [0.5 * W, 0.43 * H];
+      s1 = Math.min(0.74 * W / 752, 0.86 * H / 546); f1 = [0.5 * W, (H < 760 ? 0.405 : 0.43) * H];
     } else {
       // tall: the cloth across the frame, sky above it and the lawn below. Close, the picture runs edge to edge
       s0 = 0.88 * W / 752; f0 = [0.5 * W, 0.585 * H];
@@ -148,7 +148,7 @@
     // decides where it stands: low in the left corner, seen from behind its shoulder
     var grow = tall ? 1.85 : 3.2;                                       // how many times larger it is close than far
     F.proj.r = cam1.m * grow / (grow - 1);
-    var pw = tall ? W * 0.42 : clamp(W * 0.235, 210, 470);
+    var pw = tall ? Math.min(W * 0.42, H * 0.2) : clamp(W * 0.235, 210, 470);
     if (tall) fit(F.proj, cam1, W * 0.2, H * 0.83, pw, 1009 / 618); else fit(F.proj, cam1, W * 0.1, H * 1.19, pw, 1009 / 618);
     F.proj.lw = 618;
     // the near leaves: out of focus in the bottom corners at the start, gone as soon as the camera moves in
@@ -467,6 +467,7 @@
   }
 
   // ------------------------------------------------------------------ the frame
+  var reelA = $('reel-a'), reelB = $('reel-b'), spin = 0;
   var worldTr = '', yS = null, last = 0, raf = 0, visible = true, ptr = { x: 0, y: 0, tx: 0, ty: 0 }, dockK = -1, hintO = -1, shadeO = -1;
   var stats = { n: 0, since: 0, fps: 0, worst: 0, glow: 0 };
   function scrollQ(dt) {
@@ -502,6 +503,13 @@
     var pj = place(F.proj, cam, 1);
     place(F.bl, cam, ss(0.015, 0.07, F.bl.r - cam.m));
     place(F.br, cam, ss(0.015, 0.07, F.br.r - cam.m));
+
+    // the reels turn while the film runs (their faces are leaning ovals: squared up, turned, leaned back)
+    if (!HELD && reel.vis && !reel.vis.paused) {
+      spin += dt * 1.15;
+      reelA.style.transform = 'scaleX(0.8919) rotate(' + spin.toFixed(3) + 'rad) scaleX(1.1212)';
+      reelB.style.transform = 'scaleX(0.8077) rotate(' + (spin * 0.86 + 0.6).toFixed(3) + 'rad) scaleX(1.2381)';
+    }
 
     // the beam and what floats in it
     lx.setTransform(DPR, 0, 0, DPR, 0, 0); lx.clearRect(0, 0, W, H);
