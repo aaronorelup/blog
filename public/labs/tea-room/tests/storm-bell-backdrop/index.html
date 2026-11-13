@@ -6,6 +6,7 @@
 <title>Games: Storm Bell's own backdrop · a tea room test</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="css/chapter.css">
+<script>document.documentElement.classList.add('js');</script>
 <script type="importmap">{ "imports": { "three": "./lib/three.module.min.js" } }</script>
 </head>
 <body>
@@ -14,6 +15,7 @@
   <div class="lead-sky" aria-hidden="true">
     <img class="lead-plate" src="/labs/tea-room/b/assets/img/garden-sky.webp" alt="">
     <img class="lead-clouds" id="lead-clouds" src="/labs/tea-room/b/assets/img/garden-clouds.webp" alt="">
+    <div class="lead-rain"></div>
   </div>
   <div class="lead-text">
     <p class="kicker">The tea room · a test</p>
@@ -24,6 +26,14 @@
 
 <section class="chapter" id="chapter" aria-label="Storm Bell Fighter">
   <div class="stage" id="stage">
+    <picture>
+      <source media="(max-aspect-ratio: 4/5)" srcset="img/still-hold-tall.webp" width="780" height="1688">
+      <img class="poster" id="poster" src="img/still-hold-wide.webp" width="1600" height="1000" loading="lazy" decoding="async" alt="Storm Bell Fighter's arena in the rain: Jefrie with her scythe on the left, BloodTailor throwing his chained sickle on the right, the iron cage dome behind them.">
+    </picture>
+    <picture>
+      <source media="(max-aspect-ratio: 4/5)" data-srcset="img/still-open-tall.webp" width="780" height="1688">
+      <img class="poster poster-open" id="poster-open" data-src="img/still-open-wide.webp" width="1600" height="1000" decoding="async" alt="" hidden>
+    </picture>
     <canvas id="scene" aria-hidden="true"></canvas>
 
     <article class="card" id="card">
@@ -36,7 +46,7 @@
       </p>
     </article>
 
-    <p class="hint" id="hint" aria-hidden="true"></p>
+    <p class="hint" id="hint" aria-hidden="true"><span class="for-mouse">Move the mouse · click a fighter</span><span class="for-touch">Tap a fighter</span></p>
     <pre class="debug" id="debug" hidden></pre>
   </div>
 </section>

@@ -33,13 +33,19 @@ html { background: var(--page); }
 body { margin: 0; background: var(--page); color: var(--body); font: 16px/1.5 var(--font-body); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
 a { color: inherit; }
 
-/* ---------------------------------------------------------------- the way in: the tea garden's night sky */
-.lead { position: relative; height: 84vh; min-height: 440px; overflow: hidden; background: rgb(38, 38, 82); }
+/* ---------------------------------------------------------------- the way in: the tea garden's night sky, and the rain setting in */
+.lead { position: relative; height: 135vh; min-height: 640px; overflow: hidden; background: rgb(31, 37, 60); }
 .lead-sky { position: absolute; inset: 0; }
-.lead-plate { position: absolute; left: 50%; top: 0; width: max(100%, 177vh); height: 118%; transform: translateX(-50%); object-fit: cover; object-position: 50% 12%; }
-.lead-clouds { position: absolute; left: 50%; top: 9%; width: max(128%, 1500px); transform: translateX(-50%); will-change: transform; }
-.lead::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 46%; background: linear-gradient(to bottom, rgba(23, 23, 27, 0), rgba(23, 23, 27, 0.72) 62%, var(--storm)); }
-.lead-text { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(560px, calc(100% - 44px)); text-align: center; z-index: 1; }
+/* only the top third of look B's sky plate is sky: it is laid so that its hills end two thirds down the first screen */
+.lead-plate { position: absolute; left: 50%; top: 0; width: max(100vw, 236vh); max-width: none; height: auto; transform: translateX(-50%); }
+.lead-clouds { position: absolute; left: 50%; top: 5vh; width: max(128%, 1500px); max-width: none; transform: translateX(-50%); will-change: transform; }
+.lead-sky::after { content: ''; position: absolute; left: 0; right: 0; top: 56vh; bottom: 0; background: linear-gradient(to bottom, rgba(31, 37, 60, 0), rgb(31, 37, 60) 9vh, rgb(27, 29, 44) 46%, var(--storm) 92%); }
+.lead-rain { position: absolute; left: -10%; right: -10%; top: 58vh; bottom: 0; z-index: 1; opacity: 0.5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='260' viewBox='0 0 220 260'%3E%3Cg stroke='%23cfd3dc' stroke-linecap='round' fill='none'%3E%3Cpath d='M22 8l-5 34' stroke-width='1' opacity='.5'/%3E%3Cpath d='M96 70l-6 42' stroke-width='1.2' opacity='.42'/%3E%3Cpath d='M171 22l-4 28' stroke-width='.9' opacity='.5'/%3E%3Cpath d='M58 150l-6 40' stroke-width='1.1' opacity='.4'/%3E%3Cpath d='M139 176l-5 36' stroke-width='1' opacity='.5'/%3E%3Cpath d='M203 118l-4 30' stroke-width='.9' opacity='.36'/%3E%3Cpath d='M8 212l-4 30' stroke-width='.9' opacity='.4'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 220px 260px; animation: lead-rain 0.52s linear infinite;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 60%); mask-image: linear-gradient(to bottom, transparent, #000 60%); }
+@keyframes lead-rain { to { background-position: -36px 260px; } }
+.lead-text { position: absolute; left: 50%; top: min(50vh, 400px); transform: translate(-50%, -50%); width: min(560px, calc(100% - 44px)); text-align: center; z-index: 2; }
 .kicker { margin: 0 0 14px; font: 500 12px/1.2 var(--font-mono); letter-spacing: 0.22em; text-transform: uppercase; color: var(--head); }
 .lead h1 { margin: 0; font: 700 clamp(56px, 11vw, 124px)/0.95 var(--font-display); color: var(--lamp); letter-spacing: 0.01em; text-shadow: 0 2px 0 rgba(16, 18, 32, 0.5); }
 .lead-say { margin: 20px auto 0; max-width: 34em; font: 400 17px/1.5 Georgia, 'Times New Roman', serif; color: var(--strong); text-wrap: pretty; }
@@ -55,6 +61,7 @@ a { color: inherit; }
 .stage.is-live #scene { opacity: 1; }
 .poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 60%; }
 .stage.is-live .poster { visibility: hidden; }
+.poster[hidden] { display: none; }
 
 /* the card: the site's own hover card, standing still */
 .card {
@@ -63,8 +70,9 @@ a { color: inherit; }
   padding: 18px 22px 20px;
   border: 1px solid var(--line2); border-radius: 14px; background: var(--tile);
   box-shadow: 0 16px 44px rgba(6, 6, 12, 0.5);
-  opacity: 0; visibility: hidden; will-change: transform, opacity;
+  will-change: transform, opacity;
 }
+.js .card { opacity: 0; visibility: hidden; }
 .card-meta { display: flex; flex-wrap: wrap; gap: 0 10px; margin: 0 0 8px; font: 500 11px/1.6 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--quiet); }
 .card-meta span + span::before { content: '·'; margin-right: 10px; color: var(--line2); }
 .card-title { margin: 0 0 8px; font: 700 clamp(25px, 3.1vw, 31px)/1.12 var(--font-display); color: var(--head); }
@@ -76,7 +84,10 @@ a { color: inherit; }
 .pill-s:hover { border-color: var(--wood); background: rgba(206, 140, 164, 0.18); }
 .pill:focus-visible, .pill-s:focus-visible, .tail a:focus-visible { outline: 2px solid var(--lamp); outline-offset: 3px; }
 
-.hint { position: absolute; right: 18px; top: 16px; margin: 0; font: 500 11px/1.4 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: rgba(237, 234, 228, 0.62); opacity: 0; pointer-events: none; }
+.hint { position: absolute; right: 22px; bottom: calc(var(--vh) - var(--svh) + clamp(18px, 4.6vh, 44px)); margin: 0; font: 500 11px/1.4 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: rgba(237, 234, 228, 0.7); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8); opacity: 0; pointer-events: none; }
+.hint .for-touch { display: none; }
+@media (hover: none), (pointer: coarse) { .hint .for-mouse { display: none; } .hint .for-touch { display: inline; } }
+.rm .hint, .is-still .hint { display: none; }
 .debug { position: absolute; left: 10px; top: 10px; margin: 0; padding: 6px 9px; background: rgba(0, 0, 0, 0.72); color: #dfe; font: 11px/1.45 var(--font-mono); z-index: 5; }
 
 /* ---------------------------------------------------------------- the way out */
@@ -88,9 +99,11 @@ a { color: inherit; }
 
 /* ---------------------------------------------------------------- nothing moving: one screen, one still picture */
 .rm .chapter { height: var(--vh); }
+@media (prefers-reduced-motion: reduce) { .lead-rain { animation: none; } }
+.is-still .lead-rain { animation: none; }
 
 @media (max-width: 560px) {
   .card { padding: 15px 17px 17px; }
   .card-line { font-size: 15px; }
-  .hint { right: 12px; top: 12px; font-size: 10px; }
+  .hint { right: 0; left: 0; bottom: auto; top: 14px; text-align: center; font-size: 10px; }
 }

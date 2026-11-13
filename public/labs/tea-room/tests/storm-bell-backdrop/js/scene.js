@@ -42,6 +42,32 @@ const FIRE_LIN = new THREE.Vector3(1.0, 0.063, 0.0953);       // #FF4757
 const FIRE_ENERGY = 1.5;
 const START_X = 2.2, FACING_YAW = 70 * Math.PI / 180;
 
+// ---- what plays by itself, on a timetable that repeats: who throws which of the game's moves, and when the sky cracks
+const PERIOD = 42;
+const BEATS = [
+  { at: 3.2, who: 'jefrie', move: 'light_1' }, { at: 3.62, who: 'jefrie', move: 'light_2' },
+  { at: 8.6, who: 'tailor', move: 'heavy_whip' },
+  { at: 14.0, who: 'jefrie', move: 'special_u' },
+  { at: 19.4, who: 'tailor', move: 'special_d' },
+  { at: 24.6, who: 'jefrie', move: 'heavy' },
+  { at: 29.8, who: 'tailor', move: 'taunt' },
+  { at: 34.4, who: 'jefrie', move: 'taunt' },
+  { at: 38.6, who: 'tailor', move: 'special_u' },
+];
+// a click or a tap on a fighter: the next of these, in turn
+const ON_TAP = { jefrie: ['heavy', 'special_d', 'special_n', 'special_u', 'taunt'], tailor: ['heavy_whip', 'special_u', 'heavy', 'special_d', 'taunt'] };
+const STRIKES = [{ at: 11.3, x: -9, i: 1.0 }, { at: 22.1, x: 14, i: 0.8 }, { at: 36.2, x: 3.5, i: 1.0 }];
+const FLICKER = [[0, 0], [0.025, 1], [0.07, 0.25], [0.1, 0.85], [0.16, 0.35], [0.22, 0.55], [0.5, 0]];
+function flicker(t) {
+  for (let i = 1; i < FLICKER.length; i++) {
+    if (t <= FLICKER[i][0]) { const a = FLICKER[i - 1], b = FLICKER[i]; return a[1] + (b[1] - a[1]) * (t - a[0]) / Math.max(b[0] - a[0], 1e-4); }
+  }
+  return 0;
+}
+// the level of one strike st seconds after it: the double flicker, then a short afterglow in the clouds
+const strikeLevel = (st, i) => (st < 0 ? 0 : i * Math.max(flicker(st), st > 0.1 ? 0.22 * Math.exp(-(st - 0.1) * 5) : 0));
+function rng(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; }; }
+
 const clamp = (x, a = 0, b = 1) => (x < a ? a : x > b ? b : x);
 const lerp = (a, b, t) => a + (b - a) * t;
 const ss = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
@@ -132,7 +158,7 @@ function toonMaterial(src, kind, shared) {
 
 // ------------------------------------------------------------------ a fighter: the model, its ink line, its moves
 class Fighter {
-  constructor(gltf, x, facing, shared) {
+  constructor(gltf, who, x, facing, shared) {
     this.root = gltf.scene;
     this.root.position.set(x, 0, 0);
     this.root.rotation.y = FACING_YAW * facing;
@@ -144,11 +170,12 @@ class Fighter {
       a.setLoop(THREE.LoopRepeat, Infinity); a.play(); a.setEffectiveWeight(0);
       this.clips[c.name] = { action: a, dur: c.duration };
     }
-    const outlines = [];
+    const outlines = [], skinned = [];
     this.root.traverse((o) => {
       if (!o.isMesh) return;
       o.frustumCulled = false;
       o.material = toonMaterial(o.material, 'fighter', shared);
+      if (o.isSkinnedMesh) skinned.push(o);
       if (o.material.userData.outline && o.isSkinnedMesh) outlines.push(o);
     });
     for (const o of outlines) {
@@ -157,6 +184,33 @@ class Fighter {
       line.frustumCulled = false;
       o.parent.add(line);
     }
+    for (const o of skinned) {
+      const sh = new THREE.SkinnedMesh(o.geometry, shared.shadowMat);
+      sh.bind(o.skeleton, o.bindMatrix);
+      sh.frustumCulled = false; sh.renderOrder = -5;
+      o.parent.add(sh);
+    }
+    this.who = who; this.tap = null; this.tapN = 0;
+  }
+  // the move that is on at time t, if any: the one the reader asked for, else the timetable's
+  moveAt(t) {
+    if (this.tap) {
+      const u = t - this.tap.at, c = this.clips[this.tap.name];
+      if (c && u >= 0 && u <= c.dur + 0.18) return { name: this.tap.name, t: u };
+      this.tap = null;
+    }
+    const tc = ((t % PERIOD) + PERIOD) % PERIOD;
+    for (const b of BEATS) {
+      if (b.who !== this.who) continue;
+      const c = this.clips[b.move];
+      if (c && tc >= b.at && tc <= b.at + c.dur + 0.18) return { name: b.move, t: tc - b.at };
+    }
+    return null;
+  }
+  throwNext(t) {
+    const list = ON_TAP[this.who].filter((n) => this.clips[n]);
+    if (!list.length) return;
+    this.tap = { name: list[this.tapN++ % list.length], at: t };
   }
   // the pose at time t: the idle loop, with a move laid over it while one is on
   pose(t, move) {
@@ -214,11 +268,18 @@ export async function mount(canvas, opts = {}) {
     time: { value: 0 }, flash: { value: 0 },
     firePos: { value: new THREE.Vector4(-5.9, 1.31, -2.65, 6.5) }, fireCol: { value: new THREE.Vector3() },
     stageLights: [LIGHT_COL[0], LIGHT_COL[1], new THREE.Vector3()],       // the red rim light paints fighters only
-    outlineMat: null,
+    outlineMat: null, shadowMat: null,
   };
   shared.outlineMat = new THREE.ShaderMaterial({
     vertexShader: G.OUTLINE_VERT, fragmentShader: G.OUTLINE_FRAG, side: THREE.BackSide,
     uniforms: { widthPx: { value: 2.6 }, viewH: { value: 1080 }, maxWorld: { value: 0.035 }, ink: { value: new THREE.Vector3(0.067, 0.067, 0.075) } },
+  });
+
+  shared.shadowMat = new THREE.ShaderMaterial({
+    vertexShader: G.SHADOW_VERT, fragmentShader: G.SHADOW_FRAG, transparent: true, depthWrite: false, side: THREE.DoubleSide,
+    polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
+    stencilWrite: true, stencilRef: 1, stencilFunc: THREE.NotEqualStencilFunc, stencilZPass: THREE.ReplaceStencilOp,
+    uniforms: { lightTravel: { value: LIGHT_DIR[0].clone().negate() }, strength: { value: 0.6 } },
   });
 
   // ---- everything is fetched together
@@ -271,7 +332,7 @@ export async function mount(canvas, opts = {}) {
       fireColor: { value: new THREE.Vector4(fireLinA.x, fireLinA.y, fireLinA.z, 0.3) }, fireFlicker: { value: new THREE.Vector2(1, 1) },
       fogColor: { value: new THREE.Vector3(0.0452, 0.0452, 0.0562) }, fogParams: { value: new THREE.Vector4(9, 48, 0.7, 1) },
       floorLight: { value: new THREE.Vector3(0.95, 0.98, 1.03) },
-      blobA: { value: new THREE.Vector4(-START_X, 0, 0.95, 0.5) }, blobB: { value: new THREE.Vector4(START_X, 0, 0.95, 0.5) },
+      blobA: { value: new THREE.Vector4(-START_X, 0, 0.7, 0.34) }, blobB: { value: new THREE.Vector4(START_X, 0, 0.7, 0.34) },
     },
   });
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(260, 110).rotateX(-Math.PI / 2), floorMat);
@@ -280,20 +341,111 @@ export async function mount(canvas, opts = {}) {
   scene.add(floor);
 
   // ---- the props: sandbags, stakes, wire, two braziers
-  const flames = [];
+  const flames = [], propMeshes = [];
   propsG.scene.traverse((o) => {
     if (!o.isMesh) return;
     o.frustumCulled = false;
     o.material = toonMaterial(o.material, 'stage', shared);
     if (/^Flame_/.test(o.name)) flames.push({ node: o, base: o.scale.clone(), x: o.position.x });
+    else propMeshes.push(o);
   });
+  for (const o of propMeshes) {
+    const sh = new THREE.Mesh(o.geometry, shared.shadowMat);
+    sh.frustumCulled = false; sh.renderOrder = -5;
+    o.parent.add(sh);
+  }
   flames.sort((a, b) => a.x - b.x);
   scene.add(propsG.scene);
 
   // ---- the fighters
-  const jefrie = new Fighter(jefG, -START_X, 1, shared);
-  const tailor = new Fighter(btG, START_X, -1, shared);
+  const jefrie = new Fighter(jefG, 'jefrie', -START_X, 1, shared);
+  const tailor = new Fighter(btG, 'tailor', START_X, -1, shared);
   scene.add(jefrie.root, tailor.root);
+
+  // ---- the fires' glow in the wet air
+  const glows = flames.map((f, i) => {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.ShaderMaterial({
+      vertexShader: G.GLOW_VERT, fragmentShader: G.GLOW_FRAG, transparent: true, depthWrite: false,
+      blending: THREE.CustomBlending, blendSrc: THREE.OneFactor, blendDst: THREE.OneFactor,
+      uniforms: { color: { value: new THREE.Vector3(1.0, 0.2, 0.26) }, level: { value: 0.3 }, falloff: { value: 2.2 } },
+    }));
+    m.position.copy(f.node.position).add(new THREE.Vector3(0, 0.25, 0.05));
+    m.scale.setScalar(i === 0 ? 3.4 : 3.0);
+    m.renderOrder = 5; m.frustumCulled = false;
+    scene.add(m);
+    return m;
+  });
+
+  // ---- lightning: three bolts drawn once, each shown when its strike comes round
+  const boltMat = new THREE.ShaderMaterial({
+    vertexShader: G.BOLT_VERT, fragmentShader: G.BOLT_FRAG, transparent: true, depthWrite: false, side: THREE.DoubleSide,
+    blending: THREE.CustomBlending, blendSrc: THREE.OneFactor, blendDst: THREE.OneMinusSrcAlphaFactor,
+    uniforms: { level: { value: 0 } },
+  });
+  function jagged(a, b, depth, jitter, rnd) {
+    let pts = [a, b];
+    for (let d = 0; d < depth; d++) {
+      const next = [pts[0]];
+      for (let i = 1; i < pts.length; i++) {
+        const p = pts[i - 1], n = pts[i], len = Math.hypot(n[0] - p[0], n[1] - p[1]);
+        next.push([(p[0] + n[0]) / 2 + (rnd() - 0.5) * 2 * jitter * len, (p[1] + n[1]) / 2 + (rnd() - 0.5) * jitter * len], n);
+      }
+      pts = next;
+    }
+    return pts;
+  }
+  function boltMesh(strike, seed) {
+    const rnd = rng(seed), z = -26;
+    const top = [strike.x, 17.5], bottom = [strike.x + (rnd() - 0.5) * 6, -0.5];
+    const main = jagged(top, bottom, 5, 0.09, rnd);
+    const paths = [[main, 0.17]];
+    for (let k = 0; k < 2; k++) {
+      const st = main[4 + Math.floor(rnd() * (main.length * 0.5 - 4))];
+      paths.push([jagged(st, [st[0] + (rnd() - 0.5) * 8, st[1] - 3 - rnd() * 3], 4, 0.13, rnd), 0.08]);
+    }
+    const pos = [], side = [], idx = [];
+    for (const [pts, width] of paths) {
+      const base = pos.length / 3;
+      pts.forEach((p, i) => {
+        const a = pts[Math.max(i - 1, 0)], b = pts[Math.min(i + 1, pts.length - 1)];
+        let nx = -(b[1] - a[1]), ny = b[0] - a[0]; const l = Math.hypot(nx, ny) || 1; nx /= l; ny /= l;
+        const w = width * (1 - 0.55 * i / pts.length);
+        pos.push(p[0] - nx * w, p[1] - ny * w, z, p[0] + nx * w, p[1] + ny * w, z); side.push(-1, 1);
+        if (i) idx.push(base + i * 2 - 2, base + i * 2 - 1, base + i * 2, base + i * 2 - 1, base + i * 2 + 1, base + i * 2);
+      });
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    g.setAttribute('side', new THREE.Float32BufferAttribute(side, 1));
+    g.setIndex(idx);
+    const m = new THREE.Mesh(g, boltMat);
+    m.renderOrder = -15; m.frustumCulled = false; m.visible = false;
+    scene.add(m);
+    return m;
+  }
+  const bolts = STRIKES.map((s, i) => boltMesh(s, 77 + i * 131));
+  const boltGlow = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.ShaderMaterial({
+    vertexShader: G.GLOW_VERT, fragmentShader: G.GLOW_FRAG, transparent: true, depthWrite: false,
+    blending: THREE.CustomBlending, blendSrc: THREE.OneFactor, blendDst: THREE.OneFactor,
+    uniforms: { color: { value: new THREE.Vector3(0.79, 0.82, 0.86) }, level: { value: 0 }, falloff: { value: 3 } },
+  }));
+  boltGlow.scale.setScalar(26); boltGlow.renderOrder = -16; boltGlow.frustumCulled = false; boltGlow.visible = false;
+  scene.add(boltGlow);
+  let arrival = null;        // a strike the reader's arrival sets off: { at, bolt }
+
+  // ---- the rain meeting the mud
+  const SPLASHES = 110;
+  const splashGeo = new THREE.BufferGeometry();
+  splashGeo.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(SPLASHES * 3), 3));
+  splashGeo.setAttribute('seed', new THREE.Float32BufferAttribute(Float32Array.from({ length: SPLASHES }, (_, i) => (i + 0.5) / SPLASHES), 1));
+  const splashMat = new THREE.ShaderMaterial({
+    vertexShader: G.SPLASH_VERT, fragmentShader: G.SPLASH_FRAG, transparent: true, depthWrite: false,
+    blending: THREE.CustomBlending, blendSrc: THREE.OneFactor, blendDst: THREE.OneMinusSrcAlphaFactor,
+    uniforms: { time: shared.time, pxPerM: { value: 1000 }, centre: { value: new THREE.Vector3(0, 0, 0.1) }, extent: { value: new THREE.Vector3(9, 0, 2.6) } },
+  });
+  const splashes = new THREE.Points(splashGeo, splashMat);
+  splashes.renderOrder = 4; splashes.frustumCulled = false;
+  scene.add(splashes);
 
   // ---- the rain: a dense sheet just behind the fighters, a sparse one near the lens
   function rainSheet(o, order) {
@@ -326,13 +478,13 @@ export async function mount(canvas, opts = {}) {
   gradeScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), gradeMat));
 
   // ---- size
-  let W = 1, H = 1, portrait = false;
+  let W = 1, H = 1, portrait = false, fine = 1, fineWas = 1, slow = 0, quick = 0, ema = 16;
   function resize() {
     const r = canvas.getBoundingClientRect();
     const w = Math.max(1, Math.round(r.width)), h = Math.max(1, Math.round(r.height));
-    if (w === W && h === H) return false;
-    W = w; H = h; portrait = W / H < 0.82;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxDpr));
+    if (w === W && h === H && fine === fineWas) return false;
+    W = w; H = h; fineWas = fine; portrait = W / H < 0.82;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, maxDpr) * fine);
     renderer.setSize(W, H, false);
     camera.aspect = W / H;
     const buf = renderer.getDrawingBufferSize(new THREE.Vector2());
@@ -341,11 +493,11 @@ export async function mount(canvas, opts = {}) {
     return true;
   }
 
-  const fwd = new THREE.Vector3(), right = new THREE.Vector3(), up = new THREE.Vector3(), look = new THREE.Vector3();
+  const fwd = new THREE.Vector3(), right = new THREE.Vector3(), up = new THREE.Vector3(), look = new THREE.Vector3(), v2 = new THREE.Vector2(), v3 = new THREE.Vector3();
   const stats = { calls: 0, triangles: 0 };
 
   // One frame. q: 0..1 through the chapter. t: seconds. px, py: the pointer, -1..1 from the middle of the picture.
-  function frame(q, t, px = 0, py = 0) {
+  function frame(q, t, px = 0, py = 0, force = null) {
     resize();
     shared.time.value = t;
 
@@ -379,8 +531,25 @@ export async function mount(canvas, opts = {}) {
     const sx = portrait ? 1.2 : START_X;
     jefrie.root.position.x = -sx; tailor.root.position.x = sx;
     floorMat.uniforms.blobA.value.x = -sx; floorMat.uniforms.blobB.value.x = sx;
-    jefrie.pose(t, null);
-    tailor.pose(t + 0.37, null);
+    jefrie.pose(t, force || jefrie.moveAt(t));
+    tailor.pose(t + 0.37, force || tailor.moveAt(t));
+
+    // lightning: the timetable's strikes, and the one that greets the reader
+    let level = 0, lit = -1;
+    const tc = ((t % PERIOD) + PERIOD) % PERIOD;
+    STRIKES.forEach((s, i) => { const l = strikeLevel(tc - s.at, s.i); if (l > level) { level = l; lit = i; } });
+    if (arrival) {
+      const l = strikeLevel(t - arrival.at, 1);
+      if (t - arrival.at > 2) arrival = null; else if (l > level) { level = l; lit = arrival.bolt; }
+    }
+    shared.flash.value = Math.min(level, 1.5);
+    bolts.forEach((b, i) => { b.visible = i === lit && level > 0.02; });
+    boltMat.uniforms.level.value = Math.min(level, 1);
+    boltGlow.visible = lit >= 0 && level > 0.02;
+    if (boltGlow.visible) { boltGlow.position.set(STRIKES[lit].x, 15.5, -26.2); boltGlow.material.uniforms.level.value = level * 0.7; }
+    glows.forEach((g, i) => { g.material.uniforms.level.value = 0.2 + 0.14 * flick[i]; });
+    splashMat.uniforms.pxPerM.value = renderer.getDrawingBufferSize(v2).y / (2 * Math.tan(camera.fov * Math.PI / 360));
+    splashMat.uniforms.centre.value.x = camera.position.x * 0.6;
 
     // rain
     const tanV = Math.tan(camera.fov * Math.PI / 360);
@@ -401,11 +570,44 @@ export async function mount(canvas, opts = {}) {
     stats.calls = renderer.info.render.calls; stats.triangles = renderer.info.render.triangles;
   }
 
+  // A machine that cannot keep up gets a slightly softer picture rather than a slow one: after a run of slow frames
+  // the picture is drawn with fewer pixels, and with more again once frames come quickly. Stills are never touched.
+  function pace(ms) {
+    ema += (Math.min(ms, 120) - ema) * 0.08;
+    if (ema > 23) { slow++; quick = 0; } else if (ema < 12.5) { quick++; slow = 0; } else { slow = 0; quick = 0; }
+    if (slow > 45 && fine > 0.5) { fine = Math.max(0.5, fine * 0.84); slow = 0; ema = 16; }
+    if (quick > 240 && fine < 1) { fine = Math.min(1, fine * 1.12); quick = 0; }
+  }
+
+  // which fighter is under a point of the picture (-1..1 both ways, y up), if any
+  function pick(nx, ny) {
+    let best = null, bestD = 1e9;
+    for (const f of [jefrie, tailor]) {
+      v3.set(f.root.position.x, 1.0, 0).project(camera);
+      const top = v3.clone(); const cy = v3.y, cx = v3.x;
+      top.set(f.root.position.x, 2.0, 0).project(camera);
+      const half = Math.abs(top.y - cy) * 1.15;                 // about a body's half height on screen
+      const dx = (nx - cx) * camera.aspect / (half * 0.9), dy = (ny - cy) / half;
+      const d = dx * dx + dy * dy;
+      if (d < 1 && d < bestD) { best = f; bestD = d; }
+    }
+    return best ? best.who : null;
+  }
+  function tap(who, t) { (who === 'jefrie' ? jefrie : tailor).throwNext(who === 'jefrie' ? t : t + 0.37); }
+  // the reader has just arrived at the close view: the sky answers, and both fighters with it
+  function arrive(t) {
+    arrival = { at: t + 0.15, bolt: 2 };
+    jefrie.tap = { name: 'taunt', at: t + 0.55 };
+    tailor.tap = { name: 'taunt', at: t + 0.37 + 0.95 };
+  }
+
   function dispose() {
     renderer.dispose();
     scene.traverse((o) => { if (o.geometry) o.geometry.dispose(); });
   }
 
   resize();
-  return { frame, resize, dispose, stats, renderer, clips: { jefrie: Object.keys(jefrie.clips), tailor: Object.keys(tailor.clips) } };
+  const durs = (f) => Object.fromEntries(Object.entries(f.clips).map(([k, v]) => [k, v.dur]));
+  const bufferSize = () => renderer.getDrawingBufferSize(new THREE.Vector2());
+  return { frame, resize, dispose, stats, renderer, bufferSize, pace, pick, tap, arrive, durations: { jefrie: durs(jefrie), tailor: durs(tailor) } };
 }
