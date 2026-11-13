@@ -197,11 +197,24 @@ function start() {
   }
   function burst() {
     if (state === 'open') return;
+    const was = state;
     slots();
     state = 'open'; burstT = world.t; box.burst(simT);
     const order = toys.slice().sort((a, b) => a.def.h - b.def.h);
-    order.forEach((t, i) => launch(t, 0.05 + i * 0.055));
+    let i = 0;
+    for (const t of order) {
+      // scrolled back down while the toys were still flying home: those in the air turn round where they are,
+      // only the ones already inside come out of the box again
+      if (was === 'returning' && t.kin && t.pivot.visible && simT < t.kin.t0 + t.kin.dur) turnBack(t); else launch(t, 0.05 + i++ * 0.055);
+    }
     dirty = true;
+  }
+  function turnBack(t) {
+    const b = t.body, s = b.slot, p = t.pivot.position, q = t.pivot.quaternion, T = 0.55;
+    b.px = p.x; b.py = Math.max(p.y, b.com); b.pz = p.z; b.qx = q.x; b.qy = q.y; b.qz = q.z; b.qw = q.w;
+    b.vx = (s.x - b.px) / T; b.vz = (s.z - b.pz) / T; b.vy = 1.6; b.wx = (rand() - 0.5) * 6; b.wz = (rand() - 0.5) * 6; b.wy = 0;
+    b.on = true; b.asleep = false; b.rest = 0; b.held = null; b.ghost = 0.4; b.knock = T + 0.2; b.hot = T; b.rise = 0; b.away = 0; b.pass = false; b.dock = null; b.stuck = 0; b.lastDist = 9;
+    t.kin = null; t.launch = null;
   }
   function goHome() {
     if (state !== 'open') return;
@@ -220,8 +233,10 @@ function start() {
   // a phone's picture is narrow: three of the props stay in the box there
   const CAST = ROSTER.filter((d) => !(phone && d.desk));
   loadToys(THREE, renderer, scene, CAST, (toy) => {
-    toy.index = toys.length; toy.pop = 1; toy.kin = null; toy.launch = null;
-    toys.push(toy); world.bodies.push(toy.body);
+    // its number is its line in the roster, not the order it happened to arrive in: the huddle is the same every time
+    toy.index = CAST.indexOf(toy.def); toy.pop = 1; toy.kin = null; toy.launch = null;
+    toys.push(toy); toys.sort((a, b) => a.index - b.index);
+    world.bodies.length = 0; for (const t of toys) world.bodies.push(t.body);
     slots();
     for (const t of toys) if (t.body.asleep && t.body.on) { const s = t.body.slot; t.body.place(s.x, s.z, s.yaw + t.body.yaw0); }
     if (state === 'open') {
@@ -403,6 +418,7 @@ function start() {
   }
 
   /* -------------------------------------------------------------- the frame */
+  let boxBusy = false;
   let prog = 0, lastProg = -1, visible = true, last = 0, acc = 0, frames = 0, fpsT = 0, fps = 0;
   function progress() {
     const max = track.offsetHeight - vh;
@@ -456,6 +472,7 @@ function start() {
     // what the scroll says the box should be
     if (RM) { if (state !== 'open' && toys.length) settle(); }
     else {
+      if (forced && prog >= Y_BURST) forced = false;   // opened by hand, then scrolled past the burst: from here the scroll owns the box again
       if (forced && prog < Math.min(forcedAt - 0.04, Y_CLOSE)) forced = false;
       if (forced && prog < 0.004 && forcedAt > 0.03) forced = false;
       const want = prog >= Y_BURST || forced || (state === 'open' && prog >= Y_CLOSE);
@@ -490,7 +507,7 @@ function start() {
       }
       if (all && simT >= box.closeAt) { state = 'closed'; for (const t of toys) { t.kin = null; t.pivot.visible = false; } }
     }
-    const playing = box.update(simT, dt, state, RM || STILL ? 0 : ss(0.1, Y_BURST - 0.01, prog), ss(0.14, Y_BURST - 0.01, prog));
+    const playing = boxBusy = box.update(simT, dt, state, RM || STILL ? 0 : ss(0.1, Y_BURST - 0.01, prog), ss(0.14, Y_BURST - 0.01, prog));
     let anim = false;
     for (const t of toys) {
       const b = t.body;
@@ -523,6 +540,9 @@ function start() {
     loaded: false, state, prog: 0, frames: 0, awake: 0, fps: 0, toys, world, renderer, rect,
     info: () => ({ triangles: renderer.info.render.triangles, calls: renderer.info.render.calls, textures: renderer.info.memory.textures, geometries: renderer.info.memory.geometries }),
     held: () => (hold ? hold.toy.def.id : null),
+    lid: () => box.open,
+    calm: () => { for (const t of toys) if (t.calm) t.calm(); dirty = true; need = true; draw(); },
+    busy: () => (state === 'open' && world.awake > 0) || state === 'returning' || toys.some((t) => t.launch) || boxBusy,
     live: () => ({ visible, state, prog: progress(), hinted }),
     boxScreen: () => { const X = box.bounds, p = [0, 0]; toPaint((X.x0 + X.x1) / 2, X.y1 * 0.5, X.z1, p); const r = canvas.getBoundingClientRect(); return { x: r.left + (p[0] - rect.x) / rect.w * r.width, y: r.top + (p[1] - rect.y) / rect.h * r.height }; },
     advance: (sec) => { const n = Math.round(sec * 60); for (let i = 0; i < n; i++) tick(1 / 60); dirty = true; need = true; draw(); return { state, awake: world.awake, t: +world.t.toFixed(2) }; },
