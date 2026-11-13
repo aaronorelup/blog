@@ -406,6 +406,8 @@ export function mount(host, options = {}) {
     world.scale.y = 1; plane.mesh.visible = true; flatland.visible = true;
     renderer.render(scene, camera);
     layoutUI(q, time, pointer);
+    // a page that draws only when asked keeps drawing while one video is being played with its sound
+    if ((still || calm) && built.wall.heard >= 0) invalidate();
   }
 
   // ------------------------------------------------------------------------------------------------ the words
