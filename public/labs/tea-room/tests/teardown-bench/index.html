@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The teardowns, on the low table · a tea room test</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preload" as="image" href="/labs/tea-room/b/assets/img/room.webp">
+<link rel="stylesheet" href="css/bench.css">
+</head>
+<body>
+<a class="skip" href="#after">Skip the teardowns</a>
+
+<!-- a thin host: it maps the page's scroll to the chapter's progress q (0..1) and hands it to the scene.
+     ?y=<0..1> opens at that place; &still=1 shows that one frame with time stopped (stills, no live page, no film);
+     ?live=0 keeps the machines' own pages out (stills and films only). -->
+<section class="chapter" id="chapter" aria-label="The teardowns">
+  <div class="stage" id="stage"></div>
+</section>
+
+<footer class="tail" id="after">
+  <p class="kicker">The tea room · a test</p>
+  <p class="tail-say">Four machines from the teardown lab, shown in the tea house. Each one is its own page, run here as it is, with its console set aside.</p>
+  <p><a class="go" href="/labs/tea-room/tests/">All the tests</a></p>
+</footer>
+
+<script type="module">
+import { mount } from './js/scene.js';
+
+const params = new URLSearchParams(location.search);
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches || params.get('motion') === '0';
+const still = params.get('still') === '1';
+const live = params.get('live') !== '0';
+const yParam = params.has('y') ? Math.min(1, Math.max(0, parseFloat(params.get('y')) || 0)) : null;
+const chapter = document.getElementById('chapter');
+const stage = document.getElementById('stage');
+
+if (reduced) {
+  chapter.style.height = 'auto';
+  stage.style.position = 'static'; stage.style.height = 'auto'; stage.style.overflow = 'visible';
+  const ch = mount(stage, { reduced: true });
+  addEventListener('resize', () => ch.resize());
+  window.__chapter = ch;
+} else {
+  const travel = () => chapter.offsetHeight - stage.offsetHeight;
+  const qNow = () => {
+    const top = chapter.getBoundingClientRect().top;
+    return Math.min(1, Math.max(0, -top / Math.max(1, travel())));
+  };
+  const seek = (q) => scrollTo({ top: chapter.offsetTop + q * travel(), behavior: 'instant' });
+  const ch = mount(stage, { still, live, onSeek: seek });
+  window.__chapter = ch;
+  if (yParam != null) { history.scrollRestoration = 'manual'; seek(yParam); }
+
+  let active = false, raf = 0;
+  const t0 = performance.now();
+  const loop = (now) => {
+    raf = 0;
+    if (!active) return;
+    ch.frame(qNow(), still ? 0 : (now - t0) / 1000);
+    raf = requestAnimationFrame(loop);
+  };
+  const setActive = (on) => {
+    if (on === active) return;
+    active = on;
+    ch.setActive(on);
+    if (on && !raf) raf = requestAnimationFrame(loop);
+  };
+  // near: the chapter (or a screen either side of it) is on the screen
+  new IntersectionObserver((es) => setActive(es[0].isIntersecting), { rootMargin: '100% 0px' }).observe(chapter);
+  addEventListener('resize', () => { ch.resize(); if (active) ch.frame(qNow(), 0); });
+  document.addEventListener('visibilitychange', () => setActive(!document.hidden && chapter.getBoundingClientRect().bottom > 0 && chapter.getBoundingClientRect().top < innerHeight));
+  if (yParam != null) requestAnimationFrame(() => { seek(yParam); setActive(true); ch.frame(yParam, 0); });
+}
+</script>
+</body>
+</html>
