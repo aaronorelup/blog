@@ -10,19 +10,19 @@ export const HOLD_AT = 0.8; // from here on the camera has arrived and holds
 
 // [q, position, look-at]
 export const KEYS = [
-  [0.0, [14.2, 0.7, 5.6], [2.0, 0.5, -1.5]],        // the camp on the shore shelf, looking across the pool to the open sky
-  [0.07, [14.0, 0.68, 5.5], [2.0, 0.3, -1.5]],      // (still there while the chapter comes into view)
-  [0.13, [9.0, 0.35, 4.2], [0.6, -5.2, -1.2]],      // walking to the water's edge
-  [0.2, [1.5, -4.5, 2.5], [0.0, -9.0, -6.0]],       // under: the pool's pale bowl, the sun coming down, the throat below
-  [0.31, [0.0, -8.6, 0.9], [0.0, -14.2, -5.6]],     // the throat opens below
+  [0.0, [13.0, 1.6, 7.0], [9.4, -1.0, 2.8]],        // the camp on the shore shelf: the table, the cot, the lamp post, the pool beyond
+  [0.07, [12.9, 1.55, 6.9], [9.3, -1.1, 2.7]],      // (still there while the chapter comes into view)
+  [0.13, [8.8, 0.4, 5.4], [1.0, -5.5, -1.0]],      // walking to the water's edge
+  [0.2, [1.0, -7.0, 1.8], [0.0, -13.0, -5.0]],      // under: the pool's bowl, and the lamp finds the throat in its floor
+  [0.31, [0.2, -10.8, -0.6], [0.0, -16.0, -6.6]],     // the throat opens below, in the lamp's oval
   [0.43, [0.0, -12.2, -3.6], [0.0, -17.6, -9.0]],   // down the throat
-  [0.55, [0.0, -16.6, -8.0], [0.0, -22.4, -12.6]],  // through sink-shaft, the next passage below
-  [0.67, [-0.2, -21.4, -11.7], [-2.6, -24.6, -14.2]], // into the first chamber
+  [0.53, [0.0, -17.6, -8.8], [-1.0, -23.6, -13.4]],  // through sink-shaft, the next passage below
+  [0.61, [-0.8, -22.7, -12.8], [-4.4, -25.0, -14.8]], // into the first chamber
   [HOLD_AT, [-1.25, -24.15, -13.95], [-9.5, -26.25, -16.05]], // in the mouth of the west passage, looking along it
 ];
 
 // one of the drowned crew, swimming up the west passage towards the reader (about 2.8 m from the hold)
-export const FIGURE = [-3.95, -24.8, -14.6];
+export const FIGURE = [-4.6, -24.6, -14.4]; // a little to the left of the passage's middle, so its far end shows past him
 // a dropped chemlight far down the west passage, on its floor (y is found on the floor at mount)
 export const CHEMLIGHT = [-10.4, null, -16.2];
 // the guide line's tie-offs, from the shore down the dive and on into the west passage; at mount each is pushed out
