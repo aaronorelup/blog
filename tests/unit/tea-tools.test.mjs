@@ -63,12 +63,14 @@ test('frames --weigh: a response by kind and chapter, and the sums', () => {
   assert.deepEqual(t, { total: 15, phase: { 'first paint': 5, scroll: 10 }, kind: { css: 5, image: 10 }, chapter: { shared: 5, tv: 10 } });
 });
 
-test('reel: every 0.25 vh from a section\'s top to its last frame, both ends kept', () => {
+test('reel: every 0.25 vh from a section\'s top to its end, both ends kept', () => {
   const M = { vh: 100, max: 2000 };
   const r = reelPlaces({ top: 500, height: 260 }, M, 0.25);
-  assert.deepEqual(r.map((p) => p.vh), [0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.6]);
+  assert.deepEqual(r.map((p) => p.vh), [0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.6]);
   assert.equal(r[0].y, 0.25);
-  assert.equal(r.at(-1).n, 8);
+  assert.equal(r.at(-1).y, 0.38);
+  assert.equal(r.at(-1).n, 12);
+  assert.equal(reelPlaces({ top: 1900, height: 300 }, M).at(-1).y, 1); // never past the page's end
 });
 
 test('differ: cells and mean colour on a grid; a step asks for cells, two chapters for both', () => {

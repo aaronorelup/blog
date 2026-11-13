@@ -8,10 +8,11 @@ import {
   sizesOf, urlOf, withQuery,
 } from './lib.mjs';
 
-// The places of a reel: every step vh from the section's top to its last frame (its height less one screen), both
-// ends kept, as [{ n, vh, y }] with y a share of the page. Pure.
+// The places of a reel: every step vh from the section's top to its end, where the screens are shut on the next
+// chapter (the scroll range of a section is its height: its part of the world runs until the next section's top
+// reaches the top of the window), both ends kept, as [{ n, vh, y }] with y a share of the page. Pure.
 export function reelPlaces(sec, M, step = 0.25) {
-  const last = Math.max(0, sec.height / M.vh - 1);
+  const last = Math.max(0, sec.height / M.vh);
   const out = [];
   for (let i = 0; i * step <= last + 1e-9; i++) out.push(i * step);
   if (last - out.at(-1) > 1e-6) out.push(last);
@@ -22,7 +23,7 @@ if (isMain(import.meta.url)) {
   main(async () => {
     const { values, positionals } = args(process.argv.slice(2), {
       usage: `node scripts/tools/tea/reel.mjs --chapter <id> [address] [--step 0.25] [--sizes 1440x900,390x844]
-A chapter's frames every --step vh, from its section's top to its last frame, with ?still=1&words=0, at each size;
+A chapter's frames every --step vh, from its section's top to its end (the screens shut on the next), with ?still=1&words=0, at each size;
 one numbered strip a size (captures/tea/reel/<id>/strip-<size>.jpg) and every frame as a PNG beside it. The
 address defaults to ${DEFAULT_PAGE}.`,
       flags: {

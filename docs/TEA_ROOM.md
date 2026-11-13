@@ -434,7 +434,13 @@ to 0.96, 13%) fail, which is the fault the bar names. Within its dark stretch B'
 apart, so a step across it compares a lit frame with a dark one and passes: the sweep is what catches the stretch
 itself, and differ the slide's frames compared with each other.
 
-**Run on the stub page** (the shared system's stubs, before any chapter is built): STUB_RESULTS
+**Run on the stub page** (the shared system's stubs, before any chapter is built, 2026-11-13). The sweep: 236 of
+240 desktop frames are pictures and 4 are the house closing or the footer; on a phone 195 of 200, 4 not judged,
+and one dead: y = 0.98, the house closing half way shut, whose dark panes fill 23% of the lower 40% (the spec
+judges a closing frame unless the screens are fully shut). differ: 92 pairs too alike (59 of 84 on a desktop, 33 on
+a phone). Inside every stub chapter the frame holds, and the stub rooms are one placeholder room in different
+lights, so of the chapters' opening frames only start to television and agents to learning pass (and courses to
+now on a phone). That is what the stubs are; each chapter's builder makes its own pass.
 
 ---
 
