@@ -116,11 +116,14 @@
       var k = 1 - Math.exp(-dt * 5);
       at.x += (clamp(tx, -1, 1) - at.x) * k; at.y += (clamp(ty, -1, 1) - at.y) * k;
     }
-    var key = FROZEN ? m.q.toFixed(5) + ':' + stage.offsetWidth + 'x' + stage.offsetHeight : '';
+    var key = FROZEN ? m.q.toFixed(5) + ':' + Math.round(stage.getBoundingClientRect().top) + ':' + stage.offsetWidth + 'x' + stage.offsetHeight : '';
     if (FROZEN && key === drawn) return;
     drawn = key;
     var t1 = performance.now();
-    api.frame(m.q, t, at);
+    // while the chapter comes up into the screen only its top part shows: the picture is centred on that part
+    var sr = stage.getBoundingClientRect(), vh = window.innerHeight;
+    var shift = sr.top > 0 ? ((Math.max(0, -sr.top) + Math.min(sr.height, vh - sr.top)) / 2 - sr.height / 2) : 0;
+    api.frame(m.q, t, at, shift);
     if (!FROZEN && !FIXED) api.pace(performance.now() - t1 + (dt * 1000 > 50 ? dt * 1000 : 0));
     if (!stage.classList.contains('is-live')) { stage.classList.add('is-live'); ready(); }
     if (DEBUG) meter(now, dt);
@@ -148,7 +151,7 @@
     card.style.transform = arrived ? 'none' : 'translate3d(0,' + ((1 - show) * 26).toFixed(1) + 'px,0)';
     card.style.willChange = arrived ? 'auto' : 'transform, opacity';
     card.style.pointerEvents = show > 0.6 ? 'auto' : 'none';
-    veil.style.opacity = ss(0, 0.06, m.leave).toFixed(3);
+    veil.style.opacity = ss(0, 0.22, m.leave).toFixed(3);
     hint.style.opacity = (api && !FROZEN ? ss(0.3, 0.4, m.q) * (moved ? 0 : 1) : 0).toFixed(3);
   }
 

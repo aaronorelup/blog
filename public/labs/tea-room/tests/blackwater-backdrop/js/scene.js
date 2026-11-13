@@ -2,6 +2,9 @@
    ported from the game's public repository) build it here, flat-shaded in its zone colours, and it is lit with the game's
    own numbers: the diver's head lamp (an 84 degree cone at the eye, 90 with a square falloff, turned down near rock the
    way the game does), the zone's ambient, the sun over the open pool, exponential fog that eats the distance, motes.
+   The daylight fills the pool and is gone a few metres down the throat, so from there on every frame is the lamp's oval
+   on the rock with black all round it, as in the game's own tunnel shots. This chapter's garden is at night, so above
+   the water the sun is turned down to moonlight and the camp is lit by its own lantern and the diver's lamp.
 
    mount(host, options) -> { frame(q, time, pointer), resize(), setActive(on), dispose(), pace(ms), stats() }
    Everything on screen is a function of q (0..1, how far through the chapter), time (seconds) and pointer ({x, y} in
@@ -18,12 +21,14 @@ function rng(seed) { let s = seed >>> 0; return () => { s = (s * 1664525 + 10139
 
 // ---- the game's numbers (src/main.ts, src/tuning.ts, src/effects/atmosphere.ts)
 const LAMP = { color: 0xcfe0d4, intensity: 90, distance: 65, half: THREE.MathUtils.degToRad(84 / 2), penumbra: 0.65, decay: 2 };
-const FOG_K = 1.7, CLEAR_VIS = 35;                // fog density = fogK / visibility (FogExp2)
+const FOG_K = 1.7, CLEAR_VIS = 35, SHALLOW_VIS = 70, SUN = 700;                // fog density = fogK / visibility (FogExp2)
 const ZONE = {
   sinkhole: { fog: new THREE.Color(0x0d3640), ambient: new THREE.Color(0x3a4a50), mote: new THREE.Color(0xc8d8d2) },
   galleries: { fog: new THREE.Color(0x08211e), ambient: new THREE.Color(0x33443f), mote: new THREE.Color(0xb8c8bc) },
 };
 const ABOVE = { bg: new THREE.Color(0x8fb6c4), fog: new THREE.Color(0x9fc3cf), density: 0.012, ambient: 0.65 };
+// this chapter's garden is at night: above the water the sinkhole has moonlight, not the game's noon (its sun, turned down)
+const NIGHT = { sun: 0.3, ambient: 0.32 };
 const DEPTH_DARK = { start: 6, end: 45, floor: 0.12 };
 const MOTES = { fadeNear: 1.6, fadeFar: 7.5, box: 10, size: 0.1, opacity: 0.55 };
 const BOX = { min: [-20, -34, -26], max: [20, 12, 14] }; // the part of the cave that is built: around the route
@@ -93,30 +98,52 @@ function poseSwim(rig, t, speed) {
   rig.head.rotation.set(-0.75 + 0.1 * c, 0, 0);
 }
 
-// ------------------------------------------------------------------ the camp on the shore shelf: a lamp post, a cot, a crate (as in the game's camp)
+// ------------------------------------------------------------------ the camp on the shore shelf (as in the game's camp shots): a lamp post, a cot,
+// a work table with papers, a crate, a stump for a stool, a jerrycan, a coil of line; all boxes, as the game builds them
 function buildCamp(floorAt) {
   const g = new THREE.Group(), box = new THREE.BoxGeometry(1, 1, 1);
   const wood = new THREE.MeshStandardMaterial({ color: 0x4a3c2a, roughness: 0.9, flatShading: true });
+  const darkWood = new THREE.MeshStandardMaterial({ color: 0x3a2e22, roughness: 0.9, flatShading: true });
   const canvasM = new THREE.MeshStandardMaterial({ color: 0x4d5a3a, roughness: 0.95, flatShading: true });
+  const paper = new THREE.MeshStandardMaterial({ color: 0xb9b29a, roughness: 0.95, flatShading: true });
   const iron = new THREE.MeshStandardMaterial({ color: 0x1c1f22, roughness: 0.6, metalness: 0.3, flatShading: true });
+  const can = new THREE.MeshStandardMaterial({ color: 0x3f4a2c, roughness: 0.7, flatShading: true });
+  const rope = new THREE.MeshStandardMaterial({ color: 0xd8d6c8, roughness: 0.8, flatShading: true });
   const bulb = new THREE.MeshBasicMaterial({ color: 0xffe2a8 });
   const put = (m, sx, sy, sz, x, z, y0, ry = 0) => { const o = new THREE.Mesh(box, m); o.scale.set(sx, sy, sz); o.position.set(x, floorAt(x, z) + y0 + sy / 2, z); o.rotation.y = ry; g.add(o); return o; };
   // the lamp post at the water's edge, its lamp lit
-  const px = 11.6, pz = 2.9, py = floorAt(px, pz);
-  put(iron, 0.07, 1.9, 0.07, px, pz, 0);
-  put(iron, 0.34, 0.06, 0.34, px, pz, 0);
-  const shade = new THREE.Mesh(new THREE.ConeGeometry(0.26, 0.2, 8), iron); shade.position.set(px, py + 2.06, pz); g.add(shade);
+  const px = 9.4, pz = 2.4, py = floorAt(px, pz);
+  put(iron, 0.08, 1.9, 0.08, px, pz, 0);
+  put(iron, 0.36, 0.06, 0.36, px, pz, 0);
+  const shade = new THREE.Mesh(new THREE.ConeGeometry(0.28, 0.2, 8), iron); shade.position.set(px, py + 2.06, pz); g.add(shade);
   const lamp = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.15, 0.13), bulb); lamp.position.set(px, py + 1.9, pz); g.add(lamp);
-  // a cot, and a crate with a kit on it
-  put(wood, 1.9, 0.08, 0.72, 13.0, 2.0, 0.36, 0.5);
-  put(canvasM, 1.6, 0.06, 0.62, 13.0, 2.0, 0.44, 0.5);
+  put(can, 0.26, 0.34, 0.18, px + 0.35, pz + 0.3, 0, 0.4); // the lamp's battery box at its foot
+  // a cot, its canvas, its legs
+  const cx = 10.0, cz = 3.9, cr = 0.25;
+  put(wood, 1.9, 0.08, 0.72, cx, cz, 0.36, cr);
+  put(canvasM, 1.6, 0.07, 0.62, cx, cz, 0.44, cr);
+  put(canvasM, 0.42, 0.12, 0.5, cx - 0.62 * Math.cos(cr), cz + 0.62 * Math.sin(cr), 0.5, cr); // a rolled bag for a pillow
   for (const [dx, dz] of [[-0.8, -0.28], [0.8, -0.28], [-0.8, 0.28], [0.8, 0.28]]) {
-    const c = Math.cos(0.5), s = Math.sin(0.5);
-    put(wood, 0.07, 0.38, 0.07, 13.0 + dx * c + dz * s, 2.0 - dx * s + dz * c, 0);
+    const c = Math.cos(cr), sn = Math.sin(cr);
+    put(wood, 0.07, 0.38, 0.07, cx + dx * c + dz * sn, cz - dx * sn + dz * c, 0);
   }
-  put(wood, 0.6, 0.5, 0.5, 12.1, 2.2, 0, -0.3);
-  put(canvasM, 0.36, 0.14, 0.26, 12.1, 2.2, 0.5, -0.1);
-  return { group: g, lampPos: new THREE.Vector3(px, py + 1.9, pz), geos: [box, shade.geometry, lamp.geometry], mats: [wood, canvasM, iron, bulb] };
+  // the work table, papers and a mug on it, a stump for a stool
+  const tx = 10.85, tz = 6.25, tr = -0.35;
+  put(darkWood, 1.3, 0.07, 0.8, tx, tz, 0.72, tr);
+  for (const [dx, dz] of [[-0.58, -0.34], [0.58, -0.34], [-0.58, 0.34], [0.58, 0.34]]) {
+    const c = Math.cos(tr), sn = Math.sin(tr);
+    put(darkWood, 0.07, 0.72, 0.07, tx + dx * c + dz * sn, tz - dx * sn + dz * c, 0);
+  }
+  put(paper, 0.34, 0.012, 0.26, tx - 0.25, tz - 0.05, 0.79, tr + 0.2);
+  put(paper, 0.3, 0.012, 0.24, tx + 0.22, tz + 0.12, 0.79, tr - 0.3);
+  put(iron, 0.09, 0.11, 0.09, tx + 0.4, tz - 0.25, 0.79);
+  const stump = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.25, 0.46, 7), darkWood); stump.position.set(tx - 0.2, floorAt(tx - 0.2, tz - 0.9) + 0.23, tz - 0.9); g.add(stump);
+  // a crate with a kit bag on it, a jerrycan, a coil of line
+  put(wood, 0.6, 0.5, 0.5, 11.3, 2.0, 0, -0.3);
+  put(canvasM, 0.36, 0.14, 0.26, 11.3, 2.0, 0.5, -0.1);
+  put(can, 0.34, 0.46, 0.17, 12.0, 4.7, 0, 0.6);
+  const coil = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.05, 5, 10), rope); coil.rotation.x = Math.PI / 2; coil.position.set(8.9, floorAt(8.9, 3.2) + 0.05, 3.2); g.add(coil);
+  return { group: g, lampPos: new THREE.Vector3(px, py + 1.9, pz), geos: [box, shade.geometry, lamp.geometry, stump.geometry, coil.geometry], mats: [wood, darkWood, canvasM, paper, iron, can, rope, bulb] };
 }
 
 // ------------------------------------------------------------------ motes in the water (src/effects/atmosphere.ts): a box that rides with the camera,
@@ -200,7 +227,7 @@ export async function mount(host, options = {}) {
   // ---- lights: the game's ambient, its sun over the cenote, its head lamp; the camp's lamp on the shore
   const ambient = new THREE.AmbientLight(0x3a4a50, ABOVE.ambient);
   scene.add(ambient);
-  const sun = new THREE.PointLight(0xfff2d6, 700, 85, 2);
+  const sun = new THREE.PointLight(0xfff2d6, SUN, 85, 2);
   sun.position.set(0, 18, 0);
   scene.add(sun);
   const headlamp = new THREE.SpotLight(LAMP.color, LAMP.intensity, LAMP.distance, LAMP.half, LAMP.penumbra, LAMP.decay);
@@ -234,7 +261,7 @@ export async function mount(host, options = {}) {
     disposables.push(tex);
     for (let i = 0; i < 6; i++) {
       const w = 2.5 + (i % 3) * 1.6;
-      const m = new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: 0.09 + (i % 2) * 0.045, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false });
+      const m = new THREE.MeshBasicMaterial({ map: tex, transparent: true, opacity: 0.035 + (i % 2) * 0.02, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false });
       const plane = new THREE.Mesh(new THREE.PlaneGeometry(w, 24), m);
       const ang = (i / 6) * Math.PI * 2 + 0.4, r = 10 * (0.15 + 0.55 * ((i * 0.37) % 1));
       plane.position.set(Math.cos(ang) * r, -9, Math.sin(ang) * r);
@@ -277,9 +304,9 @@ export async function mount(host, options = {}) {
       const side = new THREE.Vector3().crossVectors(along, new THREE.Vector3(0, 1, 0));
       if (side.lengthSq() < 1e-4) side.set(1, 0, 0);
       side.normalize();
-      d.copy(side).multiplyScalar(0.75).add(new THREE.Vector3(0, -0.65, 0)).normalize();
+      d.copy(side).multiplyScalar(1.0).add(new THREE.Vector3(0, -0.42, 0)).normalize();
       const reach = toRock(v, d, 6);
-      return v.clone().addScaledVector(d, Math.max(0, reach - 0.28));
+      return v.clone().addScaledVector(d, Math.max(0, Math.min(reach - 0.35, reach * 0.72, 1.6)));
     });
     const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal');
     // a little slack between the tie-offs
@@ -287,7 +314,7 @@ export async function mount(host, options = {}) {
     const samples = [];
     const N = 420;
     for (let i = 0; i <= N; i++) { const u = i / N; const p = curve.getPoint(u); p.y -= sag(u); samples.push(p); }
-    const rope = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(samples), 1200, 0.016, 6, false);
+    const rope = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(samples), 1200, 0.024, 6, false);
     const ropeMat = new THREE.MeshStandardMaterial({ color: 0xf4f4ec, roughness: 0.7, emissive: 0x3a3c38 });
     scene.add(new THREE.Mesh(rope, ropeMat));
     disposables.push(rope, ropeMat);
@@ -317,7 +344,7 @@ export async function mount(host, options = {}) {
   // ------------------------------------------------------------------ one frame
   const v = new THREE.Vector3(), fwd = new THREE.Vector3(), right = new THREE.Vector3(), upv = new THREE.Vector3();
   const aimDir = new THREE.Vector3(), probe = new THREE.Vector3(), beamDir = new THREE.Vector3(), zfog = new THREE.Color();
-  let active = true, w = 1, h = 1, tall = false;
+  let active = true, w = 1, h = 1, tall = false, viewShifted = false;
 
   function resize() {
     w = Math.max(1, host.clientWidth); h = Math.max(1, host.clientHeight);
@@ -332,9 +359,12 @@ export async function mount(host, options = {}) {
     moteU.uScale.value = renderer.getPixelRatio() * (h / 900) * 240 * (Math.tan(THREE.MathUtils.degToRad(37.5)) / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)));
   }
 
-  function frame(q, time = 0, pointer) {
+  function frame(q, time = 0, pointer, shift = 0) {
     if (!active) return;
     q = clamp(q);
+    // shift (pixels): where the visible part of the screen is centred, when only part of it shows; the picture follows
+    if (Math.abs(shift) > 0.5) { camera.setViewOffset(w, h, 0, -shift, w, h); viewShifted = true; }
+    else if (viewShifted) { camera.clearViewOffset(); viewShifted = false; }
     const px = pointer ? clamp(pointer.x, -1, 1) : 0, py = pointer ? clamp(pointer.y, -1, 1) : 0;
 
     // the camera on its route, breathing
@@ -354,6 +384,8 @@ export async function mount(host, options = {}) {
     v.addScaledVector(right, px * dist * 0.3 * swing).addScaledVector(upv, -py * dist * 0.2 * swing);
     // on a tall screen the card covers the lower third: the picture's subject sits higher
     if (tall) v.addScaledVector(upv, -dist * 0.12 * ss(0.62, HOLD_AT, q));
+    // and at the water's edge a tall screen looks down into the pool, not up at the wall
+    if (tall) v.addScaledVector(upv, -dist * 0.32 * ss(0.08, 0.13, q) * (1 - ss(0.19, 0.25, q)));
     camera.lookAt(v);
     camera.rotateZ(Math.sin(time * 0.31) * 0.01 * under);
     camera.updateMatrixWorld();
@@ -384,12 +416,17 @@ export async function mount(host, options = {}) {
     const deep = ss(0.5, 0.68, q); // sinkhole -> galleries
     const depth = Math.max(0, -camera.position.y);
     const dark = lerp(1, DEPTH_DARK.floor, clamp((depth - DEPTH_DARK.start) / (DEPTH_DARK.end - DEPTH_DARK.start)));
-    zfog.copy(ZONE.sinkhole.fog).lerp(ZONE.galleries.fog, deep);
+    // the far end of a passage is the sinkhole's teal (as in the game's tunnel shots), only leaning to the galleries' green
+    zfog.copy(ZONE.sinkhole.fog).lerp(ZONE.galleries.fog, deep * 0.3);
     fog.color.copy(ABOVE.fog).lerp(zfog, under);
-    fog.density = lerp(ABOVE.density, FOG_K / CLEAR_VIS, under);
+    // the open pool is sunlit, clear water: you see across its bowl; the murk closes in from the throat down
+    const vis = lerp(SHALLOW_VIS, CLEAR_VIS, ss(-4, -11, camera.position.y));
+    fog.density = lerp(ABOVE.density, FOG_K / vis, under);
+    // the daylight is a cenote's: it fills the pool and is gone a few metres down the throat, where the lamp takes over
+    sun.intensity = SUN * NIGHT.sun * (1 - ss(-1.6, -9.0, camera.position.y));
     scene.background.copy(ABOVE.bg).lerp(zfog, under);
     ambient.color.copy(ZONE.sinkhole.ambient).lerp(ZONE.galleries.ambient, deep);
-    ambient.intensity = lerp(ABOVE.ambient, 0.55 * dark, under);
+    ambient.intensity = lerp(NIGHT.ambient, 0.55 * dark, under);
     rays.visible = under > 0 && q < 0.5;
     campLight.intensity = 6 * (1 - under);
     campGlow.visible = q < 0.3;
