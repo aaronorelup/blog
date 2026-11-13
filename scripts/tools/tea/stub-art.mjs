@@ -101,7 +101,8 @@ async function shadow(obj, litMask, [w, h], light, file) {
       // back to front: the glow, the lit paper, the ink silhouette
       let a = Math.min(0.8, (g1[i] + g2[i]) / 255 * 0.9), c = L;
       const p = lit[i] / 255;
-      if (p > 0) { c = mix(c, pale, p); a = a + (1 - a) * p; }
+      // the lit paper glows through the screen's paper rather than standing as a hole in it
+      if (p > 0) { c = mix(c, pale, p); a = a + (1 - a) * p * 0.78; }
       const s = (sil[i] / 255) * 0.8;
       c = mix(c, ink, a + s > 0 ? s / (s + a * (1 - s)) : 0);
       a = s + a * (1 - s);

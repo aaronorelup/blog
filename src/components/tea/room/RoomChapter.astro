@@ -10,7 +10,7 @@ import sharp from 'sharp';
 
 interface Props { ctx: any }
 const { ctx } = Astro.props;
-const { chapter, copy, n, afterHero, last, ledger, statement, still } = ctx;
+const { chapter, copy, n, afterHero, last, ledger, statement, still, count } = ctx;
 const hero = chapter.id === 'hero';
 const size = async (src: string) => {
   const m = await sharp(publicFile(src)).metadata();
@@ -38,7 +38,7 @@ const sp = still?.p ? await size(still.p) : null;
         {copy.small && <span class="room-title-small">{copy.small} </span>}
         {copy.lines.map((l: string, i: number) => <span class="room-title-line">{l}{i < copy.lines.length - 1 ? ' ' : ''}</span>)}
       </h2>
-      <p class="room-statement">{statement}</p>
+      <p class:list={['room-statement', { 'is-count': count }]}>{statement}</p>
     </header>
   )}
   <slot />

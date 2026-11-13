@@ -80,7 +80,7 @@ const words = Object.fromEntries(chapters.map((c) => {
   const copy = copyOf(c.id);
   const n = c.topic ? byTopic(c.topic) : 0;
   const statement = copy.statement ?? (c.topic ? `${n} ${COPY.room.count[n === 1 ? 0 : 1]}` : '');
-  return [c.id, { small: copy.small, lines: copy.lines, statement }];
+  return [c.id, { small: copy.small, lines: copy.lines, statement, count: copy.statement == null && Boolean(c.topic) }];
 }));
 const ctxOf = (c, i) => {
   const R = room.chapters[i];
@@ -88,7 +88,7 @@ const ctxOf = (c, i) => {
   const first = scene.scene ?? scene.scenes[scene.run[0]];
   return {
     chapter: c, copy: copyOf(c.id), n: R.n, afterHero: i === 1, last: i === chapters.length - 1, ledger: c.id === firstTopic,
-    statement: words[c.id].statement, still: first.still ?? null, topicCount: c.topic ? byTopic(c.topic) : 0, page,
+    statement: words[c.id].statement, count: words[c.id].count, still: first.still ?? null, topicCount: c.topic ? byTopic(c.topic) : 0, page,
   };
 };
 ---

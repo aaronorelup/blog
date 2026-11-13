@@ -38,7 +38,7 @@ const backIndex = (sc: any) => sc.flats.findIndex((f: any) => f.r >= 1 && !f.thr
                       <div class="room-flat room-word" data-i={j}>
                         {wordOf(f.through.to).small && <span class="room-word-small">{wordOf(f.through.to).small}</span>}
                         {wordOf(f.through.to).lines.map((l: string) => <span class="room-word-line">{l}</span>)}
-                        <span class="room-word-say">{wordOf(f.through.to).statement}</span>
+                        <span class:list={['room-word-say', { 'is-count': wordOf(f.through.to).count }]}>{wordOf(f.through.to).statement}</span>
                       </div>
                     )}
                     {g.through && room.scenes[g.through.to]?.still?.[comp] && (
@@ -62,7 +62,7 @@ const backIndex = (sc: any) => sc.flats.findIndex((f: any) => f.r >= 1 && !f.thr
                 <div class="room-flat room-word" data-i={i}>
                   {wordOf(sceneKey).small && <span class="room-word-small">{wordOf(sceneKey).small}</span>}
                   {wordOf(sceneKey).lines.map((l: string) => <span class="room-word-line">{l}</span>)}
-                  <span class="room-word-say">{wordOf(sceneKey).statement}</span>
+                  <span class:list={['room-word-say', { 'is-count': wordOf(sceneKey).count }]}>{wordOf(sceneKey).statement}</span>
                 </div>
               )}
             </Fragment>

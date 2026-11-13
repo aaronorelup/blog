@@ -18,6 +18,12 @@
 .room-word .room-word-say { font-size: clamp(17px, 1.75vw, 27px); }
 @media (orientation: portrait) { .room-word .room-word-say, .room-statement { font-size: max(17px, 4.6vw); } }
 
+/* a chapter with no line of its own says its count, in the mono face, as a fact and not as a sentence (look B) */
+.room-statement.is-count, .room-word-say.is-count {
+  font-family: 'JetBrains Mono', var(--font-mono); font-style: normal; font-weight: 500; letter-spacing: 0.04em;
+  font-size: clamp(14px, 1.15vw, 18px);
+}
+
 /* on paper */
 .room-paper { color: var(--room-ink); font-family: var(--font-serif); }
 .room-h1, .room-slip-title, .room-paper h2, .room-paper h3 {

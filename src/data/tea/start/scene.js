@@ -3,6 +3,8 @@
 // the one flat the camera nears, so the walk, the shadow and the door can be tuned against it from the first day.
 // The chapter's builder replaces this file (3.2). Board units: 1600x900 (d), 900x1600 (p).
 const word = [{ at: 'item-1', off: -0.5, v: 0 }, { at: 'item-1', off: -0.1, v: -1 }];
+// on a phone the word leaves to the right wing, clear of the index's tab at the top left
+const wordP = [{ at: 'item-1', off: -0.5, v: 0 }, { at: 'item-1', off: -0.1, v: 1 }];
 export const scene = {
   light: { colour: '#FFD892', name: 'the floor lantern' },
   shadow: { src: '/tea/scenes/start/shadow.webp', flat: 'lantern' },
@@ -26,12 +28,12 @@ export const scene = {
     aim: [560, 963],
     flats: [
       { name: 'room', src: '/tea/scenes/start/room.webp', px: [2752, 1536], box: [-1517.7, -20, 2938.3, 1640], r: 1 },
-      { name: 'word', text: true, box: [60, 170, 780, 420], r: 0.8 },
+      { name: 'word', text: true, box: [60, 200, 780, 420], r: 0.8 },
       { name: 'lantern', src: '/tea/scenes/start/lantern.webp', px: [236, 330], box: [434.1, 787.2, 252, 352.3], r: 0.62 },
     ],
     slots: [],
     camera: [{ at: 0, m: 0 }, { at: 6, m: 0.04 }],
-    tracks: [{ flat: 'word', lift: word }],
+    tracks: [{ flat: 'word', slide: wordP }],
     rest: {},
     marks: ['item-1'],
   },

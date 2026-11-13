@@ -74,3 +74,21 @@ no stray flat, the bookmark's mark and tag on the chapter in view, every picture
    a list. A stub slip is now what an item is in this book: its title as its link, and one line.
 3. **The palest lights were blown out.** The Learning and Film lanterns' paper drew pure white, which the colour
    rules forbid. The lit centre is now the light warmed a little, never white.
+
+## Round 6: the screens in the middle of a change (desktop) and the phone between items
+
+Frames: `?y=0.0877` (the screens half open from Start here onto the television) and `?y=0.4793` (shut before
+Art) at 1440x900, `?y=0.3233` (Games, its first slip arriving) at 390x844.
+
+1. **On the phone the giant word left through the index's tab.** It lifted off the top of the frame and crossed
+   the tab on its way, so for a moment the tab covered a word. On `p` the word now leaves to the right wing, and
+   rests a little lower, clear of the tab.
+2. **The shadow on the shut screens read as a hole.** The lantern's lit paper in the shadow was fully opaque, a
+   pale slot cut through the screen rather than light behind it. It now glows through, at a little under full.
+3. **A topic's count read as a caption with nothing to say.** "7 posts" stood under the giant word in the
+   statement's italic, as if it were a sentence. A chapter with no line of its own now says its count in the mono
+   face, as a fact, as look B did.
+
+What held, recorded so a later round does not redo it: the screens' lattice crosses the shadow, each screen wipes
+its own half of it, the field takes the coming chapter's light, and the real lantern stands exactly where its
+shadow was as the screens part.
