@@ -52,9 +52,9 @@ costs twice a `2k` one, and two requests never return the same picture, so a com
 | `washi.webp` | 512, 512 | 6,320 | no | the paper tile. Tiles both ways. Its mean colour is the paper colour `#F1E6D0` |
 | `screen.webp` | 1776, 2000 | 292,690 | yes | one sliding screen: cedar frame and lattice opaque, the paper see-through |
 | `sheet-shadow.webp` | 384, 384 | 4,284 | yes | the one shadow under a sheet or a slip, as a nine-slice |
-| `tv.webp` | 2254, 2048 | 147,394 | yes | the little television, three-quarter view, cut out, its glass a hole |
-| `tv-face.webp` | 2752, 2544 | 178,590 | yes | the same set seen from the front, whole, cut out, its glass a hole |
-| `tv-face-p.webp` | 1536, 2752 | 93,404 | yes | the same front picture at a phone's size, on a 9:16 canvas |
+| `tv.webp` | 2254, 2048 | 148,476 | yes | the little television, three-quarter view, cut out, its glass a hole |
+| `tv-face.webp` | 2752, 2544 | 175,760 | yes | the same set seen from the front, whole, cut out, its glass a hole |
+| `tv-face-p.webp` | 1536, 2752 | 91,998 | yes | the same front picture at a phone's size, on a 9:16 canvas |
 | `shadow-example.webp` | 1620, 720 | 22,112 | yes | the worked example of a screen shadow: a lantern and a kettle |
 
 No file is video or audio. The largest is under 1 MiB.
@@ -440,6 +440,28 @@ machine restart). The paper, the screens and the shadow are answered in the roun
    same geometry: the paper is cut pane by pane at the master's size, its soft edge is ink and paper only (the
    script counts pale pixels over the night ground and refuses any), and the veil is 0.09. The cedar is
    `rgb(64, 39, 41)` in every light, because wood is opaque. The sizes are checked in the screens' round.
+
+### Round 1: the set, at 100% beside the garden plate
+
+Sheet: `r1-tv-100.png` (twelve tiles at 100%: two of the garden plate, the knobs, the grille, the aerial's
+base and the frame's corner of `tv.webp`, the rim, the second knob, the switch and the aerial's base of
+`tv-face.webp`, the knobs and a glass corner of `tv-face-p.webp`). After the fixes: `r1-tv-after-100.png`.
+Measured on this round's files: the ink line's edge is 1.60 px on `tv.webp`, 1.64 on `tv-face.webp`, 1.56 on
+`tv-face-p.webp`, and 1.60 on the garden plate (10% to 90% of the step, as in the `4k` measurement).
+
+The three weakest things:
+
+1. **The knobs were two dark discs with nothing on them.** Each knob's pointer bar was painted in the knob's
+   own colour, so it did not read, and at the size the set has in the garden the knobs were blobs. The model's
+   bars are pale metal across a dark knob, and that is what makes them knobs. The four bars are now pale
+   (`132, 120, 130`) on the dark knob (`74, 62, 78`).
+2. **Lines the painter left open, and marks the first clean-up left behind.** The second knob of the front
+   picture had no ring across its top (24 degrees of it were missing): closed with an arc of the same ink. On
+   the three-quarter picture three scraps of grain strokes had survived beside the edge between the top and
+   the side: painted out.
+3. **The front picture still had streaks in its wooden rim and plinth while the three-quarter picture had
+   none**, so the two did not look like one piece of wood. Painted out to a quarter of their strength: what is
+   left reads as the rim's own shading, not as grain.
 
 ## Generation log
 
