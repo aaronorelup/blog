@@ -80,13 +80,13 @@ function start() {
       lay = {
         scale: 1,
         box: { x: -0.62, z: -2.3 },
-        rows: [{ z: -1.5, x0: 0.02, x1: 1.02 }, { z: -1.8, x0: -0.06, x1: 1.24 }, { z: -2.1, x0: -0.1, x1: 1.4 }, { z: -2.4, x0: -0.06, x1: 1.0 }],
+        rows: [{ z: -1.5, x0: 0.0, x1: 0.94 }, { z: -1.8, x0: -0.08, x1: 1.16 }, { z: -2.1, x0: -0.12, x1: 1.34 }, { z: -2.4, x0: -0.08, x1: 1.0 }],
         keys: [
           { t: 0.0, cx: PAINT.W / 2, cy: PAINT.H / 2, w: wMax * 0.985 },
           { t: 0.06, cx: PAINT.W / 2, cy: PAINT.H / 2, w: wMax * 0.985 },
           { t: 0.3, cx: 1190, cy: 985, w: 1240 },
-          { t: 0.46, cx: 1500, cy: 1000, w: 1560 },
-          { t: 0.78, cx: 1500, cy: 1000, w: 1560 },
+          { t: 0.46, cx: 1510, cy: 1000, w: 1580 },
+          { t: 0.78, cx: 1510, cy: 1000, w: 1580 },
           { t: 1.0, cx: 1440, cy: 1010, w: 1760 },     // the camera steps back and to the left: the card takes the left of the screen, the huddle keeps the right
         ],
       };
@@ -241,10 +241,10 @@ function start() {
     const r = canvas.getBoundingClientRect();
     rayAt(rect.x + (cx - r.left) / r.width * rect.w, rect.y + (cy - r.top) / r.height * rect.h, ray);
   }
-  function pick(grow) {
+  function pick(grow, not) {
     let best = null, bt = 1e9, bs = 0;
     for (const t of toys) {
-      const b = t.body; if (!b.on) continue;
+      const b = t.body; if (!b.on || t === not) continue;
       b.centres();
       for (let s = 0; s < b.spheres.length; s++) {
         const cx = b.wc[s * 3] - ray.ox, cy = b.wc[s * 3 + 1] - ray.oy, cz = b.wc[s * 3 + 2] - ray.oz;
@@ -253,7 +253,7 @@ function start() {
         if (tc > 0 && d2 < r * r) { const th = tc - Math.sqrt(r * r - d2); if (th < bt) { bt = th; best = t; bs = s; } }
       }
     }
-    return best ? { toy: best, s: bs } : null;
+    return best ? { toy: best, s: bs, z: best.body.pz } : null;
   }
   function overBox() {
     const X = box.bounds, m = 0.06;
@@ -265,12 +265,18 @@ function start() {
     }
     return true;
   }
-  function target(h) {
-    // where the pointer's ray meets the upright sheet of glass the toy was picked up on
+  function target(h, dt) {
+    // The toy in the hand moves on an upright sheet of glass. Where the pointer is over another toy, the sheet
+    // slides to that toy's depth: what overlaps on the screen then truly collides, so carrying one through the
+    // huddle shoves the others and knocks them over.
+    const over = pick(1.0, h.toy);
+    if (over) h.zWant = clamp(over.z, -PAINT.D + 0.3, -1.3);
+    if (dt > 0) h.z += (h.zWant - h.z) * (1 - Math.exp(-dt * 9));
     const k = (h.z - ray.oz) / ray.dz, b = h.toy.body;
     b.held.tx = clamp(ray.ox + ray.dx * k, PAINT.XL + 0.1, PAINT.XR - 0.1);
     b.held.ty = clamp(ray.oy + ray.dy * k, b.spheres[h.s].r + 0.03, 2.2);
     b.held.tz = h.z;
+    if (dt > 0) return;
     h.samples.push({ t: performance.now(), x: b.held.tx, y: b.held.ty });
     if (h.samples.length > 6) h.samples.shift();
   }
@@ -279,8 +285,8 @@ function start() {
     b.centres(); b.wake();
     const z = clamp(b.wc[hit.s * 3 + 2], -PAINT.D + 0.3, -1.25);
     b.held = { s: hit.s, tx: 0, ty: 0, tz: z };
-    hold = { toy: hit.toy, s: hit.s, z, samples: [], id: e.pointerId };
-    target(hold);
+    hold = { toy: hit.toy, s: hit.s, z, zWant: z, samples: [], id: e.pointerId };
+    target(hold, 0);
     for (const t of toys) if (t.body.on) t.body.wake();
     tagToy = hit.toy; tagUntil = 1e9; showTag(hit.toy);
     document.documentElement.classList.add('grabbing');
@@ -296,13 +302,15 @@ function start() {
       const a = S[0], z = S[S.length - 1], dt = Math.max((z.t - a.t) / 1000, 0.016);
       let vx = (z.x - a.x) / dt, vy = (z.y - a.y) / dt;
       const v = Math.hypot(vx, vy), vmax = 8.5; if (v > vmax) { vx *= vmax / v; vy *= vmax / v; }
-      if (v > 0.6) { b.hot = 1.6; b.vx = vx; b.vy = vy; b.vz = -Math.abs(vy) * 0.12 + (b.slot ? clamp((b.slot.z - b.pz) * 0.6, -0.6, 0.6) : 0); b.knock = 0.85; }
+      // a throw goes where the hand went, and leans toward the middle of the huddle: thrown toys are bowling balls
+      if (v > 0.6) { b.hot = 1.6; b.vx = vx; b.vy = vy; b.vz = clamp((huddleZ() - b.pz) * 1.1, -1.4, 1.4); b.knock = 0.85; }
     }
     if (hold.toy.onDrop) hold.toy.onDrop();
     tagUntil = simT + 2.6;
     document.documentElement.classList.remove('grabbing');
     hold = null; dirty = true;
   }
+  const huddleZ = () => (lay.rows[0].z + lay.rows[Math.min(lay.rows.length - 1, 3)].z) / 2;
   const canPlay = () => state === 'open' && !STILL;
   canvas.addEventListener('pointerdown', (e) => {
     if (e.button > 0) return;
@@ -316,7 +324,7 @@ function start() {
   });
   canvas.addEventListener('pointermove', (e) => {
     setRay(e.clientX, e.clientY);
-    if (hold && e.pointerId === hold.id) { target(hold); hold.toy.body.wake(); dirty = true; return; }
+    if (hold && e.pointerId === hold.id) { target(hold, 0); hold.toy.body.wake(); dirty = true; return; }
     if (e.pointerType === 'mouse') {
       const over = state === 'closed' ? overBox() : canPlay() && !!pick(1.15);
       document.documentElement.classList.toggle('grab', !!over);
@@ -453,6 +461,7 @@ function start() {
     let moving = false;
     if (state === 'open' && dt > 0) {
       viewPlanes();
+      if (hold) { target(hold, dt); hold.toy.body.wake(); }
       for (const t of toys) if (t.launch && world.t >= t.launchAt) t.launch();
       acc += dt; let n = 0;
       while (acc >= H && n < 14) { world.step(H); acc -= H; n++; }
@@ -471,7 +480,7 @@ function start() {
       }
       if (all && simT >= box.closeAt) { state = 'closed'; for (const t of toys) { t.kin = null; t.pivot.visible = false; } }
     }
-    const playing = box.update(simT, dt, state, RM || STILL ? 0 : ss(0.1, Y_BURST - 0.01, prog));
+    const playing = box.update(simT, dt, state, RM || STILL ? 0 : ss(0.1, Y_BURST - 0.01, prog), ss(0.14, Y_BURST - 0.01, prog));
     let anim = false;
     for (const t of toys) {
       const b = t.body;
@@ -503,6 +512,7 @@ function start() {
   window.__toybox = {
     loaded: false, state, prog: 0, frames: 0, awake: 0, fps: 0, toys, world, renderer, rect,
     info: () => ({ triangles: renderer.info.render.triangles, calls: renderer.info.render.calls, textures: renderer.info.memory.textures, geometries: renderer.info.memory.geometries }),
+    held: () => (hold ? hold.toy.def.id : null),
     advance: (sec) => { const n = Math.round(sec * 60); for (let i = 0; i < n; i++) tick(1 / 60); dirty = true; need = true; draw(); return { state, awake: world.awake, t: +world.t.toFixed(2) }; },
     screenOf: (id) => { const t = toys.find((x) => x.def.id === id); if (!t) return null; const b = t.body, p = [0, 0]; toPaint(b.px, b.py, b.pz, p); const r = canvas.getBoundingClientRect(); return { x: r.left + (p[0] - rect.x) / rect.w * r.width, y: r.top + (p[1] - rect.y) / rect.h * r.height, on: b.on, asleep: b.asleep }; },
   };

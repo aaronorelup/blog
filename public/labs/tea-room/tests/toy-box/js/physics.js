@@ -110,8 +110,9 @@ export class World {
     if (b && (aS || bS)) {
       if (vn < -0.18) { if (aS) { a.wake(); aS = false; } if (bS) { b.wake(); bS = false; } }
     }
-    const imA = aS ? 0 : a.invM, iiA = aS ? 0 : a.invI;
-    const imB = b && !bS ? b.invM : 0, iiB = b && !bS ? b.invI : 0;
+    // a toy in the hand shoves like something three times its weight: the hand is behind it
+    const imA = aS ? 0 : a.invM * (a.held ? 0.33 : 1), iiA = aS ? 0 : a.invI;
+    const imB = b && !bS ? b.invM * (b.held ? 0.33 : 1) : 0, iiB = b && !bS ? b.invI : 0;
     if (imA + imB === 0) return;
     if (vn < 0) {
       // along the normal
@@ -349,7 +350,7 @@ export class World {
       if (!b.on || b.asleep || !b.bump) continue;
       if (b.bump > 0.5) b.squashV -= Math.min(b.bump, 4) * 0.9;
       // knocked over by a thrown toy; for a moment it can knock the next one over too
-      if (b.hit > 1.25 && !b.held) { const k = 0.75 + this.rand() * 0.55; if (k > b.knock) b.knock = k; b.rest = 0; b.away = 0; b.pass = false; if (b.hot < 0.5) b.hot = 0.5; }
+      if (b.hit > 0.9 && !b.held) { const k = 0.75 + this.rand() * 0.55; if (k > b.knock) b.knock = k; b.rest = 0; b.away = 0; b.pass = false; if (b.hot < 0.5) b.hot = 0.5; }
     }
   }
 }
