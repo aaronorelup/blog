@@ -283,7 +283,8 @@ function cameraAt(q, S) {
     return {
       fov: S.fov,
       pos: [lerp(-1.0, -0.18, e) + h * 0.25, lerp(1.25, 0.8 + S.d * 0.158, e) - h * 0.1, lerp(Math.max(22, S.d + 8), S.d - 0.1, e) - h * 0.4],
-      look: [lerp(0.1, -0.18, e), lerp(4.2, 0.8, e), 0],
+      // it keeps looking up, the fighters low in the frame, and comes down onto them only as the card rises under them
+      look: [lerp(0.1, -0.18, e), lerp(4.2, 0.8, 0.45 * e + 0.55 * ss(0.3, 0.64, q)), 0],
     };
   }
   return {
@@ -727,6 +728,16 @@ export async function mount(canvas, opts = {}) {
   }
 
   resize();
+  // the shaders are built and the pictures handed to the graphics card now, while the chapter is still below the
+  // screen, so that the first frame the reader scrolls onto is not a stumble
+  try {
+    const c0 = cameraAt(0, S);
+    camera.position.set(c0.pos[0], c0.pos[1], c0.pos[2]); camera.updateMatrixWorld();
+    if (renderer.compileAsync && gl.getExtension('KHR_parallel_shader_compile')) await renderer.compileAsync(scene, camera); else renderer.compile(scene, camera);
+    renderer.compile(gradeScene, gradeCam);
+    for (const set of pics) for (const pc of set) renderer.initTexture(pc.tex);
+    renderer.initTexture(mud); renderer.initTexture(wet);
+  } catch (e) { /* the first frame builds whatever is still missing */ }
   const durs = (f) => Object.fromEntries(Object.entries(f.clips).map(([k, v]) => [k, v.dur]));
   const bufferSize = () => renderer.getDrawingBufferSize(new THREE.Vector2());
   return { frame, resize, dispose, stats, renderer, bufferSize, pace, pick, tap, arrive, durations: { jefrie: durs(jefrie), tailor: durs(tailor) } };
