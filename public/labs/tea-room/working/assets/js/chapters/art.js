@@ -123,7 +123,7 @@ export function mount(host, options) {
 
   // ------------------------------------------------------------------ the frame
   var shown = { i: -2, sky: false }, dockWas = -1, sheetY = 0;
-  var owned = false;
+  var owned = false, lastP = 0, openP = 0;
   function frame(q, t, ptr) {
     if (!alive) return false;
     if (!laid) { layout(); laid = true; }
@@ -136,7 +136,8 @@ export function mount(host, options) {
     // the name
     var kIn = RM ? (p > -1.6 ? 1 : 0) : narrow ? io(ss(NAME_IN[0] + 0.15, NAME_IN[1], p)) : io(ss(NAME_IN[0], NAME_IN[1], p));
     var kSay = RM ? kIn : narrow ? io(ss(SAY_IN[0] + 0.15, SAY_IN[1], p)) : io(ss(SAY_IN[0], SAY_IN[1], p));
-    var kOut = RM ? (p > (NAME_OUT[0] + NAME_OUT[1]) / 2 ? 1 : 0) : io(ss(NAME_OUT[0], NAME_OUT[1], p));
+    // (motion off: the name goes at the cut from the cloth to the first picture, never before it: no bare still)
+    var kOut = RM ? (sqOf(p) >= 0.03 ? 1 : 0) : io(ss(NAME_OUT[0], NAME_OUT[1], p));
     var kSayOut = RM || narrow ? kOut : io(ss(NAME_OUT[0] - 0.05, NAME_OUT[1] - 0.05, p));
     nameWas = put(word, wx, wy, kIn, kOut, nameWas);
     sayWas = put(say, sx, sy, kSay, kSayOut, sayWas);
@@ -170,6 +171,10 @@ export function mount(host, options) {
     // once look B's garden and its sky cover the whole screen the gallery is not drawn at all
     var covered = sheetOn && down >= 1 && garden.whole();
     setV(worldEl, 'world', !covered);
+    // (a picture brought forward goes back as soon as the reader scrolls: in the sky the camera holds still while the
+    // posts pass, so the scene alone would not see the scroll)
+    lastP = p;
+    if (scene.isOpen() >= 0 && Math.abs(p - openP) > 0.012) scene.close();
     var st = covered ? scene.state : scene.frame(sq, tm, HELD || RM ? null : ptr, lift);
     setOp(lead ? melt : 1);
 
@@ -200,7 +205,7 @@ export function mount(host, options) {
     if (ev.target.closest && ev.target.closest('a, button, input, .paper, #rail, .chapter-top')) return;
     var i = scene.pick(ev.clientX, ev.clientY);
     if (i < 0 && scene.isOpen() < 0) return;
-    scene.toggle(i); options.redraw();
+    scene.toggle(i); openP = lastP; options.redraw();
   }
   function onKey(ev) { if (ev.key === 'Escape' && active && scene.isOpen() >= 0) { scene.close(); options.redraw(); } }
   // (over a picture the pointer says it can be brought forward)
