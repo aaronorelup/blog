@@ -346,8 +346,11 @@ export function mount(host, options = {}) {
 
     // --- the ground: the lawn, the stepping stones, the light under the lit lantern, the petals
     const g = gx;
+    // (the ground depends only on where the camera is: drawn again only when that changes)
+    const gk = k.toFixed(5) + ',' + W + ',' + H;
+    if (gk !== lastKey) {
+    lastKey = gk;
     g.setTransform(DPR, 0, 0, DPR, 0, 0); g.clearRect(0, 0, W, H);
-    {
       const haze = g.createLinearGradient(0, hY - 0.16 * H, 0, hY + 2);
       haze.addColorStop(0, 'rgba(70,74,140,0)'); haze.addColorStop(1, 'rgba(84,86,150,0.45)');
       g.fillStyle = haze; g.fillRect(0, hY - 0.16 * H, W, 0.16 * H + 2);
