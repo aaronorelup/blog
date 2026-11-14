@@ -1,4 +1,10 @@
 // "Working with AI agents": the terminal world, as one chapter the host page drives.
+// (In the working copy: the tea room test's js/scene.js, mounted by ../agents.js. Changed from the test: frame() draws
+// whether or not the chapter is active (a guest in its lead never is) and returns true once drawn; what is read goes
+// into options.top (the page's layer in front of the cards) and is shown or hidden by show(); the pointer is read from
+// the document (the canvas lies behind the page); options.inset frames a wide picture for the part right of the rail.
+// ui.js never writes visibility: visible. The kit, ground, origami, swarm, wall, watcher and data files are the test's,
+// but for two addresses: the line library in assets/lib/lines/ and the wall's posters in assets/img/agents/wall/.)
 //
 //   const view = mount(hostElement, { still, reducedMotion, invalidate, top });   top: where what is read and pressed goes
 //   view.frame(q, time, pointer)   q: the chapter's progress, 0 to 1. time: seconds (the host stops it for a still).
