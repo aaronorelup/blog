@@ -1,6 +1,7 @@
 /* THE MACHINES ON THE BENCH (assets/js/chapters/machines.js draws it; this file comes with it, not with the page).
    The tea room test's own look (tests/teardown-bench/css/bench.css), every name prefixed mc- and set in the page's own
-   tokens. Its picture layer has no ground of its own: through its lead it is drawn over the toy box's room. */
+   tokens. Its picture layer has no ground of its own: through its lead it is drawn over the toy box's room. Its order is
+   the test's: the table, then the backdrop run forward over it, then the machine on the backdrop. */
 .chapter-stage[data-chapter='machines'] { background: none; --lit: 1; }
 .chapter-stage[data-chapter='machines'] > div { position: absolute; }
 
@@ -15,11 +16,6 @@
 /* everything away from the lamp sinks into the night */
 .mc-vig { inset: 0; pointer-events: none; opacity: 0;
   background: radial-gradient(70% 85% at var(--tcx) 46%, rgba(10, 8, 22, 0) 25%, rgba(10, 8, 22, 0.5) 70%, rgba(8, 6, 18, 0.8) 100%); }
-/* for a while, round the turn from the toy box's room to this one, the room is darker still, most of all right of the
-   table, where the toys stand in the toy box's room (not the bench: it is in front of this) */
-.mc-deep { inset: 0; pointer-events: none; opacity: 0;
-  background: linear-gradient(to right, rgba(8, 6, 18, 0.32) 0, rgba(8, 6, 18, 0.32) calc(var(--tcx) + var(--trx) * 0.5),
-    rgba(6, 4, 14, 0.94) calc(var(--tcx) + var(--trx) * 0.95), rgba(6, 4, 14, 0.94) 100%); }
 /* the lamp's light falling through the room: on the wall behind the bench, brightest down where it meets the table */
 .mc-cone { inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: calc(0.18 + 0.82 * var(--lit));
   background:
@@ -41,7 +37,7 @@
 
 /* the machine on the bench: its page's pale studio is multiplied into the lamplight (where the page is pale the bench
    shows through; where the machine is, it is lit by the lamp); the edges fade into the room */
-.mc-view { overflow: hidden; background: transparent; mix-blend-mode: multiply; opacity: calc(var(--lit) * var(--appear, 1));
+.mc-view { overflow: hidden; background: transparent; mix-blend-mode: multiply; opacity: var(--vis, 1);
   -webkit-mask-image: linear-gradient(to right, transparent 0, #000 11%, #000 89%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 9%, #000 86%, transparent 100%);
   -webkit-mask-composite: source-in;
   mask-image: linear-gradient(to right, transparent 0, #000 11%, #000 89%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 9%, #000 86%, transparent 100%);
