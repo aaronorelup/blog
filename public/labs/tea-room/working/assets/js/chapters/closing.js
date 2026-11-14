@@ -3,8 +3,9 @@
    from the left wing over the last picture of the chapter before (which stays on the screen under this). On a
    narrow screen the left wing is the screen's own edge, where a word coming on would show only its last letters, so
    there it rises a little from below instead, and is whole after the first few steps.
-   The note under it ("More chapters are on their way", in the page: .closing-note) stands still at the top of the
-   screen (chapters.css makes it sticky): it comes on there, just after the name, in a few steps of scroll.
+   The note under it ("More chapters are on their way", in the page: .closing-note) stands still on the screen
+   (chapters.css makes it sticky): it comes on there, just after the name, in a few steps of scroll. On a phone it
+   stands under the name; on a wider screen at the foot of the screen, over the floor of the toy room.
    The words are the section's own: <section id="closing" data-word="AI art|&amp; images" data-say="6 posts"> (a |
    breaks the name into lines, as look B breaks "AI video / & film"). The note stands under the name, however many
    lines it has: its place is set here from the name's height.
@@ -26,11 +27,16 @@ export function mount(host, options) {
     var tall = W / H < 0.9; narrow = W <= 820;
     // look B's rule for a chapter's name: its size, its left edge clear of the rail, a tenth of the way down
     var wp = clamp(W * (tall ? 0.15 : 0.115), 52, 190), sp = clamp(W * 0.0175, 17, 27);
+    // (a wide, short screen: the name is held to a fifth of the height, so that its two lines end above the toy box's
+    // open lid in the last picture of the chapter before: toybox.js's last view)
+    if (!narrow) wp = Math.min(wp, H * 0.19);
     left = narrow ? 16 : (parseFloat(getComputedStyle(root).getPropertyValue('--rail-w')) || 172) + Math.max(16, Math.min(46, W * 0.032)) * 2;
     word.style.fontSize = (wp * K) + 'px'; say.style.fontSize = (sp * 0.8 * K) + 'px';
     wy = H * (narrow ? 0.11 : 0.1);
     sx = left + wp * 0.08; sy = wy + word.offsetHeight / K + sp * 0.7;
-    if (note) note.style.top = Math.round(sy + say.offsetHeight / K + (narrow ? 22 : 30)) + 'px';
+    // the note: on a phone under the name; on a wider screen at the foot of the screen, over the floor, clear of the
+    // toy box and the huddle (as the games chapter's card waits at the foot of its screen)
+    if (note) note.style.top = Math.round(narrow ? sy + say.offsetHeight / K + 22 : H * 0.92 - note.offsetHeight) + 'px';
     lastW = lastS = '';
   }
   function put(el, x, y, k, was) {            // k: 0 off in the left wing (narrow: a little below, unseen), 1 in its place

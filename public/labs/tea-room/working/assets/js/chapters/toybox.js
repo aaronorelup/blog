@@ -30,7 +30,9 @@ var H0_TALL = 0.2;                                 // (where the walk starts on 
 // and leaves for the left wing as the camera goes on to the box)
 var NAME_ROOM = [2.45, 2.85], NAME_OUT = [3.05, 3.6];
 // the box's track after the walk (r: screens since the walk ended) -> the test's own track (0..1)
-var TRACK = [[0, 0.06], [1.0, 0.3], [1.9, 0.46], [2.5, 0.78], [3.2, 1.0]];
+// (the step back after the burst, 0.34 -> 0.46, comes soon after it: the toys land in a picture that holds the whole
+// huddle, as the test's does once they have settled)
+var TRACK = [[0, 0.06], [1.0, 0.3], [1.12, 0.34], [1.5, 0.46], [2.5, 0.78], [3.2, 1.0]];
 // the last leg (wide screens): as the last card leaves, the camera draws back and lowers its eye a little, so that the
 // huddle stands under the next chapter's name (closing.js) and not across it (screens from the foot's top)
 var END = [-0.75, 0.35];
@@ -43,7 +45,7 @@ export function mount(host, options) {
     '<div class="tb-sky"></div>' +
     '<div class="tb-room"><canvas class="tb-gl"></canvas><img class="tb-flat" src="' + IMG + 'room.webp" width="2752" height="1536" alt="" decoding="async" hidden></div>' +
     '<div class="tb-garden"></div>' +
-    '<div class="tb-name"><div class="flat word"></div><div class="flat say"></div></div>';
+    '<div class="tb-name"><div class="flat word"></div><div class="flat say mono"></div></div>';
   top.innerHTML =
     '<div class="tb-tag" role="status" aria-live="polite"><p class="tag-from"></p><b class="tag-name"></b><p class="tag-how"></p></div>' +
     '<button class="tb-hint off" type="button" tabindex="-1"><span></span></button>' +
@@ -82,7 +84,7 @@ export function mount(host, options) {
   }
 
   // ------------------------------------------------------------------ the layout
-  var W = 1, H = 1, narrow = false, portrait = false, laid = false, wx = 0, wy = 0, sx = 0, sy = 0, pTrack = 7;
+  var upAll = 0, W = 1, H = 1, narrow = false, portrait = false, laid = false, wx = 0, wy = 0, sx = 0, sy = 0, pTrack = 7;
   function layout() {
     W = root.clientWidth; H = window.innerHeight; narrow = W <= 820; portrait = W / H < 0.9;
     host.classList.toggle('narrow', narrow);
@@ -90,9 +92,11 @@ export function mount(host, options) {
     // the name: look B's rule for a chapter's name (as closing.js has it): its size, clear of the rail, high up
     var wp = clamp(W * (portrait ? 0.15 : 0.115), 52, 190), sp = clamp(W * 0.0175, 17, 27);
     var left = narrow ? 16 : (parseFloat(getComputedStyle(root).getPropertyValue('--rail-w')) || 172) + Math.max(16, Math.min(46, W * 0.032)) * 2;
-    word.style.fontSize = (wp * K) + 'px'; say.style.fontSize = (sp * K) + 'px'; say.style.width = (sp * K * (narrow ? 13 : 17)) + 'px';
+    // (the count under the name is look B's count line, as the film chapter and the closing beat have it: mono, 0.8)
+    word.style.fontSize = (wp * K) + 'px'; say.style.fontSize = (sp * 0.8 * K) + 'px';
     wx = left; wy = H * (narrow ? 0.11 : 0.1);
     sx = left + wp * 0.08; sy = wy + word.offsetHeight / K + sp * 0.7;
+    upAll = sy + say.offsetHeight / K + 24;
     // the end of the box's track: the first post's top comes up at the foot of the screen
     pTrack = (marks.picks ? marks.picks.top : 7.1) - 1 - WALK[1];
     if (play) play.resize();
@@ -104,9 +108,10 @@ export function mount(host, options) {
     var tr, o = 1;
     if (out > 0 && narrow) {
       // (a narrow screen's left wing is its own edge, where a leaving word would leave its last letters standing: so
-      // there it fades as it rises a little, as it came on)
-      tr = 'translate3d(' + x.toFixed(2) + 'px,' + (y - out * H * 0.05).toFixed(2) + 'px,0) scale(' + (1 / K).toFixed(5) + ')'; o = clamp(1 - out * 1.6);
-      if (k < 1) { o = Math.min(o, clamp((k - 0.06) * 5.5)); tr = 'translate3d(' + x.toFixed(2) + 'px,' + (y + (1 - k) * H * 0.07 - out * H * 0.05).toFixed(2) + 'px,0) scale(' + (1 / K).toFixed(5) + ')'; }
+      // there it goes up and off the top of the screen, whole, as if the page carried it; never a fading ghost)
+      // (the name and its count line go up together, by one distance: the count's bottom off the top of the screen)
+      tr = 'translate3d(' + x.toFixed(2) + 'px,' + (y + (1 - k) * H * 0.07 - out * upAll).toFixed(2) + 'px,0) scale(' + (1 / K).toFixed(5) + ')';
+      if (k < 1) o = clamp((k - 0.06) * 5.5);
     }
     else if (out > 0) { var w = el.offsetWidth / K; tr = 'translate3d(' + (x - out * (Math.max(x, 0) + w + 30)).toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) scale(' + (1 / K).toFixed(5) + ')'; }
     else if (narrow) { tr = 'translate3d(' + x.toFixed(2) + 'px,' + (y + (1 - k) * H * 0.07).toFixed(2) + 'px,0) scale(' + (1 / K).toFixed(5) + ')'; o = clamp((k - 0.06) * 5.5); }
@@ -163,16 +168,17 @@ export function mount(host, options) {
     if (p < (WALK[0] + NAME_ROOM[0]) / 2) {
       kIn = RM ? (p > -1.6 ? 1 : 0) : narrow ? io(ss(NAME_IN[0] + 0.15, NAME_IN[1], p)) : io(ss(NAME_IN[0], NAME_IN[1], p));
       kSay = RM ? kIn : narrow ? io(ss(SAY_IN[0] + 0.15, SAY_IN[1], p)) : io(ss(SAY_IN[0], SAY_IN[1], p));
-      kOut = RM ? (p > -0.45 ? 1 : 0) : io(ss(NAME_LEAD_OUT[0], NAME_LEAD_OUT[1], p)); kSayOut = RM ? kOut : io(ss(NAME_LEAD_OUT[0] - 0.05, NAME_LEAD_OUT[1] - 0.05, p));
+      kOut = RM ? (p > -0.45 ? 1 : 0) : io(ss(NAME_LEAD_OUT[0], NAME_LEAD_OUT[1], p)); kSayOut = RM || narrow ? kOut : io(ss(NAME_LEAD_OUT[0] - 0.05, NAME_LEAD_OUT[1] - 0.05, p));
     } else {
       // (back on the room's wall: it comes on from the left wing, on every screen)
       kIn = kSay = 1;
       if (narrow && !RM) {
         // (a narrow screen: it rises into its place as it fades on, and fades as it rises away)
         kIn = io(ss(NAME_ROOM[0], NAME_ROOM[1], p)); kSay = io(ss(NAME_ROOM[0] + 0.05, NAME_ROOM[1] + 0.05, p));
-        kOut = io(ss(NAME_OUT[0], NAME_OUT[1], p)); kSayOut = io(ss(NAME_OUT[0] - 0.05, NAME_OUT[1] - 0.1, p));
+        kOut = io(ss(NAME_OUT[0], NAME_OUT[1], p)); kSayOut = kOut;
       } else {
-      kOut = RM ? (p > NAME_OUT[1] || p < (WALK[0] + WALK[1]) / 2 ? 1 : 0) : Math.max(1 - io(ss(NAME_ROOM[0], NAME_ROOM[1], p)), io(ss(NAME_OUT[0], NAME_OUT[1], p)));
+      // (motion off: it stands on the wall in the doorway's still, and is gone in the still of the huddle)
+      kOut = RM ? (p > WALK[1] + 0.5 * Math.max(1.5, pTrack) / 3.2 || p < (WALK[0] + WALK[1]) / 2 ? 1 : 0) : Math.max(1 - io(ss(NAME_ROOM[0], NAME_ROOM[1], p)), io(ss(NAME_OUT[0], NAME_OUT[1], p)));
       kSayOut = RM ? kOut : Math.max(1 - io(ss(NAME_ROOM[0] + 0.05, NAME_ROOM[1] + 0.05, p)), io(ss(NAME_OUT[0] - 0.05, NAME_OUT[1] - 0.1, p)));
       }
     }
@@ -212,8 +218,12 @@ export function mount(host, options) {
         if (play && !play.phone && marks.foot) {
           var fe = p - marks.foot.top, eEnd = RM ? (fe > (END[0] + END[1]) / 2 ? 1 : 0) : io(ss(END[0], END[1], fe));
           if (eEnd > 0) {
-            var r1 = play.rectAt(1), we = Math.min(r1.w * 1.28, W / H * PH, PW), he = we * H / W;
-            var endR = { x: clamp(r1.x - r1.w * 0.045, 0, PW - we), y: PH - he, w: we, h: he };
+            // (the whole height of the painting, from its left edge: the box stands to the right of the closing
+            // beat's words and its open lid below the name, the huddle beside it under the wall)
+            // (on a narrower screen it moves right just enough to keep the huddle's right end, about 2250 of the
+            // painting, inside the screen)
+            var we = Math.min(W / H * PH, PW), he = we * H / W;
+            var endR = { x: clamp(2250 - we, 0, PW - we), y: PH - he, w: we, h: he };
             rect = mixRect(rect, endR, eEnd);
           }
         }

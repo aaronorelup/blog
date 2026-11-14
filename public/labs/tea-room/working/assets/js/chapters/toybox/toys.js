@@ -134,6 +134,15 @@ function build(THREE, scene, def, gltf, maxAniso) {
       toy.tick = (dt, b) => {
         const going = !b.asleep && !b.held && b.knock <= 0 && b.rest === 0;
         if (going) { wad.paused = false; mixer.update(dt * 1.6); return true; }
+        // once it stands still it finishes its step, then stands as it stood in the box (the model's own pose, the
+        // one it has when it is set down in its place on a fresh load): so the huddle at rest is the same picture on
+        // every load and after any scrolling (it used to stop mid-step, wherever the waddle happened to be)
+        if (wad.time > 1e-4) {
+          const was = wad.time; wad.paused = false; mixer.update(dt * 1.6);
+          if (wad.time < was) { wad.stop(); wad.play(); }   // (stop() gives the model back its own pose)
+          wad.paused = true;
+          return true;
+        }
         return false;
       };
     }
