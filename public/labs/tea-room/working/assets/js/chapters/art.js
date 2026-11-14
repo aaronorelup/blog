@@ -52,6 +52,8 @@ export function mount(host, options) {
   var W = root.clientWidth, H = window.innerHeight;
   var scene = mountScene(worldEl, {
     pictures: PICTURES, still: HELD, onChange: function () { options.redraw(); },
+    // (a picture brought forward stands right of the rail on a wide screen)
+    inset: function () { var r = W > 820 && document.getElementById('rail'); return r ? Math.max(0, r.getBoundingClientRect().right) : 0; },
     // (the turn starts from the games chapter's last view: the same plate, at the same place)
     start: function (w, h) {
       return endPlate(w, h, nameRightOf((section.dataset.word || '').split('|'), w, parseFloat(getComputedStyle(root).getPropertyValue('--rail-w')) || 172));

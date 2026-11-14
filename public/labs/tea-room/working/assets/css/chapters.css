@@ -16,7 +16,7 @@
    first of them says why */
 #rail li.soon span, .index li.soon span { cursor: default; }
 #rail li.soon.first::after {
-  content: 'to come'; position: absolute; right: 0; top: 0.42em;
+  content: 'to come'; position: absolute; right: 0; top: -0.5em;   /* (above the line's end: a long name fills its line) */
   font: 500 8.5px/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--pc-gold);
 }
 .index li.soon .c { letter-spacing: 0.12em; text-transform: uppercase; font-size: 8.5px; color: var(--pc-gold); }

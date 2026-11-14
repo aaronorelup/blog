@@ -311,7 +311,7 @@ export function mount(host, options = {}) {
     const turn = io(q / QA), pan = -(1 - turn) * panDist;
     // (the grove does not fade up over the cloth: it is solid, and comes in from the left as the camera turns, while the
     // cloth's garden goes out on the right, solid too, as one painted world seen turning)
-    const grove = sp ? ss(0.0, 0.05, turn) : ss(0.16, 0.7, turn);
+    const grove = sp ? ss(0.0, 0.025, turn) : ss(0.16, 0.7, turn);
     // (the turn starts from the chapter before's view of the garden: its horizon eases to the avenue's own)
     cy = sp ? lerp(plateY + PLATE.horizon * plateS, cy0, turn) : cy0;
     const tq0 = QB - 0.02, T = Tmax * io((q - tq0) / (0.985 - tq0)) - lift;
@@ -479,12 +479,14 @@ export function mount(host, options = {}) {
       }
       let hpx = wpx / p.a;
       if (i === openIdx && fwd > 0) {
-        const tw = Math.min(0.92 * W, 0.78 * H * p.a), th = tw / p.a;
-        sx = lerp(sx, W / 2, fwd); sy = lerp(sy, 0.445 * H, fwd); wpx = lerp(wpx, tw, fwd); hpx = wpx / p.a;
+        // (it comes forward into the room right of the page's rail, never under it)
+        const inL = options.inset ? options.inset() : 0, mx = inL + (W - inL) / 2;
+        const tw = Math.min(0.92 * (W - inL) - (inL ? 24 : 0), 0.78 * H * p.a), th = tw / p.a;
+        sx = lerp(sx, mx, fwd); sy = lerp(sy, 0.445 * H, fwd); wpx = lerp(wpx, tw, fwd); hpx = wpx / p.a;
         ang *= 1 - fwd; dimO *= 1 - fwd; strO *= 1 - fwd; op = lerp(op, 1, fwd); haloO = lerp(haloO, 0.5, fwd); gO *= 1 - fwd; z = 300001;
         p.cap.style.opacity = p.tassel.style.opacity = (1 - fwd).toFixed(3);
         caption.style.opacity = fwd.toFixed(3);
-        caption.style.transform = 'translate3d(' + (W / 2).toFixed(1) + 'px,' + (0.445 * H + th / 2 + 20).toFixed(1) + 'px,0) translateX(-50%)';
+        caption.style.transform = 'translate3d(' + mx.toFixed(1) + 'px,' + (0.445 * H + th / 2 + 20).toFixed(1) + 'px,0) translateX(-50%)';
       }
       if (op <= 0.003 || sx + wpx < -80 || sx - wpx > W + 80 || sy + hpx * 0.5 + 60 < 0 || sy - hpx * 0.5 - (u < 1 ? p.L * (wpx / p.bw) : 12) > H) { hide(p); glowOff(p); continue; }
       show(p); flats++;
