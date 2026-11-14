@@ -166,7 +166,7 @@ export function benchLayout(W, H, rail) {
 export var AGENTS = {
   PACK: [-3.75, -3.0],     // (machines) the machine goes, the backdrop rolls up, the lamp and the table leave
   NAME: [-3.55, -2.85],    // (agents) the chapter's name comes on from the left wing over the bare room
-  TUNE: [-2.85, -2.45],    // (agents) the glass turns from the machine's picture to the terminal
+  TUNE: [-2.8, -2.6],      // (agents) the glass turns from the machine's picture to the terminal, in a cold flash
   DIVE: [-2.5, -1.0],      // (both) straight into the glass
   RM_CUT: -1.75            // motion off: one cut from the room to the terminal
 };

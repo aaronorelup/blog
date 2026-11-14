@@ -77,7 +77,7 @@ export function mount(host, options = {}) {
   scene.add(new THREE.HemisphereLight(0x39436a, 0x0b0b12, 1.1));
   const key = new THREE.PointLight(0xffd3a0, 0, 0, 1.5); world.add(key);
 
-  let W = 1, H = 1, tall = false, active = true, built = null, shown = true;
+  let W = 1, H = 1, IN = 0, tall = false, active = true, built = null, shown = true;
   const root = document.documentElement;
   const texts = [];                                                  // drawings that hold words: drawn again when the font arrives
 
@@ -425,7 +425,7 @@ export function mount(host, options = {}) {
       const b = ui.size(e);
       if (tall || !s.label) { ui.place(e, Math.round((W - b.w) / 2), Math.round(H * s.labelY), a); return; }
       const p = project(s.label);
-      ui.place(e, clamp(p.x - b.w / 2, 16, W - b.w - 16), Math.min(p.y, H - b.h - 18), p.behind ? 0 : a);
+      ui.place(e, clamp(p.x - b.w / 2, IN + 16, W - b.w - 16), Math.min(p.y, H - b.h - 18), p.behind ? 0 : a);
     });
     // the post cards: each stands where its helper set it down
     Object.entries(ui.posts).forEach(([k, card]) => {
@@ -442,7 +442,7 @@ export function mount(host, options = {}) {
       }
       const p = project(s.card), dist = camera.position.distanceTo(s.card), sc = clamp(7.2 / dist, 0.74, k === 'gauntlet' ? 0.8 : 1);
       if (k === 'gauntlet') a *= 1 - ss(0.82, 0.97, s.p) * 0;
-      const half = w * sc / 2, cx = s.a > 0.98 ? clamp(p.x, half + 20, W - half - 20) : p.x;
+      const half = w * sc / 2, cx = s.a > 0.98 ? clamp(p.x, IN + half + 20, W - half - 20) : p.x;
       ui.place(card.a, cx - w / 2, Math.min(p.y + 4, H - 16) - h, p.behind ? 0 : a, sc);
     });
     // the wall: the names under the ten screens, the key, the sound switch
@@ -506,9 +506,11 @@ export function mount(host, options = {}) {
     host.classList.toggle('at-tall', tall); uiHost.classList.toggle('at-tall', tall);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, options.maxDpr || 2));
     renderer.setSize(W, H, false); strokeWindow(W, H);
-    camera.aspect = tall ? W / (H * 1.3) : W / H;
+    // (the page's rail stands over the left of a wide window: the picture is framed for the part right of it, IN wide)
+    IN = tall ? 0 : Math.max(0, Math.min(W * 0.3, options.inset ? options.inset() : 0));
+    camera.aspect = tall ? W / (H * 1.3) : (W - IN) / H;
     // on a tall window the picture's middle sits in the upper part, and the words have the foot
-    if (tall) camera.setViewOffset(W, H * 1.3, 0, H * 0.3, W, H); else camera.clearViewOffset();
+    if (tall) camera.setViewOffset(W, H * 1.3, 0, H * 0.3, W, H); else if (IN > 0) camera.setViewOffset(W - IN, H, -IN, 0, W, H); else camera.clearViewOffset();
     ui.forget();
     if (!built || wasTall !== tall) {
       if (built) { built.dispose(); forgetStrokes(); world.clear(); world.add(key); flatland.clear(); texts.length = 0; holder.textContent = ''; scene.children.filter((o) => o.isLineSegments).forEach((o) => scene.remove(o)); }

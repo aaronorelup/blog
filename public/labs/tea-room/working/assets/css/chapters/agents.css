@@ -25,6 +25,8 @@ html.at-hot, html.at-hot body { cursor: pointer; }
 .ag-crt { position: absolute; border-radius: 13% / 15%; pointer-events: none;
   background: radial-gradient(120% 120% at 50% 50%, rgba(0, 0, 0, 0) 55%, rgba(4, 6, 14, 0.55) 100%), linear-gradient(200deg, rgba(190, 210, 255, 0.16), rgba(190, 210, 255, 0) 42%);
   box-shadow: inset 0 0 22px rgba(10, 14, 40, 0.7); }
+.ag-flash { position: absolute; border-radius: 13% / 15%; pointer-events: none; opacity: 0; mix-blend-mode: screen;
+  background: radial-gradient(closest-side, rgba(225, 235, 255, 0.95), rgba(150, 175, 255, 0.55) 70%, rgba(120, 150, 255, 0.2) 100%); }
 .ag-tv-body { position: absolute; inset: 0; width: 100%; height: 100%; filter: brightness(0.8); user-select: none; }
 /* the chapter's name is the page's (look B's flat word, as closing.js draws it): the test's own title is not shown */
 .ag-word, .ag-say { position: absolute; left: 0; top: 0; transform-origin: 0 0; }   /* (hidden by agents.js until they come on) */

@@ -28,7 +28,7 @@ var io = function (t) { t = clamp(t); return t < 0.5 ? 2 * t * t : 1 - Math.pow(
 // the test's walk: its 0..1 runs over LT screens, starting P0 screens from the section's top (the dive ends there)
 var LT = 11.5, P0 = AGENTS.DIVE[1];
 // after the walk (screens past its end): the cards go, then the camera comes back out of the glass into the room
-var CARDS = [0.2, 0.5], OUT = [0.45, 1.95], RM_OUT = 1.1;
+var CARDS = [0.45, 0.75], OUT = [0.7, 2.15], RM_OUT = 1.3;
 var T_HELD = 8.9;                                   // (the test's own held time: the frame its stills were made at)
 var K = 1.4;                                         // (look B lays its type out larger than it is drawn)
 
@@ -37,16 +37,17 @@ export function mount(host, options) {
   host.innerHTML =
     '<div class="ag-room"><img class="ag-room-img" src="' + IMG + 'room.webp" width="2752" height="1536" alt="" decoding="async"><div class="ag-vig"></div></div>' +
     '<div class="ag-glass"><div class="ag-box"></div></div>' +
-    '<div class="ag-tvw"><div class="ag-tv"><div class="ag-tv-glow"></div><div class="ag-crt"></div><img class="ag-tv-body" src="' + IMG + 'tv-body.webp" width="1200" height="1093" alt=""></div></div>' +
+    '<div class="ag-tvw"><div class="ag-tv"><div class="ag-tv-glow"></div><div class="ag-crt"></div><div class="ag-flash"></div><img class="ag-tv-body" src="' + IMG + 'tv-body.webp" width="1200" height="1093" alt=""></div></div>' +
     '<div class="flat word ag-word"></div><div class="flat say mono ag-say"></div>';
   var $ = function (s) { return host.querySelector(s); };
   var room = $('.ag-room'), roomImg = $('.ag-room-img'), glass = $('.ag-glass'), box = $('.ag-box'), tvw = $('.ag-tvw'), tvEl = $('.ag-tv'),
-    glowEl = $('.ag-tv-glow'), crt = $('.ag-crt'), body = $('.ag-tv-body'), word = $('.ag-word'), say = $('.ag-say');
+    glowEl = $('.ag-tv-glow'), crt = $('.ag-crt'), flash = $('.ag-flash'), body = $('.ag-tv-body'), word = $('.ag-word'), say = $('.ag-say');
   (section.dataset.word || '').split('|').forEach(function (line) { var l = document.createElement('span'); l.className = 'l'; l.textContent = line; word.appendChild(l); });
   say.textContent = section.dataset.say || '';
   word.style.visibility = say.style.visibility = 'hidden';
 
-  var view = mountScene(box, { still: HELD, reducedMotion: RM, invalidate: options.redraw, top: options.top });
+  var view = mountScene(box, { still: HELD, reducedMotion: RM, invalidate: options.redraw, top: options.top, inset: function () {
+    var rr = document.getElementById('rail'), rb = rr ? rr.getBoundingClientRect() : null; return rb && rb.width && rb.right < root.clientWidth * 0.4 ? rb.right : 0; } });
   // the pictures the way in needs before its first frame is whole
   var pending = 0;
   [body, roomImg].forEach(function (im) { if (!(im.complete && im.naturalWidth)) { pending++; var done = function () { pending--; options.redraw(); }; im.addEventListener('load', done, { once: true }); im.addEventListener('error', done, { once: true }); } });
@@ -57,7 +58,7 @@ export function mount(host, options) {
     var rr = document.getElementById('rail'), rb = rr ? rr.getBoundingClientRect() : null;
     tv = tvPlace(W, H, rb && rb.width ? { right: rb.right, bottom: rb.bottom } : null);
     Object.assign(tvEl.style, { left: tv.l + 'px', top: tv.t + 'px', width: tv.w + 'px', height: tv.h + 'px' });
-    Object.assign(crt.style, { left: (TV_GLASS.x0 * 100) + '%', top: (TV_GLASS.y0 * 100) + '%', width: ((TV_GLASS.x1 - TV_GLASS.x0) * 100) + '%', height: ((TV_GLASS.y1 - TV_GLASS.y0) * 100) + '%' });
+    [crt, flash].forEach(function (e) { Object.assign(e.style, { left: (TV_GLASS.x0 * 100) + '%', top: (TV_GLASS.y0 * 100) + '%', width: ((TV_GLASS.x1 - TV_GLASS.x0) * 100) + '%', height: ((TV_GLASS.y1 - TV_GLASS.y0) * 100) + '%' }); });
     // the room: where the bench's room stands at the machines chapter's end (a phone's a little lower: its camera is
     // tilted up there, machines.js low)
     var R = tv.room;
@@ -139,7 +140,10 @@ export function mount(host, options) {
     css(glowEl, 'visibility', tv.phone || !inLead ? '' : 'hidden');      // (the machines chapter's own set glows in its room)
     // the name: in from the left wing over the bare room; up and away as the camera goes for the glass (look B's word)
     var nk = RM ? (p > AGENTS.NAME[0] + 0.2 && p <= AGENTS.RM_CUT ? 1 : 0) : io(ss(AGENTS.NAME[0], AGENTS.NAME[1], p));
-    var gone = RM ? 0 : ss(D[0] + 0.05, D[0] + 0.55, p), up = RM ? 0 : ss(D[0], D[0] + 0.6, p) * H * 0.3;
+    // (a cold flash as the set changes what it shows: look B's own television goes cold before the camera goes in)
+    var fl = RM ? 0 : Math.sin(Math.PI * clamp((p - AGENTS.TUNE[0] + 0.06) / (AGENTS.TUNE[1] - AGENTS.TUNE[0] + 0.2)));
+    css(flash, 'opacity', inLead && fl > 0.002 ? (0.85 * fl).toFixed(3) : '0');
+    var gone = RM ? 0 : ss(D[0] + 0.02, D[0] + 0.32, p), up = RM ? 0 : ss(D[0], D[0] + 0.6, p) * H * 0.3;
     putName(word, left, wy, gone >= 1 ? 0 : nk, up, gone);
     putName(say, sx, sy, gone >= 1 ? 0 : nk, up * 0.7, gone);
     // the words and cards of the world: only while the world is the frame; they go before the camera leaves the glass
