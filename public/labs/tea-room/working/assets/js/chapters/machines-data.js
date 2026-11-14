@@ -22,6 +22,9 @@ export var MACHINES = [
     erase: [],
     crop: { cx: 800, cy: 430, vh: 790, vw: 940 },
     cropNarrow: { cx: 800, cy: 440, vh: 760, vw: 740 },
+    // the live page, its camera held at a three-quarter bearing (cam below): the rover stands lower in its picture
+    liveCrop: { cx: 800, cy: 540, vh: 900, vw: 1040 },
+    liveCropNarrow: { cx: 800, cy: 520, vh: 860, vw: 860 },
     view: 'HERO',
     kind: 'toggle',                     // parts and modes toggle; a mode needs a part
     modes: { isolate: 'ISOLATE', cut: 'CUT' },
@@ -35,7 +38,10 @@ export var MACHINES = [
     // (degrees; the page's HERO view starts there and then drifts on by itself, which this holds still)
     stage: 'stage',
     cam: { az: 36 },
-    turn: { from: -38, to: 12, lean: 34, sway: 9, tilt: 12 }
+    // the camera's turn about that bearing (degrees): the scroll carries it from `from` to `to`, the pointer leans
+    // it `lean` each way, and a slow sway of `sway` runs by itself. It starts three-quarters on, the crane already
+    // reaching; turned much further left the rover leaves the cloth's lower edge, past about +60 HAB 3 stands between.
+    turn: { from: 2, to: 18, lean: 22, sway: 6, tilt: 12 }
   },
   {
     key: 'mole1',
@@ -66,6 +72,7 @@ export var MACHINES = [
     stage: 'st',
     // its SIDE view, held closer and at a fixed bearing: the machine big in its trench, the drums at the face
     cam: { az: 14, el: 22, d: 4.8, sy: -40 },
+    // (the same turn about that bearing; the camera follows the machine, so a far lean keeps it in the picture)
     turn: { from: -8, to: 10, lean: 20, sway: 5, tilt: 9 }
   }
 ];
