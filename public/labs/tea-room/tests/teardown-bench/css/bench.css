@@ -46,60 +46,96 @@ button { font: inherit; color: inherit; }
 .tb { position: absolute; inset: 0; }
 .tb > * { position: absolute; }
 
-/* the room at night: look B's own picture, the camera on it */
-.room { inset: 0; overflow: hidden; }
-.room-img { position: absolute; left: 0; top: 0; width: 2752px; height: 1536px; max-width: none; transform-origin: 0 0; will-change: transform; filter: saturate(0.92) brightness(0.8); user-select: none; }
-.room::after { content: ''; position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(120% 90% at 34% 46%, rgba(10, 8, 22, 0) 30%, rgba(10, 8, 22, 0.55) 75%, rgba(8, 6, 18, 0.82) 100%); }
+/* ---------------------------------------------------------------- the world: the room, the bench, the lamp, the television.
+   One layer, moved by the camera as one. Its order is its depth: the room, the light falling from the lamp, the television
+   on the floor, the table, the pool of light on the table, the machine standing in that light, the lamp. */
+.tb { --lit: 1; }
+.world { inset: 0; will-change: transform; }
+.world > * { position: absolute; }
 
-/* the television at the back of the room, playing the machine's film with no sound */
-.tv { aspect-ratio: 1200 / 1093; pointer-events: none; filter: brightness(0.82); }
-/* mirrored: its screen faces out from behind the frame */
-.tv-flip { position: absolute; inset: 0; transform: scaleX(-1); }
-.tv-screen { position: absolute; left: 10%; top: 34.3%; width: 50.4%; height: 49.4%; overflow: hidden; background: rgb(14, 17, 30); border-radius: 12% / 14%; }
-.tv-screen img, .tv-screen video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: saturate(0.85) brightness(0.9) sepia(0.12); }
+/* the room at night: look B's own picture */
+.room { inset: 0; overflow: hidden; }
+.room-img { position: absolute; left: 0; top: 0; width: 2752px; height: 1536px; max-width: none; transform-origin: 0 0; filter: saturate(0.9) brightness(0.72); user-select: none; }
+/* everything away from the lamp sinks into the night */
+.room::after { content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(70% 85% at var(--tcx) 46%, rgba(10, 8, 22, 0) 25%, rgba(10, 8, 22, 0.5) 70%, rgba(8, 6, 18, 0.8) 100%); }
+
+/* the lamp's light falling through the room: on the wall behind the bench, brightest down where it meets the table */
+.cone { inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: calc(0.18 + 0.82 * var(--lit));
+  background:
+    radial-gradient(calc(var(--trx) * 0.95) calc(var(--tcy) * 0.62) at var(--tcx) calc(var(--tcy) * 0.66), rgba(255, 196, 128, 0.62), rgba(255, 180, 110, 0.32) 45%, rgba(255, 170, 100, 0) 100%),
+    radial-gradient(calc(var(--trx) * 0.5) calc(var(--trx) * 0.5) at var(--lx) var(--ly), rgba(255, 214, 150, 0.55), rgba(255, 190, 120, 0) 100%); }
+
+/* the table: look B's low table, drawn large, the workbench */
+.table { max-width: none; height: auto; pointer-events: none; user-select: none; filter: brightness(0.86) saturate(0.95); }
+/* the paper sweep: lit by the lamp, dark when the lamp is */
+.sweep { left: 0; top: 0; pointer-events: none; filter: brightness(calc(0.3 + 0.7 * var(--lit))); }
+.sweep svg { display: block; overflow: visible; }
+/* the pool of lamplight on the table top, where the machine stands */
+.pool { inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: calc(0.12 + 0.88 * var(--lit));
+  background: radial-gradient(calc(var(--trx) * 0.78) calc(var(--try) * 1.15) at var(--tcx) calc(var(--tcy) - var(--try) * 0.12),
+    rgba(255, 222, 170, 0.95), rgba(255, 206, 150, 0.78) 40%, rgba(255, 190, 120, 0.28) 75%, rgba(255, 180, 110, 0) 100%); }
+/* the soft shadow on the table under the machine */
+.shade { inset: 0; pointer-events: none; mix-blend-mode: multiply; opacity: calc(0.25 + 0.75 * var(--lit));
+  background: radial-gradient(calc(var(--trx) * 0.42) calc(var(--try) * 0.32) at var(--tcx) calc(var(--tcy) + var(--try) * 0.12), rgba(70, 44, 40, 0.55), rgba(70, 44, 40, 0) 100%); }
+
+/* the television on the floor beside the bench, playing the machine's film with no sound */
+.tv { aspect-ratio: 1200 / 1093; pointer-events: none; }
+.tv-glow { position: absolute; left: -45%; right: -25%; top: -30%; bottom: -30%; pointer-events: none; mix-blend-mode: screen;
+  background: radial-gradient(closest-side, rgba(150, 175, 255, 0.24), rgba(150, 175, 255, 0) 100%); }
+/* mirrored: its screen turns to the bench and the room (the picture on it is turned back the right way) */
+.tv-flip { position: absolute; inset: 0; transform: scaleX(-1); filter: brightness(0.8); }
+.tv-screen { position: absolute; left: 10%; top: 34.3%; width: 50.4%; height: 49.4%; overflow: hidden; background: rgb(226, 220, 208); border-radius: 12% / 14%; transform: scaleX(-1); }
+.tv-screen img, .tv-screen video { position: absolute; max-width: none; filter: saturate(0.9) sepia(0.15) brightness(1.06); }
+.tv-screen::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 18px rgba(20, 18, 40, 0.55); background: linear-gradient(160deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 40%); }
 .tv-film { opacity: 0; transition: opacity 0.6s; }
 .tv-film.on { opacity: 1; }
 .tv-body { position: absolute; inset: 0; width: 100%; height: 100%; }
-.tv::after { content: ''; position: absolute; left: 20%; right: -40%; top: 10%; bottom: -45%; z-index: -1;
-  background: radial-gradient(closest-side, rgba(150, 170, 255, 0.16), rgba(150, 170, 255, 0) 100%); }
 
-/* the lamp over the table: warm light on the floor around the frame */
-.pool { left: 0; top: 0; width: 100%; height: 100%; pointer-events: none;
-  background: radial-gradient(42% 46% at 33% 60%, rgba(255, 196, 120, 0.2), rgba(255, 196, 120, 0) 70%); mix-blend-mode: screen; }
-
-/* ---------------------------------------------------------------- the bench: the machine, lit, in a clean frame */
-.bench { margin: 0; will-change: transform, opacity; }
-.view { position: relative; overflow: hidden; border-radius: 22px; background: rgb(236, 230, 220);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 226, 180, 0.18), 0 0 120px rgba(255, 190, 110, 0.12); isolation: isolate; }
+/* ---------------------------------------------------------------- the machine on the bench.
+   Its page's pale studio is multiplied into the lamplight: where the page is pale, the bench and the light show through;
+   where the machine is, it is lit by the lamp; the page's own shadows fall on the table. The edges fade into the room. */
+.bench { margin: 0; }
+.view { position: relative; overflow: hidden; background: transparent; mix-blend-mode: multiply; opacity: var(--lit);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 11%, #000 89%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 9%, #000 86%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent 0, #000 11%, #000 89%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 9%, #000 86%, transparent 100%);
+  mask-composite: intersect; }
 .pics { position: absolute; inset: 0; }
 .pic { position: absolute; max-width: none; opacity: 0; transition: opacity 0.45s ease; transform-origin: 50% 55%; user-select: none; }
 .pic.on { opacity: 1; }
+/* white, in a multiplied layer, is nothing: it lifts the stills' console out of the picture */
+.erase { position: absolute; inset: 0; pointer-events: none; }
+.erase i { position: absolute; background: #fff; }
+.alive .erase { display: none; }
 .holder { position: absolute; inset: 0; pointer-events: none; }
 .holder iframe { position: absolute; border: 0; max-width: none; opacity: 0; transition: opacity 0.6s ease; pointer-events: none; background: transparent; }
 .holder iframe.on { opacity: 1; }
 .held .holder { pointer-events: auto; }
 .held .holder iframe { pointer-events: auto; }
-/* the page's own light is a pale studio: warmed to the lamp */
-.pic, .holder iframe { filter: sepia(0.16) saturate(1.06) brightness(0.98); }
-.warm { position: absolute; inset: 0; pointer-events: none; z-index: 2;
-  background: radial-gradient(90% 70% at 50% 18%, rgba(255, 214, 160, 0.10), rgba(255, 214, 160, 0) 60%),
-              radial-gradient(130% 120% at 50% 45%, rgba(40, 24, 40, 0) 55%, rgba(40, 24, 40, 0.30) 100%); }
-.dim { position: absolute; inset: 0; background: rgb(22, 18, 32); opacity: 0; pointer-events: none; z-index: 3; }
-.film-box { position: absolute; inset: 0; z-index: 4; background: rgb(12, 12, 20); }
+.pic, .holder iframe, .film { filter: saturate(1.05) contrast(1.04); }
+.film-box { position: absolute; inset: 0; z-index: 4; background: #fff; }
 .film-box[hidden] { display: none; }
-.film { width: 100%; height: 100%; object-fit: contain; }
-.waking { position: absolute; left: 14px; bottom: 12px; z-index: 5; padding: 5px 11px; border-radius: 999px; background: rgba(21, 23, 38, 0.82);
-  font: 500 11px/1.4 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--quiet); }
+.film { position: absolute; max-width: none; }
+.waking { position: absolute; left: 50%; bottom: 16%; transform: translateX(-50%); z-index: 5; margin: 0; padding: 5px 11px; border-radius: 999px; background: rgba(21, 23, 38, 0.82);
+  font: 500 11px/1.4 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--quiet); white-space: nowrap; }
 .waking[hidden] { display: none; }
 
-.plate { display: flex; align-items: center; gap: 12px; margin-top: 12px; padding: 0 4px; min-height: 40px; }
-.plate-name { font: 700 22px/1 var(--font-display); color: var(--head); letter-spacing: 0.01em; }
-.plate-what { font: 400 15px/1.3 var(--font-serif); color: var(--strong); opacity: 0.9; }
-.turn-btn { margin-left: auto; padding: 9px 16px; border: 0; border-radius: 999px; background: var(--lamp); color: rgb(40, 30, 24); font: 700 14px/1 var(--font-body); cursor: pointer; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35); }
+/* the lamp */
+.lamp { pointer-events: none; }
+.lamp-svg { display: block; width: 100%; height: auto; overflow: visible; filter: brightness(calc(0.55 + 0.45 * var(--lit))); }
+.lamp-glow { position: absolute; left: -160%; right: -160%; top: -70%; bottom: -90%; mix-blend-mode: screen; opacity: calc(0.15 + 0.85 * var(--lit));
+  background: radial-gradient(closest-side, rgba(255, 220, 160, 0.6), rgba(255, 190, 120, 0.2) 45%, rgba(255, 180, 110, 0) 100%); }
+
+/* the label on the bench's front edge: its name, and the one button that hands it to the reader */
+.plate { position: absolute; left: 50%; top: calc(100% - 8px); transform: translateX(-50%); display: flex; align-items: center; gap: 10px; margin: 0;
+  padding: 6px 6px 6px 16px; min-height: 40px; border-radius: 999px; background: var(--card); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(74, 68, 90, 0.85); white-space: nowrap; z-index: 6; }
+.plate-name { font: 700 19px/1 var(--font-display); color: var(--head); letter-spacing: 0.01em; }
+.plate-what { font: 400 14px/1.3 var(--font-serif); color: var(--strong); opacity: 0.9; }
+.turn-btn { padding: 8px 14px; border: 0; border-radius: 999px; background: var(--lamp); color: rgb(40, 30, 24); font: 700 13.5px/1 var(--font-body); cursor: pointer; }
 .turn-btn[hidden] { display: none; }
+.plate:not(:has(.turn-btn:not([hidden]))) { padding-right: 16px; }
 .held .turn-btn { background: var(--accent); color: #fff; }
-.held .view { box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 0 3px var(--lamp); }
 
 /* ---------------------------------------------------------------- the tabs: the four machines */
 .tabs { left: 4vw; top: 3.2vh; display: flex; gap: 8px; z-index: 6; }
@@ -110,7 +146,7 @@ button { font: inherit; color: inherit; }
 .tab.on { color: var(--head); background: var(--card); }
 
 /* ---------------------------------------------------------------- the cards */
-.dock { right: 4vw; top: 0; bottom: 0; width: var(--dock-w); pointer-events: none; z-index: 5; }
+.dock { left: 4vw; top: 0; bottom: 0; width: var(--dock-w); pointer-events: none; z-index: 5; }
 .card { border-radius: 20px; background: var(--card); box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(74, 68, 90, 0.85); }
 .dock .card { position: absolute; left: 0; right: 0; bottom: 9vh; padding: 20px 22px 20px; opacity: 0; transform: translateY(14px); transition: opacity 0.35s ease, transform 0.35s ease; pointer-events: none; }
 .dock .card.up { opacity: 1; transform: none; pointer-events: auto; }
@@ -176,13 +212,11 @@ button { font: inherit; color: inherit; }
 .phone .tabs { left: 12px; right: 12px; top: 12px; gap: 6px; }
 .phone .tab { flex: 1; padding: 8px 4px 10px; font-size: 10.5px; letter-spacing: 0.04em; text-align: center; white-space: nowrap; }
 .phone .tv { display: none; }
-.phone .pool { background: radial-gradient(70% 40% at 50% 30%, rgba(255, 196, 120, 0.18), rgba(255, 196, 120, 0) 70%); }
-.phone .view { border-radius: 18px; }
-.phone .plate { margin-top: 8px; gap: 8px; min-height: 34px; }
-.phone .plate-name { font-size: 18px; }
+.phone .plate { top: calc(100% - 4px); gap: 8px; min-height: 34px; padding: 4px 4px 4px 13px; }
+.phone .plate-name { font-size: 16px; }
 .phone .plate-what { display: none; }
 .phone .turn-btn { padding: 8px 13px; font-size: 13px; }
-.phone .dock { left: 12px; right: 12px; width: auto; top: calc(var(--bench-bottom) + 54px); bottom: 12px; }
+.phone .dock { left: 12px; right: 12px; width: auto; top: calc(var(--bench-bottom) + 46px); bottom: 12px; }
 .phone .dock .card { top: 0; bottom: auto; padding: 16px 17px 16px; max-height: 100%; overflow: hidden; }
 .phone .lead-title { font-size: 32px; }
 .phone .lead-say { font-size: 16px; }
