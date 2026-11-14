@@ -73,7 +73,7 @@ export const MACHINES = [
     poster: '/media/teardown-lab/hab3/halted.webp',
     // its stills with no labels laid over the module: the halted one, the section through it
     stills: ['/media/teardown-lab/hab3/halted.webp', '/media/teardown-lab/hab3/halted.webp', '/media/teardown-lab/hab3/halted.webp'],
-    keep: { 'hab3/halted': [380, 130, 760, 480] },
+    keep: { 'hab3/halted': [400, 140, 740, 470] },
     crop: { cx: 770, cy: 360, vh: 800, vw: 950 },
     cropNarrow: { cx: 790, cy: 330, vh: 900, vw: 860 },
     hero: { view: 'HERO' },

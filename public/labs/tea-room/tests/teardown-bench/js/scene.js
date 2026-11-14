@@ -537,14 +537,21 @@ function mountList(host, opt) {
     const sec = el('section', 'li-m');
     sec.innerHTML = `
       <div class="li-head"><h2>${m.name}</h2><p>${m.what}</p></div>
-      <div class="li-pic"><img src="${m.stills[0]}" alt="${m.name}, from its teardown page" loading="lazy" decoding="async"></div>
+      <div class="li-pic">
+        <div class="room"><img class="li-room" src="${ROOM.src}" alt="" loading="lazy" decoding="async"></div>
+        <div class="cone"></div>
+        <img class="table" src="${IMG}bench-table.webp" width="873" height="682" alt="" loading="lazy" decoding="async">
+        <div class="sweep"></div><div class="pool"></div><div class="shade"></div>
+        <div class="view"><img class="li-still" src="${m.stills[0]}" alt="${m.name}, from its teardown page, standing on the bench" loading="lazy" decoding="async"><div class="erase"></div></div>
+        <div class="lamp">${LAMP_SVG.replace('tbLampPaper', 'tbLampPaper' + m.key).replace('url(#tbLampPaper)', 'url(#tbLampPaper' + m.key + ')')}<div class="lamp-glow"></div></div>
+      </div>
       <div class="li-film" hidden><video playsinline preload="none" muted></video></div>
       <ol class="li-parts">${m.parts.map((p) => `<li class="card"><h3>${p.name}</h3><p class="p-num"><b>${p.num}</b><span>${p.unit}</span></p><p class="p-say">${p.say}</p></li>`).join('')}
         <li class="card"><h3>Break it: ${m.breakIt.label.toLowerCase()}</h3><p class="p-say">${m.breakIt.say}</p></li></ol>
       <p class="e-btns"><button type="button" class="btn li-play">Watch its film</button><a class="btn" href="${m.page}">Open the full teardown</a></p>
       <div class="sound" hidden><span class="sound-say">The film has sound. It stays off until you turn it on.</span>
         <span class="switch"><button type="button" class="snd-off" aria-pressed="true">Sound off</button><button type="button" class="snd-on" aria-pressed="false">Sound on</button></span></div>`;
-    const pic = sec.querySelector('.li-pic img');
+    const pic = sec.querySelector('.li-still');
     const filmBox = sec.querySelector('.li-film'), video = sec.querySelector('video'), sound = sec.querySelector('.sound');
     sec.querySelector('.li-play').addEventListener('click', (e) => {
       const on = filmBox.hidden;
@@ -554,11 +561,28 @@ function mountList(host, opt) {
     });
     sec.querySelector('.snd-on').addEventListener('click', () => { video.muted = false; sec.querySelector('.snd-on').setAttribute('aria-pressed', 'true'); sec.querySelector('.snd-off').setAttribute('aria-pressed', 'false'); });
     sec.querySelector('.snd-off').addEventListener('click', () => { video.muted = true; sec.querySelector('.snd-on').setAttribute('aria-pressed', 'false'); sec.querySelector('.snd-off').setAttribute('aria-pressed', 'true'); });
+    // the same bench as the moving chapter, still: the table, the paper sweep, the lamp, the machine's still on it
     sec._fit = () => {
-      const box = pic.parentElement, w = box.clientWidth, h = box.clientHeight;
-      const c = w < 600 ? m.cropNarrow : m.crop;
-      const r = cropRect(w, h, { cx: c.cx, cy: c.cy, vh: 900, vw: c.vw });
+      const box = sec.querySelector('.li-pic'), w = box.clientWidth, h = box.clientHeight;
+      if (!w || !h) return;
+      const bx = w * 0.06, by = h * 0.1, bw = w * 0.88, bh = h * 0.72;
+      const view = box.querySelector('.view');
+      Object.assign(view.style, { left: bx + 'px', top: by + 'px', width: bw + 'px', height: bh + 'px' });
+      const tw = bw * 1.16, ts = tw / TABLE.w, tcx = bx + bw / 2, tcy = by + bh * 0.84;
+      Object.assign(box.querySelector('.table').style, { left: (tcx - TABLE.cx * ts) + 'px', top: (tcy - TABLE.cy * ts) + 'px', width: tw + 'px' });
+      for (const [k, v] of [['--tcx', tcx], ['--tcy', tcy], ['--trx', TABLE.rx * ts], ['--try', TABLE.ry * ts], ['--lx', tcx], ['--ly', h * 0.07]]) box.style.setProperty(k, v + 'px');
+      box.querySelector('.sweep').innerHTML = sweepSvg(bx, by, bw, bh, tcx, tcy, TABLE.ry * ts, w);
+      const lw = Math.max(26, w * 0.045);
+      Object.assign(box.querySelector('.lamp').style, { left: (tcx - lw / 2) + 'px', top: '-2px', width: lw + 'px' });
+      const rs = Math.max(w / ROOM.w, h / ROOM.h) * 1.15;
+      Object.assign(box.querySelector('.li-room').style, { width: ROOM.w * rs + 'px', height: ROOM.h * rs + 'px',
+        left: clamp(tcx - 1180 * rs, w - ROOM.w * rs, 0) + 'px', top: clamp(h * 0.5 - 760 * rs, h - ROOM.h * rs, 0) + 'px' });
+      const c = w < 600 ? { ...m.crop, vh: m.crop.vh * 1.05 } : m.crop;
+      const r = cropRect(bw, bh, c);
       Object.assign(pic.style, { left: r.left + 'px', top: r.top + 'px', width: r.W + 'px', height: r.H + 'px' });
+      const key = m.stills[0].replace(/^.*teardown-lab\//, '').replace(/\.webp$/, ''), k = r.W / 1600;
+      const boxes = [...outside(m.keep && m.keep[key]), ...((m.erase && m.erase[key]) || []).map((b) => [...b, 'w'])];
+      box.querySelector('.erase').innerHTML = boxes.map(([x, y, bw2, bh2, kind]) => `<i${kind ? ' class="word"' : ''} style="left:${(r.left + x * k).toFixed(1)}px;top:${(r.top + y * k).toFixed(1)}px;width:${(bw2 * k).toFixed(1)}px;height:${(bh2 * k).toFixed(1)}px"></i>`).join('');
     };
     root.appendChild(sec);
   }

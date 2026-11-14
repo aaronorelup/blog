@@ -121,6 +121,8 @@ button { font: inherit; color: inherit; }
 .film-box { position: absolute; inset: 0; z-index: 4; background: #fff; }
 .film-box[hidden] { display: none; }
 .film { position: absolute; max-width: none; }
+/* the film is the page as it was recorded, console and all: only its middle, where the machine is, comes onto the bench */
+.film-box { -webkit-mask-image: radial-gradient(44% 46% at 50% 47%, #000 62%, transparent 100%); mask-image: radial-gradient(44% 46% at 50% 47%, #000 62%, transparent 100%); }
 .waking { position: absolute; left: 50%; bottom: 16%; transform: translateX(-50%); z-index: 5; margin: 0; padding: 5px 11px; border-radius: 999px; background: rgba(21, 23, 38, 0.82);
   font: 500 11px/1.4 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--quiet); white-space: nowrap; }
 .waking[hidden] { display: none; }
@@ -240,8 +242,12 @@ button { font: inherit; color: inherit; }
 .tb-list .lead { padding: 22px 24px; }
 .li-head h2 { font: 700 34px/1.1 var(--font-display); color: var(--head); }
 .li-head p { font: 400 17px/1.4 var(--font-serif); color: var(--strong); }
-.li-pic { position: relative; margin-top: 14px; aspect-ratio: 4 / 3; max-width: 860px; overflow: hidden; border-radius: 22px; background: rgb(236, 230, 220); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); }
-.li-pic img { position: absolute; max-width: none; filter: sepia(0.16) saturate(1.06) brightness(0.98); }
+.li-pic { position: relative; margin-top: 14px; aspect-ratio: 4 / 3; max-width: 860px; overflow: hidden; border-radius: 22px; background: rgb(20, 16, 34); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); --lit: 1; isolation: isolate; }
+.li-pic > * { position: absolute; }
+.li-pic .room { inset: 0; }
+.li-room { position: absolute; max-width: none; filter: saturate(0.9) brightness(0.72); }
+.li-still { position: absolute; max-width: none; filter: brightness(1.09) saturate(1.06) contrast(1.03); }
+.li-pic .view { position: absolute; }
 .li-film { margin-top: 12px; border-radius: 18px; overflow: hidden; background: #000; }
 .li-film[hidden] { display: none; }
 .li-film video { width: 100%; height: auto; aspect-ratio: 16 / 9; }
