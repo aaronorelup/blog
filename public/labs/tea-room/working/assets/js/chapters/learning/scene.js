@@ -243,11 +243,8 @@ export function mount(host, options = {}) {
     lastShut = shut;
     // once the camera is well away from the desk, the shut book is drawn with the room (the next chapter's own)
     const gl = lift >= 0.5;
-    if (coverGL.visible !== gl) {
-      coverGL.visible = gl; layer.style.visibility = gl ? 'hidden' : '';
-      if (gl) { const f = book.faces[0]; coverGL.userData.paint(f.w, f.h, parseFloat(f.el.style.fontSize) || 10, tall); }
-      glDirty = true;
-    }
+    if (coverGL.visible !== gl) { coverGL.visible = gl; layer.style.visibility = gl ? 'hidden' : ''; glDirty = true; }
+    if (gl) { const f = book.faces[0]; if (coverGL.userData.paint(f.w, f.h, parseFloat(f.el.style.fontSize) || 10, tall)) glDirty = true; }
     // the light: the desk's corner; as the camera leaves, the far lamps come on and the andon burns up again
     HS.look(ss(0.3, 1, lift), rad(48));
 

@@ -84,7 +84,8 @@ export function mount(host, options) {
   var cam = { p: [0, 0, 0], q: [0, 0, 0], fov: 46 };
   var look = new Vector3(), v = new Vector3(), pt = { x: 0, y: 0, behind: false };
   var box = { x0: 0, y0: 0, x1: 0, y1: 0 }, safe = { x0: 0, y0: 0, x1: 1, y1: 1 };
-  var sway = { x: 0, y: 0 }, lastT = NaN, lastZoom = 1;
+  var sway = { x: 0, y: 0 }, lastT = NaN, lastZoom = 1, lastKey = '';
+  var pace = { ms: 16, at: NaN, n: 0, slow: false, movedAt: -1e9, scale: 1 };
 
   var railRect = function () { var rr = document.getElementById('rail'), rb = rr ? rr.getBoundingClientRect() : null; return rb && rb.width ? { right: rb.right, bottom: rb.bottom } : null; };
 
@@ -115,12 +116,12 @@ export function mount(host, options) {
 
   // the learning chapter drew last: everything this chapter depends on is put back the way it wants it
   function takeOver() {
-    renderer.setPixelRatio(dpr); renderer.setSize(W, H, false);
+    pace.scale = 1; renderer.setPixelRatio(dpr); renderer.setSize(W, H, false);
     camera.aspect = W / H; camera.near = 0.1;
     HS.sky.stars.material.size = 2.3 * dpr;
     pl = plan(pieces, tall);
     deskBook();
-    lastU = -1; lastGaps = -1; dirty = true;
+    lastU = -1; lastGaps = -1; dirty = true; lastKey = '';
   }
 
   function layout() {
@@ -178,7 +179,7 @@ export function mount(host, options) {
   }
 
   // ------------------------------------------------------------------ the drawing (the test's scene.js render())
-  function render(T, time, sw, close) {
+  function render(T, time, sw, close, shadowsNow) {
     var u = clamp((T - ACT.apart0) / (ACT.apart1 - ACT.apart0));
     var gaps = 1 - 0.3 * close;
     pose(pieces, pl, u, gaps);
@@ -249,7 +250,7 @@ export function mount(host, options) {
     HS.petalsWide.visible = keep && !tall; HS.petalsTall.visible = keep && tall;
 
     HS.petals.update(time);
-    if (u !== lastU || gaps !== lastGaps) { lastU = u; lastGaps = gaps; renderer.shadowMap.needsUpdate = true; }
+    if ((u !== lastU || gaps !== lastGaps) && shadowsNow) { lastU = u; lastGaps = gaps; renderer.shadowMap.needsUpdate = true; }
     renderer.render(HS.scene, camera);
   }
 
@@ -274,6 +275,8 @@ export function mount(host, options) {
       return true;
     }
     if (HS.claim(glHost, 'site')) takeOver();
+    var f0 = book.faces[0];
+    if (HS.coverGL.userData.paint(f0.w, f0.h, parseFloat(f0.el.style.fontSize) || 10, tall)) dirty = true;
     css(glHost, 'visibility', ''); css(leaders, 'visibility', ''); css(labelBox, 'visibility', '');
 
     // where the card is (the page itself, not the camera's glide behind it): the drawing makes room for it
@@ -313,7 +316,25 @@ export function mount(host, options) {
       if (Math.abs(ax - sway.x) > 0.001 || Math.abs(ay - sway.y) > 0.001) options.redraw();
       sw = sway;
     }
-    render(T, HELD ? T_HELD : t, sw, close);
+    // Pace (as the learning chapter keeps it): the drawing is drawn again only when something in it has changed, and
+    // for the petals and the lamps' flicker fifteen times a second. A machine that cannot keep up (no graphics card)
+    // gets the picture at half its pixels and without the moon's shadows moving while the camera moves, and does
+    // without the flicker and the petals' fall; the moment the camera stops, the whole picture is drawn again, so a
+    // place looks the same however it was reached.
+    var running = !HELD && !RM, now = performance.now();
+    if (running && !isNaN(pace.at)) { var gap = now - pace.at; if (gap > 0 && gap < 1000) { pace.ms += (gap - pace.ms) * 0.15; pace.n++; } if (pace.n > 6 && pace.ms > 50) pace.slow = true; }
+    pace.at = running ? now : NaN;
+    var key = T.toFixed(5) + ',' + close.toFixed(4) + ',' + (sw ? sw.x.toFixed(3) + sw.y.toFixed(3) : '') + ',' + Math.round(safe.x0) + ',' + Math.round(safe.y0) + ',' + Math.round(safe.x1) + ',' + Math.round(safe.y1) + ',' + W + ',' + H;
+    var moved = key !== lastKey;
+    if (moved) pace.movedAt = now;
+    var resting = !running || now - pace.movedAt > 350;
+    var scale = pace.slow && !resting ? 0.5 : 1;
+    if (scale !== pace.scale) { pace.scale = scale; renderer.setPixelRatio(dpr * scale); renderer.setSize(W, H, false); dirty = true; }
+    var tick = running && !pace.slow && (t - lastGL >= 1 / 15 || t < lastGL);
+    if (dirty || moved || tick) {
+      render(T, HELD ? T_HELD : pace.slow ? T_HELD : t, sw, close, resting || !pace.slow);
+      lastGL = t; dirty = false; lastKey = key;
+    }
 
     // the names: each appears as its piece lifts and rides with it
     var colX = 0, lastY = -1e9;
