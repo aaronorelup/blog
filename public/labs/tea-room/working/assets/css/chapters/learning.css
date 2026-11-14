@@ -177,7 +177,7 @@
 .lr-gl .lb-gl { opacity: 1; }
 /* the lamps low (the chapter's end, under the next chapter's name): darkest at the top left, where the name stands */
 .lr-low { width: 100%; height: 100%; pointer-events: none; opacity: 0;
-  background: radial-gradient(120% 110% at 18% 8%, rgba(8, 7, 18, 0.9), rgba(8, 7, 18, 0.55) 55%, rgba(8, 7, 18, 0.35) 100%); }
+  background: radial-gradient(75% 95% at 24% 22%, rgba(8, 7, 18, 0.96), rgba(8, 7, 18, 0.93) 50%, rgba(8, 7, 18, 0.72) 82%, rgba(8, 7, 18, 0.55) 100%); }
 @media (max-aspect-ratio: 9/10) {
   .lr-low { background: linear-gradient(to bottom, rgba(8, 7, 18, 0.93), rgba(8, 7, 18, 0.86) 30%, rgba(8, 7, 18, 0.5) 52%, rgba(8, 7, 18, 0.24) 78%, rgba(8, 7, 18, 0.2)); }
 }

@@ -17,7 +17,7 @@ var io = function (t) { t = clamp(t, 0, 1); return t < 0.5 ? 2 * t * t : 1 - Mat
 export function mount(host, options) {
   var root = document.documentElement, K = 1.4;                 // (look B lays its type out larger than it is drawn)
   host.innerHTML = '<div class="flat word"></div><div class="flat say mono"></div>';
-  var word = host.firstChild, say = host.lastChild, W = 0, H = 0, left = 0, wy = 0, sx = 0, sy = 0, laid = false, lastW = '', lastS = '', narrow = false;
+  var word = host.firstChild, say = host.lastChild, W = 0, H = 0, left = 0, wy = 0, sx = 0, sy = 0, laid = false, lastW = '', lastS = '', narrow = false, wing = 0;
   var note = options.section.querySelector('.closing-note'), lastN = -1;
   (options.section.dataset.word || '').split('|').forEach(function (line) { var l = document.createElement('span'); l.className = 'l'; l.textContent = line; word.appendChild(l); });
   say.textContent = options.section.dataset.say || '';
@@ -37,13 +37,17 @@ export function mount(host, options) {
     // the note: under the name (over the bench's dark backdrop, the machines chapter's last picture; at the foot of a
     // wide screen it would stand over the television)
     if (note) note.style.top = Math.round(sy + say.offsetHeight / K + 22) + 'px';
+    var rr = document.getElementById('rail'), rb = rr ? rr.getBoundingClientRect() : null; wing = rb && rb.width ? rb.right : 0;
     lastW = lastS = '';
   }
   function put(el, x, y, k, was) {            // k: 0 off in the left wing (narrow: a little below, unseen), 1 in its place
     var tr;
     if (narrow) tr = 'translate3d(' + x.toFixed(2) + 'px,' + (y + (1 - k) * H * 0.07).toFixed(2) + 'px,0) scale(' + (1 / K).toFixed(5) + ')';
-    else { var w = el.offsetWidth / K; tr = 'translate3d(' + (x - (1 - k) * (Math.max(x, 0) + w + 30)).toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) scale(' + (1 / K).toFixed(5) + ')'; }
+    else { var w = el.offsetWidth / K, xx = x - (1 - k) * (Math.max(x, 0) + w + 30); tr = 'translate3d(' + xx.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) scale(' + (1 / K).toFixed(5) + ')'; }
     if (tr !== was) {
+      // (the left wing is the rail's right edge: what is still left of it is not drawn, so nothing passes under the rail)
+      var cut = narrow ? 0 : (wing - xx) * K;
+      el.style.clipPath = cut > 0 ? 'polygon(' + cut.toFixed(1) + 'px -9999px, 99999px -9999px, 99999px 99999px, ' + cut.toFixed(1) + 'px 99999px)' : '';
       var o = narrow ? clamp((k - 0.06) * 5.5, 0, 1) : 1;       // (narrow: whole after the first fifth of its rise)
       el.style.transform = tr; el.style.visibility = k < 0.0005 || o <= 0 ? 'hidden' : '';
       el.style.opacity = narrow && o < 1 ? o.toFixed(3) : '';
