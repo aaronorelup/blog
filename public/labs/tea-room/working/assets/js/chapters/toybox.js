@@ -12,7 +12,7 @@
    and the physics that follows (it settles back to the same huddle). With motion turned off: cuts between stills
    (the garden from the lawn, the room with the box open and the toys in their huddle). */
 import { makeGarden, roomS0, M_IN, rLook } from './toybox-garden.js';
-import { TILT_LOW, H0_TALL } from './join.js';
+import { TILT_LOW, H0_TALL, SKY_CLIP } from './join.js';
 
 var IMG = new URL('../../img/', import.meta.url).href;
 var clamp = function (x, a, b) { a = a === undefined ? 0 : a; b = b === undefined ? 1 : b; return x < a ? a : x > b ? b : x; };
@@ -127,14 +127,15 @@ export function mount(host, options) {
     }
     return key;
   }
-  var tiltWas = '';
+  var tiltWas = '', skyUp = false;
   function setTilt(y) {                         // the tea house's sheet: y pixels below its place (0: look B's own view)
     var tr = 'translate3d(0,' + y.toFixed(1) + 'px,0)';
     if (tr === tiltWas) return; tiltWas = tr;
     skyEl.style.transform = tr; gardenEl.style.transform = tr;
-    // (the sky's top edge fades into the art chapter's sky behind it, as art.js has it: a fade 1.5 times the lift)
-    var m = y > 0.5 ? 'linear-gradient(to bottom, transparent 0, #000 ' + Math.round(1.5 * y) + 'px)' : '';
-    skyEl.style.webkitMaskImage = m; skyEl.style.maskImage = m;
+    var up = y > 0.5;
+    if (up !== skyUp) { skyUp = up; skyEl.style.overflow = up ? 'visible' : ''; skyEl.style.clipPath = up ? SKY_CLIP : ''; }
+    // (while it stands low its sky painting is shown whole, as art.js shows it; above the sky's top edge the art chapter's last picture shows, drawn under this one: there look B's night goes
+    // on in the same colour, join.js SKY_UP, so as the sheet lifts no edge and no second sky is seen)
   }
   var vis = {};
   function setV(el, key, yes) { if (vis[key] !== yes) { el.style.visibility = yes ? '' : 'hidden'; vis[key] = yes; } }
