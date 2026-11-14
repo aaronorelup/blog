@@ -135,7 +135,7 @@ export function mount(host, options) {
     if (ay < 0) zr = Math.max(zr, (C[1] - ht) / -ay);
     if (by > 0) zr = Math.max(zr, (hb - C[1]) / by);
     var rm = { x: C[0] + zr * (P1.x - cend[0]), y: C[1] + zr * (P1.y - cend[1]), s: P1.s * zr, tall: tall };
-    door.frame(st.house, st.house.zh, rm, tt);
+    door.frame(st.house, st.house.zh, rm, tt, ss(1.02, 1.5, st.door.R));
     // (what is drawn over the whole frame goes as the doorway fills it: the walk's vignette and its fireflies)
     var clear = (1 - ss(1.7, 6, st.house.zh)).toFixed(3);
     css(vig, 'opacity', clear); css(air, 'opacity', clear);

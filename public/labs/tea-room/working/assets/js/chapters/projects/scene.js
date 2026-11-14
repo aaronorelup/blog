@@ -319,11 +319,14 @@ export function mount(host, options = {}) {
   // the doorway has come to cend, its place on the screen at the end. At e = 1 the doorway (HOUSE.hole) covers the
   // screen. state.house: where the house's plate is drawn ({ x, y, s }: its top left and its scale) and zh, look B's
   // measure of how large the house stands (diorama.js drawGarden: the plate's scale over max(W / 1700, H / 1019)).
-  let dz = 0, ZZ = 1;
+  // dm 0..1 (the door only): how far the house's painted lawn has taken over the ground in front of it. The plate's own
+  // stepping stones (the same painting as look B's sharp front) come down to the screen's foot, and the walk's drawn
+  // stones go where the plate is opaque, so each stone on the screen is drawn once.
+  let dz = 0, ZZ = 1, dm = 0, lastMask = '';
   function frame(q, time, pointer, cards, door) {
     if (!active) return state;
     if (!L) layout();
-    if (!door || !(door.e > 0 || door.c > 0)) { dz = 0; ZZ = 1; return frameAt(q, time, pointer, cards); }
+    if (!door || !(door.e > 0 || door.c > 0)) { dz = 0; ZZ = 1; dm = 0; return frameAt(q, time, pointer, cards); }
     const f0 = f, cx0 = cx, hY0 = hY;
     const k = L.kOf(clamp(q || 0)), cam = L.camAt(k), d0 = G.zHouse - cam.z;
     const sOf = (d) => f0 * HOUSE.hw / d / HOUSE.w;
@@ -334,9 +337,9 @@ export function mount(host, options = {}) {
     // the doorway's middle on the screen, from a camera d from the house (the walk's own projection, no lean)
     const at = (dd) => { const sc = sOf(dd); return [cx0 + f0 * (0 - cam.x) / dd - HOUSE.door * sc + hx * sc, hY0 + f0 * cam.y / dd - HOUSE.lawn * sc + hy * sc]; };
     const D0 = at(d0), D = at(d), cc = clamp(door.c), C = [D0[0] + (door.cend[0] - D0[0]) * cc, D0[1] + (door.cend[1] - D0[1]) * cc];
-    dz = d0 - d; ZZ = R / Rd;
+    dz = d0 - d; ZZ = R / Rd; dm = ss(1, 1.3, R);
     f = f0 * ZZ; cx = C[0] + ZZ * (cx0 - D[0]); hY = C[1] + ZZ * (hY0 - D[1]);
-    try { frameAt(q, time, null, cards); } finally { f = f0; cx = cx0; hY = hY0; dz = 0; ZZ = 1; }
+    try { frameAt(q, time, null, cards); } finally { f = f0; cx = cx0; hY = hY0; dz = 0; ZZ = 1; dm = 0; }
     state.door = { C: C, R: R, Rend: sEnd / s0 };
     return state;
   }
@@ -372,12 +375,17 @@ export function mount(host, options = {}) {
       const sx = gxs(0, d) - lean * 0.6, y = hY + f * camY / d - HOUSE.lawn * s;
       house.style.transform = 'translate3d(' + (sx - HOUSE.door * s).toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) scale(' + s.toFixed(5) + ')';
       state.house = { x: sx - HOUSE.door * s, y: y, s: s, zh: s / Math.max(W / 1700, H / 1019) };
+      // (the plate's lawn: opaque to MA of its height, gone at MB; on the walk 36% and 62% (projects.css), on the way
+      // in through the door down to its foot)
+      const MA = 36 + dm * 48.8, MB = 62 + dm * 38, mk = dm > 0 ? 'linear-gradient(to bottom, #000 0, #000 ' + MA.toFixed(1) + '%, transparent ' + MB.toFixed(1) + '%), linear-gradient(to right, transparent 0, #000 22%, #000 78%, transparent 100%)' : '';
+      if (mk !== lastMask) { lastMask = mk; house.style.webkitMaskImage = mk; house.style.maskImage = mk; }
+      state.house.ma = y + MA / 100 * HOUSE.h * s; state.house.mb = y + MB / 100 * HOUSE.h * s;
     }
 
     // --- the ground: the lawn, the stepping stones, the light under the lit lantern, the petals
     const g = gx;
     // (the ground depends only on where the camera is: drawn again only when that changes)
-    const gk = k.toFixed(5) + ',' + W + ',' + H + ',' + dz.toFixed(4) + ',' + f.toFixed(2) + ',' + cx.toFixed(1) + ',' + hY.toFixed(1);
+    const gk = k.toFixed(5) + ',' + W + ',' + H + ',' + dz.toFixed(4) + ',' + f.toFixed(2) + ',' + cx.toFixed(1) + ',' + hY.toFixed(1) + ',' + dm.toFixed(4);
     if (gk !== lastKey) {
     lastKey = gk;
     g.setTransform(DPR, 0, 0, DPR, 0, 0); g.clearRect(0, 0, W, H);
@@ -422,7 +430,10 @@ export function mount(host, options = {}) {
         if (x + rx < 0 || x - rx > W || y - ry > H) continue;
         const fade = 1 - ss(FAR - 12, FAR, d);
         let warm = 0; if (lit) { const dd = Math.hypot(X - lit.lX, st.Z - lit.lZ); warm = (1 - ss(0.4, 2.6, dd)) * (1 - ss(0.3, 0.55, Math.abs(k - litI))); }
-        g.globalAlpha = fade;
+        // (on the way in, only below the plate's opaque lawn: where the plate fades out, these come in)
+        const own = dm > 0 ? 1 - dm * (1 - ss(state.house.ma + 0.8 * (state.house.mb - state.house.ma), state.house.mb, y - ry)) : 1;
+        if (own <= 0.002) continue;
+        g.globalAlpha = fade * own;
         g.fillStyle = '#0d1119'; g.beginPath(); g.ellipse(x, y + ry * 0.2, rx + 2, ry + 2, st.t * 0.2, 0, 6.3); g.fill();
         g.fillStyle = 'rgb(' + Math.round(lerp(44, 92, warm)) + ',' + Math.round(lerp(52, 80, warm)) + ',' + Math.round(lerp(64, 70, warm)) + ')';
         g.beginPath(); g.ellipse(x, y, rx, ry, st.t * 0.2, 0, 6.3); g.fill();
@@ -448,7 +459,10 @@ export function mount(host, options = {}) {
       const sc = f / d, hpx = t.h * sc, wpx = hpx * TREE.w / TREE.h;
       const sx = gxs(t.X, d) - lean * (t.row ? 0.5 : 0.25), sy = hY + camY * sc;
       const left = sx - (t.flip ? 1 - TREE.ax : TREE.ax) * wpx, topY = sy - TREE.ay * hpx;
-      const op = Math.round((1 - ss(FAR - 6, FAR + 6, d)) * ss(1.6, 3.4, d) * 50) / 50;
+      // (on the way in through the door the garden is the walk's last picture, walked into: what stood there stays
+      // whole until it has passed out of the frame, and nothing new comes up out of the lawn)
+      const op = dz > 0 ? Math.round((1 - ss(FAR - 6, FAR + 6, d + dz)) * ss(1.6, 3.4, d + dz) * ss(0.8, 1.1, d) * 50) / 50
+        : Math.round((1 - ss(FAR - 6, FAR + 6, d)) * ss(1.6, 3.4, d) * 50) / 50;
       if (op <= 0 || left > W + 10 || left + wpx < -10 || topY > H + 10) { hide(t); continue; }
       show(t); flats++;
       const s = hpx / (TREE.h / 2);
@@ -462,7 +476,8 @@ export function mount(host, options = {}) {
     // --- bushes close to the eye
     for (const b of bushes) {
       const d = b.Z - camZ;
-      const op = d > 0.9 && d < 5 ? Math.round(ss(1, 2, d) * (1 - ss(3.4, 5, d)) * 40) / 40 : 0;
+      const d1 = d + dz, op = dz > 0 ? (d > 0.9 && d1 < 5 ? Math.round(ss(1, 2, d1) * (1 - ss(3.4, 5, d1)) * ss(0.9, 1.15, d) * 40) / 40 : 0)
+        : d > 0.9 && d < 5 ? Math.round(ss(1, 2, d) * (1 - ss(3.4, 5, d)) * 40) / 40 : 0;
       if (op <= 0) { hide(b); continue; }
       const sc = f / d, wpx = b.w * sc, hpx = wpx * 250 / 550, left = gxs(b.X, d) - wpx / 2, topY = hY + camY * sc - hpx * 0.8;
       if (left > W || left + wpx < 0 || topY > H) { hide(b); continue; }

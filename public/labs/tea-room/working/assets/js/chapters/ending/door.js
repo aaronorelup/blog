@@ -4,9 +4,10 @@
 // in the doorway the lamplight (garden-veil.webp) thins and the back room is there behind it (ending/scene.js
 // roomScene), deeper than the door, so it grows more slowly; the warm glow round the door fades. Look B's thresholds,
 // on look B's measure of how large the house stands (zh).
-//   doorStack(parent, redraw) -> { frame(house, zh, room, t), hide(), ready() }
+//   doorStack(parent, redraw) -> { frame(house, zh, room, t, lit), hide(), ready() }
 //     house: where the walk draws its house plate ({ x, y, s }: top left and scale, the plate 2816 x 1297)
 //     room:  where the room plate stands ({ x, y, s }) and tall (a phone: the room's foot fades to the floor)
+//     lit:   0..1, the lamp in the doorway coming on as the camera sets off (the walk's plate has the doorway dark)
 import { roomScene } from './scene.js';
 
 var IMG = new URL('../../../img/', import.meta.url).href;
@@ -31,7 +32,8 @@ export function doorStack(parent, redraw) {
   var veil = pic(IMG + 'garden-veil.webp', 461, 488);
   var hi = pic(IMG + 'garden-doorhi.webp', 2816, 1584);
   // (the walk's house fades into the lawn below its middle: the sharp front takes the same fade)
-  var m = 'linear-gradient(to bottom, #000 53%, rgba(0, 0, 0, 0.45) 100%)';
+  // (over the plate's own lawn, opaque by then (projects/scene.js dm): the front fades into the same painting below it)
+  var m = 'linear-gradient(to bottom, #000 72%, transparent 100%)';
   hi.style.webkitMaskImage = m; hi.style.maskImage = m;
   var glow = document.createElement('div');
   glow.style.cssText = 'position:absolute;left:0;top:0;width:560px;height:560px;border-radius:50%;transform-origin:0 0;' +
@@ -44,25 +46,27 @@ export function doorStack(parent, redraw) {
 
   return {
     // t: seconds (the glow breathes as look B's does); returns true when the house's own front can no longer be seen
-    frame: function (house, zh, rm, t) {
+    frame: function (house, zh, rm, t, lit) {
       if (!shown) { box.style.visibility = 'inherit'; shown = true; }
       var X = function (v) { return house.x + v * house.s; }, Y = function (v) { return house.y + v * house.s; };
       // (sooner than look B's 1.25..1.7: the walk's plate is seen smaller, and its painted doorway is a dark patch close up)
       var a = ss(0.5, 0.85, zh);
       set(hi, 'opacity', a.toFixed(3), 'hio'); at(hi, X(HI[0]), Y(HI[1]), house.s / 4, 'hit');
-      var open = a >= 0.999;
-      // the room, only through the doorway, and only once the sharp front stands over the plate's painted door
+      // the lamplight and the room behind it, only through the doorway (the same hole in the plate and in the sharp
+      // front), coming on together as the camera sets off, never in one step
+      var L = Math.round(clamp(lit == null ? 1 : lit, 0, 1) * 500) / 500, open = L > 0;
       set(roomBox, 'visibility', open ? 'inherit' : 'hidden', 'rv');
+      set(roomBox, 'opacity', L < 1 ? L.toFixed(3) : '', 'ro');
       if (open) {
         var l = X(HOLE[0]), tp = Y(HOLE[1]), r = X(HOLE[2]), b = Y(HOLE[3]);
         set(roomBox, 'clipPath', 'inset(' + Math.max(0, tp).toFixed(1) + 'px ' + Math.max(0, roomBox.clientWidth - r).toFixed(1) + 'px ' + Math.max(0, roomBox.clientHeight - b).toFixed(1) + 'px ' + Math.max(0, l).toFixed(1) + 'px)', 'rc');
         room.put(rm, rm.tall);
       }
-      var vo = open ? 1 - ss(1.5, 6.5, zh) : 0;
+      var vo = L * (1 - ss(1.5, 6.5, zh));
       set(veil, 'visibility', vo > 0.002 ? 'inherit' : 'hidden', 'vv');
       if (vo > 0.002) { set(veil, 'opacity', vo.toFixed(3), 'vo'); at(veil, X(VEIL[0]), Y(VEIL[1]), house.s / 4, 'vt'); }
       var breathe = 0.9 + 0.06 * Math.sin(t * 1.26) + 0.02 * Math.sin(t * 2.9);
-      var go = Math.round(breathe * (1 - ss(2.5, 7, zh)) * a * 200) / 200;
+      var go = Math.round(breathe * (1 - ss(2.5, 7, zh)) * L * 200) / 200;
       set(glow, 'visibility', go > 0 ? 'inherit' : 'hidden', 'gv');
       if (go > 0) { set(glow, 'opacity', String(go), 'go'); at(glow, X(GLOW[0] - GLOW[2] / 2), Y(GLOW[1] - GLOW[2] / 2), house.s, 'gt'); }
       return zh > 2.7;
