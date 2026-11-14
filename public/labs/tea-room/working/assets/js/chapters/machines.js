@@ -197,7 +197,7 @@ export function mount(host, options) {
     window.scrollTo({ top: Math.round(st + qd * LD * window.innerHeight), behavior: RM ? 'auto' : 'smooth' });
   }
 
-  var TVP = null, sweepH = 0, W = 0, H = 0, L = null, phone = false, active = false, laid = false;
+  var TVP = null, roll = null, rollG = null, sweepH = 0, W = 0, H = 0, L = null, phone = false, active = false, laid = false;
   var cur = { i: -1, step: '', k: -1, mode: '' };
   var live = null, liveI = -1, liveTimer = null, pendingI = -1;
   var failed = new Set();
@@ -228,6 +228,10 @@ export function mount(host, options) {
     });
     sweep.innerHTML = sweepSvg(bx, by, bw, bh, L.tcx, L.tcy, L.try, W);
     sweepH = Math.ceil(L.tcy + L.try * 0.42 + L.try); sweep.style.height = sweepH + 'px';
+    // (the sheet's roll, while it is rolled up again at the end: a tube on its lower edge; see frame)
+    roll = document.createElement('div'); roll.className = 'mc-roll'; sweep.appendChild(roll);
+    rollG = { L: bx + bw * 0.1, R: bx + bw * 0.9, d: bw * 0.045, yB: L.tcy - L.try * 0.62, yF: L.tcy + L.try * 0.42, h: Math.round(Math.max(9, Math.min(26, bh * 0.034))) };
+    Object.assign(roll.style, { height: rollG.h + 'px', borderRadius: (rollG.h / 2) + 'px', visibility: 'hidden' }); was.roll = '';
     var lw = L.lampW, ly = L.lampY;
     Object.assign(lampEl.style, { left: (L.tcx - lw / 2) + 'px', top: ly + 'px', width: lw + 'px' });
     host.style.setProperty('--lx', L.tcx + 'px'); host.style.setProperty('--ly', (ly + lw) + 'px');
@@ -536,10 +540,21 @@ export function mount(host, options) {
     var rodY = L.by + L.bh * 0.03, rodOff = -(1 - lower) * (rodY + 30) + lowY, sheetH = sweepH - rodY;
     lampOff += lowY;
     css(lampEl, 'transform', Math.abs(lampOff) > 0.05 ? 'translate3d(0,' + lampOff.toFixed(1) + 'px,0)' : '');
-    css(roomImg, 'transform', 'translate3d(' + L.room.tx + 'px,' + (L.room.ty + roomLow).toFixed(1) + 'px,0) scale(' + L.room.s + ')');
+    css(roomImg, 'transform', dive > 0 ? 'translate(' + L.room.tx + 'px,' + (L.room.ty + roomLow).toFixed(1) + 'px) scale(' + L.room.s + ')'
+      : 'translate3d(' + L.room.tx + 'px,' + (L.room.ty + roomLow).toFixed(1) + 'px,0) scale(' + L.room.s + ')');
+    if (was.diving !== dive > 0) { was.diving = dive > 0; world.classList.toggle('mc-diving', dive > 0); }
     css(sweep, 'transform', Math.abs(rodOff) > 0.05 ? 'translate3d(0,' + rodOff.toFixed(1) + 'px,0)' : '');
     css(sweep, 'visibility', lower <= 0.0005 ? 'hidden' : '');
-    css(sweep, 'clipPath', unroll < 1 ? 'inset(-50px 0 ' + (sheetH * (1 - unroll) + (unroll > 0 ? 0 : 6)).toFixed(1) + 'px 0)' : '');
+    // (put away at the end, the sheet rolls up onto a tube that climbs back to the rod: not a flat cut edge. Only then:
+    // as it is first let down, before, the sheet stays as it was)
+    var rolling = pk > 0 && unroll < 0.999 && lower > 0.0005 && !!roll;
+    var rh = rolling ? rollG.h : 0, edge = rodY + sheetH * unroll;
+    css(sweep, 'clipPath', unroll < 1 ? 'inset(-50px 0 ' + Math.max(0, sheetH * (1 - unroll) + (unroll > 0 || rolling ? 0 : 6) - rh * 0.9).toFixed(1) + 'px 0)' : '');
+    if (rolling) {
+      var wide = rollG.d * clamp((edge - rollG.yB) / (rollG.yF - rollG.yB)) + rh * 0.35;
+      var rs = 'l' + (rollG.L - wide).toFixed(1) + 'w' + (rollG.R - rollG.L + 2 * wide).toFixed(1) + 't' + (edge - rh * 0.15).toFixed(1);
+      if (was.roll !== rs) { was.roll = rs; Object.assign(roll.style, { left: (rollG.L - wide).toFixed(1) + 'px', width: (rollG.R - rollG.L + 2 * wide).toFixed(1) + 'px', top: (edge - rh * 0.15).toFixed(1) + 'px', visibility: '' }); }
+    } else if (roll && was.roll !== '') { was.roll = ''; roll.style.visibility = 'hidden'; }
 
     // the lamp: lit over a machine, dimmed between two (the next one is set down in the dark), out at the end
     var edge = pl.step === 'intro' ? 1 - 0.35 * pl.intro : Math.min(pl.i === 0 ? 1 : pl.t / 0.025, pl.i === MACHINES.length - 1 ? 1 : (1 - pl.t) / 0.025);
@@ -564,9 +579,11 @@ export function mount(host, options) {
     if (dive > 0) {
       // into the television (join.js tvDive: the agents chapter reckons the same move); once its glass is the frame and
       // the agents chapter's picture is over it, this room is not drawn
+      // (flat, with no will-change in the world while it moves (.mc-diving): a layer kept for the move keeps the largest
+      // scale it was drawn at, and scrolled back up out of the dive it no longer fits the browser's tile memory)
       var d = tvDive(TVP, W, H, dive);
       css(world, 'transformOrigin', '0 0');
-      css(world, 'transform', 'translate3d(' + d.tx.toFixed(2) + 'px,' + d.ty.toFixed(2) + 'px,0) scale(' + d.Z.toFixed(5) + ')');
+      css(world, 'transform', 'translate(' + d.tx.toFixed(2) + 'px,' + d.ty.toFixed(2) + 'px) scale(' + d.Z.toFixed(5) + ')');
       var ag = window.TEA && window.TEA.list.filter(function (c) { return c.id === 'agents'; })[0];
       css(world, 'visibility', dive >= 1 && ag && ag.scene && ag.whole ? 'hidden' : '');
     } else if (!isLead) {

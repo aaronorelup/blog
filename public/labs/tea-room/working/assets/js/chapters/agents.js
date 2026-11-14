@@ -35,12 +35,12 @@ var K = 1.4;                                         // (look B lays its type ou
 export function mount(host, options) {
   var RM = options.reduced, HELD = options.held, section = options.section, root = document.documentElement;
   host.innerHTML =
-    '<div class="ag-room"><img class="ag-room-img" src="' + IMG + 'room.webp" width="2752" height="1536" alt="" decoding="async"><div class="ag-vig"></div></div>' +
+    '<div class="ag-room"><img class="ag-room-img" src="' + IMG + 'room.webp" width="2752" height="1536" alt="" decoding="async"><div class="ag-lan"></div><div class="ag-vig"></div></div>' +
     '<div class="ag-glass"><div class="ag-box"></div></div>' +
     '<div class="ag-tvw"><div class="ag-tv"><div class="ag-tv-glow"></div><div class="ag-crt"></div><div class="ag-flash"></div><img class="ag-tv-body" src="' + IMG + 'tv-body.webp" width="1200" height="1093" alt=""></div></div>' +
     '<div class="flat word ag-word"></div><div class="flat say mono ag-say"></div>';
   var $ = function (s) { return host.querySelector(s); };
-  var room = $('.ag-room'), roomImg = $('.ag-room-img'), glass = $('.ag-glass'), box = $('.ag-box'), tvw = $('.ag-tvw'), tvEl = $('.ag-tv'),
+  var room = $('.ag-room'), roomImg = $('.ag-room-img'), lan = $('.ag-lan'), glass = $('.ag-glass'), box = $('.ag-box'), tvw = $('.ag-tvw'), tvEl = $('.ag-tv'),
     glowEl = $('.ag-tv-glow'), crt = $('.ag-crt'), flash = $('.ag-flash'), body = $('.ag-tv-body'), word = $('.ag-word'), say = $('.ag-say');
   (section.dataset.word || '').split('|').forEach(function (line) { var l = document.createElement('span'); l.className = 'l'; l.textContent = line; word.appendChild(l); });
   say.textContent = section.dataset.say || '';
@@ -52,7 +52,7 @@ export function mount(host, options) {
   var pending = 0;
   [body, roomImg].forEach(function (im) { if (!(im.complete && im.naturalWidth)) { pending++; var done = function () { pending--; options.redraw(); }; im.addEventListener('load', done, { once: true }); im.addEventListener('error', done, { once: true }); } });
 
-  var FOC = [0.5, 0.5], lastK = 0, W = 0, H = 0, tv = null, narrow = false, left = 0, wy = 0, sx = 0, sy = 0, laid = false, active = false;
+  var FOC = [0.5, 0.5], lastK = 0, lastP = -99, W = 0, H = 0, tv = null, narrow = false, left = 0, wy = 0, sx = 0, sy = 0, laid = false, active = false;
   function layout() {
     W = root.clientWidth; H = window.innerHeight;
     var rr = document.getElementById('rail'), rb = rr ? rr.getBoundingClientRect() : null;
@@ -62,7 +62,16 @@ export function mount(host, options) {
     // the room: where the bench's room stands at the machines chapter's end (a phone's a little lower: its camera is
     // tilted up there, machines.js low)
     var R = tv.room;
-    roomImg.style.transform = 'translate3d(' + R.tx + 'px,' + (R.ty + (tv.phone ? H * 0.05 : 0)).toFixed(1) + 'px,0) scale(' + R.s + ')';
+    var Ry = R.ty + (tv.phone ? H * 0.05 : 0);
+    roomImg.style.transform = 'translate(' + R.tx + 'px,' + Ry.toFixed(1) + 'px) scale(' + R.s + ')';
+    // the standing lantern's warm light in the room the camera comes back out into (the bench and its lamp are gone):
+    // round its shade, and a pool on the mats. Its place in the painting: x 1941, shade 929, floor 1060 of 2752 x 1536.
+    // (a phone's frame ends left of the lantern: its light comes in from the right, as it would)
+    var lx = R.tx + 1941 * R.s, ly = Ry + 929 * R.s, fy = Ry + 1065 * R.s, u = R.s;
+    lan.style.background =
+      'radial-gradient(' + (330 * u).toFixed(0) + 'px ' + (300 * u).toFixed(0) + 'px at ' + lx.toFixed(0) + 'px ' + ly.toFixed(0) + 'px, rgba(255, 196, 128, 0.34), rgba(255, 170, 100, 0.12) 50%, rgba(255, 160, 90, 0) 100%),' +
+      'radial-gradient(' + (760 * u).toFixed(0) + 'px ' + (190 * u).toFixed(0) + 'px at ' + lx.toFixed(0) + 'px ' + fy.toFixed(0) + 'px, rgba(255, 186, 120, 0.3), rgba(255, 170, 100, 0.1) 55%, rgba(255, 160, 90, 0) 100%),' +
+      'radial-gradient(' + (1500 * u).toFixed(0) + 'px ' + (900 * u).toFixed(0) + 'px at ' + lx.toFixed(0) + 'px ' + fy.toFixed(0) + 'px, rgba(255, 170, 105, 0.12), rgba(255, 160, 90, 0) 100%)';
     // the name: look B's rule (closing.js has the same)
     var tall = W / H < 0.9; narrow = W <= 820;
     var wp = clamp(W * (tall ? 0.15 : 0.115), 52, 190), sp = clamp(W * 0.0175, 17, 27);
@@ -94,7 +103,10 @@ export function mount(host, options) {
   // the terminal yet (it turns from the machine's picture)
   function placeSet(k, glassOn, withRoom, lift) {
     var d = tvDive(lift ? { l: tv.l, t: tv.t + lift, w: tv.w, h: tv.h, box: tv.box } : tv, W, H, k), g = d.glass;
-    var tr = 'translate3d(' + d.tx.toFixed(2) + 'px,' + d.ty.toFixed(2) + 'px,0) scale(' + d.Z.toFixed(5) + ')';
+    // (a flat transform and no will-change: the browser paints the set and the room again at each scale. A layer kept
+    // for the move keeps the largest scale it was drawn at, and once the camera has come back out, a screen of it at
+    // twelve times its size no longer fits the browser's tile memory: the last screens then went unpainted)
+    var tr = 'translate(' + d.tx.toFixed(2) + 'px,' + d.ty.toFixed(2) + 'px) scale(' + d.Z.toFixed(5) + ')';
     var inside = g.x <= 0 && g.y <= 0 && g.x + g.w >= W && g.y + g.h >= H;
     css(tvw, 'transform', tr); css(tvw, 'visibility', inside ? 'hidden' : '');
     css(room, 'transform', tr); css(room, 'visibility', withRoom && !inside ? '' : 'hidden');
@@ -112,7 +124,11 @@ export function mount(host, options) {
     css(glass, 'opacity', glassOn >= 1 ? '' : glassOn.toFixed(3));
     css(glass, 'visibility', glassOn <= 0.001 ? 'hidden' : '');
     // the glass's own sheen (a set's curved glass) goes as the glass becomes the frame
-    css(crt, 'opacity', (glassOn * (1 - ss(0.45, 0.85, k))).toFixed(3));
+    // (by how much of the screen the glass fills, too: on a phone the glass fills the screen's height long before the
+    // dive's end, and a sheen still on there washes the whole terminal blue-grey)
+    css(crt, 'opacity', (glassOn * (1 - ss(0.45, 0.85, k)) * (1 - ss(0.3, 0.7, kb))).toFixed(3));
+    // (the set's cold glow on the room goes as the camera comes near: magnified, it would lie over the terminal itself)
+    css(glowEl, 'opacity', (1 - ss(0.12, 0.45, kb)).toFixed(3));
     return d;
   }
 
@@ -131,7 +147,7 @@ export function mount(host, options) {
     var k = RM ? (p > AGENTS.RM_CUT ? 1 : 0) : clamp((p - D[0]) / (D[1] - D[0]));      // (tvDive paces it)
     var tune = RM ? (p > AGENTS.RM_CUT ? 1 : 0) : ss(AGENTS.TUNE[0], AGENTS.TUNE[1], p);
     var out = RM ? (pe > RM_OUT ? 0 : 1) : 1 - clamp((pe - OUT[0]) / (OUT[1] - OUT[0]));
-    var inLead = k < 1; lastK = k;
+    var inLead = k < 1; lastK = k; lastP = p;
     // (in the lead this is drawn over the machines chapter's room: only once that is there, or a fresh load would show
     // the set over the chapter before it; once the glass is the frame it needs nothing under it)
     if (inLead && !machinesWhole()) return false;
@@ -153,7 +169,9 @@ export function mount(host, options) {
     // (a cold flash as the set changes what it shows: look B's own television goes cold before the camera goes in)
     var fl = RM ? 0 : Math.sin(Math.PI * clamp((p - AGENTS.TUNE[0] + 0.06) / (AGENTS.TUNE[1] - AGENTS.TUNE[0] + 0.2)));
     css(flash, 'opacity', inLead && fl > 0.002 ? (0.85 * fl).toFixed(3) : '0');
-    var gone = RM ? 0 : ss(D[0] + 0.02, D[0] + 0.32, p), up = RM ? 0 : ss(D[0], D[0] + 0.6, p) * H * 0.3;
+    // (narrow: the name stands just under the rail's pill, so it goes sooner and hardly rises, never through the pill)
+    var gone = RM ? 0 : narrow ? ss(D[0], D[0] + 0.2, p) : ss(D[0] + 0.02, D[0] + 0.32, p);
+    var up = RM ? 0 : ss(D[0], D[0] + 0.6, p) * H * (narrow ? 0.06 : 0.3);
     putName(word, left, wy, gone >= 1 ? 0 : nk, up, gone);
     putName(say, sx, sy, gone >= 1 ? 0 : nk, up * 0.7, gone);
     // the words and cards of the world: only while the world is the frame; they go before the camera leaves the glass
@@ -172,7 +190,8 @@ export function mount(host, options) {
     resize: function () { view.resize(); if (laid) layout(); },
     setActive: function (on) { active = !!on; view.setActive(active && !document.hidden); },
     dispose: function () { document.removeEventListener('visibilitychange', onVis); view.setActive(false); view.dispose(); host.textContent = ''; },
-    owns: function () { return lastK >= 1; },
+    // (the rail and a phone's pill name this chapter as soon as its name is on the screen, not only once inside the glass)
+    owns: function () { return lastK >= 1 || lastP >= (AGENTS.NAME[0] + AGENTS.NAME[1]) / 2; },
     get view() { return view; }
   };
 }
