@@ -1,0 +1,100 @@
+/* THE AI ART & IMAGES CHAPTER'S SCENE (assets/js/chapters/art.js and art-scene.js draw it; this file comes with it).
+   The gg- part is the test's own (tests/garden-gallery/css/scene.css); the ar- part is the chapter round it: its name,
+   the card under the pictures, and look B's garden coming up at the end. Nothing here moves by itself. */
+.chapter-stage[data-chapter='art'] { background: none; }   /* (the world has its own ground: in the lead it dissolves in over games) */
+.ar-world { position: absolute; inset: 0; }
+.ar-sheet { position: absolute; inset: 0; will-change: transform; }
+.ar-sky, .ar-garden { position: absolute; inset: 0; overflow: hidden; }
+.ar-sky { background: #131d25; }
+.ar-name { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+.ar-name .say { white-space: normal; text-wrap: pretty; }
+/* (look B's garden, as the 3D chapter draws it: toybox.css has the same two rules) */
+.ar-garden .tb-doorglow { background: radial-gradient(closest-side, rgba(255, 196, 110, 0.42), rgba(255, 180, 90, 0.16) 45%, rgba(255, 170, 80, 0) 100%); }
+.ar-garden .tb-motes { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
+/* the lamp's light on the cinema's plate (games.js lights it the same) */
+.gg-lamp { z-index: 801; mix-blend-mode: screen; mix-blend-mode: plus-lighter; }
+html.ar-zoom #art { cursor: zoom-in; }
+
+/* the card under the pictures (in front of the page, low in the middle): which picture is in front */
+.ar-dock { position: absolute; left: 14px; right: 14px; bottom: 22px; display: flex; justify-content: center; pointer-events: none; visibility: hidden; opacity: 0; }
+.ar-now {
+  pointer-events: auto; width: min(430px, 100%); padding: 12px 20px 13px; text-align: center;
+  border-radius: 18px; background: var(--tea-card, rgb(21, 23, 38)); box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45), inset 0 0 0 1px var(--pc-line2, rgb(74, 68, 90));
+}
+.ar-meta { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 10px; font: 500 11px/1.6 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--pc-soft); }
+.ar-meta span + span::before { content: '\00b7'; margin-right: 10px; color: var(--pc-line2); }
+.ar-meta span:empty { display: none; }
+.ar-title { margin: 2px 0 0; font: 700 clamp(19px, 1.9vw, 23px)/1.16 var(--font-display); letter-spacing: -0.01em; color: var(--pc-head); text-wrap: balance; }
+@media (max-width: 820px) { .ar-dock { bottom: 14px; } .ar-now { padding: 10px 14px 11px; } }
+.gg-world {
+  position: absolute; inset: 0; overflow: hidden; contain: strict;
+  background: #0a0e28; color: #f2e7d5;
+  -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent;
+}
+.gg-world *, .gg-world *::before, .gg-world *::after { box-sizing: border-box; }
+.gg-flat { position: absolute; left: 0; top: 0; transform-origin: 0 0; pointer-events: none; max-width: none; }
+.gg-layer { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
+
+/* the night sky: deep at the top, the plate's own violet at the horizon */
+.gg-sky {
+  position: absolute; left: 0; top: 0; width: 100%; z-index: 1; pointer-events: none;
+  background: linear-gradient(to bottom, #060817 0, #090c22 30%, #0d1130 52%, #12173a 70%, #1c2150 84%, #2b3168 95%, #353a74 100%);
+}
+.gg-stars {
+  position: absolute; inset: 0; background-repeat: repeat;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 78%, transparent 97%); mask-image: linear-gradient(to bottom, #000 0, #000 78%, transparent 97%);
+}
+.gg-moon {
+  z-index: 2; border-radius: 50%;
+  background: radial-gradient(circle at 38% 36%, #fff6dc 0, #f6e7c8 46%, #e4d2ae 72%, #d6c39e 100%);
+  box-shadow: 0 0 0 3px #1a1f4a, 0 0 60px 18px rgba(246, 231, 200, 0.16), 0 0 180px 70px rgba(246, 231, 200, 0.08);
+}
+.gg-moon::before, .gg-moon::after { content: ''; position: absolute; border-radius: 50%; background: rgba(190, 172, 140, 0.55); }
+.gg-moon::before { left: 56%; top: 22%; width: 20%; height: 20%; }
+.gg-moon::after { left: 24%; top: 58%; width: 13%; height: 13%; box-shadow: 2.4em -0.4em 0 -0.15em rgba(190, 172, 140, 0.5); }
+.gg-clouds { z-index: 3; opacity: 0.6; }
+.gg-far { z-index: 6; }
+.gg-ground { z-index: 600; }
+.gg-house { z-index: 700; -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 46%, transparent 78%); mask-image: linear-gradient(to bottom, #000 0, #000 46%, transparent 78%); }
+.gg-plate { z-index: 800; -webkit-mask-image: linear-gradient(to right, transparent 0, #000 260px); mask-image: linear-gradient(to right, transparent 0, #000 260px); }
+.gg-air { z-index: 200000; }
+.gg-tall .gg-plate { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 230px, #000 1400px, transparent 1532px); mask-image: linear-gradient(to bottom, transparent 0, #000 230px, #000 1400px, transparent 1532px); }
+
+/* a picture, hung as a lantern: an ink line round it, a string up into the branches, a tassel under it, its own light */
+.gg-pic {
+  position: absolute; left: 0; top: 0; margin: 0; padding: 0; border: 0; background: none; font: inherit; color: inherit;
+  pointer-events: none; outline: none; -webkit-appearance: none; appearance: none;
+}
+.gg-frame {
+  position: absolute; inset: 0; display: block; overflow: hidden; border-radius: 10px; background: #1a1f3c;
+  box-shadow: 0 0 0 3px #0c0f20, 0 0 0 4.5px rgba(255, 216, 146, 0.28);
+}
+.gg-pic.gg-is-open .gg-frame { cursor: zoom-out; }
+.gg-pic:focus-visible .gg-frame { box-shadow: 0 0 0 3px #0c0f20, 0 0 0 7px #f0c06a; }
+.gg-frame img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; }
+.gg-hi { opacity: 0; }
+.gg-hi.gg-on { opacity: 1; }
+.gg-dim { position: absolute; inset: 0; background: #0d1233; opacity: 0; pointer-events: none; }
+.gg-halo {
+  position: absolute; left: -40%; right: -40%; top: -62%; bottom: -62%; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(255, 222, 164, 0.6) 0, rgba(255, 210, 140, 0.4) 30%, rgba(255, 198, 122, 0.16) 58%, rgba(255, 190, 110, 0.05) 80%, rgba(255, 190, 110, 0) 100%);
+}
+/* the lantern's light in the air round it: a ring, so the picture itself stays clear */
+.gg-glow { width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 208, 138, 0) 0, rgba(255, 208, 138, 0) 40%, rgba(255, 208, 138, 0.15) 50%, rgba(255, 198, 122, 0.07) 72%, rgba(255, 190, 110, 0) 100%); }
+/* the corners of the frame fall away into the night */
+.gg-vignette { position: absolute; inset: 0; z-index: 250000; pointer-events: none; background: radial-gradient(125% 100% at 50% 46%, rgba(5, 7, 20, 0) 50%, rgba(5, 7, 20, 0.58) 100%); }
+.gg-string { position: absolute; left: 50%; bottom: 100%; width: 2.5px; margin-left: -1.25px; background: linear-gradient(to bottom, #0a0c1a 0, #0a0c1a 70%, #3a2c2e 100%); pointer-events: none; }
+.gg-cap { position: absolute; left: 50%; top: -11px; width: 62px; height: 13px; margin-left: -31px; border-radius: 7px; background: #3a2b33; box-shadow: 0 0 0 3px #0c0f20; pointer-events: none; }
+.gg-tassel { position: absolute; left: 50%; top: 100%; width: 3px; height: 30px; margin: 3px 0 0 -1.5px; background: #c9a227; pointer-events: none; }
+.gg-tassel::after { content: ''; position: absolute; left: -5px; top: 100%; width: 13px; height: 22px; border-radius: 4px 4px 7px 7px; background: #e2795c; box-shadow: 0 0 0 2.5px #0c0f20; }
+
+/* a picture brought forward: the night closes in behind it, its title on a card under it */
+.gg-shade { position: absolute; inset: 0; z-index: 300000; background: #05071a; opacity: 0; pointer-events: none; }
+.gg-shade.gg-on { pointer-events: auto; cursor: zoom-out; }
+.gg-caption {
+  position: absolute; left: 0; top: 0; z-index: 300002; max-width: min(92%, 640px); pointer-events: none; opacity: 0;
+  padding: 11px 18px 12px; border-radius: 14px; background: rgba(21, 23, 38, 0.96); box-shadow: inset 0 0 0 1px rgb(74, 68, 90), 0 18px 50px rgba(0, 0, 0, 0.45);
+  text-align: center;
+}
+.gg-caption b { display: block; font: 700 19px/1.2 'Zen Maru Gothic', sans-serif; letter-spacing: -0.01em; color: rgb(240, 192, 106); text-wrap: balance; }
+.gg-caption span { display: block; margin-top: 3px; font: 500 11px/1.3 'JetBrains Mono', ui-monospace, monospace; letter-spacing: 0.04em; color: rgb(156, 145, 127); }
