@@ -6,12 +6,14 @@
    How it joins: the toy box's room is the same painting as this chapter's room (img/room.webp). The 3D chapter ends on
    the room seen whole; over its last picture (this chapter's lead) the camera cranes down a little onto the place of
    the bench (join.js benchLayout: both chapters reckon it from the layout alone, toybox.js TURN moves the toys' room
-   the same way), and the bench comes up into the frame in front of the toys: the low table, the backdrop hung behind
-   it, the television on the floor. The room's own lamp goes down, the lantern is let down over the bench and comes
-   on, and in the dark the toy box's room becomes this chapter's own (at the section's top, CHAPTERS swaps the two
-   pictures: there the toys stand behind the bench and in the dark). Then the test's own scroll: the four machines
-   one after another, each: arrives whole, its parts one at a time (picked out, then cut open), "break it", its film
-   and its page. At the end the cards go and the lamp goes down, under the next chapter's name (closing.js).
+   the same way). Just before, the toys have gone back into their box and its lid has shut (toybox.js PACK), so the
+   room the bench is set up in is tidy. The bench comes up into the frame in front of the closed box: the low table,
+   the backdrop let down behind it and unrolled forward over it, the television on the floor. The room goes down to
+   night, the lantern comes on, and the toy box's room becomes this chapter's own (at the section's top CHAPTERS swaps
+   the two pictures: the box is behind the backdrop there, and the rooms are the same painting). Then the test's own
+   scroll: the four machines one after another, each: arrives whole, its parts one at a time (picked out, then cut
+   open), "break it", its film and its page. At the end the cards go (the film the reader opened goes with its card)
+   and the lamp goes low, the last machine still on the bench, under the next chapter's name (closing.js).
 
    Everything on the screen is a function of q and the layout, but the machine's own page (alive in the frame only
    once the scroll rests on a machine), the television's film and the film the reader asks for. With time held
@@ -51,15 +53,19 @@ var ARRIVE = 0.13, PARTS_END = 0.68, BREAK_END = 0.86;
 // (CRANE [-2.5, -1.1]: the toy box's room comes down onto the bench's place, toybox.js TURN, in its own screens)
 var LOWER = [-2.3, -1.5];                 // the lantern and the backdrop's rod are let down from above the frame
 var LIGHT = [-1.95, -1.25];               // the lantern comes on
-var RISE = [-2.2, -1.0];                  // the table comes up into the frame (the camera comes down to its height)
+var RISE = [-2.2, -1.2];                  // the table comes up into the frame (the camera comes down to its height)
 var TVRISE = [-1.9, -0.8];                // the television, nearest, comes up last and fastest
-var UNROLL = [-1.7, -1.0];                // the backdrop unrolls from its rod down onto the table
-var APPEAR = [-1.15, -0.6];               // and the first machine stands on it
+var UNROLL = [-1.5, -0.85];               // the backdrop unrolls from its rod down over the table (once it stands)
+var APPEAR = [-1.0, -0.5];                // and the first machine stands on it
 var DIM = [-2.2, -1.2];                   // the room goes down to the bench's night
-var DEEP = [-1.75, -0.9, 0.3, 1.0];       // and right of the table deeper, as the room's own lamp goes out, round the swap
 var CARD = [-0.55, -0.1];                 // the first card comes up
+// (the toys have gone back into their box before all this: toybox.js PACK; the box stands behind the backdrop)
+// motion off: everything of the lead comes in one cut, at the toy box's own cut to the bench's place (its TURN's middle,
+// 1.2 screens into its 3-screen foot)
+var RM_CUT = -1.8;
 // the end (screens after LD): the cards go, the lamp goes down, the camera draws back to the bench's first view
-var END = [0.15, 0.85];
+// (the last machine stays on the table, lit low, under the next chapter's name: never an empty bench)
+var END = [0.05, 0.45];
 
 function placeOf(q) {
   if (q < INTRO) return { i: 0, t: 0, step: 'intro', intro: 1 - q / INTRO };
@@ -101,10 +107,10 @@ export function mount(host, options) {
     '<div class="mc-dim"></div>' +
     '<div class="mc-world">' +
       '<div class="mc-room"><img class="mc-room-img" src="' + IMG + 'room.webp" width="2752" height="1536" alt="" decoding="async"></div>' +
-      '<div class="mc-vig"></div><div class="mc-deep"></div>' +
+      '<div class="mc-vig"></div>' +
       '<div class="mc-cone"></div>' +
-        '<div class="mc-sweep"></div>' +
         '<img class="mc-table mc-up" src="' + IMG + 'machines/bench-table.webp" width="873" height="682" alt="" decoding="async">' +
+        '<div class="mc-sweep"></div>' +
         '<div class="mc-pool mc-up"></div><div class="mc-shade mc-up"></div>' +
         '<div class="mc-view mc-up">' +
           '<div class="mc-pics"><img class="mc-pic a" alt=""><img class="mc-pic b" alt=""><div class="mc-erase"></div></div>' +
@@ -159,7 +165,7 @@ export function mount(host, options) {
   var $$ = function (s, r) { return Array.prototype.slice.call((r || host).querySelectorAll(s)); };
   var T = function (s) { return top.querySelector(s); };
   var TT = function (s) { return Array.prototype.slice.call(top.querySelectorAll(s)); };
-  var dim = $('.mc-dim'), world = $('.mc-world'), roomEl = $('.mc-room'), roomImg = $('.mc-room-img'), vig = $('.mc-vig'), deep = $('.mc-deep');
+  var dim = $('.mc-dim'), world = $('.mc-world'), roomEl = $('.mc-room'), roomImg = $('.mc-room-img'), vig = $('.mc-vig');
   var ups = $$('.mc-up'), sweep = $('.mc-sweep'), table = $('.mc-table'), view = $('.mc-view');
   var picA = $('.mc-pic.a'), picB = $('.mc-pic.b'), erase = $('.mc-erase'), holder = $('.mc-holder');
   var filmBox = $('.mc-film-box'), film = $('.mc-film');
@@ -483,19 +489,17 @@ export function mount(host, options) {
     }
 
     // ---- the lead: the crane, the bench coming up, the lights
-    var rise = RM ? (p > -1.3 ? 1 : 0) : io(ss(RISE[0], RISE[1], p));
+    var rise = RM ? (p > RM_CUT ? 1 : 0) : io(ss(RISE[0], RISE[1], p));
     var tvRise = RM ? rise : io(ss(TVRISE[0], TVRISE[1], p));
-    var dimK = RM ? (p > -1.3 ? 1 : 0) : ss(DIM[0], DIM[1], p);
-    var deepK = RM ? (p > -1.3 && p < 0.3 ? 1 : 0) : (p < DEEP[1] ? ss(DEEP[0], DEEP[1], p) : 1 - ss(DEEP[2], DEEP[3], p));
-    var lower = RM ? (p > -1.3 ? 1 : 0) : io(ss(LOWER[0], LOWER[1], p));
-    var light = RM ? (p > -1.3 ? 1 : 0) : ss(LIGHT[0], LIGHT[1], p);
-    var unroll = RM ? (p > -1.3 ? 1 : 0) : io(ss(UNROLL[0], UNROLL[1], p));
-    var appear = RM ? (p > -1.3 ? 1 : 0) : ss(APPEAR[0], APPEAR[1], p);
+    var dimK = RM ? (p > RM_CUT ? 1 : 0) : ss(DIM[0], DIM[1], p);
+    var lower = RM ? (p > RM_CUT ? 1 : 0) : io(ss(LOWER[0], LOWER[1], p));
+    var light = RM ? (p > RM_CUT ? 1 : 0) : ss(LIGHT[0], LIGHT[1], p);
+    var unroll = RM ? (p > RM_CUT ? 1 : 0) : io(ss(UNROLL[0], UNROLL[1], p));
+    var appear = RM ? (p > RM_CUT ? 1 : 0) : ss(APPEAR[0], APPEAR[1], p);
     // the room: the camera's place over the crane (in the lead the toy box draws the room; this chapter only its night)
     css(roomEl, 'visibility', isLead ? 'hidden' : '');
     css(dim, 'opacity', isLead ? dimK.toFixed(3) : '0');
     css(vig, 'opacity', (isLead ? dimK : 1).toFixed(3));
-    css(deep, 'opacity', deepK.toFixed(3));
     // the near things come up from below the frame, the nearest fastest (the camera comes down to the table's height)
     var off = (1 - rise) * (H - L.by + 40), tvOff = (1 - tvRise) * (H - (L.tv ? L.tv.t : H) + 60) * 1.0;
     // (a phone: while no card stands under the bench, in the lead and at the end, the bench stands lower in the frame,
@@ -518,8 +522,6 @@ export function mount(host, options) {
     css(sweep, 'transform', Math.abs(rodOff) > 0.05 ? 'translate3d(0,' + rodOff.toFixed(1) + 'px,0)' : '');
     css(sweep, 'visibility', lower <= 0.0005 ? 'hidden' : '');
     css(sweep, 'clipPath', unroll < 1 ? 'inset(-50px 0 ' + (sheetH * (1 - unroll) + (unroll > 0 ? 0 : 6)).toFixed(1) + 'px 0)' : '');
-    var ap = (appear * (1 - ending)).toFixed(3);
-    if (was.ap !== ap) { was.ap = ap; host.style.setProperty('--appear', ap); }
 
     // the lamp: lit over a machine, dimmed between two (the next one is set down in the dark), out at the end
     var edge = pl.step === 'intro' ? 1 - 0.35 * pl.intro : Math.min(pl.i === 0 ? 1 : pl.t / 0.025, pl.i === MACHINES.length - 1 ? 1 : (1 - pl.t) / 0.025);
@@ -527,6 +529,11 @@ export function mount(host, options) {
     if (isLead) lit = light * 0.65;
     var litS = lit.toFixed(3);
     if (was.lit !== litS) { was.lit = litS; host.style.setProperty('--lit', litS); }
+    // the machine itself: solid whenever it stands (the backdrop it is multiplied onto carries the lamp's light), and
+    // gone only between two machines, while the next is set down in the dark
+    var between = pl.step === 'intro' ? 1 : Math.min(pl.i === 0 ? 1 : pl.t / 0.025, pl.i === MACHINES.length - 1 ? 1 : (1 - pl.t) / 0.025);
+    var vis = (appear * smooth(between)).toFixed(3);
+    if (was.vis !== vis) { was.vis = vis; host.style.setProperty('--vis', vis); }
     // the machine comes up onto the table with the bench, and stands; the still under the page turns a little
     var kb = 1 + 0.035 * smooth(pl.step === 'arrive' ? pl.t / ARRIVE : pl.step === 'intro' ? 0 : 1);
     css(picA, 'transform', RM ? '' : 'scale(' + kb.toFixed(4) + ')'); css(picB, 'transform', RM ? '' : 'scale(' + kb.toFixed(4) + ')');
@@ -543,6 +550,8 @@ export function mount(host, options) {
 
     // which card is up (a fresh load at the same place shows the same)
     var cardOn = isLead ? (RM ? p > -0.5 : p > CARD[0]) : ending < 0.5;
+    // (the film the reader asked for goes with its card: it never plays on unseen, with no control left to stop it)
+    if (filmOn && !(cardOn && !isLead && pl.step === 'end')) openFilm(false);
     setCard(lead, cardOn && pl.step === 'intro');
     setCard(cPart, cardOn && !isLead && (pl.step === 'arrive' || pl.step === 'part'));
     setCard(cBrk, cardOn && !isLead && pl.step === 'break');

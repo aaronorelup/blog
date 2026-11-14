@@ -43,6 +43,9 @@ var END = [-0.75, 0.35];
 // then (every screen) the camera comes down a little onto the place where the bench of the next part stands (join.js
 // benchLayout; machines.js draws the bench coming up in front of the toys over these same screens, its CRANE)
 var TURN = [0.5, 1.9];
+// and just before it, bedtime: the toys hop back into the box and the lid shuts (the box's own going home, as when the
+// reader scrolls back above the burst), so the room the bench is set up in is tidy; scrolled back, the box bursts again
+var PACK = 0.42;
 
 export function mount(host, options) {
   var RM = options.reduced, HELD = options.held, section = options.section, top = options.top, marks = options.marks;
@@ -214,7 +217,7 @@ export function mount(host, options) {
     // the room: seen through the doorway once the walk has come close (look B's own rule), then the picture
     var roomOn = !lead && (hp >= 1 || (gcam && gcam.m > 0.33));
     setV(roomEl, 'room', roomOn);
-    var r = p - WALK[1], prog = 0, rect = null, turned = 0;
+    var r = p - WALK[1], prog = 0, rect = null, turned = 0, packed = false;
     if (roomOn) {
       if (hp < 1) rect = rectOfCam(garden.roomCam(gcam));
       else {
@@ -244,12 +247,13 @@ export function mount(host, options) {
           var ft = p - marks.foot.top;
           turned = RM ? (ft > (TURN[0] + TURN[1]) / 2 ? 1 : 0) : io(ss(TURN[0], TURN[1], ft));
           if (turned > 0) rect = mixRect(rect, benchRoom, turned);
+          packed = RM ? turned > 0 : ft >= PACK;
         }
       }
     }
     // (once the camera turns to the bench the toys are let be: no hand, no tag, no count over the bench's tabs)
     var hand = roomOn && hp >= 1 && active && turned <= 0;
-    if (play && roomOn) play.frame(rect, prog, active ? dt : 0, hand);
+    if (play && roomOn) play.frame(rect, packed ? 0 : prog, active ? dt : 0, hand);
     else if (play) play.idle();
     // the painting itself, where three.js is not (no WebGL, or until it has started)
     var useFlat = roomOn && (glFailed || !play || !play.ready);
