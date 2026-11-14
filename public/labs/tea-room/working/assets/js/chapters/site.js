@@ -33,6 +33,7 @@ var rad = function (d) { return d * Math.PI / 180; };
 var T_HELD = 7.3;                 // (the learning chapter's held time: the petals do not jump at the join)
 var K = 1.4;                      // (look B lays its type out larger than it is drawn)
 var SVG = 'http://www.w3.org/2000/svg';
+var MOONTURN = rad(30);
 
 // The names over the drawing (the test's own): a chip names a corner of the room with the meaning the homepage gave
 // it; a tag names a layer as it lifts (wide: in one column beside the drawing, as on an exploded drawing).
@@ -262,7 +263,8 @@ export function mount(host, options) {
     // window) and has come round to the test's own sky by the time the camera is out under the torii
     // (a phone: the moon comes to rest right of where the next chapter's name will stand, never under its lines)
     var hv = (tall ? -0.227 : 0) + (tall ? 0.023 : 0.384) * ss(0.3, 0.62, T);
-    HS.look(1, rad(48) + (hv - rad(48)) * ss(0.03, 0.2, T));
+    // (the join: the sky turns on a little, so the moon is not behind the next chapter's name)
+    HS.look(1, rad(48) + (hv - rad(48)) * ss(0.03, 0.2, T) + (j > 0 ? MOONTURN * io(ss(0, 0.3, j)) : 0));
 
     cameraAt(T, tall, cam);
     var out = sw ? ss(0.17, ACT.whole, T) : 0;
