@@ -9,15 +9,16 @@
    the terminal into the glass, as large as the glass, never larger than the screen. From there the test's own walk
    round the terminal: the cursor, one helper, a fan-out, a pipeline, an orchestrator, a writers' room, the wall of ten
    music videos, the watcher. At its end the cards go and the camera comes back out of the glass, the same move run
-   backwards, into the same bare room, which this chapter then draws itself (the machines chapter is long gone), under
-   the next chapter's name (closing.js).
+   backwards, into the same bare room, which this chapter then draws itself (the machines chapter is long gone). Then
+   the camera turns to the corner where the standing lantern is, by the shoji (join.js LEARN.TURN): the set leaves the
+   frame, and the painting comes to stand exactly where the learning chapter's modelled room will dissolve in over it.
 
    Everything on the screen is a function of q and the layout; what moves by itself (wings, chalk workers, the ten
    loops) follows the time. The ten loops play muted from /media/tea/agents/ on the site, only while the wall is seen and
    this chapter holds the screen; one of them with its sound only when the reader turns the sound on, in words.
    Motion off: the test's eight stills, one to a band of the walk; the way in and the way out are cuts. */
 import { mount as mountScene } from './agents/scene.js';
-import { AGENTS, TV_GLASS, tvPlace, tvDive } from './join.js';
+import { AGENTS, TV_GLASS, tvPlace, tvDive, LEARN, learnRoom } from './join.js';
 
 var IMG = new URL('../../img/', import.meta.url).href;
 var clamp = function (v, a, b) { a = a === undefined ? 0 : a; b = b === undefined ? 1 : b; return v < a ? a : v > b ? b : v; };
@@ -62,16 +63,9 @@ export function mount(host, options) {
     // the room: where the bench's room stands at the machines chapter's end (a phone's a little lower: its camera is
     // tilted up there, machines.js low)
     var R = tv.room;
-    var Ry = R.ty + (tv.phone ? H * 0.05 : 0);
-    roomImg.style.transform = 'translate(' + R.tx + 'px,' + Ry.toFixed(1) + 'px) scale(' + R.s + ')';
-    // the standing lantern's warm light in the room the camera comes back out into (the bench and its lamp are gone):
-    // round its shade, and a pool on the mats. Its place in the painting: x 1941, shade 929, floor 1060 of 2752 x 1536.
-    // (a phone's frame ends left of the lantern: its light comes in from the right, as it would)
-    var lx = R.tx + 1941 * R.s, ly = Ry + 929 * R.s, fy = Ry + 1065 * R.s, u = R.s;
-    lan.style.background =
-      'radial-gradient(' + (330 * u).toFixed(0) + 'px ' + (300 * u).toFixed(0) + 'px at ' + lx.toFixed(0) + 'px ' + ly.toFixed(0) + 'px, rgba(255, 196, 128, 0.34), rgba(255, 170, 100, 0.12) 50%, rgba(255, 160, 90, 0) 100%),' +
-      'radial-gradient(' + (760 * u).toFixed(0) + 'px ' + (190 * u).toFixed(0) + 'px at ' + lx.toFixed(0) + 'px ' + fy.toFixed(0) + 'px, rgba(255, 186, 120, 0.3), rgba(255, 170, 100, 0.1) 55%, rgba(255, 160, 90, 0) 100%),' +
-      'radial-gradient(' + (1500 * u).toFixed(0) + 'px ' + (900 * u).toFixed(0) + 'px at ' + lx.toFixed(0) + 'px ' + fy.toFixed(0) + 'px, rgba(255, 170, 105, 0.12), rgba(255, 160, 90, 0) 100%)';
+    R0 = { s: R.s, tx: R.tx, ty: R.ty + (tv.phone ? H * 0.05 : 0) };
+    R1 = learnRoom(W, H, rb && rb.width ? { right: rb.right, bottom: rb.bottom } : null);
+    lastTurn = -1; placeRoom(0);
     // the name: look B's rule (closing.js has the same)
     var tall = W / H < 0.9; narrow = W <= 820;
     var wp = clamp(W * (tall ? 0.15 : 0.115), 52, 190), sp = clamp(W * 0.0175, 17, 27);
@@ -85,6 +79,29 @@ export function mount(host, options) {
     FOC = tall ? [0.5, 0.26] : [0.5 + inset / W / 2, 0.5];
     was = {};
     laid = true;
+  }
+
+  // The painting at e of the turn to the lantern's corner (0: where the camera came back out, 1: LEARN's corner): a
+  // camera that pans and comes closer (the painting's point at the screen's middle moves evenly, the scale grows
+  // evenly for the eye). The set on the floor goes with the painting (it is in the room), out of the frame.
+  var R0 = null, R1 = null, R2 = null, lastTurn = -1;
+  function roomAt(e) {
+    var c0x = (W / 2 - R0.tx) / R0.s, c0y = (H / 2 - R0.ty) / R0.s, c1x = (W / 2 - R1.tx) / R1.s, c1y = (H / 2 - R1.ty) / R1.s;
+    var s = R0.s * Math.pow(R1.s / R0.s, e), cx = c0x + (c1x - c0x) * e, cy = c0y + (c1y - c0y) * e;
+    return { s: s, tx: W / 2 - cx * s, ty: H / 2 - cy * s };
+  }
+  function placeRoom(e) {
+    var r = e <= 0 ? R0 : e >= 1 ? R1 : roomAt(e);
+    roomImg.style.transform = 'translate(' + r.tx.toFixed(2) + 'px,' + r.ty.toFixed(2) + 'px) scale(' + r.s.toFixed(5) + ')';
+    // the standing lantern's warm light in the room the camera comes back out into (the bench and its lamp are gone):
+    // round its shade, and a pool on the mats. Its place in the painting: x 1941, shade 929, floor 1060 of 2752 x 1536.
+    // (a phone's frame ends left of the lantern: its light comes in from the right, as it would)
+    var lx = r.tx + 1941 * r.s, ly = r.ty + 929 * r.s, fy = r.ty + 1065 * r.s, u = r.s;
+    lan.style.background =
+      'radial-gradient(' + (330 * u).toFixed(0) + 'px ' + (300 * u).toFixed(0) + 'px at ' + lx.toFixed(0) + 'px ' + ly.toFixed(0) + 'px, rgba(255, 196, 128, 0.34), rgba(255, 170, 100, 0.12) 50%, rgba(255, 160, 90, 0) 100%),' +
+      'radial-gradient(' + (760 * u).toFixed(0) + 'px ' + (190 * u).toFixed(0) + 'px at ' + lx.toFixed(0) + 'px ' + fy.toFixed(0) + 'px, rgba(255, 186, 120, 0.3), rgba(255, 170, 100, 0.1) 55%, rgba(255, 160, 90, 0) 100%),' +
+      'radial-gradient(' + (1500 * u).toFixed(0) + 'px ' + (900 * u).toFixed(0) + 'px at ' + lx.toFixed(0) + 'px ' + fy.toFixed(0) + 'px, rgba(255, 170, 105, 0.12), rgba(255, 160, 90, 0) 100%)';
+    return r;
   }
 
   var was = {};
@@ -163,6 +180,27 @@ export function mount(host, options) {
     if (inLead) placeSet(k, tv.phone ? 1 : tune, false, lift);
     else if (out < 1) placeSet(out, 1, true);
     else placeSet(1, 1, false);
+    // the turn to the lantern's corner (screens before the learning section's top: pl)
+    var pl = pe - LEARN.FOOT;
+    var turn = RM ? (pl > (LEARN.TURN[0] + LEARN.TURN[1]) / 2 ? 1 : 0) : io(ss(LEARN.TURN[0], LEARN.TURN[1], pl));
+    if (turn !== lastTurn) { R2 = placeRoom(turn); lastTurn = turn; }
+    if (turn > 0) {
+      var r = R2;
+      {
+        // (the set stands on the floor near the camera, the painted walls far off: as the camera turns it slides out of
+        // the frame faster than the wall behind it, and grows a little faster)
+        var z = r.s / R0.s, gx = r.tx - z * R0.tx, gy = r.ty - z * R0.ty, PAR = 2.4;
+        var c0x = tv.l + tv.w / 2, c0y = tv.t + tv.h / 2, zt = Math.pow(z, 1.3);
+        var cx = c0x + (c0x * z + gx - c0x) * PAR, cy = c0y + (c0y * z + gy - c0y) * PAR;
+        var ox = cx - c0x * zt, oy = cy - c0y * zt;
+        var gt = 'translate(' + ox.toFixed(2) + 'px,' + oy.toFixed(2) + 'px) scale(' + zt.toFixed(5) + ')';
+        css(tvw, 'transform', gt); css(glass, 'transform', gt); css(room, 'transform', '');
+        // (the set is out of the frame once its box has left the screen)
+        var tl = tv.l * zt + ox, tt = tv.t * zt + oy;
+        var off = tl + tv.w * zt < 0 || tl > W || tt > H;
+        css(tvw, 'visibility', off ? 'hidden' : ''); if (off) css(glass, 'visibility', 'hidden');
+      }
+    } else css(glass, 'transform', '');
     css(glowEl, 'visibility', tv.phone || !inLead ? '' : 'hidden');      // (the machines chapter's own set glows in its room)
     // the name: in from the left wing over the bare room; up and away as the camera goes for the glass (look B's word)
     var nk = RM ? (p > AGENTS.NAME[0] + 0.2 && p <= AGENTS.RM_CUT ? 1 : 0) : io(ss(AGENTS.NAME[0], AGENTS.NAME[1], p));

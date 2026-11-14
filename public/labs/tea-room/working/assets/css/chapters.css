@@ -23,6 +23,8 @@
   font: 500 8px/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--pc-gold);
   background: linear-gradient(rgba(201, 162, 39, 0.4), rgba(201, 162, 39, 0.4)) no-repeat right 50% / calc(100% - 50px) 1px;
 }
+.index li.quiet a { color: var(--home-quiet); } .index li.quiet a:hover { color: var(--pc-head); }   /* (a built chapter whose line in the hero's list keeps its old grey for now: look B's
+   hero is held to its reference pictures, and the lines already made links use up what they allow. The rail marks it as built) */
 .index li.soon .c { letter-spacing: 0.12em; text-transform: uppercase; font-size: 8.5px; color: var(--pc-gold); }
 
 /* ---------------------------------------------------------------- AI video & film */
@@ -149,7 +151,11 @@
 /* The walk round the terminal (the test's 0..1, 11.5 screens from one screen before the section's top), then the way back
    out of the television's glass into the room. */
 .agents-walk { height: 1050vh; }
-.agents-foot { height: 300vh; }   /* (the next chapter's name comes on as the camera lands back in the room) */
+.agents-foot { height: 460vh; }   /* (= join.js LEARN.FOOT: the camera lands back in the room, then turns to the lantern's corner) */
+
+/* ---------------------------------------------------------------- learning to build with AI (assets/js/chapters/learning.js) */
+.learning-walk { height: 800vh; }  /* (learning.js LB: the test's track, the camera's arrival and the five spreads) */
+.learning-foot { height: 150vh; }  /* (the last spread held; the lamps go low under the next chapter's name) */
 
 /* ---------------------------------------------------------------- the closing beat (a draft: see chapters/closing.js) */
 /* its one small line stands under the name: the section's last screen is the page's last picture */
