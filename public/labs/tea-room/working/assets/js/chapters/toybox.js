@@ -24,12 +24,16 @@ var K = 1.4;                                       // (look B lays its type out 
 // it: over the tea house it would stand across the roof and the windows)
 var NAME_IN = [-1.95, -1.35], SAY_IN = [-1.85, -1.25], NAME_LEAD_OUT = [-0.95, -0.55];
 var SLIDE = [-0.85, -0.05];                        // the tea house slides across (games holds still under it)
-var WALK = [0.25, 2.85];                           // look B's walk from the lawn through the doorway
+var WALK = [0.25, 2.85];
+var H0_TALL = 0.2;                                 // (where the walk starts on a tall screen: look B's hero progress)                           // look B's walk from the lawn through the doorway
 // (the name stands again on the room's wall once the camera is through the doorway, as look B's "Start here" does,
 // and leaves for the left wing as the camera goes on to the box)
 var NAME_ROOM = [2.45, 2.85], NAME_OUT = [3.05, 3.6];
 // the box's track after the walk (r: screens since the walk ended) -> the test's own track (0..1)
 var TRACK = [[0, 0.06], [1.0, 0.3], [1.9, 0.46], [2.5, 0.78], [3.2, 1.0]];
+// the last leg (wide screens): as the last card leaves, the camera draws back and lowers its eye a little, so that the
+// huddle stands under the next chapter's name (closing.js) and not across it (screens from the foot's top)
+var END = [-0.75, 0.35];
 
 export function mount(host, options) {
   var RM = options.reduced, HELD = options.held, section = options.section, top = options.top, marks = options.marks;
@@ -98,7 +102,13 @@ export function mount(host, options) {
   // k: 0 off in the left wing (narrow, coming on: a little below, unseen), 1 in its place; out: leaving for the wing
   function put(el, x, y, k, out, was) {
     var tr, o = 1;
-    if (out > 0) { var w = el.offsetWidth / K; tr = 'translate3d(' + (x - out * (Math.max(x, 0) + w + 30)).toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) scale(' + (1 / K).toFixed(5) + ')'; }
+    if (out > 0 && narrow) {
+      // (a narrow screen's left wing is its own edge, where a leaving word would leave its last letters standing: so
+      // there it fades as it rises a little, as it came on)
+      tr = 'translate3d(' + x.toFixed(2) + 'px,' + (y - out * H * 0.05).toFixed(2) + 'px,0) scale(' + (1 / K).toFixed(5) + ')'; o = clamp(1 - out * 1.6);
+      if (k < 1) { o = Math.min(o, clamp((k - 0.06) * 5.5)); tr = 'translate3d(' + x.toFixed(2) + 'px,' + (y + (1 - k) * H * 0.07 - out * H * 0.05).toFixed(2) + 'px,0) scale(' + (1 / K).toFixed(5) + ')'; }
+    }
+    else if (out > 0) { var w = el.offsetWidth / K; tr = 'translate3d(' + (x - out * (Math.max(x, 0) + w + 30)).toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) scale(' + (1 / K).toFixed(5) + ')'; }
     else if (narrow) { tr = 'translate3d(' + x.toFixed(2) + 'px,' + (y + (1 - k) * H * 0.07).toFixed(2) + 'px,0) scale(' + (1 / K).toFixed(5) + ')'; o = clamp((k - 0.06) * 5.5); }
     else { var w2 = el.offsetWidth / K; tr = 'translate3d(' + (x - (1 - k) * (Math.max(x, 0) + w2 + 30)).toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) scale(' + (1 / K).toFixed(5) + ')'; }
     var key = tr + o;
@@ -157,15 +167,24 @@ export function mount(host, options) {
     } else {
       // (back on the room's wall: it comes on from the left wing, on every screen)
       kIn = kSay = 1;
+      if (narrow && !RM) {
+        // (a narrow screen: it rises into its place as it fades on, and fades as it rises away)
+        kIn = io(ss(NAME_ROOM[0], NAME_ROOM[1], p)); kSay = io(ss(NAME_ROOM[0] + 0.05, NAME_ROOM[1] + 0.05, p));
+        kOut = io(ss(NAME_OUT[0], NAME_OUT[1], p)); kSayOut = io(ss(NAME_OUT[0] - 0.05, NAME_OUT[1] - 0.1, p));
+      } else {
       kOut = RM ? (p > NAME_OUT[1] || p < (WALK[0] + WALK[1]) / 2 ? 1 : 0) : Math.max(1 - io(ss(NAME_ROOM[0], NAME_ROOM[1], p)), io(ss(NAME_OUT[0], NAME_OUT[1], p)));
       kSayOut = RM ? kOut : Math.max(1 - io(ss(NAME_ROOM[0] + 0.05, NAME_ROOM[1] + 0.05, p)), io(ss(NAME_OUT[0] - 0.05, NAME_OUT[1] - 0.1, p)));
+      }
     }
     nameWas = put(word, wx, wy, kIn, kOut, nameWas);
     sayWas = put(say, sx, sy, kSay, kSayOut, sayWas);
 
     // the tea house slides across, then the walk
     var sl = RM ? (p > -0.45 ? 1 : 0) : io(ss(SLIDE[0], SLIDE[1], p));
-    var hp = RM ? (p < (WALK[0] + WALK[1]) / 2 ? 0 : 1) : clamp((p - WALK[0]) / (WALK[1] - WALK[0]));
+    // (a tall screen starts the walk a few of look B's steps in: at look B's very first step its lawn ends a third of
+    // the way up a phone's screen, over look B's opening card, and here there is no card to stand under it)
+    var h0 = portrait ? H0_TALL : 0;
+    var hp = RM ? (p < (WALK[0] + WALK[1]) / 2 ? h0 : 1) : h0 + (1 - h0) * clamp((p - WALK[0]) / (WALK[1] - WALK[0]));
     var sheetOn = sl > 0.0005 && hp < 1;
     setV(skyEl, 'sky', sheetOn); setV(gardenEl, 'garden', sheetOn);
     var gcam = null;
@@ -188,6 +207,15 @@ export function mount(host, options) {
         if (RM) rect = prog === 0 || !play ? door : play.rectAt(prog);
         else if (rr < 1.0) rect = mixRect(door, play ? play.rectAt(0.3) : door, ss(0, 1, rr));
         else rect = play ? play.rectAt(prog) : door;
+        // the last leg (not on a phone: there the name stands over the doors, above the huddle, already)
+        if (play && !play.phone && marks.foot) {
+          var fe = p - marks.foot.top, eEnd = RM ? (fe > (END[0] + END[1]) / 2 ? 1 : 0) : io(ss(END[0], END[1], fe));
+          if (eEnd > 0) {
+            var r1 = play.rectAt(1), we = Math.min(r1.w * 1.19, W / H * PH, PW), he = we * H / W;
+            var endR = { x: clamp(r1.x - r1.w * 0.045, 0, PW - we), y: PH - he, w: we, h: he };
+            rect = mixRect(rect, endR, eEnd);
+          }
+        }
       }
     }
     var hand = roomOn && hp >= 1 && active;
