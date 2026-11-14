@@ -1,0 +1,205 @@
+// The four machines of the teardown lab (AO-073), as the machines chapter shows them (machines.js). A copy of the
+// tea room test's own list (tests/teardown-bench/js/machines.js), unchanged but for this line.
+// Every name and number below was written down from the machine's own page (/labs/teardown/<key>/): its part buttons,
+// its labels and its readouts. The plain sentences are DRAFTS written for this test, from those same labels and
+// readouts: nothing in them is new canon. The notebook itself is never copied: the page, its film and its stills are
+// shown by their own addresses.
+
+export const LAB_POST = '/ledger/teardown-lab/';
+
+// crop: what part of the page's 1600 x 900 picture the frame shows: its centre (cx, cy), how much of its height (vh)
+// fits the frame, and the widest it may show (vw: past it the console begins); a separate crop for a narrow (phone) frame.
+export const MACHINES = [
+  {
+    key: 'dray',
+    name: 'DRAY',
+    what: 'The six-wheeled hauler, five wheels fitted',
+    page: '/labs/teardown/dray/',
+    film: '/media/teardown-lab/dray/film.mp4',
+    filmLength: '30 s',
+    poster: '/media/teardown-lab/dray/hero.webp',
+    stills: ['/media/teardown-lab/dray/hero.webp', '/media/teardown-lab/dray/eye.webp', '/media/teardown-lab/dray/poster.webp'],
+    // in each still (in the page's 1600 x 900 pixels): the box the machine stands in, and the page's own words inside it.
+    // Everything else is the page's console, lifted out of the picture on the bench.
+    keep: { 'dray/hero': [365, 0, 860, 795], 'dray/eye': [365, 0, 860, 795] },
+    erase: { 'dray/eye': [[595, 135, 170, 45], [700, 605, 185, 50]] },
+    crop: { cx: 800, cy: 430, vh: 790, vw: 940 },
+    cropNarrow: { cx: 800, cy: 440, vh: 760, vw: 740 },
+    hero: { view: 'HERO' },
+    kind: 'toggle', // parts and modes toggle; a mode needs a part
+    // DRAY's cut is one plane through the deck (it opens the battery): its crane and its lamp are shown alone instead
+    modes: { isolate: 'ISOLATE', cut: 'CUT', alone: 'ALONE' },
+    allParts: ['CHASSIS', 'WHEELS', 'CRANE', 'MAST & LAMP', 'BATTERY', 'BAG'],
+    parts: [
+      {
+        button: 'CRANE', name: 'The folding crane', num: '2.30 m', unit: 'of reach, three fingers',
+        say: 'Two folding arms and a three-fingered hand lift the regolith bags off HAB 3’s window well, 135 kg at a time.',
+        second: 'alone',
+        still: 0,
+      },
+      {
+        button: 'BATTERY', name: 'The battery pack', num: '1.1 × 1.05 m', unit: 'under the deck',
+        say: 'Cut the deck open and there it is: one flat pack lying under the load bed, between the wheels.',
+        still: 0,
+      },
+      {
+        button: 'MAST & LAMP', name: 'The mast and its lamp', num: '6,000 cd', unit: 'one round eye',
+        say: 'The end of the job: the lamp on the mast lights HAB 3’s cracked window from across the yard.',
+        second: 'alone',
+        still: 1,
+      },
+    ],
+    breakIt: {
+      label: 'Gravity', min: 1.62, max: 9.81, step: 0.01, value: 1.62, unit: 'm/s²',
+      marks: [[1.62, 'Moon'], [3.71, 'Mars'], [9.81, 'Earth']],
+      say: 'It is missing its rear right wheel, and the crane is swinging a 135 kg bag. Raise the gravity from the Moon’s towards Earth’s and watch the margin go.',
+      readout: { after: 'TIP MARGIN · COM TO NEAREST SUPPORT EDGE', take: 3, label: 'Tip margin', big: 2, tidy: (b) => (/^TIP\b/.test(b) ? 'Tipped over' : b) },
+      // with no live page: what the page says at the ends (its own tip point is 8.2 m/s²)
+      offline: (v) => (v < 8.2 ? 'Stable on five wheels' : 'Tips over the missing wheel'),
+      drive: 'setG',
+      // the task scrubbed to the crane swinging down with its bag (the page's own scrub bar, 51 %): where it can tip
+      setup: { hit: 0, at: 0.512 },
+      resetOnLeave: true,
+      stills: [0, 0],
+      at: 8.2,
+    },
+  },
+  {
+    key: 'hab3',
+    name: 'HAB 3',
+    what: 'The module, taken apart in nine steps',
+    page: '/labs/teardown/hab3/',
+    film: '/media/teardown-lab/hab3/film.mp4',
+    filmLength: '58 s',
+    poster: '/media/teardown-lab/hab3/halted.webp',
+    // its stills with no labels laid over the module: the halted one, the section through it
+    stills: ['/media/teardown-lab/hab3/halted.webp', '/media/teardown-lab/hab3/halted.webp', '/media/teardown-lab/hab3/halted.webp'],
+    keep: { 'hab3/halted': [400, 140, 740, 470] },
+    crop: { cx: 770, cy: 360, vh: 800, vw: 950 },
+    cropNarrow: { cx: 770, cy: 360, vh: 760, vw: 780 },
+    hero: { view: 'HERO' },
+    kind: 'hab', // a part is isolated by picking it; "cut" is the page's section view
+    cutView: 'SECTION',
+    allParts: ['SHIELDING', 'WINDOW', 'SCRUBBER', 'POWER', 'RADIATORS', 'HATCH + TUNNEL'],
+    parts: [
+      {
+        button: 'SHIELDING', name: 'The shielding', num: 'Step 1 of 9', unit: 'strip the outer shielding',
+        say: 'Every module should have its end written on it from day one. HAB 3’s starts by taking the regolith bags off its back.',
+        still: 0,
+      },
+      {
+        button: 'SCRUBBER', name: 'The CO₂ scrubber', num: '4.12 mmHg', unit: 'of CO₂, the limit is 3.0',
+        say: 'The scrubber is losing: the carbon dioxide in the empty cabin is already past its limit, and still climbing.',
+        still: 2,
+      },
+      {
+        button: 'POWER', name: 'The battery wall', num: '31 h', unit: 'left, sunrise in 128 h',
+        say: 'Step 4 isolates HAB 3’s power. The wall of batteries cannot carry it through the night to sunrise.',
+        still: 0,
+      },
+    ],
+    breakIt: {
+      label: 'The vent bore', min: 10, max: 300, step: 1, value: 100, unit: 'mm',
+      marks: [[10, 'Ø 10'], [100, 'Ø 100'], [300, 'Ø 300']],
+      say: 'Step 9 vents the module to the Moon. The wider the port, the faster the air goes.',
+      readout: { find: /^Ø \d+ MM · /, also: /^HALF PRESSURE IN/, label: 'Vent port', big: 1 },
+      offline: () => 'At Ø 100 mm: half the pressure gone in 24 s',
+      drive: 'hit',
+      hit: 0,
+      stills: [1, 1],
+      at: 999,
+    },
+  },
+  {
+    key: 'lander',
+    name: 'Resupply 6',
+    what: 'The cargo lander that tipped',
+    page: '/labs/teardown/lander/',
+    film: '/media/teardown-lab/lander/film.mp4',
+    filmLength: '32 s',
+    poster: '/media/teardown-lab/lander/landed-upright.webp',
+    stills: ['/media/teardown-lab/lander/landed-upright.webp', '/media/teardown-lab/lander/on-its-side.webp', '/media/teardown-lab/lander/poster.webp'],
+    keep: { 'lander/landed-upright': [190, 90, 1080, 690], 'lander/on-its-side': [190, 90, 1100, 690], 'lander/poster': [190, 90, 1090, 700] },
+    erase: { 'lander/landed-upright': [[325, 325, 175, 50], [325, 430, 185, 55], [325, 490, 180, 55], [1065, 430, 215, 50], [1065, 565, 200, 50]] },
+    crop: { cx: 760, cy: 420, vh: 740, vw: 880 },
+    cropNarrow: { cx: 770, cy: 430, vh: 760, vw: 720 },
+    hero: { view: 'HERO' },
+    kind: 'toggle',
+    modes: { isolate: 'ISOLATE', cut: 'CUT' },
+    allParts: ['CARGO BAY', 'LEGS + STRUTS', 'ENGINE + TANKS'],
+    parts: [
+      {
+        button: 'CARGO BAY', name: 'The cargo bay', num: '2 shelves', unit: 'of food',
+        say: 'What the lander was for: the base’s food, on two shelves inside the bay.',
+        still: 0,
+      },
+      {
+        button: 'LEGS + STRUTS', name: 'The legs and struts', num: '450 mm', unit: 'of stroke, crushed once',
+        say: 'Each primary strut telescopes and crushes once to soak up the landing; secondary struts brace the leg; the footpad is 0.91 m.',
+        still: 0,
+      },
+      {
+        button: 'ENGINE + TANKS', name: 'The engine and tanks', num: '1.5 m/s', unit: 'nominal touchdown',
+        say: 'The descent engine is cut at contact. From there the legs have to do the rest.',
+        still: 2,
+      },
+    ],
+    breakIt: {
+      label: 'Touchdown speed', min: 0.5, max: 8, step: 0.1, value: 1.5, unit: 'm/s',
+      marks: [[1.5, 'Nominal'], [7, 'Resupply 6']],
+      say: 'Resupply 6 came down at 7.0 m/s. Push the speed up and see where the struts stop being enough.',
+      readout: { after: 'TIP-OVER MARGIN', take: 2, label: 'Tip-over margin', big: 1 },
+      offline: (v) => (v < 6.6 ? '+13.0 kJ to spare at 1.5 m/s' : '2.3 kJ past the tip at 7.0 m/s'),
+      drive: 'hit',
+      hit: 0,
+      hitPad: 10,
+      resetOnLeave: true,
+      stills: [0, 1],
+      at: 6.6,
+    },
+  },
+  {
+    key: 'mole1',
+    name: 'MOLE-1',
+    what: 'The drum digger',
+    page: '/labs/teardown/mole1/',
+    film: '/media/teardown-lab/mole1/film.mp4',
+    filmLength: '39 s',
+    poster: '/media/teardown-lab/mole1/hero-3m.webp',
+    // the still from the page's own hero view (the others look down into the trench from above)
+    stills: ['/media/teardown-lab/mole1/hero-3m.webp', '/media/teardown-lab/mole1/hero-3m.webp', '/media/teardown-lab/mole1/hero-3m.webp'],
+    keep: { 'mole1/hero-3m': [300, 100, 990, 545] },
+    erase: { 'mole1/hero-3m': [[420, 180, 105, 40], [430, 228, 115, 42], [370, 410, 155, 45], [1085, 435, 195, 45]] },
+    crop: { cx: 780, cy: 400, vh: 760, vw: 900 },
+    cropNarrow: { cx: 780, cy: 400, vh: 760, vw: 740 },
+    hero: { view: 'HERO' },
+    kind: 'set', // the mode is set (not toggled) first, then a part is picked
+    modes: { isolate: 'ISOLATE', cut: 'CUT' },
+    allParts: ['DRUMS', 'ARMS', 'HOPPER', 'CHASSIS', 'WHEELS', 'SENSOR BAR', 'BATTERY', 'RADIATOR'],
+    parts: [
+      {
+        button: 'DRUMS', name: 'The drums', num: '0.48 kg/s', unit: 'while the drum cuts',
+        say: 'Two counter-rotating drums bite the regolith: the bars cut every 25.7°, and the far half drags back as hard as the near half drags on.',
+        still: 0,
+      },
+      {
+        button: 'HOPPER', name: 'The hopper', num: '80 kg', unit: 'a load, 140 loads',
+        say: 'The drums fill the hopper, the hopper tips at the pile: 140 loads of 80 kg, and each dump is one tooth.',
+        still: 1,
+      },
+    ],
+    breakIt: {
+      label: 'Dig progress', min: 0, max: 1, step: 0.001, value: 0, unit: '',
+      marks: [[0, 'Dark and parked'], [1, '3.00 m of cover']],
+      say: 'Its job is three metres of regolith over the drift’s roof, safe from the sun. Scrub through the whole night’s dig.',
+      readout: { after: 'COVER OVER THE DRIFT\'S ROOF, AT THE FACE', take: 3, label: 'Cover over the roof', big: 2 },
+      // the scrub bar starts the job playing: pause it where the reader leaves it
+      view: 'HERO', pause: '❚❚',
+      offline: (v) => `${(v * 3).toFixed(2)} m of 3.00 m`,
+      drive: 'hit',
+      hit: 0,
+      stills: [0, 1],
+      at: 0.5,
+    },
+  },
+];

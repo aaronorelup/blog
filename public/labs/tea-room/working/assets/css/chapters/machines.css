@@ -1,0 +1,195 @@
+/* THE MACHINES ON THE BENCH (assets/js/chapters/machines.js draws it; this file comes with it, not with the page).
+   The tea room test's own look (tests/teardown-bench/css/bench.css), every name prefixed mc- and set in the page's own
+   tokens. Its picture layer has no ground of its own: through its lead it is drawn over the toy box's room. */
+.chapter-stage[data-chapter='machines'] { background: none; --lit: 1; }
+.chapter-stage[data-chapter='machines'] > div { position: absolute; }
+
+/* the room going down to the bench's night, over the toy box's room in the lead (the same as the room's own filter) */
+.mc-dim { inset: 0; background: rgba(0, 0, 0, 0.28); opacity: 0; pointer-events: none; }
+
+/* the world: the room, the bench, the lamp, the television; moved by the camera as one. Its order is its depth. */
+.mc-world { inset: 0; will-change: transform; }
+.mc-world > * { position: absolute; }
+.mc-room { inset: 0; overflow: hidden; background: #1a1424; }
+.mc-room-img { position: absolute; left: 0; top: 0; width: 2752px; height: 1536px; max-width: none; transform-origin: 0 0; filter: brightness(0.72); user-select: none; }
+/* everything away from the lamp sinks into the night */
+.mc-vig { inset: 0; pointer-events: none; opacity: 0;
+  background: radial-gradient(70% 85% at var(--tcx) 46%, rgba(10, 8, 22, 0) 25%, rgba(10, 8, 22, 0.5) 70%, rgba(8, 6, 18, 0.8) 100%); }
+/* for a moment, round the turn from the toy box's room to this one, the room is darker still (not the bench) */
+.mc-deep { inset: 0; pointer-events: none; opacity: 0;
+  background: radial-gradient(60% 70% at var(--tcx) 50%, rgba(8, 6, 18, 0.55) 0%, rgba(8, 6, 18, 0.86) 55%, rgba(6, 4, 14, 0.94) 100%); }
+/* the lamp's light falling through the room: on the wall behind the bench, brightest down where it meets the table */
+.mc-cone { inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: calc(0.18 + 0.82 * var(--lit));
+  background:
+    radial-gradient(calc(var(--trx) * 0.95) calc(var(--tcy) * 0.62) at var(--tcx) calc(var(--tcy) * 0.66), rgba(255, 196, 128, 0.62), rgba(255, 180, 110, 0.32) 45%, rgba(255, 170, 100, 0) 100%),
+    radial-gradient(calc(var(--trx) * 0.5) calc(var(--trx) * 0.5) at var(--lx) var(--ly), rgba(255, 214, 150, 0.55), rgba(255, 190, 120, 0) 100%); }
+.mc-up { will-change: transform; }
+/* the table: look B's low table, drawn large, the workbench */
+.mc-table { max-width: none; height: auto; pointer-events: none; user-select: none; filter: brightness(0.86) saturate(0.95); }
+/* the backdrop: lit by the lamp, dark when the lamp is */
+.mc-sweep { left: 0; top: 0; overflow: visible; will-change: transform; pointer-events: none; filter: brightness(calc(0.3 + 0.7 * var(--lit))); }
+.mc-sweep svg { display: block; overflow: visible; }
+/* the pool of lamplight on the table top, where the machine stands */
+.mc-pool { inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: calc(0.12 + 0.88 * var(--lit));
+  background: radial-gradient(calc(var(--trx) * 0.78) calc(var(--try) * 1.15) at var(--tcx) calc(var(--tcy) - var(--try) * 0.12),
+    rgba(255, 222, 170, 0.95), rgba(255, 206, 150, 0.78) 40%, rgba(255, 190, 120, 0.28) 75%, rgba(255, 180, 110, 0) 100%); }
+/* the soft shadow on the table under the machine */
+.mc-shade { inset: 0; pointer-events: none; mix-blend-mode: multiply; opacity: calc(0.25 + 0.75 * var(--lit));
+  background: radial-gradient(calc(var(--trx) * 0.42) calc(var(--try) * 0.32) at var(--tcx) calc(var(--tcy) + var(--try) * 0.12), rgba(70, 44, 40, 0.55), rgba(70, 44, 40, 0) 100%); }
+
+/* the machine on the bench: its page's pale studio is multiplied into the lamplight (where the page is pale the bench
+   shows through; where the machine is, it is lit by the lamp); the edges fade into the room */
+.mc-view { overflow: hidden; background: transparent; mix-blend-mode: multiply; opacity: calc(var(--lit) * var(--appear, 1));
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 11%, #000 89%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 9%, #000 86%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent 0, #000 11%, #000 89%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 9%, #000 86%, transparent 100%);
+  mask-composite: intersect; }
+.mc-pics { position: absolute; inset: 0; }
+.mc-pic { position: absolute; max-width: none; opacity: 0; transition: opacity 0.45s ease; transform-origin: 50% 55%; user-select: none; }
+.mc-pic.on { opacity: 1; }
+/* white, in a multiplied layer, is nothing: it lifts the stills' console out of the picture */
+.mc-erase { position: absolute; inset: 0; pointer-events: none; }
+.mc-erase i { position: absolute; background: #fff; }
+/* the page's words laid over its machine: smudged into the picture rather than cut out of it */
+.mc-erase i.w { background: rgba(255, 255, 255, 0.45); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px);
+  -webkit-mask-image: radial-gradient(closest-side, #000 60%, transparent); mask-image: radial-gradient(closest-side, #000 60%, transparent); }
+.mc-holder { position: absolute; inset: 0; pointer-events: none; }
+.mc-holder iframe { position: absolute; border: 0; max-width: none; opacity: 0; transition: opacity 0.6s ease; pointer-events: none; background: transparent; }
+.mc-holder iframe.on { opacity: 1; }
+.mc-hand .mc-holder, .mc-hand .mc-holder iframe { pointer-events: auto; }
+.mc-pic, .mc-holder iframe, .mc-film { filter: brightness(1.09) saturate(1.06) contrast(1.03); }
+.mc-film-box { position: absolute; inset: 0; z-index: 4; background: #fff;
+  -webkit-mask-image: radial-gradient(44% 46% at 50% 47%, #000 62%, transparent 100%); mask-image: radial-gradient(44% 46% at 50% 47%, #000 62%, transparent 100%); }
+.mc-film-box[hidden] { display: none; }
+.mc-film { position: absolute; max-width: none; }
+.mc-held .mc-pic { transition: none; }
+
+/* the television on the floor beside the bench, playing the machine's film with no sound */
+.mc-tv { aspect-ratio: 1200 / 1093; pointer-events: none; will-change: transform; }
+.mc-tv-glow { position: absolute; left: -25%; right: -45%; top: -30%; bottom: -30%; pointer-events: none; mix-blend-mode: screen;
+  background: radial-gradient(closest-side, rgba(150, 175, 255, 0.24), rgba(150, 175, 255, 0) 100%); }
+.mc-tv-flip { position: absolute; inset: 0; filter: brightness(0.8); }
+.mc-tv-screen { position: absolute; left: 10%; top: 34.3%; width: 50.4%; height: 49.4%; overflow: hidden; background: rgb(226, 220, 208); border-radius: 12% / 14%; }
+.mc-tv-screen img, .mc-tv-screen video { position: absolute; max-width: none; filter: saturate(0.9) sepia(0.15) brightness(1.06); }
+.mc-tv-screen::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 18px rgba(20, 18, 40, 0.55); background: linear-gradient(200deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 40%); }
+.mc-tv-film { opacity: 0; transition: opacity 0.6s; }
+.mc-tv-film.on { opacity: 1; }
+.mc-tv-body { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* the lamp */
+.mc-lamp { pointer-events: none; will-change: transform; }
+.mc-lamp-svg { display: block; width: 100%; height: auto; overflow: visible; filter: brightness(calc(0.55 + 0.45 * var(--lit))); }
+.mc-lamp-glow { position: absolute; left: -160%; right: -160%; top: -70%; bottom: -90%; mix-blend-mode: screen; opacity: calc(0.15 + 0.85 * var(--lit));
+  background: radial-gradient(closest-side, rgba(255, 220, 160, 0.6), rgba(255, 190, 120, 0.2) 45%, rgba(255, 180, 110, 0) 100%); }
+
+/* ---------------------------------------------------------------- in front of the page (the chapter's top layer):
+   the tabs, the machine's name on the bench's front edge, the cards. The homepage's cards: clean, dark, rounded. */
+.chapter-top > .mc-tabs, .chapter-top > .mc-plate, .chapter-top > .mc-dock, .chapter-top > .mc-hint, .chapter-top > .mc-waking { position: absolute; }
+.chapter-top > .mc-dock, .chapter-top > .mc-hint, .chapter-top > .mc-waking { pointer-events: none; }
+.mc-tabs { display: flex; gap: 8px; opacity: 0; transition: opacity 0.35s ease; }
+.mc-tabs.up { opacity: 1; }
+.mc-tab { position: relative; padding: 7px 12px 9px; border: 0; border-radius: 12px; background: rgba(21, 23, 38, 0.78); color: var(--home-quiet); cursor: pointer;
+  font: 600 12px/1 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; box-shadow: inset 0 0 0 1px rgba(74, 68, 90, 0.7); }
+.mc-tab i { position: absolute; left: 10px; right: 10px; bottom: 4px; height: 2px; border-radius: 2px; background: var(--pc-line2); overflow: hidden; }
+.mc-tab b { display: block; height: 100%; background: var(--tea-lamp); transform-origin: 0 50%; transform: scaleX(0); }
+.mc-tab.on { color: var(--pc-head); background: var(--tea-card); }
+.mc-tab:hover { color: var(--pc-strong); }
+
+.mc-plate { transform: translateX(-50%); display: flex; align-items: center; gap: 10px; margin: 0;
+  padding: 6px 6px 6px 16px; min-height: 40px; border-radius: var(--radius-pill); background: var(--tea-card);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(74, 68, 90, 0.85); white-space: nowrap; opacity: 0; transition: opacity 0.35s ease; }
+.mc-plate.up { opacity: 1; }
+.mc-plate-name { font: 700 19px/1 var(--font-display); color: var(--pc-head); letter-spacing: 0.01em; }
+.mc-plate-what { font: 400 14px/1.3 var(--font-body); color: var(--pc-strong); opacity: 0.9; }
+.mc-turn { padding: 8px 14px; border: 0; border-radius: var(--radius-pill); background: var(--tea-lamp); color: rgb(40, 30, 24); font: 700 13.5px/1 var(--font-body); cursor: pointer; }
+.mc-turn[hidden] { display: none; }
+.mc-plate:not(:has(.mc-turn:not([hidden]))) { padding-right: 16px; }
+.mc-hand .mc-turn { background: var(--pc-accent); color: #fff; }
+.mc-waking { transform: translateX(-50%); margin: 0; padding: 5px 11px; border-radius: var(--radius-pill); background: rgba(21, 23, 38, 0.82);
+  font: 500 11px/1.4 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--home-quiet); white-space: nowrap; }
+.mc-waking[hidden] { display: none; }
+
+.mc-card { border-radius: var(--radius-l); background: rgba(21, 23, 38, 0.94); box-shadow: var(--home-shadow), inset 0 0 0 1px rgba(74, 68, 90, 0.85); color: var(--home-body); }
+.mc-dock .mc-card { position: absolute; left: 0; right: 0; bottom: 9vh; padding: 20px 22px 20px; opacity: 0; visibility: hidden; transform: translateY(14px);
+  transition: opacity 0.35s ease, transform 0.35s ease, visibility 0s linear 0.35s; pointer-events: none; }
+.mc-dock .mc-card.up { opacity: 1; visibility: inherit; transform: none; pointer-events: auto; transition: opacity 0.35s ease, transform 0.35s ease, visibility 0s; }
+.mc-held .mc-dock .mc-card, .mc-held.mc-tabs, .mc-held .mc-tabs, .mc-held .mc-plate { transition: none; }
+.mc-meta { display: flex; flex-wrap: wrap; gap: 0 10px; margin: 0; font: 500 11px/1.6 var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--home-quiet); }
+.mc-meta span + span::before { content: '·'; margin-right: 10px; color: var(--pc-line2); }
+.mc-card h2, .mc-card h3 { margin: 4px 0 8px; font: 700 clamp(24px, 2.2vw, 29px)/1.12 var(--font-display); color: var(--pc-head); letter-spacing: -0.005em; text-wrap: balance; }
+.mc-card h2.mc-lead-title { font-size: clamp(30px, 2.9vw, 40px); line-height: 1.06; }
+.mc-say { margin: 0; font: 400 15.5px/1.45 var(--font-serif); color: var(--pc-strong); text-wrap: pretty; }
+.mc-lead .mc-say { font-size: 16.5px; }
+.mc-lead-go { margin: 12px 0 0; font: 600 14px/1.4 var(--font-body); color: var(--tea-lamp); }
+.mc-num { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; margin: 0 0 8px; }
+.mc-num b { font: 700 clamp(30px, 3vw, 40px)/1 var(--font-display); color: var(--pc-strong); letter-spacing: -0.01em; }
+.mc-num b:empty { display: none; }
+.mc-num span { font: 500 12px/1.4 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--home-quiet); }
+.mc-whole .mc-num span { font: 400 16px/1.4 var(--font-serif); text-transform: none; letter-spacing: 0; color: var(--pc-strong); }
+.mc-modes { display: flex; gap: 8px; margin: 14px 0 0; }
+.mc-whole .mc-modes { display: none; }
+.mc-chip { padding: 4px 10px; border-radius: var(--radius-pill); font: 600 12px/1.3 var(--font-body); color: var(--home-quiet); box-shadow: inset 0 0 0 1px var(--pc-line2); }
+.mc-chip.on { background: var(--pc-accent); color: #fff; box-shadow: none; }
+
+/* break it: one big slider */
+.mc-range { display: block; margin-top: 16px; }
+.mc-b-label { display: block; font: 500 11px/1.5 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--home-quiet); margin-bottom: 8px; }
+.mc-b-input { -webkit-appearance: none; appearance: none; display: block; width: 100%; height: 34px; margin: 0; background: transparent; cursor: pointer; }
+.mc-b-input::-webkit-slider-runnable-track { height: 10px; border-radius: 6px; background: linear-gradient(to right, var(--tea-lamp), var(--pc-accent)); }
+.mc-b-input::-moz-range-track { height: 10px; border-radius: 6px; background: linear-gradient(to right, var(--tea-lamp), var(--pc-accent)); }
+.mc-b-input::-webkit-slider-thumb { -webkit-appearance: none; width: 30px; height: 30px; margin-top: -10px; border-radius: 50%; background: #fff; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5), inset 0 0 0 3px var(--pc-accent); }
+.mc-b-input::-moz-range-thumb { width: 30px; height: 30px; border: 0; border-radius: 50%; background: #fff; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5), inset 0 0 0 3px var(--pc-accent); }
+.mc-b-marks { position: relative; display: block; height: 18px; margin: 2px 15px 0; }
+.mc-b-marks i { position: absolute; top: 0; transform: translateX(-50%); font: 500 10.5px/1.6 var(--font-mono); font-style: normal; letter-spacing: 0.04em; text-transform: uppercase; color: var(--home-quiet); white-space: nowrap; }
+.mc-b-marks i:first-child { transform: none; }
+.mc-b-marks i:last-child { transform: translateX(-100%); }
+.mc-out { margin: 12px 0 0; display: grid; gap: 2px; }
+.mc-b-val { font: 600 14px/1.4 var(--font-body); color: var(--tea-lamp); }
+.mc-b-read { font: 700 clamp(26px, 2.4vw, 32px)/1.1 var(--font-display); color: var(--pc-strong); }
+.mc-b-small { font: 500 11px/1.5 var(--font-mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--home-quiet); }
+.mc-b-small:empty { display: none; }
+
+/* the end: its film, its page */
+.mc-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.mc-btn { display: inline-flex; align-items: center; padding: 11px 17px; border: 0; border-radius: var(--radius-pill); background: var(--tea-lamp); color: rgb(40, 30, 24); font: 700 15px/1 var(--font-body); text-decoration: none; cursor: pointer; box-shadow: var(--tea-glow); }
+.mc-btn + .mc-btn { background: transparent; color: var(--pc-strong); box-shadow: inset 0 0 0 1.5px var(--pc-line2); }
+.mc-e-open::after { content: '\00a0\2192'; }
+.mc-btn + .mc-btn:hover { box-shadow: inset 0 0 0 1.5px var(--pc-head); color: var(--pc-head); }
+.mc-sound { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--pc-line); }
+.mc-sound[hidden] { display: none; }
+.mc-sound-say { flex: 1 1 160px; font: 400 13.5px/1.4 var(--font-body); color: var(--home-body); }
+.mc-switch { display: inline-flex; padding: 3px; border-radius: var(--radius-pill); box-shadow: inset 0 0 0 1px var(--pc-line2); }
+.mc-switch button { padding: 7px 12px; border: 0; border-radius: var(--radius-pill); background: transparent; color: var(--home-quiet); font: 600 13px/1 var(--font-body); cursor: pointer; }
+.mc-switch button[aria-pressed='true'] { background: var(--pc-strong); color: rgb(30, 26, 40); }
+.mc-post { margin: 14px 0 0; font: 600 14px/1.5 var(--font-body); }
+.mc-go { color: var(--pc-accent); text-decoration: none; }
+.mc-go::after { content: '\00a0\2192'; }
+.mc-go:hover { text-decoration: underline; text-underline-offset: 3px; }
+.mc-card :focus-visible, .mc-tabs :focus-visible, .mc-plate :focus-visible { outline: 3px solid var(--tea-lamp); outline-offset: 3px; }
+
+.mc-hint { left: 50%; bottom: 3vh; transform: translateX(-50%); margin: 0; padding: 6px 14px; border-radius: var(--radius-pill); background: rgba(21, 23, 38, 0.8);
+  font: 500 11px/1.4 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--home-quiet); opacity: 0; transition: opacity 0.4s; }
+.mc-hint.up { opacity: 1; }
+
+/* ---------------------------------------------------------------- a phone: the machine above its card */
+.mc-phone.chapter-top .mc-tabs { gap: 6px; }
+.mc-phone .mc-tab { flex: 1; padding: 8px 4px 10px; font-size: 10.5px; letter-spacing: 0.04em; text-align: center; white-space: nowrap; }
+.mc-phone .mc-plate { gap: 8px; min-height: 34px; padding: 4px 4px 4px 13px; }
+.mc-phone .mc-plate-name { font-size: 16px; }
+.mc-phone .mc-plate-what { display: none; }
+.mc-phone .mc-turn { padding: 8px 13px; font-size: 13px; }
+.mc-phone .mc-dock .mc-card { top: 0; bottom: auto; padding: 16px 17px 16px; max-height: 100%; overflow: hidden; }
+.mc-phone .mc-card h2.mc-lead-title { font-size: 30px; }
+.mc-phone .mc-card h3 { font-size: 22px; }
+.mc-phone .mc-lead .mc-say { font-size: 15.5px; }
+.mc-phone .mc-num b { font-size: 28px; }
+.mc-phone .mc-say { font-size: 14.5px; line-height: 1.4; }
+.mc-phone .mc-modes { margin-top: 10px; }
+.mc-phone .mc-range { margin-top: 10px; }
+.mc-phone .mc-out { margin-top: 6px; }
+.mc-phone .mc-b-read { font-size: 23px; }
+.mc-phone .mc-hint { bottom: 2vh; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mc-pic, .mc-holder iframe, .mc-tv-film, .mc-tabs, .mc-plate, .mc-hint, .mc-dock .mc-card, .mc-dock .mc-card.up { transition: none; }
+}
