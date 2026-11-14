@@ -155,6 +155,7 @@ export function mount(host, options = {}) {
   const pace = { ms: 16, at: 0, time: NaN, scale: 1, since: 0, n: 0, slow: false };
   const setScale = (k) => { if (k !== pace.scale) { pace.scale = k; renderer.setPixelRatio(dpr * k); renderer.setSize(W, H, false); glDirty = true; } };
   let lastLead = -1, lastLift = -1, lastShut = -1, lastPf = -1;
+  const dir = new Vector3(), restUp = new Vector3();
   const ctl = new Vector3(), restT = new Vector3(), lookT = new Vector3(), qq = new Quaternion(), to = { p: new Vector3(), q: new Quaternion(), fov: 60 }, toCam = { p: [0, 0, 0], q: [0, 0, 0], fov: 60 }, bz = new Vector3();
   // where the camera goes when it leaves the desk: the first place of the next chapter's camera (../site/camera.js)
   function toPose() {
@@ -167,7 +168,7 @@ export function mount(host, options = {}) {
     for (const p of HS.pieces) { p.obj.position.copy(p.home); p.obj.rotation.set(0, 0, 0); p.k = -1; p.c = -1; }
     lamps.lights.forEach((l) => { if (l.home) l.light.position.copy(l.home); });
     camera.up.set(0, 1, 0);
-    HS.patches.forEach((m) => { m.material.opacity = m.userData.strength; m.visible = true; });
+    HS.moon(1, 0);
     HS.spill.material.opacity = HS.spill.userData.strength;
     petals.mesh.visible = true;
     renderer.shadowMap.needsUpdate = true;
@@ -209,6 +210,8 @@ export function mount(host, options = {}) {
         // (a phone's reader's seat is high over the roof, straight above the book: there the camera first comes down,
         // under the paper ceiling, the lens widening so the book keeps its size; then it turns up to the room)
         const DOWN = tall ? 0.42 : 0, Y1 = 3.15;
+        // (the heading the book is read at: straight down, the picture's top points that way)
+        if (tall) restUp.set(0, 1, 0).applyQuaternion(rest.q);
         let s = lift, start = rest.p, fov0 = rest.fov;
         if (DOWN > 0) {
           const k = ss(0, DOWN, lift), d0 = rest.p.y - restT.y;
@@ -232,7 +235,12 @@ export function mount(host, options = {}) {
           // (it keeps its eye on the book while it rises, then on the room's far corner, where the next chapter looks)
           lookT.copy(restT).lerp(new Vector3(...toCam.q), ss(0.12, 0.95, s));
           tmp.position.copy(pos); tmp.up.set(0, 1, 0); tmp.lookAt(lookT); qq.copy(tmp.quaternion);
-          if (tall) camera.quaternion.slerpQuaternions(rest.q, qq, ss(0, 0.35, s)); else camera.quaternion.copy(qq);
+          if (tall) {
+            // A phone: the eye stays on the book all the way, but the picture's top is the one the book is read at
+            // (straight down) and only turns to the sky's as the camera comes to look ahead: the picture never spins.
+            dir.copy(restUp).multiplyScalar(1 - ss(0.05, 0.95, s)); dir.y += ss(0.05, 0.95, s);
+            tmp.up.copy(dir.normalize()); tmp.lookAt(lookT); camera.quaternion.copy(tmp.quaternion);
+          } else camera.quaternion.copy(qq);
           camera.fov = fov0 + (to.fov - fov0) * ss(0, 0.7, s);
           camera.near = DOWN > 0 ? 0.1 : restNear + (0.1 - restNear) * ss(0, 0.5, s);
           kit.ink.uniforms.uW.value = restInk + (OUTLINE - restInk) * (DOWN > 0 ? 0.5 + 0.5 * ss(0, 0.6, s) : ss(0, 0.6, s));
@@ -267,7 +275,8 @@ export function mount(host, options = {}) {
     if (gl) { const f = book.faces[0]; if (coverGL.userData.paint(f.w, f.h, parseFloat(f.el.style.fontSize) || 10, tall)) glDirty = true; }
     // (the moon's patches on the mats go faint as the camera leaves the desk: from afar they read as a white rug)
     const pf = 1 - 0.55 * ss(0.3, 1, lift);
-    if (pf !== lastPf) { lastPf = pf; HS.patches.forEach((m) => { m.material.opacity = m.userData.strength * pf; m.visible = true; }); glDirty = true; }
+    const sf = ss(0.1, 0.6, lift);
+    if (pf + sf * 10 !== lastPf) { lastPf = pf + sf * 10; HS.moon(pf, sf); glDirty = true; }
     // the light: the desk's corner; as the camera leaves, the far lamps come on and the andon burns up again
     HS.look(ss(0.3, 1, lift), rad(48));
 

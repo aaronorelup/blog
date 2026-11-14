@@ -222,7 +222,9 @@
   });
   window.addEventListener('pointermove', function (ev) {
     if (ev.pointerType !== 'mouse') return;
-    ptr.x = clamp(ev.clientX / W * 2 - 1, -1, 1); ptr.y = clamp(ev.clientY / H * 2 - 1, -1, 1);
+    // (before the page is measured W is 0: the window's own width, so the lean is never NaN)
+    var w = W || root.clientWidth || 1, h = H || window.innerHeight || 1;
+    ptr.x = clamp(ev.clientX / w * 2 - 1, -1, 1) || 0; ptr.y = clamp(ev.clientY / h * 2 - 1, -1, 1) || 0;
   }, { passive: true });
 
   window.TEA = {

@@ -47,7 +47,9 @@ export function mount(host, options) {
     if (tr !== was) {
       // (the left wing is the rail's right edge: what is still left of it is not drawn, so nothing passes under the rail)
       var cut = narrow ? 0 : (wing - xx) * K;
-      el.style.clipPath = cut > 0 ? 'polygon(' + cut.toFixed(1) + 'px -9999px, 99999px -9999px, 99999px 99999px, ' + cut.toFixed(1) + 'px 99999px)' : '';
+      // (not a hard edge: the letters melt into the wing over a few dozen pixels, so no clean-cut half letter shows)
+      var fe = Math.max(8, Math.min(70, x - wing - 2)) * K, mk = !narrow && cut + fe > 0 ? 'linear-gradient(to right, transparent ' + cut.toFixed(1) + 'px, #000 ' + (cut + fe).toFixed(1) + 'px)' : '';
+      el.style.maskImage = mk; el.style.webkitMaskImage = mk;
       var o = narrow ? clamp((k - 0.06) * 5.5, 0, 1) : 1;       // (narrow: whole after the first fifth of its rise)
       el.style.transform = tr; el.style.visibility = k < 0.0005 || o <= 0 ? 'hidden' : '';
       el.style.opacity = narrow && o < 1 ? o.toFixed(3) : '';

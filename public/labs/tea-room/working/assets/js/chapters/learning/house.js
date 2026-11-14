@@ -110,6 +110,16 @@ function build() {
     g.shadowColor = '#fff'; g.shadowBlur = 4; g.fillStyle = '#fff'; g.fillRect(5, 5, 54, 54);
     return new CanvasTexture(c);
   })();
+  // (the same light seen from across the room: its edge melts over a third of the patch, so from afar it reads as
+  // light lying on the mats, not as a pale rug; the camera's way out of the room crossfades to it)
+  const softPane = (() => {
+    const c = document.createElement('canvas'); c.width = c.height = 64;
+    const g = c.getContext('2d'), img = g.createImageData(64, 64);
+    const f = (x) => { const d = Math.min(x, 63 - x) / 22; const t = Math.max(0, Math.min(1, d)); return t * t * (3 - 2 * t); };
+    for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) { const i = (y * 64 + x) * 4, a = f(x) * f(y); img.data[i] = img.data[i + 1] = img.data[i + 2] = Math.round(255 * a); img.data[i + 3] = 255; }
+    g.putImageData(img, 0, 0);
+    return new CanvasTexture(c);
+  })();
   const MOON = { tan: 0.6, turn: rad(40.5) };
   const patches = [];
   const moonlight = (z0, z1, Y, strength, clip, into) => {
@@ -119,9 +129,14 @@ function build() {
     g.setAttribute('position', new Float32BufferAttribute([...a, ...b, ...c, ...a, ...c, ...d], 3));
     g.setAttribute('uv', new Float32BufferAttribute([0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1], 2));
     const m = new Mesh(g, new MeshBasicMaterial({ map: pane, color: 0x6488E2, transparent: true, opacity: strength, blending: AdditiveBlending, depthWrite: false, side: DoubleSide, clippingPlanes: clip || null }));
-    m.renderOrder = 1; m.userData.strength = strength;
+    m.renderOrder = 1; m.userData.strength = strength; m.userData.desk = !!clip;
     (into || scene).add(m);
     patches.push(m);
+    if (!clip) {                                          // (its soft twin, out until the camera leaves the desk)
+      const s = new Mesh(g, m.material.clone()); s.material.map = softPane; s.material.opacity = 0;
+      s.renderOrder = 1; s.userData.strength = strength * 1.15; s.userData.soft = true; s.visible = false;
+      (into || scene).add(s); patches.push(s);
+    }
     return m;
   };
   const dk = DESK.at, deskClip = [
@@ -273,6 +288,10 @@ function build() {
   let owner = null;
   return {
     canvas, renderer, scene, camera, kit, rig, sky, heavens, lamps, andon, pieces, byName, petals, spill, patches,
+    // the moon's light on the mats: f its strength (1 as at the desk), soft 0 the sharp patch, 1 its soft twin
+    moon(f, soft) {
+      patches.forEach((m) => { const o = m.userData.strength * f * (m.userData.soft ? soft : m.userData.desk ? 1 : 1 - soft); m.material.opacity = o; m.visible = o > 0.0005; });
+    },
     deskGL, deskCSS, book, lantern, petalsWide, petalsTall, coverGL, seek, look,
     // the canvas goes into the layer of the chapter that draws (it keeps its picture and its context when it moves)
     claim(host, who) {

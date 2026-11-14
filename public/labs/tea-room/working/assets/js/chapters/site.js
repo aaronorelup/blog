@@ -80,6 +80,7 @@ export function mount(host, options) {
 
   var W = 1, H = 1, dpr = 1, tall = false, narrow = false, IN = 0, pl = null, laid = false, active = false, lastP = -99;
   var left = 0, wy = 0, sx = 0, sy = 0, wing = 0, colW = 0, trackS = 5.4;
+  var pillB = 0, lastMask = '';
   var lastU = -1, lastGaps = -1, lastGL = -1e9, dirty = true;
   var cam = { p: [0, 0, 0], q: [0, 0, 0], fov: 46 };
   var look = new Vector3(), v = new Vector3(), pt = { x: 0, y: 0, behind: false };
@@ -136,7 +137,7 @@ export function mount(host, options) {
     word.style.fontSize = (wp * K) + 'px'; say.style.fontSize = (sp * 0.8 * K) + 'px';
     wy = H * (narrow ? 0.11 : 0.1);
     sx = left + wp * 0.08; sy = wy + word.offsetHeight / K + sp * 0.7;
-    var rb = railRect(); wing = rb ? rb.right : 0;
+    var rb = railRect(); wing = rb ? rb.right : 0; pillB = rb ? rb.bottom : 0;
     NAMES.forEach(function (n) { n.w = n.el.offsetWidth; n.h = n.el.offsetHeight; });
     colW = Math.max.apply(null, TAGS.map(function (n) { return n.w; })) + 52;
     // the track: the test's own (wide 5.4 screens, a phone 4.6), then a screen for the card (chapters.css)
@@ -153,7 +154,9 @@ export function mount(host, options) {
     css(el, 'transform', tr);
     // (the left wing is the rail's right edge: what of the name is still left of it is not drawn)
     var cut = narrow ? 0 : (wing - xx) * K;
-    css(el, 'clipPath', cut > 0 ? 'polygon(' + cut.toFixed(1) + 'px -9999px, 99999px -9999px, 99999px 99999px, ' + cut.toFixed(1) + 'px 99999px)' : '');
+    // (not a hard edge: the letters melt into the wing over a few dozen pixels, so no clean-cut half letter shows)
+    var fe = Math.max(8, Math.min(70, x - wing - 2)) * K, mk = !narrow && cut + fe > 0 ? 'linear-gradient(to right, transparent ' + cut.toFixed(1) + 'px, #000 ' + (cut + fe).toFixed(1) + 'px)' : '';
+    css(el, 'maskImage', mk); css(el, 'webkitMaskImage', mk);
     css(el, 'visibility', k < 0.0005 || o <= 0 ? 'hidden' : '');
     css(el, 'opacity', o < 1 ? o.toFixed(3) : '');
   }
@@ -185,7 +188,8 @@ export function mount(host, options) {
     pose(pieces, pl, u, gaps);
     // the sky turns as the evening goes on; it starts where the learning chapter left it (the moon in the ledger's
     // window) and has come round to the test's own sky by the time the camera is out under the torii
-    var hv = (tall ? -0.227 : 0) + (tall ? 0.183 : 0.384) * ss(0.3, 0.62, T);
+    // (a phone: the moon comes to rest right of where the next chapter's name will stand, never under its lines)
+    var hv = (tall ? -0.227 : 0) + (tall ? 0.023 : 0.384) * ss(0.3, 0.62, T);
     HS.look(1, rad(48) + (hv - rad(48)) * ss(0.03, 0.2, T));
 
     cameraAt(T, tall, cam);
@@ -244,7 +248,7 @@ export function mount(host, options) {
     // the light on the path goes with the room that cast it; the moon's patches on the mats go as the roof lifts
     HS.spill.material.opacity = HS.spill.userData.strength * (1 - 0.75 * ss(0.12, 0.7, u));
     var mo = 0.45 * (1 - ss(0, 0.08, u));      // (as the learning chapter leaves them: learning/scene.js)
-    HS.patches.forEach(function (m) { m.material.opacity = m.userData.strength * mo; m.visible = mo > 0; });
+    HS.moon(mo, 1);
     // (the petals that lay on the desk and the mats stay behind once the furniture lifts)
     var keep = deskPiece.k <= 0;
     HS.petalsWide.visible = keep && !tall; HS.petalsTall.visible = keep && tall;
@@ -283,6 +287,12 @@ export function mount(host, options) {
 
     // where the card is (the page itself, not the camera's glide behind it): the drawing makes room for it
     var cr = card.getBoundingClientRect(), cardTop = cr.top, stacked = tall || W <= 759;
+    // (a narrow screen: the rail is a little pill at the top left. As the card goes up past it, the card's top fades
+    // away just under the pill, so no line of it ever passes under the pill's own words)
+    var cut = 0;
+    if (narrow && pillB > 0) cut = Math.round(pillB + 8 - cr.top);
+    var mk = cut > -30 ? 'linear-gradient(to bottom, transparent ' + Math.max(0, cut) + 'px, #000 ' + (Math.max(0, cut) + 30) + 'px)' : '';
+    if (mk !== lastMask) { lastMask = mk; card.style.webkitMaskImage = mk; card.style.maskImage = mk; }
     var rest = H - cr.height - 10;                     // where the card's top stands once it is all up (a phone)
     var c = clamp((H - cardTop) / Math.max(1, cr.height + 10));
     if (RM) {
@@ -296,7 +306,7 @@ export function mount(host, options) {
     var room = rest - safe.y0 >= 150, e, close = 0;
     // (the card leaving at the top, as the next chapter's name comes on: the drawing goes back to the middle)
     var leave = ss(H * 0.25, -H * 0.15, cr.bottom - H * 0.5);
-    if (RM) e = c;
+    if (RM) e = leave > 0 ? 0 : c;          // (motion off: once the card starts to leave, the drawing is whole again: one cut)
     else if (!stacked) e = io(clamp((H * 1.15 - cardTop) / (H * 0.3))) * (1 - leave);
     else if (room) e = clamp((safe.y1 - (cardTop - 10)) / Math.max(1, safe.y1 - rest)) * (1 - leave);
     else e = io(c) * (1 - leave);
@@ -311,7 +321,8 @@ export function mount(host, options) {
     var sw = null;
     if (!HELD && !RM) {
       var dt = isNaN(lastT) ? 1 : clamp(t - lastT, 0, 1); lastT = t;
-      var g = 1 - Math.exp(-dt * 4.5), ax = ptr ? ptr.x : 0, ay = ptr ? ptr.y : 0;
+      var g = 1 - Math.exp(-dt * 4.5), ax = ptr && isFinite(ptr.x) ? ptr.x : 0, ay = ptr && isFinite(ptr.y) ? ptr.y : 0;
+      if (!isFinite(sway.x) || !isFinite(sway.y)) sway.x = sway.y = 0;
       sway.x += (ax - sway.x) * g; sway.y += (ay - sway.y) * g;
       if (Math.abs(ax - sway.x) < 0.001) sway.x = ax;
       if (Math.abs(ay - sway.y) < 0.001) sway.y = ay;
@@ -353,7 +364,9 @@ export function mount(host, options) {
     NAMES.forEach(function (n) {
       var inCol = column && n.kind === 'tag';
       var pc = HS.byName.get(inCol ? n.col[0] : n.piece || n.after);
-      var a = ss(0.25, 0.8, pc.k);
+      // (once the card has gone up and away the next chapter's name stands over the drawing: the names have been
+      // read, and go with the card, so no word of the drawing stands beside it, the alcove's "Projects" least of all)
+      var a = ss(0.25, 0.8, pc.k) * (1 - leave);
       if (inCol) a *= 1 - e;
       else if (n.kind === 'tag') a *= (1 - ss(pc.t1 + 0.035, pc.t1 + 0.1, u)) * (1 - e);
       else if (stacked) a *= 1 - e;
@@ -393,7 +406,7 @@ export function mount(host, options) {
     frame: frame,
     resize: function () { layout(); },
     setActive: function (on) { active = !!on; },
-    dispose: function () { if (HS.canvas.parentNode === glHost) HS.canvas.remove(); host.textContent = ''; release(); },
+    dispose: function () { card.style.webkitMaskImage = card.style.maskImage = ''; if (HS.canvas.parentNode === glHost) HS.canvas.remove(); host.textContent = ''; release(); },
     // (the rail and a phone's pill name this chapter once its name is on the screen)
     owns: function () { return lastP >= (SITE.NAME[0] + SITE.NAME[1]) / 2; },
     // (from SITE.START on this chapter draws the room: the learning chapter, at its end, stands aside)
