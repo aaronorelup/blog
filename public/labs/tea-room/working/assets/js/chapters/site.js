@@ -84,7 +84,7 @@ export function mount(host, options) {
   var cam = { p: [0, 0, 0], q: [0, 0, 0], fov: 46 };
   var look = new Vector3(), v = new Vector3(), pt = { x: 0, y: 0, behind: false };
   var box = { x0: 0, y0: 0, x1: 0, y1: 0 }, safe = { x0: 0, y0: 0, x1: 1, y1: 1 };
-  var sway = { x: 0, y: 0 }, lastT = NaN, lastZoom = 1, lastKey = '';
+  var drawing = false, sway = { x: 0, y: 0 }, lastT = NaN, lastZoom = 1, lastKey = '';
   var pace = { ms: 16, at: NaN, n: 0, slow: false, movedAt: -1e9, scale: 1 };
 
   var railRect = function () { var rr = document.getElementById('rail'), rb = rr ? rr.getBoundingClientRect() : null; return rb && rb.width ? { right: rb.right, bottom: rb.bottom } : null; };
@@ -243,7 +243,7 @@ export function mount(host, options) {
     }, 0.035);
     // the light on the path goes with the room that cast it; the moon's patches on the mats go as the roof lifts
     HS.spill.material.opacity = HS.spill.userData.strength * (1 - 0.75 * ss(0.12, 0.7, u));
-    var mo = 1 - ss(0, 0.08, u);
+    var mo = 0.45 * (1 - ss(0, 0.08, u));      // (as the learning chapter leaves them: learning/scene.js)
     HS.patches.forEach(function (m) { m.material.opacity = m.userData.strength * mo; m.visible = mo > 0; });
     // (the petals that lay on the desk and the mats stay behind once the furniture lifts)
     var keep = deskPiece.k <= 0;
@@ -263,13 +263,15 @@ export function mount(host, options) {
     lastP = p;
     // the name: in from the left wing over the camera's lift (the learning chapter draws the room under it), out the
     // same way as the camera backs out of the room (narrow: it rises and fades)
-    var T = clamp(p / trackS);
+    // (the track: from SITE.START, a screen before the section's top, to the card: join.js)
+    var T = clamp((p - SITE.START) / (trackS - SITE.START));
     var nk = RM ? (p > SITE.NAME[0] + 0.3 && T < 0.2 ? 1 : 0) : io(ss(SITE.NAME[0], SITE.NAME[1], p));
-    var outk = RM ? 0 : io(ss(0.004, 0.05, T));
+    var outk = RM ? 0 : io(ss(SITE.OUT[0], SITE.OUT[1], T));
     var gone = narrow ? outk : 0, up = narrow ? outk * H * 0.06 : 0;
     putName(word, left, wy, gone >= 1 ? 0 : narrow ? nk : nk * (1 - outk), up, gone);
     putName(say, sx, sy, gone >= 1 ? 0 : narrow ? nk : nk * (1 - outk), up * 0.7, gone);
-    if (p < 0) {
+    drawing = p >= SITE.START;
+    if (!drawing) {
       // (the lead: only the name; the room is the learning chapter's)
       css(glHost, 'visibility', 'hidden'); css(leaders, 'visibility', 'hidden'); css(labelBox, 'visibility', 'hidden');
       return true;
@@ -394,6 +396,8 @@ export function mount(host, options) {
     dispose: function () { if (HS.canvas.parentNode === glHost) HS.canvas.remove(); host.textContent = ''; release(); },
     // (the rail and a phone's pill name this chapter once its name is on the screen)
     owns: function () { return lastP >= (SITE.NAME[0] + SITE.NAME[1]) / 2; },
-    info: function () { return { T: clamp(lastP / trackS), zoom: lastZoom, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }; }
+    // (from SITE.START on this chapter draws the room: the learning chapter, at its end, stands aside)
+    drawing: function () { return drawing; },
+    info: function () { return { T: clamp((lastP - SITE.START) / (trackS - SITE.START)), zoom: lastZoom, calls: renderer.info.render.calls, triangles: renderer.info.render.triangles }; }
   };
 }

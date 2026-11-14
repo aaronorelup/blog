@@ -264,5 +264,8 @@ export function learnRoom(W, H, rail) {
    chapter the ledger shuts (SHUT), then the camera leaves the desk (LIFT) and arrives, as the learning section ends, at
    the first place of the site chapter's camera (site/camera.js cameraAt(0)), from where the site chapter goes on with
    the test's own track: no cut, no dissolve. The site chapter's name comes on over the lift (its lead, NAME, in
-   screens before its own top). Motion off: one cut at RM_CUT, from the open book to that first place. */
-export var SITE = { SHUT: [8.1, 8.7], LIFT: [8.5, 10.0], LEAD: 1.4, NAME: [-1.2, -0.55], RM_CUT: 9.2 };
+   screens before its own top). The learning section's last screen (its scroll ends a screen before the next section's
+   top) is not a still: from START (screens before its own top) the site chapter draws the room itself and its camera
+   goes on at once, while the learning chapter, its scroll at its end, stands aside (learning.js).
+   Motion off: one cut at RM_CUT, from the open book to that first place. */
+export var SITE = { SHUT: [8.1, 8.7], LIFT: [8.5, 10.0], START: -1, LEAD: 1.8, NAME: [-1.7, -1.05], OUT: [0.022, 0.07], RM_CUT: 9.2 };

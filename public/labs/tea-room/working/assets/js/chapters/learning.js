@@ -92,6 +92,11 @@ export function mount(host, options) {
     css(el, 'visibility', k < 0.0005 || o <= 0 ? 'hidden' : '');
     css(el, 'opacity', o < 1 ? o.toFixed(3) : '');
   }
+  function siteDraws() {
+    var c = window.TEA && window.TEA.list.filter(function (x) { return x.id === 'site'; })[0];
+    // (reckoned from the frame's own scroll place, so both chapters agree in the same frame)
+    return !!(c && c.scene && c.scene.drawing && window.TEA.y() >= c.top + SITE.START * window.innerHeight);
+  }
   function agentsWhole() {
     var a = window.TEA && window.TEA.list.filter(function (c) { return c.id === 'agents'; })[0];
     return !!(a && a.scene && a.whole);
@@ -131,6 +136,8 @@ export function mount(host, options) {
       return true;
     }
     if (pending > 0) return false;
+    // (at the end of its scroll, once the next chapter draws the room itself, this one stands aside: join.js SITE)
+    if (q >= 1 && siteDraws()) return true;
     var dq = p <= 0 ? 0 : clamp(p / LB);
     // the end: the ledger shuts, and the camera leaves the desk for the next chapter's first place (join.js SITE)
     var shut = RM ? (p > SITE.RM_CUT ? 1 : 0) : ss(SITE.SHUT[0], SITE.SHUT[1], p);

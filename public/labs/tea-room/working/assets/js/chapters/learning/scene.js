@@ -154,7 +154,7 @@ export function mount(host, options = {}) {
   // picture again the moment it stops; and it does without the lamps' flicker, so a turning leaf has the machine.
   const pace = { ms: 16, at: 0, time: NaN, scale: 1, since: 0, n: 0, slow: false };
   const setScale = (k) => { if (k !== pace.scale) { pace.scale = k; renderer.setPixelRatio(dpr * k); renderer.setSize(W, H, false); glDirty = true; } };
-  let lastLead = -1, lastLift = -1, lastShut = -1;
+  let lastLead = -1, lastLift = -1, lastShut = -1, lastPf = -1;
   const ctl = new Vector3(), restT = new Vector3(), lookT = new Vector3(), qq = new Quaternion(), to = { p: new Vector3(), q: new Quaternion(), fov: 60 }, toCam = { p: [0, 0, 0], q: [0, 0, 0], fov: 60 }, bz = new Vector3();
   // where the camera goes when it leaves the desk: the first place of the next chapter's camera (../site/camera.js)
   function toPose() {
@@ -176,7 +176,7 @@ export function mount(host, options = {}) {
     if (IN > 0) camera.setViewOffset(W - IN, H, -IN, 0, W, H); else camera.clearViewOffset();
     sky.stars.material.size = 2.3 * dpr;
     fit();
-    lastE = -1; lastLift = -1; lastShut = -1; glDirty = true;
+    lastE = -1; lastLift = -1; lastShut = -1; lastPf = -1; glDirty = true;
   }
   // q: the chapter's progress; lead: see the head of ../learning.js; shut: the book shuts (0 open, 1 shut); lift: the
   // camera leaves the desk for the next chapter's first place (0 at rest over the book, 1 there)
@@ -265,6 +265,9 @@ export function mount(host, options = {}) {
     const gl = lift >= 0.5;
     if (coverGL.visible !== gl) { coverGL.visible = gl; layer.style.visibility = gl ? 'hidden' : ''; glDirty = true; }
     if (gl) { const f = book.faces[0]; if (coverGL.userData.paint(f.w, f.h, parseFloat(f.el.style.fontSize) || 10, tall)) glDirty = true; }
+    // (the moon's patches on the mats go faint as the camera leaves the desk: from afar they read as a white rug)
+    const pf = 1 - 0.55 * ss(0.3, 1, lift);
+    if (pf !== lastPf) { lastPf = pf; HS.patches.forEach((m) => { m.material.opacity = m.userData.strength * pf; m.visible = true; }); glDirty = true; }
     // the light: the desk's corner; as the camera leaves, the far lamps come on and the andon burns up again
     HS.look(ss(0.3, 1, lift), rad(48));
 
