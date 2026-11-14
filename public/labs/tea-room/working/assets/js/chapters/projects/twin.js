@@ -12,8 +12,8 @@
      lantern: the walk's lit lantern drawn by code ({ url, w, h, U }, projects/scene.js drawLantern); onLoad(): a
      picture came in (draw again). update: k 0..1, how far the flats have turned to face the walk's first view (1
      there) and taken the walk's own fading with distance. */
-import { BufferGeometry, CircleGeometry, DoubleSide, Euler, Float32BufferAttribute, Group, Matrix4, Quaternion, Mesh, MeshBasicMaterial, PlaneGeometry, SRGBColorSpace, TextureLoader, Vector3 } from 'three';
-import { TREE, BUSH, LH, FAR, ss } from './plan.js';
+import { BufferGeometry, CanvasTexture, CircleGeometry, DoubleSide, Euler, Float32BufferAttribute, Group, Matrix4, Quaternion, Mesh, MeshBasicMaterial, PlaneGeometry, SRGBColorSpace, TextureLoader, Vector3 } from 'three';
+import { TREE, BUSH, LH, FAR, K0, ss } from './plan.js';
 
 const IMG = (p) => new URL('../../../img/projects/' + p, import.meta.url).href;
 const PICS = ['tree-night.webp', 'tree-blossom.webp', 'near-bush-l.webp', 'near-bush-r.webp'];
@@ -76,6 +76,46 @@ export function build(kit, G, L, view, houseZ, lantern, onLoad) {
     const [x, z] = at(o.lX, o.lZ);
     flat(lanTex, ww, hh, 0.5, 1 - 0.02 * lantern.U / lantern.h, x, z, false, 1);
   }
+  // the projects' windows the walk shows from its first view: the wooden frame on its legs (a games' window wears
+  // its little roof), drawn by code as the page draws it (css/chapters/projects.css .pw-win), with the project's
+  // picture in it once that is in (the walk asks for the pictures of the two nearest)
+  const canvases = [];
+  G.S.forEach((s) => {
+    const o = L.st[s.i], d = o.wZ - view.z; if (d > FAR || d < 0.8) return;
+    const it = s.it, mpp = o.ww / o.bw, eave = it.shelf === 'play' ? 30 : 0, side = Math.round(0.04 * o.bw);
+    const cw = o.bw + 2 * side, ch = Math.round(eave + o.bh + o.legLen + 4);
+    const c = document.createElement('canvas'); c.width = cw; c.height = ch;
+    const t = new CanvasTexture(c); t.colorSpace = SRGBColorSpace; canvases.push(t);
+    const dim = s.i === 0 ? 0 : 0.3, watch = it.run === 'film';
+    const paint = (pic) => {
+      const g = c.getContext('2d'); g.clearRect(0, 0, cw, ch);
+      const rr = (x, y, w, h, r) => { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); };
+      const fx = side, fy = eave, ft = o.ft;
+      // the legs
+      const lw = L.tall ? 9 : 14;
+      [fx + 0.07 * o.bw, fx + 0.93 * o.bw - lw].forEach((x) => { g.fillStyle = '#12131d'; g.fillRect(x - 3, fy + o.bh - 2, lw + 6, o.legLen + 6); g.fillStyle = watch ? '#2c3046' : '#4b3220'; g.fillRect(x, fy + o.bh - 2, lw, o.legLen + 3); });
+      // the frame
+      rr(fx - 3, fy - 3, o.bw + 6, o.bh + 6, 15); g.fillStyle = '#12131d'; g.fill();
+      const gr = g.createLinearGradient(0, fy, 0, fy + o.bh);
+      if (watch) { gr.addColorStop(0, '#252a40'); gr.addColorStop(1, '#191d30'); } else { gr.addColorStop(0, '#6b4a2e'); gr.addColorStop(1, '#4c3220'); }
+      rr(fx, fy, o.bw, o.bh, 12); g.fillStyle = gr; g.fill();
+      g.fillStyle = '#12131d'; g.fillRect(fx + ft - 2, fy + ft - 2, o.bw - 2 * ft + 4, o.bh - 2 * ft + 4);
+      g.fillStyle = '#11142a'; g.fillRect(fx + ft, fy + ft, o.bw - 2 * ft, o.bh - 2 * ft);
+      if (pic) g.drawImage(pic, fx + ft, fy + ft, o.bw - 2 * ft, o.bh - 2 * ft);
+      if (eave) {
+        const ex = fx - 0.04 * o.bw, ew = o.bw * 1.08, ey = fy - 30;
+        g.beginPath(); g.ellipse(ex + ew / 2, ey + 34, ew / 2 + 3, 37, 0, Math.PI, 2 * Math.PI); g.closePath(); g.fillStyle = '#12131d'; g.fill();
+        const eg = g.createLinearGradient(0, ey, 0, ey + 34); eg.addColorStop(0, '#2c3352'); eg.addColorStop(1, '#1d2238');
+        g.beginPath(); g.ellipse(ex + ew / 2, ey + 34, ew / 2, 34, 0, Math.PI, 2 * Math.PI); g.closePath(); g.fillStyle = eg; g.fill();
+      }
+      if (dim) { g.globalAlpha = dim; g.fillStyle = '#0a0d22'; rr(fx - 3, fy - 3, o.bw + 6, o.bh + 6, 14); g.fill(); g.globalAlpha = 1; }
+      t.needsUpdate = true;
+    };
+    paint(null);
+    if (Math.abs(K0 - s.i) < 2.4) { const im = new Image(); im.onload = () => { paint(im); done(); }; im.src = it.pic.src; }
+    const [x, z] = at(o.wX - side * mpp, o.wZ);
+    flat(t, cw * mpp, ch * mpp, 0, 1, x, z, false, (1 - ss(FAR - 8, FAR, d)));
+  });
   // the stepping stones, the whole path: the walk's own three ellipses (its shadow, the stone, its lit top), flattened
   // as the walk flattens them (0.62 of a true disc seen from the eye); one merged mesh for each of the three
   {
@@ -140,7 +180,7 @@ export function build(kit, G, L, view, houseZ, lantern, onLoad) {
     }
   }
   function dispose() {
-    geos.forEach((g) => g.dispose()); mats.forEach((m) => m.dispose()); tex.forEach((t) => t.dispose()); if (lanTex) lanTex.dispose();
+    geos.forEach((g) => g.dispose()); mats.forEach((m) => m.dispose()); tex.forEach((t) => t.dispose()); canvases.forEach((t) => t.dispose()); if (lanTex) lanTex.dispose();
     lawnGeo.dispose();
     if (group.parent) group.parent.remove(group);
   }
