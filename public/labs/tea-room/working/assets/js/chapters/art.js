@@ -11,7 +11,7 @@
    Everything drawn is a function of the scroll (the camera) and the time (what sways, drifts and glows); a picture
    clicked comes forward until the reader scrolls. With motion turned off: cuts, one picture at a time. */
 import { mount as mountScene } from './art-scene.js';
-import { endPlate, nameRightOf, TILT_LOW, H0_TALL } from './join.js';
+import { endPlate, nameRightOf, TILT_LOW, H0_TALL, skyUpLayout } from './join.js';
 import { makeGarden } from './toybox-garden.js';
 import { PICTURES } from './art-pictures.js';
 
@@ -24,12 +24,29 @@ var K = 1.4;                                       // (look B lays its type out 
 var T_HELD = 7.3;                                  // a held frame shows this moment (the test's own)
 var N = PICTURES.length;
 // when things happen, in screens from the section's top (the lead runs from -2 to 0)
-var NAME_IN = [-1.95, -1.35], SAY_IN = [-1.85, -1.25], NAME_OUT = [0.0, 0.5];
-var MELT = [-0.62, -0.18];                         // this chapter's garden dissolves in over the games chapter's
 var L = (N + 1.8) * 0.15 / (0.845 - 0.055);       // the test's scroll for its whole camera, in screens (its host.js)
-// the tilt back down, in screens from the foot's top; TILT_LOW of the screen's height: how low look B's garden stands
-// at the end (the 3D chapter's name stands in the sky above the roof; toybox.js lifts it the rest of the way)
-var DOWN = [0.3, 1.75];
+var QA = 0.055;                                    // (the test's turn, from the cloth to the trees: q 0..QA)
+// The turn starts in the lead, as soon as the name has come on (no screen of scroll where nothing moves), and gets
+// TURN screens, more than the test's QA * L: sq(p) eases from 0 to QA over them and leaves at the test's own rate
+// (1 / L), so the walk after it is the test's walk, only begun earlier. The name leaves as the camera turns.
+var P0 = -0.8, TURN = 1.05;
+var NAME_IN = [-1.95, -1.35], SAY_IN = [-1.85, -1.25], NAME_OUT = [P0 + 0.02, P0 + 0.55];
+// this chapter's garden dissolves in over the games chapter's: after games has taken its picture off the cloth and
+// its projector away (games.js "bare", -1.65..-1.2 here), and before the turn
+var MELT = [-1.22, -0.84];
+// the tilt back down, in screens from the foot's top: it starts as the last card goes up, and look B's garden comes
+// up from below the screen, from so deep that what comes first is the night above its sky (join.js SKY_UP), until it
+// stands TILT_LOW of the screen's height low. The camera tilts so far that the pictures rise out of the top of the
+// screen, and look B's sky covers it whole; there the 3D chapter's name comes on, and toybox.js lifts the rest of
+// the way. One plain ease over two screens (an ease of an ease went from below the screen to its place in a quarter).
+var DOWN = [-0.45, 1.6];
+function sqOf(p) {
+  var u = p - P0;
+  if (u <= 0) return 0;
+  if (u >= TURN) return Math.min(1, QA + (u - TURN) / L);
+  var b = (1 / L - QA / TURN) / TURN, a = QA / TURN - b * TURN;      // a u + b u^2: QA at TURN, at the rate 1 / L
+  return a * u + b * u * u;
+}
 
 export function mount(host, options) {
   var RM = options.reduced, HELD = options.held, section = options.section, top = options.top, marks = options.marks;
@@ -37,12 +54,12 @@ export function mount(host, options) {
 
   host.innerHTML =
     '<div class="ar-world"></div>' +
-    '<div class="ar-sheet"><div class="ar-sky"></div><div class="ar-garden"></div></div>' +
+    '<div class="ar-sheet"><div class="ar-skyup"></div><div class="ar-sky"></div><div class="ar-garden"></div></div>' +
     '<div class="ar-name"><div class="flat word"></div><div class="flat say mono"></div></div>';
   top.innerHTML =
     '<div class="ar-dock"><div class="ar-now" role="status" aria-live="polite"><p class="ar-meta"><span class="ar-count"></span><span class="ar-hint"></span></p><p class="ar-title"></p></div></div>';
   var pick = function (el, sel) { return el.querySelector(sel); };
-  var worldEl = pick(host, '.ar-world'), sheet = pick(host, '.ar-sheet'), skyEl = pick(host, '.ar-sky'), gardenEl = pick(host, '.ar-garden');
+  var worldEl = pick(host, '.ar-world'), sheet = pick(host, '.ar-sheet'), skyEl = pick(host, '.ar-sky'), gardenEl = pick(host, '.ar-garden'), skyUpEl = pick(host, '.ar-skyup');
   var word = pick(host, '.word'), say = pick(host, '.say');
   var dock = pick(top, '.ar-dock'), nowCount = pick(top, '.ar-count'), nowHint = pick(top, '.ar-hint'), nowTitle = pick(top, '.ar-title');
   (section.dataset.word || '').split('|').forEach(function (line) { var l = document.createElement('span'); l.className = 'l'; l.textContent = line; word.appendChild(l); });
@@ -75,10 +92,12 @@ export function mount(host, options) {
     sx = left + wp * 0.08; sy = wy + word.offsetHeight / K + spx * 0.7;
     upAll = sy + say.offsetHeight / K + 24;
     scene.resize();
+    var st0 = worldEl.querySelector('.gg-stars');
+    skyUpH = skyUpLayout(skyUpEl, H, st0 ? st0.style.backgroundImage : ''); imgTop = null;
     if (garden.whole()) { garden.layout(W, H); gardenLaid = true; }
     nameWas = sayWas = ''; sheetWas = '';
   }
-  var nameWas = '', sayWas = '', sheetWas = '';
+  var nameWas = '', sayWas = '', sheetWas = '', skyUpH = 0, imgTop = null;
   // (look B's way with a name: from the left wing, and back to it; a narrow screen: it rises on, and goes up off the top)
   function put(el, x, y, k, out, was) {
     var tr, o = 1;
@@ -117,13 +136,13 @@ export function mount(host, options) {
     // the name
     var kIn = RM ? (p > -1.6 ? 1 : 0) : narrow ? io(ss(NAME_IN[0] + 0.15, NAME_IN[1], p)) : io(ss(NAME_IN[0], NAME_IN[1], p));
     var kSay = RM ? kIn : narrow ? io(ss(SAY_IN[0] + 0.15, SAY_IN[1], p)) : io(ss(SAY_IN[0], SAY_IN[1], p));
-    var kOut = RM ? (p > 0.25 ? 1 : 0) : io(ss(NAME_OUT[0], NAME_OUT[1], p));
+    var kOut = RM ? (p > (NAME_OUT[0] + NAME_OUT[1]) / 2 ? 1 : 0) : io(ss(NAME_OUT[0], NAME_OUT[1], p));
     var kSayOut = RM || narrow ? kOut : io(ss(NAME_OUT[0] - 0.05, NAME_OUT[1] - 0.05, p));
     nameWas = put(word, wx, wy, kIn, kOut, nameWas);
     sayWas = put(say, sx, sy, kSay, kSayOut, sayWas);
 
     // the camera: the test's own, by the scroll (with motion off: cut to the nearest picture)
-    var sq = clamp(p / L);
+    var sq = sqOf(p);
     if (RM) {
       var k = scene.kOf(sq);
       sq = sq < 0.03 ? 0 : sq >= 0.845 ? 1 : scene.qOf(Math.round(clamp(k, 0, N - 1)));
@@ -131,35 +150,40 @@ export function mount(host, options) {
     // the dissolve over the games chapter's garden (its lead)
     var melt = RM ? (p > (MELT[0] + MELT[1]) / 2 ? 1 : 0) : ss(MELT[0], MELT[1], p);
     // the tilt back down at the end: look B's garden comes up from below the screen to TILT_LOW
-    var down = RM ? (p > foot + (DOWN[0] + DOWN[1]) / 2 ? 1 : 0) : io(ss(foot + DOWN[0], foot + DOWN[1], p));
+    var down = RM ? (p > foot + (DOWN[0] + DOWN[1]) / 2 ? 1 : 0) : ss(foot + DOWN[0], foot + DOWN[1], p);
     var lift = 0, sheetOn = down > 0.0005 && gardenLaid;
     if (sheetOn) {
-      sheetY = Math.round(lerp(H * 1.08, H * TILT_LOW, down) * 10) / 10;
-      lift = H * 1.08 - sheetY;
+      garden.draw(portrait ? H0_TALL : 0, t);   // (the time as the 3D chapter draws it, so the two pictures are one)
+      // (where the sky painting's top stands in its layer: measured once a layout, it depends on the screen alone)
+      if (imgTop === null) {
+        var si = skyEl.querySelector('img'); imgTop = si ? Math.round(si.getBoundingClientRect().top - skyEl.getBoundingClientRect().top) : 0;
+        skyUpEl.style.transform = 'translate3d(0,' + (imgTop - skyUpH + 2) + 'px,0)'; sheetWas = '';
+      }
+      // from: the sheet's place when the night above its sky (SKY_UP) just touches the foot of the screen
+      var from = H + skyUpH - imgTop + 0.02 * H;
+      sheetY = Math.round(lerp(from, H * TILT_LOW, down) * 10) / 10;
+      lift = from - sheetY;
+      var tr = 'translate3d(0,' + sheetY.toFixed(1) + 'px,0)';
+      if (tr !== sheetWas) { sheet.style.transform = tr; sheetWas = tr; }
     }
     setV(sheet, 'sheet', sheetOn);
-    if (sheetOn) {
-      var tr = 'translate3d(0,' + sheetY.toFixed(1) + 'px,0)';
-      if (tr !== sheetWas) {
-        sheet.style.transform = tr; sheetWas = tr;
-        // (look B's sky comes up out of the gallery's: its top edge is a long fade, never a line)
-        var m = 'linear-gradient(to bottom, transparent 0, #000 ' + Math.round(H * 0.45) + 'px)';
-        skyEl.style.webkitMaskImage = m; skyEl.style.maskImage = m;
-      }
-      garden.draw(portrait ? H0_TALL : 0, t);   // (the time as the 3D chapter draws it, so the two pictures are one)
-    }
-    // the gallery itself is no longer drawn once look B's garden covers the screen (a tall screen's sky aside)
-    var st = scene.frame(sq, tm, HELD || RM ? null : ptr, lift);
+    // once look B's garden and its sky cover the whole screen the gallery is not drawn at all
+    var covered = sheetOn && down >= 1 && garden.whole();
+    setV(worldEl, 'world', !covered);
+    var st = covered ? scene.state : scene.frame(sq, tm, HELD || RM ? null : ptr, lift);
     setOp(lead ? melt : 1);
 
     // the card under the pictures: which one is in front, or that they are all in the sky
-    var sky = st.k > N - 0.3;
-    if (st.index !== shown.i || sky !== shown.sky) {
-      shown = { i: st.index, sky: sky };
+    // (what it says depends on the place alone: while the camera still turns it already names the first picture, as
+    // the test's card does, so it never comes up empty and never keeps what an earlier scroll left in it)
+    var sky = st.k > N - 0.3, at = st.index >= 0 ? st.index : clamp(Math.round(st.k), 0, N - 1);
+    if (at !== shown.i || sky !== shown.sky) {
+      shown = { i: at, sky: sky };
       if (sky) { nowCount.textContent = 'All ' + N; nowTitle.textContent = 'They let go, and rise past the moon'; nowHint.textContent = WORD + ' any of them'; }
-      else if (st.index >= 0) { nowCount.textContent = (st.index + 1) + ' of ' + N; nowTitle.textContent = PICTURES[st.index].title; nowHint.textContent = st.index < 3 ? WORD + ' a picture to bring it forward' : ''; }
+      else { nowCount.textContent = (at + 1) + ' of ' + N; nowTitle.textContent = PICTURES[at].title; nowHint.textContent = at < 3 ? WORD + ' a picture to bring it forward' : ''; }
     }
-    var dockO = lead ? 0 : RM ? (p > 0.25 && p < picks - 1.1 ? 1 : 0) : ss(0.42, 0.62, p) * (1 - ss(picks - 1.3, picks - 1.05, p));
+    var tEnd = P0 + TURN;                          // (the card comes up as the turn ends, as the test's does)
+    var dockO = lead ? 0 : RM ? (st.index >= 0 || sky) && p < picks - 1.1 ? 1 : 0 : ss(tEnd - 0.17, tEnd + 0.03, p) * (1 - ss(picks - 1.3, picks - 1.05, p));
     if (st.open >= 0) dockO = 0;
     dockO = Math.round(dockO * 100) / 100;
     if (dockO !== dockWas) { dock.style.opacity = dockO; dock.style.visibility = dockO > 0.01 ? '' : 'hidden'; dockWas = dockO; }

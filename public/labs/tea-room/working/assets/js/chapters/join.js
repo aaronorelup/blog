@@ -93,3 +93,20 @@ export function endPlate(W, H, nameR) {
    3D chapter's first step (look B's hero progress 0; a tall screen H0_TALL), standing TILT_LOW of the screen's height
    below its place; the 3D chapter draws that same picture over it and lifts it into place (toybox.js TILT). */
 export var TILT_LOW = 0.3, H0_TALL = 0.2;
+// Look B's sky does not end at the top of its layer on the way down: its painting is shown whole (it reaches higher
+// than the layer: the layer is not clipped above, SKY_CLIP), and above the painting's top the same night goes on, solid
+// for SKY_UP.S of the screen's height, then fading out over SKY_UP.F into the gallery's sky. So the gallery's pictures
+// are never seen through look B's sky: at TILT_LOW the fade is above the screen and the whole screen is look B's. The
+// colour is the painting's top row (garden-sky.webp), so where the painting ends no line shows. art.js draws it; the
+// 3D chapter's lead draws over art's last picture and needs only SKY_CLIP (above its sky, art's shows).
+export var SKY_UP = { S: 0.16, F: 0.46, rgb: '14, 20, 49' };
+export var SKY_CLIP = 'inset(-400% 0 0 0)';
+// the element (a plain div), laid out for a screen H high; its bottom edge goes where the painting's top is. stars: a
+// tile of stars (the gallery's own), so the night above look B's sky is not a bare band
+export function skyUpLayout(el, H, stars) {
+  var s = SKY_UP, h = Math.round((s.S + s.F) * H), m = 'linear-gradient(to bottom, transparent 0, #000 ' + Math.round(s.F * H) + 'px)';
+  el.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:' + h + 'px;pointer-events:none;will-change:transform;' +
+    'background-color:rgb(' + s.rgb + ');' + (stars && stars !== 'none' ? 'background-image:' + stars + ';background-repeat:repeat;' : '') +
+    '-webkit-mask-image:' + m + ';mask-image:' + m;
+  return h;
+}

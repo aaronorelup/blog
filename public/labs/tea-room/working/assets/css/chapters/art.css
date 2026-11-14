@@ -5,7 +5,7 @@
 .ar-world { position: absolute; inset: 0; }
 .ar-sheet { position: absolute; inset: 0; will-change: transform; }
 .ar-sky, .ar-garden { position: absolute; inset: 0; overflow: hidden; }
-.ar-sky { background: #131d25; }
+.ar-sky { background: #131d25; overflow: visible; clip-path: inset(-400% 0 0 0); }   /* (its painting shown whole above: join.js SKY_UP) */
 .ar-name { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
 .ar-name .say { white-space: normal; text-wrap: pretty; }
 /* (look B's garden, as the 3D chapter draws it: toybox.css has the same two rules) */

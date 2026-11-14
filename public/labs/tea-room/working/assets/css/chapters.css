@@ -15,9 +15,13 @@
 /* a chapter that is not built yet keeps its place in the rail and in the hero's list, greyed and not a link; the
    first of them says why */
 #rail li.soon span, .index li.soon span { cursor: default; }
+/* (in the rail it is a small heading over the chapters to come: set in the gap above the first of them, from the
+   names' left edge, with a hairline after it to the card's edge, so it reads as the head of what is under it and
+   never as a note on the name above it. It moves no line of the rail.) */
 #rail li.soon.first::after {
-  content: 'to come'; position: absolute; right: 0; top: -0.5em;   /* (above the line's end: a long name fills its line) */
-  font: 500 8.5px/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--pc-gold);
+  content: 'to come'; position: absolute; left: 0; right: 0; top: -0.49em; height: 8px;
+  font: 500 8px/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--pc-gold);
+  background: linear-gradient(rgba(201, 162, 39, 0.4), rgba(201, 162, 39, 0.4)) no-repeat right 50% / calc(100% - 50px) 1px;
 }
 .index li.soon .c { letter-spacing: 0.12em; text-transform: uppercase; font-size: 8.5px; color: var(--pc-gold); }
 
