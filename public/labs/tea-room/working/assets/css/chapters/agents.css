@@ -82,6 +82,11 @@ html.at-hot, html.at-hot body { cursor: pointer; }
 
 /* (a post card's width on a desktop, for the type rule's sizes, grown with the page's one scale) */
 @media (min-width: 821px) { .at-ui { --at-w: calc(350px * var(--s, 1)); } }
+/* (on a wide window the wall's card is words only: the ten screens above it are its picture, and a full card would
+   cover the lower row's names. scene.js puts .at-post-bare on it whenever the window is not tall.) */
+.at-post-bare .at-post-pic { display: none; }
+.at-post-bare .at-post-cap { border-radius: calc(14px * var(--s, 1)); }
+.at-post-bare .at-post-cap::after { border-radius: 14px 0 0 14px; }
 
 /* the names under the ten screens */
 .at-tag { appearance: none; margin: 0; padding: 3px 0 4px; border: 0; background: none; color: var(--home-body); text-align: left; cursor: pointer; pointer-events: auto; width: max-content; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.95), 0 0 2px #000; }

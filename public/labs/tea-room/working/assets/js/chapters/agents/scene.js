@@ -5,6 +5,9 @@
 // the document (the canvas lies behind the page); options.inset frames a wide picture for the part right of the rail.
 // ui.js never writes visibility: visible. The kit, ground, origami, swarm, wall, watcher and data files are the test's,
 // but for two addresses: the line library in assets/lib/lines/ and the wall's posters in assets/img/agents/wall/.)
+// (The type rule: on a wide window the post cards are drawn at their own size, never shrunk with the camera's distance,
+// so their words keep the page's least sizes; at the wall the AO-026 card is words only, .at-post-bare, since the ten
+// screens above it are its picture and a full card would cover the lower row's names.)
 //
 //   const view = mount(hostElement, { still, reducedMotion, invalidate, top });   top: where what is read and pressed goes
 //   view.frame(q, time, pointer)   q: the chapter's progress, 0 to 1. time: seconds (the host stops it for a still).
@@ -419,6 +422,12 @@ export function mount(host, options = {}) {
   }
 
   // ------------------------------------------------------------------------------------------------ the words
+  // (how wide an element's words are drawn, not its box: the widest of its text's lines)
+  function inkWidth(e) {
+    let l = Infinity, r = -Infinity; const g = document.createRange(), it = document.createTreeWalker(e, NodeFilter.SHOW_TEXT);
+    for (let n = it.nextNode(); n; n = it.nextNode()) { g.selectNodeContents(n); for (const x of g.getClientRects()) { l = Math.min(l, x.left); r = Math.max(r, x.right); } }
+    return r > l ? r - l : e.offsetWidth;
+  }
   function layoutUI(q, time, pointer) {
     const S = Object.fromEntries(STOPS.map((s) => [s.key, s]));
     // the chapter's name, over the arrival
@@ -431,6 +440,13 @@ export function mount(host, options = {}) {
       const b = ui.size(e);
       if (tall || !s.label) { ui.place(e, Math.round((W - b.w) / 2), Math.round(H * s.labelY), a); return; }
       const p = project(s.label);
+      // (the wall's foot holds its card, this label and the sound card side by side; where the window is too narrow
+      // for the three, as at 1280x720, the label goes up into the sky over the screens)
+      if (k === 'wall' && b.tw == null) b.tw = inkWidth(e);
+      if (k === 'wall' && IN + 20 + ui.size(ui.posts.gauntlet.a).w + 30 + b.tw + 30 + ui.size(ui.sound).w + 24 > W) {
+        ui.place(e, clamp(p.x - b.w / 2, IN + 16, W - b.w - 16), Math.round(H * 0.05), p.behind ? 0 : a);
+        return;
+      }
       ui.place(e, clamp(p.x - b.w / 2, IN + 16, W - b.w - 16), Math.min(p.y, H - b.h - 18), p.behind ? 0 : a);
     });
     // the post cards: each stands where its helper set it down
@@ -446,7 +462,8 @@ export function mount(host, options = {}) {
         ui.place(card.a, Math.round((W - w) / 2), H - h - 14 + away * (h + 30), a * (1 - away));
         return;
       }
-      const p = project(s.card), dist = camera.position.distanceTo(s.card), sc = clamp(7.2 / dist, 0.74, k === 'gauntlet' ? 0.8 : 1);
+      // (drawn at its own size: a card shrunk with the distance put its words under the page's least sizes)
+      const p = project(s.card), sc = 1;
       if (k === 'gauntlet') a *= 1 - ss(0.82, 0.97, s.p) * 0;
       const half = w * sc / 2, cx = s.a > 0.98 ? clamp(p.x, IN + half + 20, W - half - 20) : p.x;
       ui.place(card.a, cx - w / 2, Math.min(p.y + 4, H - 16) - h, p.behind ? 0 : a, sc);
@@ -510,6 +527,7 @@ export function mount(host, options = {}) {
     W = host.clientWidth || 1; H = host.clientHeight || 1;
     const wasTall = tall; tall = W / H < 0.8;
     host.classList.toggle('at-tall', tall); uiHost.classList.toggle('at-tall', tall);
+    ui.posts.gauntlet.a.classList.toggle('at-post-bare', !tall);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, options.maxDpr || 2));
     renderer.setSize(W, H, false); strokeWindow(W, H);
     // (the page's rail stands over the left of a wide window: the picture is framed for the part right of it, IN wide)
