@@ -110,3 +110,45 @@ export function skyUpLayout(el, H, stars) {
     '-webkit-mask-image:' + m + ';mask-image:' + m;
   return h;
 }
+
+/* THE JOIN BETWEEN THE 3D CHAPTER AND THE MACHINES ON THE BENCH (machines.js): the toy box's room and the bench's room
+   are the same painting (img/room.webp). The 3D chapter's camera ends on the room seen whole; in the machines' lead it
+   cranes down a little, onto the place where the bench stands, and the bench (the low table, the backdrop behind it,
+   the television on the floor, the lamp over it) comes up into the frame in front of the toys. Both chapters reckon
+   that place from the layout alone, here: benchLayout(W, H, rail) (rail: the rail's rectangle on the screen, or null).
+   Returns where everything of the bench stands on the screen, and room: the part of the painting the camera sees
+   there ({x, y, w, h}, painting pixels; with s, tx, ty: its scale and where its corner stands on the screen). */
+export var TABLE = { w: 873, h: 682, cx: 436, cy: 271, rx: 425, ry: 130 };   // the low table's top: an ellipse in its picture
+export function benchLayout(W, H, rail) {
+  var cl = function (x, a, b) { return x < a ? a : x > b ? b : x; };
+  var phone = W < 820 || W / H < 1.05, L = { phone: phone, W: W, H: H };
+  var bx, by, bw, bh;
+  if (phone) {
+    // (the tabs stand under the rail's pill at the top; the bench under them; the cards under the bench)
+    L.tabsTop = (rail ? rail.bottom : 42) + 10;
+    bx = 6; by = L.tabsTop + 44; bw = W - 12; bh = Math.round(Math.min(H * 0.44, bw * 1.04));
+    L.tv = null;
+  } else {
+    // (the cards stand on the right, as the film's card does; the television on the floor at the left, clear of the
+    // rail; the bench between them)
+    var dockW = Math.round(cl(W * 0.25, 300, 390)), dockR = Math.round(Math.max(24, W * 0.035));
+    L.dock = { l: W - dockR - dockW, w: dockW, r: dockR };
+    var tvW = Math.round(Math.min(300, W * 0.18)), th = tvW * 1093 / 1200, tvT = Math.round(H * 0.955 - th);
+    var railR = rail ? rail.right : 172, railB = rail ? rail.bottom : H;
+    var tvL = Math.round(tvT > railB + 10 ? Math.max(W * 0.028, 16) : railR + 14);
+    L.tv = { l: tvL, t: tvT, w: tvW, h: th };
+    bx = Math.round(Math.max(tvL + tvW * 0.55, railR + Math.max(16, Math.min(46, W * 0.032))));
+    bw = Math.round(L.dock.l - W * 0.012 - bx); by = Math.round(H * 0.15); bh = Math.round(H * 0.68);
+  }
+  L.bx = bx; L.by = by; L.bw = bw; L.bh = bh;
+  // the table: its top centred under the machine, the machine's feet about four fifths of the way down the view
+  L.tw = bw * (phone ? 1.3 : 1.16); L.ts = L.tw / TABLE.w;
+  L.tcx = bx + bw / 2; L.tcy = by + bh * (phone ? 0.8 : 0.82);
+  L.trx = TABLE.rx * L.ts; L.try = TABLE.ry * L.ts;
+  L.lampW = phone ? 34 : Math.round(Math.min(78, W * 0.05)); L.lampY = phone ? by - 26 : Math.round(H * 0.005);
+  // the room behind: the alcove and its scroll behind the bench
+  var s0 = Math.max(W / PW, H / PH) * (phone ? 1.0 : 1.08);
+  var tx = cl(L.tcx - (phone ? 1080 : 1180) * s0, W - PW * s0, 0), ty = cl(H * 0.5 - (phone ? 700 : 760) * s0, H - PH * s0, 0);
+  L.room = { s: s0, tx: tx, ty: ty, x: -tx / s0, y: -ty / s0, w: W / s0, h: H / s0 };
+  return L;
+}

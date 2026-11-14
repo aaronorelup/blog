@@ -12,7 +12,7 @@
    and the physics that follows (it settles back to the same huddle). With motion turned off: cuts between stills
    (the garden from the lawn, the room with the box open and the toys in their huddle). */
 import { makeGarden, roomS0, M_IN, rLook } from './toybox-garden.js';
-import { TILT_LOW, H0_TALL, SKY_CLIP } from './join.js';
+import { TILT_LOW, H0_TALL, SKY_CLIP, benchLayout } from './join.js';
 
 var IMG = new URL('../../img/', import.meta.url).href;
 var clamp = function (x, a, b) { a = a === undefined ? 0 : a; b = b === undefined ? 1 : b; return x < a ? a : x > b ? b : x; };
@@ -40,6 +40,9 @@ var TRACK = [[0, 0.06], [1.0, 0.3], [1.12, 0.34], [1.5, 0.46], [2.5, 0.78], [3.2
 // the last leg (wide screens): as the last card leaves, the camera draws back and lowers its eye a little, so that the
 // huddle stands under the next chapter's name (closing.js) and not across it (screens from the foot's top)
 var END = [-0.75, 0.35];
+// then (every screen) the camera comes down a little onto the place where the bench of the next part stands (join.js
+// benchLayout; machines.js draws the bench coming up in front of the toys over these same screens, its CRANE)
+var TURN = [0.5, 1.9];
 
 export function mount(host, options) {
   var RM = options.reduced, HELD = options.held, section = options.section, top = options.top, marks = options.marks;
@@ -88,7 +91,7 @@ export function mount(host, options) {
   }
 
   // ------------------------------------------------------------------ the layout
-  var upAll = 0, W = 1, H = 1, narrow = false, portrait = false, laid = false, wx = 0, wy = 0, sx = 0, sy = 0, pTrack = 7;
+  var benchRoom = null, upAll = 0, W = 1, H = 1, narrow = false, portrait = false, laid = false, wx = 0, wy = 0, sx = 0, sy = 0, pTrack = 7;
   function layout() {
     W = root.clientWidth; H = window.innerHeight; narrow = W <= 820; portrait = W / H < 0.9;
     host.classList.toggle('narrow', narrow);
@@ -103,6 +106,8 @@ export function mount(host, options) {
     upAll = sy + say.offsetHeight / K + 24;
     // the end of the box's track: the first post's top comes up at the foot of the screen
     pTrack = (marks.picks ? marks.picks.top : 7.1) - 1 - WALK[1];
+    var rl = document.getElementById('rail'), rb = rl ? rl.getBoundingClientRect() : null;
+    benchRoom = benchLayout(W, H, rb && rb.width ? { right: rb.right, bottom: rb.bottom } : null).room;
     if (play) play.resize();
     nameWas = sayWas = ''; rectWas = '';
   }
@@ -234,6 +239,10 @@ export function mount(host, options) {
             var endR = { x: clamp(2250 - we, 0, PW - we), y: PH - he, w: we, h: he };
             rect = mixRect(rect, endR, eEnd);
           }
+        }
+        if (marks.foot && benchRoom) {
+          var ft = p - marks.foot.top, eTurn = RM ? (ft > (TURN[0] + TURN[1]) / 2 ? 1 : 0) : io(ss(TURN[0], TURN[1], ft));
+          if (eTurn > 0) rect = mixRect(rect, benchRoom, eTurn);
         }
       }
     }
