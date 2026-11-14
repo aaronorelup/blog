@@ -162,7 +162,8 @@
 /* ---------------------------------------------------------------- this website (assets/js/chapters/site.js) */
 /* the track is the test's own (tests/tea-house-apart/: 640vh, of which the last screen is where the card comes up) */
 .site-track { height: 640vh; }
-.site-foot { height: 90vh; }   /* (the card goes up and away, the drawing comes back to the middle, before the next chapter's name) */
+.site-foot { height: 450vh; }  /* (the card goes up and away, the drawing comes back to the middle, the next chapter's name comes on;
+                                   then the last 3.6 screens: the house closes and the camera comes down into the garden, join.js PROJ) */
 .site-read { height: 100vh; height: 100lvh; display: flex; align-items: center; justify-content: flex-end; padding: 28px clamp(20px, 5vw, 80px); box-sizing: border-box; }
 /* the homepage's night card (src/styles/home.css), as the test has it */
 .site-card {
@@ -214,6 +215,12 @@
   .site-posts .stamp { display: none; }
   .site-btn { margin-top: 12px; padding: 8px 15px; font-size: 13.5px; border-width: 1.5px; }
 }
+
+/* ---------------------------------------------------------------- projects (assets/js/chapters/projects.js) */
+/* the walk is the test's own length (tests/projects-walk/: 0.95 of a screen for each of the twelve, and three more);
+   in the foot the end card goes up and away before the closing beat's name */
+.projects-walk { height: 1425vh; }
+.projects-foot { height: 200vh; }
 
 /* ---------------------------------------------------------------- the closing beat (a draft: see chapters/closing.js) */
 /* its one small line stands under the name: the section's last screen is the page's last picture */

@@ -19,7 +19,11 @@ import { DESK } from './learning/world/interior.js';
 import { OUTLINE } from './learning/world/kit.js';
 import { ACT, cameraAt } from './site/camera.js';
 import { plan, pose } from './site/plan.js';
-import { SITE, learnInset } from './join.js';
+import { SITE, PROJ, learnInset, projectsInset } from './join.js';
+import { garden as walkGarden, layout as walkLayout, firstView } from './projects/plan.js';
+import { PROJECTS, SHELVES } from './projects/data.js';
+import { drawLantern } from './projects/scene.js';
+import { build as buildGrove } from './projects/twin.js';
 import { Vector3 } from 'three';
 
 var clamp = function (v, a, b) { a = a === undefined ? 0 : a; b = b === undefined ? 1 : b; return v < a ? a : v > b ? b : v; };
@@ -87,6 +91,9 @@ export function mount(host, options) {
   var box = { x0: 0, y0: 0, x1: 0, y1: 0 }, safe = { x0: 0, y0: 0, x1: 1, y1: 1 };
   var drawing = false, sway = { x: 0, y: 0 }, lastT = NaN, lastZoom = 1, lastKey = '';
   var pace = { ms: 16, at: NaN, n: 0, slow: false, movedAt: -1e9, scale: 1 };
+  // the join into the projects walk (join.js PROJ): its camera keys, the walk's first view, the grove
+  var JG = walkGarden(PROJECTS, SHELVES), JL = null, JV = null, JK = null, grove = null, groveKey = '', hillFar = null;
+  var cA = { p: [0, 0, 0], q: [0, 0, 0], fov: 46 }, jo = { zoom: 1, dx: 0, dy: 0 };
 
   var railRect = function () { var rr = document.getElementById('rail'), rb = rr ? rr.getBoundingClientRect() : null; return rb && rb.width ? { right: rb.right, bottom: rb.bottom } : null; };
 
@@ -144,6 +151,68 @@ export function mount(host, options) {
     var m = options.marks.track; trackS = m ? Math.max(1, m.h - 1) : 5.4;
     was = {}; laid = true;
     if (HS.owner() === 'site') takeOver();
+    joinLayout();
+  }
+
+  // ------------------------------------------------------------------ the join into the projects walk (join.js PROJ)
+  // The walk's first view for this window (projects/plan.js, as the walk itself reckons it), and the camera's keys
+  // from the taken-apart house (cameraAt(1)) round to the front, back over the lawn and down behind the grove to it.
+  function joinLayout() {
+    var rb = railRect();
+    JL = walkLayout(JG, W, H, projectsInset(W, H, rb), W <= 820 && rb ? rb.bottom : 0);
+    JV = firstView(JG, JL);
+    var key = [W, H, JL.IN, JL.top].join();
+    if (key !== groveKey) {
+      groveKey = key;
+      if (grove) grove.dispose();
+      grove = buildGrove(HS.kit, JG, JL, JV, PROJ.HOUSE_Z, drawLantern(document, true), function () { dirty = true; options.redraw(); });
+      grove.group.visible = false;
+      HS.scene.add(grove.group);
+      if (!hillFar) HS.scene.traverse(function (o) {
+        if (hillFar || !o.isMesh || !o.geometry) return;
+        if (!o.geometry.boundingSphere) o.geometry.computeBoundingSphere();
+        var c = o.geometry.boundingSphere.center;
+        if (Math.abs(c.z - 62) < 1 && Math.abs(c.x + 4) < 1) hillFar = o;
+      });
+    }
+    var Zc = grove.Zc, ey = JV.y, x = JV.x;
+    var tallJ = W / H < 0.8;
+    // (the keys: t, where the camera is, what it looks at, its lens)
+    JK = ([
+      { t: 0, p: null, q: null, fov: 0 },                                       // (cameraAt(1), filled at each frame)
+      tallJ ? { t: 0.42, p: [6, 19, 78], q: [0, 3.0, 2], fov: 44 } : { t: 0.42, p: [13, 13.5, 60], q: [0, 2.6, 2], fov: 34 },
+      { t: 0.8, p: [x + (tallJ ? 0.4 : 1.2), ey + 6.2, Zc + 6.5], q: [x, ey - 0.6, Zc - 60], fov: JV.fov + 3 },
+      { t: 1, p: [x, ey, Zc], q: [x, ey, Zc - 60], fov: JV.fov }
+    ]);
+  }
+  // monotone tangents (as site/camera.js): the path never overshoots a key, and comes to rest at both ends
+  function tangents(keys, get) {
+    var n = keys.length, d = [], m = [];
+    for (var i = 0; i < n - 1; i++) d.push((get(keys[i + 1]) - get(keys[i])) / (keys[i + 1].t - keys[i].t));
+    for (i = 0; i < n; i++) m.push(0);
+    for (i = 1; i < n - 1; i++) {
+      if (d[i - 1] * d[i] <= 0) continue;
+      var h0 = keys[i].t - keys[i - 1].t, h1 = keys[i + 1].t - keys[i].t, w0 = 2 * h1 + h0, w1 = h1 + 2 * h0;
+      m[i] = (w0 + w1) / (w0 / d[i - 1] + w1 / d[i]);
+    }
+    return m;
+  }
+  function joinCam(j, out) {
+    var keys = JK, k0 = keys[0];
+    k0.p = [out.p[0], out.p[1], out.p[2]]; k0.q = [out.q[0], out.q[1], out.q[2]]; k0.fov = out.fov;
+    var mp = [0, 1, 2].map(function (a) { return tangents(keys, function (k) { return k.p[a]; }); });
+    var mq = [0, 1, 2].map(function (a) { return tangents(keys, function (k) { return k.q[a]; }); });
+    var mf = tangents(keys, function (k) { return k.fov; });
+    var x = clamp(j), i = 0;
+    while (i < keys.length - 2 && x > keys[i + 1].t) i++;
+    var a = keys[i], b = keys[i + 1], h = b.t - a.t, s = (x - a.t) / h, s2 = s * s, s3 = s2 * s;
+    var h00 = 2 * s3 - 3 * s2 + 1, h10 = (s3 - 2 * s2 + s) * h, h01 = -2 * s3 + 3 * s2, h11 = (s3 - s2) * h;
+    for (var n = 0; n < 3; n++) {
+      out.p[n] = h00 * a.p[n] + h10 * mp[n][i] + h01 * b.p[n] + h11 * mp[n][i + 1];
+      out.q[n] = h00 * a.q[n] + h10 * mq[n][i] + h01 * b.q[n] + h11 * mq[n][i + 1];
+    }
+    out.fov = h00 * a.fov + h10 * mf[i] + h01 * b.fov + h11 * mf[i + 1];
+    return out;
   }
   var was = {};
   function css(e, k, val) { var key = e.className + k; if (was[key] !== val) { was[key] = val; e.style[k] = val; } }
@@ -182,8 +251,10 @@ export function mount(host, options) {
   }
 
   // ------------------------------------------------------------------ the drawing (the test's scene.js render())
-  function render(T, time, sw, close, shadowsNow) {
+  function render(T, time, sw, close, shadowsNow, j) {
     var u = clamp((T - ACT.apart0) / (ACT.apart1 - ACT.apart0));
+    // (the join: the house closes again over its first half)
+    if (j > 0) u *= 1 - io(ss(0.02, 0.5, j));
     var gaps = 1 - 0.3 * close;
     pose(pieces, pl, u, gaps);
     // the sky turns as the evening goes on; it starts where the learning chapter left it (the moon in the ledger's
@@ -200,6 +271,7 @@ export function mount(host, options) {
       var a = Math.atan2(dx0, dz0) - sw.x * 0.075 * out, el = Math.min(1.2, Math.max(0.12, Math.atan2(dy0, flat) + sw.y * 0.04 * out));
       cam.p[0] = cam.q[0] + Math.sin(a) * Math.cos(el) * len; cam.p[1] = cam.q[1] + Math.sin(el) * len; cam.p[2] = cam.q[2] + Math.cos(a) * Math.cos(el) * len;
     }
+    if (j > 0) joinCam(j, cam);
     camera.position.set(cam.p[0], cam.p[1], cam.p[2]);
     look.set(cam.q[0], cam.q[1], cam.q[2]);
     camera.up.set(0, 1, 0);
@@ -211,7 +283,7 @@ export function mount(host, options) {
     // Once the camera is outside and the house starts to open, the drawing is kept whole inside the space it is given
     // (right of the rail, clear of the card): slid, and made smaller if it must be. Until then the picture is framed
     // as the learning chapter frames its own, its middle the middle of the part right of the rail.
-    var zoom = 1, w = ss(ACT.whole, ACT.apart0 + 0.07, T), shift = IN / 2 * (1 - w), dx = 0, dy = 0;
+    var zoom = 1, w = ss(ACT.whole, ACT.apart0 + 0.07, T) * (1 - ss(0, 0.42, j)), shift = IN / 2 * (1 - ss(ACT.whole, ACT.apart0 + 0.07, T)), dx = 0, dy = 0;
     if (w > 0) {
       camera.updateMatrixWorld();
       var b = extent(), bw = b.x1 - b.x0, bh = b.y1 - b.y0;
@@ -222,6 +294,9 @@ export function mount(host, options) {
       dx = ((safe.x0 + safe.x1) / 2 - cx) * w;
       dy = (top < safe.y0 ? safe.y0 - top : bottom > safe.y1 ? safe.y1 - bottom : 0) * w;
     }
+    // (the join: the walk's own framing comes in as the camera comes down: its middle right of the rail, its horizon
+    // where the walk has it)
+    if (j > 0 && JV) { var fj = ss(0.55, 1, j); dx += JV.dx * fj; dy += JV.dy * fj; }
     if (zoom !== 1 || dx || dy || shift) camera.setViewOffset(W, H, (W - W / zoom) / 2 - (dx + shift) / zoom, (H - H / zoom) / 2 - dy / zoom, W / zoom, H / zoom);
     camera.updateProjectionMatrix();
     camera.updateMatrixWorld();
@@ -253,6 +328,12 @@ export function mount(host, options) {
     var keep = deskPiece.k <= 0;
     HS.petalsWide.visible = keep && !tall; HS.petalsTall.visible = keep && tall;
 
+    // the grove of the walk (from the join's start, and only for this chapter: the learning chapter never sees it)
+    if (grove) {
+      grove.group.visible = j > 0;
+      if (hillFar) hillFar.visible = !(j > 0);
+      if (j > 0) grove.update(camera, ss(0.72, 1, j));
+    }
     HS.petals.update(time);
     if ((u !== lastU || gaps !== lastGaps) && shadowsNow) { lastU = u; lastGaps = gaps; renderer.shadowMap.needsUpdate = true; }
     renderer.render(HS.scene, camera);
@@ -269,6 +350,9 @@ export function mount(host, options) {
     // same way as the camera backs out of the room (narrow: it rises and fades)
     // (the track: from SITE.START, a screen before the section's top, to the card: join.js)
     var T = clamp((p - SITE.START) / (trackS - SITE.START));
+    // the join into the projects walk: the section's last J screens (motion off: one cut, join.js PROJ.RM_CUT, in
+    // screens before the projects section's top, which is a screen after this section's scroll ends)
+    var span = options.span(), j = RM ? (p - span - 1 >= PROJ.RM_CUT ? 1 : 0) : clamp((p - (span - PROJ.J)) / PROJ.J);
     var nk = RM ? (p > SITE.NAME[0] + 0.3 && T < 0.2 ? 1 : 0) : io(ss(SITE.NAME[0], SITE.NAME[1], p));
     var outk = RM ? 0 : io(ss(SITE.OUT[0], SITE.OUT[1], T));
     var gone = narrow ? outk : 0, up = narrow ? outk * H * 0.06 : 0;
@@ -278,6 +362,8 @@ export function mount(host, options) {
     if (!drawing) {
       // (the lead: only the name; the room is the learning chapter's)
       css(glHost, 'visibility', 'hidden'); css(leaders, 'visibility', 'hidden'); css(labelBox, 'visibility', 'hidden');
+      if (grove) grove.group.visible = false;
+      if (hillFar) hillFar.visible = true;
       return true;
     }
     if (HS.claim(glHost, 'site')) takeOver();
@@ -322,6 +408,8 @@ export function mount(host, options) {
     if (!HELD && !RM) {
       var dt = isNaN(lastT) ? 1 : clamp(t - lastT, 0, 1); lastT = t;
       var g = 1 - Math.exp(-dt * 4.5), ax = ptr && isFinite(ptr.x) ? ptr.x : 0, ay = ptr && isFinite(ptr.y) ? ptr.y : 0;
+      // (the join: the lean goes as the camera comes down, so the last place is still under the dissolve)
+      var jl = 1 - ss(0.3, 0.75, j); ax *= jl; ay *= jl;
       if (!isFinite(sway.x) || !isFinite(sway.y)) sway.x = sway.y = 0;
       sway.x += (ax - sway.x) * g; sway.y += (ay - sway.y) * g;
       if (Math.abs(ax - sway.x) < 0.001) sway.x = ax;
@@ -337,15 +425,16 @@ export function mount(host, options) {
     var running = !HELD && !RM, now = performance.now();
     if (running && !isNaN(pace.at)) { var gap = now - pace.at; if (gap > 0 && gap < 1000) { pace.ms += (gap - pace.ms) * 0.15; pace.n++; } if (pace.n > 6 && pace.ms > 50) pace.slow = true; }
     pace.at = running ? now : NaN;
-    var key = T.toFixed(5) + ',' + close.toFixed(4) + ',' + (sw ? sw.x.toFixed(3) + sw.y.toFixed(3) : '') + ',' + Math.round(safe.x0) + ',' + Math.round(safe.y0) + ',' + Math.round(safe.x1) + ',' + Math.round(safe.y1) + ',' + W + ',' + H;
+    var key = T.toFixed(5) + ',' + j.toFixed(5) + ',' + close.toFixed(4) + ',' + (sw ? sw.x.toFixed(3) + sw.y.toFixed(3) : '') + ',' + Math.round(safe.x0) + ',' + Math.round(safe.y0) + ',' + Math.round(safe.x1) + ',' + Math.round(safe.y1) + ',' + W + ',' + H;
     var moved = key !== lastKey;
     if (moved) pace.movedAt = now;
     var resting = !running || now - pace.movedAt > 350;
     var scale = pace.slow && !resting ? 0.5 : 1;
     if (scale !== pace.scale) { pace.scale = scale; renderer.setPixelRatio(dpr * scale); renderer.setSize(W, H, false); dirty = true; }
-    var tick = running && !pace.slow && (t - lastGL >= 1 / 15 || t < lastGL);
+    var tick = running && !pace.slow && j < 0.97 && (t - lastGL >= 1 / 15 || t < lastGL);
     if (dirty || moved || tick) {
-      render(T, HELD ? T_HELD : pace.slow ? T_HELD : t, sw, close, resting || !pace.slow);
+      // (at the join's end the time stands still too: the picture under the dissolve does not move)
+      render(T, HELD || j >= 0.97 ? T_HELD : pace.slow ? T_HELD : t, sw && j < 1 ? sw : null, close, resting || !pace.slow, j);
       lastGL = t; dirty = false; lastKey = key;
     }
 
@@ -406,7 +495,7 @@ export function mount(host, options) {
     frame: frame,
     resize: function () { layout(); },
     setActive: function (on) { active = !!on; },
-    dispose: function () { card.style.webkitMaskImage = card.style.maskImage = ''; if (HS.canvas.parentNode === glHost) HS.canvas.remove(); host.textContent = ''; release(); },
+    dispose: function () { card.style.webkitMaskImage = card.style.maskImage = ''; if (grove) { grove.dispose(); grove = null; } if (hillFar) hillFar.visible = true; if (HS.canvas.parentNode === glHost) HS.canvas.remove(); host.textContent = ''; release(); },
     // (the rail and a phone's pill name this chapter once its name is on the screen)
     owns: function () { return lastP >= (SITE.NAME[0] + SITE.NAME[1]) / 2; },
     // (from SITE.START on this chapter draws the room: the learning chapter, at its end, stands aside)
