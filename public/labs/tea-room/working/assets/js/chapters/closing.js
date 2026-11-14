@@ -26,7 +26,7 @@ export function mount(host, options) {
     W = root.clientWidth; H = window.innerHeight;
     var tall = W / H < 0.9; narrow = W <= 820;
     // look B's rule for a chapter's name: its size, its left edge clear of the rail, a tenth of the way down
-    var wp = clamp(W * (tall ? 0.15 : 0.115), 52, 190), sp = clamp(W * 0.0175, 17, 27);
+    var wp = clamp(W * (tall ? 0.15 : 0.115), 52, 190 * TEA.s()), sp = clamp(W * 0.0175, 17, 27 * TEA.s());
     // (a wide, short screen: the name is held to a fifth of the height, so that its two lines end above the toy box's
     // open lid in the last picture of the chapter before: toybox.js's last view)
     if (!narrow) wp = Math.min(wp, H * 0.19);

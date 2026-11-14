@@ -8,7 +8,8 @@
   --font-body: Karla, system-ui, sans-serif;
   --font-serif: Georgia, 'Times New Roman', serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-  --rail-w: 172px;
+  --rail-w: calc(172px * var(--s, 1));   /* (--s: the page's one scale, set by chapters.js: 1 up to 1440x900. --rail-w is registered as a length
+                                           in chapters.css, so every script that reads it gets plain pixels) */
   --gutter: clamp(16px, 3.2vw, 46px);
   --content-l: calc(var(--rail-w) + var(--gutter) * 2);
 
@@ -34,7 +35,7 @@
   --tea-wood: rgb(160, 112, 58);
   --tea-lamp: rgb(255, 216, 146);
   --tea-glow: 0 0 14px rgba(255, 216, 146, 0.55);
-  --radius-m: 10px; --radius-card: 14px; --radius-l: 24px; --radius-pill: 999px;
+  --radius-m: calc(10px * var(--s, 1)); --radius-card: calc(14px * var(--s, 1)); --radius-l: calc(24px * var(--s, 1)); --radius-pill: 999px;
 }
 
 * { box-sizing: border-box; }
@@ -171,10 +172,10 @@ section { position: relative; }
 
 /* an eyebrow: small, spaced capitals in the quiet gold */
 .label {
-  font: 600 11.5px/1.4 var(--font-body); letter-spacing: 0.14em; text-transform: uppercase;
+  font: 600 calc(11.5px * var(--s, 1))/1.4 var(--font-body); letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--pc-gold);
 }
-.mono { font-family: var(--font-mono); font-weight: 500; font-size: 12px; letter-spacing: 0.02em; }
+.mono { font-family: var(--font-mono); font-weight: 500; font-size: calc(12px * var(--s, 1)); letter-spacing: 0.02em; }
 /* a link out of a floating card */
 .go { color: var(--pc-accent); text-decoration: none; }
 .go:hover { text-decoration: underline; text-underline-offset: 3px; }
@@ -182,53 +183,53 @@ a.go::after { content: '\00a0\2192'; font-family: var(--font-body); font-weight:
 /* a stamp: a post's verdict, or where an episode stands. A pill on one line (its box is 23.1px high, the height of
    the line of serif it replaces); if it has to wrap, a round-cornered label */
 .post .line, .card .meta .label {
-  display: block; width: fit-content; padding: 3px 10px; border: 1px solid currentColor; border-radius: 12px;
-  font: 600 10.5px/15.1px var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--pc-head);
+  display: block; width: fit-content; padding: calc(3px * var(--s, 1)) calc(10px * var(--s, 1)); border: 1px solid currentColor; border-radius: calc(12px * var(--s, 1));
+  font: 600 calc(10.5px * var(--s, 1))/calc(15.1px * var(--s, 1)) var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--pc-head);
 }
 
 /* --- hero: the title card --- */
 #hero { height: 300vh; }
 .title-slip {
-  position: absolute; right: clamp(18px, 4.6vw, 80px); top: 50%;
-  width: min(330px, 86vw);
+  position: absolute; right: clamp(18px, 4.6vw, calc(80px * var(--s, 1))); top: 50%;
+  width: min(calc(330px * var(--s, 1)), 86vw);
   will-change: transform;
 }
-.title-slip .body { padding: 22px 24px 18px; }
+.title-slip .body { padding: calc(22px * var(--s, 1)) calc(24px * var(--s, 1)) calc(18px * var(--s, 1)); }
 .title-slip h1 {
-  font: 700 31px/1.04 var(--font-display); letter-spacing: -0.015em; margin: 6px 0 10px; text-wrap: balance;
+  font: 700 calc(31px * var(--s, 1))/1.04 var(--font-display); letter-spacing: -0.015em; margin: calc(6px * var(--s, 1)) 0 calc(10px * var(--s, 1)); text-wrap: balance;
   color: var(--pc-head);
 }
-.title-slip .statement { font: 400 15px/1.46 var(--font-serif); color: var(--home-body); }
-.title-slip .counter { display: block; margin-top: 10px; color: var(--home-quiet); font-size: 11.5px; }
-.index { margin-top: 14px; padding-top: 11px; border-top: 1px solid var(--pc-line2); columns: 2; column-gap: 16px; }
+.title-slip .statement { font: 400 calc(15px * var(--s, 1))/1.46 var(--font-serif); color: var(--home-body); }
+.title-slip .counter { display: block; margin-top: calc(10px * var(--s, 1)); color: var(--home-quiet); font-size: calc(11.5px * var(--s, 1)); }
+.index { margin-top: calc(14px * var(--s, 1)); padding-top: calc(11px * var(--s, 1)); border-top: 1px solid var(--pc-line2); columns: 2; column-gap: calc(16px * var(--s, 1)); }
 .index li {
-  display: flex; align-items: baseline; gap: 6px; break-inside: avoid;
-  font: 600 11.5px/1.3 var(--font-body); color: var(--home-quiet); padding: 2.5px 0;
+  display: flex; align-items: baseline; gap: calc(6px * var(--s, 1)); break-inside: avoid;
+  font: 600 calc(11.5px * var(--s, 1))/1.3 var(--font-body); color: var(--home-quiet); padding: calc(2.5px * var(--s, 1)) 0;
 }
-.index li i { font: 500 9px var(--font-mono); font-style: normal; color: var(--pc-gold); flex: none; width: 2.2em; }
+.index li i { font: 500 calc(9px * var(--s, 1)) var(--font-mono); font-style: normal; color: var(--pc-gold); flex: none; width: 2.2em; }
 .index li a { color: var(--pc-strong); text-decoration: none; transition: color 160ms ease; }
 .index li a:hover { color: var(--pc-head); }
-.index li span.c { margin-left: auto; font: 500 10px var(--font-mono); color: var(--home-quiet); }
+.index li span.c { margin-left: auto; font: 500 calc(10px * var(--s, 1)) var(--font-mono); color: var(--home-quiet); }
 
 /* --- the rail: a card docked on the left edge --- */
 /* The rail and the clock stay on while every scene passes under them, the brightest too: they take the site's
    chrome ground (--pc-bg), which lets less through, so the quiet names still read. They do not blur what is behind
    them: at 4 percent it would not show, and they are in the frame for two thirds of the page. */
 #rail {
-  --r: 0 18px 18px 0; --ground: var(--pc-bg);
+  --r: 0 calc(18px * var(--s, 1)) calc(18px * var(--s, 1)) 0; --ground: var(--pc-bg);
   position: fixed; left: 0; top: 50%; z-index: 5;
   width: var(--rail-w);
   will-change: transform;
 }
-#rail .body { padding: 16px 14px 16px 18px; }
+#rail .body { padding: calc(16px * var(--s, 1)) calc(14px * var(--s, 1)) calc(16px * var(--s, 1)) calc(18px * var(--s, 1)); }
 #rail li {
-  position: relative; font: 600 12px/1.25 var(--font-body); color: var(--home-quiet); padding: 2.8px 0;
+  position: relative; font: 600 calc(12px * var(--s, 1))/1.25 var(--font-body); color: var(--home-quiet); padding: calc(2.8px * var(--s, 1)) 0;
 }
 #rail li a { color: var(--home-body); text-decoration: none; transition: color 160ms ease; }
 #rail li a:hover { color: var(--pc-head); }
 #rail li.now, #rail li.now a { color: var(--pc-head); }
 #rail li.now::before {
-  content: ''; position: absolute; left: -11px; top: 0.62em; width: 6px; height: 6px; border-radius: 50%;
+  content: ''; position: absolute; left: calc(-11px * var(--s, 1)); top: 0.62em; width: calc(6px * var(--s, 1)); height: calc(6px * var(--s, 1)); border-radius: 50%;
   background: var(--tea-lamp); box-shadow: var(--tea-glow);
 }
 
@@ -238,24 +239,24 @@ a.go::after { content: '\00a0\2192'; font-family: var(--font-body); font-weight:
 
 /* --- the clock: a card docked on the top edge --- */
 #clock {
-  --r: 0 0 16px 16px; --ground: var(--pc-bg);
-  position: fixed; right: clamp(14px, 3vw, 44px); top: 0; z-index: 5;
+  --r: 0 0 calc(16px * var(--s, 1)) calc(16px * var(--s, 1)); --ground: var(--pc-bg);
+  position: fixed; right: clamp(14px, 3vw, calc(44px * var(--s, 1))); top: 0; z-index: 5;
   will-change: transform;
 }
-#clock .body { padding: 20px 16px 16px; text-align: center; }
-#clock b { display: block; font: 500 30px/1 var(--font-mono); letter-spacing: 0.01em; color: var(--pc-strong); }
+#clock .body { padding: calc(20px * var(--s, 1)) calc(16px * var(--s, 1)) calc(16px * var(--s, 1)); text-align: center; }
+#clock b { display: block; font: 500 calc(30px * var(--s, 1))/1 var(--font-mono); letter-spacing: 0.01em; color: var(--pc-strong); }
 #clock.at20 b { color: var(--pc-accent); }
-#clock .dial { display: flex; gap: 6px; justify-content: center; margin-top: 9px; }
-#clock .dial i { width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid var(--home-quiet); }
+#clock .dial { display: flex; gap: calc(6px * var(--s, 1)); justify-content: center; margin-top: calc(9px * var(--s, 1)); }
+#clock .dial i { width: calc(7px * var(--s, 1)); height: calc(7px * var(--s, 1)); border-radius: 50%; border: 1.5px solid var(--home-quiet); }
 #clock .dial i.on { background: var(--pc-head); border-color: var(--pc-head); }
 
 /* --- start: the coin and the bubble --- */
 #start-head { height: 200vh; position: relative; }
 .hello {
   position: absolute; left: var(--content-l); right: var(--gutter); top: 118vh;
-  display: flex; align-items: center; gap: clamp(18px, 3vw, 44px);
+  display: flex; align-items: center; gap: clamp(18px, 3vw, calc(44px * var(--s, 1)));
 }
-.coin { position: relative; flex: none; width: clamp(150px, 17vw, 236px); aspect-ratio: 1; container-type: size; }
+.coin { position: relative; flex: none; width: clamp(150px, 17vw, calc(236px * var(--s, 1))); aspect-ratio: 1; container-type: size; }
 .coin .disc {
   position: absolute; inset: 0; border-radius: 50%;
   background: #3b2e44; border: 4px solid #ffd892;
@@ -270,36 +271,36 @@ a.go::after { content: '\00a0\2192'; font-family: var(--font-body); font-weight:
   position: absolute; inset: 0; border-radius: 50%; border: 4px solid #ffd892;
   clip-path: inset(50% 0 0 0);
 }
-.bubble { flex: 0 1 560px; }
+.bubble { flex: 0 1 calc(560px * var(--s, 1)); }
 /* the bubble's tail, of the card's own ground, a pixel under the card so no seam shows */
 .bubble::before {
-  content: ''; position: absolute; left: -15px; top: 50%; width: 16px; height: 26px; margin-top: -13px;
+  content: ''; position: absolute; left: calc(-15px * var(--s, 1)); top: 50%; width: calc(16px * var(--s, 1)); height: calc(26px * var(--s, 1)); margin-top: calc(-13px * var(--s, 1));
   background: var(--ground); -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
   clip-path: polygon(100% 0, 0 56%, 100% 100%);
 }
-.bubble .body { padding: 26px 30px 28px 34px; }
+.bubble .body { padding: calc(26px * var(--s, 1)) calc(30px * var(--s, 1)) calc(28px * var(--s, 1)) calc(34px * var(--s, 1)); }
 /* his own voice, as on the homepage's first card: the body face, not the serif */
-.bubble p { font: 400 clamp(17px, 1.6vw, 22px)/1.5 var(--font-body); color: var(--home-body); text-wrap: pretty; }
+.bubble p { font: 400 clamp(17px, 1.6vw, calc(22px * var(--s, 1)))/1.5 var(--font-body); color: var(--home-body); text-wrap: pretty; }
 
 /* --- start: three post cards, each with its picture --- */
 .sheet {
-  --sheet-pad: clamp(18px, 4vw, 58px);
+  --sheet-pad: clamp(18px, 4vw, calc(58px * var(--s, 1)));
   margin-left: var(--content-l); margin-right: var(--gutter);
-  max-width: 1060px;
+  max-width: calc(1060px * var(--s, 1));
 }
 .sheet > .shadow, .strip > .shadow { display: none; }
 .sheet > .face, .strip > .face { background: none; -webkit-backdrop-filter: none; backdrop-filter: none; border-radius: 0; }
-.sheet .body { padding: clamp(22px, 4vw, 58px) var(--sheet-pad) clamp(34px, 5.4vw, 80px); }
+.sheet .body { padding: clamp(22px, 4vw, calc(58px * var(--s, 1))) var(--sheet-pad) clamp(34px, 5.4vw, calc(80px * var(--s, 1))); }
 /* A post card. Its words keep the column they had: the card runs --bleed past them on the open side instead. The
    card is as high as its picture; only from 821 to about 900px wide, where the words need more than the picture's
    height, does it grow to hold them and the picture with it (the one place the page is longer than look B's). */
 .post {
-  --bleed: 24px;
-  position: relative; display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); gap: clamp(18px, 3vw, 40px); align-items: center;
+  --bleed: calc(24px * var(--s, 1));
+  position: relative; display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); gap: clamp(18px, 3vw, calc(40px * var(--s, 1))); align-items: center;
   margin-right: calc(-1 * var(--bleed)); padding-right: var(--bleed);
   border-radius: var(--radius-card); background: var(--tea-card); box-shadow: var(--home-shadow); overflow: hidden;
 }
-.post + .post { margin-top: clamp(40px, 7vw, 96px); }
+.post + .post { margin-top: clamp(40px, 7vw, calc(96px * var(--s, 1))); }
 .post.flip { grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr); margin-right: 0; padding-right: 0; margin-left: calc(-1 * var(--bleed)); padding-left: var(--bleed); }
 .post.flip .win { order: 2; }
 .post.flip .cap { text-align: right; }
@@ -311,7 +312,7 @@ a.go::after { content: '\00a0\2192'; font-family: var(--font-body); font-weight:
   box-shadow: inset 0 0 0 1px var(--pc-line2); transition: box-shadow 160ms ease;
 }
 .post::after, .strip li::after {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0; z-index: 2; width: 3px; pointer-events: none;
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; z-index: 2; width: calc(3px * var(--s, 1)); pointer-events: none;
   background: var(--tea-lamp); box-shadow: var(--tea-glow); transform: scaleY(0); transform-origin: top; transition: transform 160ms ease;
 }
 /* a picture fills its well edge to edge, cut by the card's corners, one hairline between it and the words */
@@ -319,9 +320,9 @@ a.go::after { content: '\00a0\2192'; font-family: var(--font-body); font-weight:
 .win .media { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; }
 .post .win { align-self: stretch; justify-self: stretch; box-shadow: 1px 0 0 var(--pc-line); }
 .post.flip .win { box-shadow: -1px 0 0 var(--pc-line); }
-.cap { padding: 18px 0; }
+.cap { padding: calc(18px * var(--s, 1)) 0; }
 .cap .label .mono { color: var(--pc-soft); }
-.cap h3 { font: 700 clamp(21px, 2.1vw, 28px)/1.16 var(--font-display); letter-spacing: -0.01em; margin: 8px 0 10px; color: var(--pc-strong); }
+.cap h3 { font: 700 clamp(21px, 2.1vw, calc(28px * var(--s, 1)))/1.16 var(--font-display); letter-spacing: -0.01em; margin: calc(8px * var(--s, 1)) 0 calc(10px * var(--s, 1)); color: var(--pc-strong); }
 /* the title is the card's link: it covers the whole card, and the ring goes round the whole card */
 .post h3 a, .strip li h3 a { color: inherit; text-decoration: none; transition: color 160ms ease; }
 .post h3 a::after, .strip li h3 a::after { color: var(--pc-accent); }
@@ -340,44 +341,44 @@ a.go::after { content: '\00a0\2192'; font-family: var(--font-body); font-weight:
 .ep { height: 100vh; height: 100svh; display: flex; align-items: center; }
 .ep.high { align-items: flex-start; padding-top: 5vh; }
 .card {
-  margin-left: var(--content-l); width: min(360px, calc(100vw - 32px));
+  margin-left: var(--content-l); width: min(calc(360px * var(--s, 1)), calc(100vw - 32px));
 }
-.card .body { padding: 22px 24px 24px; }
-.card .meta { display: flex; gap: 10px; align-items: center; }
-.card .meta .mono { color: var(--pc-head); font-size: 13px; }
-.card h3 { font: 700 30px/1.08 var(--font-display); letter-spacing: -0.015em; margin: 8px 0 10px; color: var(--pc-head); }
-.card .line { font: 400 16px/1.44 var(--font-serif); color: var(--home-body); text-wrap: pretty; }
+.card .body { padding: calc(22px * var(--s, 1)) calc(24px * var(--s, 1)) calc(24px * var(--s, 1)); }
+.card .meta { display: flex; gap: calc(10px * var(--s, 1)); align-items: center; }
+.card .meta .mono { color: var(--pc-head); font-size: calc(13px * var(--s, 1)); }
+.card h3 { font: 700 calc(30px * var(--s, 1))/1.08 var(--font-display); letter-spacing: -0.015em; margin: calc(8px * var(--s, 1)) 0 calc(10px * var(--s, 1)); color: var(--pc-head); }
+.card .line { font: 400 calc(16px * var(--s, 1))/1.44 var(--font-serif); color: var(--home-body); text-wrap: pretty; }
 .card .line::first-letter { text-transform: uppercase; }
-.card .go { display: block; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--pc-line2); font: 600 13px/1.4 var(--font-body); }
+.card .go { display: block; margin-top: calc(14px * var(--s, 1)); padding-top: calc(12px * var(--s, 1)); border-top: 1px solid var(--pc-line2); font: 600 calc(13px * var(--s, 1))/1.4 var(--font-body); }
 #tv-turn { height: 350vh; position: relative; }
 .turn-slip {
   position: absolute; left: var(--content-l); top: 150vh;
-  width: min(400px, calc(100vw - 32px));
+  width: min(calc(400px * var(--s, 1)), calc(100vw - 32px));
 }
-.turn-slip .body { padding: 22px 24px; }
-.turn-slip p { font: 400 17px/1.46 var(--font-serif); color: var(--pc-strong); text-wrap: pretty; }
+.turn-slip .body { padding: calc(22px * var(--s, 1)) calc(24px * var(--s, 1)); }
+.turn-slip p { font: 400 calc(17px * var(--s, 1))/1.46 var(--font-serif); color: var(--pc-strong); text-wrap: pretty; }
 
 /* --- tv-also: three small post cards under their eyebrow --- */
 /* The cards run to the strip's own edges, 14px apart, and --strip-padx is worked out so each card's words keep the
    column they had; the picture is that much wider, so that much taller, and the strip's foot gives the height back. */
 #tv-also { padding: 6vh 0 30vh; }
 .strip {
-  --strip-pad: clamp(16px, 2.4vw, 30px);
-  --strip-padx: calc((var(--strip-pad) + clamp(14px, 2.4vw, 34px) - 14px) / 3);
-  margin-left: var(--content-l); margin-right: var(--gutter); max-width: 1060px;
+  --strip-pad: clamp(16px, 2.4vw, calc(30px * var(--s, 1)));
+  --strip-padx: calc((var(--strip-pad) + clamp(14px, 2.4vw, calc(34px * var(--s, 1))) - calc(14px * var(--s, 1))) / 3);
+  margin-left: var(--content-l); margin-right: var(--gutter); max-width: calc(1060px * var(--s, 1));
 }
-.strip .body { padding: 6px var(--strip-pad) calc(22px - 1.125 * var(--strip-padx)); }
+.strip .body { padding: calc(6px * var(--s, 1)) var(--strip-pad) calc(calc(22px * var(--s, 1)) - 1.125 * var(--strip-padx)); }
 /* the eyebrow is a lit chip: the box it takes in the page is its old line, the chip is drawn 5px round it */
 .strip .body > .label {
-  width: fit-content; margin: -5px 0 -5px calc(-1 * var(--strip-pad)); padding: 5px 12px; border-radius: var(--radius-pill);
+  width: fit-content; margin: calc(-5px * var(--s, 1)) 0 calc(-5px * var(--s, 1)) calc(-1 * var(--strip-pad)); padding: calc(5px * var(--s, 1)) calc(12px * var(--s, 1)); border-radius: var(--radius-pill);
   background: var(--pc-hover); box-shadow: inset 0 0 0 1px var(--pc-head); color: var(--pc-head);
 }
-.strip ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 20px calc(-1 * var(--strip-pad)) 0; }
+.strip ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: calc(14px * var(--s, 1)); margin: calc(20px * var(--s, 1)) calc(-1 * var(--strip-pad)) 0; }
 .strip li { position: relative; border-radius: var(--radius-m); background: var(--tea-card); box-shadow: var(--home-shadow); overflow: hidden; }
 .strip li .win { box-shadow: 0 1px 0 var(--pc-line); }
-.strip li > div:last-child { padding: 12px var(--strip-padx) 14px; }
+.strip li > div:last-child { padding: calc(12px * var(--s, 1)) var(--strip-padx) calc(14px * var(--s, 1)); }
 .strip li .label { color: var(--pc-head); }
-.strip li h3 { font: 700 17px/1.24 var(--font-display); margin-top: 4px; color: var(--pc-strong); }
+.strip li h3 { font: 700 calc(17px * var(--s, 1))/1.24 var(--font-display); margin-top: calc(4px * var(--s, 1)); color: var(--pc-strong); }
 
 /* --- next --- */
 #next { height: 250vh; }

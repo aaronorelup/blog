@@ -57,6 +57,22 @@
   var here = document.currentScript.src.replace(/[^/]*$/, '');           // .../assets/js/
   var clamp = function (x, a, b) { return x < a ? a : x > b ? b : x; };
 
+  // ------------------------------------------------------------------ the page's one scale
+  // A big desktop window shows the page as it is at 1440x900, only larger: s = min(width / 1440, height / 900), never
+  // under 1 (so 1440x900, every smaller window and every phone are exactly as designed) and at most S_MAX. It is
+  // written on <html> as --s (a plain number), so a size in any stylesheet is calc(13px * var(--s, 1)) (in a clamp()
+  // with vw or vh, only its px cap is multiplied). A scene's own constants in px take TEA.s(). It is set here, before
+  // look B's diorama.js lays out, and again at once on every resize (before anyone measures).
+  var S_MAX = 2.4, SCALE = 1;
+  function setScale() {
+    var s = clamp(Math.min(window.innerWidth / 1440, window.innerHeight / 900), 1, S_MAX);
+    s = Math.round(s * 1000) / 1000;
+    if (s === SCALE && root.style.getPropertyValue('--s')) return;
+    SCALE = s; root.style.setProperty('--s', String(s));
+  }
+  setScale();
+  window.addEventListener('resize', setScale);
+
   // ------------------------------------------------------------------ the layers
   var under = document.createElement('div');
   under.id = 'chapters'; under.setAttribute('aria-hidden', 'true');
@@ -231,6 +247,7 @@
 
   window.TEA = {
     start: start, frame: frame, list: LIST,
+    s: function () { return SCALE; },                 // (the page's one scale: see setScale)
     y: function () { return lastY; },                 // (the scroll place the frame being drawn is drawn for)
     // for tests and pictures: true when nothing near is still loading and the chapter on the screen is whole
     settled: function () {

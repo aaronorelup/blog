@@ -68,7 +68,7 @@ export function mount(host, options) {
     lastTurn = -1; placeRoom(0);
     // the name: look B's rule (closing.js has the same)
     var tall = W / H < 0.9; narrow = W <= 820;
-    var wp = clamp(W * (tall ? 0.15 : 0.115), 52, 190), sp = clamp(W * 0.0175, 17, 27);
+    var wp = clamp(W * (tall ? 0.15 : 0.115), 52, 190 * TEA.s()), sp = clamp(W * 0.0175, 17, 27 * TEA.s());
     if (!narrow) wp = Math.min(wp, H * 0.19);
     left = narrow ? 16 : (parseFloat(getComputedStyle(root).getPropertyValue('--rail-w')) || 172) + Math.max(16, Math.min(46, W * 0.032)) * 2;
     word.style.fontSize = (wp * K) + 'px'; say.style.fontSize = (sp * 0.8 * K) + 'px';
