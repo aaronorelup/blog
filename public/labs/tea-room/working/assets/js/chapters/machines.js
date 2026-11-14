@@ -20,7 +20,7 @@
    (?still=1, motion off) or ?live=0 the machines are their stills. Motion off: no push-in, no rise, cuts. */
 import { MACHINES, LAB_POST } from './machines-data.js';
 import { createLive } from './machines-live.js';
-import { benchLayout, TABLE, PW, PH } from './join.js';
+import { benchLayout, TABLE, PW, PH, AGENTS, tvPlace, tvDive } from './join.js';
 
 var IMG = new URL('../../img/', import.meta.url).href;
 var clamp = function (v, a, b) { a = a === undefined ? 0 : a; b = b === undefined ? 1 : b; return v < a ? a : v > b ? b : v; };
@@ -67,6 +67,9 @@ var RM_CUT = -1.8;
 // the end (screens after LD): the cards go, the lamp goes down, the camera draws back to the bench's first view
 // (the last machine stays on the table, lit low, under the next chapter's name: never an empty bench)
 var END = [0.05, 0.45];
+// then the next chapter's way in (join.js AGENTS, in screens before the agents section's top): the bench is put away
+// (PACK: the machine goes, the backdrop rolls up, the lamp and the table leave) and the camera goes into the television
+// on the floor (DIVE: this chapter moves its room; the agents chapter puts the terminal into the glass over it)
 
 function placeOf(q) {
   if (q < INTRO) return { i: 0, t: 0, step: 'intro', intro: 1 - q / INTRO };
@@ -166,7 +169,7 @@ export function mount(host, options) {
   var $$ = function (s, r) { return Array.prototype.slice.call((r || host).querySelectorAll(s)); };
   var T = function (s) { return top.querySelector(s); };
   var TT = function (s) { return Array.prototype.slice.call(top.querySelectorAll(s)); };
-  var dim = $('.mc-dim'), world = $('.mc-world'), roomEl = $('.mc-room'), roomImg = $('.mc-room-img'), vig = $('.mc-vig');
+  var cone = $('.mc-cone'), dim = $('.mc-dim'), world = $('.mc-world'), roomEl = $('.mc-room'), roomImg = $('.mc-room-img'), vig = $('.mc-vig');
   var ups = $$('.mc-up'), sweep = $('.mc-sweep'), table = $('.mc-table'), view = $('.mc-view');
   var picA = $('.mc-pic.a'), picB = $('.mc-pic.b'), erase = $('.mc-erase'), holder = $('.mc-holder');
   var filmBox = $('.mc-film-box'), film = $('.mc-film');
@@ -194,7 +197,7 @@ export function mount(host, options) {
     window.scrollTo({ top: Math.round(st + qd * LD * window.innerHeight), behavior: RM ? 'auto' : 'smooth' });
   }
 
-  var sweepH = 0, W = 0, H = 0, L = null, phone = false, active = false, laid = false;
+  var TVP = null, sweepH = 0, W = 0, H = 0, L = null, phone = false, active = false, laid = false;
   var cur = { i: -1, step: '', k: -1, mode: '' };
   var live = null, liveI = -1, liveTimer = null, pendingI = -1;
   var failed = new Set();
@@ -230,7 +233,8 @@ export function mount(host, options) {
     host.style.setProperty('--lx', L.tcx + 'px'); host.style.setProperty('--ly', (ly + lw) + 'px');
     if (L.tv) Object.assign(tv.style, { width: L.tv.w + 'px', left: L.tv.l + 'px', top: L.tv.t + 'px' });
     roomImg._s = undefined;                          // (frame() places the room: the phone's tilt moves it)
-    world.style.transformOrigin = L.tcx + 'px ' + (L.tcy - bh * 0.35) + 'px';
+    css(world, 'transformOrigin', L.tcx + 'px ' + (L.tcy - bh * 0.35) + 'px');
+    TVP = tvPlace(W, H, rb && rb.width ? { right: rb.right, bottom: rb.bottom } : null);
     // the cards: on the right (wide), under the bench (a phone)
     if (phone) {
       Object.assign(dock.style, { left: '12px', right: '12px', width: 'auto', top: (by + bh + 40) + 'px', bottom: '10px' });
@@ -480,6 +484,11 @@ export function mount(host, options) {
     }
     var pe = p - LD;                                     // (after the test's scroll: the end)
     var ending = RM ? (pe > (END[0] + END[1]) / 2 ? 1 : 0) : io(ss(END[0], END[1], pe));
+    // (screens before the agents section's top: the section ends one screen after q = 1)
+    var pa = isLead ? -99 : (q - 1) * options.span() - 1;
+    var pk = RM ? (pa > (AGENTS.PACK[0] + AGENTS.PACK[1]) / 2 ? 1 : 0) : clamp((pa - AGENTS.PACK[0]) / (AGENTS.PACK[1] - AGENTS.PACK[0]));
+    var dive = RM ? (pa > AGENTS.RM_CUT ? 1 : 0) : clamp((pa - AGENTS.DIVE[0]) / (AGENTS.DIVE[1] - AGENTS.DIVE[0]));
+    var packOut = function (a, b) { return RM ? pk : io(ss(a, b, pk)); };
     if (active && !isLead && pl.step !== 'intro' && ending < 0.5) wantLive(pl.i); else dropLive();
     // the television plays the machine's film with no sound, once the machine is on the table
     var wantTv = active && !HELD && !phone && pl.step !== 'intro' && ending < 0.5;
@@ -497,6 +506,14 @@ export function mount(host, options) {
     var light = RM ? (p > RM_CUT ? 1 : 0) : ss(LIGHT[0], LIGHT[1], p);
     var unroll = RM ? (p > RM_CUT ? 1 : 0) : io(ss(UNROLL[0], UNROLL[1], p));
     var appear = RM ? (p > RM_CUT ? 1 : 0) : ss(APPEAR[0], APPEAR[1], p);
+    // put away, in the order it was set up backwards: the machine, the backdrop, the lamp and its rod, the table
+    if (pk > 0) {
+      appear *= 1 - (RM ? pk : ss(0, 0.25, pk));
+      unroll *= 1 - packOut(0.1, 0.55);
+      lower *= 1 - packOut(0.4, 0.85);
+      rise *= 1 - packOut(0.5, 1);
+      light *= 1 - packOut(0.3, 0.8);
+    }
     // the room: the camera's place over the crane (in the lead the toy box draws the room; this chapter only its night)
     css(roomEl, 'visibility', isLead ? 'hidden' : '');
     css(dim, 'opacity', isLead ? dimK.toFixed(3) : '0');
@@ -527,6 +544,8 @@ export function mount(host, options) {
     // the lamp: lit over a machine, dimmed between two (the next one is set down in the dark), out at the end
     var edge = pl.step === 'intro' ? 1 - 0.35 * pl.intro : Math.min(pl.i === 0 ? 1 : pl.t / 0.025, pl.i === MACHINES.length - 1 ? 1 : (1 - pl.t) / 0.025);
     var lit = smooth(edge) * light * (1 - 0.8 * ending);
+    if (pk > 0) css(cone, 'opacity', String(+(1 - packOut(0.3, 0.8)).toFixed(3) * (0.18 + 0.82 * lit)));
+    else css(cone, 'opacity', '');
     if (isLead) lit = light * 0.65 * (RM ? 1 : 1 - 0.8 * (ss(SETDOWN[0], SETDOWN[1], p) - ss(SETDOWN[2], SETDOWN[3], p)));
     var litS = lit.toFixed(3);
     if (was.lit !== litS) { was.lit = litS; host.style.setProperty('--lit', litS); }
@@ -542,11 +561,20 @@ export function mount(host, options) {
     var g = pl.step === 'intro' ? 0 : pl.t;
     var zoom = RM ? 1 : (pl.step === 'intro' ? 1.0 + 0.01 * (1 - pl.intro) : lerp(1.01, 1.04, smooth(g)));
     zoom = lerp(zoom, 1, ending);                     // (never below 1: the room's edges would show)
-    if (!isLead) {
+    if (dive > 0) {
+      // into the television (join.js tvDive: the agents chapter reckons the same move); once its glass is the frame and
+      // the agents chapter's picture is over it, this room is not drawn
+      var d = tvDive(TVP, W, H, dive);
+      css(world, 'transformOrigin', '0 0');
+      css(world, 'transform', 'translate3d(' + d.tx.toFixed(2) + 'px,' + d.ty.toFixed(2) + 'px,0) scale(' + d.Z.toFixed(5) + ')');
+      var ag = window.TEA && window.TEA.list.filter(function (c) { return c.id === 'agents'; })[0];
+      css(world, 'visibility', dive >= 1 && ag && ag.scene && ag.whole ? 'hidden' : '');
+    } else if (!isLead) {
+      css(world, 'transformOrigin', L.tcx + 'px ' + (L.tcy - L.bh * 0.35) + 'px'); css(world, 'visibility', '');
       css(world, 'transform', zoom !== 1 ? 'scale(' + zoom.toFixed(5) + ')' : '');
     } else {
       // (the crane: the room moves from the toy box's last view to the bench's; the bench, nearer, moves with it, more)
-      css(world, 'transform', '');
+      css(world, 'transform', ''); css(world, 'visibility', '');
     }
 
     // which card is up (a fresh load at the same place shows the same)

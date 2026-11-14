@@ -143,7 +143,13 @@
 /* The second half of 3D & animation. The section is the camera's road: the test's own scroll (2200vh: the four
    machines, each arriving, its parts, "break it", its film and its page), then the cards go and the lamp goes down. */
 .machines-walk { height: 2200vh; }
-.machines-foot { height: 150vh; }
+.machines-foot { height: 400vh; }  /* (END, then the bench is put away and the camera goes into the television: join.js AGENTS) */
+
+/* ---------------------------------------------------------------- working with AI agents (assets/js/chapters/agents.js) */
+/* The walk round the terminal (the test's 0..1, 11.5 screens from one screen before the section's top), then the way back
+   out of the television's glass into the room. */
+.agents-walk { height: 1050vh; }
+.agents-foot { height: 340vh; }
 
 /* ---------------------------------------------------------------- the closing beat (a draft: see chapters/closing.js) */
 /* its one small line stands under the name: the section's last screen is the page's last picture */

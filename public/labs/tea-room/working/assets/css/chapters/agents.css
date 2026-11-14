@@ -1,0 +1,126 @@
+/* WORKING WITH AI AGENTS (assets/js/chapters/agents.js draws it; this file comes with it, not with the page).
+   The test's own look (tests/agent-terminal/css/terminal.css), its at- rules as they are, in the page's own tokens;
+   its page rules (fonts, colours of the root, the host page's track) are the page's already and are left out. Then the
+   way in and out of the television (ag-). The cards are the site's own: a solid navy ground, a thin line, round
+   corners, a gold label, the picture flush to the edge. Never paper, never blur. */
+.chapter-stage[data-chapter='agents'] { background: none; }
+.chapter-stage[data-chapter='agents'] > div { position: absolute; left: 0; top: 0; }
+.chapter-top > .at-ui { pointer-events: none; }
+.at-host, .at-ui { --shadow: 0 18px 50px rgba(0, 0, 0, 0.55); --night-glass: #07080b; }
+html.at-hot, html.at-hot body { cursor: pointer; }
+
+/* the room the camera comes back out into (the machines chapter's room with its bench put away), the set on its floor */
+.ag-room { width: 100%; height: 100%; overflow: hidden; background: #1a1424; transform-origin: 0 0; will-change: transform; }
+.ag-room-img { position: absolute; left: 0; top: 0; width: 2752px; height: 1536px; max-width: none; transform-origin: 0 0; filter: brightness(0.72); user-select: none; }
+.ag-vig { position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(70% 85% at 50% 46%, rgba(10, 8, 22, 0) 25%, rgba(10, 8, 22, 0.5) 70%, rgba(8, 6, 18, 0.8) 100%); }
+/* the terminal: the test's whole picture, put into the glass */
+.ag-glass { width: 100%; height: 100%; overflow: hidden; }
+.ag-box { position: absolute; left: 0; top: 0; width: 100%; height: 100%; transform-origin: 0 0; }
+.ag-tvw { width: 100%; height: 100%; transform-origin: 0 0; will-change: transform; pointer-events: none; }
+.ag-tv { position: absolute; }
+.ag-tv-glow { position: absolute; left: -25%; right: -45%; top: -30%; bottom: -30%; mix-blend-mode: screen;
+  background: radial-gradient(closest-side, rgba(150, 175, 255, 0.24), rgba(150, 175, 255, 0) 100%); }
+/* the set's curved glass over the terminal: darker at its rim, a cold sheen from the top left */
+.ag-crt { position: absolute; border-radius: 13% / 15%; pointer-events: none;
+  background: radial-gradient(120% 120% at 50% 50%, rgba(0, 0, 0, 0) 55%, rgba(4, 6, 14, 0.55) 100%), linear-gradient(200deg, rgba(190, 210, 255, 0.16), rgba(190, 210, 255, 0) 42%);
+  box-shadow: inset 0 0 22px rgba(10, 14, 40, 0.7); }
+.ag-tv-body { position: absolute; inset: 0; width: 100%; height: 100%; filter: brightness(0.8); user-select: none; }
+/* the chapter's name is the page's (look B's flat word, as closing.js draws it): the test's own title is not shown */
+.ag-word, .ag-say { position: absolute; left: 0; top: 0; transform-origin: 0 0; }   /* (hidden by agents.js until they come on) */
+.at-lead { display: none !important; }
+
+/* ------------------------------------------------------------------ the test's world (terminal.css, its at- rules) */
+/* ------------------------------------------------------------------ the chapter itself */
+.at-host { overflow: hidden; background: var(--night-glass); color: var(--home-body); font-family: var(--font-body); }
+.at-canvas { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; }
+.at-grain { position: absolute; inset: 0; pointer-events: none; opacity: 0.07; background-size: 160px 160px; }
+.at-holder { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: hidden; opacity: 0; pointer-events: none; }
+.at-ui { position: absolute; inset: 0; pointer-events: none; color: var(--home-body); font-family: var(--font-body); }
+.at-ui > * { position: absolute; left: 0; top: 0; will-change: transform, opacity; }
+
+/* the chapter's name */
+.at-lead { left: clamp(20px, 6vw, 96px); top: clamp(76px, 13vh, 130px); max-width: min(600px, calc(100% - 40px)); }
+.at-kicker { font: 500 11px/1.4 var(--font-mono); letter-spacing: 0.2em; text-transform: uppercase; color: var(--pc-head); }
+.at-word { margin: 10px 0 14px; font: 700 clamp(44px, 6.4vw, 96px)/0.98 var(--font-display); letter-spacing: -0.02em; color: var(--cream); text-shadow: 0 2px 30px rgba(0, 0, 0, 0.6); }
+.at-word span { display: block; }
+.at-say { max-width: 27em; font: 400 clamp(15px, 1.35vw, 19px)/1.5 var(--font-body); color: var(--home-body); text-wrap: pretty; text-shadow: 0 1px 12px rgba(0, 0, 0, 0.9); }
+
+/* the label under a scene */
+.at-label { width: max-content; max-width: min(430px, calc(100vw - 36px)); text-align: center; text-shadow: 0 1px 14px rgba(0, 0, 0, 0.95), 0 0 3px rgba(0, 0, 0, 0.9); }
+.at-label b { display: block; font: 700 clamp(19px, 1.9vw, 27px)/1.15 var(--font-display); letter-spacing: -0.01em; color: var(--pc-head); }
+.at-label b::before { content: ''; display: block; width: 26px; height: 2px; margin: 0 auto 9px; border-radius: 2px; background: var(--tea-lamp); box-shadow: var(--tea-glow); }
+.at-label span { display: block; margin-top: 5px; font: 400 clamp(13.5px, 1.1vw, 15.5px)/1.4 var(--font-body); color: var(--home-body); text-wrap: balance; }
+
+/* a post card: the picture above, the words under it. It unfolds in two folds (--e1 the words, --e2 the picture). */
+.at-post { --e1: 1; --e2: 1; display: block; width: 318px; color: inherit; text-decoration: none; perspective: 900px; transform-origin: 50% 100%; }
+.at-post-fold { display: block; transform-style: preserve-3d; transform-origin: 50% 100%; transform: rotateX(calc((1 - var(--e1)) * 86deg)); }
+.at-post-pic, .at-post-cap { display: block; position: relative; background: var(--tea-card); box-shadow: inset 0 0 0 1px var(--pc-line2), var(--shadow); }
+.at-post-pic { aspect-ratio: 16 / 9; overflow: hidden; border-radius: 14px 14px 0 0; transform-origin: 50% 100%; transform: rotateX(calc((1 - var(--e2)) * -179deg)); z-index: 1; }
+.at-post-pic img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.at-post-pic::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px var(--pc-line2); }
+.at-post-pic[data-back='1'] img { visibility: hidden; }
+/* the cover of the card while it is still folded: its number */
+.at-post-pic[data-back='1']::before { content: attr(data-id); position: absolute; inset: 0; display: grid; place-items: center; font: 500 15px var(--font-mono); letter-spacing: 0.16em; color: var(--pc-head); transform: rotateX(180deg); }
+.at-post-cap { padding: 13px 18px 15px; border-radius: 0 0 14px 14px; }
+.at-post-cap::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; border-radius: 0 0 0 14px; background: var(--tea-lamp); box-shadow: var(--tea-glow); transform: scaleY(0); transform-origin: top; transition: transform 160ms ease; }
+.at-post-label { display: block; font: 600 10.5px/1.45 var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--pc-head); }
+.at-post-label i { margin-right: 9px; font: 500 10.5px var(--font-mono); font-style: normal; letter-spacing: 0.04em; color: var(--pc-soft); }
+.at-post-title { display: block; margin: 5px 0 7px; font: 700 18.5px/1.2 var(--font-display); letter-spacing: -0.01em; color: var(--pc-strong); text-wrap: balance; transition: color 160ms ease; }
+.at-post-line { display: block; font: 400 13.5px/1.42 var(--font-body); color: var(--home-body); text-wrap: pretty; }
+.at-post-go { display: block; margin-top: 10px; padding-top: 9px; border-top: 1px solid var(--pc-line2); font: 600 12.5px/1.3 var(--font-body); color: var(--pc-accent); }
+.at-post-go::after { content: '\00a0\2192'; }
+@media (hover: hover) {
+  .at-post:hover .at-post-title { color: var(--pc-accent); }
+  .at-post:hover .at-post-cap::after { transform: scaleY(1); }
+}
+.at-post:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 4px; border-radius: 14px; }
+
+/* the names under the ten screens */
+.at-tag { appearance: none; margin: 0; padding: 3px 0 4px; border: 0; background: none; color: var(--home-body); text-align: left; cursor: pointer; pointer-events: auto; width: max-content; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.95), 0 0 2px #000; }
+.at-tag b { display: block; font: 500 11px/1.25 var(--font-mono); letter-spacing: 0.02em; color: var(--pc-strong); }
+.at-tag span { display: block; font: 400 11.5px/1.25 var(--font-body); color: var(--home-quiet); }
+.at-tag[aria-pressed='true'] b { color: var(--pc-head); }
+.at-tag[aria-pressed='true'] span { color: var(--pc-strong); }
+
+/* the key to the paper animals, and the sound switch: two small cards */
+.at-key, .at-sound { border-radius: 16px; background: var(--tea-card); box-shadow: inset 0 0 0 1px var(--pc-line2), var(--shadow); }
+.at-key { padding: 11px 16px 12px; }
+.at-key p { position: relative; padding-left: 20px; font: 400 12.5px/1.6 var(--font-body); color: var(--home-body); white-space: nowrap; }
+.at-key p::before { content: ''; position: absolute; left: 0; top: 0.42em; width: 11px; height: 11px; border-radius: 3px; }
+.at-key .cream::before { background: #efe6d4; }
+.at-key .blue::before { background: #5a70c0; }
+.at-key .folds::before { width: 0; height: 0; border-radius: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 11px solid var(--pc-head); }
+.at-sound { display: flex; align-items: center; gap: 14px; padding: 11px 11px 11px 17px; pointer-events: auto; }
+.at-sound-say { width: 17em; font: 400 13px/1.36 var(--font-body); color: var(--home-body); text-wrap: pretty; }
+.at-switch { display: flex; flex: none; padding: 3px; border-radius: 999px; background: var(--pc-tile); box-shadow: inset 0 0 0 1px var(--pc-line2); }
+.at-switch button { appearance: none; border: 0; margin: 0; padding: 9px 14px; border-radius: 999px; background: transparent; color: var(--home-body); font: 600 13.5px/1.2 var(--font-body); cursor: pointer; white-space: nowrap; transition: background 160ms ease, color 160ms ease; }
+.at-switch button:hover { color: var(--pc-strong); }
+.at-switch button[aria-pressed='true'] { background: var(--tea-lamp); color: #2a2014; box-shadow: 0 0 14px rgba(255, 216, 146, 0.35); }
+.at-now { display: none; }
+
+/* a tall window (a phone held upright): its own layout. The picture has the upper part, the words the foot. */
+.at-tall .at-lead { left: 18px; top: auto; bottom: 86px; }
+.at-tall .at-word { font-size: clamp(40px, 12.4vw, 60px); }
+.at-tall .at-say { font-size: 15px; }
+.at-tall .at-label { max-width: calc(100vw - 32px); }
+.at-tall .at-label b { font-size: 21px; }
+.at-tall .at-post { width: min(372px, calc(100vw - 24px)); perspective: 800px; }
+.at-tall .at-post-fold { display: grid; grid-template-columns: 37% 1fr; align-items: stretch; }
+.at-tall .at-post-pic[data-back='1']::before { transform: rotateY(180deg); font-size: 12.5px; }
+.at-tall .at-post-pic { aspect-ratio: auto; border-radius: 14px 0 0 14px; transform-origin: 100% 50%; transform: rotateY(calc((1 - var(--e2)) * 179deg)); }
+.at-tall .at-post-cap { padding: 10px 13px 11px; border-radius: 0 14px 14px 0; }
+.at-tall .at-post-cap::after { display: none; }
+.at-tall .at-post-title { font-size: 15.5px; margin: 3px 0 4px; }
+.at-tall .at-post-line { font-size: 12.5px; line-height: 1.36; }
+.at-tall .at-post-go { margin-top: 6px; padding-top: 6px; font-size: 12px; }
+.at-tall .at-tag b { font-size: 9.5px; }
+.at-tall .at-tag span { display: none; }
+.at-tall .at-label-wall span { display: none; }
+.at-tall .at-key { padding: 8px 12px 9px; border-radius: 13px; }
+.at-tall .at-key p { font-size: 11.5px; line-height: 1.5; white-space: normal; }
+.at-tall .at-key .folds { max-width: 250px; }
+.at-tall .at-sound { width: calc(100vw - 28px); justify-content: space-between; gap: 10px; padding: 9px 9px 9px 14px; }
+.at-tall .at-sound-say { width: auto; font-size: 12.5px; }
+.at-tall .at-switch button { padding: 9px 11px; font-size: 13px; }
+
