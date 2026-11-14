@@ -58,3 +58,38 @@ export function arenaAt(k, reduced) { return reduced ? (k >= 0.5 ? 1 : 0) : aren
 
 // ready: the games chapter has its arena (or its still) in, and will draw over the film's frames
 export var JOIN = { fresh: false, quad: null, mid: null, h: 0, k: 0, arena: 0, ready: false };
+
+/* THE JOIN BETWEEN THE GAMES CHAPTER AND THE ART CHAPTER: the night garden where games ends (its last view, KE) is
+   where the art chapter's camera starts its turn from the cloth to the trees. Both reckon that view from the layout
+   alone, here, so neither needs the other to have drawn a frame (on a fresh load in the art chapter, games draws
+   nothing). endPlate returns the plate's scale s and where its corner (0, 0) stands on the screen, (x, y). */
+export var POLE_L = 1390, POLE_R = 2250, PIC_R = 2170, EDGE = 600;
+export var HORIZON = 812;                                        // the lawn's far edge on the plate (plate pixels)
+// where a chapter's name, set at look B's size left of the rail, ends on a wide screen (lines: the name's lines)
+export function nameRightOf(lines, W, railW) {
+  var px = Math.min(190, Math.max(52, W * 0.115)), left = railW + Math.max(16, Math.min(46, W * 0.032)) * 2;
+  var c = document.createElement('canvas').getContext('2d'), w = 0;
+  c.font = '700 ' + px + 'px "Zen Maru Gothic", sans-serif';
+  lines.forEach(function (l) { w = Math.max(w, c.measureText(l).width); });
+  return left + w;
+}
+export function endPlate(W, H, nameR) {
+  var cl = function (x, a, b) { return x < a ? a : x > b ? b : x; };
+  if (W / H >= 0.9) {
+    var right = W - Math.max(8, W * 0.006), left = Math.max(W * 0.5, nameR + Math.max(24, W * 0.02));
+    var s3 = Math.max(H / PH, Math.min((right - left) / (POLE_R - POLE_L), (W - 6) / 2172));
+    var tx = Math.max((left + right) / 2 - (POLE_L + POLE_R) / 2 * s3, left - POLE_L * s3);
+    tx = Math.max(W - PW * s3, Math.min(tx, right - PIC_R * s3, EDGE * s3 * 0.9));
+    var ty = cl(0.5 * H - FOCUS[1] * s3, H - PH * s3, 0);
+    return { s: s3, x: tx, y: ty };
+  }
+  // (a tall screen: the name is two lines over the cloth, the cloth under it)
+  var wordPx = cl(W * 0.15, 52, 190), clothTop = H * 0.11 + wordPx * 0.9 * 2 + 150, clothBot = H * 0.7;
+  var st = cl((clothBot - clothTop) / 546, 0.5 * W / 752, 0.95 * W / 752);
+  return { s: st, x: 0.52 * W - FOCUS[0] * st, y: (clothTop + clothBot) / 2 - FOCUS[1] * st };
+}
+
+/* THE JOIN BETWEEN THE ART CHAPTER AND THE 3D CHAPTER: the art chapter ends by tilting down to look B's garden at the
+   3D chapter's first step (look B's hero progress 0; a tall screen H0_TALL), standing TILT_LOW of the screen's height
+   below its place; the 3D chapter draws that same picture over it and lifts it into place (toybox.js TILT). */
+export var TILT_LOW = 0.3, H0_TALL = 0.2;

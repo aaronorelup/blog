@@ -12,7 +12,7 @@
    Everything drawn is a function of q (the chapter's progress, which is the camera) and the time (the rain, the
    fires, the fighters' timetable). With motion turned off there is no 3D at all: a still of the arena, changed by
    cuts. */
-import { PW, PH, FOCUS, GLOW, FILMQ, FILM_MID, FILM_HGT, JOIN, diveEnd, arenaAt, squared } from './join.js';
+import { PW, PH, FOCUS, GLOW, FILMQ, FILM_MID, FILM_HGT, JOIN, diveEnd, arenaAt, squared, endPlate, nameRightOf } from './join.js';
 
 var IMG = new URL('../../img/', import.meta.url).href;
 var clamp = function (x, a, b) { a = a === undefined ? 0 : a; b = b === undefined ? 1 : b; return x < a ? a : x > b ? b : x; };
@@ -25,7 +25,6 @@ var SHIFT = 0.24;                                  // how far the fighters step 
 var A_LEAD = 0.26;                                // how far into the arena the camera has come when the dive ends
 // the arena's light on the lawn: the storm's grey, a little blue (film.js lights the lawn the same while it dives)
 var LIGHT = [154, 154, 184];
-var POLE_L = 1390, POLE_R = 2250, PIC_R = 2170;    // the cloth's two bamboo poles, and the picture's right edge (plate pixels)
 var HOLD = 1.0;                                    // the garden holds this many screens at the end (chapters.css: .games-foot), under
                                                   // the next chapter's name; the projector leaves for the left wing in it
 var EDGE = 600;                                   // how far left of the plate the plain sky and lawn reach (plate pixels; on under
@@ -142,25 +141,13 @@ export function mount(host, options) {
     KD = camOf(de.s, W / 2, H / 2, FILM_MID);
     // the end: the night garden, the cloth to one side, room for the next chapter's name (closing.js) where it comes
     var rail = narrow ? 0 : (parseFloat(getComputedStyle(root).getPropertyValue('--rail-w')) || 172);
+    // (the end's view is reckoned in join.js, endPlate: the art chapter's turn starts from exactly this picture)
+    var ep = endPlate(W, H, nameRight());
+    KE = camOf(ep.s, ep.x + FOCUS[0] * ep.s, ep.y + FOCUS[1] * ep.s);
     if (!tall) {
-      // the cloth, its two poles too, stands in the room right of the next chapter's name (its widest line, measured
-      // in the name's own type), with a clear gap between the name and the left pole
-      // (the plate is at least as tall as the screen; left of it the plate's own first column is drawn out, .gm-edge,
-      // so the cloth may stand further right than the plate's left edge allows)
-      // (when there is not room for all of it, the right pole may pass the screen's edge, never the picture)
-      var right = W - Math.max(8, W * 0.006), left = Math.max(W * 0.5, nameRight() + Math.max(24, W * 0.02));
-      var s3 = Math.max(H / PH, Math.min((right - left) / (POLE_R - POLE_L), (W - 6) / 2172));
-      var tx = Math.max((left + right) / 2 - (POLE_L + POLE_R) / 2 * s3, left - POLE_L * s3);
-      tx = Math.max(W - PW * s3, Math.min(tx, right - PIC_R * s3, EDGE * s3 * 0.9));
-      var ty = clamp(0.5 * H - FOCUS[1] * s3, H - PH * s3, 0);
-      KE = camOf(s3, tx + FOCUS[0] * s3, ty + FOCUS[1] * s3);
       var pw = clamp(H * 0.3, 150, 280);
       PJE = { x: Math.max(rail + 40 + pw * 0.5, W * 0.43), y: H * 1.08, w: pw };
     } else {
-      // (the name is two lines here: "AI art / & images", its line and the note under it)
-      var wordPx = clamp(W * 0.15, 52, 190), clothTop = H * 0.11 + wordPx * 0.9 * 2 + 150, clothBot = H * 0.7;
-      var st = clamp((clothBot - clothTop) / 546, 0.5 * W / 752, 0.95 * W / 752);
-      KE = camOf(st, 0.52 * W, (clothTop + clothBot) / 2);
       var pw3 = clamp(W * 0.34, 120, 210);
       PJE = { x: Math.max(W * 0.26, pw3 * 0.62), y: H * 0.99, w: pw3 };
     }
@@ -182,12 +169,7 @@ export function mount(host, options) {
   function nameRight() {
     var el = section.nextElementSibling;
     while (el && !(el.dataset && el.dataset.word)) el = el.nextElementSibling;
-    var lines = el ? el.dataset.word.split('|') : [''];
-    var px = clamp(W * 0.115, 52, 190), left = (parseFloat(getComputedStyle(root).getPropertyValue('--rail-w')) || 172) + Math.max(16, Math.min(46, W * 0.032)) * 2;
-    var c = document.createElement('canvas').getContext('2d'), w = 0;
-    c.font = '700 ' + px + 'px "Zen Maru Gothic", sans-serif';
-    lines.forEach(function (l) { w = Math.max(w, c.measureText(l).width); });
-    return left + w;
+    return nameRightOf(el ? el.dataset.word.split('|') : [''], W, parseFloat(getComputedStyle(root).getPropertyValue('--rail-w')) || 172);
   }
   var cache = new Map();
   function setT(el, tr) { if (cache.get(el) !== tr) { el.style.transform = tr; cache.set(el, tr); } }
@@ -314,8 +296,13 @@ export function mount(host, options) {
         clip = oc2.clip; quad = oc2.quad;
       }
     }
+    // (at the very end the show is over: the projector has gone and the picture leaves the cloth, so the art chapter
+    // turns away from a bare cloth, join.js)
+    var bare = !garden_ ? 0 : RM ? (p > span - 0.4 ? 1 : 0) : io(ss(span - 0.65, span - 0.2, p));
+    if (bare > 0) { setO(arenaBox, 1 - bare); setV(arenaBox, bare < 0.999); }
     // the arena: its picture for this frame
-    if (arena) flash = arena.frame(aq, tm, 0, 0, null, view) || 0;
+    if (bare >= 0.999) flash = 0;
+    else if (arena) flash = arena.frame(aq, tm, 0, 0, null, view) || 0;
     else if (failed) placeStill(view, clip, !lead && shift >= 0.5 && !garden_);
     owns = lead ? clip === 'none' && JOIN.arena >= 1 : true;
     setClip(clip);
@@ -342,7 +329,7 @@ export function mount(host, options) {
         reelA.style.transform = 'scaleX(0.8919) rotate(' + (spin % 6.2832).toFixed(3) + 'rad) scaleX(1.1212)';
         reelB.style.transform = 'scaleX(0.8077) rotate(' + ((spin * 0.86 + 0.6) % 6.2832).toFixed(3) + 'rad) scaleX(1.2381)';
       }
-      drawBeam([pj.x + pj.w * LENS[0], pj.y + pj.h * LENS[1]], quad, ss(0.35, 0.85, e) * (1 - ss(0, 0.6, leave)), Math.min(flash, 1)); beamOn = true;
+      drawBeam([pj.x + pj.w * LENS[0], pj.y + pj.h * LENS[1]], quad, ss(0.35, 0.85, e) * (1 - ss(0, 0.6, leave)) * (1 - bare), Math.min(flash, 1)); beamOn = true;
     } else if (beamOn) { lx.setTransform(1, 0, 0, 1, 0, 0); lx.clearRect(0, 0, lightCv.width, lightCv.height); beamOn = false; }
 
     // whole: the arena (or its still) is in; on the way out the garden's plate and light too

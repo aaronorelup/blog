@@ -1,8 +1,9 @@
 /* THE 3D & ANIMATION CHAPTER: the toy box (the approved test tests/toy-box/, its play in toybox/play.js).
-   How it joins: the games chapter ends in the night garden by the cloth, and holds there. Over it (this chapter's
-   lead, chapters.js) the chapter's name comes on from the left wing, as look B's names do, the projector leaves for
-   the left wing (games.js), and the tea house at night slides across from the right with one straight edge, as look
-   B's night comes across its room. Then look B's own opening move, again: the camera walks up the stepping stones and
+   How it joins: the art chapter ends by tilting down from its sky of pictures to look B's garden, the tea house on its
+   lawn, standing a little low in the frame (art.js: DOWN, TILT_LOW). Over that held picture (this chapter's lead,
+   chapters.js) the chapter's name comes on from the left wing, as look B's names do, and leaves again; this chapter's
+   own garden, the same flats at the same place, takes over unseen, and the camera lifts the rest of the way to look
+   B's first view of the lawn (TILT). Then look B's own opening move, again: the camera walks up the stepping stones and
    in through the doorway (toybox-garden.js: look B's garden, number for number), and the room behind the doorway is
    the toy box's room, the box on the floor. Through the doorway the 3D camera is look B's room camera (drawRoom's
    garden branch); inside, it eases into the test's own camera: on to the box, which shakes, bursts, and the toys
@@ -11,6 +12,7 @@
    and the physics that follows (it settles back to the same huddle). With motion turned off: cuts between stills
    (the garden from the lawn, the room with the box open and the toys in their huddle). */
 import { makeGarden, roomS0, M_IN, rLook } from './toybox-garden.js';
+import { TILT_LOW, H0_TALL } from './join.js';
 
 var IMG = new URL('../../img/', import.meta.url).href;
 var clamp = function (x, a, b) { a = a === undefined ? 0 : a; b = b === undefined ? 1 : b; return x < a ? a : x > b ? b : x; };
@@ -23,9 +25,11 @@ var K = 1.4;                                       // (look B lays its type out 
 // (the name comes on over the games chapter's garden, and leaves for the left wing before the tea house's edge reaches
 // it: over the tea house it would stand across the roof and the windows)
 var NAME_IN = [-1.95, -1.35], SAY_IN = [-1.85, -1.25], NAME_LEAD_OUT = [-0.95, -0.55];
-var SLIDE = [-0.85, -0.05];                        // the tea house slides across (games holds still under it)
+// (the art chapter's last picture is look B's garden TILT_LOW of the screen low: from SHEET on this chapter draws the
+// same picture over it, and over TILT lifts it into look B's own first view of the lawn)
+var SHEET = -1.0, TILT = [-0.7, -0.05];
 var WALK = [0.25, 2.85];
-var H0_TALL = 0.2;                                 // (where the walk starts on a tall screen: look B's hero progress)                           // look B's walk from the lawn through the doorway
+// (H0_TALL, art.js: where the walk starts on a tall screen, look B's hero progress)                           // look B's walk from the lawn through the doorway
 // (the name stands again on the room's wall once the camera is through the doorway, as look B's "Start here" does,
 // and leaves for the left wing as the camera goes on to the box)
 var NAME_ROOM = [2.45, 2.85], NAME_OUT = [3.05, 3.6];
@@ -123,12 +127,14 @@ export function mount(host, options) {
     }
     return key;
   }
-  var slideWas = '';
-  function setSlide(x) {                        // the tea house's sheet: x pixels in from the right edge's left (0: whole)
-    var tr = 'translate3d(' + x + 'px,0,0)';
-    if (tr === slideWas) return; slideWas = tr;
+  var tiltWas = '';
+  function setTilt(y) {                         // the tea house's sheet: y pixels below its place (0: look B's own view)
+    var tr = 'translate3d(0,' + y.toFixed(1) + 'px,0)';
+    if (tr === tiltWas) return; tiltWas = tr;
     skyEl.style.transform = tr; gardenEl.style.transform = tr;
-    skyEl.classList.toggle('moving', x > 0);
+    // (the sky's top edge fades into the art chapter's sky behind it, as art.js has it: a fade 1.5 times the lift)
+    var m = y > 0.5 ? 'linear-gradient(to bottom, transparent 0, #000 ' + Math.round(1.5 * y) + 'px)' : '';
+    skyEl.style.webkitMaskImage = m; skyEl.style.maskImage = m;
   }
   var vis = {};
   function setV(el, key, yes) { if (vis[key] !== yes) { el.style.visibility = yes ? '' : 'hidden'; vis[key] = yes; } }
@@ -186,7 +192,8 @@ export function mount(host, options) {
     sayWas = put(say, sx, sy, kSay, kSayOut, sayWas);
 
     // the tea house slides across, then the walk
-    var sl = RM ? (p > -0.45 ? 1 : 0) : io(ss(SLIDE[0], SLIDE[1], p));
+    var sl = p >= SHEET ? 1 : 0;
+    var lift = RM ? (p > (TILT[0] + TILT[1]) / 2 ? 1 : 0) : io(ss(TILT[0], TILT[1], p));
     // (a tall screen starts the walk a few of look B's steps in: at look B's very first step its lawn ends a third of
     // the way up a phone's screen, over look B's opening card, and here there is no card to stand under it)
     var h0 = portrait ? H0_TALL : 0;
@@ -195,7 +202,7 @@ export function mount(host, options) {
     setV(skyEl, 'sky', sheetOn); setV(gardenEl, 'garden', sheetOn);
     var gcam = null;
     if (sheetOn) {
-      setSlide(sl >= 0.9995 ? 0 : Math.round((1 - sl) * (W + 40)));
+      setTilt(Math.round(H * TILT_LOW * (1 - lift) * 10) / 10);
       gcam = garden.draw(hp, t);
     }
     // the room: seen through the doorway once the walk has come close (look B's own rule), then the picture
@@ -239,7 +246,7 @@ export function mount(host, options) {
       var k = W / rect.w, tr = 'translate3d(' + (-rect.x * k).toFixed(2) + 'px,' + (-rect.y * k).toFixed(2) + 'px,0) scale(' + k.toFixed(5) + ')';
       if (tr !== rectWas) { flatRoom.style.transform = tr; rectWas = tr; }
     }
-    owns = !lead || sl >= 0.9995;
+    owns = !lead || p >= TILT[0];
     // whole: the garden's pictures are in (the lead and the walk); in the room, its painting (three.js's or the flat)
     if (roomOn) return (play && play.ready) || (useFlat && flatIn);
     return true;
