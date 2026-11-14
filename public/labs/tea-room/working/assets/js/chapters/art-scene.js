@@ -185,7 +185,7 @@ export function mount(host, options = {}) {
     Emax = tall ? 2.55 : 1.72; Tmax = (Emax + 0.12) * H - cy;
     moonE = tall ? 2.18 : 1.46; moonX = tall ? 0.68 : 0.64; moonR = tall ? 0.17 * W : 0.068 * W;
     houseW = (tall ? 4.2 : 2.2) * W * 13 / f;
-    panDist = (tall ? 1.5 : 1.12) * W;
+    panDist = (tall ? 1.5 : 1.12) * W * (sp ? 1.35 : 1);     // (from the cloth: far enough that no tree stands in the first view)
     plateS = tall ? 0.9 * W / 752 : Math.max(W / PLATE.w, H / PLATE.h) * 1.04;
     world.classList.toggle('gg-tall', tall);
     plateX = tall ? W / 2 - PLATE.cloth * plateS : clamp(0.94 * W - 2262 * plateS, W - PLATE.w * plateS, 0);
@@ -308,7 +308,10 @@ export function mount(host, options = {}) {
 
     const k = kOf(q), cam = camAt(k);
     const camX = cam.x + px * 0.12, camY = cam.y - py * 0.05, camZ = cam.z;
-    const turn = io(q / QA), pan = -(1 - turn) * panDist, grove = ss(0.16, 0.7, turn);
+    const turn = io(q / QA), pan = -(1 - turn) * panDist;
+    // (the grove does not fade up over the cloth: it is solid, and comes in from the left as the camera turns, while the
+    // cloth's garden goes out on the right, solid too, as one painted world seen turning)
+    const grove = sp ? ss(0.0, 0.05, turn) : ss(0.16, 0.7, turn);
     // (the turn starts from the chapter before's view of the garden: its horizon eases to the avenue's own)
     cy = sp ? lerp(plateY + PLATE.horizon * plateS, cy0, turn) : cy0;
     const tq0 = QB - 0.02, T = Tmax * io((q - tq0) / (0.985 - tq0)) - lift;
@@ -325,8 +328,8 @@ export function mount(host, options = {}) {
     cloudsB.style.transform = 'translate3d(' + (cx + cw * 0.6 + pan * 0.55 - px * 12 - Math.sin(time * 0.04) * 18).toFixed(1) + 'px,' + (hY - (tall ? 1.72 : 1.22) * H - ch / 2).toFixed(1) + 'px,0) scale(' + (-cw * 1.15 / 2816).toFixed(4) + ',' + (cw * 1.15 / 2816).toFixed(4) + ')';
 
     // --- the cinema's garden, turning out of sight
-    if (turn < 0.8) {
-      const po = (1 - ss(0.38, 0.8, turn)).toFixed(3), x0 = plateX + turn * panDist - px * 5, y0 = cy - PLATE.horizon * plateS;
+    if (turn < (sp ? 0.995 : 0.8)) {
+      const po = (sp ? 1 - ss(0.72, 0.98, turn) : 1 - ss(0.38, 0.8, turn)).toFixed(3), x0 = plateX + turn * panDist - px * 5, y0 = cy - PLATE.horizon * plateS;
       plate.style.visibility = ''; plate.style.opacity = po;
       plate.style.transform = 'translate3d(' + x0.toFixed(1) + 'px,' + y0.toFixed(1) + 'px,0) scale(' + plateS.toFixed(5) + ')';
       glowC.style.visibility = ''; glowC.style.opacity = (0.5 * po).toFixed(3);
@@ -400,7 +403,9 @@ export function mount(host, options = {}) {
       const sx = cx + pan + (t.X - camX) * sc, sy = hY + camY * sc;
       const left = sx - (t.flip ? 1 - TREE.ax : TREE.ax) * wpx, top = sy - TREE.ay * hpx;
       // a tree the camera is about to pass melts away before it can fill the frame
-      const op = Math.round((1 - ss(FAR - 10, FAR, d)) * ss(1.4, 3, d) * grove * 50) / 50;
+      // (a tall screen looking up: the nearest trunks would fill half the frame as they pass below it; they go first)
+      const up = tall && d < 7 ? 1 - ss(0.1, 0.28, T / Tmax) : 1;
+      const op = Math.round((1 - ss(FAR - 10, FAR, d)) * ss(1.4, 3, d) * grove * up * 50) / 50;
       if (op <= 0 || left > W + 10 || left + wpx < -10 || top > H + 10) { hide(t); continue; }
       show(t); flats++;
       const s = hpx / (TREE.h / 2);
