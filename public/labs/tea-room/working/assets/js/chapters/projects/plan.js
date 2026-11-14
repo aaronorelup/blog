@@ -14,7 +14,7 @@ const SC = () => (window.TEA && window.TEA.s ? window.TEA.s() : 1);
 export const DZ = 7, GAP = 4.5, EYE = 1.6, LH = 1.3;         // LH: the lantern's height
 export const K0 = -1.35, KEND_PAD = 1.75;                   // the walk in before the first lantern, and on to the house after the last
 export const TREE = { w: 1180, h: 1271, ax: 0.30, ay: 0.967 };
-export const HOUSE = { w: 2816, h: 1297, lawn: 462, door: 1408, hw: 17 };
+export const HOUSE = { w: 2816, h: 1297, lawn: 462, door: 1408, hw: 17, hole: [1358.75, 387.5, 1470, 505.25] };   // (hole: the doorway in the plate, as look B's garden-doorhi.webp has it open: join.js ENDING)
 export const BUSH = { w: 550, h: 250 };
 export const FAR = 34;
 

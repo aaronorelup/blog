@@ -48,6 +48,32 @@ function placeOf(w, h, W, H, k, fx, fy, sx, sy, cover) {
   return { x: tx, y: ty, s: sc };
 }
 
+// The back room alone, as the walk's door shows it (join.js ENDING): the same room, its drawn props and its foot, styled
+// inline (this chapter's style sheet is not in yet while the walk's camera comes up to the door). put(pl, tall) places
+// it as roomPlace() gives it; ready() once its plate is in.
+export function roomScene(parent) {
+  var s = el('div', '', parent);
+  s.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;overflow:hidden;background:#1d1520';
+  var p = el('div', '', s);
+  p.style.cssText = 'position:absolute;left:0;top:0;width:2752px;height:1536px;transform-origin:0 0';
+  var i = el('img', '', p); i.alt = ''; i.decoding = 'async'; i.draggable = false; i.src = IMG + 'room.webp';
+  i.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;display:block;max-width:none';
+  var g = el('div', '', p); g.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%'; g.innerHTML = svg(2752, 1536, roomProps());
+  var foot = el('div', '', p);
+  foot.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;background:linear-gradient(to bottom, rgba(29, 21, 32, 0) 84%, #1d1520 99%)';
+  var tr = '', ft = '';
+  return {
+    el: s,
+    put: function (pl, tall) {
+      var t = 'translate3d(' + pl.x.toFixed(2) + 'px,' + pl.y.toFixed(2) + 'px,0) scale(' + pl.s.toFixed(5) + ')';
+      if (t !== tr) { p.style.transform = t; tr = t; }
+      var f = tall ? 'block' : 'none';
+      if (f !== ft) { foot.style.display = f; ft = f; }
+    },
+    ready: function () { return i.complete; }
+  };
+}
+
 export function mount(host, options) {
   options = options || {};
   var RM = !!options.reduced;

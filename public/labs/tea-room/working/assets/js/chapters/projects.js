@@ -6,14 +6,17 @@
    This chapter's lead: its name in the giant type, in from the left wing over the taken-apart house (where the
    closing beat named it), out as the house closes; then, while the site chapter's picture holds still for its last
    screen, the painted walk dissolves in over it. From the section's top the walk itself: q 0..1 over .projects-walk.
-   In .projects-foot the end card goes up and away before the closing beat names the next chapter over the house.
+   In .projects-foot the end card goes up and away, and the camera walks on into the tea house's doorway, look B's way
+   (join.js ENDING, ending/door.js), until the back room seen through it is the ending's first picture.
 
    Everything on the screen is a function of the scroll and the layout; the time moves only the fireflies, the clouds
    and the flames. Motion off: the walk stands still at each lantern in turn (the scroll picks the nearest stop), and
    the join and the dissolve are cuts. */
 import { mount as mountScene } from './projects/scene.js';
 import { PROJECTS, SHELVES, TOTAL } from './projects/data.js';
-import { PROJ, projectsInset } from './join.js';
+import { PROJ, ENDING, projectsInset } from './join.js';
+import { doorStack } from './ending/door.js';
+import { roomPlace } from './ending/scene.js';
 
 var clamp = function (v, a, b) { a = a === undefined ? 0 : a; b = b === undefined ? 1 : b; return v < a ? a : v > b ? b : v; };
 var ss = function (a, b, x) { var t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
@@ -38,6 +41,7 @@ export function mount(host, options) {
       return { left: projectsInset(w, h, rb), top: w <= 820 && rb ? rb.bottom : 0 };
     }
   });
+  var door = doorStack(scene.world), vig = scene.world.querySelector('.pw-vignette'), air = scene.world.querySelector('.pw-air');
   var was = {};
   function css(e, k, val) { var key = e.className + k; if (was[key] !== val) { was[key] = val; e.style[k] = val; } }
 
@@ -105,9 +109,27 @@ export function mount(host, options) {
     // the cards: away, up, in the foot (before the closing beat's name)
     var cards = p <= 0 ? 0 : 1 - ss(walkS + 0.25, walkS + 0.75, p);
     // (the far garden's lean with the mouse comes in only once the walk has begun: the dissolve is between two stills)
-    var lean = HELD || RM ? null : { x: (ptr && isFinite(ptr.x) ? ptr.x : 0) * ss(0.05, 0.6, p), y: 0 };
-    scene.frame(qw, HELD ? T_HELD : t, lean, cards);
-    return scene.ready();
+    var lean = HELD || RM ? null : { x: (ptr && isFinite(ptr.x) ? ptr.x : 0) * ss(0.05, 0.6, p) * (1 - ss(walkS + ENDING.CALM[0], walkS + ENDING.CALM[1], p)), y: 0 };
+    // the door (join.js ENDING): u 0..1 over the foot's last screens, at look B's pace
+    var u = RM ? (p >= walkS + (ENDING.DOOR[0] + ENDING.DOOR[1]) / 2 ? 1 : 0) : clamp((p - walkS - ENDING.DOOR[0]) / (ENDING.DOOR[1] - ENDING.DOOR[0]));
+    var tt = HELD ? T_HELD : t;
+    if (u <= 0) {
+      scene.frame(qw, tt, lean, cards);
+      door.hide(); css(vig, 'opacity', ''); css(air, 'opacity', '');
+      return scene.ready();
+    }
+    var e = u + (u * u * (3 - 2 * u) - u) * ENDING.EASE, tall = W / H < 0.9;
+    var cend = [W * ENDING.CEND[0], H * (tall ? ENDING.CEND[2] : ENDING.CEND[1])];
+    var st = scene.frame(qw, tt, null, cards, { e: e, c: io(ss(0, 0.6, u)), cend: cend, rd: ENDING.RD });
+    // the room behind the door: deeper than the doorway, so it grows more slowly; at the end it stands where the ending
+    // chapter's first picture has it (ending/scene.js roomPlace), the doorway past the screen's edges
+    var P1 = roomPlace(W, H, 0, 0), zr = Math.pow(st.door.R / st.door.Rend, ENDING.DEEP), C = st.door.C;
+    var rm = { x: C[0] + zr * (P1.x - cend[0]), y: C[1] + zr * (P1.y - cend[1]), s: P1.s * zr, tall: tall };
+    door.frame(st.house, st.house.zh, rm, tt);
+    // (what is drawn over the whole frame goes as the doorway fills it: the walk's vignette and its fireflies)
+    var clear = (1 - ss(1.7, 6, st.house.zh)).toFixed(3);
+    css(vig, 'opacity', clear); css(air, 'opacity', clear);
+    return scene.ready() && door.ready();
   }
 
   layout();
@@ -115,7 +137,7 @@ export function mount(host, options) {
     frame: frame,
     resize: function () { layout(); scene.resize(); },
     setActive: function (on) { if (!on) scene.setActive(false); },
-    dispose: function () { scene.dispose(); host.textContent = ''; },
+    dispose: function () { door.dispose(); scene.dispose(); host.textContent = ''; },
     // (the rail and a phone's pill name this chapter once its name is on the screen)
     owns: function () { return lastP >= (PROJ.NAME[0] + PROJ.NAME[1]) / 2; },
     // (for tests: the projects' pictures are in too)

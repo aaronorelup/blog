@@ -313,13 +313,39 @@ export function mount(host, options = {}) {
 
   // q: the walk's progress; time: seconds; pointer: the mouse (null: no lean); cards: 0..1, how much of the cards
   // and of the end card is shown (the chapter fades them out at its end: projects.js)
-  function frame(q, time, pointer, cards) {
+  // door (the join into the ending, join.js ENDING; null for the walk itself): the camera walks on from the walk's end
+  // towards the house's doorway. e 0..1: how far, as a share of the way in scale (the house grows by RD at most by
+  // the camera's own walk, so the near trees pass by; the rest is the lens closing in on the doorway); c 0..1: how far
+  // the doorway has come to cend, its place on the screen at the end. At e = 1 the doorway (HOUSE.hole) covers the
+  // screen. state.house: where the house's plate is drawn ({ x, y, s }: its top left and its scale) and zh, look B's
+  // measure of how large the house stands (diorama.js drawGarden: the plate's scale over max(W / 1700, H / 1019)).
+  let dz = 0, ZZ = 1;
+  function frame(q, time, pointer, cards, door) {
     if (!active) return state;
+    if (!L) layout();
+    if (!door || !(door.e > 0 || door.c > 0)) { dz = 0; ZZ = 1; return frameAt(q, time, pointer, cards); }
+    const f0 = f, cx0 = cx, hY0 = hY;
+    const k = L.kOf(clamp(q || 0)), cam = L.camAt(k), d0 = G.zHouse - cam.z;
+    const sOf = (d) => f0 * HOUSE.hw / d / HOUSE.w;
+    const hole = HOUSE.hole, hw = hole[2] - hole[0], hh = hole[3] - hole[1], hx = (hole[0] + hole[2]) / 2, hy = (hole[1] + hole[3]) / 2;
+    const s0 = sOf(d0), sEnd = Math.max(W * 1.1 / hw, H * 1.1 / hh);
+    const R = Math.pow(sEnd / s0, clamp(door.e)), Rd = Math.min(R, door.rd || 2.4);
+    const d = d0 / Rd;
+    // the doorway's middle on the screen, from a camera d from the house (the walk's own projection, no lean)
+    const at = (dd) => { const sc = sOf(dd); return [cx0 + f0 * (0 - cam.x) / dd - HOUSE.door * sc + hx * sc, hY0 + f0 * cam.y / dd - HOUSE.lawn * sc + hy * sc]; };
+    const D0 = at(d0), D = at(d), cc = clamp(door.c), C = [D0[0] + (door.cend[0] - D0[0]) * cc, D0[1] + (door.cend[1] - D0[1]) * cc];
+    dz = d0 - d; ZZ = R / Rd;
+    f = f0 * ZZ; cx = C[0] + ZZ * (cx0 - D[0]); hY = C[1] + ZZ * (hY0 - D[1]);
+    try { frameAt(q, time, null, cards); } finally { f = f0; cx = cx0; hY = hY0; dz = 0; ZZ = 1; }
+    state.door = { C: C, R: R, Rend: sEnd / s0 };
+    return state;
+  }
+  function frameAt(q, time, pointer, cards) {
     if (!L) layout();
     q = clamp(q || 0); time = time || 0;
     const cv = cards === undefined ? 1 : clamp(cards);
     const px = pointer ? clamp(pointer.x || 0, -1, 1) : 0;
-    const k = L.kOf(q), cam = L.camAt(k), camX = cam.x, camY = cam.y, camZ = cam.z;
+    const k = L.kOf(q), cam = L.camAt(k), camX = cam.x, camY = cam.y, camZ = cam.z + dz;
     const pathAt = L.pathAt;
     const front = clamp(Math.round(k), 0, N - 1);
     const walking = k > -0.5 && k < N - 0.5;
@@ -332,12 +358,12 @@ export function mount(host, options = {}) {
 
     // --- the sky
     stars.style.backgroundPosition = (-lean * 0.4 - camZ * 0.4).toFixed(1) + 'px 0';
-    const mr = (tall ? 0.1 * W : 0.06 * W);
+    const mr = (tall ? 0.1 * W : 0.06 * W) * ZZ;
     moon.style.opacity = tall ? '1' : (1 - (walking ? 1 - ss(0.62, 0.9, Math.abs(k - front)) : 0) * (k > -0.6 && k < N - 0.4 ? 1 : 0)).toFixed(3);
-    moon.style.transform = 'translate3d(' + (cx + ((tall ? 0.74 : 0.8) - 0.5) * W - mr - lean * 0.5).toFixed(1) + 'px,' + (hY - (tall ? 0.3 : 0.36) * H - mr).toFixed(1) + 'px,0)';
+    moon.style.transform = 'translate3d(' + (cx + ((tall ? 0.74 : 0.8) - 0.5) * W * ZZ - mr - lean * 0.5).toFixed(1) + 'px,' + (hY - (tall ? 0.3 : 0.36) * H * ZZ - mr).toFixed(1) + 'px,0)' + (ZZ !== 1 ? ' scale(' + ZZ.toFixed(4) + ')' : '');
     {
-      const cw = (tall ? 3.2 : 1.6) * W, ch = cw * 350 / 2816;
-      clouds.style.transform = 'translate3d(' + (cx - cw * 0.5 - lean - camZ * 0.9 % cw + Math.sin(time * 0.05) * 14).toFixed(1) + 'px,' + (hY - (tall ? 0.5 : 0.3) * H - ch / 2).toFixed(1) + 'px,0) scale(' + (cw / 2816).toFixed(4) + ')';
+      const cw = (tall ? 3.2 : 1.6) * W * ZZ, ch = cw * 350 / 2816;
+      clouds.style.transform = 'translate3d(' + (cx - cw * 0.5 - lean - camZ * 0.9 % cw + Math.sin(time * 0.05) * 14).toFixed(1) + 'px,' + (hY - (tall ? 0.5 : 0.3) * H * ZZ - ch / 2).toFixed(1) + 'px,0) scale(' + (cw / 2816).toFixed(4) + ')';
     }
 
     // --- the tea house at the end of the path
@@ -345,12 +371,13 @@ export function mount(host, options = {}) {
       const d = G.zHouse - camZ, w = f * HOUSE.hw / d, s = w / HOUSE.w;
       const sx = gxs(0, d) - lean * 0.6, y = hY + f * camY / d - HOUSE.lawn * s;
       house.style.transform = 'translate3d(' + (sx - HOUSE.door * s).toFixed(1) + 'px,' + y.toFixed(1) + 'px,0) scale(' + s.toFixed(5) + ')';
+      state.house = { x: sx - HOUSE.door * s, y: y, s: s, zh: s / Math.max(W / 1700, H / 1019) };
     }
 
     // --- the ground: the lawn, the stepping stones, the light under the lit lantern, the petals
     const g = gx;
     // (the ground depends only on where the camera is: drawn again only when that changes)
-    const gk = k.toFixed(5) + ',' + W + ',' + H;
+    const gk = k.toFixed(5) + ',' + W + ',' + H + ',' + dz.toFixed(4) + ',' + f.toFixed(2) + ',' + cx.toFixed(1) + ',' + hY.toFixed(1);
     if (gk !== lastKey) {
     lastKey = gk;
     g.setTransform(DPR, 0, 0, DPR, 0, 0); g.clearRect(0, 0, W, H);
