@@ -13,7 +13,7 @@
    Everything on the screen is a function of q and the layout (the lamps' flicker and the petals follow the time).
    Motion off: the painting cuts to the desk, the book opens with a whole spread at a time (the test's own). */
 import { mount as mountScene } from './learning/scene.js';
-import { LEARN, learnPose, learnInset } from './join.js';
+import { LEARN, learnPose, learnInset, learnRoom } from './join.js';
 
 var clamp = function (v, a, b) { a = a === undefined ? 0 : a; b = b === undefined ? 1 : b; return v < a ? a : v > b ? b : v; };
 var smooth = function (v) { v = clamp(v); return v * v * (3 - 2 * v); };
@@ -92,10 +92,11 @@ export function mount(host, options) {
     var melt = RM ? (p > LEARN.RM_CUT ? 1 : 0) : ss(LEARN.MELT[0], LEARN.MELT[1], p);
     // the name over the painted room: in from the left wing as the camera turns, up and away before the room melts
     var nk = RM ? (p > LEARN.NAME[0] + 0.2 && p <= LEARN.RM_CUT ? 1 : 0) : io(ss(LEARN.NAME[0], LEARN.NAME[1], p));
-    var gone = RM ? 0 : narrow ? ss(LEARN.MELT[0] - 0.35, LEARN.MELT[0] - 0.05, p) : ss(LEARN.MELT[0] - 0.3, LEARN.MELT[0] + 0.05, p);
-    var up = RM ? 0 : ss(LEARN.MELT[0] - 0.4, LEARN.MELT[0] + 0.2, p) * H * (narrow ? 0.06 : 0.22);
-    putName(word, left, wy, gone >= 1 ? 0 : nk, up, gone);
-    putName(say, sx, sy, gone >= 1 ? 0 : nk, up * 0.7, gone);
+    // (it leaves the way it came, for the left wing, before the light spreads; narrow: up and out, as quickly)
+    var out = RM ? 0 : io(ss(LEARN.MELT[0] - 0.5, LEARN.MELT[0] - 0.05, p));
+    var gone = narrow ? out : 0, up = narrow ? out * H * 0.06 : 0;
+    putName(word, left, wy, gone >= 1 ? 0 : narrow ? nk : nk * (1 - out), up, gone);
+    putName(say, sx, sy, gone >= 1 ? 0 : narrow ? nk : nk * (1 - out), up * 0.7, gone);
     if (melt <= 0) {
       css(glHost, 'visibility', 'hidden'); css(pagesTop, 'visibility', 'hidden');
       view.setActive(false);
@@ -107,12 +108,21 @@ export function mount(host, options) {
     view.setActive(true);
     if (!view.frame(dq, HELD ? T_HELD : t, low)) return false;
     css(glHost, 'visibility', ''); css(pagesTop, 'visibility', '');
-    css(glHost, 'opacity', melt >= 1 ? '' : melt.toFixed(3));
+    // The modelled room comes in as the lantern's light spreads: from the andon (where the painted lantern stands)
+    // outward, a soft edge, until it has the whole screen; the camera and the painting still
+    var mk = '';
+    if (melt < 1) {
+      var A = learnRoom(W, H, railRect()).andon, cx = A[0], cy = (A[1] + A[2]) / 2;
+      var far = Math.max(Math.hypot(cx, cy), Math.hypot(W - cx, cy), Math.hypot(cx, H - cy), Math.hypot(W - cx, H - cy));
+      var r = clamp((p - LEARN.MELT[0]) / (LEARN.MELT[1] - LEARN.MELT[0])) * (far + 0.5 * H), soft = 0.45 * H;      // (at an even pace)
+      mk = 'radial-gradient(circle at ' + cx.toFixed(0) + 'px ' + cy.toFixed(0) + 'px, #000 ' + Math.max(0, r - soft).toFixed(0) + 'px, rgba(0,0,0,0) ' + r.toFixed(0) + 'px)';
+    }
+    css(glHost, 'webkitMaskImage', mk); css(glHost, 'maskImage', mk);
+    css(pagesTop, 'webkitMaskImage', mk); css(pagesTop, 'maskImage', mk);
     // (the modelled room comes in as dim as the painting, and its lamps come up as the camera goes to the desk)
     var lit = RM ? 1 : ss(LEARN.MELT[0] + 0.3, 0.7, p), f = lit >= 1 ? '' : 'brightness(' + (0.64 + 0.36 * lit).toFixed(3) + ') saturate(' + (0.78 + 0.22 * lit).toFixed(3) + ')';
     css(glHost, 'filter', f); css(pagesTop, 'filter', f);
-    // (the pages come with the room: the shut book's cover is on the desk as the room melts in)
-    css(pagesTop, 'opacity', melt >= 1 ? '' : melt.toFixed(3));
+
     // the lamps low: the pages go down into the picture (behind the page, under the dark), so the next chapter's name,
     // drawn over this chapter, stands clear over them; back up in front, where they can be pressed, as the lamps come up
     var into = low > 0 ? glHost : pagesTop;

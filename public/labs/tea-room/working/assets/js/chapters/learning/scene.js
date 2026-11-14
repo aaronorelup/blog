@@ -198,7 +198,7 @@ export function mount(host, options = {}) {
       // browser, which let parts of a turned-away slice show through)
       if (f.on === true) {
         const facing = e[8] * e[12] + e[9] * e[13] + e[10] * e[14] < 0;
-        if (f.facing !== facing) { f.facing = facing; f.el.style.visibility = facing ? 'visible' : ''; }
+        if (f.facing !== facing) { f.facing = facing; f.el.style.visibility = facing ? 'inherit' : ''; }
       }
     }
   }
@@ -232,7 +232,7 @@ export function mount(host, options = {}) {
       PW = 0.54; PH = 0.63; sx = -0.07; rest.fov = 24;
       const el = rad(58), w = 2 * (PW + M), h = (PH + 2 * M) * Math.sin(el);
       const WI = W - IN;                                  // (the width right of the rail: the picture is framed there)
-      const fw = clamp(0.92 - 0.29 * (WI / H - 0.9) / 0.7, 0.63, 0.92), fh = 0.64;
+      const fw = clamp(0.92 - 0.29 * (WI / H - 0.9) / 0.7, 0.63, 0.92) * (IN > 0 ? 0.95 : 1), fh = 0.64 * (IN > 0 ? 0.95 : 1);
       const d = Math.max(w / (fw * t2 * WI / H), h / (fh * t2));
       px = H / (d * t2);
       let cx = sx + (fw < 0.7 ? 0.005 : 0);
