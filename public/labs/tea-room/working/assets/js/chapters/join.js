@@ -258,3 +258,11 @@ export function learnRoom(W, H, rail) {
   var IN = learnInset(W, H, rail);
   return matchAt(learnPose(W, H, rail), W, H, IN);
 }
+
+/* THE JOIN BETWEEN "LEARNING TO BUILD WITH AI" AND "THIS WEBSITE": one modelled room, one renderer (learning/house.js).
+   Times in screens of the learning chapter's own scroll (p, from its section's top). At the end of the learning
+   chapter the ledger shuts (SHUT), then the camera leaves the desk (LIFT) and arrives, as the learning section ends, at
+   the first place of the site chapter's camera (site/camera.js cameraAt(0)), from where the site chapter goes on with
+   the test's own track: no cut, no dissolve. The site chapter's name comes on over the lift (its lead, NAME, in
+   screens before its own top). Motion off: one cut at RM_CUT, from the open book to that first place. */
+export var SITE = { SHUT: [8.1, 8.7], LIFT: [8.5, 10.0], LEAD: 1.4, NAME: [-1.2, -0.55], RM_CUT: 9.2 };
