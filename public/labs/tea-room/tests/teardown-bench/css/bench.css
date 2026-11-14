@@ -107,13 +107,17 @@ button { font: inherit; color: inherit; }
 /* white, in a multiplied layer, is nothing: it lifts the stills' console out of the picture */
 .erase { position: absolute; inset: 0; pointer-events: none; }
 .erase i { position: absolute; background: #fff; }
+/* the page's words laid over its machine: smudged into the picture rather than cut out of it */
+.erase i.word { background: rgba(255, 255, 255, 0.45); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px);
+  -webkit-mask-image: radial-gradient(closest-side, #000 60%, transparent); mask-image: radial-gradient(closest-side, #000 60%, transparent); }
 .alive .erase { display: none; }
 .holder { position: absolute; inset: 0; pointer-events: none; }
 .holder iframe { position: absolute; border: 0; max-width: none; opacity: 0; transition: opacity 0.6s ease; pointer-events: none; background: transparent; }
 .holder iframe.on { opacity: 1; }
 .held .holder { pointer-events: auto; }
 .held .holder iframe { pointer-events: auto; }
-.pic, .holder iframe, .film { filter: saturate(1.05) contrast(1.04); }
+/* the page's pale studio lifted to white, which on the bench is nothing at all */
+.pic, .holder iframe, .film { filter: brightness(1.09) saturate(1.06) contrast(1.03); }
 .film-box { position: absolute; inset: 0; z-index: 4; background: #fff; }
 .film-box[hidden] { display: none; }
 .film { position: absolute; max-width: none; }
