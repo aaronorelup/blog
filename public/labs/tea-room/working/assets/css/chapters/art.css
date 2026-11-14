@@ -16,7 +16,7 @@
 html.ar-zoom #art { cursor: zoom-in; }
 
 /* the card under the pictures (in front of the page, low in the middle): which picture is in front */
-.ar-dock { position: absolute; left: 14px; right: 14px; bottom: 22px; display: flex; justify-content: center; pointer-events: none; visibility: hidden; opacity: 0; }
+.ar-dock { position: absolute; left: 14px; right: 14px; bottom: 22px; display: flex; justify-content: center; pointer-events: none; opacity: 0; }   /* (art.js hides it by visibility: hidden, never visible) */
 .ar-now {
   pointer-events: auto; width: min(430px, 100%); padding: 12px 20px 13px; text-align: center;
   border-radius: 18px; background: var(--tea-card, rgb(21, 23, 38)); box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45), inset 0 0 0 1px var(--pc-line2, rgb(74, 68, 90));
