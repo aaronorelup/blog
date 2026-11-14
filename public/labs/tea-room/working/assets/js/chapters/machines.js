@@ -53,10 +53,10 @@ var LOWER = [-2.3, -1.5];                 // the lantern and the backdrop's rod 
 var LIGHT = [-1.95, -1.25];               // the lantern comes on
 var RISE = [-2.2, -1.0];                  // the table comes up into the frame (the camera comes down to its height)
 var TVRISE = [-1.9, -0.8];                // the television, nearest, comes up last and fastest
-var UNROLL = [-1.6, -0.85];               // the backdrop unrolls from its rod down onto the table
-var APPEAR = [-0.95, -0.45];              // and the first machine stands on it
+var UNROLL = [-1.7, -1.0];                // the backdrop unrolls from its rod down onto the table
+var APPEAR = [-1.15, -0.6];               // and the first machine stands on it
 var DIM = [-2.2, -1.2];                   // the room goes down to the bench's night
-var DEEP = [-1.3, -0.4, 0.3, 1.0];        // and deeper for a while round the section's top (the swap), then back
+var DEEP = [-1.75, -0.9, 0.3, 1.0];       // and right of the table deeper, as the room's own lamp goes out, round the swap
 var CARD = [-0.55, -0.1];                 // the first card comes up
 // the end (screens after LD): the cards go, the lamp goes down, the camera draws back to the bench's first view
 var END = [0.15, 0.85];
