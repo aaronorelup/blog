@@ -45,9 +45,11 @@ export var MACHINES = [
     keep: [300, 100, 990, 545],
     // the page's labels inside that box, smudged out of the picture
     erase: [[420, 180, 105, 40], [430, 228, 115, 42], [370, 410, 155, 45], [1085, 435, 195, 45]],
-    crop: { cx: 780, cy: 400, vh: 760, vw: 900 },
-    cropNarrow: { cx: 780, cy: 400, vh: 760, vw: 740 },
-    view: 'HERO',
+    crop: { cx: 790, cy: 430, vh: 880, vw: 1000 },
+    cropNarrow: { cx: 790, cy: 430, vh: 860, vw: 760 },
+    // (its HERO view follows it close, and at x60 it shuttles faster than the camera: its SIDE view holds the
+    // trench, the machine and its spoil pile in one picture)
+    view: 'SIDE',
     kind: 'set',                        // the mode is set (not toggled) first, then a part is picked
     modes: { isolate: 'ISOLATE', cut: 'CUT' },
     allParts: ['DRUMS', 'ARMS', 'HOPPER', 'CHASSIS', 'WHEELS', 'SENSOR BAR', 'BATTERY', 'RADIATOR'],
