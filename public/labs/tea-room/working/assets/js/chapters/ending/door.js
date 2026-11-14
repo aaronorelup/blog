@@ -47,7 +47,8 @@ export function doorStack(parent, redraw) {
     frame: function (house, zh, rm, t) {
       if (!shown) { box.style.visibility = 'inherit'; shown = true; }
       var X = function (v) { return house.x + v * house.s; }, Y = function (v) { return house.y + v * house.s; };
-      var a = ss(1.25, 1.7, zh);
+      // (sooner than look B's 1.25..1.7: the walk's plate is seen smaller, and its painted doorway is a dark patch close up)
+      var a = ss(0.5, 0.85, zh);
       set(hi, 'opacity', a.toFixed(3), 'hio'); at(hi, X(HI[0]), Y(HI[1]), house.s / 4, 'hit');
       var open = a >= 0.999;
       // the room, only through the doorway, and only once the sharp front stands over the plate's painted door

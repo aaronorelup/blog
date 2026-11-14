@@ -295,4 +295,4 @@ export function projectsInset(W, H, rail) { return W / H < 0.9 || !rail || rail.
 // (look B: 0.35); RD: how much larger the house grows by the camera's own walk (the rest is the lens closing in on the
 // doorway); DEEP: how much more slowly the room grows than the doorway; CEND: where the doorway's middle ends on the
 // screen (x, y wide, y tall); CALM: where the far garden stops leaning with the mouse.
-export var ENDING = { DOOR: [0.6, 3.5], EASE: 0.45, RD: 2.4, DEEP: 0.6, CEND: [0.5, 0.5, 0.5], CALM: [0.3, 0.8], NAME: [-0.85, -0.2], OUT: [0.12, 0.5] };
+export var ENDING = { DOOR: [0.6, 3.5], EASE: 0.45, RD: 2.4, DEEP: 0.6, CEND: [0.5, 0.5, 0.5], CALM: [0.3, 0.8], NAME: [-0.85, -0.2], OUT: [-0.08, 0.2] };

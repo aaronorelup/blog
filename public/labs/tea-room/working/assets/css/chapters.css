@@ -330,6 +330,7 @@
   .film-foot { height: 70vh; }
   /* a phone: each part is its card across the width, with half a screen of its picture above it */
   .en-lead { height: 50vh; height: 50svh; }
+  #now .en-lead { height: 78vh; height: 78svh; }   /* (the veranda under the moon gets a screen to itself before the long Now card) */
   .en-card { max-width: none; padding: 22px 20px 24px; border-radius: 20px; }
   .en-card h2 { font-size: 27px; }
   .en-c, .en-n, .en-a { width: auto; margin: 0 12px; }
