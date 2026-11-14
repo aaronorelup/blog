@@ -84,7 +84,7 @@ export function mount(host, options) {
   // The painting at e of the turn to the lantern's corner (0: where the camera came back out, 1: LEARN's corner): a
   // camera that pans and comes closer (the painting's point at the screen's middle moves evenly, the scale grows
   // evenly for the eye). The set on the floor goes with the painting (it is in the room), out of the frame.
-  var R0 = null, R1 = null, R2 = null, lastTurn = -1;
+  var R0 = null, R1 = null, R2 = null, lastTurn = -1, tvGone = false;
   function roomAt(e) {
     var c0x = (W / 2 - R0.tx) / R0.s, c0y = (H / 2 - R0.ty) / R0.s, c1x = (W / 2 - R1.tx) / R1.s, c1y = (H / 2 - R1.ty) / R1.s;
     var s = R0.s * Math.pow(R1.s / R0.s, e), cx = c0x + (c1x - c0x) * e, cy = c0y + (c1y - c0y) * e;
@@ -170,7 +170,8 @@ export function mount(host, options) {
     if (inLead && !machinesWhole()) return false;
     var dq = clamp((p - P0) / LT);
     if (RM) dq = view.stops[Math.min(view.stops.length - 1, Math.floor(dq * view.stops.length * 0.9999))];
-    if (!view.frame(dq, time)) return false;
+    // (once the set has left the frame in the turn to the lantern's corner, the terminal in its glass is not drawn)
+    if (!tvGone && !view.frame(dq, time)) return false;
 
     // a phone's room has no set of its own in the machines chapter: there it comes up into the frame as the bench goes,
     // already showing the terminal (it has no machine's picture to change from)
@@ -198,9 +199,9 @@ export function mount(host, options) {
         // (the set is out of the frame once its box has left the screen)
         var tl = tv.l * zt + ox, tt = tv.t * zt + oy;
         var off = tl + tv.w * zt < 0 || tl > W || tt > H;
-        css(tvw, 'visibility', off ? 'hidden' : ''); if (off) css(glass, 'visibility', 'hidden');
+        css(tvw, 'visibility', off ? 'hidden' : ''); if (off) css(glass, 'visibility', 'hidden'); tvGone = off;
       }
-    } else css(glass, 'transform', '');
+    } else { css(glass, 'transform', ''); tvGone = false; }
     css(glowEl, 'visibility', tv.phone || !inLead ? '' : 'hidden');      // (the machines chapter's own set glows in its room)
     // the name: in from the left wing over the bare room; up and away as the camera goes for the glass (look B's word)
     var nk = RM ? (p > AGENTS.NAME[0] + 0.2 && p <= AGENTS.RM_CUT ? 1 : 0) : io(ss(AGENTS.NAME[0], AGENTS.NAME[1], p));
