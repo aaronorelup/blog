@@ -29,3 +29,13 @@
 .gm-proj img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; max-width: none; }
 .gm-proj .gm-reel-a { left: 54.045%; top: 3.469%; width: 33.333%; height: 22.795%; }
 .gm-proj .gm-reel-b { left: 3.074%; top: 22.002%; width: 28.479%; height: 21.407%; }
+
+/* the second world, Megabonk (games-bonk.js): footage of the mod, drawn through its depth map. It comes across the
+   arena behind one clean edge (clip-path, from games.js). With motion off, or without WebGL, its stills stand in:
+   they cover the screen as the footage does, closed in on where she stands. */
+.gm-bonk { position: absolute; inset: 0; overflow: hidden; background: rgb(8, 22, 30); }
+.gm-bonk-gl { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; }
+.gm-bonk-still { position: absolute; left: 0; top: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 54% 60%; transform-origin: 54% 60%; }
+.gm-bonk-still[hidden], .gm-bonk-gl[hidden] { display: none; }
+/* (the two loops themselves: playing, never seen as elements) */
+.gm-bonk-hold { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: hidden; opacity: 0; pointer-events: none; }

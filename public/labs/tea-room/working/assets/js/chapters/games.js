@@ -9,6 +9,11 @@
    beside them; and at the end the camera comes back out of the cloth into the night garden (drawn here: the film
    chapter is let go by then), where the arena goes on playing on the cloth under the closing beat.
 
+   Beside the arena there is a second world, Megabonk with Jefrie modded in (games-bonk.js: footage of the mod, drawn
+   through its depth). Once the Storm Bell card has gone up it comes across from the right behind one clean edge, its
+   own card waits under her, the view goes on in; then it goes back the way it came and the arena is there again for
+   the posts. In both worlds the view leans with the mouse (a slow sway where there is none).
+
    Everything drawn is a function of q (the chapter's progress, which is the camera) and the time (the rain, the
    fires, the fighters' timetable). With motion turned off there is no 3D at all: a still of the arena, changed by
    cuts. */
@@ -27,6 +32,7 @@ var A_LEAD = 0.26;                                // how far into the arena the 
 var LIGHT = [154, 154, 184];
 var HOLD = 1.0;                                    // the garden holds this many screens at the end (chapters.css: .games-foot), under
                                                   // the next chapter's name; the projector leaves for the left wing in it
+var LEAN = 0.5;                                    // how far the arena's camera leans with the mouse (of the arena's own reach)
 var EDGE = 600;                                   // how far left of the plate the plain sky and lawn reach (plate pixels; on under
                                                   // the plate's faded first 260, games.css)
 
@@ -41,6 +47,7 @@ export function mount(host, options) {
       '<canvas class="gm-glow"></canvas>' +
     '</div>' +
     '<div class="gm-arena"><canvas class="gm-gl"></canvas><img class="gm-still" data-k="wide" alt="" decoding="async" hidden><img class="gm-still" data-k="tall" alt="" decoding="async" hidden><img class="gm-still" data-k="aside" alt="" decoding="async" hidden></div>' +
+    '<div class="gm-bonk"></div>' +
     '<canvas class="gm-light"></canvas>' +
     '<div class="gm-proj"><img src="' + IMG + 'prop-projector.webp" width="618" height="1009" alt="">' +
       '<img class="gm-reel gm-reel-a" src="' + IMG + 'film/reel-a.webp" width="206" height="230" alt="">' +
@@ -49,6 +56,8 @@ export function mount(host, options) {
   var edge = pick('.gm-edge'), garden = pick('.gm-garden'), sky = pick('.gm-sky'), lawn = pick('.gm-lawn'), plate = pick('.gm-plate'), glow = pick('.gm-glow');
   var arenaBox = pick('.gm-arena'), canvas = pick('.gm-gl'), stillW = pick('.gm-still[data-k=wide]'), stillT = pick('.gm-still[data-k=tall]'), stillA = pick('.gm-still[data-k=aside]'), still = null, lightCv = pick('.gm-light'), proj = pick('.gm-proj');
   var reelA = pick('.gm-reel-a'), reelB = pick('.gm-reel-b');
+  var bonkEl = pick('.gm-bonk'), bonk = null, bonkOn = 0, bonkClipWas = '', bonkGone = false, wasWhole = false;
+  bonkEl.style.visibility = 'hidden'; bonkEl.v_ = false;
   var lx = lightCv.getContext('2d'), gx = glow.getContext('2d');
 
   // ------------------------------------------------------------------ what has come in
@@ -115,6 +124,31 @@ export function mount(host, options) {
     });
   }
 
+  // the second world: its stills and depth come with the chapter, its footage only when the reader is near it
+  import('./games-bonk.js').then(function (m) {
+    if (!alive) return;
+    bonk = m.mount(bonkEl, { reduced: RM, held: HELD, redraw: options.redraw });
+    options.redraw();
+  }).catch(function (err) {
+    bonkGone = true;
+    if (window.console) console.warn('Megabonk could not start, the arena stays: ' + (err && err.message || err));
+    if (alive) options.redraw();
+  });
+
+  // the lean: the mouse, a breath behind it (a screen with no mouse sways slowly, so the depth still reads); none with
+  // motion off or time held
+  var FINE = !window.matchMedia || window.matchMedia('(pointer: fine)').matches;
+  var lean = { x: 0, y: 0 }, leanT = -1;
+  function leanTo(ptr, t) {
+    var ax = 0, ay = 0;
+    if (!RM && !HELD) {
+      if (FINE) { ax = ptr ? clamp(ptr.x || 0, -1, 1) : 0; ay = ptr ? clamp(ptr.y || 0, -1, 1) : 0; }
+      else { ax = Math.sin(t * 0.21) * 0.42; ay = Math.sin(t * 0.17 + 1.3) * 0.26; }
+    }
+    var g = leanT < 0 ? 1 : 1 - Math.exp(-clamp(t - leanT, 0, 0.1) * 4);
+    leanT = t; lean.x += (ax - lean.x) * g; lean.y += (ay - lean.y) * g;
+  }
+
   // ------------------------------------------------------------------ the garden's camera (as film.js has it)
   // The plate stands at distance 1; the camera is at (C, m), m how far in it has come; the plate is then 1 / (1 - m)
   // times its own size. A move between two places is a straight walk, at an even pace for the eye.
@@ -155,13 +189,16 @@ export function mount(host, options) {
     // when things happen, in screens from the section's top
     T.bell = marks.bell ? marks.bell.top : 0.7;               // the game's card has come up under the fighters
     T.picks = marks.picks ? marks.picks.top : 3;              // the first post's top
+    T.aside = marks.bell ? marks.bell.top + marks.bell.h : T.picks;   // the foot of the Storm Bell card's track: the card goes up the column a screen before it
     T.all = marks.all ? marks.all.top : 5;
     T.out0 = marks.foot ? marks.foot.top - 0.45 : span - 1.2; // the camera starts back out of the cloth
+    T.bonk = marks.bonk ? marks.bonk.top : -1;                // the Megabonk card is in its place under her (no such card: no second world)
+    T.bonkOut = marks.bonk ? marks.bonk.top + marks.bonk.h - 0.1 : -1;   // that card has gone up: the arena comes back
     var d = Math.min(window.devicePixelRatio || 1, W > 1200 ? 1.5 : 2);
     lightCv.width = Math.round(W * d); lightCv.height = Math.round(H * d); lightCv.dpr = d;
     if (failed && W / H < 0.82 && !stillT.getAttribute('src')) { stillT.src = IMG + 'games/still-hold-tall.webp'; wait(stillT, 'tall'); }
     if (failed && W > 820 && !stillA.getAttribute('src')) { stillA.src = IMG + 'games/still-aside-wide.webp'; wait(stillA, 'aside'); }
-    cache.clear(); projWas = '';
+    cache.clear(); projWas = ''; bonkClipWas = null;        // (null: set again whatever it was)
   }
 
   // where the next chapter's name ends on a wide screen (the section after this one names itself, data-word; it sets
@@ -253,15 +290,16 @@ export function mount(host, options) {
   var beamOn = false;
 
   // ------------------------------------------------------------------ the frame
-  function frame(q, t) {
+  function frame(q, t, ptr) {
     if (!alive) return false;
     if (!laid) { layout(); laid = true; }
     var tm = HELD ? T_HELD : t; lastTm = tm;
+    leanTo(ptr, t);
     // where the reader is, in screens from the section's top (the lead: from -2.5 to 0, the film's dive above it)
     var p = q < 0 ? q : q * span, lead = q < 0;
     var view = null, clip = 'none', aq, garden_ = false, quad = null, cam = null, e = 0, shift = 0;
     if (lead) {
-      owns = false;
+      owns = false; bonkOn = 0; setV(bonkEl, false); if (bonk) bonk.setPlaying(false);
       if (!JOIN.fresh || !JOIN.quad) { JOIN.arena = 0; return false; }      // the film did not draw this frame: nothing to throw onto
       JOIN.fresh = false;
       var k = JOIN.k, a = arenaAt(k, RM);
@@ -279,8 +317,9 @@ export function mount(host, options) {
       // on into the arena until the card is under the fighters, then a slow drift while the posts pass
       // (a wide screen: while the posts pass up the left the camera steps back a little and the picture slides right,
       // so both fighters stand clear of the column)
-      // (it is done before the game's card leaves its place under them and goes up the column: T.picks - 1)
-      shift = narrow ? 0 : io(ss(T.picks - 1.6, T.picks - 1.0, p)) * (1 - io(ss(T.out0 - 0.3, T.out0 + 0.3, p)));
+      // (it is done before the game's card leaves its place under them and goes up the column: T.aside - 1. They stay
+      // aside behind the second world, so the arena comes back with the column already clear for the posts)
+      shift = narrow ? 0 : io(ss(T.aside - 1.6, T.aside - 1.0, p)) * (1 - io(ss(T.out0 - 0.3, T.out0 + 0.3, p)));
       if (RM || failed) shift = shift >= 0.5 ? 1 : 0;   // (stills: changed by a cut)
       aq = p < T.bell ? lerp(aLead, 0.62, io(clamp(p / T.bell))) : lerp(0.62, 0.8, ss(T.bell, T.out0 + 0.6, p)) - shift * 0.26;
       view = { h: H, cx: W / 2 + shift * W * SHIFT, cy: H / 2 };
@@ -296,13 +335,35 @@ export function mount(host, options) {
         clip = oc2.clip; quad = oc2.quad;
       }
     }
+    // the second world: Megabonk comes across from the right, the view goes on into it (its second loop, her arrival,
+    // starts as its card lets go and rides up), and it goes back the way it came. With motion off: cuts.
+    var bk = 0, bpart = T.bonk > 0 && p >= T.bonk + 0.95 ? 1 : 0;
+    var bonkDue = !lead && T.bonk > 0 && !bonkGone && (RM ? p >= T.bonk - 0.5 && p < T.bonkOut + 0.28 : p > T.bonk - 0.78 && p < T.bonkOut + 0.55);
+    if (bonk && bonk.lost()) bonkGone = true;
+    if (!lead && bonk && T.bonk > 0 && bonk.ready()) {
+      if (p > T.bonk - 2.6 && p < T.bonkOut + 1.6) bonk.near();
+      bk = RM ? (p >= T.bonk - 0.5 && p < T.bonkOut + 0.28 ? 1 : 0) : io(ss(T.bonk - 0.78, T.bonk - 0.2, p)) * (1 - io(ss(T.bonkOut, T.bonkOut + 0.55, p)));
+    }
+    if (!lead) {
+      bonkOn = bk; setV(bonkEl, bk > 0.001);
+      if (bk > 0.001) {
+        var bc = bk >= 0.999 ? '' : 'inset(0 0 0 ' + (W * (1 - bk)).toFixed(1) + 'px)';
+        if (bc !== bonkClipWas) { bonkEl.style.clipPath = bc; bonkClipWas = bc; }
+        bonk.frame({ part: bpart, push: (p - T.bonk + 0.78) / (T.bonkOut + 1.33 - T.bonk), lx: lean.x, ly: lean.y, t: t });
+      }
+      if (bonk) bonk.setPlaying(active && bk > 0.001);
+    }
     // (at the very end the show is over: the projector has gone and the picture leaves the cloth, so the art chapter
     // turns away from a bare cloth, join.js)
     var bare = !garden_ ? 0 : RM ? (p > span - 0.4 ? 1 : 0) : io(ss(span - 0.65, span - 0.2, p));
     if (bare > 0) { setO(arenaBox, 1 - bare); setV(arenaBox, bare < 0.999); }
     // the arena: its picture for this frame
     if (bare >= 0.999) flash = 0;
-    else if (arena) flash = arena.frame(aq, tm, 0, 0, null, view) || 0;
+    else if (arena) {
+      // (not drawn while the second world covers it; it leans with the mouse only while it is the whole world)
+      var la = lead ? 0 : LEAN * ss(0, 0.5, p) * (1 - ss(T.out0 - 0.5, T.out0, p));
+      if (bk < 0.999) flash = arena.frame(aq, tm, lean.x * la, lean.y * la, null, view) || 0;
+    }
     else if (failed) placeStill(view, clip, !lead && shift >= 0.5 && !garden_);
     owns = lead ? clip === 'none' && JOIN.arena >= 1 : true;
     setClip(clip);
@@ -332,16 +393,20 @@ export function mount(host, options) {
       drawBeam([pj.x + pj.w * LENS[0], pj.y + pj.h * LENS[1]], quad, ss(0.35, 0.85, e) * (1 - ss(0, 0.6, leave)) * (1 - bare), Math.min(flash, 1)); beamOn = true;
     } else if (beamOn) { lx.setTransform(1, 0, 0, 1, 0, 0); lx.clearRect(0, 0, lightCv.width, lightCv.height); beamOn = false; }
 
-    // whole: the arena (or its still) is in; on the way out the garden's plate and light too
+    // whole: the arena (or its still) is in; on the way out the garden's plate and light too. And after a jump straight
+    // into the second world's stretch, that world's still: the arena is never shown under Megabonk's card. (Only until
+    // the chapter has once been whole: for a reader scrolling in, the arena staying a moment longer is the better wait.)
     var arenaIn = !!arena || (failed && got.wide && (W / H >= 0.82 || got.tall) && (W <= 820 || got.aside));
-    return arenaIn && (!garden_ || (got.plate && got.glow));
+    var whole = arenaIn && (!garden_ || (got.plate && got.glow)) && (!bonkDue || wasWhole || bonkGone || (!!bonk && bonk.answered(bpart)));
+    if (whole) wasWhole = true;
+    return whole;
   }
 
   // ------------------------------------------------------------------ a fighter pressed throws a move
   // (the arena is behind the page: a press anywhere that is not on a card or a link goes to the fighter under it)
   var lastTm = 0, owns = false;
   function onPress(ev) {
-    if (!active || !arena || RM || HELD || ev.button) return;
+    if (!active || !arena || RM || HELD || ev.button || bonkOn > 0.5) return;   // (under the second world there is no fighter to press)
     if (ev.target.closest && ev.target.closest('a, button, input, .paper, #rail, .chapter-top')) return;
     var nx = ev.clientX / W * 2 - 1, ny = -(ev.clientY / H * 2 - 1), who = arena.pick(nx, ny);
     if (who) { arena.tap(who, lastTm + 0.03); options.redraw(); }
@@ -350,14 +415,17 @@ export function mount(host, options) {
 
   return {
     frame: frame,
-    resize: function () { if (laid) layout(); if (arena) arena.resize(); },
-    setActive: function (on) { active = on; },
+    resize: function () { if (laid) layout(); if (arena) arena.resize(); if (bonk) bonk.resize(); },
+    setActive: function (on) { active = on; if (!on && bonk) bonk.setPlaying(false); },   // (its loops stop at once, not at the next frame)
     owns: function () { return owns; },        // (the arena is the whole world on the screen: the rail names Games)
     arena: function () { return arena; },      // (for tests: the arena, and the time of the last frame drawn)
     time: function () { return lastTm; },
+    bonk: function () { return bonk; },        // (for tests: the second world, and how far it has come across)
+    bonkOn: function () { return bonkOn; },
     dispose: function () {
       alive = false; JOIN.arena = 0; JOIN.ready = false;
       document.removeEventListener('click', onPress);
+      if (bonk) { try { bonk.dispose(); } catch (err) { /* it is going anyway */ } bonk = null; }
       if (arena) { try { arena.dispose(); } catch (err) { /* it is going anyway */ } arena = null; }
     }
   };
