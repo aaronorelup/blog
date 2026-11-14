@@ -158,6 +158,9 @@
 /* ---------------------------------------------------------------- learning to build with AI (assets/js/chapters/learning.js) */
 .learning-walk { height: 800vh; }  /* (learning.js LB: the test's track, the camera's arrival and the five spreads) */
 .learning-foot { height: 250vh; }  /* (the last spread held; the lamps go low as the next chapter's name comes on: learning.js LOW) */
+/* (once the lamps are low the pages lie in the picture, under the page's flow: learning.js puts lr-under on the root
+   then, and the flow lets the pointer through, so the pages' buttons are still pressed; the closing note takes it back) */
+html.lr-under main { pointer-events: none; }
 
 /* ---------------------------------------------------------------- the closing beat (a draft: see chapters/closing.js) */
 /* its one small line stands under the name: the section's last screen is the page's last picture */

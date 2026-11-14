@@ -56,7 +56,7 @@ export function mount(host, options) {
     if (!(im.complete && im.naturalWidth)) { pending++; im.addEventListener('load', done, { once: true }); im.addEventListener('error', done, { once: true }); }
   });
 
-  var narrow = false, left = 0, wy = 0, sx = 0, sy = 0, laid = false, active = false, lastP = -99, flareXY = null;
+  var narrow = false, left = 0, wy = 0, sx = 0, sy = 0, laid = false, active = false, lastP = -99, flareXY = null, under = false, wing = 0;
   // the lantern's light at e (0: none, 1: it fills the screen, every part of it opaque): a hot paper-white core at the
   // lantern's shade, warm amber round it, a deep ember brown at the screen's far corners
   function flareAt(e) {
@@ -75,6 +75,7 @@ export function mount(host, options) {
     word.style.fontSize = (wp * K) + 'px'; say.style.fontSize = (sp * 0.8 * K) + 'px';
     wy = H * (narrow ? 0.11 : 0.1);
     sx = left + wp * 0.08; sy = wy + word.offsetHeight / K + sp * 0.7;
+    var rb = railRect(); wing = rb ? rb.right : 0;
     was = {}; laid = true; flareXY = null;
   }
   var was = {};
@@ -82,8 +83,12 @@ export function mount(host, options) {
   function putName(el, x, y, k, up, fade) {
     var tr, o = 1 - fade;
     if (narrow) { tr = 'translate3d(' + x.toFixed(1) + 'px,' + (y + (1 - k) * H * 0.07 - up).toFixed(1) + 'px,0) scale(' + (1 / K).toFixed(5) + ')'; o *= clamp((k - 0.06) * 5.5); }
-    else { var w = el.offsetWidth / K; tr = 'translate3d(' + (x - (1 - k) * (Math.max(x, 0) + w + 30)).toFixed(1) + 'px,' + (y - up).toFixed(1) + 'px,0) scale(' + (1 / K).toFixed(5) + ')'; }
+    else { var w = el.offsetWidth / K, xx = x - (1 - k) * (Math.max(x, 0) + w + 30); tr = 'translate3d(' + xx.toFixed(1) + 'px,' + (y - up).toFixed(1) + 'px,0) scale(' + (1 / K).toFixed(5) + ')'; }
     css(el, 'transform', tr);
+    // (the left wing is the rail's right edge: what of the name is still left of it is not drawn, so no letter shows
+    // above or below the rail, or passes under it)
+    var cut = narrow ? 0 : (wing - xx) * K;
+    css(el, 'clipPath', cut > 0 ? 'polygon(' + cut.toFixed(1) + 'px -9999px, 99999px -9999px, 99999px 99999px, ' + cut.toFixed(1) + 'px 99999px)' : '');
     css(el, 'visibility', k < 0.0005 || o <= 0 ? 'hidden' : '');
     css(el, 'opacity', o < 1 ? o.toFixed(3) : '');
   }
@@ -119,9 +124,10 @@ export function mount(host, options) {
       css(flare, 'visibility', e > 0 ? 'inherit' : 'hidden');
     } else css(flare, 'visibility', 'hidden');
     if (!swapped) {
+      if (under) { under = false; root.classList.remove('lr-under'); }
       css(glHost, 'visibility', 'hidden'); css(pagesTop, 'visibility', 'hidden');
       // (the modelled room is made ready under the light, so it is whole when the light covers the screen)
-      if (melt > 0 && pending <= 0) { view.setActive(true); view.frame(0, HELD ? T_HELD : t, 0); }
+      if (melt > 0 && pending <= 0) { view.setActive(true); view.frame(0, HELD ? T_HELD : t, 0, 1); }
       else view.setActive(false);
       return true;
     }
@@ -129,7 +135,9 @@ export function mount(host, options) {
     var dq = p <= 0 ? 0 : clamp(p / LB);
     var low = RM ? (p > LB + (LOW[0] + LOW[1]) / 2 ? 1 : 0) : ss(LB + LOW[0], LB + LOW[1], p);
     view.setActive(true);
-    if (!view.frame(dq, HELD ? T_HELD : t, low)) return false;
+    // (a phone: once the light has gone, the camera rises from the painting's place to the test's own, the desk whole)
+    var lead = p >= 0 ? 0 : 1 - io(ss(LEARN.MELT[1], 0, p));
+    if (!view.frame(dq, HELD ? T_HELD : t, low, lead)) return false;
     css(glHost, 'visibility', ''); css(pagesTop, 'visibility', '');
     // (the pages' layer lies over this chapter's layer, so over the light: it comes as the light leaves the desk)
     css(pagesTop, 'opacity', e > 0 ? Math.pow(1 - e, 2).toFixed(3) : '');
@@ -141,6 +149,7 @@ export function mount(host, options) {
     // drawn over this chapter, stands clear over them; back up in front, where they can be pressed, as the lamps come up
     var into = low > 0 ? glHost : pagesTop;
     if (pages && pages.parentNode !== into) into.appendChild(pages);
+    if (under !== (low > 0)) { under = low > 0; root.classList.toggle('lr-under', under); }
     css(lowEl, 'opacity', low > 0 ? low.toFixed(3) : '0');
     return true;
   }
@@ -148,8 +157,8 @@ export function mount(host, options) {
   return {
     frame: frame,
     resize: function () { view.resize(); if (laid) layout(); },
-    setActive: function (on) { active = !!on; },
-    dispose: function () { view.dispose(); pagesTop.remove(); host.textContent = ''; },
+    setActive: function (on) { active = !!on; if (!active && under) { under = false; root.classList.remove('lr-under'); } },
+    dispose: function () { root.classList.remove('lr-under'); view.dispose(); pagesTop.remove(); host.textContent = ''; },
     // (the rail and a phone's pill name this chapter once its name is on the screen)
     owns: function () { return lastP >= (LEARN.NAME[0] + LEARN.NAME[1]) / 2; },
     get view() { return view; }

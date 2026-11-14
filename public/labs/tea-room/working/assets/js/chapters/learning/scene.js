@@ -207,17 +207,21 @@ export function mount(host, options = {}) {
   // Two places: where it arrives from (the homepage's own view of this corner) and where it rests, over the
   // book. rest is fitted to the host's size, so a spread always fills the same share of the picture.
   let W = 1, H = 1, IN = 0, safeH = 1, tall = false, dpr = 1, sized = false, restInk = OUTLINE, restNear = 0.1;
-  const from = { p: new Vector3(), q: new Quaternion(), fov: 60 }, rest = { p: new Vector3(), q: new Quaternion(), fov: 24 };
+  const from = { p: new Vector3(), q: new Quaternion(), fov: 60 }, match = { p: new Vector3(), q: new Quaternion(), fov: 60 }, rest = { p: new Vector3(), q: new Quaternion(), fov: 24 };
   const v = new Vector3(), up = new Vector3(), tmp = new PerspectiveCamera();
   const toWorld = (x, y, z) => deskGL.localToWorld(v.set(x, y, z)).clone();
   const aim = (o, p, target, upv) => { tmp.position.copy(p); tmp.up.copy(upv); tmp.lookAt(target); o.p.copy(p); o.q.copy(tmp.quaternion); };
 
   // where the camera arrives from: the host's pose (the place the painted room was seen from), or the test's own
+  // (a phone keeps the test's own place to arrive from, the desk whole in the middle: the host's pose is then only
+  // where the camera stands while the painting gives way (match), and frame()'s lead takes it from there to its own)
   function fromPose(isTall) {
     const f = options.from && options.from(isTall, W, H, IN);
-    if (!f) return;
-    aim(from, new Vector3(f.p[0], f.p[1], f.p[2]), new Vector3(f.t[0], f.t[1], f.t[2]), up.set(0, 1, 0));
-    from.fov = f.fov;
+    if (f) {
+      aim(match, new Vector3(f.p[0], f.p[1], f.p[2]), new Vector3(f.t[0], f.t[1], f.t[2]), up.set(0, 1, 0));
+      match.fov = f.fov;
+      if (!isTall) { from.p.copy(match.p); from.q.copy(match.q); from.fov = match.fov; }
+    } else { match.p.copy(from.p); match.q.copy(from.q); match.fov = from.fov; }
   }
   function fit() {
     deskGL.updateMatrixWorld(true);
@@ -236,9 +240,9 @@ export function mount(host, options = {}) {
       const d = Math.max(w / (fw * t2 * WI / H), h / (fh * t2));
       px = H / (d * t2);
       let cx = sx + (fw < 0.7 ? 0.005 : 0);
-      // (framed right of the rail: the lantern at the desk's left end is kept clear of it, the ink pot may leave the
-      // frame on the right first)
-      if (IN > 0) cx -= Math.max(0, IN + 18 - ((W + IN) / 2 + (-0.94 - cx) * px)) / px;
+      // (framed right of the rail: the lantern at the desk's left end may tuck a little under the rail's edge, as the
+      // test's lantern is cut by the screen's edge, so that the ink pot and the brush stay whole at the right)
+      if (IN > 0) cx -= Math.max(0, IN - 26 - ((W + IN) / 2 + (-0.94 - cx) * px)) / px;
       const c = toWorld(cx, DESK.top + 0.03, -0.03);
       const p = toWorld(cx, DESK.top + 0.03 + d * Math.sin(el), -0.03 + d * Math.cos(el));
       lantern.position.set(-0.81, DESK.top, -0.16);
@@ -281,10 +285,13 @@ export function mount(host, options = {}) {
   // picture again the moment it stops; and it does without the lamps' flicker, so a turning leaf has the machine.
   const pace = { ms: 16, at: 0, time: NaN, scale: 1, since: 0, n: 0, slow: false };
   const setScale = (k) => { if (k !== pace.scale) { pace.scale = k; renderer.setPixelRatio(dpr * k); renderer.setSize(W, H, false); glDirty = true; } };
-  function frame(q, time = 0, low = 0) {
+  let lastLead = -1;
+  function frame(q, time = 0, low = 0, lead = 0) {
     if (!active || !sized) return false;
     q = clamp(q);
     const e = RM ? 1 : ss(0, 1, clamp(q / TIME.arrive));
+    lead = RM || e > 0 ? 0 : Math.round(clamp(lead) * 1000) / 1000;   // 1: at the host's pose (match), 0: at from
+    if (lead !== lastLead) { lastLead = lead; lastE = -1; }
     const running = time !== pace.time;
     pace.time = time;
     if (running) {
@@ -298,11 +305,17 @@ export function mount(host, options = {}) {
     } else if (pace.scale < 1) setScale(1);
     if (e !== lastE) {
       lastE = e;
-      camera.position.lerpVectors(from.p, rest.p, e);
-      camera.quaternion.slerpQuaternions(from.q, rest.q, e);
-      // (the lens narrows only once the camera has turned down to the desk: narrowed on the way, it would close in on
-      // whatever stands ahead, the andon)
-      camera.fov = from.fov + (rest.fov - from.fov) * ss(0.3, 1, e);
+      if (lead > 0) {
+        camera.position.lerpVectors(from.p, match.p, lead);
+        camera.quaternion.slerpQuaternions(from.q, match.q, lead);
+        camera.fov = from.fov + (match.fov - from.fov) * lead;
+      } else {
+        camera.position.lerpVectors(from.p, rest.p, e);
+        camera.quaternion.slerpQuaternions(from.q, rest.q, e);
+        // (the lens narrows only once the camera has turned down to the desk: narrowed on the way, it would close in
+        // on whatever stands ahead, the andon)
+        camera.fov = from.fov + (rest.fov - from.fov) * ss(0.3, 1, e);
+      }
       camera.near = 0.1 + (restNear - 0.1) * e;          // at rest the camera may stand above the paper ceiling
       camera.updateProjectionMatrix();
       camera.updateMatrixWorld();
