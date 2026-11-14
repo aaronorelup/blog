@@ -8,6 +8,8 @@
    d = Z - camZ. Changed for the working copy: the frame keeps right of the rail on a wide screen (inset: the walk's
    middle cx is the middle of the part right of it, and nothing of a station stands under it), and a phone's windows
    start under its rail pill (top). */
+// (the page's one scale, chapters.js: the cards' widths grow with it on a big monitor; 1 up to 1440x900 and on a phone)
+const SC = () => (window.TEA && window.TEA.s ? window.TEA.s() : 1);
 
 export const DZ = 7, GAP = 4.5, EYE = 1.6, LH = 1.3;         // LH: the lantern's height
 export const K0 = -1.35, KEND_PAD = 1.75;                   // the walk in before the first lantern, and on to the house after the last
@@ -70,7 +72,7 @@ export function layout(G, W, H, IN, top) {
   const x0L = L.IN, Wr = W - x0L;                            // the part of the window right of the rail
   L.cx = x0L + Wr / 2;
   L.pad = tall ? 14 : Math.max(24, 0.035 * Wr);
-  L.cardW = tall ? W - 2 * L.pad : Math.min(440, 0.32 * Wr);
+  L.cardW = tall ? W - 2 * L.pad : Math.min(440 * SC(), 0.32 * Wr);   // (SC: the page's one scale, chapters.js)
   const camAt = (k) => camAtL(G, L, k);
   for (const s of S) {
     const it = s.it, side = s.side, a = it.pic.w / it.pic.h, pad = L.pad;
@@ -100,7 +102,7 @@ export function layout(G, W, H, IN, top) {
     else o.cardAt = { x: side > 0 ? x0 + w + frameT - L.cardW : x0 - frameT, y: y0 + h + 2 * frameT + 0.03 * H };
     L.st.push(o);
   }
-  L.endW = tall ? W - 2 * L.pad : Math.min(460, 0.36 * Wr);
+  L.endW = tall ? W - 2 * L.pad : Math.min(460 * SC(), 0.36 * Wr);
   const P = L.pathPts;
   P.push([G.zs(-3), 0]);
   for (const s of S) P.push([L.st[s.i].lZ, L.st[s.i].lX - s.side * 0.85]);
