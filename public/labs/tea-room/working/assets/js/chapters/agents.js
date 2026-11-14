@@ -52,7 +52,7 @@ export function mount(host, options) {
   var pending = 0;
   [body, roomImg].forEach(function (im) { if (!(im.complete && im.naturalWidth)) { pending++; var done = function () { pending--; options.redraw(); }; im.addEventListener('load', done, { once: true }); im.addEventListener('error', done, { once: true }); } });
 
-  var lastK = 0, W = 0, H = 0, tv = null, narrow = false, left = 0, wy = 0, sx = 0, sy = 0, laid = false, active = false;
+  var FOC = [0.5, 0.5], lastK = 0, W = 0, H = 0, tv = null, narrow = false, left = 0, wy = 0, sx = 0, sy = 0, laid = false, active = false;
   function layout() {
     W = root.clientWidth; H = window.innerHeight;
     var rr = document.getElementById('rail'), rb = rr ? rr.getBoundingClientRect() : null;
@@ -71,6 +71,9 @@ export function mount(host, options) {
     word.style.fontSize = (wp * K) + 'px'; say.style.fontSize = (sp * 0.8 * K) + 'px';
     wy = H * (narrow ? 0.11 : 0.1);
     sx = left + wp * 0.08; sy = wy + word.offsetHeight / K + sp * 0.7;
+    // where the picture's subject is (fractions of the screen): see placeSet
+    var rb2 = rr ? rr.getBoundingClientRect() : null, inset = !tall && rb2 && rb2.width && rb2.right < W * 0.4 ? rb2.right : 0;
+    FOC = tall ? [0.5, 0.26] : [0.5 + inset / W / 2, 0.5];
     was = {};
     laid = true;
   }
@@ -89,16 +92,21 @@ export function mount(host, options) {
 
   // the set and the room at k of the dive (0: the room as it stands, 1: in the glass); glassOn: how much of the glass is
   // the terminal yet (it turns from the machine's picture)
-  function placeSet(k, glassOn, withRoom) {
-    var d = tvDive(tv, W, H, k), g = d.glass;
+  function placeSet(k, glassOn, withRoom, lift) {
+    var d = tvDive(lift ? { l: tv.l, t: tv.t + lift, w: tv.w, h: tv.h, box: tv.box } : tv, W, H, k), g = d.glass;
     var tr = 'translate3d(' + d.tx.toFixed(2) + 'px,' + d.ty.toFixed(2) + 'px,0) scale(' + d.Z.toFixed(5) + ')';
     var inside = g.x <= 0 && g.y <= 0 && g.x + g.w >= W && g.y + g.h >= H;
     css(tvw, 'transform', tr); css(tvw, 'visibility', inside ? 'hidden' : '');
     css(room, 'transform', tr); css(room, 'visibility', withRoom && !inside ? '' : 'hidden');
     // the terminal, as large as the glass (covering it), never larger than the screen, in the middle of the glass
-    var kb = Math.min(1, Math.max(g.w / W, g.h / H));
-    css(box, 'transform', kb >= 1 && Math.abs(g.x + g.w / 2 - W / 2) < 0.5 && Math.abs(g.y + g.h / 2 - H / 2) < 0.5 ? '' :
-      'translate3d(' + (g.x + g.w / 2 - W * kb / 2).toFixed(2) + 'px,' + (g.y + g.h / 2 - H * kb / 2).toFixed(2) + 'px,0) scale(' + kb.toFixed(5) + ')');
+    // (while the glass is small it shows the picture's own subject, not its middle: right of the rail on a wide screen,
+    // the upper part on a tall one, where the test frames its scenes; the bias is gone by the time the glass is the frame)
+    var kb = Math.min(1, Math.max(g.w / W, g.h / H)), b4 = Math.pow(kb, 4);
+    var fx = FOC[0] + (0.5 - FOC[0]) * b4, fy = FOC[1] + (0.5 - FOC[1]) * b4;
+    var bx = g.x + g.w / 2 - W * kb * fx, by = g.y + g.h / 2 - H * kb * fy;
+    if (kb < 1) { bx = clamp(bx, g.x + g.w - W * kb, g.x); by = clamp(by, g.y + g.h - H * kb, g.y); }
+    css(box, 'transform', kb >= 1 && Math.abs(bx) < 0.5 && Math.abs(by) < 0.5 ? '' :
+      'translate3d(' + bx.toFixed(2) + 'px,' + by.toFixed(2) + 'px,0) scale(' + kb.toFixed(5) + ')');
     var m = 2 * d.Z / 10 + 1;                              // (a hair inside the body's rim, which is drawn over it)
     css(glass, 'clipPath', inside ? '' : 'inset(' + Math.max(0, g.y + m).toFixed(1) + 'px ' + Math.max(0, W - g.x - g.w + m).toFixed(1) + 'px ' + Math.max(0, H - g.y - g.h + m).toFixed(1) + 'px ' + Math.max(0, g.x + m).toFixed(1) + 'px)');
     css(glass, 'opacity', glassOn >= 1 ? '' : glassOn.toFixed(3));
@@ -131,12 +139,14 @@ export function mount(host, options) {
     if (RM) dq = view.stops[Math.min(view.stops.length - 1, Math.floor(dq * view.stops.length * 0.9999))];
     if (!view.frame(dq, time)) return false;
 
-    if (inLead) placeSet(k, tune, false);
+    // a phone's room has no set of its own in the machines chapter: there it comes up into the frame as the bench goes,
+    // already showing the terminal (it has no machine's picture to change from)
+    var rise = tv.phone && inLead ? (RM ? 1 : io(ss(AGENTS.PACK[0] + 0.2, AGENTS.PACK[1] + 0.1, p))) : 1;
+    var lift = rise < 1 ? (1 - rise) * (H - tv.t + 40) : 0;
+    css(tvEl, 'transform', lift ? 'translate3d(0,' + lift.toFixed(1) + 'px,0)' : '');
+    if (inLead) placeSet(k, tv.phone ? 1 : tune, false, lift);
     else if (out < 1) placeSet(out, 1, true);
     else placeSet(1, 1, false);
-    // a phone's room has no set of its own in the machines chapter: there it comes up into the frame as the bench goes
-    var rise = tv.phone && inLead ? (RM ? 1 : io(ss(AGENTS.PACK[0] + 0.2, AGENTS.PACK[1] + 0.1, p))) : 1;
-    css(tvEl, 'transform', rise < 1 ? 'translate3d(0,' + ((1 - rise) * (H - tv.t + 40)).toFixed(1) + 'px,0)' : '');
     css(glowEl, 'visibility', tv.phone || !inLead ? '' : 'hidden');      // (the machines chapter's own set glows in its room)
     // the name: in from the left wing over the bare room; up and away as the camera goes for the glass (look B's word)
     var nk = RM ? (p > AGENTS.NAME[0] + 0.2 && p <= AGENTS.RM_CUT ? 1 : 0) : io(ss(AGENTS.NAME[0], AGENTS.NAME[1], p));
