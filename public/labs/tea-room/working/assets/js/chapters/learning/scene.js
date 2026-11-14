@@ -206,17 +206,37 @@ export function mount(host, options = {}) {
         // Leaving the desk, in one curve: it rises off the book, comes down under the paper ceiling and backs away
         // toward the room's middle, the next chapter's first place.
         toPose();
-        const s = lift, a = (1 - s) * (1 - s), b = 2 * s * (1 - s), c = s * s;
-        ctl.copy(rest.p).lerp(to.p, 0.45); ctl.y = Math.max(to.p.y, Math.min(rest.p.y, 2.45));
-        bz.copy(rest.p).multiplyScalar(a).addScaledVector(ctl, b).addScaledVector(to.p, c);
-        camera.position.copy(bz);
-        // (it keeps its eye on the book while it rises, then on the room's far corner, where the next chapter looks)
-        lookT.copy(restT).lerp(new Vector3(...toCam.q), ss(0.12, 0.95, s));
-        tmp.position.copy(bz); tmp.up.set(0, 1, 0); tmp.lookAt(lookT); qq.copy(tmp.quaternion);
-        if (tall) camera.quaternion.slerpQuaternions(rest.q, qq, ss(0, 0.35, s)); else camera.quaternion.copy(qq);
-        camera.fov = rest.fov + (to.fov - rest.fov) * ss(0, 0.7, s);
-        camera.near = restNear + (0.1 - restNear) * ss(0, 0.5, s);
-        kit.ink.uniforms.uW.value = restInk + (OUTLINE - restInk) * ss(0, 0.6, s);
+        // (a phone's reader's seat is high over the roof, straight above the book: there the camera first comes down,
+        // under the paper ceiling, the lens widening so the book keeps its size; then it turns up to the room)
+        const DOWN = tall ? 0.42 : 0, Y1 = 3.15;
+        let s = lift, start = rest.p, fov0 = rest.fov;
+        if (DOWN > 0) {
+          const k = ss(0, DOWN, lift), d0 = rest.p.y - restT.y;
+          bz.copy(rest.p); bz.y = rest.p.y + (Y1 - rest.p.y) * k;
+          const fd = Math.min(50, 2 * Math.atan(Math.tan(rad(rest.fov) / 2) * d0 / (bz.y - restT.y)) * 180 / Math.PI);
+          start = ctl.copy(rest.p); start.y = Y1; fov0 = Math.min(50, 2 * Math.atan(Math.tan(rad(rest.fov) / 2) * d0 / (Y1 - restT.y)) * 180 / Math.PI);
+          s = clamp((lift - DOWN) / (1 - DOWN));
+          if (s <= 0) {
+            camera.position.copy(bz); camera.quaternion.copy(rest.q); camera.fov = fd;
+            camera.near = Math.max(0.1, bz.y - 3.2);                // (nothing of the house above the camera's way down is drawn: its eaves come lower than the ceiling)
+            kit.ink.uniforms.uW.value = restInk + (OUTLINE - restInk) * ss(0, 1, k) * 0.5;
+            s = -1;
+          }
+        }
+        if (s >= 0) {
+          const a = (1 - s) * (1 - s), b = 2 * s * (1 - s), c = s * s;
+          const st = start === rest.p ? rest.p : bz.copy(start);
+          const cp = new Vector3().copy(st).lerp(to.p, 0.45); cp.y = Math.max(to.p.y, Math.min(st.y, 2.45));
+          const pos = new Vector3().copy(st).multiplyScalar(a).addScaledVector(cp, b).addScaledVector(to.p, c);
+          camera.position.copy(pos);
+          // (it keeps its eye on the book while it rises, then on the room's far corner, where the next chapter looks)
+          lookT.copy(restT).lerp(new Vector3(...toCam.q), ss(0.12, 0.95, s));
+          tmp.position.copy(pos); tmp.up.set(0, 1, 0); tmp.lookAt(lookT); qq.copy(tmp.quaternion);
+          if (tall) camera.quaternion.slerpQuaternions(rest.q, qq, ss(0, 0.35, s)); else camera.quaternion.copy(qq);
+          camera.fov = fov0 + (to.fov - fov0) * ss(0, 0.7, s);
+          camera.near = DOWN > 0 ? 0.1 : restNear + (0.1 - restNear) * ss(0, 0.5, s);
+          kit.ink.uniforms.uW.value = restInk + (OUTLINE - restInk) * (DOWN > 0 ? 0.5 + 0.5 * ss(0, 0.6, s) : ss(0, 0.6, s));
+        }
       } else {
         if (lead > 0) {
           camera.position.lerpVectors(from.p, match.p, lead);
