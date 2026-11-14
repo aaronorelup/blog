@@ -205,13 +205,14 @@ export function mount(host, options) {
         // (motion off: the doorway's view with the box shut, then cuts to the huddle, and to the step back for the posts)
         prog = RM ? (rr < 0.5 ? 0 : rr < 2.5 ? 0.6 : 1.0) : trackAt(rr);
         if (RM) rect = prog === 0 || !play ? door : play.rectAt(prog);
-        else if (rr < 1.0) rect = mixRect(door, play ? play.rectAt(0.3) : door, ss(0, 1, rr));
+        // (a narrow screen turns to the box sooner: its doorway's view leaves the box half off the screen's left edge)
+        else if (rr < 1.0) rect = mixRect(door, play ? play.rectAt(0.3) : door, ss(0, narrow ? 0.6 : 1, rr));
         else rect = play ? play.rectAt(prog) : door;
         // the last leg (not on a phone: there the name stands over the doors, above the huddle, already)
         if (play && !play.phone && marks.foot) {
           var fe = p - marks.foot.top, eEnd = RM ? (fe > (END[0] + END[1]) / 2 ? 1 : 0) : io(ss(END[0], END[1], fe));
           if (eEnd > 0) {
-            var r1 = play.rectAt(1), we = Math.min(r1.w * 1.19, W / H * PH, PW), he = we * H / W;
+            var r1 = play.rectAt(1), we = Math.min(r1.w * 1.28, W / H * PH, PW), he = we * H / W;
             var endR = { x: clamp(r1.x - r1.w * 0.045, 0, PW - we), y: PH - he, w: we, h: he };
             rect = mixRect(rect, endR, eEnd);
           }

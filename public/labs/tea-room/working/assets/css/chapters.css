@@ -124,7 +124,7 @@
 .closing-rest { position: sticky; top: 0; height: 100vh; height: 100svh; pointer-events: none; }
 .closing-note { position: absolute; left: var(--content-l); top: calc(10vh + clamp(52px, 11.5vw, 190px) * 0.9 + 64px); width: fit-content; max-width: calc(100vw - 28px); pointer-events: auto; }
 .closing-note .body { padding: 14px 20px 15px; }
-.closing-note p { font: 400 16px/1.4 var(--font-serif); color: var(--pc-strong); }
+.closing-note p { font: 500 15px/1.4 var(--font-body); color: var(--pc-strong); }
 
 @media (max-width: 820px) {
   .film-walk { height: 380vh; }
