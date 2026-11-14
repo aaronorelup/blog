@@ -196,8 +196,11 @@ export function mountPlay(o) {
   let loaded = false;
   loadToys(THREE, renderer, scene, CAST, (toy) => {
     if (!alive) return;
-    toy.index = toys.length; toy.pop = 1; toy.kin = null; toy.launch = null;
-    toys.push(toy); world.bodies.push(toy.body);
+    // (a toy's place in the huddle follows its line in the roster, not the order the models happen to arrive in: so
+    // the huddle is the same on every load, and after any scrolling)
+    toy.index = CAST.indexOf(toy.def); toy.pop = 1; toy.kin = null; toy.launch = null;
+    toys.push(toy); toys.sort((a, b) => a.index - b.index);
+    world.bodies.push(toy.body); world.bodies.sort((a, b) => toys.findIndex((t) => t.body === a) - toys.findIndex((t) => t.body === b));
     slots();
     for (const t of toys) if (t.body.asleep && t.body.on) { const s = t.body.slot; t.body.place(s.x, s.z, s.yaw + t.body.yaw0); }
     if (state === 'open') {
