@@ -109,7 +109,7 @@ export function mount(host, options) {
         '<div class="mc-view mc-up">' +
           '<div class="mc-pics"><img class="mc-pic a" alt=""><img class="mc-pic b" alt=""><div class="mc-erase"></div></div>' +
           '<div class="mc-holder"></div>' +
-          '<div class="mc-film-box" hidden><video class="mc-film" playsinline preload="none" disableremoteplayback></video></div>' +
+          '<div class="mc-film-box" hidden><video class="mc-film" muted playsinline preload="none" disableremoteplayback></video></div>' +
         '</div>' +
       '<div class="mc-tv"><div class="mc-tv-glow"></div><div class="mc-tv-flip">' +
         '<div class="mc-tv-screen"><img class="mc-tv-still" alt=""><video class="mc-tv-film" muted playsinline loop preload="none" disableremoteplayback tabindex="-1"></video></div>' +
@@ -500,9 +500,10 @@ export function mount(host, options) {
     var off = (1 - rise) * (H - L.by + 40), tvOff = (1 - tvRise) * (H - (L.tv ? L.tv.t : H) + 60) * 1.0;
     // (a phone: while no card stands under the bench, in the lead and at the end, the bench stands lower in the frame,
     // the camera tilted up a little; it comes up to make room as the first card comes, and goes down again at the end)
-    var low = phone ? (RM ? (isLead || ending > 0.5 ? 1 : 0) : Math.max(1 - io(ss(CARD[0] - 0.35, CARD[1], p)), ending)) : 0;
+    var low = phone ? (RM ? ((isLead && p <= -0.5) || ending > 0.5 ? 1 : 0) : Math.max(1 - io(ss(CARD[0] - 0.35, CARD[1], p)), ending)) : 0;
     var lowY = low * H * 0.16, roomLow = low * H * 0.05;
     off += lowY;
+    css(plate, 'transform', 'translate3d(-50%,' + lowY.toFixed(1) + 'px,0)');          // (the name on the bench's edge goes with it)
     var upTr = off > 0.05 ? 'translate3d(0,' + off.toFixed(1) + 'px,0)' : '', upVis = rise <= 0.0005 ? 'hidden' : '';
     ups.forEach(function (e) { css(e, 'transform', upTr); css(e, 'visibility', upVis); });
     css(tv, 'transform', tvOff > 0.05 ? 'translate3d(0,' + tvOff.toFixed(1) + 'px,0)' : '');
@@ -541,7 +542,7 @@ export function mount(host, options) {
     }
 
     // which card is up (a fresh load at the same place shows the same)
-    var cardOn = isLead ? (RM ? p > -0.3 : p > CARD[0]) : ending < 0.5;
+    var cardOn = isLead ? (RM ? p > -0.5 : p > CARD[0]) : ending < 0.5;
     setCard(lead, cardOn && pl.step === 'intro');
     setCard(cPart, cardOn && !isLead && (pl.step === 'arrive' || pl.step === 'part'));
     setCard(cBrk, cardOn && !isLead && pl.step === 'break');
