@@ -193,7 +193,7 @@ export function mount(host, options) {
       // (at the lane's left, low: its lens throws across the open lawn of the lane, up to the cloth, and the beam
       // passes neither behind its own reels nor behind the cards.) A screen too narrow for a lane: in the corner
       // under the rail, left of the posts, its beam crossing behind them to the cloth
-      var pw2 = clamp(Math.min(lane * 0.62, H * 0.3), 150, 280);
+      var pw2 = clamp(Math.min(lane * 0.62, H * 0.3), 150, 280 * TEA.s());   // (grows with the page's one scale, chapters.js)
       if (lane >= 200) PJ2 = { x: laneL + pw2 * 0.5, y: H * 1.09, w: pw2 };
       else {
         var railEl = document.getElementById('rail'), railBot = (H + (railEl ? railEl.offsetHeight : 320)) / 2;

@@ -8,18 +8,19 @@
 .st-leaders circle { fill: var(--pc-head); }
 .st-labels { position: absolute; inset: 0; pointer-events: none; }
 .st-word, .st-say { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
-/* a corner of the room, named */
+/* a corner of the room, named (on a desktop its name at 17px, grown with the page's one scale) */
+@media (min-width: 821px) { .st-labels { --st-b: calc(17px * var(--s, 1)); } }
 .st-chip {
   position: absolute; left: 0; top: 0; visibility: hidden; white-space: nowrap; will-change: transform, opacity;
-  padding: 7px 14px 8px; border-radius: 16px; background: var(--tea-card); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+  padding: calc(7px * var(--s, 1)) calc(14px * var(--s, 1)) calc(8px * var(--s, 1)); border-radius: calc(16px * var(--s, 1)); background: var(--tea-card); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
 }
-.st-chip b { display: block; font: 700 15px/1.15 var(--font-display); color: var(--pc-head); letter-spacing: -0.005em; }
-.st-chip span { display: block; margin-top: 2px; font: 600 10.5px/1.2 var(--font-body); letter-spacing: 0.13em; text-transform: uppercase; color: rgb(143, 138, 163); }
+.st-chip b { display: block; font: 700 var(--st-b, 15px)/1.15 var(--font-display); color: var(--pc-head); letter-spacing: -0.005em; }
+.st-chip span { display: block; margin-top: calc(2px * var(--s, 1)); font: 600 var(--t-label, 10.5px)/1.2 var(--font-body); letter-spacing: 0.13em; text-transform: uppercase; color: rgb(143, 138, 163); }
 /* a layer of the drawing, named as it lifts */
 .st-tag {
   position: absolute; left: 0; top: 0; visibility: hidden; white-space: nowrap; will-change: transform, opacity;
-  padding: 6px 11px 6px; border-radius: 999px; background: var(--tea-card);
-  font: 600 11px/1 var(--font-body); letter-spacing: 0.15em; text-transform: uppercase; color: #e9dcc3;
+  padding: calc(6px * var(--s, 1)) calc(11px * var(--s, 1)) calc(6px * var(--s, 1)); border-radius: 999px; background: var(--tea-card);
+  font: 600 var(--t-label, 11px)/1 var(--font-body); letter-spacing: 0.15em; text-transform: uppercase; color: #e9dcc3;
 }
 @media (max-aspect-ratio: 4/5), (max-width: 759px) {
   .st-chip { padding: 6px 11px 7px; border-radius: 999px; }
