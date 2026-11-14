@@ -153,3 +153,51 @@ export function benchLayout(W, H, rail) {
   L.room = { s: s0, tx: tx, ty: ty, x: -tx / s0, y: -ty / s0, w: W / s0, h: H / s0 };
   return L;
 }
+
+/* THE JOIN BETWEEN THE MACHINES ON THE BENCH AND THE AGENTS CHAPTER (agents.js): look B's own move, into the
+   television. After its last machine the bench is put away (machines.js PACK: the machine goes, the backdrop rolls up,
+   the lamp and the table leave), and the room at night is left with the little television on the floor. Its glass
+   turns to the terminal's dark plane, and the camera goes straight at it until the glass is the frame (TVDIVE). The
+   machines chapter moves its room (the whole .mc-world); the agents chapter, drawn over it in its lead, draws the
+   same set's body over its own picture and throws the terminal into the glass. At the agents chapter's end the same
+   move runs backwards out of the glass, into the same bare room, which the agents chapter then draws itself.
+   Both reckon everything from the layout alone, here; times are in screens before the agents section's top (its
+   lead), so the machines chapter reckons them from its own end: p = (q - 1) * span - 1. */
+export var AGENTS = {
+  PACK: [-3.75, -3.0],     // (machines) the machine goes, the backdrop rolls up, the lamp and the table leave
+  NAME: [-3.55, -2.85],    // (agents) the chapter's name comes on from the left wing over the bare room
+  TUNE: [-2.85, -2.45],    // (agents) the glass turns from the machine's picture to the terminal
+  DIVE: [-2.5, -1.0],      // (both) straight into the glass
+  RM_CUT: -1.75            // motion off: one cut from the room to the terminal
+};
+// the glass within the set's picture (img/tv-body.webp, 1200 x 1093): where its hole is, as a box
+export var TV_GLASS = { x0: 129 / 1200, y0: 376 / 1093, x1: 720 / 1200, y1: 918 / 1093 };
+// the television's place on the screen when the camera has not moved: a wide screen's is the bench's (benchLayout); a
+// phone's room has none in the bench, so there it stands on the floor at the right, in front of where the table was
+export function tvPlace(W, H, rail) {
+  var L = benchLayout(W, H, rail);
+  // (the room's layer is the screen's own box, its painting covering it: that box's edge must never come into view)
+  var room = { x: 0, y: 0, w: W, h: H };
+  if (L.tv) return { l: L.tv.l, t: L.tv.t, w: L.tv.w, h: L.tv.h, phone: false, room: L.room, box: room };
+  var w = Math.round(Math.min(W * 0.5, 240)), h = w * 1093 / 1200;
+  return { l: Math.round(W - w - W * 0.06), t: Math.round(H * 0.95 - h), w: w, h: h, phone: true, room: L.room, box: room };
+}
+// the camera at k (0: where it stands, 1: the glass a little larger than the screen, its middle at the screen's
+// middle): the room's transform (scale Z about the screen's corner, then moved by tx, ty), at an even pace for the eye,
+// and where the glass's box then stands on the screen
+export function tvDive(tv, W, H, k) {
+  k = k < 0 ? 0 : k > 1 ? 1 : k;
+  var e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+  var c = Math.min(1, k / 0.7); c = c < 0.5 ? 2 * c * c : 1 - Math.pow(-2 * c + 2, 2) / 2;
+  var gx = tv.l + tv.w * (TV_GLASS.x0 + TV_GLASS.x1) / 2, gy = tv.t + tv.h * (TV_GLASS.y0 + TV_GLASS.y1) / 2;
+  var gw = tv.w * (TV_GLASS.x1 - TV_GLASS.x0), gh = tv.h * (TV_GLASS.y1 - TV_GLASS.y0);
+  var Zend = 1.12 * Math.max(W / gw, H / gh), Z = Math.pow(Zend, e);
+  var cx = gx + (W / 2 - gx) * c, cy = gy + (H / 2 - gy) * c, tx = cx - gx * Z, ty = cy - gy * Z;
+  // (the room's painting never shows its edge: while it is small the glass lags behind its way to the middle)
+  var b = tv.box;
+  if (b && k < 1) {
+    tx = Math.min(Math.max(tx, W - (b.x + b.w) * Z), -b.x * Z); ty = Math.min(Math.max(ty, H - (b.y + b.h) * Z), -b.y * Z);
+    cx = tx + gx * Z; cy = ty + gy * Z;
+  }
+  return { Z: Z, tx: tx, ty: ty, k: k, glass: { x: cx - gw * Z / 2, y: cy - gh * Z / 2, w: gw * Z, h: gh * Z } };
+}
