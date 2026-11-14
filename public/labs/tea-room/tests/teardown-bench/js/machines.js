@@ -23,7 +23,7 @@ export const MACHINES = [
     keep: { 'dray/hero': [365, 0, 860, 795], 'dray/eye': [365, 0, 860, 795] },
     erase: { 'dray/eye': [[595, 135, 170, 45], [700, 605, 185, 50]] },
     crop: { cx: 800, cy: 430, vh: 790, vw: 940 },
-    cropNarrow: { cx: 810, cy: 450, vh: 900, vw: 820 },
+    cropNarrow: { cx: 800, cy: 440, vh: 760, vw: 740 },
     hero: { view: 'HERO' },
     kind: 'toggle', // parts and modes toggle; a mode needs a part
     // DRAY's cut is one plane through the deck (it opens the battery): its crane and its lamp are shown alone instead
@@ -75,7 +75,7 @@ export const MACHINES = [
     stills: ['/media/teardown-lab/hab3/halted.webp', '/media/teardown-lab/hab3/halted.webp', '/media/teardown-lab/hab3/halted.webp'],
     keep: { 'hab3/halted': [400, 140, 740, 470] },
     crop: { cx: 770, cy: 360, vh: 800, vw: 950 },
-    cropNarrow: { cx: 790, cy: 330, vh: 900, vw: 860 },
+    cropNarrow: { cx: 770, cy: 360, vh: 760, vw: 780 },
     hero: { view: 'HERO' },
     kind: 'hab', // a part is isolated by picking it; "cut" is the page's section view
     cutView: 'SECTION',
@@ -121,7 +121,7 @@ export const MACHINES = [
     keep: { 'lander/landed-upright': [190, 90, 1080, 690], 'lander/on-its-side': [190, 90, 1100, 690], 'lander/poster': [190, 90, 1090, 700] },
     erase: { 'lander/landed-upright': [[325, 325, 175, 50], [325, 430, 185, 55], [325, 490, 180, 55], [1065, 430, 215, 50], [1065, 565, 200, 50]] },
     crop: { cx: 760, cy: 420, vh: 740, vw: 880 },
-    cropNarrow: { cx: 790, cy: 440, vh: 900, vw: 780 },
+    cropNarrow: { cx: 770, cy: 430, vh: 760, vw: 720 },
     hero: { view: 'HERO' },
     kind: 'toggle',
     modes: { isolate: 'ISOLATE', cut: 'CUT' },
@@ -170,7 +170,7 @@ export const MACHINES = [
     keep: { 'mole1/hero-3m': [300, 100, 990, 545] },
     erase: { 'mole1/hero-3m': [[420, 180, 105, 40], [430, 228, 115, 42], [370, 410, 155, 45], [1085, 435, 195, 45]] },
     crop: { cx: 780, cy: 400, vh: 760, vw: 900 },
-    cropNarrow: { cx: 780, cy: 440, vh: 900, vw: 780 },
+    cropNarrow: { cx: 780, cy: 400, vh: 760, vw: 740 },
     hero: { view: 'HERO' },
     kind: 'set', // the mode is set (not toggled) first, then a part is picked
     modes: { isolate: 'ISOLATE', cut: 'CUT' },

@@ -183,7 +183,7 @@ function mountStage(host, opt) {
     root.classList.toggle('phone', phone);
     let bx, by, bw, bh, tvW = 0;
     if (phone) {
-      bx = 6; by = 84; bw = W - 12; bh = Math.round(Math.min(H * 0.46, bw * 1.04));
+      bx = 6; by = 78; bw = W - 12; bh = Math.round(Math.min(H * 0.46, bw * 1.04));
     } else {
       const dockW = Math.min(400, W * 0.28);
       root.style.setProperty('--dock-w', dockW + 'px');
@@ -513,12 +513,18 @@ function sweepSvg(bx, by, bw, bh, tcx, tcy, tRy, W) {
         <stop offset="0" stop-color="#7a5658"/><stop offset="${(bend * 0.45).toFixed(3)}" stop-color="#d9ae86"/>
         <stop offset="${bend}" stop-color="#f3cf9f"/><stop offset="1" stop-color="#f7d6a8"/>
       </linearGradient>
+      <filter id="tbSweepGrain" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9 0.35" numOctaves="2" seed="7" result="n"/>
+        <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.16  0 0 0 0 0.1  0 0 0 0 0.08  0 0 0 0.16 0"/>
+        <feComposite in2="SourceGraphic" operator="in"/>
+      </filter>
       <radialGradient id="tbSweepR" gradientUnits="userSpaceOnUse" cx="${f(tcx)}" cy="${f(yB)}" r="${f((R - L) * 0.62)}" gradientTransform="translate(${f(tcx)} ${f(yB)}) scale(1 1.25) translate(${f(-tcx)} ${f(-yB)})">
         <stop offset="0.38" stop-color="#2a1a26" stop-opacity="0"/><stop offset="1" stop-color="#2a1a26" stop-opacity="0.68"/>
       </radialGradient>
     </defs>
     <path d="M${f(L - 14)} ${f(T)} V-20 M${f(R + 14)} ${f(T)} V-20" stroke="#1d1520" stroke-width="2"/>
     <path d="${path}" fill="url(#tbSweepV)"/>
+    <path d="${path}" fill="#000" filter="url(#tbSweepGrain)"/>
     <path d="${path}" fill="url(#tbSweepR)" stroke="#1d1520" stroke-width="2.6" stroke-linejoin="round"/>
     <path d="M${f(L - 22)} ${f(T)} H${f(R + 22)}" stroke="#1d1520" stroke-width="9" stroke-linecap="round"/>
     <path d="M${f(L - 20)} ${f(T - 1)} H${f(R + 20)}" stroke="#6b4632" stroke-width="4" stroke-linecap="round"/>

@@ -222,7 +222,7 @@ button { font: inherit; color: inherit; }
 .phone .plate-name { font-size: 16px; }
 .phone .plate-what { display: none; }
 .phone .turn-btn { padding: 8px 13px; font-size: 13px; }
-.phone .dock { left: 12px; right: 12px; width: auto; top: calc(var(--bench-bottom) + 46px); bottom: 12px; }
+.phone .dock { left: 12px; right: 12px; width: auto; top: calc(var(--bench-bottom) + 40px); bottom: 10px; }
 .phone .dock .card { top: 0; bottom: auto; padding: 16px 17px 16px; max-height: 100%; overflow: hidden; }
 .phone .lead-title { font-size: 32px; }
 .phone .lead-say { font-size: 16px; }
@@ -258,3 +258,6 @@ button { font: inherit; color: inherit; }
 .tb-list .e-btns { margin-top: 16px; }
 .tb-list .sound { max-width: 520px; }
 .li-post { font: 600 16px/1.5 var(--font-body); }
+.phone .b-range { margin-top: 10px; }
+.phone .b-out { margin-top: 6px; }
+.phone .b-read { font-size: 23px; }
