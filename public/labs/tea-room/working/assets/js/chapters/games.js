@@ -26,6 +26,8 @@ var A_LEAD = 0.26;                                // how far into the arena the 
 // the arena's light on the lawn: the storm's grey, a little blue (film.js lights the lawn the same while it dives)
 var LIGHT = [154, 154, 184];
 var POLE_L = 1390, POLE_R = 2250, PIC_R = 2170;    // the cloth's two bamboo poles, and the picture's right edge (plate pixels)
+var HOLD = 0.8;                                    // the garden holds this many screens at the end (chapters.css: .games-foot), under
+                                                  // the next chapter's name; the projector leaves for the left wing in it
 var EDGE = 600;                                   // how far left of the plate the plain sky and lawn reach (plate pixels; on under
                                                   // the plate's faded first 260, games.css)
 
@@ -175,9 +177,12 @@ export function mount(host, options) {
     cache.clear(); projWas = '';
   }
 
-  // where the closing beat's name ends on a wide screen (closing.js sets it: look B's size, left of it the rail)
+  // where the next chapter's name ends on a wide screen (the section after this one names itself, data-word; it sets
+  // the name at look B's size, left of it the rail)
   function nameRight() {
-    var el = document.getElementById('closing'), lines = el && el.dataset.word ? el.dataset.word.split('|') : [''];
+    var el = section.nextElementSibling;
+    while (el && !(el.dataset && el.dataset.word)) el = el.nextElementSibling;
+    var lines = el ? el.dataset.word.split('|') : [''];
     var px = clamp(W * 0.115, 52, 190), left = (parseFloat(getComputedStyle(root).getPropertyValue('--rail-w')) || 172) + Math.max(16, Math.min(46, W * 0.032)) * 2;
     var c = document.createElement('canvas').getContext('2d'), w = 0;
     c.font = '700 ' + px + 'px "Zen Maru Gothic", sans-serif';
@@ -298,7 +303,7 @@ export function mount(host, options) {
       aq = p < T.bell ? lerp(aLead, 0.62, io(clamp(p / T.bell))) : lerp(0.62, 0.8, ss(T.bell, T.out0 + 0.6, p)) - shift * 0.26;
       view = { h: H, cx: W / 2 + shift * W * SHIFT, cy: H / 2 };
       // and back out of the cloth into the garden
-      e = RM ? (p < (T.out0 + span) / 2 ? 0 : 1) : ss(T.out0, span, p);
+      e = RM ? (p < (T.out0 + span - HOLD) / 2 ? 0 : 1) : ss(T.out0, span - HOLD, p);
       if (e > 0) {
         garden_ = true;
         cam = between(KD, KE, e);
@@ -327,13 +332,17 @@ export function mount(host, options) {
       setT(glow, 'translate3d(' + (o[0] + GLOW.x * sc).toFixed(2) + 'px,' + (o[1] + GLOW.y * sc).toFixed(2) + 'px,0) scale(' + (sc / GS).toFixed(5) + ')');
       setO(glow, clamp(0.5 + 0.35 * Math.min(flash, 1.2)));
       var pjP = mixP(PJI, PJE, e), pj = { x: pjP.x - pjP.w / 2, y: pjP.y - pjP.w * 1009 / 618, w: pjP.w, h: pjP.w * 1009 / 618 };
+      // (in the hold, before the next chapter's picture comes across: the projector, the nearest thing, leaves for the
+      // left wing first, as look B's flats leave before its night comes across the room; its beam goes with it)
+      var leave = RM ? (p > span - 0.3 ? 1 : 0) : io(ss(span - 0.45, span - 0.1, p));
+      pj.x -= leave * (Math.max(pj.x, 0) + pj.w + 30);
       placeProj(pj);
       if (!HELD) {
         var spin = tm * 1.15;
         reelA.style.transform = 'scaleX(0.8919) rotate(' + (spin % 6.2832).toFixed(3) + 'rad) scaleX(1.1212)';
         reelB.style.transform = 'scaleX(0.8077) rotate(' + ((spin * 0.86 + 0.6) % 6.2832).toFixed(3) + 'rad) scaleX(1.2381)';
       }
-      drawBeam([pj.x + pj.w * LENS[0], pj.y + pj.h * LENS[1]], quad, ss(0.35, 0.85, e), Math.min(flash, 1)); beamOn = true;
+      drawBeam([pj.x + pj.w * LENS[0], pj.y + pj.h * LENS[1]], quad, ss(0.35, 0.85, e) * (1 - ss(0, 0.6, leave)), Math.min(flash, 1)); beamOn = true;
     } else if (beamOn) { lx.setTransform(1, 0, 0, 1, 0, 0); lx.clearRect(0, 0, lightCv.width, lightCv.height); beamOn = false; }
 
     // whole: the arena (or its still) is in; on the way out the garden's plate and light too
