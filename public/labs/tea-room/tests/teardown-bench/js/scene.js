@@ -211,7 +211,7 @@ function mountStage(host, opt) {
     // the television on the floor at the right, nearer than the bench, its screen turned to the room
     if (!phone) {
       const th = tvW * 1093 / 1200;
-      Object.assign(tv.style, { width: tvW + 'px', left: Math.round(W - W * 0.012 - tvW) + 'px', top: Math.round(H * 0.985 - th) + 'px' });
+      Object.assign(tv.style, { width: tvW + 'px', left: Math.round(W - W * 0.028 - tvW) + 'px', top: Math.round(H * 0.955 - th) + 'px' });
     }
     // the room: the alcove and its scroll behind the bench, the paper screens and the floor lamp to the right
     const s0 = Math.max(W / ROOM.w, H / ROOM.h) * (phone ? 1.0 : 1.08);
@@ -453,7 +453,7 @@ function mountStage(host, opt) {
 
     // the camera: a slow push in on the bench through each machine (the room, the table, the lamp and the machine move as one)
     const g = p.step === 'intro' ? 0 : p.t;
-    const zoom = p.step === 'intro' ? lerp(1.0, 1.015, 1 - p.intro) : lerp(1.015, 1.07, smooth(g));
+    const zoom = p.step === 'intro' ? lerp(1.0, 1.01, 1 - p.intro) : lerp(1.01, 1.04, smooth(g));
     world.style.transform = `scale(${zoom})`;
 
     // the lamp: lit over a machine, dimmed between two (the next one is set down in the dark)
