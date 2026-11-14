@@ -141,7 +141,10 @@ export function mount(host, options) {
     var dq = p <= 0 ? 0 : clamp(p / LB);
     // the end: the ledger shuts, and the camera leaves the desk for the next chapter's first place (join.js SITE)
     var shut = RM ? (p > SITE.RM_CUT ? 1 : 0) : ss(SITE.SHUT[0], SITE.SHUT[1], p);
-    var lift = RM ? (p > SITE.RM_CUT ? 1 : 0) : io(ss(SITE.LIFT[0], SITE.LIFT[1], p));
+    // (a phone's camera turns from straight down to the room on the way: one even ease, not two, so the turn is
+    // spread over half a screen instead of a flick)
+    var lx = ss(SITE.LIFT[0], SITE.LIFT[1], p);
+    var lift = RM ? (p > SITE.RM_CUT ? 1 : 0) : W / H < 0.8 ? lx : io(lx);
     view.setActive(true);
     // (a phone: once the light has gone, the camera rises from the painting's place to the test's own, the desk whole)
     var lead = p >= 0 ? 0 : 1 - io(ss(LEARN.MELT[1], 0, p));
