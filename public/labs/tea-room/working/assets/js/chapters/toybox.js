@@ -42,10 +42,10 @@ var TRACK = [[0, 0.06], [1.0, 0.3], [1.12, 0.34], [1.5, 0.46], [2.5, 0.78], [3.2
 var END = [-0.75, 0.35];
 // then (every screen) the camera comes down a little onto the place where the bench of the next part stands (join.js
 // benchLayout; machines.js draws the bench coming up in front of the toys over these same screens, its CRANE)
-var TURN = [0.5, 1.9];
+var TURN = [0.37, 1.4];
 // and just before it, bedtime: the toys hop back into the box and the lid shuts (the box's own going home, as when the
 // reader scrolls back above the burst), so the room the bench is set up in is tidy; scrolled back, the box bursts again
-var PACK = 0.42;
+var PACK = 0.315;
 
 export function mount(host, options) {
   var RM = options.reduced, HELD = options.held, section = options.section, top = options.top, marks = options.marks;
