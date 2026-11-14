@@ -1,0 +1,30 @@
+/* THIS WEBSITE (assets/js/chapters/site.js): what the chapter draws over its picture. The card is in the page
+   (chapters.css); these are the names over the drawing, the homepage's card very small (the test's own). */
+.st-gl { position: absolute; inset: 0; }
+.st-gl canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 1; }
+.st-leaders { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+.st-leaders line { stroke: #f6e7c8; stroke-width: 1.25; stroke-linecap: round; }
+.st-leaders circle { fill: var(--pc-head); }
+.st-labels { position: absolute; inset: 0; pointer-events: none; }
+.st-word, .st-say { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+/* a corner of the room, named */
+.st-chip {
+  position: absolute; left: 0; top: 0; visibility: hidden; white-space: nowrap; will-change: transform, opacity;
+  padding: 7px 14px 8px; border-radius: 16px; background: var(--tea-card); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+}
+.st-chip b { display: block; font: 700 15px/1.15 var(--font-display); color: var(--pc-head); letter-spacing: -0.005em; }
+.st-chip span { display: block; margin-top: 2px; font: 600 10.5px/1.2 var(--font-body); letter-spacing: 0.13em; text-transform: uppercase; color: rgb(143, 138, 163); }
+/* a layer of the drawing, named as it lifts */
+.st-tag {
+  position: absolute; left: 0; top: 0; visibility: hidden; white-space: nowrap; will-change: transform, opacity;
+  padding: 6px 11px 6px; border-radius: 999px; background: var(--tea-card);
+  font: 600 11px/1 var(--font-body); letter-spacing: 0.15em; text-transform: uppercase; color: #e9dcc3;
+}
+@media (max-aspect-ratio: 4/5), (max-width: 759px) {
+  .st-chip { padding: 6px 11px 7px; border-radius: 999px; }
+  .st-chip b { font-size: 12.5px; }
+  .st-chip span { display: none; }
+  .st-tag { font-size: 9.5px; padding: 5px 9px; }
+}
+/* (in its lead the chapter is drawn over the learning chapter's last move: only its name, so its layer is clear) */
+.chapter-stage[data-chapter='site'] { background: none; }

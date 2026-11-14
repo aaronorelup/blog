@@ -8,13 +8,14 @@
    fills the screen, the rooms change under it, and it draws back into the andon, which stands exactly where the
    painted lantern stood (LEARN's pose; the camera still). From there the test's
    own arrival: the camera comes down onto the writing desk, the ledger opens, and one post is read to a spread, a
-   leaf turned for each. Once the book is open the camera never moves. At the end the lamps go low, and the next
-   chapter's name (closing.js) comes on over the open book.
+   leaf turned for each. Once the book is open the camera stays still. At the end the ledger shuts and the camera
+   leaves the desk for the first place of the next chapter's camera (join.js SITE), in the same modelled room
+   (learning/house.js, shared with site.js), while the next chapter's name comes on.
 
    Everything on the screen is a function of q and the layout (the lamps' flicker and the petals follow the time).
    Motion off: the painting cuts to the desk, the book opens with a whole spread at a time (the test's own). */
 import { mount as mountScene } from './learning/scene.js';
-import { LEARN, learnPose, learnInset, learnRoom } from './join.js';
+import { LEARN, SITE, learnPose, learnInset, learnRoom } from './join.js';
 
 var clamp = function (v, a, b) { a = a === undefined ? 0 : a; b = b === undefined ? 1 : b; return v < a ? a : v > b ? b : v; };
 var smooth = function (v) { v = clamp(v); return v * v * (3 - 2 * v); };
@@ -22,15 +23,14 @@ var ss = function (a, b, x) { return smooth((x - a) / (b - a)); };
 var io = function (t) { t = clamp(t); return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; };
 
 var LB = 8;                       // the test's 0..1 runs over LB screens from the section's top (its own track: 900vh)
-var LOW = [0.4, 1.3];             // screens after that: the lamps go low as the next chapter's name comes on (.learning-foot)
-var T_HELD = 7.3;                 // (the test's own held time)
+var T_HELD = 7.3;                 // (the test's own held time; site.js holds the same, so the petals do not jump at the join)
 var K = 1.4;                      // (look B lays its type out larger than it is drawn)
 
 export function mount(host, options) {
   var RM = options.reduced, HELD = options.held, section = options.section, root = document.documentElement;
-  host.innerHTML = '<div class="lr-gl"></div><div class="lr-flare"></div><div class="lr-low"></div><div class="flat word lr-word"></div><div class="flat say mono lr-say"></div>';
+  host.innerHTML = '<div class="lr-gl"></div><div class="lr-flare"></div><div class="flat word lr-word"></div><div class="flat say mono lr-say"></div>';
   var $ = function (s) { return host.querySelector(s); };
-  var glHost = $('.lr-gl'), flare = $('.lr-flare'), lowEl = $('.lr-low'), word = $('.lr-word'), say = $('.lr-say');
+  var glHost = $('.lr-gl'), flare = $('.lr-flare'), word = $('.lr-word'), say = $('.lr-say');
   (section.dataset.word || '').split('|').forEach(function (line) { var l = document.createElement('span'); l.className = 'l'; l.textContent = line; word.appendChild(l); });
   say.textContent = section.dataset.say || '';
   word.style.visibility = say.style.visibility = 'hidden';
@@ -56,7 +56,7 @@ export function mount(host, options) {
     if (!(im.complete && im.naturalWidth)) { pending++; im.addEventListener('load', done, { once: true }); im.addEventListener('error', done, { once: true }); }
   });
 
-  var narrow = false, left = 0, wy = 0, sx = 0, sy = 0, laid = false, active = false, lastP = -99, flareXY = null, under = false, wing = 0;
+  var narrow = false, left = 0, wy = 0, sx = 0, sy = 0, laid = false, active = false, lastP = -99, flareXY = null, wing = 0;
   // the lantern's light at e (0: none, 1: it fills the screen, every part of it opaque): a hot paper-white core at the
   // lantern's shade, warm amber round it, a deep ember brown at the screen's far corners
   function flareAt(e) {
@@ -124,20 +124,21 @@ export function mount(host, options) {
       css(flare, 'visibility', e > 0 ? 'inherit' : 'hidden');
     } else css(flare, 'visibility', 'hidden');
     if (!swapped) {
-      if (under) { under = false; root.classList.remove('lr-under'); }
       css(glHost, 'visibility', 'hidden'); css(pagesTop, 'visibility', 'hidden');
       // (the modelled room is made ready under the light, so it is whole when the light covers the screen)
-      if (melt > 0 && pending <= 0) { view.setActive(true); view.frame(0, HELD ? T_HELD : t, 0, 1); }
+      if (melt > 0 && pending <= 0) { view.setActive(true); view.frame(0, HELD ? T_HELD : t, 1); }
       else view.setActive(false);
       return true;
     }
     if (pending > 0) return false;
     var dq = p <= 0 ? 0 : clamp(p / LB);
-    var low = RM ? (p > LB + (LOW[0] + LOW[1]) / 2 ? 1 : 0) : ss(LB + LOW[0], LB + LOW[1], p);
+    // the end: the ledger shuts, and the camera leaves the desk for the next chapter's first place (join.js SITE)
+    var shut = RM ? (p > SITE.RM_CUT ? 1 : 0) : ss(SITE.SHUT[0], SITE.SHUT[1], p);
+    var lift = RM ? (p > SITE.RM_CUT ? 1 : 0) : io(ss(SITE.LIFT[0], SITE.LIFT[1], p));
     view.setActive(true);
     // (a phone: once the light has gone, the camera rises from the painting's place to the test's own, the desk whole)
     var lead = p >= 0 ? 0 : 1 - io(ss(LEARN.MELT[1], 0, p));
-    if (!view.frame(dq, HELD ? T_HELD : t, low, lead)) return false;
+    if (!view.frame(dq, HELD ? T_HELD : t, lead, shut, lift)) return false;
     css(glHost, 'visibility', ''); css(pagesTop, 'visibility', '');
     // (the pages' layer lies over this chapter's layer, so over the light: it comes as the light leaves the desk)
     css(pagesTop, 'opacity', e > 0 ? Math.pow(1 - e, 2).toFixed(3) : '');
@@ -145,20 +146,14 @@ export function mount(host, options) {
     var lit = RM ? 1 : ss(LEARN.MELT[0] + 0.3, 0.7, p), f = lit >= 1 ? '' : 'brightness(' + (0.64 + 0.36 * lit).toFixed(3) + ') saturate(' + (0.78 + 0.22 * lit).toFixed(3) + ')';
     css(glHost, 'filter', f); css(pagesTop, 'filter', f);
 
-    // the lamps low: the pages go down into the picture (behind the page, under the dark), so the next chapter's name,
-    // drawn over this chapter, stands clear over them; back up in front, where they can be pressed, as the lamps come up
-    var into = low > 0 ? glHost : pagesTop;
-    if (pages && pages.parentNode !== into) into.appendChild(pages);
-    if (under !== (low > 0)) { under = low > 0; root.classList.toggle('lr-under', under); }
-    css(lowEl, 'opacity', low > 0 ? low.toFixed(3) : '0');
     return true;
   }
 
   return {
     frame: frame,
     resize: function () { view.resize(); if (laid) layout(); },
-    setActive: function (on) { active = !!on; if (!active && under) { under = false; root.classList.remove('lr-under'); } },
-    dispose: function () { root.classList.remove('lr-under'); view.dispose(); pagesTop.remove(); host.textContent = ''; },
+    setActive: function (on) { active = !!on; },
+    dispose: function () { view.dispose(); pagesTop.remove(); host.textContent = ''; },
     // (the rail and a phone's pill name this chapter once its name is on the screen)
     owns: function () { return lastP >= (LEARN.NAME[0] + LEARN.NAME[1]) / 2; },
     get view() { return view; }

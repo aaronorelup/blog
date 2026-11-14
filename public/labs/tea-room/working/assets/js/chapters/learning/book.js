@@ -415,5 +415,30 @@ export function buildBook({ posts, more, part, onSeek }) {
     return c;                                       // true: something drawn with the room has changed
   }
 
-  return { gl, css, layout, pose, faces, strips, M, ink, measures: () => L };
+  // The book shuts (the end of the chapter, before the camera leaves the desk): k 0 is the last spread open, as
+  // pose(1) leaves it; 1 the book shut. The whole left-hand stack (the cover and the four leaves under it) turns back
+  // over the spine as one, stiff as a board: first its top page is seen rising, then, past upright, the cover.
+  function shut(k) {
+    pose(1, false);
+    const s = ss(0, 1, k), a = PI * (1 - s);
+    for (let i = 0; i < turners.length; i++) {
+      const t = turners[i];
+      const yR = TB + TP + (LEAVES + 1 - i) * D + (i === 0 ? 0.003 : 0), yL = 0.006 + i * D;
+      t.a = a; t.hinge.position.y = yR + (yL - yR) * (a / PI); t.hinge.rotation.z = a;
+    }
+    const up = a > PI / 2;
+    for (const f of faces) {
+      let v = 0, z = 2;
+      if (f === base) v = a > 0.02 ? 1 : 0;
+      else if (up && f === turners[LEAVES].back) { v = 1; z = 3; }
+      else if (!up && f === turners[0].front) { v = 1; z = 3; }
+      set(f, v, z); shadeOf(f, 0.001, 0); dimOf(f, f === turners[LEAVES].back ? 0.34 * Math.sin(a) : f === turners[0].front ? 0.2 * Math.sin(a) : 0);
+    }
+    const so = Math.round(shL.userData.o * ss(PI * 0.55, PI, a) * 24) / 24;
+    if (shL.material.opacity !== so) { shL.material.opacity = so; shL.visible = so > 0.004; }
+    spreadNow = s >= 1 ? 0 : LEAVES + 1;
+    return true;
+  }
+
+  return { gl, css, layout, pose, shut, faces, strips, M, ink, measures: () => L };
 }
