@@ -24,9 +24,11 @@
    (time stands still), reduced (motion is turned off), redraw() (ask for a frame when the page is not drawing by
    itself: a picture came in, or a film plays while time is held).
 
-   Two things a line in LIST may add:
+   Three things a line in LIST may add:
      over: true   the chapter is drawn over the last picture of the chapter before it, which stays on and active
      lead: n      the chapter is on the screen for n screens before its own top; q runs from -n up to 0 there
+     parts: [ids] the chapter is several lines in the rail: elements of its section with these ids, in order; the rail
+                  names the one the middle of the screen is in
 
    A scene is loaded when the reader is within a screen and a half of its section, and let go four screens away. A
    picture of the section written as <img data-src> is asked for at the same moment, and only if it is shown (one in
@@ -46,7 +48,7 @@
     { id: 'learning', css: 'learning.css', lead: 2.4 }, // (its lead: the name over the painted room's corner, then the modelled room melts in, join.js LEARN)
     { id: 'site', css: 'site.css', lead: 1.8 },       // (its lead: its name over the learning chapter's last move, the camera leaving the desk; then its own camera, join.js SITE)
     { id: 'projects', css: 'projects.css', lead: 4.6 }, // (its lead: its name over the taken-apart house, then the painted garden dissolves in over the site chapter's last still, join.js PROJ)
-    { id: 'closing', over: true, lead: 1 }      // the page's last beat for now: the next builder's chapter goes above this line
+    { id: 'ending', css: 'ending.css', lead: 1, parts: ['courses', 'now', 'about'] }   // (Courses, Now and About: one scene, three lines in the rail. Its lead: the walk's camera goes in through the tea house's door, join.js ENDING)
   ];
 
   var qs = new URLSearchParams(location.search);
@@ -88,6 +90,11 @@
     c.marks = {}; c.state = 0; c.scene = null; c.whole = false; c.shown = false; c.active = false; c.top = 1e9; c.h = 1;
     var link = document.querySelector('#rail a[href="#' + c.id + '"]');
     c.rail = link ? link.closest('li') : null;
+    c.partRails = (c.parts || []).map(function (id) {
+      var a = document.querySelector('#rail a[href="#' + id + '"]');
+      return { el: document.getElementById(id), li: a ? a.closest('li') : null, top: 1e9 };
+    });
+    if (c.partRails.length) c.rail = c.partRails[0].li;
     // a picture written as <img data-src> is not asked for until its chapter is near (it holds a blank until then)
     Array.prototype.forEach.call(c.section.querySelectorAll('img[data-src]'), function (im) {
       if (!im.getAttribute('src')) im.src = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
@@ -102,6 +109,7 @@
     LIST.forEach(function (c) {
       var r = c.section.getBoundingClientRect();
       c.top = r.top + window.scrollY; c.h = r.height;
+      c.partRails.forEach(function (pr) { if (pr.el) pr.top = pr.el.getBoundingClientRect().top + window.scrollY; });
       Array.prototype.forEach.call(c.section.querySelectorAll('[data-mark]'), function (el) {
         var m = el.getBoundingClientRect();
         c.marks[el.dataset.mark] = { top: (m.top - r.top) / H, h: m.height / H };
@@ -202,6 +210,12 @@
     // the rail: which chapter the middle of the screen is in
     var mid = y + H * 0.5, now = -1;
     for (i = 0; i < LIST.length; i++) if (LIST[i].rail && (mid >= LIST[i].top - H * 0.6 || LIST[i].owns)) now = i;
+    // (a chapter of several parts: its line in the rail is the part the middle of the screen is in)
+    if (now >= 0 && LIST[now].partRails.length) {
+      var prs = LIST[now].partRails, pick = prs[0].li;
+      for (i = 1; i < prs.length; i++) if (prs[i].li && mid >= prs[i].top - H * 0.6) pick = prs[i].li;
+      if (pick && pick !== LIST[now].rail) { LIST[now].rail = pick; railNow = -1; }
+    }
     // (look B's own stage marks its three chapters in the rail too, only when its own reckoning changes: so the mark
     // is checked every frame here, not only when this reckoning changes)
     if (now !== railNow || (now >= 0 && LIST[now].rail && !LIST[now].rail.classList.contains('now'))) {
@@ -227,6 +241,10 @@
     }
   }
   if (qs.has('c') && 'scrollRestoration' in history) history.scrollRestoration = 'manual';
+  // (the last chapter's height is its flowing text: measured again once the fonts are in and the page has loaded)
+  function again() { if (!started) return; measure(); LIST.forEach(function (c) { if (c.scene) c.scene.resize(); }); redraw(); }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(again);
+  window.addEventListener('load', again);
   var rz = 0;
   window.addEventListener('resize', function () {
     clearTimeout(rz);

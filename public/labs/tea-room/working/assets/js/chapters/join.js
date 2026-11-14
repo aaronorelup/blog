@@ -283,3 +283,12 @@ export var SITE = { SHUT: [8.1, 8.7], LIFT: [8.5, 10.0], START: -1, LEAD: 1.8, N
 export var PROJ = { J: 3.6, LEAD: 4.6, NAME: [-4.4, -3.72], OUT: [-3.4, -2.95], DISSOLVE: [-0.88, -0.22], RM_CUT: -2.6, RM_SWAP: -0.5, HOUSE_Z: 2 };
 // the rail on a wide screen: what of the window the walk keeps clear of (its right edge, and a little air)
 export function projectsInset(W, H, rail) { return W / H < 0.9 || !rail || rail.right > W * 0.4 ? 0 : rail.right + 6; }
+
+/* THE JOIN BETWEEN "PROJECTS" AND THE ENDING (Courses, Now and About): the walk's camera goes on into the lit tea house.
+   In the projects section's foot, once the walk's end card has gone, the camera walks on to the house and into its
+   doorway, at look B's own pace (diorama.js gCam: the distance to the door shrinks by the same share with every step):
+   the house's sharp front (look B's garden-doorhi.webp) comes in over the walk's plate as it grows, the doorway's
+   lamplight thins, and the back room is there through it (ending/scene.js roomPlace), until the doorway is the frame.
+   That last picture is the ending's first: in its lead (screens before the ending section's top) its name comes on
+   over the room from the left wing, and leaves as the Courses card comes up. Motion off: the walk's end cuts to the room. */
+export var ENDING = { NAME: [-0.85, -0.2], OUT: [0.12, 0.5] };
