@@ -7,6 +7,8 @@
 #chapters { position: fixed; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; contain: strict; }
 .chapter-stage { position: absolute; inset: 0; overflow: hidden; visibility: hidden; background: #07080f; contain: strict; }
 .chapter-stage.over { background: none; }
+/* (the hold: under every chapter, over look B's stage; shown by chapters.js while a chapter reached by a jump is not whole) */
+.chapter-hold { position: absolute; inset: 0; visibility: hidden; background: #07080f; }
 /* what is pressed while the pictures move: a layer the size of the screen in front of the cards. (Its own
    visibility is switched by chapters.js: nothing in it may set visibility: visible, or it would outstay its chapter.) */
 .chapter-top { position: fixed; inset: 0; z-index: 3; overflow: hidden; visibility: hidden; pointer-events: none; }

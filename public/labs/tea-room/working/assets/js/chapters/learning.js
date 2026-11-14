@@ -4,8 +4,9 @@
    How it joins (join.js LEARN, read it first): after the camera has come back out of the television, the agents
    chapter turns its painted room to the corner where the standing lantern is, by the shoji. Over that (this chapter's
    lead) the chapter's name comes on from the left wing (look B's flat word) and goes; then the modelled room, the
-   homepage's own tea house by night, dissolves in over the painting, seen from the place where its andon stands
-   exactly where the painted lantern stood (LEARN's pose; both pictures still while they melt). From there the test's
+   homepage's own tea house by night, takes the painting's place under the lantern's light: the light grows until it
+   fills the screen, the rooms change under it, and it draws back into the andon, which stands exactly where the
+   painted lantern stood (LEARN's pose; the camera still). From there the test's
    own arrival: the camera comes down onto the writing desk, the ledger opens, and one post is read to a spread, a
    leaf turned for each. Once the book is open the camera never moves. At the end the lamps go low, and the next
    chapter's name (closing.js) comes on over the open book.
@@ -27,9 +28,9 @@ var K = 1.4;                      // (look B lays its type out larger than it is
 
 export function mount(host, options) {
   var RM = options.reduced, HELD = options.held, section = options.section, root = document.documentElement;
-  host.innerHTML = '<div class="lr-gl"></div><div class="lr-low"></div><div class="flat word lr-word"></div><div class="flat say mono lr-say"></div>';
+  host.innerHTML = '<div class="lr-gl"></div><div class="lr-flare"></div><div class="lr-low"></div><div class="flat word lr-word"></div><div class="flat say mono lr-say"></div>';
   var $ = function (s) { return host.querySelector(s); };
-  var glHost = $('.lr-gl'), lowEl = $('.lr-low'), word = $('.lr-word'), say = $('.lr-say');
+  var glHost = $('.lr-gl'), flare = $('.lr-flare'), lowEl = $('.lr-low'), word = $('.lr-word'), say = $('.lr-say');
   (section.dataset.word || '').split('|').forEach(function (line) { var l = document.createElement('span'); l.className = 'l'; l.textContent = line; word.appendChild(l); });
   say.textContent = section.dataset.say || '';
   word.style.visibility = say.style.visibility = 'hidden';
@@ -55,7 +56,15 @@ export function mount(host, options) {
     if (!(im.complete && im.naturalWidth)) { pending++; im.addEventListener('load', done, { once: true }); im.addEventListener('error', done, { once: true }); }
   });
 
-  var narrow = false, left = 0, wy = 0, sx = 0, sy = 0, laid = false, active = false, lastP = -99;
+  var narrow = false, left = 0, wy = 0, sx = 0, sy = 0, laid = false, active = false, lastP = -99, flareXY = null;
+  // the lantern's light at e (0: none, 1: it fills the screen, every part of it opaque): a hot paper-white core at the
+  // lantern's shade, warm amber round it, a deep ember brown at the screen's far corners
+  function flareAt(e) {
+    var x = flareXY[0].toFixed(0), y = flareXY[1].toFixed(0), far = flareXY[2], R = far * (0.3 + 0.75 * e);
+    var a = function (k) { return Math.min(1, Math.pow(e, k)).toFixed(3); };   // (the far parts go opaque only as e reaches 1)
+    return 'radial-gradient(circle at ' + x + 'px ' + y + 'px, rgba(255, 244, 222, ' + a(0.5) + ') 0px, rgba(255, 214, 150, ' + a(0.8) + ') ' + (R * 0.07).toFixed(0) +
+      'px, rgba(232, 150, 72, ' + a(1.4) + ') ' + (R * 0.28).toFixed(0) + 'px, rgba(128, 60, 34, ' + a(2.4) + ') ' + (R * 0.62).toFixed(0) + 'px, rgba(40, 20, 22, ' + a(3.2) + ') ' + R.toFixed(0) + 'px)';
+  }
   function layout() {
     W = root.clientWidth; H = window.innerHeight;
     // the name: look B's rule (closing.js and agents.js have the same)
@@ -66,7 +75,7 @@ export function mount(host, options) {
     word.style.fontSize = (wp * K) + 'px'; say.style.fontSize = (sp * 0.8 * K) + 'px';
     wy = H * (narrow ? 0.11 : 0.1);
     sx = left + wp * 0.08; sy = wy + word.offsetHeight / K + sp * 0.7;
-    was = {}; laid = true;
+    was = {}; laid = true; flareXY = null;
   }
   var was = {};
   function css(e, k, v) { var key = e.className + k; if (was[key] !== v) { was[key] = v; e.style[k] = v; } }
@@ -97,9 +106,23 @@ export function mount(host, options) {
     var gone = narrow ? out : 0, up = narrow ? out * H * 0.06 : 0;
     putName(word, left, wy, gone >= 1 ? 0 : narrow ? nk : nk * (1 - out), up, gone);
     putName(say, sx, sy, gone >= 1 ? 0 : narrow ? nk : nk * (1 - out), up * 0.7, gone);
-    if (melt <= 0) {
+    // THE LANTERN'S LIGHT (MELT): the painted lantern's glow grows until it fills the screen, wholly opaque; under it,
+    // for a breath, the painting gives way to the modelled room (the andon stands where the lantern stood); then the
+    // light draws back into the andon. Never are both rooms seen at once: a frame frozen anywhere is one room and a
+    // light, or the light alone. The camera and the painting stand still the whole time.
+    var mp = clamp((p - LEARN.MELT[0]) / (LEARN.MELT[1] - LEARN.MELT[0])), M = LEARN.MELT_PEAK;
+    var e = RM ? 0 : mp < M[0] ? io(mp / M[0]) : mp <= M[1] ? 1 : io((1 - mp) / (1 - M[1]));
+    var swapped = RM ? melt > 0 : mp > (M[0] + M[1]) / 2;
+    if (melt > 0 && !RM) {
+      if (!flareXY) { var A = learnRoom(W, H, railRect()).andon; flareXY = [A[0], A[1] + (A[2] - A[1]) * 0.36, Math.hypot(Math.max(A[0], W - A[0]), Math.max(A[1], H - A[1]))]; }
+      css(flare, 'background', flareAt(e));
+      css(flare, 'visibility', e > 0 ? 'inherit' : 'hidden');
+    } else css(flare, 'visibility', 'hidden');
+    if (!swapped) {
       css(glHost, 'visibility', 'hidden'); css(pagesTop, 'visibility', 'hidden');
-      view.setActive(false);
+      // (the modelled room is made ready under the light, so it is whole when the light covers the screen)
+      if (melt > 0 && pending <= 0) { view.setActive(true); view.frame(0, HELD ? T_HELD : t, 0); }
+      else view.setActive(false);
       return true;
     }
     if (pending > 0) return false;
@@ -108,17 +131,8 @@ export function mount(host, options) {
     view.setActive(true);
     if (!view.frame(dq, HELD ? T_HELD : t, low)) return false;
     css(glHost, 'visibility', ''); css(pagesTop, 'visibility', '');
-    // The modelled room comes in as the lantern's light spreads: from the andon (where the painted lantern stands)
-    // outward, a soft edge, until it has the whole screen; the camera and the painting still
-    var mk = '';
-    if (melt < 1) {
-      var A = learnRoom(W, H, railRect()).andon, cx = A[0], cy = (A[1] + A[2]) / 2;
-      var far = Math.max(Math.hypot(cx, cy), Math.hypot(W - cx, cy), Math.hypot(cx, H - cy), Math.hypot(W - cx, H - cy));
-      var r = clamp((p - LEARN.MELT[0]) / (LEARN.MELT[1] - LEARN.MELT[0])) * (far + 0.3 * H), soft = 0.26 * H;      // (at an even pace)
-      mk = 'radial-gradient(circle at ' + cx.toFixed(0) + 'px ' + cy.toFixed(0) + 'px, #000 ' + Math.max(0, r - soft).toFixed(0) + 'px, rgba(0,0,0,0) ' + r.toFixed(0) + 'px)';
-    }
-    css(glHost, 'webkitMaskImage', mk); css(glHost, 'maskImage', mk);
-    css(pagesTop, 'webkitMaskImage', mk); css(pagesTop, 'maskImage', mk);
+    // (the pages' layer lies over this chapter's layer, so over the light: it comes as the light leaves the desk)
+    css(pagesTop, 'opacity', e > 0 ? Math.pow(1 - e, 2).toFixed(3) : '');
     // (the modelled room comes in as dim as the painting, and its lamps come up as the camera goes to the desk)
     var lit = RM ? 1 : ss(LEARN.MELT[0] + 0.3, 0.7, p), f = lit >= 1 ? '' : 'brightness(' + (0.64 + 0.36 * lit).toFixed(3) + ') saturate(' + (0.78 + 0.22 * lit).toFixed(3) + ')';
     css(glHost, 'filter', f); css(pagesTop, 'filter', f);

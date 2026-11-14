@@ -205,8 +205,9 @@ export function tvDive(tv, W, H, k) {
 /* THE JOIN BETWEEN THE AGENTS CHAPTER AND THE LEARNING CHAPTER (learning.js): the painted room becomes the modelled
    one. After the camera has come back out of the television, the agents chapter turns its room (the painting, the
    set with it) to the corner where the lantern stands by the shoji (LEARN.TURN): there the painting stands so that its
-   lantern lies exactly where the modelled room's andon is seen from LEARN's pose. The learning chapter then dissolves
-   its modelled room in over the painting, the camera still at that pose (both pictures still), and from there it
+   lantern lies exactly where the modelled room's andon is seen from LEARN's pose. The learning chapter then lets the
+   lantern's light grow until it fills the screen, changes the painting for its modelled room under it (never both at
+   once), and draws the light back into the andon, the camera still at that pose; from there it
    comes down onto the writing desk (the test's own arrival). Both chapters reckon everything from the layout alone,
    here; times are in screens before the learning section's top (its lead). The agents chapter reckons them from its
    own foot: pe = p + FOOT_PE (its walk ends FOOT_PE screens before the learning section's top). */
@@ -214,7 +215,8 @@ export var LEARN = {
   FOOT: 4.6,               // the agents chapter's foot (.agents-foot, 460vh): its walk ends this many screens before learning
   TURN: [-2.35, -1.05],    // (agents) the painted room turns to the lantern's corner; the set leaves the frame
   NAME: [-2.2, -1.5],      // (learning) its name comes on from the left wing
-  MELT: [-0.95, -0.35],    // (learning) the modelled room dissolves in over the painting, both still
+  MELT: [-0.95, -0.35],    // (learning) the lantern's light fills the screen, the rooms change under it, it draws back
+  MELT_PEAK: [0.46, 0.54], // (learning) the part of MELT (0..1) where the light is wholly opaque: the rooms change at its middle
   RM_CUT: -0.6,            // motion off: one cut from the painting to the modelled room
   ANDON: { x: -5.42, z: 4.26, foot: 0.47, top: 1.6 },          // the modelled andon (world/lamps.js)
   LANTERN: { x: 1941, top: 796, foot: 1062 },                   // the painted lantern (img/room.webp, 2752 x 1536)
