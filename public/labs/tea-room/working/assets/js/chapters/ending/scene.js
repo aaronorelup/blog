@@ -55,7 +55,8 @@ function placeOf(w, h, W, H, k, fx, fy, sx, sy, cover) {
 // it as roomPlace() gives it; ready() once its plate is in.
 export function roomScene(parent, redraw) {
   var s = el('div', '', parent);
-  s.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;overflow:hidden;background:#1d1520';
+  // (round the plate, while the room is still smaller than the doorway: the plate's own edge colours, dark ceiling to floor)
+  s.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;overflow:hidden;background:linear-gradient(#1e161f 30%, #3e3139 70%)';
   var p = el('div', '', s);
   p.style.cssText = 'position:absolute;left:0;top:0;width:2752px;height:1536px;transform-origin:0 0';
   var i = el('img', '', p); i.alt = ''; i.decoding = 'async'; i.draggable = false; i.src = IMG + 'room.webp';

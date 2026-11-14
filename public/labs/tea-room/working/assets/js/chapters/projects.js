@@ -15,6 +15,8 @@
 import { mount as mountScene } from './projects/scene.js';
 import { PROJECTS, SHELVES, TOTAL } from './projects/data.js';
 import { PROJ, ENDING, projectsInset } from './join.js';
+import { HOUSE } from './projects/plan.js';
+var HOLE = HOUSE.hole;
 import { doorStack } from './ending/door.js';
 import { roomPlace } from './ending/scene.js';
 
@@ -124,6 +126,14 @@ export function mount(host, options) {
     // the room behind the door: deeper than the doorway, so it grows more slowly; at the end it stands where the ending
     // chapter's first picture has it (ending/scene.js roomPlace), the doorway past the screen's edges
     var P1 = roomPlace(W, H, 0, 0), zr = Math.pow(st.door.R / st.door.Rend, ENDING.DEEP), C = st.door.C;
+    // (never smaller than what of the doorway is on the screen: the doorway is taller than the room's picture is wide
+    // for, so without this the room's edges would show inside it)
+    var hs = st.house, hl = Math.max(0, hs.x + HOLE[0] * hs.s), hr = Math.min(W, hs.x + HOLE[2] * hs.s), ht = Math.max(0, hs.y + HOLE[1] * hs.s), hb = Math.min(H, hs.y + HOLE[3] * hs.s);
+    var ax = P1.x - cend[0], bx = ax + 2752 * P1.s, ay = P1.y - cend[1], by = ay + 1536 * P1.s;
+    if (ax < 0) zr = Math.max(zr, (C[0] - hl) / -ax);
+    if (bx > 0) zr = Math.max(zr, (hr - C[0]) / bx);
+    if (ay < 0) zr = Math.max(zr, (C[1] - ht) / -ay);
+    if (by > 0) zr = Math.max(zr, (hb - C[1]) / by);
     var rm = { x: C[0] + zr * (P1.x - cend[0]), y: C[1] + zr * (P1.y - cend[1]), s: P1.s * zr, tall: tall };
     door.frame(st.house, st.house.zh, rm, tt);
     // (what is drawn over the whole frame goes as the doorway fills it: the walk's vignette and its fireflies)
