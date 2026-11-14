@@ -163,9 +163,38 @@ export function build(kit, G, L, view, houseZ, lantern, onLoad) {
   const lawn = new Mesh(lawnGeo, lawnMat); lawn.position.set(0, -0.25, (houseZ + Zc) / 2);
   group.add(lawn);
 
+  // the walk's moon (css/chapters/projects.css .pw-moon: it stands still on the screen, so it is set far down the
+  // view, where the walk's first view sees it at the painting's place and size; the trees stand in front of it as in
+  // the painting). It comes up only as the camera settles there (the modelled moon has been turned away by then).
+  const moonMesh = (() => {
+    const c = document.createElement('canvas'); c.width = c.height = 512;
+    const g = c.getContext('2d'), R = 100, C = 256;
+    const glow = (r, a) => { const gr = g.createRadialGradient(C, C, R * 0.9, C, C, r); gr.addColorStop(0, 'rgba(246,231,200,' + a + ')'); gr.addColorStop(1, 'rgba(246,231,200,0)'); g.fillStyle = gr; g.fillRect(0, 0, 512, 512); };
+    glow(256, 0.06); glow(R + 60, 0.14);
+    g.beginPath(); g.arc(C, C, R + 3, 0, 6.3); g.fillStyle = '#1a1f4a'; g.fill();
+    const body = g.createRadialGradient(C - 0.24 * R, C - 0.28 * R, 0, C, C, R);
+    body.addColorStop(0, '#fff6dc'); body.addColorStop(0.46, '#f6e7c8'); body.addColorStop(0.72, '#e4d2ae'); body.addColorStop(1, '#d6c39e');
+    g.beginPath(); g.arc(C, C, R, 0, 6.3); g.fillStyle = body; g.fill();
+    g.fillStyle = 'rgba(190,172,140,0.55)';
+    g.beginPath(); g.arc(C - R + 1.32 * R, C - R + 0.64 * R, 0.2 * R, 0, 6.3); g.fill();
+    g.beginPath(); g.arc(C - R + 0.61 * R, C - R + 1.29 * R, 0.13 * R, 0, 6.3); g.fill();
+    const t = new CanvasTexture(c); t.colorSpace = SRGBColorSpace; canvases.push(t);
+    const mr = L.tall ? 0.1 * L.W : 0.06 * L.W, D = 160, k = D / L.f;
+    const sx = L.cx + ((L.tall ? 0.74 : 0.8) - 0.5) * L.W, sy = L.hY - (L.tall ? 0.3 : 0.36) * L.H;   // its middle on the screen
+    const size = (2 * mr) * 512 / (2 * R) * k;
+    const geo = new PlaneGeometry(size, size); geos.push(geo);
+    const m = new MeshBasicMaterial({ map: t, transparent: true, depthWrite: false, opacity: 0 }); m.toneMapped = false; mats.push(m);
+    const mesh = new Mesh(geo, m);
+    mesh.position.set((sx - L.cx) * k, view.y + (L.hY - sy) * k, Zc - D);
+    mesh.renderOrder = -1; mesh.visible = false;
+    group.add(mesh);
+    return mesh;
+  })();
+
   const v = new Vector3();
   // j: the join's progress (each flat rises out of the lawn in its turn), k: as above
   function update(camera, k, j) {
+    moonMesh.material.opacity = k; moonMesh.visible = k > 0.003;
     // each flat turns round its upright to face the camera; at the walk's first view (k 1) it faces down the path,
     // as the painting's flats do, and takes the walk's own fading with distance
     camera.getWorldPosition(v);

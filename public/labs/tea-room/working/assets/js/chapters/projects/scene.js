@@ -270,10 +270,13 @@ export function mount(host, options = {}) {
   const count = (im) => { if (!im.complete) { pending++; const done = () => { pending--; onChange(); }; im.addEventListener('load', done, { once: true }); im.addEventListener('error', done, { once: true }); } };
   for (const e of [house, clouds]) count(e);
   for (const s of treeSrc) { const im = new Image(); im.src = s; count(im); }
+  // (the pictures in the windows are not plates: while one is coming the walk is still whole, its window shows its
+  // empty screen; picsPending is only for the tests' settle)
+  let picsPending = 0;
   function wantPic(p) {
     if (p.picState) return;
-    p.picState = 1; pending++;
-    const done = () => { pending--; p.picState = 2; p.img.classList.add('pw-on'); onChange(); };
+    p.picState = 1; picsPending++;
+    const done = () => { picsPending--; p.picState = 2; p.img.classList.add('pw-on'); onChange(); };
     p.img.src = p.it.pic.src;
     if (p.img.decode) p.img.decode().then(done, done); else { p.img.addEventListener('load', done, { once: true }); p.img.addEventListener('error', done, { once: true }); }
   }
@@ -556,7 +559,10 @@ export function mount(host, options = {}) {
   }
   function dispose() { for (const p of P) { if (p.on) stop(p.s.i); p.card.remove(); } endCard.remove(); world.remove(); }
   const ready = () => pending === 0;
+  const picsReady = () => picsPending === 0;
 
   layout();
-  return { frame, resize, setActive, dispose, ready, count: N, state, start, stop, plan: () => L, world };
+  // (the first two stations' pictures at once: they are in the walk's first view, under the dissolve)
+  wantPic(P[0]); if (P[1]) wantPic(P[1]);
+  return { frame, resize, setActive, dispose, ready, picsReady, count: N, state, start, stop, plan: () => L, world };
 }
