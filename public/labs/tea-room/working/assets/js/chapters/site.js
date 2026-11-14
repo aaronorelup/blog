@@ -39,7 +39,7 @@ var NAMES = [
   { kind: 'tag', piece: 'shoji-front-l-0', at: [-0.95, 0, 0], text: 'Shoji screens', tall: [-6, 60, 'r'], col: ['shoji-right-b-1', [0, 0, -0.6]] },
   { kind: 'tag', piece: 'wall-left', at: [0, 0, 5.2], text: 'Plaster walls', tall: [-6, 30, 'r'], col: ['wall-right-b', [0, 0, -0.6]] },
   { kind: 'tag', piece: 'mat-0', at: [-0.7, 0, 5.1], text: 'Tatami floor', tall: [-6, 26, 'r'], col: ['platform-right', [1, 1, -0.2]] },
-  { kind: 'chip', piece: 'painting', at: [0, 0.6, 0], title: 'Projects', sub: 'The alcove', wide: [24, 64, 'l'], tall: [-4, -58, 'r'] },
+  { kind: 'chip', piece: 'painting', at: [0, 0.6, 0], title: 'Projects', sub: 'The alcove', wide: [-26, 84, 'r'], tall: [-4, -58, 'r'] },
   { kind: 'chip', piece: 'desk', at: [0, 0.3, 0], title: 'The Ledger & Courses', sub: 'The writing desk', wide: [-64, -22, 'r'], tall: [-18, 58, 'l'] },
   { kind: 'chip', piece: 'table', at: [0, 0.6, 0], title: 'Right now', sub: 'The tea table', wide: [36, -72, 'l'], tall: [-30, -50, 'l'] },
   { kind: 'chip', fixed: [0, 5.15, 22], after: 'cabinet', title: 'On your way out', sub: 'The gate', wide: [44, -34, 'l'], tall: [26, 30, 'l'] }
