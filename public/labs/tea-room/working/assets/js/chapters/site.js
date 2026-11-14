@@ -306,7 +306,7 @@ export function mount(host, options) {
     var room = rest - safe.y0 >= 150, e, close = 0;
     // (the card leaving at the top, as the next chapter's name comes on: the drawing goes back to the middle)
     var leave = ss(H * 0.25, -H * 0.15, cr.bottom - H * 0.5);
-    if (RM) e = leave > 0 ? 0 : c;          // (motion off: once the card starts to leave, the drawing is whole again: one cut)
+    if (RM) e = stacked && leave > 0 ? 0 : c;   // (motion off, a phone: once the card starts to leave, the drawing is whole again: one cut)
     else if (!stacked) e = io(clamp((H * 1.15 - cardTop) / (H * 0.3))) * (1 - leave);
     else if (room) e = clamp((safe.y1 - (cardTop - 10)) / Math.max(1, safe.y1 - rest)) * (1 - leave);
     else e = io(c) * (1 - leave);
