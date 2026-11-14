@@ -27,7 +27,7 @@ export function mount(host, options) {
   (section.dataset.word || '').split('|').forEach(function (line) { var l = document.createElement('span'); l.className = 'l'; l.textContent = line; word.appendChild(l); });
   say.textContent = section.dataset.say || '';
   word.style.visibility = say.style.visibility = 'hidden';
-  var scene = mountScene(sceneHost, { reduced: RM });
+  var scene = mountScene(sceneHost, { reduced: RM, redraw: options.redraw });
 
   var W = 1, H = 1, narrow = false, left = 0, wy = 0, sx = 0, sy = 0, wing = 0, laid = false, lastP = -99, marks = [];
   var was = {};

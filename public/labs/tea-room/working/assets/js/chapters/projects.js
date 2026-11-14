@@ -41,7 +41,7 @@ export function mount(host, options) {
       return { left: projectsInset(w, h, rb), top: w <= 820 && rb ? rb.bottom : 0 };
     }
   });
-  var door = doorStack(scene.world), vig = scene.world.querySelector('.pw-vignette'), air = scene.world.querySelector('.pw-air');
+  var door = doorStack(scene.world, options.redraw), vig = scene.world.querySelector('.pw-vignette'), air = scene.world.querySelector('.pw-air');
   var was = {};
   function css(e, k, val) { var key = e.className + k; if (was[key] !== val) { was[key] = val; e.style[k] = val; } }
 

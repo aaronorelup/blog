@@ -12,10 +12,13 @@
 img.end-layer { object-fit: fill; }
 .end-room-foot { display: none; }
 .tall .end-room-foot { display: block; background: linear-gradient(to bottom, rgba(29, 21, 32, 0) 84%, #1d1520 99%); }
-/* the veranda's view: the lawn of the far plate below the line where the tea house stood, the near tree over it */
-.end-lawn {
-  -webkit-mask-image: radial-gradient(ellipse 18% 23% at 50% 40%, transparent 78%, #000 100%);
-  mask-image: radial-gradient(ellipse 18% 23% at 50% 40%, transparent 78%, #000 100%);
+/* the veranda's view: the garden of the far plate; over it, only round the tea house, the same plate darkened and
+   cooled, so the house stands far off with its lamps out (the moon is the only light). (The test masked the house
+   away, which left a pale smudge where it stood.) */
+img.end-asleep {
+  filter: brightness(0.42) saturate(0.5) hue-rotate(-12deg);
+  -webkit-mask-image: radial-gradient(ellipse 15% 17% at 50% 46%, #000 70%, transparent 100%);
+  mask-image: radial-gradient(ellipse 15% 17% at 50% 46%, #000 70%, transparent 100%);
 }
 img.end-tree { left: -1%; top: -14%; width: 88%; height: auto; }
 .end-moonlight { background:
