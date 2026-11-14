@@ -295,6 +295,8 @@ export function mount(host, options) {
     else if (!stacked) e = io(clamp((H * 1.15 - cardTop) / (H * 0.3))) * (1 - leave);
     else if (room) e = clamp((safe.y1 - (cardTop - 10)) / Math.max(1, safe.y1 - rest)) * (1 - leave);
     else e = io(c) * (1 - leave);
+    // (once the card has gone, the next chapter's name stands at the top left: the drawing keeps below it)
+    if (!stacked) safe.y0 += leave * H * 0.27;
     var column = !stacked;
     if (column) safe.x1 -= colW * ss(ACT.apart0, ACT.apart0 + 0.06, T);
     if (!stacked) safe.x1 += (cr.left - 30 - safe.x1) * e;

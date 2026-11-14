@@ -155,7 +155,7 @@ export function mount(host, options = {}) {
   const pace = { ms: 16, at: 0, time: NaN, scale: 1, since: 0, n: 0, slow: false };
   const setScale = (k) => { if (k !== pace.scale) { pace.scale = k; renderer.setPixelRatio(dpr * k); renderer.setSize(W, H, false); glDirty = true; } };
   let lastLead = -1, lastLift = -1, lastShut = -1;
-  const restT = new Vector3(), lookT = new Vector3(), qq = new Quaternion(), to = { p: new Vector3(), q: new Quaternion(), fov: 60 }, toCam = { p: [0, 0, 0], q: [0, 0, 0], fov: 60 }, bz = new Vector3();
+  const ctl = new Vector3(), restT = new Vector3(), lookT = new Vector3(), qq = new Quaternion(), to = { p: new Vector3(), q: new Quaternion(), fov: 60 }, toCam = { p: [0, 0, 0], q: [0, 0, 0], fov: 60 }, bz = new Vector3();
   // where the camera goes when it leaves the desk: the first place of the next chapter's camera (../site/camera.js)
   function toPose() {
     cameraAt(0, tall, toCam);
@@ -203,11 +203,12 @@ export function mount(host, options = {}) {
     if (e !== lastE) {
       lastE = e;
       if (lift > 0) {
-        // Leaving the desk: the arrival's own way back (past where it came from), on to the next chapter's first
-        // place, in one curve: it rises off the book, turns up to the room and backs away toward its middle.
+        // Leaving the desk, in one curve: it rises off the book, comes down under the paper ceiling and backs away
+        // toward the room's middle, the next chapter's first place.
         toPose();
         const s = lift, a = (1 - s) * (1 - s), b = 2 * s * (1 - s), c = s * s;
-        bz.copy(rest.p).multiplyScalar(a).addScaledVector(from.p, b).addScaledVector(to.p, c);
+        ctl.copy(rest.p).lerp(to.p, 0.45); ctl.y = Math.max(to.p.y, Math.min(rest.p.y, 2.45));
+        bz.copy(rest.p).multiplyScalar(a).addScaledVector(ctl, b).addScaledVector(to.p, c);
         camera.position.copy(bz);
         // (it keeps its eye on the book while it rises, then on the room's far corner, where the next chapter looks)
         lookT.copy(restT).lerp(new Vector3(...toCam.q), ss(0.12, 0.95, s));
