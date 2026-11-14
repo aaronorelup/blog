@@ -79,13 +79,14 @@ export function createLive(machine, holder, { onReady, onFail }) {
   // the machine's work, kept going
   const startJob = () => {
     const j = machine.job;
-    if (j.loop) {
+    if (j.scrub == null) {
       win.LIVE.startTour(); win.LIVE.takeOver();
       loopT0 = win.LIVE.T;
       applied.view = null; applied.mode = null;               // (the tour's start set its own view and the drag back)
     } else {
       pressStrip(0, j.scrub);
       press(find(j.play));
+      loopT0 = win.LIVE.T;
     }
     jobOn = true;
   };
@@ -146,7 +147,7 @@ export function createLive(machine, holder, { onReady, onFail }) {
     if (machine.job.play) words.push(machine.job.play);
     if (words.some((w) => !find(w))) return false;
     if (machine.job.scrub != null && !doc.querySelectorAll('.hit')[0]) return false;
-    if (machine.job.loop && typeof win.LIVE.startTour !== 'function') return false;
+    if (machine.job.scrub == null && typeof win.LIVE.startTour !== 'function') return false;
     return !!gl;
   };
 

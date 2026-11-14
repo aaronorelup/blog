@@ -47,9 +47,8 @@ export var MACHINES = [
     erase: [[420, 180, 105, 40], [430, 228, 115, 42], [370, 410, 155, 45], [1085, 435, 195, 45]],
     crop: { cx: 790, cy: 430, vh: 880, vw: 1000 },
     cropNarrow: { cx: 790, cy: 430, vh: 860, vw: 760 },
-    // (its HERO view follows it close, and at x60 it shuttles faster than the camera: its SIDE view holds the
-    // trench, the machine and its spoil pile in one picture)
-    view: 'SIDE',
+    // (its HERO view follows it; a wider crop than its page's, so the trench's face and the spoil pile are in too)
+    view: 'HERO',
     kind: 'set',                        // the mode is set (not toggled) first, then a part is picked
     modes: { isolate: 'ISOLATE', cut: 'CUT' },
     allParts: ['DRUMS', 'ARMS', 'HOPPER', 'CHASSIS', 'WHEELS', 'SENSOR BAR', 'BATTERY', 'RADIATOR'],
@@ -57,8 +56,11 @@ export var MACHINES = [
     open: [{ at: 0 }, { at: 0.34, part: 'DRUMS', mode: 'cut' }, { at: 0.6, part: 'HOPPER', mode: 'cut' }, { at: 0.84 }],
     // it starts dark and parked: its scrub bar is pressed a little into the night's dig, where the trench is still
     // shallow and its camera sees it whole beside its spoil pile, and its x60 button plays it from there (shuttling,
-    // biting, dumping; the page loops its own night)
-    job: { scrub: 0.05, play: '×60' },
-    turn: { from: -30, to: 26, lean: 34, sway: 9, tilt: 12 }
+    // biting, dumping). Left to run, it digs on down its drift and out of the picture within a minute, so every
+    // 24 s of the page's clock it is put back to the same place (the page's own scrub bar, as its film would loop).
+    job: { scrub: 0.05, play: '×60', loop: 24 },
+    // (its HERO camera looks at a point ahead of it down the drift: turned far to the left the machine leaves the
+    // picture, so its turn leans right)
+    turn: { from: 4, to: 22, lean: 22, sway: 6, tilt: 10 }
   }
 ];
