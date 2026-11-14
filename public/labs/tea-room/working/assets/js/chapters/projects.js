@@ -117,6 +117,8 @@ export function mount(host, options) {
     setActive: function (on) { if (!on) scene.setActive(false); },
     dispose: function () { scene.dispose(); host.textContent = ''; },
     // (the rail and a phone's pill name this chapter once its name is on the screen)
-    owns: function () { return lastP >= (PROJ.NAME[0] + PROJ.NAME[1]) / 2; }
+    owns: function () { return lastP >= (PROJ.NAME[0] + PROJ.NAME[1]) / 2; },
+    // (for tests: the projects' pictures are in too)
+    picsReady: function () { return scene.picsReady(); }
   };
 }
