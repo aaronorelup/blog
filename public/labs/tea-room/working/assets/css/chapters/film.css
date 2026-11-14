@@ -113,5 +113,9 @@ video.fm-shot.on { opacity: 1; }
   .fm-sound { padding: 10px 12px 11px 16px; }
   .fm-sound-say { font-size: 12.5px; }
   .fm-switch { margin-top: 7px; }
-  .fm-switch button { padding: 7px 12px; }
+  .fm-switch button { padding: 7px 12px; font-size: 14px; }
+  /* (a short window keeps the dock as it was before the type rule: there is no room under the film for more) */
+  .fm-dock { --fm-w: 348px; }
+  .fm-now-meta { font-size: 11px; }
+  .fm-now-go { font-size: 14px; }
 }
