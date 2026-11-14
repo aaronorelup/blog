@@ -52,10 +52,10 @@ var TAGS = NAMES.filter(function (n) { return n.kind === 'tag'; });
 
 export function mount(host, options) {
   var RM = options.reduced, HELD = options.held, section = options.section, root = document.documentElement;
-  host.innerHTML = '<div class="st-gl"></div><svg class="st-leaders" xmlns="http://www.w3.org/2000/svg"></svg><div class="st-labels"></div>' +
+  host.innerHTML = '<div class="st-gl"></div><div class="st-vig"></div><svg class="st-leaders" xmlns="http://www.w3.org/2000/svg"></svg><div class="st-labels"></div>' +
     '<div class="flat word st-word"></div><div class="flat say mono st-say"></div>';
   var $ = function (s) { return host.querySelector(s); };
-  var glHost = $('.st-gl'), leaders = $('.st-leaders'), labelBox = $('.st-labels'), word = $('.st-word'), say = $('.st-say');
+  var vig = $('.st-vig'), glHost = $('.st-gl'), leaders = $('.st-leaders'), labelBox = $('.st-labels'), word = $('.st-word'), say = $('.st-say');
   (section.dataset.word || '').split('|').forEach(function (line) { var l = document.createElement('span'); l.className = 'l'; l.textContent = line; word.appendChild(l); });
   say.textContent = section.dataset.say || '';
   word.style.visibility = say.style.visibility = 'hidden';
@@ -180,7 +180,8 @@ export function mount(host, options) {
     // (the keys: t, where the camera is, what it looks at, its lens)
     JK = ([
       { t: 0, p: null, q: null, fov: 0 },                                       // (cameraAt(1), filled at each frame)
-      tallJ ? { t: 0.42, p: [6, 19, 78], q: [0, 3.0, 2], fov: 44 } : { t: 0.42, p: [13, 13.5, 60], q: [0, 2.6, 2], fov: 34 },
+      // (back over the avenue, high, the house closed and far down it; then down behind the grove of the first view)
+      tallJ ? { t: 0.42, p: [4, 30, Zc - 16], q: [0, 2.6, 2], fov: 44 } : { t: 0.42, p: [9, 24, Zc - 18], q: [0, 2.6, 2], fov: 34 },
       { t: 0.8, p: [x + (tallJ ? 0.4 : 1.2), ey + 6.2, Zc + 6.5], q: [x, ey - 0.6, Zc - 60], fov: JV.fov + 3 },
       { t: 1, p: [x, ey, Zc], q: [x, ey, Zc - 60], fov: JV.fov }
     ]);
@@ -332,7 +333,7 @@ export function mount(host, options) {
     if (grove) {
       grove.group.visible = j > 0;
       if (hillFar) hillFar.visible = !(j > 0);
-      if (j > 0) grove.update(camera, ss(0.72, 1, j));
+      if (j > 0) grove.update(camera, ss(0.72, 1, j), j);
     }
     HS.petals.update(time);
     if ((u !== lastU || gaps !== lastGaps) && shadowsNow) { lastU = u; lastGaps = gaps; renderer.shadowMap.needsUpdate = true; }
@@ -367,6 +368,9 @@ export function mount(host, options) {
       return true;
     }
     if (HS.claim(glHost, 'site')) takeOver();
+    // (the walk's own vignette comes on as the camera comes down to its first view)
+    var vk = Math.round(ss(0.7, 1, j) * 200) / 200;
+    css(vig, 'opacity', vk > 0 ? String(vk) : '0');
     var f0 = book.faces[0];
     if (HS.coverGL.userData.paint(f0.w, f0.h, parseFloat(f0.el.style.fontSize) || 10, tall)) dirty = true;
     css(glHost, 'visibility', ''); css(leaders, 'visibility', ''); css(labelBox, 'visibility', '');
