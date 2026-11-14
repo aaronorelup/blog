@@ -149,7 +149,7 @@
 /* The walk round the terminal (the test's 0..1, 11.5 screens from one screen before the section's top), then the way back
    out of the television's glass into the room. */
 .agents-walk { height: 1050vh; }
-.agents-foot { height: 370vh; }
+.agents-foot { height: 300vh; }   /* (the next chapter's name comes on as the camera lands back in the room) */
 
 /* ---------------------------------------------------------------- the closing beat (a draft: see chapters/closing.js) */
 /* its one small line stands under the name: the section's last screen is the page's last picture */

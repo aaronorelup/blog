@@ -10,6 +10,7 @@
 
 /* the world: the room, the bench, the lamp, the television; moved by the camera as one. Its order is its depth. */
 .mc-world { inset: 0; will-change: transform; }
+.mc-diving, .mc-diving * { will-change: auto !important; }   /* (into the television: machines.js, the dive) */
 .mc-world > * { position: absolute; }
 .mc-room { inset: 0; overflow: hidden; background: #1a1424; }
 .mc-room-img { position: absolute; left: 0; top: 0; width: 2752px; height: 1536px; max-width: none; transform-origin: 0 0; filter: brightness(0.72); user-select: none; }
@@ -27,6 +28,11 @@
 /* the backdrop: lit by the lamp, dark when the lamp is */
 .mc-sweep { left: 0; top: 0; overflow: visible; will-change: transform; pointer-events: none; filter: brightness(calc(0.3 + 0.7 * var(--lit))); }
 .mc-sweep svg { display: block; overflow: visible; }
+/* the sheet's roll as it is rolled back up at the end (machines.js): a tube in the sheet's own colours, inked as the room */
+.mc-roll { position: absolute; left: 0; top: 0;
+  background: linear-gradient(180deg, #4a3038 0%, #a77a66 20%, #ecc9a0 38%, #d2a782 55%, #8a5f55 80%, #3a252c 100%);
+  box-shadow: 0 0 0 1.5px #1d1520, 0 6px 10px -2px rgba(20, 12, 20, 0.55); }
+.mc-roll::before { content: ''; position: absolute; left: 1.5%; right: 1.5%; top: 30%; height: 1px; background: rgba(255, 236, 205, 0.55); }
 /* the pool of lamplight on the table top, where the machine stands */
 .mc-pool { inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: calc(0.12 + 0.88 * var(--lit));
   background: radial-gradient(calc(var(--trx) * 0.78) calc(var(--try) * 1.15) at var(--tcx) calc(var(--tcy) - var(--try) * 0.12),
