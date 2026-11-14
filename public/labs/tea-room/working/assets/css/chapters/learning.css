@@ -26,7 +26,7 @@
 .lb-gl { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; opacity: 0; }
 .lb-live .lb-gl { opacity: 1; }
 .lb-css { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; visibility: hidden; }   /* (z-index: the pages' own order stays inside it) */
-.lb-live .lb-css { visibility: visible; }
+.lb-live .lb-css { visibility: inherit; }   /* (inherit, never visible: a layer the page hides must hide it) */
 .lb-probe { position: absolute; left: 0; top: 0; width: 1px; height: 100vh; height: 100svh; visibility: hidden; pointer-events: none; }
 
 /* the chapter's word and its line, as the tea room sets them over the world */
