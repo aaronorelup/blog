@@ -58,7 +58,7 @@ var APPEAR = [-0.95, -0.45];              // and the first machine stands on it
 var DIM = [-2.2, -1.2];                   // the room goes down to the bench's night
 var DEEP = [-1.3, -0.4, 0.3, 1.0];        // and deeper for a while round the section's top (the swap), then back
 var CARD = [-0.55, -0.1];                 // the first card comes up
-// the end (screens after LD): the cards go, the lamp goes down, the camera draws back a little
+// the end (screens after LD): the cards go, the lamp goes down, the camera draws back to the bench's first view
 var END = [0.15, 0.85];
 
 function placeOf(q) {
@@ -222,7 +222,7 @@ export function mount(host, options) {
     Object.assign(lampEl.style, { left: (L.tcx - lw / 2) + 'px', top: ly + 'px', width: lw + 'px' });
     host.style.setProperty('--lx', L.tcx + 'px'); host.style.setProperty('--ly', (ly + lw) + 'px');
     if (L.tv) Object.assign(tv.style, { width: L.tv.w + 'px', left: L.tv.l + 'px', top: L.tv.t + 'px' });
-    roomImg.style.transform = 'translate3d(' + L.room.tx + 'px,' + L.room.ty + 'px,0) scale(' + L.room.s + ')';
+    roomImg._s = undefined;                          // (frame() places the room: the phone's tilt moves it)
     world.style.transformOrigin = L.tcx + 'px ' + (L.tcy - bh * 0.35) + 'px';
     // the cards: on the right (wide), under the bench (a phone)
     if (phone) {
@@ -486,7 +486,7 @@ export function mount(host, options) {
     var rise = RM ? (p > -1.3 ? 1 : 0) : io(ss(RISE[0], RISE[1], p));
     var tvRise = RM ? rise : io(ss(TVRISE[0], TVRISE[1], p));
     var dimK = RM ? (p > -1.3 ? 1 : 0) : ss(DIM[0], DIM[1], p);
-    var deepK = RM ? 0 : (p < DEEP[1] ? ss(DEEP[0], DEEP[1], p) : 1 - ss(DEEP[2], DEEP[3], p));
+    var deepK = RM ? (p > -1.3 && p < 0.3 ? 1 : 0) : (p < DEEP[1] ? ss(DEEP[0], DEEP[1], p) : 1 - ss(DEEP[2], DEEP[3], p));
     var lower = RM ? (p > -1.3 ? 1 : 0) : io(ss(LOWER[0], LOWER[1], p));
     var light = RM ? (p > -1.3 ? 1 : 0) : ss(LIGHT[0], LIGHT[1], p);
     var unroll = RM ? (p > -1.3 ? 1 : 0) : io(ss(UNROLL[0], UNROLL[1], p));
@@ -498,16 +498,23 @@ export function mount(host, options) {
     css(deep, 'opacity', deepK.toFixed(3));
     // the near things come up from below the frame, the nearest fastest (the camera comes down to the table's height)
     var off = (1 - rise) * (H - L.by + 40), tvOff = (1 - tvRise) * (H - (L.tv ? L.tv.t : H) + 60) * 1.0;
+    // (a phone: while no card stands under the bench, in the lead and at the end, the bench stands lower in the frame,
+    // the camera tilted up a little; it comes up to make room as the first card comes, and goes down again at the end)
+    var low = phone ? (RM ? (isLead || ending > 0.5 ? 1 : 0) : Math.max(1 - io(ss(CARD[0] - 0.35, CARD[1], p)), ending)) : 0;
+    var lowY = low * H * 0.16, roomLow = low * H * 0.05;
+    off += lowY;
     var upTr = off > 0.05 ? 'translate3d(0,' + off.toFixed(1) + 'px,0)' : '', upVis = rise <= 0.0005 ? 'hidden' : '';
     ups.forEach(function (e) { css(e, 'transform', upTr); css(e, 'visibility', upVis); });
     css(tv, 'transform', tvOff > 0.05 ? 'translate3d(0,' + tvOff.toFixed(1) + 'px,0)' : '');
     css(tv, 'visibility', tvRise <= 0.0005 || phone ? 'hidden' : '');
     // the lantern: let down on its cord from above the frame; the backdrop's rod with it, then the sheet unrolls
     var lampOff = -(1 - lower) * (L.lampY + L.lampW * 1.6 + 30);
-    css(lampEl, 'transform', lampOff < -0.05 ? 'translate3d(0,' + lampOff.toFixed(1) + 'px,0)' : '');
     css(lampEl, 'visibility', lower <= 0.0005 ? 'hidden' : '');
-    var rodY = L.by + L.bh * 0.03, rodOff = -(1 - lower) * (rodY + 30), sheetH = sweepH - rodY;
-    css(sweep, 'transform', rodOff < -0.05 ? 'translate3d(0,' + rodOff.toFixed(1) + 'px,0)' : '');
+    var rodY = L.by + L.bh * 0.03, rodOff = -(1 - lower) * (rodY + 30) + lowY, sheetH = sweepH - rodY;
+    lampOff += lowY;
+    css(lampEl, 'transform', Math.abs(lampOff) > 0.05 ? 'translate3d(0,' + lampOff.toFixed(1) + 'px,0)' : '');
+    css(roomImg, 'transform', 'translate3d(' + L.room.tx + 'px,' + (L.room.ty + roomLow).toFixed(1) + 'px,0) scale(' + L.room.s + ')');
+    css(sweep, 'transform', Math.abs(rodOff) > 0.05 ? 'translate3d(0,' + rodOff.toFixed(1) + 'px,0)' : '');
     css(sweep, 'visibility', lower <= 0.0005 ? 'hidden' : '');
     css(sweep, 'clipPath', unroll < 1 ? 'inset(-50px 0 ' + (sheetH * (1 - unroll) + (unroll > 0 ? 0 : 6)).toFixed(1) + 'px 0)' : '');
     var ap = (appear * (1 - ending)).toFixed(3);
@@ -525,7 +532,7 @@ export function mount(host, options) {
     // the camera: a slow push in on the bench through each machine; at the end it draws back a little
     var g = pl.step === 'intro' ? 0 : pl.t;
     var zoom = RM ? 1 : (pl.step === 'intro' ? 1.0 + 0.01 * (1 - pl.intro) : lerp(1.01, 1.04, smooth(g)));
-    zoom = lerp(zoom, 0.985, ending);
+    zoom = lerp(zoom, 1, ending);                     // (never below 1: the room's edges would show)
     if (!isLead) {
       css(world, 'transform', zoom !== 1 ? 'scale(' + zoom.toFixed(5) + ')' : '');
     } else {

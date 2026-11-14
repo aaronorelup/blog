@@ -147,8 +147,9 @@ export function benchLayout(W, H, rail) {
   L.trx = TABLE.rx * L.ts; L.try = TABLE.ry * L.ts;
   L.lampW = phone ? 34 : Math.round(Math.min(78, W * 0.05)); L.lampY = phone ? by - 26 : Math.round(H * 0.005);
   // the room behind: the alcove and its scroll behind the bench
-  var s0 = Math.max(W / PW, H / PH) * (phone ? 1.0 : 1.08);
-  var tx = cl(L.tcx - (phone ? 1080 : 1180) * s0, W - PW * s0, 0), ty = cl(H * 0.5 - (phone ? 700 : 760) * s0, H - PH * s0, 0);
+  // (a phone keeps a twentieth of the screen's height of the painting above the frame: at the end its camera tilts up)
+  var s0 = Math.max(W / PW, H / PH) * 1.08;
+  var tx = cl(L.tcx - (phone ? 1080 : 1180) * s0, W - PW * s0, 0), ty = cl(H * 0.5 - (phone ? 700 : 760) * s0, H - PH * s0, phone ? -H * 0.05 : 0);
   L.room = { s: s0, tx: tx, ty: ty, x: -tx / s0, y: -ty / s0, w: W / s0, h: H / s0 };
   return L;
 }
