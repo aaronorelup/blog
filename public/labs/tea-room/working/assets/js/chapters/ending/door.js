@@ -4,7 +4,7 @@
 // in the doorway the lamplight (garden-veil.webp) thins and the back room is there behind it (ending/scene.js
 // roomScene), deeper than the door, so it grows more slowly; the warm glow round the door fades. Look B's thresholds,
 // on look B's measure of how large the house stands (zh).
-//   doorStack(parent) -> { frame(house, zh, room, t), hide(), ready() }
+//   doorStack(parent, redraw) -> { frame(house, zh, room, t), hide(), ready() }
 //     house: where the walk draws its house plate ({ x, y, s }: top left and scale, the plate 2816 x 1297)
 //     room:  where the room plate stands ({ x, y, s }) and tall (a phone: the room's foot fades to the floor)
 import { roomScene } from './scene.js';
@@ -15,16 +15,17 @@ var ss = function (a, b, x) { var t = clamp((x - a) / (b - a), 0, 1); return t *
 // in the walk's house plate's pixels (look B: the far plate's point (1408, 786) less the ground plate's top, 287)
 var HI = [1064, 257, 704, 396], VEIL = [1356.75, 385.25, 115.25, 122], GLOW = [1416, 469, 560], HOLE = [1358.75, 387.5, 1470, 505.25];
 
-export function doorStack(parent) {
+export function doorStack(parent, redraw) {
   var box = document.createElement('div');
   box.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;z-index:8;pointer-events:none;visibility:hidden';
   parent.appendChild(box);
   var roomBox = document.createElement('div'); roomBox.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%';
   box.appendChild(roomBox);
-  var room = roomScene(roomBox);
+  var room = roomScene(roomBox, redraw);
   function pic(src, w, h) {
     var i = document.createElement('img'); i.alt = ''; i.decoding = 'async'; i.draggable = false; i.src = src;
     i.style.cssText = 'position:absolute;left:0;top:0;width:' + w + 'px;height:' + h + 'px;max-width:none;transform-origin:0 0';
+    if (redraw) i.addEventListener('load', function () { redraw(); });
     box.appendChild(i); return i;
   }
   var veil = pic(IMG + 'garden-veil.webp', 461, 488);

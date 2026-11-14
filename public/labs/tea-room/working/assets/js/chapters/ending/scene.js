@@ -33,7 +33,9 @@ function svg(w, h, body) {
 // once its card has passed). Shared with the walk's door (join.js), which ends on exactly this picture at push 0.
 export function roomPlace(W, H, push, fill) {
   var tall = W / H < 0.9, s;
-  if (tall) s = { k: mix(mix(0.62, 0.66, push), 1.0, fill), fx: 0.6, fy: 0.62, sx: 0.5, sy: mix(0.29, 0.62, fill), cover: false };
+  // (a phone: the room fills the screen from the doorway on, the card passes over it; the test kept it in the top half
+  // above the card, which left an empty floor under it while the walk's door brought it in)
+  if (tall) s = { k: mix(1.0, 1.06, push), fx: 0.6, fy: 0.62, sx: 0.5, sy: 0.5, cover: true };
   else s = { k: mix(1.0, 1.07, push), fx: 0.62, fy: 0.6, sx: 0.68, sy: 0.6, cover: true };
   return placeOf(2752, 1536, W, H, s.k, s.fx, s.fy, s.sx, s.sy, s.cover);
 }
@@ -51,12 +53,13 @@ function placeOf(w, h, W, H, k, fx, fy, sx, sy, cover) {
 // The back room alone, as the walk's door shows it (join.js ENDING): the same room, its drawn props and its foot, styled
 // inline (this chapter's style sheet is not in yet while the walk's camera comes up to the door). put(pl, tall) places
 // it as roomPlace() gives it; ready() once its plate is in.
-export function roomScene(parent) {
+export function roomScene(parent, redraw) {
   var s = el('div', '', parent);
   s.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;overflow:hidden;background:#1d1520';
   var p = el('div', '', s);
   p.style.cssText = 'position:absolute;left:0;top:0;width:2752px;height:1536px;transform-origin:0 0';
   var i = el('img', '', p); i.alt = ''; i.decoding = 'async'; i.draggable = false; i.src = IMG + 'room.webp';
+  if (redraw) i.addEventListener('load', function () { redraw(); });
   i.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;display:block;max-width:none';
   var g = el('div', '', p); g.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%'; g.innerHTML = svg(2752, 1536, roomProps());
   var foot = el('div', '', p);
@@ -68,7 +71,7 @@ export function roomScene(parent) {
       var t = 'translate3d(' + pl.x.toFixed(2) + 'px,' + pl.y.toFixed(2) + 'px,0) scale(' + pl.s.toFixed(5) + ')';
       if (t !== tr) { p.style.transform = t; tr = t; }
       var f = tall ? 'block' : 'none';
-      if (f !== ft) { foot.style.display = f; ft = f; }
+      if (f !== ft) { foot.style.display = 'none'; ft = f; }
     },
     ready: function () { return i.complete; }
   };
@@ -92,6 +95,8 @@ export function mount(host, options) {
     var i = el('img', cls || 'end-layer', parent);
     i.alt = ''; i.decoding = 'async'; i.draggable = false;
     i.src = src; imgs.push(i);
+    // (a picture that comes in asks for a frame: with time held the page draws only when asked)
+    if (options.redraw) i.addEventListener('load', function () { options.redraw(); });
     return i;
   }
   function layer(parent, html, cls) { var d = el('div', cls || 'end-layer', parent); d.innerHTML = html; return d; }
@@ -106,7 +111,8 @@ export function mount(host, options) {
   // and its lit windows masked away: the moon is the only light), the near tree, the veranda's frame.
   var B = scene('now', 2400, 1350, '#211a26');        // under the plate: the veranda's boards
   img(B.plate, IMG + 'garden-sky.webp');
-  img(B.plate, HERO + 'bg-far-night.webp', 'end-layer end-lawn');
+  img(B.plate, HERO + 'bg-far-night.webp', 'end-layer');
+  img(B.plate, HERO + 'bg-far-night.webp', 'end-layer end-asleep');   // the tea house far off, its lamps out
   layer(B.plate, svg(2400, 1350, moon(1060, 300, 74)));
   img(B.plate, HERO + 'bg-mid-night.webp', 'end-layer end-tree');
   layer(B.plate, '', 'end-layer end-moonlight');
@@ -162,12 +168,8 @@ export function mount(host, options) {
     show(A, slide < 1 && q < 0.5);
     if (slide < 1) {
       var push = RM ? 0 : ss(0, 0.72, uA);
-      // a phone: the props in the half screen above the card; as the card goes up and away the room grows to fill the
-      // screen, so no empty floor opens under the card
-      var fill = RM ? (uA >= 0.12 ? 1 : 0) : ss(0, 0.24, uA);
-      var fo = (1 - fill).toFixed(3);
-      if (fo !== lastFoot) { foot.style.opacity = fo; lastFoot = fo; }
-      put(A, room || roomPlace(W, H, push, fill), -slide * W);
+      if (lastFoot !== '0') { foot.style.opacity = '0'; lastFoot = '0'; }   // (the room covers a phone's screen now: no foot)
+      put(A, room || roomPlace(W, H, push, 0), -slide * W);
     }
 
     // --- the veranda: still. It is placed the same for every q.
