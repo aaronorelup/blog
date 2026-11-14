@@ -11,8 +11,27 @@
 import { MACHINES, LAB_POST } from './machines.js';
 import { createLive } from './live.js';
 
-// look B's own room at night and its television, by their own addresses (look B is a record: never edited)
-const ROOM = { src: '/labs/tea-room/b/assets/img/room.webp', w: 2752, h: 1536 };
+// look B's room at night, its television and its low table (the table with its teapot and cups lifted off, so it can be
+// the workbench): copies kept here, in this test's own img/
+const IMG = new URL('../img/', import.meta.url).pathname;
+const ROOM = { src: IMG + 'room.webp', w: 2752, h: 1536 };
+// the table's picture: its top is an ellipse centred at (436, 271), 425 by 130, in its own 873 x 682 pixels
+const TABLE = { w: 873, h: 682, cx: 436, cy: 271, rx: 425, ry: 130 };
+// the one hanging lamp over the bench: a paper lantern, inked like the room (its cord runs up out of the picture)
+const LAMP_SVG = `<svg class="lamp-svg" viewBox="0 0 100 160" width="100" height="160" aria-hidden="true">
+  <defs><radialGradient id="tbLampPaper" cx="50%" cy="58%" r="60%">
+    <stop offset="0" stop-color="#fff6dc"/><stop offset="0.45" stop-color="#ffd58c"/><stop offset="0.85" stop-color="#f09a48"/><stop offset="1" stop-color="#c8682e"/>
+  </radialGradient></defs>
+  <path d="M50 -900 V22" stroke="#1d1520" stroke-width="2.4" fill="none"/>
+  <path d="M37 21 h26 l3 10 h-32 z" fill="#2b1e25" stroke="#1d1520" stroke-width="2.2" stroke-linejoin="round"/>
+  <ellipse cx="50" cy="83" rx="39" ry="53" fill="url(#tbLampPaper)" stroke="#1d1520" stroke-width="3"/>
+  <g fill="none" stroke="#a5532a" stroke-opacity="0.5" stroke-width="1.3">
+    <path d="M24 44 Q50 50 76 44"/><path d="M16 58 Q50 66 84 58"/><path d="M12 73 Q50 82 88 73"/><path d="M11 88 Q50 97 89 88"/>
+    <path d="M14 103 Q50 111 86 103"/><path d="M21 118 Q50 125 79 118"/>
+  </g>
+  <path d="M34 134 h32 l-3 10 h-26 z" fill="#2b1e25" stroke="#1d1520" stroke-width="2.2" stroke-linejoin="round"/>
+  <path d="M50 144 v9" stroke="#1d1520" stroke-width="2"/>
+</svg>`;
 const INTRO = 0.045;                       // the first screen: the title over the room
 const SEG = (1 - INTRO) / MACHINES.length; // one machine's share of the scroll
 // inside one machine's share: it arrives whole, then its parts, then "break it", then its film and its page
@@ -60,26 +79,31 @@ export function mount(host, options = {}) {
 function mountStage(host, opt) {
   const root = el('div', 'tb');
   root.innerHTML = `
-    <div class="room" aria-hidden="true"><img class="room-img" src="${ROOM.src}" width="${ROOM.w}" height="${ROOM.h}" alt="" decoding="async"></div>
-    <div class="tv" aria-hidden="true"><div class="tv-flip">
-      <div class="tv-screen"><img class="tv-still" alt=""><video class="tv-film" muted playsinline loop preload="none" disableremoteplayback tabindex="-1"></video></div>
-      <img class="tv-body" src="/labs/tea-room/b/assets/img/tv-body.webp" width="1200" height="1093" alt="">
-    </div></div>
-    <div class="pool" aria-hidden="true"></div>
-    <figure class="bench">
-      <div class="view">
-        <div class="pics"><img class="pic a" alt=""><img class="pic b" alt=""></div>
-        <div class="holder"></div>
-        <div class="film-box" hidden><video class="film" playsinline preload="none" disableremoteplayback></video></div>
-        <div class="warm" aria-hidden="true"></div>
-        <div class="dim" aria-hidden="true"></div>
-        <p class="waking" hidden>Waking the machine…</p>
-      </div>
-      <figcaption class="plate">
-        <span class="plate-name"></span><span class="plate-what"></span>
-        <button type="button" class="turn-btn" hidden>Turn it yourself</button>
-      </figcaption>
-    </figure>
+    <div class="world">
+      <div class="room" aria-hidden="true"><img class="room-img" src="${ROOM.src}" width="${ROOM.w}" height="${ROOM.h}" alt="" decoding="async"></div>
+      <div class="cone" aria-hidden="true"></div>
+      <img class="table" src="${IMG}bench-table.webp" width="873" height="682" alt="" aria-hidden="true">
+      <div class="sweep" aria-hidden="true"></div>
+      <div class="pool" aria-hidden="true"></div>
+      <div class="shade" aria-hidden="true"></div>
+      <figure class="bench">
+        <div class="view">
+          <div class="pics"><img class="pic a" alt=""><img class="pic b" alt=""><div class="erase"></div></div>
+          <div class="holder"></div>
+          <div class="film-box" hidden><video class="film" playsinline preload="none" disableremoteplayback></video></div>
+          <p class="waking" hidden>Waking the machine…</p>
+        </div>
+        <figcaption class="plate">
+          <span class="plate-name"></span><span class="plate-what"></span>
+          <button type="button" class="turn-btn" hidden>Turn it yourself</button>
+        </figcaption>
+      </figure>
+      <div class="tv" aria-hidden="true"><div class="tv-glow"></div><div class="tv-flip">
+        <div class="tv-screen"><img class="tv-still" alt=""><video class="tv-film" muted playsinline loop preload="none" disableremoteplayback tabindex="-1"></video></div>
+        <img class="tv-body" src="${IMG}tv-body.webp" width="1200" height="1093" alt="">
+      </div></div>
+      <div class="lamp" aria-hidden="true">${LAMP_SVG}<div class="lamp-glow"></div></div>
+    </div>
     <nav class="tabs" aria-label="The four machines"></nav>
     <div class="dock">
       <header class="card lead">
@@ -123,9 +147,10 @@ function mountStage(host, opt) {
 
   const $ = (s) => root.querySelector(s);
   const $$ = (s) => [...root.querySelectorAll(s)];
+  const world = $('.world'), table = $('.table'), sweep = $('.sweep'), lampEl = $('.lamp'), erase = $('.erase');
   const roomImg = $('.room-img'), tv = $('.tv'), tvFilm = $('.tv-film'), tvStill = $('.tv-still');
   const bench = $('.bench'), view = $('.view'), picA = $('.pic.a'), picB = $('.pic.b'), holder = $('.holder');
-  const filmBox = $('.film-box'), film = $('.film'), dim = $('.dim'), waking = $('.waking'), turnBtn = $('.turn-btn');
+  const filmBox = $('.film-box'), film = $('.film'), waking = $('.waking'), turnBtn = $('.turn-btn');
   const lead = $('.lead'), cPart = $('.part'), cBrk = $('.brk'), cEnd = $('.end'), hint = $('.hint');
   const range = $('.b-input');
   tvFilm.addEventListener('playing', () => tvFilm.classList.add('on'));
@@ -149,29 +174,52 @@ function mountStage(host, opt) {
   let picShown = { a: '', b: '' }, picFront = 'a';
   let crop = MACHINES[0].crop, viewW = 0, viewH = 0;
 
-  // ---- layout
+  // ---- layout: the workbench (the low table, drawn large), the machine standing on it, the lamp over it, the television
+  // on the floor beside it; all of it in the room's own picture space, so the camera moves them together
+  let ref = { s: 1, tx: 0, ty: 0 }, pivot = { x: 0, y: 0 };
   function layout() {
     W = host.clientWidth || innerWidth; H = host.clientHeight || innerHeight;
     phone = W < 820 || W / H < 1.05;
     root.classList.toggle('phone', phone);
-    let bx, by, bw, bh;
+    let bx, by, bw, bh, tvW = 0;
     if (phone) {
-      bx = 12; by = 58; bw = W - 24; bh = Math.round(Math.min(H * 0.45, bw * 1.0));
+      bx = 6; by = 84; bw = W - 12; bh = Math.round(Math.min(H * 0.46, bw * 1.04));
     } else {
-      const dockW = Math.min(400, W * 0.3);
-      bx = Math.round(W * 0.04); by = Math.round(H * 0.11);
-      bw = Math.round(W - bx - dockW - W * 0.075); bh = Math.round(H * 0.72);
+      const dockW = Math.min(400, W * 0.28);
       root.style.setProperty('--dock-w', dockW + 'px');
+      tvW = Math.round(Math.min(300, W * 0.18));
+      bx = Math.round(W * 0.04 + dockW + W * 0.01);
+      bw = Math.round(W - bx - tvW * 0.72 - W * 0.015); by = Math.round(H * 0.15); bh = Math.round(H * 0.68);
     }
     Object.assign(bench.style, { left: bx + 'px', top: by + 'px', width: bw + 'px' });
     view.style.height = bh + 'px';
     viewW = bw; viewH = bh;
     root.style.setProperty('--bench-bottom', (by + bh) + 'px');
-    // the television stands on the floor at the back, half behind the frame (the frame is nearer)
+    // the table: its top centred under the machine, the machines' feet about four fifths of the way down the view
+    const tw = bw * (phone ? 1.3 : 1.16), ts = tw / TABLE.w;
+    const tcx = bx + bw / 2, tcy = by + bh * (phone ? 0.8 : 0.82);
+    Object.assign(table.style, { left: (tcx - TABLE.cx * ts) + 'px', top: (tcy - TABLE.cy * ts) + 'px', width: tw + 'px' });
+    root.style.setProperty('--tcx', tcx + 'px'); root.style.setProperty('--tcy', tcy + 'px');
+    root.style.setProperty('--trx', TABLE.rx * ts + 'px'); root.style.setProperty('--try', TABLE.ry * ts + 'px');
+    // the paper sweep: a sheet hung from a rod behind the machine and run forward onto the table, as models are lit on a
+    // bench. The machine's page is multiplied onto it, so the page's pale studio becomes this paper in the lamp's light.
+    sweep.innerHTML = sweepSvg(bx, by, bw, bh, tcx, tcy, TABLE.ry * ts, W);
+    // the lamp: over the machine, hanging from above the picture
+    const lw = phone ? 34 : Math.round(Math.min(78, W * 0.05)), ly = phone ? 52 : Math.round(H * 0.005);
+    Object.assign(lampEl.style, { left: (tcx - lw / 2) + 'px', top: ly + 'px', width: lw + 'px' });
+    root.style.setProperty('--lx', tcx + 'px'); root.style.setProperty('--ly', (ly + lw * 1.0) + 'px');
+    // the television on the floor at the right, nearer than the bench, its screen turned to the room
     if (!phone) {
-      const tw = Math.round(Math.min(230, W * 0.13)), th = tw * 1093 / 1200;
-      Object.assign(tv.style, { width: tw + 'px', left: Math.round(bx + bw - tw * 0.5) + 'px', top: Math.round(H * 0.6 - th) + 'px' });
+      const th = tvW * 1093 / 1200;
+      Object.assign(tv.style, { width: tvW + 'px', left: Math.round(W - W * 0.012 - tvW) + 'px', top: Math.round(H * 0.985 - th) + 'px' });
     }
+    // the room: the alcove and its scroll behind the bench, the paper screens and the floor lamp to the right
+    const s0 = Math.max(W / ROOM.w, H / ROOM.h) * (phone ? 1.0 : 1.08);
+    const tx = clamp(tcx - (phone ? 1080 : 1180) * s0, W - ROOM.w * s0, 0), ty = clamp(H * 0.5 - (phone ? 700 : 760) * s0, H - ROOM.h * s0, 0);
+    ref = { s: s0, tx, ty };
+    roomImg.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${s0})`;
+    pivot = { x: tcx, y: tcy - bh * 0.35 };
+    world.style.transformOrigin = `${pivot.x}px ${pivot.y}px`;
     placeAll();
   }
   function placeMedia(node, c, pw = 1600, ph = 900) {
@@ -185,12 +233,35 @@ function mountStage(host, opt) {
     placeMedia(picA, crop); placeMedia(picB, crop);
     const f = holder.querySelector('iframe');
     if (f) placeMedia(f, crop);
+    placeMedia(film, crop);
+    placeTv(m);
+    if (picShown[picFront]) placeErase(picShown[picFront]);
+  }
+  // the television shows the same machine, closer: its film cropped to the machine, never to the page's console
+  function placeTv(m) {
+    if (phone) return;
+    const sw = tv.clientWidth * 0.504, sh = tv.clientHeight * 0.494;
+    if (!sw || !sh) return;
+    const c = { ...m.crop, vh: m.crop.vh * 0.92, vw: m.crop.vw * 0.92 };
+    for (const node of [tvFilm, tvStill]) {
+      const r = cropRect(sw, sh, c);
+      Object.assign(node.style, { left: r.left + 'px', top: r.top + 'px', width: r.W + 'px', height: r.H + 'px' });
+    }
+  }
+  // the stills are pictures of the whole page, console and all: white (nothing, on the bench) over what is not the machine
+  function placeErase(src) {
+    const m = MACHINES[Math.max(0, cur.i)];
+    const boxes = (m.erase && m.erase[src]) || [];
+    const r = cropRect(viewW, viewH, crop);
+    const k = r.W / 1600;
+    erase.innerHTML = boxes.map(([x, y, w, h]) => `<i style="left:${(r.left + x * k).toFixed(1)}px;top:${(r.top + y * k).toFixed(1)}px;width:${(w * k).toFixed(1)}px;height:${(h * k).toFixed(1)}px"></i>`).join('');
   }
 
   // ---- the pictures under the live page: two layers, cross-faded when the picture changes
   function showPic(src) {
     const front = picFront === 'a' ? picA : picB, back = picFront === 'a' ? picB : picA;
     if (picShown[picFront] === src) return;
+    placeErase(src);
     const backKey = picFront === 'a' ? 'b' : 'a';
     if (picShown[backKey] !== src) { back.src = src; picShown[backKey] = src; }
     back.classList.add('on'); front.classList.remove('on');
@@ -379,21 +450,18 @@ function mountStage(host, opt) {
       b.querySelector('b').style.transform = `scaleX(${f})`;
     });
 
-    // the camera on the room: a slow push in through each machine, a step along the room between them
+    // the camera: a slow push in on the bench through each machine (the room, the table, the lamp and the machine move as one)
     const g = p.step === 'intro' ? 0 : p.t;
-    const along = p.step === 'intro' ? -0.5 : p.i + smooth(clamp((p.t - 0.94) / 0.06));
-    const zoom = lerp(1.0, 1.06, smooth(g)) * (p.step === 'intro' ? lerp(1.0, 1.04, 1 - p.intro) : 1.04);
-    const sBase = Math.max(W / ROOM.w, H / ROOM.h) * (phone ? 1.0 : 1.08) * zoom;
-    const fx = ROOM.w * (0.42 + along * 0.035), fy = ROOM.h * (phone ? 0.46 : 0.5);
-    const tx = clamp(W / 2 - fx * sBase, W - ROOM.w * sBase, 0), ty = clamp(H / 2 - fy * sBase, H - ROOM.h * sBase, 0);
-    roomImg.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${sBase})`;
+    const zoom = p.step === 'intro' ? lerp(1.0, 1.015, 1 - p.intro) : lerp(1.015, 1.07, smooth(g));
+    world.style.transform = `scale(${zoom})`;
 
-    // the table between two machines: the lamp dims, the next one is set down
-    const edge = p.step === 'intro' ? 1 - 0.3 * p.intro : Math.min(p.i === 0 ? 1 : p.t / 0.025, p.i === MACHINES.length - 1 ? 1 : (1 - p.t) / 0.025);
-    dim.style.opacity = String(1 - smooth(edge));
-    // the intro: the frame comes up from the table
+    // the lamp: lit over a machine, dimmed between two (the next one is set down in the dark)
+    const edge = p.step === 'intro' ? 1 - 0.35 * p.intro : Math.min(p.i === 0 ? 1 : p.t / 0.025, p.i === MACHINES.length - 1 ? 1 : (1 - p.t) / 0.025);
+    const lit = smooth(edge);
+    root.style.setProperty('--lit', lit.toFixed(3));
+    // the intro: the machine comes up onto the table
     const rise = p.step === 'intro' ? smooth(1 - p.intro * 1.0) : 1;
-    bench.style.transform = `translate3d(0, ${(1 - rise) * 26}px, 0)`;
+    view.style.transform = `translate3d(0, ${(1 - rise) * 18}px, 0)`;
     // the still under the page turns a little, as the machine does, when the page is not there
     const kb = 1 + 0.035 * smooth(p.step === 'arrive' ? p.t / ARRIVE : 1);
     picA.style.transform = picB.style.transform = `scale(${kb})`;
@@ -421,6 +489,32 @@ function mountStage(host, opt) {
     dispose() { setActive(false); root.remove(); },
     get state() { return { ...cur, live: !!(live && live.ready), liveI, failed: [...failed], driver: live ? live.debug : null }; },
   };
+}
+
+/* the paper sweep behind and under the machine, in screen pixels: an inked outline, lit warm from the lamp above */
+function sweepSvg(bx, by, bw, bh, tcx, tcy, tRy, W) {
+  const L = bx + bw * 0.09, R = bx + bw * 0.91, T = by + bh * 0.02;
+  const yB = tcy - tRy * 0.62, yF = tcy + tRy * 0.42, d = bw * 0.045;
+  const f = (v) => v.toFixed(1);
+  const path = `M${f(L)} ${f(T)} H${f(R)} V${f(yB)} C${f(R)} ${f(yB + tRy * 0.35)} ${f(R + d)} ${f(yF - tRy * 0.5)} ${f(R + d)} ${f(yF - tRy * 0.18)}`
+    + ` Q${f(tcx)} ${f(yF + tRy * 0.22)} ${f(L - d)} ${f(yF - tRy * 0.18)} C${f(L - d)} ${f(yF - tRy * 0.5)} ${f(L)} ${f(yB + tRy * 0.35)} ${f(L)} ${f(yB)} Z`;
+  const top = (T / 1).toFixed(1), bend = ((yB - T) / (yF - T)).toFixed(3);
+  return `<svg width="${Math.ceil(W)}" height="${Math.ceil(yF + tRy)}" viewBox="0 0 ${Math.ceil(W)} ${Math.ceil(yF + tRy)}" aria-hidden="true">
+    <defs>
+      <linearGradient id="tbSweepV" gradientUnits="userSpaceOnUse" x1="0" y1="${top}" x2="0" y2="${f(yF)}">
+        <stop offset="0" stop-color="#9c7064"/><stop offset="${(bend * 0.45).toFixed(3)}" stop-color="#d9ae86"/>
+        <stop offset="${bend}" stop-color="#f3cf9f"/><stop offset="1" stop-color="#f7d6a8"/>
+      </linearGradient>
+      <radialGradient id="tbSweepR" gradientUnits="userSpaceOnUse" cx="${f(tcx)}" cy="${f(yB)}" r="${f((R - L) * 0.62)}" gradientTransform="translate(${f(tcx)} ${f(yB)}) scale(1 1.25) translate(${f(-tcx)} ${f(-yB)})">
+        <stop offset="0.45" stop-color="#2a1a26" stop-opacity="0"/><stop offset="1" stop-color="#2a1a26" stop-opacity="0.55"/>
+      </radialGradient>
+    </defs>
+    <path d="M${f(L - 14)} ${f(T)} V-20 M${f(R + 14)} ${f(T)} V-20" stroke="#1d1520" stroke-width="2"/>
+    <path d="${path}" fill="url(#tbSweepV)"/>
+    <path d="${path}" fill="url(#tbSweepR)" stroke="#1d1520" stroke-width="2.6" stroke-linejoin="round"/>
+    <path d="M${f(L - 22)} ${f(T)} H${f(R + 22)}" stroke="#1d1520" stroke-width="9" stroke-linecap="round"/>
+    <path d="M${f(L - 20)} ${f(T - 1)} H${f(R + 20)}" stroke="#6b4632" stroke-width="4" stroke-linecap="round"/>
+  </svg>`;
 }
 
 /* ---------------------------------------------------------------- reduced motion: the stills, the cards, the buttons */

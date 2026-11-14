@@ -35,7 +35,7 @@ export const MACHINES = [
       {
         button: 'BATTERY', name: 'The battery pack', num: '1.1 × 1.05 m', unit: 'under the deck',
         say: 'Cut the deck open and there it is: one flat pack lying under the load bed, between the wheels.',
-        still: 2,
+        still: 0,
       },
       {
         button: 'MAST & LAMP', name: 'The mast and its lamp', num: '6,000 cd', unit: 'one round eye',
@@ -55,7 +55,7 @@ export const MACHINES = [
       // the task scrubbed to the crane swinging down with its bag (the page's own scrub bar, 51 %): where it can tip
       setup: { hit: 0, at: 0.512 },
       resetOnLeave: true,
-      stills: [0, 2],
+      stills: [0, 0],
       at: 8.2,
     },
   },
