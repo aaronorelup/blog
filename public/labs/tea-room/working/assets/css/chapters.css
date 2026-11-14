@@ -88,7 +88,8 @@
 .games-all { margin: 26vh 0 0 var(--content-l); width: fit-content; }
 .games-all .body { padding: 13px 20px 14px; }
 .games-all a { font: 600 15px/1.3 var(--font-body); }
-.games-foot { height: 265vh; }   /* (the way back out of the cloth: about two screens, as slow as the dive in) */
+.games-foot { height: 345vh; }   /* (the way back out of the cloth: about two screens, as slow as the dive in; then the
+                                   garden holds while the next chapter's name comes on and the tea house slides over) */
 @media (min-width: 821px) {
   .games-picks ul { grid-template-columns: minmax(0, 1fr); gap: 26vh; }
 }
@@ -96,7 +97,24 @@
   .games-bell { left: 14px; right: 14px; width: auto; bottom: 18px; }
   .games-picks { width: auto; margin-right: var(--gutter); }
   .games-all { margin-top: 18px; }
-  .games-foot { height: 255vh; }
+  .games-foot { height: 335vh; }
+}
+
+/* ---------------------------------------------------------------- 3D & animation (assets/js/chapters/toybox.js) */
+/* The section is the camera's road: up the stepping stones and in through the tea house's doorway (look B's opening
+   move), on to the toy box, which bursts, and a step back; then the four posts pass in a column beside the huddle. */
+.toybox-walk { height: 710vh; }
+.toybox-picks { width: min(372px, calc(100vw - 28px)); max-width: none; margin-right: 0; }
+.toybox-all { margin: 26vh 0 0 var(--content-l); width: fit-content; }
+.toybox-all .body { padding: 13px 20px 14px; }
+.toybox-all a { font: 600 15px/1.3 var(--font-body); }
+.toybox-foot { height: 150vh; }
+@media (min-width: 821px) {
+  .toybox-picks ul { grid-template-columns: minmax(0, 1fr); gap: 26vh; }
+}
+@media (max-width: 820px) {
+  .toybox-picks { width: auto; margin-right: var(--gutter); }
+  .toybox-all { margin-top: 18px; }
 }
 
 /* ---------------------------------------------------------------- the closing beat (a draft: see chapters/closing.js) */

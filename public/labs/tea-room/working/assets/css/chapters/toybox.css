@@ -1,0 +1,69 @@
+/* THE 3D & ANIMATION CHAPTER'S SCENE (assets/js/chapters/toybox.js draws it; this file comes with it, not with the page).
+   Its layer has no ground of its own: through its lead it is drawn over the games chapter's last picture. */
+.chapter-stage[data-chapter='toybox'] { background: none; }
+
+/* the tea house at night: look B's garden, in two layers as look B's stage has them (the sky under the room, the house
+   and the lawn over it: the doorway is a hole in the house). Both slide across together, with look B's own edge. */
+.tb-sky, .tb-garden { position: absolute; inset: 0; overflow: hidden; will-change: transform; }
+.tb-sky { background: #131d25; }
+.tb-sky.moving { box-shadow: -4px 0 0 #0d0a14, -26px 0 30px -6px rgba(8, 6, 18, 0.55); }
+.tb-doorglow { background: radial-gradient(closest-side, rgba(255, 196, 110, 0.42), rgba(255, 180, 90, 0.16) 45%, rgba(255, 170, 80, 0) 100%); }
+.tb-motes { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
+
+/* the room: the toy box's 3D picture (or, where three.js is not, the painting itself) */
+.tb-room { position: absolute; inset: 0; overflow: hidden; background: #241a2c; }
+.tb-gl { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; }
+.tb-flat { position: absolute; left: 0; top: 0; width: 2752px; height: 1536px; max-width: none; transform-origin: 0 0; }
+.tb-gl[hidden], .tb-flat[hidden] { display: none; }
+
+/* the chapter's name, as look B sets a name over its world */
+.tb-name { position: absolute; inset: 0; pointer-events: none; }
+.tb-name .say { white-space: normal; text-wrap: pretty; }
+
+/* the hand: over a toy the pointer says it can be picked up (the picture is behind the page: the section shows it) */
+.tb-grab #toybox { cursor: grab; }
+.tb-grabbing, .tb-grabbing * { cursor: grabbing !important; user-select: none; -webkit-user-select: none; }
+
+/* in front of the cards (the chapter's top layer): the toy in the hand, named on the homepage's card, very small */
+.tb-tag {
+  position: absolute; left: 0; top: 0; visibility: hidden; opacity: 0; pointer-events: none; will-change: transform, opacity;
+  width: max-content; max-width: min(300px, calc(100vw - 24px));
+  padding: 11px 16px 13px; border-radius: 18px; background: var(--tea-card);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+  transition: opacity 140ms ease;
+}
+.tb-tag.on { visibility: inherit; opacity: 1; }
+.tb-tag::after {
+  content: ''; position: absolute; left: var(--tip, 50%); bottom: -7px; width: 16px; height: 16px; margin-left: -8px;
+  background: var(--tea-card); border-radius: 3px; transform: rotate(45deg);
+}
+.tb-tag.below::after { bottom: auto; top: -7px; }
+.tb-tag.pinned::after { display: none; }
+.tb-tag .tag-from { margin: 0 0 4px; font: 600 10.5px/1.2 var(--font-body); letter-spacing: 0.13em; text-transform: uppercase; color: var(--pc-gold); }
+.tb-tag .tag-name { display: block; font: 700 18px/1.15 var(--font-display); color: var(--pc-head); letter-spacing: -0.005em; }
+.tb-tag .tag-how { margin: 5px 0 0; font: 400 14px/1.4 var(--font-body); color: var(--home-body); text-wrap: pretty; }
+.chapter-top > .tb-tag { pointer-events: none; }
+
+.tb-hint {
+  position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); will-change: opacity;
+  appearance: none; border: 0; cursor: pointer; white-space: nowrap;
+  padding: 10px 18px 11px; border-radius: 999px; background: var(--tea-card); color: var(--pc-strong);
+  font: 600 13px/1 var(--font-body); letter-spacing: 0.04em; box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+  transition: opacity 200ms ease;
+}
+.tb-hint:hover { color: var(--pc-head); }
+.tb-hint.off { opacity: 0; pointer-events: none; }
+.tb-count {
+  position: absolute; right: 16px; top: 14px; margin: 0; pointer-events: none;
+  font: 500 10.5px/1 var(--font-mono); letter-spacing: 0.02em; color: var(--cream-2); opacity: 0.75;
+}
+.chapter-top > .tb-count { pointer-events: none; }
+
+@media (max-width: 720px) {
+  .tb-hint { bottom: 20px; font-size: 12.5px; }
+  .tb-tag { max-width: calc(100vw - 24px); padding: 10px 14px 12px; border-radius: 16px; }
+  .tb-tag .tag-name { font-size: 16.5px; }
+  .tb-tag .tag-how { font-size: 13.5px; }
+  .tb-count { top: 16px; right: 12px; font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) { .tb-tag, .tb-hint { transition: none; } }
