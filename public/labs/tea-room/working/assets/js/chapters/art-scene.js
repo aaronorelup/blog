@@ -1,4 +1,4 @@
-/* THE GARDEN GALLERY, the scene of the AI art & images chapter (art.js drives it). It is the approved-for-trial test
+/* THE GARDEN GALLERY, the scene of the AI art & images chapter (art.js drives it). It is the test
    tests/garden-gallery/ (its js/scene.js), made a part of the working copy. What changed from the test: the plates by
    the working copy's own addresses (the cinema's garden is the film chapter's night plate, the tea house is look B's
    garden-ground, both the same files the test copied); his pictures by their own addresses in the test's folder, not
