@@ -220,11 +220,12 @@
       redraw();
     }, 120);
   });
+  var fine = !window.matchMedia || window.matchMedia('(pointer: fine)').matches;   // (a phone has no mouse to lean toward)
   window.addEventListener('pointermove', function (ev) {
-    if (ev.pointerType !== 'mouse') return;
-    // (before the page is measured W is 0: the window's own width, so the lean is never NaN)
-    var w = W || root.clientWidth || 1, h = H || window.innerHeight || 1;
-    ptr.x = clamp(ev.clientX / w * 2 - 1, -1, 1) || 0; ptr.y = clamp(ev.clientY / h * 2 - 1, -1, 1) || 0;
+    // (only a real mouse, once the page is measured: a browser may send one made-up move at 0,0 as the page loads,
+    // before W is known, which gave the lean NaN (and stopped the page drawing) or a full lean to the corner)
+    if (ev.pointerType !== 'mouse' || !started || !W || !fine) return;
+    ptr.x = clamp(ev.clientX / W * 2 - 1, -1, 1) || 0; ptr.y = clamp(ev.clientY / H * 2 - 1, -1, 1) || 0;
   }, { passive: true });
 
   window.TEA = {
