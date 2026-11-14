@@ -269,3 +269,18 @@ export function learnRoom(W, H, rail) {
    goes on at once, while the learning chapter, its scroll at its end, stands aside (learning.js).
    Motion off: one cut at RM_CUT, from the open book to that first place. */
 export var SITE = { SHUT: [8.1, 8.7], LIFT: [8.5, 10.0], START: -1, LEAD: 1.8, NAME: [-1.7, -1.05], OUT: [0.022, 0.07], RM_CUT: 9.2 };
+
+/* THE JOIN BETWEEN "THIS WEBSITE" AND "PROJECTS": the modelled garden becomes the painted one.
+   The site chapter's section is J screens longer than it was (.site-foot): after its card has gone, its last J screens
+   (JOIN, from 0 to 1 over them) close the house again, layer by layer, while the camera sweeps round to the front,
+   pulls back high over the lawn and comes down, behind a grove, to eye level on a stepping-stone path, looking back
+   at the lit house far away. That last place is the projects walk's own first view (projects/plan.js firstView):
+   the grove is the walk's own painted trees, bushes, stones and first lantern, stood up in the modelled garden as
+   flats where the walk has them (projects/twin.js). Then the site chapter's scroll is at its end, and its picture
+   holds for a screen: over it the painted walk dissolves in (DISSOLVE), both still, before the walk begins at the
+   projects section's top. Times below are in screens before the projects section's top (its lead).
+   The projects chapter's name comes on where the closing beat named it (over the taken-apart house, the card gone)
+   and leaves as the house closes. Motion off: the join is one cut (RM_CUT) to the last place; the dissolve one cut. */
+export var PROJ = { J: 3.6, LEAD: 4.6, NAME: [-4.4, -3.72], OUT: [-3.4, -2.95], DISSOLVE: [-0.88, -0.22], RM_CUT: -2.6, RM_SWAP: -0.5, HOUSE_Z: 2 };
+// the rail on a wide screen: what of the window the walk keeps clear of (its right edge, and a little air)
+export function projectsInset(W, H, rail) { return W / H < 0.9 || !rail || rail.right > W * 0.4 ? 0 : rail.right + 6; }

@@ -45,6 +45,7 @@
     { id: 'agents', css: 'agents.css', lead: 3.6 },   // (its lead: the name over the bare room, then into the television, join.js AGENTS)
     { id: 'learning', css: 'learning.css', lead: 2.4 }, // (its lead: the name over the painted room's corner, then the modelled room melts in, join.js LEARN)
     { id: 'site', css: 'site.css', lead: 1.8 },       // (its lead: its name over the learning chapter's last move, the camera leaving the desk; then its own camera, join.js SITE)
+    { id: 'projects', css: 'projects.css', lead: 4.6 }, // (its lead: its name over the taken-apart house, then the painted garden dissolves in over the site chapter's last still, join.js PROJ)
     { id: 'closing', over: true, lead: 1 }      // the page's last beat for now: the next builder's chapter goes above this line
   ];
 
