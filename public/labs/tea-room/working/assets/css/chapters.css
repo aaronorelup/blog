@@ -149,7 +149,7 @@
 .toybox-all { margin: 26vh 0 0 var(--content-l); width: fit-content; }
 .toybox-all .body { padding: calc(13px * var(--s, 1)) calc(20px * var(--s, 1)) calc(14px * var(--s, 1)); }
 .toybox-all a { font: 600 var(--t-link, 15px)/1.3 var(--font-body); }
-.toybox-foot { height: 300vh; }   /* (its last 2.6 screens are the machines' lead: the camera comes down onto the bench) */
+.toybox-foot { height: 220vh; }   /* (its last 1.9 screens are the machines' lead: the camera comes down onto the bench) */
 @media (min-width: 821px) {
   .toybox-picks ul { grid-template-columns: minmax(0, 1fr); gap: 26vh; }
 }
@@ -167,10 +167,11 @@
 }
 
 /* ---------------------------------------------------------------- the machines on the bench (assets/js/chapters/machines.js) */
-/* The second half of 3D & animation. The section is the camera's road: the test's own scroll (2200vh: the four
-   machines, each arriving, its parts, "break it", its film and its page), then the cards go and the lamp goes down. */
-.machines-walk { height: 2200vh; }
-.machines-foot { height: 400vh; }  /* (END, then the bench is put away and the camera goes into the television: join.js AGENTS) */
+/* A short passage without words after the toy box: DRAY, then MOLE-1, each opening as the reader scrolls (machines.js
+   LD = 3.4 screens), then the bench is put away and the camera goes into the television (join.js AGENTS: PACK begins
+   3.75 screens before the agents section's top, just after the walk). */
+.machines-walk { height: 340vh; }
+.machines-foot { height: 380vh; }
 
 /* ---------------------------------------------------------------- working with AI agents (assets/js/chapters/agents.js) */
 /* The walk round the terminal (the test's 0..1, 11.5 screens from one screen before the section's top), then the way back

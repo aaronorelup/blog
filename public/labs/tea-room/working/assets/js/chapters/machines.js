@@ -1,26 +1,27 @@
-/* THE MACHINES ON THE BENCH: the second half of the 3D & animation chapter (the tea room test tests/teardown-bench/,
-   its scene made a chapter of the page). His four Moon-base machines from the teardown lab, each its own page shown by
-   its own address in a frame this chapter works from outside (machines-live.js), part by part, without its console.
-   Nothing of the lab's notebook is copied: its pages, stills and films are used by their addresses (machines-data.js).
+/* THE MACHINES ON THE BENCH: a short passage without words between the toy box and the agents chapter. Two of his
+   machines from the teardown lab, DRAY and then MOLE-1, each its own page shown live by its own address in a frame
+   this chapter works from outside (machines-live.js). Nothing of the lab's notebook is copied: its pages, stills and
+   films are used by their addresses (machines-data.js).
 
-   How it joins: the toy box's room is the same painting as this chapter's room (img/room.webp). The 3D chapter ends on
-   the room seen whole; over its last picture (this chapter's lead) the camera cranes down a little onto the place of
-   the bench (join.js benchLayout: both chapters reckon it from the layout alone, toybox.js TURN moves the toys' room
-   the same way). Just before, the toys have gone back into their box and its lid has shut (toybox.js PACK), so the
-   room the bench is set up in is tidy. The bench comes up into the frame in front of the closed box: the low table,
-   the backdrop let down behind it and unrolled forward over it, the television on the floor. The room goes down to
-   night, the lantern comes on, and the toy box's room becomes this chapter's own (at the section's top CHAPTERS swaps
-   the two pictures: the box is behind the backdrop there, and the rooms are the same painting). Then the test's own
-   scroll: the four machines one after another, each: arrives whole, its parts one at a time (picked out, then cut
-   open), "break it", its film and its page. At the end the cards go (the film the reader opened goes with its card)
-   and the lamp goes low, the last machine still on the bench, under the next chapter's name (closing.js).
+   How it joins: the toy box's room is the same painting as this chapter's room (img/room.webp). Its toys go back into
+   their box (toybox.js PACK), and over its last screens (this chapter's lead) the camera comes down a little onto the
+   place of the bench (join.js benchLayout; toybox.js TURN moves the toys' room the same way) while the bench comes up
+   in front of the closed box: the low table, the backdrop let down behind it and unrolled forward over it, the
+   television on the floor. The room goes down to night, the lamp comes on, and DRAY is set down in the dark. (At the
+   section's top CHAPTERS swaps the two rooms: they are the same painting.)
 
-   Everything on the screen is a function of q and the layout, but the machine's own page (alive in the frame only
-   once the scroll rests on a machine), the television's film and the film the reader asks for. With time held
-   (?still=1, motion off) or ?live=0 the machines are their stills. Motion off: no push-in, no rise, cuts. */
-import { MACHINES, LAB_POST } from './machines-data.js';
+   Then each machine is on the table already working (DRAY drives up to its module and lifts a bag; MOLE-1 digs and
+   dumps), its camera turning slowly round it, the mouse leaning the camera further round and over it. As the reader
+   scrolls, it opens: its page's own cut-away and picked-out parts (machines-data.js open), then whole again; the lamp
+   dips and the next is set down. Then the bench is put away and the camera goes into the little television on the
+   floor, which has played the machine's film all along (join.js AGENTS: the agents chapter's way in).
+
+   Scroll decides the bench, the lights, which machine and which state of it. Time decides only what the machine's own
+   page does by itself in that state (its work, its sway, its eases), as a film would. With time held (?still=1),
+   motion off or ?live=0 the machines are their stills and the television its poster; motion off: cuts. */
+import { MACHINES } from './machines-data.js';
 import { createLive } from './machines-live.js';
-import { benchLayout, TABLE, PW, PH, AGENTS, tvPlace, tvDive } from './join.js';
+import { benchLayout, TABLE, AGENTS, tvPlace, tvDive } from './join.js';
 
 var IMG = new URL('../../img/', import.meta.url).href;
 var clamp = function (v, a, b) { a = a === undefined ? 0 : a; b = b === undefined ? 1 : b; return v < a ? a : v > b ? b : v; };
@@ -28,7 +29,6 @@ var lerp = function (a, b, t) { return a + (b - a) * t; };
 var smooth = function (v) { v = clamp(v); return v * v * (3 - 2 * v); };
 var ss = function (a, b, x) { return smooth((x - a) / (b - a)); };
 var io = function (t) { t = clamp(t); return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; };
-var el = function (tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
 
 // the one hanging lamp over the bench, inked like the room (its cord runs up out of the picture)
 var LAMP_SVG = '<svg class="mc-lamp-svg" viewBox="0 0 100 160" width="100" height="160" aria-hidden="true">' +
@@ -44,50 +44,29 @@ var LAMP_SVG = '<svg class="mc-lamp-svg" viewBox="0 0 100 160" width="100" heigh
   '<path d="M34 134 h32 l-3 10 h-26 z" fill="#2b1e25" stroke="#1d1520" stroke-width="2.2" stroke-linejoin="round"/>' +
   '<path d="M50 144 v9" stroke="#1d1520" stroke-width="2"/></svg>';
 
-// the test's own scroll: its 0..1 runs over LD screens from the section's top (the test's 2200vh)
-var LD = 22;
-var INTRO = 0.045;                       // the first screen: the title over the bench
-var SEG = (1 - INTRO) / MACHINES.length; // one machine's share
-var ARRIVE = 0.13, PARTS_END = 0.68, BREAK_END = 0.86;
-// the lead (screens before the section's top): the crane onto the bench, the bench coming up, the lights
-// (CRANE [-2.5, -1.1]: the toy box's room comes down onto the bench's place, toybox.js TURN, in its own screens)
-var LOWER = [-2.3, -1.5];                 // the lantern and the backdrop's rod are let down from above the frame
-var LIGHT = [-1.95, -1.25];               // the lantern comes on
-var RISE = [-2.2, -1.2];                  // the table comes up into the frame (the camera comes down to its height)
-var TVRISE = [-1.9, -0.8];                // the television, nearest, comes up last and fastest
-var UNROLL = [-1.5, -0.85];               // the backdrop unrolls from its rod down over the table (once it stands)
-var APPEAR = [-0.92, -0.78];              // and the first machine is set down on it, in the dark (as between two machines):
-var SETDOWN = [-1.12, -0.92, -0.78, -0.55]; // the lamp dips, the machine is there, the lamp comes up again
-var DIM = [-2.2, -1.2];                   // the room goes down to the bench's night
-var CARD = [-0.55, -0.1];                 // the first card comes up
-// (the toys have gone back into their box before all this: toybox.js PACK; the box stands behind the backdrop)
-// motion off: everything of the lead comes in one cut, at the toy box's own cut to the bench's place (its TURN's middle,
-// 1.2 screens into its 3-screen foot)
-var RM_CUT = -1.8;
-// the end (screens after LD): the cards go, the lamp goes down, the camera draws back to the bench's first view
-// (the last machine stays on the table, lit low, under the next chapter's name: never an empty bench)
-var END = [0.05, 0.45];
-// then the next chapter's way in (join.js AGENTS, in screens before the agents section's top): the bench is put away
-// (PACK: the machine goes, the backdrop rolls up, the lamp and the table leave) and the camera goes into the television
-// on the floor (DIVE: this chapter moves its room; the agents chapter puts the terminal into the glass over it)
+// ---- the scroll, in screens from the section's top (p; the lead is negative)
+// the lead (the toy box's foot, toybox.js TURN and PACK, runs under it): the camera comes down onto the bench's place
+// while the bench comes up, the lamp is let down and lit, the backdrop unrolls, and DRAY is set down in the dark
+var LOWER = [-1.68, -1.1];                // the lantern and the backdrop's rod are let down from above the frame
+var LIGHT = [-1.42, -0.91];               // the lantern comes on
+var RISE = [-1.61, -0.88];                // the table comes up into the frame (the camera comes down to its height)
+var TVRISE = [-1.39, -0.58];              // the television, nearest, comes up last and fastest
+var UNROLL = [-1.1, -0.62];               // the backdrop unrolls from its rod down over the table (once it stands)
+var APPEAR = [-0.67, -0.57];              // and the first machine is set down on it, in the dark:
+var SETDOWN = [-0.82, -0.67, -0.57, -0.4]; // the lamp dips, the machine is there, the lamp comes up again
+var DIM = [-1.61, -0.88];                 // the room goes down to the bench's night
+// motion off: everything of the lead comes in one cut, at the toy box's own cut to the bench's place (its TURN's
+// middle, ft = p + 2.2: its foot is 2.2 screens and ends at #machines)
+var RM_CUT = -1.31;
+// the machines: DRAY from where it is set down to SWAP, MOLE-1 from SWAP to the walk's end (LD). At SWAP the lamp dips
+// and the next machine is set down in the dark (DIP screens each side); then the bench is put away (join.js AGENTS)
+var LD = 3.4, SWAP = 1.6, DIP = 0.1, SPANS = [[-0.6, SWAP], [SWAP, LD + 0.05]];
+// the live page is let in once the bench is coming up (it takes some seconds to wake), and let go as the bench goes
+var LIVE_FROM = -1.5;
 
-function placeOf(q) {
-  if (q < INTRO) return { i: 0, t: 0, step: 'intro', intro: 1 - q / INTRO };
-  var i = Math.min(MACHINES.length - 1, Math.floor((q - INTRO) / SEG));
-  var t = clamp((q - INTRO - i * SEG) / SEG);
-  var m = MACHINES[i];
-  if (t < ARRIVE) return { i: i, t: t, step: 'arrive' };
-  if (t < PARTS_END) {
-    var n = m.parts.length, u = (t - ARRIVE) / (PARTS_END - ARRIVE) * n;
-    var k = Math.min(n - 1, Math.floor(u));
-    return { i: i, t: t, step: 'part', k: k, mode: u - k < 0.5 ? 'isolate' : (m.parts[k].second || 'cut') };
-  }
-  if (t < BREAK_END) return { i: i, t: t, step: 'break' };
-  return { i: i, t: t, step: 'end' };
-}
-var qOf = function (i, t) { return INTRO + (i + (t || 0)) * SEG; };
+function stepOf(m, u) { var s = m.open[0]; m.open.forEach(function (o) { if (u >= o.at) s = o; }); return s; }
 
-// a 1600 x 900 picture of the page (its stills, its film, the page itself) placed in a box so the crop shows
+// a 1600 x 900 picture of the page (its still, the page itself) placed in a box so the crop shows
 function cropRect(boxW, boxH, crop) {
   var s = Math.max(boxH / crop.vh, crop.vw ? boxW / crop.vw : 0);
   s = Math.max(s, boxW / 1600, boxH / 900);
@@ -96,13 +75,12 @@ function cropRect(boxW, boxH, crop) {
 }
 // the console around a still's machine: everything outside its box
 function outside(k) {
-  if (!k) return [];
   var x = k[0], y = k[1], w = k[2], h = k[3];
   return [[0, 0, 1600, y], [0, y + h, 1600, 900 - y - h], [0, y, x, h], [x + w, y, 1600 - x - w, h]];
 }
 
 export function mount(host, options) {
-  var RM = options.reduced, HELD = options.held, section = options.section, top = options.top;
+  var RM = options.reduced, HELD = options.held, top = options.top;
   var params = new URLSearchParams(location.search);
   var LIVE = !HELD && params.get('live') !== '0';
   var root = document.documentElement, alive = true;
@@ -119,7 +97,6 @@ export function mount(host, options) {
         '<div class="mc-view mc-up">' +
           '<div class="mc-pics"><img class="mc-pic a" alt=""><img class="mc-pic b" alt=""><div class="mc-erase"></div></div>' +
           '<div class="mc-holder"></div>' +
-          '<div class="mc-film-box" hidden><video class="mc-film" muted playsinline preload="none" disableremoteplayback></video></div>' +
         '</div>' +
       '<div class="mc-tv"><div class="mc-tv-glow"></div><div class="mc-tv-flip">' +
         '<div class="mc-tv-screen"><img class="mc-tv-still" alt=""><video class="mc-tv-film" muted playsinline loop preload="none" disableremoteplayback tabindex="-1"></video></div>' +
@@ -127,84 +104,28 @@ export function mount(host, options) {
       '</div></div>' +
       '<div class="mc-lamp">' + LAMP_SVG + '<div class="mc-lamp-glow"></div></div>' +
     '</div>';
-  top.innerHTML =
-    '<nav class="mc-tabs" aria-label="The four machines"></nav>' +
-    '<p class="mc-plate"><span class="mc-plate-name"></span><span class="mc-plate-what"></span>' +
-      '<button type="button" class="mc-turn" hidden>Turn it yourself</button></p>' +
-    '<p class="mc-waking" hidden>Waking the machine…</p>' +
-    '<div class="mc-dock">' +
-      '<header class="mc-card mc-lead">' +
-        '<p class="mc-meta"><span>3D &amp; animation</span><span>The teardowns</span></p>' +
-        '<h2 class="mc-lead-title">The machines on the bench</h2>' +
-        '<p class="mc-say">Four machines from the Moon base of <em>Earthlight</em>, each its own page, taken apart one part at a time on the low table, under the lamp.</p>' +
-        '<p class="mc-lead-go">Scroll, and the first one arrives.</p>' +
-      '</header>' +
-      '<article class="mc-card mc-part" aria-live="polite">' +
-        '<p class="mc-meta"><span class="mc-m-name"></span><span class="mc-m-step"></span></p>' +
-        '<h3 class="mc-p-name"></h3>' +
-        '<p class="mc-num"><b></b><span></span></p>' +
-        '<p class="mc-say mc-p-say"></p>' +
-        '<p class="mc-modes"><span class="mc-chip mc-c-iso">Isolated</span><span class="mc-chip mc-c-cut">Cut open</span></p>' +
-      '</article>' +
-      '<article class="mc-card mc-brk">' +
-        '<p class="mc-meta"><span class="mc-m-name"></span><span>Break it</span></p>' +
-        '<h3 class="mc-b-title"></h3>' +
-        '<p class="mc-say mc-b-say"></p>' +
-        '<label class="mc-range"><span class="mc-b-label"></span><input type="range" class="mc-b-input"><span class="mc-b-marks"></span></label>' +
-        '<p class="mc-out"><span class="mc-b-val"></span><b class="mc-b-read"></b><span class="mc-b-small"></span></p>' +
-      '</article>' +
-      '<article class="mc-card mc-end">' +
-        '<p class="mc-meta"><span class="mc-m-name"></span><span>The film and the page</span></p>' +
-        '<h3 class="mc-e-title"></h3>' +
-        '<p class="mc-say mc-e-say"></p>' +
-        '<div class="mc-btns"><button type="button" class="mc-btn mc-e-film">Watch its film</button><a class="mc-btn mc-e-open">Open the full teardown</a></div>' +
-        '<div class="mc-sound" hidden><span class="mc-sound-say">The film has sound. It stays off until you turn it on.</span>' +
-          '<span class="mc-switch"><button type="button" class="mc-snd-off" aria-pressed="true">Sound off</button><button type="button" class="mc-snd-on" aria-pressed="false">Sound on</button></span></div>' +
-        '<p class="mc-post"><a class="mc-go" href="' + LAB_POST + '">Read the lab’s post: how these were built</a></p>' +
-      '</article>' +
-    '</div>' +
-    '<p class="mc-hint" aria-hidden="true">Scroll</p>';
+  // the only words: the machine's own name, which is the way to its whole teardown
+  top.innerHTML = '<a class="mc-name"></a>';
 
-  var $ = function (s, r) { return (r || host).querySelector(s); };
-  var $$ = function (s, r) { return Array.prototype.slice.call((r || host).querySelectorAll(s)); };
-  var T = function (s) { return top.querySelector(s); };
-  var TT = function (s) { return Array.prototype.slice.call(top.querySelectorAll(s)); };
+  var $ = function (s) { return host.querySelector(s); };
+  var $$ = function (s) { return Array.prototype.slice.call(host.querySelectorAll(s)); };
   var cone = $('.mc-cone'), dim = $('.mc-dim'), world = $('.mc-world'), roomEl = $('.mc-room'), roomImg = $('.mc-room-img'), vig = $('.mc-vig');
-  var ups = $$('.mc-up'), sweep = $('.mc-sweep'), table = $('.mc-table'), view = $('.mc-view');
+  var ups = $$('.mc-up'), sweep = $('.mc-sweep'), table = $('.mc-table'), view = $('.mc-view'), pics = $('.mc-pics');
   var picA = $('.mc-pic.a'), picB = $('.mc-pic.b'), erase = $('.mc-erase'), holder = $('.mc-holder');
-  var filmBox = $('.mc-film-box'), film = $('.mc-film');
   var tv = $('.mc-tv'), tvFilm = $('.mc-tv-film'), tvStill = $('.mc-tv-still'), lampEl = $('.mc-lamp');
-  var tabs = T('.mc-tabs'), plate = T('.mc-plate'), turnBtn = T('.mc-turn'), waking = T('.mc-waking'), dock = T('.mc-dock');
-  var lead = T('.mc-lead'), cPart = T('.mc-part'), cBrk = T('.mc-brk'), cEnd = T('.mc-end'), hint = T('.mc-hint');
-  var range = T('.mc-b-input');
-  if (HELD) host.classList.add('mc-held'), top.classList.add('mc-held');
+  var nameEl = top.querySelector('.mc-name');
+  if (HELD) host.classList.add('mc-held');
   tvFilm.addEventListener('playing', function () { tvFilm.classList.add('on'); });
 
-  // the pictures this chapter needs before its first frame is whole: the table, the room, the first still
-  var need = [roomImg, table], pending = 0;
-  need.forEach(function (im) { if (!(im.complete && im.naturalWidth)) { pending++; im.addEventListener('load', function () { pending--; options.redraw(); }, { once: true }); im.addEventListener('error', function () { pending--; options.redraw(); }, { once: true }); } });
+  // the pictures this chapter needs before its first frame is whole: the table, the room
+  var pending = 0;
+  [roomImg, table].forEach(function (im) { if (!(im.complete && im.naturalWidth)) { pending++; im.addEventListener('load', function () { pending--; options.redraw(); }, { once: true }); im.addEventListener('error', function () { pending--; options.redraw(); }, { once: true }); } });
 
-  // ---- the tabs: one per machine, each a link to its place in the scroll
-  MACHINES.forEach(function (m, i) {
-    var b = el('button', 'mc-tab', '<span>' + m.name + '</span><i><b></b></i>');
-    b.type = 'button';
-    b.addEventListener('click', function () { seek(qOf(i, 0.02)); });
-    tabs.appendChild(b);
-  });
-  var tabEls = TT('.mc-tab');
-  function seek(qd) {
-    var st = section.getBoundingClientRect().top + window.scrollY;
-    window.scrollTo({ top: Math.round(st + qd * LD * window.innerHeight), behavior: RM ? 'auto' : 'smooth' });
-  }
-
-  var TVP = null, roll = null, rollG = null, sweepH = 0, W = 0, H = 0, L = null, phone = false, active = false, laid = false;
-  var cur = { i: -1, step: '', k: -1, mode: '' };
-  var live = null, liveI = -1, liveTimer = null, pendingI = -1;
-  var failed = new Set();
-  var held = false, heldQ = 0, lastQ = 0;
-  var filmOn = false, sliderVal = {}, readTimer = null, tvOn = false;
-  var picShown = { a: '', b: '' }, picFront = 'a';
-  var crop = MACHINES[0].crop, viewW = 0, viewH = 0;
+  var TVP = null, roll = null, rollG = null, sweepH = 0, W = 0, H = 0, L = null, phone = false, laid = false;
+  var cur = -1, live = null, liveI = -1, liveTimer = null, pendingI = -1, failed = new Set();
+  var tvOn = false, lean = { x: 0, y: 0 }, lastT = 0;
+  var picShown = { a: '', b: '' }, picFront = 'a', picsIn = {};
+  var viewW = 0, viewH = 0;
 
   // ---- layout: everything of the bench in screen pixels at the camera's place (join.js), the room behind it
   function layout() {
@@ -224,7 +145,6 @@ export function mount(host, options) {
     [host, top].forEach(function (e) {
       e.style.setProperty('--tcx', L.tcx + 'px'); e.style.setProperty('--tcy', L.tcy + 'px');
       e.style.setProperty('--trx', L.trx + 'px'); e.style.setProperty('--try', L.try + 'px');
-      e.style.setProperty('--bench-bottom', (by + bh) + 'px');
     });
     sweep.innerHTML = sweepSvg(bx, by, bw, bh, L.tcx, L.tcy, L.try, W);
     sweepH = Math.ceil(L.tcy + L.try * 0.42 + L.try); sweep.style.height = sweepH + 'px';
@@ -237,18 +157,10 @@ export function mount(host, options) {
     host.style.setProperty('--lx', L.tcx + 'px'); host.style.setProperty('--ly', (ly + lw) + 'px');
     if (L.tv) Object.assign(tv.style, { width: L.tv.w + 'px', left: L.tv.l + 'px', top: L.tv.t + 'px' });
     roomImg._s = undefined;                          // (frame() places the room: the phone's tilt moves it)
-    css(world, 'transformOrigin', L.tcx + 'px ' + (L.tcy - bh * 0.35) + 'px');
     TVP = tvPlace(W, H, rb && rb.width ? { right: rb.right, bottom: rb.bottom } : null);
-    // the cards: on the right (wide), under the bench (a phone)
-    if (phone) {
-      Object.assign(dock.style, { left: '12px', right: '12px', width: 'auto', top: (by + bh + 40) + 'px', bottom: '10px' });
-      Object.assign(tabs.style, { left: '12px', right: '12px', top: L.tabsTop + 'px' });
-    } else {
-      Object.assign(dock.style, { left: L.dock.l + 'px', width: L.dock.w + 'px', right: '', top: '0', bottom: '0' });
-      Object.assign(tabs.style, { left: L.dock.l + 'px', right: '', top: Math.round(H * 0.032) + 'px' });
-    }
-    Object.assign(plate.style, { left: L.tcx + 'px', top: (by + bh - (phone ? 4 : 8)) + 'px' });
-    Object.assign(waking.style, { left: L.tcx + 'px', top: (by + bh * 0.84) + 'px' });
+    // the name: on the table's dark front edge, under the machine
+    nameEl.style.left = L.tcx + 'px';
+    nameEl.style.top = (L.tcy + L.try * 1.08) + 'px';
     placeAll();
     laid = true;
   }
@@ -259,13 +171,11 @@ export function mount(host, options) {
   }
   function cropFor(m) { return phone ? m.cropNarrow : m.crop; }
   function placeAll() {
-    var m = MACHINES[Math.max(0, cur.i)];
-    crop = cropFor(m);
-    placeMedia(picA, crop); placeMedia(picB, crop);
-    placeMedia(holder.querySelector('iframe'), crop);
-    placeMedia(film, crop);
+    var m = MACHINES[Math.max(0, cur)];
+    placeMedia(picA, cropFor(m)); placeMedia(picB, cropFor(m));
+    placeMedia(holder.querySelector('iframe'), cropFor(m));
     placeTv(m);
-    if (picShown[picFront]) placeErase(picShown[picFront]);
+    placeErase(m);
   }
   // the television shows the same machine, closer: its film cropped to the machine, never to the page's console
   function placeTv(m) {
@@ -277,23 +187,19 @@ export function mount(host, options) {
       Object.assign(node.style, { left: r.left + 'px', top: r.top + 'px', width: r.W + 'px', height: r.H + 'px' });
     });
   }
-  // the stills are pictures of the whole page, console and all: white (nothing, on the bench) over what is not the machine
-  function placeErase(src) {
-    var m = MACHINES[Math.max(0, cur.i)];
-    var key = src.replace(/^.*teardown-lab\//, '').replace(/\.webp$/, '');
-    var boxes = outside(m.keep && m.keep[key]).concat(((m.erase && m.erase[key]) || []).map(function (b) { return b.concat(['w']); }));
-    var r = cropRect(viewW, viewH, crop), k = r.W / 1600;
+  // the still is a picture of the whole page, console and all: white (nothing, on the bench) over what is not the
+  // machine, and the page's labels over the machine smudged
+  function placeErase(m) {
+    var boxes = outside(m.keep).concat(m.erase.map(function (b) { return b.concat(['w']); }));
+    var r = cropRect(viewW, viewH, cropFor(m)), k = r.W / 1600;
     erase.innerHTML = boxes.map(function (b) {
       return '<i' + (b[4] ? ' class="w"' : '') + ' style="left:' + (r.left + b[0] * k).toFixed(1) + 'px;top:' + (r.top + b[1] * k).toFixed(1) + 'px;width:' + (b[2] * k).toFixed(1) + 'px;height:' + (b[3] * k).toFixed(1) + 'px"></i>';
     }).join('');
   }
-
-  // ---- the pictures under the live page: two layers, cross-faded when the picture changes
-  var picsIn = {};
+  // the still under the live page: two layers, cross-faded when the machine changes
   function showPic(src) {
     var front = picFront === 'a' ? picA : picB, back = picFront === 'a' ? picB : picA;
     if (picShown[picFront] === src) return;
-    placeErase(src);
     var backKey = picFront === 'a' ? 'b' : 'a';
     if (picShown[backKey] !== src) {
       back.src = src; picShown[backKey] = src;
@@ -302,167 +208,50 @@ export function mount(host, options) {
     back.classList.add('on'); front.classList.remove('on');
     picFront = backKey;
   }
+  function setMachine(i) {
+    cur = i;
+    var m = MACHINES[i];
+    showPic(m.still);
+    placeAll();
+    nameEl.textContent = m.name;
+    nameEl.href = m.page;
+    nameEl.setAttribute('aria-label', m.name + ': its whole teardown');
+    if (!phone) tvStill.src = m.poster;
+    tvFilm.classList.remove('on');
+  }
 
-  // ---- the live page in the frame: only one, only for the machine on the table, only once the scroll rests there
+  // ---- the live page in the frame: only one, only for the machine on the table, while the passage is on the screen
   function wantLive(i) {
-    if (!LIVE || !active || failed.has(i)) return dropLive();
+    if (!LIVE || failed.has(i)) return dropLive();
     if (liveI === i || pendingI === i) return;
     dropLive();
     pendingI = i;
-    liveTimer = setTimeout(function () { pendingI = -1; startLive(i); }, 420);
+    liveTimer = setTimeout(function () { pendingI = -1; startLive(i); }, 160);
   }
   function startLive(i) {
-    if (!active || cur.i !== i || cur.step === 'intro' || !alive) return;
+    if (!alive || cur !== i) return;
     var m = MACHINES[i];
     liveI = i;
-    waking.hidden = false;
     live = createLive(m, holder, {
-      onReady: function () { waking.hidden = true; turnBtn.hidden = false; host.classList.add('mc-alive'); applyLive(); },
-      onFail: function () { failed.add(i); waking.hidden = true; turnBtn.hidden = true; live = null; liveI = -1; host.classList.remove('mc-alive'); },
-      onWheel: function () { release(); }
+      onReady: function () { host.classList.add('mc-alive'); },
+      onFail: function () { failed.add(i); live = null; liveI = -1; host.classList.remove('mc-alive'); }
     });
     placeMedia(holder.querySelector('iframe'), cropFor(m));
-    applyLive();
   }
   function dropLive() {
     clearTimeout(liveTimer); pendingI = -1;
     if (live) { live.dispose(); live = null; }
-    liveI = -1; waking.hidden = true; turnBtn.hidden = true; host.classList.remove('mc-alive');
-    if (held) release();
+    liveI = -1; host.classList.remove('mc-alive');
   }
-  function applyLive() {
-    if (!live || cur.i < 0) return;
-    var m = MACHINES[cur.i];
-    if (cur.step === 'part') live.set({ view: m.hero.view, part: m.parts[cur.k].button, mode: cur.mode });
-    else if (cur.step === 'break') live.set({ view: m.breakIt.view || m.hero.view, part: null, mode: null });
-    else live.set({ view: m.hero.view, part: null, mode: null });
-    var br = m.breakIt;
-    live.breakSetup(cur.step === 'break');
-    if (cur.step === 'break') live.slide(sliderVal[m.key] != null ? sliderVal[m.key] : br.value);
-    else if (br.resetOnLeave) live.slide(br.value);
-  }
-
-  // ---- "Turn it yourself": the frame takes the pointer only when asked, and gives it back on scroll. (The frame is
-  // in the picture layer, behind the page: while it is held the page lets the pointer through to it.)
-  var mainEl = document.getElementById('main');
-  function hold() {
-    if (!live || !live.ready) return;
-    held = true; heldQ = lastQ; live.hold(true); host.classList.add('mc-hand'); top.classList.add('mc-hand');
-    if (mainEl) mainEl.style.pointerEvents = 'none';
-    section.style.pointerEvents = 'none';
-    turnBtn.textContent = 'Done turning'; turnBtn.setAttribute('aria-pressed', 'true');
-  }
-  function release() {
-    if (!held) return;
-    held = false; if (live) live.hold(false); host.classList.remove('mc-hand'); top.classList.remove('mc-hand');
-    if (mainEl) mainEl.style.pointerEvents = '';
-    section.style.pointerEvents = '';
-    turnBtn.textContent = 'Turn it yourself'; turnBtn.setAttribute('aria-pressed', 'false');
-  }
-  turnBtn.addEventListener('click', function () { if (held) release(); else hold(); });
-
-  // ---- the film: on the television (muted, always), and on the bench when asked (muted until the reader turns it on)
-  var sndOn = T('.mc-snd-on'), sndOff = T('.mc-snd-off'), sound = T('.mc-sound'), filmBtn = T('.mc-e-film');
-  function setSound(on) {
-    film.muted = !on;
-    sndOn.setAttribute('aria-pressed', String(on)); sndOff.setAttribute('aria-pressed', String(!on));
-  }
-  sndOn.addEventListener('click', function () { setSound(true); });
-  sndOff.addEventListener('click', function () { setSound(false); });
-  function openFilm(on) {
-    filmOn = on;
-    var m = MACHINES[Math.max(0, cur.i)];
-    if (on) {
-      if (film.getAttribute('src') !== m.film) { film.src = m.film; film.poster = m.poster; }
-      film.muted = true; setSound(false);
-      filmBox.hidden = false; sound.hidden = false;
-      film.currentTime = 0;
-      film.play().catch(function () {});
-      filmBtn.textContent = 'Back to the machine';
-    } else {
-      film.pause(); filmBox.hidden = true; sound.hidden = true; setSound(false);
-      filmBtn.textContent = 'Watch its film';
-    }
-  }
-  filmBtn.addEventListener('click', function () { openFilm(!filmOn); });
-  film.addEventListener('ended', function () { openFilm(false); });
-
-  // ---- break it: the page's one slider, offered big
-  range.addEventListener('input', function () {
-    var m = MACHINES[cur.i], v = parseFloat(range.value);
-    sliderVal[m.key] = v;
-    if (live) live.slide(v);
-    paintBreak();
-  });
-  function fmt(v, br) { return br.unit ? v.toFixed(br.step < 0.1 ? 2 : br.step < 1 ? 1 : 0) + ' ' + br.unit : Math.round(v * 100) + ' %'; }
-  function paintBreak() {
-    if (cur.i < 0) return;
-    var m = MACHINES[cur.i], br = m.breakIt;
-    var v = sliderVal[m.key] != null ? sliderVal[m.key] : br.value;
-    T('.mc-b-val').textContent = br.label + ': ' + fmt(v, br);
-    var r = live && live.ready ? live.reading() : null;
-    var big = T('.mc-b-read'), small = T('.mc-b-small');
-    if (r && r.big) {
-      var b = br.readout.tidy ? br.readout.tidy(r.big) : r.big;
-      big.textContent = b.replace(/ MM$/, ' mm').replace(/ CM$/, ' cm').replace(/ M$/, ' m').replace(/ M /, ' m ');
-      small.textContent = br.readout.label + (r.small ? ' · ' + r.small : '');
-    } else { big.textContent = br.offline(v); small.textContent = ''; }
-    if (!live || !live.ready) showPic(m.stills[br.stills[v >= br.at ? 1 : 0]]);
-  }
-
-  // ---- the cards
-  function fillMachine(m, i) {
-    TT('.mc-m-name').forEach(function (e) { e.textContent = m.name + ' · ' + (i + 1) + ' of ' + MACHINES.length; });
-    T('.mc-plate-name').textContent = m.name;
-    T('.mc-plate-what').textContent = m.what;
-    T('.mc-e-title').textContent = m.name + ': the whole teardown';
-    T('.mc-e-say').textContent = 'Its ' + m.filmLength + ' film, and its own page, where every part, view and number is yours to try.';
-    T('.mc-e-open').href = m.page;
-    filmBtn.textContent = 'Watch its film';
-    var br = m.breakIt;
-    T('.mc-b-title').textContent = br.label;
-    T('.mc-b-say').textContent = br.say;
-    T('.mc-b-label').textContent = br.label + ', from ' + fmt(br.min, br) + ' to ' + fmt(br.max, br);
-    range.min = br.min; range.max = br.max; range.step = br.step;
-    range.value = sliderVal[m.key] != null ? sliderVal[m.key] : br.value;
-    T('.mc-b-marks').innerHTML = br.marks.map(function (mk) { return '<i style="left:' + ((mk[0] - br.min) / (br.max - br.min)) * 100 + '%">' + mk[1] + '</i>'; }).join('');
-    if (!phone) tvStill.src = m.poster;
-    tvFilm.classList.remove('on');
-  }
-  function fillStep(p) {
-    var m = MACHINES[p.i];
-    if (p.step === 'arrive') {
-      T('.mc-m-step').textContent = 'Arrived whole';
-      T('.mc-p-name').textContent = m.name;
-      T('.mc-num b').textContent = '';
-      T('.mc-num span').textContent = m.what;
-      T('.mc-p-say').textContent = m.parts.length + ' of its parts next, one at a time: picked out, then cut open. Then you get to break it.';
-      cPart.classList.add('mc-whole');
-      showPic(m.stills[0]);
-    } else if (p.step === 'part') {
-      var part = m.parts[p.k];
-      T('.mc-m-step').textContent = 'Part ' + (p.k + 1) + ' of ' + m.parts.length;
-      T('.mc-p-name').textContent = part.name;
-      T('.mc-num b').textContent = part.num;
-      T('.mc-num span').textContent = part.unit;
-      T('.mc-p-say').textContent = part.say;
-      cPart.classList.remove('mc-whole');
-      T('.mc-c-iso').classList.toggle('on', p.mode === 'isolate');
-      T('.mc-c-cut').classList.toggle('on', p.mode !== 'isolate');
-      T('.mc-c-cut').textContent = part.second === 'alone' ? 'Shown alone' : 'Cut open';
-      showPic(m.stills[part.still]);
-    } else if (p.step === 'break') {
-      paintBreak();
-    } else {
-      showPic(m.stills[0]);
-    }
-  }
-  function setCard(e, on) { if (e._on !== on) { e._on = on; e.classList.toggle('up', on); } }
+  // (nothing plays on unseen: once the host shows this chapter no more (CHAPTERS show()), the passage is off the screen)
+  var watch = setInterval(function () {
+    if (host.style.visibility !== 'visible') { dropLive(); if (tvOn) { tvOn = false; tvFilm.pause(); } }
+  }, 500);
 
   // ---- every frame
   var was = {};
-  function css(e, k, v) { var key = k; if (e._s === undefined) e._s = {}; if (e._s[key] !== v) { e._s[key] = v; e.style[k] = v; } }
-  function frame(q, t) {
+  function css(e, k, v) { if (e._s === undefined) e._s = {}; if (e._s[k] !== v) { e._s[k] = v; e.style[k] = v; } }
+  function frame(q, t, pointer) {
     if (!alive) return false;
     if (!laid) layout();
     var p = q < 0 ? q : q * options.span(), isLead = q < 0;
@@ -473,29 +262,28 @@ export function mount(host, options) {
       if (!tb || !tb.scene || !tb.whole) return false;
     }
     if (pending > 0) return false;
-    var qd = clamp(p / LD); lastQ = qd;
-    if (held && Math.abs(qd - heldQ) > 0.0015) release();
-    var pl = placeOf(qd), m = MACHINES[pl.i];
-    if (pl.i !== cur.i) {
-      if (filmOn) openFilm(false);
-      cur.i = pl.i; cur.step = ''; fillMachine(m, pl.i); placeAll();
-    }
-    if (pl.step !== cur.step || (pl.k == null ? -1 : pl.k) !== cur.k || (pl.mode || '') !== cur.mode) {
-      if (filmOn && pl.step !== 'end') openFilm(false);
-      cur.step = pl.step; cur.k = pl.k == null ? -1 : pl.k; cur.mode = pl.mode || '';
-      fillStep(pl);
-      applyLive();
-    }
-    var pe = p - LD;                                     // (after the test's scroll: the end)
-    var ending = RM ? (pe > (END[0] + END[1]) / 2 ? 1 : 0) : io(ss(END[0], END[1], pe));
+    var i = p < SWAP ? 0 : 1, m = MACHINES[i], sp = SPANS[i];
+    if (i !== cur) setMachine(i);
+    var u = clamp((p - sp[0]) / (sp[1] - sp[0]));
     // (screens before the agents section's top: the section ends one screen after q = 1)
     var pa = isLead ? -99 : (q - 1) * options.span() - 1;
     var pk = RM ? (pa > (AGENTS.PACK[0] + AGENTS.PACK[1]) / 2 ? 1 : 0) : clamp((pa - AGENTS.PACK[0]) / (AGENTS.PACK[1] - AGENTS.PACK[0]));
     var dive = RM ? (pa > AGENTS.RM_CUT ? 1 : 0) : clamp((pa - AGENTS.DIVE[0]) / (AGENTS.DIVE[1] - AGENTS.DIVE[0]));
     var packOut = function (a, b) { return RM ? pk : io(ss(a, b, pk)); };
-    if (active && !isLead && pl.step !== 'intro' && ending < 0.5) wantLive(pl.i); else dropLive();
-    // the television plays the machine's film with no sound, once the machine is on the table
-    var wantTv = active && !HELD && !phone && pl.step !== 'intro' && ending < 0.5;
+
+    // ---- the machine itself: alive from the bench's rise until the bench is put away; its opening is the scroll's
+    if (p > LIVE_FROM && pk < 0.2) wantLive(i); else dropLive();
+    if (live) {
+      var st = stepOf(m, u), tn = m.turn;
+      live.set(st);
+      // the camera: the scroll carries it round, a slow sway of its own, and the mouse leans it (on a phone, none)
+      lean.x += ((pointer ? pointer.x : 0) - lean.x) * 0.12; lean.y += ((pointer ? pointer.y : 0) - lean.y) * 0.12;
+      var az = lerp(tn.from, tn.to, smooth(u)) + tn.sway * Math.sin(t * Math.PI * 2 / 22) + tn.lean * lean.x;
+      live.orbit(az, -tn.tilt * lean.y);
+    }
+    // the television plays the machine's film with no sound, from the moment the machine is on the table until its
+    // glass turns to the terminal (the agents chapter, join.js AGENTS TUNE)
+    var wantTv = !HELD && !phone && p > APPEAR[0] && pa < AGENTS.TUNE[1];
     if (wantTv !== tvOn || (wantTv && tvFilm.getAttribute('src') !== m.film)) {
       tvOn = wantTv;
       if (wantTv) { if (tvFilm.getAttribute('src') !== m.film) tvFilm.src = m.film; tvFilm.play().catch(function () {}); }
@@ -503,13 +291,14 @@ export function mount(host, options) {
     }
 
     // ---- the lead: the crane, the bench coming up, the lights
-    var rise = RM ? (p > RM_CUT ? 1 : 0) : io(ss(RISE[0], RISE[1], p));
+    var cut = p > RM_CUT ? 1 : 0;
+    var rise = RM ? cut : io(ss(RISE[0], RISE[1], p));
     var tvRise = RM ? rise : io(ss(TVRISE[0], TVRISE[1], p));
-    var dimK = RM ? (p > RM_CUT ? 1 : 0) : ss(DIM[0], DIM[1], p);
-    var lower = RM ? (p > RM_CUT ? 1 : 0) : io(ss(LOWER[0], LOWER[1], p));
-    var light = RM ? (p > RM_CUT ? 1 : 0) : ss(LIGHT[0], LIGHT[1], p);
-    var unroll = RM ? (p > RM_CUT ? 1 : 0) : io(ss(UNROLL[0], UNROLL[1], p));
-    var appear = RM ? (p > RM_CUT ? 1 : 0) : ss(APPEAR[0], APPEAR[1], p);
+    var dimK = RM ? cut : ss(DIM[0], DIM[1], p);
+    var lower = RM ? cut : io(ss(LOWER[0], LOWER[1], p));
+    var light = RM ? cut : ss(LIGHT[0], LIGHT[1], p);
+    var unroll = RM ? cut : io(ss(UNROLL[0], UNROLL[1], p));
+    var appear = RM ? cut : ss(APPEAR[0], APPEAR[1], p);
     // put away, in the order it was set up backwards: the machine, the backdrop, the lamp and its rod, the table
     if (pk > 0) {
       appear *= 1 - (RM ? pk : ss(0, 0.25, pk));
@@ -523,59 +312,57 @@ export function mount(host, options) {
     css(dim, 'opacity', isLead ? dimK.toFixed(3) : '0');
     css(vig, 'opacity', (isLead ? dimK : 1).toFixed(3));
     // the near things come up from below the frame, the nearest fastest (the camera comes down to the table's height)
-    var off = (1 - rise) * (H - L.by + 40), tvOff = (1 - tvRise) * (H - (L.tv ? L.tv.t : H) + 60) * 1.0;
-    // (a phone: while no card stands under the bench, in the lead and at the end, the bench stands lower in the frame,
-    // the camera tilted up a little; it comes up to make room as the first card comes, and goes down again at the end)
-    var low = phone ? (RM ? ((isLead && p <= -0.5) || ending > 0.5 ? 1 : 0) : Math.max(1 - io(ss(CARD[0] - 0.35, CARD[1], p)), ending)) : 0;
-    var lowY = low * H * 0.16, roomLow = low * H * 0.05;
-    off += lowY;
-    css(plate, 'transform', 'translate3d(-50%,' + lowY.toFixed(1) + 'px,0)');          // (the name on the bench's edge goes with it)
+    // (a phone: the bench stands lower in the frame, the camera tilted up a little, as the agents chapter expects)
+    var lowY = phone ? H * 0.16 : 0, roomLow = phone ? H * 0.05 : 0;
+    var off = (1 - rise) * (H - L.by + 40) + lowY, tvOff = (1 - tvRise) * (H - (L.tv ? L.tv.t : H) + 60);
     var upTr = off > 0.05 ? 'translate3d(0,' + off.toFixed(1) + 'px,0)' : '', upVis = rise <= 0.0005 ? 'hidden' : '';
     ups.forEach(function (e) { css(e, 'transform', upTr); css(e, 'visibility', upVis); });
     css(tv, 'transform', tvOff > 0.05 ? 'translate3d(0,' + tvOff.toFixed(1) + 'px,0)' : '');
     css(tv, 'visibility', tvRise <= 0.0005 || phone ? 'hidden' : '');
     // the lantern: let down on its cord from above the frame; the backdrop's rod with it, then the sheet unrolls
-    var lampOff = -(1 - lower) * (L.lampY + L.lampW * 1.6 + 30);
+    var lampOff = -(1 - lower) * (L.lampY + L.lampW * 1.6 + 30) + lowY;
     css(lampEl, 'visibility', lower <= 0.0005 ? 'hidden' : '');
     var rodY = L.by + L.bh * 0.03, rodOff = -(1 - lower) * (rodY + 30) + lowY, sheetH = sweepH - rodY;
-    lampOff += lowY;
     css(lampEl, 'transform', Math.abs(lampOff) > 0.05 ? 'translate3d(0,' + lampOff.toFixed(1) + 'px,0)' : '');
     css(roomImg, 'transform', dive > 0 ? 'translate(' + L.room.tx + 'px,' + (L.room.ty + roomLow).toFixed(1) + 'px) scale(' + L.room.s + ')'
       : 'translate3d(' + L.room.tx + 'px,' + (L.room.ty + roomLow).toFixed(1) + 'px,0) scale(' + L.room.s + ')');
     if (was.diving !== dive > 0) { was.diving = dive > 0; world.classList.toggle('mc-diving', dive > 0); }
     css(sweep, 'transform', Math.abs(rodOff) > 0.05 ? 'translate3d(0,' + rodOff.toFixed(1) + 'px,0)' : '');
     css(sweep, 'visibility', lower <= 0.0005 ? 'hidden' : '');
-    // (put away at the end, the sheet rolls up onto a tube that climbs back to the rod: not a flat cut edge. Only then:
-    // as it is first let down, before, the sheet stays as it was)
+    // (put away at the end, the sheet rolls up onto a tube that climbs back to the rod: not a flat cut edge)
     var rolling = pk > 0 && unroll < 0.999 && lower > 0.0005 && !!roll;
-    var rh = rolling ? rollG.h : 0, edge = rodY + sheetH * unroll;
+    var rh = rolling ? rollG.h : 0, edgeY = rodY + sheetH * unroll;
     css(sweep, 'clipPath', unroll < 1 ? 'inset(-50px 0 ' + Math.max(0, sheetH * (1 - unroll) + (unroll > 0 || rolling ? 0 : 6) - rh * 0.9).toFixed(1) + 'px 0)' : '');
     if (rolling) {
-      var wide = rollG.d * clamp((edge - rollG.yB) / (rollG.yF - rollG.yB)) + rh * 0.35;
-      var rs = 'l' + (rollG.L - wide).toFixed(1) + 'w' + (rollG.R - rollG.L + 2 * wide).toFixed(1) + 't' + (edge - rh * 0.15).toFixed(1);
-      if (was.roll !== rs) { was.roll = rs; Object.assign(roll.style, { left: (rollG.L - wide).toFixed(1) + 'px', width: (rollG.R - rollG.L + 2 * wide).toFixed(1) + 'px', top: (edge - rh * 0.15).toFixed(1) + 'px', visibility: '' }); }
+      var wide = rollG.d * clamp((edgeY - rollG.yB) / (rollG.yF - rollG.yB)) + rh * 0.35;
+      var rs = 'l' + (rollG.L - wide).toFixed(1) + 'w' + (rollG.R - rollG.L + 2 * wide).toFixed(1) + 't' + (edgeY - rh * 0.15).toFixed(1);
+      if (was.roll !== rs) { was.roll = rs; Object.assign(roll.style, { left: (rollG.L - wide).toFixed(1) + 'px', width: (rollG.R - rollG.L + 2 * wide).toFixed(1) + 'px', top: (edgeY - rh * 0.15).toFixed(1) + 'px', visibility: '' }); }
     } else if (roll && was.roll !== '') { was.roll = ''; roll.style.visibility = 'hidden'; }
 
-    // the lamp: lit over a machine, dimmed between two (the next one is set down in the dark), out at the end
-    var edge = pl.step === 'intro' ? 1 - 0.35 * pl.intro : Math.min(pl.i === 0 ? 1 : pl.t / 0.025, pl.i === MACHINES.length - 1 ? 1 : (1 - pl.t) / 0.025);
-    var lit = smooth(edge) * light * (1 - 0.8 * ending);
-    if (pk > 0) css(cone, 'opacity', String(+(1 - packOut(0.3, 0.8)).toFixed(3) * (0.18 + 0.82 * lit)));
-    else css(cone, 'opacity', '');
-    if (isLead) lit = light * 0.65 * (RM ? 1 : 1 - 0.8 * (ss(SETDOWN[0], SETDOWN[1], p) - ss(SETDOWN[2], SETDOWN[3], p)));
+    // the lamp: lit over a machine, dipped while the next is set down in the dark, put away at the end
+    var between = RM ? 1 : smooth(Math.abs(p - SWAP) / DIP);
+    var lit = light * (0.2 + 0.8 * between);
+    if (isLead) lit = light * (RM ? 1 : 1 - 0.8 * (ss(SETDOWN[0], SETDOWN[1], p) - ss(SETDOWN[2], SETDOWN[3], p)));
+    css(cone, 'opacity', pk > 0 ? String(+(1 - packOut(0.3, 0.8)).toFixed(3) * (0.18 + 0.82 * lit)) : '');
     var litS = lit.toFixed(3);
     if (was.lit !== litS) { was.lit = litS; host.style.setProperty('--lit', litS); }
-    // the machine itself: solid whenever it stands (the backdrop it is multiplied onto carries the lamp's light), and
-    // gone only between two machines, while the next is set down in the dark
-    var between = pl.step === 'intro' ? 1 : Math.min(pl.i === 0 ? 1 : pl.t / 0.025, pl.i === MACHINES.length - 1 ? 1 : (1 - pl.t) / 0.025);
-    var vis = (appear * smooth(between)).toFixed(3);
-    if (was.vis !== vis) { was.vis = vis; host.style.setProperty('--vis', vis); }
-    // the machine comes up onto the table with the bench, and stands; the still under the page turns a little
-    var kb = 1 + 0.035 * smooth(pl.step === 'arrive' ? pl.t / ARRIVE : pl.step === 'intro' ? 0 : 1);
-    css(picA, 'transform', RM ? '' : 'scale(' + kb.toFixed(4) + ')'); css(picB, 'transform', RM ? '' : 'scale(' + kb.toFixed(4) + ')');
-    // the camera: a slow push in on the bench through each machine; at the end it draws back a little
-    var g = pl.step === 'intro' ? 0 : pl.t;
-    var zoom = RM ? 1 : (pl.step === 'intro' ? 1.0 + 0.01 * (1 - pl.intro) : lerp(1.01, 1.04, smooth(g)));
-    zoom = lerp(zoom, 1, ending);                     // (never below 1: the room's edges would show)
+    // the machine: solid whenever it stands (the backdrop it is multiplied onto carries the lamp's light), gone only
+    // at the swap, while the next is set down in the dark
+    var vis = appear * (RM ? 1 : smooth(Math.abs(p - SWAP) / (DIP * 0.6)));
+    var visS = vis.toFixed(3);
+    if (was.vis !== visS) { was.vis = visS; host.style.setProperty('--vis', visS); }
+    // its name on the table's edge, with it (never in the lead's first part, never once the bench goes)
+    var nameOn = vis > 0.6 && pk < 0.05;
+    if (was.name !== nameOn) { was.name = nameOn; nameEl.classList.toggle('up', nameOn); nameEl.tabIndex = nameOn ? 0 : -1; }
+    css(nameEl, 'transform', 'translate3d(-50%,' + (lowY + (1 - rise) * (H - L.by + 40)).toFixed(1) + 'px,0)');
+    // the still, while the page wakes or where there is none: it leans a little with the mouse, as the page would turn
+    if (!RM && !HELD) {
+      var lx = pointer ? pointer.x : 0;
+      was.lx = (was.lx || 0) + (lx - (was.lx || 0)) * 0.08;
+      css(pics, 'transform', Math.abs(was.lx) > 0.002 ? 'translate3d(' + (was.lx * viewW * -0.012).toFixed(1) + 'px,0,0)' : '');
+    }
+    // the camera: a slow push in on the bench over the whole passage, drawn back as the bench is put away
+    var zoom = RM || isLead ? 1 : 1 + 0.035 * smooth(p / LD) * (1 - pk);
     if (dive > 0) {
       // into the television (join.js tvDive: the agents chapter reckons the same move); once its glass is the frame and
       // the agents chapter's picture is over it, this room is not drawn
@@ -586,48 +373,20 @@ export function mount(host, options) {
       css(world, 'transform', 'translate(' + d.tx.toFixed(2) + 'px,' + d.ty.toFixed(2) + 'px) scale(' + d.Z.toFixed(5) + ')');
       var ag = window.TEA && window.TEA.list.filter(function (c) { return c.id === 'agents'; })[0];
       css(world, 'visibility', dive >= 1 && ag && ag.scene && ag.whole ? 'hidden' : '');
-    } else if (!isLead) {
+    } else {
       css(world, 'transformOrigin', L.tcx + 'px ' + (L.tcy - L.bh * 0.35) + 'px'); css(world, 'visibility', '');
       css(world, 'transform', zoom !== 1 ? 'scale(' + zoom.toFixed(5) + ')' : '');
-    } else {
-      // (the crane: the room moves from the toy box's last view to the bench's; the bench, nearer, moves with it, more)
-      css(world, 'transform', ''); css(world, 'visibility', '');
     }
-
-    // which card is up (a fresh load at the same place shows the same)
-    var cardOn = isLead ? (RM ? p > -0.5 : p > CARD[0]) : ending < 0.5;
-    // (the film the reader asked for goes with its card: it never plays on unseen, with no control left to stop it)
-    if (filmOn && !(cardOn && !isLead && pl.step === 'end')) openFilm(false);
-    setCard(lead, cardOn && pl.step === 'intro');
-    setCard(cPart, cardOn && !isLead && (pl.step === 'arrive' || pl.step === 'part'));
-    setCard(cBrk, cardOn && !isLead && pl.step === 'break');
-    setCard(cEnd, cardOn && !isLead && pl.step === 'end');
-    var chrome = !isLead && ending < 0.5;
-    css(tabs, 'visibility', chrome || (isLead && p > CARD[0]) ? '' : 'hidden');
-    tabs.classList.toggle('up', chrome || (isLead && p > CARD[0]));
-    css(plate, 'visibility', (chrome || (isLead && p > CARD[0])) ? '' : 'hidden');
-    plate.classList.toggle('up', chrome || (isLead && p > CARD[0]));
-    hint.classList.toggle('up', !isLead && qd < 0.012 && !RM);
-    tabEls.forEach(function (b, i) {
-      var f = clamp((qd - qOf(i)) / SEG);
-      b.classList.toggle('on', i === pl.i && pl.step !== 'intro');
-      var tr = 'scaleX(' + f.toFixed(3) + ')', bar = b.querySelector('b');
-      if (bar._tr !== tr) { bar._tr = tr; bar.style.transform = tr; }
-    });
+    lastT = t;
     // whole: the bench's pictures and the machine's still are in
     var still = picShown[picFront];
     return !still || !!picsIn[still] || (picFront === 'a' ? picA : picB).complete;
   }
 
   function setActive(on) {
-    if (on === active) return;
-    active = on;
-    if (!on) {
-      dropLive(); tvFilm.pause(); tvOn = false; if (filmOn) openFilm(false);
-      clearInterval(readTimer); readTimer = null;
-    } else if (!readTimer) readTimer = setInterval(function () { if (cur.step === 'break') paintBreak(); }, 300);
+    if (!on && tvOn) { tvOn = false; tvFilm.pause(); }
   }
-  var onVis = function () { if (document.hidden) { tvFilm.pause(); if (filmOn) film.pause(); tvOn = false; } };
+  var onVis = function () { if (document.hidden) { tvFilm.pause(); tvOn = false; } };
   document.addEventListener('visibilitychange', onVis);
 
   return {
@@ -635,13 +394,13 @@ export function mount(host, options) {
     resize: function () { if (laid) layout(); },
     setActive: setActive,
     dispose: function () {
-      alive = false; setActive(false); release();
+      alive = false; clearInterval(watch); dropLive(); tvFilm.pause(); tvOn = false;
       document.removeEventListener('visibilitychange', onVis);
-      tvFilm.removeAttribute('src'); film.removeAttribute('src');
+      tvFilm.removeAttribute('src');
     },
     // (for tests)
-    get state() { return { i: cur.i, step: cur.step, k: cur.k, mode: cur.mode, live: !!(live && live.ready), liveI: liveI, failed: Array.from(failed) }; },
-    qOf: qOf, LD: LD
+    get state() { return { i: cur, live: !!(live && live.ready), liveI: liveI, failed: Array.from(failed), debug: live ? live.debug : null }; },
+    LD: LD
   };
 }
 
