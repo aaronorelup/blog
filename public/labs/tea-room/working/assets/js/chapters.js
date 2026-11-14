@@ -59,6 +59,8 @@
   var under = document.createElement('div');
   under.id = 'chapters'; under.setAttribute('aria-hidden', 'true');
   document.getElementById('stage').after(under);
+  var holdEl = document.createElement('div'), holdOn = false;
+  holdEl.className = 'chapter-hold'; under.appendChild(holdEl);
   LIST.forEach(function (c) {
     c.section = document.getElementById(c.id);
     c.host = document.createElement('div'); c.host.className = 'chapter-stage' + (c.over ? ' over' : ''); c.host.dataset.chapter = c.id;
@@ -151,13 +153,18 @@
       if (!c.over && y >= c.top - 1) holder = i;        // (a section's top is seldom a whole pixel: its own address must land in it)
     }
     // the chapter that holds the screen; while its picture is not whole yet, the one before it stays
+    // (only the chapter just before may stand in: after a jump, a chapter further back is the wrong picture and the
+    // wrong name, and look B's own last scene stands in only for the first chapter. Else the hold, the night's plain
+    // ground, covers the screen until the chapter is whole.)
     var base = -1;
-    for (i = holder; i >= 0; i--) {
+    for (i = holder; i >= 0 && i >= holder - 1; i--) {
       c = LIST[i];
       if (c.over || !c.scene) continue;
       c.whole = !!c.scene.frame(clamp((y - c.top) / travel(c), 0, 1), t, ptr);
       if (c.whole) { base = i; break; }
     }
+    var hold = base < 0 && holder >= 1;
+    if (hold !== holdOn) { holdOn = hold; holdEl.style.visibility = hold ? 'visible' : ''; }
     // with it on the screen: a chapter drawn over it (over), and the next chapter while it comes on (its lead)
     for (i = 0; i < LIST.length; i++) {
       c = LIST[i];
@@ -183,7 +190,7 @@
       if (now >= 0) railItems.forEach(function (li) { li.classList.toggle('now', li === LIST[now].rail); });
       railNow = now;
     }
-    return base >= 0;
+    return base >= 0 || hold;
   }
   var raf = 0;
   function redraw() {

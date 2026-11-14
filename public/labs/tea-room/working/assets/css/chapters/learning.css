@@ -173,6 +173,7 @@
 .chapter-stage[data-chapter='learning'] { background: none; }
 .chapter-stage[data-chapter='learning'] > div { position: absolute; left: 0; top: 0; }
 .lr-gl { width: 100%; height: 100%; }
+.lr-flare { width: 100%; height: 100%; pointer-events: none; visibility: hidden; }   /* (the lantern's light: learning.js MELT) */
 .lr-gl .lb-gl { opacity: 1; }
 /* the lamps low (the chapter's end, under the next chapter's name): darkest at the top left, where the name stands */
 .lr-low { width: 100%; height: 100%; pointer-events: none; opacity: 0;
