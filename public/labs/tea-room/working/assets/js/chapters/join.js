@@ -131,7 +131,7 @@ export function benchLayout(W, H, rail) {
   } else {
     // (the cards stand on the right, as the film's card does; the television on the floor at the left, clear of the
     // rail; the bench between them)
-    var dockW = Math.round(cl(W * 0.25, 300, 390)), dockR = Math.round(Math.max(24, W * 0.035));
+    var dockW = Math.round(cl(W * 0.25, 300, 440)), dockR = Math.round(Math.max(24, W * 0.035));
     L.dock = { l: W - dockR - dockW, w: dockW, r: dockR };
     var tvW = Math.round(Math.min(300, W * 0.18)), th = tvW * 1093 / 1200, tvT = Math.round(H * 0.955 - th);
     var railR = rail ? rail.right : 172, railB = rail ? rail.bottom : H;
