@@ -251,10 +251,11 @@ function mountStage(host, opt) {
   // the stills are pictures of the whole page, console and all: white (nothing, on the bench) over what is not the machine
   function placeErase(src) {
     const m = MACHINES[Math.max(0, cur.i)];
-    const boxes = (m.erase && m.erase[src]) || [];
+    const key = src.replace(/^.*teardown-lab\//, '').replace(/\.webp$/, '');
+    const boxes = [...outside(m.keep && m.keep[key]), ...((m.erase && m.erase[key]) || []).map((b) => [...b, 'w'])];
     const r = cropRect(viewW, viewH, crop);
     const k = r.W / 1600;
-    erase.innerHTML = boxes.map(([x, y, w, h]) => `<i style="left:${(r.left + x * k).toFixed(1)}px;top:${(r.top + y * k).toFixed(1)}px;width:${(w * k).toFixed(1)}px;height:${(h * k).toFixed(1)}px"></i>`).join('');
+    erase.innerHTML = boxes.map(([x, y, w, h, kind]) => `<i${kind ? ' class="word"' : ''} style="left:${(r.left + x * k).toFixed(1)}px;top:${(r.top + y * k).toFixed(1)}px;width:${(w * k).toFixed(1)}px;height:${(h * k).toFixed(1)}px"></i>`).join('');
   }
 
   // ---- the pictures under the live page: two layers, cross-faded when the picture changes
@@ -491,9 +492,16 @@ function mountStage(host, opt) {
   };
 }
 
+// the console around a still's machine: everything outside its box
+export function outside(k) {
+  if (!k) return [];
+  const [x, y, w, h] = k;
+  return [[0, 0, 1600, y], [0, y + h, 1600, 900 - y - h], [0, y, x, h], [x + w, y, 1600 - x - w, h]];
+}
+
 /* the paper sweep behind and under the machine, in screen pixels: an inked outline, lit warm from the lamp above */
 function sweepSvg(bx, by, bw, bh, tcx, tcy, tRy, W) {
-  const L = bx + bw * 0.09, R = bx + bw * 0.91, T = by + bh * 0.02;
+  const L = bx + bw * 0.1, R = bx + bw * 0.9, T = by + bh * 0.03;
   const yB = tcy - tRy * 0.62, yF = tcy + tRy * 0.42, d = bw * 0.045;
   const f = (v) => v.toFixed(1);
   const path = `M${f(L)} ${f(T)} H${f(R)} V${f(yB)} C${f(R)} ${f(yB + tRy * 0.35)} ${f(R + d)} ${f(yF - tRy * 0.5)} ${f(R + d)} ${f(yF - tRy * 0.18)}`
@@ -502,11 +510,11 @@ function sweepSvg(bx, by, bw, bh, tcx, tcy, tRy, W) {
   return `<svg width="${Math.ceil(W)}" height="${Math.ceil(yF + tRy)}" viewBox="0 0 ${Math.ceil(W)} ${Math.ceil(yF + tRy)}" aria-hidden="true">
     <defs>
       <linearGradient id="tbSweepV" gradientUnits="userSpaceOnUse" x1="0" y1="${top}" x2="0" y2="${f(yF)}">
-        <stop offset="0" stop-color="#9c7064"/><stop offset="${(bend * 0.45).toFixed(3)}" stop-color="#d9ae86"/>
+        <stop offset="0" stop-color="#7a5658"/><stop offset="${(bend * 0.45).toFixed(3)}" stop-color="#d9ae86"/>
         <stop offset="${bend}" stop-color="#f3cf9f"/><stop offset="1" stop-color="#f7d6a8"/>
       </linearGradient>
       <radialGradient id="tbSweepR" gradientUnits="userSpaceOnUse" cx="${f(tcx)}" cy="${f(yB)}" r="${f((R - L) * 0.62)}" gradientTransform="translate(${f(tcx)} ${f(yB)}) scale(1 1.25) translate(${f(-tcx)} ${f(-yB)})">
-        <stop offset="0.45" stop-color="#2a1a26" stop-opacity="0"/><stop offset="1" stop-color="#2a1a26" stop-opacity="0.55"/>
+        <stop offset="0.38" stop-color="#2a1a26" stop-opacity="0"/><stop offset="1" stop-color="#2a1a26" stop-opacity="0.68"/>
       </radialGradient>
     </defs>
     <path d="M${f(L - 14)} ${f(T)} V-20 M${f(R + 14)} ${f(T)} V-20" stroke="#1d1520" stroke-width="2"/>

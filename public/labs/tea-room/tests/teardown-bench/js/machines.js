@@ -18,7 +18,11 @@ export const MACHINES = [
     filmLength: '30 s',
     poster: '/media/teardown-lab/dray/hero.webp',
     stills: ['/media/teardown-lab/dray/hero.webp', '/media/teardown-lab/dray/eye.webp', '/media/teardown-lab/dray/poster.webp'],
-    crop: { cx: 810, cy: 440, vh: 700, vw: 840 },
+    // in each still (in the page's 1600 x 900 pixels): the box the machine stands in, and the page's own words inside it.
+    // Everything else is the page's console, lifted out of the picture on the bench.
+    keep: { 'dray/hero': [365, 0, 860, 795], 'dray/eye': [365, 0, 860, 795] },
+    erase: { 'dray/eye': [[595, 135, 170, 45], [700, 605, 185, 50]] },
+    crop: { cx: 800, cy: 430, vh: 790, vw: 940 },
     cropNarrow: { cx: 810, cy: 450, vh: 900, vw: 820 },
     hero: { view: 'HERO' },
     kind: 'toggle', // parts and modes toggle; a mode needs a part
@@ -66,9 +70,11 @@ export const MACHINES = [
     page: '/labs/teardown/hab3/',
     film: '/media/teardown-lab/hab3/film.mp4',
     filmLength: '58 s',
-    poster: '/media/teardown-lab/hab3/power-off.webp',
-    stills: ['/media/teardown-lab/hab3/power-off.webp', '/media/teardown-lab/hab3/halted.webp', '/media/teardown-lab/hab3/poster.webp'],
-    crop: { cx: 790, cy: 340, vh: 600, vw: 760 },
+    poster: '/media/teardown-lab/hab3/halted.webp',
+    // its stills with no labels laid over the module: the halted one, the section through it
+    stills: ['/media/teardown-lab/hab3/halted.webp', '/media/teardown-lab/hab3/halted.webp', '/media/teardown-lab/hab3/halted.webp'],
+    keep: { 'hab3/halted': [380, 130, 760, 480] },
+    crop: { cx: 770, cy: 360, vh: 800, vw: 950 },
     cropNarrow: { cx: 790, cy: 330, vh: 900, vw: 860 },
     hero: { view: 'HERO' },
     kind: 'hab', // a part is isolated by picking it; "cut" is the page's section view
@@ -112,7 +118,9 @@ export const MACHINES = [
     filmLength: '32 s',
     poster: '/media/teardown-lab/lander/landed-upright.webp',
     stills: ['/media/teardown-lab/lander/landed-upright.webp', '/media/teardown-lab/lander/on-its-side.webp', '/media/teardown-lab/lander/poster.webp'],
-    crop: { cx: 790, cy: 430, vh: 620, vw: 760 },
+    keep: { 'lander/landed-upright': [190, 90, 1080, 690], 'lander/on-its-side': [190, 90, 1100, 690], 'lander/poster': [190, 90, 1090, 700] },
+    erase: { 'lander/landed-upright': [[325, 325, 175, 50], [325, 430, 185, 55], [325, 490, 180, 55], [1065, 430, 215, 50], [1065, 565, 200, 50]] },
+    crop: { cx: 760, cy: 420, vh: 740, vw: 880 },
     cropNarrow: { cx: 790, cy: 440, vh: 900, vw: 780 },
     hero: { view: 'HERO' },
     kind: 'toggle',
@@ -156,9 +164,12 @@ export const MACHINES = [
     page: '/labs/teardown/mole1/',
     film: '/media/teardown-lab/mole1/film.mp4',
     filmLength: '39 s',
-    poster: '/media/teardown-lab/mole1/step3-with-picture.webp',
-    stills: ['/media/teardown-lab/mole1/step3-with-picture.webp', '/media/teardown-lab/mole1/hero-3m.webp', '/media/teardown-lab/mole1/poster.webp'],
-    crop: { cx: 770, cy: 430, vh: 640, vw: 800 },
+    poster: '/media/teardown-lab/mole1/hero-3m.webp',
+    // the still from the page's own hero view (the others look down into the trench from above)
+    stills: ['/media/teardown-lab/mole1/hero-3m.webp', '/media/teardown-lab/mole1/hero-3m.webp', '/media/teardown-lab/mole1/hero-3m.webp'],
+    keep: { 'mole1/hero-3m': [300, 100, 990, 545] },
+    erase: { 'mole1/hero-3m': [[420, 180, 105, 40], [430, 228, 115, 42], [370, 410, 155, 45], [1085, 435, 195, 45]] },
+    crop: { cx: 780, cy: 400, vh: 760, vw: 900 },
     cropNarrow: { cx: 780, cy: 440, vh: 900, vw: 780 },
     hero: { view: 'HERO' },
     kind: 'set', // the mode is set (not toggled) first, then a part is picked
