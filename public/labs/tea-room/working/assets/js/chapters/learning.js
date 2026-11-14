@@ -21,7 +21,7 @@ var ss = function (a, b, x) { return smooth((x - a) / (b - a)); };
 var io = function (t) { t = clamp(t); return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; };
 
 var LB = 8;                       // the test's 0..1 runs over LB screens from the section's top (its own track: 900vh)
-var LOW = [0.2, 1.1];             // screens after that: the lamps go low under the next chapter's name
+var LOW = [0.4, 1.3];             // screens after that: the lamps go low as the next chapter's name comes on (.learning-foot)
 var T_HELD = 7.3;                 // (the test's own held time)
 var K = 1.4;                      // (look B lays its type out larger than it is drawn)
 
@@ -108,6 +108,9 @@ export function mount(host, options) {
     if (!view.frame(dq, HELD ? T_HELD : t, low)) return false;
     css(glHost, 'visibility', ''); css(pagesTop, 'visibility', '');
     css(glHost, 'opacity', melt >= 1 ? '' : melt.toFixed(3));
+    // (the modelled room comes in as dim as the painting, and its lamps come up as the camera goes to the desk)
+    var lit = RM ? 1 : ss(LEARN.MELT[0] + 0.3, 0.7, p), f = lit >= 1 ? '' : 'brightness(' + (0.64 + 0.36 * lit).toFixed(3) + ') saturate(' + (0.78 + 0.22 * lit).toFixed(3) + ')';
+    css(glHost, 'filter', f); css(pagesTop, 'filter', f);
     // (the pages come with the room: the shut book's cover is on the desk as the room melts in)
     css(pagesTop, 'opacity', melt >= 1 ? '' : melt.toFixed(3));
     // the lamps low: the pages go down into the picture (behind the page, under the dark), so the next chapter's name,

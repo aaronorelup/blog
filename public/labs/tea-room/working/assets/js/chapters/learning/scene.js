@@ -235,7 +235,10 @@ export function mount(host, options = {}) {
       const fw = clamp(0.92 - 0.29 * (WI / H - 0.9) / 0.7, 0.63, 0.92), fh = 0.64;
       const d = Math.max(w / (fw * t2 * WI / H), h / (fh * t2));
       px = H / (d * t2);
-      const cx = sx + (fw < 0.7 ? 0.005 : 0);
+      let cx = sx + (fw < 0.7 ? 0.005 : 0);
+      // (framed right of the rail: the lantern at the desk's left end is kept clear of it, the ink pot may leave the
+      // frame on the right first)
+      if (IN > 0) cx -= Math.max(0, IN + 18 - ((W + IN) / 2 + (-0.94 - cx) * px)) / px;
       const c = toWorld(cx, DESK.top + 0.03, -0.03);
       const p = toWorld(cx, DESK.top + 0.03 + d * Math.sin(el), -0.03 + d * Math.cos(el));
       lantern.position.set(-0.81, DESK.top, -0.16);
@@ -297,7 +300,9 @@ export function mount(host, options = {}) {
       lastE = e;
       camera.position.lerpVectors(from.p, rest.p, e);
       camera.quaternion.slerpQuaternions(from.q, rest.q, e);
-      camera.fov = from.fov + (rest.fov - from.fov) * e;
+      // (the lens narrows only once the camera has turned down to the desk: narrowed on the way, it would close in on
+      // whatever stands ahead, the andon)
+      camera.fov = from.fov + (rest.fov - from.fov) * ss(0.3, 1, e);
       camera.near = 0.1 + (restNear - 0.1) * e;          // at rest the camera may stand above the paper ceiling
       camera.updateProjectionMatrix();
       camera.updateMatrixWorld();

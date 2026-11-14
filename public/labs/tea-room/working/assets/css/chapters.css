@@ -155,7 +155,7 @@
 
 /* ---------------------------------------------------------------- learning to build with AI (assets/js/chapters/learning.js) */
 .learning-walk { height: 800vh; }  /* (learning.js LB: the test's track, the camera's arrival and the five spreads) */
-.learning-foot { height: 150vh; }  /* (the last spread held; the lamps go low under the next chapter's name) */
+.learning-foot { height: 250vh; }  /* (the last spread held; the lamps go low as the next chapter's name comes on: learning.js LOW) */
 
 /* ---------------------------------------------------------------- the closing beat (a draft: see chapters/closing.js) */
 /* its one small line stands under the name: the section's last screen is the page's last picture */
