@@ -81,8 +81,10 @@ export function mountPlay(o) {
           { t: 0.0, cx: 1692, cy: PAINT.H / 2, w: wMax },
           { t: 0.06, cx: 1692, cy: PAINT.H / 2, w: wMax },
           { t: 0.3, cx: 1490, cy: 890, w: wMax * 0.6 },
-          { t: 0.46, cx: 1574, cy: 2000, w: wMax * 0.77 },
-          { t: 1.0, cx: 1574, cy: 2000, w: wMax * 0.77 },
+          // (the long page holds this view for the posts and the end: a little wider than the test's 0.77, so the
+          // huddle's ends, the crate on the left and the scythe on the right, stand inside the screen)
+          { t: 0.46, cx: 1580, cy: 2000, w: wMax * 0.9 },
+          { t: 1.0, cx: 1580, cy: 2000, w: wMax * 0.9 },
         ],
       };
     }
@@ -345,7 +347,8 @@ export function mountPlay(o) {
   function hint() {
     let s = '';
     if (!canHand) s = '';
-    else if (RM) s = toys.length ? 'Tap a toy to see where it came from' : '';
+    // (motion off: until the posts come, as the hint with motion on; it never stands over a post's card)
+    else if (RM) s = toys.length && prog < 0.9 ? 'Tap a toy to see where it came from' : '';
     else if (state === 'closed') s = prog < 0.12 ? '' : 'Open the box';
     else if (state === 'open' && !hinted && prog < 0.9) s = phone ? 'Pick one up. Throw it.' : 'Pick one up and throw it';
     if (STILL) s = '';
