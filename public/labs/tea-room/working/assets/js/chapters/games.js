@@ -26,7 +26,7 @@ var A_LEAD = 0.26;                                // how far into the arena the 
 // the arena's light on the lawn: the storm's grey, a little blue (film.js lights the lawn the same while it dives)
 var LIGHT = [154, 154, 184];
 var POLE_L = 1390, POLE_R = 2250, PIC_R = 2170;    // the cloth's two bamboo poles, and the picture's right edge (plate pixels)
-var HOLD = 0.8;                                    // the garden holds this many screens at the end (chapters.css: .games-foot), under
+var HOLD = 1.0;                                    // the garden holds this many screens at the end (chapters.css: .games-foot), under
                                                   // the next chapter's name; the projector leaves for the left wing in it
 var EDGE = 600;                                   // how far left of the plate the plain sky and lawn reach (plate pixels; on under
                                                   // the plate's faded first 260, games.css)

@@ -39,7 +39,7 @@
   var LIST = [
     { id: 'film', css: 'film.css' },
     { id: 'games', css: 'games.css', lead: 2.5 },   // (its lead: it is thrown onto the film's cloth during the film's dive, join.js)
-    { id: 'toybox', css: 'toybox.css', lead: 1.8 }, // (its lead: its name comes on and the tea house slides over the games chapter's garden)
+    { id: 'toybox', css: 'toybox.css', lead: 2 },   // (its lead: its name comes on and the tea house slides over the games chapter's garden)
     { id: 'closing', over: true, lead: 1 }      // the page's last beat for now: the next builder's chapter goes above this line
   ];
 

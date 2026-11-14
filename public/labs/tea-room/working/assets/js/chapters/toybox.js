@@ -19,13 +19,15 @@ var ss = function (a, b, x) { var t = clamp((x - a) / (b - a)); return t * t * (
 var io = function (t) { t = clamp(t); return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; };
 var PW = 2752, PH = 1536;                          // the room's painting
 var K = 1.4;                                       // (look B lays its type out larger than it is drawn)
-// when things happen, in screens from the section's top (the lead runs from -1.8 to 0)
-var NAME_IN = [-1.75, -1.15], SAY_IN = [-1.65, -1.05];
+// when things happen, in screens from the section's top (the lead runs from -2 to 0)
+// (the name comes on over the games chapter's garden, and leaves for the left wing before the tea house's edge reaches
+// it: over the tea house it would stand across the roof and the windows)
+var NAME_IN = [-1.95, -1.35], SAY_IN = [-1.85, -1.25], NAME_LEAD_OUT = [-0.95, -0.55];
 var SLIDE = [-0.85, -0.05];                        // the tea house slides across (games holds still under it)
 var WALK = [0.25, 2.85];                           // look B's walk from the lawn through the doorway
-// (the name leaves for the left wing as the walk begins, as look B's title leaves its lawn; it stands again on the
-// room's wall once the camera is through the doorway, as look B's "Start here" does, and leaves as it goes to the box)
-var NAME_WALK = [0.3, 0.85], NAME_ROOM = [2.45, 2.85], NAME_OUT = [3.05, 3.6];
+// (the name stands again on the room's wall once the camera is through the doorway, as look B's "Start here" does,
+// and leaves for the left wing as the camera goes on to the box)
+var NAME_ROOM = [2.45, 2.85], NAME_OUT = [3.05, 3.6];
 // the box's track after the walk (r: screens since the walk ended) -> the test's own track (0..1)
 var TRACK = [[0, 0.06], [1.0, 0.3], [1.9, 0.46], [2.5, 0.78], [3.2, 1.0]];
 
@@ -148,10 +150,10 @@ export function mount(host, options) {
 
     // the name
     var kIn, kSay, kOut, kSayOut;
-    if (p < (NAME_WALK[1] + NAME_ROOM[0]) / 2) {
-      kIn = RM ? (p > -1.4 ? 1 : 0) : narrow ? io(ss(NAME_IN[0] + 0.15, NAME_IN[1], p)) : io(ss(NAME_IN[0], NAME_IN[1], p));
+    if (p < (WALK[0] + NAME_ROOM[0]) / 2) {
+      kIn = RM ? (p > -1.6 ? 1 : 0) : narrow ? io(ss(NAME_IN[0] + 0.15, NAME_IN[1], p)) : io(ss(NAME_IN[0], NAME_IN[1], p));
       kSay = RM ? kIn : narrow ? io(ss(SAY_IN[0] + 0.15, SAY_IN[1], p)) : io(ss(SAY_IN[0], SAY_IN[1], p));
-      kOut = RM ? (p > WALK[0] ? 1 : 0) : io(ss(NAME_WALK[0], NAME_WALK[1], p)); kSayOut = RM ? kOut : io(ss(NAME_WALK[0] - 0.05, NAME_WALK[1] - 0.1, p));
+      kOut = RM ? (p > -0.45 ? 1 : 0) : io(ss(NAME_LEAD_OUT[0], NAME_LEAD_OUT[1], p)); kSayOut = RM ? kOut : io(ss(NAME_LEAD_OUT[0] - 0.05, NAME_LEAD_OUT[1] - 0.05, p));
     } else {
       // (back on the room's wall: it comes on from the left wing, on every screen)
       kIn = kSay = 1;
