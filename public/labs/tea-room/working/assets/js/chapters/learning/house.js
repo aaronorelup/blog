@@ -194,8 +194,11 @@ function build() {
     let drawn = '';
     // w, h: the cover element's size in its own pixels; em: its font size; tall: the phone's book (learning.css)
     m.userData.paint = (w, h, em, tall) => {
-      const key = [w, h, em, tall].join();
-      if (key === drawn) return;
+      // (the label's type is the page's own: until it is in, the cover is painted again at every call)
+      const ready = !document.fonts || document.fonts.check('700 20px "Zen Maru Gothic"');
+      if (!ready && document.fonts) document.fonts.load('700 20px "Zen Maru Gothic"');
+      const key = [w, h, em, tall, ready].join();
+      if (key === drawn) return false;
       drawn = key;
       const s = 640 / Math.max(w, h); c.width = Math.round(w * s); c.height = Math.round(h * s);
       const g = c.getContext('2d'), E = em * s, r = 1.3 * E, bw = 0.17 * E, thin = 0.09 * E;
@@ -219,6 +222,7 @@ function build() {
       g.fillText('The Ledger', c.width / 2, y0 + lb + 0.7 * F + 0.5 * F - 0.05 * F);
       tex.needsUpdate = true;
       m.scale.set(w, h, 1);
+      return true;                         // (painted again: the room must be drawn again)
     };
     return m;
   })();
