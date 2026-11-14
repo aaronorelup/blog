@@ -214,7 +214,7 @@ export function mount(host, options) {
     // the room: seen through the doorway once the walk has come close (look B's own rule), then the picture
     var roomOn = !lead && (hp >= 1 || (gcam && gcam.m > 0.33));
     setV(roomEl, 'room', roomOn);
-    var r = p - WALK[1], prog = 0, rect = null;
+    var r = p - WALK[1], prog = 0, rect = null, turned = 0;
     if (roomOn) {
       if (hp < 1) rect = rectOfCam(garden.roomCam(gcam));
       else {
@@ -241,12 +241,14 @@ export function mount(host, options) {
           }
         }
         if (marks.foot && benchRoom) {
-          var ft = p - marks.foot.top, eTurn = RM ? (ft > (TURN[0] + TURN[1]) / 2 ? 1 : 0) : io(ss(TURN[0], TURN[1], ft));
-          if (eTurn > 0) rect = mixRect(rect, benchRoom, eTurn);
+          var ft = p - marks.foot.top;
+          turned = RM ? (ft > (TURN[0] + TURN[1]) / 2 ? 1 : 0) : io(ss(TURN[0], TURN[1], ft));
+          if (turned > 0) rect = mixRect(rect, benchRoom, turned);
         }
       }
     }
-    var hand = roomOn && hp >= 1 && active;
+    // (once the camera turns to the bench the toys are let be: no hand, no tag, no count over the bench's tabs)
+    var hand = roomOn && hp >= 1 && active && turned <= 0;
     if (play && roomOn) play.frame(rect, prog, active ? dt : 0, hand);
     else if (play) play.idle();
     // the painting itself, where three.js is not (no WebGL, or until it has started)
