@@ -89,8 +89,6 @@ export function mount(host, options) {
     var nkk = gone >= 1 ? 0 : narrow ? nk : nk * (1 - outk);
     putName(word, left, wy, nkk, up, gone);
     putName(say, sx, sy, nkk, up * 0.7, gone);
-    // (for now: the room dissolves in over the walk's last picture)
-    css(sceneHost, 'opacity', p < 0 ? ss(-1, -0.45, p).toFixed(3) : '');
     return scene.frame(p <= 0 ? 0 : progress(p));
   }
 

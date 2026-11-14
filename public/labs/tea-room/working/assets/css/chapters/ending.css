@@ -7,7 +7,7 @@
 .en-nw, .en-ns { position: absolute; left: 0; top: 0; transform-origin: 0 0; z-index: 2; }
 .end-host { overflow: hidden; }
 .end-scene { position: absolute; inset: 0; overflow: hidden; visibility: hidden; contain: strict; }
-.end-plate { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+.end-plate { position: absolute; left: 0; top: 0; transform-origin: 0 0; }   /* (no will-change: drawn as the walk's door draws the same room, so the two pictures meet exactly) */
 .end-layer { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; max-width: none; -webkit-user-select: none; user-select: none; }
 img.end-layer { object-fit: fill; }
 .end-room-foot { display: none; }

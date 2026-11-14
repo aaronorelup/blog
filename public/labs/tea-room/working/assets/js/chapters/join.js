@@ -291,4 +291,8 @@ export function projectsInset(W, H, rail) { return W / H < 0.9 || !rail || rail.
    lamplight thins, and the back room is there through it (ending/scene.js roomPlace), until the doorway is the frame.
    That last picture is the ending's first: in its lead (screens before the ending section's top) its name comes on
    over the room from the left wing, and leaves as the Courses card comes up. Motion off: the walk's end cuts to the room. */
-export var ENDING = { NAME: [-0.85, -0.2], OUT: [0.12, 0.5] };
+// DOOR: the walk-on, in screens after the walk's end (.projects-walk's foot); EASE: how much of it eases in and out
+// (look B: 0.35); RD: how much larger the house grows by the camera's own walk (the rest is the lens closing in on the
+// doorway); DEEP: how much more slowly the room grows than the doorway; CEND: where the doorway's middle ends on the
+// screen (x, y wide, y tall); CALM: where the far garden stops leaning with the mouse.
+export var ENDING = { DOOR: [0.6, 3.5], EASE: 0.45, RD: 2.4, DEEP: 0.6, CEND: [0.5, 0.5, 0.5], CALM: [0.3, 0.8], NAME: [-0.85, -0.2], OUT: [0.12, 0.5] };

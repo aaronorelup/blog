@@ -251,7 +251,7 @@
 /* the walk is the test's own length (tests/projects-walk/: 0.95 of a screen for each of the twelve, and three more);
    in the foot the end card goes up and away, then the camera walks on into the tea house's doorway (join.js ENDING) */
 .projects-walk { height: 1425vh; }
-.projects-foot { height: 200vh; }
+.projects-foot { height: 460vh; }
 
 /* ---------------------------------------------------------------- Courses, Now and About (assets/js/chapters/ending.js) */
 /* The test tests/the-ending/'s cards: the homepage's night card (a navy ground, round corners, one soft shadow, a gold
