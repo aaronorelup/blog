@@ -201,3 +201,58 @@ export function tvDive(tv, W, H, k) {
   }
   return { Z: Z, tx: tx, ty: ty, k: k, glass: { x: cx - gw * Z / 2, y: cy - gh * Z / 2, w: gw * Z, h: gh * Z } };
 }
+
+/* THE JOIN BETWEEN THE AGENTS CHAPTER AND THE LEARNING CHAPTER (learning.js): the painted room becomes the modelled
+   one. After the camera has come back out of the television, the agents chapter turns its room (the painting, the
+   set with it) to the corner where the lantern stands by the shoji (LEARN.TURN): there the painting stands so that its
+   lantern lies exactly where the modelled room's andon is seen from LEARN's pose. The learning chapter then dissolves
+   its modelled room in over the painting, the camera still at that pose (both pictures still), and from there it
+   comes down onto the writing desk (the test's own arrival). Both chapters reckon everything from the layout alone,
+   here; times are in screens before the learning section's top (its lead). The agents chapter reckons them from its
+   own foot: pe = p + FOOT_PE (its walk ends FOOT_PE screens before the learning section's top). */
+export var LEARN = {
+  FOOT: 4.6,               // the agents chapter's foot (.agents-foot, 460vh): its walk ends this many screens before learning
+  TURN: [-2.35, -1.05],    // (agents) the painted room turns to the lantern's corner; the set leaves the frame
+  NAME: [-2.2, -1.5],      // (learning) its name comes on from the left wing
+  MELT: [-0.95, -0.35],    // (learning) the modelled room dissolves in over the painting, both still
+  RM_CUT: -0.6,            // motion off: one cut from the painting to the modelled room
+  ANDON: { x: -5.42, z: 4.26, foot: 0.47, top: 1.6 },          // the modelled andon (world/lamps.js)
+  LANTERN: { x: 1941, top: 796, foot: 1062 },                   // the painted lantern (img/room.webp, 2752 x 1536)
+  // the camera the modelled room is first seen from: p, the point looked at t, the widest lens fov (degrees). learnPose
+  // narrows the lens, a degree at a time, until the painting that matches it covers the screen.
+  WIDE: { p: [-3.2, 1.75, -1.5], t: [-5.3, 1.0, 4.9], fov: 38 },
+  TALL: { p: [-4.0, 1.7, -1.0], t: [-5.3, 1.0, 4.9], fov: 50 }
+};
+// the inset a wide picture is framed with (the rail's right edge), the same rule as the scene's
+export function learnInset(W, H, rail) { return W / H < 0.8 ? 0 : Math.max(0, Math.min(W * 0.3, rail && rail.right < W * 0.4 ? rail.right : 0)); }
+// a point of the modelled room on the screen, seen from pose (the picture framed right of IN)
+export function seeFrom(pose, W, H, IN, X) {
+  var P = pose.p, T = pose.t;
+  var f = [T[0] - P[0], T[1] - P[1], T[2] - P[2]], fl = Math.hypot(f[0], f[1], f[2]); f = [f[0] / fl, f[1] / fl, f[2] / fl];
+  var r = [-f[2], 0, f[0]], rl = Math.hypot(r[0], r[2]); r = [r[0] / rl, 0, r[2] / rl];
+  var u = [r[1] * f[2] - r[2] * f[1], r[2] * f[0] - r[0] * f[2], r[0] * f[1] - r[1] * f[0]];
+  var d = [X[0] - P[0], X[1] - P[1], X[2] - P[2]];
+  var z = d[0] * f[0] + d[1] * f[1] + d[2] * f[2], F = (H / 2) / Math.tan(pose.fov * Math.PI / 360);
+  return [(W + IN) / 2 + F * (d[0] * r[0] + d[1] * r[1] + d[2] * r[2]) / z, H / 2 - F * (d[0] * u[0] + d[1] * u[1] + d[2] * u[2]) / z];
+}
+function matchAt(pose, W, H, IN) {
+  var A = LEARN.ANDON, L = LEARN.LANTERN;
+  var top = seeFrom(pose, W, H, IN, [A.x, A.top, A.z]), foot = seeFrom(pose, W, H, IN, [A.x, A.foot, A.z]);
+  var s = (foot[1] - top[1]) / (L.foot - L.top);
+  var R = { s: s, tx: foot[0] - L.x * s, ty: foot[1] - L.foot * s, andon: [foot[0], top[1], foot[1]], IN: IN };
+  R.margin = Math.min(-R.tx, -R.ty, R.tx + PW * s - W, R.ty + PH * s - H);
+  return R;
+}
+var poseMemo = {};
+export function learnPose(W, H, rail) {
+  var tall = W / H < 0.8, IN = learnInset(W, H, rail), key = W + 'x' + H + ':' + IN;
+  if (poseMemo[key]) return poseMemo[key];
+  var b = tall ? LEARN.TALL : LEARN.WIDE, pose = { p: b.p, t: b.t, fov: b.fov };
+  while (pose.fov > 16 && matchAt(pose, W, H, IN).margin < 6) pose = { p: b.p, t: b.t, fov: pose.fov - 1 };
+  return (poseMemo[key] = pose);
+}
+// the painting at the turn's end: its scale s and where its corner stands (tx, ty), so its lantern is the andon
+export function learnRoom(W, H, rail) {
+  var IN = learnInset(W, H, rail);
+  return matchAt(learnPose(W, H, rail), W, H, IN);
+}
