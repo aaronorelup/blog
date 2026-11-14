@@ -114,7 +114,10 @@ export function build(kit, G, L, view, houseZ, lantern, onLoad) {
     paint(null);
     if (Math.abs(K0 - s.i) < 2.4) { const im = new Image(); im.onload = () => { paint(im); done(); }; im.src = it.pic.src; }
     const [x, z] = at(o.wX - side * mpp, o.wZ);
-    flat(t, cw * mpp, ch * mpp, 0, 1, x, z, false, (1 - ss(FAR - 8, FAR, d)));
+    const win = flat(t, cw * mpp, ch * mpp, 0, 1, x, z, false, (1 - ss(FAR - 8, FAR, d)));
+    // (a phone: its windows stand over the path, so from the camera high behind the avenue they would line up in one
+    // column, a pile of boards; they rise only as the camera comes down to the grove, each where the walk shows it)
+    if (L.tall) win.userData.rise = Math.max(win.userData.rise, 0.8);
   });
   // the stepping stones, the whole path: the walk's own three ellipses (its shadow, the stone, its lit top), flattened
   // as the walk flattens them (0.62 of a true disc seen from the eye); one merged mesh for each of the three
@@ -187,6 +190,9 @@ export function build(kit, G, L, view, houseZ, lantern, onLoad) {
     const mesh = new Mesh(geo, m);
     mesh.position.set((sx - L.cx) * k, view.y + (L.hY - sy) * k, Zc - D);
     mesh.renderOrder = -1; mesh.visible = false;
+    mesh.userData.r = size * R / 512;                // (the disc's radius in the world, its middle and radius on the screen at
+    mesh.userData.at = [sx, sy, mr];                 // the walk's first view: site.js brings the sky's moon to it and
+    mesh.userData.home = mesh.position.clone();      // sets this one on the screen while the camera comes down)
     group.add(mesh);
     return mesh;
   })();
@@ -213,5 +219,5 @@ export function build(kit, G, L, view, houseZ, lantern, onLoad) {
     lawnGeo.dispose();
     if (group.parent) group.parent.remove(group);
   }
-  return { group, Zc, update, dispose };
+  return { group, Zc, moon: moonMesh, update, dispose };
 }

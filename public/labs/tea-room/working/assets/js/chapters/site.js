@@ -24,7 +24,7 @@ import { garden as walkGarden, layout as walkLayout, firstView } from './project
 import { PROJECTS, SHELVES } from './projects/data.js';
 import { drawLantern } from './projects/scene.js';
 import { build as buildGrove } from './projects/twin.js';
-import { Vector3 } from 'three';
+import { Quaternion, Vector3 } from 'three';
 
 var clamp = function (v, a, b) { a = a === undefined ? 0 : a; b = b === undefined ? 1 : b; return v < a ? a : v > b ? b : v; };
 var ss = function (a, b, x) { var t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
@@ -33,7 +33,6 @@ var rad = function (d) { return d * Math.PI / 180; };
 var T_HELD = 7.3;                 // (the learning chapter's held time: the petals do not jump at the join)
 var K = 1.4;                      // (look B lays its type out larger than it is drawn)
 var SVG = 'http://www.w3.org/2000/svg';
-var MOONTURN = rad(30);
 
 // The names over the drawing (the test's own): a chip names a corner of the room with the meaning the homepage gave
 // it; a tag names a layer as it lifts (wide: in one column beside the drawing, as on an exploded drawing).
@@ -252,6 +251,65 @@ export function mount(host, options) {
     return out;
   }
 
+  // The join's one moon: the sky's moon (learning/world/sky.js) leaves its place behind the house before the next
+  // chapter's name comes in, going right and up to where the walk's painted moon stands on the screen (twin.js: its
+  // middle and size at the walk's first view). There it turns into the walk's own moon (the same place and size, the
+  // one fading as the other comes up), which grows to the painting's size and keeps that place on the screen while the
+  // camera pulls back and comes down, set far down the view so the trees stand in front of it as in the painting. At
+  // the walk's first view it is exactly where twin.js stands it. So the reader follows one moon from the house to the
+  // walk, never under the name. The sky's moon is put back as it was whenever the join is not on (j 0).
+  var mHome = null, mA = new Vector3(), mB = new Vector3(), mL = new Vector3(), mR = new Vector3(), mQ = new Quaternion();
+  function px(v, out) { mL.copy(v).project(camera); out.x = (mL.x * 0.5 + 0.5) * W; out.y = (-mL.y * 0.5 + 0.5) * H; return out; }
+  // stand a moon (its disc's radius in the world rw) at (sx, sy) on the screen, D down the view, r pixels in radius
+  function standMoon(o, sx, sy, D, r, rw) {
+    var cp = camera.position, right = mR.setFromMatrixColumn(camera.matrixWorld, 0);
+    mL.set(sx / W * 2 - 1, 1 - sy / H * 2, 0.5).unproject(camera).sub(cp).normalize();
+    mA.copy(cp).addScaledVector(mL, D);
+    var c = px(mA, {}), e = px(mB.copy(mA).addScaledVector(right, 1), {}), k = Math.hypot(e.x - c.x, e.y - c.y), s = r / (rw * k);
+    if (o.parent) o.parent.worldToLocal(mB.copy(mA)); else mB.copy(mA);
+    o.position.copy(mB); o.scale.set(s, s, 1);
+  }
+  function moonTo(j) {
+    var m = HS.sky.moon, hv = HS.heavens;
+    if (!mHome) mHome = { p: m.position.clone(), q: m.quaternion.clone(), mats: m.children.map(function (c) { return { m: c.material, o: c.material.opacity, t: c.material.transparent }; }) };
+    if (!(j > 0)) {
+      if (mHome.moved) {
+        m.position.copy(mHome.p); m.quaternion.copy(mHome.q); m.scale.set(1, 1, 1); m.visible = true;
+        m.children.forEach(function (c) { c.renderOrder = 0; });
+        mHome.mats.forEach(function (x) { x.m.opacity = x.o; x.m.transparent = x.t; x.m.needsUpdate = true; });
+        mHome.moved = false;
+      }
+      return;
+    }
+    var tw = grove.moon, at = tw.userData.at, cp = camera.position;
+    var wx = ss(0, 0.12, j), wy = ss(0.04, 0.26, j), turn = ss(0.2, 0.4, j), grow = ss(0.2, 0.7, j);
+    hv.updateMatrixWorld(); grove.group.updateMatrixWorld(); camera.updateMatrixWorld();
+    hv.localToWorld(mA.copy(mHome.p));
+    // where the sky's moon stands on the screen now, and its radius there (3.75: the sky moon's disc)
+    var h = px(mA, {}), e = px(mB.copy(mA).addScaledVector(mR.setFromMatrixColumn(camera.matrixWorld, 0), 3.75), {});
+    var rh = Math.hypot(e.x - h.x, e.y - h.y), dA = mA.distanceTo(cp), dT = tw.userData.home.distanceTo(cp);
+    var sx = h.x + (at[0] - h.x) * wx, sy = h.y + (at[1] - h.y) * wy, r = rh + (at[2] - rh) * grow;
+    // the sky's moon, until it has turned into the walk's
+    m.visible = turn < 0.997;
+    if (m.visible) {
+      standMoon(m, sx, sy, dA + (dT - dA) * wy, r, 3.75);
+      hv.localToWorld(mL.set(0, 6, 0)); mL.lerp(cp, wx);
+      m.lookAt(mL);
+      // (its glow goes as it turns; the disc stays whole under the walk's moon, which is drawn over it)
+      mHome.mats.forEach(function (x, i) { x.m.transparent = true; x.m.opacity = i === 0 ? x.o * (1 - turn) : x.o; x.m.needsUpdate = !mHome.moved; });
+      // (drawn first, under the walk's moon and every tree: twin.js draws its moon at -1)
+      m.children.forEach(function (c) { c.renderOrder = -2; });
+    }
+    mHome.moved = true;
+    // the walk's moon (twin.js update() gave it its opacity by k; here it comes up as the sky's moon turns into it)
+    tw.visible = turn > 0.003;
+    if (tw.visible) {
+      tw.material.opacity = turn; standMoon(tw, sx, sy, dT, r, tw.userData.r);
+      // (it faces the camera as the sky's moon does, and is square to the first view again as the camera arrives)
+      tw.lookAt(cp); tw.quaternion.slerp(mQ, ss(0.85, 1, j));
+    }
+  }
+
   // ------------------------------------------------------------------ the drawing (the test's scene.js render())
   function render(T, time, sw, close, shadowsNow, j) {
     var u = clamp((T - ACT.apart0) / (ACT.apart1 - ACT.apart0));
@@ -263,8 +321,7 @@ export function mount(host, options) {
     // window) and has come round to the test's own sky by the time the camera is out under the torii
     // (a phone: the moon comes to rest right of where the next chapter's name will stand, never under its lines)
     var hv = (tall ? -0.227 : 0) + (tall ? 0.023 : 0.384) * ss(0.3, 0.62, T);
-    // (the join: the sky turns on a little, so the moon is not behind the next chapter's name)
-    HS.look(1, rad(48) + (hv - rad(48)) * ss(0.03, 0.2, T) + (j > 0 ? MOONTURN * io(ss(0, 0.3, j)) : 0));
+    HS.look(1, rad(48) + (hv - rad(48)) * ss(0.03, 0.2, T));
 
     cameraAt(T, tall, cam);
     var out = sw ? ss(0.17, ACT.whole, T) : 0;
@@ -337,6 +394,7 @@ export function mount(host, options) {
       if (hillFar) hillFar.visible = !(j > 0);
       if (j > 0) grove.update(camera, ss(0.72, 1, j), j);
     }
+    moonTo(grove && j > 0 ? j : 0);
     HS.petals.update(time);
     if ((u !== lastU || gaps !== lastGaps) && shadowsNow) { lastU = u; lastGaps = gaps; renderer.shadowMap.needsUpdate = true; }
     renderer.render(HS.scene, camera);
@@ -367,6 +425,7 @@ export function mount(host, options) {
       css(glHost, 'visibility', 'hidden'); css(leaders, 'visibility', 'hidden'); css(labelBox, 'visibility', 'hidden');
       if (grove) grove.group.visible = false;
       if (hillFar) hillFar.visible = true;
+      moonTo(0);
       return true;
     }
     if (HS.claim(glHost, 'site')) takeOver();
@@ -501,7 +560,7 @@ export function mount(host, options) {
     frame: frame,
     resize: function () { layout(); },
     setActive: function (on) { active = !!on; },
-    dispose: function () { card.style.webkitMaskImage = card.style.maskImage = ''; if (grove) { grove.dispose(); grove = null; } if (hillFar) hillFar.visible = true; if (HS.canvas.parentNode === glHost) HS.canvas.remove(); host.textContent = ''; release(); },
+    dispose: function () { card.style.webkitMaskImage = card.style.maskImage = ''; moonTo(0); if (grove) { grove.dispose(); grove = null; } if (hillFar) hillFar.visible = true; if (HS.canvas.parentNode === glHost) HS.canvas.remove(); host.textContent = ''; release(); },
     // (the rail and a phone's pill name this chapter once its name is on the screen)
     owns: function () { return lastP >= (SITE.NAME[0] + SITE.NAME[1]) / 2; },
     // (from SITE.START on this chapter draws the room: the learning chapter, at its end, stands aside)

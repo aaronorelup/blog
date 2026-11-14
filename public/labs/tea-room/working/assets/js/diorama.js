@@ -49,6 +49,7 @@
     if (x > W + 30 || y > H + 30 || x + w < -30 || y + h < -30) { hide(f); return out; }
     show(f);
     setTr(f, 'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) scale(' + (w / f.lw).toFixed(5) + ')');
+    noteScale(f, f.el, w / f.lw, !f.keep);
     setOp(f, op);
     return out;
   }
@@ -171,7 +172,7 @@
     sStart: Flat('s-start', { r: 0.985, a: [0, 0], text: true }),
     wTv: Flat('w-tv', { r: 0.9, a: [0, 0], text: true }),
     sTv: Flat('s-tv', { r: 0.9, a: [0, 0], text: true, wrap: 19 }),
-    tv: Flat('r-tv', { size: [520, 473.6], b: [-378, 433], r: 0.55, a: [0.5, 1] })
+    tv: Flat('r-tv', { keep: true, size: [520, 473.6], b: [-378, 433], r: 0.55, a: [0.5, 1] })
   };
   var TVS = [424.5 / 1200, 647 / 1093];      // centre of the glass within the television's picture
   var GLASS = [124.5 / 1200, 372 / 1093, 600 / 1200, 550.5 / 1093];   // the glass, squared up, within that picture
@@ -345,6 +346,7 @@
       if (!visL) continue;
       var trl = 'translate3d(' + (offG * bw).toFixed(1) + 'px,0,0) scale(' + sc.toFixed(5) + ')';
       if (trl !== L.last) { L.el.style.transform = trl; L.last = trl; }
+      noteScale(L, L.el, sc, true);
     }
     // each garden's television is drawn from the full-size render, so it stays sharp however far in we are
     for (j = 0; j < 3; j++) {
@@ -354,6 +356,7 @@
       var X = DRO.left + DRO.fx + s2 * (0.17 * DRO.pw - DRO.fx) + offG * bw, Y = DRO.top + DRO.fy + s2 * (0.555 * DRO.ph - DRO.fy);
       var trt = 'translate3d(' + X.toFixed(2) + 'px,' + Y.toFixed(2) + 'px,0) scale(' + (s2 * 0.26 * DRO.pw / 1200).toFixed(5) + ')';
       if (trt !== Tv.last) { Tv.el.style.transform = trt; Tv.last = trt; }
+      noteScale(Tv, Tv.el, s2, true);
     }
   }
   // when the last set goes dark, the tube keeps one point of light for a moment
@@ -369,8 +372,8 @@
     plate: Flat('c-plate', { size: [2752, 1536], b: [0, 0], r: 1 }),
     proj: Flat('c-proj', { fit: 300, b: [0, 0], r: 0.3, a: [0.5, 1] }),
     nr: Flat('c-near-r', { size: [520, 271], b: [0, 0], r: 0.2 }),
-    wNext: Flat('w-next', { r: 0.96, a: [0, 0], text: true }),
-    sNext: Flat('s-next', { r: 0.96, a: [0, 0], text: true })
+    wNext: Flat('w-next', { keep: true, r: 0.96, a: [0, 0], text: true }),
+    sNext: Flat('s-next', { keep: true, r: 0.96, a: [0, 0], text: true })
   };
   var CLOTH = [[1453, 404], [2202, 370], [2207, 929], [1445, 877]].map(function (p) { return [p[0] - 1376, p[1] - 768]; });
   var cHome = { m: 0, C: [0, 0], o: [0, 0] };
@@ -566,6 +569,51 @@
     boxTr = ''; boxClip = '';
   }
 
+  // The zooms draw a layer many times its size (the house through the door, the garden in the television). A layer
+  // with will-change: transform keeps the raster scale it was drawn biggest at, so after a fast scroll back out of a
+  // zoom Chrome showed it from that raster and, when it no longer fit the tile memory, with rectangles left unpainted
+  // (a black box over the garden). Each zoomed layer notes the biggest scale it was drawn at (noteScale).
+  // - A layer shown at under half of that while the scroll moves, or under 1/1.25 of it 200 ms after the scroll comes
+  //   to rest, is replaced by a fresh copy of itself (its pictures decoded first, so nothing blinks), which Chrome
+  //   draws at the scale it is shown at, as on a fresh load at that place.
+  // - The three flats other scripts hold by reference (keep: the room's television, the next chapter's name) are not
+  //   copied: once the scroll rests they lose the hint instead (they stay layers: their transforms are 3D) and are
+  //   drawn at the scale they are shown at; they take the hint back at the next move.
+  // Scrolling on down the page never shrinks a layer that far, so nothing changes there.
+  var RR = [], rrY = null, rrT = 0, rrOff = [];
+  function noteScale(o, el, sc, swap) {
+    o.rrEl = el; o.rrCur = sc; o.rrSwap = swap;
+    if (!(o.rrMx >= sc)) o.rrMx = sc;
+    else if (swap && o.rrMx > sc * 2) renew(o);
+    if (!o.rrIn) { o.rrIn = true; RR.push(o); }
+  }
+  // a fresh copy of a garden layer, put in its place once its pictures are decoded
+  function renew(o) {
+    if (o.rrBusy) return;
+    o.rrBusy = true; o.rrMx = o.rrCur;
+    var old = o.el, nu = old.cloneNode(true), imgs = nu.tagName === 'IMG' ? [nu] : Array.prototype.slice.call(nu.querySelectorAll('img'));
+    Promise.all(imgs.map(function (im) { return im.decode ? im.decode().catch(function () {}) : null; })).then(function () {
+      o.rrBusy = false;
+      if (!old.parentNode || o.el !== old) return;
+      nu.style.cssText = old.style.cssText;
+      old.parentNode.replaceChild(nu, old);
+      o.el = o.rrEl = nu; o.last = '';
+    });
+  }
+  function rasterRest(y) {
+    if (y === rrY) return;
+    rrY = y; clearTimeout(rrT);
+    if (rrOff.length) { rrOff.forEach(function (o) { o.rrEl.style.willChange = ''; }); rrOff = []; }
+    rrT = setTimeout(rasterFresh, 200);
+  }
+  function rasterFresh() {
+    RR.forEach(function (o) {
+      if (!(o.rrMx > o.rrCur * 1.25)) return;
+      if (o.rrSwap) renew(o);
+      else { o.rrMx = o.rrCur; o.rrEl.style.willChange = 'auto'; rrOff.push(o); }
+    });
+  }
+
   var yS = 0, lastNow = 0, started = false;
   function frame(now) {
     var t = FROZEN ? T_HELD : now / 1000;
@@ -617,6 +665,7 @@
       if (ga > 0) { drawPetals(gcam, G.S0, t, ga, portrait ? 26 : 46); drawFlies(gcam, G.S0, t, ga * (1 - ss(0.3, 0.6, heroP))); canvasDirty = true; }
     }
     drawFurniture(y, heroP, e);
+    rasterRest(y);
     if (!FROZEN) requestAnimationFrame(frame);
   }
   function render() { frame(performance.now()); }
