@@ -252,7 +252,7 @@ export function mount(host, options) {
       }
     }
     // (once the camera turns to the bench the toys are let be: no hand, no tag, no count over the bench's tabs)
-    var hand = roomOn && hp >= 1 && active && turned <= 0;
+    var hand = roomOn && hp >= 1 && active && turned <= 0 && !packed;
     if (play && roomOn) play.frame(rect, packed ? 0 : prog, active ? dt : 0, hand);
     else if (play) play.idle();
     // the painting itself, where three.js is not (no WebGL, or until it has started)

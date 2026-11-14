@@ -56,7 +56,8 @@ var LIGHT = [-1.95, -1.25];               // the lantern comes on
 var RISE = [-2.2, -1.2];                  // the table comes up into the frame (the camera comes down to its height)
 var TVRISE = [-1.9, -0.8];                // the television, nearest, comes up last and fastest
 var UNROLL = [-1.5, -0.85];               // the backdrop unrolls from its rod down over the table (once it stands)
-var APPEAR = [-1.0, -0.5];                // and the first machine stands on it
+var APPEAR = [-0.92, -0.78];              // and the first machine is set down on it, in the dark (as between two machines):
+var SETDOWN = [-1.12, -0.92, -0.78, -0.55]; // the lamp dips, the machine is there, the lamp comes up again
 var DIM = [-2.2, -1.2];                   // the room goes down to the bench's night
 var CARD = [-0.55, -0.1];                 // the first card comes up
 // (the toys have gone back into their box before all this: toybox.js PACK; the box stands behind the backdrop)
@@ -526,7 +527,7 @@ export function mount(host, options) {
     // the lamp: lit over a machine, dimmed between two (the next one is set down in the dark), out at the end
     var edge = pl.step === 'intro' ? 1 - 0.35 * pl.intro : Math.min(pl.i === 0 ? 1 : pl.t / 0.025, pl.i === MACHINES.length - 1 ? 1 : (1 - pl.t) / 0.025);
     var lit = smooth(edge) * light * (1 - 0.8 * ending);
-    if (isLead) lit = light * 0.65;
+    if (isLead) lit = light * 0.65 * (RM ? 1 : 1 - 0.8 * (ss(SETDOWN[0], SETDOWN[1], p) - ss(SETDOWN[2], SETDOWN[3], p)));
     var litS = lit.toFixed(3);
     if (was.lit !== litS) { was.lit = litS; host.style.setProperty('--lit', litS); }
     // the machine itself: solid whenever it stands (the backdrop it is multiplied onto carries the lamp's light), and
