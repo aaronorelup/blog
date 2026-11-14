@@ -178,7 +178,7 @@
 .lr-low { width: 100%; height: 100%; pointer-events: none; opacity: 0;
   background: radial-gradient(120% 110% at 18% 8%, rgba(8, 7, 18, 0.9), rgba(8, 7, 18, 0.55) 55%, rgba(8, 7, 18, 0.35) 100%); }
 @media (max-aspect-ratio: 9/10) {
-  .lr-low { background: linear-gradient(to bottom, rgba(8, 7, 18, 0.88), rgba(8, 7, 18, 0.62) 32%, rgba(8, 7, 18, 0.22) 72%, rgba(8, 7, 18, 0.18)); }
+  .lr-low { background: linear-gradient(to bottom, rgba(8, 7, 18, 0.93), rgba(8, 7, 18, 0.86) 30%, rgba(8, 7, 18, 0.5) 52%, rgba(8, 7, 18, 0.24) 78%, rgba(8, 7, 18, 0.2)); }
 }
 .lr-word, .lr-say { position: absolute; left: 0; top: 0; transform-origin: 0 0; }   /* (hidden by learning.js until they come on) */
 .chapter-top > .lr-top { position: absolute; inset: 0; pointer-events: none; }

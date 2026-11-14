@@ -114,7 +114,7 @@ export function mount(host, options) {
     if (melt < 1) {
       var A = learnRoom(W, H, railRect()).andon, cx = A[0], cy = (A[1] + A[2]) / 2;
       var far = Math.max(Math.hypot(cx, cy), Math.hypot(W - cx, cy), Math.hypot(cx, H - cy), Math.hypot(W - cx, H - cy));
-      var r = clamp((p - LEARN.MELT[0]) / (LEARN.MELT[1] - LEARN.MELT[0])) * (far + 0.5 * H), soft = 0.45 * H;      // (at an even pace)
+      var r = clamp((p - LEARN.MELT[0]) / (LEARN.MELT[1] - LEARN.MELT[0])) * (far + 0.3 * H), soft = 0.26 * H;      // (at an even pace)
       mk = 'radial-gradient(circle at ' + cx.toFixed(0) + 'px ' + cy.toFixed(0) + 'px, #000 ' + Math.max(0, r - soft).toFixed(0) + 'px, rgba(0,0,0,0) ' + r.toFixed(0) + 'px)';
     }
     css(glHost, 'webkitMaskImage', mk); css(glHost, 'maskImage', mk);
