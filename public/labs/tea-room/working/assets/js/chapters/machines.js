@@ -170,10 +170,12 @@ export function mount(host, options) {
     Object.assign(node.style, { left: r.left + 'px', top: r.top + 'px', width: r.W + 'px', height: r.H + 'px' });
   }
   function cropFor(m) { return phone ? m.cropNarrow : m.crop; }
+  // (the live page may be framed apart from the still: its camera is set by machines-live.js)
+  function liveCropFor(m) { return (phone ? m.liveCropNarrow : m.liveCrop) || cropFor(m); }
   function placeAll() {
     var m = MACHINES[Math.max(0, cur)];
     placeMedia(picA, cropFor(m)); placeMedia(picB, cropFor(m));
-    placeMedia(holder.querySelector('iframe'), cropFor(m));
+    placeMedia(holder.querySelector('iframe'), liveCropFor(m));
     placeTv(m);
     placeErase(m);
   }
@@ -236,7 +238,7 @@ export function mount(host, options) {
       onReady: function () { host.classList.add('mc-alive'); },
       onFail: function () { failed.add(i); live = null; liveI = -1; host.classList.remove('mc-alive'); }
     });
-    placeMedia(holder.querySelector('iframe'), cropFor(m));
+    placeMedia(holder.querySelector('iframe'), liveCropFor(m));
   }
   function dropLive() {
     clearTimeout(liveTimer); pendingI = -1;
