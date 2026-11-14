@@ -100,7 +100,7 @@ export function mount(host, options) {
     host.classList.toggle('narrow', narrow);
     if (garden.whole()) { garden.layout(W, H); gardenLaid = true; }
     // the name: look B's rule for a chapter's name (as closing.js has it): its size, clear of the rail, high up
-    var wp = clamp(W * (portrait ? 0.15 : 0.115), 52, 190), sp = clamp(W * 0.0175, 17, 27);
+    var wp = clamp(W * (portrait ? 0.15 : 0.115), 52, 190 * TEA.s()), sp = clamp(W * 0.0175, 17, 27 * TEA.s());
     var left = narrow ? 16 : (parseFloat(getComputedStyle(root).getPropertyValue('--rail-w')) || 172) + Math.max(16, Math.min(46, W * 0.032)) * 2;
     // (the count under the name is look B's count line, as the film chapter and the closing beat have it: mono, 0.8)
     word.style.fontSize = (wp * K) + 'px'; say.style.fontSize = (sp * 0.8 * K) + 'px';

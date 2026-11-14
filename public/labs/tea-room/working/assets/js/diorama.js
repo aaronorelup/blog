@@ -181,8 +181,8 @@
     return portrait ? [-330, 120] : [110, 10];
   }
   function camC(m, L) { return { m: m, C: [L[0], L[1]], o: [0, 0] }; }     // the camera stands at L and looks straight ahead
-  function wordPx() { return clamp(W * (portrait ? 0.15 : 0.115), 52, 190); }
-  function sayPx() { return clamp(W * 0.0175, 17, 27); }
+  function wordPx() { return clamp(W * (portrait ? 0.15 : 0.115), 52, 190 * TEA.s()); }
+  function sayPx() { return clamp(W * 0.0175, 17, 27 * TEA.s()); }
   var leftEdge = 0;
   function layoutRoom() {
     R.S0 = Math.max(W / 2752, H / 1536) * 1.2;
@@ -556,7 +556,7 @@
   function layout() {
     W = document.documentElement.clientWidth; H = window.innerHeight; portrait = W / H < 0.9; narrow = W <= 820;
     var cs = getComputedStyle(document.documentElement);
-    leftEdge = narrow ? 16 : parseFloat(cs.getPropertyValue('--rail-w')) + Math.max(16, Math.min(46, W * 0.032)) * 2;
+    leftEdge = narrow ? 16 : (parseFloat(cs.getPropertyValue('--rail-w')) || 172) + Math.max(16, Math.min(46, W * 0.032)) * 2;   // (--rail-w grows with the page's one scale: chapters.js)
     Array.prototype.forEach.call(document.querySelectorAll('[data-track]'), function (el) { track(el.dataset.track, el); });
     T.eps = Array.prototype.map.call(document.querySelectorAll('.ep'), function (el) { var rc = el.getBoundingClientRect(); return rc.top + window.scrollY + rc.height / 2; });
     docH = Math.max(1, document.documentElement.scrollHeight - H);

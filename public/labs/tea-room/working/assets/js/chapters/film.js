@@ -182,7 +182,7 @@ export function mount(host, options) {
     PJ0 = { x: tall ? W * 0.24 : leftEdge + pw0 * 0.75, y: H * 1.1, w: pw0 };
     var pw1 = tall ? Math.min(W * 0.42, H * 0.2) : clamp(W * 0.235, 210, 470);
     PJ1 = tall ? { x: W * 0.2, y: H * 0.83, w: pw1 } : { x: W * 0.1 + rail * 0.5, y: H * 1.19, w: pw1 };
-    wordPx = clamp(W * (tall ? 0.15 : 0.115), 52, 190);
+    wordPx = clamp(W * (tall ? 0.15 : 0.115), 52, 190 * TEA.s());
     // 2: once the camera has stepped back, the projector stands in the foreground where nothing read passes over
     // it. A wide screen: in the lane between the posts' column and the cards at the foot, its beam fanning up to the
     // cloth. A tall screen: low on the left, under the cloth, its stool behind the cards at the foot.
@@ -222,7 +222,7 @@ export function mount(host, options) {
     PJD = { x: PJ2.x - (tall ? W * 0.5 : W * 0.32), y: PJ2.y + H * 0.95, w: PJ2.w * 2.2 };
 
     // the chapter's name and its one line, sized and placed by look B's rule
-    wordPx = clamp(W * (tall ? 0.15 : 0.115), 52, 190); sayPx = clamp(W * 0.0175, 17, 27) * 0.8;
+    wordPx = clamp(W * (tall ? 0.15 : 0.115), 52, 190 * TEA.s()); sayPx = clamp(W * 0.0175, 17, 27 * TEA.s()) * 0.8;
     wordEl.style.fontSize = (wordPx * B_K) + 'px'; sayEl.style.fontSize = (sayPx * B_K) + 'px';
     var wy = H * 0.1, wh = wordEl.offsetHeight / B_K;
     wordW = wordEl.offsetWidth / B_K; sayW = sayEl.offsetWidth / B_K;

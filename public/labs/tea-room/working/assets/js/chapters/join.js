@@ -67,7 +67,7 @@ export var POLE_L = 1390, POLE_R = 2250, PIC_R = 2170, EDGE = 600;
 export var HORIZON = 812;                                        // the lawn's far edge on the plate (plate pixels)
 // where a chapter's name, set at look B's size left of the rail, ends on a wide screen (lines: the name's lines)
 export function nameRightOf(lines, W, railW) {
-  var px = Math.min(190, Math.max(52, W * 0.115)), left = railW + Math.max(16, Math.min(46, W * 0.032)) * 2;
+  var px = Math.min(190 * TEA.s(), Math.max(52, W * 0.115)), left = railW + Math.max(16, Math.min(46, W * 0.032)) * 2;
   var c = document.createElement('canvas').getContext('2d'), w = 0;
   c.font = '700 ' + px + 'px "Zen Maru Gothic", sans-serif';
   lines.forEach(function (l) { w = Math.max(w, c.measureText(l).width); });
@@ -84,7 +84,7 @@ export function endPlate(W, H, nameR) {
     return { s: s3, x: tx, y: ty };
   }
   // (a tall screen: the name is two lines over the cloth, the cloth under it)
-  var wordPx = cl(W * 0.15, 52, 190), clothTop = H * 0.11 + wordPx * 0.9 * 2 + 150, clothBot = H * 0.7;
+  var wordPx = cl(W * 0.15, 52, 190 * TEA.s()), clothTop = H * 0.11 + wordPx * 0.9 * 2 + 150, clothBot = H * 0.7;
   var st = cl((clothBot - clothTop) / 546, 0.5 * W / 752, 0.95 * W / 752);
   return { s: st, x: 0.52 * W - FOCUS[0] * st, y: (clothTop + clothBot) / 2 - FOCUS[1] * st };
 }
