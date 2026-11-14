@@ -44,7 +44,7 @@ export function mount(host, options) {
   function layout() {
     W = root.clientWidth; H = window.innerHeight; narrow = W <= 820;
     // the name: look B's rule (closing.js, site.js and the others have the same)
-    var wtall = W / H < 0.9, wp = clamp(W * (wtall ? 0.15 : 0.115), 52, 190), sp = clamp(W * 0.0175, 17, 27);
+    var S = window.TEA && TEA.s ? TEA.s() : 1, wtall = W / H < 0.9, wp = clamp(W * (wtall ? 0.15 : 0.115), 52, 190 * S), sp = clamp(W * 0.0175, 17, 27 * S);
     if (!narrow) wp = Math.min(wp, H * 0.19);
     left = narrow ? 16 : (parseFloat(getComputedStyle(root).getPropertyValue('--rail-w')) || 172) + Math.max(16, Math.min(46, W * 0.032)) * 2;
     word.style.fontSize = (wp * K) + 'px'; say.style.fontSize = (sp * 0.8 * K) + 'px';
