@@ -14,6 +14,7 @@ import { mount as mountScene } from './art-scene.js';
 import { endPlate, nameRightOf, TILT_LOW, H0_TALL, skyUpLayout } from './join.js';
 import { makeGarden } from './toybox-garden.js';
 import { PICTURES } from './art-pictures.js';
+import { makeHome, DOCK_OUT } from './art-home.js';
 
 var IMG = new URL('../../img/', import.meta.url).href;
 var clamp = function (x, a, b) { a = a === undefined ? 0 : a; b = b === undefined ? 1 : b; return x < a ? a : x > b ? b : x; };
@@ -77,6 +78,7 @@ export function mount(host, options) {
     }
   });
   var garden = makeGarden(skyEl, gardenEl, IMG);
+  var home = makeHome(section, RM);             // (the four posts' place in the sky: art-home.js)
   var gardenLaid = false;
   garden.imgs.forEach(function (im) { if (!im.complete) im.addEventListener('load', function () { gardenLaid = false; options.redraw(); }, { once: true }); });
 
@@ -188,11 +190,12 @@ export function mount(host, options) {
       else { nowCount.textContent = (at + 1) + ' of ' + N; nowTitle.textContent = PICTURES[at].title; nowHint.textContent = at < 3 ? WORD + ' a picture to bring it forward' : ''; }
     }
     var tEnd = P0 + TURN;                          // (the card comes up as the turn ends, as the test's does)
-    var dockO = lead ? 0 : RM ? (st.index >= 0 || sky) && p < picks - 1.1 ? 1 : 0 : ss(tEnd - 0.17, tEnd + 0.03, p) * (1 - ss(picks - 1.3, picks - 1.05, p));
+    var dockO = lead ? 0 : RM ? (st.index >= 0 || sky) && p < picks + (DOCK_OUT[0] + DOCK_OUT[1]) / 2 ? 1 : 0 : ss(tEnd - 0.17, tEnd + 0.03, p) * (1 - ss(picks + DOCK_OUT[0], picks + DOCK_OUT[1], p));
     if (st.open >= 0) dockO = 0;
     dockO = Math.round(dockO * 100) / 100;
     if (dockO !== dockWas) { dock.style.opacity = dockO; dock.style.visibility = dockO > 0.01 ? '' : 'hidden'; dockWas = dockO; }
 
+    home.frame(p, picks, foot, st.open >= 0);
     owned = !lead || p >= MELT[1];
     var whole = scene.whole() && (!sheetOn || garden.whole());
     return whole;
@@ -235,6 +238,7 @@ export function mount(host, options) {
       alive = false;
       document.removeEventListener('click', onPress); document.removeEventListener('keydown', onKey); document.removeEventListener('pointermove', onMove);
       root.classList.remove('ar-zoom');
+      home.dispose();
       scene.dispose();
     }
   };
