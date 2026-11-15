@@ -503,7 +503,7 @@
   // ------------------------------------------------------------------ the page's own furniture
   var slip = $('title-slip'), rail = $('rail'), clock = $('clock'), clockB = clock.querySelector('b');
   var dialDots = Array.prototype.slice.call(clock.querySelectorAll('.dial i')), dialNow = -2;
-  var railItems = Array.prototype.slice.call(rail.querySelectorAll('li')), railNow = -2, slipTr = '', railTr = '', clockTr = '', clockTxt = '';
+  var railItems = Array.prototype.slice.call(rail.querySelectorAll('li')), railNow = -2, slipTr = '', slipMoved = false, railTr = '', clockTr = '', clockTxt = '';
   var coin = null, wins = [], vids = [];
   function measureFurniture() {
     var c = document.querySelector('.coin'), rc = c.getBoundingClientRect();
@@ -521,7 +521,7 @@
     var out = RM ? 0 : io(ss(0.045, 0.2, heroP));
     var tr = narrow ? 'translate3d(0,' + (out * (H * 1.7)).toFixed(1) + 'px,0)' : 'translate3d(' + (out * (W * 0.42 + 60)).toFixed(1) + 'px,-50%,0)';
     // (on a narrow screen it leaves downward, and would come to rest in the next chapter: gone from the frame, it is hidden)
-    if (tr !== slipTr) { slip.style.transform = tr; slip.style.visibility = narrow && out > 0.999 ? 'hidden' : ''; slipTr = tr; }
+    if (tr !== slipTr) { slip.style.transform = tr; slip.style.visibility = narrow && out > 0.999 ? 'hidden' : ''; slipTr = tr; if (out > 0) slipMoved = true; }
     var rin = (narrow || RM) ? (y >= T.startHead.top - 2 ? 1 : 0) : io(ss(0.12, 0.3, heroP));
     var rt = narrow ? 'translate3d(' + ((rin - 1) * 260).toFixed(1) + 'px,0,0)' : 'translate3d(' + ((rin - 1) * 220).toFixed(1) + 'px,-50%,0)';
     if (rt !== railTr) { rail.style.transform = rt; railTr = rt; }
@@ -606,7 +606,28 @@
     if (rrOff.length) { rrOff.forEach(function (o) { o.rrEl.style.willChange = ''; }); rrOff = []; }
     rrT = setTimeout(rasterFresh, 200);
   }
+  // The title slip, back at rest on the first screen after it has been in the wing, was drawn half a pixel off a fresh
+  // load's (desktop). On a fresh load its layer is first drawn where it stands before its transform is set, and then only
+  // moved by the -50%, a fraction of a pixel; after a scroll Chrome draws it again with that fraction in it. So once the
+  // scroll rests, a fresh copy of it is put in its place, shifted by the fraction to where a fresh load first drew it,
+  // drawn there, and then set where it belongs: as on a fresh load. (The phone's slip has no -50%: nothing to do. Not
+  // while a link in it has the keyboard's focus.)
+  function slipFresh() {
+    if (!slipMoved || /[1-9]/.test(slipTr.slice(11).replace('-50%', '')) || slip.contains(document.activeElement)) return;
+    slipMoved = false;
+    var r = slip.getBoundingClientRect(), top0 = r.top + (slipTr.indexOf('-50%') > 0 ? r.height / 2 : 0);
+    var dy = (top0 - Math.floor(top0)) - (r.top - Math.floor(r.top));
+    if (Math.abs(dy) < 0.001) return;
+    var nu = slip.cloneNode(true), tr = slipTr;
+    nu.style.transform = tr + ' translateY(' + dy.toFixed(4) + 'px)';
+    slip.parentNode.replaceChild(nu, slip);
+    slip = nu;
+    requestAnimationFrame(function () { requestAnimationFrame(function () { setTimeout(function () {
+      if (slip === nu && slipTr === tr) nu.style.transform = tr;
+    }, 60); }); });
+  }
   function rasterFresh() {
+    slipFresh();
     RR.forEach(function (o) {
       if (!(o.rrMx > o.rrCur * 1.25)) return;
       if (o.rrSwap) renew(o);
