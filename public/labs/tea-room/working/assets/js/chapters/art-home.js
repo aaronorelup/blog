@@ -58,7 +58,7 @@ export function makeHome(section, RM) {
     var o = Math.min(clamp(k * 2.2), 1 - ss(0.3, 0.9, m));
     if (hidden) o = 0;
     o = Math.round(o * 1000) / 1000;
-    var tr = 'translate3d(0,' + ty.toFixed(1) + 'px,0)';
+    var tr = 'translate3d(0,' + Math.round(ty) + 'px,0)';   // (whole pixels: the words stay sharp, and land alike however the page got there)
     set(picks, 'p', tr, o);
     if (all) set(all, 'a', tr, o);
     var off = o < 0.5;
@@ -68,7 +68,7 @@ export function makeHome(section, RM) {
     var u = indexAt(p, a, f), sh = 64 * (window.TEA && TEA.s ? TEA.s() : 1);
     for (var i = 0; i < n; i++) {
       var rel = i - u, io2 = clamp(1 - Math.abs(rel) * 1.7);
-      set(items[i], 'i' + i, 'translate3d(' + (rel * sh).toFixed(1) + 'px,0,0)', Math.round(io2 * 1000) / 1000);
+      set(items[i], 'i' + i, 'translate3d(' + Math.round(rel * sh) + 'px,0,0)', Math.round(io2 * 1000) / 1000);
       var on = Math.abs(rel) < 0.5;
       if (items[i]._on !== on) { items[i]._on = on; items[i].style.pointerEvents = on ? '' : 'none'; items[i].style.zIndex = on ? '1' : ''; }
     }
