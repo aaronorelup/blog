@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Everything on one page · The tea room</title>
 <meta name="robots" content="noindex">
+<!-- (a link that opens the page at a chapter, ?c= or #name: the night's plain ground, the chapters' hold, until the jump is
+made, so the top of the page is never shown first; chapters.js takes it off as it jumps) -->
+<style>html.tea-jump { background: #07080f; } html.tea-jump body { visibility: hidden; }</style>
+<script>if (/[?&]c=/.test(location.search) || location.hash.length > 1) { document.documentElement.classList.add('tea-jump');
+  addEventListener('load', function () { setTimeout(function () { document.documentElement.classList.remove('tea-jump'); }, 8000); }); }</script>
 <link rel="stylesheet" href="assets/fonts/fonts.css">
 <link rel="stylesheet" href="assets/css/diorama.css">
 <link rel="stylesheet" href="assets/css/chapters.css">
