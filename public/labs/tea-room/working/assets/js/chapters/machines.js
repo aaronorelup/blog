@@ -10,8 +10,9 @@
    television on the floor. The room goes down to night, the lamp comes on, and DRAY is set down in the dark. (At the
    section's top CHAPTERS swaps the two rooms: they are the same painting.)
 
-   Then each machine is on the table already working (DRAY drives up to its module and lifts a bag; MOLE-1 digs and
-   dumps), its camera turning slowly round it, the mouse leaning the camera further round and over it. As the reader
+   Then each machine is on the table already working (DRAY's crane takes a bag down from the module's well and puts
+   it back; MOLE-1 digs a load at the face), its camera turning slowly round it, the mouse leaning the camera further
+   round and over it. As the reader
    scrolls, it opens: its page's own cut-away and picked-out parts (machines-data.js open), then whole again; the lamp
    dips and the next is set down. Then the bench is put away and the camera goes into the little television on the
    floor, which has played the machine's film all along (join.js AGENTS: the agents chapter's way in).
@@ -63,6 +64,19 @@ var RM_CUT = -1.31;
 var LD = 3.4, SWAP = 1.6, DIP = 0.1, SPANS = [[-0.6, SWAP], [SWAP, LD + 0.05]];
 // the live page is let in once the bench is coming up (it takes some seconds to wake), and let go as the bench goes
 var LIVE_FROM = -1.5;
+// Waking a page is one long task (most of a second on a slow computer: the page building itself) and it runs on this
+// page's own thread, so everything script draws stops for it. The first machine's page is therefore woken EARLY and
+// unseen, where that is least seen: from PRE_FROM, while the reader is still in the toy box. Up to PRE_CARDS only the
+// toy box's post cards move, and they are moved by the browser's own scrolling, which does not stop; after it the
+// camera follows the scroll, so there the page is woken only once the scroll is at rest. The toys are drawn by script
+// too and stand still for it: so at rest it waits until none is in the air or in the reader's hand, and on the way
+// down the cards it waits for them as long as it can (to PRE_BUSY, the last place the task still ends before the
+// camera moves at a reading pace) and then goes ahead unless one is in the reader's hand: toys held up a moment
+// among moving cards are the lesser fault, the whole bench standing still as it rises the greater. Never while the
+// reader is scrolling away from the bench. It is worked up unseen, put to sleep (machines-live.js, nap), and let go
+// on as the bench rises. A reader who never rests is given it at LIVE_FROM, as before. A reader who turns back above
+// the bench has it put to sleep again, not thrown away: it is there, whole, on the way back.
+var PRE_FROM = -3.6, PRE_BUSY = -3.4, PRE_CARDS = -2.95;
 
 function stepOf(m, u) { var s = m.open[0]; m.open.forEach(function (o) { if (u >= o.at) s = o; }); return s; }
 
@@ -83,6 +97,7 @@ export function mount(host, options) {
   var RM = options.reduced, HELD = options.held, top = options.top;
   var params = new URLSearchParams(location.search);
   var LIVE = !HELD && params.get('live') !== '0';
+  var LITE = params.get('lite');                    // (for tests: ?lite=1 or 0 says how a machine's page starts; see weak())
   var root = document.documentElement, alive = true;
 
   host.innerHTML =
@@ -123,8 +138,16 @@ export function mount(host, options) {
 
   var TVP = null, roll = null, rollG = null, sweepH = 0, W = 0, H = 0, L = null, phone = false, laid = false;
   var cur = -1, live = null, liveI = -1, liveTimer = null, pendingI = -1, failed = new Set();
+  var napWant = false, liveLite = false, liveSince = 0, lastScroll = 0, lastY = window.scrollY, goingUp = false;
   var tvOn = false, lean = { x: 0, y: 0 }, lastT = 0;
-  var picShown = { a: '', b: '' }, picFront = 'a', picsIn = {};
+  var picShown = { a: '', b: '' }, picFront = 'a', picsIn = {}, wholeOnce = false;
+  // (both machines' stills are asked for now and kept: the second is wanted the moment the first leaves the bench)
+  var stills = MACHINES.map(function (m) {
+    var im = new Image(); im.decoding = 'async';
+    im.addEventListener('load', function () { picsIn[m.still] = true; }, { once: true });
+    im.src = m.still;
+    return im;
+  });
   var viewW = 0, viewH = 0;
 
   // ---- layout: everything of the bench in screen pixels at the camera's place (join.js), the room behind it
@@ -175,7 +198,7 @@ export function mount(host, options) {
   function placeAll() {
     var m = MACHINES[Math.max(0, cur)];
     placeMedia(picA, cropFor(m)); placeMedia(picB, cropFor(m));
-    placeMedia(holder.querySelector('iframe'), liveCropFor(m));
+    if (live && liveI >= 0) live.place(cropRect(viewW, viewH, liveCropFor(MACHINES[liveI])));
     placeTv(m);
     placeErase(m);
   }
@@ -223,32 +246,111 @@ export function mount(host, options) {
   }
 
   // ---- the live page in the frame: only one, only for the machine on the table, while the passage is on the screen
-  function wantLive(i) {
+  // (early: woken unseen ahead of its time, to sleep until it is wanted in earnest: see PRE_FROM)
+  function wantLive(i, early) {
     if (!LIVE || failed.has(i)) return dropLive();
-    if (liveI === i || pendingI === i) return;
+    if (!early) napWant = false;
+    if (liveI === i || pendingI === i) { if (!early && live) live.wake(); return; }
     dropLive();
+    napWant = !!early;
     pendingI = i;
-    liveTimer = setTimeout(function () { pendingI = -1; startLive(i); }, 160);
+    liveTimer = setTimeout(function () { pendingI = -1; startLive(i); }, early ? 0 : 160);
+  }
+  // The television's film takes a moment to start (its decoder is made then), which showed as three long frames just
+  // as the machine was set down. So it is made ready when the machine's page is woken: started unseen, but at no
+  // speed, held on its first picture (a film that is paused is put away by the browser after some seconds, and
+  // starting it again costs the same frames; one that plays at no speed is kept). It is given its speed the moment
+  // the television is to play.
+  function primeTv(m) {
+    if (HELD || phone || tvOn) return;
+    if (tvFilm.getAttribute('src') !== m.film) tvFilm.src = m.film;
+    else if (!tvFilm.paused) return;
+    tvFilm.playbackRate = 0;
+    tvFilm.play().catch(function () { /* it starts when it is wanted */ });
   }
   function startLive(i) {
     if (!alive || cur !== i) return;
     var m = MACHINES[i];
-    liveI = i;
+    if (laid) primeTv(m);
+    liveI = i; liveLite = weak(); liveSince = performance.now();
     live = createLive(m, holder, {
+      nap: napWant, lite: liveLite,
       onReady: function () { host.classList.add('mc-alive'); },
-      onFail: function () { failed.add(i); live = null; liveI = -1; host.classList.remove('mc-alive'); }
+      onFail: function () { failed.add(i); live = null; liveI = -1; host.classList.remove('mc-alive'); if (!tvOn) tvFilm.pause(); }
     });
-    placeMedia(holder.querySelector('iframe'), liveCropFor(m));
+    live.place(cropRect(viewW, viewH, liveCropFor(m)));
+  }
+  function early() { return napWant && (liveI === 0 || pendingI === 0); }
+  // (the reader has turned back above the bench: the first machine's page, running or on its way, sleeps and is kept)
+  function napLive() {
+    if (napWant) return;
+    napWant = true;
+    if (live) { live.nap(); if (laid) primeTv(MACHINES[0]); }
+  }
+  // (the toy box's own word on its toys: 2 one in the reader's hand, 1 any still tumbling or all on their way back
+  // into the box, 0 none)
+  function toysBusy() {
+    try {
+      var tb = window.TEA.list.filter(function (c) { return c.id === 'toybox'; })[0], pl = tb && tb.scene && tb.scene.play && tb.scene.play();
+      if (!pl || !pl.test) return 0;
+      return pl.test.held() ? 2 : pl.test.awake > 0 || pl.test.state === 'returning' ? 1 : 0;
+    } catch (err) { return 0; }
+  }
+  // A computer on which a machine's page ended at its lowest quality starts the next one there (machines-live.js,
+  // lite): remembered for this visit. Before any has run, the graphics' own name says (an integrated or a phone's chip).
+  var weakIs = null;
+  function weak() {
+    if (weakIs !== null) return weakIs;
+    if (LITE === '1' || LITE === '0') return (weakIs = LITE === '1');
+    try { var was = sessionStorage.getItem('tea-mc-tier'); if (was !== null) return (weakIs = +was >= 2); } catch (err) { /* no storage */ }
+    var name = '';
+    try {
+      var cv = document.createElement('canvas'), gl = cv.getContext('webgl'), ex = gl && gl.getExtension('WEBGL_debug_renderer_info');
+      name = gl ? String(gl.getParameter(ex ? ex.UNMASKED_RENDERER_WEBGL : gl.RENDERER)) : '';
+      var lose = gl && gl.getExtension('WEBGL_lose_context'); if (lose) lose.loseContext();
+    } catch (err) { /* unknown: not weak */ }
+    return (weakIs = /Intel(?!.*Arc)|Mali|Adreno|PowerVR|SwiftShader|llvmpipe|Basic Render/i.test(name));
   }
   function dropLive() {
     clearTimeout(liveTimer); pendingI = -1;
+    if (!tvOn && live) tvFilm.pause();                // (a film made ready and never played)
     if (live) { live.dispose(); live = null; }
     liveI = -1; host.classList.remove('mc-alive');
   }
-  // (nothing plays on unseen: once the host shows this chapter no more (CHAPTERS show()), the passage is off the screen)
+  // (nothing plays on unseen: once the host shows this chapter no more (CHAPTERS show()), the passage is off the screen.
+  // The one thing kept unseen is the first machine's page woken early and asleep, while the reader is on the way to it.)
+  var onScroll = function () {
+    var y = window.scrollY;
+    if (y !== lastY) { goingUp = y < lastY; lastY = y; }
+    lastScroll = performance.now();
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
   var watch = setInterval(function () {
-    if (host.style.visibility !== 'visible') { dropLive(); if (tvOn) { tvOn = false; tvFilm.pause(); } }
-  }, 500);
+    var seen = host.style.visibility === 'visible';
+    var pn = -options.section.getBoundingClientRect().top / (window.innerHeight || 1);   // screens from the section's top
+    if (!seen && tvOn) { tvOn = false; tvFilm.pause(); }
+    // (at rest: with no toy thrown about. Moving: only on the way down the cards' stretch, and there waiting for the
+    // toys as long as it can)
+    var moving = performance.now() - lastScroll < 320;
+    if (LIVE && !document.hidden && liveI < 0 && pendingI < 0 && !failed.has(0) && pn > PRE_FROM && pn <= LIVE_FROM) {
+      var toys = toysBusy();
+      if (moving ? !goingUp && pn < PRE_CARDS && (toys === 0 || (toys === 1 && pn > PRE_BUSY)) : toys === 0) {
+        if (!laid) layout();
+        if (cur !== 0) setMachine(0);
+        wantLive(0, true);
+      }
+    }
+    // (unseen, a page is let go; but the first machine's page asleep is kept from a little above where it is woken to
+    // the passage's end: a jump down into the passage is ahead of the camera for a few frames, and the page is wanted
+    // the moment the camera arrives. Past the passage, frame() and this let it go.)
+    if (!seen && !(early() && pn > PRE_FROM - 0.5 && pn <= LD + 1)) dropLive();
+    // (what quality its page came down to by itself, once it has run a while at its own choice. A page that STARTED
+    // low says nothing of the computer: its frame was small, or the screen is a touch screen.)
+    if (live && !liveLite && live.shown && live.tier != null && live.tier0 != null && live.tier0 < 2 && performance.now() - liveSince > 9000) {
+      try { sessionStorage.setItem('tea-mc-tier', String(live.tier)); } catch (err) { /* no storage */ }
+      weakIs = live.tier >= 2;
+    }
+  }, 125);
 
   // ---- every frame
   var was = {};
@@ -274,7 +376,9 @@ export function mount(host, options) {
     var packOut = function (a, b) { return RM ? pk : io(ss(a, b, pk)); };
 
     // ---- the machine itself: alive from the bench's rise until the bench is put away; its opening is the scroll's
-    if (p > LIVE_FROM && pk < 0.2) wantLive(i); else dropLive();
+    if (p > LIVE_FROM && pk < 0.2) wantLive(i);
+    else if (p <= LIVE_FROM && (liveI === 0 || pendingI === 0)) napLive();
+    else dropLive();
     if (live) {
       var st = stepOf(m, u), tn = m.turn;
       live.set(st);
@@ -288,7 +392,7 @@ export function mount(host, options) {
     var wantTv = !HELD && !phone && p > APPEAR[0] && pa < AGENTS.TUNE[1];
     if (wantTv !== tvOn || (wantTv && tvFilm.getAttribute('src') !== m.film)) {
       tvOn = wantTv;
-      if (wantTv) { if (tvFilm.getAttribute('src') !== m.film) tvFilm.src = m.film; tvFilm.play().catch(function () {}); }
+      if (wantTv) { if (tvFilm.getAttribute('src') !== m.film) tvFilm.src = m.film; tvFilm.playbackRate = 1; tvFilm.play().catch(function () {}); }
       else tvFilm.pause();
     }
 
@@ -380,9 +484,12 @@ export function mount(host, options) {
       css(world, 'transform', zoom !== 1 ? 'scale(' + zoom.toFixed(5) + ')' : '');
     }
     lastT = t;
-    // whole: the bench's pictures and the machine's still are in
+    // whole: the bench's pictures and the machine's still are in. (Once the bench has stood, a still that is late
+    // never takes the bench away again: where the machines change the still is unseen for that moment anyway, and
+    // "not whole" there showed the toy box's room for a few frames.)
     var still = picShown[picFront];
-    return !still || !!picsIn[still] || (picFront === 'a' ? picA : picB).complete;
+    if (!still || !!picsIn[still] || (picFront === 'a' ? picA : picB).complete) wholeOnce = true;
+    return wholeOnce;
   }
 
   function setActive(on) {
@@ -398,10 +505,12 @@ export function mount(host, options) {
     dispose: function () {
       alive = false; clearInterval(watch); dropLive(); tvFilm.pause(); tvOn = false;
       document.removeEventListener('visibilitychange', onVis);
+      window.removeEventListener('scroll', onScroll);
+      stills.length = 0;
       tvFilm.removeAttribute('src');
     },
     // (for tests)
-    get state() { return { i: cur, live: !!(live && live.ready), liveI: liveI, failed: Array.from(failed), debug: live ? live.debug : null }; },
+    get state() { return { i: cur, live: !!(live && live.ready), liveI: liveI, failed: Array.from(failed), early: early(), lite: liveLite, debug: live ? live.debug : null }; },
     LD: LD
   };
 }
