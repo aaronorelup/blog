@@ -19,16 +19,21 @@
    The scene keeps no clock of its own, reads nothing from the page and writes only inside hostElement. The one
    thing that is not a function of q is a picture brought forward by a click: any change of q sends it back.
 
-   RASTER: the trees, the bushes and the lanterns' light rings are each a layer whose scale changes every frame as the
-   camera moves; without will-change the browser paints each of them again at the new scale every frame (on a desktop
-   graphics card about 70 small repaints a frame, the art chapter's half rate). will-change: transform lets it scale
-   what it painted instead; measured, the picture is the same (painted trees and soft gradients). Not on the pictures
-   themselves: there it softened their edges.
+   DRAWING: the avenue is drawn into ONE canvas (gg-pics: the trees, the bushes, the hanging pictures and their light
+   rings, in depth order) and the sky's pictures into a second (gg-skypics), at the screen's own device pixels. Before
+   this each of them was a layer of the document (about 430), and every layer whose size changes as the camera moves
+   was painted again at its new size every frame: on an ordinary graphics card the chapter drew at half rate. Each
+   picture is drawn as its element was (halo, string, cap, tassel, ring, picture, the dim of distance), with the same
+   numbers, and with the element's opacity over the whole of it (drawFrame: the picture's own ground is cut out, never
+   drawn twice). The pictures' elements are still made: the one brought forward by a click is drawn by its element,
+   over the night that closes in (z 300001), and only while it is forward. pick() finds a picture from the geometry it
+   was drawn with, so a click and the pointer's zoom cursor go where they went.
 
    options: pictures [{ file, title, w, h }], still (time is held: nothing eases, pictures load at once),
             onChange() (something changed by itself, a picture arrived or was clicked: draw again). */
 
 const OWN = new URL('../../img/', import.meta.url).href;
+const SMOOTH = 'medium';      // (how a bitmap is drawn smaller: mip levels, as the browser paints an <img>)
 const PICS = '/labs/tea-room/tests/garden-gallery/img/pictures/';     // his pictures stay in the test's folder (11 MB)
 const MAP = { 'clouds.webp': 'art/clouds.webp', 'tree-night.webp': 'art/tree-night.webp', 'tree-blossom.webp': 'art/tree-blossom.webp',
   'tea-house.webp': 'garden-ground.webp', 'cinema-garden.webp': 'film/garden-night.webp', 'near-bush-l.webp': 'near-bush-l.webp', 'near-bush-r.webp': 'near-bush-r.webp' };
@@ -132,21 +137,26 @@ export function mount(host, options = {}) {
     }
   }
   trees.sort((a, b) => a.Z - b.Z);
-  for (const t of trees) {
-    t.el = picture('gg-flat', treeSrc[t.pink ? 1 : 0]);
-    t.el.width = TREE.w / 2; t.el.height = TREE.h / 2; t.el.style.zIndex = String(Math.round(100000 - t.Z * 100));
-    t.el.style.visibility = 'hidden'; t.shown = false; t.last = ''; t.lo = -1;
-    t.el.style.willChange = 'transform';      // (RASTER in the head comment)
-  }
+  // (drawn into the avenue's canvas: each was an <img> 590 x 635 (its height attribute TREE.h / 2, truncated) with its
+  // z-index; the same box, the same depth order)
+  trees.forEach((t, i) => { t.z = Math.round(100000 - t.Z * 100); t.ord = i; t.shown = false; t.src = t.pink ? 1 : 0; });
 
   // bushes close to the camera, dark and out of focus, along the edges of the avenue
   const bushes = [];
   for (let z = 1, j = 0; z < zEndOfWood + 8; z += 2.3 + TR() * 1.4, j++) {
-    const side = j % 2 ? 1 : -1, b = { side, Z: z, xr: TR(), wr: 0.8 + TR() * 0.5, shown: false, last: '', lo: -1 };
-    b.el = picture('gg-flat', IMG(side < 0 ? 'near-bush-l.webp' : 'near-bush-r.webp'));
-    b.el.width = 550 / 2; b.el.height = (side < 0 ? 250 : 250) / 2; b.el.style.willChange = 'transform'; b.el.style.zIndex = String(Math.round(100000 - z * 100)); b.el.style.visibility = 'hidden';
+    const side = j % 2 ? 1 : -1, b = { side, Z: z, xr: TR(), wr: 0.8 + TR() * 0.5, shown: false, z: Math.round(100000 - z * 100), ord: 10000 + j, src: side < 0 ? 2 : 3 };
     bushes.push(b);
   }
+  // the bitmaps the avenue is drawn from: the two trees and the two bushes, decoded once (no frame waits on a decode)
+  let gone = false;
+  const toBitmap = (im) => (doc.defaultView.createImageBitmap ? doc.defaultView.createImageBitmap(im) : Promise.resolve(im));
+  const bmp = [null, null, null, null];
+  [treeSrc[0], treeSrc[1], IMG('near-bush-l.webp'), IMG('near-bush-r.webp')].forEach((src, i) => {
+    const im = new Image(); im.decoding = 'async'; core++;
+    const done = () => { core--; onChange(); };
+    im.onload = () => { toBitmap(im).then((b) => { if (gone) { if (b.close) b.close(); return; } bmp[i] = b; done(); }, done); };
+    im.onerror = done; im.src = src;
+  });
 
   // the pictures
   const P = pics.map((d, i) => {
@@ -158,13 +168,19 @@ export function mount(host, options = {}) {
     const dim = make('i', 'gg-dim', frame);
     b.style.visibility = 'hidden';
     const glow = make('i', 'gg-flat gg-glow'); glow.style.visibility = 'hidden'; glow.style.willChange = 'transform';
-    return { d, i, a: d.w / d.h, s: i % 2 ? -1 : 1, el: b, halo, string, cap, tassel, lo, hi, dim, glow, gShown: false, gLast: '', gOp: -1, hiState: 0, shown: false, last: '', lz: -1, lDim: -1, lHalo: -1, lStr: -1, lOp: -1 };
+    return { d, i, a: d.w / d.h, s: i % 2 ? -1 : 1, el: b, halo, string, cap, tassel, lo, hi, dim, glow, gShown: false, gLast: '', gOp: -1, hiState: 0, shown: false, last: '', lz: -1, lDim: -1, lHalo: -1, lStr: -1, lOp: -1,
+      loBmp: null, loDone: false, hiBmp: null, dom: false, m: [1, 0, 0, 1, 0, 0] };
   });
+  // the two canvases the scene's depth is drawn into (DRAWING in the head comment): the avenue over the cinema's plate
+  // and the lamp (z 801) and under the fireflies (200000); the sky's pictures where their z-index was (10 to 90)
+  const avenue = make('canvas', 'gg-layer gg-pics'); avenue.style.zIndex = '850'; const vx = avenue.getContext('2d');
+  const skyPics = make('canvas', 'gg-layer gg-skypics'); skyPics.style.zIndex = '9'; const kx = skyPics.getContext('2d');
 
   host.appendChild(world);
 
   // ------------------------------------------------------------------ the frame's geometry
   let W = 0, H = 0, tall = false, f = 1, cx = 0, cy = 0, cy0 = 0, sp = null, EYE = 1.6, A = 0.5, B = 0, DPR = 1;
+  let RX = 1, RY = 1;
   let Emax = 1.7, Tmax = 0, moonE = 1.5, moonX = 0.66, moonR = 60, houseW = 30, panDist = 0, plateS = 1, plateX = 0, plateY = 0;
   const E0 = 0.24;
   const kStart = -1.25, kEnd = N - 1 + 1.55, SLOPE = (kEnd - kStart) / (QB - QA);
@@ -203,6 +219,11 @@ export function mount(host, options = {}) {
     for (const c of [ground, air, far]) {
       const dp = c === ground ? DPR : 1; c.width = Math.round(W * dp); c.height = Math.round(H * dp);
     }
+    // (the pictures and the trees at the screen's own device pixels, as their layers were painted: 3 on a phone, 0.8 in
+    // a browser zoomed out)
+    const PR = Math.min((doc.defaultView && doc.defaultView.devicePixelRatio) || 1, 3);
+    for (const c of [avenue, skyPics]) { c.width = Math.max(1, Math.round(W * PR)); c.height = Math.max(1, Math.round(H * PR)); }
+    RX = avenue.width / W; RY = avenue.height / H;
     for (const b of bushes) { b.X = b.side * ((tall ? 1.3 : 2.1) + b.xr * (tall ? 0.3 : 0.6)); b.w = (tall ? 1.5 : 2.3) * b.wr; b.last = ''; }
     sky.style.height = (H + Tmax + 0.3 * H) + 'px';
     moon.style.width = moon.style.height = 2 * moonR + 'px'; moon.style.fontSize = moonR / 4 + 'px';
@@ -210,7 +231,7 @@ export function mount(host, options = {}) {
     for (const t of trees) {
       t.X = t.row === 0 ? t.side * ((tall ? 1.8 : 2.75) + t.xr * (tall ? 0.5 : 0.7)) : t.row === 1 ? t.side * (4.7 + t.xr * 3.3) : t.row === 2 ? t.side * (8.6 + t.xr * 6) : t.side * ((tall ? 3.4 : 6.5) + t.xr * (tall ? 3 : 9));
       t.off = tall && (t.row === 1 || t.row === 2); t.last = '';
-      if (t.off && t.shown) { t.el.style.visibility = 'hidden'; t.shown = false; }
+      if (t.off) t.shown = false;
     }
 
     const SR = rnd(tall ? 99 : 42);
@@ -246,26 +267,34 @@ export function mount(host, options = {}) {
 
   // ------------------------------------------------------------------ pictures arriving
   let pending = 0;
-  const count = (im) => { if (!im.complete) { pending++; const done = () => { pending--; onChange(); }; im.addEventListener('load', done, { once: true }); im.addEventListener('error', done, { once: true }); } };
-  for (const p of P) count(p.lo);
+  // (each small picture is drawn from a bitmap decoded once; until it is there the picture is not whole)
+  for (const p of P) {
+    pending++;
+    const done = () => { if (!p.loDone) { p.loDone = true; pending--; onChange(); } };
+    const take = () => { if (!p.lo.naturalWidth) return done(); toBitmap(p.lo).then((b) => { if (gone) { if (b.close) b.close(); return; } p.loBmp = b; done(); }, done); };
+    if (p.lo.complete) take(); else { p.lo.addEventListener('load', take, { once: true }); p.lo.addEventListener('error', done, { once: true }); }
+  }
   const countCore = (im) => { if (!im.complete) { core++; const done = () => { core--; onChange(); }; im.addEventListener('load', done, { once: true }); im.addEventListener('error', done, { once: true }); } };
   for (const e of [house, plate, cloudsA]) countCore(e);
-  for (const s of treeSrc) { const im = new Image(); im.src = s; countCore(im); }
 
   function wantHi(p) {
     if (p.hiState) return;
     p.hiState = 1; pending++;
-    const done = () => {
-      pending--;
-      if (p.hiState === 1 && p.hi.naturalWidth > 0) { p.hiState = 2; p.hi.classList.add('gg-on'); }
-      onChange();
-    };
+    const done = () => { pending--; onChange(); };
     p.hi.src = IMG('pictures/' + p.d.file + '.webp');
-    if (p.hi.decode) p.hi.decode().then(done, done); else { p.hi.addEventListener('load', done, { once: true }); p.hi.addEventListener('error', done, { once: true }); }
+    const took = () => {
+      if (p.hiState !== 1 || !(p.hi.naturalWidth > 0)) return done();
+      toBitmap(p.hi).then((b) => {
+        if (gone || p.hiState !== 1) { if (b.close) b.close(); return done(); }
+        p.hiBmp = b; p.hiState = 2; p.hi.classList.add('gg-on'); done();
+      }, done);
+    };
+    if (p.hi.decode) p.hi.decode().then(took, took); else { p.hi.addEventListener('load', took, { once: true }); p.hi.addEventListener('error', done, { once: true }); }
   }
   function dropHi(p) {
     if (p.hiState !== 2) return;
     p.hi.classList.remove('gg-on'); p.hi.removeAttribute('src'); p.hiState = 0;
+    if (p.hiBmp && p.hiBmp.close) p.hiBmp.close(); p.hiBmp = null;
   }
 
   // ------------------------------------------------------------------ a picture brought forward
@@ -299,9 +328,83 @@ export function mount(host, options = {}) {
   const flies = (function () { const R = rnd(5), a = []; for (let i = 0; i < 64; i++) a.push({ X: (R() - 0.5) * 9, Y: 0.25 + R() * 3.3, Z: R() * 15, w: 0.3 + R() * 0.5, ph: R() * 6.28, r: 0.6 + R() * 0.7 }); return a; })();
   const state = { index: -1, k: 0, phase: 'turn', open: -1, flats: 0 };
 
-  function hide(o) { if (o.shown) { o.el.style.visibility = 'hidden'; o.shown = false; } }
+  // (a tree, a bush or a picture not drawn this frame; a picture's own element, if it was forward, goes too)
+  function hide(o) { o.shown = false; if (o.dom) { o.el.style.visibility = 'hidden'; o.dom = false; } }
   function glowOff(p) { if (p.gShown) { p.glow.style.visibility = 'hidden'; p.gShown = false; } }
-  function show(o) { if (!o.shown) { o.el.style.visibility = ''; o.shown = true; } }
+
+  // ------------------------------------------------------------------ drawing into the canvases
+  // Every part as its element painted it (art.css: .gg-halo, .gg-string, .gg-cap, .gg-tassel and its ::after, .gg-frame
+  // with its two rings, the pictures, .gg-dim; .gg-glow), in their order, in the element's own box of bw x bh, under
+  // the element's transform (origin bw / 2, -L). The element's opacity was over the whole picture: with op < 1 each part
+  // is drawn where only it is (the rings as bands, the halo with the frame cut out, the picture over what it covers
+  // taken out first), so nothing shows through the picture that did not before.
+  const TAU = Math.PI * 2;
+  function grads(c) {
+    const h = c.createRadialGradient(0, 0, 0, 0, 0, 1);
+    h.addColorStop(0, 'rgba(255,222,164,0.6)'); h.addColorStop(0.3, 'rgba(255,210,140,0.4)'); h.addColorStop(0.58, 'rgba(255,198,122,0.16)'); h.addColorStop(0.8, 'rgba(255,190,110,0.05)'); h.addColorStop(1, 'rgba(255,190,110,0)');
+    const g = c.createRadialGradient(200, 200, 0, 200, 200, 200);
+    g.addColorStop(0, 'rgba(255,208,138,0)'); g.addColorStop(0.4, 'rgba(255,208,138,0)'); g.addColorStop(0.5, 'rgba(255,208,138,0.15)'); g.addColorStop(0.72, 'rgba(255,198,122,0.07)'); g.addColorStop(1, 'rgba(255,190,110,0)');
+    const s = c.createLinearGradient(0, 0, 0, 1);
+    s.addColorStop(0, '#0a0c1a'); s.addColorStop(0.7, '#0a0c1a'); s.addColorStop(1, '#3a2c2e');
+    return { halo: h, glow: g, str: s };
+  }
+  const G = new Map();
+  const byZ = (a, b) => a.z - b.z || a.o - b.o;
+  // a box-shadow spread ring (spread e round the box x, y, w, h of radius r): the whole shape, or only its band
+  function shadow(c, x, y, w, h, r, e, band) {
+    c.beginPath(); c.roundRect(x - e, y - e, w + 2 * e, h + 2 * e, Array.isArray(r) ? r.map((v) => v + e) : r + e);
+    if (band) { c.roundRect(x, y, w, h, r); c.fill('evenodd'); } else c.fill();
+  }
+  function rr(c, x, y, w, h, r) { c.beginPath(); c.roundRect(x, y, w, h, r); c.fill(); }
+  function drawPic(c, g, it) {
+    const p = it.p, bw = p.bw, bh = p.bh, ox = bw / 2, oy = -p.L, op = it.op, cut = op < 0.995, mid = bw / 2;
+    c.setTransform(RX, 0, 0, RY, 0, 0);
+    c.translate(ox + it.tx, oy + it.ty); c.scale(it.s, it.s); if (it.ang) c.rotate(it.ang * Math.PI / 180); c.translate(-ox, -oy);
+    // the halo
+    if (it.haloO > 0) {
+      c.globalAlpha = op * it.haloO; c.save();
+      if (cut) { c.beginPath(); c.rect(-0.4 * bw - 2, -0.62 * bh - 2, 1.8 * bw + 4, 2.24 * bh + 4); c.roundRect(-3, -3, bw + 6, bh + 6, 13); c.clip('evenodd'); }
+      c.translate(mid, bh / 2); c.scale(0.9 * bw, 1.12 * bh); c.fillStyle = g.halo; c.beginPath(); c.arc(0, 0, 1, 0, TAU); c.fill(); c.restore();
+    }
+    // the string, up into the crowns
+    if (it.strO > 0) { c.globalAlpha = op * it.strO; c.save(); c.translate(mid - 1.25, -p.L); c.scale(2.5, p.L); c.fillStyle = g.str; c.fillRect(0, 0, 1, 1); c.restore(); }
+    c.globalAlpha = op;
+    // the cap, the tassel and its bob
+    c.fillStyle = '#0c0f20'; shadow(c, mid - 31, -11, 62, 13, 7, 3, cut); c.fillStyle = '#3a2b33'; rr(c, mid - 31, -11, 62, 13, 7);
+    c.fillStyle = '#c9a227'; c.fillRect(mid - 1.5, bh + 3, 3, 30);
+    c.fillStyle = '#0c0f20'; shadow(c, mid - 6.5, bh + 33, 13, 22, [4, 4, 7, 7], 2.5, cut); c.fillStyle = '#e2795c'; rr(c, mid - 6.5, bh + 33, 13, 22, [4, 4, 7, 7]);
+    // the frame's two rings (the first shadow of the list on top)
+    c.fillStyle = 'rgba(255,216,146,0.28)'; shadow(c, 0, 0, bw, bh, 10, 4.5, true);
+    c.fillStyle = '#0c0f20'; shadow(c, 0, 0, bw, bh, 10, 3, cut);
+    // the picture (large once it has come, else small), its ground under it, the dim of distance over it
+    const im = p.hiState === 2 && p.hiBmp ? p.hiBmp : p.loBmp;
+    c.save(); c.beginPath(); c.roundRect(0, 0, bw, bh, 10); c.clip();
+    if (!cut) {
+      if (im) c.drawImage(im, 0, 0, bw, bh); else { c.fillStyle = '#1a1f3c'; c.fillRect(0, 0, bw, bh); }
+      if (it.dimO > 0) { c.globalAlpha = op * it.dimO; c.fillStyle = '#0d1233'; c.fillRect(0, 0, bw, bh); }
+    } else {
+      c.globalCompositeOperation = 'destination-out'; c.fillStyle = '#000'; c.fillRect(0, 0, bw, bh);
+      c.globalCompositeOperation = 'lighter'; c.globalAlpha = op * (1 - it.dimO);
+      if (im) c.drawImage(im, 0, 0, bw, bh); else { c.fillStyle = '#1a1f3c'; c.fillRect(0, 0, bw, bh); }
+      if (it.dimO > 0) { c.globalAlpha = op * it.dimO; c.fillStyle = '#0d1233'; c.fillRect(0, 0, bw, bh); }
+      c.globalCompositeOperation = 'source-over';
+    }
+    c.restore();
+  }
+  function paint(c, cv, list) {
+    let g = G.get(c); if (!g) { g = grads(c); G.set(c, g); }
+    c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = 1; c.globalCompositeOperation = 'source-over';
+    c.clearRect(0, 0, cv.width, cv.height);
+    if (!list.length) return;
+    c.imageSmoothingEnabled = true; c.imageSmoothingQuality = SMOOTH;
+    list.sort(byZ);
+    for (const it of list) {
+      if (it.k === 1) { drawPic(c, g, it); continue; }
+      if (it.k === 0) { const b = bmp[it.b]; if (!b) continue; c.setTransform(RX * it.a, 0, 0, RY * it.d, RX * it.x, RY * it.y); c.globalAlpha = it.op; c.drawImage(b, 0, 0, it.w, it.h); continue; }
+      c.setTransform(RX * it.s, 0, 0, RY * it.s, RX * it.x, RY * it.y); c.globalAlpha = it.op; c.fillStyle = g.glow; c.beginPath(); c.arc(200, 200, 200, 0, TAU); c.fill();
+    }
+    c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = 1;
+  }
 
   // lift: how far (pixels) the camera has tilted back down after the sky (the art chapter's end, art.js)
   function frame(q, time, pointer, lift) {
@@ -399,7 +502,8 @@ export function mount(host, options = {}) {
       g.globalAlpha = 1;
     }
 
-    // --- the trees
+    // --- the trees (into the avenue's canvas, in depth order with the bushes, the pictures and their light)
+    const av = [], kv = [];
     while (firstTree > 0 && trees[firstTree - 1].Z > camZ + 0.5) firstTree--;
     while (firstTree < trees.length && trees[firstTree].Z <= camZ + 0.5) { hide(trees[firstTree]); firstTree++; }
     for (let i = firstTree; i < trees.length; i++) {
@@ -414,12 +518,9 @@ export function mount(host, options = {}) {
       const up = tall && d < 7 ? 1 - ss(0.1, 0.28, T / Tmax) : 1;
       const op = Math.round((1 - ss(FAR - 10, FAR, d)) * ss(1.4, 3, d) * grove * up * 50) / 50;
       if (op <= 0 || left > W + 10 || left + wpx < -10 || top > H + 10) { hide(t); continue; }
-      show(t); flats++;
-      const s = hpx / (TREE.h / 2);
-      const tr = t.flip ? 'translate3d(' + (left + wpx).toFixed(1) + 'px,' + top.toFixed(1) + 'px,0) scale(' + (-s).toFixed(4) + ',' + s.toFixed(4) + ')'
-        : 'translate3d(' + left.toFixed(1) + 'px,' + top.toFixed(1) + 'px,0) scale(' + s.toFixed(4) + ')';
-      if (tr !== t.last) { t.el.style.transform = tr; t.last = tr; }
-      if (op !== t.lo) { t.el.style.opacity = op; t.lo = op; }
+      t.shown = true; flats++;
+      const s = +(hpx / (TREE.h / 2)).toFixed(4);
+      av.push({ z: t.z, o: t.ord, k: 0, b: t.src, a: t.flip ? -s : s, d: s, x: +(t.flip ? left + wpx : left).toFixed(1), y: +top.toFixed(1), op, w: TREE.w / 2, h: 635 });
     }
 
     // --- bushes close to the camera
@@ -429,10 +530,9 @@ export function mount(host, options = {}) {
       if (op <= 0) { hide(b); continue; }
       const sc = f / d, wpx = b.w * sc, hpx = wpx * 250 / 550, left = cx + pan + (b.X - camX) * sc - wpx / 2, top = hY + camY * sc - hpx * 0.8;
       if (left > W || left + wpx < 0 || top > H) { hide(b); continue; }
-      show(b); flats++;
-      const tr = 'translate3d(' + left.toFixed(1) + 'px,' + top.toFixed(1) + 'px,0) scale(' + (wpx / 275).toFixed(4) + ')';
-      if (tr !== b.last) { b.el.style.transform = tr; b.last = tr; }
-      if (op !== b.lo) { b.el.style.opacity = op; b.lo = op; }
+      b.shown = true; flats++;
+      const s = +(wpx / 275).toFixed(4);
+      av.push({ z: b.z, o: b.ord, k: 0, b: b.src, a: s, d: s, x: +left.toFixed(1), y: +top.toFixed(1), op, w: 275, h: 125 });
     }
 
     // --- a picture brought forward
@@ -496,25 +596,40 @@ export function mount(host, options = {}) {
         caption.style.transform = 'translate3d(' + mx.toFixed(1) + 'px,' + (0.445 * H + th / 2 + 20).toFixed(1) + 'px,0) translateX(-50%)';
       }
       if (op <= 0.003 || sx + wpx < -80 || sx - wpx > W + 80 || sy + hpx * 0.5 + 60 < 0 || sy - hpx * 0.5 - (u < 1 ? p.L * (wpx / p.bw) : 12) > H) { hide(p); glowOff(p); continue; }
-      show(p); flats++;
+      p.shown = true; flats++;
       const s = wpx / p.bw, top = sy - hpx / 2;
-      const tr = 'translate3d(' + (sx - p.bw / 2).toFixed(2) + 'px,' + (top - p.L * s + p.L).toFixed(2) + 'px,0) scale(' + s.toFixed(5) + ') rotate(' + ang.toFixed(3) + 'deg)';
-      if (tr !== p.last) { p.el.style.transform = tr; p.last = tr; }
-      if (z !== p.lz) { p.el.style.zIndex = String(z); p.lz = z; }
-      dimO = Math.round(dimO * 100) / 100; if (dimO !== p.lDim) { p.dim.style.opacity = dimO; p.lDim = dimO; }
-      haloO = Math.round(haloO * 50) / 50; if (haloO !== p.lHalo) { p.halo.style.opacity = haloO; p.lHalo = haloO; }
-      strO = Math.round(strO * 50) / 50; if (strO !== p.lStr) { p.string.style.opacity = strO; p.lStr = strO; }
-      op = Math.round(op * 100) / 100; if (op !== p.lOp) { p.el.style.opacity = op; p.lOp = op; }
-      if (u < 1) clear.push(sx - wpx / 2 - 4, top - 4, sx + wpx / 2 + 4, top + hpx + 4, i === hero || i === openIdx || wpx > 0.3 * W ? 0 : f * p.ww / wpx);
-      // the lantern's light in the air, in front of the trees just this side of it
+      const tx = +(sx - p.bw / 2).toFixed(2), ty = +(top - p.L * s + p.L).toFixed(2), s5 = +s.toFixed(5), a3 = +ang.toFixed(3);
+      p.m[0] = tx; p.m[1] = ty; p.m[2] = s5; p.m[3] = a3; p.lz = z;
+      dimO = Math.round(dimO * 100) / 100; haloO = Math.round(haloO * 50) / 50; strO = Math.round(strO * 50) / 50; op = Math.round(op * 100) / 100;
+      p.lOp = op;
       gO = Math.round(gO * 40) / 40;
-      if (gO > 0) {
-        const gs = 2.5 * Math.sqrt(wpx * wpx + hpx * hpx), gt = 'translate3d(' + (sx - gs / 2).toFixed(1) + 'px,' + (sy - gs / 2).toFixed(1) + 'px,0) scale(' + (gs / 400).toFixed(4) + ')';
-        if (!p.gShown) { p.glow.style.visibility = ''; p.gShown = true; }
-        if (gt !== p.gLast) { p.glow.style.transform = gt; p.glow.style.zIndex = String(z + 240); p.gLast = gt; }
-        if (gO !== p.gOp) { p.glow.style.opacity = gO; p.gOp = gO; }
-      } else glowOff(p);
+      const gs = 2.5 * Math.sqrt(wpx * wpx + hpx * hpx);
+      if (i === openIdx && fwd > 0) {
+        // (forward: its own element draws it, over the night that closes in)
+        if (!p.dom) { p.el.style.visibility = ''; p.dom = true; }
+        const tr = 'translate3d(' + tx.toFixed(2) + 'px,' + ty.toFixed(2) + 'px,0) scale(' + s.toFixed(5) + ') rotate(' + ang.toFixed(3) + 'deg)';
+        if (tr !== p.last) { p.el.style.transform = tr; p.last = tr; }
+        if (z !== p.lzd) { p.el.style.zIndex = String(z); p.lzd = z; }
+        if (dimO !== p.lDim) { p.dim.style.opacity = dimO; p.lDim = dimO; }
+        if (haloO !== p.lHalo) { p.halo.style.opacity = haloO; p.lHalo = haloO; }
+        if (strO !== p.lStr) { p.string.style.opacity = strO; p.lStr = strO; }
+        if (op !== p.lOpd) { p.el.style.opacity = op; p.lOpd = op; }
+        if (gO > 0) {
+          const gt = 'translate3d(' + (sx - gs / 2).toFixed(1) + 'px,' + (sy - gs / 2).toFixed(1) + 'px,0) scale(' + (gs / 400).toFixed(4) + ')';
+          if (!p.gShown) { p.glow.style.visibility = ''; p.gShown = true; }
+          if (gt !== p.gLast) { p.glow.style.transform = gt; p.glow.style.zIndex = String(z + 240); p.gLast = gt; }
+          if (gO !== p.gOp) { p.glow.style.opacity = gO; p.gOp = gO; }
+        } else glowOff(p);
+      } else {
+        if (p.dom) { p.el.style.visibility = 'hidden'; p.dom = false; }
+        glowOff(p);
+        (u < 1 ? av : kv).push({ z, o: 20000 + 2 * i, k: 1, p, tx, ty, s: s5, ang: a3, op, haloO, strO, dimO });
+        // the lantern's light in the air, in front of the trees just this side of it
+        if (gO > 0) av.push({ z: z + 240, o: 20001 + 2 * i, k: 2, x: +(sx - gs / 2).toFixed(1), y: +(sy - gs / 2).toFixed(1), s: +(gs / 400).toFixed(4), op: gO });
+      }
+      if (u < 1) clear.push(sx - wpx / 2 - 4, top - 4, sx + wpx / 2 + 4, top + hpx + 4, i === hero || i === openIdx || wpx > 0.3 * W ? 0 : f * p.ww / wpx);
     }
+    paint(vx, avenue, av); paint(kx, skyPics, kv);
     if (openIdx < 0) caption.style.opacity = '0';
 
     // --- lanterns too far to be pictures: points of light up the river
@@ -572,11 +687,19 @@ export function mount(host, options = {}) {
   }
   // which picture is under a point of the screen (this layer is behind the page: the page's clicks come here)
   function pick(x, y) {
+    // (the box round the frame as it was drawn, as the frame's element measured it: its four corners under the
+    // picture's transform, on the screen)
     let best = -1, bz = -1;
+    const wr = world.getBoundingClientRect();
     for (const p of P) {
       if (!p.shown || p.lOp < 0.2) continue;
-      const r = p.el.querySelector('.gg-frame').getBoundingClientRect();
-      if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom && p.lz > bz) { best = p.i; bz = p.lz; }
+      const [tx, ty, s, ang] = p.m, ox = p.bw / 2, oy = -p.L, cs = Math.cos(ang * Math.PI / 180) * s, sn = Math.sin(ang * Math.PI / 180) * s;
+      let l = 1e9, r = -1e9, t = 1e9, b = -1e9;
+      for (const [u, v] of [[0, 0], [p.bw, 0], [0, p.bh], [p.bw, p.bh]]) {
+        const X = wr.left + ox + tx + cs * (u - ox) - sn * (v - oy), Y = wr.top + oy + ty + sn * (u - ox) + cs * (v - oy);
+        if (X < l) l = X; if (X > r) r = X; if (Y < t) t = Y; if (Y > b) b = Y;
+      }
+      if (x >= l && x <= r && y >= t && y <= b && p.lz > bz) { best = p.i; bz = p.lz; }
     }
     return best;
   }
@@ -584,13 +707,16 @@ export function mount(host, options = {}) {
   function dispose() {
     world.removeEventListener('click', onClick); world.removeEventListener('keydown', onKey);
     if (core < 0) core = 0;
-    for (const p of P) { p.hi.removeAttribute('src'); p.lo.removeAttribute('src'); }
+    gone = true;
+    for (const p of P) { p.hi.removeAttribute('src'); p.lo.removeAttribute('src'); for (const b of [p.loBmp, p.hiBmp]) if (b && b.close) b.close(); p.loBmp = p.hiBmp = null; }
+    for (let i = 0; i < bmp.length; i++) { if (bmp[i] && bmp[i].close) bmp[i].close(); bmp[i] = null; }
+    for (const c of [avenue, skyPics]) { c.width = c.height = 1; }
     world.remove();
   }
   // the q at which picture i is met, and whether everything this frame needs has arrived
   const qOf = (i) => QA + (clamp(i, 0, N - 1) - kStart) / SLOPE;
   const ready = () => pending === 0;
-  const whole = () => core === 0 && P.every((p) => p.lo.complete);
+  const whole = () => core === 0 && P.every((p) => p.loDone);
 
   layout();
   return { frame, resize, setActive, dispose, open, close, toggle, pick, qOf, kOf, ready, whole, count: N, state, skyQ: 0.975, isOpen: () => openIdx };
