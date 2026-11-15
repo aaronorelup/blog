@@ -142,6 +142,7 @@
 #art .art-picks .body > .label { pointer-events: auto; }
 #art .art-picks ul { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: calc(16px * var(--s, 1)); margin-top: calc(18px * var(--s, 1)); }
 #art .art-picks li { pointer-events: auto; }
+#art .art-all { pointer-events: auto; }   /* the "All N posts" pill is a link: it must take the mouse and the tap like the cards do */
 /* (each post's number is a small stamp on its picture's corner, as the ledger stamps them) */
 #art .art-picks li .label .ao {
   position: absolute; left: calc(10px * var(--s, 1)); top: calc(10px * var(--s, 1)); z-index: 2; padding: calc(3px * var(--s, 1)) calc(9px * var(--s, 1));
