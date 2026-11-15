@@ -542,6 +542,12 @@ export function mount(host, options = {}) {
     }
   }
   resize();
+  // (WARM: the world's shaders are compiled while the chapter is still out of sight, in the background where the browser
+  // can (KHR_parallel_shader_compile), so the first frame it is shown does not wait for some fourteen of them, about a
+  // third of a second on a desktop graphics card. Nothing is drawn; a later rebuild compiles on first use as before.)
+  let gone = false;
+  const warm = () => { if (!gone && built && renderer.compileAsync) renderer.compileAsync(scene, camera).catch(() => {}); };
+  if (window.requestIdleCallback) window.requestIdleCallback(warm, { timeout: 400 }); else setTimeout(warm, 50);
   // the words drawn into the world wait for the site's own monospace
   if (document.fonts && document.fonts.load) {
     Promise.all([document.fonts.load('500 44px "JetBrains Mono"'), document.fonts.load('700 21px "JetBrains Mono"')]).then(() => { texts.forEach((t) => t.redraw()); ui.forget(); invalidate(); }).catch(() => {});
@@ -557,6 +563,7 @@ export function mount(host, options = {}) {
     stats() { const i = renderer.info.render; return { calls: i.calls, triangles: i.triangles, lines: i.lines }; },
     dispose() {
       document.removeEventListener('pointermove', onMove); document.documentElement.removeEventListener('pointerleave', onLeave); document.removeEventListener('click', onClick); root.classList.remove('at-hot');
+      gone = true;
       if (built) built.dispose(); renderer.dispose(); canvas.remove(); grain.remove(); ui.ui.remove(); holder.remove(); host.classList.remove('at-host', 'at-tall'); uiHost.classList.remove('at-tall');
     },
   };
