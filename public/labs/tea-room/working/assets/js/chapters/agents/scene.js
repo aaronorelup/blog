@@ -542,11 +542,12 @@ export function mount(host, options = {}) {
     }
   }
   resize();
-  // (WARM: the world's shaders are compiled while the chapter is still out of sight, in the background where the browser
-  // can (KHR_parallel_shader_compile), so the first frame it is shown does not wait for some fourteen of them, about a
-  // third of a second on a desktop graphics card. Nothing is drawn; a later rebuild compiles on first use as before.)
+  // (WARM: the world's shaders are handed to the graphics card while the chapter is still out of sight (renderer.compile:
+  // it does not wait for them; three.js checks a shader only when it is first used), so by the frame it is first shown
+  // some fourteen of them are ready instead of compiled then, about a fifth of a second less on a desktop graphics card.
+  // Nothing is drawn, and nothing polls afterwards (compileAsync would, and could outlive dispose()).)
   let gone = false;
-  const warm = () => { if (!gone && built && renderer.compileAsync) renderer.compileAsync(scene, camera).catch(() => {}); };
+  const warm = () => { if (!gone && built) try { renderer.compile(scene, camera); } catch (e) { /* drawn later compiles on first use */ } };
   if (window.requestIdleCallback) window.requestIdleCallback(warm, { timeout: 400 }); else setTimeout(warm, 50);
   // the words drawn into the world wait for the site's own monospace
   if (document.fonts && document.fonts.load) {
