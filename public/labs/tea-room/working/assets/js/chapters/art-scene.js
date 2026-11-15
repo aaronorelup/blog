@@ -19,6 +19,12 @@
    The scene keeps no clock of its own, reads nothing from the page and writes only inside hostElement. The one
    thing that is not a function of q is a picture brought forward by a click: any change of q sends it back.
 
+   RASTER: the trees, the bushes and the lanterns' light rings are each a layer whose scale changes every frame as the
+   camera moves; without will-change the browser paints each of them again at the new scale every frame (on a desktop
+   graphics card about 70 small repaints a frame, the art chapter's half rate). will-change: transform lets it scale
+   what it painted instead; measured, the picture is the same (painted trees and soft gradients). Not on the pictures
+   themselves: there it softened their edges.
+
    options: pictures [{ file, title, w, h }], still (time is held: nothing eases, pictures load at once),
             onChange() (something changed by itself, a picture arrived or was clicked: draw again). */
 
@@ -130,6 +136,7 @@ export function mount(host, options = {}) {
     t.el = picture('gg-flat', treeSrc[t.pink ? 1 : 0]);
     t.el.width = TREE.w / 2; t.el.height = TREE.h / 2; t.el.style.zIndex = String(Math.round(100000 - t.Z * 100));
     t.el.style.visibility = 'hidden'; t.shown = false; t.last = ''; t.lo = -1;
+    t.el.style.willChange = 'transform';      // (RASTER in the head comment)
   }
 
   // bushes close to the camera, dark and out of focus, along the edges of the avenue
@@ -137,7 +144,7 @@ export function mount(host, options = {}) {
   for (let z = 1, j = 0; z < zEndOfWood + 8; z += 2.3 + TR() * 1.4, j++) {
     const side = j % 2 ? 1 : -1, b = { side, Z: z, xr: TR(), wr: 0.8 + TR() * 0.5, shown: false, last: '', lo: -1 };
     b.el = picture('gg-flat', IMG(side < 0 ? 'near-bush-l.webp' : 'near-bush-r.webp'));
-    b.el.width = 550 / 2; b.el.height = (side < 0 ? 250 : 250) / 2; b.el.style.zIndex = String(Math.round(100000 - z * 100)); b.el.style.visibility = 'hidden';
+    b.el.width = 550 / 2; b.el.height = (side < 0 ? 250 : 250) / 2; b.el.style.willChange = 'transform'; b.el.style.zIndex = String(Math.round(100000 - z * 100)); b.el.style.visibility = 'hidden';
     bushes.push(b);
   }
 
@@ -150,7 +157,7 @@ export function mount(host, options = {}) {
     const hi = make('img', 'gg-hi', frame); hi.alt = ''; hi.decoding = 'async'; hi.draggable = false;
     const dim = make('i', 'gg-dim', frame);
     b.style.visibility = 'hidden';
-    const glow = make('i', 'gg-flat gg-glow'); glow.style.visibility = 'hidden';
+    const glow = make('i', 'gg-flat gg-glow'); glow.style.visibility = 'hidden'; glow.style.willChange = 'transform';
     return { d, i, a: d.w / d.h, s: i % 2 ? -1 : 1, el: b, halo, string, cap, tassel, lo, hi, dim, glow, gShown: false, gLast: '', gOp: -1, hiState: 0, shown: false, last: '', lz: -1, lDim: -1, lHalo: -1, lStr: -1, lOp: -1 };
   });
 
