@@ -48,6 +48,12 @@ export function makeHome(section, RM) {
   function frame(p, a, f, hidden) {
     var H = window.innerHeight;
     last.a = a; last.f = f;
+    // (far from the posts, e.g. down the avenue: hidden once, and nothing measured)
+    if (p < a + IN[0] - 0.25 || p > f) {
+      set(picks, 'p', 'none', 0); if (all) set(all, 'a', 'none', 0);
+      if (offWas !== true) { home.classList.add('off'); offWas = true; }
+      return;
+    }
     // in and out: k comes up 0..1, m goes 0..1
     var k = RM ? (p >= a + (IN[0] + IN[1]) / 2 ? 1 : 0) : io(ss(a + IN[0], a + IN[1], p));
     var m = RM ? (p >= f + (OUT[0] + OUT[1]) / 2 ? 1 : 0) : io(ss(f + OUT[0], f + OUT[1], p));
@@ -58,7 +64,7 @@ export function makeHome(section, RM) {
     var o = Math.min(clamp(k * 2.2), 1 - ss(0.3, 0.9, m));
     if (hidden) o = 0;
     o = Math.round(o * 1000) / 1000;
-    var tr = 'translate3d(0,' + Math.round(ty) + 'px,0)';   // (whole pixels: the words stay sharp, and land alike however the page got there)
+    var tyr = Math.round(ty), tr = tyr ? 'translate(0,' + tyr + 'px)' : 'none';   // (whole pixels: the words stay sharp, and land alike however the page got there)
     set(picks, 'p', tr, o);
     if (all) set(all, 'a', tr, o);
     var off = o < 0.5;
@@ -68,7 +74,7 @@ export function makeHome(section, RM) {
     var u = indexAt(p, a, f), sh = 64 * (window.TEA && TEA.s ? TEA.s() : 1);
     for (var i = 0; i < n; i++) {
       var rel = i - u, io2 = clamp(1 - Math.abs(rel) * 1.7);
-      set(items[i], 'i' + i, 'translate3d(' + Math.round(rel * sh) + 'px,0,0)', Math.round(io2 * 1000) / 1000);
+      set(items[i], 'i' + i, (Math.round(rel * sh) ? 'translate(' + Math.round(rel * sh) + 'px,0)' : 'none'), Math.round(io2 * 1000) / 1000);
       var on = Math.abs(rel) < 0.5;
       if (items[i]._on !== on) { items[i]._on = on; items[i].style.pointerEvents = on ? '' : 'none'; items[i].style.zIndex = on ? '1' : ''; }
     }
