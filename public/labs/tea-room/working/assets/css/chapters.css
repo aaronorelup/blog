@@ -29,20 +29,8 @@
 .chapter-top { position: fixed; inset: 0; z-index: 3; overflow: hidden; visibility: hidden; pointer-events: none; }
 .chapter-top > * { pointer-events: auto; }
 
-/* a chapter that is not built yet keeps its place in the rail and in the hero's list, greyed and not a link; the
-   first of them says why */
-#rail li.soon span, .index li.soon span { cursor: default; }
-/* (in the rail it is a small heading over the chapters to come: set in the gap above the first of them, from the
-   names' left edge, with a hairline after it to the card's edge, so it reads as the head of what is under it and
-   never as a note on the name above it. It moves no line of the rail.) */
-#rail li.soon.first::after {
-  content: 'to come'; position: absolute; left: 0; right: 0; top: -0.49em; height: calc(8px * var(--s, 1));
-  font: 500 calc(8px * var(--s, 1))/1 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--pc-gold);
-  background: linear-gradient(rgba(201, 162, 39, 0.4), rgba(201, 162, 39, 0.4)) no-repeat right 50% / calc(100% - calc(50px * var(--s, 1))) 1px;
-}
-.index li.quiet a { color: var(--home-quiet); } .index li.quiet a:hover { color: var(--pc-head); }   /* (a built chapter whose line in the hero's list keeps its old grey for now: look B's
-   hero is held to its reference pictures, and the lines already made links use up what they allow. The rail marks it as built) */
-.index li.soon .c { letter-spacing: 0.12em; text-transform: uppercase; font-size: calc(8.5px * var(--s, 1)); color: var(--pc-gold); }
+/* every chapter is built: each line of the rail and of the hero's list is a link to its chapter, all in look B's own
+   style. (The marks for a chapter "to come" were taken out with the last of them, 15 Nov.) */
 
 /* ---------------------------------------------------------------- AI video & film */
 /* The section is the camera's road: the walk from look B's title shot to the cloth and a while before it (the
