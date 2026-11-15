@@ -15,7 +15,7 @@ export var VARIANT = new URLSearchParams(location.search).get('home') === 'b' ? 
 // the card under the pictures goes before the posts come (art.js): from a + DOCK_OUT[0] to a + DOCK_OUT[1]
 export var DOCK_OUT = [-1.05, -0.85];
 var IN = VARIANT === 'b' ? [-0.85, -0.3] : [-0.85, -0.2];   // (from a) coming up from below the screen
-var OUT = [-1.0, -0.38];                                    // (from f) rising away, done before the tilt (f - 0.45 on)
+var OUT = [-1.08, -0.4];                                    // (from f) rising away, whole, off the top of the screen
 var TW = 0.16;                                              // B: a change of post takes this much scroll
 
 export function makeHome(section, RM) {
@@ -26,7 +26,7 @@ export function makeHome(section, RM) {
   var picks = home.querySelector('.art-picks'), all = home.querySelector('.art-all');
   var items = Array.prototype.slice.call(home.querySelectorAll('.art-picks li'));
   var n = items.length;
-  var was = {}, offWas = null, last = { a: 0, f: 0 };
+  var was = {}, offWas = null, gWas = null, last = { a: 0, f: 0 };
 
   function set(el, key, tr, o) {
     var k = tr + '|' + o;
@@ -51,17 +51,23 @@ export function makeHome(section, RM) {
     // (far from the posts, e.g. down the avenue: hidden once, and nothing measured)
     if (p < a + IN[0] - 0.25 || p > f) {
       set(picks, 'p', 'none', 0); if (all) set(all, 'a', 'none', 0);
+      if (gWas !== 1) { picks.style.removeProperty('--gnd'); gWas = 1; }
       if (offWas !== true) { home.classList.add('off'); offWas = true; }
       return;
     }
     // in and out: k comes up 0..1, m goes 0..1
     var k = RM ? (p >= a + (IN[0] + IN[1]) / 2 ? 1 : 0) : io(ss(a + IN[0], a + IN[1], p));
-    var m = RM ? (p >= f + (OUT[0] + OUT[1]) / 2 ? 1 : 0) : io(ss(f + OUT[0], f + OUT[1], p));
+    // (leaving: the cards stay whole and rise straight off the top of the screen, past the moon; only their dark ground
+    // goes, in the first third, so no block hangs in mid-sky and nothing half-faded crosses the pictures)
+    var mt = RM ? (p >= f + (OUT[0] + OUT[1]) / 2 ? 1 : 0) : ss(f + OUT[0], f + OUT[1], p);
+    var m = mt * mt * (2 - mt);
     // (the home is sticky: where it actually stands now; the cards are held still against it)
     var y0 = home.getBoundingClientRect().top;
     var rise = picks.offsetHeight + (all ? all.offsetHeight : 0) + 60;
-    var ty = -y0 + (1 - k) * rise - m * H * 0.6;
-    var o = Math.min(clamp(k * 2.2), 1 - ss(0.3, 0.9, m));
+    var ty = -y0 + (1 - k) * rise - m * (H + 40);
+    var o = m >= 1 ? 0 : clamp(k * 2.2);
+    var g = Math.round((1 - ss(0, 0.35, mt)) * 100) / 100;
+    if (g !== gWas) { if (g >= 1) picks.style.removeProperty('--gnd'); else picks.style.setProperty('--gnd', String(g)); gWas = g; }
     if (hidden) o = 0;
     o = Math.round(o * 1000) / 1000;
     var tyr = Math.round(ty), tr = tyr ? 'translate(0,' + tyr + 'px)' : 'none';   // (whole pixels: the words stay sharp, and land alike however the page got there)
@@ -100,7 +106,8 @@ export function makeHome(section, RM) {
     dispose: function () {
       home.removeEventListener('focusin', onFocus);
       [picks, all].concat(items).forEach(function (el) { if (el) { el.style.transform = ''; el.style.opacity = ''; el.style.pointerEvents = ''; el.style.zIndex = ''; } });
-      home.classList.remove('off'); was = {}; offWas = null;
+      if (picks) picks.style.removeProperty('--gnd');
+      home.classList.remove('off'); was = {}; offWas = null; gWas = null;
     }
   };
 }
