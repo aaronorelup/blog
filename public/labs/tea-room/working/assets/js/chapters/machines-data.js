@@ -8,7 +8,9 @@
 // open: the machine opening as the reader scrolls, in screens of its own stretch (0..1): from `at` on, the part and
 // the mode the page shows (no part: the machine whole). Each change is one press of the page's own console, about a
 // second of its time, so there are never more than two.
-// job: how its work is kept running in a loop by its own controls (see machines-live.js).
+// job: how its work is kept going, with no cut, by its own timeline (see machines-live.js).
+// aim: the camera's aim held on the machine itself: its view's own aim, reckoned from the machine's place as its page
+// hands it (pose), in its page's metres.
 export var MACHINES = [
   {
     key: 'dray',
@@ -31,9 +33,15 @@ export var MACHINES = [
     allParts: ['CHASSIS', 'WHEELS', 'CRANE', 'MAST & LAMP', 'BATTERY', 'BAG'],
     // whole and driving; the deck cut open on its battery; the crane picked out as it swings the bag; whole again
     open: [{ at: 0 }, { at: 0.36, part: 'BATTERY', mode: 'cut' }, { at: 0.62, part: 'CRANE', mode: 'isolate' }, { at: 0.86 }],
-    // its work, looped from its own timeline (fractions of its task): from the crane reaching out to its well to the
-    // crane stowed again, the rover standing at its module the whole time (machines-live.js job.play)
-    job: { play: true, from: 0.25, to: 0.78 },
+    // its work, there and back along its own timeline (fractions of its task), the rover standing at its module the
+    // whole time: the crane reaches into the well, takes the bag from its shelf down to the ground and stows; then
+    // the same backward, the bag picked up and put on its shelf again. Both ends are the crane stowed and still, and
+    // both lie just inside the task's crane phases (0.22 to 0.78; outside them its page tints another system).
+    // seconds: what its own clock takes over the stretch. ease: each way it comes up to speed and down to rest over
+    // that long (its lamp head is still turning at both ends, and would be stopped dead).
+    job: { back: true, from: 0.2215, to: 0.7785, seconds: 14.4, rest: 0.7, ease: 1.2 },
+    // (its HERO view's own aim: a fixed place over the deck, going along with the rover)
+    aim: function (pose) { return [-0.55, 1.2, pose.z - 0.45]; },
     // the frame the page draws each picture in (LIVE.stage.frame), and the bearing its camera is held at there
     // (degrees; the page's HERO view starts there and then drifts on by itself, which this holds still)
     stage: 'stage',
@@ -65,10 +73,13 @@ export var MACHINES = [
     // whole and digging; its drums cut open (what bites); its hopper cut open (where the regolith goes); whole again
     open: [{ at: 0 }, { at: 0.34, part: 'DRUMS', mode: 'cut' }, { at: 0.6, part: 'HOPPER', mode: 'cut' }, { at: 0.84 }],
     // its work: one load dug at the drift's face near the end of its night (the trench three metres deep, as its
-    // own still shows it): the arms come down, the drums bite and the hopper fills, played from its own timeline,
-    // paused and pressed along it every frame at 8 times its clock, then from the start again (machines-live.js
-    // job.speed). Paused, its camera follows the machine itself, never the face it is digging toward.
-    job: { speed: 8, from: 0.9728, to: 0.9778 },
+    // own still shows it), pressed along its own timeline every frame at 8 times its clock (machines-live.js
+    // job.speed). It starts as the arms come down; what is kept going is the phase its page calls CUT, the arms'
+    // first bite to the hopper full, the body standing at the face throughout; `to` is only the furthest it may go.
+    // Where the load starts again its last picture fades over the new start (fade, in ms).
+    job: { speed: 8, from: 0.9728, to: 0.9779, phase: 'CUT', fade: 800 },
+    // (its SIDE view's own aim: a little ahead of and above the machine's place)
+    aim: function (pose) { return [pose.x + 0.35, pose.y + 0.25, -0.1]; },
     stage: 'st',
     // its SIDE view, held closer and at a fixed bearing: the machine big in its trench, the drums at the face
     cam: { az: 14, el: 22, d: 4.8, sy: -40 },
