@@ -236,9 +236,16 @@
     measure(); started = true;
     var id = qs.get('c');
     if (id) {
-      var c = LIST.filter(function (x) { return x.id === id; })[0];
-      if (c) window.scrollTo(0, Math.round(c.top + clamp(parseFloat(qs.get('q')) || 0, 0, 1) * travel(c)));
+      var c = LIST.filter(function (x) { return x.id === id; })[0], q = clamp(parseFloat(qs.get('q')) || 0, 0, 1);
+      // (look B's own chapters, ?c=start and ?c=tv, are its sections: the same address, measured here)
+      var el = c ? null : document.getElementById(id);
+      if (el && el.tagName === 'SECTION') {
+        var r = el.getBoundingClientRect();
+        c = { top: r.top + window.scrollY, h: r.height };
+      }
+      if (c) window.scrollTo(0, Math.round(c.top + q * travel(c)));
     }
+    root.classList.remove('tea-jump');               // (index.html's cover for a page opened at a chapter: the jump is made, look B draws this frame)
   }
   if (qs.has('c') && 'scrollRestoration' in history) history.scrollRestoration = 'manual';
   // (the last chapter's height is its flowing text: measured again once the fonts are in and the page has loaded)
