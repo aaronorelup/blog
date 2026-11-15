@@ -179,7 +179,7 @@ export function mount(host, options) {
     var ep = endPlate(W, H, nameRight());
     KE = camOf(ep.s, ep.x + FOCUS[0] * ep.s, ep.y + FOCUS[1] * ep.s);
     if (!tall) {
-      var pw = clamp(H * 0.3, 150, 280);
+      var pw = clamp(H * 0.3, 150, 280 * (window.TEA && window.TEA.s ? window.TEA.s() : 1));   // (grows with the page's one scale, chapters.js, as the film's does)
       PJE = { x: Math.max(rail + 40 + pw * 0.5, W * 0.43), y: H * 1.08, w: pw };
     } else {
       var pw3 = clamp(W * 0.34, 120, 210);
