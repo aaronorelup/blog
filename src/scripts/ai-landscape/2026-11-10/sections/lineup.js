@@ -1,14 +1,16 @@
 // The line-up (SPEC 2.3): the five stacks at level elevation, semi-open, read one floor at a time. The scroll picks
 // the floor (0.19 screens each from 0.15): no timer. A hover, a tap or an arrow key holds its own floor until the
-// scroll has moved a tenth of a screen. The nine names stand as the left axis, the five answers under the stacks.
+// scroll has moved a tenth of a screen. The nine names stand as the left axis, the five answers under the stacks, and
+// behind each stack its board rises with one sign: the lit floor in that company's glass, state and parts.
 // A phone pulls the five closer into the top third and lists the axis and the answers in a sheet.
 import { BufferGeometry, Float32BufferAttribute, LineBasicMaterial, LineSegments, Vector3 } from 'three';
 import { smooth, span } from '../core/clock.js';
 import { $, $$, announce } from '../core/dom.js';
 import { createLens } from '../scene/lens.js';
-import { createSeat } from '../scene/seat.js';
+import { createSeat, level, ROW_SPAN } from '../scene/seat.js';
+import { BAY, LID_TOP } from '../scene/set.js';
 import { ROW_X } from '../scene/row.js';
-import { FLOOR } from '../scene/stack.js';
+import { FLOOR, SEMI } from '../scene/stack.js';
 
 const FIRST = 0.15, STEP = 0.19;         // floor k is lit while u is in [FIRST + STEP (k - 1), FIRST + STEP k)
 const HOLD = 0.1;                       // screens of scroll a visitor's own pick survives
@@ -16,11 +18,25 @@ const N = FLOOR.n;
 const PHONE = { pos: [0, 2.9, 30], look: [0, 1.75, 0], fov: 24, fit: 15.2, cy: 0.2 };
 const SQUEEZE = 2.85 / 4.2;              // a phone's row spacing, as a share of the desktop's
 const STUB = 0.55;                       // how far the datum lines reach past the outer stacks
+const STACK_H = N * FLOOR.h + (N - 1) * SEMI;              // a semi-open stack: 3.62
+// What a raised board adds over the row, as it looks at the row's depth. On a desktop: the lid plate, then the whole
+// board, which must clear the words above. On a phone up to the sign's top (the board's last strip may stand behind
+// the chrome), over the lid plate or, where a phone is too short for both, in the plate's place (`bare`)
+const OVER = { wide: LID_TOP + BAY.over + BAY.rise * 0.93, phone: LID_TOP + BAY.over + (BAY.rise - BAY.head) * 0.98, bare: BAY.low + (BAY.rise - BAY.head) * 0.98 };
+// a row with signs may be drawn smaller to fit a window's height, down to this many px a world unit. Under that the
+// boards stay at rest and the row stands as it always did
+const SMALL = { wide: 42, phone: 19 };
 
 export function create(ctx, el, sec) {
-  const { rig, row, labels, input, phone } = ctx;
+  const { rig, row, labels, input, phone, studio } = ctx;
   const order = ctx.data.order;
   const towers = order.map((id) => row.tower(id));
+  const bays = towers.map((tw) => studio.bays[tw.index]);
+  // every sign the boards can carry: a company's floor as its glyph, its state and its parts (all the page's data)
+  const tiles = towers.map((tw) => ctx.data.p[tw.id].stack.map((c, i) => ({ glyph: ctx.data.layers[i], state: c.s, owner: tw.id, parts: c.p })));
+  const far = { ...PHONE };
+  const chrome = document.querySelector('.ail-chrome__side--id');
+  const sheet = $('.ail-lu__wrap', el);
   const says = $$('.ail-lu__say', el);
   const heads = $$('.ail-lu__th', el);
   const layers = $$('.ail-lu__layer', el);
@@ -28,12 +44,54 @@ export function create(ctx, el, sec) {
   const cells = rowsEl.map((tr) => $$('.ail-lu__cell', tr));
   const guestLine = $('.ail-lu__guest', el);
   const words = [$('.ail-lu__now', el), $('.ail-lu__foot', el)];
-  const st = { sel: -1, selAt: 0, hover: -1, hoverAt: 0, co: -1, lit: -1, k: 0, u: 0 };
+  const st = { sel: -1, selAt: 0, hover: -1, hoverAt: 0, co: -1, lit: -1, k: 0, u: 0, tall: false, bare: false, laid: false, top: 0, feet: 0, over: 0 };
   // the row keeps clear of the axis (the nine names stand left of the first stack's character), of the lit floor's
   // words above it and of the legend under its answers, in a window of any height (scene/seat.js)
   const seat = createSeat(ctx);
   const WIDE = seat.stop;
   const v = new Vector3();
+
+  // ---- where the row stands, worked out once for a window and the same for all nine floors (so it never moves
+  // between them): under the tallest the words above it get, over the highest the legend reaches. Where sign, plate,
+  // row and answers fit between the two, drawn smaller if need be, the boards rise. A phone that has no room for
+  // sign and plate drops the plate
+  function ghost(node, each) {
+    const copy = node.cloneNode(true);
+    copy.style.visibility = 'hidden';
+    node.after(copy);
+    const got = each(copy);
+    copy.remove();
+    return got;
+  }
+  function lay() {
+    st.laid = true;
+    const W = window.innerWidth;
+    if (phone) {
+      st.top = (chrome ? chrome.getBoundingClientRect().bottom : 78) + 2; st.feet = sheet.getBoundingClientRect().top - 18;
+      const room = st.feet - st.top, natural = W / PHONE.fit;
+      st.bare = room < (STACK_H + OVER.phone) * natural;
+      st.over = st.bare ? OVER.bare : OVER.phone;
+      const pxu = Math.min(natural, room / (STACK_H + st.over));
+      st.tall = pxu >= SMALL.phone;
+      far.fit = st.tall ? W / pxu : PHONE.fit;
+      if (!st.tall) { far.cy = PHONE.cy; st.bare = false; }
+      return;
+    }
+    const deep = ghost(words[0], (copy) => {
+      const ps = [...copy.children];
+      let low = 0;
+      ps.forEach((p, i) => { ps.forEach((q, j) => { q.style.animation = 'none'; q.classList.toggle('is-on', i === j); }); low = Math.max(low, copy.getBoundingClientRect().bottom); });
+      return low;
+    });
+    const high = ghost(words[1], (copy) => { copy.querySelector('.ail-lu__guest').classList.remove('is-on'); return copy.getBoundingClientRect().top; });
+    st.top = deep + 12; st.feet = high - 92;                                 // 92: an answer of two lines and its lamp
+    st.over = OVER.wide;
+    const pxu = (st.feet - st.top) / (STACK_H + st.over);
+    st.tall = pxu >= SMALL.wide;
+    seat.limit(st.tall ? pxu * ROW_SPAN : Infinity);
+  }
+  const onResize = () => { st.laid = false; };
+  window.addEventListener('resize', onResize);
 
   // ---- the nine datum lines: from the left axis to the first stack, between every two, and a stub past the last.
   // They run through the floors' own side faces (z = 0), so each one meets its floor exactly on every stack
@@ -133,11 +191,13 @@ export function create(ctx, el, sec) {
     const d = labels.project(v.set(pos.getX(k), pos.getY(k), pos.getZ(k)));
     return { floor: [+f.x.toFixed(1), +f.y.toFixed(1)], line: [+d.x.toFixed(1), +d.y.toFixed(1)] };
   }));
-  ctx.state.compare = { ...(ctx.state.compare || {}), lineup: { get lit() { return st.lit; }, probe, show: (i) => pick(i), floorAt: fromScroll } };
+  // (signs: what each board shows now: how far it is raised, the sign drawn on it and how much of that sign is out)
+  const signs = () => bays.map((b) => ({ rise: +b.rise.toFixed(2), sign: b.key, out: +b.flip.toFixed(2) }));
+  ctx.state.compare = { ...(ctx.state.compare || {}), lineup: { get lit() { return st.lit; }, get tall() { return st.tall; }, probe, signs, show: (i) => pick(i), floorAt: fromScroll } };
 
   return {
     stops: [0.12, 0.31, 0.5, 0.69, 0.88],
-    enter() { pins.forEach((p) => { p.on = true; }); st.sel = -1; st.hover = -1; },
+    enter() { pins.forEach((p) => { p.on = true; }); st.sel = -1; st.hover = -1; st.laid = false; },
     leave() {
       pins.forEach((p) => { p.on = false; });
       if (st.full) { st.full = false; document.documentElement.removeAttribute('data-full'); }
@@ -150,8 +210,12 @@ export function create(ctx, el, sec) {
       // in and out over the section's edges, so the neighbours meet it with nothing jumping
       const k = smooth(span(u, 0, FIRST)) * (1 - smooth(span(u, FIRST + STEP * N, sec.screens)));
       st.k = k; st.u = u;
-      if (!phone) seat.level(words[0].getBoundingClientRect().bottom + 12, words[1].getBoundingClientRect().top - 92, 0.7);      // 92: an answer of two lines and its lamp
-      rig.mix(rig.stops.row, phone ? PHONE : WIDE, k);
+      if (!st.laid) lay();
+      // a lid plate's top is what level() keeps under the words: with the boards raised, the sign's or the board's
+      const extra = st.tall ? st.over - LID_TOP : 0;
+      if (!phone) seat.level(st.top, st.feet, 0.7, extra);
+      else if (st.tall) level(ctx, far, st.top, st.feet, st.feet / window.innerHeight, extra);
+      rig.mix(rig.stops.row, phone ? far : WIDE, k);
 
       // hover a floor of any stack: that floor lights across all five, and that company comes forward
       if (!phone && !input.touch && input.moved && k > 0.5) {
@@ -169,11 +233,14 @@ export function create(ctx, el, sec) {
       const full = guestLine.classList.contains('is-on');
       if (full !== st.full) { st.full = full; document.documentElement.toggleAttribute('data-full', full); }
 
+      // whatever lights a floor changes the signs. With all nine at rest (the section's end) the boards go down
+      const up = st.tall && lit >= 0 && k > 0.5;
+      bays.forEach((b, n) => { b.up = up ? 1 : 0; b.tile = up ? tiles[n][lit] : null; b.low = st.bare && k > 0.5; });
       const open = smooth(span(u, 0, 0.25)) * (1 - smooth(span(u, sec.screens - 0.14, sec.screens)));
       towers.forEach((tw, n) => {
         tw.spread = open;                                          // semi-open: the nine floors read apart
         if (st.co >= 0 && n !== st.co) tw.dim = 0.35 * k;         // the glass of the other four falls back. A mark plate never dims
-        if (phone) { tw.shift = ROW_X[n] * (SQUEEZE - 1) * k; tw.char.show = 1 - k; }
+        if (phone) { tw.shift = ROW_X[n] * (SQUEEZE - 1) * k; tw.char.show = 1 - k; if (st.bare && k > 0.5) tw.lid.show = 0; }
         tw.floors.forEach((f, i) => {
           if (lit < 0) return;
           if (i === lit) f.lit = 0.4 * k; else f.dim = Math.max(f.dim, 0.7 * k);
@@ -194,6 +261,7 @@ export function create(ctx, el, sec) {
       el.removeEventListener('toggle', onToggle, true);
       window.removeEventListener('keydown', onKey);
       window.removeEventListener('click', onClick);
+      window.removeEventListener('resize', onResize);
       seat.drop();
       if (st.full) document.documentElement.removeAttribute('data-full');
       pins.forEach((p) => p.drop());
