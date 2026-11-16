@@ -25,7 +25,7 @@ export function unpinSection(section) {
   keepPlace(section, before, y);
 }
 
-// Pinning grows the section by two screens (three on a portrait one), so it waits for a moment when that moves nothing
+// Pinning grows the section by two screens, so it waits for a moment when that moves nothing
 // the reader reads: the page at its very top, or the title box above the screen (the scroll then moves by the growth,
 // keepPlace, so what is below the hero stays put; a strip of picture left at the top shows the scene's end instead of
 // the poster), and the scroll at rest (a smooth scroll to a #chapter, or a fling, would be cut short by that move). A

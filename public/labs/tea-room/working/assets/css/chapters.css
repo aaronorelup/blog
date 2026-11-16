@@ -1,0 +1,403 @@
+/* CHAPTERS: the page after look B's part (assets/js/chapters.js says how a chapter is added).
+   This file is loaded with the page, so the page is its full length from the start: it holds what every chapter
+   shares and each chapter's cards (everything read, in the flow of the page). What a chapter's scene draws is
+   styled in assets/css/chapters/NAME.css, which comes with the scene when the reader is near. */
+
+/* THE PAGE'S ONE SCALE. chapters.js writes --s on <html>: s = min(window width / 1440, window height / 900), never
+   under 1, at most 2.4 (TEA.s() gives the same number to a scene's script). Up to 1440x900, and on every phone, s is 1
+   and nothing changes; on a big monitor everything read grows with it, so the page looks as it does at 1440x900, only
+   larger. Write every size of a card, a label or a control as calc(13px * var(--s, 1)); in a clamp() or min() with
+   vw or vh, multiply only its px cap. (The working notes, type.txt, say more.) */
+/* (--rail-w is calc(172px * var(--s, 1)) in diorama.css: registered as a length here, so every script that reads it
+   with getComputedStyle gets plain pixels, already grown) */
+@property --rail-w { syntax: '<length>'; inherits: true; initial-value: 172px; }
+/* the words of the chapters after look B's part, on a desktop: the least a reader is given at 1440x900 (a phone and a
+   narrow window keep their own sizes). --t-title a post card's title, --t-label a small label or a meta line, --t-body
+   what is read, --t-link a link or a button. Each grows with --s. */
+@media (min-width: 821px) {
+  :root { --t-title: calc(22px * var(--s, 1)); --t-label: calc(13px * var(--s, 1)); --t-body: calc(16px * var(--s, 1)); --t-link: calc(16px * var(--s, 1)); }
+}
+
+/* the chapters' pictures: one layer each, the size of the screen, over look B's stage and behind the cards */
+#chapters { position: fixed; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; contain: strict; }
+.chapter-stage { position: absolute; inset: 0; overflow: hidden; visibility: hidden; background: #07080f; contain: strict; }
+.chapter-stage.over { background: none; }
+/* (the hold: under every chapter, over look B's stage; shown by chapters.js while a chapter reached by a jump is not whole) */
+.chapter-hold { position: absolute; inset: 0; visibility: hidden; background: #07080f; }
+/* what is pressed while the pictures move: a layer the size of the screen in front of the cards. (Its own
+   visibility is switched by chapters.js: nothing in it may set visibility: visible, or it would outstay its chapter.) */
+.chapter-top { position: fixed; inset: 0; z-index: 3; overflow: hidden; visibility: hidden; pointer-events: none; }
+.chapter-top > * { pointer-events: auto; }
+
+/* every chapter is built: each line of the rail and of the hero's list is a link to its chapter, all in look B's own
+   style. (The marks for a chapter "to come" were taken out with the last of them, 15 Nov.) */
+
+/* ---------------------------------------------------------------- AI video & film */
+/* The section is the camera's road: the walk from look B's title shot to the cloth and a while before it (the
+   reel plays, its card comes up), then the four posts pass in a column while the camera steps back. */
+.film-walk { height: 440vh; }   /* (phone and motion off: below) */
+/* four small post cards, look B's own (.strip), standing in a column beside the cloth, one at a time */
+.film-picks { width: min(calc(372px * var(--s, 1)), calc(100vw - 28px)); max-width: none; margin-right: 0; }
+.film-all { margin: 26vh 0 0 var(--content-l); width: fit-content; }
+.film-all .body { padding: calc(13px * var(--s, 1)) calc(20px * var(--s, 1)) calc(14px * var(--s, 1)); }
+.film-all a { font: 600 var(--t-link, 15px)/1.3 var(--font-body); }
+.film-foot { height: 64vh; }
+@media (min-width: 821px) {
+  .film-picks ul { grid-template-columns: minmax(0, 1fr); gap: 26vh; }
+}
+/* with motion turned off the reel does not play by itself: its fourteen moments stand here as stills, each a way
+   to put that moment on the cloth */
+.film-stills { display: none; z-index: 4; margin: 0 var(--gutter) 60vh var(--content-l); max-width: 1060px; }   /* (it passes over the sound switch, not under it) */
+.film-stills .body { padding: 20px 22px 22px; }
+.film-stills-say { margin-top: 6px; font: 400 15px/1.4 var(--font-serif); color: var(--pc-strong); }
+.film-stills ol { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr)); gap: 12px; margin-top: 14px; }
+.film-stills button {
+  appearance: none; display: block; width: 100%; padding: 0; border: 0; border-radius: var(--radius-m); overflow: hidden;
+  background: var(--tea-card); color: inherit; text-align: left; cursor: pointer; box-shadow: inset 0 0 0 1px var(--pc-line2);
+}
+.film-stills img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; background: var(--pc-tile); }
+.film-stills span { display: block; padding: 8px 11px 10px; font: 700 14px/1.25 var(--font-display); color: var(--pc-strong); }
+.film-stills button[aria-current='true'] { box-shadow: inset 0 0 0 2px var(--tea-lamp); }
+.film-stills button[aria-current='true'] span { color: var(--pc-head); }
+@media (prefers-reduced-motion: reduce) {
+  .film-stills { display: block; }
+  .film-walk { height: 300vh; }
+}
+
+/* the film chapter's last part: the camera goes into the cloth, where the games chapter's arena takes the reel's
+   place (assets/js/chapters/join.js) */
+.film-dive { height: 150vh; }
+
+/* ---------------------------------------------------------------- Games */
+/* The arena is the world behind these (assets/js/chapters/games.js). The section is the camera's road: on into the
+   arena, the game's own card waiting under the two fighters, the four posts passing beside them, then back out of
+   the cloth into the garden. */
+.games-walk { height: 70vh; }
+/* the game's card comes up under the fighters and waits there a screen (sticky), then goes on up with the page */
+.games-bell-track { height: 205vh; }
+.games-bell-hold { position: sticky; top: 0; height: 100vh; height: 100svh; pointer-events: none; }
+.games-bell { position: absolute; left: var(--content-l); bottom: 7vh; bottom: 7svh; width: min(calc(452px * var(--s, 1)), calc(100vw - 28px)); pointer-events: auto; }
+.games-bell .body { padding: calc(18px * var(--s, 1)) calc(22px * var(--s, 1)) calc(20px * var(--s, 1)); }
+.games-bell-meta { display: flex; flex-wrap: wrap; gap: 0 calc(12px * var(--s, 1)); font: 500 var(--t-label, 11px)/1.4 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--pc-soft); }
+.games-bell-meta .mono { font-size: var(--t-label, 11px); color: var(--pc-head); }
+.games-bell h3 { margin: calc(9px * var(--s, 1)) 0 calc(7px * var(--s, 1)); font: 700 clamp(26px, 2.4vw, calc(32px * var(--s, 1)))/1.1 var(--font-display); letter-spacing: -0.01em; color: var(--pc-head); }
+.games-bell-line { font: 400 calc(16px * var(--s, 1))/1.45 var(--font-serif); color: var(--pc-strong); text-wrap: pretty; }
+.games-bell-go { display: flex; flex-wrap: wrap; align-items: center; gap: calc(10px * var(--s, 1)); margin-top: calc(16px * var(--s, 1)); }
+.games-play, .games-read {
+  display: inline-flex; align-items: center; gap: calc(7px * var(--s, 1)); padding: calc(9px * var(--s, 1)) calc(18px * var(--s, 1)); border-radius: var(--radius-pill);
+  font: 700 var(--t-link, 15px)/1.2 var(--font-body); text-decoration: none; transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+.games-play { background: var(--tea-lamp); color: rgb(28, 24, 32); box-shadow: var(--tea-glow); }
+.games-read { border: 1.5px solid var(--pc-line2); color: var(--pc-strong); padding: calc(9px * var(--s, 1) - 1.5px) calc(18px * var(--s, 1) - 1.5px); }   /* (the filled button's padding less its own line, so the two stay one height at any scale) */
+.games-play:hover { transform: translateY(-1px); }
+.games-read:hover { border-color: var(--pc-head); color: var(--pc-head); }
+.games-hint { margin-left: calc(4px * var(--s, 1)); font: 500 var(--t-label, 10.5px)/1.3 var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--pc-soft); }
+.games-hint .for-touch { display: none; }
+@media (hover: none) { .games-hint .for-mouse { display: none; } .games-hint .for-touch { display: inline; } }
+/* four post cards, as the film's: one column beside the fighters, one at a time */
+.games-picks { width: min(calc(372px * var(--s, 1)), calc(100vw - 28px)); max-width: none; margin-right: 0; }
+.games-all { margin: 26vh 0 0 var(--content-l); width: fit-content; }
+.games-all .body { padding: calc(13px * var(--s, 1)) calc(20px * var(--s, 1)) calc(14px * var(--s, 1)); }
+.games-all a { font: 600 var(--t-link, 15px)/1.3 var(--font-body); }
+.games-foot { height: 365vh; }   /* (the way back out of the cloth: about two screens, as slow as the dive in; then the
+                                   garden holds while the next chapter's name comes on and the tea house slides over) */
+@media (min-width: 821px) {
+  .games-picks ul { grid-template-columns: minmax(0, 1fr); gap: 26vh; }
+  /* (at the type rule's sizes the hint shares the buttons' row with only a few pixels to spare: set a little closer) */
+  .games-hint { margin-left: calc(2px * var(--s, 1)); letter-spacing: 0.1em; }
+}
+@media (max-width: 820px) {
+  .games-bell { left: 14px; right: 14px; width: auto; bottom: 18px; }
+  .games-picks { width: auto; margin-right: var(--gutter); }
+  .games-all { margin-top: 18px; }
+  .games-foot { height: 355vh; }
+}
+
+/* ---------------------------------------------------------------- AI art & images (assets/js/chapters/art.js) */
+/* The section is the camera's road: the turn from the cloth to the trees and the walk down the avenue of pictures
+   (the test's own scroll, art.js L), the look up into the sky of pictures where the four posts pass, and the tilt
+   back down to look B's garden, where the 3D chapter's walk begins. */
+.art-walk { height: 1120vh; }
+.art-foot { height: 300vh; }
+/* THE POSTS' HOME (assets/js/chapters/art-home.js moves them; ?home=b picks the second way). The four cards and the
+   link stand in one place the size of the screen (.art-home, sticky), held there while the sky of pictures holds:
+   A, the shelf (the default): all four in a row along the foot of the sky, on a dark ground of their own, the
+   chapter's chip and "All 6 art posts" on one line above them; they come up together and rise away together.
+   B, the dock (#art.home-b, set by the script): one post at a time in one card low in the middle, where the card
+   under the pictures counted them, "2 of 4". The track is the same for both and set here, so the page's length
+   never changes when the script comes. Without the script the shelf simply rides in, rests a screen and a half
+   and rides on: still a place, still readable. */
+.art-posts { height: 255vh; }
+.art-home { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; }
+.art-home.off * { pointer-events: none !important; }
+#art .art-picks {
+  --ah-side: calc(28px * var(--s, 1));
+  width: auto; max-width: none; margin: 0 var(--ah-side) calc(28px * var(--s, 1)) var(--content-l); pointer-events: none;
+}
+/* (the shelf's own ground: dark under the cards, gone above the chip line; it moves with them) */
+#art .art-picks::before {
+  content: ''; position: absolute; left: calc(-1 * var(--content-l)); right: calc(-1 * var(--ah-side)); top: calc(-110px * var(--s, 1)); bottom: calc(-28px * var(--s, 1));
+  background: linear-gradient(to bottom, rgba(7, 9, 26, 0) 0, rgba(7, 9, 26, 0.62) 34%, rgba(7, 9, 26, 0.84) 70%, rgba(7, 9, 26, 0.9) 100%);
+  opacity: var(--gnd, 1);   /* (art-home.js: the ground goes first as the shelf lets go, so no dark block hangs in mid-sky) */
+}
+#art .art-picks .body > .label { pointer-events: auto; }
+#art .art-picks ul { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: calc(16px * var(--s, 1)); margin-top: calc(18px * var(--s, 1)); }
+#art .art-picks li { pointer-events: auto; }
+#art .art-all { pointer-events: auto; }   /* the "All N posts" pill is a link: it must take the mouse and the tap like the cards do */
+/* (each post's number is a small stamp on its picture's corner, as the ledger stamps them) */
+#art .art-picks li .label .ao {
+  position: absolute; left: calc(10px * var(--s, 1)); top: calc(10px * var(--s, 1)); z-index: 2; padding: calc(3px * var(--s, 1)) calc(9px * var(--s, 1));
+  border-radius: var(--radius-pill); background: rgba(14, 16, 30, 0.86); box-shadow: inset 0 0 0 1px var(--pc-line2);
+  font: 500 var(--t-label, 11px)/1.4 var(--font-mono); letter-spacing: 0.06em; color: var(--pc-gold);
+}
+#art .art-picks li .label .sep { display: none; }
+/* (the link sits on the chip's line, at the right: placed before the cards, it is pulled down onto that line) */
+#art .art-all { order: -1; align-self: flex-end; margin: 0 calc(28px * var(--s, 1)) calc(-37px * var(--s, 1)) 0; --r: var(--radius-pill); z-index: 1; }
+#art .art-all .body { padding: calc(9px * var(--s, 1)) calc(18px * var(--s, 1)) calc(10px * var(--s, 1)); }
+#art .art-all a { font: 600 var(--t-link, 15px)/1.3 var(--font-body); }
+@media (min-width: 821px) and (max-height: 760px) { #art:not(.home-b) .art-picks li .win { aspect-ratio: 2.3; } }
+/* B, the dock: one card, its picture at the left; the four posts take turns in it */
+/* (B has the shelf's ground too, the width of the screen: it clears the pictures behind the card, and the chip and the
+   link stand on it with the card, one group; --bm is the side margin that centres the card) */
+#art.home-b .art-picks { --bm: max(14px, calc(50vw - 380px * var(--s, 1))); width: auto; margin: 0 var(--bm) calc(26px * var(--s, 1)); }
+#art.home-b .art-picks::before {
+  left: calc(-1 * var(--bm)); right: calc(-1 * var(--bm)); top: calc(-230px * var(--s, 1)); bottom: calc(-26px * var(--s, 1));
+  background: linear-gradient(to bottom, rgba(7, 9, 26, 0) 0, rgba(7, 9, 26, 0.55) 22%, rgba(7, 9, 26, 0.86) 40%, rgba(7, 9, 26, 0.93) 60%, rgba(7, 9, 26, 0.94) 100%);
+}
+#art.home-b .art-picks ul {
+  display: grid; grid-template-columns: minmax(0, 1fr); margin: calc(14px * var(--s, 1)) 0 0; counter-reset: post; overflow: hidden;
+  border-radius: var(--radius-m); background: var(--tea-card); box-shadow: var(--home-shadow), 0 18px 50px rgba(0, 0, 0, 0.45);
+}
+#art.home-b .art-picks li { grid-area: 1 / 1; display: grid; grid-template-columns: 46% minmax(0, 1fr); align-items: center; background: none; box-shadow: none; counter-increment: post; }
+#art.home-b .art-picks li .win { align-self: stretch; box-shadow: 1px 0 0 var(--pc-line); }
+#art.home-b .art-picks li > div:last-child { padding: calc(18px * var(--s, 1)) calc(26px * var(--s, 1)); }
+#art.home-b .art-picks li > div:last-child::before {
+  content: 'Post ' counter(post) ' of 4'; display: block; margin-bottom: calc(8px * var(--s, 1));
+  font: 500 var(--t-label, 11px)/1.4 var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--pc-gold);
+}
+#art.home-b .art-picks li h3 { font-size: clamp(19px, 1.75vw, calc(26px * var(--s, 1))); line-height: 1.2; margin: 0 0 calc(10px * var(--s, 1)); }
+#art.home-b .art-picks li .label { order: 2; }
+#art.home-b .art-picks li > div:last-child { display: flex; flex-direction: column; }
+#art.home-b .art-all { margin-right: max(14px, calc(50vw - 380px * var(--s, 1))); }
+@media (max-width: 820px) {
+  /* (a phone: a shorter track, so the shelf rests about half a screen, not two; the phone's own header already names
+     the chapter, so the chip goes and the link stands alone above the stack; the number stamps sit at the picture's
+     lower corner, off the faces) */
+  .art-posts { height: 170vh; }
+  #art .art-picks .body > .label { display: none; }
+  #art:not(.home-b) .art-picks li .label .ao { top: auto; bottom: 8px; left: 8px; }
+  #art .art-picks { --ah-side: 14px; margin: 0 14px 14px; }
+  #art .art-picks::before { top: -80px; bottom: -14px; background: linear-gradient(to bottom, rgba(7, 9, 26, 0) 0, rgba(7, 9, 26, 0.8) 22%, rgba(7, 9, 26, 0.92) 100%); }
+  #art .art-picks ul { grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 16px; }
+  #art .art-picks .body { margin-bottom: 0; }
+  #art .art-all { margin: 0 14px 0 0; }
+  #art .art-all .body { padding: 7px 14px 8px; }
+  #art .art-all a { font-size: 14px; }
+  #art.home-b .art-picks { --bm: 14px; width: auto; margin: 0 14px 14px; }
+  #art.home-b .art-picks li { display: block; }
+  #art.home-b .art-picks li .win { aspect-ratio: 16 / 9; box-shadow: 0 1px 0 var(--pc-line); }
+  #art.home-b .art-picks li > div:last-child { padding: 12px 16px 14px; }
+  #art.home-b .art-picks li h3 { font-size: 19px; margin-bottom: 6px; }
+  #art.home-b .art-all { margin-right: 14px; }
+}
+
+/* ---------------------------------------------------------------- 3D & animation (assets/js/chapters/toybox.js) */
+/* The section is the camera's road: up the stepping stones and in through the tea house's doorway (look B's opening
+   move), on to the toy box, which bursts, and a step back; then the four posts pass in a column beside the huddle. */
+.toybox-walk { height: 710vh; }
+.toybox-picks { width: min(calc(372px * var(--s, 1)), calc(100vw - 28px)); max-width: none; margin-right: 0; }
+.toybox-all { margin: 26vh 0 0 var(--content-l); width: fit-content; }
+.toybox-all .body { padding: calc(13px * var(--s, 1)) calc(20px * var(--s, 1)) calc(14px * var(--s, 1)); }
+.toybox-all a { font: 600 var(--t-link, 15px)/1.3 var(--font-body); }
+.toybox-foot { height: 220vh; }   /* (its last 1.9 screens are the machines' lead: the camera comes down onto the bench) */
+@media (min-width: 821px) {
+  .toybox-picks ul { grid-template-columns: minmax(0, 1fr); gap: 26vh; }
+}
+@media (max-width: 820px) {
+  .toybox-picks { width: auto; margin-right: var(--gutter); }
+  .toybox-all { margin-top: 18px; }
+}
+
+/* the post cards of the chapters (look B's own .strip, as the chapters use it): on a desktop, the least the type rule
+   gives (--t-*, at the head of this file) */
+@media (min-width: 821px) {
+  :is(#film, #games, #art, #toybox) .strip .body > .label, :is(#film, #games, #art, #toybox) .strip li .label { font-size: var(--t-label); }
+  :is(#film, #games, #art, #toybox) .strip li h3 { font-size: var(--t-title); line-height: 1.2; }
+}
+
+/* ---------------------------------------------------------------- the machines on the bench (assets/js/chapters/machines.js) */
+/* A short passage without words after the toy box: DRAY, then MOLE-1, each opening as the reader scrolls (machines.js
+   LD = 3.4 screens), then the bench is put away and the camera goes into the television (join.js AGENTS: PACK begins
+   3.75 screens before the agents section's top, just after the walk). */
+.machines-walk { height: 340vh; }
+.machines-foot { height: 380vh; }
+
+/* ---------------------------------------------------------------- working with AI agents (assets/js/chapters/agents.js) */
+/* The walk round the terminal (the test's 0..1, 11.5 screens from one screen before the section's top), then the way back
+   out of the television's glass into the room. */
+.agents-walk { height: 1050vh; }
+.agents-foot { height: 460vh; }   /* (= join.js LEARN.FOOT: the camera lands back in the room, then turns to the lantern's corner) */
+
+/* ---------------------------------------------------------------- learning to build with AI (assets/js/chapters/learning.js) */
+.learning-walk { height: 800vh; }  /* (learning.js LB: the test's track, the camera's arrival and the five spreads) */
+.learning-foot { height: 300vh; }  /* (the last spread held; the ledger shuts and the camera leaves the desk for the next chapter: join.js SITE) */
+
+/* ---------------------------------------------------------------- this website (assets/js/chapters/site.js) */
+/* the track is the test's own (tests/tea-house-apart/: 640vh, of which the last screen is where the card comes up) */
+.site-track { height: 640vh; }
+.site-foot { height: 450vh; }  /* (the card goes up and away, the drawing comes back to the middle, the next chapter's name comes on;
+                                   then the last 3.6 screens: the house closes and the camera comes down into the garden, join.js PROJ) */
+.site-read { height: 100vh; height: 100lvh; display: flex; align-items: center; justify-content: flex-end; padding: 28px clamp(20px, 5vw, 80px); box-sizing: border-box; }
+/* the homepage's night card (src/styles/home.css), as the test has it */
+.site-card {
+  pointer-events: auto; width: min(100%, calc(500px * var(--s, 1))); border-radius: calc(24px * var(--s, 1)); padding: clamp(22px, 2.6vw, calc(32px * var(--s, 1)));
+  background: var(--tea-card); box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45); color: rgb(198, 194, 212);
+}
+.site-card h2 { margin: 0; font: 700 clamp(28px, 3vw, calc(36px * var(--s, 1)))/1.1 var(--font-display); color: var(--pc-head); }
+.site-card p { margin: calc(11px * var(--s, 1)) 0 0; font: 400 calc(16.5px * var(--s, 1))/1.55 var(--font-body); color: rgb(198, 194, 212); text-wrap: pretty; }
+.site-card h2 + p { margin-top: calc(14px * var(--s, 1)); }
+.site-posts { list-style: none; margin: calc(18px * var(--s, 1)) 0 0; padding: 0; border-top: 1px solid var(--pc-line2); }
+.site-posts li { border-bottom: 1px solid var(--pc-line2); }
+.site-posts a {
+  display: grid; grid-template-columns: calc(92px * var(--s, 1)) minmax(0, 1fr); column-gap: calc(15px * var(--s, 1)); align-items: center;
+  margin: 0 calc(-10px * var(--s, 1)); padding: calc(9px * var(--s, 1)) calc(10px * var(--s, 1)); border-radius: calc(12px * var(--s, 1)); text-decoration: none;
+}
+.site-posts a:hover { background: var(--pc-tile); }
+.site-posts img { grid-row: 1 / span 2; display: block; width: calc(92px * var(--s, 1)); height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: calc(9px * var(--s, 1)); background: var(--pc-tile); }
+.site-posts .t { align-self: end; font: 700 calc(14.5px * var(--s, 1))/1.3 var(--font-display); letter-spacing: -0.01em; color: var(--pc-strong); text-wrap: pretty; }
+.site-posts a:hover .t { color: var(--pc-head); }
+.site-posts .stamp { align-self: start; margin-top: calc(3px * var(--s, 1)); font: 500 calc(10.5px * var(--s, 1))/1.3 var(--font-mono); letter-spacing: 0.02em; color: var(--pc-gold); }
+.site-btn {
+  display: inline-block; margin-top: calc(18px * var(--s, 1)); padding: calc(10px * var(--s, 1)) calc(19px * var(--s, 1)); border: 2px solid rgb(198, 194, 212); border-radius: 999px;
+  text-decoration: none; font: 600 calc(15px * var(--s, 1))/1.2 var(--font-body); color: rgb(242, 236, 223); background: rgba(240, 192, 106, 0.1);
+}
+.site-btn:hover { background: rgb(240, 166, 184); color: rgb(16, 18, 32); border-color: rgb(240, 166, 184); }
+@media (max-height: 800px) and (min-aspect-ratio: 4/5) and (min-width: 760px) {
+  .site-read { padding-top: 18px; padding-bottom: 18px; }
+  .site-card { padding: 22px 26px; }
+  .site-card h2 { font-size: 30px; }
+  .site-card p { font-size: 15.5px; line-height: 1.5; margin-top: 9px; }
+  .site-posts { margin-top: 14px; }
+  .site-posts a { grid-template-columns: 80px minmax(0, 1fr); padding: 7px 10px; }
+  .site-posts img { width: 80px; }
+  .site-posts .t { font-size: 14px; }
+  .site-btn { margin-top: 14px; padding: 8px 17px; font-size: 14.5px; }
+}
+/* a phone, or any upright window: the card sits under the drawing, set tighter (the test's own) */
+@media (max-aspect-ratio: 4/5), (max-width: 759px) {
+  .site-track { height: 560vh; }
+  .site-read { align-items: flex-end; justify-content: center; padding: 0 10px 10px; }
+  .site-card { width: min(100%, 560px); border-radius: 22px; padding: 18px 18px 16px; }
+  .site-card h2 { font-size: 26px; }
+  .site-card p { font-size: 15px; line-height: 1.42; margin-top: 8px; }
+  .site-card h2 + p { margin-top: 9px; }
+  .site-posts { margin-top: 13px; }
+  .site-posts a { grid-template-columns: 64px minmax(0, 1fr); column-gap: 12px; padding: 7px 10px; }
+  .site-posts img { width: 64px; border-radius: 7px; grid-row: 1; }
+  .site-posts .t { font-size: 13.5px; line-height: 1.26; align-self: center; }
+  .site-posts .stamp { display: none; }
+  .site-btn { margin-top: 12px; padding: 8px 15px; font-size: 13.5px; border-width: 1.5px; }
+}
+
+/* a desktop window: the list's words at the least the type rule gives (--t-*) */
+@media (min-width: 821px) and (min-aspect-ratio: 4/5) {
+  .site-posts .t { font-size: var(--t-body); line-height: 1.25; }
+  .site-posts .stamp { font-size: var(--t-label); }
+  .site-btn { font-size: var(--t-link); }
+}
+
+/* ---------------------------------------------------------------- projects (assets/js/chapters/projects.js) */
+/* the walk is the test's own length (tests/projects-walk/: 0.95 of a screen for each of the twelve, and three more);
+   in the foot the end card goes up and away, then the camera walks on into the tea house's doorway (join.js ENDING) */
+.projects-walk { height: 1425vh; }
+.projects-foot { height: 460vh; }
+
+/* ---------------------------------------------------------------- Courses, Now and About (assets/js/chapters/ending.js) */
+/* The test tests/the-ending/'s cards: the homepage's night card (a navy ground, round corners, one soft shadow, a gold
+   kicker), solid enough that nothing behind it needs blurring. Each part: half a screen of its picture, its card, then
+   the picture alone (the tails set how long). Courses and About stand at the left, clear of the rail; Now at the right. */
+.en-lead { height: 52vh; height: 52svh; }
+.en-tail { height: 110vh; }
+#now .en-tail { height: 60vh; }
+#about .en-tail { height: 135vh; }
+.en-card {
+  position: relative; border-radius: calc(24px * var(--s, 1)); background: rgba(21, 23, 38, 0.975); box-shadow: var(--home-shadow);
+  color: var(--home-body); padding: calc(26px * var(--s, 1)) calc(28px * var(--s, 1)) calc(28px * var(--s, 1));
+  max-width: calc(100vw - var(--content-l) - var(--gutter));
+}
+.en-kick { margin: 0; font: 600 var(--t-label, 11.5px)/1.4 var(--font-body); letter-spacing: 0.14em; text-transform: uppercase; color: var(--pc-gold); }
+.en-kick a { color: inherit; text-decoration: none; }
+.en-kick a:hover { color: var(--pc-head); }
+.en-card h2 { margin: calc(6px * var(--s, 1)) 0 calc(10px * var(--s, 1)); font: 700 calc(31px * var(--s, 1))/1.08 var(--font-display); letter-spacing: -0.015em; color: var(--pc-head); text-wrap: balance; }
+.en-say { margin: 0; font: 400 var(--t-body, 16px)/1.5 var(--font-serif); color: var(--pc-strong); text-wrap: pretty; }
+.en-go { color: var(--pc-accent); text-decoration: none; font: 600 var(--t-link, 14px)/1.3 var(--font-body); }
+.en-go:hover { text-decoration: underline; }
+.en-go::after { content: '\00a0\2192'; }
+
+/* Courses: at the left, over the dark of the room */
+.en-c { width: calc(470px * var(--s, 1)); margin-left: var(--content-l); }
+.en-courses { list-style: none; margin: calc(20px * var(--s, 1)) 0 0; padding: calc(18px * var(--s, 1)) 0 0; border-top: 1px solid var(--pc-line2); display: grid; gap: calc(14px * var(--s, 1)); }
+.en-course { display: grid; grid-template-columns: calc(132px * var(--s, 1)) minmax(0, 1fr); gap: calc(4px * var(--s, 1)) calc(16px * var(--s, 1)); align-items: center; }
+.en-course img { grid-row: 1 / span 3; width: 100%; height: auto; aspect-ratio: 16 / 10; object-fit: cover; border-radius: calc(10px * var(--s, 1)); background: var(--pc-tile); box-shadow: inset 0 0 0 1px var(--pc-line2); }
+.en-code { font: 500 var(--t-label, 10.5px)/1.2 var(--font-mono); color: var(--pc-gold); letter-spacing: 0.04em; }
+.en-course h3 { margin: 0; font: 700 var(--t-title, 17px)/1.25 var(--font-display); color: var(--pc-strong); }
+
+/* Now: at the right, at most 640 px, with wide margins; the garden beside it */
+.en-n { width: calc(640px * var(--s, 1)); margin-left: auto; margin-right: max(var(--gutter), 6vw); padding: calc(30px * var(--s, 1)) calc(36px * var(--s, 1)) calc(32px * var(--s, 1)); }
+.en-lede { margin: calc(4px * var(--s, 1)) 0 0; font: italic 400 calc(18px * var(--s, 1))/1.45 var(--font-serif); color: var(--pc-strong); text-wrap: pretty; }
+.en-prose { margin-top: calc(18px * var(--s, 1)); padding-top: calc(6px * var(--s, 1)); border-top: 1px solid var(--pc-line2); font: 400 var(--t-body, 16px)/1.6 var(--font-serif); color: var(--home-body); }
+.en-prose h3 { margin: calc(22px * var(--s, 1)) 0 calc(8px * var(--s, 1)); font: 700 calc(19px * var(--s, 1))/1.25 var(--font-display); color: var(--pc-strong); }
+.en-prose p { margin: 0 0 calc(10px * var(--s, 1)); }
+.en-prose ul { margin: 0 0 calc(8px * var(--s, 1)); padding-left: 1.1em; }
+.en-prose li { margin: 0 0 calc(8px * var(--s, 1)); }
+.en-prose li::marker { color: var(--pc-gold); }
+.en-prose strong { color: var(--pc-strong); }
+.en-prose a { color: var(--pc-accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+.en-foot { margin: calc(16px * var(--s, 1)) 0 0; }
+.en-research { margin-top: calc(26px * var(--s, 1)); padding-top: calc(18px * var(--s, 1)); border-top: 1px solid var(--pc-line2); }
+.en-research h3 { margin: 0; font: 700 calc(19px * var(--s, 1))/1.25 var(--font-display); }
+.en-research h3 a { color: var(--pc-strong); text-decoration: none; }
+.en-research h3 a:hover { color: var(--pc-head); }
+.en-intro { margin: calc(4px * var(--s, 1)) 0 calc(12px * var(--s, 1)); font: 400 var(--t-body, 14.5px)/1.45 var(--font-serif); color: var(--home-quiet); }
+.en-rows { list-style: none; margin: 0; padding: 0; }
+.en-row { position: relative; padding: calc(13px * var(--s, 1)) calc(16px * var(--s, 1)) calc(14px * var(--s, 1)); border-radius: calc(14px * var(--s, 1)); background: var(--pc-tile); box-shadow: inset 0 0 0 1px var(--pc-line); }
+.en-row:hover { box-shadow: inset 0 0 0 1px var(--pc-head); }
+.en-row-meta { margin: 0 0 calc(4px * var(--s, 1)); display: flex; gap: calc(12px * var(--s, 1)); font: 500 var(--t-label, 10.5px)/1.2 var(--font-mono); color: var(--pc-gold); letter-spacing: 0.04em; }
+.en-row h4 { margin: 0; font: 700 calc(16px * var(--s, 1))/1.3 var(--font-display); }
+.en-row h4 a { color: var(--pc-strong); text-decoration: none; }
+.en-row h4 a::after { content: ''; position: absolute; inset: 0; border-radius: calc(14px * var(--s, 1)); }
+.en-row p { margin: calc(5px * var(--s, 1)) 0 0; font: 400 var(--t-body, 14.5px)/1.5 var(--font-serif); color: var(--home-body); }
+
+/* About: at the left; the right is left open to the garden */
+.en-a { width: calc(560px * var(--s, 1)); margin-left: var(--content-l); padding: calc(30px * var(--s, 1)) calc(34px * var(--s, 1)) calc(32px * var(--s, 1)); }
+.en-head { display: grid; grid-template-columns: calc(92px * var(--s, 1)) minmax(0, 1fr); gap: calc(18px * var(--s, 1)); align-items: center; }
+.en-head img { width: 100%; height: auto; aspect-ratio: 1; border-radius: 50%; box-shadow: 0 0 0 3px var(--pc-line2); background: var(--pc-tile); }
+.en-head h2 { margin: calc(4px * var(--s, 1)) 0 0; }
+.en-a .en-lede { margin: calc(16px * var(--s, 1)) 0 0; }
+.en-else { margin-top: calc(22px * var(--s, 1)); padding-top: calc(16px * var(--s, 1)); border-top: 1px solid var(--pc-line2); }
+.en-pills { list-style: none; margin: calc(10px * var(--s, 1)) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: calc(8px * var(--s, 1)); }
+.en-pills a {
+  display: inline-block; padding: calc(7px * var(--s, 1)) calc(14px * var(--s, 1)) calc(8px * var(--s, 1)); border-radius: 999px; box-shadow: inset 0 0 0 1px var(--pc-line2);
+  color: var(--pc-strong); text-decoration: none; font: 600 var(--t-link, 13px)/1.2 var(--font-body);
+}
+.en-pills a:hover { box-shadow: inset 0 0 0 1px var(--pc-head); color: var(--pc-head); }
+
+@media (max-width: 820px) {
+  .film-walk { height: 380vh; }
+  .film-picks { width: auto; margin-right: var(--gutter); }
+  .film-all { margin-top: 18px; }
+  .film-foot { height: 70vh; }
+  /* a phone: each part is its card across the width, with half a screen of its picture above it */
+  .en-lead { height: 50vh; height: 50svh; }
+  #now .en-lead { height: 78vh; height: 78svh; }   /* (the veranda under the moon gets a screen to itself before the long Now card) */
+  .en-card { max-width: none; padding: 22px 20px 24px; border-radius: 20px; }
+  .en-card h2 { font-size: 27px; }
+  .en-c, .en-n, .en-a { width: auto; margin: 0 12px; }
+  .en-n, .en-a { padding: 24px 20px 26px; }
+  .en-course { grid-template-columns: 104px minmax(0, 1fr); gap: 3px 13px; }
+  .en-head { grid-template-columns: 72px minmax(0, 1fr); gap: 14px; }
+  #about .en-tail { height: 110vh; }
+}
+@media (max-width: 820px) and (prefers-reduced-motion: reduce) {
+  .film-walk { height: 300vh; }
+}

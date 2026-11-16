@@ -384,7 +384,7 @@ export function classify(userAgent, botCategory, status, ref) {
 // so every path, name and host that reaches the snapshot goes through the checks below.
 //
 // The site: the build writes /stats-pages.txt (astro.config.mjs), every public page on the site,
-// one path per line, with unlisted posts and anything named after one left out. The listed posts
+// one path per line, with unlisted posts, anything named after one and frozen copies left out. The listed posts
 // are its /ledger/<slug>/ lines. makeSite() turns it into what the checks use; without that file,
 // /ledger/previews.json gives the listed posts alone and the checks are stricter.
 

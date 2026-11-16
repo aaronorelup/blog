@@ -39,6 +39,16 @@ test('the list holds every public page by its address, and never an unlisted pos
   assert.ok(!pages.join('\n').toLowerCase().includes(HIDDEN));
 });
 
+test('a frozen copy (scripts/tools/tea-freeze.mjs) is never named, wherever it sits', (t) => {
+  const dist = seed();
+  t.after(() => fs.rmSync(dist, { recursive: true }));
+  for (const page of ['labs/room/v1', 'room-lab']) {
+    fs.mkdirSync(path.join(dist, page), { recursive: true });
+    fs.writeFileSync(path.join(dist, page, 'index.html'), '<!doctype html><head><meta name="ao-frozen" content="/room/ at x"></head>');
+  }
+  assert.deepEqual(listPages(dist), ['/', '/about/', '/ledger/', '/ledger/shown/', '/ledger/shown/notes/', '/research/a-paper']);
+});
+
 test('a build whose previews.json lists no posts fails, rather than naming every page', (t) => {
   const dist = seed({});
   t.after(() => fs.rmSync(dist, { recursive: true }));

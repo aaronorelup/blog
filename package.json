@@ -22,6 +22,7 @@
     "ask:scale": "node scripts/eval/scale.mjs",
     "ask:probe": "node scripts/eval/probe.mjs",
     "ask:pin": "node scripts/tools/ask-pin.mjs",
+    "tea:picks": "node scripts/tools/tea-picks.mjs",
     "e2e": "playwright test -c tests/e2e/playwright.config.mjs",
     "e2e:live": "playwright test -c tests/e2e/live.config.mjs"
   },

@@ -1,0 +1,41 @@
+/* THE GAMES CHAPTER'S SCENE (assets/js/chapters/games.js draws it; this file comes with it, not with the page).
+   Its layer has no ground of its own: through the film's dive it is drawn over the film's picture. */
+.chapter-stage[data-chapter='games'] { background: none; }
+
+/* the night garden, on the way back out of the cloth (the film chapter's own plate and light, at their addresses) */
+.gm-garden { position: absolute; inset: 0; isolation: isolate; }
+.gm-ext { position: absolute; left: 0; top: 0; width: 8752px; transform-origin: 0 0; will-change: transform; }
+.gm-sky { height: 3240px; background: linear-gradient(to bottom, rgb(9, 12, 34) 0, rgb(14, 19, 50) 70%, rgb(18, 24, 59) 93%); }
+.gm-lawn { height: 3000px; background: linear-gradient(to bottom, rgb(39, 50, 46) 0, rgb(33, 43, 41) 220px, rgb(20, 27, 30) 1100px); }
+/* (left of the plate: its own first column drawn wide, plain sky over plain lawn, where the end's camera shows past
+   the plate's left edge, under the next chapter's name) */
+.gm-edge { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+.gm-plate { position: absolute; left: 0; top: 0; width: 2752px; height: 1536px; max-width: none; transform-origin: 0 0; will-change: transform; }
+.chapter-stage:not(.tall) .gm-plate { -webkit-mask-image: linear-gradient(to right, transparent 0, #000 260px); mask-image: linear-gradient(to right, transparent 0, #000 260px); }
+.tall .gm-plate { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 230px, #000 1400px, transparent 1532px); mask-image: linear-gradient(to bottom, transparent 0, #000 230px, #000 1400px, transparent 1532px); }
+.gm-glow { position: absolute; left: 0; top: 0; transform-origin: 0 0; will-change: transform; pointer-events: none; mix-blend-mode: screen; mix-blend-mode: plus-lighter; }
+
+/* the arena: the size of the screen, cut to the cloth's picture while it is on the cloth (clip-path, from games.js) */
+.gm-arena { position: absolute; inset: 0; background: rgb(23, 23, 27); }
+.gm-gl { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; }
+.gm-still { position: absolute; left: 0; top: 0; max-width: none; transform-origin: 0 0; }
+.gm-still[hidden], .gm-gl[hidden] { display: none; }
+.gm-light { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
+
+/* the projector, nearer than the cloth, its two reels turning. It is laid out at the size it is drawn (games.js sets
+   its width and height; the pictures in it are in parts of that) and only moved, never scaled: a scaled layer keeps
+   the sharpness of the size it was first drawn at, so a fresh load and a scroll to the same place would differ. */
+.gm-proj { position: absolute; left: 0; top: 0; width: 618px; height: 1009px; }
+.gm-proj img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; max-width: none; }
+.gm-proj .gm-reel-a { left: 54.045%; top: 3.469%; width: 33.333%; height: 22.795%; }
+.gm-proj .gm-reel-b { left: 3.074%; top: 22.002%; width: 28.479%; height: 21.407%; }
+
+/* the second world, Megabonk (games-bonk.js): footage of the mod, drawn through its depth map. It comes across the
+   arena behind one clean edge (clip-path, from games.js). With motion off, or without WebGL, its stills stand in:
+   they cover the screen as the footage does, closed in on where she stands. */
+.gm-bonk { position: absolute; inset: 0; overflow: hidden; background: rgb(8, 22, 30); }
+.gm-bonk-gl { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; }
+.gm-bonk-still { position: absolute; left: 0; top: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 54% 60%; transform-origin: 54% 60%; }
+.gm-bonk-still[hidden], .gm-bonk-gl[hidden] { display: none; }
+/* (the two loops themselves: playing, never seen as elements) */
+.gm-bonk-hold { position: absolute; left: 0; top: 0; width: 1px; height: 1px; overflow: hidden; opacity: 0; pointer-events: none; }

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#101220">
+<title>Learning: the ledger opens · a tea room test</title>
+<link rel="stylesheet" href="css/host.css">
+<link rel="stylesheet" href="css/book.css">
+</head>
+<body>
+<a class="skip" href="#after">Skip the book</a>
+<a class="back" href="../">Tea room tests</a>
+
+<main>
+<!-- The chapter. The track's height is how long it lasts; the stage is the picture, held while the track goes by.
+     js/scene.js builds everything inside the stage: the room, the book and the pages' words. -->
+<section id="chapter" aria-label="Learning">
+<div id="track">
+<div id="stage"></div>
+</div>
+</section>
+
+<!-- The same four posts as a plain list: what the page is without its script, or where the scene cannot be drawn.
+     The script takes it away once the book stands. -->
+<section id="plain" aria-label="Learning, as a list">
+<h1>Learning</h1>
+<ul class="plain">
+<li><a href="/ledger/no-vs-code-no-terminal/"><img src="/media/previews/no-vs-code-no-terminal.webp" width="640" height="360" alt="" loading="lazy" decoding="async"><span class="t">My first AI projects, before I knew what a terminal was</span><span class="s">AO-007 · The code was the easy part</span></a><p>The model wrote all my code, but it couldn't set up my computer or tell me what I didn't know to ask, and that was the real beginner barrier.</p></li>
+<li><a href="/ledger/monster-hunter-was-my-degree/"><img src="/media/previews/monster-hunter-was-my-degree.webp" width="640" height="360" alt="" loading="lazy" decoding="async"><span class="t">Learning to program by building an AI monster game</span><span class="s">AO-008 · The AI call is the easy part</span></a><p>The hard part of an AI app is everything around the model call, like queueing requests, chaining steps, handling failures and telling the user what's going on.</p></li>
+<li><a href="/ledger/the-missing-map/"><img src="/media/previews/the-missing-map.webp" width="640" height="360" alt="" loading="lazy" decoding="async"><span class="t">44 agents made the first lesson of my course for AI builders</span><span class="s">AO-029 · The checks made it safe</span></a><p>An agent that knew the material wrote a line a beginner would learn wrong, and another agent, told to read the script as a beginner, caught it.</p></li>
+<li><a href="/ledger/reading-the-logs-of-mit-s-ai-weight-editing-experiments/"><img src="/media/previews/reading-the-logs-of-mit-s-ai-weight-editing-experiments.webp" width="640" height="360" alt="" loading="lazy" decoding="async"><span class="t">Reading the logs of MIT's AI weight-editing experiments</span><span class="s">AO-077 · First take, since retracted</span></a><p>What I concluded from the logs before I made a film of the experiments. Watching the film changed my mind about most of it.</p></li>
+</ul>
+<p><a class="plain-more" href="/ledger/">Open the ledger</a></p>
+</section>
+
+<footer id="after">
+<p class="kicker">The tea room · a test</p>
+<p class="after-say">One idea for the Learning chapter: the ledger from the homepage's writing desk, opened, one post to a spread.</p>
+<p class="after-links"><a href="../">All tests</a><a href="/labs/tea-room/working/">The working copy</a><a href="/ledger/">The ledger</a></p>
+</footer>
+</main>
+
+<p class="hint" id="hint" aria-hidden="true">Scroll</p>
+<pre class="debug" id="debug" hidden></pre>
+<noscript><style>#chapter, .hint { display: none; } #plain { display: block; }</style></noscript>
+<script src="js/host.js" defer></script>
+</body>
+</html>

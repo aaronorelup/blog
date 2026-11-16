@@ -499,8 +499,65 @@ once the 3D hero pins the top.
 | No console error, no sideways scroll at 1440 and 390 wide by day and by night (at the top and at every chapter), every picture loads | tea-13 |
 | Under 1024 px the strip keeps the chapter being read in view: at every chapter, going down and back up, its pill sits whole inside the strip and clear of its fading end; Tab from "Main site" brings each pill in turn whole into view, clear of the fade, with room for its focus ring; with reduced motion (the strip moves at once) and without (it glides; WebKit starts the glide up to about 0.7 s late, so the pass waits for the pill to arrive and stay) | tea-14 (desktop at 390 wide, and phone) |
 | One `h1`, the hero's title, first; each chapter's word an `h2` and the first heading in it; About's sections (`AboutView level={2} title={false}`) at `h3` with no title of their own; no heading skips a level | tea-15 |
-| The hero lab `/tea-lab/` (live until the final models land) answers with its own robots noindex and no share picture or JSON-LD; the sitemap, the feed, the hover cards' list, search, Ask and read-aloud never name it, and no page links it (`/tea/`, the 404 page, every page of the sitemap) | tea-16 |
+| The hero lab `/tea-lab/` is gone (removed 2026-11-13; it answers 404); the sitemap, the feed, the hover cards' list, search, Ask and read-aloud never name it, and no page links it (`/tea/`, the 404 page, every page of the sitemap) | tea-16 |
 | An address with a chapter (`/tea/#projects`) lands on it at once: every frame from the first has the window at the top or at the chapter, never between (phone WebKit glides there while the page loads and, the page busy, stops part way); the first link followed on the page glides to its chapter | tea-17 |
+
+## The tea room being rebuilt (`tea-next.spec.mjs`, `tea-engine.spec.mjs`, `tea/<id>.spec.mjs`)
+
+`/labs/tea-room/engine/` until the swap (the address is one constant in `tests/e2e/tea/base.mjs`). Every expectation comes from the
+picks (`src/data/tea-picks.json`), the registry and `COPY.room`. The live notebook only warns.
+
+| Behaviour | Spec |
+|---|---|
+| The sections are the picks' chapters in order, each with its anchor (the `dom` id), its `h2` and one statement; the hero slip, the bookmark and the tab list the same, with the same numerals | tea-next-1 |
+| Each chapter shows exactly its shelves' posts, in order, and a topic its one closing link; no other post link on the page | tea-next-2 |
+| Courses: the two courses, their names and links | tea-next-3 |
+| Every internal link and picture resolves (the live notebook only warns) | tea-next-4 |
+| No draft or unlisted post anywhere: no slug in the HTML, no title or id of its own in the page's text or any attribute (decoded), outside Now's and About's words | tea-next-5 |
+| The index marks the chapter whose section holds the scroll position | tea-next-9 |
+| Without JavaScript the page is book mode: every chapter, word, still and link shows, no stage | tea-next-10 |
+| One `h1`; each chapter's first heading its `h2`; the first Tab is the skip link; nine Tab stops in the frame with a ring | tea-next-12 |
+| Under 1024 px the tab shows the current numeral and short name whole; its sheet lists every chapter in rows of 44 px or more and closes on a choice | tea-next-14 |
+| `/labs/tea-room/engine/` says noindex; no sitemap, feed, index or other page names it | tea-next-16 |
+| One link to `/` in the hero slip, in the index as shown, and in the footer, which carries the main nav | tea-next-8 |
+| The planned places are the real ones: the screens are fully shut at every section's top from the third chapter on | tea-next-24 |
+| An address with a chapter lands on its opening frame in one step (screens open, its word in view); `#ledger` lands on the first topic | tea-next-17 |
+| No console message, no sideways scroll, every picture in reach decoded, at every chapter's opening frame and every half screen | tea-next-13 |
+| Head and tail: each chapter's paper begins 1.2 vh in (1.0 after the hero) and ends 0.6 vh before its end (1.6 when last); the screens are shut when the footer comes in | tea-next-18 |
+| No layout shift from load to settled and through a scripted scroll | tea-next-19 |
+| Reduced motion: book mode, nothing running or playing, two frames 700 ms apart identical at six places | tea-next-20 |
+| Save-Data: book mode, no request for a loop, a film, three or a model | tea-next-21 |
+| The closed index (the bookmark, under 1024 px the tab) covers no text at any chapter's rest places | tea-next-22 |
+| A jump to a chapter far off shows its room at once (its inlined preview) while its plates are held, never the night ground, never a broken picture | tea-next-25 |
+| A picture that fails to load is never a broken box, and its scene comes back when the network does | tea-next-26 |
+| A window fetches only its own composition's pictures, the scene on screen first, and the other after a turn | tea-next-27 |
+| Book mode fetches no picture only the stage draws | tea-next-28 |
+| On a slow network the first paint is a picture and nothing shifts from load to settled | tea-next-29 |
+| One button: an embed shows one paper button and nothing of the thing before a press; a game mounts with none of its own; a machine opens in a sheet, the wheel over its paper or its machine never scrolls the page, and Esc closes it | tea-next-30 (two tests) |
+| One thing plays: a film pauses a running game; with `?still=1` no video plays (loops: added with the first loop) | tea-next-31 |
+| Weight: the top of the page fetches only 2.9's list; the bytes printed | tea-next-32 |
+| 3D stays lazy: no `three`, GLTFLoader or `.glb` at load, live, reduced motion, Save-Data, no WebGL | tea-next-33 |
+| Not the frame before, per chapter (waits while the chapter is a stub; `TEA_DIFFER_STUBS=1` runs it on stubs) | tea-next-34 |
+| The footer's computed styles equal `/tea/`'s (until the swap) | tea-next-23 |
+| Purity: the frame at a place is the same loaded directly, flicked to from the top and from the bottom (scrollTo) and turned to with the wheel, in state read back from the page and in pixels (under 0.1% apart), at 1440x900, 760 wide, 390x844 and on the phone; also at the door, before and after every screens change, and the house closing | tea-engine: purity |
+| No frame is nearly all dark, no band is dark and flat, no dark flat area is over 0.49 of the frame, and on a phone no more than a fifth of the lower 40% is dark and flat, paper or none, at 240 places (200 on a phone); the floors measured on looks A and B (`scripts/tools/tea/sweep.mjs`, `docs/TEA_ROOM.md`) | tea-engine: the empty-frame sweep |
+| At every half screen the page is no wider than the window, and `html` and `body` never set overflow | tea-engine: nothing scrolls sideways |
+
+Each chapter's own rows are in its own file:
+- `hero`: [tests/e2e/inventory/tea-hero.md](inventory/tea-hero.md)
+- `start`: [tests/e2e/inventory/tea-start.md](inventory/tea-start.md)
+- `tv`: [tests/e2e/inventory/tea-tv.md](inventory/tea-tv.md)
+- `film`: [tests/e2e/inventory/tea-film.md](inventory/tea-film.md)
+- `games`: [tests/e2e/inventory/tea-games.md](inventory/tea-games.md)
+- `art`: [tests/e2e/inventory/tea-art.md](inventory/tea-art.md)
+- `3d`: [tests/e2e/inventory/tea-3d.md](inventory/tea-3d.md)
+- `agents`: [tests/e2e/inventory/tea-agents.md](inventory/tea-agents.md)
+- `learning`: [tests/e2e/inventory/tea-learning.md](inventory/tea-learning.md)
+- `site`: [tests/e2e/inventory/tea-site.md](inventory/tea-site.md)
+- `projects`: [tests/e2e/inventory/tea-projects.md](inventory/tea-projects.md)
+- `courses`: [tests/e2e/inventory/tea-courses.md](inventory/tea-courses.md)
+- `now`: [tests/e2e/inventory/tea-now.md](inventory/tea-now.md)
+- `about`: [tests/e2e/inventory/tea-about.md](inventory/tea-about.md)
 
 ## Read-aloud (`read-aloud.spec.mjs`)
 
@@ -553,12 +610,12 @@ for `data-hero-settled` (the hero will change no layout by itself any more) befo
 | The stage is one screen on every path, and the hero's foot fades into the page (static always, with the scene only as the pin lets go) | tea-hero-19 |
 | The title box is the same box static and over the scene: no backdrop blur, an opaque card by day | tea-hero-20 |
 | The box docks only where it leaves most of the frame to the scene (1024x768 flows, 1366x768 docks with the lens shift scaled) | tea-hero-21 (desktop) |
-| On a portrait screen the box waits low and the cast stands clear above it, the scene keeps the portrait frame's full height, and it plays over a screen and a half of scroll at least after the box has gone | tea-hero-22 |
+| On a portrait screen the box waits low and the scene (the tea house and the TV) stands clear above it, the scene keeps the portrait frame's full height, the pinned section is three screens as on every screen, and the camera's move plays over 0.8 of a screen of scroll at least after the box has gone | tea-hero-22 |
 | A chapter link tapped in the last moments before the scene pins lands on its chapter, from a chapter (the pin no longer cuts the jump short) and from the top (nor lands it two screens early) | tea-hero-23 |
 | Every part the manifest names (the nodes its tracks and idle waves move, the nodes lights and glows hang from, each prop's parent and each material override's node) is in the loaded models: the runtime would skip a missing one without a word | tea-hero-24 |
 | Leaving the page while the scene loads (a reload as the manifest arrives, and as the models do) leaves no console error: once the page is being left the scene starts no load and reports none it loses | tea-hero-25 |
-| One actor in place of another, on `/tea/` with the shipped manifest (its own followers and whole-actor `visible` and `opacity` tracks left out) plus a follower made of another of its actors' models, served in its place, so it holds whatever the cast is: down the scroll to 0.8 and back, the follower rides its leader's root and scale, an opacity dissolve (with `fade`) and a visible cut show and hide each actor as keyed, the dissolved-out actor comes back, and nothing reaches the console | tea-hero-26 |
-| The shipped manifest's own swap (Jefrie and her leap mesh) on the page: an actor hidden at the top by its own track follows someone, every follower it names is one the runtime knows, down the scroll and back (a step either side of every cut) exactly one of the two is drawn on one root, and neither the number of point lights drawn nor the number of pictures on the GPU ever changes | tea-hero-27 |
+| One actor in place of another, on `/tea/` with the shipped manifest (its own followers and whole-actor `visible` and `opacity` tracks left out) plus a follower and a second actor made of its first actor's model, served in its place, so it holds whatever the cast is: down the scroll to 0.8 and back, the follower rides its leader's root and scale, an opacity dissolve (with `fade`) and a visible cut show and hide each actor as keyed, the dissolved-out actor comes back, and nothing reaches the console | tea-hero-26 |
+| The shipped scene on the page: the cast is the TV alone, no actor is hidden at the top or follows another, every actor is drawn, and down the scroll and back (0 to 1 in tenths, a step either side of any cut) neither the number of point lights drawn nor the number of pictures on the GPU ever changes | tea-hero-27 |
 | A beforeunload that does not lead to leaving (a mailto link fires it in some browsers) while the models load costs nothing: the scene comes up, nothing logged (the scene stops its loads on pagehide only, so the page stays eligible for the back/forward cache) | tea-hero-28 |
 | Under 1024 px no line of the title box (skip link, statement, counter, chapter numerals) runs under the fixed day/night switch's column as the box scrolls up under it: on a phone, static or over the scene, with the counter on one line, and at 561, 600 and 640 px wide | tea-hero-29 |
 | The page's own mailto link clicked while the models load costs nothing: Chromium sends a beforeunload and the scene loads on; WebKit cancels the loads in flight, which the scene tries again, and comes up with nothing logged | tea-hero-30 |

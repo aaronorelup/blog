@@ -83,6 +83,10 @@ const scope = (repo) => [
   ...repo.posts, ...repo.notes, ...repo.now, ...repo.research, ...repo.projects,
   ...repo.list('src/components/about'), ...repo.list('src/components/now'),
   ...repo.list('src/data', (f) => /^src\/data\/[^/]+\.js$/.test(f)),
+  ...repo.list('src/data', (f) => f === 'src/data/tea-picks.json'),       // the tea room's picks (not the hashes file)
+  ...repo.list('src/data/tea', (f) => /^src\/data\/tea\/.+\.js$/.test(f)),   // the tea room's chapters' copy, scenes and art
+  ...repo.list('src/components/tea/room', (f) => f.endsWith('.astro')),       // the tea room's components (no copy belongs there)
+  ...repo.list('docs/tea', (f) => f.endsWith('.md')),                          // the tea room's generation and round logs
   ...repo.list('src/elements/ao-demo/demos', (f) => f.endsWith('.json')),   // recorded model output a demo replays
   // the AI landscape: its frozen data, its page text and the words its world configs hold (alt text, captions)
   ...['src/data/ai-landscape', 'src/components/ai-landscape', 'src/pages/ai-landscape', 'src/scripts/ai-landscape'].flatMap((d) => repo.list(d)),

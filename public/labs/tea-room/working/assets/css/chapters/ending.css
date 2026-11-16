@@ -1,0 +1,30 @@
+/* THE ENDING: COURSES, NOW AND ABOUT (assets/js/chapters/ending.js): the scene's own styles, the tea room test
+   tests/the-ending/'s css/ending.css (its pictures part; the cards are in chapters.css, loaded with the page).
+   Nothing here sets visibility: visible on a layer of its own (chapters.js switches the layers); the scenes inside
+   are switched by ending/scene.js. */
+.chapter-stage[data-chapter='ending'] { background: none; }   /* (its lead is drawn over the walk's last picture) */
+.en-scene { position: absolute; inset: 0; }
+.en-nw, .en-ns { position: absolute; left: 0; top: 0; transform-origin: 0 0; z-index: 2; }
+.end-host { overflow: hidden; }
+.end-scene { position: absolute; inset: 0; overflow: hidden; visibility: hidden; contain: strict; }
+.end-plate { position: absolute; left: 0; top: 0; transform-origin: 0 0; }   /* (no will-change: drawn as the walk's door draws the same room, so the two pictures meet exactly) */
+.end-layer { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; max-width: none; -webkit-user-select: none; user-select: none; }
+img.end-layer { object-fit: fill; }
+.end-room-foot { display: none; }
+.tall .end-room-foot { display: block; background: linear-gradient(to bottom, rgba(29, 21, 32, 0) 84%, #1d1520 99%); }
+/* the veranda's view: the garden of the far plate; over it, only round the tea house, the same plate darkened and
+   cooled, so the house stands far off with its lamps out (the moon is the only light). (The test masked the house
+   away, which left a pale smudge where it stood.) */
+img.end-asleep {
+  filter: brightness(0.42) saturate(0.5) hue-rotate(-12deg);
+  -webkit-mask-image: radial-gradient(ellipse 15% 17% at 50% 46%, #000 70%, transparent 100%);
+  mask-image: radial-gradient(ellipse 15% 17% at 50% 46%, #000 70%, transparent 100%);
+}
+img.end-tree { left: -1%; top: -14%; width: 88%; height: auto; }
+.end-moonlight { background:
+  radial-gradient(circle at 44% 24%, rgba(170, 182, 232, 0.10), rgba(170, 182, 232, 0) 34%),
+  linear-gradient(to bottom, rgba(10, 12, 26, 0) 60%, rgba(10, 12, 26, 0.35) 100%); }
+.end-veranda { transform-origin: 50% 70%; }
+/* the dawn: the sky above the hills stays the night's colour; one band of warm light lies along the hills */
+.end-sky { background: linear-gradient(to bottom, rgba(18, 22, 46, 0.97) 0%, rgba(24, 28, 58, 0.86) 18%, rgba(34, 36, 70, 0.45) 30%, rgba(40, 40, 76, 0) 39%); opacity: 0; }
+.end-band { background: linear-gradient(to bottom, rgba(255, 196, 150, 0) 27%, rgba(255, 196, 150, 0.16) 34%, rgba(255, 204, 160, 0.2) 38%, rgba(255, 196, 150, 0) 44%); opacity: 0; }

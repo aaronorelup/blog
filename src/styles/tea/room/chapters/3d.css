@@ -1,0 +1,4 @@
+/* The 3d chapter's own rules. Stub (piece 1): its scroll length (base + per x n viewport heights, the same
+   numbers as its scene.js length, which tea.test checks) and its light, which tints its paper 6%. */
+[data-room-chapter='3d'] { --base: 2.4; --per: 0.9; --light: #FFC86B; }
+@media (orientation: portrait) { [data-room-chapter='3d'] { --base: 2.4; --per: 0.9; } }

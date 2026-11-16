@@ -1,6 +1,13 @@
 # The first rule that matches a path wins, so every exact rule sits above the wildcards (Cloudflare asks for that
 # order too), and every old URL reaches its page in one hop.
 
+# The tea room is being rebuilt. Until the new page is finished, /tea/ leads to its working copy, at the owner's
+# word (2026-11-13). 302, not 301: /tea/ will be the new page's own address again, so no browser may keep this.
+# The old page still builds at /tea/ (its tests still hold it) and is no longer reached on the live site, where a
+# redirect is followed before a file is looked for; it is kept whole at /labs/tea-room/v1/.
+/tea /labs/tea-room/working/ 302
+/tea/ /labs/tea-room/working/ 302
+
 # AO-051 was renamed on 2026-10-16 to say what it is about.
 /ledger/one-piece-reaction-clips /ledger/arcmira-mcp-test/ 301
 /ledger/one-piece-reaction-clips/ /ledger/arcmira-mcp-test/ 301

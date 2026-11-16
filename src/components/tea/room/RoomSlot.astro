@@ -1,0 +1,9 @@
+---
+// A slot element (2.3): a real element of the document (a picture of the owner's work, a loop, a player) that the
+// engine places over a box on one of the scene's flats in live mode, and that sits in normal flow in book mode.
+// One copy, so alt text, links and focus order are the same in both modes. fit: how a picture inside is fitted,
+// 'contain' (the default) or 'cover', the same field the scene's slot gives (src/lib/tea-scene.js judges by it).
+interface Props { name: string; fit?: 'contain' | 'cover'; class?: string }
+const { name, fit = 'contain', class: cls } = Astro.props;
+---
+<div class:list={['room-slot', cls]} data-room-slot={name} data-fit={fit}><slot /></div>

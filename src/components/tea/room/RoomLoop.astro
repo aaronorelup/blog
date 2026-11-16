@@ -1,0 +1,11 @@
+---
+// A muted loop in a window (2.9): muted, looping, inline, its first frame as its poster and no autoplay. media.js is
+// the only code that plays it: in view, not in book mode, not with ?still=1, not while a film or an embed runs.
+interface Props { src: string; poster: string; width: number; height: number; label?: string }
+const { src, poster, width, height, label } = Astro.props;
+---
+<span class="room-window is-loop">
+  <video data-room-loop muted loop playsinline preload="none" poster={poster} width={width} height={height} aria-label={label}>
+    <source src={src} type="video/mp4" />
+  </video>
+</span>

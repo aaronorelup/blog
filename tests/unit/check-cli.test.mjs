@@ -15,7 +15,12 @@ import { TEXT } from '../../src/data/limits.js';
 const REPO = fileURLToPath(new URL('../../', import.meta.url));
 // index.mjs and everything it imports, but picks.js: Start here names real posts, and these are made up.
 const CHECKER = [...fs.readdirSync(path.join(REPO, 'scripts/check')).map((f) => `scripts/check/${f}`), 'scripts/media/files.mjs',
-  'src/data/banned-phrases.js', 'src/data/exempt.js', 'src/data/limits.js', 'src/lib/dates.js', 'src/lib/posts.js', 'src/schemas/strict.js'];
+  'src/data/banned-phrases.js', 'src/data/exempt.js', 'src/data/limits.js', 'src/lib/dates.js', 'src/lib/posts.js', 'src/schemas/strict.js',
+  'src/data/tea.js', 'src/data/tea-chapters.js', 'src/data/taxonomy.js', 'src/lib/tea-picks.js',
+  // the rebuilt tea room's chapters (tea.js gathers their copy; the tea-art rule reads their scenes and art)
+  ...fs.readdirSync(path.join(REPO, 'src/data/tea'), { recursive: true }).filter((f) => f.endsWith('.js')).map((f) => `src/data/tea/${f}`),
+  'src/lib/tea-scene.js', 'src/lib/tea-scene-check.js',
+  ...fs.readdirSync(path.join(REPO, 'src/scripts/tea/room/engine')).map((f) => `src/scripts/tea/room/engine/${f}`)];
 
 const post = (id, { title = 'A post', extra = '', body = 'Text.' } = {}) =>
   `---\nid: "${id}"\ntitle: "${title}"\nsummary: "s"\ndate: 2026-11-01\ntopic: "agents"\npreview:\n  verdict: "Works"\n  takeaway: "It ran."${extra}\n---\n\n${body}\n`;
@@ -117,6 +122,29 @@ test('--strict never fails on a live notebook or a HELD post, at either level', 
   const listed = runs[1].issues;
   assert.ok(listed.some((line) => line.startsWith(`warn  ${file('teardown-lab')}:`) && line.endsWith('is a draft: never link it  [links]')));
   if (held) assert.ok(listed.includes(`warn  ${file(held)}:${lineOf(POSTS[held], 'An em dash')}  an em dash  [prose]`));
+});
+
+test("--strict never fails on the tea room's warnings about the live notebook, and does fail on its other warnings", async (t) => {
+  const { root, all } = sandbox(t, ['clean']);
+  const put = (rel, text) => {
+    fs.mkdirSync(path.dirname(path.join(root, rel)), { recursive: true });
+    fs.writeFileSync(path.join(root, rel), text);
+  };
+  for (const m of ['m1', 'm2', 'm3', 'm4', 'm5', 'm6']) put(`public/labs/teardown/${m}/index.html`, '');
+  const picks = (machines) => put('src/data/tea-picks.json', JSON.stringify({ v: 1, order: [], hidden: {},
+    shelves: { 'tv/machines': { auto: false, count: 1, picks: machines.map((m) => `m-${m}`) } } }));
+  const gone = 'warn  src/data/tea-picks.json  shelf tv/machines: "m-gone" is not in the teardown lab today (public/labs/teardown/), so it is left out  [tea-picks]';
+  picks(['gone', 'm1']);
+  const levels = [['--strict'], ['--deploy', '--strict']];
+  const live = await all(...levels);
+  live.forEach((run, i) => assert.deepEqual([run.status, run.summary], [0, `check ${levels[i].join(' ')}: 0 errors, 1 warnings`]));
+  assert.deepEqual(live[0].issues, [gone]);
+  // six picks on a shelf that shows five: the sixth is left out, a warning --strict fails
+  picks(['m1', 'm2', 'm3', 'm4', 'm5', 'm6']);
+  const [plain, strict] = await all([], ['--strict']);
+  assert.deepEqual([plain.status, plain.summary], [0, 'check: 0 errors, 1 warnings']);
+  assert.deepEqual([strict.status, strict.summary], [1, 'check --strict: 1 errors, 0 warnings']);
+  assert.deepEqual(strict.issues, ['error src/data/tea-picks.json  shelf tv/machines shows at most 5 picks, so "m-m6" is left out  [tea-picks]']);
 });
 
 test('paths narrow the report and the exit code, however they are spelled', async (t) => {

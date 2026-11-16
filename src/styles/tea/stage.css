@@ -78,7 +78,7 @@
    under a tenth of it took the title to 2.6:1 and the kicker to 4.2:1. */
 :root[data-mode='day'] .tea-hero-box { background-color: var(--tea-card); }
 
-/* Portrait screens (the tall poster): the cast stands in the top of the frame (camera.portrait aims it there), so the
+/* Portrait screens (the tall poster): the scene stands in the top of the frame (camera.portrait aims it there), so the
    box waits low in the first screen, its top under the television, the rest of it below the fold, on every path. */
 @media (max-aspect-ratio: 1/1) {
   .tea-hero[data-tea-hero] { --tea-hero-pt: max(76px, 61vh); }
@@ -100,13 +100,10 @@
 }
 .tea-counter-part { white-space: nowrap; }
 
-/* The scene: one length of scroll for both layouts on a screen of one shape, so a switch between them moves nothing
-   below the hero. A portrait screen's is a screen longer: the box scrolls away there before the scene plays (the lead,
-   pin.js), which left the leap about a third of a phone's screen of scroll. */
+/* The scene: one length of scroll for both layouts and every shape of screen, so a switch between them moves nothing
+   below the hero. On a portrait screen the box scrolls away first (the lead, pin.js) and the camera's slow move to the
+   tea house door plays over the rest, about a screen of scroll on a phone. */
 .tea-hero[data-3d='on'] { height: 300vh; }
-@media (max-aspect-ratio: 1/1) {
-  .tea-hero[data-3d='on'] { height: 400vh; }
-}
 
 /* dock: the pin sticks; the box opens where the static layout centres it, then docks lower left, clear of the
    day/night switch at the foot of the screen on a wide one. Only where the docked box leaves most of the frame to the

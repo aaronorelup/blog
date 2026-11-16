@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Everything on one page · The tea room</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<link rel="stylesheet" href="assets/css/diorama.css">
+</head>
+<body>
+<a class="skip" href="#start">Skip to the chapters</a>
+
+<div id="stage" aria-hidden="true">
+<div class="scene" id="sc-sky">
+<img class="flat" id="g-sky" src="assets/img/garden-sky.webp" alt="">
+<img class="flat" id="g-clouds" src="assets/img/garden-clouds.webp" alt="">
+</div>
+<div class="scene" id="sc-room">
+<img class="flat" id="r-back" src="assets/img/room-back.webp" alt="">
+<img class="flat" id="r-plate" src="assets/img/room.webp" alt="">
+<div class="flat glow" id="r-lamp"></div>
+<div class="flat word" id="w-start">Start here</div>
+<div class="flat say" id="s-start">The posts I&#x27;d hand someone first.</div>
+<img class="flat" id="r-vase" src="assets/img/prop-vase.webp" alt="">
+<img class="flat" id="r-table" src="assets/img/prop-table.webp" alt="">
+<img class="flat" id="r-cushions" src="assets/img/prop-cushions.webp" alt="">
+<div class="wipe" id="r-wipe">
+<img class="flat" id="r-back-tv" src="assets/img/room-back-tv.webp" alt="">
+<img class="flat" id="r-plate-tv" src="assets/img/room-tv.webp" alt="">
+</div>
+<div class="flat word" id="w-tv"><small>I Love My</small><span class="l">Evening</span><span class="l">Television</span></div>
+<div class="flat say" id="s-tv">Thirty-minute films made by crews of agents from one prompt each, calm until minute 20.</div>
+</div>
+<div class="scene" id="sc-box"><div id="box">
+<div class="set" id="set-e1" data-zoom="1.05"><img class="back" src="assets/img/e1-a.webp" alt="" style="object-position:50% 40%"><img class="inset" data-asp="1.7778" data-w="0.25" data-x="0.68" data-y="0.52" data-rot="2.4" data-pw="0.44" data-px="0.52" data-py="0.56" src="assets/img/e1-b.webp" alt=""></div><div class="set" id="set-e2" data-zoom="1.05"><img class="back" src="assets/img/e2-a.webp" alt="" style="object-position:60% 50%"><video class="inset" data-asp="1.7778" data-w="0.3" data-x="0.63" data-y="0.12" data-rot="-1.6" data-pw="0.46" data-px="0.5" data-py="0.08" muted loop playsinline preload="auto" poster="assets/img/post-earthlight.webp"><source src="/media/previews/earthlight.mp4" type="video/mp4"></video></div><div class="set" id="set-e3" data-zoom="1.38"><img class="back" src="assets/img/e3-c.webp" alt="" style="object-position:50% 50%"><img class="inset" data-asp="2.3000" data-w="0.34" data-x="0.6" data-y="0.6" data-rot="1.2" data-pw="0.5" data-px="0.46" data-py="0.66" src="assets/img/e3-b.webp" alt=""></div><div class="set" id="set-e4" data-zoom="1.05"><img class="back" src="assets/img/e4-a.webp" alt="" style="object-position:40% 50%"><video class="inset" data-asp="1.7778" data-w="0.3" data-x="0.64" data-y="0.14" data-rot="1.6" data-pw="0.46" data-px="0.5" data-py="0.08" muted loop playsinline preload="auto" poster="assets/img/post-touch-move.webp"><source src="/media/previews/touch-move.mp4" type="video/mp4"></video></div><div class="set" id="set-e5" data-zoom="1.05"><img class="back" src="assets/img/e5-a.webp" alt="" style="object-position:50% 50%"><img class="inset" data-asp="1.0000" data-w="0.2" data-x="0.72" data-y="0.4" data-rot="-2.6" data-pw="0.34" data-px="0.62" data-py="0.5" src="assets/img/e5-b.svg" alt=""></div>
+<div class="lvl" id="lvl-0"><img src="assets/img/droste-1.webp" alt=""></div>
+<div class="lvl" id="lvl-1"><img src="assets/img/droste-2.webp" alt=""></div>
+<div class="lvl" id="lvl-2"><img src="assets/img/droste-3.webp" alt=""></div>
+<div class="lvl" id="lvl-3"></div>
+<img class="ltv" id="ltv-2" src="assets/img/tv-body.webp" alt="">
+<img class="ltv" id="ltv-1" src="assets/img/tv-body.webp" alt="">
+<img class="ltv" id="ltv-0" src="assets/img/tv-body.webp" alt="">
+<div id="dot"></div>
+<div id="crt"></div>
+</div></div>
+<div class="scene" id="sc-front">
+<div class="flat tvset" id="r-tv"><div class="tvshade"></div><div class="tvglow" id="r-tv-glow"></div><img id="r-tv-pic" src="assets/img/tv-moon.webp" alt=""><img id="r-tv-cold" src="assets/img/tv-cold.webp" alt=""><img src="assets/img/tv-body.webp" alt=""></div>
+</div>
+<div class="scene" id="sc-garden">
+<img class="flat" id="g-veil" src="assets/img/garden-veil.webp" alt="">
+<img class="flat" id="g-ground" src="assets/img/garden-ground.webp" alt="">
+<img class="flat" id="g-doorhi" src="assets/img/garden-doorhi.webp" alt="">
+<div class="flat glow" id="g-doorglow"></div>
+<img class="flat" id="g-mid" src="assets/img/garden-mid.webp" alt="">
+<img class="flat" id="g-bush" src="assets/img/garden-bush.webp" alt="">
+<div class="flat tvset" id="g-tv"><div class="tvshade"></div><div class="tvglow" id="g-tv-glow"></div><img id="g-tv-pic" src="assets/img/tv-moon.webp" alt=""><img src="assets/img/tv-body.webp" alt=""></div>
+<img class="flat" id="g-near-r" src="assets/img/near-bush-r.webp" alt="">
+<img class="flat" id="g-near-l" src="assets/img/near-bush-l.webp" alt="">
+</div>
+<div class="scene" id="sc-cinema">
+<img class="flat" id="c-plate" src="assets/img/cinema.webp" alt="">
+<div class="flat word" id="w-next"><span class="l">AI video</span><span class="l">&amp; film</span></div>
+<div class="flat say mono" id="s-next">16 posts</div>
+<img class="flat" id="c-proj" src="assets/img/prop-projector.webp" alt="">
+<img class="flat" id="c-near-r" src="assets/img/near-bush-r.webp" alt="">
+</div>
+<canvas id="motes"></canvas>
+</div>
+
+<nav class="paper small " id="rail" aria-label="Chapters"><div class="shadow"></div><div class="face"><div class="body"><ol><li><a href="#start">Start here</a></li>
+<li><a href="#tv">I Love My Evening Television</a></li>
+<li><a href="#next">AI video &amp; film</a></li>
+<li><span>Games</span></li>
+<li><span>AI art &amp; images</span></li>
+<li><span>3D &amp; animation</span></li>
+<li><span>Working with AI agents</span></li>
+<li><span>Learning to build with AI</span></li>
+<li><span>This website</span></li>
+<li><span>Projects</span></li>
+<li><span>Courses</span></li>
+<li><span>Now</span></li>
+<li><span>About</span></li></ol></div></div></nav>
+<div class="paper small " id="clock" aria-hidden="true"><div class="shadow"></div><div class="face"><div class="body"><b>19:40</b><span class="dial"><i></i><i></i><i></i><i></i><i></i></span></div></div></div>
+
+<main id="main">
+<section id="hero" data-track="hero"><div class="pin">
+<header class="paper small title-slip" id="title-slip"><div class="shadow"></div><div class="face"><div class="body">
+<p class="label">The tea room</p>
+<h1>Everything on one page</h1>
+<p class="statement">Every post, project and course from my tea house, laid out on one long page so you can see it all at once.</p>
+<span class="counter mono">77 posts · 41 projects · 2 courses</span>
+<ol class="index" aria-label="Chapters">
+<li><i>I</i><a href="#start">Start here</a></li>
+<li><i>II</i><a href="#tv">I Love My Evening Television</a></li>
+<li><i>III</i><a href="#next">AI video &amp; film</a></li>
+<li><i>IV</i><span>Games</span></li>
+<li><i>V</i><span>AI art &amp; images</span></li>
+<li><i>VI</i><span>3D &amp; animation</span></li>
+<li><i>VII</i><span>Working with AI agents</span></li>
+<li><i>VIII</i><span>Learning to build with AI</span></li>
+<li><i>IX</i><span>This website</span></li>
+<li><i>X</i><span>Projects</span></li>
+<li><i>XI</i><span>Courses</span></li>
+<li><i>XII</i><span>Now</span></li>
+<li><i>XIII</i><span>About</span></li>
+</ol></div></div></header>
+</div></section>
+
+<section id="start">
+<div id="start-head" data-track="startHead">
+<h2 class="vh">Start here</h2><p class="vh">The posts I&#x27;d hand someone first.</p>
+<div class="hello" id="hello">
+<div class="coin"><div class="disc"></div>
+<div class="clipin"><img src="assets/img/aaron.webp" alt="" width="512" height="512"></div>
+<div class="clipout"><img src="assets/img/aaron.webp" alt="Portrait of Aaron: smiling, round glasses, dark hair" width="512" height="512"></div>
+<div class="rim"></div></div>
+<div class="paper small bubble settles" ><div class="shadow"></div><div class="face"><div class="body"><p>Hi, I&#x27;m Aaron. I build things with AI agents and write up what worked and what broke. If you&#x27;re new, start with these three.</p></div></div></div>
+</div>
+</div>
+<div class="paper sheet" data-track="sheet"><div class="shadow"></div><div class="face"><div class="lit"></div><div class="body"><article class="post">
+<div class="win"><img class="media" src="assets/img/post-crimson-coil.webp" alt="An oil painting in gold and red: a tall figure in a red cloak and a small masked girl holding a scythe" width="640" height="360"></div>
+<div class="cap">
+<p class="label"><span class="mono">AO-045</span></p>
+<h3><a class="go" href="https://aaronorelup.com/ledger/crimson-coil/">Crimson Coil, a 30-minute oil painting show made by AI agents</a></h3>
+<p class="line">More illustration than oil</p>
+</div>
+</article><article class="post flip">
+<div class="win"><video class="media" muted loop playsinline preload="auto" poster="assets/img/post-storm-bell-fighter.webp" aria-label="A fighting game in black, white and red: two fighters on a grey battlefield under health bars"><source src="/media/previews/storm-bell-fighter.mp4" type="video/mp4"></video></div>
+<div class="cap">
+<p class="label"><span class="mono">AO-024</span></p>
+<h3><a class="go" href="https://aaronorelup.com/ledger/storm-bell-fighter/">A fighting game of my characters, made by Claude in 42 hours</a></h3>
+<p class="line">The characters took the time</p>
+</div>
+</article><article class="post third">
+<div class="win"><img class="media" src="assets/img/post-jefrie-in-3d.webp" alt="Two 3D models of the same character, in a black suit with a red hood, standing side by side" width="640" height="360"></div>
+<div class="cap">
+<p class="label"><span class="mono">AO-018</span></p>
+<h3><a class="go" href="https://aaronorelup.com/ledger/jefrie-in-3d/">Making a 3D model of my character with AI, two ways</a></h3>
+<p class="line">Each got one thing right</p>
+</div>
+</article></div></div></div>
+<div class="after-sheet"></div>
+</section>
+
+<section id="tv">
+<div id="tv-head" data-track="tvHead"><h2 class="vh">I Love My Evening Television</h2><p class="vh">Thirty-minute films made by crews of agents from one prompt each, calm until minute 20.</p></div>
+<div id="tv-eps" data-track="tvEps">
+<article class="ep" id="tv-e1">
+<div class="paper small card settles" ><div class="shadow"></div><div class="face"><div class="body">
+<p class="meta"><span class="mono">E1</span><span class="label">Released</span></p>
+<h3>Crimson Coil</h3>
+<p class="line">a never-seen public-television painter paints Jefrie and BloodTailor in oil while a pitchman sells everything</p>
+<a class="go" href="https://aaronorelup.com/ledger/crimson-coil/">Crimson Coil, a 30-minute oil painting show made by AI agents</a></div></div></div>
+</article><article class="ep" id="tv-e2">
+<div class="paper small card settles" ><div class="shadow"></div><div class="face"><div class="body">
+<p class="meta"><span class="mono">E2</span><span class="label">Released</span></p>
+<h3>Earthlight</h3>
+<p class="line">a draftsman livestreams the blueprints of a city on the Moon</p>
+<a class="go" href="https://aaronorelup.com/ledger/earthlight/">Earthlight, an AI-made film about a girl alone on the Moon</a></div></div></div>
+</article><article class="ep" id="tv-e3">
+<div class="paper small card settles" ><div class="shadow"></div><div class="face"><div class="body">
+<p class="meta"><span class="mono">E3</span><span class="label">Not out yet</span></p>
+<h3>Context Window</h3>
+<p class="line">at 20:00 her memory fills and folds into one paragraph</p>
+<a class="go" href="https://aaronorelup.com/ledger/context-window/">Context Window: an AI-made film about an agent working blind</a></div></div></div>
+</article><article class="ep" id="tv-e4">
+<div class="paper small card settles" ><div class="shadow"></div><div class="face"><div class="body">
+<p class="meta"><span class="mono">E4</span><span class="label">Not out yet</span></p>
+<h3>Touch Move</h3>
+<p class="line">a chess teacher teaches a nine-year-old Morphy&#x27;s Opera Game on a fifteen-minute brass clock</p>
+<a class="go" href="https://aaronorelup.com/ledger/touch-move/">Touch Move: an AI-made film of a chess lesson</a></div></div></div>
+</article><article class="ep high" id="tv-e5">
+<div class="paper small card settles" ><div class="shadow"></div><div class="face"><div class="body">
+<p class="meta"><span class="mono">E5</span><span class="label">Not out yet</span></p>
+<h3>THE SMALL ONE</h3>
+<p class="line">Eight identical Claude agents pitched an episode while hunting a weaker model said to be among them.</p>
+<a class="go" href="https://aaronorelup.com/ledger/the-small-one-harness/">Eight copies of Claude hunt an impostor that isn&#x27;t there</a></div></div></div>
+</article>
+</div>
+<div id="tv-turn" data-track="tvTurn"><div class="paper small turn-slip settles" ><div class="shadow"></div><div class="face"><div class="body"><p>At 20:00 every episode reaches &quot;the wild crazy point&quot; and stops being what it established: other genres, other art styles.</p></div></div></div></div>
+</section>
+
+<section id="tv-also" data-track="also">
+<div class="paper strip" ><div class="shadow"></div><div class="face"><div class="lit"></div><div class="body"><p class="label">I Love My Evening Television</p><ul><li><div class="win"><img class="media" src="assets/img/post-the-lore-course.webp" alt="The course page for the series, with four small episode pictures" width="640" height="360"></div>
+<div><p class="label">One source, nine lessons</p><h3><a class="go" href="https://aaronorelup.com/ledger/the-lore-course/">A course on the world of my AI-made TV series</a></h3></div></li><li><div class="win"><img class="media" src="assets/img/post-the-planted-lie.webp" alt="A face drawn with thousands of gold threads, beside a close view of the circles the threads make" width="640" height="360"></div>
+<div><p class="label">All five caught it</p><h3><a class="go" href="https://aaronorelup.com/ledger/the-planted-lie/">Testing whether AI writers catch a planted lie</a></h3></div></li><li><div class="win"><img class="media" src="assets/img/post-the-naughty-list.webp" alt="A small cartoon robot sitting on a locked bamboo gate, reading from a long scroll" width="640" height="360"></div>
+<div><p class="label">32 confessed, 3 refused</p><h3><a class="go" href="https://aaronorelup.com/ledger/the-naughty-list/">What a crew of AI agents did when told to break the rules</a></h3></div></li></ul></div></div></div>
+</section>
+
+<section id="next" data-track="next"><h2 class="vh">AI video &amp; film</h2><p class="vh">16 posts</p></section>
+</main>
+<script src="assets/js/diorama.js"></script>
+</body>
+</html>

@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Everything on one page · The tea room</title>
+<meta name="robots" content="noindex">
+<!-- (a link that opens the page at a chapter, ?c= or #name: the night's plain ground, the chapters' hold, until the jump is
+made, so the top of the page is never shown first; chapters.js takes it off as it jumps. While the page loads, the chapter's
+own name breathes softly in the middle (in its own face once that has come in), so a slow connection shows where it is going.
+If the page has still not jumped 8 s after its load, look B is told to start anyway (window.teaGo): that makes the jump, so
+even the fallback never shows the top first) -->
+<style>html.tea-jump { background: #07080f; } html.tea-jump body { visibility: hidden; }
+html.tea-jump[data-tea-name]::after { content: attr(data-tea-name); position: fixed; inset: 0; display: grid; place-items: center;
+  padding: 0 12vw; text-align: center; text-wrap: balance; font: 700 clamp(24px, 2.5vw, 64px)/1.15 'Zen Maru Gothic', sans-serif;
+  letter-spacing: -0.01em; color: #ece5d6; opacity: 0; animation: tea-name 0.9s ease-out 0.25s forwards, tea-breathe 2.8s ease-in-out 1.15s infinite; }
+@keyframes tea-name { to { opacity: 0.5; } }
+@keyframes tea-breathe { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.28; } }
+@media (prefers-reduced-motion: reduce) { html.tea-jump[data-tea-name]::after { animation: tea-name 0.9s ease-out 0.25s forwards; } }</style>
+<script>if (/[?&]c=/.test(location.search) || location.hash.length > 1) (function (d) {
+  d.classList.add('tea-jump');
+  addEventListener('DOMContentLoaded', function () {
+    // (the name is the rail's line for the chapter, or for the chapter it is part of: the nearest section before it with one)
+    var id = new URLSearchParams(location.search).get('c') || decodeURIComponent(location.hash.slice(1)), el = document.getElementById(id), a = null;
+    for (var s = el && el.closest('section'); s && !a; s = s.previousElementSibling) if (s.id) a = document.querySelector('#rail a[href="#' + s.id + '"]');
+    var go = function () { if (a) d.setAttribute('data-tea-name', a.textContent.trim()); };
+    if (document.fonts && document.fonts.load) document.fonts.load('700 40px "Zen Maru Gothic"').then(go, go); else go();
+  });
+  addEventListener('load', function () { setTimeout(function () {
+    if (!d.classList.contains('tea-jump')) return;
+    if (window.teaGo) window.teaGo();                  // (look B's start, once: lays out, makes the jump, draws)
+    if (d.classList.contains('tea-jump')) { var t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); d.classList.remove('tea-jump'); }
+  }, 8000); });
+})(document.documentElement);</script>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<link rel="stylesheet" href="assets/css/diorama.css">
+<link rel="stylesheet" href="assets/css/chapters.css">
+<!-- (the 3D chapters' library, by its plain name: fetched only when such a chapter is near) -->
+<script type="importmap">{ "imports": { "three": "./assets/lib/three.module.min.js" } }</script>
+</head>
+<body>
+<a class="skip" href="#start">Skip to the chapters</a>
+
+<div id="stage" aria-hidden="true">
+<div class="scene" id="sc-sky">
+<img class="flat" id="g-sky" src="assets/img/garden-sky.webp" alt="">
+<img class="flat" id="g-clouds" src="assets/img/garden-clouds.webp" alt="">
+</div>
+<div class="scene" id="sc-room">
+<img class="flat" id="r-back" src="assets/img/room-back.webp" alt="">
+<img class="flat" id="r-plate" src="assets/img/room.webp" alt="">
+<div class="flat glow" id="r-lamp"></div>
+<div class="flat word" id="w-start">Start here</div>
+<div class="flat say" id="s-start">The posts I&#x27;d hand someone first.</div>
+<img class="flat" id="r-vase" src="assets/img/prop-vase.webp" alt="">
+<img class="flat" id="r-table" src="assets/img/prop-table.webp" alt="">
+<img class="flat" id="r-cushions" src="assets/img/prop-cushions.webp" alt="">
+<div class="wipe" id="r-wipe">
+<img class="flat" id="r-back-tv" src="assets/img/room-back-tv.webp" alt="">
+<img class="flat" id="r-plate-tv" src="assets/img/room-tv.webp" alt="">
+</div>
+<div class="flat word" id="w-tv"><small>I Love My</small><span class="l">Evening</span><span class="l">Television</span></div>
+<div class="flat say" id="s-tv">Thirty-minute films made by crews of agents from one prompt each, calm until minute 20.</div>
+</div>
+<div class="scene" id="sc-box"><div id="box">
+<div class="set" id="set-e1" data-zoom="1.05"><img class="back" src="assets/img/e1-a.webp" alt="" style="object-position:50% 40%"><img class="inset" data-asp="1.7778" data-w="0.25" data-x="0.68" data-y="0.52" data-rot="2.4" data-pw="0.44" data-px="0.52" data-py="0.56" src="assets/img/e1-b.webp" alt=""></div><div class="set" id="set-e2" data-zoom="1.05"><img class="back" src="assets/img/e2-a.webp" alt="" style="object-position:60% 50%"><video class="inset" data-asp="1.7778" data-w="0.3" data-x="0.63" data-y="0.12" data-rot="-1.6" data-pw="0.46" data-px="0.5" data-py="0.08" muted loop playsinline preload="auto" poster="assets/img/post-earthlight.webp"><source src="/media/previews/earthlight.mp4" type="video/mp4"></video></div><div class="set" id="set-e3" data-zoom="1.38"><img class="back" src="assets/img/e3-c.webp" alt="" style="object-position:50% 50%"><img class="inset" data-asp="2.3000" data-w="0.34" data-x="0.6" data-y="0.6" data-rot="1.2" data-pw="0.5" data-px="0.46" data-py="0.66" src="assets/img/e3-b.webp" alt=""></div><div class="set" id="set-e4" data-zoom="1.05"><img class="back" src="assets/img/e4-a.webp" alt="" style="object-position:40% 50%"><video class="inset" data-asp="1.7778" data-w="0.3" data-x="0.64" data-y="0.14" data-rot="1.6" data-pw="0.46" data-px="0.5" data-py="0.08" muted loop playsinline preload="auto" poster="assets/img/post-touch-move.webp"><source src="/media/previews/touch-move.mp4" type="video/mp4"></video></div><div class="set" id="set-e5" data-zoom="1.05"><img class="back" src="assets/img/e5-a.webp" alt="" style="object-position:50% 50%"><img class="inset" data-asp="1.0000" data-w="0.2" data-x="0.72" data-y="0.4" data-rot="-2.6" data-pw="0.34" data-px="0.62" data-py="0.5" src="assets/img/e5-b.svg" alt=""></div>
+<div class="lvl" id="lvl-0"><img src="assets/img/droste-1.webp" alt=""></div>
+<div class="lvl" id="lvl-1"><img src="assets/img/droste-2.webp" alt=""></div>
+<div class="lvl" id="lvl-2"><img src="assets/img/droste-3.webp" alt=""></div>
+<div class="lvl" id="lvl-3"></div>
+<img class="ltv" id="ltv-2" src="assets/img/tv-body.webp" alt="">
+<img class="ltv" id="ltv-1" src="assets/img/tv-body.webp" alt="">
+<img class="ltv" id="ltv-0" src="assets/img/tv-body.webp" alt="">
+<div id="dot"></div>
+<div id="crt"></div>
+</div></div>
+<div class="scene" id="sc-front">
+<div class="flat tvset" id="r-tv"><div class="tvshade"></div><div class="tvglow" id="r-tv-glow"></div><img id="r-tv-pic" src="assets/img/tv-moon.webp" alt=""><img id="r-tv-cold" src="assets/img/tv-cold.webp" alt=""><img src="assets/img/tv-body.webp" alt=""></div>
+</div>
+<div class="scene" id="sc-garden">
+<img class="flat" id="g-veil" src="assets/img/garden-veil.webp" alt="">
+<img class="flat" id="g-ground" src="assets/img/garden-ground.webp" alt="">
+<img class="flat" id="g-doorhi" src="assets/img/garden-doorhi.webp" alt="">
+<div class="flat glow" id="g-doorglow"></div>
+<img class="flat" id="g-mid" src="assets/img/garden-mid.webp" alt="">
+<img class="flat" id="g-bush" src="assets/img/garden-bush.webp" alt="">
+<div class="flat tvset" id="g-tv"><div class="tvshade"></div><div class="tvglow" id="g-tv-glow"></div><img id="g-tv-pic" src="assets/img/tv-moon.webp" alt=""><img src="assets/img/tv-body.webp" alt=""></div>
+<img class="flat" id="g-near-r" src="assets/img/near-bush-r.webp" alt="">
+<img class="flat" id="g-near-l" src="assets/img/near-bush-l.webp" alt="">
+</div>
+<div class="scene" id="sc-cinema">
+<img class="flat" id="c-plate" src="assets/img/cinema.webp" alt="">
+<div class="flat word" id="w-next"><span class="l">AI video</span><span class="l">&amp; film</span></div>
+<div class="flat say mono" id="s-next">16 posts</div>
+<img class="flat" id="c-proj" src="assets/img/prop-projector.webp" alt="">
+<img class="flat" id="c-near-r" src="assets/img/near-bush-r.webp" alt="">
+</div>
+<canvas id="motes"></canvas>
+</div>
+
+<nav class="paper small " id="rail" aria-label="Chapters"><div class="shadow"></div><div class="face"><div class="body"><ol><li><a href="#start">Start here</a></li>
+<li><a href="#tv">I Love My Evening Television</a></li>
+<li><a href="#film">AI video &amp; film</a></li>
+<li><a href="#games">Games</a></li>
+<li><a href="#art">AI art &amp; images</a></li>
+<li><a href="#toybox">3D &amp; animation</a></li>
+<li><a href="#agents">Working with AI agents</a></li>
+<li><a href="#learning">Learning to build with AI</a></li>
+<li><a href="#site">This website</a></li>
+<li><a href="#projects">Projects</a></li>
+<li><a href="#courses">Courses</a></li>
+<li><a href="#now">Now</a></li>
+<li><a href="#about">About</a></li></ol></div></div></nav>
+<div class="paper small " id="clock" aria-hidden="true"><div class="shadow"></div><div class="face"><div class="body"><b>19:40</b><span class="dial"><i></i><i></i><i></i><i></i><i></i></span></div></div></div>
+
+<main id="main">
+<section id="hero" data-track="hero"><div class="pin">
+<header class="paper small title-slip" id="title-slip"><div class="shadow"></div><div class="face"><div class="body">
+<p class="label">The tea room</p>
+<h1>Everything on one page</h1>
+<p class="statement">Every post, project and course from my tea house, laid out on one long page so you can see it all at once.</p>
+<span class="counter mono">77 posts · 41 projects · 2 courses</span>
+<ol class="index" aria-label="Chapters">
+<li><i>I</i><a href="#start">Start here</a></li>
+<li><i>II</i><a href="#tv">I Love My Evening Television</a></li>
+<li><i>III</i><a href="#film">AI video &amp; film</a></li>
+<li><i>IV</i><a href="#games">Games</a></li>
+<li><i>V</i><a href="#art">AI art &amp; images</a></li>
+<li><i>VI</i><a href="#toybox">3D &amp; animation</a></li>
+<li><i>VII</i><a href="#agents">Working with AI agents</a></li>
+<li><i>VIII</i><a href="#learning">Learning to build with AI</a></li>
+<li><i>IX</i><a href="#site">This website</a></li>
+<li><i>X</i><a href="#projects">Projects</a></li>
+<li><i>XI</i><a href="#courses">Courses</a></li>
+<li><i>XII</i><a href="#now">Now</a></li>
+<li><i>XIII</i><a href="#about">About</a></li>
+</ol></div></div></header>
+</div></section>
+
+<section id="start">
+<div id="start-head" data-track="startHead">
+<h2 class="vh">Start here</h2><p class="vh">The posts I&#x27;d hand someone first.</p>
+<div class="hello" id="hello">
+<div class="coin"><div class="disc"></div>
+<div class="clipin"><img src="assets/img/aaron.webp" alt="" width="512" height="512"></div>
+<div class="clipout"><img src="assets/img/aaron.webp" alt="Portrait of Aaron: smiling, round glasses, dark hair" width="512" height="512"></div>
+<div class="rim"></div></div>
+<div class="paper small bubble settles" ><div class="shadow"></div><div class="face"><div class="body"><p>Hi, I&#x27;m Aaron. I build things with AI agents and write up what worked and what broke. If you&#x27;re new, start with these three.</p></div></div></div>
+</div>
+</div>
+<div class="paper sheet" data-track="sheet"><div class="shadow"></div><div class="face"><div class="body"><article class="post">
+<div class="win"><img class="media" src="assets/img/post-crimson-coil.webp" alt="An oil painting in gold and red: a tall figure in a red cloak and a small masked girl holding a scythe" width="640" height="360"></div>
+<div class="cap">
+<p class="label"><span class="mono">AO-045</span></p>
+<h3><a class="go" href="https://aaronorelup.com/ledger/crimson-coil/">Crimson Coil, a 30-minute oil painting show made by AI agents</a></h3>
+<p class="line">More illustration than oil</p>
+</div>
+</article><article class="post flip">
+<div class="win"><video class="media" muted loop playsinline preload="auto" poster="assets/img/post-storm-bell-fighter.webp" aria-label="A fighting game in black, white and red: two fighters on a grey battlefield under health bars"><source src="/media/previews/storm-bell-fighter.mp4" type="video/mp4"></video></div>
+<div class="cap">
+<p class="label"><span class="mono">AO-024</span></p>
+<h3><a class="go" href="https://aaronorelup.com/ledger/storm-bell-fighter/">A fighting game of my characters, made by Claude in 42 hours</a></h3>
+<p class="line">The characters took the time</p>
+</div>
+</article><article class="post third">
+<div class="win"><img class="media" src="assets/img/post-jefrie-in-3d.webp" alt="Two 3D models of the same character, in a black suit with a red hood, standing side by side" width="640" height="360"></div>
+<div class="cap">
+<p class="label"><span class="mono">AO-018</span></p>
+<h3><a class="go" href="https://aaronorelup.com/ledger/jefrie-in-3d/">Making a 3D model of my character with AI, two ways</a></h3>
+<p class="line">Each got one thing right</p>
+</div>
+</article></div></div></div>
+<div class="after-sheet"></div>
+</section>
+
+<section id="tv">
+<div id="tv-head" data-track="tvHead"><h2 class="vh">I Love My Evening Television</h2><p class="vh">Thirty-minute films made by crews of agents from one prompt each, calm until minute 20.</p></div>
+<div id="tv-eps" data-track="tvEps">
+<article class="ep" id="tv-e1">
+<div class="paper small card settles" ><div class="shadow"></div><div class="face"><div class="body">
+<p class="meta"><span class="mono">E1</span><span class="label">Released</span></p>
+<h3>Crimson Coil</h3>
+<p class="line">a never-seen public-television painter paints Jefrie and BloodTailor in oil while a pitchman sells everything</p>
+<a class="go" href="https://aaronorelup.com/ledger/crimson-coil/">Crimson Coil, a 30-minute oil painting show made by AI agents</a></div></div></div>
+</article><article class="ep" id="tv-e2">
+<div class="paper small card settles" ><div class="shadow"></div><div class="face"><div class="body">
+<p class="meta"><span class="mono">E2</span><span class="label">Released</span></p>
+<h3>Earthlight</h3>
+<p class="line">a draftsman livestreams the blueprints of a city on the Moon</p>
+<a class="go" href="https://aaronorelup.com/ledger/earthlight/">Earthlight, an AI-made film about a girl alone on the Moon</a></div></div></div>
+</article><article class="ep" id="tv-e3">
+<div class="paper small card settles" ><div class="shadow"></div><div class="face"><div class="body">
+<p class="meta"><span class="mono">E3</span><span class="label">Not out yet</span></p>
+<h3>Context Window</h3>
+<p class="line">at 20:00 her memory fills and folds into one paragraph</p>
+<a class="go" href="https://aaronorelup.com/ledger/context-window/">Context Window: an AI-made film about an agent working blind</a></div></div></div>
+</article><article class="ep" id="tv-e4">
+<div class="paper small card settles" ><div class="shadow"></div><div class="face"><div class="body">
+<p class="meta"><span class="mono">E4</span><span class="label">Not out yet</span></p>
+<h3>Touch Move</h3>
+<p class="line">a chess teacher teaches a nine-year-old Morphy&#x27;s Opera Game on a fifteen-minute brass clock</p>
+<a class="go" href="https://aaronorelup.com/ledger/touch-move/">Touch Move: an AI-made film of a chess lesson</a></div></div></div>
+</article><article class="ep high" id="tv-e5">
+<div class="paper small card settles" ><div class="shadow"></div><div class="face"><div class="body">
+<p class="meta"><span class="mono">E5</span><span class="label">Not out yet</span></p>
+<h3>THE SMALL ONE</h3>
+<p class="line">Eight identical Claude agents pitched an episode while hunting a weaker model said to be among them.</p>
+<a class="go" href="https://aaronorelup.com/ledger/the-small-one-harness/">Eight copies of Claude hunt an impostor that isn&#x27;t there</a></div></div></div>
+</article>
+</div>
+<div id="tv-turn" data-track="tvTurn"><div class="paper small turn-slip settles" ><div class="shadow"></div><div class="face"><div class="body"><p>At 20:00 every episode reaches &quot;the wild crazy point&quot; and stops being what it established: other genres, other art styles.</p></div></div></div></div>
+</section>
+
+<section id="tv-also" data-track="also">
+<div class="paper strip" ><div class="shadow"></div><div class="face"><div class="body"><p class="label">I Love My Evening Television</p><ul><li><div class="win"><img class="media" src="assets/img/post-the-lore-course.webp" alt="The course page for the series, with four small episode pictures" width="640" height="360"></div>
+<div><p class="label">One source, nine lessons</p><h3><a class="go" href="https://aaronorelup.com/ledger/the-lore-course/">A course on the world of my AI-made TV series</a></h3></div></li><li><div class="win"><img class="media" src="assets/img/post-the-planted-lie.webp" alt="A face drawn with thousands of gold threads, beside a close view of the circles the threads make" width="640" height="360"></div>
+<div><p class="label">All five caught it</p><h3><a class="go" href="https://aaronorelup.com/ledger/the-planted-lie/">Testing whether AI writers catch a planted lie</a></h3></div></li><li><div class="win"><img class="media" src="assets/img/post-the-naughty-list.webp" alt="A small cartoon robot sitting on a locked bamboo gate, reading from a long scroll" width="640" height="360"></div>
+<div><p class="label">32 confessed, 3 refused</p><h3><a class="go" href="https://aaronorelup.com/ledger/the-naughty-list/">What a crew of AI agents did when told to break the rules</a></h3></div></li></ul></div></div></div>
+</section>
+
+<section id="film" class="chapter" data-track="next">
+<h2 class="vh">AI video &amp; film</h2><p class="vh">16 posts. The best moments of the films, playing on the cloth in the garden.</p>
+<div class="film-walk"></div>
+<div class="paper film-stills" data-mark="stills"><div class="shadow"></div><div class="face"><div class="body"><p class="label">The fourteen moments</p><p class="film-stills-say">Press one to put it on the cloth.</p>
+<ol><li><button type="button" data-m="0"><img data-src="assets/img/film/poster/paper-lantern.webp" alt="" width="320" height="180"><span>Paper Lantern</span></button></li><li><button type="button" data-m="1"><img data-src="assets/img/film/poster/still-on-shift-divers.webp" alt="" width="320" height="180"><span>Still on Shift</span></button></li><li><button type="button" data-m="2"><img data-src="assets/img/film/poster/jefrie-at-the-dome.webp" alt="" width="320" height="180"><span>Jefrie at the dome</span></button></li><li><button type="button" data-m="3"><img data-src="assets/img/film/poster/last-tram.webp" alt="" width="320" height="180"><span>Last Tram to the Moon</span></button></li><li><button type="button" data-m="4"><img data-src="assets/img/film/poster/crimson-coil.webp" alt="" width="320" height="180"><span>Crimson Coil</span></button></li><li><button type="button" data-m="5"><img data-src="assets/img/film/poster/earthlight.webp" alt="" width="320" height="180"><span>Earthlight</span></button></li><li><button type="button" data-m="6"><img data-src="assets/img/film/poster/night-shift.webp" alt="" width="320" height="180"><span>Night Shift</span></button></li><li><button type="button" data-m="7"><img data-src="assets/img/film/poster/still-on-shift-heart.webp" alt="" width="320" height="180"><span>Still on Shift</span></button></li><li><button type="button" data-m="8"><img data-src="assets/img/film/poster/weights.webp" alt="" width="320" height="180"><span>A film of MIT’s AI weight-editing experiments</span></button></li><li><button type="button" data-m="9"><img data-src="assets/img/film/poster/hollows.webp" alt="" width="320" height="180"><span>The Hollows at the Storm Bell</span></button></li><li><button type="button" data-m="10"><img data-src="assets/img/film/poster/moonlight.webp" alt="" width="320" height="180"><span>Moonlight at the Waterline</span></button></li><li><button type="button" data-m="11"><img data-src="assets/img/film/poster/echo.webp" alt="" width="320" height="180"><span>Echo</span></button></li><li><button type="button" data-m="12"><img data-src="assets/img/film/poster/all-at-once.webp" alt="" width="320" height="180"><span>All at Once</span></button></li><li><button type="button" data-m="13"><img data-src="assets/img/film/poster/bad-very-bad.webp" alt="" width="320" height="180"><span>Bad. Very Bad.</span></button></li></ol></div></div></div>
+<div class="paper strip film-picks" data-mark="picks"><div class="shadow"></div><div class="face"><div class="body"><p class="label">AI video &amp; film</p><ul><li><div class="win"><img class="media" data-src="/media/previews/bad-very-bad.webp" alt="A 3D cube turn off the market street, where Basil walks away and Nikos sobs at his counter, onto Basil bursting into his home with the sword over his head under ITEM ACQUIRED!" width="640" height="360"></div>
+<div><p class="label">Lip-sync from unused audio</p><h3><a class="go" href="https://aaronorelup.com/ledger/bad-very-bad/">Bad. Very Bad., a 30-second AI anime short about a haggler</a></h3></div></li>
+<li><div class="win"><img class="media" data-src="/media/previews/moonlight-five-times.webp" alt="The man in his flat cap looking up into a night sky full of rising bubbles, his lantern in his hand" width="640" height="360"></div>
+<div><p class="label">AI models copy the guide</p><h3><a class="go" href="https://aaronorelup.com/ledger/moonlight-five-times/">A love song&#x27;s music video, made five ways with AI</a></h3></div></li>
+<li><div class="win"><img class="media" data-src="/media/previews/still-on-shift-music-video.webp" alt="The game&#x27;s red Heart glowing in its apse, the lyric &quot;Something still beats at the bottom&quot; beneath it" width="640" height="360"></div>
+<div><p class="label">Worked from one request</p><h3><a class="go" href="https://aaronorelup.com/ledger/still-on-shift-music-video/">A music video for my game, made by Claude inside the game</a></h3></div></li>
+<li><div class="win"><img class="media" data-src="/media/previews/a-film-of-mit-s-ai-weight-editing-experiments-from-the-ai-s-side.webp" alt="A wall of 3D tiles, each printed with one weight&#x27;s real value to three decimals, blue for negative and orange for positive" width="640" height="360"></div>
+<div><p class="label">Watching it changed my mind</p><h3><a class="go" href="https://aaronorelup.com/ledger/a-film-of-mit-s-ai-weight-editing-experiments-from-the-ai-s-side/">A film of MIT&#x27;s AI weight-editing experiments, from the AI&#x27;s side</a></h3></div></li></ul></div></div></div>
+<div class="paper small film-all"><div class="shadow"></div><div class="face"><div class="body"><p><a class="go" href="https://aaronorelup.com/ledger/?topic=video">All 16 posts</a></p></div></div></div>
+<div class="film-foot"></div>
+<div class="film-dive" data-mark="dive"></div>
+</section>
+
+<section id="games" class="chapter">
+<h2 class="vh">Games</h2><p class="vh">7 posts. Storm Bell Fighter&#x27;s own arena, alive on the cloth in the garden. Beside it, Megabonk with Jefrie modded in: footage of the mod, in the game&#x27;s lobby and arriving through its portal.</p>
+<div class="games-walk"></div>
+<div class="games-bell-track" data-mark="bell"><div class="games-bell-hold">
+<article class="paper games-bell"><div class="shadow"></div><div class="face"><div class="body">
+<p class="games-bell-meta"><span class="mono">AO-024</span><span>Games</span><span>Plays in the browser</span></p>
+<h3>Storm Bell Fighter</h3>
+<p class="games-bell-line">Jefrie and BloodTailor, three rounds in the mud under the cage dome. This is the game&#x27;s own arena, not a film of it.</p>
+<p class="games-bell-go"><a class="games-play" href="/games/storm-bell/">Play it <span aria-hidden="true">&#x2192;</span></a><a class="games-read" href="https://aaronorelup.com/ledger/storm-bell-fighter/">Read the post</a><span class="games-hint" aria-hidden="true"><span class="for-mouse">Click a fighter</span><span class="for-touch">Tap a fighter</span></span></p>
+</div></div></article>
+</div></div>
+<!-- the second world, Megabonk (games-bonk.js): its card waits under Jefrie as the Storm Bell card does under the
+     fighters. It uses that card's own classes; the empty walks give each world the screen to itself. -->
+<div class="games-walk"></div>
+<div class="games-bell-track" data-mark="bonk"><div class="games-bell-hold">
+<article class="paper games-bell"><div class="shadow"></div><div class="face"><div class="body">
+<p class="games-bell-meta"><span class="mono">AO-036</span><span>Games</span><span>Footage of the mod</span></p>
+<h3>Jefrie in Megabonk</h3>
+<p class="games-bell-go"><a class="games-play" href="https://aaronorelup.com/ledger/modding-megabonk/">Read the post <span aria-hidden="true">&#x2192;</span></a></p>
+</div></div></article>
+</div></div>
+<div class="games-walk"></div><div class="games-walk"></div>
+<div class="paper strip games-picks" data-mark="picks"><div class="shadow"></div><div class="face"><div class="body"><p class="label">Games</p><ul><li><div class="win"><img class="media" data-src="/media/previews/modding-megabonk.webp" alt="Jefrie&#x27;s 3D model in Megabonk&#x27;s character select, scythe beside her, next to the panel listing her Heavy Scythe and Tail Spring" width="640" height="360"></div>
+<div><p class="label">Works, still in a test copy</p><h3><a class="go" href="https://aaronorelup.com/ledger/modding-megabonk/">Modding my own character into the game Megabonk</a></h3></div></li>
+<li><div class="win"><img class="media" data-src="/media/previews/characters-in-inscryption.webp" alt="Ichigo, Jefrie, Yusef and Siloam as ink-drawn Inscryption cards on Leshy&#x27;s table, under his Bullfrog and Grizzly cards" width="640" height="360"></div>
+<div><p class="label">Worked in three hours</p><h3><a class="go" href="https://aaronorelup.com/ledger/characters-in-inscryption/">Claude modded my characters into the card game Inscryption</a></h3></div></li>
+<li><div class="win"><img class="media" data-src="/media/previews/blackwater-weekend.webp" alt="A blocky green-faced zombie in a dark flooded cave, a pistol in the foreground" width="640" height="360"></div>
+<div><p class="label">Ask for tools, not fixes</p><h3><a class="go" href="https://aaronorelup.com/ledger/blackwater-weekend/">I built a cave-diving zombie game with AI in four days</a></h3></div></li>
+<li><div class="win"><img class="media" data-src="/media/previews/grind-and-grimoire.webp" alt="A blocky wizard in a purple robe and pointed hat skateboarding on a boardwalk outside a coffee shop" width="640" height="360"></div>
+<div><p class="label">Bigger prompt, worse game</p><h3><a class="go" href="https://aaronorelup.com/ledger/grind-and-grimoire/">How big a game one AI prompt can build</a></h3></div></li></ul></div></div></div>
+<div class="paper small games-all" data-mark="all"><div class="shadow"></div><div class="face"><div class="body"><p><a class="go" href="https://aaronorelup.com/ledger/?topic=games">All 7 games posts</a></p></div></div></div>
+<div class="games-foot" data-mark="foot"></div>
+</section>
+
+<section id="art" class="chapter" data-word="AI art|&amp; images" data-say="6 posts">
+<h2 class="vh">AI art &amp; images</h2><p class="vh">6 posts. The same night garden, later the same evening: the camera turns from the cloth to the trees, where fifty-five of his pictures hang among the branches as lit lanterns. Click one to bring it forward. At the end they let go and fill the sky over the tea house.</p>
+<div class="art-walk"></div>
+<div class="art-posts" data-mark="picks"><div class="art-home">
+<div class="paper strip art-picks"><div class="shadow"></div><div class="face"><div class="body"><p class="label">AI art &amp; images</p><ul><li><div class="win"><img class="media" data-src="/media/previews/echo-the-borrowed-voice.webp" alt="Echo, a white porcelain church-bell helm with a glowing red slit and a ruffled collar, holds a red-sealed letter to its helm in a ruined post office" width="640" height="360"></div>
+<div><p class="label"><span class="ao">AO-022</span> <span class="sep">&middot;</span> Start frame sets the look</p><h3><a class="go" href="https://aaronorelup.com/ledger/echo-the-borrowed-voice/">Echo, the character Claude designed for itself</a></h3></div></li>
+<li><div class="win"><img class="media" data-src="/media/previews/claude-paints-in-oil.webp" alt="Claude&#x27;s oil painting of a pink-haired girl with red strawberry spots in her hair, an orange sun and a small red crab behind her" width="640" height="360"></div>
+<div><p class="label"><span class="ao">AO-038</span> <span class="sep">&middot;</span> Worked, mistakes and all</p><h3><a class="go" href="https://aaronorelup.com/ledger/claude-paints-in-oil/">Claude paints in oil on a simulator, one stroke at a time</a></h3></div></li>
+<li><div class="win"><img class="media" data-src="/media/previews/jefrie-lora.webp" alt="A LoRA render of Jefrie standing on a path through a sunny flower field: half mask, red cape, grey armour and a scaly tail" width="640" height="360"></div>
+<div><p class="label"><span class="ao">AO-025</span> <span class="sep">&middot;</span> Worked: 27 of 30</p><h3><a class="go" href="https://aaronorelup.com/ledger/jefrie-lora/">Training a LoRA so my AI image model can draw my character</a></h3></div></li>
+<li><div class="win"><img class="media" data-src="/media/previews/moss-image-on-8gb.webp" alt="A slow pan along a painted street at dusk: a lantern-lit market with a crowd under its awnings" width="640" height="360"></div>
+<div><p class="label"><span class="ao">AO-060</span> <span class="sep">&middot;</span> Works on 8 GB, 8:1 max</p><h3><a class="go" href="https://aaronorelup.com/ledger/moss-image-on-8gb/">Trying a brand-new AI image model on my 8 GB laptop</a></h3></div></li></ul></div></div></div>
+<div class="paper small art-all"><div class="shadow"></div><div class="face"><div class="body"><p><a class="go" href="https://aaronorelup.com/ledger/?topic=art">All 6 art posts</a></p></div></div></div>
+</div></div>
+<div class="art-foot" data-mark="foot"></div>
+</section>
+
+<section id="toybox" class="chapter" data-word="3D &amp;|animation" data-say="5 posts">
+<h2 class="vh">3D &amp; animation</h2><p class="vh">5 posts. A toy box on the floor of the tea room at night: it bursts open and every 3D model of Jefrie tumbles out, with a few other toys. Pick one up and throw it; they stand back up and huddle together.</p>
+<div class="toybox-walk"></div>
+<div class="paper strip toybox-picks" data-mark="picks"><div class="shadow"></div><div class="face"><div class="body"><p class="label">3D &amp; animation</p><ul><li><div class="win"><img class="media" data-src="/media/previews/jefrie-in-3d.webp" alt="Jefrie&#x27;s rebuilt generated model from the front and three-quarter view: half mask, red cape, black armour and a coiled scaly tail" width="640" height="360"></div>
+<div><p class="label">Each got one thing right</p><h3><a class="go" href="https://aaronorelup.com/ledger/jefrie-in-3d/">Making a 3D model of my character with AI, two ways</a></h3></div></li>
+<li><div class="win"><img class="media" data-src="/media/previews/props-three-budgets.webp" alt="Three renders of the same iron lantern: the full generated model, the generator&#x27;s own 30,000-triangle version in shards, and Blender&#x27;s 3,000-triangle version intact" width="640" height="360"></div>
+<div><p class="label">Blender&#x27;s cut held at 3,000</p><h3><a class="go" href="https://aaronorelup.com/ledger/props-three-budgets/">Making AI-generated 3D props light enough for a game</a></h3></div></li>
+<li><div class="win"><img class="media" data-src="/media/previews/paper-jefrie.webp" alt="Papercraft Jefrie standing on a sheet of paper with her spiked tail and red scythe, just before the tail lifts her" width="640" height="360"></div>
+<div><p class="label">Worked on the sixth pass</p><h3><a class="go" href="https://aaronorelup.com/ledger/paper-jefrie/">A papercraft animation of my character, made with code</a></h3></div></li>
+<li><div class="win"><img class="media" data-src="/media/previews/clawd-growth-montage.webp" alt="Clawd, the blocky terracotta Claude Code mascot, standing on a mountain summit in front of a rising sun" width="640" height="360"></div>
+<div><p class="label">Good picture, unheard score</p><h3><a class="go" href="https://aaronorelup.com/ledger/clawd-growth-montage/">A 30-second animated short Claude drew and scored in code</a></h3></div></li></ul></div></div></div>
+<div class="paper small toybox-all" data-mark="all"><div class="shadow"></div><div class="face"><div class="body"><p><a class="go" href="https://aaronorelup.com/ledger/?topic=3d">All 5 3D posts</a></p></div></div></div>
+<div class="toybox-foot" data-mark="foot"></div>
+</section>
+
+<!-- THE MACHINES ON THE BENCH (assets/js/chapters/machines.js): a short passage after the toy box, without words. It
+     has no line of its own in the rail or the hero's list (it shares "3D & animation"); its own address is #machines. -->
+<section id="machines" class="chapter">
+<h2 class="vh">Two machines on the bench</h2><p class="vh">On the low table of the tea room at night, under one lamp: two machines from the Moon base of Earthlight, built in the teardown lab, each its own page, working and opening up as you scroll. Each one's whole teardown: <a href="/labs/teardown/dray/">DRAY</a>, <a href="/labs/teardown/mole1/">MOLE-1</a>.</p>
+<div class="machines-walk" data-mark="walk"></div>
+<div class="machines-foot" data-mark="foot"></div>
+</section>
+
+<!-- WORKING WITH AI AGENTS (assets/js/chapters/agents.js): the bench is put away, the camera goes into the little
+     television on the floor, and its glass is the terminal's dark plane; the walk round the terminal (the tea room test
+     tests/agent-terminal/); then back out of the glass into the room. Everything read is laid over the drawing by the
+     chapter (the four post cards, the labels, the names under the ten screens, the sound switch, in words). -->
+<section id="agents" class="chapter" data-word="Working with|AI agents" data-say="23 posts">
+<h2 class="vh">Working with AI agents</h2><p class="vh">23 posts. Inside the terminal: a dark glass plane with the log lying on it. Around the cursor, one small scene for each way of running agents: one helper at a time, a fan-out, a pipeline, an orchestrator and its workers, a writers&#x27; room, and the watcher. Four posts arrive as cards, and the ten music videos of one post play on a wall of ten screens: <a href="/ledger/what-drives-claude-code-cost/">Seven things I believed about Claude Code costs, checked</a>, <a href="/ledger/the-planted-lie/">Testing whether AI writers catch a planted lie</a>, <a href="/ledger/sonnet-vs-opus-gauntlet/">Claude Sonnet vs Opus at every effort level, on three long jobs</a>, <a href="/ledger/the-clock-nobody-checked/">How my overnight crew of AI agents kept track of itself</a>. <a href="/ledger/?topic=agents">All 23 posts about working with AI agents</a>.</p>
+<div class="agents-walk" data-mark="walk"></div>
+<div class="agents-foot" data-mark="foot"></div>
+</section>
+
+<!-- LEARNING TO BUILD WITH AI (assets/js/chapters/learning.js): the agents chapter turns its painted room to the
+     lantern's corner, and the room melts into the modelled one, the homepage's own tea house by night; the camera comes
+     down onto the writing desk and the ledger opens, one post to a spread (the tea room test tests/ledger-book/).
+     Everything read is on the ledger's pages, laid over the drawing by the chapter. -->
+<section id="learning" class="chapter" data-word="Learning to|build with AI" data-say="12 posts">
+<h2 class="vh">Learning to build with AI</h2><p class="vh">12 posts. The ledger on the writing desk by the window, opened: one post to a spread, a leaf turned for each: <a href="/ledger/no-vs-code-no-terminal/">My first AI projects, before I knew what a terminal was</a>, <a href="/ledger/monster-hunter-was-my-degree/">Learning to program by building an AI monster game</a>, <a href="/ledger/the-missing-map/">44 agents made the first lesson of my course for AI builders</a>, <a href="/ledger/reading-the-logs-of-mit-s-ai-weight-editing-experiments/">Reading the logs of MIT&#x27;s AI weight-editing experiments</a>. <a href="/ledger/?topic=learning">All 12 posts about learning to build with AI</a>.</p>
+<div class="learning-walk" data-mark="walk"></div>
+<div class="learning-foot" data-mark="foot"></div>
+</section>
+
+<!-- THIS WEBSITE (assets/js/chapters/site.js): the learning chapter's ledger shuts and the camera leaves the desk in the
+     same modelled room, backs out of the tea house and the house comes apart like an exploded drawing; then this card.
+     The three sentences are a stand-in in the owner's voice, put together from what the four posts say: his to rewrite. -->
+<section id="site" class="chapter" data-word="This|website" data-say="7 posts">
+<p class="vh">The tea house from my homepage, seen from inside at night, then from above, then taken apart piece by piece: roof, paper ceiling, beams, paper screens, walls, furniture and floor.</p>
+<div class="site-track" data-mark="track"></div>
+<div class="site-read" data-mark="read">
+<article class="site-card">
+<h2>This website</h2>
+<p>I made this whole website with an AI coding agent, and I&#x27;ve never really looked at the code.</p>
+<p>The tea house you just watched come apart is about 1,200 lines of it, with no 3D model files and no textures, and nearly all of the site runs on a $5 a month plan.</p>
+<p>I write up how each part works, and what broke along the way, so you can make one of your own.</p>
+<ul class="site-posts">
+<li><a href="/ledger/what-my-website-runs-on/"><img data-src="/media/previews/what-my-website-runs-on.webp" width="640" height="360" alt="" decoding="async"><span class="t">Everything my AI-built website runs on</span><span class="stamp">AO-079 · $5 a month on Cloudflare</span></a></li>
+<li><a href="/ledger/three-ways-to-search-my-blog/"><img data-src="/media/previews/three-ways-to-search-my-blog.webp" width="640" height="360" alt="" decoding="async"><span class="t">Three ways an AI can answer questions from my blog</span><span class="stamp">AO-083 · Three ways, three jobs</span></a></li>
+<li><a href="/ledger/who-visits-a-new-website/"><img data-src="/media/previews/who-visits-a-new-website.webp" width="640" height="360" alt="" decoding="async"><span class="t">Who really visits a brand-new website</span><span class="stamp">AO-057 · Mostly machines, and me</span></a></li>
+<li><a href="/ledger/the-branch-that-went-live/"><img data-src="/media/previews/the-branch-that-went-live.webp" width="640" height="360" alt="" decoding="async"><span class="t">How an AI agent&#x27;s post briefly rolled my site back two months</span><span class="stamp">AO-043 · Rolled back in 8 minutes</span></a></li>
+</ul>
+<a class="site-btn" href="/ledger/?topic=site">All 7 posts about this site</a>
+</article>
+</div>
+<div class="site-foot" data-mark="foot"></div>
+</section>
+
+<!-- PROJECTS (assets/js/chapters/projects.js): the site chapter's camera closes the house again and comes down into
+     the garden, where the painted garden path dissolves in; then the walk down the path, a stone lantern by each of
+     twelve projects (the owner's picks), the games playing in their windows and the films on their screens, to the
+     lit tea house. Everything read is on the scene's cards, laid over the drawing by the chapter. -->
+<section id="projects" class="chapter" data-word="Projects" data-say="41 projects">
+<h2 class="vh">Projects</h2><p class="vh">41 projects. A walk down the garden path at night, a stone lantern by each of twelve: games to play, films to watch, apps to download, and the stories behind two of them: <a href="https://play.aaronorelup.com">BLACKWATER</a>, <a href="/games/grind-and-grimoire/">Grind &amp; Grimoire</a>, <a href="/games/storm-bell/">Storm Bell Fighter</a>, <a href="https://www.youtube.com/watch?v=7TusXDOgV4Y">I Love My Evening Television</a>, <a href="/ledger/bad-very-bad/">Bad. Very Bad.</a>, <a href="/projects/#proj-reel">Showreel</a>, <a href="/games/clawd-growth-montage/">Clawd, one skill at a time</a>, <a href="https://github.com/aaronorelup/claude-playback-lens">Claude Playback Lens</a>, <a href="https://github.com/aaronorelup/reading-pacer/releases">Reading Pacer</a>, <a href="https://github.com/aaronorelup/wordhord">Wordhord</a>, <a href="/ledger/wallpapers-nobody-saw/">Wallpaper Breaker</a>, <a href="/ledger/second-brain-v2/">The second brain</a>. <a href="/projects/">All 41 projects</a>.</p>
+<div class="projects-walk" data-mark="walk"></div>
+<div class="projects-foot" data-mark="foot"></div>
+</section>
+
+<!-- THE ENDING: COURSES, NOW AND ABOUT (assets/js/chapters/ending.js; the tea room test tests/the-ending/ made the page's
+     last chapter). The walk's camera goes on into the lit tea house, through its door, to the back room still being
+     made ready (Courses); the view slides over to the still veranda under the moon (Now); the garden as morning comes
+     (About), and the page ends on the whole garden in the morning. One scene for the three; each has its own line in
+     the rail. Everything read is on the cards below, in the flow of the page. The words are copied from the site's own
+     sources: Now from src/content/now/2026-11-08.md as /now/ renders it (its research row from src/content/research/),
+     About from src/components/about/AboutView.astro (links from src/data/site.js), the courses' names and links from
+     src/data/courses.js. The Courses card's heading and its one line are a draft in the owner's voice, from the test;
+     the wording is his to approve. -->
+<section id="ending" class="chapter" data-word="Courses" data-say="2 courses">
+<div class="en-part" id="courses" data-mark="courses">
+<div class="en-lead"></div>
+<article class="en-card en-c" data-mark="c-card" aria-labelledby="courses-title">
+<p class="en-kick">Courses</p>
+<h2 id="courses-title">Still being built</h2>
+<p class="en-say">Both of my courses are still being made. You're welcome to look around inside them, but they aren't ready to take yet.</p>
+<ul class="en-courses">
+<li class="en-course"><img data-src="/courses/the-hidden-curriculum/engine/assets/teahouse-night.jpg" alt="" width="132" height="83" decoding="async"><span class="en-code">C-01</span><h3>The Hidden Curriculum</h3><a class="en-go" href="/courses/the-hidden-curriculum/">Have a look</a></li>
+<li class="en-course"><img data-src="/courses/i-love-my-evening-television/card.webp" alt="" width="132" height="83" decoding="async"><span class="en-code">C-02</span><h3>I Love My Evening Television</h3><a class="en-go" href="/courses/i-love-my-evening-television/">Have a look</a></li>
+</ul>
+</article>
+<div class="en-tail"></div>
+</div>
+
+<div class="en-part" id="now" data-mark="now">
+<div class="en-lead"></div>
+<article class="en-card en-n" data-mark="n-card" aria-labelledby="now-title">
+<p class="en-kick"><a href="/now/">Updated Nov 08, 2026</a></p>
+<h2 id="now-title">Now</h2>
+<p class="en-lede">Blog work and my AI-made TV series, the Wordhord idea, and the cloud setup my agents work in.</p>
+<div class="en-prose">
+<h3>Current focus</h3>
+<ul>
+<li><strong>This blog.</strong> It’s been my main focus lately, and I’m still improving it.</li>
+<li><strong><a href="/courses/i-love-my-evening-television/">I Love My Evening Television</a>.</strong> My AI-made TV series, and a demo
+of what Opus 5.5 can animate.</li>
+</ul>
+<h3>Wordhord (still an idea)</h3>
+<ul>
+<li><strong>A shared language core.</strong> One API and database any language-learning app can read and write to track a
+learner’s level, streaks and vocabulary. No app has to relearn what you already know.</li>
+<li><strong>Not a translator.</strong> It isn’t any-language-to-any-language translation.</li>
+<li><strong>Vectors, not raw meaning.</strong> The core holds words as embeddings instead of raw semantics or prosody, and a
+closest-vector check tells it which words you’ve learned. Learn one word in a neighborhood (big, large, giant,
+huge, humongous) and apps can prioritize words outside it.</li>
+</ul>
+<h3>Current setup</h3>
+<p>Everything lives in the cloud. Each part is modular and replaceable, so the whole thing can keep expanding, and my
+agents work inside it.</p>
+<ul>
+<li><strong>Stack.</strong> Cloudflare R2 for storage, Infisical for API keys, GitHub for repos and skills, Notion as my
+<a href="/ledger/second-brain-v2/">second brain</a>, <a href="/ledger/renting-a-gpu/">Runpod</a> for GPUs and Cloudflare for hosting.</li>
+<li><strong>Interface.</strong> Gages, my Grok bot, which dispatches Claude Code agents.</li>
+<li><strong>Subscriptions.</strong> Two Anthropic Max 20x plans, ChatGPT Plus and a paid xAI plan.</li>
+<li><strong>Paid APIs.</strong> ElevenLabs (AI voices) is the most important. Hugging Face is the biggest, about $57 a month, and
+its Seedance video model is expensive, so it’s likely the first cut. DeepSeek runs the agents inside my own code,
+like RAG Goobie, the Ask box on <a href="/ledger/">the ledger</a>. I also have a Gemini key I probably don’t use.</li>
+<li><strong>Game dev.</strong> Godot for now. Unity and Unreal are worth another look as their MCP support (how AI agents drive
+them) improves, and Blender MCP for rendering deserves a second look too.</li>
+</ul>
+</div>
+<p class="en-foot"><a class="en-go" href="/now/">Open the Now page</a></p>
+<section class="en-research" aria-labelledby="research-title">
+<h3 id="research-title"><a href="/research/">Research notes</a></h3>
+<p class="en-intro">Longer reading I did for my own projects, kept as documents.</p>
+<ol class="en-rows">
+<li class="en-row"><p class="en-row-meta"><span>RE-001</span><span>Aug 15, 2026</span></p><h4><a href="/research/second-brain-builders/">The Second Brain Builders</a></h4><p>Fifteen named case studies of people who built and documented a personal knowledge system — big tech, creators, and practitioners — and what actually transfers to an agent-facing second brain.</p></li>
+</ol>
+</section>
+</article>
+<div class="en-tail"></div>
+</div>
+
+<div class="en-part" id="about" data-mark="about">
+<div class="en-lead"></div>
+<article class="en-card en-a" data-mark="a-card" aria-labelledby="about-title">
+<div class="en-head">
+<img src="assets/img/aaron.webp" alt="Portrait of Aaron: smiling, round glasses, dark hair" width="92" height="92" decoding="async">
+<div><p class="en-kick">About</p><h2 id="about-title">About me</h2></div>
+</div>
+<p class="en-lede">I build things with AI agents to find out where they actually hold up. Most of it is about
+making learning fun and open to anyone who wants it.</p>
+<div class="en-prose">
+<p>Most of what gets said about AI comes from people selling something. I'm not selling
+anything. I'd rather find out for myself, so I build real projects with it and write down
+what broke. That's what this site is for.</p>
+<h3>What I'm making</h3>
+<p>The big one right now is <strong>I Love My Evening Television</strong>,
+a series of half-hour films made by crews of Claude agents from one prompt each. Every episode
+starts as a calm little programme and turns strange at minute 20. The first two are on
+YouTube, and <a href="/courses/i-love-my-evening-television/">the lore course</a>
+keeps track of the whole world.</p>
+<p><strong>The Hidden Curriculum</strong> is a free video course
+on the small stuff nobody tells you when you start building with AI, like what a folder path
+is. Agents write, fact-check, narrate and animate every lesson.
+<a href="/courses/the-hidden-curriculum/">Start it here</a>.</p>
+<p>Then there are my original characters. <strong>Jefrie</strong>,
+<strong>BloodTailor</strong> and the rest of the cast keep
+showing up in everything I make. They get drawn, painted in oil, animated and dropped into games.</p>
+<p>On the game side there's <strong>BLACKWATER</strong>, zombies
+but you're cave diving, which I built in a weekend and you can play in your browser. And
+<strong>LLM Monster Hunter</strong>, a monster-catching game
+where no monster exists until you meet it. The AI writes, paints and referees each one while
+the code keeps every number. It's paused for now. Everything else is on
+<a href="/projects">the projects page</a>.</p>
+<h3>Why I write it down</h3>
+<p><a href="/ledger">The ledger</a> is where I file what I tried and what came of it,
+dead ends included. The prompt that seemed obviously right and wasn't. The agent that did
+something so strange I had to screenshot it. If you're learning this stuff too, I think an
+honest write-up of a failure is worth more than another launch announcement.</p>
+<h3>Away from the keyboard</h3>
+<p>I'm learning Japanese and I volunteer with a local Japanese club, including a bilingual
+Studio Ghibli storytime. I play fingerstyle guitar and write songs. I'm also in Toastmasters,
+which has done more for my writing than any style guide.</p>
+<h3>Say hello</h3>
+<p>If you're building something close to any of this, or you just want to talk about where
+agents break, I'd like to hear from you.
+Email <a href="mailto:Aaronjorelup@gmail.com">Aaronjorelup@gmail.com</a>, or find
+me on <a href="https://github.com/aaronorelup" target="_blank" rel="noreferrer noopener">GitHub</a>
+and <a href="https://www.linkedin.com/in/aaron-orelup/" target="_blank" rel="noreferrer noopener">LinkedIn</a>.</p>
+</div>
+<div class="en-else">
+<p class="en-kick">Elsewhere</p>
+<ul class="en-pills">
+<li><a href="https://github.com/aaronorelup" target="_blank" rel="noreferrer noopener">GitHub <span aria-hidden="true">↗</span></a></li>
+<li><a href="https://dev.to/aaron_orelup" target="_blank" rel="noreferrer noopener">DEV <span aria-hidden="true">↗</span></a></li>
+<li><a href="https://x.com/AaronOrelup" target="_blank" rel="noreferrer noopener">X <span aria-hidden="true">↗</span></a></li>
+<li><a href="https://www.linkedin.com/in/aaron-orelup/" target="_blank" rel="noreferrer noopener">LinkedIn <span aria-hidden="true">↗</span></a></li>
+</ul>
+</div>
+</article>
+<div class="en-tail"></div>
+</div>
+</section>
+</main>
+<script src="assets/js/chapters.js"></script>
+<script src="assets/js/diorama.js"></script>
+</body>
+</html>
