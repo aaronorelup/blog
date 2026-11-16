@@ -78,10 +78,10 @@ test('previews.json: a card for each listed post and no other, with what the pos
   assert.equal(response.headers.get('Content-Type'), 'application/json; charset=utf-8');
   const text = await response.text();
   assert.deepEqual(JSON.parse(text), { posts: {
-    newer: { id: 'AO-003', title: 'Title of newer', topic, mins: 2, icon: '/media/icons/AO-003-96.webp' },
+    newer: { id: 'AO-003', title: 'Title of newer', topic, mins: 2, icon: '/media/icons/AO-003-96.webp', project, projects: [project] },
     'same-day': { id: 'AO-002', title: 'Title of same-day', topic, mins: 1 },
     shown: { id: 'AO-001', title: 'Title of shown', topic, mins: 1, verdict: 'It works', takeaway: 'It ran.', points: ['One.'] },
-  } });
+  }, projects: Object.fromEntries(Object.entries(PROJECTS).map(([k, { label }]) => [k, label])) });
   assert.ok(!text.includes(HIDDEN) && !text.includes('AO-005') && !text.includes('Nobody may read this') && !text.includes('a-draft'));
   assert.deepEqual(previewsProblems(JSON.parse(text), new Set(['shown', 'newer', 'same-day'])), []);
 });
