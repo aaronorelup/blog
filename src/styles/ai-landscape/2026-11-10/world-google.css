@@ -44,7 +44,7 @@
   /* the phone's sheet lists them: nothing is pinned over the stack */
   .ail-gl .ail-world[data-world='google'] .ail-sig__list .ail-sig__title { position: static; display: none; padding: 0; background: none; color: var(--ail-fg-2); transform: none !important; }
   .ail-gl .ail-world[data-world='google'] .ail-sig__list .ail-sig__title.is-on { display: block; flex: 0 0 100%; }
-  .ail-gl .ail-world[data-world='google'] .ail-sig__list[data-list='1'] .ail-sig__title.is-on { display: inline-block; flex: none; order: 2; padding: 5px 8px 4px; color: var(--ail-fg); outline: 0; border-width: 1.5px; font-size: 11px; }
+  .ail-gl .ail-world[data-world='google'] .ail-sig__list[data-list='1'] .ail-sig__title.is-on { display: inline-block; flex: none; order: 2; padding: 5px 8px 4px; color: var(--ail-fg); outline: 0; border-width: 1.5px; font-size: 12px; }
   .ail-gl .ail-world[data-world='google'] .ail-sig[data-part='2'] .ail-sig__list[data-list='1'] .ail-sig__item[data-n='0'] { font-size: 18px; }
   .ail-gl .ail-world[data-world='google'] .ail-catch__item { display: block; padding: 0; background: none; box-shadow: none; }
   .ail-gl .ail-world[data-world='google'] .ail-catch__item.is-on { display: block; }

@@ -71,7 +71,7 @@
 .ail-gl .ail-lu__lamp .ail-lampx { width: 16px; height: 16px; }
 .ail-gl .ail-lu__v { display: block; font-size: 19px; line-height: 1.12; }
 .ail-gl .ail-lu__v .ail-sw { display: inline-block; vertical-align: 2px; margin-right: 6px; }
-.ail-gl .ail-lu__v .ail-tag { font-size: 9px; margin-left: 5px; }
+.ail-gl .ail-lu__v .ail-tag { margin-left: 5px; }
 .ail-gl .ail-lu__d[open] .ail-lu__a { background: var(--ail-fg); color: var(--ail-bg); }
 .ail-gl .ail-lu__d[open] .ail-lu__who { color: inherit; }
 .ail-gl .ail-lu__more { position: absolute; left: 50%; top: calc(100% + 6px); width: 300px; margin: 0; transform: translateX(-50%); text-align: left; z-index: 5; }
@@ -106,10 +106,10 @@
   .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(4) { bottom: calc(var(--ail-margin) + 34px + 2 * 44px); }
   .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(5) { bottom: calc(var(--ail-margin) + 34px + 44px); }
   .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(6) { bottom: calc(var(--ail-margin) + 34px); }
-  .ail-gl .ail-lu__a { display: grid; grid-template-columns: 6.4em 1fr auto; align-items: baseline; gap: 8px; min-height: 44px; padding: 6px 0; background: none; border-top: 1px solid var(--ail-line); }
+  .ail-gl .ail-lu__a { display: grid; grid-template-columns: 7em 1fr auto; align-items: center; gap: 8px; height: 44px; padding: 2px 0; background: none; border-top: 1px solid var(--ail-line); }
   .ail-gl .ail-lu__lamp { margin: 0; align-self: center; }
-  .ail-gl .ail-lu__who { position: static; width: auto; height: auto; overflow: visible; clip-path: none; margin: 0; color: var(--ail-fg-2); }
-  .ail-gl .ail-lu__v { font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ail-gl .ail-lu__who { display: block; position: static; width: auto; height: auto; overflow: visible; clip-path: none; margin: 0; color: var(--ail-fg-2); }
+  .ail-gl .ail-lu__v { font-size: 16px; line-height: 1.1; }      /* a long answer takes two lines: no word is ever cut */
   .ail-gl .ail-lu__more { position: fixed; left: var(--ail-margin); right: var(--ail-margin); top: auto; bottom: calc(var(--ail-margin) + 34px + 5 * 44px + 6px); width: auto; transform: none; }
   .ail-gl .ail-lu__foot { left: var(--ail-margin); right: var(--ail-margin); bottom: var(--ail-margin); }
   .ail-gl .ail-lu__guest { display: none; }
@@ -213,7 +213,7 @@
   .ail-gl :is(.ail-ag__title, .ail-ln__title, .ail-ba__title) { top: calc(35svh + 10px); right: var(--ail-margin); max-width: none; font-size: 28px; }
   .ail-gl .ail-ln__kinds { top: calc(35svh + 50px); right: var(--ail-margin); max-width: none; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
   .ail-gl .ail-ln__kind { flex: none; min-height: 44px; }
-  .ail-gl .ail-ln__styles { left: var(--ail-margin); right: var(--ail-margin); top: auto; bottom: var(--ail-margin); flex-direction: row; justify-content: space-between; padding: 0; background: none; font-size: 10px; }
+  .ail-gl .ail-ln__styles { left: var(--ail-margin); right: var(--ail-margin); top: auto; bottom: var(--ail-margin); flex-direction: row; justify-content: space-between; padding: 0; background: none; letter-spacing: .02em; }
   .ail-gl .ail-ln__styles svg { width: 26px; }
   .ail-gl .ail-ln__item.is-on { left: var(--ail-margin); right: var(--ail-margin); top: calc(35svh + 108px); bottom: auto; width: auto; padding: 0; background: none; }
   .ail-gl .ail-ln__ends { font-size: 17px; }

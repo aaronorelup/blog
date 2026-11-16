@@ -29,7 +29,7 @@
 .ail-fact { display: inline; text-align: left; cursor: pointer; text-decoration: none; }
 .ail-fact[data-conf='reported'] { text-decoration: underline dotted 1px; text-underline-offset: .2em; text-decoration-color: var(--ail-fg-2); }
 .ail-fact:hover { text-decoration: underline dotted 1px; text-underline-offset: .2em; }
-.ail-tag { display: inline-block; margin-left: .6em; padding: .25em .55em .2em; border: 1px solid currentColor; font: 400 11px/1 var(--ail-mono); letter-spacing: .08em; text-transform: uppercase; vertical-align: .15em; white-space: nowrap; }
+.ail-tag { display: inline-block; margin-left: .6em; padding: .25em .55em .2em; border: 1px solid currentColor; font: 400 12px/1 var(--ail-mono); letter-spacing: .08em; text-transform: uppercase; vertical-align: .15em; white-space: nowrap; }
 .ail-tag[data-status='preview'], .ail-tag[data-status='announced'] { background: repeating-linear-gradient(135deg, transparent 0 3px, color-mix(in srgb, currentColor 22%, transparent) 3px 4px); }
 .ail-word { font-style: italic; color: var(--ail-fg-2); }
 
@@ -50,7 +50,7 @@
 .ail-own[data-owner='xai'] { --own: var(--ail-own-xai); --own-rim: var(--ail-rim-xai); }
 .ail-own[data-status='announced']::before, .ail-own[data-status='preview']::before { background: repeating-linear-gradient(135deg, transparent 0 2px, var(--ail-bg) 2px 4px), var(--own, var(--ail-mid)); }
 .ail-own[data-official='no'] { text-decoration: underline dashed 1px; text-underline-offset: .3em; }
-.ail-note { color: var(--ail-fg-2); font-size: .8em; margin-left: .5em; }
+.ail-note { color: var(--ail-fg-2); font-size: max(14px, .8em); margin-left: .5em; }
 /* a lamp tells its state by shape, in one ink for every company (--lamp: paper white on a dark ground): yes a filled
    disc, partly a disc half filled, no a ring with a short dash, not said a dotted ring. A colour is never a state */
 .ail-lampx { --i: var(--lamp, var(--ail-fg)); display: inline-block; flex: none; box-sizing: border-box; width: 14px; height: 14px; margin-right: 7px; border-radius: 50%; vertical-align: -2px; border: 1.5px solid var(--i); background: var(--i); }
