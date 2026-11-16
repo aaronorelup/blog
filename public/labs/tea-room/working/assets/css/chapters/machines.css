@@ -62,7 +62,9 @@
 .mc-holder iframe.on { opacity: 1; }
 /* a copy of the page's last picture, laid over its frame while its work starts again (machines-live.js, the veil) */
 .mc-holder .veil { position: absolute; max-width: none; opacity: 0; pointer-events: none; }
-.mc-pic, .mc-holder iframe, .mc-holder .veil { filter: brightness(1.09) saturate(1.06) contrast(1.03); }
+/* a picture of the page itself, under its frame, while it wakes (machines.js, arrives) */
+.mc-holder .mc-arrive { position: absolute; max-width: none; opacity: 0; pointer-events: none; user-select: none; }
+.mc-pic, .mc-holder iframe, .mc-holder .veil, .mc-holder .mc-arrive { filter: brightness(1.09) saturate(1.06) contrast(1.03); }
 .mc-held .mc-pic { transition: none; }
 
 /* the television on the floor beside the bench, playing the machine's film with no sound */
