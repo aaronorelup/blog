@@ -142,6 +142,19 @@ export function measure(dist) {
   row('homepage before the scene', html + css + js, 30 * KB);
   row('  HTML', html, 12 * KB);
   row('  entry JS', js, 12 * KB);
+
+  // The AI landscape's newest page: what reaches first paint. Its document carries the whole text version and every
+  // proof card's second depth on purpose (its SPEC 7.3 and 7.6), so 90 KB, not the 40 first guessed. The scene, its
+  // art and its draw calls are measured in a browser (the e2e spec), not here.
+  const landscape = path.join(dist, 'ai-landscape', 'index.html');
+  if (fs.existsSync(landscape)) {
+    const page = assets(dist, parse(landscape));
+    const doc = gz(fs.readFileSync(landscape, 'utf8'));
+    row('/ai-landscape/ first paint', doc + page.css, 90 * KB, 'HTML + CSS');
+    row('  HTML', doc, 72 * KB);
+    row('  CSS', page.css, 23 * KB);
+    row('  entry JS', page.js, 15 * KB);
+  }
   return rows;
 }
 

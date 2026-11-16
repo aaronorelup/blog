@@ -182,7 +182,7 @@ fails the build, or only warns in a live notebook.
 | `src/data/media-manifest.json` | every file in the R2 bucket, its size and MD5 (`npm run media:push`) |
 | `src/data/courses.js` | the courses |
 | `src/data/courses/*.json`, `src/data/lore/*.json` | written by the course publishers in other repos: never by hand |
-| `src/data/ai-landscape.js`, `src/data/ai-landscape/<YYYY-MM-DD>.json` | the AI landscape: `SNAPSHOTS`, its registry (newest first, plain data), `LISTED`, its one switch for being listed (off: noindex, no sitemap entry, no project card, a Draft label; read by `Page.astro`, the sources pages, `sitemap.xml.js` and `lib/content.js` `projects()`), and each snapshot's frozen fact base, never edited once it lands (README.md, "The AI landscape") |
+| `src/data/ai-landscape.js`, `src/data/ai-landscape/<YYYY-MM-DD>.json` | the AI landscape: `SNAPSHOTS`, its registry (newest first, plain data), `LISTED`, its one switch for being listed (off: noindex, no sitemap entry, no project card, a Draft label; read by `Page.astro`, the sources pages, `sitemap.xml.js` and `lib/content.js` `projects()`), and each snapshot's frozen fact base: its facts, words and pictures never change once it lands, a bug fix to its code may (README.md, "The AI landscape") |
 
 ### `src/lib/`, `src/pages/`, `src/layouts/`, `src/components/`
 
@@ -234,7 +234,7 @@ fails the build, or only warns in a live notebook.
 | Path | What |
 |---|---|
 | `src/elements/` | the post components (`src/elements/CLAUDE.md`), one folder per tag (`ao-x/element.js`, `ao-x/style.css`): `enhance.js` (viewer hook, frames, `upgrade`), `registry.js` (a tag's `element.js` loads when a post has it), `_core/` (one player at a time, the now-playing bar, the viewer hook; the viewer and its zoom load on the first open), `_lib/` (times, tables, `h()`) |
-| `src/scripts/ai-landscape/<YYYY-MM-DD>/`, `src/styles/ai-landscape/<YYYY-MM-DD>/`, `src/assets/ai-landscape/<YYYY-MM-DD>/` | the AI landscape's browser half: `index.js` (the entry: rung, story clock, chrome, then the scene after first paint; `window.__landscape`, the e2e hook; no WebGL, `?tier=static` or the skip link keep the text version), `scene/` (one three.js renderer, its own chunk on the shared `three`), `sections/` and `signatures/` (one module each, loaded near its section), `worlds/` (each company's looks, no facts); its own stylesheets and fonts, art and marks, hashed into `/_astro/` |
+| `src/scripts/ai-landscape/<YYYY-MM-DD>/`, `src/styles/ai-landscape/<YYYY-MM-DD>/`, `src/assets/ai-landscape/<YYYY-MM-DD>/` | the AI landscape's browser half: `index.js` (the entry: rung, story clock, chrome, then the scene after first paint; `window.__landscape`, the e2e hook; no WebGL, `?tier=static` or the skip link keep the text version), `scene/` (one three.js renderer, its own chunk on the shared `three`), `sections/` and `signatures/` (one module each, loaded near its section), `worlds/` (each company's looks, no facts); `ui/` (proof card, drawer, editions, expiry dates, wide tables), `access.css` (loaded last: unlit stages unreachable, the 44 px finger floor, print); its own stylesheets and fonts, art and marks (a mark the page does not draw waits in `marks/<company>/source/`, never emitted), hashed into `/_astro/`. A short window (under 540 px), a lost context, a slow machine or a chunk lost twice falls back to the text version at the reader's section |
 | `src/scripts/lazy.js` | `lazy(load, fallbackUrl)`: every dynamic import; a lost chunk (a deploy since the page loaded) navigates to `fallbackUrl` or reloads once |
 | `src/styles/elements.css` | the viewer, the now-playing bar, `.visually-hidden`, the components' caption convention: part of `site.css`; an element's own CSS is inlined into its articles by `components/post/ElementStyles.astro` |
 | `src/elements/ao-demo/demos/<name>/` | the three `<ao-demo>` demos, `synthid` (AO-040: `model.js` the watermark maths, `ui.js`, a file per part, `index.js` mounts), `cf` (AO-057) and `goobie-lab` (AO-083: `ui.js`, a file per part, `live.js` the agent's tools on the site's own files, `runs/*.json` the recorded runs), each an `index.js` exporting `mount(host, part)` and a `style.css` |
@@ -347,7 +347,8 @@ names from a reader of the repo, not from someone set on guessing them.
 **Budgets** (`scripts/tools/budgets.mjs`, gzipped, without fonts and media): a post page minus its prose ≤ 20 KB
 (chrome HTML 4, CSS 15, JS up front 8: the page's scripts, their static imports and its view's module), each element's own chunks and inlined CSS ≤ 6 KB (`ao-series`, `ao-game`
 10; one row names the element nearest its budget), the JS Listen loads ≤ 8 KB, the ledger's chrome ≤ 6 KB and ≤ 360 B a row (each row carries its card), the homepage before the
-scene chunk ≤ 30 KB (HTML 12, entry JS 12). Printed by every build, never failing it. A display code point the
+scene chunk ≤ 30 KB (HTML 12, entry JS 12), the AI landscape's first paint ≤ 90 KB (HTML 72, CSS 23, entry JS 15;
+its document is the whole text version on purpose). Printed by every build, never failing it. A display code point the
 self-hosted fonts miss is a warning in the build and a failure of `node scripts/tools/budgets.mjs` and of
 `tests/unit/fonts.test.mjs`; `node scripts/tools/fonts.mjs` fixes it.
 `tests/unit/budgets.test.mjs` (in `npm test`) checks the measuring on a made-up `dist/`, then fails on any budget

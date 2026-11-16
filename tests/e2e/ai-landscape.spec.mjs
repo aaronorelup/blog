@@ -1,7 +1,10 @@
 // The AI landscape (/ai-landscape/, its dated snapshots and their sources pages): a document of its own with none of
 // the site's chrome, the newest snapshot at /ai-landscape/, a three.js scene that draws, follows the scroll and the
-// pointer, a text version without WebGL, reduced motion with no scroll-jacking, no sideways overflow, the companies
-// reachable by keyboard, at most 60 words on screen, and every string traced to the view model or the copy file.
+// pointer, a text version without WebGL, reduced motion with no scroll-jacking, nothing off the side or out of reach,
+// the companies reachable by keyboard, at most 60 words on screen, and every string traced to the view model or the
+// copy file and standing where it belongs. Rows 12 on hold the failure paths of review round 1: one frame loop
+// however often the tab is hidden, the skip link before the scene, resizes and rotation, a lost context, a whole page
+// by keyboard, a lost chunk, and the design pass's states that a scroll alone must change.
 import fs from 'node:fs';
 import sharp from 'sharp';
 import { chromium } from '@playwright/test';
@@ -15,12 +18,15 @@ const SOURCES = SNAPSHOTS.map((s) => `/ai-landscape/${s.date}/sources/`);
 const COMPANIES = ['anthropic', 'openai', 'google', 'meta', 'xai'];
 const WORDS_MAX = 60;
 const BOARD_MAX = 80;      // a board state: one table or one list of labels. Its stage carries data-board
+const CALLS = { studio: 130, world: 120 };      // draw calls a frame (review round 1): the studio and links, a world
 
 // ?tier=low pins the cheap animated rung and turns the watchdog off, so software WebGL never drops the page to its
-// text version mid-test (the homepage precedent). The scene is up once window.__landscape says ready and it drew.
-async function open(page, path = '/ai-landscape/', tier = 'low') {
-  await page.goto(`${path}?tier=${tier}`);
+// text version mid-test (the homepage precedent). The scene is up once window.__landscape says ready and it drew, and a
+// 3D row asserts that it really is 3D: a scene that failed to mount falls to the text version, which is also "ready".
+async function open(page, path = '/ai-landscape/', tier = 'low', more = '') {
+  await page.goto(`${path}?tier=${tier}${more}`);
   await page.waitForFunction(() => window.__landscape && window.__landscape.ready && (window.__landscape.tier === 'static' || window.__landscape.frames > 1), null, { timeout: 60_000 });
+  if (tier !== 'static') expect((await hook(page)).tier, 'the scene mounted').toBe(tier);
 }
 const hook = (page) => page.evaluate(() => { const l = window.__landscape; return { tier: l.tier, progress: l.progress, frames: l.frames, section: l.section, world: l.world, camera: l.camera }; });
 // Wait until the scene has drawn n more frames (software WebGL draws a few a second while other tests run).
@@ -42,11 +48,11 @@ async function go(page, id, u, settle = 900) {
   if (settle) await page.waitForTimeout(settle);                     // the words' longest fade is 720 ms
   await frames(page, 2);
 }
-// The 3D in these walks is drawn at a pixel ratio of 0.5, so software WebGL keeps up. What they measure (words, the
-// page's width, strings) is HTML and does not depend on it.
+// The 3D in these walks is drawn at a pixel ratio of 0.25, so software WebGL keeps up with four of them at once. What
+// they measure (words, the page's width, strings, focus, draw calls) is HTML or the scene's state, not its pixels.
 const light = (page) => page.evaluate(() => {
   const c = window.__landscape.debug.ctx;
-  c.quality.ratio = 0.5; c.renderer.setPixelRatio(0.5); c.renderer.setSize(innerWidth, innerHeight, false); c.worlds.resize(innerWidth, innerHeight, 0.5);
+  c.quality.ratio = 0.25; c.renderer.setPixelRatio(0.25); c.renderer.setSize(innerWidth, innerHeight, false); c.worlds.resize(innerWidth, innerHeight, 0.25);
 });
 
 // The words a visitor sees: text in the window, not hidden, faded out or read only to screen readers (the counter of
@@ -73,11 +79,12 @@ const onScreen = (page, root = 'body') => page.evaluate((root) => {
 }, root);
 
 test('landscape-1 every page answers 200 with a clean console, fetches nothing from another origin, carries ao-build and none of the site\'s chrome', async ({ page, baseURL }) => {
-  test.setTimeout(240_000);
+  test.setTimeout(480_000);
   const origin = new URL(baseURL).origin;
   const errors = [];
   const away = [];
-  page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+  // the page reports a section that crashed or did not load, and a signature that did not, as a warning of its own
+  page.on('console', (m) => { if (m.type() === 'error' || (m.type() === 'warning' && m.text().startsWith('ai-landscape:'))) errors.push(m.text()); });
   page.on('pageerror', (e) => errors.push(e.message));
   page.on('request', (r) => { const u = new URL(r.url()); if (!['data:', 'blob:'].includes(u.protocol) && u.origin !== origin) away.push(r.url()); });
   for (const path of [...PAGES, ...SOURCES]) {
@@ -120,12 +127,18 @@ test('landscape-2 /ai-landscape/ is the newest snapshot, each dated page is its 
     await expect(page.locator('.ail-chrome time').first()).toHaveText(date);
     expect(await page.locator('link[rel="canonical"]').getAttribute('href')).toBe(`https://aaronorelup.com/ai-landscape/${date}/`);
     await card(date);
-    await expect(page.locator('.ail-strip a[href="/ai-landscape/"]')).toHaveCount(1);
-    await expect(page.locator('.ail-eds__newest[href="/ai-landscape/"]')).toHaveCount(1);
-    // the strip and the edition list hold every snapshot, newest first, this one marked
-    expect(await editions('.ail-strip a[href^="/ai-landscape/2"]')).toEqual(DATED);
+    // "Newest" leads from an older snapshot to the newest, never from the newest to itself; the empty slot for the
+    // next snapshot stands first, and only on the newest
+    const newest = date === NEWEST;
+    await expect(page.locator('a.ail-shelf__newest[href="/ai-landscape/"], a.ail-eds__newest[href="/ai-landscape/"]')).toHaveCount(newest ? 0 : 2);
+    await expect(page.locator('.ail-slab--next')).toHaveCount(newest ? 1 : 0);
+    await expect(page.locator('.ail-eds__next')).toHaveCount(newest ? 1 : 0);
+    if (newest) await expect(page.locator('.ail-shelf__row > li').first().locator('.ail-slab--next')).toHaveCount(1);
+    // the shelf and the edition list hold every snapshot, newest first, this one marked; no strip repeats them
+    await expect(page.locator('.ail-strip')).toHaveCount(0);
+    expect(await editions('.ail-shelf__row a')).toEqual(DATED);
     expect(await editions('.ail-eds__list a')).toEqual(DATED);
-    await expect(page.locator(`.ail-strip a[href="/ai-landscape/${date}/"]`)).toHaveAttribute('aria-current', 'page');
+    await expect(page.locator(`.ail-shelf__row a[href="/ai-landscape/${date}/"]`)).toHaveAttribute('aria-current', 'page');
   }
   // LISTED off (a preview under review): every page and sources page says noindex, the sitemap and the projects page
   // leave it out. On: none of that, and the sitemap lists every page.
@@ -162,7 +175,13 @@ test('landscape-3 WebGL draws: frames rise and the canvas is not one flat colour
 });
 
 test('landscape-4 scrolling moves the story forward and back: the wheel on a desktop, a scroll on a phone', async ({ page, isMobile }) => {
-  await open(page);
+  test.setTimeout(180_000);
+  // ?reduced: no idle sway, so the camera moves only because the story did (with the sway, it moves every frame)
+  await open(page, '/ai-landscape/', 'low', '&reduced');
+  await frames(page, 3);
+  const still = await hook(page);
+  await frames(page, 6);
+  expect((await hook(page)).camera, 'with no scroll the camera holds').toEqual(still.camera);
   const before = await hook(page);
   expect(before.section).toBe('top');
   if (isMobile) await page.evaluate(() => window.scrollBy(0, innerHeight * 3));
@@ -238,18 +257,27 @@ test('landscape-6 without WebGL every section is still readable, as the text ver
   await browser.close();
 });
 
-test('landscape-6b the skip link, first on the page, switches to the same text version', async ({ page }) => {
-  test.setTimeout(120_000);
+test('landscape-6b the skip link, first on the page, switches to the same text version, even after the 3D has run and the window changes size', async ({ page, isMobile }) => {
+  test.setTimeout(240_000);
   await open(page);
-  await page.keyboard.press('Tab');
+  await light(page);
+  // walk into three worlds first: the sections write inline styles the text version must not keep
+  for (const [id, u] of [['top', 0.8], ['anthropic', 1.2], ['anthropic', 2.2], ['openai', 1.2], ['google', 1.2], ['google', 2.0]]) await go(page, id, u, 300);
+  await page.evaluate(() => { document.activeElement && document.activeElement.blur(); window.scrollTo(0, 0); });
+  if (isMobile) await page.locator('.ail-skip').focus(); else await page.keyboard.press('Tab');
   await expect(page.locator('.ail-skip')).toBeFocused();
   await page.keyboard.press('Enter');
   await expect.poll(async () => (await hook(page)).tier).toBe('static');
+  // a resize in the text version keeps the text version's own layout (no 3D section heights come back)
+  await page.setViewportSize(isMobile ? { width: 400, height: 800 } : { width: 1280, height: 800 });
+  await page.waitForTimeout(800);
+  expect(await page.locator('main [style]').evaluateAll((els) => els.map((e) => `${e.tagName}.${e.className}: ${e.getAttribute('style')}`))).toEqual([]);
+  expect(await page.locator('main > section').evaluateAll((ss) => ss.filter((s) => s.style.height).map((s) => s.id))).toEqual([]);
   await readable(page);
 });
 
 test('landscape-7 reduced motion: the page scrolls natively, the story arrives at once, nothing moves by itself, and every section shows', async ({ page, isMobile }) => {
-  test.setTimeout(480_000);   // 54 stops: alone about 1.5 min, past 4 min beside three other WebGL walks on 4 cores
+  test.setTimeout(900_000);   // 54 stops: alone about 1.5 min, several times that beside three other WebGL walks on 4 cores
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await open(page);
   await light(page);
@@ -275,17 +303,70 @@ test('landscape-7 reduced motion: the page scrolls natively, the story arrives a
   }
 });
 
-test('landscape-8 nothing runs off the side of the screen, in any section, 3D or text', async ({ page }) => {
-  test.setTimeout(480_000);   // 54 stops: alone about 1.5 min, past 4 min beside three other WebGL walks on 4 cores
+// What one stop of the 3D page must hold (review round 1): every visible piece of the lit stage inside the window (the
+// stage is fixed, so the document's width never sees it), nothing that takes focus at an opacity under 0.1, nothing of
+// another section under nine points of the window, a lid mark wholly shown or wholly gone, no type under 12 px (14 for
+// a fact, a sentence, a paragraph or a list row), and the draw calls inside their budget.
+const STOP = () => {
+  const out = { outside: [], ghosts: [], foreign: [], lids: [], small: [], calls: window.__landscape.debug.ctx.renderer.info.render.calls };
+  const cur = window.__landscape.section;
+  const eff = (el) => { let o = 1; for (let n = el; n && n.nodeType === 1; n = n.parentElement) o *= Number(getComputedStyle(n).opacity); return o; };
+  const seen = (el) => {
+    for (let n = el; n && n !== document.body; n = n.parentElement) {
+      const cs = getComputedStyle(n);
+      if (cs.display === 'none' || cs.visibility === 'hidden' || Number(cs.opacity) < 0.05 || n.classList.contains('ail-vh') || cs.clipPath.includes('inset(50%)')) return false;
+    }
+    if (!el.checkVisibility()) return false;              // the inside of a closed <details> is laid out but not drawn
+    const r = el.getBoundingClientRect();
+    return r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight;
+  };
+  const name = (el) => `${el.tagName}.${String(el.className).split(' ')[0]} "${(el.textContent || '').trim().slice(0, 24)}"`;
+  const stage = document.querySelector('main .ail-stage.is-on');
+  // (a piece inside a row that scrolls sideways is held by that row: the row is what must stay inside)
+  const scrolled = (el) => { for (let n = el.parentElement; n && n !== stage; n = n.parentElement) if (getComputedStyle(n).overflowX !== 'visible') return true; return false; };
+  for (const el of stage ? stage.querySelectorAll('*') : []) {
+    if (!seen(el) || scrolled(el)) continue;
+    const r = el.getBoundingClientRect();
+    if (r.right > innerWidth + 1 || r.left < -1) out.outside.push(`${name(el)} ${Math.round(r.left)}..${Math.round(r.right)}`);
+  }
+  for (const el of document.querySelectorAll('main a[href], main button, main summary, main [tabindex]:not([tabindex="-1"])')) {
+    if (el.disabled || el.closest('[inert]') || !el.checkVisibility({ visibilityProperty: true }) || !el.getClientRects().length || el.classList.contains('ail-vh')) continue;
+    if (eff(el) < 0.1) out.ghosts.push(`${el.closest('main > section').id} ${name(el)}`);
+  }
+  for (const fx of [0.1, 0.5, 0.9]) for (const fy of [0.15, 0.5, 0.85]) {
+    const el = document.elementFromPoint(innerWidth * fx, innerHeight * fy);
+    const sec = el && el.closest('main > section');
+    if (sec && sec.id !== cur) out.foreign.push(`${fx},${fy}: ${sec.id} ${name(el)}`);
+  }
+  for (const img of document.querySelectorAll('.ail-lidmark')) { const o = Number(getComputedStyle(img).opacity); if (o > 0.001 && o < 0.999 && img.checkVisibility()) out.lids.push(o.toFixed(2)); }
+  const walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let t = walk.nextNode(); t; t = walk.nextNode()) {
+    const el = t.parentElement;
+    if (!/[\p{L}\p{N}]/u.test(t.textContent) || el.closest('script, style, .ail-live') || !seen(el)) continue;
+    const px = parseFloat(getComputedStyle(el).fontSize);
+    const floor = el.closest('.ail-fact, .ail-sentence, p, li') && !el.closest('.ail-label') ? 14 : 12;      // a label is 12 px wherever it stands
+    if (px < floor - 0.01) out.small.push(`${px}px < ${floor}: ${name(el)}`);
+  }
+  return out;
+};
+
+test('landscape-8 nothing runs off the side or stands out of reach, in any section, 3D or text: every stage piece inside the window, no invisible control, no other section under a finger, plates whole or gone, no small type, draw calls in budget', async ({ page }) => {
+  test.setTimeout(900_000);   // 54 stops: alone about 2 min, several times that beside three other WebGL walks on 4 cores
   const wide = () => page.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - innerWidth);
   await open(page);
   await light(page);
+  const bad = [];
   for (const s of await sections(page)) {
     for (const u of [0.1, 0.5, 0.9]) {
-      await go(page, s.id, u * s.screens, 0);
+      await go(page, s.id, u * s.screens, 500);
       expect(await wide(), `${s.id} at ${u}`).toBeLessThanOrEqual(0);
+      const r = await page.evaluate(STOP);
+      const budget = s.name === 'worlds' ? CALLS.world : CALLS.studio;
+      for (const [k, list] of Object.entries(r)) if (Array.isArray(list) && list.length) bad.push(`${s.id} at ${u}: ${k}: ${list.slice(0, 4).join(' | ')}`);
+      if (r.calls > budget) bad.push(`${s.id} at ${u}: ${r.calls} draw calls, over ${budget}`);
     }
   }
+  expect(bad).toEqual([]);
   await open(page, '/ai-landscape/', 'static');
   for (const y of [0, 0.25, 0.5, 0.75, 1]) {
     await page.evaluate((y) => window.scrollTo(0, (document.documentElement.scrollHeight - innerHeight) * y), y);
@@ -295,7 +376,7 @@ test('landscape-8 nothing runs off the side of the screen, in any section, 3D or
 });
 
 test('landscape-9 the five companies are reachable from the keyboard, and every link on the page answers', async ({ page, request, baseURL }) => {
-  test.setTimeout(240_000);
+  test.setTimeout(480_000);
   await open(page);
   for (const id of COMPANIES) {
     await page.evaluate(() => { document.activeElement && document.activeElement.blur(); window.scrollTo(0, 0); });
@@ -338,8 +419,8 @@ const STOPS = {
 };
 const stopsOf = (s) => (STOPS[s.name] || [0.05, 0.3, 0.6, 0.9].map((f) => +(f * s.screens).toFixed(2))).filter((u) => u <= s.screens);
 
-test('landscape-10 never more than 60 words on screen at first depth (80 on a board), in any state of the walk', async ({ page }) => {
-  test.setTimeout(600_000);
+test('landscape-10 never more than 60 words on screen at first depth (80 on a board), in any state of the walk, and a world\'s nine floors whole while they are open', async ({ page }) => {
+  test.setTimeout(900_000);
   await open(page);
   await light(page);
   const over = [];
@@ -351,6 +432,14 @@ test('landscape-10 never more than 60 words on screen at first depth (80 on a bo
       const cap = await page.evaluate(() => !!document.querySelector('.ail-stage.is-on[data-board]')) ? BOARD_MAX : WORDS_MAX;
       most = Math.max(most, words.length);
       if (words.length > cap) over.push(`${s.id} at ${u}: ${words.length} words, over ${cap}: ${words.join(' ')}`);
+      // a world's open beat holds its nine floors whole, from 0.95 to 1.6 screens: nothing rests half-faded (D06)
+      if (s.name === 'worlds' && u >= 0.95 && u <= 1.6) {
+        const whole = await page.evaluate((id) => [...document.querySelectorAll(`#${id} .ail-doors [data-agent] .ail-stack > .ail-floor`)].filter((f) => {
+          let o = 1; for (let n = f; n && n.nodeType === 1; n = n.parentElement) o *= Number(getComputedStyle(n).opacity);
+          return o >= 0.98 && f.checkVisibility({ visibilityProperty: true });
+        }).length, s.id);
+        if (whole !== 9) over.push(`${s.id} at ${u}: ${whole} of nine floors whole`);
+      }
     }
   }
   console.log(`landscape-10 ${test.info().project.name}: at most ${most} words on screen over the walk`);
@@ -422,8 +511,8 @@ const strings = (page) => page.evaluate(() => {
   return out.map((x) => ({ ...x, s: x.s.replace(/\s+/g, ' ').trim() })).filter((x) => /\p{L}/u.test(x.s));
 });
 
-test('landscape-11 every string on the page is found in the view model or the copy file', async ({ page }) => {
-  test.setTimeout(300_000);
+test('landscape-11 every string on the page is found in the view model or the copy file, and every cell stands under its company and layer', async ({ page }) => {
+  test.setTimeout(600_000);
   const missing = new Set();
   const check = (list, corpus, path) => {
     for (const { s, at } of list) {
@@ -431,13 +520,35 @@ test('landscape-11 every string on the page is found in the view model or the co
       if (!traces(s, picture ? { ...corpus, text: `${corpus.text}\n${corpus.alt}` } : corpus)) missing.add(`${path} [${at}] ${s}`);
     }
   };
+  const misplaced = [];
   for (const date of SNAPSHOTS.map((x) => x.date)) {
     const corpus = await corpusOf(date);
     for (const path of [`/ai-landscape/${date}/?tier=static`, `/ai-landscape/${date}/sources/`]) {
       await page.goto(path);
       check(await strings(page), corpus, path);
     }
+    // and each cell stands where the view puts it: the line-up's 45 and every world's nine floors, by company and layer
+    // (a string can exist in the corpus and still sit under the wrong company)
+    const { view } = await import(`../../src/components/ai-landscape/${date}/data/view.js`);
+    await page.goto(`/ai-landscape/${date}/?tier=static`);
+    const want = Object.fromEntries(view.providers.map((p) => [p.id, p.stack.map((c) => ({ name: c.name || c.word, fact: c.fact ? c.fact.id : null }))]));
+    const got = await page.evaluate(() => ({
+      lineup: [...document.querySelectorAll('tr.ail-lu__row')].map((tr) => [...tr.querySelectorAll('td.ail-lu__cell')].map((td) => ({ p: td.dataset.p,
+        name: td.querySelector('.ail-lu__ans').textContent.trim(), fact: td.querySelector('.ail-fact') ? td.querySelector('.ail-fact').dataset.fact : null }))),
+      worlds: Object.fromEntries([...document.querySelectorAll('main > section.ail-world')].map((s) => [s.id, [...s.querySelectorAll('.ail-doors [data-agent] .ail-stack > .ail-floor')]
+        .map((f) => ({ i: Number(f.dataset.i), fact: f.querySelector('.ail-floor__v .ail-fact') ? f.querySelector('.ail-floor__v .ail-fact').dataset.fact : null }))])),
+    }));
+    expect(got.lineup.length, 'nine line-up rows').toBe(9);
+    got.lineup.forEach((row, i) => row.forEach((c) => {
+      const w = want[c.p][i];
+      if (c.name !== w.name.replace(/\s+/g, ' ') || c.fact !== w.fact) misplaced.push(`${date} line-up ${c.p} floor ${i + 1}: "${c.name}" ${c.fact} where the view has "${w.name}" ${w.fact}`);
+    }));
+    for (const [id, floors] of Object.entries(got.worlds)) {
+      expect(floors.length, `${id} has nine floors`).toBe(9);
+      for (const f of floors) if (f.fact !== want[id][f.i].fact) misplaced.push(`${date} ${id} floor ${f.i + 1}: ${f.fact} where the view has ${want[id][f.i].fact}`);
+    }
   }
+  expect(misplaced).toEqual([]);
   // the 3D page writes words of its own (the rail, the live region, callouts): read them at every section
   const corpus = await corpusOf(NEWEST);
   await open(page);
@@ -449,4 +560,225 @@ test('landscape-11 every string on the page is found in the view model or the co
     }
   }
   expect([...missing]).toEqual([]);
+});
+
+// ---- review round 1: the failure paths (E02 to E09) and the states a scroll alone must change (D01, D07, D08, D19)
+
+// The scene's own chunk (the one that imports the sections), and a section's or a signature's, by their first word.
+const chunkOf = (word) => fs.readdirSync('dist/_astro').filter((f) => f.startsWith(`${word}.`) && f.endsWith('.js'))
+  .filter((f) => word !== 'scene' || /sections|signatures/.test(fs.readFileSync(`dist/_astro/${f}`, 'utf8')));
+
+test('landscape-12 one frame loop however often the tab is hidden and shown again', async ({ page }) => {
+  test.setTimeout(180_000);
+  // Playwright never hides a tab, so this does what browsers do: document.hidden is true and frame callbacks already
+  // asked for wait, without being dropped, until the tab is shown. Then the loop must run once a rendered frame.
+  await page.addInitScript(() => {
+    const raf = window.requestAnimationFrame.bind(window);
+    let hidden = false;
+    const held = [];
+    window.__stamps = new Set();
+    Object.defineProperty(document, 'hidden', { get: () => hidden, configurable: true });
+    Object.defineProperty(document, 'visibilityState', { get: () => (hidden ? 'hidden' : 'visible'), configurable: true });
+    window.requestAnimationFrame = (cb) => raf(function tick(t) { if (hidden) { held.push(cb); return; } window.__stamps.add(t); cb(t); });
+    window.__setHidden = (h) => {
+      hidden = h;
+      document.dispatchEvent(new Event('visibilitychange'));
+      if (!h) held.splice(0).forEach((cb) => raf((t) => { window.__stamps.add(t); cb(t); }));
+    };
+  });
+  await open(page);
+  await light(page);
+  for (let k = 0; k < 3; k++) {
+    await page.evaluate(() => window.__setHidden(true));
+    await page.waitForTimeout(400);
+    await page.evaluate(() => window.__setHidden(false));
+    await page.waitForTimeout(400);
+  }
+  const a = await page.evaluate(() => { window.__stamps.clear(); return window.__landscape.frames; });
+  await frames(page, 20);
+  const b = await page.evaluate(() => ({ f: window.__landscape.frames, n: window.__stamps.size }));
+  expect((b.f - a) / b.n, 'loop runs a rendered frame').toBeLessThanOrEqual(1.1);
+});
+
+test('landscape-13 the skip link pressed before the scene arrives gives the whole text version, and the scene that arrives later stays out', async ({ page, isMobile }) => {
+  test.setTimeout(180_000);
+  const names = chunkOf('scene');
+  expect(names.length).toBe(1);
+  await page.route('**/_astro/*.js', async (route) => { if (names.some((n) => route.request().url().endsWith(n))) await new Promise((r) => setTimeout(r, 4000)); await route.continue(); });
+  await page.goto('/ai-landscape/?tier=low');
+  await page.waitForFunction(() => window.__landscape && window.__landscape.tier === 'low');
+  if (isMobile) await page.locator('.ail-skip').focus(); else await page.keyboard.press('Tab');
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(6000);
+  expect(await page.evaluate(() => document.documentElement.className)).not.toMatch(/ail-3d|ail-gl/);
+  expect((await hook(page)).tier).toBe('static');
+  for (const id of COMPANIES) expect(await page.locator(`#${id}-name`).evaluate((h) => h.checkVisibility({ opacityProperty: true, visibilityProperty: true }) && getComputedStyle(h).color !== 'rgba(0, 0, 0, 0)' && getComputedStyle(h).position !== 'fixed'), id).toBe(true);
+  await page.evaluate(() => { location.hash = '#google'; });
+  await expect.poll(() => page.locator('#google-name').evaluate((h) => Math.round(h.getBoundingClientRect().top))).toBeGreaterThanOrEqual(0);
+  expect(await page.locator('#google-name').evaluate((h) => h.getBoundingClientRect().top)).toBeLessThan(await page.evaluate(() => innerHeight));
+});
+
+test('landscape-14 a resize keeps the place: a phone turned sideways reads the text version there and turns back into the 3D world; a tablet across 899 px equals a fresh load; a short window reads the text version', async ({ page, isMobile, browser, baseURL }) => {
+  test.setTimeout(600_000);
+  const mid = () => page.evaluate(() => { const e = document.elementFromPoint(innerWidth / 2, innerHeight / 2); const s = e && e.closest('main > section'); return s ? s.id : null; });
+  const size = isMobile ? { width: 390, height: 844 } : { width: 1440, height: 900 };
+  await page.setViewportSize(size);
+  await open(page);
+  await light(page);
+  await go(page, 'google', 1.2, 600);
+  await page.setViewportSize({ width: size.height, height: Math.min(size.width, 520) });       // sideways: under 540 px tall
+  await expect.poll(async () => (await hook(page)).tier, { timeout: 15_000 }).toBe('static');
+  expect(await mid()).toBe('google');
+  await page.setViewportSize(size);
+  await expect.poll(async () => (await hook(page)).world, { timeout: 30_000 }).toBe('google');
+  await expect(page.locator('html')).toHaveClass(/ail-gl/);
+  if (isMobile) return;
+  // a tablet turned across the breakpoint builds the scene again for its new layout: the same words as a fresh load
+  const shown = (p) => p.evaluate(() => { const out = []; const w = document.createTreeWalker(document.querySelector('main'), NodeFilter.SHOW_TEXT); for (let t = w.nextNode(); t; t = w.nextNode()) { const el = t.parentElement; if (!t.textContent.trim() || !el.checkVisibility({ opacityProperty: true, visibilityProperty: true })) continue; const r = el.getBoundingClientRect(); if (r.width && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth) out.push(t.textContent.trim()); } return out.join(' | '); });
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await go(page, 'top', 0, 0);
+  await page.setViewportSize({ width: 768, height: 1024 });
+  await page.waitForFunction(() => window.__landscape.ready && window.__landscape.tier === 'low' && window.__landscape.frames > 0, null, { timeout: 60_000 });
+  await page.waitForTimeout(5000);
+  const fresh = await browser.newPage({ baseURL, viewport: { width: 768, height: 1024 } });
+  await open(fresh);
+  await fresh.waitForTimeout(5000);
+  expect(await shown(page)).toBe(await shown(fresh));
+  await fresh.close();
+  // a desktop window made short (1440 by 900 at 200 percent) reads the text version, its boxes in flow
+  await page.setViewportSize({ width: 720, height: 450 });
+  await expect.poll(async () => (await hook(page)).tier, { timeout: 15_000 }).toBe('static');
+  expect(await page.locator('main [style]').count()).toBe(0);
+});
+
+test('landscape-15 a lost WebGL context keeps the reader in the same section, with focus on its heading and a word in the live region; an unpinned page on software WebGL gives up within 10 s', async ({ page, browserName, browser, baseURL }) => {
+  test.skip(browserName !== 'chromium', 'WEBGL_lose_context and the watchdog\'s timing are checked once');
+  test.setTimeout(300_000);
+  await open(page);
+  await light(page);
+  await go(page, 'google', 1.3, 600);
+  await page.evaluate(() => window.__landscape.debug.ctx.renderer.getContext().getExtension('WEBGL_lose_context').loseContext());
+  await expect.poll(async () => (await hook(page)).tier).toBe('static');
+  expect(await page.evaluate(() => { const e = document.elementFromPoint(innerWidth / 2, innerHeight / 2); return e && e.closest('main > section') && e.closest('main > section').id; })).toBe('google');
+  expect(await page.evaluate(() => document.activeElement.id)).toBe('google-name');
+  expect(await page.locator('.ail-live').textContent()).toMatch(/\S/);
+  // no ?tier=: the watchdog hears real frame times and steps down to the text version
+  const unpinned = await browser.newPage({ baseURL, viewport: { width: 1440, height: 900 } });
+  await unpinned.goto('/ai-landscape/');
+  await unpinned.waitForFunction(() => window.__landscape && window.__landscape.ready && window.__landscape.frames > 0, null, { timeout: 60_000 });
+  const t0 = Date.now();
+  await unpinned.waitForFunction(() => window.__landscape.tier === 'static', null, { timeout: 30_000 });
+  expect(Date.now() - t0, 'ms from the first frame to the text version').toBeLessThan(10_000);
+  await unpinned.close();
+});
+
+test('landscape-16 Tab and Enter alone reach a control in every section, each one seen; a rail link puts focus on its section\'s heading', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'a phone has no Tab key: the minimap and the scroll lead');
+  test.setTimeout(600_000);
+  await open(page);
+  await light(page);
+  const snap = await page.locator('body').ariaSnapshot();
+  expect(snap, 'the hidden heading link to the whole text version is in the tree at the top').toMatch(/heading "Text version[^\n]*\n\s*- '?link "Text version/);
+  const ids = await page.locator('main > section').evaluateAll((ss) => ss.map((s) => s.id));
+  const reached = new Set();
+  const dim = [];
+  let outside = 0;
+  for (let k = 0; k < 600 && reached.size < ids.length; k++) {
+    await page.keyboard.press('Tab');
+    await page.waitForTimeout(600);
+    const s = await page.evaluate(() => {
+      const el = document.activeElement;
+      let o = 1; for (let n = el; n && n.nodeType === 1; n = n.parentElement) o *= Number(getComputedStyle(n).opacity);
+      const sec = el && el.closest('main > section');
+      return { sec: sec ? sec.id : '', body: el === document.body, op: o, next: el.classList.contains('ail-next'), vh: el.classList.contains('ail-vh'), skip: el.tabIndex < 0, what: `${el.tagName}.${el.className} "${(el.textContent || '').trim().slice(0, 24)}"` };
+    });
+    if (s.body) outside++;
+    if (!s.sec) continue;
+    reached.add(s.sec);
+    if (s.op < 0.9 && !s.vh && !s.skip) dim.push(`${s.sec} ${s.what} ${s.op.toFixed(2)}`);
+    if (s.next) { await page.keyboard.press('Enter'); await page.waitForTimeout(1500); }
+  }
+  expect(ids.filter((id) => !reached.has(id)), 'sections no Tab reached').toEqual([]);
+  expect(outside, 'times focus fell out of the page').toBe(0);
+  expect(dim, 'Tab stops faded under 0.9').toEqual([]);
+  await page.evaluate(() => { document.activeElement.blur(); window.scrollTo(0, 0); });
+  await page.waitForTimeout(800);
+  await page.locator('.ail-rail a[href="#anthropic"]').focus();
+  await page.keyboard.press('Enter');
+  await expect.poll(() => page.evaluate(() => document.activeElement.id), { timeout: 30_000 }).toBe('anthropic-name');
+  await page.keyboard.press('Tab');
+  expect(await page.evaluate(() => document.activeElement.closest('main > section') && document.activeElement.closest('main > section').id)).toBe('anthropic');
+});
+
+test('landscape-17 a chunk lost to a deploy reloads the page once; with the reload spent, the page reads as text at that section, and a lost signature leaves no unhandled rejection', async ({ page, browserName }) => {
+  test.skip(browserName !== 'chromium', 'the same rule on both: checked once');
+  test.setTimeout(480_000);
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  const gone = [...chunkOf('bestat'), ...chunkOf('anthropic')];
+  await page.route('**/_astro/*.js', (route) => (gone.some((n) => route.request().url().endsWith(n)) ? route.fulfill({ status: 404, body: 'gone' }) : route.continue()));
+  let loads = 0;
+  page.on('load', () => { loads++; });
+  const toward = async (id) => {
+    const s0 = await page.evaluate((id) => window.__landscape.debug.ctx.clock.sections.find((q) => q.id === id).s0, id);
+    for (const ds of [-2, -1, 1]) { await page.evaluate((s) => window.scrollTo(0, window.__landscape.debug.ctx.clock.pixels(s)), s0 + ds); await page.waitForTimeout(1200); }
+  };
+  await page.goto('/ai-landscape/?tier=low');
+  await page.evaluate(() => sessionStorage.removeItem('ao-reloaded'));
+  await page.reload();
+  await page.waitForFunction(() => window.__landscape && window.__landscape.ready && window.__landscape.frames > 1, null, { timeout: 60_000 });
+  await light(page);
+  // the signature first: the world keeps its words and drops the signature's buttons, and nothing is unhandled
+  await page.evaluate(() => sessionStorage.setItem('ao-reloaded', '1'));
+  await toward('anthropic');
+  await expect.poll(() => page.locator('#anthropic .ail-sig__ui button').evaluateAll((bs) => bs.length > 0 && bs.every((b) => b.hidden)), { timeout: 15_000 }).toBe(true);
+  expect((await hook(page)).tier).toBe('low');
+  expect(errors).toEqual([]);
+  // best at with the reload free: one reload
+  await page.evaluate(() => sessionStorage.removeItem('ao-reloaded'));
+  const before = loads;
+  await toward('best-at');
+  await expect.poll(() => loads, { timeout: 20_000 }).toBe(before + 1);
+  // and with it spent: the text version, at best at, its 22 rows shown
+  await page.waitForFunction(() => window.__landscape && window.__landscape.ready, null, { timeout: 60_000 });
+  await light(page).catch(() => {});
+  await toward('best-at');
+  await expect.poll(async () => (await hook(page)).tier, { timeout: 20_000 }).toBe('static');
+  expect(await page.locator('#best-at .ail-bd__row').evaluateAll((rs) => rs.filter((r) => r.checkVisibility({ opacityProperty: true, visibilityProperty: true })).length)).toBe(22);
+  expect(errors).toEqual([]);
+});
+
+test('landscape-18 a jump into a world leaves no other world\'s signature standing in it (D01)', async ({ page }) => {
+  test.setTimeout(600_000);
+  await open(page);
+  await light(page);
+  for (const id of COMPANIES) {
+    // one scrollTo from wherever the last world left the page, with no jump of the clock: the clock flies past worlds
+    await page.evaluate((id) => { const c = window.__landscape.debug.ctx.clock; window.scrollTo(0, c.pixels(c.sections.find((s) => s.id === id).s0 + 1.42)); }, id);
+    await expect.poll(async () => (await hook(page)).world, { timeout: 30_000 }).toBe(id);
+    await frames(page, 3);
+    await page.waitForTimeout(2000);
+    const foreign = await page.evaluate((id) => { const out = []; window.__landscape.debug.ctx.scene.traverse((o) => { if (o.userData.sig && o.userData.sig !== id && o.visible && (o.isMesh || o.isPoints || o.isLine)) { let v = true; for (let p = o.parent; p; p = p.parent) if (!p.visible) v = false; if (v) out.push(`${o.userData.sig} ${o.type}`); } }); return out; }, id);
+    expect(foreign, `in ${id}`).toEqual([]);
+  }
+});
+
+test('landscape-19 a scroll alone steps the comparisons: nine floors in the line-up, his four guesses and the board in best at, nine blocks around the five, five companies in billing (D07, D08, D19)', async ({ page }) => {
+  test.setTimeout(600_000);
+  await open(page);
+  await light(page);
+  const states = async (id, us, read) => { const out = []; for (const u of us) { await go(page, id, u, 600); out.push(await page.evaluate(read)); } return out; };
+  const lit = await states('line-up', [0, 1, 2, 3, 4, 5, 6, 7, 8].map((k) => 0.25 + 0.19 * k), () => [...document.querySelectorAll('tr.ail-lu__row')].findIndex((tr) => tr.classList.contains('is-lit')));
+  expect(lit).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+  // with no input the lit floor holds: no timer
+  await page.waitForTimeout(5000);
+  expect(await page.evaluate(() => [...document.querySelectorAll('tr.ail-lu__row')].findIndex((tr) => tr.classList.contains('is-lit')))).toBe(8);
+  const best = await states('best-at', [0.1, 0.4, 0.85, 1.3, 1.75, 2.3], () => `${document.querySelector('#best-at').dataset.mode}:${[...document.querySelectorAll('#best-at .ail-ba__cap')].findIndex((c) => c.classList.contains('is-on'))}`);
+  expect(new Set(best).size, `best at steps through ${best.join(' ')}`).toBeGreaterThanOrEqual(6);
+  expect(best[0].startsWith('title')).toBe(true);
+  expect(best[best.length - 1].startsWith('board')).toBe(true);
+  const around = await states('around', [0, 1, 2, 3, 4, 5, 6, 7, 8].map((k) => 0.12 + 0.11 * (k + 0.5)), () => [...document.querySelectorAll('#around .ail-ar__item')].findIndex((li) => li.classList.contains('is-active')));
+  expect(around).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+  const billing = await states('billing', [0, 1, 2, 3, 4].map((k) => 0.1 + 0.16 * (k + 0.5)), () => [...document.querySelectorAll('#billing .ail-bill__pick')].findIndex((d) => d.getAttribute('aria-pressed') === 'true'));
+  expect(billing, 'billing picks the five companies in turn').toEqual([0, 1, 2, 3, 4]);
 });
