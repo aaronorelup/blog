@@ -691,7 +691,9 @@
   }
   function render() { frame(performance.now()); }
 
+  var isReady = false;
   function ready() {
+    if (isReady) return; isReady = true;              // (once: index.html's cover may call it by itself, window.teaGo)
     layout();
     var yq = parseFloat(qs.get('y'));
     if (!isNaN(yq)) window.scrollTo(0, Math.round(clamp(yq) * docH));
@@ -719,5 +721,6 @@
       return document.fonts && document.fonts.load ? Promise.all(need.map(function (f) { return document.fonts.load(f).catch(function () {}); })) : null;
     }).then(ready, ready);
   }
+  window.teaGo = ready;
   if (document.readyState === 'complete') whenLoaded(); else window.addEventListener('load', whenLoaded);
 })();

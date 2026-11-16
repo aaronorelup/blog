@@ -6,10 +6,32 @@
 <title>Everything on one page · The tea room</title>
 <meta name="robots" content="noindex">
 <!-- (a link that opens the page at a chapter, ?c= or #name: the night's plain ground, the chapters' hold, until the jump is
-made, so the top of the page is never shown first; chapters.js takes it off as it jumps) -->
-<style>html.tea-jump { background: #07080f; } html.tea-jump body { visibility: hidden; }</style>
-<script>if (/[?&]c=/.test(location.search) || location.hash.length > 1) { document.documentElement.classList.add('tea-jump');
-  addEventListener('load', function () { setTimeout(function () { document.documentElement.classList.remove('tea-jump'); }, 8000); }); }</script>
+made, so the top of the page is never shown first; chapters.js takes it off as it jumps. While the page loads, the chapter's
+own name breathes softly in the middle (in its own face once that has come in), so a slow connection shows where it is going.
+If the page has still not jumped 8 s after its load, look B is told to start anyway (window.teaGo): that makes the jump, so
+even the fallback never shows the top first) -->
+<style>html.tea-jump { background: #07080f; } html.tea-jump body { visibility: hidden; }
+html.tea-jump[data-tea-name]::after { content: attr(data-tea-name); position: fixed; inset: 0; display: grid; place-items: center;
+  padding: 0 12vw; text-align: center; text-wrap: balance; font: 700 clamp(24px, 2.5vw, 64px)/1.15 'Zen Maru Gothic', sans-serif;
+  letter-spacing: -0.01em; color: #ece5d6; opacity: 0; animation: tea-name 0.9s ease-out 0.25s forwards, tea-breathe 2.8s ease-in-out 1.15s infinite; }
+@keyframes tea-name { to { opacity: 0.5; } }
+@keyframes tea-breathe { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.28; } }
+@media (prefers-reduced-motion: reduce) { html.tea-jump[data-tea-name]::after { animation: tea-name 0.9s ease-out 0.25s forwards; } }</style>
+<script>if (/[?&]c=/.test(location.search) || location.hash.length > 1) (function (d) {
+  d.classList.add('tea-jump');
+  addEventListener('DOMContentLoaded', function () {
+    // (the name is the rail's line for the chapter, or for the chapter it is part of: the nearest section before it with one)
+    var id = new URLSearchParams(location.search).get('c') || decodeURIComponent(location.hash.slice(1)), el = document.getElementById(id), a = null;
+    for (var s = el && el.closest('section'); s && !a; s = s.previousElementSibling) if (s.id) a = document.querySelector('#rail a[href="#' + s.id + '"]');
+    var go = function () { if (a) d.setAttribute('data-tea-name', a.textContent.trim()); };
+    if (document.fonts && document.fonts.load) document.fonts.load('700 40px "Zen Maru Gothic"').then(go, go); else go();
+  });
+  addEventListener('load', function () { setTimeout(function () {
+    if (!d.classList.contains('tea-jump')) return;
+    if (window.teaGo) window.teaGo();                  // (look B's start, once: lays out, makes the jump, draws)
+    if (d.classList.contains('tea-jump')) { var t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); d.classList.remove('tea-jump'); }
+  }, 8000); });
+})(document.documentElement);</script>
 <link rel="stylesheet" href="assets/fonts/fonts.css">
 <link rel="stylesheet" href="assets/css/diorama.css">
 <link rel="stylesheet" href="assets/css/chapters.css">
