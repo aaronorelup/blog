@@ -277,7 +277,7 @@ test('landscape-6b the skip link, first on the page, switches to the same text v
 });
 
 test('landscape-7 reduced motion: the page scrolls natively, the story arrives at once, nothing moves by itself, and every section shows', async ({ page, isMobile }) => {
-  test.setTimeout(900_000);   // 54 stops: alone about 1.5 min, several times that beside three other WebGL walks on 4 cores
+  test.setTimeout(1_800_000);   // 54 stops: alone about 1.5 min, many times that beside three other WebGL walks on 4 cores
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await open(page);
   await light(page);
@@ -354,7 +354,7 @@ const STOP = () => {
 };
 
 test('landscape-8 nothing runs off the side or stands out of reach, in any section, 3D or text: every stage piece inside the window, no invisible control, no other section under a finger, plates whole or gone, no small type, draw calls in budget', async ({ page }) => {
-  test.setTimeout(900_000);   // 54 stops: alone about 2 min, several times that beside three other WebGL walks on 4 cores
+  test.setTimeout(1_800_000);   // 54 stops: alone about 2 min, many times that beside three other WebGL walks on 4 cores
   const wide = () => page.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - innerWidth);
   await open(page);
   await light(page);
@@ -423,7 +423,7 @@ const STOPS = {
 const stopsOf = (s) => (STOPS[s.name] || [0.05, 0.3, 0.6, 0.9].map((f) => +(f * s.screens).toFixed(2))).filter((u) => u <= s.screens);
 
 test('landscape-10 never more than 60 words on screen at first depth (80 on a board), in any state of the walk, and a world\'s nine floors whole while they are open', async ({ page }) => {
-  test.setTimeout(900_000);
+  test.setTimeout(1_800_000);   // 80 stops: alone about 4 min, many times that beside three other WebGL walks on 4 cores
   await open(page);
   await light(page);
   const over = [];
@@ -515,7 +515,7 @@ const strings = (page) => page.evaluate(() => {
 });
 
 test('landscape-11 every string on the page is found in the view model or the copy file, and every cell stands under its company and layer', async ({ page }) => {
-  test.setTimeout(600_000);
+  test.setTimeout(1_200_000);
   const missing = new Set();
   const check = (list, corpus, path) => {
     for (const { s, at } of list) {
@@ -677,7 +677,7 @@ test('landscape-15 a lost WebGL context keeps the reader in the same section, wi
 
 test('landscape-16 Tab and Enter alone reach a control in every section, each one seen; a rail link puts focus on its section\'s heading', async ({ page, isMobile }) => {
   test.skip(isMobile, 'a phone has no Tab key: the minimap and the scroll lead');
-  test.setTimeout(600_000);
+  test.setTimeout(1_500_000);   // some 240 Tabs, each read 600 ms later: alone about 7 min, longer beside other walks
   await open(page);
   await light(page);
   const snap = await page.locator('body').ariaSnapshot();
@@ -722,9 +722,12 @@ test('landscape-17 a chunk lost to a deploy reloads the page once; with the relo
   await page.route('**/_astro/*.js', (route) => (gone.some((n) => route.request().url().endsWith(n)) ? route.fulfill({ status: 404, body: 'gone' }) : route.continue()));
   let loads = 0;
   page.on('load', () => { loads++; });
+  // scroll toward a section as a reader does (its module is asked for when it is near); the page may reload under it
   const toward = async (id) => {
-    const s0 = await page.evaluate((id) => window.__landscape.debug.ctx.clock.sections.find((q) => q.id === id).s0, id);
-    for (const ds of [-2, -1, 1]) { await page.evaluate((s) => window.scrollTo(0, window.__landscape.debug.ctx.clock.pixels(s)), s0 + ds); await page.waitForTimeout(1200); }
+    for (const ds of [-2, -1, 1]) {
+      await page.evaluate(([id, ds]) => { const l = window.__landscape; const c = l && l.debug && l.debug.ctx.clock; const s = c && c.sections.find((q) => q.id === id); if (s) window.scrollTo(0, c.pixels(s.s0 + ds)); }, [id, ds]).catch(() => {});
+      await page.waitForTimeout(1200);
+    }
   };
   await page.goto('/ai-landscape/?tier=low');
   await page.evaluate(() => sessionStorage.removeItem('ao-reloaded'));

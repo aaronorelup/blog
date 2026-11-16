@@ -311,9 +311,12 @@ function boot() {
   markRail = buildRail();
   document.addEventListener('click', (e) => {
     const a = e.target.closest('a[href^="#"]');
-    if (!a || !gl() || !land(a.hash, true)) return;
+    // Enter on a link (a click with no pointer) lands at once, so focus is in the new section before the next key
+    const keyed = e.detail === 0;
+    if (!a || !gl() || !land(a.hash, !keyed)) return;
     e.preventDefault();
     history.pushState(null, '', a.hash);
+    if (keyed) { clock.update(0); clock.jump(); }
   });
   window.addEventListener('hashchange', () => { if (gl()) land(location.hash, false); });
   document.addEventListener('visibilitychange', () => { if (!document.hidden) wake(); });
