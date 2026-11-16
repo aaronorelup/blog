@@ -36,7 +36,7 @@ export function createPrims(ctx) {
       const set = {
         items, spin: 0, spread: 1, show: 1, night: 0, fade: 1,       // fade: how clearly an idle core shows (ghost cores)
         update() {
-          const y = tower.floors[i].y;
+          const y = tower.floors[i].mesh.position.y;                  // where the floor was drawn: a raised floor keeps its cores
           items.forEach((c) => {
             const a = c.angle + set.spin, r = ring * (0.72 + 0.28 * set.spread);
             c.mesh.position.set(tower.floors[i].mesh.position.x + Math.cos(a) * r, y, -Math.sin(a) * r * 0.82);
@@ -104,7 +104,7 @@ export function createPrims(ctx) {
       const set = {
         items, show: 1, dark: 0,
         update() {
-          group.position.set(tower.floors[i].mesh.position.x, tower.floors[i].y + FLOOR.h / 2 + 0.03, 0.25);
+          group.position.set(tower.floors[i].mesh.position.x, tower.floors[i].mesh.position.y + FLOOR.h / 2 + 0.03, 0.25);
           items.forEach((s) => { s.ring.material.opacity = set.show; s.ring.material.color.set(INK).lerp(new Color('#F8F9FB'), set.dark); s.ring.visible = set.show > 0.01; });
         },
         dispose() { drop(group); },
@@ -201,6 +201,40 @@ export function createPrims(ctx) {
           if (ends.length) { ends[0].position.copy(a); ends[1].position.copy(b); ends[1].scale.setScalar(smooth(set.draw * 2 - 1)); }
         },
         dispose() { ctx.scene.remove(line, ...ends); geo.dispose(); mat.dispose(); dotMat.dispose(); ends.forEach((d) => d.geometry.dispose()); },
+      };
+      return set;
+    },
+
+    // A cord: a link drawn thick, on the same curve as an arc between the same two points, in `color`. Fields:
+    // from, to, lift (re-read every update, so one cord can move from link to link), draw 0..1 runs it out from its
+    // start, show, dash ([on, off] in 44ths of its length, or null for solid), and bead: 0..1 puts a bead that far
+    // along it, null hides the bead.
+    cord(from, to, { color = INK, lift = 1.2, radius = 0.03, bead = 0.085 } = {}) {
+      const SEG = 44;
+      const line = ctx.createThread({ max: SEG, radius, head: false, color });
+      const pts = Array.from({ length: SEG + 1 }, () => new Vector3());
+      line.points = pts;
+      const dot = new Mesh(new SphereGeometry(bead, 20, 14), new MeshBasicMaterial({ color, transparent: true, depthTest: false, toneMapped: false }));
+      dot.renderOrder = 22; dot.visible = false;
+      ctx.scene.add(dot);
+      const mid = new Vector3();
+      const at = (u, out) => { const a = set.from, b = set.to, w0 = (1 - u) * (1 - u), w1 = 2 * (1 - u) * u, w2 = u * u; return out.set(a.x * w0 + mid.x * w1 + b.x * w2, a.y * w0 + mid.y * w1 + b.y * w2, a.z * w0 + mid.z * w1 + b.z * w2); };
+      const set = {
+        from, to, lift, draw: 1, show: 1, dash: null, bead: null, color: new Color(color),
+        update() {
+          const on = set.show > 0.01 && set.draw > 0.005;
+          if (on) {
+            mid.addVectors(set.from, set.to).multiplyScalar(0.5); mid.y += set.lift;
+            for (let n = 0; n <= SEG; n++) at(n / SEG, pts[n]);
+            line.color.copy(set.color); line.dash = set.dash;
+            line.at(smooth(set.draw) * SEG);
+          }
+          line.show = on ? set.show : 0;
+          line.update();
+          dot.visible = on && set.bead != null;
+          if (dot.visible) { at(Math.max(0, Math.min(1, set.bead)), dot.position); dot.material.color.copy(set.color); dot.material.opacity = set.show; }
+        },
+        dispose() { line.dispose(); ctx.scene.remove(dot); dot.geometry.dispose(); dot.material.dispose(); },
       };
       return set;
     },

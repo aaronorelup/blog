@@ -1,7 +1,8 @@
-// Cross-provider links (SPEC 2.7): the lights go down and a link between two owners is an arc from the floor of the
-// thing that reaches out to the floor of the thing it reaches, in the colour of the target's owner, solid or dashed
-// by how official it is. The scroll is the tour: "Thinks with", then "Hands work to", one arc at a time with its two
-// names at its ends. Only the current kind is drawn. A chip, a hover or an arrow key holds until 0.15 screens of scroll.
+// Cross-provider links (SPEC 2.7): night. A link between two owners is an arc from the floor of the thing that
+// reaches out to the floor of the thing it reaches, in the colour of the target's owner, solid or dashed by how
+// official it is. The scroll is the tour: "Thinks with", then "Hands work to", one link at a time, drawn as a bright
+// cord with a bead running along it and its two names at its ends. Only the current kind is drawn thin behind it.
+// A chip, a hover or an arrow key holds until 0.15 screens of scroll.
 import { BoxGeometry, Color, Mesh, Vector2, Vector3 } from 'three';
 import { smooth, span } from '../core/clock.js';
 import { $, $$, announce } from '../core/dom.js';
@@ -18,6 +19,9 @@ const PHONE = { pos: [0, 3.1, 30], look: [0, 2.5, 0], fov: 24, fit: 18.4, cy: 0.
 // each owner's colour as a line on the dark: its glass, lifted where the glass is too dark to show at night
 const NIGHT = { anthropic: '#E08A6C', openai: '#F3F3F3', google: '#5C9EFF', meta: '#3D8BEA', xai: '#FFFFFF', you: '#A6ABB5', outside: '#A6ABB5' };
 const white = new Color('#FFFFFF');
+// the cord of the link being read: how it is dashed by how official the link is (in 44ths of its length), how long
+// it takes to run out, how long the bead takes from one end to the other, and the room's light (was 0.62: slate)
+const CORD = { dash: { yes: null, partial: [3, 1], no: [1, 1] }, out: 0.35, run: 1.6, wash: 0.4 };
 
 export function create(ctx, el, sec) {
   const { rig, row, labels, prims, studio, input, phone, reduced } = ctx;
@@ -29,7 +33,7 @@ export function create(ctx, el, sec) {
   const kindRow = phone && chips[0] ? wholeTabs(chips[0].parentElement, () => chips) : null;      // a phone: the kinds scroll in their own row
   const edgeX = phone ? 8.2 : 11.75;
   const blocks = { you: -edgeX, outside: edgeX };
-  const st = { kind: '', active: -1, pick: null, u: 0, k: 0, drawn: new Map(), pins: [] };
+  const st = { kind: '', active: -1, pick: null, u: 0, k: 0, drawn: new Map(), pins: [], out: 0, run: 0 };
   const outs = $$('.ail-ln__out', el);
 
   // the grey blocks: whatever is outside the five, and your own computer
@@ -72,11 +76,15 @@ export function create(ctx, el, sec) {
     const d = li.dataset;
     const x = { li, n, kind: d.kind, ...ends[n], from: new Vector3(), to: new Vector3(), base: new Color(NIGHT[d.to] || NIGHT.outside) };
     place(x);
-    x.arc = prims.arc(x.from, x.to, { color: NIGHT[d.to] || NIGHT.outside, official: d.official, lift: liftOf(x, n), dots: false });
+    x.lift = liftOf(x, n);
+    x.arc = prims.arc(x.from, x.to, { color: NIGHT[d.to] || NIGHT.outside, official: d.official, lift: x.lift, dots: false });
     x.arc.show = 0; x.arc.update();
     return x;
   });
   towers.forEach((tw) => { tw.shift = 0; tw.spread = 0; tw.layout(); });
+  // one cord for whichever link is read (a phone's picture is small: its cord is drawn thicker, to the same 3 px)
+  const cord = prims.cord(arcs[0].from, arcs[0].to, phone ? { radius: 0.07, bead: 0.2 } : { bead: 0.11 });
+  cord.show = 0; cord.update();
   // each kind's arcs in the order the scroll reads them: links between companies first, hand-offs to your own computer last
   const lists = Object.fromEntries(kinds.map((k) => [k, arcs.filter((x) => x.kind === k).sort((a, b) => (a.b.id === 'you') - (b.b.id === 'you'))]));
 
@@ -91,7 +99,7 @@ export function create(ctx, el, sec) {
   // the arc being read: its sentence in the card, its two names at its two ends and the floor's name where it lands
   function setActive(n, quiet) {
     if (n === st.active) return;
-    st.active = n;
+    st.active = n; st.out = 0; st.run = 0;
     st.pins.forEach((p) => p.drop()); st.pins = [];
     items.forEach((li, k) => li.classList.toggle('is-on', k === n));
     const x = arcs[n];
@@ -148,6 +156,8 @@ export function create(ctx, el, sec) {
   ctx.state.compare = { ...(ctx.state.compare || {}), links: {
     count: arcs.length,
     drawn: () => arcs.filter((x) => x.arc.line.visible).length,
+    // the cord: which link it is on, how far it has run out and where its bead is (null: none)
+    cord: () => ({ n: cord.show > 0.01 ? st.active : -1, draw: +cord.draw.toFixed(2), bead: cord.bead == null ? null : +cord.bead.toFixed(2), dash: cord.dash }),
     dashes: () => arcs.map((x) => ({ n: x.n, official: x.li.dataset.official, dashed: !!x.arc.line.material.isLineDashedMaterial })),
     showAll() { arcs.forEach((x) => st.drawn.set(x.n, 1)); st.all = true; },
     show(n) { pick(arcs[n].kind, n); },
@@ -164,6 +174,7 @@ export function create(ctx, el, sec) {
       studio.dark = 0;
       delete document.documentElement.dataset.chrome;
       arcs.forEach((x) => { x.arc.show = 0; x.arc.update(); });
+      cord.show = 0; cord.update();
       Object.values(blockMesh).forEach((m) => { m.visible = false; });
       items.forEach((li) => li.classList.remove('is-on'));
       st.active = -1;
@@ -172,9 +183,11 @@ export function create(ctx, el, sec) {
       const k = smooth(span(u, 0, 0.2)) * (1 - smooth(span(u, 1.3, sec.screens)));
       st.k = k; st.u = u;
       if (phone) rig.mix(rig.stops.row, PHONE, k); else rig.mix(rig.stops.row, VIEW, k);
-      // lights down: the room sweeps dark, a low wash of light keeps the glass and the floor readable
+      // lights down: the room sweeps dark, a low wash of light keeps the glass and the floor readable. The boards go
+      // down into the floor: at night they would stand as five grey slabs behind the links
       studio.dark = 0.999 * k; studio.roomX = 0;
-      studio.glow.amount = 0.62 * k; studio.glow.radius = 19; studio.glow.color.set('#9EA6B8'); studio.glow.pos.set(0, 3.5, 7);
+      studio.glow.amount = CORD.wash * k; studio.glow.radius = 19; studio.glow.color.set('#9EA6B8'); studio.glow.pos.set(0, 3.5, 7);
+      for (const b of studio.bays) b.show = 1 - k;
       // the chrome and the words flip to paper on ink while the room is dark. The sweep comes from the left, where
       // the title stands, so they flip as it reaches the title (a third of the way) and not at the middle of the room
       const night = k > 0.34;
@@ -217,12 +230,24 @@ export function create(ctx, el, sec) {
         if (x.n === st.active) x.arc.color.lerp(white, 0.25);
         x.arc.update();
       }
+      // the link being read is a cord: it runs out from the thing that reaches, then a bead travels it, again and again
+      const now = arcs[st.active];
+      if (now) {
+        st.out = reduced ? 1 : Math.min(1, st.out + dt / CORD.out);
+        if (st.out >= 1) st.run = (st.run + dt / CORD.run) % 1;
+        cord.from = now.from; cord.to = now.to; cord.lift = now.lift;
+        cord.color.copy(now.base); cord.dash = CORD.dash[now.li.dataset.official] || null;
+        cord.draw = st.out; cord.bead = reduced ? 1 : st.out >= 1 ? st.run : null;
+      }
+      cord.show = now ? k : 0;
+      cord.update();
     },
     dispose() {
       el.removeEventListener('click', onChip);
       window.removeEventListener('keydown', onKey);
       if (kindRow) kindRow.drop();
       arcs.forEach((x) => x.arc.dispose());
+      cord.dispose();
       st.pins.forEach((p) => p.drop()); outPins.forEach((p) => p.drop());
       Object.values(blockMesh).forEach((m) => { ctx.scene.remove(m); m.material.dispose(); });
       blockGeo.dispose();

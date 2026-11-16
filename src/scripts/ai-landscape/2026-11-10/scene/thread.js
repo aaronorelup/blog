@@ -1,13 +1,14 @@
 // The ink thread (SPEC 3.4): one request, travelling. A thin tube along a path, drawn over the glass so it is
 // never lost, with a round head. Ink on a light ground, paper on a dark one. A section sets the path and how
 // far the head has got every frame, and reads thread.pos to pin its chip. createThread makes more than one.
+// Options for a cord (a link drawn thick): `color` in place of ink and paper, `head: false`, and thread.dash.
 import { Color, CylinderGeometry, InstancedMesh, Mesh, MeshBasicMaterial, Object3D, SphereGeometry, Vector3 } from 'three';
 
 const INK = new Color('#0C0D10');
 const PAPER = new Color('#F8F9FB');
 const UP = new Vector3(0, 1, 0);
 
-export function createThread(ctx, { max = 48, radius = 0.017 } = {}) {
+export function createThread(ctx, { max = 48, radius = 0.017, head: withHead = true, color = null } = {}) {
   const geo = new CylinderGeometry(radius, radius, 1, 8, 1, false).translate(0, 0.5, 0);
   const mat = new MeshBasicMaterial({ color: INK.clone(), depthTest: false, transparent: true, toneMapped: false });
   const tube = new InstancedMesh(geo, mat, max);
@@ -29,6 +30,8 @@ export function createThread(ctx, { max = 48, radius = 0.017 } = {}) {
     from: 0, head: 0,      // the drawn part, as fractions of its length
     show: 0,               // 0 hidden .. 1
     dark: 0,               // 0 ink .. 1 paper (set from the room: lights out, a dark world)
+    color: color ? new Color(color) : null,      // its own colour: then `dark` is not read
+    dash: null,            // [on, off] in segments of the path: three on and one off, one and one. null is solid
     pos: new Vector3(),    // where the head is, for labels.pin
     length: 0,
     reset() { thread.show = 0; thread.from = 0; },
@@ -54,8 +57,9 @@ export function createThread(ctx, { max = 48, radius = 0.017 } = {}) {
     update() {
       const pts = thread.points;
       const on = thread.show > 0.01 && pts.length > 1;
-      tube.visible = on; head.visible = on; ring.visible = on;
+      tube.visible = on; head.visible = on && withHead; ring.visible = on && withHead;
       if (!on) return;
+      const period = thread.dash ? thread.dash[0] + thread.dash[1] : 0;
       let total = 0;
       const lens = [];
       for (let i = 0; i < pts.length - 1; i++) { const l = pts[i].distanceTo(pts[i + 1]); lens.push(l); total += l; }
@@ -69,6 +73,7 @@ export function createThread(ctx, { max = 48, radius = 0.017 } = {}) {
         const s0 = at, s1 = at + lens[i];
         at = s1;
         if (s1 <= start || s0 >= end || lens[i] < 1e-5) continue;
+        if (period && i % period >= thread.dash[0]) { thread.pos.lerpVectors(pts[i], pts[i + 1], Math.min(1, (end - s0) / lens[i])); continue; }
         const u0 = Math.max(0, (start - s0) / lens[i]), u1 = Math.min(1, (end - s0) / lens[i]);
         a.lerpVectors(pts[i], pts[i + 1], u0); b.lerpVectors(pts[i], pts[i + 1], u1);
         dir.subVectors(b, a);
@@ -83,7 +88,8 @@ export function createThread(ctx, { max = 48, radius = 0.017 } = {}) {
       }
       tube.count = n;
       tube.instanceMatrix.needsUpdate = true;
-      mat.color.copy(INK).lerp(PAPER, thread.dark); mat.opacity = thread.show;
+      if (thread.color) mat.color.copy(thread.color); else mat.color.copy(INK).lerp(PAPER, thread.dark);
+      mat.opacity = thread.show;
       headMat.color.copy(mat.color); headMat.opacity = thread.show;
       ringMat.color.copy(PAPER).lerp(INK, thread.dark); ringMat.opacity = thread.show * 0.92;
       head.position.copy(thread.pos); ring.position.copy(thread.pos);
