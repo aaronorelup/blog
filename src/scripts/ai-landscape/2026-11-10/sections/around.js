@@ -1,14 +1,16 @@
 // Around the five (SPEC 2.9.1): the camera rises until the five stacks are a short row at the top of the frame,
-// and nine grey blocks rise under them one at a time, lifting them, as a base: what a person adds around the
-// providers. The scroll lights one block after another with its sentence (no timer). A visitor's own pick holds
-// until the scroll has moved a tenth of a screen. Phone: names in the sheet.
-import { Raycaster, Vector2 } from 'three';
+// and a cabinet of nine drawers rises under them one drawer at a time, lifting them: what a person keeps around
+// the providers. Each front carries its glyph and its name. The scroll pulls one drawer after another open, with its
+// sentence (no timer). A visitor's own pick holds until the scroll has moved a tenth of a screen. Phone: names in the sheet.
+import { Raycaster, Vector2, Vector3 } from 'three';
 import { easeIO, smooth, span } from '../core/clock.js';
 import { $, $$, announce, rove } from '../core/dom.js';
-import { createBase, STOPS } from '../scene/bench.js';
+import { CABINET, createBase, STOPS } from '../scene/bench.js';
 
 const AROUND = STOPS.around;
-const FIRST = 0.12, EACH = 0.11;        // block k of nine is the active one for 0.11 screens, from 0.12
+const FIRST = 0.12, EACH = 0.11;        // drawer k of nine is the open one for 0.11 screens, from 0.12
+const PULL = 0.1;                       // seconds: a drawer is 97 percent of the way out after 0.35 s
+const NAME = CABINET.up - CABINET.glyph / 2 - 0.25;      // a name stands under its glyph, this far from the front's middle
 
 export function create(ctx, el, sec) {
   const { rig, row, labels, phone, reduced, input } = ctx;
@@ -17,9 +19,16 @@ export function create(ctx, el, sec) {
   const tags = items.map((li) => $('.ail-ar__d', li));
   const list = $('.ail-ar__list', el);
   const head = $('.ail-ar__head', el);
-  const st = { active: 0, hold: null, u: 0, hover: -1, k: 0 };
-  const pins = phone ? [] : tags.map((t, k) => labels.pin(t, () => base.blocks[k].front, { ax: 0.5, ay: 0.5, dy: 2 }));
+  const st = { active: 0, hold: null, u: 0, hover: -1, k: 0, tick: 0, boxes: [], hid: false };
+  const at = new Vector3();
+  const pins = phone ? [] : tags.map((t, k) => labels.pin(t, () => at.copy(base.blocks[k].front).setY(base.blocks[k].front.y + NAME), { ax: 0.5, ay: 0.5 }));
   pins.forEach((p) => { p.on = false; });
+  base.blocks.forEach((b) => { b.out = 0; });
+  // for the tests: how far each drawer stands out, and the glyph on each front
+  ctx.state.compare = { ...(ctx.state.compare || {}), around: {
+    drawers: () => base.blocks.map((b) => ({ out: +(b.push * CABINET.slide).toFixed(2), front: +b.front.z.toFixed(2), up: +b.rise.toFixed(2), glyph: !!(b.glyph && b.glyph.visible) })),
+    glyphs: () => items.map((li) => li.dataset.layer),
+  } };
 
   function pick(k, quiet = false) {
     if (k < 0 || k >= items.length) return;
@@ -35,7 +44,7 @@ export function create(ctx, el, sec) {
   list.addEventListener('toggle', onToggle, true);
   const unrove = rove(list, 'summary');
 
-  // the block under the pointer lights, and a click opens its card
+  // the drawer under the pointer opens, and a click opens its card
   const ray = new Raycaster();
   const ndc = new Vector2();
   const hit = (x, y) => {
@@ -58,7 +67,7 @@ export function create(ctx, el, sec) {
   window.addEventListener('keydown', onEsc);
 
   return {
-    stops: items.map((_, k) => (FIRST + EACH * (k + 0.5)) / sec.screens),      // reduced motion: one still for each block
+    stops: items.map((_, k) => (FIRST + EACH * (k + 0.5)) / sec.screens),      // reduced motion: one still for each drawer
     enter() { pins.forEach((p) => { p.on = true; }); },
     leave() {
       pins.forEach((p) => { p.on = false; p.el.style.opacity = '0'; });
@@ -74,15 +83,22 @@ export function create(ctx, el, sec) {
       rig.mix(rig.stops.row, AROUND, easeIO(span(u, 0, 0.32)));
       rig.yaw = 0.05; rig.pitch = 0.02;
 
-      // the blocks rise one at a time, left to right, and every stack stands on whatever has risen under it
+      // the drawers rise one at a time, left to right, and every stack stands on whatever has risen under it
       base.blocks.forEach((b, i) => { b.rise = reduced ? 1 : span(u, 0.04 + i * 0.032, 0.16 + i * 0.032); });
+      // a mark is whole or absent: where a short window stands the title or the quote over a lid plate, all five
+      // plates leave together (the words are measured twice a second: they do not move)
+      st.tick -= dt;
+      if (st.tick <= 0) { st.tick = 0.5; st.boxes = phone ? [] : [...head.children].map((c) => c.getBoundingClientRect()); }
+      const pad = st.hid ? 8 : 0;
+      st.hid = u > 0.03 && st.boxes.some((b) => row.towers.some((tw) => { const p = labels.project(tw.lid.mesh.position), r = tw.lid.px / 2 + pad; return p.x + r > b.left && p.x - r < b.right && p.y - r < b.bottom; }));
       for (const tw of row.towers) {
         tw.lift = base.under(tw.x - 1.2, tw.x + 1.2);
+        tw.lid.show = st.hid ? 0 : 1;
         if (!phone) { tw.char.to = 'front'; tw.char.t = k; }       // the five figures step down onto the base, twice their size
       }
       row.datum = 0;
 
-      // the scroll picks the block: each of the nine is the active one for its share of the section. A hover, a tap or
+      // the scroll picks the drawer: each of the nine is the open one for its share of the section. A hover, a tap or
       // a key leads until the scroll has moved a tenth of a screen
       const up = span(u, 0.1, 0.18);
       if (st.hold != null && Math.abs(u - st.hold) > 0.1) st.hold = null;
@@ -92,20 +108,26 @@ export function create(ctx, el, sec) {
         const h = hit(input.px, input.py);
         if (h !== st.hover) { st.hover = h; ctx.canvas.style.cursor = h >= 0 ? 'pointer' : ''; if (h >= 0) { touch(); pick(h); } }
       }
+      // the open drawer slides out toward the camera and glows, the other eight step back a tone. The last one is
+      // pushed shut by the scroll before the section ends: my stack takes the cabinet over closed
+      const shut = 1 - smooth(span(u, sec.screens - 0.08, sec.screens - 0.01));
       base.show = 1;
       base.blocks.forEach((b, i) => {
         const on = i === st.active ? up : 0;
-        b.lit = on * 0.42; b.push = on; b.dim = up * 0.25 * (i === st.active ? 0 : 1);
+        b.out = reduced ? on : b.out + (on - b.out) * (1 - Math.exp(-dt / PULL));
+        b.push = Math.min(b.out, shut);
+        b.lit = b.push * 0.42; b.dim = up * 0.22 * (1 - b.push);
       });
       base.update();
 
-      // words: the names ride their blocks once each has risen. The sentence of the lit block waits for all nine
+      // words: the names ride their fronts once each has risen. The sentence of the open drawer waits for all nine
       pins.forEach((p, i) => { p.el.style.opacity = smooth(base.blocks[i].rise * 1.6 - 0.6).toFixed(3); });
       el.style.setProperty('--ar-up', up.toFixed(3));
       head.style.opacity = smooth(span(u, 0.02, 0.2)).toFixed(3);
       list.classList.toggle('is-up', up > 0.5);
     },
     dispose() {
+      if (ctx.state.compare) delete ctx.state.compare.around;
       unrove(); window.removeEventListener('keydown', onEsc);
       list.removeEventListener('focusin', onFocus);
       list.removeEventListener('toggle', onToggle, true);

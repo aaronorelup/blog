@@ -1,6 +1,6 @@
-// The architecture package's house glass (SPEC 2.9): rounded blocks, the nine-block base under the row (2.9.1),
-// the owner's bench with five shelves and dovetailed pieces (2.9.2), a soft contact shadow, and floor ribbons
-// for the ink diagrams of 2.9.3 to 2.9.5. Builders return plain fields a section sets every frame. No words here.
+// The architecture package's house glass (SPEC 2.9): rounded blocks, the cabinet of nine drawers under the row
+// (2.9.1), the owner's bench with five shelves and dovetailed pieces (2.9.2), a soft contact shadow, and floor
+// ribbons for the ink diagrams of 2.9.3 to 2.9.5. Builders return plain fields a section sets every frame. No words.
 import { BufferGeometry, CanvasTexture, Color, DoubleSide, ExtrudeGeometry, Float32BufferAttribute, Group, Line, LineBasicMaterial, Mesh, MeshBasicMaterial, PlaneGeometry, RepeatWrapping, Shape, SphereGeometry, Vector3 } from 'three';
 import { smooth } from '../core/clock.js';
 import { owner } from '../worlds/index.js';
@@ -9,8 +9,8 @@ export const INK = '#0C0D10';
 // The camera stops of the five architecture sections, chained: each section starts where the one before it ends.
 // (cy: on a phone the picture stands just over the sheet of words, with no empty band between them.)
 export const STOPS = {
-  around: { pos: [0, 8.4, 30.5], look: [0, 2.35, 0.6], fov: 24, fit: 23.5, cy: 0.6 },
-  bench: { pos: [0, 5.6, 27.5], look: [0, 2.05, 3.2], fov: 24, fit: 22.4, cy: 0.58 },
+  around: { pos: [0, 8.4, 30.5], look: [0, 2.9, 0.6], fov: 24, fit: 23.5, cy: 0.6 },                // the cabinet's fronts near 62 percent of the height
+  bench: { pos: [0, 5.2, 27.5], look: [0, 2.9, 3.2], fov: 24, fit: 23.4, cy: 0.58 },                // the bench's front edge near 64 percent
   router: { pos: [0, 17.8, 15.6], look: [0, 0, 5.15], fov: 24, fit: 21, cy: 0.42, cyd: 0.5 },      // the three diagrams stand at the middle of the frame
   board: { pos: [-0.4, 2.7, 29.5], look: [-0.4, 1.75, 0], fov: 24, fit: 24.4, cx: 0.565, cy: 0.44 },
   rail: { pos: [-0.4, 3.0, 27], look: [-0.4, 2.05, 1.6], fov: 24, fit: 23.6, cy: 0.47 },
@@ -75,20 +75,40 @@ export function shadow(ctx, w, d, { opacity = 0.2, soft = 0.45 } = {}) {
   return mesh;
 }
 
-// The nine-block base of 2.9.1: blocks along x under the five stacks. rise[k] 0..1 lifts block k out of the floor.
-export function createBase(ctx, { n = 9, span = 20.6, h = 0.62, d = 3.2, z = 0, gap = 0.12 } = {}) {
+// The cabinet of 2.9.1: nine drawers along x under the five stacks, each front printed with the glyph of what is
+// kept in it (the layer ids are read from the page's own list). rise 0..1 lifts drawer k out of the floor, push
+// 0..1 pulls it out toward the camera: its back stays in the cabinet, so whatever stands on it stays carried.
+export const CABINET = { h: 1.25, d: 3.6, z: 0.2, slide: 1.4, glyph: 0.62, up: 0.2 };
+let wellTex = null;
+export function createBase(ctx, { n = 9, span = 20.6, h = CABINET.h, d = CABINET.d, z = CABINET.z, gap = 0.12, slide = CABINET.slide } = {}) {
   const group = new Group();
   ctx.scene.add(group);
   const w = (span - gap * (n - 1)) / n;
   const geo = roundBox(w, h, d, 0.16);
+  const names = [...document.querySelectorAll('.ail-ar__item')].map((li) => li.dataset.layer);
   const blocks = Array.from({ length: n }, (_, k) => {
     const mesh = block(ctx, geo, 'house', h, { alpha: 0.88 });
     mesh.position.set(-span / 2 + w / 2 + k * (w + gap), -h / 2, z);
     group.add(mesh);
-    return { mesh, x: mesh.position.x, rise: 0, lit: 0, push: 0, dim: 0, front: new Vector3() };
+    const glyph = names[k] ? ctx.textures.glyphPlane(names[k], CABINET.glyph, { tint: INK }) : null;
+    if (glyph) { glyph.position.set(0, CABINET.up, d / 2 + 0.008); mesh.add(glyph); }
+    return { mesh, glyph, x: mesh.position.x, rise: 0, lit: 0, push: 0, dim: 0, front: new Vector3() };
   });
   const shade = shadow(ctx, span, d, { opacity: 0.16 });
   shade.position.set(0.9, 0.003, z + 0.7);
+  // the open drawer's own shadow on the floor in front of the cabinet, and the dark of the cabinet it comes out of:
+  // a shade across its top, deepest where it leaves the cabinet's front and gone before its own front edge
+  const pull = shadow(ctx, w * 0.82, slide, { opacity: 0.2, soft: 0.5 });
+  if (!wellTex) {
+    const c = document.createElement('canvas'); c.width = 4; c.height = 64;
+    const g = c.getContext('2d'), fall = g.createLinearGradient(0, 0, 0, 64);
+    fall.addColorStop(0, '#fff'); fall.addColorStop(0.5, '#555'); fall.addColorStop(1, '#000');
+    g.fillStyle = fall; g.fillRect(0, 0, 4, 64);
+    wellTex = new CanvasTexture(c);
+  }
+  const well = new Mesh(new PlaneGeometry(w - 0.3, 1).rotateX(-Math.PI / 2).translate(0, 0, 0.5), new MeshBasicMaterial({ color: INK, alphaMap: wellTex, transparent: true, opacity: 0, depthWrite: false }));
+  well.renderOrder = 6; well.visible = false;
+  ctx.scene.add(well);
   const set = {
     blocks, w, h, d, z, show: 1, span,
     // how high the base under the span [x0, x1] stands right now: what a stack there must be lifted by
@@ -98,18 +118,31 @@ export function createBase(ctx, { n = 9, span = 20.6, h = 0.62, d = 3.2, z = 0, 
       return top;
     },
     update() {
-      let up = 0;
+      let up = 0, open = null;
       blocks.forEach((b) => {
-        const r = smooth(b.rise);
-        b.mesh.position.set(b.x, h * (r - 0.5) + b.push * 0.12, z + b.push * 0.3);
-        setGlass(b.mesh, { show: set.show * Math.min(1, b.rise * 6), lit: b.lit, dim: b.dim });
-        b.front.set(b.x, b.mesh.position.y, z + d / 2 + b.push * 0.3);
+        const r = smooth(b.rise), out = b.push * slide, on = set.show * Math.min(1, b.rise * 6);
+        b.mesh.position.set(b.x, h * (r - 0.5), z + out / 2);
+        b.mesh.scale.z = 1 + out / d;
+        setGlass(b.mesh, { show: on, lit: b.lit, dim: b.dim });
+        if (b.glyph) { b.glyph.material.uniforms.uOpacity.value = on * (0.86 - b.dim * 0.9); b.glyph.visible = on > 0.01; }
+        b.front.set(b.x, b.mesh.position.y, z + d / 2 + out);
         up += r;
+        if (b.push > 0.02 && (!open || b.push > open.push)) open = b;
       });
       shade.material.opacity = shade.userData.opacity * set.show * (up / n);
       shade.visible = shade.material.opacity > 0.004;
+      pull.visible = well.visible = !!open && set.show > 0.01;
+      if (open) {
+        const out = open.push * slide, k = set.show * smooth(open.push) * smooth(open.rise);
+        pull.position.set(open.x + 0.12, 0.004, z + d / 2 + out / 2 + 0.2); pull.material.opacity = pull.userData.opacity * k;
+        well.position.set(open.x, open.mesh.position.y + h / 2 + 0.006, z + d / 2); well.scale.z = Math.max(0.01, out - 0.1); well.material.opacity = 0.34 * k;
+      }
     },
-    dispose() { group.removeFromParent(); geo.dispose(); blocks.forEach((b) => b.mesh.material.dispose()); shade.removeFromParent(); shade.geometry.dispose(); shade.material.dispose(); },
+    dispose() {
+      group.removeFromParent(); geo.dispose();
+      blocks.forEach((b) => { b.mesh.material.dispose(); if (b.glyph) { b.glyph.geometry.dispose(); b.glyph.material.dispose(); } });
+      for (const m of [shade, pull, well]) { m.removeFromParent(); m.geometry.dispose(); m.material.dispose(); }
+    },
   };
   set.update();
   return set;

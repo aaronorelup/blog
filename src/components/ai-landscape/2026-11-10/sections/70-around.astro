@@ -1,7 +1,7 @@
 ---
 // Around the five (SPEC 2.9.1): the nine things a person adds around the providers, with his one sentence about
 // his whole setup. Text version: a list of nine, each opening what goes wrong without it and what fills it.
-// 3D page (sections/around.js): nine grey blocks rise as a base under the row, and the scroll lights one after another
+// 3D page (sections/around.js): a cabinet of nine drawers rises under the row, and the scroll opens one after another
 // with its sentence.
 import '../../../../styles/ai-landscape/2026-11-10/architecture.css';
 import Fact from '../Fact.astro';
@@ -23,8 +23,8 @@ const layers = A.aroundLayers.map((l) => ({
       <p class="ail-ar__quote ail-sentence"><Fact fact={fact(frame.claim)} full tag={false}>&ldquo;{frame.quote}&rdquo;</Fact></p>
     </header>
     <ol class="ail-ar__list">
-      {layers.map((l, i) => (
-        <li class="ail-ar__item" data-i={i} data-layer={l.id}>
+      {layers.map((l) => (
+        <li class="ail-ar__item" data-layer={l.id}>
           <details class="ail-ar__d" name="ail-around">
             <summary class="ail-ar__name ail-label">{l.name}</summary>
             <div class="ail-ar__more ail-card">
