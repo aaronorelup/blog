@@ -20,7 +20,7 @@
 
 /* ---- 2.3 line-up. Text version: a table, sideways scroll inside its own box on a narrow screen */
 .ail-lu__now, .ail-lens { display: none; }
-.ail-lu__wrap { overflow-x: auto; margin-top: 18px; }
+.ail-lu__wrap { position: relative; overflow-x: auto; margin-top: 18px; }   /* relative: the cells' visually hidden words scroll with the table, never widen the page */
 .ail-lu__table { border-collapse: collapse; width: 100%; min-width: 820px; }
 .ail-lu__table :is(th, td) { text-align: left; vertical-align: top; padding: 9px 12px 9px 0; border-top: 1px solid var(--ail-line); font-weight: 400; }
 .ail-lu__th { width: 22%; }
@@ -51,7 +51,7 @@
 .ail-gl .ail-lu__say .ail-sentence { display: block; margin-top: 12px; max-width: 24em; }
 .ail-gl .ail-lu__note { display: flex; align-items: center; margin-top: 12px; color: var(--ail-fg-2); }
 @keyframes ail-cmp-in { from { opacity: 0; transform: translate3d(0, 8px, 0); } to { opacity: 1; transform: none; } }
-.ail-gl .ail-lu__wrap { overflow: visible; margin: 0; }
+.ail-gl .ail-lu__wrap { position: static; overflow: visible; margin: 0; }
 .ail-gl :is(.ail-lu__table, .ail-lu__table tbody, .ail-lu__row) { display: contents; }
 .ail-gl .ail-lu__table thead, .ail-gl .ail-lu__sent { display: none; }
 .ail-gl .ail-lu__table :is(th, td) { padding: 0; border: 0; width: auto; }
