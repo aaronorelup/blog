@@ -1,0 +1,48 @@
+---
+// The opening as HTML (SPEC 2.1): the scope line, the open line, and the five companies with the agent on top of
+// each. 3D page: each row is the caption pinned under its lid (sections/opening.js), and .ail-open__proof is the
+// poster in plain lines, shown from first paint until the scene has drawn it. Every word is data or COPY.
+import '../../../../styles/ai-landscape/2026-11-10/frame.css';
+import Fact from '../Fact.astro';
+import Mark from '../Mark.astro';
+import { COPY } from '../data/copy.js';
+import { fact, view } from '../data/view.js';
+import { world } from '../../../../scripts/ai-landscape/2026-11-10/worlds/index.js';
+
+const five = view.providers.map((p) => ({
+  ...p,
+  markName: world(p.id).marks.of === 'name' ? p.name : p.brand,
+  rename: p.nameNote ? fact(view.data.providers[p.id].identity.rename) : null,
+}));
+---
+<section id="top" class="ail-sec ail-open" data-sec="opening" data-screens="1.6" data-rail={COPY.frame.title} aria-labelledby="top-scope">
+  <div class="ail-stage">
+    <div class="ail-open__proof" aria-hidden="true">
+      <p class="ail-print"><span>{COPY.frame.title}</span></p>
+      {five.map((p) => <i data-p={p.id}></i>)}
+    </div>
+
+    <div class="ail-open__words">
+      <h2 id="top-scope" class="ail-open__scope ail-label">{COPY.frame.scope}</h2>
+      <p class="ail-open__line ail-sentence">{COPY.frame.openLine}</p>
+    </div>
+
+    <ol class="ail-open__five">
+      {five.map((p) => (
+        <li class="ail-open__co" data-p={p.id}>
+          <Mark provider={p.id} name={p.markName} />
+          <span class="ail-open__who ail-label">
+            <a class="ail-open__name" href={`#${p.id}`}>{p.name}</a>
+            {p.rename && <span class="ail-open__note"><Fact fact={p.rename} full tag={false}>{p.nameNote}</Fact></span>}
+          </span>
+          <span class="ail-open__agent"><Fact fact={p.agent.access} full>{p.agent.name}</Fact></span>
+        </li>
+      ))}
+    </ol>
+
+    <p class="ail-open__tour">
+      <span class="ail-chip" data-tour="on">{COPY.frame.tourOn}</span>
+      <button type="button" class="ail-chip" data-tour="resume">{COPY.frame.tourResume}</button>
+    </p>
+  </div>
+</section>

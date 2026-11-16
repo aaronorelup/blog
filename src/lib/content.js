@@ -3,6 +3,7 @@
 import { getCollection, render } from 'astro:content';
 import { isListed } from './posts.js';
 import { isoDay } from './dates.js';
+import { LISTED as LANDSCAPE_LISTED } from '../data/ai-landscape.js';
 
 const bySlug = (a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
 const sorted = async (name) => (await getCollection(name)).sort(bySlug);
@@ -18,7 +19,8 @@ export const textOf = async (entry) => (await renderEntry(entry)).remarkPluginFr
 export const allPosts = () => sorted('posts');                    // drafts included
 export const listedPosts = async () => (await allPosts()).filter((p) => isListed(p.data));
 export const research = () => sorted('research');
-export const projects = () => sorted('projects');
+// Every project card, except the AI landscape's while its LISTED switch is off (data/ai-landscape.js).
+export const projects = async () => (await sorted('projects')).filter((p) => LANDSCAPE_LISTED || p.id !== 'ai-landscape');
 
 // The Now page's snapshots, newest first, drafts left out. A file is named by its date, YYYY-MM-DD, which is also
 // its address /now/<date>/; the newest is /now itself.

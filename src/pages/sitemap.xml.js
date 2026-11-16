@@ -7,6 +7,7 @@ import { ledgerOrder } from '../lib/posts.js';
 import { isoDay } from '../lib/dates.js';
 import lore from '../data/lore/lore.json';
 import { TEA_BASE, teaSeo } from '../data/tea.js';
+import { LISTED as LANDSCAPE_LISTED, SNAPSHOTS } from '../data/ai-landscape.js';
 
 const LORE = '/courses/i-love-my-evening-television';
 const PAGES = [
@@ -31,6 +32,9 @@ export async function GET(context) {
     ...PAGES.map((p) => ({ loc: p, lastmod: p === '/' || p === '/ledger/' ? newest : null })),
     ...(snaps.length ? [{ loc: '/now/', lastmod: snaps[0].id }] : []),
     ...snaps.map((s) => ({ loc: `/now/${s.id}/`, lastmod: s.id })),
+    // the AI landscape, once it is listed: the newest snapshot at /ai-landscape/, and each one at its date for good
+    ...(LANDSCAPE_LISTED && SNAPSHOTS.length ? [{ loc: '/ai-landscape/', lastmod: SNAPSHOTS[0].date }] : []),
+    ...(LANDSCAPE_LISTED ? SNAPSHOTS : []).map((s) => ({ loc: `/ai-landscape/${s.date}/`, lastmod: s.date })),
     ...(await research()).map((doc) => ({ loc: `/research/${slugOf(doc)}/`, lastmod: null })),
     ...posts.flatMap((post) => {
       const page = { loc: `/ledger/${slugOf(post)}/`, lastmod: isoDay(post.data.date) };

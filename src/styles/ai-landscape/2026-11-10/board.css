@@ -1,0 +1,68 @@
+/* The board of best at (SPEC 2.8, review round 1): 22 capabilities in seven groups against six columns, the five
+   companies and "Outside the five". A cell's mark is a shape first and a colour second: the leader a 16 px disc in
+   its owner's glass with an ink ring, second an 8 px disc, contested a hatched disc, a tie the same joined by a line,
+   nobody knows five dotted rings, and nothing where a company has nothing. One table in the text version too. */
+.ail-bd { margin: 18px 0 30px; overflow-x: auto; }
+.ail-bd__table { border-collapse: collapse; }
+.ail-bd__table :is(th, td) { padding: 0; font-weight: 400; text-align: left; }
+.ail-bd__co { width: 64px; padding-bottom: 8px !important; text-align: center !important; vertical-align: bottom; color: var(--ail-fg-2); }
+.ail-bd__co .ail-mark { --h: 18px; width: 30px; height: 30px; padding: 0; margin: 0 auto 6px; }
+.ail-bd__co .ail-mark[data-clear='own'] img { height: 30px; }
+.ail-bd__con { display: block; font-size: 12px; letter-spacing: .02em; }
+.ail-bd__out { white-space: normal; line-height: 1.2; }
+.ail-bd__row { height: 26px; }
+.ail-bd__gn { width: 22px; vertical-align: top; color: var(--ail-fg-2); }
+.ail-bd tbody .ail-bd__gn { border-top: 1px solid var(--ail-fg-2); }
+.ail-bd__gn span { display: block; writing-mode: vertical-rl; transform: rotate(180deg); padding: 0 0 4px; white-space: nowrap; font-size: 12px; }
+.ail-bd__name { padding: 0 14px 0 8px !important; white-space: nowrap; border-top: 1px solid var(--ail-hair); }
+.ail-bd__open { display: block; width: 100%; font: 400 16px/1.1 var(--ail-serif); text-align: left; }
+.ail-bd__open:is(:hover, :focus-visible) { text-decoration: underline; text-underline-offset: .2em; text-decoration-thickness: 1px; }
+.ail-bd__cell { position: relative; text-align: center !important; vertical-align: middle; border-top: 1px solid var(--ail-hair); }
+.ail-bd tbody tr:first-child :is(.ail-bd__name, .ail-bd__cell) { border-top-color: var(--ail-fg-2); }
+.ail-bd [data-p='anthropic'] { --o: var(--ail-own-anthropic); }
+.ail-bd [data-p='openai'] { --o: var(--ail-own-openai); --oh: var(--ail-fg); }      /* a white glass hatches in ink */
+.ail-bd [data-p='google'] { --o: var(--ail-own-google); }
+.ail-bd [data-p='meta'] { --o: var(--ail-own-meta); }
+.ail-bd [data-p='xai'] { --o: var(--ail-own-xai); }
+.ail-bd [data-p='outside'] { --o: var(--ail-own-outside); }
+.ail-bd__m { position: relative; display: inline-block; box-sizing: border-box; border-radius: 50%; vertical-align: middle; }
+.ail-bd__m[data-m='lead'] { width: 16px; height: 16px; background: var(--o, var(--ail-mid)); box-shadow: 0 0 0 2px var(--ail-fg); }
+.ail-bd__m[data-m='second'] { width: 8px; height: 8px; background: var(--o, var(--ail-mid)); box-shadow: 0 0 0 1px var(--ail-fg); }
+.ail-bd__m:is([data-m='contest'], [data-m='tie']) { width: 14px; height: 14px; background: repeating-linear-gradient(135deg, transparent 0 2.5px, var(--oh, var(--ail-card)) 2.5px 4px), var(--o, var(--ail-mid)); box-shadow: 0 0 0 1px var(--ail-fg-2); }
+.ail-bd__m[data-m='unknown'] { width: 12px; height: 12px; border: 1.5px dotted var(--ail-fg-2); }
+.ail-bd__cell[data-line]::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1.5px; margin-top: -.75px; background: var(--ail-fg); }
+.ail-bd__cell[data-line='start']::before { left: 50%; }
+.ail-bd__cell[data-line='end']::before { right: 50%; }
+.ail-bd__key { display: flex; flex-wrap: wrap; gap: 6px 20px; margin-top: 12px; color: var(--ail-fg-2); }
+.ail-bd__key > span { display: inline-flex; align-items: center; gap: 8px; }
+
+/* 3D page: shown in the board state only. On a desktop its six mark columns stand under the five stacks and one
+   pitch further (--bd-x, --bd-pitch and --bd-y come from the camera, sections/bestat.js): the stacks are its heads */
+.ail-gl .ail-bd { display: none; margin: 0; overflow: visible; --bd-name: clamp(170px, 17.4vw, 250px); }
+.ail-gl .ail-ba[data-mode='board'] .ail-bd { display: block; position: absolute; left: calc(var(--bd-x, 30vw) - var(--bd-name) - 22px); top: var(--bd-y, 150px); --bd-row: clamp(18px, calc((100svh - var(--bd-y, 150px) - 100px) / 22), 26px); }
+.ail-gl .ail-bd__table { table-layout: fixed; width: calc(var(--bd-name) + 22px + 6 * var(--bd-pitch, 120px)); }
+.ail-gl .ail-bd__row { height: var(--bd-row); }
+.ail-gl .ail-bd__nh { width: var(--bd-name); }
+.ail-gl .ail-bd__name { text-align: right !important; overflow: hidden; }
+.ail-gl .ail-bd__open { text-align: right; font-size: clamp(14px, calc(var(--bd-row) * .68), 17px); }
+.ail-gl .ail-bd__co { width: var(--bd-pitch, 120px); }
+.ail-gl .ail-bd__co:not(.ail-bd__out) > * { display: none; }
+.ail-gl .ail-bd__out { padding: 0 4px 6px !important; }
+.ail-gl .ail-bd__key { margin: 10px 0 0 calc(var(--bd-name) + 22px); }
+.ail-gl .ail-ba[data-mode='board'] .ail-ba__title { font-size: clamp(26px, 2.9vw, 42px); max-width: 24vw; }
+
+@media (max-width: 899px) {
+  /* phone: the sheet takes the whole height under the chrome. The marks are the column heads */
+  .ail-gl .ail-ba[data-mode='board'] .ail-stage::before { top: var(--ail-top); }
+  .ail-gl .ail-ba[data-mode='board'] .ail-ba__title { top: calc(var(--ail-top) + 8px); font-size: 26px; max-width: none; }
+  .ail-gl .ail-ba[data-mode='board'] .ail-bd { left: var(--ail-margin); right: var(--ail-margin); top: auto; bottom: var(--ail-margin); --bd-row: clamp(20px, calc((100svh - 250px) / 22), 24px); }
+  .ail-gl .ail-bd__table { width: 100%; }
+  .ail-gl .ail-bd__gn { width: 18px; }
+  .ail-gl .ail-bd__nh { width: auto; }
+  .ail-gl .ail-bd__name { text-align: left !important; padding: 0 4px 0 5px !important; white-space: normal; }
+  .ail-gl .ail-bd__open { text-align: left; font-size: 14px; line-height: 1; }
+  .ail-gl .ail-bd__co { width: 34px; }
+  .ail-gl .ail-bd__co:not(.ail-bd__out) > .ail-mark { display: grid; --h: 18px; width: 28px; height: 28px; }
+  .ail-gl .ail-bd__out { width: 34px; padding: 0 0 6px !important; font-size: 12px; letter-spacing: 0; line-height: 1.05; }
+  .ail-gl .ail-bd__key { margin: 8px 0 0; gap: 4px 12px; letter-spacing: .03em; }
+}

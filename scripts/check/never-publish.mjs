@@ -88,6 +88,8 @@ const scope = (repo) => [
   ...repo.list('src/components/tea/room', (f) => f.endsWith('.astro')),       // the tea room's components (no copy belongs there)
   ...repo.list('docs/tea', (f) => f.endsWith('.md')),                          // the tea room's generation and round logs
   ...repo.list('src/elements/ao-demo/demos', (f) => f.endsWith('.json')),   // recorded model output a demo replays
+  // the AI landscape: its frozen data, its page text and the words its world configs hold (alt text, captions)
+  ...['src/data/ai-landscape', 'src/components/ai-landscape', 'src/pages/ai-landscape', 'src/scripts/ai-landscape'].flatMap((d) => repo.list(d)),
 ].map((e) => (typeof e === 'string' ? { file: e, raw: repo.read(e) } : e));
 
 export default function neverPublish(repo, report) {

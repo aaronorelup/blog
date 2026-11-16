@@ -1,0 +1,30 @@
+Official marks, unaltered, taken from Wikimedia Commons because the official source declined.
+
+Official source named by the plan: https://openai.com/brand/ (the same Blossom is served as
+https://openai.com/favicon.svg). On 2026-11-12 openai.com/brand, openai.com/about and openai.com/favicon.svg all
+answered HTTP 403 to a script. That refusal was not worked around.
+
+Fallback: Wikimedia Commons, files downloaded unmodified on 2026-11-12 (SHA-1 matches the Commons record).
+
+blossom.svg
+  File:OpenAI logo 2025 (symbol).svg
+  https://commons.wikimedia.org/wiki/File:OpenAI_logo_2025_(symbol).svg
+  https://upload.wikimedia.org/wikipedia/commons/6/66/OpenAI_logo_2025_%28symbol%29.svg
+  SHA-1 84d911401871762847b2def6b246c64fd6793563, uploaded 2026-08-24
+  Licence line on Commons: "Public domain" (licence: pd). Restrictions: "trademarked". Author: OpenAI.
+  Description on Commons: "OpenAI's blossom logo, used since February 2025". Credit on Commons: "This file was
+  derived from: OpenAI logo 2025.svg" (that title now redirects to the wordmark file below).
+
+openai-wordmark.svg
+  File:OpenAI logo 2025 (wordmark).svg
+  https://commons.wikimedia.org/wiki/File:OpenAI_logo_2025_(wordmark).svg
+  https://upload.wikimedia.org/wikipedia/commons/a/af/OpenAI_logo_2025_%28wordmark%29.svg
+  SHA-1 592014a49a237b7c54b2c4e04b829ca7bf3d4333, uploaded 2025-02-05
+  Licence line on Commons: "Public domain" (licence: pd). Restrictions: "trademarked". Author: OpenAI.
+  Credit on Commons: https://openai.com/brand/. Description on Commons: "OpenAI's primary wordmark, in use since
+  February 2025. The official Design Guidelines state that it should not be used with the Blossom."
+
+Rules kept (ART-PLAN "marks", from search summaries of openai.com/brand, not read first-hand): add no colour to
+the Blossom, never set it on a busy image, give it a lot of open space, do not lock it up with the wordmark, do not
+stretch or crop. Wordmark: clear space as prescribed on the brand page; not beside the Blossom.
+Swap in the files from openai.com/brand when someone downloads them in a browser.

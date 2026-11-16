@@ -1,0 +1,196 @@
+// The row of five (SPEC 4.1): one tower per company at x = -8.4 to 8.4, each with its lid plate (the official
+// mark, always facing the screen) and its character. row.reset() restores every per-frame field, the active
+// section sets what it needs, and row.update() draws that state and feeds the floor shadows.
+// A plate has two states, full or absent (SPEC 3.3 rule 7): it is never dimmed, tinted or cut by the iris.
+import { BoxGeometry, BufferGeometry, Color, Float32BufferAttribute, LineBasicMaterial, LineSegments, Mesh, PlaneGeometry, Raycaster, SphereGeometry, Vector2, Vector3 } from 'three';
+import { lerp } from '../core/clock.js';
+import { owner, world, ORDER } from '../worlds/index.js';
+import { createTower, FLOOR } from './stack.js';
+
+export const ROW_X = [-8.4, -4.2, 0, 4.2, 8.4];
+const LEDGE = FLOOR.w / 2 + 0.62;
+const BIG_WIDE = 1.6;     // how much larger a character stands when a world opens (pose "beside")
+// How large a character stands in each pose, times its own size: on its lid (the opening, the ending), on its ledge,
+// and free on the ground at its stack's front left (the sections where the figures have the floor to themselves).
+const SCALE = { top: 2.1, tight: 1.6, floor: 1.3, front: 2.6 };      // (tight: on its lid in a 16:9 frame or wider, which has less head room)
+const PLATE_MIN = 28;     // CSS px: a plate that would be drawn narrower is absent, and the HTML list shows the mark
+const PLATE_OUT = 0.18;   // seconds a plate takes to leave or come back, by scale alone
+
+export function createRow(ctx) {
+  const BIG = ctx.phone ? 1.15 : BIG_WIDE;
+  const { scene, mats, textures, data } = ctx;
+  const pale = (hex) => { const c = new Color(hex); return c.r + c.g + c.b > 2.2 ? new Color('#B9BEC8') : c; };
+
+  const towers = ORDER.map((id, t) => {
+    const cfg = world(id);
+    const tower = createTower(ctx, { id, x: ROW_X[t], owner: owner(id), cells: data.p[id].stack, ownerOf: owner, ink: '#0C0D10' });
+    tower.index = t; tower.cfg = cfg;
+    tower.shadow = pale(owner(id).prism ? owner(id).prism[2] : owner(id).glass);
+    scene.add(tower.group);
+
+    // the lid plate: the official mark on its plate. It never tilts: it is always turned to the camera
+    const plate = new Mesh(new PlaneGeometry(1, 1), mats.paper(null, { side: 0, blended: true, self: true }));
+    plate.visible = false; plate.renderOrder = 8;
+    scene.add(plate);
+    tower.lid = { mesh: plate, lift: 1, show: 1, size: 1.1, k: 1, px: 0, dx: 0 };
+    const name = document.querySelector(`.ail-world[data-world="${id}"] .ail-mark img`)?.alt || document.querySelector(`.ail-world[data-world="${id}"] .ail-mark__name`)?.textContent || id;
+    textures.markPlate({ url: cfg.marks.lid, name, plate: cfg.marks.plate, clear: cfg.marks.clear }).then((tex) => {
+      plate.material.uniforms.uMap.value = tex; plate.visible = true;
+      if (!tex.userData.over) return;
+      // a mark that cannot be drawn to a canvas: the official file itself rides the blank plate as an image
+      const img = document.createElement('img');
+      img.src = cfg.marks.lid; img.alt = ''; img.className = 'ail-lidmark';
+      document.body.appendChild(img);
+      tower.lid.dom = img; tower.lid.domK = tex.userData.over;
+    });
+
+    // the character: a real sphere for kind "orb3d", else the hero cut-out on a quad that faces the camera
+    const kind = cfg.character.kind;
+    const size = cfg.character.size;
+    const body = kind === 'orb3d'
+      ? new Mesh(new SphereGeometry(0.5, 48, 32), mats.orb())
+      : new Mesh(new PlaneGeometry(1, 1), mats.paper(null, { side: 0, blended: true }));
+    body.renderOrder = 7; body.visible = kind === 'orb3d';
+    scene.add(body);
+    if (kind !== 'orb3d') textures.load(cfg.art.hero).then((tex) => { if (tex) { body.material.uniforms.uMap.value = tex; body.visible = true; } });
+    const ledge = new Mesh(new BoxGeometry(1.3, 0.05, 0.95).translate(-0.07, 0, 0), mats.glass(owner(id), { halfH: 0.025, alpha: 0.82 }));
+    tower.group.add(ledge);
+    const shade = new Mesh(new PlaneGeometry(1, 1), mats.paper(textures.soft(true), { side: 0, blended: true, mask: true, tint: '#0C0D10', opacity: 0.22 }));
+    shade.rotation.x = -Math.PI / 2; shade.renderOrder = -6.5; shade.visible = false;
+    scene.add(shade);
+    tower.char = { mesh: body, ledge, shade, kind, size, floor: cfg.character.floor - 1, from: 'floor', to: 'floor', t: 1, show: 1, scale: 1, pos: new Vector3(), blink: 2 + t };
+    return tower;
+  });
+
+  // datum lines: the nine floor levels drawn across all five, like an elevation drawing
+  const pts = [];
+  for (let i = 0; i < FLOOR.n; i++) { const y = FLOOR.h / 2 + i * (FLOOR.h + FLOOR.gap0); pts.push(-10.4, y, -1.35, 10.4, y, -1.35); }
+  const datumGeo = new BufferGeometry();
+  datumGeo.setAttribute('position', new Float32BufferAttribute(pts, 3));
+  const datum = new LineSegments(datumGeo, new LineBasicMaterial({ color: '#0C0D10', transparent: true, opacity: 0 }));
+  scene.add(datum);
+
+  const ray = new Raycaster();
+  const ndc = new Vector2();
+  const a = new Vector3();
+  const b = new Vector3();
+  const floorsOf = (list) => list.flatMap((tw) => tw.floors.map((f) => f.mesh));
+
+  // Where a character stands for each named pose, in world units.
+  function pose(tower, name, out) {
+    const c = tower.char;
+    const x = tower.x + tower.shift;
+    if (name === 'top') return out.set(x, tower.height + tower.lift + c.size * onLid() * 0.5, tower.z + 0.2);
+    // front: on the ground left of the stack's front corner. On a raised base it steps back onto the base
+    if (name === 'front') return out.set(x - 2.0, tower.lift + c.size * SCALE.front * 0.5 + 0.02, tower.z + 1.6 - Math.min(0.6, tower.lift));
+    // beside: large, on the ground to the right of the stack (on a phone, where there is no room, on its lid)
+    if (name === 'beside') return ctx.phone ? out.set(x, tower.height + tower.lift + c.size * BIG * 0.5, tower.z + 0.2) : out.set(x + 2.9, c.size * BIG * 0.5 + 0.02, tower.z + 0.8);
+    return out.set(x - LEDGE, tower.floors[c.floor].y + tower.lift + FLOOR.h / 2 + c.size * SCALE.floor * 0.5, tower.z + 0.25);
+  }
+  // how much head room the frame has over the row seen from above: 1 at 16:10 and taller, 0 at 16:9 and wider
+  const roomy = () => Math.max(0, Math.min(1, (1.78 - ctx.camera.aspect) / 0.18));
+  const onLid = () => lerp(SCALE.tight, SCALE.top, roomy());
+  const big = (name) => (name === 'beside' ? BIG : name === 'top' ? onLid() : SCALE[name] || SCALE.floor);
+
+  const row = {
+    roomy,
+    towers, datum: 0,
+    tower: (id) => towers.find((tw) => tw.id === id),
+    reset() {
+      row.datum = 0;
+      for (const tw of towers) {
+        tw.reset();
+        tw.lid.lift = 1; tw.lid.show = 1; tw.lid.dx = 0;
+        tw.char.from = 'floor'; tw.char.to = 'floor'; tw.char.t = 1; tw.char.show = 1; tw.char.scale = 1;
+      }
+    },
+    // The floor under a point of the screen: { tower, i } or null. `only` limits it to one tower.
+    pick(px, py, only = null) {
+      const r = ctx.canvas.getBoundingClientRect();
+      ndc.set(((px - r.left) / r.width) * 2 - 1, -((py - r.top) / r.height) * 2 + 1);
+      ray.setFromCamera(ndc, ctx.camera);
+      const hit = ray.intersectObjects(floorsOf(only ? [only] : towers.filter((tw) => tw.show > 0.5)), false)[0];
+      return hit ? hit.object.userData : null;
+    },
+    update(dt, time, input) {
+      const cam = ctx.camera;
+      towers.forEach((tw, t) => {
+        tw.apply(dt);
+        const c = ctx.studio.casters[t];
+        c.x = tw.x + tw.shift; c.z = tw.z; c.h = tw.height + tw.lift; c.gap = tw.gap; c.color.copy(tw.shadow);
+        c.amt = tw.show * (1 - tw.dim * 0.72); c.inside = tw.side < 0 ? 0 : 1;
+
+        // the lid plate. It is wanted when its section shows it, its stack is there, it would be 28 px wide or
+        // more, and no iris is about to cut across it. It leaves and returns by scale in 0.18 s, at full value
+        ctx.studio.bays[t].x = tw.x + tw.shift;                 // its bay of the house set follows it
+        const lid = tw.lid;
+        const full = lid.size * (0.55 + 0.45 * lid.lift);
+        lid.mesh.quaternion.copy(cam.quaternion);
+        lid.mesh.position.set(tw.x + tw.shift + lid.dx, tw.height + tw.lift + 0.02 + lid.lift * (lid.size * 0.5 + 0.42), tw.z);
+        const depth = a.copy(lid.mesh.position).sub(cam.position).dot(cam.getWorldDirection(b));
+        lid.px = (full * window.innerHeight) / (2 * Math.max(0.1, depth) * Math.tan((cam.fov * Math.PI) / 360));
+        const cut = tw.side < 0 && (mats.irisOpen || 0) > 0.02;
+        const want = lid.show * tw.show > 0.5 && lid.px >= PLATE_MIN && !cut ? 1 : 0;
+        lid.k = ctx.reduced ? want : Math.max(0, Math.min(1, lid.k + (want ? dt : -dt) / PLATE_OUT));
+        const s = full * (0.6 + 0.4 * lid.k);
+        lid.mesh.scale.set(s, s, 1);
+        lid.mesh.material.uniforms.uOpacity.value = 1;
+        lid.mesh.material.uniforms.uSide.value = 0;
+        lid.mesh.visible = !!lid.mesh.material.uniforms.uMap.value && lid.k > 0.001;
+        if (lid.dom) {
+          lid.dom.style.opacity = lid.mesh.visible ? '1' : '0';
+          if (lid.mesh.visible) {
+            const p = ctx.labels.project(lid.mesh.position);
+            const px = lid.px * lid.domK * (0.6 + 0.4 * lid.k);
+            lid.dom.style.transform = `translate3d(${p.x.toFixed(1)}px,${p.y.toFixed(1)}px,0) translate(-50%,-50%) scale(${(px / 100).toFixed(4)})`;
+          }
+        }
+
+        const c2 = tw.char;
+        pose(tw, c2.from, a); pose(tw, c2.to, b);
+        const e = c2.t;
+        c2.pos.lerpVectors(a, b, e);
+        // it hops: high enough to clear the stack when it crosses from one side to the other
+        // (a step down to the front stays on its own side of the stack: a small hop is enough)
+        const near = c2.from === 'front' || c2.to === 'front';
+        if (c2.from !== c2.to) c2.pos.y += Math.sin(Math.PI * e) * Math.max(0.35, ctx.phone || near ? 0.35 : tw.height + tw.lift + c2.size * 0.5 + 0.35 - (a.y + b.y) / 2);
+        const breathe = ctx.reduced ? 0 : Math.sin(time * 2 * Math.PI * 0.4 + t) * 0.015;
+        const sc = c2.size * lerp(big(c2.from), big(c2.to), e) * c2.scale;
+        const m = c2.mesh;
+        m.position.copy(c2.pos);
+        m.visible = c2.show * tw.show > 0.01 && (c2.kind === 'orb3d' || !!m.material.uniforms.uMap.value);
+        m.material.uniforms.uSide.value = tw.side;
+        if (c2.kind === 'orb3d') {
+          m.scale.set(sc, sc * (1 + breathe), sc);
+          m.lookAt(cam.position);
+          c2.blink -= dt;
+          if (c2.blink < -0.13) c2.blink = 2.6 + ((time * 7.3 + t * 3.1) % 3.2);
+          m.material.uniforms.uBlink.value = c2.blink < 0 && !ctx.reduced ? 0.08 : 1;
+          m.material.uniforms.uLook.value.set(input.x * 0.36, -input.y * 0.24 + 0.02, 1).normalize();   // the eyes follow the pointer
+        } else {
+          m.quaternion.copy(cam.quaternion);
+          m.rotateZ(-input.x * 0.07);                                                       // it leans up to 4 degrees toward the pointer
+          m.scale.set(sc, sc * (1 + breathe), 1);
+          m.material.uniforms.uOpacity.value = c2.show * tw.show * (1 - tw.dim * 0.8);
+        }
+        // on the ground (front, or beside its open stack) it throws a soft contact shadow
+        const grounded = (n) => n === 'front' || (n === 'beside' && !ctx.phone);
+        const down = ((grounded(c2.to) ? e : 0) + (grounded(c2.from) ? 1 - e : 0)) * c2.show * tw.show;
+        c2.shade.visible = down > 0.02;
+        if (c2.shade.visible) {
+          c2.shade.position.set(c2.pos.x, (c2.to === 'front' || c2.from === 'front' ? tw.lift : 0) + 0.03, c2.pos.z + 0.06);
+          c2.shade.scale.set(sc * 1.4, sc * 0.42, 1);
+          c2.shade.material.uniforms.uOpacity.value = 0.22 * down; c2.shade.material.uniforms.uSide.value = tw.side;
+        }
+        const onLedge = (c2.to === 'floor' ? e : 0) + (c2.from === 'floor' ? 1 - e : 0);
+        c2.ledge.visible = onLedge * c2.show > 0.02;
+        c2.ledge.position.set(-LEDGE, tw.floors[c2.floor].y + FLOOR.h / 2 - 0.03, 0.25);
+        const lu = c2.ledge.material.uniforms;
+        lu.uShow.value = Math.min(1, onLedge) * tw.show * c2.show; lu.uDim.value = tw.dim; lu.uSide.value = tw.side;
+      });
+      datum.visible = row.datum > 0.01;
+      datum.material.opacity = row.datum * 0.16;
+    },
+  };
+  return row;
+}

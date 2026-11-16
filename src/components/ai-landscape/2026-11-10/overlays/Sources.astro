@@ -1,0 +1,21 @@
+---
+// The sources drawer (SPEC 2.11). The chip "Sources" in the chrome and any source number in a proof open it at the
+// right: it loads /ai-landscape/<date>/sources/ once and shows that page's list and its end (the open questions and
+// the count of unverified leads). Without JavaScript the chip is a plain link to that page.
+import '../../../../styles/ai-landscape/2026-11-10/trust.css';
+import { COPY } from '../data/copy.js';
+import { view } from '../data/view.js';
+const href = `/ai-landscape/${view.snapshot.date}/sources/`;
+---
+<dialog class="ail-drawer" id="ail-drawer" data-src={href} aria-labelledby="ail-drawer-h">
+  <div class="ail-drawer__panel">
+    <header class="ail-drawer__head">
+      <h2 id="ail-drawer-h" class="ail-label"><a href={href} target="_blank" rel="noopener">{COPY.stamp.sources} <b>{view.counts.sources}</b></a></h2>
+      <button type="button" class="ail-btn ail-drawer__x" data-close>{COPY.frame.back}</button>
+    </header>
+    <div class="ail-drawer__body" data-body aria-busy="true" tabindex="-1"></div>
+  </div>
+</dialog>
+<script>
+  import '../../../../scripts/ai-landscape/2026-11-10/ui/drawer.js';
+</script>

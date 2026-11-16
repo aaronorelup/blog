@@ -1,0 +1,14 @@
+name: "AI Landscape"
+line: "Five AI companies, their personal agents and the nine layers under each, in one dated snapshot you scroll through. Each company gets its own world."
+section: play
+state: finished
+since: "2026-11"
+needs: "Any browser. The 3D needs WebGL, and without it the page reads as text"
+image:
+  src: /media/projects/ai-landscape.webp
+  alt: "The opening of the AI landscape: five glass stacks, one per company, each with its mark and its agent on top, over the title"
+main:
+  href: "/ai-landscape/"
+posts: [progress-report-on-my-3d-ai-landscape-page]
+order: 130
+credit: "An independent comparison. Not made or endorsed by any company shown. Logos and characters belong to their owners."
