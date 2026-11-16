@@ -1,11 +1,11 @@
 // The text version's wide tables (the line-up, the agents) scroll sideways inside themselves on a phone. Each one that
 // does becomes a named region a keyboard can scroll (role, label, tabindex), with a fade at the edge (access.css) that
-// goes when its end is reached. The words of the label are read from <main data-sideways>.
+// goes when its end is reached. The words of the label are read from <main data-say-wide>.
 import { $, $$ } from '../core/dom.js';
 
 const seen = new WeakSet();
 export function markWide(on) {
-  const label = ($('#ail-main') || document.body).dataset.sideways || '';
+  const label = ($('#ail-main') || document.body).dataset.sayWide || '';
   for (const el of new Set($$('main table').map((t) => t.parentElement))) {
     const wide = on && el.scrollWidth > el.clientWidth + 1 && /auto|scroll/.test(getComputedStyle(el).overflowX);
     if (!wide) { if (el.hasAttribute('data-sideways')) for (const a of ['data-sideways', 'data-end', 'role', 'aria-label', 'tabindex']) el.removeAttribute(a); continue; }

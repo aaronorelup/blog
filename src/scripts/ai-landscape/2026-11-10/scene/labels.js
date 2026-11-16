@@ -44,7 +44,7 @@ export function createLabels(ctx) {
     // align: where the point touches the element, as fractions of its box (0 0 top left, 0.5 0.5 centre).
     pin(el, at, { dx = 0, dy = 0, ax = 0, ay = 0.5 } = {}) {
       el.classList.add('ail-pin');
-      const pin = { el, at, dx, dy, ax, ay, on: true, drop() { pins.delete(pin); el.classList.remove('ail-pin'); el.style.transform = ''; } };
+      const pin = { el, at, dx, dy, ax, ay, on: true, drop() { pins.delete(pin); el.classList.remove('ail-pin'); el.style.transform = ''; if (pin.faint) el.inert = false; } };
       pins.add(pin);
       return pin;
     },
@@ -107,12 +107,15 @@ export function createLabels(ctx) {
         if (!at) continue;
         const p = at.isVector3 ? labels.project(at) : at;
         pin.el.style.transform = `translate3d(${(p.x + pin.dx).toFixed(1)}px,${(p.y + pin.dy).toFixed(1)}px,0) translate(${-pin.ax * 100}%,${-pin.ay * 100}%)`;
-        // a pin its section has faded out is hidden as well, so Tab and a screen reader skip what nobody can see
+        // a pin its section has faded out is hidden as well, so Tab and a screen reader skip what nobody can see; one
+        // still fading in (or out) cannot take focus until it is whole
         const o = pin.el.style.opacity;
         const gone = o !== '' && Number(o) < 0.1;
         if (gone) pin.el.style.visibility = 'hidden';
         else if (pin.el.style.visibility === 'hidden' && pin.gone) pin.el.style.visibility = '';
         pin.gone = gone;
+        const faint = o !== '' && Number(o) < 0.9;
+        if (faint !== !!pin.faint) { pin.faint = faint; pin.el.inert = faint; }
       }
     },
   };

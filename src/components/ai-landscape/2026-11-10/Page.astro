@@ -56,7 +56,7 @@ const A = COPY.a11y;
   <body>
     <Chrome />
     <canvas class="ail-canvas" id="ail-gl" aria-hidden="true"></canvas>
-    <main id="ail-main" class="ail-main" data-text-on={A.textOn} data-next={A.next} data-sideways={A.sideways}>
+    <main id="ail-main" class="ail-main" data-say-text={A.textOn} data-say-next={A.next} data-say-wide={A.sideways}>
       {sections.map((Section) => <Section dated={dated} snapshots={snapshots} />)}
     </main>
     <p id="ail-fact-hint" class="ail-vh">{A.sources}</p>

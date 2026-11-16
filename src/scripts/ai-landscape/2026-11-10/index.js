@@ -88,7 +88,8 @@ function toText({ why = 'chosen', keep = false, say = false } = {}) {
   const at = sec && document.getElementById(sec.id);
   if (at) at.scrollIntoView();
   if (at && say) focusHead(at);
-  if (say) announce(main.dataset.textOn || '');
+  if (say) announce(main.dataset.sayText || '');
+  if (away) { away.here = (at && at.id) || midSection(); window.addEventListener('scroll', onTextScroll, { passive: true }); }
 }
 
 function buildRail() {
@@ -121,7 +122,7 @@ function addNextLinks() {
     const a = document.createElement('a');
     a.className = 'ail-next ail-vh';
     a.href = `#${next.id}`;
-    a.textContent = `${main.dataset.next || ''} ${next.el.dataset.rail || next.id}`.trim();
+    a.textContent = `${main.dataset.sayNext || ''} ${next.el.dataset.rail || next.id}`.trim();
     stage.append(a);
   });
 }
@@ -236,14 +237,17 @@ function enter3D(where) {
   requestAnimationFrame(() => requestAnimationFrame(load));
 }
 
-// Back from the text version for now: to the same place if the reader is still in that section, else to the section
-// in the middle of the window.
+// While the text version stands in for now, the section the reader has scrolled to (read on scroll, before any resize
+// reflows the page). Back in 3D: the same place if that is still the section they left, else that section.
+const midSection = () => { const e = document.elementFromPoint(innerWidth / 2, innerHeight / 2); const s = e && e.closest('main > section'); return s ? s.id : ''; };
+let reading = 0;
+function onTextScroll() { if (away && !reading) reading = requestAnimationFrame(() => { reading = 0; if (away) away.here = midSection() || away.here; }); }
 function back() {
   const was = away;
   away = null;
-  const mid = document.elementFromPoint(innerWidth / 2, innerHeight / 2);
-  const here = mid && mid.closest('main > section');
-  enter3D(!here || (was && here.id === was.id) ? was && was.s : here.id);
+  window.removeEventListener('scroll', onTextScroll);
+  const here = was && (was.here || was.id);
+  enter3D(!here || here === was.id ? was && was.s : here);
 }
 
 function onResize() {

@@ -19,7 +19,8 @@
   .ail .ail-ms__tag, .ail .ail-ar__name, .ail .ail-ba__stamp, .ail .ail-end__links a { display: inline-flex; align-items: center; }
   .ail .ail-chrome__title a, .ail .ail-open__name, .ail .ail-ag__s, .ail .ail-ms__date, .ail .ail-ln__ends, .ail .ail-gram__past button,
   .ail .ail-layer__head, .ail .ail-rt__more summary { padding-block: 15px; margin-block: -15px; }
-  .ail .ail-chrome__title a, .ail .ail-open__name, .ail .ail-ag__s, .ail .ail-ms__date, .ail .ail-gram__past button { padding-inline: 10px; margin-inline: -10px; }
+  .ail .ail-chrome__title a, .ail .ail-open__name, .ail .ail-ag__s, .ail .ail-ms__date { padding-inline: 10px; margin-inline: -10px; }
+  .ail .ail-gram__past button { padding-inline: 14px; margin-inline: -14px; }
 }
 
 /* the text version's wide tables scroll sideways on a phone: a fade at the edge says so */
