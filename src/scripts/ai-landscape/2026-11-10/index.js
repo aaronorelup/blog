@@ -30,6 +30,7 @@ let raf = 0;              // the one frame handle: a loop never runs twice
 let last = 0;
 let shown = null;         // the section whose stage is lit
 let pending = null;       // a section landed by a link: its heading takes focus when its stage lights
+let headAt = 0;           // when it did
 let mounts = 0;           // each scene load has a number: one that arrives after a newer one, or after the text version, is dropped
 let chosen = false;       // the text version for good: the skip link, no WebGL, a lost context, a machine too slow
 let away = null;          // the text version for now (a short window, printing): where the reader was
@@ -147,6 +148,7 @@ function arrive(cur, now) {
   if (now - pending.at > 8000) { pending = null; return; }
   if (pending.sec !== cur) return;
   pending = null;
+  headAt = performance.now();
   focusHead(cur.el);
 }
 
@@ -346,10 +348,12 @@ function boot() {
     history.pushState(null, '', a.hash);
     if (keyed) { clock.update(0); clock.jump(); }
   });
-  // Tab on a stage's last link, the one to the next section, takes it: a reader who only presses Tab walks the page
+  // Tab on a stage's last link, the one to the next section, takes it: a reader who only presses Tab walks the page.
+  // A Tab in the second a landed section takes to fade in waits on its heading: its controls cannot take focus yet
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Tab' || e.shiftKey || e.altKey || e.ctrlKey || e.metaKey || !gl()) return;
     const a = document.activeElement;
+    if (a && a.tabIndex < 0 && a !== document.body && performance.now() - headAt < 1000) { e.preventDefault(); return; }
     if (!a || !a.classList || !a.classList.contains('ail-next') || !land(a.hash, false)) return;
     e.preventDefault();
     history.pushState(null, '', a.hash);

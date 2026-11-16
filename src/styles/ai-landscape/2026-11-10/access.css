@@ -11,8 +11,8 @@
   background: var(--ail-card); color: var(--ail-fg); font: 400 var(--ail-fs-label)/1 var(--ail-mono); letter-spacing: .08em; text-transform: uppercase; text-decoration: none; }
 
 /* an arc's two names are pinned at its ends, so the button that holds them has no box of its own: focus is drawn on the names */
-.ail-gl .ail-ln__ends:focus-visible { outline: 0; box-shadow: none; }
-.ail-gl .ail-ln__ends:focus-visible .ail-own { outline: 2px solid var(--ail-fg); outline-offset: 3px; }
+.ail-gl .ail-ln__ends:focus-visible { outline: 0 !important; box-shadow: none !important; }
+.ail-gl .ail-ln__ends:focus-visible .ail-own { outline: 2px solid var(--ail-fg) !important; outline-offset: 3px !important; }
 
 /* a finger (SPEC 7.1): 44 px at the least. The controls SPEC 7.1 names grow to it; a control set in a line of words
    or a list row grows its hit area by padding that a negative margin takes back, so nothing around it moves.

@@ -20,7 +20,7 @@ export default {
   },
   // no router floor to stand on: the star floats at floor 1, a little smaller there so it clears the chrome. `out`: it
   // stands that much further from its stack on a longer ledge, one plate width clear of the G plate (never a pair with it)
-  character: { kind: 'sprite', floor: 1, size: 0.9, perch: 0.78, out: 0.3 },
+  character: { kind: 'sprite', floor: 1, size: 0.9, perch: 0.78, out: 0.42 },
   backdrop: { y: -4.45, turn: -0.1 },
   props: [
     { file: 3, z: -3.5, x: 7.2, y: 0.98, w: 2.2 },              // prop-3: the drawers of the index under a magnifying glass, low on the right

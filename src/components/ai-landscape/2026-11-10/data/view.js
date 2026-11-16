@@ -146,7 +146,7 @@ const CATCH = {
     ...p.surfaces.flatMap((s) => (s.formerNames || []).map((was) => ({ text: s.name, was, kind: 'renamed', fact: fact(s.claim) }))),
     ...dated(p).filter((t) => t.f.status === 'shut-down').map((t) => ({ text: t.name, kind: 'shut-down', tag: TAG['shut-down'], fact: t.f })),
     ...p.changes.filter((c) => c.kind === 'shutdown').map((c) => ({ c, s: p.surfaces.find((x) => x.id === c.entityRef) })).filter((x) => x.s)
-      .map(({ c, s }) => ({ text: s.name, note: s.access, kind: 'closing', fact: fact(c.claim) })),
+      .map(({ c, s }) => ({ text: s.name, note: s.access, kind: 'closing', fact: { ...fact(c.claim), status: '' } })),      // (a notice is not a product: no "Shipped" on its card)
   ],
   meta: (p, fl) => [{ text: fl.name, note: fl.access, kind: 'locked', fact: fact(fl.claim) }],
 };
