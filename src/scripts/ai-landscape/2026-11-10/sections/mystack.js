@@ -140,6 +140,9 @@ export function create(ctx, el, sec) {
     says.forEach((li) => li.classList.toggle('is-on', li === say && !mine));
     quote.classList.toggle('is-gone', !mine);
     pairsEl.classList.toggle('is-on', !mine);
+    // a phone prints the stamp just over the list of pieces, however many rows that list takes in this window (the
+    // sheet's fixed place stood it over the first row, and a finger could not reach the router's swap a second time)
+    if (phone && !mine) pairsEl.style.bottom = `${Math.round(window.innerHeight - $('.ail-ms__bands', el).getBoundingClientRect().top + 8)}px`;
     st.official = say ? say.dataset.official : 'none';
     // no documented pair: no cord, and the piece that was just swapped in hangs clear of the bench
     pieces.forEach((p) => { p.float = st.official === 'none' && p === st.last ? 1 : 0; });
@@ -184,7 +187,7 @@ export function create(ctx, el, sec) {
   pins.forEach((p) => { p.on = false; });
   // a phone's picture is small: it frames him, his router, his coding agent and its model, so the cast stands large
   const lead4 = pieces.slice(0, 4), mx = (lead4[0].x + lead4[lead4.length - 1].x) / 2;
-  const BENCH = phone ? { pos: [mx, 4.6, 27.5], look: [mx, 1.9, 3.2], fov: 24, fit: lead4[lead4.length - 1].x - lead4[0].x + (SLOT.you + SLOT.model) / 2 + 1.6, cy: 0.5 } : STOPS.bench;
+  const BENCH = phone ? { pos: [mx, 4.6, 27.5], look: [mx, 1.9, 3.2], fov: 24, fit: lead4[lead4.length - 1].x - lead4[0].x + (SLOT.you + SLOT.model) / 2 + 1.6, cy: 0.44 } : STOPS.bench;      // (cy: clear of the stamp a swap prints over the list)
   // the stacks that lend him a piece come back behind the bench, dimmed, each right behind what it lends (the
   // middle of its first pieces that stand side by side, a board's width clear of the next lender). The others stay
   // away. A swap changes who lends
@@ -342,7 +345,7 @@ export function create(ctx, el, sec) {
       buttons.forEach((b) => { b.removeEventListener('click', onSwap); b.hidden = true; });
       window.removeEventListener('keydown', onEsc);
       later.forEach(([li, parent, next]) => parent.insertBefore(li, next && next.parentNode === parent ? next : null));
-      pairsEl.open = false;
+      pairsEl.open = false; pairsEl.style.bottom = '';
       pins.forEach((p) => p.drop());
       leads.forEach((l) => l && l.drop());
       lines.forEach((l) => (l.cord || l.arc).dispose());
