@@ -126,8 +126,10 @@ export function createSet(ctx, xs) {
       wall.visible = join.visible = on;
       const near = 1 / (1 + -BAY.z / reach());
       // on a narrow window the stacks of some sections stand closer: a board is never wider than its place in the row
+      // (the row of the boards that are there: in my stack two lenders stand alone, wherever the other three were)
       let pitch = Infinity;
-      for (let k = 1; k < bays.length; k++) pitch = Math.min(pitch, Math.abs(bays[k].x - bays[k - 1].x));
+      const there = bays.filter((b) => b.show * (b.tower ? b.tower.show : 1) > 0.01).map((b) => b.x).sort((a, c) => a - c);
+      for (let k = 1; k < there.length; k++) pitch = Math.min(pitch, there[k] - there[k - 1]);
       const w = Math.min(BAY.w, pitch / near - 0.3);
       bays.forEach((b, k) => {
         const tw = b.tower;

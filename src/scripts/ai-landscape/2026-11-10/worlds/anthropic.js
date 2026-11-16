@@ -22,6 +22,7 @@ export default {
     { file: 2, z: -3.5, x: 7.5, y: 0.42, w: 2.0 },              // prop-2: a plug on its cord, lying on the floor at the right
     { file: 3, z: -12, x: -5.3, y: 0.92, w: 2.0 },              // prop-3: the folder of cards, far back on the left under the frame
   ],                                                            // prop-1, the pixel creature, stands on floor 8: the signature places it
+  creature: 1,                                                  // and prop-1 is the figure of its coding tool wherever that tool stands (the owner's bench)
   fore: { z: 3.2, x: 4.6, y: -0.55, w: 5 },
   // the frame hangs on the plain wall left of the stack. It waits above the room (y) and is lowered to `hangs`
   // once the name has left, so the title never crosses the face (signatures/anthropic.js)
