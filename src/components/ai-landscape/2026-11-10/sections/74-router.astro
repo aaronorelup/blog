@@ -1,7 +1,7 @@
 ---
 // The router idea (SPEC 2.9.3): three ways to talk to agents, the last with no line from you to the worker, and
 // what it costs, in the essay's own numbers with its date. Text version: three small diagrams with their limits.
-// 3D page (sections/router.js): the same three drawn in ink on the floor, one lit at a time, the cut line snipped.
+// 3D page (sections/router.js): the same three drawn in ink on a dark floor, one under the lamp at a time, the cut line snipped.
 // The pairs that ship today are second depth: they open with the essay, under the source button.
 import '../../../../styles/ai-landscape/2026-11-10/architecture.css';
 import Fact from '../Fact.astro';
@@ -30,8 +30,8 @@ const chips = R.shipped.map((s) => ({ r: thing(s.routerRef), w: thing(s.workerRe
   <div class="ail-stage">
     <h2 id="router-title" class="ail-rt__title ail-title">{R.name}</h2>
     <ol class="ail-rt__shapes">
-      {R.shapes.map((s, i) => (
-        <li class="ail-rt__shape" data-i={i} data-edges={JSON.stringify(s.edges.map((e) => [e.source, e.target, e.kind]))}>
+      {R.shapes.map((s) => (
+        <li class="ail-rt__shape" data-edges={s.edges.map((e) => `${e.source}:${e.target}:${e.kind}`).join(' ')}>
           <button type="button" class="ail-rt__name ail-label" aria-pressed="false">{s.name}</button>
           <svg class="ail-rt__fig" viewBox="0 0 162 72" aria-hidden="true" focusable="false">
             {figure(s).map((p) => (p.node
