@@ -25,7 +25,7 @@ const STACK_H = N * FLOOR.h + (N - 1) * SEMI;              // a semi-open stack:
 const OVER = { wide: LID_TOP + BAY.over + BAY.rise * 0.93, phone: LID_TOP + BAY.over + (BAY.rise - BAY.head) * 0.98, bare: BAY.low + (BAY.rise - BAY.head) * 0.98 };
 // a row with signs may be drawn smaller to fit a window's height, down to this many px a world unit. Under that the
 // boards stay at rest and the row stands as it always did
-const SMALL = { wide: 42, phone: 19 };
+const SMALL = { wide: 40, phone: 19 };
 
 export function create(ctx, el, sec) {
   const { rig, row, labels, input, phone, studio } = ctx;
@@ -64,8 +64,9 @@ export function create(ctx, el, sec) {
     return got;
   }
   function lay() {
-    st.laid = true;
     const W = window.innerWidth;
+    if (!words[0].offsetHeight && !sheet.offsetHeight) return;             // the stage is not laid out yet: next frame
+    st.laid = true;
     if (phone) {
       st.top = (chrome ? chrome.getBoundingClientRect().bottom : 78) + 2; st.feet = sheet.getBoundingClientRect().top - 18;
       const room = st.feet - st.top, natural = W / PHONE.fit;
