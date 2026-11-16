@@ -31,9 +31,9 @@ const KEY = ['lead', 'second', 'contest', 'unknown'];
         {best.board.map((g) => (
           <tbody data-g={g.id}>
             {g.rows.map((r, k) => (
-              <tr class="ail-bd__row" id={`cap-${r.id}`} data-verdict={r.verdict}>
+              <tr class="ail-bd__row" id={`cap-${r.id}`} data-verdict={r.verdict} data-conf={r.reported ? 'reported' : undefined}>
                 {k === 0 && <th scope="rowgroup" rowspan={g.rows.length} class="ail-bd__gn ail-label"><span>{g.name}</span></th>}
-                <th scope="row" class="ail-bd__name"><button type="button" class="ail-bd__open" data-cap={r.id}>{r.name}</button></th>
+                <th scope="row" class="ail-bd__name"><button type="button" class="ail-bd__open" data-cap={r.id}>{r.name}{r.reported && <span class="ail-vh"> {COPY.stamp.reported}</span>}</button></th>
                 {r.cells.map((c) => (
                   <td class="ail-bd__cell" data-p={c.p} data-line={c.line || undefined}>
                     {c.m && <span class="ail-bd__m" data-m={c.m} aria-hidden="true"></span>}{c.m && <span class="ail-vh">{WORD[c.m]}</span>}

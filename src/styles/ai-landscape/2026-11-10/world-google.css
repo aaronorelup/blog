@@ -32,13 +32,15 @@
 .ail-gl .ail-world[data-world='google'] .ail-sig[data-part='2'][data-more] .ail-sig__item .ail-note { display: block; margin: 8px 0 0; font-size: 17px; line-height: 1.25; }
 .ail-gl .ail-world[data-world='google'] .ail-sig[data-part='2'][data-more] .ail-sig__item[data-n='1'] { font-size: 17px; line-height: 1.25; color: var(--ail-fg-2); }
 
-/* the catch: name plates. One that was renamed shows its old name until it flips */
+/* the catch: name plates. One that was renamed shows its old name until it flips. One that is closing says what is
+   happening to it under its name, in the data's words */
 .ail-gl .ail-world[data-world='google'] .ail-catch__item { display: grid; justify-items: start; gap: 4px; padding: 8px 12px 9px; background: var(--w-card); box-shadow: 0 0 0 1px color-mix(in srgb, var(--ail-fg) 46%, transparent); will-change: transform; }
 .ail-gl .ail-world[data-world='google'] .ail-catch__item > * { margin: 0; }
 .ail-gl .ail-world[data-world='google'] .ail-catch__item[data-kind='shut-down'] { transform-origin: 12px 10px; }
 .ail-gl .ail-world[data-world='google'] .ail-catch__was { font: 400 var(--ail-fs-label)/1.2 var(--ail-mono); letter-spacing: .06em; text-transform: uppercase; }
 .ail-gl .ail-world[data-world='google'] .ail-catch__item:not([data-new]) .ail-catch__was { text-decoration: none; opacity: 1; font: inherit; letter-spacing: 0; text-transform: none; }
 .ail-gl .ail-world[data-world='google'] .ail-catch__item[data-kind='renamed']:not([data-new]) .ail-own { display: none; }
+.ail-gl .ail-world[data-world='google'] .ail-catch__item .ail-note { display: block; font: 400 var(--ail-fs-label)/1.3 var(--ail-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--ail-fg-2); }
 
 @media (max-width: 899px) {
   /* the phone's sheet lists them: nothing is pinned over the stack */

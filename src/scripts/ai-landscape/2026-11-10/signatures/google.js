@@ -295,7 +295,7 @@ export function create(ctx, world) {
   }
 
   // The catch (beat d): plates on the wall. A renamed one flips to its new name, a shut-down one drops and hangs
-  // by a corner, one whose claim carries an expiry date tilts
+  // by a corner, one that is closing tilts
   sig.catch = (k) => {
     if (k <= 0) { st.ct = 0; plates.forEach((p) => { p.classList.remove('is-on'); p.removeAttribute('data-new'); p.style.transform = ''; }); return; }
     if (k > 0.55) st.ct += ctx.reduced ? 99 : ctx.dt || 0.016;
@@ -306,9 +306,11 @@ export function create(ctx, world) {
       if (kind === 'renamed') p.toggleAttribute('data-new', e > 0.5);
       if (ctx.phone) return;
       const drop = kind === 'shut-down' ? backOut(e) : 0;
-      const turn = kind === 'stale' ? (n % 2 ? -3 : 3.5) * smooth(e) : -11 * drop;
+      const turn = kind === 'closing' ? (n % 2 ? -3 : 3.5) * smooth(e) : -11 * drop;
       const flip = kind === 'renamed' ? Math.max(0.05, Math.abs(Math.cos(e * Math.PI))) : 1;
-      v.set(tower.x + tower.shift + 2.85 + (n % 3) * 1.62, 2.66 - Math.floor(n / 3) * 0.86, tower.z - 2.4);
+      // three to a row. A second row starts half a plate in, so a long plate there stays clear of the stack
+      const rowN = Math.floor(n / 3);
+      v.set(tower.x + tower.shift + 2.85 + ((n % 3) + (rowN ? 0.62 : 0)) * 1.62, 2.66 - rowN * 0.86, tower.z - 2.4);
       p.style.transform = `${pinned(v, 0.5, 0.5, 0, drop * 14)} rotate(${turn.toFixed(2)}deg) scaleY(${flip.toFixed(3)})`;
     });
   };

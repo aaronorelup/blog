@@ -46,9 +46,9 @@ const model = p.stack[4];                                                       
       <p class="ail-leads">
         <span class="ail-label">{COPY.world.leads}</span>
         {p.leads.length > 0
-          ? <span class="ail-leads__caps">{p.leads.map((c) => <a class="ail-leads__cap" href={`#cap-${c.id}`} data-cap={c.id}>{c.name}</a>)}</span>
+          ? <span class="ail-leads__caps">{p.leads.map((c) => <span class="ail-leads__one"><a class="ail-leads__cap" href={`#cap-${c.id}`} data-cap={c.id}>{c.name}</a>{c.reported && <span class="ail-leads__conf ail-label">{COPY.stamp.reported}</span>}</span>)}</span>
           : <span class="ail-word">{COPY.world.noneOutright}</span>}
-        {p.contends > 0 && <span class="ail-leads__run"><span class="ail-label">{COPY.world.contends}</span> <b>{p.contends}</b></span>}
+        {p.contends > 0 && <a class="ail-leads__run" href="#best-at" data-cap="board"><span class="ail-label">{COPY.world.contends}</span> <b>{p.contends}</b> <span class="ail-label">{COPY.world.more}</span></a>}
       </p>
       <p class="ail-agent">
         <span class="ail-agent__name">{p.agent.name}</span>{p.agent.tag && <span class="ail-tag" data-status={p.agent.status}>{p.agent.tag}</span>}
@@ -125,10 +125,9 @@ const model = p.stack[4];                                                       
       {p.catch.length > 0 && (
         <ul class="ail-catch__list">
           {p.catch.map((it, n) => (
-            <li class="ail-catch__item" data-n={n} data-kind={it.kind} data-until={it.until}>
+            <li class="ail-catch__item" data-n={n} data-kind={it.kind}>
               {it.was && <s class="ail-catch__was">{it.was}</s>}
               <span class="ail-own" data-owner={p.id}>{it.fact ? <Fact fact={it.fact} full tag={false}>{it.text}</Fact> : it.text}</span>
-              {it.until && <span class="ail-until ail-catch__until ail-label"><span class="ail-until__w">{COPY.world.until}</span><span class="ail-until__x">{COPY.world.expired}</span> <time datetime={it.until}>{it.until}</time></span>}
               {it.note && <span class="ail-note">{it.note}</span>}{it.tag && <span class="ail-tag">{it.tag}</span>}
             </li>
           ))}

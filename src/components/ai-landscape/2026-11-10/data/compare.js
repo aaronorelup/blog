@@ -91,9 +91,10 @@ function capability(c) {
   if (c.verdict === 'clear' && !c.leader) fail(`${c.id}: clear with no leader`);
   if ((c.verdict === 'contested' || c.verdict === 'tie') && places.length < 2) fail(`${c.id}: ${c.verdict} needs two contenders`);
   // a company that appears in the ranking or the evidence has something for the job. One that does not, and whose
-  // cell for the job is empty, shows that empty state and its reason (never a low rank)
+  // cell for the job is empty, shows that empty state and its reason (never a low rank). Where nobody knows, nobody is
+  // singled out: an evidence row may score a company in its note alone, and a floor's gap is not the job's
   const rated = new Set([...places.map((x) => x.provider), ...c.evidence.map((e) => ownerOf(e.subjectRef)).filter(Boolean)]);
-  const empty = ORDER.filter((id) => !rated.has(id)).map((id) => {
+  const empty = c.verdict === 'unknown' ? [] : ORDER.filter((id) => !rated.has(id)).map((id) => {
     const m = MEDIA[c.id] && D.providers[id].media[MEDIA[c.id]];
     if (m) return m.primaryRef ? null : { id, ...stateOf('none', m.gap), reason: m.reason };
     const cell = view.provider(id).stack[floor - 1];
@@ -114,7 +115,8 @@ function capability(c) {
   return {
     id: c.id, name: c.name, question: c.question, group: c.group, floor, verdict: c.verdict, margin: c.margin, stamp, asOf: c.asOf,
     places, empty, thin, tabs, words: CHROME_WORDS + body + (tabs ? nav : 0),
-    reason: { id: c.id, text: c.reason, short: c.name, asOf: c.asOf, status: 'released', confidence: c.confidence, sources: [...new Set(c.evidence.map((e) => e.src).filter(Boolean))], gap: null },
+    // (a ranking is not a product: its card prints no status word)
+    reason: { id: c.id, text: c.reason, short: c.name, asOf: c.asOf, status: '', confidence: c.confidence, sources: [...new Set(c.evidence.map((e) => e.src).filter(Boolean))], gap: null },
     guess: guess ? { quote: guess.quote, outcome: guess.outcome, stamp: OUTCOME[guess.outcome], reason: guess.reason } : null,
     evidence: c.evidence.map((e) => ({ what: e.what, score: e.score, subject: e.subject, by: e.ranBy, date: e.date, readOn: e.readOn || null, note: e.note || null, basis: e.basis, confidence: e.confidence, src: e.src || null })),
     notYetRated: c.notYetRated, leadsOn: places.filter((x) => x.leadsOn).map((x) => ({ provider: x.provider, label: x.label, leadsOn: x.leadsOn })),
@@ -137,7 +139,7 @@ export const best = (() => {
     const marks = COLS.map(kind);
     const tied = marks.map((m, k) => (m === 'tie' ? k : -1)).filter((k) => k >= 0);
     const line = (k) => (tied.length < 2 || k < tied[0] || k > tied[tied.length - 1] ? null : k === tied[0] ? 'start' : k === tied[tied.length - 1] ? 'end' : 'mid');
-    return { id: c.id, name: c.name, verdict: c.verdict, cells: COLS.map((p, k) => ({ p, m: marks[k], line: line(k) })) };
+    return { id: c.id, name: c.name, verdict: c.verdict, reported: c.verdict === 'clear' && c.reason.confidence === 'reported', cells: COLS.map((p, k) => ({ p, m: marks[k], line: line(k) })) };
   };
   return {
     groups: GROUPS.map((g) => ({ id: g, name: COPY.best[g], caps: caps.filter((c) => c.group === g).map((c) => c.id) })),

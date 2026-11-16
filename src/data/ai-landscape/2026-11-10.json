@@ -19612,17 +19612,16 @@
      },
      {
       "what": "WebDev Arena: people vote on web apps the models build",
-      "score": "1836",
-      "subject": "Claude Fable 5.2",
-      "subjectRef": "anthropic-fable-5-2",
-      "date": "2026-11-10",
+      "score": "1818",
+      "subject": "Claude Opus 5.5",
+      "subjectRef": "anthropic-opus-5-5",
+      "date": "2026-11-09",
       "ranBy": "Arena",
       "basis": "independent",
       "version": null,
       "url": "https://www.benchleader.com/benchmarks/lmarena_webdev",
       "confidence": "reported",
-      "note": "Read from a mirror. Opus 5.5 1814, Gemini 4 Carbon 1768, GPT-6 Astra 1764.",
-      "readOn": "2026-11-12",
+      "note": "Read from a mirror. Sonnet 5.5 1774, Gemini 4 Carbon 1768, GPT-6 Astra 1767.",
       "src": 443
      },
      {
@@ -19915,10 +19914,10 @@
       "label": "AI Mode and Gemini",
       "productRef": "google-ai-mode",
       "modelRef": null,
-      "leadsOn": "Its own FACTS Search test"
+      "leadsOn": "Reach through Search and Gemini app"
      }
     ],
-    "reason": "Blind votes favour OpenAI's search answers. Gemini 4 is unrated there. Google's own test ranks it first.",
+    "reason": "Blind votes favour OpenAI's search answers. Gemini 4 is unrated there.",
     "evidence": [
      {
       "what": "Search Arena: people vote on answers built from live search",
@@ -19949,6 +19948,20 @@
       "src": 440
      },
      {
+      "what": "Gemini app users, as Google counts them",
+      "score": "1B",
+      "subject": "Gemini app",
+      "subjectRef": "google-gemini-app",
+      "date": "2026-10-28",
+      "ranBy": "Google",
+      "basis": "vendor",
+      "version": null,
+      "url": "https://blog.google/company-news/inside-google/message-ceo/alphabet-earnings-q3-2026/",
+      "confidence": "confirmed",
+      "note": "Google gave no period. Reach, not answer quality. AI Mode sits inside Google Search.",
+      "src": 221
+     },
+     {
       "what": "FACTS Search: answers built from web search, checked for invented facts",
       "score": "94.4%",
       "subject": "Gemini 4 Carbon",
@@ -19962,20 +19975,6 @@
       "note": "Google's own test. GPT-6 Astra 93.3%, GPT-6.1 Sol 92.8%, Opus 5.5 88.4%. Read from a mirror.",
       "readOn": "2026-11-12",
       "src": 448
-     },
-     {
-      "what": "Gemini app users, as Google counts them",
-      "score": "1B",
-      "subject": "Gemini app",
-      "subjectRef": "google-gemini-app",
-      "date": "2026-10-28",
-      "ranBy": "Google",
-      "basis": "vendor",
-      "version": null,
-      "url": "https://blog.google/company-news/inside-google/message-ceo/alphabet-earnings-q3-2026/",
-      "confidence": "confirmed",
-      "note": "Google gave no period. Reach, not answer quality. AI Mode sits inside Google Search.",
-      "src": 221
      }
     ],
     "verdict": "contested",
@@ -20785,16 +20784,9 @@
       "productRef": null,
       "modelRef": "anthropic-opus-5-5",
       "leadsOn": "Within 7 points on Arena"
-     },
-     {
-      "provider": "openai",
-      "label": "GPT-6 Astra",
-      "productRef": null,
-      "modelRef": "openai-gpt-6-astra",
-      "leadsOn": "AI-judged creative writing test"
      }
     ],
-    "reason": "In blind votes Gemini 4 Argon edges Claude Opus 5.5. An AI judge ranks GPT-6 Astra first.",
+    "reason": "In blind votes Gemini 4 Argon edges Claude Opus 5.5 by seven points, a near coin flip.",
     "evidence": [
      {
       "what": "Arena Creative Writing: people vote on written pieces, blind",
@@ -20811,6 +20803,20 @@
       "src": 462
      },
      {
+      "what": "Arena Text: people vote on everyday chat answers, blind",
+      "score": "1526",
+      "subject": "Gemini 4 Carbon",
+      "subjectRef": "google-gemini-4-carbon",
+      "date": "2026-11-09",
+      "ranBy": "Arena",
+      "basis": "independent",
+      "version": null,
+      "url": "https://www.benchleader.com/benchmarks/lmarena_text",
+      "confidence": "reported",
+      "note": "Argon 1522, Muse Wonder 1511, Opus 5.5 1506. Best OpenAI entry 22nd. Read from a mirror.",
+      "src": 442
+     },
+     {
       "what": "EQ-Bench Creative Writing v3: stories compared in pairs by an AI judge",
       "score": "2177",
       "subject": "GPT-6 Astra",
@@ -20824,23 +20830,9 @@
       "note": "Judge: Claude Opus 5. Kimi K3.1 Pro 2173, Fable 5.1 2155, Opus 5.5 2051, Gemini 4 Argon 1758.",
       "readOn": "2026-11-12",
       "src": 463
-     },
-     {
-      "what": "Arena Text: people vote on everyday chat answers, blind",
-      "score": "1526",
-      "subject": "Gemini 4 Carbon",
-      "subjectRef": "google-gemini-4-carbon",
-      "date": "2026-11-09",
-      "ranBy": "Arena",
-      "basis": "independent",
-      "version": null,
-      "url": "https://www.benchleader.com/benchmarks/lmarena_text",
-      "confidence": "reported",
-      "note": "Argon 1522, Muse Wonder 1511, Opus 5.5 1506. Best OpenAI entry 22nd. Read from a mirror.",
-      "src": 442
      }
     ],
-    "verdict": "contested",
+    "verdict": "tie",
     "margin": null,
     "confidence": "reported",
     "asOf": "2026-11-10",
@@ -21423,7 +21415,7 @@
     "quote": "And then search might be best with Google, but like the Google AI.",
     "capabilityRef": "best-web-search",
     "outcome": "unknown",
-    "reason": "Blind votes favour OpenAI, but Gemini 4 is unrated there. Only Google's own test ranks it first."
+    "reason": "Blind votes favour OpenAI, but Gemini 4 is unrated there."
    },
    {
     "id": "best-guess-x-search",
@@ -30112,6 +30104,37 @@
   },
   {
    "date": "2026-11-12",
+   "what": "EQ-Bench's creative writing test, judged by an AI, ranks GPT-6 Astra first. Its page carries no update date and was read on Nov 12.",
+   "confidence": "confirmed",
+   "affectsRefs": [
+    "best-writing",
+    "openai-gpt-6-astra"
+   ],
+   "src": 463
+  },
+  {
+   "date": "2026-11-12",
+   "what": "Google's own FACTS Search test on Kaggle, dated Nov 6 and read from a mirror on Nov 12, ranks Gemini 4 Carbon first at 94.4%, ahead of GPT-6 Astra at 93.3%.",
+   "confidence": "reported",
+   "affectsRefs": [
+    "best-web-search",
+    "best-guess-search",
+    "google-gemini-4-carbon"
+   ],
+   "src": 448
+  },
+  {
+   "date": "2026-11-12",
+   "what": "On Arena's WebDev board, read from a mirror on Nov 12, Claude Fable 5.2 leads at 1836, ahead of Claude Opus 5.5 at 1814.",
+   "confidence": "reported",
+   "affectsRefs": [
+    "best-agentic-coding",
+    "anthropic-fable-5-2"
+   ],
+   "src": 443
+  },
+  {
+   "date": "2026-11-12",
    "what": "Gemini Omni 1.2 Flash moved from sixth to fifth on Artificial Analysis's text-to-video arena.",
    "confidence": "confirmed",
    "affectsRefs": [
@@ -30151,7 +30174,7 @@
   },
   {
    "date": "2026-11-12",
-   "what": "No Grok 4.8 release had appeared in xAI's docs, on Artificial Analysis or on OpenRouter. On Nov 11 the @grok account still said \"later this week\".",
+   "what": "No Grok 4.8 release had appeared in xAI's docs, on Artificial Analysis or on OpenRouter.",
    "confidence": "confirmed",
    "affectsRefs": [
     "xai-grok-4-8",

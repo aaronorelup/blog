@@ -101,8 +101,9 @@ a.ail-slab:hover { background: var(--ail-fg); color: var(--ail-bg); }
 .ail-proof__say { font: 400 19px/1.28 var(--ail-serif); }
 .ail-proof__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-top: 12px; color: var(--ail-ink-2); }
 .ail-proof__meta .ail-tag { margin: 0; color: var(--ail-ink); }
+.ail-proof__state:empty { display: none; }      /* a claim that is not a product (a ranking's reason, a rename) has no status word */
 .ail-proof__conf[data-conf='reported'] { text-decoration: underline dotted 1px; text-underline-offset: .3em; }
-.ail-proof__date time { color: var(--ail-ink); }
+.ail-proof__date time, .ail-proof__until time { color: var(--ail-ink); }
 .ail-proof__src { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--ail-line); }
 .ail-proof__src > .ail-label { color: var(--ail-ink-2); }
 .ail-proof__list { display: grid; margin-top: 4px; }

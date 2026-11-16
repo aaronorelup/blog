@@ -135,15 +135,18 @@ const SIGNATURE = {
 
 // ---- what the catch floor shows in beat d (SPEC 2.5, "The catch"), where the words are not already in `lists`.
 // kind is how the piece behaves: an `empty` socket, a `locked` drawer, a plate that is `renamed` (was: its old
-// name), `shut-down` (it falls) or `stale` (until: the day its claim expires, it tilts). Anthropic's three empty
-// sockets are its second list, and xAI's catch is the frosted floor itself, so neither has one.
+// name), `shut-down` (it falls) or `closing` (a dated change is shutting it: its note says what happens, in the
+// data's words, and it tilts). A plate never prints a claim's expiry day: that is the day the page's sentence goes
+// stale, not the day the product ends. Anthropic's three empty sockets are its second list, and xAI's catch is the
+// frosted floor itself, so neither has one.
 const dated = (p) => [...p.surfaces, ...p.models].map((t) => ({ name: t.name, f: fact(t.claim) })).filter((t) => t.f);
 const CATCH = {
   openai: (p) => (p.media.video.primaryRef ? [] : [{ ...mediaItem(p.media.video), kind: 'empty' }]),
   google: (p) => [
     ...p.surfaces.flatMap((s) => (s.formerNames || []).map((was) => ({ text: s.name, was, kind: 'renamed', fact: fact(s.claim) }))),
     ...dated(p).filter((t) => t.f.status === 'shut-down').map((t) => ({ text: t.name, kind: 'shut-down', tag: TAG['shut-down'], fact: t.f })),
-    ...dated(p).filter((t) => t.f.staleAfter).map((t) => ({ text: t.name, kind: 'stale', until: t.f.staleAfter, fact: t.f })),
+    ...p.changes.filter((c) => c.kind === 'shutdown').map((c) => ({ c, s: p.surfaces.find((x) => x.id === c.entityRef) })).filter((x) => x.s)
+      .map(({ c, s }) => ({ text: s.name, note: s.access, kind: 'closing', fact: fact(c.claim) })),
   ],
   meta: (p, fl) => [{ text: fl.name, note: fl.access, kind: 'locked', fact: fact(fl.claim) }],
 };
@@ -158,13 +161,15 @@ function provider(id) {
   const computer = p.cloudComputers.find((c) => c.primary) || null;
   // what it leads outright and where it is in the running: read from the best-at cells, so the card and the board agree
   const caps = raw.bestAt.capabilities;
-  const leads = caps.filter((c) => c.verdict === 'clear' && c.leader && c.leader.provider === id).map((c) => ({ id: c.id, name: c.name }));
+  const leads = caps.filter((c) => c.verdict === 'clear' && c.leader && c.leader.provider === id).map((c) => ({ id: c.id, name: c.name, reported: c.confidence === 'reported' }));
   const contends = caps.filter((c) => (c.verdict === 'contested' || c.verdict === 'tie') && (c.contenders || []).some((x) => x.provider === id)).length;
   // the flagship's price is second depth: the proof card and the text version print it, with its end date when it has one
   const flFact = fact(fl.claim);
   const price = fl.priceIn == null ? null : `$${fl.priceIn} / $${fl.priceOut} ${COPY.world.perMillion}`;
   const until = fl.priceUntil || null;
-  const priced = price ? { ...flFact, text: `${flFact.text} ${price}${until ? ` ${COPY.world.until} ${until}` : ''}.` } : flFact;
+  // (a price with its own claim brings that claim's sources to the card: the pricing pages, not the model's)
+  const priceSrc = fl.priceClaim ? fact(fl.priceClaim).sources : [];
+  const priced = price ? { ...flFact, text: `${flFact.text} ${price}${until ? ` ${COPY.world.until} ${until}` : ''}.`, sources: [...new Set([...flFact.sources, ...priceSrc])] } : flFact;
   // its top models: released language models of the four main tiers, the flagship always among them, newest first
   const main = p.models.filter((m) => ['flagship', 'workhorse', 'fast', 'small'].includes(m.tier) && m.modality === 'language' && (resolve(m.claim) || {}).status === 'released');
   const byNew = [...main].sort((a, b) => String(b.released || '').localeCompare(String(a.released || '')));
@@ -172,7 +177,7 @@ function provider(id) {
   const top = byNew.filter((m) => kept.includes(m)).map((m, k) => ({ name: m.name, released: k === 0 ? m.released : null, fact: m.id === fl.modelRef ? priced : fact(m.claim) }));
   return {
     id, name: p.identity.name, nameNote: p.identity.nameNote, brand: p.identity.assistantBrand, homepage: p.identity.homepage,
-    rename: p.identity.rename ? fact(p.identity.rename) : null, leads, contends, top,
+    rename: p.identity.rename ? { ...fact(p.identity.rename), status: '' } : null, leads, contends, top,      // a name is not a product: its card prints no "Shipped"
     signature: { line: p.signature.line, fact: fact(p.signature.claim) },
     tension: { line: p.tension.line, fact: fact(p.tension.claim) },
     agent: { id: pa.surfaceRef, name: pa.name, status: access.status, tag: tagOf(access.status), access },

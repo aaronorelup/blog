@@ -86,6 +86,20 @@ for (const { date } of SNAPSHOTS) {
     const items = [...html.matchAll(/<li class="ail-ln__item"[^>]*data-official="([a-z]+)"[\s\S]*?<\/li>/g)];
     assert.equal(items.length, n);
     for (const [li, official] of items) assert.equal(li.includes(`>${COPY.links.unofficial}<`), official === 'no', 'an unofficial link says so');
+    const announced = links.filter((l) => l.fact.status === 'announced').length;
+    assert.equal(items.filter(([li]) => li.includes(`data-status="announced">${COPY.state.announced}<`)).length, announced, 'a link that was only announced says so');
+  });
+
+  test(`${date}: a catch plate says what happens to its product, never the day the page's own claim goes stale (round 2, V-1)`, () => {
+    for (const p of view.providers) {
+      const said = `${p.tension.fact.text} ${p.tension.line}`;
+      for (const it of p.catch) {
+        assert.equal('until' in it, false, `${p.id}: the plate of ${it.text} carries no expiry day`);
+        if (it.kind === 'closing') assert.ok(it.note && it.fact && said.includes(it.text), `${p.id}: ${it.text} is closing in the catch's own claim, and its plate says how`);
+        assert.ok(it.fact == null || !it.fact.staleAfter || it.kind === 'closing', `${p.id}: ${it.text} is on the board only for its claim's expiry date`);
+      }
+    }
+    if (html) assert.ok(!/class="ail-catch__item"[^>]*data-until/.test(html) && !html.includes('ail-catch__until'), 'no plate in the page prints "until" or "Expired"');
   });
 
   test(`${date}: best at: never more certain than the cell holds`, () => {
@@ -105,6 +119,10 @@ for (const { date } of SNAPSHOTS) {
       }
       for (const x of inside) assert.ok(c.leader?.label === x.label || c.runnerUp?.label === x.label || c.contenders.some((k) => k.label === x.label));
       for (const e of b.empty) assert.ok(e.reason && e.word && !b.places.some((x) => x.provider === e.id), `${c.id}: ${e.id} shows its empty state and reason, never a rank`);
+      // an absence mark never falls on a company whose agent the capability's own evidence scores (round 2, F2-1)
+      for (const e of b.empty) assert.ok(!c.evidence.some((row) => `${row.subject} ${row.note || ''}`.includes(view.provider(e.id).agent.name)), `${c.id}: ${e.id} is marked empty, yet its evidence names ${view.provider(e.id).agent.name}`);
+      if (c.verdict === 'unknown') assert.equal(b.empty.length, 0, `${c.id}: where nobody knows, nobody is singled out`);
+      assert.equal(b.reason.status, '', `${c.id}: a ranking's card prints no product status`);
       assert.ok(b.words <= MAX_WORDS, `${c.id}: ${b.words} words at first depth`);
     }
     assert.ok(best.caps.some((b) => b.places.some((x) => x.provider === 'outside')), 'a leader outside the five takes the plinth');

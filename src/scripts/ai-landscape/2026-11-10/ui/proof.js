@@ -28,6 +28,11 @@ function fill(fact) {
   time.textContent = d.asOf || '';
   time.dateTime = d.asOf || '';
   $('.ail-proof__date', card).hidden = !d.asOf;
+  // a claim with an end date says the day it holds until: "as of 2026-10-29, until 2026-11-11"
+  const until = $('.ail-proof__until', card);
+  until.hidden = !d.stale;
+  $('time', until).textContent = d.stale || '';
+  $('time', until).dateTime = d.stale || '';
   const list = $('.ail-proof__list', card);
   const nums = (d.src || '').split(/\s+/).filter(Boolean);
   list.textContent = '';
@@ -55,6 +60,7 @@ function summary(text) {
   const n = $$('.ail-proof__list li', card).length;
   const parts = [$('.ail-proof__state', card).textContent, $('.ail-proof__conf', card).textContent,
     $('.ail-proof__date', card).hidden ? '' : clean($('.ail-proof__date', card).textContent),
+    $('.ail-proof__until', card).hidden ? '' : clean($('.ail-proof__until', card).textContent),
     n ? `${clean($('.ail-proof__src > .ail-label', card).textContent)} ${n}` : ''].filter(Boolean);
   return parts.length ? parts.join(', ') : text;
 }

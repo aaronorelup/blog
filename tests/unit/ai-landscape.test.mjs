@@ -140,7 +140,7 @@ for (const { date } of SNAPSHOTS) {
     }
   });
 
-  test(`${date}: the changes since the snapshot are sourced, and no clear verdict rests on evidence read after it`, () => {
+  test(`${date}: the changes since the snapshot are sourced, and no verdict, reason or label rests on evidence read after it`, () => {
     for (const s of raw.sinceSnapshot) {
       assert.ok(Number.isInteger(s.src) || s.reread === true, `"${s.what}" has a source or is a re-reading of cited pages`);
       assert.ok(['confirmed', 'reported'].includes(s.confidence), `"${s.what}" is ${s.confidence}: no rumour is published`);
@@ -149,6 +149,22 @@ for (const { date } of SNAPSHOTS) {
       const first = (c.evidence || [])[0];
       if (c.verdict === 'clear') assert.ok(first && !(first.readOn && first.readOn > date), `${c.id} is clear on a row read on ${first && first.readOn}, after ${date}`);
       for (const e of c.evidence || []) if (e.readOn) assert.ok(e.readOn > date, `${c.id}: a readOn date is after the snapshot`);
+      // every verdict, not only a clear one (review round 2, F2-2): nobody is placed on a row read late, and no reason
+      // or "leads on" label names a test or a subject that only a late row holds
+      const late = (c.evidence || []).filter((e) => e.readOn);
+      const onTime = (c.evidence || []).filter((e) => !e.readOn);
+      const places = [c.leader, c.runnerUp, ...(c.contenders || [])].filter(Boolean);
+      const guess = raw.bestAt.ownerGuesses.find((g) => g.capabilityRef === c.id);
+      const said = [c.reason, guess && guess.reason, ...places.map((x) => x.leadsOn)].filter(Boolean);
+      for (const e of late) {
+        for (const x of places) {
+          const ref = x.modelRef || x.productRef;
+          if (ref && ref === e.subjectRef) assert.ok(onTime.some((o) => o.subjectRef === ref), `${c.id}: ${x.label} is placed only on a row read ${e.readOn}`);
+        }
+        const testName = e.what.split(/[\s:]/)[0];      // "FACTS Search: ..." is the test FACTS
+        if (!onTime.some((o) => o.what.split(/[\s:]/)[0] === testName)) for (const t of said) assert.ok(!t.includes(testName), `${c.id}: "${t}" names ${testName}, read ${e.readOn}`);
+        if (!onTime.some((o) => o.subject === e.subject)) assert.ok(!c.reason.includes(e.subject), `${c.id}: its reason names ${e.subject}, scored only on a row read ${e.readOn}`);
+      }
     }
     // a price that ends says when: every flagship with priceUntil has its end in the expiry list
     for (const f of raw.bestAt.flagships) {
