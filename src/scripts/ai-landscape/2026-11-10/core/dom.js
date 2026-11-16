@@ -39,8 +39,15 @@ export function fade(el, opacity, dy = 0) {
 // The site's lazy() rule (src/scripts/lazy.js), kept here so this page shares no chunk with the site's own pages:
 // after a deploy an open tab's hashed chunks are gone, so a failed import reloads the page, once per session.
 // Every chunk of this page loads through it: the scene, each section and each signature.
+// A visitor on the way out is not a lost chunk: WebKit stops a page's loads the moment a navigation away begins, so
+// an import still in flight fails then, and a reload would bring the visitor back to the page they were leaving.
+// While the page is leaving a failed import waits, and is tried again if the page is still here four seconds on.
+const LEAVE = 4000;
+let leaving = 0;
+if (typeof window !== 'undefined') for (const type of ['beforeunload', 'pagehide']) window.addEventListener(type, () => { leaving = performance.now(); });
 export function lazy(load) {
   return load().catch((err) => {
+    if (leaving && performance.now() - leaving < LEAVE) return new Promise((resolve) => { setTimeout(resolve, LEAVE); }).then(() => lazy(load));
     let spent = true;
     try { spent = !!sessionStorage.getItem('ao-reloaded'); if (!spent) sessionStorage.setItem('ao-reloaded', '1'); } catch { /* storage off: never loop */ }
     if (!spent) location.reload();

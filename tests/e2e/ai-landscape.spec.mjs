@@ -8,7 +8,8 @@
 // a text version started inside the two frames before a scene loads, a frame that throws, no word printed over a word
 // in a laptop's short window, a watchdog that knows a 30 a second display from a slow one, and a finger's targets.
 // Rows 24 and 25 hold the studio pass of round 3: a board behind each stack, the line-up's signs, the lesson's nine
-// greys, its paper number and its close, the cord of the link being read, and the agents' dusk.
+// greys, its paper number and its close, the cord of the link being read, and the agents' dusk. Row 26: a visitor who
+// leaves while a chunk loads is let go.
 import fs from 'node:fs';
 import sharp from 'sharp';
 import { chromium } from '@playwright/test';
@@ -1067,4 +1068,20 @@ test('landscape-25 the lesson stands the read floor\'s number in paper behind ni
     if (shut) expect((await page.evaluate(() => window.__landscape.compare.agents.lit())).every((t) => t.floors.every((f) => f > 0.3)), 'the cloud floors keep their light at dusk').toBe(true);
     await page.locator('#agents .ail-ag__switch').click();
   }
+});
+
+// WebKit stops a page's loads the moment a navigation away begins, so an import still in flight fails while the
+// visitor is leaving. That is not a chunk lost to a deploy: a reload then would take the visitor back to the page.
+test('landscape-26 a visitor who leaves while a chunk is still loading is let go: no reload brings them back', async ({ page }) => {
+  test.setTimeout(180_000);
+  // every signature takes four seconds to arrive, so one is in flight when the visitor leaves its world
+  await page.route(/\/_astro\/(anthropic|openai|google|meta|xai)\.[^/]*\.js$/, async (route) => { await new Promise((r) => setTimeout(r, 4000)); await route.continue().catch(() => {}); });
+  await open(page);
+  await light(page);
+  await go(page, 'xai', 0.4, 300);
+  expect((await hook(page)).world).toBe('xai');
+  await page.goto(SOURCES[0]);
+  expect(new URL(page.url()).pathname, 'the visitor arrived where they were going').toBe(SOURCES[0]);
+  await page.waitForTimeout(1500);
+  expect(new URL(page.url()).pathname, 'and stayed there').toBe(SOURCES[0]);
 });
