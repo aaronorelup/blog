@@ -1,7 +1,7 @@
 // scripts/tools/budgets.mjs over a made-up dist/: every row is measured, the heaviest post is named, the ledger's
 // rows are counted, an element's chunk and inlined CSS are weighed (and left out of the post's chrome), so is what
 // Listen loads, a live notebook is never measured, and an over-budget row is reported as over. Then the dist/ the
-// last npm run build wrote: no budget more than 20% over (P step 2 builds first).
+// last npm run build wrote: no budget more than 20% over, no hard row over at all (P step 2 builds first).
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -70,7 +70,13 @@ test('budgets measure every row, skip the live notebook and flag what is over', 
   }
 });
 
-test('the built site is within 20% of every budget', () => {
+test('a hard row fails as soon as it is over, any other at 20% over', () => {
+  const rows = [{ name: 'soft', bytes: 119, budget: 100 }, { name: 'soft over', bytes: 121, budget: 100 },
+    { name: 'hard at', bytes: 100, budget: 100, hard: true }, { name: 'hard over', bytes: 101, budget: 100, hard: true }];
+  assert.deepEqual(failing(rows).map((r) => r.name), ['soft over', 'hard over']);
+});
+
+test('the built site is within 20% of every budget, and inside the AI landscape\'s hard ones', () => {
   const rows = measure(fileURLToPath(new URL('../../dist', import.meta.url)));
   assert.deepEqual(failing(rows).map((r) => r.name.trim()), [], format(failing(rows)));
 });

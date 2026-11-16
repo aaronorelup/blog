@@ -52,7 +52,7 @@ const gl = () => root.classList.contains('ail-gl');
 // A section's heading takes focus (a link landed it, or the page fell back to text while the reader was in it).
 // A heading the 3D draws itself can be hidden: then the stage holds focus, and the next Tab is inside it.
 function focusHead(sec) {
-  const head = document.getElementById(sec.getAttribute('aria-labelledby')) || sec;
+  const head = document.getElementById(sec.getAttribute('aria-labelledby')) || $('h1', sec) || sec;
   const to = head.checkVisibility && !head.checkVisibility({ visibilityProperty: true }) ? $('.ail-stage', sec) || sec : head;
   if (!to.hasAttribute('tabindex')) to.tabIndex = -1;
   to.focus({ preventScroll: true });
@@ -87,8 +87,10 @@ function toText({ why = 'chosen', keep = false, say = false } = {}) {
   state.tier = 'static'; state.ready = true; state.world = ''; state.section = '';
   markWide(true);
   const at = sec && document.getElementById(sec.id);
-  if (at) at.scrollIntoView();
-  if (at && say) focusHead(at);
+  // a reader who never left the opening stays at the very top, with the page's own title: no jump past it
+  const first = at && clock && at === clock.sections[0].el;
+  if (first) window.scrollTo(0, 0); else if (at) at.scrollIntoView();
+  if (at && say) focusHead(first ? $('.ail-chrome') : at);
   if (say) announce(main.dataset.sayText || '');
   if (away) { away.here = (at && at.id) || midSection(); window.addEventListener('scroll', onTextScroll, { passive: true }); }
 }
@@ -162,9 +164,19 @@ function sweep(stage) {
   }
 }
 
+// One frame. A frame that throws is dropped and the loop goes on (every frame starts from the scroll position, so
+// the next one draws whole). Three in a row is a page that cannot draw: it reads as text, at the reader's place.
+let faults = 0;
 function frame(now) {
   raf = 0;
   if (!running) return;
+  try { step(now); faults = 0; } catch (err) {
+    console.warn('ai-landscape: a frame failed.', err);
+    if (++faults >= 3) { toText({ keep: true, say: true }); return; }
+  }
+  if (running && !raf) raf = requestAnimationFrame(frame);
+}
+function step(now) {
   const real = Math.max(0, (now - last) / 1000);
   const dt = Math.min(0.05, real);
   last = now;
@@ -199,7 +211,7 @@ function frame(now) {
   if (cur && now - sweepAt > 200) { sweepAt = now; const lit = $('.ail-stage', cur.el); if (lit) sweep(lit); }
   state.progress = clock.s / clock.max;
   if (scene) scene.frame(dt, now / 1000, real);
-  raf = requestAnimationFrame(frame);
+  else if (beats.length < 90) beats.push(real);      // before the scene: how often this display hands out frames
 }
 function start() {
   if (raf) cancelAnimationFrame(raf);
@@ -213,21 +225,34 @@ function wake() {
   if (running && !raf) raf = requestAnimationFrame(frame);
 }
 
+// The display's own pace, in seconds a frame: the quick quarter of the frames the loop ran before the scene (a page
+// still loading runs some long; the very first is cut short by when the loop began). 0 when too few were seen.
+// A 30 a second phone is not a slow one (core/quality.js).
+const beats = [];
+function cadence() {
+  const sorted = beats.slice(1).sort((a, b) => a - b);
+  return sorted.length < 4 ? 0 : sorted[Math.floor(sorted.length / 4)];
+}
+
 // After first paint, the scene. A chunk lost to a deploy reloads the page once, any other failure keeps the text.
-function load() {
-  const token = ++mounts;
+// `token` is the number enter3D() took: a text version that started since (a short window, print, the skip link) has
+// moved on, and this load, its mount or its scene is dropped.
+function load(token) {
+  const mine = () => token === mounts && running && gl();
+  if (!mine()) return;
   const used = canvas;
   canvasUsed = true;
   const fail = () => toText({ keep: true, say: true });
   lazy(() => import('./scene/index.js'))
-    .then((m) => (token === mounts ? m.mount({ canvas: used, clock, input, state, rung, phone, reduced, query, data: readData(), toText: fail }) : null))
+    .then((m) => (mine() ? m.mount({ canvas: used, clock, input, state, rung, phone, reduced, query, data: readData(), toText: fail, cadence: cadence() }) : null))
     .then((mounted) => {
       if (!mounted) return;
-      if (token !== mounts) { mounted.dispose(); if (!gl()) state.tier = 'static'; return; }
+      if (!mine()) { mounted.dispose(); if (!gl()) state.tier = 'static'; return; }
+      if (scene) scene.dispose();
       scene = mounted; root.classList.add('ail-3d'); state.ready = true;
     })
     .catch((err) => {
-      if (token !== mounts) return;
+      if (!mine()) return;
       console.warn('ai-landscape: the scene did not start, showing the text version.', err);
       fail();
     });
@@ -238,6 +263,7 @@ function enter3D(where) {
   phone = phoneQuery.matches;
   rung = pickRung(query, phone);
   // a canvas that had a context keeps it, lost: a new scene draws on a fresh one
+  if (scene) { scene.dispose(); scene = null; }
   if (canvasUsed) { const fresh = canvas.cloneNode(false); canvas.replaceWith(fresh); canvas = fresh; canvasUsed = false; }
   root.classList.add('ail-gl');
   markWide(false);
@@ -249,8 +275,10 @@ function enter3D(where) {
   clock.update(0); clock.jump();
   addNextLinks();
   state.tier = rung.name; state.ready = false;
+  beats.length = 0;
   start();
-  requestAnimationFrame(() => requestAnimationFrame(load));
+  const token = ++mounts;
+  requestAnimationFrame(() => requestAnimationFrame(() => load(token)));
 }
 
 // While the text version stands in for now, the section the reader has scrolled to (read on scroll, before any resize
@@ -317,6 +345,15 @@ function boot() {
     e.preventDefault();
     history.pushState(null, '', a.hash);
     if (keyed) { clock.update(0); clock.jump(); }
+  });
+  // Tab on a stage's last link, the one to the next section, takes it: a reader who only presses Tab walks the page
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab' || e.shiftKey || e.altKey || e.ctrlKey || e.metaKey || !gl()) return;
+    const a = document.activeElement;
+    if (!a || !a.classList || !a.classList.contains('ail-next') || !land(a.hash, false)) return;
+    e.preventDefault();
+    history.pushState(null, '', a.hash);
+    clock.update(0); clock.jump();
   });
   window.addEventListener('hashchange', () => { if (gl()) land(location.hash, false); });
   document.addEventListener('visibilitychange', () => { if (!document.hidden) wake(); });

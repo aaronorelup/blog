@@ -71,8 +71,8 @@ be applied to an old snapshot's code, and should be, since every snapshot copies
 review, reachable only by its address) every page and sources page says noindex, the sitemap leaves them out, the
 project card shows nowhere and the chrome carries a small Draft label. Set it to `true` to list the page.
 
-Its budgets (review round 1): first paint 90 KB gzipped of HTML and CSS (`node scripts/tools/budgets.mjs` rows; the
-document carries the whole text version on purpose), a first view of 650 KB on desktop and phone, 130 draw calls in
+Its budgets (review rounds 1 and 2): first paint 95 KB gzipped of HTML and CSS (`node scripts/tools/budgets.mjs` rows,
+which fail as soon as they are over; the document carries the whole text version on purpose), a first view of 650 KB on desktop and phone, 130 draw calls in
 the studio and in links and 120 in a world, 370 words of fixed copy and 60 for screen readers, 60 words on screen
 (80 on a board). A window under 540 px tall reads the text version.
 

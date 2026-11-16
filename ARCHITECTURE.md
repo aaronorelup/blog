@@ -347,8 +347,8 @@ names from a reader of the repo, not from someone set on guessing them.
 **Budgets** (`scripts/tools/budgets.mjs`, gzipped, without fonts and media): a post page minus its prose ≤ 20 KB
 (chrome HTML 4, CSS 15, JS up front 8: the page's scripts, their static imports and its view's module), each element's own chunks and inlined CSS ≤ 6 KB (`ao-series`, `ao-game`
 10; one row names the element nearest its budget), the JS Listen loads ≤ 8 KB, the ledger's chrome ≤ 6 KB and ≤ 360 B a row (each row carries its card), the homepage before the
-scene chunk ≤ 30 KB (HTML 12, entry JS 12), the AI landscape's first paint ≤ 90 KB (HTML 72, CSS 23, entry JS 15;
-its document is the whole text version on purpose). Printed by every build, never failing it. A display code point the
+scene chunk ≤ 30 KB (HTML 12, entry JS 12), the AI landscape's first paint ≤ 95 KB (HTML 72, CSS 26, entry JS 15;
+its document is the whole text version on purpose, and its rows fail as soon as they are over). Printed by every build, never failing it. A display code point the
 self-hosted fonts miss is a warning in the build and a failure of `node scripts/tools/budgets.mjs` and of
 `tests/unit/fonts.test.mjs`; `node scripts/tools/fonts.mjs` fixes it.
 `tests/unit/budgets.test.mjs` (in `npm test`) checks the measuring on a made-up `dist/`, then fails on any budget

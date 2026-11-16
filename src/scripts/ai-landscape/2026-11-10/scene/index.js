@@ -4,7 +4,7 @@
 // sections/<data-sec>.js exports create(ctx, el, sec) and returns { enter, update(t, dt), leave, dispose }.
 import { Scene, SRGBColorSpace, WebGLRenderer } from 'three';
 import { lazy } from '../core/dom.js';
-import { createWatchdog } from '../core/quality.js';
+import { createWatchdog, RUNGS } from '../core/quality.js';
 import { createRig } from './camera.js';
 import { createLabels } from './labels.js';
 import { createMaterials } from './materials.js';
@@ -20,7 +20,7 @@ const SIGNATURES = import.meta.glob('../signatures/*.js');
 const FACES = ['400 120px "League Gothic"', '400 20px "JetBrains Mono"', 'italic 400 30px "Instrument Serif"'];
 
 export async function mount(boot) {
-  const { canvas, clock, input, state, rung, phone, reduced, query, data, toText } = boot;
+  const { canvas, clock, input, state, rung, phone, reduced, query, data, toText, cadence = 0 } = boot;
   const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
   renderer.outputColorSpace = SRGBColorSpace;
   renderer.sortObjects = true;
@@ -66,7 +66,7 @@ export async function mount(boot) {
   const watchdog = createWatchdog(rung, {
     apply(q) { Object.assign(ctx.quality, q); state.tier = q.name; if (size.w) resize(); },
     onStatic: giveUp,
-  });
+  }, cadence);
   resize();
   canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); giveUp(); });
 
@@ -145,9 +145,17 @@ export async function mount(boot) {
     if (performance.now() >= quiet) watchdog.sample(real);
   }
 
-  // hooks for tests and screenshots: the context itself, and one stack shown in the five states
+  // hooks for tests and screenshots: the context itself, one stack shown in the five states, and the watchdog's
+  // verdict on a steady frame time (a fresh one, fed `seconds` of `frameMs` frames on a display of `cadenceMs`)
   state.debug = {
     ctx,
+    judge(frameMs, cadenceMs = 0, seconds = 40, name = 'low') {
+      const out = { steps: 0, gaveUp: null };
+      const w = createWatchdog({ ...RUNGS[name], pinned: false }, { apply() { out.steps++; }, onStatic() { out.gaveUp = out.gaveUp ?? at; } }, cadenceMs / 1000);
+      let at = 0;
+      for (; at < seconds && out.gaveUp == null; at += frameMs / 1000) w.sample(frameMs / 1000);
+      return { ...out, steps: out.steps - 1, limit: w.limit, ratio: w.quality.ratio };
+    },
     states(id, list = ['solid', 'hatch', 'frost', 'dotted', 'hollow', 'solid', 'hatch', 'frost', 'hollow']) {
       ctx.row.tower(id).setCells(list.map((s) => ({ s, g: [] })), true);
     },
