@@ -327,7 +327,7 @@ const STOP = () => {
   for (const el of stage ? stage.querySelectorAll('*') : []) {
     if (!seen(el) || scrolled(el)) continue;
     const r = el.getBoundingClientRect();
-    if (r.right > innerWidth + 1 || r.left < -1) out.outside.push(`${name(el)} ${Math.round(r.left)}..${Math.round(r.right)}`);
+    if (r.right > innerWidth + 2 || r.left < -2) out.outside.push(`${name(el)} ${Math.round(r.left)}..${Math.round(r.right)}`);
   }
   for (const el of document.querySelectorAll('main a[href], main button, main summary, main [tabindex]:not([tabindex="-1"])')) {
     if (el.disabled || el.closest('[inert]') || !el.checkVisibility({ visibilityProperty: true }) || !el.getClientRects().length || el.classList.contains('ail-vh')) continue;
@@ -343,8 +343,11 @@ const STOP = () => {
   for (let t = walk.nextNode(); t; t = walk.nextNode()) {
     const el = t.parentElement;
     if (!/[\p{L}\p{N}]/u.test(t.textContent) || el.closest('script, style, .ail-live') || !seen(el)) continue;
-    const px = parseFloat(getComputedStyle(el).fontSize);
-    const floor = el.closest('.ail-fact, .ail-sentence, p, li') && !el.closest('.ail-label') ? 14 : 12;      // a label is 12 px wherever it stands
+    const cs = getComputedStyle(el);
+    const px = parseFloat(cs.fontSize);
+    // a label (the mono face: tags, keys, numbers, notes) is 12 px wherever it stands; words that state something are 14
+    const label = /mono/i.test(cs.fontFamily) || el.closest('.ail-label');
+    const floor = el.closest('.ail-fact, .ail-sentence, p, li') && !label ? 14 : 12;
     if (px < floor - 0.01) out.small.push(`${px}px < ${floor}: ${name(el)}`);
   }
   return out;

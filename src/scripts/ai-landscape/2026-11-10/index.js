@@ -70,6 +70,7 @@ function stop3D() {
   for (const el of $$('.is-on')) el.classList.remove('is-on');
   for (const el of $$('main [style]')) el.removeAttribute('style');
   for (const el of $$('main [inert]')) el.inert = false;
+  for (const el of $$('main [data-faint]')) el.removeAttribute('data-faint');
   for (const el of $$('.ail-next')) el.remove();
   const leaders = $('#ail-leaders');
   if (leaders) leaders.replaceChildren();
@@ -147,6 +148,20 @@ function arrive(cur, now) {
   focusHead(cur.el);
 }
 
+// Five times a second, every control of the lit stage that its section has faded under 0.9 (an opacity on it or on
+// what holds it) is inert, so Tab, a finger and a screen reader reach only what can be seen. The focused one is left.
+const CONTROLS = 'a[href], button, summary, [tabindex]:not([tabindex="-1"])';
+let sweepAt = 0;
+function sweep(stage) {
+  for (const el of $$(CONTROLS, stage)) {
+    if (el.classList.contains('ail-vh') || el === document.activeElement) continue;
+    let o = 1;
+    for (let n = el; n && n !== stage.parentElement; n = n.parentElement) o *= Number(getComputedStyle(n).opacity);
+    const faint = o < 0.9;
+    if (faint !== el.hasAttribute('data-faint')) { el.toggleAttribute('data-faint', faint); el.inert = faint; }
+  }
+}
+
 function frame(now) {
   raf = 0;
   if (!running) return;
@@ -181,6 +196,7 @@ function frame(now) {
     }
   }
   arrive(cur, now);
+  if (cur && now - sweepAt > 200) { sweepAt = now; const lit = $('.ail-stage', cur.el); if (lit) sweep(lit); }
   state.progress = clock.s / clock.max;
   if (scene) scene.frame(dt, now / 1000, real);
   raf = requestAnimationFrame(frame);
