@@ -34,6 +34,7 @@ export function create(ctx, el, sec) {
   const edgeX = phone ? 8.2 : 11.75;
   const blocks = { you: -edgeX, outside: edgeX };
   const st = { kind: '', active: -1, pick: null, u: 0, k: 0, drawn: new Map(), pins: [], out: 0, run: 0 };
+  const view = { ...VIEW };
   const outs = $$('.ail-ln__out', el);
 
   // the grey blocks: whatever is outside the five, and your own computer
@@ -182,7 +183,9 @@ export function create(ctx, el, sec) {
     update(t, dt, u) {
       const k = smooth(span(u, 0, 0.2)) * (1 - smooth(span(u, 1.3, sec.screens)));
       st.k = k; st.u = u;
-      if (phone) rig.mix(rig.stops.row, PHONE, k); else rig.mix(rig.stops.row, VIEW, k);
+      // in a tall window the row stands a little lower: the arcs get air under the title and less floor lies empty
+      view.cyd = 0.5 + 0.055 * smooth(span(window.innerHeight, 700, 880));
+      if (phone) rig.mix(rig.stops.row, PHONE, k); else rig.mix(rig.stops.row, view, k);
       // lights down: the room sweeps dark, a low wash of light keeps the glass and the floor readable. The boards go
       // down into the floor: at night they would stand as five grey slabs behind the links
       studio.dark = 0.999 * k; studio.roomX = 0;
