@@ -188,6 +188,41 @@ for (const { date } of SNAPSHOTS) {
       assert.ok(f.priceClaim && raw.expiring.some((e) => e.claimRef === f.priceClaim.id && e.staleAfter === f.priceUntil), `${f.provider}'s price end is in the expiry list`);
     }
   });
+
+  // An arrow that also points at the vendor's view of it (claimRef) was once swapped whole for that claim, and the
+  // line from his router to his coding agent, the one his own sentence is about, never reached the page.
+  test(`${date}: every arrow of the owner's stack keeps its two ends and its verb, the one from his router to his coding agent among them, and reaches the page; every drawer of the cabinet has its glyph`, async () => {
+    const arrows = view.data.aaron.arrows;
+    assert.equal(arrows.length, raw.aaron.arrows.length);
+    for (const a of arrows) assert.ok(a.fromRef && a.toRef && a.verb, `${a.id}: an arrow has two ends and a verb`);
+    const now = (layer) => raw.aaron.nodes.find((n) => n.layer === layer && n.state === 'current');
+    const router = now('router'), coder = now('harness');
+    const link = arrows.find((a) => a.fromRef === router.id && a.toRef === coder.id);
+    assert.ok(link, 'his router dispatches his coding agent');
+    const { GLYPHS } = await import(`../../src/scripts/ai-landscape/${date}/scene/glyphs.js`);
+    for (const l of raw.architecture.aroundLayers) assert.ok(GLYPHS[l.id], `the drawer "${l.id}" has a glyph`);
+    const html = read(`dist/ai-landscape/${date}/index.html`);
+    if (!html) return;                                                       // (no build: the rest reads the built page)
+    // the page says its lines the short way: "you:router", an "!" after the one he wants gone, "you:agent:talks"
+    const short = (id) => id.replace(/^aaron-/, '');
+    const bench = new Set([...html.matchAll(/data-node="aaron-([a-z0-9-]+)"[^>]*data-first/g)].map((m) => m[1]));
+    const pairs = /data-arrows="([^"]*)"/.exec(html)[1].split(' ');
+    for (const pair of pairs) {
+      assert.match(pair, /^[a-z0-9-]+:[a-z0-9-]+!?$/, `"${pair}" is a pair of pieces`);
+      for (const id of pair.replace('!', '').split(':')) assert.ok(bench.has(id), `"${id}" of "${pair}" stands on the bench`);
+    }
+    assert.ok(pairs.includes(`${short(router.id)}:${short(coder.id)}`), 'the pair from his router to his coding agent is drawn');
+    assert.deepEqual(pairs.filter((p) => p.endsWith('!')), raw.aaron.arrows.filter((a) => a.state === 'target' && bench.has(short(a.fromRef)) && bench.has(short(a.toRef))).map((a) => `${short(a.fromRef)}:${short(a.toRef)}!`), 'only the line he wants gone is marked');
+    const card = html.slice(html.indexOf(`data-node="${router.id}"`)).split('data-node="')[1];
+    assert.ok(card.includes(`>${link.verb} `), `the router's card prints "${link.verb}" and what it dispatches`);
+    const kinds = new Set(raw.architecture.routerPattern.shapes.flatMap((s) => s.edges.map((e) => e.kind)));
+    const edges = [...html.matchAll(/data-edges="([^"]*)"/g)].map((m) => m[1].split(' '));
+    assert.equal(edges.length, raw.architecture.routerPattern.shapes.length);
+    edges.forEach((list, i) => {
+      assert.deepEqual(list, raw.architecture.routerPattern.shapes[i].edges.map((e) => `${e.source}:${e.target}:${e.kind}`), `the edges of shape ${i + 1}`);
+      for (const e of list) assert.ok(kinds.has(e.split(':')[2]), `"${e}" names a kind of edge`);
+    });
+  });
 }
 
 test('the registry is newest first, matches the page files, and keeps every published snapshot', async () => {

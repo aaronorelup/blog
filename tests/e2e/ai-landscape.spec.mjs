@@ -9,7 +9,8 @@
 // in a laptop's short window, a watchdog that knows a 30 a second display from a slow one, and a finger's targets.
 // Rows 24 and 25 hold the studio pass of round 3: a board behind each stack, the line-up's signs, the lesson's nine
 // greys, its paper number and its close, the cord of the link being read, and the agents' dusk. Row 26: a visitor who
-// leaves while a chunk loads is let go.
+// leaves while a chunk loads is let go. Row 27 holds the pass's workshop: the cabinet of nine drawers, the bench with
+// its cast, cords and lenders, and the router floor's one lamp.
 import fs from 'node:fs';
 import sharp from 'sharp';
 import { chromium } from '@playwright/test';
@@ -1084,4 +1085,89 @@ test('landscape-26 a visitor who leaves while a chunk is still loading is let go
   expect(new URL(page.url()).pathname, 'the visitor arrived where they were going').toBe(SOURCES[0]);
   await page.waitForTimeout(1500);
   expect(new URL(page.url()).pathname, 'and stayed there').toBe(SOURCES[0]);
+});
+
+// The workshop of the studio pass (round 3, package 2): the cabinet, the bench and its cast, the router floor's lamp.
+test('landscape-27 around the five is a cabinet of nine drawers, a glyph on every front, the one being read pulled out and shut again before my stack takes it over; on the bench his own pair carries its figures on the two largest blocks, cords join him, his router and his coding agent, the second dashed as the pair is stamped, only the lenders stand behind and each behind what it lends, and a swap takes the figure away and redraws or drops the cord; the router floor goes dark under one lamp that stands on the lit diagram', async ({ page }) => {
+  test.setTimeout(900_000);
+  await open(page);
+  await light(page);
+  const compare = (read) => page.evaluate(read);
+
+  // ---- around: nine fronts with a glyph each, one drawer out, and none at the hand-over
+  const around = (await sections(page)).find((s) => s.id === 'around');
+  await go(page, 'around', 0.12 + 0.11 * 4.5, 900);
+  const active = await page.evaluate(() => [...document.querySelectorAll('#around .ail-ar__item')].findIndex((li) => li.classList.contains('is-active')));
+  expect(active, 'the fifth drawer is being read').toBe(4);
+  await expect.poll(() => compare(() => window.__landscape.compare.around.drawers().filter((d) => d.out > 1).length), { timeout: 30_000 }).toBe(1);
+  const drawers = await compare(() => window.__landscape.compare.around.drawers());
+  expect(drawers.length).toBe(9);
+  expect(drawers.every((d) => d.glyph && d.up === 1), 'nine risen fronts, a glyph on each').toBe(true);
+  expect(drawers.findIndex((d) => d.out > 1), 'the open drawer is the one being read').toBe(active);
+  expect(drawers.filter((d, k) => k !== active).every((d) => d.out < 0.3), 'the other eight are in').toBe(true);
+  expect(drawers[active].front, 'it stands out toward the camera').toBeGreaterThan(Math.max(...drawers.filter((d, k) => k !== active).map((d) => d.front)) + 1);
+  await go(page, 'around', around.screens - 0.004, 300);
+  expect((await compare(() => window.__landscape.compare.around.drawers())).every((d) => d.out === 0), 'every drawer is shut when my stack takes the cabinet over').toBe(true);
+
+  // ---- my stack: the cast, the cords, the lenders
+  await go(page, 'my-stack', 0.7, 600);
+  const stack = () => compare(() => { const m = window.__landscape.compare.mystack; return { cast: m.cast(), cords: m.cords(), lenders: m.lenders(), sizes: m.sizes(), official: m.official() }; });
+  await expect.poll(async () => (await stack()).cast.filter((c) => c.on).length, { timeout: 60_000, message: 'both figures stand on his own pair' }).toBe(2);
+  await expect.poll(async () => (await stack()).cords.filter((c) => c.on).length, { timeout: 60_000 }).toBe(2);
+  const dom = () => page.evaluate(() => {
+    const pieces = [...document.querySelectorAll('#my-stack .ail-ms__piece[data-first]')];
+    const pair = Object.fromEntries(['router', 'worker'].map((k) => { const li = document.querySelector(`#my-stack .ail-ms__piece[data-swap="${k}"]`); return [k, { id: li.dataset.node.replace(/^aaron-/, ''), owner: li.dataset.owner, name: li.querySelector('.ail-ms__name').textContent.trim() }]; }));
+    const say = [...document.querySelectorAll('#my-stack .ail-ms__say.is-on')].map((li) => li.dataset.official);
+    return { owners: pieces.map((li) => li.dataset.owner), pair, say, order: window.__landscape.debug.ctx.data.order };
+  });
+  const DASH = { yes: null, partial: [6, 2], no: [3, 3] };
+  const first = await dom();
+  let s = await stack();
+  expect(s.cast.map((c) => c.piece).sort(), 'the figures stand on his router and his coding agent').toEqual([first.pair.router.id, first.pair.worker.id].sort());
+  const big = s.sizes.filter((p) => [first.pair.router.id, first.pair.worker.id].includes(p.id)), rest = s.sizes.filter((p) => p.layer !== 'you' && !big.includes(p));
+  expect(Math.min(...big.map((p) => p.w)), 'his pair stands on the two largest blocks').toBeGreaterThan(Math.max(...rest.map((p) => p.w)) * 1.5);
+  expect(s.sizes.find((p) => p.layer === 'you').w, 'and the dot that is him is no smaller than the things they use').toBeGreaterThanOrEqual(Math.max(...rest.map((p) => p.w)) * 0.8);
+  const [toRouter, link] = [s.cords.find((c) => c.from === 'you'), s.cords.find((c) => c.from === first.pair.router.id)];
+  expect(toRouter.to === first.pair.router.id && toRouter.dash === null && toRouter.bead === null, 'a solid cord from him to his router').toBe(true);
+  expect(link.to, 'a cord from his router to his coding agent').toBe(first.pair.worker.id);
+  expect(link.dash, `dashed as the pair is stamped ("${s.official}")`).toEqual(DASH[s.official]);
+  expect(typeof link.bead, 'with a bead on it').toBe('number');
+  const lent = (d) => [...new Set(d.owners.filter((o) => d.order.includes(o)))].sort();
+  const behind = (list) => list.every((l) => l.lends.length > 0 && Math.min(...l.lends.map((x) => Math.abs(x - l.x))) <= 2.4);
+  expect(s.lenders.map((l) => l.id).sort(), 'only the companies that lend him a piece stand behind').toEqual(lent(first));
+  expect(behind(s.lenders), `each lender stands behind what it lends: ${JSON.stringify(s.lenders)}`).toBe(true);
+
+  // a swap: the figure of a piece that is no longer his own leaves, the lenders follow, the cord follows the stamp
+  for (const kind of ['router', 'worker', 'router']) {
+    await page.locator(`#my-stack .ail-ms__swap[data-swap="${kind}"]`).click();
+    const now = await dom();
+    const mine = { router: now.pair.router.name === first.pair.router.name, worker: now.pair.worker.name === first.pair.worker.name };
+    await expect.poll(async () => { const c = (await stack()).cast; return [c.find((x) => x.piece === first.pair.router.id).on, c.find((x) => x.piece === first.pair.worker.id).on]; }, { timeout: 60_000, message: `after a swap of the ${kind}: a figure stands only on a piece that is his own` }).toEqual([mine.router, mine.worker]);
+    await expect.poll(async () => (await stack()).lenders.map((l) => l.id).sort(), { timeout: 60_000, message: 'the lenders are the owners of the pieces now on the bench' }).toEqual(lent(now));
+    s = await stack();
+    expect(behind(s.lenders), `each lender behind what it lends: ${JSON.stringify(s.lenders)}`).toBe(true);
+    if (!mine.router || !mine.worker) expect(now.say, 'the pair on the bench shows its stamp').toEqual([s.official]);
+    if (s.official === 'none') await expect.poll(async () => (await stack()).cords.find((c) => c.from === first.pair.router.id).on, { timeout: 30_000, message: 'no documented pair: no cord' }).toBe(false);
+    else {
+      await expect.poll(async () => (await stack()).cords.find((c) => c.from === first.pair.router.id).on, { timeout: 60_000, message: `a pair stamped "${s.official}" has its cord` }).toBe(true);
+      expect((await stack()).cords.find((c) => c.from === first.pair.router.id).dash).toEqual(DASH[s.official]);
+    }
+  }
+
+  // ---- the router floor: dark, one lamp, on the lit diagram. A pick moves it. The light is back for the lamp board
+  const router = (await sections(page)).find((s) => s.id === 'router');
+  const lamp = () => compare(() => ({ ...window.__landscape.compare.router.lamp(), chrome: document.documentElement.dataset.chrome || '', pressed: [...document.querySelectorAll('#router .ail-rt__name')].findIndex((b) => b.getAttribute('aria-pressed') === 'true') }));
+  for (const [t, want] of [[0.25, 0], [0.5, 1], [0.8, 2]]) {
+    await go(page, 'router', t * router.screens, 300);
+    await expect.poll(async () => { const l = await lamp(); return l.lit === want && Math.abs(l.x - l.at[want]) < 0.2 ? want : `lit ${l.lit}, lamp at ${l.x}`; }, { timeout: 30_000, message: `at ${t} the lamp stands on diagram ${want + 1}` }).toBe(want);
+    const l = await lamp();
+    expect(l.dark, 'the room is dark').toBeGreaterThan(0.8);
+    expect(l.glow, 'and the lamp is lit').toBeGreaterThan(0.9);
+    expect(l.chrome, 'the words are paper on ink while it is').toBe('dark');
+    expect(l.pressed, 'the lit diagram is the one whose name is pressed').toBe(want);
+  }
+  await page.locator('#router .ail-rt__name').first().click();
+  await expect.poll(async () => { const l = await lamp(); return l.lit === 0 && Math.abs(l.x - l.at[0]) < 0.2; }, { timeout: 30_000, message: 'a pick moves the lamp' }).toBe(true);
+  await go(page, 'agnostic', 0.35, 600);
+  expect(await compare(() => ({ dark: window.__landscape.debug.ctx.studio.dark, chrome: document.documentElement.dataset.chrome || '' })), 'the lamp board stands in daylight').toEqual({ dark: 0, chrome: '' });
 });
