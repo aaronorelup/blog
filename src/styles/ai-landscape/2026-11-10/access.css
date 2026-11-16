@@ -46,4 +46,7 @@
   /* a wide table takes the paper's width and wraps inside it: no column is cut at the page's edge */
   .ail :is(.ail-lu__table, .ail-ag__table, .ail-bd__table) { table-layout: fixed; width: 100% !important; min-width: 0 !important; }
   .ail :is(.ail-lu__table, .ail-ag__table, .ail-bd__table) :is(th, td) { overflow-wrap: anywhere; white-space: normal !important; }
+  /* the voice lamps' key goes onto a second line in the narrow first column: its words stay whole */
+  .ail .ail-lu__tnote { flex-wrap: wrap; gap: 2px 12px; overflow-wrap: normal; }
+  .ail .ail-lu__nk { margin-left: 0; white-space: nowrap; }
 }
