@@ -1,6 +1,7 @@
 // Provider-agnostic design and billing (SPEC 2.9.4, 2.9.5), two sections in front of the row. "board": twenty
 // lamps on a dark glass board, one column under each stack, each the page's own lamp shape in paper white. "rail": a tank and a meter for each
-// company on a rail, a bead that runs from the tank and switches to the meter when it runs dry. Both tour.
+// company on a rail, a bead that runs from the tank and switches to the meter when it runs dry. On the rail the
+// scroll picks the company and the trend (no timer): a visitor's own pick holds for a tenth of a screen of scroll.
 import { BoxGeometry, CylinderGeometry, Group, Mesh, Vector3 } from 'three';
 import { easeIO, smooth, span } from '../core/clock.js';
 import { $, $$, announce } from '../core/dom.js';
@@ -100,7 +101,7 @@ function board(ctx, el, sec) {
 const CYCLE = 7, DRAIN = 4.2, SWITCH = 4.4, METER = 6.4;
 function rail(ctx, el, sec) {
   return frame(ctx, el, sec, (group, pin) => {
-    const { rig, row, reduced, input } = ctx;
+    const { rig, row, reduced } = ctx;
     const bar = block(ctx, roundBox(21, 0.12, 0.36, 0.06), 'house', 0.12);
     bar.position.set(0, 0.06, RZ);
     group.add(bar);
@@ -111,7 +112,8 @@ function rail(ctx, el, sec) {
     const rows = $$('.ail-bill__row', el);
     const trends = $$('.ail-bill__trend', el);
     const dots = $$('.ail-bill__dot', el);
-    const st = { active: 0, clock: 0, trend: 0, tclock: 0, touched: false, time: 0 };
+    const st = { active: 0, trend: 0, hold: null, holdT: null, u: 0, time: 0 };
+    const S = sec.screens, FROM = 0.1, EACH = (S - 0.2) / rows.length, TREND = (S - 0.2) / Math.max(1, trends.length);
     const units = rows.map((tr, c) => {
       const id = tr.dataset.p;
       const x = ROW_X[c];
@@ -128,11 +130,9 @@ function rail(ctx, el, sec) {
       group.add(shell, fill, dial, pointer);
       const bead = dot(ctx, 0.1, id);
       const pick = $('.ail-bill__pick', tr);
-      const top = new Vector3(x, 1.38, RZ);
-      const edge = c === 0 ? 0.12 : c === rows.length - 1 ? 0.88 : 0.5;
-      pin(pick, new Vector3(x, 0.55, RZ), { ax: 0.5, ay: 0.5 });
-      // the company's card stands over its tank and meter: name, plan, meter, at the limit
-      [$('.ail-bill__nm', tr), ...$$('.ail-bill__cell', tr)].forEach((node, n) => pin(node, top, { ax: edge, ay: 1, dy: -8 - (3 - n) * 50 }));
+      // its dot stands on the floor in front of its tank and meter. The card of the picked company hangs at the top
+      // right (the stylesheet places it): it never lies over a stack or a mark
+      pin(pick, new Vector3(x, 0, RZ + 0.55), { ax: 0.5, ay: 0, dy: 2 });
       return { id, x, tr, shell, fill, dial, pointer, hand, bead, pick, phase: c * 1.35 };
     });
     function choose(c, quiet) {
@@ -146,30 +146,38 @@ function rail(ctx, el, sec) {
       dots.forEach((d, k) => d.setAttribute('aria-pressed', String(k === i)));
     }
     choose(0, true); trend(0);
-    const onPick = (e) => { const b = e.target.closest('.ail-bill__pick'); if (!b) return; st.touched = true; choose(units.findIndex((u) => u.pick === b), false); };
-    const onDot = (e) => { st.touched = true; trend(Number(e.currentTarget.dataset.i)); };
+    const onPick = (e) => { const b = e.target.closest('.ail-bill__pick'); if (!b) return; st.hold = st.u; choose(units.findIndex((u) => u.pick === b), false); };
+    const onDot = (e) => { st.holdT = st.u; trend(Number(e.currentTarget.dataset.i)); };
     el.addEventListener('click', onPick);
+    // a click on a stack picks its company too (<main> lies over the canvas, so the click is heard on the window)
+    const onStack = (e) => {
+      if (sec !== ctx.clock.current || e.target.closest('a, button, summary, details, header, nav, dialog')) return;
+      const hit = row.pick(e.clientX, e.clientY);
+      if (hit) { st.hold = st.u; choose(hit.tower.index, false); }
+    };
+    window.addEventListener('click', onStack);
     $('.ail-bill__pager', el).hidden = false;
     dots.forEach((d) => d.addEventListener('click', onDot));
-    const stopTour = input.onInput((kind) => { if (sec === ctx.clock.current && (kind === 'down' || kind === 'touch' || kind === 'key')) st.touched = true; });
     const from = new Vector3(), to = new Vector3(), ctl = new Vector3();
     return {
-      stops: [0.42],
+      stops: units.map((_, c) => (FROM + EACH * (c + 0.5)) / S),          // reduced motion: one still for each company
       hide() { units.forEach((u) => { u.bead.visible = false; u.hand.visible = false; }); },
-      leave() { units.forEach((u) => { u.tr.querySelector('details').open = false; }); },
+      leave() { units.forEach((u) => { u.tr.querySelector('details').open = false; }); st.hold = st.holdT = null; },
       update(dt, u) {
-        const k = smooth(span(u, 0, 0.14)) * (1 - smooth(span(u, 0.56, 0.7)));
-        if (u < 0.5) rig.to(STOPS.rail); else rig.mix(STOPS.rail, rig.stops.row, easeIO(span(u, 0.5, 0.7)));
+        st.u = u;
+        const k = smooth(span(u, 0, 0.14)) * (1 - smooth(span(u, S - 0.14, S)));
+        if (u < S - 0.2) rig.to(STOPS.rail); else rig.mix(STOPS.rail, rig.stops.row, easeIO(span(u, S - 0.2, S)));
         rig.yaw = 0.05; rig.pitch = 0.02;
-        // the open card stands where that company's lid would be: it carries the name, so the mark steps aside
-        row.towers.forEach((tw, c) => { tw.char.show = 1 - k; if (c === st.active && !ctx.phone) tw.lid.show = 1 - k; });
+        row.towers.forEach((tw) => { tw.char.show = 1 - k; });
         st.time += reduced ? 0 : dt;
-        // the tour: one company's lines at a time, and one trend at a time, until the visitor takes over
-        if (!reduced && !st.touched && k > 0.9) {
-          st.clock += dt; st.tclock += dt;
-          if (st.clock > 5.2) { st.clock = 0; choose((st.active + 1) % units.length, true); }
-          if (st.tclock > 7.5) { st.tclock = 0; trend((st.trend + 1) % trends.length); }
-        }
+        // the scroll picks the company and the trend, each for its share of the section. A pick by hand holds until
+        // the scroll has moved a tenth of a screen
+        if (st.hold != null && Math.abs(u - st.hold) > 0.1) st.hold = null;
+        if (st.holdT != null && Math.abs(u - st.holdT) > 0.1) st.holdT = null;
+        const want = Math.max(0, Math.min(units.length - 1, Math.floor((u - FROM) / EACH)));
+        if (st.hold == null && want !== st.active) choose(want, true);
+        const wantT = Math.max(0, Math.min(trends.length - 1, Math.floor((u - FROM) / TREND)));
+        if (st.holdT == null && wantT !== st.trend) trend(wantT);
         setGlass(bar, { show: k });
         units.forEach((n, c) => {
           const p = reduced ? 3.2 : (st.time + n.phase) % CYCLE;
@@ -194,7 +202,7 @@ function rail(ctx, el, sec) {
         });
         return k;
       },
-      dispose() { el.removeEventListener('click', onPick); dots.forEach((d) => d.removeEventListener('click', onDot)); stopTour(); units.forEach((u) => { drop(u.bead); drop(u.hand); }); },
+      dispose() { el.removeEventListener('click', onPick); window.removeEventListener('click', onStack); dots.forEach((d) => d.removeEventListener('click', onDot)); units.forEach((u) => { drop(u.bead); drop(u.hand); }); },
     };
   });
 }

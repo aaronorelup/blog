@@ -96,8 +96,11 @@ export function create(ctx, el, sec) {
     if (x && !phone) {
       const [a, b] = $$('.ail-ln__ends .ail-own', x.li), floor = $('.ail-ln__floor', x.li);
       const dir = Math.sign(x.to.x - x.from.x) || 1;
-      st.pins.push(labels.pin(a, x.from, { ax: dir > 0 ? 1 : 0, ay: 1, dx: -dir * 6, dy: -8 }), labels.pin(b, x.to, { ax: dir > 0 ? 0 : 1, ay: 1, dx: dir * 6, dy: -8 }));
-      if (floor) st.pins.push(labels.pin(floor, x.to, { ax: dir > 0 ? 0 : 1, ay: 0, dx: dir * 6, dy: 8 }));
+      // a name stands outward of its end of the arc, unless that end is near the window's edge: then it stands inward
+      const out = (pt, d) => { const px = labels.project(pt).x; return px < 230 ? 1 : px > window.innerWidth - 230 ? -1 : d; };
+      const da = out(x.from, -dir), db = out(x.to, dir);
+      st.pins.push(labels.pin(a, x.from, { ax: da < 0 ? 1 : 0, ay: 1, dx: da * 6, dy: -8 }), labels.pin(b, x.to, { ax: db > 0 ? 0 : 1, ay: 1, dx: db * 6, dy: -8 }));
+      if (floor) st.pins.push(labels.pin(floor, x.to, { ax: db > 0 ? 0 : 1, ay: 0, dx: db * 6, dy: 8 }));
     }
     if (!quiet && n >= 0) announce(items[n].textContent.replace(/\s+/g, ' ').trim());
   }

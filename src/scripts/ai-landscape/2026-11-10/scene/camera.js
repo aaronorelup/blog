@@ -82,11 +82,12 @@ export function createRig(ctx) {
       let dist = off.length();
       if (want.fit) dist = Math.max(dist, want.fit / (2 * Math.tan(fov * RAD / 2) * camera.aspect));
       off.normalize();
-      // push-in: 5.5 units from the floor, 12 degrees above it, from the side the camera is already on
+      // push-in: 9 units from the floor, 12 degrees above it, from the side the camera is already on: the floor stays
+      // whole in the frame, with its neighbours above and below
       if (rig.push && rig.push.k > 0.001) {
         const k = easeIO(rig.push.k), pt = rig.push.point;
         right.set(p.x - pt.x, 0, p.z - pt.z).normalize();
-        const far = rig.phone ? 9 : 6.8;                 // a little further than the 5.5 of the plan: the card needs the right third
+        const far = rig.phone ? 10.5 : 9;
         right.multiplyScalar(far * Math.cos(12 * RAD)).setY(far * Math.sin(12 * RAD));
         p.copy(l).addScaledVector(off, dist).lerp(right.add(pt), k);
         l.lerp(right.copy(pt).setX(pt.x + (rig.phone ? 0 : 1.1)), k);    // look a little right of the floor, so it sits left of its card

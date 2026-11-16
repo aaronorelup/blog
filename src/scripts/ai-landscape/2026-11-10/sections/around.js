@@ -1,13 +1,14 @@
 // Around the five (SPEC 2.9.1): the camera rises until the five stacks are a short row at the top of the frame,
 // and nine grey blocks rise under them one at a time, lifting them, as a base: what a person adds around the
-// providers. One block is lit at a time with its sentence. It tours until touched. Phone: names in the sheet.
+// providers. The scroll lights one block after another with its sentence (no timer). A visitor's own pick holds
+// until the scroll has moved a tenth of a screen. Phone: names in the sheet.
 import { Raycaster, Vector2 } from 'three';
 import { easeIO, smooth, span } from '../core/clock.js';
 import { $, $$, announce, rove } from '../core/dom.js';
 import { createBase, STOPS } from '../scene/bench.js';
 
 const AROUND = STOPS.around;
-const TOUR = 2.6;
+const FIRST = 0.12, EACH = 0.11;        // block k of nine is the active one for 0.11 screens, from 0.12
 
 export function create(ctx, el, sec) {
   const { rig, row, labels, phone, reduced, input } = ctx;
@@ -16,7 +17,7 @@ export function create(ctx, el, sec) {
   const tags = items.map((li) => $('.ail-ar__d', li));
   const list = $('.ail-ar__list', el);
   const head = $('.ail-ar__head', el);
-  const st = { active: 0, clock: 0, touched: false, hover: -1, k: 0 };
+  const st = { active: 0, hold: null, u: 0, hover: -1, k: 0 };
   const pins = phone ? [] : tags.map((t, k) => labels.pin(t, () => base.blocks[k].front, { ax: 0.5, ay: 0.5, dy: 2 }));
   pins.forEach((p) => { p.on = false; });
 
@@ -27,13 +28,12 @@ export function create(ctx, el, sec) {
     if (!quiet) announce($('.ail-ar__say', items[k]).textContent.trim());
   }
   pick(0, true);
-  const touch = () => { st.touched = true; };
+  const touch = () => { st.hold = st.u; };
   const onFocus = (e) => { const li = e.target.closest('.ail-ar__item'); if (li) { touch(); pick(items.indexOf(li)); } };
   const onToggle = (e) => { const li = e.target.closest('.ail-ar__item'); if (li && e.target.open) { touch(); pick(items.indexOf(li)); } };
   list.addEventListener('focusin', onFocus);
   list.addEventListener('toggle', onToggle, true);
   const unrove = rove(list, 'summary');
-  const stopTour = input.onInput((kind) => { if (sec === ctx.clock.current && (kind === 'down' || kind === 'touch' || kind === 'key')) touch(); });
 
   // the block under the pointer lights, and a click opens its card
   const ray = new Raycaster();
@@ -58,18 +58,19 @@ export function create(ctx, el, sec) {
   window.addEventListener('keydown', onEsc);
 
   return {
-    stops: [0.55],
+    stops: items.map((_, k) => (FIRST + EACH * (k + 0.5)) / sec.screens),      // reduced motion: one still for each block
     enter() { pins.forEach((p) => { p.on = true; }); },
     leave() {
       pins.forEach((p) => { p.on = false; p.el.style.opacity = '0'; });
       tags.forEach((t) => { t.open = false; });
+      st.hold = null;
       base.show = 0; base.update();
       ctx.canvas.style.cursor = '';
     },
     update(t, dt, u) {
       // camera: up from the level row to where the row is small at the top. It stays there for the bench
       const k = smooth(span(u, 0, 0.32));
-      st.k = k;
+      st.k = k; st.u = u;
       rig.mix(rig.stops.row, AROUND, easeIO(span(u, 0, 0.32)));
       rig.yaw = 0.05; rig.pitch = 0.02;
 
@@ -81,12 +82,12 @@ export function create(ctx, el, sec) {
       }
       row.datum = 0;
 
-      // the tour: one block at a time, until the visitor touches the section. Hover leads while it lasts
-      const up = span(u, 0.36, 0.44);
-      if (!reduced && !st.touched && up >= 1) {
-        st.clock += dt;
-        if (st.clock > TOUR) { st.clock = 0; pick((st.active + 1) % items.length, true); }
-      }
+      // the scroll picks the block: each of the nine is the active one for its share of the section. A hover, a tap or
+      // a key leads until the scroll has moved a tenth of a screen
+      const up = span(u, 0.1, 0.18);
+      if (st.hold != null && Math.abs(u - st.hold) > 0.1) st.hold = null;
+      const want = Math.max(0, Math.min(items.length - 1, Math.floor((u - FIRST) / EACH)));
+      if (st.hold == null && want !== st.active) pick(want, true);
       if (!phone && !input.touch && input.moved && st.k > 0.9) {
         const h = hit(input.px, input.py);
         if (h !== st.hover) { st.hover = h; ctx.canvas.style.cursor = h >= 0 ? 'pointer' : ''; if (h >= 0) { touch(); pick(h); } }
@@ -105,7 +106,7 @@ export function create(ctx, el, sec) {
       list.classList.toggle('is-up', up > 0.5);
     },
     dispose() {
-      stopTour(); unrove(); window.removeEventListener('keydown', onEsc);
+      unrove(); window.removeEventListener('keydown', onEsc);
       list.removeEventListener('focusin', onFocus);
       list.removeEventListener('toggle', onToggle, true);
       window.removeEventListener('click', onClick);

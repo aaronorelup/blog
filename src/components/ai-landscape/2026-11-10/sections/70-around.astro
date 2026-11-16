@@ -1,7 +1,8 @@
 ---
 // Around the five (SPEC 2.9.1): the nine things a person adds around the providers, with his one sentence about
 // his whole setup. Text version: a list of nine, each opening what goes wrong without it and what fills it.
-// 3D page (sections/around.js): nine grey blocks rise as a base under the row, one lit at a time with its sentence.
+// 3D page (sections/around.js): nine grey blocks rise as a base under the row, and the scroll lights one after another
+// with its sentence.
 import '../../../../styles/ai-landscape/2026-11-10/architecture.css';
 import Fact from '../Fact.astro';
 import { COPY } from '../data/copy.js';
@@ -15,7 +16,7 @@ const layers = A.aroundLayers.map((l) => ({
   proof: l.proof ? fact(l.proof) : null,
 }));
 ---
-<section id="around" class="ail-sec ail-ar" data-sec="around" data-screens="0.9" data-land="0.45" data-rail={COPY.architecture.title} aria-labelledby="around-title">
+<section id="around" class="ail-sec ail-ar" data-sec="around" data-screens="1.2" data-land="0.3" data-rail={COPY.architecture.title} aria-labelledby="around-title">
   <div class="ail-stage">
     <header class="ail-ar__head">
       <h2 id="around-title" class="ail-title">{COPY.architecture.title}</h2>

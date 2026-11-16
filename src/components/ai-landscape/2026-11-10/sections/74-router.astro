@@ -2,6 +2,7 @@
 // The router idea (SPEC 2.9.3): three ways to talk to agents, the last with no line from you to the worker, and
 // what it costs, in the essay's own numbers with its date. Text version: three small diagrams with their limits.
 // 3D page (sections/router.js): the same three drawn in ink on the floor, one lit at a time, the cut line snipped.
+// The pairs that ship today are second depth: they open with the essay, under the source button.
 import '../../../../styles/ai-landscape/2026-11-10/architecture.css';
 import Fact from '../Fact.astro';
 import { COPY } from '../data/copy.js';
@@ -26,7 +27,7 @@ function figure(shape) {
 const chips = R.shipped.map((s) => ({ r: thing(s.routerRef), w: thing(s.workerRef), official: s.official }));
 ---
 <section id="router" class="ail-sec ail-rt" data-sec="router" data-screens="1.5" data-land="0.55" data-rail={R.name} aria-labelledby="router-title">
-  <div class="ail-stage">
+  <div class="ail-stage" data-full>
     <h2 id="router-title" class="ail-rt__title ail-title">{R.name}</h2>
     <ol class="ail-rt__shapes">
       {R.shapes.map((s, i) => (
@@ -61,16 +62,16 @@ const chips = R.shipped.map((s) => ({ r: thing(s.routerRef), w: thing(s.workerRe
           <ul class="ail-rt__list ail-rt__srcs">
             {R.sources.map((s) => <li><span class="ail-label">{s.org} &middot; {s.form} &middot; {s.date}</span> {s.title}</li>)}
           </ul>
+          <ul class="ail-rt__chips">
+            {chips.map((c) => (
+              <li class="ail-rt__chip" data-official={c.official} title={`${c.r.name}, ${c.w.name}: ${OFFICIAL[c.official]}`}>
+                <span class="ail-rt__end" data-owner={c.r.owner}></span><span class="ail-rt__wire"></span><span class="ail-rt__end" data-owner={c.w.owner}></span>
+                <span class="ail-rt__cw">{c.r.name}, {c.w.name}: {OFFICIAL[c.official]}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       </details>
-      <ul class="ail-rt__chips">
-        {chips.map((c) => (
-          <li class="ail-rt__chip" data-official={c.official} title={`${c.r.name}, ${c.w.name}: ${OFFICIAL[c.official]}`}>
-            <span class="ail-rt__end" data-owner={c.r.owner}></span><span class="ail-rt__wire"></span><span class="ail-rt__end" data-owner={c.w.owner}></span>
-            <span class="ail-rt__cw">{c.r.name}, {c.w.name}: {OFFICIAL[c.official]}</span>
-          </li>
-        ))}
-      </ul>
     </div>
   </div>
 </section>

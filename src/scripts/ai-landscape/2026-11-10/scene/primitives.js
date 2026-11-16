@@ -2,17 +2,19 @@
 // cores inside a floor, sockets, lamps, arcs between floors, and a gate. Each call returns an object with the
 // fields a signature sets, an update() it calls every frame, and a dispose(). All of them ride their tower.
 // Every piece is built hidden: it shows only once its owner has called update() with something to show.
-import { AdditiveBlending, BoxGeometry, BufferGeometry, Color, Float32BufferAttribute, Group, Line, LineBasicMaterial, LineDashedMaterial, Mesh, MeshBasicMaterial, PlaneGeometry, SphereGeometry, Sprite, SpriteMaterial, TorusGeometry, Vector3 } from 'three';
+import { AdditiveBlending, BoxGeometry, BufferGeometry, Color, EdgesGeometry, Float32BufferAttribute, Group, Line, LineBasicMaterial, LineDashedMaterial, LineSegments, Mesh, MeshBasicMaterial, PlaneGeometry, SphereGeometry, Sprite, SpriteMaterial, TorusGeometry, Vector3 } from 'three';
 import { smooth } from '../core/clock.js';
 import { owner as ownerOf } from '../worlds/index.js';
 import { FLOOR } from './stack.js';
 
 const INK = '#0C0D10';
+const PAPER = '#F8F9FB';
 // how a line says who stands behind a link: documented, partly documented, unofficial
 const DASH = { yes: null, partial: [0.2, 0.12], no: [0.07, 0.07] };
 
 export function createPrims(ctx) {
   const { mats, textures } = ctx;
+  const ink = new Color(INK);
   const drop = (group) => { group.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); }); group.removeFromParent(); };
 
   return {
@@ -58,9 +60,13 @@ export function createPrims(ctx) {
       tower.group.add(group);
       const w = Math.min(0.2, (FLOOR.w - 0.5) / n - 0.05);
       const geo = new BoxGeometry(w, 0.32, 0.03).translate(w / 2, 0.16, 0);
+      // a door is a leaf of house paper with an ink outline, so it reads against any wall. The one ajar is inked in
+      const edges = new EdgesGeometry(geo);
+      const line = new LineBasicMaterial({ color: INK });
       const leaves = Array.from({ length: n }, (_, k) => {
-        const mesh = new Mesh(geo, mats.glass(tower.owner, { halfH: 0.16, side, alpha: 0.8 }));
+        const mesh = new Mesh(geo, mats.paper(null, { side, plain: true, tint: PAPER }));
         mesh.position.x = (k - n / 2) * (w + 0.05) + 0.025; mesh.visible = false;
+        mesh.add(new LineSegments(edges, line));
         group.add(mesh);
         return { mesh, swing: 0 };
       });
@@ -71,12 +77,11 @@ export function createPrims(ctx) {
           leaves.forEach((d, k) => {
             d.swing += ((k === set.open ? 1 : 0) - d.swing) * (1 - Math.exp(-9 * dt));
             d.mesh.rotation.y = -d.swing * 1.15;
-            const u = d.mesh.material.uniforms;
-            u.uShow.value = set.show * tower.show; u.uPulse.value = k === set.open ? 0.35 : 0; u.uDim.value = tower.dim;
-            d.mesh.visible = set.show > 0.01;
+            d.mesh.material.uniforms.uTint.value.set(PAPER).lerp(ink, Math.min(1, d.swing * 1.4));
+            d.mesh.visible = set.show * tower.show > 0.5;
           });
         },
-        dispose() { drop(group); },
+        dispose() { edges.dispose(); line.dispose(); drop(group); },
       };
       return set;
     },

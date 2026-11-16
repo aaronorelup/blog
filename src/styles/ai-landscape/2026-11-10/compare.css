@@ -75,6 +75,7 @@
 .ail-gl .ail-lu__d[open] .ail-lu__a { background: var(--ail-fg); color: var(--ail-bg); }
 .ail-gl .ail-lu__d[open] .ail-lu__who { color: inherit; }
 .ail-gl .ail-lu__more { position: absolute; left: 50%; top: calc(100% + 6px); width: 300px; margin: 0; transform: translateX(-50%); text-align: left; z-index: 5; }
+.ail-gl .ail-lu__cell:last-child { max-width: min(186px, 13vw); }      /* the last answer keeps inside the window */
 .ail-gl .ail-lu__cell:first-child + .ail-lu__cell .ail-lu__more { left: 0; transform: none; }
 .ail-gl .ail-lu__cell:last-child .ail-lu__more { left: auto; right: 0; transform: none; }
 .ail-gl .ail-lu__foot { position: absolute; left: var(--ail-margin); bottom: var(--ail-margin); display: grid; gap: 6px; }
@@ -97,22 +98,24 @@
   .ail-gl .ail-lu__layer { width: 100%; height: auto; min-height: 44px; padding: 0 4px; font-size: 12px; letter-spacing: .02em; text-align: center; white-space: normal; color: var(--ail-fg); background: var(--ail-floor); box-shadow: inset 0 0 0 1px var(--ail-line); }
   .ail-gl .ail-lu__layer[aria-pressed='true'] { background: var(--ail-fg); color: var(--ail-bg); }
   .ail-gl .ail-lu__layer .ail-lu__k, .ail-gl .ail-lu__layer[aria-pressed='true'] .ail-lu__k { display: none; }
+  /* the five answers stand at the foot of the sheet, or right under the sentence where the window is tall (a tablet) */
+  .ail-gl .ail-lu { --lu-foot: max(var(--ail-margin), 65svh - 508px); }
   .ail-gl .ail-lu__now { top: calc(35svh + 158px); right: var(--ail-margin); width: auto; }
   .ail-gl .ail-lu__say .ail-lu__head { display: none; }
   .ail-gl .ail-lu__say .ail-sentence { margin: 0; font-size: 19px; }
   .ail-gl .ail-lu__row.is-lit .ail-lu__cell { position: fixed; left: var(--ail-margin); right: var(--ail-margin); max-width: none; width: auto; text-align: left; }
-  .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(2) { bottom: calc(var(--ail-margin) + 34px + 4 * 44px); }
-  .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(3) { bottom: calc(var(--ail-margin) + 34px + 3 * 44px); }
-  .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(4) { bottom: calc(var(--ail-margin) + 34px + 2 * 44px); }
-  .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(5) { bottom: calc(var(--ail-margin) + 34px + 44px); }
-  .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(6) { bottom: calc(var(--ail-margin) + 34px); }
+  .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(2) { bottom: calc(var(--lu-foot) + 4 * 44px); }
+  .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(3) { bottom: calc(var(--lu-foot) + 3 * 44px); }
+  .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(4) { bottom: calc(var(--lu-foot) + 2 * 44px); }
+  .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(5) { bottom: calc(var(--lu-foot) + 1 * 44px); }
+  .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(6) { bottom: var(--lu-foot); }
   .ail-gl .ail-lu__a { display: grid; grid-template-columns: 7em 1fr auto; align-items: center; gap: 8px; height: 44px; padding: 2px 0; background: none; border-top: 1px solid var(--ail-line); }
   .ail-gl .ail-lu__lamp { margin: 0; align-self: center; }
   .ail-gl .ail-lu__who { display: block; position: static; width: auto; height: auto; overflow: visible; clip-path: none; margin: 0; color: var(--ail-fg-2); }
   .ail-gl .ail-lu__v { font-size: 16px; line-height: 1.1; }      /* a long answer takes two lines: no word is ever cut */
-  .ail-gl .ail-lu__more { position: fixed; left: var(--ail-margin); right: var(--ail-margin); top: auto; bottom: calc(var(--ail-margin) + 34px + 5 * 44px + 6px); width: auto; transform: none; }
-  .ail-gl .ail-lu__foot { left: var(--ail-margin); right: var(--ail-margin); bottom: var(--ail-margin); }
-  .ail-gl .ail-lu__guest { display: none; }
+  .ail-gl .ail-lu__more { position: fixed; left: var(--ail-margin); right: var(--ail-margin); top: auto; bottom: calc(var(--lu-foot) + 5 * 44px + 6px); width: auto; transform: none; }
+  /* the five rows name their companies, so the legend steps aside (60 words a screen): each row's swatch and tag say its state */
+  .ail-gl .ail-lu__foot { display: none; }
 }
 
 
@@ -211,7 +214,11 @@
   /* phone, 3D page: the row keeps the top third, each section's words sit in the sheet below it */
   .ail-gl :is(.ail-ag, .ail-ln, .ail-ba) .ail-stage::before { content: ''; position: absolute; left: 0; right: 0; top: 35svh; bottom: 0; background: var(--ail-veil); box-shadow: 0 -1px 0 var(--ail-hair); }
   .ail-gl :is(.ail-ag__title, .ail-ln__title, .ail-ba__title) { top: calc(35svh + 10px); right: var(--ail-margin); max-width: none; font-size: 28px; }
-  .ail-gl .ail-ln__kinds { top: calc(35svh + 50px); right: var(--ail-margin); max-width: none; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  /* the kinds scroll inside their own row and fade out at its right end, as a world's tabs do */
+  .ail-gl .ail-ln__kinds { top: calc(35svh + 50px); right: 0; max-width: none; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; }
+  .ail-gl .ail-ln__kinds::-webkit-scrollbar { display: none; }
+  .ail-gl .ail-ln__kinds::after { content: ''; position: sticky; right: 0; flex: none; width: 44px; background: linear-gradient(90deg, transparent, var(--ail-bg)); pointer-events: none; }
+  .ail-gl .ail-ln__kind { scroll-snap-align: start; }
   .ail-gl .ail-ln__kind { flex: none; min-height: 44px; }
   .ail-gl .ail-ln__styles { left: var(--ail-margin); right: var(--ail-margin); top: auto; bottom: var(--ail-margin); flex-direction: row; justify-content: space-between; padding: 0; background: none; letter-spacing: .02em; }
   .ail-gl .ail-ln__styles svg { width: 26px; }

@@ -49,7 +49,8 @@
 .ail-rail a::before { content: ''; width: 5px; height: 5px; margin-left: 9px; border-radius: 50%; background: currentColor; opacity: .32; transition: transform 150ms, opacity 150ms; }
 .ail-rail a[aria-current='true']::before { opacity: 1; transform: scale(1.7); }
 .ail-rail a:hover::before, .ail-rail a:focus-visible::before { opacity: 1; }
-.ail-rail a span { position: absolute; left: 26px; top: 50%; transform: translate(-4px, -50%); padding: 5px 8px; background: var(--ail-fg); color: var(--ail-bg); white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity 150ms, transform 150ms; font: 400 12px/1 var(--ail-mono); letter-spacing: .08em; text-transform: uppercase; }
+/* a section's name opens to the right of its dot on its own ink ground, 24 characters at most */
+.ail-rail a span { position: absolute; left: 26px; top: 50%; transform: translate(-4px, -50%); max-width: calc(24ch + 16px + 1.92em); overflow: hidden; text-overflow: ellipsis; padding: 5px 8px; background: var(--ail-fg); color: var(--ail-bg); white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity 150ms, transform 150ms; font: 400 12px/1 var(--ail-mono); letter-spacing: .08em; text-transform: uppercase; }
 .ail-rail a:hover span, .ail-rail a:focus-visible span { opacity: 1; visibility: visible; transform: translate(0, -50%); }
 .ail-rail li[data-gap] { margin-top: 7px; }
 

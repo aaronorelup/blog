@@ -42,6 +42,7 @@
 
 /* ---- 2.9.2 my stack. Text version: five bands, each a list of pieces that open */
 .ail-ms__head { display: grid; gap: 12px; max-width: 46rem; }
+.ail-ms__who { margin-left: .6em; vertical-align: .55em; color: var(--ail-fg-2); }
 .ail-ms__date { margin-left: .5em; vertical-align: .55em; text-decoration: none; padding: 3px 6px 2px; border: 1px solid var(--ail-hair); }
 .ail-ms__quote.is-gone { visibility: hidden; }
 .ail-ms__bands { display: grid; gap: 18px; margin-top: 26px; }
@@ -155,7 +156,7 @@
 .ail-rt__chip[data-official='partial'] .ail-rt__wire { border-top-style: dotted; }
 .ail-rt__cw { margin-left: 8px; font-size: 15px; }
 
-.ail-gl .ail-rt__title, .ail-gl .ail-rt__cw { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.ail-gl .ail-rt__title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .ail-gl .ail-rt__shapes { display: block; margin: 0; }
 .ail-gl .ail-rt__shape { display: grid; justify-items: center; gap: 6px; width: max-content; max-width: 300px; opacity: 0; }
 .ail-gl .ail-rt__fig { display: none; }
@@ -169,7 +170,8 @@
 .ail-gl .ail-rt__cav { font-size: 18px; line-height: 1.25; }
 .ail-gl .ail-rt__src { justify-self: start; background: var(--ail-veil); padding: 0 10px; }
 .ail-gl .ail-rt__card { position: absolute; left: 0; top: calc(100% + 8px); width: min(560px, 90vw); max-height: 56vh; overflow: auto; z-index: 4; }
-.ail-gl .ail-rt__chips { padding: 6px 10px; background: var(--ail-veil); justify-self: start; gap: 8px 12px; }
+/* the pairs that ship today are second depth: a named list in the essay's card */
+.ail-rt__card .ail-rt__chips { display: grid; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--ail-hair); }
 
 @media (max-width: 899px) {
   .ail-gl .ail-rt__shapes { position: absolute; left: var(--ail-margin); right: var(--ail-margin); bottom: var(--ail-margin); display: flex; flex-wrap: wrap; gap: 4px; opacity: var(--rt-on, 0); }
@@ -240,11 +242,22 @@
 .ail-bill__dot { width: 28px; height: 28px; display: grid; place-items: center; }
 .ail-bill__dot::before { content: ''; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--ail-fg); }
 .ail-bill__dot[aria-pressed='true']::before { background: var(--ail-fg); }
-.ail-gl .ail-bill__pick { width: 112px; height: 96px; border-radius: 8px; opacity: 0; }
-.ail-gl .ail-bill__pick:is(:hover, :focus-visible) { box-shadow: inset 0 0 0 1.5px var(--ail-fg); }
 .ail-gl .ail-bill__row:not(.is-on) :is(.ail-bill__nm, .ail-bill__cell, .ail-bill__x) { display: none; }
-.ail-gl .ail-bill__row.is-on :is(.ail-bill__nm, .ail-bill__cell) { display: block; width: 236px; height: 46px; padding: 5px 11px 6px; background: var(--ail-veil); }
-.ail-gl .ail-bill__nm { font-size: 30px; line-height: 38px; padding-top: 4px !important; }
+.ail-gl .ail-bill__row.is-on :is(.ail-bill__nm, .ail-bill__cell) { display: block; padding: 6px 12px 7px; background: var(--ail-veil); }
+@media (min-width: 900px) {
+  /* a dot in its owner's colour in front of each company's tank and meter, as on a phone: the underlined one is the
+     company whose card is up. Its mark, over its stack, names it */
+  .ail-gl .ail-bill__pick { display: grid; place-items: center; width: 44px; height: 40px; opacity: 0; }
+  .ail-gl .ail-bill__pick::before { content: ''; width: 14px; height: 14px; border-radius: 50%; background: var(--o); box-shadow: 0 0 0 1px var(--ail-fg); }
+  .ail-gl .ail-bill__pick:is(:hover, :focus-visible) { box-shadow: inset 0 0 0 1px var(--ail-fg); }
+  .ail-gl .ail-bill__pick[aria-pressed='true'] { box-shadow: inset 0 -3px 0 var(--ail-fg); }
+  /* the picked company's card: its name and three lines, at the top right, clear of every stack and mark */
+  .ail-gl .ail-bill__row.is-on :is(.ail-bill__nm, .ail-bill__cell) { position: absolute; right: var(--ail-margin); top: var(--ail-top); width: min(27vw, 330px); height: 50px; opacity: var(--an-on, 0); }
+  .ail-gl .ail-bill__row.is-on .ail-bill__nm { height: 44px; font-size: 30px; line-height: 36px; padding-top: 5px; border-bottom: 3px solid var(--o, var(--ail-mid)); }
+  .ail-gl .ail-bill__row.is-on .ail-bill__cell[data-k='plan'] { top: calc(var(--ail-top) + 46px); }
+  .ail-gl .ail-bill__row.is-on .ail-bill__cell[data-k='meter'] { top: calc(var(--ail-top) + 98px); }
+  .ail-gl .ail-bill__row.is-on .ail-bill__cell[data-k='limit'] { top: calc(var(--ail-top) + 150px); }
+}
 .ail-gl .ail-bill__h { display: block; color: var(--ail-fg-2); margin-bottom: 3px; }
 .ail-gl .ail-bill__cell .ail-fact { font-size: 19px; line-height: 1.15; white-space: nowrap; }
 

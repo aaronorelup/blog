@@ -17,7 +17,7 @@ const five = view.providers.map((p) => ({ ...p, markName: world(p.id).marks.of =
 <header class="ail-chrome">
   <div class="ail-chrome__side ail-chrome__side--id">
     <h1 class="ail-chrome__title ail-label"><a href="#top">{COPY.frame.title}</a></h1>
-    <h2 class="ail-vh"><a href="#ail-main" data-ail-text>{COPY.frame.skip}</a></h2>
+    <h2 class="ail-vh"><a href="#ail-main" data-ail-text tabindex="-1">{COPY.frame.skip}</a></h2>
     <a class="ail-chrome__chip ail-label" href="#snapshot" data-ail-open="editions"><span class="ail-chrome__ind">{COPY.frame.independent}</span> <span class="ail-chrome__w">{COPY.frame.snapshot}</span> <time datetime={DATE}>{DATE}</time></a>
     {!LISTED && <p class="ail-preview ail-label">{COPY.frame.draft}</p>}
   </div>
@@ -46,7 +46,12 @@ const five = view.providers.map((p) => ({ ...p, markName: world(p.id).marks.of =
   if (opener) {
     const set = (on) => { map.toggleAttribute('data-open', on); opener.setAttribute('aria-expanded', String(on)); };
     opener.addEventListener('click', () => set(!map.hasAttribute('data-open')));
-    document.addEventListener('click', (e) => { if (map.hasAttribute('data-open') && !e.target.closest('.ail-map__open')) set(false); });
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.ail-map__open')) return;
+      set(false);
+      const taken = e.target.closest('.ail-map__col');
+      if (taken && getComputedStyle(opener).display !== 'none') taken.blur();      // the list shuts behind the link that was taken
+    });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') set(false); });
   }
 </script>

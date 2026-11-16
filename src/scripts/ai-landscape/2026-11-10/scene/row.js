@@ -12,7 +12,7 @@ const LEDGE = FLOOR.w / 2 + 0.62;
 const BIG_WIDE = 1.6;     // how much larger a character stands when a world opens (pose "beside")
 // How large a character stands in each pose, times its own size: on its lid (the opening, the ending), on its ledge,
 // and free on the ground at its stack's front left (the sections where the figures have the floor to themselves).
-const SCALE = { top: 2.1, tight: 1.6, floor: 1.3, front: 2.6 };      // (tight: on its lid in a 16:9 frame or wider, which has less head room)
+const SCALE = { top: 2.1, tight: 1.6, floor: 1.3, front: 2.25 };      // (tight: on its lid in a 16:9 frame or wider, which has less head room)
 const PLATE_MIN = 28;     // CSS px: a plate that would be drawn narrower is absent, and the HTML list shows the mark
 const PLATE_OUT = 0.18;   // seconds a plate takes to leave or come back, by scale alone
 
@@ -82,7 +82,8 @@ export function createRow(ctx) {
     const x = tower.x + tower.shift;
     if (name === 'top') return out.set(x, tower.height + tower.lift + c.size * onLid() * 0.5, tower.z + 0.2);
     // front: on the ground left of the stack's front corner. On a raised base it steps back onto the base
-    if (name === 'front') return out.set(x - 2.0, tower.lift + c.size * SCALE.front * 0.5 + 0.02, tower.z + 1.6 - Math.min(0.6, tower.lift));
+    // (1.6 left of the stack's middle: the first figure of the row stays whole inside the frame)
+    if (name === 'front') return out.set(x - 1.6, tower.lift + c.size * SCALE.front * 0.5 + 0.02, tower.z + 1.6 - Math.min(0.6, tower.lift));
     // beside: large, on the ground to the right of the stack (on a phone, where there is no room, on its lid)
     if (name === 'beside') return ctx.phone ? out.set(x, tower.height + tower.lift + c.size * BIG * 0.5, tower.z + 0.2) : out.set(x + 2.9, c.size * BIG * 0.5 + 0.02, tower.z + 0.8);
     return out.set(x - LEDGE, tower.floors[c.floor].y + tower.lift + FLOOR.h / 2 + c.size * SCALE.floor * c.perch * 0.5, tower.z + 0.25);

@@ -156,4 +156,7 @@
   .ail-gram__chip svg { width: 20px; height: 20px; }
   .ail-gl .ail-end__quote, .ail-gl .ail-end__foot { position: static; width: auto; max-width: none; }
   .ail-gl .ail-end__foot { margin-top: 14px; }
+  /* the closing line follows the date printed on the floor: the lids, the date and the words are one column, with
+     no empty band between them */
+  .ail-gl .ail-end .ail-stage { justify-content: flex-start; padding-top: calc(var(--lid) + 7.16 * var(--u) + var(--gap) + 22px); }
 }

@@ -85,11 +85,15 @@ export function create(ctx, el, sec) {
   const list = $('.ail-open__five', el);
   const caps = $$('.ail-open__co', el).map((li) => { const at = new Vector3(); return { li, at, pin: ctx.phone ? null : labels.pin(li, at, { ax: 0.5, ay: 0 }) }; });
   const skip = ctx.reduced || !!window.location.hash || window.scrollY > 100;
-  const st = { live: false, warm: 0, clock: 0, born: -1, last: -1, heard: -1, type: null, laid: false, g: null, tour: '', tt: 0, grace: 0, dim: 0, hover: -1, lifts: towers.map(() => 0) };
+  const st = { live: false, warm: 0, clock: 0, born: -1, last: -1, heard: -1, type: null, laid: false, g: null, cy: 0.4, tour: '', tt: 0, grace: 0, dim: 0, hover: -1, lifts: towers.map(() => 0) };
   const v = new Vector3();
   ctx.state.opening = { t: 0, tour: '' };
 
-  const layout = () => { st.g = ground(ctx); st.type = print(ctx, ruler, st.g, st.type); st.laid = true; };
+  const layout = () => {
+    st.g = ground(ctx); st.type = print(ctx, ruler, st.g, st.type); st.laid = true;
+    // a phone or a tablet: where the level row rests, just over the sheet of words, whatever the window's height
+    st.cy = Math.max(0.25, Math.min(0.62, words.getBoundingClientRect().top / window.innerHeight - 0.17));
+  };
   const onResize = () => { st.laid = false; };
   window.addEventListener('resize', onResize);
   // any real input ends the tour (SPEC 4.6). A short grace after "Resume" keeps the hand that pressed it from ending it
@@ -147,7 +151,7 @@ export function create(ctx, el, sec) {
       hero.fit = 24.3 * Math.max(ctx.phone ? smooth(span(e, 0.4, 1)) : 0, Math.min(1, down * 5));
       // a phone: the level row comes to rest lower, just over the sheet of words, and rises to the shared row stop only
       // as the section ends (no empty band between the picture and the words)
-      rig.mix(hero, ctx.phone ? { ...rig.stops.row, cy: lerp(0.4, rig.stops.row.cy, smooth(span(u, 1.25, 1.6))) } : rig.stops.row, down);
+      rig.mix(hero, ctx.phone ? { ...rig.stops.row, cy: lerp(st.cy, rig.stops.row.cy, smooth(span(u, 1.25, 1.6))) } : rig.stops.row, down);
       if (tau < 1) rig.cut();                                      // the intro is already eased: no lag, so the width holds exactly
       rig.yaw = 0.06 * smooth(span(e, 0.3, 0.9));
       rig.pitch = 0.025 * smooth(span(e, 0.3, 0.9));

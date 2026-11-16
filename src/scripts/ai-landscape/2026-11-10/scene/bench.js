@@ -7,12 +7,13 @@ import { owner } from '../worlds/index.js';
 
 export const INK = '#0C0D10';
 // The camera stops of the five architecture sections, chained: each section starts where the one before it ends.
+// (cy: on a phone the picture stands just over the sheet of words, with no empty band between them.)
 export const STOPS = {
-  around: { pos: [0, 8.4, 30.5], look: [0, 2.35, 0.6], fov: 24, fit: 23.5, cy: 0.48 },
-  bench: { pos: [0, 5.6, 27.5], look: [0, 2.05, 3.2], fov: 24, fit: 22.4, cy: 0.42 },
-  router: { pos: [0, 17.8, 14.6], look: [0, 0, 4.15], fov: 24, fit: 20.5, cy: 0.42 },
-  board: { pos: [-0.4, 2.7, 29.5], look: [-0.4, 1.75, 0], fov: 24, fit: 24.4, cx: 0.565, cy: 0.36 },
-  rail: { pos: [-0.4, 3.0, 27], look: [-0.4, 2.05, 1.6], fov: 24, fit: 23.6, cy: 0.36 },
+  around: { pos: [0, 8.4, 30.5], look: [0, 2.35, 0.6], fov: 24, fit: 23.5, cy: 0.6 },
+  bench: { pos: [0, 5.6, 27.5], look: [0, 2.05, 3.2], fov: 24, fit: 22.4, cy: 0.58 },
+  router: { pos: [0, 17.8, 15.6], look: [0, 0, 5.15], fov: 24, fit: 21, cy: 0.42, cyd: 0.5 },      // the three diagrams stand at the middle of the frame
+  board: { pos: [-0.4, 2.7, 29.5], look: [-0.4, 1.75, 0], fov: 24, fit: 24.4, cx: 0.565, cy: 0.44 },
+  rail: { pos: [-0.4, 3.0, 27], look: [-0.4, 2.05, 1.6], fov: 24, fit: 23.6, cy: 0.47 },
 };
 const shapeOf = (w, d, r) => {
   const x = w / 2, z = d / 2;

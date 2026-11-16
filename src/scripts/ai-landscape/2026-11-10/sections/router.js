@@ -6,11 +6,12 @@ import { clamp01, easeIO, smooth, span } from '../core/clock.js';
 import { $, $$, announce, rove } from '../core/dom.js';
 import { block, dot, drop, INK, ribbon, roundBox, setGlass, STOPS } from '../scene/bench.js';
 
-const CX = [-6.6, 0, 6.6];
+const CX = [-6.7, 0, 6.7];
 const CZ = 5.5;
+const BIG = 1.45;                 // the pieces of a diagram against their first size: they are read from across the room
 const LEAVES = 3;                 // a team or a router hands out to several: three of each are drawn
-const HUB = { w: 0.86, h: 0.56 };
-const LEAF = { w: 0.62, h: 0.44 };
+const HUB = { w: 0.86 * BIG, h: 0.56 * BIG };
+const LEAF = { w: 0.62 * BIG, h: 0.44 * BIG };
 
 export function create(ctx, el, sec) {
   const { rig, row, labels, phone, reduced } = ctx;
@@ -19,8 +20,8 @@ export function create(ctx, el, sec) {
   const more = $('.ail-rt__more', el);
   const group = new Group();
   ctx.scene.add(group);
-  const hubGeo = roundBox(HUB.w, HUB.h, HUB.w, 0.1);
-  const leafGeo = roundBox(LEAF.w, LEAF.h, LEAF.w, 0.08);
+  const hubGeo = roundBox(HUB.w, HUB.h, HUB.w, 0.14);
+  const leafGeo = roundBox(LEAF.w, LEAF.h, LEAF.w, 0.11);
   const st = { lit: -1, chosen: -1, cut: 0, cutT: 0, time: 0, k: 0 };
   const v = new Vector3();
 
@@ -32,21 +33,21 @@ export function create(ctx, el, sec) {
     const leafIds = ids.filter((id) => id !== 'you' && id !== hub);
     const c = new Vector3(CX[i], 0, CZ);
     const nodes = new Map();
-    const you = dot(ctx, 0.2);
-    you.position.set(c.x - 2.1, 0.2, c.z + 0.75);
+    const you = dot(ctx, 0.2 * BIG);
+    you.position.set(c.x - 2.35, 0.2 * BIG, c.z + 0.75);
     nodes.set('you', [{ mesh: you, at: you.position }]);
     const hubMesh = block(ctx, hubGeo, 'house', HUB.h);
-    hubMesh.position.set(c.x + (leafIds.length ? -0.2 : 1.3), HUB.h / 2, c.z - (leafIds.length ? 0.35 : 0.2));
+    hubMesh.position.set(c.x + (leafIds.length ? -0.25 : 1.3), HUB.h / 2, c.z - (leafIds.length ? 0.35 : 0.2));
     group.add(hubMesh);
     nodes.set(hub, [{ mesh: hubMesh, at: hubMesh.position }]);
     // a glyph of the layer grammar on each block: the router's fork on a router, the harness loop on any other agent
     const mark = (m, name, size, y) => { const g = ctx.textures.glyphPlane(name, size, { tint: '#0C0D10' }); g.rotation.x = -Math.PI / 2; g.position.set(0, y + 0.004, 0); m.add(g); return g; };
-    mark(hubMesh, hub === 'router' ? 'router' : 'harness', 0.5, HUB.h / 2);
+    mark(hubMesh, hub === 'router' ? 'router' : 'harness', 0.5 * BIG, HUB.h / 2);
     for (const id of leafIds) {
       nodes.set(id, Array.from({ length: LEAVES }, (_, k) => {
         const m = block(ctx, leafGeo, 'house', LEAF.h);
-        m.position.set(c.x + 1.95 + (k === 1 ? 0.25 : 0), LEAF.h / 2, c.z - 1.55 + k * 1.35);
-        mark(m, 'harness', 0.38, LEAF.h / 2);
+        m.position.set(c.x + 2.1 + (k === 1 ? 0.3 : 0), LEAF.h / 2, c.z - 1.75 + k * 1.55);
+        mark(m, 'harness', 0.38 * BIG, LEAF.h / 2);
         group.add(m);
         return { mesh: m, at: m.position };
       }));
@@ -55,10 +56,10 @@ export function create(ctx, el, sec) {
     const lines = edges.flatMap(([a, b, kind]) => {
       const out = [];
       for (const A of nodes.get(a)) for (const B of nodes.get(b)) {
-        const r = ribbon(ctx, { kind: kind === 'reports' ? 'pale' : '', width: kind === 'talks' ? 0.07 : 0.06 });
+        const r = ribbon(ctx, { kind: kind === 'reports' ? 'pale' : '', width: (kind === 'talks' ? 0.07 : 0.06) * BIG });
         r.a.copy(A.at); r.b.copy(B.at);
-        if (kind === 'reports') { const side = v.subVectors(r.b, r.a).normalize(); r.a.add(new Vector3(-side.z, 0, side.x).multiplyScalar(0.16)); r.b.add(new Vector3(-side.z, 0, side.x).multiplyScalar(0.16)); }
-        const bead = kind === 'dispatches' ? dot(ctx, 0.12) : null;
+        if (kind === 'reports') { const side = v.subVectors(r.b, r.a).normalize(); r.a.add(new Vector3(-side.z, 0, side.x).multiplyScalar(0.2)); r.b.add(new Vector3(-side.z, 0, side.x).multiplyScalar(0.2)); }
+        const bead = kind === 'dispatches' ? dot(ctx, 0.12 * BIG) : null;
         out.push({ r, kind, bead, phase: out.length * 0.37 });
       }
       return out;
@@ -96,7 +97,7 @@ export function create(ctx, el, sec) {
   const onEsc = (e) => { if (e.key === 'Escape' && sec === ctx.clock.current) $$('details[open]:not(.ail-ms__pairs)', el).forEach((d) => { d.open = false; }); };
   window.addEventListener('keydown', onEsc);
 
-  const pins = phone ? [] : items.map((li, i) => labels.pin(li, () => v.set(CX[i] - 0.3, 0, CZ + 2.25), { ax: 0.5, ay: 0, dy: 6 }));
+  const pins = phone ? [] : items.map((li, i) => labels.pin(li, () => v.set(CX[i] - 0.1, 0, CZ + 2.6), { ax: 0.5, ay: 0, dy: 6 }));
   pins.forEach((p) => { p.on = false; });
   const all = [...shapes.flatMap((s) => s.lines.map((l) => l.r)), cutA, cutB, ...snip];
   function hide() {
@@ -145,7 +146,7 @@ export function create(ctx, el, sec) {
           l.r.update();
           if (l.bead) {
             const p = reduced ? 0.5 : ((st.time * 0.55 + l.phase) % 1);
-            l.bead.position.lerpVectors(l.r.a, l.r.b, easeIO(p)).setY(0.11);
+            l.bead.position.lerpVectors(l.r.a, l.r.b, easeIO(p)).setY(0.11 * BIG);
             l.bead.visible = k * on > 0.5 && draw > 0.95;
           }
         });
