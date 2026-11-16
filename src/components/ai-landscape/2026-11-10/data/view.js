@@ -195,11 +195,12 @@ function provider(id) {
   };
 }
 
-// The same data with every { claimRef } swapped for its claim, for sections that pick their own fields.
+// The same data with every { claimRef } swapped for its claim, for sections that pick their own fields. An arrow
+// (it has a fromRef) that also points at the vendor's view of it stays an arrow: its ends and its verb are kept.
 function resolved(node) {
   if (Array.isArray(node)) return node.map(resolved);
   if (!node || typeof node !== 'object') return node;
-  if (typeof node.claimRef === 'string') return resolve(node);
+  if (typeof node.claimRef === 'string' && !('fromRef' in node)) return resolve(node);
   return Object.fromEntries(Object.entries(node).map(([k, v]) => [k, resolved(v)]));
 }
 
