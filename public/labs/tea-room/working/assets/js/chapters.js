@@ -270,6 +270,13 @@
     ptr.x = clamp(ev.clientX / W * 2 - 1, -1, 1) || 0; ptr.y = clamp(ev.clientY / H * 2 - 1, -1, 1) || 0;
   }, { passive: true });
 
+  // (a trial: one flick, one stop, as on the homepage: steps.js. ?step=1 switches it on for this tab, ?step=0 off)
+  var stepOn = qs.get('step');
+  try { if (stepOn !== '1' && stepOn !== '0') stepOn = sessionStorage.getItem('tea-step'); } catch (err) { /* no storage */ }
+  if (stepOn === '1') ['assets/js/steps-data.js', 'assets/js/steps.js'].forEach(function (src) {
+    var sc = document.createElement('script'); sc.src = src; sc.async = false; document.head.appendChild(sc);
+  });
+
   window.TEA = {
     start: start, frame: frame, list: LIST,
     s: function () { return SCALE; },                 // (the page's one scale: see setScale)
