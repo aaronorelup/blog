@@ -1,31 +1,52 @@
 ---
-// The frame on every screen (SPEC 2.0): the skip link, the title and stamp chip, the 5 by 9 minimap that is
-// also the "you are here" mark, the sources chip, the section rail and the live region. Ink and paper only.
-// index.js fills the rail from the sections and moves the minimap's mark. Overlays answer data-ail-open.
-// While LISTED (src/data/ai-landscape.js) is off, a quiet Draft label stands beside the stamp chip.
+// The frame on every screen (SPEC 2.0): the skip link, the title and stamp chip (which says "Independent" in every
+// frame), the 5 by 9 minimap that is also the "you are here" mark, the sources chip, the section rail and the live
+// region. Ink and paper only. index.js fills the rail and moves the minimap's mark. Overlays answer data-ail-open.
+// A phone gets the minimap as one button that opens five named links. While LISTED is off, a quiet Draft label.
 import '../../../styles/ai-landscape/2026-11-10/chrome.css';
+import Mark from './Mark.astro';
 import { COPY } from './data/copy.js';
 import { view } from './data/view.js';
 import { LISTED } from '../../../data/ai-landscape.js';
+import { world } from '../../../scripts/ai-landscape/2026-11-10/worlds/index.js';
 const DATE = view.snapshot.date;
+const A = COPY.a11y;
+const five = view.providers.map((p) => ({ ...p, markName: world(p.id).marks.of === 'name' ? p.name : p.brand }));
 ---
 <a class="ail-skip ail-btn" href="#ail-main" data-ail-text>{COPY.frame.skip}</a>
 <header class="ail-chrome">
-  <div class="ail-chrome__side">
+  <div class="ail-chrome__side ail-chrome__side--id">
     <h1 class="ail-chrome__title ail-label"><a href="#top">{COPY.frame.title}</a></h1>
-    <a class="ail-chrome__chip ail-label" href="#snapshot" data-ail-open="editions"><span class="ail-chrome__w">{COPY.frame.snapshot}</span> <time datetime={DATE}>{DATE}</time></a>
+    <h2 class="ail-vh"><a href="#ail-main" data-ail-text>{COPY.frame.skip}</a></h2>
+    <a class="ail-chrome__chip ail-label" href="#snapshot" data-ail-open="editions"><span class="ail-chrome__ind">{COPY.frame.independent}</span> <span class="ail-chrome__w">{COPY.frame.snapshot}</span> <time datetime={DATE}>{DATE}</time></a>
     {!LISTED && <p class="ail-preview ail-label">{COPY.frame.draft}</p>}
   </div>
   <div class="ail-chrome__side">
-    <nav class="ail-map" aria-label={COPY.frame.scope}>
-      {view.providers.map((p) => (
-        <a class="ail-map__col" href={`#${p.id}`} data-p={p.id} aria-label={p.name}>
+    <nav class="ail-map" id="ail-map" aria-label={COPY.frame.scope}>
+      <button type="button" class="ail-map__open" aria-expanded="false" aria-controls="ail-map" aria-label={A.jump} title={A.jump}>
+        {five.map((p) => <span class="ail-map__ic" data-p={p.id}>{p.stack.map((c) => <i data-state={c.state}></i>)}</span>)}
+      </button>
+      {five.map((p) => (
+        <a class="ail-map__col" href={`#${p.id}`} data-p={p.id} aria-label={p.name} title={`${A.jump}: ${p.name}`}>
           {p.stack.map((c) => <i data-state={c.state}></i>)}
+          <span class="ail-map__who"><Mark provider={p.id} name={p.markName} size="s" /><span class="ail-label">{p.name}</span></span>
         </a>
       ))}
     </nav>
-    <a class="ail-chrome__chip ail-label" href={`/ai-landscape/${DATE}/sources/`} data-ail-open="sources">{COPY.stamp.sources} <b>{view.counts.sources}</b></a>
+    <a class="ail-chrome__chip ail-label" href={`/ai-landscape/${DATE}/sources/`} data-ail-open="sources" aria-label={`${COPY.stamp.sources} ${view.counts.sources}`}><span class="ail-chrome__sw">{COPY.stamp.sources}</span> <b>{view.counts.sources}</b></a>
   </div>
 </header>
 <nav class="ail-rail" aria-label={COPY.frame.title} hidden><ol></ol></nav>
 <p class="ail-live ail-vh" aria-live="polite"></p>
+<script>
+  // a phone: the minimap is one button that opens the five companies as named links. It shuts when a link is taken,
+  // on a tap anywhere else and on Escape
+  const map = document.querySelector('.ail-map');
+  const opener = map && map.querySelector('.ail-map__open');
+  if (opener) {
+    const set = (on) => { map.toggleAttribute('data-open', on); opener.setAttribute('aria-expanded', String(on)); };
+    opener.addEventListener('click', () => set(!map.hasAttribute('data-open')));
+    document.addEventListener('click', (e) => { if (map.hasAttribute('data-open') && !e.target.closest('.ail-map__open')) set(false); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') set(false); });
+  }
+</script>

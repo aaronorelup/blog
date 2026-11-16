@@ -3,7 +3,7 @@
 // and the snapshot's date is printed on the floor where the title was. Then the owner's line, the disclaimer, the links.
 import { Vector3 } from 'three';
 import { easeIO, lerp, smooth, span } from '../core/clock.js';
-import { $, fade } from '../core/dom.js';
+import { $ } from '../core/dom.js';
 import { HOURS } from '../scene/studio.js';
 import { LID, ground, place, pose, print } from './opening.js';
 
@@ -23,7 +23,7 @@ export function create(ctx, el) {
     enter() { st.laid = false; },
     leave() {
       for (const tw of row.towers) tw.lid.size = 1.1;
-      for (const node of [quote, foot]) { node.style.opacity = ''; node.style.visibility = ''; node.style.transform = ''; }
+      for (const node of [quote, foot]) node.classList.remove('is-on');
     },
     update(t, dt, u) {
       if (!st.laid) layout();
@@ -43,9 +43,10 @@ export function create(ctx, el) {
         tw.char.scale = 1 - smooth(span(p, 0.08, 0.42));        // a cut-out seen from above reads as lying down: it leaves first
         if (tw.char.scale < 0.02) tw.char.show = 0;
       }
-      const words = smooth(span(p, 0.7, 1));
-      fade(quote, words, 16 * (1 - words));
-      fade(foot, words, 16 * (1 - words));
+      // the closing line and the foot are triggered when the date is nearly printed, and leave on the way back up
+      const words = ctx.reduced ? p > 0.5 : p > 0.82;
+      quote.classList.toggle('is-on', words);
+      foot.classList.toggle('is-on', words);
     },
     dispose() {
       window.removeEventListener('resize', onResize);

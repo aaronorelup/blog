@@ -142,8 +142,12 @@ export function create(ctx, el, sec) {
       const drop = easeIO(span(u, 0.25, 0.85));
 
       const hero = pose(ctx, e, st.g);
-      hero.fit = 24.3 * Math.min(1, down * 5);                    // on the way down the row keeps its width, as at both ends
-      rig.mix(hero, rig.stops.row, down);
+      // on the way down the row keeps its width, as at both ends. A phone pulls back as the stacks tilt up, so all five
+      // stay inside its narrow window from the first second on
+      hero.fit = 24.3 * Math.max(ctx.phone ? smooth(span(e, 0.4, 1)) : 0, Math.min(1, down * 5));
+      // a phone: the level row comes to rest lower, just over the sheet of words, and rises to the shared row stop only
+      // as the section ends (no empty band between the picture and the words)
+      rig.mix(hero, ctx.phone ? { ...rig.stops.row, cy: lerp(0.4, rig.stops.row.cy, smooth(span(u, 1.25, 1.6))) } : rig.stops.row, down);
       if (tau < 1) rig.cut();                                      // the intro is already eased: no lag, so the width holds exactly
       rig.yaw = 0.06 * smooth(span(e, 0.3, 0.9));
       rig.pitch = 0.025 * smooth(span(e, 0.3, 0.9));
@@ -152,7 +156,7 @@ export function create(ctx, el, sec) {
       studio.ink = 1 - smooth(span(u, 0.15, 0.6));
       row.datum = smooth(span(u, 0.95, 1.35));
 
-      // the tour: after 4 s with no input each stack in turn rises one unit, 3.5 s each, until any input.
+      // the tour: after 4 s with no input each stack in turn rises, 3.5 s each, until any input.
       // It runs on real seconds (the engine's dt is capped), so a slow machine still stops it within 400 ms
       const calm = time > 3.6 && u < 0.03 && !ctx.reduced;
       st.grace = Math.max(0, st.grace - real);
@@ -184,7 +188,8 @@ export function create(ctx, el, sec) {
         c.scale = first ? 1 : backOut(pop);
 
         const on = touring && i === turn;
-        const want = on ? smooth(ph / 0.2) * (1 - smooth((ph - 0.78) / 0.2)) : st.hover === i && !touring ? 0.22 : 0;
+        // on tour a stack rises half a unit: a whole unit would carry the first one's mark plate under the chrome
+        const want = on ? 0.5 * smooth(ph / 0.2) * (1 - smooth((ph - 0.78) / 0.2)) : st.hover === i && !touring ? 0.22 : 0;
         st.lifts[i] = damp(st.lifts[i], want, on ? 6 : 14, real);
         tw.lift = st.lifts[i];
         if (!on) tw.dim = 0.12 * st.dim;
@@ -203,7 +208,8 @@ export function create(ctx, el, sec) {
       const capO = seen * (1 - smooth(span(u, 1.2, 1.5)));
       if (ctx.phone) fade(list, capO);
       else for (const cap of caps) { cap.li.style.opacity = capO.toFixed(3); cap.li.style.visibility = capO < 0.01 ? 'hidden' : 'visible'; }
-      fade(words, 1 - smooth(span(u, 0.55, 0.85)), -24 * smooth(span(u, 0.55, 0.85)));
+      // the open line leaves with the floor print. On a phone it stays with the list under it: the sheet is never half empty
+      if (ctx.phone) fade(words, capO); else fade(words, 1 - smooth(span(u, 0.55, 0.85)), -24 * smooth(span(u, 0.55, 0.85)));
       const chip = st.tour && u < 0.05 ? st.tour : '';
       if ((tourEl.dataset.state || '') !== chip) { if (chip) tourEl.dataset.state = chip; else delete tourEl.dataset.state; }
       ctx.state.opening.t = time; ctx.state.opening.tour = st.tour;
