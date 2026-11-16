@@ -37,6 +37,7 @@
 .ail-lu__lamp { display: inline-flex; margin-left: 10px; }
 .ail-lu__lamp .ail-lampx { margin: 0; }
 .ail-lu__tnote { display: flex; align-items: center; }
+.ail-lu__nk { display: inline-flex; align-items: center; margin-left: 18px; }
 .ail-lu__voices { display: grid; gap: 5px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--ail-hair); }
 .ail-lu__voices b { font-weight: 400; font-style: italic; }
 .ail-lu__guest { margin-top: 8px; font-size: 16px; color: var(--ail-fg-2); }
@@ -56,11 +57,10 @@
 .ail-gl .ail-lu__table thead, .ail-gl .ail-lu__sent { display: none; }
 .ail-gl .ail-lu__table :is(th, td) { padding: 0; border: 0; width: auto; }
 /* the axis: the nine names, always printed, each on its floor's height and right-aligned against the first stack.
-   The lit one is in ink with its number, the rest stand back at 55 percent */
-.ail-gl .ail-lu__layer { display: block; padding: 3px 0 3px 8px; white-space: nowrap; text-align: right; color: color-mix(in srgb, var(--ail-fg) 55%, transparent); transition: color 150ms; }
+   The lit one is in ink with its number, the rest stand back at 64 percent (4.5 to 1 on the studio's paper, and more) */
+.ail-gl .ail-lu__layer { display: block; padding: 3px 0 3px 8px; white-space: nowrap; text-align: right; color: color-mix(in srgb, var(--ail-fg) 64%, transparent); transition: color 150ms; }
 .ail-gl .ail-lu__layer:is(:hover, :focus-visible), .ail-gl .ail-lu__layer[aria-pressed='true'] { color: var(--ail-fg); }
-.ail-gl .ail-lu__k { display: none; color: inherit; }
-.ail-gl .ail-lu__layer[aria-pressed='true'] .ail-lu__k { display: inline; }
+.ail-gl .ail-lu__k { display: none; color: inherit; }      /* the lit floor's number stands with its name at the top left, once */
 .ail-gl .ail-lu__cell { display: none; width: max-content; max-width: min(214px, 15.5vw); text-align: center; transition: opacity 150ms; }   /* never wider than the pitch of the row: on a narrow window an answer wraps, it does not run under its neighbour */
 .ail-gl .ail-lu__row.is-lit .ail-lu__cell { display: block; }
 .ail-gl .ail-lu__cell.is-dim { opacity: .42 !important; }
@@ -81,8 +81,19 @@
 .ail-gl .ail-lu__foot { position: absolute; left: var(--ail-margin); bottom: var(--ail-margin); display: grid; gap: 6px; }
 .ail-gl .ail-lu__key { margin: 0; }
 .ail-gl .ail-lu__key li:nth-child(n + 3) { display: none; }
+.ail-gl .ail-lu__foot:has(.ail-lu__guest.is-on) .ail-lu__key { display: none; }      /* a floor with a guest's part says that instead: 60 words a screen */
 .ail-gl .ail-lu__guest { margin: 0; font-size: 18px; color: var(--ail-fg); opacity: 0; transition: opacity var(--ail-t) var(--ail-ease); }
 .ail-gl .ail-lu__guest.is-on { opacity: 1; }
+@media (min-width: 900px) and (max-height: 760px) {
+  /* a short window: the lit floor's words are smaller and run wider, the legend lies on one line (sections/lineup.js
+     stands the row under the words) */
+  .ail-gl .ail-lu__now { width: min(66vw, 920px); }
+  .ail-gl .ail-lu__now .ail-title { font-size: clamp(34px, 7vh, 52px); }
+  .ail-gl .ail-lu__say .ail-sentence { margin-top: 6px; max-width: 36em; font-size: clamp(21px, 4.2vh, 30px); }
+  .ail-gl .ail-lu__note { margin-top: 6px; }
+  .ail-gl .ail-lu__foot { grid-auto-flow: column; align-items: center; gap: 18px; }
+  .ail-gl .ail-lu__guest { font-size: 16px; }
+}
 /* the lens: a loupe over the stack under the pointer. It grows into the iris when a click opens the world */
 .ail-gl .ail-lens { display: block; position: fixed; left: 0; top: 0; z-index: 4; width: 180px; height: 180px; border-radius: 50%; pointer-events: none; visibility: hidden; will-change: transform;
   box-shadow: 0 0 0 1px var(--ail-ink), 0 0 0 5px rgba(248, 249, 251, .88), 0 0 0 6px rgba(12, 13, 16, .2), 0 16px 36px rgba(12, 13, 16, .22); }
@@ -209,6 +220,14 @@
 .ail-gl .ail-ba__why { position: fixed; left: var(--ail-margin); bottom: calc(var(--ail-margin) + 26px); width: min(40vw, 560px); padding: 12px 16px 0; background: var(--ail-veil); font-size: 20px; }
 .ail-gl .ail-ba__when { position: fixed; left: var(--ail-margin); bottom: var(--ail-margin); padding: 4px 16px 10px; background: var(--ail-veil); }
 .ail-gl .ail-ba__guess { position: fixed; right: calc(var(--ail-margin) + 8px); bottom: calc(var(--ail-margin) + 18px); width: min(30vw, 420px); margin: 0; }
+@media (min-width: 900px) and (max-height: 760px) {
+  /* a short window: the reason stands under the title and his guess at the top right, so the labels under the stacks
+     have the foot of the window to themselves (sections/bestat.js stands the podium under both) */
+  .ail-gl .ail-ba__why { top: calc(var(--ail-top) + 62px); bottom: auto; padding: 8px 12px 2px; font-size: 17px; }
+  .ail-gl .ail-ba__when { top: var(--ba-why, 200px); bottom: auto; padding: 2px 12px 8px; }
+  .ail-gl .ail-ba__guess { top: calc(var(--ail-top) + 2px); bottom: auto; padding: 10px 16px 16px; }
+  .ail-gl .ail-ba__guess blockquote { font-size: 20px; }
+}
 
 @media (max-width: 899px) {
   /* phone, 3D page: the row keeps the top third, each section's words sit in the sheet below it */
@@ -217,7 +236,7 @@
   /* the kinds scroll inside their own row and fade out at its right end, as a world's tabs do */
   .ail-gl .ail-ln__kinds { top: calc(35svh + 50px); right: 0; max-width: none; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; }
   .ail-gl .ail-ln__kinds::-webkit-scrollbar { display: none; }
-  .ail-gl .ail-ln__kinds::after { content: ''; position: sticky; right: 0; flex: none; width: 44px; box-sizing: content-box; border-left: var(--cut, 0px) solid transparent; margin-left: calc(-1 * var(--cut, 0px)); background: linear-gradient(90deg, transparent, var(--ail-bg) 24px) border-box; pointer-events: none; }
+  .ail-gl .ail-ln__kinds::after { content: ''; position: sticky; right: 0; flex: none; width: 44px; box-sizing: content-box; border-left: var(--cut, 0px) solid transparent; margin-left: calc(-1 * var(--cut, 0px)); background: linear-gradient(90deg, transparent, var(--ail-bg) 2px) border-box; pointer-events: none; }
   .ail-gl .ail-ln__kind { scroll-snap-align: start; }
   .ail-gl .ail-ln__kind { flex: none; min-height: 44px; }
   .ail-gl .ail-ln__styles { left: var(--ail-margin); right: var(--ail-margin); top: auto; bottom: var(--ail-margin); flex-direction: row; justify-content: space-between; padding: 0; background: none; letter-spacing: .02em; }

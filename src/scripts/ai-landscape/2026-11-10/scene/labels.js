@@ -6,15 +6,16 @@ import { smooth } from '../core/clock.js';
 
 const NS = 'http://www.w3.org/2000/svg';
 
-// A row of tabs that scrolls sideways (a phone) never rests on a cut word: the fade at its right end reaches back to
-// where the last whole tab ends (--cut, read by the row's ::after). show(el) brings one tab whole into the row.
+// A row of tabs that scrolls sideways (a phone, a short window) never rests on a cut word or glyph: the cover at its
+// right end reaches back to where the last whole tab ends (--cut, read by the row's ::after). show(el) brings one tab
+// whole into the row.
 export function wholeTabs(row, tabs) {
   let raf = 0;
   const fit = () => {
     const box = row.getBoundingClientRect();
     let end = -1;
-    for (const el of tabs()) { const r = el.getBoundingClientRect(); if (r.width > 0 && r.left >= box.left - 1 && r.right <= box.right - 18) end = Math.max(end, r.right); }
-    row.style.setProperty('--cut', `${end < 0 ? 0 : Math.max(0, box.right - end - 47).toFixed(0)}px`);
+    for (const el of tabs()) { const r = el.getBoundingClientRect(); if (r.width > 0 && r.left >= box.left - 1 && r.right <= box.right - 46) end = Math.max(end, r.right); }      // 46: clear of the fade itself
+    row.style.setProperty('--cut', `${end < 0 ? 0 : Math.max(0, box.right - end - 45).toFixed(0)}px`);      // the cover starts 1 px after the last whole tab
   };
   const later = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(fit); };
   row.addEventListener('scroll', later, { passive: true });

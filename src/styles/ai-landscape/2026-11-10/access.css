@@ -10,6 +10,10 @@
   transform: translateX(-50%); display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border: 1px solid var(--ail-fg);
   background: var(--ail-card); color: var(--ail-fg); font: 400 var(--ail-fs-label)/1 var(--ail-mono); letter-spacing: .08em; text-transform: uppercase; text-decoration: none; }
 
+/* an arc's two names are pinned at its ends, so the button that holds them has no box of its own: focus is drawn on the names */
+.ail-gl .ail-ln__ends:focus-visible { outline: 0; box-shadow: none; }
+.ail-gl .ail-ln__ends:focus-visible .ail-own { outline: 2px solid var(--ail-fg); outline-offset: 3px; }
+
 /* a finger (SPEC 7.1): 44 px at the least. The controls SPEC 7.1 names grow to it; a control set in a line of words
    or a list row grows its hit area by padding that a negative margin takes back, so nothing around it moves.
    Fact buttons inside sentences stay as they are (WCAG 2.5.8 exempts inline targets) */
@@ -21,6 +25,8 @@
   .ail .ail-layer__head, .ail .ail-rt__more summary { padding-block: 15px; margin-block: -15px; }
   .ail .ail-chrome__title a, .ail .ail-open__name, .ail .ail-ag__s, .ail .ail-ms__date { padding-inline: 10px; margin-inline: -10px; }
   .ail .ail-gram__past button { padding-inline: 14px; margin-inline: -14px; }
+  /* a row of the best-at board is one target as tall as its row (22 rows share a phone's height: 44 px each cannot be) */
+  .ail .ail-bd__open { display: flex; align-items: center; justify-content: inherit; min-height: var(--bd-row, 26px); }
 }
 
 /* the text version's wide tables scroll sideways on a phone: a fade at the edge says so */
@@ -37,4 +43,7 @@
 @media print {
   .ail-gl .ail-stage:not(.is-on) * { visibility: visible !important; }
   .ail [data-sideways] { -webkit-mask: none; mask: none; overflow: visible !important; }
+  /* a wide table takes the paper's width and wraps inside it: no column is cut at the page's edge */
+  .ail :is(.ail-lu__table, .ail-ag__table, .ail-bd__table) { table-layout: fixed; width: 100% !important; min-width: 0 !important; }
+  .ail :is(.ail-lu__table, .ail-ag__table, .ail-bd__table) :is(th, td) { overflow-wrap: anywhere; white-space: normal !important; }
 }

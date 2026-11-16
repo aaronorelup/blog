@@ -1,7 +1,7 @@
 // The lens of the line-up (SPEC 4.7): a loupe 90 px in radius that follows the pointer at 9 a second over a stack
 // and shows its inside, drawn flat like a cutaway: the nine floors in their five states, and every part of each
 // floor as a bead in its owner's colour, the floor under the pointer lit. It never sits over type and closes over
-// empty floor. grow() turns it into the iris when a click opens that stack's world.
+// empty floor, or when the pointer has rested 1.5 s. grow() turns it into the iris when a click opens that stack's world.
 import { Vector3 } from 'three';
 import { owner } from '../worlds/index.js';
 import { FLOOR } from './stack.js';
@@ -99,7 +99,9 @@ export function createLens(ctx, node, towers) {
   return {
     // active: the line-up is settled. data: the page's per-company structure (ctx.data.p)
     update(dt, active, data) {
-      const hit = active && input.px >= 0 ? row.pick(input.px, input.py) : null;
+      // a pointer left at rest gives the stack back after a second and a half: the lens never hides the lit floor for long
+      st.still = input.moved ? 0 : (st.still || 0) + dt;
+      const hit = active && input.px >= 0 && st.still < 1.5 ? row.pick(input.px, input.py) : null;
       const free = hit && !overType(input.px, input.py) && !document.querySelector('.ail-lu details[open]');
       st.want = free ? 1 : 0;
       if (free) { st.tower = hit.tower; st.i = hit.i; }

@@ -1,6 +1,7 @@
 // One world section (SPEC 2.4): the same four beats for all five companies, driven by the scroll.
 // a Enter 0 to 0.8: truck along the row, the iris opens, the entry card. b Open 0.8 to 1.62: nine callouts and the
-// product tabs, held. c Signature 1.62 to 2.5: signatures/<name>.js plays. d The catch 2.5 to 3.0, then the iris shuts.
+// product tabs, held. c Signature 1.62 to 2.5: signatures/<name>.js plays. d The catch 2.5 to 3.0, its four other
+// myths said in turn by the scroll, then the iris shuts.
 // Words are triggered at a scroll position and then run on time (SPEC 4.3): nothing rests half-faded.
 // Everything world-specific comes from worlds/<id>.js and the page's data: this file never names a company.
 import { Vector3 } from 'three';
@@ -13,6 +14,7 @@ import { world } from '../worlds/index.js';
 
 const BEATS = [['a', 0.8], ['b', 1.62], ['c', 2.5], ['d', 3.01]];
 const MODEL = 4;
+const FLAG0 = 2.54, FLAGW = 0.07;      // the first flag opens at 2.54 screens, each holds 0.07, the fourth shuts at 2.82
 
 export function create(ctx, el, sec) {
   const { rig, row, studio, labels, prims, input } = ctx;
@@ -50,9 +52,10 @@ export function create(ctx, el, sec) {
     const box = nameEl.getBoundingClientRect();
     st.rect = { left: ink.left, width: ink.width, top: box.top, height: box.height };
   };
-  const onResize = () => { st.rect = null; st.doorsCol = -99; };
-  const tabsRow = ctx.phone ? wholeTabs(doorsEl, () => doors.map((d) => d.tab)) : null;      // a phone: the tabs scroll in their own row
+  const onResize = () => { st.rect = null; st.doorsCol = -99; st.callW = 0; };
+  const tabsRow = wholeTabs(doorsEl, () => doors.map((d) => d.tab));      // a phone, or a short window: the tabs scroll in their own row
   window.addEventListener('resize', onResize);
+  doorsEl.toggleAttribute('data-row', ctx.phone);
 
   // ---- doors: this company's products. Picking one relabels the nine callouts from that product's own stack
   function select(k, quiet = false) {
@@ -61,6 +64,7 @@ export function create(ctx, el, sec) {
     st.door = k;
     doors.forEach((x) => { x.node.open = x === d; x.tab.setAttribute('aria-expanded', String(x === d)); });
     if (st.calls) { st.calls.drop(); st.calls = null; }
+    st.callW = 0;
     if (st.cores) { st.cores.dispose(); st.cores = null; }
     if (st.cardPin) { st.cardPin.drop(); st.cardPin = null; }
     closePush();
@@ -75,7 +79,7 @@ export function create(ctx, el, sec) {
       if (d.card && !ctx.phone) st.cardPin = labels.pin(d.card, () => tower.anchor(MODEL, 1, labels.project), { dx: 46, ay: 0.2 });
     }
     leaves.open = k;
-    if (tabsRow) tabsRow.show(d.tab);
+    tabsRow.show(d.tab);
     if (!quiet) announce(d.tab.textContent.trim());
   }
   const onTab = (e) => { const tab = e.target.closest('summary'); const d = tab && doors.find((x) => x.tab === tab); if (d) { e.preventDefault(); select(d.k); } };
@@ -128,6 +132,12 @@ export function create(ctx, el, sec) {
     if (hit) push(hit.i); else closePush();
   };
   window.addEventListener('click', onCanvas);
+  // the other myths behind their flags: the scroll says them one after another through the catch, struck through over
+  // the row of flags, so a visitor who only scrolls reads all of them (a tap opens the one on show with its fact: the
+  // whole card would pass 60 words). A flag opened by hand holds until the scroll has moved a tenth of a screen
+  const flags = $$('.ail-flag', el);
+  const onFlag = (e) => { if (e.target.closest('.ail-flag summary')) st.flagAt = st.u; };
+  el.addEventListener('click', onFlag);
   // a capability this company leads is a link to its row of the board in "best at"
   const onCap = (e) => { if (e.target.closest('a[data-cap]')) { e.preventDefault(); ctx.scrollTo('best-at', 2.25); } };
   el.addEventListener('click', onCap);
@@ -183,13 +193,18 @@ export function create(ctx, el, sec) {
       st.u = u;
       const beat = BEATS.find(([, end]) => u < end)[0];
       if (beat !== st.beat) {
-        if (tabsRow) tabsRow.fit();
+        tabsRow.fit();
         if (st.beat === 'c') { if (st.sig) st.sig.reset(); st.stilled = false; }
         if (beat !== 'b' && st.door !== agentDoor) select(agentDoor, true);
         if (beat !== 'b') closePush();
         st.beat = beat;
       }
       if (input.moved || !st.rect) measure();
+      if (beat === 'd' && flags.length) {
+        if (st.flagAt != null && Math.abs(u - st.flagAt) > 0.1) st.flagAt = null;
+        const k = Math.floor((u - FLAG0) / FLAGW);
+        if (st.flagAt == null && k !== st.flag) { st.flag = k; flags.forEach((f, n) => { f.open = false; f.classList.toggle('is-said', n === k); }); }
+      } else if (st.flag != null) { st.flag = null; st.flagAt = null; flags.forEach((f) => { f.open = false; f.classList.remove('is-said'); }); }
 
       // camera: truck along the row to this stack, settle wider when it opens, hold. The last world pulls back out
       const from = before ? rig.world(before.x, 'open') : rig.stops.row;
@@ -254,18 +269,28 @@ export function create(ctx, el, sec) {
         calls.rows[0].parentElement.classList.toggle('is-compact', beat === 'c' || beat === 'd');
         calls.update(amount, lit);
       }
-      // the tabs stand above the first callout, as wide as the room to the window's edge, on one line or two
+      // the tabs stand above the first callout, as wide as the room to the window's edge, on one line or two. Where two
+      // lines would lie on that callout (a short window) they are one row that scrolls sideways, as on a phone
+      inst.avoid = null;
       if (!ctx.phone && beat === 'b') {
         const a0 = calls && calls.anchors.length ? { x: calls.column, y: calls.anchors[0].y } : tower.anchor(0, 1, labels.project);
         const col = calls && calls.anchors.length ? a0.x : a0.x + 46;
-        if (Math.abs(col - (st.doorsCol ?? -99)) > 6) {
+        const room = a0.y - 96;                                         // from under the chrome to the first callout
+        if (Math.abs(col - (st.doorsCol ?? -99)) > 6 || (st.doorsWrap > room) !== doorsEl.hasAttribute('data-row')) {
           st.doorsCol = col;
           doorsEl.style.maxWidth = `${Math.max(260, window.innerWidth - col - 28).toFixed(0)}px`;
-          doorsEl.removeAttribute('data-tight');
+          doorsEl.removeAttribute('data-tight'); doorsEl.removeAttribute('data-row');
           if (doorsEl.offsetHeight > 76) doorsEl.setAttribute('data-tight', '');
-          st.doorsH = doorsEl.offsetHeight;
+          st.doorsWrap = doorsEl.offsetHeight;
+          if (st.doorsWrap > room) { doorsEl.setAttribute('data-row', ''); tabsRow.show(doors[st.door].tab); }
+          st.doorsH = doorsEl.offsetHeight; st.doorsW = doorsEl.offsetWidth;
         }
-        doorsEl.style.left = `${col.toFixed(0)}px`; doorsEl.style.top = `${Math.max(64, a0.y - 32 - st.doorsH).toFixed(0)}px`;
+        const top = Math.max(64, a0.y - 32 - st.doorsH);
+        doorsEl.style.left = `${col.toFixed(0)}px`; doorsEl.style.top = `${top.toFixed(0)}px`;
+        // what the framed portrait must not stand on: the tabs and the nine callouts (scene/world.js shows it only clear)
+        if (calls && calls.anchors.length && amount >= 1 && !st.callW) st.callW = Math.max(...calls.rows.map((r) => r.offsetWidth));
+        inst.avoid = [{ left: col, right: col + st.doorsW, top, bottom: top + st.doorsH }];
+        if (calls && calls.anchors.length) inst.avoid.push({ left: col - 8, right: col + (st.callW || 300), top: calls.anchors[0].y - 34, bottom: calls.anchors[calls.anchors.length - 1].y + 34 });
       }
       if (st.cardPin) st.cardPin.el.style.opacity = amount.toFixed(2);
       if (!ctx.phone) doorsEl.style.visibility = beat === 'b' && amount < 0.02 ? 'hidden' : '';
@@ -312,12 +337,13 @@ export function create(ctx, el, sec) {
       window.removeEventListener('keydown', onKey);
       window.removeEventListener('click', onCanvas);
       el.removeEventListener('click', onCap);
+      el.removeEventListener('click', onFlag);
       doorsEl.removeEventListener('click', onRow);
       doorsEl.removeEventListener('click', onTab);
       doorsEl.removeEventListener('keydown', onRowKey);
       window.removeEventListener('resize', onResize);
       unrove();
-      if (tabsRow) tabsRow.drop();
+      tabsRow.drop(); doorsEl.removeAttribute('data-row');
       if (st.sig) st.sig.dispose();
       if (st.calls) st.calls.drop();
       if (st.cores) st.cores.dispose();

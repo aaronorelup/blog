@@ -190,11 +190,11 @@ export function createWorlds(ctx) {
       sh.uPaper.value.copy(HOUSE).lerp(sh.uWorld.value, Math.min(1, top.open * 1.5));
       if (top.parts.dust) top.parts.dust.material.uniforms.uPx.value = size.ratio * size.h * 0.26;      // motes about 0.25 units across, soft
 
-      // a portrait shows only whole: inside the window, 24 px clear of the chrome, with the iris quite open. It
+      // a portrait shows only whole: inside the window, 24 px clear of the chrome and of the words, the iris quite open. It
       // comes and goes by scale in 0.18 s at full value (a little slack once shown, so a pointer swing never flickers it)
       const f = top.parts.portrait;
       if (f && top.parts.portraitTex) {
-        if (!chrome) chrome = [...document.querySelectorAll('.ail-chrome__side')].map((n) => n.getBoundingClientRect());
+        if (!chrome) chrome = [...document.querySelectorAll('.ail-chrome__side, .ail-rail')].map((n) => n.getBoundingClientRect());
         let l = 1e9, r = -1e9, hi = 1e9, lo = -1e9;
         for (const [sx, sy] of CORNERS) {
           v.set((sx * FRAME.w) / 2, (sy * FRAME.h) / 2, 0).applyEuler(f.rotation).add(f.position).add(top.group.position).project(cam);
@@ -202,8 +202,10 @@ export function createWorlds(ctx) {
           l = Math.min(l, x); r = Math.max(r, x); hi = Math.min(hi, y); lo = Math.max(lo, y);
         }
         const m = top.portraitOn ? 10 : 24, e = top.portraitOn ? -16 : 4;      // (the pointer's far swing may take a shown frame's mat to the window's edge)
+        const on = (c) => l < c.right + m && r > c.left - m && hi < c.bottom + m && lo > c.top - m;
+        // (`avoid`: the boxes of the words its section has on show beside it, the tabs and the callouts)
         top.portraitOn = top.open >= 0.999 && l >= e && r <= size.w - e && hi >= e && lo <= size.h - e
-          && !chrome.some((c) => c.width > 0 && l < c.right + m && r > c.left - m && hi < c.bottom + m && lo > c.top - m);
+          && !chrome.some((c) => c.width > 0 && on(c)) && !(top.avoid || []).some(on);
         top.portraitK = ctx.reduced ? (top.portraitOn ? 1 : 0) : Math.max(0, Math.min(1, (top.portraitK || 0) + (top.portraitOn ? ctx.dt : -ctx.dt) / 0.18));
         f.visible = top.portraitK > 0.001;
         f.scale.setScalar(0.6 + 0.4 * top.portraitK);

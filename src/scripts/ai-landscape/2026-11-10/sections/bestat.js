@@ -7,10 +7,12 @@ import { smooth, span } from '../core/clock.js';
 import { $, $$, announce } from '../core/dom.js';
 import { createPodium } from '../scene/podium.js';
 import { ROW_X } from '../scene/row.js';
+import { level } from '../scene/seat.js';
 
 const FIRST = 0.2, STEP = 0.45, BOARD = 2.0, HOLD = 0.15;
 const SQUEEZE = 2.85 / 4.2;
-const VIEW = { pos: [1.0, 3.4, 31], look: [1.0, 2.95, 0], fov: 24, fit: 28.4, cy: 0.27 };
+const LOW = 0.55;                         // a desktop's podium stands a little low in the frame, on the floor
+const VIEW = { pos: [1.0, 3.4, 31], look: [1.0, 2.95, 0], fov: 24, fit: 28.4, cy: 0.27, cyd: LOW };
 const PHONE = { pos: [1.1, 3.3, 30], look: [1.1, 2.7, 0], fov: 24, fit: 18.6, cy: 0.19 };
 // the board: the five stacks shrink to a strip of column heads at the top of the frame
 const STRIP = { pos: [-0.5, 2.2, 31], look: [-0.5, 1.9, 0], fov: 24, fit: 46, cyd: 0.135, cy: 0.11 };
@@ -152,6 +154,13 @@ export function create(ctx, el, sec) {
 
       const onBoard = st.mode === 'board';
       const k = smooth(span(u, 0, FIRST)) * (1 - smooth(span(u, sec.screens - 0.2, sec.screens)));
+      // a short window prints the reason, its date under it (--ba-why) and his guess at the top (compare.css): the
+      // podium stands under all three
+      if (!phone && !onBoard) {
+        const short = window.innerHeight <= 760 && st.n >= 0;
+        if (short) el.style.setProperty('--ba-why', `${$('.ail-ba__why', caps[st.n]).getBoundingClientRect().bottom.toFixed(0)}px`);
+        if (short) level(ctx, VIEW, Math.max(...$$('.ail-ba__when, .ail-ba__guess', caps[st.n]).map((n) => n.getBoundingClientRect().bottom)) + 14); else VIEW.cyd = LOW;
+      }
       if (onBoard) rig.mix(phone ? PHONE : STRIP, rig.stops.row, 1 - k);
       else rig.mix(rig.stops.row, phone ? PHONE : VIEW, k);
       const lit = st.n >= 0 ? Number(caps[st.n].dataset.floor) - 1 : -1;

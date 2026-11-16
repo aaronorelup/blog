@@ -6,6 +6,7 @@ import { BufferGeometry, Float32BufferAttribute, LineBasicMaterial, LineSegments
 import { smooth, span } from '../core/clock.js';
 import { $, $$, announce } from '../core/dom.js';
 import { createLens } from '../scene/lens.js';
+import { createSeat } from '../scene/seat.js';
 import { ROW_X } from '../scene/row.js';
 import { FLOOR } from '../scene/stack.js';
 
@@ -28,16 +29,10 @@ export function create(ctx, el, sec) {
   const guestLine = $('.ail-lu__guest', el);
   const words = [$('.ail-lu__now', el), $('.ail-lu__foot', el)];
   const st = { sel: -1, selAt: 0, hover: -1, hoverAt: 0, co: -1, lit: -1, k: 0, u: 0 };
-  // the row keeps clear of the axis: the nine names stand left of the first stack's character, 270 px in all
-  const WIDE = { ...rig.stops.row };
-  function seat() {
-    const W = window.innerWidth, base = rig.stops.row;
-    WIDE.fit = base.fit * Math.max(1, ((19.2 / base.fit) * W) / (W - 270 - 40));       // 19.2: the five stacks, edge to edge
-    const left = (0.5 - (9.6 + base.look[0]) / WIDE.fit) * W;                           // where the first stack's left edge would stand
-    WIDE.cx = 0.5 + Math.max(0, 270 - left) / W;
-  }
-  seat();
-  window.addEventListener('resize', seat);
+  // the row keeps clear of the axis (the nine names stand left of the first stack's character), of the lit floor's
+  // words above it and of the legend under its answers, in a window of any height (scene/seat.js)
+  const seat = createSeat(ctx);
+  const WIDE = seat.stop;
   const v = new Vector3();
 
   // ---- the nine datum lines: from the left axis to the first stack, between every two, and a stub past the last.
@@ -145,6 +140,7 @@ export function create(ctx, el, sec) {
     enter() { pins.forEach((p) => { p.on = true; }); st.sel = -1; st.hover = -1; },
     leave() {
       pins.forEach((p) => { p.on = false; });
+      if (st.full) { st.full = false; document.documentElement.removeAttribute('data-full'); }
       lines.visible = false; litLine.visible = false;
       if (lens) lens.close(true);
       company(-1);
@@ -154,6 +150,7 @@ export function create(ctx, el, sec) {
       // in and out over the section's edges, so the neighbours meet it with nothing jumping
       const k = smooth(span(u, 0, FIRST)) * (1 - smooth(span(u, FIRST + STEP * N, sec.screens)));
       st.k = k; st.u = u;
+      if (!phone) seat.level(words[0].getBoundingClientRect().bottom + 12, words[1].getBoundingClientRect().top - 92, 0.7);      // 92: an answer of two lines and its lamp
       rig.mix(rig.stops.row, phone ? PHONE : WIDE, k);
 
       // hover a floor of any stack: that floor lights across all five, and that company comes forward
@@ -168,6 +165,9 @@ export function create(ctx, el, sec) {
       if (st.sel >= 0 && Math.abs(u - st.selAt) > HOLD) { st.sel = -1; $$('details[open]', el).forEach((d) => { d.open = false; }); company(-1); }
       const lit = st.hover >= 0 ? st.hover : st.sel >= 0 ? st.sel : fromScroll(u);
       light(lit, st.sel < 0);
+      // a floor that also explains a guest's colour stands at the word cap: the chrome's chip drops a word there
+      const full = guestLine.classList.contains('is-on');
+      if (full !== st.full) { st.full = full; document.documentElement.toggleAttribute('data-full', full); }
 
       const open = smooth(span(u, 0, 0.25)) * (1 - smooth(span(u, sec.screens - 0.14, sec.screens)));
       towers.forEach((tw, n) => {
@@ -194,7 +194,8 @@ export function create(ctx, el, sec) {
       el.removeEventListener('toggle', onToggle, true);
       window.removeEventListener('keydown', onKey);
       window.removeEventListener('click', onClick);
-      window.removeEventListener('resize', seat);
+      seat.drop();
+      if (st.full) document.documentElement.removeAttribute('data-full');
       pins.forEach((p) => p.drop());
       if (lens) lens.drop();
       ctx.scene.remove(lines, litLine);

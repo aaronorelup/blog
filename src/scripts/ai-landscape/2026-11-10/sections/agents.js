@@ -6,6 +6,7 @@ import { Color, Vector3 } from 'three';
 import { smooth, span } from '../core/clock.js';
 import { $, $$, announce } from '../core/dom.js';
 import { ROW_X } from '../scene/row.js';
+import { createSeat } from '../scene/seat.js';
 import { owner } from '../worlds/index.js';
 
 const LIT = [2, 6, 7];                          // router, compute, delegation
@@ -21,16 +22,13 @@ export function create(ctx, el, sec) {
   const plates = $$('.ail-ag__row', el);
   const sw = $('.ail-ag__switch', el);
   const heads = $('.ail-ag__heads', el);
-  const st = { closed: 0, want: false, toured: false, tour: 0, touched: false, k: 0 };
-  // the row keeps clear of the table's row heads: they need 270 px left of the first stack, as the line-up's axis does
-  const WIDE = { ...rig.stops.row };
-  function seat() {
-    const W = window.innerWidth, base = rig.stops.row;
-    WIDE.fit = base.fit * Math.max(1, ((19.2 / base.fit) * W) / (W - 270 - 40));
-    WIDE.cx = 0.5 + Math.max(0, 270 - (0.5 - (9.6 + base.look[0]) / WIDE.fit) * W) / W;
-  }
-  seat();
-  window.addEventListener('resize', seat);
+  const st = { closed: 0, want: false, toured: false, tour: 0, touched: false, k: 0, run: 0 };
+  // the row keeps clear of the table's row heads (270 px left of the first stack, as the line-up's axis), of the title
+  // above it and, with the table under it, of the window's foot, in a window of any height (scene/seat.js)
+  const seat = createSeat(ctx);
+  const WIDE = seat.stop;
+  const title = $('.ail-ag__title', el);
+  const desk = $('.ail-ag__console', el);
   const v = new Vector3();
 
   // the lamps: three on the compute floor from the primary cloud computer, one on the router floor from the agent
@@ -92,6 +90,17 @@ export function create(ctx, el, sec) {
     update(t, dt, u) {
       const k = smooth(span(u, 0, 0.22)) * (1 - smooth(span(u, sec.screens - 0.22, sec.screens)));
       st.k = k;
+      if (!phone) {
+        // the switch stands at the foot of the window, left of the table. Where the table's row heads reach down to it
+        // (a short window) it stands at the top right, under the chrome, and its cables run from there
+        const H = window.innerHeight, tr = title.getBoundingClientRect(), dr = desk.getBoundingClientRect();
+        const high = el.dataset.desk === 'top';
+        // (it moves up when the heads reach 6 px into its place, and back only once they are 14 px clear: no flicker)
+        const gap = H - Math.min(36, Math.max(16, 0.024 * window.innerWidth)) - 64 - heads.getBoundingClientRect().bottom;
+        if (k > 0.5 && (high ? gap > 14 : gap < -6)) { if (high) delete el.dataset.desk; else el.dataset.desk = 'top'; }
+        seat.level(Math.max(tr.bottom, high ? dr.bottom : 0) + 10, H - 22 - plates[0].offsetHeight);
+        st.run = dr.bottom + 6;
+      }
       rig.mix(rig.stops.row, phone ? PHONE : WIDE, k);
 
       // it tours itself once: the laptop shuts, waits, opens. Any press, tap or key in the section ends the tour
@@ -127,8 +136,9 @@ export function create(ctx, el, sec) {
           if (!m) return;
           const p = labels.project(m.getWorldPosition(v));
           // it runs under the table, up the lane left of its agent's column, then across to the part: never over a label
+          // (from a switch at the top it runs along under the switch instead, over the lids)
           const plate = plates[towers.indexOf(c.x.tw)].getBoundingClientRect();
-          const under = Math.max(plate.bottom, plates[0].getBoundingClientRect().bottom) + 9, lane = plate.left - 5;
+          const under = el.dataset.desk === 'top' ? st.run : Math.max(plate.bottom, plates[0].getBoundingClientRect().bottom) + 9, lane = plate.left - 5;
           c.path.setAttribute('d', `M${x0.toFixed(1)} ${y0.toFixed(1)}V${under.toFixed(1)}H${lane.toFixed(1)}V${p.y.toFixed(1)}H${p.x.toFixed(1)}`);
           c.path.style.opacity = (k * (0.62 - 0.53 * st.closed)).toFixed(3);
         });
@@ -137,7 +147,8 @@ export function create(ctx, el, sec) {
     },
     dispose() {
       sw.removeEventListener('click', onSwitch);
-      window.removeEventListener('resize', seat);
+      seat.drop();
+      delete el.dataset.desk;
       stopTour();
       pins.forEach((p) => p.drop());
       lamps.forEach((l) => l.dispose());

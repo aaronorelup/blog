@@ -38,7 +38,8 @@
 :is(.ail-leads, .ail-thinks, .ail-top) > .ail-label, .ail-leads__run .ail-label { color: var(--ail-fg-2); }
 .ail-leads__caps, .ail-top__list { display: inline-flex; flex-wrap: wrap; gap: 2px 14px; }
 .ail-leads__cap { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .2em; }
-.ail-leads__run { white-space: nowrap; }
+.ail-leads__conf { margin-left: 6px; color: var(--ail-fg-2); text-decoration: underline dotted 1px; text-underline-offset: .3em; }      /* a lead that rests on reports says so */
+.ail-leads__run { white-space: nowrap; text-decoration: none; }
 .ail-leads__run b { font-weight: 400; }
 .ail-top__m { white-space: nowrap; }
 .ail-top__m time { margin-left: .6em; color: var(--ail-fg-2); }
@@ -67,10 +68,9 @@
 .ail-sig__list ul[data-ordered] li::before { content: counter(step) '. '; font: 400 var(--ail-fs-label)/1 var(--ail-mono); }
 .ail-sig__item .ail-own, .ail-catch__item .ail-own { text-transform: none; font: inherit; letter-spacing: 0; display: inline; }
 .ail-sig__item .ail-own::before, .ail-catch__item .ail-own::before { display: inline-block; margin-right: .5em; transform: translateY(-1px); }
-/* the pieces of the catch: an empty socket, a locked drawer, a plate that was renamed, shut down or about to expire */
+/* the pieces of the catch: an empty socket, a locked drawer, a plate that was renamed, shut down or is closing */
 .ail-catch__list { display: grid; gap: 5px; }
 .ail-catch__was { margin-right: .5em; }
-.ail-catch__until { margin-left: .7em; color: var(--ail-fg-2); }
 .ail-flags { margin-top: 10px; }
 .ail-flags ul { display: grid; gap: 2px; margin-top: 6px; }
 .ail-flag summary { display: flex; align-items: center; gap: 10px; min-height: 44px; }
@@ -118,8 +118,15 @@
    wraps to two lines. A tab is its glyph and its product's name, always: a name never waits for a hover */
 .ail-gl .ail-doors[data-beat] { position: fixed; left: 0; top: 0; z-index: 4; display: flex; flex-wrap: wrap; align-items: stretch; gap: 3px; margin: 0; transform: none; }
 .ail-gl .ail-door { border: 0; flex: none; }          /* a tab keeps its width: the row wraps or scrolls, it never squeezes a name */
+/* a short window with no room for two lines over the first callout: one row that scrolls sideways, each tab whole at rest */
+.ail-gl .ail-doors[data-row] { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; white-space: nowrap; }
+.ail-gl .ail-doors[data-row]::-webkit-scrollbar { display: none; }
+/* the fade at a scrolling row's right end rides the row, never a mask: a mask would also hide the open product's nine rows
+   (--cut: how far it reaches back to the end of the last whole tab, so no word or glyph rests half shown) */
+.ail-gl .ail-doors[data-row]::after { content: ''; position: sticky; right: 0; flex: none; width: 44px; box-sizing: content-box; border-left: var(--cut, 0px) solid transparent; margin-left: calc(-1 * var(--cut, 0px)); background: linear-gradient(90deg, transparent, var(--w-ground, var(--ail-paper)) 2px) border-box; pointer-events: none; }
 .ail-gl .ail-doors__cap { display: flex; align-items: center; margin: 0; padding: 0 9px; background: var(--w-scrim); color: var(--ail-fg-2); transition: opacity var(--ail-t) var(--ail-ease); }
 .ail-gl .ail-world:not([data-beat-now='b']) :is(.ail-door__tab, .ail-doors__cap) { opacity: 0; visibility: hidden; pointer-events: none; }
+.ail-gl .ail-world:not([data-beat-now='b']) .ail-doors::after { display: none; }      /* the row's fade leaves with its tabs: it never lies on the catch's sentence */
 /* pushed in on a floor, the camera is close and the tabs would lie over a callout: they step aside (a phone lists them in the sheet) */
 @media (min-width: 900px) { .ail-gl .ail-world.is-pushed :is(.ail-door__tab, .ail-doors__cap) { opacity: 0; visibility: hidden; pointer-events: none; } }
 .ail-gl .ail-door__tab { position: relative; min-height: 32px; min-width: 32px; padding: 0 9px 0 8px; gap: 6px; justify-content: center; background: var(--w-scrim); box-shadow: inset 0 0 0 1px var(--ail-hair); font: 400 15px/1 var(--ail-serif); letter-spacing: 0; text-transform: none; transition: background-color 150ms, color 150ms, opacity var(--ail-t) var(--ail-ease); }
@@ -135,7 +142,10 @@
 .ail-gl .ail-flags ul { display: flex; gap: 6px; }
 .ail-gl .ail-flag summary { justify-content: center; min-width: 44px; padding: 0 12px; background: var(--w-card); box-shadow: inset 0 0 0 1px var(--ail-fg); }
 .ail-gl .ail-flag__myth { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-.ail-gl .ail-flag[open] summary { background: var(--ail-fg); color: var(--ail-bg); }
+.ail-gl .ail-flag:is([open], .is-said) summary { background: var(--ail-fg); color: var(--ail-bg); }
+/* the scroll says one myth at a time, struck through on its own lines over the row of flags (sections/worlds.js) */
+.ail-gl .ail-flags ul:has(.is-said) { position: relative; padding-top: 58px; }
+.ail-gl .ail-flag.is-said:not([open]) .ail-flag__myth { position: absolute; left: 0; right: 0; top: 2px; width: auto; height: auto; overflow: visible; clip-path: none; font: italic 400 20px/1.2 var(--ail-serif); color: var(--ail-fg); text-decoration: line-through; text-decoration-thickness: 1px; }
 .ail-gl .ail-flag__truth { position: absolute; left: 0; right: 0; bottom: calc(100% + 8px); padding: 14px 18px; background: var(--w-card); box-shadow: 0 0 0 1px var(--ail-fg); max-width: none; }
 .ail-gl .ail-catch { overflow: visible; }
 
@@ -152,11 +162,8 @@
   .ail-gl .ail-sig, .ail-gl .ail-catch, .ail-gl .ail-world__intro { left: 0; right: 0; bottom: 0; width: auto; height: 45svh; padding: 12px var(--ail-margin); background: none; align-content: start; gap: 8px; }
   .ail-gl .ail-world__intro { padding-top: calc(17vw * .88 + 22px); }
   .ail-gl .ail-world[data-chrome='dark'] .ail-world__intro { background: var(--w-ground); }      /* its sheet arrives with it */
-  /* the tabs scroll inside their own row, each whole when it comes to rest, and fade out at the right edge. The fade is
-     a piece that rides the row's right end, never a mask: a mask on the row would also hide the open product's nine rows */
+  /* the tabs scroll inside their own row, each whole when it comes to rest, and fade out at the right edge */
   .ail-gl .ail-doors[data-beat] { left: var(--ail-margin); right: 0; top: auto; bottom: calc(45svh - 46px); flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; }
-  /* (--cut: how far the fade reaches back to the end of the last whole tab, so no word rests half shown) */
-  .ail-gl .ail-doors[data-beat]::after { content: ''; position: sticky; right: 0; flex: none; width: 44px; box-sizing: content-box; border-left: var(--cut, 0px) solid transparent; margin-left: calc(-1 * var(--cut, 0px)); background: linear-gradient(90deg, transparent, var(--w-ground, var(--ail-paper)) 24px) border-box; pointer-events: none; }
   .ail-gl .ail-doors[data-beat]::-webkit-scrollbar { display: none; }
   .ail-gl .ail-door, .ail-gl .ail-doors__cap { scroll-snap-align: start; }
   .ail-gl .ail-doors__cap { background: none; padding: 0 6px 0 0; }
