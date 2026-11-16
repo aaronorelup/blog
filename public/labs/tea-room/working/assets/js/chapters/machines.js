@@ -77,6 +77,9 @@ var LIVE_FROM = -1.5;
 // on as the bench rises. A reader who never rests is given it at LIVE_FROM, as before. A reader who turns back above
 // the bench has it put to sleep again, not thrown away: it is there, whole, on the way back.
 var PRE_FROM = -3.6, PRE_BUSY = -3.4, PRE_CARDS = -2.95;
+// A verdict "slow computer" that came from a page stepping its own quality down lapses after WEAK_KEEP: the next
+// machine is tried at full quality again (a busy minute is not a slow computer).
+var WEAK_KEEP = 5 * 60 * 1000;
 
 function stepOf(m, u) { var s = m.open[0]; m.open.forEach(function (o) { if (u >= o.at) s = o; }); return s; }
 
@@ -111,7 +114,7 @@ export function mount(host, options) {
         '<div class="mc-pool mc-up"></div><div class="mc-shade mc-up"></div>' +
         '<div class="mc-view mc-up">' +
           '<div class="mc-pics"><img class="mc-pic a" alt=""><img class="mc-pic b" alt=""><div class="mc-erase"></div></div>' +
-          '<div class="mc-holder"></div>' +
+          '<div class="mc-holder"><img class="mc-arrive" alt="" decoding="async"></div>' +
         '</div>' +
       '<div class="mc-tv"><div class="mc-tv-glow"></div><div class="mc-tv-flip">' +
         '<div class="mc-tv-screen"><img class="mc-tv-still" alt=""><video class="mc-tv-film" muted playsinline loop preload="none" disableremoteplayback tabindex="-1"></video></div>' +
@@ -126,7 +129,7 @@ export function mount(host, options) {
   var $$ = function (s) { return Array.prototype.slice.call(host.querySelectorAll(s)); };
   var cone = $('.mc-cone'), dim = $('.mc-dim'), world = $('.mc-world'), roomEl = $('.mc-room'), roomImg = $('.mc-room-img'), vig = $('.mc-vig');
   var ups = $$('.mc-up'), sweep = $('.mc-sweep'), table = $('.mc-table'), view = $('.mc-view'), pics = $('.mc-pics');
-  var picA = $('.mc-pic.a'), picB = $('.mc-pic.b'), erase = $('.mc-erase'), holder = $('.mc-holder');
+  var picA = $('.mc-pic.a'), picB = $('.mc-pic.b'), erase = $('.mc-erase'), holder = $('.mc-holder'), arrive = $('.mc-arrive');
   var tv = $('.mc-tv'), tvFilm = $('.mc-tv-film'), tvStill = $('.mc-tv-still'), lampEl = $('.mc-lamp');
   var nameEl = top.querySelector('.mc-name');
   if (HELD) host.classList.add('mc-held');
@@ -149,6 +152,19 @@ export function mount(host, options) {
     return im;
   });
   var viewW = 0, viewH = 0;
+  // While a machine's page wakes, the machine stands as a picture of that page itself (machines-data.js arrive), in
+  // the live picture's own place: the page fades in over the same machine, the same size, where it stood. (Its still
+  // is another view of it, larger and elsewhere on the cloth: shown first, the machine jumped when its page took
+  // over.) The still is kept for where there are no live pages: motion off, ?live=0, time held.
+  // Both are asked for now and kept: the second is wanted the moment the first leaves the bench.
+  var arriveIn = {}, arriveOn = null, arriveSrc = '';
+  var arrives = MACHINES.map(function (m) {
+    if (!m.arrive || !LIVE || RM) return null;
+    var im = new Image(); im.decoding = 'async';
+    im.addEventListener('load', function () { arriveIn[m.arrive] = true; options.redraw(); }, { once: true });
+    im.src = IMG + m.arrive;
+    return im;
+  });
 
   // ---- layout: everything of the bench in screen pixels at the camera's place (join.js), the room behind it
   function layout() {
@@ -198,6 +214,7 @@ export function mount(host, options) {
   function placeAll() {
     var m = MACHINES[Math.max(0, cur)];
     placeMedia(picA, cropFor(m)); placeMedia(picB, cropFor(m));
+    placeMedia(arrive, liveCropFor(m));
     if (live && liveI >= 0) live.place(cropRect(viewW, viewH, liveCropFor(MACHINES[liveI])));
     placeTv(m);
     placeErase(m);
@@ -237,6 +254,8 @@ export function mount(host, options) {
     cur = i;
     var m = MACHINES[i];
     showPic(m.still);
+    var as = m.arrive && LIVE && !RM ? IMG + m.arrive : '';
+    if (as !== arriveSrc) { arriveSrc = as; if (as) arrive.src = as; else arrive.removeAttribute('src'); }
     placeAll();
     nameEl.textContent = m.name;
     nameEl.href = m.page;
@@ -296,13 +315,19 @@ export function mount(host, options) {
       return pl.test.held() ? 2 : pl.test.awake > 0 || pl.test.state === 'returning' ? 1 : 0;
     } catch (err) { return 0; }
   }
-  // A computer on which a machine's page ended at its lowest quality starts the next one there (machines-live.js,
-  // lite): remembered for this visit. Before any has run, the graphics' own name says (an integrated or a phone's chip).
-  var weakIs = null;
+  // A computer on which a machine's page came down to a low quality by itself starts the next one there
+  // (machines-live.js, lite): remembered for WEAK_KEEP from when that page was last seen drawing, in this tab
+  // ("step@when"). Before any has run, and after that has lapsed, the graphics' own name says (an integrated or a
+  // phone's chip).
+  var weakIs = null, weakSeen = 0, stored = { tier: null, at: 0 };
   function weak() {
-    if (weakIs !== null) return weakIs;
+    if (weakIs !== null && !(weakSeen && Math.abs(Date.now() - weakSeen) > WEAK_KEEP)) return weakIs;
+    weakSeen = 0;
     if (LITE === '1' || LITE === '0') return (weakIs = LITE === '1');
-    try { var was = sessionStorage.getItem('tea-mc-tier'); if (was !== null) return (weakIs = +was >= 2); } catch (err) { /* no storage */ }
+    try {
+      var was = String(sessionStorage.getItem('tea-mc-tier') || '').split('@'), age = Date.now() - +was[1];
+      if (was.length === 2 && age >= 0 && age < WEAK_KEEP) { weakSeen = +was[1]; return (weakIs = +was[0] >= 2); }
+    } catch (err) { /* no storage */ }
     var name = '';
     try {
       var cv = document.createElement('canvas'), gl = cv.getContext('webgl'), ex = gl && gl.getExtension('WEBGL_debug_renderer_info');
@@ -346,9 +371,14 @@ export function mount(host, options) {
     if (!seen && !(early() && pn > PRE_FROM - 0.5 && pn <= LD + 1)) dropLive();
     // (what quality its page came down to by itself, once it has run a while at its own choice. A page that STARTED
     // low says nothing of the computer: its frame was small, or the screen is a touch screen.)
-    if (live && !liveLite && live.shown && live.tier != null && live.tier0 != null && live.tier0 < 2 && performance.now() - liveSince > 9000) {
-      try { sessionStorage.setItem('tea-mc-tier', String(live.tier)); } catch (err) { /* no storage */ }
-      weakIs = live.tier >= 2;
+    // (stamped only while that page is drawing: asleep, or in a hidden tab, it says nothing new)
+    if (live && !liveLite && live.shown && !live.asleep && !document.hidden && live.tier != null && live.tier0 != null && live.tier0 < 2 && performance.now() - liveSince > 9000) {
+      var when = Date.now();
+      if (stored.tier !== live.tier || when - stored.at > 30000) {
+        stored = { tier: live.tier, at: when };
+        try { sessionStorage.setItem('tea-mc-tier', live.tier + '@' + when); } catch (err) { /* no storage */ }
+      }
+      weakIs = live.tier >= 2; weakSeen = when;
     }
   }, 125);
 
@@ -457,6 +487,14 @@ export function mount(host, options) {
     var vis = appear * (RM ? 1 : smooth(Math.abs(p - SWAP) / (DIP * 0.6)));
     var visS = vis.toFixed(3);
     if (was.vis !== visS) { was.vis = visS; host.style.setProperty('--vis', visS); }
+    // under the live page: the picture of that page (see arrives), or the still where there are no live pages. A
+    // page that fails leaves its picture standing: the machine stays where it stood. Changed only while the machine
+    // is unseen (a picture that comes late does not take the still's place in front of the reader).
+    var wantArrive = LIVE && !RM && !!m.arrive && !!arriveIn[m.arrive];
+    if (wantArrive !== arriveOn && (arriveOn === null || vis <= 0.02)) {
+      arriveOn = wantArrive;
+      css(pics, 'opacity', wantArrive ? '0' : ''); css(arrive, 'opacity', wantArrive ? '1' : '0');
+    }
     // its name on the table's edge, with it (never in the lead's first part, never once the bench goes)
     var nameOn = vis > 0.6 && pk < 0.05;
     if (was.name !== nameOn) { was.name = nameOn; nameEl.classList.toggle('up', nameOn); nameEl.tabIndex = nameOn ? 0 : -1; }
@@ -506,7 +544,7 @@ export function mount(host, options) {
       alive = false; clearInterval(watch); dropLive(); tvFilm.pause(); tvOn = false;
       document.removeEventListener('visibilitychange', onVis);
       window.removeEventListener('scroll', onScroll);
-      stills.length = 0;
+      stills.length = 0; arrives.length = 0;
       tvFilm.removeAttribute('src');
     },
     // (for tests)

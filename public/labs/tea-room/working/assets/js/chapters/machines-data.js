@@ -11,6 +11,11 @@
 // job: how its work is kept going, with no cut, by its own timeline (see machines-live.js).
 // aim: the camera's aim held on the machine itself: its view's own aim, reckoned from the machine's place as its page
 // hands it (pose), in its page's metres.
+// arrive: a picture of the machine's own live page as this passage frames it, the page's whole 1600 x 900: read off
+// its canvas the moment it was first shown (its work just begun, the camera where the scroll has it on arrival, the
+// mouse at the middle), over the page's own ground colour. It stands on the cloth while the page wakes, in the live
+// picture's own place and size, so nothing moves when the page takes over. (Under img/, with the bench's pictures.
+// If a machine's cam, turn, job or liveCrop here is changed, or its page's looks, take it again.)
 export var MACHINES = [
   {
     key: 'dray',
@@ -19,6 +24,7 @@ export var MACHINES = [
     film: '/media/teardown-lab/dray/film.mp4',
     poster: '/media/teardown-lab/dray/hero.webp',
     still: '/media/teardown-lab/dray/hero.webp',
+    arrive: 'machines/dray-arrive.webp',
     // the box in the still the machine stands in (in the page's 1600 x 900 pixels): the rest is its console
     keep: [365, 0, 860, 795],
     erase: [],
@@ -58,6 +64,7 @@ export var MACHINES = [
     film: '/media/teardown-lab/mole1/film.mp4',
     poster: '/media/teardown-lab/mole1/hero-3m.webp',
     still: '/media/teardown-lab/mole1/hero-3m.webp',
+    arrive: 'machines/mole1-arrive.webp',
     keep: [300, 100, 990, 545],
     // the page's labels inside that box, smudged out of the picture
     erase: [[420, 180, 105, 40], [430, 228, 115, 42], [370, 410, 155, 45], [1085, 435, 195, 45]],
