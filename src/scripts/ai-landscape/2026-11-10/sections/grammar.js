@@ -30,7 +30,7 @@ const INK = '#0C0D10', PAPER = '#F8F9FB';
 const SINK = 7 * (FLOOR.h + FLOOR.gap0);                            // seven floors and seven gaps go under: two floors stay above the ground
 // the close, in screens after the ninth floor: the stack shuts and the answer climbs, the thread leaves, the stack
 // sinks, two floors hold, the camera goes back to the row (the five return over the section's last 0.2 screens)
-const CLOSE = { shut: 0.1, answer: 0.11, thread: [0.1, 0.14], sink: [0.12, 0.24], back: [0.3, 0.44], still: 0.3 };
+const CLOSE = { shut: 0.1, answer: 0.11, thread: [0.1, 0.14], sink: [0.12, 0.26], back: [0.38, 0.52], still: 0.32 };
 // the paper floor number: where its middle stands in the window and how tall it is, as shares of the window
 const NUM = { wide: { x: 0.215, y: 0.36, h: 0.42 }, phone: { x: 0.8, y: 0.17, h: 0.2 }, far: 20, flip: 0.24 };
 const SPIN = 0.6, GLOW = 0.9;                                       // the cores: radians a second, and seconds each one glows
@@ -112,6 +112,12 @@ export function create(ctx, el, sec) {
   const onKey = (e) => { if (e.key === 'Escape' && ctx.clock.current === sec) $$('details[open]', el).forEach((d) => { d.open = false; }); };
   window.addEventListener('click', onClick);
   window.addEventListener('keydown', onKey);
+  // the test hook: the paper number on show, how far the stack has sunk, and each floor's grey and height over the ground
+  ctx.state.lesson = {
+    get number() { return num.show > 0.5 && num.squash > 0.5 ? num.text : ''; },
+    get sunk() { return -sp.lift; },
+    floors: () => sp.floors.map((f) => ({ grey: `#${f.u.uColor.value.getHexString()}`, y: +(f.mesh.position.y + sp.lift).toFixed(3) })),
+  };
 
   // The camera for a point between the acts (0 to 2), looking at height y. Polar, so a move between acts is an arc.
   function stand(act, y) {
@@ -266,6 +272,7 @@ export function create(ctx, el, sec) {
       for (const m of signs) { m.geometry.dispose(); m.material.dispose(); }
       for (const th of things) th.set.dispose();
       num.dispose();
+      delete ctx.state.lesson;
       sp.dispose();
       answer.dispose();
       for (const h of hands) h.line.dispose();
