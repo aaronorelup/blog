@@ -439,11 +439,14 @@ test('landscape-10 never more than 60 words on screen at first depth (80 on a bo
       most = Math.max(most, words.length);
       if (words.length > cap) over.push(`${s.id} at ${u}: ${words.length} words, over ${cap}: ${words.join(' ')}`);
       // a world's open beat holds its nine floors whole, from 0.95 to 1.6 screens: nothing rests half-faded (D06)
+      // (they arrive on time, 0.77 s, counted in drawn frames: on a busy box the count is read again for up to 3 s)
       if (s.name === 'worlds' && u >= 0.95 && u <= 1.6) {
-        const whole = await page.evaluate((id) => [...document.querySelectorAll(`#${id} .ail-doors [data-agent] .ail-stack > .ail-floor`)].filter((f) => {
+        const count = () => page.evaluate((id) => [...document.querySelectorAll(`#${id} .ail-doors [data-agent] .ail-stack > .ail-floor`)].filter((f) => {
           let o = 1; for (let n = f; n && n.nodeType === 1; n = n.parentElement) o *= Number(getComputedStyle(n).opacity);
           return o >= 0.98 && f.checkVisibility({ visibilityProperty: true });
         }).length, s.id);
+        let whole = await count();
+        for (let k = 0; k < 6 && whole !== 9; k++) { await page.waitForTimeout(500); whole = await count(); }
         if (whole !== 9) over.push(`${s.id} at ${u}: ${whole} of nine floors whole`);
       }
     }
