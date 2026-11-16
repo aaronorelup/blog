@@ -58,7 +58,7 @@ export function createRow(ctx) {
     const shade = new Mesh(new PlaneGeometry(1, 1), mats.paper(textures.soft(true), { side: 0, blended: true, mask: true, tint: '#0C0D10', opacity: 0.22 }));
     shade.rotation.x = -Math.PI / 2; shade.renderOrder = -6.5; shade.visible = false;
     scene.add(shade);
-    tower.char = { mesh: body, ledge, shade, kind, size, floor: cfg.character.floor - 1, from: 'floor', to: 'floor', t: 1, show: 1, scale: 1, pos: new Vector3(), blink: 2 + t };
+    tower.char = { mesh: body, ledge, shade, kind, size, perch: cfg.character.perch || 1, floor: cfg.character.floor - 1, from: 'floor', to: 'floor', t: 1, show: 1, scale: 1, pos: new Vector3(), blink: 2 + t };
     return tower;
   });
 
@@ -85,12 +85,12 @@ export function createRow(ctx) {
     if (name === 'front') return out.set(x - 2.0, tower.lift + c.size * SCALE.front * 0.5 + 0.02, tower.z + 1.6 - Math.min(0.6, tower.lift));
     // beside: large, on the ground to the right of the stack (on a phone, where there is no room, on its lid)
     if (name === 'beside') return ctx.phone ? out.set(x, tower.height + tower.lift + c.size * BIG * 0.5, tower.z + 0.2) : out.set(x + 2.9, c.size * BIG * 0.5 + 0.02, tower.z + 0.8);
-    return out.set(x - LEDGE, tower.floors[c.floor].y + tower.lift + FLOOR.h / 2 + c.size * SCALE.floor * 0.5, tower.z + 0.25);
+    return out.set(x - LEDGE, tower.floors[c.floor].y + tower.lift + FLOOR.h / 2 + c.size * SCALE.floor * c.perch * 0.5, tower.z + 0.25);
   }
   // how much head room the frame has over the row seen from above: 1 at 16:10 and taller, 0 at 16:9 and wider
   const roomy = () => Math.max(0, Math.min(1, (1.78 - ctx.camera.aspect) / 0.18));
   const onLid = () => lerp(SCALE.tight, SCALE.top, roomy());
-  const big = (name) => (name === 'beside' ? BIG : name === 'top' ? onLid() : SCALE[name] || SCALE.floor);
+  const big = (name, c) => (name === 'beside' ? BIG : name === 'top' ? onLid() : SCALE[name] || SCALE.floor * c.perch);
 
   const row = {
     roomy,
@@ -155,7 +155,7 @@ export function createRow(ctx) {
         const near = c2.from === 'front' || c2.to === 'front';
         if (c2.from !== c2.to) c2.pos.y += Math.sin(Math.PI * e) * Math.max(0.35, ctx.phone || near ? 0.35 : tw.height + tw.lift + c2.size * 0.5 + 0.35 - (a.y + b.y) / 2);
         const breathe = ctx.reduced ? 0 : Math.sin(time * 2 * Math.PI * 0.4 + t) * 0.015;
-        const sc = c2.size * lerp(big(c2.from), big(c2.to), e) * c2.scale;
+        const sc = c2.size * lerp(big(c2.from, c2), big(c2.to, c2), e) * c2.scale;
         const m = c2.mesh;
         m.position.copy(c2.pos);
         m.visible = c2.show * tw.show > 0.01 && (c2.kind === 'orb3d' || !!m.material.uniforms.uMap.value);

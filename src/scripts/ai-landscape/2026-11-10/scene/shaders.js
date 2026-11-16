@@ -111,8 +111,8 @@ void main() {
     float s = fract(ph);
     float gap = 1.0 - smoothstep(0.0, px, s) * (1.0 - smoothstep(0.5, 0.5 + px, s));
     gap = mix(gap, 0.5, smoothstep(0.11, 0.2, px)) * uHatch * (1.0 - smoothstep(0.25, 0.4, abs(N.y)));
-    col = mix(col, uHatchCol.rgb, gap * mix(0.13, 0.34, uHatchCol.a));
-    a *= mix(1.0, mix(0.92, 1.0, uHatchCol.a), gap);
+    col = mix(col, uHatchCol.rgb, gap * mix(0.085, 0.27, uHatchCol.a));      // band against gap: 12 percent of white or less
+    a *= mix(1.0, mix(0.95, 1.0, uHatchCol.a), gap);
   }
 
   // frosted glass: it exists and the maker has not said what it is. Milky, matte, nothing shows through

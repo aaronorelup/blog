@@ -18,14 +18,14 @@ export default {
     portrait: 'Cut-paper illustration of Sundar Pichai',
     person: 'Sundar Pichai',
   },
-  character: { kind: 'sprite', floor: 1, size: 0.9 },           // no router floor to stand on: the lantern floats at floor 1
+  character: { kind: 'sprite', floor: 1, size: 0.9, perch: 0.86 },    // no router floor to stand on: the lantern floats at floor 1, a little smaller there so it clears the chrome
   backdrop: { y: -4.45, turn: -0.1 },
   props: [
     { file: 3, z: -3.5, x: 7.2, y: 0.98, w: 2.2 },              // prop-3: the drawers of the index under a magnifying glass, low on the right
     { file: 2, z: -6, x: -4.0, y: 0.84, w: 1.35 },              // prop-2: a banana on a stool, at the left
     { file: 1, z: -9, x: 11.25, y: 1.42, w: 1.65 },             // prop-1: a door left ajar, at the right edge
   ],
-  fore: { z: 3.2, x: 4.1, y: -0.1, w: 3.3 },                   // four footlights at the front edge, right of the stack
+  fore: { z: 5.6, x: 2.36, y: 0.35, w: 3.3 },                  // four footlights at the front edge, right of the stack: close enough that their feet are below the frame
   portrait: { x: 12.9, y: 5.2 },
   dust: '#F8F9FA',
   signature: 'google',

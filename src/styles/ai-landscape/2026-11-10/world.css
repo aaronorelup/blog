@@ -5,7 +5,8 @@
 .ail-world__head { display: grid; grid-template-columns: auto 1fr; column-gap: 14px; row-gap: 10px; align-items: center; }
 .ail-kicker { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; padding-bottom: 7px; border-bottom: 2px solid var(--w-line, var(--ail-ink-2)); justify-self: start; }
 .ail-kicker span + span::before { content: '/'; margin-right: 12px; color: var(--ail-fg-2); }
-.ail-kicker__note { color: var(--ail-fg-2); }
+/* the note beside a name is a reported fact: it is set as one, in the serif, with its dotted line */
+.ail-kicker__note { color: var(--ail-fg-2); font: italic 400 15px/1 var(--ail-serif); letter-spacing: 0; text-transform: none; }
 /* justify-self: the h2 is as wide as its word, not as its grid column (the 3D name is laid over its letters) */
 .ail-world__name { grid-column: 1 / -1; justify-self: start; font-size: clamp(64px, 11vw, 150px); }
 
@@ -81,6 +82,9 @@
 .ail-gl .ail-world .ail-stage { color: var(--ail-fg); }
 /* a signature that sets `dark` (lights out): the words flip to paper, on the ink scrim, in any world */
 .ail-gl .ail-world[data-dark] { --w-scrim: rgba(12, 13, 16, .88); --w-card: #16171B; --w-ground: #0C0D10; }
+/* a dark world's words stand on its own dark scrim from the moment they arrive, before the chrome has flipped
+   (the iris is still opening) and after it has flipped back: they carry their own paper ink, never the studio's */
+.ail-gl .ail-world[data-chrome='dark'] :is(.ail-world__intro, .ail-kicker, .ail-sig, .ail-catch, .ail-world__caption) { --ail-fg: #F8F9FB; --ail-fg-2: #B7BBC4; --ail-hair: #33363D; --ail-bg: var(--ail-night); color: var(--ail-fg); }
 .ail-gl .ail-world__pic { display: none; }
 .ail-gl .ail-world__head { position: absolute; left: var(--ail-margin); top: var(--ail-top); max-width: 54vw; opacity: 0; transition: opacity var(--ail-t) var(--ail-ease); }
 .ail-gl .ail-kicker { padding: 7px 10px; background: var(--w-scrim); }
@@ -108,7 +112,7 @@
 .ail-gl .ail-sig__item, .ail-gl .ail-catch__item { position: fixed; left: 0; top: 0; z-index: 3; padding: 4px 8px 5px; background: var(--w-scrim); white-space: nowrap; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 300ms var(--ail-ease); font-size: 17px; }
 .ail-gl .ail-sig__item.is-on, .ail-gl .ail-catch__item.is-on { opacity: 1; visibility: visible; }
 .ail-gl .ail-sig__item .ail-note, .ail-gl .ail-catch__item .ail-note { display: none; }
-.ail-gl .ail-sig__item .ail-tag, .ail-gl .ail-catch__item .ail-tag { font-size: 10px; }
+.ail-gl .ail-sig__item .ail-tag, .ail-gl .ail-catch__item .ail-tag { font-size: 12px; }
 
 /* doors: this company's products as a row of named tabs above the callouts, after the one word "Products". The row
    wraps to two lines. A tab is its glyph and its product's name, always: a name never waits for a hover */
@@ -147,9 +151,11 @@
   .ail-gl .ail-world:not([data-beat-now='a']) .ail-world__name { opacity: 0; }
   .ail-gl .ail-sig, .ail-gl .ail-catch, .ail-gl .ail-world__intro { left: 0; right: 0; bottom: 0; width: auto; height: 45svh; padding: 12px var(--ail-margin); background: none; align-content: start; gap: 8px; }
   .ail-gl .ail-world__intro { padding-top: calc(17vw * .88 + 22px); }
-  /* the tabs scroll inside their own row, each whole when it comes to rest, and fade out at the right edge */
-  .ail-gl .ail-doors[data-beat] { left: var(--ail-margin); right: 0; top: auto; bottom: calc(45svh - 46px); flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; padding-right: 44px;
-    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent); }
+  .ail-gl .ail-world[data-chrome='dark'] .ail-world__intro { background: var(--w-ground); }      /* its sheet arrives with it */
+  /* the tabs scroll inside their own row, each whole when it comes to rest, and fade out at the right edge. The fade is
+     a piece that rides the row's right end, never a mask: a mask on the row would also hide the open product's nine rows */
+  .ail-gl .ail-doors[data-beat] { left: var(--ail-margin); right: 0; top: auto; bottom: calc(45svh - 46px); flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; }
+  .ail-gl .ail-doors[data-beat]::after { content: ''; position: sticky; right: 0; flex: none; width: 44px; background: linear-gradient(90deg, transparent, var(--w-ground, var(--ail-paper))); pointer-events: none; }
   .ail-gl .ail-doors[data-beat]::-webkit-scrollbar { display: none; }
   .ail-gl .ail-door, .ail-gl .ail-doors__cap { scroll-snap-align: start; }
   .ail-gl .ail-doors__cap { background: none; padding: 0 6px 0 0; }

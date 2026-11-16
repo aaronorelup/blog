@@ -257,7 +257,9 @@ export function create(ctx, world) {
     lineMat.opacity = amount;
     if (ctx.input.moved && !ctx.input.touch) point(hit({ clientX: ctx.input.px, clientY: ctx.input.py }) >= 0);
     slab.material.uniforms.uPulse.value = arrived ? 0.25 : 0;
-    if (!ctx.phone) for (const [n, k] of names.map((n, k) => [n, k])) n.style.transform = pinned(v.set(base + xs[k] + (k ? 0.08 : -0.08), top + tower.lift + 0.6, tower.z + FLOOR.w / 2 - 0.15), k ? 0.12 : 0.88, 1);      // the two spread outward from their doors
+    // each door's name stands under its door on the face of floor 1, the two either side of their threads: above the
+    // doors they would lie under the chrome
+    if (!ctx.phone) for (const [n, k] of names.map((n, k) => [n, k])) n.style.transform = pinned(v.set(base + xs[k] + (k ? 0.1 : -0.1), f[0].y + tower.lift - 0.06, tower.z + FRONT), k ? 0 : 1, 0.5);
     if (ctx.phone) names.forEach((n, k) => n.classList.toggle('is-on', st.runs[k] >= 0 && st.part === 1));
     if (indexName) {
       indexName.classList.toggle('is-on', arrived > 0 && st.part === 1 && amount > 0.5);
