@@ -8,9 +8,15 @@ import Fact from '../Fact.astro';
 import { COPY } from '../data/copy.js';
 import { fact, ownerOf, view } from '../data/view.js';
 
-const { dated = false, snapshots = [] } = Astro.props;
+const { snapshots = [] } = Astro.props;
 const DATE = view.snapshot.date;
 const checked = view.snapshot.compiledAt.slice(0, 10);
+// "Newest" leads from an older snapshot to the newest; the empty slot for the next one stands only on the newest
+const newest = !snapshots.length || snapshots[0].date === DATE;
+// the hours the eight fact files were gathered, first to last, from the data (UTC, to the minute)
+const times = Object.values(view.snapshot.files || {}).sort();
+const hm = (iso) => iso.slice(11, 16);
+const gathered = times.length ? { from: times[0], to: times[times.length - 1] } : null;
 const sources = `/ai-landscape/${DATE}/sources/`;
 const since = view.data.sinceSnapshot;
 const expiring = view.data.expiring.map(fact).filter(Boolean).sort((a, b) => a.staleAfter.localeCompare(b.staleAfter));
@@ -28,6 +34,7 @@ const SURE = { confirmed: COPY.stamp.confirmed, reported: COPY.stamp.reported };
 
     <div class="ail-stamp__say">
       <p class="ail-sentence">{COPY.stamp.stale}</p>
+      {gathered && <p class="ail-stamp__when ail-label">{COPY.stamp.gathered} <time datetime={gathered.from}>{gathered.from.slice(0, 10)} {hm(gathered.from)}</time> {COPY.stamp.to} <time datetime={gathered.to}>{hm(gathered.to)}</time> {COPY.stamp.utc}</p>}
       <details class="ail-disc ail-stamp__counts" name="ail-stamp">
         <summary class="ail-label"><b>{view.counts.claims}</b> {COPY.stamp.claims} <i aria-hidden="true">/</i> <b>{view.counts.sources}</b> {COPY.stamp.sources}</summary>
         <div class="ail-disc__card">
@@ -41,12 +48,12 @@ const SURE = { confirmed: COPY.stamp.confirmed, reported: COPY.stamp.reported };
       <nav class="ail-shelf" aria-labelledby="snapshot-eds">
         <p id="snapshot-eds" class="ail-label">{COPY.stamp.editions}</p>
         <ol class="ail-shelf__row">
+          {newest && <li><span class="ail-slab ail-slab--next">{COPY.stamp.next}</span></li>}
           {snapshots.map((s) => (
             <li><a class="ail-slab" href={`/ai-landscape/${s.date}/`} aria-current={s.date === DATE ? 'page' : undefined} title={s.summary}><time datetime={s.date}>{s.date}</time></a></li>
           ))}
-          <li><span class="ail-slab ail-slab--next">{COPY.stamp.next}</span></li>
         </ol>
-        {dated && <a class="ail-shelf__newest ail-label" href="/ai-landscape/">{COPY.stamp.newest}</a>}
+        {!newest && <a class="ail-shelf__newest ail-label" href="/ai-landscape/">{COPY.stamp.newest}</a>}
       </nav>
     </div>
 
@@ -71,8 +78,8 @@ const SURE = { confirmed: COPY.stamp.confirmed, reported: COPY.stamp.reported };
         <div class="ail-disc__card">
           <ol class="ail-expiring">
             {expiring.map((f) => (
-              <li class="ail-expiring__item">
-                <time class="ail-expiring__d ail-label" datetime={f.staleAfter}>{f.staleAfter}</time>
+              <li class="ail-expiring__item" data-until={f.staleAfter}>
+                <span class="ail-until ail-expiring__d ail-label"><span class="ail-until__w">{COPY.world.until}</span><span class="ail-until__x">{COPY.world.expired}</span> <time datetime={f.staleAfter}>{f.staleAfter}</time></span>
                 <span class="ail-own" data-owner={ownerOf(f.id)}>{f.short}</span>
                 <span class="ail-expiring__say"><Fact fact={f} /></span>
               </li>

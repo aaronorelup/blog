@@ -107,6 +107,12 @@ export function createLabels(ctx) {
         if (!at) continue;
         const p = at.isVector3 ? labels.project(at) : at;
         pin.el.style.transform = `translate3d(${(p.x + pin.dx).toFixed(1)}px,${(p.y + pin.dy).toFixed(1)}px,0) translate(${-pin.ax * 100}%,${-pin.ay * 100}%)`;
+        // a pin its section has faded out is hidden as well, so Tab and a screen reader skip what nobody can see
+        const o = pin.el.style.opacity;
+        const gone = o !== '' && Number(o) < 0.1;
+        if (gone) pin.el.style.visibility = 'hidden';
+        else if (pin.el.style.visibility === 'hidden' && pin.gone) pin.el.style.visibility = '';
+        pin.gone = gone;
       }
     },
   };

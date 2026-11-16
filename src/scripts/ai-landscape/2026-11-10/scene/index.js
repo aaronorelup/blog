@@ -3,6 +3,7 @@
 // what it wants, then draws that. A section module is loaded when its section is within 1.5 screens:
 // sections/<data-sec>.js exports create(ctx, el, sec) and returns { enter, update(t, dt), leave, dispose }.
 import { Scene, SRGBColorSpace, WebGLRenderer } from 'three';
+import { lazy } from '../core/dom.js';
 import { createWatchdog } from '../core/quality.js';
 import { createRig } from './camera.js';
 import { createLabels } from './labels.js';
@@ -38,14 +39,19 @@ export async function mount(boot) {
   ctx.worlds = createWorlds(ctx);
   ctx.prims = createPrims(ctx);
   ctx.createThread = (options) => createThread(ctx, options);
-  // The signature module for a world: signatures/<name>.js, or null. It exports create(ctx, world).
-  ctx.signature = (name) => { const load = SIGNATURES[`../signatures/${name}.js`]; return load ? load() : Promise.resolve(null); };
+  // The signature module for a world: signatures/<name>.js, or null. It exports create(ctx, world). A chunk lost to a
+  // deploy reloads the page once; after that the world keeps its words and drops the signature's buttons.
+  ctx.signature = (name) => { const load = SIGNATURES[`../signatures/${name}.js`]; return load ? lazy(load) : Promise.resolve(null); };
   // Scroll the page to a section (by id), or to a point inside it: u screens from its start.
   ctx.scrollTo = (id, u = 0) => {
     const sec = clock.sections.find((x) => x.id === id);
     if (sec) window.scrollTo({ top: clock.pixels(sec.s0 + u), behavior: reduced ? 'auto' : 'smooth' });
   };
 
+  // the watchdog hears real frame times, but not while a section or a world is being built (shaders, textures)
+  let quiet = 0;
+  ctx.hush = (ms = 1500) => { quiet = Math.max(quiet, performance.now() + ms); };
+  ctx.hush();
   const size = { w: 0, h: 0 };
   function resize() {
     size.w = window.innerWidth; size.h = window.innerHeight;
@@ -72,7 +78,19 @@ export async function mount(boot) {
       const load = SECTIONS[`../sections/${sec.name}.js`];
       slot = { ctl: null, gone: false, inside: false };
       slots.set(sec, slot);
-      if (load) load().then((m) => { if (!slot.gone && live) { slot.ctl = m.create(ctx, sec.el, sec); if (slot.ctl) slot.ctl.range = [sec.s0, sec.s1]; } }).catch((err) => console.warn('ai-landscape: a section did not load.', sec.name, err));
+      // a chunk lost to a deploy reloads the page once. After that the page reads as text, at the reader's place:
+      // a section without its module would stand empty (its states are drawn by it), so the text version shows it whole
+      if (load) {
+        lazy(load).then((m) => {
+          if (slot.gone || !live) return;
+          ctx.hush();
+          slot.ctl = m.create(ctx, sec.el, sec);
+          if (slot.ctl) slot.ctl.range = [sec.s0, sec.s1];
+        }).catch((err) => {
+          console.warn('ai-landscape: a section did not load.', sec.name, err);
+          if (err && err.spent) giveUp();
+        });
+      }
     } else if (slot && sec.far && clock.current !== sec) {
       slot.gone = true;
       if (slot.ctl && slot.ctl.dispose) slot.ctl.dispose();
@@ -83,7 +101,8 @@ export async function mount(boot) {
 
   let active = null;
   let lastStop = null;
-  function frame(dt, time) {
+  // dt: the frame time clamped for the animation. real: the frame's true length, for the watchdog
+  function frame(dt, time, real = dt) {
     if (!live) return;
     ctx.time = time; ctx.dt = dt;
     ctx.mats.shared.uTime.value = reduced ? 0 : time;          // reduced motion: the dust and the iris edge hold still
@@ -123,7 +142,7 @@ export async function mount(boot) {
     const c = ctx.camera.position;
     state.camera = { x: +c.x.toFixed(3), y: +c.y.toFixed(3), z: +c.z.toFixed(3), fov: +ctx.camera.fov.toFixed(2) };
     input.moved = false;
-    watchdog.sample(dt);
+    if (performance.now() >= quiet) watchdog.sample(real);
   }
 
   // hooks for tests and screenshots: the context itself, and one stack shown in the five states
@@ -135,7 +154,8 @@ export async function mount(boot) {
   };
 
   return {
-    frame, resize,
+    frame,
+    resize() { ctx.hush(); resize(); },
     dispose() {
       live = false;
       for (const slot of slots.values()) { slot.gone = true; if (slot.ctl && slot.ctl.dispose) slot.ctl.dispose(); }

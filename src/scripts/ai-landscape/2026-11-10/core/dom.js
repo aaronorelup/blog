@@ -9,11 +9,21 @@ export function readData() {
   try { return JSON.parse(node.textContent); } catch { return null; }
 }
 
-// Light the blocks of `root` whose data-beat lists `name` (data-beat="b c"), and hide the others.
+// Light the blocks of `root` whose data-beat lists `name` (data-beat="b c"), and hide the others. A block that is not
+// lit is inert: a part of it that a stylesheet keeps visible can still not be reached by Tab or a screen reader.
 export function setBeat(root, name) {
   if (root.dataset.beatNow === name) return false;
   root.dataset.beatNow = name;
-  for (const el of $$('[data-beat]', root)) el.classList.toggle('is-on', el.dataset.beat.split(' ').includes(name));
+  for (const el of $$('[data-beat]', root)) {
+    const on = el.dataset.beat.split(' ').includes(name);
+    el.classList.toggle('is-on', on);
+    // focus inside a block that goes out stays in its section: on the section's heading, never back at the page top
+    if (!on && el.contains(document.activeElement)) {
+      const head = document.getElementById(root.getAttribute('aria-labelledby'));
+      if (head) { if (!head.hasAttribute('tabindex')) head.tabIndex = -1; head.focus({ preventScroll: true }); }
+    }
+    el.inert = !on;
+  }
   return true;
 }
 
@@ -24,6 +34,19 @@ export function fade(el, opacity, dy = 0) {
   el.style.opacity = opacity.toFixed(3);
   el.style.visibility = opacity < 0.01 ? 'hidden' : 'visible';
   if (dy || el.style.transform) el.style.transform = dy ? `translate3d(0,${dy.toFixed(1)}px,0)` : '';
+}
+
+// The site's lazy() rule (src/scripts/lazy.js), kept here so this page shares no chunk with the site's own pages:
+// after a deploy an open tab's hashed chunks are gone, so a failed import reloads the page, once per session.
+// Every chunk of this page loads through it: the scene, each section and each signature.
+export function lazy(load) {
+  return load().catch((err) => {
+    let spent = true;
+    try { spent = !!sessionStorage.getItem('ao-reloaded'); if (!spent) sessionStorage.setItem('ao-reloaded', '1'); } catch { /* storage off: never loop */ }
+    if (!spent) location.reload();
+    err.spent = spent;
+    throw err;
+  });
 }
 
 // One sentence to the polite live region, built from data by the caller (SPEC 7.4).

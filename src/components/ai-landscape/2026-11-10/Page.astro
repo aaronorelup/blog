@@ -13,6 +13,7 @@ import { COMMIT } from '../../../lib/build.js';
 import { LISTED } from '../../../data/ai-landscape.js';
 import { inPublic } from '../../../lib/paths.js';
 import { themeCss } from '../../../scripts/ai-landscape/2026-11-10/worlds/index.js';
+import '../../../styles/ai-landscape/2026-11-10/access.css';      // last: the access and failure rules win (E07 to E12)
 
 const { dated = false, snapshots = [] } = Astro.props;
 const DATE = view.snapshot.date;
@@ -25,7 +26,9 @@ const title = `${COPY.frame.title}, ${COPY.frame.snapshot.toLowerCase()} ${DATE}
 const description = `${COPY.frame.scope} ${COPY.frame.openLine}`;
 const og = `ai-landscape/${DATE}/og.jpg`;
 const hasOg = inPublic(og);
-const prePaint = "(function(){var q=new URLSearchParams(location.search);if(q.get('tier')!=='static')document.documentElement.classList.add('ail-gl')})()";
+// the 3D layout before first paint, unless the text version is asked for or the window is too short for the 3D (index.js)
+const prePaint = "(function(){var q=new URLSearchParams(location.search);if(q.get('tier')!=='static'&&innerHeight>=540)document.documentElement.classList.add('ail-gl')})()";
+const A = COPY.a11y;
 ---
 <!doctype html>
 <html lang="en" class="ail" data-snapshot={DATE} data-dated={dated ? '' : undefined}>
@@ -44,6 +47,7 @@ const prePaint = "(function(){var q=new URLSearchParams(location.search);if(q.ge
     {hasOg && <meta property="og:image" content={`https://aaronorelup.com/${og}`} />}
     {hasOg && <meta name="twitter:card" content="summary_large_image" />}
     <meta name="theme-color" content="#E6E8ED" />
+    <meta name="color-scheme" content="light" />
     <link rel="preload" href={displayFont} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={labelFont} as="font" type="font/woff2" crossorigin />
     <style is:inline set:html={themeCss()}></style>
@@ -52,14 +56,10 @@ const prePaint = "(function(){var q=new URLSearchParams(location.search);if(q.ge
   <body>
     <Chrome />
     <canvas class="ail-canvas" id="ail-gl" aria-hidden="true"></canvas>
-    <main id="ail-main" class="ail-main">
+    <main id="ail-main" class="ail-main" data-text-on={A.textOn} data-next={A.next} data-sideways={A.sideways}>
       {sections.map((Section) => <Section dated={dated} snapshots={snapshots} />)}
     </main>
-    <nav class="ail-strip ail-label" aria-label={COPY.stamp.editions}>
-      <span>{COPY.stamp.editions}</span>
-      {snapshots.map((s) => <a href={`/ai-landscape/${s.date}/`} aria-current={s.date === DATE ? 'page' : undefined}>{s.date}</a>)}
-      {dated && <a href="/ai-landscape/">{COPY.stamp.newest}</a>}
-    </nav>
+    <p id="ail-fact-hint" class="ail-vh">{A.sources}</p>
     {overlays.map((Overlay) => <Overlay dated={dated} snapshots={snapshots} />)}
     <svg class="ail-leaders" id="ail-leaders" aria-hidden="true"></svg>
     <script type="application/json" id="ail-data" set:html={view.json}></script>

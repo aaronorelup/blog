@@ -217,7 +217,9 @@ export function create(ctx, el, sec) {
       studio.roomX = tower.x;
       stage.style.setProperty('--sheet', open.toFixed(3));
       toggle(head, open > 0.35);
-      nameEl.style.visibility = inst.nameShow > 0.02 || ctx.phone ? '' : 'hidden';
+      // while the scene draws no name, the heading (transparent over the 3D) is clipped away rather than hidden: it is
+      // not counted as words on screen, and it stays a heading a screen reader finds and a link can focus
+      nameEl.style.clipPath = inst.nameShow > 0.02 || ctx.phone ? '' : 'inset(50%)';
       inst.nameRect = st.rect;
       // the name is the entrance. It appears whole, once the iris edge has passed its far end (an edge never
       // slices it), and leaves when the stack opens

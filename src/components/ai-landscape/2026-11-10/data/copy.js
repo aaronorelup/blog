@@ -129,6 +129,7 @@ export const COPY = {
     since: 'changes since the snapshot',
     expiring: 'facts carry an expiry date',
     gathered: 'Facts gathered',
+    to: 'to',
     utc: 'UTC',
     editions: 'Editions',
     next: 'Next',
