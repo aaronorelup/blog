@@ -648,6 +648,10 @@ read through `window.__landscape`. The walks draw the 3D at a pixel ratio of 0.5
 | A section's or a signature's chunk lost to a deploy reloads the page once; with the reload spent a lost section turns the page to text at that section (best at's 22 rows), a lost signature drops its buttons with no unhandled rejection | `lazy()` in `core/dom.js` | landscape-17 (desktop) |
 | A jump into a world leaves no other world's signature standing in it | `worlds.js` signature `userData.sig` | landscape-18 |
 | A scroll alone steps the comparisons: nine floors in the line-up (and none changes by itself), his four guesses and the board in best at, nine blocks around the five, five companies in billing | the sections' `update(u)` | landscape-19 |
+| A text version that starts in the two frames before a scene loads (a window dragged across 540 px and back) stays a text version: no scene arrives on it, no WebGL context is left alive, and the 3D page comes back whole; one frame that throws is dropped and the page still follows the scroll | `enter3D()`'s load number, `frame()`'s guard | landscape-20 |
+| In a laptop's short window (1366 by 660, 1280 by 720) no word prints over a word, at every beat of a walk: the row stands under its words, the agents' switch stands clear of the table, a world's tabs are one row, a portrait waits where words are | `scene/seat.js`, `agents.js` `data-desk`, `worlds.js` `data-row` and `avoid` | landscape-21 (desktop) |
+| The watchdog knows a display that hands out 30 frames a second from a slow machine: steady frames at the display's own pace keep the 3D page, slower ones step down and end in the text version; a stall while loading is not a pace | `core/quality.js` `createWatchdog(rung, hooks, cadence)`, `index.js` `cadence()` | landscape-22 |
+| A finger's targets: a touch tablet held sideways has no rail of dots and gets the 44 px company button with its five 44 px links; a row of the best-at board is one target as tall as its row | `chrome.css`, `access.css` under `(pointer: coarse)` | landscape-23 (the tablet: desktop) |
 
 ## The live site (`live.spec.mjs`, `npm run e2e:live`)
 

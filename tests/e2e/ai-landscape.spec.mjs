@@ -4,7 +4,9 @@
 // the companies reachable by keyboard, at most 60 words on screen, and every string traced to the view model or the
 // copy file and standing where it belongs. Rows 12 on hold the failure paths of review round 1: one frame loop
 // however often the tab is hidden, the skip link before the scene, resizes and rotation, a lost context, a whole page
-// by keyboard, a lost chunk, and the design pass's states that a scroll alone must change.
+// by keyboard, a lost chunk, and the design pass's states that a scroll alone must change. Rows 20 on hold round 2's:
+// a text version started inside the two frames before a scene loads, a frame that throws, no word printed over a word
+// in a laptop's short window, a watchdog that knows a 30 a second display from a slow one, and a finger's targets.
 import fs from 'node:fs';
 import sharp from 'sharp';
 import { chromium } from '@playwright/test';
@@ -419,6 +421,7 @@ const STOPS = {
   worlds: [0.12, 0.34, 0.5, 0.62, 0.95, 1.3, 1.55, 2.0, 2.45, 2.62, 2.8, 2.93],
   opening: [0, 0.3, 0.6, 1.0, 1.4],
   grammar: [0.1, 0.2, 0.39, 0.67, 0.95, 1.23, 1.58, 1.94, 2.22, 2.5, 2.78, 3.0, 3.15],
+  lineup: [0.1, 0.25, 0.44, 0.63, 0.82, 1.01, 1.2, 1.39, 1.58, 1.77, 1.92],      // each of the nine floors, and the rest after them
 };
 const stopsOf = (s) => (STOPS[s.name] || [0.05, 0.3, 0.6, 0.9].map((f) => +(f * s.screens).toFixed(2))).filter((u) => u <= s.screens);
 
@@ -675,6 +678,28 @@ test('landscape-15 a lost WebGL context keeps the reader in the same section, wi
   await unpinned.close();
 });
 
+test('landscape-22 the watchdog knows a display that hands out 30 frames a second from a machine that is slow: the first keeps its 3D page, the second steps down and then reads as text', async ({ page }) => {
+  test.setTimeout(180_000);
+  await open(page);
+  // the shipped watchdog (core/quality.js), a fresh one, fed steady frames: judge(frame ms, the display's own pace in ms)
+  const judge = (frame, pace, seconds = 60) => page.evaluate(([f, p, s]) => window.__landscape.debug.judge(f, p, s), [frame, pace, seconds]);
+  for (const [frame, pace] of [[8.3, 8.3], [16.7, 16.7], [20, 16.7], [33.4, 33.4], [36, 33.4], [22.3, 22.3]]) {
+    const r = await judge(frame, pace);
+    expect(r.gaveUp, `${frame} ms frames on a ${pace} ms display keep the 3D page`).toBeNull();
+    expect(r.steps, `${frame} ms frames on a ${pace} ms display step down nothing`).toBe(0);
+  }
+  // a slow machine: 33 ms frames on a 60 a second display, 60 ms frames on a 30 a second one, 100 ms frames anywhere
+  for (const [frame, pace] of [[33.4, 16.7], [60, 33.4], [100, 16.7], [100, 0]]) {
+    const r = await judge(frame, pace);
+    expect(r.steps, `${frame} ms frames on a ${pace} ms display step down`).toBeGreaterThan(0);
+    expect(r.gaveUp, `${frame} ms frames on a ${pace} ms display end in the text version`).not.toBeNull();
+    expect(r.gaveUp).toBeLessThan(20);
+  }
+  // a stall while the page loads is not a display's pace: the limit never passes 45 ms, and with no pace known it is 21
+  expect((await judge(16.7, 400)).limit).toBe(45);
+  expect((await judge(16.7, 0)).limit).toBe(21);
+});
+
 test('landscape-16 Tab and Enter alone reach a control in every section, each one seen; a rail link puts focus on its section\'s heading', async ({ page, isMobile }) => {
   test.skip(isMobile, 'a phone has no Tab key: the minimap and the scroll lead');
   test.setTimeout(1_500_000);   // some 240 Tabs, each read 600 ms later: alone about 7 min, longer beside other walks
@@ -787,4 +812,142 @@ test('landscape-19 a scroll alone steps the comparisons: nine floors in the line
   expect(around).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8]);
   const billing = await states('billing', [0, 1, 2, 3, 4].map((k) => 0.1 + 0.16 * (k + 0.5)), () => [...document.querySelectorAll('#billing .ail-bill__pick')].findIndex((d) => d.getAttribute('aria-pressed') === 'true'));
   expect(billing, 'billing picks the five companies in turn').toEqual([0, 1, 2, 3, 4]);
+});
+
+// A window's animation frames held back and let go again, as a busy page delivers them late: what the page asked
+// for in between runs when the hold ends. Also every WebGL context a canvas of the page was given.
+const HOLD = () => {
+  const raf = window.requestAnimationFrame.bind(window);
+  const held = [];
+  window.__hold = false;
+  window.requestAnimationFrame = (cb) => raf((t) => { if (window.__hold) held.push(cb); else cb(t); });
+  window.__release = () => { window.__hold = false; held.splice(0).forEach((cb) => raf(cb)); };
+  window.__ctxs = [];
+  const get = HTMLCanvasElement.prototype.getContext;
+  HTMLCanvasElement.prototype.getContext = function (kind, ...rest) { const c = get.call(this, kind, ...rest); if (c && /webgl/.test(kind) && this.isConnected && !window.__ctxs.includes(c)) window.__ctxs.push(c); return c; };
+};
+const liveContexts = (page) => page.evaluate(() => window.__ctxs.filter((c) => !c.isContextLost()).length);
+
+test('landscape-20 a text version that starts in the two frames before a scene loads stays a text version: no scene arrives on it, no context is left behind, and the 3D page comes back whole; a frame that throws does not stop the page', async ({ page, isMobile }) => {
+  test.setTimeout(300_000);
+  await page.addInitScript(HOLD);
+  const tall = isMobile ? { width: 390, height: 844 } : { width: 1440, height: 900 };
+  const short = { width: tall.width, height: 480 };
+  await page.setViewportSize(tall);
+  await open(page);
+  expect(await liveContexts(page)).toBe(1);
+  await page.setViewportSize(short);
+  await expect.poll(async () => (await hook(page)).tier, { timeout: 15_000 }).toBe('static');
+  // grow (the 3D page is asked for, its scene two frames away), then shrink again before those frames run
+  await page.evaluate(() => { window.__hold = true; });
+  await page.setViewportSize(tall);
+  await expect(page.locator('html')).toHaveClass(/ail-gl/);
+  await page.setViewportSize(short);
+  await expect(page.locator('html')).not.toHaveClass(/ail-gl/);
+  await page.evaluate(() => window.__release());
+  await page.waitForTimeout(6000);
+  expect(await page.evaluate(() => document.documentElement.className)).not.toMatch(/ail-3d|ail-gl/);
+  expect((await hook(page)).tier).toBe('static');
+  for (const id of COMPANIES) expect(await page.locator(`#${id}-name`).evaluate((h) => h.checkVisibility({ opacityProperty: true, visibilityProperty: true }) && getComputedStyle(h).color !== 'rgba(0, 0, 0, 0)' && getComputedStyle(h).position !== 'fixed'), id).toBe(true);
+  expect(await liveContexts(page), 'WebGL contexts alive under the text version').toBe(0);
+  // and back: one scene, one context
+  await page.setViewportSize(tall);
+  await page.waitForFunction(() => window.__landscape.ready && window.__landscape.tier === 'low' && window.__landscape.frames > 1, null, { timeout: 60_000 });
+  await expect(page.locator('html')).toHaveClass(/ail-3d/);
+  expect(await liveContexts(page)).toBe(1);
+  // one frame that throws is dropped and the next draws: the page still follows the scroll
+  await light(page);
+  await go(page, 'line-up', 0.5, 300);
+  await page.evaluate(() => { const r = window.__landscape.debug.ctx.row; const u = r.update; let once = true; r.update = function (...a) { if (once) { once = false; throw new Error('one bad frame'); } return u.apply(this, a); }; });
+  await frames(page, 4);
+  await go(page, 'google', 1.2, 300);
+  expect((await hook(page)).world).toBe('google');
+  expect((await hook(page)).tier).toBe('low');
+});
+
+// Every pair of visible text boxes of the page that print over each other by more than 2 px both ways. Two lines of
+// one block never count (a line box is taller than its ink), nor a word inside the block that holds it.
+const OVERLAPS = () => {
+  const seen = (el) => {
+    for (let n = el; n && n !== document.body; n = n.parentElement) {
+      const cs = getComputedStyle(n);
+      if (cs.display === 'none' || cs.visibility === 'hidden' || Number(cs.opacity) < 0.3 || n.classList.contains('ail-vh') || cs.clipPath.includes('inset(50%)')) return false;
+    }
+    return el.checkVisibility({ visibilityProperty: true });
+  };
+  const boxes = [];
+  const range = document.createRange();
+  const walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let t = walk.nextNode(); t; t = walk.nextNode()) {
+    const el = t.parentElement;
+    if (!/[\p{L}\p{N}]/u.test(t.textContent) || el.closest('script, style, .ail-live') || !seen(el)) continue;
+    const block = el.closest('p, li, h1, h2, h3, td, th, button, summary, figcaption, blockquote, a') || el;
+    range.selectNodeContents(t);
+    for (const r of range.getClientRects()) {
+      if (r.width < 2 || r.height < 2 || r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) continue;
+      const cut = r.height * 0.18;
+      boxes.push({ l: r.left, r: r.right, t: r.top + cut, b: r.bottom - cut, block, s: t.textContent.trim().slice(0, 28) });
+    }
+  }
+  const bad = [];
+  for (let i = 0; i < boxes.length; i++) for (let j = i + 1; j < boxes.length; j++) {
+    const a = boxes[i], b = boxes[j];
+    if (a.block === b.block || a.block.contains(b.block) || b.block.contains(a.block)) continue;
+    const ox = Math.min(a.r, b.r) - Math.max(a.l, b.l), oy = Math.min(a.b, b.b) - Math.max(a.t, b.t);
+    if (ox > 2 && oy > 2) bad.push(`"${a.s}" over "${b.s}" by ${Math.round(ox)}x${Math.round(oy)}`);
+  }
+  return [...new Set(bad)];
+};
+
+const SHORT_STOPS = { worlds: [0.5, 0.95, 1.3, 1.55, 2.0, 2.62, 2.8], opening: [0.6, 1.4], grammar: [0.39, 1.58, 3.0] };
+test('landscape-21 in a laptop\'s short window no word prints over a word: 1366 by 660 and 1280 by 720, every section and every beat of a world', async ({ page, isMobile }) => {
+  test.skip(isMobile, 'a phone lists its words in a sheet: landscape-8 walks it');
+  test.setTimeout(1_800_000);   // two walks of 70 stops
+  const bad = [];
+  for (const size of [{ width: 1366, height: 660 }, { width: 1280, height: 720 }]) {
+    await page.setViewportSize(size);
+    await open(page);
+    await light(page);
+    await page.mouse.move(size.width * 0.55, size.height * 0.5);
+    for (const s of await sections(page)) {
+      for (const u of (SHORT_STOPS[s.name] || [0.3, 0.6, 0.9].map((f) => +(f * s.screens).toFixed(2)))) {
+        await go(page, s.id, u, 700);
+        const over = await page.evaluate(OVERLAPS);
+        if (over.length) bad.push(`${size.width}x${size.height} ${s.id} at ${u}: ${over.slice(0, 4).join(' | ')}`);
+      }
+    }
+  }
+  expect(bad).toEqual([]);
+});
+
+test('landscape-23 a finger gets targets it can hit: a touch tablet held sideways has the 44 px company button and no rail of dots, and a row of the best-at board is as tall as its row', async ({ browser, baseURL, browserName, page, isMobile }) => {
+  test.setTimeout(300_000);
+  const sizes = (p, sel) => p.evaluate((sel) => [...document.querySelectorAll(sel)].filter((el) => el.checkVisibility({ opacityProperty: true, visibilityProperty: true }) && !el.closest('[inert]')).map((el) => { const r = el.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height)]; }).filter(([w]) => w > 0), sel);
+  if (isMobile) {
+    await open(page);
+    await light(page);
+    await go(page, 'best-at', 2.35, 600);
+    const rows = await sizes(page, '#best-at .ail-bd__open');
+    expect(rows.length).toBe(22);
+    for (const [, h] of rows) expect(h, 'a board row under a finger').toBeGreaterThanOrEqual(20);
+    return;
+  }
+  test.skip(browserName !== 'chromium', 'the emulated tablet is Chromium\'s');
+  const tablet = await browser.newPage({ baseURL, viewport: { width: 1180, height: 820 }, hasTouch: true, isMobile: true, deviceScaleFactor: 1 });
+  await open(tablet);
+  expect(await tablet.evaluate(() => matchMedia('(pointer: coarse)').matches), 'the tablet\'s pointer is coarse').toBe(true);
+  await light(tablet);
+  await go(tablet, 'top', 0.3, 600);
+  expect(await sizes(tablet, '.ail-rail a'), 'no rail of 17 px dots under a finger').toEqual([]);
+  expect(await sizes(tablet, '.ail-map__col'), 'the five company links wait behind their button').toEqual([]);
+  for (const sel of ['.ail-map__open', '.ail-chrome__chip']) for (const [w, h] of await sizes(tablet, sel)) { expect(w, sel).toBeGreaterThanOrEqual(44); expect(h, sel).toBeGreaterThanOrEqual(44); }
+  await tablet.locator('.ail-map__open').tap();
+  const links = await sizes(tablet, '.ail-map__col');
+  expect(links.length).toBe(5);
+  for (const [w, h] of links) { expect(w).toBeGreaterThanOrEqual(44); expect(h).toBeGreaterThanOrEqual(44); }
+  await go(tablet, 'best-at', 2.35, 600);
+  const rows = await sizes(tablet, '#best-at .ail-bd__open');
+  expect(rows.length).toBe(22);
+  for (const [, h] of rows) expect(h, 'a board row under a finger').toBeGreaterThanOrEqual(18);
+  await tablet.close();
 });
