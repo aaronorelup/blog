@@ -23,7 +23,7 @@ export default {
   props: [
     { file: 3, z: -3.5, x: 7.2, y: 0.98, w: 2.2 },              // prop-3: the drawers of the index under a magnifying glass, low on the right
     { file: 2, z: -6, x: -4.0, y: 0.84, w: 1.35 },              // prop-2: a banana on a stool, at the left
-    { file: 1, z: -9, x: 11.25, y: 1.42, w: 1.65 },             // prop-1: a door left ajar, at the right edge
+    // prop-1, a second door at the right edge, is left out: it stood half out of the frame, across the drawers
   ],
   fore: { z: 5.6, x: 2.36, y: 0.35, w: 3.3 },                  // four footlights at the front edge, right of the stack: close enough that their feet are below the frame
   portrait: { x: 12.9, y: 5.2 },

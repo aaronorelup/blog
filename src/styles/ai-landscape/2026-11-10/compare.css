@@ -217,7 +217,7 @@
   /* the kinds scroll inside their own row and fade out at its right end, as a world's tabs do */
   .ail-gl .ail-ln__kinds { top: calc(35svh + 50px); right: 0; max-width: none; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; }
   .ail-gl .ail-ln__kinds::-webkit-scrollbar { display: none; }
-  .ail-gl .ail-ln__kinds::after { content: ''; position: sticky; right: 0; flex: none; width: 44px; background: linear-gradient(90deg, transparent, var(--ail-bg)); pointer-events: none; }
+  .ail-gl .ail-ln__kinds::after { content: ''; position: sticky; right: 0; flex: none; width: 44px; box-sizing: content-box; border-left: var(--cut, 0px) solid transparent; margin-left: calc(-1 * var(--cut, 0px)); background: linear-gradient(90deg, transparent, var(--ail-bg) 24px) border-box; pointer-events: none; }
   .ail-gl .ail-ln__kind { scroll-snap-align: start; }
   .ail-gl .ail-ln__kind { flex: none; min-height: 44px; }
   .ail-gl .ail-ln__styles { left: var(--ail-margin); right: var(--ail-margin); top: auto; bottom: var(--ail-margin); flex-direction: row; justify-content: space-between; padding: 0; background: none; letter-spacing: .02em; }

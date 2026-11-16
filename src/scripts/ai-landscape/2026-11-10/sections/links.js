@@ -5,6 +5,7 @@
 import { BoxGeometry, Color, Mesh, Vector2, Vector3 } from 'three';
 import { smooth, span } from '../core/clock.js';
 import { $, $$, announce } from '../core/dom.js';
+import { wholeTabs } from '../scene/labels.js';
 import { ROW_X } from '../scene/row.js';
 import { FLOOR } from '../scene/stack.js';
 import { owner } from '../worlds/index.js';
@@ -25,6 +26,7 @@ export function create(ctx, el, sec) {
   const items = $$('.ail-ln__item', el);
   const chips = $$('.ail-ln__kind', el);
   const kinds = chips.map((c) => c.dataset.kind).filter((k) => items.some((li) => li.dataset.kind === k));
+  const kindRow = phone && chips[0] ? wholeTabs(chips[0].parentElement, () => chips) : null;      // a phone: the kinds scroll in their own row
   const edgeX = phone ? 8.2 : 11.75;
   const blocks = { you: -edgeX, outside: edgeX };
   const st = { kind: '', active: -1, pick: null, u: 0, k: 0, drawn: new Map(), pins: [] };
@@ -81,8 +83,8 @@ export function create(ctx, el, sec) {
   function setKind(k, quiet) {
     st.kind = k;
     chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.kind === k)));
-    const row = chips[0] && chips[0].parentElement, on = chips.find((c) => c.dataset.kind === k);
-    if (phone && row && on) row.scrollLeft = Math.max(0, on.offsetLeft - row.clientWidth / 2 + on.offsetWidth / 2);
+    const on = chips.find((c) => c.dataset.kind === k);
+    if (kindRow && on) kindRow.show(on);
     arcs.forEach((x) => { if (x.kind === k) st.drawn.set(x.n, 0); });
     void quiet;
   }
@@ -219,6 +221,7 @@ export function create(ctx, el, sec) {
     dispose() {
       el.removeEventListener('click', onChip);
       window.removeEventListener('keydown', onKey);
+      if (kindRow) kindRow.drop();
       arcs.forEach((x) => x.arc.dispose());
       st.pins.forEach((p) => p.drop()); outPins.forEach((p) => p.drop());
       Object.values(blockMesh).forEach((m) => { ctx.scene.remove(m); m.material.dispose(); });

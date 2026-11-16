@@ -7,6 +7,7 @@ import { Vector3 } from 'three';
 import { easeIO, lerp, smooth, span, win } from '../core/clock.js';
 import { $, $$, announce, rove, setBeat, toggle } from '../core/dom.js';
 import { HOURS } from '../scene/studio.js';
+import { wholeTabs } from '../scene/labels.js';
 import { FRAME } from '../scene/world.js';
 import { world } from '../worlds/index.js';
 
@@ -50,6 +51,7 @@ export function create(ctx, el, sec) {
     st.rect = { left: ink.left, width: ink.width, top: box.top, height: box.height };
   };
   const onResize = () => { st.rect = null; st.doorsCol = -99; };
+  const tabsRow = ctx.phone ? wholeTabs(doorsEl, () => doors.map((d) => d.tab)) : null;      // a phone: the tabs scroll in their own row
   window.addEventListener('resize', onResize);
 
   // ---- doors: this company's products. Picking one relabels the nine callouts from that product's own stack
@@ -73,6 +75,7 @@ export function create(ctx, el, sec) {
       if (d.card && !ctx.phone) st.cardPin = labels.pin(d.card, () => tower.anchor(MODEL, 1, labels.project), { dx: 46, ay: 0.2 });
     }
     leaves.open = k;
+    if (tabsRow) tabsRow.show(d.tab);
     if (!quiet) announce(d.tab.textContent.trim());
   }
   const onTab = (e) => { const tab = e.target.closest('summary'); const d = tab && doors.find((x) => x.tab === tab); if (d) { e.preventDefault(); select(d.k); } };
@@ -180,6 +183,7 @@ export function create(ctx, el, sec) {
       st.u = u;
       const beat = BEATS.find(([, end]) => u < end)[0];
       if (beat !== st.beat) {
+        if (tabsRow) tabsRow.fit();
         if (st.beat === 'c') { if (st.sig) st.sig.reset(); st.stilled = false; }
         if (beat !== 'b' && st.door !== agentDoor) select(agentDoor, true);
         if (beat !== 'b') closePush();
@@ -311,6 +315,7 @@ export function create(ctx, el, sec) {
       doorsEl.removeEventListener('keydown', onRowKey);
       window.removeEventListener('resize', onResize);
       unrove();
+      if (tabsRow) tabsRow.drop();
       if (st.sig) st.sig.dispose();
       if (st.calls) st.calls.drop();
       if (st.cores) st.cores.dispose();

@@ -155,7 +155,8 @@
   /* the tabs scroll inside their own row, each whole when it comes to rest, and fade out at the right edge. The fade is
      a piece that rides the row's right end, never a mask: a mask on the row would also hide the open product's nine rows */
   .ail-gl .ail-doors[data-beat] { left: var(--ail-margin); right: 0; top: auto; bottom: calc(45svh - 46px); flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; }
-  .ail-gl .ail-doors[data-beat]::after { content: ''; position: sticky; right: 0; flex: none; width: 44px; background: linear-gradient(90deg, transparent, var(--w-ground, var(--ail-paper))); pointer-events: none; }
+  /* (--cut: how far the fade reaches back to the end of the last whole tab, so no word rests half shown) */
+  .ail-gl .ail-doors[data-beat]::after { content: ''; position: sticky; right: 0; flex: none; width: 44px; box-sizing: content-box; border-left: var(--cut, 0px) solid transparent; margin-left: calc(-1 * var(--cut, 0px)); background: linear-gradient(90deg, transparent, var(--w-ground, var(--ail-paper)) 24px) border-box; pointer-events: none; }
   .ail-gl .ail-doors[data-beat]::-webkit-scrollbar { display: none; }
   .ail-gl .ail-door, .ail-gl .ail-doors__cap { scroll-snap-align: start; }
   .ail-gl .ail-doors__cap { background: none; padding: 0 6px 0 0; }
