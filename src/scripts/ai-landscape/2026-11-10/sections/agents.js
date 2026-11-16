@@ -1,12 +1,14 @@
 // Personal agents (SPEC 2.6): the row again with only floors 3, 7 and 8 lit, one table under it: every agent a
 // column under its stack, the row heads at the left. Three lamps on floor 7 and one on floor 3 repeat the table in
-// ink. "Close your laptop" shuts the paper laptop: the cables to every part that needs your own machine, and the
-// cells that do, fall to 15 percent. It tours itself once. On a phone the table is a list in the sheet, with no cable.
+// ink. "Close your laptop" shuts the paper laptop: the room goes to dusk, the cloud floors keep their light, and the
+// cables to every part that needs your own machine, and the cells that do, fall to 15 percent. It tours itself once.
+// On a phone the table is a list in the sheet, with no cable.
 import { Color, Vector3 } from 'three';
 import { smooth, span } from '../core/clock.js';
 import { $, $$, announce } from '../core/dom.js';
 import { ROW_X } from '../scene/row.js';
 import { createSeat } from '../scene/seat.js';
+import { HOURS } from '../scene/studio.js';
 import { owner } from '../worlds/index.js';
 
 const LIT = [2, 6, 7];                          // router, compute, delegation
@@ -14,9 +16,12 @@ const PHONE = { pos: [0, 2.9, 30], look: [0, 1.75, 0], fov: 24, fit: 15.2, cy: 0
 const SQUEEZE = 2.85 / 4.2;
 const YOU = owner('you').glass;
 const DARK = '#2A2C31';
+// the hour: late light while the laptop is open. Shut, the room dims this far and one low pool of warm light stays
+// on the row and the floor in front of it, where the table stands
+const DUSK = { open: 0.1, shut: 0.58, warm: 0.6, pool: { amount: 0.66, radius: 15, color: '#FFE9CF', pos: [0, 2.2, 7.5] } };
 
 export function create(ctx, el, sec) {
-  const { rig, row, labels, prims, phone, reduced, input } = ctx;
+  const { rig, row, labels, prims, studio, phone, reduced, input } = ctx;
   const order = ctx.data.order;
   const towers = order.map((id) => row.tower(id));
   const plates = $$('.ail-ag__row', el);
@@ -111,11 +116,16 @@ export function create(ctx, el, sec) {
         else if (st.tour >= 4.6) { setClosed(false, true); st.toured = true; }
       }
       st.closed += ((st.want ? 1 : 0) - st.closed) * (reduced ? 1 : 1 - Math.exp(-5 * dt));
+      // dusk follows the lid: the title drawn in light. What keeps working (the lit floors) keeps its light
+      studio.lamp.set(...HOURS.hero).lerp(v.set(...HOURS.low), k);
+      studio.warmth = DUSK.warm * k;
+      studio.dusk = (DUSK.open + (DUSK.shut - DUSK.open) * st.closed) * k;
+      studio.glow.amount = DUSK.pool.amount * k; studio.glow.radius = DUSK.pool.radius; studio.glow.color.set(DUSK.pool.color); studio.glow.pos.set(...DUSK.pool.pos);
 
       towers.forEach((tw, n) => {
         tw.spread = k;                                              // semi-open: floors 3, 7 and 8 read apart
         if (phone) { tw.shift = ROW_X[n] * (SQUEEZE - 1) * k; tw.char.show = 1 - k; } else { tw.char.to = 'front'; tw.char.t = k; }      // the figure steps down in front, twice its size
-        tw.floors.forEach((f, i) => { if (LIT.includes(i)) f.lit = 0.34 * k; else f.dim = Math.max(f.dim, 0.74 * k); });
+        tw.floors.forEach((f, i) => { if (LIT.includes(i)) f.lit = (0.34 + 0.3 * st.closed) * k; else f.dim = Math.max(f.dim, 0.74 * k); });
       });
       lamps.forEach((l) => { l.show = k; l.update(); });
 
