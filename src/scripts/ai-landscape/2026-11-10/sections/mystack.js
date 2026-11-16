@@ -65,8 +65,9 @@ export function create(ctx, el, sec) {
     p.seam = keep(new Line(tail.seam, new LineBasicMaterial({ color: INK, transparent: true, opacity: 0.7 })));
     p.inlay.position.set(p.x, H * 0.61, Z + DEPTH / 2 - 0.045); p.seam.position.copy(p.inlay.position);
     p.name = $('.ail-ms__name', p.li);
-    p.li.addEventListener('pointerenter', () => { p.hover = 1; });
-    p.li.addEventListener('pointerleave', () => { p.hover = 0; });
+    p.over = () => { p.hover = 1; }; p.out = () => { p.hover = 0; };       // kept, so dispose() can take them off again
+    p.li.addEventListener('pointerenter', p.over);
+    p.li.addEventListener('pointerleave', p.out);
   });
   const byId = new Map(pieces.map((p) => [p.id, p]));
   pieces[0].li.dataset.edge = 'start'; pieces[pieces.length - 1].li.dataset.edge = 'end';      // cards at the ends open inward
@@ -231,6 +232,7 @@ export function create(ctx, el, sec) {
       });
     },
     dispose() {
+      pieces.forEach((p) => { p.li.removeEventListener('pointerenter', p.over); p.li.removeEventListener('pointerleave', p.out); });
       buttons.forEach((b) => { b.removeEventListener('click', onSwap); b.hidden = true; });
       window.removeEventListener('keydown', onEsc);
       later.forEach(([li, parent, next]) => parent.insertBefore(li, next && next.parentNode === parent ? next : null));

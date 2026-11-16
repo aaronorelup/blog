@@ -7,14 +7,15 @@ const ROOT = '../../../../assets/ai-landscape/2026-11-10';
 
 export const HOUSE = { paper: '#E6E8ED', floor: '#F8F9FB', ink: '#0C0D10', ink2: '#4A4E57', mid: '#8C929C', line: '#C9CDD5', night: '#050608' };
 
-// One picture of a world, or null: art('xai', 'plate'). Names: plate, plate-s, hero, prop-1..3, fore, portrait.
+// One picture of a world, or null: art('xai', 'plate'). Names: plate, plate-s, hero, hero-s, prop-1..3, fore, portrait.
+// hero-s is the character at 512 px, made from hero: the row of five draws it, the full one comes with its world.
 const bare = (name) => String(name).replace(/\.(webp|svg|png)$/, '');        // 'grok-mark' and 'grok-mark.svg' both find the file
 export const art = (id, name) => ART[`${ROOT}/art/${id}/${bare(name)}.webp`] || null;
 // One official mark file, or null: mark('xai', 'grok-mark'). A world with no file gets its name set in type.
 export const mark = (id, name) => MARKS[`${ROOT}/marks/${id}/${bare(name)}.svg`] || MARKS[`${ROOT}/marks/${id}/${bare(name)}.png`] || null;
 // Every picture of one world, with null for a piece that was left out.
 export const artOf = (id) => ({
-  plate: art(id, 'plate'), plateSmall: art(id, 'plate-s'), hero: art(id, 'hero'),
+  plate: art(id, 'plate'), plateSmall: art(id, 'plate-s'), hero: art(id, 'hero'), heroSmall: art(id, 'hero-s'),
   props: [art(id, 'prop-1'), art(id, 'prop-2'), art(id, 'prop-3')], fore: art(id, 'fore'), portrait: art(id, 'portrait'),
 });
 

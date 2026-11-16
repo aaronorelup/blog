@@ -28,3 +28,6 @@ Rules kept (ART-PLAN "marks", from search summaries of openai.com/brand, not rea
 the Blossom, never set it on a busy image, give it a lot of open space, do not lock it up with the wordmark, do not
 stretch or crop. Wordmark: clear space as prescribed on the brand page; not beside the Blossom.
 Swap in the files from openai.com/brand when someone downloads them in a browser.
+
+Kept in source/, not shipped (review round 1, E15, 2026-11-16): openai-wordmark.svg. The page draws only
+blossom.svg, and a file in this folder is emitted to the live site whether used or not. Moved unchanged (same SHA-1).

@@ -156,7 +156,7 @@ export function createPrims(ctx) {
             if (u) { u.uActive.value = l.lit * set.level; u.uShow.value = set.show; } else l.mesh.material.opacity = set.show * 0.7;
           });
         },
-        dispose() { drop(group); },
+        dispose() { drop(group); geo.dispose(); ringGeo.dispose(); },        // (a shape no lamp used is disposed too)
       };
       return set;
     },

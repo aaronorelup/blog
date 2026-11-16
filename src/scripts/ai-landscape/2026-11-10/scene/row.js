@@ -52,7 +52,9 @@ export function createRow(ctx) {
       : new Mesh(new PlaneGeometry(1, 1), mats.paper(null, { side: 0, blended: true }));
     body.renderOrder = 7; body.visible = kind === 'orb3d';
     scene.add(body);
-    if (kind !== 'orb3d') textures.load(cfg.art.hero).then((tex) => { if (tex) { body.material.uniforms.uMap.value = tex; body.visible = true; } });
+    // the first view draws the 512 px character; the full one replaces it later (sharpen, below), on the high rung only
+    const first = cfg.art.heroSmall || cfg.art.hero;
+    if (kind !== 'orb3d') textures.load(first).then((tex) => { if (tex && !(tower.char && tower.char.sharp)) { body.material.uniforms.uMap.value = tex; body.visible = true; } });
     const ledge = new Mesh(new BoxGeometry(1.3, 0.05, 0.95).translate(-0.07, 0, 0), mats.glass(owner(id), { halfH: 0.025, alpha: 0.82 }));
     tower.group.add(ledge);
     const shade = new Mesh(new PlaneGeometry(1, 1), mats.paper(textures.soft(true), { side: 0, blended: true, mask: true, tint: '#0C0D10', opacity: 0.22 }));
@@ -69,6 +71,21 @@ export function createRow(ctx) {
   datumGeo.setAttribute('position', new Float32BufferAttribute(pts, 3));
   const datum = new LineSegments(datumGeo, new LineBasicMaterial({ color: '#0C0D10', transparent: true, opacity: 0 }));
   scene.add(datum);
+
+  // the full 1024 px character, on the high rung only: when its world is within a section, or once the worlds are
+  // behind (the studio sections draw the figures large). The 512 px one stays cached for the row
+  const worldOf = new Map();
+  function sharpen() {
+    if (ctx.quality.name !== 'high') return;
+    for (const tw of towers) {
+      if (tw.char.sharp || tw.char.kind === 'orb3d' || !tw.cfg.art.heroSmall || !tw.cfg.art.hero) continue;
+      if (!worldOf.has(tw.id)) worldOf.set(tw.id, ctx.clock.sections.find((s) => s.id === tw.id) || null);
+      const sec = worldOf.get(tw.id);
+      if (!sec || !(sec.near || ctx.clock.s >= sec.s0)) continue;
+      tw.char.sharp = true;
+      textures.load(tw.cfg.art.hero).then((tex) => { if (tex) { tw.char.mesh.material.uniforms.uMap.value = tex; tw.char.mesh.visible = true; } });
+    }
+  }
 
   const ray = new Raycaster();
   const ndc = new Vector2();
@@ -115,6 +132,7 @@ export function createRow(ctx) {
     },
     update(dt, time, input) {
       const cam = ctx.camera;
+      sharpen();
       towers.forEach((tw, t) => {
         tw.apply(dt);
         const c = ctx.studio.casters[t];

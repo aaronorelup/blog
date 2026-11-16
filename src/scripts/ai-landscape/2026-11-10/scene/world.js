@@ -148,7 +148,7 @@ export function createWorlds(ctx) {
     inst.dispose = () => {
       group.traverse((o) => { if (o.isMesh || o.isPoints) { o.geometry.dispose(); o.material.dispose(); } });
       scene.remove(group);
-      if (inst.name) { scene.remove(inst.name); inst.name.material.uniforms.uMap.value.dispose(); inst.name.material.dispose(); }
+      if (inst.name) { scene.remove(inst.name); inst.name.material.uniforms.uMap.value.dispose(); inst.name.material.dispose(); inst.name.geometry.dispose(); }
       if (inst.parts.portraitTex) inst.parts.portraitTex.dispose();
       urls.forEach((u) => textures.release(u));
     };
