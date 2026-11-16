@@ -10,12 +10,11 @@ import { view } from '../data/view.js';
 import { world } from '../../../../scripts/ai-landscape/2026-11-10/worlds/index.js';
 
 const five = view.providers.map((p) => ({ ...p, markName: world(p.id).marks.of === 'name' ? p.name : p.brand }));
-const letters = [...COPY.frame.title];
 ---
 <section id="top" class="ail-sec ail-open" data-sec="opening" data-screens="1.6" data-rail={COPY.frame.title} aria-labelledby="top-scope">
   <div class="ail-stage">
     <div class="ail-open__proof" aria-hidden="true">
-      <p class="ail-print"><span>{letters.map((ch) => <b>{ch}</b>)}</span></p>
+      <p class="ail-print"><span>{COPY.frame.title}</span></p>
       {five.map((p) => <i data-p={p.id}></i>)}
     </div>
 

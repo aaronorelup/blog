@@ -20,8 +20,9 @@
 
 /* ---- opening, 3D page. The proof is the poster in plain lines: it hides the canvas until the scene has drawn
    the same picture under it, then fades. Its title is also the ruler the floor print is laid against */
-.ail-gl .ail-open__proof { display: block; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, var(--ail-floor) 30%, #F3F4F7 100%); transition: opacity 420ms linear, visibility 0s linear 420ms; }
-.ail-gl .ail-open.is-live .ail-open__proof { opacity: 0; visibility: hidden; }
+/* (the wait before it hides belongs to the hiding alone: on the proof itself it also held the poster back 420 ms at first paint) */
+.ail-gl .ail-open__proof { display: block; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, var(--ail-floor) 30%, #F3F4F7 100%); transition: opacity 420ms linear; }
+.ail-gl .ail-open.is-live .ail-open__proof { opacity: 0; visibility: hidden; transition: opacity 420ms linear, visibility 0s linear 420ms; }
 .ail-open__proof > i { position: absolute; left: calc(50% + (var(--x) - 1.2) * var(--u)); top: var(--lid); width: calc(2.4 * var(--u)); height: calc(2.4 * var(--u)); border-radius: calc(.28 * var(--u)); box-shadow: inset 0 0 0 1px var(--ail-line); }
 .ail-open__proof > i::after { content: ''; position: absolute; inset: 17.5%; border-radius: 11.2%; box-shadow: inset 0 0 0 1px var(--ail-line); }
 .ail-open__proof > i[data-p='anthropic'] { --x: -8.4; --n: 0; }
@@ -37,6 +38,14 @@
 .ail-gl .ail-open__co .ail-mark { display: none; }
 .ail-gl .ail-open__who { justify-content: center; }
 .ail-gl .ail-open__co.is-hot { background: var(--ail-ink); color: var(--ail-floor); }
+/* a short window draws the row smaller and its lids closer: a caption's state tag goes under its name, so two captions
+   never touch, and the floor print lies a little lower, clear of the taller caption */
+@media (min-width: 900px) and (max-height: 760px) {
+  .ail-open { --gap: 186px; }
+  .ail-gl .ail-open__co { gap: 1px; padding: 4px 8px 5px; }
+  .ail-gl .ail-open__agent { font-size: 17px; line-height: 1.1; }
+  .ail-gl .ail-open__agent .ail-tag { display: table; margin: 2px auto 0; padding: .15em .45em .1em; }
+}
 .ail-gl .ail-open__tour { display: block; position: absolute; right: var(--ail-margin); bottom: var(--ail-margin); margin: 0; opacity: 0; visibility: hidden; transition: opacity 200ms linear, visibility 0s linear 200ms; }
 .ail-gl .ail-open__tour[data-state] { opacity: 1; visibility: visible; transition-delay: 0s; }
 .ail-open__tour .ail-chip { background: var(--ail-veil); }
@@ -44,13 +53,19 @@
 .ail-open__tour[data-state='on'] span::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: ail-blink 1.4s steps(2, jump-none) infinite; }
 @keyframes ail-blink { from { opacity: 1; } to { opacity: .2; } }
 /* the first second: the five lids ink in one after another, 60 ms apart, and the title is set letter by letter over
-   the same 640 ms. The scene then draws the same picture under the proof */
-.ail-gl .ail-open__proof > i { animation: ail-ink 400ms var(--ail-ease) both; animation-delay: calc(var(--n) * 60ms); }
-.ail-gl .ail-open__proof .ail-print b { font-weight: 400; animation: ail-set 1ms linear both; animation-delay: calc(var(--k) * 53ms); }
-.ail-print b:nth-child(1) { --k: 0; } .ail-print b:nth-child(2) { --k: 1; } .ail-print b:nth-child(3) { --k: 2; } .ail-print b:nth-child(4) { --k: 3; } .ail-print b:nth-child(5) { --k: 4; } .ail-print b:nth-child(6) { --k: 5; }
-.ail-print b:nth-child(7) { --k: 6; } .ail-print b:nth-child(8) { --k: 7; } .ail-print b:nth-child(9) { --k: 8; } .ail-print b:nth-child(10) { --k: 9; } .ail-print b:nth-child(11) { --k: 10; } .ail-print b:nth-child(12) { --k: 11; }
+   the same 640 ms: a cut that steps along the twelve letters of this snapshot's title in its display face (the
+   right-hand insets are the letters' own edges, measured). The scene then draws the same picture under the proof */
+.ail-gl .ail-stage.is-on .ail-open__proof > i { animation: ail-ink 400ms var(--ail-ease) both; animation-delay: calc(var(--n) * 60ms); }      /* (it starts when the stage is first shown) */
+.ail-gl .ail-open__proof .ail-print span { display: inline-block; }
+.ail-gl .ail-stage.is-on .ail-open__proof .ail-print span { animation: ail-set 640ms step-end both; }
+@keyframes ail-set {
+  0% { clip-path: inset(-10% 90.15% -10% -2%); } 8.33% { clip-path: inset(-10% 85.42% -10% -2%); } 16.67% { clip-path: inset(-10% 81.5% -10% -2%); }
+  25% { clip-path: inset(-10% 74.05% -10% -2%); } 33.33% { clip-path: inset(-10% 63.95% -10% -2%); } 41.67% { clip-path: inset(-10% 53.98% -10% -2%); }
+  50% { clip-path: inset(-10% 44.57% -10% -2%); } 58.33% { clip-path: inset(-10% 36.05% -10% -2%); } 66.67% { clip-path: inset(-10% 27.02% -10% -2%); }
+  75% { clip-path: inset(-10% 17.17% -10% -2%); } 83.33% { clip-path: inset(-10% 8.27% -10% -2%); } 91.67%, 100% { clip-path: inset(-10% -2% -10% -2%); }
+}
 @keyframes ail-ink { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: none; } }
-@keyframes ail-set { from { opacity: 0; } to { opacity: 1; } }
+
 
 @media (max-width: 899px) {
   .ail-open, .ail-end { --u: calc(100vw / 21); --lid: 31svh; --gap: 32px; }
