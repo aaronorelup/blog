@@ -7,6 +7,8 @@
 // by keyboard, a lost chunk, and the design pass's states that a scroll alone must change. Rows 20 on hold round 2's:
 // a text version started inside the two frames before a scene loads, a frame that throws, no word printed over a word
 // in a laptop's short window, a watchdog that knows a 30 a second display from a slow one, and a finger's targets.
+// Rows 24 and 25 hold the studio pass of round 3: a board behind each stack, the line-up's signs, the lesson's nine
+// greys, its paper number and its close, the cord of the link being read, and the agents' dusk.
 import fs from 'node:fs';
 import sharp from 'sharp';
 import { chromium } from '@playwright/test';
@@ -420,7 +422,7 @@ test('landscape-9 the five companies are reachable from the keyboard, and every 
 const STOPS = {
   worlds: [0.12, 0.34, 0.5, 0.62, 0.95, 1.3, 1.55, 2.0, 2.45, 2.62, 2.8, 2.93],
   opening: [0, 0.3, 0.6, 1.0, 1.4],
-  grammar: [0.1, 0.2, 0.39, 0.67, 0.95, 1.23, 1.58, 1.94, 2.22, 2.5, 2.78, 3.0, 3.15],
+  grammar: [0.1, 0.2, 0.39, 0.67, 0.95, 1.23, 1.58, 1.94, 2.22, 2.5, 2.78, 3.0, 3.24, 3.36, 3.46],      // (3.24: the two floors left above the ground)
   lineup: [0.1, 0.25, 0.44, 0.63, 0.82, 1.01, 1.2, 1.39, 1.58, 1.77, 1.92],      // each of the nine floors, and the rest after them
 };
 const stopsOf = (s) => (STOPS[s.name] || [0.05, 0.3, 0.6, 0.9].map((f) => +(f * s.screens).toFixed(2))).filter((u) => u <= s.screens);
@@ -902,7 +904,7 @@ const OVERLAPS = () => {
   return [...new Set(bad)];
 };
 
-const SHORT_STOPS = { worlds: [0.5, 0.95, 1.3, 1.55, 2.0, 2.62, 2.8], opening: [0.6, 1.4], grammar: [0.39, 1.58, 3.0] };
+const SHORT_STOPS = { worlds: [0.5, 0.95, 1.3, 1.55, 2.0, 2.62, 2.8], opening: [0.6, 1.4], grammar: [0.39, 1.58, 3.0, 3.24], lineup: [0.25, 0.44, 0.63, 1.2, 1.58, 1.9] };
 test('landscape-21 in a laptop\'s short window no word prints over a word: 1366 by 660 and 1280 by 720, every section and every beat of a world', async ({ page, isMobile }) => {
   test.skip(isMobile, 'a phone lists its words in a sheet: landscape-8 walks it');
   test.setTimeout(1_800_000);   // two walks of 70 stops
@@ -953,4 +955,116 @@ test('landscape-23 a finger gets targets it can hit: a touch tablet held sideway
   expect(rows.length).toBe(22);
   for (const [, h] of rows) expect(h, 'a board row under a finger').toBeGreaterThanOrEqual(18);
   await tablet.close();
+});
+
+// ---- landscape-24 and 25: the studio pass (review round 3)
+// Where each board of the house set and what it stands behind are drawn, in CSS px: the board's own edges, its
+// stack's, the top of that stack's lid plate, and the board's sign when one is out.
+const BOARDS = () => {
+  const c = window.__landscape.debug.ctx;
+  const at = (x, y, z) => c.labels.project({ x, y, z });
+  return c.studio.bays.map((b, i) => {
+    const tw = c.row.towers[i], half = b.wide / 2, z = b.z;
+    const top = tw.height + tw.lift, sx = tw.x + tw.shift, lid = tw.lid.mesh, sign = b.sign;
+    const tall = sign.geometry.parameters.height * sign.scale.y / 2;
+    return {
+      p: tw.id, seen: b.seen, rise: b.rise, key: b.key, out: b.flip,
+      left: at(b.at - half, b.top, z).x, right: at(b.at + half, b.top, z).x, top: at(b.at, b.top, z).y,
+      stack: [at(sx - 1.2, top, tw.z).x, at(sx + 1.2, top, tw.z).x], lid: lid.visible ? at(lid.position.x, lid.position.y + lid.scale.y / 2, lid.position.z).y : null,
+      sign: sign.visible ? [at(sign.position.x, sign.position.y + tall, sign.position.z).y, at(sign.position.x, sign.position.y - tall, sign.position.z).y] : null,
+    };
+  });
+};
+// The signs the page's own data asks for on floor i: a company, the layer, its state there and its parts.
+const SIGNS = (i) => { const d = JSON.parse(document.getElementById('ail-data').textContent); return d.order.map((id) => `${id}|${d.layers[i]}|${d.p[id].stack[i].s}|${d.p[id].stack[i].p.slice(0, 6).map((q) => q[0] + q[1]).join(',')}`); };
+
+test('landscape-24 a board stands right behind each stack and none in a gap; in the line-up the five rise with one sign each, the lit floor of each company as the page\'s data has it, whole, under the words and clear of every lid plate; with all nine at rest they go down, and a window too short for them leaves them at rest', async ({ page, isMobile }) => {
+  test.setTimeout(900_000);
+  await open(page);
+  await light(page);
+  await go(page, 'top', 1.5, 600);
+  for (const b of await page.evaluate(BOARDS)) {
+    const [l, r] = b.stack, w = r - l;
+    expect(b.seen, `${b.p}: its board is there`).toBe(true);
+    expect(Math.abs((b.left + b.right) / 2 - (l + r) / 2), `${b.p}: the board stands behind its own stack, not beside it`).toBeLessThan(w * 0.2);
+    expect(b.right - b.left, `${b.p}: the board is as wide as its stack or wider`).toBeGreaterThan(w * 0.95);
+    if (b.lid != null) expect(b.top, `${b.p}: the board ends above its lid plate`).toBeLessThan(b.lid);
+    expect(b.rise, `${b.p}: at rest outside the line-up`).toBeLessThan(0.01);
+    expect(b.sign, `${b.p}: no sign outside the line-up`).toBe(null);
+  }
+  // the line-up: voice, then the model floor, then all nine at rest
+  const up = () => page.evaluate(() => window.__landscape.compare.lineup.signs().every((s) => s.rise > 0.99 && s.out > 0.99));
+  for (const [u, i] of [[0.44, 1], [1.01, 4]]) {
+    await go(page, 'line-up', u, 600);
+    expect(await page.evaluate(() => window.__landscape.compare.lineup.tall), 'this window has the height for the signs').toBe(true);
+    await expect.poll(up, { timeout: 30_000 }).toBe(true);
+    await expect.poll(async () => (await page.evaluate(BOARDS)).map((b) => b.key), { timeout: 30_000 }).toEqual(await page.evaluate(SIGNS, i));
+    await expect.poll(up, { timeout: 30_000 }).toBe(true);
+    const words = await page.evaluate((phone) => (phone ? document.querySelector('.ail-chrome__side--id') : document.querySelector('.ail-lu__now')).getBoundingClientRect().bottom, isMobile);
+    for (const b of await page.evaluate(BOARDS)) {
+      expect(b.sign, `${b.p} floor ${i + 1}: its sign is out`).not.toBe(null);
+      expect(b.sign[0], `${b.p} floor ${i + 1}: the sign stands under the words above it`).toBeGreaterThanOrEqual(words - 1);
+      if (b.lid != null) expect(b.sign[1], `${b.p} floor ${i + 1}: the sign never touches the lid plate`).toBeLessThan(b.lid - 1);
+      expect(Math.abs((b.left + b.right) / 2 - (b.stack[0] + b.stack[1]) / 2), `${b.p}: the raised board is still behind its stack`).toBeLessThan((b.stack[1] - b.stack[0]) * 0.2);
+    }
+  }
+  expect((await page.evaluate(SIGNS, 4)).some((k) => /^xai\|.*anthropic/.test(k)), 'on the model floor one sign holds another company\'s bead').toBe(true);
+  await go(page, 'line-up', 1.94, 600);
+  await expect.poll(() => page.evaluate(() => window.__landscape.compare.lineup.signs().every((s) => s.rise < 0.01 && !s.sign && s.out === 0)), { timeout: 30_000 }).toBe(true);
+  if (isMobile) return;
+  // a window with no height for sign, plate, row and answers: the boards stay at rest and the row stands as before
+  await page.setViewportSize({ width: 1280, height: 600 });
+  await frames(page, 3);
+  await go(page, 'line-up', 0.44, 900);
+  expect(await page.evaluate(() => window.__landscape.compare.lineup.tall), 'a 600 px window has no room for the signs').toBe(false);
+  for (const b of await page.evaluate(BOARDS)) { expect(b.rise, `${b.p}: at rest in a short window`).toBeLessThan(0.01); expect(b.sign).toBe(null); }
+});
+
+test('landscape-25 the lesson stands the read floor\'s number in paper behind nine greys, light to dark, and ends on two floors above the ground; the link being read is one cord, dashed as its link is documented, with no board behind it; a shut laptop dims the agents\' room and an open one lights it again', async ({ page }) => {
+  test.setTimeout(900_000);
+  await open(page);
+  await light(page);
+  const lesson = (read) => page.evaluate(read);
+  await go(page, 'layers', 0.39, 600);
+  const greys = (await lesson(() => window.__landscape.lesson.floors())).map((f) => f.grey);
+  const lum = (hex) => { const n = parseInt(hex.slice(1), 16); return 0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255); };
+  expect(new Set(greys).size, 'nine floors, nine greys').toBe(9);
+  for (let k = 1; k < 9; k++) expect(lum(greys[k]), `floor ${k + 1} is darker than floor ${k}`).toBeLessThan(lum(greys[k - 1]));
+  for (const hex of greys) { const n = parseInt(hex.slice(1), 16), ch = [n >> 16, (n >> 8) & 255, n & 255]; expect(ch[0] <= ch[1] && ch[1] <= ch[2] && ch[2] - ch[0] <= 20, `${hex} is a house grey, with the cool cast of the house's own neutrals and no more: no hue in the lesson`).toBe(true); }
+  // the number is the read floor's own, as the page prints it
+  for (const u of [0.39, 1.58, 2.78]) {
+    await go(page, 'layers', u, 600);
+    const want = await page.evaluate(() => document.querySelector('#layers .ail-layer.is-on .ail-layer__n').textContent.trim());
+    await expect.poll(() => lesson(() => window.__landscape.lesson.number), { timeout: 30_000 }).toBe(want);
+  }
+  // the close: two floors above the ground, seven under it, under the closing line
+  await go(page, 'layers', 3.24, 600);
+  const floors = await lesson(() => window.__landscape.lesson.floors().map((f) => f.y));
+  expect(floors.filter((y) => y > 0).length, `two floors stand above the ground: ${floors.join(' ')}`).toBe(2);
+  expect(floors[0] > 0 && floors[1] > 0, 'and they are the top two').toBe(true);
+  expect(await lesson(() => window.__landscape.lesson.number), 'no number at the close').toBe('');
+  expect(await page.evaluate(() => { const h = document.querySelector('#layers .ail-gram__close'); return h.classList.contains('is-on') && Number(getComputedStyle(h).opacity) > 0.9; }), 'the closing line stands').toBe(true);
+
+  // links: the cord is on the link being read, dashed by how official that link is, and the boards are down
+  await go(page, 'links', 0.6, 900);
+  expect(await page.evaluate(() => window.__landscape.debug.ctx.studio.bays.some((b) => b.seen)), 'no board behind the links').toBe(false);
+  const DASH = { yes: null, partial: [3, 1], no: [1, 1] };
+  const kinds = await page.evaluate(() => { const seen = {}; for (const x of window.__landscape.compare.links.dashes()) if (!(x.official in seen)) seen[x.official] = x.n; return seen; });
+  expect(Object.keys(kinds).length, 'links of more than one standing').toBeGreaterThan(1);
+  for (const [official, n] of Object.entries(kinds)) {
+    await page.evaluate((n) => window.__landscape.compare.links.show(n), n);
+    await expect.poll(() => page.evaluate(() => { const c = window.__landscape.compare.links.cord(); return c.draw >= 1 ? c.n : -2; }), { timeout: 30_000 }).toBe(n);
+    expect((await page.evaluate(() => window.__landscape.compare.links.cord())).dash, `a link that is "${official}"`).toEqual(DASH[official]);
+  }
+
+  // agents: dusk follows the laptop
+  await go(page, 'agents', 0.6, 900);
+  const dusk = () => page.evaluate(() => window.__landscape.debug.ctx.studio.dusk);
+  await page.locator('#agents .ail-ag__switch').click();
+  for (let turn = 0; turn < 2; turn++) {
+    const shut = await page.evaluate(() => window.__landscape.compare.agents.closed);
+    if (shut) await expect.poll(dusk, { timeout: 30_000 }).toBeGreaterThan(0.5); else await expect.poll(dusk, { timeout: 30_000 }).toBeLessThan(0.2);
+    if (shut) expect((await page.evaluate(() => window.__landscape.compare.agents.lit())).every((t) => t.floors.every((f) => f > 0.3)), 'the cloud floors keep their light at dusk').toBe(true);
+    await page.locator('#agents .ail-ag__switch').click();
+  }
 });

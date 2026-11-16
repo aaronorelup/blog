@@ -26,6 +26,22 @@ const filesOf = (date) => [
 // The dated paths a file names that are not its snapshot's own: a copied folder that kept an old import path.
 const foreignDates = (text, own) => [...new Set(text.match(DATE) || [])].filter((d) => d !== own);
 
+test('a line-up sign is drawn again when its company, layer, state or parts change, and only then', async () => {
+  for (const { date } of SNAPSHOTS) {
+    const file = `../../src/scripts/ai-landscape/${date}/scene/sign.js`;
+    if (!fs.existsSync(new URL(file, import.meta.url))) continue;
+    const { signKey } = await import(file);
+    const base = { owner: 'xai', glyph: 'model', state: 'solid', parts: [['xai', 'released'], ['anthropic', 'released']] };
+    assert.equal(signKey(null), '', 'no tile, no sign');
+    assert.equal(signKey(base), signKey({ ...base, parts: base.parts.map((p) => [...p, 'yes']) }), 'a part\'s third field is not drawn');
+    const others = [{ owner: 'meta' }, { glyph: 'voice' }, { parts: [['xai', 'released'], ['xai', 'released']] }, { parts: [['xai', 'released'], ['anthropic', 'preview']] }, { parts: [] }, ...[...STATES].filter((x) => x !== 'solid').map((state) => ({ state }))];
+    const keys = new Set([signKey(base), ...others.map((o) => signKey({ ...base, ...o }))]);
+    assert.equal(keys.size, others.length + 1, `${date}: every change of what a sign shows changes its key`);
+    const seven = { ...base, parts: Array.from({ length: 7 }, () => ['xai', 'released']) };
+    assert.equal(signKey(seven), signKey({ ...seven, parts: seven.parts.slice(0, 6) }), 'a sign shows six beads at most');
+  }
+});
+
 test('a snapshot\'s files name no other date: a copy that kept one old import path fails here', () => {
   assert.deepEqual(foreignDates("import raw from '../../../../data/ai-landscape/2026-11-10.json';", '2026-12-01'), ['2026-11-10'], 'the guard catches a kept data path');
   assert.deepEqual(foreignDates("import '../../../styles/ai-landscape/2026-11-10/base.css';", '2026-12-01'), ['2026-11-10'], 'the guard catches a kept folder');
