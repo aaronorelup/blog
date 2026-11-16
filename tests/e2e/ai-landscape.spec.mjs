@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import sharp from 'sharp';
 import { chromium } from '@playwright/test';
 import { test, expect } from './fixtures.mjs';
-import { SNAPSHOTS } from '../../src/data/ai-landscape.js';
+import { LISTED, SNAPSHOTS } from '../../src/data/ai-landscape.js';
 
 const NEWEST = SNAPSHOTS[0].date;
 const DATED = SNAPSHOTS.map((s) => `/ai-landscape/${s.date}/`);
@@ -98,7 +98,7 @@ test('landscape-1 every page answers 200 with a clean console, fetches nothing f
   expect(away).toEqual([]);
 });
 
-test('landscape-2 /ai-landscape/ is the newest snapshot, each dated page is its own and links back, the editions and the sitemap list them all', async ({ page, request }) => {
+test('landscape-2 /ai-landscape/ is the newest snapshot, each dated page is its own and links back, the editions list them all, and the sitemap, the projects page and noindex follow LISTED', async ({ page, request }) => {
   // each page's share card is a real 1200x630 JPEG of this build, at its snapshot's fixed address
   const card = async (date) => {
     const og = await page.locator('meta[property="og:image"]').getAttribute('content');
@@ -127,8 +127,19 @@ test('landscape-2 /ai-landscape/ is the newest snapshot, each dated page is its 
     expect(await editions('.ail-eds__list a')).toEqual(DATED);
     await expect(page.locator(`.ail-strip a[href="/ai-landscape/${date}/"]`)).toHaveAttribute('aria-current', 'page');
   }
+  // LISTED off (a preview under review): every page and sources page says noindex, the sitemap and the projects page
+  // leave it out. On: none of that, and the sitemap lists every page.
+  for (const path of [...PAGES, ...SOURCES]) {
+    await page.goto(path.endsWith('sources/') ? path : `${path}?tier=static`);
+    await expect(page.locator('meta[name="robots"][content="noindex"]'), path).toHaveCount(LISTED ? 0 : 1);
+  }
   const sitemap = await (await request.get('/sitemap.xml')).text();
-  for (const path of PAGES) expect(sitemap, path).toContain(`<loc>https://aaronorelup.com${path}</loc>`);
+  for (const path of PAGES) {
+    if (LISTED) expect(sitemap, path).toContain(`<loc>https://aaronorelup.com${path}</loc>`);
+    else expect(sitemap, path).not.toContain(`<loc>https://aaronorelup.com${path}</loc>`);
+  }
+  await page.goto('/projects/');
+  expect(await page.locator('a[href^="/ai-landscape/"]').count() > 0, 'the projects page links the AI landscape').toBe(LISTED);
 });
 
 // How much the canvas alone varies (the largest channel's standard deviation): 0 is one flat colour.

@@ -5,8 +5,11 @@
 import fs from 'node:fs';
 import { test, expect } from './fixtures.mjs';
 import { expectPlaying, play } from './helpers.mjs';
+import { LISTED as LANDSCAPE_LISTED } from '../../src/data/ai-landscape.js';
 
-const FILES = fs.readdirSync(new URL('../../src/content/projects/', import.meta.url)).filter((f) => f.endsWith('.yaml'));
+// Every file is a card, except the AI landscape's while its LISTED switch is off (lib/content.js projects()).
+const FILES = fs.readdirSync(new URL('../../src/content/projects/', import.meta.url))
+  .filter((f) => f.endsWith('.yaml') && (LANDSCAPE_LISTED || f !== 'ai-landscape.yaml'));
 const SECTIONS = ['play', 'download', 'watch', 'read', 'stopped'];
 const sectionCards = (root, key) => root.locator(`#proj-${key} :is(.proj-card, .proj-line-item)`);
 

@@ -182,13 +182,13 @@ fails the build, or only warns in a live notebook.
 | `src/data/media-manifest.json` | every file in the R2 bucket, its size and MD5 (`npm run media:push`) |
 | `src/data/courses.js` | the courses |
 | `src/data/courses/*.json`, `src/data/lore/*.json` | written by the course publishers in other repos: never by hand |
-| `src/data/ai-landscape.js`, `src/data/ai-landscape/<YYYY-MM-DD>.json` | the AI landscape: `SNAPSHOTS`, its registry (newest first, plain data), and each snapshot's frozen fact base, never edited once it lands (README.md, "The AI landscape") |
+| `src/data/ai-landscape.js`, `src/data/ai-landscape/<YYYY-MM-DD>.json` | the AI landscape: `SNAPSHOTS`, its registry (newest first, plain data), `LISTED`, its one switch for being listed (off: noindex, no sitemap entry, no project card, a Draft label; read by `Page.astro`, the sources pages, `sitemap.xml.js` and `lib/content.js` `projects()`), and each snapshot's frozen fact base, never edited once it lands (README.md, "The AI landscape") |
 
 ### `src/lib/`, `src/pages/`, `src/layouts/`, `src/components/`
 
 | Path | What |
 |---|---|
-| `src/lib/content.js` | the only importer of `astro:content`: `allPosts`, `listedPosts`, `notesBySlug`, `research`, `projects`, `nowSnapshots` (newest first, drafts left out, names checked), `renderEntry`, `textOf` (the extraction), `slugOf` |
+| `src/lib/content.js` | the only importer of `astro:content`: `allPosts`, `listedPosts`, `notesBySlug`, `research`, `projects` (the AI landscape's card only once its `LISTED` is on), `nowSnapshots` (newest first, drafts left out, names checked), `renderEntry`, `textOf` (the extraction), `slugOf` |
 | `src/lib/{posts,cards,icons,dates,paths}.js` | listing, ledger order, older/newer and `related()` (Read next: project, then topic, then date), the card shape, icons by id, UTC dates, `PUBLIC_DIR` |
 | `src/lib/glyphs.js` | the line drawings: a topic's glyph (where a post has no icon) and the search lens; Astro and the browser read it |
 | `src/lib/text/rules.js`, `hash.js` | what a reader reads (shared with the browser's read-aloud), content hashes |
@@ -425,8 +425,8 @@ Other code, other repos and the live Worker key on these. Behind them, files mov
 - **The AI landscape.** `src/data/ai-landscape/<date>.json` → `components/ai-landscape/<date>/data/view.js` →
   `Page.astro`: every section is HTML at build time, and the browser gets one small JSON of structure
   (`#ail-data`) that the scene draws from. The newest at `/ai-landscape/`, each at `/ai-landscape/<date>/` with its
-  sources page; `SNAPSHOTS` feeds the edition list and the sitemap, its project card `src/content/projects/`. Not a
-  post: in no list, feed, search or Ask.
+  sources page; `SNAPSHOTS` feeds the edition list and the sitemap, its project card `src/content/projects/`, both
+  only once `LISTED` is on. Not a post: in no list, feed, search or Ask.
 - **The projects page.** `src/content/projects/*.yaml` → `src/lib/projects.js` → `components/projects/` at
   `/projects`, and in the homepage overlay, fetched from `/projects/`. Post links open in the overlay like every
   `/ledger/` link; a card's links to the site's own pages carry `data-no-fly`.

@@ -13,6 +13,8 @@
 .ail-chrome__chip b { font-weight: 400; color: var(--ail-fg); }
 .ail-chrome__chip:hover b { color: inherit; }
 .ail-gl .ail-chrome { position: fixed; left: 0; right: 0; top: 0; }
+/* while the page is unlisted (LISTED off): a quiet note beside the stamp chip; on a phone it hangs under the title */
+.ail-preview { display: inline-flex; align-items: center; min-height: 30px; padding: 0 9px; border: 1px dashed var(--ail-hair); color: var(--ail-fg-2); white-space: nowrap; }
 
 /* the 5 by 9 minimap: five companies across, nine layers down, each cell in its owner's glass and state */
 .ail-map { display: flex; gap: 3px; align-items: stretch; height: 34px; padding: 0 2px; }
@@ -51,6 +53,9 @@
   .ail-chrome__chip { padding: 0 5px; letter-spacing: .02em; font-size: 10.5px; }
   .ail-chrome__title { letter-spacing: .04em; font-size: 10.5px; }
   .ail-chrome__w { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .ail-chrome:has(.ail-preview) { padding-bottom: 18px; }
+  .ail-chrome__side:has(.ail-preview) { position: relative; }
+  .ail-preview { position: absolute; left: 0; top: calc(100% - 4px); min-height: 0; padding: 2px 6px 3px; border: 0; background: var(--ail-veil); font-size: 9.5px; line-height: 1; }
   .ail-gl .ail-rail { display: none; }
   .ail-map { height: 30px; }
   .ail-map__col { width: 7px; }

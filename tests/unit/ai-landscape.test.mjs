@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 import raw from '../../src/data/ai-landscape/2026-11-10.json' with { type: 'json' };
-import { SNAPSHOTS } from '../../src/data/ai-landscape.js';
+import { LISTED, SNAPSHOTS } from '../../src/data/ai-landscape.js';
 import { COPY } from '../../src/components/ai-landscape/2026-11-10/data/copy.js';
 import { LIMITS, misses, printable, words } from '../../src/components/ai-landscape/2026-11-10/data/limits.js';
 import { ORDER, view } from '../../src/components/ai-landscape/2026-11-10/data/view.js';
@@ -139,4 +139,21 @@ test('the built pages: newest at /ai-landscape/, each dated page links back as N
   const request = rows.find((r) => r.includes(`id="s-${raw.sources.find((s) => s.kind === 'request').n}"`));
   assert.ok(request && !request.includes('<a '), 'the request has no link');
   assert.ok(src.includes(`<b>${raw.unverifiedCount}</b> ${COPY.stamp.unverified}`), 'the count of unverified leads, and nothing else of them');
+});
+
+// LISTED (src/data/ai-landscape.js) is the one switch: off, the pages say noindex and nothing on the site lists them.
+test(`the LISTED switch is ${LISTED}: noindex, the sitemap, the project card and the preview label follow it`, { skip: !built && 'no dist/' }, () => {
+  const noindex = /<meta name="robots" content="noindex"\s*\/?>/;
+  for (const page of ['index.html', ...SNAPSHOTS.flatMap(({ date }) => [`${date}/index.html`, `${date}/sources/index.html`])]) {
+    const html = read(`${DIST}/${page}`);
+    assert.equal(noindex.test(html.split('</head>')[0]), !LISTED, `/ai-landscape/${page} ${LISTED ? 'has no' : 'has a'} robots noindex`);
+    assert.equal(html.includes('class="ail-preview'), !LISTED, `/ai-landscape/${page} ${LISTED ? 'has no' : 'has its'} preview label`);
+  }
+  const sitemap = read('dist/sitemap.xml');
+  assert.equal(sitemap.includes('/ai-landscape/'), LISTED, `the sitemap ${LISTED ? 'lists' : 'leaves out'} the AI landscape`);
+  for (const where of ['projects/index.html', 'tea/index.html']) {
+    const html = read(`dist/${where}`);
+    assert.ok(html, `dist/${where} is built`);
+    assert.equal(/href="\/ai-landscape\//.test(html), LISTED, `/${where.replace('index.html', '')} ${LISTED ? 'links' : 'does not link'} the AI landscape`);
+  }
 });

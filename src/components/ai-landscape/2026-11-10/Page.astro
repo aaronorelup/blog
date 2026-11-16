@@ -10,6 +10,7 @@ import Chrome from './Chrome.astro';
 import { COPY } from './data/copy.js';
 import { view } from './data/view.js';
 import { COMMIT } from '../../../lib/build.js';
+import { LISTED } from '../../../data/ai-landscape.js';
 import { inPublic } from '../../../lib/paths.js';
 import { themeCss } from '../../../scripts/ai-landscape/2026-11-10/worlds/index.js';
 
@@ -34,6 +35,7 @@ const prePaint = "(function(){var q=new URLSearchParams(location.search);if(q.ge
     <meta name="ao-build" content={COMMIT} />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {!LISTED && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />

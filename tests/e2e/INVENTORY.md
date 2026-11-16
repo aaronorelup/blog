@@ -629,7 +629,7 @@ read through `window.__landscape`. The walks draw the 3D at a pixel ratio of 0.5
 | Behaviour | Listener or attribute | Spec |
 |---|---|---|
 | Every page and sources page answers 200 with no console error or page error, carries `ao-build` and none of the site's chrome, and nothing it fetches (each section's module and art included) comes from another origin | `<meta name="ao-build">`, the page's own `<head>` | landscape-1 |
-| `/ai-landscape/` is the newest snapshot; each dated page shows its own date, links back as Newest and marks itself among the editions; each has its 1200×630 share card; the sitemap lists them all | `data-snapshot`, `data-dated`, `.ail-strip`, `#ail-editions`, `SNAPSHOTS` | landscape-2 |
+| `/ai-landscape/` is the newest snapshot; each dated page shows its own date, links back as Newest and marks itself among the editions; each has its 1200×630 share card; with `LISTED` off every page says noindex and neither the sitemap nor the projects page names it, with it on the sitemap lists them all | `data-snapshot`, `data-dated`, `.ail-strip`, `#ail-editions`, `SNAPSHOTS`, `LISTED` | landscape-2 |
 | WebGL draws: frames rise and the canvas is not one flat colour | `window.__landscape.frames` | landscape-3 |
 | Scrolling moves the story forward and back (the wheel; a scroll on a phone) | the story clock (native scroll), `progress`, `section` | landscape-4 |
 | The pointer turns the camera, and it comes back with the pointer | window `pointermove` → the camera rig's orbit | landscape-5 (desktop: a phone has no pointer) |

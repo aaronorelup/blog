@@ -10,6 +10,7 @@ import '../../../styles/ai-landscape/2026-11-10/static.css';
 import { COPY } from '../../../components/ai-landscape/2026-11-10/data/copy.js';
 import { view } from '../../../components/ai-landscape/2026-11-10/data/view.js';
 import { COMMIT } from '../../../lib/build.js';
+import { LISTED } from '../../../data/ai-landscape.js';
 
 const DATE = view.snapshot.date;
 const page = `/ai-landscape/${DATE}/`;
@@ -33,6 +34,7 @@ const cited = new Set();
     <meta name="ao-build" content={COMMIT} />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {!LISTED && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -45,6 +47,7 @@ const cited = new Set();
       <div class="ail-chrome__side">
         <p class="ail-chrome__title ail-label"><a href={page}>{COPY.frame.title}</a></p>
         <a class="ail-chrome__chip ail-label" href={`${page}#snapshot`}><span class="ail-chrome__w">{COPY.frame.snapshot}</span> <time datetime={DATE}>{DATE}</time></a>
+        {!LISTED && <p class="ail-preview ail-label">{COPY.frame.draft}</p>}
       </div>
     </header>
     <main id="ail-main" class="ail-srcpage__main">

@@ -14,6 +14,7 @@ export const COPY = {
     tourOn: 'Auto tour. Touch to take over.',
     tourResume: 'Resume tour',
     back: 'Back',
+    draft: 'Draft',
   },
   grammar: {
     request: 'Fix the typo on my homepage and tell me when it\'s live.',
