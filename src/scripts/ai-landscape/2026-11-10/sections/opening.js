@@ -213,12 +213,14 @@ export function create(ctx, el, sec) {
       if (ctx.phone) fade(list, capO);
       else for (const cap of caps) { cap.li.style.opacity = capO.toFixed(3); cap.li.style.visibility = capO < 0.01 ? 'hidden' : 'visible'; }
       // the open line leaves with the floor print. On a phone it stays with the list under it: the sheet is never half empty
-      if (ctx.phone) fade(words, capO); else fade(words, 1 - smooth(span(u, 0.55, 0.85)), -24 * smooth(span(u, 0.55, 0.85)));
+      if (ctx.phone) fade(words, 1 - smooth(span(u, 1.2, 1.5))); else fade(words, 1 - smooth(span(u, 0.55, 0.85)), -24 * smooth(span(u, 0.55, 0.85)));
       const chip = st.tour && u < 0.05 ? st.tour : '';
       if ((tourEl.dataset.state || '') !== chip) { if (chip) tourEl.dataset.state = chip; else delete tourEl.dataset.state; }
       ctx.state.opening.t = time; ctx.state.opening.tour = st.tour;
     },
     dispose() {
+      // the text version takes the page as the stylesheet lays it out: no faded piece keeps an inline "hidden"
+      for (const node of [words, list, ...caps.map((c) => c.li)]) { node.style.opacity = ''; node.style.visibility = ''; node.style.transform = ''; }
       window.removeEventListener('resize', onResize);
       window.removeEventListener('click', onClick);
       resume.removeEventListener('click', onResume);

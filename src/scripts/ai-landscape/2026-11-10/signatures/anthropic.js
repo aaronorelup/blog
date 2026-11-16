@@ -129,7 +129,7 @@ export function create(ctx, world) {
   const petShade = new Mesh(new PlaneGeometry(1, 1), mats.paper(textures.soft(true), { side: 1, blended: true, mask: true, tint: cfg.theme.ink, opacity: 0.22 }));
   petShade.rotation.x = -Math.PI / 2; petShade.renderOrder = -6.5; petShade.visible = false;
   tower.group.add(petShade);
-  const PET = { door: 'anthropic-claude-code', big: 0.95, small: 0.7, x: 4.4, z: 0.8, wide: 1, was: false, hop: 0 };
+  const PET = { door: 'anthropic-claude-code', big: 0.85, small: 0.7, x: 4.12, z: 0.8, wide: 1, was: false, hop: 0 };      // (x: whole inside a 16:10 frame, at the end of the figure's cord)
   textures.load(cfg.art.props[0]).then((tex) => { if (tex && !st.gone) { pet.material.uniforms.uMap.value = tex; PET.wide = tex.image.width / tex.image.height; } });
 
   // ---- flights. A seat is decided by the lid's own data, never by the visitor

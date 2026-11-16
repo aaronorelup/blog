@@ -78,8 +78,10 @@ export function create(ctx, el, sec) {
 
   return {
     stops: [0.6],
-    enter() { pins.forEach((p) => { p.on = true; }); },
+    // (data-full: the table stands at the word cap, so the chrome's stamp chip drops its first word while it is on)
+    enter() { pins.forEach((p) => { p.on = true; }); document.documentElement.toggleAttribute('data-full', true); },
     leave() {
+      document.documentElement.removeAttribute('data-full');
       pins.forEach((p) => { p.on = false; });
       if (st.tour > 0 && !st.toured) st.toured = true;
       setClosed(false, true); st.closed = 0;
@@ -141,6 +143,7 @@ export function create(ctx, el, sec) {
       lamps.forEach((l) => l.dispose());
       cables.forEach((c) => c.path.remove());
       if (ctx.state.compare) delete ctx.state.compare.agents;
+      if (sec === ctx.clock.current) document.documentElement.removeAttribute('data-full');
     },
   };
 }

@@ -109,8 +109,9 @@ export function create(ctx, el, sec) {
 
   return {
     stops: [0.25, 0.5, 0.82],
-    enter() { group.visible = true; pins.forEach((p) => { p.on = true; }); },
-    leave() { hide(); pins.forEach((p) => { p.on = false; p.el.style.opacity = '0'; }); st.chosen = -1; },
+    // (data-full: this section stands at the word cap, so the chrome's stamp chip drops its first word while it is on)
+    enter() { group.visible = true; pins.forEach((p) => { p.on = true; }); document.documentElement.toggleAttribute('data-full', true); },
+    leave() { hide(); pins.forEach((p) => { p.on = false; p.el.style.opacity = '0'; }); st.chosen = -1; document.documentElement.removeAttribute('data-full'); },
     update(t, dt) {
       st.time += dt;
       const u = t;                                 // every stop below is a share of the section, whatever its length in screens
@@ -171,6 +172,7 @@ export function create(ctx, el, sec) {
       all.forEach((r) => r.dispose());
       shapes.forEach((s) => { drop(s.you.mesh); s.lines.forEach((l) => drop(l.bead)); });
       drop(group); hubGeo.dispose(); leafGeo.dispose();
+      if (sec === ctx.clock.current) document.documentElement.removeAttribute('data-full');
     },
   };
 }

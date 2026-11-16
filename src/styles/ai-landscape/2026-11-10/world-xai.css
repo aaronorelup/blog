@@ -14,4 +14,4 @@
   .ail-gl .ail-world[data-world='xai'] .ail-sig__item[data-picked] { margin: -4px 0 -5px; }
 }
 /* the hand-off prints three more names: the rename note in the header steps aside for them (60 words a screen) */
-.ail-gl .ail-world[data-world='xai']:has(.ail-sig[data-handoff]) .ail-kicker__note { display: none; }
+.ail-gl .ail-world[data-world='xai'][data-handoff] .ail-kicker__note { display: none; }

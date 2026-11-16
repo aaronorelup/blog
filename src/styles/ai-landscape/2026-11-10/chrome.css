@@ -11,8 +11,9 @@
 .ail-chrome__chip { display: inline-flex; align-items: center; gap: .7em; min-height: 30px; padding: 0 9px; border: 1px solid var(--ail-hair); text-decoration: none; color: var(--ail-fg-2); transition: background-color 150ms, color 150ms; }
 .ail-chrome__chip:hover { background: var(--ail-fg); color: var(--ail-bg); border-color: var(--ail-fg); }
 .ail-chrome__chip b, .ail-chrome__ind { font-weight: 400; color: var(--ail-fg); }
-/* a stage that stands at its word cap sets data-full: the chip's first word steps aside there (the date stays) */
-.ail:has(.ail-stage.is-on[data-full]) .ail-chrome__ind { display: none; }
+/* a section that stands at its word cap sets data-full on the page while it is on: the chip's first word steps aside
+   there (the date stays) */
+.ail[data-full] .ail-chrome__ind { display: none; }
 .ail-chrome__chip:hover b { color: inherit; }
 .ail-gl .ail-chrome { position: fixed; left: 0; right: 0; top: 0; }
 /* while the page is unlisted (LISTED off): a quiet note beside the stamp chip; on a phone it hangs under the title */
