@@ -35,6 +35,7 @@ export function create(ctx, el) {
       rig.pitch = 0.025 * smooth(span(e, 0.3, 0.9));
       studio.lamp.set(...HOURS.noon).lerp(v.set(...HOURS.hero), smooth(e));
       studio.ink = smooth(span(p, 0.3, 0.75));
+      for (const b of studio.bays) b.show = smooth(span(e, 0.35, 0.9));      // the boards go back into the floor: the poster has none
 
       const flat = easeIO(span(p, 0.3, 0.9));
       for (const tw of row.towers) {

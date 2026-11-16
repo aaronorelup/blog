@@ -124,6 +124,12 @@ export function createTextures(ctx) {
       return { texture: finish(new CanvasTexture(c), false), aspect: c.width / c.height };
     },
 
+    // A square canvas to draw on, as a colour texture: { g, texture }. Set texture.needsUpdate after drawing.
+    sheet(size = 256) {
+      const [c, g] = canvas(size, size);
+      return { g, texture: finish(new CanvasTexture(c)) };
+    },
+
     // One of GLYPHS as an ink mask.
     glyph(name, px = 128) {
       const key = `glyph:${name}:${px}`;

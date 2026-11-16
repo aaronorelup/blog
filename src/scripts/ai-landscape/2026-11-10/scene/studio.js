@@ -1,6 +1,7 @@
 // The neutral studio (SPEC 3.1, 4.1): a floor that works out coloured shadows and reflections for up to eight
-// casters, a paper cyclorama, one lamp, and the light state: lights out with a colour blooming from a point.
-// Sections set lamp, warmth, dark, glow and ink every frame. reset() puts back the daylight defaults.
+// casters, a paper cyclorama, one lamp, and the light state: lights out with a colour blooming from a point, or the
+// whole room dimmed evenly (dusk). Sections set lamp, warmth, dark, dusk, glow, ink and the boards of the house set
+// (bays: up, show, tile) every frame. reset() puts back the daylight defaults.
 import { Color, CylinderGeometry, Mesh, PlaneGeometry, Vector3 } from 'three';
 import { damp } from '../core/clock.js';
 import { createSet } from './set.js';
@@ -24,7 +25,7 @@ export function createStudio(ctx) {
   scene.add(cyc, ground);
   scene.background = PAPER.clone();
   const gu = ground.material.uniforms;
-  const set = createSet(ctx, [-8.4, -4.2, 0, 4.2, 8.4]);          // the house set: a wall, five bays and dust behind the row
+  const set = createSet(ctx, [-8.4, -4.2, 0, 4.2, 8.4]);          // the house set: a wall, dust, and a board behind each stack
   const lampNow = new Vector3(...HOURS.hero).normalize();
   const tmp = new Vector3();
   let warmNow = 0;
@@ -33,14 +34,17 @@ export function createStudio(ctx) {
     ground, cyc,
     lamp: new Vector3(), warmth: 0,
     dark: 0, roomX: 0,                                              // lights out: the sweep 0..1 and the room it crosses
+    dusk: 0,                                                        // the whole room dimmed evenly, 0..1 (1 is night). Used while dark is 0
     glow: { amount: 0, radius: 0, color: new Color('#FFFFFF'), pos: new Vector3() },
     ink: 0,                                                         // how strongly the floor print shows (setInk)
-    bays: set.bays, set: 1,                                         // the house set: each bay's x (row.js), and 0 to step the set back
+    bays: set.bays, set: 1,                                         // the house set: its boards (row.js gives each its stack), and 0 to step the set back
+    word: set.word,                                                 // a paper word standing in the room (scene/set.js)
     casters: Array.from({ length: 8 }, () => ({ x: 0, z: 0, h: 2.7, gap: 0.045, amt: 0, inside: 0, color: new Color('#8C929C') })),
 
     reset() {
-      studio.lamp.set(...HOURS.hero); studio.warmth = 0; studio.dark = 0; studio.glow.amount = 0; studio.glow.radius = 0; studio.ink = 0; studio.set = 1;
+      studio.lamp.set(...HOURS.hero); studio.warmth = 0; studio.dark = 0; studio.dusk = 0; studio.glow.amount = 0; studio.glow.radius = 0; studio.ink = 0; studio.set = 1;
       for (const c of studio.casters) { c.amt = 0; c.inside = 0; }
+      for (const b of studio.bays) { b.up = 0; b.show = 1; b.tile = null; b.low = false; }
     },
     // Print on the floor: a canvas texture (ink coverage in red) over the world rectangle [x0, z0, width, depth].
     setInk(texture, rect) { gu.uInk.value = texture; gu.uInkRect.value.set(...rect); },
@@ -55,15 +59,18 @@ export function createStudio(ctx) {
       gu.uFar.value.copy(PAPER).lerp(WARM, warmNow * 0.22);
       cyc.material.uniforms.uFar.value.copy(gu.uFar.value);
       gu.uInkAmt.value = gu.uInk.value ? studio.ink : 0;
-      sh.uDark.value.set(studio.dark, studio.roomX, studio.glow.radius, studio.glow.amount);
+      // dusk is the same falloff with the sweep parked far to the left, so every point of the room is equally far in
+      const dusk = studio.dark > 0 ? 0 : Math.max(0, Math.min(1, studio.dusk));
+      if (dusk > 0) sh.uDark.value.set((76 + 8 * dusk) / 84, -1000, studio.glow.radius, studio.glow.amount);
+      else sh.uDark.value.set(studio.dark, studio.roomX, studio.glow.radius, studio.glow.amount);
       sh.uGlowPos.value.copy(studio.glow.pos);
       sh.uGlowCol.value.copy(studio.glow.color);
       // lights out stays dark whatever the colour: a very bright glow (white) is held to half strength
       const g = sh.uGlowCol.value;
       const bright = 0.2126 * g.r + 0.7152 * g.g + 0.0722 * g.b;
       if (bright > 0.5) g.multiplyScalar(0.5 / bright);
-      scene.background.copy(PAPER).lerp(NIGHT, studio.dark);
-      set.update(studio.set);
+      scene.background.copy(PAPER).lerp(NIGHT, Math.max(studio.dark, dusk * dusk * (3 - 2 * dusk)));
+      set.update(studio.set, dt);
       studio.casters.forEach((c, i) => {
         gu.uTPos.value[i].set(c.x, c.z);
         gu.uTCol.value[i].copy(c.color);

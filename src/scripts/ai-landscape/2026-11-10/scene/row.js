@@ -141,7 +141,7 @@ export function createRow(ctx) {
 
         // the lid plate. It is wanted when its section shows it, its stack is there, it would be 28 px wide or
         // more, and no iris is about to cut across it. It leaves and returns by scale in 0.18 s, at full value
-        ctx.studio.bays[t].x = tw.x + tw.shift;                 // its bay of the house set follows it
+        ctx.studio.bays[t].x = tw.x + tw.shift; ctx.studio.bays[t].tower = tw;      // its board of the house set follows it
         const lid = tw.lid;
         const full = lid.size * (0.55 + 0.45 * lid.lift);
         lid.mesh.quaternion.copy(cam.quaternion);
