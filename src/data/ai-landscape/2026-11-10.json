@@ -2,21 +2,21 @@
  "schema": "ai-landscape/1",
  "kind": "landscape",
  "_readme": {
-  "shape": "SCHEMA.md describes providers, bestAt, architecture and aaron. This file differs from the eight source files in the ways listed here.",
-  "sourcesList": "One numbered list. A claim holds source numbers in \"sources\". Evidence rows, board cells, pattern sources, unverified items and sinceSnapshot items hold one number in \"src\" (their url stays). A source that nothing here cites was read only for an unverified lead: its title and url are null.",
+  "shape": "The page's fact base: providers, bestAt, architecture and aaron, as the research schema describes them, plus the lists below.",
+  "sourcesList": "One numbered list. A claim holds source numbers in \"sources\"; evidence rows, board cells, pattern sources and changes since the snapshot hold one number in \"src\". A source read only for a lead we could not verify keeps its number, kind and date, and nothing else.",
   "claims": "Every claim is confirmed or reported. An absence claim has status none and a \"gap\": draw it as an empty state.",
   "evidenceExtras": "\"readOn\" marks evidence first read after the snapshot day. \"moreEvidence\" holds rows beyond the three a standing may show. \"addedInMerge\" marks rows and standings the merge copied in from another file.",
-  "unverified": "Cut before publishing. The research file held 150 unverified leads and rumors. Only their count is kept, in \"unverifiedCount\". None is in a claim.",
-  "sinceSnapshot": "What the logs cite from Nov 11 and 12. News since the snapshot, not part of it.",
+  "extras": "\"priceUntil\" is the day a flagship's price ends, \"listIn\" and \"listOut\" its price after it, and \"priceClaim\" says so with sources. \"otherVendors\" holds what an agent documents about other companies' models and agents.",
+  "leads": "150 leads and rumors we could not verify are left out. Only their count is kept. None is in a claim.",
+  "sinceSnapshot": "What the logs cite from Nov 11 and 12. News since the snapshot, not part of it. An item with \"reread\" re-reads pages already cited and carries no source of its own.",
   "expiring": "Claims with a known end date, soonest first.",
-  "conflicts": "CONFLICTS.md C01 to C46 with the state the merge left each in: topic, state and the claims they touch.",
-  "audit": "Compiler notes, source-check notes, red-team notes and every merge edit are in landscape.audit.json, keyed by claim id or path.",
-  "published": "This is the frozen copy the page is built from: data/landscape.json after one scripted cut that drops the \"unverified\" array, the check trails, the conflict resolutions, and the title and url of every source nothing here cites. It is never edited after it lands."
+  "conflicts": "The research's open questions, C01 to C46: each with its topic, the state it was left in and the claims it touches. How each was settled stays with the research.",
+  "published": "The frozen copy the page is built from. Before publishing, the research's check notes, the reasoning that settled each question and every lead we could not verify were left out. It changes only through this same cut."
  },
  "snapshot": {
   "date": "2026-11-10",
   "compiledAt": "2026-11-12T04:52:57Z",
-  "method": "Ten research files, each claim tied to pages fetched on 2026-11-10. Eight fact files were compiled from them, every claim was re-checked against its sources that day, and a red team attacked the twenty highest-stakes claims in each provider file and in the rankings. This file merges the eight. Unverified leads and rumors are in \"unverified\", never in a claim. The red-team passes for Google, Meta, xAI and the rankings finished on 2026-11-12: what they found dated after the snapshot is in \"sinceSnapshot\", and evidence they read late carries \"readOn\". The architecture and owner files were source-checked but not red-teamed.",
+  "method": "Ten research files, each claim tied to pages fetched on 2026-11-10. Eight fact files were compiled from them, every claim was re-checked against its sources that day, and a red team attacked the twenty highest-stakes claims in each provider file and in the rankings. This snapshot merges the eight. The 150 leads and rumors we could not verify are left out: none is in a claim. The red-team passes for Google, Meta, xAI and the rankings finished on 2026-11-12: what they found after the snapshot is listed as a change since it, and evidence they read late shows the day it was read. The architecture and owner files were source-checked but not red-teamed.",
   "files": {
    "anthropic": "2026-11-10T22:47:18Z",
    "openai": "2026-11-10T22:47:37Z",
@@ -1335,7 +1335,7 @@
        ],
        "parts": [],
        "claim": {
-        "claimRef": "anthropic-cowork-sandbox-local"
+        "claimRef": "anthropic-cowork-sandbox-about"
        }
       },
       {
@@ -3581,7 +3581,7 @@
     "homepage": "https://openai.com"
    },
    "signature": {
-    "line": "Your plan works in other apps",
+    "line": "Your plan works in approved apps",
     "claim": {
      "claimRef": "openai-plan-third-party"
     },
@@ -4650,7 +4650,7 @@
       },
       {
        "layer": "model",
-       "name": "Several GPT-6 models",
+       "name": "Several OpenAI models, Terra named",
        "refs": [
         "openai-gpt-6-1-terra"
        ],
@@ -4733,17 +4733,7 @@
        ],
        "parts": [],
        "claim": {
-        "id": "openai-agent-other-vendors",
-        "text": "OpenAI documents no way for a dot to use another company's model or agent.",
-        "short": "No outside agents documented",
-        "asOf": "2026-11-10",
-        "status": "none",
-        "confidence": "confirmed",
-        "sources": [
-         91,
-         94
-        ],
-        "gap": "undisclosed"
+        "claimRef": "openai-agent-delegates"
        }
       },
       {
@@ -5572,7 +5562,22 @@
       "note": "Best Overall. One reviewer, one day. Totals are sums of task scores.",
       "src": 44
      }
-    ]
+    ],
+    "otherVendors": {
+     "claim": {
+      "id": "openai-agent-other-vendors",
+      "text": "OpenAI documents no way for a dot to use another company's model or agent.",
+      "short": "No outside agents documented",
+      "asOf": "2026-11-10",
+      "status": "none",
+      "confidence": "confirmed",
+      "sources": [
+       91,
+       94
+      ],
+      "gap": "undisclosed"
+     }
+    }
    },
    "voice": {
     "claim": {
@@ -8864,17 +8869,7 @@
        ],
        "parts": [],
        "claim": {
-        "id": "google-agent-other-vendors",
-        "text": "Google documents no way for Tasks to use another company's model or agent.",
-        "short": "None documented",
-        "asOf": "2026-11-10",
-        "status": "none",
-        "confidence": "confirmed",
-        "sources": [
-         173,
-         199
-        ],
-        "gap": "undisclosed"
+        "claimRef": "google-agent-delegates"
        }
       },
       {
@@ -9995,7 +9990,22 @@
       "note": "Tested under its old name, Gemini Spark. One reviewer, one day. Totals are sums of task scores.",
       "src": 44
      }
-    ]
+    ],
+    "otherVendors": {
+     "claim": {
+      "id": "google-agent-other-vendors",
+      "text": "Google documents no way for Tasks to use another company's model or agent.",
+      "short": "None documented",
+      "asOf": "2026-11-10",
+      "status": "none",
+      "confidence": "confirmed",
+      "sources": [
+       173,
+       199
+      ],
+      "gap": "undisclosed"
+     }
+    }
    },
    "voice": {
     "claim": {
@@ -12926,17 +12936,7 @@
        ],
        "parts": [],
        "claim": {
-        "id": "meta-agent-other-vendors",
-        "text": "Meta documents no way for Muse to use another company's model or agent.",
-        "short": "No outside agents documented",
-        "asOf": "2026-11-10",
-        "status": "none",
-        "confidence": "confirmed",
-        "sources": [
-         301,
-         252
-        ],
-        "gap": "undisclosed"
+        "claimRef": "meta-agent-delegates"
        }
       },
       {
@@ -13624,7 +13624,22 @@
       "note": "Most Accessible. One reviewer, one day. Totals are sums of task scores.",
       "src": 44
      }
-    ]
+    ],
+    "otherVendors": {
+     "claim": {
+      "id": "meta-agent-other-vendors",
+      "text": "Meta documents no way for Muse to use another company's model or agent.",
+      "short": "No outside agents documented",
+      "asOf": "2026-11-10",
+      "status": "none",
+      "confidence": "confirmed",
+      "sources": [
+       301,
+       252
+      ],
+      "gap": "undisclosed"
+     }
+    }
    },
    "voice": {
     "claim": {
@@ -15268,7 +15283,7 @@
    "provider": "xai",
    "identity": {
     "name": "xAI",
-    "nameNote": "now SpaceXSI",
+    "nameNote": "reportedly now SpaceXSI",
     "legalName": "SpaceX Super Intelligence LLC",
     "lab": null,
     "assistantBrand": "Grok",
@@ -17804,13 +17819,14 @@
       "official": "no",
       "claim": {
        "id": "xai-grok-bot-drives-codex",
-       "text": "Users run OpenAI's Codex the same way, signed in with ChatGPT. xAI does not document this.",
-       "short": "User workaround",
+       "text": "Users run OpenAI's Codex the same way, signed in with ChatGPT. Some report refusals since Nov 7.",
+       "short": "User workaround, disputed",
        "asOf": "2026-11-10",
        "status": "released",
        "confidence": "reported",
        "sources": [
-        418
+        418,
+        422
        ],
        "basis": "community",
        "conflict": "C11"
@@ -19294,7 +19310,7 @@
    "misconceptions": [
     {
      "id": "xai-myth-runs-on-grok",
-     "myth": "Grok Bot runs on Grok.",
+     "myth": "Grok Bot only runs on Grok.",
      "truth": {
       "claimRef": "xai-agent-model"
      }
@@ -19540,7 +19556,7 @@
       "label": "Gemini 4 Carbon",
       "productRef": null,
       "modelRef": "google-gemini-4-carbon",
-      "leadsOn": "CursorBench, LiveBench, AA terminal test"
+      "leadsOn": "CursorBench, AA terminal test"
      },
      {
       "provider": "outside",
@@ -19550,7 +19566,7 @@
       "leadsOn": "First on AA's terminal test"
      }
     ],
-    "reason": "Claude leads most independent coding boards. Gemini 4 Carbon beats it on CursorBench, LiveBench and a terminal test.",
+    "reason": "Claude leads most independent coding boards. Gemini 4 Carbon beats it on CursorBench and a terminal test.",
     "evidence": [
      {
       "what": "Coding Agent Index: 290 repo and terminal tasks, product plus model",
@@ -19581,6 +19597,20 @@
       "src": 161
      },
      {
+      "what": "Terminal-Bench 4.0: jobs done in a command-line terminal",
+      "score": "65.2%",
+      "subject": "Gemini 4 Carbon",
+      "subjectRef": "google-gemini-4-carbon",
+      "date": "2026-11-10",
+      "ranBy": "Artificial Analysis",
+      "basis": "independent",
+      "version": "4.0",
+      "url": "https://artificialanalysis.ai/evaluations/terminalbench-4-0",
+      "confidence": "confirmed",
+      "note": "Kimi K3.1 Pro 67.2%. Sonnet 5.5 63.6%, Fable 5.2 61.6%, Opus 5.5 and GPT-6 Astra 59.6%.",
+      "src": 444
+     },
+     {
       "what": "WebDev Arena: people vote on web apps the models build",
       "score": "1836",
       "subject": "Claude Fable 5.2",
@@ -19594,20 +19624,6 @@
       "note": "Read from a mirror. Opus 5.5 1814, Gemini 4 Carbon 1768, GPT-6 Astra 1764.",
       "readOn": "2026-11-12",
       "src": 443
-     },
-     {
-      "what": "Terminal-Bench 4.0: jobs done in a command-line terminal",
-      "score": "65.2%",
-      "subject": "Gemini 4 Carbon",
-      "subjectRef": "google-gemini-4-carbon",
-      "date": "2026-11-10",
-      "ranBy": "Artificial Analysis",
-      "basis": "independent",
-      "version": "4.0",
-      "url": "https://artificialanalysis.ai/evaluations/terminalbench-4-0",
-      "confidence": "confirmed",
-      "note": "Kimi K3.1 Pro 67.2%. Sonnet 5.5 63.6%, Fable 5.2 61.6%, Opus 5.5 and GPT-6 Astra 59.6%.",
-      "src": 444
      },
      {
       "what": "LiveBench coding: bug fixes from real merged pull requests",
@@ -19733,7 +19749,7 @@
       "label": "Codex with GPT-6 Astra",
       "productRef": "openai-codex",
       "modelRef": "openai-gpt-6-astra",
-      "leadsOn": "Independent game and browser tests"
+      "leadsOn": "An independent game test"
      },
      {
       "provider": "anthropic",
@@ -19743,7 +19759,7 @@
       "leadsOn": "Three vendors' own benchmark tables"
      }
     ],
-    "reason": "Independent game and browser tests favour OpenAI. Vendors' own tables, OpenAI's included, put Claude first.",
+    "reason": "An independent game test favours OpenAI. Vendors' own tables, OpenAI's included, put Claude first.",
     "evidence": [
      {
       "what": "CUA-bench: six real games played with keyboard and mouse",
@@ -19758,21 +19774,6 @@
       "confidence": "confirmed",
       "note": "Claude Opus 5.5 14.00%, Gemini 4 Argon 4.83%. Fable 5.2, Carbon untested. Astra's run cost ten times more.",
       "src": 53
-     },
-     {
-      "what": "LiveBench browser tasks: real web apps, driven by screenshots",
-      "score": "93.3%",
-      "subject": "GPT-6.1 Sol",
-      "subjectRef": "openai-gpt-6-1-sol",
-      "date": "2026-11-06",
-      "ranBy": "LiveBench",
-      "basis": "independent",
-      "version": "2026-11-06 release, table updated 2026-11-11",
-      "url": "https://livebench.ai/",
-      "confidence": "confirmed",
-      "note": "Terra 93.1%, Astra 91.3%, Fable 5.1 89.8%, Gemini 4 Argon 82.8%. One run, browser only.",
-      "readOn": "2026-11-12",
-      "src": 54
      },
      {
       "what": "OSWorld 2.1 offline set, partial credit, Anthropic's launch table",
@@ -19815,6 +19816,21 @@
       "confidence": "confirmed",
       "note": "Fable 5.1 80.7, Muse Wonder Full 78.4, GPT-6 Astra 75.8.",
       "src": 270
+     },
+     {
+      "what": "LiveBench browser tasks: real web apps, driven by screenshots",
+      "score": "93.3%",
+      "subject": "GPT-6.1 Sol",
+      "subjectRef": "openai-gpt-6-1-sol",
+      "date": "2026-11-06",
+      "ranBy": "LiveBench",
+      "basis": "independent",
+      "version": "2026-11-06 release, table updated 2026-11-11",
+      "url": "https://livebench.ai/",
+      "confidence": "confirmed",
+      "note": "Terra 93.1%, Astra 91.3%, Fable 5.1 89.8%, Gemini 4 Argon 82.8%. One run, browser only.",
+      "readOn": "2026-11-12",
+      "src": 54
      }
     ],
     "verdict": "contested",
@@ -19832,23 +19848,25 @@
     "name": "Browser agents",
     "question": "Who is best at doing tasks in a web browser?",
     "group": "act",
-    "leader": {
-     "provider": "openai",
-     "label": "GPT-6.1 Sol and Terra",
-     "productRef": null,
-     "modelRef": "openai-gpt-6-1-sol",
-     "leadsOn": null
-    },
-    "runnerUp": {
-     "provider": "anthropic",
-     "label": "Claude Fable 5.1 and Sonnet 5.5",
-     "productRef": null,
-     "modelRef": "anthropic-sonnet-5-5",
-     "leadsOn": null
-    },
+    "leader": null,
+    "runnerUp": null,
     "contenders": [],
-    "reason": "OpenAI's models lead LiveBench's browser tasks by a few points over Claude, in one run.",
+    "reason": "No current independent browser-agent test was found. Arena's general agent board is the nearest stand-in.",
     "evidence": [
+     {
+      "what": "Arena Agent: people judge multi-step tool tasks, not browser-only",
+      "score": "20.0",
+      "subject": "Claude Opus 5.5",
+      "subjectRef": "anthropic-opus-5-5",
+      "date": "2026-11-08",
+      "ranBy": "Arena",
+      "basis": "independent",
+      "version": null,
+      "url": "https://www.benchleader.com/benchmarks/lmarena_agent",
+      "confidence": "reported",
+      "note": "Gemini 4 Carbon 16.6, Sonnet 5.5 16.0, GPT-6 Astra 14.2. Read from a mirror.",
+      "src": 446
+     },
      {
       "what": "LiveBench browser tasks: multi-step jobs in real web apps",
       "score": "93.3%",
@@ -19863,24 +19881,10 @@
       "note": "Terra 93.1%, Astra 91.3%, Fable 5.1 89.8%, Gemini 4 Argon 82.8%. One run, browser only.",
       "readOn": "2026-11-12",
       "src": 54
-     },
-     {
-      "what": "Arena Agent: people judge multi-step tool tasks, not browser-only",
-      "score": "20.0",
-      "subject": "Claude Opus 5.5",
-      "subjectRef": "anthropic-opus-5-5",
-      "date": "2026-11-08",
-      "ranBy": "Arena",
-      "basis": "independent",
-      "version": null,
-      "url": "https://www.benchleader.com/benchmarks/lmarena_agent",
-      "confidence": "reported",
-      "note": "Gemini 4 Carbon 16.6, Sonnet 5.5 16.0, GPT-6 Astra 14.2. Read from a mirror.",
-      "src": 446
      }
     ],
-    "verdict": "clear",
-    "margin": "narrow",
+    "verdict": "unknown",
+    "margin": null,
     "confidence": "confirmed",
     "asOf": "2026-11-10",
     "notYetRated": []
@@ -20021,23 +20025,8 @@
       "leadsOn": "About a fifth the cost"
      }
     ],
-    "reason": "Claude narrowly leads two independent research tests. Gemini 4 Carbon, close behind, costs about a fifth as much.",
+    "reason": "Claude scores slightly higher on two independent tests. Gemini 4 Carbon costs about a fifth as much.",
     "evidence": [
-     {
-      "what": "LiveBench research: open-ended briefs written up as graded reports",
-      "score": "94.5%",
-      "subject": "Claude Fable 5.2",
-      "subjectRef": "anthropic-fable-5-2",
-      "date": "2026-11-10",
-      "ranBy": "LiveBench",
-      "basis": "independent",
-      "version": "2026-11-06 release, table updated 2026-11-11",
-      "url": "https://livebench.ai/",
-      "confidence": "confirmed",
-      "note": "Muse Wonder 93.0%, Gemini 4 Carbon 92.5%, GPT-6 Astra 90.6%. One run.",
-      "readOn": "2026-11-12",
-      "src": 54
-     },
      {
       "what": "Knowledge work over complex visual files, built by Google DeepMind",
       "score": "57%",
@@ -20065,6 +20054,21 @@
       "confidence": "confirmed",
       "note": "Top three are Opus 5.5 with different search tools. No GPT-6, Gemini 4 or Fable 5.2 tested.",
       "src": 161
+     },
+     {
+      "what": "LiveBench research: open-ended briefs written up as graded reports",
+      "score": "94.5%",
+      "subject": "Claude Fable 5.2",
+      "subjectRef": "anthropic-fable-5-2",
+      "date": "2026-11-10",
+      "ranBy": "LiveBench",
+      "basis": "independent",
+      "version": "2026-11-06 release, table updated 2026-11-11",
+      "url": "https://livebench.ai/",
+      "confidence": "confirmed",
+      "note": "Muse Wonder 93.0%, Gemini 4 Carbon 92.5%, GPT-6 Astra 90.6%. One run.",
+      "readOn": "2026-11-12",
+      "src": 54
      }
     ],
     "verdict": "contested",
@@ -21346,7 +21350,7 @@
       "version": null,
       "url": "https://developers.openai.com/codex/skills",
       "confidence": "confirmed",
-      "note": "Each rival's own docs, as cited in anthropic.json. Not a quality score.",
+      "note": "Each rival's own documentation. Not a quality score.",
       "src": 65
      },
      {
@@ -21412,7 +21416,7 @@
     "quote": "But computer use might be OpenAI. I'm not even sure anymore, actually.",
     "capabilityRef": "best-computer-use",
     "outcome": "partly",
-    "reason": "Independent game and browser tests favour OpenAI. Vendors' own tables put Claude first."
+    "reason": "An independent game test favours OpenAI. Vendors' own tables put Claude first."
    },
    {
     "id": "best-guess-search",
@@ -21575,6 +21579,22 @@
     "contextTokens": 1048576,
     "claim": {
      "claimRef": "google-flagship"
+    },
+    "priceUntil": "2026-11-30",
+    "listIn": 4,
+    "listOut": 20,
+    "priceClaim": {
+     "id": "google-carbon-price",
+     "text": "Google charges $2 / $10 per 1M tokens for Gemini 4 Carbon until Nov 30, then $4 / $20.",
+     "short": "Carbon at half price",
+     "asOf": "2026-11-10",
+     "status": "released",
+     "confidence": "confirmed",
+     "sources": [
+      202,
+      179
+     ],
+     "staleAfter": "2026-11-30"
     }
    },
    {
@@ -23750,7 +23770,16 @@
      "modelsElsewhere": {
       "value": "partial",
       "claim": {
-       "claimRef": "arch-plumbing-copilot-about"
+       "id": "google-elsewhere",
+       "text": "GitHub Copilot offers Gemini. On OpenRouter, Gemini 3.8 Flash is served only by Google itself.",
+       "short": "Resold, but Google-hosted",
+       "asOf": "2026-11-10",
+       "status": "released",
+       "confidence": "confirmed",
+       "sources": [
+        439,
+        6
+       ]
       }
      }
     },
@@ -24346,7 +24375,7 @@
     "productRef": "xai-grok-bot",
     "what": "The agent he talks to. It starts his Claude Code agents.",
     "state": "current",
-    "quote": "Interface. Gages, my Grok bot, which dispatches Claude Code agents.",
+    "quote": "Gages, my Grok bot, which dispatches Claude Code agents.",
     "claim": {
      "id": "aaron-router-claim",
      "text": "His interface is a Grok Bot called Gages. It starts Claude Code agents for him.",
@@ -24887,7 +24916,8 @@
      "basis": "owner",
      "conflict": "C11"
     },
-    "vendorViewRef": "xai-grok-bot-drives-claude-code"
+    "vendorViewRef": "xai-grok-bot-drives-claude-code",
+    "claimRef": "xai-grok-bot-drives-claude-code"
    },
    {
     "id": "aaron-arrow-coder-to-plan",
@@ -30072,6 +30102,15 @@
    "src": 54
   },
   {
+   "date": "2026-11-11",
+   "what": "On LiveBench's table, updated in place on Nov 11, OpenAI's models lead the browser tasks by a few points over Claude, in one run.",
+   "confidence": "confirmed",
+   "affectsRefs": [
+    "best-browser-agents"
+   ],
+   "src": 54
+  },
+  {
    "date": "2026-11-12",
    "what": "Gemini Omni 1.2 Flash moved from sixth to fifth on Artificial Analysis's text-to-video arena.",
    "confidence": "confirmed",
@@ -30118,7 +30157,8 @@
     "xai-grok-4-8",
     "xai-change-grok-4-8"
    ],
-   "src": null
+   "src": null,
+   "reread": true
   },
   {
    "date": "2026-11-12",
@@ -30128,26 +30168,6 @@
     "xai-change-team-bots"
    ],
    "src": 388
-  },
-  {
-   "date": "2026-11-11",
-   "what": "Apple's top-free charts ranked Muse above ChatGPT in all five countries where Muse is sold: first in Canada, Japan and Mexico, second in the US and Singapore.",
-   "confidence": "reported",
-   "affectsRefs": [
-    "meta-muse",
-    "meta-best-distribution-about"
-   ],
-   "src": null
-  },
-  {
-   "date": "2026-11-11",
-   "what": "One user's screenshot shows AI Mode's model menu as Auto, Gemini 3.8 Flash and Gemini 4 Carbon.",
-   "confidence": "rumored",
-   "affectsRefs": [
-    "google-ai-mode-model",
-    "google-ai-mode-carbon"
-   ],
-   "src": null
   },
   {
    "date": "2026-11-12",
@@ -30160,7 +30180,8 @@
     "google-agent-status",
     "google-change-jules"
    ],
-   "src": null
+   "src": null,
+   "reread": true
   }
  ],
  "expiring": [
@@ -30218,6 +30239,10 @@
   },
   {
    "claimRef": "openai-sdk",
+   "staleAfter": "2026-11-30"
+  },
+  {
+   "claimRef": "google-carbon-price",
    "staleAfter": "2026-11-30"
   },
   {

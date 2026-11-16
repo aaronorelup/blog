@@ -20,11 +20,11 @@ const billing = new Set(nodes.filter((n) => n.layer === 'billing').map((n) => n.
 const tank = (id) => me.arrows.some((a) => (a.fromRef === id && billing.has(a.toRef)) || (a.toRef === id && billing.has(a.fromRef)));
 const label = (n) => (n.productRef ? thing(n.productRef).name : null);
 const who = (n) => (n.layer === 'you' ? 'you' : n.productRef ? thing(n.productRef).owner : 'outside');
-// what a piece does to another: the arrow's verb and the other piece's name. An arrow that carries a claim
-// (claim, or claimRef resolved by the view) makes the line a fact that opens its proof
+// what a piece does to another: the arrow's verb and the other piece's name. An arrow that carries a claim makes the
+// line a fact that opens its proof; one that points at the vendor's view of it (claimRef, C11) opens that instead
 const verbs = (n) => me.arrows.filter((a) => a.fromRef === n.id && a.state === 'documented')
   .map((a) => [a, nodes.find((x) => x.id === a.toRef)]).filter(([, to]) => to)
-  .map(([a, to]) => ({ text: `${a.verb} ${label(to) || to.name}`, fact: fact(a.claim || a.claimRef) || null }));
+  .map(([a, to]) => ({ text: `${a.verb} ${label(to) || to.name}`, fact: fact(a.claimRef ? { claimRef: a.claimRef } : a.claim) || null }));
 const bands = me.bands.map((b) => ({
   ...b,
   pieces: b.nodeRefs.map((id) => nodes.find((n) => n.id === id)).filter(Boolean).map((n) => ({
