@@ -146,7 +146,8 @@ export function create(ctx, el, sec) {
       const drop = easeIO(span(u, 0.25, 0.85));
 
       const hero = pose(ctx, e, st.g);
-      for (const b of studio.bays) b.show = smooth(span(e, 0.35, 0.9));      // the boards come up out of the floor as the camera comes down
+      // the boards come up out of the floor as the camera comes down, by the intro or by a scroll that outruns it
+      for (const b of studio.bays) b.show = smooth(span(Math.max(e, down), 0.35, 0.9));
       // on the way down the row keeps its width, as at both ends. A phone pulls back as the stacks tilt up, so all five
       // stay inside its narrow window from the first second on
       hero.fit = 24.3 * Math.max(ctx.phone ? smooth(span(e, 0.4, 1)) : 0, Math.min(1, down * 5));

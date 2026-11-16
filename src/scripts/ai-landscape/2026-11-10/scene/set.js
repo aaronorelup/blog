@@ -19,8 +19,7 @@ const SHADE = 9;                  // a board's shadow is this tall: its soft edg
 export function createSet(ctx, xs) {
   const { scene, mats, textures } = ctx;
   const paper = (tint, opts = {}) => mats.paper(null, { side: -1, plain: true, tint, ...opts });
-  const parts = [];
-  const add = (mesh, order) => { mesh.renderOrder = order; scene.add(mesh); parts.push(mesh); return mesh; };
+  const add = (mesh, order) => { mesh.renderOrder = order; scene.add(mesh); return mesh; };
 
   // the wall: house paper with grain, 6 percent darker over its lowest 3 units, and a hairline where it meets the floor
   const wall = add(new Mesh(new PlaneGeometry(WALL.w, WALL.h), paper(WALL.colour, { foot: [3 / WALL.h, 0.06] })), -9.5);
@@ -28,18 +27,32 @@ export function createSet(ctx, xs) {
   const join = add(new Mesh(new PlaneGeometry(WALL.w, 0.045), paper(WALL.line)), -9.4);
   join.position.set(0, 0.022, WALL.z + 0.02);
 
-  // a board behind each stack: a tall flat with a torn top edge (the floor hides what is under it), its soft shadow
-  // a little to the right, and the plane its sign is drawn on
-  const flat = new PlaneGeometry(1, BAY.tall);
-  const soft = new PlaneGeometry(1, 1);
+  // a board behind each stack: a flat with a torn top edge, its soft shadow a little to the right, and the plane its
+  // sign is drawn on. The five boards are one mesh and their five shadows another (two draw calls): four corners
+  // each, written every frame. A board's u runs from its own whole number, so no two tear alike
+  const quads = (n) => {
+    const geo = new BufferGeometry();
+    geo.setAttribute('position', new Float32BufferAttribute(new Float32Array(n * 12), 3));
+    geo.setAttribute('uv', new Float32BufferAttribute(new Float32Array(n * 8), 2));
+    geo.setAttribute('normal', new Float32BufferAttribute(new Float32Array(n * 12).map((_, i) => (i % 3 === 2 ? 1 : 0)), 3));
+    geo.setIndex(Array.from({ length: n }, (_, k) => [0, 1, 2, 2, 1, 3].map((c) => k * 4 + c)).flat());
+    return geo;
+  };
+  // corners of quad k: x0..x1, y0..y1 at depth z, with the texture from (u0, v0) to (u1, v1)
+  const put = (geo, k, x0, x1, y0, y1, z, u0, u1, v0, v1) => {
+    const p = geo.attributes.position, t = geo.attributes.uv;
+    [[x0, y0, u0, v0], [x1, y0, u1, v0], [x0, y1, u0, v1], [x1, y1, u1, v1]].forEach(([x, y, u, v], c) => { p.setXYZ(k * 4 + c, x, y, z); t.setXY(k * 4 + c, u, v); });
+  };
+  const flats = add(new Mesh(quads(xs.length), paper(BAY.colour, { torn: [0, BAY.torn / BAY.tall, 5.5, 1] })), -9.1);
+  const shades = add(new Mesh(quads(xs.length), mats.paper(textures.soft(), { side: -1, blended: true, mask: true, tint: '#4A4E57', opacity: 0.15 })), -9.2);
+  flats.frustumCulled = shades.frustumCulled = false;
   const px = ctx.quality.small ? 256 : 512;
-  const bays = xs.map((x, k) => {
-    const shade = add(new Mesh(soft, mats.paper(textures.soft(), { side: -1, blended: true, mask: true, tint: '#4A4E57', opacity: 0.15 })), -9.2);
-    const mesh = add(new Mesh(flat, paper(BAY.colour, { torn: [0, BAY.torn / BAY.tall, 5.5, k * 3.1 + 1] })), -9.1);
+  const bays = xs.map((x) => {
     const sheet = textures.sheet(px);
     const sign = add(new Mesh(new PlaneGeometry(BAY.sign, BAY.sign), mats.paper(sheet.texture, { side: -1, blended: true })), -9);
     sign.visible = false;
-    return { mesh, shade, sign, sheet, x, tower: null, show: 1, up: 0, tile: null, low: false, top: 0, rise: 0, goal: 0, wait: 0, key: '', next: '', hold: 0, flip: 0, sunk: 0 };
+    // (at, z, wide, top, seen: where the board was drawn last frame, for whoever asks: its middle, depth, width, top edge)
+    return { sign, sheet, x, tower: null, show: 1, up: 0, tile: null, low: false, at: x, z: BAY.z, wide: BAY.w, top: 0, seen: false, rise: 0, goal: 0, wait: 0, key: '', next: '', hold: 0, flip: 0, sunk: 0 };
   });
 
   // dust: a few slow motes of paper white between the row and the wall
@@ -136,17 +149,19 @@ export function createSet(ctx, xs) {
           else { b.flip = Math.max(0, b.flip - dt / FLIP[0]); if (b.flip <= 0) paint(b, want); }
         }
         const seen = smooth(b.show * (tw ? tw.show : 1));
-        b.top = (rest + BAY.rise * b.rise) * seen;
         const x = BAY.mid + (b.x - BAY.mid) / near;
-        b.mesh.scale.x = w;
-        b.mesh.position.set(x, b.top - BAY.tall / 2, BAY.z);
-        b.shade.scale.set(w * 1.3, SHADE, 1);
-        b.shade.position.set(x + 0.15 * w, b.top + 0.2 - SHADE / 2, BAY.z - 0.06);
-        b.mesh.visible = b.shade.visible = on && seen > 0.01;
-        b.sign.visible = b.mesh.visible && b.flip > 0.01 && !!b.key;
+        b.at = x; b.wide = w; b.seen = on && seen > 0.01;
+        b.top = b.seen ? (rest + BAY.rise * b.rise) * seen : 0;
+        // the board from the floor to its top (its tear keeps its size whatever the height), and its shadow, whose
+        // soft block is as wide as the board and starts just under the board's top. An unseen board has no height
+        put(flats.geometry, k, x - w / 2, x + w / 2, 0, b.top, BAY.z, k, k + 1, 1 - b.top / BAY.tall, 1);
+        const sx = x + 0.15 * w, sy = b.seen ? b.top + 0.2 : 0;
+        put(shades.geometry, k, sx - 0.65 * w, sx + 0.65 * w, b.seen ? sy - SHADE : 0, sy, BAY.z - 0.06, 0, 1, 0, 1);
+        b.sign.visible = b.seen && b.flip > 0.01 && !!b.key;
         const s = Math.min(1, (w - 0.2) / BAY.sign);
         if (b.sign.visible) { b.sign.position.set(x, b.top - BAY.head - (BAY.sign * s) / 2, BAY.z + 0.03); b.sign.scale.set(s, s * smooth(b.flip), 1); }
       });
+      for (const m of [flats, shades]) { m.visible = on && bays.some((b) => b.seen); m.geometry.attributes.position.needsUpdate = true; m.geometry.attributes.uv.needsUpdate = true; }
       if (dust) { dust.visible = on; dust.material.uniforms.uPx.value = ctx.renderer.getPixelRatio() * window.innerHeight * 0.2; }
     },
   };
