@@ -11,7 +11,7 @@ export default {
   marks: { of: 'name', plate: 'white', clear: 0.75 },          // never tinted, never beside the wordmark, three quarters of its height clear
   art: artOf('openai'),
   alt: {
-    plate: 'A white paper gallery at noon: low plinths, a pill-shaped bar on the wall, a shelf of fuzzy balls in many colours, a laptop and a phone.',
+    plate: 'A white paper gallery at noon: low plinths, a pill-shaped message bar on the wall, a shelf of fuzzy balls in many colours, a laptop and a phone.',
     hero: 'A round yellow felt figure with round black glasses and a small bow tie.',
     portrait: 'Cut-paper illustration of Sam Altman',
     person: 'Sam Altman',                                       // the gallery label under the frame: the name only
@@ -23,7 +23,9 @@ export default {
     { file: 2, z: -12, x: -5.9, y: 0.68, w: 1.7 },              // prop-2: three fuzzy balls on the floor, far back on the left
   ],                                                            // prop-1, a second laptop on a plinth, is left out: the plate has one, and two crowded the frame
   fore: null,                                                   // the white plinth at the front edge is left out: it read as a blank
-  sign: { draw: 'bar', x: -5.5, y: 6.6, w: 3.4, h: 0.644 },     // a message bar with no words, on the wall's blank lozenge left of the figure
+  // a message bar with no words (a plus, a caret, a microphone, the round send button), on the wall's blank lozenge
+  // left of the figure: the one place there that neither the figure, the stack nor the world's title line covers
+  sign: { draw: 'bar', x: -5.45, y: 6.6, w: 3.75, h: 0.67 },
   portrait: { x: 12.5, y: 5.9 },                                // on the plain wall inside the right arch
   dust: '#C9CDD5',
   signature: 'openai',

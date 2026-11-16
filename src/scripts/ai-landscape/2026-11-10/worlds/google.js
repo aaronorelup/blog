@@ -14,11 +14,13 @@ export default {
   art: artOf('google'),
   alt: {
     plate: 'A night stage in black paper: four hanging lanterns in yellow, red, blue and green, two doors, a search bar, a wall of small drawers and paper stars on threads.',
-    hero: 'A four-point star lantern in pale paper, lit from inside in four colours.',
-    portrait: 'Cut-paper illustration of Sundar Pichai',
+    hero: 'A four-point star with rounded points, in a soft blend of yellow, red, blue and green. This page\'s own drawing after the Gemini spark, not Google\'s file.',
+    portrait: 'Cut-paper illustration of Sundar Pichai',      // (not hung in this snapshot: see portrait below)
     person: 'Sundar Pichai',
   },
-  character: { kind: 'sprite', floor: 1, size: 0.9, perch: 0.86 },    // no router floor to stand on: the lantern floats at floor 1, a little smaller there so it clears the chrome
+  // no router floor to stand on: the star floats at floor 1, a little smaller there so it clears the chrome. `out`: it
+  // stands that much further from its stack on a longer ledge, one plate width clear of the G plate (never a pair with it)
+  character: { kind: 'sprite', floor: 1, size: 0.9, perch: 0.78, out: 0.3 },
   backdrop: { y: -4.45, turn: -0.1 },
   props: [
     { file: 3, z: -3.5, x: 7.2, y: 0.98, w: 2.2 },              // prop-3: the drawers of the index under a magnifying glass, low on the right
@@ -26,7 +28,10 @@ export default {
     // prop-1, a second door at the right edge, is left out: it stood half out of the frame, across the drawers
   ],
   fore: { z: 5.6, x: 2.36, y: 0.35, w: 3.3 },                  // four footlights at the front edge, right of the stack: close enough that their feet are below the frame
-  portrait: { x: 12.9, y: 5.2 },
+  // no frame hangs here: the one portrait made did not read as its person, in the page's cut-paper key or at all (two
+  // review rounds), and the plan's rule for that is to hang nothing. The picture waits in art/google/source/, outside
+  // the build. To hang a new one: put it back as art/google/portrait.webp and set portrait: { x: 12.9, y: 5.2 }
+  portrait: null,
   dust: '#F8F9FA',
   signature: 'google',
   myth: 'google-myth-one-agent',

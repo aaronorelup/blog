@@ -60,7 +60,7 @@ export function createRow(ctx) {
     const shade = new Mesh(new PlaneGeometry(1, 1), mats.paper(textures.soft(true), { side: 0, blended: true, mask: true, tint: '#0C0D10', opacity: 0.22 }));
     shade.rotation.x = -Math.PI / 2; shade.renderOrder = -6.5; shade.visible = false;
     scene.add(shade);
-    tower.char = { mesh: body, ledge, shade, kind, size, perch: cfg.character.perch || 1, floor: cfg.character.floor - 1, from: 'floor', to: 'floor', t: 1, show: 1, scale: 1, pos: new Vector3(), blink: 2 + t };
+    tower.char = { mesh: body, ledge, shade, kind, size, perch: cfg.character.perch || 1, out: cfg.character.out || 0, floor: cfg.character.floor - 1, from: 'floor', to: 'floor', t: 1, show: 1, scale: 1, pos: new Vector3(), blink: 2 + t };
     return tower;
   });
 
@@ -103,7 +103,7 @@ export function createRow(ctx) {
     if (name === 'front') return out.set(x - 1.6, tower.lift + c.size * SCALE.front * 0.5 + 0.02, tower.z + 1.6 - Math.min(0.6, tower.lift));
     // beside: large, on the ground to the right of the stack (on a phone, where there is no room, on its lid)
     if (name === 'beside') return ctx.phone ? out.set(x, tower.height + tower.lift + c.size * BIG * 0.5, tower.z + 0.2) : out.set(x + 2.9, c.size * BIG * 0.5 + 0.02, tower.z + 0.8);
-    return out.set(x - LEDGE, tower.floors[c.floor].y + tower.lift + FLOOR.h / 2 + c.size * SCALE.floor * c.perch * 0.5, tower.z + 0.25);
+    return out.set(x - LEDGE - c.out, tower.floors[c.floor].y + tower.lift + FLOOR.h / 2 + c.size * SCALE.floor * c.perch * 0.5, tower.z + 0.25);
   }
   // how much head room the frame has over the row seen from above: 1 at 16:10 and taller, 0 at 16:9 and wider
   const roomy = () => Math.max(0, Math.min(1, (1.78 - ctx.camera.aspect) / 0.18));
@@ -203,7 +203,10 @@ export function createRow(ctx) {
         }
         const onLedge = (c2.to === 'floor' ? e : 0) + (c2.from === 'floor' ? 1 - e : 0);
         c2.ledge.visible = onLedge * c2.show > 0.02;
-        c2.ledge.position.set(-LEDGE, tw.floors[c2.floor].y + FLOOR.h / 2 - 0.03, 0.25);
+        // (a figure that stands further out has a longer ledge: its end at the stack stays where it is)
+        const wide = 1 + c2.out / 1.3;
+        c2.ledge.scale.x = wide;
+        c2.ledge.position.set(-LEDGE + 0.58 * (1 - wide), tw.floors[c2.floor].y + FLOOR.h / 2 - 0.03, 0.25);
         const lu = c2.ledge.material.uniforms;
         lu.uShow.value = Math.min(1, onLedge) * tw.show * c2.show; lu.uDim.value = tw.dim; lu.uSide.value = tw.side;
       });

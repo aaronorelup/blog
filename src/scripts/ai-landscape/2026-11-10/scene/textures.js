@@ -179,13 +179,22 @@ export function createTextures(ctx) {
     // A message bar with no words: a white pill with an ink outline and a round ink send button, arrow up.
     bar() {
       if (cache.has('bar')) return cache.get('bar');
-      const W = 1140, H = 216, r = 100;
+      const W = 1680, H = 300, r = 142;
       const [c, g] = canvas(W, H);
       g.fillStyle = '#FFFFFF'; g.strokeStyle = '#0C0D10'; g.lineWidth = 8;
       g.beginPath(); g.arc(W - 8 - r, H / 2, r, -Math.PI / 2, Math.PI / 2); g.arc(8 + r, H / 2, r, Math.PI / 2, Math.PI * 1.5); g.closePath(); g.fill(); g.stroke();
-      g.fillStyle = '#0C0D10'; g.beginPath(); g.arc(W - 108, H / 2, 72, 0, Math.PI * 2); g.fill();
-      g.strokeStyle = '#FFFFFF'; g.lineWidth = 16; g.lineCap = 'round'; g.lineJoin = 'round';
-      g.beginPath(); g.moveTo(W - 108, 144); g.lineTo(W - 108, 74); g.moveTo(W - 138, 104); g.lineTo(W - 108, 74); g.lineTo(W - 78, 104); g.stroke();
+      g.lineCap = 'round'; g.lineJoin = 'round';
+      // a plus at the left, where a file is added, and a caret where the words would go
+      g.lineWidth = 14; g.beginPath(); g.moveTo(150, H / 2 - 42); g.lineTo(150, H / 2 + 42); g.moveTo(108, H / 2); g.lineTo(192, H / 2); g.stroke();
+      g.strokeStyle = '#8C929C'; g.lineWidth = 8; g.beginPath(); g.moveTo(282, H / 2 - 50); g.lineTo(282, H / 2 + 50); g.stroke();
+      // a microphone, then the round ink button with its arrow
+      const mx = W - 392;
+      g.strokeStyle = '#0C0D10'; g.lineWidth = 12;
+      g.beginPath(); g.roundRect(mx - 24, H / 2 - 70, 48, 88, 24); g.stroke();
+      g.beginPath(); g.arc(mx, H / 2 - 6, 52, 0.12 * Math.PI, 0.88 * Math.PI); g.moveTo(mx, H / 2 + 46); g.lineTo(mx, H / 2 + 76); g.stroke();
+      g.fillStyle = '#0C0D10'; g.beginPath(); g.arc(W - 150, H / 2, 104, 0, Math.PI * 2); g.fill();
+      g.strokeStyle = '#FFFFFF'; g.lineWidth = 20;
+      g.beginPath(); g.moveTo(W - 150, H / 2 + 50); g.lineTo(W - 150, H / 2 - 48); g.moveTo(W - 194, H / 2 - 4); g.lineTo(W - 150, H / 2 - 48); g.lineTo(W - 106, H / 2 - 4); g.stroke();
       const t = finish(new CanvasTexture(c));
       cache.set('bar', t);
       return t;
