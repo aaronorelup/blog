@@ -17,7 +17,6 @@ const ME = 0.42;                                             // the dot that is 
 const SLOT = { you: 1.5, router: 2.7, harness: 2.7, model: 1.5 }, REST = 1.36, PAD = 0.28, GAP = 0.16;
 const FLOOR = { router: 2, harness: 3, model: 4 };           // the floor a borrowed piece leaves its company's stack from
 const FLY = 0.8, STAGGER = 0.07, SWAP = 0.7;
-const LINE = { yes: 'yes', partial: 'partial', no: 'no' };
 // the cord from router to coding agent: dashed as the pair is documented (44ths of its length), a bead every 1.4 s
 const CORD = { dash: { yes: null, partial: [6, 2], no: [3, 3] }, out: 0.35, run: 1.4, sag: -0.14 };
 
@@ -310,7 +309,7 @@ export function create(ctx, el, sec) {
 
       // lines run out once the pieces have landed. A cord waits for both its ends, runs out in 0.35 s, and the one
       // between the pair is dashed as the swap's verdict says, or absent
-      const drawn = smooth((st.fly - FLY - pieces.length * STAGGER) / 0.7) * (1 - away);
+      const drawn = (reduced ? 1 : smooth((st.fly - FLY - pieces.length * STAGGER) / 0.7)) * (1 - away);      // (reduced motion: they are there with the pieces)
       lines.forEach((l) => {
         if (l.cord) {
           const there = l.pa.landed && l.pb.landed && drawn > 0.2 && !(l.link && st.official === 'none');

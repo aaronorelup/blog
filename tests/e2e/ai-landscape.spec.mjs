@@ -1170,4 +1170,17 @@ test('landscape-27 around the five is a cabinet of nine drawers, a glyph on ever
   await expect.poll(async () => { const l = await lamp(); return l.lit === 0 && Math.abs(l.x - l.at[0]) < 0.2; }, { timeout: 30_000, message: 'a pick moves the lamp' }).toBe(true);
   await go(page, 'agnostic', 0.35, 600);
   expect(await compare(() => ({ dark: window.__landscape.debug.ctx.studio.dark, chrome: document.documentElement.dataset.chrome || '' })), 'the lamp board stands in daylight').toEqual({ dark: 0, chrome: '' });
+
+  // ---- reduced motion: each of these is there with its section, nothing runs out, slides or travels afterwards
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await open(page);
+  await light(page);
+  await go(page, 'around', 0.12 + 0.11 * 2.5, 0);
+  expect((await compare(() => window.__landscape.compare.around.drawers())).map((d) => d.out), 'the third drawer is out, whole, and the others are in').toEqual([0, 0, 1.4, 0, 0, 0, 0, 0, 0]);
+  await go(page, 'my-stack', 0.78, 0);
+  await expect.poll(async () => (await stack()).cast.every((c) => c.on), { timeout: 30_000, message: 'the figures stand with their blocks (the creature once its picture has loaded)' }).toBe(true);
+  expect((await stack()).cords.map((c) => [c.on, c.bead]), 'the cords are drawn, and the bead rests at the coding agent').toEqual([[true, null], [true, 1]]);
+  await go(page, 'router', 0.5 * router.screens, 0);
+  const l = await lamp();
+  expect([l.lit, l.x], 'the lamp is on the second diagram').toEqual([1, l.at[1]]);
 });
