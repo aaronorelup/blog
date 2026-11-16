@@ -96,12 +96,23 @@ test('the frozen data carries no unverified lead, only their count, and sources 
   assert.equal('unverified' in raw, false);
   assert.ok(Number.isInteger(raw.unverifiedCount) && raw.unverifiedCount > 0);
   assert.equal(raw.snapshot.date, '2026-11-10');
+  // Cited as the sources page counts it: a lead's source keeps only its number, kind and date.
+  const cited = new Set();
+  (function walk(node, key) {
+    if (Array.isArray(node)) return node.forEach((v) => (typeof v === 'number' && key === 'sources' ? cited.add(v) : walk(v, key)));
+    if (!node || typeof node !== 'object') return;
+    for (const [k, v] of Object.entries(node)) (k === 'src' && typeof v === 'number' ? cited.add(v) : walk(v, k));
+  })({ ...view.data, sources: null, conflicts: null });
   raw.sources.forEach((s, i) => {
     assert.equal(s.n, i + 1, 'sources are numbered 1 to n in order');
-    assert.ok(s.title && s.date && s.kind, `source ${s.n} has a title, a date and a kind`);
-    if (s.kind === 'request') assert.equal(s.url, null, `source ${s.n} is the request and has no address`);
+    assert.ok(s.date && s.kind, `source ${s.n} has a date and a kind`);
+    if (!cited.has(s.n)) assert.ok(s.title === null && s.url === null, `source ${s.n} is cited by nothing published and keeps no title or address`);
+    else if (!s.title) assert.fail(`source ${s.n} is cited and has a title`);
+    else if (s.kind === 'request') assert.equal(s.url, null, `source ${s.n} is the request and has no address`);
     else assert.match(s.url, /^https:\/\//, `source ${s.n} links over https`);
   });
+  assert.ok(raw.conflicts.every((c) => !('resolution' in c)), 'a conflict keeps its topic and state, never its resolution');
+  assert.ok(!JSON.stringify(raw).includes('"checked":'), 'no source-check or red-team trail');
   assert.ok(raw.sinceSnapshot.length > 0 && raw.expiring.length > 0);
 });
 
