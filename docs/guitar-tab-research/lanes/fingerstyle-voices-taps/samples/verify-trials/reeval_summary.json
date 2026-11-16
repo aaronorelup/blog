@@ -1,0 +1,1522 @@
+[
+{
+"id": "e0021",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "stems",
+"error_new": null
+},
+{
+"id": "e0022",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0023",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0029",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "stems",
+"error_new": null
+},
+{
+"id": "e0031",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0032",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0033",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "stems",
+"error_new": null
+},
+{
+"id": "e0034",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0035",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0036",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "stems",
+"error_new": null
+},
+{
+"id": "e0037",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0038",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0039",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "stems",
+"error_new": null
+},
+{
+"id": "e0040",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0041",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0053",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0077",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0078",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0079",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0080",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0081",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0082",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0083",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0084",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0085",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0086",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0087",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0088",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0089",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0090",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0091",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0092",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0093",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0094",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0096",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0097",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0098",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0099",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0100",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0101",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0102",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0103",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0104",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0105",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0106",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0107",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0108",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0109",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0161",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "stems",
+"error_new": null
+},
+{
+"id": "e0162",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "stems",
+"error_new": null
+},
+{
+"id": "e0163",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "stems",
+"error_new": null
+},
+{
+"id": "e0164",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "stems",
+"error_new": null
+},
+{
+"id": "e0165",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "stems",
+"error_new": null
+},
+{
+"id": "e0166",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "stems",
+"error_new": null
+},
+{
+"id": "e0167",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "stems",
+"error_new": null
+},
+{
+"id": "e0168",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "stems",
+"error_new": null
+},
+{
+"id": "e0169",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "stems",
+"error_new": null
+},
+{
+"id": "e0170",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "stems",
+"error_new": null
+},
+{
+"id": "e0171",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0172",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0173",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0174",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0440",
+"exit_old": 3,
+"exit_new": 3,
+"same_counts_metrics_error": true,
+"sub": "f0",
+"error_new": "IndexError: index 5654 is out of bounds for axis 0 with size 5654"
+},
+{
+"id": "e0441",
+"exit_old": 3,
+"exit_new": 3,
+"same_counts_metrics_error": true,
+"sub": "f0",
+"error_new": "IndexError: index 5654 is out of bounds for axis 0 with size 5654"
+},
+{
+"id": "e0442",
+"exit_old": 3,
+"exit_new": 3,
+"same_counts_metrics_error": true,
+"sub": "f0",
+"error_new": "IndexError: index 8348 is out of bounds for axis 0 with size 8348"
+},
+{
+"id": "e0443",
+"exit_old": 3,
+"exit_new": 3,
+"same_counts_metrics_error": true,
+"sub": "f0",
+"error_new": "IndexError: index 8348 is out of bounds for axis 0 with size 8348"
+},
+{
+"id": "e0444",
+"exit_old": 3,
+"exit_new": 3,
+"same_counts_metrics_error": true,
+"sub": "f0",
+"error_new": "IndexError: index 8356 is out of bounds for axis 0 with size 8356"
+},
+{
+"id": "e0445",
+"exit_old": 3,
+"exit_new": 3,
+"same_counts_metrics_error": true,
+"sub": "f0",
+"error_new": "IndexError: index 8356 is out of bounds for axis 0 with size 8356"
+},
+{
+"id": "e0446",
+"exit_old": 3,
+"exit_new": 3,
+"same_counts_metrics_error": true,
+"sub": "f0",
+"error_new": "IndexError: index 5651 is out of bounds for axis 0 with size 5651"
+},
+{
+"id": "e0447",
+"exit_old": 3,
+"exit_new": 3,
+"same_counts_metrics_error": true,
+"sub": "f0",
+"error_new": "IndexError: index 5651 is out of bounds for axis 0 with size 5651"
+},
+{
+"id": "e0478",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "f0",
+"error_new": null
+},
+{
+"id": "e0483",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "f0",
+"error_new": null
+},
+{
+"id": "e0487",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "f0",
+"error_new": null
+},
+{
+"id": "e0492",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "f0",
+"error_new": null
+},
+{
+"id": "e0501",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "f0",
+"error_new": null
+},
+{
+"id": "e0509",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "f0",
+"error_new": null
+},
+{
+"id": "e0517",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "f0",
+"error_new": null
+},
+{
+"id": "e0528",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "f0",
+"error_new": null
+},
+{
+"id": "e0564",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "f0",
+"error_new": null
+},
+{
+"id": "e0566",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0570",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0572",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "f0",
+"error_new": null
+},
+{
+"id": "e0576",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0579",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0582",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "f0",
+"error_new": null
+},
+{
+"id": "e0584",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0587",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0590",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "f0",
+"error_new": null
+},
+{
+"id": "e0593",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0595",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0597",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "f0",
+"error_new": null
+},
+{
+"id": "e0599",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0601",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0603",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "f0",
+"error_new": null
+},
+{
+"id": "e0605",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0607",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0611",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0622",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "stems",
+"error_new": null
+},
+{
+"id": "e0632",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "stems",
+"error_new": null
+},
+{
+"id": "e0637",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0640",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0643",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0645",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0681",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0684",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0686",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0688",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0691",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0694",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0697",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0701",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0703",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0706",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0708",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0710",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0712",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0714",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0716",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0718",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0734",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0736",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0738",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0741",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0744",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0746",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0748",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0751",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0753",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0755",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0757",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0759",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0762",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0764",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0767",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0770",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0772",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0774",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0776",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0777",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0780",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0783",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0786",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0789",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0791",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0794",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0797",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0800",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0803",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0807",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0810",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0814",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0818",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0821",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0824",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0827",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0830",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0833",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0836",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0839",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0842",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0846",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0849",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0851",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0854",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0857",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0861",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0865",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0868",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0871",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0874",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0877",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e0950",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "stems",
+"error_new": null
+},
+{
+"id": "e0965",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "stems",
+"error_new": null
+},
+{
+"id": "e0971",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e0974",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e1124",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "stems",
+"error_new": null
+},
+{
+"id": "e1138",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "stems",
+"error_new": null
+},
+{
+"id": "e1143",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e1147",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e1219",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e1220",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e1221",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e1222",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "notes",
+"error_new": null
+},
+{
+"id": "e1276",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e1277",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e1278",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e1279",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e1280",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e1281",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+},
+{
+"id": "e1282",
+"exit_old": 0,
+"exit_new": 0,
+"same_counts_metrics_error": true,
+"sub": "onsets",
+"error_new": null
+}
+]

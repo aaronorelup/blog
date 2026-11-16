@@ -1,0 +1,70 @@
+{
+ "clip": "R3a",
+ "mode": "full",
+ "frames": 540,
+ "all": {
+  "frames": 540,
+  "frac_0_hands": 0.1778,
+  "frac_1_hand": 0.8222,
+  "frac_2_hands": 0.0,
+  "frac_more_than_2": 0.0,
+  "frac_at_least_1": 0.8222,
+  "label_counts": {
+   "null": 444
+  },
+  "infer_ms_mean": 241.44,
+  "infer_ms_median": 200.78,
+  "infer_ms_p90": 413.43,
+  "fps_from_mean": 4.14,
+  "score_mean": 0.3685,
+  "score_min": 0.3,
+  "score_max": 0.5177
+ },
+ "per_shot": {
+  "medium": {
+   "frames": 319,
+   "frac_0_hands": 0.2288,
+   "frac_1_hand": 0.7712,
+   "frac_2_hands": 0.0,
+   "frac_more_than_2": 0.0,
+   "frac_at_least_1": 0.7712,
+   "label_counts": {
+    "null": 246
+   },
+   "infer_ms_mean": 215.51,
+   "infer_ms_median": 186.9,
+   "infer_ms_p90": 344.59,
+   "fps_from_mean": 4.64,
+   "score_mean": 0.39,
+   "score_min": 0.3002,
+   "score_max": 0.5177
+  },
+  "wide": {
+   "frames": 221,
+   "frac_0_hands": 0.1041,
+   "frac_1_hand": 0.8959,
+   "frac_2_hands": 0.0,
+   "frac_more_than_2": 0.0,
+   "frac_at_least_1": 0.8959,
+   "label_counts": {
+    "null": 198
+   },
+   "infer_ms_mean": 278.87,
+   "infer_ms_median": 255.6,
+   "infer_ms_p90": 442.83,
+   "fps_from_mean": 3.59,
+   "score_mean": 0.3418,
+   "score_min": 0.3,
+   "score_max": 0.3889
+  }
+ },
+ "tool": "rtmlib hand",
+ "rtmlib_version": "?",
+ "models": {
+  "det": "https://download.openmmlab.com/mmpose/v1/projects/rtmposev1/onnx_sdk/rtmdet_nano_8xb32-300e_hand-267f9c8f.zip",
+  "pose": "https://download.openmmlab.com/mmpose/v1/projects/rtmposev1/onnx_sdk/rtmpose-m_simcc-hand5_pt-aic-coco_210e-256x256-74fb594_20230320.zip"
+ },
+ "init_s": 0.274,
+ "frame_step": 1,
+ "hand_counted_if_mean_kpt_score_ge": 0.3
+}

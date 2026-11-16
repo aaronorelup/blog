@@ -1,0 +1,39 @@
+{
+ "tag": "dropd-range",
+ "backend": "tflite",
+ "model_path": "/home/user/gtr/lanes/audio-to-notes/venv-basicpitch/lib/python3.10/site-packages/basic_pitch/saved_models/icassp_2022/nmp.tflite",
+ "model_type": "MODEL_TYPES.TFLITE",
+ "settings": {
+  "onset_threshold": 0.5,
+  "frame_threshold": 0.3,
+  "minimum_note_length": 127.7,
+  "minimum_frequency": 73.4,
+  "maximum_frequency": 1319.0,
+  "multiple_pitch_bends": false,
+  "melodia_trick": true
+ },
+ "model_load_s": 0.001,
+ "clips": {
+  "S5dropd": {
+   "input": "/home/user/gtr/inputs/S5dropd/S5dropd.wav",
+   "predict_s": 23.231,
+   "n_notes": 129,
+   "midi_instruments": 1,
+   "midi_pitch_bend_events": 0,
+   "model_output_shapes": {
+    "note": [
+     2524,
+     88
+    ],
+    "onset": [
+     2524,
+     88
+    ],
+    "contour": [
+     2524,
+     264
+    ]
+   }
+  }
+ }
+}

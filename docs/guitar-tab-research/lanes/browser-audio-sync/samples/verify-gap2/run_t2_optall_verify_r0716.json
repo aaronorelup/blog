@@ -1,0 +1,269 @@
+{
+ "page": "/gpages/htdemucs6s.html?threads=2&opt=all&tag=S4_10s_t2_optall_verify&write=0",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 7.289,
+ "driver_cpus_allowed_list": "0-1",
+ "clk_tck": 100,
+ "sampler": {
+  "interval_ms": 500,
+  "samples": 15,
+  "mean_sample_cost_ms": 1.7333333333333334
+ },
+ "external_requests": [],
+ "phases": [
+  {
+   "name": "model_fetch_start",
+   "epoch_ms": 1794359765426.4
+  },
+  {
+   "name": "model_fetch_end",
+   "epoch_ms": 1794359765749.3
+  },
+  {
+   "name": "session_create_start",
+   "epoch_ms": 1794359765751
+  }
+ ],
+ "phase_cpu": [
+  {
+   "phase": "model_fetch",
+   "wall_s": 0.322900146484375,
+   "cpu_s_all_processes": 0.08254297069922657,
+   "cpu_per_wall_all": 0.2556300193664384,
+   "cpu_s_renderer": 0.08254297069922657,
+   "cpu_per_wall_renderer": 0.2556300193664384,
+   "per_process": [
+    {
+     "pid": 5863,
+     "type": "renderer",
+     "cpu_s": 0.08254297069922657
+    }
+   ]
+  }
+ ],
+ "processes": [
+  {
+   "pid": 5804,
+   "type": "browser",
+   "exe": "chrome-headless-shell.real",
+   "seen_s": [
+    0.501,
+    7.287
+   ],
+   "cpu_s": 0.01,
+   "cpu_s_total_at_last_sample": 0.17,
+   "max_rss_mb_sampled": 90.71484375,
+   "vmhwm_mb": 91.421875,
+   "max_threads": 26,
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 5806,
+   "type": "zygote",
+   "exe": "chrome-headless-shell.real",
+   "seen_s": [
+    0.501,
+    7.287
+   ],
+   "cpu_s": 0,
+   "cpu_s_total_at_last_sample": 0,
+   "max_rss_mb_sampled": 39.72265625,
+   "vmhwm_mb": 39.72265625,
+   "max_threads": 1,
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 5807,
+   "type": "zygote",
+   "exe": "chrome-headless-shell.real",
+   "seen_s": [
+    0.501,
+    7.287
+   ],
+   "cpu_s": 0,
+   "cpu_s_total_at_last_sample": 0.01,
+   "max_rss_mb_sampled": 39.9375,
+   "vmhwm_mb": 39.9375,
+   "max_threads": 1,
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 5827,
+   "type": "utility:network.mojom.NetworkService",
+   "exe": "chrome-headless-shell.real",
+   "seen_s": [
+    0.501,
+    7.287
+   ],
+   "cpu_s": 0.01,
+   "cpu_s_total_at_last_sample": 0.11,
+   "max_rss_mb_sampled": 68.87109375,
+   "vmhwm_mb": 70.73046875,
+   "max_threads": 8,
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 5825,
+   "type": "gpu-process",
+   "exe": "chrome-headless-shell.real",
+   "seen_s": [
+    0.501,
+    7.287
+   ],
+   "cpu_s": 0,
+   "cpu_s_total_at_last_sample": 0.02,
+   "max_rss_mb_sampled": 57.46875,
+   "vmhwm_mb": 57.46875,
+   "max_threads": 13,
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 5863,
+   "type": "renderer",
+   "exe": "chrome-headless-shell.real",
+   "seen_s": [
+    0.501,
+    7.287
+   ],
+   "cpu_s": 8.05,
+   "cpu_s_total_at_last_sample": 8.29,
+   "max_rss_mb_sampled": 4378.69140625,
+   "vmhwm_mb": 4383.8203125,
+   "max_threads": 11,
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  }
+ ],
+ "renderer_threads": [
+  {
+   "pid": 5863,
+   "tid": 5863,
+   "name": "chrome-headless",
+   "cpu_s": 6.7,
+   "processors_seen": [
+    0,
+    1
+   ],
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 5863,
+   "tid": 5866,
+   "name": "ThreadPoolForeg",
+   "cpu_s": 1.05,
+   "processors_seen": [
+    0,
+    1
+   ],
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 5863,
+   "tid": 5868,
+   "name": "ThreadPoolForeg",
+   "cpu_s": 0.29,
+   "processors_seen": [
+    0,
+    1
+   ],
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 5863,
+   "tid": 5871,
+   "name": "ThreadPoolForeg",
+   "cpu_s": 0.14,
+   "processors_seen": [
+    0,
+    1
+   ],
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 5863,
+   "tid": 5867,
+   "name": "Chrome_ChildIOT",
+   "cpu_s": 0.03,
+   "processors_seen": [
+    0,
+    1
+   ],
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 5863,
+   "tid": 5874,
+   "name": "DedicatedWorker",
+   "cpu_s": 0.03,
+   "processors_seen": [
+    0,
+    1
+   ],
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  }
+ ],
+ "processors_seen_by_renderer_threads": [
+  0,
+  1
+ ],
+ "result": {
+  "threads_requested": 2,
+  "file": "/laneinputs/S4_10s/S4_10s.wav",
+  "model": "/dl/htdemucs-6s-onnx/htdemucs_6s_fp16weights.onnx",
+  "crossOriginIsolated": true,
+  "hardwareConcurrency": 2,
+  "N_SAMPLES": 343980,
+  "overlap": 85995,
+  "stride": 257985,
+  "ort_versions": {
+   "common": "1.31.1",
+   "web": "1.31.1"
+  },
+  "mem_start": {
+   "usedJSHeapSize": 10000000,
+   "totalJSHeapSize": 10000000,
+   "jsHeapSizeLimit": 3760000000
+  },
+  "model_bytes": 136428532,
+  "session_options": {
+   "executionProviders": [
+    "wasm"
+   ],
+   "graphOptimizationLevel": "all",
+   "extra": {
+    "session": {
+     "use_ort_model_bytes_directly": "1"
+    }
+   }
+  },
+  "error": "Can't create a session. ERROR_CODE: 6, ERROR_MESSAGE: std::bad_alloc",
+  "stack": "Error: Can't create a session. ERROR_CODE: 6, ERROR_MESSAGE: std::bad_alloc\n    at S (http://127.0.0.1:18777/nm/onnxruntime-web/dist/ort.wasm.min.mjs:6:27597)\n    at Ce (http://127.0.0.1:18777/nm/onnxruntime-web/dist/ort.wasm.min.mjs:6:38597)\n    at async Xe.loadModel (http://127.0.0.1:18777/nm/onnxruntime-web/dist/ort.wasm.min.mjs:6:51047)\n    at async Ke.createInferenceSessionHandler (http://127.0.0.1:18777/nm/onnxruntime-web/dist/ort.wasm.min.mjs:6:53062)\n    at async e.create (http://127.0.0.1:18777/nm/onnxruntime-web/dist/ort.wasm.min.mjs:6:21131)\n    at async http://127.0.0.1:18777/gpages/htdemucs6s.html?threads=2&opt=all&tag=S4_10s_t2_optall_verify&write=0:52:19"
+ }
+}

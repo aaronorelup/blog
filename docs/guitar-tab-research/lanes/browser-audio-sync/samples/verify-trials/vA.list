@@ -1,0 +1,5 @@
+/home/user/gtr/lanes/browser-audio-sync/verify/out/probe/probe_headless_shell.json /pages/probe.html
+/home/user/gtr/lanes/browser-audio-sync/verify/out/sync/sync_s4_buffer_busy0.json /pages/sync_s4.html?mode=buffer
+/home/user/gtr/lanes/browser-audio-sync/verify/out/video/video_mp4.json /pages/video.html?file=mp4&parts=play,playid,seek
+/home/user/gtr/lanes/browser-audio-sync/verify/out/metronome/metronome_lookahead_busy100.json /pages/metronome.html?method=lookahead&busy=100&dur=61
+/home/user/gtr/lanes/browser-audio-sync/verify/out/metronome/metronome_tone_busy100.json /pages/metronome.html?method=tone&busy=100&dur=61

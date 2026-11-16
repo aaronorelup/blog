@@ -1,0 +1,575 @@
+{
+ "tex": "/lane/out/alphatex-from-truth/S2n.truth.atex",
+ "steps": [
+  {
+   "edit": "fret",
+   "gesture": "double-click the fret digit of melody bar 1 note 1, type \"2\"",
+   "selected": {
+    "text": "0",
+    "startLine": 11,
+    "startCol": 1,
+    "endLine": 11,
+    "endCol": 2
+   },
+   "line_after": "2.3.4 0.3.4 3.2.4 3.2.4 |",
+   "after": {
+    "renders": 2,
+    "texCalls": 2,
+    "melody_bar1": [
+     {
+      "string_alphatab": 4,
+      "string_from_top": 3,
+      "fret": 2,
+      "pitch": 57
+     },
+     {
+      "string_alphatab": 4,
+      "string_from_top": 3,
+      "fret": 0,
+      "pitch": 55
+     },
+     {
+      "string_alphatab": 5,
+      "string_from_top": 2,
+      "fret": 3,
+      "pitch": 62
+     },
+     {
+      "string_alphatab": 5,
+      "string_from_top": 2,
+      "fret": 3,
+      "pitch": 62
+     }
+    ],
+    "bass_bar1_note1": {
+     "string_alphatab": 1,
+     "string_from_top": 6,
+     "fret": 3,
+     "pitch": 43
+    },
+    "staff": {
+     "capo": 0,
+     "tuning": [
+      64,
+      59,
+      55,
+      50,
+      45,
+      40
+     ],
+     "tuningName": "Guitar Standard Tuning"
+    },
+    "markers": [],
+    "errors": []
+   }
+  },
+  {
+   "edit": "string",
+   "gesture": "double-click the fret digit of melody bar 1 note 2, type \"5\"; double-click its string digit, type \"4\"",
+   "selected_first": {
+    "text": "0",
+    "startLine": 11,
+    "startCol": 7,
+    "endLine": 11,
+    "endCol": 8
+   },
+   "line_between": "2.3.4 5.3.4 3.2.4 3.2.4 |",
+   "between": {
+    "melody_bar1_note2": {
+     "string_alphatab": 4,
+     "string_from_top": 3,
+     "fret": 5,
+     "pitch": 60
+    },
+    "markers": []
+   },
+   "selected_second": {
+    "text": "3",
+    "startLine": 11,
+    "startCol": 9,
+    "endLine": 11,
+    "endCol": 10
+   },
+   "line_after": "2.3.4 5.4.4 3.2.4 3.2.4 |",
+   "after": {
+    "renders": 4,
+    "texCalls": 4,
+    "melody_bar1": [
+     {
+      "string_alphatab": 4,
+      "string_from_top": 3,
+      "fret": 2,
+      "pitch": 57
+     },
+     {
+      "string_alphatab": 3,
+      "string_from_top": 4,
+      "fret": 5,
+      "pitch": 55
+     },
+     {
+      "string_alphatab": 5,
+      "string_from_top": 2,
+      "fret": 3,
+      "pitch": 62
+     },
+     {
+      "string_alphatab": 5,
+      "string_from_top": 2,
+      "fret": 3,
+      "pitch": 62
+     }
+    ],
+    "bass_bar1_note1": {
+     "string_alphatab": 1,
+     "string_from_top": 6,
+     "fret": 3,
+     "pitch": 43
+    },
+    "staff": {
+     "capo": 0,
+     "tuning": [
+      64,
+      59,
+      55,
+      50,
+      45,
+      40
+     ],
+     "tuningName": "Guitar Standard Tuning"
+    },
+    "markers": [],
+    "errors": []
+   }
+  },
+  {
+   "edit": "impossible string",
+   "gesture": "double-click the string digit of bass bar 1 note 1, type \"7\"; then Control+Z",
+   "selected": {
+    "text": "6",
+    "startLine": 25,
+    "startCol": 3,
+    "endLine": 25,
+    "endCol": 4
+   },
+   "line_with_7": "3.7.4 0.4.4 3.6.4 0.4.4 |",
+   "with_7": {
+    "renders": 4,
+    "texCalls": 5,
+    "melody_bar1": [
+     {
+      "string_alphatab": 4,
+      "string_from_top": 3,
+      "fret": 2,
+      "pitch": 57
+     },
+     {
+      "string_alphatab": 3,
+      "string_from_top": 4,
+      "fret": 5,
+      "pitch": 55
+     },
+     {
+      "string_alphatab": 5,
+      "string_from_top": 2,
+      "fret": 3,
+      "pitch": 62
+     },
+     {
+      "string_alphatab": 5,
+      "string_from_top": 2,
+      "fret": 3,
+      "pitch": 62
+     }
+    ],
+    "bass_bar1_note1": {
+     "string_alphatab": 1,
+     "string_from_top": 6,
+     "fret": 3,
+     "pitch": 43
+    },
+    "staff": {
+     "capo": 0,
+     "tuning": [
+      64,
+      59,
+      55,
+      50,
+      45,
+      40
+     ],
+     "tuningName": "Guitar Standard Tuning"
+    },
+    "markers": [
+     {
+      "severity": 8,
+      "message": "Note string is out of range. Available range: 1-6",
+      "code": "AT208",
+      "source": "alphaTab",
+      "startLine": 25,
+      "startCol": 3,
+      "endLine": 25,
+      "endCol": 4
+     }
+    ],
+    "errors": [
+     {
+      "type": "alphatab_error",
+      "t_ms": 5643.7,
+      "message": "There are errors in the parsed alphaTex, check the diagnostics for details"
+     }
+    ]
+   },
+   "log_tail_with_7": [
+    {
+     "type": "postRenderFinished",
+     "t_ms": 3177.7,
+     "renders": 3
+    },
+    {
+     "type": "tex",
+     "t_ms": 4289.4,
+     "calls": 4
+    },
+    {
+     "type": "renderFinished",
+     "t_ms": 4325.6
+    },
+    {
+     "type": "postRenderFinished",
+     "t_ms": 4325.9,
+     "renders": 4
+    },
+    {
+     "type": "tex",
+     "t_ms": 5639.9,
+     "calls": 5
+    },
+    {
+     "type": "alphatab_error",
+     "t_ms": 5643.7,
+     "message": "There are errors in the parsed alphaTex, check the diagnostics for details"
+    }
+   ],
+   "line_after_undo": "3.6.4 0.4.4 3.6.4 0.4.4 |",
+   "after_undo": {
+    "renders": 5,
+    "texCalls": 6,
+    "melody_bar1": [
+     {
+      "string_alphatab": 4,
+      "string_from_top": 3,
+      "fret": 2,
+      "pitch": 57
+     },
+     {
+      "string_alphatab": 3,
+      "string_from_top": 4,
+      "fret": 5,
+      "pitch": 55
+     },
+     {
+      "string_alphatab": 5,
+      "string_from_top": 2,
+      "fret": 3,
+      "pitch": 62
+     },
+     {
+      "string_alphatab": 5,
+      "string_from_top": 2,
+      "fret": 3,
+      "pitch": 62
+     }
+    ],
+    "bass_bar1_note1": {
+     "string_alphatab": 1,
+     "string_from_top": 6,
+     "fret": 3,
+     "pitch": 43
+    },
+    "staff": {
+     "capo": 0,
+     "tuning": [
+      64,
+      59,
+      55,
+      50,
+      45,
+      40
+     ],
+     "tuningName": "Guitar Standard Tuning"
+    },
+    "markers": [],
+    "errors": [
+     {
+      "type": "alphatab_error",
+      "t_ms": 5643.7,
+      "message": "There are errors in the parsed alphaTex, check the diagnostics for details"
+     }
+    ]
+   }
+  },
+  {
+   "edit": "capo",
+   "gesture": "click at the end of the \\tuning line, End, Enter, type \"\\ca\", Escape, type \"po 2\"",
+   "tuning_line": 6,
+   "suggestions_after_backslash_ca": [
+    "\\capo, Set the capo fret, Function",
+    "\\ac, Mark an anacrusis (pick-up) bar, Function",
+    "\\accidentals, Changes the mode how accidentals are treated, Function",
+    "\\articulation, Define percussion articulations, Function",
+    "\\chordDiagramsInScore, Show inline chord diagrams in score., Function",
+    "\\scale, Adjusts the relative scale of the bar, Function",
+    "\\track, Start a new track, Function",
+    "\\bracketExtendMode, Set the mode for brackets and braces., Function",
+    "\\multiTrackTrackNamePolicy, Sets the track name visibility when rendering multiple tracks., Function",
+    "\\singleTrackTrackNamePolicy, Sets the track name visibility when rendering single tracks., Function",
+    "\\wordsAndMusic, Sets the template and text align for combined words and music authors., Function",
+    "\\firstSystemTrackNameMode, The text how to show as track names, Function"
+   ],
+   "new_line": "\\capo 2",
+   "after": {
+    "renders": 6,
+    "texCalls": 8,
+    "melody_bar1": [
+     {
+      "string_alphatab": 4,
+      "string_from_top": 3,
+      "fret": 2,
+      "pitch": 59
+     },
+     {
+      "string_alphatab": 3,
+      "string_from_top": 4,
+      "fret": 5,
+      "pitch": 57
+     },
+     {
+      "string_alphatab": 5,
+      "string_from_top": 2,
+      "fret": 3,
+      "pitch": 64
+     },
+     {
+      "string_alphatab": 5,
+      "string_from_top": 2,
+      "fret": 3,
+      "pitch": 64
+     }
+    ],
+    "bass_bar1_note1": {
+     "string_alphatab": 1,
+     "string_from_top": 6,
+     "fret": 3,
+     "pitch": 45
+    },
+    "staff": {
+     "capo": 2,
+     "tuning": [
+      64,
+      59,
+      55,
+      50,
+      45,
+      40
+     ],
+     "tuningName": "Guitar Standard Tuning"
+    },
+    "markers": [],
+    "errors": [
+     {
+      "type": "alphatab_error",
+      "t_ms": 5643.7,
+      "message": "There are errors in the parsed alphaTex, check the diagnostics for details"
+     },
+     {
+      "type": "alphatab_error",
+      "t_ms": 9155.7,
+      "message": "Error parsing alphaTex, check diagnostics on inner error for details"
+     }
+    ]
+   }
+  }
+ ],
+ "initial": {
+  "renders": 1,
+  "texCalls": 1,
+  "melody_bar1": [
+   {
+    "string_alphatab": 4,
+    "string_from_top": 3,
+    "fret": 0,
+    "pitch": 55
+   },
+   {
+    "string_alphatab": 4,
+    "string_from_top": 3,
+    "fret": 0,
+    "pitch": 55
+   },
+   {
+    "string_alphatab": 5,
+    "string_from_top": 2,
+    "fret": 3,
+    "pitch": 62
+   },
+   {
+    "string_alphatab": 5,
+    "string_from_top": 2,
+    "fret": 3,
+    "pitch": 62
+   }
+  ],
+  "bass_bar1_note1": {
+   "string_alphatab": 1,
+   "string_from_top": 6,
+   "fret": 3,
+   "pitch": 43
+  },
+  "staff": {
+   "capo": 0,
+   "tuning": [
+    64,
+    59,
+    55,
+    50,
+    45,
+    40
+   ],
+   "tuningName": "Guitar Standard Tuning"
+  },
+  "markers": [],
+  "errors": []
+ },
+ "lsp_init_log": [
+  {
+   "type": "grammarRegistered",
+   "t_ms": 84.6
+  },
+  {
+   "type": "lspInitialized",
+   "t_ms": 510.1,
+   "ms": 327.6
+  },
+  {
+   "type": "ready",
+   "t_ms": 573.9
+  },
+  {
+   "type": "postRenderFinished",
+   "t_ms": 656,
+   "renders": 1
+  }
+ ],
+ "lines": {
+  "melody_bar1": 11,
+  "bass_bar1": 25,
+  "melody_bar1_text": "0.3.4 0.3.4 3.2.4 3.2.4 |",
+  "bass_bar1_text": "3.6.4 0.4.4 3.6.4 0.4.4 |"
+ },
+ "export1": {
+  "gpBytes": 4691,
+  "texChars": 2072
+ },
+ "export2": {
+  "gpBytes": 4700,
+  "texChars": 2084
+ },
+ "page_log": [
+  {
+   "type": "grammarRegistered",
+   "t_ms": 84.6
+  },
+  {
+   "type": "lspInitialized",
+   "t_ms": 510.1,
+   "ms": 327.6
+  },
+  {
+   "type": "ready",
+   "t_ms": 573.9
+  },
+  {
+   "type": "postRenderFinished",
+   "t_ms": 656,
+   "renders": 1
+  },
+  {
+   "type": "tex",
+   "t_ms": 2016.2,
+   "calls": 2
+  },
+  {
+   "type": "postRenderFinished",
+   "t_ms": 2045.1,
+   "renders": 2
+  },
+  {
+   "type": "tex",
+   "t_ms": 3151.1,
+   "calls": 3
+  },
+  {
+   "type": "postRenderFinished",
+   "t_ms": 3177.7,
+   "renders": 3
+  },
+  {
+   "type": "tex",
+   "t_ms": 4289.4,
+   "calls": 4
+  },
+  {
+   "type": "postRenderFinished",
+   "t_ms": 4325.9,
+   "renders": 4
+  },
+  {
+   "type": "tex",
+   "t_ms": 5639.9,
+   "calls": 5
+  },
+  {
+   "type": "alphatab_error",
+   "t_ms": 5643.7,
+   "message": "There are errors in the parsed alphaTex, check the diagnostics for details"
+  },
+  {
+   "type": "tex",
+   "t_ms": 7396.8,
+   "calls": 6
+  },
+  {
+   "type": "postRenderFinished",
+   "t_ms": 7414.4,
+   "renders": 5
+  },
+  {
+   "type": "tex",
+   "t_ms": 9153.6,
+   "calls": 7
+  },
+  {
+   "type": "alphatab_error",
+   "t_ms": 9155.7,
+   "message": "Error parsing alphaTex, check diagnostics on inner error for details"
+  },
+  {
+   "type": "tex",
+   "t_ms": 10392.7,
+   "calls": 8
+  },
+  {
+   "type": "postRenderFinished",
+   "t_ms": 10435.6,
+   "renders": 6
+  }
+ ],
+ "console": [
+  "error: [AlphaTab][AlphaTex] Error while parsing alphaTex: There are errors in the parsed alphaTex, check the diagnostics for details\nlexer diagnostics:\n\nparser diagnostics:\n\nsemantic diagnostics:\n  Error AT208(25,3)->(25,4): Note string is out of range. Available range: 1-6",
+  "error: [AlphaTab][API] An unexpected error occurred AlphaTexErrorWithDiagnostics: There are errors in the parsed alphaTex, check the diagnostics for details\n    at AlphaTexImporter.readScore (http://127.0.0.1:8765/nm/@coderline/alphatab/dist/alphaTab.js:16207:20)\n    at AlphaTabApi.tex (http://127.0.0.1:87",
+  "error: [AlphaTab][AlphaTex] Error while parsing alphaTex: There are errors in the parsed alphaTex, check the diagnostics for details\nlexer diagnostics:\n\nparser diagnostics:\n  Error AT204(7,1)->(7,4): Unrecognized metadata 'ca'.\nsemantic diagnostics:\n",
+  "error: [AlphaTab][API] An unexpected error occurred UnsupportedFormatError: Error parsing alphaTex, check diagnostics on inner error for details\n    at AlphaTexImporter.readScore (http://127.0.0.1:8765/nm/@coderline/alphatab/dist/alphaTab.js:16202:11)\n    at AlphaTabApi.tex (http://127.0.0.1:8765/nm/@coder"
+ ],
+ "wall_ms": 12429
+}

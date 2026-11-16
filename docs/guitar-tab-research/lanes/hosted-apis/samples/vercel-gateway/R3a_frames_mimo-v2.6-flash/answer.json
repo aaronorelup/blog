@@ -1,0 +1,37 @@
+{
+ "capo": {
+  "present": "no",
+  "fret": null,
+  "evidence": "The front view (e.g., t=7.0s) clearly shows the nut and upper fretboard with no capo clamped on the neck."
+ },
+ "tuning": {
+  "tuning": "cannot_tell",
+  "evidence": "Tuning cannot be determined from visual frames alone; audio is required to identify the pitches of the strings."
+ },
+ "fretting_hand": [
+  {
+   "start": 0.0,
+   "end": 6.0,
+   "visible": true,
+   "lowest_fret": 2,
+   "highest_fret": 8,
+   "note": "Side view of the guitarist; the left hand moves between approximately frets 2 and 8."
+  },
+  {
+   "start": 7.0,
+   "end": 14.0,
+   "visible": true,
+   "lowest_fret": 2,
+   "highest_fret": 12,
+   "note": "Front view provides a clear look at the fretboard; the hand shifts between low positions (frets 2-6) and high positions (frets 8-12)."
+  },
+  {
+   "start": 15.0,
+   "end": 17.0,
+   "visible": true,
+   "lowest_fret": 3,
+   "highest_fret": 6,
+   "note": "Side view returns; the hand stays in the lower-middle position on the neck (frets 3-6)."
+  }
+ ]
+}

@@ -1,0 +1,12 @@
+1470a308896629352a811082843eb708cbc2f1aa3092757340055ef76a53ed0c  zenodo-11406378/best_TabCNN_tablature_trancription_model
+8d9ce59157bdab37fb4816d32d7f29f3da0cdbf3c7876707c819af4d1f88e6b7  cstr-tabcnn-onnx/tabcnn-gpfx.onnx
+15c58000ed2d1deb3d3fc07581aa1823482dad91d913399dc0209ef240ad8a51  cstr-tabcnn-onnx/tabcnn.onnx
+ce168b2cd426f81a2a78499214e40605  zenodo-11406378/best_TabCNN_tablature_trancription_model
+cstr-tabcnn-onnx:
+total 6528
+-rw-r--r-- 1 root root 3339568 Nov 11 00:14 tabcnn-gpfx.onnx
+-rw-r--r-- 1 root root 3339979 Nov 11 00:14 tabcnn.onnx
+
+zenodo-11406378:
+total 3268
+-rw-r--r-- 1 root root 3345122 Nov 11 00:14 best_TabCNN_tablature_trancription_model

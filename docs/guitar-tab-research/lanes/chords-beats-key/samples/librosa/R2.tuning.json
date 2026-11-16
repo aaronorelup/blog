@@ -1,0 +1,5 @@
+{
+ "estimate_tuning_semitones": 0.010000000000000009,
+ "estimate_tuning_cents": 1.0,
+ "call": "librosa.estimate_tuning(y=y, sr=22050) defaults n_fft=2048, resolution=0.01, bins_per_octave=12"
+}

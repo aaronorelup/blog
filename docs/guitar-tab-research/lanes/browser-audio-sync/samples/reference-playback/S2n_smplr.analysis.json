@@ -1,0 +1,15 @@
+{
+ "source": "/home/user/gtr/lanes/browser-audio-sync/out/synths/synth_smplr_S2n.json",
+ "clip": "S2n",
+ "n_detected": 46,
+ "sample_rate": 44100,
+ "shift_from_schedule_s": 1.260453514739229,
+ "recorder_negative_step_correction_frames": 0,
+ "xcorr_with_truth_render": {
+  "lag_samples": 55551,
+  "lag_s": 1.2596598639455783,
+  "normalized_peak": 0.6495948433876038,
+  "gain_fit": 0.23121029138565063,
+  "residual_rms_rel": 0.7602804899215698
+ }
+}

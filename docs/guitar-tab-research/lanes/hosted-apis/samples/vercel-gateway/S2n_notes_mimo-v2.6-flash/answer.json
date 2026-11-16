@@ -1,0 +1,149 @@
+{
+ "notes": [
+  {
+   "onset": 0.02,
+   "offset": 1.52,
+   "pitch": 43
+  },
+  {
+   "onset": 0.02,
+   "offset": 1.52,
+   "pitch": 55
+  },
+  {
+   "onset": 0.02,
+   "offset": 1.52,
+   "pitch": 59
+  },
+  {
+   "onset": 0.02,
+   "offset": 1.52,
+   "pitch": 62
+  },
+  {
+   "onset": 0.53,
+   "offset": 0.98,
+   "pitch": 62
+  },
+  {
+   "onset": 0.99,
+   "offset": 1.44,
+   "pitch": 64
+  },
+  {
+   "onset": 1.48,
+   "offset": 1.93,
+   "pitch": 62
+  },
+  {
+   "onset": 1.96,
+   "offset": 2.41,
+   "pitch": 60
+  },
+  {
+   "onset": 2.44,
+   "offset": 3.94,
+   "pitch": 48
+  },
+  {
+   "onset": 2.44,
+   "offset": 3.94,
+   "pitch": 55
+  },
+  {
+   "onset": 2.44,
+   "offset": 3.94,
+   "pitch": 60
+  },
+  {
+   "onset": 2.44,
+   "offset": 3.94,
+   "pitch": 64
+  },
+  {
+   "onset": 2.92,
+   "offset": 3.37,
+   "pitch": 64
+  },
+  {
+   "onset": 3.41,
+   "offset": 3.86,
+   "pitch": 62
+  },
+  {
+   "onset": 3.89,
+   "offset": 4.34,
+   "pitch": 60
+  },
+  {
+   "onset": 4.38,
+   "offset": 4.83,
+   "pitch": 59
+  },
+  {
+   "onset": 4.85,
+   "offset": 6.35,
+   "pitch": 43
+  },
+  {
+   "onset": 4.85,
+   "offset": 6.35,
+   "pitch": 55
+  },
+  {
+   "onset": 4.85,
+   "offset": 6.35,
+   "pitch": 59
+  },
+  {
+   "onset": 4.85,
+   "offset": 6.35,
+   "pitch": 62
+  },
+  {
+   "onset": 5.34,
+   "offset": 5.79,
+   "pitch": 62
+  },
+  {
+   "onset": 5.82,
+   "offset": 6.27,
+   "pitch": 60
+  },
+  {
+   "onset": 6.3,
+   "offset": 6.75,
+   "pitch": 59
+  },
+  {
+   "onset": 6.78,
+   "offset": 7.23,
+   "pitch": 57
+  },
+  {
+   "onset": 7.27,
+   "offset": 7.72,
+   "pitch": 55
+  },
+  {
+   "onset": 7.75,
+   "offset": 8.42,
+   "pitch": 43
+  },
+  {
+   "onset": 7.75,
+   "offset": 8.42,
+   "pitch": 55
+  },
+  {
+   "onset": 7.75,
+   "offset": 8.42,
+   "pitch": 59
+  },
+  {
+   "onset": 7.75,
+   "offset": 8.42,
+   "pitch": 62
+  }
+ ]
+}

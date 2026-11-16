@@ -1,0 +1,41 @@
+[
+ {
+  "tool": "essentia",
+  "python": "/home/user/gtr/lanes/chords-beats-key/venv-essentia/bin/python",
+  "script": "/home/user/blog/docs/guitar-tab-research/lanes/chords-beats-key/scripts/essentia_run.py",
+  "clips": [
+   "R3a",
+   "R3b",
+   "R3c"
+  ],
+  "args": [
+   "--tempocnn-dir",
+   "/home/user/gtr/lanes/chords-beats-key/models/essentia_tempocnn"
+  ],
+  "tag": "essentia"
+ },
+ {
+  "tool": "librosa",
+  "python": "/home/user/gtr/lanes/chords-beats-key/venv-librosa/bin/python",
+  "script": "/home/user/blog/docs/guitar-tab-research/lanes/chords-beats-key/scripts/librosa_run.py",
+  "clips": [
+   "R3a",
+   "R3b",
+   "R3c"
+  ],
+  "args": [],
+  "tag": "librosa"
+ },
+ {
+  "tool": "chordino",
+  "python": "/home/user/gtr/lanes/chords-beats-key/venv-chordext/bin/python",
+  "script": "/home/user/blog/docs/guitar-tab-research/lanes/chords-beats-key/scripts/chordino_run.py",
+  "clips": [
+   "R3a",
+   "R3b",
+   "R3c"
+  ],
+  "args": [],
+  "tag": "chordino"
+ }
+]

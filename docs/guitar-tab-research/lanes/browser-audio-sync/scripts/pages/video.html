@@ -1,0 +1,142 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>video frame timing</title>
+<body>
+<video id="v" muted playsinline width="640" height="480"></video>
+<script type="module">
+// R3a video: (1) requestVideoFrameCallback during normal playback, (2) seeks to exact frame times, (3) frame-by-frame
+// decoding with WebCodecs through Mediabunny. Frames are identified exactly by the SHA-1 of their luma plane,
+// compared with ffmpeg's decode of the same file (frame_hashes.py).
+import { finish, fail, sleep, stats } from './common.js';
+import * as MB from '/nm/mediabunny/dist/bundles/mediabunny.mjs';
+const q = new URLSearchParams(location.search);
+const FILE = q.get('file') || 'webm', PARTS = (q.get('parts') || 'play,playid,seek,decode').split(',');
+const FPS = 30000 / 1001;
+const R = { file: FILE, parts: PARTS };
+const hex = (buf) => Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('');
+async function yHashOfFrame(vf) {
+  const w = vf.visibleRect ? vf.visibleRect.width : vf.codedWidth, h = vf.visibleRect ? vf.visibleRect.height : vf.codedHeight;
+  const buf = new Uint8Array(vf.allocationSize()); const layout = await vf.copyTo(buf);
+  if (!['I420', 'NV12', 'I420A', 'I422', 'I444'].includes(vf.format)) return { format: vf.format, hash: null };
+  const y = new Uint8Array(w * h); const { offset, stride } = layout[0];
+  for (let r = 0; r < h; r++) y.set(buf.subarray(offset + r * stride, offset + r * stride + w), r * w);
+  return { format: vf.format, hash: hex(await crypto.subtle.digest('SHA-1', y)) };
+}
+try {
+  const ref = await (await fetch(`/out/video/R3a.${FILE}.yhash.json`)).json();
+  const byHash = new Map(); for (const f of ref.frames) byHash.set(f.y_sha1, f.i);
+  R.ref = { n_frames: ref.n_frames, codec: ref.codec };
+  const v = document.getElementById('v');
+  v.src = `/inputs/R3a/R3a.${FILE}`;
+  await new Promise((r, j) => { v.onloadeddata = r; v.onerror = () => j(new Error('video error ' + (v.error && v.error.message))); });
+  R.duration = v.duration;
+  // (1) playback with requestVideoFrameCallback
+  for (const part of ['play', 'playid']) {
+    if (!PARTS.includes(part)) continue;
+    v.currentTime = 0; await new Promise((r) => { v.onseeked = r; });
+    const cb = []; let ended = false, idErrors = 0;
+    const onFrame = async (now, md) => {
+      const row = { now, mediaTime: md.mediaTime, presentedFrames: md.presentedFrames, expectedDisplayTime: md.expectedDisplayTime,
+        presentationTime: md.presentationTime, processingDuration: md.processingDuration ?? null };
+      if (part === 'playid') { const t = performance.now(); try { const vf = new VideoFrame(v); const h = await yHashOfFrame(vf); vf.close();
+          row.format = h.format; row.frame = h.hash ? (byHash.has(h.hash) ? byHash.get(h.hash) : -1) : null; } catch (e) { idErrors++; row.idError = String(e); }
+        row.id_ms = performance.now() - t; }
+      cb.push(row);
+      if (!ended) v.requestVideoFrameCallback(onFrame);
+    };
+    v.requestVideoFrameCallback(onFrame);
+    const t0 = performance.now();
+    await v.play();
+    await new Promise((r) => { v.onended = r; });
+    ended = true;
+    const wall = (performance.now() - t0) / 1000;
+    const pf = cb.map((c) => c.presentedFrames);
+    const steps = pf.slice(1).map((p, i) => p - pf[i]);
+    const idx = cb.map((c) => c.mediaTime * FPS);
+    const res = { callbacks: cb.length, wall_s: wall, presentedFrames_first: pf[0], presentedFrames_last: pf[pf.length - 1],
+      presentedFrames_step_counts: steps.reduce((m, s) => (m[s] = (m[s] || 0) + 1, m), {}),
+      mediaTime_times_fps_minus_nearest_integer: stats(idx.map((x) => x - Math.round(x))),
+      distinct_mediaTime: new Set(cb.map((c) => c.mediaTime)).size,
+      mediaTime_frame_index_step_counts: idx.slice(1).map((x, i) => Math.round(x) - Math.round(idx[i])).reduce((m, s) => (m[s] = (m[s] || 0) + 1, m), {}),
+      callback_interval_ms: stats(cb.slice(1).map((c, i) => c.now - cb[i].now)) };
+    if (part === 'playid') {
+      const known = cb.filter((c) => c.frame !== null && c.frame !== undefined && c.frame >= 0);
+      res.identified = known.length; res.unidentified = cb.filter((c) => c.frame === -1).length; res.id_errors = idErrors;
+      res.formats = [...new Set(cb.map((c) => c.format))];
+      res.shown_frame_minus_mediaTime_frame_counts = known.reduce((m, c) => { const d = c.frame - Math.round(c.mediaTime * FPS); m[d] = (m[d] || 0) + 1; return m; }, {});
+      res.shown_frame_minus_ref_frame_at_mediaTime_counts = known.reduce((m, c) => {
+        // reference frame whose pts is the last one <= mediaTime (+0.5 ms)
+        let j = 0; while (j + 1 < ref.frames.length && ref.frames[j + 1].t <= c.mediaTime + 0.0005) j++;
+        const d = c.frame - j; m[d] = (m[d] || 0) + 1; return m; }, {});
+      res.distinct_frames_shown = new Set(known.map((c) => c.frame)).size;
+      res.id_ms = stats(cb.filter((c) => c.id_ms !== undefined).map((c) => c.id_ms));
+    }
+    res.first5 = cb.slice(0, 5);
+    R[part] = res;
+  }
+  // (2) seek accuracy
+  if (PARTS.includes('seek')) {
+    const targets = [1, 2, 10, 50, 100, 200, 217, 300, 400, 439, 500, 530];
+    const rows = [];
+    for (const k of targets) for (const where of ['start', 'mid']) {
+      const t = where === 'start' ? k / FPS : (k + 0.5) / FPS;
+      const md = await new Promise(async (res) => {
+        let done = false; const to = setTimeout(() => { if (!done) res(null); }, 3000);
+        v.requestVideoFrameCallback((now, m) => { done = true; clearTimeout(to); res(m); });
+        v.currentTime = t;
+      });
+      await new Promise((r) => { if (!v.seeking) r(); else v.onseeked = r; });
+      let frame = null, format = null;
+      try { const vf = new VideoFrame(v); const h = await yHashOfFrame(vf); vf.close(); format = h.format; frame = h.hash ? (byHash.has(h.hash) ? byHash.get(h.hash) : -1) : null; } catch (e) { frame = 'error: ' + e; }
+      // the frame that should be shown: the last reference frame whose pts <= t
+      let j = 0; while (j + 1 < ref.frames.length && ref.frames[j + 1].t <= t + 1e-9) j++;
+      rows.push({ k, where, t, currentTime_after: v.currentTime, rvfc_mediaTime: md ? md.mediaTime : null, shown_frame: frame, format,
+        expected_frame_by_ref_pts: j, ref_pts_of_k: ref.frames[k] ? ref.frames[k].t : null });
+    }
+    R.seek = { rows, n: rows.length, n_shown_equals_expected: rows.filter((r) => r.shown_frame === r.expected_frame_by_ref_pts).length,
+      n_shown_equals_k: rows.filter((r) => r.shown_frame === r.k).length,
+      n_rvfc_timeout: rows.filter((r) => r.rvfc_mediaTime === null).length };
+  }
+  // (3) WebCodecs decoding through Mediabunny
+  if (PARTS.includes('decode')) {
+    const input = new MB.Input({ source: new MB.UrlSource(`/inputs/R3a/R3a.${FILE}`), formats: MB.ALL_FORMATS });
+    const track = await input.getPrimaryVideoTrack();
+    const D = { codec: await track.getCodec(), decoderConfig: null, canDecode: await track.canDecode() };
+    try { const c = await track.getDecoderConfig(); D.decoderConfig = { codec: c.codec, codedWidth: c.codedWidth, codedHeight: c.codedHeight }; } catch (e) { D.decoderConfig = String(e); }
+    const sink = new MB.VideoSampleSink(track);
+    const t0 = performance.now(); let n = 0, same = 0, sameAny = 0; const tsDiff = [], fmts = new Set(), firsts = [];
+    for await (const s of sink.samples()) {
+      const vf = s.toVideoFrame(); const h = await yHashOfFrame(vf); vf.close();
+      fmts.add(h.format);
+      const refAt = ref.frames[n];
+      if (h.hash && refAt && h.hash === refAt.y_sha1) same++;
+      if (h.hash && byHash.has(h.hash)) sameAny++;
+      if (refAt) tsDiff.push((s.timestamp - refAt.t) * 1000);
+      if (n < 5) firsts.push({ timestamp: s.timestamp, duration: s.duration, format: s.format, ref_t: refAt && refAt.t });
+      s.close(); n++;
+    }
+    const ms = performance.now() - t0;
+    D.frames_decoded = n; D.decode_and_hash_ms_total = ms; D.ms_per_frame_including_hash = ms / n;
+    D.y_plane_identical_to_ffmpeg_same_index = same; D.y_plane_found_anywhere_in_ffmpeg_decode = sameAny;
+    D.timestamp_minus_ffprobe_pts_ms = stats(tsDiff); D.formats = [...fmts]; D.first5 = firsts;
+    // decode-only timing (no hashing)
+    const sink2 = new MB.VideoSampleSink(track); const t1 = performance.now(); let n2 = 0;
+    for await (const s of sink2.samples()) { s.close(); n2++; }
+    D.decode_only_ms_total = performance.now() - t1; D.decode_only_frames = n2;
+    // random access: getSample at the seek targets
+    const ra = [];
+    for (const k of [1, 2, 10, 50, 100, 200, 217, 300, 400, 439, 500, 530]) {
+      const t = k / FPS; const t2 = performance.now(); const s = await sink.getSample(t); const dt = performance.now() - t2;
+      if (!s) { ra.push({ k, t, sample: null }); continue; }
+      const vf = s.toVideoFrame(); const h = await yHashOfFrame(vf); vf.close();
+      let j = 0; while (j + 1 < ref.frames.length && ref.frames[j + 1].t <= t + 1e-9) j++;
+      ra.push({ k, t, sample_timestamp: s.timestamp, frame: h.hash ? (byHash.has(h.hash) ? byHash.get(h.hash) : -1) : null, expected_frame_by_ref_pts: j, ms: dt });
+      s.close();
+    }
+    D.getSample = ra; D.getSample_matches_expected = ra.filter((r) => r.frame === r.expected_frame_by_ref_pts).length;
+    R.decode = D;
+  }
+  finish(R);
+} catch (e) { fail(e, R); }
+</script>
+</body>

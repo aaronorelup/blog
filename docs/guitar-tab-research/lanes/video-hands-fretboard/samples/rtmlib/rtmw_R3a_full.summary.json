@@ -1,0 +1,75 @@
+{
+ "clip": "R3a",
+ "mode": "full",
+ "frames": 90,
+ "all": {
+  "frames": 90,
+  "frac_0_hands": 0.0,
+  "frac_1_hand": 0.0,
+  "frac_2_hands": 1.0,
+  "frac_more_than_2": 0.0,
+  "frac_at_least_1": 1.0,
+  "label_counts": {
+   "person_left": 90,
+   "person_right": 90
+  },
+  "infer_ms_mean": 1622.84,
+  "infer_ms_median": 1549.07,
+  "infer_ms_p90": 2042.1,
+  "fps_from_mean": 0.62,
+  "score_mean": 5.0013,
+  "score_min": 2.6312,
+  "score_max": 7.827
+ },
+ "per_shot": {
+  "medium": {
+   "frames": 53,
+   "frac_0_hands": 0.0,
+   "frac_1_hand": 0.0,
+   "frac_2_hands": 1.0,
+   "frac_more_than_2": 0.0,
+   "frac_at_least_1": 1.0,
+   "label_counts": {
+    "person_left": 53,
+    "person_right": 53
+   },
+   "infer_ms_mean": 1730.83,
+   "infer_ms_median": 1720.75,
+   "infer_ms_p90": 2134.51,
+   "fps_from_mean": 0.58,
+   "score_mean": 4.9735,
+   "score_min": 2.8545,
+   "score_max": 7.3095
+  },
+  "wide": {
+   "frames": 37,
+   "frac_0_hands": 0.0,
+   "frac_1_hand": 0.0,
+   "frac_2_hands": 1.0,
+   "frac_more_than_2": 0.0,
+   "frac_at_least_1": 1.0,
+   "label_counts": {
+    "person_left": 37,
+    "person_right": 37
+   },
+   "infer_ms_mean": 1468.15,
+   "infer_ms_median": 1419.64,
+   "infer_ms_p90": 1730.59,
+   "fps_from_mean": 0.68,
+   "score_mean": 5.0412,
+   "score_min": 2.6312,
+   "score_max": 7.827
+  }
+ },
+ "tool": "rtmlib rtmw",
+ "rtmlib_version": "?",
+ "models": {
+  "det": "https://download.openmmlab.com/mmpose/v1/projects/rtmposev1/onnx_sdk/yolox_m_8xb8-300e_humanart-c2c7a14a.zip",
+  "pose": "https://download.openmmlab.com/mmpose/v1/projects/rtmw/onnx_sdk/rtmw-dw-x-l_simcc-cocktail14_270e-384x288_20231122.zip"
+ },
+ "init_s": 1.376,
+ "frame_step": 6,
+ "hand_counted_if_mean_kpt_score_ge": 0.3,
+ "frac_frames_with_det_box": 1.0,
+ "det_boxes_per_frame_max": 1
+}

@@ -1,0 +1,42 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>small JS analysis libraries 2</title>
+<body>
+<script type="module">
+// aubiojs 0.2.1 (aubio in WASM): Pitch('yinfft', 2048, 441, sr) on melody clips; Tempo(1024, 512, sr) on beat clips
+// (a beat is logged at the end of each hop for which do() returned non-zero).  pitchfinder 2.3.4 YIN({sampleRate}) on
+// 2048-sample frames every 441 samples.  realtime-bpm-analyzer 5.6.1 analyzeFullBuffer(audioBuffer).
+import { finish, fail, upload, fetchArrayBuffer } from './common.js';
+import { aubio, YIN, analyzeFullBuffer } from '/build/small2.js';
+const q = new URLSearchParams(location.search);
+const PITCH = (q.get('pitch') || 'S1,R1b').split(','), BEAT = (q.get('beat') || 'S3,S4,R2').split(',');
+const R = { aubio_pitch: {}, aubio_tempo: {}, pitchfinder_yin: {}, realtime_bpm: {} };
+const load = async (id) => new OfflineAudioContext(1, 1, 44100).decodeAudioData(await fetchArrayBuffer(`/inputs/${id}/${id}.wav`));
+const mono = (b) => { const x = new Float32Array(b.length); for (let c = 0; c < b.numberOfChannels; c++) { const d = b.getChannelData(c); for (let i = 0; i < d.length; i++) x[i] += d[i] / b.numberOfChannels; } return x; };
+try {
+  const t0 = performance.now(); const A = await aubio(); R.aubio_init_ms = performance.now() - t0;
+  for (const id of PITCH) {
+    const b = await load(id); const x = mono(b); const sr = b.sampleRate; const H = 441, N = 2048;
+    let a = performance.now(); const p = new A.Pitch('yinfft', N, H, sr); const rows = [];
+    for (let s = 0; s + H <= x.length; s += H) { const f = p.do(x.subarray(s, s + H)); rows.push([(s + H) / sr, f]); }
+    R.aubio_pitch[id] = { ms: performance.now() - a, frames: rows.length, time_convention: 'end of each 441-sample hop (aubio keeps a 2048-sample window)',
+      csv: await upload('smalljs', `${id}_aubio_yinfft.csv`, 'time_s,frequency_hz\n' + rows.map((r) => `${r[0].toFixed(6)},${r[1].toFixed(3)}`).join('\n') + '\n') };
+    a = performance.now(); const det = YIN({ sampleRate: sr }); const rows2 = [];
+    for (let s = 0; s + N <= x.length; s += H) { const f = det(x.subarray(s, s + N)); rows2.push([(s + N / 2) / sr, f || 0]); }
+    R.pitchfinder_yin[id] = { ms: performance.now() - a, frames: rows2.length, time_convention: 'frame centre',
+      csv: await upload('smalljs', `${id}_pitchfinder_yin.csv`, 'time_s,frequency_hz\n' + rows2.map((r) => `${r[0].toFixed(6)},${r[1].toFixed(3)}`).join('\n') + '\n') };
+  }
+  for (const id of BEAT) {
+    const b = await load(id); const x = mono(b); const sr = b.sampleRate; const H = 512;
+    let a = performance.now(); const t = new A.Tempo(1024, H, sr); const beats = [];
+    for (let s = 0; s + H <= x.length; s += H) { if (t.do(x.subarray(s, s + H))) beats.push((s + H) / sr); }
+    R.aubio_tempo[id] = { ms: performance.now() - a, bpm: t.getBpm(), confidence: t.getConfidence(), n_beats: beats.length, first10: beats.slice(0, 10),
+      beats_file: await upload('smalljs', `${id}_aubio_beats.txt`, beats.map((v) => v.toFixed(6)).join('\n') + '\n'),
+      bpm_file: await upload('smalljs', `${id}_aubio_bpm.txt`, `${t.getBpm()}\n`) };
+    a = performance.now(); const cands = await analyzeFullBuffer(b);
+    R.realtime_bpm[id] = { ms: performance.now() - a, top5: cands.slice(0, 5), bpm_file: await upload('smalljs', `${id}_realtimebpm_bpm.txt`, `${cands[0] ? cands[0].tempo : 0}\n`) };
+  }
+  finish(R);
+} catch (e) { fail(e, R); }
+</script>
+</body>

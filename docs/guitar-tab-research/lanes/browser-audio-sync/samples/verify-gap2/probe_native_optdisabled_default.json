@@ -1,0 +1,137 @@
+{
+ "cmd": [
+  "/home/user/gtr/lanes/browser-audio-sync/venv-verify-demucsonnx/bin/python",
+  "-I",
+  "/home/user/blog/docs/guitar-tab-research/lanes/browser-audio-sync/scripts/gap2/ref_demucs_onnx.py",
+  "/home/user/gtr/lanes/browser-audio-sync/verify-gap2/dl/htdemucs-6s-onnx/htdemucs_6s_fp16weights.onnx",
+  "/home/user/gtr/lanes/browser-audio-sync/inputs/S4_10s/S4_10s.wav",
+  "/home/user/gtr/lanes/browser-audio-sync/verify-gap2/out/htdemucs6s-native-optdisabled-verify",
+  "disabled"
+ ],
+ "exit_code": 0,
+ "wall_s": 30.73,
+ "samples": 120,
+ "probe_cpus_allowed": "0-1",
+ "threads": [
+  {
+   "pid": 15281,
+   "tid": 15281,
+   "name": "python",
+   "allowed": [
+    "0-1"
+   ],
+   "processors": [
+    0,
+    1
+   ],
+   "first_s": 0.0,
+   "cpu_s": 23.89,
+   "last_s": 30.48
+  },
+  {
+   "pid": 15281,
+   "tid": 15294,
+   "name": "python",
+   "allowed": [
+    "3"
+   ],
+   "processors": [
+    3
+   ],
+   "first_s": 0.51,
+   "cpu_s": 8.9,
+   "last_s": 30.23
+  },
+  {
+   "pid": 15281,
+   "tid": 15292,
+   "name": "python",
+   "allowed": [
+    "1"
+   ],
+   "processors": [
+    1
+   ],
+   "first_s": 0.51,
+   "cpu_s": 8.88,
+   "last_s": 30.23
+  },
+  {
+   "pid": 15281,
+   "tid": 15293,
+   "name": "python",
+   "allowed": [
+    "2"
+   ],
+   "processors": [
+    2
+   ],
+   "first_s": 0.51,
+   "cpu_s": 8.32,
+   "last_s": 30.23
+  },
+  {
+   "pid": 15281,
+   "tid": 15282,
+   "name": "python",
+   "allowed": [
+    "0-1"
+   ],
+   "processors": [
+    0
+   ],
+   "first_s": 0.26,
+   "cpu_s": 0.1,
+   "last_s": 30.48
+  },
+  {
+   "pid": 15281,
+   "tid": 15288,
+   "name": "python",
+   "allowed": [
+    "0-1"
+   ],
+   "processors": [
+    0,
+    1
+   ],
+   "first_s": 0.26,
+   "cpu_s": 0.0,
+   "last_s": 30.48
+  },
+  {
+   "pid": 15281,
+   "tid": 15804,
+   "name": "python",
+   "allowed": [
+    "0-1"
+   ],
+   "processors": [
+    0
+   ],
+   "first_s": 9.41,
+   "cpu_s": 0.0,
+   "last_s": 9.67
+  },
+  {
+   "pid": 15281,
+   "tid": 15811,
+   "name": "python",
+   "allowed": [
+    "0-1"
+   ],
+   "processors": [
+    0
+   ],
+   "first_s": 9.92,
+   "cpu_s": 0.0,
+   "last_s": 10.17
+  }
+ ],
+ "cpu_s_by_allowed_list": {
+  "0-1": 23.99,
+  "3": 8.9,
+  "1": 8.88,
+  "2": 8.32
+ }
+}

@@ -1,0 +1,47 @@
+{
+ "input": {
+  "path": "/home/user/gtr/inputs/R2/R2.wav",
+  "sample_rate": 44100,
+  "channels": 2,
+  "frames": 1587600,
+  "subtype": "PCM_16",
+  "rms_dbfs": -10.269501251900643,
+  "seconds": 36.0
+ },
+ "est_dir": "/home/user/gtr/lanes/source-separation/out/uvr/1_HP-UVR/R2",
+ "stems": {
+  "instrumental": {
+   "file": "instrumental.wav",
+   "bytes": 6348878,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 1587200,
+   "seconds": 35.9909,
+   "frames_minus_input": -400,
+   "rms_dbfs": -17.01,
+   "peak_dbfs": -0.92
+  },
+  "vocals": {
+   "file": "vocals.wav",
+   "bytes": 6348878,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 1587200,
+   "seconds": 35.9909,
+   "frames_minus_input": -400,
+   "rms_dbfs": -13.99,
+   "peak_dbfs": -0.92
+  }
+ },
+ "sum_vs_mix": {
+  "common_rate": 44100,
+  "common_frames": 1587200,
+  "best_lag_samples": 0,
+  "residual_db_at_lag0": -14.71,
+  "note": "positive lag = the stems' sum is late relative to the mix"
+ }
+}

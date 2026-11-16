@@ -1,0 +1,16 @@
+{
+ "librosa_version": "1.0.0",
+ "import_s": 0.023,
+ "load_resample_s": 1.402,
+ "beat_track_s": 6.163,
+ "tempo_s": 0.71,
+ "estimate_tuning_s": 0.358,
+ "key_baseline_s": 0.754,
+ "outputs": {
+  "n_beats": 80,
+  "beat_track_tempo": 143.5546875,
+  "tempo": 143.5546875,
+  "tuning_cents": 1.0,
+  "key_baseline": "Eb minor"
+ }
+}

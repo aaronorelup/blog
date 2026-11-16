@@ -1,0 +1,147 @@
+\artist ("Traditional (18th-century French melody), arranged for this test set" "%artist%" center)
+\wordsandmusic ("Words & Music by %WORDSMUSIC%" right)
+\title ("Twinkle (Ah! vous dirai-je, maman), fingerstyle, nylon" "%title%" center)
+\track ("Guitar" "Guitar") {
+  color "#FF0000"
+  volume 13
+  balance 8
+  instrument acousticguitarnylon
+}
+  \staff {
+    score
+    tabs
+  }
+    \tuning (E4 B3 G3 D3 A2 E2) {
+      hide
+      label "Guitar Standard Tuning"
+    }
+    \voice 
+      \ts (4 4)
+      \tempo (112 "Moderate")
+      \tempo (112 "Moderate")
+      \accidentals auto
+      \clef g2
+      \ottava regular
+      \simile none
+      \ks c
+        r.1{dy f instrument acousticguitarnylon}
+      |
+        2.3.4
+        0.3.4
+        3.2.4
+        3.2.4
+      |
+        0.1.4
+        0.1.4
+        3.2.2
+      |
+        1.2.4
+        1.2.4
+        0.2.4
+        0.2.4
+      |
+        2.3.4
+        2.3.4
+        0.3.2
+      |
+        3.2.4
+        3.2.4
+        1.2.4
+        1.2.4
+      |
+        0.2.4
+        0.2.4
+        2.3.2
+      |
+        3.2.4
+        3.2.4
+        1.2.4
+        1.2.4
+      |
+        0.2.4
+        0.2.4
+        2.3.2
+      |
+        0.3.4
+        0.3.4
+        3.2.4
+        3.2.4
+      |
+        0.1.4
+        0.1.4
+        3.2.2
+      |
+        1.2.4
+        1.2.4
+        0.2.4
+        0.2.4
+      |
+        2.3.4
+        2.3.4
+        0.3.2
+    \voice 
+      \clef g2
+      \ottava regular
+      \simile none
+      \ks c
+        r.1{dy f}
+      |
+        3.6.4
+        0.4.4
+        3.6.4
+        0.4.4
+      |
+        3.5.4
+        2.4.4
+        3.6.4
+        0.4.4
+      |
+        3.5.4
+        2.4.4
+        3.6.4
+        0.4.4
+      |
+        0.4.4
+        0.5.4
+        3.6.4
+        0.4.4
+      |
+        3.6.4
+        0.4.4
+        3.5.4
+        2.4.4
+      |
+        3.6.4
+        0.4.4
+        0.4.4
+        0.5.4
+      |
+        3.6.4
+        0.4.4
+        3.5.4
+        2.4.4
+      |
+        3.6.4
+        0.4.4
+        0.4.4
+        0.5.4
+      |
+        3.6.4
+        0.4.4
+        3.6.4
+        0.4.4
+      |
+        3.5.4
+        2.4.4
+        3.6.4
+        0.4.4
+      |
+        3.5.4
+        2.4.4
+        3.6.4
+        0.4.4
+      |
+        0.4.4
+        0.5.4
+        3.6.4
+        0.4.4

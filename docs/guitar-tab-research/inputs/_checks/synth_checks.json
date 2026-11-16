@@ -1,0 +1,491 @@
+{
+ "_renderer_latency": {
+  "method": "17 renders of one nylon G3 note (program 24, 100 BPM): note-on at tick 0, then at ticks 960, 962, ... 990; lateness = first output sample above 1e-6 minus note-on time x 44100. The tick-0 render gives the sample's own attack delay; the spread of the others shows the 64-sample block on which FluidSynth starts notes",
+  "renders": [
+   {
+    "note_tick": 0,
+    "expected_sample": 0.0,
+    "first_nonzero_sample": 71,
+    "late_samples": 71.0
+   },
+   {
+    "note_tick": 960,
+    "expected_sample": 26460.0,
+    "first_nonzero_sample": 26567,
+    "late_samples": 107.0
+   },
+   {
+    "note_tick": 962,
+    "expected_sample": 26515.12,
+    "first_nonzero_sample": 26631,
+    "late_samples": 115.88
+   },
+   {
+    "note_tick": 964,
+    "expected_sample": 26570.25,
+    "first_nonzero_sample": 26695,
+    "late_samples": 124.75
+   },
+   {
+    "note_tick": 966,
+    "expected_sample": 26625.38,
+    "first_nonzero_sample": 26759,
+    "late_samples": 133.62
+   },
+   {
+    "note_tick": 968,
+    "expected_sample": 26680.5,
+    "first_nonzero_sample": 26759,
+    "late_samples": 78.5
+   },
+   {
+    "note_tick": 970,
+    "expected_sample": 26735.62,
+    "first_nonzero_sample": 26823,
+    "late_samples": 87.38
+   },
+   {
+    "note_tick": 972,
+    "expected_sample": 26790.75,
+    "first_nonzero_sample": 26887,
+    "late_samples": 96.25
+   },
+   {
+    "note_tick": 974,
+    "expected_sample": 26845.88,
+    "first_nonzero_sample": 26951,
+    "late_samples": 105.12
+   },
+   {
+    "note_tick": 976,
+    "expected_sample": 26901.0,
+    "first_nonzero_sample": 27015,
+    "late_samples": 114.0
+   },
+   {
+    "note_tick": 978,
+    "expected_sample": 26956.12,
+    "first_nonzero_sample": 27079,
+    "late_samples": 122.88
+   },
+   {
+    "note_tick": 980,
+    "expected_sample": 27011.25,
+    "first_nonzero_sample": 27143,
+    "late_samples": 131.75
+   },
+   {
+    "note_tick": 982,
+    "expected_sample": 27066.38,
+    "first_nonzero_sample": 27207,
+    "late_samples": 140.62
+   },
+   {
+    "note_tick": 984,
+    "expected_sample": 27121.5,
+    "first_nonzero_sample": 27207,
+    "late_samples": 85.5
+   },
+   {
+    "note_tick": 986,
+    "expected_sample": 27176.62,
+    "first_nonzero_sample": 27271,
+    "late_samples": 94.38
+   },
+   {
+    "note_tick": 988,
+    "expected_sample": 27231.75,
+    "first_nonzero_sample": 27335,
+    "late_samples": 103.25
+   },
+   {
+    "note_tick": 990,
+    "expected_sample": 27286.88,
+    "first_nonzero_sample": 27399,
+    "late_samples": 112.12
+   }
+  ],
+  "late_samples_min": 71.0,
+  "late_samples_max": 140.62,
+  "late_ms_mean": 2.433
+ },
+ "_versions": {
+  "fluidsynth": "FluidSynth runtime version 2.3.4",
+  "soundfont": "/usr/share/sounds/sf2/FluidR3_GM.sf2",
+  "numpy": "2.4.6",
+  "mido": "1.3.3"
+ },
+ "S1": {
+  "id": "S1",
+  "duration_s": 29.833333,
+  "samples": 1315650,
+  "fluidsynth_rendered_samples": 1408064,
+  "gain_applied": 5.944309,
+  "wav_read_back": {
+   "samples": 1315650,
+   "channels": 2,
+   "peak_dbfs": -1.0,
+   "rms_dbfs": -16.83,
+   "samples_at_full_scale": 0
+  },
+  "first_note_on_s": 1.666667,
+  "first_nonzero_sample": 73611,
+  "first_nonzero_minus_first_note_ms": 2.517,
+  "tab_collisions": 0,
+  "rerender_from_truth": {
+   "method": "MIDI rebuilt from the truth JSON (seconds -> ticks at the clip tempo, same channels/programs), rendered again, cross-correlated with the clip's own render (mono, +/-100 ms)",
+   "best_lag_samples": 0,
+   "max_abs_difference_relative_to_peak": 0.0
+  },
+  "onsets": {
+   "method": "librosa.onset.onset_detect(hop_length=128, backtrack=False) on the mono mix; truth onsets within 35 ms grouped (first onset of the group used); match = nearest detection within 50 ms",
+   "truth_groups": 62,
+   "detections": 62,
+   "matched": 62,
+   "median_ms": 13.46,
+   "p10_ms": 11.73,
+   "p90_ms": 15.3
+  }
+ },
+ "S2n": {
+  "id": "S2n",
+  "duration_s": 29.357143,
+  "samples": 1294650,
+  "fluidsynth_rendered_samples": 1386944,
+  "gain_applied": 4.370183,
+  "wav_read_back": {
+   "samples": 1294650,
+   "channels": 2,
+   "peak_dbfs": -1.0,
+   "rms_dbfs": -15.24,
+   "samples_at_full_scale": 0
+  },
+  "first_note_on_s": 2.142857,
+  "first_nonzero_sample": 94603,
+  "first_nonzero_minus_first_note_ms": 2.336,
+  "tab_collisions": 0,
+  "rerender_from_truth": {
+   "method": "MIDI rebuilt from the truth JSON (seconds -> ticks at the clip tempo, same channels/programs), rendered again, cross-correlated with the clip's own render (mono, +/-100 ms)",
+   "best_lag_samples": 0,
+   "max_abs_difference_relative_to_peak": 0.0
+  },
+  "onsets": {
+   "method": "librosa.onset.onset_detect(hop_length=128, backtrack=False) on the mono mix; truth onsets within 35 ms grouped (first onset of the group used); match = nearest detection within 50 ms",
+   "truth_groups": 48,
+   "detections": 46,
+   "matched": 46,
+   "median_ms": 15.07,
+   "p10_ms": 13.8,
+   "p90_ms": 16.66
+  },
+  "gp5": {
+   "file": "S2n.gp5",
+   "tempo": 112,
+   "capo_read_back": 0,
+   "tuning_read_back": [
+    40,
+    45,
+    50,
+    55,
+    59,
+    64
+   ],
+   "notes_written": 90,
+   "notes_read": 90,
+   "matching": 90,
+   "missing": [],
+   "extra": [],
+   "method": "PyGuitarPro 0.11 guitarpro.parse(); note position = (beat.start - 960) / 960 quarter notes; pitch = string value + track offset (capo) + fret; compared with the truth as sets of (position, string, fret, pitch)"
+  }
+ },
+ "S2s": {
+  "id": "S2s",
+  "duration_s": 29.357143,
+  "samples": 1294650,
+  "fluidsynth_rendered_samples": 1734016,
+  "gain_applied": 3.947207,
+  "wav_read_back": {
+   "samples": 1294650,
+   "channels": 2,
+   "peak_dbfs": -1.0,
+   "rms_dbfs": -18.23,
+   "samples_at_full_scale": 0
+  },
+  "first_note_on_s": 2.142857,
+  "first_nonzero_sample": 94747,
+  "first_nonzero_minus_first_note_ms": 5.601,
+  "tab_collisions": 0,
+  "rerender_from_truth": {
+   "method": "MIDI rebuilt from the truth JSON (seconds -> ticks at the clip tempo, same channels/programs), rendered again, cross-correlated with the clip's own render (mono, +/-100 ms)",
+   "best_lag_samples": 0,
+   "max_abs_difference_relative_to_peak": 0.0
+  },
+  "onsets": {
+   "method": "librosa.onset.onset_detect(hop_length=128, backtrack=False) on the mono mix; truth onsets within 35 ms grouped (first onset of the group used); match = nearest detection within 50 ms",
+   "truth_groups": 48,
+   "detections": 48,
+   "matched": 48,
+   "median_ms": 15.06,
+   "p10_ms": 12.35,
+   "p90_ms": 17.91
+  }
+ },
+ "S3": {
+  "id": "S3",
+  "duration_s": 24.0,
+  "samples": 1058400,
+  "fluidsynth_rendered_samples": 1709504,
+  "gain_applied": 2.266399,
+  "wav_read_back": {
+   "samples": 1058400,
+   "channels": 2,
+   "peak_dbfs": -1.0,
+   "rms_dbfs": -18.86,
+   "samples_at_full_scale": 0
+  },
+  "first_note_on_s": 2.5,
+  "first_nonzero_sample": 110491,
+  "first_nonzero_minus_first_note_ms": 5.465,
+  "tab_collisions": 0,
+  "rerender_from_truth": {
+   "method": "MIDI rebuilt from the truth JSON (seconds -> ticks at the clip tempo, same channels/programs), rendered again, cross-correlated with the clip's own render (mono, +/-100 ms)",
+   "best_lag_samples": 0,
+   "max_abs_difference_relative_to_peak": 0.0
+  },
+  "onsets": {
+   "method": "librosa.onset.onset_detect(hop_length=128, backtrack=False) on the mono mix; truth onsets within 35 ms grouped (first onset of the group used); match = nearest detection within 50 ms",
+   "truth_groups": 43,
+   "detections": 29,
+   "matched": 29,
+   "median_ms": 19.45,
+   "p10_ms": 18.41,
+   "p90_ms": 23.27
+  }
+ },
+ "S7flat30": {
+  "id": "S7flat30",
+  "duration_s": 24.0,
+  "samples": 1058400,
+  "fluidsynth_rendered_samples": 1709504,
+  "gain_applied": 2.013946,
+  "wav_read_back": {
+   "samples": 1058400,
+   "channels": 2,
+   "peak_dbfs": -1.0,
+   "rms_dbfs": -20.07,
+   "samples_at_full_scale": 0
+  },
+  "first_note_on_s": 2.5,
+  "first_nonzero_sample": 110494,
+  "first_nonzero_minus_first_note_ms": 5.533,
+  "tab_collisions": 0,
+  "rerender_from_truth": {
+   "method": "MIDI rebuilt from the truth JSON (seconds -> ticks at the clip tempo, same channels/programs), rendered again, cross-correlated with the clip's own render (mono, +/-100 ms)",
+   "best_lag_samples": 0,
+   "max_abs_difference_relative_to_peak": 0.0
+  },
+  "onsets": {
+   "method": "librosa.onset.onset_detect(hop_length=128, backtrack=False) on the mono mix; truth onsets within 35 ms grouped (first onset of the group used); match = nearest detection within 50 ms",
+   "truth_groups": 43,
+   "detections": 31,
+   "matched": 31,
+   "median_ms": 20.35,
+   "p10_ms": 18.41,
+   "p90_ms": 23.28
+  },
+  "detune_measurement": {
+   "method": "strongest spectral peak in [370, 410] Hz and in [185, 205] Hz of the final G chord, 20.300-22.300 s, Hann window, FFT zero-padded to 2^20, parabolic interpolation; cents = 1200*log2(f_S7/f_S3)",
+   "S3_peak_hz": 391.824,
+   "S7_peak_hz": 384.913,
+   "cents_392": -30.81,
+   "S3_peak2_hz": 195.677,
+   "S7_peak2_hz": 192.33,
+   "cents_196": -29.87,
+   "S3_vs_equal_tempered_G4_cents": -0.76,
+   "bend_value": -1229,
+   "bend_nominal_cents": -30.005
+  }
+ },
+ "S4": {
+  "id": "S4",
+  "duration_s": 38.741383,
+  "samples": 1708495,
+  "fluidsynth_rendered_samples": 2138048,
+  "gain_applied": 2.050684,
+  "wav_read_back": {
+   "samples": 1708495,
+   "channels": 2,
+   "peak_dbfs": -1.0,
+   "rms_dbfs": -17.37,
+   "samples_at_full_scale": 0
+  },
+  "first_note_on_s": 2.068966,
+  "first_nonzero_sample": 91340,
+  "first_nonzero_minus_first_note_ms": 2.236,
+  "tab_collisions": 0,
+  "rerender_from_truth": {
+   "method": "MIDI rebuilt from the truth JSON (seconds -> ticks at the clip tempo, same channels/programs), rendered again, cross-correlated with the clip's own render (mono, +/-100 ms)",
+   "best_lag_samples": 0,
+   "max_abs_difference_relative_to_peak": 0.011141992
+  },
+  "onsets": {
+   "method": "librosa.onset.onset_detect(hop_length=128, backtrack=False) on the mono mix; truth onsets within 35 ms grouped (first onset of the group used); match = nearest detection within 50 ms",
+   "truth_groups": 127,
+   "detections": 81,
+   "matched": 81,
+   "median_ms": 13.49,
+   "p10_ms": 11.19,
+   "p90_ms": 17.12
+  },
+  "stems_sum_vs_mix": {
+   "max_abs_difference_relative_to_mix_peak": 0.011088117,
+   "stem_rms_dbfs": {
+    "drums": -28.7,
+    "bass": -23.6,
+    "guitar": -21.69,
+    "lead": -21.99
+   }
+  }
+ },
+ "S5capo2": {
+  "id": "S5capo2",
+  "duration_s": 29.357143,
+  "samples": 1294650,
+  "fluidsynth_rendered_samples": 1386944,
+  "gain_applied": 4.221041,
+  "wav_read_back": {
+   "samples": 1294650,
+   "channels": 2,
+   "peak_dbfs": -1.0,
+   "rms_dbfs": -15.72,
+   "samples_at_full_scale": 0
+  },
+  "first_note_on_s": 2.142857,
+  "first_nonzero_sample": 94598,
+  "first_nonzero_minus_first_note_ms": 2.222,
+  "tab_collisions": 0,
+  "rerender_from_truth": {
+   "method": "MIDI rebuilt from the truth JSON (seconds -> ticks at the clip tempo, same channels/programs), rendered again, cross-correlated with the clip's own render (mono, +/-100 ms)",
+   "best_lag_samples": 0,
+   "max_abs_difference_relative_to_peak": 0.0
+  },
+  "onsets": {
+   "method": "librosa.onset.onset_detect(hop_length=128, backtrack=False) on the mono mix; truth onsets within 35 ms grouped (first onset of the group used); match = nearest detection within 50 ms",
+   "truth_groups": 48,
+   "detections": 46,
+   "matched": 46,
+   "median_ms": 15.02,
+   "p10_ms": 13.75,
+   "p90_ms": 16.43
+  },
+  "gp5": {
+   "file": "S5capo2.gp5",
+   "tempo": 112,
+   "capo_read_back": 2,
+   "tuning_read_back": [
+    40,
+    45,
+    50,
+    55,
+    59,
+    64
+   ],
+   "notes_written": 90,
+   "notes_read": 90,
+   "matching": 90,
+   "missing": [],
+   "extra": [],
+   "method": "PyGuitarPro 0.11 guitarpro.parse(); note position = (beat.start - 960) / 960 quarter notes; pitch = string value + track offset (capo) + fret; compared with the truth as sets of (position, string, fret, pitch)"
+  }
+ },
+ "S5dropd": {
+  "id": "S5dropd",
+  "duration_s": 29.357143,
+  "samples": 1294650,
+  "fluidsynth_rendered_samples": 1386944,
+  "gain_applied": 4.370183,
+  "wav_read_back": {
+   "samples": 1294650,
+   "channels": 2,
+   "peak_dbfs": -1.0,
+   "rms_dbfs": -14.98,
+   "samples_at_full_scale": 0
+  },
+  "first_note_on_s": 2.142857,
+  "first_nonzero_sample": 94603,
+  "first_nonzero_minus_first_note_ms": 2.336,
+  "tab_collisions": 0,
+  "rerender_from_truth": {
+   "method": "MIDI rebuilt from the truth JSON (seconds -> ticks at the clip tempo, same channels/programs), rendered again, cross-correlated with the clip's own render (mono, +/-100 ms)",
+   "best_lag_samples": 0,
+   "max_abs_difference_relative_to_peak": 0.0
+  },
+  "onsets": {
+   "method": "librosa.onset.onset_detect(hop_length=128, backtrack=False) on the mono mix; truth onsets within 35 ms grouped (first onset of the group used); match = nearest detection within 50 ms",
+   "truth_groups": 48,
+   "detections": 46,
+   "matched": 46,
+   "median_ms": 15.07,
+   "p10_ms": 13.8,
+   "p90_ms": 16.66
+  },
+  "gp5": {
+   "file": "S5dropd.gp5",
+   "tempo": 112,
+   "capo_read_back": 0,
+   "tuning_read_back": [
+    38,
+    45,
+    50,
+    55,
+    59,
+    64
+   ],
+   "notes_written": 90,
+   "notes_read": 90,
+   "matching": 90,
+   "missing": [],
+   "extra": [],
+   "method": "PyGuitarPro 0.11 guitarpro.parse(); note position = (beat.start - 960) / 960 quarter notes; pitch = string value + track offset (capo) + fret; compared with the truth as sets of (position, string, fret, pitch)"
+  }
+ },
+ "S6taps": {
+  "id": "S6taps",
+  "duration_s": 29.357143,
+  "samples": 1294650,
+  "fluidsynth_rendered_samples": 1734016,
+  "gain_applied": 3.951795,
+  "wav_read_back": {
+   "samples": 1294650,
+   "channels": 2,
+   "peak_dbfs": -1.0,
+   "rms_dbfs": -18.03,
+   "samples_at_full_scale": 0
+  },
+  "first_note_on_s": 2.142857,
+  "first_nonzero_sample": 94626,
+  "first_nonzero_minus_first_note_ms": 2.857,
+  "tab_collisions": 0,
+  "rerender_from_truth": {
+   "method": "MIDI rebuilt from the truth JSON (seconds -> ticks at the clip tempo, same channels/programs), rendered again, cross-correlated with the clip's own render (mono, +/-100 ms)",
+   "best_lag_samples": 0,
+   "max_abs_difference_relative_to_peak": 0.0
+  },
+  "onsets": {
+   "method": "librosa.onset.onset_detect(hop_length=128, backtrack=False) on the mono mix; truth onsets within 35 ms grouped (first onset of the group used); match = nearest detection within 50 ms",
+   "truth_groups": 53,
+   "detections": 53,
+   "matched": 53,
+   "median_ms": 12.56,
+   "p10_ms": 9.15,
+   "p90_ms": 16.32
+  },
+  "stems_sum_vs_mix": {
+   "max_abs_difference_relative_to_mix_peak": 0.000787514,
+   "stem_rms_dbfs": {
+    "guitar": -18.22,
+    "taps": -31.8
+   }
+  }
+ }
+}

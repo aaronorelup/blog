@@ -1,0 +1,16 @@
+{
+ "librosa_version": "1.0.0",
+ "import_s": 0.002,
+ "load_resample_s": 0.457,
+ "beat_track_s": 2.217,
+ "tempo_s": 0.045,
+ "estimate_tuning_s": 0.066,
+ "key_baseline_s": 0.217,
+ "outputs": {
+  "n_beats": 29,
+  "beat_track_tempo": 95.703125,
+  "tempo": 95.703125,
+  "tuning_cents": -31.0,
+  "key_baseline": "G major"
+ }
+}

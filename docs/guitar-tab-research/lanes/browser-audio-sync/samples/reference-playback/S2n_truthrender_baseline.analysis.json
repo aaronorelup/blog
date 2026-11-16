@@ -1,0 +1,6 @@
+{
+ "source": "baseline:/home/user/gtr/inputs/S2n/S2n.mono.wav",
+ "clip": "S2n",
+ "n_detected": 46,
+ "sample_rate": 44100
+}

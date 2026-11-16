@@ -1,0 +1,21 @@
+basic-pitch	0.4.0	latest_upload=2024-08-16T17:17:08.410579Z	first_upload=2022-05-12T06:26:45.501738Z	license=''	license_expression=''	classifiers=[]	requires_python=None	nreleases=12
+crepe	0.0.16	latest_upload=2024-08-19T18:15:43.284243Z	first_upload=2018-04-17T10:23:36.603789Z	license='MIT'	license_expression=''	classifiers=['License :: OSI Approved :: MIT License']	requires_python=None	nreleases=16
+torchcrepe	0.0.24	latest_upload=2025-05-16T18:41:13.419088Z	first_upload=2020-08-01T18:56:05.171466Z	license='MIT'	license_expression=''	classifiers=['License :: OSI Approved :: MIT License']	requires_python=None	nreleases=24
+librosa	1.0.0	latest_upload=2026-08-11T15:37:35.455857Z	first_upload=2013-12-14T22:17:51.194064Z	license='ISC'	license_expression=''	classifiers=['License :: OSI Approved :: ISC License (ISCL)']	requires_python='>=3.12'	nreleases=47
+pesto-pitch	2.0.1	latest_upload=2025-02-18T16:24:18.845921Z	first_upload=2023-10-16T15:29:52.680557Z	license=''	license_expression=''	classifiers=['License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)']	requires_python='>=3.8'	nreleases=4
+torchfcpe	0.0.4	latest_upload=2024-03-06T20:03:43.685604Z	first_upload=2023-12-13T20:40:43.556669Z	license='MIT'	license_expression=''	classifiers=['License :: OSI Approved :: MIT License']	requires_python=''	nreleases=4
+swift-f0	0.3.0	latest_upload=2026-09-25T15:36:25.761406Z	first_upload=2025-07-08T00:39:11.634995Z	license=''	license_expression='MIT'	classifiers=[]	requires_python='>=3.8'	nreleases=5
+aubio	0.4.9	latest_upload=2019-02-08T11:21:02.438010Z	first_upload=2016-08-25T10:43:31.278466Z	license='GNU/GPL version 3'	license_expression=''	classifiers=['License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)']	requires_python=''	nreleases=10
+essentia	2.1b6.dev1438	latest_upload=2026-05-19T16:25:49.379142Z	first_upload=2018-07-03T17:13:49.409181Z	license=''	license_expression='AGPL-3.0-only'	classifiers=[]	requires_python=None	nreleases=23
+essentia-tensorflow	2.1b6.dev1438	latest_upload=2026-05-19T16:26:01.685674Z	first_upload=2020-04-22T14:03:48.134026Z	license=''	license_expression='AGPL-3.0-only'	classifiers=[]	requires_python=None	nreleases=15
+piano-transcription-inference	0.0.6	latest_upload=2025-01-26T02:30:39.045379Z	first_upload=2020-09-18T06:39:23.451489Z	license=''	license_expression=''	classifiers=['License :: OSI Approved :: MIT License']	requires_python='>=3.6'	nreleases=6
+transkun	2.0.1	latest_upload=2024-09-28T15:30:19.859459Z	first_upload=2022-08-08T00:55:15.659251Z	license=''	license_expression=''	classifiers=['License :: OSI Approved :: MIT License']	requires_python='>=3.6'	nreleases=6
+omnizart	0.6.3	latest_upload=2026-05-31T07:10:55.818285Z	first_upload=2020-11-06T06:33:16.830795Z	license='MIT'	license_expression=''	classifiers=['License :: OSI Approved :: MIT License']	requires_python='>=3.8'	nreleases=19
+penn	1.0.0	latest_upload=2025-04-02T17:11:45.924447Z	first_upload=2022-12-19T18:24:55.675810Z	license='MIT'	license_expression=''	classifiers=['License :: OSI Approved :: MIT License']	requires_python=None	nreleases=16
+note-seq	0.0.5	latest_upload=2022-07-01T16:35:14.117736Z	first_upload=2020-06-16T18:34:32.427519Z	license='Apache 2'	license_expression=''	classifiers=['License :: OSI Approved :: Apache Software License']	requires_python=''	nreleases=6
+aria-amt	ERROR HTTP Error 404: Not Found
+crepe-notes	0.2.0	latest_upload=2026-03-13T10:01:57.594543Z	first_upload=2023-07-12T08:15:38.302316Z	license='GNU General Public License v3.0 license'	license_expression=''	classifiers=['License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)']	requires_python='>=3.9'	nreleases=5
+rmvpe	ERROR HTTP Error 404: Not Found
+hft-transformer	ERROR HTTP Error 404: Not Found
+timbre-trap	ERROR HTTP Error 404: Not Found
+muscriptor	0.4.0	latest_upload=2026-10-20T16:00:38.945293Z	first_upload=2026-07-10T11:16:35.436732Z	license=''	license_expression='MIT'	classifiers=[]	requires_python='>=3.10'	nreleases=6

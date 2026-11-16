@@ -1,0 +1,513 @@
+{
+ "htdemucs-6s-guitar-ft/S4": {
+  "mix_rms_dbfs": -17.37,
+  "mix_frames": 1708495,
+  "stems": {
+   "drums": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1708495,
+    "bytes": 10251014,
+    "rms_dbfs": -34.45,
+    "full_scale_samples": 0,
+    "samples": 3416990
+   },
+   "bass": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1708495,
+    "bytes": 10251014,
+    "rms_dbfs": -33.03,
+    "full_scale_samples": 0,
+    "samples": 3416990
+   },
+   "other": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1708495,
+    "bytes": 10251014,
+    "rms_dbfs": -68.88,
+    "full_scale_samples": 0,
+    "samples": 3416990
+   },
+   "vocals": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1708495,
+    "bytes": 10251014,
+    "rms_dbfs": -23.04,
+    "full_scale_samples": 0,
+    "samples": 3416990
+   },
+   "guitar": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1708495,
+    "bytes": 10251014,
+    "rms_dbfs": -21.69,
+    "full_scale_samples": 0,
+    "samples": 3416990
+   },
+   "piano": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1708495,
+    "bytes": 10251014,
+    "rms_dbfs": -74.38,
+    "full_scale_samples": 0,
+    "samples": 3416990
+   }
+  },
+  "sum_residual_db_lag0": -11.13,
+  "projection": {
+   "bass": {
+    "drums": 0.0068,
+    "bass": 0.3117,
+    "other": 0.0004,
+    "vocals": 0.0475,
+    "guitar": 0.1207,
+    "piano": 0.0003
+   },
+   "drums": {
+    "drums": 0.4774,
+    "bass": 0.0097,
+    "other": 0.0011,
+    "vocals": 0.0359,
+    "guitar": 0.1466,
+    "piano": 0.001
+   },
+   "guitar": {
+    "drums": -0.0017,
+    "bass": -0.008,
+    "other": 0.0007,
+    "vocals": 0.1006,
+    "guitar": 0.8977,
+    "piano": -0.0011
+   },
+   "lead": {
+    "drums": -0.0021,
+    "bass": 0.0012,
+    "other": 0.0001,
+    "vocals": 0.822,
+    "guitar": 0.161,
+    "piano": -0.0009
+   }
+  }
+ },
+ "htdemucs-6s-guitar-ft/S6taps": {
+  "mix_rms_dbfs": -18.03,
+  "mix_frames": 1294650,
+  "stems": {
+   "drums": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1294650,
+    "bytes": 7767944,
+    "rms_dbfs": -37.72,
+    "full_scale_samples": 0,
+    "samples": 2589300
+   },
+   "bass": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1294650,
+    "bytes": 7767944,
+    "rms_dbfs": -52.85,
+    "full_scale_samples": 0,
+    "samples": 2589300
+   },
+   "other": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1294650,
+    "bytes": 7767944,
+    "rms_dbfs": -57.5,
+    "full_scale_samples": 0,
+    "samples": 2589300
+   },
+   "vocals": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1294650,
+    "bytes": 7767944,
+    "rms_dbfs": -58.96,
+    "full_scale_samples": 0,
+    "samples": 2589300
+   },
+   "guitar": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1294650,
+    "bytes": 7767944,
+    "rms_dbfs": -21.72,
+    "full_scale_samples": 0,
+    "samples": 2589300
+   },
+   "piano": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1294650,
+    "bytes": 7767944,
+    "rms_dbfs": -30.07,
+    "full_scale_samples": 0,
+    "samples": 2589300
+   }
+  },
+  "sum_residual_db_lag0": -8.4,
+  "projection": {
+   "guitar": {
+    "drums": -0.0045,
+    "bass": -0.0072,
+    "other": 0.0018,
+    "vocals": 0.0043,
+    "guitar": 0.5465,
+    "piano": 0.1774
+   },
+   "taps": {
+    "drums": 0.4131,
+    "bass": -0.0039,
+    "other": 0.0021,
+    "vocals": 0.0078,
+    "guitar": 0.2401,
+    "piano": 0.0218
+   }
+  }
+ },
+ "htdemucs-6s-guitar-ft/S2s": {
+  "mix_rms_dbfs": -18.23,
+  "mix_frames": 1294650,
+  "stems": {
+   "drums": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1294650,
+    "bytes": 7767944,
+    "rms_dbfs": -60.49,
+    "full_scale_samples": 0,
+    "samples": 2589300
+   },
+   "bass": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1294650,
+    "bytes": 7767944,
+    "rms_dbfs": -52.44,
+    "full_scale_samples": 0,
+    "samples": 2589300
+   },
+   "other": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1294650,
+    "bytes": 7767944,
+    "rms_dbfs": -55.54,
+    "full_scale_samples": 0,
+    "samples": 2589300
+   },
+   "vocals": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1294650,
+    "bytes": 7767944,
+    "rms_dbfs": -59.18,
+    "full_scale_samples": 0,
+    "samples": 2589300
+   },
+   "guitar": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1294650,
+    "bytes": 7767944,
+    "rms_dbfs": -36.63,
+    "full_scale_samples": 0,
+    "samples": 2589300
+   },
+   "piano": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1294650,
+    "bytes": 7767944,
+    "rms_dbfs": -24.55,
+    "full_scale_samples": 0,
+    "samples": 2589300
+   }
+  },
+  "sum_residual_db_lag0": -5.7
+ },
+ "htdemucs-6s-guitar-ft/R2": {
+  "mix_rms_dbfs": -10.27,
+  "mix_frames": 1587600,
+  "stems": {
+   "drums": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1587600,
+    "bytes": 9525644,
+    "rms_dbfs": -26.06,
+    "full_scale_samples": 0,
+    "samples": 3175200
+   },
+   "bass": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1587600,
+    "bytes": 9525644,
+    "rms_dbfs": -27.28,
+    "full_scale_samples": 0,
+    "samples": 3175200
+   },
+   "other": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1587600,
+    "bytes": 9525644,
+    "rms_dbfs": -61.95,
+    "full_scale_samples": 0,
+    "samples": 3175200
+   },
+   "vocals": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1587600,
+    "bytes": 9525644,
+    "rms_dbfs": -12.42,
+    "full_scale_samples": 40,
+    "samples": 3175200
+   },
+   "guitar": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1587600,
+    "bytes": 9525644,
+    "rms_dbfs": -18.8,
+    "full_scale_samples": 0,
+    "samples": 3175200
+   },
+   "piano": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1587600,
+    "bytes": 9525644,
+    "rms_dbfs": -67.9,
+    "full_scale_samples": 0,
+    "samples": 3175200
+   }
+  },
+  "sum_residual_db_lag0": -12.44,
+  "derived_instrumental_sum": {
+   "subtype": "FLOAT",
+   "frames": 1587600,
+   "max_abs_diff_vs_five_stem_sum": 0.0
+  }
+ },
+ "htdemucs_6s-via-ft-script/S4": {
+  "mix_rms_dbfs": -17.37,
+  "mix_frames": 1708495,
+  "stems": {
+   "drums": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1708495,
+    "bytes": 10251014,
+    "rms_dbfs": -29.21,
+    "full_scale_samples": 0,
+    "samples": 3416990
+   },
+   "bass": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1708495,
+    "bytes": 10251014,
+    "rms_dbfs": -25.3,
+    "full_scale_samples": 0,
+    "samples": 3416990
+   },
+   "other": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1708495,
+    "bytes": 10251014,
+    "rms_dbfs": -73.14,
+    "full_scale_samples": 0,
+    "samples": 3416990
+   },
+   "vocals": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1708495,
+    "bytes": 10251014,
+    "rms_dbfs": -22.83,
+    "full_scale_samples": 0,
+    "samples": 3416990
+   },
+   "guitar": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1708495,
+    "bytes": 10251014,
+    "rms_dbfs": -28.71,
+    "full_scale_samples": 0,
+    "samples": 3416990
+   },
+   "piano": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1708495,
+    "bytes": 10251014,
+    "rms_dbfs": -31.2,
+    "full_scale_samples": 0,
+    "samples": 3416990
+   }
+  },
+  "sum_residual_db_lag0": -12.34,
+  "projection": {
+   "bass": {
+    "drums": 0.0154,
+    "bass": 0.7555,
+    "other": 0.0003,
+    "vocals": 0.0389,
+    "guitar": 0.0302,
+    "piano": 0.0639
+   },
+   "drums": {
+    "drums": 0.8903,
+    "bass": 0.0218,
+    "other": 0.0001,
+    "vocals": 0.0058,
+    "guitar": 0.0248,
+    "piano": 0.018
+   },
+   "guitar": {
+    "drums": 0.0173,
+    "bass": 0.0082,
+    "other": 0.0009,
+    "vocals": 0.0946,
+    "guitar": 0.3447,
+    "piano": 0.2181
+   },
+   "lead": {
+    "drums": 0.0028,
+    "bass": 0.0076,
+    "other": 0.0002,
+    "vocals": 0.8456,
+    "guitar": 0.0204,
+    "piano": 0.0539
+   }
+  }
+ },
+ "htdemucs_6s-via-ft-script/S6taps": {
+  "mix_rms_dbfs": -18.03,
+  "mix_frames": 1294650,
+  "stems": {
+   "drums": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1294650,
+    "bytes": 7767944,
+    "rms_dbfs": -32.98,
+    "full_scale_samples": 0,
+    "samples": 2589300
+   },
+   "bass": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1294650,
+    "bytes": 7767944,
+    "rms_dbfs": -75.65,
+    "full_scale_samples": 0,
+    "samples": 2589300
+   },
+   "other": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1294650,
+    "bytes": 7767944,
+    "rms_dbfs": -81.61,
+    "full_scale_samples": 0,
+    "samples": 2589300
+   },
+   "vocals": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1294650,
+    "bytes": 7767944,
+    "rms_dbfs": -81.29,
+    "full_scale_samples": 0,
+    "samples": 2589300
+   },
+   "guitar": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1294650,
+    "bytes": 7767944,
+    "rms_dbfs": -33.76,
+    "full_scale_samples": 0,
+    "samples": 2589300
+   },
+   "piano": {
+    "subtype": "PCM_24",
+    "rate": 44100,
+    "channels": 2,
+    "frames": 1294650,
+    "bytes": 7767944,
+    "rms_dbfs": -20.14,
+    "full_scale_samples": 0,
+    "samples": 2589300
+   }
+  },
+  "sum_residual_db_lag0": -12.16,
+  "projection": {
+   "guitar": {
+    "drums": 0.0044,
+    "bass": 0.0008,
+    "other": 0.0004,
+    "vocals": 0.0004,
+    "guitar": 0.0635,
+    "piano": 0.7551
+   },
+   "taps": {
+    "drums": 0.8025,
+    "bass": 0.0002,
+    "other": 0.0,
+    "vocals": 0.0001,
+    "guitar": 0.0056,
+    "piano": 0.1691
+   }
+  }
+ }
+}

@@ -1,0 +1,24 @@
+[
+ {
+  "tool": "chordino",
+  "python": "/home/user/gtr/lanes/chords-beats-key/venv-chordext/bin/python",
+  "script": "/home/user/blog/docs/guitar-tab-research/lanes/chords-beats-key/scripts/chordino_run.py",
+  "clips": [
+   "S3",
+   "S7flat30",
+   "S4",
+   "S2n",
+   "S2s",
+   "S5capo2",
+   "S5dropd",
+   "S6taps",
+   "R1a",
+   "R1b",
+   "R1c",
+   "R2",
+   "R2full"
+  ],
+  "args": [],
+  "tag": "chordino"
+ }
+]

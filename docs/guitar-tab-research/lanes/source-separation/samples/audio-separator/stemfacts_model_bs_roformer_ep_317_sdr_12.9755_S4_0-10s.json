@@ -1,0 +1,82 @@
+{
+ "input": {
+  "path": "/home/user/gtr/lanes/source-separation/inputs/S4_0-10s/S4_0-10s.wav",
+  "sample_rate": 44100,
+  "channels": 2,
+  "frames": 441000,
+  "subtype": "PCM_16",
+  "rms_dbfs": -19.149861873376654,
+  "seconds": 10.0
+ },
+ "est_dir": "/home/user/gtr/lanes/source-separation/out/uvr/model_bs_roformer_ep_317_sdr_12.9755/S4_0-10s",
+ "stems": {
+  "instrumental": {
+   "file": "instrumental.wav",
+   "bytes": 1764078,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 441000,
+   "seconds": 10.0,
+   "frames_minus_input": 0,
+   "rms_dbfs": -19.15,
+   "peak_dbfs": -1.78
+  },
+  "vocals": {
+   "file": "vocals.wav",
+   "bytes": 1764078,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 441000,
+   "seconds": 10.0,
+   "frames_minus_input": 0,
+   "rms_dbfs": -Infinity,
+   "peak_dbfs": -Infinity
+  }
+ },
+ "sum_vs_mix": {
+  "common_rate": 44100,
+  "common_frames": 441000,
+  "best_lag_samples": 0,
+  "residual_db_at_lag0": -72.07,
+  "note": "positive lag = the stems' sum is late relative to the mix"
+ },
+ "truth_dir": "/home/user/gtr/inputs/S4/stems",
+ "projection": {
+  "instrumental": {
+   "bass": 1.0084,
+   "drums": 1.0504,
+   "guitar": 0.9724,
+   "lead": 0.9824
+  },
+  "vocals": {
+   "bass": 0.0,
+   "drums": 0.0,
+   "guitar": 0.0,
+   "lead": 0.0
+  }
+ },
+ "projection_column_sums": {
+  "bass": 1.0084,
+  "drums": 1.0504,
+  "guitar": 0.9724,
+  "lead": 0.9824
+ },
+ "si_sdr_db_cross": {
+  "instrumental": {
+   "bass": -4.72,
+   "drums": -10.63,
+   "guitar": -2.8,
+   "lead": -3.39
+  },
+  "vocals": {
+   "bass": Infinity,
+   "drums": Infinity,
+   "guitar": Infinity,
+   "lead": Infinity
+  }
+ }
+}

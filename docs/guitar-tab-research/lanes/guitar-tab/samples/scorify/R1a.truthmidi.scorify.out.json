@@ -1,0 +1,16 @@
+{
+ "status": "search-exhausted",
+ "diagnostics": [
+  "No valid path within the declared candidate and mechanics model"
+ ],
+ "stats": {
+  "strategy": "beam",
+  "frames": 364,
+  "expandedStates": 257886,
+  "discardedCandidates": 15314,
+  "dominatedStates": 12467,
+  "exhaustive": false
+ },
+ "ms": 1827.241934,
+ "notes": []
+}

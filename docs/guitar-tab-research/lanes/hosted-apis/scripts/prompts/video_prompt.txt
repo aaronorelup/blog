@@ -1,0 +1,4 @@
+This is a video of a person playing a guitar. Watch it and answer, as JSON matching the given schema:
+- "capo": is a capo clamped on the guitar neck? "present" is "yes", "no" or "cannot_tell"; "fret" is the fret it sits behind (an integer) or null; "evidence" says what in the video shows it.
+- "tuning": the tuning of the guitar if it can be determined (for example "standard E A D G B E" or "drop D"), or "cannot_tell", with the evidence.
+- "fretting_hand": a list of consecutive time spans covering the whole video. For each span give "start" and "end" in seconds from the start of the video, whether the fretting hand is "visible", and if it is, the lowest and highest fret numbers the fingers of the fretting hand cover in that span ("lowest_fret", "highest_fret", integers, 0 = open strings only) or null when the frets cannot be read, plus a short "note" on what is seen (camera angle, hand position).

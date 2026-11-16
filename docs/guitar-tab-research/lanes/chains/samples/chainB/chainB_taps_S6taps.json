@@ -1,0 +1,286 @@
+{
+"percussive_onsets": 53,
+"transcribed_note_onsets": 175,
+"truth": {
+"taps": 32,
+"note_groups": 48,
+"events": {
+"tap+note": 27,
+"tap-only": 5,
+"note-only": 21
+}
+},
+"onsets_without_a_transcribed_note_within_50ms": 5,
+"by_class": {
+"with note / truth tap+note": 27,
+"with note / truth note-only": 21,
+"without note / truth tap-only": 5
+},
+"rows": [
+{
+"onset": 2.1478,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 2.6819,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 3.2276,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "note-only"
+},
+{
+"onset": 3.7616,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 4.2957,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "note-only"
+},
+{
+"onset": 4.8298,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 5.3638,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "note-only"
+},
+{
+"onset": 5.8979,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 6.1765,
+"has_transcribed_note_within_50ms": false,
+"truth_event": "tap-only"
+},
+{
+"onset": 6.4435,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "note-only"
+},
+{
+"onset": 6.966,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 7.5117,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "note-only"
+},
+{
+"onset": 8.0457,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 8.5914,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "note-only"
+},
+{
+"onset": 9.1138,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 9.6595,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "note-only"
+},
+{
+"onset": 10.182,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 10.4606,
+"has_transcribed_note_within_50ms": false,
+"truth_event": "tap-only"
+},
+{
+"onset": 10.7276,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 11.2617,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 11.7957,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "note-only"
+},
+{
+"onset": 12.3298,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 12.8639,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "note-only"
+},
+{
+"onset": 13.3979,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 13.9436,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "note-only"
+},
+{
+"onset": 14.466,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 14.7447,
+"has_transcribed_note_within_50ms": false,
+"truth_event": "tap-only"
+},
+{
+"onset": 15.0117,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "note-only"
+},
+{
+"onset": 15.5458,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 16.0798,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "note-only"
+},
+{
+"onset": 16.6139,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 17.1595,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "note-only"
+},
+{
+"onset": 17.682,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 18.2277,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "note-only"
+},
+{
+"onset": 18.7617,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 19.0404,
+"has_transcribed_note_within_50ms": false,
+"truth_event": "tap-only"
+},
+{
+"onset": 19.2958,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 19.8298,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 20.3639,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "note-only"
+},
+{
+"onset": 20.898,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 21.4436,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "note-only"
+},
+{
+"onset": 21.9661,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 22.5117,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "note-only"
+},
+{
+"onset": 23.0458,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 23.3244,
+"has_transcribed_note_within_50ms": false,
+"truth_event": "tap-only"
+},
+{
+"onset": 23.5799,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "note-only"
+},
+{
+"onset": 24.1139,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 24.6596,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "note-only"
+},
+{
+"onset": 25.182,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 25.7277,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "note-only"
+},
+{
+"onset": 26.2618,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+},
+{
+"onset": 26.7958,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "note-only"
+},
+{
+"onset": 27.3299,
+"has_transcribed_note_within_50ms": true,
+"truth_event": "tap+note"
+}
+]
+}

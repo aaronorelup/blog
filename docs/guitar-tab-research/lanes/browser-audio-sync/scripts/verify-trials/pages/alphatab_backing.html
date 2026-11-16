@@ -1,0 +1,59 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>alphaTab backing track (verifier)</title>
+<body>
+<div id="at" style="width:1200px"></div>
+<script type="module">
+// Verifier page (verify-trials-browser-audio-sync, 2026-11-10): alphaTab 1.9.0 PlayerMode.EnabledBackingTrack with the
+// backing track and sync points filled in code, not from a Guitar Pro 8 file: S2n.gp5 is read with
+// importer.ScoreLoader.loadScoreFromBytes, score.backingTrack = new model.BackingTrack() with rawAudioFile = the bytes of
+// S2n.wav (rendered from the same notes at 112 BPM), one flat sync point per master bar at bar index x 4 x 60000/tempo ms
+// (score.applyFlatSyncPoints; ?offset=<ms> adds a constant to every sync point), then api.renderScore(score). Logged: whether the player gets ready, the output object,
+// alphaTab's position against its audio element's currentTime during 6 s of play, a seek to 20000 ms and a pause.
+import { finish, fail, sleep, stats, fetchArrayBuffer } from '/pages/common.js';
+const R = { page: 'alphatab_backing (verifier)', alphaTab_npm_version: '1.9.0' };
+try {
+  const alphaTab = await import('/nm/@coderline/alphatab/dist/alphaTab.mjs');
+  const api = new alphaTab.AlphaTabApi(document.getElementById('at'), {
+    core: { fontDirectory: '/nm/@coderline/alphatab/dist/font/' },
+    player: { playerMode: alphaTab.PlayerMode.EnabledBackingTrack, soundFont: '/nm/@coderline/alphatab/dist/soundfont/sonivox.sf2' } });
+  const t0 = performance.now(); const states = []; const pos = []; let el = null;
+  api.playerStateChanged.on((e) => states.push({ now: +(performance.now() - t0).toFixed(1), state: e.state, stopped: e.stopped }));
+  api.playerPositionChanged.on((e) => pos.push([performance.now() - t0, e.currentTime, el ? el.currentTime * 1000 : null, e.isSeek]));
+  const ready = new Promise((r) => api.playerReady.on(r));
+  const gp = new Uint8Array(await fetchArrayBuffer('/inputs/S2n/S2n.gp5'));
+  const wav = new Uint8Array(await fetchArrayBuffer('/inputs/S2n/S2n.wav'));
+  const score = alphaTab.importer.ScoreLoader.loadScoreFromBytes(gp, api.settings);
+  const bt = new alphaTab.model.BackingTrack(); bt.rawAudioFile = wav; score.backingTrack = bt;
+  const barMs = 4 * 60000 / score.tempo;
+  const OFFSET = Number(new URLSearchParams(location.search).get('offset') || 0);   // ms added to every sync point
+  R.sync_offset_ms = OFFSET;
+  const flat = score.masterBars.map((mb, i) => ({ barIndex: i, barPosition: 0, barOccurence: 0, millisecondOffset: i * barMs + OFFSET }));
+  score.applyFlatSyncPoints(flat);
+  R.tempo = score.tempo; R.master_bars = score.masterBars.length; R.bar_ms = barMs;
+  R.sync_points_applied = flat.length; R.sync_points_exported = score.exportFlatSyncPoints().length;
+  R.wav_bytes = wav.length;
+  api.renderScore(score);
+  R.player_ready = await Promise.race([ready.then(() => 'ready'), sleep(20000).then(() => 'no playerReady within 20 s')]);
+  R.ready_ms = +(performance.now() - t0).toFixed(1);
+  const out = api.player ? api.player.output : null;
+  R.output_class = out ? out.constructor.name : null;
+  el = out && out.audioElement ? out.audioElement : null;
+  R.has_audio_element = !!el;
+  if (el) { R.audio_element = { duration_s: el.duration, readyState: el.readyState, src_kind: String(el.src).slice(0, 5) }; }
+  R.api_endTime_ms = api.player && api.player.output && out.backingTrackDuration !== undefined ? out.backingTrackDuration : null;
+  const tPlay = performance.now() - t0;
+  api.play(); await sleep(6000);
+  R.after_6s = { audio_ms: el ? el.currentTime * 1000 : null, api_timePosition: api.timePosition, audio_paused: el ? el.paused : null };
+  api.timePosition = 20000; await sleep(1500);
+  R.after_seek_1p5s = { audio_ms: el ? el.currentTime * 1000 : null, api_timePosition: api.timePosition };
+  api.pause(); await sleep(300);
+  R.audio_paused_after_pause = el ? el.paused : null;
+  const d = pos.filter((p) => p[0] > tPlay + 500 && p[0] < tPlay + 6000 && p[2] !== null).map((p) => p[1] - p[2]);
+  R.position_events = pos.length; R.position_minus_audio_ms_during_play = stats(d);
+  R.position_first = pos.slice(0, 6).map((p) => p.map((v) => (typeof v === 'number' ? +v.toFixed(2) : v)));
+  R.states = states.slice(0, 12);
+  finish(R);
+} catch (e) { fail(e, R); }
+</script>
+</body>

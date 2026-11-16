@@ -1,0 +1,6 @@
+R1b torchcrepe-tiny truth-voiced frames 1823 est>=1500Hz on 890 median periodicity there 0.0 | elsewhere 0.879
+R1b torchcrepe-full truth-voiced frames 1823 est>=1500Hz on 838 median periodicity there 0.0 | elsewhere 0.931
+S1 torchcrepe-tiny truth-voiced frames 2624 est>=1500Hz on 0 median periodicity there None | elsewhere 0.911
+S1 torchcrepe-full truth-voiced frames 2624 est>=1500Hz on 0 median periodicity there None | elsewhere 0.959
+S2n torchcrepe-tiny truth-voiced frames 2529 est>=1500Hz on 2307 median periodicity there 0.0 | elsewhere 0.787
+S2n torchcrepe-full truth-voiced frames 2529 est>=1500Hz on 1803 median periodicity there 0.0 | elsewhere 0.788

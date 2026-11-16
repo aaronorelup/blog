@@ -1,0 +1,117 @@
+{
+ "source": "/home/user/gtr/lanes/audio-to-notes/out/basic-pitch/onnx-default/S3.mid",
+ "percussion_parts_removed": 0,
+ "n_note_or_chord_objects": 112,
+ "methods": {
+  "key": {
+   "key": "E minor",
+   "correlationCoefficient": 0.8158,
+   "alternates": [
+    [
+     "G major",
+     0.809
+    ],
+    [
+     "C major",
+     0.6959
+    ],
+    [
+     "A minor",
+     0.6102
+    ],
+    [
+     "D major",
+     0.3974
+    ]
+   ]
+  },
+  "key.krumhansl": {
+   "key": "G major",
+   "correlationCoefficient": 0.8841,
+   "alternates": [
+    [
+     "E minor",
+     0.8693
+    ],
+    [
+     "B minor",
+     0.5884
+    ],
+    [
+     "C major",
+     0.5103
+    ],
+    [
+     "D major",
+     0.4146
+    ]
+   ]
+  },
+  "key.simple": {
+   "key": "G major",
+   "correlationCoefficient": 0.7878,
+   "alternates": [
+    [
+     "E minor",
+     0.7711
+    ],
+    [
+     "C major",
+     0.7105
+    ],
+    [
+     "B minor",
+     0.4946
+    ],
+    [
+     "A minor",
+     0.4282
+    ]
+   ]
+  },
+  "key.bellman": {
+   "key": "C major",
+   "correlationCoefficient": 0.7667,
+   "alternates": [
+    [
+     "G major",
+     0.7419
+    ],
+    [
+     "E minor",
+     0.6941
+    ],
+    [
+     "C minor",
+     0.4259
+    ],
+    [
+     "D major",
+     0.4032
+    ]
+   ]
+  },
+  "key.temperley": {
+   "key": "G major",
+   "correlationCoefficient": 0.8479,
+   "alternates": [
+    [
+     "E minor",
+     0.7892
+    ],
+    [
+     "C major",
+     0.7276
+    ],
+    [
+     "B minor",
+     0.4507
+    ],
+    [
+     "D major",
+     0.3832
+    ]
+   ]
+  }
+ }
+}

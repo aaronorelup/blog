@@ -1,0 +1,14 @@
+{
+ "open_strings_midi": [
+  40,
+  45,
+  50,
+  55,
+  59,
+  64
+ ],
+ "tuning_name": "standard",
+ "offset_cents": -10,
+ "capo_fret": 0,
+ "evidence": "The recording features standard open chord shapes (G, Em, C, D) played in a standard open position, indicating standard tuning and no capo. The overall pitch of the guitar sounds slightly flat compared to concert pitch, estimated at around -10 cents."
+}

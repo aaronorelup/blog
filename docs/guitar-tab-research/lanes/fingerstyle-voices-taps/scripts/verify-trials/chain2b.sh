@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Verifier chain 2b: re-runs of r0238 (libnmfd), r0252 (basic-pitch), r0325 (basic-pitch with range, S5dropd), r0327 (demucs htdemucs_6s, R3a only),
+# each like the original: --nolock, one thread, pinned to one core with taskset where the original was.
+source /home/user/gtr/env.sh >/dev/null 2>&1
+export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 NUMBA_NUM_THREADS=1
+L=/home/user/gtr/lanes/fingerstyle-voices-taps; V=$L/verify-trials; S=/home/user/blog/docs/guitar-tab-research/lanes/fingerstyle-voices-taps/scripts; I=/home/user/gtr/inputs
+gtr-run --nolock --lane fingerstyle-voices-taps --tool libnmfd --label "verify: re-run of r0238 (libnmfd_drum_extraction.py on S6taps mono; nolock, 1 thread) in a venv rebuilt offline from freeze/venv-nmfd.txt" --input $I/S6taps/S6taps.mono.wav -- $V/venv-nmfd/bin/python -I -B $S/libnmfd_drum_extraction.py $I/S6taps/S6taps.mono.wav $V/libnmfd/S6taps
+mkdir -p $V/basic-pitch $V/basic-pitch-range
+gtr-run --nolock --lane fingerstyle-voices-taps --tool basic-pitch --label "verify: re-run of r0252 (basic-pitch 0.4.0 ONNX, defaults, 5 clips; nolock, taskset 1 core) in a venv rebuilt offline from freeze/venv-basicpitch.txt" --input $I/S2n/S2n.mono.wav --input $I/S2s/S2s.mono.wav --input $I/S6taps/S6taps.mono.wav --input $I/S5dropd/S5dropd.mono.wav --input $I/R3a/R3a.mono.wav -- taskset -c 1 $V/venv-bp/bin/basic-pitch --model-serialization onnx --save-midi --save-note-events $V/basic-pitch $I/S2n/S2n.mono.wav $I/S2s/S2s.mono.wav $I/S6taps/S6taps.mono.wav $I/S5dropd/S5dropd.mono.wav $I/R3a/R3a.mono.wav
+gtr-run --nolock --lane fingerstyle-voices-taps --tool basic-pitch --label "verify: re-run of r0325 on S5dropd only (basic-pitch ONNX --minimum-frequency 77.78 --maximum-frequency 1396.91; nolock, taskset 1 core)" --input $I/S5dropd/S5dropd.mono.wav -- taskset -c 1 $V/venv-bp/bin/basic-pitch --model-serialization onnx --save-note-events --minimum-frequency 77.78 --maximum-frequency 1396.91 $V/basic-pitch-range $I/S5dropd/S5dropd.mono.wav
+gtr-run --nolock --lane fingerstyle-voices-taps --tool demucs-4.1.0 --label "verify: re-run of r0327 (demucs -n htdemucs_6s -d cpu -j 1) on R3a only (nolock, taskset 1 core, 1 thread), with the source-separation lane's venv-demucs (demucs 4.1.0, torch 2.15.0+cpu, the versions in freeze/venv-demucs.txt)" --input $I/R3a/R3a.wav -- taskset -c 2 /home/user/gtr/lanes/source-separation/venv-demucs/bin/python -I -B -m demucs -n htdemucs_6s -d cpu -j 1 -o $V/demucs-real $I/R3a/R3a.wav
+echo CHAIN2B-DONE

@@ -1,0 +1,16 @@
+[
+ {
+  "tool": "beatnet",
+  "python": "/home/user/gtr/lanes/chords-beats-key/verify-trials/venvs/beatnet/bin/python",
+  "script": "/home/user/blog/docs/guitar-tab-research/lanes/chords-beats-key/scripts/beatnet_run.py",
+  "clips": [
+   "S3",
+   "S4"
+  ],
+  "args": [
+   "--model",
+   "1"
+  ],
+  "tag": "beatnet"
+ }
+]

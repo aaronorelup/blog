@@ -1,0 +1,66 @@
+{
+ "file": "/home/user/gtr/lanes/browser-audio-sync/out/stretch/S1_rubberband_0p75.wav",
+ "sample_rate": 44100,
+ "rate": 0.75,
+ "samples": 1754200,
+ "seconds": 39.77777777777778,
+ "audible_first_s": 2.202108843537415,
+ "audible_last_s": 38.1204081632653,
+ "audible_span_s": 35.91829931972789,
+ "alignment_shift_s": -0.020113823129251696,
+ "known_note": {
+  "onset_s": 2.2021,
+  "pitch": 66,
+  "median_f0_hz": 370.131,
+  "cents": 0.64,
+  "frames": 56
+ },
+ "known_note_fft": {
+  "hz": 370.573,
+  "cents_vs_nominal": 2.71,
+  "segment_s": 0.325
+ },
+ "notes_with_pitch": 62,
+ "notes_total": 62,
+ "cents_median": 0.64,
+ "cents_mean_abs": 20.296774193548398,
+ "cents_max_abs": 1199.36,
+ "notes_within_50_cents": 61,
+ "first5": [
+  {
+   "onset_s": 2.2021,
+   "pitch": 66,
+   "median_f0_hz": 370.131,
+   "cents": 0.64,
+   "frames": 56
+  },
+  {
+   "onset_s": 2.7577,
+   "pitch": 66,
+   "median_f0_hz": 370.131,
+   "cents": 0.64,
+   "frames": 56
+  },
+  {
+   "onset_s": 3.3132,
+   "pitch": 67,
+   "median_f0_hz": 392.14,
+   "cents": 0.64,
+   "frames": 56
+  },
+  {
+   "onset_s": 3.8688,
+   "pitch": 69,
+   "median_f0_hz": 440.162,
+   "cents": 0.64,
+   "frames": 56
+  },
+  {
+   "onset_s": 4.4243,
+   "pitch": 69,
+   "median_f0_hz": 440.162,
+   "cents": 0.64,
+   "frames": 56
+  }
+ ]
+}

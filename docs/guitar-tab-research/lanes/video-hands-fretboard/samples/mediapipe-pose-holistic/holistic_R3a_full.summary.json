@@ -1,0 +1,59 @@
+{
+ "clip": "R3a",
+ "mode": "full",
+ "frames": 540,
+ "all": {
+  "frames": 540,
+  "frac_0_hands": 0.0241,
+  "frac_1_hand": 0.813,
+  "frac_2_hands": 0.163,
+  "frac_more_than_2": 0.0,
+  "frac_at_least_1": 0.9759,
+  "label_counts": {
+   "left_hand": 521,
+   "right_hand": 94
+  },
+  "infer_ms_mean": 48.24,
+  "infer_ms_median": 48.6,
+  "infer_ms_p90": 58.89,
+  "fps_from_mean": 20.73
+ },
+ "per_shot": {
+  "medium": {
+   "frames": 319,
+   "frac_0_hands": 0.0376,
+   "frac_1_hand": 0.6865,
+   "frac_2_hands": 0.2759,
+   "frac_more_than_2": 0.0,
+   "frac_at_least_1": 0.9624,
+   "label_counts": {
+    "left_hand": 301,
+    "right_hand": 94
+   },
+   "infer_ms_mean": 46.6,
+   "infer_ms_median": 47.35,
+   "infer_ms_p90": 56.9,
+   "fps_from_mean": 21.46
+  },
+  "wide": {
+   "frames": 221,
+   "frac_0_hands": 0.0045,
+   "frac_1_hand": 0.9955,
+   "frac_2_hands": 0.0,
+   "frac_more_than_2": 0.0,
+   "frac_at_least_1": 0.9955,
+   "label_counts": {
+    "left_hand": 220
+   },
+   "infer_ms_mean": 50.6,
+   "infer_ms_median": 51.31,
+   "infer_ms_p90": 63.2,
+   "fps_from_mean": 19.76
+  }
+ },
+ "tool": "mediapipe holistic",
+ "mediapipe_version": "1.2.2",
+ "model": "holistic_landmarker.task",
+ "init_s": 0.244,
+ "frac_pose_found": 1.0
+}

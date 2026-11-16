@@ -1,0 +1,36 @@
+warning: The `UV_NATIVE_TLS` environment variable is deprecated and will be removed in a future release. Use `UV_SYSTEM_CERTS` instead.
+Using Python 3.10.20 environment at: dry-3.10
+  × Failed to build `crepe==0.0.16`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit
+      status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File "<string>", line 14, in <module>
+        File
+      "/home/user/gtr/cache/uv/builds-v0/.tmpCKmOYr/lib/python3.10/site-packages/setuptools/build_meta.py",
+      line 333, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+        File
+      "/home/user/gtr/cache/uv/builds-v0/.tmpCKmOYr/lib/python3.10/site-packages/setuptools/build_meta.py",
+      line 301, in _get_build_requires
+          self.run_setup()
+        File
+      "/home/user/gtr/cache/uv/builds-v0/.tmpCKmOYr/lib/python3.10/site-packages/setuptools/build_meta.py",
+      line 520, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File
+      "/home/user/gtr/cache/uv/builds-v0/.tmpCKmOYr/lib/python3.10/site-packages/setuptools/build_meta.py",
+      line 317, in run_setup
+          exec(code, locals())  # noqa: S102 # exec is intentional here
+        File "<string>", line 6, in <module>
+      ModuleNotFoundError: No module named 'pkg_resources'
+
+hint: `crepe` (v0.0.16) was included because `ddsp` (v3.3.4) depends on `crepe>=0.0.11`
+hint: This error likely indicates that `crepe@0.0.16` depends on `pkg_resources`, but doesn't declare it as a build dependency. If `crepe` is a first-party package, consider adding `pkg_resources` to its `build-system.requires`. Otherwise, either add it to your `pyproject.toml` under:
+
+[tool.uv.extra-build-dependencies]
+crepe = ["pkg_resources"]
+
+or `uv pip install pkg_resources` into the environment and re-run with `--no-build-isolation`.

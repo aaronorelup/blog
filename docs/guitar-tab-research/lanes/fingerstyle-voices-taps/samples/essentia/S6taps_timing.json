@@ -1,0 +1,38 @@
+{
+ "essentia": "2.1-beta6-dev",
+ "input": "/home/user/gtr/inputs/S6taps/S6taps.mono.wav",
+ "n_samples": 1294650,
+ "od_hfc": {
+  "seconds": 0.166,
+  "n_onsets": 52
+ },
+ "od_complex": {
+  "seconds": 0.186,
+  "n_onsets": 53
+ },
+ "od_complex_phase": {
+  "seconds": 0.121,
+  "n_onsets": 79
+ },
+ "od_flux": {
+  "seconds": 0.109,
+  "n_onsets": 59
+ },
+ "od_melflux": {
+  "seconds": 0.14,
+  "n_onsets": 61
+ },
+ "od_rms": {
+  "seconds": 0.099,
+  "n_onsets": 157
+ },
+ "onsetrate": {
+  "seconds": 0.089,
+  "n_onsets": 53,
+  "rate_per_s": 1.805352807044983
+ },
+ "superflux": {
+  "seconds": 0.147,
+  "n_onsets": 19
+ }
+}

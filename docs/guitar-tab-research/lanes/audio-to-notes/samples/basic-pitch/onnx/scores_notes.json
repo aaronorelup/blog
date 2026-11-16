@@ -1,0 +1,147 @@
+{
+ "tool": "basic-pitch",
+ "kind": "notes",
+ "dir": "/home/user/gtr/lanes/audio-to-notes/out/basic-pitch/onnx-default",
+ "conf_threshold": null,
+ "results": {
+  "S3": {
+   "eval_id": "e0586",
+   "args": "notes --truth S3 --est /home/user/gtr/lanes/audio-to-notes/out/basic-pitch/onnx-default/S3.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.761421,
+     "recall": 0.824176,
+     "f1": 0.791557,
+     "avg_overlap_ratio": 0.847248,
+     "n_matched": 150
+    },
+    "onset_offset": {
+     "precision": 0.609137,
+     "recall": 0.659341,
+     "f1": 0.633245,
+     "avg_overlap_ratio": 0.922648,
+     "n_matched": 120
+    },
+    "recall_by_voice": {
+     "chord": {
+      "n_truth": 182,
+      "onset_only_matched": 150,
+      "onset_only_recall": 0.824176,
+      "onset_offset_matched": 120,
+      "onset_offset_recall": 0.659341
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 150,
+     "median_s": 0.009004,
+     "mean_s": 0.009848,
+     "mean_abs_s": 0.011525,
+     "p95_abs_s": 0.031606,
+     "max_abs_s": 0.042483
+    }
+   },
+   "counts": {
+    "n_truth": 182,
+    "n_est": 197,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 150,
+    "n_matched_onset_offset": 120
+   }
+  },
+  "S6taps": {
+   "eval_id": "e0589",
+   "args": "notes --truth S6taps --est /home/user/gtr/lanes/audio-to-notes/out/basic-pitch/onnx-default/S6taps.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.459184,
+     "recall": 1.0,
+     "f1": 0.629371,
+     "avg_overlap_ratio": 0.795721,
+     "n_matched": 90
+    },
+    "onset_offset": {
+     "precision": 0.280612,
+     "recall": 0.611111,
+     "f1": 0.384615,
+     "avg_overlap_ratio": 0.939462,
+     "n_matched": 55
+    },
+    "recall_by_voice": {
+     "bass": {
+      "n_truth": 48,
+      "onset_only_matched": 48,
+      "onset_only_recall": 1.0,
+      "onset_offset_matched": 25,
+      "onset_offset_recall": 0.520833
+     },
+     "melody": {
+      "n_truth": 42,
+      "onset_only_matched": 42,
+      "onset_only_recall": 1.0,
+      "onset_offset_matched": 30,
+      "onset_offset_recall": 0.714286
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 90,
+     "median_s": 0.009156,
+     "mean_s": 0.009719,
+     "mean_abs_s": 0.009869,
+     "p95_abs_s": 0.020278,
+     "max_abs_s": 0.02509
+    }
+   },
+   "counts": {
+    "n_truth": 90,
+    "n_est": 196,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 90,
+    "n_matched_onset_offset": 55
+   }
+  },
+  "S7flat30": {
+   "eval_id": "e0592",
+   "args": "notes --truth S7flat30 --est /home/user/gtr/lanes/audio-to-notes/out/basic-pitch/onnx-default/S7flat30.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.741071,
+     "recall": 0.456044,
+     "f1": 0.564626,
+     "avg_overlap_ratio": 0.70043,
+     "n_matched": 83
+    },
+    "onset_offset": {
+     "precision": 0.348214,
+     "recall": 0.214286,
+     "f1": 0.265306,
+     "avg_overlap_ratio": 0.906202,
+     "n_matched": 39
+    },
+    "recall_by_voice": {
+     "chord": {
+      "n_truth": 182,
+      "onset_only_matched": 83,
+      "onset_only_recall": 0.456044,
+      "onset_offset_matched": 39,
+      "onset_offset_recall": 0.214286
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 83,
+     "median_s": 0.00836,
+     "mean_s": 0.008524,
+     "mean_abs_s": 0.011345,
+     "p95_abs_s": 0.026243,
+     "max_abs_s": 0.044131
+    }
+   },
+   "counts": {
+    "n_truth": 182,
+    "n_est": 112,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 83,
+    "n_matched_onset_offset": 39
+   }
+  }
+ }
+}

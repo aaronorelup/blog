@@ -1,0 +1,7 @@
+# local_name	URL   (training-data terms; fetched into /home/user/gtr/lanes/source-separation/verify-docs/extra3/)
+audioset_download.html	https://research.google.com/audioset/download.html
+vggsound_page.html	https://www.robots.ox.ac.uk/~vgg/data/vggsound/
+audiocaps_readme.md	https://raw.githubusercontent.com/cdjkim/audiocaps/master/README.md
+audiocaps_LICENSE	https://raw.githubusercontent.com/cdjkim/audiocaps/master/LICENSE
+zenodo_clotho_4783391.json	https://zenodo.org/api/records/4783391
+zenodo_openmic_1432913.json	https://zenodo.org/api/records/1432913

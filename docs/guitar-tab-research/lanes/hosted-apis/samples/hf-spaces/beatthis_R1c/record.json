@@ -1,0 +1,54 @@
+{
+ "space": "teamup-tech/Beat-This",
+ "api_name": "/process",
+ "args": [
+  "file:/home/user/gtr/inputs/R1c/R1c.wav"
+ ],
+ "token": null,
+ "runtime_before": {
+  "stage": "RUNNING",
+  "hardware": {
+   "current": "cpu-basic",
+   "requested": "cpu-basic"
+  }
+ },
+ "space_sha": "8f2aa339670026b2da94671d842757aacc8ae2c0",
+ "client_connect_s": 1.669,
+ "ok": true,
+ "wall_s": 5.685,
+ "status_changes": [
+  {
+   "t_s": 1.68,
+   "code": "Status.STARTING",
+   "rank": null,
+   "queue_size": null,
+   "eta": null,
+   "progress": null
+  },
+  {
+   "t_s": 3.68,
+   "code": "Status.PROCESSING",
+   "rank": null,
+   "queue_size": null,
+   "eta": null,
+   "progress": null
+  },
+  {
+   "t_s": 4.68,
+   "code": "Status.FINISHED",
+   "rank": null,
+   "queue_size": null,
+   "eta": null,
+   "progress": null
+  }
+ ],
+ "result_summary": {
+  "files": [
+   {
+    "file": "/home/user/gtr/lanes/hosted-apis/out/hf-spaces/beatthis_R1c/files/beat-this_audio-with-beats.wav",
+    "bytes": 2490396
+   }
+  ],
+  "n_labels": 56
+ }
+}

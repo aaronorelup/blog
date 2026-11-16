@@ -1,0 +1,71 @@
+{
+ "model": "meta/muse-spark-open",
+ "messages": [
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "file",
+     "file": {
+      "filename": "S2n.mono.wav",
+      "file_data": "<data:audio/wav;base64 of S2n.mono.wav: 2589344 bytes, sha256 9a8b2ba2c54d00d9c108df14c44bf3761513929ec638debcd3424adc3480618f>"
+     }
+    },
+    {
+     "type": "text",
+     "text": "Listen to this audio recording of a solo guitar piece.\nList every note that is played, in time order, as JSON matching the given schema. For each note give:\n- \"onset\": the time the note starts, in seconds from the start of the file (to the nearest 0.01 s),\n- \"offset\": the time the note stops sounding, in seconds,\n- \"pitch\": the pitch as a MIDI note number (60 = middle C = C4, 64 = E4, 40 = the low E string of a guitar in standard tuning).\nInclude every note, bass notes and melody notes alike. Notes that start together are listed separately.\n"
+    }
+   ]
+  }
+ ],
+ "response_format": {
+  "type": "json_schema",
+  "json_schema": {
+   "name": "answer",
+   "schema": {
+    "type": "object",
+    "properties": {
+     "notes": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "onset": {
+         "type": "number",
+         "description": "note start in seconds from the start of the file"
+        },
+        "offset": {
+         "type": "number",
+         "description": "note end in seconds"
+        },
+        "pitch": {
+         "type": "integer",
+         "description": "MIDI note number, 60 = C4"
+        }
+       },
+       "required": [
+        "onset",
+        "offset",
+        "pitch"
+       ]
+      }
+     }
+    },
+    "required": [
+     "notes"
+    ]
+   }
+  }
+ },
+ "max_tokens": 24576,
+ "providerOptions": {
+  "gateway": {
+   "only": [
+    "togetherai"
+   ],
+   "order": [
+    "togetherai"
+   ]
+  }
+ }
+}

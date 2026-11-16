@@ -1,0 +1,7 @@
+[1.037] log: Heap resize call from 16777216 to 20185088 took 0.1299999998882413 msecs. Success: true
+[1.063] log: Heap resize call from 20185088 to 24248320 took 0.044999999925494194 msecs. Success: true
+[1.078] log: Heap resize call from 24248320 to 29097984 took 0.034999999683350325 msecs. Success: true
+[1.239] log: Heap resize call from 29097984 to 34930688 took 0.0800000000745058 msecs. Success: true
+[1.696] log: Heap resize call from 34930688 to 41943040 took 0.060000000055879354 msecs. Success: true
+[1.723] log: Heap resize call from 41943040 to 50331648 took 16.825000000186265 msecs. Success: true
+[1.934] log: Heap resize call from 50331648 to 60424192 took 0.054999999701976776 msecs. Success: true

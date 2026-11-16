@@ -1,0 +1,10 @@
+[0.237] log: PHASE model_fetch_start 1794356685290.7
+[0.602] log: PHASE model_fetch_end 1794356685657.5
+[0.603] log: PHASE session_create_start 1794356685657.7
+[7.143] error: Error: Can't create a session. ERROR_CODE: 6, ERROR_MESSAGE: std::bad_alloc
+    at S (http://127.0.0.1:18766/nm/onnxruntime-web/dist/ort.wasm.min.mjs:6:27597)
+    at Ce (http://127.0.0.1:18766/nm/onnxruntime-web/dist/ort.wasm.min.mjs:6:38597)
+    at async Xe.loadModel (http://127.0.0.1:18766/nm/onnxruntime-web/dist/ort.wasm.min.mjs:6:51047)
+    at async Ke.createInferenceSessionHandler (http://127.0.0.1:18766/nm/onnxruntime-web/dist/ort.wasm.min.mjs:6:53062)
+    at async e.create (http://127.0.0.1:18766/nm/onnxruntime-web/dist/ort.wasm.min.mjs:6:21131)
+    at async http://127.0.0.1:18766/gpages/htdemucs6s.html?threads=2&opt=basic&tag=S4_10s_t2_optbasic:52:19

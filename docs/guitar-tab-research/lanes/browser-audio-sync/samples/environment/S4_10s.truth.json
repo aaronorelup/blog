@@ -1,0 +1,40 @@
+{
+ "id": "S4_10s",
+ "title": "Band: drums, bass, strummed guitar, lead line (singer stand-in) (10 s excerpt for the in-browser Demucs trial)",
+ "what": "S4 samples 182483 to 623482 (start 4.137937 s, the first beat of the song after the count-in bar), cut with sox; stems cut the same way.",
+ "audio": "S4_10s.wav",
+ "duration_s": 10.0,
+ "sample_rate": 44100,
+ "channels": 2,
+ "tempo_bpm": 116.0,
+ "time_signature": "4/4",
+ "key": "D major",
+ "tuning_midi": [
+  40,
+  45,
+  50,
+  55,
+  59,
+  64
+ ],
+ "capo": 0,
+ "tuning_offset_cents": 0,
+ "notes": [],
+ "beats": [],
+ "downbeats": [],
+ "chords": [],
+ "taps": [],
+ "stems": {
+  "drums": "stems/drums.wav",
+  "bass": "stems/bass.wav",
+  "guitar": "stems/guitar.wav",
+  "lead": "stems/lead.wav"
+ },
+ "source": {
+  "kind": "synthesized",
+  "url": null,
+  "license": "Song (chords, bass line, lead melody, drum part) written for this test set. Audio rendered from MIDI for this test set with FluidSynth 2.3.4 and FluidR3_GM.sf2 (MIT license).",
+  "license_quote": "I hereby release Fluid under the MIT license, as described in COPYING.",
+  "attribution": "Rendered with the FluidR3_GM SoundFont by Frank Wen (MIT license)."
+ }
+}

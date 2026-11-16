@@ -1,0 +1,101 @@
+{
+ "algo": "crepe-tiny",
+ "essentia": "2.1-beta6-dev",
+ "clips": {
+  "S1": {
+   "input": "/home/user/gtr/inputs/S1/S1.mono.wav",
+   "sample_rate": 16000,
+   "n_frames": 2984,
+   "hop_s": 0.009999999776482582,
+   "activation_shape": [
+    2984,
+    360
+   ],
+   "seconds": 14.38
+  },
+  "S2n": {
+   "input": "/home/user/gtr/inputs/S2n/S2n.mono.wav",
+   "sample_rate": 16000,
+   "n_frames": 2936,
+   "hop_s": 0.009999999776482582,
+   "activation_shape": [
+    2936,
+    360
+   ],
+   "seconds": 12.616
+  },
+  "S2s": {
+   "input": "/home/user/gtr/inputs/S2s/S2s.mono.wav",
+   "sample_rate": 16000,
+   "n_frames": 2936,
+   "hop_s": 0.009999999776482582,
+   "activation_shape": [
+    2936,
+    360
+   ],
+   "seconds": 14.151
+  },
+  "S4": {
+   "input": "/home/user/gtr/inputs/S4/S4.mono.wav",
+   "sample_rate": 16000,
+   "n_frames": 3875,
+   "hop_s": 0.009999999776482582,
+   "activation_shape": [
+    3875,
+    360
+   ],
+   "seconds": 17.909
+  },
+  "S4lead": {
+   "input": "/home/user/gtr/inputs/S4/stems/lead.wav",
+   "sample_rate": 16000,
+   "n_frames": 3875,
+   "hop_s": 0.009999999776482582,
+   "activation_shape": [
+    3875,
+    360
+   ],
+   "seconds": 19.134
+  },
+  "R1b": {
+   "input": "/home/user/gtr/inputs/R1b/R1b.mono.wav",
+   "sample_rate": 16000,
+   "n_frames": 2934,
+   "hop_s": 0.009999999776482582,
+   "activation_shape": [
+    2934,
+    360
+   ],
+   "seconds": 14.718
+  },
+  "R2": {
+   "input": "/home/user/gtr/inputs/R2/R2.mono.wav",
+   "sample_rate": 16000,
+   "n_frames": 3601,
+   "hop_s": 0.009999999776482582,
+   "activation_shape": [
+    3601,
+    360
+   ],
+   "seconds": 18.521
+  },
+  "R3a": {
+   "input": "/home/user/gtr/inputs/R3a/R3a.mono.wav",
+   "sample_rate": 16000,
+   "n_frames": 1800,
+   "hop_s": 0.009999999776482582,
+   "activation_shape": [
+    1800,
+    360
+   ],
+   "seconds": 9.886
+  }
+ },
+ "setup_s": 0.018,
+ "settings": {
+  "graphFilename": "crepe-tiny-1.pb",
+  "hopSize_ms": 10,
+  "batchSize": 64,
+  "sampleRate": 16000
+ }
+}

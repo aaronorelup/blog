@@ -1,0 +1,41 @@
+{
+ "replaced": ":q 0/3",
+ "with": ":q 2/3",
+ "at": 123,
+ "n_before": 90,
+ "n_after": 90,
+ "first8_before": [
+  "0",
+  "0",
+  "3",
+  "3",
+  "0",
+  "0",
+  "3",
+  "1"
+ ],
+ "first8_after": [
+  "2",
+  "0",
+  "3",
+  "3",
+  "0",
+  "0",
+  "3",
+  "1"
+ ],
+ "changed": [
+  {
+   "i": 0,
+   "before": "0",
+   "after": "2"
+  }
+ ],
+ "editor_error": "",
+ "console": [
+  {
+   "type": "log",
+   "text": "Running VexTab.Div: 4.0.3-5-g3a5e00d master 3a5e00d858ae98934ba545f9bef5eb923e17e402"
+  }
+ ]
+}

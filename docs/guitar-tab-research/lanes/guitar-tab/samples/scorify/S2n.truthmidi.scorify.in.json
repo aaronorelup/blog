@@ -1,0 +1,561 @@
+{
+ "name": "S2n.truthmidi",
+ "ppq": 960,
+ "meter": [
+  4,
+  4
+ ],
+ "tempoMap": [
+  {
+   "tick": 0,
+   "bpm": 112.00005973336519
+  }
+ ],
+ "notes": [
+  {
+   "id": "n0",
+   "tick": 3840,
+   "durTicks": 942,
+   "name": "G2"
+  },
+  {
+   "id": "n1",
+   "tick": 3840,
+   "durTicks": 942,
+   "name": "G3"
+  },
+  {
+   "id": "n2",
+   "tick": 4800,
+   "durTicks": 942,
+   "name": "D3"
+  },
+  {
+   "id": "n3",
+   "tick": 4800,
+   "durTicks": 942,
+   "name": "G3"
+  },
+  {
+   "id": "n4",
+   "tick": 5760,
+   "durTicks": 942,
+   "name": "G2"
+  },
+  {
+   "id": "n5",
+   "tick": 5760,
+   "durTicks": 942,
+   "name": "D4"
+  },
+  {
+   "id": "n6",
+   "tick": 6720,
+   "durTicks": 942,
+   "name": "D3"
+  },
+  {
+   "id": "n7",
+   "tick": 6720,
+   "durTicks": 942,
+   "name": "D4"
+  },
+  {
+   "id": "n8",
+   "tick": 7680,
+   "durTicks": 942,
+   "name": "C3"
+  },
+  {
+   "id": "n9",
+   "tick": 7680,
+   "durTicks": 942,
+   "name": "E4"
+  },
+  {
+   "id": "n10",
+   "tick": 8640,
+   "durTicks": 942,
+   "name": "E3"
+  },
+  {
+   "id": "n11",
+   "tick": 8640,
+   "durTicks": 942,
+   "name": "E4"
+  },
+  {
+   "id": "n12",
+   "tick": 9600,
+   "durTicks": 942,
+   "name": "G2"
+  },
+  {
+   "id": "n13",
+   "tick": 9600,
+   "durTicks": 1902,
+   "name": "D4"
+  },
+  {
+   "id": "n14",
+   "tick": 10560,
+   "durTicks": 942,
+   "name": "D3"
+  },
+  {
+   "id": "n15",
+   "tick": 11520,
+   "durTicks": 942,
+   "name": "C3"
+  },
+  {
+   "id": "n16",
+   "tick": 11520,
+   "durTicks": 942,
+   "name": "C4"
+  },
+  {
+   "id": "n17",
+   "tick": 12480,
+   "durTicks": 942,
+   "name": "E3"
+  },
+  {
+   "id": "n18",
+   "tick": 12480,
+   "durTicks": 942,
+   "name": "C4"
+  },
+  {
+   "id": "n19",
+   "tick": 13440,
+   "durTicks": 942,
+   "name": "G2"
+  },
+  {
+   "id": "n20",
+   "tick": 13440,
+   "durTicks": 942,
+   "name": "B3"
+  },
+  {
+   "id": "n21",
+   "tick": 14400,
+   "durTicks": 942,
+   "name": "D3"
+  },
+  {
+   "id": "n22",
+   "tick": 14400,
+   "durTicks": 942,
+   "name": "B3"
+  },
+  {
+   "id": "n23",
+   "tick": 15360,
+   "durTicks": 942,
+   "name": "D3"
+  },
+  {
+   "id": "n24",
+   "tick": 15360,
+   "durTicks": 942,
+   "name": "A3"
+  },
+  {
+   "id": "n25",
+   "tick": 16320,
+   "durTicks": 942,
+   "name": "A2"
+  },
+  {
+   "id": "n26",
+   "tick": 16320,
+   "durTicks": 942,
+   "name": "A3"
+  },
+  {
+   "id": "n27",
+   "tick": 17280,
+   "durTicks": 942,
+   "name": "G2"
+  },
+  {
+   "id": "n28",
+   "tick": 17280,
+   "durTicks": 1902,
+   "name": "G3"
+  },
+  {
+   "id": "n29",
+   "tick": 18240,
+   "durTicks": 942,
+   "name": "D3"
+  },
+  {
+   "id": "n30",
+   "tick": 19200,
+   "durTicks": 942,
+   "name": "G2"
+  },
+  {
+   "id": "n31",
+   "tick": 19200,
+   "durTicks": 942,
+   "name": "D4"
+  },
+  {
+   "id": "n32",
+   "tick": 20160,
+   "durTicks": 942,
+   "name": "D3"
+  },
+  {
+   "id": "n33",
+   "tick": 20160,
+   "durTicks": 942,
+   "name": "D4"
+  },
+  {
+   "id": "n34",
+   "tick": 21120,
+   "durTicks": 942,
+   "name": "C3"
+  },
+  {
+   "id": "n35",
+   "tick": 21120,
+   "durTicks": 942,
+   "name": "C4"
+  },
+  {
+   "id": "n36",
+   "tick": 22080,
+   "durTicks": 942,
+   "name": "E3"
+  },
+  {
+   "id": "n37",
+   "tick": 22080,
+   "durTicks": 942,
+   "name": "C4"
+  },
+  {
+   "id": "n38",
+   "tick": 23040,
+   "durTicks": 942,
+   "name": "G2"
+  },
+  {
+   "id": "n39",
+   "tick": 23040,
+   "durTicks": 942,
+   "name": "B3"
+  },
+  {
+   "id": "n40",
+   "tick": 24000,
+   "durTicks": 942,
+   "name": "D3"
+  },
+  {
+   "id": "n41",
+   "tick": 24000,
+   "durTicks": 942,
+   "name": "B3"
+  },
+  {
+   "id": "n42",
+   "tick": 24960,
+   "durTicks": 942,
+   "name": "D3"
+  },
+  {
+   "id": "n43",
+   "tick": 24960,
+   "durTicks": 1902,
+   "name": "A3"
+  },
+  {
+   "id": "n44",
+   "tick": 25920,
+   "durTicks": 942,
+   "name": "A2"
+  },
+  {
+   "id": "n45",
+   "tick": 26880,
+   "durTicks": 942,
+   "name": "G2"
+  },
+  {
+   "id": "n46",
+   "tick": 26880,
+   "durTicks": 942,
+   "name": "D4"
+  },
+  {
+   "id": "n47",
+   "tick": 27840,
+   "durTicks": 942,
+   "name": "D3"
+  },
+  {
+   "id": "n48",
+   "tick": 27840,
+   "durTicks": 942,
+   "name": "D4"
+  },
+  {
+   "id": "n49",
+   "tick": 28800,
+   "durTicks": 942,
+   "name": "C3"
+  },
+  {
+   "id": "n50",
+   "tick": 28800,
+   "durTicks": 942,
+   "name": "C4"
+  },
+  {
+   "id": "n51",
+   "tick": 29760,
+   "durTicks": 942,
+   "name": "E3"
+  },
+  {
+   "id": "n52",
+   "tick": 29760,
+   "durTicks": 942,
+   "name": "C4"
+  },
+  {
+   "id": "n53",
+   "tick": 30720,
+   "durTicks": 942,
+   "name": "G2"
+  },
+  {
+   "id": "n54",
+   "tick": 30720,
+   "durTicks": 942,
+   "name": "B3"
+  },
+  {
+   "id": "n55",
+   "tick": 31680,
+   "durTicks": 942,
+   "name": "D3"
+  },
+  {
+   "id": "n56",
+   "tick": 31680,
+   "durTicks": 942,
+   "name": "B3"
+  },
+  {
+   "id": "n57",
+   "tick": 32640,
+   "durTicks": 942,
+   "name": "D3"
+  },
+  {
+   "id": "n58",
+   "tick": 32640,
+   "durTicks": 1902,
+   "name": "A3"
+  },
+  {
+   "id": "n59",
+   "tick": 33600,
+   "durTicks": 942,
+   "name": "A2"
+  },
+  {
+   "id": "n60",
+   "tick": 34560,
+   "durTicks": 942,
+   "name": "G2"
+  },
+  {
+   "id": "n61",
+   "tick": 34560,
+   "durTicks": 942,
+   "name": "G3"
+  },
+  {
+   "id": "n62",
+   "tick": 35520,
+   "durTicks": 942,
+   "name": "D3"
+  },
+  {
+   "id": "n63",
+   "tick": 35520,
+   "durTicks": 942,
+   "name": "G3"
+  },
+  {
+   "id": "n64",
+   "tick": 36480,
+   "durTicks": 942,
+   "name": "G2"
+  },
+  {
+   "id": "n65",
+   "tick": 36480,
+   "durTicks": 942,
+   "name": "D4"
+  },
+  {
+   "id": "n66",
+   "tick": 37440,
+   "durTicks": 942,
+   "name": "D3"
+  },
+  {
+   "id": "n67",
+   "tick": 37440,
+   "durTicks": 942,
+   "name": "D4"
+  },
+  {
+   "id": "n68",
+   "tick": 38400,
+   "durTicks": 942,
+   "name": "C3"
+  },
+  {
+   "id": "n69",
+   "tick": 38400,
+   "durTicks": 942,
+   "name": "E4"
+  },
+  {
+   "id": "n70",
+   "tick": 39360,
+   "durTicks": 942,
+   "name": "E3"
+  },
+  {
+   "id": "n71",
+   "tick": 39360,
+   "durTicks": 942,
+   "name": "E4"
+  },
+  {
+   "id": "n72",
+   "tick": 40320,
+   "durTicks": 942,
+   "name": "G2"
+  },
+  {
+   "id": "n73",
+   "tick": 40320,
+   "durTicks": 1902,
+   "name": "D4"
+  },
+  {
+   "id": "n74",
+   "tick": 41280,
+   "durTicks": 942,
+   "name": "D3"
+  },
+  {
+   "id": "n75",
+   "tick": 42240,
+   "durTicks": 942,
+   "name": "C3"
+  },
+  {
+   "id": "n76",
+   "tick": 42240,
+   "durTicks": 942,
+   "name": "C4"
+  },
+  {
+   "id": "n77",
+   "tick": 43200,
+   "durTicks": 942,
+   "name": "E3"
+  },
+  {
+   "id": "n78",
+   "tick": 43200,
+   "durTicks": 942,
+   "name": "C4"
+  },
+  {
+   "id": "n79",
+   "tick": 44160,
+   "durTicks": 942,
+   "name": "G2"
+  },
+  {
+   "id": "n80",
+   "tick": 44160,
+   "durTicks": 942,
+   "name": "B3"
+  },
+  {
+   "id": "n81",
+   "tick": 45120,
+   "durTicks": 942,
+   "name": "D3"
+  },
+  {
+   "id": "n82",
+   "tick": 45120,
+   "durTicks": 942,
+   "name": "B3"
+  },
+  {
+   "id": "n83",
+   "tick": 46080,
+   "durTicks": 942,
+   "name": "D3"
+  },
+  {
+   "id": "n84",
+   "tick": 46080,
+   "durTicks": 942,
+   "name": "A3"
+  },
+  {
+   "id": "n85",
+   "tick": 47040,
+   "durTicks": 942,
+   "name": "A2"
+  },
+  {
+   "id": "n86",
+   "tick": 47040,
+   "durTicks": 942,
+   "name": "A3"
+  },
+  {
+   "id": "n87",
+   "tick": 48000,
+   "durTicks": 942,
+   "name": "G2"
+  },
+  {
+   "id": "n88",
+   "tick": 48000,
+   "durTicks": 1902,
+   "name": "G3"
+  },
+  {
+   "id": "n89",
+   "tick": 48960,
+   "durTicks": 942,
+   "name": "D3"
+  }
+ ],
+ "tuning": null,
+ "capo": 0,
+ "level": null,
+ "rightHand": null,
+ "pin": null
+}

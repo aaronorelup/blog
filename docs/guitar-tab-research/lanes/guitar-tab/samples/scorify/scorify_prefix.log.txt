@@ -1,0 +1,15 @@
+R1a.truthmidi: the first 187 notes arrange; the first 188 do not (search-exhausted: No valid path within the declared candidate and mechanics model)
+  n182 F3 onset 28.343 s, ends 28.610 s
+  n183 A#2 onset 28.609 s, ends 28.905 s
+  n184 A#3 onset 28.624 s, ends 28.902 s
+  n185 F3 onset 28.625 s, ends 28.880 s
+  n186 A#2 onset 28.881 s, ends 29.102 s
+  n187 D#3 onset 29.152 s, ends 29.159 s
+R1b.truthmidi: the first 55 notes arrange; the first 56 do not (search-exhausted: No valid path within the declared candidate and mechanics model)
+  n50 F#4 onset 24.642 s, ends 24.746 s
+  n51 E4 onset 24.747 s, ends 24.922 s
+  n52 F#4 onset 24.944 s, ends 25.131 s
+  n53 G4 onset 25.159 s, ends 25.251 s
+  n54 F#4 onset 25.253 s, ends 25.457 s
+  n55 B4 onset 25.272 s, ends 25.423 s
+[gtr-run r0630] guitar-tab/scorify-0.4.0 "gap round 2: scorify 0.4.0 prefix bisection on R1a and R1b (which note first makes exact mode fail)" wall=16.36s cpu=22.1s rss=188.5MB cores=None exit=0 slot_wait=0.0s

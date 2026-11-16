@@ -1,0 +1,14 @@
+{
+ "model": "deeptemp-k4-3",
+ "global_tempo": 96.0,
+ "local_tempo": [
+  96.0,
+  96.0,
+  96.0
+ ],
+ "local_tempo_max_prob": [
+  0.7092,
+  0.7152,
+  0.5561
+ ]
+}

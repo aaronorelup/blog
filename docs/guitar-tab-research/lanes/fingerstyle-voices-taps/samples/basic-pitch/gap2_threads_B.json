@@ -1,0 +1,61 @@
+{
+ "pid": 30835,
+ "substring": "out/gap2-bp-threads/B_slot_ort2",
+ "found_after_s": 263.35,
+ "watched_s": 5.95,
+ "samples": 117,
+ "max_threads_at_once": 4,
+ "process_masks": [
+  "2-3"
+ ],
+ "n_threads_seen": 4,
+ "threads": {
+  "30835": {
+   "name": "python",
+   "masks": [
+    "2-3"
+   ],
+   "cpus_seen_while_accumulating": [
+    3
+   ],
+   "cpu_ticks": 581
+  },
+  "30838": {
+   "name": "python",
+   "masks": [
+    "2-3"
+   ],
+   "cpus_seen_while_accumulating": [
+    2
+   ],
+   "cpu_ticks": 12
+  },
+  "30840": {
+   "name": "python",
+   "masks": [
+    "2-3"
+   ],
+   "cpus_seen_while_accumulating": [
+    2
+   ],
+   "cpu_ticks": 10
+  },
+  "30884": {
+   "name": "python",
+   "masks": [
+    "2-3"
+   ],
+   "cpus_seen_while_accumulating": [
+    2
+   ],
+   "cpu_ticks": 213
+  }
+ },
+ "threads_per_mask": {
+  "2-3": 4
+ },
+ "cpus_used_by_threads_with_ticks": [
+  2,
+  3
+ ]
+}

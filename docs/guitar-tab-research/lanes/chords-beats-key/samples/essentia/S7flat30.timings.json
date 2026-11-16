@@ -1,0 +1,45 @@
+{
+ "essentia_version": "2.1-beta6-dev",
+ "import_s": 3.415,
+ "load_s": 0.066,
+ "rhythm_multifeature_s": 2.573,
+ "rhythm_degara_s": 0.616,
+ "tuning_s": 0.043,
+ "key_bgate_s": 0.033,
+ "key_krumhansl_s": 0.044,
+ "key_temperley_s": 0.032,
+ "key_edma_s": 0.027,
+ "key_shaath_s": 0.031,
+ "tonal_s": 0.171,
+ "load11025_s": 0.457,
+ "tempocnn_deeptemp-k16-3_s": 0.588,
+ "tempocnn_deeptemp-k4-3_s": 0.255,
+ "outputs": {
+  "rhythm": {
+   "multifeature": [
+    95.570556640625,
+    3.152042865753174,
+    37
+   ],
+   "degara": [
+    95.570556640625,
+    0.0,
+    37
+   ]
+  },
+  "tuning_cents": -31.0,
+  "keys": {
+   "bgate": "G major",
+   "krumhansl": "G major",
+   "temperley": "G major",
+   "edma": "G major",
+   "shaath": "G major"
+  },
+  "tonal": {
+   "n_segments": 12,
+   "key": "C major"
+  },
+  "tempocnn_deeptemp-k16-3": 96.0,
+  "tempocnn_deeptemp-k4-3": 96.0
+ }
+}

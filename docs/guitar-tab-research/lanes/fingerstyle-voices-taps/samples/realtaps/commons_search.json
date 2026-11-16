@@ -1,0 +1,1154 @@
+{
+ "log": [
+  {
+   "query": "percussive guitar",
+   "http": 200,
+   "hits": 50
+  },
+  {
+   "query": "percussive fingerstyle",
+   "http": 429,
+   "hits": 0
+  },
+  {
+   "query": "fingerstyle percussion",
+   "http": 429,
+   "hits": 0
+  },
+  {
+   "query": "guitar body percussion",
+   "http": 200,
+   "hits": 50
+  },
+  {
+   "query": "slap guitar acoustic",
+   "http": 429,
+   "hits": 0
+  },
+  {
+   "query": "guitar body tapping",
+   "http": 429,
+   "hits": 0
+  },
+  {
+   "query": "percussive acoustic guitar",
+   "http": 200,
+   "hits": 50
+  },
+  {
+   "query": "fingerstyle guitar",
+   "http": 200,
+   "hits": 50
+  },
+  {
+   "imageinfo_chunk": 0,
+   "http": 200
+  }
+ ],
+ "files": [
+  {
+   "title": "File:Man playing an acoustic brazilian guitar (Violão) on Marco Zero Square, Refice, Pernambuco, Brazil.jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Am7 Percussive Bass Tapping.webm",
+   "queries": [
+    "percussive guitar"
+   ],
+   "size": 3597054,
+   "duration": 43.701,
+   "mime": "video/webm",
+   "width": 640,
+   "height": 480,
+   "url": "https://upload.wikimedia.org/wikipedia/commons/b/be/Am7_Percussive_Bass_Tapping.webm?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "descriptionurl": "https://commons.wikimedia.org/wiki/File:Am7_Percussive_Bass_Tapping.webm",
+   "license": "CC BY 3.0",
+   "license_url": "https://creativecommons.org/licenses/by/3.0",
+   "artist": "Bob William",
+   "description": "Percussive tapping pattern on 5-string bass on a Am7 chord."
+  },
+  {
+   "title": "File:Teisco guitar 1967.JPG",
+   "queries": [
+    "percussive guitar",
+    "guitar body percussion",
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:1967 Teisco guitar and Matsumoku Epiphone Aria Bass.JPG",
+   "queries": [
+    "percussive guitar",
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Vox V 809 Repeat Percussion guitar effect.jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Takamine fretless archtop bass guitar - The bass (3094660838) (2008-10-14 21.27.20 Kuba Bożanowski).jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Chitarra hi hat guitar.JPG",
+   "queries": [
+    "percussive guitar",
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Chitarra Acustico percussivo rullante - guitar.JPG",
+   "queries": [
+    "percussive guitar",
+    "guitar body percussion",
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Chitarra Acustico percussivo grancassa - guitar.JPG",
+   "queries": [
+    "percussive guitar",
+    "guitar body percussion",
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Grancassa chitarra vicino ponte guitar.JPG",
+   "queries": [
+    "percussive guitar",
+    "guitar body percussion",
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Small Drum-kit and half-size guitar.jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Jesse Fullers Silvertone Acoustic Electric Guitar.jpg",
+   "queries": [
+    "percussive guitar",
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Jennett Meriden Russell b- June 23, 1960 - is an American singer-songwriter- Best known for her deep, resonant voice and percussive guitar style, Russell's songs are typically vignettes that capture the darker 2013-12-22 13-45.jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Ukulele, Guitar, and Laney amp on worship - 2014-12-21 (by David Mulder).jpg",
+   "queries": [
+    "percussive guitar",
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:John Mellencamp's acoustic guitar, handwritten lyrics, belt and stage clothing - Rock and Roll Hall of Fame (2014-07-12 16.08.05 by Zurich 99).jpg",
+   "queries": [
+    "percussive guitar",
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:REO Speedwagon, Kevin Cronin's Ovation guitar - Rock and Roll Hall of Fame (2014-07-12 16.08.22 by Zurich 99).jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Stornoway's Guitars at Tall Ships 2010 Hartlepool.jpg",
+   "queries": [
+    "percussive guitar",
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Robert Szydło bass rig - Irek Głyk Multisound - 17th International Percussion Festival, Opole, 2008 (2008-10-14 20.16.20 by Kuba Bożanowski).jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Guitars at Smithonian Museum.jpg",
+   "queries": [
+    "percussive guitar",
+    "guitar body percussion",
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Jon-gomm-rolandwichser.jpg",
+   "queries": [
+    "percussive guitar",
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Hayden Eller (Vocals-Guitar), Jake Barrow (Drums-Vocals-Percussion), Nikko Van Wyck (Bass).jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Acoustic guitars, ukuleles, and percussions - musical instrument store at San Francisco.jpg",
+   "queries": [
+    "percussive guitar",
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Highlife guitar.mid",
+   "queries": [
+    "percussive guitar"
+   ],
+   "size": 405,
+   "duration": 4.000260416666666,
+   "mime": "audio/midi",
+   "width": 0,
+   "height": 0,
+   "url": "https://upload.wikimedia.org/wikipedia/commons/6/6d/Highlife_guitar.mid?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "descriptionurl": "https://commons.wikimedia.org/wiki/File:Highlife_guitar.mid",
+   "license": "CC BY-SA 3.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/3.0",
+   "artist": "Dr clave",
+   "description": "An example of highlife guitar shown in relation to the bell pattern known in Cuba as clave."
+  },
+  {
+   "title": "File:A vintage Matsumoku Epiphone Aria Bass.jpg",
+   "queries": [
+    "percussive guitar",
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:The perfect trio - Takamine, Cajon, Pignose.jpg",
+   "queries": [
+    "percussive guitar",
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Tommy Emmanuel soave.JPG",
+   "queries": [
+    "percussive guitar",
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Leni Stern.jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Hi hat chitarra percussiva.jpg",
+   "queries": [
+    "percussive guitar",
+    "guitar body percussion",
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Matao Snare Drum 001.JPG",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Dalmedo maple stomp box.jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:The bass (3094660838).jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Bandabardò in concerto 19.jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Bob Brozman q.jpg",
+   "queries": [
+    "percussive guitar",
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Double bass & acoustic guitar - Green Boys at Weezie's Kitchen, Richmond, Virginia (2012-07-26 20.55.13 by Eli Christman).jpg",
+   "queries": [
+    "percussive guitar",
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Pumas gear (2914725621).jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Pink Floyd Their Mortal Remains - 2017-10-13 - Andy Mabbett - 47.jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Robert Szydło soloing (3094657868).jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Nick is a versatile guy! ) (2931191409).jpg",
+   "queries": [
+    "percussive guitar",
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:The Marimba (1888).jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Heikki Salo at Viikinsaari, Tampere.jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Giant Drums ^ Percussions - panoramio.jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Modugno esegue Vecchio frac e, mentre fischia, percuote la cassa della chitarra.jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Mulatu Astatke with Black Jesus Experience.jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Parte mano grancassa chiarra.jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:DSCF1118 Three musicians perform on a brightly lit stage under a tent - one playing guitar one singing into a microphone and another on percussion - surrounded by stage lights and equipment.jpg",
+   "queries": [
+    "percussive guitar",
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Gary-burton-and-julian-lage.jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Gill Landry Kevin Hayes Old Crow Medicine Show 9-30 Club Washington DC August 2012.jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Old Crow Medicine Show 9-30 Club Washington DC August 2012.jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Steel guitar-KayEss.1.jpeg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:Kenji Bunch and His Bluegrass All-Stars practice Craftsbury Common VT July 2012.jpg",
+   "queries": [
+    "percussive guitar"
+   ]
+  },
+  {
+   "title": "File:1950 Martin 000-18 of Libba Cotten, 2000 PRS Dragon 2000, 1936-39 Slingerland Songster, 1999-00 Quatro by Rafael Aviles Vazquez, 1962 Silvertone (H1385 ?) 12 string of Jesse Fuller - Smithonian Museum (2013-03-16 14.05.43 by Tyfferz Y).jpg",
+   "queries": [
+    "guitar body percussion",
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:1936-39 Slingerland Songster - Smithonian Museum (2013-03-16 14.05.43 by Tyfferz Y) clip.jpg",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Aerosmith, Steven Tyler's outfit, Joey Kramer's drum-kit (1999) and drum heads - Rock and Roll Hall of Fame (2014-07-12 16.06.26 by Zurich 99).jpg",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:The dragon, image, and demon; or, The three religions of China- Confucianism, Buddhism, and Taoism, giving an account of the mythology, idolatry, and demonolatry of the Chinese (1887) (14597249320).jpg",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Andrea de luca01.jpg",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Andrea de luca03.jpg",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Andrea de luca04.jpg",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Andrea de luca02.jpg",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Hector Berlioz, selections from his letters, and aesthetic, humorous, and satirical writings (IA cu31924022328409).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:A course of lectures on natural philosophy and the mechanical arts (IA lecturescourseof01younrich).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:A course of lectures on natural philosophy and the mechanical arts (IA b33519882 0001).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:The music of the Bible, with an account of the development of modern musical instruments from ancient types (IA cu31924022269058).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Contributions to the history of musical scales (IA contributionstoh00wead).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:The New York State business directory, containing the names, business and address of all merchants, manufacturers, and professional men throughout the state (IA newyorkstatebusip1samp).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:A dictionary of music and musicians (A.D. 1450-1878 (IA dictionaryofmusi02grov 2).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:The married rake. A frace (IA marriedrakefrace00selb).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:The orchestra (IA cu31924022390938).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:The foundations and nature of verse (IA foundationsnatur00jaco).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Gallo's band book, a treatise on wind instruments, symphony band and military band (IA gallosbandbooktr01gall).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Catalogue showing the subject or title of every patent granted by the U. S. government prior to the year 1857; (IA catalogueshowing01brow).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Wild oats and dead leaves (IA wildoatsdeadleav00smit).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:A history of music (IA cu31924022441871).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Programme (IA programme1112bost).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:The retrospect of practical medicine and surgery. Volume 4 (Second Edition), July - December 1841. (IA s2id13655660).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:The music of the Bible, with some account of the development of modern musical instruments from ancient types (IA cu31924021773290).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Popular technology; or, Professions and trades (IA populartechnolog02hazeiala).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Sacred geography, and antiquities (IA sacredgeographya00barr).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Examiner, Journal of Political Economy, v2n25.djvu",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:A narrative of the case of Miss Margaret McAvoy; with an account of some optical experiments connected with it (IA b33520525).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Catalog of Copyright Entries 1960 Music July-Dec 3D Ser Vol 14 Pt 5 (IA catalogofcopyrig3145libr).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Wonders in acoustics - or, The phenomena of sound (IA cu31924031294758).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Piano mastery, second series; talks with master pianists and teachers, including conferences with... (IA pianomasteryseco02brow).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:The history of music (IA historyofmusi01naum).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Memoirs of a sportsman (IA cu31924027511546).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Familiar talks on the history of music (IA familiartalksonh00gantiala).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:A dictionary of music and musicians (1450-1889) (IA dictionaryofmusi02grovuoft).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Aurora (IA aurora1976nort).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Rudiments of reason ; or, the young experimental philosopher- being .. dialogues in which the ... phenomena of nature are ... explained (IA b22024323).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Some essentials of physics. (IA someessentialsof00seym).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Essentials in music history (IA cu31924022402410).pdf",
+   "queries": [
+    "guitar body percussion"
+   ]
+  },
+  {
+   "title": "File:Chris Woods Guitarist.jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:James Taylor and Luis Conte at Tanglewood.jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Morten Abel Stavernfestivalen (150510).jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Morten Abel Stavernfestivalen (150504).jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Morten Abel Stavernfestivalen (150432).jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Morten Abel Stavernfestivalen (150316).jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Marius Gengenbach Cosmopolite (223751).jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:One-man band street musician Key West FL February 2007.jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Zither, string instruments, accordions - musical instrument store at San Francisco.jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Blues Party of New Mills UK.jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:John Mayall 1970-1281 03.jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:John Mayall 1970-1281 07.jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:John Mayall 1970-1281 08.jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:John Mayall 1970-1281 10.jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:John Mayall 1970-1281 06.jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:John Mayall 1970-1281 11.jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:John Mayall 1970-1281 09.jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:John Mayall 1970-1281 01.jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:John Mayall 1970-1281 05.jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:John Mayall 1970-1281 02.jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:John Mayall 1970-1281 04.jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Blue Island.wav",
+   "queries": [
+    "percussive acoustic guitar"
+   ],
+   "size": 33416228,
+   "duration": 126.11537414965986,
+   "mime": "audio/wav",
+   "width": 0,
+   "height": 0,
+   "url": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Blue_Island.wav?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "descriptionurl": "https://commons.wikimedia.org/wiki/File:Blue_Island.wav",
+   "license": "CC BY-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-sa/4.0",
+   "artist": "Mikecolemusic",
+   "description": "Sentimental, upbeat, slightly sad, island, ocean, sun, happy, energetic music. Ukulele, acoustic guitar, bass, percussion."
+  },
+  {
+   "title": "File:John Mayall 1970-1281 02 (Jon Mark).jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:John Mayall 1970-1281 04 (Johnny Almond).jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Paul McCartney - Out There Concert - 140420-5874-jikatu (13926488062).jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Paul McCartney - Out There Concert - 140420-5738-jikatu (13926402812).jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Paul McCartney - Out There Concert - 140420-5502-jikatu (13949382555).jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Paul McCartney - Out There Concert - 140420-5655-jikatu (14001586716).jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Paul McCartney - Out There Concert - 140420-5696-jikatu (13949922194).jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Paul McCartney - Out There Concert - 140420-5929-jikatu (13950080724).jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Paul McCartney - Out There Concert - 140420-5769-jikatu (13949545745).jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Paul McCartney - Out There Concert - 140420-5983-jikatu (13949643705).jpg",
+   "queries": [
+    "percussive acoustic guitar"
+   ]
+  },
+  {
+   "title": "File:Bass guitars 11.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:Zupf- Picking- und Fingerstyle bsp.mid",
+   "queries": [
+    "fingerstyle guitar"
+   ],
+   "size": 3775,
+   "duration": 88,
+   "mime": "audio/midi",
+   "width": 0,
+   "height": 0,
+   "url": "https://upload.wikimedia.org/wikipedia/commons/c/c6/Zupf-_Picking-_und_Fingerstyle_bsp.mid?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+   "descriptionurl": "https://commons.wikimedia.org/wiki/File:Zupf-_Picking-_und_Fingerstyle_bsp.mid",
+   "license": "CC BY-SA 2.5",
+   "license_url": "https://creativecommons.org/licenses/by-sa/2.5",
+   "artist": "user:Mjchael",
+   "description": "Comparison of plucking, picking and fingerstyle techniques"
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 07.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:Bass guitars.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 41.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 27.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 35.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 12.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 24.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 06.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 14.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 19.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 37.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 08.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 02.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 40.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 13.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 22.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 31.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 32.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 01.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 38.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 34.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 11.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 20.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 39.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 18.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 17.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 23.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 03.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 05.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 28.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 29.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"A bass guitar player in nature - Iranian bassist - Performer Aydin Karbalaei- Photographer Mostafa Meraji ـ Alamut Mountains in Iran\" 26.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:Fingerpicking indice - Fingerpicking index finger.JPG",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:Fingerpicking medio - Fingerpicking middle finger.JPG",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:Fingerpicking anulare - Fingerpicking ring finger.JPG",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:Daniel Rosenfeldt Fingerstyle Guitar.png",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:Iranian Bassist.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:Coming Out Alive Album Cover.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:Bassist band 02.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:(بیسیست).jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:Bass Player.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:Iranian Bassist players.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:Bassist band 07.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:A depressive rock band in Iran- Music rehearsal space- Canon Photography-Mortaz band- Photographer mostafa meraji 33.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:\"Band (rock and pop)- Iranian Band Musician (Mortaz Band) - Mostafa meraji - Photography with Canon- Creative Commons Wikipedia\" 10.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:Bass guitarist.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:Iranian bass Player.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  },
+  {
+   "title": "File:گیتاریست.jpg",
+   "queries": [
+    "fingerstyle guitar"
+   ]
+  }
+ ]
+}

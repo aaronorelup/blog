@@ -1,0 +1,28 @@
+{
+ "id": "R3a",
+ "title": "Classical guitar concert video, 18 s excerpt (archive.org, CC BY-SA 4.0)",
+ "what": "Real classical guitar performance video (nylon strings, played with the fingers), 18 s excerpt (400-418 s) of a 28-minute concert recording; 640x480, 30000/1001 fps, progressive. Multi-camera edit: medium shot of the seated player from the front at a slight angle (guitar neck and fretting hand at the upper right of the player, picking hand at the sound hole partly behind a microphone stand) from 0 to 7.27 s, a wide shot of the stage (player small in frame, a music stand in front of the lower guitar body) from 7.27 to 14.65 s, and the medium shot again from 14.65 s to the end (cut times from ffmpeg scene score > 0.12). The piece played is not identified in the item's metadata. No ground truth.",
+ "audio": "R3a.wav",
+ "duration_s": 17.999546,
+ "sample_rate": 44100,
+ "channels": 2,
+ "tempo_bpm": null,
+ "time_signature": null,
+ "key": null,
+ "tuning_midi": null,
+ "capo": null,
+ "tuning_offset_cents": null,
+ "notes": [],
+ "beats": [],
+ "downbeats": [],
+ "chords": [],
+ "taps": [],
+ "stems": {},
+ "source": {
+  "kind": "video",
+  "url": "https://archive.org/details/scm-422828-crescendo313-drh-meredithconn",
+  "license": "CC BY-SA 4.0",
+  "license_quote": "Usage: Attribution-ShareAlike 4.0 International (https://creativecommons.org/licenses/by-sa/4.0/)",
+  "attribution": "\"Crescendo 313 - DRH - Meredith Connie Solo Classical Guitar - Part II\", Mark Andersen / Seattle Community Media, archive.org item scm-422828-crescendo313-drh-meredithconn, CC BY-SA 4.0; excerpt 400-418 s, re-encoded."
+ }
+}

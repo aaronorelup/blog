@@ -1,0 +1,53 @@
+{
+ "capo": {
+  "present": "no",
+  "fret": null,
+  "evidence": "No capo is visible clamped on the guitar neck in any of the frames; the nut is exposed."
+ },
+ "tuning": {
+  "value": "cannot_tell",
+  "evidence": "Tuning cannot be determined visually without audio."
+ },
+ "fretting_hand": [
+  {
+   "start": 0.0,
+   "end": 7.0,
+   "visible": true,
+   "lowest_fret": 1,
+   "highest_fret": 3,
+   "note": "Hand is in the low position near the nut, fretting chords in the first few frets."
+  },
+  {
+   "start": 7.0,
+   "end": 10.0,
+   "visible": true,
+   "lowest_fret": 5,
+   "highest_fret": 8,
+   "note": "Hand shifts up the neck; index finger is positioned around the 5th fret."
+  },
+  {
+   "start": 10.0,
+   "end": 14.0,
+   "visible": true,
+   "lowest_fret": 1,
+   "highest_fret": 3,
+   "note": "Hand returns to the lower position near the nut."
+  },
+  {
+   "start": 14.0,
+   "end": 17.0,
+   "visible": true,
+   "lowest_fret": 5,
+   "highest_fret": 8,
+   "note": "Hand shifts back up the neck to the 5th fret area."
+  },
+  {
+   "start": 17.0,
+   "end": 17.0,
+   "visible": true,
+   "lowest_fret": 2,
+   "highest_fret": 4,
+   "note": "Hand moves back to the lower position near the nut at the end of the video."
+  }
+ ]
+}

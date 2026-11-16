@@ -1,0 +1,403 @@
+result	source of the quote	quote
+xai-faq-general	md	Enterprise Terms of Service and Data Processing Addendum
+NOT FOUND	md	Sorry, you have been blocked
+extra:headings/record_headings.md	md	xAI Speech to Text API
+NOT FOUND	md	Web page, complete
+aws-service-terms,byteplus-ai-terms,byteplus-tos,cesure-terms,fal-mureka-page,fal-tos,flat-openapi,gateway-models,hf-mimo-mopd-readme,hf-mimo-rl-readme,meta-dev-tos,mimo-model-page,mureka-llms,mureka-terms,musicgpt-llms,musicgpt-pricing,musicgpt-tos,nova-what-is,nova2-what-is,openai-audio-cc,openai-audio-guide,openai-model-gpt-audio-1.5,openai-pricing-md,openai-ref-chat-create,openai-your-data,pypi-gradio-client-053,pypi-gradio-client-272,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-disallow-training,vercel-docs-ai-gateway,vercel-kb-provider-data,vercel-model-mimo-html,vercel-model-mimo-md,vercel-model-muse-html,vercel-model-muse-md,vercel-model-seed-html,vercel-model-seed-md,vercel-sec-compliance,xai-pricing,xai-stt,extra:apps-survey/survey.md,extra:headings/record_headings.md	md	Text
+fal-mureka-llms,fal-mureka-openapi,fal-mureka-page	md	can include MusicXML, PDF sheet music, and timestamped lyrics
+extra:headings/record_headings.md	md	Mureka Music Transcription on fal.ai
+fal-mureka-llms,fal-mureka-page,gateway-models,musicgpt-pricing,openai-pricing-md,qwen-pricing-intl,vercel-model-muse-html,xai-pricing,extra:apps-survey/survey.md	md	$0.20
+fal-mureka-llms,fal-mureka-openapi,fal-mureka-page	md	between 10 seconds and 10 minutes and no larger than 100 MB
+NOT FOUND	md	 <<'PY' > body_$c.json import base64, json, sys c = sys.argv[1] b = base64.b64encode(open(f
+NOT FOUND	md	).read()).decode() print(json.dumps({
+qwen-omni	md	data:audio/wav;base64,
+alibaba-product-terms,aws-service-terms,byteplus-ai-terms,byteplus-tos,cesure-assistants,cesure-format,cesure-terms,fal-mureka-llms,fal-mureka-openapi,fal-mureka-page,fal-tos,flat-openapi,hf-api-muse,hf-mimo-mopd-readme,hf-mimo-rl-readme,meta-dev-tos,mimo-agreement-html,mimo-model-page,mimo-platform-agreement,mureka-terms,musicgpt-a2m,musicgpt-tos,nova-what-is,nova2-what-is,openai-model-gpt-audio-1.5,openai-ref-chat-create,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-ai-product-terms,vercel-disallow-training,vercel-docs-ai-gateway,vercel-kb-provider-data,vercel-model-mimo-html,vercel-model-muse-html,vercel-model-seed-html,vercel-sec-compliance,vercel-terms,xai-stt,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:inputs/INPUTS.md,extra:apps-survey/survey.md	md	title
+fal-llms,fal-mureka-llms	md	Authorization: Key $FAL_KEY
+fal-mureka-llms,openai-audio-cc,openai-ref-chat-create,qwen-omni,vercel-disallow-training,vercel-docs-ai-gateway,xai-faq-security	md	Content-Type: application/json
+fal-mureka-llms,fal-mureka-openapi,fal-mureka-page	md	zip_url
+vercel-ai-product-terms	md	Last Updated March 17, 2026
+vercel-terms	md	Last Updated October 19, 2026
+mimo-chunk-1995	md	updated on July 7, 2026
+fal-mureka-llms,fal-mureka-openapi,fal-mureka-page	md	can include MusicXML, PDF sheet music, and timestamped lyrics
+fal-mureka-llms,fal-mureka-page,gateway-models,musicgpt-pricing,openai-pricing-md,qwen-pricing-intl,vercel-model-muse-html,xai-pricing,extra:apps-survey/survey.md	md	$0.20
+mureka-llms	md	Mureka is developed by Skywork AI Pte.   Ltd.
+fal-mureka-llms,fal-mureka-page	md	Transcribes generated or uploaded music into a   downloadable archive that can include MusicXML, PDF sheet music, and timestamped lyrics.
+fal-mureka-llms	md	**Category**:   audio-to-text
+fal-mureka-page	md	licenseType
+alibaba-product-terms,aws-service-terms,byteplus-ai-terms,byteplus-tos,fal-mureka-page,fal-tos,gateway-models,hf-api-muse,meta-dev-tos,mimo-chunk-1995,musicgpt-pricing,musicgpt-tos,vercel-ai-product-terms,vercel-model-mimo-html,vercel-model-muse-html,vercel-model-seed-html,vercel-terms,extra:inputs/INPUTS.md,extra:apps-survey/survey.md	md	commercial
+fal-mureka-page,extra:apps-survey/survey.md	md	Commercial use
+fal-mureka-llms	md	Usage Examples
+aws-service-terms,byteplus-ai-terms,byteplus-tos,fal-mureka-openapi,fal-tos,musicgpt-a2m,musicgpt-tos,extra:cesure-mcp/probe.json	md	1.0.0
+fal-mureka-llms,fal-mureka-openapi,fal-mureka-page	md	mureka/api/song/transcribe
+fal-mureka-llms,fal-mureka-openapi,fal-mureka-page	md	Generated song ID from   song_id in a /generate/song response.
+fal-mureka-llms,fal-mureka-openapi,fal-mureka-page	md	Audio ID returned by /files/upload with   purpose='audio'.
+fal-mureka-llms,fal-mureka-openapi,fal-mureka-page	md	Public HTTPS URL or data URI for an MP3, WAV, or M4A file between 10 seconds and   10 minutes and no larger than 100 MB. Provide exactly one audio source.
+fal-mureka-llms,fal-mureka-openapi,fal-mureka-page	md	Optional title used for the generated transcription files.
+fal-mureka-llms,fal-mureka-openapi,fal-mureka-page	md	The generated transcription archive.
+fal-mureka-llms,fal-mureka-openapi,fal-mureka-page,flat-openapi,qwen-omni	md	can include
+fal-mureka-llms,fal-mureka-page	md	Billing is calculated per transcribed song. Your request will cost **$0.20** per song. For **$1**   you can transcribe **5 songs**.
+fal-tos	md	Last Updated: September 8,   2026
+fal-tos	md	machine learning models hosted by third parties
+fal-tos	md	Your access to and use of such Third-Party   Materials may be subject to additional terms, conditions, and policies (including terms of service or privacy   policies of the providers of such Third-Party Materials).
+alibaba-product-terms,aws-service-terms,byteplus-tos,fal-tos,meta-dev-tos,mimo-chunk-1995,musicgpt-tos,vercel-terms,extra:apps-survey/survey.md	md	You may not
+fal-tos	md	use or access any   Third-Party Materials or any outputs derived from such materials to develop, modify, fine-tune, or improve any   products or services that compete with those Third Party Materials, including to develop, fine-tune, or train any   artificial intelligence or machine learning algorithms or models
+alibaba-product-terms,aws-service-terms,byteplus-ai-terms,byteplus-tos,cesure-assistants,cesure-format,cesure-terms,fal-llms,fal-mureka-llms,fal-mureka-openapi,fal-mureka-page,fal-tos,flat-openapi,gateway-models,hf-api-mimo-mopd,hf-api-mimo-rl,hf-api-muse,hf-mimo-mopd-readme,hf-mimo-rl-readme,meta-dev-tos,mimo-agreement-html,mimo-chunk-1995,mimo-model-page,mimo-platform-agreement,mureka-llms,mureka-terms,musicgpt-a2m,musicgpt-llms,musicgpt-pricing,musicgpt-tos,nova-what-is,nova2-what-is,openai-audio-cc,openai-audio-guide,openai-model-gpt-audio-1.5,openai-pricing-md,openai-ref-chat-create,openai-your-data,pypi-gradio-client-053,pypi-gradio-client-272,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-ai-product-terms,vercel-disallow-training,vercel-docs-ai-gateway,vercel-kb-provider-data,vercel-model-mimo-html,vercel-model-mimo-md,vercel-model-muse-html,vercel-model-muse-md,vercel-model-seed-html,vercel-model-seed-md,vercel-notices,vercel-sec-compliance,vercel-terms,xai-faq-general,xai-faq-security,xai-pricing,xai-stt,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:inputs/INPUTS.md,extra:apps-survey/survey.md,extra:headings/record_headings.md	md	 or   
+openai-model-gpt-audio-1.5,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-model-mimo-html,vercel-model-muse-html,vercel-model-seed-html	md	Input and output
+openai-model-gpt-audio-1.5,openai-ref-chat-create,qwen-omni,xai-stt	md	Not supported
+openai-model-gpt-audio-1.5,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-model-mimo-html,vercel-model-muse-html,vercel-model-seed-html	md	Input and output
+openai-model-gpt-audio-1.5,openai-ref-chat-create,qwen-omni,xai-stt	md	Not supported
+openai-model-gpt-audio-1.5	md	128,000 context window
+openai-model-gpt-audio-1.5	md	16,384 max     output tokens
+openai-model-gpt-audio-1.5	md	Text tokens
+openai-model-gpt-audio-1.5,openai-pricing-md,vercel-model-seed-html,xai-pricing	md	$2.50
+openai-model-gpt-audio-1.5,openai-pricing-md	md	$10.00
+openai-model-gpt-audio-1.5,qwen-pricing-aliyun,qwen-pricing-intl	md	Audio tokens
+openai-model-gpt-audio-1.5,openai-pricing-md	md	$32.00
+openai-model-gpt-audio-1.5,openai-pricing-md	md	$64.00
+openai-pricing-md	md	Prices per 1M tokens     unless noted.
+openai-pricing-md	md	| gpt-audio-1.5 | Audio | $32.00 | $64.00 | - |
+openai-pricing-md	md	| gpt-audio-1.5 |     Text | $2.50 | $10.00 | - |
+openai-ref-chat-create	md	The format of the encoded audio data. Currently supports 
+alibaba-product-terms,aws-service-terms,byteplus-ai-terms,byteplus-tos,cesure-assistants,cesure-format,cesure-terms,fal-llms,fal-mureka-llms,fal-mureka-openapi,fal-mureka-page,fal-tos,flat-openapi,gateway-models,hf-api-mimo-mopd,hf-api-mimo-rl,hf-api-muse,hf-mimo-mopd-readme,hf-mimo-rl-readme,hf-muse-license-file,meta-dev-tos,mimo-chunk-1995,mimo-model-page,mureka-llms,mureka-terms,musicgpt-a2m,musicgpt-llms,musicgpt-pricing,musicgpt-tos,nova-what-is,nova2-what-is,openai-audio-cc,openai-audio-guide,openai-model-gpt-audio-1.5,openai-pricing-md,openai-ref-chat-create,openai-your-data,pypi-gradio-client-053,pypi-gradio-client-272,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-ai-product-terms,vercel-disallow-training,vercel-docs-ai-gateway,vercel-kb-provider-data,vercel-model-mimo-html,vercel-model-mimo-md,vercel-model-muse-html,vercel-model-muse-md,vercel-model-seed-html,vercel-model-seed-md,vercel-notices,vercel-sec-compliance,vercel-terms,xai-faq-general,xai-faq-security,xai-pricing,xai-stt,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:inputs/INPUTS.md,extra:apps-survey/survey.md,extra:headings/record_headings.md	md	 and 
+NOT FOUND	md	 No video input.   - Audio tokens per second: not stated on the model page, the pricing page, the audio guide     (https://developers.openai.com/api/docs/guides/audio.md) or the audio-in-Chat-Completions guide; UNVERIFIED     (one call's `usage` would settle it).   - Terms: https://openai.com/policies/services-agreement/ answered HTTP 403 with 
+NOT FOUND	md	 to curl, and HTTP 403 to the web-fetch tool, on 2026-11-11: no clause quoted (UNVERIFIED). The docs     page on data (https://developers.openai.com/api/docs/guides/your-data.md, docs, not the contract): 
+NOT FOUND	md	; its table gives `/v1/chat/completions` 
+alibaba-product-terms,aws-service-terms,byteplus-ai-terms,byteplus-tos,cesure-assistants,cesure-format,cesure-terms,fal-llms,fal-mureka-llms,fal-mureka-openapi,fal-mureka-page,fal-tos,flat-openapi,gateway-models,hf-api-mimo-mopd,hf-api-mimo-rl,hf-api-muse,hf-mimo-mopd-readme,hf-mimo-rl-readme,meta-dev-tos,mimo-agreement-html,mimo-chunk-1995,mimo-model-page,mimo-platform-agreement,mureka-llms,mureka-terms,musicgpt-a2m,musicgpt-llms,musicgpt-pricing,musicgpt-tos,nova-what-is,nova2-what-is,openai-audio-cc,openai-audio-guide,openai-model-gpt-audio-1.5,openai-pricing-md,openai-ref-chat-create,openai-your-data,pypi-gradio-client-053,pypi-gradio-client-272,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-ai-product-terms,vercel-disallow-training,vercel-docs-ai-gateway,vercel-kb-provider-data,vercel-model-mimo-html,vercel-model-mimo-md,vercel-model-muse-html,vercel-model-muse-md,vercel-model-seed-html,vercel-model-seed-md,vercel-notices,vercel-sec-compliance,vercel-terms,xai-faq-general,xai-faq-security,xai-pricing,xai-stt,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:inputs/INPUTS.md,extra:apps-survey/survey.md,extra:headings/record_headings.md	md	 for 
+alibaba-product-terms,aws-service-terms,byteplus-ai-terms,byteplus-tos,cesure-assistants,cesure-format,cesure-terms,fal-llms,fal-mureka-llms,fal-mureka-openapi,fal-mureka-page,fal-tos,flat-openapi,gateway-models,hf-api-mimo-mopd,hf-api-mimo-rl,hf-api-muse,hf-mimo-mopd-readme,hf-mimo-rl-readme,hf-muse-license-file,meta-dev-tos,mimo-chunk-1995,mimo-model-page,mureka-llms,mureka-terms,musicgpt-a2m,musicgpt-llms,musicgpt-pricing,musicgpt-tos,nova-what-is,nova2-what-is,openai-audio-cc,openai-audio-guide,openai-model-gpt-audio-1.5,openai-pricing-md,openai-ref-chat-create,openai-your-data,pypi-gradio-client-053,pypi-gradio-client-272,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-ai-product-terms,vercel-disallow-training,vercel-docs-ai-gateway,vercel-kb-provider-data,vercel-model-mimo-html,vercel-model-mimo-md,vercel-model-muse-html,vercel-model-muse-md,vercel-model-seed-html,vercel-model-seed-md,vercel-notices,vercel-sec-compliance,vercel-terms,xai-faq-general,xai-faq-security,xai-pricing,xai-stt,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:inputs/INPUTS.md,extra:apps-survey/survey.md,extra:headings/record_headings.md	md	 and 
+alibaba-product-terms,aws-service-terms,byteplus-ai-terms,byteplus-tos,cesure-assistants,cesure-format,cesure-terms,fal-llms,fal-mureka-llms,fal-mureka-openapi,fal-mureka-page,fal-tos,flat-openapi,gateway-models,hf-api-mimo-mopd,hf-api-mimo-rl,hf-api-muse,hf-mimo-mopd-readme,hf-mimo-rl-readme,meta-dev-tos,mimo-agreement-html,mimo-chunk-1995,mimo-model-page,mimo-platform-agreement,mureka-llms,mureka-terms,musicgpt-a2m,musicgpt-llms,musicgpt-pricing,musicgpt-tos,nova-what-is,nova2-what-is,openai-audio-cc,openai-audio-guide,openai-model-gpt-audio-1.5,openai-pricing-md,openai-ref-chat-create,openai-your-data,pypi-gradio-client-053,pypi-gradio-client-272,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-ai-product-terms,vercel-disallow-training,vercel-docs-ai-gateway,vercel-kb-provider-data,vercel-model-mimo-html,vercel-model-mimo-md,vercel-model-muse-html,vercel-model-muse-md,vercel-model-seed-html,vercel-model-seed-md,vercel-notices,vercel-sec-compliance,vercel-terms,xai-faq-general,xai-faq-security,xai-pricing,xai-stt,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:inputs/INPUTS.md,extra:apps-survey/survey.md,extra:headings/record_headings.md	md	 for 
+qwen-omni	md	The models on this     page are billed by the number of tokens for each modality (audio, image, video).
+qwen-omni	md	Qwen3.8-Omni-Flash: Input     audio formula: Total tokens = Audio duration (seconds) * 7.
+qwen-omni	md	If the audio duration is less than 1 second, it     is counted as 1 second.
+qwen-pricing-intl	md	Alibaba Cloud Model Studio:Model inference pricing
+qwen-pricing-intl	md	Last Updated:Nov 07, 2026
+alibaba-product-terms,aws-service-terms,hf-api-muse,mimo-chunk-1995,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,extra:inputs/INPUTS.md	md	International
+musicgpt-pricing,openai-pricing-md,qwen-pricing-intl,vercel-model-muse-html	md	$0.15
+musicgpt-pricing,qwen-pricing-intl	md	$0.016
+qwen-pricing-intl	md	$0.47
+alibaba-product-terms,aws-service-terms,hf-api-muse,mimo-chunk-1995,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,extra:inputs/INPUTS.md	md	International
+qwen-pricing-intl	md	$1.4
+NOT FOUND	md	 (audio), output 
+NOT FOUND	md	 (text) and 
+NOT FOUND	md	 (text +     audio), free quota 
+qwen-pricing-intl	md	The Qwen3.5-Omni and Qwen3-Omni series offer a free quota only in     Singapore.
+alibaba-product-terms	md	Last Updated:Oct 19, 2026
+alibaba-product-terms	md	Model Studio does not claim ownership of any Intellectual Property Rights in the Output.
+alibaba-product-terms	md	Alibaba Cloud will not use your Member Content to develop or improve the models on Model Studio, unless you     separately provide your consent.
+alibaba-product-terms,mimo-chunk-1995	md	you shall not
+alibaba-product-terms	md	use Model Studio, AI models     provided through Model Studio (including any Output of such AI models) to train or develop products or services     that compete with Alibaba Cloud and/or its affiliates’ products and services, unless expressly authorised by us
+nova-what-is	md	This     documentation is for Amazon Nova Version 1.
+nova-what-is	md	To start building with Amazon Nova, you must access the models     through an API using Amazon Bedrock.
+hf-mimo-mopd-readme,hf-mimo-rl-readme,mimo-model-page,nova-what-is	md	Text, Image, Video
+aws-service-terms,byteplus-ai-terms,byteplus-tos,cesure-terms,fal-mureka-page,fal-tos,flat-openapi,gateway-models,hf-mimo-mopd-readme,hf-mimo-rl-readme,meta-dev-tos,mimo-model-page,mureka-llms,mureka-terms,musicgpt-llms,musicgpt-pricing,musicgpt-tos,nova-what-is,nova2-what-is,openai-audio-cc,openai-audio-guide,openai-model-gpt-audio-1.5,openai-pricing-md,openai-ref-chat-create,openai-your-data,pypi-gradio-client-053,pypi-gradio-client-272,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-disallow-training,vercel-docs-ai-gateway,vercel-kb-provider-data,vercel-model-mimo-html,vercel-model-mimo-md,vercel-model-muse-html,vercel-model-muse-md,vercel-model-seed-html,vercel-model-seed-md,vercel-sec-compliance,xai-pricing,xai-stt,extra:apps-survey/survey.md,extra:headings/record_headings.md	md	Text
+alibaba-product-terms,byteplus-ai-terms,byteplus-tos,fal-llms,fal-mureka-page,gateway-models,musicgpt-llms,musicgpt-pricing,musicgpt-tos,nova-what-is,nova2-what-is,openai-audio-guide,openai-model-gpt-audio-1.5,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,xai-pricing,xai-stt,extra:headings/record_headings.md	md	Speech
+nova-what-is	md	Accepts speech as input and provides speech with text     transcriptions as output.
+nova2-what-is	md	Text, images, video, documents
+aws-service-terms,byteplus-ai-terms,byteplus-tos,cesure-terms,fal-mureka-page,fal-tos,flat-openapi,gateway-models,hf-mimo-mopd-readme,hf-mimo-rl-readme,meta-dev-tos,mimo-model-page,mureka-llms,mureka-terms,musicgpt-llms,musicgpt-pricing,musicgpt-tos,nova-what-is,nova2-what-is,openai-audio-cc,openai-audio-guide,openai-model-gpt-audio-1.5,openai-pricing-md,openai-ref-chat-create,openai-your-data,pypi-gradio-client-053,pypi-gradio-client-272,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-disallow-training,vercel-docs-ai-gateway,vercel-kb-provider-data,vercel-model-mimo-html,vercel-model-mimo-md,vercel-model-muse-html,vercel-model-muse-md,vercel-model-seed-html,vercel-model-seed-md,vercel-sec-compliance,xai-pricing,xai-stt,extra:apps-survey/survey.md,extra:headings/record_headings.md	md	Text
+nova2-what-is	md	Speech, text
+nova2-what-is	md	Text, images, documents, video, audio
+aws-service-terms,gateway-models,nova2-what-is,openai-model-gpt-audio-1.5,openai-your-data,vercel-model-mimo-html,vercel-model-muse-html,vercel-model-seed-html	md	Embeddings
+aws-service-terms	md	Amazon Nova 2 Omni
+aws-service-terms	md	Last Updated: November 5, 2026
+aws-service-terms	md	The output that you generate using AI Services is Your Content.
+aws-service-terms,nova-what-is,nova2-what-is,openai-model-gpt-audio-1.5,openai-pricing-md,vercel-notices	md	Amazon Bedrock
+aws-service-terms	md	Amazon     Foundation Models (Amazon Nova and Titan models)
+aws-service-terms	md	to develop and improve
+aws-service-terms	md	For certain models identified on the Bedrock     abuse detection page, as part of providing the Service, Amazon Bedrock stores Service inputs and outputs for up to     30 days (unless otherwise required by law) solely to detect activity that violates our, or third-party model     providers’, terms of service or use policies.
+vercel-docs-ai-gateway	md	AI Gateway is available on all plans. Your use of each AI     provider is subject to their terms listed on each model's page
+vercel-model-mimo-html	md	Your use is subject to Xiaomi's Terms & Privacy Policies.
+vercel-model-mimo-html,vercel-model-muse-html,vercel-model-seed-html	md	Using a provider means you agree to their terms, listed under Legal.
+vercel-ai-product-terms	md	Last Updated March 17, 2026
+vercel-ai-product-terms	md	Effective Date     March 31, 2026
+vercel-ai-product-terms	md	AI Products and Services
+aws-service-terms,openai-your-data,vercel-ai-product-terms	md	Customer Content
+vercel-ai-product-terms	md	Input(s) and Output(s)
+vercel-ai-product-terms	md	Vercel grants Customer a non-exclusive, non-transferable, revocable, limited license (without the right       to sublicense), solely for the Term, to (a) access and use the AI Products and Services; and (b) use any       associated Documentation in connection with authorized uses of the AI Products and Services, in all cases of       (a)-(b), solely for Customer's personal or internal business use purposes.
+vercel-ai-product-terms	md	As between you and Vercel, and to the extent permitted by applicable law, you own Customer Content and       Vercel assigns to you Vercel's rights, if any, in the Output.
+vercel-ai-product-terms	md	If you use the AI Products and Services       under a Hobby or Pro plan, your Customer Content forms part of Your Content, as defined in Section 3 of the       Terms of Service and is subject to the license granted to Vercel under Section 3.
+vercel-ai-product-terms	md	AI Gateway enables you to interact with your selected third-party AI providers. Any Customer Content       provided to or received from such Non-Vercel Service is subject to the terms and conditions and privacy notices       of the applicable third party.
+vercel-ai-product-terms	md	an Enterprise subscription to AI Gateway
+vercel-ai-product-terms	md	Vercel represents and warrants that it shall not       use AI Gateway Customer Content to train or improve the AI Products and Services.
+vercel-terms	md	Last Updated October 19, 2026
+vercel-terms	md	In addition, if you     are on a Hobby plan or trial Pro plan, you agree that we may use Your Content to train our artificial intelligence     (“AI”) and machine learning models, and we may share Your Content with third parties for the purpose of     developing and improving their products, including training and improving their AI and machine learning models
+vercel-terms	md	If you are on a paid Pro plan, Model Training is not enabled by default and you may opt in to Model Training.     You may opt-out of Model Training at any time by adjusting your Team account settings or by upgrading to an     Enterprise plan.
+vercel-terms	md	You shall only use the Services under a Hobby plan for your personal or non-commercial     use.
+NOT FOUND	md	Free tier
+vercel-notices	md	Last Updated     February 26, 2026
+vercel-notices	md	Non-Vercel Services in the AI Gateway are provided subject to any applicable terms the     customer has agreed to with respect to the third-party AI service provider, or the terms below, as applicable:
+vercel-sec-compliance	md	AI Gateway uses zero data retention by default. It permanently deletes your prompts     and responses after requests complete.
+vercel-disallow-training	md	The following providers currently support no training on prompt data on AI Gateway.
+vercel-disallow-training	md	A     provider's default policy may not match with the status that AI Gateway has in place due to negotiated     agreements.
+vercel-disallow-training	md	No prompt training
+vercel-kb-provider-data	md	Per-request no-training controls add no cost on any plan. ZDR requires Pro or     Enterprise.
+alibaba-product-terms,aws-service-terms,byteplus-ai-terms,byteplus-tos,cesure-assistants,cesure-format,cesure-terms,fal-mureka-page,fal-tos,flat-openapi,gateway-models,hf-api-muse,meta-dev-tos,mimo-model-page,mimo-platform-agreement,musicgpt-tos,nova-what-is,nova2-what-is,openai-model-gpt-audio-1.5,openai-ref-chat-create,pypi-gradio-client-053,pypi-gradio-client-272,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-model-mimo-html,vercel-model-muse-html,vercel-model-seed-html,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:inputs/INPUTS.md,extra:apps-survey/survey.md	md	none
+NOT FOUND	md	 for `meta/muse-spark-open`, 
+alibaba-product-terms,aws-service-terms,byteplus-ai-terms,byteplus-tos,cesure-assistants,cesure-format,cesure-terms,fal-mureka-page,fal-tos,flat-openapi,gateway-models,hf-api-muse,meta-dev-tos,mimo-model-page,mimo-platform-agreement,musicgpt-tos,nova-what-is,nova2-what-is,openai-model-gpt-audio-1.5,openai-ref-chat-create,pypi-gradio-client-053,pypi-gradio-client-272,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-model-mimo-html,vercel-model-muse-html,vercel-model-seed-html,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:inputs/INPUTS.md,extra:apps-survey/survey.md	md	none
+mimo-chunk-1995	md	Our Service Agreement was updated on July 7, 2026.
+mimo-chunk-1995	md	Xiaomi acts as a     Processor in data processing activities, and you are the Data Controller. The data you upload, store, process,     download, distribute, or otherwise handle through our services constitutes your business data, over which you     retain full control.
+mimo-chunk-1995	md	The intellectual property rights owned by both parties before using the Service     shall remain with each party and will not be transferred as a result of the performance of this Agreement by     both parties. For the avoidance of doubt, the ownership and intellectual property rights of the Xiaomi MiMo model     belong to Xiaomi, including but not limited to model parameters, algorithms, code, framework structure, etc.
+mimo-chunk-1995	md	The content generated by this product does not represent the product/service itself or the views of     Xiaomi.
+mimo-chunk-1995	md	When providing services outside the Chinese Mainland, Xiaomi will store the relevant data on     servers located in Europe and Singapore.
+alibaba-product-terms,aws-service-terms,byteplus-ai-terms,byteplus-tos,fal-llms,fal-mureka-page,fal-tos,flat-openapi,gateway-models,hf-api-muse,hf-mimo-mopd-readme,hf-mimo-rl-readme,meta-dev-tos,mimo-chunk-1995,musicgpt-tos,nova2-what-is,openai-model-gpt-audio-1.5,openai-pricing-md,openai-ref-chat-create,openai-your-data,pypi-gradio-client-053,pypi-gradio-client-272,qwen-omni,qwen-pricing-aliyun,vercel-ai-product-terms,vercel-disallow-training,vercel-docs-ai-gateway,vercel-kb-provider-data,vercel-model-muse-html,vercel-sec-compliance,vercel-terms,xai-faq-security,xai-stt,extra:apps-survey/survey.md,extra:headings/record_headings.md	md	train
+mimo-model-page	md	$0.14USD / Million tokens
+mimo-model-page	md	$0.28USD / Million tokens
+vercel-model-mimo-md	md	$0.112/1M input tokens, $0.224/1M     output tokens
+vercel-model-muse-html	md	Your use is subject to Meta's Terms &     Privacy Policies.
+meta-dev-tos	md	Last updated: October 9, 2026
+meta-dev-tos	md	These Terms apply when you access or use the application     programming interface we make available (“Meta Model API”)
+meta-dev-tos	md	Meta does     not receive or process your Content, including Inputs or Outputs, in connection with your access to the Meta     Materials through a Hosted Platform. Meta does not use such Content to train, develop, evaluate, or improve     Meta’s artificial intelligence models, products, or services in connection with that access.
+meta-dev-tos	md	Hosted Platform
+meta-dev-tos	md	a third-party cloud platform authorized by Meta to host and provide access to the     Meta Materials
+meta-dev-tos	md	Certain Meta Models may also be made available by Meta under open source     or open weight terms or other separate terms.
+meta-dev-tos	md	Conversely, these Terms do not apply to, limit, or terminate     any rights you have to use Meta Models outside the Services (e.g., on a self-hosted basis) pursuant to a separate     license.
+alibaba-product-terms,aws-service-terms,byteplus-ai-terms,byteplus-tos,cesure-assistants,cesure-format,cesure-terms,fal-llms,fal-mureka-page,fal-tos,gateway-models,meta-dev-tos,openai-pricing-md,qwen-omni,qwen-pricing-aliyun,vercel-model-mimo-html,vercel-model-muse-html,vercel-model-seed-html,xai-faq-general	md	Legal
+alibaba-product-terms,aws-service-terms,fal-mureka-page,fal-tos,flat-openapi,gateway-models,hf-api-muse,meta-dev-tos,musicgpt-tos,openai-your-data,vercel-kb-provider-data,vercel-model-mimo-html,vercel-model-muse-html,vercel-model-seed-html,extra:inputs/INPUTS.md,extra:apps-survey/survey.md,extra:headings/record_headings.md	md	manual
+hf-api-muse	md	MUSE MODEL     LICENSE
+hf-api-muse	md	Release date: October 15, 2026
+hf-api-muse	md	Copyright (c) 2026 Meta Platforms, Inc.
+hf-api-muse	md	Permission is     hereby granted, free of charge, to any person (the 
+hf-api-muse	md	) accessing or obtaining a copy of this software,     including the model, code, model weights, parameters, configuration files, and associated documentation files (the     “Software”), to deal in the Software without restriction
+hf-api-muse	md	Licensee shall prominently display 
+hf-api-muse	md	 in the user interface of each product or service that uses the Software or any Derivatives, or in     the accompanying documentation, website, or settings menu.
+hf-api-muse	md	Model as a Service
+hf-api-muse	md	twenty (20) million US dollars
+hf-api-muse	md	does not     apply to (a) internal use, research, or any commercial activity that is not Model as a Service
+hf-api-muse	md	Meta claims     no ownership of outputs generated by the Software.
+hf-api-muse	md	Dated: October 15, 2026
+vercel-model-seed-html	md	Your use is subject to ByteDance's     Terms & Privacy Policies.
+byteplus-tos	md	Last Updated: August 23, 2022
+byteplus-tos	md	Unless otherwise agreed, you hereby grant to BytePlus and its affiliates a     non-exclusive, worldwide, royalty-free, perpetual, irrevocable, sub-licensable, and transferable right and license     without any license fee to access and use any data collected from you, or stored or uploaded by you, during your     access to or use of the Services, for any purposes relating to our operation and provision of the Services.
+byteplus-ai-terms	md	Last     updated: August 28, 2026
+byteplus-ai-terms	md	As between you and     BytePlus, you retain your rights in Input. To the extent permitted by applicable law, as between you and BytePlus,     you own the Output generated in response to your Input, and BytePlus does not claim ownership of such Output.
+byteplus-ai-terms	md	BytePlus may retain and process data relating to your use of the AI Services as necessary to provide and     maintain the AI Services and protect them from fraud, abuse, and security threats
+byteplus-ai-terms	md	Except for feedback     that you voluntarily provide for service improvement, or where you otherwise separately consent or agree in     writing, BytePlus will not use your Customer Data to train the foundation models underlying the AI Services.
+musicgpt-a2m,musicgpt-llms,musicgpt-pricing	md	Audio to MIDI
+musicgpt-pricing	md	$0.005   + $0.0037/min
+musicgpt-pricing	md	$0.007 + $0.005/min
+musicgpt-pricing	md	$0.014 + $0.01/min
+musicgpt-pricing	md	Base Cost:   One-time charge per request
+musicgpt-pricing	md	+/min: Additional cost per minute (60s increments)
+musicgpt-pricing	md	Plans don't give you credits,   they lower the cost of each API call.
+musicgpt-a2m	md	Max input audio length: 8 minutes.
+musicgpt-a2m	md	AI-driven audio analysis and transcription
+musicgpt-tos	md	Effective date: 01 Jan 2025
+musicgpt-tos	md	Users on paid plans have full commercial rights to their generated content.
+musicgpt-tos	md	By using the   Service, you grant MusicGPT a royalty-free, non-exclusive, and perpetual license to use, showcase, and distribute   generated music for improving the Service, marketing, and training purposes.
+musicgpt-tos	md	You retain ownership of   uploaded files but grant us a license to process them as necessary for providing the Service.
+extra:headings/record_headings.md	md	xAI speech to text
+xai-pricing	md	Speech to Text | $0.10 / hr (REST), $0.20 / hr   (Streaming)
+xai-faq-general	md	for our Enterprise Terms of Service and Data Processing Addendum
+NOT FOUND	md	Sorry, you   have been blocked
+extra:apps-survey/survey.md	md	[Bot Check Circumvention]
+vercel-notices	md	xAI Enterprise Terms of Service
+xai-faq-general,xai-faq-security,xai-pricing,xai-stt	md	SpaceXSI
+xai-faq-security	md	SpaceXSI never trains on your API inputs or outputs without your explicit   permission.
+xai-faq-security	md	By default, all API requests and responses are stored on our servers (encrypted at rest) for 30   days for auditing purposes in the event of suspected abuse or misuse. SpaceXSI does not train on this data, and it   is automatically deleted after 30 days.
+xai-faq-security	md	every API response includes an `x-zero-data-retention`   header
+cesure-assistants,cesure-format,cesure-terms,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:apps-survey/survey.md,extra:headings/record_headings.md	md	Cesure
+cesure-assistants,extra:apps-survey/survey.md	md	You add Cesure once, as a custom connector, with this   address:
+cesure-assistants,extra:apps-survey/survey.md	md	No audio. Turning a recording into a tab happens in the app, from a   sound.
+cesure-assistants,cesure-format,cesure-terms,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:apps-survey/survey.md,extra:headings/record_headings.md	md	cesure
+aws-service-terms,byteplus-ai-terms,byteplus-tos,fal-mureka-openapi,fal-tos,musicgpt-a2m,musicgpt-tos,extra:cesure-mcp/probe.json	md	1.0.0
+extra:cesure-mcp/probe.json	md	2025-06-18
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	md	Open in Cesure
+cesure-format	md	This is version 2.
+cesure-format	md	Open strings from string 1 (the highest) to string N (the lowest)
+cesure-format	md	Capo position in   frets. Fret numbers stay relative to the capo; only the sounding pitch moves.
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	md	200 at most a call
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	md	lowest frets
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	md	fewest hand moves
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	md	lets it choose a   capo
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	md	never moves a note written with its string
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	md	4 semitones at most
+cesure-terms,extra:apps-survey/survey.md	md	The app is designed for personal use.
+cesure-terms	md	If you link an AI assistant such as ChatGPT or Claude to your account, it acts at your request within what   you allowed on the linking page — seeing, reading and saving scores — and you can unlink it at any time from the   
+cesure-terms	md	 screen. What that assistant does with your scores falls under its provider's own terms.
+extra:headings/record_headings.md	md	Other multimodal LLM APIs
+fal-mureka-llms,fal-mureka-openapi,fal-mureka-page	md	can include MusicXML, PDF sheet music, and timestamped lyrics
+flat-openapi	md	Preferred formats
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	md	The .cesure text, AlphaTex, or Open in Cesure link, verbatim.
+extra:apps-survey/survey.md	md	alphaTex (.alphatex)
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	md	lets it choose a capo
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	md	lowest frets
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	md	fewest hand moves
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	md	never moves a note written with its string
+extra:headings/record_headings.md	md	The three models called through the   gateway
+alibaba-product-terms,aws-service-terms,byteplus-ai-terms,byteplus-tos,cesure-assistants,cesure-format,cesure-terms,fal-llms,fal-mureka-llms,fal-mureka-openapi,fal-mureka-page,fal-tos,flat-openapi,gateway-models,hf-api-mimo-mopd,hf-api-mimo-rl,hf-api-muse,hf-mimo-mopd-readme,hf-mimo-rl-readme,hf-muse-license-file,meta-dev-tos,mimo-chunk-1995,mimo-model-page,mureka-llms,mureka-terms,musicgpt-a2m,musicgpt-llms,musicgpt-pricing,musicgpt-tos,nova-what-is,nova2-what-is,openai-audio-cc,openai-audio-guide,openai-model-gpt-audio-1.5,openai-pricing-md,openai-ref-chat-create,openai-your-data,pypi-gradio-client-053,pypi-gradio-client-272,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-ai-product-terms,vercel-disallow-training,vercel-docs-ai-gateway,vercel-kb-provider-data,vercel-model-mimo-html,vercel-model-mimo-md,vercel-model-muse-html,vercel-model-muse-md,vercel-model-seed-html,vercel-model-seed-md,vercel-notices,vercel-sec-compliance,vercel-terms,xai-faq-general,xai-faq-security,xai-pricing,xai-stt,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:inputs/INPUTS.md,extra:apps-survey/survey.md,extra:headings/record_headings.md	md	 and 
+NOT FOUND	md	; the per-second token   rate and the Services Agreement remain UNVERIFIED, the latter HTTP 403), Qwen-Omni (prices in USD, the audio token   formula, Alibaba Cloud's Model Studio terms), MusicGPT audio-to-MIDI (prices, limits, terms; the model behind it is   not named), Amazon Nova (input modalities of Nova 1 and Nova 2 models, AWS Service Terms). - H4: new section 
+NOT FOUND	md	 (schema from the OpenAPI document, price, fal's   third-party-model clauses); not called (no fal key), `for-aaron.md` section 15. - H5: new section 
+NOT FOUND	md	, from the read-only probe r0622 (`trials.md`, Gap round 2). - Tool list: items 26 and 28 extended, items 29 to 32 added. - Quote check (`scripts/gap2/check_quotes.py`, results in `samples/gap2/quotes_check.tsv`): every double-quoted string   this round added to `survey.md`, `trials.md` and `for-aaron.md` (joined across line breaks, from `git diff` against   the last commit) and every quote field this round added to `tools.json` was searched for, after normalising   whitespace, curly quotes and markdown marks, in the saved pages, the saved API answers and the samples (last run at   00:40 UTC on the text as it stood then; only this paragraph's figures changed after): 314 strings, 283 found. The 31   not found are 8 references to this record's own headings, 1 browser menu label (
+NOT FOUND	md	), 2 pieces of   a shell example, 1 quote cited from the apps-survey lane's record (
+NOT FOUND	md	, Tabtify's home page as   quoted there), and 19 spans of prose that the check paired between two separate quotes; the quotes inside those   spans were checked one by one and found. One found string, 
+NOT FOUND	md	, is found only in   `raw/gap2-xai-403-note.txt`, the note written from the session's output after the 403 page copies were deleted. - Still UNVERIFIED after this round: xAI's and OpenAI's terms texts (HTTP 403 to the box); OpenAI's audio tokens per   second; which MiMo checkpoint Xiaomi serves; whether a gateway route counts as a 
+NOT FOUND	md	 under Meta's   Exhibit C; Mureka's own terms and what its ZIP holds; whether Cesure serves `create_score` without an account (the   tools declare `noauth`; no call was sent); the Vercel plan of the gateway key's team; Amazon Nova prices and 
+extra:apps-survey/survey.md,extra:headings/record_headings.md	md	Gap round 2
+extra:apps-survey/survey.md,extra:headings/record_headings.md	md	added in gap round 2
+extra:headings/record_headings.md	md	Media kept outside git
+cesure-assistants,cesure-format,cesure-terms,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:apps-survey/survey.md,extra:headings/record_headings.md	md	Cesure
+cesure-assistants,extra:apps-survey/survey.md	md	You add Cesure once, as a custom connector,   with this address:
+extra:headings/record_headings.md	md	Cesure MCP server
+NOT FOUND	md	 --nolock -- python3 -I scripts/gap2/cesure_mcp_probe.py samples/cesure-mcp`.   No account, no key, no cookie; `User-Agent: research-probe/0.1 (MCP client, no account)`. It sent, over MCP's   Streamable HTTP transport (JSON-RPC 2.0 by POST): `initialize` (protocol version 2025-06-18, client name   
+NOT FOUND	md	), `notifications/initialized`, `tools/list`; then `GET /.well-known/oauth-protected-resource`. No   `tools/call` was sent, so no draft was created. Every request and response is in `samples/cesure-mcp/probe.json`,   the tool list in `samples/cesure-mcp/tools_list.json` (25,420 bytes).  | step | HTTP | round trip s | what came back | |---|---|---|---| | `initialize` | 200 | 0.600 | `application/json`, 1,663 bytes: `protocolVersion` 
+NOT FOUND	md	; `capabilities` `tools` and `resources` (both `listChanged` false); `serverInfo` name 
+fal-tos,extra:apps-survey/survey.md	md	, version 
+alibaba-product-terms,aws-service-terms,fal-tos,hf-mimo-mopd-readme,hf-mimo-rl-readme,meta-dev-tos,openai-ref-chat-create,qwen-omni,vercel-ai-product-terms,vercel-terms,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:inputs/INPUTS.md,extra:apps-survey/survey.md	md	, title 
+NOT FOUND	md	; an `instructions` text; no `Mcp-Session-Id` header; `X-Ratelimit-Limit: 3000` | | `notifications/initialized` | 202 | 0.664 | empty body | | `tools/list` | 200 | 0.493 | 19,822 bytes, 14 tools (below) | | `GET /.well-known/oauth-protected-resource` | 404 | 0.635 | empty body |  - The 14 tools, with the `securitySchemes` each declares in its `_meta` (`noauth`: callable without an account;   `oauth2`: with a linked Cesure account) and its MCP annotations:  | tool | title | required inputs (other inputs) | securitySchemes | readOnlyHint / destructiveHint | |---|---|---|---|---| | `create_score` | Create a score | `score` (a .cesure text) | noauth, oauth2 | false / false | | `import_score` | Import a score | `score` (.cesure text, AlphaTex, or an 
+NOT FOUND	md	 link) | noauth, oauth2 | false / false | | `read_score` | Read measures | `draft` (`track`, `from`, `to`) | noauth, oauth2 | true / false | | `edit_measures` | Edit measures | `draft`, `from`, `to`, `measures` (`track`) | noauth, oauth2 | false / true | | `transpose` | Transpose | `draft`, `semitones` (-24 to 24) (`notesOffTheNeck`: `retune_lowest_string` or `change_octave`; `harmonicsOffTheNeck`: `keep_harmonic` or `play_fretted`) | noauth, oauth2 | false / true | | `refinger` | Place the notes again | `draft` (`track`; `mode`: `auto`, `standard`, `optimized`; `searchCapo` boolean, default false) | noauth, oauth2 | false / true | | `undo_last_change` | Undo the last change | `draft` | noauth, oauth2 | false / true | | `open_in_cesure` | Open in Cesure | `draft` | noauth, oauth2 | true / false | | `search_catalog` | Search the catalog | none (`query`, `language`: en, fr, es) | noauth | true / false | | `list_my_scores` | List my scores | none (`offset`) | oauth2 | true / false | | `read_my_score` | Open one of my scores | `id` | oauth2 | false / false | | `save_new_score` | Save as a new score | `draft` (`title`) | oauth2 | false / false | | `update_my_score` | Save over my score | `draft` | oauth2 | false / true | | `organize_my_scores` | Organize my scores | none (`create_tags`, `add`, `remove`, `delete_unused_tags`) | oauth2 | false / true |  - Drafts without an account: the server accepted `initialize` and `tools/list` with no credentials, and the eight   draft tools (create, import, read, edit, transpose, refinger, undo, open) declare `noauth` among their schemes; the   five library tools declare only `oauth2`. The `instructions` text: 
+NOT FOUND	md	 Whether a `create_score` call is in fact served without an account was not tested   (the probe sent no `tools/call`): UNVERIFIED until one call. - Input format facts (tool descriptions, saved in `tools_list.json`): a score is written as .cesure text, e.g.   `{
+alibaba-product-terms,aws-service-terms,cesure-assistants,cesure-format,cesure-terms,flat-openapi,gateway-models,hf-mimo-mopd-readme,openai-ref-chat-create,qwen-omni,vercel-disallow-training,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:inputs/INPUTS.md,extra:apps-survey/survey.md,extra:headings/record_headings.md	md	score
+alibaba-product-terms,aws-service-terms,byteplus-ai-terms,byteplus-tos,cesure-assistants,cesure-format,cesure-terms,fal-mureka-llms,fal-mureka-openapi,fal-mureka-page,fal-tos,flat-openapi,hf-api-muse,hf-mimo-mopd-readme,hf-mimo-rl-readme,meta-dev-tos,mimo-agreement-html,mimo-model-page,mimo-platform-agreement,mureka-terms,musicgpt-a2m,musicgpt-tos,nova-what-is,nova2-what-is,openai-model-gpt-audio-1.5,openai-ref-chat-create,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-ai-product-terms,vercel-disallow-training,vercel-docs-ai-gateway,vercel-kb-provider-data,vercel-model-mimo-html,vercel-model-muse-html,vercel-model-seed-html,vercel-sec-compliance,vercel-terms,xai-stt,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:inputs/INPUTS.md,extra:apps-survey/survey.md	md	title
+fal-mureka-openapi,fal-mureka-page,mureka-llms,musicgpt-llms,musicgpt-pricing,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:inputs/INPUTS.md,extra:apps-survey/survey.md,extra:headings/record_headings.md	md	Song
+alibaba-product-terms,aws-service-terms,byteplus-ai-terms,byteplus-tos,cesure-format,flat-openapi,gateway-models,mureka-llms,musicgpt-tos,openai-your-data,qwen-omni,vercel-terms,xai-faq-security,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:inputs/INPUTS.md,extra:apps-survey/survey.md,extra:headings/record_headings.md	md	tempo
+cesure-assistants,cesure-format,flat-openapi,gateway-models,mureka-llms,openai-model-gpt-audio-1.5,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:apps-survey/survey.md	md	tracks
+alibaba-product-terms,aws-service-terms,byteplus-ai-terms,byteplus-tos,cesure-assistants,cesure-format,cesure-terms,fal-mureka-openapi,fal-mureka-page,fal-tos,flat-openapi,gateway-models,hf-api-mimo-mopd,hf-api-mimo-rl,hf-api-muse,hf-mimo-mopd-readme,hf-mimo-rl-readme,meta-dev-tos,mimo-agreement-html,mimo-chunk-1995,mimo-model-page,mimo-platform-agreement,mureka-terms,musicgpt-a2m,musicgpt-llms,musicgpt-tos,nova-what-is,nova2-what-is,openai-model-gpt-audio-1.5,openai-pricing-md,openai-ref-chat-create,pypi-gradio-client-053,pypi-gradio-client-272,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-disallow-training,vercel-docs-ai-gateway,vercel-kb-provider-data,vercel-model-mimo-html,vercel-model-muse-html,vercel-model-seed-html,vercel-notices,vercel-terms,xai-faq-general,xai-faq-security,xai-pricing,xai-stt,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:inputs/INPUTS.md,extra:apps-survey/survey.md	md	name
+cesure-format,flat-openapi,musicgpt-pricing,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:inputs/INPUTS.md,extra:apps-survey/survey.md,extra:headings/record_headings.md	md	Guitar
+aws-service-terms,cesure-format,cesure-terms,fal-mureka-page,fal-tos,flat-openapi,mureka-llms,musicgpt-llms,musicgpt-pricing,musicgpt-tos,qwen-omni,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:inputs/INPUTS.md,extra:apps-survey/survey.md	md	instrument
+cesure-format,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:apps-survey/survey.md	md	GUITAR
+alibaba-product-terms,aws-service-terms,byteplus-ai-terms,byteplus-tos,cesure-assistants,cesure-format,flat-openapi,hf-api-muse,meta-dev-tos,mimo-chunk-1995,musicgpt-tos,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:apps-survey/survey.md	md	measures
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	md	beat = content.duration[{d | tu 3}]; content = fret.string[{note   props}] | pitch | (note note …) | r
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	md	Strings from 1 (the highest); x as fret mutes.
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	md	a track without tuning is a   guitar in standard tuning; tuning lists the open strings from string 1
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	md	Every measure must read and fill its time   signature, or nothing is created and the refusal names each fault with its place.
+cesure-format	md	This is version 2.
+cesure-format	md	Capo position in frets. Fret   numbers stay relative to the capo; only the sounding pitch moves.
+extra:cesure-mcp/probe.json	md	No tool gives the whole score back: each answers with a   summary, and read_score reads measures, 200 at most a call.
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	md	Place the notes of the draft   again on the neck (string and fret), keeping their pitches: mode auto, standard (lowest frets) or optimized (fewest   hand moves); searchCapo lets it choose a capo.
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	md	A note may be written by its pitch (E4, Bb3) in   place of fret.string: Cesure chooses its string and fret, and never moves a note written with its string.
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	md	retune_lowest_string tunes the lowest string of the track down to the lowest   of those it carries (4 semitones at most)
+cesure-assistants,extra:apps-survey/survey.md	md	No audio. Turning a   recording into a tab happens in the app, from a sound.
+pypi-gradio-client-272	json:gradio_client.license.code.quote	Apache-2.0
+pypi-gradio-client-053,pypi-gradio-client-272	json:gradio_client.license.code.note	License :: OSI Approved :: Apache Software License
+vercel-docs-ai-gateway	json:Vercel AI Gateway.license.service_terms[2].quote	AI Gateway is available on all plans. Your use of each AI provider is subject to their terms listed on each model's page
+vercel-ai-product-terms	json:Vercel AI Gateway.license.service_terms[3].quote	Last Updated March 17, 2026
+vercel-ai-product-terms	json:Vercel AI Gateway.license.service_terms[3].note	Effective Date March 31, 2026
+vercel-ai-product-terms	json:Vercel AI Gateway.license.service_terms[4].quote	Vercel grants Customer a non-exclusive, non-transferable, revocable, limited license (without the right to sublicense), solely for the Term, to (a) access and use the AI Products and Services; and (b) use any associated Documentation in connection with authorized uses of the AI Products and Services, in all cases of (a)-(b), solely for Customer's personal or internal business use purposes.
+vercel-ai-product-terms	json:Vercel AI Gateway.license.service_terms[5].quote	As between you and Vercel, and to the extent permitted by applicable law, you own Customer Content and Vercel assigns to you Vercel's rights, if any, in the Output.
+vercel-ai-product-terms	json:Vercel AI Gateway.license.service_terms[6].quote	If you use the AI Products and Services under a Hobby or Pro plan, your Customer Content forms part of Your Content, as defined in Section 3 of the Terms of Service and is subject to the license granted to Vercel under Section 3.
+vercel-ai-product-terms	json:Vercel AI Gateway.license.service_terms[7].quote	AI Gateway enables you to interact with your selected third-party AI providers. Any Customer Content provided to or received from such Non-Vercel Service is subject to the terms and conditions and privacy notices of the applicable third party.
+vercel-ai-product-terms	json:Vercel AI Gateway.license.service_terms[8].quote	Vercel represents and warrants that it shall not use AI Gateway Customer Content to train or improve the AI Products and Services.
+vercel-terms	json:Vercel AI Gateway.license.service_terms[9].topic	Last Updated October 19, 2026
+vercel-terms	json:Vercel AI Gateway.license.service_terms[9].quote	In addition, if you are on a Hobby plan or trial Pro plan, you agree that we may use Your Content to train our artificial intelligence (“AI”) and machine learning models, and we may share Your Content with third parties for the purpose of developing and improving their products, including training and improving their AI and machine learning models
+vercel-terms	json:Vercel AI Gateway.license.service_terms[10].quote	If you are on a paid Pro plan, Model Training is not enabled by default and you may opt in to Model Training. You may opt-out of Model Training at any time by adjusting your Team account settings or by upgrading to an Enterprise plan.
+vercel-terms	json:Vercel AI Gateway.license.service_terms[11].quote	You shall only use the Services under a Hobby plan for your personal or non-commercial use.
+vercel-notices	json:Vercel AI Gateway.license.service_terms[12].topic	Last Updated February 26, 2026
+vercel-notices	json:Vercel AI Gateway.license.service_terms[12].quote	Non-Vercel Services in the AI Gateway are provided subject to any applicable terms the customer has agreed to with respect to the third-party AI service provider, or the terms below, as applicable:
+vercel-sec-compliance	json:Vercel AI Gateway.license.service_terms[13].quote	AI Gateway uses zero data retention by default. It permanently deletes your prompts and responses after requests complete.
+vercel-disallow-training	json:Vercel AI Gateway.license.service_terms[14].quote	The following providers currently support no training on prompt data on AI Gateway.
+vercel-kb-provider-data	json:Vercel AI Gateway.license.service_terms[15].quote	Per-request no-training controls add no cost on any plan. ZDR requires Pro or Enterprise.
+NOT FOUND	json:Vercel AI Gateway.unverified[2]	Free tier
+NOT FOUND	json:Vercel AI Gateway.corrections[0]	Vercel's gateway terms were not read
+hf-mimo-mopd-readme,hf-mimo-rl-readme	json:xiaomi/mimo-v2.6-flash (via Verc.license.weights.quote	license: mit
+vercel-model-mimo-html	json:xiaomi/mimo-v2.6-flash (via Verc.license.service_terms[0].quote	Your use is subject to Xiaomi's Terms & Privacy Policies.
+mimo-chunk-1995	json:xiaomi/mimo-v2.6-flash (via Verc.license.service_terms[1].quote	Our Service Agreement was updated on July 7, 2026.
+mimo-chunk-1995	json:xiaomi/mimo-v2.6-flash (via Verc.license.service_terms[2].quote	Xiaomi acts as a Processor in data processing activities, and you are the Data Controller. The data you upload, store, process, download, distribute, or otherwise handle through our services constitutes your business data, over which you retain full control.
+mimo-chunk-1995	json:xiaomi/mimo-v2.6-flash (via Verc.license.service_terms[3].quote	The intellectual property rights owned by both parties before using the Service shall remain with each party and will not be transferred as a result of the performance of this Agreement by both parties. For the avoidance of doubt, the ownership and intellectual property rights of the Xiaomi MiMo model belong to Xiaomi, including but not limited to model parameters, algorithms, code, framework structure, etc.
+mimo-chunk-1995	json:xiaomi/mimo-v2.6-flash (via Verc.license.service_terms[4].quote	The content generated by this product does not represent the product/service itself or the views of Xiaomi.
+mimo-chunk-1995	json:xiaomi/mimo-v2.6-flash (via Verc.license.service_terms[5].quote	When providing services outside the Chinese Mainland, Xiaomi will store the relevant data on servers located in Europe and Singapore.
+alibaba-product-terms,aws-service-terms,byteplus-ai-terms,byteplus-tos,fal-llms,fal-mureka-page,fal-tos,flat-openapi,gateway-models,hf-api-muse,hf-mimo-mopd-readme,hf-mimo-rl-readme,meta-dev-tos,mimo-chunk-1995,musicgpt-tos,nova2-what-is,openai-model-gpt-audio-1.5,openai-pricing-md,openai-ref-chat-create,openai-your-data,pypi-gradio-client-053,pypi-gradio-client-272,qwen-omni,qwen-pricing-aliyun,vercel-ai-product-terms,vercel-disallow-training,vercel-docs-ai-gateway,vercel-kb-provider-data,vercel-model-muse-html,vercel-sec-compliance,vercel-terms,xai-faq-security,xai-stt,extra:apps-survey/survey.md,extra:headings/record_headings.md	json:xiaomi/mimo-v2.6-flash (via Verc.unverified[3]	train
+alibaba-product-terms,aws-service-terms,byteplus-ai-terms,byteplus-tos,cesure-assistants,cesure-format,cesure-terms,fal-llms,fal-tos,flat-openapi,gateway-models,hf-api-muse,hf-mimo-mopd-readme,meta-dev-tos,mimo-agreement-html,mimo-chunk-1995,mimo-model-page,mimo-platform-agreement,musicgpt-tos,openai-model-gpt-audio-1.5,openai-ref-chat-create,openai-your-data,pypi-gradio-client-053,pypi-gradio-client-272,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-ai-product-terms,vercel-model-mimo-html,vercel-model-muse-html,vercel-model-seed-html,vercel-terms,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:inputs/INPUTS.md,extra:apps-survey/survey.md,extra:headings/record_headings.md	json:xiaomi/mimo-v2.6-flash (via Verc.gateway_data_flags	some
+alibaba-product-terms,aws-service-terms,byteplus-ai-terms,byteplus-tos,cesure-assistants,cesure-format,cesure-terms,fal-mureka-page,fal-tos,flat-openapi,gateway-models,hf-api-muse,meta-dev-tos,mimo-model-page,mimo-platform-agreement,musicgpt-tos,nova-what-is,nova2-what-is,openai-model-gpt-audio-1.5,openai-ref-chat-create,pypi-gradio-client-053,pypi-gradio-client-272,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-model-mimo-html,vercel-model-muse-html,vercel-model-seed-html,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:inputs/INPUTS.md,extra:apps-survey/survey.md	json:xiaomi/mimo-v2.6-flash (via Verc.gateway_data_flags	none
+extra:headings/record_headings.md	json:xiaomi/mimo-v2.6-flash (via Verc.corrections[0]	The three models called through the gateway
+alibaba-product-terms,aws-service-terms,fal-mureka-page,fal-tos,flat-openapi,gateway-models,hf-api-muse,meta-dev-tos,musicgpt-tos,openai-your-data,vercel-kb-provider-data,vercel-model-mimo-html,vercel-model-muse-html,vercel-model-seed-html,extra:inputs/INPUTS.md,extra:apps-survey/survey.md,extra:headings/record_headings.md	json:meta/muse-spark-open (via Vercel.license.weights.name	manual
+hf-api-muse	json:meta/muse-spark-open (via Vercel.license.weights.quote	Meta claims no ownership of outputs generated by the Software.
+hf-api-muse	json:meta/muse-spark-open (via Vercel.license.weights.note	Release date: October 15, 2026
+hf-api-muse	json:meta/muse-spark-open (via Vercel.license.weights.note	Built with Muse Spark Open
+hf-api-muse	json:meta/muse-spark-open (via Vercel.license.weights.note	Model as a Service
+hf-api-muse	json:meta/muse-spark-open (via Vercel.license.weights.note	twenty (20) million US dollars
+vercel-model-muse-html	json:meta/muse-spark-open (via Vercel.license.service_terms[0].quote	Your use is subject to Meta's Terms & Privacy Policies.
+meta-dev-tos	json:meta/muse-spark-open (via Vercel.license.service_terms[1].topic	Last updated: October 9, 2026
+meta-dev-tos	json:meta/muse-spark-open (via Vercel.license.service_terms[1].quote	These Terms apply when you access or use the application programming interface we make available (“Meta Model API”)
+meta-dev-tos	json:meta/muse-spark-open (via Vercel.license.service_terms[2].quote	Meta does not receive or process your Content, including Inputs or Outputs, in connection with your access to the Meta Materials through a Hosted Platform. Meta does not use such Content to train, develop, evaluate, or improve Meta’s artificial intelligence models, products, or services in connection with that access.
+hf-api-muse	json:meta/muse-spark-open (via Vercel.license.service_terms[3].quote	Permission is hereby granted, free of charge, to any person (the "Licensee") accessing or obtaining a copy of this software, including the model, code, model weights, parameters, configuration files, and associated documentation files (the “Software”), to deal in the Software without restriction
+meta-dev-tos	json:meta/muse-spark-open (via Vercel.unverified[1]	Hosted Platform
+NOT FOUND	json:meta/muse-spark-open (via Vercel.gateway_data_flags	, zdr 
+extra:headings/record_headings.md	json:meta/muse-spark-open (via Vercel.corrections[0]	The three models called through the gateway
+vercel-model-seed-html	json:bytedance/seed-2.1-turbo (via Ve.license.service_terms[0].quote	Your use is subject to ByteDance's Terms & Privacy Policies.
+byteplus-tos	json:bytedance/seed-2.1-turbo (via Ve.license.service_terms[1].topic	Last Updated: August 23, 2022
+byteplus-tos	json:bytedance/seed-2.1-turbo (via Ve.license.service_terms[1].quote	Unless otherwise agreed, you hereby grant to BytePlus and its affiliates a non-exclusive, worldwide, royalty-free, perpetual, irrevocable, sub-licensable, and transferable right and license without any license fee to access and use any data collected from you, or stored or uploaded by you, during your access to or use of the Services, for any purposes relating to our operation and provision of the Services.
+byteplus-ai-terms	json:bytedance/seed-2.1-turbo (via Ve.license.service_terms[2].topic	Last updated: August 28, 2026
+byteplus-ai-terms	json:bytedance/seed-2.1-turbo (via Ve.license.service_terms[2].quote	As between you and BytePlus, you retain your rights in Input. To the extent permitted by applicable law, as between you and BytePlus, you own the Output generated in response to your Input, and BytePlus does not claim ownership of such Output.
+byteplus-ai-terms	json:bytedance/seed-2.1-turbo (via Ve.license.service_terms[3].quote	BytePlus may retain and process data relating to your use of the AI Services as necessary to provide and maintain the AI Services and protect them from fraud, abuse, and security threats
+byteplus-ai-terms	json:bytedance/seed-2.1-turbo (via Ve.license.service_terms[4].quote	Except for feedback that you voluntarily provide for service improvement, or where you otherwise separately consent or agree in writing, BytePlus will not use your Customer Data to train the foundation models underlying the AI Services.
+NOT FOUND	json:bytedance/seed-2.1-turbo (via Ve.gateway_data_flags	, zdr 
+extra:headings/record_headings.md	json:bytedance/seed-2.1-turbo (via Ve.corrections[0]	The three models called through the gateway
+xai-faq-general	json:xAI Speech to Text (grok-voice-t.license.service_terms[0].quote	for our Enterprise Terms of Service and Data Processing Addendum
+xai-faq-security	json:xAI Speech to Text (grok-voice-t.license.service_terms[1].quote	SpaceXSI never trains on your API inputs or outputs without your explicit permission.
+xai-faq-security	json:xAI Speech to Text (grok-voice-t.license.service_terms[2].quote	By default, all API requests and responses are stored on our servers (encrypted at rest) for 30 days for auditing purposes in the event of suspected abuse or misuse. SpaceXSI does not train on this data, and it is automatically deleted after 30 days.
+NOT FOUND	json:xAI Speech to Text (grok-voice-t.corrections[0]	xAI's terms were not read
+openai-model-gpt-audio-1.5	json:OpenAI audio in Chat Completions.version	128,000 context window
+openai-model-gpt-audio-1.5	json:OpenAI audio in Chat Completions.version	16,384 max output tokens
+openai-ref-chat-create	json:OpenAI audio in Chat Completions.inputs[0]	The format of the encoded audio data. Currently supports 
+alibaba-product-terms,aws-service-terms,byteplus-ai-terms,byteplus-tos,cesure-assistants,cesure-format,cesure-terms,fal-llms,fal-mureka-llms,fal-mureka-openapi,fal-mureka-page,fal-tos,flat-openapi,gateway-models,hf-api-mimo-mopd,hf-api-mimo-rl,hf-api-muse,hf-mimo-mopd-readme,hf-mimo-rl-readme,hf-muse-license-file,meta-dev-tos,mimo-chunk-1995,mimo-model-page,mureka-llms,mureka-terms,musicgpt-a2m,musicgpt-llms,musicgpt-pricing,musicgpt-tos,nova-what-is,nova2-what-is,openai-audio-cc,openai-audio-guide,openai-model-gpt-audio-1.5,openai-pricing-md,openai-ref-chat-create,openai-your-data,pypi-gradio-client-053,pypi-gradio-client-272,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-ai-product-terms,vercel-disallow-training,vercel-docs-ai-gateway,vercel-kb-provider-data,vercel-model-mimo-html,vercel-model-mimo-md,vercel-model-muse-html,vercel-model-muse-md,vercel-model-seed-html,vercel-model-seed-md,vercel-notices,vercel-sec-compliance,vercel-terms,xai-faq-general,xai-faq-security,xai-pricing,xai-stt,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:inputs/INPUTS.md,extra:apps-survey/survey.md,extra:headings/record_headings.md	json:OpenAI audio in Chat Completions.inputs[0]	 and 
+openai-model-gpt-audio-1.5,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-model-mimo-html,vercel-model-muse-html,vercel-model-seed-html	json:OpenAI audio in Chat Completions.inputs[1]	Input and output
+openai-model-gpt-audio-1.5,openai-ref-chat-create,qwen-omni,xai-stt	json:OpenAI audio in Chat Completions.inputs[1]	Not supported
+openai-model-gpt-audio-1.5,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-model-mimo-html,vercel-model-muse-html,vercel-model-seed-html	json:OpenAI audio in Chat Completions.inputs[1]	Input and output
+openai-model-gpt-audio-1.5,openai-ref-chat-create,qwen-omni,xai-stt	json:OpenAI audio in Chat Completions.inputs[1]	Not supported
+openai-model-gpt-audio-1.5,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-model-mimo-html,vercel-model-muse-html,vercel-model-seed-html	json:OpenAI audio in Chat Completions.outputs[0]	Input and output
+openai-your-data	json:OpenAI audio in Chat Completions.license.service_terms[0].quote	Your data is your data. As of March 1, 2023, data sent to the OpenAI API is not used to train or improve OpenAI models (unless you explicitly opt in to share data with us).
+NOT FOUND	json:OpenAI audio in Chat Completions.license.service_terms[0].note	 for data used for training and 
+openai-pricing-md	json:OpenAI audio in Chat Completions.pricing	| gpt-audio-1.5 | Audio | $32.00 | $64.00 | - |
+openai-pricing-md	json:OpenAI audio in Chat Completions.pricing	| gpt-audio-1.5 | Text | $2.50 | $10.00 | - |
+alibaba-product-terms	json:Alibaba Cloud Model Studio Qwen-.license.service_terms[0].topic	Last Updated:Oct 19, 2026
+alibaba-product-terms	json:Alibaba Cloud Model Studio Qwen-.license.service_terms[0].quote	Model Studio does not claim ownership of any Intellectual Property Rights in the Output.
+alibaba-product-terms	json:Alibaba Cloud Model Studio Qwen-.license.service_terms[1].quote	Alibaba Cloud will not use your Member Content to develop or improve the models on Model Studio, unless you separately provide your consent.
+alibaba-product-terms,mimo-chunk-1995	json:Alibaba Cloud Model Studio Qwen-.license.service_terms[2].topic	you shall not
+alibaba-product-terms	json:Alibaba Cloud Model Studio Qwen-.license.service_terms[2].quote	use Model Studio, AI models provided through Model Studio (including any Output of such AI models) to train or develop products or services that compete with Alibaba Cloud and/or its affiliates’ products and services, unless expressly authorised by us
+qwen-pricing-intl	json:Alibaba Cloud Model Studio Qwen-.pricing	Last Updated:Nov 07, 2026
+alibaba-product-terms,aws-service-terms,hf-api-muse,mimo-chunk-1995,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,extra:inputs/INPUTS.md	json:Alibaba Cloud Model Studio Qwen-.pricing	International
+musicgpt-pricing,openai-pricing-md,qwen-pricing-intl,vercel-model-muse-html	json:Alibaba Cloud Model Studio Qwen-.pricing	$0.15
+musicgpt-pricing,qwen-pricing-intl	json:Alibaba Cloud Model Studio Qwen-.pricing	$0.016
+qwen-pricing-intl	json:Alibaba Cloud Model Studio Qwen-.pricing	$0.47
+alibaba-product-terms,aws-service-terms,hf-api-muse,mimo-chunk-1995,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,extra:inputs/INPUTS.md	json:Alibaba Cloud Model Studio Qwen-.pricing	International
+qwen-pricing-intl	json:Alibaba Cloud Model Studio Qwen-.pricing	$1.4
+NOT FOUND	json:Alibaba Cloud Model Studio Qwen-.pricing	 (audio), output 
+NOT FOUND	json:Alibaba Cloud Model Studio Qwen-.pricing	 (text) and 
+NOT FOUND	json:Alibaba Cloud Model Studio Qwen-.pricing	 (text + audio), free quota 
+NOT FOUND	json:Alibaba Cloud Model Studio Qwen-.pricing	 (Singapore only). Audio tokens: 
+NOT FOUND	json:Alibaba Cloud Model Studio Qwen-.corrections[0]	Price and terms: not read
+hf-mimo-mopd-readme,hf-mimo-rl-readme,mimo-model-page,nova-what-is	json:Amazon Nova.what	Text, Image, Video
+aws-service-terms,byteplus-ai-terms,byteplus-tos,cesure-terms,fal-mureka-page,fal-tos,flat-openapi,gateway-models,hf-mimo-mopd-readme,hf-mimo-rl-readme,meta-dev-tos,mimo-model-page,mureka-llms,mureka-terms,musicgpt-llms,musicgpt-pricing,musicgpt-tos,nova-what-is,nova2-what-is,openai-audio-cc,openai-audio-guide,openai-model-gpt-audio-1.5,openai-pricing-md,openai-ref-chat-create,openai-your-data,pypi-gradio-client-053,pypi-gradio-client-272,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,vercel-disallow-training,vercel-docs-ai-gateway,vercel-kb-provider-data,vercel-model-mimo-html,vercel-model-mimo-md,vercel-model-muse-html,vercel-model-muse-md,vercel-model-seed-html,vercel-model-seed-md,vercel-sec-compliance,xai-pricing,xai-stt,extra:apps-survey/survey.md,extra:headings/record_headings.md	json:Amazon Nova.what	Text
+alibaba-product-terms,byteplus-ai-terms,byteplus-tos,fal-llms,fal-mureka-page,gateway-models,musicgpt-llms,musicgpt-pricing,musicgpt-tos,nova-what-is,nova2-what-is,openai-audio-guide,openai-model-gpt-audio-1.5,qwen-omni,qwen-pricing-aliyun,qwen-pricing-intl,xai-pricing,xai-stt,extra:headings/record_headings.md	json:Amazon Nova.what	Speech
+nova2-what-is	json:Amazon Nova.what	Text, images, video, documents
+nova2-what-is	json:Amazon Nova.what	Speech, text
+nova2-what-is	json:Amazon Nova.what	Text, images, documents, video, audio
+aws-service-terms	json:Amazon Nova.license.service_terms[0].topic	Last Updated: November 5, 2026
+aws-service-terms	json:Amazon Nova.license.service_terms[0].quote	The output that you generate using AI Services is Your Content.
+aws-service-terms	json:Amazon Nova.license.service_terms[1].quote	For certain models identified on the Bedrock abuse detection page, as part of providing the Service, Amazon Bedrock stores Service inputs and outputs for up to 30 days (unless otherwise required by law) solely to detect activity that violates our, or third-party model providers’, terms of service or use policies.
+aws-service-terms	json:Amazon Nova.unverified[1]	Amazon Nova 2 Omni
+aws-service-terms,cesure-format,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:apps-survey/survey.md	json:Amazon Nova.corrections[0]	not read
+musicgpt-tos	json:MusicGPT API (audio_to_midi).license.service_terms[0].topic	Effective date: 01 Jan 2025
+musicgpt-tos	json:MusicGPT API (audio_to_midi).license.service_terms[0].quote	Users on paid plans have full commercial rights to their generated content.
+musicgpt-tos	json:MusicGPT API (audio_to_midi).license.service_terms[1].quote	By using the Service, you grant MusicGPT a royalty-free, non-exclusive, and perpetual license to use, showcase, and distribute generated music for improving the Service, marketing, and training purposes.
+musicgpt-tos	json:MusicGPT API (audio_to_midi).license.service_terms[2].quote	You retain ownership of uploaded files but grant us a license to process them as necessary for providing the Service.
+musicgpt-pricing	json:MusicGPT API (audio_to_midi).pricing	$0.005 + $0.0037/min
+musicgpt-pricing	json:MusicGPT API (audio_to_midi).pricing	$0.007 + $0.005/min
+musicgpt-pricing	json:MusicGPT API (audio_to_midi).pricing	$0.014 + $0.01/min
+musicgpt-pricing	json:MusicGPT API (audio_to_midi).pricing	+/min: Additional cost per minute (60s increments)
+musicgpt-a2m	json:MusicGPT API (audio_to_midi).pricing	Max input audio length: 8 minutes.
+musicgpt-a2m	json:MusicGPT API (audio_to_midi).unverified[0]	AI-driven audio analysis and transcription
+mureka-llms	json:Mureka Music Transcription (fal..what	Mureka is developed by Skywork AI Pte. Ltd.
+fal-mureka-llms,fal-mureka-page	json:Mureka Music Transcription (fal..what	Transcribes generated or uploaded music into a downloadable archive that can include MusicXML, PDF sheet music, and timestamped lyrics.
+aws-service-terms,byteplus-ai-terms,byteplus-tos,fal-mureka-openapi,fal-tos,musicgpt-a2m,musicgpt-tos,extra:cesure-mcp/probe.json	json:Mureka Music Transcription (fal..version	1.0.0
+fal-mureka-llms,fal-mureka-openapi,fal-mureka-page	json:Mureka Music Transcription (fal..inputs[0]	Public HTTPS URL or data URI for an MP3, WAV, or M4A file between 10 seconds and 10 minutes and no larger than 100 MB. Provide exactly one audio source.
+fal-mureka-llms,fal-mureka-openapi,fal-mureka-page	json:Mureka Music Transcription (fal..outputs[0]	The generated transcription archive.
+fal-mureka-llms,fal-mureka-openapi,fal-mureka-page	json:Mureka Music Transcription (fal..outputs[0]	can include MusicXML, PDF sheet music, and timestamped lyrics
+fal-mureka-page,extra:apps-survey/survey.md	json:Mureka Music Transcription (fal..license.service_terms[0].quote	Commercial use
+fal-tos	json:Mureka Music Transcription (fal..license.service_terms[1].topic	Last Updated: September 8, 2026
+fal-tos	json:Mureka Music Transcription (fal..license.service_terms[1].quote	Your access to and use of such Third-Party Materials may be subject to additional terms, conditions, and policies (including terms of service or privacy policies of the providers of such Third-Party Materials).
+alibaba-product-terms,aws-service-terms,byteplus-tos,fal-tos,meta-dev-tos,mimo-chunk-1995,musicgpt-tos,vercel-terms,extra:apps-survey/survey.md	json:Mureka Music Transcription (fal..license.service_terms[2].topic	You may not
+fal-tos	json:Mureka Music Transcription (fal..license.service_terms[2].quote	use or access any Third-Party Materials or any outputs derived from such materials to develop, modify, fine-tune, or improve any products or services that compete with those Third Party Materials, including to develop, fine-tune, or train any artificial intelligence or machine learning algorithms or models
+fal-mureka-llms,fal-mureka-page	json:Mureka Music Transcription (fal..pricing	Billing is calculated per transcribed song. Your request will cost **$0.20** per song. For **$1** you can transcribe **5 songs**.
+cesure-assistants,extra:apps-survey/survey.md	json:Cesure MCP server (api.cesure.ap.what	No audio. Turning a recording into a tab happens in the app, from a sound.
+cesure-assistants,cesure-format,cesure-terms,extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json,extra:apps-survey/survey.md,extra:headings/record_headings.md	json:Cesure MCP server (api.cesure.ap.version	cesure
+aws-service-terms,byteplus-ai-terms,byteplus-tos,fal-mureka-openapi,fal-tos,musicgpt-a2m,musicgpt-tos,extra:cesure-mcp/probe.json	json:Cesure MCP server (api.cesure.ap.version	1.0.0
+extra:cesure-mcp/probe.json	json:Cesure MCP server (api.cesure.ap.version	2025-06-18
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	json:Cesure MCP server (api.cesure.ap.inputs[0]	Strings from 1 (the highest); x as fret mutes.
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	json:Cesure MCP server (api.cesure.ap.inputs[1]	.cesure text, AlphaTex, or Open in Cesure link, verbatim
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	json:Cesure MCP server (api.cesure.ap.outputs[0]	200 at most a call
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	json:Cesure MCP server (api.cesure.ap.constraints_accepted[0]	lowest frets
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	json:Cesure MCP server (api.cesure.ap.constraints_accepted[0]	fewest hand moves
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	json:Cesure MCP server (api.cesure.ap.constraints_accepted[0]	lets it choose a capo
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	json:Cesure MCP server (api.cesure.ap.constraints_accepted[1]	never moves a note written with its string
+extra:cesure-mcp/probe.json,extra:cesure-mcp/tools_list.json	json:Cesure MCP server (api.cesure.ap.constraints_accepted[3]	4 semitones at most
+cesure-terms,extra:apps-survey/survey.md	json:Cesure MCP server (api.cesure.ap.license.service_terms[0].quote	The app is designed for personal use.
+cesure-terms,extra:apps-survey/survey.md	json:Cesure MCP server (api.cesure.ap.license.service_terms[1].quote	What that assistant does with your scores falls under its provider's own terms.

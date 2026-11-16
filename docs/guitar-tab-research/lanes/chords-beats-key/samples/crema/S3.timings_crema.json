@@ -1,0 +1,21 @@
+{
+ "tensorflow": "2.12.1",
+ "import_s": 2.916,
+ "analyze_s": 10.353,
+ "outputs": {
+  "n_segments": 9,
+  "labels": [
+   "A:min7",
+   "C:maj/3",
+   "D:maj",
+   "E:min",
+   "G:maj",
+   "N"
+  ],
+  "confidence_min_max": [
+   0.41380971670150757,
+   0.9256775379180908
+  ],
+  "annotation_metadata": "{}"
+ }
+}

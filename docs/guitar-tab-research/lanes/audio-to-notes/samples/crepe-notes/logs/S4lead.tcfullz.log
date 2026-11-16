@@ -1,0 +1,8 @@
+S4lead.wav
+/home/user/gtr/lanes/audio-to-notes/out/crepe-notes/tcfullz/S4lead.wav
+Onsets file not found at S4lead.onsets.npz
+Running onset detection...
+Tuning offset: 6.000000000000005 cents
+/home/user/gtr/lanes/audio-to-notes/venv-crepenotes/lib/python3.11/site-packages/librosa/core/convert.py:1094: RuntimeWarning: divide by zero encountered in log2
+  midi: np.ndarray = 12 * (np.log2(np.asanyarray(frequencies)) - np.log2(440.0)) + 69
+time tcfullz S4lead wall 4.41 s user 3.88 s sys 0.41 s maxrss 584580 KiB exit 0

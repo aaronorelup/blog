@@ -1,0 +1,74 @@
+{
+ "tool": "torchcrepe-full",
+ "clips": {
+  "S1": {
+   "input": "/home/user/gtr/inputs/S1/S1.mono.wav",
+   "seconds": 140.747,
+   "n_frames": 2984,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 2984
+  },
+  "S2n": {
+   "input": "/home/user/gtr/inputs/S2n/S2n.mono.wav",
+   "seconds": 116.189,
+   "n_frames": 2936,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 2936
+  },
+  "S2s": {
+   "input": "/home/user/gtr/inputs/S2s/S2s.mono.wav",
+   "seconds": 124.383,
+   "n_frames": 2936,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 2936
+  },
+  "S4": {
+   "input": "/home/user/gtr/inputs/S4/S4.mono.wav",
+   "seconds": 269.478,
+   "n_frames": 3875,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 3875
+  },
+  "S4lead": {
+   "input": "/home/user/gtr/inputs/S4/stems/lead.wav",
+   "seconds": 354.465,
+   "n_frames": 3875,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 3875
+  },
+  "R1b": {
+   "input": "/home/user/gtr/inputs/R1b/R1b.mono.wav",
+   "seconds": 212.394,
+   "n_frames": 2934,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 2934
+  },
+  "R2": {
+   "input": "/home/user/gtr/inputs/R2/R2.mono.wav",
+   "seconds": 313.167,
+   "n_frames": 3601,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 3601
+  },
+  "R3a": {
+   "input": "/home/user/gtr/inputs/R3a/R3a.mono.wav",
+   "seconds": 250.431,
+   "n_frames": 1800,
+   "hop_s": 0.01,
+   "n_frames_freq_gt0": 1800
+  }
+ },
+ "version": "torchcrepe 0.0.24",
+ "settings": {
+  "model": "full",
+  "sr": "16000 (torchcrepe resamples)",
+  "hop_length": "160 samples = 10 ms",
+  "fmin": 50.0,
+  "fmax": 2006.0,
+  "decoder": "torchcrepe.decode.viterbi (default)",
+  "batch_size": 512,
+  "device": "cpu",
+  "confidence": "periodicity (raw, no filtering)"
+ },
+ "setup_s": 2.183
+}

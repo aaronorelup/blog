@@ -1,0 +1,6 @@
+# uv pip freeze of the probe venv (Python 3.11) used in run r0666 (gap round 2, item A8); installed with uv pip install --offline "onnxruntime==1.31.1" "numpy==2.4.6"; deleted afterwards
+flatbuffers==25.12.19
+numpy==2.4.6
+onnxruntime==1.31.1
+packaging==26.3
+protobuf==7.36.2

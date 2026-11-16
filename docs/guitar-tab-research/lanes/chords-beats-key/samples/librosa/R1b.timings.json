@@ -1,0 +1,16 @@
+{
+ "librosa_version": "1.0.0",
+ "import_s": 0.013,
+ "load_resample_s": 0.885,
+ "beat_track_s": 7.782,
+ "tempo_s": 0.495,
+ "estimate_tuning_s": 0.382,
+ "key_baseline_s": 0.639,
+ "outputs": {
+  "n_beats": 45,
+  "beat_track_tempo": 95.703125,
+  "tempo": 95.703125,
+  "tuning_cents": 5.0,
+  "key_baseline": "C# minor"
+ }
+}

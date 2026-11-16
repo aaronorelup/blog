@@ -1,0 +1,8 @@
+{"type": "object",
+ "properties": {
+  "open_strings_midi": {"type": "array", "items": {"type": "integer"}},
+  "tuning_name": {"type": "string"},
+  "offset_cents": {"type": "number"},
+  "capo_fret": {"type": "integer"},
+  "evidence": {"type": "string"}},
+ "required": ["open_strings_midi", "tuning_name", "offset_cents", "capo_fret", "evidence"]}

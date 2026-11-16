@@ -1,0 +1,7 @@
+{
+ "n_frames": 777,
+ "last_frame_hz": 440.2542419433594,
+ "last_frame_cents_vs_440": 1.0,
+ "median_hz": 440.2542419433594,
+ "call": "TuningFrequencyExtractor(frameSize=4096, hopSize=2048) on MonoLoader(sampleRate=44100)"
+}

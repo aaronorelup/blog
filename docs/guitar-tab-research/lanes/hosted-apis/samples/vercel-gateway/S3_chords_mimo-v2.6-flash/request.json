@@ -1,0 +1,73 @@
+{
+ "model": "xiaomi/mimo-v2.6-flash",
+ "messages": [
+  {
+   "role": "user",
+   "content": [
+    {
+     "type": "file",
+     "file": {
+      "filename": "S3.mono.wav",
+      "file_data": "<data:audio/wav;base64 of S3.mono.wav: 2116844 bytes, sha256 92f5740a02860ee7e450f1a7da9ee8e3b6fad44b29ee11ddb98f913519265c2a>"
+     }
+    },
+    {
+     "type": "text",
+     "text": "Listen to this audio recording of a piece of music.\nReturn, as JSON matching the given schema:\n- \"chords\": the chord progression as a list of consecutive segments covering the whole file, each with \"start\" and \"end\" times in seconds from the start of the file and a chord \"label\". Write labels like C, Am, G7, Dmaj7, F#m, Bb, Bm7b5, Esus4, C/E. Use N for stretches where no chord sounds (silence or count-in).\n- \"tempo_bpm\": the tempo in beats per minute.\n- \"key\": the key, written as \"<tonic> major\" or \"<tonic> minor\", for example \"G major\" or \"E minor\".\n- \"time_signature\": for example \"4/4\".\n"
+    }
+   ]
+  }
+ ],
+ "response_format": {
+  "type": "json_schema",
+  "json_schema": {
+   "name": "answer",
+   "schema": {
+    "type": "object",
+    "properties": {
+     "chords": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "start": {
+         "type": "number",
+         "description": "segment start in seconds from the start of the file"
+        },
+        "end": {
+         "type": "number",
+         "description": "segment end in seconds"
+        },
+        "label": {
+         "type": "string",
+         "description": "chord label such as C, Am, G7, F#m, or N for no chord"
+        }
+       },
+       "required": [
+        "start",
+        "end",
+        "label"
+       ]
+      }
+     },
+     "tempo_bpm": {
+      "type": "number"
+     },
+     "key": {
+      "type": "string"
+     },
+     "time_signature": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "chords",
+     "tempo_bpm",
+     "key",
+     "time_signature"
+    ]
+   }
+  }
+ },
+ "max_tokens": 24576
+}

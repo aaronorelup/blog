@@ -1,0 +1,38 @@
+{
+ "page": "/pages/stretch.html?method=rubberband&rate=0.75",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 6.279,
+ "external_requests": [],
+ "result": {
+  "method": "rubberband",
+  "rate": 0.75,
+  "preservesPitch": null,
+  "file": "/inputs/S1/S1.wav",
+  "input": {
+   "sampleRate": 44100,
+   "channels": 2,
+   "duration_s": 29.833333333333332
+  },
+  "wasm_init_ms": 12.84000000031665,
+  "rubberband": {
+   "samples_required_first": 1024,
+   "start_delay": 0,
+   "latency": 0,
+   "time_ratio": 1.3333333333333333
+  },
+  "out_sampleRate": 44100,
+  "processing_ms": 2163.4799999999814,
+  "output": {
+   "samples": 1754200,
+   "seconds": 39.77777777777778,
+   "expected_seconds": 39.77777777777778,
+   "peak": 0.8857285380363464
+  },
+  "wav": "/home/user/gtr/lanes/browser-audio-sync/out/stretch/S1_rubberband_0p75.wav"
+ }
+}

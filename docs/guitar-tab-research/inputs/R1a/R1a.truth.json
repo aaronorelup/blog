@@ -1,0 +1,1872 @@
+{
+ "id": "R1a",
+ "title": "GuitarSet 02_SS2-107-Ab_comp (first 29.2 s)",
+ "what": "GuitarSet excerpt: player 02, Singer-Songwriter progression 2, 'comp' take (accompaniment), 107 BPM, key Ab; mic recording, first 29.159 s of 02_SS2-107-Ab_comp_mic.wav.",
+ "audio": "R1a.wav",
+ "duration_s": 29.158889,
+ "sample_rate": 44100,
+ "channels": 1,
+ "tempo_bpm": 107.0,
+ "time_signature": "4/4",
+ "key": "Ab minor",
+ "tuning_midi": [
+  40,
+  45,
+  50,
+  55,
+  59,
+  64
+ ],
+ "capo": 0,
+ "tuning_offset_cents": 0,
+ "notes": [
+  {
+   "onset": 0.007269,
+   "offset": 0.570353,
+   "pitch": 61,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 6
+  },
+  {
+   "onset": 0.033618,
+   "offset": 0.579287,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 0.570466,
+   "offset": 0.93618,
+   "pitch": 41,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 1
+  },
+  {
+   "onset": 0.584457,
+   "offset": 0.839877,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 0.849786,
+   "offset": 1.43609,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 0.851917,
+   "offset": 1.432416,
+   "pitch": 56,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 6
+  },
+  {
+   "onset": 0.855976,
+   "offset": 1.448085,
+   "pitch": 61,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 6
+  },
+  {
+   "onset": 1.437496,
+   "offset": 1.68711,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 1.449355,
+   "offset": 1.681555,
+   "pitch": 56,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 6
+  },
+  {
+   "onset": 1.449537,
+   "offset": 1.693346,
+   "pitch": 61,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 6
+  },
+  {
+   "onset": 1.689378,
+   "offset": 2.182802,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 1.691759,
+   "offset": 1.964593,
+   "pitch": 56,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 6
+  },
+  {
+   "onset": 1.708856,
+   "offset": 1.877201,
+   "pitch": 61,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 6
+  },
+  {
+   "onset": 2.270602,
+   "offset": 2.508607,
+   "pitch": 42,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 2
+  },
+  {
+   "onset": 2.513346,
+   "offset": 2.79779,
+   "pitch": 42,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 2
+  },
+  {
+   "onset": 2.556067,
+   "offset": 2.799877,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 2.797859,
+   "offset": 3.088108,
+   "pitch": 42,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 2
+  },
+  {
+   "onset": 2.803505,
+   "offset": 3.087949,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 3.091759,
+   "offset": 3.974117,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 3.097405,
+   "offset": 3.950738,
+   "pitch": 42,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 2
+  },
+  {
+   "onset": 3.956271,
+   "offset": 4.205886,
+   "pitch": 42,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 2
+  },
+  {
+   "onset": 3.973097,
+   "offset": 4.449106,
+   "pitch": 51,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 1
+  },
+  {
+   "onset": 3.978584,
+   "offset": 4.181759,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 4.185591,
+   "offset": 4.290081,
+   "pitch": 46,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 1
+  },
+  {
+   "onset": 4.207292,
+   "offset": 5.490194,
+   "pitch": 41,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 1
+  },
+  {
+   "onset": 4.518652,
+   "offset": 5.093346,
+   "pitch": 54,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 4
+  },
+  {
+   "onset": 4.524865,
+   "offset": 4.7977,
+   "pitch": 47,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 4.544888,
+   "offset": 5.328561,
+   "pitch": 59,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 4.801577,
+   "offset": 4.917677,
+   "pitch": 47,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 5.064185,
+   "offset": 5.331215,
+   "pitch": 47,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 5.335024,
+   "offset": 5.898108,
+   "pitch": 47,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 5.335772,
+   "offset": 5.910466,
+   "pitch": 54,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 4
+  },
+  {
+   "onset": 5.353278,
+   "offset": 6.165976,
+   "pitch": 59,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 5.901419,
+   "offset": 6.151033,
+   "pitch": 47,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 6.154253,
+   "offset": 6.740557,
+   "pitch": 47,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 6.157269,
+   "offset": 6.598448,
+   "pitch": 54,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 4
+  },
+  {
+   "onset": 6.168992,
+   "offset": 6.586951,
+   "pitch": 59,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 6.742847,
+   "offset": 6.998267,
+   "pitch": 52,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 7
+  },
+  {
+   "onset": 6.754616,
+   "offset": 7.311895,
+   "pitch": 59,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 9
+  },
+  {
+   "onset": 6.755115,
+   "offset": 7.318199,
+   "pitch": 64,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 9
+  },
+  {
+   "onset": 7.018856,
+   "offset": 7.129151,
+   "pitch": 52,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 7
+  },
+  {
+   "onset": 7.312099,
+   "offset": 7.584933,
+   "pitch": 52,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 7
+  },
+  {
+   "onset": 7.31448,
+   "offset": 7.587314,
+   "pitch": 59,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 9
+  },
+  {
+   "onset": 7.32643,
+   "offset": 7.599264,
+   "pitch": 64,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 9
+  },
+  {
+   "onset": 7.585115,
+   "offset": 7.863754,
+   "pitch": 52,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 7
+  },
+  {
+   "onset": 7.59092,
+   "offset": 7.846339,
+   "pitch": 59,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 9
+  },
+  {
+   "onset": 7.601804,
+   "offset": 8.159083,
+   "pitch": 64,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 9
+  },
+  {
+   "onset": 7.867405,
+   "offset": 8.151849,
+   "pitch": 59,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 9
+  },
+  {
+   "onset": 7.867654,
+   "offset": 8.152099,
+   "pitch": 52,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 7
+  },
+  {
+   "onset": 8.15482,
+   "offset": 8.433459,
+   "pitch": 52,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 7
+  },
+  {
+   "onset": 8.160376,
+   "offset": 8.439015,
+   "pitch": 64,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 9
+  },
+  {
+   "onset": 8.163573,
+   "offset": 8.436407,
+   "pitch": 59,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 9
+  },
+  {
+   "onset": 8.434321,
+   "offset": 8.701351,
+   "pitch": 52,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 7
+  },
+  {
+   "onset": 8.439128,
+   "offset": 8.781623,
+   "pitch": 64,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 9
+  },
+  {
+   "onset": 8.440852,
+   "offset": 8.742711,
+   "pitch": 59,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 9
+  },
+  {
+   "onset": 8.705727,
+   "offset": 8.932122,
+   "pitch": 46,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 1
+  },
+  {
+   "onset": 8.71618,
+   "offset": 8.92516,
+   "pitch": 41,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 1
+  },
+  {
+   "onset": 8.97448,
+   "offset": 9.258924,
+   "pitch": 46,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 6
+  },
+  {
+   "onset": 9.259378,
+   "offset": 9.543822,
+   "pitch": 46,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 6
+  },
+  {
+   "onset": 9.544956,
+   "offset": 9.823595,
+   "pitch": 46,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 6
+  },
+  {
+   "onset": 9.564616,
+   "offset": 9.727156,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 9.824094,
+   "offset": 10.381373,
+   "pitch": 46,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 6
+  },
+  {
+   "onset": 9.828357,
+   "offset": 10.385636,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 10.386044,
+   "offset": 10.664684,
+   "pitch": 46,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 6
+  },
+  {
+   "onset": 10.389106,
+   "offset": 10.65033,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 10.668448,
+   "offset": 11.022552,
+   "pitch": 46,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 6
+  },
+  {
+   "onset": 10.674049,
+   "offset": 11.057178,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 10.694298,
+   "offset": 10.769763,
+   "pitch": 56,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 1
+  },
+  {
+   "onset": 10.994593,
+   "offset": 11.064253,
+   "pitch": 56,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 1
+  },
+  {
+   "onset": 11.058743,
+   "offset": 11.221283,
+   "pitch": 51,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 6
+  },
+  {
+   "onset": 11.085954,
+   "offset": 11.196249,
+   "pitch": 56,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 1
+  },
+  {
+   "onset": 11.223391,
+   "offset": 11.507836,
+   "pitch": 51,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 6
+  },
+  {
+   "onset": 11.511804,
+   "offset": 11.773029,
+   "pitch": 51,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 6
+  },
+  {
+   "onset": 11.776929,
+   "offset": 12.072983,
+   "pitch": 51,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 6
+  },
+  {
+   "onset": 11.778652,
+   "offset": 12.057292,
+   "pitch": 58,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 8
+  },
+  {
+   "onset": 12.076271,
+   "offset": 12.64516,
+   "pitch": 51,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 6
+  },
+  {
+   "onset": 12.079015,
+   "offset": 12.647904,
+   "pitch": 58,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 8
+  },
+  {
+   "onset": 12.648539,
+   "offset": 12.921373,
+   "pitch": 51,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 6
+  },
+  {
+   "onset": 12.651441,
+   "offset": 12.912666,
+   "pitch": 58,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 8
+  },
+  {
+   "onset": 12.922666,
+   "offset": 13.236135,
+   "pitch": 51,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 6
+  },
+  {
+   "onset": 12.938267,
+   "offset": 13.274956,
+   "pitch": 58,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 8
+  },
+  {
+   "onset": 12.943414,
+   "offset": 13.251078,
+   "pitch": 63,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 8
+  },
+  {
+   "onset": 13.487745,
+   "offset": 13.731555,
+   "pitch": 44,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 4
+  },
+  {
+   "onset": 13.751056,
+   "offset": 13.994865,
+   "pitch": 44,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 4
+  },
+  {
+   "onset": 14.021895,
+   "offset": 14.312144,
+   "pitch": 44,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 4
+  },
+  {
+   "onset": 14.037949,
+   "offset": 14.299174,
+   "pitch": 47,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 14.315137,
+   "offset": 14.872416,
+   "pitch": 44,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 4
+  },
+  {
+   "onset": 14.322008,
+   "offset": 14.885092,
+   "pitch": 47,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 14.325682,
+   "offset": 14.598516,
+   "pitch": 56,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 1
+  },
+  {
+   "onset": 14.87482,
+   "offset": 15.141849,
+   "pitch": 60,
+   "velocity": null,
+   "voice": "chord",
+   "string": 2,
+   "fret": 1
+  },
+  {
+   "onset": 14.875659,
+   "offset": 15.165908,
+   "pitch": 44,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 4
+  },
+  {
+   "onset": 14.889332,
+   "offset": 15.162167,
+   "pitch": 47,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 15.161736,
+   "offset": 15.417156,
+   "pitch": 60,
+   "velocity": null,
+   "voice": "chord",
+   "string": 2,
+   "fret": 1
+  },
+  {
+   "onset": 15.167269,
+   "offset": 16.014797,
+   "pitch": 44,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 4
+  },
+  {
+   "onset": 15.167541,
+   "offset": 15.411351,
+   "pitch": 47,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 15.178085,
+   "offset": 16.014004,
+   "pitch": 51,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 1
+  },
+  {
+   "onset": 15.445999,
+   "offset": 16.014888,
+   "pitch": 47,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 15.46575,
+   "offset": 15.889514,
+   "pitch": 59,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 16.015863,
+   "offset": 17.101396,
+   "pitch": 44,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 4
+  },
+  {
+   "onset": 16.017972,
+   "offset": 16.296611,
+   "pitch": 47,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 16.024616,
+   "offset": 16.547065,
+   "pitch": 54,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 4
+  },
+  {
+   "onset": 16.302303,
+   "offset": 16.540307,
+   "pitch": 47,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 16.548516,
+   "offset": 17.117405,
+   "pitch": 47,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 16.556135,
+   "offset": 17.125024,
+   "pitch": 54,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 4
+  },
+  {
+   "onset": 16.570126,
+   "offset": 17.127405,
+   "pitch": 60,
+   "velocity": null,
+   "voice": "chord",
+   "string": 2,
+   "fret": 1
+  },
+  {
+   "onset": 17.121396,
+   "offset": 17.39423,
+   "pitch": 44,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 4
+  },
+  {
+   "onset": 17.122847,
+   "offset": 17.401487,
+   "pitch": 47,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 17.398403,
+   "offset": 17.711872,
+   "pitch": 44,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 4
+  },
+  {
+   "onset": 17.406067,
+   "offset": 17.667292,
+   "pitch": 54,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 4
+  },
+  {
+   "onset": 17.407927,
+   "offset": 17.796861,
+   "pitch": 47,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 17.41482,
+   "offset": 17.49609,
+   "pitch": 55,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 0
+  },
+  {
+   "onset": 17.720194,
+   "offset": 17.882734,
+   "pitch": 56,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 1
+  },
+  {
+   "onset": 17.930239,
+   "offset": 18.533958,
+   "pitch": 56,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 6
+  },
+  {
+   "onset": 17.934797,
+   "offset": 18.236657,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 17.946339,
+   "offset": 18.515228,
+   "pitch": 61,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 6
+  },
+  {
+   "onset": 18.242303,
+   "offset": 18.486112,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 18.50643,
+   "offset": 18.785069,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 18.792394,
+   "offset": 19.367088,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 18.792915,
+   "offset": 19.628834,
+   "pitch": 56,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 6
+  },
+  {
+   "onset": 18.800217,
+   "offset": 19.64194,
+   "pitch": 61,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 6
+  },
+  {
+   "onset": 19.370874,
+   "offset": 19.620489,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 19.634049,
+   "offset": 19.918493,
+   "pitch": 56,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 6
+  },
+  {
+   "onset": 19.635183,
+   "offset": 19.890602,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 19.646997,
+   "offset": 19.890806,
+   "pitch": 61,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 6
+  },
+  {
+   "onset": 19.894707,
+   "offset": 20.051441,
+   "pitch": 46,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 1
+  },
+  {
+   "onset": 20.055727,
+   "offset": 20.322756,
+   "pitch": 46,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 1
+  },
+  {
+   "onset": 20.083573,
+   "offset": 20.466702,
+   "pitch": 42,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 2
+  },
+  {
+   "onset": 20.466747,
+   "offset": 20.756997,
+   "pitch": 42,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 2
+  },
+  {
+   "onset": 20.47516,
+   "offset": 20.759605,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 20.757859,
+   "offset": 21.884026,
+   "pitch": 42,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 2
+  },
+  {
+   "onset": 20.760512,
+   "offset": 21.021736,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 21.024729,
+   "offset": 21.889673,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 21.025591,
+   "offset": 21.907949,
+   "pitch": 54,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 4
+  },
+  {
+   "onset": 21.893663,
+   "offset": 22.143278,
+   "pitch": 42,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 2
+  },
+  {
+   "onset": 21.894434,
+   "offset": 22.144049,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 21.911237,
+   "offset": 22.178267,
+   "pitch": 54,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 4
+  },
+  {
+   "onset": 22.143958,
+   "offset": 23.275931,
+   "pitch": 41,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 1
+  },
+  {
+   "onset": 22.145954,
+   "offset": 22.395568,
+   "pitch": 46,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 1
+  },
+  {
+   "onset": 22.184865,
+   "offset": 22.324185,
+   "pitch": 51,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 1
+  },
+  {
+   "onset": 22.344434,
+   "offset": 22.466339,
+   "pitch": 52,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 2
+  },
+  {
+   "onset": 22.469174,
+   "offset": 22.753618,
+   "pitch": 54,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 4
+  },
+  {
+   "onset": 22.474933,
+   "offset": 22.765183,
+   "pitch": 47,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 22.483527,
+   "offset": 22.791192,
+   "pitch": 59,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 22.766657,
+   "offset": 22.993051,
+   "pitch": 47,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 23.016861,
+   "offset": 23.289695,
+   "pitch": 47,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 23.290194,
+   "offset": 23.876498,
+   "pitch": 47,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 23.299423,
+   "offset": 23.879922,
+   "pitch": 54,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 4
+  },
+  {
+   "onset": 23.306271,
+   "offset": 24.1538,
+   "pitch": 59,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 23.317269,
+   "offset": 24.257677,
+   "pitch": 63,
+   "velocity": null,
+   "voice": "chord",
+   "string": 2,
+   "fret": 4
+  },
+  {
+   "onset": 23.879242,
+   "offset": 24.146271,
+   "pitch": 47,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 2
+  },
+  {
+   "onset": 23.882348,
+   "offset": 24.126158,
+   "pitch": 54,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 4
+  },
+  {
+   "onset": 24.147065,
+   "offset": 24.634684,
+   "pitch": 49,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 4
+  },
+  {
+   "onset": 24.147428,
+   "offset": 24.368017,
+   "pitch": 54,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 4
+  },
+  {
+   "onset": 24.164185,
+   "offset": 24.326725,
+   "pitch": 59,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 4
+  },
+  {
+   "onset": 24.448425,
+   "offset": 24.552915,
+   "pitch": 56,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 1
+  },
+  {
+   "onset": 24.640239,
+   "offset": 24.971124,
+   "pitch": 52,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 7
+  },
+  {
+   "onset": 24.976793,
+   "offset": 25.255432,
+   "pitch": 52,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 7
+  },
+  {
+   "onset": 24.981033,
+   "offset": 25.253868,
+   "pitch": 59,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 9
+  },
+  {
+   "onset": 25.257518,
+   "offset": 25.570988,
+   "pitch": 52,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 7
+  },
+  {
+   "onset": 25.265976,
+   "offset": 25.579446,
+   "pitch": 59,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 9
+  },
+  {
+   "onset": 25.278675,
+   "offset": 25.864979,
+   "pitch": 64,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 9
+  },
+  {
+   "onset": 25.296566,
+   "offset": 25.714525,
+   "pitch": 68,
+   "velocity": null,
+   "voice": "chord",
+   "string": 2,
+   "fret": 9
+  },
+  {
+   "onset": 25.576203,
+   "offset": 25.831623,
+   "pitch": 52,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 7
+  },
+  {
+   "onset": 25.5838,
+   "offset": 25.833414,
+   "pitch": 59,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 9
+  },
+  {
+   "onset": 25.837405,
+   "offset": 26.121849,
+   "pitch": 52,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 7
+  },
+  {
+   "onset": 25.839174,
+   "offset": 26.123618,
+   "pitch": 59,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 9
+  },
+  {
+   "onset": 25.868017,
+   "offset": 26.094412,
+   "pitch": 64,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 9
+  },
+  {
+   "onset": 26.094865,
+   "offset": 26.396725,
+   "pitch": 64,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 9
+  },
+  {
+   "onset": 26.123165,
+   "offset": 26.378584,
+   "pitch": 52,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 7
+  },
+  {
+   "onset": 26.125341,
+   "offset": 26.386566,
+   "pitch": 59,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 9
+  },
+  {
+   "onset": 26.381509,
+   "offset": 26.648539,
+   "pitch": 52,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 7
+  },
+  {
+   "onset": 26.399038,
+   "offset": 26.648652,
+   "pitch": 59,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 9
+  },
+  {
+   "onset": 26.402348,
+   "offset": 26.855137,
+   "pitch": 64,
+   "velocity": null,
+   "voice": "chord",
+   "string": 3,
+   "fret": 9
+  },
+  {
+   "onset": 26.654162,
+   "offset": 26.863142,
+   "pitch": 59,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 9
+  },
+  {
+   "onset": 26.65423,
+   "offset": 26.8516,
+   "pitch": 51,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 6
+  },
+  {
+   "onset": 26.95262,
+   "offset": 27.21965,
+   "pitch": 46,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 6
+  },
+  {
+   "onset": 27.224185,
+   "offset": 27.48541,
+   "pitch": 46,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 6
+  },
+  {
+   "onset": 27.49482,
+   "offset": 27.773459,
+   "pitch": 46,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 6
+  },
+  {
+   "onset": 27.778516,
+   "offset": 28.32999,
+   "pitch": 46,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 6
+  },
+  {
+   "onset": 27.785001,
+   "offset": 28.62092,
+   "pitch": 58,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 8
+  },
+  {
+   "onset": 27.786453,
+   "offset": 28.337927,
+   "pitch": 53,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 8
+  },
+  {
+   "onset": 28.334956,
+   "offset": 28.60779,
+   "pitch": 46,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 6
+  },
+  {
+   "onset": 28.342938,
+   "offset": 28.609967,
+   "pitch": 53,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 8
+  },
+  {
+   "onset": 28.608743,
+   "offset": 28.904797,
+   "pitch": 46,
+   "velocity": null,
+   "voice": "chord",
+   "string": 6,
+   "fret": 6
+  },
+  {
+   "onset": 28.624049,
+   "offset": 28.902688,
+   "pitch": 58,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 8
+  },
+  {
+   "onset": 28.62482,
+   "offset": 28.880239,
+   "pitch": 53,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 8
+  },
+  {
+   "onset": 28.881464,
+   "offset": 29.102054,
+   "pitch": 46,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 1
+  },
+  {
+   "onset": 29.152144,
+   "offset": 29.158889,
+   "pitch": 51,
+   "velocity": null,
+   "voice": "chord",
+   "string": 5,
+   "fret": 6
+  },
+  {
+   "onset": 29.153936,
+   "offset": 29.158889,
+   "pitch": 58,
+   "velocity": null,
+   "voice": "chord",
+   "string": 4,
+   "fret": 8
+  }
+ ],
+ "beats": [
+  0.0,
+  0.560748,
+  1.121495,
+  1.682243,
+  2.242991,
+  2.803738,
+  3.364486,
+  3.925234,
+  4.485981,
+  5.046729,
+  5.607477,
+  6.168224,
+  6.728972,
+  7.28972,
+  7.850467,
+  8.411215,
+  8.971963,
+  9.53271,
+  10.093458,
+  10.654206,
+  11.214953,
+  11.775701,
+  12.336449,
+  12.897196,
+  13.457944,
+  14.018692,
+  14.579439,
+  15.140187,
+  15.700935,
+  16.261682,
+  16.82243,
+  17.383178,
+  17.943925,
+  18.504673,
+  19.065421,
+  19.626168,
+  20.186916,
+  20.747664,
+  21.308411,
+  21.869159,
+  22.429907,
+  22.990654,
+  23.551402,
+  24.11215,
+  24.672897,
+  25.233645,
+  25.794393,
+  26.35514,
+  26.915888,
+  27.476636,
+  28.037383,
+  28.598131,
+  29.158879
+ ],
+ "downbeats": [
+  0.0,
+  2.242991,
+  4.485981,
+  6.728972,
+  8.971963,
+  11.214953,
+  13.457944,
+  15.700935,
+  17.943925,
+  20.186916,
+  22.429907,
+  24.672897,
+  26.915888,
+  29.158879
+ ],
+ "chords": [
+  {
+   "start": 0.0,
+   "end": 2.242991,
+   "label": "C#:min"
+  },
+  {
+   "start": 2.242991,
+   "end": 4.485981,
+   "label": "F#:7"
+  },
+  {
+   "start": 4.485981,
+   "end": 6.728972,
+   "label": "B:maj"
+  },
+  {
+   "start": 6.728972,
+   "end": 8.971963,
+   "label": "E:maj"
+  },
+  {
+   "start": 8.971963,
+   "end": 11.214953,
+   "label": "A#:hdim7"
+  },
+  {
+   "start": 11.214953,
+   "end": 13.457944,
+   "label": "D#:7"
+  },
+  {
+   "start": 13.457944,
+   "end": 17.943925,
+   "label": "G#:min"
+  },
+  {
+   "start": 17.943925,
+   "end": 20.186916,
+   "label": "C#:min"
+  },
+  {
+   "start": 20.186916,
+   "end": 22.429907,
+   "label": "F#:7"
+  },
+  {
+   "start": 22.429907,
+   "end": 24.672897,
+   "label": "B:maj"
+  },
+  {
+   "start": 24.672897,
+   "end": 26.915888,
+   "label": "E:maj"
+  },
+  {
+   "start": 26.915888,
+   "end": 29.158879,
+   "label": "A#:hdim7"
+  },
+  {
+   "start": 29.158879,
+   "end": 29.158889,
+   "label": "D#:7"
+  }
+ ],
+ "taps": [],
+ "stems": {},
+ "source": {
+  "kind": "dataset",
+  "url": "https://zenodo.org/records/3371780",
+  "license": "CC BY 4.0 (Creative Commons Attribution 4.0 International)",
+  "license_quote": "\"Creative Commons Attribution 4.0 International\" / \"The Creative Commons Attribution license allows re-distribution and re-use of a licensed work on the condition that the creator is appropriately credited.\" (Rights / License box of the Zenodo record, read 2026-11-10)",
+  "attribution": "GuitarSet (Xi, Bittner, Pauwels, Ye, Bello, ISMIR 2018), file 02_SS2-107-Ab_comp, CC BY 4.0. Excerpt 0-29.159 s. Q. Xi, R. Bittner, J. Pauwels, X. Ye, and J. P. Bello, \"GuitarSet: A Dataset for Guitar Transcription\", in 19th International Society for Music Information Retrieval Conference, Paris, France, Sept. 2018. Data: GuitarSet v1.1.0, Zenodo, doi:10.5281/zenodo.3371780."
+ }
+}

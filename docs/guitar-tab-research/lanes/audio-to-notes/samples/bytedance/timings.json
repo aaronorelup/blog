@@ -1,0 +1,24 @@
+{
+ "tool": "bytedance",
+ "clips": {
+  "S2n": {
+   "input": "/home/user/gtr/inputs/S2n/S2n.wav",
+   "seconds": 75.827,
+   "n_notes": 87,
+   "n_pedal_events": 9
+  },
+  "R1c": {
+   "input": "/home/user/gtr/inputs/R1c/R1c.wav",
+   "seconds": 73.71,
+   "n_notes": 87,
+   "n_pedal_events": 0
+  }
+ },
+ "settings": {
+  "model_type": "Note_pedal",
+  "checkpoint": "note_F1=0.9677_pedal_F1=0.9186.pth",
+  "sample_rate": 16000,
+  "device": "cpu"
+ },
+ "setup_s": 8.561
+}

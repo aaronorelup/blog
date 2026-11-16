@@ -1,0 +1,57 @@
+{
+ "service": "vercel-ai-gateway",
+ "model": "bytedance/seed-2.1-turbo",
+ "media": "/home/user/gtr/inputs/R3a/R3a.mp4",
+ "media_bytes": 2368626,
+ "media_sha256": "9badbd52c96536733b8bcfe6ab896f43f765f9b691dc53fcac9d9e00efb0a31d",
+ "media_duration_s": 18.018,
+ "mime": "video/mp4",
+ "http_status": 400,
+ "wall_s": 0.458,
+ "reasoning_effort": null,
+ "max_tokens": 24576,
+ "price_usd_per_token": {
+  "input": 5e-07,
+  "output": 2.5e-06
+ },
+ "price_source": "https://ai-gateway.vercel.sh/v1/models entry 'pricing' (read at run time)",
+ "response_headers": {},
+ "finish_reason": null,
+ "reasoning_text_chars": 0,
+ "final_provider": null,
+ "provider_metadata": {
+  "gateway": {
+   "routing": {
+    "originalModelId": "bytedance/seed-2.1-turbo",
+    "resolvedProvider": "bytedance",
+    "fallbacksAvailable": [],
+    "canonicalSlug": "bytedance/seed-2.1-turbo",
+    "modelAttemptCount": 1,
+    "modelAttempts": [
+     {
+      "canonicalSlug": "bytedance/seed-2.1-turbo",
+      "success": false,
+      "providerAttemptCount": 1,
+      "providerAttempts": [
+       {
+        "provider": "bytedance",
+        "credentialType": "system",
+        "success": false,
+        "error": "'file part media type video/mp4' functionality not supported.",
+        "startTime": 1794344669595,
+        "endTime": 1794344669597
+       }
+      ]
+     }
+    ],
+    "totalProviderAttemptCount": 1,
+    "clientSessionId": "ef8041b614893b71ab3c2c491dd9fa4b",
+    "clientSessionIdSource": "fingerprint"
+   },
+   "generationId": "gen_01M73MDM9SD5B1EMPMSVTFDE86"
+  }
+ },
+ "output_text_chars": 0,
+ "answer_parsed": false,
+ "spent_service_before_usd": 0.014347
+}

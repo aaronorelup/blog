@@ -1,0 +1,495 @@
+{
+ "page": "/gpages/htdemucs6s.html?threads=2&opt=disabled&tag=S4_10s_t2_optdisabled",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 49.224,
+ "driver_cpus_allowed_list": "0-1",
+ "clk_tck": 100,
+ "sampler": {
+  "interval_ms": 500,
+  "samples": 98,
+  "mean_sample_cost_ms": 2.163265306122449
+ },
+ "external_requests": [],
+ "phases": [
+  {
+   "name": "model_fetch_start",
+   "epoch_ms": 1794356461038
+  },
+  {
+   "name": "model_fetch_end",
+   "epoch_ms": 1794356461550.5
+  },
+  {
+   "name": "session_create_start",
+   "epoch_ms": 1794356461550.7
+  },
+  {
+   "name": "session_create_end",
+   "epoch_ms": 1794356477199.9
+  },
+  {
+   "name": "separate_start",
+   "epoch_ms": 1794356477306.2
+  },
+  {
+   "name": "run0_start",
+   "epoch_ms": 1794356477313
+  },
+  {
+   "name": "run0_end",
+   "epoch_ms": 1794356491261.7
+  },
+  {
+   "name": "run1_start",
+   "epoch_ms": 1794356491313.9
+  },
+  {
+   "name": "run1_end",
+   "epoch_ms": 1794356506354.2
+  },
+  {
+   "name": "separate_end",
+   "epoch_ms": 1794356506401.7
+  }
+ ],
+ "phase_cpu": [
+  {
+   "phase": "model_fetch",
+   "wall_s": 0.5125,
+   "cpu_s_all_processes": 0.3328343313373254,
+   "cpu_per_wall_all": 0.6494328416338057,
+   "cpu_s_renderer": 0.2639720558882236,
+   "cpu_per_wall_renderer": 0.5150674261233631,
+   "per_process": [
+    {
+     "pid": 21327,
+     "type": "browser",
+     "cpu_s": 0.034431137724550885
+    },
+    {
+     "pid": 21353,
+     "type": "utility:network.mojom.NetworkService",
+     "cpu_s": 0.034431137724550906
+    },
+    {
+     "pid": 21397,
+     "type": "renderer",
+     "cpu_s": 0.2639720558882236
+    }
+   ]
+  },
+  {
+   "phase": "session_create",
+   "wall_s": 15.649199951171875,
+   "cpu_s_all_processes": 16.121039873378244,
+   "cpu_per_wall_all": 1.0301510571581032,
+   "cpu_s_renderer": 16.061948047264845,
+   "cpu_per_wall_renderer": 1.0263750285880948,
+   "per_process": [
+    {
+     "pid": 21327,
+     "type": "browser",
+     "cpu_s": 0.025544916027320355
+    },
+    {
+     "pid": 21353,
+     "type": "utility:network.mojom.NetworkService",
+     "cpu_s": 0.03354691008607784
+    },
+    {
+     "pid": 21397,
+     "type": "renderer",
+     "cpu_s": 16.061948047264845
+    }
+   ]
+  },
+  {
+   "phase": "separate",
+   "wall_s": 29.0955,
+   "cpu_s_all_processes": 48.19912691420723,
+   "cpu_per_wall_all": 1.6565835580831134,
+   "cpu_s_renderer": 48.17982161782135,
+   "cpu_per_wall_renderer": 1.6559200432307863,
+   "per_process": [
+    {
+     "pid": 21327,
+     "type": "browser",
+     "cpu_s": 0.01930529638588123
+    },
+    {
+     "pid": 21397,
+     "type": "renderer",
+     "cpu_s": 48.17982161782135
+    }
+   ]
+  },
+  {
+   "phase": "run0",
+   "wall_s": 13.948699951171875,
+   "cpu_s_all_processes": 24.61291758133151,
+   "cpu_per_wall_all": 1.7645312944926956,
+   "cpu_s_renderer": 24.602917581331507,
+   "cpu_per_wall_renderer": 1.7638143818029821,
+   "per_process": [
+    {
+     "pid": 21327,
+     "type": "browser",
+     "cpu_s": 0.01
+    },
+    {
+     "pid": 21397,
+     "type": "renderer",
+     "cpu_s": 24.602917581331507
+    }
+   ]
+  },
+  {
+   "phase": "run1",
+   "wall_s": 15.040300048828126,
+   "cpu_s_all_processes": 23.47386236106179,
+   "cpu_per_wall_all": 1.5607309884014429,
+   "cpu_s_renderer": 23.47386236106179,
+   "cpu_per_wall_renderer": 1.5607309884014429,
+   "per_process": [
+    {
+     "pid": 21397,
+     "type": "renderer",
+     "cpu_s": 23.47386236106179
+    }
+   ]
+  }
+ ],
+ "processes": [
+  {
+   "pid": 21327,
+   "type": "browser",
+   "exe": "chrome-headless-shell.real",
+   "seen_s": [
+    0.5,
+    49.222
+   ],
+   "cpu_s": 1.55,
+   "cpu_s_total_at_last_sample": 1.68,
+   "max_rss_mb_sampled": 140.796875,
+   "vmhwm_mb": 161.6484375,
+   "max_threads": 27,
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 21329,
+   "type": "zygote",
+   "exe": "chrome-headless-shell.real",
+   "seen_s": [
+    0.5,
+    49.222
+   ],
+   "cpu_s": 0,
+   "cpu_s_total_at_last_sample": 0.01,
+   "max_rss_mb_sampled": 39.8046875,
+   "vmhwm_mb": 39.8046875,
+   "max_threads": 1,
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 21330,
+   "type": "zygote",
+   "exe": "chrome-headless-shell.real",
+   "seen_s": [
+    0.5,
+    49.222
+   ],
+   "cpu_s": 0,
+   "cpu_s_total_at_last_sample": 0.01,
+   "max_rss_mb_sampled": 39.65625,
+   "vmhwm_mb": 39.65625,
+   "max_threads": 1,
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 21353,
+   "type": "utility:network.mojom.NetworkService",
+   "exe": "chrome-headless-shell.real",
+   "seen_s": [
+    0.5,
+    49.222
+   ],
+   "cpu_s": 0.14,
+   "cpu_s_total_at_last_sample": 0.19,
+   "max_rss_mb_sampled": 73.0234375,
+   "vmhwm_mb": 79.6484375,
+   "max_threads": 9,
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 21345,
+   "type": "gpu-process",
+   "exe": "chrome-headless-shell.real",
+   "seen_s": [
+    0.5,
+    49.222
+   ],
+   "cpu_s": 0,
+   "cpu_s_total_at_last_sample": 0.02,
+   "max_rss_mb_sampled": 57.203125,
+   "vmhwm_mb": 57.203125,
+   "max_threads": 13,
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 21397,
+   "type": "renderer",
+   "exe": "chrome-headless-shell.real",
+   "seen_s": [
+    0.5,
+    49.222
+   ],
+   "cpu_s": 65.78,
+   "cpu_s_total_at_last_sample": 65.89,
+   "max_rss_mb_sampled": 1283.9140625,
+   "vmhwm_mb": 1319.06640625,
+   "max_threads": 11,
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  }
+ ],
+ "renderer_threads": [
+  {
+   "pid": 21397,
+   "tid": 21397,
+   "name": "chrome-headless",
+   "cpu_s": 41.38,
+   "processors_seen": [
+    0,
+    1
+   ],
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 21397,
+   "tid": 21445,
+   "name": "DedicatedWorker",
+   "cpu_s": 22.24,
+   "processors_seen": [
+    0,
+    1
+   ],
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 21397,
+   "tid": 21400,
+   "name": "ThreadPoolForeg",
+   "cpu_s": 1.77,
+   "processors_seen": [
+    0,
+    1
+   ],
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 21397,
+   "tid": 21402,
+   "name": "ThreadPoolForeg",
+   "cpu_s": 0.28,
+   "processors_seen": [
+    0,
+    1
+   ],
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 21397,
+   "tid": 21405,
+   "name": "ThreadPoolForeg",
+   "cpu_s": 0.11,
+   "processors_seen": [
+    0,
+    1
+   ],
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 21397,
+   "tid": 21401,
+   "name": "Chrome_ChildIOT",
+   "cpu_s": 0.04,
+   "processors_seen": [
+    0,
+    1
+   ],
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  }
+ ],
+ "processors_seen_by_renderer_threads": [
+  0,
+  1
+ ],
+ "result": {
+  "threads_requested": 2,
+  "file": "/laneinputs/S4_10s/S4_10s.wav",
+  "model": "/dl/htdemucs-6s-onnx/htdemucs_6s_fp16weights.onnx",
+  "crossOriginIsolated": true,
+  "hardwareConcurrency": 2,
+  "N_SAMPLES": 343980,
+  "overlap": 85995,
+  "stride": 257985,
+  "ort_versions": {
+   "common": "1.31.1",
+   "web": "1.31.1"
+  },
+  "mem_start": {
+   "usedJSHeapSize": 10000000,
+   "totalJSHeapSize": 10000000,
+   "jsHeapSizeLimit": 3760000000
+  },
+  "model_bytes": 136428532,
+  "session_options": {
+   "executionProviders": [
+    "wasm"
+   ],
+   "graphOptimizationLevel": "disabled",
+   "extra": {
+    "session": {
+     "use_ort_model_bytes_directly": "1"
+    }
+   }
+  },
+  "session_create_ms": 15649.160000000149,
+  "numThreads_after_create": 2,
+  "inputNames": [
+   "mix"
+  ],
+  "outputNames": [
+   "stems"
+  ],
+  "inputMetadata": [
+   {
+    "name": "mix",
+    "isTensor": true,
+    "type": "float32",
+    "shape": [
+     1,
+     2,
+     343980
+    ]
+   }
+  ],
+  "outputMetadata": [
+   {
+    "name": "stems",
+    "isTensor": true,
+    "type": "float32",
+    "shape": [
+     "Addstems_dim_0",
+     "Addstems_dim_1",
+     "Addstems_dim_2",
+     "Addstems_dim_3"
+    ]
+   }
+  ],
+  "mem_after_create": {
+   "usedJSHeapSize": 10000000,
+   "totalJSHeapSize": 10000000,
+   "jsHeapSizeLimit": 3760000000
+  },
+  "input": {
+   "sampleRate": 44100,
+   "channels": 2,
+   "samples": 441000,
+   "seconds": 10
+  },
+  "chunks": [
+   {
+    "i": 0,
+    "start": 0,
+    "end": 343980,
+    "run_ms": 13949.210000000894
+   },
+   {
+    "i": 1,
+    "start": 257985,
+    "end": 441000,
+    "run_ms": 15040.605000000447
+   }
+  ],
+  "output_dims": [
+   1,
+   6,
+   2,
+   343980
+  ],
+  "separate_ms": 29094.275000000373,
+  "mem_after_separate": {
+   "usedJSHeapSize": 10000000,
+   "totalJSHeapSize": 10000000,
+   "jsHeapSizeLimit": 3760000000
+  },
+  "stems": {
+   "drums": {
+    "samples": 441000,
+    "peak": 0.3908482491970062,
+    "rms_dbfs": -28.875147907136416,
+    "wav": "/home/user/gtr/lanes/browser-audio-sync/out/htdemucs6s-web/S4_10s_t2_optdisabled_drums.wav"
+   },
+   "bass": {
+    "samples": 441000,
+    "peak": 0.28432729840278625,
+    "rms_dbfs": -24.676097601741823,
+    "wav": "/home/user/gtr/lanes/browser-audio-sync/out/htdemucs6s-web/S4_10s_t2_optdisabled_bass.wav"
+   },
+   "other": {
+    "samples": 441000,
+    "peak": 0.0019339269492775202,
+    "rms_dbfs": -80.24647416019768,
+    "wav": "/home/user/gtr/lanes/browser-audio-sync/out/htdemucs6s-web/S4_10s_t2_optdisabled_other.wav"
+   },
+   "vocals": {
+    "samples": 441000,
+    "peak": 0.4007258713245392,
+    "rms_dbfs": -21.880155611015248,
+    "wav": "/home/user/gtr/lanes/browser-audio-sync/out/htdemucs6s-web/S4_10s_t2_optdisabled_vocals.wav"
+   },
+   "guitar": {
+    "samples": 441000,
+    "peak": 0.21569138765335083,
+    "rms_dbfs": -31.37243048246525,
+    "wav": "/home/user/gtr/lanes/browser-audio-sync/out/htdemucs6s-web/S4_10s_t2_optdisabled_guitar.wav"
+   },
+   "piano": {
+    "samples": 441000,
+    "peak": 0.32396799325942993,
+    "rms_dbfs": -27.774013698610744,
+    "wav": "/home/user/gtr/lanes/browser-audio-sync/out/htdemucs6s-web/S4_10s_t2_optdisabled_piano.wav"
+   }
+  },
+  "stem_sum_minus_mix_db": -12.927130953156773,
+  "measureUserAgentSpecificMemory": "error: SecurityError: Failed to execute 'measureUserAgentSpecificMemory' on 'Performance': performance.measureUserAgentSpecificMemory is not available."
+ }
+}

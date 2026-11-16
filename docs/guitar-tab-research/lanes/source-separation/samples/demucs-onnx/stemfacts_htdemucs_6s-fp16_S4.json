@@ -1,0 +1,182 @@
+{
+ "input": {
+  "path": "/home/user/gtr/inputs/S4/S4.wav",
+  "sample_rate": 44100,
+  "channels": 2,
+  "frames": 1708495,
+  "subtype": "PCM_16",
+  "rms_dbfs": -17.368587345890337,
+  "seconds": 38.7414
+ },
+ "est_dir": "/home/user/gtr/lanes/source-separation/out/demucs-onnx-htdemucs_6s-fp16/S4",
+ "stems": {
+  "bass": {
+   "file": "bass.wav",
+   "bytes": 6834024,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 1708495,
+   "seconds": 38.7414,
+   "frames_minus_input": 0,
+   "rms_dbfs": -25.16,
+   "peak_dbfs": -10.8
+  },
+  "drums": {
+   "file": "drums.wav",
+   "bytes": 6834024,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 1708495,
+   "seconds": 38.7414,
+   "frames_minus_input": 0,
+   "rms_dbfs": -29.24,
+   "peak_dbfs": -8.43
+  },
+  "guitar": {
+   "file": "guitar.wav",
+   "bytes": 6834024,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 1708495,
+   "seconds": 38.7414,
+   "frames_minus_input": 0,
+   "rms_dbfs": -29.54,
+   "peak_dbfs": -9.66
+  },
+  "other": {
+   "file": "other.wav",
+   "bytes": 6834024,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 1708495,
+   "seconds": 38.7414,
+   "frames_minus_input": 0,
+   "rms_dbfs": -50.4,
+   "peak_dbfs": -20.5
+  },
+  "piano": {
+   "file": "piano.wav",
+   "bytes": 6834024,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 1708495,
+   "seconds": 38.7414,
+   "frames_minus_input": 0,
+   "rms_dbfs": -29.69,
+   "peak_dbfs": -9.69
+  },
+  "vocals": {
+   "file": "vocals.wav",
+   "bytes": 6834024,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 1708495,
+   "seconds": 38.7414,
+   "frames_minus_input": 0,
+   "rms_dbfs": -23.08,
+   "peak_dbfs": -8.02
+  }
+ },
+ "sum_vs_mix": {
+  "common_rate": 44100,
+  "common_frames": 1708495,
+  "best_lag_samples": 0,
+  "residual_db_at_lag0": -12.05,
+  "note": "positive lag = the stems' sum is late relative to the mix"
+ },
+ "truth_dir": "/home/user/gtr/inputs/S4/stems",
+ "projection": {
+  "bass": {
+   "bass": 0.7701,
+   "drums": 0.0224,
+   "guitar": 0.0096,
+   "lead": 0.0087
+  },
+  "drums": {
+   "bass": 0.0155,
+   "drums": 0.8865,
+   "guitar": 0.0176,
+   "lead": 0.0031
+  },
+  "guitar": {
+   "bass": 0.0184,
+   "drums": 0.0212,
+   "guitar": 0.3033,
+   "lead": 0.0183
+  },
+  "other": {
+   "bass": 0.0025,
+   "drums": 0.0002,
+   "guitar": 0.0044,
+   "lead": 0.0016
+  },
+  "piano": {
+   "bass": 0.0647,
+   "drums": 0.0251,
+   "guitar": 0.2733,
+   "lead": 0.073
+  },
+  "vocals": {
+   "bass": 0.0368,
+   "drums": 0.0062,
+   "guitar": 0.0914,
+   "lead": 0.8035
+  }
+ },
+ "projection_column_sums": {
+  "bass": 0.908,
+  "drums": 0.9616,
+  "guitar": 0.6996,
+  "lead": 0.9082
+ },
+ "si_sdr_db_cross": {
+  "bass": {
+   "bass": 7.48,
+   "drums": -36.58,
+   "guitar": -36.99,
+   "lead": -38.12
+  },
+  "drums": {
+   "bass": -30.51,
+   "drums": 8.91,
+   "guitar": -27.59,
+   "lead": -43.02
+  },
+  "guitar": {
+   "bass": -28.66,
+   "drums": -32.59,
+   "guitar": 1.04,
+   "lead": -27.17
+  },
+  "other": {
+   "bass": -25.08,
+   "drums": -51.32,
+   "guitar": -18.4,
+   "lead": -27.59
+  },
+  "piano": {
+   "bass": -17.5,
+   "drums": -30.93,
+   "guitar": -0.47,
+   "lead": -14.84
+  },
+  "vocals": {
+   "bass": -29.13,
+   "drums": -49.83,
+   "guitar": -19.38,
+   "lead": 6.87
+  }
+ }
+}

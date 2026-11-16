@@ -1,0 +1,226 @@
+{
+ "model": "/home/user/gtr/lanes/fingerstyle-voices-taps/gap2/ipt-model/eguitar_ircam.ts",
+ "torch": "2.15.0+cpu",
+ "threads": 2,
+ "sr": 8000,
+ "seglen": 7168,
+ "classes": [
+  "behind-nut",
+  "bend",
+  "bottleneck",
+  "glissando",
+  "legato",
+  "muted",
+  "palmstrike",
+  "scratch",
+  "snap-pizz",
+  "staccato",
+  "sustained",
+  "tremolo",
+  "trill",
+  "vibrato"
+ ],
+ "load_seconds": 0.069,
+ "hop_s": 0.1,
+ "clips": {
+  "S6taps": {
+   "input": "/home/user/gtr/inputs/S6taps/S6taps.mono.wav",
+   "input_sr": 44100,
+   "n_windows": 285,
+   "forward_seconds_batched": 3.427,
+   "top1_counts_all": {
+    "bottleneck": 214,
+    "legato": 17,
+    "palmstrike": 26,
+    "scratch": 27,
+    "sustained": 1
+   },
+   "mean_prob_all": {
+    "behind-nut": 0.0004,
+    "bend": 0.0004,
+    "bottleneck": 0.7465,
+    "glissando": 0.0005,
+    "legato": 0.062,
+    "muted": 0.0003,
+    "palmstrike": 0.0883,
+    "scratch": 0.0837,
+    "snap-pizz": 0.0002,
+    "staccato": 0.0001,
+    "sustained": 0.0152,
+    "tremolo": 0.0008,
+    "trill": 0.0006,
+    "vibrato": 0.0008
+   },
+   "n_windows_rms_ge_-60dBFS": 272,
+   "top1_counts_rms_ge_-60dBFS": {
+    "bottleneck": 214,
+    "legato": 17,
+    "palmstrike": 26,
+    "scratch": 14,
+    "sustained": 1
+   },
+   "n_windows_tap_in_last_0.2s": 64,
+   "mean_prob_tap_in_last_0.2s_rms_ge_-60dBFS": {
+    "behind-nut": 0.0004,
+    "bend": 0.0008,
+    "bottleneck": 0.8516,
+    "glissando": 0.0005,
+    "legato": 0.045,
+    "muted": 0.0,
+    "palmstrike": 0.0642,
+    "scratch": 0.019,
+    "snap-pizz": 0.0,
+    "staccato": 0.0,
+    "sustained": 0.0163,
+    "tremolo": 0.0004,
+    "trill": 0.0009,
+    "vibrato": 0.0011
+   },
+   "top1_counts_tap_in_last_0.2s_rms_ge_-60dBFS": {
+    "bottleneck": 55,
+    "legato": 2,
+    "palmstrike": 5,
+    "scratch": 1,
+    "sustained": 1
+   },
+   "mean_prob_no_tap_in_last_0.2s_rms_ge_-60dBFS": {
+    "behind-nut": 0.0,
+    "bend": 0.0002,
+    "bottleneck": 0.7607,
+    "glissando": 0.0002,
+    "legato": 0.0709,
+    "muted": 0.0,
+    "palmstrike": 0.1008,
+    "scratch": 0.0659,
+    "snap-pizz": 0.0,
+    "staccato": 0.0,
+    "sustained": 0.0002,
+    "tremolo": 0.0007,
+    "trill": 0.0003,
+    "vibrato": 0.0001
+   },
+   "top1_counts_no_tap_in_last_0.2s_rms_ge_-60dBFS": {
+    "bottleneck": 159,
+    "legato": 15,
+    "palmstrike": 21,
+    "scratch": 13
+   }
+  },
+  "S2s": {
+   "input": "/home/user/gtr/inputs/S2s/S2s.mono.wav",
+   "input_sr": 44100,
+   "n_windows": 285,
+   "forward_seconds_batched": 2.973,
+   "top1_counts_all": {
+    "bottleneck": 216,
+    "legato": 24,
+    "palmstrike": 20,
+    "scratch": 16,
+    "sustained": 1,
+    "trill": 8
+   },
+   "mean_prob_all": {
+    "behind-nut": 0.0004,
+    "bend": 0.0008,
+    "bottleneck": 0.7558,
+    "glissando": 0.0004,
+    "legato": 0.0843,
+    "muted": 0.0003,
+    "palmstrike": 0.0668,
+    "scratch": 0.0445,
+    "snap-pizz": 0.0003,
+    "staccato": 0.0001,
+    "sustained": 0.0152,
+    "tremolo": 0.001,
+    "trill": 0.0289,
+    "vibrato": 0.0012
+   },
+   "n_windows_rms_ge_-60dBFS": 272,
+   "top1_counts_rms_ge_-60dBFS": {
+    "bottleneck": 216,
+    "legato": 24,
+    "palmstrike": 20,
+    "scratch": 3,
+    "sustained": 1,
+    "trill": 8
+   }
+  },
+  "R3c": {
+   "input": "/home/user/gtr/inputs/R3c/R3c.mono.wav",
+   "input_sr": 44100,
+   "n_windows": 172,
+   "forward_seconds_batched": 1.651,
+   "top1_counts_all": {
+    "bend": 11,
+    "bottleneck": 28,
+    "legato": 91,
+    "palmstrike": 9,
+    "sustained": 12,
+    "trill": 19,
+    "vibrato": 2
+   },
+   "mean_prob_all": {
+    "behind-nut": 0.0001,
+    "bend": 0.0707,
+    "bottleneck": 0.169,
+    "glissando": 0.0004,
+    "legato": 0.5169,
+    "muted": 0.0,
+    "palmstrike": 0.0522,
+    "scratch": 0.0014,
+    "snap-pizz": 0.0013,
+    "staccato": 0.0002,
+    "sustained": 0.0638,
+    "tremolo": 0.0002,
+    "trill": 0.1076,
+    "vibrato": 0.0161
+   },
+   "n_windows_rms_ge_-60dBFS": 172,
+   "top1_counts_rms_ge_-60dBFS": {
+    "bend": 11,
+    "bottleneck": 28,
+    "legato": 91,
+    "palmstrike": 9,
+    "sustained": 12,
+    "trill": 19,
+    "vibrato": 2
+   }
+  }
+ },
+ "S6taps_vs_S2s": {
+  "n_paired_windows": 285,
+  "same_top1": 233,
+  "mean_abs_prob_difference": {
+   "behind-nut": 0.0001,
+   "bend": 0.0008,
+   "bottleneck": 0.1608,
+   "glissando": 0.0003,
+   "legato": 0.0956,
+   "muted": 0.0,
+   "palmstrike": 0.0554,
+   "scratch": 0.0394,
+   "snap-pizz": 0.0,
+   "staccato": 0.0,
+   "sustained": 0.0005,
+   "tremolo": 0.0008,
+   "trill": 0.0287,
+   "vibrato": 0.0009
+  },
+  "mean_prob_S6taps_minus_S2s": {
+   "behind-nut": 0.0,
+   "bend": -0.0004,
+   "bottleneck": -0.0093,
+   "glissando": 0.0002,
+   "legato": -0.0223,
+   "muted": 0.0,
+   "palmstrike": 0.0215,
+   "scratch": 0.0392,
+   "snap-pizz": -0.0,
+   "staccato": 0.0,
+   "sustained": 0.0,
+   "tremolo": -0.0003,
+   "trill": -0.0283,
+   "vibrato": -0.0004
+  }
+ }
+}

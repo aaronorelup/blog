@@ -1,0 +1,8 @@
+{"type": "object",
+ "properties": {
+  "notes": {"type": "array", "items": {"type": "object", "properties": {
+      "onset": {"type": "number", "description": "note start in seconds from the start of the file"},
+      "offset": {"type": "number", "description": "note end in seconds"},
+      "pitch": {"type": "integer", "description": "MIDI note number, 60 = C4"}},
+      "required": ["onset", "offset", "pitch"]}}},
+ "required": ["notes"]}

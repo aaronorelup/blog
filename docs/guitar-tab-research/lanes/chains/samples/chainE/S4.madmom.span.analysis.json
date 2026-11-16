@@ -1,0 +1,78 @@
+{
+ "capture_index_of_render_sample0": 23330,
+ "context_frame_of_render_sample0": 24738,
+ "start_frame_scheduled": 24738,
+ "found_minus_scheduled_frames": 0,
+ "max_abs_difference_capture_vs_render": 2.9802322387695312e-08,
+ "n_clicks_scheduled": 65,
+ "n_clicks_found": 65,
+ "n_alphatab_metronome_onsets_in_capture": 73,
+ "n_alphatab_metronome_onsets_in_render_file": 73,
+ "alphatab_metronome_capture_minus_render_frames": {
+  "n": 73,
+  "mean": 0.0,
+  "median": 0.0,
+  "sd": 0.0,
+  "min": 0.0,
+  "max": 0.0,
+  "max_abs": 0.0
+ },
+ "click_minus_scheduled_ms": {
+  "n": 65,
+  "mean": 0.0,
+  "median": 0.0,
+  "sd": 0.0,
+  "min": 0.0,
+  "max": 0.0,
+  "max_abs": 0.0
+ },
+ "click_minus_nearest_alphatab_metronome_ms": {
+  "n": 65,
+  "mean": 16.382,
+  "median": 16.372,
+  "sd": 4.426,
+  "min": 3.878,
+  "max": 26.531,
+  "max_abs": 26.531
+ },
+ "clicks_within_20ms_of_a_metronome_onset": 52,
+ "clicks_within_5ms_of_a_metronome_onset": 1,
+ "click_minus_nearest_alphatab_metronome_ms_first10": [
+  11.973,
+  3.878,
+  7.234,
+  10.59,
+  12.494,
+  15.85,
+  17.755,
+  11.111,
+  24.467,
+  16.372
+ ],
+ "click_minus_nearest_alphatab_metronome_ms_last5": [
+  17.052,
+  20.408,
+  12.313,
+  15.669,
+  19.025
+ ],
+ "click_minus_nearest_truth_beat_ms": {
+  "n": 65,
+  "mean": 5.618,
+  "median": 5.873,
+  "sd": 4.399,
+  "min": -6.213,
+  "max": 15.51,
+  "max_abs": 15.51
+ },
+ "alphatab_metronome_onsets_within_truth_beat_span": 68,
+ "alphatab_metronome_minus_nearest_truth_beat_ms": {
+  "n": 68,
+  "mean": -10.761,
+  "median": -10.771,
+  "sd": 0.419,
+  "min": -11.451,
+  "max": -10.068,
+  "max_abs": 11.451
+ }
+}

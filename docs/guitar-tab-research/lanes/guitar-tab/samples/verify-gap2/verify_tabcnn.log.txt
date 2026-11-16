@@ -1,0 +1,19 @@
+== S2n zenodo-amt
+Zenodo 11406378 best_TabCNN_tablature_trancription_model (amt-tools TabCNN, torch): load 0.01s, features+inference+decoding 5.79s, frames 1265, notes 220, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2
+clip S2n zenodo-amt: wall 35.51 s, maxrss 1528272 KB
+== S2n onnx-gpfx
+cstr/tabcnn-onnx tabcnn-gpfx.onnx (ONNX Runtime 1.31.1, front-end card, gpfx): load 0.07s, features+inference+decoding 1.11s, frames 1265, notes 220, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['0-1']
+clip S2n onnx-gpfx: wall 6.85 s, maxrss 1034392 KB
+== S2n onnx-vanilla
+cstr/tabcnn-onnx tabcnn.onnx (ONNX Runtime 1.31.1, front-end card, vanilla): load 0.06s, features+inference+decoding 1.13s, frames 1265, notes 223, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['0-1']
+clip S2n onnx-vanilla: wall 6.32 s, maxrss 1025564 KB
+== R1c zenodo-amt
+Zenodo 11406378 best_TabCNN_tablature_trancription_model (amt-tools TabCNN, torch): load 0.01s, features+inference+decoding 3.58s, frames 1216, notes 135, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2
+clip R1c zenodo-amt: wall 9.54 s, maxrss 1366204 KB
+== R1c onnx-gpfx
+cstr/tabcnn-onnx tabcnn-gpfx.onnx (ONNX Runtime 1.31.1, front-end card, gpfx): load 0.06s, features+inference+decoding 1.62s, frames 1216, notes 135, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['0-1']
+clip R1c onnx-gpfx: wall 7.96 s, maxrss 1033236 KB
+== R1c onnx-vanilla
+cstr/tabcnn-onnx tabcnn.onnx (ONNX Runtime 1.31.1, front-end card, vanilla): load 0.05s, features+inference+decoding 1.07s, frames 1216, notes 151, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['0-1']
+clip R1c onnx-vanilla: wall 6.49 s, maxrss 1024872 KB
+[gtr-run r0674] guitar-tab/tabcnn-published-weights "verify (verify-gapfill-guitar-tab round 2): gap2_run_tabcnn.py re-run, Zenodo 11406378 / tabcnn-gpfx.onnx / tabcnn.onnx on S2n and R1c" wall=72.73s cpu=67.1s rss=1492.5MB cores=2 exit=0 slot_wait=0.0s

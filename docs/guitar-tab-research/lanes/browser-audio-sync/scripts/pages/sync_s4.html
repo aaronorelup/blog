@@ -1,0 +1,85 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>sync to a recording</title>
+<body>
+<script type="module">
+// Play S4 and put a click on each truth beat (S4.beats.txt).
+//  mode=buffer : S4 decoded into an AudioBuffer, played by an AudioBufferSourceNode; clicks scheduled up front on
+//                the same AudioContext clock (start + beat time).
+//  mode=element: S4 played by an <audio> element routed into the graph (MediaElementAudioSourceNode); a 25 ms
+//                setTimeout loop reads audio.currentTime and ctx.currentTime and schedules each click 100 ms ahead
+//                at ctx.currentTime + (beat - audio.currentTime).
+// Recorder channel 0 = S4 as it arrives in the graph (mono, (L+R)/2), channel 1 = the clicks.
+// Every 50 ms the page also logs (performance.now, audio.currentTime or the buffer position, ctx.currentTime,
+// getOutputTimestamp) to measure drift between the two clocks.
+import { finish, fail, sleep, makeRecorder, encodeWav, upload, fetchArrayBuffer, fetchText, stats } from './common.js';
+const q = new URLSearchParams(location.search);
+const MODE = q.get('mode') || 'buffer', BUSY = Number(q.get('busy') || 0);
+const R = { mode: MODE, busy_ms: BUSY };
+try {
+  const ctx = new AudioContext({ latencyHint: 'interactive' }); await ctx.resume();
+  const sr = ctx.sampleRate; R.sampleRate = sr; R.baseLatency = ctx.baseLatency; R.outputLatency = ctx.outputLatency;
+  const beats = (await fetchText('/inputs/S4/S4.beats.txt')).trim().split('\n').map((l) => Number(l.split('\t')[0]));
+  R.n_beats = beats.length;
+  const CL = Math.round(0.010 * sr), click = ctx.createBuffer(1, CL, sr), cd = click.getChannelData(0);
+  for (let n = 0; n < CL; n++) cd[n] = 0.8 * Math.cos(2 * Math.PI * 2000 * n / sr) * Math.exp(-n / (0.002 * sr));
+  const rec = await makeRecorder(ctx, 2, 1);
+  const merger = new ChannelMergerNode(ctx, { numberOfInputs: 2 }); merger.connect(rec.node);
+  const mono = new GainNode(ctx, { channelCount: 1, channelCountMode: 'explicit', channelInterpretation: 'speakers' });
+  mono.connect(merger, 0, 0); mono.connect(ctx.destination);
+  const clickBus = new GainNode(ctx); clickBus.connect(merger, 0, 1); clickBus.connect(ctx.destination);
+  const clickAt = (t) => { const s = new AudioBufferSourceNode(ctx, { buffer: click }); s.connect(clickBus); s.start(t); };
+  let busyOn = true;
+  if (BUSY > 0) { const spin = () => { if (!busyOn) return; const t = performance.now(); while (performance.now() - t < BUSY) {} setTimeout(spin, 0); }; setTimeout(spin, 0); }
+  const log = []; let duration;
+  const sched = [];
+  if (MODE === 'buffer') {
+    const buf = await ctx.decodeAudioData(await fetchArrayBuffer('/inputs/S4/S4.wav'));
+    duration = buf.duration;
+    const src = new AudioBufferSourceNode(ctx, { buffer: buf }); src.connect(mono);
+    const t0 = Math.ceil((ctx.currentTime + 0.5) * sr) / sr;
+    R.start_frame_scheduled = Math.round(t0 * sr);
+    src.start(t0);
+    for (const b of beats) { clickAt(t0 + b); sched.push({ beat: b, t: t0 + b, ctxTime: ctx.currentTime }); }
+    const iv = setInterval(() => { const ts = ctx.getOutputTimestamp();
+      log.push([performance.now(), ctx.currentTime - t0, ctx.currentTime, ts.contextTime, ts.performanceTime]); }, 50);
+    while (ctx.currentTime < t0 + duration + 0.3) await sleep(100);
+    clearInterval(iv);
+  } else {
+    const audio = new Audio(); audio.src = '/inputs/S4/S4.wav'; audio.preload = 'auto';
+    await new Promise((r, j) => { audio.oncanplaythrough = r; audio.onerror = () => j(new Error('audio element error ' + (audio.error && audio.error.message))); });
+    duration = audio.duration;
+    const node = ctx.createMediaElementSource(audio); node.connect(mono);
+    await sleep(300);
+    const tPlay = ctx.currentTime;
+    await audio.play();
+    R.play_resolved_ctxTime_minus_call = ctx.currentTime - tPlay;
+    let i = 0;
+    const iv = setInterval(() => { const ts = ctx.getOutputTimestamp();
+      log.push([performance.now(), audio.currentTime, ctx.currentTime, ts.contextTime, ts.performanceTime]); }, 50);
+    await new Promise((done) => {
+      const tick = () => {
+        const a = audio.currentTime, c = ctx.currentTime;
+        while (i < beats.length && beats[i] - a < 0.1) { const t = c + (beats[i] - a); sched.push({ beat: beats[i], t, ctxTime: c, mediaTime: a, late: t < c }); clickAt(t); i++; }
+        if (audio.ended || i >= beats.length) done(); else setTimeout(tick, 25);
+      };
+      tick();
+    });
+    await new Promise((r) => { if (audio.ended) r(); else audio.onended = r; });
+    await sleep(300);
+    clearInterval(iv);
+  }
+  busyOn = false;
+  const cap = await rec.stop();
+  R.capture = { firstFrame: cap.firstFrame, frames: cap.channels[0].length, gaps: cap.gaps };
+  R.scheduled = sched.map((s) => ({ ...s, frame: Math.round(s.t * sr) }));
+  R.n_scheduled_late = sched.filter((s) => s.late).length;
+  R.clock_log_columns = ['performance.now ms', MODE === 'buffer' ? 'buffer position s (ctx.currentTime - start)' : 'audio.currentTime s', 'ctx.currentTime s', 'getOutputTimestamp.contextTime s', 'getOutputTimestamp.performanceTime ms'];
+  R.clock_log = log;
+  R.playbackStats = ctx.playbackStats ? JSON.parse(JSON.stringify(ctx.playbackStats.toJSON())) : null;
+  R.wav = await upload('sync', `sync_s4_${MODE}_busy${BUSY}.wav`, encodeWav(cap.channels, sr, { float: true }));
+  await ctx.close();
+  finish(R);
+} catch (e) { fail(e, R); }
+</script>
+</body>

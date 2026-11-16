@@ -1,0 +1,136 @@
+{
+ "version": "6.4.1-fbe8f46",
+ "input": "/home/user/blog/docs/guitar-tab-research/lanes/web-tab-render/samples/verovio/S2n.truth.mei",
+ "loadOk": 1,
+ "steps": [
+  {
+   "step": "loaded",
+   "edit_returned": null,
+   "status": {
+    "canRedo": false,
+    "canUndo": false,
+    "chainedId": "",
+    "insertMode": false,
+    "isMensuralMusicOnly": false
+   },
+   "note1": {
+    "mei": {
+     "tab.course": "3",
+     "tab.fret": "0"
+    },
+    "drawn": "0"
+   },
+   "note2": {
+    "mei": {
+     "tab.course": "3",
+     "tab.fret": "0"
+    },
+    "drawn": "0"
+   }
+  },
+  {
+   "step": "set note 1 tab.fret 2",
+   "edit_returned": 1,
+   "status": {
+    "canRedo": false,
+    "canUndo": true,
+    "chainedId": "p1k5ct98",
+    "insertMode": false,
+    "isMensuralMusicOnly": false
+   },
+   "note1": {
+    "mei": {
+     "tab.course": "3",
+     "tab.fret": "2"
+    },
+    "drawn": "2"
+   },
+   "note2": {
+    "mei": {
+     "tab.course": "3",
+     "tab.fret": "0"
+    },
+    "drawn": "0"
+   }
+  },
+  {
+   "step": "set note 2 tab.course 4",
+   "edit_returned": 1,
+   "status": {
+    "canRedo": false,
+    "canUndo": true,
+    "chainedId": "s1v28b8a",
+    "insertMode": false,
+    "isMensuralMusicOnly": false
+   },
+   "note1": {
+    "mei": {
+     "tab.course": "3",
+     "tab.fret": "2"
+    },
+    "drawn": "2"
+   },
+   "note2": {
+    "mei": {
+     "tab.course": "4",
+     "tab.fret": "0"
+    },
+    "drawn": "0"
+   }
+  },
+  {
+   "step": "set note 2 tab.fret 5",
+   "edit_returned": 1,
+   "status": {
+    "canRedo": false,
+    "canUndo": true,
+    "chainedId": "s1v28b8a",
+    "insertMode": false,
+    "isMensuralMusicOnly": false
+   },
+   "note1": {
+    "mei": {
+     "tab.course": "3",
+     "tab.fret": "2"
+    },
+    "drawn": "2"
+   },
+   "note2": {
+    "mei": {
+     "tab.course": "4",
+     "tab.fret": "5"
+    },
+    "drawn": "5"
+   }
+  },
+  {
+   "step": "undo",
+   "edit_returned": 1,
+   "status": {
+    "canRedo": true,
+    "canUndo": false,
+    "chainedId": "",
+    "insertMode": false,
+    "isMensuralMusicOnly": false
+   },
+   "note1": {
+    "mei": {
+     "tab.course": "3",
+     "tab.fret": "0"
+    },
+    "drawn": "0"
+   },
+   "note2": {
+    "mei": {
+     "tab.course": "3",
+     "tab.fret": "0"
+    },
+    "drawn": "0"
+   }
+  }
+ ],
+ "note_ids": [
+  "p1k5ct98",
+  "s1v28b8a"
+ ]
+}

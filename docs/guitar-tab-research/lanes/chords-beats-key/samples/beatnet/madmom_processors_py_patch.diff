@@ -1,0 +1,4 @@
+23c23
+< from collections import MutableSequence
+---
+> from collections.abc import MutableSequence

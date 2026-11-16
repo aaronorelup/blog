@@ -1,0 +1,54 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>waveform views</title>
+<body style="width:1200px">
+<div id="ws"></div>
+<div id="zv" style="width:1000px;height:150px"></div><div id="ov" style="width:1000px;height:80px"></div>
+<audio id="au" preload="auto"></audio>
+<video id="vid" muted preload="auto" width="320" height="240"></video>
+<script src="/nm/peaks.js/dist/peaks.js"></script>
+<script type="module">
+// wavesurfer.js 8.0.5 and peaks.js 4.0.0: time from creation to a drawn waveform for S4 (38.7 s) and R2full (228.5 s),
+// what the peaks look like, and wavesurfer following a <video> (R3a.webm) as its media element during playback.
+import { finish, fail, sleep, stats } from './common.js';
+import WaveSurfer from '/nm/wavesurfer.js/dist/wavesurfer.esm.js';
+const R = { wavesurfer: {}, peaks: {} };
+try {
+  for (const id of ['S4', 'R2full']) {
+    const url = `/inputs/${id}/${id}.wav`;
+    const t0 = performance.now();
+    const ws = WaveSurfer.create({ container: '#ws', url, height: 100, width: 1000 });
+    const ready = await new Promise((r, j) => { ws.on('ready', (d) => r(d)); ws.on('error', (e) => j(e)); });
+    const ms = performance.now() - t0;
+    const peaks = ws.exportPeaks({ channels: 1, maxLength: 1000, precision: 10000 });
+    R.wavesurfer[id] = { create_to_ready_ms: ms, duration_s: ready, decoded_sampleRate: ws.getDecodedData() ? ws.getDecodedData().sampleRate : null,
+      exportPeaks_lengths: peaks.map((p) => p.length), first_peaks: peaks[0].slice(0, 8) };
+    ws.destroy();
+  }
+  // peaks.js with Web Audio
+  for (const id of ['S4', 'R2full']) {
+    const au = document.getElementById('au'); au.src = `/inputs/${id}/${id}.wav`;
+    const actx = new AudioContext();
+    const t0 = performance.now();
+    const inst = await new Promise((r, j) => peaks.init({ zoomview: { container: document.getElementById('zv') }, overview: { container: document.getElementById('ov') },
+      mediaElement: au, webAudio: { audioContext: actx, scale: 128, multiChannel: false } }, (err, p) => (err ? j(err) : r(p))));
+    const ms = performance.now() - t0;
+    const wd = inst.getWaveformData ? inst.getWaveformData() : null;
+    R.peaks[id] = { init_to_ready_ms: ms, waveform: wd ? { scale: wd.scale, length: wd.length, duration: wd.duration, sample_rate: wd.sample_rate, channels: wd.channels } : null };
+    inst.destroy(); await actx.close();
+  }
+  // wavesurfer following a video element
+  const v = document.getElementById('vid'); v.src = '/inputs/R3a/R3a.webm';
+  await new Promise((r) => { v.onloadeddata = r; });
+  const t0 = performance.now();
+  const ws = WaveSurfer.create({ container: '#ws', media: v, height: 80, width: 1000 });
+  await new Promise((r) => ws.on('ready', r));
+  R.wavesurfer.video_media_ready_ms = performance.now() - t0;
+  const log = [];
+  const iv = setInterval(() => log.push([performance.now(), v.currentTime, ws.getCurrentTime()]), 100);
+  await v.play(); await sleep(8000); v.pause(); clearInterval(iv);
+  R.wavesurfer.video_follow = { samples: log.length, ws_minus_video_ms: stats(log.map((x) => (x[2] - x[1]) * 1000)) };
+  finish(R);
+} catch (e) { fail(e, R); }
+</script>
+</body>

@@ -1,0 +1,61 @@
+{
+ "label": "imported S2n.gp5",
+ "title": "Twinkle (Ah! vous dirai-je, maman), fingerstyle, nylon",
+ "artist": "Traditional (18th-century French melody), arranged for this test set",
+ "album": "",
+ "music": "",
+ "tab": "",
+ "tempo": 112,
+ "tempoLabel": "Moderate",
+ "masterBars": 13,
+ "timeSignatures": [
+  "4/4"
+ ],
+ "tempoAutomations": [
+  {
+   "bar": 0,
+   "ratio": 0,
+   "value": 112
+  },
+  {
+   "bar": 0,
+   "ratio": 0,
+   "value": 112
+  }
+ ],
+ "tracks": [
+  {
+   "index": 0,
+   "name": "Guitar",
+   "shortName": "Guitar",
+   "program": 24,
+   "primaryChannel": 0,
+   "isPercussion": false,
+   "staves": [
+    {
+     "index": 0,
+     "showTablature": true,
+     "showStandardNotation": true,
+     "tuning_top_to_bottom": [
+      64,
+      59,
+      55,
+      50,
+      45,
+      40
+     ],
+     "tuningName": "Guitar Standard Tuning",
+     "capo": 0,
+     "transpositionPitch": 0,
+     "displayTranspositionPitch": -12,
+     "isPercussion": false,
+     "bars": 13,
+     "voicesPerBar": 2,
+     "beats": 92,
+     "restBeats": 2,
+     "notes": 90
+    }
+   ]
+  }
+ ]
+}

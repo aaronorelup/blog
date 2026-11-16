@@ -1,0 +1,34 @@
+{
+ "input": {
+  "path": "/home/user/gtr/lanes/source-separation/inputs/S4_0-10s/S4_0-10s.wav",
+  "sample_rate": 44100,
+  "channels": 2,
+  "frames": 441000,
+  "subtype": "PCM_16",
+  "rms_dbfs": -19.149861873376654,
+  "seconds": 10.0
+ },
+ "est_dir": "/home/user/gtr/lanes/source-separation/out/msst-becruily-guitar/S4_0-10s",
+ "stems": {
+  "Guitar": {
+   "file": "Guitar.wav",
+   "bytes": 3528088,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "FLOAT",
+   "format": "WAV",
+   "frames": 441000,
+   "seconds": 10.0,
+   "frames_minus_input": 0,
+   "rms_dbfs": -51.18,
+   "peak_dbfs": -26.54
+  }
+ },
+ "sum_vs_mix": {
+  "common_rate": 44100,
+  "common_frames": 441000,
+  "best_lag_samples": -1,
+  "residual_db_at_lag0": -0.08,
+  "note": "positive lag = the stems' sum is late relative to the mix"
+ }
+}

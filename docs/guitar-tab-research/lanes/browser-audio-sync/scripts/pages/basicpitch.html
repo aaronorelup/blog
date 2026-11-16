@@ -1,0 +1,102 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>basic pitch in the browser</title>
+<body>
+<script type="module">
+// Basic Pitch (Spotify) in the page.
+//   engine=tfjs : @spotify/basic-pitch 1.0.1 (TensorFlow.js, the npm package's own model.json), backend=webgl|cpu|wasm
+//   engine=ort  : the same model as nmp.onnx (from the basic-pitch Python repository) in ONNX Runtime Web 1.31.1, wasm EP,
+//                 threads=N; windowing copied from basic-pitch-ts evaluateModel (43844-sample windows, 30-frame overlap)
+// Both use basic-pitch-ts post-processing (outputToNotesPoly + addPitchBendsToNoteEvents + noteFramesToTime) with
+// two parameter sets: "pydefault" (onset 0.5, frame 0.3, min length 11 frames, as the Python CLI defaults) and
+// "readme" (0.25, 0.25, 5, as the npm README example).
+import { finish, fail, upload, fetchArrayBuffer } from './common.js';
+import * as BP from '/build/basicpitch.js';
+const q = new URLSearchParams(location.search);
+const CLIP = q.get('clip') || 'S1', ENGINE = q.get('engine') || 'tfjs', BACKEND = q.get('backend') || 'webgl';
+const THREADS = Number(q.get('threads') || 1);
+const R = { clip: CLIP, engine: ENGINE, backend: ENGINE === 'tfjs' ? BACKEND : 'ort-wasm', threads: ENGINE === 'ort' ? THREADS : null,
+  crossOriginIsolated: self.crossOriginIsolated };
+try {
+  const ab = await fetchArrayBuffer(`/inputs/${CLIP}/${CLIP}.wav`);
+  const d0 = performance.now();
+  const dec = await new OfflineAudioContext(1, 1, 44100).decodeAudioData(ab);
+  const n22 = Math.ceil(dec.duration * 22050);
+  const oc = new OfflineAudioContext(1, n22, 22050);
+  const s = new AudioBufferSourceNode(oc, { buffer: dec }); s.connect(oc.destination); s.start(0);
+  const audio22 = await oc.startRendering();         // stereo -> mono downmix and 44.1 -> 22.05 kHz resample by the browser
+  R.decode_resample_ms = performance.now() - d0;
+  let frames = [], onsets = [], contours = [];
+  if (ENGINE === 'tfjs') {
+    const tf = BP.tf;
+    if (BACKEND === 'wasm') BP.setWasmPaths('/nm/@tensorflow/tfjs-backend-wasm/dist/');
+    const ok = await tf.setBackend(BACKEND); await tf.ready();
+    R.tf_version = tf.version.tfjs; R.backend_set = ok; R.backend_active = tf.getBackend();
+    const l0 = performance.now();
+    const model = await tf.loadGraphModel('/nm/@spotify/basic-pitch/model/model.json');
+    R.model_load_ms = performance.now() - l0;
+    const bp = new BP.BasicPitch(model);
+    const i0 = performance.now();
+    await bp.evaluateModel(audio22, (f, o, c) => { frames.push(...f); onsets.push(...o); contours.push(...c); }, () => {});
+    R.inference_ms = performance.now() - i0;
+  } else {
+    const ort = await import('/nm/onnxruntime-web/dist/ort.wasm.min.mjs');
+    ort.env.wasm.wasmPaths = '/nm/onnxruntime-web/dist/';
+    ort.env.wasm.numThreads = THREADS;
+    R.ort_version = ort.env.versions ? ort.env.versions.web : null;
+    const l0 = performance.now();
+    const sess = await ort.InferenceSession.create('/dl/basic-pitch/nmp.onnx', { executionProviders: ['wasm'] });
+    R.model_load_ms = performance.now() - l0;
+    R.ort_inputs = sess.inputNames; R.ort_outputs = sess.outputNames;
+    R.ort_numThreads_after_create = ort.env.wasm.numThreads;
+    // windowing as in basic-pitch-ts inference.ts
+    const FFT_HOP = 256, AUDIO_N = 22050 * 2 - FFT_HOP, OVERLAP = 30 * FFT_HOP, HOP = AUDIO_N - OVERLAP;
+    const x = audio22.getChannelData(0);
+    const padded = new Float32Array(OVERLAP / 2 + x.length); padded.set(x, OVERLAP / 2);
+    const i0 = performance.now(); let nWin = 0;
+    const outs = { note: [], onset: [], contour: [] };
+    for (let start = 0; start < padded.length; start += HOP) {
+      const w = new Float32Array(AUDIO_N); w.set(padded.subarray(start, start + AUDIO_N));
+      const res = await sess.run({ [sess.inputNames[0]]: new ort.Tensor('float32', w, [1, AUDIO_N, 1]) });
+      nWin++;
+      for (const name of sess.outputNames) {
+        const t = res[name]; const [, T, F] = t.dims; const kind = F === 264 ? 'contour' : null;
+        const rows = []; for (let i = 0; i < T; i++) rows.push(Array.from(t.data.subarray(i * F, (i + 1) * F)));
+        (kind ? outs.contour : (outs._88 = outs._88 || [])).push({ name, rows });
+      }
+    }
+    R.inference_ms = performance.now() - i0; R.windows = nWin;
+    R.output_shapes = sess.outputNames;
+    // identify note vs onset among the two 88-bin outputs by name (StatefulPartitionedCall:1 / :2) is model specific;
+    // the names are recorded; mapping used: the output whose name sorts first among 88-bin outputs = note? Checked below.
+    const names88 = [...new Set(outs._88.map((o) => o.name))];
+    R.names88 = names88;
+    const map = q.get('map') ? q.get('map').split(',') : null;   // optional explicit "noteName,onsetName"
+    const noteName = map ? map[0] : names88[0], onsetName = map ? map[1] : names88[1];
+    R.mapping = { note: noteName, onset: onsetName };
+    // unwrap: drop half the overlap frames at both sides of every window, as basic-pitch-ts does
+    const nOlap = 30, half = nOlap / 2;
+    const unwrap = (wins) => { const all = []; for (const w of wins) all.push(...w.rows.slice(half, w.rows.length - half)); return all; };
+    const nFramesTotal = Math.floor(x.length * Math.floor(22050 / 256) / 22050);   // ANNOTATIONS_FPS (86) * duration, as basic-pitch-ts
+    frames = unwrap(outs._88.filter((o) => o.name === noteName)).slice(0, nFramesTotal);
+    onsets = unwrap(outs._88.filter((o) => o.name === onsetName)).slice(0, nFramesTotal);
+    contours = unwrap(outs.contour).slice(0, nFramesTotal);
+  }
+  R.n_frames = frames.length;
+  const sets = { pydefault: [0.5, 0.3, 11], readme: [0.25, 0.25, 5] };
+  R.notes = {};
+  for (const [name, [on, fr, ml]] of Object.entries(sets)) {
+    const p0 = performance.now();
+    const ev = BP.noteFramesToTime(BP.addPitchBendsToNoteEvents(contours, BP.outputToNotesPoly(frames, onsets, on, fr, ml)));
+    const ms = performance.now() - p0;
+    ev.sort((a, b) => a.startTimeSeconds - b.startTimeSeconds || a.pitchMidi - b.pitchMidi);
+    const csv = 'start_time_s,end_time_s,pitch_midi,amplitude\n' + ev.map((e) => `${e.startTimeSeconds.toFixed(6)},${(e.startTimeSeconds + e.durationSeconds).toFixed(6)},${e.pitchMidi},${e.amplitude.toFixed(4)}`).join('\n') + '\n';
+    const tag = ENGINE === 'tfjs' ? `tfjs-${BACKEND}` : `ort-t${THREADS}${self.crossOriginIsolated ? '' : '-nocoi'}`;
+    R.notes[name] = { params: { onsetThresh: on, frameThresh: fr, minNoteLen: ml }, n: ev.length, postprocess_ms: ms,
+      first10: ev.slice(0, 10).map((e) => [+e.startTimeSeconds.toFixed(4), +e.durationSeconds.toFixed(4), e.pitchMidi]),
+      csv: await upload('basicpitch', `${CLIP}_${tag}_${name}.csv`, csv) };
+  }
+  finish(R);
+} catch (e) { fail(e, R); }
+</script>
+</body>

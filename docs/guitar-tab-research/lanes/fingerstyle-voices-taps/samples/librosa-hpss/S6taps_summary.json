@@ -1,0 +1,49 @@
+{
+ "input": "/home/user/gtr/inputs/S6taps/S6taps.mono.wav",
+ "sr": 44100,
+ "n_samples": 1294650,
+ "librosa": "0.11.0",
+ "runs": [
+  {
+   "margin": 1.0,
+   "hpss_seconds": 6.057,
+   "n_onsets_percussive": 53,
+   "energy_fraction_harmonic": 0.7955739258429263,
+   "energy_fraction_percussive": 0.06482294875321712,
+   "energy_fraction_residual": 7.470978995890144e-15
+  },
+  {
+   "margin": 2.0,
+   "hpss_seconds": 2.753,
+   "n_onsets_percussive": 53,
+   "energy_fraction_harmonic": 0.6202811472573335,
+   "energy_fraction_percussive": 0.037157156106206596,
+   "energy_fraction_residual": 0.057838551484196324
+  },
+  {
+   "margin": 4.0,
+   "hpss_seconds": 2.662,
+   "n_onsets_percussive": 53,
+   "energy_fraction_harmonic": 0.3843751115259561,
+   "energy_fraction_percussive": 0.021574964338817462,
+   "energy_fraction_residual": 0.22174291090731338
+  },
+  {
+   "margin": 8.0,
+   "hpss_seconds": 2.621,
+   "n_onsets_percussive": 53,
+   "energy_fraction_harmonic": 0.16801958110320492,
+   "energy_fraction_percussive": 0.010094021686641492,
+   "energy_fraction_residual": 0.4698424245521479
+  },
+  {
+   "margin": 16.0,
+   "hpss_seconds": 2.709,
+   "n_onsets_percussive": 53,
+   "energy_fraction_harmonic": 0.0469531959671067,
+   "energy_fraction_percussive": 0.003287039780501952,
+   "energy_fraction_residual": 0.7236334249019342
+  }
+ ],
+ "n_onsets_mix": 53
+}

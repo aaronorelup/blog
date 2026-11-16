@@ -1,0 +1,210 @@
+[
+ {
+  "model": "gemini-4-carbon",
+  "clip": "S3",
+  "file": "/home/user/gtr/inputs/S3/S3.mono.wav",
+  "mime": "audio/wav",
+  "bytes": 2116844,
+  "http_status": 200,
+  "wall_s": 0.481,
+  "body": {
+   "totalTokens": 656,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 31
+    },
+    {
+     "modality": "AUDIO",
+     "tokenCount": 625
+    }
+   ]
+  }
+ },
+ {
+  "model": "gemini-4-carbon",
+  "clip": "S4",
+  "file": "/home/user/gtr/inputs/S4/S4.mono.wav",
+  "mime": "audio/wav",
+  "bytes": 3417034,
+  "http_status": 200,
+  "wall_s": 0.657,
+  "body": {
+   "totalTokens": 1040,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 31
+    },
+    {
+     "modality": "AUDIO",
+     "tokenCount": 1009
+    }
+   ]
+  }
+ },
+ {
+  "model": "gemini-4-carbon",
+  "clip": "S2n",
+  "file": "/home/user/gtr/inputs/S2n/S2n.mono.wav",
+  "mime": "audio/wav",
+  "bytes": 2589344,
+  "http_status": 200,
+  "wall_s": 0.546,
+  "body": {
+   "totalTokens": 795,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 31
+    },
+    {
+     "modality": "AUDIO",
+     "tokenCount": 764
+    }
+   ]
+  }
+ },
+ {
+  "model": "gemini-4-carbon",
+  "clip": "S5capo2",
+  "file": "/home/user/gtr/inputs/S5capo2/S5capo2.mono.wav",
+  "mime": "audio/wav",
+  "bytes": 2589344,
+  "http_status": 200,
+  "wall_s": 0.625,
+  "body": {
+   "totalTokens": 795,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 31
+    },
+    {
+     "modality": "AUDIO",
+     "tokenCount": 764
+    }
+   ]
+  }
+ },
+ {
+  "model": "gemini-4-carbon",
+  "clip": "R3a",
+  "file": "/home/user/gtr/inputs/R3a/R3a.mp4",
+  "mime": "video/mp4",
+  "bytes": 2368626,
+  "http_status": 200,
+  "wall_s": 0.459,
+  "body": {
+   "totalTokens": 1921,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 31
+    },
+    {
+     "modality": "VIDEO",
+     "tokenCount": 1350
+    },
+    {
+     "modality": "AUDIO",
+     "tokenCount": 540
+    }
+   ]
+  }
+ },
+ {
+  "model": "gemini-3.5-flash-lite",
+  "clip": "S3",
+  "file": "/home/user/gtr/inputs/S3/S3.mono.wav",
+  "mime": "audio/wav",
+  "bytes": 2116844,
+  "http_status": 200,
+  "wall_s": 1.044,
+  "body": {
+   "totalTokens": 769,
+   "promptTokensDetails": [
+    {
+     "modality": "AUDIO",
+     "tokenCount": 769
+    }
+   ]
+  }
+ },
+ {
+  "model": "gemini-3.5-flash-lite",
+  "clip": "S4",
+  "file": "/home/user/gtr/inputs/S4/S4.mono.wav",
+  "mime": "audio/wav",
+  "bytes": 3417034,
+  "http_status": 200,
+  "wall_s": 0.788,
+  "body": {
+   "totalTokens": 1240,
+   "promptTokensDetails": [
+    {
+     "modality": "AUDIO",
+     "tokenCount": 1240
+    }
+   ]
+  }
+ },
+ {
+  "model": "gemini-3.5-flash-lite",
+  "clip": "S2n",
+  "file": "/home/user/gtr/inputs/S2n/S2n.mono.wav",
+  "mime": "audio/wav",
+  "bytes": 2589344,
+  "http_status": 200,
+  "wall_s": 0.937,
+  "body": {
+   "totalTokens": 940,
+   "promptTokensDetails": [
+    {
+     "modality": "AUDIO",
+     "tokenCount": 940
+    }
+   ]
+  }
+ },
+ {
+  "model": "gemini-3.5-flash-lite",
+  "clip": "S5capo2",
+  "file": "/home/user/gtr/inputs/S5capo2/S5capo2.mono.wav",
+  "mime": "audio/wav",
+  "bytes": 2589344,
+  "http_status": 200,
+  "wall_s": 0.927,
+  "body": {
+   "totalTokens": 940,
+   "promptTokensDetails": [
+    {
+     "modality": "AUDIO",
+     "tokenCount": 940
+    }
+   ]
+  }
+ },
+ {
+  "model": "gemini-3.5-flash-lite",
+  "clip": "R3a",
+  "file": "/home/user/gtr/inputs/R3a/R3a.mp4",
+  "mime": "video/mp4",
+  "bytes": 2368626,
+  "http_status": 200,
+  "wall_s": 1.307,
+  "body": {
+   "totalTokens": 1869,
+   "promptTokensDetails": [
+    {
+     "modality": "VIDEO",
+     "tokenCount": 1292
+    },
+    {
+     "modality": "AUDIO",
+     "tokenCount": 577
+    }
+   ]
+  }
+ }
+]

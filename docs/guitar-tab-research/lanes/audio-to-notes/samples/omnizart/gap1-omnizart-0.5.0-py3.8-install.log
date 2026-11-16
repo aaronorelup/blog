@@ -1,0 +1,47 @@
+Downloading cpython-3.8.20-linux-x86_64-gnu (download) (19.9MiB)
+ Downloaded cpython-3.8.20-linux-x86_64-gnu (download)
+Using CPython 3.8.20
+Creating virtual environment at: venv-omnizart
+Activate with: source venv-omnizart/bin/activate
+Using Python 3.8.20 environment at: venv-omnizart
+Resolved 91 packages in 13.00s
+   Building madmom==0.16.1
+   Building vamp==1.1.0
+   Building wrapt==1.12.1
+  × Failed to build `vamp==1.1.0`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit
+      status: 1)
+
+      [stderr]
+      Traceback (most recent call last):
+        File "<string>", line 14, in <module>
+        File
+      "/home/user/gtr/cache/uv/builds-v0/.tmpjRgG5I/lib/python3.8/site-packages/setuptools/build_meta.py",
+      line 333, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+        File
+      "/home/user/gtr/cache/uv/builds-v0/.tmpjRgG5I/lib/python3.8/site-packages/setuptools/build_meta.py",
+      line 303, in _get_build_requires
+          self.run_setup()
+        File
+      "/home/user/gtr/cache/uv/builds-v0/.tmpjRgG5I/lib/python3.8/site-packages/setuptools/build_meta.py",
+      line 521, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File
+      "/home/user/gtr/cache/uv/builds-v0/.tmpjRgG5I/lib/python3.8/site-packages/setuptools/build_meta.py",
+      line 319, in run_setup
+          exec(code, locals())
+        File "<string>", line 3, in <module>
+      ModuleNotFoundError: No module named 'numpy'
+
+hint: `vamp` (v1.1.0) was included because `omnizart` (v0.5.0) depends on `vamp`
+hint: This error likely indicates that `vamp@1.1.0` depends on `numpy`, but doesn't declare it as a build dependency. If `vamp` is a first-party package, consider adding `numpy` to its `build-system.requires`. Otherwise, either add it to your `pyproject.toml` under:
+
+[tool.uv.extra-build-dependencies]
+vamp = ["numpy"]
+
+or `uv pip install numpy` into the environment and re-run with `--no-build-isolation`.
+real	0m16.979s
+user	0m4.757s
+sys	0m1.223s

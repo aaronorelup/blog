@@ -1,0 +1,44 @@
+{
+ "page": "/pages/synths.html?method=jssynth&clip=S2n",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 35.418,
+ "external_requests": [],
+ "result": {
+  "method": "jssynth",
+  "clip": "S2n",
+  "n_notes": 90,
+  "sampleRate": 44100,
+  "load_ms": 2175.5849999999627,
+  "sf2_bytes": 148398306,
+  "play_called_ctxTime": 2.211700680272109,
+  "play_resolved_ctxTime": 2.211700680272109,
+  "note": "start of the MIDI player is not scheduled by the page; analysis aligns by the best constant offset",
+  "t0": null,
+  "t0_frame": null,
+  "capture": {
+   "firstFrame": 896,
+   "frames": 1416064,
+   "gaps": [
+    {
+     "atFrame": 1024,
+     "frames": 512
+    }
+   ]
+  },
+  "playbackStats": {
+   "underrunDuration": 0.47,
+   "underrunEvents": 47,
+   "totalDuration": 31.715834,
+   "averageLatency": 0.031316,
+   "minimumLatency": 0,
+   "maximumLatency": 0.032879
+  },
+  "peak": 0.20425204932689667,
+  "wav": "/home/user/gtr/lanes/browser-audio-sync/out/synths/S2n_jssynth.wav"
+ }
+}

@@ -1,0 +1,21 @@
+# gap round 2, A2: SoX 14.4.2 determinism check on the lane's input preparation (2026-11-11)
+# input /home/user/gtr/inputs/S7flat30/S7flat30.wav sha256 6caa284fd6761f611f14972cac051ed1107185995a3054552c1b48f2c208363c
+# kept lane input (made 2026-11-10, no ledger id):
+31f6f3a9c8e3469f49cb0cdf2838151dae9c315613d0a63594b5915442c42eef  /home/user/gtr/lanes/audio-to-notes/inputs/S7flat30.plus30c.wav
+# r0602 (gtr-run --nolock): sox S7flat30.wav S7flat30.plus30c.wav pitch 30 -> moved to out/sox/S7flat30.plus30c.r0602.wav
+4f54aac7bd07b03b494caab986df518dd5f6506d4f77a48db5569569ed91933b  /home/user/gtr/lanes/audio-to-notes/out/sox/S7flat30.plus30c.r0602.wav
+# two more default runs, same command (not in the ledger; deleted after hashing):
+2a40e649c8398fad6e0bebbad2d40dd9ffd1201315886fc339d4003e1c1cc627  again.wav
+a9267e398015fd0ab00a7498f3ceec97fed0a4cf0f31df5a16d7444b4c5c7c85  again2.wav
+# two runs with -R (repeatable mode):
+7453f3e8a03d5892b777bf81a2937bfcb4fee3f2f29abb4e33249f4fd38887d6  againR.wav
+7453f3e8a03d5892b777bf81a2937bfcb4fee3f2f29abb4e33249f4fd38887d6  againR2.wav
+# one run with -D (no dither):
+54580ba34a187d5365b4c788ab903102b2cc3fd4e0212e56ba553706432dee03  againD.wav
+# sample differences against the kept lane input (16-bit sample units):
+S7flat30.plus30c.r0602.wav max|diff| 2 differing samples 942526 of 2116800
+again.wav max|diff| 2 differing samples 942499 of 2116800
+again2.wav max|diff| 2 differing samples 941674 of 2116800
+againR.wav max|diff| 2 differing samples 941842 of 2116800
+againD.wav max|diff| 1 differing samples 686022 of 2116800
+again.wav vs again2.wav max|diff| 2 differing samples 941654

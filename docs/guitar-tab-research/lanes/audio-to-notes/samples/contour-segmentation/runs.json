@@ -1,0 +1,98 @@
+{
+ "fcpe/S1": {
+  "threshold": null,
+  "frames": 2984,
+  "voiced_frames": 2739,
+  "n_notes": 48,
+  "n_notes_with_nan_pitch_dropped": 0,
+  "segmentation_s": 0.003
+ },
+ "fcpe/S4lead": {
+  "threshold": null,
+  "frames": 3875,
+  "voiced_frames": 3288,
+  "n_notes": 35,
+  "n_notes_with_nan_pitch_dropped": 0,
+  "segmentation_s": 0.004
+ },
+ "fcpe/R1b": {
+  "threshold": null,
+  "frames": 2934,
+  "voiced_frames": 2357,
+  "n_notes": 87,
+  "n_notes_with_nan_pitch_dropped": 7,
+  "segmentation_s": 0.003
+ },
+ "pesto/S1": {
+  "threshold": null,
+  "frames": 2984,
+  "voiced_frames": 2984,
+  "n_notes": 62,
+  "n_notes_with_nan_pitch_dropped": 0,
+  "segmentation_s": 0.003
+ },
+ "pesto/S4lead": {
+  "threshold": null,
+  "frames": 3875,
+  "voiced_frames": 3875,
+  "n_notes": 41,
+  "n_notes_with_nan_pitch_dropped": 0,
+  "segmentation_s": 0.004
+ },
+ "pesto/R1b": {
+  "threshold": null,
+  "frames": 2934,
+  "voiced_frames": 2934,
+  "n_notes": 169,
+  "n_notes_with_nan_pitch_dropped": 0,
+  "segmentation_s": 0.007
+ },
+ "torchcrepe-full/S1": {
+  "threshold": "0.21",
+  "frames": 2984,
+  "voiced_frames": 2785,
+  "n_notes": 48,
+  "n_notes_with_nan_pitch_dropped": 0,
+  "segmentation_s": 0.003
+ },
+ "torchcrepe-full/S4lead": {
+  "threshold": "0.21",
+  "frames": 3875,
+  "voiced_frames": 3329,
+  "n_notes": 35,
+  "n_notes_with_nan_pitch_dropped": 0,
+  "segmentation_s": 0.004
+ },
+ "torchcrepe-full/R1b": {
+  "threshold": "0.21",
+  "frames": 2934,
+  "voiced_frames": 1184,
+  "n_notes": 38,
+  "n_notes_with_nan_pitch_dropped": 5,
+  "segmentation_s": 0.003
+ },
+ "essentia-crepe-tiny/S1": {
+  "threshold": null,
+  "frames": 2984,
+  "voiced_frames": 2984,
+  "n_notes": 65,
+  "n_notes_with_nan_pitch_dropped": 0,
+  "segmentation_s": 0.003
+ },
+ "essentia-crepe-tiny/S4lead": {
+  "threshold": null,
+  "frames": 3875,
+  "voiced_frames": 3875,
+  "n_notes": 44,
+  "n_notes_with_nan_pitch_dropped": 0,
+  "segmentation_s": 0.006
+ },
+ "essentia-crepe-tiny/R1b": {
+  "threshold": null,
+  "frames": 2934,
+  "voiced_frames": 2934,
+  "n_notes": 166,
+  "n_notes_with_nan_pitch_dropped": 0,
+  "segmentation_s": 0.004
+ }
+}

@@ -1,0 +1,51 @@
+# verify-gapfill-audio-to-notes, round 2: re-runs compared with gap round 2's outputs (2026-11-11)
+
+## r0694: CREPE Notes, re-run of r0616 (venv rebuilt offline from samples/crepe-notes/uv-pip-freeze-venv-crepenotes-py3.11.txt; crepe-notes from the PyPI wheel, SHA-256 checked; madmom 0.17.dev0 copied from fingerstyle-voices-taps/venv-madmom as in r0616)
+prep_crepenotes_inputs.py re-run: all nine f0in.csv files byte-identical to out/crepe-notes/<cfg>/
+tcfull S1: MIDI identical to r0616's; printed Tuning offset: 6.000000000000005 cents (same as r0616)
+tcfull R1b: MIDI identical to r0616's; printed Tuning offset: 20.000000000000007 cents (same as r0616)
+tcfull S4lead: MIDI identical to r0616's; printed Tuning offset: 6.000000000000005 cents (same as r0616)
+tctiny S1: MIDI identical to r0616's; printed Tuning offset: 6.000000000000005 cents (same as r0616)
+tctiny R1b: MIDI identical to r0616's; printed Tuning offset: 27.0 cents (same as r0616)
+tctiny S4lead: MIDI identical to r0616's; printed Tuning offset: 4.0000000000000036 cents (same as r0616)
+tcfullz S1: MIDI identical to r0616's; printed Tuning offset: 6.000000000000005 cents (same as r0616)
+tcfullz R1b: MIDI identical to r0616's; printed Tuning offset: 6.000000000000005 cents (same as r0616)
+tcfullz S4lead: MIDI identical to r0616's; printed Tuning offset: 6.000000000000005 cents (same as r0616)
+per-call GNU time (r0694):
+time tcfull S1 wall 22.33 s user 20.87 s sys 1.03 s maxrss 545628 KiB exit 0
+time tcfull R1b wall 6.54 s user 5.71 s sys 0.42 s maxrss 434844 KiB exit 0
+time tcfull S4lead wall 7.37 s user 6.39 s sys 0.55 s maxrss 592336 KiB exit 0
+time tctiny S1 wall 6.49 s user 6.19 s sys 0.37 s maxrss 437232 KiB exit 0
+time tctiny R1b wall 6.36 s user 6.18 s sys 0.36 s maxrss 434864 KiB exit 0
+time tctiny S4lead wall 7.16 s user 6.74 s sys 0.48 s maxrss 591892 KiB exit 0
+time tcfullz S1 wall 6.17 s user 6.05 s sys 0.35 s maxrss 437648 KiB exit 0
+time tcfullz R1b wall 6.12 s user 5.83 s sys 0.35 s maxrss 434752 KiB exit 0
+time tcfullz S4lead wall 6.97 s user 6.61 s sys 0.53 s maxrss 591732 KiB exit 0
+[gtr-run r0694] audio-to-notes/crepe-notes "verify (verify-gapfill-audio-to-notes round 2): re-run of r0616, crepe_notes 0.2.0 --f0 on the same 9 inputs (venv rebuilt offline from the saved freeze, madmom 0.17.dev0 copied as in r0616)" wall=75.6s cpu=75.1s rss=578.5MB cores=2 exit=0 slot_wait=0.0s
+
+## r0691: SoX, re-run of r0602 (gtr-run --nolock), plus unlogged runs with -R (twice) and -D (once)
+ae608af53c698379fc1f476e7ba959d7331f89e6c2e09d46591f710810f6b978  S7flat30.plus30c.wav
+7453f3e8a03d5892b777bf81a2937bfcb4fee3f2f29abb4e33249f4fd38887d6  R1.wav
+7453f3e8a03d5892b777bf81a2937bfcb4fee3f2f29abb4e33249f4fd38887d6  R2.wav
+54580ba34a187d5365b4c788ab903102b2cc3fd4e0212e56ba553706432dee03  D1.wav
+gap round 2 (samples/sox/gap2-sox-determinism.txt): -R runs 7453f3e8...38887d6 (both), -D run 54580ba3...432dee03, r0602 4f54aac7...ed91933b, kept lane input 31f6f3a9...42c42eef
+so: the -R output and the -D output of this re-run are byte-identical to gap round 2's; the default-mode output (r0691) differs from r0602's and from the kept file (SoX's default dither)
+S7flat30.plus30c.wav vs the kept lane input: max |difference| 2 (16-bit units), differing samples 942812 of 2116800
+R1.wav vs the kept lane input: max |difference| 2 (16-bit units), differing samples 941842 of 2116800
+D1.wav vs the kept lane input: max |difference| 1 (16-bit units), differing samples 686022 of 2116800
+
+## r0692: Essentia PitchYinProbabilistic explicit-parameter sine check, re-run of r0647 (gtr-run --nolock, fingerstyle-voices-taps venv-essentia)
+stdout byte-identical to r0647's out/essentia-pyin-gap2/sines_explicit.txt (= samples/essentia-pyin/gap2-sines-explicit.txt)
+
+## r0698 (ONNX Runtime 1.23.2, Python 3.10) and r0699 (1.31.1, Python 3.11): the A8 probe scripts/gap2/ort_affinity_probe.py again, under taskset -c 0,1 via gtr-run --nolock; venvs built offline (onnxruntime + numpy only), model nmp.onnx from the basic-pitch 0.4.0 wheel (SHA-256 2c3c1d14...2c059a0ec)
+venv-ort1232 freeze: coloredlogs==15.0.1 flatbuffers==25.12.19 humanfriendly==10.0 mpmath==1.3.0 numpy==1.26.4 onnxruntime==1.23.2 packaging==26.3 protobuf==7.36.2 sympy==1.14.0 
+venv-ort1311 freeze: flatbuffers==25.12.19 numpy==2.4.6 onnxruntime==1.31.1 packaging==26.3 protobuf==7.36.2 
+{"onnxruntime": "1.23.2", "process_affinity": [0, 1], "os_cpu_count": 4}
+{"session": "A: graph_optimization_level only", "input": ["serving_default_input_2:0", [1, 43844, 1]], "runs": 157, "new_threads": 4, "threads": [{"cpus_allowed_list": ["0-1"], "ran_on_cpus": [0, 1]}, {"cpus_allowed_list": ["1"], "ran_on_cpus": [1]}, {"cpus_allowed_list": ["2"], "ran_on_cpus": [2]}, {"cpus_allowed_list": ["3"], "ran_on_cpus": [3]}]}
+{"session": "B: plus intra_op_num_threads=2", "input": ["serving_default_input_2:0", [1, 43844, 1]], "runs": 117, "new_threads": 2, "threads": [{"cpus_allowed_list": ["0-1"], "ran_on_cpus": [1]}, {"cpus_allowed_list": ["0-1"], "ran_on_cpus": [0]}]}
+{"onnxruntime": "1.31.1", "process_affinity": [0, 1], "os_cpu_count": 4}
+{"session": "A: graph_optimization_level only", "input": ["serving_default_input_2:0", [1, 43844, 1]], "runs": 58, "new_threads": 4, "threads": [{"cpus_allowed_list": ["0-1"], "ran_on_cpus": [1]}, {"cpus_allowed_list": ["1"], "ran_on_cpus": [1]}, {"cpus_allowed_list": ["0-1", "2"], "ran_on_cpus": [1, 2]}, {"cpus_allowed_list": ["0-1", "3"], "ran_on_cpus": [1, 3]}]}
+{"session": "B: plus intra_op_num_threads=2", "input": ["serving_default_input_2:0", [1, 43844, 1]], "runs": 54, "new_threads": 2, "threads": [{"cpus_allowed_list": ["0-1"], "ran_on_cpus": [1]}, {"cpus_allowed_list": ["0-1"], "ran_on_cpus": [0, 1]}]}
+Same pattern as r0667 / r0666 (samples/basic-pitch/gap2-ort-affinity-probe-r0666-r0667.txt): with graph_optimization_level only, 1.23.2 made worker threads whose Cpus_allowed_list is 1, 2 and 3 (each ran only on that CPU), 1.31.1 two threads seen with 0-1 and then 2 or 3 (ran on CPUs 1 and 2, 1 and 3); with intra_op_num_threads = 2 every new thread had 0-1. r0698's ledger CPU time, 17.4 s in 6.52 s wall under a 2-CPU mask, is more than 2 CPUs can give.
+
+## r0664's outputs (out/basic-pitch/onnx-affinity-gap2/) against r0234's out/basic-pitch/onnx-default/: the same 32 file names (16 .mid, 16 .notes.csv), every file byte-identical (cmp)

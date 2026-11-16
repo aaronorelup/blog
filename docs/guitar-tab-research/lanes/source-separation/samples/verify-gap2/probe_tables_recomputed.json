@@ -1,0 +1,150 @@
+{
+ "probe_mdx-default_S4.json": {
+  "wall_s": 85.73,
+  "samples": 336,
+  "interval_s": 0.25,
+  "max_threads_at_once": 15,
+  "threads_seen": 18,
+  "probe_own_cpu_s": 0.75,
+  "cpu_s_by_allowed_recomputed": {
+   "0-1": 56.92,
+   "1": 28.34,
+   "2": 28.19,
+   "3": 27.87
+  },
+  "cpu_s_by_allowed_stored": {
+   "0-1": 56.92,
+   "1": 28.34,
+   "2": 28.19,
+   "3": 27.87
+  },
+  "single_cpu_threads": [
+   {
+    "tid": 3686,
+    "allowed": "1",
+    "samples_allowed": 297,
+    "cpu_seen": {
+     "1": 297
+    },
+    "cpu_s": 28.34,
+    "first_seen_s": 8.37,
+    "before_end_s": 1.51
+   },
+   {
+    "tid": 3687,
+    "allowed": "2",
+    "samples_allowed": 297,
+    "cpu_seen": {
+     "2": 297
+    },
+    "cpu_s": 28.19,
+    "first_seen_s": 8.37,
+    "before_end_s": 1.51
+   },
+   {
+    "tid": 3688,
+    "allowed": "3",
+    "samples_allowed": 297,
+    "cpu_seen": {
+     "3": 297
+    },
+    "cpu_s": 27.87,
+    "first_seen_s": 8.37,
+    "before_end_s": 1.51
+   }
+  ],
+  "cpu2_plus_cpu3_s": 56.06,
+  "every_thread_allowed_only_0-1": false
+ },
+ "probe_mdx-ort2_S4.json": {
+  "wall_s": 66.34,
+  "samples": 261,
+  "interval_s": 0.25,
+  "max_threads_at_once": 13,
+  "threads_seen": 14,
+  "probe_own_cpu_s": 0.59,
+  "cpu_s_by_allowed_recomputed": {
+   "0-1": 92.6
+  },
+  "cpu_s_by_allowed_stored": {
+   "0-1": 92.6
+  },
+  "single_cpu_threads": [],
+  "cpu2_plus_cpu3_s": 0,
+  "every_thread_allowed_only_0-1": true
+ },
+ "probe_onnx-default_S4.json": {
+  "wall_s": 57.76,
+  "samples": 227,
+  "interval_s": 0.25,
+  "max_threads_at_once": 7,
+  "threads_seen": 8,
+  "probe_own_cpu_s": 0.46,
+  "cpu_s_by_allowed_recomputed": {
+   "0-1": 31.87,
+   "1": 22.74,
+   "2": 21.99,
+   "3": 21.76
+  },
+  "cpu_s_by_allowed_stored": {
+   "0-1": 31.87,
+   "1": 22.74,
+   "2": 21.99,
+   "3": 21.76
+  },
+  "single_cpu_threads": [
+   {
+    "tid": 31747,
+    "allowed": "1",
+    "samples_allowed": 219,
+    "cpu_seen": {
+     "1": 219
+    },
+    "cpu_s": 22.74,
+    "first_seen_s": 1.01,
+    "before_end_s": 1.01
+   },
+   {
+    "tid": 31748,
+    "allowed": "2",
+    "samples_allowed": 219,
+    "cpu_seen": {
+     "2": 219
+    },
+    "cpu_s": 21.99,
+    "first_seen_s": 1.01,
+    "before_end_s": 1.01
+   },
+   {
+    "tid": 31749,
+    "allowed": "3",
+    "samples_allowed": 219,
+    "cpu_seen": {
+     "3": 219
+    },
+    "cpu_s": 21.76,
+    "first_seen_s": 1.01,
+    "before_end_s": 1.01
+   }
+  ],
+  "cpu2_plus_cpu3_s": 43.75,
+  "every_thread_allowed_only_0-1": false
+ },
+ "probe_onnx-ort2_S4.json": {
+  "wall_s": 61.28,
+  "samples": 241,
+  "interval_s": 0.25,
+  "max_threads_at_once": 5,
+  "threads_seen": 5,
+  "probe_own_cpu_s": 0.5,
+  "cpu_s_by_allowed_recomputed": {
+   "0-1": 70.49
+  },
+  "cpu_s_by_allowed_stored": {
+   "0-1": 70.49
+  },
+  "single_cpu_threads": [],
+  "cpu2_plus_cpu3_s": 0,
+  "every_thread_allowed_only_0-1": true
+ }
+}

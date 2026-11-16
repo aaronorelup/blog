@@ -1,0 +1,9 @@
+R1a maestro []
+R1a amateur ["up to 12 string attacks in one second; this difficulty allows 7","up to 20 picked notes in one bar, some together; this difficulty allows 4 unless each sounds alone"]
+R1b maestro []
+R1b amateur ["up to 9 string attacks in one second; this difficulty allows 7"]
+R1c maestro []
+R1c amateur ["up to 11 string attacks in one second; this difficulty allows 7","up to 15 picked notes in one bar, some together; this difficulty allows 4 unless each sounds alone"]
+S2n maestro []
+S2n amateur ["up to 8 picked notes in one bar, some together; this difficulty allows 4 unless each sounds alone"]
+[gtr-run r0641] guitar-tab/scorify-0.4.0 "gap round 2: scorify 0.4.0 limitsExceeded on R1a R1b R1c S2n at maestro and amateur (light check)" wall=0.14s cpu=0.1s rss=63.4MB cores=None exit=0 slot_wait=0.0s

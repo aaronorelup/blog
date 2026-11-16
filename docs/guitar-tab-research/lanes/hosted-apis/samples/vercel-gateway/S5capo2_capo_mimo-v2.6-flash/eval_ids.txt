@@ -1,0 +1,2 @@
+[gtr-eval e0069] tuning truth=S5capo2 exit=0 (ledger /home/user/gtr/eval/ledger/evals.jsonl)
+[gtr-eval e0070] key truth=S5capo2 exit=0 (ledger /home/user/gtr/eval/ledger/evals.jsonl)

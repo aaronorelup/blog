@@ -1,0 +1,65 @@
+Using Python 3.10.20 environment at: mt3pt/dry-3.10
+  × Failed to build `crepe==0.0.16`
+  ├─▶ The build backend returned an error
+  ╰─▶ Call to `setuptools.build_meta:__legacy__.build_wheel` failed (exit
+      status: 1)
+
+      [stdout]
+      Downloading weight file model-tiny.h5.bz2 ...
+
+      [stderr]
+      <string>:6: UserWarning: pkg_resources is deprecated as an API.
+      See https://setuptools.pypa.io/en/latest/pkg_resources.html. The
+      pkg_resources package is slated for removal as early as 2025-11-30.
+      Refrain from using this package or pin to Setuptools<81.
+      Traceback (most recent call last):
+        File "<string>", line 14, in <module>
+        File
+      "/home/user/gtr/cache/uv/builds-v0/.tmpxgrGdM/lib/python3.10/site-packages/setuptools/build_meta.py",
+      line 333, in get_requires_for_build_wheel
+          return self._get_build_requires(config_settings, requirements=[])
+        File
+      "/home/user/gtr/cache/uv/builds-v0/.tmpxgrGdM/lib/python3.10/site-packages/setuptools/build_meta.py",
+      line 301, in _get_build_requires
+          self.run_setup()
+        File
+      "/home/user/gtr/cache/uv/builds-v0/.tmpxgrGdM/lib/python3.10/site-packages/setuptools/build_meta.py",
+      line 518, in run_setup
+          super().run_setup(setup_script=setup_script)
+        File
+      "/home/user/gtr/cache/uv/builds-v0/.tmpxgrGdM/lib/python3.10/site-packages/setuptools/build_meta.py",
+      line 317, in run_setup
+          exec(code, locals())
+        File "<string>", line 30, in <module>
+        File
+      "/root/.local/share/uv/python/cpython-3.10-linux-x86_64-gnu/lib/python3.10/urllib/request.py",
+      line 241, in urlretrieve
+          with contextlib.closing(urlopen(url, data)) as fp:
+        File
+      "/root/.local/share/uv/python/cpython-3.10-linux-x86_64-gnu/lib/python3.10/urllib/request.py",
+      line 216, in urlopen
+          return opener.open(url, data, timeout)
+        File
+      "/root/.local/share/uv/python/cpython-3.10-linux-x86_64-gnu/lib/python3.10/urllib/request.py",
+      line 525, in open
+          response = meth(req, response)
+        File
+      "/root/.local/share/uv/python/cpython-3.10-linux-x86_64-gnu/lib/python3.10/urllib/request.py",
+      line 634, in http_response
+          response = self.parent.error(
+        File
+      "/root/.local/share/uv/python/cpython-3.10-linux-x86_64-gnu/lib/python3.10/urllib/request.py",
+      line 563, in error
+          return self._call_chain(*args)
+        File
+      "/root/.local/share/uv/python/cpython-3.10-linux-x86_64-gnu/lib/python3.10/urllib/request.py",
+      line 496, in _call_chain
+          result = func(*args)
+        File
+      "/root/.local/share/uv/python/cpython-3.10-linux-x86_64-gnu/lib/python3.10/urllib/request.py",
+      line 643, in http_error_default
+          raise HTTPError(req.full_url, code, msg, hdrs, fp)
+      urllib.error.HTTPError: HTTP Error 403: Forbidden
+
+
+hint: Build failures usually indicate a problem with the package or the build environment

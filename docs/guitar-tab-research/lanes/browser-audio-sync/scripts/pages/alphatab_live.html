@@ -1,0 +1,94 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>alphaTab live</title>
+<body>
+<div id="at" style="width:1200px"></div>
+<script type="module">
+// alphaTab 1.9.0 real-time player.
+//  mode=countin : synthesizer mode, countInVolume 1, metronomeVolume 1, guitar track muted; alphaTab's own audio output
+//                 is tapped (AudioNode.connect is wrapped so whatever alphaTab connects to its destination also feeds
+//                 this lane's AudioWorklet recorder in alphaTab's AudioContext); 8 s of playback recorded.
+//  mode=external: PlayerMode.EnabledExternalMedia with a handler driving an <audio> element playing S2n.wav; the page
+//                 calls output.updatePosition(audio.currentTime * 1000) on every animation frame and logs alphaTab's
+//                 playerPositionChanged against audio.currentTime; then a seek through api.timePosition.
+import { finish, fail, sleep, makeRecorder, clickOnsets, stats, encodeWav, upload, fetchArrayBuffer } from './common.js';
+const q = new URLSearchParams(location.search);
+const MODE = q.get('mode') || 'countin';
+const R = { mode: MODE, alphaTab_npm_version: '1.9.0' };
+const taps = [];
+const origConnect = AudioNode.prototype.connect;
+AudioNode.prototype.connect = function (dest, ...rest) {
+  const r = origConnect.call(this, dest, ...rest);
+  if (dest instanceof AudioDestinationNode) taps.push({ node: this, ctx: this.context });
+  return r;
+};
+try {
+  const alphaTab = await import('/nm/@coderline/alphatab/dist/alphaTab.mjs');
+  const api = new alphaTab.AlphaTabApi(document.getElementById('at'), {
+    core: { fontDirectory: '/nm/@coderline/alphatab/dist/font/' },
+    player: { playerMode: MODE === 'external' ? alphaTab.PlayerMode.EnabledExternalMedia : alphaTab.PlayerMode.EnabledSynthesizer,
+      soundFont: '/nm/@coderline/alphatab/dist/soundfont/sonivox.sf2' } });
+  const events = []; const t0 = performance.now();
+  api.playerPositionChanged.on((e) => events.push({ now: performance.now() - t0, currentTime: e.currentTime, endTime: e.endTime, isSeek: e.isSeek }));
+  api.playerStateChanged.on((e) => events.push({ now: performance.now() - t0, state: e.state, stopped: e.stopped }));
+  const loaded = new Promise((r) => api.scoreLoaded.on(r));
+  const ready = new Promise((r) => api.playerReady.on(r));
+  api.load(new Uint8Array(await fetchArrayBuffer('/inputs/S2n/S2n.gp5')));
+  const score = await loaded; await ready;
+  R.tempo = score.tempo;
+  if (MODE === 'countin') {
+    api.countInVolume = 1; api.metronomeVolume = 1;
+    api.changeTrackMute([score.tracks[0]], true);
+    // alphaTab creates and connects its audio output on the first play(): play, stop, then tap the connection
+    api.play(); await sleep(400); api.stop(); await sleep(400);
+    R.taps = taps.map((t) => t.node.constructor.name);
+    const ctx = taps.length ? taps[taps.length - 1].ctx : null;
+    if (!ctx) throw new Error('no alphaTab output connected to a destination');
+    R.alphaTab_ctx = { sampleRate: ctx.sampleRate, state: ctx.state, baseLatency: ctx.baseLatency };
+    const rec = await makeRecorder(ctx, 1, 1);
+    const joined = new Set(); const joinTaps = () => { for (const t of taps) if (t.ctx === ctx && !joined.has(t.node)) { joined.add(t.node); origConnect.call(t.node, rec.node); } };
+    joinTaps(); const joinIv = setInterval(joinTaps, 5);   // alphaTab may connect a new output node on play()
+    await sleep(200);
+    const playCtxTime = ctx.currentTime; R.play_called_ctx_frame = Math.round(playCtxTime * ctx.sampleRate);
+    api.play();
+    await sleep(8000);
+    api.stop(); await sleep(200); clearInterval(joinIv);
+    R.taps_after = taps.length; R.taps_joined = joined.size;
+    const cap = await rec.stop();
+    const x = cap.channels[0]; let peak = 0; for (const v of x) peak = Math.max(peak, Math.abs(v));
+    const on = clickOnsets(x, peak * 0.05, Math.round(0.15 * ctx.sampleRate)).map((i) => i + cap.firstFrame);
+    const beat = 60 / score.tempo;
+    R.capture = { firstFrame: cap.firstFrame, frames: x.length, gaps: cap.gaps, peak };
+    R.clicks = { n: on.length, first_after_play_ms: on.length ? (on[0] - R.play_called_ctx_frame) / ctx.sampleRate * 1000 : null,
+      intervals_ms: on.slice(1).map((f, i) => +((f - on[i]) / ctx.sampleRate * 1000).toFixed(3)), beat_ms: beat * 1000 };
+    const firstPos = events.find((e) => e.currentTime > 0);
+    R.first_position_event_over_0 = firstPos || null;
+    R.wav = await upload('alphatab', 'S2n_alphatab_live_countin_metronome.wav', encodeWav([x], ctx.sampleRate));
+  } else {
+    const audio = new Audio('/inputs/S2n/S2n.wav'); audio.preload = 'auto';
+    await new Promise((r) => { audio.oncanplaythrough = r; });
+    const calls = [];
+    api.player.output.handler = {
+      get backingTrackDuration() { return audio.duration * 1000; },
+      get playbackRate() { return audio.playbackRate; }, set playbackRate(v) { audio.playbackRate = v; },
+      get masterVolume() { return audio.volume; }, set masterVolume(v) { audio.volume = v; },
+      seekTo(ms) { calls.push(['seekTo', ms, performance.now() - t0]); audio.currentTime = ms / 1000; },
+      play() { calls.push(['play', performance.now() - t0]); audio.play(); },
+      pause() { calls.push(['pause', performance.now() - t0]); audio.pause(); },
+    };
+    let raf = true; const pump = () => { if (!raf) return; api.player.output.updatePosition(audio.currentTime * 1000); requestAnimationFrame(pump); }; requestAnimationFrame(pump);
+    const pairs = [];
+    api.playerPositionChanged.on((e) => pairs.push([performance.now() - t0, e.currentTime, audio.currentTime * 1000]));
+    api.play(); await sleep(10000);
+    api.timePosition = 20000; await sleep(1500);
+    const afterSeek = { audio_ms: audio.currentTime * 1000, api_timePosition: api.timePosition };
+    api.pause(); raf = false; await sleep(200);
+    R.handler_calls = calls; R.after_seek = afterSeek;
+    const d = pairs.filter((p) => p[2] > 500 && p[0] < 10000).map((p) => p[1] - p[2]);
+    R.position_event_minus_audio_ms = stats(d); R.position_events = pairs.length;
+  }
+  R.events_first = events.slice(0, 12); R.events_n = events.length;
+  finish(R);
+} catch (e) { fail(e, R); }
+</script>
+</body>

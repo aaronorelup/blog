@@ -1,0 +1,93 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>chain E: tab playback and a beat-tracker metronome</title>
+<body>
+<div id="at" style="width:1200px"></div>
+<script type="module">
+// Chain E. Built from the browser-audio-sync lane's pages: alphatab.html (alphaTab 1.9.0 exportAudio, metronome-only
+// and guitar-only renders) and sync_s4.html (play audio in one AudioContext, schedule clicks on the same clock,
+// capture the graph with the AudioWorklet recorder of common.js).
+// 1. alphaTab loads the chain A Guitar Pro 5 file (?gp=) and renders it twice with exportAudio: the metronome alone
+//    (guitar track volume 0) and the guitar alone (metronome volume 0).
+// 2. One AudioContext (44.1 kHz) plays both renders from the same frame T (AudioBufferSourceNode) and schedules a
+//    10 ms click (the sync_s4 click) at T + (b - gp0) for every beat time b of the beat tracker file (?beats=, first
+//    column, seconds in the audio), gp0 = the audio time of the Guitar Pro file's time 0 (?gp0=).
+// 3. Recorder channels: 0 = the guitar render as it arrives, 1 = the clicks, 2 = alphaTab's metronome render.
+import { finish, fail, sleep, makeRecorder, encodeWav, fetchArrayBuffer, fetchText } from '/bpages/common.js';
+import * as alphaTab from '/nm/@coderline/alphatab/dist/alphaTab.mjs';
+const q = new URLSearchParams(location.search);
+const GP = q.get('gp'), BEATS = q.get('beats'), GP0 = Number(q.get('gp0') || 0), TAG = q.get('tag') || 'chainE';
+const R = { gp: GP, beats_file: BEATS, gp0_s: GP0, alphaTab_npm_version: '1.9.0' };
+const upload = async (name, data) => { const r = await fetch(`/upload/${name}`, { method: 'POST', body: data });
+  if (!r.ok) throw new Error(`upload ${name}: ${r.status}`); return `/home/user/gtr/lanes/chains/out/chainE/${name}`; };
+try {
+  const api = new alphaTab.AlphaTabApi(document.getElementById('at'), {
+    core: { fontDirectory: '/nm/@coderline/alphatab/dist/font/', useWorkers: true },
+    player: { playerMode: alphaTab.PlayerMode.EnabledSynthesizer, soundFont: '/nm/@coderline/alphatab/dist/soundfont/sonivox.sf2' },
+  });
+  const t0 = performance.now();
+  const loaded = new Promise((r) => api.scoreLoaded.on((s) => r(s)));
+  const ready = new Promise((r) => api.playerReady.on(() => r()));
+  api.load(new Uint8Array(await fetchArrayBuffer(GP)));
+  const score = await loaded; await ready;
+  R.score = { title: score.title, tempo: score.tempo, masterBars: score.masterBars.length,
+    bar_numerators: score.masterBars.map((b) => b.timeSignatureNumerator) };
+  R.load_ms = performance.now() - t0;
+  const sr = 44100;
+  const render = async (opts) => {
+    const o = new alphaTab.synth.AudioExportOptions();
+    o.sampleRate = sr; o.masterVolume = 1; o.metronomeVolume = opts.metronome; o.useSyncPoints = false;
+    if (opts.muteTrack) o.trackVolume = new Map([[0, 0]]);
+    const ex = await api.exportAudio(o);
+    const parts = []; let total = 0; let last = null; const a = performance.now();
+    for (;;) { const c = await ex.render(1000); if (!c) break; parts.push(c.samples); total += c.samples.length;
+      last = { currentTime: c.currentTime, endTime: c.endTime, currentTick: c.currentTick, endTick: c.endTick }; }
+    const ms = performance.now() - a; ex.destroy();
+    const inter = new Float32Array(total); let off = 0; for (const p of parts) { inter.set(p, off); off += p.length; }
+    const L = new Float32Array(total / 2), Rr = new Float32Array(total / 2);
+    for (let i = 0; i < total / 2; i++) { L[i] = inter[2 * i]; Rr[i] = inter[2 * i + 1]; }
+    return { L, R: Rr, ms, last };
+  };
+  const met = await render({ metronome: 1, muteTrack: true });
+  const gtr = await render({ metronome: 0, muteTrack: false });
+  R.metronome_render = { ms: met.ms, seconds: met.L.length / sr, last_chunk: met.last };
+  R.guitar_render = { ms: gtr.ms, seconds: gtr.L.length / sr, last_chunk: gtr.last };
+  R.metronome_wav = await upload(`${TAG}_alphatab_metronome_only.wav`, encodeWav([met.L, met.R], sr));
+  R.guitar_wav = await upload(`${TAG}_alphatab_guitar_only.wav`, encodeWav([gtr.L, gtr.R], sr));
+
+  const beats = (await fetchText(BEATS)).trim().split('\n').map((l) => Number(l.trim().split(/\s+/)[0])).filter((x) => Number.isFinite(x));
+  R.n_beats = beats.length;
+  const ctx = new AudioContext({ sampleRate: sr, latencyHint: 'interactive' }); await ctx.resume();
+  R.sampleRate = ctx.sampleRate;
+  const mk = (x) => { const b = ctx.createBuffer(2, x.L.length, sr); b.copyToChannel(x.L, 0); b.copyToChannel(x.R, 1); return b; };
+  const gBuf = mk(gtr), mBuf = mk(met);
+  const CL = Math.round(0.010 * sr), click = ctx.createBuffer(1, CL, sr), cd = click.getChannelData(0);
+  for (let n = 0; n < CL; n++) cd[n] = 0.8 * Math.cos(2 * Math.PI * 2000 * n / sr) * Math.exp(-n / (0.002 * sr));
+  const rec = await makeRecorder(ctx, 3, 1);
+  const merger = new ChannelMergerNode(ctx, { numberOfInputs: 3 }); merger.connect(rec.node);
+  const monoG = new GainNode(ctx, { channelCount: 1, channelCountMode: 'explicit', channelInterpretation: 'speakers' });
+  monoG.connect(merger, 0, 0); monoG.connect(ctx.destination);
+  const clickBus = new GainNode(ctx); clickBus.connect(merger, 0, 1); clickBus.connect(ctx.destination);
+  const monoM = new GainNode(ctx, { channelCount: 1, channelCountMode: 'explicit', channelInterpretation: 'speakers' });
+  monoM.connect(merger, 0, 2); monoM.connect(ctx.destination);
+  const g = new AudioBufferSourceNode(ctx, { buffer: gBuf }); g.connect(monoG);
+  const m = new AudioBufferSourceNode(ctx, { buffer: mBuf }); m.connect(monoM);
+  const T = Math.ceil((ctx.currentTime + 0.5) * sr) / sr;
+  R.start_frame_scheduled = Math.round(T * sr);
+  g.start(T); m.start(T);
+  const sched = [];
+  for (const b of beats) { const t = T + (b - GP0); if (t < T) { sched.push({ beat: b, skipped_before_start: true }); continue; }
+    const s = new AudioBufferSourceNode(ctx, { buffer: click }); s.connect(clickBus); s.start(t);
+    sched.push({ beat: b, t, frame: Math.round(t * sr) }); }
+  R.scheduled = sched;
+  const dur = Math.max(gBuf.duration, mBuf.duration);
+  while (ctx.currentTime < T + dur + 0.3) await sleep(100);
+  const cap = await rec.stop();
+  R.capture = { firstFrame: cap.firstFrame, frames: cap.channels[0].length, gaps: cap.gaps };
+  R.playbackStats = ctx.playbackStats ? JSON.parse(JSON.stringify(ctx.playbackStats.toJSON())) : null;
+  R.wav = await upload(`${TAG}_capture.wav`, encodeWav(cap.channels, sr, { float: true }));
+  await ctx.close();
+  finish(R);
+} catch (e) { fail(e, R); }
+</script>
+</body>

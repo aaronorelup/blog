@@ -1,0 +1,71 @@
+{
+ "tool": "pyin",
+ "clips": {
+  "S1": {
+   "input": "/home/user/gtr/inputs/S1/S1.mono.wav",
+   "seconds": 13.181,
+   "n_frames": 1285,
+   "hop_s": 0.02322,
+   "n_frames_freq_gt0": 1201
+  },
+  "S2n": {
+   "input": "/home/user/gtr/inputs/S2n/S2n.mono.wav",
+   "seconds": 1.387,
+   "n_frames": 1265,
+   "hop_s": 0.02322,
+   "n_frames_freq_gt0": 882
+  },
+  "S2s": {
+   "input": "/home/user/gtr/inputs/S2s/S2s.mono.wav",
+   "seconds": 1.418,
+   "n_frames": 1265,
+   "hop_s": 0.02322,
+   "n_frames_freq_gt0": 977
+  },
+  "S4": {
+   "input": "/home/user/gtr/inputs/S4/S4.mono.wav",
+   "seconds": 1.929,
+   "n_frames": 1669,
+   "hop_s": 0.02322,
+   "n_frames_freq_gt0": 1255
+  },
+  "S4lead": {
+   "input": "/home/user/gtr/inputs/S4/stems/lead.wav",
+   "seconds": 2.647,
+   "n_frames": 1669,
+   "hop_s": 0.02322,
+   "n_frames_freq_gt0": 1463
+  },
+  "R1b": {
+   "input": "/home/user/gtr/inputs/R1b/R1b.mono.wav",
+   "seconds": 2.688,
+   "n_frames": 1264,
+   "hop_s": 0.02322,
+   "n_frames_freq_gt0": 993
+  },
+  "R2": {
+   "input": "/home/user/gtr/inputs/R2/R2.mono.wav",
+   "seconds": 3.457,
+   "n_frames": 1551,
+   "hop_s": 0.02322,
+   "n_frames_freq_gt0": 1109
+  },
+  "R3a": {
+   "input": "/home/user/gtr/inputs/R3a/R3a.mono.wav",
+   "seconds": 2.079,
+   "n_frames": 776,
+   "hop_s": 0.02322,
+   "n_frames_freq_gt0": 583
+  }
+ },
+ "version": "1.0.0",
+ "settings": {
+  "sr": 22050,
+  "fmin": 65.40639132514966,
+  "fmax": 2093.004522404789,
+  "frame_length": 2048,
+  "hop_length": 512,
+  "note": "librosa.load(path, sr=22050, mono=True); librosa.pyin(...) other args default"
+ },
+ "setup_s": 1.033
+}

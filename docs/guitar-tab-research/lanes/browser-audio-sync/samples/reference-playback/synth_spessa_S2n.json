@@ -1,0 +1,49 @@
+{
+ "page": "/pages/synths.html?method=spessa&clip=S2n",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 40.51,
+ "external_requests": [],
+ "result": {
+  "method": "spessa",
+  "clip": "S2n",
+  "n_notes": 90,
+  "sampleRate": 44100,
+  "load_ms": 1794.2349999998696,
+  "sf2_bytes": 0,
+  "t0": 2.572380952380952,
+  "t0_frame": 113442,
+  "capture": {
+   "firstFrame": 2304,
+   "frames": 1432064,
+   "gaps": [
+    {
+     "atFrame": 2432,
+     "frames": 384
+    },
+    {
+     "atFrame": 18688,
+     "frames": -128
+    },
+    {
+     "atFrame": 18688,
+     "frames": 128
+    }
+   ]
+  },
+  "playbackStats": {
+   "underrunDuration": 0.32,
+   "underrunEvents": 32,
+   "totalDuration": 32.413218,
+   "averageLatency": 0.031313,
+   "minimumLatency": 0,
+   "maximumLatency": 0.032879
+  },
+  "peak": 0.22721333801746368,
+  "wav": "/home/user/gtr/lanes/browser-audio-sync/out/synths/S2n_spessa.wav"
+ }
+}

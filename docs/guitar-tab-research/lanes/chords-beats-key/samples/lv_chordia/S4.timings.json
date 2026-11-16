@@ -1,0 +1,27 @@
+{
+ "torch": "2.15.0+cpu",
+ "torch_threads": 1,
+ "import_s": 1.12,
+ "chord_recognition_submission_s": 6.431,
+ "n_segments_submission": 18,
+ "labels_submission": [
+  "A:7",
+  "A:maj",
+  "B:min",
+  "D:maj",
+  "E:min7",
+  "G:maj",
+  "N"
+ ],
+ "chord_recognition_ismir2017_s": 3.364,
+ "n_segments_ismir2017": 18,
+ "labels_ismir2017": [
+  "A:7",
+  "A:maj",
+  "B:min",
+  "D:maj",
+  "E:min7",
+  "G:maj",
+  "N"
+ ]
+}

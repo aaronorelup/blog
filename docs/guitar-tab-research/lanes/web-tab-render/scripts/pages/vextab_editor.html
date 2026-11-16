@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>VexTab editor-mode trial (verifier)</title>
+<style>body { margin: 0; background: #fff; } .vextab-auto { padding: 10px; }</style>
+<script src="/nm/vextab/dist/main.prod.js"></script>
+</head>
+<body>
+<!-- VexTab 4.0.5 Div with editor="true": VexTab renders the text below and adds a textarea; typing in it re-renders
+     (verify-trials-web-tab-render, 2026-11-10). The text is samples/vextab/S2n.vextab, written by truth_to_vextab.py. -->
+<div class="vextab-auto" editor="true" width="1200" height="1000" editor-height="300">
+options space=20 tab-stems=false
+tabstave notation=true tablature=true tuning=standard key=G time=4/4
+voice
+notes :w ## | :q 0/3 :q 0/3 :q 3/2 :q 3/2 | :q 0/1 :q 0/1 :h 3/2 | :q 1/2 :q 1/2 :q 0/2 :q 0/2 |
+voice
+notes :w ## | :q 3/6 :q 0/4 :q 3/6 :q 0/4 | :q 3/5 :q 2/4 :q 3/6 :q 0/4 | :q 3/5 :q 2/4 :q 3/6 :q 0/4 |
+tabstave notation=true tablature=true tuning=standard key=G
+voice
+notes :q 2/3 :q 2/3 :h 0/3 | :q 3/2 :q 3/2 :q 1/2 :q 1/2 | :q 0/2 :q 0/2 :h 2/3 | :q 3/2 :q 3/2 :q 1/2 :q 1/2 |
+voice
+notes :q 0/4 :q 0/5 :q 3/6 :q 0/4 | :q 3/6 :q 0/4 :q 3/5 :q 2/4 | :q 3/6 :q 0/4 :q 0/4 :q 0/5 | :q 3/6 :q 0/4 :q 3/5 :q 2/4 |
+tabstave notation=true tablature=true tuning=standard key=G
+voice
+notes :q 0/2 :q 0/2 :h 2/3 | :q 0/3 :q 0/3 :q 3/2 :q 3/2 | :q 0/1 :q 0/1 :h 3/2 | :q 1/2 :q 1/2 :q 0/2 :q 0/2 |
+voice
+notes :q 3/6 :q 0/4 :q 0/4 :q 0/5 | :q 3/6 :q 0/4 :q 3/6 :q 0/4 | :q 3/5 :q 2/4 :q 3/6 :q 0/4 | :q 3/5 :q 2/4 :q 3/6 :q 0/4 |
+tabstave notation=true tablature=true tuning=standard key=G
+voice
+notes :q 2/3 :q 2/3 :h 0/3 |
+voice
+notes :q 0/4 :q 0/5 :q 3/6 :q 0/4 |
+</div>
+</body>
+</html>
