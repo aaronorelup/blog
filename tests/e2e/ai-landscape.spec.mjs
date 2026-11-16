@@ -249,7 +249,7 @@ test('landscape-6b the skip link, first on the page, switches to the same text v
 });
 
 test('landscape-7 reduced motion: the page scrolls natively, the story arrives at once, nothing moves by itself, and every section shows', async ({ page, isMobile }) => {
-  test.setTimeout(240_000);
+  test.setTimeout(480_000);   // 54 stops: alone about 1.5 min, past 4 min beside three other WebGL walks on 4 cores
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await open(page);
   await light(page);
@@ -276,7 +276,7 @@ test('landscape-7 reduced motion: the page scrolls natively, the story arrives a
 });
 
 test('landscape-8 nothing runs off the side of the screen, in any section, 3D or text', async ({ page }) => {
-  test.setTimeout(240_000);
+  test.setTimeout(480_000);   // 54 stops: alone about 1.5 min, past 4 min beside three other WebGL walks on 4 cores
   const wide = () => page.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - innerWidth);
   await open(page);
   await light(page);
