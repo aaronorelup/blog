@@ -194,10 +194,18 @@ export function create(ctx, el, sec) {
   window.addEventListener('keydown', onEsc);
 
   // ---- labels: names under the bench in two staggered rows on a desktop (his pair has room in the first row, at
-  // the feet of the two large blocks). A phone lists them in the sheet
+  // the feet of the two large blocks). A phone lists them in the sheet.
+  // A swap keeps its place whatever the length of the name beside it, so a pointer or a finger that rests on it can
+  // press it again (centred, a longer name pushed the swap from under the pointer, and the next press opened a card
+  // or swapped the other piece). On a desktop a piece with a swap is held by its right end, under the right corner
+  // of its block, and its name grows to the left. On a phone his pair are two bars, each to the end of its row with
+  // its swap there, so no name moves a piece into another row
   const w0 = new Vector3();
   const low = (p, k) => k % 2 === 1 && p.box !== LEAD;
-  const pins = phone ? [] : pieces.map((p, k) => labels.pin(p.li, () => v.set(p.x, 0.02, Z + DEPTH / 2), { ax: 0.5, ay: 0, dy: ROWS[low(p, k) ? 1 : 0] }));
+  const pins = phone ? [] : pieces.map((p, k) => labels.pin(p.li, () => v.set(p.x + (p.swap ? p.box.w / 2 : 0), 0.02, Z + DEPTH / 2), { ax: p.swap ? 1 : 0.5, ay: 0, dy: ROWS[low(p, k) ? 1 : 0] }));
+  const bars = phone ? pieces.filter((p) => p.swap) : [];
+  const bar = (on) => bars.forEach((p, k) => { p.li.style.flex = on ? `1 0 ${k ? '100%' : 'auto'}` : ''; p.li.firstElementChild.style.flex = on ? '1' : ''; p.tag.style.display = on ? 'flex' : ''; });
+  bar(true);
   const leads = phone ? [] : pieces.map((p, k) => (low(p, k) ? labels.line('dot') : null));
   pins.forEach((p) => { p.on = false; });
   // a phone's picture is small: it frames him, his router, his coding agent and its model, so the cast stands large
@@ -369,6 +377,7 @@ export function create(ctx, el, sec) {
       pairsEl.open = false; pairsEl.style.bottom = ''; pairsEl.style.top = '';
       pins.forEach((p) => p.drop());
       pieces.forEach((p) => { p.tag.style.opacity = ''; });
+      bar(false);
       leads.forEach((l) => l && l.drop());
       lines.forEach((l) => (l.cord || l.arc).dispose());
       cast.forEach((c) => c.fig.dispose());
