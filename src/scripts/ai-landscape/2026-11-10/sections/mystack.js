@@ -19,6 +19,9 @@ const FLOOR = { router: 2, harness: 3, model: 4 };           // the floor a borr
 const FLY = 0.8, STAGGER = 0.07, SWAP = 0.7;
 // the cord from router to coding agent: dashed as the pair is documented (44ths of its length), a bead every 1.4 s
 const CORD = { dash: { yes: null, partial: [6, 2], no: [3, 3] }, out: 0.35, run: 1.4, sag: -0.14 };
+// the names stand in two rows under the bench's foot (px): the second begins where the first one's ground ends (a
+// name is 48 px high), so no ground of one row lies over a name of the other
+const ROWS = [12, 60];
 
 export function create(ctx, el, sec) {
   const { rig, row, labels, prims, phone, reduced, mats, textures } = ctx;
@@ -29,7 +32,7 @@ export function create(ctx, el, sec) {
   const pairsEl = $('.ail-ms__pairs', el);
   pairsEl.open = true;
   const says = $$('.ail-ms__say', el);
-  const st = { r: 0, w: 0, flown: false, fly: 0, last: null, official: 'no', time: 0 };
+  const st = { r: 0, w: 0, flown: false, fly: 0, last: null, official: 'no', time: 0, tick: 0 };
   const made = [];
   const keep = (m) => { ctx.scene.add(m); made.push(m); return m; };
 
@@ -81,7 +84,7 @@ export function create(ctx, el, sec) {
     p.inlay = keep(new Mesh(t.geo, mats.glass(owner(p.owner), { halfH: H * 0.39 })));
     p.seam = keep(new Line(t.seam, new LineBasicMaterial({ color: INK, transparent: true, opacity: 0.7 })));
     p.inlay.position.set(p.x, H * 0.61, Z + DEPTH / 2 - 0.045); p.seam.position.copy(p.inlay.position);
-    p.name = $('.ail-ms__name', p.li);
+    p.name = $('.ail-ms__name', p.li); p.tag = $('.ail-ms__tag', p.li);
     p.over = () => { p.hover = 1; }; p.leave = () => { p.hover = 0; };       // kept, so dispose() can take them off again
     p.li.addEventListener('pointerenter', p.over);
     p.li.addEventListener('pointerleave', p.leave);
@@ -131,6 +134,19 @@ export function create(ctx, el, sec) {
     return { pa, pb, target, arc };
   }).filter(Boolean);
 
+  // a desktop prints the stamp bottom left, under the names. A short window has no room there: where the stamp would
+  // stand over the first row of names and the two swaps, it stands where his sentence stood, under the title (the
+  // sentence is away while the pair on the bench is not his)
+  const v = new Vector3();
+  function place() {
+    if (phone || !pairsEl.classList.contains('is-on')) return;
+    const frame = pairsEl.offsetParent.getBoundingClientRect();
+    const names = labels.project(v.set(pieces[0].x, 0.02, Z + DEPTH / 2)).y + ROWS[1];
+    const up = frame.bottom - pairsEl.offsetLeft - pairsEl.offsetHeight < names;
+    const top = up ? `${Math.round(quote.getBoundingClientRect().top - frame.top)}px` : '';
+    if (pairsEl.style.top !== top) { pairsEl.style.top = top; pairsEl.style.bottom = up ? 'auto' : ''; }
+  }
+
   // ---- the swap: cycle the router through the personal agents and outside routers, the worker through the coding agents
   function verdict(quiet) {
     const r = opts.router[st.r], w = opts.worker[st.w];
@@ -142,6 +158,7 @@ export function create(ctx, el, sec) {
     // a phone prints the stamp just over the list of pieces, however many rows that list takes in this window (the
     // sheet's fixed place stood it over the first row, and a finger could not reach the router's swap a second time)
     if (phone && !mine) pairsEl.style.bottom = `${Math.round(window.innerHeight - $('.ail-ms__bands', el).getBoundingClientRect().top + 8)}px`;
+    place();
     st.official = say ? say.dataset.official : 'none';
     // no documented pair: no cord, and the piece that was just swapped in hangs clear of the bench
     pieces.forEach((p) => { p.float = st.official === 'none' && p === st.last ? 1 : 0; });
@@ -160,7 +177,7 @@ export function create(ctx, el, sec) {
     row.towers.forEach((tw, i) => { tw.shift = seat[i] - tw.x; });
     source(p, o.owner, p.from);
     p.t = reduced ? 1 : 0; p.delay = 0; p.dur = SWAP;
-    st.last = p;
+    st.last = p; p.again = true;
     verdict(false);
   }
   const buttons = $$('.ail-ms__swap', el);
@@ -178,10 +195,9 @@ export function create(ctx, el, sec) {
 
   // ---- labels: names under the bench in two staggered rows on a desktop (his pair has room in the first row, at
   // the feet of the two large blocks). A phone lists them in the sheet
-  const v = new Vector3();
   const w0 = new Vector3();
   const low = (p, k) => k % 2 === 1 && p.box !== LEAD;
-  const pins = phone ? [] : pieces.map((p, k) => labels.pin(p.li, () => v.set(p.x, 0.02, Z + DEPTH / 2), { ax: 0.5, ay: 0, dy: low(p, k) ? 50 : 12 }));
+  const pins = phone ? [] : pieces.map((p, k) => labels.pin(p.li, () => v.set(p.x, 0.02, Z + DEPTH / 2), { ax: 0.5, ay: 0, dy: ROWS[low(p, k) ? 1 : 0] }));
   const leads = phone ? [] : pieces.map((p, k) => (low(p, k) ? labels.line('dot') : null));
   pins.forEach((p) => { p.on = false; });
   // a phone's picture is small: it frames him, his router, his coding agent and its model, so the cast stands large
@@ -328,13 +344,19 @@ export function create(ctx, el, sec) {
       // words: the head arrives with the bench, the labels with their pieces
       const words = smooth(span(u, 0.12, 0.3)) * (1 - smooth(span(u, 1.1, 1.24)));
       el.style.setProperty('--ms-on', words.toFixed(3));
+      // (the stamp's place is measured again twice a second while the camera holds: a window can change its size)
+      st.tick -= dt;
+      if (st.tick <= 0 && u > 0.32 && u < 1.08) { st.tick = 0.5; place(); }
       pins.forEach((pin, k) => {
-        const p = pieces[k];
-        pin.el.style.opacity = (words * smooth(p.t * 3 - 1.4)).toFixed(3);
+        const p = pieces[k], o = smooth(p.t * 3 - 1.4);
+        // a name arrives with its piece. At a swap only the name goes and comes back: the swap beside it stays (a pin
+        // that has faded out is hidden, and a hidden button loses its focus and the pointer that rests on it)
+        pin.el.style.opacity = (words * (p.again ? 1 : o)).toFixed(3);
+        if (p.again) p.tag.style.opacity = o.toFixed(3);
         const lead = leads[k];
         if (lead) {
           const a = labels.project(v.set(p.x, 0.02, Z + DEPTH / 2));
-          lead.set(a.x, a.y + 3, a.x, a.y + 48, Number(pin.el.style.opacity) * 0.6);
+          lead.set(a.x, a.y + 3, a.x, a.y + ROWS[1] - 2, Number(pin.el.style.opacity) * 0.6);
         }
       });
     },
@@ -344,8 +366,9 @@ export function create(ctx, el, sec) {
       buttons.forEach((b) => { b.removeEventListener('click', onSwap); b.hidden = true; });
       window.removeEventListener('keydown', onEsc);
       later.forEach(([li, parent, next]) => parent.insertBefore(li, next && next.parentNode === parent ? next : null));
-      pairsEl.open = false; pairsEl.style.bottom = '';
+      pairsEl.open = false; pairsEl.style.bottom = ''; pairsEl.style.top = '';
       pins.forEach((p) => p.drop());
+      pieces.forEach((p) => { p.tag.style.opacity = ''; });
       leads.forEach((l) => l && l.drop());
       lines.forEach((l) => (l.cord || l.arc).dispose());
       cast.forEach((c) => c.fig.dispose());

@@ -906,6 +906,55 @@ const OVERLAPS = () => {
   return [...new Set(bad)];
 };
 
+// What OVERLAPS cannot see: a ground is not a word. Under the bench of my stack every name stands on a ground of its
+// own, and so does the stamp a swap prints. A name is whole when no other name's ground lies over its words. A swap
+// can be pressed a second time when a pointer on its middle finds the swap. The stamp's words stand under no name's
+// ground and under no swap, and its ground over no swap and over no name of a phone's list (a desktop's names are
+// pinned above it). All of it is measured but the swaps: a browser does not find a name under a pointer while it
+// fades, nor for some frames after
+const BENCH_WORDS = () => {
+  const seen = (el) => el.checkVisibility({ opacityProperty: true, visibilityProperty: true });
+  const lines = (el) => { const r = document.createRange(); r.selectNodeContents(el); return [...r.getClientRects()].filter((b) => b.width > 2 && b.height > 2); };
+  const over = (a, b) => Math.min(a.right, b.right) - Math.max(a.left, b.left) > 1 && Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > 1;
+  const bad = [];
+  const names = [...document.querySelectorAll('#my-stack .ail-ms__piece[data-first]')].map((li) => ({ li, parts: [...li.querySelectorAll('.ail-ms__tag .ail-ms__name, .ail-ms__tag .ail-ms__role')].filter(seen) })).filter((n) => n.parts.length)
+    .map((n) => ({ ...n, s: n.parts[0].textContent.trim(), words: n.parts.flatMap(lines), ground: n.li.querySelector('.ail-ms__tag').getBoundingClientRect() }));
+  const swaps = [...document.querySelectorAll('#my-stack .ail-ms__swap')].filter(seen).map((b) => ({ b, s: b.dataset.swap, box: b.getBoundingClientRect() }));
+  for (const a of names) for (const b of names) if (a !== b && b.words.some((w) => over(a.ground, w))) bad.push(`the ground of "${a.s}" lies over the name "${b.s}"`);
+  for (const { b, s, box } of swaps) {
+    // (the middle of a swap: a piece's small mark stands on the corner of the swap beside it)
+    for (const [fx, fy] of [[0.5, 0.5], [0.3, 0.3], [0.7, 0.3], [0.3, 0.7], [0.7, 0.7]]) {
+      const at = document.elementFromPoint(box.left + box.width * fx, box.top + box.height * fy);
+      if (at && !b.contains(at)) { bad.push(`the swap of the ${s} is under ${at.className || at.tagName}`); break; }
+    }
+  }
+  const say = document.querySelector('#my-stack .ail-ms__say.is-on');
+  if (say && seen(say)) {
+    const panel = say.getBoundingClientRect(), words = [...say.querySelectorAll('.ail-ms__stamp, .ail-ms__line')].flatMap(lines);
+    for (const n of names) {
+      if (words.some((w) => over(w, n.ground))) bad.push(`the stamp's words stand under the name "${n.s}"`);
+      if (!n.li.classList.contains('ail-pin') && n.words.some((w) => over(w, panel))) bad.push(`the stamp stands over the name "${n.s}"`);
+    }
+    for (const { s, box } of swaps) if (over(panel, box)) bad.push(`the stamp stands on the swap of the ${s}`);
+  }
+  return bad;
+};
+// (a name a swap has just changed goes with the next frame and comes back with its piece, and the stamp takes its
+// time to arrive: the measure waits for both, or it would pass over what is not there yet. It is taken again, a few
+// frames on, before a fault counts: what a pointer finds follows what is drawn)
+const benchWords = async (page) => {
+  await frames(page, 3);
+  await expect.poll(() => page.evaluate(() => [...document.querySelectorAll('#my-stack .ail-ms__piece[data-first], #my-stack .ail-ms__piece[data-first] .ail-ms__tag, #my-stack .ail-ms__say.is-on')].every((el) => Number(getComputedStyle(el).opacity) === 1)), { timeout: 60_000, message: 'every name under the bench is back, and the stamp has arrived' }).toBe(true);
+  let bad = [];
+  for (let k = 0; k < 6; k++) {
+    await frames(page, 2);
+    bad = await page.evaluate(BENCH_WORDS);
+    if (!bad.length) break;
+    await page.waitForTimeout(500);
+  }
+  return bad;
+};
+
 const SHORT_STOPS = { worlds: [0.5, 0.95, 1.3, 1.55, 2.0, 2.62, 2.8], opening: [0.6, 1.4], grammar: [0.39, 1.58, 3.0, 3.24], lineup: [0.25, 0.44, 0.63, 1.2, 1.58, 1.9] };
 test('landscape-21 in a laptop\'s short window no word prints over a word: 1366 by 660 and 1280 by 720, every section and every beat of a world', async ({ page, isMobile }) => {
   test.skip(isMobile, 'a phone lists its words in a sheet: landscape-8 walks it');
@@ -921,6 +970,15 @@ test('landscape-21 in a laptop\'s short window no word prints over a word: 1366 
         await go(page, s.id, u, 700);
         const over = await page.evaluate(OVERLAPS);
         if (over.length) bad.push(`${size.width}x${size.height} ${s.id} at ${u}: ${over.slice(0, 4).join(' | ')}`);
+      }
+      if (s.id !== 'my-stack') continue;
+      // the bench: every name whole on its ground, and after each swap the stamp it prints clear of the names and the swaps
+      await go(page, s.id, 0.7, 700);
+      for (const kind of ['', 'router', 'worker']) {
+        if (kind) await page.locator(`#my-stack .ail-ms__swap[data-swap="${kind}"]`).click();
+        const whole = await benchWords(page);
+        const over = [...await page.evaluate(OVERLAPS), ...whole];
+        if (over.length) bad.push(`${size.width}x${size.height} my-stack${kind ? ` after a swap of the ${kind}` : ''}: ${over.slice(0, 4).join(' | ')}`);
       }
     }
   }
@@ -1136,6 +1194,7 @@ test('landscape-27 around the five is a cabinet of nine drawers, a glyph on ever
   const behind = (list) => list.every((l) => l.lends.length > 0 && Math.min(...l.lends.map((x) => Math.abs(x - l.x))) <= 2.4);
   expect(s.lenders.map((l) => l.id).sort(), 'only the companies that lend him a piece stand behind').toEqual(lent(first));
   expect(behind(s.lenders), `each lender stands behind what it lends: ${JSON.stringify(s.lenders)}`).toBe(true);
+  expect(await benchWords(page), 'every name under the bench is whole, and both swaps can be pressed').toEqual([]);
 
   // a swap: the figure of a piece that is no longer his own leaves, the lenders follow, the cord follows the stamp
   for (const kind of ['router', 'worker', 'router']) {
@@ -1152,6 +1211,18 @@ test('landscape-27 around the five is a cabinet of nine drawers, a glyph on ever
       await expect.poll(async () => (await stack()).cords.find((c) => c.from === first.pair.router.id).on, { timeout: 60_000, message: `a pair stamped "${s.official}" has its cord` }).toBe(true);
       expect((await stack()).cords.find((c) => c.from === first.pair.router.id).dash).toEqual(DASH[s.official]);
     }
+    expect(await benchWords(page), `after a swap of the ${kind} the stamp it prints, every name and both swaps are whole`).toEqual([]);
+  }
+
+  // the swap from the keyboard: Enter on it swaps, the name beside it goes and comes back, and focus is still on the
+  // swap, so the next Enter swaps again (a swap that faded with its name was hidden, and focus fell to the page)
+  await page.locator('#my-stack .ail-ms__swap[data-swap="router"]').focus();
+  for (const press of [1, 2]) {
+    const was = (await dom()).pair.router.name;
+    await page.keyboard.press('Enter');
+    await expect.poll(async () => (await dom()).pair.router.name, { timeout: 30_000, message: `Enter ${press} on the router's swap swaps it` }).not.toBe(was);
+    expect(await benchWords(page), 'and the bench is whole again').toEqual([]);
+    expect(await page.evaluate(() => document.activeElement.dataset.swap || document.activeElement.tagName), 'focus stays on the swap').toBe('router');
   }
 
   // ---- the router floor: dark, one lamp, on the lit diagram. A pick moves it. The light is back for the lamp board
