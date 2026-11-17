@@ -252,6 +252,9 @@ export function create(ctx, el, sec) {
 
       // the stack pulls apart from the top. The character stands large beside it, then hops onto its floor
       tower.open = smooth(span(u, 0.6, 1.0)) * (1 - smooth(span(u, 2.72, 2.9)));
+      // a piece docked at the foot of the frame (fore.draw) stands there for the open beat: it comes when the entry card
+      // has left that corner and goes before the next beat's card takes it
+      inst.dock = smooth(span(u, 0.82, 1.0)) * (1 - smooth(span(u, 1.5, 1.6)));
       const c = tower.char;
       if (u < 0.62) { c.from = 'floor'; c.to = 'beside'; c.t = smooth(span(u, 0.22, 0.52)); }
       else { c.from = 'beside'; c.to = 'floor'; c.t = easeIO(span(u, 0.62, 1.0)); }

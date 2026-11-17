@@ -111,7 +111,16 @@ export function createWorlds(ctx) {
       return mesh;
     };
     inst.parts.props = cfg.props.slice(0, ctx.quality.props).map((p, k) => cut(cfg.art.props[(p.file || k + 1) - 1], p, -6 + k));
-    if (cfg.fore && cfg.art.fore) inst.parts.fore = cut(cfg.art.fore, cfg.fore, 12);
+    if (cfg.fore && cfg.art.fore && !cfg.fore.draw) inst.parts.fore = cut(cfg.art.fore, cfg.fore, 12);
+    // a foreground piece drawn in code (fore.draw names a textures function, as sign.draw does), its height from the
+    // drawing: no contact shadow, and none on a phone, where it would stand over the floors of the open stack
+    if (cfg.fore && cfg.fore.draw && !ctx.phone) {
+      const f = cfg.fore, tex = textures[f.draw]();
+      const mesh = new Mesh(new PlaneGeometry(f.w, (f.w * tex.image.height) / tex.image.width), mats.paper(tex, { side: 1, blended: true, opacity: 0 }));
+      mesh.renderOrder = 12; mesh.visible = false;
+      group.add(mesh);
+      inst.parts.dock = mesh;
+    }
 
     // dust: slow motes in the world's light colour
     if (ctx.quality.dust > 0) {
@@ -163,7 +172,7 @@ export function createWorlds(ctx) {
       return mounted.get(cfg.id);
     },
     unmount(id) { const inst = mounted.get(id); if (inst) { inst.dispose(); mounted.delete(id); if (worlds.active === inst) worlds.active = null; } },
-    reset() { for (const inst of mounted.values()) { inst.open = 0; inst.nameShow = 0; } },
+    reset() { for (const inst of mounted.values()) { inst.open = 0; inst.nameShow = 0; inst.dock = 0; } },
     resize(w, h, ratio) { size.w = w; size.h = h; size.ratio = ratio; chrome = null; },
 
     // Write the iris and the world's ground for whichever world is open this frame. inst.open: 0 shut .. 1 open.
@@ -209,6 +218,20 @@ export function createWorlds(ctx) {
         top.portraitK = ctx.reduced ? (top.portraitOn ? 1 : 0) : Math.max(0, Math.min(1, (top.portraitK || 0) + (top.portraitOn ? ctx.dt : -ctx.dt) / 0.18));
         f.visible = top.portraitK > 0.001;
         f.scale.setScalar(0.6 + 0.4 * top.portraitK);
+      }
+      // a docked piece stands whole or not at all: its section says how far it is in (inst.dock, 0 to 1), and it comes
+      // up from under its place only while all of it is inside the window. It follows the scroll, so it is still
+      const dock = top.parts.dock;
+      if (dock) {
+        const f = top.cfg.fore, e = top.dock || 0, hw = dock.geometry.parameters.width / 2, hh = dock.geometry.parameters.height / 2;
+        let whole = e > 0.001;
+        for (const [sx, sy] of CORNERS) {
+          v.set(f.x + sx * hw, f.y + sy * hh, f.z).add(top.group.position).project(cam);
+          if (Math.abs(v.x) > 1 - 16 / size.w || Math.abs(v.y) > 1 - 16 / size.h) whole = false;
+        }
+        dock.visible = whole;
+        dock.position.set(f.x, f.y - (1 - e) * 0.35, f.z);
+        dock.material.uniforms.uOpacity.value = e;
       }
       // a sign on the wall steps back while the name stands in front of it
       if (top.parts.sign) top.parts.sign.material.uniforms.uOpacity.value = 1 - top.nameShow;
