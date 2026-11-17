@@ -1211,8 +1211,8 @@ test('landscape-27 around the five is a cabinet of nine drawers, a glyph on ever
     const mine = { router: now.pair.router.name === first.pair.router.name, worker: now.pair.worker.name === first.pair.worker.name };
     await expect.poll(async () => { const c = (await stack()).cast; return [c.find((x) => x.piece === first.pair.router.id).on, c.find((x) => x.piece === first.pair.worker.id).on]; }, { timeout: 60_000, message: `after a swap of the ${kind}: a figure stands only on a piece that is his own` }).toEqual([mine.router, mine.worker]);
     await expect.poll(async () => (await stack()).lenders.map((l) => l.id).sort(), { timeout: 60_000, message: 'the lenders are the owners of the pieces now on the bench' }).toEqual(lent(now));
-    s = await stack();
-    expect(behind(s.lenders), `each lender behind what it lends: ${JSON.stringify(s.lenders)}`).toBe(true);
+    // (two lenders that stay and change places slide for about a second: the measure is of where they come to stand)
+    await expect.poll(async () => { s = await stack(); return behind(s.lenders) || JSON.stringify(s.lenders); }, { timeout: 30_000, message: 'each lender comes to stand behind what it lends' }).toBe(true);
     if (!mine.router || !mine.worker) expect(now.say, 'the pair on the bench shows its stamp').toEqual([s.official]);
     if (s.official === 'none') await expect.poll(async () => (await stack()).cords.find((c) => c.from === first.pair.router.id).on, { timeout: 30_000, message: 'no documented pair: no cord' }).toBe(false);
     else {
