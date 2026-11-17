@@ -184,6 +184,9 @@ test('landscape-4 scrolling moves the story forward and back: the wheel on a des
   test.setTimeout(180_000);
   // ?reduced: no idle sway, so the camera moves only because the story did (with the sway, it moves every frame)
   await open(page, '/ai-landscape/', 'low', '&reduced');
+  // (the scene says ready before its first section has arrived: the opening sets the camera when it mounts, some
+  // tenths of a second later, which on a quick machine is more than three frames. The measure starts once it has)
+  await page.waitForFunction(() => window.__landscape.opening && window.__landscape.opening.t > 0, null, { timeout: 60_000 });
   await frames(page, 3);
   const still = await hook(page);
   await frames(page, 6);
@@ -652,10 +655,14 @@ test('landscape-14 a resize keeps the place: a phone turned sideways reads the t
   await go(page, 'top', 0, 0);
   await page.setViewportSize({ width: 768, height: 1024 });
   await page.waitForFunction(() => window.__landscape.ready && window.__landscape.tier === 'low' && window.__landscape.frames > 0, null, { timeout: 60_000 });
-  await page.waitForTimeout(5000);
+  // both are read in the same state: the opening has drawn itself in and its tour has begun (4 s with no input), and
+  // the tour's chip has faded in. A fixed wait of 5 s read one page just before its tour and the other just after,
+  // on a machine quick enough to get there in 5 s
+  const toured = async (p) => { await p.waitForFunction(() => window.__landscape.opening && window.__landscape.opening.tour === 'on', null, { timeout: 90_000 }); await p.waitForTimeout(900); };
+  await toured(page);
   const fresh = await browser.newPage({ baseURL, viewport: { width: 768, height: 1024 } });
   await open(fresh);
-  await fresh.waitForTimeout(5000);
+  await toured(fresh);
   expect(await shown(page)).toBe(await shown(fresh));
   await fresh.close();
   // a desktop window made short (1440 by 900 at 200 percent) reads the text version, its boxes in flow
