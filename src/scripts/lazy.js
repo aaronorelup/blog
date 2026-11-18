@@ -5,6 +5,7 @@
 // A page that is leaving on purpose (the leaves door) abandons its loads, and WebKit rejects them: that is not version
 // skew, so nothing navigates or reloads over the way out. Back to the page (pageshow) clears it.
 let away = false;
+export const isLeaving = () => away;
 export function leaving() {
   away = true;
   addEventListener('pageshow', () => { away = false; }, { once: true });

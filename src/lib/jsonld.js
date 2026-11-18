@@ -39,7 +39,7 @@ export function blogPosting({ headline, description, published, url, image, voic
   });
 }
 
-// A listed post's notes page (/ledger/<slug>/notes/): an Article, part of its post, by its post's voice.
+// A listed post's notes page (/ledger/<slug>/notes/): an Article, part of its post, by the note's own voice.
 export function notesArticle({ headline, description, url, postUrl, voice }) {
   return graph(url, {
     '@type': 'Article', headline, description, url, mainEntityOfPage: url, isPartOf: ref(postUrl), inLanguage: 'en',

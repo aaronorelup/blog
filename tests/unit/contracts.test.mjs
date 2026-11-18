@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { check, previewsProblems, statsPagesProblems, rssProblems, baselineProblems, shareUrlProblems, shareImageProblems,
-  imageSize, sitemapPaths, jsonLdProblems, agentFilesProblems } from '../../scripts/build/contracts.mjs';
+  imageSize, sitemapPaths, jsonLdProblems, agentFilesProblems, claudeSlugs, claudeNotes } from '../../scripts/build/contracts.mjs';
 import { LIVE_NOTEBOOKS } from '../../src/data/exempt.js';
 import { blogPosting, notesArticle, profilePage, scriptText, webSite } from '../../src/lib/jsonld.js';
 
@@ -178,4 +178,14 @@ test('llms.txt, llms-full.txt and the twins (agentFilesProblems): an unlisted or
   assert.deepEqual(agentFilesProblems(ok, listed, (p) => p !== '/ledger/b/'), ['llms.txt: links /ledger/b/, which is not built']);
   assert.deepEqual(agentFilesProblems({ ...ok, full: undefined }, listed, built), ['llms-full.txt: it was not built']);
   assert.deepEqual(agentFilesProblems({ ...ok, llms: `${llmsOk} ${SITE}/ledger/${LIVE}/` }, listed, built), []);
+});
+
+test('a notes page is held to the note\'s own voice: AO-067\'s notes are Claude\'s under Aaron\'s post', () => {
+  assert.ok(claudeNotes().has('the-thought-it-denied'));
+  assert.ok(!claudeSlugs().has('the-thought-it-denied'));
+  const html = (author) => `<script type="application/ld+json">${scriptText(notesArticle({ headline: 'N', description: 'd',
+    url: 'https://aaronorelup.com/ledger/the-thought-it-denied/notes/', postUrl: 'https://aaronorelup.com/ledger/the-thought-it-denied/',
+    voice: author }))}</script>`;
+  assert.deepEqual(jsonLdProblems(html('claude'), '/ledger/the-thought-it-denied/notes/', true, 'Article'), []);
+  assert.ok(jsonLdProblems(html(undefined), '/ledger/the-thought-it-denied/notes/', true, 'Article').length > 0);
 });

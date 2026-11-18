@@ -2,7 +2,7 @@
 // before paint), the overlay, the coin and its lantern door; then, after first paint and only with WebGL, the scene
 // as a chunk of its own. Without it the page stays the flat document, already in the right colours.
 import './theme.js';
-import { lazy } from '../lazy.js';
+import { isLeaving, lazy } from '../lazy.js';
 import { bindCoin } from './coin.js';
 import { bindLeaves } from './leaves-door.js';
 import { flat } from './flat.js';
@@ -29,5 +29,5 @@ requestAnimationFrame(() => requestAnimationFrame(() => {
     // the e2e hook, and handy from the console when tuning waypoints; a scene that throws on start (a renderer
     // WebGL refused after all) gives the flat page at once, not a staged first frame left pending
     try { window.__homeScene = mount(); } catch (e) { flat(`the scene failed to start: ${e?.message || e}`); }
-  }, () => flat('the scene failed to load'));
+  }, () => isLeaving() || flat('the scene failed to load'));   // a page on its way out (the leaves door) stays staged
 }));

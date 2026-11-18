@@ -19,6 +19,6 @@ const markdown = isListed(post.data) && !isLive(slugOf(post)) ? `/ledger/${slugO
 ---
 <PanelPage title={`${note.data.title} · Aaron Orelup`} description={note.data.summary} active="ledger"
   noindex={post.data.unlisted} markdown={markdown} headline={note.data.title}
-  notesOf={{ postUrl: new URL(`/ledger/${slugOf(post)}/`, Astro.site).href, voice: post.data.voice }}>
+  notesOf={{ postUrl: new URL(`/ledger/${slugOf(post)}/`, Astro.site).href, voice: note.data.voice }}>
   <PostView post={post} note={note} />
 </PanelPage>

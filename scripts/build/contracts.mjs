@@ -31,6 +31,14 @@ export function claudeSlugs(postsDir = path.join(ROOT, 'src/content/posts')) {
     .map((f) => f.slice(0, -3)));
 }
 
+// The posts whose notes page Claude wrote as "I" (a note's own voice: claude), keyed by the note's post. A note's
+// voice may differ from its post's (AO-067's notes are Claude's), and its page's byline follows the note.
+export function claudeNotes(notesDir = path.join(ROOT, 'src/content/notes')) {
+  return new Set(fs.readdirSync(notesDir).filter((f) => f.endsWith('.md'))
+    .map((f) => matter(fs.readFileSync(path.join(notesDir, f), 'utf8')).data)
+    .filter((d) => d.voice === 'claude' && d.post).map((d) => d.post));
+}
+
 // A live notebook is left out of both sides: whatever its fleet pushes, it never fails a contract.
 const sameSet = (what, got, want) => {
   const missing = [...want].filter((s) => !got.has(s) && !isLive(s));
@@ -226,7 +234,7 @@ export const readBaseline = (file = BASELINE) =>
 const redirectSourcesOf = (text) => new Set(text.split('\n').map((l) => l.trim()).filter((l) => l && !l.startsWith('#'))
   .map((l) => l.split(/\s+/)[0]));
 
-export function check(dist, listed = listedSlugs(), byClaude = claudeSlugs()) {
+export function check(dist, listed = listedSlugs(), byClaude = claudeSlugs(), notesByClaude = claudeNotes()) {
   const read = (p) => fs.readFileSync(path.join(dist, p), 'utf8');
   const isBuilt = (p) => fs.existsSync(path.join(dist, p.endsWith('/') ? p + 'index.html' : p));
   const sizeOf = (p) => {
@@ -251,7 +259,7 @@ export function check(dist, listed = listedSlugs(), byClaude = claudeSlugs()) {
       .map((s) => [read(`ledger/${s}/index.html`), `/ledger/${s}/`, byClaude.has(s)])
       .flatMap(([html, pathname, claude]) => [...shareUrlProblems(html, pathname), ...jsonLdProblems(html, pathname, claude)]),
     ...[...listed].filter((s) => !isLive(s) && isBuilt(`/ledger/${s}/notes/`))
-      .flatMap((s) => jsonLdProblems(read(`ledger/${s}/notes/index.html`), `/ledger/${s}/notes/`, byClaude.has(s), 'Article')),
+      .flatMap((s) => jsonLdProblems(read(`ledger/${s}/notes/index.html`), `/ledger/${s}/notes/`, notesByClaude.has(s), 'Article')),
     ...jsonLdProblems(read('about/index.html'), '/about/', false, 'ProfilePage'),
     // Not the course pages: other repos write their data (CLAUDE.md), and a picture of theirs must never stop a deploy.
     ...sitemapPaths(read('sitemap.xml'))

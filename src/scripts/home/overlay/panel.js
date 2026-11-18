@@ -14,7 +14,8 @@ const inner = document.getElementById('panel-inner');
 const scroller = document.getElementById('panel-scroll');
 const screen = document.getElementById('panel-screen');
 const dialog = document.getElementById('panel-card');
-const behind = ['content', 'stop-rail'].map((id) => document.getElementById(id)).filter(Boolean);
+const behind = [...['content', 'stop-rail'].map((id) => document.getElementById(id)), document.querySelector('a.skip')]
+  .filter(Boolean);   // the skip link too: its #content is inert while the panel is up
 const HOME_TITLE = document.title;
 const listeners = new Set();
 let state = 'closed';

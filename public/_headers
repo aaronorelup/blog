@@ -31,6 +31,8 @@
 # the canonical copy. /ledger/*.md covers the notes twins too: a splat matches across folders, and a second rule
 # would join a second Content-Type onto the first. The public machine files may be read cross-origin: one rule per
 # path sets the CORS header, or it would be sent as "*, *". /api/* is the Worker's, and is not opened here.
+# A rule cannot tell a miss from a hit: a missing .md under these paths (an unlisted post's) gets the 404 page typed as
+# Markdown. Accepted: the status is still 404, and a Worker route for *.md would cost more than it saves.
 /llms.txt
   ! Content-Type
   Content-Type: text/plain; charset=utf-8

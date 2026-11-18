@@ -26,8 +26,11 @@ interface Props {
   home?: boolean;
   // /about/: it carries the ProfilePage.
   profile?: boolean;
-  // A notes page: its post's canonical and voice, and it carries an Article (with headline).
+  // A notes page: its post's canonical and the note's own voice (a note may be Claude's under Aaron's post), and it
+  // carries an Article (with headline).
   notesOf?: { postUrl: string; voice?: string };
+  // false on a page that shows no Zen Maru 700 heading (the leaves room): no preload of the display face.
+  displayFont?: boolean;
   // A site path to name as canonical (and og:url) instead of the page itself (the tea room's SEO switch,
   // src/data/tea.js). Left out, as on every other page, both name the page.
   canonical?: string;
@@ -35,7 +38,7 @@ interface Props {
   markdown?: string;
 }
 const { title, description, noindex = false, image, published, headline, voice, home = false, canonical: named,
-  markdown, profile = false, notesOf } = Astro.props;
+  markdown, profile = false, notesOf, displayFont = true } = Astro.props;
 const canonical = new URL(named ?? Astro.url.pathname, Astro.site).href;
 const shareImage = image && new URL(image, Astro.site).href;
 const data = noindex ? null
@@ -74,7 +77,7 @@ const ogCard = !!shareImage && new URL(shareImage).pathname.startsWith('/og/');
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <link rel="preload" href={FONTS.preload} as="font" type="font/woff2" crossorigin />
-{FONTS.faces.filter((f) => f.family === 'Zen Maru Gothic' && f.weight === 700 && f.range.startsWith('U+0000')).map((f) => <link rel="preload" href={f.file} as="font" type="font/woff2" crossorigin />)}
+{displayFont && FONTS.faces.filter((f) => f.family === 'Zen Maru Gothic' && f.weight === 700 && f.range.startsWith('U+0000')).map((f) => <link rel="preload" href={f.file} as="font" type="font/woff2" crossorigin />)}
 <script is:inline>
   (function () {
     try {
