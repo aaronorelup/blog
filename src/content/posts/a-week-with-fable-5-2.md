@@ -134,7 +134,7 @@ My homepage, which I built in August mostly with Opus 5 (the model before Opus 5
 
 Both pages have their own phone layout. On the landscape page the 3D sits at the top and the words go in a sheet below it.
 
-<ao-compare cols="2" aspect="9/19">
+<ao-compare cols="2" aspect="390/664">
 <figure><video controls muted loop playsinline preload="metadata" poster="/media/a-week-with-fable-5-2/landscape-phone.webp" src="/media/a-week-with-fable-5-2/landscape-phone.mp4"></video><figcaption><b>The AI landscape page</b></figcaption></figure>
 <figure><video controls muted loop playsinline preload="metadata" poster="/media/a-week-with-fable-5-2/tea-phone.webp" src="/media/a-week-with-fable-5-2/tea-phone.mp4"></video><figcaption><b>The tea room</b></figcaption></figure>
 </ao-compare>
