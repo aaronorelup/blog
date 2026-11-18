@@ -2,7 +2,7 @@
 // (who-visits-a-new-website) two, goobie-lab (three-ways-to-search-my-blog) four; /cdn-cgi/trace and /api/reads are
 // answered by the fixtures, goobie-lab's live tools by the build's own /ask/ files and /rss.xml.
 import { test, expect } from '../fixtures.mjs';
-import { open, pageWith } from '../helpers.mjs';
+import { open, pageWith, touchScroll } from '../helpers.mjs';
 
 const demo = (page, name, part) => page.locator(`ao-demo[name="${name}"][part="${part}"]`);
 const mounted = (d) => expect(d.locator(':scope > .sid, :scope > .cfd, :scope > div').first()).toBeVisible();
@@ -88,6 +88,12 @@ test.describe('synthid', () => {
     await page.touchscreen.tap(box.x + box.width * 0.6, box.y + box.height * 0.5);
     await expect(d.locator('.sid-tip')).toBeVisible();
     await expect(d.locator('.sid-tip b')).toContainText('of the words');
+  });
+  test('demo-synthid-8 book: a swipe that starts on the chart (a page scroll) leaves no readout', async ({ page }) => {
+    const d = demo(page, 'synthid', 'book');
+    await mounted(d);
+    await touchScroll(d.locator('svg.sid-chart'), 0.6);
+    await expect(d.locator('.sid-tip')).toBeHidden();
   });
   test('demo-synthid-6 edit: on a phone the letter is 16px or more, so iOS does not zoom on focus', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'iOS focus zoom: phone only');

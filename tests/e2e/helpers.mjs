@@ -107,3 +107,13 @@ export async function contentChanges(controls, ms = 1000) {
   await controls.page().evaluate((t) => new Promise((r) => setTimeout(r, t)), ms);
   return seen.read();
 }
+
+// What a finger that starts a page scroll sends to an element (no pointerup: a scroll ends in pointercancel, then a
+// touch pointerleave), at fx/fy of its box. Synthetic, so it runs on both projects; a real swipe can't be driven in WebKit.
+export const touchScroll = (el, fx = 0.5, fy = 0.5) => el.evaluate((n, [fx, fy]) => {
+  const r = n.getBoundingClientRect();
+  const at = { pointerType: 'touch', pointerId: 9, isPrimary: true, clientX: r.left + r.width * fx, clientY: r.top + r.height * fy, bubbles: true };
+  for (const t of ['pointerover', 'pointerenter', 'pointerdown', 'pointermove', 'pointercancel', 'pointerout', 'pointerleave']) {
+    n.dispatchEvent(new PointerEvent(t, at));
+  }
+}, [fx, fy]);

@@ -1,6 +1,6 @@
 // <ao-treemap>: a table as nested tiles; view buttons regroup it, pointing at a tile or the arrow keys read it out.
 import { test, expect } from '../fixtures.mjs';
-import { open, pageWith } from '../helpers.mjs';
+import { open, pageWith, touchScroll } from '../helpers.mjs';
 
 const el = (page) => page.locator('ao-treemap').first();
 const read = (page) => el(page).locator('.ao-tm-read');
@@ -48,4 +48,11 @@ test('treemap-4 a touch tap on a tile reads that tile, not the first', async ({ 
   await expect(tiles.nth(i)).toHaveClass(/ao-tm-on/);
   await expect(tiles.first()).not.toHaveClass(/ao-tm-on/);
   await expect(read(page)).toContainText('of all');
+});
+
+test('treemap-5 a swipe that starts on a tile (a page scroll) leaves no tile read out', async ({ page }) => {
+  const before = await read(page).textContent();
+  await touchScroll(el(page).locator('.ao-tm-tile').nth(1));
+  await expect(el(page).locator('.ao-tm-tile.ao-tm-on')).toHaveCount(0);
+  await expect(read(page)).toHaveText(before);
 });

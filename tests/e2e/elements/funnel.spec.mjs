@@ -1,7 +1,7 @@
 // <ao-funnel>: an ordered list of steps that each take some away, drawn as a bar of segments and rows; a row and its
 // segment light together (pointer and focus), "What's in it" opens a row's examples.
 import { test, expect } from '../fixtures.mjs';
-import { open, pageWith } from '../helpers.mjs';
+import { open, pageWith, touchScroll } from '../helpers.mjs';
 
 const el = (page) => page.locator('ao-funnel').first();
 test.beforeEach(async ({ page }) => open(page, pageWith('ao-funnel')));
@@ -64,4 +64,13 @@ test('funnel-5 a touch tap lights its row alone, and a second tap on it turns it
   await expect(el(page).locator('.ao-funnel-seg.is-on')).toHaveCount(1);
   await tap(rows.nth(2));
   await expect(lit).toHaveCount(0);
+});
+
+test('funnel-6 a swipe that starts on a row (a page scroll) leaves no row lit', async ({ page }) => {
+  const rows = el(page).locator('.ao-funnel-row');
+  for (const i of [1, 2, 3]) {
+    await touchScroll(rows.nth(i).locator('.ao-funnel-head'));
+    await touchScroll(el(page).locator('.ao-funnel-seg').nth(i - 1));
+  }
+  await expect(el(page).locator('.is-on')).toHaveCount(0);
 });

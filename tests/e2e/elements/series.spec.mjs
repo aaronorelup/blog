@@ -1,7 +1,7 @@
 // <ao-series>: a day-by-day table as a chart. The buttons switch the series shown (or the layers, with stack), and
 // pointing at a day or focusing the chart and using the keys reads that day out, with its marks.
 import { test, expect } from '../fixtures.mjs';
-import { open, pageWith } from '../helpers.mjs';
+import { open, pageWith, touchScroll } from '../helpers.mjs';
 
 const el = (page) => page.locator('ao-series').first();
 const read = (page) => el(page).locator('.ao-series-read');
@@ -54,4 +54,10 @@ test('series-4 a touch tap reads the day tapped, not the last one', async ({ pag
   await expect(read(page)).toHaveText(tapped);
   await page.keyboard.press('End');
   await expect(read(page)).not.toHaveText(tapped);
+});
+
+test('series-5 a swipe that starts on the chart (a page scroll) leaves no day read out', async ({ page }) => {
+  const before = await read(page).textContent();
+  await touchScroll(el(page).locator('.ao-series-body'), 0.3);
+  await expect(read(page)).toHaveText(before);
 });

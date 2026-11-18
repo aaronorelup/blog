@@ -100,23 +100,26 @@ class AoFunnel extends HTMLElement {
       if (i > 0) {
         const seg = segs[i - 1];
         const light = (v) => { seg.classList.toggle('is-on', v); li.classList.toggle('is-on', v); };
-        const leave = (e) => { if (e.pointerType === 'mouse') light(false); };
-        // A tap lights its row alone, or turns it off when it was lit; a touch pointerleave changes nothing.
+        // A mouse or pen lights on enter and clears on leave. A finger lights only on a tap (pointerup): the tap
+        // lights its row alone, or turns it off when it was lit. A scroll ends in pointercancel and lights nothing.
+        const enter = (e) => { if (e.pointerType !== 'touch') light(true); };
+        const leave = (e) => { if (e.pointerType !== 'touch') light(false); };
+        const cancel = () => { if (tappedRow !== li) light(false); };
         const tap = (e) => {
-          if (e.pointerType === 'mouse') return;
+          if (e.pointerType !== 'touch') return;
           const again = tappedRow === li;
           box.querySelectorAll('.is-on').forEach((el) => el.classList.remove('is-on'));
           tappedRow = again ? null : li;
           if (!again) light(true);
         };
-        li.addEventListener('pointerenter', () => light(true));
-        li.addEventListener('pointerleave', leave);
-        li.addEventListener('pointerup', tap);
+        for (const t of [li, seg]) {
+          t.addEventListener('pointerenter', enter);
+          t.addEventListener('pointerleave', leave);
+          t.addEventListener('pointercancel', cancel);
+          t.addEventListener('pointerup', tap);
+        }
         li.addEventListener('focusin', () => light(true));
         li.addEventListener('focusout', () => light(false));
-        seg.addEventListener('pointerenter', () => light(true));
-        seg.addEventListener('pointerleave', leave);
-        seg.addEventListener('pointerup', tap);
       }
       list.append(li);
     });

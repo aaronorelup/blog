@@ -214,7 +214,7 @@ The demos:
   and `/rss.xml`, about 380 KB gzipped at 76 posts, growing with the blog. A live run leaves the live notebook out, as
   the recording did, and the demo's foot says so under every part.
 
-Behaviours: demo-synthid-1 to demo-synthid-7, demo-cf-1, demo-cf-2, demo-lab-1 to demo-lab-7. Used by 3 posts
+Behaviours: demo-synthid-1 to demo-synthid-8, demo-cf-1, demo-cf-2, demo-lab-1 to demo-lab-7. Used by 3 posts
 (`INVENTORY.md`).
 
 ## <ao-diff>
@@ -322,7 +322,7 @@ least two items with a `<data>`.
 </ao-funnel>
 ```
 
-Behaviours: funnel-1 to funnel-5 (funnel-5: a touch tap lights its row alone). Used by 2 posts (`INVENTORY.md`); best shown by `who-visits-a-new-website`.
+Behaviours: funnel-1 to funnel-6 (funnel-5: a touch tap lights its row alone; funnel-6: a swipe that scrolls lights none). Used by 2 posts (`INVENTORY.md`); best shown by `who-visits-a-new-website`.
 
 ## <ao-game>
 
@@ -515,7 +515,7 @@ every other column a series named by its `<th>`; `<th data-unit="MB">` prints it
 </ao-series>
 ```
 
-Behaviours: series-1 to series-4 (series-4: a touch tap reads the day tapped; `stack` and `th[data-unit]` are used by no page today). Used by 2 posts
+Behaviours: series-1 to series-5 (series-4: a touch tap reads the day tapped; series-5: a swipe that scrolls reads none; `stack` and `th[data-unit]` are used by no page today). Used by 2 posts
 (`INVENTORY.md`); best shown by `who-visits-a-new-website`.
 
 ## <ao-shots>
@@ -637,4 +637,4 @@ Children: one `<table>`, then an optional `<figcaption>`. Rows with no amount ab
 </ao-treemap>
 ```
 
-Behaviours: treemap-1 to treemap-4 (treemap-4: a touch tap reads the tile tapped). Used by 1 post (`INVENTORY.md`): `counting-the-code`.
+Behaviours: treemap-1 to treemap-5 (treemap-4: a touch tap reads the tile tapped; treemap-5: a swipe that scrolls reads none). Used by 1 post (`INVENTORY.md`): `counting-the-code`.
