@@ -123,7 +123,7 @@ export function createScanners(root, api, tab) {
         ? 'Not a scanner at all: browsers ask for this by habit. Until 17 Oct 2026 the site had only /favicon.svg, so these got ' + NOT_FOUND + '. It has a /favicon.ico now.'
         : d.path === '/apple-touch-icon.png'
         ? 'Not a scanner at all: phones ask for a home-screen icon by habit. Until 18 Nov 2026 the site had none, so these got ' + NOT_FOUND + '. It has one now.'
-        : 'Not a scanner at all: phones ask for a home-screen icon by habit. This site doesn’t have one, so they get ' + NOT_FOUND + '.';
+        : 'Not a scanner at all: phones ask for a home-screen icon by habit. This site keeps its icon at /apple-touch-icon.png, not under this name, so these get ' + NOT_FOUND + '.';
     } else if (isSitePath(d.path, api.ctx.build)) {
       // a real file of this site on the wall: whatever went wrong, it wasn't 'not found'
       title = `${n} ${d.n === 1 ? 'knock' : 'knocks'} on ${d.path}.`;
