@@ -773,6 +773,35 @@ test.describe('Ask RAG Goobie at work', () => {
     await expect(page.locator('.results')).toHaveAttribute('aria-label', 'Results for gpu');
   });
 
+  // The box's chunk held, a tap on the switch lands before box.js has mounted: the last one is acted on when it does.
+  for (const [n, taps, pressed] of [[29, ['ask'], 'ask'], [30, ['ask', 'search'], 'search']]) {
+    test(`search-${n} a tap on ${taps.join(' then ')} before the box's module has run leaves ${pressed} pressed once it mounts`, async ({ page, context }) => {
+      const seen = await watch(page, context);
+      let letGo;
+      const held = new Promise((r) => { letGo = r; });
+      await page.route(/\/_astro\/ledger\.[^/]+\.js$/, async (route) => { await held; await route.fallback(); });
+      await page.goto('/ledger/', { waitUntil: 'domcontentloaded' });
+      await expect(page.locator('[data-mode="ask"]')).toBeVisible();
+      await expect(page.locator('[data-search][data-ready]')).toHaveCount(0);
+      for (const mode of taps) await page.locator(`[data-mode="${mode}"]`).click();
+      await expect(page.locator('[data-mode="ask"]')).toHaveAttribute('aria-pressed', 'false');
+      letGo();
+      await ready(page);
+      await expect(page.locator(`[data-mode="${pressed}"]`)).toHaveAttribute('aria-pressed', 'true');
+      if (pressed === 'ask') {
+        await expect(input(page)).toHaveAttribute('placeholder', ASK_LABEL);
+        await expect.poll(() => seen.api.filter((r) => r === 'GET /api/session').length).toBe(1);
+        await page.waitForTimeout(500);
+        expect(seen.api.filter((r) => r === 'GET /api/session')).toHaveLength(1);
+      } else {
+        await page.waitForTimeout(500);
+        await expect(input(page)).toHaveAttribute('placeholder', 'Search the ledger');
+        expect([seen.api.filter((r) => r.endsWith('/api/session')), seen.turnstile]).toEqual([[], []]);
+      }
+      await expect(page.locator('[data-search]')).not.toHaveAttribute('data-pending-mode');
+    });
+  }
+
   test('search-24 the line under the box says how many posts RAG Goobie reads, in Ask only', async ({ page, context, request }) => {
     await watch(page, context);
     const { posts } = await (await request.get('/ledger/previews.json')).json();

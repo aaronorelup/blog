@@ -228,7 +228,7 @@ test('read-3 with no recording of this version, the browser voice reads, marks t
   await unrecorded(page, SHORT);
   await page.goto(SHORT);
   await listen(page).click();
-  await expect(page.locator('.ra-note')).toHaveText('The recording of this version is on its way.');
+  await expect(page.locator('.ra-note')).toHaveText("No recording of this version yet, so your browser's voice reads it.");
   await expect(page.locator('.ra-voice [data-voice="speech"]')).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('.ra-voice [data-voice="recorded"]')).toBeDisabled();
   const title = await page.locator('[data-r="t"]').innerText();

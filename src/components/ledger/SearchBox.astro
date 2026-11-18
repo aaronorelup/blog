@@ -42,3 +42,14 @@ const line = m.mode === 'whole' ? `RAG Goobie reads all ${all} of Aaron's posts 
   <div class="search-turnstile" data-turnstile></div>
   <div class="search-out" data-search-out aria-live="polite"></div>
 </form>
+{/* The last tap on the switch before box.js has mounted (no data-ready yet), kept for box.js to act on when it does.
+    The homepage overlay strips scripts from a view it loads, so this covers the standalone /ledger/ page. */}
+<script is:inline>
+  (() => {
+    const form = document.currentScript.previousElementSibling;
+    form.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-mode]');
+      if (b && !('ready' in form.dataset)) form.dataset.pendingMode = b.dataset.mode;
+    }, true);
+  })();
+</script>

@@ -435,7 +435,7 @@ sound (WebAudio, only after a gesture), the tab hidden pauses the loop (`visibil
 ask-notes from Goobie's prompt against DeepSeek; no `related` list names AO-073, so no check waits on the live
 notebook); Ask's answers are event streams (`sse`, `fixtures.mjs` `streamOf()`), and search-17 and -19 hold the stream
 in the page to see it step by step. Turnstile is a stub that solves at once with the test response. Every spec that
-clicks Ask waits for `[data-search][data-ready]` first (the box's module has mounted).
+clicks Ask waits for `[data-search][data-ready]` first (the box's module has mounted); search-29 and -30 click it before, on purpose.
 
 | Behaviour | Spec |
 |---|---|
@@ -465,6 +465,7 @@ clicks Ask waits for `[data-search][data-ready]` first (the box's module has mou
 | Under reduced motion the Ask box shows the first example and never changes it | search-21 |
 | The "Ask RAG Goobie" button shows no card while the how-it-works post isn't in `previews.json`; once it is, hovering shows its card with the line "How RAG Goobie works", leaving closes it and keyboard focus opens it; a phone gets none | search-22 |
 | Words typed before the box's module has run (its chunk held) are searched once it mounts | search-23 |
+| A tap on Ask before the box's module has run (its chunk held) changes nothing on screen, then opens Ask once it mounts (pressed, its placeholder, one `GET /api/session`); Ask then Search leaves Search pressed with no session and no Turnstile | search-29, search-30 |
 | The line under the box says how many posts RAG Goobie reads, in Ask only | search-24 |
 | On a 360 px Android phone (Chromium) a cite that ends a line flush makes no sideways scroll (its 44 px box stays inside the panel's padding) | search-25 (desktop project, Android profile) |
 
