@@ -354,6 +354,7 @@ its static rung mid-test.
 | A view in the panel has the colours it has on its own page, by day and by night, and its focused search box looks the same | overlay-25 |
 | While the panel is up the day/night switch sits in its header, clear of the card's corner and the nav, and still switches; it goes back on close | overlay-26 |
 | On a phone the panel's footer is two short lines (under a tenth of the window), every link kept: exactly the feed, the tea room and every elsewhere | overlay-27 (phone) |
+| The panel is a modal for the keyboard: a card's link opened with Enter puts focus in the panel (a dialog, `aria-modal`), the scene and its rail are inert, PageDown scrolls it and Tab stays in it; Esc gives focus back to that link, the scene no longer inert, and putting it back fetches nothing | overlay-28 |
 
 ## Pages (`ledger.spec.mjs`, `pages.spec.mjs`)
 

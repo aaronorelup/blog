@@ -202,6 +202,8 @@
   box-shadow: var(--pc-shadow); overflow: hidden; overflow: clip; display: flex; flex-direction: column;
 }
 .ov-host { display: contents; }
+/* Focus put there by the overlay (panel.js), for the keyboard to start from: no ring. Its controls keep theirs. */
+#panel-screen #panel-scroll:focus, #content:focus { outline: none; }
 
 /* The day/night switch answers at once on the homepage (its look follows aria-pressed, the mode asked for), while
    the room follows over the tween. While the panel is up it sits in the panel's header, where a standalone page

@@ -103,7 +103,7 @@ export const COPY = {
   utilities: [
     { label: 'Search the ledger', line: 'Words and meaning, on the ledger page.', href: '/ledger/' },
     { label: 'Ask RAG Goobie', line: 'Ask my posts a question. It reads them first.', href: '/ledger/' },
-    { label: 'Stats', line: 'What people read here, by the numbers.', href: '/stats' },
+    { label: 'Stats', line: 'What people read here, by the numbers.', href: '/stats/' },
     { label: 'RSS', line: 'New posts in any reader app.', href: '/rss.xml' },
   ],
   footerLine: 'This is the long view of aaronorelup.com. The tea house is the front door.',

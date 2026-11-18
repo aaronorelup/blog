@@ -37,7 +37,7 @@ const NAV = [
   ['questions', 'Open questions', `${BASE}/questions/`],
   ['steel', 'Steel', `${BASE}/steel/`],
 ];
-const allCrumbs = [['Courses', '/courses'], ['I Love My Evening Television', `${BASE}/`], ...crumbs];
+const allCrumbs = [['Courses', '/courses/'], ['I Love My Evening Television', `${BASE}/`], ...crumbs];
 const nEntities = EPISODES.length + CHARACTERS.length + THINGS.length;
 const stampText = STAMP?.at ? `built ${fmtDate(String(STAMP.at).slice(0, 10))}${STAMP.commit ? ` from ${String(STAMP.commit).slice(0, 7)}` : ''}` : '';
 ---

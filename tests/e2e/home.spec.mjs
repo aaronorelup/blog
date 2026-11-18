@@ -129,7 +129,7 @@ test('home-7 without WebGL the scene bails to the flat page, in the stored modeâ
   await expect(page.locator('#stop-rail')).toBeHidden();
   const shown = await page.locator('section[data-wp]').evaluateAll((ss) => ss.every((s) => s.style.opacity === '1' && !s.inert));
   expect(shown).toBe(true);
-  await expect(page.locator('section[data-wp] a[href="/ledger"]').first()).toBeVisible();
+  await expect(page.locator('section[data-wp] a[href="/ledger/"]').first()).toBeVisible();
   expect(await page.evaluate(() => [document.body, document.querySelector('section[data-wp] > div')]
     .map((el) => getComputedStyle(el).backgroundColor))).toEqual(['rgb(16, 18, 32)', 'rgba(21, 23, 38, 0.86)']);
   await browser.close();
@@ -170,7 +170,7 @@ test('home-8 an outside link flies the camera out through the gate, then opens; 
 test('home-9 a data-no-fly link leaves at once, without closing the panel or flying', async ({ page }) => {
   await scene(page);
   // The courses card's own link grows the Courses view; its rows are data-no-fly links to the course pages.
-  const card = page.locator('section[data-wp] a[href="/courses"]').first();
+  const card = page.locator('section[data-wp] a[href="/courses/"]').first();
   for (let k = 0; k < 6 && await card.evaluate((a) => a.closest('section').inert); k++) {
     await page.keyboard.press('ArrowDown');
     await settle(page);
@@ -195,7 +195,7 @@ test('home-10 a lost WebGL context bails to the flat page', async ({ page }) => 
   await page.locator('#home-scene-canvas').evaluate((c) => (c.getContext('webgl2') || c.getContext('webgl')).getExtension('WEBGL_lose_context').loseContext());
   await warn;
   await expect(page.locator('#stop-rail')).toBeHidden();
-  await expect(page.locator('section[data-wp] a[href="/ledger"]').first()).toBeVisible();
+  await expect(page.locator('section[data-wp] a[href="/ledger/"]').first()).toBeVisible();
 });
 
 test('home-11 the backtick opens and closes the staging tool', async ({ page }) => {

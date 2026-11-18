@@ -156,7 +156,7 @@ test('pages-8 /now shows the newest snapshot, and its History opens every dated 
     await expect(own.locator('a')).toHaveCount(0);
     await expect(rows.locator('a')).toHaveCount(hrefs.length - 1);
     await expect(page.locator('.page-kicker')).toHaveText(`Snapshot of ${await own.locator('strong').textContent()}`);
-    await expect(page.locator('.page-lede a[href="/now"]')).toBeVisible();
+    await expect(page.locator('.page-lede a[href="/now/"]')).toBeVisible();
     if (i === 0) expect(await snapshot()).toBe(current);
   }
   expect(errors).toEqual([]);
