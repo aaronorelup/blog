@@ -5,6 +5,16 @@ summary: "Short recordings of the two pages Claude Fable 5.2 built for my site i
 date: 2026-11-18
 topic: "agents"
 draft: true
+preview:
+  verdict: "Two pages, two Fable limits"
+  takeaway: "Fable 5.2 built a 3D AI landscape page and my tea room. The landscape job ran a week on seven messages from me and hit my Fable limit twice."
+  points:
+    - "A full Fable limit counts for about half the all-models one. It ran out with all-models at 75% and 80%."
+    - "Fable that only directs came to 2% of a job's cost. With Fable agents doing the hard parts it was two thirds."
+    - "Cloud machines with no graphics card kept going down under the agents' browsers, five times in one job."
+  image: "/media/previews/a-week-with-fable-5-2.webp"
+  loop: "/media/previews/a-week-with-fable-5-2.mp4"
+  alt: "Five stacks in company colours with a small character on top of each, standing behind the words AI LANDSCAPE"
 ---
 
 Claude Fable 5.2 is Anthropic's top model. It came out on 9 November, and this week I had it build the two biggest pages on my site: a 3D page that maps the AI landscape, and the tea room, a painted walk through everything here. **Below are short recordings of both and the links, so you can judge them yourself.** The AI landscape job ran for a week on seven messages from me and stopped twice on my Fable limit, even with Opus 5.5 agents writing half of its output.
@@ -136,7 +146,7 @@ Both pages have their own phone layout. On the landscape page the 3D sits at the
 - **Fable has its own weekly limit on top of the all-models one.** Anthropic's help pages say that much. When it runs out, Fable agents stop and Opus agents keep going.
 - **A full Fable limit counts for about half of the all-models limit.** Both times Fable hit 100%, the all-models limit read 75% and 80%.
 - **Resets.** Each of my accounts got three Fable resets and two weekly resets, and I have about one of each left. A Fable reset gives back the whole Fable limit and half of the all-models one. A weekly reset gives back the whole Fable limit too. After the Fable reset I used, Fable went from 100% to 0 and all-models from 75% to 25%.
-- **Orchestrating with Fable isn't a way around it.** With Opus writing half the output, the landscape job still used up my whole Fable limit in under a day, twice.
+- **How much Fable you use depends on what you hand it.** In my guitar tab job Fable only directed, and Opus and Sonnet agents did all the work, so Fable came to about 2% of the cost. In the landscape job Fable agents also did the hard parts, and Fable was two thirds of the cost. That job used up my whole Fable limit in under a day, twice.
 - **I haven't tried /advisor much yet.** It keeps a cheaper model like Opus 5.5 doing the work and lets it ask Fable at key moments, like before it commits to a plan.
 
 <ao-bars unit="%" max="100">
@@ -166,6 +176,6 @@ I wanted a project manager for all my projects on my own dashboard. I explained 
 - **This post's session hit the same wall.** Its machine went down twice while it recorded the clips.
 - **What helps.** The tea room sped up on my own computer. A session can also start other cloud sessions, each with its own machine. That works, but it's harder to follow from my end.
 
-I also used Fable 5.2 for a survey of the tools a guitar tab web app would need, which isn't listed on the site yet.
+Fable 5.2 also directed two smaller jobs this week: 183 agents surveying 575 tools a guitar tab web app could use, and four small browser games. Neither is listed on the site yet.
 
 *Claude wrote this post from the landscape session's transcript, the site's code history and my notes, and recorded the clips.*
