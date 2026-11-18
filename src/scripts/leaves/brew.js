@@ -1,11 +1,12 @@
-// The brew's timeline, driven by sim time (never the wall clock): rise, pour, infuse, swirl, settle, sip, reveal,
-// slip, rest. One step(s, dt) moves the water line, the swirl, the leaves, the dye, the waves and the heat, and
-// queues events (a tock, a landing, a sip) for sound and paint. Pure: a headless run (tests/unit/leaves.test.mjs)
-// brews the same cup from the same seed. Stirring adds to the swirl, and the sips wait for it to die down.
+// The brew's timeline, in sim time (index.js keeps it on the wall clock): rise, pour, the word-leaf lands, infuse,
+// swirl, settle, sip, reveal, slip, rest. One step(s, dt) moves the water line, the swirl, the leaves, the dye, the
+// waves and the heat, and queues events (a tock, a landing, a sip) for sound and paint. Pure: a headless run
+// (tests/unit/leaves.test.mjs) brews the same cup from the same seed. Stirring adds to the swirl, and the sips wait
+// for it to die down.
 import { advect, deposit, makeDye } from './dye.js';
 import { spinDown, stir as addSpin, vTheta } from './flow.js';
 import { sampleSlots } from './glyphs.js';
-import { ASSIGN_AT, HB, assign, depthAt, makeLeaves, stepLeaves } from './leaves.js';
+import { ASSIGN_AT, HB, WORD, assign, depthAt, makeLeaves, stepLeaves } from './leaves.js';
 import { disturb, makeRipples, stepRipples, tip } from './ripples.js';
 import { mulberry32, noise2, smooth } from './rng.js';
 import { digitsOf } from '../../data/leaves.js';
@@ -14,24 +15,25 @@ export const DT = 1 / 60;
 export const W_FULL = 3.0;                      // the water line when full, cm over the bottom's centre
 const W_SIPS = [3.0, 2.05, 1.2, 0.5];           // after each of three sips
 const W_END = 0.13;                             // a film over the middle: the waterline back at the foot
-export const POUR = [1.0, 2.5];
-// After the last sip, the reveal (at 16 s if nobody stirred), then the slip, the rest and the end, in seconds.
-const REVEAL = 16, DRAIN = 3, SLIP = 3.2, REST = 6, END = 12.5;
+export const RISE = 0.5;                        // the tray and cup come up; the cup tocks on the wood
+export const POUR = [0.55, 1.5];
+// After the last sip, the reveal (at 12.6 s if nobody stirred), then the slip, the rest and the end, in seconds.
+const REVEAL = 12.6, DRAIN = 3, SLIP = 2.6, REST = 5, END = 11;
 const DYE_MIX = 0.85;
-const SIP_LEN = 0.72, SIP_GAP = 1.25, FIRST_SIP = 12.4;
+const SIP_LEN = 0.72, SIP_GAP = 1.25, FIRST_SIP = 9.2, SIP_FROM = 8.8;
 export const PHASES = ['rise', 'pour', 'infuse', 'swirl', 'settle', 'sip', 'reveal', 'slip', 'rest'];
 
 // The rim: a hand-thrown circle, the same at every size (cup.js draws it, the waves reflect off it).
 export const wallOf = (seed) => (a) => 1 + (noise2(Math.cos(a) * 1.6 + 4, Math.sin(a) * 1.6 + 4, seed) - 0.5) * 0.045;
 
-export function createBrew(data, seed, { from = null, quick = false } = {}) {
+export function createBrew(data, seed, { quick = false } = {}) {
   const rng = mulberry32(seed);
   const s = {
     seed, rng, quick, data, t: 0, phase: 'rise', gamma: 0, W: 0, temp: 1, sips: 0, sipT: -1, sipFrom: 0,
     tilt: 0, next: data.next, digits: digitsOf(data.next), events: [], done: false, lastStir: -9,
-    tides: [], dryFront: 1.02, breath: 0, pourAngle: 0, pourR: 0.56, spin: 1, revealT: Infinity, lastSip: 0,
+    tides: [], dryFront: 1.02, breath: 0, pourAngle: 0, pourR: 0.56, spin: 1, revealT: Infinity, lastSip: 0, rings: [],
   };
-  s.leaves = makeLeaves(data, rng, from);
+  s.leaves = makeLeaves(data, rng);
   s.slots = sampleSlots(s.digits, Math.round(s.leaves.length * 0.9), rng);
   s.dye = makeDye(seed);
   // spread evenly, all the color the leaves hold makes the tea DYE_MIX strong
@@ -41,6 +43,9 @@ export function createBrew(data, seed, { from = null, quick = false } = {}) {
   // the pour comes in from the upper left, today's angle, and lands off-centre on a tangent
   s.spin = rng() < 0.5 ? 1 : -1;
   s.pourAngle = -2.25 + (rng() - 0.5) * 0.6;
+  // the word-leaf meets the tea across the cup from where the pour lands
+  const P = pourPoint(s), word = s.leaves[0];
+  word.x = -P.x * 0.55; word.y = -P.y * 0.55;
   return s;
 }
 
@@ -58,8 +63,8 @@ function phaseOf(s) {
   const t = s.t;
   if (t < POUR[0]) return 'rise';
   if (t < POUR[1]) return 'pour';
-  if (t < 6) return 'infuse';
-  if (t < 12) return 'swirl';
+  if (t < 4.2) return 'infuse';
+  if (t < SIP_FROM) return 'swirl';
   if (s.sips === 0 && s.sipT < 0) return 'settle';
   if (t < s.revealT) return 'sip';
   if (t < s.revealT + SLIP) return 'reveal';
@@ -94,9 +99,9 @@ function stepLevel(s) {
 function maybeSip(s, asked) {
   if (s.sipT >= 0 || s.sips >= 3) return;
   const calm = Math.abs(s.gamma) < 0.75 && s.t - s.lastStir > 1.2;
-  if (s.t < 12 || !calm) return;
+  if (s.t < SIP_FROM || !calm) return;
   const due = s.sips === 0 ? FIRST_SIP : s.lastSip + SIP_GAP;
-  if (asked ? s.t >= 12 && (s.sips === 0 || s.t - s.lastSip > 0.4) : s.t >= due) startSip(s);
+  if (asked ? s.sips === 0 || s.t - s.lastSip > 0.4 : s.t >= due) startSip(s);
   // the reveal waits for the last sip
 }
 
@@ -104,7 +109,7 @@ export function step(s, dt = DT) {
   if (s.done) return;
   s.t += dt;
   const t = s.t;
-  if (s.t - dt < 0.6 && t >= 0.6) s.events.push({ type: 'tock' });
+  if (s.t - dt < RISE && t >= RISE) s.events.push({ type: 'tock' });
   // the pour: a tangent jet that sets the spin
   if (t >= POUR[0] && t < POUR[1]) {
     const p = pourPoint(s);
@@ -119,13 +124,19 @@ export function step(s, dt = DT) {
   const before = s.events.length;
   stepLeaves(s, dt, s.dye, (d, x, y, a) => deposit(d, x, y, a * s.dyeScale));
   if (s.W > 0) advect(s.dye, s.gamma, dt, t);
-  if (s.ripples) {
-    for (let i = before; i < s.events.length; i++) {
-      const e = s.events[i];
-      if (e.kind !== 1 && depthAt(s.W, Math.hypot(e.x, e.y)) > 0.05) disturb(s.ripples, e.x, e.y, -0.014, 0.035);
-    }
-    stepRipples(s.ripples);
+  for (let i = before; i < s.events.length; i++) {
+    const e = s.events[i];
+    if (e.kind === WORD) s.rings.push({ x: e.x, y: e.y, t });
+    if (!s.ripples || e.kind === 1 || depthAt(s.W, Math.hypot(e.x, e.y)) <= 0.05) continue;
+    disturb(s.ripples, e.x, e.y, e.kind === WORD ? -0.05 : -0.014, e.kind === WORD ? 0.06 : 0.035);
   }
+  if (s.ripples) stepRipples(s.ripples);
+  // the word-leaf's rings ride the surface swirl, as the leaf does
+  for (const g of s.rings) {
+    const r = Math.hypot(g.x, g.y), a = vTheta(s.gamma, r) / Math.max(r, 0.05) * dt, c = Math.cos(a), sn = Math.sin(a);
+    [g.x, g.y] = [g.x * c - g.y * sn, g.x * sn + g.y * c];
+  }
+  if (s.rings.length && t - s.rings[0].t > 2) s.rings.shift();
   // heat: Newton's law, sped up
   if (t > POUR[0]) s.temp = Math.exp(-(t - POUR[0]) / 7.5);
   // the wet sheen dries from the rim inward, a ring at a time, and the lantern breathes once

@@ -6,8 +6,8 @@ import { stillThread } from './steam.js';
 import { tallyOf } from './ui.js';
 
 // Brings room.s to rest; a fresh quick brew when `quick` (a still made at load), else the one in progress.
-export function toRest(room, { data, seed, from, quick }) {
-  if (quick) room.s = createBrew(data, seed, { from, quick: true });
+export function toRest(room, { data, seed, quick }) {
+  if (quick) room.s = createBrew(data, seed, { quick: true });
   runToRest(room.s);
   stillThread(room.steam);
   return tallyOf(room.s.leaves);

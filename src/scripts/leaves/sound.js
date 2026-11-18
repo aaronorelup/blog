@@ -1,7 +1,8 @@
 // The room's sound, synthesized with WebAudio and never played before a gesture: the context starts suspended
 // unless the browser already allows it, and resumes on the first press in the room. Master at -18 dB into a gentle
 // compressor. The pour sings the quarter-wave note of the air over the water, f = c / (4 (L + 0.6 r)), rising as the
-// cup fills; leaves tick, the cup tocks on the wood, the stir swishes, the sips slurp. Nothing at the reveal.
+// cup fills; the word-leaf plips into it, leaves tick, the cup tocks on the wood, the stir swishes, the sips slurp.
+// Nothing at the reveal.
 const C = 343;                  // m/s
 const CUP_R = 0.055, CUP_H = 0.075;
 
@@ -49,14 +50,16 @@ export function makeSound(cupPx) {
       pour.bp.frequency.setTargetAtTime(f, ctx.currentTime, 0.05);
       pour.lp.frequency.setTargetAtTime(180 + 160 * Math.random(), ctx.currentTime, 0.03);
     },
-    tick(size = 0.06) {
+    // a leaf landing; the newest ones a little louder and longer
+    tick(size = 0.06, loud = false) {
       const now = ctx.currentTime;
       if (now - lastTick < 0.02 || !on || ctx.state !== 'running') return;
       lastTick = now;
       const src = ctx.createBufferSource(); src.buffer = buf;
       const hp = filter('highpass', 2600 + (0.09 - size) * 40000, 0.8), g = gain(0);
       src.connect(hp).connect(g).connect(master);
-      g.gain.setValueAtTime(0.0001, now); g.gain.linearRampToValueAtTime(0.32, now + 0.001); g.gain.exponentialRampToValueAtTime(0.0001, now + 0.006);
+      g.gain.setValueAtTime(0.0001, now); g.gain.linearRampToValueAtTime(loud ? 0.5 : 0.32, now + 0.001);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + (loud ? 0.012 : 0.006));
       src.start(now, Math.random() * 1.5, 0.01);
     },
     // the cup settling on wood: ceramic modes 1, 2.32, 4.25, 6.63, damped and dulled
@@ -74,6 +77,19 @@ export function makeSound(cupPx) {
       thud.buffer = buf; thud.connect(tl).connect(tg).connect(master);
       tg.gain.setValueAtTime(0.6, now); tg.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
       thud.start(now, 0, 0.1);
+    },
+    // the word-leaf meeting the tea: a drop's plip (the bubble it traps rings and rises in pitch) and a soft splash
+    plip() {
+      if (!on || ctx.state !== 'running') return;
+      const now = ctx.currentTime, o = ctx.createOscillator(), g = gain(0);
+      o.type = 'sine'; o.connect(g).connect(master);
+      o.frequency.setValueAtTime(620, now); o.frequency.exponentialRampToValueAtTime(1500, now + 0.05);
+      g.gain.setValueAtTime(0.0001, now); g.gain.linearRampToValueAtTime(0.42, now + 0.004); g.gain.exponentialRampToValueAtTime(0.0001, now + 0.11);
+      o.start(now); o.stop(now + 0.13);
+      const src = ctx.createBufferSource(), bp = filter('bandpass', 2400, 1.2), sg = gain(0);
+      src.buffer = buf; src.connect(bp).connect(sg).connect(master);
+      sg.gain.setValueAtTime(0.0001, now); sg.gain.linearRampToValueAtTime(0.22, now + 0.003); sg.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
+      src.start(now, Math.random() * 1.5, 0.06);
     },
     // the swish follows the swirl while the guest stirs
     stir(strength) {

@@ -20,7 +20,7 @@ export function stepSteam(st, s, dt) {
     st.ps.push({ x: Math.cos(a) * r, y: Math.sin(a) * r, age: 0, life: 2.2 + st.rng() * 1.6, seed: st.rng() * 100, k: 1 });
   }
   if (st.acc > 1) st.acc = 1;
-  if (ending && !st.lastThread && s.t > s.revealT + 6.6) {
+  if (ending && !st.lastThread && s.t > s.revealT + 5.6) {
     st.lastThread = true;
     st.ps.push({ x: -0.12, y: 0.06, age: 0, life: 4.6, seed: 42, k: 1.6, last: true });
   }

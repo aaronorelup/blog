@@ -1,11 +1,11 @@
 // The swirl in the cup, in cup units (the inner radius is 1, time in seconds). A Lamb-Oseen-like vortex, whose
-// circulation spins down on the Ekman time H / sqrt(nu * Omega), sped up to settle in about eight seconds, and the
+// circulation spins down on the Ekman time H / sqrt(nu * Omega), sped up to settle in about seven seconds, and the
 // secondary flow it drives: inward along the bottom, outward at the surface. That is the tea-leaf paradox.
 import { clamp } from './rng.js';
 
 export const RC = 0.42;           // the vortex core radius
 const NU = 0.01;                  // water, cm^2/s
-const SPEED = 3;                  // the cup's day squeezed into seconds
+const SPEED = 4;                  // the cup's day squeezed into seconds
 const VISC = 0.05;                // the wall's own drag, so the last of the spin dies
 const K_IN = 1.1, K_OUT = 0.45;   // how hard the secondary flow pushes, along the bottom and at the surface
 export const GMAX = 9;

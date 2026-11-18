@@ -2,7 +2,8 @@
 // /leaves/: a secret room. Double-click (or long-press) "leaves" in the homepage's hero line and its leaf falls in
 // here (scripts/home/leaves-door.js): a cup of tea with one leaf per listed entry that settles to read the next
 // entry's number. noindex, in no sitemap, list or stats; nothing links here. Data: lib/leaves.js; copy:
-// data/leaves.js; the room itself: scripts/leaves/.
+// data/leaves.js; the leaf's outline: data/leaf.js; the room itself: scripts/leaves/. The first paint already holds
+// the leaf where the homepage let go of it (the inline script, from the hash), until the canvas takes it over.
 import '../../styles/tokens.css';
 import '../../styles/fonts.css';
 import '../../styles/leaves.css';
@@ -10,6 +11,7 @@ import Head from '../../components/chrome/Head.astro';
 import { allPosts, listedPosts, textOf } from '../../lib/content.js';
 import { colorTally, leafData, nextId } from '../../lib/leaves.js';
 import { COPY, LEAVES_PAGE, digitsOf } from '../../data/leaves.js';
+import { LEAF } from '../../data/leaf.js';
 
 const buildDate = new Date();
 const built = buildDate.toISOString().slice(0, 10);
@@ -29,6 +31,20 @@ const tally = colorTally(leaves, built);
   <body class="lv-body">
     <main class="lv">
       <canvas class="lv-canvas" aria-hidden="true"></canvas>
+      <svg class="lv-word" viewBox={LEAF.view} aria-hidden="true" hidden>
+        <path d={LEAF.body} fill={LEAF.fill} stroke={LEAF.edge} stroke-width={LEAF.line} />
+        <path d={LEAF.veins} fill="none" stroke={LEAF.vein} stroke-width={LEAF.line * 0.9} stroke-linecap="round" />
+      </svg>
+      <script is:inline>
+        (function () {
+          var m = /from=([\d.]+),([\d.]+),(-?[\d.]+),([\d.]+)/.exec(location.hash), e = document.querySelector('.lv-word');
+          if (!m || !e || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+          var s = +m[4];
+          e.style.left = m[1] * innerWidth - 0.6 * s + 'px'; e.style.top = m[2] * innerHeight - 0.3 * s + 'px';
+          e.style.width = 1.2 * s + 'px'; e.style.height = 0.6 * s + 'px'; e.style.transform = 'rotate(' + m[3] + 'deg)';
+          e.removeAttribute('hidden');
+        })();
+      </script>
       <p class="lv-alt">{COPY.alt(digitsOf(next))}</p>
       <ul class="lv-list" role="listbox" tabindex="0" aria-label={COPY.list}>
         <li role="option" id="lv-o-0" aria-selected="false">{COPY.wordLeaf}</li>

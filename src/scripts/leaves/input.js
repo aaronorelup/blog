@@ -7,7 +7,8 @@ import { lengthPx } from './paint-leaves.js';
 export function bindInput(root, cv, room, act) {
   const st = { dragging: false, used: false, moved: 0, prev: 0, id: -1, active: -1 };
   const toCup = (e) => ({ x: (e.clientX - room.L.cx) / room.L.R, y: (e.clientY - room.L.cy) / room.L.R });
-  const named = () => room.s.leaves.filter((p) => p.kind !== FAN && p.landed);
+  // in the order they are drawn: the entries, then the word-leaf on top
+  const named = () => [...room.s.leaves.slice(1).filter((p) => p.kind !== FAN && p.landed), ...(room.s.leaves[0].landed ? [room.s.leaves[0]] : [])];
 
   // The top leaf under a point: those afloat first, then sinking, then on the bottom; the last drawn on top.
   function hit(e) {

@@ -12,10 +12,11 @@ export const COPY = {
   label: (id, title) => `${id} · ${title}`,
   wordLeaf: 'leaves · from the sentence',
   line1: (next) => `The leaves say ${next}. I haven't written it yet.`,
+  // the green leaves in the cup are this month's (palette.js turns a leaf at 30 days), so the slip names them
   line2: ({ n, share, recent }) => `${n} entries in the pot, one leaf each.` + (
-    recent === 1 ? ' Most of the color came from this month\'s one.'
-      : share > 0.5 && recent >= 2 ? ` Most of the color came from this month's ${recent}.`
-        : ' The newest leaves gave the most color.'),
+    recent === 0 ? ' None of them is from this month.'
+      : recent === 1 ? " The green one is this month's."
+        : ` The green ones are this month's ${recent}.` + (share > 0.5 ? ' They gave most of the color.' : '')),
 };
 
 // "AO-086" as the leaves write it: the digits only.

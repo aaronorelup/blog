@@ -50,9 +50,10 @@ export function watch(onChange) {
 export const mix = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
 export const toCss = (c, a = 1) => `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${a})`;
 
-// A leaf's color by its age in days: this week's sencha green, a month's olive, half a year's oxidised brown.
-const AGES = [[0, rgb('#7FA04A')], [12, rgb('#77953F')], [35, rgb('#6B7638')], [70, rgb('#6E5A32')],
-  [120, rgb('#5C432B')], [200, rgb('#4A3325')]];
+// A leaf's color by its age in days: this month's bright sencha green, turning at the month's end, then olive,
+// oxidised brown and, past three months, spent. The slip's "the green ones are this month's" rests on the turn at 30.
+const AGES = [[0, rgb('#97BE4E')], [10, rgb('#8EB449')], [22, rgb('#82A443')], [30, rgb('#79963F')], [32, rgb('#6F7136')],
+  [40, rgb('#6B5F33')], [55, rgb('#66502E')], [80, rgb('#5B4029')], [110, rgb('#4D3223')], [200, rgb('#422A1E')]];
 export function leafColor(days) {
   for (let i = 1; i < AGES.length; i++) {
     if (days <= AGES[i][0]) return mix(AGES[i - 1][1], AGES[i][1], (days - AGES[i - 1][0]) / (AGES[i][0] - AGES[i - 1][0]));

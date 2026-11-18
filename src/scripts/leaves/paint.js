@@ -1,17 +1,18 @@
 // One frame of the room, in device px: the ground, the tray rising out of it, the cup and its shadow (once risen,
-// copied from one still picture, and only round the cup unless the pour or the lamp reaches further), then inside
-// the rim the bottom and its sunk leaves, the tea over them (liquid.js: 'multiply' what it lets through, 'lighter'
-// what it adds), the leaves still sinking (tinted by the tea above them) and the ones afloat, then what falls in,
-// the pour and the steam. Nothing here changes the brew.
-import { POUR } from './brew.js';
+// copied from one still picture, and only round the cup unless something outside it moves), then inside the rim the
+// bottom and its sunk leaves, the tea over them (liquid.js: 'multiply' what it lets through, 'lighter' what it adds),
+// the word-leaf's rings, the leaves still sinking (tinted by the tea above them) and the ones afloat, then what falls
+// in (fall.js), the pour, the steam, a named leaf's thread to its label, and over it all the word-leaf on its way down.
+// Nothing here changes the brew.
+import { POUR, RISE } from './brew.js';
 import { cupShadow } from './cup.js';
 import { sample } from './dye.js';
-import { FAN, WORD, depthAt } from './leaves.js';
+import { drawFalling, drawRings, drawWordLeaf } from './fall.js';
+import { ENTRY, FAN, WORD, WORD_LAND, depthAt } from './leaves.js';
 import { SPAN_CUP, shade, through } from './liquid.js';
 import { bodyColor, drawFannings, drawLeaf, lengthPx } from './paint-leaves.js';
 import { drawSteam } from './steam.js';
 import { drawStream } from './stream.js';
-import { smooth } from './rng.js';
 
 const LIT = { night: [0.92, 0.8, 0.62], day: [1, 0.98, 0.95] };
 const ease = (x) => { const t = Math.min(1, Math.max(0, x)); return t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2; };
@@ -44,20 +45,27 @@ function still(room) {
   return bake.base;
 }
 
+// The first frame, before anything is baked: the ground and the word-leaf just as the homepage let go of it.
+export function paintEarly(ctx, room, leaf = true) {
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.fillStyle = room.pal.page;
+  ctx.fillRect(0, 0, room.v.w, room.v.h);
+  if (leaf && !room.reduce) drawWordLeaf(ctx, room, 0, true);
+}
+
 export function paint(ctx, room) {
   const { v, s, pal, bake, liquid, steam, focus } = room;
   const t = s.t, R = v.R, day = pal.mode === 'day', lit = LIT[pal.mode];
   const X = (x) => v.cx + x * R, Y = (y) => v.cy + y * R;
-  const rise = ease(t / 0.6);
+  const rise = ease(t / RISE);
   let clip = null;
   if (rise < 1) {
     stage(ctx, room, rise);
-    if (rise <= 0) return;
   } else {
     const base = still(room);
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.globalCompositeOperation = 'source-over';
-    if (bake.fresh || t < POUR[1] + 0.45 || s.breath > 0 || room.breathed) {
+    if (bake.fresh || t < Math.max(POUR[1], WORD_LAND) + 0.45 || s.breath > 0 || room.breathed || focus || room.unfocused) {
       ctx.drawImage(base, 0, 0);
     } else {
       // only round the cup: the rest of the frame has not changed
@@ -69,16 +77,18 @@ export function paint(ctx, room) {
     }
     bake.fresh = false;
     room.breathed = s.breath > 0;
+    room.unfocused = !!focus;
   }
-  if (t < 0.6 && !s.leaves.some((p) => p.kind === WORD && p.landed)) { flight(ctx, room); return; }
 
-  const colorOf = (p, extra = 1) => bodyColor(p).map((c, i) => c * lit[i] * extra);
+  const colorOf = (p, extra = 1) => bodyColor(p).map((c, i) => c * lit[i] * extra * (p.kind === WORD ? 1.14 : 1));
   const glint = `rgba(${day ? '255,252,236' : pal.light.join(',')},${day ? 0.55 : 0.7})`;
   const visible = (p) => p.landed;
   ctx.save();
   ctx.clip(bake.inner);
   // the bottom: shadows of the floating leaves, then the sunk ones, crisp
-  const big = s.leaves.filter((p) => p.kind !== FAN && visible(p));
+  // the word-leaf last, so it lies on top of any leaf it touches
+  const big = s.leaves.filter((p) => p.kind === ENTRY && visible(p));
+  if (s.leaves[0].landed) big.push(s.leaves[0]);
   const fans = s.leaves.filter((p) => p.kind === FAN && visible(p));
   for (const p of big) {
     if (p.sunk) continue;
@@ -89,11 +99,15 @@ export function paint(ctx, room) {
   }
   for (const p of big) if (p.sunk) drawLeaf(ctx, X(p.x), Y(p.y), lengthPx(p, R), p.a, p.unroll, colorOf(p), p.seed, { ink: 0.3 });
   drawFannings(ctx, fans.filter((p) => p.sunk), X, Y, R, v.dpr, 0, 2, (i) => (i ? 'rgba(74,52,32,0.9)' : 'rgba(96,104,50,0.85)'));
-  // the tea
+  // the tea (a slow device shades it every other frame)
   if (t > POUR[0]) {
-    shade(liquid.L, s, pal);
-    liquid.tctx.putImageData(new ImageData(liquid.L.trans, liquid.L.n, liquid.L.n), 0, 0);
-    liquid.actx.putImageData(new ImageData(liquid.L.add, liquid.L.n, liquid.L.n), 0, 0);
+    room.frameNo = (room.frameNo || 0) + 1;
+    if (!room.thin || room.frameNo % 2 || !liquid.shaded) {
+      shade(liquid.L, s, pal);
+      liquid.tctx.putImageData(liquid.timg, 0, 0);
+      liquid.actx.putImageData(liquid.aimg, 0, 0);
+      liquid.shaded = true;
+    }
     const span = SPAN_CUP * R;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.imageSmoothingEnabled = true;
@@ -103,6 +117,7 @@ export function paint(ctx, room) {
     ctx.drawImage(liquid.add, v.cx - span, v.cy - span, span * 2, span * 2);
     ctx.globalCompositeOperation = 'source-over';
   }
+  if (s.rings.length) drawRings(ctx, room);
   // leaves on their way down, tinted by the tea over them; then the ones afloat
   for (const p of big) {
     if (p.sunk || p.z <= 0.02) continue;
@@ -114,21 +129,10 @@ export function paint(ctx, room) {
     if (p.sunk || p.z > 0.02) continue;
     drawLeaf(ctx, X(p.x), Y(p.y), lengthPx(p, R), p.a, p.unroll, colorOf(p, 1.12), p.seed, { ink: 0.55, glint });
   }
-  if (focus) {
-    const p = s.leaves.find((q) => q === focus);
-    if (p) drawLeaf(ctx, X(p.x), Y(p.y), lengthPx(p, R), p.a, p.unroll, colorOf(p), p.seed, { ring: pal.cream, alpha: 0 });
-  }
+  if (focus) drawLeaf(ctx, X(focus.x), Y(focus.y), lengthPx(focus, R), focus.a, focus.unroll, colorOf(focus), focus.seed, { ring: pal.cream, alpha: 0 });
   ctx.restore();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
-  // what is still falling in, seen from above: big, then smaller as it drops, its shadow closing on it
-  for (const p of s.leaves) {
-    if (p.landed || p.kind === WORD || t < p.drop - 0.3) continue;
-    const k = (p.drop - t) / 0.3, size = (p.kind === FAN ? 3 * v.dpr : lengthPx(p, R)) * (1 + 1.3 * k);
-    const x = X(p.x) - k * 0.06 * R, y = Y(p.y) - k * 0.1 * R;
-    drawLeaf(ctx, x + k * 0.14 * R, y + k * 0.18 * R, size, p.a + k * 2, 0, [20, 14, 16], p.seed, { alpha: 0.18 * (1 - k), ink: 0 });
-    drawLeaf(ctx, x, y, size, p.a + k * 2, 0, colorOf(p, 1.12), p.seed, { alpha: Math.min(1, (1 - k) * 2.5), glint });
-  }
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  drawFalling(ctx, room, colorOf);
   drawStream(ctx, s, v, pal);
   drawSteam(ctx, steam, v, pal);
   if (s.breath > 0 && !day) {
@@ -138,22 +142,20 @@ export function paint(ctx, room) {
     ctx.globalCompositeOperation = 'lighter'; ctx.fillStyle = g; ctx.fillRect(0, 0, v.w, v.h);
     ctx.globalCompositeOperation = 'source-over';
   }
+  if (focus && room.labelAt) thread(ctx, room, X(focus.x), Y(focus.y));
+  if (!s.leaves[0].landed) drawWordLeaf(ctx, room, t);
   if (clip) ctx.restore();
 }
 
-// The word-leaf, still falling from the sentence on the homepage into the empty cup.
-function flight(ctx, room) {
-  const { v, s, pal } = room;
-  const p = s.leaves.find((q) => q.kind === WORD);
-  const k = smooth(0, 1, s.t / 0.6);
-  const f = p.from || [0.5, -0.04];
-  const fx = f[0] * v.w, fy = f[1] * v.h, tx = v.cx + p.x * v.R, ty = v.cy + p.y * v.R;
-  const x = fx + (tx - fx) * k + Math.sin(k * Math.PI * 2.2) * 14 * v.dpr * (1 - k);
-  const y = fy + (ty - fy) * k;
-  const size = 9 * v.dpr + (lengthPx(p, v.R) - 9 * v.dpr) * k;
-  const lit = LIT[pal.mode];
+// A named leaf's thread to its label: a hairline from the leaf to the paper's nearest edge, a dot on the leaf.
+function thread(ctx, room, x, y) {
+  const { v, pal } = room, day = pal.mode === 'day';
+  const ax = room.labelAt.x * v.dpr, ay = room.labelAt.y * v.dpr;
+  const color = day ? 'rgba(35,31,43,0.72)' : 'rgba(241,230,208,0.78)';
+  const mx = (x + ax) / 2 + (ay - y) * 0.08, my = (y + ay) / 2 - (ax - x) * 0.08;
   ctx.setTransform(1, 0, 0, 1, 0, 0);
-  drawLeaf(ctx, x + (1 - k) * 0.08 * v.R, y + (1 - k) * 0.1 * v.R, size, p.a + (1 - k) * 3, 0, [20, 14, 16], p.seed, { alpha: 0.2 * k, ink: 0 });
-  drawLeaf(ctx, x, y, size, p.a + (1 - k) * 3, 0, bodyColor(p).map((c, i) => c * (0.4 + 0.6 * lit[i]) * 1.15), p.seed,
-    { glint: `rgba(${pal.light.join(',')},0.8)`, ink: 0.4 });
+  ctx.strokeStyle = color; ctx.lineWidth = v.dpr; ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(x, y); ctx.quadraticCurveTo(mx, my, ax, ay); ctx.stroke();
+  ctx.fillStyle = color;
+  ctx.beginPath(); ctx.arc(x, y, 2 * v.dpr, 0, Math.PI * 2); ctx.fill();
 }

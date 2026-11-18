@@ -9,6 +9,15 @@ html, .lv-body { margin: 0; height: 100%; overflow: hidden; background: var(--pc
 .lv { position: fixed; inset: 0; height: 100dvh; overflow: hidden; background: var(--pc-page); }
 .lv-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pinch-zoom; cursor: grab; }
 .lv-canvas:active { cursor: grabbing; }
+.lv-word {
+  position: absolute; overflow: visible; pointer-events: none; transform-origin: 50% 50%;
+  filter: drop-shadow(10px 14px 7px rgba(8, 6, 14, 0.32));
+}
+.lv-word[hidden] { display: none; }
+/* while the room bakes, the leaf hangs in the air and sways a little, on the compositor */
+.lv-word:not([hidden]) { animation: lv-hang 900ms cubic-bezier(.4, 0, .6, 1) infinite alternate; }
+@keyframes lv-hang { from { translate: 0 0; rotate: 0deg; } to { translate: -2px 3px; rotate: -5deg; } }
+:root[data-mode='day'] .lv-word { filter: drop-shadow(10px 14px 7px rgba(70, 45, 30, 0.32)); }
 .lv-canvas.lv-fade { opacity: 0; transition: opacity 200ms var(--lv-ease); }
 .lv-canvas.lv-fade.lv-in { opacity: 1; }
 
@@ -31,8 +40,8 @@ html, .lv-body { margin: 0; height: 100%; overflow: hidden; background: var(--pc
   clip-path: polygon(0.4% 0, 100% 0.6%, 99.6% 100%, 0 99.3%);
 }
 .lv-label {
-  padding: 8px 12px; font: 600 13px/1.3 var(--font-body); white-space: nowrap; max-width: calc(100vw - 24px);
-  overflow: hidden; text-overflow: ellipsis; pointer-events: none; opacity: 0; transform: rotate(-1.5deg) translateY(4px);
+  box-sizing: border-box; padding: 8px 12px; font: 600 13px/1.35 var(--font-body); max-width: min(380px, calc(100vw - 32px));
+  width: max-content; text-wrap: balance; pointer-events: none; opacity: 0; z-index: 2; transform: rotate(-1.5deg) translateY(4px);
   transition: opacity 180ms var(--lv-ease), transform 180ms var(--lv-ease);
 }
 .lv-label.lv-on { opacity: 1; transform: none; }
@@ -43,7 +52,9 @@ html, .lv-body { margin: 0; height: 100%; overflow: hidden; background: var(--pc
 }
 .lv-slip.lv-in { opacity: 1; transform: none; transition: opacity 420ms var(--lv-ease), transform 760ms var(--lv-pop); }
 .lv-slip.lv-still { transition: none; }
-.lv-line1 { margin: 0; padding-right: 54px; font: 400 19px/1.45 var(--font-serif); color: rgba(35, 31, 43, 0.92); }
+.lv-line1 {
+  margin: 0; padding-right: 54px; font: 400 19px/1.45 var(--font-serif); color: rgba(35, 31, 43, 0.92); text-wrap: balance;
+}
 .lv-line2 { margin: 10px 0 0; padding-right: 54px; font: 400 13px/1.5 var(--font-body); color: rgba(35, 31, 43, 0.66); }
 .lv-seal { position: absolute; right: 16px; bottom: 16px; width: 44px; height: 44px; opacity: 0; transform: scale(1.25) rotate(-3deg); }
 .lv-slip.lv-in .lv-seal { opacity: 1; transform: rotate(-3deg); transition: opacity 120ms var(--lv-ease) 700ms, transform 220ms var(--lv-ease) 700ms; }
@@ -80,4 +91,5 @@ html, .lv-body { margin: 0; height: 100%; overflow: hidden; background: var(--pc
   .lv-slip, .lv-slip.lv-in, .lv-seal, .lv-slip.lv-in .lv-seal, .lv-label { transition: none; }
   .lv-slip.lv-in::after { animation: none; }
   .lv-label { transform: none; }
+  .lv-word:not([hidden]) { animation: none; }
 }

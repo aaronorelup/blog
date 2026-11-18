@@ -44,10 +44,13 @@ export function drawStream(ctx, s, v, pal) {
   };
   const day = pal.mode === 'day';
   ctx.setTransform(1, 0, 0, 1, 0, 0);
-  // its shadow, further from it the higher the water still is
+  // its shadow, further from it the higher the water still is; only once the water has landed, so it never runs
+  // ahead of the stream
   const off = (i) => (1 - (tail + (head - tail) * i / (n - 1))) * R;
+  ctx.globalAlpha = smooth(0.9, 1, head);
   ctx.fillStyle = day ? 'rgba(70,45,30,0.12)' : 'rgba(6,6,14,0.22)';
-  ctx.fill(body((i) => off(i) * 0.16, (i) => off(i) * 0.2, 1));
+  if (ctx.globalAlpha > 0) ctx.fill(body((i) => off(i) * 0.16, (i) => off(i) * 0.2, 1));
+  ctx.globalAlpha = 1;
   // glass: nearly clear in the middle, a soft sheen across it, a bright thread on the lamp's side and a dark
   // refracted edge on the other
   ctx.fillStyle = day ? 'rgba(255,252,240,0.2)' : 'rgba(255,226,170,0.14)';
