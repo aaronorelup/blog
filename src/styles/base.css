@@ -1,6 +1,6 @@
 /* Page-wide rules of every page (PanelPage and Home): the page colour, the body font, focus, selection and the skip
    link. */
-html { scroll-behavior: auto; }
+html { scroll-behavior: auto; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 body {
   margin: 0;
   background: var(--pc-page);

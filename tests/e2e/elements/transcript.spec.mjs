@@ -72,3 +72,11 @@ test('transcript-5 Enter on a line seeks there; hiding the element pauses its vi
   await el(page).evaluate((n) => { n.style.display = 'none'; });
   await expectPlaying(v, false);
 });
+
+test('transcript-6 on a phone the search field is 16px or more, so iOS does not zoom on focus', async ({ page, isMobile }) => {
+  test.skip(!isMobile, 'iOS focus zoom: phone only');
+  const sizes = await el(page).locator('input[type=search]').evaluateAll((els) => els
+    .filter((e) => e.getClientRects().length).map((e) => parseFloat(getComputedStyle(e).fontSize)));
+  expect(sizes.length).toBeGreaterThan(0);
+  for (const s of sizes) expect(s).toBeGreaterThanOrEqual(16);
+});

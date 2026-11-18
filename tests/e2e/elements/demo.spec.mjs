@@ -78,6 +78,13 @@ test.describe('synthid', () => {
     await page.mouse.move(0, 0);
     await expect(d.locator('.sid-tip')).toBeHidden();
   });
+  test('demo-synthid-6 edit: on a phone the letter is 16px or more, so iOS does not zoom on focus', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'iOS focus zoom: phone only');
+    const d = demo(page, 'synthid', 'edit');
+    await mounted(d);
+    const px = await d.locator('textarea.sid-area').evaluate((e) => parseFloat(getComputedStyle(e).fontSize));
+    expect(px).toBeGreaterThanOrEqual(16);
+  });
 });
 
 test.describe('cf', () => {
@@ -231,5 +238,13 @@ test.describe('goobie-lab', () => {
     await expect(form.locator('.gl-play-out')).toContainText('for /\\(/i');
     await d.getByRole('button', { name: 'Show every turn' }).click();
     await expect(d.locator('.gl-answer a.gl-cite').first()).toHaveAttribute('href', /^\/ledger\/[a-z0-9-]+\/(notes\/)?(#[a-z0-9-]+)?$/);
+  });
+
+  test('demo-lab-8 agent: on a phone the playground\'s tool and words are 16px or more, so iOS does not zoom on focus', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'iOS focus zoom: phone only');
+    const form = lab(page, 'agent').locator('form.gl-play');
+    for (const f of [form.locator('select.gl-select'), form.locator('input.gl-input')]) {
+      expect(await f.evaluate((e) => parseFloat(getComputedStyle(e).fontSize))).toBeGreaterThanOrEqual(16);
+    }
   });
 });

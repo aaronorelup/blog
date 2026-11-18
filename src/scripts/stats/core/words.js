@@ -208,7 +208,7 @@ export const PROBE_FAMILIES = [
     house: "There's nothing to log in to." },
   { key: 'habit', name: 'Browser habits', test: /^\/(favicon\.ico|apple-touch-icon[\w.-]*\.png)$/i,
     hoped: 'an icon browsers ask for by habit. Not a scanner at all.',
-    house: "This site's icon lives at /favicon.svg." },
+    house: "This site's icon lives at /favicon.svg, with a home-screen copy at /apple-touch-icon.png." },
   { key: 'own', name: "This site's old addresses", test: /^\/(ledger|posts|courses|media|games|presentations|labs)\//i,
     hoped: 'a page of this site that moved or never existed: an old link, or a guess.',
     house: 'A person following a broken link lands here too.' },

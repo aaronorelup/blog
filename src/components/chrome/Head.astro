@@ -72,6 +72,7 @@ const ogCard = !!shareImage && new URL(shareImage).pathname.startsWith('/og/');
 {markdown && !noindex && <link rel="alternate" type="text/markdown" href={markdown} />}
 <link rel="alternate" type="text/plain" title="llms.txt" href="/llms.txt" />
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <link rel="preload" href={FONTS.preload} as="font" type="font/woff2" crossorigin />
 {FONTS.faces.filter((f) => f.family === 'Zen Maru Gothic' && f.weight === 700 && f.range.startsWith('U+0000')).map((f) => <link rel="preload" href={f.file} as="font" type="font/woff2" crossorigin />)}
 <script is:inline>

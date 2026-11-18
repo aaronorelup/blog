@@ -164,6 +164,7 @@ streams the same two films.
 | A find chip marks every hit and counts them; again clears; the search box marks too | `find`, chip `click`, search `input` | transcript-3 |
 | One pane playing pauses the other | document `ao-listen-play` | transcript-4 |
 | Enter on a line seeks; hiding the element pauses its video | line `keydown`, video `timeupdate` | transcript-5 |
+| On a phone the search field is 16px or more, so iOS Safari doesn't zoom the page on focus (phone only) | style `@media (pointer: coarse)` | transcript-6 |
 
 ### `ao-fetch`: every-video-can-seek, the-branch-that-went-live
 
@@ -277,6 +278,7 @@ the recording.
 | synthid `detect`: fewer words checked change the score | range `input` | demo-synthid-3 |
 | synthid `edit`: typing or an edit button rescores; Reset restores | textarea `input`, edit buttons, Reset, strip `change` | demo-synthid-4 |
 | synthid `book`: pointing at the chart reads it out | svg `pointermove` `pointerleave` | demo-synthid-5 |
+| synthid `edit`: on a phone the letter is 16px or more, so iOS Safari doesn't zoom on focus (phone only) | style `@media (pointer: coarse)` | demo-synthid-6 |
 | cf `you`: asks `/cdn-cgi/trace` and lays out the visit; the address is masked until shown | Show `click`, show/hide `click` | demo-cf-1 |
 | cf `count`: shows the live count; an automated browser isn't counted (asserted on the status line only) | `data-slug`, `visibilitychange`, Try again | demo-cf-2 |
 | goobie-lab `windows`: the three ways, each with its map; in-context's shades every post, RAG's a few | `part` | demo-lab-1 |
@@ -286,6 +288,7 @@ the recording.
 | goobie-lab `agent`: a recorded call runs again live on the site's files, the same as recorded on the posts it searched (whatever was listed since); on all the posts listed today it says how many came since, this post among them, and what it returns now; its result and an opened result stay as you step | Run this call live `click`, Next `click` | demo-lab-5 |
 | goobie-lab `agent`: the playground searches the reader's own words live, as plain text; cites link to their passages | form `submit` | demo-lab-6 |
 | goobie-lab `agent`: a live run that can't read the site's files says so, and the next try reads them | Run this call live `click` | demo-lab-7 |
+| goobie-lab `agent`: on a phone the playground's tool and words are 16px or more, so iOS Safari doesn't zoom on focus (phone only) | style `@media (pointer: coarse)` | demo-lab-8 |
 
 ## Standalone pages (`standalone.spec.mjs`, `elements/game.spec.mjs`)
 
