@@ -4,7 +4,7 @@ title: "A week of building with Claude Fable 5.2"
 summary: "Recordings of the two pages Claude Fable 5.2 built for my site in its first week out, a 3D map of the AI industry and a painted tour of the site, with how each job ran and how its usage limit works."
 date: 2026-11-18
 topic: "agents"
-draft: true
+draft: false
 preview:
   verdict: "Two pages, neither finished"
   takeaway: "Fable 5.2 built a 3D AI landscape page and my tea room, a painted tour of my site, and neither is finished. The landscape job hit my Fable cap twice."
