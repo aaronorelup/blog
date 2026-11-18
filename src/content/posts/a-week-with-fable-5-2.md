@@ -32,7 +32,7 @@ My own take: I'm blown away by it, and I don't think most people will see why wh
 
 I asked for a page about Anthropic, OpenAI, Google, Meta and xAI that shows how each one's products stack up in layers, from the app you talk to down to the model and the computer it runs on, with as few words as possible. I dictated about 1,900 words, pointed it at [Shopify's Winter 2026 Editions page](https://www.shopify.com/editions/winter2026) as the bar for design, and asked it to do it all "on your own autonomously without me or any of my feedback".
 
-<figure><video class="fill" controls muted loop playsinline preload="metadata" poster="/media/a-week-with-fable-5-2/landscape-desktop.webp" src="/media/a-week-with-fable-5-2/landscape-desktop.mp4"></video><figcaption><b>The AI landscape page on a laptop</b><span class="ao-meta">the opening, the Anthropic, OpenAI and Google rooms, the line-up and the end</span></figcaption></figure>
+<figure><video class="fill" controls muted loop playsinline preload="metadata" poster="/media/a-week-with-fable-5-2/landscape-desktop.webp" src="/media/a-week-with-fable-5-2/landscape-desktop.mp4"></video><figcaption>The AI landscape page on a laptop: the opening, the Anthropic, OpenAI and Google rooms, the line-up and the end.</figcaption></figure>
 
 [Open the AI landscape page](/ai-landscape/). It has a "Draft" label in the corner for now. My [progress report from the first night](/ledger/progress-report-on-my-3d-ai-landscape-page/) covers the research and the three prototype designs it chose from.
 
@@ -44,6 +44,8 @@ I asked for a page about Anthropic, OpenAI, Google, Meta and xAI that shows how 
 - **Three review rounds.** In round one all six AI reviewers said no, with 100 findings. Round two found 44 more and fixed 31. Round three was cut off by the Fable limit.
 
 </details>
+
+**Seven days, seven messages from me.** The times are mine, US Central.
 
 <ao-timeline lanes="a:Me|f:Fable and its agents|l:My limits">
 <ol>
@@ -66,7 +68,6 @@ I asked for a page about Anthropic, OpenAI, Google, Meta and xAI that shows how 
 <li data-lane="l"><time>Mon 8:26 pm</time><p>Fable limit hit again, at 80% all-models. Every Fable agent stops.</p></li>
 <li data-lane="f"><time>Mon 9:56 pm</time><p>The job stops after its two Opus reviewers finish.</p></li>
 </ol>
-<figcaption><b>Seven days, seven messages from me</b><span class="ao-meta">10 to 16 November, my time (US Central)</span></figcaption>
 </ao-timeline>
 
 **Where it stands.** The last two AI reviewers both said no. One said it was close, with no wrong facts left. The other found a button in the "my stack" section, where the page shows the AI tools I use, that could make its plain-text version describe my setup wrong. 45 saved changes aren't live yet, and nothing has been checked on a real graphics card or phone.
@@ -99,9 +100,9 @@ Running totals from the job's own usage counters (tokens written, then the pay-p
 
 ## The tea room
 
-<figure><video class="fill" controls muted loop playsinline preload="metadata" poster="/media/a-week-with-fable-5-2/tea-walk.webp" src="/media/a-week-with-fable-5-2/tea-walk.mp4"></video><figcaption><b>Walking into the tea room</b><span class="ao-meta">the garden, the door, Start here, then 20:00 in the TV chapter</span></figcaption></figure>
+<figure><video class="fill" controls muted loop playsinline preload="metadata" poster="/media/a-week-with-fable-5-2/tea-walk.webp" src="/media/a-week-with-fable-5-2/tea-walk.mp4"></video><figcaption>Walking into the tea room: the garden, the door, Start here, then 20:00 in the TV chapter.</figcaption></figure>
 
-<figure><video class="fill" controls muted loop playsinline preload="metadata" poster="/media/a-week-with-fable-5-2/tea-chapters.webp" src="/media/a-week-with-fable-5-2/tea-chapters.mp4"></video><figcaption><b>Five of its chapters</b><span class="ao-meta">film, games, art, agents and this website</span></figcaption></figure>
+<figure><video class="fill" controls muted loop playsinline preload="metadata" poster="/media/a-week-with-fable-5-2/tea-chapters.webp" src="/media/a-week-with-fable-5-2/tea-chapters.mp4"></video><figcaption>Five of its chapters: film, games, art, agents and this website.</figcaption></figure>
 
 [Walk through the tea room](/tea/). It's still a working copy.
 
