@@ -1,6 +1,8 @@
 ---
 // Shell for the homepage only: the scene owns its own chrome. It links site.css, as every panel page does
 // (PanelPage.astro), so the overlay's views find every rule they need already here, and then its own home.css.
+// The head script marks a page the scene will stage (data-stage-pending: WebGL, no reduced motion, no ?tier=static),
+// which home.css lays out staged from the first frame; the scene or flat.js takes it off, or the fail-safe after 10 s.
 import '../styles/site.css';
 import '../styles/home.css';
 import AgentNote from '../components/chrome/AgentNote.astro';
@@ -21,6 +23,15 @@ const {
 <html lang="en" class="no-js">
   <head>
     <Head title={title} description={description} image={await shareImage(Astro.url.pathname)} home />
+    <script is:inline>
+      (function () {
+        var d = document.documentElement;
+        if (!window.WebGLRenderingContext || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (new URLSearchParams(location.search).get('tier') === 'static') return;
+        d.setAttribute('data-stage-pending', '');
+        setTimeout(function () { d.removeAttribute('data-stage-pending'); }, 10000);
+      })();
+    </script>
   </head>
   <body>
     <AgentNote />

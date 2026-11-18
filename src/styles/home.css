@@ -229,9 +229,22 @@
 /* The tween moves the page colour every frame: no transition to lag behind it. */
 :root[data-tweening] body { transition: none; }
 
-/* Without JavaScript the sticky canvas never moves, so the six full-height panels
-   would be six screens of empty space. Collapse them into a plain stacked page. */
-.no-js .home-viewport { display: none; }
-.no-js .home-main { margin-top: 0; }
-.no-js .home-stop { min-height: 0; padding: 40px clamp(20px, 6vw, 96px); }
-.no-js .home-spacer { display: none; }
+/* A page the scene will stage (layouts/Home.astro's head script sets data-stage-pending) is laid out from the first
+   frame the way enableStage() (scene/cards.js) leaves it, so nothing moves when the scene mounts: every section over
+   the window, the hero card alone and where the staged page shows it. enableStage(), disableStage(), the scene's
+   mount() when it does not stage, and flat() take the attribute off; the head script's fail-safe after 10 s. */
+:root[data-stage-pending], :root[data-stage-pending] body { overflow: hidden; }
+:root[data-stage-pending] .home-main { position: fixed; inset: 0; margin: 0; z-index: 1; display: block; }
+:root[data-stage-pending] section[data-wp] { position: absolute; inset: 0; min-height: 0; }
+:root[data-stage-pending] section[data-wp='1'] { display: none; }
+:root[data-stage-pending] section[data-wp]:not([data-wp='0']) { opacity: 0; visibility: hidden; }   /* no Tab into a card not shown yet */
+:root[data-stage-pending] section[data-wp]:not([data-wp='0']) > .home-card { pointer-events: none; }
+
+/* Without the scene the sticky canvas never moves, so the six full-height panels would be six screens of empty
+   space. Collapse them into a plain stacked page: without JavaScript (no-js, unless a staged first frame is pending:
+   if no module ever runs, the fail-safe ends it and this layout follows), and on the flat page (flat.js adds
+   home-flat: no WebGL, a lost context, too slow even as a static frame, the scene's chunk lost). */
+.no-js:not([data-stage-pending]) .home-viewport, .home-flat .home-viewport { display: none; }
+.no-js:not([data-stage-pending]) .home-main, .home-flat .home-main { margin-top: 0; }
+.no-js:not([data-stage-pending]) .home-stop, .home-flat .home-stop { min-height: 0; padding: 40px clamp(20px, 6vw, 96px); }
+.no-js:not([data-stage-pending]) .home-spacer, .home-flat .home-spacer { display: none; }

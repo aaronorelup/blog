@@ -24,6 +24,8 @@ function webgl() {
 requestAnimationFrame(() => requestAnimationFrame(() => {
   if (!webgl()) { flat('no webgl'); return; }
   lazy(() => import('./scene/scene.js')).then(({ mount }) => {
-    window.__homeScene = mount();   // the e2e hook, and handy from the console when tuning waypoints
+    // the e2e hook, and handy from the console when tuning waypoints; a scene that throws on start (a renderer
+    // WebGL refused after all) gives the flat page at once, not a staged first frame left pending
+    try { window.__homeScene = mount(); } catch (e) { flat(`the scene failed to start: ${e?.message || e}`); }
   }, () => flat('the scene failed to load'));
 }));
