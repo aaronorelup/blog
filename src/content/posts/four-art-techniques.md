@@ -84,16 +84,16 @@ put.
 ## Walking into a painting
 
 **A 3D surface made from one painting holds a real camera move, once the figure is cut out and
-the room behind her is painted in.** The painting is Echo,
+the room behind it is painted in.** The painting is Echo,
 [the character Claude designed for itself](/ledger/echo-the-borrowed-voice/), reading a letter in
 a long hall of pigeonholes. The agent used MoGe-2, an AI model that guesses how far away every
 pixel is, to turn the picture into a 3D surface in 2 to 3 seconds. Then Blender moved a camera
-35 percent of the way toward her with a small arc, over 8 seconds.
+35 percent of the way toward Echo with a small arc, over 8 seconds.
 
-- **One surface tears.** About 2 seconds in, grey holes open behind her and behind the table,
+- **One surface tears.** About 2 seconds in, grey holes open behind Echo and behind the table,
   because nothing was ever painted there.
-- **Two layers hold.** The agent cut her out with an AI selection tool, had Qwen-Image paint the
-  hall without her, made a surface from each and stacked them. No holes for the whole 8 seconds.
+- **Two layers hold.** The agent cut Echo out with an AI selection tool, had Qwen-Image paint the
+  empty hall, made a surface from each and stacked them. No holes for the whole 8 seconds.
   The floor behind the table smears a little.
 
 <ao-compare cols="2" aspect="16/9" sync>
@@ -103,7 +103,7 @@ pixel is, to turn the picture into a 3D surface in 2 to 3 seconds. Then Blender 
 
 I also asked an AI video model, MiniMax-H3, for the same push-in from the same painting. It went
 further than asked and rebuilt the hall on the way. The far window slides, a lit doorway appears
-and her porcelain head turns glossy.
+and its porcelain head turns glossy.
 
 <ao-compare cols="2" aspect="16/9" sync>
 <figure><video controls muted loop playsinline preload="metadata" poster="/media/four-art-techniques/painting-layered.webp" src="/media/four-art-techniques/painting-layered.mp4"></video><figcaption><b>Two layers in Blender</b><span class="ao-meta">the move as asked</span></figcaption></figure>
@@ -122,9 +122,9 @@ bigger, livelier move, but it isn't your picture any more by the end.
 - The depth model disagreed with itself. On the painting and on the empty hall it guessed a lens
   of 80.9 and 83.3 degrees, and sizes about 10 percent apart, so the two layers didn't line up
   until the agent pinned both.
-- Asking the selection tool for the "bell-headed figure" selected only her head. "Person", plus
-  "brown leather bag" and "letter held in hands", got all of her.
-- At reduced mesh detail her outline came out jagged. Full detail fixed it, apart from a slightly
+- Asking the selection tool for the "bell-headed figure" selected only its head. "Person", plus
+  "brown leather bag" and "letter held in hands", got all of it.
+- At reduced mesh detail its outline came out jagged. Full detail fixed it, apart from a slightly
   serrated coat hem.
 
 </details>
@@ -187,8 +187,8 @@ scroll and the window drifted, which no edit was supposed to touch.
   left.
 - **Even "change nothing" drifts.** Four passes asking for no change at all were already off by
   15, and the first letter of the scroll had turned rust red.
-- **Pasting back only what changed** brought it to 8.6. It leaked twice, when the model also
-  redrew the window while adding something to the shelf.
+- **Pasting back only what changed** brought it to 8.6. It still leaked when the model also
+  redrew the window or the scroll while adding something to the shelf, mostly at edits 4, 8 and 9.
 - **Keeping only changes that touch the shelf or the floor** brought it to 2.0. The scroll came
   out pixel for pixel the same after 12 edits.
 
@@ -214,12 +214,12 @@ few lines of code and no extra graphics card time.
 </ao-compare>
 
 - Fed straight back, the drift grew by about 3.4 a pass, and change-nothing passes by about 3.7.
-- The plain paste-back leaked at edits 4 and 8, when the edit also redrew the window and the
-  scroll. The shelf-only version leaked once, at edit 8, where a little gold screen stands in
+- The plain paste-back leaked most at edits 4, 8 and 9, when the edit also redrew the window
+  and the scroll. The shelf-only version leaked once, at edit 8, where a little gold screen stands in
   front of the window.
 - The same picture and seed gave a bit-for-bit identical edit, so the three versions could share
   their first step.
-- 40 edits in all, 28 minutes of graphics card.
+- 40 jobs in all, one starting picture and 39 edits, 28 minutes of graphics card.
 
 </details>
 
