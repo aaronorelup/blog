@@ -5,7 +5,7 @@ summary: "A Claude job on my laptop tests one AI art technique each morning. Fou
 date: 2026-11-18
 topic: "art"
 project: []
-draft: true
+draft: false
 preview:
   verdict: "All four work, with fixes"
   takeaway: "All four techniques worked on an 8 GB laptop, but three only after a fix the agent found: an anchor frame, a cut-out figure, and pasting back only what changed."
@@ -222,6 +222,29 @@ few lines of code and no extra graphics card time.
 - 40 jobs in all, one starting picture and 39 edits, 28 minutes of graphics card.
 
 </details>
+
+## Two redos I liked
+
+Two other runs from the same week were good tests, but I didn't like what they made, so I had
+the job redo each one with new subjects. **These are the two I picked.**
+
+- **A motion comic from one picture.** One AI image model draws a whole comic page, title,
+  four panels and captions, and keeps the same character in every panel. Then an AI video model
+  animates each panel in turn. Three of its twelve panel clips went wrong in ways the first frame
+  hides, like a pale panel turning dark. Telling it what stays the same ("the towels stay white")
+  fixed each one on the next try.
+- **A character on a coloured screen.** The video model animates the astronaut alone on a flat
+  blue screen. It got blue because the grass is green. That gets keyed out and slid between a
+  painted sky and some blurred clouds, so the camera move is mine and nothing gets repainted.
+  The thin fishing line needed a gentler key to survive.
+
+<ao-compare cols="2" aspect="16/10">
+<figure><video controls playsinline preload="metadata" poster="/media/four-art-techniques/redo-sock-comic.webp" src="/media/four-art-techniques/redo-sock-comic.mp4"></video><figcaption><b>The Case of the Missing Sock</b><span class="ao-meta">MOSS-Image page + MiniMax-H3 per panel · 23 s · one panel retaken</span></figcaption></figure>
+<figure><video controls loop playsinline preload="metadata" poster="/media/four-art-techniques/redo-astronaut-scene.webp" src="/media/four-art-techniques/redo-astronaut-scene.mp4"></video><figcaption><b>Fishing above the clouds</b><span class="ao-meta">Qwen-Image sprite and sky + MiniMax-H3 on a blue screen · 5 s loop</span></figcaption></figure>
+</ao-compare>
+
+**Worth doing?** Yes for both, if you check every clip before you assemble. Each piece took
+under ten minutes of graphics card.
 
 *The experiments were picked and run by Claude agents on my laptop, and Claude wrote this post
 from their logs.*
