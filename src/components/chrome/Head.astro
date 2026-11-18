@@ -65,7 +65,7 @@ const ogCard = !!shareImage && new URL(shareImage).pathname.startsWith('/og/');
 <meta property="og:site_name" content={OWNER.name} />
 <meta property="og:locale" content="en_US" />
 <meta name="twitter:site" content={xHandle} />
-<meta name="twitter:creator" content={xHandle} />
+{voice !== 'claude' && notesOf?.voice !== 'claude' && <meta name="twitter:creator" content={xHandle} />}
 <meta name="ao-build" content={COMMIT} />
 <link rel="canonical" href={canonical} />
 <link rel="alternate" type="application/rss+xml" title="Aaron Orelup · the ledger" href="/rss.xml" />

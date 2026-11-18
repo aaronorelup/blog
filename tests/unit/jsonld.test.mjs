@@ -87,7 +87,7 @@ test('the homepage: a WebSite with a name, a url and its publisher, no SearchAct
 });
 
 test('the script text: no "<" survives, and it parses back to the same data', () => {
-  const hostile = { ...post, headline: 'He said "stop" </script><script>alert(1)</script> <!-- \\  ', description: "it's <b>&amp;" };
+  const hostile = { ...post, headline: 'He said "stop" </script><script>alert(1)</script> <!-- \\  ', description: "it's <b>&amp;" };
   const text = scriptText(blogPosting(hostile));
   assert.equal(text.includes('<'), false);
   assert.deepEqual(JSON.parse(text), blogPosting(hostile));

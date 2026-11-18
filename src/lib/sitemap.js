@@ -19,11 +19,13 @@ export function courseDay(loc, courses) {
   return slug ? day(courses[slug]?.updated) : null;
 }
 
-// Every published lesson of every course, each once, dated by its course.
+// Every published lesson of every course, each once, dated by its course. The course repo's 'published' is not
+// trusted alone: a lesson whose page has not landed, or asks not to be indexed, is left out.
 export function courseLessons(courses) {
   return Object.values(courses).flatMap((c) => (c?.modules || []).flatMap((m) => m?.lessons || [])
     .filter((l) => l?.status === 'published' && typeof l.url === 'string' && l.url.startsWith('/courses/'))
-    .map((l) => ({ loc: slashed(l.url.replace(/[?#].*$/, '')), lastmod: day(c.updated) })));
+    .map((l) => slashed(l.url.replace(/[?#].*$/, ''))).filter((p) => !p.split('/').includes('..') && shown(p))
+    .map((loc) => ({ loc, lastmod: day(c.updated) })));
 }
 
 // Same-site links to a hosted work, in a post's Markdown or HTML: [x](/games/a/), href="https://aaronorelup.com/tools/b/".
@@ -33,12 +35,16 @@ const KEEP_OUT = /^\/labs\/tea-room\//;     // the tea room's labs: noindex, and
 // A built page that asks not to be indexed, or only sends the reader on.
 const hidden = (html) => (html.match(/<meta\b[^>]*>/gi) || []).some((m) =>
   (/\bname\s*=\s*["']?robots\b/i.test(m) && /noindex/i.test(m)) || /\bhttp-equiv\s*=\s*["']?refresh\b/i.test(m));
+// A page under public/ that is built and may be indexed.
+function shown(p) {
+  const file = path.join(PUBLIC_DIR, p, 'index.html');
+  return fs.existsSync(file) && !hidden(fs.readFileSync(file, 'utf8'));
+}
 
 function workPage(link) {
   const p = slashed(link.replace(/[?#].*$/, '').replace(/index\.html$/, ''));
   if (p.split('/').includes('..') || isLivePath(p) || KEEP_OUT.test(p)) return null;
-  const file = path.join(PUBLIC_DIR, p, 'index.html');
-  return fs.existsSync(file) && !hidden(fs.readFileSync(file, 'utf8')) ? p : null;
+  return shown(p) ? p : null;
 }
 
 // The hosted works the given (listed) posts link, each once, dated by the newest post that links it. A live

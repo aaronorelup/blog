@@ -48,6 +48,13 @@ const previews = await import('../../src/pages/ledger/previews.json.js');
 const sitemap = await import('../../src/pages/sitemap.xml.js');
 const COURSES = { 'the-hidden-curriculum': (await import('../../src/data/courses/the-hidden-curriculum.json', { with: { type: 'json' } })).default,
   'i-love-my-evening-television': (await import('../../src/data/courses/i-love-my-evening-television.json', { with: { type: 'json' } })).default };
+// Each published lesson's page, built, but for one that never landed and one that asks not to be indexed.
+const PUBLISHED = Object.values(COURSES).flatMap((c) => c.modules.flatMap((m) => m.lessons)).filter((l) => l.status === 'published');
+const [UNBUILT, NOINDEX] = PUBLISHED.map((l) => l.url);
+for (const { url } of PUBLISHED.filter((l) => l.url !== UNBUILT)) {
+  fs.mkdirSync(path.join(publicDir, url), { recursive: true });
+  fs.writeFileSync(path.join(publicDir, url, 'index.html'), url === NOINDEX ? '<meta name="robots" content="noindex">' : '<!doctype html>');
+}
 const sitemapRows = async () => [...(await (await sitemap.GET({ site: new URL(SITE) })).text())
   .matchAll(/<url><loc>([^<]*)<\/loc>(?:<lastmod>([^<]*)<\/lastmod>)?<\/url>/g)].map((m) => [m[1].slice(SITE.length), m[2] ?? null]);
 
@@ -89,7 +96,7 @@ test('sitemap.xml: the works listed posts link, once, by their newest post, and 
   assert.deepEqual(works, [['/games/demo/', '2026-11-01']]);
 });
 
-test('sitemap.xml: every published lesson of both courses, once, dated by its course, and nothing unpublished', async () => {
+test('sitemap.xml: every built, indexable published lesson of both courses, once, dated by its course, and nothing unpublished', async () => {
   const rows = await sitemapRows();
   const urls = new Map(rows);
   assert.equal(urls.size, rows.length, 'a page appears twice');
@@ -99,12 +106,13 @@ test('sitemap.xml: every published lesson of both courses, once, dated by its co
     assert.equal(urls.get(`/courses/${slug}/`), course.updated, slug);
     for (const lesson of course.modules.flatMap((m) => m.lessons)) {
       if (lesson.status === 'published') published += 1;
-      assert.equal(urls.has(lesson.url), lesson.status === 'published' && typeof lesson.url === 'string', lesson.url ?? lesson.id);
-      if (lesson.status === 'published') assert.equal(urls.get(lesson.url), course.updated, lesson.url);
+      const shown = lesson.status === 'published' && typeof lesson.url === 'string' && ![UNBUILT, NOINDEX].includes(lesson.url);
+      assert.equal(urls.has(lesson.url), shown, lesson.url ?? lesson.id);
+      if (shown) assert.equal(urls.get(lesson.url), course.updated, lesson.url);
     }
   }
   assert.ok(published >= 23, `${published} published lessons`);
-  assert.equal(rows.filter(([loc]) => loc.includes('/lessons/')).length, published);
+  assert.equal(rows.filter(([loc]) => loc.includes('/lessons/')).length, published - 2);
   assert.equal(urls.get('/courses/'), Object.values(COURSES).map((c) => c.updated).sort().at(-1));
   assert.equal(urls.get('/courses/i-love-my-evening-television/world/'), COURSES['i-love-my-evening-television'].updated);
 });
