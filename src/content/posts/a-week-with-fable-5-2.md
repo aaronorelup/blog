@@ -7,7 +7,7 @@ topic: "agents"
 draft: true
 preview:
   verdict: "Two pages, neither finished"
-  takeaway: "Fable 5.2 built a 3D AI landscape page and my tea room, a painted tour of my site. Neither is finished. The landscape job hit my Fable cap twice."
+  takeaway: "Fable 5.2 built a 3D AI landscape page and my tea room, a painted tour of my site, and neither is finished. The landscape job hit my Fable cap twice."
   points:
     - "Fable has its own weekly cap. Using all of it took about half my overall weekly cap."
     - "When Fable only handed work to cheaper models it was 2% of the cost. When it did the hard parts too, two thirds."
@@ -21,12 +21,12 @@ Claude Fable 5.2 came out on 9 November. Anthropic says it's a step above Opus 5
 
 My own take: I'm blown away by it, and I don't think most people will see why when they try it. On the normal tasks I'd give Opus 5.5, I think Fable does about the same. I think the difference only shows on a task that's extremely complex, and I don't think most people give their models tasks that hard.
 
-- **The AI landscape page** came from one long request I dictated. Fable planned the work and handed every job to other agents. It's live at its link but not in my site's lists yet, and the last two AI reviewers it ran said it wasn't ready.
-- **The tea room** ran on my other Claude account. It made three looks for the opening, I picked one, and each later chapter was built as its own demo first.
-- **The landscape job had Fable write 6.2 million tokens and Opus 5.5 write 6.3 million,** about $1,925 at Anthropic's pay-per-use prices. It ran on my subscription, so what it really cost was my weekly limits.
-- **My plan has a weekly cap for all models and a separate one for Fable, and a full Fable cap uses half of the overall one.** Anthropic's help pages say so, but nothing in Claude Code told me. I found out by hitting it.
-- **The computers slowed it down too.** The cloud computers my agents run on have no graphics card, and they kept going down, most likely while agents checked the page in a browser.
-- **It still needs me on open-ended problems.** A project tracker for my own work went through a few versions and I didn't like any of them.
+- **The AI landscape page** came from one long request I dictated. Fable planned it and handed every job to other agents. It's live at its link but not in my site's lists, and its last two AI reviewers said it wasn't ready.
+- **The tea room** ran on my other Claude account. It made three looks for the opening and I picked one.
+- **The landscape job had Fable write 6.2 million tokens and Opus 5.5 write 6.3 million,** about $1,925 at Anthropic's pay-per-use prices. On my subscription, the real cost was my weekly limits.
+- **A full Fable limit uses half of my weekly limit for all models.** Anthropic's help pages say so, but nothing in Claude Code told me. I found out by hitting it.
+- **The computers slowed it down too.** The cloud computers my agents run on kept going down, most likely while agents checked the page in a browser.
+- **It still needs me on open-ended problems,** like a project tracker for my own work.
 
 ## The AI landscape page
 
@@ -69,7 +69,7 @@ I asked for a page about Anthropic, OpenAI, Google, Meta and xAI that shows how 
 <figcaption><b>Seven days, seven messages from me</b><span class="ao-meta">10 to 16 November, my time (US Central)</span></figcaption>
 </ao-timeline>
 
-**Where it stands.** The last two AI reviewers both said no. One said it was close: no wrong facts, nothing private, and every big problem from round two fixed. The other found a bug: one button in the page's "my stack" section, where it shows the AI tools I use, could make the page's plain-text version describe my setup wrong. 45 saved changes aren't live yet, and nothing has been checked on a real graphics card or phone.
+**Where it stands.** The last two AI reviewers both said no. One said it was close, with no wrong facts left. The other found a button in the "my stack" section, where the page shows the AI tools I use, that could make its plain-text version describe my setup wrong. 45 saved changes aren't live yet, and nothing has been checked on a real graphics card or phone.
 
 | Model | Tokens written | At pay-per-use prices |
 |---|---|---|
@@ -127,7 +127,7 @@ It still needs a ton of feedback. What I don't like, like the size of the cards 
 
 A lot of the time went to waiting on the computer. Its cloud computer had no graphics card, so it drew every painted layer on the main processor, which is slow at that. When I moved it to my own computer, which has a graphics card, the work went much faster.
 
-My homepage, which I built in August mostly with Opus 5 (the model before Opus 5.5), took a ton of manual effort, and the tea room took almost none. Even its first examples for each chapter, made under Fable's direction, are things I don't think Opus 5.5 would have come up with on its own. I don't think pages like this existed five years ago. You'd have needed a development team and an art team working together.
+My homepage, which I built in August mostly with Opus 5 (the model before Opus 5.5), took a ton of manual effort, and the tea room took almost none. Even its first examples for each chapter, made under Fable's direction, are things I don't think Opus 5.5 would have come up with on its own.
 
 ## Both pages on a phone
 
@@ -140,11 +140,10 @@ Both pages have their own phone layout. On the landscape page the 3D sits at the
 
 ## How the Fable limit works
 
-- **Fable has its own weekly limit inside the all-models one.** Anthropic's help pages say Fable can use up to 50% of the weekly limit, from the same pool as every other model. When the Fable limit runs out, Fable agents stop and Opus agents keep going.
-- **A full Fable limit counts for half of the all-models limit.** When a Fable reset gave my Fable limit back, the all-models limit dropped from 75% to 25%.
-- **Resets.** Anthropic gave each of my accounts three Fable resets and two weekly resets, one-time refills for when a limit runs out, and I have about one of each left. A Fable reset gives back what Fable used, so with a full Fable limit that's half of the all-models one. A weekly reset gives back the whole Fable limit too.
-- **How much Fable you use depends on what you hand it.** In another job, testing tools for a guitar tab app, Fable only handed out the work, and Opus and Sonnet 5.5 (another cheaper model) did all of it, so Fable came to about 2% of the cost. In the landscape job Fable agents also did the hard parts, and Fable was two thirds of the cost. That job used up my whole Fable limit in under a day, twice.
-- **I haven't tried /advisor much yet.** It's a command in Claude Code, the app my agents run in. It keeps a cheaper model like Opus 5.5 doing the work and lets it ask Fable at key moments, like before it commits to a plan.
+- **Fable has its own weekly limit inside the all-models one.** Anthropic's help pages say Fable can use up to 50% of the weekly limit, from the same pool as every other model. When a Fable reset gave my Fable limit back, the all-models limit dropped from 75% to 25%. When the Fable limit runs out, Fable agents stop and Opus agents keep going.
+- **Resets** are one-time refills for when a limit runs out. Anthropic gave each of my accounts three Fable resets and two weekly resets, and I have about one of each left. A Fable reset gives back what Fable used. A weekly reset gives back everything, Fable included.
+- **How much Fable you use depends on what you hand it.** In another job, testing tools for a guitar tab app, Fable only handed out the work and Opus and Sonnet 5.5 (another cheaper model) did all of it, so Fable came to about 2% of the cost. In the landscape job Fable agents also did the hard parts, and Fable was two thirds of the cost. That job used up my whole Fable limit in under a day, twice.
+- **I haven't tried /advisor much yet.** It's a command in Claude Code, the app my agents run in, that keeps a cheaper model like Opus 5.5 doing the work and lets it ask Fable at key moments, like before it commits to a plan.
 
 <ao-bars unit="%" max="100">
 <table><thead><tr><th>Reading</th><th>Fable limit used</th><th>All-models limit used</th></tr></thead>
@@ -164,7 +163,7 @@ Both pages have their own phone layout. On the landscape page the 3D sits at the
 
 ## Where it still needs me
 
-I wanted a project tracker app for all my projects, on my own dashboard. I explained every problem I had and hoped it would work out the tool I needed. It made a few versions and I didn't like any of them, so I'm giving it far more feedback than I expected to. I think of this as divergent thinking: the space of possible answers is huge, and every decision changes the others. It's the same reason asking a model "how do I make money with AI?" gets you nowhere. I think if you give it something hard and technical with a clear goal, it can handle it.
+I wanted a project tracker app for all my projects, on my own dashboard. I explained every problem I had and hoped it would work out the tool I needed. It made a few versions and I didn't like any of them, so I'm giving it far more feedback than I expected. I think of this as divergent thinking: the space of possible answers is huge, and every decision changes the others. It's the same reason asking a model "how do I make money with AI?" gets you nowhere.
 
 ## The computers slowed it down
 
