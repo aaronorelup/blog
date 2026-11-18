@@ -1,7 +1,7 @@
-// The agent layer's text, as pure functions over post, card, note and research values: /llms.txt, /llms-full.txt,
-// the Markdown twins /ledger/<slug>.md and /ledger/<slug>/notes.md, and the note for agents each page carries
-// (components/chrome/AgentNote.astro). Only a listed post that is no live notebook has a twin (twinPosts); a live
-// notebook gives its title, address and summary only, and an unlisted post or a draft appears nowhere here.
+// The agent layer's text, as pure functions over post, card, note, research, course and project values: /llms.txt,
+// /llms-full.txt, the Markdown twins /ledger/<slug>.md and /ledger/<slug>/notes.md, and the note for agents each page
+// carries (components/chrome/AgentNote.astro). Only a listed post that is no live notebook has a twin (twinPosts); a
+// live notebook gives its title, address and summary only, and an unlisted post or a draft appears nowhere here.
 import { isLive } from '../data/exempt.js';
 import { PROJECTS, TOPICS } from '../data/taxonomy.js';
 import { isoDay } from './dates.js';
@@ -43,8 +43,57 @@ export function notesTwin(note, post) {
 
 const LIVE = 'live notebook, updated all day';
 
-// /llms.txt (llmstxt.org): the index. posts: the listed posts; notes: notesBySlug(); research: the documents.
-export function llmsTxt({ posts, notes, research, cardOf }) {
+// A size as agents weigh a fetch: 1.6 MB, 48 KB; and about how many tokens that much text is (4 bytes a token).
+export const sizeOf = (bytes) => (bytes >= 1e6 ? `${(bytes / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1e3))} KB`);
+const tokensOf = (bytes) => `about ${bytes >= 4e5 ? Math.round(bytes / 4e4) * 10 : Math.max(1, Math.round(bytes / 4e3))}k tokens`;
+
+// A lesson's text on one line: cut at the last sentence end within max characters, or at a word, marked, when that
+// would keep less than half.
+export function clip(text, max = 150) {
+  const s = String(text ?? '').replace(/\s+/g, ' ').trim();
+  if (s.length <= max) return s;
+  const sentence = s.slice(0, max + 1).match(/^.*[.!?…](?=\s)/)?.[0];
+  return sentence?.length >= max / 2 ? sentence : `${s.slice(0, max).replace(/\s+\S*$/, '')}…`;
+}
+
+// A project's main link as /llms.txt may give it: an https link as it is, a built page of the site (a post's only if
+// it is listed), and anything else (#proj-reel, a download, a hidden post, none) the projects page that holds it.
+export function projectLink(link, listed) {
+  const href = typeof link === 'string' && link.startsWith(`${SITE}/`) ? link.slice(SITE.length) : link;
+  if (typeof href === 'string' && href.startsWith('https://')) return href;
+  const page = typeof href === 'string' && /^\/(?!\/)[^\s?#]*\/$/.test(href) && !href.split('/').includes('..');
+  const post = page && href.match(/^\/ledger\/([^/]+)\/$/);
+  if (!page || (href.startsWith('/ledger/') && !(post && listed.has(post[1])))) return `${SITE}/projects/`;
+  return `${SITE}${href}`;
+}
+
+// The sections past the ledger. courses: [{ code, title, tagline, href, counts: courseCounts(), minutes, lessons:
+// [{ id, title, loc, duration, legacy, text }] }], only lessons whose page is built; now: { date, summary } or null;
+// about: { description, social: [{ label, href }] }; projects: [{ name, line, href, chip }], in page order.
+const outOf = (n) => (n.legacy
+  ? `${n.out} of ${n.lessons} new lessons out, ${n.legacy} legacy (made before the 2026-10-12 rebuild)`
+  : `${n.out} of ${n.lessons} lessons out`);
+const courseLine = (c) => `- [${c.title}](${SITE}${c.href}): ${c.code}. ${stop(c.tagline)} ${outOf(c.counts)}, ${c.minutes} to watch.`;
+const lessonLine = (l) => `  - [${l.id} ${l.title}](${SITE}${l.loc}): `
+  + `${stop([l.duration, l.legacy && 'legacy'].filter(Boolean).join(', ') || 'lesson')}${l.text ? ` ${clip(l.text)}` : ''}`;
+const projectLine = (p, listed) => `- [${p.name}](${projectLink(p.href, listed)}): ${p.line}${p.chip ? ` (${p.chip})` : ''}`;
+const said = (about) => (about?.description ? `. In his words: "${about.description}"` : '.');
+function moreSections({ courses, now, about, projects, listed }) {
+  const lines = (...l) => l.flat().join('\n');
+  return [
+    '## Courses', lines(`- [Courses](${SITE}/courses/): short narrated lessons, drawn in code, out a lesson at a time; `
+      + 'locked lessons are not listed.', courses.flatMap((c) => [courseLine(c), ...c.lessons.map(lessonLine)])),
+    '## Now', `- [Now](${SITE}/now/): what Aaron is working on${now ? `, updated ${now.date}. ${now.summary}` : '.'}`,
+    '## About', lines(`- [About](${SITE}/about/): who Aaron is${said(about)} Contact: his email and profiles are on `
+      + 'the About page.', about?.social?.length ? `- Profiles: ${about.social.map((s) => `[${s.label}](${s.href})`).join(', ')}` : []),
+    '## Projects', lines(`- [Projects](${SITE}/projects/): everything Aaron has made or is making, by what you can do `
+      + 'with it.', projects.map((p) => projectLine(p, listed))),
+  ];
+}
+
+// /llms.txt (llmstxt.org): the index. posts: the listed posts; notes: notesBySlug(); research: the documents; the
+// rest as moreSections() takes them; fullBytes: /llms-full.txt's size.
+export function llmsTxt({ posts, notes, research, cardOf, courses = [], now = null, about = null, projects = [], fullBytes = null }) {
   const listed = ledgerOrder(posts.filter((p) => isListed(p.data)));
   const postLine = (p) => (isLive(p.id)
     ? `- [${p.data.id} ${p.data.title}](${SITE}/ledger/${p.id}/): ${isoDay(p.data.date)}, ${LIVE}. ${p.data.summary}`
@@ -59,19 +108,20 @@ export function llmsTxt({ posts, notes, research, cardOf }) {
     '## Notes', twinNotes(posts, notes).map(([p, n]) =>
       `- [${n.data.title}](${SITE}/ledger/${p.id}/notes.md): the making-of of ${p.data.id}. ${n.data.summary}`).join('\n'),
     '## Research', research.map((d) => `- [${d.data.title}](${SITE}/research/${d.id}.md): ${d.data.summary}`).join('\n'),
+    ...moreSections({ courses, now, about, projects, listed: new Set(listed.map((p) => p.id)) }),
     '## Machine endpoints',
     [`- [RSS](${SITE}/rss.xml): every listed post, newest first`,
       `- [Sitemap](${SITE}/sitemap.xml): every public page`,
       `- [Post cards](${SITE}/ledger/previews.json): {posts:{slug:{id, title, topic, mins, verdict, takeaway, points, ...}}, projects:{key:label}}`,
-      `- GET ${SITE}/api/search?q=<text>: 200 {v, hits:[{slug, kind, anchor, heading, text, score}]}, the best 2 chunks of each `
-        + 'of the best 8 posts; kind post|notes; anchor \'\' is the top of the page, short the short version. A hit\'s page is '
-        + `${SITE}/ledger/<slug>/ (plus notes/ when kind is notes), then #<anchor>. 400 when q is under 3 or over 200 `
+      `- GET ${SITE}/api/search?q=<text>: 200 {v, hits:[{id, title, url, slug, kind, anchor, heading, text, score}]}, the best `
+        + '2 chunks of each of the best 8 posts; url is the page to cite (with #anchor), id its AO id; kind post|notes; '
+        + 'anchor \'\' is the top of the page, short the short version. 400 when q is under 3 or over 200 '
         + 'characters; 429 past 600 a minute, or 20 a minute for one query; 503 when the search flag is off or the daily cap '
         + 'is spent, until 00:00 UTC. No token.',
       '- POST /api/ask: Turnstile-gated, for people in a browser only.'].join('\n'),
     '## Optional',
-    [`- [Everything in one file](${SITE}/llms-full.txt): every post and notes twin above, ledger order`,
-      `- [About](${SITE}/about/)`, `- [Now](${SITE}/now/)`, `- [Projects](${SITE}/projects/)`, `- [Courses](${SITE}/courses/)`].join('\n'),
+    `- [Everything in one file](${SITE}/llms-full.txt): every post and notes twin above, ledger order`
+      + (fullBytes ? `; ${sizeOf(fullBytes)}, ${tokensOf(fullBytes)}. Try /api/search or a post's .md twin first.` : ''),
   ].join('\n\n') + '\n';
 }
 
@@ -87,9 +137,10 @@ export function llmsFullTxt({ posts, notes, cardOf }) {
 }
 
 // The note for agents on every page, plain text: md is this page's twin (a site path) where it has one, newest the
-// newest listed posts (on / and /ledger/), extra any more clauses. Names only paths the build writes (contracts.mjs).
-export function agentNote({ md, newest = [], extra = [] } = {}) {
-  return ['AGENTS: HTML here is chrome-heavy. Machine mirror: /llms.txt (index) /llms-full.txt (corpus, md)',
+// newest listed posts (on / and /ledger/), extra any more clauses, full /llms-full.txt's size (sizeOf). Names only paths
+// the build writes (contracts.mjs), so the size carries no '/'.
+export function agentNote({ md, newest = [], extra = [], full = '' } = {}) {
+  return [`AGENTS: HTML here is chrome-heavy. Machine mirror: /llms.txt (index) /llms-full.txt (corpus, md${full ? `, ~${full}` : ''})`,
     md && `${md} (this page, md)`, '/ledger/previews.json /rss.xml /sitemap.xml.',
     'GET /api/search?q=<3-200 chars> -> JSON chunks, no auth. /api/ask: Turnstile, browsers only.', ...extra,
     newest.length && `Newest: ${newest.map((p) => `${p.data.id} /ledger/${p.id}/ ${isoDay(p.data.date)}`).join(' | ')}.`,

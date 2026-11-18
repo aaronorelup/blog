@@ -19,14 +19,18 @@ export function courseDay(loc, courses) {
   return slug ? day(courses[slug]?.updated) : null;
 }
 
-// Every published lesson of every course, each once, dated by its course. The course repo's 'published' is not
-// trusted alone: a lesson whose page has not landed, or asks not to be indexed, is left out.
-export function courseLessons(courses) {
-  return Object.values(courses).flatMap((c) => (c?.modules || []).flatMap((m) => m?.lessons || [])
+// Every published lesson of every course, in data order: [{ slug (the course's), lesson (its row), loc }]. The course
+// repo's 'published' is not trusted alone: a lesson whose page has not landed, or asks not to be indexed, is left out.
+// /llms.txt names these too (pages/llms.txt.js).
+export function publishedLessons(courses) {
+  return Object.entries(courses).flatMap(([slug, c]) => (c?.modules || []).flatMap((m) => m?.lessons || [])
     .filter((l) => l?.status === 'published' && typeof l.url === 'string' && l.url.startsWith('/courses/'))
-    .map((l) => slashed(l.url.replace(/[?#].*$/, ''))).filter((p) => !p.split('/').includes('..') && shown(p))
-    .map((loc) => ({ loc, lastmod: day(c.updated) })));
+    .map((lesson) => ({ slug, lesson, loc: slashed(lesson.url.replace(/[?#].*$/, '')) }))
+    .filter(({ loc }) => !loc.split('/').includes('..') && shown(loc)));
 }
+
+// The sitemap's lessons: each published lesson, dated by its course.
+export const courseLessons = (courses) => publishedLessons(courses).map(({ slug, loc }) => ({ loc, lastmod: day(courses[slug].updated) }));
 
 // Same-site links to a hosted work, in a post's Markdown or HTML: [x](/games/a/), href="https://aaronorelup.com/tools/b/".
 const WORK = /(?<=^|[\s("'=<])(?:https:\/\/aaronorelup\.com)?(\/(?:games|presentations|tools|labs)\/[^\s"'()<>\]]*)/g;

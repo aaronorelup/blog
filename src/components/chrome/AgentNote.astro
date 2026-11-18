@@ -4,7 +4,8 @@
 // aria-hidden and data-nosnippet (never a search snippet), for HTML-to-Markdown converters. No human sees it, nothing
 // in it is focusable, it sits outside every [data-panel-view], article and [data-pagefind-body]. / and /ledger/ add
 // the newest listed posts.
-import { agentNote } from '../../lib/agent-text.js';
+import { agentNote, sizeOf } from '../../lib/agent-text.js';
+import { corpusBytes } from '../../lib/agent-corpus.js';
 import { listedPosts } from '../../lib/content.js';
 import { ledgerOrder } from '../../lib/posts.js';
 
@@ -16,7 +17,7 @@ const { md } = Astro.props;
 const path = Astro.url.pathname;
 const newest = path === '/' || path === '/ledger/' ? ledgerOrder(await listedPosts()).slice(0, 5) : [];
 const extra = path === '/stats/' ? ['GET /api/stats -> JSON snapshot.'] : [];
-const text = agentNote({ md, newest, extra });
+const text = agentNote({ md, newest, extra, full: sizeOf(await corpusBytes()) });   // /llms-full.txt's size, made once
 ---
 <Fragment set:html={`<!-- ${text.replaceAll('--', '-')} -->`} />
 <div class="ao-agent" aria-hidden="true" data-nosnippet>{text}</div>
