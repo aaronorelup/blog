@@ -323,9 +323,31 @@ the recording.
 | The first paint is already the staged page (`data-stage-pending`): the hero card alone, where the scene leaves it, so it stays put as the scene mounts and nothing shifts (Chromium's layout-shift entries under 0.05) | `Home`'s inline script, home.css; `enableStage()` takes it off | home-14 |
 | Nothing leaves the page staged: a lost scene chunk goes to the flat page; with no module at all the head script's fail-safe gives the no-JS page after 10 s | `flat()`; the inline script's timeout | home-15 |
 | Reduced motion and `?tier=static` never stage the page: every stop stands in a document that scrolls | the inline script's own checks; `mount()` | home-16 |
+| The leaves door costs the homepage nothing: no request for `/leaves/` or its chunk; selecting another word, "leaves change" or a word in another card opens nothing | document `selectionchange`, `pointerdown` `pointerup` `pointercancel` (passive, capture), `keyup` → `leaves-door.js` check | leaves-1 |
+| A double-click on "leaves" in the hero line peels a leaf off the word, washes the page to its ground and opens `/leaves/`; the room strips the `#from=` hash | the same, on `pointerup` | leaves-2 (desktop: a phone long-presses; `@timing`: within 3 s, in `desktop-timing`) |
+| A finished selection of exactly that word (a long-press, a keyboard selection) opens the room | `selectionchange` with no pointer down | leaves-3 |
 
 The scene specs pin `?tier=low`, which the scene supports for slow machines, so software WebGL never drops it to
 its static rung mid-test.
+
+## The leaves room (`leaves.spec.mjs`)
+
+`/leaves/` (`src/pages/leaves/index.astro`, `src/scripts/leaves/`): a cup of tea, one leaf per listed entry, that settles
+to read the next entry's number. Reached only by its door on the homepage (rows leaves-1 to leaves-3 above).
+
+| Behaviour | Listener or attribute | Spec |
+|---|---|---|
+| The room renders (a 9 by 9 sample of the canvas varies), is `noindex`, is in neither `/sitemap.xml` nor `/stats-pages.txt`, asks nothing of another origin and leaves storage and cookies as they were | `meta[name=ao-secret]`, `stats-pages.mjs` | leaves-4 |
+| `__leaves.skip()` brews to rest: phase `rest`, the loop stopped, the slip and the text alternative read the next entry | `window.__leaves` | leaves-5 |
+| Day and night: the canvas's corner is the mode's own ground | `html[data-mode]`, `palette.js` `watch` | leaves-6 |
+| Under reduced motion the room is the finished still life at once: the slip within a second, no loop | `matchMedia('(prefers-reduced-motion: reduce)')` `change` | leaves-7 |
+| A hover (mouse) or a tap on a leaf names its entry on a paper label | canvas `pointermove` `pointerdown` `pointerup` `pointercancel` `pointerleave`, `touchmove` while stirring | leaves-8 |
+| Esc and the "Leave the cup" pill go back home (Back when the homepage sent the guest), with nothing of the door left on it | window `keydown`, `.lv-leave` `click`, the door's `pageshow` | leaves-9 |
+| No sideways scroll; both pills at least 44 px tall; the Sound pill toggles `aria-pressed` | `.lv-sound` `click` | leaves-10 |
+
+Not checked by a spec (a tool for the eye, not a contract): dragging round the cup and the Left and Right keys stir,
+Space or a tap sips sooner, the offscreen list's Up and Down light a leaf (`.lv-list` `focus` `blur` `keydown`), the
+sound (WebAudio, only after a gesture), the tab hidden pauses the loop (`visibilitychange`), a resize re-lays the room.
 
 ## Homepage overlay (`overlay.spec.mjs`)
 

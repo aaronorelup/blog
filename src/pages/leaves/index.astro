@@ -1,0 +1,55 @@
+---
+// /leaves/: a secret room. Double-click (or long-press) "leaves" in the homepage's hero line and its leaf falls in
+// here (scripts/home/leaves-door.js): a cup of tea with one leaf per listed entry that settles to read the next
+// entry's number. noindex, in no sitemap, list or stats; nothing links here. Data: lib/leaves.js; copy:
+// data/leaves.js; the room itself: scripts/leaves/.
+import '../../styles/tokens.css';
+import '../../styles/fonts.css';
+import '../../styles/leaves.css';
+import Head from '../../components/chrome/Head.astro';
+import { allPosts, listedPosts, textOf } from '../../lib/content.js';
+import { colorTally, leafData, nextId } from '../../lib/leaves.js';
+import { COPY, LEAVES_PAGE, digitsOf } from '../../data/leaves.js';
+
+const buildDate = new Date();
+const built = buildDate.toISOString().slice(0, 10);
+const leaves = await leafData(await listedPosts(), buildDate, async (post) => (await textOf(post))?.words ?? 0);
+const next = nextId((await allPosts()).map((p) => p.data.id));
+const data = { leaves, next, built };
+const json = JSON.stringify(data).replace(/</g, '\\u003c');
+const tally = colorTally(leaves, built);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <Head title={LEAVES_PAGE.title} description={LEAVES_PAGE.description} noindex />
+    <meta name="ao-secret" content="" />
+  </head>
+  <body class="lv-body">
+    <main class="lv">
+      <canvas class="lv-canvas" aria-hidden="true"></canvas>
+      <p class="lv-alt">{COPY.alt(digitsOf(next))}</p>
+      <ul class="lv-list" role="listbox" tabindex="0" aria-label={COPY.list}>
+        <li role="option" id="lv-o-0" aria-selected="false">{COPY.wordLeaf}</li>
+        {leaves.map((l, i) => <li role="option" id={`lv-o-${i + 1}`} aria-selected="false">{COPY.label(l.id, l.title)}</li>)}
+      </ul>
+      <div class="lv-hint" aria-hidden="true">{COPY.hint}</div>
+      <div class="lv-label" role="status" aria-live="polite"></div>
+      <div class="lv-slip" role="status" hidden>
+        <p class="lv-line1">{COPY.line1(next)}</p>
+        <p class="lv-line2">{COPY.line2({ n: leaves.length, ...tally })}</p>
+        <canvas class="lv-seal" aria-hidden="true"></canvas>
+      </div>
+      <div class="lv-pills">
+        <button type="button" class="lv-pill lv-sound" aria-pressed="true">{COPY.soundOn}</button>
+        <button type="button" class="lv-pill lv-leave">{COPY.leave}</button>
+      </div>
+    </main>
+    <script type="application/json" id="leaves-data" set:html={json} />
+    <script>
+      import { mount } from '../../scripts/leaves/index.js';
+      mount();
+    </script>
+  </body>
+</html>

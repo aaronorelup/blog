@@ -4,6 +4,7 @@
 import './theme.js';
 import { lazy } from '../lazy.js';
 import { bindCoin } from './coin.js';
+import { bindLeaves } from './leaves-door.js';
 import { flat } from './flat.js';
 import { mountOverlay, onPanel } from './overlay/panel.js';
 
@@ -13,6 +14,7 @@ mountOverlay();
 // The day/night switch moves into the panel's header while the panel is up (home.css).
 onPanel((state) => root.toggleAttribute('data-panel-up', state === 'open' || state === 'covered'));
 bindCoin();
+bindLeaves();
 
 function webgl() {
   try {

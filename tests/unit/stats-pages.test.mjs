@@ -49,6 +49,17 @@ test('a frozen copy (scripts/tools/tea-freeze.mjs) is never named, wherever it s
   assert.deepEqual(listPages(dist), ['/', '/about/', '/ledger/', '/ledger/shown/', '/ledger/shown/notes/', '/research/a-paper']);
 });
 
+test('a secret room (ao-secret, the leaves) is never named', (t) => {
+  const dist = seed();
+  t.after(() => fs.rmSync(dist, { recursive: true }));
+  fs.mkdirSync(path.join(dist, 'leaves'), { recursive: true });
+  fs.writeFileSync(path.join(dist, 'leaves', 'index.html'),
+    '<!doctype html><head><meta name="robots" content="noindex, nofollow"><meta name="ao-secret" content=""></head><body></body>');
+  const pages = listPages(dist);
+  assert.ok(!pages.includes('/leaves/'));
+  assert.deepEqual(pages, ['/', '/about/', '/ledger/', '/ledger/shown/', '/ledger/shown/notes/', '/research/a-paper']);
+});
+
 test('a build whose previews.json lists no posts fails, rather than naming every page', (t) => {
   const dist = seed({});
   t.after(() => fs.rmSync(dist, { recursive: true }));

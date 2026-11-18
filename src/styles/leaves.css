@@ -1,0 +1,83 @@
+/* The leaves room (/leaves/): one fixed stage, the canvas under everything, washi slips for the label and the
+   reading, two pills. Colours are the --pc-* tokens (tokens.css) and the tea room's constants (docs/TEA_ROOM.md):
+   washi #F1E6D0, ink #231F2B. The slip is the room's one playful overshoot. */
+:root { --lv-washi: #F1E6D0; --lv-ink: #231F2B; --lv-ease: cubic-bezier(.4, 0, .2, 1); --lv-pop: cubic-bezier(.34, 1.8, .64, 1); }
+
+html, .lv-body { margin: 0; height: 100%; overflow: hidden; background: var(--pc-page); }
+.lv-body { color: var(--pc-body); font-family: var(--font-body); -webkit-tap-highlight-color: transparent; }
+
+.lv { position: fixed; inset: 0; height: 100dvh; overflow: hidden; background: var(--pc-page); }
+.lv-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pinch-zoom; cursor: grab; }
+.lv-canvas:active { cursor: grabbing; }
+.lv-canvas.lv-fade { opacity: 0; transition: opacity 200ms var(--lv-ease); }
+.lv-canvas.lv-fade.lv-in { opacity: 1; }
+
+.lv-alt, .lv-list {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+
+.lv-hint {
+  position: absolute; font: 400 13px/1 var(--font-body); color: var(--pc-quiet); letter-spacing: 0.02em;
+  opacity: 0; transition: opacity 600ms var(--lv-ease); pointer-events: none; user-select: none;
+}
+.lv-hint.lv-shown { opacity: 1; }
+.lv-hint.lv-gone { opacity: 0; transition-duration: 300ms; }
+
+/* paper: washi, cut square, one soft shadow down and to the right */
+.lv-label, .lv-slip {
+  position: absolute; background: var(--lv-washi); color: var(--lv-ink);
+  box-shadow: 10px 14px 34px rgba(16, 10, 14, 0.32);
+  clip-path: polygon(0.4% 0, 100% 0.6%, 99.6% 100%, 0 99.3%);
+}
+.lv-label {
+  padding: 8px 12px; font: 600 13px/1.3 var(--font-body); white-space: nowrap; max-width: calc(100vw - 24px);
+  overflow: hidden; text-overflow: ellipsis; pointer-events: none; opacity: 0; transform: rotate(-1.5deg) translateY(4px);
+  transition: opacity 180ms var(--lv-ease), transform 180ms var(--lv-ease);
+}
+.lv-label.lv-on { opacity: 1; transform: none; }
+.lv-label:empty { visibility: hidden; }
+
+.lv-slip {
+  box-sizing: border-box; padding: 20px 22px 22px; opacity: 0; transform: translateY(34px) rotate(1.5deg);
+}
+.lv-slip.lv-in { opacity: 1; transform: none; transition: opacity 420ms var(--lv-ease), transform 760ms var(--lv-pop); }
+.lv-slip.lv-still { transition: none; }
+.lv-line1 { margin: 0; padding-right: 54px; font: 400 19px/1.45 var(--font-serif); color: rgba(35, 31, 43, 0.92); }
+.lv-line2 { margin: 10px 0 0; padding-right: 54px; font: 400 13px/1.5 var(--font-body); color: rgba(35, 31, 43, 0.66); }
+.lv-seal { position: absolute; right: 16px; bottom: 16px; width: 44px; height: 44px; opacity: 0; transform: scale(1.25) rotate(-3deg); }
+.lv-slip.lv-in .lv-seal { opacity: 1; transform: rotate(-3deg); transition: opacity 120ms var(--lv-ease) 700ms, transform 220ms var(--lv-ease) 700ms; }
+.lv-slip.lv-still .lv-seal { transition: none; }
+/* once the seal is down, a tiny curl of steam lifts off it and is gone */
+.lv-slip::after {
+  content: ''; position: absolute; right: 34px; bottom: 58px; width: 7px; height: 12px; opacity: 0;
+  border-left: 1.5px solid rgba(35, 31, 43, 0.38); border-radius: 50%; pointer-events: none;
+}
+.lv-slip.lv-in:not(.lv-still)::after { animation: lv-curl 1600ms var(--lv-ease) 1100ms 1 both; }
+@keyframes lv-curl {
+  0% { opacity: 0; transform: translateY(6px) rotate(-12deg) scaleY(0.6); }
+  35% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-16px) rotate(18deg) scaleY(1.2); }
+}
+
+.lv-pills { position: absolute; right: 16px; bottom: 16px; display: flex; gap: 10px; }
+.lv-pill {
+  min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1px solid var(--pc-line2);
+  background: color-mix(in srgb, var(--pc-page) 82%, transparent); color: var(--pc-strong);
+  font: 600 13px/1 var(--font-body); cursor: pointer; transition: background 180ms var(--lv-ease), border-color 180ms var(--lv-ease);
+}
+.lv-pill:hover { border-color: var(--pc-head); }
+.lv-pill:focus-visible, .lv-list:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; }
+.lv-pill[aria-pressed='false'] { color: var(--pc-quiet); }
+
+@media (max-width: 520px) {
+  .lv-line1 { font-size: 17px; }
+  .lv-pills { left: 16px; justify-content: flex-end; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lv-hint { display: none; }
+  .lv-slip, .lv-slip.lv-in, .lv-seal, .lv-slip.lv-in .lv-seal, .lv-label { transition: none; }
+  .lv-slip.lv-in::after { animation: none; }
+  .lv-label { transform: none; }
+}
