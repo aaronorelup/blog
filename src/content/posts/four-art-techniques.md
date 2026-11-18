@@ -1,5 +1,5 @@
 ---
-id: "AO-084"
+id: "AO-086"
 title: "Four AI art techniques tested on my laptop"
 summary: "A Claude job on my laptop tests one AI art technique each morning. Four from this week: a seasons loop, a camera move into a painting, a 16-megapixel picture and twelve edits in a row. Which work, and what each takes."
 date: 2026-11-18
