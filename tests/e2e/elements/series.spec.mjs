@@ -40,3 +40,18 @@ test('series-3 the chart takes focus and the keys walk the days', async ({ page 
   await page.keyboard.press('Home');
   await expect(read(page)).not.toHaveText(last);
 });
+
+test('series-4 a touch tap reads the day tapped, not the last one', async ({ page, isMobile }) => {
+  test.skip(!isMobile, 'touch taps: phone only');
+  const body = el(page).locator('.ao-series-body');
+  await body.scrollIntoViewIfNeeded();
+  const box = await body.boundingBox();
+  await page.touchscreen.tap(box.x + box.width * 0.1, box.y + box.height * 0.5);
+  await expect(read(page).locator('.ao-series-val').first()).toBeVisible();
+  await page.waitForTimeout(300); // the touch pointerleave and the focus that follow a tap must not move it
+  const tapped = await read(page).textContent();
+  await el(page).locator('.ao-series-plot').focus();
+  await expect(read(page)).toHaveText(tapped);
+  await page.keyboard.press('End');
+  await expect(read(page)).not.toHaveText(tapped);
+});

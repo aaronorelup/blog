@@ -78,6 +78,17 @@ test.describe('synthid', () => {
     await page.mouse.move(0, 0);
     await expect(d.locator('.sid-tip')).toBeHidden();
   });
+  test('demo-synthid-7 book: a touch tap on the chart shows the readout, and keeps it', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'touch taps: phone only');
+    const d = demo(page, 'synthid', 'book');
+    await mounted(d);
+    const svg = d.locator('svg.sid-chart');
+    await svg.scrollIntoViewIfNeeded();
+    const box = await svg.boundingBox();
+    await page.touchscreen.tap(box.x + box.width * 0.6, box.y + box.height * 0.5);
+    await expect(d.locator('.sid-tip')).toBeVisible();
+    await expect(d.locator('.sid-tip b')).toContainText('of the words');
+  });
   test('demo-synthid-6 edit: on a phone the letter is 16px or more, so iOS does not zoom on focus', async ({ page, isMobile }) => {
     test.skip(!isMobile, 'iOS focus zoom: phone only');
     const d = demo(page, 'synthid', 'edit');

@@ -214,7 +214,7 @@ The demos:
   and `/rss.xml`, about 380 KB gzipped at 76 posts, growing with the blog. A live run leaves the live notebook out, as
   the recording did, and the demo's foot says so under every part.
 
-Behaviours: demo-synthid-1 to demo-synthid-5, demo-cf-1, demo-cf-2, demo-lab-1 to demo-lab-7. Used by 3 posts
+Behaviours: demo-synthid-1 to demo-synthid-7, demo-cf-1, demo-cf-2, demo-lab-1 to demo-lab-7. Used by 3 posts
 (`INVENTORY.md`).
 
 ## <ao-diff>
@@ -322,7 +322,7 @@ least two items with a `<data>`.
 </ao-funnel>
 ```
 
-Behaviours: funnel-1 to funnel-4. Used by 2 posts (`INVENTORY.md`); best shown by `who-visits-a-new-website`.
+Behaviours: funnel-1 to funnel-5 (funnel-5: a touch tap lights its row alone). Used by 2 posts (`INVENTORY.md`); best shown by `who-visits-a-new-website`.
 
 ## <ao-game>
 
@@ -340,7 +340,8 @@ homepage closes the reader, it pauses (its frames held, its AudioContexts suspen
 | `aspect="w/h"` | the frame (default `16/9`) |
 | `note` | one line under the frame: controls, what it needs |
 
-The inner markup, a link to the game, is the no-JS fallback.
+The inner markup, a link to the game, is the no-JS fallback. After Play, Stop and "Open in its own tab" always show;
+Fullscreen shows only where the browser can make a frame fullscreen (not iPhone Safari, which can't for frames).
 
 ```html
 <ao-game src="/games/x/" poster="/media/x/poster.webp" size="about 20 MB" label="X, playable in the browser"
@@ -514,7 +515,7 @@ every other column a series named by its `<th>`; `<th data-unit="MB">` prints it
 </ao-series>
 ```
 
-Behaviours: series-1 to series-3 (`stack` and `th[data-unit]` are used by no page today). Used by 2 posts
+Behaviours: series-1 to series-4 (series-4: a touch tap reads the day tapped; `stack` and `th[data-unit]` are used by no page today). Used by 2 posts
 (`INVENTORY.md`); best shown by `who-visits-a-new-website`.
 
 ## <ao-shots>
@@ -636,4 +637,4 @@ Children: one `<table>`, then an optional `<figcaption>`. Rows with no amount ab
 </ao-treemap>
 ```
 
-Behaviours: treemap-1 to treemap-3. Used by 1 post (`INVENTORY.md`): `counting-the-code`.
+Behaviours: treemap-1 to treemap-4 (treemap-4: a touch tap reads the tile tapped). Used by 1 post (`INVENTORY.md`): `counting-the-code`.

@@ -99,7 +99,16 @@ class AoTreemap extends HTMLElement {
       const t = e.target.closest('.ao-tm-tile');
       if (t) this.focusTile(+t.dataset.i, false);
     });
-    this.stage.addEventListener('pointerleave', () => { if (document.activeElement !== this.stage) this.focusTile(-1, false); });
+    // A finger sends no pointermove, and a touch pointerleave follows every tap: a tap picks on pointerup (a
+    // scroll ends in pointercancel instead), and a touch leave keeps what was tapped.
+    this.stage.addEventListener('pointerup', (e) => {
+      const t = e.pointerType !== 'mouse' && e.target.closest('.ao-tm-tile');
+      if (t) this.focusTile(+t.dataset.i, false);
+    });
+    this.stage.addEventListener('pointerleave', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      if (document.activeElement !== this.stage) this.focusTile(-1, false);
+    });
     this.stage.addEventListener('keydown', (e) => {
       const n = this.tiles?.length || 0;
       if (!n) return;

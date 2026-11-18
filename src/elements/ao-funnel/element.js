@@ -65,6 +65,7 @@ class AoFunnel extends HTMLElement {
     box.append(sum, bar);
 
     const list = h('ol', { class: 'ao-funnel-rows' });
+    let tappedRow = null; // the row the last touch tap lit
     rows.forEach((r, i) => {
       const li = h('li', { class: 'ao-funnel-row' + (i === 0 ? ' is-total' : '') });
       if (i > 0) li.classList.add('ao-funnel-f' + ((i - 1) % 6));
@@ -99,12 +100,23 @@ class AoFunnel extends HTMLElement {
       if (i > 0) {
         const seg = segs[i - 1];
         const light = (v) => { seg.classList.toggle('is-on', v); li.classList.toggle('is-on', v); };
+        const leave = (e) => { if (e.pointerType === 'mouse') light(false); };
+        // A tap lights its row alone, or turns it off when it was lit; a touch pointerleave changes nothing.
+        const tap = (e) => {
+          if (e.pointerType === 'mouse') return;
+          const again = tappedRow === li;
+          box.querySelectorAll('.is-on').forEach((el) => el.classList.remove('is-on'));
+          tappedRow = again ? null : li;
+          if (!again) light(true);
+        };
         li.addEventListener('pointerenter', () => light(true));
-        li.addEventListener('pointerleave', () => light(false));
+        li.addEventListener('pointerleave', leave);
+        li.addEventListener('pointerup', tap);
         li.addEventListener('focusin', () => light(true));
         li.addEventListener('focusout', () => light(false));
         seg.addEventListener('pointerenter', () => light(true));
-        seg.addEventListener('pointerleave', () => light(false));
+        seg.addEventListener('pointerleave', leave);
+        seg.addEventListener('pointerup', tap);
       }
       list.append(li);
     });

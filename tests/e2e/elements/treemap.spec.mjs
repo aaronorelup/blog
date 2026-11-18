@@ -36,3 +36,16 @@ test('treemap-3 a view button regroups the tiles', async ({ page }) => {
   await expect(buttons.nth(1)).toHaveAttribute('aria-pressed', 'true');
   await expect.poll(() => el(page).locator('.ao-tm-name').allTextContents()).not.toEqual(names);
 });
+
+test('treemap-4 a touch tap on a tile reads that tile, not the first', async ({ page, isMobile }) => {
+  test.skip(!isMobile, 'touch taps: phone only');
+  await el(page).locator('.ao-tm-stage').scrollIntoViewIfNeeded();
+  const tiles = el(page).locator('.ao-tm-tile');
+  const areas = await tiles.evaluateAll((ts) => ts.map((t) => { const r = t.getBoundingClientRect(); return r.width * r.height; }));
+  const i = areas.reduce((best, a, k) => (k > 0 && a > areas[best] ? k : best), 1);
+  const box = await tiles.nth(i).boundingBox();
+  await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
+  await expect(tiles.nth(i)).toHaveClass(/ao-tm-on/);
+  await expect(tiles.first()).not.toHaveClass(/ao-tm-on/);
+  await expect(read(page)).toContainText('of all');
+});

@@ -43,3 +43,25 @@ test('funnel-4 What’s in it opens and closes the examples', async ({ page }) =
   await more.click();
   await expect(ex).toBeHidden();
 });
+
+test('funnel-5 a touch tap lights its row alone, and a second tap on it turns it off', async ({ page, isMobile }) => {
+  test.skip(!isMobile, 'touch taps: phone only');
+  const rows = el(page).locator('.ao-funnel-row');
+  const lit = el(page).locator('.ao-funnel-row.is-on');
+  const tap = async (row) => {
+    const head = row.locator('.ao-funnel-head');
+    await head.scrollIntoViewIfNeeded();
+    const box = await head.boundingBox();
+    await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
+  };
+  await tap(rows.nth(1));
+  await expect(rows.nth(1)).toHaveClass(/is-on/);
+  await expect(lit).toHaveCount(1);
+  await expect(el(page).locator('.ao-funnel-seg.is-on')).toHaveCount(1);
+  await tap(rows.nth(2));
+  await expect(rows.nth(2)).toHaveClass(/is-on/);
+  await expect(lit).toHaveCount(1);
+  await expect(el(page).locator('.ao-funnel-seg.is-on')).toHaveCount(1);
+  await tap(rows.nth(2));
+  await expect(lit).toHaveCount(0);
+});

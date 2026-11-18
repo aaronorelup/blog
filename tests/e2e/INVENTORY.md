@@ -88,7 +88,7 @@ notes, `earthlight`'s notes, `nine-claudes-one-painting` today).
 
 | Behaviour | Listener or attribute | Spec |
 |---|---|---|
-| Poster and Play (with `size`) until the click; then the game's page (`src`) in a frame, Fullscreen and Stop shown | `src`, `poster`, `size`, `label`, `note`, `aspect`, Play `click`, frame `load` | game-1 |
+| Poster and Play (with `size`) until the click; then the game's page (`src`) in a frame, Stop and the own-tab link shown, Fullscreen only where the browser can make a frame fullscreen (hidden on iPhone Safari, checked by the phone project) | `src`, `poster`, `size`, `label`, `note`, `aspect`, Play `click`, frame `load` | game-1 |
 | Scrolled away it pauses behind a veil; the veil resumes it | IntersectionObserver, veil `click` | game-2, game-6 |
 | Another player pauses it; resuming pauses the other | document `ao-listen-play`, claim | game-3 |
 | `ao-stop` and a hidden tab pause it | document `ao-stop`, `visibilitychange` | game-4 (wording: see below) |
@@ -218,6 +218,7 @@ streams the same two films.
 |---|---|---|
 | `show` picks the first series; the buttons switch it | `show`, `avg`, button `click` | series-1 |
 | Pointing at a day reads it out (with its marks), leaving clears it | body `pointermove` `pointerdown` `pointerleave`, `data-d` marks | series-2 |
+| A touch tap reads the day tapped, not the last one (phone only) | body `pointerdown` (touch), `pointerleave` ignored for touch | series-4 |
 | The chart takes focus and the keys walk the days | plot `focus` `blur` `keydown` | series-3 |
 | `stack` (layers), `th[data-unit]` | `stack`, `data-unit` | not used by any page today |
 
@@ -229,6 +230,7 @@ streams the same two films.
 | A row and its segment light together, from either | row and segment `pointerenter` `pointerleave` | funnel-2 |
 | Focus in a row lights it | row `focusin` `focusout` | funnel-3 |
 | What's in it opens and closes the examples | more `click` | funnel-4 |
+| A touch tap lights its row alone; a second tap turns it off (phone only) | row and segment `pointerup` (touch), `pointerleave` ignored for touch | funnel-5 |
 
 ### `ao-ask`: who-visits-a-new-website
 
@@ -257,6 +259,7 @@ streams the same two films.
 | Tiles drawn (`top`, `unit`); pointing at one reads it out, leaving clears | stage `pointermove` `pointerleave` | treemap-1 |
 | Focus and the keys walk the tiles | stage `focus` `keydown` | treemap-2 |
 | A view button regroups | `views`, button `click` | treemap-3 |
+| A touch tap on a tile reads that tile, not the first (phone only) | stage `pointerup` (touch), `pointerleave` ignored for touch | treemap-4 |
 
 ### `ao-matrix`: moss-image-on-8gb, props-three-budgets
 
@@ -278,6 +281,7 @@ the recording.
 | synthid `detect`: fewer words checked change the score | range `input` | demo-synthid-3 |
 | synthid `edit`: typing or an edit button rescores; Reset restores | textarea `input`, edit buttons, Reset, strip `change` | demo-synthid-4 |
 | synthid `book`: pointing at the chart reads it out | svg `pointermove` `pointerleave` | demo-synthid-5 |
+| synthid `book`: a touch tap on the chart reads it out and keeps it (phone only) | svg `pointerup` (touch), `pointerleave` ignored for touch | demo-synthid-7 |
 | synthid `edit`: on a phone the letter is 16px or more, so iOS Safari doesn't zoom on focus (phone only) | style `@media (pointer: coarse)` | demo-synthid-6 |
 | cf `you`: asks `/cdn-cgi/trace` and lays out the visit; the address is masked until shown | Show `click`, show/hide `click` | demo-cf-1 |
 | cf `count`: shows the live count; an automated browser isn't counted (asserted on the status line only) | `data-slug`, `visibilitychange`, Try again | demo-cf-2 |
