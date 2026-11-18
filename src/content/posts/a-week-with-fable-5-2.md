@@ -34,8 +34,6 @@ I asked for a page about Anthropic, OpenAI, Google, Meta and xAI that shows how 
 
 <figure><video class="fill" controls muted loop playsinline preload="metadata" poster="/media/a-week-with-fable-5-2/landscape-desktop.webp" src="/media/a-week-with-fable-5-2/landscape-desktop.mp4"></video><figcaption><b>The AI landscape page on a laptop</b><span class="ao-meta">the opening, the Anthropic, OpenAI and Google rooms, the line-up and the end</span></figcaption></figure>
 
-<figure><video class="fill" controls muted loop playsinline preload="metadata" poster="/media/a-week-with-fable-5-2/landscape-google.webp" src="/media/a-week-with-fable-5-2/landscape-google.mp4"></video><figcaption><b>Google's room plays its own short tour when you stop scrolling</b><span class="ao-meta">each company's room has one</span></figcaption></figure>
-
 [Open the AI landscape page](/ai-landscape/). It's unlisted for now, with a "Draft" label in the corner. My [progress report from the first night](/ledger/progress-report-on-my-3d-ai-landscape-page/) covers the research and the three prototype designs it chose from.
 
 <details><summary>How the job ran, step by step</summary>
