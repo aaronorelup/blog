@@ -269,7 +269,9 @@ test('home-14 the first paint is already the staged page: the hero card stays pu
   await page.goto('/?tier=low', { waitUntil: 'commit' });
   const hero = page.locator('.home-card-hero');
   await hero.waitFor();
-  await page.evaluate(() => document.fonts.ready);
+  // WebKit settles document.fonts.ready only once the held modules have run, so wait on the faces themselves
+  await page.evaluate(() => Promise.race([document.fonts.ready,
+    Promise.all([document.fonts.load('700 1em "Zen Maru Gothic"'), document.fonts.load('1em Karla')])]));
   await expect(page.locator('html')).toHaveAttribute('data-stage-pending', '');
   const box = async () => Object.values(await hero.boundingBox()).map(Math.round);
   const first = await box();
