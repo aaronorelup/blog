@@ -110,6 +110,9 @@ test('overlay-2 a row opens its post in the panel, with no document load, its pi
   await home(page);
   await openLedger(page);
   await openRow(page, modelPost);
+  // Only the view is mounted: the fetched page's note for agents (chrome/AgentNote.astro) stays out, the home's stays.
+  await expect(panel(page).locator('.ao-agent')).toHaveCount(0);
+  await expect(page.locator('.ao-agent')).toHaveCount(1);
   // The post's view module runs enhance(root) on the copy the overlay mounted: its pictures open the viewer.
   await reader(page).locator('img[role=button]').first().click();
   await expect(page.locator('dialog.ao-lb')).toBeVisible();

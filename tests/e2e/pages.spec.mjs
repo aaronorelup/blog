@@ -161,3 +161,44 @@ test('pages-8 /now shows the newest snapshot, and its History opens every dated 
   }
   expect(errors).toEqual([]);
 });
+
+// The note for agents (chrome/AgentNote.astro): on the homepage, the ledger and a post, one clipped pixel no reader
+// sees or reaches, outside every view, article and search body, with the same words in an HTML comment.
+test('pages-9 every page carries a note for agents that no person sees', async ({ page, request }) => {
+  const previews = await (await request.get('/ledger/previews.json')).json();
+  const [slug] = Object.keys(previews.posts);
+  for (const url of ['/', '/ledger/', `/ledger/${slug}/`]) {
+    expect(await (await request.get(url)).text()).toMatch(/<body[^>]*>\s*<!-- AGENTS: [^]*?\/llms\.txt[^]*?-->/);
+    await page.goto(url);
+    const note = page.locator('.ao-agent');
+    await expect(note).toHaveCount(1);
+    await expect(note).toHaveAttribute('aria-hidden', 'true');
+    await expect(note).toContainText('/llms.txt');
+    const box = await note.boundingBox();
+    expect(box.width <= 1 && box.height <= 1, `${url}: ${JSON.stringify(box)}`).toBe(true);
+    expect(await note.evaluate((n) => ({
+      focusable: n.querySelectorAll('a, button, input, select, textarea, [tabindex]').length,
+      inside: Boolean(n.closest('[data-panel-view], article, .pc-prose, [data-pagefind-body]')),
+      shown: getComputedStyle(n).display !== 'none' && getComputedStyle(n).visibility !== 'hidden',
+    }))).toEqual({ focusable: 0, inside: false, shown: true });
+  }
+});
+
+// The agent layer's files (lib/agent-text.js): /llms.txt names each listed post's Markdown twin, and a post's head
+// links its twin, which is the post as Markdown.
+test('pages-10 /llms.txt and the Markdown twin a post links', async ({ page, request }) => {
+  const previews = await (await request.get('/ledger/previews.json')).json();
+  const llms = await request.get('/llms.txt');
+  expect(llms.status()).toBe(200);
+  const text = await llms.text();
+  expect(text.startsWith('# Aaron Orelup\n')).toBe(true);
+  for (const s of Object.keys(previews.posts)) expect(text).toMatch(new RegExp(`/ledger/${s}(\\.md|/)\\)`));
+  const slug = [...text.matchAll(/\/ledger\/([^/.)]+)\.md\)/g)][0][1];
+  await page.goto(`/ledger/${slug}/`);
+  const href = await page.locator('link[rel="alternate"][type="text/markdown"]').getAttribute('href');
+  expect(href).toBe(`/ledger/${slug}.md`);
+  await expect(page.locator('link[rel="alternate"][href="/llms.txt"]')).toHaveCount(1);
+  const md = await (await request.get(href)).text();
+  expect(md).toContain(`<!-- Canonical: https://aaronorelup.com/ledger/${slug}/ -->`);
+  expect(md).toContain(`${previews.posts[slug].id} · `);
+});

@@ -25,9 +25,11 @@ interface Props {
   // A site path to name as canonical (and og:url) instead of the page itself (the tea room's SEO switch,
   // src/data/tea.js). Left out, as on every other page, both name the page.
   canonical?: string;
+  // The page's Markdown twin (a site path), linked as an alternate unless the page is noindex. Every page links /llms.txt.
+  markdown?: string;
 }
-const { title, description, noindex = false, image, published, headline, voice, home = false, canonical: named } =
-  Astro.props;
+const { title, description, noindex = false, image, published, headline, voice, home = false, canonical: named,
+  markdown } = Astro.props;
 const canonical = new URL(named ?? Astro.url.pathname, Astro.site).href;
 const shareImage = image && new URL(image, Astro.site).href;
 const data = noindex ? null
@@ -50,6 +52,8 @@ const data = noindex ? null
 <meta name="ao-build" content={COMMIT} />
 <link rel="canonical" href={canonical} />
 <link rel="alternate" type="application/rss+xml" title="Aaron Orelup · the ledger" href="/rss.xml" />
+{markdown && !noindex && <link rel="alternate" type="text/markdown" href={markdown} />}
+<link rel="alternate" type="text/plain" title="llms.txt" href="/llms.txt" />
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <link rel="preload" href={FONTS.preload} as="font" type="font/woff2" crossorigin />
 <script is:inline>

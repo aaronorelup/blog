@@ -17,3 +17,5 @@ body {
   font-weight: 600; text-decoration: none;
 }
 .skip:focus { top: 16px; }
+/* The note for agents (chrome/AgentNote.astro): a clipped pixel, never display:none, which converters drop. */
+.ao-agent { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }

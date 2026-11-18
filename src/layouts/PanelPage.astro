@@ -4,6 +4,7 @@
 // homepage overlay fetches its views from them. The same panel that grows out of a homepage card, already open. Its
 // view's module (views/<data-panel-view>.js, through mountView) runs once the page has parsed.
 import '../styles/site.css';
+import AgentNote from '../components/chrome/AgentNote.astro';
 import Head from '../components/chrome/Head.astro';
 import ModeToggle from '../components/chrome/ModeToggle.astro';
 import PanelChrome from '../components/chrome/PanelChrome.astro';
@@ -29,6 +30,8 @@ interface Props {
   tagline?: string;
   // False on a page that brings its own <main> (/stats); PanelChrome's scrolling body is the landmark otherwise.
   main?: boolean;
+  // The page's Markdown twin, a site path (Head's alternate link and the note for agents): only a page that has one.
+  markdown?: string;
 }
 const {
   title,
@@ -42,6 +45,7 @@ const {
   voice,
   tagline,
   main,
+  markdown,
 } = Astro.props;
 const card = image ?? (noindex ? undefined : await shareImage(Astro.url.pathname));
 ---
@@ -50,10 +54,11 @@ const card = image ?? (noindex ? undefined : await shareImage(Astro.url.pathname
 <html lang="en">
   <head>
     <Head title={title} description={description} noindex={noindex} image={card} published={published}
-      headline={headline} voice={voice} />
+      headline={headline} voice={voice} markdown={markdown} />
     <slot name="head" />
   </head>
   <body>
+    <AgentNote md={noindex ? undefined : markdown} />
     <a class="skip" href="#panel-scroll">Skip to content</a>
     <ModeToggle />
     <div id="panel-screen" class="pc-screen">

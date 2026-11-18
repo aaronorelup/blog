@@ -24,3 +24,30 @@
   Cache-Control: public, max-age=300
 /media/icons/*
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+#
+# The agent layer (src/lib/agent-text.js). Static assets type a file by its extension and drop the charset the page
+# set, and Python clients then read text/* as Latin-1, so every .txt and .md is typed again here, after every other
+# rule (rules apply in file order; '!' removes only what is already set). The .md twins say noindex: the HTML page is
+# the canonical copy. /ledger/*.md covers the notes twins too: a splat matches across folders, and a second rule
+# would join a second Content-Type onto the first. / and /ledger/ point agents at /llms.txt in a Link header too.
+/llms.txt
+  ! Content-Type
+  Content-Type: text/plain; charset=utf-8
+/llms-full.txt
+  ! Content-Type
+  Content-Type: text/plain; charset=utf-8
+/robots.txt
+  ! Content-Type
+  Content-Type: text/plain; charset=utf-8
+/research/*.md
+  ! Content-Type
+  Content-Type: text/markdown; charset=utf-8
+  X-Robots-Tag: noindex
+/ledger/*.md
+  ! Content-Type
+  Content-Type: text/markdown; charset=utf-8
+  X-Robots-Tag: noindex
+/
+  Link: </llms.txt>; rel="alternate"; type="text/plain"
+/ledger/
+  Link: </llms.txt>; rel="alternate"; type="text/plain"

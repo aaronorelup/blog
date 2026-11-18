@@ -4,7 +4,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { check, previewsProblems, statsPagesProblems, rssProblems, baselineProblems, shareUrlProblems, shareImageProblems,
-  imageSize, sitemapPaths, jsonLdProblems } from '../../scripts/build/contracts.mjs';
+  imageSize, sitemapPaths, jsonLdProblems, agentFilesProblems } from '../../scripts/build/contracts.mjs';
+import { LIVE_NOTEBOOKS } from '../../src/data/exempt.js';
 
 const dist = fileURLToPath(new URL('../../dist', import.meta.url));
 const listed = new Set(['a', 'b']);
@@ -129,4 +130,21 @@ test('the baseline: every path built or redirected', () => {
   const built = new Set(['/', '/ledger/a/']);
   assert.deepEqual(baselineProblems(['/', '/ledger/a/', '/posts/'], (p) => built.has(p), new Set(['/posts'])), []);
   assert.equal(baselineProblems(['/ledger/gone/'], (p) => built.has(p), new Set()).length, 1);
+});
+
+const SITE = 'https://aaronorelup.com';
+const [{ slug: LIVE }] = Object.values(LIVE_NOTEBOOKS);
+
+test('llms.txt, llms-full.txt and the twins (agentFilesProblems): an unlisted or draft slug, a dead link or a twin of no listed post each fail', () => {
+  const listed = new Set(['a', 'b']);
+  const built = () => true;
+  const llmsOk = `- [AO-1](${SITE}/ledger/a.md) - [AO-2](${SITE}/ledger/b/) ${SITE}/ledger/previews.json ${SITE}/api/search?q=<text> ${SITE}/ledger/<slug>/`;
+  const ok = { llms: llmsOk, full: 'see /ledger/a/ and /ledger/b/notes/', twins: ['a.md', 'b/notes.md'], unlisted: new Set(['z-hidden']) };
+  assert.deepEqual(agentFilesProblems(ok, listed, built), []);
+  assert.equal(agentFilesProblems({ ...ok, llms: `${llmsOk} ${SITE}/ledger/c.md` }, listed, built).length, 1);
+  assert.equal(agentFilesProblems({ ...ok, full: 'the z-hidden post' }, listed, built).length, 1);
+  assert.equal(agentFilesProblems({ ...ok, twins: ['a.md', 'z-hidden.md', `${LIVE}.md`] }, listed, built).length, 2);
+  assert.deepEqual(agentFilesProblems(ok, listed, (p) => p !== '/ledger/b/'), ['llms.txt: links /ledger/b/, which is not built']);
+  assert.deepEqual(agentFilesProblems({ ...ok, full: undefined }, listed, built), ['llms-full.txt: it was not built']);
+  assert.deepEqual(agentFilesProblems({ ...ok, llms: `${llmsOk} ${SITE}/ledger/${LIVE}/` }, listed, built), []);
 });

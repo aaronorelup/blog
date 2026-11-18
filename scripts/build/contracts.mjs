@@ -161,6 +161,37 @@ export function jsonLdProblems(html, pathname, byClaude = false) {
   return problems;
 }
 
+// The agent layer (src/lib/agent-text.js): /llms.txt and /llms-full.txt name no post outside `listed` but a live
+// notebook, and no unlisted slug at all; every link of /llms.txt is built (an /api/ route aside); no unlisted post or
+// live notebook has a Markdown twin. files: { llms, full, twins: ['<slug>.md', '<slug>/notes.md', …], unlisted }.
+export function agentFilesProblems({ llms, full, twins = [], unlisted = new Set() }, listed, isBuilt) {
+  const problems = new Set();
+  for (const [name, text] of [['llms.txt', llms], ['llms-full.txt', full]]) {
+    if (typeof text !== 'string') { problems.add(`${name}: it was not built`); continue; }
+    for (const [, slug] of text.matchAll(/\/ledger\/([a-z0-9][a-z0-9-]*)(?=\/|\.md\b|#|\)|\s|$)/g)) {
+      if (!listed.has(slug) && !isLive(slug)) problems.add(`${name}: names /ledger/${slug}, not a listed post`);
+    }
+    for (const slug of unlisted) if (text.includes(slug)) problems.add(`${name}: names the unlisted ${slug}`);
+  }
+  for (const [, p] of (llms ?? '').matchAll(/https:\/\/aaronorelup\.com(\/[^\s)<>"'#?]*)/g)) {
+    if (!p.startsWith('/api/') && !isBuilt(p)) problems.add(`llms.txt: links ${p}, which is not built`);
+  }
+  for (const rel of twins) {
+    const slug = rel.replace(/(\/notes)?\.md$/, '');
+    if (!listed.has(slug) || isLive(slug)) problems.add(`/ledger/${rel}: a Markdown twin of no listed post`);
+  }
+  return [...problems];
+}
+
+// The note for agents (components/chrome/AgentNote.astro) names only paths the build has (an /api/ route aside). A page
+// without one passes.
+export function agentNoteProblems(html, pathname, isBuilt) {
+  const note = html.match(/<div class="ao-agent" aria-hidden="true">([^<]*)<\/div>/);
+  if (!note) return [];
+  return [...note[1].matchAll(/(?:^|\s)(\/[^\s<&]*)/g)].map((m) => m[1].replace(/[.,:;)]+$/, ''))
+    .filter((p) => !p.startsWith('/api/') && !isBuilt(p)).map((p) => `${pathname}: its note for agents names ${p}, which is not built`);
+}
+
 // The pages the sitemap lists, as paths: the pages whose share pictures check() looks at.
 export const sitemapPaths = (xml) => [...xml.matchAll(/<loc>([^<]*)<\/loc>/g)].map((m) => m[1])
   .filter((loc) => loc.startsWith(SITE + '/')).map((loc) => loc.slice(SITE.length));
@@ -184,7 +215,17 @@ export function check(dist, listed = listedSlugs(), byClaude = claudeSlugs()) {
     const file = path.join(dist, p);
     return file.startsWith(dist) && fs.existsSync(file) && fs.statSync(file).isFile() ? imageSize(fs.readFileSync(file)) : null;
   };
+  const maybe = (p) => (fs.existsSync(path.join(dist, p)) ? read(p) : undefined);
+  const ledger = fs.readdirSync(path.join(dist, 'ledger'), { withFileTypes: true });
+  const twins = [...ledger.filter((e) => e.isFile() && e.name.endsWith('.md')).map((e) => e.name),
+    ...ledger.filter((e) => e.isDirectory() && fs.existsSync(path.join(dist, 'ledger', e.name, 'notes.md'))).map((e) => `${e.name}/notes.md`)];
+  const unlisted = new Set(ledger.filter((e) => e.isDirectory() && !listed.has(e.name) && !isLive(e.name)
+    && fs.existsSync(path.join(dist, 'ledger', e.name, 'index.html'))).map((e) => e.name));
+  const notePages = [...new Set(['/', '/ledger/', '/stats/', ...sitemapPaths(read('sitemap.xml'))])]
+    .filter((p) => p.endsWith('/') && !isLivePath(p) && isBuilt(p));
   return [
+    ...agentFilesProblems({ llms: maybe('llms.txt'), full: maybe('llms-full.txt'), twins, unlisted }, listed, isBuilt),
+    ...notePages.flatMap((p) => agentNoteProblems(read(`${p.slice(1)}index.html`), p, isBuilt)),
     ...previewsProblems(JSON.parse(read('ledger/previews.json')), listed),
     ...statsPagesProblems(read('stats-pages.txt'), listed),
     ...rssProblems(read('rss.xml'), listed),

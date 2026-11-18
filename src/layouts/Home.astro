@@ -3,6 +3,7 @@
 // (PanelPage.astro), so the overlay's views find every rule they need already here, and then its own home.css.
 import '../styles/site.css';
 import '../styles/home.css';
+import AgentNote from '../components/chrome/AgentNote.astro';
 import Head from '../components/chrome/Head.astro';
 import { shareImage } from '../lib/og/pages.js';
 
@@ -22,6 +23,7 @@ const {
     <Head title={title} description={description} image={await shareImage(Astro.url.pathname)} home />
   </head>
   <body>
+    <AgentNote />
     <a class="skip" href="#content">Skip to content</a>
     <slot />
   </body>

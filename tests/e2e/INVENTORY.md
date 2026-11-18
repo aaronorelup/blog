@@ -326,7 +326,7 @@ its static rung mid-test.
 | Behaviour | Spec |
 |---|---|
 | A card grows into the ledger, with no document load | overlay-1 |
-| A row opens its post in the panel, with no document load; `enhance(root)` makes its pictures open the viewer; Esc closes the viewer and leaves the panel open | overlay-2 |
+| A row opens its post in the panel, with no document load; `enhance(root)` makes its pictures open the viewer; Esc closes the viewer and leaves the panel open; the fetched page's note for agents is not mounted | overlay-2 |
 | Post A, post B, back to A, on to C: every `ao-*` is defined each time; the model renders, the game reloads, the demo responds | overlay-3 |
 | A lost chunk (the first the post's view module asks for) still ends on a working post: `mountView`'s `lazy()` opens the real page | overlay-4 |
 | A lost post component chunk in the panel opens the post's real page at once, with no reload first: `mountView` hands the view its fallback, which `enhance()` passes on | overlay-4b |
@@ -382,6 +382,8 @@ its static rung mid-test.
 | A range change rolls the lede's figures (`tweenNumber`, every frame for 450 ms) in their own text nodes: watched from before the range is picked to the roll's end, the provenance buttons around them never have a node replaced (listen-5), and the figures change | pages-7 |
 | A link to a heading lands on it, and a search result's passage is in view, though the components above it draw after the load event (`scripts/views/post.js`) | pages-5 |
 | `/now` shows the newest snapshot of `src/content/now/`, lit in the nav; its History links every snapshot by date, newest first; each `/now/<date>/` shows that snapshot, marks its own row unlinked and points back to `/now` | pages-8 |
+| The note for agents (`chrome/AgentNote.astro`) on `/`, `/ledger/` and a post: an HTML comment first in `<body>` and one `.ao-agent`, `aria-hidden`, at most 1×1 px, nothing focusable in it, never hidden by `display` or `visibility`, outside every `[data-panel-view]`, article and search body; the overlay never mounts a fetched page's (overlay-2) | pages-9 |
+| `/llms.txt` names every listed post's Markdown twin (the live notebook by its page); a post's head links its `.md` twin and `/llms.txt`, and the twin is that post | pages-10 |
 
 ## The post page (`post.spec.mjs`)
 

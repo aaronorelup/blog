@@ -3,7 +3,9 @@
 // post is: the post view with variant notes (components/post/PostView.astro).
 import PanelPage from '../../../layouts/PanelPage.astro';
 import PostView from '../../../components/post/PostView.astro';
+import { isLive } from '../../../data/exempt.js';
 import { allPosts, notesBySlug, slugOf } from '../../../lib/content.js';
+import { isListed } from '../../../lib/posts.js';
 
 export async function getStaticPaths() {
   const notes = await notesBySlug();
@@ -12,8 +14,10 @@ export async function getStaticPaths() {
 }
 
 const { post, note } = Astro.props;
+// Its Markdown twin (pages/ledger/[slug]/notes.md.js): beside a listed post that is no live notebook.
+const markdown = isListed(post.data) && !isLive(slugOf(post)) ? `/ledger/${slugOf(post)}/notes.md` : undefined;
 ---
 <PanelPage title={`${note.data.title} · Aaron Orelup`} description={note.data.summary} active="ledger"
-  noindex={post.data.unlisted}>
+  noindex={post.data.unlisted} markdown={markdown}>
   <PostView post={post} note={note} />
 </PanelPage>
