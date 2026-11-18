@@ -1,17 +1,23 @@
 // /sitemap.xml: every page a search engine or an AI crawler should know about, so they stop
 // guessing. Before 2026-10-17 there was none and the request 404'd (38 times in 30 days, by the
 // analytics in AO-057). Listed posts and their notes only (isListed): an unlisted post carries noindex
-// and must not be handed to a crawler here any more than it appears in a list.
+// and must not be handed to a crawler here any more than it appears in a list. Course lessons and the works listed
+// posts link come from lib/sitemap.js.
 import { listedPosts, notesBySlug, nowSnapshots, research, slugOf } from '../lib/content.js';
 import { ledgerOrder } from '../lib/posts.js';
 import { isoDay } from '../lib/dates.js';
+import { courseDay, courseLessons, hostedWorks } from '../lib/sitemap.js';
 import lore from '../data/lore/lore.json';
+import hiddenCurriculum from '../data/courses/the-hidden-curriculum.json';
+import eveningTelevision from '../data/courses/i-love-my-evening-television.json';
 import { TEA_BASE, teaSeo } from '../data/tea.js';
 import { LISTED as LANDSCAPE_LISTED, SNAPSHOTS } from '../data/ai-landscape.js';
 
 const LORE = '/courses/i-love-my-evening-television';
+// read only: the course repo writes them (CLAUDE.md)
+const COURSES = { 'the-hidden-curriculum': hiddenCurriculum, 'i-love-my-evening-television': eveningTelevision };
 const PAGES = [
-  '/', '/ledger/', '/projects/', '/about/', '/courses/', '/courses/the-hidden-curriculum/', '/research/',
+  '/', '/ledger/', '/projects/', '/about/', '/stats/', '/courses/', '/courses/the-hidden-curriculum/', '/research/',
   // C-02, the lore course: its pages and one per episode, character and thing
   ...['', 'world/', 'timeline/', 'episodes/', 'characters/', 'things/', 'eggs/', 'threads/', 'questions/', 'steel/'].map((p) => `${LORE}/${p}`),
   ...(lore.episodes || []).map((e) => `${LORE}/episodes/${e.id}/`),
@@ -29,7 +35,8 @@ export async function GET(context) {
   const snaps = await nowSnapshots();   // newest first; a snapshot's id is its date
 
   const urls = [
-    ...PAGES.map((p) => ({ loc: p, lastmod: p === '/' || p === '/ledger/' ? newest : null })),
+    ...PAGES.map((p) => ({ loc: p, lastmod: p === '/' || p === '/ledger/' ? newest : courseDay(p, COURSES) })),
+    ...courseLessons(COURSES),
     ...(snaps.length ? [{ loc: '/now/', lastmod: snaps[0].id }] : []),
     ...snaps.map((s) => ({ loc: `/now/${s.id}/`, lastmod: s.id })),
     // the AI landscape, once it is listed: the newest snapshot at /ai-landscape/, and each one at its date for good
@@ -40,7 +47,8 @@ export async function GET(context) {
       const page = { loc: `/ledger/${slugOf(post)}/`, lastmod: isoDay(post.data.date) };
       return notes.has(slugOf(post)) ? [page, { ...page, loc: `${page.loc}notes/` }] : [page];
     }),
-  ];
+    ...hostedWorks(posts),
+  ].filter((u, i, all) => all.findIndex((v) => v.loc === u.loc) === i);
   const body = '<?xml version="1.0" encoding="UTF-8"?>\n' +
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     urls.map((u) => `  <url><loc>${site}${u.loc}</loc>${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ''}</url>`).join('\n') +

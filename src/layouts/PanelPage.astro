@@ -26,6 +26,9 @@ interface Props {
   // A post's own title and its voice (Head: a listed post's structured data).
   headline?: string;
   voice?: string;
+  // /about/'s ProfilePage, and a notes page's post (Head: their structured data).
+  profile?: boolean;
+  notesOf?: { postUrl: string; voice?: string };
   // The footer's line after the copyright (PanelChrome's own line when left out).
   tagline?: string;
   // False on a page that brings its own <main> (/stats); PanelChrome's scrolling body is the landmark otherwise.
@@ -43,6 +46,8 @@ const {
   published,
   headline,
   voice,
+  profile,
+  notesOf,
   tagline,
   main,
   markdown,
@@ -54,7 +59,7 @@ const card = image ?? (noindex ? undefined : await shareImage(Astro.url.pathname
 <html lang="en">
   <head>
     <Head title={title} description={description} noindex={noindex} image={card} published={published}
-      headline={headline} voice={voice} markdown={markdown} />
+      headline={headline} voice={voice} markdown={markdown} profile={profile} notesOf={notesOf} />
     <slot name="head" />
   </head>
   <body>

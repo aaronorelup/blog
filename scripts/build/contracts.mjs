@@ -143,21 +143,39 @@ export function shareImageProblems(html, pathname, sizeOf) {
   return problems;
 }
 
-// A listed post's page carries exactly one JSON-LD block (chrome/Head.astro, lib/jsonld.js): it parses, and its url is
-// the page's canonical, https://aaronorelup.com<pathname>. Its author never contradicts the page: a post Claude wrote
-// (byClaude; the page says "Written by Claude") names none, and every other names exactly the site's owner.
-export function jsonLdProblems(html, pathname, byClaude = false) {
+// A listed page carries exactly one JSON-LD block (chrome/Head.astro, lib/jsonld.js): it parses into an @graph whose
+// node of the given type (a post's BlogPosting, a notes page's Article, /about/'s ProfilePage) has the page's canonical,
+// https://aaronorelup.com<pathname>, as url, beside the owner's Person with his profiles (sameAs). Its byline never
+// contradicts the page: the owner publishes every post, and is its author except on one Claude wrote (byClaude; the
+// page says "Written by Claude"), which names none. Every {@id} it refers to is in the graph, but for the WebSite
+// (the homepage's) and the post a notes page is part of.
+const PERSON = SITE + OWNER.about + '#person';
+const refsOf = (v) => (Array.isArray(v) ? v.flatMap(refsOf) : v && typeof v === 'object'
+  ? (Object.keys(v).length === 1 && typeof v['@id'] === 'string' ? [v['@id']] : Object.values(v).flatMap(refsOf)) : []);
+export function jsonLdProblems(html, pathname, byClaude = false, type = 'BlogPosting') {
   const blocks = [...html.matchAll(/<script\b[^>]*\stype="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
   if (blocks.length !== 1) return [`${pathname}: ${blocks.length} JSON-LD blocks, not 1`];
   const want = SITE + pathname;
   let data;
   try { data = JSON.parse(blocks[0]); } catch (e) { return [`${pathname}: its JSON-LD block does not parse (${e.message})`]; }
-  const problems = data?.url === want ? [] : [`${pathname}: its JSON-LD url is ${data?.url ?? 'missing'}, not ${want}`];
-  const owner = { '@type': 'Person', name: OWNER.name, url: SITE + OWNER.about };
-  if (byClaude && data?.author !== undefined) problems.push(`${pathname}: Claude wrote it, but its JSON-LD names an author`);
-  if (!byClaude && !isDeepStrictEqual(data?.author, owner)) {
-    problems.push(`${pathname}: its JSON-LD author is ${JSON.stringify(data?.author) ?? 'missing'}, not ${JSON.stringify(owner)}`);
+  const graph = Array.isArray(data?.['@graph']) ? data['@graph'] : [];
+  const node = graph.find((n) => n?.['@type'] === type);
+  if (!node) return [`${pathname}: its JSON-LD has no @graph with a ${type}`];
+  const problems = node.url === want ? [] : [`${pathname}: its JSON-LD url is ${node.url ?? 'missing'}, not ${want}`];
+  const person = graph.find((n) => n?.['@type'] === 'Person' && n['@id'] === PERSON);
+  if (person?.name !== OWNER.name || !person.sameAs?.length) problems.push(`${pathname}: its JSON-LD has no Person ${PERSON} with sameAs`);
+  const owner = { '@type': 'Person', '@id': PERSON, name: OWNER.name, url: SITE + OWNER.about };
+  if (type === 'ProfilePage') {
+    if (node.mainEntity?.['@id'] !== PERSON) problems.push(`${pathname}: its ProfilePage is not about ${PERSON}`);
+  } else {
+    if (node.publisher?.['@id'] !== PERSON) problems.push(`${pathname}: its JSON-LD publisher is not ${PERSON}`);
+    if (byClaude && node.author !== undefined) problems.push(`${pathname}: Claude wrote it, but its JSON-LD names an author`);
+    if (!byClaude && !isDeepStrictEqual(node.author, owner)) {
+      problems.push(`${pathname}: its JSON-LD author is ${JSON.stringify(node.author) ?? 'missing'}, not ${JSON.stringify(owner)}`);
+    }
   }
+  const known = new Set([...graph.map((n) => n?.['@id']), SITE + '/#website', type === 'Article' ? want.replace(/notes\/$/, '') : null]);
+  for (const id of refsOf(graph).filter((id) => !known.has(id))) problems.push(`${pathname}: its JSON-LD refers to ${id}, which it never names`);
   return problems;
 }
 
@@ -232,6 +250,9 @@ export function check(dist, listed = listedSlugs(), byClaude = claudeSlugs()) {
     ...[...listed].filter((s) => !isLive(s) && isBuilt(`/ledger/${s}/`))
       .map((s) => [read(`ledger/${s}/index.html`), `/ledger/${s}/`, byClaude.has(s)])
       .flatMap(([html, pathname, claude]) => [...shareUrlProblems(html, pathname), ...jsonLdProblems(html, pathname, claude)]),
+    ...[...listed].filter((s) => !isLive(s) && isBuilt(`/ledger/${s}/notes/`))
+      .flatMap((s) => jsonLdProblems(read(`ledger/${s}/notes/index.html`), `/ledger/${s}/notes/`, byClaude.has(s), 'Article')),
+    ...jsonLdProblems(read('about/index.html'), '/about/', false, 'ProfilePage'),
     // Not the course pages: other repos write their data (CLAUDE.md), and a picture of theirs must never stop a deploy.
     ...sitemapPaths(read('sitemap.xml'))
       .filter((p) => p.endsWith('/') && !isLivePath(p) && !p.startsWith('/courses/') && isBuilt(p))

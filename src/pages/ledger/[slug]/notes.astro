@@ -18,6 +18,7 @@ const { post, note } = Astro.props;
 const markdown = isListed(post.data) && !isLive(slugOf(post)) ? `/ledger/${slugOf(post)}/notes.md` : undefined;
 ---
 <PanelPage title={`${note.data.title} · Aaron Orelup`} description={note.data.summary} active="ledger"
-  noindex={post.data.unlisted} markdown={markdown}>
+  noindex={post.data.unlisted} markdown={markdown} headline={note.data.title}
+  notesOf={{ postUrl: new URL(`/ledger/${slugOf(post)}/`, Astro.site).href, voice: post.data.voice }}>
   <PostView post={post} note={note} />
 </PanelPage>
