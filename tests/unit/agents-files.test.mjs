@@ -94,7 +94,9 @@ test('stripComments and absolutize', () => {
 
 test('the note for agents: its twin and the newest when given, and it names no path the build lacks', () => {
   const p = post('shown', 'AO-001', '2026-10-01');
-  const note = agentNote({ md: '/ledger/shown.md', newest: [p], extra: ['GET /api/stats -> JSON snapshot.'] });
+  const note = agentNote({ md: '/ledger/shown.md', newest: [p], extra: ['GET /api/stats returns a JSON snapshot.'] });
+  // a crude tag-stripper (re.sub('<[^>]+>', '')) must never end the HTML-comment copy early, nor '--' close it
+  for (const t of [note, agentNote()]) assert.ok(!/[<>]|--/.test(t), t);
   assert.ok(note.includes('/ledger/shown.md (this page, md)') && note.includes('AO-001 /ledger/shown/ 2026-10-01') && note.includes('/api/stats'));
   assert.ok(!agentNote().includes('this page') && !agentNote().includes('Newest'));
   const html = (t) => `<body><div class="ao-agent" aria-hidden="true" data-nosnippet>${t.replaceAll('<', '&lt;').replaceAll('>', '&gt;')}</div></body>`;

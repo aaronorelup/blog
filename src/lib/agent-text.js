@@ -101,7 +101,7 @@ export function llmsTxt({ posts, notes, research, cardOf, courses = [], now = nu
   return [
     '# Aaron Orelup',
     '> The tea house: Aaron Orelup\'s notes on learning AI (agents, AI video, games, 3D), filed as a ledger of posts, AO-###.',
-    'Agents: HTML here is chrome-heavy; every listed post has a Markdown twin at /ledger/<slug>.md, its making-of at '
+    'Agents: HTML here is chrome-heavy; every listed post but a live notebook has a Markdown twin at /ledger/<slug>.md, its making-of at '
       + '/ledger/<slug>/notes.md. Whole corpus, one file: /llms-full.txt. Retrieval: GET /api/search (below). Cite the '
       + `canonical ${SITE}/ledger/<slug>/ plus the AO id. No auth; robots.txt allows everything.`,
     '## Posts', listed.map(postLine).join('\n'),
@@ -138,11 +138,12 @@ export function llmsFullTxt({ posts, notes, cardOf }) {
 
 // The note for agents on every page, plain text: md is this page's twin (a site path) where it has one, newest the
 // newest listed posts (on / and /ledger/), extra any more clauses, full /llms-full.txt's size (sizeOf). Names only paths
-// the build writes (contracts.mjs), so the size carries no '/'.
+// the build writes (contracts.mjs), so the size carries no '/'; no '<', '>' or '--', so a crude tag-stripper never cuts
+// its HTML-comment copy short.
 export function agentNote({ md, newest = [], extra = [], full = '' } = {}) {
   return [`AGENTS: HTML here is chrome-heavy. Machine mirror: /llms.txt (index) /llms-full.txt (corpus, md${full ? `, ~${full}` : ''})`,
     md && `${md} (this page, md)`, '/ledger/previews.json /rss.xml /sitemap.xml.',
-    'GET /api/search?q=<3-200 chars> -> JSON chunks, no auth. /api/ask: Turnstile, browsers only.', ...extra,
+    'GET /api/search?q=TEXT (3 to 200 chars) returns JSON chunks, no auth. /api/ask: Turnstile, browsers only.', ...extra,
     newest.length && `Newest: ${newest.map((p) => `${p.data.id} /ledger/${p.id}/ ${isoDay(p.data.date)}`).join(' | ')}.`,
     'Ids: AO-###. Cite canonical URLs.'].filter(Boolean).join(' ');
 }

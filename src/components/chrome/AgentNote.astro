@@ -16,7 +16,7 @@ interface Props {
 const { md } = Astro.props;
 const path = Astro.url.pathname;
 const newest = path === '/' || path === '/ledger/' ? ledgerOrder(await listedPosts()).slice(0, 5) : [];
-const extra = path === '/stats/' ? ['GET /api/stats -> JSON snapshot.'] : [];
+const extra = path === '/stats/' ? ['GET /api/stats returns a JSON snapshot.'] : [];
 const text = agentNote({ md, newest, extra, full: sizeOf(await corpusBytes()) });   // /llms-full.txt's size, made once
 ---
 <Fragment set:html={`<!-- ${text.replaceAll('--', '-')} -->`} />
