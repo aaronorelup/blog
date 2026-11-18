@@ -173,6 +173,7 @@ test('pages-9 every page carries a note for agents that no person sees', async (
     const note = page.locator('.ao-agent');
     await expect(note).toHaveCount(1);
     await expect(note).toHaveAttribute('aria-hidden', 'true');
+    await expect(note).toHaveAttribute('data-nosnippet', '');   // never a search result's snippet
     await expect(note).toContainText('/llms.txt');
     const box = await note.boundingBox();
     expect(box.width <= 1 && box.height <= 1, `${url}: ${JSON.stringify(box)}`).toBe(true);

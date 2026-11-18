@@ -1,8 +1,9 @@
 ---
 // The note for agents, the first child of <body> (Home, PanelPage, TeaRoomPage): where the machine-readable views
-// are (lib/agent-text.js agentNote), as an HTML comment for raw-HTML readers and as .ao-agent, clipped to a pixel and
-// aria-hidden, for HTML-to-Markdown converters. No human sees it, nothing in it is focusable, and it sits outside
-// every [data-panel-view], article and [data-pagefind-body]. / and /ledger/ add the newest listed posts.
+// are (lib/agent-text.js agentNote), as an HTML comment for raw-HTML readers and as .ao-agent, clipped to a pixel,
+// aria-hidden and data-nosnippet (never a search snippet), for HTML-to-Markdown converters. No human sees it, nothing
+// in it is focusable, it sits outside every [data-panel-view], article and [data-pagefind-body]. / and /ledger/ add
+// the newest listed posts.
 import { agentNote } from '../../lib/agent-text.js';
 import { listedPosts } from '../../lib/content.js';
 import { ledgerOrder } from '../../lib/posts.js';
@@ -18,4 +19,4 @@ const extra = path === '/stats/' ? ['GET /api/stats -> JSON snapshot.'] : [];
 const text = agentNote({ md, newest, extra });
 ---
 <Fragment set:html={`<!-- ${text.replaceAll('--', '-')} -->`} />
-<div class="ao-agent" aria-hidden="true">{text}</div>
+<div class="ao-agent" aria-hidden="true" data-nosnippet>{text}</div>

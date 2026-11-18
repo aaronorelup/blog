@@ -186,7 +186,7 @@ export function agentFilesProblems({ llms, full, twins = [], unlisted = new Set(
 // The note for agents (components/chrome/AgentNote.astro) names only paths the build has (an /api/ route aside). A page
 // without one passes.
 export function agentNoteProblems(html, pathname, isBuilt) {
-  const note = html.match(/<div class="ao-agent" aria-hidden="true">([^<]*)<\/div>/);
+  const note = html.match(/<div class="ao-agent" aria-hidden="true"(?: data-nosnippet)?>([^<]*)<\/div>/);
   if (!note) return [];
   return [...note[1].matchAll(/(?:^|\s)(\/[^\s<&]*)/g)].map((m) => m[1].replace(/[.,:;)]+$/, ''))
     .filter((p) => !p.startsWith('/api/') && !isBuilt(p)).map((p) => `${pathname}: its note for agents names ${p}, which is not built`);
