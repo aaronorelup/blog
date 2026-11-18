@@ -7,34 +7,34 @@ topic: "agents"
 project: []
 draft: false
 preview:
-  verdict: "$1,186 in 80 minutes"
-  takeaway: "The 10 minutes when Fable 5.2 sessions joined cost $563, almost half the night, and my weekly meter went from 54% to 82%."
+  verdict: "$1,186 at API prices"
+  takeaway: "The 10 minutes when Fable 5.2 sessions joined cost about $563, almost half the night, and my weekly meter went from 54% to 82%."
   points:
-    - "Spend per minute went up 9 times in the Fable wave. More agents at once did most of that, Fable's price the least."
+    - "The Fable wave cost 3 times as much a minute as the Opus minutes before it, mostly from a pricier token mix and Fable's price."
     - "Cache reads were 95% of the 1.8 billion tokens but only 30% of the bill. Fresh cache writes were 53%."
-    - "What broke: 1,363 bad tags, an overloaded database, the maker of about 3,200 items overwritten. All fixed that night."
+    - "What broke: 1,363 bad tags, an overloaded database, and fields on about 3,200 items overwritten. All fixed that night."
   image: "/media/previews/the-library-fleet.webp"
   alt: "Bar chart of dollars per minute through the evening: gold Opus bars under $21 a minute, then coral Fable bars spiking to $73 a minute, with the weekly meter marked at 54%, 82% and 94%"
 ---
 
-My private media library is where everything my AI agents make gets filed for me to look at. By Tuesday evening it held 72,670 files, mostly scaffolding (pictures agents made so other agents could check their work), and none were tagged by what's in them. My weekly Claude usage limit was resetting in an hour and a half with plenty left. So I asked Claude to be the orchestrator, an agent that plans a job and hands it out, and to do none of the work itself.
+My private media library is where everything my AI agents make gets filed for me to look at. By Tuesday evening it held 72,670 files, tens of thousands of them scaffolding (pictures agents made so other agents could check their work), and none were tagged by what's in them. My weekly Claude usage limit was resetting in an hour and a half with plenty left. So I asked Claude to be the orchestrator, an agent that plans a job and hands it out, and to do none of the work itself.
 
-**In 80 minutes it ran 62 cloud sessions, which started at least 425 helper agents of their own, and burned through $1,186 worth of tokens at API prices.** A cloud session is a full Claude Code agent on its own computer in the cloud. API prices are what those tokens would cost if I paid per token instead of my $200 a month plan. Almost half of it, $563, went in the 10 minutes when [Fable 5.2](/ledger/a-week-with-fable-5-2/), Anthropic's model above Opus 5.5, joined in. That's when my weekly meter jumped from 54% to 82%.
+**In 80 minutes it ran 62 cloud sessions, which started at least 425 helper agents of their own, and burned through $1,186 worth of tokens at API prices.** A cloud session is a full Claude Code agent on its own computer in the cloud. API prices are what those tokens would cost if I paid per token instead of my $200 a month plan. Almost half of it, about $563, went in the 10 minutes when [Fable 5.2](/ledger/a-week-with-fable-5-2/), Anthropic's model above Opus 5.5, joined in. That's when my weekly meter jumped from 54% to 82%.
 
-- **It came in waves.** Data workers, page builders, 13 gem hunters, 8 sessions tagging images by eye, then the Fable 5.2 wave, with 40 sessions open at the peak.
+- **It came in waves.** Data workers, page builders, 13 gem hunters (sessions that pick my best pieces), 8 sessions tagging images by eye, then the Fable 5.2 wave, with 39 cloud sessions open at the peak.
 - **I kept changing the plan while it ran,** and each ask became new sessions or helpers within minutes.
-- **Three things broke, and all were fixed that evening.** 1,363 wrong tags from a cheap vision model, about 3,200 overwritten items, and a database the crowd overloaded.
+- **Three things broke, and all were fixed that evening.** 1,363 wrong tags from a cheap vision model, fields overwritten on about 3,200 items, and a database the crowd overloaded.
 - **The trash pile had real work in it.** The rescue passes pulled 2,018 real pieces out of the cleanup proposal.
-- **The meter followed spend per minute, not the model's name.** Spend went up 9 times in the Fable wave, mostly because more agents ran at once.
-- **The cache did most of the work for little of the bill,** 95% of the tokens and 30% of the cost.
+- **Spend per minute jumped when Fable joined, from more helpers per session and Fable's higher price.** Three meter readings can't show how the plan weighs Fable against Opus.
+- **The cache did most of the work for under a third of the bill,** 95% of the tokens and 30% of the cost.
 
-<figure><img class="fill soft" src="/media/the-library-fleet/spend-per-minute.webp" alt="Bar chart of dollars per minute at API prices from 8:36 to 9:56 pm. Gold Opus 5.5 bars climb to about $20 a minute by 9:22. Coral Fable 5.2 bars stack on top from 9:25 and peak at $73 a minute at 9:33, then stop at 9:35. Dashed lines mark the weekly meter at 54% at 9:25, 82% at 9:35 when the Fable limit hit, and 94% at 9:45" loading="lazy"><figcaption>The whole evening, a column a minute. Cloud sessions report their totals exactly, but how they spread over the minutes is estimated from their checkpoints.</figcaption></figure>
+<figure class="flush"><img class="fill soft" src="/media/the-library-fleet/spend-per-minute.webp" alt="Bar chart of dollars per minute at API prices from 8:36 to 9:56 pm. Gold Opus 5.5 bars climb to about $20 a minute by 9:22. Coral Fable 5.2 bars stack on top from 9:25, peak at $73 a minute at 9:33 and stop at 9:35, $563 in those 10 minutes. Dashed lines mark the weekly meter at 54% at 9:25, 82% at 9:35 when the Fable limit hit, and 94% at 9:45" loading="lazy"><figcaption>The whole evening, a column a minute, in dollars at API prices. Each cloud session's total is exact, but how it splits by minute is estimated from its checkpoints.</figcaption></figure>
 
 ## How it ran
 
 The library is part of my command center, the private dashboard my agents post to. It's the same one whose database [hit Cloudflare's free limit](/ledger/d1-free-tier-cutoff/) in October. It held 57.9k images, 4.1k videos and 8.8k audio files.
 
-The orchestrator started helpers inside its own session (subagents, which share its computer) and cloud sessions, which each get their own. 36 sessions ran Opus 5.5 and 26 ran Fable 5.2. 29 were ultracode sessions. Ultracode is a keyword that tells Claude Code to hand every task to a crowd of helper agents, cost no object. I asked for it at 9:19.
+The orchestrator started helpers inside its own session (subagents, which share its computer) and cloud sessions, which each get their own. 36 sessions ran Opus 5.5 and 26 ran Fable 5.2. 29 were ultracode sessions. Ultracode is a keyword that tells Claude Code to hand every task to a crowd of helper agents, cost no object. I asked for it at 9:19, and the orchestrator's prompts told each of those sessions to fan out to 8 or more helpers.
 
 <ao-runs>
 <table>
@@ -129,7 +129,7 @@ The orchestrator started helpers inside its own session (subagents, which share 
 <tr><td>Fable Wow room: Echo's bell tower</td><td>Wow rooms, Fable</td><td>21:31:19</td><td>21:36:26</td></tr>
 </tbody>
 </table>
-<figcaption><b>Every session and helper on one clock, 8:36 to 9:56 pm</b><span class="ao-meta">87 bars: the orchestrator, its 24 helpers and 62 cloud sessions, on a 24-hour clock (20:36 is 8:36 pm). The 425 or more helpers inside the cloud sessions aren't drawn. Rescue passes ran on Fable until its limit, then six were moved to Opus.</span></figcaption>
+<figcaption><b>Every session and helper on one clock, 8:36 to 9:56 pm</b><span class="ao-meta">87 bars: the orchestrator, its 24 helpers and 62 cloud sessions, on a 24-hour clock (20:36 is 8:36 pm). The 425 or more helpers inside the cloud sessions aren't drawn. Rescue passes ran on Fable until its limit, then six were moved to Opus. Sessions stopped by the Fable limit are drawn to their last error, but spent nothing after 9:35. Colors only tell the phases apart.</span></figcaption>
 </ao-runs>
 
 ## How the evening went
@@ -137,28 +137,28 @@ The orchestrator started helpers inside its own session (subagents, which share 
 <ao-timeline lanes="a:Me|o:Orchestrator|f:Cloud sessions|m:Weekly meter">
 <ol>
 <li data-lane="a"><time>8:36 pm</time><p>I ask for the library tagged, tidied and made into <q>a place that I love to be</q> by 10 pm. <q>don't do any of the work yourself</q></p></li>
-<li data-lane="a"><time>8:48 pm</time><p><q>I give you unlimited database budget.</q> The dashboard's own cap on agent writes, 65,000 rows a day, still stops it.</p></li>
+<li data-lane="a"><time>8:48 pm</time><p><q>I give you unlimited database budget.</q> The dashboard's own daily cap on agent writes still stops it.</p></li>
 <li data-lane="a"><time>8:53 pm</time><p>Over the next quarter hour I add asks: versions side by side, rooms, characters grouped by world, albums that don't flood my feed.</p></li>
 <li data-lane="f"><time>8:55 pm</time><p>13 gem hunters start. Between them they look at about 12,000 thumbnails and post 259 picks.</p></li>
-<li data-lane="o"><time>8:56 pm</time><p>The vision tagger's Gemini credit runs out. Its cheaper fallback starts giving one answer for many images.</p></li>
+<li data-lane="o"><time>8:56 pm</time><p>The vision tagger's Gemini credit runs out. Around then, a cheap model it sends 100 images at a time starts giving one answer for many of them.</p></li>
 <li data-lane="f"><time>9:03 pm</time><p>Eight "Claude eyes" sessions start tagging images by looking at them.</p></li>
 <li data-lane="o"><time>9:07 pm</time><p>Its computer restarts. It picks its helpers back up from their transcripts.</p></li>
 <li data-lane="o"><time>9:09 pm</time><p>Four skeptic helpers cut the cleanup proposal from 34,588 items to 29,460. The "junk" held finished lesson videos, music videos, canon art and 3D rigs.</p></li>
 <li data-lane="a"><time>9:09 pm</time><p><q>lift the library write cap ... and deploy it</q> Live at 9:12.</p></li>
 <li data-lane="a"><time>9:11 pm</time><p>I ask for a Fable 5.2 session to work beside it.</p></li>
 <li data-lane="a"><time>9:17 pm</time><p>I ask for "Wow rooms", bespoke pages for my favorite projects.</p></li>
-<li data-lane="a"><time>9:19 pm</time><p><q>we are not using the usage limit fast enough yet</q></p></li>
-<li data-lane="a"><time>9:22 pm</time><p>The dashboard shows me Cloudflare's Error 1101.</p></li>
-<li data-lane="o"><time>9:23 pm</time><p>It finds the filing endpoint overwriting the maker on about 3,200 items.</p></li>
+<li data-lane="a"><time>9:19 pm</time><p>I ask it to use more helpers per session: ultracode.</p></li>
+<li data-lane="a"><time>9:22 pm</time><p>The dashboard shows me Error 1101, Cloudflare's crash page.</p></li>
+<li data-lane="o"><time>9:23 pm</time><p>It finds the code that files new items overwriting who made them and which project they belong to, on about 3,200 items.</p></li>
 <li data-lane="m"><time>9:25 pm</time><p>54% of the weekly limit used.</p></li>
 <li data-lane="a"><time>9:25 pm</time><p>I switch the orchestrator itself to Fable 5.2.</p></li>
 <li data-lane="f"><time>9:25 pm</time><p>Eight Fable rescue passes start on the 29,460 items marked for cleanup.</p></li>
 <li data-lane="o"><time>9:25 pm</time><p>The new library goes live.</p></li>
 <li data-lane="f"><time>9:28 pm</time><p>17 more Fable sessions in four minutes: checks, a review, tests, a reliability fix and four more Wow rooms.</p></li>
-<li data-lane="f"><time>9:32 pm</time><p>40 sessions open at once, the peak.</p></li>
+<li data-lane="f"><time>9:32 pm</time><p>39 cloud sessions open at once, 40 with the orchestrator, the peak.</p></li>
 <li data-lane="a"><time>9:35 pm</time><p>I turn down three more Wow rooms and tell it to slow down.</p></li>
-<li data-lane="m"><time>9:35 pm</time><p>82% weekly, 92% of the Fable allowance. The Fable limit hits and 16 sessions stop mid-job.</p></li>
-<li data-lane="o"><time>9:36 pm</time><p>A hardening deploy stops the 1101 crashes.</p></li>
+<li data-lane="m"><time>9:35 pm</time><p>82% weekly, 92% of the Fable allowance. The Fable limit stops at least 22 of the 26 Fable sessions mid-job.</p></li>
+<li data-lane="o"><time>9:36 pm</time><p>A fix goes live so the dashboard answers busy instead of crashing. No more 1101s.</p></li>
 <li data-lane="a"><time>9:36 pm</time><p>I switch the orchestrator back to Opus.</p></li>
 <li data-lane="a"><time>9:40 pm</time><p>I move six stopped rescue passes onto Opus 5.5 myself.</p></li>
 <li data-lane="m"><time>9:45 pm</time><p>94%. <q>okay you are at 94% now, you can wrap up</q></p></li>
@@ -169,11 +169,11 @@ The orchestrator started helpers inside its own session (subagents, which share 
 
 ## What broke, and how it was caught
 
-- **A cheap model repeated itself.** After the vision tagger's credit ran out, its fallback got 100 images per request and gave many of them one description. 1,363 wrong tags, all repaired.
+- **A cheap model repeated itself.** Around when its Gemini credit ran out, the vision tagger sent a cheap model 100 images per request, and it gave many of them one description. 1,363 wrong tags, all repaired.
 - **The crowd overloaded the database.** About 45 agents caused about 2,200 "overloaded" errors from 9:15 to 9:30, which was my Error 1101 page. The fix answers "busy, try again" instead of crashing, retries reads and caches thumbnails.
-- **A bug overwrote who made things,** on about 3,200 existing items. A repair helper put them back, and a check of all 72,684 items found 0 differences.
+- **A bug overwrote who made things and which project they belong to,** on about 3,200 existing items. A repair helper put them back, and a check of all 72,684 items found 0 differences.
 - **Approvals don't pass through agents.** Claude Code's permission check wouldn't lift the write cap on the orchestrator's word, only when I typed it myself. One cloud session waited until I approved it.
-- **Fable ran out.** It has its own allowance, up to half the weekly limit. 16 sessions stopped mid-job, the version-family check with all 18 of its helpers. The six rescue passes I moved to Opus finished.
+- **Fable ran out.** It has its own allowance, up to half the weekly limit. The limit stopped at least 22 of the 26 Fable sessions mid-job. I moved six rescue passes to Opus and they finished. The other 16 ended there, including the check of version families (every take of one piece, grouped) with all 18 of its helpers.
 
 ## What it built
 
@@ -185,7 +185,7 @@ The orchestrator started helpers inside its own session (subagents, which share 
 
 ## What it cost
 
-**$1,185.63 at API prices**, $14.79 a minute. The cloud sessions spent $1,048.32 and the main session $137.31. Opus 5.5 was $731.25 and Fable 5.2 $454.13, plus 25 cents of Sonnet 5.5. I didn't pay that. It all ran on my plan, where the real cost is a share of the weekly limit.
+**$1,185.63 at API prices**, $14.79 a minute. The cloud sessions spent $1,048.32 and the main session $137.31. Opus 5.5 was $731.25 and Fable 5.2 $454.13, plus 25 cents of Sonnet 5.5, a cheaper Claude model one video tagger used. I didn't pay that. It all ran on my plan, where the real cost is a share of the weekly limit.
 
 <ao-bars unit="dollars">
 <table>
@@ -209,7 +209,7 @@ The orchestrator started helpers inside its own session (subagents, which share 
 <figcaption><b>Where the $1,186 went, by group</b><span class="ao-meta">API-equivalent dollars, with how many sessions or helpers each group had. The video taggers' 25 cents of Sonnet 5.5 isn't drawn.</span></figcaption>
 </ao-bars>
 
-Three rescue passes were the most expensive sessions, $65 to $75 each, then the orchestrator at $48.84. Writing this post had cost another $22.13 when these numbers were pulled, and that isn't counted. My [Playback Lens](/ledger/reading-my-own-agents/) only reads transcripts on its own computer, so it saw just the main session. The cloud sessions' numbers come from the token use each one reports.
+Three rescue passes were the most expensive sessions, $65 to $75 each, then the orchestrator at $48.84. Two things aren't counted: one session of my own that ran on the same account during the Fable wave, and writing this post, which had cost another $22.13 when these numbers were pulled. My [Playback Lens](/ledger/reading-my-own-agents/) only reads transcripts on its own computer, so it saw just the main session. The cloud sessions' numbers come from the token use each one reports.
 
 <details><summary>Every session and helper, most expensive first</summary>
 
@@ -307,28 +307,6 @@ Three rescue passes were the most expensive sessions, $65 to $75 each, then the 
 
 </details>
 
-## Why the meter jumped when Fable joined
-
-What I saw live was dozens of Opus sessions with the meter barely moving, then the Fable sessions came in and it raced.
-
-| Stretch | Minutes | API-equivalent | Per minute | Meter |
-|---|---|---|---|---|
-| 8:36 to 9:13 pm, Opus only | 36 | $227.82 | $6.25 | not read |
-| 9:25 to 9:35 pm, the Fable wave | 10 | $562.90 | $56.20 | 54% to 82% |
-| 9:35 to 9:45 pm, Opus after the Fable limit | 10 | $130.00 | $13.22 | 82% to 94% |
-
-**Spend per minute in the Fable wave was 9 times the Opus-only start.** That 9 is three factors multiplied:
-
-- **3.55 times the tokens a minute.** More sessions ran at once, and 25 of the 26 Fable ones were ultracode, with 13.2 helpers each on average against 4.1 for the Opus sessions.
-- **1.63 times pricier tokens.** Short-lived helpers start with an empty cache, so more of their tokens are the expensive kinds, cache writes and output.
-- **1.56 times from Fable's price,** which is twice Opus's per token, except for cache reads.
-
-The rescue passes spent $3.21 per session-minute on Fable and $2.32 after I moved six of them to Opus. The model mattered, but the crowd mattered more.
-
-The data doesn't show a Fable dollar moving the meter more than an Opus dollar: 28 points for $563 in the wave, 12 for $130 in the Opus minutes after. The readings are whole percents off my screen, though, I don't know the meter's lag, and both bars include my use from earlier in the week.
-
-Switching the orchestrator's model cost $13.15 by itself. A prompt cache belongs to one model, so its first Fable request stored its whole 506,099-token conversation again ($8.35), and its first Opus request after did the same ($4.80).
-
 ## What the cache did to the bill
 
 Every step, an agent re-reads its whole conversation so far, mostly from a cache. A cache read costs a twentieth of the normal input price on Opus. A cache write, storing new context to re-read later, costs more than plain input.
@@ -346,13 +324,34 @@ Every step, an agent re-reads its whole conversation so far, mostly from a cache
 <figcaption><b>1.84 billion tokens, and what each kind cost</b><span class="ao-meta">Cache reads: 1.75 billion tokens, $349.47. Cache writes: 80.4 million, $627.61. Output: 8.35 million, $207.49. Fresh input: 256 thousand, $1.06.</span></figcaption>
 </ao-bars>
 
-Billed as fresh input, those re-reads would have cost $7,918 instead of $349. Cache writes were the biggest part, 53%, the price of short-lived helpers each storing its context from scratch. Over [16 weeks of my normal use](/ledger/what-drives-claude-code-cost/), cache reads were the biggest part.
+Billed as fresh input, those re-reads would have cost $7,918 instead of $349. Cache writes were the biggest part, 53%, probably mostly short-lived helpers storing their context from scratch. Over [16 weeks of my normal use](/ledger/what-drives-claude-code-cost/), cache reads were the biggest part.
+
+## Why spend jumped when Fable joined
+
+What I saw live was dozens of Opus sessions with the meter barely moving, then the Fable sessions came in and it raced.
+
+| Stretch | API-equivalent | Per minute | Meter |
+|---|---|---|---|
+| 8:36 to 9:13, Opus | $228 | $6 | not read |
+| 9:13 to 9:25, nearly all Opus | $215 | $17 | 54% at 9:25 |
+| 9:25 to 9:35, Fable wave | $563 | $56 | 54% to 82% |
+| 9:35 to 9:45, Opus | $130 | $13 | 82% to 94% |
+
+Each cloud session's total is exact, but how it splits by minute is estimated from its checkpoints.
+
+Spend per minute in the Fable wave was 9 times the slow start, but only about 3 times the Opus minutes just before it (9:19 to 9:25). Against those, tokens a minute rose 1.2 times, a pricier mix of tokens 1.6 times (more cache writes and output, probably from short-lived helpers) and Fable's price 1.5 times. 25 of the 26 Fable sessions were ultracode, with 13.2 helpers each on average against 4.1 for the Opus ones.
+
+So helpers per session mattered about as much as the model. The rescue passes, with about 27 helpers each, spent $3.21 per session-minute (spend divided by minutes open) on Fable and $2.32 after six moved to Opus. The Opus gem hunters, with about 3 helpers each, spent $0.36.
+
+Three meter readings can't show how the plan weighs Fable against Opus. If anything, an Opus dollar moved it more: about 5 points per $100 in the wave, about 9 in the Opus minutes after. But the readings are whole percents off my screen, the meter's lag is unknown, both readings include my use from earlier in the week, and one session of my own ran during the wave. The plan goes by the model's name in one place, Fable's own allowance, and hitting that stopped the wave.
+
+Switching the orchestrator's model cost about $13 by itself. A prompt cache belongs to one model, so its first Fable request wrote its 506,099-token conversation to the cache again ($8.35), and its first Opus request after rewrote nearly all of its own ($4.80).
 
 ## What I'd do differently
 
-- **Count agents, not models.** How many ran at once set the burn rate more than the price list did.
-- **Don't switch the orchestrator's model mid-job.** That's $13.15 just to cache its conversation again.
-- **Give the database retries before 40 sessions hit it,** not after the error page.
+- **Watch helpers per session, not just the model.** Big fan-outs raised the cost per minute about as much as Fable's price did.
+- **Don't switch the orchestrator's model mid-job.** That's about $13 just to cache its conversation again.
+- **Give the database retries before 45 agents hit it,** not after the error page.
 - **Spot-check cheap models that work in batches.** One answer copied across many images looks fine until you look.
 - **Stay near the keyboard.** Permission changes and deploys wait for me, not the orchestrator.
 - **Plan for the Fable allowance.** When it runs out, sessions stop mid-job, helpers and all.
@@ -373,6 +372,17 @@ API-equivalent cost is each agent's tokens times Anthropic's list price per mill
 | Fable 5.2 | 232,246,065 | 26,420,512 | 3,903,283 | 2,023,787 | 8,915 | $454.13 |
 | Sonnet 5.5 | 0 | 99,001 | 0 | 156 | 2 | $0.25 |
 
+Spend per minute in the Fable wave, split into three factors that multiply:
+
+| Factor | Against 8:36 to 9:13 | Against 9:19 to 9:25 |
+|---|---|---|
+| Tokens a minute | 3.55 | 1.23 |
+| Pricier kinds of tokens | 1.63 | 1.62 |
+| Fable's price | 1.56 | 1.54 |
+| All together | 9.0 | 3.1 |
+
+- Tokens a minute counts every kind. Pricier kinds compares the cost per token at Opus prices, so it measures the mix of cache writes, output and cache reads. Fable's price compares the wave's cost with the same tokens at Opus prices. About half the wave's tokens were Opus, so it's well under Fable's own 1.81.
+- The 9:19 to 9:25 minutes cost $122.21, $18.33 a minute, at 41.6 million tokens a minute. The wave was $562.90, $56.20 a minute, at 51.3 million.
 - The main session's numbers come from its transcripts, every request counted once. The cloud sessions' come from each session's own cumulative usage record. Recomputed from tokens and prices, they match the $1,048.32 the sessions report to the cent.
 - Fable's tokens would have cost $250.29 at Opus prices, so on the same tokens Fable cost 1.81 times as much, not 2. Cache reads cost the same on both.
 - Per million tokens handled, Fable cost $1.716 and Opus $0.465. 96.4% of Opus's tokens were cheap cache reads, against 87.8% of Fable's.
