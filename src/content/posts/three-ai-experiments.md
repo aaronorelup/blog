@@ -28,6 +28,9 @@ the code itself, so no Claude, Opus or Fable was used and there was no bill.
   descent, the same math that trains AI models. At 20:00 of a 30-minute programme, the way
   [my AI TV series](/courses/i-love-my-evening-television/) breaks at twenty minutes, it gets
   pushed past its limit. It sounded best right before it fell apart.
+- **The same training run by Claude Fable 5.2, with a model that learns.** A small network learns
+  609 old fiddle tunes and improvises while it trains. It gets 56% of the next notes right on
+  tunes it never saw, bends for six and a half minutes after 20:00, then falls apart at 26:32.
 - **A lesson that has to prove itself.** An orbit lesson set on the Moon runs seven physics checks
   in your browser and stays locked until they pass. A deliberately broken copy showed two of the
   first checks could never fail.
@@ -50,7 +53,7 @@ Each one lined up with something I already do: the twenty-minute break in my ser
 [checking every chess board in Touch Move](/ledger/touch-move/), and
 [my interactive lessons](/courses/the-hidden-curriculum/).
 
-## A training run you can hear
+## A training run you can hear: Gages's version
 
 From the clip alone you can't tell if the "learning" is a real optimiser or a composed piece that
 sounds like one. So this version can't be faked. The orchestra is 37 pitched voices plus one
@@ -96,6 +99,136 @@ times between 24:00 and the end.
 - **My prompt** (said out loud, condensed): "Search the web for cool, novel things people are doing with Opus 5.5, Fable 5.2 and other recent models. Look at my blog posts, images included, for ideas to extend. Pick the strongest, actually try them, and write blog posts about the results. Drafts only."
 - **Recipe:** pick a short tune and render it to audio. Give a bank of pitched voices plus one noise voice a volume per note. Run plain gradient descent (numpy) on the gap between their sound spectrum and the tune's. Play the current volumes after every few steps and join the bars into one file. To make it break, raise the step size past 2 divided by the loss's steepest curvature and hold it there.
 - **To try it on your own content:** swap in any melody you like. Python, numpy and ffmpeg are all it needs, and it runs in under a second.
+
+</details>
+
+## A training run you can hear: Fable 5.2's version
+
+Gages's orchestra can only ever play its one tune. So I gave the same idea to Claude Fable 5.2 and
+asked for a model that learns music, plays some it was never shown, and still breaks at 20:00 for
+a real reason. **It did all three.** Its player is a small neural network that learns from 609 old
+fiddle tunes in jig time to bet on the next note. On 68 tunes it never saw, it gets 56% of the
+next notes right. At 20:00 its step size goes past what it can take. It bends for six and a half
+minutes, then falls apart at 26:32.
+
+<ao-listen ref="alone">
+<figure data-id="programme"><audio controls preload="none" src="/media/three-ai-experiments/fable-training-run.mp3"></audio><img src="/media/three-ai-experiments/fable-training-run-strip.webp" alt="A strip of the model's bets over the programme: an even haze of every note at the start, clear bands on the notes of one key by the middle, a red line at 20:00, thinning bands after it and only scattered single dots at the end, while the error line under it shoots up" loading="lazy"><figcaption><b>The programme</b><span class="ao-meta">at 20:00 the step size is set to its limit, then climbs 2% a note</span></figcaption></figure>
+<figure data-id="alone"><audio controls preload="none" src="/media/three-ai-experiments/fable-training-run-left-alone.mp3"></audio><img src="/media/three-ai-experiments/fable-training-run-left-alone-strip.webp" alt="The same strip with nothing changed at 20:00: the bands carry on in a regular pattern to the end and the error line stays flat" loading="lazy"><figcaption><b>Left alone</b><span class="ao-meta">the same model and the same data, and the step size never changes</span></figcaption></figure>
+<figure data-id="x3"><audio controls preload="none" src="/media/three-ai-experiments/fable-training-run-held-3x.mp3"></audio><img src="/media/three-ai-experiments/fable-training-run-held-3x-strip.webp" alt="The same strip with the step size held at three times the limit: a short spike in the error line right at 20:00, then the bands and the line settle again a little higher" loading="lazy"><figcaption><b>Held at 3 times the limit</b><span class="ao-meta">worse than guessing for 6 notes at 20:00, then it heals itself</span></figcaption></figure>
+<figure data-id="x10"><audio controls preload="none" src="/media/three-ai-experiments/fable-training-run-held-10x.mp3"></audio><img src="/media/three-ai-experiments/fable-training-run-held-10x-strip.webp" alt="The same strip with the step size held at ten times the limit: the bands turn into scattered single dots right at 20:00 and the error line jumps to the top and stays there" loading="lazy"><figcaption><b>Held at 10 times the limit</b><span class="ao-meta">gone one step after 20:00</span></figcaption></figure>
+<figcaption><b>Four endings of one training run, 30:00 in 90 seconds</b><span class="ao-meta">top: the model's bets on each note (blue) and the note it picked (orange) · bottom: its error on tunes it never saw · red line: 20:00 · the first 60 seconds are the same in all four, so jump to 20:00 and switch</span></figcaption>
+</ao-listen>
+
+- **Every sound is the model at that moment.** At each note it gives every possible next note a
+  probability, picks one, then trains some more. The pick is plucked on a music box, harder the
+  surer it was. Under it a soft pad plays every note at once, each as loud as its probability. So
+  it opens as all the notes at once and thins out as the model makes up its mind.
+- **You can hear it learn.** By 04:27 it beats a table that only counts which note usually follows
+  which. By 06:36, 95% of its bets are in the key of D. By 08:49 it gets every second note right
+  on tunes it never saw. Between 10:00 and 20:00 it plays one note out of 136 outside the key.
+  Nobody told it what a key is.
+- **"Music it was never shown" holds up two ways.** The 68 test tunes were kept out of training,
+  and a near copy of another tune couldn't be picked as one. It gets 56% of their next notes
+  right, where that table gets 27% and guessing gets 3%. And what it improvises is its own. The
+  longest run it shares with any training tune is 8 notes. A typical real tune it never saw
+  shares 11.
+- **The break is measured, not staged.** At 20:00 the script measures how sharply the error
+  curves, which sets the biggest step the model can take and stay stable. That limit was 0.98,
+  and the step size (the learning rate) had been 0.30. It's set to the limit and then climbs 2%
+  a note. Four steps later the error on unseen tunes is up 15%. Nothing else changes. "Left
+  alone" is the same model on the same data.
+- **It bent before it broke.** Gages's mixer is one smooth bowl, so past its limit it can only
+  blow up. A network can move. By 25:00 this one had cut its own sharpness in half, which doubles
+  its own limit, and it kept playing in key while it got worse. At 6.4 times the old limit it ran
+  out of room. By 27:22 its error was 30 times worse than guessing. It's still in D, it's 100%
+  sure of nearly every note, and it's right one time in ten.
+- **Pushed all at once, it ends differently.** Held at 3 times the limit, it's worse than guessing
+  for 6 notes and then heals itself. Held at 10 times, it's gone after one step. Both are clips
+  above.
+- **What's real and what's designed.** Real: every note, how hard it's plucked, the pad, the
+  error, the limit and the collapse. Fable didn't place one of them. Designed: the music-box
+  sound, the tempo, how the training steps are spread over the clock, and the choice to push at
+  20:00 by 2% a note.
+- **Next to Gages's.** His has 608 volume knobs, one tune and 190 training steps. This one has
+  47,840 weights, 609 tunes and 6,144 steps. His got cleaner for four minutes before it blew up.
+  This one got worse within four steps and took six and a half minutes to go.
+- **Fable can't hear.** It checked the sound by drawing it and measuring how loud it was. Nobody
+  had listened to it when this went up.
+
+<figure><img src="/media/three-ai-experiments/fable-training-run-chart.webp" alt="Three charts on one programme clock with a red line at 20:00. Top: the model's bets start as an even haze over every note, settle onto the notes of D major, and end as scattered single dots. Middle: the error falls from 3.47 to 1.36 by 20:00, wobbles upward, then jumps past 100 after 26:32 while a grey line for the run left alone stays flat. Bottom: the step size against its own limit creeps from 0.05 to 0.3 times, jumps to 1 at 20:00 and keeps climbing" loading="lazy"><figcaption><b>The whole run on the programme clock</b><span class="ao-meta">top: what it believes and what it plays · middle: its error on tunes it trains on and on tunes it never sees · bottom: its step size against its own limit, measured again at every note</span></figcaption></figure>
+
+<details><summary>The numbers, by the programme clock</summary>
+
+| Programme clock | Training steps so far | Step size vs the limit at 20:00 | Step size vs the limit right then | Error on unseen tunes | Next notes right |
+|---|---|---|---|---|---|
+| 00:00 | 0 | 0.31x | 0.05x | 3.47 | 0% |
+| 02:34 | 13 | 0.31x | 0.10x | 2.62 | 31% |
+| 04:27 | 66 | 0.31x | 0.16x | 2.00 | 40% |
+| 08:49 | 514 | 0.31x | 0.16x | 1.56 | 50% |
+| 15:00 | 2,531 | 0.31x | 0.20x | 1.45 | 53% |
+| 19:56 | 5,938 | 0.31x | 0.29x | 1.37 | 56% |
+| 20:00 | 6,000 | 1.00x | 1.00x | 1.36 | 56% |
+| 20:17 | 6,004 | 1.08x | 1.25x | 1.56 | 51% |
+| 22:34 | 6,037 | 2.08x | 2.49x | 2.20 | 43% |
+| 25:00 | 6,072 | 4.16x | 2.22x | 2.34 | 41% |
+| 26:15 | 6,090 | 5.94x | 3.20x | 2.38 | 39% |
+| 26:32 | 6,094 | 6.43x | 5.08x | 3.55 | 28% |
+| 27:22 | 6,106 | 8.16x | 16x | 103 | 9% |
+| 29:56 | 6,143 | 17x | not measurable | 325 | 14% |
+
+The error is the usual training score (cross-entropy), and 3.47 is what guessing among the 32
+choices scores. A "note" here is one eighth-note slot, which holds a pitch, a hold of the last
+pitch or a rest. The limit is 2 divided by the sharpness, the steepest curve of the error. Before
+20:00 nobody touches the step size, and the model walks toward its own limit anyway, from 0.05 to
+0.29 times it, because its sharpness grows as it learns. At 25:00 the two limit columns disagree
+because the model had flattened itself out. Every note is in
+[one file](/media/three-ai-experiments/fable-training-run-notes.csv) and all 6,144 training steps
+are in [another](/media/three-ai-experiments/fable-training-run-steps.csv).
+
+</details>
+
+<details><summary>Other pushes, other random seeds, and what each input is worth</summary>
+
+From the same 20:00 state, with the step size held at one level until 30:00:
+
+| Held at | Worst error | Notes worse than guessing, out of 144 | Error at the end |
+|---|---|---|---|
+| 0.31x (left alone) | 1.37 | 0 | 1.36 |
+| 0.8x | 1.44 | 0 | 1.39 |
+| 1x | 1.56 | 0 | 1.42 |
+| 1.5x | 2.53 | 0 | 1.48 |
+| 2x | 4.02 | 2 | 1.53 |
+| 3x | 6.67 | 6 | 1.58 |
+| 4x | 32 | 77 | 2.83 |
+| 5x | 72 | 142 | 8.39 |
+| 10x | 243 | 143 | 67 |
+
+There's no cliff at exactly 1x. The damage grows smoothly, it heals up to 3x, and from 5x it never
+comes back. Climbing slowly it lasted until 6.4x, because it had time to flatten out on the way.
+
+Six reruns of the whole programme with different random numbers fell apart at 25:46, 26:03, 26:19,
+26:19, 26:32 and 26:40, so the time isn't placed. All six stayed in key before 20:00, with at most
+one stray note in 144.
+
+Without its memory of what it played 4 and 8 bars ago it gets 46% of next notes right, not 56%.
+Without the beat and bar counter, 53%. With one bar of context in place of two it gets 57%, so
+that part was over-built.
+
+The tunes come from four collections printed between about 1780 and 1903: O'Neill's Music of
+Ireland, Aird's Airs, Ryan's Mammoth Collection and two small folk books. 1,246 of their tunes are
+in 6/8. 677 were left after keeping the major-key ones that fit an eighth-note grid, moving them
+all to D and dropping repeats.
+
+</details>
+
+<details><summary>How it was made, and how to make your own</summary>
+
+- **Who made it:** Claude Fable 5.2 on effort max, UltraCode off, in one Claude Code session with no helper agents. It built and ran the experiment, made the sound and the pictures, wrote this section and published it.
+- **My prompt** (condensed): "Make a piece where a real optimisation run is audible. Every moment you hear is the model's actual current state, not a composed imitation. The programme is 30:00 compressed to about 90 seconds, and it breaks at 20:00 because something real in the training goes wrong, like the learning rate pushed past its stability limit. Gages's version couldn't play music it was never shown, and it was a mixer, not a model. Close those gaps, keep the break real and auditable, and say plainly what is real and what is designed."
+- **What broke on the way:** the first tune filter threw out 893 of 1,246 tunes because it misread pickup notes. A bug in a test script made the model look stuck on one note when it wasn't. The first plan for 20:00 was one jump to 3 times the limit, and the model just healed, so the push became a climb.
+- **Time and cost:** about an hour and a half from the brief to the push. The run itself is 6,144 training steps and takes about 25 seconds on one processor core. Measuring the sharpness at all 432 notes takes 7 minutes. The session can't see its own token count, so there's no cost figure.
+- **Recipe:** get melodies as notes (music21, a Python library, reads ABC, MIDI and MusicXML files). Put them on a grid of eighth notes, move them all to one key and hold some out. Train a small next-note network with plain gradient descent. At every note, save its probabilities and the note it picks. To break it, measure the sharpness, set the learning rate to 2 divided by it, and keep raising it. Then play the picks as plucks and the probabilities as a pad.
+- **To try it on your own content:** swap in any folder of tunes in one time signature, like hymns, game music or your own songs. The trainer and the synth are about 600 lines of plain JavaScript with no libraries, and ffmpeg makes the MP3.
 
 </details>
 
