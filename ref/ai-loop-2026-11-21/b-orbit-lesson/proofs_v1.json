@@ -1,0 +1,90 @@
+{
+ "verlet": {
+  "integrator": "verlet",
+  "allPass": true,
+  "totalMs": 125.8,
+  "results": [
+   {
+    "name": "Energy is conserved over 10 orbits (drift < 0.01%)",
+    "ok": true,
+    "msg": "max drift 2.55e-10%",
+    "ms": 29.9
+   },
+   {
+    "name": "A circular-orbit throw keeps its height (radius within 0.1%)",
+    "ok": true,
+    "msg": "radius spread 0.0002%",
+    "ms": 3
+   },
+   {
+    "name": "Orbit period matches Kepler: T = 2(r&sup3;/GM) within 0.2%",
+    "ok": true,
+    "msg": "sim 117.80 min vs Kepler 117.79 min",
+    "ms": 0.9
+   },
+   {
+    "name": "Kepler's third law: T²/a³ is the same for 3 ellipses (within 0.5%)",
+    "ok": true,
+    "msg": "spread 0.013%",
+    "ms": 44.4
+   },
+   {
+    "name": "Just under escape speed comes back; just over never does",
+    "ok": true,
+    "msg": "0.97 v_esc: orbiting (17 laps), 1.03 v_esc: escaped",
+    "ms": 45.8
+   },
+   {
+    "name": "Reality check: the same code gives the real Moon’s month (within 0.5%)",
+    "ok": true,
+    "msg": "27.284 d vs sidereal month 27.321661 d",
+    "ms": 0.1
+   }
+  ],
+  "wallMs": 232
+ },
+ "euler": {
+  "integrator": "euler",
+  "allPass": false,
+  "totalMs": 89,
+  "results": [
+   {
+    "name": "Energy is conserved over 10 orbits (drift < 0.01%)",
+    "ok": false,
+    "msg": "max drift 1.57e+1%",
+    "ms": 9.4
+   },
+   {
+    "name": "A circular-orbit throw keeps its height (radius within 0.1%)",
+    "ok": false,
+    "msg": "radius spread 16.2927%",
+    "ms": 3
+   },
+   {
+    "name": "Orbit period matches Kepler: T = 2(r&sup3;/GM) within 0.2%",
+    "ok": false,
+    "msg": "sim 118.78 min vs Kepler 117.79 min",
+    "ms": 0.6
+   },
+   {
+    "name": "Kepler's third law: T²/a³ is the same for 3 ellipses (within 0.5%)",
+    "ok": false,
+    "msg": "spread 12.912%",
+    "ms": 37.2
+   },
+   {
+    "name": "Just under escape speed comes back; just over never does",
+    "ok": true,
+    "msg": "0.97 v_esc: orbiting (6 laps), 1.03 v_esc: escaped",
+    "ms": 38.3
+   },
+   {
+    "name": "Reality check: the same code gives the real Moon’s month (within 0.5%)",
+    "ok": true,
+    "msg": "27.284 d vs sidereal month 27.321661 d",
+    "ms": 0.1
+   }
+  ],
+  "wallMs": 128
+ }
+}

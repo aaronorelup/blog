@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Throw it hard enough and it never lands - a lesson that proves itself first</title>
+<style>
+ body{margin:0;background:#0b0d12;color:#e8e4da;font:16px/1.5 Karla,system-ui,sans-serif;display:grid;grid-template-columns:minmax(320px,420px) 1fr;height:100vh;overflow:hidden}
+ aside{height:100vh;box-sizing:border-box;padding:22px 24px;border-right:1px solid #222;overflow:auto}
+ h1{font-size:21px;margin:0 0 6px} p{margin:8px 0;color:#c9c3b6}
+ #proofs{list-style:none;padding:0;margin:12px 0;font:13px/1.45 ui-monospace,monospace}
+ #proofs li{padding:4px 0;border-bottom:1px solid #1d2028}
+ .pass{color:#7fe08a}.fail{color:#ff6b6b}.wait{color:#888}
+ #gate{padding:10px 12px;border-radius:8px;margin:12px 0;font-weight:700}
+ #gate.locked{background:#3a1416;color:#ffb3b3}#gate.open{background:#12321a;color:#a9f0b3}
+ fieldset{border:1px solid #2a2e38;border-radius:8px;padding:10px 12px;margin:10px 0}
+ fieldset[disabled]{opacity:.35}
+ input[type=range]{width:100%} button{font:inherit;padding:6px 12px;border-radius:6px;border:1px solid #555;background:#1b1f29;color:#eee;cursor:pointer}
+ canvas{width:100%;height:100vh;display:block}
+ .num{font-variant-numeric:tabular-nums}
+</style></head><body>
+<aside>
+ <h1>Throw it hard enough and it never lands</h1>
+ <p>You're standing on the Moon, like Noor. Throw a ball sideways. Faster, and it lands farther away. At one exact speed the ground curves away as fast as the ball falls, and it never lands. That's an orbit.</p>
+ <p><b>Before you can touch anything, this page has to prove its own physics.</b> It runs the checks below in your browser. If any fails, the lesson stays locked.</p>
+ <ul id="proofs"></ul>
+ <div id="gate" class="locked">Locked: proving...</div>
+ <fieldset id="controls" disabled>
+  <label>Throw speed: <span id="vlab" class="num"></span> km/s</label>
+  <input id="v" type="range" min="0.3" max="2.6" step="0.01" value="1.2">
+  <p class="num" id="readout"></p>
+  <button id="throw">Throw</button> <button id="circ">Set orbit speed</button> <button id="esc">Set escape speed</button>
+ </fieldset>
+ <p style="font-size:13px;color:#888">Integrator: <span id="integ"></span>. Add <code>?integrator=euler</code> to the address to load a deliberately worse integrator and watch the gate catch it.</p>
+</aside>
+<canvas id="c"></canvas>
+<script>
+// ---------- physics (units: km, s) ----------
+const GM_MOON = 4902.800;          // km^3/s^2 (standard lunar GM)
+const R_MOON  = 1737.4;            // km mean radius
+const GM_EARTH = 398600.4418, GM_MOON_SYS = 398600.4418 + 4902.8; // Earth, Earth+Moon
+const A_MOON_ORBIT = 384399;       // km semi-major axis of the Moon's orbit
+const SIDEREAL_MONTH_D = 27.321661;// days
+const params = new URLSearchParams(location.search);
+const INTEGRATOR = params.get('integrator') === 'euler' ? 'euler' : 'verlet';
+document.getElementById('integ').textContent = INTEGRATOR === 'verlet' ? 'velocity Verlet (symplectic)' : 'explicit Euler (deliberately bad)';
+
+function acc(x, y, GM){ const r2 = x*x + y*y, r = Math.sqrt(r2), k = -GM/(r2*r); return [k*x, k*y]; }
+function step(s, dt, GM){
+  if (INTEGRATOR === 'euler'){ const [ax,ay] = acc(s.x,s.y,GM); s.x += s.vx*dt; s.y += s.vy*dt; s.vx += ax*dt; s.vy += ay*dt; return; }
+  const [ax,ay] = acc(s.x,s.y,GM); s.vx += 0.5*ax*dt; s.vy += 0.5*ay*dt; s.x += s.vx*dt; s.y += s.vy*dt;
+  const [bx,by] = acc(s.x,s.y,GM); s.vx += 0.5*bx*dt; s.vy += 0.5*by*dt;
+}
+const energy = (s,GM) => 0.5*(s.vx*s.vx + s.vy*s.vy) - GM/Math.hypot(s.x,s.y);
+const vCirc = (r,GM) => Math.sqrt(GM/r), vEsc = (r,GM) => Math.sqrt(2*GM/r);
+// launch from the surface (+ 1 km so a "level" throw clears the ground), horizontally
+function launch(v, r0=R_MOON+1){ return {x:0, y:r0, vx:v, vy:0}; }
+// integrate until it lands, completes N periods (angle), or escapes; returns stats
+function fly(v, {GM=GM_MOON, r0=R_MOON+1, dt=1, maxT=4e5, rFloor=R_MOON, rEsc=60*R_MOON}={}){
+  const s = launch(v, r0); let t=0, ang=0, lastA=Math.atan2(s.y,s.x), rmin=1e99, rmax=0, E0=energy(s,GM), maxDrift=0, crossings=[];
+  while(t<maxT){
+    step(s,dt,GM); t+=dt; const r=Math.hypot(s.x,s.y); rmin=Math.min(rmin,r); rmax=Math.max(rmax,r);
+    const a=Math.atan2(s.y,s.x); let d=a-lastA; if(d>Math.PI)d-=2*Math.PI; if(d<-Math.PI)d+=2*Math.PI; const before=Math.floor(ang/(2*Math.PI)); ang+=Math.abs(d); lastA=a;
+    if(Math.floor(ang/(2*Math.PI))>before) crossings.push(t);
+    maxDrift=Math.max(maxDrift, Math.abs((energy(s,GM)-E0)/E0));
+    if(r<rFloor) return {fate:'landed', t, ang, rmin, rmax, maxDrift, crossings};
+    if(r>rEsc) return {fate:'escaped', t, ang, rmin, rmax, maxDrift, crossings};
+  }
+  return {fate:'orbiting', t, ang, rmin, rmax, maxDrift, crossings};
+}
+// ---------- the proofs ----------
+const proofs = [
+ ['Energy is conserved over 10 orbits (drift < 0.01%)', () => {
+   const r0=R_MOON+100, v=vCirc(r0,GM_MOON), T=2*Math.PI*Math.sqrt(r0**3/GM_MOON);
+   const f=fly(v,{r0,dt:2,maxT:10*T}); return [f.maxDrift<1e-4, `max drift ${(f.maxDrift*100).toExponential(2)}%`]; }],
+ ['A circular-orbit throw keeps its height (radius within 0.1%)', () => {
+   const r0=R_MOON+100, f=fly(vCirc(r0,GM_MOON),{r0,dt:2,maxT:6e4});
+   const spread=(f.rmax-f.rmin)/r0; return [spread<1e-3, `radius spread ${(spread*100).toFixed(4)}%`]; }],
+ ['Orbit period matches Kepler: T = 2&pi;&radic;(r&sup3;/GM) within 0.2%', () => {
+   const r0=R_MOON+100, Tk=2*Math.PI*Math.sqrt(r0**3/GM_MOON), f=fly(vCirc(r0,GM_MOON),{r0,dt:1,maxT:1.2*Tk});
+   const Ts=f.crossings[0]; const e=Math.abs(Ts-Tk)/Tk; return [Ts && e<2e-3, `sim ${(Ts/60).toFixed(2)} min vs Kepler ${(Tk/60).toFixed(2)} min`]; }],
+ ["Kepler's third law: T\u00b2/a\u00b3 is the same for 3 ellipses (within 0.5%)", () => {
+   const r0=R_MOON+100, vc=vCirc(r0,GM_MOON), ks=[];
+   for(const m of [1.0,1.1,1.2]){ const f=fly(vc*m,{r0,dt:1,maxT:2e5}); const a=(f.rmin+f.rmax)/2, T=f.crossings[0]; ks.push(T*T/(a**3)); }
+   const spread=(Math.max(...ks)-Math.min(...ks))/ks[0]; return [spread<5e-3, `spread ${(spread*100).toFixed(3)}%`]; }],
+ ['Just under escape speed comes back; just over never does', () => {
+   const r0=R_MOON+100, ve=vEsc(r0,GM_MOON);
+   const lo=fly(0.97*ve,{r0,dt:5,maxT:3e6,rEsc:1e9}), hi=fly(1.03*ve,{r0,dt:5,maxT:3e6,rEsc:40*R_MOON});
+   return [lo.fate==='orbiting' && lo.crossings.length>0 && hi.fate==='escaped', `0.97 v_esc: ${lo.fate} (${lo.crossings.length} laps), 1.03 v_esc: ${hi.fate}`]; }],
+ ['Reality check: the simulator flies the real Moon around Earth and gets the month (within 0.5%)', () => {
+   // v2: v1 used the closed-form formula here, so it passed even with the broken integrator. Now the sim must fly it.
+   const a=A_MOON_ORBIT, v=vCirc(a,GM_MOON_SYS), f=fly(v,{GM:GM_MOON_SYS, r0:a, dt:600, maxT:40*86400, rFloor:6371, rEsc:1e7});
+   const T=f.crossings[0]/86400, e=Math.abs(T-SIDEREAL_MONTH_D)/SIDEREAL_MONTH_D;
+   return [T && e<5e-3, `simulated ${T?T.toFixed(3):'-'} d vs sidereal month ${SIDEREAL_MONTH_D} d`]; }],
+ ['Near-escape throw: 0.995 v_esc comes back to its launch height after a long lap (within 0.5%)', () => {
+   // v3: v2 took the minimum radius over the whole flight, which includes the launch itself, so it could never fail.
+   // Now: fly out past apolune, then record the lowest point on the way back.
+   const r0=R_MOON+100, s=launch(0.995*vEsc(r0,GM_MOON), r0); let t=0, rPrev=r0, out=true, rApo=0, rPeri=1e99;
+   while(t<5e7){ step(s,10,GM_MOON); t+=10; const r=Math.hypot(s.x,s.y);
+     if(out){ if(r<rPrev && r>2*r0){ out=false; rApo=rPrev; } }
+     else { rPeri=Math.min(rPeri,r); if(r>rPrev && rPeri<1.5*r0) break; }
+     if(r<R_MOON) { rPeri=r; break; } rPrev=r; }
+   const e=(rPeri-r0)/r0; return [!out && Math.abs(e)<5e-3, `apolune ${(rApo/R_MOON).toFixed(0)} Moon radii; came back to ${(e*100).toFixed(3)}% of launch height`]; }],
+];
+const ul=document.getElementById('proofs'), results=[]; let allPass=true; const t0=performance.now();
+for(const [name] of proofs){ const li=document.createElement('li'); li.className='wait'; li.innerHTML='&#9675; '+name; ul.appendChild(li); }
+for(let i=0;i<proofs.length;i++){
+  const [name,fn]=proofs[i]; const ts=performance.now(); let ok=false, msg='';
+  try{ [ok,msg]=fn(); }catch(e){ ok=false; msg='threw '+e.message; }
+  ok=!!ok; allPass=allPass&&ok; const ms=performance.now()-ts;
+  results.push({name:name.replace(/&[a-z0-9]+;/g,''), ok, msg, ms:+ms.toFixed(1)});
+  const li=ul.children[i]; li.className=ok?'pass':'fail'; li.innerHTML=(ok?'&#10003; ':'&#10007; ')+name+`<br><span style="color:#999">${msg} &middot; ${ms.toFixed(0)} ms</span>`;
+}
+const totalMs=performance.now()-t0, gate=document.getElementById('gate');
+if(allPass){ gate.className='open'; gate.textContent=`Unlocked: all ${proofs.length} proofs passed in ${totalMs.toFixed(0)} ms.`; document.getElementById('controls').disabled=false; }
+else { gate.className='locked'; gate.textContent=`Locked: ${results.filter(r=>!r.ok).length} of ${proofs.length} proofs failed. The lesson won't teach physics it can't show.`; }
+window.__PROOFS__={integrator:INTEGRATOR, allPass, totalMs:+totalMs.toFixed(1), results};
+
+// ---------- the lesson ----------
+const cv=document.getElementById('c'), cx=cv.getContext('2d'); let W,H,scale;
+function resize(){ W=cv.width=cv.clientWidth*devicePixelRatio; H=cv.height=cv.clientHeight*devicePixelRatio; scale=Math.min(W,H)/(2*R_MOON*2.6); }
+addEventListener('resize',resize); resize();
+const vIn=document.getElementById('v'), vlab=document.getElementById('vlab'), rd=document.getElementById('readout');
+const vc0=vCirc(R_MOON+1,GM_MOON), ve0=vEsc(R_MOON+1,GM_MOON);
+function label(){ const v=+vIn.value; vlab.textContent=v.toFixed(2);
+  rd.innerHTML=`Orbit speed here: <b>${vc0.toFixed(3)}</b> km/s &middot; escape: <b>${ve0.toFixed(3)}</b> km/s<br>`+
+   (v<vc0-0.005?'Too slow: it will land.':v<ve0?'Fast enough: it goes around.':'Escape: it leaves the Moon for good.'); }
+vIn.oninput=label; label();
+let trail=[], ball=null, stars=Array.from({length:220},()=>[Math.random(),Math.random(),Math.random()]);
+function throwIt(){ ball=launch(+vIn.value); trail=[]; }
+document.getElementById('throw').onclick=throwIt;
+document.getElementById('circ').onclick=()=>{vIn.value=vc0.toFixed(2);label();throwIt();};
+document.getElementById('esc').onclick=()=>{vIn.value=(ve0+0.01).toFixed(2);label();throwIt();};
+function toS(x,y){ return [W/2+x*scale, H/2-y*scale]; }
+function frame(){
+  cx.fillStyle='#05060a'; cx.fillRect(0,0,W,H);
+  for(const [a,b,c] of stars){ cx.fillStyle=`rgba(255,255,255,${0.3+0.7*c})`; cx.fillRect(a*W,b*H,1.5,1.5); }
+  // earth in the sky
+  cx.fillStyle='#4a86c5'; cx.beginPath(); cx.arc(W*0.85,H*0.15,Math.min(W,H)*0.05,0,7); cx.fill();
+  const [mx,my]=toS(0,0); const g=cx.createRadialGradient(mx-R_MOON*scale*0.3,my-R_MOON*scale*0.3,10,mx,my,R_MOON*scale);
+  g.addColorStop(0,'#cfccc4'); g.addColorStop(1,'#6e6a63'); cx.fillStyle=g; cx.beginPath(); cx.arc(mx,my,R_MOON*scale,0,7); cx.fill();
+  const [nx,ny]=toS(0,R_MOON); cx.fillStyle='#f3c14b'; cx.fillRect(nx-3,ny-12,6,12); // Noor
+  if(ball && !document.getElementById('controls').disabled){
+    for(let i=0;i<60;i++){ step(ball,4,GM_MOON); const r=Math.hypot(ball.x,ball.y); if(i%3===0) trail.push([ball.x,ball.y]); if(r<R_MOON){ ball.landed=true; break; } }
+    if(trail.length>4000) trail.shift();
+  }
+  if(trail.length){
+    cx.strokeStyle='#f3c14b'; cx.lineWidth=2; cx.beginPath(); trail.forEach(([x,y],i)=>{const [sx,sy]=toS(x,y); i?cx.lineTo(sx,sy):cx.moveTo(sx,sy);}); cx.stroke();
+  }
+  if(ball){ const [bx,by]=toS(ball.x,ball.y); cx.fillStyle='#fff'; cx.beginPath(); cx.arc(bx,by,5,0,7); cx.fill(); if(ball.landed) ball=null; }
+  requestAnimationFrame(frame);
+}
+frame();
+</script></body></html>
