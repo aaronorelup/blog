@@ -31,6 +31,9 @@ the code itself, so no Claude, Opus or Fable was used and there was no bill.
 - **A lesson that has to prove itself.** An orbit lesson set on the Moon runs seven physics checks
   in your browser and stays locked until they pass. A deliberately broken copy showed two of the
   first checks could never fail.
+- **The same lesson by Claude Opus 5.5, playable right here.** Nine checks run before you can
+  throw, five broken engines show each one can fail, and it found Gages's landing distances about
+  a kilometre long.
 - **The Quiet Hour.** An 89-second film of an old TV in a dark room, where everything on screen
   is driven by the training run's numbers. It breaks because the data breaks, not because a
   script says so.
@@ -96,7 +99,7 @@ times between 24:00 and the end.
 
 </details>
 
-## A lesson that has to prove itself
+## A lesson that has to prove itself: Gages's version
 
 The lesson puts you on the Moon, like Noor in [Earthlight](/ledger/earthlight/). Throw a ball
 sideways. Faster and it lands farther away, and at one speed it never lands. Before the slider
@@ -126,6 +129,73 @@ the real Moon's month right. All seven pass in about a tenth of a second.
 - **My prompt** (said out loud, condensed): "Search the web for cool, novel things people are doing with Opus 5.5, Fable 5.2 and other recent models. Look at my blog posts, images included, for ideas to extend. Pick the strongest, actually try them, and write blog posts about the results. Drafts only."
 - **Recipe:** one HTML file, no libraries. A small orbit simulator (velocity Verlet, a step method that keeps orbits stable) plus seven checks that run in the browser on page load. The controls stay disabled until every check passes. Headless Chrome (Puppeteer) loads it twice, once with a deliberately broken simulator, to confirm the checks turn red.
 - **To try it on your own content:** for any interactive lesson, write down the facts it must get right, test the simulation against them before the learner can touch it, and ship a broken twin to prove each test can fail.
+
+</details>
+
+## A lesson that has to prove itself: Opus 5.5's version
+
+Gages's lesson is only screenshots, and it never says where the ball lands. So I gave the same
+idea to Claude Opus 5.5 and asked for one you can play right here. **It works on a phone too, and
+each of its nine checks is shown failing against a deliberately broken engine.** It also found
+that Gages's landing distances are each about a kilometre too long.
+
+<ao-game src="/labs/moon-orbit/" poster="/media/three-ai-experiments/opus-orbit-lesson-poster.webp" size="about 30 KB" label="The Moon orbit lesson by Claude Opus 5.5" aspect="1/1" note="Tap a digit to pick the step, then minus and plus. Keys: arrows change the speed, space throws."><a href="/labs/moon-orbit/"><img src="/media/three-ai-experiments/opus-orbit-lesson-poster.webp" alt="The orbit lesson: its physics checks all passed on the left, a ball circling just above the Moon on the right, the speed set to 1.6800 km/s" loading="lazy"></a></ao-game>
+
+- **The hook holds, to within a kilometre.** From 1 km up, 1.67 km/s lands 558.0 km away and
+  1.68 km/s never lands, because orbit speed there is 1.6794 km/s. 558.0 came out the same three
+  ways, from the exact orbit formula in 40-digit math, a separate simulator in Python and the lesson.
+  Gages's 61, 186 and 559 km are each about 1 km long. Its simulator stopped at the first whole
+  second underground, and none of its seven checks looked at a landing.
+- **Every check can fail, and that's tested, not assumed.** Opus made five broken copies of the
+  engine with one mistake each: the textbook Euler step, a flat Moon, gravity that never weakens
+  with height, landing one step late, and a typo in the Moon's mass. Every check fails on at least
+  one of them. One of Gages's seven checks (just under escape speed comes back) never failed.
+- **A typo passes every law of physics.** Type the Moon's gravity as 4092.8 instead of 4902.8 and
+  the engine is still perfect physics, for a lighter Moon. Eight checks pass. Only the ninth catches
+  it, because it compares the Moon with NASA's numbers, a gravity of 1.62 m/s² and the 113-minute
+  lap of its Lunar Reconnaissance Orbiter 50 km up. That's the gap Gages pointed out above, and
+  one check against the real world closes part of it.
+- **The first engine wasn't exact enough.** Plain velocity Verlet, the step method Gages used, in
+  half-second steps, put a 1.6791 km/s throw 861 m long. Opus switched to Yoshida's version, three
+  Verlet steps of odd sizes with one of them backwards. It's within 11 cm for less work, and it's
+  what you're playing.
+- **It says what it leaves out.** This Moon is a smooth ball, but the real one has peaks almost
+  11 km high, so a ball skimming 1 km up would hit one. It also leaves out the Moon's lumpy gravity,
+  Earth past 60,000 km and the Moon turning. All of it is listed under the checks.
+
+<details><summary>Every check against every broken engine</summary>
+
+| Check | Real engine | Euler steps | Flat Moon | Same pull at every height | Lands a step late | Typo in the Moon |
+|---|---|---|---|---|---|---|
+| Lands where the exact math says | pass | fail | fail | fail | fail | pass |
+| Orbit speed stays 1 km up | pass | fail | fail | fail | pass | pass |
+| Comes back around on time | pass | fail | fail | fail | pass | pass |
+| Energy doesn't leak | pass | fail | fail | fail | pass | pass |
+| Equal areas in equal times | pass | fail | fail | pass | pass | pass |
+| Bigger orbits take longer, by the right amount | pass | fail | fail | fail | pass | pass |
+| Escape speed is a hard line | pass | fail | fail | fail | pass | pass |
+| Runs backwards into your hand | pass | fail | pass | pass | pass | pass |
+| It's the real Moon | pass | fail | fail | fail | fail | fail |
+| **Checks failed** | **0 of 9** | **9** | **8** | **7** | **2** | **1** |
+
+What the real engine measured: 1.67 km/s lands 557.98 km away, and the formula says 557.98. A lap
+at orbit speed stays within a millimetre of 1 km up and takes 108.40 minutes, as Kepler says.
+Energy holds to 1 part in 255 billion over ten laps. A ball dropped from 10 m falls at 1.62 m/s²,
+and a lap 50 km up takes 113.0 minutes. All nine take 0.04 seconds of computing in Chrome, and
+0.19 seconds with the processor slowed six times to act like a slow phone.
+
+The lesson's "Break the engine" box makes this same table in your browser, from the same code.
+
+</details>
+
+<details><summary>How it was made, and how to make your own</summary>
+
+- **Who made it:** Claude Opus 5.5 on its highest effort setting, UltraCode off, in one Claude Code session with no helper agents. It built the lesson, checked the numbers, wrote this section and published it.
+- **My prompt** (condensed): "Build an interactive lesson about orbits on the Moon that you can play in the blog itself: throw a ball sideways, faster and faster, until it never lands. Before the controls work, run physics self-checks in the reader's browser and stay locked if any fail. Prove every check can fail with a deliberately broken twin. Verify the 559 km yourself. State the model's limits honestly."
+- **What broke on the way:** the first engine (plain Verlet) was 861 m off near orbit speed. The typo copy first failed four checks for the wrong reason, because the test throws were sized for the real Moon and on a lighter Moon a 2 km/s throw nearly escapes. Testing in a headless browser caught a "NaN days" flight time and a camera that framed everything too low.
+- **Time and cost:** about an hour from the brief to the push, with one engine thrown away. The session doesn't show its own token count from the inside, so there's no cost figure.
+- **Recipe:** plain JavaScript files, no libraries: the engine, the exact formulas, the checks and the page. Each check flies the engine and compares it with something the engine didn't compute: an exact formula, a law that has to hold, or a published number. Then make one broken copy for each mistake you're worried about, and run every check on every copy. A check that no copy can fail gets fixed or cut.
+- **To try it on your own content:** anything that calculates can do this, like a budget sheet, a recipe scaler or a game's damage numbers. Write down what it must get right, test it before anyone touches it, and keep the broken copies so the test can be run again.
 
 </details>
 

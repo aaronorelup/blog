@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Throw a ball on the Moon until it never lands: an orbit lesson that tests itself</title>
+<meta name="description" content="Throw a ball sideways from 1 km above the Moon, faster each time, until it goes into orbit. Before you can throw, the page checks its own physics in your browser, and stays locked if any check fails.">
+<meta name="color-scheme" content="dark light">
+<script>
+  // Day or night before the first paint: ?mode=, else the site's own switch (localStorage 'scene-mode'), else night.
+  (function () {
+    var m = new URLSearchParams(location.search).get('mode');
+    if (m !== 'day' && m !== 'night') { try { m = localStorage.getItem('scene-mode'); } catch (e) { m = null; } }
+    document.documentElement.dataset.mode = m === 'day' ? 'day' : 'night';
+  })();
+</script>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23101220'/%3E%3Ccircle cx='16' cy='20' r='9' fill='%23c9c6bd'/%3E%3Cpath d='M5 15C9 6 23 6 27 15' stroke='%23F0C06A' stroke-width='2.2' fill='none'/%3E%3Ccircle cx='27' cy='15' r='2.4' fill='%23F0C06A'/%3E%3C/svg%3E">
+</head>
+<body>
+<div class="app" id="app" data-gate="testing">
+  <div class="stage" id="stage">
+    <canvas id="sky" role="img" aria-label="The Moon, the thrower 1 km up, and the path of each throw"></canvas>
+    <div class="hud">
+      <button type="button" class="chip checks-chip" id="checksChip" aria-expanded="true" aria-controls="checksSheet"><span class="dot"></span><span id="checksChipText">Testing its physics</span></button>
+      <button type="button" class="chip" id="goalsChip" aria-expanded="false" aria-controls="goalsSheet">Goals <span id="goalsCount">0/6</span></button>
+      <span class="hud-gap"></span>
+      <button type="button" class="chip ghost" id="modeBtn" hidden>Day</button>
+    </div>
+    <div class="readout" id="readout" aria-hidden="true"></div>
+    <p class="sr-only" id="say" aria-live="polite"></p>
+
+    <section class="sheet" id="checksSheet" aria-labelledby="checksTitle">
+      <h1 id="checksTitle">Throw a ball sideways on the Moon, faster each time, until it never lands</h1>
+      <p class="lede">You're 1 km up. Before you can throw, this page tests its own physics engine, right here in your browser. If any check fails, throwing stays locked.</p>
+      <div class="gate-row">
+        <p class="status" id="checksStatus" role="status">Running 9 checks</p>
+        <button type="button" class="pill primary" id="startBtn" disabled>Start throwing</button>
+      </div>
+      <ol class="checks" id="checkList"></ol>
+      <details class="more" id="breakBox">
+        <summary>Break the engine and watch the checks catch it</summary>
+        <p>Each broken engine has one mistake in it. Pick one and the checks run again on it.</p>
+        <label class="field"><span>Engine</span><select id="engineSel"></select></label>
+        <p class="note" id="engineNote"></p>
+        <p><button type="button" class="pill" id="matrixBtn">Run every check on every engine</button></p>
+        <div id="matrix" class="matrix-wrap" hidden></div>
+      </details>
+      <details class="more">
+        <summary>What this lesson leaves out</summary>
+        <ul class="limits">
+          <li><b>Mountains.</b> This Moon is a smooth ball. The real one has peaks almost 11 km above the average ground and basins 9 km below it, so a ball skimming 1 km up would hit a mountain long before it got around.</li>
+          <li><b>Lumpy gravity.</b> The real Moon's mass is lumpy, so low orbits drift. Apollo 16 left a small satellite about 100 km up in 1972 and it crashed 35 days later.</li>
+          <li><b>Earth.</b> Past about 60,000 km, Earth pulls harder than the Moon can hold on to, so the lesson stops there.</li>
+          <li><b>The Moon turning.</b> It turns once a month. In the 1 hour 48 minutes an orbiting ball takes to come back around, you'd have moved about 30 km, so it would miss you.</li>
+          <li><b>Your arm.</b> Orbit speed is about 37 times a 100 mph fastball.</li>
+        </ul>
+        <p class="note">The checks can only test what's written down here. "It's the real Moon" compares the engine with NASA's numbers, but nothing checks the mountains, because the model has none.</p>
+      </details>
+      <p class="foot">The engine, the checks and the exact formulas are plain files you can read: <a href="engine.js" target="_blank" rel="noopener">engine.js</a>, <a href="checks.js" target="_blank" rel="noopener">checks.js</a>, <a href="kepler.js" target="_blank" rel="noopener">kepler.js</a>. Made by Claude Opus 5.5 for <a href="/ledger/three-ai-experiments/" target="_top">Aaron Orelup's blog</a>.</p>
+    </section>
+
+    <section class="sheet goals-sheet" id="goalsSheet" aria-labelledby="goalsTitle" hidden>
+      <h2 id="goalsTitle">Goals</h2>
+      <ol class="goals" id="goalList"></ol>
+      <p class="record" id="record"></p>
+      <div class="gate-row"><button type="button" class="pill primary" id="goalsDone">Back to throwing</button></div>
+    </section>
+  </div>
+
+  <fieldset class="dock" id="dock" disabled>
+    <legend class="sr-only">Throw</legend>
+    <div class="speed-row">
+      <button type="button" class="step" id="minus" aria-label="Slower">&minus;</button>
+      <div class="dial" id="dial" role="group" aria-label="Throw speed in km/s. Pick a digit to change it with minus and plus"></div>
+      <button type="button" class="step" id="plus" aria-label="Faster">+</button>
+      <span class="unit">km/s</span>
+      <button type="button" class="throw" id="throwBtn">Throw</button>
+    </div>
+    <input type="range" id="slider" min="0" max="300" step="1" value="50" aria-label="Throw speed, coarse">
+    <p class="hints" id="hints"></p>
+    <p class="lock" id="lockNote">Throwing turns on when every check passes.</p>
+  </fieldset>
+</div>
+<noscript><p class="noscript">This lesson needs JavaScript: it runs its physics checks and its throws in your browser.</p></noscript>
+<script type="module" src="lesson.js"></script>
+</body>
+</html>

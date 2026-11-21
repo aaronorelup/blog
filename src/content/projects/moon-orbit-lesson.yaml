@@ -1,0 +1,15 @@
+name: "The Moon orbit lesson that tests itself"
+line: "Throw a ball sideways from 1 km above the Moon, faster each time, until it never lands. Nine physics checks run in your browser first and lock it if one fails."
+section: play
+state: finished
+since: "2026-11"
+needs: "Any browser, on a phone or a computer"
+image:
+  src: /media/projects/moon-orbit-lesson.webp
+  alt: "The orbit lesson: a ball circling just above the Moon, with a strip below plotting its height above the ground"
+main:
+  label: "Play the lesson"
+  href: "/labs/moon-orbit/"
+posts: [three-ai-experiments]
+order: 75
+credit: "Built by Claude Opus 5.5, after a first version by Gages, my Grok Bot agent."
