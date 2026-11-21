@@ -1,14 +1,15 @@
 name: "A training run you can hear"
 line: "A small neural network learns old fiddle tunes while you listen. Every note is its own pick at that moment, and at 20:00 its learning rate is pushed too far."
-section: watch
+section: play
 state: finished
 since: "2026-11"
+needs: "Any browser, with the sound on"
 image:
   src: /media/projects/training-run-you-can-hear.webp
   alt: "The model's bets on each note as blue bands, a red line at 20:00, then the bands breaking up into scattered single dots"
 main:
-  label: "Listen to it"
-  href: "/ledger/three-ai-experiments/"
+  label: "Train it and listen"
+  href: "/labs/training-run/"
 posts: [three-ai-experiments]
-order: 65
+order: 77
 credit: "Built by Claude Fable 5.2, after a first version by Gages, my Grok Bot agent."

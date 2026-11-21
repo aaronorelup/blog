@@ -31,6 +31,7 @@ the code itself, so no Claude, Opus or Fable was used and there was no bill.
 - **The same training run by Claude Fable 5.2, with a model that learns.** A small network learns
   609 old fiddle tunes and improvises while it trains. It gets 56% of the next notes right on
   tunes it never saw, bends for six and a half minutes after 20:00, then falls apart at 26:32.
+  Your browser can redo the whole run and check it.
 - **A lesson that has to prove itself.** An orbit lesson set on the Moon runs seven physics checks
   in your browser and stays locked until they pass. A deliberately broken copy showed two of the
   first checks could never fail.
@@ -119,6 +120,11 @@ minutes, then falls apart at 26:32.
 <figcaption><b>Four endings of one training run, 30:00 in 90 seconds</b><span class="ao-meta">top: the model's bets on each note (blue) and the note it picked (orange) · bottom: its error on tunes it never saw · red line: 20:00 · the first 60 seconds are the same in all four, so jump to 20:00 and switch</span></figcaption>
 </ao-listen>
 
+Or train it yourself. This page redoes the whole run in your browser in about a minute, plays it
+while it trains, and lets you choose what happens at 20:00.
+
+<ao-game src="/labs/training-run/" poster="/media/three-ai-experiments/fable-training-run-lab-poster.webp" size="about 120 KB" label="A training run you can hear, trained in your browser" aspect="1/1" note="Press Play inside it, with the sound on. It trains for about a minute while it plays. Then pick another push at 20:00."><a href="/labs/training-run/"><img src="/media/three-ai-experiments/fable-training-run-lab-poster.webp" alt="The training page after a run: the model's bets across the whole programme with a red line at 20:00, the error line shooting up near the end, and controls for the step size at 20:00" loading="lazy"></a></ao-game>
+
 - **Every sound is the model at that moment.** At each note it gives every possible next note a
   probability, picks one, then trains some more. The pick is plucked on a music box, harder the
   surer it was. Under it a soft pad plays every note at once, each as loud as its probability. So
@@ -145,6 +151,11 @@ minutes, then falls apart at 26:32.
 - **Pushed all at once, it ends differently.** Held at 3 times the limit, it's worse than guessing
   for 6 notes and then heals itself. Held at 10 times, it's gone after one step. Both are clips
   above.
+- **Your browser can redo the run and check it.** The page above trains the same model from the
+  same starting point and compares every number with the published run. In Chrome all 6,144
+  training steps and all 432 notes came out identical, digit for digit, so you don't have to take
+  the numbers on trust. It was only checked in Chrome. If your browser disagrees, the page shows
+  the first number that differs.
 - **What's real and what's designed.** Real: every note, how hard it's plucked, the pad, the
   error, the limit and the collapse. Fable didn't place one of them. Designed: the music-box
   sound, the tempo, how the training steps are spread over the clock, and the choice to push at
@@ -225,10 +236,10 @@ all to D and dropping repeats.
 
 - **Who made it:** Claude Fable 5.2 on effort max, UltraCode off, in one Claude Code session with no helper agents. It built and ran the experiment, made the sound and the pictures, wrote this section and published it.
 - **My prompt** (condensed): "Make a piece where a real optimisation run is audible. Every moment you hear is the model's actual current state, not a composed imitation. The programme is 30:00 compressed to about 90 seconds, and it breaks at 20:00 because something real in the training goes wrong, like the learning rate pushed past its stability limit. Gages's version couldn't play music it was never shown, and it was a mixer, not a model. Close those gaps, keep the break real and auditable, and say plainly what is real and what is designed."
-- **What broke on the way:** the first tune filter threw out 893 of 1,246 tunes because it misread pickup notes. A bug in a test script made the model look stuck on one note when it wasn't. The first plan for 20:00 was one jump to 3 times the limit, and the model just healed, so the push became a climb.
-- **Time and cost:** about an hour and a half from the brief to the push. The run itself is 6,144 training steps and takes about 25 seconds on one processor core. Measuring the sharpness at all 432 notes takes 7 minutes. The session can't see its own token count, so there's no cost figure.
+- **What broke on the way:** the first tune filter threw out 893 of 1,246 tunes because it misread pickup notes. A bug in a test script made the model look stuck on one note when it wasn't. The first plan for 20:00 was one jump to 3 times the limit, and the model just healed, so the push became a climb. The browser page stuttered on a slow device, stopping at every bar, until it was made to wait for four bars at a time.
+- **Time and cost:** about an hour and three quarters from the brief to the last push. The run, the sound and this section went up after an hour and a quarter, and the page you can play took the rest. The run itself is 6,144 training steps and takes about 25 seconds on one processor core, or about a minute in a browser with the sound. Measuring the sharpness at all 432 notes takes 7 minutes. The session can't see its own token count, so there's no cost figure.
 - **Recipe:** get melodies as notes (music21, a Python library, reads ABC, MIDI and MusicXML files). Put them on a grid of eighth notes, move them all to one key and hold some out. Train a small next-note network with plain gradient descent. At every note, save its probabilities and the note it picks. To break it, measure the sharpness, set the learning rate to 2 divided by it, and keep raising it. Then play the picks as plucks and the probabilities as a pad.
-- **To try it on your own content:** swap in any folder of tunes in one time signature, like hymns, game music or your own songs. The trainer and the synth are about 600 lines of plain JavaScript with no libraries, and ffmpeg makes the MP3.
+- **To try it on your own content:** swap in any folder of tunes in one time signature, like hymns, game music or your own songs. The trainer, the synth and the page are about 1,300 lines of plain JavaScript with no libraries, and every file is linked at the bottom of the page you can play above. ffmpeg makes the MP3s.
 
 </details>
 
