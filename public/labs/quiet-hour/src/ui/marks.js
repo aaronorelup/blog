@@ -36,14 +36,15 @@ const PAIR = { 'tears-off': 'tears-on' };
 const SKIP = new Set(['seconds', 'recorded', 'waitedNotes', 'performed', 'gripping', 'handsIn', 'latched']);
 const FIELD = { ln32: 'ln 32', tenLn32: '10 x ln 32', limit20: 'limit at 20:00', share20: 'share at 20:00', bestSoFar: 'best error so far',
   lrBefore: 'lr before', err6: 'error of 6 notes', meanVel6: 'mean velocity of 6', median3: 'median of 3 sharp', limitNow: 'edge now',
-  ratioNow: 'step / edge', massInKey: 'mass in key', share: 'heldAcc', err: 'held', lr287: 'lr before 20:00', lr288: 'lr at 20:00', times: 'times the limit' };
+  ratioNow: 'step / edge', massInKey: 'mass in key', share: 'heldAcc', err: 'held', lr287: 'lr before 20:00', best20: 'best error by 20:00', errLast6: 'held, last 6 notes', lrLast7: 'lr, last 7 notes', g: 'tear g', lr288: 'lr at 20:00', times: 'times the limit' };
 export function whyText(e) {
+  if (e.kind === 'lid' && has(e.values?.err)) return `A fixed moment; open or shut by the hands' switch: held ${num(e.values.err)}, ln 32 ${num(Math.log(32))}`;
   if (e.format) return 'A fixed moment, the same in every ending.';
   const out = [];
   for (const [k, v] of Object.entries(e.values || {})) {
     if (SKIP.has(k)) continue;
     let t = null;
-    if (Array.isArray(v)) { const xs = v.map(num).filter((x) => x !== null); if (xs.length) t = xs.length > 2 ? `${xs[0]} … ${xs[xs.length - 1]} (${xs.length} notes)` : xs.join(', '); }
+    if (Array.isArray(v)) { const xs = v.map(num).filter((x) => x !== null); if (xs.length) t = xs.length > 2 ? `${xs[0]} to ${xs[xs.length - 1]}` : xs.join(', '); }
     else t = typeof v === 'number' ? num(v) : null;
     if (t === null) continue;
     out.push(`${FIELD[k] || k} ${t}`);

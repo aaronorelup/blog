@@ -49,7 +49,7 @@ export function loadFonts() {
   return fontsLoaded;
 }
 
-export async function createFilm({ canvas, width = 1280, height = 720, ending = 'main', quality = 'final' }) {
+export async function createFilm({ canvas, width = 1280, height = 720, ending = 'main', quality = 'final', xrayText = null }) {
   if (!ENDINGS.includes(ending)) throw new Error(`unknown ending ${ending}`);
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: quality !== 'draft', preserveDrawingBuffer: false, powerPreference: 'high-performance' });
   renderer.setPixelRatio(1);
@@ -71,7 +71,10 @@ export async function createFilm({ canvas, width = 1280, height = 720, ending = 
   async function setEnding(name) {
     if (!ENDINGS.includes(name)) throw new Error(`unknown ending ${name}`);
     const e = await loadEngine(name, new URL('./', here).href);
-    engine = e; programme = createProgramme({ engine }); subs = createSubtitles(engine);
+    engine = e; subs = createSubtitles(engine);
+    // xrayText (the lab page only): words the x-ray labels' values for a reader. The programme reads nothing else
+    // from the engine, and without it (the film, ?render=1) it gets the engine itself, as before.
+    programme = createProgramme({ engine: xrayText ? { gauges: (f) => e.gauges(f).map((g) => ({ ...g, value: xrayText(g.value) })) } : engine });
     current = name; film.engine = engine;
     return engine;
   }

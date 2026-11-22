@@ -15,7 +15,7 @@
 
 import { createFilm, ENDINGS } from '../film.js';
 import { FPS, PROGRAMME_FRAMES, TOTAL_FRAMES, clockText } from './time.js';
-import { gaugesAt, formatValue, formatReads } from './ui/gauges.js';
+import { gaugesAt, formatValue, formatReads, readable } from './ui/gauges.js';
 import { marksFor, groupMarks } from './ui/marks.js';
 
 const END_S = TOTAL_FRAMES / FPS;                        // 100 s
@@ -112,7 +112,7 @@ export function startPlayer() {
     const canvas = document.createElement('canvas');
     canvas.setAttribute('role', 'img');
     canvas.setAttribute('aria-label', 'The Quiet Hour, drawn live');
-    const film = await createFilm({ canvas, width: T.w, height: T.h, ending: st.ending, quality: T.quality });
+    const film = await createFilm({ canvas, width: T.w, height: T.h, ending: st.ending, quality: T.quality, xrayText: readable });
     await film.ready;
     // the ending may have changed while this one was being built
     while (film.ending !== st.ending) await film.setEnding(st.ending);
@@ -275,8 +275,10 @@ export function startPlayer() {
     st.audio = { ending, buffer: null, state: 'loading', token, promise: null };
     st.msgs.audio = 'Loading the sound.'; showStatus();
     const url = new URL(AUDIO_NAME(ending), new URL(audioBase, location.href)).href;
+    let tail = 0;
     st.audio.promise = fetch(url)
       .then((r) => { if (!r.ok) throw new Error('missing'); return r.arrayBuffer(); })
+      .then((data) => { tail = mp3TailPadding(data); return data; })
       .then((data) => new Promise((resolve, reject) => {
         // the callback form works in old Safari too; the promise form everywhere else
         const p = st.ac.decodeAudioData(data, resolve, reject);
@@ -284,13 +286,13 @@ export function startPlayer() {
       }))
       .then((buffer) => {
         if (st.audio.token !== token) return null;
-        st.audio.buffer = buffer; st.audio.state = 'ready'; st.msgs.audio = ''; showStatus();
+        st.audio.buffer = buffer; st.audio.lead = leadIn(buffer, tail); st.audio.state = 'ready'; st.msgs.audio = ''; showStatus();
         return buffer;
       })
       .catch(() => {
         if (st.audio.token !== token) return null;
         st.audio.state = 'failed';
-        st.msgs.audio = 'The soundtrack is not here yet, so the film plays silently.'; showStatus();
+        st.msgs.audio = 'The sound could not be loaded, so the film plays silently.'; showStatus();
         return null;
       });
     return st.audio.promise;
@@ -309,11 +311,12 @@ export function startPlayer() {
 
   function startSource(t) {
     stopSource();
-    if (!st.ac || !st.audio.buffer || t >= st.audio.buffer.duration) { st.mode = 'raf'; return; }
+    const lead = st.audio.lead || 0;
+    if (!st.ac || !st.audio.buffer || t + lead >= st.audio.buffer.duration) { st.mode = 'raf'; return; }
     const src = st.ac.createBufferSource();
     src.buffer = st.audio.buffer;
     src.connect(st.gain);
-    src.start(0, t);
+    src.start(0, t + lead);
     st.src = src; st.srcStart = st.ac.currentTime; st.srcOffset = t; st.mode = 'audio';
   }
 
@@ -402,10 +405,14 @@ export function startPlayer() {
       const li = document.createElement('li');
       const b = document.createElement('b'); b.textContent = m.clock;
       li.append(b, ' ', m.label);
+      if (m.why) { const w = document.createElement('span'); w.className = 'why'; w.textContent = m.why; li.appendChild(w); }
       ul.appendChild(li);
     }
     ui.tip.appendChild(ul);
     ui.tip.hidden = false;
+    // the tip opens upward over the picture: if the values would push it past the top, show the events alone
+    const room = ui.scrub.getBoundingClientRect().top - ui.theatre.getBoundingClientRect().top + 50;
+    if (ui.tip.offsetHeight > room) for (const w of ui.tip.querySelectorAll('.why')) w.hidden = true;
     const sw = ui.scrub.clientWidth, tw = ui.tip.offsetWidth;
     const x = el.offsetLeft + ui.marks.offsetLeft;
     ui.tip.style.left = `${Math.max(0, Math.min(sw - tw, x - tw / 2))}px`;
@@ -426,14 +433,20 @@ export function startPlayer() {
         const val = document.createElement('span'); val.className = 'val';
         const reads = document.createElement('span'); reads.className = 'reads';
         li.append(name, val, reads);
-        if (g.rule) { const rule = document.createElement('span'); rule.className = 'rule'; rule.textContent = `rule: ${g.rule}`; li.appendChild(rule); }
+        const rule = document.createElement('span'); rule.className = 'rule'; li.appendChild(rule);
         ui.gauges.appendChild(li);
-        row = { val, reads, v: null, r: null };
+        row = { val, reads, rule, v: null, r: null, u: null };
         st.gaugeRows.set(g.id, row);
       }
       const v = formatValue(g.value), r = formatReads(g.reads);
       if (v !== row.v) { row.val.textContent = v; row.v = v; }
-      if (r !== row.r) { row.reads.textContent = r ? `log: ${r}` : ''; row.r = r; }
+      if (r !== row.r) {
+        // the clocks and the crank read the frame, not the log (bible 9): say so rather than show nothing
+        row.reads.textContent = r ? `log: ${r}` : (g.id === 'subtitle' ? '' : 'log: none, it keeps time');
+        row.r = r;
+      }
+      const u = g.rule ? `rule: ${g.rule}` : '';                // the maker's line changes its rule with the line
+      if (u !== row.u) { row.rule.textContent = u; row.rule.hidden = !u; row.u = u; }
     }
   }
   function setXray(on) {
@@ -538,6 +551,38 @@ function hasWebGL2() {
     if (lose) lose.loseContext();
     return true;
   } catch { return false; }
+}
+
+/**
+ * The soundtrack is exactly 100 s (4,800,000 samples at 48 kHz). An mp3 starts with the encoder's delay and ends with
+ * padding; Chromium and Firefox cut both (the file's LAME/Info tag says how much), so the buffer is 100 s and starts
+ * at 0. A browser that keeps them gives a longer buffer: the sound then starts `lead` seconds in, where lead is the
+ * extra length less the padding at the end (read from the tag; 0 if there is none). Never more than 0.2 s.
+ */
+function leadIn(buffer, tailSamples) {
+  const extra = buffer.duration - END_S;
+  if (!(extra > 0.0005) || extra > 0.2) return 0;
+  return Math.max(0, extra - tailSamples / buffer.sampleRate);
+}
+
+/** The end padding the encoder wrote in the mp3's LAME/Info tag, in samples (less the decoder's 529), or 0. */
+function mp3TailPadding(data) {
+  try {
+    const b = new Uint8Array(data, 0, Math.min(data.byteLength, 16384));
+    let i = 0;
+    if (b[0] === 0x49 && b[1] === 0x44 && b[2] === 0x33) i = 10 + ((b[6] << 21) | (b[7] << 14) | (b[8] << 7) | b[9]);  // ID3v2
+    for (let j = i; j < b.length - 160; j++) {
+      const tag = String.fromCharCode(b[j], b[j + 1], b[j + 2], b[j + 3]);
+      if (tag !== 'Info' && tag !== 'Xing') continue;
+      const flags = b[j + 7];
+      let k = j + 8 + (flags & 1 ? 4 : 0) + (flags & 2 ? 4 : 0) + (flags & 4 ? 100 : 0) + (flags & 8 ? 4 : 0);
+      k += 21;                                         // encoder string (9), revision, lowpass, replay gain (8), flags, bitrate
+      if (k + 2 >= b.length) return 0;
+      const pad = ((b[k + 1] & 0x0f) << 8) | b[k + 2];
+      return Math.max(0, pad - 529);
+    }
+  } catch { /* no tag: no padding known */ }
+  return 0;
 }
 
 /** The ?audio= base, only if it stays on this site (no request leaves the site). */

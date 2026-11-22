@@ -126,6 +126,8 @@ html[data-embed] .head { display: none; }
 .tip b { color: var(--head); font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
 .tip ul { margin: 0; padding: 0; list-style: none; }
 .tip li + li { margin-top: 3px; }
+.tip .why { display: block; margin: 1px 0 0; font: 11px/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--soft); }
+.tip .why[hidden] { display: none; }
 
 .row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-top: 4px; }
 .pill {
