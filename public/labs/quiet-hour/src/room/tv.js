@@ -53,7 +53,7 @@ function walnutCanvas() {
       const t = v * 22 + warp;
       const f = t - Math.floor(t);
       const line = Math.pow(Math.abs(f - 0.5) * 2, 6);                 // dark late-wood lines
-      const pore = 1 - 0.3 * Math.max(0, hash01(SEED.grain, x >> 1, y, 0) - 0.82) / 0.18;              // flecks of open pore
+      const pore = 1 - 0.14 * Math.max(0, hash01(SEED.grain, x >> 2, y >> 1, 0) - 0.8) / 0.2;   // open pores, long              // flecks of open pore
       const band = 0.82 + 0.36 * n1(u * 8 + 3.7, v * 2 + 1.3);         // lighter and darker boards
       const k = band * (1 - 0.42 * line) * pore;
       // walnut: warm brown with a little purple-grey in the dark lines
@@ -182,7 +182,7 @@ export function createTV({ THREE, programmeTexture, anchors }) {
 
   const walnut = litByTube(THREE, new THREE.MeshLambertMaterial({ map: walnutTex, color: 0xffffff }), glow, { sheen: 0.025 });
   const darkMat = litByTube(THREE, new THREE.MeshLambertMaterial({ color: 0x1d1815 }), glow, { sheen: 0.09 });
-  const clothMat = litByTube(THREE, new THREE.MeshLambertMaterial({ map: clothTex }), glow, { sheen: 0.0, spill: 2.5, wrap: 0.6 });
+  const clothMat = litByTube(THREE, new THREE.MeshLambertMaterial({ map: clothTex }), glow, { sheen: 0.0, spill: 1.5, wrap: 0.6 });
   const brass = litByTube(THREE, new THREE.MeshLambertMaterial({ color: 0xb08a4a }), glow, { sheen: 0.22 });
   const flatMat = new THREE.MeshBasicMaterial({ vertexColors: true });
 

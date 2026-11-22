@@ -17,6 +17,7 @@
 // Everything that moves reads S (or the shot). No state is carried between frames.
 
 import * as THREE from 'three';
+import * as RULES from '../rules.js';
 import { ROOM, WIDE_A, REVERSE } from '../shots.js';
 import { createTV } from './tv.js';
 import { createShell } from './shell.js';
@@ -26,12 +27,30 @@ import { createDust } from './dust.js';
 
 export const LIGHT = Object.freeze({
   spotGain: 14.0,          // spot intensity (cd) per unit of the canvas's mean luminance
-  spotDecay: 1.35,        // a touch gentler than physical so the far wall holds the chair's shadow
-  spotAngle: 1.42,        // rad: the beam's half-angle (the tube's spread), penumbra below
+  spotDecay: 1.5,          // a touch gentler than physical so the far wall holds the chair's shadow
+  spotAngle: 0.9,          // rad: the beam's half-angle; with the full penumbra it is a pool with a long soft falloff
   spotPenumbra: 1.0,
-  fillSky: 0x7a8fb0, fillGround: 0x26252a, fillIntensity: 1.05,   // the static night fill
+  spotAim: [-0.42, 0.45, -0.5],   // the pool's centre: the empty chair's seat (ROOM.chair)
+  // the static night fill: moonlight from the bay-window side (+z). It lies on the back wall, the floor and the
+  // chair's back, and leaves the front wall (the REVERSE's wall) to the television
+  fillSky: 0x7a8fb0, fillGround: 0x2a2a30, fillIntensity: 0.6, fillFrom: [0, 0.45, 0.89],
   dustGain: 28.0,
+  // the chair's shadow. S.shadowRadius runs from its floor (the box is certain: a razor) to its ceiling (the box
+  // knows nothing: very soft). The room turns that into the blur radius of a variance shadow map, in texels of
+  // the 1024 map (one texel is about 0.8 cm on the wall behind the chair)
+  shadowMap: 1024, shadowFov: 80, shadowBlurMin: 0.75, shadowBlurMax: 50, shadowBlurTaps: 25,
 });
+
+// The range of the engine's shadow signal, read from its own rule (its value when the box is certain and when
+// it knows nothing). The room never applies a rule to a frame: it only needs to know where S.shadowRadius's floor and
+// ceiling are, so that the softest shadow is always the softest the room can draw. Bible v1.2: 1 to 15.
+const SHADOW_SIGNAL = (() => {
+  const f = RULES.shadowRadius;
+  const lo = typeof f === 'function' ? f(0) : NaN, hi = typeof f === 'function' ? f(1) : NaN;
+  return Number.isFinite(lo) && Number.isFinite(hi) && hi > lo ? [lo, hi] : [1, 15];
+})();
+
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 
 export function createRoom({ renderer, programmeCanvas, width, height, quality = 'final' }) {
   const scene = new THREE.Scene();
@@ -39,7 +58,7 @@ export function createRoom({ renderer, programmeCanvas, width, height, quality =
   const camera = new THREE.PerspectiveCamera(40, width / height, 0.03, 40);
   camera.userData.heightPx = height;
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFShadowMap;                    // PCF honours shadow.radius
+  renderer.shadowMap.type = THREE.VSMShadowMap;                    // blurred in map space: a wide, smooth penumbra
 
   // ---- the programme texture (shared by the tube, the tea's reflection) ----
   const S0 = ROOM.screen;
@@ -61,17 +80,19 @@ export function createRoom({ renderer, programmeCanvas, width, height, quality =
   scene.add(dust.points);
 
   // ---- light: the screen spot (the only shadow caster) and the static night fill ----
-  scene.add(new THREE.HemisphereLight(LIGHT.fillSky, LIGHT.fillGround, LIGHT.fillIntensity));
+  const hemi = new THREE.HemisphereLight(LIGHT.fillSky, LIGHT.fillGround, LIGHT.fillIntensity);
+  hemi.position.set(...LIGHT.fillFrom);                           // the direction the sky colour comes from
+  scene.add(hemi);
   const spot = new THREE.SpotLight(0xffffff, 0, 14, LIGHT.spotAngle, LIGHT.spotPenumbra, LIGHT.spotDecay);
   spot.position.set(S0.x, S0.y, S0.z + 0.04);
-  spot.target.position.set(S0.x - 0.15, S0.y - 0.45, S0.z + 3);
+  spot.target.position.set(...LIGHT.spotAim);
   scene.add(spot); scene.add(spot.target);
   spot.castShadow = true;
-  const sm = 1024;                                                 // the unit of S.shadowRadius: 1 px = ~1 cm on the far wall
-  spot.shadow.mapSize.set(sm, sm);
-  spot.shadow.camera.near = 0.12; spot.shadow.camera.far = 7.5;
-  spot.shadow.bias = -0.0004; spot.shadow.normalBias = 0.012;
-  spot.shadow.focus = 0.55;                                       // the shadow map covers the beam's core (~90 deg)
+  spot.shadow.mapSize.set(LIGHT.shadowMap, LIGHT.shadowMap);
+  spot.shadow.camera.near = 0.6; spot.shadow.camera.far = 7.5;    // nothing that casts is nearer than the table
+  spot.shadow.bias = -0.0006; spot.shadow.normalBias = 0.01;
+  spot.shadow.focus = (LIGHT.shadowFov * Math.PI / 180) / (2 * LIGHT.spotAngle);   // shadow camera fov = 2 angle focus
+  spot.shadow.blurSamples = LIGHT.shadowBlurTaps;
 
   // canvas average for the spot (a 40x30 downsample, then a plain mean)
   const avgCanvas = document.createElement('canvas'); avgCanvas.width = 40; avgCanvas.height = 30;
@@ -96,7 +117,9 @@ export function createRoom({ renderer, programmeCanvas, width, height, quality =
     const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b, m = Math.max(r, g, b, 1e-4);
     spot.color.setRGB(r / m, g / m, b / m, THREE.SRGBColorSpace);
     spot.intensity = LIGHT.spotGain * lum;
-    spot.shadow.radius = S.shadowRadius;                           // 1 + 5 H / ln 32
+    // the shadow's edge: S.shadowRadius, from its floor (a razor) to its ceiling (very soft)
+    const soft = clamp((S.shadowRadius - SHADOW_SIGNAL[0]) / (SHADOW_SIGNAL[1] - SHADOW_SIGNAL[0]), 0, 1);
+    spot.shadow.radius = LIGHT.shadowBlurMin + soft * LIGHT.shadowBlurMax;
     lightCol.copy(spot.color).multiplyScalar(lum);
 
     shell.update(S);

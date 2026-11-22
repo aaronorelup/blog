@@ -53,10 +53,10 @@ export function createScreenMaterial({ THREE, programmeTexture }) {
         // slope instead: red is pushed right and blue left by about dx of the picture, as a first-order shift
         vec3 col = texture2D(map, uv).rgb;
         float pxPerUv = 1.0 / max(abs(dFdx(uv.x)), 1e-5);
-        float sh = min(dx.x * pxPerUv, 2.0);                             // the bleed in output pixels (<= 2)
+        float sh = min(dx.x * pxPerUv, 1.2);                             // the bleed in output pixels (<= 1.2)
         vec3 gx = dFdx(col);
-        col.r = clamp(col.r - gx.r * sh, 0.0, 1.0);
-        col.b = clamp(col.b + gx.b * sh * 0.7, 0.0, 1.0);
+        col.r = clamp(col.r - gx.r * sh * 0.45, 0.0, 1.0);
+        col.b = clamp(col.b + gx.b * sh * 0.3, 0.0, 1.0);
         // the phosphor's soft bloom (an explicit coarse level: one cheap tap), mixed so the mean stays the mean
         vec3 bloom = textureLod(map, clamp(uv, 0.0, 1.0), 5.0).rgb;
         col = mix(col, max(col, bloom), 0.10);
@@ -95,6 +95,10 @@ export function createScreenMaterial({ THREE, programmeTexture }) {
         float dark = 1.0 - clamp(luma(col) * 1.6, 0.0, 1.0);
         col += refl * uGlass * (0.25 + 0.75 * dark * dark) * (0.55 + 0.45 * face);
 
+        // the film's vignette and grain (src/post.js), but not its curve: the picture's colours stay exact
+        #ifdef TONE_MAPPING
+        col = qhFilm(col);
+        #endif
         gl_FragColor = vec4(col, 1.0);
         #include <colorspace_fragment>
       }`,

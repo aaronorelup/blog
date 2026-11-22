@@ -14,14 +14,15 @@ The programme is frames 0 to 2159, the coda (black) frames 2160 to 2399; the out
 
 Layers (film bible section 5):
   TV bus, mono, through the speaker chain: the programme (through a static compressor, and dipped under the voice as
-    a broadcast mix would), the maker's voice, the bench foley (punch ticks, ratchet, chalk, dial taps, crank creak)
-    and, in the coda, the last bet held as a pad.
+    a broadcast mix would: 9 dB, or more where that is needed to keep the voice clear of it), the maker's voice, the
+    bench foley (punch ticks, a ratchet click on every knob turn, the chalk tick, dial taps, crank creak) and, in the
+    coda, the last bet held as a pad.
   Room bus, stereo, not through the speaker: house hum (follows the cue's hum flag), a wall-clock tick on every bar
     line, a faint tube whine, tear crackle, spoon chatter.
 Mix: one fixed master gain, the same for every ending (so the first 20:00 are the same bytes in all four), and an
-offline peak limiter at -1.5 dBTP. The build FAILS (and renames its output .FAILED.wav) if true peak is above -1 dBTP,
-short-term loudness is above -13 LUFS anywhere, integrated loudness is outside -18 to -15 LUFS, or the length is not
-4,800,000 samples.
+offline peak limiter. The build FAILS (and renames its output .FAILED.wav) if true peak is above -1 dBTP, short-term
+loudness is above -13 LUFS anywhere, integrated loudness is outside -18 to -15 LUFS, any line of the voice is less
+than 4 LU over everything under it, or the length is not 4,800,000 samples.
 numpy and scipy only. Every random number is drawn from a generator seeded by (SEED, layer, index).
 """
 import argparse
@@ -63,9 +64,14 @@ COMP_WINDOW_BLOCKS = 100   # 1 s detector window, in 10 ms blocks
 COMP_ATTACK_S = 0.03
 COMP_RELEASE_S = 0.4
 VOICE_DB = 1.5             # gain on the frozen voice (its speech sits at -20 dBFS RMS)
-DUCK_DB = 9.0              # the programme dips this much under the maker's voice, as a broadcast mix would
-DUCK_ATTACK_S = 0.08
-DUCK_RELEASE_S = 0.5
+DUCK_DB = 9.0              # the programme dips at least this much under the maker's voice, as a broadcast mix would,
+VOICE_OVER_BED_LU = 4.0    # and by as much more as keeps its level (below) this far under the line's own level,
+DUCK_MAX_DB = 24.0         # up to this much
+DUCK_PRE_S = 0.12          # the dip is in place when a line starts: it comes down over this long before it,
+DUCK_TAIL_S = 0.10         # starts back this long before the frozen take ends (its last 150 ms are silence)
+DUCK_RELEASE_S = 0.30      # and is back up this long after that
+BED_HOLD_S = 1.0           # the programme's level for the dip: 10 ms RMS, rising at once, falling with this time constant
+VOICE_MARGIN_MIN_LU = 4.0  # the build fails if a line of the voice is less than this over everything under it
 MASTER_GAIN_DB = -3.7      # one fixed master gain for every ending (a per-ending normaliser would let the end of
                            # the log change the level of the opening); chosen so all four meet the caps
 INTEGRATED_RANGE = (-18.0, -15.0)   # 'about -16 LUFS integrated': the short-term cap binds first, so it lands near -17
@@ -114,7 +120,6 @@ def load_cues(path):
     cues = {
         'pickKind': [str(k) for k in col('pickKind')],
         'p': [float(v) if num(v) else None for v in col('pickP')],
-        'stepChanged': [bool(v) for v in col('stepChanged')],
         'hum': [bool(v) for v in col('humOn')],
         'tear': [float(v) if num(v) else 0.0 for v in col('tear')],
         'spoon': [bool(v) for v in col('spoonChatter')],
@@ -124,7 +129,7 @@ def load_cues(path):
                             for l in c['lines']), key=lambda l: l['frame'])
     cues['knobTurns'] = [{'frame': int(t['frame']), 'frames': int(t['frames']), 'note': int(t['note'])} for t in c['knobTurns']]
     cues['taps'] = sorted(int(f) for t in c['dialTaps'] if t.get('performed') for f in t['contacts'])
-    cues['chalk'] = {'frame': int(c['chalk']['frame']), 'frames': int(c['chalk']['frames'])}
+    cues['chalk'] = {'frame': int(c['chalk']['frame']), 'frames': int(c['chalk']['tickFrames'])}   # the hand's tick
     bet = c['coda']['bet']
     if len(bet) < SYNTH['P']:
         raise SystemExit('cue file has no coda bet')
@@ -217,23 +222,69 @@ def held_pad(bet, start, n_hold_fade, n_ring, n_decay):
     return x * env * SYNTH['master']
 
 
-def duck_gain(vo):
-    """The programme's own mix dips under the presenter: DUCK_DB down wherever the voice (10 ms RMS) is above -50
-    dBFS, with attack and release smoothing. Keyed only by the voice signal, which the cues placed."""
-    blk = SR // 100
-    m = len(vo) // blk
-    lvl = 10 * np.log10((vo[:m * blk].reshape(m, blk) ** 2).mean(1) + 1e-12)
-    tgt = np.where(lvl > -50, DUCK_DB, 0.0)
-    a_at = np.exp(-1 / (DUCK_ATTACK_S * 100))
-    a_re = np.exp(-1 / (DUCK_RELEASE_S * 100))
-    sm = np.empty(m)
-    st = 0.0
+def bed_level(bed_st):
+    """The programme's level as the room hears it, for the dip under the voice: K-weighted power of both channels in
+    1 ms blocks, a 10 ms mean, rising at once and falling slowly (BED_HOLD_S). Causal: block k holds nothing that
+    sounds after it, so what happens after 20:00 cannot reach back before it."""
+    z = bs1770.kweight(bed_st)
+    p = (z * z).sum(axis=1)
+    blk = SR // 1000
+    m = len(p) // blk
+    pb = p[:m * blk].reshape(m, blk).mean(axis=1)
+    c = np.concatenate([[0.0], np.cumsum(pb)])
+    idx = np.arange(m)
+    lo = np.maximum(0, idx - 9)
+    p10 = (c[idx + 1] - c[lo]) / (idx + 1 - lo)
+    fall = np.exp(-1.0 / (BED_HOLD_S * 1000))
+    env = np.empty(m)
+    e = 0.0
     for i in range(m):
-        a = a_at if tgt[i] > st else a_re
-        st = a * st + (1 - a) * tgt[i]
-        sm[i] = st
-    g_db = np.interp(np.arange(len(vo)), np.arange(m) * blk + blk / 2, -sm)
-    return 10 ** (g_db / 20)
+        e = max(p10[i], e * fall)
+        env[i] = e
+    return env
+
+
+def voice_dip(spans, voice_st, env):
+    """How far the programme dips under the maker's voice, in dB per sample. Under a line it dips DUCK_DB, or as far
+    as it takes to hold its level (bed_level, as known 1 ms earlier) VOICE_OVER_BED_LU under that line's own
+    K-weighted level, up to DUCK_MAX_DB. The dip comes down before the line starts and goes back up after it ends.
+    Keyed only by where the cues put the lines, the frozen takes and the programme so far."""
+    blk = SR // 1000
+    zv = bs1770.kweight(voice_st)
+    cv = np.concatenate([[0.0], np.cumsum((zv * zv).sum(axis=1))])
+    known = np.concatenate([[0.0], env[:-1]])
+    dip = np.zeros(N)
+    for a, b in spans:
+        allowed = (cv[b] - cv[a]) / (b - a) / 10 ** (VOICE_OVER_BED_LU / 10)
+        a0 = max(0, a - int(DUCK_PRE_S * SR))
+        b1 = max(a, b - int(DUCK_TAIL_S * SR))
+        b2 = min(N, b1 + int(DUCK_RELEASE_S * SR))
+        k0, k1 = a0 // blk, (b2 + blk - 1) // blk
+        need = 10 * np.log10(np.maximum(known[k0:k1], 1e-30) / allowed)
+        need = np.repeat(np.clip(need, DUCK_DB, DUCK_MAX_DB), blk)[a0 - k0 * blk:b2 - k0 * blk]
+        w = np.ones(b2 - a0)
+        if a > a0:
+            w[:a - a0] = 0.5 - 0.5 * np.cos(np.pi * np.arange(a - a0) / (a - a0))
+        if b2 > b1:
+            w[b1 - a0:] = 0.5 + 0.5 * np.cos(np.pi * np.arange(b2 - b1) / (b2 - b1))
+        dip[a0:b2] = np.maximum(dip[a0:b2], w * need)
+    k = SR // 500                                # a 2 ms running mean of what came before, so the 1 ms steps do not zip
+    c = np.concatenate([np.zeros(k), np.cumsum(dip)])
+    return (c[k:] - c[:-k]) / k
+
+
+def line_margins(spans, voice_out, rest_out):
+    """Per line: the K-weighted loudness of the voice alone and of everything else in the final mix, over the line's
+    own samples, and the difference (LU)."""
+    out = []
+    cs = []
+    for x in (voice_out, rest_out):
+        z = bs1770.kweight(x)
+        cs.append(np.concatenate([[0.0], np.cumsum((z * z).sum(axis=1))]))
+    for a, b in spans:
+        lv, lr = (-0.691 + 10 * np.log10(max((c[b] - c[a]) / (b - a), 1e-30)) for c in cs)
+        out.append((float(lv), float(lr), float(lv - lr)))
+    return out
 
 
 # ---------------------------------------------------------------- the speaker chain
@@ -430,7 +481,7 @@ def peak_limit(x):
     h = int(LIMIT_HALF_S * SR)
     g = uniform_filter1d(minimum_filter1d(need, 4 * h + 1, mode='nearest'), 2 * h + 1, mode='nearest')
     g = np.minimum(g, 1.0)
-    return x * g[:, None], float(20 * np.log10(g.min()))
+    return x * g[:, None], g
 
 
 # ---------------------------------------------------------------- build
@@ -449,9 +500,10 @@ def build(cues, programme, voice, sync_proof=False):
     add(prog, s_end, pad)
     events += [(s_end, 'coda', 'pad held'), (s_end + n_ring, 'coda', 'pad decays'), (s_end + n_ring + n_decay, 'coda', 'pad silent')]
     gain, det_db, red = compressor_gain(prog)
-    tv = prog * gain
+    bed = prog * gain
     # voice
     vo = np.zeros(N)
+    spans = []
     starts = [frame_sample(l['frame']) for l in cues['lines']]
     for j, ln in enumerate(cues['lines']):
         if ln['text'] not in voice:
@@ -464,24 +516,17 @@ def build(cues, programme, voice, sync_proof=False):
             f = min(len(x), SR // 50)
             x[len(x) - f:] *= np.linspace(1, 0, f)
         add(vo, s0, x)
+        spans.append((s0, s0 + len(x)))
         events.append((s0, 'voice', ln['id'] + ('-' + ln['variant'] if ln.get('variant') else '')))
-    duck = duck_gain(vo)
-    tv = tv * duck + vo
     # bench foley
     fo = np.zeros(N)
     for g in range(NOTES):                       # the punch: every pick but REST (a pencil dot), level by its p
         if cues['pickKind'][g] != 'rest' and cues['p'][g] is not None:
             add(fo, note_start(g), punch(min(1.0, max(0.0, cues['p'][g])), rng(30, g)))
-    turned = set()
-    for i, t in enumerate(cues['knobTurns']):    # the ratchet: on every knob turn, at the frame the knob moves
+    for i, t in enumerate(cues['knobTurns']):    # the ratchet: on every knob turn, at the frame the knob starts to move
         add(fo, frame_sample(t['frame']), ratchet(rng(31, i)))
         events.append((frame_sample(t['frame']), 'foley', 'ratchet'))
-        turned.add(t['note'])
-    for g in range(NOTES):                       # a step change with no knob turn of its own (or the next note's)
-        if cues['stepChanged'][g] and g not in turned and g + 1 not in turned:
-            add(fo, note_start(g), ratchet(rng(31, 1000 + g)))
-            events.append((note_start(g), 'foley', 'ratchet'))
-    ch = cues['chalk']
+    ch = cues['chalk']                           # the chalk tick, as long as the hand draws it
     add(fo, frame_sample(ch['frame']), chalk(ch['frames'], rng(32, 0)))
     events.append((frame_sample(ch['frame']), 'foley', 'chalk'))
     for i, f in enumerate(cues['taps']):
@@ -489,13 +534,18 @@ def build(cues, programme, voice, sync_proof=False):
         events.append((frame_sample(f), 'foley', 'tap'))
     for b in range(PROG_FRAMES // FPB):          # the crank creaks once a turn while the programme runs
         add(fo, frame_sample(b * FPB + 12), creak(rng(34, b)))
-    tv = tv + fo
-    clicks = np.zeros(N)
+    # through the speaker. The chain is linear, so each layer can go through it alone, and the dip under the voice
+    # can be set from the programme as it is heard.
+    voice_st = speaker_chain(vo)
+    fo_st = speaker_chain(fo)
+    dip_db = voice_dip(spans, voice_st, bed_level(speaker_chain(bed)))
+    bed_st = speaker_chain(bed * 10 ** (-dip_db / 20))
+    click_st = None
     if sync_proof:
+        clicks = np.zeros(N)
         for b in range(FRAMES // FPB):
             clicks[frame_sample(b * FPB)] = 0.5
-    tv_st = speaker_chain(tv)
-    click_st = speaker_chain(clicks) if sync_proof else None
+        click_st = speaker_chain(clicks)
     # room
     room = house_hum(cues['hum'])
     hum_check = None
@@ -519,15 +569,24 @@ def build(cues, programme, voice, sync_proof=False):
         if cues['spoon'][g]:
             add(room, note_start(g), spoon(g, rng(41, g)))
             events.append((note_start(g), 'room', 'spoon'))
-    mix = tv_st + room
-    gain_db = MASTER_GAIN_DB
-    out, limit_db = peak_limit(mix * 10 ** (gain_db / 20))
+    mg = 10 ** (MASTER_GAIN_DB / 20)
+    voice_m = voice_st * mg
+    rest_m = (bed_st + fo_st + room) * mg
+    out, lim = peak_limit(voice_m + rest_m)
+    lines = []
+    for ln, (a, b), (lv, lr, margin) in zip(cues['lines'], spans, line_margins(spans, voice_m * lim[:, None], rest_m * lim[:, None])):
+        hold = dip_db[a:max(a + 1, b - int(DUCK_TAIL_S * SR))]
+        lines.append({'id': ln['id'], 'text': ln['text'], 'frame': ln['frame'], 'seconds': round((b - a) / SR, 4),
+                      'voiceLUFS': round(lv, 2), 'underItLUFS': round(lr, 2), 'marginLU': round(margin, 2),
+                      'dip_dB': [round(float(hold.min()), 2), round(float(hold.max()), 2)]})
     if sync_proof:
-        out = out + click_st * 10 ** (gain_db / 20)
-    info = {'limiterMaxReduction_dB': round(-limit_db, 2), 'humMaxDiffVsEngine': hum_check, 'mixGain_dB': round(gain_db, 3), 'compressor': {'thresholdDb': COMP_THRESHOLD_DB, 'ratio': COMP_RATIO,
-            'maxReduction_dB': round(float(red.max()), 2)}, 'detector_dB_per_10ms': np.round(det_db, 2).tolist(),
-            'reduction_dB_per_10ms': np.round(red, 2).tolist(),
-            'stems': {'tv': tv_st * 10 ** (gain_db / 20), 'room': room * 10 ** (gain_db / 20)}}
+        out = out + click_st * mg
+    info = {'limiterMaxReduction_dB': round(float(-20 * np.log10(lim.min())), 2), 'humMaxDiffVsEngine': hum_check,
+            'mixGain_dB': MASTER_GAIN_DB, 'lines': lines,
+            'compressor': {'thresholdDb': COMP_THRESHOLD_DB, 'ratio': COMP_RATIO, 'maxReduction_dB': round(float(red.max()), 2)},
+            'detector_dB_per_10ms': np.round(det_db, 2).tolist(), 'reduction_dB_per_10ms': np.round(red, 2).tolist(),
+            'dip_dB_per_10ms': np.round(dip_db[:N // 480 * 480].reshape(-1, 480).max(axis=1), 2).tolist(),
+            'stems': {'voice': voice_m, 'programme': bed_st * mg, 'foley': fo_st * mg, 'room': room * mg}}
     return out, sorted(events), info
 
 
@@ -539,7 +598,7 @@ def main():
     ap.add_argument('--programme', help='published programme WAV (48 kHz, sample 0 = 00:00)')
     ap.add_argument('--voice', help='frozen voice dir (with manifest.json)')
     ap.add_argument('--sync-proof', action='store_true', help='also put a click on every bar line through the speaker')
-    ap.add_argument('--stems', action='store_true', help='also write the TV and room stems')
+    ap.add_argument('--stems', action='store_true', help='also write the voice, programme, foley and room stems (before the limiter)')
     a = ap.parse_args()
     # inputs default to the film's work dir: QUIET_HOUR_WORK, else the folder two above the cue file (<work>/build/cues)
     work = os.environ.get('QUIET_HOUR_WORK') or os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(a.cues))))
@@ -565,10 +624,13 @@ def main():
            'caps': {'truePeak_dBTP': CAP_TP, 'shortTermMax_LUFS': CAP_ST, 'integratedRange_LUFS': INTEGRATED_RANGE},
            'mixGain_dB': info['mixGain_dB'], 'compressor': info['compressor'],
            'humMaxDiffVsEngine': info['humMaxDiffVsEngine'], 'limiterMaxReduction_dB': info['limiterMaxReduction_dB'],
+           'voice': {'minMarginLU': VOICE_MARGIN_MIN_LU, 'about': 'per line: loudness of the voice alone, of everything else under it, '
+                     'the difference, and the least and most the programme was dipped under it', 'lines': info['lines']},
            'events': [{'sample': s, 'frame': s / SPF, 'layer': l, 'what': w} for s, l, w in events]}
     json.dump(rep, open(os.path.join(a.out, stem + '.json'), 'w'), indent=1)
     json.dump({'shortTerm': m['shortTerm'], 'detector_dB_per_10ms': info['detector_dB_per_10ms'],
-               'reduction_dB_per_10ms': info['reduction_dB_per_10ms']}, open(os.path.join(a.out, stem + '.curves.json'), 'w'))
+               'reduction_dB_per_10ms': info['reduction_dB_per_10ms'], 'dip_dB_per_10ms': info['dip_dB_per_10ms']},
+              open(os.path.join(a.out, stem + '.curves.json'), 'w'))
     bad = []
     if m['truePeak_dBTP'] > CAP_TP:
         bad.append('true peak %.2f dBTP > %.1f' % (m['truePeak_dBTP'], CAP_TP))
@@ -576,10 +638,15 @@ def main():
         bad.append('short-term %.2f LUFS > %.1f (window ending %.1f s)' % (m['shortTermMaxLUFS'], CAP_ST, m['shortTermMaxEndsAt_s']))
     if not INTEGRATED_RANGE[0] <= m['integratedLUFS'] <= INTEGRATED_RANGE[1]:
         bad.append('integrated %.2f LUFS outside %s' % (m['integratedLUFS'], INTEGRATED_RANGE))
-    print(json.dumps({'wav': wav, 'sha256': sha, **{k: v for k, v in m.items() if k != 'shortTerm'}}))
+    low = [ln for ln in info['lines'] if ln['marginLU'] < VOICE_MARGIN_MIN_LU]
+    if low:
+        bad.append('voice under %.1f LU over what is under it: %s' % (VOICE_MARGIN_MIN_LU, ', '.join(
+            '%s at frame %d (%.2f)' % (ln['id'], ln['frame'], ln['marginLU']) for ln in low)))
+    print(json.dumps({'wav': wav, 'sha256': sha, **{k: v for k, v in m.items() if k != 'shortTerm'},
+                      'voiceMarginMinLU': min(ln['marginLU'] for ln in info['lines']) if info['lines'] else None}))
     if bad:
         os.replace(wav, wav[:-4] + '.FAILED.wav')
-        raise SystemExit('LOUDNESS CAP BROKEN (kept as %s.FAILED.wav): %s' % (stem, '; '.join(bad)))
+        raise SystemExit('CHECK FAILED (kept as %s.FAILED.wav): %s' % (stem, '; '.join(bad)))
 
 
 if __name__ == '__main__':

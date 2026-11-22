@@ -1,4 +1,4 @@
-// The nine shots (film bible section 6) and the room anchors the cameras aim at.
+// The ten shots (film bible section 6, v1.2) and the room anchors the cameras aim at.
 //
 // The cut list and the camera moves are AUTHORED (bible section 9: "the camera and the cuts"): they
 // are the same in all four endings and are the only things here that read the frame number. Every
@@ -87,10 +87,14 @@ export const SHOTS = [
     },
     view: () => 'P-DIAL',
   },
-  // REVERSE (v1.1): the set out of frame, only its light; a slow 4% push toward the chair
-  { name: 'REVERSE', bars: [58, 64], cam: (t) => pushed(REVERSE, 0.04 * smooth(t)), view: () => 'P-WIDE' },
+  // REVERSE (v1.1): the set out of frame, only its light. Locked off: in this shot the only things that move are
+  // the ones the data moves (the dust, the shadow's edge, the neighbour's window)
+  { name: 'REVERSE', bars: [58, 64], cam: () => REVERSE, view: () => 'P-WIDE' },
   { name: 'SCREEN', bars: [64, 69], cam: (t) => pushed(screenCam(50, 0.88), 0.02 * smooth(t)), view: () => 'P-WIDE' },
-  { name: 'WIDE A', bars: [69, 72], cam: () => WIDE_A, view: () => 'P-STRIP' },
+  // REVERSE again (v1.2): the very same locked framing as shot 7, so whatever differs, the data changed
+  { name: 'REVERSE', bars: [69, 71], cam: () => REVERSE, view: () => 'P-WIDE' },
+  // WIDE A for the last bar (v1.2): the set in the dark room, the whole bench on it
+  { name: 'WIDE A', bars: [71, 72], cam: () => WIDE_A, view: () => 'P-WIDE' },
 ];
 
 /** The shot live on `frame` (0..2159; frames past the programme hold the last shot). */

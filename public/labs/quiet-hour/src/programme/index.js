@@ -4,7 +4,10 @@
 //   programme.draw(ctx, S, view)        // ctx: the 1280x960 programme canvas's 2D context
 //                                       // S: engine.signals(frame) (typedef at the top of ../signals.js)
 //                                       // view: a rectangle in bench units from ../layout.js VIEWS
-//   programme.drawXray(ctx, S, view)    // the lab page's x-ray: a plain label beside each gauge. Never in the film.
+//   programme.draw(ctx, S, view, { xray: true })   // the same picture with the lab page's x-ray over it: a plain
+//                                       // label beside each gauge, from engine.gauges(frame). Only when asked for like
+//                                       // this: the film (film.js renderFrame(frame), make/*.mjs) never asks.
+//   programme.drawXray(ctx, S, view)    // only the labels, over whatever is on the canvas
 //
 // How it is drawn. Everything that never moves (baize, lamp pool, wood, the paper with its ruled rows, the dial's face
 // and engraving, the box, the rails and plates) is painted once per view into an offscreen canvas when the programme
@@ -21,7 +24,8 @@
 import * as LAYOUT from '../layout.js';
 import {
   PROGRAMME_W as PW, PROGRAMME_H as PH, VIEWS, WOOD_EDGE, LAMP, LIGHT_DIR, STRIP, rowY, rowYf, PUNCH, PUNCH_BRIDGE,
-  LIGHTBOX, HOLE_R, STYLUS, ROLL, DIAL, CHALK_TEXT, KNOB, FLAGS, SHARE_DRUM, LESSONS, BOX, CRANK, TITLE_CARD,
+  LIGHTBOX, HOLE_R, STYLUS, ROLL, DIAL, CHALK_TICK, CHALK_TEXT, KNOB, FLAGS, SHARE_DRUM, LESSONS, BOX, LID, CRANK,
+  TITLE_CARD,
 } from '../layout.js';
 import { hash01, hashSigned, noise1 } from '../rng.js';
 import { createHands } from './hands.js';
@@ -195,6 +199,7 @@ export function createProgramme({ engine }) {
   const flagPath = (() => { const p = new Path2D(); p.moveTo(0, -1.8); p.lineTo(56, -1.8); p.lineTo(56, 1.8); p.lineTo(0, 1.8); p.closePath(); return p; })();
   const pennant = cutRect(34, 2, 23, 19, SEED.cut + 9, 0.6, 6);
   const cardCanvas = buildTitleCard();
+  const lidCanvas = buildLid();
   const pinTable = Array.from({ length: 46 }, (_, i) => ({                // the music box cylinder's pins
     y: BOX.y + 70 + hash01(SEED.pins, i, 0) * (BOX.h - 140), a: hash01(SEED.pins, i, 1) * TAU,
   }));
@@ -257,7 +262,7 @@ export function createProgramme({ engine }) {
     applyTears(ctx, S);
     applyBlocks(ctx, S);
     drawClockBug(ctx, S);                            // last: exact on every frame
-    if (opts.xray) drawXray(ctx, S, view);
+    if (opts && opts.xray === true) drawXray(ctx, S, view);   // the lab page only; the film never passes it
     ctx.restore();
   }
 
@@ -661,23 +666,33 @@ export function createProgramme({ engine }) {
       ctx.strokeStyle = 'rgba(239,229,201,0.95)'; ctx.strokeText(t, lx, ly);
       ctx.fillStyle = C.ink; ctx.fillText(t, lx, ly);
     }
-    // the chalk: a tick at the limit measured at 20:00, and the number beside it in the maker's hand
-    if (S.chalk > 0) {
-      const a = angleAtU(S.chalkU), c = Math.cos(a), s = Math.sin(a), t = clamp(S.chalk, 0, 1);
+    // the chalk (FORMAT, bible v1.1). The tick at the limit measured at 20:00 grows outward with S.chalkTick (0.5 at
+    // frame 1440, 1 from 1441), so its end is where the hand's chalk tip is: ./hands.js reads the same signal the same
+    // way. The number beside it is written on from left to right by S.chalk (0.2 .. 1 over frames 1440 .. 1444).
+    const tick = clamp(isNum(S.chalkTick) ? S.chalkTick : (S.chalk || 0) / 0.4, 0, 1), num = clamp(S.chalk || 0, 0, 1);
+    if (tick > 0 || num > 0) {
+      const a = angleAtU(S.chalkU), c = Math.cos(a), s = Math.sin(a);
       ctx.save();
-      ctx.strokeStyle = pat(ctx, 'chalk'); ctx.lineCap = 'round';
-      const r0 = 0.8, r1 = lerp(0.8, 1.16, clamp(t / 0.6, 0, 1));
-      for (let i = 0; i < 3; i++) {
-        const j = (i - 1) * 2.6, jx = -s * j, jy = c * j;
-        ctx.lineWidth = i === 1 ? 9 : 4; ctx.globalAlpha = i === 1 ? 1 : 0.6;
-        ctx.beginPath(); ctx.moveTo(x + c * r * r0 + jx, y + s * r * r0 + jy); ctx.lineTo(x + c * r * r1 + jx * 0.6, y + s * r * r1 + jy * 0.6); ctx.stroke();
+      if (tick > 0) {
+        ctx.strokeStyle = pat(ctx, 'chalk'); ctx.lineCap = 'round';
+        const d0 = r * CHALK_TICK.r0, d1 = r * lerp(CHALK_TICK.r0, CHALK_TICK.r1, tick);
+        for (let i = 0; i < 3; i++) {                                  // three passes: chalk is never one clean line
+          const j = (i - 1) * 2.6, jx = -s * j, jy = c * j, lw = i === 1 ? 9 : 4;
+          const e = Math.max(d0, d1 - lw / 2);                         // the round cap ends exactly at the chalk's tip
+          ctx.lineWidth = lw; ctx.globalAlpha = i === 1 ? 1 : 0.6;
+          ctx.beginPath(); ctx.moveTo(x + c * d0 + jx, y + s * d0 + jy); ctx.lineTo(x + c * e + jx * 0.6, y + s * e + jy * 0.6); ctx.stroke();
+        }
       }
-      ctx.globalAlpha = smooth(0.2, 1, t); ctx.fillStyle = pat(ctx, 'chalk');
-      ctx.font = `64px ${FONT_HAND}`; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-      ctx.shadowColor = 'rgba(0,0,0,0.4)'; ctx.shadowBlur = 2 * k; ctx.shadowOffsetX = 1.2 * k; ctx.shadowOffsetY = 1.5 * k;
-      const tx = x + c * r * 1.12 + CHALK_TEXT.dx, ty = y + s * r * 1.12 + CHALK_TEXT.dy;
-      ctx.fillText(S.chalkText, tx, ty); ctx.shadowColor = 'rgba(0,0,0,0)';
-      ctx.globalAlpha *= 0.7; ctx.fillText(S.chalkText, tx + 1.3, ty + 0.6);   // a second pass: chalk is thick
+      if (num > 0) {
+        ctx.globalAlpha = 1; ctx.fillStyle = pat(ctx, 'chalk');
+        ctx.font = `64px ${FONT_HAND}`; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+        const text = String(S.chalkText ?? ''), w = ctx.measureText(text).width;
+        const tx = x + c * r * 1.12 + CHALK_TEXT.dx, ty = y + s * r * 1.12 + CHALK_TEXT.dy;
+        ctx.beginPath(); ctx.rect(tx - 10, ty - 60, (w + 20) * num, 120); ctx.clip();
+        ctx.shadowColor = 'rgba(0,0,0,0.4)'; ctx.shadowBlur = 2 * k; ctx.shadowOffsetX = 1.2 * k; ctx.shadowOffsetY = 1.5 * k;
+        ctx.fillText(text, tx, ty); ctx.shadowColor = 'rgba(0,0,0,0)';
+        ctx.globalAlpha = 0.7; ctx.fillText(text, tx + 1.3, ty + 0.6);   // a second pass: chalk is thick
+      }
       ctx.restore();
     }
     // the needle: blued steel with a counterweight, its shadow on the face
@@ -760,21 +775,64 @@ export function createProgramme({ engine }) {
       }
       ctx.globalAlpha = 1;
     }
-    // the lid: standing open on its hinge (a thin walnut edge), coming down over the last bar
-    const hgt = Math.max(10, BOX.h * Math.sin(lid * Math.PI / 2));
-    ctx.save(); ctx.translate(BOX.x, BOX.y); ctx.scale(1, hgt / BOX.h);
-    shadow(ctx, k, 2 + 8 * lid, 0.45); ctx.fillStyle = lid > 0 ? C.walnutLight : C.walnutDark; ctx.fill(P.lid); noShadow(ctx);
-    ctx.restore();
-    if (lid > 0) {
-      ctx.save(); ctx.beginPath(); ctx.rect(BOX.x, BOX.y, BOX.w, hgt); ctx.clip();
-      ctx.translate(BOX.x, BOX.y); ctx.scale(1, hgt / BOX.h);
-      woodGrain(ctx, 0, 0, BOX.w, BOX.h, SEED.wood + 3, true);
-      ctx.strokeStyle = 'rgba(230,200,140,0.55)'; ctx.lineWidth = 1.5; ctx.strokeRect(12, 12, BOX.w - 24, BOX.h - 24);
+    // the lid, hinged on the box's top edge. Standing open, the camera above sees only its walnut edge (LID.edge);
+    // as S.lidClosed brings it down, its pale top face comes into view, foreshortened, with the edge below it. Its
+    // lower edge is at BOX.y + max(LID.edge, BOX.h sin): ./hands.js puts the closing hand's fingertips there.
+    const ang = lid * Math.PI / 2, total = Math.max(LID.edge, BOX.h * Math.sin(ang));
+    const edge = Math.min(total, LID.edge * Math.cos(ang)), face = total - edge;
+    if (face > 0.5) {
+      // what the raised lid hides from the lamp: a soft shade on the box just below it, gone when it is shut
+      const sh = 46 * Math.sin(2 * ang), y0 = BOX.y + total;
+      if (sh > 1 && y0 < BOX.y + BOX.h) {
+        const g = ctx.createLinearGradient(0, y0, 0, y0 + sh);
+        g.addColorStop(0, 'rgba(4,10,6,0.5)'); g.addColorStop(1, 'rgba(4,10,6,0)');
+        ctx.fillStyle = g; ctx.fillRect(BOX.x + 4, y0, BOX.w - 4, Math.min(sh, BOX.y + BOX.h - y0));
+      }
+      ctx.save(); ctx.translate(BOX.x, BOX.y); ctx.scale(1, face / BOX.h);
+      ctx.drawImage(lidCanvas, -2, -2, BOX.w + 4, BOX.h + 4);
+      ctx.fillStyle = `rgba(20,12,4,${(0.22 * Math.cos(ang)).toFixed(3)})`; ctx.fill(P.lid);   // tilted away from the lamp
       ctx.restore();
-      ctx.fillStyle = `rgba(0,0,0,${(0.35 * (1 - lid)).toFixed(3)})`; ctx.fillRect(BOX.x, BOX.y, BOX.w, hgt);
-    } else {
-      ctx.fillStyle = 'rgba(255,220,160,0.25)'; ctx.fillRect(BOX.x + 2, BOX.y + 2, BOX.w - 4, 2);
     }
+    if (edge > 0.5) {
+      const y0 = BOX.y + face;
+      ctx.fillStyle = C.walnutDark; shadow(ctx, k, 2 + 5 * Math.sin(ang), 0.45); ctx.fillRect(BOX.x, y0, BOX.w, edge); noShadow(ctx);
+      ctx.fillStyle = 'rgba(255,220,160,0.28)'; ctx.fillRect(BOX.x + 2, y0 + 1, BOX.w - 4, Math.min(2, edge));
+    }
+  }
+  // the lid's top face, built once (fixed seeds): a pale boxwood panel inlaid in walnut, a brass line round it, a
+  // brass pull at the free edge. Pale on purpose: a shut box is the lightest thing on the right of the bench and an
+  // open one the darkest, so "the lid is closed" reads at a glance, small, and in a picture gone grey.
+  function buildLid() {
+    const s = 2, c = canvas(BOX.w * s + 8, BOX.h * s + 8), x = c.getContext('2d');
+    x.setTransform(s, 0, 0, s, 4, 4);
+    x.fillStyle = C.walnutLight; x.fill(P.lid);
+    x.save(); x.clip(P.lid);
+    woodGrain(x, 0, 0, BOX.w, BOX.h, SEED.wood + 3, true);
+    x.restore();
+    const m = 14, panel = cutRect(m, m, BOX.w - 2 * m, BOX.h - 2 * m, SEED.cut + 10, 0.5, 20);
+    x.fillStyle = '#e4d4a9'; x.fill(panel);
+    x.save(); x.clip(panel);
+    x.fillStyle = pattern(x, T.paper, 0.5); x.fillRect(0, 0, BOX.w, BOX.h);
+    for (let i = 0; i < 26; i++) {                                    // the veneer's faint figure, along the lid
+      const gx = m + 4 + hash01(SEED.wood + 4, i) * (BOX.w - 2 * m - 8);
+      x.strokeStyle = `rgba(140,104,56,${(0.08 + 0.12 * hash01(SEED.wood + 5, i)).toFixed(3)})`; x.lineWidth = 0.6 + hash01(SEED.wood + 6, i);
+      x.beginPath();
+      for (let yy = m; yy <= BOX.h - m; yy += 12) { const px = gx + noise1(SEED.wood + 7, i % 5, yy, 150) * 3; if (yy === m) x.moveTo(px, yy); else x.lineTo(px, yy); }
+      x.stroke();
+    }
+    const g = x.createLinearGradient(0, 0, BOX.w, BOX.h);
+    g.addColorStop(0, 'rgba(255,250,235,0.28)'); g.addColorStop(1, 'rgba(96,66,24,0.2)');
+    x.fillStyle = g; x.fillRect(0, 0, BOX.w, BOX.h);
+    x.restore();
+    x.strokeStyle = C.brass; x.lineWidth = 2.2; x.stroke(panel);
+    x.strokeStyle = 'rgba(255,240,200,0.5)'; x.lineWidth = 0.7; x.stroke(panel);
+    x.strokeStyle = 'rgba(84,62,34,0.5)'; x.lineWidth = 1; x.strokeRect(m + 9, m + 9, BOX.w - 2 * m - 18, BOX.h - 2 * m - 18);
+    // the pull: a small brass bar near the free edge
+    const pull = new Path2D(); pull.roundRect(BOX.w / 2 - 26, BOX.h - m - 34, 52, 11, 5);
+    x.fillStyle = 'rgba(60,40,14,0.35)'; x.beginPath(); x.roundRect(BOX.w / 2 - 25, BOX.h - m - 31, 54, 12, 5); x.fill();
+    x.fillStyle = C.brass; x.fill(pull);
+    x.fillStyle = 'rgba(255,240,190,0.6)'; x.fillRect(BOX.w / 2 - 22, BOX.h - m - 33, 44, 2.5);
+    return c;
   }
 
   // the crank: one turn per bar (S.crankAngle), always
@@ -877,68 +935,84 @@ export function createProgramme({ engine }) {
   }
 
   // =================================================================================================================
-  // THE X-RAY (lab page only): a small plain label beside each gauge, its name and live value. Texts come from
-  // engine.gauges(frame) when the engine has it, else from S. Picture-wide gauges are listed bottom left; gauges
-  // that live in the room (window, dust, tea...) are not on the programme and are left to the page.
-  function xrayAnchors(S) {                         // gauge id -> [bench x, bench y, side (-1 left, 1 right)]
-    const pol = (u, rr) => { const a = angleAtU(u); return [DIAL.x + Math.cos(a) * DIAL.r * rr, DIAL.y + Math.sin(a) * DIAL.r * rr]; };
+  // THE X-RAY (lab page only; never in the film: draw() adds it only when called with { xray: true }).
+  // A small plain label beside each gauge this picture shows: the gauge's name and its live value, both taken from
+  // engine.gauges(frame) for this very frame, by the engine's own ids. Nothing is worded, computed or remembered here:
+  // an engine without gauges gives no labels. The four gauges of the picture's condition are listed bottom left. The
+  // gauges that live in the room or on the soundtrack are not on this picture; the page lists them.
+  const XRAY_PICTURE = ['warmth', 'tears', 'hairlines', 'blocks'];
+  const XRAY_ELSEWHERE = ['window', 'hum', 'dust', 'shadow', 'tea', 'wallClock', 'subtitle'];
+  /** gauge id -> [x, y, side] in programme pixels (side: -1 = label to the left of the point, 1 = to the right). */
+  function xrayAnchors(S, view) {
+    const kk = PW / view.w, px = (bx, by, side) => [(bx - view.x) * kk, (by - view.y) * kk, side];
+    const pol = (u, rr, side) => { const a = angleAtU(u); return px(DIAL.x + Math.cos(a) * DIAL.r * rr, DIAL.y + Math.sin(a) * DIAL.r * rr, side); };
+    const col = S.stripColumns.length ? S.stripColumns[S.stripColumns.length - 1] : null;   // the newest column
+    const cx = PUNCH.x + (col ? col.x : 0) * STRIP.colW;
+    // the haze label points at the bet's second darkest row (the darkest is usually under the hole)
+    let hazeRow = 15;
+    if (col && col.haze) {
+      const order = col.haze.map((a, r) => [a, r]).sort((p, q) => q[0] - p[0] || p[1] - q[1]);
+      hazeRow = order[1] && order[1][0] >= 0.05 && order[0][1] === S.pick ? order[1][1] : order[0][1];
+    }
     const A = {
-      haze: [260, rowY(22), 1],
-      hole: [PUNCH.x - 10, S.pick >= 0 ? rowY(S.pick) : rowY(15), -1],
-      stylus: [STYLUS.rulerX + 18, rowYf(isNum(S.stylusRow) ? S.stylusRow : 15), 1],
-      needle: [...pol(S.needleU, 0.55), -1],
-      flags: [FLAGS.x + 10, FLAGS.y + 10, -1],
-      drum: [SHARE_DRUM.x, SHARE_DRUM.y + SHARE_DRUM.h / 2, -1],
-      lessons: [LESSONS.x + LESSONS.w + 6, LESSONS.y + LESSONS.h / 2, 1],
-      crank: [CRANK.x - 30, CRANK.y + 40, -1],
-      hands: [470, 1080, 1],
+      haze: px(cx - STRIP.colW * 0.4, rowY(hazeRow), -1),
+      hole: px(cx - HOLE_R, S.pick >= 0 ? rowY(S.pick) : rowY(15), -1),
+      stylus: px(STYLUS.railX + 16, rowYf(isNum(S.stylusRow) ? S.stylusRow : 15), 1),
+      needle: pol(S.needleU, 0.5, -1),
+      hatching: isNum(S.hatchU) && S.hatchU < 1 ? pol((S.hatchU + 1) / 2, 0.97, 1) : pol(0.86, 0.9, 1),   // or where it was
+      flags: px(FLAGS.x + FLAGS.w - 8, FLAGS.y + 8, 1),
+      drum: px(SHARE_DRUM.x + SHARE_DRUM.w / 2, SHARE_DRUM.y + SHARE_DRUM.h + 4, -1),
+      lessons: px(LESSONS.x + LESSONS.w * 0.75, LESSONS.y + LESSONS.h + 4, 1),
+      crank: px(CRANK.x, CRANK.y + CRANK.r + 16, -1),
+      hands: px(LAYOUT.HANDS.left.rest.x, LAYOUT.HANDS.left.rest.y + 70, 1),
+      clock: [PW - 252, 88, -1],                                         // the clock bug (programme pixels)
     };
-    if (isNum(S.hatchU) && S.hatchU < 1) A.hatching = [...pol(S.hatchU, 0.97), 1];
-    if (S.chalk > 0) A.chalk = [...pol(S.chalkU, 1.16), 1];
+    if (S.chalkTick > 0 || S.chalk > 0) A.chalk = pol(S.chalkU, 1.0, -1);   // once it is on the dial
     return A;
   }
-  const XRAY_PICTURE = ['warmth', 'tears', 'hairlines', 'blocks'];
   function drawXray(ctx, S, view) {
     let list = null;
     try { if (engine && typeof engine.gauges === 'function') list = engine.gauges(S.frame); } catch { list = null; }
-    if (!Array.isArray(list) || !list.length) list = [
-      { id: 'haze', name: 'Pencil haze', value: S.p ? `darkest row alpha ${Math.max(...(S.stripColumns.at(-1)?.haze || [0])).toFixed(2)}` : '-' },
-      { id: 'hole', name: 'Hole', value: `${S.pickName} p ${isNum(S.pickP) ? S.pickP.toFixed(3) : '-'}` },
-      { id: 'stylus', name: 'Stylus', value: `row ${S.stylusRow.toFixed(1)}` },
-      { id: 'needle', name: 'STEP needle', value: S.lr }, { id: 'hatching', name: 'TOO FAR hatching', value: S.limit },
-      { id: 'chalk', name: 'Chalk mark', value: S.chalkText }, { id: 'flags', name: 'NEW TUNES flags', value: `${S.flagsUp} of ten` },
-      { id: 'drum', name: 'Drum counter', value: S.shareDrumText }, { id: 'lessons', name: 'LESSONS', value: S.stepsText },
-      { id: 'crank', name: 'Crank', value: `bar ${S.bar}` }, { id: 'hands', name: "The maker's hands", value: S.handsPresent },
-      { id: 'warmth', name: 'Colour of the picture', value: S.warmth }, { id: 'tears', name: 'Tears', value: S.tear },
-      { id: 'hairlines', name: 'Hairline', value: S.hairline ? `${S.hairline.shiftPx} px` : 'none' }, { id: 'blocks', name: 'Blocks', value: S.blocks },
-    ];
-    const fmt = (v) => (v === null || v === undefined ? '-' : typeof v === 'number' ? (Number.isInteger(v) ? String(v) : String(Number(v.toPrecision(3)))) : typeof v === 'boolean' ? (v ? 'yes' : 'no') : String(v));
-    const label = (g) => { const t = `${String(g.name ?? g.id).split(':')[0]}: ${fmt(g.value)}`; return t.length > 64 ? t.slice(0, 63) + '\u2026' : t; };
-    const kk = PW / view.w, A = xrayAnchors(S), placed = [];
+    if (!Array.isArray(list) || !list.length) return;
+    const text = (g) => {
+      const v = g.value === null || g.value === undefined ? '-' : typeof g.value === 'boolean' ? (g.value ? 'yes' : 'no') : String(g.value);
+      const t = `${String(g.name ?? g.id).split(':')[0]}: ${v}`;
+      return t.length > 58 ? t.slice(0, 57) + '…' : t;
+    };
+    const A = xrayAnchors(S, view), placed = [], H = 19;
     ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+    noShadow(ctx);
     ctx.font = `14px ${FONT_MONO}`; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
-    const box = (text, x, y, side, dot) => {
-      const w = Math.ceil(ctx.measureText(text).width) + 12, h = 19;
-      let lx = clamp(side > 0 ? x + 10 : x - 10 - w, 4, PW - w - 4), ly = clamp(y - h / 2, 4, PH - h - 4);
-      for (let n = 0; n < 40 && placed.some((r) => lx < r[0] + r[2] && lx + w > r[0] && ly < r[1] + r[3] && ly + h > r[1]); n++) ly = clamp(ly + h + 2, 4, PH - h - 4);
-      placed.push([lx, ly, w, h]);
+    const box = (t, x, y, side, dot) => {
+      const w = Math.ceil(ctx.measureText(t).width) + 12;
+      const lx = clamp(side > 0 ? x + 12 : x - 12 - w, 4, PW - w - 4);
+      let ly = clamp(y - H / 2, 4, PH - H - 4);
+      const hits = (yy) => placed.some((r) => lx < r[0] + r[2] && lx + w > r[0] && yy < r[1] + r[3] && yy + H > r[1]);
+      for (let n = 1; n <= 24 && hits(ly); n++) {                       // the nearest free line, below or above
+        const dn = y - H / 2 + n * (H + 2), up = y - H / 2 - n * (H + 2);
+        if (dn <= PH - H - 4 && !hits(dn)) { ly = dn; break; }
+        if (up >= 4 && !hits(up)) { ly = up; break; }
+      }
+      placed.push([lx, ly, w, H]);
       if (dot) {
-        ctx.strokeStyle = 'rgba(242,242,234,0.8)'; ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(side > 0 ? lx : lx + w, ly + h / 2); ctx.stroke();
+        ctx.strokeStyle = 'rgba(242,242,234,0.85)'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x < lx ? lx : x > lx + w ? lx + w : x, ly + H / 2); ctx.stroke();
         ctx.fillStyle = '#f2f2ea'; ctx.beginPath(); ctx.arc(x, y, 3, 0, TAU); ctx.fill();
       }
-      ctx.fillStyle = 'rgba(0,0,0,0.74)'; ctx.fillRect(lx, ly, w, h);
-      ctx.fillStyle = '#f2f2ea'; ctx.fillText(text, lx + 6, ly + h / 2 + 0.5);
+      ctx.fillStyle = 'rgba(0,0,0,0.76)'; ctx.fillRect(lx, ly, w, H);
+      ctx.fillStyle = '#f2f2ea'; ctx.fillText(t, lx + 6, ly + H / 2 + 0.5);
     };
-    let row = 0;
-    for (const g of list) if (XRAY_PICTURE.includes(g.id)) box(label(g), 8, PH - 16 - 21 * row++, 1, false);
+    const corner = [];                                                   // listed bottom left, in the engine's order
+    const onPicture = [];
     for (const g of list) {
+      if (!g || XRAY_ELSEWHERE.includes(g.id)) continue;
       const at = A[g.id];
-      if (!at) continue;
-      const x = (at[0] - view.x) * kk, y = (at[1] - view.y) * kk;
-      if (x < 0 || x > PW || y < 0 || y > PH) continue;
-      box(label(g), x, y, at[2], true);
+      const inside = at && at[0] >= 0 && at[0] <= PW && at[1] >= 0 && at[1] <= PH;
+      if (XRAY_PICTURE.includes(g.id) || (g.id === 'hands' && !inside)) corner.push(g);
+      else if (inside) onPicture.push([g, at]);
     }
+    corner.forEach((g, i) => box(text(g), -8, PH - 16 - (H + 2) * (corner.length - 1 - i), 1, false));
+    for (const [g, at] of onPicture) box(text(g), at[0], at[1], at[2], true);
     ctx.restore();
   }
 
