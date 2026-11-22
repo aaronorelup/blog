@@ -188,8 +188,9 @@ export function createTV({ THREE, programmeTexture, anchors }) {
   const bakelite = litByTube(THREE, new THREE.MeshLambertMaterial({ color: 0x1e1814 }), glow, { sheen: 0.16 });
   const backMat = new THREE.MeshLambertMaterial({ color: 0x1c1712 });
 
-  const add = (geo, mat, { cast = false, x = 0, y = 0, z = 0 } = {}) => {
-    const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = cast; m.receiveShadow = true;
+  // receiveShadow is off: the screen light stands in front of the set's face, so nothing of the set is in its beam
+  const add = (geo, mat, { cast = false, x = 0, y = 0, z = 0, order = 0 } = {}) => {
+    const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = cast; m.receiveShadow = false; m.renderOrder = order;
     group.add(m); return m;
   };
 
@@ -203,18 +204,18 @@ export function createTV({ THREE, programmeTexture, anchors }) {
   // ---- the bezel mask: a dark plate with the tube's rounded opening ---------------------------------------------------
   const BZ_D = 0.016;                                                  // proud of the case front
   const hole = [0, 0, S0.w - 0.006, S0.h - 0.006, 0.026];
-  add(slab(THREE, BEZ.w, BEZ.h, BZ_D, 0.03, 0.004, [hole]), bezelMat, { x: S0.x, y: S0.y, z: zFront - 0.004 });
+  add(slab(THREE, BEZ.w, BEZ.h, BZ_D, 0.03, 0.004, [hole]), bezelMat, { x: S0.x, y: S0.y, z: zFront - 0.004, order: -1 });
   // a thin brass bead round the bezel
   add(slab(THREE, BEZ.w + 0.008, BEZ.h + 0.008, 0.006, 0.034, 0.002, [[0, 0, BEZ.w - 0.004, BEZ.h - 0.004, 0.028]]), brass,
     { x: S0.x, y: S0.y, z: zFront - 0.002 });
   // the tube's black surround behind the glass (seen past the glass's edge at an angle)
-  add(new THREE.PlaneGeometry(S0.w + 0.02, S0.h + 0.02), new THREE.MeshBasicMaterial({ color: 0x050505 }), { x: S0.x, y: S0.y, z: S0.z - 0.004 });
+  add(new THREE.PlaneGeometry(S0.w + 0.02, S0.h + 0.02), new THREE.MeshBasicMaterial({ color: 0x050505 }), { x: S0.x, y: S0.y, z: S0.z - 0.004, order: -2 });
 
   // ---- the tube ------------------------------------------------------------------------------------------------------
   const screenMat = createScreenMaterial({ THREE, programmeTexture });
   screenMat.uniforms.uHalf.value.set(S0.w / 2, S0.h / 2);
   const screen = new THREE.Mesh(new THREE.PlaneGeometry(S0.w, S0.h, 24, 18), screenMat);
-  screen.position.set(S0.x, S0.y, S0.z); group.add(screen);
+  screen.position.set(S0.x, S0.y, S0.z); screen.renderOrder = -3; group.add(screen);   // drawn first: the depth test then spares the case behind it
 
   // ---- the control panel: two knobs over a speaker grille -------------------------------------------------------------
   const P = PANEL, pcx = P.x0 + P.w / 2, ptop = S0.y + BEZ.h / 2, pbot = S0.y - BEZ.h / 2;
