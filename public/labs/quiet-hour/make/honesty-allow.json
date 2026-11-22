@@ -1,5 +1,5 @@
 {
- "about": "The honesty audit's allowlist (make/check-honesty.mjs). Every place the film's code reads the frame, compares a frame / note / bar / time against a number, names a FORMAT time, or names an ending, must be listed here with the bible's reason; anything else fails. file: a path, a folder ending in /, or *. rule: clock | ending | compare | literal | format | reads | *. detail: a regex on what was found; match: a piece of the line's text (or regex: a regex on it). Reasons marked NOT-IN-9 are keyed to the frame by a bible rule outside section 9's FORMAT list: the orchestrator should confirm or overrule them.",
+ "about": "The honesty audit's allowlist (make/check-honesty.mjs). Every place the film's code reads the frame, compares a frame / note / bar / time against a number, names a FORMAT time, or names an ending, must be listed here with the bible's reason; anything else fails. file: a path, a folder ending in /, or *. rule: clock | ending | compare | literal | format | reads | *. detail: a regex on what was found; match: a piece of the line's text (or regex: a regex on it). Every reason starts with its group: FORMAT (bible 9's list), CLOCK (the clock bug, the crank, the wall clock: bible 9 v1.2), GRID (bible 2 definitions and range bounds), RELATIVE (a duration counted from a log-caused event), RANDOM (a hash of seed and frame, bible 1.4), RULING (allowed by the orchestrator's rulings for the final audit: the lid over the last bar, the subtitle fade), AUTHORED (the camera: src/shots.js as a whole), LOADER / LABEL (an ending name that only picks a file or labels it), DRIVER, LAB (drawn only on the lab page), NOT-TIME (a number or name that is not a time). Brought up to date by checker-final, 2026-11-22.",
  "allow": [
   {
    "file": "film.js",
@@ -43,7 +43,7 @@
    "file": "src/time.js",
    "rule": "format",
    "detail": "^(BREAK_NOTE|BREAK_FRAME|CODA_FRAMES|TOTAL_FRAMES|frameAtClock)$",
-   "reason": "GRID / FORMAT definitions (bible 2, 9)"
+   "reason": "GRID: the bible 2 grid and the FORMAT ends (20:00 = note 288 = frame 1440, black at 2160, the coda; frameAtClock turns a programme second into a frame) (bible 2, 9)"
   },
   {
    "file": "src/rules.js",
@@ -64,7 +64,7 @@
    "rule": "literal",
    "detail": "^2130$",
    "match": "LID_BAR_FRAME = 2130",
-   "reason": "NOT-IN-9: the lid over the last bar if the hands are present (bible 3 hands rule 7); keyed to the last bar, gated by the log"
+   "reason": "RULING: the lid over the last bar (bible 3 hands rule 7), closed only if the hands are present (a log switch); allowed by the orchestrator for the final audit"
   },
   {
    "file": "src/rules.js",
@@ -101,13 +101,13 @@
    "file": "src/rules.js",
    "rule": "format",
    "detail": "^(LID_BAR_FRAME|LID_POSE_FROM)$",
-   "reason": "NOT-IN-9: the lid over the last bar (bible 3 hands rule 7)"
+   "reason": "RULING: the lid over the last bar (bible 3 hands rule 7); allowed by the orchestrator"
   },
   {
    "file": "src/rules.js",
    "rule": "format",
    "detail": "^breakNote$",
-   "reason": "FORMAT: 20:00 is the turn; L6b reads the step size at note 288, L7/L8/L9 hold only after 20:00 (bible 7)"
+   "reason": "FORMAT: 20:00 (note 288) is the break note read from the data; L6b reads the step size at note 288, L7/L8/L9 hold only after 20:00 (bible 7; orchestrator ruling: \"after 20:00\" inside rules)"
   },
   {
    "file": "src/rules.js",
@@ -119,7 +119,7 @@
    "file": "src/rules.js",
    "rule": "compare",
    "detail": "^g > c\\.breakNote$",
-   "reason": "FORMAT: L7, L8, L9 hold only after 20:00 (bible 7 table)"
+   "reason": "FORMAT: L7, L8, L9 hold only after 20:00, the break note (bible 7 table; orchestrator ruling)"
   },
   {
    "file": "src/signals.js",
@@ -131,7 +131,7 @@
    "file": "src/signals.js",
    "rule": "format",
    "detail": "^(L1_FRAME|CARD_SLIDE|CARD_POSE|DIAL_TAP_\\w+|CHALK_\\w+|chalk\\w+|LID_BAR_FRAME|LID_POSE_FROM|GN_FRAME|L6A_FRAME|FORMAT_FRAMES|TOTAL_FRAMES|cardSlide)$",
-   "reason": "FORMAT: the engine applies the section 9 list (title card, L1, taps, chalk, L6a, Goodnight, black) and the lid (NOT-IN-9, bible 3 hands rule 7)"
+   "reason": "FORMAT: the engine applies the section 9 list (title card, L1, taps and L2, chalk pickup 1410, chalking 1440, L6a 1445, Goodnight 2135, black 2160); the lid by the orchestrator's ruling (bible 3 hands rule 7)"
   },
   {
    "file": "src/signals.js",
@@ -167,7 +167,7 @@
    "file": "src/signals.js",
    "rule": "compare",
    "detail": "^(f|frame) >= R\\.LID_BAR_FRAME$",
-   "reason": "NOT-IN-9: the lid over the last bar, only if the hands are present (bible 3 hands rule 7)"
+   "reason": "RULING: the lid over the last bar, only if the hands are present (bible 3 hands rule 7); allowed by the orchestrator"
   },
   {
    "file": "src/signals.js",
@@ -180,34 +180,27 @@
    "rule": "literal",
    "detail": "^1800$",
    "match": "logClock",
-   "reason": "GRID: the log's own clock label (432 notes over 30:00 = 1800 s of programme), for the x-ray"
+   "reason": "GRID: the log's own clock label (432 notes over 30:00 = 1800 s of programme), for the x-ray (lab page)"
   },
   {
    "file": "src/shots.js",
    "rule": "compare",
    "detail": "^f (>=|<) (12|14|36) \\* B$",
-   "reason": "AUTHORED: the camera and the cuts (bible 6 shot table, 9): programme views change on bar lines 12, 14, 36"
-  },
-  {
-   "file": "src/shots.js",
-   "rule": "literal",
-   "detail": "^72$",
-   "match": "bars: [69, 72]",
-   "reason": "AUTHORED: the shot table's last bar (bible 6)"
+   "reason": "AUTHORED: the camera and the cuts: the shot table is allowed as a whole (bible 6, 9; orchestrator ruling); programme views change on bar lines 12, 14, 36"
   },
   {
    "file": "src/shots.js",
    "rule": "literal",
    "detail": "^360$",
    "match": "Math.PI / 360",
-   "reason": "not time: half a field of view in degrees to radians"
+   "reason": "NOT-TIME: half a field of view in degrees to radians"
   },
   {
    "file": "film.js",
    "rule": "reads",
    "detail": "^frame$",
    "match": "function renderFrame(frame",
-   "reason": "DRIVER: renderFrame(i) is a pure function of the frame (bible 1.4); the frame only picks S"
+   "reason": "DRIVER: renderFrame(i) is a pure function of the frame (bible 1.4); the frame only picks S and the shot"
   },
   {
    "file": "film.js",
@@ -220,26 +213,26 @@
    "file": "film.js",
    "rule": "format",
    "detail": "^TOTAL_FRAMES$",
-   "reason": "info for the player: the film's length (bible 2)"
+   "reason": "GRID: the film's length, for the player (bible 2)"
   },
   {
    "file": "film.js",
    "rule": "literal",
    "detail": "^720$",
    "match": "height = 720",
-   "reason": "not time: the default render height"
+   "reason": "NOT-TIME: the default render height"
   },
   {
    "file": "src/programme/",
    "rule": "reads",
    "detail": "^S\\.crankAngle$",
-   "reason": "NOT-IN-9: the crank, one turn per bar always (bible 3 table, Reads: frame); bible 9 counts the tempo as Fable's own"
+   "reason": "CLOCK: the crank, one turn per bar always: the tempo (bible 3 table; bible 9 v1.2 lists the crank among the FORMAT clocks)"
   },
   {
    "file": "src/programme/",
    "rule": "reads",
    "detail": "^S\\.clock$",
-   "reason": "NOT-IN-9: the clock bug, MM:SS of floor(f x 5 / 6) (bible 3 table, Reads: frame)"
+   "reason": "CLOCK: the clock bug, MM:SS of floor(f x 5 / 6) (bible 3 table; bible 9 v1.2 FORMAT clocks)"
   },
   {
    "file": "src/programme/",
@@ -263,69 +256,69 @@
    "file": "src/programme/",
    "rule": "reads",
    "detail": "^S\\.lidClosed$",
-   "reason": "NOT-IN-9: the lid over the last bar if the hands are present (bible 3 hands rule 7)"
+   "reason": "RULING: the lid over the last bar if the hands are present (bible 3 hands rule 7); allowed by the orchestrator"
   },
   {
    "file": "src/room/",
    "rule": "reads",
    "detail": "^S\\.(minuteAngle|hourAngle)$",
-   "reason": "NOT-IN-9: the wall clock, 23:30 plus the programme clock (bible 4 table, Reads: frame; 9 lists its 23:30 start as authored)"
+   "reason": "CLOCK: the wall clock, 23:30 plus the programme clock (bible 4 table; bible 9 v1.2 FORMAT clocks)"
   },
   {
    "file": "src/room/",
    "rule": "reads",
    "detail": "^S\\.frame$",
    "regex": "hash01\\(\\d+, S\\.frame",
-   "reason": "RANDOM: the spoon's rattle shape is a hash of (seed, frame) (bible 1.4); when it rattles is S.spoonChatter, from the log"
+   "reason": "RANDOM: the spoon's rattle shape is a hash of (seed, frame) (bible 1.4; orchestrator ruling); when it rattles is S.spoonChatter, from the log (bible 4 tea)"
   },
   {
    "file": "src/room/tv.js",
    "rule": "reads",
    "detail": "^S\\.frame$",
    "match": "group.userData.frame = S.frame",
-   "reason": "RANDOM: hands the frame to src/post.js as the film grain's seed (bible 1.4)"
+   "reason": "RANDOM: hands the frame to src/post.js as the film grain's seed (bible 1.4; orchestrator ruling: frame-seeded texture)"
   },
   {
    "file": "src/room/",
    "rule": "literal",
    "detail": "^(600|1500)$",
    "match": "MOTES = quality === 'draft' ? 600 : 1500",
-   "reason": "not time: the number of dust motes (bible 4: about 1,500)"
+   "reason": "NOT-TIME: the number of dust motes (bible 4: about 1,500)"
   },
   {
    "file": "src/room/tv.js",
    "rule": "literal",
    "detail": "^72$",
    "match": "72 * k",
-   "reason": "not time: a colour value in a procedural texture"
+   "reason": "NOT-TIME: a colour value in a procedural texture"
   },
   {
    "file": "src/room/tv.js",
    "rule": "literal",
    "detail": "^1080$",
    "match": "heightPx || 1080",
-   "reason": "not time: the default output height for the scanline size"
+   "reason": "NOT-TIME: the default output height for the scanline size"
   },
   {
    "file": "src/post.js",
    "rule": "reads",
    "detail": "^frame$",
    "regex": "frameOf|render\\(scene, camera, overlayCanvas, overlayKey, frame\\)|Number\\.isFinite\\(frame",
-   "reason": "RANDOM: the film grain's seed is hash01(GRAIN_SEED, frame) (bible 1.4)"
+   "reason": "RANDOM: the grain's seed is hash01(GRAIN_SEED, frame), read only in the opt-in grain=film mode; the default grain=static never reads the frame (bible 1.4; orchestrator ruling: frame-seeded texture)"
   },
   {
    "file": "src/subtitles.js",
    "rule": "reads",
    "detail": "^frame$",
    "regex": "at\\(frame\\)|const c = at\\(frame\\)|frame - c\\.start|c\\.end - frame",
-   "reason": "RELATIVE: the subtitle's 3-frame fade, counted from its line's start (a FORMAT or log-caused line, bible 7)"
+   "reason": "RULING: the subtitle's 3-frame fade, counted from its own line's start and end (a FORMAT or log-caused line, bible 7); allowed by the orchestrator"
   },
   {
    "file": "src/programme/index.js",
    "rule": "compare",
    "detail": "^cs <= 0\\.05$",
    "match": "if (cs <= 0.05) continue;",
-   "reason": "not time: cs is the cosine of a music-box pin's angle (the pins turn with the crank)"
+   "reason": "NOT-TIME: cs is the cosine of a music-box pin's angle (the pins turn with the crank)"
   },
   {
    "file": "src/programme/index.js",
@@ -335,17 +328,42 @@
    "reason": "LAB: the x-ray's gauge list for this frame, drawn only when the lab page turns the x-ray on (opts.xray), never in the film"
   },
   {
-   "file": "src/programme/index.js",
+   "file": "src/shots.js",
    "rule": "literal",
-   "regex": "^\\w+: \\[-?\\d+, -?\\d+, -?1\\],?",
-   "reason": "not time: an x-ray label's anchor on the bench (lab page only)"
+   "reason": "AUTHORED: the shot table (bars, lens, push, the programme view per frame) is the camera, allowed as a whole (bible 6, 9; orchestrator ruling). Clocks and ending names in this file still fail"
   },
   {
-   "file": "src/programme/index.js",
-   "rule": "reads",
-   "detail": "^S\\.bar$",
-   "match": "id: 'crank', name: 'Crank'",
-   "reason": "LAB: the x-ray's crank label (bar number), drawn only when the lab page turns the x-ray on"
+   "file": "src/programme/",
+   "rule": "format",
+   "detail": "^chalkTick$",
+   "reason": "FORMAT: S.chalkTick, the chalk tick drawn over frames 1440 to 1441 (bible 3 chalk mark, 9; orchestrator ruling: the FORMAT signals of the 20:00 chalk)"
+  },
+  {
+   "file": "src/programme/hands.js",
+   "rule": "format",
+   "detail": "^CHALK_STICK$",
+   "reason": "NOT-TIME: the chalk stick's length, width and angle in the hand (a shape; the name only starts with CHALK_)"
+  },
+  {
+   "file": "src/programme/hands.js",
+   "rule": "literal",
+   "detail": "^(360|600|1800)$",
+   "match": "left: { rest: [470, 1900], tap: [360, 1800]",
+   "reason": "NOT-TIME: where each forearm's elbow sits for each pose, in bench units"
+  },
+  {
+   "file": "src/programme/hands.js",
+   "rule": "literal",
+   "detail": "^300$",
+   "match": "D = Math.max(300, (BENCH.h + 150 - y)",
+   "reason": "NOT-TIME: how far a leaving hand draws back, in bench units"
+  },
+  {
+   "file": "src/programme/hands.js",
+   "rule": "literal",
+   "detail": "^900$",
+   "match": "(BENCH.h + 140 - wrist[1]) / uy : 900)",
+   "reason": "NOT-TIME: the sleeve's length, in bench units"
   }
  ]
 }

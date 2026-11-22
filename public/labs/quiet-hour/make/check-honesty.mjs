@@ -2,6 +2,8 @@
 // or hears is keyed to film time or to the ending's name, except the FORMAT list in bible section 9.
 //
 //   node make/check-honesty.mjs [--out report.json] [--static-only | --no-test-engine] [--allow make/honesty-allow.json]
+//                               [--runs <runs-dir>]   (passed to make/test-engine.mjs; else QH_RUNS; without it the
+//                                                      engine test skips its checks against the run files, a WARN here)
 //                               [--plant <fixture.js>=<as path>]   (scan a fixture as a film file: proves the scan can fail)
 //
 // Exits 1 if anything fails, 2 on a usage error. Two halves:
@@ -225,11 +227,14 @@ function matchAllow(hit, allow) {
 }
 
 // ---- dynamic: the engine's events against the raw log -------------------------------------------------------------------
-function dynamic(skipTestEngine) {
+function dynamic(skipTestEngine, runs) {
   const res = { testEngine: null, events: {} , failures: [], warnings: [] };
   if (skipTestEngine) { res.testEngine = { exit: null, summary: 'skipped (--no-test-engine)' }; res.warnings.push('make/test-engine.mjs was not run (--no-test-engine)'); return res; }
   // 1. the engine's own test, as it is
-  const t = spawnSync('nice', ['-n', '5', process.execPath, path.join(HERE, 'test-engine.mjs')], { encoding: 'utf8', maxBuffer: 64 << 20 });
+  const runsDir = runs ? path.resolve(runs) : (process.env.QH_RUNS || null);
+  if (runsDir && !fs.existsSync(runsDir)) { res.failures.push(`runs folder not found: ${runsDir}`); return res; }
+  if (!runsDir) res.warnings.push('no --runs <dir> (or QH_RUNS): make/test-engine.mjs skipped its checks against the run files');
+  const t = spawnSync('nice', ['-n', '5', process.execPath, path.join(HERE, 'test-engine.mjs'), ...(runsDir ? [runsDir] : [])], { encoding: 'utf8', maxBuffer: 64 << 20 });
   const out = (t.stdout || '') + (t.stderr || '');
   let section = '?';
   const bySection = {};
@@ -239,8 +244,9 @@ function dynamic(skipTestEngine) {
     if (/^FAIL /.test(line)) (bySection[section] ||= []).push(line.slice(5));
   }
   const summary = /(\d+) checks, (\d+) failed/.exec(out);
-  res.testEngine = { exit: t.status, summary: summary ? summary[0] : out.trim().split('\n').slice(-3).join(' | '), failsBySection: bySection };
+  res.testEngine = { runs: runsDir, exit: t.status, summary: summary ? summary[0] : out.trim().split('\n').slice(-3).join(' | '), failsBySection: bySection };
   for (const sec of ['2', '5', '8']) for (const f of bySection[sec] || []) res.failures.push(`test-engine section ${sec}: ${f}`);
+  if (summary && t.status !== 0 && !Object.keys(bySection).length) res.failures.push(`test-engine exited ${t.status}`);
   if (!summary) res.failures.push(`test-engine did not finish: ${out.trim().split('\n').slice(-4).join(' | ')}`);
   for (const [sec, fs_] of Object.entries(bySection)) if (!['2', '5', '8'].includes(sec)) res.warnings.push(`test-engine section ${sec} (not an honesty section): ${fs_.length} FAIL, first: ${fs_[0]}`);
   return res;
@@ -394,7 +400,7 @@ async function eventsAudit(res) {
 }
 
 // ---- main ------------------------------------------------------------------------------------------------------------
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const a = args(process.argv.slice(2));
   const allowFile = path.resolve(a.allow || path.join(HERE, 'honesty-allow.json'));
   let allow = [];
@@ -426,7 +432,7 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   for (const s of stale) L.push(`    stale allow entry (matches nothing now): ${s.file} [${s.rule}] ${s.detail ? 'detail /' + s.detail + '/ ' : ''}"${s.match ?? s.regex ?? ''}"`);
   let dyn = { failures: [], warnings: [] };
   if (!a['static-only']) {
-    dyn = dynamic(a['no-test-engine']);
+    dyn = dynamic(a['no-test-engine'], typeof a.runs === 'string' ? a.runs : null);
     try { await eventsAudit(dyn); } catch (e) { dyn.failures.push(`the engine could not be built or audited: ${e.message}`); }
     L.push(`  dynamic: test-engine.mjs: ${dyn.testEngine.summary} (exit ${dyn.testEngine.exit})`);
     for (const [name, r] of Object.entries(dyn.events)) L.push(`    ${name}: ${r.total} events, ${r.format} FORMAT, ${r.failed} failed${r.unchecked.length ? `; values matched but no condition check for: ${r.unchecked.join(', ')}` : ''}`);
