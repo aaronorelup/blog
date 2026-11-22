@@ -7,14 +7,17 @@
 // GRAIN has three modes (createPost's `grain` option; when the caller passes none, the page's ?grain= query
 // parameter; when there is none of those either, 'static'):
 //   'static'  the film's and the lab page's default. One fixed fine pattern that never changes with the frame:
-//             pixel (x, y) (y counted up from the bottom row) gets hash01(GRAIN_SEED, x, y, 0) of ./rng.js, used as a
-//             dither of about one code value either way (triangular) just before the frame is cut to 8 bits, so the
-//             dark walls do not band. It is not a texture: it is under the eye's threshold, it has no shape, and
-//             because it never moves a video encoder pays for it once, not every frame.
+//             pixel (x, y) (y counted up from the bottom row) gets hash01(GRAIN_SEED, x, y, 0) of ./rng.js (ported bit
+//             for bit; checked against rng.js on rendered frames), used as a dither of one code value either way
+//             (triangular) just before the frame is cut to 8 bits, so the dark walls do not band. It is not a texture:
+//             it is under the eye's threshold and has no shape (its block means and autocorrelation are white
+//             noise's), and because it never moves a video encoder pays for it in its key frames, not in every frame.
 //   'film'    grain that changes with every frame (seeded by hash01(GRAIN_SEED, frame)): monochrome, multiplicative,
-//             two staggered lattices of 2 px cells, 2% of the value. For comparison only: measured on this box,
-//             per-frame grain multiplies the H.264 bitrate several times over.
+//             two staggered lattices of 2 px cells, 2% of the value. For comparison only.
 //   'off'     neither. The 8-bit frames band in the dark walls.
+// Measured on this box (36 frames at 1080p, x264 slow, CRF 20, frames after the first): a locked WIDE A costs
+// 0.42 Mbit/s with 'off', 0.45 with 'static' and 0.53 with 'film'; a SCREEN shot 2.68, 2.69 and 2.66 (there the
+// scrolling picture is the cost). The key frame grows by about 60% (wide) and 20% (SCREEN) with 'static'.
 // Whatever the mode, the grade is a pure function of (frame, pixel): no feedback, no previous frame.
 //
 // Built for software WebGL, where every full-frame pass, render target, resolve or mip chain costs real time at

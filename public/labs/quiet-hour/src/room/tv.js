@@ -368,7 +368,7 @@ export function createTV({ THREE, programmeTexture, anchors }) {
     const C = anchors.cabinet;
     if (!C) return null;
     const x0 = C.x - C.w / 2 + 0.008, x1 = C.x + C.w / 2 - 0.008, y1 = C.h - 0.0005, y0 = C.h - 0.034, z = C.z + C.d / 2 + 0.004;
-    const part = gridPart(72, 6, (u, v) => {
+    const part = gridPart(70, 6, (u, v) => {
       const x = x0 + (x1 - x0) * u, y = y0 + (y1 - y0) * v;
       const dx = Math.max(Math.abs(x - S0.x) - S0.w / 2, 0);            // sideways from under the tube
       const a = sstep(y0, C.h - 0.012, y) * Math.exp(-dx / GLOW.edgeScale) * sstep(0, 0.03, Math.min(x - x0, x1 - x));
