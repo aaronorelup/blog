@@ -65,18 +65,13 @@ export function dialAngle(v) {
   const t = Math.log(v / DIAL.min) / Math.log(DIAL.max / DIAL.min);
   return DIAL.a0 + Math.min(1, Math.max(0, t)) * (DIAL.a1 - DIAL.a0);
 }
-// the chalk tick, in dial radii along the limit's angle: it grows from r0 outward to r0 + (r1 - r0) x S.chalkTick,
-// so its end is where the hand's chalk tip is (./programme/hands.js chalkTip uses the same two numbers)
-export const CHALK_TICK = { r0: 0.8, r1: 1.16 };
 export const CHALK_TEXT = { dx: 24, dy: 18 };                   // the chalked number, offset from the mark's outer end
 export const KNOB = { x: 1010, y: 905, r: 46, clicksPerTurn: 24 }; // turns with the needle; ratchet of 24 clicks
 export const FLAGS = { x: 1050, y: 620, w: 300, h: 80, n: 10 };  // NEW TUNES: ten brass flags, OF TEN
 export const SHARE_DRUM = { x: 1050, y: 712, w: 84, h: 44 };     // two-digit drum, round(100 x share)
 export const LESSONS = { x: 1146, y: 712, w: 204, h: 44 };       // six-digit odometer, steps so far
 export const BOX = { x: 1370, y: 600, w: 190, h: 300 };          // the music box (the strip feeds into it)
-// the lid, hinged on the box's top edge. Standing open it shows only its edge (`edge` units); closing, its lower edge
-// is at y + max(edge, h x sin(S.lidClosed x 90 deg)), which is where ./programme/hands.js puts the left hand
-export const LID = { x: 1370, y: 600, w: 190, h: 300, hinge: 'top', edge: 10 };
+export const LID = { x: 1370, y: 600, w: 190, h: 300, hinge: 'top' };
 export const CRANK = { x: 1465, y: 1000, r: 70 };                // axle; the handle is at radius r; 1 turn per bar
 // the bench's still life, lower left (static; nothing reads them): lesson cards, a pencil, the chalk tray
 export const PROPS = {

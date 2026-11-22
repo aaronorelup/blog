@@ -13,12 +13,10 @@
 // The control panel needs room beside the tube, so the case runs further to the right of the tube than to its left
 // (it is wider than anchors.tv.w; it still sits well inside the cabinet).
 //
-// The glow, so the eye finds the set as the room's light source at once: the tube lights its own bezel, case front,
-// knobs and grille (a term added to those materials, falling off with distance from the tube's edge), and three small
-// baked meshes carry its light into the room: a veil of haze round the tube, a pool on the cabinet top with a band
-// along the top's front edge, and the light on the wall behind the set, which is multiplied into the wall so its own
-// colour and stripes brighten. All of it is the programme canvas's mean colour (the last level of the canvas
-// texture's mip chain) times a fixed falloff, so the room's light and this glow agree and nothing here has a clock.
+// The glow: the tube lights its own bezel, case front, knobs and grille (a term added to those materials: the
+// programme canvas's mean colour, which is the last level of the canvas texture's mip chain, falling off with
+// distance from the tube's edge), plus two additive quads: a faint haze round the tube and a soft halo on the wall
+// behind the set. All of it reads only the canvas, so the room's light and this glow agree.
 //
 // Textures (walnut, grille cloth) are made once at load from fixed seeds (hash01). Nothing here keeps state between
 // frames: update() sets uniforms from this frame's camera and S only. It also writes S.frame on group.userData.frame
@@ -192,12 +190,12 @@ export function createTV({ THREE, programmeTexture, anchors }) {
   // baked at load into one mesh per material (7 draws in all, none casting shadows: the screen light stands in front
   // of the set's face, so nothing of the set is in its beam). Big flat faces that are never seen take the cheapest
   // material.
-  const parts = { walnut: [], dark: [], brass: [], cloth: [], flat: [] };
+  const parts = { walnut: [], dark: [], brass: [], cloth: [], flat: [], glow: [] };
   const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _e = new THREE.Euler(), _v = new THREE.Vector3(), _one = new THREE.Vector3(1, 1, 1);
-  const part = (bucket, geo, { x = 0, y = 0, z = 0, rx = 0, rz = 0, color = null } = {}) => {
+  const part = (bucket, geo, { x = 0, y = 0, z = 0, rx = 0, rz = 0, color = null, kind = 0 } = {}) => {
     const g = geo.index ? geo.toNonIndexed() : geo.clone();
     g.applyMatrix4(_m.compose(_v.set(x, y, z), _q.setFromEuler(_e.set(rx, 0, rz)), _one));
-    g.userData = { color };
+    g.userData = { color, kind };
     parts[bucket].push(g);
   };
   const groupOf = (geo, gi) => {                                        // one material group of a non-indexed geometry
@@ -210,7 +208,7 @@ export function createTV({ THREE, programmeTexture, anchors }) {
   };
   const merged = (list) => {
     const n = list.reduce((a, g) => a + g.attributes.position.count, 0);
-    const pos = new Float32Array(n * 3), nrm = new Float32Array(n * 3), uv = new Float32Array(n * 2), col = new Float32Array(n * 3);
+    const pos = new Float32Array(n * 3), nrm = new Float32Array(n * 3), uv = new Float32Array(n * 2), col = new Float32Array(n * 3), kind = new Float32Array(n);
     let o = 0;
     for (const g of list) {
       const c = g.attributes.position.count;
@@ -218,12 +216,13 @@ export function createTV({ THREE, programmeTexture, anchors }) {
       if (g.attributes.normal) nrm.set(g.attributes.normal.array, o * 3);
       if (g.attributes.uv) uv.set(g.attributes.uv.array, o * 2);
       const cc = new THREE.Color(g.userData.color ?? 0xffffff);
-      for (let i = 0; i < c; i++) { col[(o + i) * 3] = cc.r; col[(o + i) * 3 + 1] = cc.g; col[(o + i) * 3 + 2] = cc.b; }
+      for (let i = 0; i < c; i++) { col[(o + i) * 3] = cc.r; col[(o + i) * 3 + 1] = cc.g; col[(o + i) * 3 + 2] = cc.b; kind[o + i] = g.userData.kind; }
       o += c; g.dispose();
     }
     const out = new THREE.BufferGeometry();
     out.setAttribute('position', new THREE.BufferAttribute(pos, 3)); out.setAttribute('normal', new THREE.BufferAttribute(nrm, 3));
     out.setAttribute('uv', new THREE.BufferAttribute(uv, 2)); out.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    out.setAttribute('kind', new THREE.BufferAttribute(kind, 1));
     out.computeBoundingSphere();
     return out;
   };
@@ -289,139 +288,37 @@ export function createTV({ THREE, programmeTexture, anchors }) {
   }
   for (const g of [knobGeo, capGeo, tickGeo, footGeo, shoeGeo]) g.dispose();
 
-  // ---- glow: the set as the room's light source (all of it coloured by the canvas mean, all of it baked) -----------
-  // Three layers, each a small mesh whose falloff is worked out per vertex at load (attribute ga), so a fragment
-  // costs nothing but a blend:
-  //   veil   additive, a ring round the tube just in front of the set: a tight haze on the bezel and a wide, faint
-  //          one over whatever is behind it (halation). No fragments over the picture;
-  //   top    additive, on the cabinet top: a pool round the set's base, strongest at the front, none under the set,
-  //          and a band along the top's front edge, brightest under the tube (the varnished edge catching it);
-  //   wall   multiplied in (the frame times 1 + glow), on the wall behind the set, falling off from the set's
-  //          outline: the wall's own colour and stripes get brighter, as a lit wall does. It stops short of the
-  //          doorway and the window.
-  // Smooth light added to an 8-bit frame bands, so the additive layers dither themselves with qhRand (src/post.js).
-  const GLOW = {
-    veilTight: 0.10, veilWide: 0.11, veilScale: 0.14, veilReach: 0.5,     // additive strengths (x canvas mean), metres
-    top: 0.44, topScale: 0.10, edge: 0.42, edgeScale: 0.22, wood: [1.0, 0.86, 0.70],   // wood: the varnished walnut's tint
-    wall: 5.0, wallScale: 0.24, wallReach: 0.75,                          // the wall is multiplied by 1 + wall x mean x a
-  };
-  const sstep = (e0, e1, x) => { const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0))); return t * t * (3 - 2 * t); };
-  const sdBox = (px, py, hx, hy, r) => {                                 // signed distance to a rounded box
-    const qx = Math.abs(px) - hx + r, qy = Math.abs(py) - hy + r;
-    return Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - r;
-  };
-  const glowGeo = (list) => {                                            // [{ pos, ga, idx, tint? }] -> one geometry
-    const pos = [], ga = [], idx = [];
-    for (const g of list) {
-      const o = pos.length / 3, t = g.tint ?? [1, 1, 1];                 // tint: the lit surface's own colour
-      pos.push(...g.pos); for (const a of g.ga) ga.push(a * t[0], a * t[1], a * t[2]); for (const i of g.idx) idx.push(i + o);
-    }
-    const out = new THREE.BufferGeometry();
-    out.setAttribute('position', new THREE.BufferAttribute(new Float32Array(pos), 3));
-    out.setAttribute('ga', new THREE.BufferAttribute(new Float32Array(ga), 3));
-    out.setIndex(idx); out.computeBoundingSphere();
-    return out;
-  };
-  const gridPart = (nx, ny, at) => {                                     // at(u, v) -> [x, y, z, a]
-    const pos = [], ga = [], idx = [];
-    for (let j = 0; j <= ny; j++) for (let i = 0; i <= nx; i++) { const v = at(i / nx, j / ny); pos.push(v[0], v[1], v[2]); ga.push(v[3]); }
-    for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) { const q = j * (nx + 1) + i; idx.push(q, q + 1, q + nx + 2, q, q + nx + 2, q + nx + 1); }
-    return { pos, ga, idx };
-  };
-  // the veil: strips round the tube's rounded outline, at these distances from its edge
-  const veilPart = (() => {
-    const hw = S0.w / 2, hh = S0.h / 2, r = 0.03, z = zFront + 0.04, per = [];   // per: [px, py, nx, ny] round the outline
-    const corner = (cxx, cyy, a0) => { for (let k = 0; k <= 8; k++) { const a = a0 + k / 8 * Math.PI / 2, c = Math.cos(a), sn = Math.sin(a); per.push([cxx + r * c, cyy + r * sn, c, sn]); } };
-    const edge = (x0, y0, x1, y1, nx, ny) => { for (let k = 1; k < 8; k++) per.push([x0 + (x1 - x0) * k / 8, y0 + (y1 - y0) * k / 8, nx, ny]); };
-    corner(hw - r, hh - r, 0); edge(hw - r, hh, -hw + r, hh, 0, 1);
-    corner(-hw + r, hh - r, Math.PI / 2); edge(-hw, hh - r, -hw, -hh + r, -1, 0);
-    corner(-hw + r, -hh + r, Math.PI); edge(-hw + r, -hh, hw - r, -hh, 0, -1);
-    corner(hw - r, -hh + r, Math.PI * 1.5); edge(hw, -hh + r, hw, hh - r, 1, 0);
-    const offs = [0, 0.002, 0.004, 0.008, 0.014, 0.022, 0.034, 0.05, 0.075, 0.11, 0.16, 0.23, 0.31, 0.40, GLOW.veilReach];
-    const alpha = (d) => GLOW.veilTight * Math.exp(-d / 0.022) * sstep(0, 0.004, d) * (1 - sstep(0.08, 0.12, d))
-      + GLOW.veilWide * Math.exp(-d / GLOW.veilScale) * sstep(0, 0.02, d) * (1 - sstep(0.6 * GLOW.veilReach, GLOW.veilReach, d));
-    const pos = [], ga = [], idx = [], n = per.length;
-    for (const d of offs) for (const [px, py, nx, ny] of per) { pos.push(S0.x + px + nx * d, S0.y + py + ny * d, z); ga.push(alpha(d)); }
-    for (let k = 0; k + 1 < offs.length; k++) for (let i = 0; i < n; i++) {
-      const a0 = k * n + i, a1 = k * n + (i + 1) % n, b0 = a0 + n, b1 = a1 + n;
-      idx.push(a0, a1, b1, a0, b1, b0);
-    }
-    return { pos, ga, idx };
-  })();
-  // the pool on the cabinet top
-  const topPart = (() => {
-    const C = anchors.cabinet;
-    if (!C) return null;
-    const x0 = C.x - C.w / 2 + 0.012, x1 = C.x + C.w / 2 - 0.012, z0 = C.z - C.d / 2 + 0.012, z1 = C.z + C.d / 2 - 0.012, y = C.h + 0.0012;
-    const fcx = (xL + xR) / 2, fcz = (zBack + zFront) / 2, fhx = (xR - xL) / 2, fhz = (zFront - zBack) / 2;
-    const part = gridPart(64, 22, (u, v) => {
-      const x = x0 + (x1 - x0) * u, z = z0 + (z1 - z0) * v;
-      const d = sdBox(x - fcx, z - fcz, fhx, fhz, 0.02);                // from the set's footprint: under it, d < 0
-      const a = Math.exp(-Math.max(d, 0) / GLOW.topScale) * sstep(-0.03, 0.004, d) * (0.4 + 0.6 * sstep(zBack, zFront, z))
-        * sstep(-0.012, 0.012, Math.min(x - x0, x1 - x, z - z0, z1 - z));   // eases off toward the top's rounded edges
-      return [x, y, z, GLOW.top * a];
-    });
-    return { ...part, tint: GLOW.wood };
-  })();
-  // the top's front edge: a band on a plane a hair in front of the cabinet, from the top surface down 3 cm
-  const edgePart = (() => {
-    const C = anchors.cabinet;
-    if (!C) return null;
-    const x0 = C.x - C.w / 2 + 0.008, x1 = C.x + C.w / 2 - 0.008, y1 = C.h - 0.0005, y0 = C.h - 0.034, z = C.z + C.d / 2 + 0.004;
-    const part = gridPart(70, 6, (u, v) => {
-      const x = x0 + (x1 - x0) * u, y = y0 + (y1 - y0) * v;
-      const dx = Math.max(Math.abs(x - S0.x) - S0.w / 2, 0);            // sideways from under the tube
-      const a = sstep(y0, C.h - 0.012, y) * Math.exp(-dx / GLOW.edgeScale) * sstep(0, 0.03, Math.min(x - x0, x1 - x));
-      return [x, y, z, GLOW.edge * a];
-    });
-    return { ...part, tint: GLOW.wood };
-  })();
-  // the light on the wall behind the set
-  const wallPart = (() => {
-    const zW = (anchors.backWallZ ?? -3) + 0.004, R = GLOW.wallReach;
-    const D = anchors.doorway, Wn = anchors.window, H = anchors.size?.h ?? 2.5;
-    const xLim0 = D ? D.x + D.w / 2 + 0.03 : xL - R - 1, xLim1 = Wn ? Wn.x - Wn.w / 2 - 0.03 : xR + R + 1;   // the wall's own ends
-    const x0 = Math.max(xL - R, xLim0), x1 = Math.min(xR + R, xLim1), y0 = Math.max(T.y - 0.4, 0.12), y1 = Math.min(yTop + R, H - 0.03);
-    const ccx = (xL + xR) / 2, ccy = (T.y + yTop) / 2, chx = (xR - xL) / 2, chy = (yTop - T.y) / 2;
-    return gridPart(Math.ceil((x1 - x0) / 0.035), Math.ceil((y1 - y0) / 0.035), (u, v) => {
-      const x = x0 + (x1 - x0) * u, y = y0 + (y1 - y0) * v;
-      const d = Math.max(sdBox(x - ccx, y - ccy, chx, chy, 0.04), 0);    // from the set's outline
-      const a = Math.exp(-d / GLOW.wallScale) * (1 - sstep(0.55 * R, R, d))
-        * sstep(xLim0, xLim0 + 0.14, x) * sstep(xLim1, xLim1 - 0.14, x) * sstep(y0, y0 + 0.1, y) * sstep(y1, y1 - 0.1, y);
-      return [x, y, zW, a];
-    });
-  })();
-  const glowVert = /* glsl */`
-    attribute vec3 ga; uniform sampler2D uProg; uniform float uGain; varying vec3 vC;
-    void main() {
-      vC = textureLod(uProg, vec2(0.5), 12.0).rgb * (ga * uGain);       // the canvas mean (last mip level) x falloff
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }`;
-  const glowBase = { transparent: true, depthWrite: false, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 };
-  const addMat = new THREE.ShaderMaterial({
-    ...glowBase, uniforms: { uProg: glow.uProg, uGain: { value: 1 } }, blending: THREE.AdditiveBlending, vertexShader: glowVert,
-    fragmentShader: /* glsl */`
-      varying vec3 vC;
+  // ---- glow: a haze ring round the tube (kind 0) and a halo on the wall behind the set (kind 1), additive, coloured
+  // by the canvas mean. The ring has no fragments over the picture.
+  const HZ = 0.12, zWall = (anchors.backWallZ ?? -3) + 0.004, wall = { hw: 0.95, hh: 0.68, x: S0.x + 0.05, y: S0.y + 0.12 };
+  {
+    const outer = roundedRect(THREE, new THREE.Shape(), -S0.w / 2 - HZ, -S0.h / 2 - HZ, S0.w + 2 * HZ, S0.h + 2 * HZ, 0.03 + HZ);
+    outer.holes.push(roundedRect(THREE, new THREE.Path(), -S0.w / 2, -S0.h / 2, S0.w, S0.h, 0.03));
+    part('glow', new THREE.ShapeGeometry(outer, 6), { x: S0.x, y: S0.y, z: zFront + 0.02, kind: 0 });
+    part('glow', new THREE.PlaneGeometry(2 * wall.hw, 2 * wall.hh), { x: wall.x, y: wall.y, z: zWall, kind: 1 });
+  }
+  const glowMat = new THREE.ShaderMaterial({
+    uniforms: { uProg: glow.uProg, uTube: { value: new THREE.Vector2(S0.x, S0.y) }, uTubeHalf: { value: new THREE.Vector2(S0.w / 2, S0.h / 2) },
+      uWall: { value: new THREE.Vector4(wall.x, wall.y, wall.hw, wall.hh) }, uStrength: { value: new THREE.Vector2(0.10, 0.09) } },
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false,
+    polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
+    vertexShader: 'attribute float kind; varying vec2 vW; varying float vK; void main(){ vW = position.xy; vK = kind; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+    fragmentShader: `
+      uniform sampler2D uProg; uniform vec2 uTube, uTubeHalf, uStrength; uniform vec4 uWall; varying vec2 vW; varying float vK;
+      float sdRR(vec2 p, vec2 b, float r) { vec2 q = abs(p) - b + r; return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r; }
       void main() {
-        vec3 c = vC;
-        #ifdef QH_GRADE
-        c = floor(c * 255.0 + qhRand()) / 255.0;                         // whole code values, rounded up or down by chance
-        #endif
-        gl_FragColor = vec4(c, 1.0);
+        vec3 avg = textureLod(uProg, vec2(0.5), 12.0).rgb;
+        float a;
+        if (vK < 0.5) {
+          float d = sdRR(vW - uTube, uTubeHalf, 0.03);
+          a = exp(-max(d, 0.0) / 0.022) * smoothstep(0.0, 0.004, d) * (1.0 - smoothstep(0.08, 0.12, d)) * uStrength.x;
+        } else {
+          vec2 e = (vW - uWall.xy) / uWall.zw, k = e * vec2(1.0, 1.25);
+          a = exp(-dot(k, k) * 3.2) * (1.0 - smoothstep(0.8, 1.0, max(abs(e.x), abs(e.y)))) * uStrength.y;
+        }
+        gl_FragColor = vec4(avg * a, 1.0);
       }`,
   });
-  const mulMat = new THREE.ShaderMaterial({
-    ...glowBase, uniforms: { uProg: glow.uProg, uGain: { value: GLOW.wall } }, vertexShader: glowVert, toneMapped: false,
-    blending: THREE.CustomBlending, blendEquation: THREE.AddEquation, blendSrc: THREE.DstColorFactor, blendDst: THREE.OneFactor,
-    blendSrcAlpha: THREE.ZeroFactor, blendDstAlpha: THREE.OneFactor,      // frame x (1 + glow); alpha untouched
-    // no dither of its own: it multiplies a wall that the grade has already dithered, which breaks its steps up too
-    fragmentShader: 'varying vec3 vC; void main() { gl_FragColor = vec4(clamp(vC, 0.0, 1.0), 1.0); }',
-  });
-  const glowMesh = (parts2, mat, name) => {
-    const m = new THREE.Mesh(glowGeo(parts2.filter(Boolean)), mat);
-    m.castShadow = false; m.receiveShadow = false; m.renderOrder = 2; m.name = name;
-    group.add(m); return m;
-  };
 
   // ---- one mesh per material ------------------------------------------------------------------------------------------
   const meshOf = (bucket, mat, order) => {
@@ -434,8 +331,7 @@ export function createTV({ THREE, programmeTexture, anchors }) {
   meshOf('walnut', walnut, 0);
   meshOf('brass', brass, 0);
   meshOf('cloth', clothMat, 0);
-  glowMesh([wallPart], mulMat, 'qh-tv-wall-light');
-  glowMesh([topPart, edgePart, veilPart], addMat, 'qh-tv-glow');
+  meshOf('glow', glowMat, 2);
 
   // ---- per frame -----------------------------------------------------------------------------------------------------
   const tmpA = new THREE.Vector3(), tmpB = new THREE.Vector3();

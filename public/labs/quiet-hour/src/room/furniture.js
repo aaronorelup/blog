@@ -3,11 +3,11 @@
 // framed print and a few books. update(S) moves the clock's hands and the spoon; the tea is ./tea.js.
 
 import * as THREE from 'three';
-import { tex, roundedBox, boxUV, contactShadow, smoothNormals, pile } from './mats.js';
+import { tex, roundedBox, boxUV, contactShadow } from './mats.js';
 import * as T from './textures.js';
 import { hash01 } from '../rng.js';
 
-export function createFurniture({ ROOM, screen }) {
+export function createFurniture({ ROOM }) {
   const group = new THREE.Group();
   const add = (m, parent = group, cast = true, recv = true) => { m.castShadow = cast; m.receiveShadow = recv; parent.add(m); return m; };
   const walnutTex = tex(T.walnut(), { repeat: [1.6, 1.6] });
@@ -47,15 +47,15 @@ export function createFurniture({ ROOM, screen }) {
       m.position.set(bx + bw / 2, C.h + bh / 2, -0.06); m.rotation.z = i === 6 ? -0.18 : 0; bx += bw + 0.002;
     }
     const lie = add(new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.03, 0.14), new THREE.MeshLambertMaterial({ color: 0x3c4a5a })), g);
-    lie.position.set(C.w / 2 - 0.17, C.h + 0.015, -0.1); lie.rotation.y = -0.2;       // right of the set, under the dish
+    lie.position.set(-C.w / 2 + 0.36, C.h + 0.015, -0.02); lie.rotation.y = 0.15;
     const dish = add(new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.04, 0.02, 20), brass), g);
-    dish.position.set(C.w / 2 - 0.16, C.h + 0.04, -0.09);
+    dish.position.set(C.w / 2 - 0.15, C.h + 0.01, 0.02);
   }
 
-  // ---- the rug, under the chair's front feet and in front of the set (a hair above the boards) ----
+  // ---- the rug, under the chair and in front of the set (a hair above the boards) ----
   {
     const rg = new THREE.Mesh(new THREE.PlaneGeometry(2.1, 1.45), new THREE.MeshLambertMaterial({ map: tex(T.rug(), { aniso: 8 }) }));
-    rg.rotation.x = -Math.PI / 2; rg.rotation.z = Math.PI / 2 + 0.03; rg.position.set(ROOM.chair.x + 0.02, 0.004, -1.3);
+    rg.rotation.x = -Math.PI / 2; rg.rotation.z = Math.PI / 2 + 0.04; rg.position.set(-0.2, 0.004, -1.25);
     rg.receiveShadow = true; group.add(rg);
   }
 
@@ -86,68 +86,62 @@ export function createFurniture({ ROOM, screen }) {
     pic.position.z = 0.026;
   }
 
-  // ---- the empty wing chair, in front of the set, its back to WIDE A ----
-  // Chair-local: it faces -z (the set), its back is at +z. Upholstered in a worn moss velvet: every box is a
-  // rounded, smooth-shaded cushion, the arms are rolled, the wings curve forward from the back.
+  // ---- the empty wing chair: back to WIDE A, turned to the set ----
   const ch = ROOM.chair;
   const chair = new THREE.Group(); chair.position.set(ch.x, 0, ch.z); chair.rotation.y = ch.rotY; group.add(chair);
   const velvetTex = tex(T.velvet(), { repeat: [2, 2] });
-  const uph = pile(new THREE.MeshLambertMaterial({ map: velvetTex }), screen, { rim: 1.3, sheen: 2.2, key: 'velvet' });
+  const uph = new THREE.MeshLambertMaterial({ map: velvetTex });
   {
-    const cushion = (w, h, d, r) => smoothNormals(boxUV(roundedBox(w, h, d, r, 4), 2));
-    const part = (geo, x, y, z, rx = 0, ry = 0, rz = 0) => { const m = add(new THREE.Mesh(geo, uph), chair); m.position.set(x, y, z); m.rotation.set(rx, ry, rz); return m; };
-    part(cushion(0.80, 0.27, 0.76, 0.045), 0, 0.245, 0);                        // the base, down to the feet
-    part(cushion(0.57, 0.14, 0.62, 0.06), 0, 0.435, -0.06);                     // seat cushion
-    part(cushion(0.66, 0.76, 0.17, 0.065), 0, 0.77, 0.325, 0.1);                // the back, reclined a little
-    part(cushion(0.53, 0.50, 0.13, 0.06), 0, 0.73, 0.2, 0.13);                  // the loose back cushion
-    // a rolled arm: a turned bolster with slightly domed ends, on a rounded panel
-    const R = 0.082, L = 0.72;
-    const prof = [[0, -L / 2 - 0.012], [R * 0.5, -L / 2 - 0.01], [R * 0.86, -L / 2 - 0.002], [R, -L / 2 + 0.022], [R, L / 2 - 0.022], [R * 0.86, L / 2 + 0.002], [R * 0.5, L / 2 + 0.01], [0, L / 2 + 0.012]];   // bottom to top
-    const rollGeo = new THREE.LatheGeometry(prof.map(([r, y]) => new THREE.Vector2(r, y)), 28);
-    rollGeo.rotateX(Math.PI / 2);
+    const part = (geo, x, y, z, rx = 0, ry = 0, rz = 0) => { const m = add(new THREE.Mesh(boxUV(geo, 2), uph), chair); m.position.set(x, y, z); m.rotation.set(rx, ry, rz); return m; };
+    // chair local: faces -z (the set), back at +z
+    part(roundedBox(0.8, 0.26, 0.78, 0.04), 0, 0.24, 0);                       // base
+    part(roundedBox(0.56, 0.12, 0.62, 0.05), 0, 0.42, -0.05);                  // seat cushion
+    part(roundedBox(0.66, 0.74, 0.16, 0.05), 0, 0.76, 0.33, -0.12);            // back
+    part(roundedBox(0.5, 0.3, 0.12, 0.05), 0, 0.6, 0.22, -0.2);                // back cushion (lumbar)
     for (const sx of [-1, 1]) {
-      part(cushion(0.13, 0.33, 0.70, 0.05), sx * 0.345, 0.49, -0.02);            // arm panel
-      part(rollGeo, sx * 0.358, 0.655, -0.03);
-      // the wing: a curved slab from the back's side, forward and down to the arm
+      part(roundedBox(0.12, 0.3, 0.7, 0.04), sx * 0.34, 0.5, -0.02);           // arm panel
+      const roll = add(new THREE.Mesh(boxUV(new THREE.CylinderGeometry(0.075, 0.075, 0.72, 16), 2), uph), chair);
+      roll.rotation.x = Math.PI / 2; roll.position.set(sx * 0.35, 0.65, -0.03);
+      // the wing: a curved panel from the back forward, high at the back
       const ws = new THREE.Shape();
-      ws.moveTo(0.02, 0); ws.lineTo(0.02, 0.4); ws.quadraticCurveTo(0.03, 0.51, -0.1, 0.52);
-      ws.quadraticCurveTo(-0.27, 0.5, -0.3, 0.3); ws.quadraticCurveTo(-0.31, 0.15, -0.25, 0.0); ws.closePath();
-      const wg = new THREE.ExtrudeGeometry(ws, { depth: 0.05, bevelEnabled: true, bevelThickness: 0.03, bevelSize: 0.03, bevelSegments: 4, curveSegments: 14 });
-      wg.translate(0, 0, -0.025);                                              // centre the slab on its own plane
+      ws.moveTo(0, 0); ws.lineTo(0.0, 0.4); ws.quadraticCurveTo(0.02, 0.5, -0.1, 0.52);
+      ws.quadraticCurveTo(-0.27, 0.5, -0.3, 0.3); ws.quadraticCurveTo(-0.31, 0.15, -0.26, 0.0); ws.closePath();
+      const wg = new THREE.ExtrudeGeometry(ws, { depth: 0.06, bevelEnabled: true, bevelThickness: 0.025, bevelSize: 0.025, bevelSegments: 3, curveSegments: 10 });
       wg.computeVertexNormals();
-      const wing = part(smoothNormals(boxUV(wg, 2), 60), sx * 0.375, 0.6, 0.36);
-      wing.rotation.y = -Math.PI / 2;                                           // the shape's -x is the chair's front
+      const wing = add(new THREE.Mesh(boxUV(wg, 2), uph), chair);
+      wing.rotation.y = -Math.PI / 2; wing.position.set(sx * 0.37 - 0.03, 0.6, 0.36);
     }
+    const legMat = walnutDark;
     for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
-      const leg = add(new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.016, 0.115, 12), walnutDark), chair);
-      leg.position.set(sx * 0.33, 0.0575, sz * 0.31);
+      const leg = add(new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.016, 0.11, 10), legMat), chair);
+      leg.position.set(sx * 0.34, 0.055, sz * 0.32);
     }
-    const cs = contactShadow(rectTex, 1.08, 1.06, 0.62); cs.position.set(0, 0.003, 0.02); chair.add(cs);
+    const cs = contactShadow(rectTex, 1.05, 1.05, 0.6); cs.position.set(0, 0.003, 0.02); chair.add(cs);
   }
 
   // ---- the folded blanket over the chair's left arm (cream knit, three layers thick) ----
   {
     const knitTex = tex(T.knit(), { repeat: [7, 7] });
-    // profile in chair-local (x, y): inside on the seat, up over the rolled arm, down its outside
-    const P = [[-0.14, 0.515], [-0.22, 0.535], [-0.285, 0.67], [-0.345, 0.752], [-0.42, 0.728], [-0.458, 0.6], [-0.462, 0.37]];
+    const prof = [];                                         // profile in chair-local (x, y): inside on the seat, over the arm, down outside
+    const P = [[-0.16, 0.49], [-0.24, 0.52], [-0.3, 0.66], [-0.35, 0.735], [-0.42, 0.7], [-0.445, 0.58], [-0.445, 0.36]];
     const curve = new THREE.CatmullRomCurve3(P.map(([x, y]) => new THREE.Vector3(x, y, 0)));
-    const pts = curve.getPoints(36);
-    const th = 0.036, s = new THREE.Shape();
+    const pts = curve.getPoints(28);
+    const th = 0.035, s = new THREE.Shape();
     const norm = (i) => { const a = pts[Math.max(0, i - 1)], b = pts[Math.min(pts.length - 1, i + 1)]; const t = b.clone().sub(a).normalize(); return new THREE.Vector2(-t.y, t.x); };
     pts.forEach((p, i) => { const n = norm(i); (i ? s.lineTo.bind(s) : s.moveTo.bind(s))(p.x + n.x * th / 2, p.y + n.y * th / 2); });
     for (let i = pts.length - 1; i >= 0; i--) { const n = norm(i), p = pts[i]; s.lineTo(p.x - n.x * th / 2, p.y - n.y * th / 2); }
-    s.closePath();
-    const bg = new THREE.ExtrudeGeometry(s, { depth: 0.36, steps: 12, bevelEnabled: true, bevelThickness: 0.014, bevelSize: 0.012, bevelSegments: 3, curveSegments: 4 });
+    s.closePath(); void prof;
+    const bg = new THREE.ExtrudeGeometry(s, { depth: 0.36, bevelEnabled: true, bevelThickness: 0.012, bevelSize: 0.01, bevelSegments: 2, curveSegments: 4 });
     bg.translate(0, 0, -0.18 - 0.08);
-    // soft lumps: a few seeded waves along the fold so it is not a machined shape
+    // soft lumps: displace along the extrusion with a few seeded waves so the fold is not a machined shape
     const p = bg.attributes.position;
     for (let i = 0; i < p.count; i++) {
       const z = p.getZ(i), x = p.getX(i);
-      p.setY(i, p.getY(i) + 0.007 * Math.sin(z * 31 + x * 9) + 0.005 * Math.sin(z * 13 + 1.3));
+      p.setY(i, p.getY(i) + 0.008 * Math.sin(z * 31 + x * 9) + 0.006 * Math.sin(z * 13 + 1.3));
     }
     bg.computeVertexNormals(); boxUV(bg, 6);
-    const knitMat = pile(new THREE.MeshLambertMaterial({ map: knitTex }), screen, { rim: 0.3, sheen: 0.8, key: 'knit' });
-    add(new THREE.Mesh(smoothNormals(bg, 60), knitMat), chair);
+    const blanket = add(new THREE.Mesh(bg, new THREE.MeshLambertMaterial({ map: knitTex })), chair);
+    blanket.position.set(0.0, 0.0, 0.0);
   }
 
   // ---- the side table: round walnut top on a turned pedestal ----
