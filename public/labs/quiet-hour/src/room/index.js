@@ -17,13 +17,13 @@
 // Everything that moves reads S (or the shot). No state is carried between frames.
 
 import * as THREE from 'three';
-import * as RULES from '../rules.js';
 import { ROOM, WIDE_A, REVERSE } from '../shots.js';
 import { createTV } from './tv.js';
 import { createShell } from './shell.js';
 import { createFurniture } from './furniture.js';
 import { createTea } from './tea.js';
 import { createDust } from './dust.js';
+import { setupShadow, blurTexels } from './shadow.js';
 
 export const LIGHT = Object.freeze({
   spotGain: 14.0,          // spot intensity (cd) per unit of the canvas's mean luminance
@@ -35,30 +35,13 @@ export const LIGHT = Object.freeze({
   // chair's back, and leaves the front wall (the REVERSE's wall) to the television
   fillSky: 0x7a8fb0, fillGround: 0x2a2a30, fillIntensity: 0.6, fillFrom: [0, 0.45, 0.89],
   dustGain: 28.0,
-  // the chair's shadow. S.shadowRadius runs from its floor (the box is certain: a razor) to its ceiling (the box
-  // knows nothing: very soft). The room turns that into the blur radius of a variance shadow map, in texels of
-  // the 1024 map (one texel is about 0.8 cm on the wall behind the chair)
-  shadowMap: 1024, shadowFov: 80, shadowBlurMin: 0.75, shadowBlurMax: 50, shadowBlurTaps: 25,
 });
-
-// The range of the engine's shadow signal, read from its own rule (its value when the box is certain and when
-// it knows nothing). The room never applies a rule to a frame: it only needs to know where S.shadowRadius's floor and
-// ceiling are, so that the softest shadow is always the softest the room can draw. Bible v1.2: 1 to 15.
-const SHADOW_SIGNAL = (() => {
-  const f = RULES.shadowRadius;
-  const lo = typeof f === 'function' ? f(0) : NaN, hi = typeof f === 'function' ? f(1) : NaN;
-  return Number.isFinite(lo) && Number.isFinite(hi) && hi > lo ? [lo, hi] : [1, 15];
-})();
-
-const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 
 export function createRoom({ renderer, programmeCanvas, width, height, quality = 'final' }) {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x000000);
   const camera = new THREE.PerspectiveCamera(40, width / height, 0.03, 40);
   camera.userData.heightPx = height;
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.VSMShadowMap;                    // blurred in map space: a wide, smooth penumbra
 
   // ---- the programme texture (shared by the tube, the tea's reflection) ----
   const S0 = ROOM.screen;
@@ -87,12 +70,7 @@ export function createRoom({ renderer, programmeCanvas, width, height, quality =
   spot.position.set(S0.x, S0.y, S0.z + 0.04);
   spot.target.position.set(...LIGHT.spotAim);
   scene.add(spot); scene.add(spot.target);
-  spot.castShadow = true;
-  spot.shadow.mapSize.set(LIGHT.shadowMap, LIGHT.shadowMap);
-  spot.shadow.camera.near = 0.6; spot.shadow.camera.far = 7.5;    // nothing that casts is nearer than the table
-  spot.shadow.bias = -0.0006; spot.shadow.normalBias = 0.01;
-  spot.shadow.focus = (LIGHT.shadowFov * Math.PI / 180) / (2 * LIGHT.spotAngle);   // shadow camera fov = 2 angle focus
-  spot.shadow.blurSamples = LIGHT.shadowBlurTaps;
+  setupShadow(renderer, spot);                                    // ./shadow.js: a variance map, blurred by S
 
   // canvas average for the spot (a 40x30 downsample, then a plain mean)
   const avgCanvas = document.createElement('canvas'); avgCanvas.width = 40; avgCanvas.height = 30;
@@ -117,9 +95,7 @@ export function createRoom({ renderer, programmeCanvas, width, height, quality =
     const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b, m = Math.max(r, g, b, 1e-4);
     spot.color.setRGB(r / m, g / m, b / m, THREE.SRGBColorSpace);
     spot.intensity = LIGHT.spotGain * lum;
-    // the shadow's edge: S.shadowRadius, from its floor (a razor) to its ceiling (very soft)
-    const soft = clamp((S.shadowRadius - SHADOW_SIGNAL[0]) / (SHADOW_SIGNAL[1] - SHADOW_SIGNAL[0]), 0, 1);
-    spot.shadow.radius = LIGHT.shadowBlurMin + soft * LIGHT.shadowBlurMax;
+    spot.shadow.radius = blurTexels(S);                           // the shadow's edge, from S.shadowRadius (./shadow.js)
     lightCol.copy(spot.color).multiplyScalar(lum);
 
     shell.update(S);
