@@ -277,9 +277,9 @@ export function createProgramme({ engine }) {
 
     // the bench's front edge: walnut, its top bevel catching the lamp
     x.save();
-    x.fillStyle = C.walnut; x.fillRect(WOOD_EDGE.x - 20, WOOD_EDGE.y, WOOD_EDGE.w + 40, WOOD_EDGE.h + 20);
-    x.beginPath(); x.rect(WOOD_EDGE.x - 20, WOOD_EDGE.y, WOOD_EDGE.w + 40, WOOD_EDGE.h + 20); x.clip();
-    woodGrain(x, WOOD_EDGE.x - 20, WOOD_EDGE.y, WOOD_EDGE.w + 40, WOOD_EDGE.h + 20, SEED.wood);
+    x.fillStyle = C.walnut; x.fillRect(WOOD_EDGE.x - 80, WOOD_EDGE.y, WOOD_EDGE.w + 160, WOOD_EDGE.h + 80);
+    x.beginPath(); x.rect(WOOD_EDGE.x - 80, WOOD_EDGE.y, WOOD_EDGE.w + 160, WOOD_EDGE.h + 80); x.clip();
+    woodGrain(x, WOOD_EDGE.x - 80, WOOD_EDGE.y, WOOD_EDGE.w + 160, WOOD_EDGE.h + 80, SEED.wood);
     g = x.createLinearGradient(0, WOOD_EDGE.y, 0, WOOD_EDGE.y + WOOD_EDGE.h);
     g.addColorStop(0, 'rgba(255,214,150,0.30)'); g.addColorStop(0.08, 'rgba(255,214,150,0.05)'); g.addColorStop(1, 'rgba(0,0,0,0.45)');
     x.fillStyle = g; x.fillRect(WOOD_EDGE.x - 20, WOOD_EDGE.y, WOOD_EDGE.w + 40, WOOD_EDGE.h + 20);
@@ -643,23 +643,15 @@ export function createProgramme({ engine }) {
       ctx.strokeStyle = C.ink; ctx.lineWidth = 2.6; ctx.lineCap = 'round';
       ctx.beginPath(); ctx.moveTo(x + Math.cos(a0) * ri, y + Math.sin(a0) * ri); ctx.lineTo(x + Math.cos(a0) * ro, y + Math.sin(a0) * ro); ctx.stroke();
       ctx.lineWidth = 1.4; ctx.beginPath(); ctx.arc(x, y, ri, a0, a1); ctx.stroke();
-      // TOO FAR, engraved along the zone (centred if it fits, else from its start), with a cream halo
+      // TOO FAR, engraved level (it reads at a glance, even small) in the middle of the zone, on a cream halo; clipped
+      // to the zone, so a narrow zone shows only part of it
       ctx.save();
-      ctx.font = `19px ${FONT_SERIF}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      const text = 'TOO FAR', rr = r * 0.58, gap = 3;
-      const widths = [...text].map((ch) => ctx.measureText(ch).width + gap);
-      const span = widths.reduce((s, w) => s + w, 0) / rr;
-      let a = (a1 - a0) > span + 0.1 ? (a0 + a1) / 2 - span / 2 : a0 + 0.06;
-      for (let i = 0; i < text.length; i++) {
-        const am = a + widths[i] / 2 / rr;
-        if (am < a1 - 0.02) {
-          ctx.save(); ctx.translate(x + Math.cos(am) * rr, y + Math.sin(am) * rr); ctx.rotate(am + Math.PI / 2);
-          ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(239,229,201,0.95)'; ctx.strokeText(text[i], 0, 0);
-          ctx.fillStyle = C.ink; ctx.fillText(text[i], 0, 0);
-          ctx.restore();
-        }
-        a += widths[i] / rr;
-      }
+      ctx.beginPath(); ctx.arc(x, y, ro + 4, a0, a1); ctx.lineTo(x, y); ctx.closePath(); ctx.clip();
+      const am = (a0 + a1) / 2, rr = r * 0.6, tx = x + Math.cos(am) * rr, ty = y + Math.sin(am) * rr;
+      ctx.font = `25px ${FONT_SERIF}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.letterSpacing = '2px';
+      ctx.lineWidth = 7; ctx.lineJoin = 'round'; ctx.strokeStyle = 'rgba(239,229,201,0.97)'; ctx.strokeText('TOO FAR', tx, ty);
+      ctx.fillStyle = C.ink; ctx.fillText('TOO FAR', tx, ty);
+      ctx.letterSpacing = '0px';
       ctx.restore();
     }
     // the scale's numbers (drawn over the hatching, haloed)
@@ -876,10 +868,11 @@ export function createProgramme({ engine }) {
   // the clock bug: MM:SS top right, in every view, exact on every frame
   function drawClockBug(ctx, S) {
     ctx.save(); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
-    const plate = new Path2D(); plate.roundRect(PW - 196, 30, 160, 52, 6);
+    // inside the tube's safe area: its glass and bezel crop the canvas corners
+    const plate = new Path2D(); plate.roundRect(PW - 252, 62, 160, 52, 6);
     ctx.fillStyle = 'rgba(8,12,10,0.5)'; ctx.fill(plate);
     ctx.font = `40px ${FONT_MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#f3ecd9'; ctx.fillText(S.clock, PW - 116, 57);
+    ctx.fillStyle = '#f3ecd9'; ctx.fillText(S.clock, PW - 172, 89);
     ctx.restore();
   }
 

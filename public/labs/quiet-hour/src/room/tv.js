@@ -251,32 +251,40 @@ export function createTV({ THREE, programmeTexture, anchors }) {
   }
 
   // ---- glow: a haze round the tube, a halo on the wall behind the set (additive, coloured by the canvas mean) ----------
-  const glowQuad = (w, h, pos, shape, strength) => {
-    const m = new THREE.ShaderMaterial({
-      uniforms: { uProg: glow.uProg, uStrength: { value: strength }, uHalf: { value: new THREE.Vector2(w / 2, h / 2) },
-        uTubeHalf: { value: new THREE.Vector2(S0.w / 2, S0.h / 2) }, uOff: { value: new THREE.Vector2(S0.x - pos[0], S0.y - pos[1]) } },
-      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false,
-      polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
-      vertexShader: 'varying vec2 vP; uniform vec2 uHalf; void main(){ vP = (uv - 0.5) * 2.0 * uHalf; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
-      fragmentShader: `
-        uniform sampler2D uProg; uniform float uStrength; uniform vec2 uHalf, uTubeHalf, uOff; varying vec2 vP;
-        float sdRR(vec2 p, vec2 b, float r) { vec2 q = abs(p) - b + r; return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r; }
-        void main() {
-          vec3 avg = textureLod(uProg, vec2(0.5), 12.0).rgb;
-          ${shape}
-          gl_FragColor = vec4(avg * a * uStrength, 1.0);
-        }`,
-    });
-    const q = new THREE.Mesh(new THREE.PlaneGeometry(w, h), m); q.position.set(...pos); q.renderOrder = 2;
-    group.add(q); return q;
-  };
-  // the haze just in front of the glass: falls off from the tube's edge outward, none on the picture itself
-  glowQuad(S0.w + 0.26, S0.h + 0.26, [S0.x, S0.y, zFront + 0.02],
-    'float d = sdRR(vP - uOff, uTubeHalf, 0.03); float a = d < 0.0 ? 0.0 : exp(-d / 0.022) * smoothstep(0.0, 0.004, d);', 0.10);
+  const glowMat = (shape, strength, half) => new THREE.ShaderMaterial({
+    uniforms: { uProg: glow.uProg, uStrength: { value: strength }, uHalf: { value: half },
+      uTube: { value: new THREE.Vector2(S0.x, S0.y) }, uTubeHalf: { value: new THREE.Vector2(S0.w / 2, S0.h / 2) } },
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false,
+    polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
+    vertexShader: 'varying vec2 vW; void main(){ vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xy; gl_Position = projectionMatrix * viewMatrix * w; }',
+    fragmentShader: `
+      uniform sampler2D uProg; uniform float uStrength; uniform vec2 uHalf, uTube, uTubeHalf; varying vec2 vW;
+      float sdRR(vec2 p, vec2 b, float r) { vec2 q = abs(p) - b + r; return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r; }
+      void main() {
+        vec3 avg = textureLod(uProg, vec2(0.5), 12.0).rgb;
+        ${shape}
+        gl_FragColor = vec4(avg * a * uStrength, 1.0);
+      }`,
+  });
+  // the haze just in front of the glass: a ring round the tube (no fragments over the picture), falling off from
+  // the tube's edge outward
+  {
+    const R = 0.12, outer = roundedRect(THREE, new THREE.Shape(), -S0.w / 2 - R, -S0.h / 2 - R, S0.w + 2 * R, S0.h + 2 * R, 0.03 + R);
+    outer.holes.push(roundedRect(THREE, new THREE.Path(), -S0.w / 2, -S0.h / 2, S0.w, S0.h, 0.03));
+    const q = new THREE.Mesh(new THREE.ShapeGeometry(outer, 6), glowMat(
+      'float d = sdRR(vW - uTube, uTubeHalf, 0.03); float a = exp(-max(d, 0.0) / 0.022) * smoothstep(0.0, 0.004, d) * (1.0 - smoothstep(0.08, 0.12, d));',
+      0.10, new THREE.Vector2(S0.w / 2 + R, S0.h / 2 + R)));
+    q.position.set(S0.x, S0.y, zFront + 0.02); q.renderOrder = 2; group.add(q);
+  }
   // the halo on the wall behind: wide and soft, centred a little above the set
-  const zWall = (anchors.backWallZ ?? -3) + 0.004;
-  glowQuad(1.9, 1.35, [S0.x + 0.05, S0.y + 0.12, zWall],
-    'vec2 e = vP / uHalf; float a = exp(-dot(e * vec2(1.0, 1.25), e * vec2(1.0, 1.25)) * 3.2) * (1.0 - smoothstep(0.8, 1.0, max(abs(e.x), abs(e.y))));', 0.09);
+  {
+    const zWall = (anchors.backWallZ ?? -3) + 0.004, hw = 0.95, hh = 0.68, cxw = S0.x + 0.05, cyw = S0.y + 0.12;
+    const q = new THREE.Mesh(new THREE.PlaneGeometry(2 * hw, 2 * hh), glowMat(
+      `vec2 e = (vW - vec2(${cxw.toFixed(4)}, ${cyw.toFixed(4)})) / uHalf; vec2 k = e * vec2(1.0, 1.25);
+       float a = exp(-dot(k, k) * 3.2) * (1.0 - smoothstep(0.8, 1.0, max(abs(e.x), abs(e.y))));`,
+      0.09, new THREE.Vector2(hw, hh)));
+    q.position.set(cxw, cyw, zWall); q.renderOrder = 2; group.add(q);
+  }
 
   // ---- per frame -----------------------------------------------------------------------------------------------------
   const tmpA = new THREE.Vector3(), tmpB = new THREE.Vector3();

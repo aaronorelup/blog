@@ -28,7 +28,7 @@ export const LIGHT_DIR = { dx: 0.62, dy: 0.78 };          // paper shadows fall 
 // and REST (31) at the bottom. One column per note; the newest column sits under the punch at
 // PUNCH.x and older columns scroll left by COL_W per note.
 export const STRIP = {
-  x: -12, y: 116, w: 1422, h: 460,         // the paper: runs off the left edge, rolls up on the right (ROLL)
+  x: -70, y: 116, w: 1480, h: 460,         // the paper: runs off the left edge, rolls up on the right (ROLL)
   rowsTop: 140, rowH: 12.5,                // pitch row r (0 = lowest) has its top at rowsTop + (29 - r) * rowH
   gap: 15,                                 // between the 30 pitch rows and HOLD/REST
   colW: 22,                                // one note
@@ -99,10 +99,12 @@ export const HANDS = {
 };
 
 // ---- the programme's three camera views (rectangles in bench units, all 4:3) -----------------
+// The tube's glass and bezel crop the canvas edges (and round its corners), so every view keeps what matters
+// at least ~5% inside its frame.
 export const VIEWS = {
-  'P-WIDE': { x: 0, y: 0, w: 1600, h: 1200 },
+  'P-WIDE': { x: -40, y: -30, w: 1680, h: 1260 },      // the whole bench, a little room around it for the tube's edge
   'P-STRIP': { x: 640, y: 50, w: 693.33, h: 520 },     // the strip, the punch and the stylus, close
-  'P-DIAL': { x: 560, y: 440, w: 800, h: 600 },        // dial, chalk, knob, flags, counters, the strip's newest edge
+  'P-DIAL': { x: 545, y: 425, w: 880, h: 660 },        // dial, chalk, knob, flags, counters, the strip's newest edge
 };
 
 /** Interpolate two view rectangles (for a programme move, if a shot asks for one). */

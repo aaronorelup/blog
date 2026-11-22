@@ -67,11 +67,11 @@ export function createRoom({ renderer, programmeCanvas, width, height, quality =
   spot.target.position.set(S0.x - 0.15, S0.y - 0.45, S0.z + 3);
   scene.add(spot); scene.add(spot.target);
   spot.castShadow = true;
-  const sm = quality === 'draft' ? 1024 : 2048;
+  const sm = 1024;                                                 // the unit of S.shadowRadius: 1 px = ~1 cm on the far wall
   spot.shadow.mapSize.set(sm, sm);
   spot.shadow.camera.near = 0.12; spot.shadow.camera.far = 7.5;
   spot.shadow.bias = -0.0004; spot.shadow.normalBias = 0.012;
-  spot.shadow.focus = 0.62;                                       // the shadow map covers the beam's core (~100 deg)
+  spot.shadow.focus = 0.55;                                       // the shadow map covers the beam's core (~90 deg)
 
   // canvas average for the spot (a 40x30 downsample, then a plain mean)
   const avgCanvas = document.createElement('canvas'); avgCanvas.width = 40; avgCanvas.height = 30;

@@ -684,11 +684,11 @@ export function createEngine(shared, endingData, opts = {}) {
     add('stylus', 'Stylus: where the bet sits, trembling while the box is unsure', ['p', 'entropy'],
       'height = mean row of the bet; wander = spread x (H / ln 32) x smooth noise',
       S.meanRow === null ? 'no bet: it stays where it was'
-        : `row ${fx(S.stylusRow, 1)}: mean row ${fx(S.meanRow, 1)}, wander up to ${fx(S.spread * S.entropyN)} rows (spread ${fx(S.spread)} x H/ln 32 ${fx(S.entropyN)})`);
+        : `row ${fx(S.stylusRow, 1)}:${Math.abs(S.stylusRow - S.stylusWander - S.meanRow) > 0.05 ? ' gliding to' : ''} the bet's mean row ${fx(S.meanRow, 1)} ${S.stylusWander < 0 ? '-' : '+'} ${fx(Math.abs(S.stylusWander))} of wander (up to ${fx(S.spread * S.entropyN)} = spread ${fx(S.spread)} x H/ln 32 ${fx(S.entropyN)})`);
 
     // the dial
     add('needle', 'STEP needle: how big a step the box takes after a mistake', ['lr'], 'log dial 0.03 to 30; the knob turns it over 3 frames when the step size changes',
-      `${sig(S.needle, 4)}${S.knobTurning ? ` (the knob is turning to ${sig(lr[g], 4)})` : ''}${S.needleOffScale ? ', off the scale' : ''}`);
+      `${sig(S.needle, 4)}${S.knobTurning && S.needle !== lr[g] ? ` (the knob is turning to ${sig(lr[g], 4)})` : ''}${S.needleOffScale ? ', off the scale' : ''}`);
     const readings = sharp.slice(Math.max(0, g - R.SHARP_MEDIAN_NOTES + 1), g + 1);
     add('hatching', 'TOO FAR hatching: the edge, measured right now', ['sharp'],
       'starts at 2 / median of the last 3 sharpness readings; gone for good at the first reading after 20:00 that is not positive',
@@ -712,7 +712,7 @@ export function createEngine(shared, endingData, opts = {}) {
       `${fx(S.warmth)} (k ${fx(S.warmthK)}): mean error of the last 6 notes ${sig(err6[g])}; guessing is ${fx(R.LN32)}, best up to 20:00 ${sig(best20)}`);
     const bands = S.tearBands.length;
     add('tears', 'Tears: how far the error is above its own best', ['held'], 'g = ln(error / best error so far) / ln 250; floor(8 g) bands shifted up to 24 g px',
-      `g ${fx(S.tear)}: ${bands} band${bands === 1 ? '' : 's'}${bands ? `, up to ${Math.round(R.tearMaxPx(S.tear))} px` : ''} (error ${sig(err[g])} is ${sig(err[g] / bestSoFar[g])} times its best so far, ${sig(bestSoFar[g])})`);
+      `g ${fx(S.tear)}: ${bands} band${bands === 1 ? '' : 's'}${bands ? `, up to ${Math.round(R.tearMaxPx(S.tear))} px` : ''} (error ${sig(err[g])}, ${err[g] === bestSoFar[g] ? 'its best so far' : `${fx(err[g] / bestSoFar[g])} times its best so far, ${sig(bestSoFar[g])}`})`);
 
     // the maker, the room
     const left = Object.entries(S.hands.left).sort((a, b) => b[1] - a[1])[0][0];
@@ -929,7 +929,8 @@ function buildEvents(d) {
     }
     if (d.humGate[g] !== prevHum) {
       add(d.humGate[g]
-        ? { kind: 'hum-on', frame: f, what: 'the house hum comes back (over 2 s)', values: { stillNotes: R.HUM_STILL_NOTES } }
+        ? { kind: 'hum-on', frame: f, what: 'the house hum comes back (over 2 s): the step size has been still for 6 notes',
+          values: { lrLast7: d.lr.slice(g - R.HUM_STILL_NOTES, g + 1).map(fmt), stillNotes: R.HUM_STILL_NOTES } }
         : { kind: 'hum-off', frame: f, what: 'the house hum stops dead', values: { lrBefore: fmt(d.lr[g - 1]), lr: fmt(d.lr[g]) } });
     }
     prevHum = d.humGate[g];
@@ -973,7 +974,13 @@ function buildEvents(d) {
   let prevGrip = false;
   for (let f = 0; f < d.F; f++) {
     const grip = d.leftTarget[f] === 'grip';
-    if (grip !== prevGrip) add({ kind: grip ? 'grip-on' : 'grip-off', frame: f, what: grip ? 'the left hand grips the knob' : 'the left hand lets go of the knob', values: {} });
+    if (grip !== prevGrip) {
+      const g = noteAt(f), gone = !d.handsIn[g];
+      add({ kind: grip ? 'grip-on' : 'grip-off', frame: f,
+        what: grip ? 'the left hand grips the knob (the step size changed)'
+          : gone ? 'the left hand leaves the knob with the hands (error above guessing)' : 'the left hand lets go of the knob (the step size has stopped changing)',
+        values: { lrBefore: fmt(d.lr[Math.max(0, g - 1)]), lr: fmt(d.lr[g]), err: fmt(d.err[g]), handsIn: d.handsIn[g] } });
+    }
     prevGrip = grip;
   }
 

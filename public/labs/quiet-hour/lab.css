@@ -151,6 +151,9 @@ html[data-embed] .head { display: none; }
 /* short frames: the four endings fold into one menu, so the picture keeps its height */
 @media (max-height: 560px) and (min-width: 520px) {
   .ending-pick { display: inline-flex; }
+  .ending-pick > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .ending-pick select { max-width: 15em; }
+  .times .film { display: none; }
   .endings-row { display: none; }
   .scrub { height: 50px; }
   .ticks span { font-size: 9px; }

@@ -50,7 +50,7 @@ const smooth = (t) => t * t * (3 - 2 * t);
 function pushed(cam, amount) { return { ...cam, pos: lerp3(cam.pos, cam.target, amount) }; }
 
 // WIDE A: seated height over the chair's right shoulder; the set, the clock, the doorway and the window.
-export const WIDE_A = { pos: [0.1, 1.42, 0.5], target: [0.1, 0.8, -2.9], fov: lensToFov(38), lens: 38 };
+export const WIDE_A = { pos: [0.12, 1.32, 0.5], target: [0.15, 0.84, -2.9], fov: lensToFov(38), lens: 38 };
 // TWO-SHOT: low past the chair's left arm, the blanket and the cup large, the set beyond.
 export const TWO_SHOT = { pos: [-1.42, 0.93, -0.28], target: [0.45, 0.42, -2.62], fov: lensToFov(35), lens: 35 };
 // REVERSE (v1.1): from beside the set, looking back at the empty chair and its shadow on the wall behind it.

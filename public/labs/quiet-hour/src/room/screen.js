@@ -9,7 +9,7 @@
 //             size in metres), uGlass (reflection strength)
 //
 // What it does, in order: a gentle barrel warp of the picture (a hair of underscan, so the clock bug in the corner
-// stays on the glass), a little horizontal chroma bleed and smear, the phosphor's own soft bloom (a mix with a
+// stays on the glass), a little horizontal chroma bleed, the phosphor's own soft bloom (a mix with a
 // blurred copy, so the average brightness and colour stay honest), anti-aliased scanlines (each line's contrast is
 // box-filtered by its size on screen, so nothing beats against the pixel grid), the tube's rounded corners and
 // darkening rim, a faint glow of the picture into the tube's black border, and the glass: a weak fixed reflection of
@@ -49,15 +49,13 @@ export function createScreenMaterial({ THREE, programmeTexture }) {
         vec2 uv = 0.5 + c * (1.0 + uWarp * (dot(c, c) - 0.25)) * 0.988;
         vec2 dx = vec2(0.0013, 0.0);
 
-        // the picture: chroma bleed (red trails right, blue left) and a little horizontal smear
+        // the picture: chroma bleed (red trails right, blue left), three taps
         vec3 col;
         col.r = texture2D(map, uv - dx).r;
         col.g = texture2D(map, uv).g;
         col.b = texture2D(map, uv + dx * 0.7).b;
-        vec3 smear = 0.5 * (texture2D(map, uv + dx * 1.6).rgb + texture2D(map, uv - dx * 1.6).rgb);
-        col = mix(col, smear, 0.22);
-        // the phosphor's soft bloom: a mix, so the mean stays the mean
-        vec3 bloom = textureLod(map, uv, 4.5).rgb;
+        // the phosphor's soft bloom (an explicit coarse level: one cheap tap), mixed so the mean stays the mean
+        vec3 bloom = textureLod(map, clamp(uv, 0.0, 1.0), 5.0).rgb;
         col = mix(col, max(col, bloom), 0.10);
 
         // the picture's own edge (raster edge, soft) inside the tube
@@ -73,8 +71,7 @@ export function createScreenMaterial({ THREE, programmeTexture }) {
 
         col *= inside;
         // glow of the lit picture into the tube's black border
-        vec3 halo = textureLod(map, clamp(uv, 0.0, 1.0), 6.0).rgb;
-        col += halo * 0.10 * (1.0 - inside);
+        col += bloom * 0.10 * (1.0 - inside);
 
         // the tube's face: rounded corners and a darkening rim (in metres, 4:3)
         vec2 p = c * 2.0 * uHalf;

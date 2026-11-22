@@ -1,6 +1,6 @@
 // Writes what the sound builder and the orchestrator need from the engine, for each ending:
 //
-//   node make/cues.mjs <out-dir> [--durations <file.json>]
+//   node make/cues.mjs <out-dir> [--durations <file.json>] [--what-if]
 //
 //   <out-dir>/cues-<ending>.json   the spoken lines, every event, the knob turns and dial taps (frames for the foley),
 //                                  per-note arrays (pick, velocity, step change, hum, tear, spoon...) and the coda's bet
@@ -11,7 +11,8 @@
 // Line lengths: data/voice.json (the frozen voice), or --durations <file> as { "<line text or id>": seconds } or
 // { lines: [{ id, text, seconds }] }. A text with no recording of its own lasts the mean of its id's recordings
 // (voice.json form), else its words at 130 a minute plus 0.3 s. After new lines are recorded, run this again: a
-// line's real length can move the lines after it.
+// line's real length can move the lines after it, and so change a number another line says. --what-if tries every
+// length from 0.8 to 1.3 times each estimate and prints the other texts that could then be needed.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -26,7 +27,8 @@ const ENDINGS = ['main', 'alone', 'x3', 'x10'];
 
 const args = process.argv.slice(2);
 const outDir = args.find((a, i) => !a.startsWith('--') && args[i - 1] !== '--durations');
-if (!outDir) { console.error('usage: node make/cues.mjs <out-dir> [--durations <file.json>]'); process.exit(2); }
+if (!outDir) { console.error('usage: node make/cues.mjs <out-dir> [--durations <file.json>] [--what-if]'); process.exit(2); }
+const whatIf = args.includes('--what-if');
 const di = args.indexOf('--durations');
 // accepts { "<text or id>": seconds } or a voice file { lines: [{ id, text, seconds }] }
 function readDurations(file) {
@@ -148,9 +150,37 @@ for (const ending of ENDINGS) {
   summary.push(`${ending}: ${engine.cues.length} lines (${engine.cues.map((c) => `${c.id}@${c.note}`).join(' ')}), not spoken: ${unspoken.join(' ') || 'none'}, ${engine.events.length} events`);
 }
 const missingList = [...missing.values()];
+
+// --what-if: a text's real length is not known until it is recorded. Try each estimated line at 0.8 to 1.3 times its
+// estimate (one at a time) and collect any other unrecorded text an ending would then speak.
+if (whatIf && missingList.length) {
+  const known = new Set(missingList.map((m) => m.text));
+  for (const m of missingList) m.couldAlsoNeed = [];
+  for (const ending of ENDINGS) {
+    const data = readJson(`ending-${ending}.json`);
+    for (const m of missingList.filter((x) => x.endings.some((w) => w.startsWith(`${ending} `)))) {
+      const found = new Map();                              // other text -> [shortest, longest] length of m that needs it
+      for (let k = Math.floor(m.estimatedSeconds * 80); k <= Math.ceil(m.estimatedSeconds * 130); k++) {
+        const seconds = k / 100;
+        const engine = createEngine(shared, data, { voiceDurations: { ...voiceDurations, [m.text]: seconds } });
+        for (const c of engine.cues) {
+          if (c.recorded || known.has(c.text)) continue;
+          const r = found.get(c.text) ?? [seconds, seconds];
+          r[1] = seconds;
+          found.set(c.text, r);
+        }
+      }
+      for (const [text, [lo, hi]] of found) m.couldAlsoNeed.push({ ending, text, ifRecordedBetween: [lo, hi] });
+    }
+  }
+}
 fs.writeFileSync(path.join(outDir, 'voice-missing.json'), JSON.stringify({
   about: 'line texts spoken in at least one ending that the frozen voice (data/voice.json) has no recording of; their lengths are estimates until recorded',
   lines: missingList }, null, 1));
 console.log(summary.join('\n'));
 console.log(missingList.length ? `texts the frozen voice does not have yet (${missingList.length}):` : 'the frozen voice has every spoken text');
-for (const m of missingList) console.log(`  ${m.id}: "${m.text}"  [${m.endings.join('; ')}]  est. ${m.estimatedSeconds} s`);
+for (const m of missingList) {
+  console.log(`  ${m.id}: "${m.text}"  [${m.endings.join('; ')}]  est. ${m.estimatedSeconds} s`);
+  for (const a of m.couldAlsoNeed ?? []) console.log(`      if it comes out between ${a.ifRecordedBetween[0]} and ${a.ifRecordedBetween[1]} s, ${a.ending} also needs "${a.text}"`);
+}
+if (whatIf && missingList.length && missingList.every((m) => !m.couldAlsoNeed.length)) console.log('  (what-if: no other text is needed for any length from 0.8 to 1.3 times the estimates)');

@@ -15,7 +15,7 @@ export function createDust({ quality, height }) {
   for (let i = 0; i < MOTES; i++) {
     for (let k = 0; k < 3; k++) {
       base[i * 3 + k] = BOXMIN[k] + hash01(7001, i, k, 0) * BOXSIZE[k];
-      vel[i * 3 + k] = (hash01(7002, i, k, 0) * 2 - 1) * (k === 1 ? 0.009 : 0.016) + (k === 1 ? 0.002 : 0);  // m per second of drift; a faint updraught
+      vel[i * 3 + k] = (hash01(7002, i, k, 0) * 2 - 1) * (k === 1 ? 0.013 : 0.024) + (k === 1 ? 0.003 : 0);  // m per second of drift; a faint updraught
     }
     const big = hash01(7003, i, 0, 0);
     aux[i * 4] = 0.55 + 1.3 * big * big * big;                // size factor (a few big flecks, mostly fine)

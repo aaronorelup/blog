@@ -84,6 +84,7 @@ export function startPlayer() {
     ui.stage.style.height = `${Math.round(h)}px`;
     const pw = overlay && st.xrayOn ? ui.xray.offsetWidth : 0;   // the x-ray lying over the stage's right side
     if (overlay) ui.xray.style.height = `${Math.round(h)}px`; else ui.xray.style.height = '';
+    ui.poster.style.right = pw ? `${pw}px` : '';
     if (st.canvas) {
       const cw = Math.min(w - pw, h * 16 / 9), ch = cw * 9 / 16;
       st.canvas.style.width = `${Math.round(cw)}px`; st.canvas.style.height = `${Math.round(ch)}px`;
