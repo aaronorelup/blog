@@ -35,6 +35,7 @@ export function createRoom({ renderer, programmeCanvas, width, height, quality =
   };
 
   // ---- the shell: floor, ceiling, walls (the back wall has the doorway and the window cut out) ---
+  const N = ROOM.neighbour;
   const { w: RW, d: RD, h: RH } = ROOM.size, zB = ROOM.backWallZ, zF = zB + RD;
   const wallMat = tinted(0x56606e), floorMat = tinted(0x4a4038);
   const plane = (w, h, mat, pos, rot) => {
@@ -58,12 +59,11 @@ export function createRoom({ renderer, programmeCanvas, width, height, quality =
     const hall = new THREE.Mesh(new THREE.BoxGeometry(D.w + 0.4, D.h + 0.3, 3), new THREE.MeshLambertMaterial({ color: 0x15171b, side: THREE.BackSide }));
     hall.position.set(D.x, (D.h + 0.3) / 2, zB - 1.5); scene.add(hall);
     // outside: the night street, and the neighbour's window across it
-    plane(30, 14, new THREE.MeshBasicMaterial({ color: 0x07090d }), [0, 4, -15], [0, 0, 0]);
+    plane(30, 14, new THREE.MeshBasicMaterial({ color: 0x07090d }), [0, 4, N.z - 0.2], [0, 0, 0]);
     // curtains either side of the window
     box(0.32, Wn.h + 0.35, 0.06, tinted(0x6a5e55), Wn.x - Wn.w / 2 + 0.1, Wn.y, zB + 0.06);
     box(0.32, Wn.h + 0.35, 0.06, tinted(0x6a5e55), Wn.x + Wn.w / 2 - 0.1, Wn.y, zB + 0.06);
   }
-  const N = ROOM.neighbour;
   const neighbourMat = new THREE.MeshBasicMaterial({ color: 0xffc870 });
   const neighbour = plane(N.w, N.h, neighbourMat, [N.x, N.y, N.z], [0, 0, 0]);
   neighbour.receiveShadow = false;
@@ -128,7 +128,7 @@ export function createRoom({ renderer, programmeCanvas, width, height, quality =
   screen.position.set(S0.x, S0.y, S0.z); scene.add(screen);
 
   // ---- lights: the screen spot (the only shadow caster) and a static night fill --------------
-  scene.add(new THREE.HemisphereLight(0x8090b0, 0x202028, 0.22));
+  scene.add(new THREE.HemisphereLight(0x8090b0, 0x202028, 0.35));
   const spot = new THREE.SpotLight(0xffffff, 0, 12, Math.PI / 2.4, 0.6, 1.2);
   spot.position.set(S0.x, S0.y, S0.z + 0.03);
   spot.target.position.set(S0.x, S0.y - 0.15, S0.z + 3); scene.add(spot); scene.add(spot.target);
@@ -165,7 +165,7 @@ export function createRoom({ renderer, programmeCanvas, width, height, quality =
       }`,
     fragmentShader: `
       uniform float uOpacity; uniform vec3 uColor;
-      void main(){ vec2 d = gl_PointCoord - 0.5; float a = smoothstep(0.5, 0.1, length(d)); gl_FragColor = vec4(uColor * a * uOpacity * 0.35, 1.0); }`,
+      void main(){ vec2 d = gl_PointCoord - 0.5; float a = smoothstep(0.5, 0.1, length(d)); gl_FragColor = vec4(uColor * a * uOpacity * 0.22, 1.0); }`,
   });
   const dust = new THREE.Points(dustGeo, dustMat); dust.frustumCulled = false; scene.add(dust);
 
@@ -189,7 +189,7 @@ export function createRoom({ renderer, programmeCanvas, width, height, quality =
     const n = px.length / 4 * 255; r /= n; g /= n; b /= n;
     const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b, m = Math.max(r, g, b, 1e-4);
     spot.color.setRGB(r / m, g / m, b / m, THREE.SRGBColorSpace);
-    spot.intensity = 14 * lum;
+    spot.intensity = 40 * lum;
     // shadow softness from the entropy: radius 1 + 5 H/ln32
     const h = isNum(S.entropy) ? clamp(S.entropy / LN32, 0, 1) : 1;
     spot.shadow.radius = 1 + 5 * h;

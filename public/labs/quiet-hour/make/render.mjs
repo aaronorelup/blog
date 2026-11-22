@@ -96,7 +96,7 @@ export async function openFilm(chromium, url, { width, height, ending, quality =
   const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
   const errors = [];
   page.on('pageerror', (e) => { errors.push(e.message); console.error('[page]', e.message); });
-  page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') console.error(`[console.${m.type()}]`, m.text()); });
+  page.on('console', (m) => { if ((m.type() === 'error' || m.type() === 'warning') && !/GPU stall due to ReadPixels/.test(m.text())) console.error(`[console.${m.type()}]`, m.text()); });
   page.setDefaultTimeout(timeout);
   await page.goto(`${url}/index.html?render=1&w=${width}&h=${height}&ending=${ending}&quality=${quality}`);
   await page.waitForFunction(() => window.QH && window.QH.ready, null, { timeout });

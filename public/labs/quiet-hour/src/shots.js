@@ -23,8 +23,8 @@ export const ROOM = {
   wallClock: { x: 0, y: 1.82, z: -2.97, r: 0.17 },
   doorway: { x: -1.75, z: -2.99, w: 0.9, h: 2.05 },  // open, on the back wall's left; a dark hall beyond
   window: { x: 1.75, y: 1.35, z: -2.99, w: 1.0, h: 1.1 },
-  neighbour: { x: 2.2, y: 1.9, z: -14, w: 0.7, h: 0.9 }, // the warm window across the street
-  chair: { x: 0.05, z: 0.35, rotY: 0 },              // empty wing chair, back to camera, facing the TV
+  neighbour: { x: 2.27, y: 1.45, z: -4, w: 0.3, h: 0.4 }, // the warm window across the street (seen through ours from WIDE A and WIDE B)
+  chair: { x: -0.42, z: 0.35, rotY: 0 },              // empty wing chair, back to camera, facing the TV
   table: { x: 0.78, z: 0.05, h: 0.55, r: 0.22 },
   cup: { x: 0.74, y: 0.55, z: 0.02, r: 0.045, h: 0.07 },
 };
@@ -46,8 +46,8 @@ const smooth = (t) => t * t * (3 - 2 * t);
 // push a camera toward its target by `amount` of the distance (3% push = 0.03)
 function pushed(cam, amount) { return { ...cam, pos: lerp3(cam.pos, cam.target, amount) }; }
 
-const WIDE_A = { pos: [0.22, 1.12, 2.15], target: [0, 0.98, -2.6], fov: lensToFov(32), lens: 32 };
-const WIDE_B = { pos: [-1.55, 1.35, 1.6], target: [1.15, 1.05, -2.6], fov: lensToFov(28), lens: 28 };
+const WIDE_A = { pos: [0.3, 1.2, 2.3], target: [0, 0.95, -2.6], fov: lensToFov(32), lens: 32 };
+const WIDE_B = { pos: [-1.6, 1.3, 1.4], target: [1.0, 1.1, -3.0], fov: lensToFov(28), lens: 28 };
 const TWO_SHOT = { pos: [1.12, 0.92, 1.05], target: [0.05, 0.78, -2.5], fov: lensToFov(40), lens: 40 };
 
 // Where a bench point lands on the TV face for a given programme view (for aiming SCREEN shots).
