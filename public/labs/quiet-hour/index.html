@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Quiet Hour</title>
+<meta name="description" content="A short film rendered live in your browser from a music box's training log. Four endings, one code path.">
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
+<style>
+  :root { --bg: #0b0b0c; --fg: #e8e2d4; --dim: #8c867a; }
+  html, body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.4 system-ui, sans-serif; }
+  body.render { overflow: hidden; }
+  body.render #ui { display: none; }
+  #stage { display: block; width: 100%; max-width: 1280px; aspect-ratio: 16 / 9; margin: 0 auto; background: #000; }
+  body.render #stage { width: auto; max-width: none; margin: 0; aspect-ratio: auto; }
+  #ui { max-width: 1280px; margin: 8px auto; padding: 0 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; box-sizing: border-box; }
+  #ui button { background: #222; color: var(--fg); border: 1px solid #444; border-radius: 4px; padding: 6px 12px; font: inherit; cursor: pointer; }
+  #ui button[aria-pressed="true"] { background: #4a3f2c; border-color: #8a7a55; }
+  #scrub { flex: 1 1 240px; min-width: 160px; }
+  #clock { font-variant-numeric: tabular-nums; color: var(--dim); min-width: 9ch; }
+  #status { color: var(--dim); }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div id="ui">
+  <button id="play" type="button">Play</button>
+  <input id="scrub" type="range" min="0" max="2159" value="0" aria-label="Frame">
+  <span id="clock">00:00</span>
+  <span role="group" aria-label="Ending">
+    <button type="button" data-ending="main" aria-pressed="true">main</button>
+    <button type="button" data-ending="alone" aria-pressed="false">alone</button>
+    <button type="button" data-ending="x3" aria-pressed="false">x3</button>
+    <button type="button" data-ending="x10" aria-pressed="false">x10</button>
+  </span>
+  <span id="status">loading</span>
+</div>
+<script type="module">
+  // Two modes. ?render=1&w=..&h=..&ending=..&quality=.. : a bare canvas for make/render.mjs, which
+  // drives window.QH frame by frame. Otherwise: a minimal live player (requestAnimationFrame picks
+  // the frame from the elapsed time; the film itself never reads a clock).
+  import { createFilm } from './film.js';
+  import { FPS, PROGRAMME_FRAMES, clockText } from './src/time.js';
+
+  const q = new URLSearchParams(location.search);
+  const renderMode = q.has('render');
+  const canvas = document.getElementById('stage');
+  const W = +(q.get('w') || 1280), H = +(q.get('h') || 720);
+  if (renderMode) { document.body.classList.add('render'); canvas.style.width = W + 'px'; canvas.style.height = H + 'px'; }
+  const film = await createFilm({ canvas, width: W, height: H, ending: q.get('ending') || 'main', quality: q.get('quality') || 'final' });
+
+  if (!renderMode) {
+    const $ = (id) => document.getElementById(id);
+    const status = $('status'), scrub = $('scrub'), play = $('play'), clock = $('clock');
+    scrub.max = String(PROGRAMME_FRAMES - 1);
+    let frame = 0, playing = false, t0 = 0, f0 = 0, shown = -1, busy = false;
+    const show = (f) => { frame = f; if (f !== shown) { film.renderFrame(f); shown = f; } scrub.value = String(f); clock.textContent = clockText(f); };
+    await film.ready; status.textContent = ''; show(0);
+    function tick(now) {
+      if (!playing) return;
+      const f = Math.min(PROGRAMME_FRAMES - 1, f0 + Math.floor((now - t0) / 1000 * FPS));
+      show(f);
+      if (f >= PROGRAMME_FRAMES - 1) { playing = false; play.textContent = 'Play'; return; }
+      requestAnimationFrame(tick);
+    }
+    play.onclick = () => {
+      playing = !playing; play.textContent = playing ? 'Pause' : 'Play';
+      if (playing) { if (frame >= PROGRAMME_FRAMES - 1) frame = 0; f0 = frame; t0 = performance.now(); requestAnimationFrame(tick); }
+    };
+    scrub.oninput = () => { f0 = +scrub.value; t0 = performance.now(); show(+scrub.value); };
+    for (const b of document.querySelectorAll('[data-ending]')) b.onclick = async () => {
+      if (busy) return; busy = true; status.textContent = 'loading ' + b.dataset.ending;
+      await film.setEnding(b.dataset.ending);
+      for (const o of document.querySelectorAll('[data-ending]')) o.setAttribute('aria-pressed', String(o === b));
+      shown = -1; show(frame); status.textContent = ''; busy = false;
+    };
+  }
+</script>
+</body>
+</html>
