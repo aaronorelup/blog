@@ -33,7 +33,7 @@ CAP_TP, CAP_ST, INTEGRATED = -1.0, -13.0, (-18.0, -15.0)
 
 
 def ebur128(path):
-    r = subprocess.run(['ffmpeg', '-nostats', '-hide_banner', '-i', path, '-af', 'ebur128=peak=true:framelog=verbose',
+    r = subprocess.run(['ffmpeg', '-nostats', '-hide_banner', '-v', 'verbose', '-i', path, '-af', 'ebur128=peak=true:framelog=verbose',
                         '-f', 'null', '-'], capture_output=True, text=True)
     log = r.stderr
     st = [float(v) for v in re.findall(r'S:\s*(-?[\d.]+|-inf)', log) if v != '-inf']

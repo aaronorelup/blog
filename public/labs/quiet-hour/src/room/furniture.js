@@ -1,6 +1,7 @@
 // The furniture (room-set): the low walnut sideboard the set stands on, the empty wing chair with its folded
 // knitted blanket, the side table with the tea (cup, saucer, spoon, the listings magazine), the wall clock, a
-// framed print and a few books. update(S) moves the clock's hands and the spoon; the tea is ./tea.js.
+// framed print and a few books. update(S, light) moves the clock's hands and the spoon and gives the chair's
+// velvet this frame's screen light (its rim); the tea is ./tea.js.
 
 import * as THREE from 'three';
 import { tex, roundedBox, boxUV, contactShadow } from './mats.js';

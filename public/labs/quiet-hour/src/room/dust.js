@@ -1,9 +1,11 @@
 // Dust in the screen's beam (room-set). About 1,500 motes; each one's place is a closed form of S.dustDrift
 // (the running sum of H / ln 32, in seconds): base + velocity x drift, plus a slow sway that is also a function of
 // drift, wrapped inside the beam's box. So they slow as the box gets surer and hang still when it is certain.
-// Each mote is lit by the beam it floats in: the spot's cone and distance, a forward-scattering phase (bright
-// when you look toward the screen), its own size and reflectance. Opacity from S.dustOpacity. Motes fade near
-// the box's faces so the wrap never pops.
+// Each mote is lit by the beam it floats in: the spot's cone and distance, the screen light's own shadow map (no
+// light in the chair's shadow), a scattering phase (a strong back-scatter glint looking along the beam from beside
+// the set, a gentle forward lobe looking into it, so the wides never snow), its own size and reflectance. The lens
+// is focused at shot.camera.focus: nearer motes open into dim soft discs. Opacity from S.dustOpacity. Motes fade
+// near the box's faces so the wrap never pops, and within 0.25-0.6 m of the lens so the SCREEN shots stay clean.
 
 import * as THREE from 'three';
 import { hash01 } from '../rng.js';

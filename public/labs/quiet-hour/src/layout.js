@@ -66,6 +66,10 @@ export function dialAngle(v) {
   return DIAL.a0 + Math.min(1, Math.max(0, t)) * (DIAL.a1 - DIAL.a0);
 }
 export const CHALK_TEXT = { dx: 24, dy: 18 };                   // the chalked number, offset from the mark's outer end
+// the chalk tick on the dial, as fractions of DIAL.r along the radius at S.chalkU: it starts at r0 and its end is at
+// lerp(r0, r1, S.chalkTick). The maker's chalk tip (programme/hands.js chalkTip: dialPos(chalkU, lerp(0.8, 1.16, tick)))
+// is drawn at exactly this point, so these two numbers must stay equal to the ones there.
+export const DIAL_CHALK = { r0: 0.8, r1: 1.16 };
 export const KNOB = { x: 1010, y: 905, r: 46, clicksPerTurn: 24 }; // turns with the needle; ratchet of 24 clicks
 export const FLAGS = { x: 1050, y: 620, w: 300, h: 80, n: 10 };  // NEW TUNES: ten brass flags, OF TEN
 export const SHARE_DRUM = { x: 1050, y: 712, w: 84, h: 44 };     // two-digit drum, round(100 x share)

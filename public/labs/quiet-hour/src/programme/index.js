@@ -21,7 +21,7 @@
 import * as LAYOUT from '../layout.js';
 import {
   PROGRAMME_W as PW, PROGRAMME_H as PH, VIEWS, WOOD_EDGE, LAMP, LIGHT_DIR, STRIP, rowY, rowYf, PUNCH, PUNCH_BRIDGE,
-  LIGHTBOX, HOLE_R, STYLUS, ROLL, DIAL, CHALK_TEXT, KNOB, FLAGS, SHARE_DRUM, LESSONS, BOX, CRANK, TITLE_CARD,
+  LIGHTBOX, HOLE_R, STYLUS, ROLL, DIAL, CHALK_TEXT, DIAL_CHALK, KNOB, FLAGS, SHARE_DRUM, LESSONS, BOX, CRANK, TITLE_CARD,
 } from '../layout.js';
 import { hash01, hashSigned, noise1 } from '../rng.js';
 import { createHands } from './hands.js';
@@ -257,7 +257,7 @@ export function createProgramme({ engine }) {
     applyTears(ctx, S);
     applyBlocks(ctx, S);
     drawClockBug(ctx, S);                            // last: exact on every frame
-    if (opts.xray) drawXray(ctx, S, view);
+    if (opts && opts.xray === true) drawXray(ctx, S, view);   // the lab page's x-ray only; the film never asks
     ctx.restore();
   }
 
@@ -661,23 +661,36 @@ export function createProgramme({ engine }) {
       ctx.strokeStyle = 'rgba(239,229,201,0.95)'; ctx.strokeText(t, lx, ly);
       ctx.fillStyle = C.ink; ctx.fillText(t, lx, ly);
     }
-    // the chalk: a tick at the limit measured at 20:00, and the number beside it in the maker's hand
-    if (S.chalk > 0) {
-      const a = angleAtU(S.chalkU), c = Math.cos(a), s = Math.sin(a), t = clamp(S.chalk, 0, 1);
+    // the chalk: a tick at the limit measured at 20:00 (drawn on by S.chalkTick: its end is where the maker's chalk tip
+    // is, hands.js), and the number beside it, written on left to right by S.chalkNumber over its own frames
+    const tick = isNum(S.chalkTick) ? clamp(S.chalkTick, 0, 1) : 0;
+    const written = isNum(S.chalkNumber) ? clamp(S.chalkNumber, 0, 1) : 0;
+    if (tick > 0 || written > 0) {
+      const a = angleAtU(S.chalkU), c = Math.cos(a), s = Math.sin(a);
       ctx.save();
-      ctx.strokeStyle = pat(ctx, 'chalk'); ctx.lineCap = 'round';
-      const r0 = 0.8, r1 = lerp(0.8, 1.16, clamp(t / 0.6, 0, 1));
-      for (let i = 0; i < 3; i++) {
-        const j = (i - 1) * 2.6, jx = -s * j, jy = c * j;
-        ctx.lineWidth = i === 1 ? 9 : 4; ctx.globalAlpha = i === 1 ? 1 : 0.6;
-        ctx.beginPath(); ctx.moveTo(x + c * r * r0 + jx, y + s * r * r0 + jy); ctx.lineTo(x + c * r * r1 + jx * 0.6, y + s * r * r1 + jy * 0.6); ctx.stroke();
+      ctx.strokeStyle = pat(ctx, 'chalk');
+      if (tick > 0) {
+        const r0 = DIAL_CHALK.r0, r1 = lerp(DIAL_CHALK.r0, DIAL_CHALK.r1, tick);
+        // the stroke's start is round (where the chalk touched down); its end is square, so the line stops exactly
+        // under the tip (the cap would push it 4.5 units past)
+        for (let i = 0; i < 3; i++) {
+          const j = (i - 1) * 2.6, jx = -s * j, jy = c * j;
+          ctx.lineWidth = i === 1 ? 9 : 4; ctx.globalAlpha = i === 1 ? 1 : 0.6; ctx.lineCap = 'butt';
+          ctx.beginPath(); ctx.moveTo(x + c * r * r0 + jx, y + s * r * r0 + jy); ctx.lineTo(x + c * r * r1 + jx * 0.6, y + s * r * r1 + jy * 0.6); ctx.stroke();
+        }
+        ctx.globalAlpha = 1; ctx.fillStyle = pat(ctx, 'chalk');
+        ctx.beginPath(); ctx.arc(x + c * r * r0, y + s * r * r0, 4.5, 0, TAU); ctx.fill();
       }
-      ctx.globalAlpha = smooth(0.2, 1, t); ctx.fillStyle = pat(ctx, 'chalk');
-      ctx.font = `64px ${FONT_HAND}`; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-      ctx.shadowColor = 'rgba(0,0,0,0.4)'; ctx.shadowBlur = 2 * k; ctx.shadowOffsetX = 1.2 * k; ctx.shadowOffsetY = 1.5 * k;
-      const tx = x + c * r * 1.12 + CHALK_TEXT.dx, ty = y + s * r * 1.12 + CHALK_TEXT.dy;
-      ctx.fillText(S.chalkText, tx, ty); ctx.shadowColor = 'rgba(0,0,0,0)';
-      ctx.globalAlpha *= 0.7; ctx.fillText(S.chalkText, tx + 1.3, ty + 0.6);   // a second pass: chalk is thick
+      if (written > 0) {
+        ctx.font = `64px ${FONT_HAND}`; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+        const tx = x + c * r * 1.12 + CHALK_TEXT.dx, ty = y + s * r * 1.12 + CHALK_TEXT.dy;
+        const tw = ctx.measureText(S.chalkText).width + 4;
+        ctx.beginPath(); ctx.rect(tx - 4, ty - 50, 4 + tw * written, 100); ctx.clip();   // the part written so far
+        ctx.globalAlpha = 1; ctx.fillStyle = pat(ctx, 'chalk');
+        ctx.shadowColor = 'rgba(0,0,0,0.4)'; ctx.shadowBlur = 2 * k; ctx.shadowOffsetX = 1.2 * k; ctx.shadowOffsetY = 1.5 * k;
+        ctx.fillText(S.chalkText, tx, ty); ctx.shadowColor = 'rgba(0,0,0,0)';
+        ctx.globalAlpha = 0.7; ctx.fillText(S.chalkText, tx + 1.3, ty + 0.6);   // a second pass: chalk is thick
+      }
       ctx.restore();
     }
     // the needle: blued steel with a counterweight, its shadow on the face
@@ -770,6 +783,14 @@ export function createProgramme({ engine }) {
       ctx.translate(BOX.x, BOX.y); ctx.scale(1, hgt / BOX.h);
       woodGrain(ctx, 0, 0, BOX.w, BOX.h, SEED.wood + 3, true);
       ctx.strokeStyle = 'rgba(230,200,140,0.55)'; ctx.lineWidth = 1.5; ctx.strokeRect(12, 12, BOX.w - 24, BOX.h - 24);
+      // the lid's top: a pale inlaid panel (maple), so a closed box reads at a glance even on a small screen, where the
+      // open box is a dark well with a brass cylinder in it
+      const ip = { x: 24, y: 26, w: BOX.w - 48, h: BOX.h - 52 };
+      ctx.fillStyle = '#e6d6ac'; shadow(ctx, k, 1, 0.35); ctx.fill(cutRect(ip.x, ip.y, ip.w, ip.h, SEED.cut + 10, 0.5, 14)); noShadow(ctx);
+      ctx.fillStyle = pat(ctx, 'paper'); ctx.fillRect(ip.x, ip.y, ip.w, ip.h);
+      ctx.strokeStyle = 'rgba(74,45,27,0.7)'; ctx.lineWidth = 1.4; ctx.strokeRect(ip.x + 8, ip.y + 8, ip.w - 16, ip.h - 16);
+      ctx.fillStyle = C.brass; ctx.beginPath(); ctx.ellipse(BOX.w / 2, BOX.h - 16, 11, 7, 0, 0, TAU); ctx.fill();
+      ctx.fillStyle = C.walnutDark; ctx.beginPath(); ctx.arc(BOX.w / 2, BOX.h - 17, 2.4, 0, TAU); ctx.fill();
       ctx.restore();
       ctx.fillStyle = `rgba(0,0,0,${(0.35 * (1 - lid)).toFixed(3)})`; ctx.fillRect(BOX.x, BOX.y, BOX.w, hgt);
     } else {
@@ -877,67 +898,114 @@ export function createProgramme({ engine }) {
   }
 
   // =================================================================================================================
-  // THE X-RAY (lab page only): a small plain label beside each gauge, its name and live value. Texts come from
-  // engine.gauges(frame) when the engine has it, else from S. Picture-wide gauges are listed bottom left; gauges
-  // that live in the room (window, dust, tea...) are not on the programme and are left to the page.
-  function xrayAnchors(S) {                         // gauge id -> [bench x, bench y, side (-1 left, 1 right)]
-    const pol = (u, rr) => { const a = angleAtU(u); return [DIAL.x + Math.cos(a) * DIAL.r * rr, DIAL.y + Math.sin(a) * DIAL.r * rr]; };
-    const A = {
-      haze: [260, rowY(22), 1],
-      hole: [PUNCH.x - 10, S.pick >= 0 ? rowY(S.pick) : rowY(15), -1],
-      stylus: [STYLUS.rulerX + 18, rowYf(isNum(S.stylusRow) ? S.stylusRow : 15), 1],
-      needle: [...pol(S.needleU, 0.55), -1],
-      flags: [FLAGS.x + 10, FLAGS.y + 10, -1],
-      drum: [SHARE_DRUM.x, SHARE_DRUM.y + SHARE_DRUM.h / 2, -1],
-      lessons: [LESSONS.x + LESSONS.w + 6, LESSONS.y + LESSONS.h / 2, 1],
-      crank: [CRANK.x - 30, CRANK.y + 40, -1],
-      hands: [470, 1080, 1],
-    };
-    if (isNum(S.hatchU) && S.hatchU < 1) A.hatching = [...pol(S.hatchU, 0.97), 1];
-    if (S.chalk > 0) A.chalk = [...pol(S.chalkU, 1.16), 1];
-    return A;
-  }
-  const XRAY_PICTURE = ['warmth', 'tears', 'hairlines', 'blocks'];
+  // THE X-RAY (lab page only, never in the film; drawn only when draw() is called with opts.xray === true, or when the
+  // page calls drawXray itself). Every label is taken from engine.gauges(frame), the engine's own list for this frame:
+  // nothing is made up here, so there is no other list to go stale. Each gauge drawn on the bench gets one label beside
+  // its element, placed by the gauge's id (XRAY_BENCH); the picture-wide gauges (XRAY_PICTURE) are listed in the lower
+  // left corner; the room and sound gauges (window, hum, dust, shadow, tea, wall clock, the maker's lines) and any id
+  // not named here are left to the page's list. One label per id. No gauge list: no labels.
+  const XRAY_PICTURE = ['warmth', 'hairlines', 'tears', 'blocks'];
+  const XRAY_SAFE = { x: 44, y: 34 };               // programme px kept clear at the edges: the tube's glass crops them
+  const XRAY_FONT = 15, XRAY_H = 21, XRAY_GAP = 3;
+  const polU = (u, rr) => { const a = angleAtU(u); return [DIAL.x + Math.cos(a) * DIAL.r * rr, DIAL.y + Math.sin(a) * DIAL.r * rr]; };
+  // where each bench gauge's element is for this frame: [bench x, bench y, preferred side (-1 left, 1 right, 2 below,
+  // -2 above)].
+  // The clock bug is in programme pixels (it is drawn after the bench), so it is placed apart (xrayClock).
+  const XRAY_BENCH = {
+    haze: (S) => {                                   // the darkest pencil in the newest columns, just left of the punch
+      const top = S.p ? S.p.reduce((b, v, i) => (v > S.p[b] ? i : b), 0) : 15;
+      return [PUNCH.x - 4 * STRIP.colW, rowY(top), -1];
+    },
+    hole: (S) => [PUNCH.x, rowY(S.pick >= 0 ? S.pick : 15), -1],
+    stylus: (S) => [STYLUS.railX + 16, rowYf(isNum(S.stylusRow) ? S.stylusRow : 15), 1],
+    needle: (S) => [...polU(S.needleU, 0.5), -1],
+    hatching: (S) => [...polU(isNum(S.hatchU) && S.hatchU < 1 ? (S.hatchU + 1) / 2 : 1, 0.9), 1],
+    chalk: (S) => [...polU(S.chalkU, DIAL_CHALK.r1), 1],
+    knob: () => [KNOB.x + KNOB.r, KNOB.y, 1],
+    flags: () => [FLAGS.x + FLAGS.w / 2, FLAGS.y + 12, -2],
+    drum: () => [SHARE_DRUM.x + SHARE_DRUM.w / 2, SHARE_DRUM.y + SHARE_DRUM.h, 2],
+    lessons: () => [LESSONS.x + LESSONS.w / 2, LESSONS.y + LESSONS.h, 2],
+    crank: (S) => [CRANK.x + Math.cos(S.crankAngle) * CRANK.r, CRANK.y + Math.sin(S.crankAngle) * CRANK.r, -1],
+    hands: (S) => {                                  // the left hand: its pose targets blended by the engine's weights
+      const W = S.hands.left, T = LAYOUT.HANDS.left;
+      let x = 0, y = 0, sum = 0;
+      for (const [pose, w] of Object.entries(W)) if (w > 0 && T[pose]) { x += T[pose].x * w; y += T[pose].y * w; sum += w; }
+      if (!(sum > 0)) { x = T.rest.x; y = T.rest.y; sum = 1; }
+      const out = 1 - clamp(S.hands.present, 0, 1);
+      return [x / sum, Math.min(y / sum + LAYOUT.HANDS.off.dy * out, LAYOUT.BENCH.h - 20), 1];
+    },
+  };
   function drawXray(ctx, S, view) {
     let list = null;
-    try { if (engine && typeof engine.gauges === 'function') list = engine.gauges(S.frame); } catch { list = null; }
-    if (!Array.isArray(list) || !list.length) list = [
-      { id: 'haze', name: 'Pencil haze', value: S.p ? `darkest row alpha ${Math.max(...(S.stripColumns.at(-1)?.haze || [0])).toFixed(2)}` : '-' },
-      { id: 'hole', name: 'Hole', value: `${S.pickName} p ${isNum(S.pickP) ? S.pickP.toFixed(3) : '-'}` },
-      { id: 'stylus', name: 'Stylus', value: `row ${S.stylusRow.toFixed(1)}` },
-      { id: 'needle', name: 'STEP needle', value: S.lr }, { id: 'hatching', name: 'TOO FAR hatching', value: S.limit },
-      { id: 'chalk', name: 'Chalk mark', value: S.chalkText }, { id: 'flags', name: 'NEW TUNES flags', value: `${S.flagsUp} of ten` },
-      { id: 'drum', name: 'Drum counter', value: S.shareDrumText }, { id: 'lessons', name: 'LESSONS', value: S.stepsText },
-      { id: 'crank', name: 'Crank', value: `bar ${S.bar}` }, { id: 'hands', name: "The maker's hands", value: S.handsPresent },
-      { id: 'warmth', name: 'Colour of the picture', value: S.warmth }, { id: 'tears', name: 'Tears', value: S.tear },
-      { id: 'hairlines', name: 'Hairline', value: S.hairline ? `${S.hairline.shiftPx} px` : 'none' }, { id: 'blocks', name: 'Blocks', value: S.blocks },
-    ];
-    const fmt = (v) => (v === null || v === undefined ? '-' : typeof v === 'number' ? (Number.isInteger(v) ? String(v) : String(Number(v.toPrecision(3)))) : typeof v === 'boolean' ? (v ? 'yes' : 'no') : String(v));
-    const label = (g) => { const t = `${String(g.name ?? g.id).split(':')[0]}: ${fmt(g.value)}`; return t.length > 64 ? t.slice(0, 63) + '\u2026' : t; };
-    const kk = PW / view.w, A = xrayAnchors(S), placed = [];
-    ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
-    ctx.font = `14px ${FONT_MONO}`; ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
-    const box = (text, x, y, side, dot) => {
-      const w = Math.ceil(ctx.measureText(text).width) + 12, h = 19;
-      let lx = clamp(side > 0 ? x + 10 : x - 10 - w, 4, PW - w - 4), ly = clamp(y - h / 2, 4, PH - h - 4);
-      for (let n = 0; n < 40 && placed.some((r) => lx < r[0] + r[2] && lx + w > r[0] && ly < r[1] + r[3] && ly + h > r[1]); n++) ly = clamp(ly + h + 2, 4, PH - h - 4);
-      placed.push([lx, ly, w, h]);
-      if (dot) {
-        ctx.strokeStyle = 'rgba(242,242,234,0.8)'; ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(side > 0 ? lx : lx + w, ly + h / 2); ctx.stroke();
-        ctx.fillStyle = '#f2f2ea'; ctx.beginPath(); ctx.arc(x, y, 3, 0, TAU); ctx.fill();
-      }
-      ctx.fillStyle = 'rgba(0,0,0,0.74)'; ctx.fillRect(lx, ly, w, h);
-      ctx.fillStyle = '#f2f2ea'; ctx.fillText(text, lx + 6, ly + h / 2 + 0.5);
+    try { list = engine && typeof engine.gauges === 'function' ? engine.gauges(S.frame) : null; } catch { list = null; }
+    if (!Array.isArray(list) || !list.length) return;
+    const text = (g) => {
+      const v = g.value === null || g.value === undefined || g.value === '' ? '-' : String(g.value);
+      const t = `${g.name || g.id}: ${v}`;
+      return t.length > 58 ? t.slice(0, 57) + '…' : t;
     };
-    let row = 0;
-    for (const g of list) if (XRAY_PICTURE.includes(g.id)) box(label(g), 8, PH - 16 - 21 * row++, 1, false);
+    const kk = PW / view.w, placed = [], seen = new Set();
+    const L = XRAY_SAFE.x, T = XRAY_SAFE.y, R = PW - XRAY_SAFE.x, B = PH - XRAY_SAFE.y;
+    const hits = (x, y, w) => placed.some((r) => x < r[0] + r[2] + XRAY_GAP && x + w + XRAY_GAP > r[0] && y < r[1] + r[3] + XRAY_GAP && y + XRAY_H + XRAY_GAP > r[1]);
+    ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+    ctx.filter = 'none'; noShadow(ctx);
+    ctx.font = `${XRAY_FONT}px ${FONT_MONO}`; ctx.textBaseline = 'middle'; ctx.textAlign = 'left'; ctx.letterSpacing = '0px';
+    const paint = (t, x, y, w) => {
+      ctx.fillStyle = 'rgba(0,0,0,0.76)'; ctx.fillRect(x, y, w, XRAY_H);
+      ctx.fillStyle = '#f2f2ea'; ctx.fillText(t, x + 6, y + XRAY_H / 2 + 0.5);
+      placed.push([x, y, w, XRAY_H]);
+    };
+    // a label beside a point (programme px): the preferred side first, then nudged up and down, then the other side
+    // (a side is only used if the label clears the point: pushed in from the picture's edge it would cover what it
+    // names), then above or below the point
+    const beside = (t, px, py, side) => {
+      const w = Math.ceil(ctx.measureText(t).width) + 12;
+      let best = null;
+      const tryAt = (x, y0, step) => {
+        for (let n = 0; n < 24 && !best; n++) {
+          const dy = step ? step(n) : (n % 2 ? 1 : -1) * Math.ceil(n / 2) * (XRAY_H + XRAY_GAP);
+          const y = clamp(y0 + dy, T, B - XRAY_H);
+          if (!hits(x, y, w)) best = [x, y];
+        }
+      };
+      const xc = clamp(px - w / 2, L, R - w);
+      const above = () => { if (!best) tryAt(xc, py - 14 - XRAY_H, (n) => -n * (XRAY_H + XRAY_GAP)); };
+      const below = () => { if (!best) tryAt(xc, py + 14, (n) => n * (XRAY_H + XRAY_GAP)); };
+      if (side === 2) below();                       // 2: under the element first (a counter's window), -2: over it
+      if (side === -2) above();
+      for (const sd of Math.abs(side) === 2 ? [] : [side, -side]) {
+        const x = clamp(sd > 0 ? px + 12 : px - 12 - w, L, R - w);
+        if (sd > 0 ? x < px + 6 : x + w > px - 6) continue;
+        tryAt(x, py - XRAY_H / 2);
+        if (best) break;
+      }
+      above(); below();
+      if (!best) return;                             // no room left: the page's list still has it
+      const [x, y] = best, ey = y + XRAY_H / 2;
+      const ex = x >= px ? x : x + w <= px ? x + w : clamp(px, x, x + w), ey2 = x < px && x + w > px ? (y > py ? y : y + XRAY_H) : ey;
+      ctx.strokeStyle = 'rgba(242,242,234,0.85)'; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(ex, ey2); ctx.stroke();
+      ctx.fillStyle = '#f2f2ea'; ctx.beginPath(); ctx.arc(px, py, 3.2, 0, TAU); ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,0.8)'; ctx.lineWidth = 1; ctx.stroke();
+      paint(t, x, y, w);
+    };
+    // the clock bug's plate is reserved first, so no label lands on it
+    placed.push([PW - 252, 62, 160, 52]);
+    // picture-wide gauges: stacked up from the lower left corner, in the list's order
+    const pic = list.filter((g) => XRAY_PICTURE.includes(g.id) && !seen.has(g.id) && seen.add(g.id));
+    pic.forEach((g, i) => {
+      const t = text(g), w = Math.ceil(ctx.measureText(t).width) + 12;
+      paint(t, L, B - XRAY_H - (pic.length - 1 - i) * (XRAY_H + XRAY_GAP), w);
+    });
     for (const g of list) {
-      const at = A[g.id];
-      if (!at) continue;
-      const x = (at[0] - view.x) * kk, y = (at[1] - view.y) * kk;
-      if (x < 0 || x > PW || y < 0 || y > PH) continue;
-      box(label(g), x, y, at[2], true);
+      if (seen.has(g.id)) continue;
+      if (g.id === 'clock') { seen.add(g.id); beside(text(g), PW - 252, 88, -1); continue; }
+      const at = XRAY_BENCH[g.id];
+      if (!at) continue;                             // a room or sound gauge, or one this module does not know: the page's
+      seen.add(g.id);
+      const [bx, by, side] = at(S), px = (bx - view.x) * kk, py = (by - view.y) * kk;
+      if (px < L || px > R || py < T || py > B) continue;   // its element is not in this view
+      beside(text(g), px, py, side);
     }
     ctx.restore();
   }

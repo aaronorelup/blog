@@ -80,15 +80,16 @@ DUCK_MAX_DB = 30.0
 DUCK_PREROLL_S = 0.06      # the dip starts this long before the line's first sound (the line is placed by a cue)
 DUCK_ATTACK_S = 0.04
 DUCK_RELEASE_S = 0.5
-VOICE_TARGET_LU = 6.0      # each line's dip is deepened until the line is this far above the programme under it
+VOICE_TARGET_LU = 6.0      # each line's dip is deepened until the line is this far above the programme under it,
+                           # both K-weighted (LU) and in the speech band (dB)
 VOICE_MIN_LU = 4.0         # ... and the build fails if a line ends up less than this above the whole bed under it
 SPEECH_BAND = (300.0, 3400.0)   # a small speaker's speech band, for the second (reported) margin
 FOLEY_TARGET_DB = 3.0      # a bench sound must be this far above everything else in its band, in its window
-FOLEY_MAX_BOOST_DB = 15.0
+FOLEY_MAX_BOOST_DB = 22.0
 PUNCH_CHECK_P = 0.5        # punch ticks are levelled by p by design; the ones with p >= this must be heard
 # per bench sound: the band it is heard in (after the speaker's 5.5 kHz low-pass) and its window
-# (clicks are judged by their strongest 3 ms in the window; the chalk scrape over its whole length)
-FOLEY_BANDS = {'punch': ((3000, 5400), 0.006), 'ratchet': ((2500, 5400), 0.05), 'chalk': ((1500, 5400), None),
+# (window None = the whole sound; clicks are judged by their strongest 3 ms in it, the chalk scrape over all of it)
+FOLEY_BANDS = {'punch': ((3000, 5400), 0.006), 'ratchet': ((2500, 5400), None), 'chalk': ((1500, 5400), None),
                'tap': ((2500, 5400), 0.03)}
 BAR = FPB * SPF            # 60,000 samples: the room response and the limiter work one bar at a time
 MASTER_GAIN_DB = -3.7      # one fixed master gain for every ending (a per-ending normaliser would let the end of
@@ -301,8 +302,9 @@ def line_margin(voice_st, bed_st, s0, s1):
 
 def event_margin(ev_mono, bed_mono, s, n, lo, hi, click):
     """A bench sound against everything else, in its own band (dB). A scrape (click=False) is measured over its whole
-    window. A click is heard by its peak against what is there at that instant, so for a click the 3 ms inside its
-    window where it is strongest is compared with the bed in the same 3 ms."""
+    window. A click is heard by its peak against what is there at that instant, so for a click each 3 ms on one of its
+    clicks (within 6 dB of its strongest) is compared with the bed in the same 3 ms, and the clearest one counts: a
+    ratchet is heard if one of its three clicks is."""
     a = max(0, s - 1000)
     b = min(N, s + n + 1000)
     sos = butter(4, [lo, hi], btype='bandpass', fs=SR, output='sos')
@@ -313,8 +315,10 @@ def event_margin(ev_mono, bed_mono, s, n, lo, hi, click):
         ce = np.concatenate([[0.0], np.cumsum(e * e)])
         cd = np.concatenate([[0.0], np.cumsum(d * d)])
         k = np.arange(0, max(1, n - w + 1), 24)
-        i = int(k[int(np.argmax(ce[k + w] - ce[k]))])
-        return float(10 * np.log10((ce[i + w] - ce[i]) / max(cd[i + w] - cd[i], 1e-30)))
+        ee = ce[k + w] - ce[k]
+        dd = np.maximum(cd[k + w] - cd[k], 1e-30)
+        at = ee >= ee.max() / 4                  # the 3 ms windows on one of its clicks (within 6 dB of the strongest)
+        return float(10 * np.log10((ee[at] / dd[at]).max()))
     return float(10 * np.log10((e * e).sum() / max((d * d).sum(), 1e-30)))
 
 
@@ -374,15 +378,18 @@ def punch(p, r):
     return (0.30 * click + 0.045 * th) * p
 
 
-def ratchet(r):
-    """Three pawl clicks 17 ms apart, the third softest."""
-    n = int(0.08 * SR)
+def ratchet(frames, r):
+    """The knob's ratchet while it turns: three pawl clicks spread through the turn (the cue says how many frames it
+    takes), the first a sixth of the way in, so the clicks fall between the punch at the note's start and the next
+    note; each a little softer."""
+    span = frames * SPF
+    n = span + int(0.02 * SR)
     out = np.zeros(n)
-    for j, (d, a) in enumerate(((0.0, 1.0), (0.017, 0.8), (0.034, 0.55))):
+    for j, a in enumerate((1.0, 0.85, 0.7)):
         m = int(0.012 * SR)
         k = band(r.standard_normal(m), 2500, 7000) * decay(m, 0.0012)
         k += 0.4 * np.sin(2 * np.pi * (1900 + 120 * j) * np.arange(m) / SR) * decay(m, 0.003)
-        add(out, int(d * SR), a * k)
+        add(out, int((2 * j + 1) * span / 6), a * k)
     return out * 0.05
 
 
@@ -578,11 +585,11 @@ def foley_instances(cues):
             inst.append(('punch', note_start(g), punch(p, rng(30, g)), p))
     turned = set()
     for i, t in enumerate(cues['knobTurns']):    # the ratchet: on every knob turn, at the frame the knob starts to move
-        inst.append(('ratchet', frame_sample(t['frame']), ratchet(rng(31, i)), None))
+        inst.append(('ratchet', frame_sample(t['frame']), ratchet(t['frames'], rng(31, i)), None))
         turned.add(t['note'])
     for g in range(NOTES):                       # a step change the engine gave no knob turn of its own (should not happen)
         if cues['stepChanged'][g] and g not in turned and g + 1 not in turned:
-            inst.append(('ratchet', note_start(g), ratchet(rng(31, 1000 + g)), None))
+            inst.append(('ratchet', note_start(g), ratchet(3, rng(31, 1000 + g)), None))
     ch = cues['chalk']
     inst.append(('chalk', frame_sample(ch['frame']), chalk(ch['frames'], ch['tickFrames'], rng(32, 0)), None))
     for i, f in enumerate(cues['taps']):
@@ -653,9 +660,10 @@ def build(cues, programme, voice, sync_proof=False):
         prog_st = prog_st0 * duck_gain(spans, depths)[:, None]
         short = False
         for j, (s0, s1) in enumerate(spans):
-            lu, _, _ = line_margin(vo_st, prog_st, s0, s1)
-            if lu < VOICE_TARGET_LU and depths[j] < DUCK_MAX_DB:
-                depths[j] = min(DUCK_MAX_DB, depths[j] + np.ceil((VOICE_TARGET_LU - lu + 0.25) * 2) / 2)
+            lu, sp, _ = line_margin(vo_st, prog_st, s0, s1)
+            worst = min(lu, sp)
+            if worst < VOICE_TARGET_LU and depths[j] < DUCK_MAX_DB:
+                depths[j] = min(DUCK_MAX_DB, depths[j] + np.ceil((VOICE_TARGET_LU - worst + 0.25) * 2) / 2)
                 short = True
         if not short:
             break
@@ -666,8 +674,8 @@ def build(cues, programme, voice, sync_proof=False):
     tv_only = speaker_chain(tv * duck) * mg
     foley_log = []
     f_st, dirty = {}, set(['punch', 'ratchet', 'chalk', 'tap', 'creak'])
-    for it in range(5):
-        adjust = it < 4                          # the last pass only measures
+    for it in range(7):
+        adjust = it < 6                          # the last pass only measures
         stems = foley_stems(inst, fgain)
         for k in sorted(dirty):
             f_st[k] = speaker_chain(stems[k]) * mg
@@ -777,8 +785,9 @@ def main():
     if not INTEGRATED_RANGE[0] <= m['integratedLUFS'] <= INTEGRATED_RANGE[1]:
         bad.append('integrated %.2f LUFS outside %s' % (m['integratedLUFS'], INTEGRATED_RANGE))
     for v in info['voiceMargins']:
-        if v['marginLU'] < VOICE_MIN_LU:
-            bad.append('line %s at frame %d only %.2f LU above its bed' % (v['id'], v['frame'], v['marginLU']))
+        if min(v['marginLU'], v['speechBandMarginDb']) < VOICE_MIN_LU:
+            bad.append('line %s at frame %d only %.2f LU (%.2f dB in the speech band) above its bed' % (
+                v['id'], v['frame'], v['marginLU'], v['speechBandMarginDb']))
     for f in info['foley']:
         if f['checked'] and f['marginDb'] < FOLEY_TARGET_DB - 0.05:
             bad.append('%s at frame %.1f masked (%.2f dB in band)' % (f['kind'], f['frame'], f['marginDb']))

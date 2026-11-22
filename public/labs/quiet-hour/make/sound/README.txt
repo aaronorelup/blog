@@ -13,9 +13,10 @@ One script makes the whole soundtrack of an ending from three inputs, and nothin
       --sync-proof adds a click on every bar line through the speaker; sync_proof.py checks where they land.
 
 The build fails if true peak is above -1 dBTP, short-term loudness is above -13 LUFS anywhere, integrated loudness
-is outside -18 to -15 LUFS, any line is less than 4 LU above the bed under it (the programme dips under each line,
-deeper where the music is loud), or a ratchet, the chalk, a dial tap or a sure pick's punch is masked in its own band
-(each is raised, up to 15 dB, until it is 3 dB above everything else there). Two runs give the same bytes. Nothing in
+is outside -18 to -15 LUFS, any line is less than 4 LU (and 4 dB in the 300 Hz to 3.4 kHz speech band) above the
+bed under it (the programme dips under each line, deeper where the music is loud), or a ratchet, the chalk, a dial
+tap or a sure pick's punch is masked in its own band (each is raised, up to 22 dB, until it is 3 dB above everything
+else there). Two runs give the same bytes. Nothing in
 it branches on the ending's name (the name only picks which published file to open), and the first 60 s (20:00 on
 the clock, samples 0 to 2,879,999) come out bit-identical in all four endings: nothing in the chain looks ahead
 across a bar line (causal filters, the room response convolved one bar at a time, the limiter deciding each bar from

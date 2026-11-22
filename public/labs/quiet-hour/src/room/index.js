@@ -10,9 +10,13 @@
 // tube: tv-look's files; this file only creates and updates them).
 //
 // The light: the screen is the light. One shadow-casting spot at the tube, its colour and strength from the
-// programme canvas's average, its shadow's blur from S.shadowSoftness (a broad soft gradient while the box is
-// unsure, a razor when it is certain): a variance shadow map, blurred in the light's space. A low, cool, static night fill so the room's shapes read. Nothing else lights the room:
-// the moon at the windows and the neighbour's window are unlit decals and glows.
+// programme canvas's average, aimed at the chair's seat as a pool (all penumbra, falling off toward the walls'
+// edges). Its shadow's blur comes from S.shadowSoftness (bible v1.2): a broad soft gradient while the box is
+// unsure, a razor when it is certain, drawn with three's variance shadow map blurred in the light's space (see
+// LIGHT). The dust samples the same map, so the chair's shadow is a volume in the beam too. The night fill is
+// static and low: a cool directional wash from the front of the room (it lies on the back wall and the chair's
+// back for WIDE A and leaves the front wall to the screen for the REVERSE) over a very low ambient. Nothing else
+// lights the room: the moon at the windows and the neighbour's window are unlit decals and glows.
 //
 // Everything that moves reads S (or the shot). No state is carried between frames.
 

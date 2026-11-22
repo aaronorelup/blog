@@ -320,17 +320,22 @@ export function createTV({ THREE, programmeTexture, anchors }) {
       uStrength: { value: new THREE.Vector4(GLOW.haze, GLOW.halo, GLOW.haloBroad, GLOW.spill) } },
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false,
     polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
-    vertexShader: 'attribute float kind; varying vec3 vW; varying float vK; void main(){ vW = position; vK = kind; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+    // the picture's mean is the same for every fragment: read it once a vertex (the last mip level), not per pixel.
+    // The halo and the spill see it through a gentle curve (luminance^0.6, same hue), so a dim picture still reads as
+    // the room's source and a bright one does not flood the wall
+    vertexShader: `
+      uniform sampler2D uProg; attribute float kind; varying vec3 vW; varying float vK; varying vec3 vAvg; varying vec3 vSoft;
+      void main() {
+        vW = position; vK = kind;
+        vAvg = textureLod(uProg, vec2(0.5), 12.0).rgb;
+        vSoft = vAvg * pow(max(dot(vAvg, vec3(0.2126, 0.7152, 0.0722)), 1e-4), -0.4);
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }`,
     fragmentShader: `
       #include <qh_dither>
-      uniform sampler2D uProg; uniform vec2 uTube, uTubeHalf; uniform vec4 uWall, uCase, uFoot, uStrength; varying vec3 vW; varying float vK;
+      uniform vec2 uTube, uTubeHalf; uniform vec4 uWall, uCase, uFoot, uStrength; varying vec3 vW; varying float vK; varying vec3 vAvg; varying vec3 vSoft;
       float sdRR(vec2 p, vec2 b, float r) { vec2 q = abs(p) - b + r; return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r; }
       void main() {
-        vec3 avg = textureLod(uProg, vec2(0.5), 12.0).rgb;
-        // the halo and the spill see the picture's mean through a gentle curve (luminance^0.6, same hue), so a dim
-        // picture still reads as the room's source and a bright one does not flood the wall
-        float lum = max(dot(avg, vec3(0.2126, 0.7152, 0.0722)), 1e-4);
-        vec3 soft = avg * pow(lum, -0.4);
         float a; uint salt;
         if (vK < 0.5) {
           float d = sdRR(vW.xy - uTube, uTubeHalf, 0.03);
@@ -352,7 +357,7 @@ export function createTV({ THREE, programmeTexture, anchors }) {
           a = uStrength.w * exp(-d / 0.09) * front;
           salt = 3u;
         }
-        vec3 col = (vK < 0.5 ? avg : soft) * a;
+        vec3 col = (vK < 0.5 ? vAvg : vSoft) * a;
         float amp = (0.8 / 255.0) * smoothstep(1.0 / 255.0, 3.0 / 255.0, max(col.r, max(col.g, col.b)));
         gl_FragColor = vec4(max(col + qhDither(salt) * amp, 0.0), 1.0);
       }`,
