@@ -38,8 +38,16 @@ export function rowY(tok) {
   if (tok < 30) return STRIP.rowsTop + (29 - tok + 0.5) * STRIP.rowH;
   return STRIP.rowsTop + 30 * STRIP.rowH + STRIP.gap + (tok - 30 + 0.5) * STRIP.rowH;
 }
+/** y of a fractional row (the stylus: rows -0.5..31.5), linear between row centres, across the HOLD/REST gap too. */
+export function rowYf(r) {
+  const c = Math.min(31.5, Math.max(-0.5, r));
+  if (c <= 0) return rowY(0) + (rowY(0) - rowY(1)) * -c;
+  if (c >= 31) return rowY(31) + (rowY(31) - rowY(30)) * (c - 31);
+  const i = Math.floor(c), f = c - i;
+  return rowY(i) + (rowY(i + 1) - rowY(i)) * f;
+}
 export const STRIP_ROWS_BOTTOM = STRIP.rowsTop + 32 * STRIP.rowH + STRIP.gap;   // 555
-export const PUNCH = { x: 1100, y: 100, w: 44, h: 40 };          // brass punch head; column centre at PUNCH.x
+export const PUNCH = { x: 1100, y: 100, w: 44, h: 40, stroke: 14 }; // brass punch head; column centre at PUNCH.x; stroke = its drop
 export const LIGHTBOX = { x: 1076, y: 130, w: 48, h: 430 };      // under the newest column: holes glow amber here
 export const HOLE_R = 7.5;                                        // R in radius = R * (0.25 + 0.75 p)
 export const STYLUS = { pivot: { x: 1250, y: 70 }, len: 230 };   // brass pointer; its tip hangs over the newest column
@@ -71,10 +79,11 @@ export const HANDS = {
     chalk: { x: DIAL.x + 120, y: DIAL.y - 60, rot: -0.5 },   // over the chalk mark
     grip: { x: KNOB.x - 10, y: KNOB.y + 30, rot: -0.2 },     // on the knob
     lid: { x: BOX.x + BOX.w / 2, y: BOX.y + 60, rot: 0.1 },  // closing the lid
-    slideCard: { x: TITLE_CARD.x + 80, y: TITLE_CARD.y + 200, rot: 0 },
+    card: { x: TITLE_CARD.x + 80, y: TITLE_CARD.y + 200, rot: 0 },        // slides the title card away
+    crank: { x: CRANK.x - 140, y: CRANK.y + 40, rot: 0.2 },            // (unused by the engine: the right hand cranks)
   },
   right: {
-    crank: { x: CRANK.x, y: CRANK.y, rot: 0.25 },             // follows the crank handle
+    crank: { x: CRANK.x, y: CRANK.y, rot: 0.25 },             // follows the crank handle (always, rule 2)
   },
 };
 

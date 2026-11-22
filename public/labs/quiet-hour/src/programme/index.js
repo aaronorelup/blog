@@ -4,47 +4,39 @@
 //
 //   const programme = createProgramme({ engine });
 //   programme.draw(ctx, S, view)   // ctx: the 1280x960 programme canvas's 2D context
-//                                  // S: engine.signals(frame); view: a rectangle from layout.js VIEWS
+//                                  // S: engine.signals(frame) (typedef at the top of ../signals.js)
+//                                  // view: a rectangle in bench units from ../layout.js VIEWS
 //
-// Rules for whoever fills this in: draw everything fresh from S (and engine.note(g) for the strip's
-// history) every call; keep no state between calls; no Math.random, no clocks. Positions come from
-// ../layout.js. Every number drawn is read from S. The stub is ugly on purpose but every element
-// already moves by the bible's rules, so the grey animatic tells the story.
+// Rules for whoever fills this in: draw everything fresh from S every call; keep no state between calls
+// (the scratch canvases below are overwritten before they are read); no Math.random, no clocks. Positions
+// come from ../layout.js. Every number drawn is read from S. Every rule (haze alpha, hole size, where the
+// hatching starts, which flags are up, where the hands are) is already applied by the engine: this file only
+// turns S into shapes. The stub is ugly on purpose, but every element moves by the engine's signals.
 
 import {
-  PROGRAMME_W, PROGRAMME_H, BENCH, WOOD_EDGE, LAMP, STRIP, rowY, STRIP_ROWS_BOTTOM, PUNCH, LIGHTBOX, HOLE_R, STYLUS,
-  DIAL, dialAngle, CHALK_TEXT, KNOB, FLAGS, SHARE_DRUM, LESSONS, BOX, CRANK, TITLE_CARD, HANDS,
+  PROGRAMME_W, PROGRAMME_H, BENCH, WOOD_EDGE, LAMP, STRIP, rowY, rowYf, PUNCH, LIGHTBOX, HOLE_R, STYLUS,
+  DIAL, CHALK_TEXT, KNOB, FLAGS, SHARE_DRUM, LESSONS, BOX, CRANK, TITLE_CARD, HANDS,
 } from '../layout.js';
-import { NOTE_FRAMES, BAR_FRAMES } from '../time.js';
-import { hash01 } from '../rng.js';
 
-const LN32 = Math.log(32);
-const SEED = { stylus: 101, hair: 211, tear: 307, block: 401 };
 const FONT_SERIF = '"QH Serif"', FONT_MONO = '"QH Mono"', FONT_HAND = '"QH Hand"';
-const D_MAJOR = [1, 2, 4, 6, 7, 9, 11];                    // pitch classes (A3 = tok 0 is pitch class 9)
-const inKeyRow = (tok) => tok < 30 && D_MAJOR.includes((57 + tok) % 12);
+const D_MAJOR = [1, 2, 4, 6, 7, 9, 11];                    // pitch classes; row 0 is A3 (MIDI 57)
+const inKeyRow = (r) => r < 30 && D_MAJOR.includes((57 + r) % 12);
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 const lerp = (a, b, t) => a + (b - a) * t;
-const smoothstep = (t) => { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
 const isNum = (x) => typeof x === 'number' && Number.isFinite(x);
-// smooth seeded value noise in -1..1, knots every `period` frames
-function noise1(seed, x, period) {
-  const u = x / period, i = Math.floor(u), f = smoothstep(u - i);
-  return lerp(hash01(seed, i, 0, 0), hash01(seed, i + 1, 0, 0), f) * 2 - 1;
-}
+const angleAtU = (u) => DIAL.a0 + clamp(u, 0, 1) * (DIAL.a1 - DIAL.a0);   // dial position 0..1 -> canvas angle
 
-export function createProgramme({ engine }) {
-  // scratch canvases for the screen-space effects (contents never carried between frames)
-  const scratch = document.createElement('canvas'); scratch.width = PROGRAMME_W; scratch.height = PROGRAMME_H;
+export function createProgramme({ engine }) {         // eslint-disable-line no-unused-vars
+  const scratch = document.createElement('canvas'); scratch.width = PROGRAMME_W; scratch.height = 64;
   const sctx = scratch.getContext('2d');
-  const tiny = document.createElement('canvas'); tiny.width = 8; tiny.height = 8;
+  const tiny = document.createElement('canvas'); tiny.width = 16; tiny.height = 16;
   const tctx = tiny.getContext('2d');
 
   function draw(ctx, S, view) {
     const sx = PROGRAMME_W / view.w, sy = PROGRAMME_H / view.h;
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.imageSmoothingEnabled = true;
     ctx.fillStyle = '#202020'; ctx.fillRect(0, 0, PROGRAMME_W, PROGRAMME_H);
     ctx.setTransform(sx, 0, 0, sy, -view.x * sx, -view.y * sy);   // bench units from here on
 
@@ -58,7 +50,7 @@ export function createProgramme({ engine }) {
     drawTitleCard(ctx, S);
     drawHands(ctx, S);
 
-    ctx.setTransform(1, 0, 0, 1, 0, 0);                            // screen space from here on
+    ctx.setTransform(1, 0, 0, 1, 0, 0);                            // programme pixels from here on
     applyWarmth(ctx, S);
     applyHairline(ctx, S, view, sy);
     applyTears(ctx, S);
@@ -76,135 +68,110 @@ export function createProgramme({ engine }) {
     ctx.fillStyle = '#5a4d40'; ctx.fillRect(WOOD_EDGE.x, WOOD_EDGE.y, WOOD_EDGE.w, WOOD_EDGE.h);
   }
 
-  // ---- the strip: haze 0.85*sqrt(p), hole radius R*(0.25+0.75 p(pick)) ------------------
+  // ---- the strip: S.stripColumns (haze alpha and hole size already by the bible's rules) ---
   function drawStrip(ctx, S) {
     ctx.fillStyle = '#d8d6d0'; ctx.fillRect(STRIP.x, STRIP.y, STRIP.w, STRIP.h);
-    // ruled rows (D-major pitch rows darker, like staff paper)
-    for (let r = 0; r < 32; r++) {
+    for (let r = 0; r < 32; r++) {                                  // ruled rows, D-major rows darker
       ctx.fillStyle = inKeyRow(r) ? 'rgba(40,40,40,0.35)' : 'rgba(40,40,40,0.12)';
       ctx.fillRect(STRIP.x, rowY(r) + STRIP.rowH / 2 - 0.6, STRIP.w, 1.2);
     }
-    // lightbox under the newest column
-    ctx.fillStyle = '#efe6cf'; ctx.fillRect(LIGHTBOX.x, LIGHTBOX.y, LIGHTBOX.w, LIGHTBOX.h);
-    const g = S.note, phase = S.phase;
-    const nCols = Math.ceil((PUNCH.x - STRIP.x) / STRIP.colW) + 1;
+    ctx.fillStyle = '#efe6cf'; ctx.fillRect(LIGHTBOX.x, LIGHTBOX.y, LIGHTBOX.w, LIGHTBOX.h);   // lightbox
     ctx.save();
     ctx.beginPath(); ctx.rect(STRIP.x, STRIP.y, PUNCH.x + STRIP.colW / 2 - STRIP.x, STRIP.h); ctx.clip();
-    for (let k = g; k >= Math.max(0, g - nCols); k--) {
-      const cx = PUNCH.x - (g - k + phase) * STRIP.colW, x0 = cx - STRIP.colW / 2;
-      if (k % STRIP.barEvery === 0) { ctx.fillStyle = 'rgba(30,30,30,0.45)'; ctx.fillRect(x0 - 0.75, STRIP.y + 10, 1.5, STRIP.h - 20); }
-      const n = engine.note(k), p = n.pNaN ? null : n.p;
-      if (!p) continue;                                            // the bet is not a number: no haze, no hole
-      for (let r = 0; r < 32; r++) {
-        const a = 0.85 * Math.sqrt(Math.max(0, p[r]));
-        if (a < 0.01) continue;
+    for (const c of S.stripColumns) {
+      const cx = PUNCH.x + c.x * STRIP.colW, x0 = cx - STRIP.colW / 2;
+      if (x0 > PUNCH.x + STRIP.colW || cx < STRIP.x - STRIP.colW) continue;
+      if (c.bar) { ctx.fillStyle = 'rgba(30,30,30,0.45)'; ctx.fillRect(x0 - 0.75, STRIP.y + 10, 1.5, STRIP.h - 20); }
+      if (c.haze) for (let r = 0; r < 32; r++) {
+        const a = c.haze[r];
+        if (!(a >= 0.01)) continue;
         ctx.fillStyle = `rgba(30,30,34,${a.toFixed(4)})`;
         ctx.fillRect(x0 + 1, rowY(r) - STRIP.rowH / 2, STRIP.colW - 2, STRIP.rowH);
       }
-      const pp = n.ptok, tok = n.tok, y = rowY(tok);
-      if (!isNum(pp)) continue;
-      const rad = HOLE_R * (0.25 + 0.75 * pp);
+      if (!isNum(c.holeR) || c.tok < 0) continue;                   // no bet: no hole
+      const rad = HOLE_R * c.holeR, y = rowY(c.tok);
       const lit = Math.abs(cx - PUNCH.x) < LIGHTBOX.w / 2 + STRIP.colW / 2;
       ctx.fillStyle = lit ? '#ffcf70' : '#111';
       ctx.beginPath();
-      if (tok === 30) ctx.rect(cx - rad * 1.6, y - rad * 0.45, rad * 3.2, rad * 0.9);       // HOLD: a short slot
-      else if (tok === 31) ctx.arc(cx, y, 1.6, 0, Math.PI * 2);                              // REST: a pencil dot
+      if (c.kind === 'hold') ctx.rect(cx - rad * 1.6, y - rad * 0.45, rad * 3.2, rad * 0.9);   // a short slot
+      else if (c.kind === 'rest') ctx.arc(cx, y, 1.6, 0, Math.PI * 2);                         // a pencil dot
       else ctx.arc(cx, y, rad, 0, Math.PI * 2);
       ctx.fill();
     }
     ctx.restore();
-    // the punch
-    ctx.fillStyle = '#8a7a55'; ctx.fillRect(PUNCH.x - PUNCH.w / 2, PUNCH.y, PUNCH.w, PUNCH.h);
-    ctx.strokeStyle = '#222'; ctx.lineWidth = 2; ctx.strokeRect(PUNCH.x - PUNCH.w / 2, PUNCH.y, PUNCH.w, PUNCH.h);
+    const py = PUNCH.y + PUNCH.stroke * (S.punch || 0);             // the punch stroke
+    ctx.fillStyle = '#8a7a55'; ctx.fillRect(PUNCH.x - PUNCH.w / 2, py, PUNCH.w, PUNCH.h);
+    ctx.strokeStyle = '#222'; ctx.lineWidth = 2; ctx.strokeRect(PUNCH.x - PUNCH.w / 2, py, PUNCH.w, PUNCH.h);
   }
 
-  // ---- stylus: height = the bet's mean row; wander = spread x H/ln32 x seeded noise -------
+  // ---- stylus: S.stylusRow (mean row + wander, glided by the engine) ----------------------
   function drawStylus(ctx, S) {
-    const p = S.p;
-    let tipY = rowY(15);
-    if (p) {
-      let m = 0; for (let r = 0; r < 32; r++) m += p[r] * rowY(r);
-      let v = 0; for (let r = 0; r < 32; r++) v += p[r] * (rowY(r) - m) ** 2;
-      const spread = Math.sqrt(v), h = isNum(S.entropy) ? S.entropy / LN32 : 0;
-      tipY = m + spread * h * noise1(SEED.stylus, S.frame, 9);
-    }
-    const tip = { x: PUNCH.x, y: clamp(tipY, STRIP.rowsTop, STRIP_ROWS_BOTTOM) };
+    const tip = { x: PUNCH.x, y: rowYf(isNum(S.stylusRow) ? S.stylusRow : 15) };
     ctx.strokeStyle = '#9a8656'; ctx.lineWidth = 6; ctx.lineCap = 'round';
     ctx.beginPath(); ctx.moveTo(STYLUS.pivot.x, STYLUS.pivot.y); ctx.lineTo(tip.x + 14, tip.y); ctx.stroke();
     ctx.fillStyle = '#9a8656'; ctx.beginPath(); ctx.moveTo(tip.x + 16, tip.y - 7); ctx.lineTo(tip.x + 2, tip.y); ctx.lineTo(tip.x + 16, tip.y + 7); ctx.fill();
     ctx.beginPath(); ctx.arc(STYLUS.pivot.x, STYLUS.pivot.y, 12, 0, Math.PI * 2); ctx.fill();
   }
 
-  // ---- STEP dial: needle = step size; hatched TOO FAR from 2/sharpness now; chalk at 20:00 -
+  // ---- STEP dial: needle (S.needleU), TOO FAR from S.hatchU, chalk (S.chalk, chalkU, chalkText) ----
   function drawDial(ctx, S) {
     const { x, y, r } = DIAL;
     ctx.fillStyle = '#cfcab9'; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
     ctx.strokeStyle = '#333'; ctx.lineWidth = 3; ctx.stroke();
-    // hatched zone: [limit now, max]; gone if sharpness is zero, negative or not a number
-    if (isNum(S.sharp) && S.sharp > 0) {
-      const a0 = dialAngle(2 / S.sharp);
-      if (a0 < DIAL.a1) {
-        ctx.save(); ctx.beginPath(); ctx.moveTo(x, y); ctx.arc(x, y, r * 0.92, a0, DIAL.a1); ctx.closePath(); ctx.clip();
-        ctx.strokeStyle = 'rgba(40,40,40,0.75)'; ctx.lineWidth = 2;
-        for (let d = -2 * r; d < 2 * r; d += 9) { ctx.beginPath(); ctx.moveTo(x + d, y - r); ctx.lineTo(x + d + r, y + r); ctx.stroke(); }
-        ctx.restore();
-        const am = (a0 + DIAL.a1) / 2;
-        ctx.save(); ctx.translate(x + Math.cos(am) * r * 0.62, y + Math.sin(am) * r * 0.62);
-        ctx.fillStyle = '#222'; ctx.font = `22px ${FONT_SERIF}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText('TOO FAR', 0, 0); ctx.restore();
-      }
+    if (isNum(S.hatchU) && S.hatchU < 1) {                         // null: the hatching is gone
+      const a0 = angleAtU(S.hatchU);
+      ctx.save(); ctx.beginPath(); ctx.moveTo(x, y); ctx.arc(x, y, r * 0.92, a0, DIAL.a1); ctx.closePath(); ctx.clip();
+      ctx.strokeStyle = 'rgba(40,40,40,0.75)'; ctx.lineWidth = 2;
+      for (let d = -2 * r; d < 2 * r; d += 9) { ctx.beginPath(); ctx.moveTo(x + d, y - r); ctx.lineTo(x + d + r, y + r); ctx.stroke(); }
+      ctx.restore();
+      const am = (a0 + DIAL.a1) / 2;
+      ctx.fillStyle = '#222'; ctx.font = `22px ${FONT_SERIF}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText('TOO FAR', x + Math.cos(am) * r * 0.62, y + Math.sin(am) * r * 0.62);
     }
-    // ticks and numerals (decades and thirds)
     ctx.fillStyle = '#222'; ctx.font = `20px ${FONT_SERIF}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    for (const v of [0.03, 0.1, 0.3, 1, 3, 10, 30]) {
-      const a = dialAngle(v), c = Math.cos(a), s = Math.sin(a);
+    for (const v of [0.03, 0.1, 0.3, 1, 3, 10, 30]) {               // engraved scale (fixed)
+      const a = angleAtU(Math.log(v / DIAL.min) / Math.log(DIAL.max / DIAL.min)), c = Math.cos(a), s = Math.sin(a);
       ctx.strokeStyle = '#222'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x + c * r * 0.86, y + s * r * 0.86); ctx.lineTo(x + c * r * 0.98, y + s * r * 0.98); ctx.stroke();
       ctx.fillText(String(v), x + c * r * 0.74, y + s * r * 0.74);
     }
     ctx.font = `26px ${FONT_SERIF}`; ctx.fillText('STEP', x, y + r * 0.45);
-    // chalk mark at the limit measured at 20:00 (appears over frames 1440..1444)
-    if (S.chalk > 0 && isNum(S.limit20)) {
-      const a = dialAngle(S.limit20), c = Math.cos(a), s = Math.sin(a);
-      ctx.save(); ctx.globalAlpha = clamp(S.chalk, 0, 1);
-      ctx.strokeStyle = '#f4f4f0'; ctx.lineWidth = 5; ctx.lineCap = 'round';
-      ctx.beginPath(); ctx.moveTo(x + c * r * 0.82, y + s * r * 0.82); ctx.lineTo(x + c * r * 1.12, y + s * r * 1.12); ctx.stroke();
-      ctx.fillStyle = '#f4f4f0'; ctx.font = `40px ${FONT_HAND}`; ctx.textAlign = 'left';
-      ctx.fillText(S.limit20.toFixed(2), x + c * r * 1.12 + CHALK_TEXT.dx, y + s * r * 1.12 + CHALK_TEXT.dy);
+    if (S.chalk > 0) {
+      const a = angleAtU(S.chalkU), c = Math.cos(a), s = Math.sin(a), t = clamp(S.chalk, 0, 1);
+      ctx.save();
+      ctx.strokeStyle = '#f4f4f0'; ctx.lineWidth = 5; ctx.lineCap = 'round';   // the stroke draws on outward
+      ctx.beginPath(); ctx.moveTo(x + c * r * 0.82, y + s * r * 0.82); ctx.lineTo(x + c * r * lerp(0.82, 1.12, t), y + s * r * lerp(0.82, 1.12, t)); ctx.stroke();
+      ctx.globalAlpha = t; ctx.fillStyle = '#f4f4f0'; ctx.font = `40px ${FONT_HAND}`; ctx.textAlign = 'left';
+      ctx.fillText(S.chalkText, x + c * r * 1.12 + CHALK_TEXT.dx, y + s * r * 1.12 + CHALK_TEXT.dy);
       ctx.restore();
     }
-    // needle: the step size
-    if (isNum(S.lr)) {
-      const a = dialAngle(S.lr);
-      ctx.strokeStyle = '#111'; ctx.lineWidth = 4; ctx.lineCap = 'round';
-      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(a) * r * 0.9, y + Math.sin(a) * r * 0.9); ctx.stroke();
-    }
+    const a = angleAtU(S.needleU);
+    ctx.strokeStyle = '#111'; ctx.lineWidth = 4; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(a) * r * 0.9, y + Math.sin(a) * r * 0.9); ctx.stroke();
     ctx.fillStyle = '#555'; ctx.beginPath(); ctx.arc(x, y, 10, 0, Math.PI * 2); ctx.fill();
   }
 
-  // ---- knob: turns with the needle (3 knob turns over the dial's sweep), 24-click ratchet ---
+  // ---- knob: S.knobAngle (turns with the needle), ratchet teeth -------------------------------
   function drawKnob(ctx, S) {
-    const { x, y, r, clicksPerTurn } = KNOB;
-    const t = isNum(S.lr) ? (dialAngle(S.lr) - DIAL.a0) / (DIAL.a1 - DIAL.a0) : 0;
-    const a = -Math.PI / 2 + t * 3 * Math.PI * 2;
-    ctx.fillStyle = '#6b6b6b'; ctx.beginPath();
+    const { x, y, r, clicksPerTurn } = KNOB, a = -Math.PI / 2 + (S.knobAngle || 0);
+    ctx.fillStyle = S.knobTurning ? '#7d7d7d' : '#6b6b6b'; ctx.beginPath();
     for (let i = 0; i < clicksPerTurn * 2; i++) {
-      const aa = (i / (clicksPerTurn * 2)) * Math.PI * 2, rr = i % 2 ? r : r * 0.9;
+      const aa = a + (i / (clicksPerTurn * 2)) * Math.PI * 2, rr = i % 2 ? r : r * 0.9;
       ctx.lineTo(x + Math.cos(aa) * rr, y + Math.sin(aa) * rr);
     }
     ctx.closePath(); ctx.fill();
     ctx.strokeStyle = '#eee'; ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(a) * r * 0.8, y + Math.sin(a) * r * 0.8); ctx.stroke();
   }
 
-  // ---- NEW TUNES flags (bar lines only), share drum (per note), LESSONS odometer -----------
+  // ---- NEW TUNES flags (S.flagsUp, flipping over S.flagsT), share drum, LESSONS odometer --------
   function drawFlagsAndCounters(ctx, S) {
-    const barShare = engine.note(Math.floor(S.frame / BAR_FRAMES) * (BAR_FRAMES / NOTE_FRAMES)).heldAcc;
-    const up = isNum(barShare) ? Math.round(10 * barShare) : 0;
     ctx.fillStyle = '#4a4a4a'; ctx.fillRect(FLAGS.x, FLAGS.y + FLAGS.h - 10, FLAGS.w, 10);
     const fw = FLAGS.w / FLAGS.n;
     for (let i = 0; i < FLAGS.n; i++) {
-      const fx = FLAGS.x + i * fw + fw * 0.2, isUp = i < up;
-      ctx.fillStyle = '#888'; ctx.fillRect(fx, FLAGS.y + (isUp ? 6 : FLAGS.h - 26), 3, isUp ? FLAGS.h - 16 : 16);
-      ctx.fillStyle = isUp ? '#c8b070' : '#666'; ctx.fillRect(fx + 3, FLAGS.y + (isUp ? 6 : FLAGS.h - 26), fw * 0.5, isUp ? 22 : 10);
+      const was = i < S.flagsPrevUp, now = i < S.flagsUp;
+      const up = was === now ? (now ? 1 : 0) : lerp(was ? 1 : 0, now ? 1 : 0, clamp(S.flagsT, 0, 1));
+      const fx = FLAGS.x + i * fw + fw * 0.2, top = lerp(FLAGS.y + FLAGS.h - 26, FLAGS.y + 6, up);
+      ctx.fillStyle = '#888'; ctx.fillRect(fx, top, 3, FLAGS.y + FLAGS.h - 10 - top);
+      ctx.fillStyle = up > 0.5 ? '#c8b070' : '#666'; ctx.fillRect(fx + 3, top, fw * 0.5, lerp(10, 22, up));
     }
     ctx.fillStyle = '#ddd'; ctx.font = `16px ${FONT_SERIF}`; ctx.textAlign = 'right'; ctx.textBaseline = 'alphabetic';
     ctx.fillText('NEW TUNES · OF TEN', FLAGS.x + FLAGS.w, FLAGS.y - 6);
@@ -213,109 +180,99 @@ export function createProgramme({ engine }) {
       ctx.fillStyle = '#e8e2d0'; ctx.font = `${box.h * 0.8}px ${FONT_MONO}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText(text, box.x + box.w / 2, box.y + box.h / 2 + 2);
     };
-    drum(SHARE_DRUM, isNum(S.share) ? String(Math.min(99, Math.round(100 * S.share))).padStart(2, '0') : '--');
-    drum(LESSONS, isNum(S.steps) ? String(S.steps).padStart(6, '0') : '------');
+    drum(SHARE_DRUM, S.shareDrumText);
+    drum(LESSONS, S.stepsText);
     ctx.fillStyle = '#ddd'; ctx.font = `16px ${FONT_SERIF}`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
     ctx.fillText('LESSONS', LESSONS.x + LESSONS.w / 2, LESSONS.y + LESSONS.h + 4);
   }
 
-  // ---- the box, the lid (closed over the last bar only if the hands are there), the crank ---
+  // ---- the box, the lid (S.lidClosed), the crank (S.crankAngle: one turn per bar, always) ------
   function drawBoxAndCrank(ctx, S) {
     ctx.fillStyle = '#5b5046'; ctx.fillRect(BOX.x, BOX.y, BOX.w, BOX.h);
     ctx.fillStyle = '#3a332c'; ctx.fillRect(BOX.x + 16, BOX.y + 16, BOX.w - 32, BOX.h - 32);
-    const lid = clamp(S.lidClosed ?? 0, 0, 1);
+    const lid = clamp(S.lidClosed || 0, 0, 1);
     if (lid > 0) { ctx.fillStyle = '#7a6a58'; ctx.fillRect(BOX.x, BOX.y, BOX.w, BOX.h * lid); }
-    const a = (S.frame / BAR_FRAMES) * Math.PI * 2;                // one turn per bar, always
-    const hx = CRANK.x + Math.cos(a) * CRANK.r, hy = CRANK.y + Math.sin(a) * CRANK.r;
+    const [hx, hy] = crankHandle(S);
     ctx.fillStyle = '#777'; ctx.beginPath(); ctx.arc(CRANK.x, CRANK.y, 18, 0, Math.PI * 2); ctx.fill();
     ctx.strokeStyle = '#999'; ctx.lineWidth = 10; ctx.lineCap = 'round';
     ctx.beginPath(); ctx.moveTo(CRANK.x, CRANK.y); ctx.lineTo(hx, hy); ctx.stroke();
     ctx.fillStyle = '#bbb'; ctx.beginPath(); ctx.arc(hx, hy, 14, 0, Math.PI * 2); ctx.fill();
   }
+  const crankHandle = (S) => [CRANK.x + Math.cos(S.crankAngle) * CRANK.r, CRANK.y + Math.sin(S.crankAngle) * CRANK.r];
 
-  // ---- title card (FORMAT: frames 0..89 on the bench, slid away over 90..119) ---------------
+  // ---- title card (S.titleSlide: FORMAT, slid off over frames 90..119) ------------------------
   function drawTitleCard(ctx, S) {
-    const t = clamp(S.titleSlide ?? 1, 0, 1);
-    if (t >= 1) return;
-    const x = lerp(TITLE_CARD.x, TITLE_CARD.exitX, smoothstep(t));
+    if (!S.titleVisible) return;
+    const x = lerp(TITLE_CARD.x, TITLE_CARD.exitX, clamp(S.titleSlide, 0, 1));
     ctx.fillStyle = '#e9e4d6'; ctx.fillRect(x, TITLE_CARD.y, TITLE_CARD.w, TITLE_CARD.h);
     ctx.fillStyle = '#2a2a2a'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.font = `64px ${FONT_SERIF}`; ctx.fillText('THE QUIET HOUR', x + TITLE_CARD.w / 2, TITLE_CARD.y + TITLE_CARD.h * 0.42);
     ctx.font = `italic 30px ${FONT_SERIF}`; ctx.fillText('a music box learns jigs by ear', x + TITLE_CARD.w / 2, TITLE_CARD.y + TITLE_CARD.h * 0.68);
   }
 
-  // ---- the maker's hands: two mittens, positions = pose weights x layout targets ----------
+  // ---- the maker's hands: two mittens placed by S.hands (presence, pose weights, finger) --------
   function drawHands(ctx, S) {
-    const H = S.hands;
-    const present = clamp(H ? H.present : (S.handsPresent ?? 1), 0, 1);
+    const H = S.hands, present = clamp(H.present, 0, 1);
     if (present <= 0) return;
     const dy = (1 - present) * HANDS.off.dy;
-    // left hand: blend of its poses by the engine's weights (rest if none given)
-    const w = (H && H.left) || { rest: 1 };
     let sum = 0, x = 0, y = 0, rot = 0;
-    for (const [pose, wt] of Object.entries(w)) {
+    for (const [pose, wt] of Object.entries(H.left)) {
       const P = HANDS.left[pose]; if (!P || !(wt > 0)) continue;
       x += P.x * wt; y += P.y * wt; rot += P.rot * wt; sum += wt;
     }
     if (sum > 0) { x /= sum; y /= sum; rot /= sum; } else ({ x, y, rot } = HANDS.left.rest);
-    const tapDip = H && isNum(H.tap) ? H.tap : 0;                  // 0..1 finger press (tap-along / dial tap)
-    mitten(ctx, x, y + dy, rot, tapDip);
-    // right hand on the crank handle whenever present
-    const a = (S.frame / BAR_FRAMES) * Math.PI * 2;
-    mitten(ctx, CRANK.x + Math.cos(a) * CRANK.r, CRANK.y + Math.sin(a) * CRANK.r + dy, HANDS.right.crank.rot, 0);
+    // the index finger: lifted for the tap-along, pressed for the dial tap
+    mitten(ctx, x, y + dy, rot, (H.fingerLift || 0) - (H.dialTap || 0));
+    const [hx, hy] = crankHandle(S);                                // right hand: on the crank (rule 2)
+    mitten(ctx, hx, hy + dy, HANDS.right.crank.rot, 0);
   }
-  function mitten(ctx, x, y, rot, dip) {
+  function mitten(ctx, x, y, rot, lift) {
     ctx.save(); ctx.translate(x, y); ctx.rotate(rot);
     ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.beginPath(); ctx.ellipse(10, 14, 52, 66, 0, 0, Math.PI * 2); ctx.fill();   // paper shadow
     ctx.fillStyle = '#b9b2a6'; ctx.fillRect(-46, 40, 92, 520);                                                       // knitted cuff
     ctx.fillStyle = '#d9cfc0'; ctx.beginPath(); ctx.ellipse(0, 0, 48, 62, 0, 0, Math.PI * 2); ctx.fill();            // the hand
     ctx.beginPath(); ctx.ellipse(-50, 10, 16, 30, -0.5, 0, Math.PI * 2); ctx.fill();                                 // thumb
-    ctx.beginPath(); ctx.ellipse(8, -62 - 14 * dip, 12, 26, 0, 0, Math.PI * 2); ctx.fill();                          // index finger
+    ctx.beginPath(); ctx.ellipse(8, -62 - 18 * lift, 12 * (1 + 0.2 * lift), 26, 0, 0, Math.PI * 2); ctx.fill();      // index finger
     ctx.restore();
   }
 
-  // ---- screen-space effects ----------------------------------------------------------------
-  // warmth = 0.15 + 0.85 k: saturation of the whole picture (desaturate by 1 - warmth)
+  // ---- programme-wide effects ---------------------------------------------------------------
+  // warmth 0.15..1 = the saturation of the whole picture (desaturate by 1 - warmth)
   function applyWarmth(ctx, S) {
-    const w = isNum(S.warmth) ? clamp(S.warmth, 0, 1) : 1;
+    const w = clamp(S.warmth, 0, 1);
     if (w >= 1) return;
     ctx.save(); ctx.globalCompositeOperation = 'saturation'; ctx.globalAlpha = 1 - w;
     ctx.fillStyle = '#808080'; ctx.fillRect(0, 0, PROGRAMME_W, PROGRAMME_H); ctx.restore();
   }
-  // ratio now > 1: one hairline shift of 1..3 px somewhere in the strip, seeded by the note
+  // S.hairline: one shift of 1..3 px at y (0..1 of the strip's height), on notes where ratio now > 1
   function applyHairline(ctx, S, view, sy) {
-    if (!(S.ratio > 1)) return;
+    if (!S.hairline) return;
     const top = (STRIP.y - view.y) * sy, bot = (STRIP.y + STRIP.h - view.y) * sy;
-    const y0 = Math.round(clamp(lerp(top, bot, hash01(SEED.hair, S.note, 0, 0)), 0, PROGRAMME_H - 3));
-    const dx = 1 + Math.floor(hash01(SEED.hair, S.note, 1, 0) * 3);
-    shiftBand(ctx, y0, 2, dx);
+    const y0 = Math.round(clamp(lerp(top, bot, S.hairline.y), 0, PROGRAMME_H - 2));
+    shiftBand(ctx, y0, 2, Math.round(S.hairline.shiftPx));
   }
-  // tears: floor(8 g) bands, up to +/- 24 g px, reseeded per note; displacement only
+  // S.tearBands: displaced bands (y0, y1 in 0..1 of the picture), displacement only
   function applyTears(ctx, S) {
-    const g = isNum(S.tear) ? clamp(S.tear, 0, 1) : 0, n = Math.floor(8 * g);
-    for (let i = 0; i < n; i++) {
-      const y0 = Math.floor(hash01(SEED.tear, S.note, i, 0) * (PROGRAMME_H - 40));
-      const h = 6 + Math.floor(hash01(SEED.tear, S.note, i, 1) * 34);
-      const dx = Math.round((hash01(SEED.tear, S.note, i, 2) * 2 - 1) * 24 * g);
-      if (dx) shiftBand(ctx, y0, h, dx);
+    for (const b of S.tearBands) {
+      const y0 = Math.round(b.y0 * PROGRAMME_H), h = Math.max(1, Math.round((b.y1 - b.y0) * PROGRAMME_H)), dx = Math.round(b.dxPx);
+      if (dx) shiftBand(ctx, y0, Math.min(h, 64, PROGRAMME_H - y0), dx);
     }
   }
   function shiftBand(ctx, y0, h, dx) {
+    if (h <= 0 || !dx) return;
     sctx.clearRect(0, 0, PROGRAMME_W, h);
     sctx.drawImage(ctx.canvas, 0, y0, PROGRAMME_W, h, 0, 0, PROGRAMME_W, h);
-    ctx.drawImage(scratch, 0, 0, PROGRAMME_W, h, dx, y0, PROGRAMME_W, h);
-    // the edge the band left behind keeps its own pixels (nothing new is drawn there)
+    ctx.drawImage(scratch, 0, 0, PROGRAMME_W, h, dx, y0, PROGRAMME_W, h);   // the uncovered edge keeps its own pixels
   }
-  // blocks: when err > 10 ln 32, 8 px mosaic patches over a share of the picture that grows with g
+  // S.blockTiles: tiles of a 16 x 12 grid, each mosaicked at 8 px
   function applyBlocks(ctx, S) {
-    if (!(S.err > 10 * LN32)) return;
-    const g = isNum(S.tear) ? clamp(S.tear, 0, 1) : 0, patches = Math.round(4 + 60 * g);
+    if (!S.blocks || !S.blockTiles.length) return;
+    const tw = PROGRAMME_W / 16, th = PROGRAMME_H / 12;            // 80 x 80 programme px
     tctx.imageSmoothingEnabled = false; ctx.save(); ctx.imageSmoothingEnabled = false;
-    for (let i = 0; i < patches; i++) {
-      const px = Math.floor(hash01(SEED.block, S.note, i, 0) * (PROGRAMME_W / 64)) * 64;
-      const py = Math.floor(hash01(SEED.block, S.note, i, 1) * (PROGRAMME_H / 64)) * 64;
-      tctx.drawImage(ctx.canvas, px, py, 64, 64, 0, 0, 8, 8);
-      ctx.drawImage(tiny, 0, 0, 8, 8, px, py, 64, 64);
+    for (const t of S.blockTiles) {
+      const px = (t % 16) * tw, py = Math.floor(t / 16) * th, n = tw / 8;
+      tctx.drawImage(ctx.canvas, px, py, tw, th, 0, 0, n, n);
+      ctx.drawImage(tiny, 0, 0, n, n, px, py, tw, th);
     }
     ctx.restore();
   }

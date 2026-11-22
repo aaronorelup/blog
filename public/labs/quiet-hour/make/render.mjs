@@ -121,6 +121,18 @@ export function flipRows(buf, w, h) {
 }
 export const sha256 = (b) => crypto.createHash('sha256').update(b).digest('hex');
 
+// ---- provenance: a hash of every file the page can load (to catch a source change mid-render) ----
+export function sourceDigest(root = LAB) {
+  const files = [];
+  const walk = (d) => { for (const e of fs.readdirSync(d, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+    const p = path.join(d, e.name);
+    if (e.isDirectory()) { if (e.name !== 'make' && !e.name.startsWith('.')) walk(p); }
+    else if (/\.(js|mjs|json|html|css|woff2)$/.test(e.name)) files.push([path.relative(root, p), sha256(fs.readFileSync(p))]);
+  } };
+  walk(root);
+  return { digest: sha256(files.map((f) => f.join(' ')).join('\n')), files: Object.fromEntries(files) };
+}
+
 // ---- render ------------------------------------------------------------------------------------
 function ffmpegFor(outDir, lo, W, H, format) {
   const input = ['-v', 'error', '-y', '-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', `${W}x${H}`, '-r', String(FPS), '-i', '-'];
@@ -138,6 +150,7 @@ export async function render(opts) {
   fs.mkdirSync(path.join(OUT, format === 'png' ? 'frames' : 'seg'), { recursive: true });
   const { chromium } = loadPlaywright();
   const server = await startServer({ mounts: opts.mount || [] });
+  const srcBefore = sourceDigest();
 
   let chunks = [];
   for (let lo = FROM; lo <= TO; lo += CHUNK) chunks.push([lo, Math.min(TO + 1, lo + CHUNK)]);
@@ -190,11 +203,14 @@ export async function render(opts) {
   }
   await Promise.all(Array.from({ length: Math.min(SHARDS, chunks.length) }, (_, k) => worker(k)));
   await server.close();
+  const srcAfter = sourceDigest();
+  if (srcAfter.digest !== srcBefore.digest) console.error('WARNING: the page\'s source files changed during the render: frames may mix versions. Render again.');
   const wallS = (Date.now() - t0) / 1000, list = Object.keys(frames).map(Number).sort((a, b) => a - b);
   const ms = list.map((f) => frames[f].ms).sort((a, b) => a - b);
   const log = {
     ending, width: W, height: H, from: FROM, to: TO, shards: SHARDS, chunk: CHUNK, format, quality, order: opts.order || 'forward',
-    info, wallSeconds: +wallS.toFixed(1), fps: +((TO - FROM + 1) / wallS).toFixed(3),
+    info, source: { digest: srcBefore.digest, changedDuringRender: srcAfter.digest !== srcBefore.digest, files: srcBefore.files },
+    wallSeconds: +wallS.toFixed(1), fps: +((TO - FROM + 1) / wallS).toFixed(3),
     msPerFrame: { median: +ms[ms.length >> 1].toFixed(1), p90: +ms[Math.floor(ms.length * 0.9)].toFixed(1), mean: +(ms.reduce((a, b) => a + b, 0) / ms.length).toFixed(1) },
     load: fs.readFileSync('/proc/loadavg', 'utf8').trim(),
     chunks: chunks.map(([lo, hi]) => ({ from: lo, to: hi - 1, file: format === 'png' ? null : `seg/seg_${String(lo).padStart(6, '0')}.mkv` })).sort((a, b) => a.from - b.from),

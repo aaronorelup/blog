@@ -13,12 +13,9 @@
 
 import * as THREE from 'three';
 import { ROOM } from '../shots.js';
-import { NOTE_FRAMES } from '../time.js';
 import { hash01 } from '../rng.js';
 
-const LN32 = Math.log(32);
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
-const isNum = (x) => typeof x === 'number' && Number.isFinite(x);
 
 export function createRoom({ renderer, programmeCanvas, width, height, quality = 'final' }) {
   const scene = new THREE.Scene();
@@ -98,9 +95,12 @@ export function createRoom({ renderer, programmeCanvas, width, height, quality =
   cup.position.set(cu.x, cu.y + cu.h / 2 + 0.015, cu.z); cup.castShadow = cup.receiveShadow = true; scene.add(cup);
   const tea = new THREE.Mesh(new THREE.CircleGeometry(cu.r * 0.92, 24), tinted(0x3a2616));
   tea.rotation.x = -Math.PI / 2; tea.position.set(cu.x, cu.y + cu.h + 0.005, cu.z); scene.add(tea);
-  const rippleMat = new THREE.MeshBasicMaterial({ color: 0xd8c8a8, transparent: true, opacity: 0 });
-  const ripple = new THREE.Mesh(new THREE.RingGeometry(0.85, 1, 32), rippleMat);
-  ripple.rotation.x = -Math.PI / 2; ripple.position.set(cu.x, cu.y + cu.h + 0.007, cu.z); scene.add(ripple);
+  // ripple rings: one per pluck of the last 36 frames (S.teaRings), expanding and fading by age
+  const RING_FRAMES = 36, rings = [];
+  for (let i = 0; i < 8; i++) {
+    const m = new THREE.Mesh(new THREE.RingGeometry(0.86, 1, 32), new THREE.MeshBasicMaterial({ color: 0xd8c8a8, transparent: true, opacity: 0, depthWrite: false }));
+    m.rotation.x = -Math.PI / 2; m.position.set(cu.x, cu.y + cu.h + 0.007, cu.z); m.visible = false; scene.add(m); rings.push(m);
+  }
   const spoon = box(0.008, 0.11, 0.008, grey(0.85), cu.x + 0.02, cu.y + cu.h + 0.03, cu.z, true);
   spoon.rotation.z = -0.35;
 
@@ -190,31 +190,31 @@ export function createRoom({ renderer, programmeCanvas, width, height, quality =
     const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b, m = Math.max(r, g, b, 1e-4);
     spot.color.setRGB(r / m, g / m, b / m, THREE.SRGBColorSpace);
     spot.intensity = 40 * lum;
-    // shadow softness from the entropy: radius 1 + 5 H/ln32
-    const h = isNum(S.entropy) ? clamp(S.entropy / LN32, 0, 1) : 1;
-    spot.shadow.radius = 1 + 5 * h;
+    // shadow softness from the entropy: radius 1 + 5 H/ln32 (the engine's shadowRadius)
+    spot.shadow.radius = S.shadowRadius;
 
     // neighbour's window: lit while err <= ln 32
     neighbourMat.color.set(S.windowLit ? 0xffc870 : 0x0b0c10);
 
-    // dust
-    dustMat.uniforms.uDrift.value = S.dustDrift || 0;
-    dustMat.uniforms.uOpacity.value = 0.25 + 0.75 * h;
+    // dust: closed-form drift, opacity from the entropy
+    dustMat.uniforms.uDrift.value = S.dustDrift;
+    dustMat.uniforms.uOpacity.value = S.dustOpacity;
     dustMat.uniforms.uColor.value.copy(spot.color);
 
-    // tea: a ripple per pluck sized by velocity squared, expanding across the note
-    const v = isNum(S.pluckVel) ? S.pluckVel : 0, ph = S.phase ?? (S.frame % NOTE_FRAMES) / NOTE_FRAMES;
-    const rr = cu.r * 0.9 * (0.2 + 0.8 * ph);
-    ripple.scale.set(rr, rr, 1); rippleMat.opacity = clamp(v * v * (1 - ph) * 1.2, 0, 1);
+    // tea: a ring per pluck sized by velocity squared
+    rings.forEach((m, i) => {
+      const ring = S.teaRings[i];
+      m.visible = !!ring;
+      if (!ring) return;
+      const t = clamp(ring.age / RING_FRAMES, 0, 1), rr = cu.r * 0.92 * (0.15 + 0.85 * t);
+      m.scale.set(rr, rr, 1); m.material.opacity = clamp(ring.size * (1 - t), 0, 1);
+    });
     // spoon chatter when the mean velocity of the last 6 notes is 0.95 or more
-    const chatter = S.spoonChatter ?? false;
-    spoon.rotation.z = -0.35 + (chatter ? (hash01(7101, S.frame, 0, 0) * 2 - 1) * 0.06 : 0);
+    spoon.rotation.z = -0.35 + (S.spoonChatter ? (hash01(7101, S.frame, 0, 0) * 2 - 1) * 0.06 : 0);
 
-    // wall clock: 23:30 plus the programme clock
-    const [mm, ss] = S.clock.split(':').map(Number);
-    const minutes = 30 + mm + ss / 60;
-    minuteHand.rotation.z = -(minutes / 60) * Math.PI * 2;
-    hourHand.rotation.z = -((11 + minutes / 60) / 12) * Math.PI * 2;
+    // wall clock: 23:30 plus the programme clock (angles clockwise from 12)
+    minuteHand.rotation.z = -S.minuteAngle;
+    hourHand.rotation.z = -S.hourAngle;
   }
 
   return {

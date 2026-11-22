@@ -71,7 +71,7 @@ export async function createFilm({ canvas, width = 1280, height = 720, ending = 
   async function setEnding(name) {
     if (!ENDINGS.includes(name)) throw new Error(`unknown ending ${name}`);
     const e = await loadEngine(name, new URL('./', here).href);
-    engine = e; programme = createProgramme({ engine }); subs = createSubtitles(engine.cues);
+    engine = e; programme = createProgramme({ engine }); subs = createSubtitles(engine);
     current = name; film.engine = engine;
     return engine;
   }

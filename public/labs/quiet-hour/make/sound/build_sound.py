@@ -13,12 +13,15 @@ The programme is frames 0 to 2159, the coda (black) frames 2160 to 2399; the out
 48 kHz stereo, 24-bit.
 
 Layers (film bible section 5):
-  TV bus, mono, through the speaker chain: the programme (through a static compressor first), the maker's voice,
-    the bench foley (punch ticks, ratchet, chalk, dial taps, crank creak) and, in the coda, the last bet held as a pad.
+  TV bus, mono, through the speaker chain: the programme (through a static compressor, and dipped under the voice as
+    a broadcast mix would), the maker's voice, the bench foley (punch ticks, ratchet, chalk, dial taps, crank creak)
+    and, in the coda, the last bet held as a pad.
   Room bus, stereo, not through the speaker: house hum (follows the cue's hum flag), a wall-clock tick on every bar
     line, a faint tube whine, tear crackle, spoon chatter.
-Mix: one static gain to -16 LUFS integrated. The build FAILS if true peak is above -1 dBTP, short-term loudness is
-above -13 LUFS anywhere, or the length is not 4,800,000 samples.
+Mix: one fixed master gain, the same for every ending (so the first 20:00 are the same bytes in all four), and an
+offline peak limiter at -1.5 dBTP. The build FAILS (and renames its output .FAILED.wav) if true peak is above -1 dBTP,
+short-term loudness is above -13 LUFS anywhere, integrated loudness is outside -18 to -15 LUFS, or the length is not
+4,800,000 samples.
 numpy and scipy only. Every random number is drawn from a generator seeded by (SEED, layer, index).
 """
 import argparse
@@ -28,7 +31,8 @@ import os
 import sys
 
 import numpy as np
-from scipy.signal import butter, sosfilt, fftconvolve
+from scipy.ndimage import minimum_filter1d, uniform_filter1d
+from scipy.signal import butter, sosfilt, fftconvolve, resample_poly
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -52,15 +56,23 @@ PUBLISHED = {'main': 'fable-training-run', 'alone': 'fable-training-run-left-alo
              'x3': 'fable-training-run-held-3x', 'x10': 'fable-training-run-held-10x'}
 
 # ---- authored constants (film bible section 9: the speaker chain and the mix are authored) ----
-COMP_THRESHOLD_DB = -18.0  # detector level (300 ms RMS of the band-limited programme, dBFS) where compression starts
-COMP_RATIO = 2.0
-COMP_KNEE_DB = 6.0
+COMP_THRESHOLD_DB = -17.0  # detector level (1 s K-weighted RMS of the band-limited programme, dBFS) where it starts
+COMP_RATIO = 10.0
+COMP_KNEE_DB = 3.0
+COMP_WINDOW_BLOCKS = 100   # 1 s detector window, in 10 ms blocks
 COMP_ATTACK_S = 0.03
 COMP_RELEASE_S = 0.4
-VOICE_DB = -8.0            # gain on the frozen voice (its speech sits at -20 dBFS RMS)
-TARGET_LUFS = -16.0
+VOICE_DB = 1.5             # gain on the frozen voice (its speech sits at -20 dBFS RMS)
+DUCK_DB = 9.0              # the programme dips this much under the maker's voice, as a broadcast mix would
+DUCK_ATTACK_S = 0.08
+DUCK_RELEASE_S = 0.5
+MASTER_GAIN_DB = -3.7      # one fixed master gain for every ending (a per-ending normaliser would let the end of
+                           # the log change the level of the opening); chosen so all four meet the caps
+INTEGRATED_RANGE = (-18.0, -15.0)   # 'about -16 LUFS integrated': the short-term cap binds first, so it lands near -17
 CAP_TP = -1.0
 CAP_ST = -13.0
+LIMIT_DBTP = -1.5          # the master peak limiter's ceiling (true peak, 4x oversampled)
+LIMIT_HALF_S = 0.005       # its gain moves over 10 ms windows, centred on the peak
 SYNTH = {'lo': 57, 'P': 30, 'halo': 0.3, 'master': 0.5, 'sr': 44100}   # the published synth's pad rule (synth.js)
 RINGOUT_S = 2.5            # the published ring-out after 30:00
 PAD_HOLD_FADE_S = 0.6      # the published pad fades out over 0.6 s after the last note; the held pad fades in over it
@@ -81,53 +93,42 @@ def frame_sample(f):
 
 # ---------------------------------------------------------------- cues
 def load_cues(path):
-    """Read a cue file into plain lists. Accepts the engine's field names and a few aliases."""
+    """Read a cue file written by make/cues.mjs (format quiet-hour-cues/1) into plain lists."""
     c = json.load(open(path))
-    for k, v in (('fps', FPS), ('samplesPerFrame', SPF), ('framesPerNote', FPN)):
-        if k in c and c[k] != v:
-            raise SystemExit('cue file grid %s=%s, expected %s' % (k, c[k], v))
-    notes = c.get('notes') or c.get('perNote')
-    if isinstance(notes, list):   # a list of per-note objects -> columns
-        notes = {k: [n.get(k) for n in notes] for k in notes[0].keys()}
+    if c.get('format') != 'quiet-hour-cues/1':
+        raise SystemExit('unknown cue format %r' % c.get('format'))
+    grid = {'fps': FPS, 'noteFrames': FPN, 'barFrames': FPB, 'programmeFrames': PROG_FRAMES, 'totalFrames': FRAMES,
+            'samplesPerFrameAt48k': SPF}
+    for k, v in grid.items():
+        if c.get(k) != v:
+            raise SystemExit('cue file grid %s=%s, expected %s' % (k, c.get(k), v))
+    pn = c['perNote']
 
-    def col(*names, default=None):
-        for nm in names:
-            if nm in notes:
-                v = notes[nm]
-                if len(v) != NOTES:
-                    raise SystemExit('cue column %s has %d notes, expected %d' % (nm, len(v), NOTES))
-                return v
-        if default is not None:
-            return [default] * NOTES
-        raise SystemExit('cue file has none of ' + ', '.join(names))
+    def col(name):
+        v = pn[name]
+        if len(v) != NOTES:
+            raise SystemExit('cue column %s has %d notes, expected %d' % (name, len(v), NOTES))
+        return v
 
     num = lambda v: isinstance(v, (int, float)) and not isinstance(v, bool) and v == v
     cues = {
-        'pick': [v if num(v) else None for v in col('pick', 'tok')],
-        'p': [float(v) if num(v) else None for v in col('p', 'ppick', 'pPick', 'ptok')],
-        'velocity': [float(v) if num(v) else 0.0 for v in col('velocity', 'vel', 'pluckVelocity')],
-        'stepChanged': [bool(v) for v in col('stepChanged', 'stepChange', 'changed', 'ratchet')],
-        'hum': [bool(v) for v in col('hum', 'humOn')],
-        'tear': [float(v) if num(v) else 0.0 for v in col('tear', 'tearAmount', 'g')],
-        'spoon': [bool(v) for v in col('spoon', 'spoonChatter')],
+        'pickKind': [str(k) for k in col('pickKind')],
+        'p': [float(v) if num(v) else None for v in col('pickP')],
+        'stepChanged': [bool(v) for v in col('stepChanged')],
+        'hum': [bool(v) for v in col('humOn')],
+        'tear': [float(v) if num(v) else 0.0 for v in col('tear')],
+        'spoon': [bool(v) for v in col('spoonChatter')],
+        'humLevelPerFrame': c.get('perFrame', {}).get('humLevel'),
     }
-    lines = []
-    for ln in c.get('lines', c.get('voice', [])):
-        f = ln.get('frame', ln.get('startFrame', ln.get('start')))
-        lines.append({'id': ln['id'], 'variant': ln.get('variant'), 'text': ln['text'], 'frame': int(f)})
-    events = []
-    for ev in c.get('events', []):
-        t = ev.get('type', ev.get('kind', ev.get('id')))
-        f = ev.get('frame', ev.get('startFrame'))
-        if t is None or f is None:
-            continue
-        events.append({'type': str(t), 'frame': int(f), 'frames': int(ev.get('frames', ev.get('length', 1)) or 1)})
-    coda = c.get('coda', {})
-    bet = coda.get('bet', coda.get('p', c.get('lastBet')))
-    if bet is None or len(bet) < SYNTH['P']:
+    cues['lines'] = sorted(({'id': l['id'], 'variant': l.get('variant'), 'text': l['text'], 'frame': int(l['frame'])}
+                            for l in c['lines']), key=lambda l: l['frame'])
+    cues['knobTurns'] = [{'frame': int(t['frame']), 'frames': int(t['frames']), 'note': int(t['note'])} for t in c['knobTurns']]
+    cues['taps'] = sorted(int(f) for t in c['dialTaps'] if t.get('performed') for f in t['contacts'])
+    cues['chalk'] = {'frame': int(c['chalk']['frame']), 'frames': int(c['chalk']['frames'])}
+    bet = c['coda']['bet']
+    if len(bet) < SYNTH['P']:
         raise SystemExit('cue file has no coda bet')
-    cues.update({'lines': sorted(lines, key=lambda l: l['frame']), 'events': events,
-                 'bet': [float(v) if num(v) else float('nan') for v in bet]})
+    cues['bet'] = [float(v) if num(v) else float('nan') for v in bet]
     return cues
 
 
@@ -161,14 +162,15 @@ def decay(n, tau_s):
 
 # ---------------------------------------------------------------- the programme and its compressor
 def compressor_gain(mono):
-    """A static compressor: fixed threshold, ratio and knee on a 300 ms RMS of the band-limited programme, with
-    attack and release smoothing on 10 ms blocks. Returns the per-sample linear gain."""
+    """A static compressor: fixed threshold, ratio and knee on the loudness of the band-limited programme
+    (K-weighted, 1 s RMS), with attack and release smoothing on 10 ms blocks. Returns the per-sample linear gain."""
     det = sosfilt(butter(2, [160, 5500], btype='bandpass', fs=SR, output='sos'), mono)
+    det = bs1770.kweight(det[:, None])[:, 0]
     blk = SR // 100
     m = len(det) // blk
     pw = (det[:m * blk].reshape(m, blk) ** 2).mean(1)
     c = np.concatenate([[0.0], np.cumsum(pw)])
-    w = 30
+    w = COMP_WINDOW_BLOCKS
     idx = np.arange(m)
     lo = np.maximum(0, idx - w + 1)
     rms = (c[idx + 1] - c[lo]) / (idx + 1 - lo)
@@ -213,6 +215,25 @@ def held_pad(bet, start, n_hold_fade, n_ring, n_decay):
     k = np.arange(n_decay)
     env[n_ring:] = np.exp(-6.9 * k / n_decay) * (1 - k / n_decay)    # -60 dB by the end, and exactly 0 there
     return x * env * SYNTH['master']
+
+
+def duck_gain(vo):
+    """The programme's own mix dips under the presenter: DUCK_DB down wherever the voice (10 ms RMS) is above -50
+    dBFS, with attack and release smoothing. Keyed only by the voice signal, which the cues placed."""
+    blk = SR // 100
+    m = len(vo) // blk
+    lvl = 10 * np.log10((vo[:m * blk].reshape(m, blk) ** 2).mean(1) + 1e-12)
+    tgt = np.where(lvl > -50, DUCK_DB, 0.0)
+    a_at = np.exp(-1 / (DUCK_ATTACK_S * 100))
+    a_re = np.exp(-1 / (DUCK_RELEASE_S * 100))
+    sm = np.empty(m)
+    st = 0.0
+    for i in range(m):
+        a = a_at if tgt[i] > st else a_re
+        st = a * st + (1 - a) * tgt[i]
+        sm[i] = st
+    g_db = np.interp(np.arange(len(vo)), np.arange(m) * blk + blk / 2, -sm)
+    return 10 ** (g_db / 20)
 
 
 # ---------------------------------------------------------------- the speaker chain
@@ -399,6 +420,19 @@ def load_voice(vdir):
     return by_text
 
 
+def peak_limit(x):
+    """A look-ahead peak limiter, offline: the gain each sample needs to keep its 4x-oversampled peak under the
+    ceiling, then a minimum over 4h+1 samples and a mean over 2h+1 (centred), which never lets the gain rise above
+    what any sample needs. Mostly it does nothing; it only shaves the maker's consonants and the hardest plucks."""
+    ceil = 10 ** (LIMIT_DBTP / 20)
+    pk = np.abs(resample_poly(x, 4, 1, axis=0)).max(axis=1).reshape(-1, 4).max(axis=1)
+    need = np.minimum(1.0, ceil / np.maximum(pk, 1e-12))
+    h = int(LIMIT_HALF_S * SR)
+    g = uniform_filter1d(minimum_filter1d(need, 4 * h + 1, mode='nearest'), 2 * h + 1, mode='nearest')
+    g = np.minimum(g, 1.0)
+    return x * g[:, None], float(20 * np.log10(g.min()))
+
+
 # ---------------------------------------------------------------- build
 def build(cues, programme, voice, sync_proof=False):
     events = []                         # every placed sound: (sample, layer, name) for the plots and the proofs
@@ -431,26 +465,29 @@ def build(cues, programme, voice, sync_proof=False):
             x[len(x) - f:] *= np.linspace(1, 0, f)
         add(vo, s0, x)
         events.append((s0, 'voice', ln['id'] + ('-' + ln['variant'] if ln.get('variant') else '')))
-    tv = tv + vo
+    duck = duck_gain(vo)
+    tv = tv * duck + vo
     # bench foley
     fo = np.zeros(N)
-    for g in range(NOTES):
-        s0 = note_start(g)
-        if cues['pick'][g] is not None and cues['p'][g] is not None:
-            add(fo, s0, punch(min(1.0, max(0.0, cues['p'][g])), rng(30, g)))
-        if cues['stepChanged'][g]:
-            add(fo, s0 + int(0.06 * SR), ratchet(rng(31, g)))
-            events.append((s0, 'foley', 'ratchet'))
-    for i, ev in enumerate(cues['events']):
-        t = ev['type'].lower()
-        s0 = frame_sample(ev['frame'])
-        if 'chalk' in t and 'pick' not in t:
-            add(fo, s0, chalk(max(1, ev['frames']), rng(32, i)))
-            events.append((s0, 'foley', 'chalk'))
-        elif 'tap' in t and 'along' not in t:
-            add(fo, s0, tap(rng(33, i)))
-            events.append((s0, 'foley', 'tap'))
-    for b in range(FRAMES // FPB):
+    for g in range(NOTES):                       # the punch: every pick but REST (a pencil dot), level by its p
+        if cues['pickKind'][g] != 'rest' and cues['p'][g] is not None:
+            add(fo, note_start(g), punch(min(1.0, max(0.0, cues['p'][g])), rng(30, g)))
+    turned = set()
+    for i, t in enumerate(cues['knobTurns']):    # the ratchet: on every knob turn, at the frame the knob moves
+        add(fo, frame_sample(t['frame']), ratchet(rng(31, i)))
+        events.append((frame_sample(t['frame']), 'foley', 'ratchet'))
+        turned.add(t['note'])
+    for g in range(NOTES):                       # a step change with no knob turn of its own (or the next note's)
+        if cues['stepChanged'][g] and g not in turned and g + 1 not in turned:
+            add(fo, note_start(g), ratchet(rng(31, 1000 + g)))
+            events.append((note_start(g), 'foley', 'ratchet'))
+    ch = cues['chalk']
+    add(fo, frame_sample(ch['frame']), chalk(ch['frames'], rng(32, 0)))
+    events.append((frame_sample(ch['frame']), 'foley', 'chalk'))
+    for i, f in enumerate(cues['taps']):
+        add(fo, frame_sample(f), tap(rng(33, i)))
+        events.append((frame_sample(f), 'foley', 'tap'))
+    for b in range(PROG_FRAMES // FPB):          # the crank creaks once a turn while the programme runs
         add(fo, frame_sample(b * FPB + 12), creak(rng(34, b)))
     tv = tv + fo
     clicks = np.zeros(N)
@@ -461,6 +498,12 @@ def build(cues, programme, voice, sync_proof=False):
     click_st = speaker_chain(clicks) if sync_proof else None
     # room
     room = house_hum(cues['hum'])
+    hum_check = None
+    if cues.get('humLevelPerFrame'):             # cross-check against the engine's own per-frame hum level
+        env = hum_env(cues['hum'])
+        mine = env[np.arange(PROG_FRAMES) * SPF + SPF - 1]
+        theirs = np.array(cues['humLevelPerFrame'], dtype=float)
+        hum_check = round(float(np.abs(mine - theirs).max()), 4)
     for b in range(FRAMES // FPB):
         s0 = frame_sample(b * FPB)
         add(room, s0, pan(clock_tick(b), 0.05))
@@ -477,12 +520,11 @@ def build(cues, programme, voice, sync_proof=False):
             add(room, note_start(g), spoon(g, rng(41, g)))
             events.append((note_start(g), 'room', 'spoon'))
     mix = tv_st + room
-    m = bs1770.measure(mix)
-    gain_db = TARGET_LUFS - m['integratedLUFS']
-    out = mix * 10 ** (gain_db / 20)
+    gain_db = MASTER_GAIN_DB
+    out, limit_db = peak_limit(mix * 10 ** (gain_db / 20))
     if sync_proof:
         out = out + click_st * 10 ** (gain_db / 20)
-    info = {'mixGain_dB': round(gain_db, 3), 'compressor': {'thresholdDb': COMP_THRESHOLD_DB, 'ratio': COMP_RATIO,
+    info = {'limiterMaxReduction_dB': round(-limit_db, 2), 'humMaxDiffVsEngine': hum_check, 'mixGain_dB': round(gain_db, 3), 'compressor': {'thresholdDb': COMP_THRESHOLD_DB, 'ratio': COMP_RATIO,
             'maxReduction_dB': round(float(red.max()), 2)}, 'detector_dB_per_10ms': np.round(det_db, 2).tolist(),
             'reduction_dB_per_10ms': np.round(red, 2).tolist(),
             'stems': {'tv': tv_st * 10 ** (gain_db / 20), 'room': room * 10 ** (gain_db / 20)}}
@@ -499,7 +541,8 @@ def main():
     ap.add_argument('--sync-proof', action='store_true', help='also put a click on every bar line through the speaker')
     ap.add_argument('--stems', action='store_true', help='also write the TV and room stems')
     a = ap.parse_args()
-    work = os.environ.get('QUIET_HOUR_WORK', '')
+    # inputs default to the film's work dir: QUIET_HOUR_WORK, else the folder two above the cue file (<work>/build/cues)
+    work = os.environ.get('QUIET_HOUR_WORK') or os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(a.cues))))
     prog_path = a.programme or os.path.join(work, 'data-fable', 'audio', PUBLISHED[a.ending] + '.48k.wav')
     voice_dir = a.voice or os.path.join(work, 'build', 'voice', 'frozen')
     cues = load_cues(a.cues)
@@ -519,8 +562,9 @@ def main():
             write_wav24(os.path.join(a.out, '%s.stem-%s.wav' % (stem, k), ), v, SR)
     rep = {'ending': a.ending, 'cues': os.path.abspath(a.cues), 'programme': os.path.abspath(prog_path),
            'samples': int(out.shape[0]), 'sampleRate': SR, 'sha256': sha, 'loudness': {k: v for k, v in m.items() if k != 'shortTerm'},
-           'caps': {'truePeak_dBTP': CAP_TP, 'shortTermMax_LUFS': CAP_ST, 'integratedTarget_LUFS': TARGET_LUFS},
+           'caps': {'truePeak_dBTP': CAP_TP, 'shortTermMax_LUFS': CAP_ST, 'integratedRange_LUFS': INTEGRATED_RANGE},
            'mixGain_dB': info['mixGain_dB'], 'compressor': info['compressor'],
+           'humMaxDiffVsEngine': info['humMaxDiffVsEngine'], 'limiterMaxReduction_dB': info['limiterMaxReduction_dB'],
            'events': [{'sample': s, 'frame': s / SPF, 'layer': l, 'what': w} for s, l, w in events]}
     json.dump(rep, open(os.path.join(a.out, stem + '.json'), 'w'), indent=1)
     json.dump({'shortTerm': m['shortTerm'], 'detector_dB_per_10ms': info['detector_dB_per_10ms'],
@@ -530,11 +574,12 @@ def main():
         bad.append('true peak %.2f dBTP > %.1f' % (m['truePeak_dBTP'], CAP_TP))
     if m['shortTermMaxLUFS'] > CAP_ST:
         bad.append('short-term %.2f LUFS > %.1f (window ending %.1f s)' % (m['shortTermMaxLUFS'], CAP_ST, m['shortTermMaxEndsAt_s']))
-    if abs(m['integratedLUFS'] - TARGET_LUFS) > 0.5:
-        bad.append('integrated %.2f LUFS, target %.1f' % (m['integratedLUFS'], TARGET_LUFS))
+    if not INTEGRATED_RANGE[0] <= m['integratedLUFS'] <= INTEGRATED_RANGE[1]:
+        bad.append('integrated %.2f LUFS outside %s' % (m['integratedLUFS'], INTEGRATED_RANGE))
     print(json.dumps({'wav': wav, 'sha256': sha, **{k: v for k, v in m.items() if k != 'shortTerm'}}))
     if bad:
-        raise SystemExit('LOUDNESS CAP BROKEN: ' + '; '.join(bad))
+        os.replace(wav, wav[:-4] + '.FAILED.wav')
+        raise SystemExit('LOUDNESS CAP BROKEN (kept as %s.FAILED.wav): %s' % (stem, '; '.join(bad)))
 
 
 if __name__ == '__main__':
