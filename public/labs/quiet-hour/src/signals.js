@@ -1,21 +1,25 @@
-// THE QUIET HOUR: the engine. Turns (ending, frame) into every number the picture and the sound need.
+// THE QUIET HOUR: the engine (bible v1.2). Turns (ending, frame) into every number the picture and the sound need.
 //
 //   const engine = await loadEngine('main', baseUrl);   // browser: fetches data/shared.json + data/ending-main.json
 //   const engine = createEngine(shared, endingData, { voiceDurations });   // pure; also runs in Node
 //   engine.signals(frame)   // frame 0..2159: one plain object, the same keys on every frame (documented below)
+//   engine.gauges(frame)    // the x-ray: [{ id, name, reads, value, rule }], one per gauge a viewer can see
 //   engine.note(g)          // the full log row of note g (0..431), non-numbers kept as NaN / Infinity
 //   engine.meta             // the token table, ln 32, the limit measured at 20:00, best error to 20:00, counts
-//   engine.cues             // the scheduled lines [{ id, text, note, frame, seconds, ... }]
+//   engine.cues             // the spoken lines [{ id, text, variant, note, frame, seconds, values, ... }]
+//   engine.dropped          // data lines whose rule held at some note but which were never spoken, and why
+//   engine.lineReport       // every line of the table: where it was spoken, or why not
 //   engine.events           // everything that happens, with its note, frame and the log values that caused it
 //   engine.perNote          // per-note arrays (for the sound and the x-ray)
-//   engine.subtitleAt(f)    // the subtitle at any film frame 0..2399 (the last one runs into the black coda)
+//   engine.knobTurns, engine.dialTaps
+//   engine.subtitleAt(f)    // the subtitle at any film frame 0..2399 (none from frame 2160: the coda is black)
 //
 // Every rule of the bible lives in ./rules.js and is applied here once. Everything smoothed or accumulated (hand
-// presence, pose blends, the knob, the hum, the dust's drift, the line schedule) is computed for every frame when the
-// engine is created, by walking forward from frame 0; signals(frame) only looks things up. So frames can be asked
-// for in any order, and the same frame always gives the same object. Nothing here reads the ending's name, a clock,
-// a timer or Math.random. Nothing before frame 1440 reads a note after 287, so frames 0..1439 are the same in all
-// four endings.
+// presence, pose blends, the knob, the hum, the dust's drift, the hatching's latch, the line schedule) is computed for
+// every note and frame when the engine is created, by walking forward from note 0; signals(frame) only looks things
+// up (and evaluates closed forms of the frame: the stylus noise, the strip's scroll). So frames can be asked for in any
+// order, and the same frame always gives the same object. Nothing here reads the ending's name, a clock, a timer or
+// Math.random. Nothing before frame 1440 reads a note after 287, so frames 0..1439 are the same in all four endings.
 //
 // ------------------------------------------------------------------------------------------------------------------
 // THE SIGNALS OBJECT (engine.signals(frame)). Units in [brackets]. Bible rule in (parentheses).
@@ -50,7 +54,9 @@
 //   entropy        [nats 0..ln 32 | null]  H of the bet;   entropyN [0..1] = H / ln 32 (non-number: 0)
 //   err            [nats | null]   error on unseen tunes (log: held);  share [0..1 | null] share right on unseen
 //                                  tunes (log: heldAcc);  train [nats | null] error on the tunes it learns from
-//   worse          [bool]          err above ln 32: worse than guessing (bible 3 hands rule 1, 4 window)
+//   worse          [bool]          (v1.1) err > ln 32 + 1e-9: worse than guessing (bible 3 hands rule 1)
+//   err6           [nats | null]   (v1.1) mean err of the last 6 notes (the picture's warmth reads it)
+//   bestErrSoFar   [nats | null]   (v1.1) the lowest err at this note or any earlier one (the tears read it)
 //
 // the strip and stylus (bible 3)
 //   meanRow        [rows 0..31 | null]  the bet's mean row (p-weighted token index)
@@ -73,17 +79,27 @@
 //   needleU        [0..1]               needle position on the log dial 0.03..30 (clamped)
 //   needleOffScale [bool]               the step size is outside 0.03..30
 //   knobAngle      [rad]                2 turns over the dial's scale x needleU (AUTHORED)
-//   knobTurning    [bool]               a turn is in progress
+//   knobTurning    [bool]               a turn is in progress (v1.1: 3 frames, the note's first 3; at 20:00 frames
+//                                       1442..1444, after the chalk tick)
 //   knobClick      [bool]               a turn starts on this frame (the ratchet click; sound sync)
-//   sharp          [| null]             sharpness now (log)
-//   limit          [step size | null]   the limit measured right now: 2 / sharpness; null when sharpness <= 0
+//   knobTurnFrom, knobTurnTo [step size | null]  the turn in progress (null when the knob is still)
+//   sharp          [| null]             sharpness now (the log's single reading)
+//   sharpMedian3   [| null]             (v1.1) the median of the last 3 sharpness readings (this note's included)
+//   limit          [step size | null]   (v1.1) the limit measured right then: 2 / sharpMedian3; null when the hatching
+//                                       is gone (latched) or the median is not positive
 //   hatchU         [0..1 | null]        where the hatched TOO FAR zone starts (clamped; 1 = above the scale, so
 //                                       nothing hatched); null = the hatching is gone
-//   hatchGone      [bool]               sharpness zero, negative or not a number
-//   ratio          [| null]             ratio now = step size x sharpness / 2 (log)
+//   hatchGone      [bool]               no hatching on this note (latched, or no measurable edge)
+//   hatchGoneSince [int note | null]    (v1.1) the latch: the first note after 20:00 whose reading was zero, negative
+//                                       or not a number, once it has happened (null before, and if it never does)
+//   ratio          [| null]             the log's own ratio = step size x sharpness / 2 (single reading, x-ray)
+//   ratioNow       [| null]             (v1.1) step size x sharpMedian3 / 2 = lr / limit; null when the hatching is
+//                                       gone. Hairlines and L5 read this one
 //   lrOverLimit20  [| null]             step size / the limit measured at 20:00 (x-ray)
 //   limit20        [step size]          the limit measured at 20:00 (the chalk mark)
-//   chalk          [0..1]               chalk draw-on progress: 0 before frame 1440, 0.2 .. 1 over 1440..1444
+//   chalkTick      [0..1]               (v1.1) the chalk tick's draw-on: 0 before frame 1440, 0.5 on 1440, 1 from 1441
+//   chalk          [0..1]               the chalked number's draw-on: 0 before frame 1440, 0.2 .. 1 over 1440..1444
+//   chalkNumber    [0..1]               the same as chalk (named for what it draws)
 //   chalkU         [0..1]               the chalk mark's place on the dial
 //   chalkText      ['0.98']             the chalked number: the limit at 20:00 to 2 decimals
 //
@@ -97,11 +113,11 @@
 //   crankAngle     [rad 0..2pi)         one turn per bar, always: 2 pi barFrame / 30
 //
 // picture warmth and glitches (bible 3)
-//   warmthK        [0..1]               k = clamp((ln 32 - err) / (ln 32 - best err to 20:00), 0, 1)
+//   warmthK        [0..1]               (v1.1) k = clamp((ln 32 - err6) / (ln 32 - best err up to 20:00), 0, 1)
 //   warmth         [0.15..1]            saturation and warmth of the whole picture = 0.15 + 0.85 k
-//   hairline       [{ y, shiftPx } | null]  on a note where ratio now is above 1: y [0..1 of the strip's height],
-//                                       shiftPx [+-1..3 programme px], seeded by the note
-//   tear           [0..1]               g = clamp(ln(err / err at 20:00) / ln 250, 0, 1)
+//   hairline       [{ y, shiftPx } | null]  (v1.1) on a note where ratioNow is above 1 and the hatching exists:
+//                                       y [0..1 of the strip's height], shiftPx [+-1..3 programme px], seeded by note
+//   tear           [0..1]               (v1.1) g = clamp(ln(err / bestErrSoFar) / ln 250, 0, 1)
 //   tearBands      [{ y0, y1, dxPx }]   floor(8 g) bands: y0, y1 [0..1 of the picture's height], dxPx [px, |dxPx|
 //                                       <= 24 g], reseeded per note. Displacement only, brightness unchanged
 //   blocks         [bool]               err above 10 x ln 32
@@ -126,10 +142,11 @@
 //   lidClosed      [0..1]               the lid over the last bar if the hands are in at its start (rule 7)
 //
 // the room (bible 4)
-//   windowLit      [bool]               the neighbour's window: lit while err <= ln 32
+//   windowLit      [bool]               (v1.1) the neighbour's window: the hands' switch (= handsIn)
 //   humGate        [bool]               the house hum is allowed on this note (off on a step change, back after 6
 //                                       still notes);   humLevel [0..1] its level, 0 at once, back over 48 frames
-//   shadowRadius   [px 1..6]            1 + 5 H / ln 32
+//   shadowSoftness [0..1]               (v1.2) H6 / ln 32, H6 = the mean entropy of the last 6 notes
+//   shadowRadius   [px 1..15]           (v1.2) 1 + 14 x shadowSoftness
 //   dustDrift      [s]                  running sum of H / ln 32 over the frames before this one, / 24. A mote's
 //                                       offset = its own velocity x dustDrift
 //   dustOpacity    [0.25..1]            0.25 + 0.75 H / ln 32
@@ -142,7 +159,7 @@
 //
 // the maker's voice (bible 7)
 //   subtitle       [string | null]      the line showing now (from its start for its length + 0.5 s; a newer line
-//                                       replaces it)
+//                                       replaces it; never past frame 2159)
 //   subtitleId     [string | null]      its id;  subtitleStart [frame | null]  when it started
 //   speaking       [string | null]      the id of the line whose voice is sounding now
 // ------------------------------------------------------------------------------------------------------------------
@@ -155,16 +172,21 @@ import * as R from './rules.js';
 /** The random seeds (AUTHORED; bible 9). */
 export const SEEDS = Object.freeze({ stylus: 101, hairline: 211, tear: 307, blocks: 401 });
 export const STRIP_HISTORY = 64;
+/** Every frame a FORMAT event (bible 9, plus the lid: bible 3 hands rule 7) can happen on. */
 export const FORMAT_FRAMES = Object.freeze([0, R.L1_FRAME, R.CARD_SLIDE[0], ...R.DIAL_TAP_FRAMES, R.CHALK_PICKUP_FRAME,
-  R.CHALK_FRAME, R.LID_BAR_FRAME, R.GN_FRAME, PROGRAMME_FRAMES].sort((a, b) => a - b));
+  R.CHALK_FRAME, R.L6A_FRAME, R.LID_BAR_FRAME, R.GN_FRAME, PROGRAMME_FRAMES].sort((a, b) => a - b));
 
 const DATA_FORMAT = 'quiet-hour-notes/1';
 const PUNCH_CURVE = [1, 0.5, 0.15, 0, 0];               // AUTHORED
-const DIAL_LN = Math.log(R.DIAL_MAX / R.DIAL_MIN);
 const isNum = (x) => typeof x === 'number' && Number.isFinite(x);
 const fin = (x) => (isNum(x) ? x : null);
 const lerp = (a, b, t) => a + (b - a) * t;
 const pad = (n, w) => String(n).padStart(w, '0');
+const sameNum = (a, b) => a === b || (a !== a && b !== b);
+/** The log values an event carries: 6 significant figures (the tables), null for not-a-number. */
+const fmt = (r) => (isNum(r) ? Number(r.toPrecision(6)) : r === null || r === undefined ? null : typeof r === 'boolean' ? r : String(r));
+/** The last n entries of a per-note array up to note g (fewer at the start). */
+const lastOf = (arr, g, n) => arr.slice(Math.max(0, g - n + 1), g + 1);
 
 const fetched = new Map();
 function fetchJson(url) {
@@ -242,36 +264,56 @@ export function createEngine(shared, endingData, opts = {}) {
   const vel = tok.map((t, g) => R.pluckVelocity(t, ptok[g], P));
   const hN = entropy.map(R.entropyShare);
   const moments = rows.map((r, g) => (betOk[g] ? R.betMoments(r.p) : null));
-  const limitNow = sharp.map(R.limitFromSharpness);
   const worse = err.map(R.worseThanGuessing);
-  const stepChanged = lr.map((v, g) => g > 0 && v !== lr[g - 1]);
+  const stepChanged = lr.map((v, g) => g > 0 && !sameNum(v, lr[g - 1]));
 
   // constants of the film read from the log: error and share at 20:00, best error up to and including 20:00
   const err20 = err[BREAK_NOTE], share20 = share[BREAK_NOTE];
   let best20 = Infinity, best20Note = -1;
   for (let g = 0; g <= BREAK_NOTE; g++) if (isNum(err[g]) && err[g] < best20) { best20 = err[g]; best20Note = g; }
 
-  const warmK = err.map((e) => R.warmthK(e, best20));
-  const tearG = err.map((e) => R.tearAmount(e, err20));
+  // (v1.1) the hatching: the limit right then is 2 / the median of the last 3 sharpness readings; the first reading
+  // after 20:00 that is zero, negative or not a number removes it for the rest of the programme (a latch)
+  const sharpMed3 = sharp.map((_, g) => fin(R.medianOf(lastOf(sharp, g, R.SHARP_MEDIAN_NOTES))));
+  let edgeLostAt = null;
+  for (let g = BREAK_NOTE + 1; g < N && edgeLostAt === null; g++) if (R.losesTheEdge(sharp[g])) edgeLostAt = g;
+  const latched = sharp.map((_, g) => edgeLostAt !== null && g >= edgeLostAt);
+  const limitNow = sharpMed3.map((m, g) => (latched[g] ? null : R.limitFromMedian(m)));
+  const ratioNow = limitNow.map((L, g) => (L === null || !isNum(lr[g]) ? null : (lr[g] * sharpMed3[g]) / 2));
+
+  // (v1.1) warmth from the mean error of the last 6 notes; tears from the best error so far
+  const err6 = err.map((_, g) => R.meanOf(lastOf(err, g, R.WARMTH_MEAN_NOTES)));
+  const bestSoFar = new Array(N);
+  {
+    let b = Infinity;
+    for (let g = 0; g < N; g++) { if (isNum(err[g]) && err[g] < b) b = err[g]; bestSoFar[g] = b; }
+  }
+  const warmK = err6.map((e) => R.warmthK(e, best20));
+  const tearG = err.map((e, g) => R.tearAmount(e, bestSoFar[g]));
   const blocksOn = err.map(R.blocksOn);
+  // (v1.2) the shadow's softness: the mean entropy of the last 6 notes, over ln 32
+  const shadowSoft = hN.map((_, g) => R.meanOf(lastOf(hN, g, R.SHADOW_MEAN_NOTES)));
   const barStart = (g) => g - (g % NOTES_PER_BAR);
   const flags = share.map((_, g) => R.flagsUp(share[barStart(g)]));
   const drum = share.map(R.shareDrum);
 
-  // hands rule 1: present or gone, decided note by note from the log
+  // hands rule 1: present or gone, decided note by note from the log. (v1.1) The neighbour's window is this switch.
   const handsIn = new Array(N), handsOutAt = new Array(N).fill(false), handsBackAt = new Array(N).fill(false);
+  const handsBackSince = new Array(N);   // L10: the hands have come back and are still there
   {
-    let state = true, good = 0;
+    let state = true, good = 0, back = false;
     for (let g = 0; g < N; g++) {
       if (state) {
-        if (worse[g]) { state = false; good = 0; handsOutAt[g] = true; }
+        if (worse[g]) { state = false; good = 0; back = false; handsOutAt[g] = true; }
       } else {
         good = worse[g] ? 0 : good + 1;
-        if (good >= R.HANDS_BACK_NOTES) { state = true; handsBackAt[g] = true; }
+        if (good >= R.HANDS_BACK_NOTES) { state = true; back = true; handsBackAt[g] = true; }
       }
       handsIn[g] = state;
+      handsBackSince[g] = state && back;
     }
   }
+  const windowLit = handsIn;
 
   // the hum: off on any note where the step size changed, allowed again after 6 still notes
   const humGate = new Array(N);
@@ -293,7 +335,7 @@ export function createEngine(shared, endingData, opts = {}) {
   }
 
   // glitches, seeded per note
-  const hairline = ratio.map((x, g) => (R.hairlineOn(x) ? Object.freeze({
+  const hairline = ratioNow.map((x, g) => (R.hairlineOn(x) ? Object.freeze({
     y: 0.04 + 0.92 * hash01(SEEDS.hairline, g, 0),
     shiftPx: (R.HAIRLINE_PX[0] + Math.floor(hash01(SEEDS.hairline, g, 1) * (R.HAIRLINE_PX[1] - R.HAIRLINE_PX[0] + 1)))
       * (hash01(SEEDS.hairline, g, 2) < 0.5 ? -1 : 1),
@@ -356,29 +398,35 @@ export function createEngine(shared, endingData, opts = {}) {
     }
   }
 
-  // the knob and needle: turned to each new step size, never while the chalk is being drawn
-  const needleLn = new Float64Array(F), needleVal = new Float64Array(F);
-  const turning = new Array(F).fill(false), click = new Array(F).fill(false);
+  // (v1.1) the knob: on a note whose step size differs from the note before, it turns to the new value over the
+  // note's first 3 frames (never while the chalk tick is being drawn: at 20:00, frames 1442..1444). The knob turns
+  // whether or not the hands are there. A step size that is not a positive number: the knob stays where it is.
   const turns = [];
+  const knob0 = isNum(lr[0]) && lr[0] > 0 ? lr[0] : R.DIAL_MIN;
   {
-    let curLn = Math.log(lr[0]), curLr = lr[0], turn = null;
+    let cur = knob0;
+    for (let g = 1; g < N; g++) {
+      const v = lr[g];
+      if (!stepChanged[g] || !(isNum(v) && v > 0) || v === cur) continue;
+      let start = g * NOTE_FRAMES;
+      while (R.chalkTickBusy(start)) start++;
+      turns.push({ start, end: start + R.KNOB_TURN_FRAMES - 1, frames: R.KNOB_TURN_FRAMES, from: cur, to: v,
+        fromLn: Math.log(cur), toLn: Math.log(v), note: g, lrBefore: lr[g - 1] });
+      cur = v;
+    }
+  }
+  const needleVal = new Float64Array(F), turning = new Array(F).fill(false), click = new Array(F).fill(false);
+  const turnOf = new Array(F).fill(null);
+  {
+    let cur = knob0, ti = 0;
     for (let f = 0; f < F; f++) {
-      const g = noteAt(f);
-      if (turn && f > turn.end) { curLn = turn.toLn; curLr = turn.to; turn = null; }
-      const target = isNum(lr[g]) && lr[g] > 0 ? lr[g] : curLr;   // a step size that is not a number: the knob stays
-      const targetLn = target === curLr ? curLn : Math.log(target);
-      if (!turn && target !== curLr && !R.chalkBusy(f)) {
-        const n = R.knobTurnFrames((targetLn - curLn) / DIAL_LN);
-        turn = { start: f, end: f + n - 1, frames: n, from: curLr, to: target, fromLn: curLn, toLn: targetLn, note: g };
-        turns.push(turn);
-        click[f] = true;
-      }
-      if (turn) {
-        const s = R.smoothstep((f - turn.start + 1) / turn.frames);
-        needleLn[f] = lerp(turn.fromLn, turn.toLn, s);
-        needleVal[f] = f === turn.end ? turn.to : Math.exp(needleLn[f]);
-        turning[f] = true;
-      } else { needleLn[f] = curLn; needleVal[f] = curLr; }
+      while (ti < turns.length && turns[ti].end < f) { cur = turns[ti].to; ti++; }
+      const t = ti < turns.length && turns[ti].start <= f ? turns[ti] : null;
+      if (t) {
+        const s = R.smoothstep((f - t.start + 1) / t.frames);
+        needleVal[f] = f === t.end ? t.to : Math.exp(lerp(t.fromLn, t.toLn, s));
+        turning[f] = true; click[f] = f === t.start; turnOf[f] = t;
+      } else needleVal[f] = cur;
     }
   }
 
@@ -406,21 +454,23 @@ export function createEngine(shared, endingData, opts = {}) {
     const inTap = taps.some((tp) => tp.performed && f >= tp.frame + R.DIAL_TAP_WINDOW[0] && f <= tp.frame + R.DIAL_TAP_WINDOW[1]);
     if (lidCloses && f >= R.LID_BAR_FRAME) t = 'lid';
     else if (f >= R.CARD_POSE[0] && f <= R.CARD_POSE[1]) t = 'card';
-    else if (f >= R.CHALK_PICKUP_FRAME && f < R.CHALK_FRAME + R.CHALK_FRAMES) t = 'chalk';
+    else if (f >= R.CHALK_PICKUP_FRAME && f < R.CHALK_FRAME + R.CHALK_TICK_FRAMES) t = 'chalk';
     else if (gripT[f]) t = 'grip';
     else if (inTap) t = 'tap';
     leftTarget[f] = t;
   }
   const leftW = new Array(F);
   {
-    // weights in integer steps of 1 / POSE_BLEND_FRAMES, so a blend lands exactly on 0 and 1
-    const B = R.POSE_BLEND_FRAMES;
+    // weights in integer steps of 1 / POSE_BLEND_FRAMES, so a blend lands exactly on 0 and 1; the reach to the knob
+    // moves POSE_BLEND_FRAMES / GRIP_REACH_FRAMES steps a frame
+    const B = R.POSE_BLEND_FRAMES, REACH = B / R.GRIP_REACH_FRAMES;
     const w = Object.fromEntries(R.POSES.map((k) => [k, k === 'rest' ? B : 0]));
     for (let f = 0; f < F; f++) {
+      const rate = leftTarget[f] === 'grip' ? REACH : 1;
       let sum = 0;
       for (const k of R.POSES) {
         const tgt = leftTarget[f] === k ? B : 0;
-        w[k] += R.clamp(tgt - w[k], -1, 1);
+        w[k] += R.clamp(tgt - w[k], -rate, rate);
         sum += w[k];
       }
       leftW[f] = Object.freeze(Object.fromEntries(R.POSES.map((k) => [k, w[k] / sum])));
@@ -449,10 +499,11 @@ export function createEngine(shared, endingData, opts = {}) {
     }
   }
 
-  // ---- the maker's lines (bible 7) ------------------------------------------------------------------------------------
-  const ctx = Object.freeze({ lr, ptok, share, ratio, massInKey, limitNow, limit20, breakNote: BREAK_NOTE,
-    handsBack: handsBackAt });
-  const { cues, dropped } = scheduleLines(ctx, opts.voiceDurations);
+  // ---- the maker's lines (bible 7, v1.2) -------------------------------------------------------------------------------
+  const ctx = Object.freeze({ lr, ptok, share, share20, ratioNow, massInKey, limitNow, limit20, breakNote: BREAK_NOTE,
+    handsIn, handsBackSince });
+  const lineData = { err, share, share20, ptok, massInKey, lr, limit20, limitNow, ratioNow, sharpMed3, handsIn };
+  const { cues, dropped, report: lineReport } = scheduleLines(ctx, opts.voiceDurations, lineData);
   const subtitleAt = (frame) => {
     let hit = null;
     for (const c of cues) if (frame >= c.frame && frame < c.subtitleEnd) hit = c;
@@ -468,7 +519,7 @@ export function createEngine(shared, endingData, opts = {}) {
   const meta = Object.freeze({
     ending: opts.name ?? endingData.ending,              // a label only: no rule reads it
     tokens: Object.freeze(tokens), P, HOLD, REST, ln32: R.LN32,
-    limit20, chalkText: R.chalkText(limit20), err20, share20, best20, best20Note,
+    limit20, chalkText: R.chalkText(limit20), err20, share20, best20, best20Note, edgeLostNote: edgeLostAt,
     run: Object.freeze({ push: endingData.push ?? null, climb: endingData.climb ?? null, rule: endingData.rule ?? null }),
     source: shared.source ?? null,
     seeds: SEEDS,
@@ -486,14 +537,17 @@ export function createEngine(shared, endingData, opts = {}) {
   const perNote = Object.freeze({
     pick: tok, pickKind: kind, pickP: ptok.map(fin), pickInKey: inKey,
     pickMidiSounded: tok.map((t, g) => (kind[g] === 'pitch' ? tokens[t].midiSounded : null)),
-    velocity: vel, stepChanged, lr, humGate, handsIn, worse, windowLit: worse.map((w) => !w), tear: tearG,
+    velocity: vel, stepChanged, lr, humGate, handsIn, worse, windowLit, tear: tearG,
     blocks: blocksOn, spoonChatter: spoon, meanVel6, flagsUp: flags, shareDrum: drum, warmthK: warmK,
     entropyN: hN, err: err.map(fin), share: share.map(fin), limitNow, hairline: hairline.map((h) => h !== null),
+    err6: err6.map(fin), bestErrSoFar: bestSoFar.map(fin), sharpMedian3: sharpMed3, ratioNow, hatchGone: limitNow.map((x) => x === null),
+    shadowSoftness: shadowSoft, handsBackSince,
   });
 
-  const events = buildEvents({ N, F, rows, kind, inKey, ptok, err, share, sharp, ratio, lr, limitNow, worse, stepChanged,
-    handsOutAt, handsBackAt, humGate, spoon, meanVel6, flags, tearG, blocksOn, hairline, warmK, turns, taps, gripT,
-    leftTarget, lidCloses, lidNote, handsIn, cues, dropped, limit20, err20, share20, best20, entropy, hN, tokName });
+  const events = buildEvents({ N, F, rows, kind, inKey, ptok, err, share, sharp, ratio, lr, limitNow, ratioNow, sharpMed3,
+    latched, edgeLostAt, worse, stepChanged, handsOutAt, handsBackAt, humGate, spoon, meanVel6, flags, tearG, bestSoFar,
+    blocksOn, hairline, warmK, err6, turns, taps, gripT, leftTarget, lidCloses, lidNote, handsIn, windowLit, cues,
+    dropped, limit20, err20, share20, best20, entropy, tokName });
 
   // ---- signals(frame) ---------------------------------------------------------------------------------------------------
   const chalkU = R.clamp(R.dialU(limit20), 0, 1), chalkTxt = R.chalkText(limit20);
@@ -538,6 +592,7 @@ export function createEngine(shared, endingData, opts = {}) {
       ? R.smoothstep((frame - R.LID_BAR_FRAME + 1) / (F - R.LID_BAR_FRAME)) : 0;
     const title = R.cardSlide(frame);
     const k = warmK[g];
+    const chalkNum = R.chalkProgress(frame), turn = turnOf[frame];
 
     return {
       frame, note: g, noteFrame: nf, phase: nf / NOTE_FRAMES, bar, barFrame, barPhase: barFrame / BAR_FRAMES,
@@ -548,7 +603,7 @@ export function createEngine(shared, endingData, opts = {}) {
       pick: r.tok, pickName: tokName(r.tok), pickKind: kind[g], pickP: fin(ptok[g]), pickInKey: inKey[g],
       pluck: vel[g] !== null, pluckVel: vel[g],
       entropy: fin(entropy[g]), entropyN: hN[g], err: fin(err[g]), share: fin(share[g]), train: fin(r.train),
-      worse: worse[g],
+      worse: worse[g], err6: fin(err6[g]), bestErrSoFar: fin(bestSoFar[g]),
 
       meanRow: m ? m.mean : null, spread: m ? m.spread : null, stylusRow, stylusWander: wander,
       punch: PUNCH_CURVE[nf], stripColumns: strip,
@@ -556,9 +611,11 @@ export function createEngine(shared, endingData, opts = {}) {
       lr: fin(lr[g]), stepChanged: stepChanged[g], needle: needleVal[frame], needleU: R.clamp(nU ?? 0, 0, 1),
       needleOffScale: nU === null || nU < 0 || nU > 1, knobAngle: 2 * Math.PI * R.KNOB_TURNS * R.clamp(nU ?? 0, 0, 1),
       knobTurning: turning[frame], knobClick: click[frame],
-      sharp: fin(sharp[g]), limit: lim, hatchU: lim === null ? null : R.clamp(R.dialU(lim), 0, 1), hatchGone: lim === null,
-      ratio: fin(ratio[g]), lrOverLimit20: fin(lr[g] / limit20), limit20,
-      chalk: R.chalkProgress(frame), chalkU, chalkText: chalkTxt,
+      knobTurnFrom: turn ? turn.from : null, knobTurnTo: turn ? turn.to : null,
+      sharp: fin(sharp[g]), sharpMedian3: sharpMed3[g], limit: lim, hatchU: lim === null ? null : R.clamp(R.dialU(lim), 0, 1),
+      hatchGone: lim === null, hatchGoneSince: latched[g] ? edgeLostAt : null,
+      ratio: fin(ratio[g]), ratioNow: ratioNow[g], lrOverLimit20: fin(lr[g] / limit20), limit20,
+      chalkTick: R.chalkTickProgress(frame), chalk: chalkNum, chalkNumber: chalkNum, chalkU, chalkText: chalkTxt,
 
       flagsUp: flags[g], flagsPrevUp: bar > 0 ? flags[barStart(g) - 1] : flags[g],
       flagsT: R.clamp((barFrame + 1) / R.FLAG_FLIP_FRAMES, 0, 1),
@@ -578,7 +635,8 @@ export function createEngine(shared, endingData, opts = {}) {
       },
       titleSlide: title, titleVisible: title < 1, lidClosed,
 
-      windowLit: !worse[g], humGate: humGate[g], humLevel: humLevel[frame], shadowRadius: R.shadowRadius(hN[g]),
+      windowLit: windowLit[g], humGate: humGate[g], humLevel: humLevel[frame],
+      shadowSoftness: shadowSoft[g], shadowRadius: R.shadowRadius(shadowSoft[g]),
       dustDrift: dustDrift[frame], dustOpacity: R.dustOpacity(hN[g]), teaRings: rings, spoonChatter: spoon[g],
       wallMinutes, wallClock: wallText(wallMinutes),
       minuteAngle: (2 * Math.PI * (wallMinutes % 60)) / 60, hourAngle: (2 * Math.PI * ((wallMinutes / 60) % 12)) / 12,
@@ -588,8 +646,71 @@ export function createEngine(shared, endingData, opts = {}) {
     };
   }
 
+  // ---- gauges(frame): the x-ray ------------------------------------------------------------------------------------------
+  // One entry per gauge a viewer can see: what it is in plain words, the log fields it reads (none for the clocks and
+  // the crank, which read the frame: bible 9), its live value as a short text, and its rule in a few words.
+  const n3 = (x) => (isNum(x) ? String(Number(x.toPrecision(3))) : '-');
+  const LINE_READS = { L3: ['massInKey'], L4: ['heldAcc'], YES: ['ptok'], L5: ['lr', 'sharp'], L6b: ['lr', 'measured20.limit'],
+    L7: ['heldAcc', 'held'], L8: ['sharp', 'measured20.limit'], L9: ['heldAcc'], L10: ['held'] };
+  function gauges(frame) {
+    const S = signals(frame), g = S.note;
+    const top = S.p ? S.p.reduce((b, x, i) => (x > S.p[b] ? i : b), 0) : -1;
+    const hole = S.pickKind === 'pitch' ? `${S.pickName} p ${n3(S.pickP)}, ${n3(R.holeRadius(S.pickP))} of full size`
+      : S.pickKind === 'hold' ? `HOLD slot, p ${n3(S.pickP)}` : S.pickKind === 'rest' ? 'REST dot' : 'no bet';
+    const hatch = S.limit !== null ? (S.hatchU >= 1 ? `above the dial (edge ${n3(S.limit)})` : `from ${n3(S.limit)}`)
+      : S.hatchGoneSince !== null ? `gone since ${logClock(S.hatchGoneSince)}` : 'none (no edge measured)';
+    const hands = S.handsIn ? (S.handsPresent < 1 ? 'coming back' : 'on the bench') : (S.handsPresent > 0 ? 'leaving' : 'gone');
+    const sub = S.subtitleId;
+    return [
+      { id: 'clock', name: 'Clock on the TV', reads: [], value: S.clock, rule: 'MM:SS of frame x 5 / 6' },
+      { id: 'haze', name: 'Pencil haze', reads: ['p'],
+        value: top >= 0 ? `darkest ${tokName(top)} p ${n3(S.p[top])}, grey ${n3(R.hazeAlpha(S.p[top]))}` : 'no bet',
+        rule: 'each cell 0.85 x sqrt(p)' },
+      { id: 'hole', name: 'Punched hole', reads: ['tok', 'ptok'], value: hole, rule: 'size 0.25 + 0.75 x p(pick)' },
+      { id: 'stylus', name: 'Stylus', reads: ['p', 'entropy'],
+        value: S.meanRow === null ? 'still' : `row ${S.meanRow.toFixed(1)}, wander ${n3(S.stylusWander)}`,
+        rule: 'mean row, wander spread x H / ln 32' },
+      { id: 'needle', name: 'STEP dial needle', reads: ['lr'],
+        value: `${n3(S.needle)} (${n3(S.needle / limit20)} x the chalk)`, rule: 'the step size, log dial 0.03 to 30' },
+      { id: 'hatching', name: 'TOO FAR hatching', reads: ['sharp'], value: hatch,
+        rule: '2 / median of 3 sharpness readings' },
+      { id: 'chalk', name: 'Chalk mark', reads: ['measured20.limit'],
+        value: frame < R.CHALK_FRAME ? 'not yet' : S.chalkText, rule: 'the limit measured at 20:00' },
+      { id: 'knob', name: 'Knob', reads: ['lr'],
+        value: (S.knobTurning ? `turning to ${n3(S.knobTurnTo)}` : `still, ${n3(S.needle)}`) + (S.hands.gripping ? ', hand on it' : ''),
+        rule: 'turns to each new step size in 3 frames' },
+      { id: 'flags', name: 'NEW TUNES flags', reads: ['heldAcc'], value: `${S.flagsUp} of ten`, rule: '10 x share, on bar lines' },
+      { id: 'drum', name: 'Drum counter', reads: ['heldAcc'], value: S.shareDrumText, rule: '100 x share, every note' },
+      { id: 'lessons', name: 'LESSONS counter', reads: ['step'], value: S.stepsText, rule: 'steps so far' },
+      { id: 'crank', name: 'Crank', reads: [], value: `${Math.round((S.crankAngle * 180) / Math.PI)} degrees`, rule: 'one turn a bar, always' },
+      { id: 'warmth', name: 'Colour of the picture', reads: ['held'], value: `${n3(S.warmth)} (error of 6 notes ${n3(S.err6)})`,
+        rule: 'mean error of 6 notes vs the best by 20:00' },
+      { id: 'hairlines', name: 'Hairlines', reads: ['lr', 'sharp'],
+        value: S.hairline ? `${Math.abs(S.hairline.shiftPx)} px, step / edge ${n3(S.ratioNow)}` : `none, step / edge ${n3(S.ratioNow)}`,
+        rule: 'step over the edge (above 1)' },
+      { id: 'tears', name: 'Tearing', reads: ['held'], value: `${S.tearBands.length} bands (${n3(S.tear)})`,
+        rule: 'error over its best so far, log scale' },
+      { id: 'blocks', name: 'Blocks', reads: ['held'], value: S.blocks ? `${S.blockTiles.length} tiles` : 'off',
+        rule: 'error above 10 x ln 32' },
+      { id: 'hands', name: "The maker's hands", reads: ['held'], value: `${hands} (error ${n3(S.err)})`,
+        rule: 'leave when worse than guessing, back after 6 notes' },
+      { id: 'window', name: "Neighbour's window", reads: ['held'], value: S.windowLit ? 'lit' : 'dark', rule: "the hands' switch" },
+      { id: 'hum', name: 'House hum', reads: ['lr'], value: S.humLevel > 0 ? `${Math.round(100 * S.humLevel)}%` : 'off',
+        rule: 'off on a step change, back after 6 still notes' },
+      { id: 'dust', name: 'Dust in the beam', reads: ['entropy'],
+        value: `${n3(S.dustOpacity)} opaque, drifted ${n3(S.dustDrift)}`, rule: 'moves and shows with H / ln 32' },
+      { id: 'shadow', name: "Chair's shadow", reads: ['entropy'], value: `blur ${n3(S.shadowRadius)}`,
+        rule: '1 + 14 x mean H / ln 32 of 6 notes' },
+      { id: 'tea', name: 'Tea and spoon', reads: ['ptok'],
+        value: `${S.teaRings.length} rings${S.spoonChatter ? ', spoon chatters' : ''}`, rule: 'a ring a pluck, sized by velocity squared' },
+      { id: 'wallClock', name: 'Wall clock', reads: [], value: S.wallClock, rule: '23:30 plus the TV clock' },
+      { id: 'subtitle', name: 'The maker says', reads: sub ? (LINE_READS[sub] ?? []) : [],
+        value: S.subtitle ? S.subtitle : 'nothing', rule: sub ? (R.LINES.find((l) => l.id === sub)?.rule ?? '') : 'lines by rule' },
+    ].map((x) => Object.freeze({ ...x, reads: Object.freeze(x.reads), note: g }));
+  }
+
   return Object.freeze({
-    meta, signals, cues, dropped, events, perNote,
+    meta, signals, gauges, cues, dropped, lineReport, events, perNote,
     knobTurns: Object.freeze(turns.map((t) => Object.freeze({ ...t }))),
     dialTaps: Object.freeze(taps.map((t) => Object.freeze({ ...t }))),
     note: (g) => {
@@ -609,96 +730,148 @@ function wallText(minutes) {
   return `${pad(Math.floor(m / 60), 2)}:${pad(m % 60, 2)}`;
 }
 
-// ---- the line queue (bible 7) -------------------------------------------------------------------------------------------
-// A line fires at the first note that meets its rule (FORMAT lines at their frame), starts on a note boundary and
-// never overlaps another: it waits up to 2 bars, then is dropped. "Yes." needs nothing playing (it never waits).
-// L6b goes right after L6a, ahead of anything waiting. "Goodnight." is never dropped and cuts anything still
-// playing; nothing starts after it. Queue order: trigger note, then table order.
-function scheduleLines(c, voiceDurations) {
-  const cues = [], dropped = [];
-  const fired = new Set();
-  const queue = [];
-  let playing = null, lastYes = -Infinity, gnStarted = false, l6bPending = null;
-  const lineDef = Object.fromEntries(R.LINES.map((l) => [l.id, l]));
-  const order = Object.fromEntries(R.LINES.map((l, i) => [l.id, i]));
+// ---- the lines (bible 7, v1.2) ----------------------------------------------------------------------------------------
+// FORMAT lines start at their frames (L1, L2, L6a, "Goodnight."). L6b starts on the first note boundary after L6a has
+// finished, ahead of anything else. A data line is spoken at the first note where its rule holds AND the voice is free
+// AND it would finish before the next FORMAT line is due; it waits as long as that takes, and it is not spoken on a note
+// where its rule does not hold. Each data line at most once per ending, except "Yes." (24 notes apart). Its numbers are
+// read at the note it is spoken on. When several could start on the same note: "There you are." first, then table
+// order (R.SPEAK_ORDER). "Goodnight." cuts anything still playing (nothing can be: every line finishes before the next
+// FORMAT line), is never dropped, and nothing is said after it. Lines start on note boundaries (every FORMAT frame is
+// one). The subtitle shows from the line's start for its length + 0.5 s, until the next line starts, and never past
+// the programme's last frame.
+function scheduleLines(c, voiceDurations, d) {
+  const def = Object.fromEntries(R.LINES.map((l) => [l.id, l]));
+  const formatLines = R.LINES.filter((l) => l.format).sort((a, b) => a.frame - b.frame);
+  const dataLines = R.SPEAK_ORDER.map((id) => def[id]);
+  const cues = [], spoken = new Set(), lastSaid = {};
+  const seen = Object.fromEntries(dataLines.map((L) => [L.id, { first: null, last: null, runFrom: null, busy: 0, late: 0,
+    beaten: 0, afterGN: 0 }]));
+  let playing = null, l6bDue = false, gnStarted = false;
 
-  const start = (item, g) => {
-    const f0 = g * NOTE_FRAMES;
-    const seconds = R.lineSeconds(item.id, item.text, voiceDurations);
-    const cue = { id: item.id, text: item.text, note: g, frame: f0, seconds,
-      endFrame: f0 + seconds * FPS, subtitleEnd: f0 + (seconds + R.SUBTITLE_EXTRA_S) * FPS,
-      triggerNote: item.trigger, waitedNotes: g - item.trigger, format: !!lineDef[item.id].format,
-      after: lineDef[item.id].afterLine ?? null, cutAt: null };
-    if (playing && playing.endFrame > f0) { playing.cutAt = f0; playing.endFrame = f0; }
-    // a newer line replaces the subtitle of the one before
-    for (const prev of cues) if (prev.subtitleEnd > f0) prev.subtitleEnd = f0;
+  const make = (L, g, f0, extra) => {
+    const text = L.text(g, c), variant = L.variant ? L.variant(g, c) : null;
+    const seconds = R.lineSeconds(L.id, text, voiceDurations);
+    return { id: L.id, text, variant, note: g, frame: f0, seconds, recorded: R.lineRecorded(L.id, text, voiceDurations),
+      endFrame: f0 + seconds * FPS, subtitleEnd: null, triggerNote: g, ruleFrom: g, firstHeld: g, waitedNotes: 0,
+      format: !!L.format, after: L.afterLine ?? null, cutAt: null, rule: L.rule, values: Object.freeze({}), ...extra };
+  };
+  const start = (cue) => {
+    if (playing && playing.endFrame > cue.frame) { playing.cutAt = cue.frame; playing.endFrame = cue.frame; }
     cues.push(cue);
     playing = cue;
-    if (item.id === 'YES') lastYes = g;
-    if (item.id === 'L6a') l6bPending = { id: 'L6b', text: null, trigger: null };
-    if (item.id === 'GN') gnStarted = true;
-    return cue;
+    spoken.add(cue.id);
+    lastSaid[cue.id] = cue.note;
   };
 
   for (let g = 0; g < NOTES; g++) {
-    const f0 = g * NOTE_FRAMES;
-    const free = () => !playing || playing.endFrame <= f0;
-    // 1. new triggers (not YES, not L6b), in table order
-    for (const L of R.LINES) {
-      if (L.id === 'YES' || L.afterLine) continue;
-      if (!L.repeat && fired.has(L.id)) continue;
-      const hit = L.format ? f0 === L.frame : (L.frame === undefined && L.when(g, c));
-      if (!hit) continue;
-      fired.add(L.id);
-      const item = { id: L.id, text: L.text(g, c), trigger: g };
-      if (gnStarted) { dropped.push({ ...item, note: g, reason: 'after Goodnight.' }); continue; }
-      queue.push(item);
+    const f0 = g * NOTE_FRAMES, f1 = f0 + NOTE_FRAMES;
+    // the data lines' rules on this note
+    const holds = {};
+    for (const L of dataLines) {
+      const h = !!L.holds(g, c), s = seen[L.id];
+      holds[L.id] = h;
+      if (h) { if (s.first === null) s.first = g; if (s.runFrom === null) s.runFrom = g; s.last = g; } else s.runFrom = null;
     }
-    queue.sort((a, b) => a.trigger - b.trigger || order[a.id] - order[b.id]);
-    // 2. "Goodnight." starts now, whatever is playing; everything still waiting is dropped
-    const gi = queue.findIndex((q) => q.id === 'GN');
-    if (gi >= 0) {
-      const [gn] = queue.splice(gi, 1);
-      start(gn, g);
-      for (const q of queue.splice(0)) dropped.push({ ...q, note: g, reason: 'Goodnight. started' });
-      if (l6bPending) { dropped.push({ id: 'L6b', text: null, trigger: g, note: g, reason: 'Goodnight. started' }); l6bPending = null; }
+    // 1. a FORMAT line due inside this note starts at its frame, whatever is playing
+    const fl = formatLines.find((L) => L.frame >= f0 && L.frame < f1);
+    if (fl) {
+      start(make(fl, g, fl.frame, {}));
+      if (fl.id === 'GN') gnStarted = true;
+      if (def.L6b.afterLine === fl.id) l6bDue = true;
+      for (const L of dataLines) if (holds[L.id] && !spoken.has(L.id)) seen[L.id][gnStarted ? 'afterGN' : 'busy']++;
       continue;
     }
-    if (gnStarted) continue;
-    // 3. L6b becomes due on the first note boundary after L6a has finished
-    if (l6bPending && l6bPending.trigger === null && free()) {
-      l6bPending.trigger = g;
-      l6bPending.text = lineDef.L6b.text(g, c);
+    const free = !playing || playing.endFrame <= f0;
+    if (gnStarted || !free) {
+      for (const L of dataLines) if (holds[L.id] && !spoken.has(L.id)) seen[L.id][gnStarted ? 'afterGN' : 'busy']++;
+      continue;
     }
-    // 4. drop lines that have waited more than 2 bars
-    for (let i = queue.length - 1; i >= 0; i--) {
-      if (g - queue[i].trigger > R.LINE_WAIT_NOTES) dropped.push({ ...queue.splice(i, 1)[0], note: g, reason: 'waited 2 bars' });
+    // 2. L6b, directly after L6a
+    if (l6bDue) {
+      l6bDue = false;
+      start(make(def.L6b, g, f0, { values: lineValues('L6b', g, d) }));
+      for (const L of dataLines) if (holds[L.id] && !spoken.has(L.id)) seen[L.id].busy++;
+      continue;
     }
-    if (l6bPending && l6bPending.trigger !== null && g - l6bPending.trigger > R.LINE_WAIT_NOTES) {
-      dropped.push({ ...l6bPending, note: g, reason: 'waited 2 bars' });
-      l6bPending = null;
+    // 3. the first data line (in speaking order) whose rule holds and that would finish before the next FORMAT line
+    const nextFormat = formatLines.find((L) => L.frame >= f1)?.frame ?? Infinity;
+    let chosen = null;
+    for (const L of dataLines) {
+      if (!holds[L.id]) continue;
+      if (L.repeat ? g - (lastSaid[L.id] ?? -Infinity) < R.YES_GAP_NOTES : spoken.has(L.id)) continue;
+      const cue = make(L, g, f0, { ruleFrom: seen[L.id].runFrom, firstHeld: seen[L.id].first,
+        waitedNotes: g - seen[L.id].runFrom, values: lineValues(L.id, g, d) });
+      if (chosen) { if (!L.repeat) seen[L.id].beaten++; continue; }
+      if (cue.endFrame > nextFormat) { if (!L.repeat) seen[L.id].late++; continue; }
+      chosen = cue;
     }
-    // 5. start the next line if nothing is playing (L6b first)
-    if (free()) {
-      if (l6bPending && l6bPending.trigger !== null) { start(l6bPending, g); l6bPending = null; }
-      else if (queue.length) start(queue.shift(), g);
-    }
-    // 6. "Yes.": only if nothing is playing or waiting, 24 notes after the last one
-    if (free() && !queue.length && !l6bPending && g - lastYes >= R.YES_GAP_NOTES && lineDef.YES.when(g, c)) {
-      start({ id: 'YES', text: lineDef.YES.text(g, c), trigger: g }, g);
-    }
+    if (chosen) start(chosen);
   }
-  return { cues: cues.map((x) => Object.freeze(x)),
-    dropped: dropped.map((x) => Object.freeze({ ...x, format: !!lineDef[x.id].format, after: lineDef[x.id].afterLine ?? null })) };
+
+  // subtitles: the line's length + 0.5 s, cut by the next line, never past the programme's last frame
+  cues.forEach((cue, i) => {
+    const next = i + 1 < cues.length ? cues[i + 1].frame : Infinity;
+    cue.subtitleEnd = Math.min(cue.frame + (cue.seconds + R.SUBTITLE_EXTRA_S) * FPS, next, PROGRAMME_FRAMES);
+  });
+
+  // every line of the table: spoken where, or why not
+  const report = [], dropped = [];
+  for (const L of R.LINES) {
+    const said = cues.filter((x) => x.id === L.id);
+    const s = seen[L.id];
+    let why = null;
+    if (!said.length) {
+      if (!s || s.first === null) why = L.format || L.afterLine ? 'not scheduled' : 'its rule never held';
+      else {
+        const parts = [];
+        if (s.busy) parts.push(`the voice was busy on ${s.busy} of those notes`);
+        if (s.late) parts.push(`it would not have finished before the next FORMAT line on ${s.late}`);
+        if (s.beaten) parts.push(`another line went first on ${s.beaten}`);
+        if (s.afterGN) parts.push(`${s.afterGN} came after "Goodnight."`);
+        why = `its rule held on notes ${s.first}..${s.last}, but ${parts.join(', ') || 'never on a note it could start'}`;
+        dropped.push(Object.freeze({ id: L.id, text: L.text(s.first, c), variant: L.variant ? L.variant(s.first, c) : null,
+          trigger: s.first, note: s.last, reason: why, format: false, after: null, rule: L.rule,
+          values: lineValues(L.id, s.first, d) }));
+      }
+    }
+    report.push(Object.freeze({ id: L.id, rule: L.rule, format: !!L.format, spoken: said.map((x) => Object.freeze({ note: x.note,
+      frame: x.frame, clock: clockText(x.frame), text: x.text })), firstHeld: s ? s.first : null, whyNot: why }));
+  }
+  return { cues: Object.freeze(cues.map((x) => Object.freeze(x))), dropped: Object.freeze(dropped), report: Object.freeze(report) };
+}
+
+/** The log values that make a line be spoken (read at the note it is spoken on). */
+function lineValues(id, g, d) {
+  const last6 = (arr) => lastOf(arr, g, 6).map(fmt);
+  let v;
+  switch (id) {
+    case 'L3': v = { massInKey: fmt(d.massInKey[g]) }; break;
+    case 'L4': v = { share: fmt(d.share[g]) }; break;
+    case 'YES': v = { ptok: fmt(d.ptok[g]) }; break;
+    case 'L5': v = { ratioNow: fmt(d.ratioNow[g]), median3: fmt(d.sharpMed3[g]), lr: fmt(d.lr[g]) }; break;
+    case 'L6b': v = { [`lr${BREAK_NOTE - 1}`]: fmt(d.lr[BREAK_NOTE - 1]), [`lr${BREAK_NOTE}`]: fmt(d.lr[BREAK_NOTE]),
+      limit20: fmt(d.limit20), times: fmt(d.lr[BREAK_NOTE] / d.limit20) }; break;
+    case 'L7': v = { share: fmt(d.share[g]), share20: fmt(d.share20), handsIn: d.handsIn[g] }; break;
+    case 'L8': v = { limitNow: fmt(d.limitNow[g]), chalk: fmt(d.limit20), times: fmt(d.limitNow[g] / d.limit20),
+      median3: fmt(d.sharpMed3[g]) }; break;
+    case 'L9': v = { share: fmt(d.share[g]), share20: fmt(d.share20) }; break;
+    case 'L10': v = { errLast6: last6(d.err) }; break;
+    default: v = {};
+  }
+  return Object.freeze(v);
 }
 
 // ---- events (everything that happens, for the tables and the x-ray) -----------------------------------------------------
+// Every event is FORMAT (format: true: keyed to the clock, the same frames in every ending) or carries in `values` the
+// log values that caused it, read at its note (make/check-honesty.mjs matches them against the raw log).
 function buildEvents(d) {
   const ev = [];
-  const fmt = (r) => (isNum(r) ? Number(r.toPrecision(6)) : r === null ? null : String(r));
-  const add = (o) => ev.push(Object.freeze({ format: false, note: noteAt(o.frame), values: {}, ...o }));
+  const add = (o) => ev.push(Object.freeze({ format: false, note: noteAt(o.frame), values: {}, ...o,
+    values: Object.freeze(o.values ?? {}) }));
   const at = (g) => g * NOTE_FRAMES;
   const L = R.LN32;
+  const last = (arr, g, n) => lastOf(arr, g, n).map(fmt);
 
   // FORMAT (fixed frames, identical in every ending; a tap or the lid may be skipped by the rules)
   add({ kind: 'title-card', frame: 0, format: true, what: 'title card on the bench: THE QUIET HOUR' });
@@ -709,7 +882,8 @@ function buildEvents(d) {
       values: { performed: t.performed, handsIn: d.handsIn[noteAt(t.decidedAt)], gripping: d.gripT[t.decidedAt] } });
   }
   add({ kind: 'chalk-pickup', frame: R.CHALK_PICKUP_FRAME, format: true, what: 'the left hand takes the chalk' });
-  add({ kind: 'chalk', frame: R.CHALK_FRAME, format: true, what: `chalk mark at the limit measured at 20:00: ${R.chalkText(d.limit20)}`,
+  add({ kind: 'chalk', frame: R.CHALK_FRAME, format: true,
+    what: `chalk tick (frames 1440-1441) and number (1440-1444) at the limit measured at 20:00: ${R.chalkText(d.limit20)}`,
     values: { limit20: fmt(d.limit20) } });
   add({ kind: 'lid', frame: R.LID_BAR_FRAME, format: true,
     what: d.lidCloses ? 'the left hand closes the lid over the last bar' : 'the lid stays open (hands gone)',
@@ -718,14 +892,14 @@ function buildEvents(d) {
 
   // lines
   for (const c of d.cues) {
-    const g = c.triggerNote;
-    const values = c.format ? {} : lineValues(c.id, g, d);
-    add({ kind: 'line', id: c.id, frame: c.frame, format: c.format, after: c.after, note: c.note, triggerNote: g, what: `"${c.text}"`,
-      values: { ...values, seconds: fmt(c.seconds), waitedNotes: c.waitedNotes, ...(c.cutAt !== null ? { cutAt: c.cutAt } : {}) } });
+    add({ kind: 'line', id: c.id, frame: c.frame, format: c.format, after: c.after, note: c.note, triggerNote: c.triggerNote,
+      ruleFrom: c.ruleFrom, what: `"${c.text}"`,
+      values: { ...c.values, seconds: fmt(c.seconds), recorded: c.recorded, waitedNotes: c.waitedNotes,
+        ...(c.cutAt !== null ? { cutAt: c.cutAt } : {}) } });
   }
   for (const x of d.dropped) {
-    add({ kind: 'line-dropped', id: x.id, frame: at(x.note), format: x.format, after: x.after, note: x.note, triggerNote: x.trigger,
-      what: `${x.id} dropped (${x.reason})${x.text ? `: "${x.text}"` : ''}`, values: x.trigger !== null ? lineValues(x.id, x.trigger, d) : {} });
+    add({ kind: 'line-dropped', id: x.id, frame: at(x.trigger), format: false, after: null, note: x.trigger, triggerNote: x.trigger,
+      ruleFrom: x.trigger, what: `${x.id} never spoken: ${x.reason}`, values: x.values });
   }
 
   // state changes read from the log, note by note
@@ -733,73 +907,82 @@ function buildEvents(d) {
   let prevHum = true, firstCertain = false, warmFull = false, warmZero = false, offScale = false;
   for (let g = 0; g < d.N; g++) {
     const f = at(g), e = fmt(d.err[g]);
-    if (d.handsOutAt[g]) add({ kind: 'hands-out', frame: f, what: 'both hands slide out (over one bar)', values: { err: e, ln32: fmt(L) } });
+    if (d.handsOutAt[g]) add({ kind: 'hands-out', frame: f, what: 'both hands slide out (over one bar): worse than guessing', values: { err: e, ln32: fmt(L) } });
     if (d.handsBackAt[g]) {
-      add({ kind: 'hands-back', frame: f, what: 'the hands slide back (over 20 frames)',
-        values: { errLast6: d.err.slice(g - 5, g + 1).map(fmt), ln32: fmt(L) } });
+      add({ kind: 'hands-back', frame: f, what: 'the hands slide back (over 20 frames): 6 notes in a row at or below guessing',
+        values: { errLast6: last(d.err, g, 6), ln32: fmt(L) } });
     }
-    const lit = !d.worse[g];
-    if (lit !== prevWindow) add({ kind: lit ? 'window-lit' : 'window-dark', frame: f, what: lit ? "the neighbour's window lights" : "the neighbour's window goes dark", values: { err: e } });
+    const lit = d.windowLit[g];
+    if (lit !== prevWindow) {
+      add(lit ? { kind: 'window-lit', frame: f, what: "the neighbour's window lights again", values: { err: e, errLast6: last(d.err, g, 6) } }
+        : { kind: 'window-dark', frame: f, what: "the neighbour's window goes dark", values: { err: e } });
+    }
     prevWindow = lit;
     if (d.humGate[g] !== prevHum) {
       add(d.humGate[g]
-        ? { kind: 'hum-on', frame: f, what: 'the house hum comes back (over 2 s)', values: { stillNotes: R.HUM_STILL_NOTES } }
-        : { kind: 'hum-off', frame: f, what: 'the house hum stops dead', values: { lrBefore: fmt(d.lr[g - 1]), lr: fmt(d.lr[g]) } });
+        ? { kind: 'hum-on', frame: f, what: 'the house hum comes back (over 2 s): 6 notes with no step change', values: { lrLast7: last(d.lr, g, 7) } }
+        : { kind: 'hum-off', frame: f, what: 'the house hum stops dead: the step size changed', values: { lrBefore: fmt(d.lr[g - 1]), lr: fmt(d.lr[g]) } });
     }
     prevHum = d.humGate[g];
     if (g > 0 && g % NOTES_PER_BAR === 0 && d.flags[g] !== d.flags[g - 1]) {
-      add({ kind: 'flags', frame: f, what: `NEW TUNES flags ${d.flags[g - 1]} -> ${d.flags[g]} of ten`, values: { share: fmt(d.share[g]) } });
+      add({ kind: 'flags', frame: f, what: `NEW TUNES flags ${d.flags[g - 1]} -> ${d.flags[g]} of ten`, values: { share: fmt(d.share[g]), shareBarBefore: fmt(d.share[g - NOTES_PER_BAR]) } });
     }
     const hair = d.hairline[g] !== null;
-    if (hair !== prevHair) add({ kind: hair ? 'hairlines-on' : 'hairlines-off', frame: f, what: hair ? 'hairline shifts start (ratio now above 1)' : 'no more hairlines', values: { ratio: fmt(d.ratio[g]) } });
+    if (hair !== prevHair) {
+      add({ kind: hair ? 'hairlines-on' : 'hairlines-off', frame: f,
+        what: hair ? 'hairline shifts start (step over the edge, ratio now above 1)' : 'no more hairlines',
+        values: { ratioNow: fmt(d.ratioNow[g]), lr: fmt(d.lr[g]), median3: fmt(d.sharpMed3[g]), limitNow: fmt(d.limitNow[g]) } });
+    }
     prevHair = hair;
     const tear = R.tearBandCount(d.tearG[g]) > 0;
-    if (tear !== prevTear) add({ kind: tear ? 'tears-on' : 'tears-off', frame: f, what: tear ? `tear bands start (${R.tearBandCount(d.tearG[g])})` : 'the tears heal', values: { err: e, g: fmt(d.tearG[g]) } });
+    if (tear !== prevTear) {
+      add({ kind: tear ? 'tears-on' : 'tears-off', frame: f,
+        what: tear ? `tear bands start (${R.tearBandCount(d.tearG[g])})` : 'the tears heal',
+        values: { err: e, bestSoFar: fmt(d.bestSoFar[g]), g: fmt(d.tearG[g]) } });
+    }
     prevTear = tear;
     if (d.blocksOn[g] !== prevBlocks) add({ kind: d.blocksOn[g] ? 'blocks-on' : 'blocks-off', frame: f, what: d.blocksOn[g] ? 'block mosaic starts (err above 10 ln 32)' : 'the blocks clear', values: { err: e, tenLn32: fmt(10 * L) } });
     prevBlocks = d.blocksOn[g];
     const hatch = d.limitNow[g] !== null;
-    if (hatch !== prevHatch) add({ kind: hatch ? 'hatch-back' : 'hatch-gone', frame: f, what: hatch ? 'the TOO FAR hatching comes back' : 'the TOO FAR hatching disappears (sharpness not positive)', values: { sharp: fmt(d.sharp[g]) } });
+    if (hatch !== prevHatch) {
+      if (!hatch && d.latched[g]) {
+        add({ kind: 'hatch-gone', frame: f, what: 'the TOO FAR hatching disappears for good: a sharpness reading after 20:00 that is not above 0',
+          values: { sharp: fmt(d.sharp[g]), latched: true } });
+      } else {
+        add({ kind: hatch ? 'hatch-back' : 'hatch-gone', frame: f,
+          what: hatch ? 'the TOO FAR hatching comes back' : 'the TOO FAR hatching disappears (median sharpness not above 0)',
+          values: { median3: fmt(d.sharpMed3[g]), limit: fmt(d.limitNow[g]), sharp: fmt(d.sharp[g]) } });
+      }
+    }
     prevHatch = hatch;
     const off = hatch && d.limitNow[g] > R.DIAL_MAX;
-    if (off !== offScale) add({ kind: off ? 'hatch-off-scale' : 'hatch-on-scale', frame: f, what: off ? 'the limit now is past the top of the dial (no hatching visible)' : 'the hatching is back on the dial', values: { limit: fmt(d.limitNow[g]) } });
+    if (off !== offScale && hatch) add({ kind: off ? 'hatch-off-scale' : 'hatch-on-scale', frame: f, what: off ? 'the edge is past the top of the dial (no hatching visible)' : 'the hatching is back on the dial', values: { limit: fmt(d.limitNow[g]), median3: fmt(d.sharpMed3[g]) } });
     offScale = off;
     if (d.spoon[g] !== prevSpoon) add({ kind: d.spoon[g] ? 'spoon-on' : 'spoon-off', frame: f, what: d.spoon[g] ? 'the spoon chatters' : 'the spoon is still', values: { meanVel6: fmt(d.meanVel6[g]) } });
     prevSpoon = d.spoon[g];
     if (d.inKey[g] === false) add({ kind: 'pick-out-of-key', frame: f, what: `out-of-key pick ${d.tokName(d.rows[g].tok)}`, values: { pick: d.rows[g].tok, ptok: fmt(d.ptok[g]) } });
     if (!firstCertain && d.ptok[g] === 1) { firstCertain = true; add({ kind: 'first-certain', frame: f, what: 'first pick with p exactly 1: a full hole, the stylus still', values: { ptok: 1, entropy: fmt(d.entropy[g]) } }); }
-    if (!warmFull && d.warmK[g] === 1) { warmFull = true; add({ kind: 'warmth-full', frame: f, what: 'the picture reaches full colour (k = 1)', values: { err: e, best20: fmt(d.best20) } }); }
-    if (g > BREAK_NOTE && !warmZero && d.warmK[g] === 0) { warmZero = true; add({ kind: 'warmth-zero', frame: f, what: 'the picture is grey again (k = 0)', values: { err: e } }); }
+    if (!warmFull && d.warmK[g] === 1) { warmFull = true; add({ kind: 'warmth-full', frame: f, what: 'the picture reaches full colour (k = 1)', values: { err6: fmt(d.err6[g]), err: e, best20: fmt(d.best20) } }); }
+    if (g > BREAK_NOTE && !warmZero && d.warmK[g] === 0) { warmZero = true; add({ kind: 'warmth-zero', frame: f, what: 'the picture is grey again (k = 0)', values: { err6: fmt(d.err6[g]), err: e } }); }
   }
   for (const t of d.turns) {
-    add({ kind: 'knob-turn', frame: t.start, note: t.note, what: `knob turned ${fmt(t.from)} -> ${fmt(t.to)} (${t.frames} frames)`,
-      values: { from: fmt(t.from), to: fmt(t.to), handsIn: d.handsIn[t.note] } });
+    add({ kind: 'knob-turn', frame: t.start, note: t.note, what: `knob turned ${fmt(t.from)} -> ${fmt(t.to)} (${t.frames} frames)${d.handsIn[t.note] ? '' : ', nobody on it'}`,
+      values: { from: fmt(t.from), to: fmt(t.to), lrBefore: fmt(t.lrBefore), handsIn: d.handsIn[t.note] } });
   }
   let prevGrip = false;
   for (let f = 0; f < d.F; f++) {
     const grip = d.leftTarget[f] === 'grip';
-    if (grip !== prevGrip) add({ kind: grip ? 'grip-on' : 'grip-off', frame: f, what: grip ? 'the left hand grips the knob' : 'the left hand lets go of the knob', values: {} });
+    if (grip !== prevGrip) {
+      const g = noteAt(f);
+      add({ kind: grip ? 'grip-on' : 'grip-off', frame: f,
+        what: grip ? 'the left hand grips the knob (the step size changed)'
+          : !d.handsIn[g] ? 'the left hand lets go of the knob (the hands leave)' : 'the left hand lets go of the knob (no more turns)',
+        values: { lr: fmt(d.lr[g]), lrBefore: fmt(d.lr[g - 1]), handsIn: d.handsIn[g], err: fmt(d.err[g]) } });
+    }
     prevGrip = grip;
   }
 
   const order = (e) => (e.format ? 0 : 1);
   ev.sort((a, b) => a.frame - b.frame || order(a) - order(b));
   return Object.freeze(ev);
-}
-
-/** The log values that made a line fire (for the tables). */
-function lineValues(id, g, d) {
-  const fmt = (r) => (isNum(r) ? Number(r.toPrecision(6)) : r === null ? null : String(r));
-  switch (id) {
-    case 'L3': return { massInKey: fmt(d.rows[g].massInKey) };
-    case 'L4': return { share: fmt(d.share[g]) };
-    case 'YES': return { ptok: fmt(d.ptok[g]) };
-    case 'L5': return { ratio: fmt(d.ratio[g]) };
-    case 'L6b': return { lr287: fmt(d.lr[BREAK_NOTE - 1]), lr288: fmt(d.lr[BREAK_NOTE]), limit20: fmt(d.limit20), times: fmt(d.lr[BREAK_NOTE] / d.limit20) };
-    case 'L7': return { share: fmt(d.share[g]), share20: fmt(d.share20) };
-    case 'L8': return { limitNow: fmt(d.limitNow[g]), chalk: fmt(d.limit20), times: fmt(d.limitNow[g] / d.limit20) };
-    case 'L9': return { share: fmt(d.share[g]), share20: fmt(d.share20) };
-    case 'L10': return { errLast6: d.err.slice(g - 5, g + 1).map(fmt) };
-    default: return {};
-  }
 }

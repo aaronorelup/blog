@@ -15,8 +15,10 @@
 //
 // The glow: the tube lights its own bezel, case front, knobs and grille (a term added to those materials: the
 // programme canvas's mean colour, which is the last level of the canvas texture's mip chain, falling off with
-// distance from the tube's edge), plus two additive quads: a faint haze round the tube and a soft halo on the wall
-// behind the set. All of it reads only the canvas, so the room's light and this glow agree.
+// distance from the tube's edge), plus three additive decals in one draw: a faint haze round the tube, the halo on
+// the wall behind the set (tight round the case's outline over a broad soft glow) and the spill on the cabinet top
+// round the set's feet. All of it reads only the canvas, so the room's light and this glow agree: the set is where
+// the room's light comes from. The decals carry the film's static dither (src/post.js), so they do not band.
 //
 // Textures (walnut, grille cloth) are made once at load from fixed seeds (hash01). Nothing here keeps state between
 // frames: update() sets uniforms from this frame's camera and S only. It also writes S.frame on group.userData.frame
@@ -24,6 +26,7 @@
 
 import { hash01 } from '../rng.js';
 import { createScreenMaterial } from './screen.js';
+import '../post.js';                                   // the qh_dither shader chunk the glows include
 
 const SEED = { walnut: 8101, grain: 8102, cloth: 8201 };
 
@@ -288,35 +291,70 @@ export function createTV({ THREE, programmeTexture, anchors }) {
   }
   for (const g of [knobGeo, capGeo, tickGeo, footGeo, shoeGeo]) g.dispose();
 
-  // ---- glow: a haze ring round the tube (kind 0) and a halo on the wall behind the set (kind 1), additive, coloured
-  // by the canvas mean. The ring has no fragments over the picture.
-  const HZ = 0.12, zWall = (anchors.backWallZ ?? -3) + 0.004, wall = { hw: 0.95, hh: 0.68, x: S0.x + 0.05, y: S0.y + 0.12 };
+  // ---- glow: the set as the room's light. Three additive decals, all coloured by the canvas mean (the same light the
+  // room's spot takes) and all in the one glow mesh (one draw):
+  //   kind 0: a faint haze ring round the tube (no fragments over the picture);
+  //   kind 1: the halo on the wall behind the set: a tight glow hugging the case's outline (light escaping round
+  //           it) over a broad soft one, a little higher than the set, so the eye finds the source at once;
+  //   kind 2: the spill on the cabinet top: brightest along the set's front edge and feet, fading out along the top.
+  // Each carries the static dither (src/post.js qh_dither, its own salt), so the long faint gradients do not band.
+  const HZ = 0.12, zWall = (anchors.backWallZ ?? -3) + 0.004;
+  const wall = { hw: 1.25, hh: 0.95, x: cx, y: cy + 0.16 };            // the halo's quad on the wall (it fades inside it)
+  const C = anchors.cabinet;
+  const top = C ? { x0: C.x - C.w / 2 + 0.008, x1: C.x + C.w / 2 - 0.008, z0: C.z - C.d / 2 + 0.008, z1: C.z + C.d / 2 - 0.008, y: (C.y ?? 0) + C.h + 0.0012 } : null;
   {
     const outer = roundedRect(THREE, new THREE.Shape(), -S0.w / 2 - HZ, -S0.h / 2 - HZ, S0.w + 2 * HZ, S0.h + 2 * HZ, 0.03 + HZ);
     outer.holes.push(roundedRect(THREE, new THREE.Path(), -S0.w / 2, -S0.h / 2, S0.w, S0.h, 0.03));
     part('glow', new THREE.ShapeGeometry(outer, 6), { x: S0.x, y: S0.y, z: zFront + 0.02, kind: 0 });
     part('glow', new THREE.PlaneGeometry(2 * wall.hw, 2 * wall.hh), { x: wall.x, y: wall.y, z: zWall, kind: 1 });
+    if (top && top.x1 > top.x0 && top.z1 > top.z0) {
+      part('glow', new THREE.PlaneGeometry(top.x1 - top.x0, top.z1 - top.z0), { x: (top.x0 + top.x1) / 2, y: top.y, z: (top.z0 + top.z1) / 2, rx: -Math.PI / 2, kind: 2 });
+    }
   }
+  const GLOW = { haze: 0.10, halo: 0.22, haloBroad: 0.075, spill: 0.30 };   // halo and spill on the curved mean (x1.38 at a mean of 0.45)
   const glowMat = new THREE.ShaderMaterial({
     uniforms: { uProg: glow.uProg, uTube: { value: new THREE.Vector2(S0.x, S0.y) }, uTubeHalf: { value: new THREE.Vector2(S0.w / 2, S0.h / 2) },
-      uWall: { value: new THREE.Vector4(wall.x, wall.y, wall.hw, wall.hh) }, uStrength: { value: new THREE.Vector2(0.10, 0.09) } },
+      uWall: { value: new THREE.Vector4(wall.x, wall.y, wall.hw, wall.hh) },
+      uCase: { value: new THREE.Vector4(cx, cy, W / 2, H / 2) },
+      uFoot: { value: new THREE.Vector4(xL, xR, zBack, zFront) },
+      uStrength: { value: new THREE.Vector4(GLOW.haze, GLOW.halo, GLOW.haloBroad, GLOW.spill) } },
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false,
     polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
-    vertexShader: 'attribute float kind; varying vec2 vW; varying float vK; void main(){ vW = position.xy; vK = kind; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+    vertexShader: 'attribute float kind; varying vec3 vW; varying float vK; void main(){ vW = position; vK = kind; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
     fragmentShader: `
-      uniform sampler2D uProg; uniform vec2 uTube, uTubeHalf, uStrength; uniform vec4 uWall; varying vec2 vW; varying float vK;
+      #include <qh_dither>
+      uniform sampler2D uProg; uniform vec2 uTube, uTubeHalf; uniform vec4 uWall, uCase, uFoot, uStrength; varying vec3 vW; varying float vK;
       float sdRR(vec2 p, vec2 b, float r) { vec2 q = abs(p) - b + r; return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r; }
       void main() {
         vec3 avg = textureLod(uProg, vec2(0.5), 12.0).rgb;
-        float a;
+        // the halo and the spill see the picture's mean through a gentle curve (luminance^0.6, same hue), so a dim
+        // picture still reads as the room's source and a bright one does not flood the wall
+        float lum = max(dot(avg, vec3(0.2126, 0.7152, 0.0722)), 1e-4);
+        vec3 soft = avg * pow(lum, -0.4);
+        float a; uint salt;
         if (vK < 0.5) {
-          float d = sdRR(vW - uTube, uTubeHalf, 0.03);
+          float d = sdRR(vW.xy - uTube, uTubeHalf, 0.03);
           a = exp(-max(d, 0.0) / 0.022) * smoothstep(0.0, 0.004, d) * (1.0 - smoothstep(0.08, 0.12, d)) * uStrength.x;
+          salt = 1u;
+        } else if (vK < 1.5) {
+          // distance on the wall from the case's outline (seen straight on), and an edge fade inside the quad
+          float d = max(sdRR(vW.xy - uCase.xy, uCase.zw, 0.04), 0.0);
+          vec2 e = (vW.xy - uWall.xy) / uWall.zw;
+          float fade = (1.0 - smoothstep(0.55, 1.0, abs(e.x))) * (1.0 - smoothstep(0.5, 1.0, abs(e.y)));
+          float up = 1.0 + 0.35 * smoothstep(-0.2, 0.6, vW.y - uCase.y - uCase.w);   // light climbs the wall a little
+          a = (uStrength.y * exp(-d / 0.13) + uStrength.z * exp(-d * d / 0.16)) * up * fade;
+          salt = 2u;
         } else {
-          vec2 e = (vW - uWall.xy) / uWall.zw, k = e * vec2(1.0, 1.25);
-          a = exp(-dot(k, k) * 3.2) * (1.0 - smoothstep(0.8, 1.0, max(abs(e.x), abs(e.y)))) * uStrength.y;
+          // the cabinet top: distance from the set's footprint, brightest along its front edge
+          vec2 q = vec2(vW.x - 0.5 * (uFoot.x + uFoot.y), vW.z - 0.5 * (uFoot.z + uFoot.w));
+          float d = max(sdRR(q, vec2(0.5 * (uFoot.y - uFoot.x), 0.5 * (uFoot.w - uFoot.z)), 0.02), 0.0);
+          float front = 0.35 + 0.65 * smoothstep(uFoot.z, uFoot.w + 0.01, vW.z);
+          a = uStrength.w * exp(-d / 0.09) * front;
+          salt = 3u;
         }
-        gl_FragColor = vec4(avg * a, 1.0);
+        vec3 col = (vK < 0.5 ? avg : soft) * a;
+        float amp = (0.8 / 255.0) * smoothstep(1.0 / 255.0, 3.0 / 255.0, max(col.r, max(col.g, col.b)));
+        gl_FragColor = vec4(max(col + qhDither(salt) * amp, 0.0), 1.0);
       }`,
   });
 

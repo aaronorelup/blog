@@ -18,10 +18,22 @@ Layers (film bible section 5):
     and, in the coda, the last bet held as a pad.
   Room bus, stereo, not through the speaker: house hum (follows the cue's hum flag), a wall-clock tick on every bar
     line, a faint tube whine, tear crackle, spoon chatter.
-Mix: one fixed master gain, the same for every ending (so the first 20:00 are the same bytes in all four), and an
-offline peak limiter at -1.5 dBTP. The build FAILS (and renames its output .FAILED.wav) if true peak is above -1 dBTP,
-short-term loudness is above -13 LUFS anywhere, integrated loudness is outside -18 to -15 LUFS, or the length is not
-4,800,000 samples.
+Mix: one fixed master gain, the same for every ending, and an offline peak limiter at -1.5 dBTP.
+
+The voice must be heard: under every line the programme dips (DUCK_DB at least, deeper for a line whose bed is loud)
+until the line's K-weighted loudness is VOICE_TARGET_LU above the programme under it; the build then measures every
+line against the whole bed under it (programme, foley, room) and FAILS if any is under VOICE_MIN_LU.
+The bench must be heard: every ratchet click, chalk stroke, dial tap and every punch tick of a pick with p >= 0.5 is
+measured in its own band against everything else in that band at that moment, and raised (up to FOLEY_MAX_BOOST_DB)
+until it is FOLEY_TARGET_DB above it; the build FAILS if one is still masked.
+
+The first 60 s (frames 0 to 1439, samples 0 to 2,879,999) come out bit-identical in every ending whose cues and
+programme agree there, because nothing in the chain looks ahead across a bar line: the filters are causal, the room
+response is convolved one bar at a time, and the limiter decides each bar from that bar and what came before.
+
+The build FAILS (and renames its output .FAILED.wav) if true peak is above -1 dBTP, short-term loudness is above -13
+LUFS anywhere, integrated loudness is outside -18 to -15 LUFS, a line or a bench sound is masked, or the length is
+not 4,800,000 samples.
 numpy and scipy only. Every random number is drawn from a generator seeded by (SEED, layer, index).
 """
 import argparse
@@ -32,7 +44,7 @@ import sys
 
 import numpy as np
 from scipy.ndimage import minimum_filter1d, uniform_filter1d
-from scipy.signal import butter, sosfilt, fftconvolve, resample_poly
+from scipy.signal import butter, sosfilt, resample_poly
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -63,9 +75,22 @@ COMP_WINDOW_BLOCKS = 100   # 1 s detector window, in 10 ms blocks
 COMP_ATTACK_S = 0.03
 COMP_RELEASE_S = 0.4
 VOICE_DB = 1.5             # gain on the frozen voice (its speech sits at -20 dBFS RMS)
-DUCK_DB = 9.0              # the programme dips this much under the maker's voice, as a broadcast mix would
-DUCK_ATTACK_S = 0.08
+DUCK_DB = 9.0              # the programme dips at least this much under the maker's voice, as a broadcast mix would
+DUCK_MAX_DB = 30.0
+DUCK_PREROLL_S = 0.06      # the dip starts this long before the line's first sound (the line is placed by a cue)
+DUCK_ATTACK_S = 0.04
 DUCK_RELEASE_S = 0.5
+VOICE_TARGET_LU = 6.0      # each line's dip is deepened until the line is this far above the programme under it
+VOICE_MIN_LU = 4.0         # ... and the build fails if a line ends up less than this above the whole bed under it
+SPEECH_BAND = (300.0, 3400.0)   # a small speaker's speech band, for the second (reported) margin
+FOLEY_TARGET_DB = 3.0      # a bench sound must be this far above everything else in its band, in its window
+FOLEY_MAX_BOOST_DB = 15.0
+PUNCH_CHECK_P = 0.5        # punch ticks are levelled by p by design; the ones with p >= this must be heard
+# per bench sound: the band it is heard in (after the speaker's 5.5 kHz low-pass) and its window
+# (clicks are judged by their strongest 3 ms in the window; the chalk scrape over its whole length)
+FOLEY_BANDS = {'punch': ((3000, 5400), 0.006), 'ratchet': ((2500, 5400), 0.05), 'chalk': ((1500, 5400), None),
+               'tap': ((2500, 5400), 0.03)}
+BAR = FPB * SPF            # 60,000 samples: the room response and the limiter work one bar at a time
 MASTER_GAIN_DB = -3.7      # one fixed master gain for every ending (a per-ending normaliser would let the end of
                            # the log change the level of the opening); chosen so all four meet the caps
 INTEGRATED_RANGE = (-18.0, -15.0)   # 'about -16 LUFS integrated': the short-term cap binds first, so it lands near -17
@@ -124,7 +149,8 @@ def load_cues(path):
                             for l in c['lines']), key=lambda l: l['frame'])
     cues['knobTurns'] = [{'frame': int(t['frame']), 'frames': int(t['frames']), 'note': int(t['note'])} for t in c['knobTurns']]
     cues['taps'] = sorted(int(f) for t in c['dialTaps'] if t.get('performed') for f in t['contacts'])
-    cues['chalk'] = {'frame': int(c['chalk']['frame']), 'frames': int(c['chalk']['frames'])}
+    cues['chalk'] = {'frame': int(c['chalk']['frame']), 'frames': int(c['chalk']['frames']),
+                     'tickFrames': int(c['chalk'].get('tickFrames', c['chalk']['frames']))}
     bet = c['coda']['bet']
     if len(bet) < SYNTH['P']:
         raise SystemExit('cue file has no coda bet')
@@ -217,13 +243,17 @@ def held_pad(bet, start, n_hold_fade, n_ring, n_decay):
     return x * env * SYNTH['master']
 
 
-def duck_gain(vo):
-    """The programme's own mix dips under the presenter: DUCK_DB down wherever the voice (10 ms RMS) is above -50
-    dBFS, with attack and release smoothing. Keyed only by the voice signal, which the cues placed."""
+def duck_gain(spans, depths):
+    """The programme's own mix dips under the presenter, as a broadcast mix would: from DUCK_PREROLL_S before each
+    line's first sample to its last, by that line's depth (dB), with attack and release smoothing on 10 ms blocks.
+    Keyed only by where the cues placed the lines."""
     blk = SR // 100
-    m = len(vo) // blk
-    lvl = 10 * np.log10((vo[:m * blk].reshape(m, blk) ** 2).mean(1) + 1e-12)
-    tgt = np.where(lvl > -50, DUCK_DB, 0.0)
+    m = N // blk
+    tgt = np.zeros(m)
+    pre = int(DUCK_PREROLL_S * SR)
+    for (s0, s1), d in zip(spans, depths):
+        a, b = max(0, (s0 - pre) // blk), min(m, -(-s1 // blk))
+        tgt[a:b] = np.maximum(tgt[a:b], d)
     a_at = np.exp(-1 / (DUCK_ATTACK_S * 100))
     a_re = np.exp(-1 / (DUCK_RELEASE_S * 100))
     sm = np.empty(m)
@@ -232,8 +262,60 @@ def duck_gain(vo):
         a = a_at if tgt[i] > st else a_re
         st = a * st + (1 - a) * tgt[i]
         sm[i] = st
-    g_db = np.interp(np.arange(len(vo)), np.arange(m) * blk + blk / 2, -sm)
+    g_db = np.interp(np.arange(N), np.arange(m) * blk + blk / 2, -sm)
     return 10 ** (g_db / 20)
+
+
+# ---------------------------------------------------------------- measuring what is heard
+def kpower_blocks(st, a, b, hop=SR // 10):
+    """K-weighted power (summed over channels) of stereo st[a:b] in blocks of `hop` samples."""
+    z = bs1770.kweight(st[a:b])
+    m = (b - a) // hop
+    return (z[:m * hop] ** 2).sum(axis=1).reshape(m, hop).mean(axis=1)
+
+
+def band_power_blocks(st, a, b, lo, hi, hop=SR // 10):
+    x = st[a:b].mean(axis=1) if st.ndim == 2 else st[a:b]
+    y = sosfilt(butter(4, [lo, hi], btype='bandpass', fs=SR, output='sos'), x)
+    m = (b - a) // hop
+    return (y[:m * hop] ** 2).reshape(m, hop).mean(axis=1)
+
+
+def line_margin(voice_st, bed_st, s0, s1):
+    """How far a line stands above the bed under it: the K-weighted loudness of the voice over its spoken 100 ms
+    blocks (within 20 dB of its loudest block), minus the bed's over the same blocks (LU). Also the same in the
+    small speaker's speech band (dB). Both measured on what leaves the speaker, before the limiter."""
+    pre = int(0.1 * SR)                     # start a little early so a short line has whole blocks
+    a = max(0, s0 - pre // 2)
+    b = min(N, max(s1, a + 3 * pre))
+    pv = kpower_blocks(voice_st, a, b)
+    pb = kpower_blocks(bed_st, a, b)
+    on = pv > pv.max() / 100
+    lu = 10 * np.log10(pv[on].sum() / max(pb[on].sum(), 1e-30))
+    sv = band_power_blocks(voice_st, a, b, *SPEECH_BAND)
+    sb = band_power_blocks(bed_st, a, b, *SPEECH_BAND)
+    son = sv > sv.max() / 100
+    sp = 10 * np.log10(sv[son].sum() / max(sb[son].sum(), 1e-30))
+    return float(lu), float(sp), int(on.sum())
+
+
+def event_margin(ev_mono, bed_mono, s, n, lo, hi, click):
+    """A bench sound against everything else, in its own band (dB). A scrape (click=False) is measured over its whole
+    window. A click is heard by its peak against what is there at that instant, so for a click the 3 ms inside its
+    window where it is strongest is compared with the bed in the same 3 ms."""
+    a = max(0, s - 1000)
+    b = min(N, s + n + 1000)
+    sos = butter(4, [lo, hi], btype='bandpass', fs=SR, output='sos')
+    e = sosfilt(sos, ev_mono[a:b])[s - a:s - a + n]
+    d = sosfilt(sos, bed_mono[a:b])[s - a:s - a + n]
+    if click:
+        w = int(0.003 * SR)
+        ce = np.concatenate([[0.0], np.cumsum(e * e)])
+        cd = np.concatenate([[0.0], np.cumsum(d * d)])
+        k = np.arange(0, max(1, n - w + 1), 24)
+        i = int(k[int(np.argmax(ce[k + w] - ce[k]))])
+        return float(10 * np.log10((ce[i + w] - ce[i]) / max(cd[i + w] - cd[i], 1e-30)))
+    return float(10 * np.log10((e * e).sum() / max((d * d).sum(), 1e-30)))
 
 
 # ---------------------------------------------------------------- the speaker chain
@@ -245,9 +327,22 @@ def speaker_chain(mono):
                      butter(4, 5500, btype='lowpass', fs=SR, output='sos'),
                      peaking(2800, 3.0, 0.9), peaking(190, 2.5, 1.4), peaking(900, -1.5, 1.2)])
     y = sosfilt(sos, mono)
-    ir = room_ir()
-    out = np.stack([fftconvolve(y, ir[:, 0])[:len(y)], fftconvolve(y, ir[:, 1])[:len(y)]], axis=1)
-    return out
+    return block_convolve(y, room_ir())
+
+
+def block_convolve(y, ir):
+    """Convolution by overlap-add, one bar (60,000 samples) of input per FFT. Each block's FFT sees only its own bar,
+    so the output up to any bar line depends only on the input up to it (one FFT over the whole film would round
+    differently whenever anything later differs)."""
+    L = len(ir)
+    nfft = 1 << int(np.ceil(np.log2(BAR + L - 1)))
+    H = np.fft.rfft(ir, nfft, axis=0)
+    out = np.zeros((len(y) + L - 1, ir.shape[1]))
+    for k in range(0, len(y), BAR):
+        seg = y[k:k + BAR]
+        Y = np.fft.irfft(np.fft.rfft(seg, nfft)[:, None] * H, nfft, axis=0)[:len(seg) + L - 1]
+        out[k:k + len(seg) + L - 1] += Y
+    return out[:len(y)]
 
 
 def room_ir():
@@ -271,11 +366,12 @@ def room_ir():
 
 # ---------------------------------------------------------------- bench foley (into the TV)
 def punch(p, r):
-    """The brass punch: a dry 2 ms click and a small thunk, level by the pick's probability."""
+    """The brass punch: a sharp click high in the speaker's band (3 to 5.4 kHz, where a music-box pluck has least of
+    its own attack) and a small thunk, level by the pick's probability."""
     n = int(0.03 * SR)
-    click = band(r.standard_normal(n), 1800, 4500) * decay(n, 0.0015)
+    click = band(r.standard_normal(n), 3000, 5400) * decay(n, 0.0008)
     th = np.sin(2 * np.pi * 420 * np.arange(n) / SR) * decay(n, 0.006)
-    return (0.55 * click + 0.45 * th) * 0.10 * p
+    return (0.30 * click + 0.045 * th) * p
 
 
 def ratchet(r):
@@ -290,21 +386,27 @@ def ratchet(r):
     return out * 0.05
 
 
-def chalk(frames, r):
-    """A chalk stroke as long as the cue says: bright scraping noise in short grains."""
+def chalk(frames, tick_frames, r):
+    """Chalk as long as the cue says: the tick, one firm stroke over its frames, then the number written beside it,
+    lighter and in short grains, over the rest. Bright scraping noise."""
     n = frames * SPF
     x = band(r.standard_normal(n), 1500, 6500, 2)
     grain = 0.55 + 0.45 * np.sign(np.sin(2 * np.pi * 37 * np.arange(n) / SR + r.uniform(0, 6.28)))
-    env = np.sin(np.pi * np.arange(n) / n) ** 0.5
-    return x * grain * env * 0.035
+    k = max(1, min(frames, tick_frames)) * SPF
+    env = np.zeros(n)
+    env[:k] = np.sin(np.pi * np.arange(k) / k) ** 0.5
+    if n > k:
+        env[k:] = 0.35 * np.sin(np.pi * np.arange(n - k) / (n - k)) ** 0.7 * grain[k:]
+    return x * env * 0.035
 
 
 def tap(r):
-    """A fingertip on the dial glass: a knock with two glass modes."""
+    """A fingertip on the dial glass: a short knock and two small glass modes, bright, above the music box's own
+    fundamentals."""
     n = int(0.06 * SR)
     t = np.arange(n) / SR
-    x = (np.sin(2 * np.pi * 1150 * t) * decay(n, 0.02) + 0.5 * np.sin(2 * np.pi * 2730 * t) * decay(n, 0.012)
-         + 0.6 * band(r.standard_normal(n), 300, 2500) * decay(n, 0.003))
+    x = (np.sin(2 * np.pi * 3170 * t) * decay(n, 0.007) + 0.6 * np.sin(2 * np.pi * 4630 * t) * decay(n, 0.004)
+         + 0.8 * band(r.standard_normal(n), 1200, 5000) * decay(n, 0.0015))
     return x * 0.06
 
 
@@ -425,17 +527,81 @@ def peak_limit(x):
     ceiling, then a minimum over 4h+1 samples and a mean over 2h+1 (centred), which never lets the gain rise above
     what any sample needs. Mostly it does nothing; it only shaves the maker's consonants and the hardest plucks."""
     ceil = 10 ** (LIMIT_DBTP / 20)
-    pk = np.abs(resample_poly(x, 4, 1, axis=0)).max(axis=1).reshape(-1, 4).max(axis=1)
-    need = np.minimum(1.0, ceil / np.maximum(pk, 1e-12))
     h = int(LIMIT_HALF_S * SR)
-    g = uniform_filter1d(minimum_filter1d(need, 4 * h + 1, mode='nearest'), 2 * h + 1, mode='nearest')
-    g = np.minimum(g, 1.0)
-    return x * g[:, None], float(20 * np.log10(g.min()))
+    ctx = 8 * h                              # it remembers the end of the bar before; it never looks past the bar line
+    out = np.empty_like(x)
+    gmin, steps = 1.0, []
+    prev = 1.0
+    for s in range(0, len(x), BAR):
+        a, e = max(0, s - ctx), min(len(x), s + BAR)
+        seg = x[a:e]
+        pk = np.abs(resample_poly(seg, 4, 1, axis=0)).max(axis=1).reshape(-1, 4).max(axis=1)
+        need = np.minimum(1.0, ceil / np.maximum(pk, 1e-12))
+        g = uniform_filter1d(minimum_filter1d(need, 4 * h + 1, mode='nearest'), 2 * h + 1, mode='nearest')
+        g = np.minimum(g, 1.0)[s - a:]
+        out[s:e] = x[s:e] * g[:, None]
+        gmin = min(gmin, float(g.min()))
+        if s and abs(g[0] - prev) > 1e-9:
+            steps.append((s, round(float(20 * np.log10(g[0] / prev)), 3)))
+        prev = g[-1]
+    return out, float(20 * np.log10(gmin)), steps
 
 
 # ---------------------------------------------------------------- build
+def place_voice(cues, voice):
+    """Every line at its cue's first sample; a later line cuts one still playing ("Goodnight." cuts anything)."""
+    vo = np.zeros(N)
+    spans, events = [], []
+    starts = [frame_sample(l['frame']) for l in cues['lines']]
+    for j, ln in enumerate(cues['lines']):
+        if ln['text'] not in voice:
+            raise SystemExit('no frozen voice for line %s: %r' % (ln['id'], ln['text']))
+        x = voice[ln['text']][0] * 10 ** (VOICE_DB / 20)
+        s0 = starts[j]
+        nxt = starts[j + 1] if j + 1 < len(starts) else N
+        if s0 + len(x) > nxt:
+            x = x[:max(0, nxt - s0)].copy()
+            f = min(len(x), SR // 50)
+            x[len(x) - f:] *= np.linspace(1, 0, f)
+        add(vo, s0, x)
+        spans.append((s0, min(N, s0 + len(x))))
+        events.append((s0, 'voice', ln['id'] + ('-' + ln['variant'] if ln.get('variant') else '')))
+    return vo, spans, events
+
+
+def foley_instances(cues):
+    """Every bench sound the cues place: (category, sample, signal, window samples, p or None)."""
+    inst = []
+    for g in range(NOTES):                       # the punch: every pick but REST (a pencil dot), level by its p
+        if cues['pickKind'][g] != 'rest' and cues['p'][g] is not None:
+            p = min(1.0, max(0.0, cues['p'][g]))
+            inst.append(('punch', note_start(g), punch(p, rng(30, g)), p))
+    turned = set()
+    for i, t in enumerate(cues['knobTurns']):    # the ratchet: on every knob turn, at the frame the knob starts to move
+        inst.append(('ratchet', frame_sample(t['frame']), ratchet(rng(31, i)), None))
+        turned.add(t['note'])
+    for g in range(NOTES):                       # a step change the engine gave no knob turn of its own (should not happen)
+        if cues['stepChanged'][g] and g not in turned and g + 1 not in turned:
+            inst.append(('ratchet', note_start(g), ratchet(rng(31, 1000 + g)), None))
+    ch = cues['chalk']
+    inst.append(('chalk', frame_sample(ch['frame']), chalk(ch['frames'], ch['tickFrames'], rng(32, 0)), None))
+    for i, f in enumerate(cues['taps']):
+        inst.append(('tap', frame_sample(f), tap(rng(33, i)), None))
+    for b in range(PROG_FRAMES // FPB):          # the crank creaks once a turn while the programme runs
+        inst.append(('creak', frame_sample(b * FPB + 12), creak(rng(34, b)), None))
+    return inst
+
+
+def foley_stems(inst, gains):
+    stems = {k: np.zeros(N) for k in ('punch', 'ratchet', 'chalk', 'tap', 'creak')}
+    for i, (k, s, x, _) in enumerate(inst):
+        add(stems[k], s, x * gains[i])
+    return stems
+
+
 def build(cues, programme, voice, sync_proof=False):
     events = []                         # every placed sound: (sample, layer, name) for the plots and the proofs
+    mg = 10 ** (MASTER_GAIN_DB / 20)
     # programme: the published stereo audio, mono for the speaker
     prog = np.zeros(N)
     pm = programme.mean(axis=1) if programme.ndim == 2 else programme
@@ -450,53 +616,12 @@ def build(cues, programme, voice, sync_proof=False):
     events += [(s_end, 'coda', 'pad held'), (s_end + n_ring, 'coda', 'pad decays'), (s_end + n_ring + n_decay, 'coda', 'pad silent')]
     gain, det_db, red = compressor_gain(prog)
     tv = prog * gain
-    # voice
-    vo = np.zeros(N)
-    starts = [frame_sample(l['frame']) for l in cues['lines']]
-    for j, ln in enumerate(cues['lines']):
-        if ln['text'] not in voice:
-            raise SystemExit('no frozen voice for line %s: %r' % (ln['id'], ln['text']))
-        x = voice[ln['text']][0] * 10 ** (VOICE_DB / 20)
-        s0 = starts[j]
-        nxt = starts[j + 1] if j + 1 < len(starts) else N
-        if s0 + len(x) > nxt:                       # a later line cuts it ("Goodnight." cuts anything playing)
-            x = x[:max(0, nxt - s0)].copy()
-            f = min(len(x), SR // 50)
-            x[len(x) - f:] *= np.linspace(1, 0, f)
-        add(vo, s0, x)
-        events.append((s0, 'voice', ln['id'] + ('-' + ln['variant'] if ln.get('variant') else '')))
-    duck = duck_gain(vo)
-    tv = tv * duck + vo
-    # bench foley
-    fo = np.zeros(N)
-    for g in range(NOTES):                       # the punch: every pick but REST (a pencil dot), level by its p
-        if cues['pickKind'][g] != 'rest' and cues['p'][g] is not None:
-            add(fo, note_start(g), punch(min(1.0, max(0.0, cues['p'][g])), rng(30, g)))
-    turned = set()
-    for i, t in enumerate(cues['knobTurns']):    # the ratchet: on every knob turn, at the frame the knob moves
-        add(fo, frame_sample(t['frame']), ratchet(rng(31, i)))
-        events.append((frame_sample(t['frame']), 'foley', 'ratchet'))
-        turned.add(t['note'])
-    for g in range(NOTES):                       # a step change with no knob turn of its own (or the next note's)
-        if cues['stepChanged'][g] and g not in turned and g + 1 not in turned:
-            add(fo, note_start(g), ratchet(rng(31, 1000 + g)))
-            events.append((note_start(g), 'foley', 'ratchet'))
-    ch = cues['chalk']
-    add(fo, frame_sample(ch['frame']), chalk(ch['frames'], rng(32, 0)))
-    events.append((frame_sample(ch['frame']), 'foley', 'chalk'))
-    for i, f in enumerate(cues['taps']):
-        add(fo, frame_sample(f), tap(rng(33, i)))
-        events.append((frame_sample(f), 'foley', 'tap'))
-    for b in range(PROG_FRAMES // FPB):          # the crank creaks once a turn while the programme runs
-        add(fo, frame_sample(b * FPB + 12), creak(rng(34, b)))
-    tv = tv + fo
-    clicks = np.zeros(N)
-    if sync_proof:
-        for b in range(FRAMES // FPB):
-            clicks[frame_sample(b * FPB)] = 0.5
-    tv_st = speaker_chain(tv)
-    click_st = speaker_chain(clicks) if sync_proof else None
-    # room
+    # the voice, and the programme's chain output before any dip (the chain is linear: the dip is applied after it,
+    # which is the same as before it to within the room response's 0.4 s; it is re-chained once the depths are known)
+    vo, spans, ev = place_voice(cues, voice)
+    events += ev
+    vo_st = speaker_chain(vo) * mg
+    # room (not through the speaker)
     room = house_hum(cues['hum'])
     hum_check = None
     if cues.get('humLevelPerFrame'):             # cross-check against the engine's own per-frame hum level
@@ -519,15 +644,87 @@ def build(cues, programme, voice, sync_proof=False):
         if cues['spoon'][g]:
             add(room, note_start(g), spoon(g, rng(41, g)))
             events.append((note_start(g), 'room', 'spoon'))
-    mix = tv_st + room
-    gain_db = MASTER_GAIN_DB
-    out, limit_db = peak_limit(mix * 10 ** (gain_db / 20))
+    room = room * mg
+    # 1. the dip under each line: deepened until the line is VOICE_TARGET_LU above the programme under it. Decided
+    #    from the programme alone (not the foley or room), so a line's depth depends only on the music under it.
+    depths = [DUCK_DB] * len(spans)
+    prog_st0 = speaker_chain(tv) * mg            # the dip moves slowly against the room's 0.4 s, so for choosing the
+    for it in range(6):                          # depths it is applied after the chain; the mix re-chains exactly
+        prog_st = prog_st0 * duck_gain(spans, depths)[:, None]
+        short = False
+        for j, (s0, s1) in enumerate(spans):
+            lu, _, _ = line_margin(vo_st, prog_st, s0, s1)
+            if lu < VOICE_TARGET_LU and depths[j] < DUCK_MAX_DB:
+                depths[j] = min(DUCK_MAX_DB, depths[j] + np.ceil((VOICE_TARGET_LU - lu + 0.25) * 2) / 2)
+                short = True
+        if not short:
+            break
+    duck = duck_gain(spans, depths)
+    # 2. bench foley, each kind on its own stem through the speaker; every check is in its own band and window
+    inst = foley_instances(cues)
+    fgain = [1.0] * len(inst)
+    tv_only = speaker_chain(tv * duck) * mg
+    foley_log = []
+    f_st, dirty = {}, set(['punch', 'ratchet', 'chalk', 'tap', 'creak'])
+    for it in range(5):
+        adjust = it < 4                          # the last pass only measures
+        stems = foley_stems(inst, fgain)
+        for k in sorted(dirty):
+            f_st[k] = speaker_chain(stems[k]) * mg
+        dirty = set()
+        total = tv_only + vo_st + room + sum(f_st.values())
+        tot_m = total.mean(axis=1)
+        mono = {k: v.mean(axis=1) for k, v in f_st.items()}
+        changed = False
+        foley_log = []
+        for i, (kind, s, x, p) in enumerate(inst):
+            if kind not in FOLEY_BANDS:
+                continue
+            (lo, hi), win = FOLEY_BANDS[kind]
+            n = len(x) if win is None else int(win * SR)
+            n = min(n, N - s)
+            # this instance alone (the chain is linear and causal: its stem contribution is the stem's within the
+            # window minus any other instance of the same kind, which never overlap within a window)
+            mine = mono[kind]
+            m = event_margin(mine, tot_m - mine, s, n, lo, hi, kind != 'chalk')
+            must = kind != 'punch' or (p is not None and p >= PUNCH_CHECK_P)
+            if must and adjust and m < FOLEY_TARGET_DB and fgain[i] < 10 ** (FOLEY_MAX_BOOST_DB / 20):
+                up = 10 ** ((FOLEY_TARGET_DB - m + 0.5) / 20)
+                fgain[i] = min(10 ** (FOLEY_MAX_BOOST_DB / 20), fgain[i] * up)
+                changed = True
+                dirty.add(kind)
+            foley_log.append({'kind': kind, 'sample': s, 'frame': s / SPF, 'p': p, 'checked': must,
+                              'marginDb': round(m, 2), 'boostDb': round(20 * np.log10(fgain[i]), 2)})
+        if not changed:
+            break
+    fo_st = sum(f_st.values())
+    for i, (kind, s, x, p) in enumerate(inst):
+        if kind in ('ratchet', 'chalk', 'tap'):
+            events.append((s, 'foley', kind))
+    # 3. the mix: one master gain (already applied to every stem), then the limiter
+    mix = tv_only + vo_st + fo_st + room
+    out, limit_db, steps = peak_limit(mix)
+    clicks = np.zeros(N)
     if sync_proof:
-        out = out + click_st * 10 ** (gain_db / 20)
-    info = {'limiterMaxReduction_dB': round(-limit_db, 2), 'humMaxDiffVsEngine': hum_check, 'mixGain_dB': round(gain_db, 3), 'compressor': {'thresholdDb': COMP_THRESHOLD_DB, 'ratio': COMP_RATIO,
-            'maxReduction_dB': round(float(red.max()), 2)}, 'detector_dB_per_10ms': np.round(det_db, 2).tolist(),
-            'reduction_dB_per_10ms': np.round(red, 2).tolist(),
-            'stems': {'tv': tv_st * 10 ** (gain_db / 20), 'room': room * 10 ** (gain_db / 20)}}
+        for b in range(FRAMES // FPB):
+            clicks[frame_sample(b * FPB)] = 0.5
+        out = out + speaker_chain(clicks) * mg
+    # 4. what is heard: every line against everything else under it
+    bed = tv_only + fo_st + room
+    margins = []
+    for j, (s0, s1) in enumerate(spans):
+        ln = cues['lines'][j]
+        lu, sp, nb = line_margin(vo_st, bed, s0, s1)
+        lu_p, _, _ = line_margin(vo_st, tv_only, s0, s1)
+        margins.append({'id': ln['id'], 'text': ln['text'], 'frame': ln['frame'], 'sample': s0, 'playedSamples': s1 - s0,
+                        'duckDb': depths[j], 'marginLU': round(lu, 2), 'marginOverProgrammeLU': round(lu_p, 2),
+                        'speechBandMarginDb': round(sp, 2), 'blocks': nb})
+    info = {'limiterMaxReduction_dB': round(-limit_db, 2), 'limiterBarSteps_dB': steps, 'humMaxDiffVsEngine': hum_check,
+            'mixGain_dB': round(MASTER_GAIN_DB, 3),
+            'compressor': {'thresholdDb': COMP_THRESHOLD_DB, 'ratio': COMP_RATIO, 'maxReduction_dB': round(float(red.max()), 2)},
+            'detector_dB_per_10ms': np.round(det_db, 2).tolist(), 'reduction_dB_per_10ms': np.round(red, 2).tolist(),
+            'voiceMargins': margins, 'foley': foley_log,
+            'stems': {'programme': tv_only, 'voice': vo_st, 'foley': fo_st, 'room': room}}
     return out, sorted(events), info
 
 
@@ -565,6 +762,9 @@ def main():
            'caps': {'truePeak_dBTP': CAP_TP, 'shortTermMax_LUFS': CAP_ST, 'integratedRange_LUFS': INTEGRATED_RANGE},
            'mixGain_dB': info['mixGain_dB'], 'compressor': info['compressor'],
            'humMaxDiffVsEngine': info['humMaxDiffVsEngine'], 'limiterMaxReduction_dB': info['limiterMaxReduction_dB'],
+           'limiterBarSteps_dB': info['limiterBarSteps_dB'],
+           'voiceMargins': info['voiceMargins'], 'voiceMinLU': VOICE_MIN_LU,
+           'foley': info['foley'], 'foleyTargetDb': FOLEY_TARGET_DB,
            'events': [{'sample': s, 'frame': s / SPF, 'layer': l, 'what': w} for s, l, w in events]}
     json.dump(rep, open(os.path.join(a.out, stem + '.json'), 'w'), indent=1)
     json.dump({'shortTerm': m['shortTerm'], 'detector_dB_per_10ms': info['detector_dB_per_10ms'],
@@ -576,10 +776,16 @@ def main():
         bad.append('short-term %.2f LUFS > %.1f (window ending %.1f s)' % (m['shortTermMaxLUFS'], CAP_ST, m['shortTermMaxEndsAt_s']))
     if not INTEGRATED_RANGE[0] <= m['integratedLUFS'] <= INTEGRATED_RANGE[1]:
         bad.append('integrated %.2f LUFS outside %s' % (m['integratedLUFS'], INTEGRATED_RANGE))
+    for v in info['voiceMargins']:
+        if v['marginLU'] < VOICE_MIN_LU:
+            bad.append('line %s at frame %d only %.2f LU above its bed' % (v['id'], v['frame'], v['marginLU']))
+    for f in info['foley']:
+        if f['checked'] and f['marginDb'] < FOLEY_TARGET_DB - 0.05:
+            bad.append('%s at frame %.1f masked (%.2f dB in band)' % (f['kind'], f['frame'], f['marginDb']))
     print(json.dumps({'wav': wav, 'sha256': sha, **{k: v for k, v in m.items() if k != 'shortTerm'}}))
     if bad:
         os.replace(wav, wav[:-4] + '.FAILED.wav')
-        raise SystemExit('LOUDNESS CAP BROKEN (kept as %s.FAILED.wav): %s' % (stem, '; '.join(bad)))
+        raise SystemExit('BUILD CHECK BROKEN (kept as %s.FAILED.wav): %s' % (stem, '; '.join(bad)))
 
 
 if __name__ == '__main__':

@@ -7,6 +7,34 @@ import { tex, roundedBox, boxUV, contactShadow } from './mats.js';
 import * as T from './textures.js';
 import { hash01 } from '../rng.js';
 
+// The velvet's pile: fibres on the chair's edges catch the screen's light when it comes from behind them, so from
+// behind the chair (WIDE A, the TWO-SHOT) its back and wings read by a rim of screen light. A grazing-angle term lit
+// by the same canvas colour as the spot, falling off with distance from the screen; plus the faintest rim of the
+// night fill. Shape only: it reads the light the room gives it on this frame (update), nothing else.
+const pileU = {
+  uPileLight: { value: new THREE.Color(0, 0, 0) }, uPileFrom: { value: new THREE.Vector3() },
+  uPileFill: { value: new THREE.Color(0x1a2233) },
+};
+function pile(mat) {
+  mat.onBeforeCompile = (sh) => {
+    Object.assign(sh.uniforms, pileU);
+    sh.fragmentShader = sh.fragmentShader
+      .replace('#include <common>', '#include <common>\nuniform vec3 uPileLight, uPileFrom, uPileFill;')
+      .replace('#include <opaque_fragment>', `{
+  vec3 Vv = normalize(vViewPosition), Pv = -vViewPosition;
+  vec3 Lv = uPileFrom - Pv; float dl = length(Lv); Lv /= dl;
+  float nv = 1.0 - abs(dot(normal, Vv)), rim = nv * nv * nv;
+  float fwd = smoothstep(-0.3, 0.9, dot(-Vv, Lv));            // the screen behind the surface, toward the eye
+  float face = smoothstep(-0.4, 0.3, dot(normal, Lv));         // fibres turned toward the screen, wrapping a little past
+  vec3 tint = mix(diffuseColor.rgb, vec3(0.45), 0.35);
+  outgoingLight += tint * (uPileLight * rim * fwd * face / (0.5 + dl * dl) + uPileFill * rim);
+}
+#include <opaque_fragment>`);
+  };
+  mat.customProgramCacheKey = () => 'qh-pile';
+  return mat;
+}
+
 export function createFurniture({ ROOM }) {
   const group = new THREE.Group();
   const add = (m, parent = group, cast = true, recv = true) => { m.castShadow = cast; m.receiveShadow = recv; parent.add(m); return m; };
@@ -90,23 +118,23 @@ export function createFurniture({ ROOM }) {
   const ch = ROOM.chair;
   const chair = new THREE.Group(); chair.position.set(ch.x, 0, ch.z); chair.rotation.y = ch.rotY; group.add(chair);
   const velvetTex = tex(T.velvet(), { repeat: [2, 2] });
-  const uph = new THREE.MeshLambertMaterial({ map: velvetTex });
+  const uph = pile(new THREE.MeshLambertMaterial({ map: velvetTex }));
   {
     const part = (geo, x, y, z, rx = 0, ry = 0, rz = 0) => { const m = add(new THREE.Mesh(boxUV(geo, 2), uph), chair); m.position.set(x, y, z); m.rotation.set(rx, ry, rz); return m; };
     // chair local: faces -z (the set), back at +z
-    part(roundedBox(0.8, 0.26, 0.78, 0.04), 0, 0.24, 0);                       // base
-    part(roundedBox(0.56, 0.12, 0.62, 0.05), 0, 0.42, -0.05);                  // seat cushion
-    part(roundedBox(0.66, 0.74, 0.16, 0.05), 0, 0.76, 0.33, -0.12);            // back
-    part(roundedBox(0.5, 0.3, 0.12, 0.05), 0, 0.6, 0.22, -0.2);                // back cushion (lumbar)
+    part(roundedBox(0.8, 0.26, 0.78, 0.04, 6), 0, 0.24, 0);                       // base
+    part(roundedBox(0.56, 0.12, 0.62, 0.05, 6), 0, 0.42, -0.05);                  // seat cushion
+    part(roundedBox(0.66, 0.74, 0.16, 0.05, 6), 0, 0.76, 0.33, -0.12);            // back
+    part(roundedBox(0.5, 0.3, 0.12, 0.05, 6), 0, 0.6, 0.22, -0.2);                // back cushion (lumbar)
     for (const sx of [-1, 1]) {
-      part(roundedBox(0.12, 0.3, 0.7, 0.04), sx * 0.34, 0.5, -0.02);           // arm panel
-      const roll = add(new THREE.Mesh(boxUV(new THREE.CylinderGeometry(0.075, 0.075, 0.72, 16), 2), uph), chair);
+      part(roundedBox(0.12, 0.3, 0.7, 0.04, 6), sx * 0.34, 0.5, -0.02);           // arm panel
+      const roll = add(new THREE.Mesh(boxUV(new THREE.CylinderGeometry(0.075, 0.075, 0.72, 40), 2), uph), chair);
       roll.rotation.x = Math.PI / 2; roll.position.set(sx * 0.35, 0.65, -0.03);
       // the wing: a curved panel from the back forward, high at the back
       const ws = new THREE.Shape();
       ws.moveTo(0, 0); ws.lineTo(0.0, 0.4); ws.quadraticCurveTo(0.02, 0.5, -0.1, 0.52);
       ws.quadraticCurveTo(-0.27, 0.5, -0.3, 0.3); ws.quadraticCurveTo(-0.31, 0.15, -0.26, 0.0); ws.closePath();
-      const wg = new THREE.ExtrudeGeometry(ws, { depth: 0.06, bevelEnabled: true, bevelThickness: 0.025, bevelSize: 0.025, bevelSegments: 3, curveSegments: 10 });
+      const wg = new THREE.ExtrudeGeometry(ws, { depth: 0.06, bevelEnabled: true, bevelThickness: 0.025, bevelSize: 0.025, bevelSegments: 6, curveSegments: 24 });
       wg.computeVertexNormals();
       const wing = add(new THREE.Mesh(boxUV(wg, 2), uph), chair);
       wing.rotation.y = -Math.PI / 2; wing.position.set(sx * 0.37 - 0.03, 0.6, 0.36);
@@ -184,8 +212,9 @@ export function createFurniture({ ROOM }) {
     bowl.castShadow = stem.castShadow = true;
   }
 
-  // ---- per frame: the clock's hands, the spoon's chatter ----
-  function update(S) {
+  // ---- per frame: the clock's hands, the spoon's chatter, the velvet's pile toward the screen ----
+  function update(S, light) {
+    if (light) { pileU.uPileLight.value.copy(light.color).multiplyScalar(light.gain); pileU.uPileFrom.value.copy(light.fromView); }
     minuteHand.rotation.z = -S.minuteAngle;
     hourHand.rotation.z = -S.hourAngle;
     // the spoon chatters on the saucer while S says so: a small seeded rattle (shape only; S decides when)

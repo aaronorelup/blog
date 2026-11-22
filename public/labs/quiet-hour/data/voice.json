@@ -121,6 +121,24 @@
    "variant": "24",
    "text": "Twenty-four in a hundred. It'll find it again.",
    "seconds": 4.0
+  },
+  {
+   "id": "L7",
+   "variant": "50",
+   "text": "Fifty in a hundred. It'll find it again.",
+   "seconds": 3.92
+  },
+  {
+   "id": "L7",
+   "variant": "46",
+   "text": "Forty-six in a hundred. It'll find it again.",
+   "seconds": 4.11
+  },
+  {
+   "id": "L9",
+   "variant": "6",
+   "text": "Six in a hundred.",
+   "seconds": 1.36
   }
  ],
  "Good evening. It hasn't heard a tune yet, so it plays every note at once.": 4.94,
@@ -142,5 +160,8 @@
  "Nineteen in a hundred.": 1.84,
  "We'll give it ten times that.": 2.18,
  "Twenty-four in a hundred.": 1.76,
- "Twenty-four in a hundred. It'll find it again.": 4.0
+ "Twenty-four in a hundred. It'll find it again.": 4.0,
+ "Fifty in a hundred. It'll find it again.": 3.92,
+ "Forty-six in a hundred. It'll find it again.": 4.11,
+ "Six in a hundred.": 1.36
 }
