@@ -95,8 +95,9 @@ export function createScreenMaterial({ THREE, programmeTexture }) {
         float dark = 1.0 - clamp(luma(col) * 1.6, 0.0, 1.0);
         col += refl * uGlass * (0.25 + 0.75 * dark * dark) * (0.55 + 0.45 * face);
 
-        // the film's vignette and grain (src/post.js), but not its curve: the picture's colours stay exact
-        #ifdef TONE_MAPPING
+        // the film's vignette and its dither or grain (src/post.js defines QH_GRADE when its grade is installed),
+        // but not its curve: the picture's colours stay exact
+        #ifdef QH_GRADE
         col = qhFilm(col);
         #endif
         gl_FragColor = vec4(col, 1.0);

@@ -6,15 +6,14 @@
 // ramp with no bands and no noise. A PCF kernel that wide needs hundreds of taps per screen pixel.
 //
 // Two things here are the room's own:
-//   1. softness(S): where S.shadowRadius sits between its floor and its ceiling. The two ends are read from the
-//      engine's rule itself (its value when the box is certain and when it knows nothing), so the softest shadow is
-//      always the softest the room draws, whatever range the rule has. The room never applies the rule to a frame.
+//   1. the scale: S.shadowSoftness (0 = the box is certain .. 1 = it knows nothing; the same number S.shadowRadius
+//      is made from, 1 + 14 x softness) becomes a blur of 1 texel (a razor) up to about 5% of the map (a ramp some
+//      60 cm wide on the wall behind the chair). The room never applies a rule to a frame: it only scales S.
 //   2. the lookup (patched into three's shader chunk once, at load): three.js's Chebyshev test, but with the ramp
 //      tightened round its middle when the blur is small. A one-texel blur then draws an edge a few millimetres
 //      wide on the far wall, on the true outline, instead of a soft texel-wide step.
 
 import * as THREE from 'three';
-import * as RULES from '../rules.js';
 
 export const SHADOW = Object.freeze({
   map: 768,            // texels across the light's view
@@ -25,16 +24,10 @@ export const SHADOW = Object.freeze({
   sharpBelow: [1.5, 6.0],   // texels of blur between which the lookup's ramp goes from razor to three's own
 });
 
-// S.shadowRadius's floor and ceiling (bible v1.2: 1 and 15)
-const SIGNAL = (() => {
-  const f = RULES.shadowRadius;
-  const lo = typeof f === 'function' ? f(0) : NaN, hi = typeof f === 'function' ? f(1) : NaN;
-  return Number.isFinite(lo) && Number.isFinite(hi) && hi > lo ? [lo, hi] : [1, 15];
-})();
-
-/** 0 (a razor) .. 1 (the softest): where this frame's S.shadowRadius sits in its range. */
+/** 0 (a razor) .. 1 (the softest) for this frame: S.shadowSoftness, or the same thing from S.shadowRadius (1..15). */
 export function softness(S) {
-  return Math.min(1, Math.max(0, (S.shadowRadius - SIGNAL[0]) / (SIGNAL[1] - SIGNAL[0])));
+  const s = Number.isFinite(S.shadowSoftness) ? S.shadowSoftness : (S.shadowRadius - 1) / 14;
+  return Math.min(1, Math.max(0, s));
 }
 /** The blur radius, in texels of the shadow map, for this frame. */
 export function blurTexels(S) {

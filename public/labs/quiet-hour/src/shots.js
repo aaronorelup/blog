@@ -20,16 +20,16 @@ export const ROOM = {
   tv: { x: 0, y: 0.5, z: -2.74, w: 0.70, h: 0.56, d: 0.46 },       // the set's box (front face at z -2.51)
   // the picture tube's visible 4:3 face, centre and size (the screen quad)
   screen: { x: 0, y: 0.80, z: -2.505, w: 0.48, h: 0.36 },
-  wallClock: { x: 0, y: 1.6, z: -2.985, r: 0.155 },
-  doorway: { x: -1.45, z: -3.0, w: 0.82, h: 2.0 },  // open, on the back wall's left; a dark hall beyond
-  window: { x: 1.36, y: 1.33, z: -3.0, w: 0.84, h: 1.12 },          // back wall, right of the set: seen from WIDE A
-  window2: { x: 1.25, y: 1.33, z: 2.4, w: 0.9, h: 1.12 },           // front wall (bay side): seen from the REVERSE
+  wallClock: { x: 0.02, y: 1.43, z: -2.985, r: 0.145 },
+  doorway: { x: -1.2, z: -3.0, w: 0.82, h: 2.0 },   // open, on the back wall's left; a dark hall beyond
+  window: { x: 1.16, y: 1.33, z: -3.0, w: 0.84, h: 1.12 },          // back wall, right of the set: seen from WIDE A
+  window2: { x: 1.5, y: 1.33, z: 2.4, w: 0.9, h: 1.12 },            // front wall (bay side): seen from the REVERSE
   // the warm window across the street; placed at load on the ray from WIDE A through `window` (and a twin
   // beyond window2 on the ray from the REVERSE), both driven by the one signal S.windowLit
   neighbour: { w: 0.42, h: 0.55, beyond: 7.0 },
-  chair: { x: -0.42, z: -0.5, rotY: -0.19 },          // empty wing chair, back to WIDE A, turned to the set
-  table: { x: -1.13, z: -1.06, h: 0.56, r: 0.23 },     // at the chair's front-left    // small walnut side table at the chair's left
-  cup: { x: -1.06, y: 0.56, z: -1.09, r: 0.042, h: 0.065 },   // y = the table top; the saucer sits on it
+  chair: { x: -0.12, z: -0.5, rotY: -0.06 },          // empty wing chair in front of the set, its back to WIDE A
+  table: { x: -1.1, z: -0.42, h: 0.56, r: 0.23 },     // small walnut side table beside the chair's left arm
+  cup: { x: -1.05, y: 0.56, z: -0.46, r: 0.042, h: 0.065 },   // y = the table top; the saucer sits on it
 };
 
 export const lensToFov = (mm) => 2 * Math.atan(12 / mm) * 180 / Math.PI;   // 24 mm sensor height
@@ -49,12 +49,14 @@ const smooth = (t) => t * t * (3 - 2 * t);
 // push a camera toward its target by `amount` of the distance (3% push = 0.03)
 function pushed(cam, amount) { return { ...cam, pos: lerp3(cam.pos, cam.target, amount) }; }
 
-// WIDE A: seated height over the chair's right shoulder; the set, the clock, the doorway and the window.
-export const WIDE_A = { pos: [0.12, 1.32, 0.5], target: [0.15, 0.84, -2.9], fov: lensToFov(38), lens: 38 };
-// TWO-SHOT: low past the chair's left arm, the blanket and the cup large, the set beyond.
-export const TWO_SHOT = { pos: [-1.42, 0.93, -0.28], target: [0.45, 0.42, -2.62], fov: lensToFov(35), lens: 35 };
+// WIDE A: seated height behind the empty chair's right shoulder, a 56 mm so the set is the subject (its screen
+// about 22% of the frame's width): the chair's back and wing a dark shape at the lower left, the clock above the
+// set, the window and the neighbour's on the right, a sliver of the dark doorway on the left.
+export const WIDE_A = { pos: [0.72, 1.18, 0.7], target: [0.33, 0.98, -3.0], fov: lensToFov(56), lens: 56 };
+// TWO-SHOT: from behind the side table, past the chair's left arm: the cup large, the blanket, the set beyond.
+export const TWO_SHOT = { pos: [-1.56, 0.95, 0.32], target: [0.12, 0.12, -2.6], fov: lensToFov(35), lens: 35 };
 // REVERSE (v1.1): from beside the set, looking back at the empty chair and its shadow on the wall behind it.
-export const REVERSE = { pos: [0.5, 0.98, -2.3], target: [-0.55, 0.66, 1.6], fov: lensToFov(28), lens: 28 };
+export const REVERSE = { pos: [0.78, 0.98, -2.36], target: [-0.33, 0.72, 1.6], fov: lensToFov(28), lens: 28 };
 
 // Where a bench point lands on the TV face for a given programme view (for aiming SCREEN shots).
 function benchToScreenUV(view, bx, by) { return [(bx - view.x) / view.w, (by - view.y) / view.h]; }

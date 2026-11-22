@@ -1,6 +1,7 @@
 """Sync proof for the soundtrack: are the sounds where the picture's frames say they are?
 
-    python sync_proof.py --plain soundtrack-main.wav --proof soundtrack-main-syncproof.wav --cues cues-main.json
+    python sync_proof.py --plain soundtrack-main.wav --proof soundtrack-main-syncproof.wav --cues cues-main.json \
+        --programme <the published programme WAV the build read>
 
 1. Bar-line clicks. build_sound.py --sync-proof adds a click at the first sample of every bar line (frame 30 k) on the
    TV, before the speaker chain. proof - plain is then the clicks alone, after the chain. Each click's onset (the first

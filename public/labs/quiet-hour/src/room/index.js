@@ -6,13 +6,15 @@
 //
 // Parts: ./shell.js (walls, floor, doorway and hall, the two windows, the street, the neighbour's window, moon
 // spill), ./furniture.js (sideboard, wing chair and blanket, side table, cup and spoon, clock, print, books),
-// ./tea.js (the rippling, reflecting tea), ./dust.js (motes in the beam), ./tv.js + ./screen.js (the set and its
-// tube: tv-look's files; this file only creates and updates them).
+// ./tea.js (the rippling, reflecting tea), ./dust.js (motes in the beam), ./shadow.js (the screen light's shadow),
+// ./mats.js + ./textures.js (materials and canvas textures), ./tv.js + ./screen.js (the set and its tube: tv-look's
+// files; this file only creates and updates them).
 //
 // The light: the screen is the light. One shadow-casting spot at the tube, its colour and strength from the
-// programme canvas's average, its shadow radius from S.shadowRadius (soft while the box is unsure, razor-hard
-// when it is certain). A low, cool, static night fill so the room's shapes read. Nothing else lights the room:
-// the moon at the windows and the neighbour's window are unlit decals and glows.
+// programme canvas's average, a pool aimed at the empty chair. Its shadow's edge comes from S (./shadow.js: soft
+// while the box is unsure, a razor when it is certain). A low, cool, static night fill from the bay-window side so
+// the room's shapes read. Nothing else lights the room: the moon at the windows and the neighbour's window are
+// unlit decals and glows.
 //
 // Everything that moves reads S (or the shot). No state is carried between frames.
 
@@ -28,13 +30,13 @@ import { setupShadow, blurTexels } from './shadow.js';
 export const LIGHT = Object.freeze({
   spotGain: 14.0,          // spot intensity (cd) per unit of the canvas's mean luminance
   spotDecay: 1.5,          // a touch gentler than physical so the far wall holds the chair's shadow
-  spotAngle: 0.9,          // rad: the beam's half-angle; with the full penumbra it is a pool with a long soft falloff
-  spotPenumbra: 1.0,
-  spotAim: [-0.42, 0.45, -0.5],   // the pool's centre: the empty chair's seat (ROOM.chair)
+  // the beam: a pool centred on the empty chair's seat, falling off all the way to its edge (full penumbra), so the
+  // wall behind the chair is brightest round the chair's shadow and its far ends fall toward the dark
+  spotAngle: 0.64, spotPenumbra: 1.0, spotAimY: 0.45,
   // the static night fill: moonlight from the bay-window side (+z). It lies on the back wall, the floor and the
   // chair's back, and leaves the front wall (the REVERSE's wall) to the television
   fillSky: 0x7a8fb0, fillGround: 0x2a2a30, fillIntensity: 0.6, fillFrom: [0, 0.45, 0.89],
-  dustGain: 28.0,
+  dustGain: 24,             // the dust level: how much of the beam a bright mote sends to the lens
 });
 
 export function createRoom({ renderer, programmeCanvas, width, height, quality = 'final' }) {
@@ -55,11 +57,13 @@ export function createRoom({ renderer, programmeCanvas, width, height, quality =
   // ---- the room ----
   const shell = createShell({ ROOM, wideCam: WIDE_A, reverseCam: REVERSE });
   scene.add(shell.group);
-  const furniture = createFurniture({ ROOM });
+  // what the cloth's pile needs each frame: the screen light's place (view space) and its colour x intensity
+  const screenLight = { uScreenV: { value: new THREE.Vector3() }, uScreenCol: { value: new THREE.Color(0, 0, 0) }, uScreenDecay: { value: LIGHT.spotDecay } };
+  const furniture = createFurniture({ ROOM, screen: screenLight });
   scene.add(furniture.group);
   const tea = createTea({ ROOM, programmeTexture: progTex });
   scene.add(tea.mesh);
-  const dust = createDust({ quality, height });
+  const dust = createDust({ ROOM, quality, height });
   scene.add(dust.points);
 
   // ---- light: the screen spot (the only shadow caster) and the static night fill ----
@@ -68,7 +72,7 @@ export function createRoom({ renderer, programmeCanvas, width, height, quality =
   scene.add(hemi);
   const spot = new THREE.SpotLight(0xffffff, 0, 14, LIGHT.spotAngle, LIGHT.spotPenumbra, LIGHT.spotDecay);
   spot.position.set(S0.x, S0.y, S0.z + 0.04);
-  spot.target.position.set(...LIGHT.spotAim);
+  spot.target.position.set(ROOM.chair.x, LIGHT.spotAimY, ROOM.chair.z);
   scene.add(spot); scene.add(spot.target);
   setupShadow(renderer, spot);                                    // ./shadow.js: a variance map, blurred by S
 
@@ -95,8 +99,10 @@ export function createRoom({ renderer, programmeCanvas, width, height, quality =
     const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b, m = Math.max(r, g, b, 1e-4);
     spot.color.setRGB(r / m, g / m, b / m, THREE.SRGBColorSpace);
     spot.intensity = LIGHT.spotGain * lum;
-    spot.shadow.radius = blurTexels(S);                           // the shadow's edge, from S.shadowRadius (./shadow.js)
+    spot.shadow.radius = blurTexels(S);                           // the shadow's edge, from S.shadowSoftness (./shadow.js)
     lightCol.copy(spot.color).multiplyScalar(lum);
+    screenLight.uScreenCol.value.copy(spot.color).multiplyScalar(spot.intensity);
+    screenLight.uScreenV.value.copy(spot.position).applyMatrix4(camera.matrixWorldInverse);
 
     shell.update(S);
     furniture.update(S);

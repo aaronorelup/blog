@@ -22,7 +22,9 @@ Layers (film bible section 5):
 Mix: one fixed master gain, the same for every ending (so the first 20:00 are the same bytes in all four), and an
 offline peak limiter. The build FAILS (and renames its output .FAILED.wav) if true peak is above -1 dBTP, short-term
 loudness is above -13 LUFS anywhere, integrated loudness is outside -18 to -15 LUFS, any line of the voice is less
-than 4 LU over everything under it, or the length is not 4,800,000 samples.
+than 4 LU over everything under it, the hum is not the engine's own hum level, or the length is not 4,800,000 samples.
+Before 20:00 the four endings come out as the same bytes: every gain there depends only on what has sounded so far
+(the peak limiter alone looks 15 ms ahead), and the room response is convolved in one-second blocks.
 numpy and scipy only. Every random number is drawn from a generator seeded by (SEED, layer, index).
 """
 import argparse
@@ -79,6 +81,16 @@ CAP_TP = -1.0
 CAP_ST = -13.0
 LIMIT_DBTP = -1.5          # the master peak limiter's ceiling (true peak, 4x oversampled)
 LIMIT_HALF_S = 0.005       # its gain moves over 10 ms windows, centred on the peak
+# bench foley levels (linear, before the speaker). Set by measurement, not by ear, against the programme in each
+# sound's own band at its own moment: a punch for a pick the box is half sure of or surer is about level with the
+# pluck it lands on, the knob's click on a note is about 6 dB over it, the chalk tick 3.5 dB and the dial taps about
+# 5 dB over, the crank creak about 18 dB under.
+PUNCH_AMP = 0.20           # x the pick's probability
+RATCHET_AMP = 0.14         # one pawl click
+RATCHET_TEETH_PER_DECADE = 40   # the knob's ratchet: a turn clicks once per tooth it passes on the log dial, at least once
+CHALK_AMP = 0.10
+TAP_AMP = 0.10
+CREAK_AMP = 0.10
 SYNTH = {'lo': 57, 'P': 30, 'halo': 0.3, 'master': 0.5, 'sr': 44100}   # the published synth's pad rule (synth.js)
 RINGOUT_S = 2.5            # the published ring-out after 30:00
 PAD_HOLD_FADE_S = 0.6      # the published pad fades out over 0.6 s after the last note; the held pad fades in over it
@@ -127,7 +139,8 @@ def load_cues(path):
     }
     cues['lines'] = sorted(({'id': l['id'], 'variant': l.get('variant'), 'text': l['text'], 'frame': int(l['frame'])}
                             for l in c['lines']), key=lambda l: l['frame'])
-    cues['knobTurns'] = [{'frame': int(t['frame']), 'frames': int(t['frames']), 'note': int(t['note'])} for t in c['knobTurns']]
+    cues['knobTurns'] = [{'frame': int(t['frame']), 'frames': int(t['frames']), 'from': float(t['from']), 'to': float(t['to'])}
+                         for t in c['knobTurns']]
     cues['taps'] = sorted(int(f) for t in c['dialTaps'] if t.get('performed') for f in t['contacts'])
     cues['chalk'] = {'frame': int(c['chalk']['frame']), 'frames': int(c['chalk']['tickFrames'])}   # the hand's tick
     bet = c['coda']['bet']
@@ -295,10 +308,21 @@ def speaker_chain(mono):
     sos = np.vstack([butter(4, 160, btype='highpass', fs=SR, output='sos'),
                      butter(4, 5500, btype='lowpass', fs=SR, output='sos'),
                      peaking(2800, 3.0, 0.9), peaking(190, 2.5, 1.4), peaking(900, -1.5, 1.2)])
-    y = sosfilt(sos, mono)
-    ir = room_ir()
-    out = np.stack([fftconvolve(y, ir[:, 0])[:len(y)], fftconvolve(y, ir[:, 1])[:len(y)]], axis=1)
-    return out
+    return convolve_blocks(sosfilt(sos, mono), room_ir())
+
+
+def convolve_blocks(y, ir, block=SR):
+    """y convolved with each column of ir, by overlap-add in one-second blocks. Every block is convolved on its own,
+    so a sample of the result depends, to the last bit, only on the blocks up to its own: one FFT over the whole film
+    would let the end of an ending disturb its beginning by rounding (it did, once: a single 24-bit step 30 s in)."""
+    n, taps = len(y), len(ir)
+    out = np.zeros((n + taps, ir.shape[1]))
+    for k in range(0, n, block):
+        seg = y[k:k + block]
+        if seg.any():
+            for ch in range(ir.shape[1]):
+                out[k:k + len(seg) + taps - 1, ch] += fftconvolve(seg, ir[:, ch])
+    return out[:n]
 
 
 def room_ir():
@@ -326,19 +350,22 @@ def punch(p, r):
     n = int(0.03 * SR)
     click = band(r.standard_normal(n), 1800, 4500) * decay(n, 0.0015)
     th = np.sin(2 * np.pi * 420 * np.arange(n) / SR) * decay(n, 0.006)
-    return (0.55 * click + 0.45 * th) * 0.10 * p
+    return (0.55 * click + 0.45 * th) * PUNCH_AMP * p
 
 
-def ratchet(r):
-    """Three pawl clicks 17 ms apart, the third softest."""
-    n = int(0.08 * SR)
-    out = np.zeros(n)
-    for j, (d, a) in enumerate(((0.0, 1.0), (0.017, 0.8), (0.034, 0.55))):
-        m = int(0.012 * SR)
+def ratchet(turn, r):
+    """The knob's ratchet over one turn: one pawl click per tooth passed (RATCHET_TEETH_PER_DECADE on the log dial,
+    at least one), spread evenly over the frames the knob takes, the first as it starts to move. A one-tooth turn is
+    a single click; the push at 20:00 is a zip, denser the further it goes."""
+    teeth = max(1, int(round(RATCHET_TEETH_PER_DECADE * abs(np.log10(turn['to'] / turn['from'])))))
+    span = turn['frames'] * SPF
+    m = int(0.012 * SR)
+    out = np.zeros(span + m)
+    for j in range(teeth):
         k = band(r.standard_normal(m), 2500, 7000) * decay(m, 0.0012)
-        k += 0.4 * np.sin(2 * np.pi * (1900 + 120 * j) * np.arange(m) / SR) * decay(m, 0.003)
-        add(out, int(d * SR), a * k)
-    return out * 0.05
+        k += 0.4 * np.sin(2 * np.pi * (1900 + 120 * (j % 3)) * np.arange(m) / SR) * decay(m, 0.003)
+        add(out, j * span // teeth, k * r.uniform(0.8, 1.0))
+    return out * RATCHET_AMP * teeth ** -0.25
 
 
 def chalk(frames, r):
@@ -347,7 +374,7 @@ def chalk(frames, r):
     x = band(r.standard_normal(n), 1500, 6500, 2)
     grain = 0.55 + 0.45 * np.sign(np.sin(2 * np.pi * 37 * np.arange(n) / SR + r.uniform(0, 6.28)))
     env = np.sin(np.pi * np.arange(n) / n) ** 0.5
-    return x * grain * env * 0.035
+    return x * grain * env * CHALK_AMP
 
 
 def tap(r):
@@ -356,7 +383,7 @@ def tap(r):
     t = np.arange(n) / SR
     x = (np.sin(2 * np.pi * 1150 * t) * decay(n, 0.02) + 0.5 * np.sin(2 * np.pi * 2730 * t) * decay(n, 0.012)
          + 0.6 * band(r.standard_normal(n), 300, 2500) * decay(n, 0.003))
-    return x * 0.06
+    return x * TAP_AMP
 
 
 def creak(r):
@@ -366,7 +393,7 @@ def creak(r):
     rate = 23 + 4 * r.uniform()
     pulses = (np.sin(2 * np.pi * rate * t + r.uniform(0, 6.28)) > 0.6).astype(float)
     x = band(r.standard_normal(n), 550, 1500) * (0.3 + 0.7 * pulses)
-    return x * np.hanning(n) * 0.012
+    return x * np.hanning(n) * CREAK_AMP
 
 
 # ---------------------------------------------------------------- the room (stereo, not through the speaker)
@@ -523,8 +550,8 @@ def build(cues, programme, voice, sync_proof=False):
     for g in range(NOTES):                       # the punch: every pick but REST (a pencil dot), level by its p
         if cues['pickKind'][g] != 'rest' and cues['p'][g] is not None:
             add(fo, note_start(g), punch(min(1.0, max(0.0, cues['p'][g])), rng(30, g)))
-    for i, t in enumerate(cues['knobTurns']):    # the ratchet: on every knob turn, at the frame the knob starts to move
-        add(fo, frame_sample(t['frame']), ratchet(rng(31, i)))
+    for i, t in enumerate(cues['knobTurns']):    # the ratchet: on every knob turn, over the frames the knob moves
+        add(fo, frame_sample(t['frame']), ratchet(t, rng(31, i)))
         events.append((frame_sample(t['frame']), 'foley', 'ratchet'))
     ch = cues['chalk']                           # the chalk tick, as long as the hand draws it
     add(fo, frame_sample(ch['frame']), chalk(ch['frames'], rng(32, 0)))
@@ -638,6 +665,8 @@ def main():
         bad.append('short-term %.2f LUFS > %.1f (window ending %.1f s)' % (m['shortTermMaxLUFS'], CAP_ST, m['shortTermMaxEndsAt_s']))
     if not INTEGRATED_RANGE[0] <= m['integratedLUFS'] <= INTEGRATED_RANGE[1]:
         bad.append('integrated %.2f LUFS outside %s' % (m['integratedLUFS'], INTEGRATED_RANGE))
+    if info['humMaxDiffVsEngine'] is not None and info['humMaxDiffVsEngine'] > 0.01:
+        bad.append('the hum is %.3f away from the engine\'s own hum level' % info['humMaxDiffVsEngine'])
     low = [ln for ln in info['lines'] if ln['marginLU'] < VOICE_MARGIN_MIN_LU]
     if low:
         bad.append('voice under %.1f LU over what is under it: %s' % (VOICE_MARGIN_MIN_LU, ', '.join(

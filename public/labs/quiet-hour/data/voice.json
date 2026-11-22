@@ -1,5 +1,5 @@
 {
- "about": "The maker's lines as frozen audio: each line's exact text and its length in seconds, from the file's first sample, which is placed on the line's start frame. The texts are also keys, for make/cues.mjs --durations. Written by make/sound/voice_freeze.py.",
+ "about": "The maker's lines as frozen audio: each line's exact text and its length in seconds, from the file's first sample, which is placed on the line's start frame. Every text recorded while the film's rules were being settled is listed, so an ending speaks only some of them. The texts are also keys, for make/cues.mjs --durations. Written by make/sound/voice_freeze.py.",
  "voice": "Quiet Hour maker (AO-087)",
  "lines": [
   {

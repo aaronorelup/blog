@@ -114,21 +114,21 @@ export function createShell({ ROOM, wideCam, reverseCam }) {
     // curtains on a pole: one drawn a third across, one gathered back (half-drawn), linen with folds
     const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, Wn.w + 0.6, 10), new THREE.MeshLambertMaterial({ color: 0x3b2a1c }));
     pole.rotation.z = Math.PI / 2; pole.position.set(0, Wn.h / 2 + 0.16, 0.08); g.add(pole);
-    const ch = Wn.h + 0.16 + Wn.h / 2 + 0.6 - 0.02;                       // curtain drop: pole to below the sill
+    // sill-length curtains: from the pole to a hand below the sill
+    const drop = Wn.h + 0.32;
     const curtain = (width, folds, x, seed) => {
-      const cg = new THREE.PlaneGeometry(width, Wn.h + 0.5, 28, 6), p = cg.attributes.position;
+      const cg = new THREE.PlaneGeometry(width, drop, 28, 6), p = cg.attributes.position;
       for (let i = 0; i < p.count; i++) {
-        const u = (p.getX(i) / width) + 0.5, v = (p.getY(i) / (Wn.h + 0.5)) + 0.5;
+        const u = (p.getX(i) / width) + 0.5, v = (p.getY(i) / drop) + 0.5;
         const z = 0.05 * Math.sin(u * folds * Math.PI * 2 + hash01(seed, 0) * 6) + 0.015 * Math.sin(u * folds * 5.1 + v * 2);
         p.setZ(i, z * (0.7 + 0.3 * (1 - v)));
       }
       cg.computeVertexNormals();
       const m = new THREE.Mesh(cg, curtainMat); m.castShadow = true; m.receiveShadow = true;
-      m.position.set(x, Wn.h / 2 + 0.15 - (Wn.h + 0.5) / 2, 0.09); g.add(m); return m;
+      m.position.set(x, Wn.h / 2 + 0.15 - drop / 2, 0.09); g.add(m); return m;
     };
-    curtain(0.36, 5, -Wn.w / 2 + 0.0, 11);                                // drawn a little over the left pane
-    curtain(0.26, 4.5, Wn.w / 2 + 0.15, 12);                                    // gathered at the right
-    void ch;
+    curtain(0.36, 5, -Wn.w / 2 + 0.0, 11);                                   // drawn a little over the left pane
+    curtain(0.26, 4.5, Wn.w / 2 + 0.15, 12);                                 // gathered at the right
     // the street beyond and the neighbour's window (positioned by the caller in world space)
     const streetMat = new THREE.MeshBasicMaterial({ map: streetTex });
     const nMat = new THREE.MeshBasicMaterial({ map: warmTex, color: 0xffffff });
@@ -158,7 +158,7 @@ export function createShell({ ROOM, wideCam, reverseCam }) {
     sky.position.set(p.x, p.y + 6, p.z + dirZ * 3); if (dirZ > 0) sky.rotation.y = Math.PI; group.add(sky);
     return { nw, halo };
   }
-  const out1 = outside(win1, W1, zB, -1, wideCam, [0.2, 0.26]);
+  const out1 = outside(win1, W1, zB, -1, wideCam, [-0.11, 0.14]);
   const out2 = outside(win2, W2, zF, +1, reverseCam, [0.2, 0.25]);
 
   // ---- moonlight spill: a cool patch under each window (no light: an additive decal) ----

@@ -133,8 +133,9 @@ def main():
                'lines': manifest}, open(os.path.join(vd, 'frozen', 'manifest.json'), 'w'), indent=1)
     # The engine (make/cues.mjs --durations) looks a line's length up by its exact text, so every text is also a key.
     doc = {'about': "The maker's lines as frozen audio: each line's exact text and its length in seconds, from the "
-                    "file's first sample, which is placed on the line's start frame. The texts are also keys, for "
-                    "make/cues.mjs --durations. Written by make/sound/voice_freeze.py.",
+                    "file's first sample, which is placed on the line's start frame. Every text recorded while the "
+                    "film's rules were being settled is listed, so an ending speaks only some of them. The texts are "
+                    "also keys, for make/cues.mjs --durations. Written by make/sound/voice_freeze.py.",
            'voice': takes['voiceName'], 'lines': public}
     for ln in public:
         doc[ln['text']] = ln['seconds']
