@@ -52,12 +52,12 @@ PUBLISHED = {'main': 'fable-training-run', 'alone': 'fable-training-run-left-alo
              'x3': 'fable-training-run-held-3x', 'x10': 'fable-training-run-held-10x'}
 
 # ---- authored constants (film bible section 9: the speaker chain and the mix are authored) ----
-COMP_THRESHOLD_DB = -27.0  # detector level (300 ms RMS of the band-limited programme, dBFS) where compression starts
-COMP_RATIO = 2.2
+COMP_THRESHOLD_DB = -18.0  # detector level (300 ms RMS of the band-limited programme, dBFS) where compression starts
+COMP_RATIO = 2.0
 COMP_KNEE_DB = 6.0
 COMP_ATTACK_S = 0.03
 COMP_RELEASE_S = 0.4
-VOICE_DB = -1.0            # gain on the frozen voice (its speech sits at -20 dBFS RMS)
+VOICE_DB = -8.0            # gain on the frozen voice (its speech sits at -20 dBFS RMS)
 TARGET_LUFS = -16.0
 CAP_TP = -1.0
 CAP_ST = -13.0
