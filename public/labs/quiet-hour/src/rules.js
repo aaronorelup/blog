@@ -186,8 +186,13 @@ export const POSES = ['rest', 'crank', 'tap', 'chalk', 'grip', 'card', 'lid'];
 
 // ---- section 4: the room ----------------------------------------------------------------------------------------
 
-/** Shadow blur radius = 1 + 5 H / ln 32. */
-export const shadowRadius = (h) => 1 + 5 * h;
+/**
+ * (v1.2) Shadow softness = H6 / ln 32, where H6 is the mean entropy of the last 6 notes (this one and the five before;
+ * fewer at the very start), so the shadow does not jitter from note to note. Shadow blur radius = 1 + 14 x softness:
+ * 15 when the box knows nothing, 1 when it is certain.
+ */
+export const SHADOW_NOTES = 6;
+export const shadowRadius = (softness) => 1 + 14 * softness;
 /** Dust opacity = 0.25 + 0.75 H / ln 32. Drift = each mote's velocity x running sum of H / ln 32 (in seconds). */
 export const dustOpacity = (h) => 0.25 + 0.75 * h;
 /** Tea: a ripple ring per pluck sized by velocity squared. AUTHORED: a ring lives 36 frames (1.5 s). */

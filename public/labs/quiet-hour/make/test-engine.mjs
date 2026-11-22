@@ -371,7 +371,13 @@ if (!RUNS) {
     let drift = 0;
     for (let f = 0; f < 700; f++) drift += Math.min(1, R[Math.floor(f / 5)].entropy / LN32) / 24;
     ok(near(S(700).dustDrift, drift, 1e-9), `${e}: dust drift = running sum of H / ln 32`);
-    all(432, (g) => near(S(g * 5).shadowRadius, 1 + (5 * Math.min(1, R[g].entropy / LN32)), 1e-12) && near(S(g * 5).dustOpacity, 0.25 + 0.75 * Math.min(1, R[g].entropy / LN32), 1e-12), `${e}: shadow radius and dust opacity on every note`);
+    // (v1.2) the shadow: softness = mean of H / ln 32 over the last 6 notes, radius = 1 + 14 x softness
+    all(432, (g) => {
+      const w = R.slice(Math.max(0, g - 5), g + 1).map((r) => Math.min(1, r.entropy / LN32)), soft = w.reduce((a, b) => a + b, 0) / w.length;
+      return [0, 1, 2, 3, 4].every((i) => { const s = S(g * 5 + i); return near(s.shadowSoftness, soft, 1e-12) && near(s.shadowRadius, 1 + 14 * soft, 1e-12) && s.shadowSoftness >= 0 && s.shadowSoftness <= 1; });
+    }, `${e}: shadow softness = mean H / ln 32 of the last 6 notes, radius = 1 + 14 x softness, on every note`);
+    ok(near(S(0).shadowRadius, 15, 1e-9) && S(0).shadowSoftness > 0.999999 && S(900).shadowRadius > 3 && S(900).shadowRadius < 9, `${e}: the shadow is 15 px soft when the box knows nothing (frame 900: ${S(900).shadowRadius.toFixed(2)})`);
+    all(432, (g) => near(S(g * 5).dustOpacity, 0.25 + 0.75 * Math.min(1, R[g].entropy / LN32), 1e-12), `${e}: dust opacity on every note`);
     const f9 = 1200 + 7, rings = S(f9).teaRings;
     ok(rings.length > 0 && rings.every((rg) => R[rg.note].pluckVel !== null && near(rg.size, R[rg.note].pluckVel ** 2, 1e-15) && rg.age === f9 - rg.note * 5 && rg.age < 36), `${e}: tea rings sized by velocity squared`);
     all(432, (g) => { let sum = 0; for (let j = Math.max(0, g - 5); j <= g; j++) sum += R[j].pluckVel ?? 0; return S(g * 5).spoonChatter === (sum / 6 >= 0.95); }, `${e}: spoon chatter when the mean velocity of the last 6 notes >= 0.95`);

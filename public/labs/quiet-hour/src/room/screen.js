@@ -49,11 +49,14 @@ export function createScreenMaterial({ THREE, programmeTexture }) {
         vec2 uv = 0.5 + c * (1.0 + uWarp * (dot(c, c) - 0.25)) * 0.988;
         vec2 dx = vec2(0.0013, 0.0);
 
-        // the picture: chroma bleed (red trails right, blue left), three taps
-        vec3 col;
-        col.r = texture2D(map, uv - dx).r;
-        col.g = texture2D(map, uv).g;
-        col.b = texture2D(map, uv + dx * 0.7).b;
+        // the picture, one tap (each extra tap costs ~40 ms a frame in software GL). Chroma bleed from the screen-space
+        // slope instead: red is pushed right and blue left by about dx of the picture, as a first-order shift
+        vec3 col = texture2D(map, uv).rgb;
+        float pxPerUv = 1.0 / max(abs(dFdx(uv.x)), 1e-5);
+        float sh = min(dx.x * pxPerUv, 2.0);                             // the bleed in output pixels (<= 2)
+        vec3 gx = dFdx(col);
+        col.r = clamp(col.r - gx.r * sh, 0.0, 1.0);
+        col.b = clamp(col.b + gx.b * sh * 0.7, 0.0, 1.0);
         // the phosphor's soft bloom (an explicit coarse level: one cheap tap), mixed so the mean stays the mean
         vec3 bloom = textureLod(map, clamp(uv, 0.0, 1.0), 5.0).rgb;
         col = mix(col, max(col, bloom), 0.10);
@@ -82,7 +85,7 @@ export function createScreenMaterial({ THREE, programmeTexture }) {
 
         // the glass: fresnel and a weak, fixed, blurred reflection of the room, strongest where the picture is dark
         vec3 V = normalize(uCam - vPos), N = normalize(vN);
-        float fres = 0.035 + 0.965 * pow(1.0 - max(dot(N, V), 0.0), 5.0);
+        float f1 = 1.0 - max(dot(N, V), 0.0), f2 = f1 * f1; float fres = 0.035 + 0.965 * f2 * f2 * f1;
         vec2 q = p / uHalf.y + (V.xy / max(V.z, 0.2)) * 0.12;    // reflection space, a small parallax with the view
         vec2 wq = (q - vec2(-0.62, 0.46)) * vec2(1.0, 0.92);       // the window: upper left (mirrored room)
         float win = (1.0 - smoothstep(0.10, 0.30, abs(wq.x) - 0.12)) * (1.0 - smoothstep(0.10, 0.30, abs(wq.y) - 0.20));

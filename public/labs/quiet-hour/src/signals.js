@@ -151,7 +151,10 @@
 //                                       below ln 32). Always equal to handsIn
 //   humGate        [bool]               the house hum is allowed on this note (off on a step change, back after 6
 //                                       still notes);   humLevel [0..1] its level, 0 at once, back over 48 frames
-//   shadowRadius   [px 1..6]            1 + 5 H / ln 32
+//   shadowSoftness [0..1]               (v1.2) H6 / ln 32, H6 = the mean entropy of the last 6 notes: 1 when the box
+//                                       knows nothing, 0 when it is certain. For the room to drive a blur with
+//   shadowRadius   [px 1..15]           (v1.2) 1 + 14 x shadowSoftness: 15 at the start, about 5 to 7 in the middle of
+//                                       the programme, 1 when the box is certain
 //   dustDrift      [s]                  running sum of H / ln 32 over the frames before this one, / 24. A mote's
 //                                       offset = its own velocity x dustDrift
 //   dustOpacity    [0.25..1]            0.25 + 0.75 H / ln 32
@@ -275,6 +278,8 @@ export function createEngine(shared, endingData, opts = {}) {
   const inKey = tok.map((t, g) => (kind[g] === 'pitch' ? tokens[t].inKey : null));
   const vel = tok.map((t, g) => R.pluckVelocity(t, ptok[g], P));
   const hN = entropy.map(R.entropyShare);
+  // (v1.2) the shadow reads the mean of H / ln 32 over the last 6 notes
+  const soft6 = hN.map((_, g) => { const w = hN.slice(Math.max(0, g - R.SHADOW_NOTES + 1), g + 1); return w.reduce((a, b) => a + b, 0) / w.length; });
   const moments = rows.map((r, g) => (betOk[g] ? R.betMoments(r.p) : null));
   const worse = err.map(R.worseThanGuessing);
   const stepChanged = lr.map((v, g) => g > 0 && v !== lr[g - 1]);
@@ -554,6 +559,7 @@ export function createEngine(shared, endingData, opts = {}) {
     blocks: blocksOn, spoonChatter: spoon, meanVel6, flagsUp: flags, shareDrum: drum, warmthK: warmK,
     entropyN: hN, err: err.map(fin), share: share.map(fin), limitNow, hairline: hairline.map((h) => h !== null),
     err6: err6.map(fin), bestErrSoFar: bestSoFar.map(fin), sharpMedian3: sharpMed.map(fin), ratioNow: ratioNow.map(fin),
+    shadowSoftness: soft6,
   });
 
   const events = buildEvents({ N, F, rows, kind, inKey, ptok, err, share, sharp, sharpMed, ratioNow, lr, limitNow, worse,
@@ -646,7 +652,8 @@ export function createEngine(shared, endingData, opts = {}) {
       },
       titleSlide: title, titleVisible: title < 1, lidClosed,
 
-      windowLit: windowLit[g], humGate: humGate[g], humLevel: humLevel[frame], shadowRadius: R.shadowRadius(hN[g]),
+      windowLit: windowLit[g], humGate: humGate[g], humLevel: humLevel[frame],
+      shadowRadius: R.shadowRadius(soft6[g]), shadowSoftness: soft6[g],
       dustDrift: dustDrift[frame], dustOpacity: R.dustOpacity(hN[g]), teaRings: rings, spoonChatter: spoon[g],
       wallMinutes, wallClock: wallText(wallMinutes),
       minuteAngle: (2 * Math.PI * (wallMinutes % 60)) / 60, hourAngle: (2 * Math.PI * ((wallMinutes / 60) % 12)) / 12,
@@ -736,8 +743,9 @@ export function createEngine(shared, endingData, opts = {}) {
     add('dust', 'Dust in the beam: it drifts while the box is unsure, hangs still when it is certain', ['entropy'],
       'speed = each mote\'s own x H / ln 32; opacity = 0.25 + 0.75 x H / ln 32',
       `drifting at ${pct(S.entropyN)} of full speed, opacity ${fx(S.dustOpacity)}`);
-    add('shadow', "The chair's shadow: soft while the box is unsure, hard when it is certain", ['entropy'], 'blur radius = 1 + 5 x H / ln 32',
-      `blur radius ${fx(S.shadowRadius)} (H / ln 32 = ${fx(S.entropyN)})`);
+    add('shadow', "The chair's shadow: soft while the box is unsure, hard when it is certain", ['entropy'],
+      'blur radius = 1 + 14 x H6 / ln 32, H6 = the mean entropy of the last 6 notes (15 knowing nothing, 1 when certain)',
+      `blur radius ${fx(S.shadowRadius, 1)}: softness ${fx(S.shadowSoftness)} over the last 6 notes (this note alone: ${fx(S.entropyN)})`);
     add('tea', 'Tea: a ring for every plucked note; the spoon chatters when six notes running are plucked hard', ['tok', 'ptok'],
       'ring size = velocity squared, velocity = 0.25 + 0.75 x p(pick); spoon: mean velocity of the last 6 notes >= 0.95',
       `${S.pluck ? `ring of size ${fx(R.teaRingSize(S.pluckVel))} (velocity ${fx(S.pluckVel)})` : `no ring on this note (${S.pickName})`}; spoon ${S.spoonChatter ? 'chattering' : 'still'} (mean velocity of the last 6 notes ${fx(meanVel6[g])})`);

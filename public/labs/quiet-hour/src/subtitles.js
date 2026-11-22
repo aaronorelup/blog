@@ -57,8 +57,11 @@ export function createSubtitles(engine) {
       ctx.globalAlpha = cue.alpha;
       // 1. the soft dark halo: a wide blurred shadow drawn under the letters
       ctx.save();
-      ctx.shadowColor = 'rgba(6,5,4,0.9)'; ctx.shadowBlur = size * 0.32; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = size * 0.03;
-      ctx.strokeStyle = 'rgba(8,6,5,0.55)'; ctx.lineWidth = size * 0.14;
+      ctx.shadowColor = 'rgba(6,5,4,0.95)'; ctx.shadowBlur = size * 0.45; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = size * 0.03;
+      ctx.strokeStyle = 'rgba(8,6,5,0.6)'; ctx.lineWidth = size * 0.2;
+      for (let k = 0; k < 2; k++) lines.forEach((t, i) => ctx.strokeText(t, x, y0 + i * size * LINE));   // twice: a denser halo
+      ctx.shadowBlur = size * 0.12; ctx.shadowOffsetY = 0;
+      ctx.strokeStyle = 'rgba(8,6,5,0.5)'; ctx.lineWidth = size * 0.1;
       lines.forEach((t, i) => ctx.strokeText(t, x, y0 + i * size * LINE));
       ctx.restore();
       // 2. the letters, with a hairline of their own colour for weight
