@@ -14,19 +14,22 @@ import { BAR_FRAMES } from './time.js';
 
 // ---- room anchors (the room builder keeps its objects on these) ------------------------------
 export const ROOM = {
-  size: { w: 5.0, d: 6.0, h: 2.6 },                 // x -2.5..2.5, z -3..3, y 0..2.6
+  size: { w: 4.4, d: 5.4, h: 2.5 },                 // x -2.2..2.2, z -3..2.4, y 0..2.5 (a small front room)
   backWallZ: -3.0,
-  cabinet: { x: 0, y: 0, z: -2.62, w: 1.2, h: 0.55, d: 0.5 },
-  tv: { x: 0, y: 0.55, z: -2.62, w: 0.66, h: 0.52, d: 0.46 },
+  cabinet: { x: 0, y: 0, z: -2.74, w: 1.3, h: 0.5, d: 0.48 },      // the low walnut sideboard the set stands on
+  tv: { x: 0, y: 0.5, z: -2.74, w: 0.70, h: 0.56, d: 0.46 },       // the set's box (front face at z -2.51)
   // the picture tube's visible 4:3 face, centre and size (the screen quad)
-  screen: { x: 0, y: 0.83, z: -2.385, w: 0.44, h: 0.33 },
-  wallClock: { x: 0, y: 1.82, z: -2.97, r: 0.17 },
-  doorway: { x: -1.75, z: -2.99, w: 0.9, h: 2.05 },  // open, on the back wall's left; a dark hall beyond
-  window: { x: 1.75, y: 1.35, z: -2.99, w: 1.0, h: 1.1 },
-  neighbour: { x: 2.27, y: 1.45, z: -4, w: 0.3, h: 0.4 }, // the warm window across the street (seen through ours from WIDE A and WIDE B)
-  chair: { x: -0.42, z: 0.35, rotY: 0 },              // empty wing chair, back to camera, facing the TV
-  table: { x: 0.78, z: 0.05, h: 0.55, r: 0.22 },
-  cup: { x: 0.74, y: 0.55, z: 0.02, r: 0.045, h: 0.07 },
+  screen: { x: 0, y: 0.80, z: -2.505, w: 0.48, h: 0.36 },
+  wallClock: { x: 0, y: 1.6, z: -2.985, r: 0.155 },
+  doorway: { x: -1.45, z: -3.0, w: 0.82, h: 2.0 },  // open, on the back wall's left; a dark hall beyond
+  window: { x: 1.36, y: 1.33, z: -3.0, w: 0.84, h: 1.12 },          // back wall, right of the set: seen from WIDE A
+  window2: { x: 1.25, y: 1.33, z: 2.4, w: 0.9, h: 1.12 },           // front wall (bay side): seen from the REVERSE
+  // the warm window across the street; placed at load on the ray from WIDE A through `window` (and a twin
+  // beyond window2 on the ray from the REVERSE), both driven by the one signal S.windowLit
+  neighbour: { w: 0.42, h: 0.55, beyond: 7.0 },
+  chair: { x: -0.42, z: -0.5, rotY: -0.19 },          // empty wing chair, back to WIDE A, turned to the set
+  table: { x: -1.13, z: -1.06, h: 0.56, r: 0.23 },     // at the chair's front-left    // small walnut side table at the chair's left
+  cup: { x: -1.06, y: 0.56, z: -1.09, r: 0.042, h: 0.065 },   // y = the table top; the saucer sits on it
 };
 
 export const lensToFov = (mm) => 2 * Math.atan(12 / mm) * 180 / Math.PI;   // 24 mm sensor height
@@ -46,9 +49,12 @@ const smooth = (t) => t * t * (3 - 2 * t);
 // push a camera toward its target by `amount` of the distance (3% push = 0.03)
 function pushed(cam, amount) { return { ...cam, pos: lerp3(cam.pos, cam.target, amount) }; }
 
-const WIDE_A = { pos: [0.3, 1.2, 2.3], target: [0, 0.95, -2.6], fov: lensToFov(32), lens: 32 };
-const WIDE_B = { pos: [-1.6, 1.3, 1.4], target: [1.0, 1.1, -3.0], fov: lensToFov(28), lens: 28 };
-const TWO_SHOT = { pos: [1.12, 0.92, 1.05], target: [0.05, 0.78, -2.5], fov: lensToFov(40), lens: 40 };
+// WIDE A: seated height over the chair's right shoulder; the set, the clock, the doorway and the window.
+export const WIDE_A = { pos: [0.1, 1.42, 0.5], target: [0.1, 0.8, -2.9], fov: lensToFov(38), lens: 38 };
+// TWO-SHOT: low past the chair's left arm, the blanket and the cup large, the set beyond.
+export const TWO_SHOT = { pos: [-1.42, 0.93, -0.28], target: [0.45, 0.42, -2.62], fov: lensToFov(35), lens: 35 };
+// REVERSE (v1.1): from beside the set, looking back at the empty chair and its shadow on the wall behind it.
+export const REVERSE = { pos: [0.5, 0.98, -2.3], target: [-0.55, 0.66, 1.6], fov: lensToFov(28), lens: 28 };
 
 // Where a bench point lands on the TV face for a given programme view (for aiming SCREEN shots).
 function benchToScreenUV(view, bx, by) { return [(bx - view.x) / view.w, (by - view.y) / view.h]; }
@@ -60,13 +66,14 @@ const B = BAR_FRAMES;
 export const SHOTS = [
   { name: 'WIDE A', bars: [0, 4], cam: () => WIDE_A, view: () => 'P-WIDE' },
   {
-    name: 'SCREEN', bars: [4, 20], cam: (t) => pushed(screenCam(50, 0.96), 0.03 * smooth(t)),
+    name: 'SCREEN', bars: [4, 20], cam: (t) => pushed(screenCam(50, 0.87), 0.03 * smooth(t)),
     view: (f) => (f >= 12 * B && f < 14 * B) ? 'P-DIAL' : f >= 14 * B ? 'P-STRIP' : 'P-WIDE',
   },
-  { name: 'TWO-SHOT', bars: [20, 30], cam: () => TWO_SHOT, view: () => 'P-WIDE' },
+  { name: 'TWO-SHOT', bars: [20, 30], cam: (t) => pushed(TWO_SHOT, 0.02 * smooth(t)), view: () => 'P-WIDE' },
   {
-    // framed low on the strip and the resting hand: the tube overfills the frame, aimed below centre
-    name: 'SCREEN LOW', bars: [30, 42], cam: () => screenCam(50, 1.25, 0.5, 0.62),
+    // framed low on the strip and the resting hand: the tube just overfills the height, aimed below centre so the
+    // bottom of the bezel stays in frame
+    name: 'SCREEN LOW', bars: [30, 42], cam: () => screenCam(50, 1.02, 0.5, 0.56),
     view: (f) => f >= 36 * B ? 'P-DIAL' : 'P-STRIP',
   },
   { name: 'WIDE A', bars: [42, 47], cam: () => WIDE_A, view: () => 'P-WIDE' },
@@ -75,13 +82,14 @@ export const SHOTS = [
     name: 'SCREEN KNOB', bars: [47, 58],
     cam: (t) => {
       const [u, v] = benchToScreenUV(VIEWS['P-DIAL'], KNOB.x, KNOB.y);
-      const c0 = screenCam(50, 0.96), k = screenPoint(u, v);
+      const c0 = screenCam(50, 0.88), k = screenPoint(u, v);
       return { ...c0, pos: lerp3(c0.pos, k, 0.05 * t), target: lerp3(c0.target, k, 0.05 * t) };
     },
     view: () => 'P-DIAL',
   },
-  { name: 'WIDE B', bars: [58, 64], cam: () => WIDE_B, view: () => 'P-WIDE' },
-  { name: 'SCREEN', bars: [64, 69], cam: () => screenCam(50, 0.96), view: () => 'P-WIDE' },
+  // REVERSE (v1.1): the set out of frame, only its light; a slow 4% push toward the chair
+  { name: 'REVERSE', bars: [58, 64], cam: (t) => pushed(REVERSE, 0.04 * smooth(t)), view: () => 'P-WIDE' },
+  { name: 'SCREEN', bars: [64, 69], cam: (t) => pushed(screenCam(50, 0.88), 0.02 * smooth(t)), view: () => 'P-WIDE' },
   { name: 'WIDE A', bars: [69, 72], cam: () => WIDE_A, view: () => 'P-STRIP' },
 ];
 

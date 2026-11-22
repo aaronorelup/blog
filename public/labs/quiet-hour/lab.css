@@ -1,0 +1,209 @@
+/* The Quiet Hour: the lab page. Night only, so the film leads. The colours are the site's night tokens
+   (the Tea House palette, also used by /labs/moon-orbit/ and /labs/training-run/), copied so the page stands alone. */
+:root {
+  color-scheme: dark;
+  --page: #0d0e18;
+  --bg: rgba(21, 23, 38, 0.96);
+  --tile: #1a1a26;
+  --head: #f0c06a;
+  --strong: #f2e7d5;
+  --body: #c9bca9;
+  --soft: #9c917f;
+  --quiet: #8e8375;
+  --line: #302e3e;
+  --line2: #4a445a;
+  --accent: #e2795c;
+  --gold: #c9a227;
+  --film: #000;
+  --bar-h: 0px;
+  --ease: cubic-bezier(.4, 0, .2, 1);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--page);
+  color: var(--strong);
+  font: 15px/1.5 Karla, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+button, input { font: inherit; color: inherit; }
+a { color: var(--accent); text-underline-offset: 2px; }
+:focus-visible { outline: 3px solid var(--head); outline-offset: 3px; }
+::selection { background: var(--line2); }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+[hidden] { display: none !important; }
+
+/* ---- render mode (make/render.mjs): a bare canvas, nothing else ---------------------------------------- */
+body.render { overflow: hidden; background: #000; }
+body.render .app, body.render noscript { display: none; }
+#render-canvas { display: block; }
+
+/* ---- the theatre: stage + controls, x-ray beside on wide screens ------------------------------------- */
+.app { min-height: 100vh; }
+.head { max-width: 1280px; margin: 0 auto; padding: 14px 16px 10px; }
+.head h1 {
+  margin: 0; font: 700 20px/1.25 "Zen Maru Gothic", Karla, system-ui, sans-serif; color: var(--head); letter-spacing: -0.01em;
+}
+.head p { margin: 2px 0 0; color: var(--body); font-size: 14px; }
+html[data-embed] .head { display: none; }
+
+.theatre { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); background: var(--film); }
+.theatre.xray-on.wide { grid-template-columns: minmax(0, 1fr) min(320px, 38%); }
+.screen-col { min-width: 0; display: flex; flex-direction: column; }
+
+.stage {
+  position: relative; width: 100%; height: 56.25vw; background: var(--film); overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.stage canvas { display: block; background: var(--film); touch-action: manipulation; }
+.stage.coda canvas { visibility: hidden; }
+.coda-sub {
+  position: absolute; left: 0; right: 0; bottom: 6%; margin: 0; text-align: center; pointer-events: none;
+  font: 400 clamp(15px, 2.6vw, 30px)/1.2 "QH Serif", Georgia, serif; color: #efe6d2;
+  text-shadow: 0 0 3px #000, 0 0 6px #000;
+}
+
+/* the poster card: Play, Replay, the WebGL fallback */
+.poster {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; padding: 16px; text-align: center; background: radial-gradient(ellipse at 50% 55%, rgba(13, 14, 24, 0.15), rgba(0, 0, 0, 0.55));
+}
+.poster.card { background: #0b0b12; }
+.poster h2 {
+  margin: 0; font: 400 clamp(22px, 4.4vw, 46px)/1.1 "QH Serif", Georgia, serif; letter-spacing: 0.18em; color: #efe6d2;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8);
+}
+.poster p { margin: 0; max-width: 46ch; color: var(--body); font-size: 14px; text-shadow: 0 1px 6px #000; }
+.bigplay {
+  display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 26px 0 20px; border-radius: 999px;
+  border: 1px solid var(--head); background: var(--head); color: #17130a; font-weight: 600; font-size: 16px; cursor: pointer;
+  box-shadow: 0 20px 60px rgba(240, 192, 106, 0.16); transition: transform 180ms var(--ease), box-shadow 180ms var(--ease);
+}
+.bigplay:hover { transform: translateY(-1px); box-shadow: 0 24px 70px rgba(240, 192, 106, 0.24); }
+.bigplay:disabled { opacity: 0.55; cursor: default; transform: none; }
+.bigplay svg { width: 14px; height: 14px; }
+
+/* ---- the control bar ---------------------------------------------------------------------------------- */
+.bar { background: var(--page); border-top: 1px solid var(--line); padding: 6px 16px 10px; }
+.scrub { position: relative; height: 56px; margin: 0 2px; }
+.scrub input {
+  position: absolute; left: 0; right: 0; top: 18px; width: 100%; height: 24px; margin: 0; background: transparent;
+  accent-color: var(--head); cursor: pointer; -webkit-appearance: none; appearance: none;
+  /* the programme in light, the black coda after 30:00 darker */
+  --track: linear-gradient(90deg, var(--line2) 0 90%, var(--line) 90% 100%);
+}
+.scrub input::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: var(--track, var(--line2)); }
+.scrub input::-moz-range-track { height: 4px; border-radius: 2px; background: var(--track, var(--line2)); }
+.scrub input::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 16px; height: 16px; margin-top: -6px; border-radius: 50%; background: var(--head); border: 2px solid var(--page);
+}
+.scrub input::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--head); border: 2px solid var(--page); }
+.marks { position: absolute; left: 8px; right: 8px; top: 0; height: 18px; }
+.ticks { position: absolute; left: 8px; right: 8px; bottom: 0; height: 13px; pointer-events: none; }
+.ticks span {
+  position: absolute; top: 0; transform: translateX(-50%); font: 10px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--quiet);
+}
+.ticks span:first-child { transform: none; }
+.ticks span.turn { color: var(--soft); }
+.ticks span.turn::before { content: ''; position: absolute; left: 50%; top: -24px; height: 20px; border-left: 1px dashed var(--line2); }
+.mark {
+  position: absolute; top: 2px; width: 22px; height: 18px; margin-left: -11px; padding: 0; border: 0; background: none;
+  cursor: pointer; display: flex; justify-content: center;
+}
+.mark::before { content: ''; width: 3px; height: 12px; border-radius: 2px; background: var(--c, var(--body)); margin-top: 3px; }
+.mark[data-n]::after {
+  content: attr(data-n); position: absolute; top: -3px; left: 13px; font: 9px/1 Karla, system-ui, sans-serif; color: var(--soft);
+}
+.mark.k-line { --c: var(--strong); }
+.mark.k-room { --c: var(--head); }
+.mark.k-harm { --c: var(--accent); }
+.mark.k-bench { --c: var(--soft); }
+.tip {
+  position: absolute; bottom: 58px; z-index: 6; max-width: min(320px, calc(100vw - 32px)); padding: 7px 10px;
+  background: var(--tile); border: 1px solid var(--line2); border-radius: 10px; color: var(--strong); font-size: 13px;
+  line-height: 1.35; box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55); pointer-events: none; white-space: normal;
+}
+.tip b { color: var(--head); font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+.tip ul { margin: 0; padding: 0; list-style: none; }
+.tip li + li { margin-top: 3px; }
+
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-top: 4px; }
+.pill {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 36px; padding: 0 14px;
+  border-radius: 999px; border: 1px solid var(--line2); background: transparent; color: var(--strong); font-size: 14px;
+  font-weight: 600; cursor: pointer; transition: border-color 180ms var(--ease), color 180ms var(--ease);
+}
+.pill:hover { border-color: var(--head); }
+.pill.primary { min-width: 88px; background: var(--head); border-color: var(--head); color: #17130a; }
+.pill[aria-pressed="true"] { border-color: var(--head); color: var(--head); }
+.pill:disabled { opacity: 0.5; cursor: default; }
+.pill svg { width: 12px; height: 12px; flex: none; }
+.times { display: flex; align-items: baseline; gap: 10px; font: 600 14px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.times .prog { color: var(--head); font-size: 17px; }
+.times .film { color: var(--soft); font-weight: 400; font-size: 12.5px; }
+.times small { font: 400 11px Karla, system-ui, sans-serif; color: var(--quiet); margin-right: 3px; }
+.gap { flex: 1 1 0; }
+.ending-pick { display: none; align-items: center; gap: 6px; font-size: 12.5px; color: var(--quiet); }
+.ending-pick select {
+  min-height: 34px; max-width: 13.5em; padding: 0 10px; border-radius: 999px; border: 1px solid var(--head);
+  background: var(--page); color: var(--head); font-size: 13px; font-weight: 600; cursor: pointer;
+}
+/* short frames: the four endings fold into one menu, so the picture keeps its height */
+@media (max-height: 560px) and (min-width: 520px) {
+  .ending-pick { display: inline-flex; }
+  .endings-row { display: none; }
+  .scrub { height: 50px; }
+  .ticks span { font-size: 9px; }
+  .bar { padding-top: 2px; padding-bottom: 6px; }
+  .note { margin-top: 2px; }
+}
+.endings { display: flex; flex-wrap: wrap; gap: 6px; }
+.endings .pill { min-height: 32px; padding: 0 12px; font-size: 13px; font-weight: 400; color: var(--body); }
+.endings .pill[aria-pressed="true"] { color: var(--head); font-weight: 600; }
+.note { margin: 6px 0 0; font-size: 12.5px; color: var(--quiet); }
+.note span + span::before { content: '  \00b7  '; white-space: pre; }
+.note .warn { color: var(--body); }
+
+/* ---- x-ray ---------------------------------------------------------------------------------------------- */
+.xray { background: var(--page); border-top: 1px solid var(--line); padding: 12px 16px 16px; min-width: 0; }
+.theatre.wide .xray { border-top: 0; border-left: 1px solid var(--line); overflow: auto; }
+/* short landscape frames (the post's 16:9 embed, a phone on its side): the x-ray lies over the right of the stage
+   and the picture moves left, so the controls keep their room */
+.theatre.overlay .xray {
+  position: absolute; top: 0; right: 0; width: min(340px, 44%); overflow: auto; overscroll-behavior: contain; z-index: 5;
+  border-top: 0; border-left: 1px solid var(--line); background: rgba(13, 14, 24, 0.94); padding: 10px 12px 12px;
+}
+.theatre.overlay.xray-on .stage { justify-content: flex-start; }
+.theatre.overlay .gauges { grid-template-columns: minmax(0, 1fr); }
+.xray h2 { margin: 0 0 4px; font: 700 15px/1.3 "Zen Maru Gothic", Karla, system-ui, sans-serif; color: var(--head); }
+.xray p { margin: 0 0 10px; font-size: 13px; color: var(--body); }
+.gauges { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0 18px; }
+.theatre.wide .gauges { grid-template-columns: minmax(0, 1fr); }
+.gauges li { display: flex; flex-direction: column; gap: 1px; padding: 6px 0 7px; border-bottom: 1px solid var(--line); min-width: 0; }
+.gauges .name { font-size: 13px; line-height: 1.35; color: var(--strong); }
+.gauges .val { font: 600 12.5px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--head); overflow-wrap: anywhere; }
+.gauges .reads, .gauges .rule { font: 11px/1.35 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--quiet); overflow-wrap: anywhere; }
+
+/* ---- under the stage ------------------------------------------------------------------------------------ */
+.about { max-width: 720px; margin: 0 auto; padding: 22px 16px 40px; }
+.about h2 { margin: 18px 0 6px; font: 700 17px/1.3 "Zen Maru Gothic", Karla, system-ui, sans-serif; color: var(--head); letter-spacing: -0.01em; }
+.about h2:first-child { margin-top: 0; }
+.about p { margin: 0 0 10px; font: 16px/1.65 Georgia, "Times New Roman", serif; color: var(--body); max-width: 620px; }
+.about p.small { font: 13.5px/1.55 Karla, system-ui, sans-serif; color: var(--soft); }
+.about ul { margin: 0 0 10px; padding-left: 18px; color: var(--body); font-size: 14px; }
+.about li { margin: 0 0 4px; }
+.about code { font: 13px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.about .eyebrow { font: 600 11px/1 Karla, system-ui, sans-serif; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin: 0 0 8px; }
+
+@media (max-width: 560px) {
+  .bar { padding: 4px 12px 10px; }
+  .head { padding: 12px 16px 8px; }
+  .times .prog { font-size: 16px; }
+  .pill { padding: 0 12px; }
+  .endings .pill { padding: 0 10px; }
+  .xray { padding: 12px 16px 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; scroll-behavior: auto !important; }
+}
+.noscript { padding: 16px; color: var(--body); }

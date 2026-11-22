@@ -1,206 +1,115 @@
-// The room (Three.js): GREY STUB (harness-builder).
-//
-// The room builder replaces the furniture and the materials; the interface stays:
+// The room (Three.js): a dark front room near midnight, lit by the television (room-set).
 //
 //   const room = createRoom({ renderer, programmeCanvas, width, height, quality });
 //   room.update(S, shot)   // S = engine.signals(frame), shot = shots.js shotAt(frame)
 //   room.scene, room.camera
 //
-// Everything that moves reads S (or the shot): the screen shows the programme canvas, the screen spot
-// light takes its colour from the canvas average, its shadow softness from the bet's entropy, the
-// neighbour's window from the error, the motes from the running sum of entropy, the tea from the pluck
-// velocity, the wall clock from the programme clock. No state is carried between frames.
+// Parts: ./shell.js (walls, floor, doorway and hall, the two windows, the street, the neighbour's window, moon
+// spill), ./furniture.js (sideboard, wing chair and blanket, side table, cup and spoon, clock, print, books),
+// ./tea.js (the rippling, reflecting tea), ./dust.js (motes in the beam), ./tv.js + ./screen.js (the set and its
+// tube: tv-look's files; this file only creates and updates them).
+//
+// The light: the screen is the light. One shadow-casting spot at the tube, its colour and strength from the
+// programme canvas's average, its shadow radius from S.shadowRadius (soft while the box is unsure, razor-hard
+// when it is certain). A low, cool, static night fill so the room's shapes read. Nothing else lights the room:
+// the moon at the windows and the neighbour's window are unlit decals and glows.
+//
+// Everything that moves reads S (or the shot). No state is carried between frames.
 
 import * as THREE from 'three';
-import { ROOM } from '../shots.js';
-import { hash01 } from '../rng.js';
+import { ROOM, WIDE_A, REVERSE } from '../shots.js';
 import { createTV } from './tv.js';
+import { createShell } from './shell.js';
+import { createFurniture } from './furniture.js';
+import { createTea } from './tea.js';
+import { createDust } from './dust.js';
 
-const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+export const LIGHT = Object.freeze({
+  spotGain: 14.0,          // spot intensity (cd) per unit of the canvas's mean luminance
+  spotDecay: 1.35,        // a touch gentler than physical so the far wall holds the chair's shadow
+  spotAngle: 1.42,        // rad: the beam's half-angle (the tube's spread), penumbra below
+  spotPenumbra: 1.0,
+  fillSky: 0x6f86ad, fillGround: 0x1e1d1f, fillIntensity: 0.46,   // the static night fill
+  dustGain: 20.0,
+});
 
 export function createRoom({ renderer, programmeCanvas, width, height, quality = 'final' }) {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x000000);
-  const camera = new THREE.PerspectiveCamera(40, width / height, 0.05, 40);
+  const camera = new THREE.PerspectiveCamera(40, width / height, 0.03, 40);
+  camera.userData.heightPx = height;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;                    // PCF honours shadow.radius
 
-  const grey = (v) => new THREE.MeshLambertMaterial({ color: new THREE.Color(v, v, v) });
-  const tinted = (hex) => new THREE.MeshLambertMaterial({ color: hex });
-  const box = (w, h, d, mat, x, y, z, shadow = true) => {
-    const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
-    m.position.set(x, y, z); m.castShadow = shadow; m.receiveShadow = true; scene.add(m); return m;
-  };
-
-  // ---- the shell: floor, ceiling, walls (the back wall has the doorway and the window cut out) ---
-  const N = ROOM.neighbour;
-  const { w: RW, d: RD, h: RH } = ROOM.size, zB = ROOM.backWallZ, zF = zB + RD;
-  const wallMat = tinted(0x56606e), floorMat = tinted(0x4a4038);
-  const plane = (w, h, mat, pos, rot) => {
-    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), mat);
-    m.position.set(...pos); m.rotation.set(...rot); m.receiveShadow = true; scene.add(m); return m;
-  };
-  plane(RW, RD, floorMat, [0, 0, (zB + zF) / 2], [-Math.PI / 2, 0, 0]);
-  plane(RW, RD, grey(0.25), [0, RH, (zB + zF) / 2], [Math.PI / 2, 0, 0]);
-  plane(RD, RH, wallMat, [-RW / 2, RH / 2, (zB + zF) / 2], [0, Math.PI / 2, 0]);
-  plane(RD, RH, wallMat, [RW / 2, RH / 2, (zB + zF) / 2], [0, -Math.PI / 2, 0]);
-  plane(RW, RH, wallMat, [0, RH / 2, zF], [0, Math.PI, 0]);
-  {
-    const s = new THREE.Shape(); s.moveTo(-RW / 2, 0); s.lineTo(RW / 2, 0); s.lineTo(RW / 2, RH); s.lineTo(-RW / 2, RH); s.closePath();
-    const D = ROOM.doorway, Wn = ROOM.window;
-    const door = new THREE.Path(); door.moveTo(D.x - D.w / 2, 0.001); door.lineTo(D.x - D.w / 2, D.h); door.lineTo(D.x + D.w / 2, D.h); door.lineTo(D.x + D.w / 2, 0.001); door.closePath();
-    const win = new THREE.Path(); win.moveTo(Wn.x - Wn.w / 2, Wn.y - Wn.h / 2); win.lineTo(Wn.x - Wn.w / 2, Wn.y + Wn.h / 2); win.lineTo(Wn.x + Wn.w / 2, Wn.y + Wn.h / 2); win.lineTo(Wn.x + Wn.w / 2, Wn.y - Wn.h / 2); win.closePath();
-    s.holes.push(door, win);
-    const m = new THREE.Mesh(new THREE.ShapeGeometry(s), wallMat); m.position.z = zB; m.receiveShadow = true; scene.add(m);
-    box(RW, 0.1, 0.02, grey(0.7), 0, 0.05, zB + 0.011, false);                            // skirting board
-    // the dark hall beyond the doorway (nothing is ever there)
-    const hall = new THREE.Mesh(new THREE.BoxGeometry(D.w + 0.4, D.h + 0.3, 3), new THREE.MeshLambertMaterial({ color: 0x15171b, side: THREE.BackSide }));
-    hall.position.set(D.x, (D.h + 0.3) / 2, zB - 1.5); scene.add(hall);
-    // outside: the night street, and the neighbour's window across it
-    plane(30, 14, new THREE.MeshBasicMaterial({ color: 0x07090d }), [0, 4, N.z - 0.2], [0, 0, 0]);
-    // curtains either side of the window
-    box(0.32, Wn.h + 0.35, 0.06, tinted(0x6a5e55), Wn.x - Wn.w / 2 + 0.1, Wn.y, zB + 0.06);
-    box(0.32, Wn.h + 0.35, 0.06, tinted(0x6a5e55), Wn.x + Wn.w / 2 - 0.1, Wn.y, zB + 0.06);
-  }
-  const neighbourMat = new THREE.MeshBasicMaterial({ color: 0xffc870 });
-  const neighbour = plane(N.w, N.h, neighbourMat, [N.x, N.y, N.z], [0, 0, 0]);
-  neighbour.receiveShadow = false;
-
-  // ---- furniture ----------------------------------------------------------------------------
-  plane(2.4, 1.7, tinted(0x5a4a44), [0, 0.004, -0.5], [-Math.PI / 2, 0, 0]);             // rug
-  const C = ROOM.cabinet; box(C.w, C.h, C.d, tinted(0x4b3a2c), C.x, C.h / 2, C.z);
-  const Wc = ROOM.wallClock;
-  const clockFace = new THREE.Mesh(new THREE.CylinderGeometry(Wc.r, Wc.r, 0.03, 40), grey(0.75));
-  clockFace.rotation.x = Math.PI / 2; clockFace.position.set(Wc.x, Wc.y, Wc.z + 0.015); scene.add(clockFace);
-  const hand = (len, w) => {
-    const g = new THREE.BoxGeometry(w, len, 0.006); g.translate(0, len / 2, 0);
-    const m = new THREE.Mesh(g, grey(0.08)); m.position.set(Wc.x, Wc.y, Wc.z + 0.035); scene.add(m); return m;
-  };
-  const hourHand = hand(Wc.r * 0.55, 0.018), minuteHand = hand(Wc.r * 0.85, 0.012);
-  // the empty wing chair, back to camera, with a folded blanket
-  const ch = ROOM.chair, chairMat = tinted(0x50473f);
-  box(0.8, 0.42, 0.75, chairMat, ch.x, 0.21, ch.z);
-  box(0.8, 0.75, 0.16, chairMat, ch.x, 0.42 + 0.37, ch.z + 0.3);
-  box(0.14, 0.25, 0.7, chairMat, ch.x - 0.4, 0.55, ch.z);
-  box(0.14, 0.25, 0.7, chairMat, ch.x + 0.4, 0.55, ch.z);
-  box(0.12, 0.35, 0.3, chairMat, ch.x - 0.38, 1.0, ch.z + 0.22);
-  box(0.12, 0.35, 0.3, chairMat, ch.x + 0.38, 1.0, ch.z + 0.22);
-  box(0.5, 0.06, 0.32, tinted(0x8a7f6c), ch.x + 0.05, 0.45, ch.z - 0.05);                  // blanket
-  const tb = ROOM.table;
-  const table = new THREE.Mesh(new THREE.CylinderGeometry(tb.r, tb.r, 0.03, 24), tinted(0x4b3a2c));
-  table.position.set(tb.x, tb.h, tb.z); table.castShadow = table.receiveShadow = true; scene.add(table);
-  box(0.04, tb.h, 0.04, tinted(0x4b3a2c), tb.x, tb.h / 2, tb.z);
-  const cu = ROOM.cup;
-  const cup = new THREE.Mesh(new THREE.CylinderGeometry(cu.r, cu.r * 0.8, cu.h, 20), grey(0.8));
-  cup.position.set(cu.x, cu.y + cu.h / 2 + 0.015, cu.z); cup.castShadow = cup.receiveShadow = true; scene.add(cup);
-  const tea = new THREE.Mesh(new THREE.CircleGeometry(cu.r * 0.92, 24), tinted(0x3a2616));
-  tea.rotation.x = -Math.PI / 2; tea.position.set(cu.x, cu.y + cu.h + 0.005, cu.z); scene.add(tea);
-  // ripple rings: one per pluck of the last 36 frames (S.teaRings), expanding and fading by age
-  const RING_FRAMES = 36, rings = [];
-  for (let i = 0; i < 8; i++) {
-    const m = new THREE.Mesh(new THREE.RingGeometry(0.86, 1, 32), new THREE.MeshBasicMaterial({ color: 0xd8c8a8, transparent: true, opacity: 0, depthWrite: false }));
-    m.rotation.x = -Math.PI / 2; m.position.set(cu.x, cu.y + cu.h + 0.007, cu.z); m.visible = false; scene.add(m); rings.push(m);
-  }
-  const spoon = box(0.008, 0.11, 0.008, grey(0.85), cu.x + 0.02, cu.y + cu.h + 0.03, cu.z, true);
-  spoon.rotation.z = -0.35;
-
-  // ---- the television (tv.js / screen.js belong to tv-look) ------------------------------------
+  // ---- the programme texture (shared by the tube, the tea's reflection) ----
   const S0 = ROOM.screen;
   const progTex = new THREE.CanvasTexture(programmeCanvas);
   progTex.colorSpace = THREE.SRGBColorSpace; progTex.minFilter = THREE.LinearFilter; progTex.generateMipmaps = false;
+
+  // ---- the set (tv-look) ----
   const tv = createTV({ THREE, programmeTexture: progTex, anchors: ROOM });
   scene.add(tv.group);
-  camera.userData.heightPx = height;
 
-  // ---- lights: the screen spot (the only shadow caster) and a static night fill --------------
-  scene.add(new THREE.HemisphereLight(0x8090b0, 0x202028, 0.35));
-  const spot = new THREE.SpotLight(0xffffff, 0, 12, Math.PI / 2.4, 0.6, 1.2);
-  spot.position.set(S0.x, S0.y, S0.z + 0.03);
-  spot.target.position.set(S0.x, S0.y - 0.15, S0.z + 3); scene.add(spot); scene.add(spot.target);
+  // ---- the room ----
+  const shell = createShell({ ROOM, wideCam: WIDE_A, reverseCam: REVERSE });
+  scene.add(shell.group);
+  const furniture = createFurniture({ ROOM });
+  scene.add(furniture.group);
+  const tea = createTea({ ROOM, programmeTexture: progTex });
+  scene.add(tea.mesh);
+  const dust = createDust({ quality, height });
+  scene.add(dust.points);
+
+  // ---- light: the screen spot (the only shadow caster) and the static night fill ----
+  scene.add(new THREE.HemisphereLight(LIGHT.fillSky, LIGHT.fillGround, LIGHT.fillIntensity));
+  const spot = new THREE.SpotLight(0xffffff, 0, 14, LIGHT.spotAngle, LIGHT.spotPenumbra, LIGHT.spotDecay);
+  spot.position.set(S0.x, S0.y, S0.z + 0.04);
+  spot.target.position.set(S0.x - 0.15, S0.y - 0.45, S0.z + 3);
+  scene.add(spot); scene.add(spot.target);
   spot.castShadow = true;
-  const sm = quality === 'draft' ? 512 : 1024;
-  spot.shadow.mapSize.set(sm, sm); spot.shadow.camera.near = 0.1; spot.shadow.camera.far = 9; spot.shadow.bias = -0.0008;
+  const sm = quality === 'draft' ? 1024 : 2048;
+  spot.shadow.mapSize.set(sm, sm);
+  spot.shadow.camera.near = 0.12; spot.shadow.camera.far = 7.5;
+  spot.shadow.bias = -0.0004; spot.shadow.normalBias = 0.012;
+  spot.shadow.focus = 0.62;                                       // the shadow map covers the beam's core (~100 deg)
 
-  // canvas average for the spot light (40x30 downsample, then a plain mean)
+  // canvas average for the spot (a 40x30 downsample, then a plain mean)
   const avgCanvas = document.createElement('canvas'); avgCanvas.width = 40; avgCanvas.height = 30;
   const actx = avgCanvas.getContext('2d', { willReadFrequently: true });
+  const lightCol = new THREE.Color();
 
-  // ---- dust: ~1,500 motes in the beam; drift = velocity x running sum of H/ln32 ---------------
-  const MOTES = quality === 'draft' ? 600 : 1500;
-  const base = new Float32Array(MOTES * 3), vel = new Float32Array(MOTES * 3);
-  const BOXMIN = [-0.9, 0.35, -2.3], BOXSIZE = [1.8, 1.3, 2.9];          // the beam's volume
-  for (let i = 0; i < MOTES; i++) for (let k = 0; k < 3; k++) {
-    base[i * 3 + k] = BOXMIN[k] + hash01(7001, i, k, 0) * BOXSIZE[k];
-    vel[i * 3 + k] = (hash01(7002, i, k, 0) * 2 - 1) * (k === 1 ? 0.02 : 0.035);   // metres per unit of drift
-  }
-  const dustGeo = new THREE.BufferGeometry();
-  dustGeo.setAttribute('position', new THREE.BufferAttribute(base, 3));
-  dustGeo.setAttribute('vel', new THREE.BufferAttribute(vel, 3));
-  const dustMat = new THREE.ShaderMaterial({
-    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
-    uniforms: { uDrift: { value: 0 }, uOpacity: { value: 0.5 }, uColor: { value: new THREE.Color(1, 1, 1) },
-      uMin: { value: new THREE.Vector3(...BOXMIN) }, uSize: { value: new THREE.Vector3(...BOXSIZE) }, uScale: { value: height } },
-    vertexShader: `
-      attribute vec3 vel; uniform float uDrift, uScale; uniform vec3 uMin, uSize;
-      void main(){
-        vec3 p = uMin + mod(position - uMin + vel * uDrift, uSize);           // closed form: no stepping
-        vec4 mv = modelViewMatrix * vec4(p, 1.0);
-        gl_PointSize = max(1.0, 0.004 * uScale / -mv.z);
-        gl_Position = projectionMatrix * mv;
-      }`,
-    fragmentShader: `
-      uniform float uOpacity; uniform vec3 uColor;
-      void main(){ vec2 d = gl_PointCoord - 0.5; float a = smoothstep(0.5, 0.1, length(d)); gl_FragColor = vec4(uColor * a * uOpacity * 0.22, 1.0); }`,
-  });
-  const dust = new THREE.Points(dustGeo, dustMat); dust.frustumCulled = false; scene.add(dust);
-
-  // ---- per frame ------------------------------------------------------------------------------
+  // ---- per frame ----
   function update(S, shot) {
     const cam = shot.camera;
     camera.fov = cam.fov; camera.aspect = width / height;
     camera.position.set(...cam.pos); camera.lookAt(...cam.target); camera.updateProjectionMatrix(); camera.updateMatrixWorld();
 
-    // the screen: new picture, then the TV's own per-frame update
+    // the screen: new picture, then the set's own per-frame update
     progTex.needsUpdate = true;
     tv.update(S, shot, camera);
 
-    // screen light: colour and intensity from the canvas average
+    // screen light: colour and strength from the canvas average
     actx.drawImage(programmeCanvas, 0, 0, 40, 30);
     const px = actx.getImageData(0, 0, 40, 30).data;
     let r = 0, g = 0, b = 0; for (let i = 0; i < px.length; i += 4) { r += px[i]; g += px[i + 1]; b += px[i + 2]; }
     const n = px.length / 4 * 255; r /= n; g /= n; b /= n;
     const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b, m = Math.max(r, g, b, 1e-4);
     spot.color.setRGB(r / m, g / m, b / m, THREE.SRGBColorSpace);
-    spot.intensity = 40 * lum;
-    // shadow softness from the entropy: radius 1 + 5 H/ln32 (the engine's shadowRadius)
-    spot.shadow.radius = S.shadowRadius;
+    spot.intensity = LIGHT.spotGain * lum;
+    spot.shadow.radius = S.shadowRadius;                           // 1 + 5 H / ln 32
+    lightCol.copy(spot.color).multiplyScalar(lum);
 
-    // neighbour's window: lit while err <= ln 32
-    neighbourMat.color.set(S.windowLit ? 0xffc870 : 0x0b0c10);
-
-    // dust: closed-form drift, opacity from the entropy
-    dustMat.uniforms.uDrift.value = S.dustDrift;
-    dustMat.uniforms.uOpacity.value = S.dustOpacity;
-    dustMat.uniforms.uColor.value.copy(spot.color);
-
-    // tea: a ring per pluck sized by velocity squared
-    rings.forEach((m, i) => {
-      const ring = S.teaRings[i];
-      m.visible = !!ring;
-      if (!ring) return;
-      const t = clamp(ring.age / RING_FRAMES, 0, 1), rr = cu.r * 0.92 * (0.15 + 0.85 * t);
-      m.scale.set(rr, rr, 1); m.material.opacity = clamp(ring.size * (1 - t), 0, 1);
-    });
-    // spoon chatter when the mean velocity of the last 6 notes is 0.95 or more
-    spoon.rotation.z = -0.35 + (S.spoonChatter ? (hash01(7101, S.frame, 0, 0) * 2 - 1) * 0.06 : 0);
-
-    // wall clock: 23:30 plus the programme clock (angles clockwise from 12)
-    minuteHand.rotation.z = -S.minuteAngle;
-    hourHand.rotation.z = -S.hourAngle;
+    shell.update(S);
+    furniture.update(S);
+    tea.update(S, lightCol);
+    dust.update(S, spot, lightCol, LIGHT.dustGain);
   }
 
   return {
     scene, camera, update,
-    dispose() { scene.traverse((o) => { o.geometry?.dispose(); o.material?.dispose?.(); }); progTex.dispose(); },
+    dispose() {
+      scene.traverse((o) => { o.geometry?.dispose(); const ms = Array.isArray(o.material) ? o.material : [o.material]; ms.forEach((mm) => { if (!mm) return; for (const k in mm) if (mm[k]?.isTexture) mm[k].dispose(); mm.dispose?.(); }); });
+      progTex.dispose();
+    },
   };
 }

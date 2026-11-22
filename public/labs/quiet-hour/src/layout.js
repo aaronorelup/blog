@@ -20,14 +20,15 @@
 export const PROGRAMME_W = 1280, PROGRAMME_H = 960;
 export const BENCH = { x: 0, y: 0, w: 1600, h: 1200 };
 export const WOOD_EDGE = { x: 0, y: 1130, w: 1600, h: 70 };
-export const LAMP = { x: 760, y: 560, r: 900 };          // the warm pool of bench-lamp light (centre, radius)
+export const LAMP = { x: 560, y: 430, r: 1150 };         // the warm pool of the one bench lamp, upper left (centre, radius)
+export const LIGHT_DIR = { dx: 0.62, dy: 0.78 };          // paper shadows fall this way (down and to the right)
 
 // ---- the strip -------------------------------------------------------------------------------
 // 32 rows: rows 0..29 are pitches LOW to HIGH (drawn bottom to top), then a gap, then HOLD (30)
 // and REST (31) at the bottom. One column per note; the newest column sits under the punch at
 // PUNCH.x and older columns scroll left by COL_W per note.
 export const STRIP = {
-  x: 40, y: 120, w: 1360, h: 440,          // the paper
+  x: -12, y: 116, w: 1422, h: 460,         // the paper: runs off the left edge, rolls up on the right (ROLL)
   rowsTop: 140, rowH: 12.5,                // pitch row r (0 = lowest) has its top at rowsTop + (29 - r) * rowH
   gap: 15,                                 // between the 30 pitch rows and HOLD/REST
   colW: 22,                                // one note
@@ -49,8 +50,12 @@ export function rowYf(r) {
 export const STRIP_ROWS_BOTTOM = STRIP.rowsTop + 32 * STRIP.rowH + STRIP.gap;   // 555
 export const PUNCH = { x: 1100, y: 100, w: 44, h: 40, stroke: 14 }; // brass punch head; column centre at PUNCH.x; stroke = its drop
 export const LIGHTBOX = { x: 1076, y: 130, w: 48, h: 430 };      // under the newest column: holes glow amber here
-export const HOLE_R = 7.5;                                        // R in radius = R * (0.25 + 0.75 p)
-export const STYLUS = { pivot: { x: 1250, y: 70 }, len: 230 };   // brass pointer; its tip hangs over the newest column
+export const HOLE_R = 8.75;                                       // R in radius = R * (0.25 + 0.75 p)
+// brass stylus: a carriage riding a vertical rail just right of the lightbox; its tip points at the newest column.
+// The rail carries a ruler with one graduation per strip row (longer on the D-major rows).
+export const STYLUS = { railX: 1150, tipX: 1113, y0: 96, y1: 596, rulerX: 1166 };
+export const ROLL = { x: 1404, w: 50, y: 100, h: 492 };          // the blank paper's roll (the strip unwinds from it)
+export const PUNCH_BRIDGE = { x: 1062, y: 58, w: 76, h: 18 };     // iron crossbar the punch head hangs from
 
 // ---- the lower band --------------------------------------------------------------------------
 // STEP dial: log scale MIN..MAX. Angle (canvas radians, clockwise from +x) runs from a0 (lower
@@ -60,7 +65,7 @@ export function dialAngle(v) {
   const t = Math.log(v / DIAL.min) / Math.log(DIAL.max / DIAL.min);
   return DIAL.a0 + Math.min(1, Math.max(0, t)) * (DIAL.a1 - DIAL.a0);
 }
-export const CHALK_TEXT = { dx: 26, dy: -10 };                  // the chalked number, offset from the mark's outer end
+export const CHALK_TEXT = { dx: 24, dy: 18 };                   // the chalked number, offset from the mark's outer end
 export const KNOB = { x: 1010, y: 905, r: 46, clicksPerTurn: 24 }; // turns with the needle; ratchet of 24 clicks
 export const FLAGS = { x: 1050, y: 620, w: 300, h: 80, n: 10 };  // NEW TUNES: ten brass flags, OF TEN
 export const SHARE_DRUM = { x: 1050, y: 712, w: 84, h: 44 };     // two-digit drum, round(100 x share)
@@ -68,6 +73,12 @@ export const LESSONS = { x: 1146, y: 712, w: 204, h: 44 };       // six-digit od
 export const BOX = { x: 1370, y: 600, w: 190, h: 300 };          // the music box (the strip feeds into it)
 export const LID = { x: 1370, y: 600, w: 190, h: 300, hinge: 'top' };
 export const CRANK = { x: 1465, y: 1000, r: 70 };                // axle; the handle is at radius r; 1 turn per bar
+// the bench's still life, lower left (static; nothing reads them): lesson cards, a pencil, the chalk tray
+export const PROPS = {
+  cards: { x: 215, y: 735, w: 236, h: 156, rot: -0.12 },
+  pencil: { x: 70, y: 1062, rot: -0.3, len: 300 },
+  tray: { x: 150, y: 880, w: 250, h: 50, rot: 0.05 },
+};
 export const TITLE_CARD = { x: 420, y: 240, w: 640, h: 300, exitX: -700 }; // slides to x = exitX over frames 90..119
 
 // ---- where the maker's hands go (the palm centre; cuffs run off the bottom edge) ---------------

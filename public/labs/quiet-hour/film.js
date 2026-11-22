@@ -76,12 +76,14 @@ export async function createFilm({ canvas, width = 1280, height = 720, ending = 
     return engine;
   }
 
-  /** Draw frame `frame` (integer, 0..PROGRAMME_FRAMES-1) of the current ending. Returns the shot. */
-  function renderFrame(frame) {
+  /** Draw frame `frame` (integer, 0..PROGRAMME_FRAMES-1) of the current ending. Returns the shot.
+   *  opts.xray (the lab page only, never the film): the programme's x-ray labels on the TV picture. */
+  function renderFrame(frame, opts) {
     const f = Math.max(0, Math.min(PROGRAMME_FRAMES - 1, Math.floor(frame)));
     const S = engine.signals(f);
     const shot = shotAt(f);
-    programme.draw(progCtx, S, shot.view);
+    if (opts && opts.xray) programme.draw(progCtx, S, shot.view, { xray: true });
+    else programme.draw(progCtx, S, shot.view);
     room.update(S, shot);
     const cue = subs.at(f);
     const key = cue ? `${cue.id}|${cue.text}|${cue.alpha.toFixed(3)}` : null;

@@ -1,5 +1,5 @@
-// Every rule of the film bible (sections 3, 4, 5 and 7) that turns a number from the log into something seen or
-// heard, written once, here. src/signals.js applies them to the log for every note and frame; nothing else in the
+// Every rule of the film bible (v1.1, sections 3, 4, 5 and 7) that turns a number from the log into something seen
+// or heard, written once, here. src/signals.js applies them to the log for every note and frame; nothing else in the
 // film should re-derive them. No rule here can see the ending's name, the wall clock or Math.random.
 //
 // Two conventions hold everywhere:
@@ -7,18 +7,24 @@
 //     counts as worse than guessing, a sharpness that is not a number removes the hatching, and so on. The bible
 //     does not say; this is the one reading that never shows a broken run as a healthy one.
 //   - Thresholds compare the log's full-precision value with the bible's number exactly as written
-//     (">= 0.95" means >= 0.95).
+//     (">= 0.95" means >= 0.95). The one tolerance is the bible's own: "worse than guessing" is err > ln 32 + 1e-9.
 //
 // Anything marked AUTHORED is a choice the bible leaves open (a duration, a curve, a size). It is listed in the
 // report so the orchestrator can change it here, in one place.
 
-import { NOTE_FRAMES, BAR_FRAMES, FPS, frameAtClock } from './time.js';
+import { NOTE_FRAMES, BAR_FRAMES, FPS, PROGRAMME_FRAMES, frameAtClock } from './time.js';
 
 export const LN32 = Math.log(32);                      // the error of a uniform guess over the 32 rows
 
 const isNum = (x) => typeof x === 'number' && Number.isFinite(x);
 export const clamp = (x, a, b) => (x < a ? a : x > b ? b : x);
 export const smoothstep = (t) => { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); };
+
+/** The median of a short list of numbers (the mean of the middle two when the count is even). */
+export function median(values) {
+  const v = values.slice().sort((a, b) => a - b), n = v.length;
+  return n % 2 ? v[(n - 1) / 2] : (v[n / 2 - 1] + v[n / 2]) / 2;
+}
 
 // ---- section 3: the strip ---------------------------------------------------------------------------------------
 
@@ -61,25 +67,40 @@ export const DIAL_MIN = 0.03, DIAL_MAX = 30;            // log dial, 0.03 to 30
 /** Position of a step size on the dial, 0 at 0.03 and 1 at 30 (not clamped; null if not a positive number). */
 export const dialU = (v) => (isNum(v) && v > 0 ? Math.log(v / DIAL_MIN) / Math.log(DIAL_MAX / DIAL_MIN) : null);
 
-/** The limit measured right now: 2 / sharpness. Zero, negative or not a number: no limit (the hatching is gone). */
+/**
+ * (v1.1) The sharpness the dial trusts at a note: the median of the last 3 readings (this note's and the two
+ * before it; fewer at the very start). NaN if any of them is not a number.
+ */
+export const SHARP_MEDIAN_NOTES = 3;
+export const sharpnessMedian = (readings) => (readings.every(isNum) ? median(readings) : NaN);
+/** The limit measured right now: 2 / that median. Zero, negative or not a number: no limit, no hatching. */
 export const limitFromSharpness = (sharp) => (isNum(sharp) && sharp > 0 ? 2 / sharp : null);
+/**
+ * (v1.1) The latch: the first single reading AFTER 20:00 that is zero, negative or not a number means the edge can
+ * no longer be measured. The hatching goes at that note and never comes back.
+ */
+export const edgeLost = (sharpReading) => !(sharpReading > 0);
 
 /** AUTHORED: the knob turns 2 full turns over the dial's whole scale, the same direction as the needle. */
 export const KNOB_TURNS = 2;
 /**
- * AUTHORED: how a knob turn moves the needle. A turn takes max(3, ceil(|du| / 0.03)) frames (a big turn, like the
- * one at 20:00, takes longer), eased. A turn starts on the first frame the step size differs from where the knob
- * stands, unless the maker's left hand is drawing the chalk mark (frames 1440 to 1444, FORMAT): then it starts at
- * 1445, which is the bible's order "draws the chalk mark ... Then ... grips the knob and turns it".
+ * (v1.1) A knob turn: on any note whose step size differs from the note before, the knob (and the needle) go to
+ * the new value over that note's first 3 frames. At 20:00 the left hand is drawing the chalk tick on frames 1440
+ * and 1441, so that turn takes frames 1442 to 1444: a turn never starts while the tick is being drawn.
+ * AUTHORED: the needle eases (smoothstep on the log scale) and stands on the new value on the 3rd frame.
  */
-export const KNOB_TURN_MIN_FRAMES = 3, KNOB_TURN_DU_PER_FRAME = 0.03;
-export const knobTurnFrames = (du) => Math.max(KNOB_TURN_MIN_FRAMES, Math.ceil(Math.abs(du) / KNOB_TURN_DU_PER_FRAME));
+export const KNOB_TURN_FRAMES = 3;
 
-/** The chalk mark: drawn on at frame 1440 over 5 frames (FORMAT), at the limit measured at 20:00, number to 2 dp. */
-export const CHALK_FRAME = 1440, CHALK_FRAMES = 5, CHALK_PICKUP_FRAME = 1410;
-export const chalkProgress = (frame) => clamp((frame - CHALK_FRAME + 1) / CHALK_FRAMES, 0, 1);
+/**
+ * (v1.1) The chalk mark at 20:00 (FORMAT): the tick is drawn over frames 1440 to 1441 at the limit measured at
+ * 20:00; the number (that limit to 2 decimals) is chalked beside it over frames 1440 to 1444.
+ */
+export const CHALK_FRAME = 1440, CHALK_TICK_FRAMES = 2, CHALK_FRAMES = 5, CHALK_PICKUP_FRAME = 1410;
+export const chalkTickProgress = (frame) => clamp((frame - CHALK_FRAME + 1) / CHALK_TICK_FRAMES, 0, 1);
+export const chalkProgress = (frame) => clamp((frame - CHALK_FRAME + 1) / CHALK_FRAMES, 0, 1);   // the number
 export const chalkText = (limit20) => limit20.toFixed(2);
-export const chalkBusy = (frame) => frame >= CHALK_FRAME && frame < CHALK_FRAME + CHALK_FRAMES;
+/** The left hand is drawing the tick (it cannot turn the knob on these frames). */
+export const chalkTickBusy = (frame) => frame >= CHALK_FRAME && frame < CHALK_FRAME + CHALK_TICK_FRAMES;
 
 // ---- section 3: counters ----------------------------------------------------------------------------------------
 
@@ -92,18 +113,28 @@ export const FLAG_FLIP_FRAMES = 6;
 
 // ---- section 3: picture warmth and the glitches -----------------------------------------------------------------
 
-/** k = clamp((ln 32 - err) / (ln 32 - best err up to 20:00), 0, 1). */
-export const warmthK = (err, best20) => (isNum(err) ? clamp((LN32 - err) / (LN32 - best20), 0, 1) : 0);
+/**
+ * (v1.1) k = clamp((ln 32 - err6) / (ln 32 - best err up to 20:00), 0, 1), err6 = the mean error of the last 6
+ * notes (this one and the five before; fewer at the very start), so the colour does not pump from note to note.
+ */
+export const WARMTH_NOTES = 6;
+export const warmthK = (err6, best20) => (isNum(err6) ? clamp((LN32 - err6) / (LN32 - best20), 0, 1) : 0);
 /** Saturation and warmth of the whole picture = 0.15 + 0.85 k. */
 export const warmthOf = (k) => 0.15 + 0.85 * k;
 
-/** Hairline: on a note where ratio now (step size x sharpness / 2) is above 1. */
-export const hairlineOn = (ratio) => !(ratio <= 1);
+/**
+ * Hairline: on a note where ratio now is above 1, and (v1.1) only while the hatching exists. Ratio now = step size x
+ * sharpness / 2 with the same median of 3 readings as the hatching, so a hairline means: the needle is inside TOO FAR.
+ */
+export const hairlineOn = (ratioNow) => !(ratioNow <= 1);
 /** The hairline's place and shift, seeded by the note: y in [0.04, 0.96] of the strip, a 1 to 3 px shift. */
 export const HAIRLINE_PX = [1, 3];
 
-/** Tears: g = clamp(ln(err / err at 20:00) / ln 250, 0, 1). */
-export const tearAmount = (err, err20) => (isNum(err) ? clamp(Math.log(err / err20) / Math.log(250), 0, 1) : 1);
+/**
+ * (v1.1) Tears: g = clamp(ln(err / its best error so far) / ln 250, 0, 1), best so far = the lowest error at this
+ * note or any earlier one. So nothing tears while it is learning.
+ */
+export const tearAmount = (err, bestSoFar) => (isNum(err) ? clamp(Math.log(err / bestSoFar) / Math.log(250), 0, 1) : 1);
 /** floor(8 g) displaced bands, up to +/- 24 g px (programme-canvas pixels), reseeded per note. */
 export const tearBandCount = (g) => Math.floor(8 * g);
 export const tearMaxPx = (g) => 24 * g;
@@ -118,9 +149,16 @@ export const BLOCK_GRID = [16, 12], BLOCK_PX = 8;
 
 // ---- section 3: the maker's hands --------------------------------------------------------------------------------
 
-/** Worse than guessing: err above ln 32 (a non-number counts as worse). */
-export const worseThanGuessing = (err) => !(err <= LN32);
-/** Rule 1: out over one bar from the first worse note; back over 20 frames after 6 notes in a row at or below. */
+/**
+ * Worse than guessing: (v1.1) err > ln 32 + 1e-9 (at note 0 the error equals ln 32 to the last bits). A non-number
+ * counts as worse. "At or below ln 32" is the opposite of this, everywhere.
+ */
+export const GUESS_EPS = 1e-9;
+export const worseThanGuessing = (err) => !(err <= LN32 + GUESS_EPS);
+/**
+ * Rule 1: out over one bar from the first worse note; back over 20 frames after 6 notes in a row at or below.
+ * (v1.1) The neighbour's window uses the same switch.
+ */
 export const HANDS_OUT_FRAMES = BAR_FRAMES, HANDS_BACK_FRAMES = 20, HANDS_BACK_NOTES = 6;
 /** Rule 6: the tap-along finger taps on any note with p(pick) >= 0.6, lifting higher the surer. */
 export const TAP_ALONG_P = 0.6;
@@ -139,8 +177,11 @@ export const cardSlide = (frame) => smoothstep((frame - CARD_SLIDE[0] + 1) / (CA
 export const LID_BAR_FRAME = 2130, LID_POSE_FROM = 2124;
 /** AUTHORED: the left hand stays on the knob for 5 frames after a turn (so it holds on while turns keep coming). */
 export const GRIP_LINGER_FRAMES = NOTE_FRAMES;
-/** AUTHORED: poses blend linearly over 6 frames. */
-export const POSE_BLEND_FRAMES = 6;
+/**
+ * AUTHORED: poses blend linearly over 6 frames, except the move TO the knob, which takes 2 (the hand must be on the
+ * knob while a 3-frame turn happens: at 20:00 it comes straight from the chalk tick).
+ */
+export const POSE_BLEND_FRAMES = 6, GRIP_REACH_FRAMES = 2;
 export const POSES = ['rest', 'crank', 'tap', 'chalk', 'grip', 'card', 'lid'];
 
 // ---- section 4: the room ----------------------------------------------------------------------------------------
@@ -149,8 +190,6 @@ export const POSES = ['rest', 'crank', 'tap', 'chalk', 'grip', 'card', 'lid'];
 export const shadowRadius = (h) => 1 + 5 * h;
 /** Dust opacity = 0.25 + 0.75 H / ln 32. Drift = each mote's velocity x running sum of H / ln 32 (in seconds). */
 export const dustOpacity = (h) => 0.25 + 0.75 * h;
-/** The neighbour's window is lit while err <= ln 32. */
-export const windowLit = (err) => !worseThanGuessing(err);
 /** Tea: a ripple ring per pluck sized by velocity squared. AUTHORED: a ring lives 36 frames (1.5 s). */
 export const teaRingSize = (vel) => vel * vel;
 export const TEA_RING_FRAMES = 36;
@@ -165,21 +204,34 @@ export const WALL_START_MINUTES = 23 * 60 + 30;
 /** House hum: silent on any note where the step size changed, back over 2 s after 6 still notes. */
 export const HUM_STILL_NOTES = 6, HUM_BACK_FRAMES = 2 * FPS;
 
-// ---- section 7: the maker's lines -------------------------------------------------------------------------------
+// ---- section 7: the maker's lines (v1.1) ------------------------------------------------------------------------
+//
+// FORMAT lines start at their frame. A data line is spoken at the first note where its rule holds AND the voice is
+// free AND it would finish before the next FORMAT line is due. Until then it waits; on a note where its rule does
+// not hold it is not spoken (the maker only says what is true when it is said). Each data line is spoken at most
+// once, except "Yes.". Numbers are read at the note the line is spoken on. "Goodnight." cuts anything still playing,
+// and nothing is said after it (the last word is "Goodnight.").
 
-export const LINE_WAIT_NOTES = 12;                      // a line waits up to 2 bars, then is dropped
 export const SUBTITLE_EXTRA_S = 0.5;                    // the subtitle stays for the line's length plus half a second
+/** (v1.1) No subtitle runs past the programme's last frame (frame 2160 on is the encoder's black). */
+export const SUBTITLE_LAST_END = PROGRAMME_FRAMES;
 export const WORDS_PER_MINUTE = 130, LINE_PAD_S = 0.3;  // estimate when no recorded length is given
 export const YES_GAP_NOTES = 24, YES_P = 0.95;
-export const L1_FRAME = 30, L2_FRAME = DIAL_TAP_FRAMES[0], L6A_FRAME = CHALK_FRAME, GN_FRAME = 2135;
+export const L1_FRAME = 30, L2_FRAME = DIAL_TAP_FRAMES[0], L6A_FRAME = CHALK_FRAME + CHALK_FRAMES, GN_FRAME = 2135;
 
-/** A line's length in seconds: the recorded length when given (by exact text, then by id), else words / 130 wpm + 0.3 s. */
+/**
+ * A line's length in seconds: the recorded length of that exact text when there is one; else the recorded length
+ * given for its id (make/cues.mjs and loadEngine give the mean of the id's recorded variants, a better guess for
+ * "N in a hundred" with a new N); else its word count at 130 words a minute plus 0.3 s.
+ */
 export function lineSeconds(id, text, voiceDurations) {
   const d = voiceDurations && (voiceDurations[text] ?? voiceDurations[id]);
   if (isNum(d) && d > 0) return d;
   const words = text.trim().split(/\s+/).length;
   return (words * 60) / WORDS_PER_MINUTE + LINE_PAD_S;
 }
+/** True if a recorded length exists for exactly this text. */
+export const lineRecorded = (text, voiceDurations) => !!voiceDurations && isNum(voiceDurations[text]);
 
 const ONES = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve',
   'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
@@ -202,43 +254,57 @@ export function numberWords(x) {
 const capital = (s) => s[0].toUpperCase() + s.slice(1);
 
 /**
- * The lines, in table order (bible section 7). `format: true` lines fire at a fixed frame; every other line fires at
- * the first note whose log meets its rule. Each `when(g, c)` reads only the context `c` built by signals.js from the
- * log (per-note arrays and constants), never the ending's name. `text(g, c)` writes numbers from the triggering note.
+ * The lines, in table order (bible section 7).
+ *   format: true   starts at `frame`, in every ending
+ *   afterLine      starts on the first note after that line has finished, ahead of everything else
+ *   holds(g, c)    a data line's rule at note g: true or false, from the context `c` that signals.js builds from the
+ *                  log (per-note arrays and constants), never from the ending's name
+ *   text(g, c)     the words, with numbers read at the note the line is spoken on
+ *   reads          the log fields the rule reads (for the x-ray)
  */
 export const LINES = [
-  { id: 'L1', format: true, frame: L1_FRAME, rule: 'FORMAT, frame 30',
+  { id: 'L1', format: true, frame: L1_FRAME, rule: 'FORMAT, frame 30', reads: [],
     text: () => "Good evening. It hasn't heard a tune yet, so it plays every note at once." },
-  { id: 'L2', format: true, frame: L2_FRAME, rule: 'FORMAT, the 05:00 tap (frame 360)',
+  { id: 'L2', format: true, frame: L2_FRAME, rule: 'FORMAT, the 05:00 tap (frame 360)', reads: [],
     text: () => "That's how big a step it takes after a mistake. Not too big." },
-  { id: 'L3', rule: 'first note with 95% of the bet in the key of D (massInKey >= 0.95)',
-    when: (g, c) => c.massInKey[g] >= 0.95, text: () => "It's found the key. Nobody told it one." },
-  { id: 'L4', rule: 'first note with half the next notes right on unseen tunes (heldAcc >= 0.5)',
-    when: (g, c) => c.share[g] >= 0.5, text: () => 'Every second note right. On tunes it\'s never heard.' },
-  { id: 'YES', repeat: true, rule: 'p(pick) >= 0.95, >= 24 notes after the last "Yes.", nothing else playing',
-    when: (g, c) => c.ptok[g] >= YES_P, text: () => 'Yes.' },
-  { id: 'L5', rule: 'first note with ratio now >= 0.25',
-    when: (g, c) => c.ratio[g] >= 0.25, text: () => "A quarter of the way to the edge now. Nobody's touched it." },
-  { id: 'L6a', format: true, frame: L6A_FRAME, rule: 'FORMAT, frame 1440, with the chalk',
+  { id: 'L3', rule: '95% of the bet is in the key of D (massInKey >= 0.95)', reads: ['p'],
+    holds: (g, c) => c.massInKey[g] >= 0.95, text: () => "It's found the key. Nobody told it one." },
+  { id: 'L4', rule: 'half the next notes right on unseen tunes (heldAcc >= 0.5)', reads: ['heldAcc'],
+    holds: (g, c) => c.share[g] >= 0.5, text: () => 'Every second note right. On tunes it\'s never heard.' },
+  { id: 'YES', repeat: true, rule: 'p(pick) >= 0.95, at least 24 notes after the last "Yes.", nothing else playing',
+    reads: ['ptok'], holds: (g, c) => c.ptok[g] >= YES_P, text: () => 'Yes.' },
+  { id: 'L5', rule: 'ratio now >= 0.25 (step size against the hatching\'s edge)', reads: ['lr', 'sharp'],
+    holds: (g, c) => c.ratioNow[g] !== null && c.ratioNow[g] >= 0.25,
+    text: () => "A quarter of the way to the edge now. Nobody's touched it." },
+  { id: 'L6a', format: true, frame: L6A_FRAME, rule: 'FORMAT, frame 1445, right after the chalk', reads: [],
     text: () => "That's as big a step as it can take." },
-  { id: 'L6b', afterLine: 'L6a', rule: 'right after L6a, by the step size at note 288 against the limit at 20:00',
+  { id: 'L6b', afterLine: 'L6a', rule: 'right after L6a; chosen by the step size at note 288 against the limit at 20:00',
+    reads: ['lr', 'measured20.limit'],
     text: (g, c) => {
       const lr = c.lr[c.breakNote], before = c.lr[c.breakNote - 1], n = lr / c.limit20;
       if (lr === before) return "We'll leave it where it is.";
       if (Math.abs(n - 1) <= 1e-9) return "So that's where we'll put it.";
       return `We'll give it ${numberWords(n)} times that.`;
     } },
-  { id: 'L7', rule: 'after 20:00, first note with the share 0.05 under its 20:00 value',
-    when: (g, c) => g > c.breakNote && c.share[g] <= c.share[c.breakNote] - 0.05,
+  { id: 'L7', rule: 'after 20:00, the share is 0.05 or more under its 20:00 value but still at least half of it',
+    reads: ['heldAcc'],
+    holds: (g, c) => g > c.breakNote && c.share[g] <= c.share[c.breakNote] - 0.05 && c.share[g] >= c.share[c.breakNote] / 2,
     text: (g, c) => `${capital(intWords(shareDrum(c.share[g])))} in a hundred. It'll find it again.` },
-  { id: 'L8', rule: 'after 20:00, first note with the limit now >= 1.8 x the chalk mark',
-    when: (g, c) => g > c.breakNote && c.limitNow[g] !== null && c.limitNow[g] >= 1.8 * c.limit20,
+  { id: 'L8', rule: 'after 20:00, the hatching still exists and its edge is at 1.8 times the chalk mark or more',
+    reads: ['sharp', 'measured20.limit'],
+    holds: (g, c) => g > c.breakNote && c.limitNow[g] !== null && c.limitNow[g] >= 1.8 * c.limit20,
     text: () => "It's made itself room." },
-  { id: 'L9', rule: 'after 20:00, first note with the share under half its 20:00 value',
-    when: (g, c) => g > c.breakNote && c.share[g] < c.share[c.breakNote] / 2,
+  { id: 'L9', rule: 'after 20:00, the share is under half its 20:00 value', reads: ['heldAcc'],
+    holds: (g, c) => g > c.breakNote && c.share[g] < c.share[c.breakNote] / 2,
     text: (g, c) => `${capital(intWords(shareDrum(c.share[g])))} in a hundred.` },
-  { id: 'L10', repeat: true, rule: 'the hands come back (every time)',
-    when: (g, c) => c.handsBack[g], text: () => 'There you are.' },
-  { id: 'GN', format: true, frame: GN_FRAME, rule: 'FORMAT, frame 2135; never dropped, cuts anything still playing',
-    text: () => 'Goodnight.' },
+  { id: 'L10', rule: 'the hands have come back (and are on the bench)', reads: ['held'],
+    holds: (g, c) => c.handsReturned[g], text: () => 'There you are.' },
+  { id: 'GN', format: true, frame: GN_FRAME, rule: 'FORMAT, frame 2135; cuts anything still playing; the last word',
+    reads: [], text: () => 'Goodnight.' },
 ];
+/**
+ * AUTHORED (the bible does not say): when several data lines could be spoken on the same note, the one about an
+ * event goes first ("There you are." belongs to the hands coming back), then table order; "Yes." only when no
+ * other line is spoken on that note.
+ */
+export const SPEAK_ORDER = ['L10', 'L3', 'L4', 'L5', 'L7', 'L8', 'L9'];

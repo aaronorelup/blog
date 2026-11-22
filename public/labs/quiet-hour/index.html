@@ -2,78 +2,121 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The Quiet Hour</title>
-<meta name="description" content="A short film rendered live in your browser from a music box's training log. Four endings, one code path.">
+<meta name="description" content="A 100 second film drawn live in your browser from a real training run's log. A music box learns jigs on a late-night TV programme. Four endings, one code path, and an x-ray of every number.">
+<meta name="color-scheme" content="dark">
+<script>
+  // Framed inside the post (the site's <ao-game>): the post has already said what this is, so the page starts at the film.
+  try { if (window.self !== window.top) document.documentElement.dataset.embed = '1'; } catch (e) { document.documentElement.dataset.embed = '1'; }
+</script>
 <script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
-<style>
-  :root { --bg: #0b0b0c; --fg: #e8e2d4; --dim: #8c867a; }
-  html, body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.4 system-ui, sans-serif; }
-  body.render { overflow: hidden; }
-  body.render #ui { display: none; }
-  #stage { display: block; width: 100%; max-width: 1280px; aspect-ratio: 16 / 9; margin: 0 auto; background: #000; }
-  body.render #stage { width: auto; max-width: none; margin: 0; aspect-ratio: auto; }
-  #ui { max-width: 1280px; margin: 8px auto; padding: 0 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; box-sizing: border-box; }
-  #ui button { background: #222; color: var(--fg); border: 1px solid #444; border-radius: 4px; padding: 6px 12px; font: inherit; cursor: pointer; }
-  #ui button[aria-pressed="true"] { background: #4a3f2c; border-color: #8a7a55; }
-  #scrub { flex: 1 1 240px; min-width: 160px; }
-  #clock { font-variant-numeric: tabular-nums; color: var(--dim); min-width: 9ch; }
-  #status { color: var(--dim); }
-</style>
+<link rel="stylesheet" href="lab.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d0e18'/%3E%3Crect x='6' y='8' width='20' height='15' rx='3' fill='none' stroke='%23F0C06A' stroke-width='2'/%3E%3Cpath d='M12 27h8' stroke='%23F0C06A' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
 </head>
 <body>
-<canvas id="stage"></canvas>
-<div id="ui">
-  <button id="play" type="button">Play</button>
-  <input id="scrub" type="range" min="0" max="2159" value="0" aria-label="Frame">
-  <span id="clock">00:00</span>
-  <span role="group" aria-label="Ending">
-    <button type="button" data-ending="main" aria-pressed="true">main</button>
-    <button type="button" data-ending="alone" aria-pressed="false">alone</button>
-    <button type="button" data-ending="x3" aria-pressed="false">x3</button>
-    <button type="button" data-ending="x10" aria-pressed="false">x10</button>
-  </span>
-  <span id="status">loading</span>
+<div class="app" id="app">
+  <header class="head">
+    <h1>The Quiet Hour</h1>
+    <p>A short film your browser draws live, frame by frame, from the log of a real training run.</p>
+  </header>
+
+  <div class="theatre" id="theatre">
+    <div class="screen-col">
+      <div class="stage" id="stage" role="region" aria-label="The film">
+        <p class="coda-sub" id="codaSub" aria-hidden="true"></p>
+        <div class="poster card" id="poster">
+          <h2>THE QUIET HOUR</h2>
+          <p id="posterNote">Loading the film</p>
+          <button type="button" class="bigplay" id="bigPlay" disabled><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 1l9 5-9 5z" fill="currentColor"/></svg><span>Play</span></button>
+        </div>
+      </div>
+
+      <div class="bar" id="bar">
+        <div class="scrub" id="scrub">
+          <div class="marks" id="marks" role="group" aria-label="What happens in this ending"></div>
+          <input type="range" id="seek" min="0" max="2399" step="1" value="0" aria-label="Film time" aria-valuetext="00:00 on the programme clock">
+          <div class="tip" id="tip" hidden></div>
+        </div>
+        <div class="row">
+          <button type="button" class="pill primary" id="play" disabled aria-keyshortcuts="Space">Play</button>
+          <div class="times" aria-live="off">
+            <span class="prog"><small>clock</small><span id="progClock">00:00</span></span>
+            <span class="film"><small>film</small><span id="filmTime">0:00.0</span> / 1:40</span>
+          </div>
+          <label class="ending-pick"><span>Ending</span>
+            <select id="endingSel">
+              <option value="main">The programme</option>
+              <option value="alone">Left alone</option>
+              <option value="x3">Held at 3 times the limit</option>
+              <option value="x10">Held at 10 times the limit</option>
+            </select>
+          </label>
+          <span class="gap"></span>
+          <button type="button" class="pill" id="sound" aria-pressed="true">Sound on</button>
+          <button type="button" class="pill" id="xrayBtn" aria-pressed="false" aria-controls="xray">X-ray</button>
+        </div>
+        <div class="row endings-row">
+          <div class="endings" role="group" aria-label="Ending">
+            <button type="button" class="pill" data-ending="main" aria-pressed="true">The programme</button>
+            <button type="button" class="pill" data-ending="alone" aria-pressed="false">Left alone</button>
+            <button type="button" class="pill" data-ending="x3" aria-pressed="false">Held at 3 times the limit</button>
+            <button type="button" class="pill" data-ending="x10" aria-pressed="false">Held at 10 times the limit</button>
+          </div>
+        </div>
+        <p class="note" id="note"><span>Before 20:00 on the clock all four endings are the same film.</span><span class="warn" id="status" role="status"></span></p>
+      </div>
+    </div>
+
+    <aside class="xray" id="xray" hidden aria-labelledby="xrayTitle">
+      <h2 id="xrayTitle">X-ray</h2>
+      <p>Every moving thing in the film is one of these numbers. Each one is read, note by note, from the log of a real training run.</p>
+      <ul class="gauges" id="gauges"></ul>
+    </aside>
+  </div>
+
+  <main class="about">
+    <p class="eyebrow">About this film</p>
+    <h2>What you are watching</h2>
+    <p>A dark living room near midnight. On the old TV a calm maker, seen only as two hands, teaches a small music box to play jigs by ear, and at 20:00 on the programme clock turns it up to the limit it has just measured. Nothing on this page is a video: your browser draws every frame from the frame number and the ending you chose.</p>
+    <h2>What is real and what is designed</h2>
+    <p>Every number in the picture and every event comes from the log of a small neural network's training run on old fiddle tunes, the one published as Fable 5.2's version in the post, in its four endings. The room, the hands, the camera, the voice and its words, the thresholds that turn numbers into pictures, and a few fixed moments (the title card, the opening line, the taps every five minutes, the chalk at 20:00, Goodnight) are designed, the same in every ending.</p>
+    <p class="small">The marks on the time bar are what the rules make happen in the ending you picked. Switch endings and watch them move. Keys: Space plays and pauses, the arrow keys step 5 seconds.</p>
+
+    <h2>Where it comes from</h2>
+    <ul>
+      <li><a href="/ledger/three-ai-experiments/" target="_top">The post this film belongs to</a></li>
+      <li><a href="/labs/training-run/" target="_top">The training run the data comes from</a>, which you can run yourself</li>
+    </ul>
+    <h2>The recipe</h2>
+    <ul>
+      <li><a href="make/README.txt">make/README.txt</a>: how the film is rendered and checked frame by frame</li>
+      <li><a href="film.js">film.js</a>: one frame, as a function of (frame, ending)</li>
+      <li><a href="src/signals.js">src/signals.js</a> and <a href="src/rules.js">src/rules.js</a>: every number and every rule</li>
+      <li><a href="src/shots.js">src/shots.js</a>, <a href="src/programme/index.js">src/programme/</a>, <a href="src/room/index.js">src/room/</a>: the shots, the TV picture, the room</li>
+      <li><a href="src/player.js">src/player.js</a>: this page</li>
+    </ul>
+    <h2>Credits</h2>
+    <p class="small">three.js r160 (MIT License). Cormorant Garamond, Courier Prime and Caveat (SIL Open Font License, <a href="fonts/LICENSES.txt">fonts/LICENSES.txt</a>). Made by Claude Opus 5.5 for <a href="/ledger/three-ai-experiments/" target="_top">Aaron Orelup's blog</a>.</p>
+  </main>
 </div>
+<noscript><p class="noscript">This film is drawn by JavaScript in your browser. <a href="/ledger/three-ai-experiments/">The post</a> has the rendered film.</p></noscript>
+
 <script type="module">
-  // Two modes. ?render=1&w=..&h=..&ending=..&quality=.. : a bare canvas for make/render.mjs, which
-  // drives window.QH frame by frame. Otherwise: a minimal live player (requestAnimationFrame picks
-  // the frame from the elapsed time; the film itself never reads a clock).
-  import { createFilm } from './film.js';
-  import { FPS, PROGRAMME_FRAMES, clockText } from './src/time.js';
-
+  // Two modes. ?render=1&w=..&h=..&ending=..&quality=.. : a bare canvas for make/render.mjs, which drives
+  // window.QH frame by frame (film.js). Otherwise: the player (src/player.js).
   const q = new URLSearchParams(location.search);
-  const renderMode = q.has('render');
-  const canvas = document.getElementById('stage');
-  const W = +(q.get('w') || 1280), H = +(q.get('h') || 720);
-  if (renderMode) { document.body.classList.add('render'); canvas.style.width = W + 'px'; canvas.style.height = H + 'px'; }
-  const film = await createFilm({ canvas, width: W, height: H, ending: q.get('ending') || 'main', quality: q.get('quality') || 'final' });
-
-  if (!renderMode) {
-    const $ = (id) => document.getElementById(id);
-    const status = $('status'), scrub = $('scrub'), play = $('play'), clock = $('clock');
-    scrub.max = String(PROGRAMME_FRAMES - 1);
-    let frame = 0, playing = false, t0 = 0, f0 = 0, shown = -1, busy = false;
-    const show = (f) => { frame = f; if (f !== shown) { film.renderFrame(f); shown = f; } scrub.value = String(f); clock.textContent = clockText(f); };
-    await film.ready; status.textContent = ''; show(0);
-    function tick(now) {
-      if (!playing) return;
-      const f = Math.min(PROGRAMME_FRAMES - 1, f0 + Math.floor((now - t0) / 1000 * FPS));
-      show(f);
-      if (f >= PROGRAMME_FRAMES - 1) { playing = false; play.textContent = 'Play'; return; }
-      requestAnimationFrame(tick);
-    }
-    play.onclick = () => {
-      playing = !playing; play.textContent = playing ? 'Pause' : 'Play';
-      if (playing) { if (frame >= PROGRAMME_FRAMES - 1) frame = 0; f0 = frame; t0 = performance.now(); requestAnimationFrame(tick); }
-    };
-    scrub.oninput = () => { f0 = +scrub.value; t0 = performance.now(); show(+scrub.value); };
-    for (const b of document.querySelectorAll('[data-ending]')) b.onclick = async () => {
-      if (busy) return; busy = true; status.textContent = 'loading ' + b.dataset.ending;
-      await film.setEnding(b.dataset.ending);
-      for (const o of document.querySelectorAll('[data-ending]')) o.setAttribute('aria-pressed', String(o === b));
-      shown = -1; show(frame); status.textContent = ''; busy = false;
-    };
+  if (q.has('render')) {
+    document.body.classList.add('render');
+    const { createFilm } = await import('./film.js');
+    const W = +(q.get('w') || 1280), H = +(q.get('h') || 720);
+    const canvas = document.createElement('canvas');
+    canvas.id = 'render-canvas'; canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    document.body.prepend(canvas);
+    await createFilm({ canvas, width: W, height: H, ending: q.get('ending') || 'main', quality: q.get('quality') || 'final' });
+  } else {
+    const { startPlayer } = await import('./src/player.js');
+    startPlayer();
   }
 </script>
 </body>
