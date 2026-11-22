@@ -174,118 +174,164 @@ export function createTV({ THREE, programmeTexture, anchors }) {
   };
   const walnutTex = new THREE.CanvasTexture(walnutCanvas());
   walnutTex.colorSpace = THREE.SRGBColorSpace; walnutTex.wrapS = walnutTex.wrapT = THREE.RepeatWrapping;
-  walnutTex.repeat.set(1 / 0.9, 1 / 0.45); walnutTex.anisotropy = 4;
+  walnutTex.repeat.set(1 / 0.9, 1 / 0.45); walnutTex.anisotropy = 2;
   const clothTex = new THREE.CanvasTexture(clothCanvas());
   clothTex.colorSpace = THREE.SRGBColorSpace; clothTex.wrapS = clothTex.wrapT = THREE.RepeatWrapping;
   clothTex.repeat.set(1 / 0.07, 1 / 0.07);                            // a 256 px tile = 7 cm of cloth: threads about 1.1 mm
-  clothTex.anisotropy = 4;
+  clothTex.anisotropy = 2;
 
   const walnut = litByTube(THREE, new THREE.MeshLambertMaterial({ map: walnutTex, color: 0xffffff }), glow, { sheen: 0.025 });
-  const bezelMat = litByTube(THREE, new THREE.MeshLambertMaterial({ color: 0x1b1714 }), glow, { sheen: 0.07 });
-  const panelMat = litByTube(THREE, new THREE.MeshLambertMaterial({ color: 0x241c16 }), glow, { sheen: 0.04 });
+  const darkMat = litByTube(THREE, new THREE.MeshLambertMaterial({ color: 0x1d1815 }), glow, { sheen: 0.09 });
   const clothMat = litByTube(THREE, new THREE.MeshLambertMaterial({ map: clothTex }), glow, { sheen: 0.0, spill: 2.5, wrap: 0.6 });
   const brass = litByTube(THREE, new THREE.MeshLambertMaterial({ color: 0xb08a4a }), glow, { sheen: 0.22 });
-  const bakelite = litByTube(THREE, new THREE.MeshLambertMaterial({ color: 0x1e1814 }), glow, { sheen: 0.16 });
-  const backMat = new THREE.MeshLambertMaterial({ color: 0x1c1712 });
+  const flatMat = new THREE.MeshBasicMaterial({ vertexColors: true });
 
-  // receiveShadow is off: the screen light stands in front of the set's face, so nothing of the set is in its beam
-  const add = (geo, mat, { cast = false, x = 0, y = 0, z = 0, order = 0 } = {}) => {
-    const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.castShadow = cast; m.receiveShadow = false; m.renderOrder = order;
-    group.add(m); return m;
+  // Software WebGL pays for every draw call (tens of ms each at 1080p) and shades hidden fragments too, so the set is
+  // baked at load into one mesh per material (7 draws in all, none casting shadows: the screen light stands in front
+  // of the set's face, so nothing of the set is in its beam). Big flat faces that are never seen take the cheapest
+  // material.
+  const parts = { walnut: [], dark: [], brass: [], cloth: [], flat: [], glow: [] };
+  const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _e = new THREE.Euler(), _v = new THREE.Vector3(), _one = new THREE.Vector3(1, 1, 1);
+  const part = (bucket, geo, { x = 0, y = 0, z = 0, rx = 0, rz = 0, color = null, kind = 0 } = {}) => {
+    const g = geo.index ? geo.toNonIndexed() : geo.clone();
+    g.applyMatrix4(_m.compose(_v.set(x, y, z), _q.setFromEuler(_e.set(rx, 0, rz)), _one));
+    g.userData = { color, kind };
+    parts[bucket].push(g);
+  };
+  const groupOf = (geo, gi) => {                                        // one material group of a non-indexed geometry
+    const { start, count } = geo.groups[gi], out = new THREE.BufferGeometry();
+    for (const k of ['position', 'normal', 'uv']) {
+      const at = geo.attributes[k]; if (!at) continue;
+      out.setAttribute(k, new THREE.BufferAttribute(at.array.slice(start * at.itemSize, (start + count) * at.itemSize), at.itemSize));
+    }
+    return out;
+  };
+  const merged = (list) => {
+    const n = list.reduce((a, g) => a + g.attributes.position.count, 0);
+    const pos = new Float32Array(n * 3), nrm = new Float32Array(n * 3), uv = new Float32Array(n * 2), col = new Float32Array(n * 3), kind = new Float32Array(n);
+    let o = 0;
+    for (const g of list) {
+      const c = g.attributes.position.count;
+      pos.set(g.attributes.position.array, o * 3);
+      if (g.attributes.normal) nrm.set(g.attributes.normal.array, o * 3);
+      if (g.attributes.uv) uv.set(g.attributes.uv.array, o * 2);
+      const cc = new THREE.Color(g.userData.color ?? 0xffffff);
+      for (let i = 0; i < c; i++) { col[(o + i) * 3] = cc.r; col[(o + i) * 3 + 1] = cc.g; col[(o + i) * 3 + 2] = cc.b; kind[o + i] = g.userData.kind; }
+      o += c; g.dispose();
+    }
+    const out = new THREE.BufferGeometry();
+    out.setAttribute('position', new THREE.BufferAttribute(pos, 3)); out.setAttribute('normal', new THREE.BufferAttribute(nrm, 3));
+    out.setAttribute('uv', new THREE.BufferAttribute(uv, 2)); out.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    out.setAttribute('kind', new THREE.BufferAttribute(kind, 1));
+    out.computeBoundingSphere();
+    return out;
   };
 
-  // ---- the case: a rounded walnut box, a darker back ----------------------------------------------------------------
-  const caseGeo = slab(THREE, W, H, T.d, 0.04, 0.014);
-  // UVs: the extrusion's world UVs are in metres; the texture repeat sets the scale
-  add(caseGeo, walnut, { cast: true, x: cx, y: cy, z: zBack });
-  // the back panel (hardboard), just proud of the case back
-  add(new THREE.PlaneGeometry(W - 0.06, H - 0.06), backMat, { x: cx, y: cy, z: zBack - 0.001 }).rotation.y = Math.PI;
+  // ---- the case: a rounded walnut box -------------------------------------------------------------------------------
+  // The extrusion's rounded sides and edges (group 1) are walnut; its flat caps (group 0, front and back) are never
+  // seen (the front is covered by a thin walnut frame with the bezel's opening cut out of it), so they are flat dark.
+  // UVs: the extrusion's world UVs are in metres; the texture repeat sets the scale.
+  const CB = 0.014;
+  {
+    const caseGeo = slab(THREE, W, H, T.d, 0.04, CB);
+    part('flat', groupOf(caseGeo, 0), { x: cx, y: cy, z: zBack, color: 0x0d0907 });
+    part('walnut', groupOf(caseGeo, 1), { x: cx, y: cy, z: zBack });
+    caseGeo.dispose();
+    const fr = roundedRect(THREE, new THREE.Shape(), xL + CB, yBot + CB, W - 2 * CB, H - 2 * CB, 0.04 - CB);
+    const o = 0.006;                                                  // the opening hides under the bezel's edge
+    fr.holes.push(roundedRect(THREE, new THREE.Path(), S0.x - BEZ.w / 2 + o, S0.y - BEZ.h / 2 + o, BEZ.w - 2 * o, BEZ.h - 2 * o, 0.03 - o));
+    part('walnut', new THREE.ShapeGeometry(fr, 8), { z: zFront + 0.0005 });
+  }
 
-  // ---- the bezel mask: a dark plate with the tube's rounded opening ---------------------------------------------------
+  // ---- the bezel mask: a dark plate with the tube's rounded opening, a thin brass bead round it ---------------------
   const BZ_D = 0.016;                                                  // proud of the case front
-  const hole = [0, 0, S0.w - 0.006, S0.h - 0.006, 0.026];
-  add(slab(THREE, BEZ.w, BEZ.h, BZ_D, 0.03, 0.004, [hole]), bezelMat, { x: S0.x, y: S0.y, z: zFront - 0.004, order: -1 });
-  // a thin brass bead round the bezel
-  add(slab(THREE, BEZ.w + 0.008, BEZ.h + 0.008, 0.006, 0.034, 0.002, [[0, 0, BEZ.w - 0.004, BEZ.h - 0.004, 0.028]]), brass,
+  part('dark', slab(THREE, BEZ.w, BEZ.h, BZ_D, 0.03, 0.004, [[0, 0, S0.w - 0.006, S0.h - 0.006, 0.026]]), { x: S0.x, y: S0.y, z: zFront - 0.004 });
+  part('brass', slab(THREE, BEZ.w + 0.008, BEZ.h + 0.008, 0.006, 0.034, 0.002, [[0, 0, BEZ.w - 0.004, BEZ.h - 0.004, 0.028]]),
     { x: S0.x, y: S0.y, z: zFront - 0.002 });
   // the tube's black surround behind the glass (seen past the glass's edge at an angle)
-  add(new THREE.PlaneGeometry(S0.w + 0.02, S0.h + 0.02), new THREE.MeshBasicMaterial({ color: 0x050505 }), { x: S0.x, y: S0.y, z: S0.z - 0.004, order: -2 });
+  part('flat', new THREE.PlaneGeometry(S0.w + 0.02, S0.h + 0.02), { x: S0.x, y: S0.y, z: S0.z - 0.004, color: 0x050505 });
 
   // ---- the tube ------------------------------------------------------------------------------------------------------
   const screenMat = createScreenMaterial({ THREE, programmeTexture });
   screenMat.uniforms.uHalf.value.set(S0.w / 2, S0.h / 2);
   const screen = new THREE.Mesh(new THREE.PlaneGeometry(S0.w, S0.h, 24, 18), screenMat);
-  screen.position.set(S0.x, S0.y, S0.z); screen.renderOrder = -3; group.add(screen);   // drawn first: the depth test then spares the case behind it
+  screen.position.set(S0.x, S0.y, S0.z); screen.renderOrder = -3; group.add(screen);
 
   // ---- the control panel: two knobs over a speaker grille -------------------------------------------------------------
   const P = PANEL, pcx = P.x0 + P.w / 2, ptop = S0.y + BEZ.h / 2, pbot = S0.y - BEZ.h / 2;
-  add(slab(THREE, P.w, ptop - pbot, 0.008, 0.012, 0.002), panelMat, { x: pcx, y: (ptop + pbot) / 2, z: zFront - 0.002 });
+  part('dark', slab(THREE, P.w, ptop - pbot, 0.008, 0.012, 0.002), { x: pcx, y: (ptop + pbot) / 2, z: zFront - 0.002 });
   // knobs: a turned bakelite skirt and cap with a brass insert and a cream pointer line
   const knobProfile = [[0, 0], [0.026, 0], [0.027, 0.004], [0.022, 0.008], [0.020, 0.024], [0.017, 0.028], [0, 0.029]]
     .map(([r, h]) => new THREE.Vector2(r, h));
-  const knobGeo = new THREE.LatheGeometry(knobProfile, 36); knobGeo.rotateX(Math.PI / 2);
-  const capGeo = new THREE.CylinderGeometry(0.0115, 0.0115, 0.002, 32); capGeo.rotateX(Math.PI / 2);
+  const knobGeo = new THREE.LatheGeometry(knobProfile, 36);
+  const capGeo = new THREE.CylinderGeometry(0.0115, 0.0115, 0.002, 32);
   const tickGeo = new THREE.BoxGeometry(0.0022, 0.009, 0.0012);
-  const tickMat = new THREE.MeshBasicMaterial({ color: 0x8f8470 });
   const knobY = [ptop - 0.05, ptop - 0.125];
   knobY.forEach((ky, i) => {
-    const z0 = zFront + 0.006;
-    add(knobGeo, bakelite, { x: pcx, y: ky, z: z0 });
-    add(capGeo, brass, { x: pcx, y: ky, z: z0 + 0.0295 });
-    const tick = add(tickGeo, tickMat, { x: pcx, y: ky, z: z0 + 0.031 });
-    const a = i === 0 ? 0.55 : -0.9;                                   // where the knobs were last left (AUTHORED)
-    tick.position.x += Math.sin(a) * 0.0155; tick.position.y += Math.cos(a) * 0.0155; tick.rotation.z = -a;
+    const z0 = zFront + 0.006, a = i === 0 ? 0.55 : -0.9;              // where the knobs were last left (AUTHORED)
+    part('dark', knobGeo, { x: pcx, y: ky, z: z0, rx: Math.PI / 2 });
+    part('brass', capGeo, { x: pcx, y: ky, z: z0 + 0.0295, rx: Math.PI / 2 });
+    part('flat', tickGeo, { x: pcx + Math.sin(a) * 0.0155, y: ky + Math.cos(a) * 0.0155, z: z0 + 0.031, rz: -a, color: 0x8f8470 });
   });
   // the speaker grille: woven cloth in a thin brass frame
   const gTop = knobY[1] - 0.05, gBot = pbot + 0.022, gW = P.w - 0.026, gH = gTop - gBot;
-  const cloth = new THREE.PlaneGeometry(gW, gH);
-  add(cloth, clothMat, { x: pcx, y: (gTop + gBot) / 2, z: zFront + 0.0065 });
-  add(slab(THREE, gW + 0.008, gH + 0.008, 0.004, 0.004, 0.0012, [[0, 0, gW - 0.002, gH - 0.002, 0.002]]), brass,
+  part('cloth', new THREE.PlaneGeometry(gW, gH), { x: pcx, y: (gTop + gBot) / 2, z: zFront + 0.0065 });
+  part('brass', slab(THREE, gW + 0.008, gH + 0.008, 0.004, 0.004, 0.0012, [[0, 0, gW - 0.002, gH - 0.002, 0.002]]),
     { x: pcx, y: (gTop + gBot) / 2, z: zFront + 0.005 });
 
   // ---- feet: four small turned walnut feet with brass shoes ------------------------------------------------------------
   const footGeo = new THREE.CylinderGeometry(0.016, 0.011, FEET, 20);
   const shoeGeo = new THREE.CylinderGeometry(0.0115, 0.0115, 0.004, 20);
   for (const fx of [xL + 0.06, xR - 0.06]) for (const fz of [zFront - 0.06, zBack + 0.06]) {
-    add(footGeo, walnut, { x: fx, y: T.y + FEET / 2, z: fz });
-    add(shoeGeo, brass, { x: fx, y: T.y + 0.002, z: fz });
+    part('walnut', footGeo, { x: fx, y: T.y + FEET / 2, z: fz });
+    part('brass', shoeGeo, { x: fx, y: T.y + 0.002, z: fz });
   }
+  for (const g of [knobGeo, capGeo, tickGeo, footGeo, shoeGeo]) g.dispose();
 
-  // ---- glow: a haze round the tube, a halo on the wall behind the set (additive, coloured by the canvas mean) ----------
-  const glowMat = (shape, strength, half) => new THREE.ShaderMaterial({
-    uniforms: { uProg: glow.uProg, uStrength: { value: strength }, uHalf: { value: half },
-      uTube: { value: new THREE.Vector2(S0.x, S0.y) }, uTubeHalf: { value: new THREE.Vector2(S0.w / 2, S0.h / 2) } },
+  // ---- glow: a haze ring round the tube (kind 0) and a halo on the wall behind the set (kind 1), additive, coloured
+  // by the canvas mean. The ring has no fragments over the picture.
+  const HZ = 0.12, zWall = (anchors.backWallZ ?? -3) + 0.004, wall = { hw: 0.95, hh: 0.68, x: S0.x + 0.05, y: S0.y + 0.12 };
+  {
+    const outer = roundedRect(THREE, new THREE.Shape(), -S0.w / 2 - HZ, -S0.h / 2 - HZ, S0.w + 2 * HZ, S0.h + 2 * HZ, 0.03 + HZ);
+    outer.holes.push(roundedRect(THREE, new THREE.Path(), -S0.w / 2, -S0.h / 2, S0.w, S0.h, 0.03));
+    part('glow', new THREE.ShapeGeometry(outer, 6), { x: S0.x, y: S0.y, z: zFront + 0.02, kind: 0 });
+    part('glow', new THREE.PlaneGeometry(2 * wall.hw, 2 * wall.hh), { x: wall.x, y: wall.y, z: zWall, kind: 1 });
+  }
+  const glowMat = new THREE.ShaderMaterial({
+    uniforms: { uProg: glow.uProg, uTube: { value: new THREE.Vector2(S0.x, S0.y) }, uTubeHalf: { value: new THREE.Vector2(S0.w / 2, S0.h / 2) },
+      uWall: { value: new THREE.Vector4(wall.x, wall.y, wall.hw, wall.hh) }, uStrength: { value: new THREE.Vector2(0.10, 0.09) } },
     transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false,
     polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
-    vertexShader: 'varying vec2 vW; void main(){ vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xy; gl_Position = projectionMatrix * viewMatrix * w; }',
+    vertexShader: 'attribute float kind; varying vec2 vW; varying float vK; void main(){ vW = position.xy; vK = kind; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
     fragmentShader: `
-      uniform sampler2D uProg; uniform float uStrength; uniform vec2 uHalf, uTube, uTubeHalf; varying vec2 vW;
+      uniform sampler2D uProg; uniform vec2 uTube, uTubeHalf, uStrength; uniform vec4 uWall; varying vec2 vW; varying float vK;
       float sdRR(vec2 p, vec2 b, float r) { vec2 q = abs(p) - b + r; return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r; }
       void main() {
         vec3 avg = textureLod(uProg, vec2(0.5), 12.0).rgb;
-        ${shape}
-        gl_FragColor = vec4(avg * a * uStrength, 1.0);
+        float a;
+        if (vK < 0.5) {
+          float d = sdRR(vW - uTube, uTubeHalf, 0.03);
+          a = exp(-max(d, 0.0) / 0.022) * smoothstep(0.0, 0.004, d) * (1.0 - smoothstep(0.08, 0.12, d)) * uStrength.x;
+        } else {
+          vec2 e = (vW - uWall.xy) / uWall.zw, k = e * vec2(1.0, 1.25);
+          a = exp(-dot(k, k) * 3.2) * (1.0 - smoothstep(0.8, 1.0, max(abs(e.x), abs(e.y)))) * uStrength.y;
+        }
+        gl_FragColor = vec4(avg * a, 1.0);
       }`,
   });
-  // the haze just in front of the glass: a ring round the tube (no fragments over the picture), falling off from
-  // the tube's edge outward
-  {
-    const R = 0.12, outer = roundedRect(THREE, new THREE.Shape(), -S0.w / 2 - R, -S0.h / 2 - R, S0.w + 2 * R, S0.h + 2 * R, 0.03 + R);
-    outer.holes.push(roundedRect(THREE, new THREE.Path(), -S0.w / 2, -S0.h / 2, S0.w, S0.h, 0.03));
-    const q = new THREE.Mesh(new THREE.ShapeGeometry(outer, 6), glowMat(
-      'float d = sdRR(vW - uTube, uTubeHalf, 0.03); float a = exp(-max(d, 0.0) / 0.022) * smoothstep(0.0, 0.004, d) * (1.0 - smoothstep(0.08, 0.12, d));',
-      0.10, new THREE.Vector2(S0.w / 2 + R, S0.h / 2 + R)));
-    q.position.set(S0.x, S0.y, zFront + 0.02); q.renderOrder = 2; group.add(q);
-  }
-  // the halo on the wall behind: wide and soft, centred a little above the set
-  {
-    const zWall = (anchors.backWallZ ?? -3) + 0.004, hw = 0.95, hh = 0.68, cxw = S0.x + 0.05, cyw = S0.y + 0.12;
-    const q = new THREE.Mesh(new THREE.PlaneGeometry(2 * hw, 2 * hh), glowMat(
-      `vec2 e = (vW - vec2(${cxw.toFixed(4)}, ${cyw.toFixed(4)})) / uHalf; vec2 k = e * vec2(1.0, 1.25);
-       float a = exp(-dot(k, k) * 3.2) * (1.0 - smoothstep(0.8, 1.0, max(abs(e.x), abs(e.y))));`,
-      0.09, new THREE.Vector2(hw, hh)));
-    q.position.set(cxw, cyw, zWall); q.renderOrder = 2; group.add(q);
-  }
+
+  // ---- one mesh per material ------------------------------------------------------------------------------------------
+  const meshOf = (bucket, mat, order) => {
+    const m = new THREE.Mesh(merged(parts[bucket]), mat);
+    m.castShadow = false; m.receiveShadow = false; m.renderOrder = order; m.name = `qh-tv-${bucket}`;
+    group.add(m); return m;
+  };
+  meshOf('flat', flatMat, -2);
+  meshOf('dark', darkMat, -1);
+  meshOf('walnut', walnut, 0);
+  meshOf('brass', brass, 0);
+  meshOf('cloth', clothMat, 0);
+  meshOf('glow', glowMat, 2);
 
   // ---- per frame -----------------------------------------------------------------------------------------------------
   const tmpA = new THREE.Vector3(), tmpB = new THREE.Vector3();
