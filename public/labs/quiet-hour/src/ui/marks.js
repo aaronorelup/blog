@@ -33,10 +33,10 @@ const KINDS = {
 const PAIR = { 'tears-off': 'tears-on' };
 
 // the log values that caused an event, as "field value" pairs (the line's own bookkeeping left out)
-const SKIP = new Set(['seconds', 'recorded', 'waitedNotes', 'performed', 'gripping', 'handsIn', 'latched', 'times']);
+const SKIP = new Set(['seconds', 'recorded', 'waitedNotes', 'performed', 'gripping', 'handsIn', 'latched']);
 const FIELD = { ln32: 'ln 32', tenLn32: '10 x ln 32', limit20: 'limit at 20:00', share20: 'share at 20:00', bestSoFar: 'best error so far',
   lrBefore: 'lr before', err6: 'error of 6 notes', meanVel6: 'mean velocity of 6', median3: 'median of 3 sharp', limitNow: 'edge now',
-  ratioNow: 'step / edge', massInKey: 'mass in key', share: 'heldAcc', err: 'held', lr287: 'lr at 19:56', lr288: 'lr at 20:00' };
+  ratioNow: 'step / edge', massInKey: 'mass in key', share: 'heldAcc', err: 'held', lr287: 'lr before 20:00', lr288: 'lr at 20:00', times: 'times the limit' };
 export function whyText(e) {
   if (e.format) return 'A fixed moment, the same in every ending.';
   const out = [];
