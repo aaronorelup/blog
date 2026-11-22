@@ -185,15 +185,7 @@
   {
    "file": "src/shots.js",
    "rule": "compare",
-   "detail": "^f (>=|<) (12|14|36) \\* B$",
-   "reason": "AUTHORED: the camera and the cuts: the shot table is allowed as a whole (bible 6, 9; orchestrator ruling); programme views change on bar lines 12, 14, 36"
-  },
-  {
-   "file": "src/shots.js",
-   "rule": "literal",
-   "detail": "^360$",
-   "match": "Math.PI / 360",
-   "reason": "NOT-TIME: half a field of view in degrees to radians"
+   "reason": "AUTHORED: the camera and the cuts: the shot table is allowed as a whole (bible 6, 9; orchestrator ruling): shots change on bar lines, programme views on bars 12, 14, 36. Clocks and ending names in this file still fail"
   },
   {
    "file": "film.js",
@@ -330,7 +322,7 @@
   {
    "file": "src/shots.js",
    "rule": "literal",
-   "reason": "AUTHORED: the shot table (bars, lens, push, the programme view per frame) is the camera, allowed as a whole (bible 6, 9; orchestrator ruling). Clocks and ending names in this file still fail"
+   "reason": "AUTHORED: the shot table (bars, lens, push, the programme view per frame) is the camera, allowed as a whole (bible 6, 9; orchestrator ruling); also Math.PI / 360 (half a field of view to radians). Clocks and ending names in this file still fail"
   },
   {
    "file": "src/programme/",

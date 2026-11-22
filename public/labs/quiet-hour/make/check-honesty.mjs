@@ -44,7 +44,8 @@ function args(argv) {
   const a = {};
   for (let i = 0; i < argv.length; i++) {
     if (!argv[i].startsWith('--')) continue;
-    a[argv[i].slice(2)] = argv[i + 1] && !argv[i + 1].startsWith('--') ? argv[++i] : true;
+    const k = argv[i].slice(2), v = argv[i + 1] && !argv[i + 1].startsWith('--') ? argv[++i] : true;
+    a[k] = k in a ? [].concat(a[k], v) : v;              // a repeated option (--plant) keeps every value
   }
   return a;
 }
