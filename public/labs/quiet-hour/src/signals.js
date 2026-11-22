@@ -12,7 +12,7 @@
 //   engine.perNote          // per-note arrays (for the sound and the x-ray)
 //   engine.subtitleAt(f)    // the subtitle at a frame (none from frame 2160 on: that is the encoder's black)
 //
-// Every rule of the bible (v1.1) lives in ./rules.js and is applied here once. Everything smoothed or accumulated
+// Every rule of the bible (v1.2) lives in ./rules.js and is applied here once. Everything smoothed or accumulated
 // (hand presence, pose blends, the knob, the hum, the dust's drift, medians and means over the last few notes, the
 // line schedule) is computed for every note and frame when the engine is created, by walking forward from the
 // start; signals(frame) only looks things up. So frames can be asked for in any order, and the same frame always
@@ -162,7 +162,7 @@
 //   wallClock      ['HH:MM']            '23:50' at the turn, '23:59' on the last frame
 //   minuteAngle, hourAngle [rad]        clockwise from 12
 //
-// the maker's voice (bible 7, v1.1)
+// the maker's voice (bible 7, v1.1; v1.2: L7 is only said while the hands are on the bench)
 //   subtitle       [string | null]      the line showing now (from its start for its length + 0.5 s; a newer line
 //                                       replaces it; never past frame 2159)
 //   subtitleId     [string | null]      its id;  subtitleStart [frame | null]  when it started
@@ -509,7 +509,8 @@ export function createEngine(shared, endingData, opts = {}) {
   }
 
   // ---- the maker's lines (bible 7) ------------------------------------------------------------------------------------
-  const ctx = Object.freeze({ lr, ptok, share, massInKey, limitNow, ratioNow, limit20, breakNote: BREAK_NOTE, handsReturned });
+  const ctx = Object.freeze({ lr, ptok, share, massInKey, limitNow, ratioNow, limit20, breakNote: BREAK_NOTE, handsIn,
+    handsReturned });
   const { cues, report } = scheduleLines(ctx, opts.voiceDurations);
   const dropped = Object.freeze(report.filter((r) => !r.format && !r.after && !r.repeat && !r.spoken.length && r.heldNotes > 0)
     .map((r) => Object.freeze({ id: r.id, text: r.textAtFirstHeld, trigger: r.firstHeldNote, note: r.lastHeldNote,
@@ -528,7 +529,7 @@ export function createEngine(shared, endingData, opts = {}) {
   const count = (arr, fn) => arr.reduce((n, x, i) => n + (fn(x, i) ? 1 : 0), 0);
   const meta = Object.freeze({
     ending: opts.name ?? endingData.ending,              // a label only: no rule reads it
-    bible: 'v1.1',
+    bible: 'v1.2',
     tokens: Object.freeze(tokens), P, HOLD, REST, ln32: R.LN32,
     limit20, chalkText: R.chalkText(limit20), err20, share20, best20, best20Note, hatchLostAt,
     run: Object.freeze({ push: endingData.push ?? null, climb: endingData.climb ?? null, rule: endingData.rule ?? null }),
@@ -998,7 +999,7 @@ function lineValues(id, g, d) {
     case 'YES': return { ptok: fmt(d.ptok[g]) };
     case 'L5': return { ratioNow: fmt(d.ratioNow[g]) };
     case 'L6b': return { lr287: fmt(d.lr[BREAK_NOTE - 1]), lr288: fmt(d.lr[BREAK_NOTE]), limit20: fmt(d.limit20), times: fmt(d.lr[BREAK_NOTE] / d.limit20) };
-    case 'L7': return { share: fmt(d.share[g]), share20: fmt(d.share20) };
+    case 'L7': return { share: fmt(d.share[g]), share20: fmt(d.share20), err: fmt(d.err[g]), handsIn: d.handsIn[g] };
     case 'L8': return { limitNow: fmt(d.limitNow[g]), chalk: fmt(d.limit20), times: fmt(d.limitNow[g] / d.limit20) };
     case 'L9': return { share: fmt(d.share[g]), share20: fmt(d.share20) };
     case 'L10': return { errLast6: d.err.slice(g - 5, g + 1).map(fmt) };

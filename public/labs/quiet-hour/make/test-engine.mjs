@@ -1,4 +1,4 @@
-// Tests the engine (src/signals.js + src/rules.js) against the bible (v1.1) and the verified run files.
+// Tests the engine (src/signals.js + src/rules.js) against the bible (v1.2) and the verified run files.
 //
 //   node make/test-engine.mjs [<runs-dir>]      (or QH_RUNS=<runs-dir>)
 //
@@ -221,7 +221,7 @@ if (!RUNS) {
     ok(eng.meta.limit20 === runs[e][288].measured20.limit, `${e}: limit at 20:00`);
   }
 
-  section('7 bible rules (v1.1) against values computed from the run files');
+  section('7 bible rules (v1.1 and v1.2) against values computed from the run files');
   for (const e of ENDINGS) {
     const eng = engines[e], R = runs[e];
     const Sc = new Map();
@@ -386,7 +386,8 @@ if (!RUNS) {
       L3: [(g) => R[g].massInKey >= 0.95, () => "It's found the key. Nobody told it one."],
       L4: [(g) => acc[g] >= 0.5, () => "Every second note right. On tunes it's never heard."],
       L5: [(g) => ratioT[g] !== null && ratioT[g] >= 0.25, () => "A quarter of the way to the edge now. Nobody's touched it."],
-      L7: [(g) => g > 288 && acc[g] <= acc[288] - 0.05 && acc[g] >= acc[288] / 2, (g) => `${n100(g)} in a hundred. It'll find it again.`],
+      // (v1.2) a reassurance needs somebody there: only while the hands are on the bench
+      L7: [(g) => g > 288 && acc[g] <= acc[288] - 0.05 && acc[g] >= acc[288] / 2 && inAt[g], (g) => `${n100(g)} in a hundred. It'll find it again.`],
       L8: [(g) => g > 288 && limitT[g] !== null && limitT[g] >= 1.8 * limit20, () => "It's made itself room."],
       L9: [(g) => g > 288 && acc[g] < acc[288] / 2, (g) => `${n100(g)} in a hundred.`],
     };
@@ -423,6 +424,7 @@ if (!RUNS) {
     const yes = cs.filter((c) => c.id === 'YES').map((c) => c.note);
     ok(yes.every((g, i) => R[g].ptok >= 0.95 && (i === 0 || g - yes[i - 1] >= 24)), `${e}: "Yes." only on p(pick) >= 0.95, at least 24 notes apart`);
     ok(cs.at(-1).id === 'GN' && cs.at(-1).frame === 2135, `${e}: "Goodnight." is the last word, at frame 2135`);
+    ok(cs.filter((c) => c.id === 'L7').every((c) => inAt[c.note] && S(c.frame).handsIn), `${e}: L7 is only said while the hands are on the bench`);
     for (const c of cs.filter((x) => x.id === 'L7' || x.id === 'L9')) {
       ok(c.text.startsWith(n100(c.note) + ' in a hundred.') && c.text.startsWith(Cap(numberText(S(c.frame).shareDrum))), `${e}: ${c.id} says the drum counter's number at the note it is spoken on: ${c.text}`);
     }

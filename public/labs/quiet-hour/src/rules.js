@@ -1,4 +1,4 @@
-// Every rule of the film bible (v1.1, sections 3, 4, 5 and 7) that turns a number from the log into something seen
+// Every rule of the film bible (v1.2, sections 3, 4, 5 and 7) that turns a number from the log into something seen
 // or heard, written once, here. src/signals.js applies them to the log for every note and frame; nothing else in the
 // film should re-derive them. No rule here can see the ending's name, the wall clock or Math.random.
 //
@@ -286,9 +286,11 @@ export const LINES = [
       if (Math.abs(n - 1) <= 1e-9) return "So that's where we'll put it.";
       return `We'll give it ${numberWords(n)} times that.`;
     } },
-  { id: 'L7', rule: 'after 20:00, the share is 0.05 or more under its 20:00 value but still at least half of it',
-    reads: ['heldAcc'],
-    holds: (g, c) => g > c.breakNote && c.share[g] <= c.share[c.breakNote] - 0.05 && c.share[g] >= c.share[c.breakNote] / 2,
+  // (v1.2) L7 is a reassurance, so somebody has to be there: the hands are on the bench, by the hands' own rule
+  { id: 'L7', rule: 'after 20:00, the share is 0.05 or more under its 20:00 value but still at least half of it, and the hands are on the bench',
+    reads: ['heldAcc', 'held'],
+    holds: (g, c) => g > c.breakNote && c.share[g] <= c.share[c.breakNote] - 0.05 && c.share[g] >= c.share[c.breakNote] / 2
+      && c.handsIn[g],
     text: (g, c) => `${capital(intWords(shareDrum(c.share[g])))} in a hundred. It'll find it again.` },
   { id: 'L8', rule: 'after 20:00, the hatching still exists and its edge is at 1.8 times the chalk mark or more',
     reads: ['sharp', 'measured20.limit'],

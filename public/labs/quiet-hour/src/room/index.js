@@ -29,8 +29,8 @@ export const LIGHT = Object.freeze({
   spotDecay: 1.35,        // a touch gentler than physical so the far wall holds the chair's shadow
   spotAngle: 1.42,        // rad: the beam's half-angle (the tube's spread), penumbra below
   spotPenumbra: 1.0,
-  fillSky: 0x6f86ad, fillGround: 0x1e1d1f, fillIntensity: 0.46,   // the static night fill
-  dustGain: 20.0,
+  fillSky: 0x7a8fb0, fillGround: 0x26252a, fillIntensity: 1.05,   // the static night fill
+  dustGain: 28.0,
 });
 
 export function createRoom({ renderer, programmeCanvas, width, height, quality = 'final' }) {
