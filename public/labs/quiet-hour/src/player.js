@@ -2,7 +2,7 @@
 //
 // The film itself (../film.js) is a pure function of (frame, ending) and never reads a clock. This file owns time:
 //   - Sound is the master clock: one AudioContext, the ending's soundtrack decoded into a buffer and played from the
-//     chosen offset. Film seconds = offset + (context time since start) - output latency.
+//     chosen offset. Film seconds = offset + (context time of the sample being heard now - context time at start).
 //   - With the sound off, not loaded, or missing, time advances from requestAnimationFrame timestamps.
 //   - Each animation frame draws film frame floor(seconds x 24). Frames 2160 and later are black (the coda: sound only)
 //     and at 100 s it stops on a Replay card.
@@ -180,11 +180,17 @@ export function startPlayer() {
 
   // ---- the clock --------------------------------------------------------------------------------------------------------
   function now() {
-    if (st.mode === 'audio' && st.ac && st.src) {
-      const lat = (st.ac.outputLatency || st.ac.baseLatency || 0);
-      return Math.max(st.srcOffset, st.srcOffset + (st.ac.currentTime - st.srcStart) - lat);
-    }
+    if (st.mode === 'audio' && st.ac && st.src) return Math.max(st.srcOffset, st.srcOffset + (heardTime(st.ac) - st.srcStart));
     return st.t;
+  }
+  // the context time of the sample being heard now: the output timestamp, carried forward to this moment (currentTime
+  // moves in blocks of up to tens of milliseconds); otherwise currentTime less the output latency
+  function heardTime(ac) {
+    const fallback = ac.currentTime - (ac.outputLatency || ac.baseLatency || 0);
+    if (ac.state !== 'running' || typeof ac.getOutputTimestamp !== 'function') return fallback;
+    const o = ac.getOutputTimestamp();
+    if (!o || !(o.contextTime > 0) || !(o.performanceTime > 0)) return fallback;
+    return Math.min(ac.currentTime, o.contextTime + Math.max(0, performance.now() - o.performanceTime) / 1000);
   }
 
   function tick(ts) {
@@ -251,7 +257,7 @@ export function startPlayer() {
     if (st.playing && !st.scrubbing) startClock();
     if (!st.started) hidePoster();
     if (ui.poster.dataset.kind === 'replay') hidePoster();
-    draw(frameOf(st.t)); updateReadouts();
+    draw(frameOf(st.t)); updateReadouts(); setPlayLabel();
   }
 
   // ---- sound ------------------------------------------------------------------------------------------------------------
@@ -351,6 +357,8 @@ export function startPlayer() {
     // the sound of the old ending stops at once; the picture keeps time on its own until the new sound is in
     if (st.playing) { stopSource(); st.mode = 'raf'; st.lastTs = null; }
     st.audio = { ending: null, buffer: null, state: 'none', token: st.audio.token + 1 };
+    // fetch and decode the new sound while the new ending's numbers are built, not after
+    if (st.ac && st.soundOn) loadAudio(name);
     st.endingChain = st.endingChain.then(async () => {
       if (!st.film || st.ending !== name) return;
       await st.film.setEnding(name);

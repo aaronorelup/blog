@@ -83,12 +83,13 @@ export function marksFor(engine) {
   return out;
 }
 
-/** Marks closer than `minFrames` merged into groups: [{ frame, cls, items: [mark] }]. */
+/** Marks within `minFrames` of a group's first mark merged into it: [{ frame, cls, items: [mark] }]. Measured from the
+ *  first mark, not chained, so a busy minute becomes a few small groups whose tips still have room for the values. */
 export function groupMarks(marks, minFrames) {
   const groups = [];
   for (const m of marks) {
     const g = groups[groups.length - 1];
-    if (g && m.frame - g.last <= minFrames) { g.items.push(m); g.last = m.frame; }
+    if (g && m.frame - g.frame <= minFrames) { g.items.push(m); g.last = m.frame; }
     else groups.push({ frame: m.frame, last: m.frame, items: [m] });
   }
   const rank = { 'k-harm': 0, 'k-room': 1, 'k-bench': 2, 'k-line': 3 };
