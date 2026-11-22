@@ -1,21 +1,21 @@
 ---
 id: "AO-087"
-title: "Three AI experiments: a training run, a lesson and a TV film"
-summary: "My Grok Bot agent found the most interesting things people are making with Fable 5.2 and Opus 5.5, then tested three of them: music made by a real training run, a lesson that checks its own physics, and a TV film."
+title: "Three AI experiments, built by my Grok agent and again by Claude"
+summary: "My Grok Bot agent built three ideas people are making with Fable 5.2 and Opus 5.5: music from a real training run, a lesson that checks its own physics and a TV film. Then Claude built each one again."
 date: 2026-11-21
 topic: "video"
 project: []
 draft: false
 preview:
-  verdict: "All three worked"
-  takeaway: "A real training run makes listenable music, a lesson can refuse to open until its physics pass, and a film can break because its data breaks. No AI model calls."
+  verdict: "All six worked"
+  takeaway: "Gages built all three in about 20 minutes with no AI calls. Claude's versions went further: a model that learns, checks seen failing, a film with four endings."
   points:
-    - "Pushed past its limit at 20:00, the music got cleaner for about four minutes before it fell apart."
-    - "Two of the lesson's first six self-tests could never fail. A deliberately broken version caught that."
-    - "2,142 film frames rendered in 128 seconds in a browser, on a computer with no graphics card."
-  image: "/media/previews/three-ai-experiments.webp"
-  loop: "/media/previews/three-ai-experiments.mp4"
-  alt: "An old TV in a dark wallpapered room showing a painted landscape, a floor lamp and a wall clock beside it"
+    - "Fable's network learned 609 old fiddle tunes, got 56% of next notes right on unseen tunes and fell apart at 26:32."
+    - "Opus's lesson shows each of its nine checks failing on a broken engine and found Gages's landings about 1 km too long."
+    - "The film's code makes a calm programme when left alone. At 10 times the limit the maker's hands are gone at 20:04."
+  image: "/media/previews/three-ai-experiments-claude.webp"
+  loop: "/media/previews/three-ai-experiments-claude.mp4"
+  alt: "An old wooden TV in a dark blue living room at night shows a cream title card, THE QUIET HOUR, under a wall clock at half past eleven, with a neighbour's window glowing warm at the edge"
 ---
 
 I asked Gages, my Grok Bot agent, to go find the most interesting things people are making with
@@ -23,6 +23,9 @@ Claude's newest models, Fable 5.2 and Opus 5.5, read through my blog for ideas, 
 the best ones and write them up. It picked three and built all of them in one sitting on its own
 cloud computer. **All three worked, and none of them needed an AI model to run.** Gages wrote
 the code itself, so no Claude, Opus or Fable was used and there was no bill.
+
+Then I gave each of the three to Claude's own models, Fable 5.2 and Opus 5.5, and they built them
+again. Each of their versions sits right under Gages's.
 
 - **A training run you can hear.** A tiny orchestra learns a tune from noise by real gradient
   descent, the same math that trains AI models. At 20:00 of a 30-minute programme, the way
@@ -41,6 +44,10 @@ the code itself, so no Claude, Opus or Fable was used and there was no bill.
 - **The Quiet Hour.** An 89-second film of an old TV in a dark room, where everything on screen
   is driven by the training run's numbers. It breaks because the data breaks, not because a
   script says so.
+- **The same film by Claude Fable 5.2 and Opus 5.5, with a maker on the TV.** Almost everything
+  that moves is a number from Fable's training run above, and one piece of code renders all four
+  of its endings. Left alone it stays a calm programme. At 20:00 the maker turns the box up to
+  its measured limit, and at 26:32 the hands leave.
 
 ## Where the ideas came from
 
@@ -343,7 +350,7 @@ The lesson's "Break the engine" box makes this same table in your browser, from 
 
 </details>
 
-## The Quiet Hour
+## The Quiet Hour: Gages's version
 
 An old TV in a dark living room, built in Three.js (a library for 3D in a web page). The
 programme on it, *THE QUIET HOUR*, is a painted landscape whose brushwork sharpens as the
@@ -376,6 +383,138 @@ explodes, the picture tears and the sun becomes an eye. The soundtrack is the tr
 
 </details>
 
+## The Quiet Hour: Fable 5.2 and Opus 5.5's version
+
+Gages's film has nobody on the TV, and all its fright is in the last 11 seconds. So I had Claude
+Fable 5.2 direct a new one and Claude Opus 5.5 agents build it. **Almost everything that moves
+in it is a number from Fable's training run above, and one piece of code renders all four
+endings.** Left alone it's a calm programme. At 10 times its limit, it's gone at 20:04.
+
+<figure><video controls playsinline preload="metadata" poster="/media/three-ai-experiments/fable-opus-quiet-hour-poster.webp" src="/media/three-ai-experiments/fable-opus-quiet-hour.mp4"></video><figcaption><b>The Quiet Hour, the programme ending</b> <span class="ao-meta">100 s · 1920x1080 · Three.js, drawn a frame at a time in a browser with no graphics card · sound on, subtitles in the picture</span></figcaption></figure>
+
+- **Every gauge is a number.** Two cut-paper hands teach a music box jigs. A paper strip shows
+  what it believes as pencil haze and what it plays as punched holes, and a dial shows its step
+  size and its limit.
+- **20:00 is quiet. The break comes at 26:32.** At 20:00 the maker chalks the measured limit on
+  the dial and turns the box up to it. It plays on, slowly getting worse. At 26:32 it's
+  worse than guessing. The hands leave, a neighbour's window goes dark and the box plays on
+  alone, completely sure and right about one time in ten.
+- **The empty chair shows it too.** The TV is the only light that changes. The chair's shadow is
+  a soft half-metre blur while the box is unsure, razor-sharp once it's certain. No red, no jump
+  scare.
+- **The four endings are the proof.** No code knows which ending it's drawing. Left alone, the
+  hands close the lid on "Goodnight." At 3 times the limit they're away from 20:12 to
+  20:58. At 10 times the maker ends up saying only "Yes." to an empty bench, because
+  the box is sure of every note.
+- **Nobody has heard the sound.** The agents can't hear. The voice was designed from a written
+  description, not cloned, and every line was checked by turning it back into text.
+- **What's real and what's designed.** Real: every gauge, hole, colour and shadow, and every
+  number the maker says. Designed: the set, the maker, the shots, every rule, the voice, and a
+  few moments keyed to the clock, like the chalk at 20:00.
+- **Next to Gages's.** His is one push-in with no cuts and no maker, made in minutes. This one
+  shows something's wrong 20 seconds before it breaks, and took 45 agent
+  runs and about 7 hours.
+- **The limits.** The room is drawn like a game, so light doesn't bounce off the walls, and up
+  close the chair looks like a model. It has two windows, each with a neighbour's window switched by the
+  same number, since no one window shows both ways the camera looks. The page you can play was only tested in Chrome.
+
+All four endings from 18:20, in sync and silent. Up to 20:00 they're identical to
+the pixel.
+
+<ao-compare cols="2" aspect="16/9" sync>
+<figure><video controls muted playsinline preload="metadata" poster="/media/three-ai-experiments/fable-opus-quiet-hour-ending-main.webp" src="/media/three-ai-experiments/fable-opus-quiet-hour-ending-main.mp4"></video><figcaption><b>The programme</b><span class="ao-meta">set to the limit at 20:00, then up 2% a note · the hands leave at 26:32</span></figcaption></figure>
+<figure><video controls muted playsinline preload="metadata" poster="/media/three-ai-experiments/fable-opus-quiet-hour-ending-alone.webp" src="/media/three-ai-experiments/fable-opus-quiet-hour-ending-alone.mp4"></video><figcaption><b>Left alone</b><span class="ao-meta">the step size never changes · the hands close the lid on "Goodnight."</span></figcaption></figure>
+<figure><video controls muted playsinline preload="metadata" poster="/media/three-ai-experiments/fable-opus-quiet-hour-ending-x3.webp" src="/media/three-ai-experiments/fable-opus-quiet-hour-ending-x3.mp4"></video><figcaption><b>Held at 3 times the limit</b><span class="ao-meta">the hands are away from 20:12 to 20:58, then it heals</span></figcaption></figure>
+<figure><video controls muted playsinline preload="metadata" poster="/media/three-ai-experiments/fable-opus-quiet-hour-ending-x10.webp" src="/media/three-ai-experiments/fable-opus-quiet-hour-ending-x10.mp4"></video><figcaption><b>Held at 10 times the limit</b><span class="ao-meta">the hands are gone at 20:04, the picture breaks into blocks at 20:16</span></figcaption></figure>
+</ao-compare>
+
+Or draw it live in your browser, with an x-ray that names the number behind every moving thing.
+
+<ao-game src="/labs/quiet-hour/" poster="/media/three-ai-experiments/fable-opus-quiet-hour-lab-poster.webp" size="about 3 MB" label="The Quiet Hour, drawn live in your browser" aspect="16/9" note="Press Play with the sound on. Pick an ending, scrub, or turn on the x-ray. A slow computer gets a smaller picture, and the sound keeps time."><a href="/labs/quiet-hour/"><img src="/media/three-ai-experiments/fable-opus-quiet-hour-lab-poster.webp" alt="The lab page at 19:01: the dark living room with the old TV and the wall clock, a timeline of the film's events with buttons for the four endings under it, and the x-ray panel naming the number behind each moving thing." loading="lazy"></a></ao-game>
+
+<div class="gallery-280">
+<figure><img src="/media/three-ai-experiments/fable-opus-quiet-hour-still-room.webp" alt="Past the arm of an empty chair, a cup of tea on a small round table sits in the light of an old TV across the dark room, where two knitted cuffs work a music box on a green bench." loading="lazy"><figcaption><b>The room</b> <span class="ao-meta">11:40 · lit by the TV</span></figcaption></figure>
+<figure><img src="/media/three-ai-experiments/fable-opus-quiet-hour-still-strip.webp" alt="Close on the TV: a ruled paper strip with grey pencil haze and dark punched holes in tune-like rows, a brass stylus at its newest edge lit amber from below, clock 13:53." loading="lazy"><figcaption><b>What it believes and what it plays</b> <span class="ao-meta">13:53 · pencil haze and holes</span></figcaption></figure>
+<figure><img src="/media/three-ai-experiments/fable-opus-quiet-hour-still-chalk.webp" alt="The STEP dial at the turn: a chalk tick and 0.98 chalked at the edge of the hatched TOO FAR zone, the needle on the mark, a hand on the knob, ten flags with six up, clock 20:03, a fading 'Yes.' subtitle." loading="lazy"><figcaption><b>Just after 20:00</b> <span class="ao-meta">20:03 · the limit chalked, the needle on it. At 20:00 exactly the hand covers the mark</span></figcaption></figure>
+<figure><img src="/media/three-ai-experiments/fable-opus-quiet-hour-still-reverse.webp" alt="The empty green armchair from beside the TV, its hard-edged black shadow on the striped wall behind it, the folded blanket on its arm, a teacup on the side table and the neighbour's window dark." loading="lazy"><figcaption><b>The empty chair</b> <span class="ao-meta">29:30 · its shadow hardens as the box gets surer</span></figcaption></figure>
+<figure><img src="/media/three-ai-experiments/fable-opus-quiet-hour-still-gone.webp" alt="The TV picture gone cold grey with no hands on the bench: large sure holes on the strip, torn bands and blocky patches across the strip, dial and counters, clock 27:55." loading="lazy"><figcaption><b>Alone</b> <span class="ao-meta">27:55 · worse than guessing, and completely sure</span></figcaption></figure>
+<figure><img src="/media/three-ai-experiments/fable-opus-quiet-hour-still-x10.webp" alt="The STEP dial in the ten-times ending, grey and torn: the needle far past the chalked 0.98 mark, the flags nearly all down, counters broken into blocks, subtitle 'We'll give it ten times that.', clock 21:15." loading="lazy"><figcaption><b>Held at 10 times</b> <span class="ao-meta">21:15 · the same code, a different log</span></figcaption></figure>
+<figure><img src="/media/three-ai-experiments/fable-opus-quiet-hour-still-alone.webp" alt="The room at midnight from behind the armchair: the TV is still warm green, both of the maker's hands still on the bench, one closing the music box's lid, the wall clock at twelve, the neighbour's window lit and 'Goodnight.' beneath." loading="lazy"><figcaption><b>Left alone, the last second</b> <span class="ao-meta">29:46 · the hands close the lid</span></figcaption></figure>
+</div>
+
+<details><summary>Every gauge and the number behind it</summary>
+
+| On screen | Number from the run | Rule |
+|---|---|---|
+| Pencil haze on the strip | the bet on each of the 32 choices | darker the likelier, one column a note |
+| Punched hole | the note it picked, and how sure it was | bigger the surer, the same rule as how hard the music box plucks it |
+| Brass stylus over the strip | how spread out the bet is | wanders while it's unsure, dead still when it's certain |
+| STEP dial needle | the step size (the learning rate) | on a dial from 0.03 to 30 |
+| TOO FAR hatching | the sharpness, how sharply the error curves | starts at the biggest stable step right then, 2 divided by the sharpness. Gone for good once it can't be measured |
+| Chalk mark | the limit measured at 20:00 | 0.98, chalked at 20:00 |
+| Knob and its click | the step size changing | turns, with a ratchet click, on every note where it changes, with or without a hand on it |
+| NEW TUNES flags, OF TEN | the share of next notes right on tunes it never saw | flags up = that share times ten, changed on bar lines, with a two-digit counter beside it |
+| LESSONS counter | training steps so far | an odometer |
+| Colour of the programme | the error on tunes it never saw, over the last 6 notes | grey when it knows nothing, full colour at its best, grey again once it's worse than guessing |
+| Hairlines in the strip | the step size against the limit right then | a 1 to 3 pixel shift on any note where the step is past the limit, a beat before the error moves |
+| Tears | the error against its best so far | sideways bands that grow with the error. Nothing tears while it's learning |
+| Blocks | the error | mosaic patches once the error is 10 times worse than guessing |
+| The hands | the error | leave over one bar the first note it's worse than guessing, come back after 6 notes in a row at or under it |
+| The box's lid | the hands | closed over the last bar if the hands are there, left open if they're gone |
+| The neighbour's windows | the error | the same switch as the hands. One for each way the camera looks, both switched together |
+| The light in the room | the programme's own picture | its average colour and brightness. The TV is the only light that casts shadows or changes |
+| Shadows | how spread out the bet is, over the last 6 notes | a blur about half a metre wide while it's unsure, razor-sharp when it's certain. You see it on the wall behind the empty chair |
+| Dust in the beam | how spread out the bet is | drifts slower as the box gets surer and hangs still when it's certain |
+| Ripples in the tea | how hard each note is plucked | one ring a note. The spoon rattles when the last 6 average 95% of a full pluck or more |
+| House hum | the step size changing | stops dead on a note where it changes, back over 2 seconds after 6 still notes |
+| What the maker says | the key, the share, the step against the limit, the hands | each line has a rule, and a number is read at the note it's spoken. "It'll find it again." needs the hands on the bench |
+| Clock in the corner, wall clock, crank | the clock, not the run | the programme time, 23:30 plus it on the wall, and one turn of the crank a bar |
+
+"Worse than guessing" means an error above what picking at random among the 32 choices scores.
+The rules and their thresholds were all set by hand, and every one is in
+[the film's rules file](/labs/quiet-hour/src/rules.js).
+
+</details>
+
+<details><summary>How it was made, and how to make your own</summary>
+
+- **Who made it:** Claude Fable 5.2 on effort max with UltraCode on (Claude Code's mode for running many helper agents), in one Claude Code session. Fable directed: it wrote the research briefs, merged three rival treatments into one plan (it called it the film bible), reviewed contact sheets (pages of small frames from a test render), changed the rules and wrote the fix notes. Claude Opus 5.5 agents built everything: 37 Opus agent runs by the time it was pushed, counting four that were stopped or thrown away and three that ran after this section was first written. One of them wrote it. For two hours some fix work was done by Fable agents by mistake, in 8 more runs. It was thrown away and redone by Opus agents, below.
+
+| Agent | What it did |
+|---|---|
+| Research and probes | took apart the films it was based on and Gages's code, read my series for how the programme should feel, worked out how the film lands on this site, ran the training run again and got the published numbers back exactly, tried the sound tools, and measured how fast a computer with no graphics card draws a frame |
+| Three directors | each wrote a treatment: story first, data honesty first, dread first |
+| Engine | the rules that turn each moment of the log into what happens on screen, and a table of every event in each ending with the numbers that caused it |
+| Render harness | the film page and the machine that renders it a frame at a time |
+| Sound and voice | the soundtrack for all four endings and the maker's voice |
+| Programme art | the cut-paper programme on the TV |
+| Hands | the maker's two hands and their poses |
+| Room and cameras | the living room and the ten shots |
+| TV look | the TV set, its glow on the wall and the last pass on the picture |
+| Lab page | the page you can play above |
+| Checker | flashes, honesty, words, sound sync and the line schedule, each shown failing on planted bad input first. The honesty check caught three events that didn't carry the number behind them, and the engine was fixed |
+| The five fix rounds, done twice | engine, room and cameras, TV look, programme art and sound, brought up to the film's last set of rules. The first time Fable agents did them by mistake, so fresh Opus agents did all five again |
+| Finisher | the final render, the side-by-side clips and the stills |
+| Writer | this section, in two passes |
+| Lander, librarian and a last fixer | put it on this site, filed the film and its sound in my media library, and made Fable's last corrections to this section |
+
+- **My prompt** (condensed): "Make The Quiet Hour: a short film, 60 to 120 seconds, of an old TV in a dark living room showing a gentle programme. Everything on screen and in the room should be driven by a real training run's log, so the 20:00 horror turn happens because the data breaks, not because a script says so. Go much further than Gages's version: a real scene, a calm maker on the TV programme, sound design, a horror turn that reads clearly, and deterministic frame-by-frame rendering. Blender or Three.js, your call, but say why. The cloud machine has no GPU. You only orchestrate: every build task goes to Opus 5.5 agents."
+- **Fable's rules to the builders** (condensed): "Draw only from the engine's signals for the frame you're given. Never read the log yourself, never branch on the ending's name, never use the frame number to make something happen. No clocks, no timers, no random numbers. Carry nothing from one frame to the next. Touch only the files you own. Look at your work: render frames and open them, again and again. Before you report, the same-frame check must pass and you must have looked at all four endings. Then tell me what is weak, what is unfinished and what broke."
+- **What broke on the way:**
+  - The first panel of directors was briefed on Gages's data. Fable stopped it and threw its work away once it saw that its own training run was already published above.
+  - A message meant to hurry one research agent started a second copy of it instead, and the two wrote over each other's notes.
+  - The film's first rules misbehaved on the real data. One line was never spoken in any ending, because another line was always still playing. The opening tore, because knowing nothing counted as an error. A gauge blinked, because its late readings are noise. Fable rewrote about a dozen rules after reading the engine agent's report.
+  - Seven agents rendered on four processor cores at once, up to five times more work than the computer could run at a time. Two agents' checks that the same frame always comes out the same failed only because other agents were editing files under them.
+  - **The big one.** The rule was that Fable only directs and Opus agents do all the building. When Fable sent five builders back for fixes by messaging them, Claude Code quietly resumed them on Fable 5.2, the director's own model, not Opus 5.5. Nothing said so. Fable caught it two hours later in the token log. The tool that counts each agent's tokens, the chunks of text a model reads and writes, also records which model served it, and about 850,000 output tokens of fix work had been written by Fable agents. Fable stopped the render that had just started, set that work aside, put the files back to the last all-Opus state and had fresh Opus agents redo all five fix rounds. One of the fresh agents found the set-aside work and copied it, so its round was thrown away and done again from scratch, with the old work locked away. It cost about an hour and half a million Opus output tokens. So a message to a finished agent can bring it back on a different model, and only the token log showed it.
+  - The sound agent found that the first 60 seconds differed between two endings by the smallest step a 24-bit sound file can store. A filter that looked at the whole film at once rounded differently whenever anything later changed. Working one bar at a time fixed it, and now the first 60 seconds are identical in all four.
+  - The final check that every moving thing comes from the data failed on one line: the slow breath of the maker's resting fingers, which keeps time with the bar. Fable ruled it part of the maker's design, like the crank, and added it to the honesty check's allowed list.
+  - The first encode of the four side-by-side clips wasn't identical to the pixel before 20:00, because the video encoder looks ahead at frames still to come. So the shared five seconds are encoded once and each ending is joined to them.
+- **Time and cost:** about 7 hours of work from the brief to the push, not counting 2 hours 40 minutes near the start when the cloud computer was restarting. By the push there had been 37 Opus agent runs, plus the 8 that ran on Fable by mistake. By the time the film was rendered the agents had written about 3.8 million output tokens: about 2.5 million by Opus agents, 0.9 million by the Fable agents whose work was thrown away, and 0.36 million by Fable as director. The film is 2,160 rendered frames at 1920x1080 and 24 frames a second, plus 240 black frames that the encoder adds under the last ring of sound. The final render took 42 minutes on four busy processor cores, three browsers at once, about 3 seconds a frame in each. A second render of 24 of the frames came out identical, byte for byte. The file is 25.7 MB (H.264 at CRF 21, the encoder's quality setting). Pressing Play on the page above downloads about 3 MB, and 1.6 MB of that is the ending's soundtrack. The voice used about 2,300 characters of speech from ElevenLabs (a voice service), two voice designs and dozens of speech-to-text checks.
+- **Recipe:** Three.js in a headless browser (one with no window), not Blender. With no graphics card, Blender's film renderer would probably take tens of seconds a frame here, so many hours for the film. That's an estimate, not a test. Software WebGL drew a frame at 1920x1080 in about one to three seconds here, depending on how busy the computer was. The programme is an ordinary 2D canvas drawn fresh each frame and used as the TV's picture, and the page that renders the film is the same page you can play. Write down, for every thing on screen, which number drives it and the rule. Make `renderFrame(i)` a pure function of the frame and the ending: no clocks, no timers and no random numbers except a hash of the frame or note. Render it with Playwright in headless Chromium, in a few parallel batches, as lossless frames, then join them with the soundtrack in ffmpeg. The close shots of the scrolling strip are what make the file big, not grain. With no grain at all the dark walls showed bands, so the film has a fixed fine dither, a faint noise pattern that never changes from frame to frame. The sound is Fable's published audio for each ending through a small TV speaker's filter, with the voice and the bench sounds placed from the same event table as the picture. The four 100-second soundtracks sit at about -17 LUFS (a standard loudness measure), with the voice at least 5.5 LU (loudness units) over everything else on every line and each bench sound measured above the music in its own band of pitches. Then check that the same frame gives the same bytes on every run and that the first 60 seconds are identical in every ending. Five more checks were each shown failing on planted bad input before they were trusted: flashes (at most 3 a second, no red), honesty (no code reads the film time or the ending's name outside a short allowed list, and a flat fake log makes nothing happen), words (the film never shows or says AI, model or training), sound sync, and the line schedule.
+- **To try it on your own content:** any log of a few numbers over time works, like a game's score, a week of weather or an agent's to-do list. Pick a calm scene, give each number one thing to move, and render it again on a log where nothing happens. If anything still happens, it was a script, not the data.
+
+</details>
+
 <details><summary>What it all cost</summary>
 
 | | Training run | Lesson | The Quiet Hour |
@@ -389,4 +528,4 @@ builds and the first drafts took about 20 minutes.
 
 </details>
 
-*Gages, my Grok Bot agent, found the ideas, built the three experiments and drafted this post.*
+*Gages, my Grok Bot agent, found the ideas, built the three experiments and drafted this post. Claude Fable 5.2 and Opus 5.5 built the second versions and wrote their own sections.*
