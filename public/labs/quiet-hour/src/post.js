@@ -45,7 +45,7 @@ import { hash01 } from './rng.js';
 export const GRAIN_MODES = Object.freeze(['static', 'film', 'off']);
 export const GRAIN_SEED = 9101;
 export const LOOK = Object.freeze({
-  dither: 1.0,         // 'static': the dither's reach in code values (triangular, +-1), applied in gamma-2 terms
+  dither: 1.0,         // 'static': the dither's reach in 8-bit code values (triangular: +-1 at every level)
   grain: 0.02,         // 'film': multiplicative grain range, the value times 0.98..1.00
   grainCell: 2.0,      // 'film': output pixels per grain cell at 1080 lines (scaled with the frame's height)
   vignette: 0.24,      // darkening in the far corners
@@ -99,10 +99,14 @@ uint qhPixel( uint k0 ) {                                                  // ha
   return h;
 }
 float qhRand() { return float( qhPixel( ${u(0x9e3779b9 ^ (GRAIN_SEED + 1))} ) >> 8u ) * ( 1.0 / 16777216.0 ); }
-vec3 qhDither( vec3 d ) {                                                  // d in display terms
+vec3 qhDither( vec3 d ) {                                                  // d in display terms (gamma 2)
   uint h = qhPixel( ${u(0x9e3779b9 ^ GRAIN_SEED)} );
   float tri = ( float( h >> 16u ) + float( h & 0xffffu ) ) * ( 1.0 / 65535.0 ) - 1.0;
-  return max( d + tri * ${f(look.dither / 255)}, 0.0 );
+  // one 8-bit code value at this level, in display terms: the sRGB curve's slope, in its linear toe (where one
+  // code is a large step: 1.518e-4 / d) and above it (a straight-line fit), and never more than d itself, so
+  // black stays black and the mean is kept
+  vec3 one = mix( min( d, 1.518e-4 / max( d, 1e-4 ) ), 0.00263 + 0.00183 * d, step( 0.056, d ) );
+  return d + tri * one * ${f(look.dither)};
 }
 vec3 qhFilm( vec3 color ) {
   vec3 d = qhDither( sqrt( max( color * qhVig(), 0.0 ) ) );

@@ -2,9 +2,9 @@
 // (the running sum of H / ln 32, in seconds): base + velocity x drift, plus a slow sway that is also a function of
 // drift, wrapped inside the beam's box. So they slow as the box gets surer and hang still when it is certain.
 //
-// Each mote is lit by the beam it floats in (the spot's own cone and distance falloff), scattering back toward a
-// camera that stands by the set (the REVERSE, the dust shot) a little more than forward. Opacity from
-// S.dustOpacity. What keeps it from being snow: nothing falls (each mote has its own slow heading), most motes are
+// Each mote is lit by the beam it floats in (the spot's own cone and distance falloff) and scatters that light
+// forward and back along the beam more than sideways, so it shows both from behind the chair (WIDE A) and from beside
+// the set (the REVERSE, the dust shot). Opacity from S.dustOpacity. What keeps it from being snow: nothing falls (each mote has its own slow heading), most motes are
 // faint and only a few glint, and the lens does the rest: a mote near the camera is a wide, soft, dim disc (out
 // of focus), a far one a fine point. Motes within arm's reach of the lens fade out, so the SCREEN shots stay clean.
 // They also fade near the box's faces, so the wrap never pops.
@@ -63,9 +63,9 @@ export function createDust({ ROOM, quality, height }) {
         // the light this mote stands in: the spot's own cone and falloff
         vec3 L = p - uSpot; float dist = length(L); L /= dist;
         float beam = smoothstep(uCone.x, uCone.y, dot(L, uSpotDir)) * pow(max(dist, 0.35), -uCone.z);
-        // scattering: a little forward, more back toward a camera that stands by the light
+        // scattering: forward (a camera looking into the screen) and back (a camera standing by the set), least sideways
         float g = dot(L, normalize(cameraPosition - p));
-        float phase = 0.3 + 0.9 * pow(max(g, 0.0), 4.0) + 1.0 * pow(max(-g, 0.0), 1.5);
+        float phase = 0.3 + 1.1 * pow(max(g, 0.0), 4.0) + 1.0 * pow(max(-g, 0.0), 1.5);
         vec4 mv = viewMatrix * vec4(p, 1.0);
         float z = max(-mv.z, 0.05);
         float px = aux.x * (uPx.x + uPx.y * pow(z, -uPx.z)) * uScale;   // out of focus near the lens

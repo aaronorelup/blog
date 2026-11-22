@@ -1,5 +1,5 @@
 // The screen light's shadow (room-set): one variance shadow map whose blur is set, frame by frame, from
-// S.shadowRadius. Soft while the box is unsure, a razor when it is certain (bible 4, v1.2).
+// S.shadowSoftness. Soft while the box is unsure, a razor when it is certain (bible 4, v1.2).
 //
 // Why a variance map: the depth map is blurred in the light's own space (two box passes of three.js's VSM, 8-bit
 // packed targets, never half-float), so a penumbra half a metre wide costs the same as a hard edge and is a smooth
@@ -7,8 +7,8 @@
 //
 // Two things here are the room's own:
 //   1. the scale: S.shadowSoftness (0 = the box is certain .. 1 = it knows nothing; the same number S.shadowRadius
-//      is made from, 1 + 14 x softness) becomes a blur of 1 texel (a razor) up to about 5% of the map (a ramp some
-//      60 cm wide on the wall behind the chair). The room never applies a rule to a frame: it only scales S.
+//      is made from, 1 + 14 x softness) becomes a blur of 1 texel (a razor) up to about 6% of the map (a ramp some
+//      75 cm wide on the wall behind the chair). The room never applies a rule to a frame: it only scales S.
 //   2. the lookup (patched into three's shader chunk once, at load): three.js's Chebyshev test, but with the ramp
 //      tightened round its middle when the blur is small. A one-texel blur then draws an edge a few millimetres
 //      wide on the far wall, on the true outline, instead of a soft texel-wide step.
@@ -17,9 +17,10 @@ import * as THREE from 'three';
 
 export const SHADOW = Object.freeze({
   map: 768,            // texels across the light's view
-  fov: 80,             // degrees of the beam the map covers: one texel is about 1.1 cm on the wall behind the chair
+  fov: 76,             // degrees: a little more than the whole beam, so nothing lit is outside the map. One texel
+                       // is about 1 cm on the wall behind the chair
   blurMin: 1.0,        // texels: the razor (the blur that only takes the stair-steps off the map's edge)
-  blurMax: 0.049,      // of the map's width: the softest edge, a ramp about 60 cm wide on that wall
+  blurMax: 0.062,      // of the map's width: the softest edge, a ramp about 75 cm wide on that wall
   taps: 21,            // samples per blur pass (fixed: it is compiled into the blur)
   sharpBelow: [1.5, 6.0],   // texels of blur between which the lookup's ramp goes from razor to three's own
 });
@@ -69,6 +70,6 @@ export function setupShadow(renderer, spot) {
   spot.shadow.mapSize.set(SHADOW.map, SHADOW.map);
   spot.shadow.camera.near = 0.6; spot.shadow.camera.far = 7.5;    // nothing that casts a shadow is nearer than the table
   spot.shadow.bias = -0.0006; spot.shadow.normalBias = 0.01;
-  spot.shadow.focus = (SHADOW.fov * Math.PI / 180) / (2 * spot.angle);   // three: shadow camera fov = 2 x angle x focus
+  spot.shadow.focus = (SHADOW.fov * Math.PI / 180) / (2 * spot.angle);   // three: shadow camera fov = 2 x angle x focus (no clamp)
   spot.shadow.blurSamples = SHADOW.taps;
 }

@@ -35,7 +35,7 @@ export const LIGHT = Object.freeze({
   spotAngle: 0.64, spotPenumbra: 1.0, spotAimY: 0.45,
   // the static night fill: moonlight from the bay-window side (+z). It lies on the back wall, the floor and the
   // chair's back, and leaves the front wall (the REVERSE's wall) to the television
-  fillSky: 0x7a8fb0, fillGround: 0x2a2a30, fillIntensity: 0.6, fillFrom: [0, 0.45, 0.89],
+  fillSky: 0x7a8fb0, fillGround: 0x34343e, fillIntensity: 0.6, fillFrom: [0, 0.45, 0.89],
   dustGain: 24,             // the dust level: how much of the beam a bright mote sends to the lens
 });
 
