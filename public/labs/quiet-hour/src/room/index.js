@@ -14,6 +14,7 @@
 import * as THREE from 'three';
 import { ROOM } from '../shots.js';
 import { hash01 } from '../rng.js';
+import { createTV } from './tv.js';
 
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 
@@ -68,7 +69,6 @@ export function createRoom({ renderer, programmeCanvas, width, height, quality =
   // ---- furniture ----------------------------------------------------------------------------
   plane(2.4, 1.7, tinted(0x5a4a44), [0, 0.004, -0.5], [-Math.PI / 2, 0, 0]);             // rug
   const C = ROOM.cabinet; box(C.w, C.h, C.d, tinted(0x4b3a2c), C.x, C.h / 2, C.z);
-  const T = ROOM.tv; box(T.w, T.h, T.d, tinted(0x3d3128), T.x, T.y + T.h / 2, T.z);
   const Wc = ROOM.wallClock;
   const clockFace = new THREE.Mesh(new THREE.CylinderGeometry(Wc.r, Wc.r, 0.03, 40), grey(0.75));
   clockFace.rotation.x = Math.PI / 2; clockFace.position.set(Wc.x, Wc.y, Wc.z + 0.015); scene.add(clockFace);
@@ -104,28 +104,13 @@ export function createRoom({ renderer, programmeCanvas, width, height, quality =
   const spoon = box(0.008, 0.11, 0.008, grey(0.85), cu.x + 0.02, cu.y + cu.h + 0.03, cu.z, true);
   spoon.rotation.z = -0.35;
 
-  // ---- the screen: the programme canvas on the tube, with a little CRT --------------------------
+  // ---- the television (tv.js / screen.js belong to tv-look) ------------------------------------
   const S0 = ROOM.screen;
   const progTex = new THREE.CanvasTexture(programmeCanvas);
   progTex.colorSpace = THREE.SRGBColorSpace; progTex.minFilter = THREE.LinearFilter; progTex.generateMipmaps = false;
-  const screenMat = new THREE.ShaderMaterial({
-    uniforms: { map: { value: progTex }, uLines: { value: 240 }, uScan: { value: 0 }, uWarp: { value: 0.08 } },
-    vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
-    fragmentShader: `
-      uniform sampler2D map; uniform float uLines, uScan, uWarp; varying vec2 vUv;
-      void main(){
-        vec2 c = vUv - 0.5; vec2 uv = vUv + c * uWarp * dot(c, c) * 4.0;        // barrel warp
-        if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) { gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0); return; }
-        vec3 col = texture2D(map, uv).rgb;
-        float s = 0.5 + 0.5 * cos(uv.y * uLines * 6.2831853);                  // scanlines, faded by the shot
-        col *= mix(1.0, 0.72 + 0.28 * s, uScan);
-        vec2 e = uv - 0.5; col *= 1.0 - 0.55 * dot(e, e) * 2.2;                 // vignette
-        gl_FragColor = vec4(col, 1.0);
-        #include <colorspace_fragment>
-      }`,
-  });
-  const screen = new THREE.Mesh(new THREE.PlaneGeometry(S0.w, S0.h), screenMat);
-  screen.position.set(S0.x, S0.y, S0.z); scene.add(screen);
+  const tv = createTV({ THREE, programmeTexture: progTex, anchors: ROOM });
+  scene.add(tv.group);
+  camera.userData.heightPx = height;
 
   // ---- lights: the screen spot (the only shadow caster) and a static night fill --------------
   scene.add(new THREE.HemisphereLight(0x8090b0, 0x202028, 0.35));
@@ -170,17 +155,14 @@ export function createRoom({ renderer, programmeCanvas, width, height, quality =
   const dust = new THREE.Points(dustGeo, dustMat); dust.frustumCulled = false; scene.add(dust);
 
   // ---- per frame ------------------------------------------------------------------------------
-  const tmpA = new THREE.Vector3(), tmpB = new THREE.Vector3();
   function update(S, shot) {
     const cam = shot.camera;
     camera.fov = cam.fov; camera.aspect = width / height;
     camera.position.set(...cam.pos); camera.lookAt(...cam.target); camera.updateProjectionMatrix(); camera.updateMatrixWorld();
 
-    // the screen: new picture; scanlines fade out where a line would be under 2.5 output pixels
+    // the screen: new picture, then the TV's own per-frame update
     progTex.needsUpdate = true;
-    tmpA.set(S0.x, S0.y + S0.h / 2, S0.z).project(camera); tmpB.set(S0.x, S0.y - S0.h / 2, S0.z).project(camera);
-    const screenPx = Math.abs(tmpA.y - tmpB.y) / 2 * height, linePx = screenPx / screenMat.uniforms.uLines.value;
-    screenMat.uniforms.uScan.value = clamp((linePx - 2.5) / 1.0, 0, 1);
+    tv.update(S, shot, camera);
 
     // screen light: colour and intensity from the canvas average
     actx.drawImage(programmeCanvas, 0, 0, 40, 30);

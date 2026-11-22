@@ -17,6 +17,8 @@ import {
   PROGRAMME_W, PROGRAMME_H, BENCH, WOOD_EDGE, LAMP, STRIP, rowY, rowYf, PUNCH, LIGHTBOX, HOLE_R, STYLUS,
   DIAL, CHALK_TEXT, KNOB, FLAGS, SHARE_DRUM, LESSONS, BOX, CRANK, TITLE_CARD, HANDS,
 } from '../layout.js';
+import * as LAYOUT from '../layout.js';
+import { createHands } from './hands.js';
 
 const FONT_SERIF = '"QH Serif"', FONT_MONO = '"QH Mono"', FONT_HAND = '"QH Hand"';
 const D_MAJOR = [1, 2, 4, 6, 7, 9, 11];                    // pitch classes; row 0 is A3 (MIDI 57)
@@ -31,6 +33,7 @@ export function createProgramme({ engine }) {         // eslint-disable-line no-
   const sctx = scratch.getContext('2d');
   const tiny = document.createElement('canvas'); tiny.width = 16; tiny.height = 16;
   const tctx = tiny.getContext('2d');
+  const hands = createHands({ layout: LAYOUT });
 
   function draw(ctx, S, view) {
     const sx = PROGRAMME_W / view.w, sy = PROGRAMME_H / view.h;
@@ -41,6 +44,7 @@ export function createProgramme({ engine }) {         // eslint-disable-line no-
     ctx.setTransform(sx, 0, 0, sy, -view.x * sx, -view.y * sy);   // bench units from here on
 
     drawBench(ctx);
+    hands.drawUnder(ctx, S, view);
     drawStrip(ctx, S);
     drawStylus(ctx, S);
     drawDial(ctx, S);
@@ -48,7 +52,7 @@ export function createProgramme({ engine }) {         // eslint-disable-line no-
     drawFlagsAndCounters(ctx, S);
     drawBoxAndCrank(ctx, S);
     drawTitleCard(ctx, S);
-    drawHands(ctx, S);
+    hands.drawOver(ctx, S, view);
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);                            // programme pixels from here on
     applyWarmth(ctx, S);
@@ -208,32 +212,6 @@ export function createProgramme({ engine }) {         // eslint-disable-line no-
     ctx.fillStyle = '#2a2a2a'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.font = `64px ${FONT_SERIF}`; ctx.fillText('THE QUIET HOUR', x + TITLE_CARD.w / 2, TITLE_CARD.y + TITLE_CARD.h * 0.42);
     ctx.font = `italic 30px ${FONT_SERIF}`; ctx.fillText('a music box learns jigs by ear', x + TITLE_CARD.w / 2, TITLE_CARD.y + TITLE_CARD.h * 0.68);
-  }
-
-  // ---- the maker's hands: two mittens placed by S.hands (presence, pose weights, finger) --------
-  function drawHands(ctx, S) {
-    const H = S.hands, present = clamp(H.present, 0, 1);
-    if (present <= 0) return;
-    const dy = (1 - present) * HANDS.off.dy;
-    let sum = 0, x = 0, y = 0, rot = 0;
-    for (const [pose, wt] of Object.entries(H.left)) {
-      const P = HANDS.left[pose]; if (!P || !(wt > 0)) continue;
-      x += P.x * wt; y += P.y * wt; rot += P.rot * wt; sum += wt;
-    }
-    if (sum > 0) { x /= sum; y /= sum; rot /= sum; } else ({ x, y, rot } = HANDS.left.rest);
-    // the index finger: lifted for the tap-along, pressed for the dial tap
-    mitten(ctx, x, y + dy, rot, (H.fingerLift || 0) - (H.dialTap || 0));
-    const [hx, hy] = crankHandle(S);                                // right hand: on the crank (rule 2)
-    mitten(ctx, hx, hy + dy, HANDS.right.crank.rot, 0);
-  }
-  function mitten(ctx, x, y, rot, lift) {
-    ctx.save(); ctx.translate(x, y); ctx.rotate(rot);
-    ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.beginPath(); ctx.ellipse(10, 14, 52, 66, 0, 0, Math.PI * 2); ctx.fill();   // paper shadow
-    ctx.fillStyle = '#b9b2a6'; ctx.fillRect(-46, 40, 92, 520);                                                       // knitted cuff
-    ctx.fillStyle = '#d9cfc0'; ctx.beginPath(); ctx.ellipse(0, 0, 48, 62, 0, 0, Math.PI * 2); ctx.fill();            // the hand
-    ctx.beginPath(); ctx.ellipse(-50, 10, 16, 30, -0.5, 0, Math.PI * 2); ctx.fill();                                 // thumb
-    ctx.beginPath(); ctx.ellipse(8, -62 - 18 * lift, 12 * (1 + 0.2 * lift), 26, 0, 0, Math.PI * 2); ctx.fill();      // index finger
-    ctx.restore();
   }
 
   // ---- programme-wide effects ---------------------------------------------------------------
