@@ -436,6 +436,7 @@ sound (WebAudio, only after a gesture), the tab hidden pauses the loop (`visibil
 | A wide picture in `<ao-compare>` holds its ratio before it loads, so the page doesn't jump | post-9 |
 | Reload, and Back with and without the page cache, put `#panel-scroll` back where the reader was, on a long post with components | post-10 |
 | The notes page is the post view without the short version, Read next or older/newer; its way back is the short version | post-11 |
+| Every fenced code block in a post or notes page gets a Copy button beside it (not in the `<pre>`, not in a component) that puts the code on the clipboard (`scripts/post/copy.js`) | post-12 (Chromium) |
 
 ## Search and Ask RAG Goobie (`search.spec.mjs`)
 

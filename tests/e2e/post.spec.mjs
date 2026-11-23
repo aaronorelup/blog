@@ -1,6 +1,7 @@
 // The post page (src/components/post/, src/scripts/views/post.js, src/scripts/post/): the short version, the
 // contents list, folded details and deep links, Read next, older and newer, the byline, the share card, the RSS
-// categories, a wide picture holding its place, and Reload and Back keeping the reader's place. INVENTORY rows post-*.
+// categories, a wide picture holding its place, Reload and Back keeping the reader's place, and the Copy button on code
+// blocks. INVENTORY rows post-*.
 import fs from 'node:fs';
 import matter from 'gray-matter';
 import sharp from 'sharp';
@@ -237,4 +238,22 @@ test('post-11 the notes page: the post view without its short version, Listen, R
   await expect(page.locator('#short, .rel, .post-nav, .notes-link')).toHaveCount(0);
   await expect(page.locator('.post-back')).toHaveAttribute('href', url.replace(/notes\/$/, ''));
   await expect(page.locator('meta[property="og:image"]')).toHaveCount(0);
+});
+
+test('post-12 a code block gets a Copy button beside it that puts the code on the clipboard; the code\'s text is unchanged', async ({ page, request, context, browserName }) => {
+  test.skip(browserName !== 'chromium', 'clipboard permissions are Chromium-only in Playwright');
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  let url;
+  for (const u of postUrls) if ((await (await request.get(u)).text()).includes('<pre class="astro-code')) { url = u; break; }
+  expect(url, 'a post with a fenced code block').toBeTruthy();
+  await page.goto(url);
+  await page.evaluate(() => document.querySelectorAll('[data-post-article] details').forEach((d) => { d.open = true; }));
+  const block = page.locator('[data-post-article] .code-block').first();
+  await expect(block.locator('.code-copy')).toHaveText('Copy');
+  await expect(page.locator('[data-post-article] pre .code-copy, ao-ask .code-copy')).toHaveCount(0);
+  const code = (await block.locator('pre').evaluate((pre) => pre.textContent)).replace(/\s+$/, '');
+  await block.locator('.code-copy').click();
+  await expect(block.locator('.code-copy')).toHaveText('Copied');
+  // A Windows clipboard hands the text back with CRLF line ends.
+  expect((await page.evaluate(() => navigator.clipboard.readText())).replace(/\r\n/g, '\n')).toBe(code);
 });
