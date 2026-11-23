@@ -32,8 +32,8 @@ sprint seen from the side facing right, pose4 a star jump facing the viewer.
 
 ## Model and graph
 
-- **ComfyUI 0.37.0 or newer**, the release that added Qwen-Image 2.1. If it's older, ask before
-  updating it.
+- **ComfyUI with Qwen-Image 2.1 support**, there by 0.37.0. The post ran on 0.45.0. If it's
+  older, ask before updating it.
 - **Qwen-Image 2.1, Comfy-Org's int8 repackage** on Hugging Face (`Comfy-Org/Qwen-Image-2.1`):
   `diffusion_models/qwen_image_2.1_int8_convrot.safetensors` (7.3 GB),
   `text_encoders/qwen3vl_8b_int8_convrot.safetensors` (9.4 GB),
@@ -127,7 +127,8 @@ In this order, as one paragraph:
 - **Install** into the Python that has torch, which is ComfyUI's own on a portable install:
   `pip install --no-deps controlnet_aux==0.0.9`, so its pinned versions leave torch alone. Then
   check that `cv2`, `timm`, `skimage`, `einops`, `scipy` and `huggingface_hub` import, and install
-  any that don't (`opencv-python-headless`, `scikit-image`), never upgrading torch.
+  any that don't (`opencv-python-headless`, `scikit-image`), never upgrading torch. An
+  `AttributeError` about `MessageFactory` printed on import is harmless. The scores still come out.
 - **Run** every script with that same Python, from the kit folder:
   - `python score.py scores.json <render>:pose1:A <render>:pose1:B ...` for all twelve.
   - `python sheets.py scores.json <folder of the renders> <out folder>` prints the comparison
@@ -157,5 +158,5 @@ In this order, as one paragraph:
 | Star jump | 8.2 | 36.5 | 4.1 | 10 |
 | Average | 17.8 | 28.1 | 5.4 | |
 
-The null, each picture scored against the other three targets, was 35 to 58 degrees. No picture
-had the stick figure drawn into it.
+The null, each picture scored against the other three targets, was 35 to 58 degrees. None of the
+9 pictures given the stick figure drew it in.

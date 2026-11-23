@@ -11,7 +11,7 @@ preview:
   takeaway: "With a stick figure and the pose in words, my character's limbs came out 5.4 degrees off on average, against 17.8 for words alone and 28.1 for the stick figure alone."
   points:
     - "The stick figure alone did worst. On a side-view sprint the editor ignored it and copied her standing reference pose."
-    - "None of the 13 pictures had the stick figure drawn into it. Side-view poses still came back facing the viewer."
+    - "None of the 9 pictures given the stick figure drew it in. Side-view poses still came back facing the viewer."
     - "One seed per picture. Her tail went missing in one picture and came out thin in another."
   image: "/media/previews/stick-figure-poses.webp"
   alt: "Jefrie, a masked girl with a huge armoured tail, in a deep lunge holding a scythe level above her head"
@@ -29,8 +29,8 @@ were 17.8 degrees off, and the stick figure alone 28.1.**
 - **The stick figure alone was worse than words on average.** It won 2 of the 4 poses, but on
   the side-view sprint the editor ignored it and stood her the way she stands in her reference
   pictures.
-- **It never drew the stick figure into the picture.** Not once in 13 pictures. One sentence in
-  the prompt tells it not to.
+- **It never drew the stick figure into the picture.** Not once in the 9 pictures that were given
+  one. One sentence in the prompt tells it not to.
 - **Side views came back facing the viewer**, and one arabesque lost her tail.
 
 The character is [Jefrie](/ledger/jefrie-lora/), and this was one of
@@ -106,7 +106,7 @@ legs. A picture facing the viewer of a side-view target got its arms labelled fr
 its legs from the other. So the agent scores each picture four ways (as labelled, all swapped,
 arms swapped, legs swapped) and keeps the best.
 
-That rule was changed after the first test picture and before the other twelve. Under the rule as
+That rule was changed after the first test picture and before the rest. Under the rule as
 first written, swap everything or nothing, the result is mixed: both wins 2 of 4 poses and the
 averages tie, 16.9 degrees for both and 17.0 for words. Both sets of numbers are in the agent's
 table.
