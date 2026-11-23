@@ -143,7 +143,10 @@ files are about 17 GB.
 only what's missing.
 
 ```
-Get this computer ready to rerun the experiment in https://aaronorelup.com/ledger/stick-figure-poses/notes.md. ComfyUI is already installed. Install only what's missing, test each piece once, then tell me what you installed and where.
+Get this computer ready to rerun the experiment in
+https://aaronorelup.com/ledger/stick-figure-poses/notes.md
+ComfyUI is already installed. Install only what's missing, test each piece once,
+then tell me what you installed and where.
 ```
 
 **2. Run it.** Put a picture of your character on the first line. The second line is for anything
@@ -154,11 +157,16 @@ match my test.
 My character: C:\path\to\your-character.png
 Change: nothing
 
-Rerun the experiment in https://aaronorelup.com/ledger/stick-figure-poses/notes.md with my character, on my own setup where it fits. Keep the four stick figures and the three versions so my scores compare with the post. Show me the scored grid and what OpenPose saw when it's done.
+Rerun the experiment in
+https://aaronorelup.com/ledger/stick-figure-poses/notes.md
+with my character, on my own setup where it fits. Keep the four stick figures and the
+three versions so my scores compare with the post. Show me the scored grid and what
+OpenPose saw when it's done.
 ```
 
 The recipe both prompts point to is [the notes page](/ledger/stick-figure-poses/notes/): the
-stick figures and their joints, the prompts, the settings and the scoring scripts.
+stick figures, the model and settings, the prompts, and the scripts that score the pictures and
+draw the two sheets.
 
 *A Claude agent designed and ran the experiment on my laptop, and Claude wrote this post from its
 notes.*

@@ -1,62 +1,51 @@
 ---
 post: "stick-figure-poses"
 title: "Posing with a stick figure: the recipe for your agent"
-summary: "What an AI agent needs to rerun the test: the stick figures and their joints, the model and graph, the prompts, and how each picture was scored."
+summary: "What an AI agent needs to rerun the test: the stick figures, the model and graph, the prompts, and the scripts that score the pictures and draw the sheets."
 ---
 
 This page is written for the agent that reruns the experiment in [the post](/ledger/stick-figure-poses/).
-Adapt anything to the computer and the character you are given. The parts marked **keep** are what
-makes a rerun's scores comparable with the post's.
+Adapt anything to the computer and the character you are given, and say what you changed next to
+the scores. The parts marked **keep** are what makes a rerun's scores comparable with the post's.
 
 ## What to make
 
 - **4 poses x 3 versions = 12 pictures**, one seed each. A: the pose in words only. B: the stick
   figure only. C: the stick figure and the words.
-- **A scored grid**: the targets down the left, A, B and C across, the limb error under each
-  picture, the closest of each row marked.
-- **What OpenPose saw**: every picture with the skeleton OpenPose found drawn over it and the
-  target in a corner, joints under 0.6 confidence drawn hollow.
+- **The comparison table**, the **scored grid** and **what OpenPose saw**. `sheets.py` in the kit
+  makes all three from the scores.
 - Look at every picture yourself too. The scores miss things like a missing tail or a prop held
   wrong.
 
-## The stick figures (keep)
+## The kit
 
-The exact targets, 1024 x 1024, OpenPose's colours on black:
-[pose1.png](/media/stick-figure-poses/kit/pose1.png) (arabesque, side view facing right),
-[pose2.png](/media/stick-figure-poses/kit/pose2.png) (deep lunge facing the viewer, both hands
-overhead), [pose3.png](/media/stick-figure-poses/kit/pose3.png) (sprint, side view facing right),
-[pose4.png](/media/stick-figure-poses/kit/pose4.png) (star jump facing the viewer). Their joints,
-in pixels in the same frame, OpenPose's 18 names, `null` where a joint isn't drawn:
-[targets.json](/media/stick-figure-poses/kit/targets.json).
+Download into one folder: [pose1.png](/media/stick-figure-poses/kit/pose1.png),
+[pose2.png](/media/stick-figure-poses/kit/pose2.png), [pose3.png](/media/stick-figure-poses/kit/pose3.png),
+[pose4.png](/media/stick-figure-poses/kit/pose4.png) (the stick figures, **keep**),
+[targets.json](/media/stick-figure-poses/kit/targets.json) (their joints),
+[pose.py](/media/stick-figure-poses/kit/pose.py), [score.py](/media/stick-figure-poses/kit/score.py)
+and [sheets.py](/media/stick-figure-poses/kit/sheets.py).
 
-<details><summary>The joints as text</summary>
-
-```json
-{"W": 1024, "H": 1024, "poses": {
-"pose1": {"nose":[659.2,245.4],"neck":[622.0,298.6],"r_shoulder":[611.5,294.7],"r_elbow":[729.6,273.9],"r_wrist":[832.9,251.9],"l_shoulder":[632.5,302.4],"l_elbow":[514.4,281.5],"l_wrist":[411.0,259.6],"r_hip":[553.7,462.7],"r_knee":[380.8,447.6],"r_ankle":[191.1,431.0],"l_hip":[568.8,468.2],"l_knee":[568.8,641.8],"l_ankle":[568.8,832.2],"r_eye":[651.2,227.8],"l_eye":null,"r_ear":[617.6,232.6],"l_ear":null},
-"pose2": {"nose":[483.8,325.0],"neck":[483.8,389.8],"r_shoulder":[423.8,389.8],"r_elbow":[338.9,305.0],"r_wrist":[375.1,205.8],"l_shoulder":[543.8,389.8],"l_elbow":[628.7,305.0],"l_wrist":[592.5,205.8],"r_hip":[441.4,567.4],"r_knee":[273.7,612.4],"r_ankle":[273.7,802.8],"l_hip":[526.2,567.4],"l_knee":[633.1,704.2],"l_ankle":[750.3,854.2],"r_eye":[469.4,307.4],"l_eye":[498.2,307.4],"r_ear":[448.6,313.8],"l_ear":[519.0,313.8]},
-"pose3": {"nose":[638.9,352.1],"neck":[601.8,405.2],"r_shoulder":[594.0,403.2],"r_elbow":[692.3,472.0],"r_wrist":[745.1,380.5],"l_shoulder":[609.4,407.3],"l_elbow":[524.6,492.1],"l_wrist":[480.0,587.9],"r_hip":[549.6,575.1],"r_knee":[462.8,725.5],"r_ankle":[278.9,676.2],"l_hip":[561.9,578.4],"l_knee":[725.0,519.1],"l_ankle":[692.0,706.5],"r_eye":[630.9,334.5],"l_eye":null,"r_ear":[597.3,339.3],"l_ear":null},
-"pose4": {"nose":[512.0,272.1],"neck":[512.0,336.9],"r_shoulder":[452.0,336.9],"r_elbow":[348.1,276.9],"r_wrist":[256.6,224.1],"l_shoulder":[572.0,336.9],"l_elbow":[675.9,276.9],"l_wrist":[767.4,224.1],"r_hip":[469.6,514.5],"r_knee":[388.1,667.8],"r_ankle":[298.7,835.9],"l_hip":[554.4,514.5],"l_knee":[635.9,667.8],"l_ankle":[725.3,835.9],"r_eye":[497.6,254.5],"l_eye":[526.4,254.5],"r_ear":[476.8,260.9],"l_ear":[547.2,260.9]}}}
-```
-
-</details>
-
-They were drawn for a small figure with a large tail, scaled to 0.8 of the frame to leave room
-for the tail and cape. Keep them as they are for any humanoid character.
+The stick figures are 1024 x 1024, OpenPose's colours on black. pose1 is an arabesque seen from
+the side facing right, pose2 a deep lunge facing the viewer with both hands overhead, pose3 a
+sprint seen from the side facing right, pose4 a star jump facing the viewer.
 
 ## Model and graph
 
-- **ComfyUI 0.37.0 or newer** (that release added Qwen-Image 2.1).
+- **ComfyUI 0.37.0 or newer**, the release that added Qwen-Image 2.1. If it's older, ask before
+  updating it.
 - **Qwen-Image 2.1, Comfy-Org's int8 repackage** on Hugging Face (`Comfy-Org/Qwen-Image-2.1`):
   `diffusion_models/qwen_image_2.1_int8_convrot.safetensors` (7.3 GB),
-  `text_encoders/qwen3vl_8b_int8_convrot.safetensors` (9.4 GB, CLIPLoader type `qwen_image`),
-  `vae/qwen_image_2.1_vae_bf16.safetensors` (0.7 GB).
-- **Measured on an 8 GB RTX 4070 laptop GPU:** peak 6.9 to 7.3 GB. 61 to 66 s a picture with two
-  references, 111 to 140 s with three. 13 pictures, 23 minutes.
+  `text_encoders/qwen3vl_8b_int8_convrot.safetensors` (9.4 GB),
+  `vae/qwen_image_2.1_vae_bf16.safetensors` (0.7 GB). Another build of Qwen-Image 2.1 the reader
+  already has is fine. A different edit model works too, as long as it takes several reference
+  pictures, but say so next to the scores.
+- **Measured on an 8 GB RTX 4070 laptop GPU with 64 GB of RAM:** 6.9 to 7.3 GB of graphics memory
+  at peak, 61 to 66 s a picture with two references, 111 to 140 s with three. 13 pictures in 23
+  minutes.
 - **Settings (keep):** 1024 x 1024 empty latent, 25 steps, cfg 1.0, euler, simple, denoise 1.0,
-  seed 3801.
-- On a smaller card, or with another edit model the reader already has, use what fits and say so
-  next to the scores. Any edit model that takes several reference pictures can run the test.
+  seed 3801. The output must be 1024 x 1024 so the picture shares the stick figure's frame.
+- Every picture the graph loads goes in ComfyUI's `input` folder.
 
 <details><summary>The graph, in ComfyUI's API format</summary>
 
@@ -79,8 +68,8 @@ for the tail and cape. Keep them as they are for any humanoid character.
 }
 ```
 
-This is version C of the lunge. Version A drops node 22 and its `images.image_2` input, and
-wires the main picture in as `images.image_2`.
+This is version C of the lunge. For version A, delete node 22 and the `images.image_3` input, and
+wire node 23 into `images.image_2`.
 
 </details>
 
@@ -89,25 +78,25 @@ wires the main picture in as `images.image_2`.
 - **B and C (keep the order):** `<image1>` a full-body front view of the character, `<image2>` the
   stick figure, `<image3>` the character's main picture.
 - **A:** `<image1>` the front view, `<image2>` the main picture.
-- The post used a crop of the front panel of her character sheet (918 x 1536) and her main
-  picture (2528 x 1696). With only one picture of the character, use it for both.
+- The post used a crop of the front panel of her character sheet and her main picture. With only
+  one picture of the character, use it in both places, full body or not, and say so.
 
 ## The prompt
 
 In this order, as one paragraph:
 
-1. **Style:** "Painterly dark-fantasy illustration of one full figure, seen whole from head to
-   boots and tail, on a plain flat mid-grey studio background with a faint floor shadow, soft
-   even light." Write one that suits the character. Keep the plain grey background and the full
-   figure, since they make the scoring easier.
-2. **The character:** a description of the reader's character, naming the reference pictures:
-   "The girl is Jefrie, the same girl as in `<image1>` and `<image3>`: ..." (A: `<image1>` and
-   `<image2>`).
-3. **B and C, the stick-figure sentence (keep, word for word):** "Her pose is exactly the pose of
-   the stick figure in `<image2>`: the same angle of every arm, leg and her body, at the same
-   place and size in the picture. `<image2>` is only a pose guide: draw no lines, dots or stick
-   figure in the picture." Change "her" to fit the character.
-4. **A and C, the pose in words (keep):**
+1. **Style:** the post used "Painterly dark-fantasy illustration of one full figure, seen whole
+   from head to boots and tail, on a plain flat mid-grey studio background with a faint floor
+   shadow, soft even light." Write one that suits the character. Keep the full figure and the plain
+   grey background, since they make the scoring easier.
+2. **The character:** a description of the character that names the reference pictures. The post's
+   began "The girl is Jefrie, the same girl as in `<image1>` and `<image3>`: ..." (A: `<image1>`
+   and `<image2>`).
+3. **B and C, the stick-figure sentence (keep):** "Her pose is exactly the pose of the stick figure
+   in `<image2>`: the same angle of every arm, leg and her body, at the same place and size in the
+   picture. `<image2>` is only a pose guide: draw no lines, dots or stick figure in the picture."
+   Change "her" to fit the character, nothing else.
+4. **A and C, the pose in words (keep, changing only pronouns and the prop):**
    - Arabesque: "She balances in a ballet arabesque, seen from the side, facing the right of the
      picture: she stands on one straight leg, her other leg is lifted and stretched straight out
      behind her at hip height, level with the ground, her body tips forward a little, and both arms
@@ -117,7 +106,8 @@ In this order, as one paragraph:
      picture is bent at a right angle with that thigh level with the ground and the shin straight
      up and down; the leg on the right side of the picture is stretched out straight, diagonally
      down to the side. Her body is upright, and she holds her scythe horizontally above her head
-     with both hands, both arms raised and her elbows bent outward."
+     with both hands, both arms raised and her elbows bent outward." Swap "her scythe" for the
+     character's own long prop, or write "both hands raised above her head" instead.
    - Sprint: "She sprints at full speed, seen exactly from the side, running toward the right of
      the picture: her body leans forward, her front knee is driven high with that thigh pointing
      forward, her back leg is pushed off behind her with the foot kicked up, one arm swings forward
@@ -125,38 +115,37 @@ In this order, as one paragraph:
    - Star jump: "She leaps high into the air in a star jump, facing the viewer: both arms are flung
      up and out in a wide V above her shoulders and both legs are spread wide apart in an
      upside-down V, so her body makes a big X; her boots are far off the ground."
-5. **The prop:** the lunge holds her scythe overhead, described in a sentence. The other three
-   poses say "Her hands are empty: no weapon." Swap the scythe for the character's own prop, or
-   leave the hands empty.
+5. **The prop:** in the lunge, one sentence describing the prop. The other three poses said "Her
+   hands are empty: no weapon."
 6. **Colour:** one sentence on the character's palette.
 
 ## Scoring (keep)
 
-- **OpenPose body model** from `controlnet_aux` 0.0.9, weights `lllyasviel/Annotators`, on the
-  CPU. Call `OpenposeDetector.from_pretrained("lllyasviel/Annotators").body_estimation(bgr_image)`
-  directly: it returns the joints with their confidence.
-- **Install** it into the Python that has torch and OpenCV (ComfyUI's own, on the post's laptop)
-  with `pip install --no-deps controlnet_aux==0.0.9`, so its pinned dependencies leave torch
-  alone. With torch 2.6 or newer, patch `torch.load` to pass `weights_only=False` before the
-  import, or its weights refuse to load. An `AttributeError` about `MessageFactory` on import is
-  harmless.
-- **The scripts the post used:** [pose.py](/media/stick-figure-poses/kit/pose.py) (detect and
-  draw) and [score.py](/media/stick-figure-poses/kit/score.py). Put both beside `targets.json` and
-  run `python score.py scores.json render.png:pose2:C ...` (one `picture:pose:version` per
-  picture).
+- **OpenPose body model** from `controlnet_aux` 0.0.9, weights `lllyasviel/Annotators` (a few
+  hundred MB, downloaded on first use), run on the CPU. `pose.py` loads it and already patches
+  `torch.load` for torch 2.6 and newer.
+- **Install** into the Python that has torch, which is ComfyUI's own on a portable install:
+  `pip install --no-deps controlnet_aux==0.0.9`, so its pinned versions leave torch alone. Then
+  check that `cv2`, `timm`, `skimage`, `einops`, `scipy` and `huggingface_hub` import, and install
+  any that don't (`opencv-python-headless`, `scikit-image`), never upgrading torch.
+- **Run** every script with that same Python, from the kit folder:
+  - `python score.py scores.json <render>:pose1:A <render>:pose1:B ...` for all twelve.
+  - `python sheets.py scores.json <folder of the renders> <out folder>` prints the comparison
+    table beside the post's averages and writes `grid.jpg` and `openpose.jpg`.
+  - Also score the character's reference pictures against each target (`<ref>:pose1:ref` and so on)
+    as a baseline. The post's references scored 31 to 70 degrees.
 - **The rules:** the biggest person in the picture. A joint counts at 0.6 confidence or more. Ten
   limbs: upper arms, forearms, thighs, shins, torso (neck to the middle of the hips) and head (neck
-  to nose), each scored when both its ends are found. The error is the mean of the absolute angle
-  differences between each limb and the target's, in degrees.
-- **Left and right:** OpenPose picks them separately for the arms and the legs, so score each
-  picture four ways (as labelled, all swapped, arms swapped, legs swapped) and keep the lowest.
-- **The number to compare:** for each pose, average each version's per-limb errors over only the
-  limbs found in all three of its versions. `score.py` writes the per-limb errors (`per_limb`).
-- **Also stored:** the share of joints within 0.2 torso lengths of the target after a fit for
-  position and size, and a null: the same picture scored against the other three targets.
-- **The painted-lines check** in `score.py` (`stick_share`) counts bright pixels that aren't red,
-  which only works for a grey and red character like hers. For another character, look at the
-  pictures instead.
+  to nose). The error is the mean absolute angle difference between each limb and the target's, in
+  degrees. OpenPose picks left and right separately for the arms and the legs, so each picture is
+  scored four ways (as labelled, all swapped, arms swapped, legs swapped) and keeps the lowest.
+- **The comparison number** for a pose averages each version over only the limbs found in all its
+  versions. A version with fewer than 4 limbs found is left out of that pose, and a pose with fewer
+  than 4 common limbs is not comparable. Report which.
+- `score.py`'s `stick_share` counts bright pixels that aren't red, to catch a painted stick figure.
+  It only works for a grey and red character. For any other, look at the pictures instead.
+- **A test for setup:** one render through the graph with any picture as `<image1>`, then
+  `score.py` on it. It should print `scored` with a joint count.
 
 ## The post's numbers, to compare with
 
@@ -168,5 +157,5 @@ In this order, as one paragraph:
 | Star jump | 8.2 | 36.5 | 4.1 | 10 |
 | Average | 17.8 | 28.1 | 5.4 | |
 
-Her reference pictures' own poses scored 31 to 70 degrees against the four targets. The null was
-35 to 58. No picture had the stick figure drawn into it.
+The null, each picture scored against the other three targets, was 35 to 58 degrees. No picture
+had the stick figure drawn into it.
