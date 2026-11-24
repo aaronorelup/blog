@@ -1,0 +1,23 @@
+---
+// The note for agents, the first child of <body> (Home, PanelPage, TeaRoomPage): where the machine-readable views
+// are (lib/agent-text.js agentNote), as an HTML comment for raw-HTML readers and as .ao-agent, clipped to a pixel,
+// aria-hidden and data-nosnippet (never a search snippet), for HTML-to-Markdown converters. No human sees it, nothing
+// in it is focusable, it sits outside every [data-panel-view], article and [data-pagefind-body]. / and /ledger/ add
+// the newest listed posts.
+import { agentNote, sizeOf } from '../../lib/agent-text.js';
+import { corpusBytes } from '../../lib/agent-corpus.js';
+import { listedPosts } from '../../lib/content.js';
+import { ledgerOrder } from '../../lib/posts.js';
+
+interface Props {
+  // This page's Markdown twin (a site path): a listed post that is no live notebook, its notes, a research document.
+  md?: string;
+}
+const { md } = Astro.props;
+const path = Astro.url.pathname;
+const newest = path === '/' || path === '/ledger/' ? ledgerOrder(await listedPosts()).slice(0, 5) : [];
+const extra = path === '/stats/' ? ['GET /api/stats returns a JSON snapshot.'] : [];
+const text = agentNote({ md, newest, extra, full: sizeOf(await corpusBytes()) });   // /llms-full.txt's size, made once
+---
+<Fragment set:html={`<!-- ${text.replaceAll('--', '-')} -->`} />
+<div class="ao-agent" aria-hidden="true" data-nosnippet>{text}</div>

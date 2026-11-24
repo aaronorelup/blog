@@ -1,6 +1,6 @@
 /* Page-wide rules of every page (PanelPage and Home): the page colour, the body font, focus, selection and the skip
    link. */
-html { scroll-behavior: auto; }
+html { scroll-behavior: auto; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 body {
   margin: 0;
   background: var(--pc-page);
@@ -17,3 +17,6 @@ body {
   font-weight: 600; text-decoration: none;
 }
 .skip:focus { top: 16px; }
+/* The note for agents (chrome/AgentNote.astro): a clipped pixel, never display:none, which converters drop. */
+.ao-agent { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  -webkit-user-select: none; user-select: none; }   /* never the start of a reader's Select All and Copy */

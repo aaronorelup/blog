@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projects: a walk down the garden path · a tea room test</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="css/scene.css" data-pw-scene>
+<link rel="stylesheet" href="css/host.css">
+<script>document.documentElement.classList.add('js');</script>
+</head>
+<body>
+<a class="skip" href="#after">Skip the garden path</a>
+
+<section class="chapter" id="chapter" aria-label="Projects">
+  <div class="stage" id="stage">
+    <!-- the scene is mounted here by js/host.js when the chapter is near -->
+    <div class="scene" id="scene"></div>
+
+    <header class="card lead" id="lead">
+      <p class="kicker">The tea room · a test</p>
+      <h1>Projects</h1>
+      <p class="say">Further down the garden path, the things to use: games to play, films to watch, apps to download. Each lantern lights the one in front of you.<span class="when-moving"> Scroll to walk.</span></p>
+    </header>
+
+    <div class="steps-bar card" id="steps" hidden><button type="button" id="prev">Previous</button><button type="button" id="next">Next lantern</button></div>
+    <p class="hint" id="hint" aria-hidden="true">Scroll</p>
+    <pre class="debug" id="debug" hidden></pre>
+  </div>
+  <div class="track" id="track" aria-hidden="true"></div>
+</section>
+
+<footer class="tail" id="after">
+  <p class="kicker">About this test</p>
+  <p class="tail-say">The projects chapter: twelve of the projects, picked on four shelves, each shown the way it is used. The games play and the films run whole, right where they stand by the path.</p>
+  <p class="tail-links"><a href="/labs/tea-room/tests/">All tests</a><a href="/labs/tea-room/working/">The working copy</a></p>
+</footer>
+
+<script type="module" src="js/host.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+/* The rules every state of the page shares (SPEC 7.2 to 7.5): the focus ring, the live region, reduced motion and
+   print. The text version (no WebGL, a lost context, ?tier=static, the skip link) is the page with no .ail-gl class:
+   every section in flow. Print always gets the text version, whatever was on screen. */
+
+/* focus: the double ring, 2 px of ink outside 2 px of paper, also on pieces that draw their own outline */
+.ail :focus-visible { outline: 2px solid var(--ail-fg) !important; outline-offset: 2px !important; box-shadow: 0 0 0 2px var(--ail-bg) !important; }
+.ail .ail-drawer__body:focus-visible, .ail .ail-src:focus-visible { outline-offset: -2px !important; box-shadow: inset 0 0 0 4px var(--ail-bg) !important; }
+.ail .ail-proof:focus-visible, .ail .ail-eds:focus-visible { outline-offset: 3px !important; }
+
+/* a rail dot's name shows on hover and focus, and a screen reader hears it always: transparent, never hidden */
+.ail .ail-rail a span { visibility: visible; pointer-events: none; }
+
+/* the live region is read, never seen */
+.ail-live { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* the text version: one readable column per section, nothing left where the scene had pinned it */
+.ail:not(.ail-gl) .ail-pin { position: static; transform: none; }
+
+/* reduced motion: nothing slides, fades or presses. Disclosures and cards simply appear */
+@media (prefers-reduced-motion: reduce) {
+  .ail-stamp__ink, .ail-disc__card, .ail-proof, .ail-eds { animation: none !important; }
+  .ail-drawer__panel { transition: none !important; }
+  .ail-drawer__body[aria-busy='true']::before { animation: none; background: var(--ail-line); }
+}
+
+/* print: the text version on white, every disclosure open (editions.js opens them), no canvas, no overlays */
+@media print {
+  .ail, .ail-gl { background: #FFFFFF; }
+  .ail { --ail-fg: #0C0D10; --ail-fg-2: #4A4E57; --ail-bg: #FFFFFF; --ail-veil: transparent; }
+  .ail-canvas, .ail-leaders, .ail-lidmark, .ail-rail, .ail-skip, .ail-map, .ail-proof, .ail-eds, .ail-drawer, .ail-live { display: none !important; }
+  .ail-chrome, .ail-gl .ail-chrome { position: static !important; }
+  .ail-gl .ail-main { padding-bottom: 0; }
+  .ail-gl .ail-sec { height: auto !important; min-height: 0; padding: 28px var(--ail-margin); border-top: 1px solid #C9CDD5; pointer-events: auto; break-inside: auto; }
+  .ail-gl .ail-stage, .ail-gl [data-beat] { position: static !important; visibility: visible !important; opacity: 1 !important; transform: none !important; }
+  .ail-gl .ail-at-tl, .ail-gl .ail-at-bl, .ail-gl .ail-at-r, .ail-gl .ail-pin { position: static !important; transform: none !important; width: auto; max-width: none; }
+  .ail-gl .ail-stamp__mark, .ail-gl .ail-stamp__say, .ail-gl .ail-stamp__side, .ail-gl .ail-stamp__more { position: static; transform: none; width: auto; margin-bottom: 18px; }
+  .ail-gl .ail-disc__card { position: static; max-height: none; overflow: visible; box-shadow: none; animation: none; }
+  .ail-stamp__ink { -webkit-mask: none; mask: none; animation: none !important; }
+  .ail-disc summary::after { display: none; }
+  .ail-src, .ail-srcs__end { break-inside: avoid; }
+}

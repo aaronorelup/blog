@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>3D: the toy box · a tea room test</title>
+<link rel="stylesheet" href="css/toybox.css">
+<link rel="preload" as="image" href="/labs/tea-room/b/assets/img/room.webp">
+<script type="importmap">{"imports":{"three":"./lib/three.module.min.js"}}</script>
+</head>
+<body>
+<a class="skip" href="#read">Skip to the posts</a>
+<a class="back" href="../">Tea room tests</a>
+
+<main id="main">
+<!-- The track: its height is how long the camera's move lasts. The picture stays on screen all the way down it. -->
+<section id="track">
+<h1 class="vh">3D: the toy box</h1>
+<p class="vh">A wooden toy box on the floor of the tea room at night. It bursts open and every 3D model of Jefrie I have made tumbles out, with a few other toys. You can pick any of them up and throw it; they stand back up and huddle together.</p>
+
+<div id="stage">
+<canvas id="scene" aria-hidden="true"></canvas>
+
+<!-- the chapter's word and its line, as look B sets them over the world. DRAFT line, Aaron's to rewrite. -->
+<div class="word" id="word" aria-hidden="true">3D</div>
+<div class="say" id="say" aria-hidden="true">Every Jefrie I have made so far lives in this box.</div>
+
+<!-- the name of the toy in the hand: the homepage's card, very small. Its words come from js/roster.js. -->
+<div class="tagcard" id="tag" role="status" aria-live="polite"><p class="tag-from"></p><b class="tag-name"></b><p class="tag-how"></p></div>
+
+<button class="hint" id="hint" type="button"><span id="hint-text">Scroll, or open the box</span></button>
+<p class="count" id="count" aria-hidden="true"></p>
+</div>
+</section>
+
+<section id="read">
+<article class="card" id="card">
+<p class="eyebrow">Chapter six</p>
+<h2>3D</h2>
+<!-- DRAFT: these sentences are Aaron's to write. A plain stand-in in his voice, put together from what the four
+     posts below say (AI agents made Jefrie in 3D about twenty times in six days, shape by shape in Blender or from
+     one picture; props were cut down to 3,000 and 300 triangles for a game). -->
+<p>AI agents have made my character Jefrie in 3D about twenty times now: built shape by shape in Blender, or generated whole from one picture.</p>
+<p>The ones in the box are those models, each from a different try. Pick one up to see where it came from.</p>
+<ul class="posts">
+<li><a href="/ledger/jefrie-in-3d/"><img src="/media/previews/jefrie-in-3d.webp" width="640" height="360" alt="" loading="lazy" decoding="async"><span class="t">Making a 3D model of my character with AI, two ways</span><span class="stamp">AO-018 · Each got one thing right</span></a></li>
+<li><a href="/ledger/props-three-budgets/"><img src="/media/previews/props-three-budgets.webp" width="640" height="360" alt="" loading="lazy" decoding="async"><span class="t">Making AI-generated 3D props light enough for a game</span><span class="stamp">AO-059 · Blender's cut held at 3,000</span></a></li>
+<li><a href="/ledger/paper-jefrie/"><img src="/media/previews/paper-jefrie.webp" width="640" height="360" alt="" loading="lazy" decoding="async"><span class="t">A papercraft animation of my character, made with code</span><span class="stamp">AO-058 · Worked on the sixth pass</span></a></li>
+<li><a href="/ledger/clawd-growth-montage/"><img src="/media/previews/clawd-growth-montage.webp" width="640" height="360" alt="" loading="lazy" decoding="async"><span class="t">A 30-second animated short Claude drew and scored in code</span><span class="stamp">AO-020 · Good picture, unheard score</span></a></li>
+</ul>
+<a class="btn" href="/ledger/?topic=3d">Every 3D post</a>
+</article>
+</section>
+</main>
+
+<noscript><style>#track { display: none; } #read { margin-top: 0; }</style></noscript>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+/* The tea house, taken apart: one chapter of the tea room page, as a test.
+   The world is a fixed canvas the scroll drives (js/). What is read sits on a card in the homepage's night
+   style: clean, digital, a little cartoony. The fonts are the site's own, by their own addresses. */
+
+@font-face { font-family: 'Karla'; font-style: normal; font-weight: 400 600; font-display: swap; src: url('/fonts/karla-latin.3b1eb09a.woff2') format('woff2'); }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/zen-maru-gothic-500-latin.2c5953da.woff2') format('woff2'); }
+@font-face { font-family: 'Zen Maru Gothic'; font-style: normal; font-weight: 700; font-display: swap; src: url('/fonts/zen-maru-gothic-700-latin.9d65f92a.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url('/fonts/jetbrains-mono-latin.83c005d4.woff2') format('woff2'); }
+
+:root {
+  color-scheme: dark;
+  /* the homepage's night card (src/styles/home.css, tokens.css) */
+  --night: rgb(16, 18, 32);
+  --card: rgb(21, 23, 38);
+  --head: rgb(240, 192, 106);
+  --strong: rgb(242, 231, 213);
+  --body: rgb(198, 194, 212);
+  --quiet: rgb(143, 138, 163);
+  --gold: rgb(201, 162, 39);
+  --tile: rgb(32, 31, 44);
+  --line: rgb(74, 68, 90);
+  --btn-line: rgb(198, 194, 212);
+  --btn-text: rgb(242, 236, 223);
+  --pink: rgb(240, 166, 184);
+  /* the tea room's type over the world (look B) */
+  --cream: #f6e7c8;
+  --cream-2: #e9dcc3;
+  --font-display: 'Zen Maru Gothic', sans-serif;
+  --font-body: Karla, system-ui, sans-serif;
+  --font-serif: Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --track: 640vh;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--night); -webkit-text-size-adjust: 100%; }
+body { margin: 0; color: var(--body); font-family: var(--font-body); overflow-x: hidden; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+:focus-visible { outline: 3px solid var(--head); outline-offset: 3px; }
+.skip { position: fixed; left: 12px; top: -80px; z-index: 20; padding: 10px 14px; background: var(--card); color: var(--strong); font: 600 13px var(--font-body); border-radius: 10px; text-decoration: none; }
+.skip:focus { top: 12px; }
+
+/* ------------------------------------------------------------------ the picture */
+#stage { position: fixed; left: 0; top: 0; width: 100%; height: 100vh; height: 100lvh; overflow: hidden; z-index: 0; background: var(--night); }
+#scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; }
+.ready #scene { opacity: 1; }
+#leaders { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+#leaders line { stroke: var(--cream); stroke-width: 1.25; stroke-linecap: round; }
+#leaders circle { fill: var(--head); }
+#labels { position: absolute; inset: 0; pointer-events: none; }
+
+/* a corner of the room, named: the homepage's card, very small */
+.chip {
+  position: absolute; left: 0; top: 0; visibility: hidden; white-space: nowrap; will-change: transform, opacity;
+  padding: 7px 14px 8px; border-radius: 16px; background: var(--card);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+}
+.chip b { display: block; font: 700 15px/1.15 var(--font-display); color: var(--head); letter-spacing: -0.005em; }
+.chip span { display: block; margin-top: 2px; font: 600 10.5px/1.2 var(--font-body); letter-spacing: 0.13em; text-transform: uppercase; color: var(--quiet); }
+/* a layer of the drawing, named as it lifts: a passing caption, the same card smaller still */
+.tag {
+  position: absolute; left: 0; top: 0; visibility: hidden; white-space: nowrap; will-change: transform, opacity;
+  padding: 6px 11px 6px; border-radius: 999px; background: var(--card);
+  font: 600 11px/1 var(--font-body); letter-spacing: 0.15em; text-transform: uppercase; color: var(--cream-2);
+}
+
+/* the chapter's word and its line, as look B sets them over the world */
+.word {
+  position: absolute; left: 0; top: 0; will-change: transform, opacity; transform-origin: 0 50%;
+  font-family: var(--font-display); font-weight: 700; color: var(--cream);
+  font-size: clamp(56px, 9.4vw, 170px); line-height: 0.9; letter-spacing: -0.02em; white-space: nowrap;
+}
+.word .l + .l::before { content: ' '; }
+.say {
+  position: absolute; left: 0; top: 0; will-change: transform, opacity; max-width: 22em;
+  font: italic 400 clamp(17px, 1.75vw, 26px)/1.34 var(--font-serif); color: var(--cream-2);
+}
+.hint {
+  position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); will-change: opacity;
+  font: 600 11.5px/1 var(--font-body); letter-spacing: 0.2em; text-transform: uppercase; color: var(--cream-2);
+  padding-bottom: 22px;
+}
+.hint::after {
+  content: ''; position: absolute; left: 50%; bottom: 0; width: 1.5px; height: 14px; margin-left: -0.75px;
+  background: var(--cream-2); border-radius: 1px;
+}
+.back {
+  position: fixed; left: 14px; top: 12px; z-index: 5; padding: 6px 12px 7px; border-radius: 999px;
+  background: rgba(21, 23, 38, 0.72); color: var(--quiet); text-decoration: none;
+  font: 600 11px/1 var(--font-body); letter-spacing: 0.12em; text-transform: uppercase;
+}
+.back:hover { color: var(--strong); }
+
+/* ------------------------------------------------------------------ the page over it */
+main { position: relative; z-index: 1; pointer-events: none; }
+#track { height: var(--track); }
+#read {
+  min-height: 100vh; min-height: 100lvh; display: flex; align-items: center; justify-content: flex-end;
+  padding: 28px clamp(20px, 5vw, 80px);
+}
+.card {
+  pointer-events: auto; width: min(100%, 500px); border-radius: 24px; padding: clamp(22px, 2.6vw, 32px);
+  background: var(--card); box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+}
+.card h2 { margin: 0; font: 700 clamp(28px, 3vw, 36px)/1.1 var(--font-display); color: var(--head); }
+.card p { margin: 11px 0 0; font-size: 16.5px; line-height: 1.55; color: var(--body); text-wrap: pretty; }
+.card h2 + p { margin-top: 14px; }
+.card ::selection { background: rgb(247, 201, 212); color: var(--night); }
+
+.posts { list-style: none; margin: 18px 0 0; padding: 0; border-top: 1px solid var(--line); }
+.posts li { border-bottom: 1px solid var(--line); }
+.posts a {
+  display: grid; grid-template-columns: 92px minmax(0, 1fr); column-gap: 15px; align-items: center;
+  margin: 0 -10px; padding: 9px 10px; border-radius: 12px; text-decoration: none;
+}
+.posts a:hover { background: var(--tile); }
+.posts img { grid-row: 1 / span 2; display: block; width: 92px; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 9px; background: var(--tile); }
+.posts .t { align-self: end; font: 700 14.5px/1.3 var(--font-display); letter-spacing: -0.01em; color: var(--strong); text-wrap: pretty; }
+.posts a:hover .t { color: var(--head); }
+.posts .stamp { align-self: start; margin-top: 3px; font: 500 10.5px/1.3 var(--font-mono); letter-spacing: 0.02em; color: var(--gold); }
+.btn {
+  display: inline-block; margin-top: 18px; padding: 10px 19px; border: 2px solid var(--btn-line); border-radius: 999px;
+  text-decoration: none; font: 600 15px/1.2 var(--font-body); color: var(--btn-text); background: rgba(240, 192, 106, 0.1);
+}
+.btn:hover { background: var(--pink); color: var(--night); border-color: var(--pink); }
+
+/* a low, wide window (a small laptop): the same card, set a little tighter so all of it shows at once */
+@media (max-height: 800px) and (min-aspect-ratio: 4/5) and (min-width: 760px) {
+  #read { padding-top: 18px; padding-bottom: 18px; }
+  .card { padding: 22px 26px; }
+  .card h2 { font-size: 30px; }
+  .card p { font-size: 15.5px; line-height: 1.5; margin-top: 9px; }
+  .posts { margin-top: 14px; }
+  .posts a { grid-template-columns: 80px minmax(0, 1fr); padding: 7px 10px; }
+  .posts img { width: 80px; }
+  .posts .t { font-size: 14px; }
+  .btn { margin-top: 14px; padding: 8px 17px; font-size: 14.5px; }
+}
+
+/* a phone, or any upright window: the card is the page's last screen and sits under the drawing, so it is set
+   tighter to leave the drawing room above it */
+@media (max-aspect-ratio: 4/5), (max-width: 759px) {
+  :root { --track: 560vh; }
+  #read { align-items: flex-end; justify-content: center; padding: 0 10px 10px; }
+  .card { width: min(100%, 560px); border-radius: 22px; padding: 18px 18px 16px; }
+  .card h2 { font-size: 26px; }
+  .card p { font-size: 15px; line-height: 1.42; margin-top: 8px; }
+  .card h2 + p { margin-top: 9px; }
+  .posts { margin-top: 13px; }
+  .posts a { grid-template-columns: 64px minmax(0, 1fr); column-gap: 12px; padding: 7px 10px; }
+  .posts img { width: 64px; border-radius: 7px; grid-row: 1; }
+  .posts .t { font-size: 13.5px; line-height: 1.26; align-self: center; }
+  .posts .stamp { display: none; }
+  .btn { margin-top: 12px; padding: 8px 15px; font-size: 13.5px; border-width: 1.5px; }
+  .word { font-size: 21vw; }
+  .word .l { display: block; }
+  .word .l + .l::before { content: none; }
+  .say { max-width: 15em; }
+  .chip { padding: 6px 11px 7px; border-radius: 999px; }
+  .chip b { font-size: 12.5px; }
+  .chip span { display: none; }
+  .tag { font-size: 9.5px; padding: 5px 9px; }
+  .back { font-size: 10px; }
+}
+
+/* nothing glides for readers who ask for less motion: still pictures, one to a screen, and a short dissolve
+   through the night from one to the next (js/apart.js) */
+@media (prefers-reduced-motion: reduce) {
+  :root { --track: 500vh; }
+  #scene, #leaders, #labels, .word, .say, .hint { transition: opacity 0.17s linear; }
+  #stage.cut #scene, #stage.cut #leaders, #stage.cut #labels, #stage.cut .word, #stage.cut .say, #stage.cut .hint { opacity: 0 !important; }
+}
+
+/* where the picture cannot be drawn, the page is one frame of the finished drawing and the card under it */
+.poster { display: none; width: min(100%, 980px); height: auto; border-radius: 24px; }
+.flat #stage, .flat #track { display: none; }
+.flat #read { flex-direction: column; justify-content: center; align-items: center; gap: 22px; }
+.flat .poster { display: block; }

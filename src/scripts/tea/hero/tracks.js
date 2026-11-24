@@ -1,7 +1,11 @@
 // The manifest's motion: scroll tracks (keyed on the hero's progress, 0 to 1) and idle waves (keyed on time), both as
 // deltas from each node's rest pose, applied once a frame. A node is a bone or a rigid part, any Object3D; a track
-// whose actor or node is missing is skipped. Channels: position, rotation (degrees), scale, squash, bend (deform).
+// whose actor or node is missing is skipped. Channels (CHANNELS): position, rotation (degrees), scale, squash, bend
+// (deform), and for a whole actor visible and opacity (shown or not, worked out afresh every frame); then a follower
+// takes its leader's root and inner scale.
 import { Euler, MathUtils, Quaternion } from './three.js';
+
+export const CHANNELS = ['position', 'rotation', 'scale', 'squash', 'bend', 'visible', 'opacity'];
 
 const sanitise = (n) => String(n).replace(/\s/g, '_').replace(/[[\]./:]/g, '');
 
@@ -35,24 +39,30 @@ function slotFor(slots, actor, nodeName) {
     slot.restPos = slot.inner ? actor.restPos : slot.obj.position.clone();
     slot.restQuat = slot.obj.quaternion.clone();
     slot.restScale = (slot.inner || slot.obj).scale.clone();
-    slot.pos = [0, 0, 0]; slot.rot = [0, 0, 0]; slot.scl = [1, 1, 1]; slot.bend = 0;
+    slot.pos = [0, 0, 0]; slot.rot = [0, 0, 0]; slot.scl = [1, 1, 1]; slot.bend = 0; slot.vis = null; slot.opa = null;
   }
   slots.set(key, slot);
   return slot;
 }
+
+// visible and opacity move a whole actor: on a node they are skipped (the actor's other tracks still bind)
+const WHOLE = new Set(['visible', 'opacity']);
 
 export function bindTracks(manifest, actors) {
   const byId = new Map(actors.map((a) => [a.spec.id, a]));
   const slots = new Map();
   const bind = (t) => {
     const actor = byId.get(t.actor);
-    const slot = actor ? slotFor(slots, actor, t.node) : null;
+    if (!actor || (t.node && WHOLE.has(t.channel))) return null;
+    const slot = slotFor(slots, actor, t.node);
     return slot ? { ...t, slot } : null;
   };
   const scroll = manifest.tracks.map(bind).filter(Boolean);
   const idle = manifest.idle.map(bind).filter(Boolean);
   const live = [...new Set([...slots.values()].filter(Boolean))];
-  return { scroll, idle, live };
+  // a follower rides its leader (manifest.js checked the pair): applied after every track, the leader's included
+  const follow = actors.filter((a) => a.spec.follow && byId.has(a.spec.follow)).map((a) => [a, byId.get(a.spec.follow)]);
+  return { scroll, idle, live, follow };
 }
 
 const smooth = (x) => x * x * (3 - 2 * x);
@@ -89,6 +99,18 @@ function add(slot, channel, v, k = 1) {
     const s = 1 + (Array.isArray(v) ? v[0] : v) * k;   // 0.1 stretches 10% up and thins to keep the volume
     slot.scl[1] *= s; slot.scl[0] /= Math.sqrt(s); slot.scl[2] /= Math.sqrt(s);
   } else if (channel === 'bend') slot.bend += (Array.isArray(v) ? v[0] : v) * k;
+  // visible: drawn while the sum is 0.5 or more (keys 1 then 0 a hair apart, linear, make a cut); opacity: 0..1 on an
+  // actor with "fade" (alpha-hashed materials), a dissolve; drawn while above SHOWN
+  else if (channel === 'visible') slot.vis = (slot.vis ?? 0) + (Array.isArray(v) ? v[0] : v) * k;
+  else if (channel === 'opacity') slot.opa = (slot.opa ?? 0) + (Array.isArray(v) ? v[0] : v) * k;
+}
+
+const SHOWN = 0.004;
+
+// Shown or not, from this frame's visible and opacity sums alone (null: the actor has no such track), so a scroll back
+// always brings an actor back: an actor faded to 0 or cut away once is not hidden for good.
+export function shownBy(vis, opa) {
+  return (vis === null || vis >= 0.5) && (opa === null || opa > SHOWN);
 }
 
 let R = null;   // scratch rotation, made on first use (three arrives with the scene: three.js)
@@ -99,7 +121,7 @@ export function applyTracks(bound, p, time, travel = 1) {
   const { e: _e, q: _q } = R || (R = { e: new Euler(), q: new Quaternion() });
   for (const s of bound.live) {
     s.pos[0] = s.pos[1] = s.pos[2] = 0; s.rot[0] = s.rot[1] = s.rot[2] = 0;
-    s.scl[0] = s.scl[1] = s.scl[2] = 1; s.bend = 0;
+    s.scl[0] = s.scl[1] = s.scl[2] = 1; s.bend = 0; s.vis = null; s.opa = null;
   }
   for (const t of bound.scroll) {
     const v = sample(t.keys, p, t.ease);
@@ -118,5 +140,15 @@ export function applyTracks(bound, p, time, travel = 1) {
     s.obj.quaternion.copy(s.restQuat).multiply(_q.setFromEuler(_e));
     (s.inner || s.obj).scale.set(s.restScale.x * s.scl[0], s.restScale.y * s.scl[1], s.restScale.z * s.scl[2]);
     if (s.inner && s.actor.bend) s.actor.bend.value = s.actor.bendRest + s.bend;
+    if (s.vis !== null || s.opa !== null) {
+      const o = s.opa === null ? 1 : Math.max(0, Math.min(1, s.opa));
+      for (const [m, base] of s.actor.fadeMats || []) m.opacity = base * o;
+      s.obj.visible = shownBy(s.vis, s.opa);
+    }
+  }
+  for (const [f, lead] of bound.follow || []) {
+    f.root.position.copy(lead.root.position);
+    f.root.quaternion.copy(lead.root.quaternion);
+    f.inner.scale.copy(lead.inner.scale);
   }
 }

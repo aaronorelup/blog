@@ -1,0 +1,42 @@
+/* Meta's world only (SPEC 2.5.4): the gate's three steps in the console, the approve button, the locked
+   drawer and the myth it answers. Colours come from worlds/meta.js through the --w-* properties, so
+   brandMode "marks-only" needs no edit here. */
+/* the plate: the file's box is half again as tall as the symbol, so the symbol is 13 px high here (never under 12)
+   with close to twice its height clear on every side. A name set in type needs none */
+.ail-world[data-world='meta'] .ail-mark { --h: 20px; }
+.ail-world[data-world='meta'] .ail-mark--type { padding: 10px 12px; }
+
+/* the three steps: a number, then its sentence beside it at every width (a sentence is one piece and would drop under it) */
+.ail-world[data-world='meta'] .ail-sig__list ul[data-ordered] li { display: flex; align-items: flex-start; gap: .35em; }
+.ail-world[data-world='meta'] .ail-sig__list ul[data-ordered] li::before { font: inherit; color: var(--ail-fg-2); white-space: pre; }
+.ail-world[data-world='meta'] .ail-sig__item .ail-own::before { display: none; }
+/* beat c: the three steps stand as one numbered list from the start, where the myth stands in other worlds.
+   A step is lit, with an ink line beside it, when the thread reaches it */
+.ail-gl .ail-world[data-world='meta'] .ail-sig .ail-myth { display: none; }
+.ail-gl .ail-world[data-world='meta'] .ail-sig__list ul { gap: 8px; }
+.ail-gl .ail-world[data-world='meta'] .ail-sig__list .ail-sig__item { position: static; display: flex; padding: 0 0 0 9px; background: none; white-space: normal; opacity: 1; visibility: visible; transform: none; pointer-events: auto; font-size: 16px; line-height: 1.2; color: var(--ail-fg-2); box-shadow: -3px 0 0 transparent; }
+.ail-gl .ail-world[data-world='meta'] .ail-sig__list .ail-sig__item.is-on { color: var(--ail-fg); box-shadow: -3px 0 0 var(--ail-fg); }
+.ail-gl .ail-world[data-world='meta'] .ail-sig__list .ail-sig__item.is-on::before { color: var(--ail-fg); }
+/* the approve button is there from the start. When the gate asks, its ring breathes until it is pressed */
+.ail-gl .ail-world[data-world='meta'] .ail-btn[data-act='approve']:not([disabled]) { animation: ail-meta-ask 1.6s ease-in-out infinite; }
+@keyframes ail-meta-ask { 0%, 100% { box-shadow: 0 0 0 0 var(--w-line); } 50% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--w-line) 38%, transparent); } }
+
+/* beat d: the locked drawer carries the flagship's name and, under it, the only way in */
+.ail-gl .ail-world[data-world='meta'] .ail-catch__item { width: max-content; max-width: min(30vw, 380px); padding: 10px 13px 12px; background: var(--w-card); box-shadow: 0 0 0 1px var(--ail-fg); white-space: normal; font-size: 17px; line-height: 1.3; }
+.ail-gl .ail-world[data-world='meta'] .ail-catch__item .ail-note { display: block; margin: 5px 0 0; font: 400 var(--ail-fs-label)/1.3 var(--ail-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ail-fg-2); }
+.ail-gl .ail-world[data-world='meta'] .ail-catch__item .ail-own::before { display: none; }
+/* and what people say of that model is struck through on top of the catch: only the myth, its truth is the catch */
+.ail-gl .ail-world[data-world='meta'][data-beat-now='d'] .ail-sig { opacity: 1; visibility: visible; transform: none; transition: none; background: none; padding: 0; }
+.ail-gl .ail-world[data-world='meta'][data-beat-now='d'] .ail-sig > :not(.ail-myth),
+.ail-gl .ail-world[data-world='meta'][data-beat-now='d'] .ail-myth > :not(s) { display: none; }
+.ail-gl .ail-world[data-world='meta'][data-beat-now='d'] .ail-myth { display: block; position: fixed; left: 0; top: 0; z-index: 3; padding: 7px 18px 8px; background: var(--w-scrim); font-size: 19px; line-height: 1.2; white-space: nowrap; opacity: 0; transition: opacity 300ms var(--ail-ease); }
+.ail-gl .ail-world[data-world='meta'][data-beat-now='d'] .ail-myth.is-on { opacity: 1; }
+.ail-gl .ail-world[data-world='meta'] .ail-myth s { opacity: .78; }
+
+@media (max-width: 899px) {
+  .ail-gl .ail-world[data-world='meta'] .ail-sig__list .ail-sig__item { font-size: 15px; }
+  .ail-gl .ail-world[data-world='meta'] .ail-catch__item { width: auto; max-width: none; padding: 0; background: none; box-shadow: none; font-size: 15px; }
+  /* in the sheet the struck myth is the first line, and the catch starts under it */
+  .ail-gl .ail-world[data-world='meta'][data-beat-now='d'] .ail-myth { position: absolute; left: var(--ail-margin); right: var(--ail-margin); top: 12px; padding: 0; background: none; font-size: 16px; white-space: normal; }
+  .ail-gl .ail-world[data-world='meta'] .ail-catch { padding-top: 42px; }
+}

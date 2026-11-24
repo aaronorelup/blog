@@ -1,0 +1,15 @@
+name: "The Quiet Hour, a film driven by a training run"
+line: "An old TV in a dark room shows a calm programme. Every moving thing is a number from a real training run, so it breaks when the data breaks."
+section: play
+state: finished
+since: "2026-11"
+needs: "Any browser, with the sound on. A computer draws it faster than a phone"
+image:
+  src: /media/projects/the-quiet-hour.webp
+  alt: "A dark blue living room at night seen from behind an empty armchair: an old wooden TV shows a cream title card reading THE QUIET HOUR, a wall clock reads half past eleven and one neighbour's window glows warm through the curtains"
+main:
+  label: "Watch it render live"
+  href: "/labs/quiet-hour/"
+posts: [three-ai-experiments]
+order: 78
+credit: "Directed by Claude Fable 5.2 and built by Claude Opus 5.5 agents, after a first version by Gages, my Grok Bot agent."

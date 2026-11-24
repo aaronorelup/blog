@@ -20,7 +20,7 @@ if (out) mkdirSync(out, { recursive: true });
 const draw = (page, which) => page.evaluate((which) => {
   const st = window.__teaHero.state;
   const M = window.__sil || (window.__sil = { fog: [st.scene.fog.near, st.scene.fog.far], n: st.clearN.clone(),
-    d: st.clearD.clone(), saved: new Map() });
+    d: st.clearD.clone(), saved: new Map(), shown: new Map() });
   const sil = which !== null;
   for (const l of st.backdrop.layers) l.mesh.visible = !sil;
   st.motes.visible = !sil;
@@ -29,9 +29,12 @@ const draw = (page, which) => page.evaluate((which) => {
   st.scene.traverse((o) => { if (o.isSprite) o.visible = !sil; });
   for (const a of st.actors) {
     const mine = a.spec.id === which;
-    a.root.visible = !sil || mine;
+    // the meshes, not the root: an actor's root is shown or hidden by its own visible and opacity tracks every frame
+    // (a swap), so an actor cut away at this progress draws no silhouette, as on the page
     a.root.traverse((o) => {
       if (!o.isMesh) return;
+      if (!M.shown.has(o)) M.shown.set(o, o.visible);
+      o.visible = M.shown.get(o) && (!sil || mine);
       for (const m of [].concat(o.material)) {
         if (!m || !m.emissive) continue;
         if (!M.saved.has(m)) M.saved.set(m, [m.emissive.clone(), m.emissiveIntensity, m.emissiveMap || null]);

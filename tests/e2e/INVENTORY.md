@@ -88,7 +88,7 @@ notes, `earthlight`'s notes, `nine-claudes-one-painting` today).
 
 | Behaviour | Listener or attribute | Spec |
 |---|---|---|
-| Poster and Play (with `size`) until the click; then the game's page (`src`) in a frame, Fullscreen and Stop shown | `src`, `poster`, `size`, `label`, `note`, `aspect`, Play `click`, frame `load` | game-1 |
+| Poster and Play (with `size`) until the click; then the game's page (`src`) in a frame, Stop and the own-tab link shown, Fullscreen only where the browser can make a frame fullscreen (hidden on iPhone Safari, checked by the phone project) | `src`, `poster`, `size`, `label`, `note`, `aspect`, Play `click`, frame `load` | game-1 |
 | Scrolled away it pauses behind a veil; the veil resumes it | IntersectionObserver, veil `click` | game-2, game-6 |
 | Another player pauses it; resuming pauses the other | document `ao-listen-play`, claim | game-3 |
 | `ao-stop` and a hidden tab pause it | document `ao-stop`, `visibilitychange` | game-4 (wording: see below) |
@@ -164,6 +164,7 @@ streams the same two films.
 | A find chip marks every hit and counts them; again clears; the search box marks too | `find`, chip `click`, search `input` | transcript-3 |
 | One pane playing pauses the other | document `ao-listen-play` | transcript-4 |
 | Enter on a line seeks; hiding the element pauses its video | line `keydown`, video `timeupdate` | transcript-5 |
+| On a phone the search field is 16px or more, so iOS Safari doesn't zoom the page on focus (phone only) | style `@media (pointer: coarse)` | transcript-6 |
 
 ### `ao-fetch`: every-video-can-seek, the-branch-that-went-live
 
@@ -217,6 +218,8 @@ streams the same two films.
 |---|---|---|
 | `show` picks the first series; the buttons switch it | `show`, `avg`, button `click` | series-1 |
 | Pointing at a day reads it out (with its marks), leaving clears it | body `pointermove` `pointerdown` `pointerleave`, `data-d` marks | series-2 |
+| A touch tap reads the day tapped, not the last one (phone only) | body `pointerdown` (touch), `pointerleave` ignored for touch | series-4 |
+| A swipe that starts on the chart (a page scroll) leaves no day read out | body `pointercancel` | series-5 |
 | The chart takes focus and the keys walk the days | plot `focus` `blur` `keydown` | series-3 |
 | `stack` (layers), `th[data-unit]` | `stack`, `data-unit` | not used by any page today |
 
@@ -228,6 +231,8 @@ streams the same two films.
 | A row and its segment light together, from either | row and segment `pointerenter` `pointerleave` | funnel-2 |
 | Focus in a row lights it | row `focusin` `focusout` | funnel-3 |
 | What's in it opens and closes the examples | more `click` | funnel-4 |
+| A touch tap lights its row alone; a second tap turns it off (phone only) | row and segment `pointerup` (touch), `pointerenter` `pointerleave` ignored for touch | funnel-5 |
+| A swipe that starts on a row (a page scroll) leaves no row lit | row and segment `pointercancel` | funnel-6 |
 
 ### `ao-ask`: who-visits-a-new-website
 
@@ -256,6 +261,8 @@ streams the same two films.
 | Tiles drawn (`top`, `unit`); pointing at one reads it out, leaving clears | stage `pointermove` `pointerleave` | treemap-1 |
 | Focus and the keys walk the tiles | stage `focus` `keydown` | treemap-2 |
 | A view button regroups | `views`, button `click` | treemap-3 |
+| A touch tap on a tile reads that tile, not the first (phone only) | stage `pointerup` (touch), `pointerleave` ignored for touch | treemap-4 |
+| A swipe that starts on a tile (a page scroll) leaves no tile read out | stage `pointercancel` | treemap-5 |
 
 ### `ao-matrix`: moss-image-on-8gb, props-three-budgets
 
@@ -277,6 +284,9 @@ the recording.
 | synthid `detect`: fewer words checked change the score | range `input` | demo-synthid-3 |
 | synthid `edit`: typing or an edit button rescores; Reset restores | textarea `input`, edit buttons, Reset, strip `change` | demo-synthid-4 |
 | synthid `book`: pointing at the chart reads it out | svg `pointermove` `pointerleave` | demo-synthid-5 |
+| synthid `book`: a touch tap on the chart reads it out and keeps it (phone only) | svg `pointerup` (touch), `pointerleave` ignored for touch | demo-synthid-7 |
+| synthid `book`: a swipe that starts on the chart (a page scroll) leaves no readout | svg `pointercancel` | demo-synthid-8 |
+| synthid `edit`: on a phone the letter is 16px or more, so iOS Safari doesn't zoom on focus (phone only) | style `@media (pointer: coarse)` | demo-synthid-6 |
 | cf `you`: asks `/cdn-cgi/trace` and lays out the visit; the address is masked until shown | Show `click`, show/hide `click` | demo-cf-1 |
 | cf `count`: shows the live count; an automated browser isn't counted (asserted on the status line only) | `data-slug`, `visibilitychange`, Try again | demo-cf-2 |
 | goobie-lab `windows`: the three ways, each with its map; in-context's shades every post, RAG's a few | `part` | demo-lab-1 |
@@ -286,6 +296,7 @@ the recording.
 | goobie-lab `agent`: a recorded call runs again live on the site's files, the same as recorded on the posts it searched (whatever was listed since); on all the posts listed today it says how many came since, this post among them, and what it returns now; its result and an opened result stay as you step | Run this call live `click`, Next `click` | demo-lab-5 |
 | goobie-lab `agent`: the playground searches the reader's own words live, as plain text; cites link to their passages | form `submit` | demo-lab-6 |
 | goobie-lab `agent`: a live run that can't read the site's files says so, and the next try reads them | Run this call live `click` | demo-lab-7 |
+| goobie-lab `agent`: on a phone the playground's tool and words are 16px or more, so iOS Safari doesn't zoom on focus (phone only) | style `@media (pointer: coarse)` | demo-lab-8 |
 
 ## Standalone pages (`standalone.spec.mjs`, `elements/game.spec.mjs`)
 
@@ -310,23 +321,48 @@ the recording.
 | A rail dot flies to its waypoint (the cards' page lets clicks through to the rail; only the shown card takes them) | rail `click` | home-4 |
 | The day/night toggle tweens the world (the page colour passes through between, the 3D changes with it even with the camera still, once it ends `--pc-bg` is the plain per-mode string again, and the screen is the one a fresh load of that mode draws) | toggle `click` → `ao-mode` → theme.js | home-5 |
 | The avatar flips like a coin and lands on a face | avatar `click`, `pointerenter` `pointerleave` | home-6 |
-| Without WebGL the scene bails to the flat page, in the stored mode's colours | `home/index.js` `webgl()` → `flat()` | home-7 (Chromium: `--disable-webgl` is its flag) |
+| Without WebGL the scene bails to the flat page, in the stored mode's colours, a close stack (`home-flat`: no empty threshold screen, each stop its card's height) | `home/index.js` `webgl()` → `flat()` | home-7 (Chromium: `--disable-webgl` is its flag) |
 | An outside link flies the camera out through the gate (the white at full), then opens; a new-tab link leaves the scene where it stood | window `click` → `bindOutbound`, `flyToLink` (`scene/exit.js`) | home-8 |
 | A `data-no-fly` link leaves at once, the panel left as it was | `data-no-fly` | home-9 |
-| A lost WebGL context bails to the flat page | canvas `webglcontextlost` | home-10 |
+| A lost WebGL context bails to the flat page, the same close stack | canvas `webglcontextlost` | home-10 |
 | The backtick opens and closes the staging tool | window `keydown` → onStageHotkey | home-11 (its own keys, drag and copy are a tool for Aaron, not checked) |
 | Five night tosses in a row open the lantern door: the last lands lamp-up, the lamp flares, the page goes to `/api/lantern` | avatar `click` → lantern.js | home-12 (the Worker's redirect: live-6) |
 | With night stored the first paint is already night: page, card and heading colours before any module runs | Head's inline script, tokens.css | home-13 |
+| The first paint is already the staged page (`data-stage-pending`): the hero card alone, where the scene leaves it, so it stays put as the scene mounts and nothing shifts (Chromium's layout-shift entries under 0.05) | `Home`'s inline script, home.css; `enableStage()` takes it off | home-14 |
+| Nothing leaves the page staged: a lost scene chunk goes to the flat page; with no module at all the head script's fail-safe gives the no-JS page after 10 s | `flat()`; the inline script's timeout | home-15 |
+| Reduced motion and `?tier=static` never stage the page: every stop stands in a document that scrolls | the inline script's own checks; `mount()` | home-16 |
+| The leaves door costs the homepage nothing: no request for `/leaves/` or its chunk; selecting another word, "leaves change" or a word in another card opens nothing | document `selectionchange`, `pointerdown` `pointerup` `pointercancel` (passive, capture), `keyup` → `leaves-door.js` check | leaves-1 |
+| A double-click on "leaves" in the hero line peels a leaf off the word, washes the page to its ground and opens `/leaves/`; the room strips the `#from=` hash | the same, on `pointerup` | leaves-2 (desktop: a phone long-presses; `@timing`: within 3 s, in `desktop-timing`) |
+| A finished selection of exactly that word (a long-press, a keyboard selection) opens the room | `selectionchange` with no pointer down | leaves-3 |
 
 The scene specs pin `?tier=low`, which the scene supports for slow machines, so software WebGL never drops it to
 its static rung mid-test.
+
+## The leaves room (`leaves.spec.mjs`)
+
+`/leaves/` (`src/pages/leaves/index.astro`, `src/scripts/leaves/`): a cup of tea, one leaf per listed entry, that settles
+to read the next entry's number. Reached only by its door on the homepage (rows leaves-1 to leaves-3 above).
+
+| Behaviour | Listener or attribute | Spec |
+|---|---|---|
+| The room renders (a 9 by 9 sample of the canvas varies), is `noindex`, is in neither `/sitemap.xml` nor `/stats-pages.txt`, asks nothing of another origin and leaves storage and cookies as they were | `meta[name=ao-secret]`, `stats-pages.mjs` | leaves-4 |
+| `__leaves.skip()` brews to rest: phase `rest`, the loop stopped, the slip and the text alternative read the next entry | `window.__leaves` | leaves-5 |
+| Day and night: the canvas's corner is the mode's own ground | `html[data-mode]`, `palette.js` `watch` | leaves-6 |
+| Under reduced motion the room is the finished still life at once: the slip within a second, no loop | `matchMedia('(prefers-reduced-motion: reduce)')` `change` | leaves-7 |
+| A hover (mouse) or a tap on a leaf names its entry on a paper label | canvas `pointermove` `pointerdown` `pointerup` `pointercancel` `pointerleave`, `touchmove` while stirring | leaves-8 |
+| Esc and the "Leave the cup" pill go back home (Back when the homepage sent the guest), with nothing of the door left on it | window `keydown`, `.lv-leave` `click`, the door's `pageshow` | leaves-9 |
+| No sideways scroll; both pills at least 44 px tall; the Sound pill toggles `aria-pressed` | `.lv-sound` `click` | leaves-10 |
+
+Not checked by a spec (a tool for the eye, not a contract): dragging round the cup and the Left and Right keys stir,
+Space or a tap sips sooner, the offscreen list's Up and Down light a leaf (`.lv-list` `focus` `blur` `keydown`), the
+sound (WebAudio, only after a gesture), the tab hidden pauses the loop (`visibilitychange`), a resize re-lays the room.
 
 ## Homepage overlay (`overlay.spec.mjs`)
 
 | Behaviour | Spec |
 |---|---|
 | A card grows into the ledger, with no document load | overlay-1 |
-| A row opens its post in the panel, with no document load; `enhance(root)` makes its pictures open the viewer; Esc closes the viewer and leaves the panel open | overlay-2 |
+| A row opens its post in the panel, with no document load; `enhance(root)` makes its pictures open the viewer; Esc closes the viewer and leaves the panel open; the fetched page's note for agents is not mounted | overlay-2 |
 | Post A, post B, back to A, on to C: every `ao-*` is defined each time; the model renders, the game reloads, the demo responds | overlay-3 |
 | A lost chunk (the first the post's view module asks for) still ends on a working post: `mountView`'s `lazy()` opens the real page | overlay-4 |
 | A lost post component chunk in the panel opens the post's real page at once, with no reload first: `mountView` hands the view its fallback, which `enhance()` passes on | overlay-4b |
@@ -354,6 +390,7 @@ its static rung mid-test.
 | A view in the panel has the colours it has on its own page, by day and by night, and its focused search box looks the same | overlay-25 |
 | While the panel is up the day/night switch sits in its header, clear of the card's corner and the nav, and still switches; it goes back on close | overlay-26 |
 | On a phone the panel's footer is two short lines (under a tenth of the window), every link kept: exactly the feed, the tea room and every elsewhere | overlay-27 (phone) |
+| The panel is a modal for the keyboard: a card's link opened with Enter puts focus in the panel (a dialog, `aria-modal`), the scene and its rail are inert, PageDown scrolls it and Tab stays in it; Esc gives focus back to that link, the scene no longer inert, and putting it back fetches nothing | overlay-28 |
 
 ## Pages (`ledger.spec.mjs`, `pages.spec.mjs`)
 
@@ -381,6 +418,8 @@ its static rung mid-test.
 | A range change rolls the lede's figures (`tweenNumber`, every frame for 450 ms) in their own text nodes: watched from before the range is picked to the roll's end, the provenance buttons around them never have a node replaced (listen-5), and the figures change | pages-7 |
 | A link to a heading lands on it, and a search result's passage is in view, though the components above it draw after the load event (`scripts/views/post.js`) | pages-5 |
 | `/now` shows the newest snapshot of `src/content/now/`, lit in the nav; its History links every snapshot by date, newest first; each `/now/<date>/` shows that snapshot, marks its own row unlinked and points back to `/now` | pages-8 |
+| The note for agents (`chrome/AgentNote.astro`) on `/`, `/ledger/` and a post: an HTML comment first in `<body>` and one `.ao-agent`, `aria-hidden`, at most 1×1 px, nothing focusable in it, never hidden by `display` or `visibility`, outside every `[data-panel-view]`, article and search body; the overlay never mounts a fetched page's (overlay-2) | pages-9 |
+| `/llms.txt` names every listed post's Markdown twin (the live notebook by its page); a post's head links its `.md` twin and `/llms.txt`, and the twin is that post | pages-10 |
 
 ## The post page (`post.spec.mjs`)
 
@@ -397,6 +436,7 @@ its static rung mid-test.
 | A wide picture in `<ao-compare>` holds its ratio before it loads, so the page doesn't jump | post-9 |
 | Reload, and Back with and without the page cache, put `#panel-scroll` back where the reader was, on a long post with components | post-10 |
 | The notes page is the post view without the short version, Read next or older/newer; its way back is the short version | post-11 |
+| Every fenced code block in a post or notes page gets a Copy button beside it (not in the `<pre>`, not in a component) that puts the code on the clipboard (`scripts/post/copy.js`) | post-12 (Chromium) |
 
 ## Search and Ask RAG Goobie (`search.spec.mjs`)
 
@@ -404,7 +444,7 @@ its static rung mid-test.
 ask-notes from Goobie's prompt against DeepSeek; no `related` list names AO-073, so no check waits on the live
 notebook); Ask's answers are event streams (`sse`, `fixtures.mjs` `streamOf()`), and search-17 and -19 hold the stream
 in the page to see it step by step. Turnstile is a stub that solves at once with the test response. Every spec that
-clicks Ask waits for `[data-search][data-ready]` first (the box's module has mounted).
+clicks Ask waits for `[data-search][data-ready]` first (the box's module has mounted); search-29 and -30 click it before, on purpose.
 
 | Behaviour | Spec |
 |---|---|
@@ -434,6 +474,7 @@ clicks Ask waits for `[data-search][data-ready]` first (the box's module has mou
 | Under reduced motion the Ask box shows the first example and never changes it | search-21 |
 | The "Ask RAG Goobie" button shows no card while the how-it-works post isn't in `previews.json`; once it is, hovering shows its card with the line "How RAG Goobie works", leaving closes it and keyboard focus opens it; a phone gets none | search-22 |
 | Words typed before the box's module has run (its chunk held) are searched once it mounts | search-23 |
+| A tap on Ask before the box's module has run (its chunk held) changes nothing on screen, then opens Ask once it mounts (pressed, its placeholder, one `GET /api/session`); Ask then Search leaves Search pressed with no session and no Turnstile | search-29, search-30 |
 | The line under the box says how many posts RAG Goobie reads, in Ask only | search-24 |
 | On a 360 px Android phone (Chromium) a cite that ends a line flush makes no sideways scroll (its 44 px box stays inside the panel's padding) | search-25 (desktop project, Android profile) |
 
@@ -493,14 +534,71 @@ once the 3D hero pins the top.
 | The panel footer's "Tea room" link and the homepage gate's button reach `/tea/`; the gate's `data-no-fly` leaves at once (the scene doesn't hold the click to fly) | tea-7 |
 | The hero, the rail and the footer lead back to `/`; the footer carries every `NAV` link | tea-8 |
 | The rail marks the chapter being read (`aria-current`), none over the hero; a rail link or strip pill takes the reader to its chapter; a chapter reached by its anchor shows its opener (the one-time fade was set off, or never waited, and ends fully shown; no frame of it is timed) | tea-9 |
-| With JavaScript off every chapter shows, nothing waits to fade in, every link shows on a wide window, and on a phone every address is on a link that shows | tea-10 |
+| With JavaScript off every chapter shows, nothing waits to fade in, every link shows on a wide window, and on a phone every address is on a link that shows; the day/night switch, which needs its script, isn't shown, nor does the phone's strip keep room for it (its pills run to its end) | tea-10 |
 | Day or night chosen on a panel page is what `/tea/` opens in, and the reverse (the shared `scene-mode`) | tea-11 |
 | The first Tab is the skip link, in view; it takes the keyboard past the hero and the rail into the first chapter; no positive tabindex | tea-12 |
 | No console error, no sideways scroll at 1440 and 390 wide by day and by night (at the top and at every chapter), every picture loads | tea-13 |
 | Under 1024 px the strip keeps the chapter being read in view: at every chapter, going down and back up, its pill sits whole inside the strip and clear of its fading end; Tab from "Main site" brings each pill in turn whole into view, clear of the fade, with room for its focus ring; with reduced motion (the strip moves at once) and without (it glides; WebKit starts the glide up to about 0.7 s late, so the pass waits for the pill to arrive and stay) | tea-14 (desktop at 390 wide, and phone) |
 | One `h1`, the hero's title, first; each chapter's word an `h2` and the first heading in it; About's sections (`AboutView level={2} title={false}`) at `h3` with no title of their own; no heading skips a level | tea-15 |
-| The hero lab `/tea-lab/` (live until the final models land) answers with its own robots noindex and no share picture or JSON-LD; the sitemap, the feed, the hover cards' list, search, Ask and read-aloud never name it, and no page links it (`/tea/`, the 404 page, every page of the sitemap) | tea-16 |
+| The hero lab `/tea-lab/` is gone (removed 2026-11-13; it answers 404); the sitemap, the feed, the hover cards' list, search, Ask and read-aloud never name it, and no page links it (`/tea/`, the 404 page, every page of the sitemap) | tea-16 |
 | An address with a chapter (`/tea/#projects`) lands on it at once: every frame from the first has the window at the top or at the chapter, never between (phone WebKit glides there while the page loads and, the page busy, stops part way); the first link followed on the page glides to its chapter | tea-17 |
+
+## The tea room being rebuilt (`tea-next.spec.mjs`, `tea-engine.spec.mjs`, `tea/<id>.spec.mjs`)
+
+`/labs/tea-room/engine/` until the swap (the address is one constant in `tests/e2e/tea/base.mjs`). Every expectation comes from the
+picks (`src/data/tea-picks.json`), the registry and `COPY.room`. The live notebook only warns.
+
+| Behaviour | Spec |
+|---|---|
+| The sections are the picks' chapters in order, each with its anchor (the `dom` id), its `h2` and one statement; the hero slip, the bookmark and the tab list the same, with the same numerals | tea-next-1 |
+| Each chapter shows exactly its shelves' posts, in order, and a topic its one closing link; no other post link on the page | tea-next-2 |
+| Courses: the two courses, their names and links | tea-next-3 |
+| Every internal link and picture resolves (the live notebook only warns) | tea-next-4 |
+| No draft or unlisted post anywhere: no slug in the HTML, no title or id of its own in the page's text or any attribute (decoded), outside Now's and About's words | tea-next-5 |
+| The index marks the chapter whose section holds the scroll position | tea-next-9 |
+| Without JavaScript the page is book mode: every chapter, word, still and link shows, no stage | tea-next-10 |
+| One `h1`; each chapter's first heading its `h2`; the first Tab is the skip link; nine Tab stops in the frame with a ring | tea-next-12 |
+| Under 1024 px the tab shows the current numeral and short name whole; its sheet lists every chapter in rows of 44 px or more and closes on a choice | tea-next-14 |
+| `/labs/tea-room/engine/` says noindex; no sitemap, feed, index or other page names it | tea-next-16 |
+| One link to `/` in the hero slip, in the index as shown, and in the footer, which carries the main nav | tea-next-8 |
+| The planned places are the real ones: the screens are fully shut at every section's top from the third chapter on | tea-next-24 |
+| An address with a chapter lands on its opening frame in one step (screens open, its word in view); `#ledger` lands on the first topic | tea-next-17 |
+| No console message, no sideways scroll, every picture in reach decoded, at every chapter's opening frame and every half screen | tea-next-13 |
+| Head and tail: each chapter's paper begins 1.2 vh in (1.0 after the hero) and ends 0.6 vh before its end (1.6 when last); the screens are shut when the footer comes in | tea-next-18 |
+| No layout shift from load to settled and through a scripted scroll | tea-next-19 |
+| Reduced motion: book mode, nothing running or playing, two frames 700 ms apart identical at six places | tea-next-20 |
+| Save-Data: book mode, no request for a loop, a film, three or a model | tea-next-21 |
+| The closed index (the bookmark, under 1024 px the tab) covers no text at any chapter's rest places | tea-next-22 |
+| A jump to a chapter far off shows its room at once (its inlined preview) while its plates are held, never the night ground, never a broken picture | tea-next-25 |
+| A picture that fails to load is never a broken box, and its scene comes back when the network does | tea-next-26 |
+| A window fetches only its own composition's pictures, the scene on screen first, and the other after a turn | tea-next-27 |
+| Book mode fetches no picture only the stage draws | tea-next-28 |
+| On a slow network the first paint is a picture and nothing shifts from load to settled | tea-next-29 |
+| One button: an embed shows one paper button and nothing of the thing before a press; a game mounts with none of its own; a machine opens in a sheet, the wheel over its paper or its machine never scrolls the page, and Esc closes it | tea-next-30 (two tests) |
+| One thing plays: a film pauses a running game; with `?still=1` no video plays (loops: added with the first loop) | tea-next-31 |
+| Weight: the top of the page fetches only 2.9's list; the bytes printed | tea-next-32 |
+| 3D stays lazy: no `three`, GLTFLoader or `.glb` at load, live, reduced motion, Save-Data, no WebGL | tea-next-33 |
+| Not the frame before, per chapter (waits while the chapter is a stub; `TEA_DIFFER_STUBS=1` runs it on stubs) | tea-next-34 |
+| The footer's computed styles equal `/tea/`'s (until the swap) | tea-next-23 |
+| Purity: the frame at a place is the same loaded directly, flicked to from the top and from the bottom (scrollTo) and turned to with the wheel, in state read back from the page and in pixels (under 0.1% apart), at 1440x900, 760 wide, 390x844 and on the phone; also at the door, before and after every screens change, and the house closing | tea-engine: purity |
+| No frame is nearly all dark, no band is dark and flat, no dark flat area is over 0.49 of the frame, and on a phone no more than a fifth of the lower 40% is dark and flat, paper or none, at 240 places (200 on a phone); the floors measured on looks A and B (`scripts/tools/tea/sweep.mjs`, `docs/TEA_ROOM.md`) | tea-engine: the empty-frame sweep |
+| At every half screen the page is no wider than the window, and `html` and `body` never set overflow | tea-engine: nothing scrolls sideways |
+
+Each chapter's own rows are in its own file:
+- `hero`: [tests/e2e/inventory/tea-hero.md](inventory/tea-hero.md)
+- `start`: [tests/e2e/inventory/tea-start.md](inventory/tea-start.md)
+- `tv`: [tests/e2e/inventory/tea-tv.md](inventory/tea-tv.md)
+- `film`: [tests/e2e/inventory/tea-film.md](inventory/tea-film.md)
+- `games`: [tests/e2e/inventory/tea-games.md](inventory/tea-games.md)
+- `art`: [tests/e2e/inventory/tea-art.md](inventory/tea-art.md)
+- `3d`: [tests/e2e/inventory/tea-3d.md](inventory/tea-3d.md)
+- `agents`: [tests/e2e/inventory/tea-agents.md](inventory/tea-agents.md)
+- `learning`: [tests/e2e/inventory/tea-learning.md](inventory/tea-learning.md)
+- `site`: [tests/e2e/inventory/tea-site.md](inventory/tea-site.md)
+- `projects`: [tests/e2e/inventory/tea-projects.md](inventory/tea-projects.md)
+- `courses`: [tests/e2e/inventory/tea-courses.md](inventory/tea-courses.md)
+- `now`: [tests/e2e/inventory/tea-now.md](inventory/tea-now.md)
+- `about`: [tests/e2e/inventory/tea-about.md](inventory/tea-about.md)
 
 ## Read-aloud (`read-aloud.spec.mjs`)
 
@@ -536,15 +634,15 @@ for `data-hero-settled` (the hero will change no layout by itself any more) befo
 | Without WebGL the same | tea-hero-2 (desktop: a Chromium flag) |
 | Nothing of the 3D is fetched before first paint; where the scene runs its files do come, after it | tea-hero-3 |
 | Where WebGL runs the scene mounts, pins and draws with no console error, and what sticks stays at the top mid-scroll | tea-hero-4 |
-| On a phone the day/night switch is on screen and on top through the static and the pinned hero, works, and is the only one | tea-hero-5 (phone) |
+| On a phone the day/night switch is on screen and on top through the static and the pinned hero, works, and is the only one; landed on the first chapter, the strip is already stuck at the top with the switch inside it | tea-hero-5 (phone) |
 | The title box's skip link takes the keyboard past the pinned hero to the chapters | tea-hero-6 |
 | Every chapter link in the title box lands on its chapter at its scroll margin | tea-hero-7 |
 | The title box holds within 1 px of its static place on every frame while the scene takes over | tea-hero-8 |
 | A scene that arrives late moves nothing on screen: with the box still on screen it waits; with the reader on the first chapter it pins with the chapter left where it is | tea-hero-9 |
-| Arriving at `/tea/#projects` with the scene ready mid-scroll lands on the chapter | tea-hero-10 |
+| Arriving at `/tea/#projects` lands on the chapter, and the scene, ready only once the page has left the top for it, pins without moving the reader off it | tea-hero-10 |
 | The day/night switch pressed while the models load is the mode the scene comes up in, its pictures included | tea-hero-11 |
 | A lost WebGL context shows the poster until it is back, then the scene with its light made again | tea-hero-12 |
-| Reduced motion turned on while the scene runs puts the poster back, the page where it was | tea-hero-13 |
+| Reduced motion turned on while the scene runs puts the poster back, the page where it was, and frees every geometry and picture the scene put on the GPU | tea-hero-13 |
 | With the scene up the switch fetches no poster under the canvas | tea-hero-14 |
 | The poster and the scene take the same shape of frame, a square window included | tea-hero-15 |
 | A missing manifest or model keeps the poster and the hero one screen, with no page error | tea-hero-16 |
@@ -553,10 +651,36 @@ for `data-hero-settled` (the hero will change no layout by itself any more) befo
 | The stage is one screen on every path, and the hero's foot fades into the page (static always, with the scene only as the pin lets go) | tea-hero-19 |
 | The title box is the same box static and over the scene: no backdrop blur, an opaque card by day | tea-hero-20 |
 | The box docks only where it leaves most of the frame to the scene (1024x768 flows, 1366x768 docks with the lens shift scaled) | tea-hero-21 (desktop) |
-| On a portrait screen the box waits low and the cast stands clear above it, and the scene keeps the portrait frame's full height | tea-hero-22 |
+| On a portrait screen the box waits low and the scene (the tea house and the TV) stands clear above it, the scene keeps the portrait frame's full height, the pinned section is three screens as on every screen, and the camera's move plays over 0.8 of a screen of scroll at least after the box has gone | tea-hero-22 |
 | A chapter link tapped in the last moments before the scene pins lands on its chapter, from a chapter (the pin no longer cuts the jump short) and from the top (nor lands it two screens early) | tea-hero-23 |
 | Every part the manifest names (the nodes its tracks and idle waves move, the nodes lights and glows hang from, each prop's parent and each material override's node) is in the loaded models: the runtime would skip a missing one without a word | tea-hero-24 |
 | Leaving the page while the scene loads (a reload as the manifest arrives, and as the models do) leaves no console error: once the page is being left the scene starts no load and reports none it loses | tea-hero-25 |
+| One actor in place of another, on `/tea/` with the shipped manifest (its own followers and whole-actor `visible` and `opacity` tracks left out) plus a follower and a second actor made of its first actor's model, served in its place, so it holds whatever the cast is: down the scroll to 0.8 and back, the follower rides its leader's root and scale, an opacity dissolve (with `fade`) and a visible cut show and hide each actor as keyed, the dissolved-out actor comes back, and nothing reaches the console | tea-hero-26 |
+| The shipped scene on the page: the cast is the TV alone, no actor is hidden at the top or follows another, every actor is drawn, and down the scroll and back (0 to 1 in tenths, a step either side of any cut) neither the number of point lights drawn nor the number of pictures on the GPU ever changes | tea-hero-27 |
+| A beforeunload that does not lead to leaving (a mailto link fires it in some browsers) while the models load costs nothing: the scene comes up, nothing logged (the scene stops its loads on pagehide only, so the page stays eligible for the back/forward cache) | tea-hero-28 |
+| Under 1024 px no line of the title box (skip link, statement, counter, chapter numerals) runs under the fixed day/night switch's column as the box scrolls up under it: on a phone, static or over the scene, with the counter on one line, and at 561, 600 and 640 px wide | tea-hero-29 |
+| The page's own mailto link clicked while the models load costs nothing: Chromium sends a beforeunload and the scene loads on; WebKit cancels the loads in flight, which the scene tries again, and comes up with nothing logged | tea-hero-30 |
+
+## The AI landscape (`ai-landscape.spec.mjs`)
+
+`/ai-landscape/`, every dated snapshot and its sources page: a document of its own (`src/components/ai-landscape/<date>/`,
+`src/scripts/ai-landscape/<date>/`). The scene is pinned to `?tier=low` (no stepping down under software WebGL) and
+read through `window.__landscape`. The walks draw the 3D at a pixel ratio of 0.5: what they measure is HTML.
+
+| Behaviour | Listener or attribute | Spec |
+|---|---|---|
+| Every page and sources page answers 200 with no console error or page error, carries `ao-build` and none of the site's chrome, and nothing it fetches (each section's module and art included) comes from another origin | `<meta name="ao-build">`, the page's own `<head>` | landscape-1 |
+| `/ai-landscape/` is the newest snapshot; each dated page shows its own date, links back as Newest and marks itself among the editions; each has its 1200×630 share card; with `LISTED` off every page says noindex and neither the sitemap nor the projects page names it, with it on the sitemap lists them all | `data-snapshot`, `data-dated`, `.ail-strip`, `#ail-editions`, `SNAPSHOTS`, `LISTED` | landscape-2 |
+| WebGL draws: frames rise and the canvas is not one flat colour | `window.__landscape.frames` | landscape-3 |
+| Scrolling moves the story forward and back (the wheel; a scroll on a phone) | the story clock (native scroll), `progress`, `section` | landscape-4 |
+| The pointer turns the camera, and it comes back with the pointer | window `pointermove` → the camera rig's orbit | landscape-5 (desktop: a phone has no pointer) |
+| Without WebGL every section reads as text: its heading, its words, each world's picture and nine floors | `hasWebGL()` → `toText()` | landscape-6 (desktop: a Chromium flag) |
+| The skip link, first on the page, switches to the same text version | `[data-ail-text]` `click` → `toText()` | landscape-6b |
+| Reduced motion: the page scrolls natively, the story arrives unlagged, nothing moves by itself, and no position shows an empty screen | `prefers-reduced-motion` | landscape-7 |
+| Nothing runs off the side of the screen, in any section, 3D or text | | landscape-8 |
+| The five companies are reachable by keyboard (the minimap's columns land on each world), and every link answers: an address of the site 200 with its fragment there, a hash an element of the page | document `click` on `a[href^="#"]`, `hashchange` | landscape-9 |
+| Never more than 60 words on screen at first depth, at every beat of a walk through the page | SPEC 2.0 | landscape-10 |
+| Every string on the page (text, `alt`, `aria-label`, `title`, the 3D page's own words) is found in the snapshot's view model or copy file; a picture's description in its world config | `data/view.js`, `data/copy.js`, `worlds/*.js` `alt` | landscape-11 |
 
 ## The live site (`live.spec.mjs`, `npm run e2e:live`)
 

@@ -278,8 +278,8 @@ export function doorWall(probes, knocks, famOf, limit = 24, perFamily = 6) {
 // Files this site really serves that a scanner may still ask for. The door wall holds every
 // address scanners tried, whatever the answer; a real file there failed some other way (a wrong
 // method, a dropped connection), and its card must not call it a door that was never here.
-// /favicon.ico has been one since 17 Oct 2026: AO-057 added it for exactly these knocks.
-const SITE_FILES = new Set(['/sitemap.xml', '/rss.xml', '/robots.txt', '/favicon.svg', '/favicon.ico','/version.json', '/media-sizes.json', '/ledger/previews.json']);
+// /favicon.ico since 17 Oct 2026 (AO-057) and /apple-touch-icon.png since 18 Nov 2026, for exactly these knocks.
+const SITE_FILES = new Set(['/sitemap.xml', '/rss.xml', '/robots.txt', '/favicon.svg', '/favicon.ico', '/apple-touch-icon.png', '/version.json', '/media-sizes.json', '/ledger/previews.json']);
 export function isSitePath(path, build) {
   const p = String(path || '').split(/[?#]/)[0];
   if (SITE_FILES.has(p)) return true;

@@ -1,6 +1,7 @@
 // The one picture behind the characters: a plane set back in the scene, plus cut-out layers of the same picture at
 // nearer depths (alpha in the image). Each layer holds its night and day image and mixes them by the mode; the
 // current mode's image loads first, the other after the first frame (later()).
+import { patient } from './manifest.js';
 import { Mesh, PlaneGeometry, ShaderMaterial, SRGBColorSpace, TextureLoader } from './three.js';
 
 const VERT = `
@@ -20,19 +21,37 @@ void main() {
 }
 `;
 
+// A layer's image is fetched (a network error tried again, as the models are: manifest.js patient), then decoded from
+// its bytes: WebKit cancels an image element's load as a link starts to leave the page (a mailto link) and fires
+// neither its load nor its error, so a decode not settled in 4 s is started again, once (as the models' pictures are,
+// actors.js quiet). userData.src keeps the image's address.
 let texLoader = null;
-function tex(url, anisotropy) {
+async function tex(url, anisotropy, signal) {
+  const blob = await patient(async () => {
+    const res = await fetch(url, { credentials: 'same-origin', signal });
+    if (!res.ok) throw new Error(`picture ${res.status}: ${url}`);
+    return res.blob();
+  }, signal);
+  const local = URL.createObjectURL(blob);
   texLoader ||= new TextureLoader();
-  return texLoader.loadAsync(url).then((t) => {
+  const decode = () => new Promise((ok, no) => {
+    const stall = setTimeout(() => no(new TypeError('picture stalled: ' + url)), 4000);
+    texLoader.loadAsync(local).then(ok, no).finally(() => clearTimeout(stall));
+  });
+  try {
+    const t = await decode().catch((e) => (signal && signal.aborted ? Promise.reject(e) : decode()));
     t.colorSpace = SRGBColorSpace;
     t.anisotropy = anisotropy;
+    t.userData.src = url;
     return t;
-  });
+  } finally {
+    URL.revokeObjectURL(local);
+  }
 }
 
-export async function loadBackdrop(manifest, night, anisotropy) {
+export async function loadBackdrop(manifest, night, anisotropy, signal) {
   const layers = await Promise.all(manifest.background.map(async (spec, i) => {
-    const first = await tex(night ? spec.night : spec.day, anisotropy);
+    const first = await tex(night ? spec.night : spec.day, anisotropy, signal);
     const mat = new ShaderMaterial({
       uniforms: {
         uNight: { value: first }, uDay: { value: first }, uMix: { value: night ? 1 : 0 },
@@ -57,7 +76,7 @@ export async function loadBackdrop(manifest, night, anisotropy) {
       other ||= Promise.all(layers.map(async (l) => {
         const url = night ? l.spec.day : l.spec.night;
         if (url === (night ? l.spec.night : l.spec.day)) return;
-        const t = await tex(url, anisotropy);
+        const t = await tex(url, anisotropy, signal);
         l.mat.uniforms[night ? 'uDay' : 'uNight'].value = t;
       })).catch(() => {}).then(() => { b.tried = true; });
       return other;

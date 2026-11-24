@@ -180,7 +180,7 @@ folder leaves the fallback; a chunk that fails to load leaves it too, and the ne
 
 | Attribute | |
 |---|---|
-| `name="synthid"` | the demo: the folder under `demos/` (`synthid`, `cf`, `goobie-lab`) |
+| `name="synthid"` | the demo: the folder under `demos/` (`synthid`, `cf`, `goobie-lab`, `candy-card`) |
 | `part="tournament"` | which part of it to mount; an unknown part leaves the fallback |
 | `data-slug="…"` | `cf`'s `count` only: the post whose reads it counts (default: the page's own slug) |
 
@@ -213,8 +213,15 @@ The demos:
   soon after it opens; no budget measures demos. The first live run then fetches `/ask/manifest.json`, its pack
   and `/rss.xml`, about 380 KB gzipped at 76 posts, growing with the blog. A live run leaves the live notebook out, as
   the recording did, and the demo's foot says so under every part.
+- **`candy-card`** (`candy-machine`, AO-089): one part, `card`. A copy of the Daily candy card from Aaron's command
+  centre with three of its days (`data.json`: the posts, his notes as they stood on 24 November 2026, a still and an
+  opening line for each). Nothing in it is connected: the switches flip, the days and tabs move and a typed note is
+  added to the list, all in memory only, and the card says so. CNDY-041 opens its real page in a same-origin frame
+  (`public/labs/candy-card/cndy-041/`, its media under `/media/candy-machine/cndy-041/`), loaded only once the card is
+  within 600 px of the screen and sized to its content. The card keeps the command centre's dark palette in day and
+  night, because it shows that page as it is. Never fetch the live card or its API from here.
 
-Behaviours: demo-synthid-1 to demo-synthid-5, demo-cf-1, demo-cf-2, demo-lab-1 to demo-lab-7. Used by 3 posts
+Behaviours: demo-synthid-1 to demo-synthid-8, demo-cf-1, demo-cf-2, demo-lab-1 to demo-lab-7 (`candy-card` has no e2e spec yet). Used by 4 posts
 (`INVENTORY.md`).
 
 ## <ao-diff>
@@ -322,7 +329,7 @@ least two items with a `<data>`.
 </ao-funnel>
 ```
 
-Behaviours: funnel-1 to funnel-4. Used by 2 posts (`INVENTORY.md`); best shown by `who-visits-a-new-website`.
+Behaviours: funnel-1 to funnel-6 (funnel-5: a touch tap lights its row alone; funnel-6: a swipe that scrolls lights none). Used by 2 posts (`INVENTORY.md`); best shown by `who-visits-a-new-website`.
 
 ## <ao-game>
 
@@ -340,7 +347,8 @@ homepage closes the reader, it pauses (its frames held, its AudioContexts suspen
 | `aspect="w/h"` | the frame (default `16/9`) |
 | `note` | one line under the frame: controls, what it needs |
 
-The inner markup, a link to the game, is the no-JS fallback.
+The inner markup, a link to the game, is the no-JS fallback. After Play, Stop and "Open in its own tab" always show;
+Fullscreen shows only where the browser can make a frame fullscreen (not iPhone Safari, which can't for frames).
 
 ```html
 <ao-game src="/games/x/" poster="/media/x/poster.webp" size="about 20 MB" label="X, playable in the browser"
@@ -514,7 +522,7 @@ every other column a series named by its `<th>`; `<th data-unit="MB">` prints it
 </ao-series>
 ```
 
-Behaviours: series-1 to series-3 (`stack` and `th[data-unit]` are used by no page today). Used by 2 posts
+Behaviours: series-1 to series-5 (series-4: a touch tap reads the day tapped; series-5: a swipe that scrolls reads none; `stack` and `th[data-unit]` are used by no page today). Used by 2 posts
 (`INVENTORY.md`); best shown by `who-visits-a-new-website`.
 
 ## <ao-shots>
@@ -636,4 +644,4 @@ Children: one `<table>`, then an optional `<figcaption>`. Rows with no amount ab
 </ao-treemap>
 ```
 
-Behaviours: treemap-1 to treemap-3. Used by 1 post (`INVENTORY.md`): `counting-the-code`.
+Behaviours: treemap-1 to treemap-5 (treemap-4: a touch tap reads the tile tapped; treemap-5: a swipe that scrolls reads none). Used by 1 post (`INVENTORY.md`): `counting-the-code`.

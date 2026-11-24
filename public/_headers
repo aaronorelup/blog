@@ -24,3 +24,54 @@
   Cache-Control: public, max-age=300
 /media/icons/*
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+#
+# The agent layer (src/lib/agent-text.js). Static assets type a file by its extension and drop the charset the page
+# set, and Python clients then read text/* as Latin-1, so every .txt and .md is typed again here, after every other
+# rule (rules apply in file order; '!' removes only what is already set). The .md twins say noindex: the HTML page is
+# the canonical copy. /ledger/*.md covers the notes twins too: a splat matches across folders, and a second rule
+# would join a second Content-Type onto the first. The public machine files may be read cross-origin: one rule per
+# path sets the CORS header, or it would be sent as "*, *". /api/* is the Worker's, and is not opened here.
+# A rule cannot tell a miss from a hit: a missing .md under these paths (an unlisted post's) gets the 404 page typed as
+# Markdown. Accepted: the status is still 404, and a Worker route for *.md would cost more than it saves.
+/llms.txt
+  ! Content-Type
+  Content-Type: text/plain; charset=utf-8
+  Access-Control-Allow-Origin: *
+/llms-full.txt
+  ! Content-Type
+  Content-Type: text/plain; charset=utf-8
+  Access-Control-Allow-Origin: *
+/robots.txt
+  ! Content-Type
+  Content-Type: text/plain; charset=utf-8
+  Access-Control-Allow-Origin: *
+/research/*.md
+  ! Content-Type
+  Content-Type: text/markdown; charset=utf-8
+  X-Robots-Tag: noindex
+  Access-Control-Allow-Origin: *
+/ledger/*.md
+  ! Content-Type
+  Content-Type: text/markdown; charset=utf-8
+  X-Robots-Tag: noindex
+  Access-Control-Allow-Origin: *
+/ledger/previews.json
+  Access-Control-Allow-Origin: *
+/rss.xml
+  Access-Control-Allow-Origin: *
+/sitemap.xml
+  Access-Control-Allow-Origin: *
+#
+# Every page is an index.html (dist/404.html aside, served for any missing path), and /about redirects to /about/, so
+# every page URL ends in '/': it is typed again with its charset, for the same Python clients. '/' gets its own lines
+# in case a splat does not match the bare root; where both match, the later '!' clears the first value, so it is sent
+# once. / and /ledger/ point agents at /llms.txt in a Link header too.
+/*/
+  ! Content-Type
+  Content-Type: text/html; charset=utf-8
+/
+  ! Content-Type
+  Content-Type: text/html; charset=utf-8
+  Link: </llms.txt>; rel="alternate"; type="text/plain"
+/ledger/
+  Link: </llms.txt>; rel="alternate"; type="text/plain"

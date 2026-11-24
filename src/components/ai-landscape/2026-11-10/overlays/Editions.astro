@@ -1,0 +1,23 @@
+---
+// The edition list (SPEC 2.10) that the stamp chip in the chrome opens: every snapshot of the registry, newest first,
+// with its one-line summary, the current one marked, an empty slot for the next, and on a dated page a link to the
+// newest. Without JavaScript the chip leads to the same shelf in the stamp section.
+import '../../../../styles/ai-landscape/2026-11-10/trust.css';
+import { COPY } from '../data/copy.js';
+import { view } from '../data/view.js';
+const { dated = false, snapshots = [] } = Astro.props;
+const DATE = view.snapshot.date;
+---
+<div class="ail-eds" id="ail-editions" role="dialog" aria-labelledby="ail-eds-h" tabindex="-1" hidden>
+  <p id="ail-eds-h" class="ail-label">{COPY.stamp.editions}</p>
+  <ol class="ail-eds__list">
+    {snapshots.map((s) => (
+      <li><a class="ail-eds__ed" href={`/ai-landscape/${s.date}/`} aria-current={s.date === DATE ? 'page' : undefined}><time class="ail-label" datetime={s.date}>{s.date}</time> <span>{s.summary}</span></a></li>
+    ))}
+    <li><span class="ail-eds__ed ail-eds__next ail-label">{COPY.stamp.next}</span></li>
+  </ol>
+  {dated && <a class="ail-btn ail-eds__newest" href="/ai-landscape/">{COPY.stamp.newest}</a>}
+</div>
+<script>
+  import '../../../../scripts/ai-landscape/2026-11-10/ui/editions.js';
+</script>

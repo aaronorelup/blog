@@ -5,7 +5,6 @@ summary: "I had Claude agents list every tool they could find for turning songs 
 date: 2026-11-10
 topic: "agents"
 project: []
-unlisted: true     # live at its URL only for now: listing it needs npm run ask:pin (docs/ASK.md) and starts the read-aloud
 preview:
   verdict: "138 of 575 tools ran"
   takeaway: "My agents' ten lists come to 575 tools for a guitar tab web app. 138 of them ran, 128 on a cloud computer with no graphics card."
@@ -19,7 +18,7 @@ preview:
 
 I want to build a web app that turns a song, or a video of someone playing guitar, into tabs. Tabs are guitar music written as fret numbers on six lines, one per string. Before building anything I had a team of Claude agents list every tool they could find for each step, run the ones they could in the time they had, and read each license. **Their ten lists come to 575 tools, and 138 of them ran**: 128 on a cloud computer with no graphics card, which I call the cloud box, and 10 more through a public demo page or a service an agent can call, counting two helpers those calls went through. 116 others have steps written for me instead, because they need a graphics card, an account or my own hands, or because Claude's permission system wouldn't let my agents install or run them. I asked for facts only: what went in and what came out, with no grades and no picks.
 
-The app would work in steps, with a person correcting it along the way. Split the song into instruments. Turn the guitar into notes. Find the chords and the beat. Choose a string and a fret for each note. Show the tab, play it back against a metronome, and run the analysis again when the person says there's a capo on fret 2. A capo is a clamp across the strings that raises every note. For a fingerstyle video, a guitar played with the fingers, it would also watch the hands. I'd already had three AI passes turn ten of my own guitar videos into tabs. This time each tool gets looked at by itself.
+The app would work in steps, with a person correcting it along the way. Split the song into instruments. Turn the guitar into notes. Find the chords and the beat. Choose a string and a fret for each note. Show the tab, play it back against a metronome, and run the analysis again when the person says there's a capo on fret 2. A capo is a clamp across the strings that raises every note. For a fingerstyle video, a guitar played with the fingers, it would also watch the hands. I'd already had three AI passes [turn some of my own guitar videos into tabs](/ledger/guitar-tabs-from-video/). This time each tool gets looked at by itself.
 
 ## The quick rundown
 

@@ -1,0 +1,17 @@
+Official marks, unaltered. Never recolour, redraw, crop, tint or animate them, and never place them on art.
+
+Source: Anthropic press kit, https://www.anthropic.com/press-kit
+  (the URL serves the zip https://www-cdn.anthropic.com/ae59ca4ca194dac9c9dc3bc78c5829468cb0e8af.zip)
+Fetched: 2026-11-12. Each file below is byte-identical to the file in the zip.
+
+claude-spark.svg       "Anthropic logos/Claude logos/3 Claude Spark/SVG/Claude Spark - Clay.svg"
+claude-logo.svg        "Anthropic logos/Claude logos/1 Claude logo/SVG/Claude logo - Slate.svg"
+claude-logo-ivory.svg  "Anthropic logos/Claude logos/1 Claude logo/SVG/Claude logo - Ivory.svg" (for dark grounds)
+claude-code-logo.svg   "Anthropic logos/Claude logos/2 Claude Code logo/SVG/Claude Code logo - Slate.svg"
+anthropic-logo.svg     "Anthropic logos/Anthropic logos/1 Anthropic logo/SVG/Anthropic logo - Slate.svg"
+
+duet-icon.svg          https://claude.com/static/claude-duet/app-icon-flat.svg, the app icon shown on
+                       https://claude.com/product/claude-duet. Fetched 2026-11-12, byte-identical.
+
+Rule kept (SPEC 3.2 and ART-PLAN "marks"): "Use the Slate, Ivory or Clay files as given. No rules page was found
+in the kit, so keep clear space of half the mark height and never recolour." Duet icon: "Unaltered."

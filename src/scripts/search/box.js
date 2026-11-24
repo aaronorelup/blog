@@ -2,8 +2,8 @@
 // types and the meaning half (/api/search) after 400 ms of quiet or on Enter, merged into one list. Nothing loads
 // before the box is first focused, and search needs no session. Ask RAG Goobie loads ask.js only once it is opened,
 // keeps the box's text, selected, and cycles example questions in the empty box; its microphone loads hear.js on the
-// first press. Text typed before this module ran is searched when it mounts; data-ready on the form says it has. "/"
-// focuses the box unless something else takes typing. mount(root) returns unmount.
+// first press. Typing or a tap on Ask (SearchBox.astro keeps it) before this module ran is acted on when it mounts;
+// data-ready on the form says it has. "/" focuses the box unless something else takes typing. mount(root) -> unmount.
 import { CYCLE_MS } from '../../data/ask.js';
 import { load as loadCards } from '../cards/data.js';
 import { lazy } from '../lazy.js';
@@ -148,12 +148,16 @@ export function mount(root) {
   // What was typed (or focused) before this module ran is acted on now.
   if (document.activeElement === ui.input) onFocus();
   if (ui.input.value.trim()) onInput();
+  const pending = form.dataset.pendingMode;
+  delete form.dataset.pendingMode;
+  if (pending === 'ask') onMode({ target: q$('[data-mode="ask"]') });
   form.dataset.ready = '';
   return () => {
     live = false;
     cycle.stop();
     hear?.cancel();
     delete form.dataset.ready;
+    delete form.dataset.pendingMode;
     ui.input.removeEventListener('input', onInput);
     ui.input.removeEventListener('focus', onFocus);
     form.removeEventListener('submit', onSubmit);

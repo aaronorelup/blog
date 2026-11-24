@@ -1,5 +1,5 @@
 // Behaviour checks for the hero (node scripts/tools/tea-hero/verify.mjs [--url U], a preview or dev server running;
-// U is /tea/ or /tea-lab/, ?hero=on is added): reduced motion and no WebGL keep the poster, load none of the 3D and log
+// U is /tea/, ?hero=on is added): reduced motion and no WebGL keep the poster, load none of the 3D and log
 // no error; the 3D path logs no error, shifts no layout as the canvas comes in (both layouts), follows the switch with
 // a tween, stops drawing off screen, and the title box's skip link still reaches the first chapter through the pin.
 import { chromium } from '@playwright/test';

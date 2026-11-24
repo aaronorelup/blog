@@ -228,7 +228,7 @@ test('read-3 with no recording of this version, the browser voice reads, marks t
   await unrecorded(page, SHORT);
   await page.goto(SHORT);
   await listen(page).click();
-  await expect(page.locator('.ra-note')).toHaveText('The recording of this version is on its way.');
+  await expect(page.locator('.ra-note')).toHaveText("No recording of this version yet, so your browser's voice reads it.");
   await expect(page.locator('.ra-voice [data-voice="speech"]')).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('.ra-voice [data-voice="recorded"]')).toBeDisabled();
   const title = await page.locator('[data-r="t"]').innerText();
@@ -362,12 +362,12 @@ test('read-5 in the homepage reader Listen works, and closing the panel (ao-stop
   await recorded(page, request, POST);
   await page.goto('/?tier=low');
   await expect(page.locator('#stop-rail [data-goto]').first()).toBeVisible({ timeout: 20_000 });
-  const card = page.locator('section[data-wp]').filter({ has: page.locator('a[href="/ledger"]') }).first();
+  const card = page.locator('section[data-wp]').filter({ has: page.locator('a[href="/ledger/"]') }).first();
   for (let k = 0; k < 6 && await card.evaluate((s) => s.inert); k++) {
     await page.keyboard.press('ArrowDown');
     await page.waitForTimeout(3000);
   }
-  const link = card.locator('a[href="/ledger"]').first();
+  const link = card.locator('a[href="/ledger/"]').first();
   const at = await link.boundingBox();
   await page.mouse.click(at.x + at.width / 2, at.y + at.height / 2);
   await expect(page.locator('#panel-screen')).toHaveAttribute('aria-hidden', 'false');

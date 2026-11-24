@@ -91,6 +91,20 @@ a.cv-row:hover .cv-go { color: var(--pc-head); }
 .hc-cap small { display: block; font: 600 11px/1.4 Karla, sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: rgb(240, 192, 106); }
 .hc-cap strong { display: block; margin-top: 4px; font: 700 21px/1.2 'Zen Maru Gothic', sans-serif; color: rgb(242, 231, 213); }
 .hc-cap span.hc-dur { flex: none; font: 12px/1 ui-monospace, Consolas, monospace; color: rgb(242, 231, 213); background: rgba(8, 9, 18, 0.7); padding: 6px 8px; border-radius: 6px; }
+/* A narrow card (a phone, or the two-column hero just over 900 px) is too short for the 74 px circle and the caption:
+   keyed to the card's own width, since the title (course data) changes length with every lesson. The title stops at
+   3 lines there (the link's aria-label has all of it), so no title can reach the circle. */
+.hc-feature { container-type: inline-size; }
+@container (max-width: 460px) {
+  .hc-play { width: 48px; height: 48px; top: 30%; }
+  .hc-play svg { width: 18px; height: 18px; }
+  .hc-cap { left: 14px; right: 14px; bottom: 12px; }
+  .hc-cap strong { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; font-size: 16.5px; line-height: 1.2; }
+}
+@container (max-width: 320px) {
+  .hc-play { width: 40px; height: 40px; top: 25%; }
+  .hc-play svg { width: 16px; height: 16px; }
+}
 
 .hc-chev { flex: none; width: 14px; height: 14px; color: var(--pc-quiet); transition: transform 220ms cubic-bezier(.4, 0, .2, 1); }
 details[open] > summary .hc-chev { transform: rotate(180deg); }

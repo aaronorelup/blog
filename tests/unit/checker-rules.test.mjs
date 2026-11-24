@@ -63,6 +63,8 @@ put('src/content/posts/bad-yaml.md', '---\nid: "AO-606"\ntitle: "unclosed\n---\n
 put('src/content/posts/no-topic.md', post('AO-607', { extra: '' }));
 put('src/content/posts/v1.md', post('AO-608', { extra: `\ntopic: "agents"\nseries: "s"\nstatus: "done"\ntags: ["x"]${card}` }));
 put('src/content/posts/teardown-lab.md', post('AO-073', { extra: `\ntags: ["x"]${card}` }));
+const videos = post('AO-610', { body: '<video src="/a.mp4" controls></video>\n<video src="/b.mp4" controls playsinline></video>\nIn code `<video>` is only a word.' });
+put('src/content/posts/videos.md', videos);
 put('src/content/posts/terms.md', post('AO-609', { body: 'zorblax and ZORBLAX are not it.\nZorblax is.\nZorblax again, at https://hq.secret.example.dev/api.' }));
 put('src/content/notes/listed.md', '---\npost: "listed"\ntitle: "t"\nsummary: "s"\n---\n');
 put('src/content/notes/a-draft.md', '---\npost: "a-draft"\ntitle: "t"\nsummary: "s"\n---\n');
@@ -138,6 +140,11 @@ test('prose: each voice rule once, at its line, and never in code, a tag, an att
   // The voice rules never stop a deploy: there they are printed.
   assert.deepEqual(shape(of('prose', 'src/content/posts/prose.md', 'deploy')), expected('warn'));
   assert.deepEqual(of('prose', 'src/content/posts/listed.md'), []);
+});
+
+test('prose: a <video> without playsinline, never one with it or one in code', () => {
+  assert.deepEqual(shape(of('prose', 'src/content/posts/videos.md')),
+    [[lineOf(videos, '/a.mp4'), 'error', '<video> without playsinline (it goes fullscreen on iPhone)']]);
 });
 
 test('prose: a HELD post is only warned about', { skip: !held && 'no post is held' }, () => {

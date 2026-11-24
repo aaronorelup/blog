@@ -20,9 +20,6 @@ class AoSlider extends HTMLElement {
     const stage = h('div', { class: 'ao-slider-stage' });
     a.classList.add('ao-slider-a');
     b.classList.add('ao-slider-b');
-    // Both are in view the moment the frame is, so neither should wait on lazy loading.
-    a.loading = 'eager';
-    b.loading = 'eager';
     stage.append(a, b);
 
     const line = h('div', { class: 'ao-slider-line', 'aria-hidden': 'true' });

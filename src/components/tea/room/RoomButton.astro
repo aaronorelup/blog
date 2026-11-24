@@ -1,0 +1,7 @@
+---
+// An item's one button: a small slip of paper at least 44 px tall, its label in ink (Karla 600) with the link's
+// vermilion underline. It says what it does, and what it costs when that is more than 5 MB.
+interface Props { class?: string; [k: string]: any }
+const { class: cls, ...rest } = Astro.props;
+---
+<button type="button" class:list={['room-button', cls]} {...rest}><span class="room-button-label"><slot /></span></button>

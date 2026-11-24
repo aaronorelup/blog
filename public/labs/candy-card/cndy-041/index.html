@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Several mid-clip keyframes, no first or last frame, for fast fights</title>
+<meta name="robots" content="noindex">
+<style>@font-face{font-family:'Karla';font-weight:400;font-display:swap;src:url('/fonts/karla-latin.3b1eb09a.woff2') format('woff2')}@font-face{font-family:'Karla';font-weight:600;font-display:swap;src:url('/fonts/karla-latin.3b1eb09a.woff2') format('woff2')}</style>
+<style>
+:root{
+  --pc-page:#101220; --pc-bg:rgba(21,23,38,.96); --pc-tile:#201F2C; --pc-hover:#222130; --pc-code:#222130;
+  --pc-head:#F0C06A; --pc-strong:#F2E7D5; --pc-body:#C9BCA9; --pc-soft:#9C917F; --pc-quiet:#8E8375;
+  --pc-line:#302E3E; --pc-line2:#4A445A; --pc-accent:#E2795C; --pc-gold:#C9A227;
+  --pc-shadow:0 34px 100px rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0; padding:22px; background:var(--pc-page); color:var(--pc-body); position:relative;
+     font:400 15px/1.6 Karla,system-ui,-apple-system,'Segoe UI',sans-serif}
+.id{position:absolute; top:10px; right:14px; font:600 10px/1 ui-monospace,Menlo,monospace; letter-spacing:.08em; color:var(--pc-quiet)}
+.eyebrow{font:600 11px/1 Karla,system-ui,sans-serif; letter-spacing:.13em; text-transform:uppercase; color:var(--pc-gold); margin:0 0 8px}
+h1{font:700 24px/1.25 'Zen Maru Gothic',system-ui,sans-serif; color:var(--pc-head); margin:0 0 6px}
+.sub{font-family:Georgia,'Times New Roman',serif; color:var(--pc-soft); font-size:15px; margin:0 0 16px; max-width:78ch}
+.ehml{background:var(--pc-tile); border:1px solid var(--pc-line); border-radius:16px; padding:12px 16px; margin:0 0 14px; font-size:13.5px}
+.ehml p{margin:0 0 6px} .ehml p:last-child{margin:0}
+.ehml b{color:var(--pc-strong); font-weight:600}
+.tpl{position:relative; border:1px solid var(--pc-gold); border-radius:16px; padding:14px 16px 14px; margin:0 0 18px; background:var(--pc-bg)}
+.tpl .k{font:600 10px/1 Karla,sans-serif; letter-spacing:.13em; text-transform:uppercase; color:var(--pc-gold); margin:0 0 8px}
+.tpl p{margin:0; font-family:Georgia,'Times New Roman',serif; color:var(--pc-strong); font-size:14.5px; line-height:1.55; padding-right:70px}
+.tpl button{position:absolute; top:12px; right:12px; border:1px solid var(--pc-line2); background:transparent; color:var(--pc-body);
+  border-radius:999px; padding:6px 13px; font:600 11px/1 Karla,sans-serif; letter-spacing:.07em; cursor:pointer}
+.tpl button:hover{background:var(--pc-hover)}
+:focus-visible{outline:2px solid var(--pc-head); outline-offset:3px}
+.stats{display:flex; gap:10px; flex-wrap:wrap; margin:0 0 18px}
+.stat{flex:1 1 170px; background:var(--pc-tile); border:1px solid var(--pc-line); border-radius:18px; padding:12px 16px}
+.stat b{display:block; font:700 24px/1.15 'Zen Maru Gothic',system-ui,sans-serif; color:var(--pc-strong); margin:0 0 3px}
+.stat span{font:600 10px/1.35 Karla,system-ui,sans-serif; letter-spacing:.11em; text-transform:uppercase; color:var(--pc-quiet)}
+@media (prefers-reduced-motion: no-preference){ .stat{opacity:0; transform:translateY(6px); animation:up .6s ease forwards}
+  .stat:nth-child(2){animation-delay:.1s}.stat:nth-child(3){animation-delay:.2s}.stat:nth-child(4){animation-delay:.3s} }
+@keyframes up{to{opacity:1; transform:none}}
+h2{font:700 16px/1.3 'Zen Maru Gothic',system-ui,sans-serif; color:var(--pc-head); margin:24px 0 8px}
+h3{font:700 13px/1.3 'Zen Maru Gothic',system-ui,sans-serif; color:var(--pc-strong); margin:14px 0 6px}
+video,img.full{display:block; width:100%; border-radius:14px; background:#000; border:1px solid var(--pc-line)}
+a.zoom{display:block}
+.cap{font-size:12.5px; color:var(--pc-quiet); margin:6px 2px 16px; max-width:100ch}
+.cap b{color:var(--pc-body)}
+.look{font-size:13px; color:var(--pc-body); margin:6px 2px 6px}
+.look b{color:var(--pc-gold); font-weight:600; letter-spacing:.06em; text-transform:uppercase; font-size:10.5px; margin-right:6px}
+table{border-collapse:collapse; width:100%; font-size:12.5px; margin:4px 0 8px}
+th,td{border-top:1px solid var(--pc-line); padding:6px 8px; text-align:left; vertical-align:top}
+th{color:var(--pc-quiet); font:600 10px/1.3 Karla,sans-serif; letter-spacing:.1em; text-transform:uppercase}
+td.n{font-family:ui-monospace,Menlo,monospace; color:var(--pc-strong)}
+details{background:var(--pc-tile); border:1px solid var(--pc-line); border-radius:14px; padding:10px 14px; margin:10px 0 0}
+summary{cursor:pointer; font:600 11px/1.4 Karla,system-ui,sans-serif; letter-spacing:.12em; text-transform:uppercase; color:var(--pc-quiet)}
+.prompt{font:400 11px/1.55 ui-monospace,Menlo,monospace; color:var(--pc-soft); margin:8px 0 0}
+.prompt b{color:var(--pc-body)}
+.trial{border-top:1px solid var(--pc-line); padding-top:6px; margin-top:22px}
+.two{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+@media (max-width:700px){ .two{grid-template-columns:1fr} }
+.note{font-size:11.5px; color:var(--pc-quiet); margin:12px 2px 0}
+</style>
+<body>
+<div class="id">CNDY-041</div>
+<p class="eyebrow">Daily candy · MiniMax-H3 interior keyframes · Qwen-Image 2.1 stills</p>
+<h1>Several mid-clip keyframes, no first or last frame, for fast fights</h1>
+<p class="sub">With two or three <code>MiniMaxH3AddGuide</code> stills and no end frames, the frame closest to each keyframe was the asked frame for all 7 keyframes in trials 1, 2 and 4. The same seed and prompt with no guides drew other character designs in every trial with characters, yet still hit some of the moments from the words alone. Around each keyframe the guided clips slow almost to a stop.</p>
+
+<div class="ehml">
+  <p><b>Experiment.</b> 2-3 <code>MiniMaxH3AddGuide</code> stills at interior frames, no first or last frame, fast character and camera motion. Each keyframe is framed where the prompt's timed camera move is at that second, and the prompt names what it adds. Every trial has a same-seed, same-prompt arm with no guides.</p>
+  <p><b>Hypothesis.</b> Unguided H3 misses the designed moments (checklist written before any job); guided hits each within ±2 frames, without CNDY-040 trial 2's whip-out snap, looking no worse than unguided.</p>
+  <p><b>Models.</b> MiniMax-H3 (fl2va + turbo 4-step, 736×416) is the subject. Keyframes: Qwen-Image 2.1 multi-ref t2i at 1472×832 (character sheets + one set plate per trial); trial 3's are CPU composites of the Episode 2 sheet and desk plate.</p>
+  <p><b>Look for.</b> In each side-by-side, the header turns red within ±2 frames of a guide. At each keyframe: is the guided side worse (mush, limbs)? Is there a snap into or out of it? In trial 3, does VOID come early? In trial 4 C, is there a freeze or stutter between f84 and f96?</p>
+</div>
+
+<div class="tpl">
+  <p class="k">Technique template</p>
+  <p id="tpl">Make a still for each moment the shot must hit, framed where the prompt's timed camera move will be at that second, and anchor each one at its interior frame of a MiniMax-H3 clip with MiniMaxH3AddGuide, with no first or last frame, while the prompt's timed beats name what each still adds and when [optional: anchor the same still again a few frames later to hold the moment, e.g. an impact] [optional: for a document or graphics shot, composite the stills from the real assets on the CPU instead of generating them].</p>
+  <button type="button" id="copy">Copy</button>
+</div>
+
+<div class="stats">
+  <div class="stat"><b>7 of 7</b><span>keyframes in trials 1, 2, 4 B where the closest frame was the asked frame</span></div>
+  <div class="stat"><b>6.0–8.4 vs 35–53</b><span>MAE at the asked frames: guided vs unguided</span></div>
+  <div class="stat"><b>f164</b><span>trial 3: red VOID appears (stamp asked f168, key at f181)</span></div>
+  <div class="stat"><b>6 → 26 frames</b><span>trial 4 strike held: one guide (B) vs the same still twice (C)</span></div>
+</div>
+
+<h2>The keyframes, kept and dropped</h2>
+<a class="zoom" href="/media/candy-machine/cndy-041/keyframes-sheet.webp" target="_blank"><img class="full" src="/media/candy-machine/cndy-041/keyframes-sheet.webp" alt="All keyframes of the four trials, kept and dropped"></a>
+<p class="look"><b>Look for</b>row 2: with no cast sentence, Qwen crossed the two characters (he swings her scythe, both figures are Jefrie, he has her tail). Row 1 adds one sentence up front naming who has the tail, mask and scythe, with a new seed (the two changes are not separated); roles were right in 6 of 6 stills made with it. Also note trial 4's dropped strike (no pierce) and the kept one (a straight blade).</p>
+
+<div class="trial">
+<h2>Trial 1 · Jefrie spars BloodTailor · orbit · 243 f · guides f60 / f121 / f181 · seed 4101</h2>
+<video controls loop playsinline preload="metadata" poster="/media/candy-machine/cndy-041/t1-guided-vs-unguided.webp" src="/media/candy-machine/cndy-041/t1-guided-vs-unguided.mp4"></video>
+<p class="look"><b>Look for</b>the left side matching the vault, the inverted hero frame and the clash on f60 / f121 / f181, with nearly still frames around each one. The orbit happens in blurred close passes of the camera at f75-90 and f135-150. The right side is another design (white helmet, white skull mask, silver tail), but it does put her upside down above him with a blood vortex at f85-135, from the words alone.</p>
+<a class="zoom" href="/media/candy-machine/cndy-041/t1-guides-pm2.webp" target="_blank"><img class="full" src="/media/candy-machine/cndy-041/t1-guides-pm2.webp" alt="Trial 1 keyframes and both arms at asked-2, asked, asked+2"></a>
+<p class="cap">Each row: the keyframe, then guided and unguided at asked−2 / asked / asked+2, with each tile's MAE to the keyframe. Guided 6.65 / 5.98 / 6.11 at the asked frames; unguided 46.8 / 52.2 / 52.7.</p>
+<div class="two">
+<a class="zoom" href="/media/candy-machine/cndy-041/t1-mae.webp" target="_blank"><img class="full" src="/media/candy-machine/cndy-041/t1-mae.webp" alt="Trial 1 MAE to each keyframe and frame steps"></a>
+<a class="zoom" href="/media/candy-machine/cndy-041/t1-strip.webp" target="_blank"><img class="full" src="/media/candy-machine/cndy-041/t1-strip.webp" alt="Trial 1 every 20th frame, guided and unguided"></a>
+</div>
+<p class="cap">Left: MAE to each keyframe per frame, and the frame-to-frame step (snap floor dotted at 15). Held ±half-way: 26 / 40 / 32 frames. Steps near the guides 3.4 / 1.1 / 2.1 against a clip median of 8.2; largest 21.8 at f144 (2.6× the median). MAE at ±5 of the guides 6.7-10.3; CNDY-040 trial 2's whip-out had 53.3 / 37.4 there, with steps of 20-44. Right: every 20th frame, guided above unguided. GPU 1,257 s including a dropped keyframe set (408 s).</p>
+</div>
+
+<div class="trial">
+<h2>Trial 2 · BloodTailor flees demons at night · camera waypoints · 124 f · guides f40 / f95 · seed 4102</h2>
+<video controls loop playsinline preload="metadata" poster="/media/candy-machine/cndy-041/t2-guided-vs-unguided.webp" src="/media/candy-machine/cndy-041/t2-guided-vs-unguided.mp4"></video>
+<p class="look"><b>Look for</b>the guided camera holding the raised view to f48, a red wash over him at f48-63, then a push down and in that passes the f95 close-up without stopping (MAE 17.8 / 8.4 / 19.1 at f93 / 95 / 97) and ends on an extreme close-up of the grin. The unguided arm's high shot is steeper than the keyframe; both arms reach the close-up. This is the one trial where stills and words disagree: the words ask for a steep top-down and a road-level close-up, the stills are shallow and chest-height, and the guided arm keeps the stills' view.</p>
+<a class="zoom" href="/media/candy-machine/cndy-041/t2-guides-pm2.webp" target="_blank"><img class="full" src="/media/candy-machine/cndy-041/t2-guides-pm2.webp" alt="Trial 2 keyframes and both arms at asked-2, asked, asked+2"></a>
+<div class="two">
+<a class="zoom" href="/media/candy-machine/cndy-041/t2-mae.webp" target="_blank"><img class="full" src="/media/candy-machine/cndy-041/t2-mae.webp" alt="Trial 2 MAE and steps"></a>
+<a class="zoom" href="/media/candy-machine/cndy-041/t2-strip.webp" target="_blank"><img class="full" src="/media/candy-machine/cndy-041/t2-strip.webp" alt="Trial 2 every 12th frame"></a>
+</div>
+<p class="cap">Closest frames 40 / 95 (MAE 6.33 / 8.36; unguided 35.3 / 52.3). Held 49 frames at f40 and 3 at f95 (MAE 20.3 / 21.6 at ±5: the closest thing to a whip-out in this run). No step over the snap rule (largest 29.6 at f123, the last frames).</p>
+</div>
+
+<div class="trial">
+<h2>Trial 3 · Teo's desk cam, hands only · VOID at 7 s · 243 f · guides f60 / f181 (CPU composites) · seed 4103</h2>
+<video controls loop playsinline preload="metadata" poster="/media/candy-machine/cndy-041/t3-guided-vs-unguided.webp" src="/media/candy-machine/cndy-041/t3-guided-vs-unguided.mp4"></video>
+<p class="look"><b>Look for</b>the Episode 2 sheet itself on the left after a settle (f0-50, two hands adjust it), the stamp hand from ~f115, and VOID appearing at f164-165, a few frames before the asked 7 s (f168). On the right is another sheet, with a small red stamp at f166.</p>
+<a class="zoom" href="/media/candy-machine/cndy-041/t3-ssim.webp" target="_blank"><img class="full" src="/media/candy-machine/cndy-041/t3-ssim.webp" alt="Trial 3 SSIM of the VOID crop and the title block per frame"></a>
+<p class="cap">The two keyframes differ only in the VOID patch, so whole-frame MAE is flat here. SSIM of the VOID crop to the VOID key against the no-VOID key, and of the title block (0.82 guided, 0.10-0.13 unguided). It dips at f120-163 while the hand covers the window detail and the arm crosses the title block.</p>
+<a class="zoom" href="/media/candy-machine/cndy-041/t3-strip.webp" target="_blank"><img class="full" src="/media/candy-machine/cndy-041/t3-strip.webp" alt="Trial 3 every 20th frame"></a>
+</div>
+
+<div class="trial">
+<h2>Trial 4 · the heart scene · 124 f · A unguided / B f40 + strike f84 / C = B + strike again f96 · seed 4104</h2>
+<video controls loop playsinline preload="metadata" poster="/media/candy-machine/cndy-041/t4-A-B-C.webp" src="/media/candy-machine/cndy-041/t4-A-B-C.mp4"></video>
+<p class="look"><b>Look for</b>C from f78 to f103: does the impact read as a held beat or as a frozen picture? Steps fall to 0.01-0.03 at f82-83, f91-92 and f95-96, and the picture changes on a four-frame cadence (steps of ~1 at f90 / f94 / f98, ~0.02-0.2 between); A and B bump on the same frames. B hits the strike at f84 and moves on (6 frames held). In A, the scythe reaches his back but no blade comes out of his chest.</p>
+<a class="zoom" href="/media/candy-machine/cndy-041/t4-guides-pm2.webp" target="_blank"><img class="full" src="/media/candy-machine/cndy-041/t4-guides-pm2.webp" alt="Trial 4 keyframes and A, B, C at asked-2, asked, asked+2"></a>
+<div class="two">
+<a class="zoom" href="/media/candy-machine/cndy-041/t4-mae.webp" target="_blank"><img class="full" src="/media/candy-machine/cndy-041/t4-mae.webp" alt="Trial 4 MAE and steps"></a>
+<a class="zoom" href="/media/candy-machine/cndy-041/t4-strip.webp" target="_blank"><img class="full" src="/media/candy-machine/cndy-041/t4-strip.webp" alt="Trial 4 every 12th frame, A B C"></a>
+</div>
+<p class="cap">MAE to the strike at f84 / f96: A 44.2 / 44.3, B 6.16 / 11.2, C 5.96 / 5.76. All three arms jump 15-24 per frame at f72-78, the lunge; the unguided arm jumps most (23.8).</p>
+</div>
+
+<details>
+  <summary>The hypothesis, part by part, and what went differently</summary>
+  <p class="prompt"><b>Unguided misses the moments:</b> trial 1 hero inversion yes (f85-135), vault no, clash partly, no orbit; trial 2 both waypoints yes, its high shot steeper; trial 3 stamped at f166 on another sheet; trial 4 no blade through his chest. Every unguided arm with characters drew other designs; trial 3's drew another sheet. <b>Within ±2:</b> offset 0 for 7 of 7 in trials 1, 2, 4 B; trial 3 VOID at f164-165 against the stamp at f168; trial 4 C's strike spans f78-103 (minimum f99). <b>Snap:</b> no step met the rule (&gt;15 and &gt;3× median) in trials 1-3, a strict rule that 040's own whip would only partly have met; like for like, the ±5 MAE around the guides is 6.7-10.3 in trial 1 and 20.3 / 21.6 at trial 2's f95, against 040's 53.3 / 37.4. Trial 4's lunge steps are in all arms. <b>No worse:</b> see the asked±2 sheets.</p>
+  <p class="prompt"><b>Not as planned:</b> trial 1's first keyframe set was dropped (features crossed) and re-made with a cast sentence, so trial 1 took 21 min of GPU; the setup was reusable, so trials 2-4 ran (2,767 s in all). Trials 1 and 4 used Jefrie's setting canon as the set plate. Trial 2's keyframes came back less extreme than asked and were kept. Trial 4's strike was re-seeded once. No stick figure was used. The full checklist is in work/checklist_filled.md.</p>
+</details>
+
+<details>
+  <summary>Prompts and settings</summary>
+  <p class="prompt"><b>Qwen cast sentence (trials 1, 4):</b> Exactly two figures. The small girl Jefrie from &lt;image1&gt; is the only one with a tail, the only one with a mask with ear points, and the only one holding the scythe. The tall man BloodTailor from &lt;image2&gt; has no tail, no scythe and no ear points: a smooth iron dome over his upper face, a white shirt and a red cloak.</p>
+  <p class="prompt"><b>Qwen trial 1 f121:</b> Dramatic low-angle shot from a camera close to the muddy ground in front of BloodTailor, looking steeply up ... Jefrie is directly above him in mid-air, completely upside down, head toward the ground ... she holds her scythe overhead in both hands, so its blade points down at him ... in his raised right hand spins an extremely fast vortex of blood filled with razor shards ...</p>
+  <p class="prompt"><b>H3 trial 1:</b> [0s-2.5s] Wide shot from their left side at chest height: he whips two long iron chains low across the mud at her legs; her tail slams the mud and at 2.5 seconds she vaults sideways over the chains ... The camera orbits fast to the right around them. [2.5s-5s] ... the camera sinks to the ground in front of him and looks up; at 5 seconds she is completely upside down in the air directly above him ... [5s-7.5s] ... at 7.5 seconds her scythe blade meets his blood claws in a burst of sparks and blood spray. [7.5s-10s] They strain against each other, then spring apart as the camera completes a half orbit.</p>
+  <p class="prompt"><b>H3 trial 2:</b> [0s-1.7s] High wide shot from high above the road looking steeply down ... [1.7s-4s] The camera swoops down and forward ... at 4 seconds it is a low close-up from just above the road on his grin ... <b>Trial 3:</b> top-down desk ... [5.5s-7s] His right hand enters from the bottom holding a small wooden rubber stamp. At 7 seconds he presses the stamp down firmly on the window detail ... <b>Trial 4:</b> [1.7s-3.5s] Her tail slams the mud and launches her across the gap; at 3.5 seconds she drives her scythe straight through his back and out through the front of his chest ... [3.5s-4s] The impact holds ...</p>
+  <p class="prompt"><b>Settings:</b> Qwen-Image 2.1 multi-ref t2i 1472×832, 25 steps cfg 1 (131-186 s) · H3 fl2va + turbo 4-step, 736×416, res_multistep 4 steps, no first/last frame (243 f: 148-175 s; 124 f: 73-88 s) · seeds H3 4101-4104, Qwen 4111/4112 (t1), 4120-4121 (t2), 4141/4142 (t4) · full text in work/prompts.py.</p>
+</details>
+<p class="note">One seed per trial. MAE = mean |a−b| over RGB at 736×416, 0-255; steps = MAE between consecutive frames.</p>
+
+<script>
+(function(){
+  var b = document.getElementById('copy');
+  b.addEventListener('click', function(){
+    var t = document.getElementById('tpl').innerText;
+    function done(){ b.textContent = 'Copied'; setTimeout(function(){ b.textContent = 'Copy'; }, 1400); }
+    if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(t).then(done, fallback); } else { fallback(); }
+    function fallback(){ var a = document.createElement('textarea'); a.value = t; document.body.appendChild(a); a.select();
+      try { document.execCommand('copy'); done(); } catch(e) {} document.body.removeChild(a); }
+  });
+})();
+</script>
+</body>
+</html>

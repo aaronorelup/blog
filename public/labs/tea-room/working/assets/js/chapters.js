@@ -1,0 +1,295 @@
+/* CHAPTERS: the page after look B's part.
+   Look B (diorama.js) draws the hero, Start here and the television, and ends on the garden cinema's title shot.
+   Every chapter after that is added here, and a chapter is three things:
+
+     1. a <section class="chapter" id="NAME"> in index.html, after the one before it. Its height is its scroll length;
+        everything read in it (cards, links) is plain HTML in the flow of the page, styled in assets/css/chapters.css.
+     2. a scene, assets/js/chapters/NAME.js, that draws the chapter's pictures:
+          export function mount(host, options) { ...; return { frame, resize, setActive, dispose }; }
+     3. one line in LIST below.
+
+   The scene draws into host, a layer the size of the screen that stays put behind the cards (pictures only), and
+   puts whatever is pressed while the pictures move (a sound switch, a play button) into options.top, a layer the
+   same size in front of the cards.
+     frame(q, time, pointer)   draw the picture for q, the chapter's progress: 0 when the top of its section reaches
+                               the top of the screen, 1 when its last line reaches the foot of the screen. time is in
+                               seconds (it stands still under ?still=1 and with motion turned off), pointer is the
+                               mouse, -1..1 each way. Return true once the picture is whole (its plates are in): until
+                               then the chapter before stays on the screen.
+     resize()                  the window changed, or the section was measured again
+     setActive(on)             on: this chapter holds the screen (play what plays). off: pause everything
+     dispose()                 the reader is far away: stop, and let go of what was loaded
+   options: section (the chapter's own section), top, marks (where each [data-mark] element of the section stands,
+   in screens from the section's top: { name: { top, h } }), span() (the section's scroll length in screens), held
+   (time stands still), reduced (motion is turned off), redraw() (ask for a frame when the page is not drawing by
+   itself: a picture came in, or a film plays while time is held).
+
+   Three things a line in LIST may add:
+     over: true   the chapter is drawn over the last picture of the chapter before it, which stays on and active
+     lead: n      the chapter is on the screen for n screens before its own top; q runs from -n up to 0 there
+     parts: [ids] the chapter is several lines in the rail: elements of its section with these ids, in order; the rail
+                  names the one the middle of the screen is in
+
+   A scene is loaded when the reader is within a screen and a half of its section, and let go four screens away. A
+   picture of the section written as <img data-src> is asked for at the same moment, and only if it is shown (one in
+   a part that is display: none, as the film's stills are with motion on, is never fetched).
+   Addresses: ?y=0.4 (that fraction of the whole page) and ?still=1 are look B's; ?c=film&q=0.4 opens one chapter
+   at an exact frame. */
+(function () {
+  'use strict';
+
+  var LIST = [
+    { id: 'film', css: 'film.css' },
+    { id: 'games', css: 'games.css', lead: 2.5 },   // (its lead: it is thrown onto the film's cloth during the film's dive, join.js)
+    { id: 'art', css: 'art.css', lead: 2 },         // (its lead: its name comes on and its garden dissolves in over the games chapter's)
+    { id: 'toybox', css: 'toybox.css', lead: 2 },   // (its lead: its name comes on over the art chapter's last view, look B's garden, art.js)
+    { id: 'machines', css: 'machines.css', lead: 1.9 }, // (its lead: the camera comes down onto the bench over the toy box's room, join.js benchLayout)
+    { id: 'agents', css: 'agents.css', lead: 3.6 },   // (its lead: the name over the bare room, then into the television, join.js AGENTS)
+    { id: 'learning', css: 'learning.css', lead: 2.4 }, // (its lead: the name over the painted room's corner, then the modelled room melts in, join.js LEARN)
+    { id: 'site', css: 'site.css', lead: 1.8 },       // (its lead: its name over the learning chapter's last move, the camera leaving the desk; then its own camera, join.js SITE)
+    { id: 'projects', css: 'projects.css', lead: 4.6 }, // (its lead: its name over the taken-apart house, then the painted garden dissolves in over the site chapter's last still, join.js PROJ)
+    { id: 'ending', css: 'ending.css', lead: 1, parts: ['courses', 'now', 'about'] }   // (Courses, Now and About: one scene, three lines in the rail. Its lead: the walk's camera goes in through the tea house's door, join.js ENDING)
+  ];
+
+  var qs = new URLSearchParams(location.search);
+  var HELD_Q = qs.get('still') === '1';
+  var RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var HELD = HELD_Q || RM;
+  var root = document.documentElement;
+  var here = document.currentScript.src.replace(/[^/]*$/, '');           // .../assets/js/
+  var clamp = function (x, a, b) { return x < a ? a : x > b ? b : x; };
+
+  // ------------------------------------------------------------------ the page's one scale
+  // A big desktop window shows the page as it is at 1440x900, only larger: s = min(width / 1440, height / 900), never
+  // under 1 (so 1440x900, every smaller window and every phone are exactly as designed) and at most S_MAX. It is
+  // written on <html> as --s (a plain number), so a size in any stylesheet is calc(13px * var(--s, 1)) (in a clamp()
+  // with vw or vh, only its px cap is multiplied). A scene's own constants in px take TEA.s(). It is set here, before
+  // look B's diorama.js lays out, and again at once on every resize (before anyone measures).
+  var S_MAX = 2.4, SCALE = 1;
+  function setScale() {
+    var s = clamp(Math.min(window.innerWidth / 1440, window.innerHeight / 900), 1, S_MAX);
+    s = Math.round(s * 1000) / 1000;
+    if (s === SCALE && root.style.getPropertyValue('--s')) return;
+    SCALE = s; root.style.setProperty('--s', String(s));
+  }
+  setScale();
+  window.addEventListener('resize', setScale);
+
+  // ------------------------------------------------------------------ the layers
+  var under = document.createElement('div');
+  under.id = 'chapters'; under.setAttribute('aria-hidden', 'true');
+  document.getElementById('stage').after(under);
+  var holdEl = document.createElement('div'), holdOn = false;
+  holdEl.className = 'chapter-hold'; under.appendChild(holdEl);
+  LIST.forEach(function (c) {
+    c.section = document.getElementById(c.id);
+    c.host = document.createElement('div'); c.host.className = 'chapter-stage' + (c.over ? ' over' : ''); c.host.dataset.chapter = c.id;
+    under.appendChild(c.host);
+    c.topEl = document.createElement('div'); c.topEl.className = 'chapter-top';
+    c.section.insertBefore(c.topEl, c.section.firstChild);
+    c.marks = {}; c.state = 0; c.scene = null; c.whole = false; c.shown = false; c.active = false; c.top = 1e9; c.h = 1;
+    var link = document.querySelector('#rail a[href="#' + c.id + '"]');
+    c.rail = link ? link.closest('li') : null;
+    c.partRails = (c.parts || []).map(function (id) {
+      var a = document.querySelector('#rail a[href="#' + id + '"]');
+      return { el: document.getElementById(id), li: a ? a.closest('li') : null, top: 1e9 };
+    });
+    if (c.partRails.length) c.rail = c.partRails[0].li;
+    // a picture written as <img data-src> is not asked for until its chapter is near (it holds a blank until then)
+    Array.prototype.forEach.call(c.section.querySelectorAll('img[data-src]'), function (im) {
+      if (!im.getAttribute('src')) im.src = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+    });
+  });
+  var railItems = Array.prototype.slice.call(document.querySelectorAll('#rail li')), railNow = -1;
+
+  // ------------------------------------------------------------------ measuring
+  var W = 0, H = 1, started = false, lastY = 0, lastT = 0;
+  function measure() {
+    W = root.clientWidth; H = window.innerHeight;
+    LIST.forEach(function (c) {
+      var r = c.section.getBoundingClientRect();
+      c.top = r.top + window.scrollY; c.h = r.height;
+      c.partRails.forEach(function (pr) { if (pr.el) pr.top = pr.el.getBoundingClientRect().top + window.scrollY; });
+      Array.prototype.forEach.call(c.section.querySelectorAll('[data-mark]'), function (el) {
+        var m = el.getBoundingClientRect();
+        c.marks[el.dataset.mark] = { top: (m.top - r.top) / H, h: m.height / H };
+      });
+    });
+  }
+  function travel(c) { return Math.max(1, c.h - H); }
+
+  // ------------------------------------------------------------------ loading and letting go
+  function sheet(href) {
+    return new Promise(function (done) {
+      var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = href;
+      l.onload = done; l.onerror = done; document.head.appendChild(l);
+    });
+  }
+  function load(c) {
+    c.state = 1;
+    // (a picture in a part of the section that is not shown, display: none, is not asked for at all: the film's
+    // fourteen stills are shown only with motion turned off)
+    Array.prototype.forEach.call(c.section.querySelectorAll('img[data-src]'), function (im) {
+      if (!im.getClientRects().length) return;
+      im.src = im.dataset.src; im.removeAttribute('data-src');
+    });
+    var waits = [import(here + 'chapters/' + c.id + '.js')];
+    if (c.css && !c.cssIn) { c.cssIn = true; waits.push(sheet(here + '../css/chapters/' + c.css)); }
+    Promise.all(waits).then(function (got) {
+      if (c.state !== 1) return;
+      c.scene = got[0].mount(c.host, {
+        section: c.section, top: c.topEl, marks: c.marks, span: function () { return travel(c) / H; },
+        held: HELD, reduced: RM, redraw: redraw
+      });
+      c.state = 2; c.whole = false; c.active = false;
+      redraw();
+    }).catch(function (err) {
+      c.state = 3;                                   // the chapter before stays on the screen; the cards are still there to read
+      if (window.console) console.warn('The ' + c.id + ' chapter did not load: ' + (err && err.message));
+    });
+  }
+  function letGo(c) {
+    if (c.scene) { try { c.scene.setActive(false); c.scene.dispose(); } catch (err) { /* it is going anyway */ } }
+    c.scene = null; c.state = 0; c.whole = false; c.active = false;
+    c.host.textContent = ''; c.topEl.textContent = '';
+    show(c, false);
+  }
+  function show(c, yes) {
+    if (c.shown === yes) return;
+    c.shown = yes; c.host.style.visibility = yes ? 'visible' : ''; c.topEl.style.visibility = yes ? 'visible' : '';
+  }
+  function setActive(c, yes) {
+    if (c.active === yes || !c.scene) return;
+    c.active = yes; c.scene.setActive(yes);
+  }
+
+  // ------------------------------------------------------------------ the frame
+  // y: the scroll position the camera is at (look B's own, a breath behind the reader's). Returns true when a
+  // chapter's picture covers the screen, so look B's stage has nothing left to draw.
+  var ptr = { x: 0, y: 0 };
+  function frame(y, t) {
+    if (!started) return false;
+    lastY = y; lastT = t;
+    var holder = -1, i, c;
+    for (i = 0; i < LIST.length; i++) {
+      c = LIST[i];
+      var lead = (c.lead || 0) * H;
+      if (c.state === 0 && y > c.top - lead - 1.5 * H && y < c.top + c.h + 1.5 * H) load(c);
+      else if (c.state === 2 && (y < c.top - lead - 4 * H || y > c.top + c.h + 4 * H)) letGo(c);
+      if (!c.over && y >= c.top - 1) holder = i;        // (a section's top is seldom a whole pixel: its own address must land in it)
+    }
+    // the chapter that holds the screen; while its picture is not whole yet, the one before it stays
+    // (only the chapter just before may stand in: after a jump, a chapter further back is the wrong picture and the
+    // wrong name, and look B's own last scene stands in only for the first chapter. Else the hold, the night's plain
+    // ground, covers the screen until the chapter is whole.)
+    var base = -1;
+    for (i = holder; i >= 0 && i >= holder - 1; i--) {
+      c = LIST[i];
+      if (c.over || !c.scene) continue;
+      c.whole = !!c.scene.frame(clamp((y - c.top) / travel(c), 0, 1), t, ptr);
+      if (c.whole) { base = i; break; }
+    }
+    var hold = base < 0 && holder >= 1;
+    if (hold !== holdOn) { holdOn = hold; holdEl.style.visibility = hold ? 'visible' : ''; }
+    // with it on the screen: a chapter drawn over it (over), and the next chapter while it comes on (its lead)
+    for (i = 0; i < LIST.length; i++) {
+      c = LIST[i];
+      var on = i === base, guest = false;
+      c.owns = false;
+      if (!on && c.scene && y >= c.top - (c.lead || 0) * H && (c.over ? holder < i : y < c.top - 1)) {
+        guest = true;
+        c.whole = !!c.scene.frame(y < c.top ? (y - c.top) / H : clamp((y - c.top) / travel(c), 0, 1), t, ptr);
+        on = c.whole;
+        // (a guest whose picture already fills the screen, as the arena does once the film's cloth has left the frame,
+        // is the chapter the reader is in: the rail names it)
+        c.owns = on && !c.over && !!c.scene.owns && c.scene.owns();
+      }
+      show(c, on);
+      setActive(c, on && (!guest || !!c.over));
+    }
+    // the rail: which chapter the middle of the screen is in
+    var mid = y + H * 0.5, now = -1;
+    for (i = 0; i < LIST.length; i++) if (LIST[i].rail && (mid >= LIST[i].top - H * 0.6 || LIST[i].owns)) now = i;
+    // (a chapter of several parts: its line in the rail is the part the middle of the screen is in)
+    if (now >= 0 && LIST[now].partRails.length) {
+      var prs = LIST[now].partRails, pick = prs[0].li;
+      for (i = 1; i < prs.length; i++) if (prs[i].li && mid >= prs[i].top - H * 0.6) pick = prs[i].li;
+      if (pick && pick !== LIST[now].rail) { LIST[now].rail = pick; railNow = -1; }
+    }
+    // (look B's own stage marks its three chapters in the rail too, only when its own reckoning changes: so the mark
+    // is checked every frame here, not only when this reckoning changes)
+    if (now !== railNow || (now >= 0 && LIST[now].rail && !LIST[now].rail.classList.contains('now'))) {
+      if (now >= 0) railItems.forEach(function (li) { li.classList.toggle('now', li === LIST[now].rail); });
+      railNow = now;
+    }
+    return base >= 0 || hold;
+  }
+  var raf = 0;
+  function redraw() {
+    // look B draws every frame by itself unless time is held; then a chapter asks for its own frames
+    if (!HELD || raf || !started) return;
+    raf = requestAnimationFrame(function () { raf = 0; frame(window.scrollY, lastT); });
+  }
+
+  // ------------------------------------------------------------------ start (look B calls this when the page is laid out)
+  function start() {
+    measure(); started = true;
+    var id = qs.get('c');
+    if (id) {
+      var c = LIST.filter(function (x) { return x.id === id; })[0], q = clamp(parseFloat(qs.get('q')) || 0, 0, 1);
+      // (look B's own chapters, ?c=start and ?c=tv, are its sections: the same address, measured here)
+      var el = c ? null : document.getElementById(id);
+      if (el && el.tagName === 'SECTION') {
+        var r = el.getBoundingClientRect();
+        c = { top: r.top + window.scrollY, h: r.height };
+      }
+      if (c) window.scrollTo(0, Math.round(c.top + q * travel(c)));
+    }
+    root.classList.remove('tea-jump');               // (index.html's cover for a page opened at a chapter: the jump is made, look B draws this frame)
+  }
+  if (qs.has('c') && 'scrollRestoration' in history) history.scrollRestoration = 'manual';
+  // (the last chapter's height is its flowing text: measured again once the fonts are in and the page has loaded)
+  function again() { if (!started) return; measure(); LIST.forEach(function (c) { if (c.scene) c.scene.resize(); }); redraw(); }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(again);
+  window.addEventListener('load', again);
+  var rz = 0;
+  window.addEventListener('resize', function () {
+    clearTimeout(rz);
+    rz = setTimeout(function () {
+      if (!started) return;
+      measure();
+      LIST.forEach(function (c) { if (c.scene) c.scene.resize(); });
+      redraw();
+    }, 120);
+  });
+  var fine = !window.matchMedia || window.matchMedia('(pointer: fine)').matches;   // (a phone has no mouse to lean toward)
+  window.addEventListener('pointermove', function (ev) {
+    // (only a real mouse, once the page is measured: a browser may send one made-up move at 0,0 as the page loads,
+    // before W is known, which gave the lean NaN (and stopped the page drawing) or a full lean to the corner)
+    if (ev.pointerType !== 'mouse' || !started || !W || !fine) return;
+    ptr.x = clamp(ev.clientX / W * 2 - 1, -1, 1) || 0; ptr.y = clamp(ev.clientY / H * 2 - 1, -1, 1) || 0;
+  }, { passive: true });
+
+  // (a trial: one flick, one stop, as on the homepage: steps.js. ?step=1 switches it on for this tab, ?step=0 off)
+  var stepOn = qs.get('step');
+  try { if (stepOn !== '1' && stepOn !== '0') stepOn = sessionStorage.getItem('tea-step'); } catch (err) { /* no storage */ }
+  if (stepOn === '1') ['assets/js/steps-data.js', 'assets/js/steps.js'].forEach(function (src) {
+    var sc = document.createElement('script'); sc.src = src; sc.async = false; document.head.appendChild(sc);
+  });
+
+  window.TEA = {
+    start: start, frame: frame, list: LIST,
+    s: function () { return SCALE; },                 // (the page's one scale: see setScale)
+    y: function () { return lastY; },                 // (the scroll place the frame being drawn is drawn for)
+    // for tests and pictures: true when nothing near is still loading and the chapter on the screen is whole
+    settled: function () {
+      if (!started) return false;
+      var y = window.scrollY, ok = true;
+      LIST.forEach(function (c) {
+        if (c.state === 1) ok = false;
+        if (!c.over && y >= c.top && y <= c.top + c.h && c.state !== 3 && !(c.state === 2 && c.whole)) ok = false;
+      });
+      return ok;
+    }
+  };
+})();

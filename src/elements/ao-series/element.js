@@ -74,7 +74,11 @@ class AoSeries extends HTMLElement {
     };
     body.addEventListener('pointermove', fromPointer);
     body.addEventListener('pointerdown', fromPointer);
-    body.addEventListener('pointerleave', () => { if (document.activeElement !== plot) pick(-1); });
+    // A touch pointerleave follows every tap; it must not clear the day the tap picked (blur clears it). A swipe
+    // that scrolls the page ends in pointercancel, not pointerup, and that clears what its pointerdown picked.
+    const clear = () => { if (document.activeElement !== plot) pick(-1); };
+    body.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'touch') clear(); });
+    body.addEventListener('pointercancel', clear);
     plot.addEventListener('focus', () => { if (s.active < 0) pick(n - 1); });
     plot.addEventListener('blur', () => pick(-1));
     plot.addEventListener('keydown', (e) => {

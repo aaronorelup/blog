@@ -100,7 +100,7 @@
   color: var(--pc-accent); font-size: 13px; letter-spacing: 0.02em; text-decoration: none; transition: color 180ms ease;
 }
 .proj-link:hover, .proj-count:hover, .proj-post:hover { color: var(--pc-head); }
-.proj-reel-caption .proj-link { font-size: inherit; letter-spacing: 0; }
+.proj-reel-caption .proj-link { font-size: inherit; letter-spacing: 0; text-decoration: underline; text-underline-offset: 2px; }
 .proj-nowrap { white-space: nowrap; }
 
 .proj-posts { margin: 6px 0 0; padding: var(--space-2) 0 0; list-style: none; border-top: 1px solid var(--pc-line); }

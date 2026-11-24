@@ -1,0 +1,442 @@
+/* DIORAMA: two surfaces. The world (#stage, fixed, pictures only) and the cards (everything read, in flow). */
+
+:root {
+  --cream: #f6e7c8;
+  --cream-2: #e9dcc3;
+  --night: #0b0d1b;
+  --font-display: 'Zen Maru Gothic', sans-serif;
+  --font-body: Karla, system-ui, sans-serif;
+  --font-serif: Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --rail-w: calc(172px * var(--s, 1));   /* (--s: the page's one scale, set by chapters.js: 1 up to 1440x900. --rail-w is registered as a length
+                                           in chapters.css, so every script that reads it gets plain pixels) */
+  --gutter: clamp(16px, 3.2vw, 46px);
+  --content-l: calc(var(--rail-w) + var(--gutter) * 2);
+
+  /* The cards' colours are the site's own, by night (src/styles/tokens.css, home.css, tea/tea.css): this world is
+     always night, so there is no day set. */
+  --pc-head: rgb(240, 192, 106);
+  --pc-strong: rgb(242, 231, 213);
+  --pc-soft: rgb(156, 145, 127);
+  --pc-line: rgb(48, 46, 62);
+  --pc-line2: rgb(74, 68, 90);
+  --pc-accent: rgb(226, 121, 92);
+  --pc-gold: rgb(201, 162, 39);
+  --pc-tile: rgb(32, 31, 44);
+  --pc-hover: rgb(34, 33, 48);
+  --pc-bg: rgba(21, 23, 38, 0.96);
+  /* the homepage card's navy, let through a little less than its 0.86: over the brightest painting in the television
+     the red link on an episode card still reads at 4.5 to 1 */
+  --home-card: rgba(21, 23, 38, 0.9);
+  --home-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  --home-body: rgb(198, 194, 212);
+  --home-quiet: rgb(143, 138, 163);
+  --tea-card: rgb(21, 23, 38);
+  --tea-wood: rgb(160, 112, 58);
+  --tea-lamp: rgb(255, 216, 146);
+  --tea-glow: 0 0 14px rgba(255, 216, 146, 0.55);
+  --radius-m: calc(10px * var(--s, 1)); --radius-card: calc(14px * var(--s, 1)); --radius-l: calc(24px * var(--s, 1)); --radius-pill: 999px;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--night); -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  color: var(--home-body);
+  font-family: var(--font-body);
+  font-size: 15.5px;
+  line-height: 1.5;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+html { overflow-x: hidden; overflow-x: clip; }
+img, video { display: block; max-width: 100%; }
+a { color: inherit; }
+h1, h2, h3, p, ol, ul { margin: 0; padding: 0; }
+ol, ul { list-style: none; }
+
+.vh {
+  position: absolute !important;
+  width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; border-radius: 4px; }
+#stage :focus-visible { outline: none; }
+
+.skip {
+  position: fixed; left: 16px; top: -80px; z-index: 60;
+  padding: 12px 18px; border-radius: 12px; border: 2px solid var(--pc-line2);
+  background: var(--pc-bg); color: var(--pc-strong);
+  font: 600 14px var(--font-body); text-decoration: none;
+}
+.skip:focus { top: 16px; }
+
+/* ---------------------------------------------------------------- the world */
+
+#stage {
+  position: fixed; inset: 0; z-index: 0; overflow: hidden;
+  background: #07080f;
+  contain: strict;
+}
+.scene { position: absolute; inset: 0; visibility: hidden; overflow: hidden; }
+.scene.on { visibility: visible; }
+#sc-sky { background: #131d25; }
+.flat {
+  position: absolute; left: 0; top: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+  pointer-events: none; user-select: none;
+  max-width: none;
+  backface-visibility: hidden;
+}
+.glow { border-radius: 50%; }
+#g-doorglow { background: radial-gradient(closest-side, rgba(255, 196, 110, 0.42), rgba(255, 180, 90, 0.16) 45%, rgba(255, 170, 80, 0) 100%); }
+#r-lamp { background: radial-gradient(closest-side, rgba(255, 190, 110, 0.34), rgba(255, 170, 90, 0.12) 50%, rgba(255, 170, 80, 0) 100%); }
+.tvglow { background: radial-gradient(closest-side, rgba(170, 196, 255, 0.36), rgba(150, 180, 255, 0.12) 50%, rgba(150, 180, 255, 0) 100%); }
+
+.tvset { position: absolute; left: 0; top: 0; }
+.tvset > img, .tvset > .tvglow { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+.tvset > .tvglow { left: -32%; top: -8%; width: 135%; height: 135%; }
+.tvset > .tvshade { position: absolute; left: 3%; top: 84%; width: 96%; height: 20%; border-radius: 50%; background: radial-gradient(closest-side, rgba(3, 3, 10, 0.7), rgba(3, 3, 10, 0.35) 55%, rgba(3, 3, 10, 0) 100%); }
+
+/* the dark comes across the room like a sliding screen: one straight edge, the room behind it unlit */
+.wipe { position: absolute; inset: 0; overflow: hidden; will-change: transform; box-shadow: -4px 0 0 #0d0a14, -26px 0 30px -6px rgba(8, 6, 18, 0.55); }
+
+/* the giant chapter word and its one line: the only type printed on the world */
+.word {
+  font-family: var(--font-display); font-weight: 700;
+  line-height: 0.9; letter-spacing: -0.025em;
+  color: var(--cream);
+  white-space: nowrap;
+  text-shadow: 0 2px 0 rgba(11, 9, 22, 0.35);
+}
+.word small {
+  display: block; font-size: 0.2em; letter-spacing: 0.01em; line-height: 1.5;
+  padding-left: 0.14em; color: var(--cream-2);
+}
+.word .l { display: block; }
+.say {
+  font-family: var(--font-serif); font-style: italic;
+  color: var(--cream-2); line-height: 1.34;
+  text-shadow: 0 1px 0 rgba(11, 9, 22, 0.5);
+}
+.say.mono { font-family: var(--font-mono); font-style: normal; font-weight: 500; letter-spacing: 0.04em; }
+
+#motes { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
+
+/* inside the television */
+#box { position: absolute; overflow: hidden; background: #07080f; transform-origin: 0 0; will-change: transform; }
+.set { position: absolute; inset: 0; will-change: transform; overflow: hidden; background: #05050b; box-shadow: -5px 0 0 #0b0911, 5px 0 0 #0b0911; }
+.set .back { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; will-change: transform; }
+.set .inset {
+  position: absolute; will-change: transform;
+  box-shadow: 0 26px 50px rgba(0, 0, 0, 0.55), 0 3px 8px rgba(0, 0, 0, 0.45);
+  outline: 2px solid rgba(12, 10, 18, 0.9);
+  object-fit: cover; background: #0a0a12;
+}
+.lvl { position: absolute; left: 0; top: 0; will-change: transform; overflow: hidden; }
+#lvl-3 { background: #07080f; }
+.ltv { position: absolute; left: 0; top: 0; width: 1200px; height: 1093px; max-width: none; transform-origin: 0 0; will-change: transform; }
+#dot {
+  position: absolute; width: 160px; height: 160px; margin: -80px 0 0 -80px; border-radius: 50%; will-change: transform, opacity; opacity: 0;
+  background: radial-gradient(closest-side, #f4f7ff 0, #dfe8ff 5%, rgba(170, 196, 255, 0.5) 9%, rgba(150, 180, 255, 0.14) 30%, rgba(150, 180, 255, 0) 100%);
+}
+.lvl img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+#crt {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 74% 78% at 50% 50%, rgba(5, 5, 12, 0) 68%, rgba(5, 5, 12, 0.5) 100%);
+  box-shadow: inset 0 0 0 2px rgba(5, 5, 12, 0.9), inset 0 0 60px 18px rgba(5, 5, 12, 0.6);
+}
+
+/* ---------------------------------------------------------------- the cards */
+/* Everything read stands on one of the site's two cards. A floating card is the homepage's (home.css .home-card): a
+   see-through navy ground over the scene, round corners, one soft shadow, a gold heading. A post card is the hover
+   card's and the old tea page's (cards.css .lp-card, tea/chapters.css .tea-card): a solid ground with a thin line,
+   its picture flush to its edge. Every card keeps the box it had, so the page is as long as it was and the camera
+   meets every card where it did. (The class names are older than the look: .paper is a card.) */
+
+main { position: relative; z-index: 2; }
+section { position: relative; }
+.pin { position: sticky; top: 0; height: 100vh; height: 100svh; pointer-events: none; }
+.pin > * { pointer-events: auto; }
+
+.paper { --r: var(--radius-l); --ground: var(--home-card); position: relative; color: var(--home-body); }
+.paper > .shadow { position: absolute; inset: 0; border-radius: var(--r); box-shadow: var(--home-shadow); }
+.paper > .face {
+  position: relative; border-radius: var(--r);
+  background: var(--ground); -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
+}
+.paper > .face > .body { position: relative; }
+#rail > .face, #clock > .face { -webkit-backdrop-filter: none; backdrop-filter: none; }
+
+/* an eyebrow: small, spaced capitals in the quiet gold */
+.label {
+  font: 600 calc(11.5px * var(--s, 1))/1.4 var(--font-body); letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--pc-gold);
+}
+.mono { font-family: var(--font-mono); font-weight: 500; font-size: calc(12px * var(--s, 1)); letter-spacing: 0.02em; }
+/* a link out of a floating card */
+.go { color: var(--pc-accent); text-decoration: none; }
+.go:hover { text-decoration: underline; text-underline-offset: 3px; }
+a.go::after { content: '\00a0\2192'; font-family: var(--font-body); font-weight: 600; }
+/* a stamp: a post's verdict, or where an episode stands. A pill on one line (its box is 23.1px high, the height of
+   the line of serif it replaces); if it has to wrap, a round-cornered label */
+.post .line, .card .meta .label {
+  display: block; width: fit-content; padding: calc(3px * var(--s, 1)) calc(10px * var(--s, 1)); border: 1px solid currentColor; border-radius: calc(12px * var(--s, 1));
+  font: 600 calc(10.5px * var(--s, 1))/calc(15.1px * var(--s, 1)) var(--font-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--pc-head);
+}
+
+/* --- hero: the title card --- */
+#hero { height: 300vh; }
+.title-slip {
+  position: absolute; right: clamp(18px, 4.6vw, calc(80px * var(--s, 1))); top: 50%;
+  width: min(calc(330px * var(--s, 1)), 86vw);
+  will-change: transform;
+}
+.title-slip .body { padding: calc(22px * var(--s, 1)) calc(24px * var(--s, 1)) calc(18px * var(--s, 1)); }
+.title-slip h1 {
+  font: 700 calc(31px * var(--s, 1))/1.04 var(--font-display); letter-spacing: -0.015em; margin: calc(6px * var(--s, 1)) 0 calc(10px * var(--s, 1)); text-wrap: balance;
+  color: var(--pc-head);
+}
+.title-slip .statement { font: 400 calc(15px * var(--s, 1))/1.46 var(--font-serif); color: var(--home-body); }
+.title-slip .counter { display: block; margin-top: calc(10px * var(--s, 1)); color: var(--home-quiet); font-size: calc(11.5px * var(--s, 1)); }
+.index { margin-top: calc(14px * var(--s, 1)); padding-top: calc(11px * var(--s, 1)); border-top: 1px solid var(--pc-line2); columns: 2; column-gap: calc(16px * var(--s, 1)); }
+.index li {
+  display: flex; align-items: baseline; gap: calc(6px * var(--s, 1)); break-inside: avoid;
+  font: 600 calc(11.5px * var(--s, 1))/1.3 var(--font-body); color: var(--home-quiet); padding: calc(2.5px * var(--s, 1)) 0;
+}
+.index li i { font: 500 calc(9px * var(--s, 1)) var(--font-mono); font-style: normal; color: var(--pc-gold); flex: none; width: 2.2em; }
+.index li a { color: var(--pc-strong); text-decoration: none; transition: color 160ms ease; }
+.index li a:hover { color: var(--pc-head); }
+.index li span.c { margin-left: auto; font: 500 calc(10px * var(--s, 1)) var(--font-mono); color: var(--home-quiet); }
+
+/* --- the rail: a card docked on the left edge --- */
+/* The rail and the clock stay on while every scene passes under them, the brightest too: they take the site's
+   chrome ground (--pc-bg), which lets less through, so the quiet names still read. They do not blur what is behind
+   them: at 4 percent it would not show, and they are in the frame for two thirds of the page. */
+#rail {
+  --r: 0 calc(18px * var(--s, 1)) calc(18px * var(--s, 1)) 0; --ground: var(--pc-bg);
+  position: fixed; left: 0; top: 50%; z-index: 5;
+  width: var(--rail-w);
+  will-change: transform;
+}
+#rail .body { padding: calc(16px * var(--s, 1)) calc(14px * var(--s, 1)) calc(16px * var(--s, 1)) calc(18px * var(--s, 1)); }
+#rail li {
+  position: relative; font: 600 calc(12px * var(--s, 1))/1.25 var(--font-body); color: var(--home-quiet); padding: calc(2.8px * var(--s, 1)) 0;
+}
+#rail li a { color: var(--home-body); text-decoration: none; transition: color 160ms ease; }
+#rail li a:hover { color: var(--pc-head); }
+#rail li.now, #rail li.now a { color: var(--pc-head); }
+#rail li.now::before {
+  content: ''; position: absolute; left: calc(-11px * var(--s, 1)); top: 0.62em; width: calc(6px * var(--s, 1)); height: calc(6px * var(--s, 1)); border-radius: 50%;
+  background: var(--tea-lamp); box-shadow: var(--tea-glow);
+}
+
+/* a link that takes the keyboard's focus is never left in the wings */
+#rail:focus-within { transform: translate3d(0, -50%, 0) !important; }
+.title-slip:focus-within { transform: translate3d(0, -50%, 0) !important; }
+
+/* --- the clock: a card docked on the top edge --- */
+#clock {
+  --r: 0 0 calc(16px * var(--s, 1)) calc(16px * var(--s, 1)); --ground: var(--pc-bg);
+  position: fixed; right: clamp(14px, 3vw, calc(44px * var(--s, 1))); top: 0; z-index: 5;
+  will-change: transform;
+}
+#clock .body { padding: calc(20px * var(--s, 1)) calc(16px * var(--s, 1)) calc(16px * var(--s, 1)); text-align: center; }
+#clock b { display: block; font: 500 calc(30px * var(--s, 1))/1 var(--font-mono); letter-spacing: 0.01em; color: var(--pc-strong); }
+#clock.at20 b { color: var(--pc-accent); }
+#clock .dial { display: flex; gap: calc(6px * var(--s, 1)); justify-content: center; margin-top: calc(9px * var(--s, 1)); }
+#clock .dial i { width: calc(7px * var(--s, 1)); height: calc(7px * var(--s, 1)); border-radius: 50%; border: 1.5px solid var(--home-quiet); }
+#clock .dial i.on { background: var(--pc-head); border-color: var(--pc-head); }
+
+/* --- start: the coin and the bubble --- */
+#start-head { height: 200vh; position: relative; }
+.hello {
+  position: absolute; left: var(--content-l); right: var(--gutter); top: 118vh;
+  display: flex; align-items: center; gap: clamp(18px, 3vw, calc(44px * var(--s, 1)));
+}
+.coin { position: relative; flex: none; width: clamp(150px, 17vw, calc(236px * var(--s, 1))); aspect-ratio: 1; container-type: size; }
+.coin .disc {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: #3b2e44; border: 4px solid #ffd892;
+  box-shadow: 8px 18px 40px rgba(3, 3, 12, 0.6), inset 0 -18px 30px rgba(15, 10, 25, 0.5);
+}
+.coin .clipin { position: absolute; inset: 4px; border-radius: 50%; overflow: hidden; }
+.coin .clipout { position: absolute; left: -30cqw; top: -60cqw; width: 160cqw; height: 110cqw; overflow: hidden; }
+.coin img { position: absolute; width: 118cqw; height: 118cqw; max-width: none; will-change: transform; transform-origin: 50% 100%; }
+.coin .clipin img { left: calc(-9cqw - 4px); top: calc(-6cqw - 4px); }
+.coin .clipout img { left: 21cqw; top: 54cqw; }
+.coin .rim {
+  position: absolute; inset: 0; border-radius: 50%; border: 4px solid #ffd892;
+  clip-path: inset(50% 0 0 0);
+}
+.bubble { flex: 0 1 calc(560px * var(--s, 1)); }
+/* the bubble's tail, of the card's own ground, a pixel under the card so no seam shows */
+.bubble::before {
+  content: ''; position: absolute; left: calc(-15px * var(--s, 1)); top: 50%; width: calc(16px * var(--s, 1)); height: calc(26px * var(--s, 1)); margin-top: calc(-13px * var(--s, 1));
+  background: var(--ground); -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px);
+  clip-path: polygon(100% 0, 0 56%, 100% 100%);
+}
+.bubble .body { padding: calc(26px * var(--s, 1)) calc(30px * var(--s, 1)) calc(28px * var(--s, 1)) calc(34px * var(--s, 1)); }
+/* his own voice, as on the homepage's first card: the body face, not the serif */
+.bubble p { font: 400 clamp(17px, 1.6vw, calc(22px * var(--s, 1)))/1.5 var(--font-body); color: var(--home-body); text-wrap: pretty; }
+
+/* --- start: three post cards, each with its picture --- */
+.sheet {
+  --sheet-pad: clamp(18px, 4vw, calc(58px * var(--s, 1)));
+  margin-left: var(--content-l); margin-right: var(--gutter);
+  max-width: calc(1060px * var(--s, 1));
+}
+.sheet > .shadow, .strip > .shadow { display: none; }
+.sheet > .face, .strip > .face { background: none; -webkit-backdrop-filter: none; backdrop-filter: none; border-radius: 0; }
+.sheet .body { padding: clamp(22px, 4vw, calc(58px * var(--s, 1))) var(--sheet-pad) clamp(34px, 5.4vw, calc(80px * var(--s, 1))); }
+/* A post card. Its words keep the column they had: the card runs --bleed past them on the open side instead. The
+   card is as high as its picture; only from 821 to about 900px wide, where the words need more than the picture's
+   height, does it grow to hold them and the picture with it (the one place the page is longer than look B's). */
+.post {
+  --bleed: calc(24px * var(--s, 1));
+  position: relative; display: grid; grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); gap: clamp(18px, 3vw, calc(40px * var(--s, 1))); align-items: center;
+  margin-right: calc(-1 * var(--bleed)); padding-right: var(--bleed);
+  border-radius: var(--radius-card); background: var(--tea-card); box-shadow: var(--home-shadow); overflow: hidden;
+}
+.post + .post { margin-top: clamp(40px, 7vw, calc(96px * var(--s, 1))); }
+.post.flip { grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr); margin-right: 0; padding-right: 0; margin-left: calc(-1 * var(--bleed)); padding-left: var(--bleed); }
+.post.flip .win { order: 2; }
+.post.flip .cap { text-align: right; }
+.post.flip .line { margin-left: auto; }
+.post.third { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); margin-left: 9%; }
+/* the card's thin line, over its picture too, and the lantern bar that grows down its side under the mouse */
+.post::before, .strip li::before {
+  content: ''; position: absolute; inset: 0; z-index: 2; border-radius: inherit; pointer-events: none;
+  box-shadow: inset 0 0 0 1px var(--pc-line2); transition: box-shadow 160ms ease;
+}
+.post::after, .strip li::after {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; z-index: 2; width: calc(3px * var(--s, 1)); pointer-events: none;
+  background: var(--tea-lamp); box-shadow: var(--tea-glow); transform: scaleY(0); transform-origin: top; transition: transform 160ms ease;
+}
+/* a picture fills its well edge to edge, cut by the card's corners, one hairline between it and the words */
+.win { position: relative; overflow: hidden; aspect-ratio: 16 / 9; background: var(--pc-tile); }
+.win .media { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; }
+.post .win { align-self: stretch; justify-self: stretch; box-shadow: 1px 0 0 var(--pc-line); }
+.post.flip .win { box-shadow: -1px 0 0 var(--pc-line); }
+.cap { padding: calc(18px * var(--s, 1)) 0; }
+.cap .label .mono { color: var(--pc-soft); }
+.cap h3 { font: 700 clamp(21px, 2.1vw, calc(28px * var(--s, 1)))/1.16 var(--font-display); letter-spacing: -0.01em; margin: calc(8px * var(--s, 1)) 0 calc(10px * var(--s, 1)); color: var(--pc-strong); }
+/* the title is the card's link: it covers the whole card, and the ring goes round the whole card */
+.post h3 a, .strip li h3 a { color: inherit; text-decoration: none; transition: color 160ms ease; }
+.post h3 a::after, .strip li h3 a::after { color: var(--pc-accent); }
+.post h3 a::before, .strip li h3 a::before { content: ''; position: absolute; inset: 0; z-index: 1; }
+.post h3 a:focus-visible, .strip li h3 a:focus-visible { outline: none; }
+.post:has(a:focus-visible), .strip li:has(a:focus-visible) { outline: 3px solid var(--pc-head); outline-offset: 3px; }
+@media (hover: hover) {
+  .post:hover::before, .strip li:hover::before { box-shadow: inset 0 0 0 1px var(--tea-wood); }
+  .post:hover::after, .strip li:hover::after { transform: scaleY(1); }
+  .post:hover h3 a, .strip li:hover h3 a { color: var(--pc-accent); text-decoration: none; }
+}
+.after-sheet { height: 60vh; }
+
+/* --- tv: head, episode cards, the turn --- */
+#tv-head { height: 285vh; }
+.ep { height: 100vh; height: 100svh; display: flex; align-items: center; }
+.ep.high { align-items: flex-start; padding-top: 5vh; }
+.card {
+  margin-left: var(--content-l); width: min(calc(360px * var(--s, 1)), calc(100vw - 32px));
+}
+.card .body { padding: calc(22px * var(--s, 1)) calc(24px * var(--s, 1)) calc(24px * var(--s, 1)); }
+.card .meta { display: flex; gap: calc(10px * var(--s, 1)); align-items: center; }
+.card .meta .mono { color: var(--pc-head); font-size: calc(13px * var(--s, 1)); }
+.card h3 { font: 700 calc(30px * var(--s, 1))/1.08 var(--font-display); letter-spacing: -0.015em; margin: calc(8px * var(--s, 1)) 0 calc(10px * var(--s, 1)); color: var(--pc-head); }
+.card .line { font: 400 calc(16px * var(--s, 1))/1.44 var(--font-serif); color: var(--home-body); text-wrap: pretty; }
+.card .line::first-letter { text-transform: uppercase; }
+.card .go { display: block; margin-top: calc(14px * var(--s, 1)); padding-top: calc(12px * var(--s, 1)); border-top: 1px solid var(--pc-line2); font: 600 calc(13px * var(--s, 1))/1.4 var(--font-body); }
+#tv-turn { height: 350vh; position: relative; }
+.turn-slip {
+  position: absolute; left: var(--content-l); top: 150vh;
+  width: min(calc(400px * var(--s, 1)), calc(100vw - 32px));
+}
+.turn-slip .body { padding: calc(22px * var(--s, 1)) calc(24px * var(--s, 1)); }
+.turn-slip p { font: 400 calc(17px * var(--s, 1))/1.46 var(--font-serif); color: var(--pc-strong); text-wrap: pretty; }
+
+/* --- tv-also: three small post cards under their eyebrow --- */
+/* The cards run to the strip's own edges, 14px apart, and --strip-padx is worked out so each card's words keep the
+   column they had; the picture is that much wider, so that much taller, and the strip's foot gives the height back. */
+#tv-also { padding: 6vh 0 30vh; }
+.strip {
+  --strip-pad: clamp(16px, 2.4vw, calc(30px * var(--s, 1)));
+  --strip-padx: calc((var(--strip-pad) + clamp(14px, 2.4vw, calc(34px * var(--s, 1))) - calc(14px * var(--s, 1))) / 3);
+  margin-left: var(--content-l); margin-right: var(--gutter); max-width: calc(1060px * var(--s, 1));
+}
+.strip .body { padding: calc(6px * var(--s, 1)) var(--strip-pad) calc(calc(22px * var(--s, 1)) - 1.125 * var(--strip-padx)); }
+/* the eyebrow is a lit chip: the box it takes in the page is its old line, the chip is drawn 5px round it */
+.strip .body > .label {
+  width: fit-content; margin: calc(-5px * var(--s, 1)) 0 calc(-5px * var(--s, 1)) calc(-1 * var(--strip-pad)); padding: calc(5px * var(--s, 1)) calc(12px * var(--s, 1)); border-radius: var(--radius-pill);
+  background: var(--pc-hover); box-shadow: inset 0 0 0 1px var(--pc-head); color: var(--pc-head);
+}
+.strip ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: calc(14px * var(--s, 1)); margin: calc(20px * var(--s, 1)) calc(-1 * var(--strip-pad)) 0; }
+.strip li { position: relative; border-radius: var(--radius-m); background: var(--tea-card); box-shadow: var(--home-shadow); overflow: hidden; }
+.strip li .win { box-shadow: 0 1px 0 var(--pc-line); }
+.strip li > div:last-child { padding: calc(12px * var(--s, 1)) var(--strip-padx) calc(14px * var(--s, 1)); }
+.strip li .label { color: var(--pc-head); }
+.strip li h3 { font: 700 calc(17px * var(--s, 1))/1.24 var(--font-display); margin-top: calc(4px * var(--s, 1)); color: var(--pc-strong); }
+
+/* --- next --- */
+#next { height: 250vh; }
+
+/* ---------------------------------------------------------------- small screens */
+@media (max-width: 820px) {
+  :root { --rail-w: 0px; --content-l: 14px; --gutter: 14px; }
+  #rail { --r: var(--radius-pill); top: 10px; left: 10px; width: auto; max-width: calc(100vw - 120px); }
+  #rail .body { padding: 7px 12px 7px 22px; }
+  #rail li { display: none; font-size: 12px; line-height: 1.5; padding: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #rail li.now { display: block; }
+  #rail:focus-within, .title-slip:focus-within { transform: none !important; }
+  /* the chip cuts a long name short, which would cut the lantern dot off too: the dot stands on the chip itself */
+  #rail li.now::before { display: none; }
+  #rail .body::before {
+    content: ''; position: absolute; left: 10px; top: 50%; width: 6px; height: 6px; margin-top: -3px; border-radius: 50%;
+    background: var(--tea-lamp); box-shadow: var(--tea-glow);
+  }
+  #clock .body { padding: 12px 10px 8px; }
+  #clock b { font-size: 20px; }
+  #clock .dial { gap: 4px; margin-top: 6px; }
+  #clock .dial i { width: 5px; height: 5px; }
+  .title-slip { right: 12px; left: 12px; width: auto; top: auto; bottom: 14px; }
+  .title-slip .body { padding: 16px 18px 14px; }
+  .title-slip h1 { font-size: 25px; margin: 4px 0 6px; }
+  .title-slip .statement { font-size: 14px; line-height: 1.4; }
+  .title-slip .counter { margin-top: 6px; font-size: 11px; }
+  .index { margin-top: 9px; padding-top: 8px; column-gap: 14px; }
+  .index li { font-size: 11.5px; padding: 1px 0; }
+  .index li i { display: none; }
+  .hello { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .coin { width: 132px; margin-left: 6px; }
+  .bubble { flex: none; width: 100%; margin-top: 12px; }
+  .bubble::before { left: 54px; top: -15px; width: 30px; height: 16px; margin: 0; clip-path: polygon(0 100%, 40% 0, 100% 100%); }
+  .bubble .body { padding: 18px 20px 20px; }
+  /* A post card stands upright: its picture across the top, as wide as the sheet was; its words keep their column.
+     Each card is --post-grow taller than its post was, so the cards stand 14px apart and the sheet's head and foot
+     give back the rest: the page is exactly as long as it was. */
+  .sheet { --post-grow: calc(1.125 * var(--sheet-pad) + 14px); --post-shift: calc(1.5 * var(--post-grow) - (clamp(40px, 7vw, 96px) - 14px)); }
+  .sheet .body { margin: calc(-1 * var(--post-shift)) 0; }
+  .post, .post.flip, .post.third { grid-template-columns: minmax(0, 1fr); gap: 0; margin: 0 calc(-1 * var(--sheet-pad)); padding: 0; }
+  .post + .post { margin-top: 14px; }
+  .post.flip .win { order: 0; }
+  .post .win, .post.flip .win { box-shadow: 0 1px 0 var(--pc-line); }
+  .cap, .post.flip .cap { padding: 12px var(--sheet-pad) 14px; text-align: left; }
+  .post.flip .line { margin-left: 0; }
+  .ep, .ep.high { align-items: flex-end; padding: 0 0 9vh; }
+  .card h3 { font-size: 25px; }
+  /* A small card lies on its side: the picture down its left edge, the words beside it in the column they had.
+     Each card is 20px taller than its row was; the strip's foot gives that back. */
+  .strip .body { padding-bottom: 0; margin-bottom: -18px; }
+  .strip ul { grid-template-columns: minmax(0, 1fr); gap: 14px; margin-top: 18px; }
+  .strip li { display: grid; grid-template-columns: calc(116px + var(--strip-pad)) minmax(0, 1fr); gap: 12px; align-items: center; min-height: 85.25px; }
+  .strip li .win { align-self: stretch; aspect-ratio: auto; box-shadow: 1px 0 0 var(--pc-line); }
+  .strip li > div:last-child { padding: 10px var(--strip-pad) 10px 0; }
+  .strip li h3 { font-size: 15px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+}

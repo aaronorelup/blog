@@ -122,10 +122,15 @@ export function partBook(root) {
     tip.style.left = Math.min(box.width - 190, Math.max(0, left + 12)) + 'px';
   }
   svg.addEventListener('pointermove', hover);
-  svg.addEventListener('pointerleave', () => {
+  // A tap sends no pointermove: it shows the tip on pointerup, and the touch pointerleave after it keeps it. A swipe
+  // that scrolls the page ends in pointercancel, which hides what its pointermoves showed.
+  const unhover = () => {
     tip.hidden = true;
     svg.querySelector('.cross')?.setAttribute('visibility', 'hidden');
-  });
+  };
+  svg.addEventListener('pointerup', (e) => { if (e.pointerType === 'touch') hover(e); });
+  svg.addEventListener('pointerleave', (e) => { if (e.pointerType !== 'touch') unhover(); });
+  svg.addEventListener('pointercancel', unhover);
 
   root.append(
     h('div', { class: 'sid-eyebrow' }, 'Demo 5 · a book, after your edits'),

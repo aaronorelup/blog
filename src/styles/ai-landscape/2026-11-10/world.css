@@ -1,0 +1,173 @@
+/* One company's world (SPEC 2.4, 7.1, 7.3), for all five. Text version: an article with its picture and lists.
+   3D page: the same blocks become the words of the four beats, in the three places words may live.
+   A world's own colours are the --w-* properties Page.astro writes from worlds/<id>.js. World-only looks go in world-<id>.css. */
+.ail-world { --w-fg: var(--w-ink, var(--ail-ink)); }
+.ail-world__head { display: grid; grid-template-columns: auto 1fr; column-gap: 14px; row-gap: 10px; align-items: center; }
+.ail-kicker { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; padding-bottom: 7px; border-bottom: 2px solid var(--w-line, var(--ail-ink-2)); justify-self: start; }
+.ail-kicker span + span::before { content: '/'; margin-right: 12px; color: var(--ail-fg-2); }
+.ail-kicker__note { color: var(--ail-fg-2); }
+/* justify-self: the h2 is as wide as its word, not as its grid column (the 3D name is laid over its letters) */
+.ail-world__name { grid-column: 1 / -1; justify-self: start; font-size: clamp(64px, 11vw, 150px); }
+
+/* a mark on its plate: paper white or ink, facing the screen, with its clear space. Never tilted or tinted */
+.ail-mark { --h: 26px; display: inline-grid; place-items: center; padding: calc(var(--h) * .5); background: #FFFFFF; box-shadow: 0 0 0 1px var(--ail-line); line-height: 0; }
+.ail-mark[data-plate='ink'] { background: #0C0D10; }
+.ail-mark[data-clear='1'] { padding: var(--h); }
+.ail-mark[data-clear='2'] { padding: calc(var(--h) * 2); }
+.ail-mark[data-clear='own'] { padding: 0; }
+.ail-mark[data-clear='own'] img { height: calc(var(--h) * 2); }
+.ail-mark img { height: var(--h); width: auto; max-width: none; }
+.ail-mark--type { padding: 10px 12px; }
+.ail-mark__name { font: 400 22px/1 var(--ail-display); letter-spacing: .04em; text-transform: uppercase; color: #0C0D10; }
+.ail-mark[data-plate='ink'] .ail-mark__name { color: #F8F9FB; }
+.ail-mark--s { --h: 16px; }
+
+.ail-world__pic { position: relative; margin: 28px 0 32px; background: var(--w-ground, var(--ail-floor)); overflow: hidden; }
+.ail-world__plate { width: 100%; height: auto; }
+.ail-world__hero { position: absolute; left: 6%; bottom: 4%; width: 22%; height: auto; filter: drop-shadow(0 10px 14px rgba(12, 13, 16, .22)); }
+.ail-world__caption { display: none; }
+.ail-world__portrait { position: absolute; right: 5%; top: 8%; width: 11%; height: auto; border: 6px solid #FFFFFF; box-shadow: 0 0 0 1.5px #0C0D10, 0 8px 16px rgba(12, 13, 16, .2); }
+
+.ail-world__intro, .ail-sig, .ail-catch { margin-top: 28px; display: grid; gap: 10px; max-width: 46rem; }
+.ail-known .ail-label, .ail-catch__line .ail-label { display: block; margin-bottom: 4px; color: var(--ail-fg-2); }
+.ail-agent__name { font: 400 var(--ail-fs-title)/.95 var(--ail-display); letter-spacing: .015em; text-transform: uppercase; }
+.ail-agent .ail-tag { vertical-align: .9em; }
+/* the entry card's three short lines: what it leads, what its agent thinks with, its top models. A label, then values */
+.ail-leads, .ail-thinks, .ail-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; font-size: 17px; line-height: 1.22; }
+:is(.ail-leads, .ail-thinks, .ail-top) > .ail-label, .ail-leads__run .ail-label { color: var(--ail-fg-2); }
+.ail-leads__caps, .ail-top__list { display: inline-flex; flex-wrap: wrap; gap: 2px 14px; }
+.ail-leads__cap { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .2em; }
+.ail-leads__run { white-space: nowrap; }
+.ail-leads__run b { font-weight: 400; }
+.ail-top__m { white-space: nowrap; }
+.ail-top__m time { margin-left: .6em; color: var(--ail-fg-2); }
+/* the flagship's price is second depth: the text version prints it here, the 3D page in the model's proof card */
+.ail-flagship { display: flex; flex-wrap: wrap; gap: 4px 14px; color: var(--ail-fg-2); }
+.ail-gl .ail-flagship { display: none; }
+
+/* the doors on floor 1: this company's products. Text version: a list that opens one product at a time */
+.ail-doors { margin-top: 32px; display: grid; gap: 2px; }
+.ail-doors__cap { color: var(--ail-fg-2); }
+.ail-door { border-top: 1px solid var(--ail-line); }
+.ail-door__tab { display: flex; align-items: center; gap: 10px; min-height: 44px; white-space: nowrap; font: 400 var(--ail-fs-label)/1.2 var(--ail-mono); letter-spacing: .08em; text-transform: uppercase; }
+.ail-door__tab .ail-glyph { width: 18px; height: 18px; }
+.ail-door[open] > .ail-door__tab { font-weight: 400; }
+.ail-door[open] > .ail-door__tab .ail-door__name { text-decoration: underline; text-underline-offset: .3em; }
+.ail-door > .ail-stack, .ail-door > .ail-card { margin: 6px 0 22px; }
+.ail-card { display: grid; gap: 8px; padding: 14px 16px; background: var(--ail-card); box-shadow: 0 0 0 1px var(--ail-hair); max-width: 34rem; }
+
+.ail-sig__ui, .ail-sig__note, .ail-sig__head, .ail-sig__lead, .ail-sig__tail { display: none; }
+.ail-myth { font-size: var(--ail-fs-body); }
+.ail-sig__lists { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px 32px; margin-top: 6px; }
+.ail-sig__list .ail-sig__title { color: var(--ail-fg-2); margin-bottom: 6px; }
+.ail-sig__list ul { display: grid; gap: 5px; }
+.ail-sig__list ul[data-ordered] { counter-reset: step; }
+.ail-sig__list ul[data-ordered] li { counter-increment: step; }
+.ail-sig__list ul[data-ordered] li::before { content: counter(step) '. '; font: 400 var(--ail-fs-label)/1 var(--ail-mono); }
+.ail-sig__item .ail-own, .ail-catch__item .ail-own { text-transform: none; font: inherit; letter-spacing: 0; display: inline; }
+.ail-sig__item .ail-own::before, .ail-catch__item .ail-own::before { display: inline-block; margin-right: .5em; transform: translateY(-1px); }
+/* the pieces of the catch: an empty socket, a locked drawer, a plate that was renamed, shut down or about to expire */
+.ail-catch__list { display: grid; gap: 5px; }
+.ail-catch__was { margin-right: .5em; }
+.ail-catch__until { margin-left: .7em; color: var(--ail-fg-2); }
+.ail-flags { margin-top: 10px; }
+.ail-flags ul { display: grid; gap: 2px; margin-top: 6px; }
+.ail-flag summary { display: flex; align-items: center; gap: 10px; min-height: 44px; }
+.ail-flag summary .ail-glyph { width: 18px; height: 18px; }
+.ail-flag[open] summary .ail-flag__myth { display: none; }
+.ail-flag__truth { padding: 0 0 10px 28px; max-width: 40rem; }
+
+/* ---- the 3D page ---- */
+.ail-gl .ail-world .ail-stage { color: var(--ail-fg); }
+/* a signature that sets `dark` (lights out): the words flip to paper, on the ink scrim, in any world */
+.ail-gl .ail-world[data-dark] { --w-scrim: rgba(12, 13, 16, .88); --w-card: #16171B; --w-ground: #0C0D10; }
+.ail-gl .ail-world__pic { display: none; }
+.ail-gl .ail-world__head { position: absolute; left: var(--ail-margin); top: var(--ail-top); max-width: 54vw; opacity: 0; transition: opacity var(--ail-t) var(--ail-ease); }
+.ail-gl .ail-kicker { padding: 7px 10px; background: var(--w-scrim); }
+.ail-gl .ail-world__head.is-on { opacity: 1; }
+.ail-gl .ail-world__name { font-size: var(--ail-fs-display); margin-top: 4px; white-space: nowrap; }
+.ail-3d .ail-world__name { color: transparent; user-select: none; }
+.ail-gl .ail-world__caption { display: block; padding: 3px 7px; background: var(--w-scrim); font-size: 12px; white-space: nowrap; opacity: 0; visibility: hidden; }
+.ail-gl .ail-world__caption.is-on { opacity: 1; visibility: visible; }
+
+.ail-gl .ail-world__intro, .ail-gl .ail-sig, .ail-gl .ail-catch { position: absolute; left: var(--ail-margin); bottom: var(--ail-margin); width: min(28vw, 404px); margin: 0; padding: 16px 18px 18px; background: var(--w-scrim); }
+/* the entry card is triggered, never scrubbed: in over 450 ms, out in 200 */
+.ail-gl .ail-world__intro { width: min(32vw, 452px); gap: 9px; }
+.ail-gl .ail-world__intro:not(.is-on) { transition-duration: 200ms, 200ms, 0s; transition-delay: 0s, 0s, 200ms; }
+.ail-gl .ail-world__intro .ail-sentence { font-size: clamp(22px, 2.1vw, 32px); }
+.ail-gl .ail-world__intro .ail-agent__name { font-size: clamp(34px, 3.6vw, 54px); }
+@media (max-height: 700px) { .ail-gl .ail-world__intro { gap: 6px; padding: 12px 16px 14px; } .ail-gl .ail-world__intro .ail-sentence { font-size: 22px; } .ail-gl .ail-world__intro .ail-agent__name { font-size: 34px; } }
+.ail-gl .ail-sig__ui { display: flex; flex-wrap: wrap; gap: 8px; }
+.ail-gl .ail-sig__note { display: block; color: var(--ail-fg-2); }
+.ail-gl .ail-myth { font-size: clamp(20px, 1.7vw, 26px); line-height: 1.14; }
+.ail-gl .ail-sig__lists { display: block; margin: 0; }
+.ail-gl .ail-sig__list .ail-sig__title { display: none; }
+.ail-gl .ail-sig__head { display: block; color: var(--ail-fg-2); }
+/* a signature's words and the catch's pieces wait unseen until their signature pins one and gives it is-on */
+.ail-gl .ail-catch__list { position: absolute; }
+.ail-gl .ail-sig__item, .ail-gl .ail-catch__item { position: fixed; left: 0; top: 0; z-index: 3; padding: 4px 8px 5px; background: var(--w-scrim); white-space: nowrap; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 300ms var(--ail-ease); font-size: 17px; }
+.ail-gl .ail-sig__item.is-on, .ail-gl .ail-catch__item.is-on { opacity: 1; visibility: visible; }
+.ail-gl .ail-sig__item .ail-note, .ail-gl .ail-catch__item .ail-note { display: none; }
+.ail-gl .ail-sig__item .ail-tag, .ail-gl .ail-catch__item .ail-tag { font-size: 10px; }
+
+/* doors: this company's products as a row of named tabs above the callouts, after the one word "Products". The row
+   wraps to two lines. A tab is its glyph and its product's name, always: a name never waits for a hover */
+.ail-gl .ail-doors[data-beat] { position: fixed; left: 0; top: 0; z-index: 4; display: flex; flex-wrap: wrap; align-items: stretch; gap: 3px; margin: 0; transform: none; }
+.ail-gl .ail-door { border: 0; flex: none; }          /* a tab keeps its width: the row wraps or scrolls, it never squeezes a name */
+.ail-gl .ail-doors__cap { display: flex; align-items: center; margin: 0; padding: 0 9px; background: var(--w-scrim); color: var(--ail-fg-2); transition: opacity var(--ail-t) var(--ail-ease); }
+.ail-gl .ail-world:not([data-beat-now='b']) :is(.ail-door__tab, .ail-doors__cap) { opacity: 0; visibility: hidden; pointer-events: none; }
+/* pushed in on a floor, the camera is close and the tabs would lie over a callout: they step aside (a phone lists them in the sheet) */
+@media (min-width: 900px) { .ail-gl .ail-world.is-pushed :is(.ail-door__tab, .ail-doors__cap) { opacity: 0; visibility: hidden; pointer-events: none; } }
+.ail-gl .ail-door__tab { position: relative; min-height: 32px; min-width: 32px; padding: 0 9px 0 8px; gap: 6px; justify-content: center; background: var(--w-scrim); box-shadow: inset 0 0 0 1px var(--ail-hair); font: 400 15px/1 var(--ail-serif); letter-spacing: 0; text-transform: none; transition: background-color 150ms, color 150ms, opacity var(--ail-t) var(--ail-ease); }
+.ail-gl .ail-door__tab:hover { box-shadow: inset 0 0 0 1px var(--ail-fg); }
+.ail-gl .ail-door__tab .ail-glyph { width: 14px; height: 14px; }
+.ail-gl .ail-doors[data-tight] .ail-door:not([open]) .ail-glyph { display: none; }       /* three lines would reach the first callout: the names stay, the glyphs go */
+.ail-gl .ail-door:not([open]) .ail-door__tab .ail-tag { display: none; }
+.ail-gl .ail-door[open] .ail-door__tab { background: var(--ail-fg); color: var(--ail-bg); box-shadow: none; }
+.ail-gl .ail-door[open] > .ail-door__tab .ail-door__name { text-decoration: none; }
+.ail-gl .ail-door__tab .ail-tag { margin-left: 2px; font-size: 12px; padding: .2em .45em .15em; }
+.ail-gl .ail-door > .ail-card { position: fixed; left: 0; top: 0; z-index: 4; width: min(30vw, 380px); margin: 0; background: var(--w-card); }
+
+.ail-gl .ail-flags ul { display: flex; gap: 6px; }
+.ail-gl .ail-flag summary { justify-content: center; min-width: 44px; padding: 0 12px; background: var(--w-card); box-shadow: inset 0 0 0 1px var(--ail-fg); }
+.ail-gl .ail-flag__myth { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.ail-gl .ail-flag[open] summary { background: var(--ail-fg); color: var(--ail-bg); }
+.ail-gl .ail-flag__truth { position: absolute; left: 0; right: 0; bottom: calc(100% + 8px); padding: 14px 18px; background: var(--w-card); box-shadow: 0 0 0 1px var(--ail-fg); max-width: none; }
+.ail-gl .ail-catch { overflow: visible; }
+
+@media (max-width: 899px) {
+  .ail-world__name { font-size: clamp(56px, 20vw, 96px); }
+  .ail-world__hero { width: 30%; }
+  .ail-world__portrait { width: 16%; border-width: 3px; }
+  /* phone, 3D page: the scene keeps the top 55 percent, the words sit in a sheet on the world's ground */
+  .ail-gl .ail-world .ail-stage::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 45svh; background: var(--w-ground, var(--ail-paper)); box-shadow: 0 -1px 0 var(--ail-hair); z-index: -1; opacity: var(--sheet, 0); }
+  .ail-gl .ail-world__head { max-width: none; right: var(--ail-margin); }
+  /* the name moves into the sheet: there is no room behind a stack that fills the width */
+  .ail-gl .ail-world__name, .ail-3d .ail-world__name { position: fixed; left: var(--ail-margin); top: calc(55svh + 12px); margin: 0; font-size: 17vw; color: var(--ail-fg); transition: opacity var(--ail-t) var(--ail-ease); }
+  .ail-gl .ail-world:not([data-beat-now='a']) .ail-world__name { opacity: 0; }
+  .ail-gl .ail-sig, .ail-gl .ail-catch, .ail-gl .ail-world__intro { left: 0; right: 0; bottom: 0; width: auto; height: 45svh; padding: 12px var(--ail-margin); background: none; align-content: start; gap: 8px; }
+  .ail-gl .ail-world__intro { padding-top: calc(17vw * .88 + 22px); }
+  /* the tabs scroll inside their own row, each whole when it comes to rest, and fade out at the right edge */
+  .ail-gl .ail-doors[data-beat] { left: var(--ail-margin); right: 0; top: auto; bottom: calc(45svh - 46px); flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; padding-right: 44px;
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent); }
+  .ail-gl .ail-doors[data-beat]::-webkit-scrollbar { display: none; }
+  .ail-gl .ail-door, .ail-gl .ail-doors__cap { scroll-snap-align: start; }
+  .ail-gl .ail-doors__cap { background: none; padding: 0 6px 0 0; }
+  .ail-gl .ail-world__intro { width: auto; gap: 7px; }
+  .ail-gl .ail-world__intro .ail-sentence { font-size: 21px; }
+  .ail-gl .ail-world__intro .ail-agent__name { font-size: 34px; }
+  :is(.ail-leads, .ail-thinks, .ail-top) { font-size: 16px; }
+  .ail-gl .ail-door[open] > .ail-stack { position: fixed; left: var(--ail-margin); right: var(--ail-margin); top: calc(55svh + 50px); }
+  .ail-gl .ail-door > .ail-card { left: var(--ail-margin); right: var(--ail-margin); top: calc(55svh + 50px); width: auto; transform: none !important; }
+  .ail-gl .ail-myth { font-size: 18px; }
+  /* each list keeps its own width and height in the sheet: one that does not fit beside the last starts a new line */
+  .ail-gl .ail-sig__lists { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 4px 14px; }
+  .ail-gl .ail-sig__list { display: contents; }
+  .ail-gl .ail-sig__list ul { flex: none; max-width: 100%; justify-items: start; }
+  .ail-gl .ail-catch__list { display: contents; }
+  .ail-gl .ail-sig__item, .ail-gl .ail-catch__item { position: static; display: none; padding: 0; background: none; font-size: 15px; white-space: normal; justify-self: start; transform: none !important; }
+  .ail-gl .ail-sig__item.is-on, .ail-gl .ail-catch__item.is-on { display: block; }
+  .ail-gl .ail-door__tab { min-height: 44px; min-width: 44px; white-space: nowrap; }
+  .ail-gl .ail-world[data-beat-now='b'] .ail-doors, .ail-gl .ail-world[data-beat-now='b'] .ail-stack { opacity: 1; }
+  .ail-gl .ail-world:not([data-beat-now='b']) .ail-door > .ail-stack, .ail-gl .ail-world:not([data-beat-now='b']) .ail-door > .ail-card { display: none; }
+}

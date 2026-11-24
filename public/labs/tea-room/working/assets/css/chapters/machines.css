@@ -1,0 +1,101 @@
+/* THE MACHINES ON THE BENCH (assets/js/chapters/machines.js draws it; this file comes with it, not with the page).
+   Every name prefixed mc- and set in the page's own tokens. Its picture layer has no ground of its own: through its
+   lead it is drawn over the toy box's room. Its order: the table, then the backdrop run forward over it, then the
+   machine on the backdrop. The only words are the machine's name, which is the way to its whole teardown. */
+.chapter-stage[data-chapter='machines'] { background: none; --lit: 1; }
+.chapter-stage[data-chapter='machines'] > div { position: absolute; }
+
+/* the room going down to the bench's night, over the toy box's room in the lead (the same as the room's own filter) */
+.mc-dim { inset: 0; background: rgba(0, 0, 0, 0.28); opacity: 0; pointer-events: none; }
+
+/* the world: the room, the bench, the lamp, the television; moved by the camera as one. Its order is its depth. */
+.mc-world { inset: 0; will-change: transform; }
+.mc-diving, .mc-diving * { will-change: auto !important; }   /* (into the television: machines.js, the dive) */
+.mc-world > * { position: absolute; }
+.mc-room { inset: 0; overflow: hidden; background: #1a1424; }
+.mc-room-img { position: absolute; left: 0; top: 0; width: 2752px; height: 1536px; max-width: none; transform-origin: 0 0; filter: brightness(0.72); user-select: none; }
+/* everything away from the lamp sinks into the night */
+.mc-vig { inset: 0; pointer-events: none; opacity: 0;
+  background: radial-gradient(70% 85% at var(--tcx) 46%, rgba(10, 8, 22, 0) 25%, rgba(10, 8, 22, 0.5) 70%, rgba(8, 6, 18, 0.8) 100%); }
+/* the lamp's light falling through the room: on the wall behind the bench, brightest down where it meets the table */
+.mc-cone { inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: calc(0.18 + 0.82 * var(--lit));
+  background:
+    radial-gradient(calc(var(--trx) * 0.95) calc(var(--tcy) * 0.62) at var(--tcx) calc(var(--tcy) * 0.66), rgba(255, 196, 128, 0.62), rgba(255, 180, 110, 0.32) 45%, rgba(255, 170, 100, 0) 100%),
+    radial-gradient(calc(var(--trx) * 0.5) calc(var(--trx) * 0.5) at var(--lx) var(--ly), rgba(255, 214, 150, 0.55), rgba(255, 190, 120, 0) 100%); }
+.mc-up { will-change: transform; }
+/* the table: look B's low table, drawn large, the workbench */
+.mc-table { max-width: none; height: auto; pointer-events: none; user-select: none; filter: brightness(calc(0.5 + 0.36 * var(--lit))) saturate(0.95); }
+/* the backdrop: lit by the lamp, dark when the lamp is */
+.mc-sweep { left: 0; top: 0; overflow: visible; will-change: transform; pointer-events: none; filter: brightness(calc(0.3 + 0.7 * var(--lit))); }
+.mc-sweep svg { display: block; overflow: visible; }
+/* the sheet's roll as it is rolled back up at the end (machines.js): a tube in the sheet's own colours, inked as the room */
+.mc-roll { position: absolute; left: 0; top: 0;
+  background: linear-gradient(180deg, #4a3038 0%, #a77a66 20%, #ecc9a0 38%, #d2a782 55%, #8a5f55 80%, #3a252c 100%);
+  box-shadow: 0 0 0 1.5px #1d1520, 0 6px 10px -2px rgba(20, 12, 20, 0.55); }
+.mc-roll::before { content: ''; position: absolute; left: 1.5%; right: 1.5%; top: 30%; height: 1px; background: rgba(255, 236, 205, 0.55); }
+/* the pool of lamplight on the table top, where the machine stands */
+.mc-pool { inset: 0; pointer-events: none; mix-blend-mode: screen; opacity: calc(0.12 + 0.88 * var(--lit));
+  background: radial-gradient(calc(var(--trx) * 0.78) calc(var(--try) * 1.15) at var(--tcx) calc(var(--tcy) - var(--try) * 0.12),
+    rgba(255, 222, 170, 0.95), rgba(255, 206, 150, 0.78) 40%, rgba(255, 190, 120, 0.28) 75%, rgba(255, 180, 110, 0) 100%); }
+/* the soft shadow on the table under the machine */
+.mc-shade { inset: 0; pointer-events: none; mix-blend-mode: multiply; opacity: calc(0.25 + 0.75 * var(--lit));
+  background: radial-gradient(calc(var(--trx) * 0.42) calc(var(--try) * 0.32) at var(--tcx) calc(var(--tcy) + var(--try) * 0.12), rgba(70, 44, 40, 0.55), rgba(70, 44, 40, 0) 100%); }
+
+/* the machine on the bench: its page's pale studio is multiplied into the lamplight (where the page is pale the bench
+   shows through; where the machine is, it is lit by the lamp); the edges fade into the room */
+.mc-view { overflow: hidden; background: transparent; mix-blend-mode: multiply; opacity: var(--vis, 1);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 11%, #000 89%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 9%, #000 86%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent 0, #000 11%, #000 89%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 9%, #000 86%, transparent 100%);
+  mask-composite: intersect; }
+.mc-pics { position: absolute; inset: 0; }
+.mc-pic { position: absolute; max-width: none; opacity: 0; transition: opacity 0.45s ease; transform-origin: 50% 55%; user-select: none; }
+.mc-pic.on { opacity: 1; }
+/* white, in a multiplied layer, is nothing: it lifts the stills' console out of the picture */
+.mc-erase { position: absolute; inset: 0; pointer-events: none; }
+.mc-erase i { position: absolute; background: #fff; }
+/* the page's words laid over its machine: smudged into the picture rather than cut out of it */
+.mc-erase i.w { background: rgba(255, 255, 255, 0.45); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px);
+  -webkit-mask-image: radial-gradient(closest-side, #000 60%, transparent); mask-image: radial-gradient(closest-side, #000 60%, transparent); }
+.mc-holder { position: absolute; inset: 0; pointer-events: none; }
+.mc-holder iframe { position: absolute; border: 0; max-width: none; opacity: 0; transition: opacity 0.6s ease; pointer-events: none; background: transparent; }
+.mc-holder iframe.on { opacity: 1; }
+/* a copy of the page's last picture, laid over its frame while its work starts again (machines-live.js, the veil) */
+.mc-holder .veil { position: absolute; max-width: none; opacity: 0; pointer-events: none; }
+/* a picture of the page itself, under its frame, while it wakes (machines.js, arrives) */
+.mc-holder .mc-arrive { position: absolute; max-width: none; opacity: 0; pointer-events: none; user-select: none; }
+.mc-pic, .mc-holder iframe, .mc-holder .veil, .mc-holder .mc-arrive { filter: brightness(1.09) saturate(1.06) contrast(1.03); }
+.mc-held .mc-pic { transition: none; }
+
+/* the television on the floor beside the bench, playing the machine's film with no sound */
+.mc-tv { aspect-ratio: 1200 / 1093; pointer-events: none; will-change: transform; }
+.mc-tv-glow { position: absolute; left: -25%; right: -45%; top: -30%; bottom: -30%; pointer-events: none; mix-blend-mode: screen;
+  background: radial-gradient(closest-side, rgba(150, 175, 255, 0.24), rgba(150, 175, 255, 0) 100%); }
+.mc-tv-flip { position: absolute; inset: 0; filter: brightness(0.8); }
+.mc-tv-screen { position: absolute; left: 10%; top: 34.3%; width: 50.4%; height: 49.4%; overflow: hidden; background: rgb(226, 220, 208); border-radius: 12% / 14%; }
+.mc-tv-screen img, .mc-tv-screen video { position: absolute; max-width: none; filter: saturate(0.9) sepia(0.15) brightness(1.06); }
+.mc-tv-screen::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 18px rgba(20, 18, 40, 0.55); background: linear-gradient(200deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 40%); }
+.mc-tv-film { opacity: 0; transition: opacity 0.6s; }
+.mc-tv-film.on { opacity: 1; }
+.mc-tv-body { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* the lamp */
+.mc-lamp { pointer-events: none; will-change: transform; }
+.mc-lamp-svg { display: block; width: 100%; height: auto; overflow: visible; filter: brightness(calc(0.55 + 0.45 * var(--lit))); }
+.mc-lamp-glow { position: absolute; left: -160%; right: -160%; top: -70%; bottom: -90%; mix-blend-mode: screen; opacity: calc(0.15 + 0.85 * var(--lit));
+  background: radial-gradient(closest-side, rgba(255, 220, 160, 0.6), rgba(255, 190, 120, 0.2) 45%, rgba(255, 180, 110, 0) 100%); }
+
+/* ---------------------------------------------------------------- in front of the page (the chapter's top layer):
+   the machine's name on the table's front edge, small and quiet; it is the link to its whole teardown */
+.chapter-top > .mc-name { position: absolute; transform: translateX(-50%); padding: 6px 12px; border-radius: var(--radius-pill);
+  font: 600 clamp(12px, 0.8vw, 16px)/1 var(--font-mono); letter-spacing: 0.22em; color: rgba(255, 228, 190, 0.7); text-decoration: none;
+  white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity 0.5s ease, visibility 0s linear 0.5s, color 0.2s; }
+.chapter-top > .mc-name::after { content: '\2009\2197'; letter-spacing: 0; opacity: 0.7; }
+.chapter-top > .mc-name.up { opacity: 1; visibility: inherit; transition: opacity 0.5s ease, visibility 0s, color 0.2s; }
+.chapter-top > .mc-name:hover { color: rgba(255, 236, 205, 0.95); background: rgba(21, 23, 38, 0.55); }
+.chapter-top > .mc-name:focus-visible { outline: 3px solid var(--tea-lamp); outline-offset: 2px; }
+.mc-phone.chapter-top > .mc-name { font-size: 11px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .mc-pic, .mc-holder iframe, .mc-tv-film, .chapter-top > .mc-name, .chapter-top > .mc-name.up { transition: none; }
+}

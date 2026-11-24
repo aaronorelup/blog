@@ -5,6 +5,7 @@
 import { enhance } from '../../elements/enhance.js';
 import { lazy } from '../lazy.js';
 import { mount as contents } from '../post/contents.js';
+import { mount as copy } from '../post/copy.js';
 import { mount as details } from '../post/details.js';
 import { targetOf } from '../post/target.js';
 import { bind as listen } from '../read-aloud/listen.js';
@@ -53,7 +54,7 @@ function land(root, drawn) {
 }
 
 export function article(root, fallbackUrl) {
-  const unmounts = [contents(root), details(root), land(root, enhance(root, fallbackUrl))];
+  const unmounts = [contents(root), details(root), copy(root), land(root, enhance(root, fallbackUrl))];
   return () => unmounts.forEach((unmount) => unmount());
 }
 

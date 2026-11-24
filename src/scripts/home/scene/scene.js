@@ -43,6 +43,7 @@ export function mount() {
   s.onResize = () => resize(s);
   addEventListener('resize', s.onResize);
   if (!s.reduced) { enableStage(s); bindInput(s); }
+  else document.documentElement.removeAttribute('data-stage-pending');   // the document stays (home.css)
   // backtick toggles the staging tool
   s.onStageHotkey = (e) => {
     if (e.key !== '`' && e.key !== '~') return;

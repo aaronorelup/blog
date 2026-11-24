@@ -5,8 +5,11 @@
 import fs from 'node:fs';
 import { test, expect } from './fixtures.mjs';
 import { expectPlaying, play } from './helpers.mjs';
+import { LISTED as LANDSCAPE_LISTED } from '../../src/data/ai-landscape.js';
 
-const FILES = fs.readdirSync(new URL('../../src/content/projects/', import.meta.url)).filter((f) => f.endsWith('.yaml'));
+// Every file is a card, except the AI landscape's while its LISTED switch is off (lib/content.js projects()).
+const FILES = fs.readdirSync(new URL('../../src/content/projects/', import.meta.url))
+  .filter((f) => f.endsWith('.yaml') && (LANDSCAPE_LISTED || f !== 'ai-landscape.yaml'));
 const SECTIONS = ['play', 'download', 'watch', 'read', 'stopped'];
 const sectionCards = (root, key) => root.locator(`#proj-${key} :is(.proj-card, .proj-line-item)`);
 
@@ -88,16 +91,16 @@ test.describe('in the homepage overlay', () => {
     await page.goto('/?tier=low');
     await expect(page.locator('#stop-rail [data-goto]').first()).toBeVisible({ timeout: 20_000 });
     await page.evaluate(() => { window.__sameDocument = true; });
-    const card = page.locator('section[data-wp]').filter({ has: page.locator('a[href="/projects"]') }).first();
+    const card = page.locator('section[data-wp]').filter({ has: page.locator('a[href="/projects/"]') }).first();
     for (let k = 0; k < 6 && await card.evaluate((s) => s.inert); k++) {
       await page.keyboard.press('ArrowDown');
       await page.waitForTimeout(3000);
     }
-    const link = card.locator('a[href="/projects"]').first();
+    const link = card.locator('a[href="/projects/"]').first();
     const box = await link.boundingBox();
     await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
     await expect(page.locator('#panel-screen')).toHaveAttribute('aria-hidden', 'false');
-    await expect(page).toHaveURL(/\/projects$/);
+    await expect(page).toHaveURL(/\/projects\/$/);
     const view = page.locator('#panel-screen [data-panel-view="projects"]');
     await expect(view.locator('.proj-card').first()).toBeVisible();
     expect(await counts(view)).toEqual(standalone);

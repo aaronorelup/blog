@@ -1,0 +1,31 @@
+---
+// The stage (2.2, 2.3): two fixed layers that cover the window, clip themselves, take no pointer and are hidden
+// from screen readers. The back layer (z 1) holds every scene's back group; slot elements (z 2) live in their
+// sections; the front layer (z 3) holds every scene's front group, the ambient canvas and the screens. One group
+// per scene in each layer, in page order. Decoration only: everything read or pressed is in the document. Not
+// rendered at all in book mode (book.css). The 100lvh probe is the engine's viewport height (the phone's address
+// bar is no resize). The compiled scenes travel in the page as one JSON block.
+import RoomScene from './RoomScene.astro';
+import RoomScreens from './RoomScreens.astro';
+import { ROOM_BLOCK } from '../../../lib/tea-scene.js';
+import { COPY } from '../../../data/tea.js';
+
+interface Props { room: any; json: string; words: Record<string, any> }
+const { room, json, words } = Astro.props;
+const keys = room.chapters.flatMap((c: any) => c.run);
+const first = new Set(room.chapters[0].run);
+---
+<div class="room-stage is-back" aria-hidden="true">
+  {keys.map((k: string) => <RoomScene room={room} sceneKey={k} layer="back" words={words} eager={first.has(k)} />)}
+</div>
+<div class="room-stage is-front" aria-hidden="true">
+  {keys.map((k: string) => <RoomScene room={room} sceneKey={k} layer="front" words={words} eager={first.has(k)} />)}
+  <canvas class="room-ambient"></canvas>
+  <RoomScreens />
+</div>
+<div class="room-lvh" aria-hidden="true"></div>
+<div class="room-meter" data-room-meter hidden data-median={COPY.room.meter.median} data-worst={COPY.room.meter.worst} data-longest={COPY.room.meter.longest}>
+  <button type="button" class="room-button">{COPY.room.meter.start}</button>
+  <output></output>
+</div>
+<script type="application/json" id={ROOM_BLOCK} set:html={json} />
