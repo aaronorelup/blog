@@ -89,6 +89,8 @@
 .ail-gl .ail-world__head { position: absolute; left: var(--ail-margin); top: var(--ail-top); max-width: 54vw; opacity: 0; transition: opacity var(--ail-t) var(--ail-ease); }
 .ail-gl .ail-kicker { padding: 7px 10px; background: var(--w-scrim); }
 .ail-gl .ail-world__head.is-on { opacity: 1; }
+/* a link or Tab that lands a world puts focus on its name: its head stands at once, so the ring is seen (round 3, N-8) */
+.ail-gl .ail-world__head:has(.ail-world__name:focus-visible) { opacity: 1 !important; transition: none; }
 .ail-gl .ail-world__name { font-size: var(--ail-fs-display); margin-top: 4px; white-space: nowrap; }
 .ail-3d .ail-world__name { color: transparent; user-select: none; }
 .ail-gl .ail-world__caption { display: block; padding: 3px 7px; background: var(--w-scrim); font-size: 12px; white-space: nowrap; opacity: 0; visibility: hidden; }

@@ -763,6 +763,8 @@ test('landscape-16 Tab and Enter alone reach a control in every section, each on
   await page.locator('.ail-rail a[href="#anthropic"]').focus();
   await page.keyboard.press('Enter');
   await expect.poll(() => page.evaluate(() => document.activeElement.id), { timeout: 30_000 }).toBe('anthropic-name');
+  // and that focus is seen the moment it lands: the name's head stands at once (round 3, N-8: it was at opacity 0)
+  expect(await page.evaluate(() => { let o = 1; for (let n = document.activeElement; n && n.nodeType === 1; n = n.parentElement) o *= Number(getComputedStyle(n).opacity); return o; }), 'the focused name is seen').toBeGreaterThanOrEqual(0.9);
   await page.keyboard.press('Tab');
   expect(await page.evaluate(() => document.activeElement.closest('main > section') && document.activeElement.closest('main > section').id)).toBe('anthropic');
 });

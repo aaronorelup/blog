@@ -234,7 +234,10 @@ export function create(ctx, el, sec) {
       toggle(head, open > 0.35);
       // while the scene draws no name, the heading (transparent over the 3D) is clipped away rather than hidden: it is
       // not counted as words on screen, and it stays a heading a screen reader finds and a link can focus
-      nameEl.style.clipPath = inst.nameShow > 0.02 || ctx.phone ? '' : 'inset(50%)';
+      // (unless a key put focus on it: then it prints itself in ink, so the focus is seen, round 3 N-8)
+      const keyed = nameEl === document.activeElement && nameEl.matches(':focus-visible');
+      nameEl.style.clipPath = inst.nameShow > 0.02 || ctx.phone || keyed ? '' : 'inset(50%)';
+      nameEl.style.color = keyed && inst.nameShow <= 0.02 ? 'var(--ail-fg)' : '';
       inst.nameRect = st.rect;
       // the name is the entrance. It appears whole, once the iris edge has passed its far end (an edge never
       // slices it), and leaves when the stack opens
