@@ -719,6 +719,14 @@ test('landscape-22 the watchdog knows a display that hands out 30 frames a secon
   // a stall while the page loads is not a display's pace: the limit never passes 45 ms, and with no pace known it is 21
   expect((await judge(16.7, 400)).limit).toBe(45);
   expect((await judge(16.7, 0)).limit).toBe(21);
+  // and the page's own watchdog is handed the display's pace on every load, the fast ones from the cache too: a scene
+  // that arrived within four frames left it with none, at 21 ms, and a 30 a second display read as a slow machine
+  for (let load = 1; load <= 6; load++) {
+    if (load > 1) await open(page);
+    const { pace, limit } = await page.evaluate(() => ({ pace: window.__landscape.debug.pace, limit: window.__landscape.debug.limit }));
+    expect(pace, `load ${load} knows the display's pace`).toBeGreaterThan(0);
+    expect(limit, `load ${load}: the limit follows that pace`).toBeCloseTo(Math.max(21, Math.min(45, pace * 1250)), 6);
+  }
 });
 
 test('landscape-16 Tab and Enter alone reach a control in every section, each one seen; a rail link puts focus on its section\'s heading', async ({ page, isMobile }) => {

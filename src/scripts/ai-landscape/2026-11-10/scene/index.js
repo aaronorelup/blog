@@ -145,10 +145,11 @@ export async function mount(boot) {
     if (performance.now() >= quiet) watchdog.sample(real);
   }
 
-  // hooks for tests and screenshots: the context itself, one stack shown in the five states, and the watchdog's
+  // hooks for tests and screenshots: the context itself, the watchdog's pace, one stack shown in the five states, and its
   // verdict on a steady frame time (a fresh one, fed `seconds` of `frameMs` frames on a display of `cadenceMs`)
   state.debug = {
     ctx,
+    pace: cadence, limit: watchdog.limit,      // the display's pace this load handed the watchdog (seconds a frame), and its limit (ms)
     judge(frameMs, cadenceMs = 0, seconds = 40, name = 'low') {
       const out = { steps: 0, gaveUp: null };
       const w = createWatchdog({ ...RUNGS[name], pinned: false }, { apply() { out.steps++; }, onStatic() { out.gaveUp = out.gaveUp ?? at; } }, cadenceMs / 1000);

@@ -237,6 +237,15 @@ function cadence() {
   const sorted = beats.slice(1).sort((a, b) => a - b);
   return sorted.length < 4 ? 0 : sorted[Math.floor(sorted.length / 4)];
 }
+// The scene waits for that pace: PACE frames of the bare loop (a fifth of a second at 60 a second), or 1.5 s of a
+// visible page whose frames are held up. A scene from the cache arrives within a few frames, and with the four or so
+// seen by then the pace was unknown half the time (a 30 a second display then read as a slow machine) or read double.
+const PACE = 12;
+const paced = () => new Promise((done) => {
+  let waited = 0;
+  const look = () => { if (beats.length > PACE || waited > 1500) done(); else { waited += document.hidden ? 0 : 30; setTimeout(look, 30); } };
+  look();
+});
 
 // After first paint, the scene. A chunk lost to a deploy reloads the page once, any other failure keeps the text.
 // `token` is the number enter3D() took: a text version that started since (a short window, print, the skip link) has
@@ -248,6 +257,7 @@ function load(token) {
   canvasUsed = true;
   const fail = () => toText({ keep: true, say: true });
   lazy(() => import('./scene/index.js'))
+    .then((m) => paced().then(() => m))
     .then((m) => (mine() ? (remember(), m.mount({ canvas: used, clock, input, state, rung, phone, reduced, query, data: readData(), toText: fail, cadence: cadence() })) : null))
     .then((mounted) => {
       if (!mounted) return;
