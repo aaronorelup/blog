@@ -146,6 +146,9 @@ export function create(ctx, el, sec) {
     rowsEl.forEach((tr, k) => tr.classList.toggle('is-lit', k === i));
     layers.forEach((b, k) => b.setAttribute('aria-pressed', String(k === i)));
     guestLine.classList.toggle('is-on', i >= 0 && rowsEl[i].hasAttribute('data-guest'));
+    // its swatches are the other colours on this floor's signs, whoever's they are (round 3, F3-2: it was always clay)
+    const others = i < 0 ? [] : [...new Set($$('.ail-lu__cell[data-guest]', rowsEl[i]).flatMap((td) => td.dataset.guest.split(' ')))];
+    $$('.ail-sw--guest', guestLine).forEach((sw, k) => { if (others[k]) sw.dataset.p = others[k]; else sw.removeAttribute('data-p'); });
     $$('.ail-map__col').forEach((col) => [...col.children].forEach((cell, k) => cell.toggleAttribute('data-row', k === i)));
     if (!quiet && i >= 0) announce(says[i].textContent.trim());
   }

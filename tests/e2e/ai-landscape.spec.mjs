@@ -1161,6 +1161,9 @@ test('landscape-24 a board stands right behind each stack and none in a gap; in 
       expect(Math.abs((b.left + b.right) / 2 - (b.stack[0] + b.stack[1]) / 2), `${b.p}: the raised board is still behind its stack`).toBeLessThan((b.stack[1] - b.stack[0]) * 0.2);
     }
     seen[i] = await signsSeen(page);
+    // the key's sample of "someone else's part" is the colour of each guest on this floor, never a fixed one (F3-2)
+    const guests = await page.evaluate((i) => { const d = JSON.parse(document.getElementById('ail-data').textContent); return [...new Set(d.order.flatMap((id) => d.p[id].stack[i].g || []))]; }, i);
+    expect(await page.evaluate(() => [...document.querySelectorAll('#line-up .ail-sw--guest')].filter((x) => x.dataset.p && getComputedStyle(x).display !== 'none').map((x) => x.dataset.p)), `floor ${i + 1}: the key's swatches are its guests`).toEqual(guests);
   }
   // and the screen shows them: each sign looks more like the page's drawing of its own key than like the other floor's,
   // and its glass is its own company's colour, as drawn (not dimmed, not another's)
@@ -1296,6 +1299,10 @@ test('landscape-27 around the five is a cabinet of nine drawers, a glyph on ever
   expect(link.to, 'a cord from his router to his coding agent').toBe(first.pair.worker.id);
   expect(link.dash, `dashed as the pair is stamped ("${s.official}")`).toEqual(DASH[s.official]);
   expect(typeof link.bead, 'with a bead on it').toBe('number');
+  // and his own pair's stamp ("Unofficial") stands at that cord while the pair is his (round 3, F3-3)
+  const cordWord = () => page.evaluate(() => { const e = document.querySelector('#my-stack .ail-ms__cordword'); return e ? { text: e.textContent.trim(), on: Number(getComputedStyle(e).opacity) > 0.9 } : null; });
+  const hisStamp = await page.evaluate(() => { const m = document.getElementById('my-stack').dataset.mine.split(' '); const say = [...document.querySelectorAll('#my-stack .ail-ms__say')].find((li) => li.dataset.r === m[0] && li.dataset.w === m[1]); return say ? say.querySelector('.ail-ms__stamp').textContent.trim() : null; });
+  if (hisStamp) await expect.poll(cordWord, { timeout: 30_000, message: 'his pair\'s stamp stands at their cord' }).toEqual({ text: hisStamp, on: true });
   const lent = (d) => [...new Set(d.owners.filter((o) => d.order.includes(o)))].sort();
   const behind = (list) => list.every((l) => l.lends.length > 0 && Math.min(...l.lends.map((x) => Math.abs(x - l.x))) <= 2.4);
   expect(s.lenders.map((l) => l.id).sort(), 'only the companies that lend him a piece stand behind').toEqual(lent(first));
@@ -1325,6 +1332,7 @@ test('landscape-27 around the five is a cabinet of nine drawers, a glyph on ever
     // (two lenders that stay and change places slide for about a second: the measure is of where they come to stand)
     await expect.poll(async () => { s = await stack(); return behind(s.lenders) || JSON.stringify(s.lenders); }, { timeout: 30_000, message: 'each lender comes to stand behind what it lends' }).toBe(true);
     if (!mine.router || !mine.worker) expect(now.say, 'the pair on the bench shows its stamp').toEqual([s.official]);
+    if (hisStamp && (!mine.router || !mine.worker)) await expect.poll(async () => (await cordWord()).on, { timeout: 30_000, message: 'and his pair\'s stamp at the cord leaves' }).toBe(false);
     if (s.official === 'none') await expect.poll(async () => (await stack()).cords.find((c) => c.from === first.pair.router.id).on, { timeout: 30_000, message: 'no documented pair: no cord' }).toBe(false);
     else {
       await expect.poll(async () => (await stack()).cords.find((c) => c.from === first.pair.router.id).on, { timeout: 60_000, message: `a pair stamped "${s.official}" has its cord` }).toBe(true);

@@ -80,7 +80,7 @@ const others = ['partial', 'no', 'unknown'].filter((v) => Object.values(voices).
       <ul class="ail-lu__key">
         {KEY.map(([state, word]) => <li data-state={state}><span class="ail-sw" data-state={state} aria-hidden="true"></span>{word}</li>)}
       </ul>
-      <p class="ail-lu__guest"><span class="ail-sw ail-sw--guest" aria-hidden="true"></span>{COPY.state.guest}</p>
+      <p class="ail-lu__guest"><span class="ail-sw ail-sw--guest" aria-hidden="true"></span><span class="ail-sw ail-sw--guest" aria-hidden="true"></span><span class="ail-sw ail-sw--guest" aria-hidden="true"></span>{COPY.state.guest}</p>
     </div>
     <div class="ail-lens" aria-hidden="true"><canvas></canvas></div>
   </div>

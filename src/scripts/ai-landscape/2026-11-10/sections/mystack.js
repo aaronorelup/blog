@@ -36,8 +36,7 @@ export function create(ctx, el, sec) {
   pairsEl.open = true;
   const says = $$('.ail-ms__say', el);
   const st = { r: 0, w: 0, flown: false, fly: 0, last: null, official: 'no', time: 0, tick: 0 };
-  const made = [];
-  const keep = (m) => { ctx.scene.add(m); made.push(m); return m; };
+  const made = [], keep = (m) => { ctx.scene.add(m); made.push(m); return m; };
 
   // ---- layout: shelves left to right in band order, one slot for each piece shown at first depth. The two that do
   // the work get a wide slot and a large block, the dot and the model a middle one, everything else a narrow one
@@ -61,8 +60,7 @@ export function create(ctx, el, sec) {
     x += GAP;
   }
   const span0 = x - GAP;
-  shelves.forEach((s) => { s[0] -= span0 / 2; s[1] -= span0 / 2; });
-  pieces.forEach((p) => { p.x -= span0 / 2; });
+  shelves.forEach((s) => { s[0] -= span0 / 2; s[1] -= span0 / 2; }); pieces.forEach((p) => { p.x -= span0 / 2; });
 
   // ---- the bench: five shelves of house glass, and the shadow the analytic floor cannot give it
   const bench = shelves.map(([a, b]) => { const m = keep(block(ctx, roundBox(b - a, H, DEPTH, 0.16), 'house', H)); m.position.set((a + b) / 2, H / 2, Z); return m; });
@@ -96,8 +94,7 @@ export function create(ctx, el, sec) {
   const byId = new Map(pieces.map((p) => [p.id, p]));
   pieces[0].li.dataset.edge = 'start'; pieces[pieces.length - 1].li.dataset.edge = 'end';      // cards at the ends open inward
   const swapped = { router: pieces.find((p) => p.swap === 'router'), worker: pieces.find((p) => p.swap === 'worker') };
-  st.r = Math.max(0, opts.router.findIndex((o) => o.ref === mineR));
-  st.w = Math.max(0, opts.worker.findIndex((o) => o.ref === mineW));
+  st.r = Math.max(0, opts.router.findIndex((o) => o.ref === mineR)); st.w = Math.max(0, opts.worker.findIndex((o) => o.ref === mineW));
 
   // ---- the cast, on his own pair only (scene/cast.js): the character of his router's company on the router, the
   // creature of his coding agent's company on the coding agent. A piece that is swapped in shows its glass alone
@@ -142,6 +139,9 @@ export function create(ctx, el, sec) {
   // stand over the first row of names and the two swaps, it stands where his sentence stood, under the title (the
   // sentence is away while the pair on the bench is not his)
   const v = new Vector3();
+  // his own pair's stamp ("Unofficial") stands over the middle of their cord while that pair is on the bench (round 3, F3-3)
+  const word = $('.ail-ms__cordword', el), link = lines.find((l) => l.link);
+  const wordPin = word && link ? labels.pin(word, () => v.copy(link.pa.right).add(link.pb.left).multiplyScalar(0.5).setY(link.pa.right.y - 0.24), { ax: 0.5, ay: 0 }) : null;      // (under it: over it stood the figure)
   function place() {
     if (phone || !pairsEl.classList.contains('is-on')) return;
     const frame = pairsEl.offsetParent.getBoundingClientRect();
@@ -358,6 +358,7 @@ export function create(ctx, el, sec) {
       // words: the head arrives with the bench, the labels with their pieces
       const words = smooth(span(u, 0.12, 0.3)) * (1 - smooth(span(u, 1.1, 1.24)));
       el.style.setProperty('--ms-on', words.toFixed(3));
+      if (wordPin) word.style.opacity = (opts.router[st.r] === his.router && opts.worker[st.w] === his.worker && link.out >= 1 && link.cord.show > 0.5 ? words : 0).toFixed(3);
       // (the stamp's place is measured again twice a second while the camera holds: a window can change its size)
       st.tick -= dt;
       if (st.tick <= 0 && u > 0.32 && u < 1.08) { st.tick = 0.5; place(); }
@@ -384,9 +385,8 @@ export function create(ctx, el, sec) {
       pieces.forEach((p) => { if (p.swap && his[p.swap]) dress(p, his[p.swap]); delete p.li.dataset.edge; p.tag.style.opacity = ''; });
       quote.classList.remove('is-gone'); pairsEl.classList.remove('is-on'); says.forEach((li) => li.classList.remove('is-on'));
       pairsEl.open = false; pairsEl.style.bottom = ''; pairsEl.style.top = '';
-      pins.forEach((p) => p.drop());
-      bar(false);
-      leads.forEach((l) => l && l.drop());
+      pins.forEach((p) => p.drop()); bar(false); leads.forEach((l) => l && l.drop());
+      if (wordPin) { wordPin.drop(); word.style.opacity = ''; }
       lines.forEach((l) => (l.cord || l.arc).dispose());
       cast.forEach((c) => c.fig.dispose());
       pieces.forEach((p) => { if (p.glyph) { p.glyph.geometry.dispose(); p.glyph.material.dispose(); } if (p.obj) p.obj.dispose(); });

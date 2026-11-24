@@ -99,6 +99,10 @@
 .ail-gl .ail-ms__say.is-on { display: block; animation: ail-ar-in var(--ail-t) var(--ail-ease); }
 .ail-gl .ail-ms__pair { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .ail-gl .ail-ms__stamp { display: table; margin: 0 0 8px; font-size: 13px; letter-spacing: .14em; border-width: 2px; outline: 1px solid currentColor; outline-offset: 2px; transform: rotate(-2deg); }
+/* his own pair's stamp over their cord (mystack.js pins it): the text version has it in the list of pairs */
+.ail-ms__cordword { display: none; }
+.ail-gl .ail-ms__cordword { display: block; opacity: 0; padding: 4px 5px 0; background: var(--ail-veil); pointer-events: none; }
+.ail-gl .ail-ms__cordword .ail-ms__stamp { margin: 0 0 4px; font-size: 11px; letter-spacing: .1em; padding: 3px 6px 2px; }
 .ail-gl .ail-ms__line { font: italic 400 clamp(20px, 1.7vw, 27px)/1.1 var(--ail-serif); }
 .ail-gl .ail-ms__rest { display: block; position: absolute; right: var(--ail-margin); bottom: var(--ail-margin); z-index: 7; opacity: var(--ms-on, 0); }
 .ail-gl .ail-ms__restbtn { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--ail-fg); background: var(--ail-card); }

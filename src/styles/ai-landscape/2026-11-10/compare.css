@@ -8,7 +8,9 @@
 .ail-sw[data-state='frost'] { background: color-mix(in srgb, var(--e) 22%, var(--ail-floor)); border-style: dotted; border-color: var(--ail-fg-2); }
 .ail-sw[data-state='dotted'] { background: none; border: 1.5px dotted color-mix(in srgb, var(--ail-fg) 55%, transparent); }
 .ail-sw[data-state='hollow'] { background: linear-gradient(var(--ail-fg-2), var(--ail-fg-2)) center / 40% 1.5px no-repeat; border-color: color-mix(in srgb, var(--ail-fg) 60%, transparent); }
-.ail-sw--guest { width: 10px; border-radius: 50%; --g: var(--ail-own-anthropic); }
+.ail-sw--guest { width: 10px; border-radius: 50%; }      /* grey, or the colours of the lit floor's guests (lineup.js) */
+.ail-sw--guest ~ .ail-sw--guest { margin-left: -4px; }
+.ail-sw--guest ~ .ail-sw--guest:not([data-p]) { display: none; }
 [data-p='anthropic'] .ail-sw, .ail-sw[data-p='anthropic'] { --g: var(--ail-own-anthropic); }
 [data-p='openai'] .ail-sw, .ail-sw[data-p='openai'] { --g: var(--ail-own-openai); --e: var(--ail-rim-openai); }
 [data-p='google'] .ail-sw, .ail-sw[data-p='google'] { --g: var(--ail-own-google); --e: #378AFF; }
