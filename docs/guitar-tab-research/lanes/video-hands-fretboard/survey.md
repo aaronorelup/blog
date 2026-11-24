@@ -1429,9 +1429,9 @@ Inside this lane (video):
    projects with `focal_length / self.cfg.MODEL.IMAGE_SIZE` and a zero camera center, so its points are relative to
    the hand crop and need the crop's box center and size before this mapping (HaMeR section).
 8. A horizontally mirrored (front-camera) video inverts MediaPipe's handedness labels ("Passing a horizontally
-   mirrored image will invert these outputs", MediaPipe hand page); PRIOR.md records two of Aaron's earlier videos as
-   "Video is mirrored" / "Video is mirrored (front camera)" (`docs/guitar-tab-research/PRIOR.md` lines 24 and 29), so a
-   user's "this video is mirrored" correction changes which hand MediaPipe labels Left or Right.
+   mirrored image will invert these outputs", MediaPipe hand page); PRIOR.md records one of Aaron's earlier videos,
+   002, as "Video is mirrored" (`docs/guitar-tab-research/PRIOR.md` line 25), so a user's "this video is mirrored"
+   correction changes which hand MediaPipe labels Left or Right.
 9. MediaPipe VIDEO mode takes a per-frame `timestamp_ms` and returns one result per frame (hand page), and Basic Pitch
    outputs `note_events` as `(start_time_s, end_time_s, pitch_midi, amplitude, pitch_bends)` "times in seconds"
    (`lanes/audio-to-notes/survey.md`, section "13. Spotify Basic Pitch"; verify: that file has changed since, the line

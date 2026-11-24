@@ -1,7 +1,7 @@
 # Guitar tablature web app: research folder
 
 Research only, for a web app that builds guitar tablature step by step with a person in the loop. Nothing
-was built. Start with [PLAN.md](PLAN.md). The post made from this is live, unlisted, at
+was built. Start with [PLAN.md](PLAN.md). The post made from this is live at
 https://aaronorelup.com/ledger/guitar-tab-tools/ (`src/content/posts/guitar-tab-tools.md`, AO-082. It first went out as AO-079, an id another
 post on `main` already had, and a later commit on `main` gave it AO-082).
 
@@ -15,7 +15,7 @@ same box and finished everything the first had left open (see "What the second s
 |---|---|
 | [PLAN.md](PLAN.md) | the plan, the tool lists, the agent assignments |
 | [ENVIRONMENT.md](ENVIRONMENT.md) | the box, how runs were timed and scored |
-| [PRIOR.md](PRIOR.md) | what the earlier post (AO-078) already found |
+| [PRIOR.md](PRIOR.md), [prior/](prior/) | what the earlier post (AO-078) already found, and the script that computes its table |
 | [inputs/](inputs/) | the 17 test clips: manifest, ground truth, scripts (audio and video are in the studio library) |
 | [lanes/](lanes/) | ten lanes plus `chains`. Each has `trials.md` (what ran), `survey.md` (docs, formats, licenses quoted), `for-aaron.md`, `tools.json`, samples and scripts |
 | [HANDOFFS.md](HANDOFFS.md), [handoffs.json](handoffs.json), [handoffs/](handoffs/) | every tool by stage, how an agent calls it, what it reads and writes, and every handoff between tools as a fact with its evidence (tested with run ids, or from documentation). Three diagrams |
@@ -77,12 +77,10 @@ critic's list.
 ## Left for Aaron
 
 1. The 120 tests in [FOR_AARON.md](FOR_AARON.md), none of which has to be done.
-2. Listing the post. It is `unlisted: true` because a listed post this long needs `npm run ask:pin`
-   (`docs/ASK.md`) and would be read aloud by the paid text-to-speech job.
-3. The post links to this folder on the branch `research/guitar-tab-tools`. After the pull request merges,
+2. The post links to this folder on the branch `research/guitar-tab-tools`. After the pull request merges,
    change `tree/research/guitar-tab-tools` and `blob/research/guitar-tab-tools` to `tree/main` and
    `blob/main` in the post.
-4. The three decisions in FOR_AARON.md under "Three things only you can decide".
+3. The three decisions in FOR_AARON.md under "Three things only you can decide".
 
 ## How the post was put together
 

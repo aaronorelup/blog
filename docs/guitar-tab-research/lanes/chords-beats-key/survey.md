@@ -1578,7 +1578,7 @@ PyPI versions and upload dates are from `https://pypi.org/pypi/<name>/json` read
   web searches on 2026-11-10. Related facts found: the NNLS Tuning plugin, Essentia TuningFrequency and librosa
   estimate_tuning measure the concert-pitch offset (cents or fractions of a semitone), not open-string tuning or capo;
   the PRIOR.md brief records that the earlier post's "Tabber" tool reported "capo 7 at 0.34 confidence (a coin-flip
-  with capo 3 at 0.33)" (PRIOR.md lines 81 and 120). Capo detection from video is in the video-hands-fretboard lane.
+  with capo 3 at 0.33)" (PRIOR.md lines 77 and 116). Capo detection from video is in the video-hands-fretboard lane.
 - Gap round 1 search (2026-11-10, gapfill-chords-beats-key), for an open-string tuning or capo detector from audio with
   published weights or code installable as a package, 2024 to 2026:
   - Web search queries: "guitar capo position detection from audio deep learning 2025"; "guitar open string tuning
