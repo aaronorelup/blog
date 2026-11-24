@@ -1,17 +1,16 @@
 ---
 id: "AO-078"
 title: "Turning my guitar videos into tabs with AI"
-summary: "My Grok bot and Claude Opus 5.5, once blind and once with a tab-making skill, each turned five videos of me playing guitar into tabs and audio. What each one heard, and where they agree."
+summary: "My Grok bot and Claude Opus 5.5, once blind and once with a tab-making skill, each tried to turn five videos of me playing guitar into tabs and audio. What each one heard, and where they agree."
 date: 2026-11-09
 topic: "agents"
 project: []
 draft: false
-unlisted: true     # Aaron asked for it at its URL only: noindex, in no list, feed, card or /stats
 preview:
-  verdict: "Opus closest in 3 of 4"
-  takeaway: "Played back, both Opus 5.5 passes' tabs came closest to the right recording in 3 of 4 videos. My Grok bot's did in 2 of 3."
+  verdict: "Opus closest, 3 of 4"
+  takeaway: "Played back, the tabs from each Opus 5.5 pass came closest to the right recording in 3 of 4 videos, not the same three. My Grok bot's did in 2 of 3."
   points:
-    - "All three agree on tuning and capo for one video, 003. They split on 002's and 009's tuning and on whether 004 is a ukulele."
+    - "All three agree on tuning and capo only for 003. They split on 002's and 009's tuning and on whether 004 is a ukulele."
     - "Grok Bot's tabs had no rhythm and two had no notes. Both Opus passes wrote timed tabs for all five."
     - "Nobody has checked any of these tabs against the real songs by ear."
   image: "/media/previews/guitar-tabs-from-video.webp"
@@ -21,9 +20,9 @@ preview:
 I wanted to see if AI could turn videos of me playing guitar into tabs. Tabs are guitar music
 written as fret numbers on six lines, one per string. Three passes tried five videos from my
 guitar album: my Grok bot, Claude Opus 5.5 working blind, and Opus 5.5 again with Tabber, a
-tab-making skill Claude Code built. **Played back, both Opus passes' tabs came closest to the
-right recording in 3 of 4 videos, and my Grok bot's in 2 of 3.** Nobody has checked any of them
-against the songs by ear yet.
+tab-making skill Claude Code built. **Played back, the tabs from each Opus pass came closest to
+the right recording in 3 of 4 videos, not the same three. My Grok bot's did in 2 of 3.** Nobody has
+checked any of them against the songs by ear yet.
 
 ## Three tries
 
@@ -61,8 +60,8 @@ compared that mix with all five real recordings. The table shows where the right
 
 001 is skipped. It's muted or nearly silent, so there's no real mix of notes to compare.
 
-It's a loose test. Most of these songs sit in the same few keys, one of the real recordings has
-singing in it, and it only hears notes, not rhythm, strings or tuning.
+It's a loose test. Most of these songs sit in the same few keys, and one of the real recordings has
+singing in it. The check only hears notes, not rhythm, strings or tuning.
 
 ## The five videos
 
@@ -158,8 +157,8 @@ E|x--x--x--x--|------x--x--|x--x--x--x--|------------|
 ====================================================================================================
  song01 - 13-second near-silent clip: soft fretting-hand taps / finger exercise (not a song)
 ====================================================================================================
- Source        : song01.mp4 (0:13), filmed in the dark looking down the neck; the guitar is ~20-25
-                 dB quieter than in the other clips. No vocals (whisper's 'I'mo, R.' is noise).
+ Source        : song01.mp4 (0:13), filmed in the dark looking down the neck; the guitar is very
+                 quiet. No vocals (whisper's 'I'mo, R.' is noise).
  Tuning        : Assumed standard E A D G B E (nothing in the audio contradicts it; too quiet to
                  verify). The weak tones sit between semitones (~+40 cents), so every pitch below
                  may be one fret off.

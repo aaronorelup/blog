@@ -44,8 +44,9 @@ only what the site plays.
 Taking a video or a song out of its post and out of the manifest does not stop the site serving it: the Worker
 answers any path the bucket holds. Delete the object from the bucket too (Cloudflare dashboard, R2,
 `aaronorelup-site-media`), then `curl -I` its URL: it should answer 404. Until an object is deleted, list its folder
-in `SHOWN` in `worker/media/serve.js` with a pattern for the files that stay: every other path in that folder then
-answers as a file that isn't there. Take the folder out of `SHOWN` once the bucket holds only what the site shows.
+in `SHOWN` in `worker/media/shown.js` with a pattern for the files that stay: every other path in that folder then
+answers as a file that isn't there, and `/stats` never quotes it as a missing file someone asked for. The rule is
+in `worker/media/shown.js`. A folder can stay there after its objects are deleted: the `/stats` half still applies.
 
 ## The two commands
 
