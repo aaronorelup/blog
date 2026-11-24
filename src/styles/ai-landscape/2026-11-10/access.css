@@ -19,7 +19,7 @@
    Fact buttons inside sentences stay as they are (WCAG 2.5.8 exempts inline targets) */
 @media (pointer: coarse) {
   .ail .ail-chrome__chip, .ail .ail-bill__dot, .ail .ail-bill__pick, .ail .ail-ms__swap, .ail .ail-ms__tag, .ail .ail-ar__name,
-  .ail .ail-rt__name, .ail .ail-ba__stamp, .ail .ail-end__links a { min-height: 44px !important; min-width: 44px !important; }
+  .ail .ail-rt__name, .ail .ail-ba__stamp, .ail .ail-end__links a, .ail .ail-chip { min-height: 44px !important; min-width: 44px !important; }
   .ail .ail-ms__tag, .ail .ail-ar__name, .ail .ail-ba__stamp, .ail .ail-end__links a { display: inline-flex; align-items: center; }
   .ail .ail-chrome__title a, .ail .ail-open__name, .ail .ail-ag__s, .ail .ail-ms__date, .ail .ail-ln__ends, .ail .ail-gram__past button,
   .ail .ail-layer__head, .ail .ail-rt__more summary { padding-block: 15px; margin-block: -15px; }
@@ -27,6 +27,11 @@
   .ail .ail-gram__past button { padding-inline: 14px; margin-inline: -14px; }
   /* a row of the best-at board is one target as tall as its row (22 rows share a phone's height: 44 px each cannot be) */
   .ail .ail-bd__open { display: flex; align-items: center; justify-content: inherit; min-height: var(--bd-row, 26px); }
+}
+/* so is a floor's name on the line-up's axis, on a touch screen too wide for the phone's chips (round 3, N-7: 20 px tall
+   on rows 24 px apart) */
+@media (pointer: coarse) and (min-width: 900px) {
+  .ail-gl .ail-lu__layer { padding-block: 5px; margin-block: -2px; }
 }
 
 /* the text version's wide tables scroll sideways on a phone: a fade at the edge says so */
