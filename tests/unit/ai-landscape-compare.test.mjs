@@ -102,6 +102,42 @@ for (const { date } of SNAPSHOTS) {
     if (html) assert.ok(!/class="ail-catch__item"[^>]*data-until/.test(html) && !html.includes('ail-catch__until'), 'no plate in the page prints "until" or "Expired"');
   });
 
+  test(`${date}: line-up signs: a part no company documents, documents only in part, or that is a preview or announced, is drawn otherwise than a settled part, and a part from outside the five takes the status of the claim its product uses it by (round 3, F3-1)`, async () => {
+    // the sign is drawn on a canvas: in node, a context that writes down every call and setting is enough to compare
+    globalThis.Path2D ??= class { addPath() {} };
+    globalThis.DOMMatrix ??= class {};
+    const { drawSign, signKey } = await import(`../../src/scripts/ai-landscape/${date}/scene/sign.js`);
+    const record = () => {
+      const log = [];
+      const g = new Proxy({}, {
+        get: (t, k) => (k === 'log' ? log : k === 'createLinearGradient' ? () => ({ addColorStop() {} }) : (...a) => log.push(`${String(k)}(${a.map((x) => (typeof x === 'object' ? '' : x)).join(',')})`)),
+        set: (t, k, v) => { log.push(`${String(k)}=${typeof v === 'object' ? 'gradient' : v}`); return true; },
+      });
+      return g;
+    };
+    const glass = { anthropic: '#D97757', openai: '#FFFFFF', google: '#4285F4', meta: '#0866FF', xai: '#0A0A0A', you: '#8C929C', outside: '#8C929C' };
+    const ownerOf = (id) => ({ glass: glass[id] || '#8C929C' });
+    const drawn = (parts) => { const g = record(); drawSign(g, 256, { glyph: 'model', state: 'solid', owner: 'xai', parts }, ownerOf); return g.log.join(';'); };
+    const claims = new Map();
+    (function index(n) { if (Array.isArray(n)) n.forEach(index); else if (n && typeof n === 'object') { if (n.id && n.text && n.status) claims.set(n.id, n); Object.values(n).forEach(index); } })(raw);
+    let unsettled = 0;
+    for (const id of ORDER) {
+      const p = raw.providers[id];
+      const surface = p.surfaces.find((s) => s.id === p.personalAgent.surfaceRef);
+      view.client.p[id].stack.forEach((c, i) => c.p.forEach((part, k) => {
+        const ref = (surface.stack[i].parts || [])[k].ref;
+        const use = ref && ref.startsWith('ext-') && surface.poweredBy.find((m) => m.modelRef === ref);
+        if (use) assert.equal(part[1], (claims.get(use.claim.claimRef) || use.claim).status, `${id} floor ${i + 1}: ${ref} carries the status of the claim its product uses it by`);
+        if (part[1] === 'released' && (part[2] || 'yes') === 'yes') return;
+        unsettled++;
+        const settled = [part[0], 'released', 'yes'];
+        assert.notEqual(drawn([part]), drawn([settled]), `${id} floor ${i + 1}: ${part.join(' ')} is drawn otherwise than a settled part`);
+        assert.notEqual(signKey({ owner: id, glyph: 'model', state: 'solid', parts: [part] }), signKey({ owner: id, glyph: 'model', state: 'solid', parts: [settled] }), 'and its sign is drawn again when only that changes');
+      }));
+    }
+    assert.ok(unsettled >= 5, `the line-up has parts that are not settled (${unsettled}): the two user-installed, the two named by Musk, the announced model`);
+  });
+
   test(`${date}: best at: never more certain than the cell holds`, () => {
     const caps = raw.bestAt.capabilities;
     assert.equal(best.caps.length, 22);

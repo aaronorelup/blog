@@ -68,8 +68,10 @@ export const lamp = (f) => (f && f.value ? f.value : 'unknown');
 
 export const layers = raw.architecture.stackLayers.map((l) => ({ id: l.id, n: String(l.order).padStart(2, '0'), name: l.name, sentence: l.sentence, without: l.without }));
 
-// One floor of one product: its state, its words, its parts and whose they are.
-function cell(layer, i, provider) {
+// One floor of one product: its state, its words, its parts and whose they are. A part from outside the five has no
+// status of its own: the claim by which this product uses it (`via`, its poweredBy) gives one (round 3, F3-1: two
+// models only "named by Musk" are announced, not running)
+function cell(layer, i, provider, via = []) {
   const base = { layer: layer.layer, n: layers[i].n, label: layers[i].name };
   if (!layer.name) {
     const s = stateOf('none', layer.gap);
@@ -79,7 +81,8 @@ function cell(layer, i, provider) {
   const s = stateOf(f ? f.status : 'released', f && f.gap);
   const parts = (layer.parts || []).slice(0, 6).map((p) => {
     const t = thing(p.ref);
-    return { name: p.name, owner: t ? t.owner : provider, status: t ? t.status : 'released', official: p.official || 'yes' };
+    const use = p.ref && p.ref.startsWith('ext-') ? fact((via.find((m) => m.modelRef === p.ref) || {}).claim) : null;
+    return { name: p.name, owner: t ? t.owner : provider, status: use ? use.status : t ? t.status : 'released', official: p.official || 'yes' };
   });
   const guests = [...new Set((layer.refs || []).map(ownerOf).filter((o) => o && o !== provider))];
   return { ...base, ...s, name: layer.name, reason: null, fact: f, tag: f ? tagOf(f.status) : null, parts, guests };
@@ -90,7 +93,7 @@ function door(s, provider, agentId) {
   const f = fact(s.claim);
   return {
     id: s.id, name: s.name, kind: s.kind, agent: s.id === agentId, status: f.status, tag: tagOf(f.status), access: s.access, fact: f,
-    stack: s.stack ? s.stack.map((l, i) => cell(l, i, provider)) : null,
+    stack: s.stack ? s.stack.map((l, i) => cell(l, i, provider, s.poweredBy)) : null,
     models: s.poweredBy.filter((m) => THINKS.includes(m.role)).map((m) => ({ ...thing(m.modelRef), role: m.role })),
   };
 }
@@ -155,7 +158,7 @@ function provider(id) {
   const p = raw.providers[id];
   const pa = p.personalAgent;
   const surface = p.surfaces.find((s) => s.id === pa.surfaceRef) || fail(`${id}: no surface for the personal agent`);
-  const stack = surface.stack.map((l, i) => cell(l, i, id));
+  const stack = surface.stack.map((l, i) => cell(l, i, id, surface.poweredBy));
   const access = fact(pa.access);
   const fl = raw.bestAt.flagships.find((f) => f.provider === id);
   const computer = p.cloudComputers.find((c) => c.primary) || null;

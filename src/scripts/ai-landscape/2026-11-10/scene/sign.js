@@ -1,6 +1,8 @@
 // A line-up sign (studio pass, round 3): one floor of one company, large enough to read across a room. The layer's
 // glyph on a rounded square in that company's glass and in the floor's state (the page's five), and under it the
-// floor's parts as beads, each in its own owner's colour: another colour inside the glass is someone else's part.
+// floor's parts as beads, each in its own owner's colour: another colour inside the glass is someone else's part. A
+// part as settled as the data has it and no more: hatched while it is a preview or announced, and inside a dashed ink
+// ring where no company documents it (faint, as a frosted floor is) or documents it only in part (round 3, F3-1).
 // Drawn on a 256 grid. A sign states nothing new: glyph, state, owner and parts are the page's data (scene/set.js).
 import { GLYPHS } from './glyphs.js';
 
@@ -10,7 +12,8 @@ const BEAD = { r: 13, gap: 6, y: 196, max: 6 };
 const pale = (hex) => { const n = parseInt(hex.slice(1), 16); return 0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255) > 200; };
 
 // What a sign shows, as one string: a sign is drawn again only when this changes.
-export const signKey = (t) => (t ? `${t.owner}|${t.glyph}|${t.state}|${(t.parts || []).slice(0, BEAD.max).map((p) => p[0] + p[1]).join(',')}` : '');
+export const partKey = (p) => p[0] + p[1] + (p[2] && p[2] !== 'yes' ? `:${p[2]}` : '');
+export const signKey = (t) => (t ? `${t.owner}|${t.glyph}|${t.state}|${(t.parts || []).slice(0, BEAD.max).map(partKey).join(',')}` : '');
 
 // Bands at 45 degrees, rising to the right like the page's own hatching, over whatever the caller has clipped to.
 function hatch(g, [x, y, w, h], band, tone, alpha) {
@@ -22,7 +25,7 @@ function hatch(g, [x, y, w, h], band, tone, alpha) {
   g.restore();
 }
 
-// tile: { glyph, state, owner, parts: [[owner, status]] }. ownerOf: worlds/index.js `owner`. size: the canvas edge in px.
+// tile: { glyph, state, owner, parts: [[owner, status, official]] }. ownerOf: worlds/index.js `owner`. size: the canvas edge in px.
 export function drawSign(g, size, tile, ownerOf) {
   const k = size / 256;
   g.setTransform(k, 0, 0, k, 0, 0);
@@ -69,15 +72,21 @@ export function drawSign(g, size, tile, ownerOf) {
   if (state === 'hatch') { g.strokeStyle = ground; g.lineWidth = 22; g.stroke(path); }
   g.save(); g.globalAlpha = markA; g.strokeStyle = mark; g.lineWidth = 10; g.stroke(path); g.restore();
 
-  // the parts: one bead each, in its own owner's glass, inside a paper ring. A preview or announced part is hatched
+  // the parts: one bead each, in its own owner's glass, inside a paper ring. A preview or announced part is hatched;
+  // an unofficial one is its owner's glass at a frosted floor's strength inside a dashed ink ring, a partly documented
+  // one keeps its glass under the dashes
   const step = 2 * BEAD.r + BEAD.gap;
-  parts.forEach(([id, status], i) => {
+  parts.forEach(([id, status, official], i) => {
     const x = 128 + (i - (parts.length - 1) / 2) * step, y = BEAD.y;
     const own = ownerOf(id);
     const whitish = pale(own.glass) && !own.prism;
+    const loose = official === 'no', dashed = loose || official === 'partial';
     g.beginPath(); g.arc(x, y, BEAD.r + 2, 0, Math.PI * 2); g.fillStyle = PAPER; g.fill();
+    g.save(); g.globalAlpha = loose ? 0.28 : 1;
     g.beginPath(); g.arc(x, y, BEAD.r, 0, Math.PI * 2); g.fillStyle = fillOf(own, x - BEAD.r, x + BEAD.r); g.fill();
-    if (status === 'preview' || status === 'announced') { g.save(); g.clip(); hatch(g, [x - BEAD.r, y - BEAD.r, 2 * BEAD.r, 2 * BEAD.r], 3.5, whitish ? MID : PAPER, 0.8); g.restore(); }
-    if (whitish) { g.beginPath(); g.arc(x, y, BEAD.r - 1, 0, Math.PI * 2); g.strokeStyle = INK; g.lineWidth = 2; g.stroke(); }
+    g.restore();
+    if (status === 'preview' || status === 'announced') { g.save(); g.beginPath(); g.arc(x, y, BEAD.r, 0, Math.PI * 2); g.clip(); hatch(g, [x - BEAD.r, y - BEAD.r, 2 * BEAD.r, 2 * BEAD.r], 3.5, whitish || loose ? MID : PAPER, 0.8); g.restore(); }
+    if (dashed) { g.beginPath(); g.arc(x, y, BEAD.r - 1.25, 0, Math.PI * 2); g.strokeStyle = INK; g.lineWidth = 2.5; g.setLineDash([3, 3.5]); g.stroke(); g.setLineDash([]); }
+    else if (whitish) { g.beginPath(); g.arc(x, y, BEAD.r - 1, 0, Math.PI * 2); g.strokeStyle = INK; g.lineWidth = 2; g.stroke(); }
   });
 }

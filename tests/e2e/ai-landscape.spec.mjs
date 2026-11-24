@@ -1127,7 +1127,8 @@ async function signsSeen(page) {
   return out;
 }
 // The signs the page's own data asks for on floor i: a company, the layer, its state there and its parts.
-const SIGNS = (i) => { const d = JSON.parse(document.getElementById('ail-data').textContent); return d.order.map((id) => `${id}|${d.layers[i]}|${d.p[id].stack[i].s}|${d.p[id].stack[i].p.slice(0, 6).map((q) => q[0] + q[1]).join(',')}`); };
+// (a part's key: owner and status, and how official it is when it is not: "anthropicreleased:no")
+const SIGNS = (i) => { const d = JSON.parse(document.getElementById('ail-data').textContent); return d.order.map((id) => `${id}|${d.layers[i]}|${d.p[id].stack[i].s}|${d.p[id].stack[i].p.slice(0, 6).map((q) => q[0] + q[1] + (q[2] && q[2] !== 'yes' ? `:${q[2]}` : '')).join(',')}`); };
 
 test('landscape-24 a board stands right behind each stack and none in a gap; in the line-up the five rise with one sign each, the lit floor of each company as the page\'s data has it, whole, under the words and clear of every lid plate; with all nine at rest they go down, and a window too short for them leaves them at rest', async ({ page, isMobile }) => {
   test.setTimeout(900_000);
