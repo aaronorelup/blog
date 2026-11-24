@@ -10,7 +10,8 @@
 // Rows 24 and 25 hold the studio pass of round 3: a board behind each stack, the line-up's signs, the lesson's nine
 // greys, its paper number and its close, the cord of the link being read, and the agents' dusk. Row 26: a visitor who
 // leaves while a chunk loads is let go. Row 27 holds the pass's workshop: the cabinet of nine drawers, the bench with
-// its cast, cords and lenders, and the router floor's one lamp.
+// its cast, cords and lenders, and the router floor's one lamp. Row 28 holds its rooms and art: the lamp desk on the
+// floor, billing's five in step, the paper objects, the far wall's picture, Google's portrait and Meta's card.
 import fs from 'node:fs';
 import sharp from 'sharp';
 import { chromium } from '@playwright/test';
@@ -1204,7 +1205,8 @@ test('landscape-27 around the five is a cabinet of nine drawers, a glyph on ever
   expect(s.cast.map((c) => c.piece).sort(), 'the figures stand on his router and his coding agent').toEqual([first.pair.router.id, first.pair.worker.id].sort());
   const big = s.sizes.filter((p) => [first.pair.router.id, first.pair.worker.id].includes(p.id)), rest = s.sizes.filter((p) => p.layer !== 'you' && !big.includes(p));
   expect(Math.min(...big.map((p) => p.w)), 'his pair stands on the two largest blocks').toBeGreaterThan(Math.max(...rest.map((p) => p.w)) * 1.5);
-  expect(s.sizes.find((p) => p.layer === 'you').w, 'and the dot that is him is no smaller than the things they use').toBeGreaterThanOrEqual(Math.max(...rest.map((p) => p.w)) * 0.8);
+  // (a thing they use is a block, or the paper object on its plinth: whichever is wider)
+  expect(s.sizes.find((p) => p.layer === 'you').w, 'and the dot that is him is no smaller than the things they use').toBeGreaterThanOrEqual(Math.max(...rest.map((p) => Math.max(p.w, p.thing))) * 0.8);
   const [toRouter, link] = [s.cords.find((c) => c.from === 'you'), s.cords.find((c) => c.from === first.pair.router.id)];
   expect(toRouter.to === first.pair.router.id && toRouter.dash === null && toRouter.bead === null, 'a solid cord from him to his router').toBe(true);
   expect(link.to, 'a cord from his router to his coding agent').toBe(first.pair.worker.id);
@@ -1295,4 +1297,119 @@ test('landscape-27 around the five is a cabinet of nine drawers, a glyph on ever
   await go(page, 'router', 0.5 * router.screens, 0);
   const l = await lamp();
   expect([l.lit, l.x], 'the lamp is on the second diagram').toEqual([1, l.at[1]]);
+});
+
+// ---- landscape-28: the studio pass's rooms and art (review round 3, package 3)
+// The mean tone (0 to 255) of what is drawn around a point of the window, words and all.
+async function tone(page, [x, y]) {
+  const { channels } = await sharp(await page.screenshot({ clip: { x: Math.round(x) - 5, y: Math.round(y) - 5, width: 10, height: 10 } })).stats();
+  return (channels[0].mean + channels[1].mean + channels[2].mean) / 3;
+}
+test('landscape-28 the lamp desk lies on the floor in front of five whole stacks, a column of lamps under each, drawn in ink, and has left before the camera moves on; billing\'s five run in step, so no frame holds more in one tray than in another, and no tank stands over a floor; both keep every word clear in a 1280 by 560 window; the drawer being read holds its paper object and the bench\'s things stand as objects no larger than him; the far wall has its picture; a room hangs a portrait where its text version shows one, and Meta\'s grid panel is under a blank card', async ({ page, isMobile }) => {
+  test.setTimeout(900_000);
+  const compare = (read) => page.evaluate(read);
+  const size = page.viewportSize();
+  // (the pointer rests at the top, in the middle: over no lamp, whose card would open, and turning the camera to neither side)
+  const start = async () => { await open(page); await light(page); if (!isMobile) await page.mouse.move(page.viewportSize().width / 2, 30); };
+  await start();
+
+  // ---- the lamp desk
+  const desk = () => compare(() => ({ ...window.__landscape.compare.desk(), stacks: window.__landscape.debug.ctx.row.towers.map((tw) => +tw.show.toFixed(2)), lids: window.__landscape.debug.ctx.row.towers.map((tw) => tw.lid.k) }));
+  const lamps = () => compare(() => [...document.querySelectorAll('#agnostic .ail-agn__cell .ail-fact')].filter((b) => b.checkVisibility({ opacityProperty: true, visibilityProperty: true })).length);
+  await go(page, 'agnostic', 0.35, 600);
+  await expect.poll(async () => (await desk()).on, { timeout: 30_000, message: 'the desk is there' }).toBe(1);
+  await expect.poll(lamps, { timeout: 30_000, message: 'twenty lamps: five companies by four questions' }).toBe(20);
+  let d = await desk();
+  expect(d.stacks, 'five whole stacks stand behind it').toEqual([1, 1, 1, 1, 1]);
+  expect(d.lids.every((k) => k === d.lids[0]) && [0, 1].includes(d.lids[0]) && !(d.low && d.lids[0]), `the five marks are whole or away together, and away where the window is short: ${d.lids}`).toBe(true);
+  expect(Math.max(...d.off), `each column of lamps stands under its stack (px off: ${d.off.map((v) => Math.round(v))})`).toBeLessThan(14);
+  expect(d.under, 'the desk begins under the stacks\' feet: it covers no floor').toBeGreaterThanOrEqual(-2);
+  if (!isMobile) {
+    // what is drawn, not only what the scene says: ink between the lamps, and the pale floor there once the desk has left
+    const at = d.mid;
+    expect(await tone(page, at), 'the desk\'s face is ink').toBeLessThan(70);
+    await go(page, 'agnostic', 0.63, 300);
+    await expect.poll(async () => (await desk()).on, { timeout: 30_000, message: 'the desk has left before the camera moves on to billing' }).toBe(0);
+    expect(await lamps(), 'and its lamps with it').toBe(0);
+    expect(await tone(page, at), 'the floor is where the desk was').toBeGreaterThan(150);
+  }
+
+  // ---- billing: one cycle, the same for all five at every moment
+  const rail = () => compare(() => window.__landscape.compare.rail());
+  await go(page, 'billing', 0.5, 600);
+  const seen = new Set();
+  for (let k = 0; k < 40 && (seen.size < 3 || k < 6); k++) {
+    const r = await rail();
+    expect(r.state.every((s) => s[0] === r.state[0][0] && s[1] === r.state[0][1]), `the five stand at the same level with the same beads: ${JSON.stringify(r.state)}`).toBe(true);
+    seen.add(JSON.stringify(r.state[0]));
+    await frames(page, 2);
+    await page.waitForTimeout(300);
+  }
+  expect(seen.size, 'and the cycle runs').toBeGreaterThanOrEqual(3);
+  expect(Math.min(...(await rail()).under), 'no tank stands over a floor of its stack (px under the stack\'s foot)').toBeGreaterThanOrEqual(-2);
+
+  // ---- a laptop's shortest window: both pictures whole, no word over a word, a mark whole or away
+  if (!isMobile) {
+    await page.setViewportSize({ width: 1280, height: 560 });
+    await start();
+    for (const [id, u] of [['agnostic', 0.2], ['agnostic', 0.35], ['billing', 0.3], ['billing', 0.7]]) {
+      await go(page, id, u, 700);
+      expect(await page.evaluate(OVERLAPS), `1280x560 ${id} at ${u}: no word over a word`).toEqual([]);
+      const lids = await compare(() => window.__landscape.debug.ctx.row.towers.map((tw) => tw.lid.k));
+      expect(lids.every((k) => k === 0) || lids.every((k) => k === 1), `1280x560 ${id} at ${u}: the five marks are whole or away together: ${lids}`).toBe(true);
+      if (id === 'agnostic') expect(Math.max(...(await desk()).off), '1280x560: the lamps still stand under their stacks').toBeLessThan(14);
+    }
+    await page.setViewportSize(size);
+    await start();
+  }
+
+  // ---- the paper objects: one in the open drawer, none once it is shut. On the bench, an object for every piece
+  // whose layer the cabinet keeps a drawer for, and a glyph on every other block
+  const around = (await sections(page)).find((s) => s.id === 'around');
+  await go(page, 'around', 0.12 + 0.11 * 4.5, 900);
+  const things = () => compare(() => ({ things: window.__landscape.compare.around.things(), layers: window.__landscape.compare.around.glyphs(), active: [...document.querySelectorAll('#around .ail-ar__item')].findIndex((li) => li.classList.contains('is-active')) }));
+  await expect.poll(async () => (await things()).things.filter(Boolean).length, { timeout: 60_000, message: 'one object stands in the cabinet (once its picture has loaded)' }).toBe(1);
+  let a = await things();
+  const thing = a.things[a.active];
+  expect(thing && thing.layer, 'it is the open drawer\'s own').toBe(a.layers[a.active]);
+  expect(Math.abs(thing.x - thing.drawer), 'and stands in it').toBeLessThan(0.01);
+  await expect.poll(async () => { const now = (await things()).things[a.active]; return now ? now.tall : 0; }, { timeout: 30_000, message: 'it has come up out of the drawer' }).toBeGreaterThan(0.6);
+  await go(page, 'around', around.screens - 0.004, 300);
+  expect((await things()).things.filter(Boolean), 'no object stands out when my stack takes the cabinet over').toEqual([]);
+  await go(page, 'my-stack', 0.7, 600);
+  const bench = () => compare(() => ({ sizes: window.__landscape.compare.mystack.sizes(), kept: [...document.querySelectorAll('#around .ail-ar__item')].map((li) => li.dataset.layer), swaps: [...document.querySelectorAll('#my-stack .ail-ms__piece[data-swap]')].map((li) => li.dataset.node.replace(/^aaron-/, '')) }));
+  const wanted = (b) => b.sizes.filter((p) => b.kept.includes(p.layer) && !b.swaps.includes(p.id)).map((p) => p.id);
+  await expect.poll(async () => { const b = await bench(); return b.sizes.filter((p) => p.thing > 0).map((p) => p.id).join() === wanted(b).join() ? 'all' : JSON.stringify(b.sizes); }, { timeout: 60_000, message: 'each thing the cabinet keeps stands on the bench as its paper object, and nothing else does' }).toBe('all');
+  expect(wanted(await bench()).length, 'there are such things on his bench').toBeGreaterThan(0);
+
+  // ---- the far wall's picture hangs in the studio
+  await go(page, 'top', 1.5, 300);
+  await expect.poll(() => compare(() => window.__landscape.debug.ctx.studio.plate()), { timeout: 60_000, message: 'the wall\'s picture is up' }).toBe(true);
+
+  // ---- the rooms: a frame hangs in 3D where the text version shows that room's portrait (a desktop: a phone hangs
+  // none), and the blank card stays on Meta's wall while the room's name stands in front of it
+  const room = () => compare(() => {
+    const w = window.__landscape.debug.ctx.worlds.active;
+    return w ? { id: w.id, open: w.open, frame: !!(w.parts.portrait && w.parts.portrait.visible && w.portraitK === 1), card: w.parts.sign ? [w.parts.sign.visible, w.parts.sign.material.uniforms.uOpacity.value] : null, name: w.nameShow } : null;
+  });
+  if (!isMobile) {
+    for (const id of ['google', 'meta']) {
+      const hangs = await page.locator(`.ail-world[data-world="${id}"] .ail-world__portrait`).count() > 0;
+      await go(page, id, 1.15, 600);
+      // (Meta's frame hangs only where the window has room for it clear of the callouts: 1440 by 900 and wider)
+      if (id === 'google') await expect.poll(async () => { const r = await room(); return r && r.id === id && r.open >= 0.999 ? r.frame : null; }, { timeout: 60_000, message: `${id}: the framed portrait hangs whole in its room, as its text version shows it (${hangs})` }).toBe(hangs);
+    }
+  }
+  await go(page, 'meta', 1.15, 600);
+  await expect.poll(async () => { const r = await room(); return r && r.id === 'meta' ? r.card : null; }, { timeout: 60_000, message: 'Meta\'s wall carries its blank card' }).toEqual([true, 1]);
+  await go(page, 'meta', 0.5, 600);
+  expect((await room()).card, 'and keeps it while the room\'s name stands on the wall').toEqual([true, 1]);
+
+  // ---- reduced motion: every tank half full, three beads in every tray, and the open drawer's object out at once
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await start();
+  await go(page, 'billing', 0.5, 0);
+  expect((await rail()).state, 'a still that compares nothing').toEqual([[0.5, 3], [0.5, 3], [0.5, 3], [0.5, 3], [0.5, 3]]);
+  await go(page, 'around', 0.12 + 0.11 * 2.5, 0);
+  await expect.poll(async () => { const now = (await things()).things[2]; return now ? now.tall : 0; }, { timeout: 60_000, message: 'the third drawer\'s object stands out whole' }).toBeGreaterThan(0.6);
 });

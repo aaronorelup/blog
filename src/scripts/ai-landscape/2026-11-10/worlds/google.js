@@ -30,7 +30,7 @@ export default {
   fore: { z: 5.6, x: 2.36, y: 0.35, w: 3.3 },                  // four footlights at the front edge, right of the stack: close enough that their feet are below the frame
   // the frame hangs on the dark stretch of the wall right of the callouts, its white mat as on the other four. Hung in the
   // studio pass: a first portrait (art/google/source/, outside the build) did not read as its person and was left out
-  portrait: { x: 14.3, y: 5.35 },                              // null hangs none in this room (worlds/index.js PORTRAITS switches all five)
+  portrait: { x: 14.3, y: 5.05 },                              // null hangs none in this room (worlds/index.js PORTRAITS switches all five)
   dust: '#F8F9FA',
   signature: 'google',
   myth: 'google-myth-one-agent',

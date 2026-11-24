@@ -12,7 +12,7 @@ import { GLYPHS } from '../scene/glyphs.js';
 import { createObject } from '../scene/objects.js';
 
 const Z = 3.3, H = 0.46, DEPTH = 1.9;
-const P = { w: 1.02, h: 0.68, d: 0.9 }, LOW = { w: 1.12, h: 0.26, d: 0.96 }, THING = 1.3;      // (LOW: the plinth of a piece that has a paper object, THING: that object's longer side)
+const P = { w: 1.02, h: 0.68, d: 0.9 }, LOW = { w: 1.02, h: 0.26, d: 0.9 }, THING = 1.04;      // (LOW: the plinth of a piece that has a paper object, THING: that object's longer side, no larger than him)
 const LEAD = { w: 1.79, h: 1.02, d: 1.08 };                  // his router and his coding agent: the two that do the work
 const ME = 0.42;                                             // the dot that is him
 const SLOT = { you: 1.5, router: 2.7, harness: 2.7, model: 1.5 }, REST = 1.36, PAD = 0.28, GAP = 0.16;
@@ -252,7 +252,7 @@ export function create(ctx, el, sec) {
     cast: () => cast.map((c) => ({ on: c.fig.mesh.visible && c.fig.k > 0.9, kind: c.fig.orb ? 'orb' : 'cut', piece: c.p.id, owner: c.p.owner })),
     cords: () => lines.filter((l) => l.cord).map((l) => ({ from: l.pa.id, to: l.pb.id, on: l.cord.show > 0.01 && l.cord.draw >= 1, dash: l.cord.dash, bead: l.cord.bead == null ? null : +l.cord.bead.toFixed(2) })),
     lenders: () => row.towers.filter((tw) => tw.show > 0.5).map((tw) => ({ id: tw.id, x: +(tw.x + tw.shift).toFixed(2), lends: pieces.filter((p) => p.owner === tw.id).map((p) => +p.x.toFixed(2)) })),
-    sizes: () => pieces.map((p) => ({ id: p.id, layer: p.layer, w: p.layer === 'you' ? ME * 2 : p.box.w, thing: !!(p.obj && p.obj.mesh.visible) })),
+    sizes: () => pieces.map((p) => ({ id: p.id, layer: p.layer, w: p.layer === 'you' ? ME * 2 : p.box.w, thing: p.obj && p.obj.mesh.visible ? THING : 0 })),
     official: () => st.official,
   } };
 

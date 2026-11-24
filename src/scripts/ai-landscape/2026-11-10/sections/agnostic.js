@@ -18,12 +18,13 @@ const DESK = { z: 9.6, deep: 5.2, tilt: (14 * Math.PI) / 180, lip: 0.1, pad: 0.8
 const RZ = 8.6;                       // the billing rail stands this far in front of the row: from above, clear of the stacks' feet
 const DARK = { glass: '#17181C', rim: '#5B606A', glow: '#17181C' };
 const TAN = Math.tan((24 * Math.PI) / 360);
-const PX_MIN = 40;                    // a window that would draw a unit smaller than this gives up the lid plates (a mark is whole or absent) and seats again
+const PX_MIN = 36;                    // a window that would draw a unit smaller than this gives up the lid plates (a mark is whole or absent) and seats again
 const BASE = { board: { ...STOPS.board }, rail: { ...STOPS.rail } };
 const bare = { board: false, rail: false };      // the lid plates are away and the boards stand low
 const edges = () => { const W = window.innerWidth; return [Math.max(40, Math.min(96, W / 15)), W - Math.max(24, Math.min(64, W / 22.5))]; };      // clear of the rail of dots, and of the right edge
-// What bounds the five stacks: their lid plates (or, bare, the low boards) and their feet
-const stacks = (row, low) => [...ROW_X.map((x, c) => [x, row.towers[c].height + (low ? BAY.low + 0.3 : LID_TOP + BAY.over + 0.5), 0]), [ROW_X[0] - 1.4, 0, 1.2], [ROW_X[ROW_X.length - 1] + 1.4, 0.4, 1.2]];
+// What bounds the five stacks: their lid plates (or, bare, the low boards) and their feet. (A board's paper may pass under a
+// word's ground: a mark may not)
+const stacks = (row, low) => [...ROW_X.map((x, c) => [x, row.towers[c].height + (low ? BAY.low + 0.3 : LID_TOP + 0.15), 0]), [ROW_X[0] - 1.4, 0, 1.2], [ROW_X[ROW_X.length - 1] + 1.4, 0.4, 1.2]];
 // Where the camera of a stop stands in this window, and how much closer together things `z` in front of the row at
 // height y must stand to be seen right under the stacks
 function under(stop) {
@@ -109,7 +110,7 @@ function board(ctx, el, sec) {
       names.forEach((n) => n.at.set(mid + (ROW_X[n.c] - mid) * squeeze(DESK.lip, zNear), 0, zNear + 0.05));
     }
     // The camera's seat, from the window: stacks, desk, row labels and names stand as one block between the claim
-    // above and the key under it. Too short a window for that at 40 px a unit: the lid plates leave. A phone keeps the plain row
+    // above and the key under it. Too short a window for that at 36 px a unit: the lid plates leave. A phone keeps the plain row
     function seat() {
       Object.assign(STOPS.board, BASE.board);
       bare.board = false;
@@ -132,6 +133,15 @@ function board(ctx, el, sec) {
     }
     seat();
     window.addEventListener('resize', seat);
+    // for the tests: how far each column of lamps stands from its stack on the screen (px), how far under the stacks'
+    // feet the desk begins (px), and whether the lid plates are away
+    const px = (x, y, z) => ctx.labels.project(new Vector3(x, y, z));
+    ctx.state.compare = { ...(ctx.state.compare || {}), desk: () => ({
+      low: bare.board, on: +slab.material.uniforms.uShow.value.toFixed(2),
+      off: ROW_X.map((x, c) => Math.max(...lamps.filter((l) => l.c === c).map((l) => Math.abs(ctx.labels.project(l.at).x - px(x, 1.35, 0).x)))),
+      under: px(mid, onDesk(0)[0], onDesk(0)[1]).y - px(ROW_X[2], 0, 1.2).y,
+      mid: [lamps[0], lamps[1], lamps[4], lamps[5]].map((l) => ctx.labels.project(l.at)).reduce((m, p) => [m[0] + p.x / 4, m[1] + p.y / 4], [0, 0]),
+    }) };
     return {
       stops: [0.42],
       update(dt, u) {
@@ -152,7 +162,7 @@ function board(ctx, el, sec) {
         });
         return k;
       },
-      dispose() { window.removeEventListener('resize', seat); Object.assign(STOPS.board, BASE.board); },
+      dispose() { window.removeEventListener('resize', seat); Object.assign(STOPS.board, BASE.board); if (ctx.state.compare) delete ctx.state.compare.desk; },
     };
   });
 }
@@ -287,6 +297,12 @@ function rail(ctx, el, sec) {
     $('.ail-bill__pager', el).hidden = false;
     dots.forEach((d) => d.addEventListener('click', onDot));
     const from = new Vector3(), to = new Vector3(), ctl = new Vector3();
+    // for the tests: each company's tank level and the beads in its tray this frame, and how far under its stack's
+    // foot its tank's top stands on the screen (px)
+    ctx.state.compare = { ...(ctx.state.compare || {}), rail: () => ({
+      low: bare.rail, state: units.map((n) => [n.level, n.beads]),
+      under: units.map((n) => ctx.labels.project(from.set(n.x + TANK.x, RAIL + TANK.h, RZ)).y - ctx.labels.project(to.set(ROW_X[n.c], 0, 1.2)).y),
+    }) };
     return {
       stops: units.map((_, c) => (FROM + EACH * (c + 0.5)) / S),          // reduced motion: one still for each company
       hide() { units.forEach((u) => { u.bead.visible = false; }); },
@@ -318,6 +334,7 @@ function rail(ctx, el, sec) {
           const p = reduced ? DRAIN / 2 : st.time % CYCLE;
           const level = p < DRAIN ? 1 - p / DRAIN : p < METER ? 0 : (p - METER) / (CYCLE - METER);
           const metered = p >= SWITCH && p < METER;
+          n.level = +level.toFixed(3); n.beads = reduced ? 3 : p >= METER ? 0 : metered ? Math.floor(((p - SWITCH) / (METER - SWITCH)) * PILE) : 0;
           const paid = reduced ? 3 : metered ? ((p - SWITCH) / (METER - SWITCH)) * PILE : 0;      // beads landed, and how far the next one is
           const lit = c === st.active ? 0.3 : 0;
           const dim = c === st.active ? 0 : 0.35;
@@ -352,7 +369,7 @@ function rail(ctx, el, sec) {
         pile.instanceMatrix.needsUpdate = true;
         return k;
       },
-      dispose() { el.removeEventListener('click', onPick); window.removeEventListener('click', onStack); window.removeEventListener('resize', place); Object.assign(STOPS.rail, BASE.rail); dots.forEach((d) => d.removeEventListener('click', onDot)); units.forEach((u) => { drop(u.bead); u.pick.style.removeProperty('--o'); }); },
+      dispose() { el.removeEventListener('click', onPick); window.removeEventListener('click', onStack); window.removeEventListener('resize', place); Object.assign(STOPS.rail, BASE.rail); if (ctx.state.compare) delete ctx.state.compare.rail; dots.forEach((d) => d.removeEventListener('click', onDot)); units.forEach((u) => { drop(u.bead); u.pick.style.removeProperty('--o'); }); },
     };
   });
 }

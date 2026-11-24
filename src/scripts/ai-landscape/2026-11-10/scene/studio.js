@@ -39,6 +39,7 @@ export function createStudio(ctx) {
     ink: 0,                                                         // how strongly the floor print shows (setInk)
     bays: set.bays, set: 1,                                         // the house set: its boards (row.js gives each its stack), and 0 to step the set back
     word: set.word,                                                 // a paper word standing in the room (scene/set.js)
+    plate: set.plate,                                               // whether the far wall's picture hangs
     casters: Array.from({ length: 8 }, () => ({ x: 0, z: 0, h: 2.7, gap: 0.045, amt: 0, inside: 0, color: new Color('#8C929C') })),
 
     reset() {
