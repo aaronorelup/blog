@@ -179,3 +179,15 @@ test('assembleDay: a day is put together from listed posts only, whatever the st
   assert.deepEqual(assembleDay(core, [], [{ slug: 'earthlight', n: 0 }], site).reads, []);
   assert.deepEqual(assembleDay(core, [], null, site).reads, []);
 });
+
+test('a path the site withholds from a folder is never quoted, as a page or as a probe', () => {
+  const s = makeSite(['/', '/ledger/', '/ledger/guitar-tabs-from-video/'].join('\n'));
+  const shown = '/media/guitar-tabs-from-video/song-003.mp4';
+  assert.equal(safePath(shown, s, { probe: true }), shown);
+  for (const asked of ['/media/guitar-tabs-from-video/song-000.mp4', '/MEDIA/Guitar-Tabs-From-Video/song-000.mp4', '/media/guitar-tabs-from-video%2Fsong-000.mp4',
+    '/media//guitar-tabs-from-video/opus-blind-000.mp3', '/media/guitar-tabs-from-video/song-003.mp4/', '/media/guitar-tabs-from-video/']) {
+    assert.equal(safePath(asked, s, { probe: true }), null, asked);
+    assert.equal(safePath(asked, s), null, asked);
+  }
+  assert.deepEqual(scrubDay({ probes: [['/media/guitar-tabs-from-video/song-000.mp4', 9], [shown, 2], ['/.env', 1]] }, s).probes, [[shown, 2], ['/.env', 1]]);
+});

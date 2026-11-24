@@ -5,6 +5,7 @@
 // (200, Accept-Ranges). A read-aloud post file not recorded yet answers 200 { ready: false }, never a 404.
 import { json, status } from '../lib/http.js';
 import { buildJson } from '../lib/build-files.js';
+import { withheld } from './shown.js';
 
 // What the asset server sends with every file, so a file answers the same from either place. A read-aloud
 // recording's files in R2 are named by the hash of their text, so they never change.
@@ -14,11 +15,6 @@ const IMMUTABLE = 'public, max-age=31536000, immutable';
 const MEDIA = /\.(mp4|m4v|webm|mov|mp3|m4a|aac|wav|ogg|oga|opus|flac)$/i;
 const RECORDING = /^\/read\/[^/]+\/[^/]+\.json$/;
 const isMedia = (pathname) => MEDIA.test(pathname);
-
-// Folders where the bucket holds more files than the site shows. From these only a file that matches is read from
-// R2. Any other path there answers as a file that isn't there (docs/MEDIA.md, "Taking a file off the site").
-const SHOWN = [['/media/guitar-tabs-from-video/', /-(001|002|003|004|009)\.(mp4|mp3)$/]];
-const withheld = (path) => SHOWN.some(([folder, shown]) => path.startsWith(folder) && !shown.test(path));
 
 // The asset's length in bytes, or 0 when the list can't be read just now (the file then goes out whole).
 const sizeOf = (env, pathname) => buildJson(env, '/media-sizes.json').then((all) => all[pathname] || 0, () => 0);

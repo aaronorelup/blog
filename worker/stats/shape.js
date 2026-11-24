@@ -3,6 +3,8 @@
 // (index.js is the half that talks to D1 and the GraphQL API). Nothing here keeps a person's user agent: it is
 // read, turned into "Chrome" / "Windows" or a class, and dropped. Named bots and programs ("GPTBot", "curl") are kept.
 
+import { withheld } from '../media/shown.js';
+
 export const SITE = 'aaronorelup.com';
 export const LAUNCH = '2026-08-02'; // the site's first day; the long-run totals start here
 
@@ -466,6 +468,7 @@ export function safePath(path, site, opts) {
   if (d.includes('%') || d.includes('\\') || !/^[\x21-\x7e]+$/.test(d)) return null;
   d = d.replace(/\/{2,}/g, '/');
   const low = d.toLowerCase();
+  if (withheld(low)) return null; // a file the site doesn't serve is never quoted (media/shown.js)
   const segs = low.split('/');
   if (segs.some((s) => s === '..' || s === '.')) return null;
 
