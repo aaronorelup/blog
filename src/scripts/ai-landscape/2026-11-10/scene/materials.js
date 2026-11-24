@@ -9,7 +9,7 @@ const lum = (c) => 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b;
 export function createMaterials() {
   const shared = {
     uIris: { value: new Vector4(0, 0, 0, 1) }, uIrisTint: { value: new Color(0, 0, 0) }, uTime: { value: 0 },
-    uDark: { value: new Vector4(0, 0, 0, 0) }, uGlowPos: { value: new Vector3() }, uGlowCol: { value: new Color(1, 1, 1) },
+    uDark: { value: new Vector4(0, 0, 0, 0) }, uGlowPos: { value: new Vector3() }, uGlowCol: { value: new Color(1, 1, 1) }, uLamp: { value: 0 },
     uLight: { value: new Vector3(-0.34, 0.8, -0.5).normalize() }, uPaper: { value: new Color('#E6E8ED') },
     uWorld: { value: new Color('#E6E8ED') },
   };

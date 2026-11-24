@@ -10,9 +10,9 @@ import { block, dot, drop, INK, ribbon, roundBox, setGlass, STOPS } from '../sce
 const CX = [-6.7, 0, 6.7];
 const CZ = 5.5;
 const BIG = 1.6;                  // the pieces of a diagram against their first size: they are read from across the room
-// the lamp: how dark the room goes, the pool's radius and strength, how fast it follows the lit diagram (a second),
+// the lamp: how dark the room goes, the pool's radius (it has an edge: studio.glow.lamp) and strength, how fast it follows the lit diagram (a second),
 // and the grey a diagram's lines wait in outside the pool
-const LAMP = { dark: 0.92, radius: 3.4, amount: 1.05, x: 0.3, y: 0.6, follow: 6, grey: '#7D838E' };
+const LAMP = { dark: 0.92, radius: 3.5, amount: 1.05, x: 0.3, y: 0.6, follow: 6, grey: '#7D838E' };
 const ink = new Color(INK), grey = new Color(LAMP.grey);
 const LEAVES = 3;                 // a team or a router hands out to several: three of each are drawn
 const HUB = { w: 0.86 * BIG, h: 0.56 * BIG };
@@ -145,7 +145,7 @@ export function create(ctx, el, sec) {
       // 6 a second (reduced motion: it is there at once)
       st.spot = st.spot == null || reduced ? CX[lit] : st.spot + (CX[lit] - st.spot) * (1 - Math.exp(-LAMP.follow * dt));
       studio.dark = LAMP.dark * k; studio.roomX = 0;
-      studio.glow.amount = LAMP.amount * k; studio.glow.radius = LAMP.radius; studio.glow.cap = 1;
+      studio.glow.amount = LAMP.amount * k; studio.glow.radius = LAMP.radius; studio.glow.cap = 1; studio.glow.lamp = 1;
       studio.glow.color.set('#FFFFFF'); studio.glow.pos.set(st.spot + LAMP.x, LAMP.y, CZ);
       // the chrome and the words flip to paper on ink while the room is dark, as they do for the links at night: the
       // lamp's pool is then the one light in the frame, the lit diagram's name the one bright chip, and the rail shows

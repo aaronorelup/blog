@@ -35,14 +35,14 @@ export function createStudio(ctx) {
     lamp: new Vector3(), warmth: 0,
     dark: 0, roomX: 0,                                              // lights out: the sweep 0..1 and the room it crosses
     dusk: 0,                                                        // the whole room dimmed evenly, 0..1 (1 is night). Used while dark is 0
-    glow: { amount: 0, radius: 0, color: new Color('#FFFFFF'), pos: new Vector3(), cap: 0.5 },      // (cap: how bright its colour may be. 1 lets a white lamp light the paper white)
+    glow: { amount: 0, radius: 0, color: new Color('#FFFFFF'), pos: new Vector3(), cap: 0.5, lamp: 0 },      // (cap: how bright its colour may be. 1 lets a white lamp light the paper white. lamp 1: a pool with an edge, not a bloom)
     ink: 0,                                                         // how strongly the floor print shows (setInk)
     bays: set.bays, set: 1,                                         // the house set: its boards (row.js gives each its stack), and 0 to step the set back
     word: set.word,                                                 // a paper word standing in the room (scene/set.js)
     casters: Array.from({ length: 8 }, () => ({ x: 0, z: 0, h: 2.7, gap: 0.045, amt: 0, inside: 0, color: new Color('#8C929C') })),
 
     reset() {
-      studio.lamp.set(...HOURS.hero); studio.warmth = 0; studio.dark = 0; studio.dusk = 0; studio.glow.amount = 0; studio.glow.radius = 0; studio.glow.cap = 0.5; studio.ink = 0; studio.set = 1;
+      studio.lamp.set(...HOURS.hero); studio.warmth = 0; studio.dark = 0; studio.dusk = 0; studio.glow.amount = 0; studio.glow.radius = 0; studio.glow.cap = 0.5; studio.glow.lamp = 0; studio.ink = 0; studio.set = 1;
       for (const c of studio.casters) { c.amt = 0; c.inside = 0; }
       for (const b of studio.bays) { b.up = 0; b.show = 1; b.tile = null; b.low = false; }
     },
@@ -63,7 +63,7 @@ export function createStudio(ctx) {
       const dusk = studio.dark > 0 ? 0 : Math.max(0, Math.min(1, studio.dusk));
       if (dusk > 0) sh.uDark.value.set((76 + 8 * dusk) / 84, -1000, studio.glow.radius, studio.glow.amount);
       else sh.uDark.value.set(studio.dark, studio.roomX, studio.glow.radius, studio.glow.amount);
-      sh.uGlowPos.value.copy(studio.glow.pos);
+      sh.uGlowPos.value.copy(studio.glow.pos); sh.uLamp.value = studio.glow.lamp;
       sh.uGlowCol.value.copy(studio.glow.color);
       // lights out stays dark whatever the colour: a very bright glow (white) is held to half strength, unless the
       // section asks for a lamp (glow.cap 1: the router floor's one pool of light)
