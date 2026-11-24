@@ -163,8 +163,10 @@ function board(ctx, el, sec) {
 // time (what you pay as you use), and a new month fills the one and clears the other
 const CYCLE = 9, DRAIN = 4.2, SWITCH = 4.4, METER = 8, PILE = 8;
 const TANK = { r: 0.46, h: 1.5, x: -0.62 }, TRAY = { w: 0.98, h: 0.1, d: 0.52, x: 0.76 }, BEAD = 0.1, RAIL = 0.12;
-// The rail under this window's camera: how much closer its five places stand than the stacks, and its half length
-const railAt = () => { const k = under(STOPS.rail)(0.8, RZ); return [k, (ROW_X[ROW_X.length - 1] - BASE.rail.look[0]) * k + 1.5]; };
+// The rail under this window's camera: how much closer its five places stand than the stacks, and its half length.
+// (A phone's camera moves in on one company at a time, from straight in front: there each place stands before its stack)
+const railAt = (phone) => { const k = phone ? 1 : under(STOPS.rail)(0.8, RZ); return [k, (ROW_X[ROW_X.length - 1] - BASE.rail.look[0]) * k + 1.5]; };
+const NEAR = { ...BASE.rail, fit: 9.6, cy: 0.4 };      // a phone's stop on the picked company: its stack, its tank and its tray, the neighbours at the frame's edges
 // Its camera's seat, from the window: stacks, tanks and rail stand as one block under the claim and the picked
 // company's card (it hangs 200 px down from the claim's top: the stylesheet) and over the tallest trend sentence
 function seatRail(ctx) {
@@ -182,7 +184,7 @@ function seatRail(ctx) {
   const stand = (box, low) => {
     let px = 0;
     for (let i = 0; i < 3; i++) {
-      const [k, half] = railAt();
+      const [k, half] = railAt(false);
       px = frameIn(STOPS.rail, BASE.rail, [...stacks(ctx.row, low), [mid - half, 0, RZ + 0.45, 6, 0, 0, 8], [mid + half, 0, RZ + 0.45, 0, 0, 6, 8],
         ...ROW_X.map((x) => [mid + (x - mid) * k + TANK.x, RAIL + TANK.h, RZ])], box, box.fy);
     }
@@ -242,7 +244,7 @@ function rail(ctx, el, sec) {
     // so its five places stand closer together
     function place() {
       seatRail(ctx);
-      const [squeeze, half] = railAt();
+      const [squeeze, half] = railAt(ctx.phone);
       drop(bar);
       bar = block(ctx, roundBox(half * 2, RAIL, 0.9, 0.06), 'house', RAIL);
       bar.position.set(mid, RAIL / 2, RZ);
@@ -292,7 +294,10 @@ function rail(ctx, el, sec) {
       update(dt, u) {
         st.u = u;
         const k = smooth(span(u, 0, 0.14)) * (1 - smooth(span(u, S - 0.14, S)));
-        if (u < S - 0.2) rig.to(STOPS.rail); else rig.mix(STOPS.rail, rig.stops.row, easeIO(span(u, S - 0.2, S)));
+        if (ctx.phone) { const x = units[st.active].x; NEAR.pos = [x, BASE.rail.pos[1], BASE.rail.pos[2]]; NEAR.look = [x, BASE.rail.look[1] + 0.9, BASE.rail.look[2]]; }
+        if (u >= S - 0.2) rig.mix(ctx.phone ? NEAR : STOPS.rail, rig.stops.row, easeIO(span(u, S - 0.2, S)));
+        else if (ctx.phone) rig.mix(STOPS.rail, NEAR, easeIO(span(u, 0.04, 0.14)));
+        else rig.to(STOPS.rail);
         rig.yaw = 0.05; rig.pitch = 0.02;
         const low = bare.rail && u < S - 0.1;
         row.towers.forEach((tw, c) => { tw.char.show = 1 - k; if (low) { tw.lid.show = 0; studio.bays[c].low = true; } });
