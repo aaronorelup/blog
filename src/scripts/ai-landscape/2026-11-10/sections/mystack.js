@@ -1,7 +1,7 @@
 // My stack (SPEC 2.9.2): the cabinet sinks, and a long low bench rises with five shelves and a cast. A large dot
 // (him), his router and his coding agent on two large blocks with their companies' own figures standing on them,
-// and a row of small grey things they use. Ink cords say who talks to whom. Only the stacks that lend him a piece
-// stay behind. Borrowed pieces fly in from their stacks and key into the bench. The swap judges a pair.
+// and a row of low plinths with the paper objects they use. Ink cords say who talks to whom. Only the stacks that lend
+// him a piece stay behind. Borrowed pieces fly in from their stacks and key into the bench. The swap judges a pair.
 import { Line, LineBasicMaterial, Mesh, Vector3 } from 'three';
 import { backOut, clamp01, easeIO, easeOut, smooth, span } from '../core/clock.js';
 import { $, $$, announce } from '../core/dom.js';
@@ -9,9 +9,10 @@ import { ORDER, owner, world } from '../worlds/index.js';
 import { block, createBase, dot, dovetail, INK, roundBox, setGlass, shadow, STOPS } from '../scene/bench.js';
 import { createFigure } from '../scene/cast.js';
 import { GLYPHS } from '../scene/glyphs.js';
+import { createObject } from '../scene/objects.js';
 
 const Z = 3.3, H = 0.46, DEPTH = 1.9;
-const P = { w: 1.02, h: 0.68, d: 0.9 };
+const P = { w: 1.02, h: 0.68, d: 0.9 }, LOW = { w: 1.12, h: 0.26, d: 0.96 }, THING = 1.3;      // (LOW: the plinth of a piece that has a paper object, THING: that object's longer side)
 const LEAD = { w: 1.79, h: 1.02, d: 1.08 };                  // his router and his coding agent: the two that do the work
 const ME = 0.42;                                             // the dot that is him
 const SLOT = { you: 1.5, router: 2.7, harness: 2.7, model: 1.5 }, REST = 1.36, PAD = 0.28, GAP = 0.16;
@@ -48,7 +49,8 @@ export function create(ctx, el, sec) {
     x += PAD;
     for (const li of lis) {
       const layer = li.dataset.layer, w = SLOT[layer] || REST;
-      pieces.push({ li, x: x + w / 2, id: li.dataset.node.replace(/^aaron-/, ''), layer, owner: li.dataset.owner, swap: li.dataset.swap || null, box: li.dataset.swap ? LEAD : P });
+      const obj = createObject(ctx, layer);
+      pieces.push({ li, x: x + w / 2, id: li.dataset.node.replace(/^aaron-/, ''), layer, owner: li.dataset.owner, swap: li.dataset.swap || null, box: li.dataset.swap ? LEAD : obj ? LOW : P, obj });
       x += w;
     }
     x += PAD;
@@ -66,7 +68,7 @@ export function create(ctx, el, sec) {
   made.push(shade);
 
   // ---- the pieces: an ink dot for him, a block of glass for anything else. Borrowed glass keys in with a dovetail
-  const geo = roundBox(P.w, P.h, P.d, 0.12), bigGeo = roundBox(LEAD.w, LEAD.h, LEAD.d, 0.16);
+  const geo = roundBox(P.w, P.h, P.d, 0.12), bigGeo = roundBox(LEAD.w, LEAD.h, LEAD.d, 0.16), lowGeo = roundBox(LOW.w, LOW.h, LOW.d, 0.1);
   const tail = dovetail(P.w, H * 0.78), bigTail = dovetail(LEAD.w, H * 0.78);
   const provider = (o) => ORDER.includes(o);
   pieces.forEach((p, k) => {
@@ -76,10 +78,10 @@ export function create(ctx, el, sec) {
     p.pos = p.to.clone(); p.from = p.to.clone();
     p.top = new Vector3(); p.out = new Vector3(); p.head = new Vector3(); p.left = new Vector3(); p.right = new Vector3();
     p.t = reduced ? 1 : 0; p.delay = k * STAGGER; p.dur = FLY; p.float = 0; p.lift = 0; p.hover = 0; p.tall = 0;
-    p.mesh = me ? dot(ctx, ME, null, { segments: 32 }) : keep(block(ctx, big ? bigGeo : geo, owner(p.owner), p.box.h));
+    p.mesh = me ? dot(ctx, ME, null, { segments: 32 }) : keep(block(ctx, big ? bigGeo : p.obj ? lowGeo : geo, owner(p.owner), p.box.h));
     if (me) made.push(p.mesh);
-    // each block's front says what it is in the page's own glyphs: the layer's (fork, loop, core) or the drawer's it came from
-    if (!me && GLYPHS[p.layer]) { p.glyph = textures.glyphPlane(p.layer, big ? 0.52 : 0.4); p.glyph.position.z = p.box.d / 2 + 0.006; p.mesh.add(p.glyph); }
+    // a block's front says what it is in the page's own glyphs (fork, loop, core). A piece with a paper object needs none
+    if (!me && !p.obj && GLYPHS[p.layer]) { p.glyph = textures.glyphPlane(p.layer, big ? 0.52 : 0.4); p.glyph.position.z = p.box.d / 2 + 0.006; p.mesh.add(p.glyph); }
     const t = big ? bigTail : tail;
     p.inlay = keep(new Mesh(t.geo, mats.glass(owner(p.owner), { halfH: H * 0.39 })));
     p.seam = keep(new Line(t.seam, new LineBasicMaterial({ color: INK, transparent: true, opacity: 0.7 })));
@@ -129,7 +131,7 @@ export function create(ctx, el, sec) {
       return { pa, pb, link, cord, out: 0 };
     }
     const dx = Math.abs(pa.x - pb.x);
-    const from = pa.box === LEAD ? pa.out : pa.top, to = target ? pb.head : pb.top;
+    const from = pa.box === LEAD ? pa.out : pa.obj ? pa.head : pa.top, to = target || pb.obj ? pb.head : pb.top;
     const arc = prims.arc(from, to, { color: INK, official: target ? 'no' : 'yes', lift: target ? 1.1 + dx * 0.24 : 0.45 + dx * 0.1, dots: false });
     return { pa, pb, target, arc };
   }).filter(Boolean);
@@ -235,6 +237,7 @@ export function create(ctx, el, sec) {
   function show(on) {
     made.forEach((m) => { m.visible = on; });
     cast.forEach((c) => c.fig.hide());
+    pieces.forEach((p) => p.obj && p.obj.hide());
     lines.forEach((l) => { const d = l.cord || l.arc; d.show = 0; d.update(); });
     pins.forEach((p) => { p.on = on; p.el.style.opacity = on ? '' : '0'; });
     leads.forEach((l) => l && l.set(0, 0, 0, 0, 0));
@@ -249,7 +252,7 @@ export function create(ctx, el, sec) {
     cast: () => cast.map((c) => ({ on: c.fig.mesh.visible && c.fig.k > 0.9, kind: c.fig.orb ? 'orb' : 'cut', piece: c.p.id, owner: c.p.owner })),
     cords: () => lines.filter((l) => l.cord).map((l) => ({ from: l.pa.id, to: l.pb.id, on: l.cord.show > 0.01 && l.cord.draw >= 1, dash: l.cord.dash, bead: l.cord.bead == null ? null : +l.cord.bead.toFixed(2) })),
     lenders: () => row.towers.filter((tw) => tw.show > 0.5).map((tw) => ({ id: tw.id, x: +(tw.x + tw.shift).toFixed(2), lends: pieces.filter((p) => p.owner === tw.id).map((p) => +p.x.toFixed(2)) })),
-    sizes: () => pieces.map((p) => ({ id: p.id, layer: p.layer, w: p.layer === 'you' ? ME * 2 : p.box.w })),
+    sizes: () => pieces.map((p) => ({ id: p.id, layer: p.layer, w: p.layer === 'you' ? ME * 2 : p.box.w, thing: !!(p.obj && p.obj.mesh.visible) })),
     official: () => st.official,
   } };
 
@@ -312,6 +315,7 @@ export function create(ctx, el, sec) {
         if (p.layer === 'you') { p.mesh.material.uniforms.uShow.value = on; p.mesh.visible = on > 0.01; }
         else setGlass(p.mesh, { show: on, lit: p.hover * 0.3, hatch: p.hatch || 0 });
         if (p.glyph) { p.glyph.material.uniforms.uOpacity.value = on * 0.9; p.glyph.visible = on > 0.01; }
+        if (p.obj) { p.obj.place(v.set(p.pos.x, p.pos.y + p.half * s, Z + 0.04), THING * s, on); p.tall = p.obj.tall - 0.1; }
         const keyed = provider(p.owner) && p.layer !== 'you' && p.lift < 0.05 && p.t > 0.92;
         setGlass(p.inlay, { show: keyed ? rise : 0, hatch: p.hatch || 0 });
         p.inlay.position.y = H * 0.61 + H * (rise - 1);
@@ -381,7 +385,7 @@ export function create(ctx, el, sec) {
       leads.forEach((l) => l && l.drop());
       lines.forEach((l) => (l.cord || l.arc).dispose());
       cast.forEach((c) => c.fig.dispose());
-      pieces.forEach((p) => { if (p.glyph) { p.glyph.geometry.dispose(); p.glyph.material.dispose(); } });
+      pieces.forEach((p) => { if (p.glyph) { p.glyph.geometry.dispose(); p.glyph.material.dispose(); } if (p.obj) p.obj.dispose(); });
       made.forEach((m) => { if (m.material) m.material.dispose(); m.removeFromParent(); });
       geo.dispose(); bigGeo.dispose(); tail.geo.dispose(); tail.seam.dispose(); bigTail.geo.dispose(); bigTail.seam.dispose(); shade.geometry.dispose();
       bench.forEach((m) => m.geometry.dispose());
