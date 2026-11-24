@@ -15,6 +15,11 @@ const MEDIA = /\.(mp4|m4v|webm|mov|mp3|m4a|aac|wav|ogg|oga|opus|flac)$/i;
 const RECORDING = /^\/read\/[^/]+\/[^/]+\.json$/;
 const isMedia = (pathname) => MEDIA.test(pathname);
 
+// Folders where the bucket holds more files than the site shows. From these only a file that matches is read from
+// R2. Any other path there answers as a file that isn't there (docs/MEDIA.md, "Taking a file off the site").
+const SHOWN = [['/media/guitar-tabs-from-video/', /-(001|002|003|004|009)\.(mp4|mp3)$/]];
+const withheld = (path) => SHOWN.some(([folder, shown]) => path.startsWith(folder) && !shown.test(path));
+
 // The asset's length in bytes, or 0 when the list can't be read just now (the file then goes out whole).
 const sizeOf = (env, pathname) => buildJson(env, '/media-sizes.json').then((all) => all[pathname] || 0, () => 0);
 
@@ -23,7 +28,7 @@ export async function serve(request, env) {
   let path;
   try { path = decodeURIComponent(url.pathname); } catch { return status(400); } // a broken %-escape names no file
   if (request.method === 'GET' || request.method === 'HEAD') {
-    const stored = await fromR2(request, env, path.slice(1));
+    const stored = withheld(path) ? null : await fromR2(request, env, path.slice(1));
     if (stored) return stored;
     if (RECORDING.test(path)) return json({ ready: false });
   }
