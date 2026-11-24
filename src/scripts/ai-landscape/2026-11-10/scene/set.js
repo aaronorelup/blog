@@ -12,7 +12,7 @@ const WALL = { z: -26, w: 80, h: 30, colour: '#E6E8ED', line: '#C9CDD5' };
 // The wall's picture (art/house/plate): white paper, one long shelf of small blank models, bars of window light. The
 // shelf's front edge is `at` of the picture's height from its top, and hangs `shelf` above the floor: over the boards
 // from the row. The picture melts into the plain wall at its edges, so a window of any shape sees wall and no end of it
-const PLATE = { w: 50, h: 28.125, at: 0.575, shelf: 9.3, soft: 0.07 };
+const PLATE = { w: 50, h: 28.125, at: 0.575, shelf: 9.3, soft: 0.07, haze: 0.6 };      // (haze: how much of it shows through the room's air. A far wall is quiet, and words stand in front of it)
 // A board: 3.2 behind its stack, as tall as the stack's lid plate and `over` more, seen from the row stop (its eye
 // height and middle). Raised it is `rise` taller and carries a sign `sign` square, `head` under its top edge.
 export const BAY = { z: -3.2, w: 3.3, tall: 14, colour: '#F8F9FB', torn: 0.14, over: 0.45, low: 0.3, rise: 2.6, sign: 2.3, head: 0.25, eye: 2.2, mid: -0.5 };
@@ -31,7 +31,7 @@ export function createSet(ctx, xs) {
   wall.position.set(0, WALL.h / 2, WALL.z);
   const join = add(new Mesh(new PlaneGeometry(WALL.w, 0.045), paper(WALL.line)), -9.4);
   join.position.set(0, 0.022, WALL.z + 0.08);
-  const plate = add(new Mesh(new PlaneGeometry(PLATE.w, PLATE.h), mats.paper(null, { side: -1, blended: true, soft: PLATE.soft })), -9.45);
+  const plate = add(new Mesh(new PlaneGeometry(PLATE.w, PLATE.h), mats.paper(null, { side: -1, blended: true, soft: PLATE.soft, opacity: PLATE.haze })), -9.45);
   plate.position.set(0, PLATE.shelf - PLATE.h * (0.5 - PLATE.at), WALL.z + 0.04);
   let hung = false;
   textures.load((ctx.quality.small && art('house', 'plate-s')) || art('house', 'plate')).then((tex) => { if (tex) { plate.material.uniforms.uMap.value = tex; hung = true; } });
