@@ -44,7 +44,7 @@
 .ail-ms__head { display: grid; gap: 12px; max-width: 46rem; }
 .ail-ms__who { margin-left: .6em; vertical-align: .55em; color: var(--ail-fg-2); }
 .ail-ms__date { margin-left: .5em; vertical-align: .55em; text-decoration: none; padding: 3px 6px 2px; border: 1px solid var(--ail-hair); }
-.ail-ms__quote.is-gone { visibility: hidden; }
+.ail-gl .ail-ms__quote.is-gone { visibility: hidden; }
 .ail-ms__bands { display: grid; gap: 18px; margin-top: 26px; }
 .ail-ms__bandname { color: var(--ail-fg-2); margin-bottom: 6px; }
 .ail-ms__pieces { display: flex; flex-wrap: wrap; gap: 6px 10px; }

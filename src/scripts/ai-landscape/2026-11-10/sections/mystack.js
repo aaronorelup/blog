@@ -29,6 +29,8 @@ export function create(ctx, el, sec) {
   const read = (li) => ({ ref: li.dataset.ref, owner: li.dataset.owner, status: li.dataset.status, name: li.textContent.trim() });
   const opts = { router: $$('.ail-ms__opts[data-for="router"] li', el).map(read), worker: $$('.ail-ms__opts[data-for="worker"] li', el).map(read) };
   const [mineR, mineW] = (el.dataset.mine || '').split(' ');
+  // his own pair, read from the lists of options and never from the pieces, which a swap dresses until dispose() undoes it
+  const his = { router: opts.router.find((o) => o.ref === mineR) || opts.router[0], worker: opts.worker.find((o) => o.ref === mineW) || opts.worker[0] };
   const quote = $('.ail-ms__quote', el);
   const pairsEl = $('.ail-ms__pairs', el);
   pairsEl.open = true;
@@ -50,7 +52,8 @@ export function create(ctx, el, sec) {
     for (const li of lis) {
       const layer = li.dataset.layer, w = SLOT[layer] || REST;
       const obj = createObject(ctx, layer);
-      pieces.push({ li, x: x + w / 2, id: li.dataset.node.replace(/^aaron-/, ''), layer, owner: li.dataset.owner, swap: li.dataset.swap || null, box: li.dataset.swap ? LEAD : obj ? LOW : P, obj });
+      const swap = li.dataset.swap || null, own = swap && his[swap] ? his[swap].owner : li.dataset.owner;
+      pieces.push({ li, x: x + w / 2, id: li.dataset.node.replace(/^aaron-/, ''), layer, owner: own, swap, box: swap ? LEAD : obj ? LOW : P, obj });
       x += w;
     }
     x += PAD;
@@ -64,8 +67,7 @@ export function create(ctx, el, sec) {
   // ---- the bench: five shelves of house glass, and the shadow the analytic floor cannot give it
   const bench = shelves.map(([a, b]) => { const m = keep(block(ctx, roundBox(b - a, H, DEPTH, 0.16), 'house', H)); m.position.set((a + b) / 2, H / 2, Z); return m; });
   const shade = shadow(ctx, span0, DEPTH, { opacity: 0.2 });
-  shade.position.set(0.6, 0.003, Z + 0.55);
-  made.push(shade);
+  shade.position.set(0.6, 0.003, Z + 0.55); made.push(shade);
 
   // ---- the pieces: an ink dot for him, a block of glass for anything else. Borrowed glass keys in with a dovetail
   const geo = roundBox(P.w, P.h, P.d, 0.12), bigGeo = roundBox(LEAD.w, LEAD.h, LEAD.d, 0.16), lowGeo = roundBox(LOW.w, LOW.h, LOW.d, 0.1);
@@ -185,7 +187,7 @@ export function create(ctx, el, sec) {
   const buttons = $$('.ail-ms__swap', el);
   const onSwap = (e) => swap(e.currentTarget.dataset.swap);
   buttons.forEach((b) => { b.hidden = false; b.addEventListener('click', onSwap); });
-  pieces.forEach((p) => { if (p.swap) dress(p, opts[p.swap][p.swap === 'router' ? st.r : st.w]); });
+  pieces.forEach((p) => { if (p.swap && his[p.swap]) dress(p, his[p.swap]); });
   verdict(true);
   // pieces past first depth leave their bands for the list behind the "more" button, and go back on dispose
   const restList = $('.ail-ms__restlist', el);
@@ -378,9 +380,11 @@ export function create(ctx, el, sec) {
       buttons.forEach((b) => { b.removeEventListener('click', onSwap); b.hidden = true; });
       window.removeEventListener('keydown', onEsc);
       later.forEach(([li, parent, next]) => parent.insertBefore(li, next && next.parentNode === parent ? next : null));
+      // the markup is his own stack again: his pair named, his quote in, no stamp (the text version and the next create() read it)
+      pieces.forEach((p) => { if (p.swap && his[p.swap]) dress(p, his[p.swap]); delete p.li.dataset.edge; p.tag.style.opacity = ''; });
+      quote.classList.remove('is-gone'); pairsEl.classList.remove('is-on'); says.forEach((li) => li.classList.remove('is-on'));
       pairsEl.open = false; pairsEl.style.bottom = ''; pairsEl.style.top = '';
       pins.forEach((p) => p.drop());
-      pieces.forEach((p) => { p.tag.style.opacity = ''; });
       bar(false);
       leads.forEach((l) => l && l.drop());
       lines.forEach((l) => (l.cord || l.arc).dispose());

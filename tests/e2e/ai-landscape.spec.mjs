@@ -11,7 +11,8 @@
 // greys, its paper number and its close, the cord of the link being read, and the agents' dusk. Row 26: a visitor who
 // leaves while a chunk loads is let go. Row 27 holds the pass's workshop: the cabinet of nine drawers, the bench with
 // its cast, cords and lenders, and the router floor's one lamp. Row 28 holds its rooms and art: the lamp desk on the
-// floor, billing's five in step, the paper objects, the far wall's picture, Google's portrait and Meta's card.
+// floor, billing's five in step, the paper objects, the far wall's picture, Google's portrait and Meta's card. Rows 29
+// on hold round 3's reviews: the text version after the 3D page is a fresh one, and my stack built again is his own.
 import fs from 'node:fs';
 import sharp from 'sharp';
 import { chromium } from '@playwright/test';
@@ -1412,4 +1413,81 @@ test('landscape-28 the lamp desk lies on the floor in front of five whole stacks
   expect((await rail()).state, 'a still that compares nothing').toEqual([[0.5, 3], [0.5, 3], [0.5, 3], [0.5, 3], [0.5, 3]]);
   await go(page, 'around', 0.12 + 0.11 * 2.5, 0);
   await expect.poll(async () => { const now = (await things()).things[2]; return now ? now.tall : 0; }, { timeout: 60_000, message: 'the third drawer\'s object stands out whole' }).toBeGreaterThan(0.6);
+});
+
+// ---- landscape-29: the text version that follows the 3D page (review round 3: N-1, N-2)
+// <main> as a list of elements: a short path, every attribute but a focus target's tabindex="-1", and its own text.
+const markup = (page) => page.evaluate(() => {
+  const main = document.querySelector('main'), out = [];
+  const walk = document.createTreeWalker(main, NodeFilter.SHOW_ELEMENT);
+  for (let e = walk.currentNode; e; e = walk.nextNode()) {
+    const attrs = [...e.attributes].filter((a) => !(a.name === 'tabindex' && a.value === '-1')).map((a) => `${a.name}=${a.value}`).sort().join(' ');
+    const own = [...e.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent.trim()).join('|');
+    const path = []; for (let p = e; p && p !== main; p = p.parentElement) path.unshift(p.tagName.toLowerCase() + (p.id ? `#${p.id}` : ''));
+    out.push(`${path.slice(-3).join('>')} [${attrs}] ${own}`);
+  }
+  return out;
+});
+const differ = (a, b) => { const A = new Set(a), B = new Set(b); return [...a.filter((x) => !B.has(x)).map((x) => `- ${x}`), ...b.filter((x) => !A.has(x)).map((x) => `+ ${x}`)].slice(0, 12); };
+test('landscape-29 the text version that follows the 3D page is the one a fresh load gives, whatever the reader did there: after the five worlds, a line-up floor, the laptop switch, a router pick and swaps in my stack, a short window and (Chromium) a lost context leave no attribute, state or name behind, his quote stands and his router is his own; and my stack built again after a swap and a far scroll stands his own companies\' figures on his pair', async ({ page, isMobile, browserName }) => {
+  test.setTimeout(900_000);
+  const fresh = await page.context().newPage();
+  await fresh.setViewportSize(page.viewportSize());
+  await fresh.goto('/ai-landscape/?tier=static');
+  await fresh.waitForFunction(() => window.__landscape && window.__landscape.ready);
+  const clean = await markup(fresh);
+  const his = await fresh.evaluate(() => ({ quote: document.querySelector('#my-stack .ail-ms__quote').textContent.trim(), router: document.querySelector('#my-stack .ail-ms__piece[data-swap="router"] .ail-ms__name').textContent.trim() }));
+  await fresh.close();
+  const read = () => page.evaluate(() => { const q = document.querySelector('#my-stack .ail-ms__quote'); return { quote: q.checkVisibility({ visibilityProperty: true }) ? q.textContent.trim() : '', router: document.querySelector('#my-stack .ail-ms__piece[data-swap="router"] .ail-ms__name').textContent.trim() }; });
+  const swap = (kind) => page.locator(`#my-stack .ail-ms__swap[data-swap="${kind}"]`).click();
+  const cast = () => page.evaluate(() => window.__landscape.compare.mystack.cast().map((c) => ({ piece: c.piece, owner: c.owner, kind: c.kind, on: c.on })));
+  let base = null;
+  // the 3D page, used: every world opened, a floor of the line-up pressed, the laptop shut, a router picked, both swaps
+  const use = async () => {
+    await open(page);
+    await light(page);
+    for (const id of COMPANIES) await go(page, id, 1.3, 300);
+    await go(page, 'line-up', 0.6, 300);
+    await page.locator('#line-up button.ail-lu__layer').nth(6).click();
+    await go(page, 'agents', 0.6, 300);
+    if (await page.locator('#agents .ail-ag__switch').isVisible()) await page.locator('#agents .ail-ag__switch').click();
+    await go(page, 'router', 0.7, 300);
+    await page.locator('#router .ail-rt__name').first().click();
+    await go(page, 'my-stack', 0.8, 1500);
+    await expect.poll(async () => (await cast()).every((c) => c.on), { timeout: 60_000, message: 'both figures stand on his pair' }).toBe(true);
+    base = await cast();
+    await swap('router'); await swap('worker'); await swap('router');
+    await frames(page, 4);
+    expect(await read(), 'in 3D the swap stands in for his own pair').not.toEqual(his);
+  };
+
+  // a swap, a far scroll (my stack is let go) and back: built again, it stands his own pair and their own figures
+  await use();
+  const first = (await read()).router;
+  await go(page, 'end', 0.5, 300);
+  expect(await page.evaluate(() => !!window.__landscape.compare.mystack), 'my stack is let go at the end').toBe(false);
+  await go(page, 'my-stack', 0.8, 1500);
+  await expect.poll(async () => (await cast()).every((c) => c.on), { timeout: 60_000, message: 'both figures stand again' }).toBe(true);
+  expect((await read()).router, `his router is his own again (it showed ${first} when the section was let go)`).toBe(his.router);
+  const owners = await page.evaluate(() => Object.fromEntries([...document.querySelectorAll('#my-stack .ail-ms__opts')].map((ul) => { const mine = document.getElementById('my-stack').dataset.mine.split(' '); const li = [...ul.querySelectorAll('li')].find((x) => mine.includes(x.dataset.ref)); return [ul.dataset.for, li.dataset.owner]; })));
+  expect(base.map((c) => c.owner), 'on the first visit the figures are his router\'s and his coding agent\'s companies').toEqual([owners.router, owners.worker]);
+  expect(await cast(), 'built again, the same figures stand on the same pieces (no other company\'s character on his router)').toEqual(base);
+  await swap('router');
+  await frames(page, 4);
+
+  // a short window: the text version, as a fresh load gives it
+  const size = page.viewportSize();
+  await page.setViewportSize({ width: size.width, height: 480 });
+  await expect.poll(async () => (await hook(page)).tier, { timeout: 60_000 }).toBe('static');
+  expect(differ(clean, await markup(page)), 'after a short window the text version equals a fresh one').toEqual([]);
+  expect(await read(), 'his quote stands and his router is his own').toEqual(his);
+  if (browserName !== 'chromium') return;
+
+  // a lost context, after the 3D page came back and was used again
+  await page.setViewportSize(size);
+  await use();
+  await page.evaluate(() => window.__landscape.debug.ctx.renderer.getContext().getExtension('WEBGL_lose_context').loseContext());
+  await expect.poll(async () => (await hook(page)).tier, { timeout: 60_000 }).toBe('static');
+  expect(differ(clean, await markup(page)), 'after a lost context the text version equals a fresh one').toEqual([]);
+  expect(await read(), 'his quote stands and his router is his own').toEqual(his);
 });

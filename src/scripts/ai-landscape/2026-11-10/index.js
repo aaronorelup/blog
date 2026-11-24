@@ -5,6 +5,7 @@
 import { createClock } from './core/clock.js';
 import { $, $$, announce, lazy, readData, toggle } from './core/dom.js';
 import { createInput } from './core/input.js';
+import { remember, replaced, restore } from './core/markup.js';
 import { pickRung } from './core/quality.js';
 import { markExpired } from './ui/expiry.js';
 import { markWide } from './ui/wide.js';
@@ -59,13 +60,14 @@ function focusHead(sec) {
   to.focus({ preventScroll: true });
 }
 
-// Everything the 3D page wrote into the document goes: the scene, the loop, the lit stages, inline styles, the links
-// it added. The sections keep their own markup, so the page is again what Astro built.
+// Everything the 3D page wrote into the document goes: the scene (each section puts back the markup it changed), the
+// loop, the lit stages, inline styles, the links it added, every attribute it changed. The page is what Astro built.
 function stop3D() {
   running = false;
   if (raf) cancelAnimationFrame(raf);
   raf = 0; shown = null; pending = null; mounts++;
   if (scene) { scene.dispose(); scene = null; }
+  restore();
   root.classList.remove('ail-3d');
   for (const name of ['data-chrome', 'data-full']) root.removeAttribute(name);
   for (const el of $$('.is-on')) el.classList.remove('is-on');
@@ -246,7 +248,7 @@ function load(token) {
   canvasUsed = true;
   const fail = () => toText({ keep: true, say: true });
   lazy(() => import('./scene/index.js'))
-    .then((m) => (mine() ? m.mount({ canvas: used, clock, input, state, rung, phone, reduced, query, data: readData(), toText: fail, cadence: cadence() }) : null))
+    .then((m) => (mine() ? (remember(), m.mount({ canvas: used, clock, input, state, rung, phone, reduced, query, data: readData(), toText: fail, cadence: cadence() })) : null))
     .then((mounted) => {
       if (!mounted) return;
       if (!mine()) { mounted.dispose(); if (!gl()) state.tier = 'static'; return; }
@@ -266,7 +268,7 @@ function enter3D(where) {
   rung = pickRung(query, phone);
   // a canvas that had a context keeps it, lost: a new scene draws on a fresh one
   if (scene) { scene.dispose(); scene = null; }
-  if (canvasUsed) { const fresh = canvas.cloneNode(false); canvas.replaceWith(fresh); canvas = fresh; canvasUsed = false; }
+  if (canvasUsed) { const fresh = canvas.cloneNode(false); canvas.replaceWith(fresh); replaced(canvas, fresh); canvas = fresh; canvasUsed = false; }
   root.classList.add('ail-gl');
   markWide(false);
   clock.measure();
