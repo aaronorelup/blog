@@ -22,7 +22,7 @@
     }
    ],
    "img": "/media/candy-machine/tabs/cndy-034.webp",
-   "alt": "An orange cat holding a microphone in a rainy neon street",
+   "alt": "An orange cat singing into a microphone in front of a rainy, neon-lit street",
    "lede": "30 s of Neon Koi fed to H3 as an audio guide: the cat's voice comes out as the song itself, and its mouth follows the lines, not the syllables."
   },
   {
@@ -91,7 +91,7 @@
     }
    ],
    "img": "/media/candy-machine/tabs/cndy-037.webp",
-   "alt": "Yusef holding up a blazing lantern on a dark road",
+   "alt": "Yusef holds up a glowing lantern in a dark forest over an old man kneeling at his feet",
    "lede": "Yusef's lantern story in one 10 s pass: five Qwen paintings pinned at f0, f60, f121, f181 and f242 with H3's own guide node. Every interior keyframe landed within one frame of where it was asked, and he moves between them."
   },
   {
@@ -137,7 +137,7 @@
     }
    ],
    "img": "/media/candy-machine/tabs/cndy-039.webp",
-   "alt": "BloodTailor seen from behind, his red cloak to the camera",
+   "alt": "BloodTailor sitting on a dark rooftop at night, seen from the side halfway round the camera's circle",
    "lede": "Painting both stills from one TRELLIS.2 mesh of BloodTailor gave H3 a picture of his back. With that picture attached, every arm orbited 180 degrees from his grin to his cloak and landed on it. The grey Blender orbit previs barely changed the clip."
   },
   {
@@ -196,7 +196,7 @@
     }
    ],
    "img": "/media/candy-machine/tabs/cndy-042.webp",
-   "alt": "A character speaking a new line in a frame from a short clip",
+   "alt": "Basil, a big bearded merchant in a red cloak, holds up a woven cloth at a market stall",
    "lede": "A voice take goes into reference mode as Audio 1, and the prompt gives a new line. Three arms per trial on one seed: A with no audio reference (the voice described in words), B the canon take, C a swap take."
   },
   {
@@ -212,7 +212,7 @@
     }
    ],
    "img": "/media/candy-machine/tabs/cndy-043.webp",
-   "alt": "Jefrie with her scythe, from a re-rendered clip",
+   "alt": "Jefrie in armour sitting on a sandbag wall with her scythe across her knees, her spiked tail beside her",
    "lede": "Each trial renders a clip with no guide (draft A). One wrong frame of that draft is fixed with a local Qwen edit and pasted back, then the clip is rendered again with the repaired frame as a guide at its own frame number (B)."
   },
   {
@@ -228,7 +228,7 @@
     }
    ],
    "img": "/media/candy-machine/tabs/cndy-044.webp",
-   "alt": "Two puppet-like figures in plate armour and spiked tails fighting in the rain",
+   "alt": "Two puppet-like figures in plate armour, one with a long spiked tail, fighting in the rain",
    "lede": "One frame of 041 trial 4 A's puppet look, anchored once with MiniMaxH3AddGuide, gave a guided arm whose mask, tail and helmet were there in every 12th frame of a 243-frame fight."
   }
  ]

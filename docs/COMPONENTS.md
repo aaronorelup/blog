@@ -221,7 +221,7 @@ The demos:
   within 600 px of the screen and sized to its content. The card keeps the command centre's dark palette in day and
   night, because it shows that page as it is. Never fetch the live card or its API from here.
 
-Behaviours: demo-synthid-1 to demo-synthid-8, demo-cf-1, demo-cf-2, demo-lab-1 to demo-lab-7. Used by 3 posts
+Behaviours: demo-synthid-1 to demo-synthid-8, demo-cf-1, demo-cf-2, demo-lab-1 to demo-lab-7 (`candy-card` has no e2e spec yet). Used by 4 posts
 (`INVENTORY.md`).
 
 ## <ao-diff>

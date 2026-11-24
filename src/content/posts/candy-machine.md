@@ -25,14 +25,15 @@ since 23 November the machine makes them back to back. **My favourite so far is 
 steered by pictures pinned in the middle of the clip.** Below is a working copy of the card it
 posts to, and the best candy yet.
 
+<figure class="flush"><video class="fill framed" controls playsinline preload="metadata" poster="/media/candy-machine/fight-keyframes.webp" src="/media/candy-machine/fight-keyframes.mp4"></video><figcaption class="small-print">Jefrie and BloodTailor, two of my original characters, sparring for 10 seconds. Three pictures pinned in the middle of the clip steered it (CNDY-041)</figcaption></figure>
+
 - **One run is one technique.** An explorer agent reads my notes and picks the experiment, a
-  creator agent builds and renders it in ComfyUI on my 8 GB graphics card, and a clerk posts it.
+  creator agent builds and renders it in ComfyUI, a free app for running image and video models,
+  on my laptop's 8 GB graphics card, and a clerk posts it.
 - **It never stops unless I tell it to.** On its first day in 24/7 mode it finished 8 candies.
   Pause, 24/7 and off are three buttons on the card.
 - **My notes steer it.** Liked it, mixed or didn't like it, what I saw, and what to try next. A
   request stays open until a run takes it up, and the card says which one did.
-- **Every result is evidence, not a verdict.** The agents show me side by sides and frames. I'm
-  the one who decides if it worked.
 
 ## Why I built it
 
@@ -53,39 +54,37 @@ them in weird ways, to make effects nobody has seen. Most people want their AI w
 little like AI as possible. I want to celebrate the styles only AI can make. The candy machine
 keeps experimenting while I do other things, so that list of techniques keeps growing.
 
-I call it candy because every day when I look at what my agent made, it honestly feels like candy.
+I call it candy because looking at what my agent made each day fills me with so much joy. It's
+like candy to me.
 
 ## What a candy looks like on my dashboard
 
-This is the Daily candy card from my command center, copied with three of its days. Each post is
-one experiment: a title that names the technique, a one-sentence template I can paste into another
-project, then the evidence. Under it is my notes box. It opens on CNDY-041, the fight scene I liked
-most. Press the switches and type a note if you like. The copy isn't connected to anything, so
-nothing you do in it leaves your browser.
+This is the Daily candy card from my command center, copied with three of its days. It opens on
+CNDY-041, the fight scene. Each post names the technique, gives a one-sentence template I can reuse,
+then the evidence, written for me, so it's dense. My notes box is under it. Press the switches and
+type a note if you like. The copy isn't connected to anything, so nothing leaves your browser.
 
 <ao-demo name="candy-card" part="card">
 The card needs JavaScript. It shows three days of candy posts (20, 22 and 23 November 2026), CNDY-041's whole page, and my notes under each post.
 </ao-demo>
 
-You can see the loop in the notes. On CNDY-037 I said the run had called itself a success when my
-eyes said the guides made the picture worse, and I asked for a fight scene with no first or last
-frame. CNDY-041 was that run. My note on 041 asked for more of an odd style it drew by accident,
+You can see the loop in the notes. On CNDY-037 I asked for a fight scene with no first or last
+frame, and CNDY-041 was that run. My note on 041 asked for more of a style it drew by accident,
 and CNDY-044 took that up.
 
 ## The best candy so far
 
-These are the ones I marked "liked it" or loved in my library, newest first. A keyframe here is a
-picture you pin to a moment of a video, so the clip has to pass through it. The video model is
-MiniMax-H3, which runs on my laptop.
+These are the ones I marked "liked it" or loved, newest first. A keyframe is a picture pinned to a
+moment of a video, so the clip has to pass through it. The video model is MiniMax-H3, on my laptop.
 
 ### Keyframes in the middle of a fast fight (CNDY-041)
 
-<figure class="flush"><video class="fill framed" controls playsinline preload="metadata" poster="/media/candy-machine/fight-keyframes.webp" src="/media/candy-machine/fight-keyframes.mp4"></video><figcaption class="small-print">Jefrie spars BloodTailor, 10 seconds, three keyframes and nothing at the start or the end</figcaption></figure>
+<figure class="flush"><video class="fill framed" controls playsinline preload="metadata" poster="/media/candy-machine/cndy-041/t1-guided-vs-unguided.webp" src="/media/candy-machine/cndy-041/t1-guided-vs-unguided.mp4"></video><figcaption class="small-print">Left: with the three keyframes. Right: the same prompt without them</figcaption></figure>
 
-Claude painted a still for each moment the shot had to hit, a vault, an upside-down hero frame and
-a clash, and pinned them at three frames in the middle of the clip. The clip passed through each
-one on its frame and moved freely in between. It does slow almost to a stop around each keyframe.
-The same prompt without the stills drew different characters. My note on this one started in all caps.
+The clip at the top. Claude painted a still for each moment the shot had to hit, a vault, an
+upside-down hero frame and a clash, and pinned them mid-clip. It hit each one on its frame, though
+it slows almost to a stop around them. Without them the same prompt drew other characters. My note
+started in all caps.
 
 ### A puppet look found by accident (CNDY-041, CNDY-044)
 
@@ -95,77 +94,77 @@ The same prompt without the stills drew different characters. My note on this on
 <figure><video controls playsinline preload="metadata" poster="/media/candy-machine/puppet-kept-fight.webp" src="/media/candy-machine/puppet-kept-fight.mp4"></video><figcaption><b>Kept, in a fight</b><span class="ao-meta">CNDY-044, 10 seconds</span></figcaption></figure>
 </ao-compare>
 
-One clip with no keyframes drew my characters as something I've never seen: dark fantasy puppets,
-almost chibi. The next run took a single frame of it and pinned it into new clips as their only
-guide, and the look held through a whole fight. I'm calling them dread bobbles. It also tried the
-look on two more characters, and those didn't come out well.
+A clip with no keyframes drew my characters as dark fantasy puppets, almost chibi, like nothing
+I'd seen. The next run pinned one frame of it into new clips, and the look held through a whole
+fight. I'm calling them dread bobbles. On two other characters it didn't come out well.
 
 ### One keyframe from a stick figure with a tail (CNDY-040)
 
-<figure class="flush"><video class="fill framed" controls muted playsinline preload="metadata" poster="/media/stick-figure-poses/keyframe-lift.webp" src="/media/stick-figure-poses/keyframe-lift.mp4"></video><figcaption class="small-print">Left: with the keyframe at frame 30. Right: the same prompt and seed without it</figcaption></figure>
+<figure class="flush"><video class="fill framed" controls muted playsinline preload="metadata" poster="/media/stick-figure-poses/keyframe-lift.webp" src="/media/stick-figure-poses/keyframe-lift.mp4"></video><figcaption class="small-print">Left: with the keyframe at frame 30. Right: the same prompt without it</figcaption></figure>
 
-A stick figure with a chain drawn in for Jefrie's tail posed a picture of her, and that picture was
-the only guide in a five-second clip. I can't tell which frame was the keyframe, and it doesn't
-freeze on it the way end frames used to. The clip without it glitched into something I loved: her
-face on the back of her head as she hangs limp, which is genuinely scary. The stick figures have
-[their own post](/ledger/stick-figure-poses/).
+A stick figure with a chain drawn in for Jefrie's tail posed a picture of her, the only guide in
+a five-second clip. I can't tell which frame was the keyframe, and it doesn't freeze there the way
+end frames used to. The clip without it glitched into something I loved: her face on the back of
+her head as she hangs limp. Genuinely scary.
 
 ### A painted back view makes the camera circle him (CNDY-039)
 
 <figure class="flush"><video class="fill framed" controls muted playsinline preload="metadata" poster="/media/candy-machine/orbit-previs-vs-result.webp" src="/media/candy-machine/orbit-previs-vs-result.mp4"></video><figcaption class="small-print">Left: the grey 3D guide animation. Right: the clip, with a painting of his back attached</figcaption></figure>
 
-Claude made a 3D model of BloodTailor from his picture with TRELLIS, an image-to-3D model, and used
-it to paint his back. With that back view attached, the video model circled 180 degrees around him
-and landed on it. The grey Blender animation meant as a guide barely changed anything. The painted
-back did it.
+Claude turned BloodTailor's picture into a 3D model and used it to paint his back. With that back
+view attached, the video model circled 180 degrees around him and landed on it. A grey guide
+animation of the model, made in Blender, barely changed anything.
+
+### A stick figure poses Jefrie (CNDY-038)
+
+<figure class="flush"><img class="fill framed" src="/media/stick-figure-poses/best-of-each.webp" alt="Jefrie drawn in four poses, a lunge, a star jump, a sprint and an arabesque, each from a stick figure" loading="lazy"><figcaption class="small-print">The best of each pose, from a stick figure and a sentence</figcaption></figure>
+
+A script drew stick figures and handed each to the image model as a second picture. Stick figure
+plus words beat either one alone in all four poses. It has [its own post](/ledger/stick-figure-poses/).
 
 ### 25 seconds in one go (CNDY-036)
 
-<figure class="flush"><video class="fill framed" controls playsinline preload="metadata" poster="/media/candy-machine/ichigo-snail-25s.webp" src="/media/candy-machine/ichigo-snail-25s.mp4"></video><figcaption class="small-print">Ichigo ignores a hopeful snail, 600 frames in one pass, 5 minutes on my laptop, with its own sound</figcaption></figure>
+<figure class="flush"><video class="fill framed" controls playsinline preload="metadata" poster="/media/candy-machine/ichigo-snail-25s.webp" src="/media/candy-machine/ichigo-snail-25s.mp4"></video><figcaption class="small-print">My character Ichigo ignores a hopeful snail, 600 frames in one pass, 5 minutes on my laptop, with its own sound</figcaption></figure>
 
-The video model was trained on clips of about 15 seconds. Candy pushed one pass to 25 seconds on my
-8 GB card, and the picture held the whole way. From 30 seconds up it still looked fine, but the
-story started over and played twice.
+The video model was trained on clips of about 15 seconds. One pass held for 25. From 30 seconds up
+it still looked fine, but the story played twice.
 
 ### A tea room you can stand inside (CNDY-035)
 
 <figure class="flush"><video class="fill framed" controls muted playsinline preload="metadata" poster="/media/candy-machine/tea-room-tour.webp" src="/media/candy-machine/tea-room-tour.mp4"></video><figcaption class="small-print">A 30-second look around one 16-megapixel picture</figcaption></figure>
 
-One picture painted as a full 360-degree sphere, then looked around in. Every view straight ahead
-reads as a room with straight walls. One of the two tries bent, and the floor kinked into a V.
+One picture painted as a full 360-degree sphere. Every view straight ahead reads as a room with
+straight walls. Straight down, the floor's borders kink into a V that no edit fixed.
 
 ### A cat that sings my song back (CNDY-034)
 
 <figure class="flush"><video class="fill framed" controls playsinline preload="metadata" poster="/media/candy-machine/cat-sings-neon-koi.webp" src="/media/candy-machine/cat-sings-neon-koi.mp4"></video><figcaption class="small-print">Sound on. Three clips cut in the song's rests</figcaption></figure>
 
-30 seconds of Neon Koi, a song Claude made for [an earlier test](/ledger/sonnet-vs-opus-gauntlet/),
-went into the video model as an audio guide. The cat's voice came out as the song itself, and its
-mouth opens for each line, though not for each syllable.
+Neon Koi, a song Claude made for [an earlier test](/ledger/sonnet-vs-opus-gauntlet/), went into
+the video model as audio. The cat sings the song itself, opening its mouth for each line, though not
+each syllable.
 
 ### From one leaf to the whole park (CNDY-033)
 
 <figure class="flush"><video class="fill framed" controls muted playsinline preload="metadata" poster="/media/candy-machine/leaf-to-park-zoom.webp" src="/media/candy-machine/leaf-to-park-zoom.mp4"></video><figcaption class="small-print">12 pictures, each painted around the last at twice the scale, flown as one zoom</figcaption></figure>
 
-One picture of a maple leaf on a pond, painted outward 12 times, then flown as a single zoom from
-the leaf to the whole of Ohori Park. There are no hard seams, but you can still spot soft ghosts
-where the rings meet.
+A maple leaf on a pond, painted outward 12 times, then flown as one zoom out to all of Ohori Park.
+No hard seams, but soft ghosts where the rings meet.
 
 ### Eight effects on one cat, with no cuts (CNDY-032)
 
 <figure class="flush"><video class="fill framed" controls playsinline preload="metadata" poster="/media/candy-machine/tabby-eight-effects.webp" src="/media/candy-machine/tabby-eight-effects.mp4"></video><figcaption class="small-print">Every clip starts and ends on the same still of the cat</figcaption></figure>
 
-The video model has effects built in that you call by name, like fire breath or bullet time. Each
-clip started and ended on the same still, so eight effects play back to back as one shot. Two
-didn't survive: the orbit and the pull-back, because they need the camera to end somewhere else. I
-think this would make a great wallpaper.
+The video model has effects you call by name, like fire breath or bullet time. Each clip starts
+and ends on the same still, so eight play back to back as one shot. The orbit and the pull-back
+didn't survive, since the camera has to end somewhere else. It'd make a great wallpaper.
 
 ### A 16-megapixel folding screen in 75 seconds (CNDY-029)
 
 <figure class="flush"><video class="fill framed" controls muted playsinline preload="metadata" poster="/media/candy-machine/folding-screen-tour.webp" src="/media/candy-machine/folding-screen-tour.mp4"></video><figcaption class="small-print">A tour of one 5632 by 2816 picture</figcaption></figure>
 
-Tabby cats act out candy's own history on a gold-leaf folding screen, drawn in one go on my 8 GB
-card with no upscaler. The composition has no seams anywhere. Up close the cats blur into each other,
-and that's what I'd like fixed next.
+Tabby cats act out candy's own history on a gold-leaf screen, drawn at full size in one go, not
+enlarged. The composition has no seams. Up close the cats blur into each other.
 
 ### Before I could leave notes
 
@@ -175,8 +174,8 @@ and that's what I'd like fixed next.
 <figure><video controls muted playsinline preload="metadata" poster="/media/four-art-techniques/shelf-stopmotion.webp" src="/media/four-art-techniques/shelf-stopmotion.mp4"></video><figcaption><b>A shelf filled by twelve edits</b><span class="ao-meta">CNDY-030</span></figcaption></figure>
 </ao-compare>
 
-Before the notes box, I marked favourites in my media library instead. These three are explained
-in [Four AI art techniques tested on my laptop](/ledger/four-art-techniques/).
+Before the notes box, I marked favourites in my library. [Four AI art techniques tested on my
+laptop](/ledger/four-art-techniques/) explains these three.
 
 Candy itself started in September as one idea a morning, drawn by three image models with a
 Claude judge picking the best ([that version](/ledger/daily-candy/)). These four from back then are
@@ -201,10 +200,11 @@ ones I loved.
 - **What it uses.** Across those 8 runs my weekly Claude limit went from 14% to 20%, and part of
   that was other sessions I ran the same day. That's roughly half to three quarters of a point per
   candy.
-- **The rules I gave it that evening.** One technique per candy, done well in about 2 to 4 hours.
-  The title names the technique. A one-sentence template I can reuse. Up to four trials on
-  different characters and pacing, with nothing the technique doesn't need. No scores or
-  measurements: I judge by looking.
+- **The rules I gave it on day one.** The title names the technique. A one-sentence template I can
+  reuse. Evidence, never a verdict. Up to four trials on different characters and pacing, with
+  nothing the technique doesn't need. That evening I added two more: one technique per candy, done
+  well in about 2 to 4 hours, and no scores or measurements, because I judge by looking. CNDY-041
+  came before those two, which is why its page is full of numbers.
 - **Its own ideas too.** It takes my oldest open request first, but after two runs in a row that
   followed requests, the next one is its own idea. I enjoy those as much. CNDY-042, a voice test I
   never asked for, was one.
