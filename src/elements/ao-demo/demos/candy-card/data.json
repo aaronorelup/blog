@@ -1,0 +1,235 @@
+{
+ "status": {
+  "line": "24/7: the next run starts within about 10 minutes.",
+  "small": [
+   "24/7 with no end: it runs until you turn it off.",
+   "Last: CNDY-044 finished: An accidental H3 look kept by its own frame as a guide.",
+   "Laptop timers: every 10 min while 24/7 is on, else 4 am"
+  ]
+ },
+ "posts": [
+  {
+   "d": "2026-11-20",
+   "id": "CNDY-034",
+   "t": "A cat sings Neon Koi back, because the song went in as audio",
+   "notes": [
+    {
+     "at": "2026-11-24T01:30:58.145Z",
+     "who": "aaron",
+     "liked": "liked",
+     "saw": "It absolutely work! is this just a way to lip sync in general?",
+     "next": "Are we just using audio as a reference in the minimax h3? if so this is really cool. i wonder the other use cases for using audio as a reference. Especially the weird ones"
+    }
+   ],
+   "img": "/media/candy-machine/tabs/cndy-034.webp",
+   "alt": "An orange cat holding a microphone in a rainy neon street",
+   "lede": "30 s of Neon Koi fed to H3 as an audio guide: the cat's voice comes out as the song itself, and its mouth follows the lines, not the syllables."
+  },
+  {
+   "d": "2026-11-22",
+   "id": "CNDY-035",
+   "t": "A tea room you can stand inside",
+   "notes": [
+    {
+     "at": "2026-11-24T01:18:10.486Z",
+     "who": "aaron",
+     "liked": "liked",
+     "saw": "Love it! This is wonderful would love to put this technique to use in a creative way somewhere. It came out great!"
+    },
+    {
+     "at": "2026-11-24T01:21:29.862Z",
+     "who": "aaron",
+     "next": "Could we do it google maps style where we make it so that you can click over to the next location? how do you think you could generate a second location in the same room without it just being a completely different place? I picture a mini game/interactable that allows you to explore by clicking to different locations, and we could overlay a 3d character that moves around in the actual space. IDK how you would do that especially how you would handle lighting/shadows, but I think it's worth a shot even if you have to forget about lighting/shadows. but if you can figure those out too, even better!"
+    },
+    {
+     "at": "2026-11-24T01:23:57.688Z",
+     "who": "aaron",
+     "next": "Or what about other images that are a lot different than just a room. because what you have right now kind of feels like just one of those virtual home tours so it is a little boring, but what if it was characters up close to the camera instead or space ships or under water, or a room with tons of stuffed animals/easter eggs, and fun things to find like a 3d wears waldo."
+    },
+    {
+     "at": "2026-11-24T01:26:30.087Z",
+     "who": "aaron",
+     "next": "Or like a CNDY-030 type deal where its a game where you click things and we can edit the photo the 030 way to make it interactable. Maybe we could even make it so that you can brew the tea and pour it and things like that depending on where you click. Like 3d point and click game, but using this method."
+    },
+    {
+     "at": "2026-11-24T01:27:12.983Z",
+     "who": "aaron",
+     "next": "Am I crazy or can we somehow mix this with the CNDY 033 technique? what would that even mean or look like?"
+    }
+   ],
+   "img": "/media/candy-machine/tabs/cndy-035.webp",
+   "alt": "A small Japanese tea room at night painted as one 360-degree panorama, laid out flat",
+   "lede": "One 16 MP equirect painted by MiniMax H3 Image. Every level view reads as a straight-walled room."
+  },
+  {
+   "d": "2026-11-23",
+   "id": "CNDY-036",
+   "t": "Ichigo and the snail: one 25 s H3 pass",
+   "notes": [
+    {
+     "at": "2026-11-24T01:17:08.697Z",
+     "who": "aaron",
+     "liked": "liked",
+     "saw": "I love this video! What were you testing? were you testing whether or not you could generate a 30 second video all at once with h3? how long did it take to generate? was it just 318s in one take? if so that is incredible! and the video held up. I don't see any signs of it breaking down. I would like you to confirm all of those things and then see how long we can push it. either way, this was a great generation"
+    }
+   ],
+   "img": "/media/candy-machine/tabs/cndy-036.webp",
+   "alt": "Ichigo with long pink hair sitting in a yellow rowboat on a pale sea, a snail swimming toward her",
+   "lede": "Ichigo ignores a hopeful snail for 25 s, then flicks it into the sea. It is one single pass at 600 frames, past the model's trained 362. At 719 frames and above the picture still holds, but the story plays twice."
+  },
+  {
+   "d": "2026-11-23",
+   "id": "CNDY-037",
+   "t": "Five painted keyframes, one H3 pass",
+   "notes": [
+    {
+     "at": "2026-11-23T20:18:45.266Z",
+     "who": "aaron via chat",
+     "saw": "it said that the expirement was a success, but when reviewing it with my eyes, it did not seem like the interior guides improved the quality of the final output. It may have followed the guides well, but the guides actually made the quality worse because the guides themselves guided it to a worse quality output. I didn't like the concept of the video from 037 itself which impacts my ability to judge the technique. Also the endframe was bad and made the characters walk backwards at the end which was unrelated to the experiment because the experiment did not require endframes.",
+     "next": "So I would like to try it again on a video that minimax on it's own could not create the vision of the prompt, perhaps something like a fighting sceene with lots of character and camera movement where there is one frame that you want to capture in a certain way. Like a specific jump attack. Maybe experiment 2 could be a fast pace action scene where it doesn't use beginning or end frames and only the internal key frames, or one with one of my I Love My Evening Television characters and it can be a completely different use of internal key frames.",
+     "taken_by": "CNDY-041"
+    }
+   ],
+   "img": "/media/candy-machine/tabs/cndy-037.webp",
+   "alt": "Yusef holding up a blazing lantern on a dark road",
+   "lede": "Yusef's lantern story in one 10 s pass: five Qwen paintings pinned at f0, f60, f121, f181 and f242 with H3's own guide node. Every interior keyframe landed within one frame of where it was asked, and he moves between them."
+  },
+  {
+   "d": "2026-11-23",
+   "id": "CNDY-038",
+   "t": "A drawn stick figure poses Jefrie, if words come with it",
+   "notes": [
+    {
+     "at": "2026-11-23T20:34:05.059Z",
+     "who": "aaron",
+     "liked": "liked",
+     "saw": "Incredible!"
+    },
+    {
+     "at": "2026-11-23T20:46:38.496Z",
+     "who": "aaron",
+     "next": "Are you able to do this with other image models lile the one obsession model with the Jefrie Lora? One thing I notice is that her tail is not coming out correctly. Are you able to come up with a method that uses the ease from the stick figure but still can correct or get right details like her tail? I would like to see this used together with video models. Maybe combining the internal key frames, Or is there a way to use a single stick figure internal key frame like you did for this image, but for video?",
+     "taken_by": "CNDY-040"
+    },
+    {
+     "at": "2026-11-23T20:49:11.272Z",
+     "who": "aaron",
+     "next": "Could you skeleton the tail?",
+     "taken_by": "CNDY-040"
+    }
+   ],
+   "img": "/media/stick-figure-poses/best-of-each.webp",
+   "alt": "Jefrie drawn in four poses, each from a stick figure",
+   "lede": "No ControlNet is installed, so a script drew four OpenPose skeletons and handed each to a Qwen edit as its second picture. OpenPose then measured every render's limb angles against its skeleton."
+  },
+  {
+   "d": "2026-11-23",
+   "id": "CNDY-039",
+   "t": "BloodTailor orbited 180° by MiniMax-H3: the painted back still did it, not the previs",
+   "notes": [
+    {
+     "at": "2026-11-24T00:28:42.314Z",
+     "who": "aaron",
+     "liked": "liked",
+     "saw": "Using trellis to help create a good previs is a fantastic idea and it looks like it paid off.",
+     "next": "I wonder how well we can do a continuous shot now like the latent stitch experiment where Jefrie was just reading a book for 15 minutes as one continuous shot as the camera looks around at all the individual details. or Jefrie sharpening her scythe the issue was that we could never get her hand to sharpen the actual blade of the scythe. Now that we can do that trellis previs and the expirement with the stick figure guidance for her movements and the movements of her tail and now we have the one obsession internal keyframes I bet we could do a lot with keeping things consistent. I think previously we had it adhere too much to the previs and the start/end key frames, but now that we have that solved with those other methods that I mentioned, it might actually work. Also, please note that perhaps the jefrie lora is turned up too high. I chose one obsession because I love it's style, but the lora actually overrides it, so I'm not sure how we can fix that and still generate jefrie in the one obsessions style. But whatever we choose as the image model, we will likely have to use the same image model for all keyframes in order to keep the style coherent through the entire generation, consider using the key frames sparingly or we will need to figure out a way to get the key frames to truly fit what the final generation should look like",
+     "taken_by": "CNDY-043"
+    }
+   ],
+   "img": "/media/candy-machine/tabs/cndy-039.webp",
+   "alt": "BloodTailor seen from behind, his red cloak to the camera",
+   "lede": "Painting both stills from one TRELLIS.2 mesh of BloodTailor gave H3 a picture of his back. With that picture attached, every arm orbited 180 degrees from his grin to his cloak and landed on it. The grey Blender orbit previs barely changed the clip."
+  },
+  {
+   "d": "2026-11-23",
+   "id": "CNDY-040",
+   "t": "Tail-chain stick figure, LoRA repaint, one mid-clip keyframe",
+   "notes": [
+    {
+     "at": "2026-11-24T00:36:12.235Z",
+     "who": "aaron",
+     "liked": "liked",
+     "saw": "This is fantastic as well and trial 4 unguided is extremely scary in a wonderful way. it was a glitch in the generation that caused the back of jefrie's head to have her face as she hangs limp. she looks like a dead body hanging from the roof because she truly is completely limp, and the fact that it is a face in the back of her head making it look like she is facing you when she is not is quite freaky especially because she is about to attack you. the actual movement of the attack in both is terrible. she just floats into your direction. And she is hanging off of nothing which is unfortunate. either way, I picture jefrie actually climbing on things normally rather then just hanging off of her tail like that, so careful not to do that hanging off of her tail thing too often. The technique worked amazingly though and it doesn't have the same issues that we've had before with endframes where it freezes on the key frame. Infact it is integrated so naturally that you cannot tell which frame was the keyframe that you used. And the pose that came out of it look extremely dynamic."
+    },
+    {
+     "at": "2026-11-24T00:40:21.605Z",
+     "who": "aaron",
+     "next": "Maybe try a longer generation with the latent stitch method of her martial arts demonstration utilizing previs and the lessons from this and in the last video segment at the end of the stitch have a \"money shot\" a super gorgeous frame as a keyframe like water splashing in the sun with golden sunlight rays at the end of her attack with a close up shot of her face as her scythe passes in front of the camera in the middle of a mid air attack and it can be slow mo. Really pack it in there with how beautiful it can be since you have all of the control",
+     "taken_by": "CNDY-045"
+    }
+   ],
+   "img": "/media/stick-figure-poses/keyframe-lift.webp",
+   "alt": "Two clips side by side of Jefrie lifted by her tail",
+   "lede": "In all four guided clips, the frame closest to the keyframe was the frame asked for (f62, f70, f100, f30). With the gold chain drawn in, the tail sat 3.9 and 6.5 px from it on trials 1 and 4. With the body skeleton alone it sat 63.7 and 61.6 px away."
+  },
+  {
+   "d": "2026-11-23",
+   "id": "CNDY-041",
+   "t": "Several mid-clip keyframes, no first or last frame, for fast fights",
+   "notes": [
+    {
+     "at": "2026-11-24T00:45:49.685Z",
+     "who": "aaron",
+     "liked": "liked",
+     "saw": "INCREDIBLE!!! I love this. Trial 1 is the most amazing. I love how cool you've made the fight scene. This absolutely works and we must use this method or another method just as powerful for fight scenes like this.",
+     "next": "Trial 4 A is such a crazy unique style. I would love to explore it. They are weird looking dark fantasy chibi-ish puppets for lack of better words. I've never seen anything like it.",
+     "taken_by": "CNDY-044"
+    }
+   ],
+   "page": "/labs/candy-card/cndy-041/index.html"
+  },
+  {
+   "d": "2026-11-23",
+   "id": "CNDY-042",
+   "t": "A reference voice for a new line in H3 reference mode",
+   "notes": [
+    {
+     "at": "2026-11-24T00:58:08.851Z",
+     "who": "aaron",
+     "liked": "mixed",
+     "saw": "The B in all arms worked. C in arms 1-3 did not get the womans voice. C from arm 4 was about as good as B from arm 4 surprisingly. The issue is that minimax h3's audio quality is very poor compared to what we get in other methods, so I don't anticipate us ever actually using it. So the swap takes failed, the audio reference worked for the B takes, it did sound like the original character, but the audio quality is much lower than elevenlabs or higgsfield. I bet even a local audio model would have done better."
+    },
+    {
+     "at": "2026-11-24T01:01:19.011Z",
+     "who": "aaron",
+     "next": "btw, I do really appreciate that you don't just use my ideas, that you branch off and explore your own ideas and I think this was a really good example of you doing that. I never asked you to do the minimax h3 audio tests, and this was very insightful into something that I have not tried before and I did enjoy watching the videos you created. So great work!"
+    }
+   ],
+   "img": "/media/candy-machine/tabs/cndy-042.webp",
+   "alt": "A character speaking a new line in a frame from a short clip",
+   "lede": "A voice take goes into reference mode as Audio 1, and the prompt gives a new line. Three arms per trial on one seed: A with no audio reference (the voice described in words), B the canon take, C a swap take."
+  },
+  {
+   "d": "2026-11-23",
+   "id": "CNDY-043",
+   "t": "Keyframes repaired from the video's own draft",
+   "notes": [
+    {
+     "at": "2026-11-24T02:25:50.270Z",
+     "who": "aaron",
+     "liked": "mixed",
+     "saw": "You tried too many things in one session so it is hard to give feedback and the quality of your work went down. Try to focus on one thing per candy. The scythe was the worst part of almost all of them though. jefrie correctly sharpened the blade portion of the scythe, but the blade portion of the scythe stuck out in odd directions and did not adhere to the canon scythe reference. Also trial one did show that the one obsession even with the lora does not have the quality of the cannon refrence. we will need to train a better lora or a lora on a better model or come up with another solution, but the image generations are quite bad and for the image quality to lower the quality of a video generation is never something we want to face. I think you will need to retry each experirment as its own candy."
+    }
+   ],
+   "img": "/media/candy-machine/tabs/cndy-043.webp",
+   "alt": "Jefrie with her scythe, from a re-rendered clip",
+   "lede": "Each trial renders a clip with no guide (draft A). One wrong frame of that draft is fixed with a local Qwen edit and pasted back, then the clip is rendered again with the repaired frame as a guide at its own frame number (B)."
+  },
+  {
+   "d": "2026-11-23",
+   "id": "CNDY-044",
+   "t": "An accidental H3 look kept by its own frame as a guide",
+   "notes": [
+    {
+     "at": "2026-11-24T03:38:45.630Z",
+     "who": "aaron",
+     "liked": "disliked",
+     "saw": "I like trial 1 B, and trial 2 B. Yusef and echo did not come out well at all. Lets call these dread bobbles. You  will need to work with me to create the other dread bobbles. Maybe it could be a candy, but I'm not sure that's the right place to do it. it will likely have to be a back and forth between me and you to get it to work. I'm not sure how effective the MiniMaxH3AddGuide was for this. it really needs to be image references and we will need to decide what each character should look like in this style and then create a reference sheet for the style."
+    }
+   ],
+   "img": "/media/candy-machine/tabs/cndy-044.webp",
+   "alt": "Two puppet-like figures in plate armour and spiked tails fighting in the rain",
+   "lede": "One frame of 041 trial 4 A's puppet look, anchored once with MiniMaxH3AddGuide, gave a guided arm whose mask, tail and helmet were there in every 12th frame of a 243-frame fight."
+  }
+ ]
+}

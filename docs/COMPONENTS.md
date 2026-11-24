@@ -180,7 +180,7 @@ folder leaves the fallback; a chunk that fails to load leaves it too, and the ne
 
 | Attribute | |
 |---|---|
-| `name="synthid"` | the demo: the folder under `demos/` (`synthid`, `cf`, `goobie-lab`) |
+| `name="synthid"` | the demo: the folder under `demos/` (`synthid`, `cf`, `goobie-lab`, `candy-card`) |
 | `part="tournament"` | which part of it to mount; an unknown part leaves the fallback |
 | `data-slug="…"` | `cf`'s `count` only: the post whose reads it counts (default: the page's own slug) |
 
@@ -213,6 +213,13 @@ The demos:
   soon after it opens; no budget measures demos. The first live run then fetches `/ask/manifest.json`, its pack
   and `/rss.xml`, about 380 KB gzipped at 76 posts, growing with the blog. A live run leaves the live notebook out, as
   the recording did, and the demo's foot says so under every part.
+- **`candy-card`** (`candy-machine`, AO-089): one part, `card`. A copy of the Daily candy card from Aaron's command
+  centre with three of its days (`data.json`: the posts, his notes as they stood on 24 November 2026, a still and an
+  opening line for each). Nothing in it is connected: the switches flip, the days and tabs move and a typed note is
+  added to the list, all in memory only, and the card says so. CNDY-041 opens its real page in a same-origin frame
+  (`public/labs/candy-card/cndy-041/`, its media under `/media/candy-machine/cndy-041/`), loaded only once the card is
+  within 600 px of the screen and sized to its content. The card keeps the command centre's dark palette in day and
+  night, because it shows that page as it is. Never fetch the live card or its API from here.
 
 Behaviours: demo-synthid-1 to demo-synthid-8, demo-cf-1, demo-cf-2, demo-lab-1 to demo-lab-7. Used by 3 posts
 (`INVENTORY.md`).
