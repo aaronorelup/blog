@@ -284,7 +284,7 @@
   .ail-gl .ail-bill__cell .ail-fact { font-size: 16px; }
   .ail-gl .ail-bill__x { bottom: calc(var(--ail-margin) + 234px); }
   .ail-gl .ail-bill__pick { position: absolute; bottom: calc(var(--ail-margin) + 286px); width: 44px; height: 40px; border-radius: 0; opacity: 1; display: grid; place-items: center; }
-  .ail-gl .ail-bill__pick::before { content: ''; width: 14px; height: 14px; border-radius: 50%; background: var(--o); box-shadow: 0 0 0 1px var(--ail-fg); }
+  .ail-gl .ail-bill__pick::before { content: ''; width: 26px; height: 26px; border-radius: 4px; background: var(--o); box-shadow: 0 0 0 1px var(--ail-fg); }
   .ail-gl .ail-bill__pick[aria-pressed='true'] { box-shadow: inset 0 -2px 0 var(--ail-fg); }
   .ail-gl .ail-bill__row:nth-child(1) .ail-bill__pick { left: var(--ail-margin); }
   .ail-gl .ail-bill__row:nth-child(2) .ail-bill__pick { left: calc(var(--ail-margin) + 46px); }

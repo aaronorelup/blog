@@ -12,8 +12,8 @@ export const STOPS = {
   around: { pos: [0, 8.4, 30.5], look: [0, 2.9, 0.6], fov: 24, fit: 23.5, cy: 0.6 },                // the cabinet's fronts near 62 percent of the height
   bench: { pos: [0, 5.2, 27.5], look: [0, 2.9, 3.2], fov: 24, fit: 23.4, cy: 0.58 },                // the bench's front edge near 64 percent
   router: { pos: [0, 17.8, 15.6], look: [0, 0, 5.15], fov: 24, fit: 21, cy: 0.42, cyd: 0.5 },      // the three diagrams stand at the middle of the frame
-  board: { pos: [-0.4, 2.7, 29.5], look: [-0.4, 1.75, 0], fov: 24, fit: 24.4, cx: 0.565, cy: 0.44 },
-  rail: { pos: [-0.4, 3.0, 27], look: [-0.4, 2.05, 1.6], fov: 24, fit: 23.6, cy: 0.47 },
+  board: { pos: [-0.4, 7.4, 28], look: [-0.4, 0.7, 3.8], fov: 24, fit: 24.4, cx: 0.565, cy: 0.44, cyd: 0.59 },      // from above: five whole stacks, the lamp desk in front of their feet
+  rail: { pos: [-0.4, 6.4, 26.5], look: [-0.4, 1.2, 2.6], fov: 24, fit: 23.6, cy: 0.47, cyd: 0.585 },                // from above: tank and tray stand under each stack and cover no floor
 };
 const shapeOf = (w, d, r) => {
   const x = w / 2, z = d / 2;
