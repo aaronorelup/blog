@@ -986,10 +986,26 @@ const benchWords = async (page) => {
 };
 
 const SHORT_STOPS = { worlds: [0.5, 0.95, 1.3, 1.55, 2.0, 2.62, 2.8], opening: [0.6, 1.4], grammar: [0.39, 1.58, 3.0, 3.24], lineup: [0.25, 0.44, 0.63, 1.2, 1.58, 1.9] };
-test('landscape-21 in a laptop\'s short window no word prints over a word: 1366 by 660 and 1280 by 720, every section and every beat of a world', async ({ page, isMobile }) => {
-  test.skip(isMobile, 'a phone lists its words in a sheet: landscape-8 walks it');
+test('landscape-21 in a short window no word prints over a word: a laptop at 1366 by 660 and 1280 by 720, and a small phone at 375 by 667, every section, every beat of a world and every floor of the line-up', async ({ page, isMobile }) => {
   test.setTimeout(1_800_000);   // two walks of 70 stops
   const bad = [];
+  if (isMobile) {
+    // a small phone (round 3, N-5: the line-up's note line printed over its first answer, and the board of best at
+    // over its title). Each of the line-up's nine floors, as the phone's chips step them
+    await page.setViewportSize({ width: 375, height: 667 });
+    await open(page);
+    await light(page);
+    for (const s of await sections(page)) {
+      const stops = s.name === 'lineup' ? Array.from({ length: 9 }, (_, i) => +(0.25 + 0.19 * i).toFixed(2)) : SHORT_STOPS[s.name] || [0.3, 0.6, 0.9].map((f) => +(f * s.screens).toFixed(2));
+      for (const u of stops) {
+        await go(page, s.id, u, 700);
+        const over = await page.evaluate(OVERLAPS);
+        if (over.length) bad.push(`375x667 ${s.id} at ${u}: ${over.slice(0, 4).join(' | ')}`);
+      }
+    }
+    expect(bad).toEqual([]);
+    return;
+  }
   for (const size of [{ width: 1366, height: 660 }, { width: 1280, height: 720 }]) {
     await page.setViewportSize(size);
     await open(page);

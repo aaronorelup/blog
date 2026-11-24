@@ -104,14 +104,18 @@
 @media (max-width: 899px) {
   .ail-lu__sent { font-size: 14px; }
   /* phone, 3D page: slim stacks in the top third, then the nine names as tappable chips, the sentence, the answers */
-  .ail-gl .ail-lu .ail-stage::before { content: ''; position: absolute; left: 0; right: 0; top: 35svh; bottom: 0; background: rgba(248, 249, 251, .94); box-shadow: 0 -1px 0 var(--ail-line); }
-  .ail-gl .ail-lu__wrap { position: absolute; left: var(--ail-margin); right: var(--ail-margin); top: calc(35svh + 10px); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+  .ail-gl .ail-lu .ail-stage::before { content: ''; position: absolute; left: 0; right: 0; top: var(--lu-sheet); bottom: 0; background: rgba(248, 249, 251, .94); box-shadow: 0 -1px 0 var(--ail-line); }
+  .ail-gl .ail-lu__wrap { position: absolute; left: var(--ail-margin); right: var(--ail-margin); top: calc(var(--lu-sheet) + 10px); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
   .ail-gl .ail-lu__layer { width: 100%; height: auto; min-height: 44px; padding: 0 4px; font-size: 12px; letter-spacing: .02em; text-align: center; white-space: normal; color: var(--ail-fg); background: var(--ail-floor); box-shadow: inset 0 0 0 1px var(--ail-line); }
   .ail-gl .ail-lu__layer[aria-pressed='true'] { background: var(--ail-fg); color: var(--ail-bg); }
   .ail-gl .ail-lu__layer .ail-lu__k, .ail-gl .ail-lu__layer[aria-pressed='true'] .ail-lu__k { display: none; }
   /* the five answers stand at the foot of the sheet, or right under the sentence where the window is tall (a tablet) */
   .ail-gl .ail-lu { --lu-foot: max(var(--ail-margin), 65svh - 508px); }
-  .ail-gl .ail-lu__now { top: calc(35svh + 158px); right: var(--ail-margin); width: auto; }
+  /* the sheet begins a third of the way down, or higher in a short window: under it the chips (150 px), the sentence
+     with its note line (at most 67), the five answers (220) and the foot. Below about 700 px a note printed over the
+     first answer (round 3, N-5) */
+  .ail-gl .ail-lu { --lu-sheet: max(88px, min(35svh, 100svh - var(--lu-foot) - 451px)); }
+  .ail-gl .ail-lu__now { top: calc(var(--lu-sheet) + 158px); right: var(--ail-margin); width: auto; }
   .ail-gl .ail-lu__say .ail-lu__head { display: none; }
   .ail-gl .ail-lu__say .ail-sentence { margin: 0; font-size: 19px; }
   .ail-gl .ail-lu__row.is-lit .ail-lu__cell { position: fixed; left: var(--ail-margin); right: var(--ail-margin); max-width: none; width: auto; text-align: left; }

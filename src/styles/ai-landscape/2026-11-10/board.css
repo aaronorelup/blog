@@ -62,6 +62,10 @@
   .ail-gl .ail-ba[data-mode='board'] .ail-stage::before { top: var(--ail-top); }
   .ail-gl .ail-ba[data-mode='board'] .ail-ba__title { top: calc(var(--ail-top) + 8px); font-size: 26px; max-width: none; }
   .ail-gl .ail-ba[data-mode='board'] .ail-bd { left: var(--ail-margin); right: var(--ail-margin); top: auto; bottom: var(--ail-margin); --bd-row: clamp(20px, calc((100svh - 250px) / 22), 24px); }
+  /* 22 rows a finger can hit need about 720 px: in a shorter window the board ends under the title and scrolls in
+     itself, the marks staying at its head (round 3: at 375 by 667 it stood over the title and under the chrome) */
+  .ail-gl .ail-ba[data-mode='board'] .ail-bd { max-height: calc(100svh - var(--ail-top) - 46px - var(--ail-margin)); overflow-y: auto; scrollbar-width: thin; }
+  .ail-gl .ail-bd__table thead :is(th, td) { position: sticky; top: 0; z-index: 1; background: var(--ail-floor); }
   .ail-gl .ail-bd__table { width: 100%; }
   .ail-gl .ail-bd__gn { width: 18px; }
   .ail-gl .ail-bd__nh { width: auto; }
