@@ -657,8 +657,13 @@ test('landscape-14 a resize keeps the place: a phone turned sideways reads the t
   await page.waitForFunction(() => window.__landscape.ready && window.__landscape.tier === 'low' && window.__landscape.frames > 0, null, { timeout: 60_000 });
   // both are read in the same state: the opening has drawn itself in and its tour has begun (4 s with no input), and
   // the tour's chip has faded in. A fixed wait of 5 s read one page just before its tour and the other just after,
-  // on a machine quick enough to get there in 5 s
-  const toured = async (p) => { await p.waitForFunction(() => window.__landscape.opening && window.__landscape.opening.tour === 'on', null, { timeout: 90_000 }); await p.waitForTimeout(900); };
+  // on a machine quick enough to get there in 5 s; a fixed 900 ms after the tour began read a fresh page's chip still
+  // at opacity 0 on a machine that draws three frames a second (a CSS fade moves only with the frames)
+  const toured = async (p) => {
+    await p.waitForFunction(() => window.__landscape.opening && window.__landscape.opening.tour === 'on', null, { timeout: 90_000 });
+    await p.waitForFunction(() => getComputedStyle(document.querySelector('.ail-open__tour')).opacity === '1', null, { timeout: 30_000 });
+    await p.waitForTimeout(400);
+  };
   await toured(page);
   const fresh = await browser.newPage({ baseURL, viewport: { width: 768, height: 1024 } });
   await open(fresh);
