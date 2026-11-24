@@ -1,13 +1,18 @@
-// The house set, version 2 (studio pass, round 3): a far wall, slow dust, and one paper board right behind each
-// stack as its backing card. A section may raise the boards (bay.up) and give each one sign (bay.tile, scene/sign.js),
+// The house set, version 2 (studio pass, round 3): a far wall with its picture, slow dust, and one paper board right
+// behind each stack as its backing card. A section may raise the boards (bay.up) and give each one sign (bay.tile, scene/sign.js),
 // send them down into the floor (bay.show), or stand a paper word in the room (word()). Unlit house paper only: it
 // adds no hue, goes dark with the room, and is drawn outside an open iris. studio.js builds it, row.js tells the bays.
 import { BufferGeometry, Float32BufferAttribute, Mesh, PlaneGeometry, Points, Vector3 } from 'three';
 import { smooth } from '../core/clock.js';
 import { owner } from '../worlds/index.js';
+import { art } from '../worlds/_default.js';
 import { drawSign, signKey } from './sign.js';
 
 const WALL = { z: -26, w: 80, h: 30, colour: '#E6E8ED', line: '#C9CDD5' };
+// The wall's picture (art/house/plate): white paper, one long shelf of small blank models, bars of window light. The
+// shelf's front edge is `at` of the picture's height from its top, and hangs `shelf` above the floor: over the boards
+// from the row. The picture melts into the plain wall at its edges, so a window of any shape sees wall and no end of it
+const PLATE = { w: 50, h: 28.125, at: 0.575, shelf: 9.3, soft: 0.07 };
 // A board: 3.2 behind its stack, as tall as the stack's lid plate and `over` more, seen from the row stop (its eye
 // height and middle). Raised it is `rise` taller and carries a sign `sign` square, `head` under its top edge.
 export const BAY = { z: -3.2, w: 3.3, tall: 14, colour: '#F8F9FB', torn: 0.14, over: 0.45, low: 0.3, rise: 2.6, sign: 2.3, head: 0.25, eye: 2.2, mid: -0.5 };
@@ -25,7 +30,11 @@ export function createSet(ctx, xs) {
   const wall = add(new Mesh(new PlaneGeometry(WALL.w, WALL.h), paper(WALL.colour, { foot: [3 / WALL.h, 0.06] })), -9.5);
   wall.position.set(0, WALL.h / 2, WALL.z);
   const join = add(new Mesh(new PlaneGeometry(WALL.w, 0.045), paper(WALL.line)), -9.4);
-  join.position.set(0, 0.022, WALL.z + 0.02);
+  join.position.set(0, 0.022, WALL.z + 0.08);
+  const plate = add(new Mesh(new PlaneGeometry(PLATE.w, PLATE.h), mats.paper(null, { side: -1, blended: true, soft: PLATE.soft })), -9.45);
+  plate.position.set(0, PLATE.shelf - PLATE.h * (0.5 - PLATE.at), WALL.z + 0.04);
+  let hung = false;
+  textures.load((ctx.quality.small && art('house', 'plate-s')) || art('house', 'plate')).then((tex) => { if (tex) { plate.material.uniforms.uMap.value = tex; hung = true; } });
 
   // a board behind each stack: a flat with a torn top edge, its soft shadow a little to the right, and the plane its
   // sign is drawn on. The five boards are one mesh and their five shadows another (two draw calls): four corners
@@ -124,6 +133,7 @@ export function createSet(ctx, xs) {
     update(show = 1, dt = 0.016) {
       const on = show > 0.01;
       wall.visible = join.visible = on;
+      plate.visible = on && hung;
       const near = 1 / (1 + -BAY.z / reach());
       // on a narrow window the stacks of some sections stand closer: a board is never wider than its place in the row
       // (the row of the boards that are there: in my stack two lenders stand alone, wherever the other three were)
