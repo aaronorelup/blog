@@ -246,16 +246,16 @@ export function create(ctx, el, sec) {
     lenders(null);
   }
   const base = createBase(ctx);
-  base.show = 0; base.update();
-  show(false);
+  base.show = 0; base.update(); show(false);
 
-  // for the tests: the figures standing, the cord between the pair, who lends
+  // for the tests: the figures standing (and where on the screen), the cord between the pair, who lends
   ctx.state.compare = { ...(ctx.state.compare || {}), mystack: {
-    cast: () => cast.map((c) => ({ on: c.fig.mesh.visible && c.fig.k > 0.9, kind: c.fig.orb ? 'orb' : 'cut', piece: c.p.id, owner: c.p.owner })),
+    cast: () => cast.map((c) => ({ on: c.fig.mesh.visible && c.fig.k > 0.9, kind: c.fig.orb ? 'orb' : 'cut', piece: c.p.id, owner: c.p.owner, at: c.fig.mesh.visible ? labels.project(c.fig.mesh.position) : null })),
     cords: () => lines.filter((l) => l.cord).map((l) => ({ from: l.pa.id, to: l.pb.id, on: l.cord.show > 0.01 && l.cord.draw >= 1, dash: l.cord.dash, bead: l.cord.bead == null ? null : +l.cord.bead.toFixed(2) })),
     lenders: () => row.towers.filter((tw) => tw.show > 0.5).map((tw) => ({ id: tw.id, x: +(tw.x + tw.shift).toFixed(2), lends: pieces.filter((p) => p.owner === tw.id).map((p) => +p.x.toFixed(2)) })),
     sizes: () => pieces.map((p) => ({ id: p.id, layer: p.layer, w: p.layer === 'you' ? ME * 2 : p.box.w, thing: p.obj && p.obj.mesh.visible ? THING : 0 })),
     official: () => st.official,
+    figure: (id) => { const c = cast.find((x) => x.p.id === id); return c ? c.fig.mesh : null; },      // (the mesh, to draw a frame without it)
   } };
 
   return {

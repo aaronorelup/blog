@@ -1065,6 +1065,51 @@ const BOARDS = () => {
     };
   });
 };
+// What is drawn, read from the screen (review round 3, N-4: the reads above are the scene's own bookkeeping, and a
+// sign repainted but never sent to the GPU passed them). A patch as a 24 by 24 grey grid, normalised so that light and
+// shade do not count, only the drawing; and the mean colour of its top left corner (inside a sign's square).
+const GRID = 24;
+async function grid(png) {
+  const px = [...(await sharp(png).flatten({ background: '#F8F9FB' }).resize(GRID, GRID, { fit: 'fill' }).removeAlpha().raw().toBuffer())];
+  const g = [];
+  for (let j = 0; j < px.length; j += 3) g.push(0.299 * px[j] + 0.587 * px[j + 1] + 0.114 * px[j + 2]);
+  const m = g.reduce((a, b) => a + b, 0) / g.length, sd = Math.sqrt(g.reduce((a, b) => a + (b - m) ** 2, 0) / g.length) || 1;
+  const corner = [0, 1, 2].map((c) => { let t = 0; for (let y = 3; y < 6; y++) for (let x = 3; x < 6; x++) t += px[(y * GRID + x) * 3 + c]; return t / 9; });
+  return { z: g.map((v) => (v - m) / sd), corner };
+}
+const apart = (a, b) => a.reduce((t, v, j) => t + Math.abs(v - b[j]), 0) / a.length;
+const ratio = (page, r) => page.evaluate((r) => { const c = window.__landscape.debug.ctx; c.quality.ratio = r; c.renderer.setPixelRatio(r); c.renderer.setSize(innerWidth, innerHeight, false); c.worlds.resize(innerWidth, innerHeight, r); }, r);
+// Each raised sign where it is drawn (CSS px, from its place in the world) and the page's own drawing of it (the canvas
+// its texture is made from)
+const SHEETS = () => {
+  const c = window.__landscape.debug.ctx;
+  const at = (x, y, z) => c.labels.project({ x, y, z });
+  return c.studio.bays.map((b, i) => {
+    const s = b.sign;
+    s.updateWorldMatrix(true, false);
+    const k = s.getWorldScale(s.position.clone()), p = s.getWorldPosition(s.position.clone());
+    const hw = s.geometry.parameters.width * k.x / 2, hh = s.geometry.parameters.height * k.y / 2;
+    const [x0, x1, y0, y1] = [at(p.x - hw, p.y, p.z).x, at(p.x + hw, p.y, p.z).x, at(p.x, p.y + hh, p.z).y, at(p.x, p.y - hh, p.z).y];
+    return { p: c.row.towers[i].id, key: b.key, box: { x: x0, y: y0, width: x1 - x0, height: y1 - y0 }, drawn: b.sheet.texture.image.toDataURL() };
+  });
+};
+// The five signs as the screen shows them, once nothing moves, drawn at a pixel ratio of 1 for the one look
+async function signsSeen(page) {
+  let was = await page.evaluate(SHEETS);
+  for (let k = 0; k < 40; k++) {
+    await frames(page, 1);
+    const now = await page.evaluate(SHEETS);
+    const moved = now.some((x, j) => Math.abs(x.box.x - was[j].box.x) + Math.abs(x.box.y - was[j].box.y) > 0.5);
+    was = now;
+    if (!moved) break;
+  }
+  await ratio(page, 1);
+  await frames(page, 2);
+  const out = [];
+  for (const x of was) out.push({ p: x.p, key: x.key, screen: await grid(await page.screenshot({ clip: x.box })), drawn: await grid(Buffer.from(x.drawn.split(',')[1], 'base64')) });
+  await ratio(page, 0.25);
+  return out;
+}
 // The signs the page's own data asks for on floor i: a company, the layer, its state there and its parts.
 const SIGNS = (i) => { const d = JSON.parse(document.getElementById('ail-data').textContent); return d.order.map((id) => `${id}|${d.layers[i]}|${d.p[id].stack[i].s}|${d.p[id].stack[i].p.slice(0, 6).map((q) => q[0] + q[1]).join(',')}`); };
 
@@ -1084,6 +1129,7 @@ test('landscape-24 a board stands right behind each stack and none in a gap; in 
   }
   // the line-up: voice, then the model floor, then all nine at rest
   const up = () => page.evaluate(() => window.__landscape.compare.lineup.signs().every((s) => s.rise > 0.99 && s.out > 0.99));
+  const seen = {};
   for (const [u, i] of [[0.44, 1], [1.01, 4]]) {
     await go(page, 'line-up', u, 600);
     expect(await page.evaluate(() => window.__landscape.compare.lineup.tall), 'this window has the height for the signs').toBe(true);
@@ -1096,6 +1142,18 @@ test('landscape-24 a board stands right behind each stack and none in a gap; in 
       expect(b.sign[0], `${b.p} floor ${i + 1}: the sign stands under the words above it`).toBeGreaterThanOrEqual(words - 1);
       if (b.lid != null) expect(b.sign[1], `${b.p} floor ${i + 1}: the sign never touches the lid plate`).toBeLessThan(b.lid - 1);
       expect(Math.abs((b.left + b.right) / 2 - (b.stack[0] + b.stack[1]) / 2), `${b.p}: the raised board is still behind its stack`).toBeLessThan((b.stack[1] - b.stack[0]) * 0.2);
+    }
+    seen[i] = await signsSeen(page);
+  }
+  // and the screen shows them: each sign looks more like the page's drawing of its own key than like the other floor's,
+  // and its glass is its own company's colour, as drawn (not dimmed, not another's)
+  for (const [i, j] of [[1, 4], [4, 1]]) {
+    for (const x of seen[i]) {
+      const other = seen[j].find((y) => y.p === x.p);
+      if (x.key !== other.key) expect(apart(x.screen.z, x.drawn.z), `${x.p} floor ${i + 1}: the sign on screen is its own floor's, not floor ${j + 1}'s`).toBeLessThan(apart(x.screen.z, other.drawn.z));
+      const nearest = seen[i].map((y) => [y.p, apart(x.screen.corner, y.drawn.corner)]).sort((a, b) => a[1] - b[1])[0][0];
+      expect(nearest, `${x.p} floor ${i + 1}: its glass on screen is its own company's colour`).toBe(x.p);
+      expect(Math.max(...x.screen.corner.map((v, c) => Math.abs(v - x.drawn.corner[c]))), `${x.p} floor ${i + 1}: as drawn, not dimmed or tinted`).toBeLessThan(30);
     }
   }
   expect((await page.evaluate(SIGNS, 4)).some((k) => /^xai\|.*anthropic/.test(k)), 'on the model floor one sign holds another company\'s bead').toBe(true);
@@ -1226,6 +1284,19 @@ test('landscape-27 around the five is a cabinet of nine drawers, a glyph on ever
   expect(s.lenders.map((l) => l.id).sort(), 'only the companies that lend him a piece stand behind').toEqual(lent(first));
   expect(behind(s.lenders), `each lender stands behind what it lends: ${JSON.stringify(s.lenders)}`).toBe(true);
   expect(await benchWords(page), 'every name under the bench is whole, and both swaps can be pressed').toEqual([]);
+  // and the screen shows both figures: one frame drawn with each and one without it differ where it stands (N-4)
+  for (const c of s.cast) {
+    const seen = await page.evaluate(([id, at]) => {
+      const x = window.__landscape.debug.ctx, r = x.renderer, gl = r.getContext(), mesh = window.__landscape.compare.mystack.figure(id), k = r.getPixelRatio();
+      const read = () => { r.render(x.scene, x.camera); const px = new Uint8Array(4 * 9); gl.readPixels(Math.round(at.x * k) - 1, Math.round((innerHeight - at.y) * k) - 1, 3, 3, gl.RGBA, gl.UNSIGNED_BYTE, px); return [0, 1, 2].map((ch) => px.filter((_, j) => j % 4 === ch).reduce((a, b) => a + b, 0) / 9); };
+      const drawn = read();
+      mesh.visible = false;
+      const bare = read();
+      mesh.visible = true;
+      return Math.max(...drawn.map((v, ch) => Math.abs(v - bare[ch])));
+    }, [c.piece, c.at]);
+    expect(seen, `the figure on ${c.piece} is drawn where it stands`).toBeGreaterThan(25);
+  }
 
   // a swap: the figure of a piece that is no longer his own leaves, the lenders follow, the cord follows the stamp
   for (const kind of ['router', 'worker', 'router']) {
@@ -1288,6 +1359,13 @@ test('landscape-27 around the five is a cabinet of nine drawers, a glyph on ever
     expect(l.glow, 'and the lamp is lit').toBeGreaterThan(0.9);
     expect(l.chrome, 'the words are paper on ink while it is').toBe('dark');
     expect(l.pressed, 'the lit diagram is the one whose name is pressed').toBe(want);
+    // and the screen shows the pool: the floor in front of the lit diagram is brighter than in front of the others (N-4)
+    // (a phone frames the lit diagram: a floor out of the window is not compared)
+    const floor = await page.evaluate((at) => at.map((x) => { const p = window.__landscape.debug.ctx.labels.project({ x, y: 0, z: 7.3 }); return p.x > 8 && p.x < innerWidth - 8 && p.y > 8 && p.y < innerHeight - 8 ? p : null; }), l.at);
+    expect(floor[want], `at ${t} the lit diagram's floor is in the window`).not.toBe(null);
+    const tones = [];
+    for (const p of floor) tones.push(p ? await tone(page, [p.x, p.y]) : null);
+    for (const [k, v] of tones.entries()) if (k !== want && v != null) expect(tones[want] - v, `at ${t} the pool on diagram ${want + 1} is brighter than the floor at diagram ${k + 1} (${tones.map((x) => x && Math.round(x))})`).toBeGreaterThan(25);
   }
   await page.locator('#router .ail-rt__name').first().click();
   await expect.poll(async () => { const l = await lamp(); return l.lit === 0 && Math.abs(l.x - l.at[0]) < 0.2; }, { timeout: 30_000, message: 'a pick moves the lamp' }).toBe(true);
