@@ -1,21 +1,39 @@
-// Provider-agnostic design and billing (SPEC 2.9.4, 2.9.5), two sections in front of the row. "board": twenty
-// lamps on a dark glass desk on the floor, one column under each whole stack, each the page's own lamp shape in paper white. "rail": a tank and a meter for each
-// company on a rail, a bead that runs from the tank and switches to the meter when it runs dry. On the rail the
-// scroll picks the company and the trend (no timer): a visitor's own pick holds for a tenth of a screen of scroll.
+// Provider-agnostic design and billing (SPEC 2.9.4, 2.9.5), two sections on the floor in front of the row, seen from
+// above so the five stacks stay whole. "board": twenty lamps on a low desk, one column under each stack, each the
+// page's own lamp shape in paper white on ink. "rail": a tank and a tray for each company, and beads that land in the
+// tray once the tank is dry. The scroll picks the company and the trend (no timer). Both are seated from the window
+// (seat.js frameIn): the whole picture stands between the words above it and the words under it, at any size.
 import { BufferGeometry, CylinderGeometry, ExtrudeGeometry, Group, InstancedMesh, LineBasicMaterial, LineSegments, Mesh, MeshBasicMaterial, Object3D, PlaneGeometry, Shape, SphereGeometry, Vector3 } from 'three';
 import { easeIO, smooth, span } from '../core/clock.js';
 import { $, $$, announce } from '../core/dom.js';
 import { ROW_X } from '../scene/row.js';
+import { frameIn } from '../scene/seat.js';
+import { BAY, LID_TOP } from '../scene/set.js';
 import { owner, world } from '../worlds/index.js';
 import { block, dot, drop, INK, roundBox, setGlass, shadow, STOPS } from '../scene/bench.js';
 
-// The lamp desk: a low wedge of dark glass on the floor in front of the row, its face tilted up to the camera. Its
-// middle stands DESK.z in front of the row, the face is DESK.deep from its far edge to its near one, DESK.lip high there
-const DESK = { z: 9.6, deep: 5.2, tilt: (14 * Math.PI) / 180, lip: 0.1, pad: 0.8, inset: 0.12 };
+// The lamp desk: a low wedge of house glass on the floor in front of the row, its face an ink inlay tilted up to the
+// camera. Its middle stands DESK.z in front of the row, the face is DESK.deep from its far edge to its near one
+const DESK = { z: 9.6, deep: 5.2, tilt: (14 * Math.PI) / 180, lip: 0.1, pad: 0.8, inset: 0.12, rim: 0.16, ink: '#101114' };
 const RZ = 8.6;                       // the billing rail stands this far in front of the row: from above, clear of the stacks' feet
 const DARK = { glass: '#17181C', rim: '#5B606A', glow: '#17181C' };
-const LABELS = 152;                   // CSS px the four row labels need at the desk's left
 const TAN = Math.tan((24 * Math.PI) / 360);
+const PX_MIN = 40;                    // a window that would draw a unit smaller than this gives up the lid plates (a mark is whole or absent) and seats again
+const BASE = { board: { ...STOPS.board }, rail: { ...STOPS.rail } };
+const bare = { board: false, rail: false };      // the lid plates are away and the boards stand low
+const edges = () => { const W = window.innerWidth; return [Math.max(40, Math.min(96, W / 15)), W - Math.max(24, Math.min(64, W / 22.5))]; };      // clear of the rail of dots, and of the right edge
+// What bounds the five stacks: their lid plates (or, bare, the low boards) and their feet
+const stacks = (row, low) => [...ROW_X.map((x, c) => [x, row.towers[c].height + (low ? BAY.low + 0.3 : LID_TOP + BAY.over + 0.5), 0]), [ROW_X[0] - 1.4, 0, 1.2], [ROW_X[ROW_X.length - 1] + 1.4, 0.4, 1.2]];
+// Where the camera of a stop stands in this window, and how much closer together things `z` in front of the row at
+// height y must stand to be seen right under the stacks
+function under(stop) {
+  const look = new Vector3(...stop.look), fwd = new Vector3(...stop.pos).sub(look);
+  const dist = Math.max(fwd.length(), stop.fit / (2 * TAN * (window.innerWidth / window.innerHeight)));
+  fwd.normalize();
+  const eye = look.addScaledVector(fwd, dist);
+  fwd.negate();
+  return (y, z) => ((y - eye.y) * fwd.y + (z - eye.z) * fwd.z) / ((1.35 - eye.y) * fwd.y - eye.z * fwd.z);
+}
 
 // A wedge w wide: a flat foot, an upright back, and the tilted face from the back's top down to the near lip.
 function wedge(w) {
@@ -54,9 +72,9 @@ function frame(ctx, el, sec, build) {
 // ---- 2.9.4: the lamp desk
 function board(ctx, el, sec) {
   return frame(ctx, el, sec, (group, pin) => {
-    const { rig, row, reduced } = ctx;
-    const base = { ...STOPS.board };
-    const mid = base.look[0];
+    const { rig, row, reduced, studio } = ctx;
+    const mid = BASE.board.look[0];
+    const claim = $('.ail-agn__claim', el), key = $('.ail-agn__key', el), more = $('.ail-agn__more', el);
     // each lamp is the cell's own button, pinned on the desk's face: the same shape the legend and the phone's table show
     const lamps = $$('.ail-agn__row', el).flatMap((tr, c) => $$('.ail-agn__cell', tr).map((td, r) => {
       const btn = $('.ail-fact', td), at = new Vector3();
@@ -66,60 +84,65 @@ function board(ctx, el, sec) {
       if (print) { print.renderOrder = 6; group.add(print); }
       return { c, r, at, print, lamp: $('.ail-lampx', btn), on: 0 };
     }));
-    const heads = $$('.ail-agn__q', el).map((th, r) => { const at = new Vector3(); pin(th, at, { ax: 1, ay: 0.5 }); return { r, at }; });
-    const names = $$('.ail-agn__p', el).map((th, c) => { const at = new Vector3(); pin(th, at, { ax: 0.5, ay: 0, dy: 8 }); return { c, at }; });
-    // Where a thing stands on the desk to be seen right under a stack: the desk is nearer the camera than the row,
-    // so its columns stand closer together, a little more with every row toward the camera
-    const eye = new Vector3(), fwd = new Vector3(), look = new Vector3();
-    const squeeze = (y, z) => ((y - eye.y) * fwd.y + (z - eye.z) * fwd.z) / ((1.35 - eye.y) * fwd.y - eye.z * fwd.z);
-    let slab = null, shade = null, wide = 0;
+    const heads = $$('.ail-agn__q', el).map((th, r) => { const at = new Vector3(); pin(th, at, { ax: 1, ay: 0.5 }); return { r, at, th }; });
+    const names = $$('.ail-agn__p', el).map((th, c) => { const at = new Vector3(); pin(th, at, { ax: 0.5, ay: 0, dy: 8 }); return { c, at, th }; });
+    let slab = null, face = null, shade = null, wide = 0, half = 0;
+    // The desk under this window's camera: as wide as its far row and a margin, each column right under its stack
     function place() {
-      const s = STOPS.board;
-      look.set(...s.look); fwd.set(...s.pos).sub(look);
-      const dist = Math.max(fwd.length(), s.fit / (2 * TAN * (window.innerWidth / window.innerHeight)));
-      fwd.normalize(); eye.copy(look).addScaledVector(fwd, dist); fwd.negate();
-      const [yFar, zFar] = onDesk(0), [, zNear] = onDesk(1);
-      const half = (ROW_X[ROW_X.length - 1] - mid) * squeeze(yFar, zFar) + DESK.pad;      // as wide as its far row, and a margin
+      const squeeze = under(STOPS.board);
+      const [yFar, zFar] = onDesk(0), [, zNear] = onDesk(1), [yMid, zMid] = onDesk(0.5);
+      half = (ROW_X[ROW_X.length - 1] - mid) * squeeze(yFar, zFar) + DESK.pad;
       if (Math.abs(half * 2 - wide) > 0.05) {
         wide = half * 2;
-        drop(slab); drop(shade);
+        drop(slab); drop(face); drop(shade);
         slab = block(ctx, wedge(wide), DARK, DESK.lip + DESK.deep * Math.sin(DESK.tilt), { alpha: 0.9 });
         slab.position.set(mid, 0, DESK.z);
+        face = new Mesh(new PlaneGeometry(wide - 2 * DESK.rim, DESK.deep - 2 * DESK.rim).rotateX(DESK.tilt - Math.PI / 2), ctx.mats.paper(null, { side: 0, plain: true, tint: DESK.ink, blended: true, opacity: 0 }));
+        face.position.set(mid, yMid + 0.012, zMid); face.renderOrder = 5;
         shade = shadow(ctx, wide, DESK.deep, { opacity: 0.16, soft: 0.3 });
         shade.position.set(mid + 0.35, 0.004, DESK.z + 0.25);
-        group.add(slab, shade);
+        group.add(slab, face, shade);
       }
       const line = (r) => onDesk(DESK.inset + (1 - 2 * DESK.inset) * (r / Math.max(1, heads.length - 1)));
-      lamps.forEach((l) => { const [y, z] = line(l.r); l.at.set(mid + (ROW_X[l.c] - mid) * squeeze(y, z), y + 0.02, z); if (l.print) l.print.position.copy(l.at); });
+      lamps.forEach((l) => { const [y, z] = line(l.r); l.at.set(mid + (ROW_X[l.c] - mid) * squeeze(y, z), y + 0.03, z); if (l.print) l.print.position.copy(l.at); });
       heads.forEach((h) => { const [y, z] = line(h.r); h.at.set(mid - half - 0.25, y, z); });
       names.forEach((n) => n.at.set(mid + (ROW_X[n.c] - mid) * squeeze(DESK.lip, zNear), 0, zNear + 0.05));
     }
-    // The camera's seat, from the window: the row labels start clear of the rail (96 px at 1440), the stacks end
-    // 64 px inside the right edge, and stacks and labels sit as one centred block. A phone keeps the plain row
+    // The camera's seat, from the window: stacks, desk, row labels and names stand as one block between the claim
+    // above and the key under it. Too short a window for that at 40 px a unit: the lid plates leave. A phone keeps the plain row
     function seat() {
-      Object.assign(STOPS.board, base);
-      if (ctx.phone) STOPS.board.cx = 0.5;
-      else {
-        const W = window.innerWidth, H = window.innerHeight;
-        const left = Math.max(40, Math.min(96, W / 15)), right = Math.max(24, Math.min(64, W / 22.5));
-        const room = Math.max(320, W - left - LABELS - right);
-        const band = ROW_X[ROW_X.length - 1] - ROW_X[0] + 2.8;                // the five stacks and a little air
-        const dist = Math.max(Math.hypot(base.pos[1] - base.look[1], base.pos[2] - base.look[2]), (band * H) / (2 * TAN * room));
-        STOPS.board.fit = Math.max(base.fit, dist * 2 * TAN * (W / H));
-        STOPS.board.cx = (left + LABELS + room / 2 + (mid * H) / (2 * TAN * dist)) / W;      // (the last term: where x = 0 stands)
+      Object.assign(STOPS.board, BASE.board);
+      bare.board = false;
+      if (ctx.phone) { STOPS.board.cx = 0.5; place(); return; }
+      const [l, r] = edges();
+      const box = { l, r, t: claim.getBoundingClientRect().bottom + 14, b: Math.min(key.getBoundingClientRect().top, more.getBoundingClientRect().top) - 10 };
+      const label = Math.max(...heads.map((h) => h.th.offsetWidth)) + 4, name = names[0].th.offsetHeight + 12;
+      for (const low of [false, true]) {
+        bare.board = low;
+        let px = 0;
+        for (let i = 0; i < 3; i++) {
+          place();
+          px = frameIn(STOPS.board, BASE.board, [...stacks(row, low), ...heads.map((h) => [h.at.x, h.at.y, h.at.z, label, 16, 0, 16]),
+            ...names.map((n) => [n.at.x, n.at.y, n.at.z, 44, 0, 44, name]), [mid + half, DESK.lip, onDesk(1)[1], 0, 0, 8, 8]], box);
+        }
+        place();
+        if (px >= PX_MIN) break;
       }
-      place();
+      seatRail(ctx);
     }
     seat();
     window.addEventListener('resize', seat);
     return {
       stops: [0.42],
       update(dt, u) {
-        const k = smooth(span(u, 0, 0.14)) * (1 - smooth(span(u, 0.6, 0.7)));
-        if (u < 0.56) rig.to(STOPS.board); else rig.mix(STOPS.board, STOPS.rail, easeIO(span(u, 0.56, 0.7)));
+        // the desk leaves before the camera moves on to the rail, so no label rides the move
+        const k = smooth(span(u, 0, 0.14)) * (1 - smooth(span(u, 0.5, 0.58)));
+        if (u < 0.58) rig.to(STOPS.board); else rig.mix(STOPS.board, STOPS.rail, easeIO(span(u, 0.58, 0.7)));
         rig.yaw = 0.04; rig.pitch = 0.015;
-        for (const tw of row.towers) tw.char.show = 0;
+        const low = u < 0.64 ? bare.board : bare.rail;
+        row.towers.forEach((tw, c) => { tw.char.show = 0; if (low) { tw.lid.show = 0; studio.bays[c].low = true; } });
         setGlass(slab, { show: k });
+        face.material.uniforms.uOpacity.value = k; face.visible = k > 0.01;
         shade.material.opacity = 0.16 * k;
         // the lamps come on row by row, left to right
         lamps.forEach((l) => {
@@ -129,21 +152,55 @@ function board(ctx, el, sec) {
         });
         return k;
       },
-      dispose() { window.removeEventListener('resize', seat); Object.assign(STOPS.board, base); },
+      dispose() { window.removeEventListener('resize', seat); Object.assign(STOPS.board, BASE.board); },
     };
   });
 }
 
-// ---- 2.9.5: the billing rail. Each company's cycle: the tank drains (what you bought), the switch, beads land in
-// the tray one at a time (what you pay as you use), and a new month fills the one and clears the other
+// ---- 2.9.5: the billing rail. One cycle, the same for every company and in step (the page's data gives all five a
+// plan, pay per use and a rule at the limit, and no amounts: a frame in which one tray held more than another would
+// compare what the data does not). The tank drains (what you bought), the switch, beads land in the tray one at a
+// time (what you pay as you use), and a new month fills the one and clears the other
 const CYCLE = 9, DRAIN = 4.2, SWITCH = 4.4, METER = 8, PILE = 8;
 const TANK = { r: 0.46, h: 1.5, x: -0.62 }, TRAY = { w: 0.98, h: 0.1, d: 0.52, x: 0.76 }, BEAD = 0.1, RAIL = 0.12;
+// The rail under this window's camera: how much closer its five places stand than the stacks, and its half length
+const railAt = () => { const k = under(STOPS.rail)(0.8, RZ); return [k, (ROW_X[ROW_X.length - 1] - BASE.rail.look[0]) * k + 1.5]; };
+// Its camera's seat, from the window: stacks, tanks and rail stand as one block under the claim and the picked
+// company's card (it hangs 200 px down from the claim's top: the stylesheet) and over the tallest trend sentence
+function seatRail(ctx) {
+  const el = document.getElementById('billing');
+  Object.assign(STOPS.rail, BASE.rail);
+  bare.rail = false;
+  if (ctx.phone || !el) return;
+  const mid = BASE.rail.look[0], [l, r] = edges();
+  const claim = $('.ail-bill__claim', el).getBoundingClientRect(), list = $('.ail-bill__trends', el);
+  const tall = Math.max(...$$('.ail-bill__trend', el).map((li) => { const on = li.classList.contains('is-on'); if (!on) li.style.display = 'block'; const h = li.offsetHeight; if (!on) li.style.display = ''; return h; }));
+  const b = list.getBoundingClientRect().bottom - tall - 12;
+  // two ways to stand: under the card, as wide as the window, or left of the card and as high as the claim lets it.
+  // The larger picture wins (a laptop's short window takes the second)
+  const boxes = [{ l, r, t: Math.max(claim.bottom, claim.top + 200) + 12, b, fy: 1 }, { l, r: window.innerWidth - claim.left - Math.min(window.innerWidth * 0.27, 330) - 16, t: claim.bottom + 12, b, fy: 0.5 }];
+  const stand = (box, low) => {
+    let px = 0;
+    for (let i = 0; i < 3; i++) {
+      const [k, half] = railAt();
+      px = frameIn(STOPS.rail, BASE.rail, [...stacks(ctx.row, low), [mid - half, 0, RZ + 0.45, 6, 0, 0, 8], [mid + half, 0, RZ + 0.45, 0, 0, 6, 8],
+        ...ROW_X.map((x) => [mid + (x - mid) * k + TANK.x, RAIL + TANK.h, RZ])], box, box.fy);
+    }
+    return px;
+  };
+  for (const low of [false, true]) {
+    bare.rail = low;
+    const px = boxes.map((box) => { Object.assign(STOPS.rail, BASE.rail); return stand(box, low); });
+    Object.assign(STOPS.rail, BASE.rail);
+    if (stand(boxes[px[1] > px[0] * 1.02 ? 1 : 0], low) >= PX_MIN) break;
+  }
+}
 // where bead j lies in its tray, seen from the front: four, three on them, one on top. [x, y] from the tray's top middle
 const HEAP = Array.from({ length: PILE }, (_, j) => { const [n, layer] = j < 4 ? [j - 1.5, 0] : j < 7 ? [j - 5, 1] : [0, 2]; return [n * BEAD * 2.1, BEAD * (0.95 + 1.73 * layer)]; });
 function rail(ctx, el, sec) {
   return frame(ctx, el, sec, (group, pin) => {
-    const { rig, row, reduced } = ctx;
-    const mid = STOPS.rail.look[0];
+    const { rig, row, reduced, studio } = ctx;
+    const mid = BASE.rail.look[0];
     const shellGeo = new CylinderGeometry(TANK.r, TANK.r, TANK.h, 32);
     const fillGeo = new CylinderGeometry(TANK.r - 0.07, TANK.r - 0.07, 1, 32).translate(0, 0.5, 0);
     const trayGeo = roundBox(TRAY.w, TRAY.h, TRAY.d, 0.08);
@@ -168,7 +225,7 @@ function rail(ctx, el, sec) {
       // draws the tile from --o). A company with no mark file keeps its colour
       const m = world(id).marks;
       if (ctx.phone && m.lid) pick.style.setProperty('--o', `${m.plate === 'ink' ? INK : '#FFF'} url(${m.lid}) center / auto ${m.clear === 'own' ? 26 : m.clear === 1 ? 22 : 16}px no-repeat`);
-      return { id, x: ROW_X[c], c, tr, shell, fill, tray, bead, pick, at, phase: c * 1.7 };
+      return { id, x: ROW_X[c], c, tr, shell, fill, tray, bead, pick, at };
     });
     // the beads of the five trays are one mesh, in ink: what is paid belongs to nobody yet
     // (the last five instances are the beads in the air)
@@ -184,12 +241,8 @@ function rail(ctx, el, sec) {
     // Tank and tray stand right under their stack as the camera sees it: the rail is nearer the camera than the row,
     // so its five places stand closer together
     function place() {
-      const s = STOPS.rail, v = new Vector3(...s.pos).sub(new Vector3(...s.look));
-      const dist = Math.max(v.length(), s.fit / (2 * TAN * (window.innerWidth / window.innerHeight)));
-      v.normalize();
-      const eye = new Vector3(...s.look).addScaledVector(v, dist);
-      const squeeze = ((0.8 - eye.y) * -v.y + (RZ - eye.z) * -v.z) / ((1.35 - eye.y) * -v.y - eye.z * -v.z);
-      const half = (ROW_X[ROW_X.length - 1] - mid) * squeeze + 1.5;
+      seatRail(ctx);
+      const [squeeze, half] = railAt();
       drop(bar);
       bar = block(ctx, roundBox(half * 2, RAIL, 0.9, 0.06), 'house', RAIL);
       bar.position.set(mid, RAIL / 2, RZ);
@@ -241,7 +294,8 @@ function rail(ctx, el, sec) {
         const k = smooth(span(u, 0, 0.14)) * (1 - smooth(span(u, S - 0.14, S)));
         if (u < S - 0.2) rig.to(STOPS.rail); else rig.mix(STOPS.rail, rig.stops.row, easeIO(span(u, S - 0.2, S)));
         rig.yaw = 0.05; rig.pitch = 0.02;
-        row.towers.forEach((tw) => { tw.char.show = 1 - k; });
+        const low = bare.rail && u < S - 0.1;
+        row.towers.forEach((tw, c) => { tw.char.show = 1 - k; if (low) { tw.lid.show = 0; studio.bays[c].low = true; } });
         st.time += reduced ? 0 : dt;
         // the scroll picks the company and the trend, each for its share of the section. A pick by hand holds until
         // the scroll has moved a tenth of a screen
@@ -256,7 +310,7 @@ function rail(ctx, el, sec) {
         pile.material.opacity = k; pile.visible = k > 0.01;
         units.forEach((n, c) => {
           // reduced motion: every tank half full, three beads in every tray, nothing in the air
-          const p = reduced ? DRAIN / 2 : (st.time + n.phase) % CYCLE;
+          const p = reduced ? DRAIN / 2 : st.time % CYCLE;
           const level = p < DRAIN ? 1 - p / DRAIN : p < METER ? 0 : (p - METER) / (CYCLE - METER);
           const metered = p >= SWITCH && p < METER;
           const paid = reduced ? 3 : metered ? ((p - SWITCH) / (METER - SWITCH)) * PILE : 0;      // beads landed, and how far the next one is
@@ -293,7 +347,7 @@ function rail(ctx, el, sec) {
         pile.instanceMatrix.needsUpdate = true;
         return k;
       },
-      dispose() { el.removeEventListener('click', onPick); window.removeEventListener('click', onStack); window.removeEventListener('resize', place); dots.forEach((d) => d.removeEventListener('click', onDot)); units.forEach((u) => { drop(u.bead); u.pick.style.removeProperty('--o'); }); },
+      dispose() { el.removeEventListener('click', onPick); window.removeEventListener('click', onStack); window.removeEventListener('resize', place); Object.assign(STOPS.rail, BASE.rail); dots.forEach((d) => d.removeEventListener('click', onDot)); units.forEach((u) => { drop(u.bead); u.pick.style.removeProperty('--o'); }); },
     };
   });
 }
