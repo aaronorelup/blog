@@ -6,6 +6,7 @@ export const SNAPSHOTS = [
 ];
 
 // The one switch for whether the AI landscape is listed. false: a preview under the owner's review, reachable only
-// by its address. Every page and sources page says noindex, the sitemap leaves them out, no project card shows it
+// by its address. Every page and sources page says noindex and carries ao-secret (so stats-pages.txt, and with it
+// /stats, never names it: scripts/build/stats-pages.mjs), the sitemap leaves them out, no project card shows it
 // (lib/content.js projects()), and the chrome carries a small Draft label. true lists it: none of those.
 export const LISTED = false;

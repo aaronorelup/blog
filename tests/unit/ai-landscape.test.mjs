@@ -275,15 +275,20 @@ test('the built pages: newest at /ai-landscape/, "Newest" only on an older snaps
 });
 
 // LISTED (src/data/ai-landscape.js) is the one switch: off, the pages say noindex and nothing on the site lists them.
-test(`the LISTED switch is ${LISTED}: noindex, the sitemap, the project card and the preview label follow it`, { skip: !built && 'no dist/' }, () => {
+test(`the LISTED switch is ${LISTED}: noindex, the sitemap, /stats, the project card and the preview label follow it`, { skip: !built && 'no dist/' }, () => {
   const noindex = /<meta name="robots" content="noindex"\s*\/?>/;
+  const secret = /<meta name="ao-secret"/;
   for (const page of ['index.html', ...SNAPSHOTS.flatMap(({ date }) => [`${date}/index.html`, `${date}/sources/index.html`])]) {
     const html = read(`${DIST}/${page}`);
     assert.equal(noindex.test(html.split('</head>')[0]), !LISTED, `/ai-landscape/${page} ${LISTED ? 'has no' : 'has a'} robots noindex`);
+    assert.equal(secret.test(html.split('</head>')[0]), !LISTED, `/ai-landscape/${page} ${LISTED ? 'has no' : 'has an'} ao-secret`);
     assert.equal(html.includes('class="ail-preview'), !LISTED, `/ai-landscape/${page} ${LISTED ? 'has no' : 'has its'} preview label`);
   }
   const sitemap = read('dist/sitemap.xml');
   assert.equal(sitemap.includes('/ai-landscape/'), LISTED, `the sitemap ${LISTED ? 'lists' : 'leaves out'} the AI landscape`);
+  const stats = read('dist/stats-pages.txt');
+  assert.ok(stats, 'dist/stats-pages.txt is built');
+  assert.equal(stats.split('\n').some((p) => p.startsWith('/ai-landscape/')), LISTED, `stats-pages.txt ${LISTED ? 'names' : 'never names'} the AI landscape, so /stats ${LISTED ? 'may show' : 'never shows'} it`);
   for (const where of ['projects/index.html', 'tea/index.html']) {
     const html = read(`dist/${where}`);
     assert.ok(html, `dist/${where} is built`);

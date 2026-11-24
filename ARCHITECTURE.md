@@ -184,7 +184,7 @@ fails the build, or only warns in a live notebook.
 | `src/data/media-manifest.json` | every file in the R2 bucket, its size and MD5 (`npm run media:push`) |
 | `src/data/courses.js` | the courses |
 | `src/data/courses/*.json`, `src/data/lore/*.json` | written by the course publishers in other repos: never by hand |
-| `src/data/ai-landscape.js`, `src/data/ai-landscape/<YYYY-MM-DD>.json` | the AI landscape: `SNAPSHOTS`, its registry (newest first, plain data), `LISTED`, its one switch for being listed (off: noindex, no sitemap entry, no project card, a Draft label; read by `Page.astro`, the sources pages, `sitemap.xml.js` and `lib/content.js` `projects()`), and each snapshot's frozen fact base: its facts, words and pictures never change once it lands, a bug fix to its code may (README.md, "The AI landscape") |
+| `src/data/ai-landscape.js`, `src/data/ai-landscape/<YYYY-MM-DD>.json` | the AI landscape: `SNAPSHOTS`, its registry (newest first, plain data), `LISTED`, its one switch for being listed (off: noindex, `ao-secret` so no `stats-pages.txt` entry, no sitemap entry, no project card, a Draft label; read by `Page.astro`, the sources pages, `sitemap.xml.js` and `lib/content.js` `projects()`), and each snapshot's frozen fact base: its facts, words and pictures never change once it lands, a bug fix to its code may (README.md, "The AI landscape") |
 
 ### `src/lib/`, `src/pages/`, `src/layouts/`, `src/components/`
 
