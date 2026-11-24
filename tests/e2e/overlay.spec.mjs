@@ -48,9 +48,9 @@ async function openFrom(page, href) {
   await page.mouse.click(x, y);
   await isOpen(page);
   await expect(page).toHaveURL(new RegExp(href + '$'));
-  await expect(view(page, href.slice(1))).toBeVisible();
+  await expect(view(page, href.replace(/\//g, ''))).toBeVisible();
 }
-const openLedger = (page) => openFrom(page, '/ledger');
+const openLedger = (page) => openFrom(page, '/ledger/');
 // The ledger's module has run on the copy in the panel (views/ledger.js): "/" then focuses its search box.
 async function ledgerMounted(page) {
   const input = panel(page).locator('.search-input');
@@ -97,7 +97,7 @@ test('overlay-1 a card grows into the ledger, with no document load', async ({ p
   await home(page);
   await openLedger(page);
   await expect(view(page, 'ledger')).toBeVisible();
-  const from = await page.locator('section[data-wp]').filter({ has: page.locator('a[href="/ledger"]') }).first()
+  const from = await page.locator('section[data-wp]').filter({ has: page.locator('a[href="/ledger/"]') }).first()
     .locator(':scope > *').first().boundingBox();
   await expect.poll(async () => {
     const b = await page.locator('#panel-card').boundingBox();
@@ -110,6 +110,9 @@ test('overlay-2 a row opens its post in the panel, with no document load, its pi
   await home(page);
   await openLedger(page);
   await openRow(page, modelPost);
+  // Only the view is mounted: the fetched page's note for agents (chrome/AgentNote.astro) stays out, the home's stays.
+  await expect(panel(page).locator('.ao-agent')).toHaveCount(0);
+  await expect(page.locator('.ao-agent')).toHaveCount(1);
   // The post's view module runs enhance(root) on the copy the overlay mounted: its pictures open the viewer.
   await reader(page).locator('img[role=button]').first().click();
   await expect(page.locator('dialog.ao-lb')).toBeVisible();
@@ -133,7 +136,7 @@ test('overlay-3 post A, post B, back to A and on to C: every component works on 
   await reader(page).locator('ao-game .ao-game-load').first().click();
   await expect(reader(page).locator('ao-game iframe')).toHaveCount(1);
   await page.goBack();
-  await expect(page).toHaveURL(/\/ledger$/);
+  await expect(page).toHaveURL(/\/ledger\/$/);
   await page.goBack();
   await reading(page, modelPost);
   await allDefined(page);
@@ -243,7 +246,7 @@ test('overlay-7 Back to the ledger and Back to the tea house', async ({ page }) 
   await openLedger(page);
   await openRow(page, modelPost);
   await reader(page).locator('[data-close-reader]').first().click();
-  await expect(page).toHaveURL(/\/ledger$/);
+  await expect(page).toHaveURL(/\/ledger\/$/);
   await expect(view(page, 'ledger')).toBeVisible();
   await panel(page).locator('[data-panel-home]').first().click();
   await isClosed(page);
@@ -352,7 +355,7 @@ test('overlay-12 a view is fetched on intent only: never on idle, and on the poi
   await home(page);
   await page.waitForTimeout(4000);
   expect(fetched).toEqual([]);
-  const { x, y } = await cardLink(page, '/ledger');
+  const { x, y } = await cardLink(page, '/ledger/');
   expect(fetched).toEqual([]);
   await page.mouse.move(x, y);
   await page.mouse.down();
@@ -382,7 +385,7 @@ test('overlay-14 Courses brings its own stylesheet, put before the homepage’s'
   const linked = () => page.evaluate(() => [...document.querySelectorAll('link[rel="stylesheet"]')].map((l) => new URL(l.href).pathname));
   await home(page);
   expect((await linked()).filter((h) => brought.includes(h))).toEqual([]);
-  await openFrom(page, '/courses');
+  await openFrom(page, '/courses/');
   await expect(view(page, 'courses')).toBeVisible();
   const now = await linked();
   for (const h of brought) {
@@ -433,7 +436,7 @@ test('overlay-17 Back, or ← LEDGER, from a post finds the ledger filtered and 
     .map((c) => [c.dataset.value, Number(c.textContent.match(/\d+(?=\s*$)/)[0])]).sort((a, b) => b[1] - a[1])[0][0]);
   const chip = panel(page).locator(`[data-chip="topic"][data-value="${value}"]`);
   await chip.click();
-  await expect(page).toHaveURL(new RegExp(`/ledger/?\\?topic=${value}$`));
+  await expect(page).toHaveURL(new RegExp(`/ledger/\\?topic=${value}$`));
   const rows = panel(page).locator('[data-panel-view="ledger"] .row:not([hidden])');
   const count = await rows.count();
   const last = rows.nth(count - 1).locator('[data-ledger-entry]');
@@ -502,7 +505,7 @@ test('overlay-20 the scene draws nothing while the panel covers it, and again on
     setTimeout(() => done(info.frame - from), 1000);
   }));
   expect(await drawn()).toBeGreaterThan(0);
-  await openFrom(page, '/projects');
+  await openFrom(page, '/projects/');
   await page.waitForTimeout(800);
   expect(await drawn()).toBe(0);
   await page.keyboard.press('Escape');
@@ -512,7 +515,7 @@ test('overlay-20 the scene draws nothing while the panel covers it, and again on
 
 test('overlay-21 a project’s own page leaves at once from the panel, with no flight', async ({ page }) => {
   await home(page);
-  await openFrom(page, '/projects');
+  await openFrom(page, '/projects/');
   const start = panel(page).locator('.proj-card a.proj-btn[href^="/courses/"]').first();
   await expect(start).toHaveAttribute('data-no-fly');
   const href = await start.getAttribute('href');
@@ -649,4 +652,41 @@ test('overlay-27 on a phone the panel’s footer is two short lines, every link 
   // exactly these: the feed, the tea room (every panel page's way to /tea/) and every elsewhere
   const hrefs = await foot.locator('a').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
   expect(hrefs.sort()).toEqual(['/rss.xml', '/tea/', ...SOCIAL.map((s) => s.href)].sort());
+});
+
+test('overlay-28 a modal for the keyboard: focus goes into the panel, the scene is inert, Esc gives focus back', async ({ page }) => {
+  // The pages fetched (each a page view on /stats), as overlay-12 counts them.
+  const fetched = [];
+  page.on('request', (r) => {
+    const { pathname } = new URL(r.url());
+    if (r.resourceType() === 'fetch' && /^\/(ledger|courses|projects|about|now)\/([^/]+\/(notes\/)?)?$/.test(pathname)) fetched.push(pathname);
+  });
+  await home(page);
+  await cardLink(page, '/ledger/');
+  const link = page.locator('section[data-wp] a[href="/ledger/"]').first();
+  await link.focus();
+  await page.keyboard.press('Enter');
+  await isOpen(page);
+  await expect(view(page, 'ledger')).toBeVisible();
+  const inPanel = () => page.evaluate(() => !!document.activeElement?.closest('#panel-screen'));
+  const inert = () => page.evaluate(() => ['content', 'stop-rail'].map((id) => document.getElementById(id).inert));
+  await expect.poll(inPanel).toBe(true);
+  expect(await inert()).toEqual([true, true]);
+  await expect(page.locator('#panel-card')).toHaveAttribute('role', 'dialog');
+  await expect(page.locator('#panel-card')).toHaveAttribute('aria-modal', 'true');
+  // Focus is in the panel, so the keys scroll it, and Tab stays in it.
+  const top = () => page.locator('#panel-scroll').evaluate((s) => s.scrollTop);
+  expect(await top()).toBe(0);
+  await page.keyboard.press('PageDown');
+  await expect.poll(top).toBeGreaterThan(0);
+  await page.keyboard.press('Tab');
+  expect(await inPanel()).toBe(true);
+  // Esc closes it and gives focus back to the link it opened from; putting it back fetches nothing: the one page
+  // fetched is the ledger, on the focus that opened it.
+  await page.keyboard.press('Escape');
+  await isClosed(page);
+  expect(await link.evaluate((a) => a === document.activeElement)).toBe(true);
+  expect(await inert()).toEqual([false, false]);
+  await page.waitForTimeout(500);
+  expect(fetched).toEqual(['/ledger/']);
 });

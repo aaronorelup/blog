@@ -19,7 +19,7 @@ const icon = iconFor(post);
 <header class="post-head">
   {note
     ? <a class="post-back" href={`/ledger/${slugOf(post)}/`}>← The short version</a>
-    : <a class="post-back" href="/ledger" data-close-reader data-no-fly>← Ledger</a>}
+    : <a class="post-back" href="/ledger/" data-close-reader data-no-fly>← Ledger</a>}
   <div class="post-meta">
     {icon
       ? <img class="post-icon" data-no-zoom src={icon.s96} srcset={`${icon.s96} 96w, ${icon.s256} 256w`} sizes="64px" width="64"

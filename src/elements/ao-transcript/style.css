@@ -29,6 +29,8 @@ ao-transcript video { display: block; width: 100%; height: auto; border-radius: 
   background: transparent;
   color: var(--pc-strong);
 }
+/* iOS Safari zooms the page on focus into a field under 16px, and stays zoomed: 16px on touch screens. */
+@media (pointer: coarse) { .ao-tr-bar input[type='search'] { font-size: 16px; } }
 .ao-tr-bar input[type='search']:focus-visible { outline: 3px solid var(--pc-head); outline-offset: 2px; }
 .ao-tr-bar button {
   font: 600 12.5px/1 Karla, system-ui, sans-serif;

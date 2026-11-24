@@ -64,7 +64,7 @@ ao-bars {
 .ao-bars-val {
   flex: 0 0 auto;
   font: 12px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  color: var(--pc-quiet);
+  color: var(--pc-soft);
   white-space: nowrap;
 }
 .ao-bars-s0 { --bar: var(--pc-head); }

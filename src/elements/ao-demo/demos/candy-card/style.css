@@ -1,0 +1,110 @@
+/* AO-089's demo (index.js beside it): a copy of the Daily candy card from Aaron's command centre. It keeps the
+   command centre's own dark palette in day and night alike, because it shows that page as it is. Everything is
+   scoped under .cdc, and the demo uses divs and spans rather than p, li or h3, so the post's prose rules stay out. */
+
+ao-demo[name="candy-card"] { display: block; margin: 28px 0 34px; }
+
+.cdc {
+  --c-tile: #201f2c; --c-hover: #2a2838; --c-head: #f0c06a; --c-strong: #f2e7d5; --c-body: #c9bca9;
+  --c-quiet: #8e8375; --c-line: #302e3e; --c-line2: #4a445a; --c-gold: #c9a227; --c-terra: #d9805f; --c-green: #8fb98a;
+  color-scheme: dark;
+  font: 400 15px/1.5 Karla, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color: var(--c-body);
+  background: var(--c-tile);
+  border: 1px solid var(--c-line2);
+  border-radius: 18px;
+  padding: 14px 14px 16px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+}
+.cdc * { box-sizing: border-box; }
+.cdc button {
+  border: 1px solid var(--c-line2); background: transparent; color: var(--c-body); border-radius: 999px;
+  height: 30px; padding: 0 12px; font: 600 12px/1 Karla, system-ui, sans-serif; cursor: pointer; white-space: nowrap;
+}
+.cdc button:hover { background: var(--c-hover); color: var(--c-strong); }
+.cdc button:disabled { opacity: 0.3; cursor: default; background: transparent; }
+.cdc button[aria-expanded="true"], .cdc button[aria-pressed="true"] { border-color: var(--c-head); color: var(--c-head); }
+.cdc :focus-visible { outline: 2px solid var(--c-head); outline-offset: 2px; }
+
+.cdc .cdc-top { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin: 0 2px 12px; }
+.cdc .cdc-name { font: 700 18px/1.2 'Zen Maru Gothic', system-ui, sans-serif; color: var(--c-strong); }
+.cdc .cdc-copy { font-size: 12px; color: var(--c-quiet); }
+
+.cdc .cdc-ctl {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0 0 12px; padding: 8px 10px;
+  border: 1px solid var(--c-line); border-radius: 14px;
+}
+.cdc .cdc-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--c-quiet); flex: none; }
+.cdc .cdc-dot.on { background: var(--c-green); }
+.cdc .cdc-dot.hold { background: var(--c-gold); }
+.cdc .cdc-dot.off { background: var(--c-terra); }
+.cdc .cdc-st { font-size: 13px; color: var(--c-strong); margin-right: auto; min-width: 200px; }
+.cdc .cdc-st small { display: block; color: var(--c-quiet); font-size: 12px; }
+.cdc label.cdc-until { font-size: 12px; color: var(--c-quiet); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.cdc .cdc-until input {
+  font: 400 12px/1 Karla, system-ui, sans-serif; color: var(--c-strong); background: transparent;
+  border: 1px solid var(--c-line2); border-radius: 8px; height: 30px; padding: 0 6px;
+}
+.cdc .cdc-until button { height: 26px; padding: 0 9px; font-weight: 400; }
+.cdc .cdc-hint { font-size: 12px; color: var(--c-quiet); margin: -6px 2px 10px; max-width: 760px; }
+.cdc .cdc-hint:empty { display: none; }
+
+.cdc .cdc-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0 0 8px; }
+.cdc .cdc-eyebrow { font: 600 11px/1 Karla, system-ui, sans-serif; letter-spacing: 0.13em; text-transform: uppercase; color: var(--c-gold); }
+.cdc .cdc-when { font: 700 17px/1.3 'Zen Maru Gothic', system-ui, sans-serif; color: var(--c-head); margin-right: auto; }
+.cdc .cdc-posts { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 12px; }
+.cdc .cdc-posts button {
+  height: auto; min-height: 30px; padding: 6px 12px; font-weight: 400; text-align: left; white-space: normal; max-width: 100%;
+}
+.cdc .cdc-posts button b { font: 600 11px/1 ui-monospace, Menlo, monospace; letter-spacing: 0.04em; margin-right: 6px; color: var(--c-gold); }
+.cdc .cdc-posts button i { font-style: normal; font-size: 11px; color: var(--c-gold); margin-left: 6px; }
+.cdc .cdc-posts button[aria-selected="true"] { border-color: var(--c-head); color: var(--c-head); background: var(--c-hover); }
+
+.cdc .cdc-list { display: none; margin: 0 0 12px; padding: 6px; border: 1px solid var(--c-line); border-radius: 14px; }
+.cdc .cdc-list.open { display: block; }
+.cdc .cdc-find { display: flex; gap: 6px; align-items: center; padding: 4px 6px 8px; font-size: 12px; color: var(--c-quiet); }
+.cdc .cdc-find input {
+  width: 90px; font: 400 12px/1 ui-monospace, Menlo, monospace; color: var(--c-strong); background: transparent;
+  border: 1px solid var(--c-line2); border-radius: 8px; height: 28px; padding: 0 6px;
+}
+.cdc .cdc-list button.cdc-day {
+  display: flex; gap: 12px; width: 100%; height: auto; border: 0; border-radius: 10px; padding: 8px 10px;
+  text-align: left; font: 400 14px/1.4 Karla, system-ui, sans-serif; white-space: normal;
+}
+.cdc .cdc-list button.cdc-day[aria-current="true"] { background: var(--c-hover); color: var(--c-head); }
+.cdc .cdc-day .d { font: 400 12px/1.6 ui-monospace, Menlo, monospace; color: var(--c-quiet); flex: none; width: 92px; }
+.cdc .cdc-day .c { font: 400 12px/1.6 ui-monospace, Menlo, monospace; color: var(--c-gold); flex: none; width: 58px; }
+.cdc .cdc-day .ts { color: var(--c-body); }
+
+.cdc .cdc-view iframe { display: block; width: 100%; height: 960px; border: 0; border-radius: 12px; background: #101220; }
+.cdc .cdc-view button.cdc-more { display: block; margin: 10px auto 0; }
+.cdc .cdc-view button.cdc-more[hidden] { display: none; }
+.cdc .cdc-stub { padding: 18px 20px; border-radius: 12px; background: #101220; }
+.cdc .cdc-stub .cdc-sid { font: 600 10px/1 ui-monospace, Menlo, monospace; letter-spacing: 0.08em; color: var(--c-quiet); }
+.cdc .cdc-stub .cdc-stitle { margin: 8px 0 6px; font: 700 21px/1.25 'Zen Maru Gothic', system-ui, sans-serif; color: var(--c-head); }
+.cdc .cdc-stub .cdc-lede { margin: 0 0 14px; font: 400 15px/1.55 Georgia, 'Times New Roman', serif; color: #9c917f; max-width: 78ch; }
+.cdc img.cdc-img { display: block; width: 100%; height: auto; margin: 0 0 12px; border-radius: 10px; border: 1px solid var(--c-line); }
+.cdc .cdc-stub .cdc-elsewhere { font-size: 13px; color: var(--c-quiet); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+.cdc .cdc-notes { margin: 14px 0 0; padding: 12px 14px; border: 1px solid var(--c-line); border-radius: 14px; }
+.cdc .cdc-nh { margin: 0 0 4px; font: 700 15px/1.3 'Zen Maru Gothic', system-ui, sans-serif; color: var(--c-head); }
+.cdc .cdc-nlead { margin: 0 0 10px; font-size: 12px; color: var(--c-quiet); }
+.cdc .cdc-note { padding: 8px 0; border-top: 1px solid var(--c-line); font-size: 14px; color: var(--c-body); white-space: pre-wrap; }
+.cdc .cdc-note:last-child { margin-bottom: 12px; }
+.cdc .cdc-note .w { display: block; font-size: 11.5px; color: var(--c-quiet); white-space: normal; }
+.cdc .cdc-note b { color: var(--c-strong); font-weight: 600; }
+.cdc .cdc-note.mine { border-left: 2px solid var(--c-gold); padding-left: 10px; }
+.cdc .cdc-chips { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 8px; }
+.cdc label.cdc-l { display: block; font-size: 12px; color: var(--c-quiet); margin: 8px 0 4px; }
+.cdc .cdc-notes textarea {
+  width: 100%; min-height: 70px; resize: vertical; font: 400 14px/1.45 Karla, system-ui, sans-serif; color: var(--c-strong);
+  background: transparent; border: 1px solid var(--c-line2); border-radius: 10px; padding: 8px 10px;
+}
+.cdc .cdc-row { display: flex; gap: 10px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+.cdc .cdc-ok { font-size: 12px; color: var(--c-quiet); }
+
+@media (max-width: 640px) {
+  .cdc { padding: 10px 10px 12px; border-radius: 14px; }
+  .cdc .cdc-st { min-width: 0; flex-basis: 100%; }
+  .cdc .cdc-stub { padding: 14px; }
+}

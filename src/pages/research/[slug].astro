@@ -9,6 +9,7 @@ export async function getStaticPaths() {
 
 const { doc } = Astro.props;
 ---
-<PanelPage title={`${doc.data.title} · Aaron Orelup`} description={doc.data.summary} active="ledger">
+<PanelPage title={`${doc.data.title} · Aaron Orelup`} description={doc.data.summary} active="ledger"
+  markdown={`/research/${slugOf(doc)}.md`}>
   <ResearchView doc={doc} />
 </PanelPage>

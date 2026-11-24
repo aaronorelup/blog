@@ -1,6 +1,6 @@
 // <ao-game>: a game from public/games/ played inside the post. Like <ao-model>, nothing downloads until the reader
-// asks: a poster and a Play button first, then an iframe of the game's own page, with Fullscreen, Stop and an "own
-// tab" link under it. The inner markup (a link to the game) is the no-JS fallback. Attributes: docs/COMPONENTS.md.
+// asks: a poster and a Play button first, then an iframe of the game's own page, with Fullscreen (where the browser
+// can), Stop and an "own tab" link under it. The inner markup (a link to the game) is the no-JS fallback. See COMPONENTS.md.
 import { AO_LISTEN_PLAY, AO_STOP, claim, current } from '../_core/player.js';
 import { h } from '../_lib/dom.js';
 
@@ -11,6 +11,11 @@ import { h } from '../_lib/dom.js';
 // The game page is same-origin, so pausing needs nothing from the game: its window's
 // requestAnimationFrame is held (no frames, no GPU) and every AudioContext it made is
 // suspended. If that hook can't be made, the game is unloaded instead. Stop unloads it either way.
+// Whether this browser can put a frame in fullscreen (iPhone Safari can't: only <video>). Where it can't, the button
+// stays hidden and "Open in its own tab" is the way to a bigger view.
+const canFull = () => !!(document.fullscreenEnabled || document.webkitFullscreenEnabled) &&
+  !!(Element.prototype.requestFullscreen || Element.prototype.webkitRequestFullscreen);
+
 class AoGame extends HTMLElement {
   connectedCallback() {
     if (this._ready) return;
@@ -95,7 +100,7 @@ class AoGame extends HTMLElement {
       this._hook = this.hookFrame(frame);
       if (!this._paused) frame.focus();
     });
-    this._full.hidden = false;
+    this._full.hidden = !canFull();
     this._stopBtn.hidden = false;
     claim(this);
   }

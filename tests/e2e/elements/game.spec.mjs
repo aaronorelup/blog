@@ -15,14 +15,18 @@ async function start(page) {
   await g.locator('.ao-game-load').click();
   const frame = g.locator('iframe');
   await expect(frame).toHaveAttribute('src', await g.getAttribute('src'));
-  await expect(g.locator('.ao-game-full')).toBeVisible();
+  // Fullscreen shows only where the browser can make a frame fullscreen: hidden in the phone project (iPhone Safari).
+  const full = await page.evaluate(() => !!(document.fullscreenEnabled || document.webkitFullscreenEnabled) &&
+    !!(Element.prototype.requestFullscreen || Element.prototype.webkitRequestFullscreen));
+  await expect(g.locator('.ao-game-full')).toBeVisible({ visible: full });
   await expect(g.locator('.ao-game-stop')).toBeVisible();
+  await expect(g.locator('.ao-game-bar a')).toBeVisible();
   await hooked(frame);
   return g;
 }
 const veil = (g) => g.locator('.ao-game-veil');
 
-test('game-1 Play loads the game in a frame', async ({ page }) => {
+test('game-1 Play loads the game in a frame, with Fullscreen only where the browser can (hidden on the phone)', async ({ page }) => {
   await start(page);
 });
 

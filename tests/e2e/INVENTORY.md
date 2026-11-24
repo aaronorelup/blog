@@ -88,7 +88,7 @@ notes, `earthlight`'s notes, `nine-claudes-one-painting` today).
 
 | Behaviour | Listener or attribute | Spec |
 |---|---|---|
-| Poster and Play (with `size`) until the click; then the game's page (`src`) in a frame, Fullscreen and Stop shown | `src`, `poster`, `size`, `label`, `note`, `aspect`, Play `click`, frame `load` | game-1 |
+| Poster and Play (with `size`) until the click; then the game's page (`src`) in a frame, Stop and the own-tab link shown, Fullscreen only where the browser can make a frame fullscreen (hidden on iPhone Safari, checked by the phone project) | `src`, `poster`, `size`, `label`, `note`, `aspect`, Play `click`, frame `load` | game-1 |
 | Scrolled away it pauses behind a veil; the veil resumes it | IntersectionObserver, veil `click` | game-2, game-6 |
 | Another player pauses it; resuming pauses the other | document `ao-listen-play`, claim | game-3 |
 | `ao-stop` and a hidden tab pause it | document `ao-stop`, `visibilitychange` | game-4 (wording: see below) |
@@ -164,6 +164,7 @@ streams the same two films.
 | A find chip marks every hit and counts them; again clears; the search box marks too | `find`, chip `click`, search `input` | transcript-3 |
 | One pane playing pauses the other | document `ao-listen-play` | transcript-4 |
 | Enter on a line seeks; hiding the element pauses its video | line `keydown`, video `timeupdate` | transcript-5 |
+| On a phone the search field is 16px or more, so iOS Safari doesn't zoom the page on focus (phone only) | style `@media (pointer: coarse)` | transcript-6 |
 
 ### `ao-fetch`: every-video-can-seek, the-branch-that-went-live
 
@@ -217,6 +218,8 @@ streams the same two films.
 |---|---|---|
 | `show` picks the first series; the buttons switch it | `show`, `avg`, button `click` | series-1 |
 | Pointing at a day reads it out (with its marks), leaving clears it | body `pointermove` `pointerdown` `pointerleave`, `data-d` marks | series-2 |
+| A touch tap reads the day tapped, not the last one (phone only) | body `pointerdown` (touch), `pointerleave` ignored for touch | series-4 |
+| A swipe that starts on the chart (a page scroll) leaves no day read out | body `pointercancel` | series-5 |
 | The chart takes focus and the keys walk the days | plot `focus` `blur` `keydown` | series-3 |
 | `stack` (layers), `th[data-unit]` | `stack`, `data-unit` | not used by any page today |
 
@@ -228,6 +231,8 @@ streams the same two films.
 | A row and its segment light together, from either | row and segment `pointerenter` `pointerleave` | funnel-2 |
 | Focus in a row lights it | row `focusin` `focusout` | funnel-3 |
 | What's in it opens and closes the examples | more `click` | funnel-4 |
+| A touch tap lights its row alone; a second tap turns it off (phone only) | row and segment `pointerup` (touch), `pointerenter` `pointerleave` ignored for touch | funnel-5 |
+| A swipe that starts on a row (a page scroll) leaves no row lit | row and segment `pointercancel` | funnel-6 |
 
 ### `ao-ask`: who-visits-a-new-website
 
@@ -256,6 +261,8 @@ streams the same two films.
 | Tiles drawn (`top`, `unit`); pointing at one reads it out, leaving clears | stage `pointermove` `pointerleave` | treemap-1 |
 | Focus and the keys walk the tiles | stage `focus` `keydown` | treemap-2 |
 | A view button regroups | `views`, button `click` | treemap-3 |
+| A touch tap on a tile reads that tile, not the first (phone only) | stage `pointerup` (touch), `pointerleave` ignored for touch | treemap-4 |
+| A swipe that starts on a tile (a page scroll) leaves no tile read out | stage `pointercancel` | treemap-5 |
 
 ### `ao-matrix`: moss-image-on-8gb, props-three-budgets
 
@@ -277,6 +284,9 @@ the recording.
 | synthid `detect`: fewer words checked change the score | range `input` | demo-synthid-3 |
 | synthid `edit`: typing or an edit button rescores; Reset restores | textarea `input`, edit buttons, Reset, strip `change` | demo-synthid-4 |
 | synthid `book`: pointing at the chart reads it out | svg `pointermove` `pointerleave` | demo-synthid-5 |
+| synthid `book`: a touch tap on the chart reads it out and keeps it (phone only) | svg `pointerup` (touch), `pointerleave` ignored for touch | demo-synthid-7 |
+| synthid `book`: a swipe that starts on the chart (a page scroll) leaves no readout | svg `pointercancel` | demo-synthid-8 |
+| synthid `edit`: on a phone the letter is 16px or more, so iOS Safari doesn't zoom on focus (phone only) | style `@media (pointer: coarse)` | demo-synthid-6 |
 | cf `you`: asks `/cdn-cgi/trace` and lays out the visit; the address is masked until shown | Show `click`, show/hide `click` | demo-cf-1 |
 | cf `count`: shows the live count; an automated browser isn't counted (asserted on the status line only) | `data-slug`, `visibilitychange`, Try again | demo-cf-2 |
 | goobie-lab `windows`: the three ways, each with its map; in-context's shades every post, RAG's a few | `part` | demo-lab-1 |
@@ -286,6 +296,7 @@ the recording.
 | goobie-lab `agent`: a recorded call runs again live on the site's files, the same as recorded on the posts it searched (whatever was listed since); on all the posts listed today it says how many came since, this post among them, and what it returns now; its result and an opened result stay as you step | Run this call live `click`, Next `click` | demo-lab-5 |
 | goobie-lab `agent`: the playground searches the reader's own words live, as plain text; cites link to their passages | form `submit` | demo-lab-6 |
 | goobie-lab `agent`: a live run that can't read the site's files says so, and the next try reads them | Run this call live `click` | demo-lab-7 |
+| goobie-lab `agent`: on a phone the playground's tool and words are 16px or more, so iOS Safari doesn't zoom on focus (phone only) | style `@media (pointer: coarse)` | demo-lab-8 |
 
 ## Standalone pages (`standalone.spec.mjs`, `elements/game.spec.mjs`)
 
@@ -310,23 +321,48 @@ the recording.
 | A rail dot flies to its waypoint (the cards' page lets clicks through to the rail; only the shown card takes them) | rail `click` | home-4 |
 | The day/night toggle tweens the world (the page colour passes through between, the 3D changes with it even with the camera still, once it ends `--pc-bg` is the plain per-mode string again, and the screen is the one a fresh load of that mode draws) | toggle `click` → `ao-mode` → theme.js | home-5 |
 | The avatar flips like a coin and lands on a face | avatar `click`, `pointerenter` `pointerleave` | home-6 |
-| Without WebGL the scene bails to the flat page, in the stored mode's colours | `home/index.js` `webgl()` → `flat()` | home-7 (Chromium: `--disable-webgl` is its flag) |
+| Without WebGL the scene bails to the flat page, in the stored mode's colours, a close stack (`home-flat`: no empty threshold screen, each stop its card's height) | `home/index.js` `webgl()` → `flat()` | home-7 (Chromium: `--disable-webgl` is its flag) |
 | An outside link flies the camera out through the gate (the white at full), then opens; a new-tab link leaves the scene where it stood | window `click` → `bindOutbound`, `flyToLink` (`scene/exit.js`) | home-8 |
 | A `data-no-fly` link leaves at once, the panel left as it was | `data-no-fly` | home-9 |
-| A lost WebGL context bails to the flat page | canvas `webglcontextlost` | home-10 |
+| A lost WebGL context bails to the flat page, the same close stack | canvas `webglcontextlost` | home-10 |
 | The backtick opens and closes the staging tool | window `keydown` → onStageHotkey | home-11 (its own keys, drag and copy are a tool for Aaron, not checked) |
 | Five night tosses in a row open the lantern door: the last lands lamp-up, the lamp flares, the page goes to `/api/lantern` | avatar `click` → lantern.js | home-12 (the Worker's redirect: live-6) |
 | With night stored the first paint is already night: page, card and heading colours before any module runs | Head's inline script, tokens.css | home-13 |
+| The first paint is already the staged page (`data-stage-pending`): the hero card alone, where the scene leaves it, so it stays put as the scene mounts and nothing shifts (Chromium's layout-shift entries under 0.05) | `Home`'s inline script, home.css; `enableStage()` takes it off | home-14 |
+| Nothing leaves the page staged: a lost scene chunk goes to the flat page; with no module at all the head script's fail-safe gives the no-JS page after 10 s | `flat()`; the inline script's timeout | home-15 |
+| Reduced motion and `?tier=static` never stage the page: every stop stands in a document that scrolls | the inline script's own checks; `mount()` | home-16 |
+| The leaves door costs the homepage nothing: no request for `/leaves/` or its chunk; selecting another word, "leaves change" or a word in another card opens nothing | document `selectionchange`, `pointerdown` `pointerup` `pointercancel` (passive, capture), `keyup` → `leaves-door.js` check | leaves-1 |
+| A double-click on "leaves" in the hero line peels a leaf off the word, washes the page to its ground and opens `/leaves/`; the room strips the `#from=` hash | the same, on `pointerup` | leaves-2 (desktop: a phone long-presses; `@timing`: within 3 s, in `desktop-timing`) |
+| A finished selection of exactly that word (a long-press, a keyboard selection) opens the room | `selectionchange` with no pointer down | leaves-3 |
 
 The scene specs pin `?tier=low`, which the scene supports for slow machines, so software WebGL never drops it to
 its static rung mid-test.
+
+## The leaves room (`leaves.spec.mjs`)
+
+`/leaves/` (`src/pages/leaves/index.astro`, `src/scripts/leaves/`): a cup of tea, one leaf per listed entry, that settles
+to read the next entry's number. Reached only by its door on the homepage (rows leaves-1 to leaves-3 above).
+
+| Behaviour | Listener or attribute | Spec |
+|---|---|---|
+| The room renders (a 9 by 9 sample of the canvas varies), is `noindex`, is in neither `/sitemap.xml` nor `/stats-pages.txt`, asks nothing of another origin and leaves storage and cookies as they were | `meta[name=ao-secret]`, `stats-pages.mjs` | leaves-4 |
+| `__leaves.skip()` brews to rest: phase `rest`, the loop stopped, the slip and the text alternative read the next entry | `window.__leaves` | leaves-5 |
+| Day and night: the canvas's corner is the mode's own ground | `html[data-mode]`, `palette.js` `watch` | leaves-6 |
+| Under reduced motion the room is the finished still life at once: the slip within a second, no loop | `matchMedia('(prefers-reduced-motion: reduce)')` `change` | leaves-7 |
+| A hover (mouse) or a tap on a leaf names its entry on a paper label | canvas `pointermove` `pointerdown` `pointerup` `pointercancel` `pointerleave`, `touchmove` while stirring | leaves-8 |
+| Esc and the "Leave the cup" pill go back home (Back when the homepage sent the guest), with nothing of the door left on it | window `keydown`, `.lv-leave` `click`, the door's `pageshow` | leaves-9 |
+| No sideways scroll; both pills at least 44 px tall; the Sound pill toggles `aria-pressed` | `.lv-sound` `click` | leaves-10 |
+
+Not checked by a spec (a tool for the eye, not a contract): dragging round the cup and the Left and Right keys stir,
+Space or a tap sips sooner, the offscreen list's Up and Down light a leaf (`.lv-list` `focus` `blur` `keydown`), the
+sound (WebAudio, only after a gesture), the tab hidden pauses the loop (`visibilitychange`), a resize re-lays the room.
 
 ## Homepage overlay (`overlay.spec.mjs`)
 
 | Behaviour | Spec |
 |---|---|
 | A card grows into the ledger, with no document load | overlay-1 |
-| A row opens its post in the panel, with no document load; `enhance(root)` makes its pictures open the viewer; Esc closes the viewer and leaves the panel open | overlay-2 |
+| A row opens its post in the panel, with no document load; `enhance(root)` makes its pictures open the viewer; Esc closes the viewer and leaves the panel open; the fetched page's note for agents is not mounted | overlay-2 |
 | Post A, post B, back to A, on to C: every `ao-*` is defined each time; the model renders, the game reloads, the demo responds | overlay-3 |
 | A lost chunk (the first the post's view module asks for) still ends on a working post: `mountView`'s `lazy()` opens the real page | overlay-4 |
 | A lost post component chunk in the panel opens the post's real page at once, with no reload first: `mountView` hands the view its fallback, which `enhance()` passes on | overlay-4b |
@@ -354,6 +390,7 @@ its static rung mid-test.
 | A view in the panel has the colours it has on its own page, by day and by night, and its focused search box looks the same | overlay-25 |
 | While the panel is up the day/night switch sits in its header, clear of the card's corner and the nav, and still switches; it goes back on close | overlay-26 |
 | On a phone the panel's footer is two short lines (under a tenth of the window), every link kept: exactly the feed, the tea room and every elsewhere | overlay-27 (phone) |
+| The panel is a modal for the keyboard: a card's link opened with Enter puts focus in the panel (a dialog, `aria-modal`), the scene and its rail are inert, PageDown scrolls it and Tab stays in it; Esc gives focus back to that link, the scene no longer inert, and putting it back fetches nothing | overlay-28 |
 
 ## Pages (`ledger.spec.mjs`, `pages.spec.mjs`)
 
@@ -381,6 +418,8 @@ its static rung mid-test.
 | A range change rolls the lede's figures (`tweenNumber`, every frame for 450 ms) in their own text nodes: watched from before the range is picked to the roll's end, the provenance buttons around them never have a node replaced (listen-5), and the figures change | pages-7 |
 | A link to a heading lands on it, and a search result's passage is in view, though the components above it draw after the load event (`scripts/views/post.js`) | pages-5 |
 | `/now` shows the newest snapshot of `src/content/now/`, lit in the nav; its History links every snapshot by date, newest first; each `/now/<date>/` shows that snapshot, marks its own row unlinked and points back to `/now` | pages-8 |
+| The note for agents (`chrome/AgentNote.astro`) on `/`, `/ledger/` and a post: an HTML comment first in `<body>` and one `.ao-agent`, `aria-hidden`, at most 1×1 px, nothing focusable in it, never hidden by `display` or `visibility`, outside every `[data-panel-view]`, article and search body; the overlay never mounts a fetched page's (overlay-2) | pages-9 |
+| `/llms.txt` names every listed post's Markdown twin (the live notebook by its page); a post's head links its `.md` twin and `/llms.txt`, and the twin is that post | pages-10 |
 
 ## The post page (`post.spec.mjs`)
 
@@ -397,6 +436,7 @@ its static rung mid-test.
 | A wide picture in `<ao-compare>` holds its ratio before it loads, so the page doesn't jump | post-9 |
 | Reload, and Back with and without the page cache, put `#panel-scroll` back where the reader was, on a long post with components | post-10 |
 | The notes page is the post view without the short version, Read next or older/newer; its way back is the short version | post-11 |
+| Every fenced code block in a post or notes page gets a Copy button beside it (not in the `<pre>`, not in a component) that puts the code on the clipboard (`scripts/post/copy.js`) | post-12 (Chromium) |
 
 ## Search and Ask RAG Goobie (`search.spec.mjs`)
 
@@ -404,7 +444,7 @@ its static rung mid-test.
 ask-notes from Goobie's prompt against DeepSeek; no `related` list names AO-073, so no check waits on the live
 notebook); Ask's answers are event streams (`sse`, `fixtures.mjs` `streamOf()`), and search-17 and -19 hold the stream
 in the page to see it step by step. Turnstile is a stub that solves at once with the test response. Every spec that
-clicks Ask waits for `[data-search][data-ready]` first (the box's module has mounted).
+clicks Ask waits for `[data-search][data-ready]` first (the box's module has mounted); search-29 and -30 click it before, on purpose.
 
 | Behaviour | Spec |
 |---|---|
@@ -434,6 +474,7 @@ clicks Ask waits for `[data-search][data-ready]` first (the box's module has mou
 | Under reduced motion the Ask box shows the first example and never changes it | search-21 |
 | The "Ask RAG Goobie" button shows no card while the how-it-works post isn't in `previews.json`; once it is, hovering shows its card with the line "How RAG Goobie works", leaving closes it and keyboard focus opens it; a phone gets none | search-22 |
 | Words typed before the box's module has run (its chunk held) are searched once it mounts | search-23 |
+| A tap on Ask before the box's module has run (its chunk held) changes nothing on screen, then opens Ask once it mounts (pressed, its placeholder, one `GET /api/session`); Ask then Search leaves Search pressed with no session and no Turnstile | search-29, search-30 |
 | The line under the box says how many posts RAG Goobie reads, in Ask only | search-24 |
 | On a 360 px Android phone (Chromium) a cite that ends a line flush makes no sideways scroll (its 44 px box stays inside the panel's padding) | search-25 (desktop project, Android profile) |
 

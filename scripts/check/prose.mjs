@@ -1,10 +1,10 @@
 // WRITING.md's voice rules that a script can see, on what a reader reads of a post (its body without code, tags,
 // attributes or URLs, plus the title, summary and card): no em dash, no spaced en dash, no semicolon, no banned
-// phrase, a takeaway of at most two sentences. Errors on every post but the HELD ones (src/data/exempt.js), which warn.
-// Always warnings: title or summary past its target, nested parentheses, inline style= in a post. The caps beyond
-// the targets are src/schemas/strict.js's (frontmatter.mjs reports them).
+// phrase, a takeaway of at most two sentences, a <video> with playsinline (iPhone plays it fullscreen without). Errors
+// on every post but the HELD ones (src/data/exempt.js), which warn, and live notebooks, never asked. Always warnings:
+// title or summary past its target, nested parentheses, inline style=. Caps are src/schemas/strict.js's.
 import { TEXT } from '../../src/data/limits.js';
-import { isHeld } from '../../src/data/exempt.js';
+import { isHeld, isLive } from '../../src/data/exempt.js';
 import { PHRASES } from '../../src/data/banned-phrases.js';
 import { keyLine, liner, readerText, withoutCode } from './text.mjs';
 
@@ -45,6 +45,11 @@ export default function prose(repo, report) {
     if (nested.length) report(file, nested[0], 'nested parentheses', 'warn');
     const styled = [...withoutCode(raw).matchAll(/<[a-z][^>]*\sstyle=/gi)].map((m) => line(m.index));
     if (styled.length) report(file, styled[0], `${styled.length} inline style= (the post page styles posts)`, 'warn');
+    if (!isLive(slug)) {
+      for (const m of withoutCode(raw).matchAll(/<video\b[^>]*>/gi)) {
+        if (!/\splaysinline\b/i.test(m[0])) report(file, line(m.index), '<video> without playsinline (it goes fullscreen on iPhone)', level);
+      }
+    }
 
     const card = data.preview ?? {};
     const fields = [['title', data.title], ['summary', data.summary], ['verdict', card.verdict],

@@ -31,6 +31,14 @@ export function claudeSlugs(postsDir = path.join(ROOT, 'src/content/posts')) {
     .map((f) => f.slice(0, -3)));
 }
 
+// The posts whose notes page Claude wrote as "I" (a note's own voice: claude), keyed by the note's post. A note's
+// voice may differ from its post's (AO-067's notes are Claude's), and its page's byline follows the note.
+export function claudeNotes(notesDir = path.join(ROOT, 'src/content/notes')) {
+  return new Set(fs.readdirSync(notesDir).filter((f) => f.endsWith('.md'))
+    .map((f) => matter(fs.readFileSync(path.join(notesDir, f), 'utf8')).data)
+    .filter((d) => d.voice === 'claude' && d.post).map((d) => d.post));
+}
+
 // A live notebook is left out of both sides: whatever its fleet pushes, it never fails a contract.
 const sameSet = (what, got, want) => {
   const missing = [...want].filter((s) => !got.has(s) && !isLive(s));
@@ -143,22 +151,71 @@ export function shareImageProblems(html, pathname, sizeOf) {
   return problems;
 }
 
-// A listed post's page carries exactly one JSON-LD block (chrome/Head.astro, lib/jsonld.js): it parses, and its url is
-// the page's canonical, https://aaronorelup.com<pathname>. Its author never contradicts the page: a post Claude wrote
-// (byClaude; the page says "Written by Claude") names none, and every other names exactly the site's owner.
-export function jsonLdProblems(html, pathname, byClaude = false) {
+// A listed page carries exactly one JSON-LD block (chrome/Head.astro, lib/jsonld.js): it parses into an @graph whose
+// node of the given type (a post's BlogPosting, a notes page's Article, /about/'s ProfilePage) has the page's canonical,
+// https://aaronorelup.com<pathname>, as url, beside the owner's Person with his profiles (sameAs). Its byline never
+// contradicts the page: the owner publishes every post, and is its author except on one Claude wrote (byClaude; the
+// page says "Written by Claude"), which names none. Every {@id} it refers to is in the graph, but for the WebSite
+// (the homepage's) and the post a notes page is part of.
+const PERSON = SITE + OWNER.about + '#person';
+const refsOf = (v) => (Array.isArray(v) ? v.flatMap(refsOf) : v && typeof v === 'object'
+  ? (Object.keys(v).length === 1 && typeof v['@id'] === 'string' ? [v['@id']] : Object.values(v).flatMap(refsOf)) : []);
+export function jsonLdProblems(html, pathname, byClaude = false, type = 'BlogPosting') {
   const blocks = [...html.matchAll(/<script\b[^>]*\stype="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
   if (blocks.length !== 1) return [`${pathname}: ${blocks.length} JSON-LD blocks, not 1`];
   const want = SITE + pathname;
   let data;
   try { data = JSON.parse(blocks[0]); } catch (e) { return [`${pathname}: its JSON-LD block does not parse (${e.message})`]; }
-  const problems = data?.url === want ? [] : [`${pathname}: its JSON-LD url is ${data?.url ?? 'missing'}, not ${want}`];
-  const owner = { '@type': 'Person', name: OWNER.name, url: SITE + OWNER.about };
-  if (byClaude && data?.author !== undefined) problems.push(`${pathname}: Claude wrote it, but its JSON-LD names an author`);
-  if (!byClaude && !isDeepStrictEqual(data?.author, owner)) {
-    problems.push(`${pathname}: its JSON-LD author is ${JSON.stringify(data?.author) ?? 'missing'}, not ${JSON.stringify(owner)}`);
+  const graph = Array.isArray(data?.['@graph']) ? data['@graph'] : [];
+  const node = graph.find((n) => n?.['@type'] === type);
+  if (!node) return [`${pathname}: its JSON-LD has no @graph with a ${type}`];
+  const problems = node.url === want ? [] : [`${pathname}: its JSON-LD url is ${node.url ?? 'missing'}, not ${want}`];
+  const person = graph.find((n) => n?.['@type'] === 'Person' && n['@id'] === PERSON);
+  if (person?.name !== OWNER.name || !person.sameAs?.length) problems.push(`${pathname}: its JSON-LD has no Person ${PERSON} with sameAs`);
+  const owner = { '@type': 'Person', '@id': PERSON, name: OWNER.name, url: SITE + OWNER.about };
+  if (type === 'ProfilePage') {
+    if (node.mainEntity?.['@id'] !== PERSON) problems.push(`${pathname}: its ProfilePage is not about ${PERSON}`);
+  } else {
+    if (node.publisher?.['@id'] !== PERSON) problems.push(`${pathname}: its JSON-LD publisher is not ${PERSON}`);
+    if (byClaude && node.author !== undefined) problems.push(`${pathname}: Claude wrote it, but its JSON-LD names an author`);
+    if (!byClaude && !isDeepStrictEqual(node.author, owner)) {
+      problems.push(`${pathname}: its JSON-LD author is ${JSON.stringify(node.author) ?? 'missing'}, not ${JSON.stringify(owner)}`);
+    }
   }
+  const known = new Set([...graph.map((n) => n?.['@id']), SITE + '/#website', type === 'Article' ? want.replace(/notes\/$/, '') : null]);
+  for (const id of refsOf(graph).filter((id) => !known.has(id))) problems.push(`${pathname}: its JSON-LD refers to ${id}, which it never names`);
   return problems;
+}
+
+// The agent layer (src/lib/agent-text.js): /llms.txt and /llms-full.txt name no post outside `listed` but a live
+// notebook, and no unlisted slug at all; every link of /llms.txt is built (an /api/ route aside); no unlisted post or
+// live notebook has a Markdown twin. files: { llms, full, twins: ['<slug>.md', '<slug>/notes.md', …], unlisted }.
+export function agentFilesProblems({ llms, full, twins = [], unlisted = new Set() }, listed, isBuilt) {
+  const problems = new Set();
+  for (const [name, text] of [['llms.txt', llms], ['llms-full.txt', full]]) {
+    if (typeof text !== 'string') { problems.add(`${name}: it was not built`); continue; }
+    for (const [, slug] of text.matchAll(/\/ledger\/([a-z0-9][a-z0-9-]*)(?=\/|\.md\b|#|\)|\s|$)/g)) {
+      if (!listed.has(slug) && !isLive(slug)) problems.add(`${name}: names /ledger/${slug}, not a listed post`);
+    }
+    for (const slug of unlisted) if (text.includes(slug)) problems.add(`${name}: names the unlisted ${slug}`);
+  }
+  for (const [, p] of (llms ?? '').matchAll(/https:\/\/aaronorelup\.com(\/[^\s)<>"'#?]*)/g)) {
+    if (!p.startsWith('/api/') && !isBuilt(p)) problems.add(`llms.txt: links ${p}, which is not built`);
+  }
+  for (const rel of twins) {
+    const slug = rel.replace(/(\/notes)?\.md$/, '');
+    if (!listed.has(slug) || isLive(slug)) problems.add(`/ledger/${rel}: a Markdown twin of no listed post`);
+  }
+  return [...problems];
+}
+
+// The note for agents (components/chrome/AgentNote.astro) names only paths the build has (an /api/ route aside). A page
+// without one passes.
+export function agentNoteProblems(html, pathname, isBuilt) {
+  const note = html.match(/<div class="ao-agent" aria-hidden="true"(?: data-nosnippet)?>([^<]*)<\/div>/);
+  if (!note) return [];
+  return [...note[1].matchAll(/(?:^|\s)(\/[^\s<&]*)/g)].map((m) => m[1].replace(/[.,:;)]+$/, ''))
+    .filter((p) => !p.startsWith('/api/') && !isBuilt(p)).map((p) => `${pathname}: its note for agents names ${p}, which is not built`);
 }
 
 // The pages the sitemap lists, as paths: the pages whose share pictures check() looks at.
@@ -177,20 +234,33 @@ export const readBaseline = (file = BASELINE) =>
 const redirectSourcesOf = (text) => new Set(text.split('\n').map((l) => l.trim()).filter((l) => l && !l.startsWith('#'))
   .map((l) => l.split(/\s+/)[0]));
 
-export function check(dist, listed = listedSlugs(), byClaude = claudeSlugs()) {
+export function check(dist, listed = listedSlugs(), byClaude = claudeSlugs(), notesByClaude = claudeNotes()) {
   const read = (p) => fs.readFileSync(path.join(dist, p), 'utf8');
   const isBuilt = (p) => fs.existsSync(path.join(dist, p.endsWith('/') ? p + 'index.html' : p));
   const sizeOf = (p) => {
     const file = path.join(dist, p);
     return file.startsWith(dist) && fs.existsSync(file) && fs.statSync(file).isFile() ? imageSize(fs.readFileSync(file)) : null;
   };
+  const maybe = (p) => (fs.existsSync(path.join(dist, p)) ? read(p) : undefined);
+  const ledger = fs.readdirSync(path.join(dist, 'ledger'), { withFileTypes: true });
+  const twins = [...ledger.filter((e) => e.isFile() && e.name.endsWith('.md')).map((e) => e.name),
+    ...ledger.filter((e) => e.isDirectory() && fs.existsSync(path.join(dist, 'ledger', e.name, 'notes.md'))).map((e) => `${e.name}/notes.md`)];
+  const unlisted = new Set(ledger.filter((e) => e.isDirectory() && !listed.has(e.name) && !isLive(e.name)
+    && fs.existsSync(path.join(dist, 'ledger', e.name, 'index.html'))).map((e) => e.name));
+  const notePages = [...new Set(['/', '/ledger/', '/stats/', ...sitemapPaths(read('sitemap.xml'))])]
+    .filter((p) => p.endsWith('/') && !isLivePath(p) && isBuilt(p));
   return [
+    ...agentFilesProblems({ llms: maybe('llms.txt'), full: maybe('llms-full.txt'), twins, unlisted }, listed, isBuilt),
+    ...notePages.flatMap((p) => agentNoteProblems(read(`${p.slice(1)}index.html`), p, isBuilt)),
     ...previewsProblems(JSON.parse(read('ledger/previews.json')), listed),
     ...statsPagesProblems(read('stats-pages.txt'), listed),
     ...rssProblems(read('rss.xml'), listed),
     ...[...listed].filter((s) => !isLive(s) && isBuilt(`/ledger/${s}/`))
       .map((s) => [read(`ledger/${s}/index.html`), `/ledger/${s}/`, byClaude.has(s)])
       .flatMap(([html, pathname, claude]) => [...shareUrlProblems(html, pathname), ...jsonLdProblems(html, pathname, claude)]),
+    ...[...listed].filter((s) => !isLive(s) && isBuilt(`/ledger/${s}/notes/`))
+      .flatMap((s) => jsonLdProblems(read(`ledger/${s}/notes/index.html`), `/ledger/${s}/notes/`, notesByClaude.has(s), 'Article')),
+    ...jsonLdProblems(read('about/index.html'), '/about/', false, 'ProfilePage'),
     // Not the course pages: other repos write their data (CLAUDE.md), and a picture of theirs must never stop a deploy.
     ...sitemapPaths(read('sitemap.xml'))
       .filter((p) => p.endsWith('/') && !isLivePath(p) && !p.startsWith('/courses/') && isBuilt(p))

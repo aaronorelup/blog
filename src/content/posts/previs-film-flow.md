@@ -27,7 +27,7 @@ guide.
 second that the model followed its camera and staging almost exactly.**
 
 <figure>
-  <video src="/media/previs-film-flow/hollows-red-outline.mp4" controls preload="metadata" poster="/media/previs-film-flow/s10-red-outline.webp"></video>
+  <video src="/media/previs-film-flow/hollows-red-outline.mp4" controls playsinline preload="metadata" poster="/media/previs-film-flow/s10-red-outline.webp"></video>
   <figcaption>The whole first film. Shots 4, 6 and 10 had a previs, so they carry red outlines. The rest went straight to video.</figcaption>
 </figure>
 
@@ -78,7 +78,7 @@ monster's shoulder and the red circle sits on its head, right where the Blender 
 moves. Everything else, the paint, the mud, Jefrie's tail, came from the sheets.
 
 <figure>
-  <video src="/media/previs-film-flow/s04-side-by-side.mp4" controls muted loop preload="metadata"></video>
+  <video src="/media/previs-film-flow/s04-side-by-side.mp4" controls playsinline muted loop preload="metadata"></video>
   <figcaption>Shot 4. Jefrie crouches, slams her tail, arcs over three monsters and skids to a landing. The Blender previs on the left, the finished H3 shot on the right.</figcaption>
 </figure>
 

@@ -8,6 +8,7 @@
 // staging: the page is noindex whatever TEA_SEO says (2.0), and in no sitemap. Piece 6a removes it.
 // The hero must be the first chapter: the page's h1, its top anchor, the door and the first frame rest on it.
 import '../styles/tea/room/room.css';
+import AgentNote from '../components/chrome/AgentNote.astro';
 import Head from '../components/chrome/Head.astro';
 import ElementStyles from '../components/post/ElementStyles.astro';
 import FONTS from '../data/fonts.json';
@@ -38,6 +39,7 @@ const preload = [face('Zen Maru Gothic', 700), face('JetBrains Mono', 500)].filt
     </script>
   </head>
   <body class="room">
+    <AgentNote />
     <ElementStyles tags={['ao-game']} />
     <slot />
     <script>

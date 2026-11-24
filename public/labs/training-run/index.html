@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A training run you can hear, trained in your browser</title>
+<meta name="description" content="Your browser trains a small note-predicting network on 609 old fiddle tunes and plays every note it picks while it learns. At 20:00 its step size goes past its limit. You choose how far.">
+<meta name="color-scheme" content="dark light">
+<script>
+  // Day or night before the first paint: ?mode=, else the site's own switch (localStorage 'scene-mode'), else night.
+  (function () {
+    var m = new URLSearchParams(location.search).get('mode');
+    if (m !== 'day' && m !== 'night') { try { m = localStorage.getItem('scene-mode'); } catch (e) { m = null; } }
+    document.documentElement.dataset.mode = m === 'day' ? 'day' : 'night';
+    // Framed inside the post: the post has already said what this is, so the page starts at the picture.
+    try { if (window.self !== window.top) document.documentElement.dataset.embed = '1'; } catch (e) { document.documentElement.dataset.embed = '1'; }
+  })();
+</script>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23120d1c'/%3E%3Cpath d='M4 21h5l3-9 4 14 4-18 3 13h5' fill='none' stroke='%233987e5' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M21 4v24' stroke='%23d03b3b' stroke-width='1.6'/%3E%3C/svg%3E">
+</head>
+<body>
+<div class="app" id="app" data-state="loading">
+  <header class="head">
+    <h1>A training run you can hear</h1>
+    <p class="lede">Press Play. Your browser trains a small network on 609 old fiddle tunes, and you hear every note it picks while it learns. At 20:00 its step size is set against its limit. You choose how hard.</p>
+  </header>
+
+  <div class="stage" id="stage">
+    <canvas id="roll" tabindex="0" role="slider" aria-label="The programme, 00:00 to 30:00. Top: the model's bets on each note and the note it picked. Bottom: its error on tunes it never saw. Arrow keys move through it." aria-valuemin="0" aria-valuemax="1800" aria-valuenow="0"></canvas>
+  </div>
+
+  <div class="transport">
+    <button type="button" class="pill primary" id="play" disabled>Play</button>
+    <span class="clock" id="clock" aria-label="Programme clock">00:00</span>
+    <span class="status" id="status" role="status">Loading 609 tunes</span>
+    <button type="button" class="pill ghost" id="modeBtn">Day</button>
+  </div>
+
+  <dl class="readout" id="readout">
+    <div><dt>Training steps so far</dt><dd id="rSteps">0</dd></div>
+    <div><dt>Error on tunes it never saw</dt><dd id="rErr">3.47</dd></div>
+    <div><dt>Next notes right</dt><dd id="rAcc">0%</dd></div>
+    <div><dt>Step size</dt><dd id="rLr">0.30</dd></div>
+  </dl>
+
+  <fieldset class="push" id="push">
+    <legend>What happens at 20:00</legend>
+    <div class="presets" role="group" aria-label="Ready-made endings">
+      <button type="button" class="chip" data-push="1" data-climb="2" aria-pressed="true">As published</button>
+      <button type="button" class="chip" data-push="0" data-climb="0" aria-pressed="false">Left alone</button>
+      <button type="button" class="chip" data-push="3" data-climb="0" aria-pressed="false">Held at 3x</button>
+      <button type="button" class="chip" data-push="10" data-climb="0" aria-pressed="false">Held at 10x</button>
+    </div>
+    <label class="field"><span>Set the step size to <b id="pushVal">1.0</b> times its limit</span>
+      <input type="range" id="pushIn" min="0.5" max="12" step="0.1" value="1"></label>
+    <label class="field"><span>then raise it <b id="climbVal">2.0</b>% every note</span>
+      <input type="range" id="climbIn" min="0" max="5" step="0.5" value="2"></label>
+    <p class="hint" id="pushHint">The limit is measured in your browser when the run reaches 20:00. Change the push any time: after 20:00 the ending is trained again and plays from 19:35.</p>
+  </fieldset>
+
+  <details class="more" id="audit">
+    <summary>Checked against the published run: <span id="auditLine">waiting for the run</span></summary>
+    <ul class="audit" id="auditList"></ul>
+    <p class="note">The page compares every number it computes with the run in the post, digit for digit. They can only match if your browser did the same training. The maths is built from plain plus, minus, times and divide so that every browser rounds alike. It was checked in Chrome. If yours differs, the first difference is shown here.</p>
+  </details>
+
+  <details class="more">
+    <summary>What's real and what's designed</summary>
+    <ul class="plain">
+      <li><b>Real.</b> Every note, how hard it's plucked, the pad under it, the error, the limit and whatever happens after 20:00. They come out of the training run while you listen.</li>
+      <li><b>Designed.</b> The music-box sound and the tempo. How the 6,144 training steps are spread over the clock: none for the first two bars, about 60 a note by 20:00, then one a note. And the push at 20:00, which is now yours.</li>
+      <li><b>The three sound rules.</b> The note it picks is plucked, an octave up. It's plucked harder the surer the model was. Under it a pad plays every note at once, each as loud as its probability.</li>
+      <li><b>The limit.</b> Plain gradient descent overshoots when its step size is more than 2 divided by the sharpness, the steepest curve of the error. The page measures that sharpness at 20:00 on 4,096 training notes.</li>
+    </ul>
+  </details>
+
+  <p class="foot">Everything here is plain files you can read: <a href="core.js" target="_blank" rel="noopener">core.js</a> (the model and its maths), <a href="programme.js" target="_blank" rel="noopener">programme.js</a> (the clock and the push), <a href="synth.js" target="_blank" rel="noopener">synth.js</a> (the sound), <a href="tunes.json" target="_blank" rel="noopener">tunes.json</a> (the tunes) and <a href="published.json" target="_blank" rel="noopener">published.json</a> (the published run's numbers). The scripts that made the tune file, the published run and its pictures are in <a href="make/README.txt" target="_blank" rel="noopener">the make folder</a>. The tunes are from O'Neill's Music of Ireland, Aird's Airs, Ryan's Mammoth Collection and two small folk books, typed into ABC notation by volunteers, among them Jack Campin, John Chambers, Ray Davies and Dan G. Petersen. Built by Claude Fable 5.2 for <a href="/ledger/three-ai-experiments/" target="_top">this post</a>.</p>
+</div>
+<noscript><p class="noscript">This page needs JavaScript: it trains the model and makes the sound in your browser.</p></noscript>
+<script type="module" src="lab.js"></script>
+</body>
+</html>

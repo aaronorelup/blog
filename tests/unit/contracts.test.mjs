@@ -4,7 +4,9 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { check, previewsProblems, statsPagesProblems, rssProblems, baselineProblems, shareUrlProblems, shareImageProblems,
-  imageSize, sitemapPaths, jsonLdProblems } from '../../scripts/build/contracts.mjs';
+  imageSize, sitemapPaths, jsonLdProblems, agentFilesProblems, claudeSlugs, claudeNotes } from '../../scripts/build/contracts.mjs';
+import { LIVE_NOTEBOOKS } from '../../src/data/exempt.js';
+import { blogPosting, notesArticle, profilePage, scriptText, webSite } from '../../src/lib/jsonld.js';
 
 const dist = fileURLToPath(new URL('../../dist', import.meta.url));
 const listed = new Set(['a', 'b']);
@@ -93,40 +95,97 @@ test('the sitemap: its pages as paths', () => {
   assert.deepEqual(sitemapPaths(xml), ['/', '/now/2026-11-08/']);
 });
 
-test('a listed post: one JSON-LD block that parses, its url the page address', () => {
-  const block = (json) => `<script type="application/ld+json">${json}</script>`;
-  const page = (...blocks) => `<html lang="en"><head><script>var a = 1;</script>${blocks.join('')}</head><body></body></html>`;
-  const owner = '"author":{"@type":"Person","name":"Aaron Orelup","url":"https://aaronorelup.com/about/"}';
-  const post = (author) => block(`{"@type":"BlogPosting","headline":"a \\u003c/script> b","url":"https://aaronorelup.com/ledger/a/"${author}}`);
-  const good = post(`,${owner}`);
+// The JSON-LD of a page as lib/jsonld.js writes it, through the same script text, and a page around blocks.
+const block = (json) => `<script type="application/ld+json">${typeof json === 'string' ? json : scriptText(json)}</script>`;
+const page = (...blocks) => `<html lang="en"><head><script>var a = 1;</script>${blocks.join('')}</head><body></body></html>`;
+const A = 'https://aaronorelup.com/ledger/a/';
+const art = { headline: 'a </script> b', description: 'd', published: new Date('2026-11-10'), url: A };
+// The same graph with its first node changed.
+const withNode = (data, change) => ({ ...data, '@graph': [change({ ...data['@graph'][0] }), ...data['@graph'].slice(1)] });
+
+test('a listed post: one JSON-LD block that parses, a graph whose BlogPosting has the page address', () => {
+  const good = block(blogPosting(art));
   assert.deepEqual(jsonLdProblems(page(good), '/ledger/a/'), []);
   assert.equal(jsonLdProblems(page(), '/ledger/a/').length, 1);
   assert.equal(jsonLdProblems(page(good, good), '/ledger/a/').length, 1);
   assert.equal(jsonLdProblems(page(good), '/ledger/b/').length, 1);
-  assert.equal(jsonLdProblems(page(block(`{"@type":"BlogPosting",${owner}}`)), '/ledger/a/').length, 1);
+  assert.equal(jsonLdProblems(page(block(withNode(blogPosting(art), ({ url, ...n }) => n))), '/ledger/a/').length, 1);
   assert.equal(jsonLdProblems(page(block('{"url":"https://aaronorelup.com/ledger/a/"')), '/ledger/a/').length, 1);
+  // The flat shape of before the graph is no longer enough.
+  assert.equal(jsonLdProblems(page(block(`{"@type":"BlogPosting","url":"${A}"}`)), '/ledger/a/').length, 1);
   // An unescaped </script> in a title ends the block early: what is left does not parse.
-  assert.equal(jsonLdProblems(page(block('{"headline":"a </script> b","url":"https://aaronorelup.com/ledger/a/"}')), '/ledger/a/').length, 1);
+  assert.equal(jsonLdProblems(page(`<script type="application/ld+json">${JSON.stringify(blogPosting(art))}</script>`), '/ledger/a/').length, 1);
 });
 
-test('a listed post: the author is the owner, and none where the page says Claude wrote it', () => {
-  const block = (author) => `<head><script type="application/ld+json">{"url":"https://aaronorelup.com/ledger/a/"${author}}</script></head>`;
-  const person = (name, url = 'https://aaronorelup.com/about/') => `,"author":{"@type":"Person","name":"${name}","url":"${url}"}`;
+test('a listed post: the owner publishes it and is its author, and is no author where the page says Claude wrote it', () => {
+  const ours = blogPosting(art);
+  const claude = blogPosting({ ...art, voice: 'claude' });
+  const author = (data, a) => block(withNode(data, (n) => ({ ...n, author: a })));
+  const owner = ours['@graph'][0].author;
   // Aaron's post: exactly the owner, nothing less and nothing more.
-  assert.deepEqual(jsonLdProblems(block(person('Aaron Orelup')), '/ledger/a/'), []);
-  assert.equal(jsonLdProblems(block(''), '/ledger/a/').length, 1);
-  assert.equal(jsonLdProblems(block(person('Claude')), '/ledger/a/').length, 1);
-  assert.equal(jsonLdProblems(block(person('Aaron Orelup', 'https://aaronorelup.com/')), '/ledger/a/').length, 1);
-  assert.equal(jsonLdProblems(block(`,"author":[${person('Aaron Orelup').slice(10)},${person('Claude').slice(10)}]`), '/ledger/a/').length, 1);
-  // Claude's post: no author at all, not the owner and not a substitute.
-  assert.deepEqual(jsonLdProblems(block(''), '/ledger/a/', true), []);
-  assert.equal(jsonLdProblems(block(person('Aaron Orelup')), '/ledger/a/', true).length, 1);
-  assert.equal(jsonLdProblems(block(person('Claude')), '/ledger/a/', true).length, 1);
-  assert.equal(jsonLdProblems(block(',"author":null'), '/ledger/a/', true).length, 1);
+  assert.deepEqual(jsonLdProblems(page(block(ours)), '/ledger/a/'), []);
+  assert.equal(jsonLdProblems(page(block(claude)), '/ledger/a/').length, 1);
+  assert.equal(jsonLdProblems(page(author(ours, { ...owner, name: 'Claude' })), '/ledger/a/').length, 1);
+  assert.equal(jsonLdProblems(page(author(ours, { ...owner, url: 'https://aaronorelup.com/' })), '/ledger/a/').length, 1);
+  assert.equal(jsonLdProblems(page(author(ours, [owner, { ...owner, name: 'Claude' }])), '/ledger/a/').length, 1);
+  // Claude's post: no author at all, not the owner and not a substitute, and still the owner's to publish.
+  assert.deepEqual(jsonLdProblems(page(block(claude)), '/ledger/a/', true), []);
+  assert.equal(jsonLdProblems(page(block(ours)), '/ledger/a/', true).length, 1);
+  assert.equal(jsonLdProblems(page(author(claude, { ...owner, name: 'Claude' })), '/ledger/a/', true).length, 1);
+  assert.equal(jsonLdProblems(page(author(claude, null)), '/ledger/a/', true).length, 1);
+  assert.equal(jsonLdProblems(page(block(withNode(claude, ({ publisher, ...n }) => n))), '/ledger/a/', true).length, 1);
+});
+
+test('the owner is a Person with his profiles, and every reference in the graph resolves', () => {
+  const ours = blogPosting(art);
+  const [post, person] = ours['@graph'];
+  assert.ok(jsonLdProblems(page(block({ ...ours, '@graph': [post] })), '/ledger/a/').length >= 1);
+  assert.equal(jsonLdProblems(page(block({ ...ours, '@graph': [post, { ...person, sameAs: [] }] })), '/ledger/a/').length, 1);
+  const stray = withNode(ours, (n) => ({ ...n, isPartOf: { '@id': 'https://aaronorelup.com/#elsewhere' } }));
+  assert.equal(jsonLdProblems(page(block(stray)), '/ledger/a/').length, 1);
+});
+
+test('a notes page and /about/: an Article part of its post, and a ProfilePage about the owner', () => {
+  const notes = { headline: 'n', description: 'd', url: `${A}notes/`, postUrl: A };
+  const at = (data, claude = false) => jsonLdProblems(page(block(data)), '/ledger/a/notes/', claude, 'Article');
+  assert.deepEqual(at(notesArticle(notes)), []);
+  assert.deepEqual(at(notesArticle({ ...notes, voice: 'claude' }), true), []);
+  assert.equal(at(notesArticle(notes), true).length, 1);
+  assert.equal(at(notesArticle({ ...notes, postUrl: 'https://aaronorelup.com/ledger/b/' })).length, 1);
+  const about = profilePage('https://aaronorelup.com/about/');
+  assert.deepEqual(jsonLdProblems(page(block(about)), '/about/', false, 'ProfilePage'), []);
+  assert.equal(jsonLdProblems(page(block(webSite('https://aaronorelup.com/'))), '/about/', false, 'ProfilePage').length, 1);
 });
 
 test('the baseline: every path built or redirected', () => {
   const built = new Set(['/', '/ledger/a/']);
   assert.deepEqual(baselineProblems(['/', '/ledger/a/', '/posts/'], (p) => built.has(p), new Set(['/posts'])), []);
   assert.equal(baselineProblems(['/ledger/gone/'], (p) => built.has(p), new Set()).length, 1);
+});
+
+const SITE = 'https://aaronorelup.com';
+const [{ slug: LIVE }] = Object.values(LIVE_NOTEBOOKS);
+
+test('llms.txt, llms-full.txt and the twins (agentFilesProblems): an unlisted or draft slug, a dead link or a twin of no listed post each fail', () => {
+  const listed = new Set(['a', 'b']);
+  const built = () => true;
+  const llmsOk = `- [AO-1](${SITE}/ledger/a.md) - [AO-2](${SITE}/ledger/b/) ${SITE}/ledger/previews.json ${SITE}/api/search?q=<text> ${SITE}/ledger/<slug>/`;
+  const ok = { llms: llmsOk, full: 'see /ledger/a/ and /ledger/b/notes/', twins: ['a.md', 'b/notes.md'], unlisted: new Set(['z-hidden']) };
+  assert.deepEqual(agentFilesProblems(ok, listed, built), []);
+  assert.equal(agentFilesProblems({ ...ok, llms: `${llmsOk} ${SITE}/ledger/c.md` }, listed, built).length, 1);
+  assert.equal(agentFilesProblems({ ...ok, full: 'the z-hidden post' }, listed, built).length, 1);
+  assert.equal(agentFilesProblems({ ...ok, twins: ['a.md', 'z-hidden.md', `${LIVE}.md`] }, listed, built).length, 2);
+  assert.deepEqual(agentFilesProblems(ok, listed, (p) => p !== '/ledger/b/'), ['llms.txt: links /ledger/b/, which is not built']);
+  assert.deepEqual(agentFilesProblems({ ...ok, full: undefined }, listed, built), ['llms-full.txt: it was not built']);
+  assert.deepEqual(agentFilesProblems({ ...ok, llms: `${llmsOk} ${SITE}/ledger/${LIVE}/` }, listed, built), []);
+});
+
+test('a notes page is held to the note\'s own voice: AO-067\'s notes are Claude\'s under Aaron\'s post', () => {
+  assert.ok(claudeNotes().has('the-thought-it-denied'));
+  assert.ok(!claudeSlugs().has('the-thought-it-denied'));
+  const html = (author) => `<script type="application/ld+json">${scriptText(notesArticle({ headline: 'N', description: 'd',
+    url: 'https://aaronorelup.com/ledger/the-thought-it-denied/notes/', postUrl: 'https://aaronorelup.com/ledger/the-thought-it-denied/',
+    voice: author }))}</script>`;
+  assert.deepEqual(jsonLdProblems(html('claude'), '/ledger/the-thought-it-denied/notes/', true, 'Article'), []);
+  assert.ok(jsonLdProblems(html(undefined), '/ledger/the-thought-it-denied/notes/', true, 'Article').length > 0);
 });

@@ -1,0 +1,167 @@
+{
+ "about": "The maker's lines as frozen audio: each line's exact text and its length in seconds, from the file's first sample, which is placed on the line's start frame. The texts are also keys, for make/cues.mjs --durations. Written by make/sound/voice_freeze.py.",
+ "voice": "Quiet Hour maker (AO-087)",
+ "lines": [
+  {
+   "id": "L1",
+   "variant": null,
+   "text": "Good evening. It hasn't heard a tune yet, so it plays every note at once.",
+   "seconds": 4.94
+  },
+  {
+   "id": "L2",
+   "variant": null,
+   "text": "That's how big a step it takes after a mistake. Not too big.",
+   "seconds": 4.56
+  },
+  {
+   "id": "L3",
+   "variant": null,
+   "text": "It's found the key. Nobody told it one.",
+   "seconds": 3.44
+  },
+  {
+   "id": "L4",
+   "variant": null,
+   "text": "Every second note right. On tunes it's never heard.",
+   "seconds": 4.48
+  },
+  {
+   "id": "YES",
+   "variant": null,
+   "text": "Yes.",
+   "seconds": 0.54
+  },
+  {
+   "id": "L5",
+   "variant": null,
+   "text": "A quarter of the way to the edge now. Nobody's touched it.",
+   "seconds": 3.96
+  },
+  {
+   "id": "L6a",
+   "variant": null,
+   "text": "That's as big a step as it can take.",
+   "seconds": 2.08
+  },
+  {
+   "id": "L6b",
+   "variant": "unchanged",
+   "text": "We'll leave it where it is.",
+   "seconds": 1.42
+  },
+  {
+   "id": "L6b",
+   "variant": "equal",
+   "text": "So that's where we'll put it.",
+   "seconds": 1.36
+  },
+  {
+   "id": "L8",
+   "variant": null,
+   "text": "It's made itself room.",
+   "seconds": 1.44
+  },
+  {
+   "id": "L10",
+   "variant": null,
+   "text": "There you are.",
+   "seconds": 1.3
+  },
+  {
+   "id": "GN",
+   "variant": null,
+   "text": "Goodnight.",
+   "seconds": 0.62
+  },
+  {
+   "id": "L9",
+   "variant": "27",
+   "text": "Twenty-seven in a hundred.",
+   "seconds": 1.72
+  },
+  {
+   "id": "L7",
+   "variant": "51",
+   "text": "Fifty-one in a hundred. It'll find it again.",
+   "seconds": 4.32
+  },
+  {
+   "id": "L6b",
+   "variant": "three",
+   "text": "We'll give it three times that.",
+   "seconds": 1.64
+  },
+  {
+   "id": "L7",
+   "variant": "49",
+   "text": "Forty-nine in a hundred. It'll find it again.",
+   "seconds": 4.88
+  },
+  {
+   "id": "L9",
+   "variant": "19",
+   "text": "Nineteen in a hundred.",
+   "seconds": 1.84
+  },
+  {
+   "id": "L6b",
+   "variant": "ten",
+   "text": "We'll give it ten times that.",
+   "seconds": 2.18
+  },
+  {
+   "id": "L9",
+   "variant": "24",
+   "text": "Twenty-four in a hundred.",
+   "seconds": 1.76
+  },
+  {
+   "id": "L7",
+   "variant": "24",
+   "text": "Twenty-four in a hundred. It'll find it again.",
+   "seconds": 4.0
+  },
+  {
+   "id": "L7",
+   "variant": "50",
+   "text": "Fifty in a hundred. It'll find it again.",
+   "seconds": 3.92
+  },
+  {
+   "id": "L7",
+   "variant": "46",
+   "text": "Forty-six in a hundred. It'll find it again.",
+   "seconds": 4.11
+  },
+  {
+   "id": "L9",
+   "variant": "6",
+   "text": "Six in a hundred.",
+   "seconds": 1.36
+  }
+ ],
+ "Good evening. It hasn't heard a tune yet, so it plays every note at once.": 4.94,
+ "That's how big a step it takes after a mistake. Not too big.": 4.56,
+ "It's found the key. Nobody told it one.": 3.44,
+ "Every second note right. On tunes it's never heard.": 4.48,
+ "Yes.": 0.54,
+ "A quarter of the way to the edge now. Nobody's touched it.": 3.96,
+ "That's as big a step as it can take.": 2.08,
+ "We'll leave it where it is.": 1.42,
+ "So that's where we'll put it.": 1.36,
+ "It's made itself room.": 1.44,
+ "There you are.": 1.3,
+ "Goodnight.": 0.62,
+ "Twenty-seven in a hundred.": 1.72,
+ "Fifty-one in a hundred. It'll find it again.": 4.32,
+ "We'll give it three times that.": 1.64,
+ "Forty-nine in a hundred. It'll find it again.": 4.88,
+ "Nineteen in a hundred.": 1.84,
+ "We'll give it ten times that.": 2.18,
+ "Twenty-four in a hundred.": 1.76,
+ "Twenty-four in a hundred. It'll find it again.": 4.0,
+ "Fifty in a hundred. It'll find it again.": 3.92,
+ "Forty-six in a hundred. It'll find it again.": 4.11,
+ "Six in a hundred.": 1.36
+}

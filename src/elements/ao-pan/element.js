@@ -24,7 +24,7 @@ class AoPan extends HTMLElement {
     h('div', { class: 'ao-pan-track' }, ...imgs));
     this.stage = stage;
 
-    this.miniImg = h('img', { alt: '', draggable: 'false', 'data-no-zoom': '' });
+    this.miniImg = h('img', { alt: '', draggable: 'false', loading: 'lazy', 'data-no-zoom': '' });
     this.win = h('span', { class: 'ao-pan-win' });
     const mini = h('div', { class: 'ao-pan-mini', 'aria-hidden': 'true' }, this.miniImg, this.win);
 
@@ -120,7 +120,7 @@ class AoPan extends HTMLElement {
     this.imgs.forEach((img, k) => {
       const on = k === i;
       img.classList.toggle('ao-pan-off', !on);
-      if (on) img.loading = 'eager';
+      if (on && this._shown) img.loading = 'eager';   // a view the reader picked; the first waits for the scroll
     });
     this.viewBtns.forEach((b, k) => b.setAttribute('aria-pressed', String(k === i)));
     const img = this.imgs[i];

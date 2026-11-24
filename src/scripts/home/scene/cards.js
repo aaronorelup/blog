@@ -24,9 +24,11 @@ export function enableStage(s) {
   s.stopIdx = 0;
   s.cards.forEach((c, i) => cardState(c.el, i === 0 ? 1 : 0, 0, 0));
   syncRail(s);
+  html.removeAttribute('data-stage-pending');   // home.css's staged first frame: these inline styles now hold it
 }
 
 export function disableStage(s) {
+  document.documentElement.removeAttribute('data-stage-pending');   // never staged too: ?tier=static, before mount stages
   if (!s.restore) return;
   document.documentElement.style.overflow = s.restore.h;
   document.body.style.overflow = s.restore.b;

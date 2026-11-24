@@ -10,7 +10,7 @@ import { speech } from './speech.js';
 
 const SPEEDS = [1, 1.25, 1.5, 2];
 const HINT = 'Click any word to start there.';
-const COMING = 'The recording of this version is on its way.';
+const SPEECH = "No recording of this version yet, so your browser's voice reads it.";
 const MUTE = 'No recording of this version yet, and this browser has no voice of its own.';
 const QUIET = 3000; // after the reader scrolls themselves, the page waits this long before following the reading again
 const NOT_TEXT = 'a, button, input, select, textarea, summary, label, img, picture, video, audio, iframe';
@@ -53,7 +53,7 @@ export function open(root, button, audio, onClose) {
     loading = null;
     if (!el.isConnected) return;
     rec = r.parts ? r : null;
-    if (!rec && readHash) note = canSpeak ? COMING : MUTE;
+    if (!rec && readHash) note = canSpeak ? SPEECH : MUTE;
     if (rec || canSpeak) make(rec ? 'recorded' : 'speech');
     render();
   });

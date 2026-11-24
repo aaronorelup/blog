@@ -4,7 +4,7 @@
 // lit NAV item. Everything else, a course page or /stats, is a page of its own.
 import { NAV } from '../../../data/site.js';
 
-const VIEWS = new Map(NAV.filter((n) => n.overlay).map((n) => [n.href, n.key]));
+const VIEWS = new Map(NAV.filter((n) => n.overlay).map((n) => [n.href.replace(/\/$/, ''), n.key]));
 const POST = /^\/ledger\/[^/]+(?:\/notes)?$/;
 
 export function routeOf(href) {

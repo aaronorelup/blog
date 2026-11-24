@@ -9,13 +9,13 @@ export async function embed(env, texts) {
   return (await env.AI.run(model, { text: texts })).data;
 }
 
-// The topK nearest chunks, best first: [{ slug, kind, anchor, heading, text, title, voice, score }], voice 'claude' on
-// a post or notes page Claude tells as "I" and undefined on Aaron's.
+// The topK nearest chunks, best first: [{ slug, kind, anchor, heading, text, title, voice, score, vid }], voice 'claude'
+// on a post or notes page Claude tells as "I" and undefined on Aaron's, vid the vector's id (AO-063:4, AO-063n:4).
 export async function retrieve(env, q, topK) {
   const [vector] = await embed(env, [q]);
   const { matches } = await env.SEARCH_INDEX.query(vector, { topK, returnMetadata: 'all' });
-  return matches.map(({ score, metadata: m }) => (
-    { slug: m.s, kind: m.k, anchor: m.a, heading: m.h, text: m.t, title: m.T, voice: m.v, score }));
+  return matches.map(({ id, score, metadata: m }) => (
+    { slug: m.s, kind: m.k, anchor: m.a, heading: m.h, text: m.t, title: m.T, voice: m.v, score, vid: id }));
 }
 
 // The topK nearest chunks' ids (AO-063:4, AO-063n:4 for a notes page), best first: Vectorize's ids-only query, whose

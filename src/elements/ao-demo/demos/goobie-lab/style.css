@@ -222,6 +222,8 @@ ao-demo[name="goobie-lab"] { display: block; margin: 26px 0 34px; }
   color: var(--pc-strong);
   font: 500 13.5px/1.3 Karla, system-ui, sans-serif;
 }
+/* iOS Safari zooms the page on focus into a field under 16px, and stays zoomed: 16px on touch screens. */
+@media (pointer: coarse) { .gl select.gl-select, .gl input.gl-input { font-size: 16px; } }
 .gl input.gl-input { flex: 1 1 160px; }
 .gl .gl-play-out:empty { display: none; }
 

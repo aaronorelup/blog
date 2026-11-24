@@ -91,16 +91,16 @@ test.describe('in the homepage overlay', () => {
     await page.goto('/?tier=low');
     await expect(page.locator('#stop-rail [data-goto]').first()).toBeVisible({ timeout: 20_000 });
     await page.evaluate(() => { window.__sameDocument = true; });
-    const card = page.locator('section[data-wp]').filter({ has: page.locator('a[href="/projects"]') }).first();
+    const card = page.locator('section[data-wp]').filter({ has: page.locator('a[href="/projects/"]') }).first();
     for (let k = 0; k < 6 && await card.evaluate((s) => s.inert); k++) {
       await page.keyboard.press('ArrowDown');
       await page.waitForTimeout(3000);
     }
-    const link = card.locator('a[href="/projects"]').first();
+    const link = card.locator('a[href="/projects/"]').first();
     const box = await link.boundingBox();
     await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);
     await expect(page.locator('#panel-screen')).toHaveAttribute('aria-hidden', 'false');
-    await expect(page).toHaveURL(/\/projects$/);
+    await expect(page).toHaveURL(/\/projects\/$/);
     const view = page.locator('#panel-screen [data-panel-view="projects"]');
     await expect(view.locator('.proj-card').first()).toBeVisible();
     expect(await counts(view)).toEqual(standalone);

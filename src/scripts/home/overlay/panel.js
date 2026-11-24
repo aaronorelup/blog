@@ -12,12 +12,18 @@ import { mountView } from '../../views/index.js';
 const host = document.querySelector('[data-panel-host]');
 const inner = document.getElementById('panel-inner');
 const scroller = document.getElementById('panel-scroll');
+const screen = document.getElementById('panel-screen');
+const dialog = document.getElementById('panel-card');
+const behind = [...['content', 'stop-rail'].map((id) => document.getElementById(id)), document.querySelector('a.skip')]
+  .filter(Boolean);   // the skip link too: its #content is inert while the panel is up
 const HOME_TITLE = document.title;
 const listeners = new Set();
 let state = 'closed';
 let shown = null;                          // the view on screen: { route, node, unmount }
 let wanted = null;                         // the key of the route last asked for
 let ledger = { search: '', scroll: 0 };    // where the ledger was left, for "← LEDGER" (data-close-reader)
+let opener = null;                         // the card's link that opened it, where focus goes back on close
+let restoring = false;                     // focus is being put back: no prefetch for it
 
 const set = (next) => { state = next; listeners.forEach((fn) => fn(next)); };
 const isOpen = () => state === 'open' || state === 'covered';
@@ -45,6 +51,31 @@ function drop() {
   shown = null;
 }
 
+// A modal for the keyboard and screen readers: while it is up the scene behind it is inert, and focus starts in it.
+function modal(up) {
+  behind.forEach((el) => { el.inert = up; });
+  if (up) { dialog.setAttribute('role', 'dialog'); dialog.setAttribute('aria-modal', 'true'); }
+}
+// Into the view, unless focus is in the panel already (the ledger's "/" may have put it in its search box).
+function focusIn(route) {
+  if (!isOpen() || screen.contains(document.activeElement)) return;
+  const target = route.url.hash && shown && targetOf(shown.node, route.url.hash);
+  if (!scroller.hasAttribute('tabindex')) scroller.setAttribute('tabindex', '-1');
+  (target?.tabIndex >= 0 ? target : scroller).focus({ preventScroll: true });
+}
+// Back to the card's link it opened from, or to the scene's <main>: never another card's link, whose focus would
+// prefetch (a page view on /stats).
+function focusBack() {
+  const main = document.getElementById('content');
+  const to = opener?.isConnected && !opener.closest('section')?.inert ? opener : main;
+  opener = null;
+  if (!to) return;
+  if (to === main && !main.hasAttribute('tabindex')) main.setAttribute('tabindex', '-1');
+  restoring = true;
+  to.focus({ preventScroll: true });
+  restoring = false;
+}
+
 // The same page again only moves to its anchor (or, from a link with none, its top); a pop leaves it be.
 async function show(route, pushed) {
   wanted = route.key;
@@ -52,6 +83,7 @@ async function show(route, pushed) {
     shown.route = route;
     if (route.url.hash) targetOf(shown.node, route.url.hash)?.scrollIntoView();
     else if (pushed) scroller.scrollTop = 0;
+    focusIn(route);
     return;
   }
   const { node, title } = await load(route);
@@ -60,18 +92,21 @@ async function show(route, pushed) {
   host.append(node);
   inner.dataset.activeView = route.nav;
   document.title = title;
+  dialog.setAttribute('aria-label', title);
   // The real page is the fallback: a chunk lost to a deploy opens it.
   const mounted = mountView(node, route.url.href);
   shown = { route, node, unmount: () => mounted.then((unmount) => unmount()) };
   const scroll = history.state?.scroll ?? 0;
   scroller.scrollTop = scroll;
   if (scroll) mounted.then(() => { scroller.scrollTop = scroll; });
+  mounted.then(() => { if (shown?.route.key === route.key) focusIn(shown.route); });
 }
 
 // from: the card it grows out of. Back, Forward and a deep link open it at once.
 function open(route, from, pushed) {
   if (!isOpen()) {
     set('open');
+    modal(true);
     const covered = () => set('covered');
     if (pushed) grow(from, covered); else appear(covered);
   }
@@ -87,6 +122,8 @@ export function closePanel(push = true) {
   stop();
   wanted = null;
   set('closing');
+  modal(false);
+  focusBack();
   shrink(() => {
     if (shown) drop();
     document.title = HOME_TITLE;
@@ -104,9 +141,10 @@ function onClick(e) {
     return;
   }
   const back = a.hasAttribute('data-close-reader');
-  const route = routeOf(back ? '/ledger' + ledger.search : a.href);
+  const route = routeOf(back ? '/ledger/' + ledger.search : a.href);
   if (!route) return;
   e.preventDefault();
+  if (a.closest('section[data-wp]')) opener = a;
   leave();
   const same = shown?.route.key === route.key;
   history[same ? 'replaceState' : 'pushState'](back ? { scroll: ledger.scroll } : null, '', route.url.href);
@@ -115,6 +153,7 @@ function onClick(e) {
 
 function onPop() {
   const route = routeOf(location.href);
+  if (route && !isOpen()) opener = null;
   if (route) open(route, null, false);
   else closePanel(false);
 }
@@ -123,7 +162,7 @@ function onPop() {
 // every fetched page is a page view on /stats.
 function onIntent(e) {
   const a = e.target.closest?.('a[href]');
-  if (!a || navigator.connection?.saveData) return;
+  if (!a || restoring || navigator.connection?.saveData) return;
   if (e.type === 'focusin' && !a.matches('section[data-wp] a, [data-nav]')) return;
   const route = routeOf(a.href);
   if (route) prefetch(route.page);
