@@ -21,6 +21,9 @@ export default {
   },
   character: { kind: 'sprite', floor: 3, size: 1.05 },
   backdrop: { y: -4.2, turn: -0.1 },
+  // a blank paper card over the wall picture's one panel that carries a grid (it read as a calendar: a product this
+  // page says nothing about). The wall's other panels are blank too. 8 percent larger than the panel, the canvas's margin for its shadow added
+  sign: { draw: 'card', x: 12.02, y: 5.97, w: 3.68, h: 3.23, keep: true },
   props: [
     { file: 2, z: -6, x: -4.1, y: 1.2, w: 1.55 },               // prop-2: a white paper gate, at the left
     { file: 1, z: -3.5, x: 7.3, y: 0.62, w: 2.2 },              // prop-1: glasses on a stand, low on the right

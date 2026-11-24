@@ -206,6 +206,22 @@ export function createTextures(ctx) {
       return t;
     },
 
+    // A blank paper card with round corners and its own soft shadow under it, to hang over a panel of a wall picture.
+    // The card is 272 by 236 of the 320 by 280 canvas.
+    card() {
+      if (cache.has('card')) return cache.get('card');
+      const [c, g] = canvas(320, 280);
+      const tone = g.createLinearGradient(0, 16, 0, 252);
+      tone.addColorStop(0, '#ECECEF'); tone.addColorStop(1, '#E3E4E8');
+      g.shadowColor = 'rgba(52,62,84,.3)'; g.shadowBlur = 14; g.shadowOffsetX = 4; g.shadowOffsetY = 8;
+      g.fillStyle = tone; g.beginPath(); g.roundRect(20, 16, 272, 236, 34); g.fill();
+      g.shadowColor = 'transparent';
+      g.strokeStyle = 'rgba(255,255,255,.7)'; g.lineWidth = 2; g.beginPath(); g.roundRect(21, 17, 270, 234, 33); g.stroke();
+      const t = finish(new CanvasTexture(c));
+      cache.set('card', t);
+      return t;
+    },
+
     // A soft round glow, for cores with the lights out.
     halo() {
       if (cache.has('halo')) return cache.get('halo');

@@ -233,8 +233,8 @@ export function createWorlds(ctx) {
         dock.position.set(f.x, f.y - (1 - e) * 0.35, f.z);
         dock.material.uniforms.uOpacity.value = e;
       }
-      // a sign on the wall steps back while the name stands in front of it
-      if (top.parts.sign) top.parts.sign.material.uniforms.uOpacity.value = 1 - top.nameShow;
+      // a sign on the wall steps back while the name stands in front of it (sign.keep: it is part of the wall and stays)
+      if (top.parts.sign && !top.cfg.sign.keep) top.parts.sign.material.uniforms.uOpacity.value = 1 - top.nameShow;
 
       // the name: a camera-facing plane behind the stack, sized so it covers the DOM box given in nameRect
       const r = top.nameRect;
