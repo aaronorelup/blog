@@ -15,7 +15,7 @@ export default {
   alt: {
     plate: 'A night stage in black paper: four hanging lanterns in yellow, red, blue and green, two doors, a search bar, a wall of small drawers and paper stars on threads.',
     hero: 'A four-point star with rounded points, in a soft blend of yellow, red, blue and green. This page\'s own drawing after the Gemini spark, not Google\'s file.',
-    portrait: 'Cut-paper illustration of Sundar Pichai',      // (not hung in this snapshot: see portrait below)
+    portrait: 'Cut-paper illustration of Sundar Pichai',
     person: 'Sundar Pichai',
   },
   // no router floor to stand on: the star floats at floor 1, a little smaller there so it clears the chrome. `out`: it
@@ -28,10 +28,9 @@ export default {
     // prop-1, a second door at the right edge, is left out: it stood half out of the frame, across the drawers
   ],
   fore: { z: 5.6, x: 2.36, y: 0.35, w: 3.3 },                  // four footlights at the front edge, right of the stack: close enough that their feet are below the frame
-  // no frame hangs here: the one portrait made did not read as its person, in the page's cut-paper key or at all (two
-  // review rounds), and the plan's rule for that is to hang nothing. The picture waits in art/google/source/, outside
-  // the build. To hang a new one: put it back as art/google/portrait.webp and set portrait: { x: 12.9, y: 5.2 }
-  portrait: null,
+  // the frame hangs on the dark stretch of the wall right of the callouts, its white mat as on the other four. Hung in the
+  // studio pass: a first portrait (art/google/source/, outside the build) did not read as its person and was left out
+  portrait: { x: 14.3, y: 5.35 },                              // null hangs none in this room (worlds/index.js PORTRAITS switches all five)
   dust: '#F8F9FA',
   signature: 'google',
   myth: 'google-myth-one-agent',

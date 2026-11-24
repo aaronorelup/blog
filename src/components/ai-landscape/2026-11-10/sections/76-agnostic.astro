@@ -2,7 +2,7 @@
 // Provider-agnostic design (SPEC 2.9.4): twenty lamps, five companies by four questions. A lamp says yes, partly, no
 // or not said by its shape, in one ink for every company: the owner's colour is the line under its name.
 // Text version: a real table with the answer in words and a lamp beside it, then the plumbing that makes swaps work.
-// 3D page (sections/agnostic.js): the lamps lie on a glass board in front of the stacks, one column per company.
+// 3D page (sections/agnostic.js): the lamps lie on a low desk on the floor in front of the stacks, one column per company.
 import '../../../../styles/ai-landscape/2026-11-10/architecture.css';
 import Fact from '../Fact.astro';
 import { COPY } from '../data/copy.js';
@@ -19,14 +19,14 @@ const rows = G.matrix.map((m) => ({ id: m.provider, name: view.provider(m.provid
     <h2 id="agnostic-title" class="ail-agn__claim ail-sentence"><Fact fact={fact(G.claim)} /></h2>
     <table class="ail-agn__board">
       <thead>
-        <tr><td></td>{COLS.map(([k, w]) => <th scope="col" class="ail-agn__q ail-label" data-col={k}>{w}</th>)}</tr>
+        <tr><td></td>{COLS.map(([k, w]) => <th scope="col" class="ail-agn__q ail-label">{w}</th>)}</tr>
       </thead>
       <tbody>
         {rows.map((r) => (
           <tr class="ail-agn__row" data-p={r.id}>
             <th scope="row" class="ail-agn__p ail-label">{r.name}</th>
             {r.cells.map((c) => (
-              <td class="ail-agn__cell" data-v={c.value} data-col={c.key}>
+              <td class="ail-agn__cell" data-v={c.value}>
                 <Fact fact={c.fact} full tag={false}><span class="ail-lampx" data-v={c.value} aria-hidden="true"></span><span class="ail-agn__w">{SAY[c.value]}</span></Fact>
               </td>
             ))}
