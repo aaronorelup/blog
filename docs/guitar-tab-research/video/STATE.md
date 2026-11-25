@@ -248,3 +248,16 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 - Finished so far: ch17 and ch05 pass their polish check (P2, P7).
 - Runs P2 to P7 started before rule (e). Their chapters that place clipped lines (ch02, 04, 07, 13, 14, 16) get one
   more short pass once voicefix is done.
+
+## 2026-11-25 21:12 UTC
+
+- Part voicefix done and checked:
+  - `level.py` now limits true peak after the gain (numpy, 4x oversampled, zero latency, -1.0 dBTP, 24-bit).
+  - 126 source lines re-made in place (same length, lag 0, loudness within 0.07 LU). The other 30 already had limited
+    files from fix agents and stay.
+  - Clipped samples in the sources: 7,462 before, 0 after. The checker found no pumping and no dulled consonants.
+  - Corrections to the records are appended to `/home/user/gtv/work/voicefix/AFFECTED.md`.
+- 13 chapters must refresh their placed narration: ch00, 01, 02, 04, 06, 07, 10, 11, 12, 13, 14, 15, 16. P8 to P10
+  cover ch00, 06, 12 and 15 (rule (e) is in their prompts). The others get a refresh run when their current polish run
+  ends: P11 wf_fd3f8bfc-99a (ch02) is running; ch01, 04, 07, 10, 11, 13, 14 and 16 are still to come.
+- P7 finished: ch02 and ch05 pass the film-wide check.

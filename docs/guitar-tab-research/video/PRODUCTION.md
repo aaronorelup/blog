@@ -602,11 +602,13 @@ from the three recordings or the research clips, and every graphic is drawn from
   briefs said 0.12; at 0.12 the song is about 24 dB under the voice and cannot be heard, so either use 2.7's level or
   leave the song out of that stretch.
 - **Clipped narration.** `level.py` raised the ElevenLabs takes 8 to 10 dB with plain gain and wrote 16-bit PCM, so
-  the loud syllables were cut flat: 7,467 clipped samples over the 156 `vo/lNN.wav` files, and up to 1,261 in one
-  chapter's mix (measured 20:40 UTC). `level.py` now limits true peak after the gain. The 156 lines are levelled again
+  the loud syllables were cut flat: 7,462 clipped samples over the 156 `vo/lNN.wav` files in use, and up to 1,261
+  in one chapter's placed files (ch06, measured 20:40 UTC). `level.py` now limits true peak after the gain. The 156 lines are levelled again
   from their mp3s with the same length and timing (old files kept as `lNN.wav.pre-tp`).
   `/home/user/gtv/work/voicefix/AFFECTED.md` says what each chapter refreshes. The check: no sample at or over 0.999
   in any narration file a chapter places.
+  Done: 126 lines in place; the 30 that fix agents had already replaced with their own limited files (ch03, ch05, ch08,
+  ch06 l04, l06, l10) stay as they were. The new files are 24-bit, so ch12 and ch13, which read them as 16-bit, change one reader each.
 
 ## 7. Licensing notes that matter for specific choices
 
