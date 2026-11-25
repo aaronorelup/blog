@@ -329,3 +329,8 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 ## 2026-11-25 22:35 UTC
 
 - P13 finished: ch04 and ch14 pass with clean narration. Done: ch01, 04, 05, 06, 07, 08, 09, 12, 14, 15, 17.
+
+## 2026-11-25 22:45 UTC
+
+- P14 finished: ch13 and ch16 pass with clean narration. Done: 13 of 18 (ch01, 04, 05, 06, 07, 08, 09, 12, 13, 14, 15,
+  16, 17). Still running: ch00 and ch03 (P8), ch02 (P11), ch10 (P4 polish2), ch11 (P15).
