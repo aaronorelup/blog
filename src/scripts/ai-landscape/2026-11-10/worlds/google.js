@@ -34,5 +34,6 @@ export default {
   dust: '#F8F9FA',
   signature: 'google',
   myth: 'google-myth-one-agent',
+  stamps: { 'google-myth-veo': 0 },        // its stamp is a sentence of the fact: the short form alone leaves the strike's idea standing
   catchFloor: 1,
 };

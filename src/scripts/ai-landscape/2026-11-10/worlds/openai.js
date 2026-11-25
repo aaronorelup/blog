@@ -28,5 +28,6 @@ export default {
   dust: '#C9CDD5',
   signature: 'openai',
   myth: 'openai-myth-voice',
+  stamps: { 'openai-myth-diffusion': -1 },        // its stamp is a sentence of the fact: the short form alone leaves the strike's idea standing
   catchFloor: 5,
 };

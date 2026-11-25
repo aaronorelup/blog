@@ -31,6 +31,7 @@
 
 .ail-world__intro, .ail-sig, .ail-catch { margin-top: 28px; display: grid; gap: 10px; max-width: 46rem; }
 .ail-known .ail-label, .ail-catch__line .ail-label { display: block; margin-bottom: 4px; color: var(--ail-fg-2); }
+.ail-catch__myth { display: block; margin-bottom: 2px; font-style: italic; color: var(--ail-fg-2); text-decoration-thickness: 1px; }
 .ail-agent__name { font: 400 var(--ail-fs-title)/.95 var(--ail-display); letter-spacing: .015em; text-transform: uppercase; }
 .ail-agent .ail-tag { vertical-align: .9em; }
 /* the entry card's three short lines: what it leads, what its agent thinks with, its top models. A label, then values */
@@ -145,14 +146,16 @@
 .ail-gl .ail-flag summary { justify-content: center; min-width: 44px; padding: 0 12px; background: var(--w-card); box-shadow: inset 0 0 0 1px var(--ail-fg); }
 .ail-gl .ail-flag__myth { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .ail-gl .ail-flag:is([open], .is-said) summary { background: var(--ail-fg); color: var(--ail-bg); }
-/* the scroll says one myth at a time, struck through on its own lines over the row of flags, and a beat later stamps
-   its correction under it: the fact's own short form, in ink. The flag opens the whole sentence (sections/worlds.js;
-   review round 4, W-2) */
+/* the scroll says one myth at a time, struck through in grey over the row of flags, and a beat later writes its
+   correction under it in ink at the same size, marked with the world's line: the eye ends on what is true. The room
+   is kept for the whole catch, so the card never jumps. The flag opens the whole sentence (sections/worlds.js;
+   review round 4, W-2; round 5, E-5, E-9) */
 .ail-flag__fix { display: none; }
-.ail-gl .ail-flags ul:has(.is-said) { position: relative; padding-top: 88px; }
-.ail-gl .ail-flag.is-told:not([open]) + .ail-flag__fix { display: block; position: absolute; left: 0; top: 56px; margin: 0; }
-.ail-gl .ail-flag__fix > .ail-label { display: inline-block; padding: 4px 8px 3px; background: var(--ail-fg); color: var(--ail-bg); animation: ail-ar-in var(--ail-t) var(--ail-ease); }
-.ail-gl .ail-flag.is-said:not([open]) .ail-flag__myth { position: absolute; left: 0; right: 0; top: 2px; width: auto; height: auto; overflow: visible; clip-path: none; font: italic 400 20px/1.2 var(--ail-serif); color: var(--ail-fg); text-decoration: line-through; text-decoration-thickness: 1px; }
+.ail-gl .ail-world[data-beat-now='d'] .ail-flags ul { position: relative; padding-top: 104px; }
+.ail-gl .ail-flag.is-said:not([open]) + .ail-flag__fix { position: absolute; left: 0; right: 0; top: 0; height: 98px; margin: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 4px; }
+.ail-gl .ail-flag__fix > s { font: italic 400 20px/1.2 var(--ail-serif); color: var(--ail-fg-2); text-decoration-thickness: 1px; }
+.ail-gl .ail-flag__true { font: 400 20px/1.2 var(--ail-serif); color: var(--ail-fg); padding-left: 10px; box-shadow: inset 3px 0 0 var(--w-line, var(--ail-fg)); visibility: hidden; }
+.ail-gl .ail-flag.is-told + .ail-flag__fix > .ail-flag__true { visibility: visible; animation: ail-ar-in var(--ail-t) var(--ail-ease); }
 .ail-gl .ail-flag__truth { position: absolute; left: 0; right: 0; bottom: calc(100% + 8px); padding: 14px 18px; background: var(--w-card); box-shadow: 0 0 0 1px var(--ail-fg); max-width: none; }
 .ail-gl .ail-catch { overflow: visible; }
 

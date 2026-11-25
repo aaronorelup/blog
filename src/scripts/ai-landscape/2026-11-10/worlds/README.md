@@ -26,6 +26,7 @@ Nothing else is edited. `worlds/index.js` finds the config, `scene/index.js` fin
 | `sign` | Optional. `{ draw, x, y, w, h, keep }`: a piece drawn in code (`draw` names a `textures` function, `'card'` is a blank paper card) that hangs flat on the curved wall. It steps back while the room's name stands on the wall, unless `keep` (Meta's card covers a panel of its picture, so it stays) |
 | `creature` | Optional. The number of the prop that is the figure of its coding tool (1 is `prop-1`). Where the owner's own coding agent is this company's, that figure stands on its block of his bench (`scene/cast.js`). Without it the block shows its glass alone |
 | `signature`, `myth`, `catchFloor` | The signature module's name. The myth beat c answers: an `id` from `providers.<id>.misconceptions[]` in `src/data/ai-landscape/2026-11-10.json` (a wrong id fails the build and prints the right ones). The floor (1 to 9) that slides out in beat d |
+| `line`, `stamps` | Optional. `line`: a claim id beat c says in place of the myth, which is then struck as the catch's first line. `stamps`: `{ <myth id>: n }`, where the short form under a struck myth would leave its idea standing, sentence n of the fact (-1 the last) is written instead. A wrong id fails the build |
 
 World units: a floor is 2.4 wide and 0.26 high, a closed stack 2.70 high, an open one 5.22. The stack stands at x = 0 of its
 world, the wall 22 behind it. At the open stop the frame is about 12 units wide at the stack.
