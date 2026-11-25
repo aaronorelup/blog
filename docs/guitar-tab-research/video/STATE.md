@@ -354,3 +354,8 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   overwrote the placed vo-l01.wav by mistake, rebuilt it with build.py's steps and put it back. chapter.mp4 was
   rendered before that and is unchanged. Recorded in its qc/verify.md.
 - Done: 16 of 18. Not yet: ch00 (P16), ch02 (P11).
+
+## 2026-11-25 23:15 UTC
+
+- P11 finished: ch02 passes with clean narration. Done: 17 of 18. Only ch00 is left (P16, its tool tag). Part
+  finish starts when it passes.
