@@ -193,7 +193,14 @@ export function createPrims(ctx) {
               pos.setXYZ(n, a.x * w0 + mid.x * w1 + b.x * w2, a.y * w0 + mid.y * w1 + b.y * w2, a.z * w0 + mid.z * w1 + b.z * w2);
             }
             pos.needsUpdate = true;
-            if (dash) line.computeLineDistances();
+            // (dash distances written in place: computeLineDistances() would add a new attribute, and leave a GPU
+            // buffer behind, each time the arc moves. Review round 4, L-1)
+            if (dash && !geo.attributes.lineDistance) line.computeLineDistances();
+            else if (dash) {
+              const d = geo.attributes.lineDistance;
+              for (let n = 1, s = 0; n <= SEG; n++) { s += Math.hypot(pos.getX(n) - pos.getX(n - 1), pos.getY(n) - pos.getY(n - 1), pos.getZ(n) - pos.getZ(n - 1)); d.setX(n, s); }
+              d.needsUpdate = true;
+            }
           }
           geo.setDrawRange(0, Math.max(2, Math.round((SEG + 1) * smooth(set.draw))));
           mat.color.copy(set.color).lerp(new Color('#F8F9FB'), set.dark); mat.opacity = set.show * 0.9;

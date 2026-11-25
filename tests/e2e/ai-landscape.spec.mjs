@@ -1433,6 +1433,35 @@ async function tone(page, [x, y]) {
   const { channels } = await sharp(await page.screenshot({ clip: { x: Math.round(x) - 5, y: Math.round(y) - 5, width: 10, height: 10 } })).stats();
   return (channels[0].mean + channels[1].mean + channels[2].mean) / 3;
 }
+// What one picture adds to the screen (review round 4, T-1): a frame drawn with its mesh and one without, read at 49
+// points across it. The largest change of any channel at any point, 0 to 255 (two frames of the same moment are the
+// same, so a picture drawn at opacity 0 reads 0); -1 where the mesh is not shown. kind:
+// 'around' (the object in drawer `arg`), 'bench' (the object on piece `arg`), 'wall', or the room's 'portrait' or 'card'.
+async function drawnBy(page, kind, arg = null) {
+  return page.evaluate(([kind, arg]) => {
+    const x = window.__landscape.debug.ctx, r = x.renderer, gl = r.getContext(), k = r.getPixelRatio(), c = window.__landscape.compare, w = x.worlds.active;
+    const mesh = { around: () => c.around.mesh(arg), bench: () => c.mystack.thing(arg), wall: () => x.studio.plate.mesh, portrait: () => w && w.parts.portrait, card: () => w && w.parts.sign }[kind]();
+    if (!mesh || !mesh.visible) return -1;
+    if (!mesh.geometry.boundingBox) mesh.geometry.computeBoundingBox();
+    const { min, max } = mesh.geometry.boundingBox;
+    mesh.updateMatrixWorld();
+    const at = [];
+    const GRID = [0.15, 0.25, 0.35, 0.5, 0.65, 0.75, 0.85];
+    for (const u of GRID) for (const v of GRID) {
+      const p = min.clone().lerp(max, 0.5);
+      p.x = min.x + (max.x - min.x) * u; p.y = min.y + (max.y - min.y) * v;
+      p.applyMatrix4(mesh.matrixWorld).project(x.camera);
+      const sx = ((p.x + 1) / 2) * innerWidth, sy = ((1 - p.y) / 2) * innerHeight;
+      if (sx > 2 && sx < innerWidth - 2 && sy > 2 && sy < innerHeight - 2 && p.z < 1) at.push([sx, sy]);
+    }
+    const read = () => { r.render(x.scene, x.camera); return at.map(([sx, sy]) => { const px = new Uint8Array(4); gl.readPixels(Math.round(sx * k), Math.round((innerHeight - sy) * k), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); return px; }); };
+    const drawn = read();
+    mesh.visible = false;
+    const bare = read();
+    mesh.visible = true;
+    return Math.max(0, ...drawn.map((px, i) => Math.max(...[0, 1, 2].map((ch) => Math.abs(px[ch] - bare[i][ch])))));
+  }, [kind, arg]);
+}
 test('landscape-28 the lamp desk lies on the floor in front of five whole stacks, a column of lamps under each, drawn in ink, and has left before the camera moves on; billing\'s five run in step, so no frame holds more in one tray than in another, and no tank stands over a floor; both keep every word clear in a 1280 by 560 window; the drawer being read holds its paper object and the bench\'s things stand as objects no larger than him; the far wall has its picture; a room hangs a portrait where its text version shows one, and Meta\'s grid panel is under a blank card', async ({ page, isMobile }) => {
   test.setTimeout(900_000);
   const compare = (read) => page.evaluate(read);
@@ -1502,6 +1531,8 @@ test('landscape-28 the lamp desk lies on the floor in front of five whole stacks
   expect(thing && thing.layer, 'it is the open drawer\'s own').toBe(a.layers[a.active]);
   expect(Math.abs(thing.x - thing.drawer), 'and stands in it').toBeLessThan(0.01);
   await expect.poll(async () => { const now = (await things()).things[a.active]; return now ? now.tall : 0; }, { timeout: 30_000, message: 'it has come up out of the drawer' }).toBeGreaterThan(0.6);
+  // (what is drawn, not only what the scene says: a frame without it differs where it stands, T-1)
+  await expect.poll(() => drawnBy(page, 'around', a.active), { timeout: 30_000, message: 'the open drawer\'s object is drawn on the screen' }).toBeGreaterThan(25);
   await go(page, 'around', around.screens - 0.004, 300);
   expect((await things()).things.filter(Boolean), 'no object stands out when my stack takes the cabinet over').toEqual([]);
   await go(page, 'my-stack', 0.7, 600);
@@ -1509,10 +1540,12 @@ test('landscape-28 the lamp desk lies on the floor in front of five whole stacks
   const wanted = (b) => b.sizes.filter((p) => b.kept.includes(p.layer) && !b.swaps.includes(p.id)).map((p) => p.id);
   await expect.poll(async () => { const b = await bench(); return b.sizes.filter((p) => p.thing > 0).map((p) => p.id).join() === wanted(b).join() ? 'all' : JSON.stringify(b.sizes); }, { timeout: 60_000, message: 'each thing the cabinet keeps stands on the bench as its paper object, and nothing else does' }).toBe('all');
   expect(wanted(await bench()).length, 'there are such things on his bench').toBeGreaterThan(0);
+  for (const id of wanted(await bench())) expect(await drawnBy(page, 'bench', id), `the object on ${id} is drawn on the screen`).toBeGreaterThan(25);
 
   // ---- the far wall's picture hangs in the studio
   await go(page, 'top', 1.5, 300);
   await expect.poll(() => compare(() => window.__landscape.debug.ctx.studio.plate()), { timeout: 60_000, message: 'the wall\'s picture is up' }).toBe(true);
+  expect(await drawnBy(page, 'wall'), 'and drawn on the screen (faintly: a far wall is quiet, seen through the room\'s air)').toBeGreaterThan(8);
 
   // ---- the rooms: a frame hangs in 3D where the text version shows that room's portrait (a desktop: a phone hangs
   // none), and the blank card stays on Meta's wall while the room's name stands in front of it
@@ -1526,10 +1559,12 @@ test('landscape-28 the lamp desk lies on the floor in front of five whole stacks
       await go(page, id, 1.15, 600);
       // (Meta's frame hangs only where the window has room for it clear of the callouts: 1440 by 900 and wider)
       if (id === 'google') await expect.poll(async () => { const r = await room(); return r && r.id === id && r.open >= 0.999 ? r.frame : null; }, { timeout: 60_000, message: `${id}: the framed portrait hangs whole in its room, as its text version shows it (${hangs})` }).toBe(hangs);
+      if (id === 'google' && hangs) expect(await drawnBy(page, 'portrait'), 'and is drawn on the screen').toBeGreaterThan(25);
     }
   }
   await go(page, 'meta', 1.15, 600);
   await expect.poll(async () => { const r = await room(); return r && r.id === 'meta' ? r.card : null; }, { timeout: 60_000, message: 'Meta\'s wall carries its blank card' }).toEqual([true, 1]);
+  expect(await drawnBy(page, 'card'), 'and it is drawn on the screen, over the panel (white on a pale panel)').toBeGreaterThan(8);
   await go(page, 'meta', 0.5, 600);
   expect((await room()).card, 'and keeps it while the room\'s name stands on the wall').toEqual([true, 1]);
 
@@ -1608,13 +1643,48 @@ test('landscape-29 the text version that follows the 3D page is the one a fresh 
   await expect.poll(async () => (await hook(page)).tier, { timeout: 60_000 }).toBe('static');
   expect(differ(clean, await markup(page)), 'after a short window the text version equals a fresh one').toEqual([]);
   expect(await read(), 'his quote stands and his router is his own').toEqual(his);
+  // and outside <main>: no lid mark the scene laid over the page is left behind (review round 4, G-1)
+  expect(await page.locator('body > img.ail-lidmark').count(), 'no lid mark image is left on the text version').toBe(0);
   if (browserName !== 'chromium') return;
 
   // a lost context, after the 3D page came back and was used again
   await page.setViewportSize(size);
+  // (the 3D page built again without a reload lays one lid mark image over billing, not one more each time: G-1)
+  await page.waitForFunction(() => window.__landscape.tier === 'low' && window.__landscape.ready && window.__landscape.frames > 2, null, { timeout: 90_000 });
+  await go(page, 'billing', 0.5, 300);
+  await expect.poll(() => page.locator('body > img.ail-lidmark').count(), { timeout: 30_000, message: 'the 3D page built again lays one lid mark image, not one more' }).toBe(1);
   await use();
   await page.evaluate(() => window.__landscape.debug.ctx.renderer.getContext().getExtension('WEBGL_lose_context').loseContext());
   await expect.poll(async () => (await hook(page)).tier, { timeout: 60_000 }).toBe('static');
   expect(differ(clean, await markup(page)), 'after a lost context the text version equals a fresh one').toEqual([]);
+  expect(await page.locator('body > img.ail-lidmark').count(), 'and no lid mark image is left on it').toBe(0);
   expect(await read(), 'his quote stands and his router is his own').toEqual(his);
+});
+
+// ---- landscape-30: what a visit leaves on the GPU (review round 4, L-1)
+test('landscape-30 a visit to my stack, billing or the line-up and back leaves nothing on the GPU: after the first, two more visits change neither the live buffers and vertex arrays nor three\'s geometries', async ({ page, browserName, isMobile }) => {
+  test.skip(browserName !== 'chromium' || isMobile, 'counts Chromium\'s WebGL calls, on a desktop');
+  test.setTimeout(600_000);
+  await page.addInitScript(() => {
+    window.__gl = {};
+    for (const P of [WebGL2RenderingContext.prototype, WebGLRenderingContext.prototype]) {
+      for (const k of ['Buffer', 'VertexArray']) {
+        const make = P[`create${k}`], free = P[`delete${k}`];
+        if (!make || !free) continue;
+        P[`create${k}`] = function (...a) { const o = make.apply(this, a); window.__gl[k] = (window.__gl[k] || 0) + 1; return o; };
+        P[`delete${k}`] = function (o) { if (o) window.__gl[k] = (window.__gl[k] || 0) - 1; return free.call(this, o); };
+      }
+    }
+  });
+  await open(page);
+  await light(page);
+  const live = () => page.evaluate(() => ({ buffers: window.__gl.Buffer, arrays: window.__gl.VertexArray, geometries: window.__landscape.debug.ctx.renderer.info.memory.geometries }));
+  for (const [id, u] of [['my-stack', 0.8], ['billing', 0.5], ['line-up', 0.6]]) {
+    // (the first visit builds what stays: shared shapes, textures, programs)
+    await go(page, id, u, 600);
+    await go(page, 'top', 0.3, 600);
+    const before = await live();
+    for (let k = 0; k < 2; k++) { await go(page, id, u, 600); await go(page, 'top', 0.3, 600); }
+    expect(await live(), `${id}: two more visits and back leave nothing behind`).toEqual(before);
+  }
 });

@@ -36,6 +36,7 @@ export function create(ctx, el, sec) {
     drawers: () => base.blocks.map((b) => ({ out: +(b.push * CABINET.slide).toFixed(2), front: +b.front.z.toFixed(2), up: +b.rise.toFixed(2), glyph: !!(b.glyph && b.glyph.visible) })),
     things: () => things.map((o, k) => (o && o.mesh.visible ? { layer: o.layer, x: +o.mesh.position.x.toFixed(2), drawer: +base.blocks[k].x.toFixed(2), tall: +o.tall.toFixed(2) } : null)),
     glyphs: () => items.map((li) => li.dataset.layer),
+    mesh: (k) => (things[k] ? things[k].mesh : null),      // (an object's mesh, to draw a frame without it)
   } };
 
   function pick(k, quiet = false) {

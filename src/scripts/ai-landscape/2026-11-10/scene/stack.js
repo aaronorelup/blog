@@ -54,6 +54,9 @@ function rimGeometry() {
   for (const [x, z] of [[c, c], [-c, c], [c, -c], [-c, -c]]) out.push(x, FLOOR.h / 2, z, x, -FLOOR.h / 2, z);
   rim = new BufferGeometry();
   rim.setAttribute('position', new Float32BufferAttribute(out, 3));
+  // its dash distances, once: computeLineDistances() on each floor's line would give the shared shape a new attribute
+  // per tower, and leave the last one's GPU buffer behind every time a section builds a tower (review round 4, L-1)
+  new LineSegments(rim).computeLineDistances();
   return rim;
 }
 const coreGeo = new SphereGeometry(0.082, 20, 14);
@@ -71,7 +74,6 @@ export function createTower(ctx, { id, x = 0, z = 0, owner, cells, ownerOf, ink 
     mesh.userData = { tower, i };
     const lineMat = new LineDashedMaterial({ color: ink, transparent: true, opacity: 0, dashSize: 1, gapSize: 0 });
     const line = new LineSegments(rimGeometry(), lineMat);
-    line.computeLineDistances();
     line.visible = false;
     group.add(mesh, line);
     tower.floors.push({ i, mesh, line, mat, u: mat.uniforms, state: 'solid', cur: { ...STATES.solid }, target: STATES.solid, y: 0,

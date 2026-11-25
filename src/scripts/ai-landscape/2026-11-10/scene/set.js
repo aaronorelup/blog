@@ -90,7 +90,7 @@ export function createSet(ctx, xs) {
 
   return {
     bays,
-    plate: () => hung && plate.visible,      // for the tests: the wall's picture is up
+    plate: Object.assign(() => hung && plate.visible, { mesh: plate }),      // for the tests: the wall's picture is up (and its mesh)
     // A word or a number cut from paper, standing in the room: its ink mask in light grey, and the same mask as its
     // shadow on whatever is behind. set(text) with text read from the page, place(position, quaternion, height).
     word() {

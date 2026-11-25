@@ -254,7 +254,7 @@ export function create(ctx, el, sec) {
     cords: () => lines.filter((l) => l.cord).map((l) => ({ from: l.pa.id, to: l.pb.id, on: l.cord.show > 0.01 && l.cord.draw >= 1, dash: l.cord.dash, bead: l.cord.bead == null ? null : +l.cord.bead.toFixed(2) })),
     lenders: () => row.towers.filter((tw) => tw.show > 0.5).map((tw) => ({ id: tw.id, x: +(tw.x + tw.shift).toFixed(2), lends: pieces.filter((p) => p.owner === tw.id).map((p) => +p.x.toFixed(2)) })),
     sizes: () => pieces.map((p) => ({ id: p.id, layer: p.layer, w: p.layer === 'you' ? ME * 2 : p.box.w, thing: p.obj && p.obj.mesh.visible ? THING : 0 })),
-    official: () => st.official,
+    official: () => st.official, thing: (id) => { const p = pieces.find((x) => x.id === id); return p && p.obj ? p.obj.mesh : null; },
     figure: (id) => { const c = cast.find((x) => x.p.id === id); return c ? c.fig.mesh : null; },      // (the mesh, to draw a frame without it)
   } };
 
