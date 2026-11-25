@@ -657,6 +657,11 @@ test('landscape-14 a resize keeps the place: a phone turned sideways reads the t
   await go(page, 'top', 0, 0);
   await page.setViewportSize({ width: 768, height: 1024 });
   await page.waitForFunction(() => window.__landscape.ready && window.__landscape.tier === 'low' && window.__landscape.frames > 0, null, { timeout: 60_000 });
+  // the scene's canvas, made afresh after the text version and again across the breakpoint, is still the one Astro
+  // built: fixed behind the page and hidden from a screen reader (one stripped of its attributes stood in the flow, a
+  // screen tall, and pushed the reader a screen into the opening)
+  expect(await page.evaluate(() => { const c = document.querySelector('canvas#ail-gl.ail-canvas[aria-hidden="true"]'); return c ? getComputedStyle(c).position : 'gone'; }), 'the canvas keeps its class, id and aria-hidden').toBe('fixed');
+  expect(await page.evaluate(() => scrollY), 'the reader is still at the top').toBe(0);
   // both are read in the same state: the opening has drawn itself in and its tour has begun (4 s with no input), and
   // the tour's chip has faded in. A fixed wait of 5 s read one page just before its tour and the other just after,
   // on a machine quick enough to get there in 5 s; a fixed 900 ms after the tour began read a fresh page's chip still

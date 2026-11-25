@@ -12,9 +12,11 @@ export function remember() {
   if (!built) built = new Map($$('#ail-main, #ail-main *').map((el) => [el, [...el.attributes].map((a) => [a.name, a.value])]));
 }
 
-// a canvas that takes the place of a used one stands where it stood, with the attributes it had
+// a canvas that takes the place of a used one stands where it stood, with the attributes it had. Only one read here:
+// the scene's own canvas stands outside <main>, and a record of none would strip it (its class, id and aria-hidden) at
+// the next stop3D, leaving a 1024 px canvas in the flow over the page (round 4, row 14)
 export function replaced(old, fresh) {
-  if (built) built.set(fresh, built.get(old) || []);
+  if (built && built.has(old)) built.set(fresh, built.get(old));
 }
 
 export function restore() {
