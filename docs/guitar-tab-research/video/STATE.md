@@ -359,3 +359,13 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 
 - P11 finished: ch02 passes with clean narration. Done: 17 of 18. Only ch00 is left (P16, its tool tag). Part
   finish starts when it passes.
+
+## 2026-11-25 23:20 UTC
+
+- P16 finished: ch00 passes; the tool tag reads in full at 22 px. **All 18 chapters pass.** My own gate on all 18:
+  - no placed narration file has a clipped or flat-topped sample;
+  - every chapter.mp4 matches its chapter.json length;
+  - nothing in project/ is newer than the render;
+  - every latest qc/verify.md says PASS or READY.
+  Total 2,973.5 s (49:33).
+- Part finish launched: the join with its gate, disk clearing and level matching, then the three film checkers.
