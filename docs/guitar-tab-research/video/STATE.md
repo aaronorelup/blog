@@ -306,3 +306,8 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 - P9 finished: ch06 and ch09 pass, and their placed narration has no clipped or flat-topped samples
   (`scratchpad/vocheck.py`). Done: ch05, ch06, ch08, ch09, ch17. Minor items left for the film check: ch06 has a
   3.3 s silence at 1:57; ch09's s5 finding text ends at y 921.
+
+## 2026-11-25 22:00 UTC
+
+- P10 finished: ch12 and ch15 pass, with clean narration. ch15's render now has the fixed strips. ch12's own strip
+  is shot again. Done: ch05, ch06, ch08, ch09, ch12, ch15, ch17.
