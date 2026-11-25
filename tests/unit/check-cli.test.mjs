@@ -16,7 +16,7 @@ const REPO = fileURLToPath(new URL('../../', import.meta.url));
 // index.mjs and everything it imports, but picks.js: Start here names real posts, and these are made up.
 const CHECKER = [...fs.readdirSync(path.join(REPO, 'scripts/check')).map((f) => `scripts/check/${f}`), 'scripts/media/files.mjs',
   'src/data/banned-phrases.js', 'src/data/exempt.js', 'src/data/limits.js', 'src/lib/dates.js', 'src/lib/posts.js', 'src/schemas/strict.js',
-  'src/data/tea.js', 'src/data/tea-chapters.js', 'src/data/taxonomy.js', 'src/lib/tea-picks.js',
+  'src/schemas/credits.js', 'src/data/tea.js', 'src/data/tea-chapters.js', 'src/data/taxonomy.js', 'src/lib/tea-picks.js',
   // the rebuilt tea room's chapters (tea.js gathers their copy; the tea-art rule reads their scenes and art)
   ...fs.readdirSync(path.join(REPO, 'src/data/tea'), { recursive: true }).filter((f) => f.endsWith('.js')).map((f) => `src/data/tea/${f}`),
   'src/lib/tea-scene.js', 'src/lib/tea-scene-check.js',
