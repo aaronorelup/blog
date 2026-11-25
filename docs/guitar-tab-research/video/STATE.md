@@ -230,3 +230,21 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   - P7 wf_ecd31a48-179: the film-wide check for ch02 and ch05 (render only if a number is outside)
 - Still running: P2 (ch07, ch17), P3 (ch04, ch14), lane A (fix-ch15, rereview-ch12), the kit-fix check. Lane A's
   chapters (ch00, 03, 06, 09, 12, 15) go into polish when it ends.
+
+## 2026-11-25 20:50 UTC
+
+- The kit fix passed its independent check: 305 joins and every last tile match a fresh reference shot, and the beat
+  maps are unchanged.
+- Lane A (ch00, 03, 06, 09, 12, 15) finished; none passed outright. Its items are in
+  `/home/user/gtv/work/polish-pending-laneA.json`.
+- New film-wide finding (PRODUCTION.md 6.10 (e)): `level.py` used plain gain and wrote 16-bit PCM, so the narration is
+  clipped. 7,467 clipped samples over the 156 source lines; 11 chapters place clipped lines (up to 1,261 samples in
+  ch06). Part voicefix (wf_367c205f-900): a true-peak limit in level.py, the 156 lines levelled again from their mp3s
+  with the same length and timing, `/home/user/gtv/work/voicefix/AFFECTED.md`, then an independent check.
+- Polish runs with the full rules (a) to (e):
+  - P8 wf_989bb546-5ad: ch00, ch03
+  - P9 wf_cd61cf73-af6: ch06, ch09
+  - P10 wf_46a2426a-1e8: ch12, ch15
+- Finished so far: ch17 and ch05 pass their polish check (P2, P7).
+- Runs P2 to P7 started before rule (e). Their chapters that place clipped lines (ch02, 04, 07, 13, 14, 16) get one
+  more short pass once voicefix is done.

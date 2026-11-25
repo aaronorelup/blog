@@ -11,7 +11,7 @@ export const meta = {
   ],
 }
 
-// One part per workflow run: args.part is blind (with args.lane x or y), score, script, chapters (with args.chapters), polish (with args.items, args.wide), kitfix, finish or publish.
+// One part per workflow run: args.part is blind (with args.lane x or y), score, script, chapters (with args.chapters), polish (with args.items, args.wide), kitfix, voicefix, finish or publish.
 const OPUS = 'claude-opus-5-5'
 const GTV = '/home/user/gtv'
 const REC = '/home/user/blog/docs/guitar-tab-research/video'
@@ -256,7 +256,32 @@ Mark each problem you return BLOCKING (a viewer would notice: wrong or missing p
 The problems that were to be fixed:
 ${problems}`
 
-const WIDE = (ch) => `FILM-WIDE DECISIONS (${REC}/PRODUCTION.md section 6.10, read it; they apply even where the problems below do not mention them): (a) in chapter.mp4 every narration line is 1.5 to 3 dB louder than the listening windows; measure it (each line's span against each window's span with ffmpeg ebur128) and fix the mix if it is outside; (b) tab strips: if this chapter shows a tab strip, read /home/user/gtv/work/seamfix/AFFECTED.md and do what it says for ${ch}; (c) voice edges: every narration placement starts at a quiet point with a 5 ms fade-in and ends with a 20 to 25 ms fade-out, and no sample step over 0.01 within 10 ms of a line's start or end; (d) a song kept under the narration sits at gain 0.22 to 0.3 and comes up to 1.0 in gaps longer than about 1 s, or is left out of that stretch (never 0.12).`
+const WIDE = (ch) => `FILM-WIDE DECISIONS (${REC}/PRODUCTION.md section 6.10, read it; they apply even where the problems below do not mention them): (a) in chapter.mp4 every narration line is 1.5 to 3 dB louder than the listening windows; measure it (each line's span against each window's span with ffmpeg ebur128) and fix the mix if it is outside; (b) tab strips: if this chapter shows a tab strip, read /home/user/gtv/work/seamfix/AFFECTED.md and do what it says for ${ch}; (c) voice edges: every narration placement starts at a quiet point with a 5 ms fade-in and ends with a 20 to 25 ms fade-out, and no sample step over 0.01 within 10 ms of a line's start or end; (d) a song kept under the narration sits at gain 0.22 to 0.3 and comes up to 1.0 in gaps longer than about 1 s, or is left out of that stretch (never 0.12); (e) clipped narration: the 156 source lines are being levelled again with a true-peak limit by kit-voicefix; when /home/user/gtv/work/voicefix/DONE exists, refresh this chapter's narration as /home/user/gtv/work/voicefix/AFFECTED.md says (keep your own trims, fades and placement gain) and check that no narration file the chapter places has a sample at or over 0.999. Do your other fixes first; if DONE is not there yet when you are ready to render, wait for it with a foreground call (600000 ms timeout): timeout 580 python3 -c "import os,time
+while not os.path.exists('/home/user/gtv/work/voicefix/DONE'): time.sleep(10)" ; repeat until it exists.`
+
+const VOICEFIX = `[AGENT: kit-voicefix]
+
+${COMMON}
+
+YOUR JOB: the film's narration is clipped, fix it at the source. Chapters are being polished by other agents at the same time: never edit anything under ${PROD}/chapters/*/project/ or ${PROD}/chapters/*/data/; you may only replace the source narration files ${PROD}/chapters/*/vo/lNN.wav as described below.
+The problem (${REC}/PRODUCTION.md section 6.10, "Clipped narration"; found by the ch15 re-review, /home/user/gtv/work/rereview-ch15-blind-results/): ${PROD}/kit/tools/level.py raises each ElevenLabs take (vo/lNN.mp3) 8 to 10 dB with plain gain to -17 LUFS and writes 16-bit PCM, so loud syllables are cut flat. Over the 156 vo/lNN.wav files there are 7,467 samples at or over 0.999. ${PROD}/VOICE.md says how the voice agent made them (read it: the exact level.py arguments, trims and fades it used, if any).
+1. Fix level.py: after the gain, a true-peak limiter (4x oversampled detection, look-ahead with the delay compensated so the output stays sample-aligned with the input, smooth release) to at most -1.0 dBTP; make the integrated loudness still land on the target (adjust the gain and limit again if the limiter lowered it); write 24-bit PCM. Keep its command line and its output's length the same. Write it in numpy/scipy (deterministic), not ffmpeg's alimiter, unless you prove alimiter is sample-aligned.
+2. Make all 156 vo/lNN.wav again from their mp3 with the fixed level.py and the same arguments VOICE.md records. Keep each old file as lNN.wav.pre-tp. Check every new file: the same number of samples as the old one, zero offset against it (cross-correlation), integrated loudness within 0.1 LU of the old one, true peak at most -1.0 dBTP, no sample at or over 0.999, and away from the old clipped stretches the two differ by less than -40 dB (null test). Listen by measurement to three of the most clipped lines before and after (a spectrogram crop of the loudest syllable is enough).
+3. Find how every chapter uses the narration: for each ${PROD}/chapters/chNN-slug/, which project files come from vo/lNN.wav (copies, trims, fades, re-levelled versions; look at its build script and the files' lengths and content), and which ones were already made from the mp3s with a limiter by a fix agent (ch03's project/level_tp.py, ch08's project/vo_level.py and any like them) and so are not affected. Count the clipped samples in each chapter's placed narration files.
+4. Write /home/user/gtv/work/voicefix/AFFECTED.md: per chapter, its clipped-sample count, whether it must refresh, and the exact steps (which build step or command makes its narration files again from the new sources, keeping its trims, fades and placement gain), so a chapter agent can do it in a few minutes; and the chapters that need nothing. Then write /home/user/gtv/work/voicefix/DONE (one line: the time and "156 lines re-levelled").
+5. Add to ${REC}/PRODUCTION.md section 6.10 "Clipped narration" only what differs from what it says (one short line).
+Your final message: the fix, the numbers before and after, and the AFFECTED.md summary.`
+
+const VOICEFIX_CHECK = `[AGENT: kit-voicefix-check]
+
+${COMMON}
+
+YOUR JOB: check, independently, the repair of the film's clipped narration. Another agent fixed ${PROD}/kit/tools/level.py, made the 156 ${PROD}/chapters/*/vo/lNN.wav again (old ones kept as lNN.wav.pre-tp) and wrote /home/user/gtv/work/voicefix/AFFECTED.md (the problem: ${REC}/PRODUCTION.md section 6.10, "Clipped narration"). You did not do it. Edit nothing under ${PROD}/chapters/.
+1. With your own code: every new lNN.wav has no sample at or over 0.999, true peak at most -1.0 dBTP, the same length and zero offset against its .pre-tp file, and integrated loudness within 0.1 LU of it.
+2. The words files (vo/lNN.words.json) still line up: check five lines' word onsets against the new audio's energy.
+3. The sound: compare the loudest second of five of the most clipped lines before and after (spectrogram crops, look at them): the flat tops are gone, and nothing new is wrong (pumping, dulled consonants).
+4. AFFECTED.md against the chapters: is each chapter's count and its refresh steps right? Did it miss a chapter that places narration under other names?
+Return: pass, problems (one string each, with the path and the fix), and a two-line summary.`
 
 const KITFIX = `[AGENT: kit-seamfix]
 
@@ -424,6 +449,13 @@ if (PART === 'kitfix') {
   const fixed = await safe(KITFIX, o('kit-seamfix', 'Kit fix'))
   const v = verdict(await safe(KITFIX_VERIFY, { ...o('kit-seamfix-check', 'Kit fix', 'high'), schema: VERDICT }))
   return { part: 'kitfix', fixed: short(fixed), check: { pass: v.pass, problems: v.problems, summary: v.summary } }
+}
+
+if (PART === 'voicefix') {
+  phase('Voice fix')
+  const fixed = await safe(VOICEFIX, o('kit-voicefix', 'Voice fix', 'high'))
+  const v = verdict(await safe(VOICEFIX_CHECK, { ...o('kit-voicefix-check', 'Voice fix', 'high'), schema: VERDICT }))
+  return { part: 'voicefix', fixed: short(fixed), check: { pass: v.pass, problems: v.problems, summary: v.summary } }
 }
 
 if (PART === 'polish') {

@@ -601,6 +601,12 @@ from the three recordings or the research clips, and every graphic is drawn from
   gain 0.22 to 0.3 on its -19 LUFS asset and comes up to 1.0 over 0.35 to 0.4 s in gaps longer than about 1 s. Some
   briefs said 0.12; at 0.12 the song is about 24 dB under the voice and cannot be heard, so either use 2.7's level or
   leave the song out of that stretch.
+- **Clipped narration.** `level.py` raised the ElevenLabs takes 8 to 10 dB with plain gain and wrote 16-bit PCM, so
+  the loud syllables were cut flat: 7,467 clipped samples over the 156 `vo/lNN.wav` files, and up to 1,261 in one
+  chapter's mix (measured 20:40 UTC). `level.py` now limits true peak after the gain. The 156 lines are levelled again
+  from their mp3s with the same length and timing (old files kept as `lNN.wav.pre-tp`).
+  `/home/user/gtv/work/voicefix/AFFECTED.md` says what each chapter refreshes. The check: no sample at or over 0.999
+  in any narration file a chapter places.
 
 ## 7. Licensing notes that matter for specific choices
 
