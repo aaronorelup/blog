@@ -58,8 +58,8 @@ tempo, time signature, chord segments, and every note with onset, offset, pitch,
 capo). The hint variant adds one sentence with the true open strings and capo. `conv_h03.py` writes these files:
 `notes.csv` and `chords.lab` on the recording's timeline, and `notes.seg.csv` and `chords.seg.lab` in segment time (these
 are scored). Chord labels were converted to Harte, with the slash bass dropped. `render.wav` (FluidSynth, steel program 25)
-and `render_mix.wav` (recording left, render right) are made from `notes.csv` on the recording's timeline (t0 s
-first). The gateway's answer has no beats, so
+and `render_mix.wav` (recording left, render right) are made from `notes.csv` on the recording's timeline
+(the first t0 s: silence in `render.wav`, the recording alone in `render_mix.wav`). The gateway's answer has no beats, so
 there is no `beats.txt`, and no GP5 was written. In run 2, tuning/h-03-hint's first try stopped at the 24576-token limit
 (`finish_reason` "length", JSON not parsed, USD 0.006978, 200.8 s, kept in `attempt1/`). The result is the one identical
 retry. (In run 1 the same happened to capo/h-03-hint: USD 0.006979, 87.4 s.)

@@ -42,7 +42,8 @@ construction. `render.wav` = the GP5 as written, played by FluidSynth on the rec
 | o-01-c01 | 0.985 (1.000); 0.017 | 0.726 (0.965); 0.268 | 0.963 (1.000); 0.035 |
 | o-01-c01-32 | 0.996 (1.000); 0.000 | 0.944 (0.987); 0.052 | 0.997 (1.000); 0.002 |
 
-The plan's command keeps every note, string and fret (matched by order: 1.000 / 0.981 / 1.000), but one song tempo
+The plan's command writes every truth note with its string and fret. Matched by note order: 1.000 / 0.981 / 1.000 (on
+tuning 616 of 628: one tempo puts notes played apart into one beat, which the order match sorts by pitch). One song tempo
 cannot follow a player: read back on the recording, 0.443 / 0.068 / 0.381 of the truth's own notes are within 50 ms. A
 tempo on every beat, chosen with error feedback, gives 0.990 / 0.670 / 0.951 on the truth's beats and 0.985 / 0.726 /
 0.963 on Beat This's; the 16th-note grid then leaves 1.7 % / 26.8 % / 3.5 % of notes more than 50 ms from their
@@ -105,7 +106,7 @@ through y-03. standard: chain-1 = chain-2 (t-02 named the true tuning and capo).
 | chain-1 | 0.000 (0.000) | 0.081 (0.102) | 0.822 (0.829) |
 | chain-2 | 0.753 (0.767) | 0.715 (0.801) | 0.822 (0.829) |
 | chain-3 | 0.712 (0.719) | 0.081 (0.102) | 0.719 (0.729) |
-| chain-4 | 0.000 (0.000) | 0.000 (0.000) | 0.000 (0.000) |
+| chain-4 | 0.010 (0.010) | 0.000 (0.000) | 0.016 (0.016) |
 | chain-5 | 0.791 (0.795) | 0.914 (0.967) | 0.890 (0.892) |
 | chain-6 | 0.940 (0.958) | 0.732 (0.822) | 0.918 (0.928) |
 
@@ -116,7 +117,7 @@ through y-03. standard: chain-1 = chain-2 (t-02 named the true tuning and capo).
 | chain-1 | 0.000 (0.390) / 0.940 | 0.111 (0.111) / 0.729 | 0.896 (0.896) / 0.918 |
 | chain-2 | 0.802 (0.802) / 0.940 | 0.970 (0.970) / 0.737 | 0.896 (0.896) / 0.918 |
 | chain-3 | 0.758 (0.758) / 0.939 | 0.110 (0.110) / 0.736 | 0.795 (0.795) / 0.904 |
-| chain-4 | 0.000 (0.000) / 0.010 | - (-) / 0.000 | - (-) / 0.000 |
+| chain-4 | 1.000 (1.000) / 0.010 | 0.000 (0.000) / 0.038 | 1.000 (1.000) / 0.016 |
 | chain-5 | 0.794 (0.794) / 0.996 | 0.968 (0.968) / 0.944 | 0.892 (0.892) / 0.997 |
 | chain-6 | 1.000 (1.000) / 0.940 | 0.994 (0.994) / 0.737 | 1.000 (1.000) / 0.918 |
 
@@ -127,7 +128,7 @@ through y-03. standard: chain-1 = chain-2 (t-02 named the true tuning and capo).
 | chain-1 | 0.902 / 0.995 / 0.986 / 0.716 | 0.745 / 0.059 / 0.154 / 0.657 | 0.882 / 0.984 / 0.973 / 0.863 |
 | chain-2 | 0.903 / 0.995 / 0.986 / 0.716 | 0.750 / 0.059 / 0.154 / 0.657 | 0.882 / 0.984 / 0.973 / 0.863 |
 | chain-3 | 0.902 / 0.995 / 0.986 / 0.716 | 0.749 / 0.059 / 0.154 / 0.657 | 0.875 / 0.984 / 0.973 / 0.863 |
-| chain-4 | 0.010 / 0.233 / 0.091 / 0.103 | 0.000 / 0.177 / 0.100 / 0.000 | 0.000 / 0.167 / 0.000 / 0.441 |
+| chain-4 | 0.011 / 0.195 / 0.095 / 0.281 | 0.052 / 0.000 / 0.000 / 0.639 | 0.021 / 0.229 / 0.074 / 0.530 |
 | chain-5 | 0.996 / 1.000 / 0.993 / 0.706 | 0.945 / 0.059 / 0.154 / 0.657 | 0.997 / 0.984 / 0.973 / 0.863 |
 | chain-6 | 0.904 / 0.995 / 0.986 / 0.716 | 0.749 / 0.059 / 0.154 / 0.657 | 0.882 / 0.984 / 0.973 / 0.863 |
 
@@ -148,7 +149,7 @@ capo, chain-1 0.000; tuning: t-02 said Drop D, 0.081). With the true tuning and 
 most on capo (0.209) and standard (0.110), the note step most on tuning (0.178 in the list, 0.268 in the file; the
 truth's own notes lose 0.056 to the same file writer, o-01-c01-32). The video
 pins lower the score on capo (-0.042) and standard (-0.103) and leave tuning's at 0.081. The one-call service
-(chain-4) matches 1 of 102, 0 of 106 and 0 of 125 truth notes in its 30 s.
+(chain-4) matches 1 of 102, 4 of 106 and 2 of 125 truth notes in its 30 s.
 
 ## The six chains against the truth, per song
 
@@ -159,7 +160,7 @@ pins lower the score on capo (-0.042) and standard (-0.103) and leave tuning's a
 | chain-1 | 0.000 (0.000, 0.000) | 0 / 766 / 49 / 117 | 39,45,50,55,59,64, 0 | no, no |
 | chain-2 | 0.753 (0.767, 0.767) | 614 / 152 / 49 / 116 | 40,45,50,55,59,64, 3 | yes, yes |
 | chain-3 | 0.712 (0.719, 0.721) | 580 / 185 / 50 / 116 | 40,45,50,55,59,64, 3 | yes, yes |
-| chain-4 | 0.000 (0.000, 0.000) | 0 / 1 / 101 / 99 | 40,45,50,55,59,64, 0 | yes, no |
+| chain-4 | 0.010 (0.010, 0.098) | 1 / 0 / 101 / 72 | 40,45,50,55,59,64, 3 | yes, yes |
 | chain-5 | 0.791 (0.795, 0.795) | 645 / 167 / 3 / 3 | 40,45,50,55,59,64, 3 | yes, yes |
 | chain-6 | 0.940 (0.958, 0.955) | 766 / 0 / 49 / 113 | 40,45,50,55,59,64, 3 | yes, yes |
 
@@ -170,7 +171,7 @@ pins lower the score on capo (-0.042) and standard (-0.103) and leave tuning's a
 | chain-1 | 0.081 (0.102, 0.105) | 51 / 407 / 170 / 144 | 38,45,50,55,59,64, 0 | no, yes |
 | chain-2 | 0.715 (0.801, 0.838) | 449 / 14 / 165 / 144 | 38,43,48,53,57,60, 0 | yes, yes |
 | chain-3 | 0.081 (0.102, 0.105) | 51 / 411 / 166 / 144 | 38,45,50,55,59,64, 0 | no, yes |
-| chain-4 | 0.000 (0.000, 0.000) | 0 / 0 / 106 / 51 | 40,45,50,55,59,64, 3 | no, no |
+| chain-4 | 0.000 (0.000, 0.000) | 0 / 4 / 102 / 44 | 40,45,50,55,59,64, 0 | no, yes |
 | chain-5 | 0.914 (0.967, 0.955) | 574 / 19 / 35 / 34 | 38,43,48,53,57,60, 0 | yes, yes |
 | chain-6 | 0.732 (0.822, 0.861) | 460 / 3 / 165 / 145 | 38,43,48,53,57,60, 0 | yes, yes |
 
@@ -181,7 +182,7 @@ pins lower the score on capo (-0.042) and standard (-0.103) and leave tuning's a
 | chain-1 | 0.822 (0.829, 0.841) | 558 / 65 / 56 / 111 | 40,45,50,55,59,64, 0 | yes, yes |
 | chain-2 | 0.822 (0.829, 0.841) | 558 / 65 / 56 / 111 | 40,45,50,55,59,64, 0 | yes, yes |
 | chain-3 | 0.719 (0.729, 0.741) | 488 / 126 / 65 / 111 | 40,45,50,55,59,64, 0 | yes, yes |
-| chain-4 | 0.000 (0.000, 0.000) | 0 / 0 / 125 / 113 | 40,45,50,55,59,64, 2 | yes, no |
+| chain-4 | 0.016 (0.016, 0.296) | 2 / 0 / 123 / 64 | 40,45,50,55,59,64, 0 | yes, yes |
 | chain-5 | 0.890 (0.892, 0.892) | 604 / 73 / 2 / 2 | 40,45,50,55,59,64, 0 | yes, yes |
 | chain-6 | 0.918 (0.928, 0.938) | 623 / 0 / 56 / 111 | 40,45,50,55,59,64, 0 | yes, yes |
 
@@ -194,10 +195,9 @@ pins lower the score on capo (-0.042) and standard (-0.103) and leave tuning's a
   chain-2 then: 0.756 / 0.640 / 0.813.
 - **o-03**: `exportAudio` only (offline). Clipped samples in the 16-bit renders (above). The o-03-span guitar renders
   were deleted for disk; its metronome renders are kept.
-- **chain-4**: h-03's notes give a pitch that disagrees with their own string and fret for 60 of 100 (capo), 52 of 52
-  (tuning) and 113 of 113 (standard) notes (`chain-4/h03tab.json`); the tab is scored as string and fret, as returned. It
-  returned no beat times: its file uses a beat grid at its own tempo (92 / 90 / 90 BPM, 4/4) from the segment start.
-  It said capo 0 / 3 / 2 and standard tuning on all three.
+- **chain-4** (h-03 run 2): the pitch returned disagrees with its string and fret for 73 of 73 / 0 of 49 / 0 of 66 notes
+  (`chain-4/h03tab.json`; scored as string and fret, as returned). No beat times came back: the file uses its own grid at
+  85 / 50 / 132 BPM, 4/4, from the segment start. It said capo 3 / 0 / 0, standard tuning on all three.
 - **chain-3 on tuning** looks fingertips up on step 8's fallback fret grid, which uses the answer key's fret count
   (`step-08-sound-and-video.md`), so that row is not tool-only.
 - **tuning, step 1**: the separated stem won by 0.003 onset F1 (0.833 vs 0.830) but found fewer truth notes (recall
@@ -225,8 +225,7 @@ right / on another string or fret / missed; tool notes invented).
   there (49.1 ms median over the song) (`capo/o-03/film_window.json`); a one-tempo file's clicks sit within 2.6 ms of
   its own beats (`capo/o-03-span/scores.json`). Play `capo/o-03/capo_guitar_and_metronome.wav` (file time; starts at
   0.3455 s of the recording). Settled by the truth; also heard.
-- **o-04, FluidSynth.** Every `render.wav`; the plainest: `capo/chain-2/render.wav` 79-99 s against the recording.
-  For the ear.
+- **o-04, FluidSynth.** Every `render.wav`; the plainest: `capo/chain-2/render.wav` 79-99 s against the recording. For the ear.
 - **chain-1.** capo 79-99 s: 0 of 77 truth notes right, 71 on another position (no capo; t-02's 6th string D#2), 6
   missed, 11 invented (`capo/chain-1/stretch_at79.json`). Its notes are nearly chain-2's (onset F1 0.902 vs
   0.903) and sound at the same pitches, so its `render.wav` is for the ear to compare with chain-2's; the frets are
@@ -236,10 +235,15 @@ right / on another string or fret / missed; tool notes invented).
 - **chain-3.** capo 88-108 s: against chain-2 the video pins move 10 truth notes onto their position and 9 off it
   (whole song 51 and 85; standard 9 and 79) (`capo/chain-3/pindiff_chain-2.json`, `standard/chain-3/pindiff_chain-2.json`).
   Show both strips with step 7's hand overlay. Settled by the truth.
-- **chain-4.** tuning 26-46 s: 0 of 74 truth notes found, 36 notes invented; the file says standard tuning, capo 3
-  (`tuning/chain-4/stretch.json`, `h03tab.json`). Play its `render.wav` over the recording. Settled by the truth; heard.
+- **chain-4.** tuning 26-46 s: 3 of 74 truth notes found, all 3 on another string or fret, 28 notes invented; the file
+  says standard tuning, capo 0 (`tuning/chain-4/stretch.json`, `h03tab.json`). Play its `render.wav` over the recording. Settled by the truth; heard.
 - **chain-5.** capo 95-115 s: the truth's own notes, 36 placed right and 36 on another string or fret
-  (`capo/chain-5/stretch.json`). Played, a pitch on another string sounds the same: for the eye; the count is settled
-  by the truth.
+  (`capo/chain-5/stretch.json`). Played, a pitch on another string sounds the same: for the eye; the count is settled by the truth.
 - **chain-6.** tuning 96-116 s: all 50 notes found sit on the truth's string and fret; 24 truth notes missed, 28 notes
   invented (`tuning/chain-6/stretch.json`). Settled by the truth; the gaps are heard.
+
+## After the audit (audit B)
+
+- Agent audit-fix-b, 2026-11-25. Problem 9: the o-01 sentence now says what its brackets measure (the GP5s hold every
+  truth note with its string and fret; tuning's 12 order misses sit in beats holding notes played apart: `work/audit-fix-b/p9/`).
+  Problem 5: chain-4 was rebuilt from h-03's blind run 2 (step 10); run 1's build is in `<S>/chain-4/run1-slotname/`.
