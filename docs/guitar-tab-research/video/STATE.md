@@ -288,3 +288,15 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   - P8 (ch00, ch03), P9 (ch06, ch09) and P10 (ch12, ch15), lane A's polish;
   - refresh runs P11 (ch02), P12 (ch07), P13 (ch04, ch14) and P14 (ch13, ch16).
 - Still to start: the refresh for ch01, ch10 and ch11 once P4 and P6 end.
+
+## 2026-11-25 21:45 UTC (check-in)
+
+- Done: ch05, ch08 and ch17 (passed polish, clean narration).
+- P4: ch11 passed and is refreshing its narration in P15 (wf_6b734669-381). ch10's check marked its missing narration
+  refresh BLOCKING, so its second round (polish2) does it.
+- P6: ch08 passed with nothing open. ch01's check failed, and its second round is running.
+- P8 to P10 (lane A) and refresh runs P11 to P14 are running.
+- Disk: down to 2.5 GB with 14 renders queued. Trimmed the frame cache, and started a detached janitor
+  (`/home/user/gtv/work/janitor.sh`, pid in `janitor.pid`, log `janitor.log`). Every 5 minutes it deletes frame-cache
+  folders not touched for 45 minutes. 4.3 GB free.
+- Film length now: 49:34 over the 18 chapters (current chapter.mp4 files).
