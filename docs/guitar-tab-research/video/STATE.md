@@ -311,3 +311,11 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 
 - P10 finished: ch12 and ch15 pass, with clean narration. ch15's render now has the fixed strips. ch12's own strip
   is shot again. Done: ch05, ch06, ch08, ch09, ch12, ch15, ch17.
+
+## 2026-11-25 22:15 UTC
+
+- P12 finished: ch07 passes with clean narration. Done: ch05, 06, 07, 08, 09, 12, 15, 17.
+- Part finish rewritten:
+  - The join starts with a gate (every chapter current and passed) and frees disk (previews, frame cache).
+  - It matches the chapters' narration loudness before joining (one gain per chapter).
+  - Then three film checkers run in parallel: picture, sound, story. Each marks problems BLOCKING or NIT.
