@@ -21,3 +21,7 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 ## Log
 
 - 2026-11-24 22:20 UTC: stage 1 launched.
+- 2026-11-25 00:04 UTC: the container restarted. Five of seven stage 1 agents had finished (production, tools,
+  embed, and the dataset and creator song scouts). Stage 1 resumed: the archive scout and the selector.
+  Findings so far: YouTube refuses downloads from this box, so songs must come from hosts that answer (Vimeo,
+  archives, dataset hosts). HyperFrames renders 1080p30 at about 1.15 s per second here. Narrator candidate chosen.
