@@ -5,14 +5,16 @@ slot. Heavy files and every script: `/home/user/gtv/truth/standard/`, `/home/use
 `/home/user/gtv/work/truth-standard/` (`bin/`, `logs/`, `PROGRESS.md`). Every number below comes from a file named
 next to it.
 
-**In one paragraph.** 676 notes over the whole piece (0 to 177.00 s of `standard.wav`, all 56 bars, nothing left
+**In one paragraph.** 680 notes over the whole piece (0 to 177.00 s of `standard.wav`, all 56 bars, nothing left
 out), strings and frets from Gareth Evans' own on-screen Guitar Pro tab, read twice independently (853 of 853 tab
-notes identical), timed to the recording. Standard tuning, no capo, +6 cents sharp. 573 notes are confirmed by a
-pitch rise in the audio at their onset, 100 come from the tab alone (mostly re-plucks of a pitch that is still
-ringing), 3 are heard but not in the tab. The guitar-trained model scores onset F1 0.882 against it and Basic Pitch
-0.656, both in or near the range the research saw on real guitar; the truth's timing agrees with the model's notes to a
-median of 0.0 ms. Repaired after the independent check: 14 onsets re-timed, bar 36 and the rolled-chord rule (Repairs,
-at the end).
+notes identical), timed to the recording, and following the performance where it departs from the tab. Standard
+tuning, no capo, +6 cents sharp. 573 notes are confirmed by a pitch rise in the audio at their onset, 96 come from the
+tab alone (mostly re-plucks of a pitch that is still ringing), 11 are heard but not in the tab. The guitar-trained
+model scores onset F1 0.891 against it and Basic Pitch 0.663, both in or near the range the research saw on real
+guitar; the truth's timing agrees with the model's notes to a median of 0.0 ms. Repaired twice after independent
+checks: 14 onsets re-timed, bar 36 and the rolled-chord rule (Repairs); then 2 notes re-pitched, 2 unplayed tab notes
+removed, 6 played notes added, and the video's neck outline tracked through the whole video, now 76 poses instead of 3
+(Repairs, second round, at the end).
 
 ## Files
 
@@ -26,7 +28,9 @@ at the end).
 | `standard.notes.csv`, `.beats.txt`, `.chords.lab`, `.mid`, `.gp5`, `.tab.txt` | side files (scores below) |
 | `standard.tab-merged.json` | the merged reading (reader a + a `merge` block); `read-a.json`, `read-b.json` the two readings |
 | `truth-standard-repairs.csv` (next to this record) | every note the repair changed, before and after, with its evidence (Repairs) |
-| `standard.video.json` | video truth: fps, size, capo 0, 3 pose ranges with neck quadrilaterals, 6 labelled frames |
+| `truth-standard-repairs2.csv` (next to this record) | every note the second repair changed, before and after, with its evidence (Repairs, second round) |
+| `standard.video.json` | video truth: fps, size, capo 0, 76 pose ranges with neck quadrilaterals, 6 labelled frames |
+| `standard.neck_track.json` | the neck outline tracked every 5 frames (0.1 s), raw and 0.5-s-smoothed, that the poses come from |
 
 ## Source and credit
 
@@ -95,15 +99,15 @@ original carries the standard YouTube licence; a cover of a major-label composit
 10. **Taps**: 93 `string-slap` (the X notes, "XX = percussive thumb slap"; "(lh)" over one X in bars 12, 24, 44) and 118
     `thump` ("(o) = wrist thump"); 15 thumps over tied notes or a rest are interpolated on the beat grid.
 11. **Voice** is a rule, not from the tab: per event the highest note on strings 1-3 is melody, the lowest on strings
-    4-6 bass, the rest chord (the capo truth uses the same rule); the 3 heard-only notes are chord.
+    4-6 bass, the rest chord (the capo truth uses the same rule); the 11 heard-only notes are chord.
 
 ## Covered range and counts
 
 Whole piece: `scored_range` [0.0, 177.00102] s, bars 1-56, no repeat signs (all bars written out), all 56 bars seen
-by the cursor in order. Notes **676**: `tab+audio` **573**, `tab` **100**, `audio` **3**; voice bass 275, melody 316,
-chord 85; pitches E2 (40) to G4 (67); first onset 0.448 s, last 174.621 s. Beats 224, downbeats 56, chord segments 70
-(C:maj, F:maj, G:maj, A:min, D:min, E:maj, N), taps 211. `gtr-eval check-truth`: **6931 checks, 0 mismatches**
-(after the repair: `work/truth-fix-standard/logs/final_checktruth.log`).
+by the cursor in order. Notes **680**: `tab+audio` **573**, `tab` **96**, `audio` **11**; voice bass 274, melody 313,
+chord 93; pitches E2 (40) to G4 (67); first onset 0.448 s, last 174.621 s. Beats 224, downbeats 56, chord segments 70
+(C:maj, F:maj, G:maj, A:min, D:min, E:maj, N), taps 211. `gtr-eval check-truth`: **6971 checks, 0 mismatches**
+(after the second repair: `work/truth-fix2-standard/logs/chk_final2_checktruth.log`).
 
 ## Departures from the tab (the truth follows the performance)
 
@@ -111,43 +115,51 @@ chord 85; pitches E2 (40) to G4 (67); first onset 0.448 s, last 174.621 s. Beats
   and bar 51 pos 3.5 (161.13 s): CQT at G3 rises from about -33 dB to -21..-25 dB (+8.0 to +12.0 dB), the guitar
   model hears a 1.0-1.2 s G3 at each, and no harmonic of a sounding note falls on G3. In the truth as conf `audio`,
   timed with the tab note they sound with (`work/.../departures.json`).
+- **Second repair** (Repairs, second round): at bar 17 pos 0.75 (51.66 s) and bar 39 pos 0.75 (121.20 s) the player
+  plays E3 s4 f2 where the tab has G3 s3 f0; bar 39's pos-1.0 E3 (121.37 s) and bar 45's pos-2.0 C4 (141.13 s) are not
+  played (the C4 comes a sixteenth early, 140.86 s); six played notes were missing (A3 bar 10, G2 bar 27, E3 bars 30 and
+  34, C4 bar 45, D3 bar 53). The 8 notes in place are conf `audio`, each timed on its own onset.
 - **Not added** (doubtful, listed in the same file): a G2 after the X slaps of bars 29 and 33 (+7.2 and +4.1 dB, s6
   still fretted at 3: possibly the slapped string ringing on), an A2 brushed 0.18 s before the bar 50 chord (+6.3 dB),
   the pitched thuds of the "(lh)" slaps at the end of bar 24 (already taps), a B3 at -40 dB.
-- **Left out by the player?** None proven. 26 tab notes are neither heard by the guitar model nor confirmed by a CQT
-  rise; nearly all are re-plucks of a pitch still ringing (G3, C3, A3, C4, E3 repeats), so they stay in as `tab`.
-  The other way round, the guitar model's 112 notes that match no truth note are 76 the same pitch still sounding,
-  11 an octave or twelfth of a sounding note, 17 at a slap or thump, 8 other (the doubtful ones above)
-  (`bin/unmatched.py`; after the repair `work/truth-fix-standard/logs/chk_after_unmatched.log`; 116 = 78/11/19/8
-  before it).
+- **Left out by the player?** Two proven in the second repair (above). 22 tab notes are neither heard by the guitar
+  model nor confirmed by a CQT rise; nearly all are re-plucks of a pitch still ringing (G3, C3, A3, C4, E3 repeats), so
+  they stay in as `tab`. The other way round, the guitar model's 104 notes that match no truth note are 72 the same
+  pitch still sounding, 10 an octave or twelfth of a sounding note, 14 at a slap or thump, 8 other (the doubtful ones
+  above) (`bin/unmatched.py`; after the second repair `work/truth-fix2-standard/logs/chk_after2_unmatched.log`; 112 =
+  76/11/17/8 after the first, 116 = 78/11/19/8 before it).
 - **Fingering**: no other fingering seen in the frames checked (6 labelled frames, 13 check frames); the frames agree
-  with the tab's positions, including the slide into s3 fret 9 (bar 16) and s2 fret 5 (bar 13).
+  with the tab's positions, including the slide into s3 fret 9 (bar 16) and s2 fret 5 (bar 13). The E3-for-G3 notes
+  of the second repair are another string plucked inside the same C shape (s4 f2 is held), not another fingering.
 
 ## Checks, with numbers
 
 | check | result | file |
 |---|---|---|
-| guitar-fl.pth (guitar-trained model) on standard.mono.wav, gtr-run r0767 | onset P 0.847, R 0.920, **F1 0.882**; onset+offset F1 0.562; recall bass 0.949, chord 0.894, melody 0.902 (eval e1968, repaired truth; first build e1896: F1 0.877) | `work/.../gfl/`, `work/truth-fix-standard/logs/final_eval_gfl.json` |
-| the same per 10 s | 0.97 0.99 0.99 0.85 0.86 0.87 0.95 0.82 0.80 0.92 0.89 0.84 0.86 0.84 0.75 0.87 0.90 0.81 (0-10 s ... 170-177 s; 110-120 s was 0.75 before the repair of bar 36) | `work/truth-fix-standard/logs/chk_after_per10.log` |
-| timing against guitar-fl (nearest same-pitch onset, 633 notes) | median 0.0 ms, 10th-90th percentile -10.6 to +9.4 ms, 622 within 50 ms (618 before the repair) | `work/truth-fix-standard/logs/chk_after_offset_gfl.log` |
-| Basic Pitch 0.4.0 (tflite) on standard.wav, r0768 | onset P 0.536, R 0.846, **F1 0.656**; onset+offset 0.343 (eval e1969; first build e1897: 0.654); per 10 s 0.51-0.78 | `work/.../bp/`, `work/truth-fix-standard/logs/chk_after_per10.log` |
+| guitar-fl.pth (guitar-trained model) on standard.mono.wav, gtr-run r0767 | onset P 0.858, R 0.926, **F1 0.891**; onset+offset F1 0.571; recall bass 0.953, chord 0.903, melody 0.911 (eval e2175, second repair; e1968 after the first: F1 0.882; first build e1896: 0.877) | `work/.../gfl/`, `work/truth-fix2-standard/logs/chk_final2_gfl.json` |
+| the same per 10 s | 0.97 0.99 1.00 0.85 0.86 0.90 0.95 0.82 0.82 0.93 0.91 0.84 0.90 0.84 0.78 0.87 0.91 0.81 (0-10 s ... 170-177 s; 110-120 s was 0.75 before the repair of bar 36) | `work/truth-fix2-standard/logs/chk_after2_per10.log` |
+| timing against guitar-fl (nearest same-pitch onset, 638 notes) | median 0.0 ms, 10th-90th percentile -10.9 to +9.3 ms, 630 within 50 ms (622 of 633 after the first repair, 618 before it) | `work/truth-fix2-standard/logs/chk_after2_offset_gfl.log` |
+| Basic Pitch 0.4.0 (tflite) on standard.wav, r0768 | onset P 0.543, R 0.851, **F1 0.663**; onset+offset 0.348 (eval e2176; e1969 after the first repair: 0.656; first build e1897: 0.654); per 10 s 0.51-0.78 | `work/.../bp/`, `work/truth-fix2-standard/logs/chk_after2_per10.log` |
 | first truth, before the onset fix | guitar-fl F1 0.449, the model's onsets +49 ms later everywhere (eval e1890): what led to step 4 | `logs/eval_gfl_v1.json` |
-| truth synthesized (FluidR3 steel guitar) vs the recording, chroma | **0.787**; per 10 s 0.70-0.89 (lowest 70-80 s, 0.697); +1 semitone 0.453, -1 semitone 0.425 | `work/.../chroma_check.json` |
+| truth synthesized (FluidR3 steel guitar) vs the recording, chroma | **0.786**; per 10 s 0.70-0.89 (lowest 70-80 s, 0.697); +1 semitone 0.454, -1 semitone 0.425 (0.787, 0.453, 0.425 before the second repair) | `work/.../chroma_check.json`, `work/truth-fix2-standard/logs/chk_after2_chroma.log` |
 | 10 notes by hand, spectrogram slice and video frame at the onset | CQT at the note's pitch rises 8.6 to 29.8 dB in 9 of 10; bar 45 pos 0.75 (s3 f2, a re-pluck of a ringing A3) +1.8 dB only. Fretting hand at frets 1-4 in 10 of 10 (string not resolvable at that scale). 3 more at high frets: bar 16 hand sliding over frets 7-10 into s3 f9, bar 13 index on s2 f5, bar 30 E shape at frets 4-6 | `work/.../handcheck.json`, `handcheck_spec.png`, `handcheck_frames.jpg`, `handcheck_highfret.jpg` |
-| side files against the JSON (`--no-ledger`) | notes.csv onset and onset+offset F1 1.0; .mid 1.0 (onset+offset 0.996, tick rounding); .tab.txt 676/676 same string and fret; beats.txt beats F 1.0, downbeats 1.0 (`--downbeat-col 2`); chords.lab root, majmin, sevenths 1.0; .gp5 with `--time-shift 0.4981`: tab 649/676 and notes F1 0.960 (Guitar Pro gives a beat one time: the 27 others are rolled-chord notes more than 50 ms after their beat; every matched note has the same string and fret; 647 and 0.957 before the repair), onset+offset 0.411 (written lengths) | `work/truth-fix-standard/logs/final_side.log` |
+| side files against the JSON (`--no-ledger`) | notes.csv onset and onset+offset F1 1.0; .mid 1.0 (onset+offset 0.996, tick rounding); .tab.txt 680/680 same string and fret; beats.txt beats F 1.0, downbeats 1.0 (`--downbeat-col 2`); chords.lab root, majmin, sevenths 1.0; .gp5 with `--time-shift 0.4981`: tab 652/680 and notes F1 0.959 (Guitar Pro gives a beat one time: the 28 others are notes more than 50 ms from it, nearly all upper notes of rolled chords, and the added bar-34 E3, 71 ms before its beat; every matched note has the same string and fret; 649/676 and 0.960 after the first repair, 647 and 0.957 before it), onset+offset 0.407 (written lengths); `--ignore-time` 680/680 | `work/truth-fix2-standard/logs/chk_final2_side.log` |
 
 **GP5 time 0 = 0.4981 s of standard.wav** (one beat per tab event, rests as rests, a hidden tempo change on every
-beat so each beat starts at its aligned time; the 3 heard-only notes included).
+beat so each beat starts at its aligned time; the 11 heard-only notes included, the added G2 of bar 27 and C4 of bar 45
+as beats of their own at pos 1.5 and 1.75).
 
 ## Video truth (`standard.video.json`)
 
 50 fps, 1920x648 (standard.mp4; the same coordinates in standard.full.mp4), av offset 0 (the picture lags the sound
 by 14.5 ms, under one frame), not mirrored (right-handed, string 6 at the top), capo_fret 0. One static camera shot,
-but the guitar moves inside it (the nut drifts from x 1855 to about 1915 and 60 px down), so it is given as three pose
-ranges: 0-50 s, 50-100 s, 100-177.02 s, each with its quadrilateral (nut-upper, nut-lower, body-lower, body-upper) and
-frets_visible [0, 20]. Pose A's corners were read on a frame; in B and C the nut corners come from a nut tracker and
-the body-end corners are pose A shifted by the measured mid-neck drift (about +-20 px). Six labelled frames, two per
-range, each looked at in a 2x zoom: 1.51 s (C chord: index [2,1], middle [4,2], ring [5,3]), 40.85 s (index [2,5]),
+but the guitar moves inside it: the nut end swings up and down (nut-upper y 158 to 291, x 1845 to 1919) within a
+second or two, while the body end moves little up and down and slides sideways with the guitar (x 372 to 442). The first build gave three pose ranges (0-50, 50-100, 100-177.02 s); the
+second repair replaced them with **76 poses** (p01 to p76, 0.2 to 14.6 s long, median 1.7 s) cut from the neck outline
+tracked every 0.1 s (`standard.neck_track.json`; Repairs, second round). Each has its quadrilateral (nut-upper,
+nut-lower, body-lower, body-upper), frets_visible [0, 20] and `quad_frame` (the frame whose tracked outline is closest
+to it). p01 (0-14.55 s) keeps the corners read by hand on the frame at 9.0 s, within 1 px. Six labelled frames (in
+poses p01, p09, p31, p32, p36, p73), each looked at in a 2x zoom: 1.51 s (C chord: index [2,1], middle [4,2], ring [5,3]), 40.85 s (index [2,5]),
 89.26 s and 101.52 s and 170.95 s (F: thumb s6 f1, index [2,1], middle [3,2], ring [4,3]), 93.62 s (E shape: index
 [3,4], middle [2,5], ring [4,6]); pinkies hovering (null).
 
@@ -156,20 +168,25 @@ range, each looked at in a 2x zoom: 1.51 s (C chord: index [2,1], middle [4,2], 
 - **Offsets** are estimates (let ring), not measured: onset+offset scores mean little here.
 - **Voice** labels and **chord** labels are derived by rule, not given by the tab; D:min and G:maj in 9 half bars
   rest on a tie-break (no third played); sevenths are not labelled.
-- **100 `tab` notes** are not confirmed at their onset (re-plucks of ringing pitches, a few legato notes); their
-  times come from their event. Bar 37's downbeat C4 is one: neither the model nor the CQT hears it.
+- **96 `tab` notes** are not confirmed at their onset (re-plucks of ringing pitches, a few legato notes); their
+  times come from their event. Bar 37's downbeat C4 is one: neither the model nor the CQT hears it. Another is bar 17's
+  pos-1.0 G3 (#198 before the second repair, 51.877 s): an X slap falls there, and the G3's own partials drop 9-10 dB
+  after it instead of rising, while guitar-fl and Basic Pitch report a G3 there and guitar-gaps does not. It stays
+  (`work/truth-fix2-standard/out/ev_p1.json`).
 - **Rolled chords** are the least certain times in the file: 51 upper notes have fewer than two clean partials (no
   partial of their own for C4 or F3 over F2 and E4 over E3; only the fundamental for B3 over G2) and are placed by the
   order rule; 10 of the 72 upper roll notes are more than 100 ms after their bass (at most 174 ms, bar 1). In the G
   rolls of bars 15, 27 and 47 a faint B3 sounds
   from the chord's first attack; the truth times the B3's main rise 50-90 ms later, where guitar-gaps and guitar-fl
   put it at the first attack (Repairs, Problem 2).
-- **The 3 `audio` notes** were found with the guitar model's help (a model note at an onset with no truth note), then
-  confirmed on the CQT; that is 3 of 676 notes in the model check.
+- **The 11 `audio` notes** were found with the models' help: the first 3 from a guitar-fl note with no truth note, the 8
+  of the second repair from the independent check (guitar-fl and guitar-gaps agreeing), each then confirmed on the
+  spectrum without the models. That is 11 of 680 notes in the model checks.
 - **Chroma 0.70-0.80** in the middle of the piece (verses 2-3, chorus) against 0.87-0.89 at the start: percussion
   (slaps, thumps) and the let-ring offsets lower it; the note timing there agrees with the model at 0.75-0.92 F1.
-- **Video**: body-end corners in poses B and C are extrapolated (+-20 px); the string of a fingertip was read only
-  in the 2x zooms of the 6 labelled frames.
+- **Video**: a pose's quad holds every 0.5-s-smoothed tracked outline within 10 px, but in quick movements the outline
+  leaves it for a moment: 3.3% of the raw 0.1-s samples are 15 to 38 px away (a note there can land a string off). The
+  string of a fingertip was read only in the 2x zooms of the 6 labelled frames.
 
 ## Scripts (in `/home/user/gtv/work/truth-standard/bin/`)
 
@@ -281,3 +298,119 @@ of their own (the checker's Doubt 2); bar 49's A3 (#574) also stays 46-57 ms aft
 two clean partials falls in the rule's first 5 ms). #464 G3 and #466 E3 (bar 39, both `tab`): the models hear a G3 and
 an E3 160-180 ms from them, the other way round; not examined here. #187 and #542 are slides into E4 from below, whose
 pitch arrives after the pluck; #533 is a roll's bass; #675 is bar 56's last note (Doubt 6).
+
+## Repairs, second round
+
+Done 2026-11-25 by the truth-fix2-standard agent after the second independent check (`truth-standard-check.md`,
+"Second check", PROBLEMS 1 to 3). Work folder `/home/user/gtv/work/truth-fix2-standard/` (below `F2/`: `bin/`,
+`logs/`, `out/`, `frames/`, `stage/`, `PROGRESS.md`; the files as they were before this round in `orig/`, hashes in
+`logs/orig.sha256`). Repaired `standard.truth.json`: SHA-256 `daa4884b3543041b...` (`F2/logs/installed.sha256`).
+Every changed note, before and after, with its evidence: `truth-standard-repairs2.csv` (next to this record, 19 rows).
+
+**Own evidence** (`F2/bin/ev2.py`), independent of the builder's alignment, of the first repair's code and of the
+checker's code: the magnitude at the exact frequency of each partial (the DFT of a centred Hann frame of 4096 samples,
+hop 1 ms; also 2048 and 8192) of `standard.mono.wav`. A partial is *clean* when no harmonic (1 to 30) of any other note
+the truth has sounding there falls inside the Hann main lobe. *Rise* = median level 5-30 ms after the frames stop
+touching the onset minus the same before it. *Control* = the same rise at frequencies between the harmonics, which is
+what a slap, a thump or another attack does there. Onsets of the notes put in (`F2/bin/time_new.py`) follow the
+truth's own convention: the peak of the builder's pitch-specific flux (`refine.py`) within 40 ms of the steepest rise
+of the clean partials. Run on the 513 tab+audio notes the builder timed by flux, this returns the truth's onset within
+3 ms for 505. guitar-fl, guitar-gaps (r0771) and Basic Pitch were used only to check, never to set a time.
+
+### Problem 1, bars 17 and 39: fixed, 2 notes re-pitched and 1 removed
+
+| note before | own evidence | gfl / gaps / BP | after |
+|---|---|---|---|
+| #196 G3 s3 f0, bar 17 pos 0.75, 51.683 (`tab`) | G3: h1 +4.8 dB, but its clean h3, h7, h9 fall 13.6, 20.5, 6.0 dB. E3: 7 clean partials rise a median 10.8 dB (h1 +29.3), 13.0 dB more than the control | E3 at 51.651 / 51.650 / 51.650 | **E3 s4 f2, 51.6644**, `audio` |
+| #464 G3 s3 f0, bar 39 pos 0.75, 121.200 (`tab`) | G3: clean partials median -1.4 dB. E3: h1 +24.4 dB (the E3 line goes from -35 to -11 dB at 121.17-121.25 s), 5 clean partials median +5.8, 5.9 more than the control | E3 at 121.185 / 121.189 / 121.182 | **E3 s4 f2, 121.1966**, `audio` |
+| #466 E3 s4 f2, bar 39 pos 1.0, 121.366 (`tab`) | E3 h1 -8.7 dB, clean partials median -1.5, 11.2 below the control: the E3 of pos 0.75 decaying | none | **removed** |
+
+The checker is right on all three. In bar 39 the player swaps the tab's order (E3 at pos 0.75, G3 at pos 1.0; #465
+G3 rises and all three models hear it). Bar 17 differs at pos 1.0, where an X slap falls: the E3 (#197) rises again
+(E3 line -24 to -9 dB, both models) and stays; the tab's G3 (#198, `tab`) falls 9-10 dB instead of rising, while
+guitar-fl and Basic Pitch report a G3 and guitar-gaps does not. It stays as a doubt (What remains uncertain).
+
+### Problem 2, six played notes missing: fixed, 6 added, and bar 45's pos-2.0 C4 removed
+
+| added (all `audio`, voice chord) | own evidence: clean partials, median rise, over the control | onset (flux) | gfl / gaps / BP |
+|---|---|---|---|
+| A3 s3 f2, bar 10 pos 0.5 (with the C3) | h1 2 5 7 10 11: +14.2 dB (h1 +19.1), +16.5 | 29.3384 | 29.324 / 29.319 / 29.334 |
+| G2 s6 f3, bar 27 pos 1.5 (no tab note there) | h1 7 11: +17.7 (h1 +20.2), +12.0 | 83.8908 | 83.875 / 83.874 / 83.877 |
+| E3 s4 f2, bar 30 pos 0 (with C3 and C4) | h1 2 5 7 10: +18.0 (h1 +27.7), +9.8 | 92.1020 | 92.089 / 92.091 / 92.068 |
+| E3 s4 f2, bar 34 pos 0 (with C3 and C4) | h1 2 5 7 10: +17.8 (h1 +36.6), +17.4 | 104.6436 | 104.676 / 104.677 / 104.684 |
+| C4 s2 f1, bar 45 pos 1.75 (no tab note there) | h1 3 7 9: +12.3 (h1 +13.3), +16.6 | 140.8610 | 140.863 / 140.862 / 140.873 |
+| D3 s4 f0, bar 53 pos 2.0 (with the G2) | h1 +22.6, h11 +10.9 (the G2's attack leaves no free control bin); with 8192 samples h1 7 11: +20.8 | 166.2055 | 166.220 / 166.219 / 166.234 |
+
+The checker is right on all six. guitar-fl and guitar-gaps sit within 20 ms of the flux onsets (also for the two E3s
+of Problem 1) and Basic Pitch within 34 ms, except in bar 34 (32-41 ms later), where the models put the E3 with its chord: there the E3 line rises at 104.63-104.65 s, the C3's at 104.65-104.69 s, and the flux of E3, C3 and
+C4 all peak at 104.64 and again at 104.684, so the E3 comes about 40 ms before the C3 and C4 (104.685). Not in the
+checker's list, found while checking bar 45: **#541 C4 s2 f1, bar 45 pos 2.0, 141.126 (`tab`) is not played**. Its
+clean partials fall (h3 -5.6, h9 +2.7 dB; with 8192 samples five clean partials, median -4.6 dB) and no model has a C4
+there; the C4 of 140.861 is the tab's C4 played a sixteenth early. Removed. The C3 both models report at 39.24 s (the
+checker's Doubt 4) has no rise of its own here either (8192 samples: clean partials median -3.5 dB): not added.
+
+**Notes, beats, side files.** 4 tab notes out (#196 and #464 as G3, #466, #541), 8 `audio` notes in, 7 notes with a new
+let-ring offset only (the next attack on their string moved; listed in the CSV): 676 notes become 680, `tab` 100 to
+96, `audio` 3 to 11, `tab+audio` 573 unchanged; voice bass 274, melody 313, chord 93 (heard-only notes stay chord, as
+before). Beats, downbeats, the 70 chord segments and their labels, the 211 taps, key, tempo 76.14, tuning and
+`scored_range` [0, 177.00102] are unchanged (`F2/logs/compare2.log`; beats.txt and chords.lab byte-identical); nothing
+was cut from the scored range. The side files were rewritten from the JSON by `F2/bin/build_truth_fix2.py` and
+`F2/bin/write_gp5_fix2.py` (the first repair's scripts plus a changes file, `F2/out/changes2.json`; without it they
+rewrite all seven installed files byte for byte, `F2/stage/repro/`). The GP5 has 467 beats (the G2 of bar 27 and the C4
+of bar 45 split the beat they fall in); time 0 is still 0.4981 s.
+
+### Problem 3, the video's pose A: fixed, and poses B and C with it
+
+- **Tracking** (`F2/bin/neck_track2.py`; gtr-run r0832 every 0.5 s, then r0868 every 5 frames, 2 cores, 405 s): SIFT
+  keypoints on the fretboard of the frame at 9.0 s, where pose A's corners were read, matched in each frame, a RANSAC
+  similarity (rotation, scale, translation) fitted to the matches, and pose A's quad mapped through it. 1778 frames, at
+  least 35 inliers each (median 96), median residual per frame 0.8 px (at most 1.6).
+- **What it shows.** The body end of the neck moves little up and down (body-upper y 243-262 in 98% of the frames)
+  but slides sideways with the guitar (x 372-442), while the nut end swings: nut-upper y from 158 to 291 and x from
+  1845 to 1919 in the poses (143 to 305 in single frames), often within a second. Pose A holds only to about
+  14 s. From 15 to 37 s the neck is 14-27 px higher than pose A (nut-upper y 173-186 against 200; the black box over
+  the logo hides the top edge there), and from 38 s on it is up to 57 px lower (at the checker's 46.34 and 49.5 s
+  nut-upper is 57 and 48 px lower and 25 and 31 px further right). Poses B and C are off by as much (below).
+- **Independent check** (`F2/bin/string_check.py`, which does not use the tracker): in columns between fret wires where
+  exactly six evenly spaced strings are seen, with 1.5 string spacings clear beyond both outer strings (so no hand is
+  over them and the outer strings are known), the mean distance of the six from where a quad puts them, one frame every
+  2 s (89 frames). Tracked outline: median 0.3 px near the nut (17 frames have such a column; max 0.7) and 0.3 px on
+  the body half (84 frames; max 1.2). Old 3 poses: 13.2 px near the nut (max 35.5; 10 of 13 frames over 8 px), 7.8 px on
+  the body half (max 23.7; 41 of 87 over 8 px). New poses: 2.6 px (max 8.2) and 2.3 px (max 18.9; 2 of 82 over 8 px).
+  Drawn on 12 frames (`F2/frames/quad_new_vs_old.jpg`: 9.0, 16, 30, 40.85, 46.34, 49.5, 75, 88.5, 99, 110, 163.08, 176
+  s), the new quads follow the fretboard edges in all 12.
+- **Poses** (`F2/bin/pose_split.py`, 10 px): each coordinate of the tracked outline is median-smoothed over 0.5 s; a
+  pose grows while every coordinate's range stays within 20 px, and its quad is the mid-range. **76 poses**, 0.2 to 14.6
+  s long (median 1.7 s); every smoothed sample lies within 10 px of its pose's quad (about 0.4 string spacing at the
+  nut). Raw samples: median 6.0 px, 90th percentile 10.4, 99th 18.7; 3.3% are over 15 px (quick movements, fits with few
+  inliers). `standard.video.json` gets the 76 shots (each with `quad_frame`, the frame whose tracked outline is closest
+  to its quad) and `neck_track_file`; the 6 labelled frames keep their fingertip labels and name their new pose (p01,
+  p09, p31, p32, p36, p73); the track itself is `standard.neck_track.json` (232 KB). Two labelled frames per shot is no
+  longer possible. `score_video_cells.py` takes one fret grid per shot, so the video lane needs a grid per pose (the
+  frame `make_w04_cmds.py` uses for shot 0, 9.0 s, is inside p01).
+
+| self-check (`F2/bin/checks2.sh`, logs `F2/logs/chk_after2_*`, `chk_final2_*`; before = the first repair's `chk_after_*`) | before | after |
+|---|---|---|
+| `gtr-eval check-truth` | 6931 checks, 0 mismatches | 6971, 0 |
+| notes: all / `tab+audio` / `tab` / `audio` | 676 / 573 / 100 / 3 | 680 / 573 / 96 / 11 |
+| notes.csv, .mid, .tab.txt, beats.txt, chords.lab against the JSON | 1.0, 1.0 (on+off 0.996), 676/676, 1.0 and 1.0, 1.0 | the same, .tab.txt 680/680 |
+| .gp5 (`--time-shift 0.4981`): tab matched, notes F1, onset+offset | 649/676, 0.960, 0.411 | 652/680, 0.959, 0.407 (`--ignore-time` 680/680) |
+| guitar-fl: P / R / F1, onset+offset F1 | 0.847 / 0.920 / 0.882, 0.562 (e1968) | 0.858 / 0.926 / **0.891**, 0.571 (e2175) |
+| guitar-fl recall bass / chord / melody | 0.949 / 0.894 / 0.902 | 0.953 / 0.903 / 0.911 |
+| guitar-fl F1 in the 10-s windows that moved (20, 50, 80, 90, 100, 120, 140, 160 s) | .99 .87 .80 .92 .89 .86 .75 .90 | 1.00 .90 .82 .93 .91 .90 .78 .91 |
+| truth notes with a same-pitch guitar-fl onset within 50 ms | 622 of 633 | 630 of 638 |
+| Basic Pitch: P / R / F1 | 0.536 / 0.846 / 0.656 (e1969) | 0.543 / 0.851 / 0.663 (e2176) |
+| guitar-gaps (checker's r0771) F1 | 0.869 | 0.878 |
+| madmom (checker's r0772): beats F (matched), downbeats F | 0.982 (220), 0.982 | unchanged |
+| truth late / early: 2 of the 3 models more than 50 ms off the same way, none within 30 ms | 3 (#288 #466 #575) / 5 (#187 #464 #533 #542 #675) | 2 / 4 (the same notes but #466 and #464; now numbered #289 #578 / #188 #536 #545 #679) |
+| guitar-fl notes with no truth note: same pitch ringing / octave or 12th / at a tap / other | 112 = 76 / 11 / 17 / 8 | 104 = 72 / 10 / 14 / 8 |
+| truth notes guitar-fl misses (of them `tab`) | 54 (26) | 50 (22) |
+| chroma, synthesized truth vs recording (+1 / -1 semitone) | 0.787 (0.453 / 0.425) | 0.786 (0.454 / 0.425) |
+| video: strings' distance from where the quad puts them, nut half / body half, median (max) | 13.2 (35.5) / 7.8 (23.7) px | 2.6 (8.2) / 2.3 (18.9) px |
+
+**Left as they are**: #198 (bar 17 pos 1.0 G3, above); the roll tops the first repair kept (#177 #312 #558 #636, the
+checker's Doubt 1); the tuning offset (Doubt 2); the slide-ins (Doubt 3). Order of this round's scripts: `ev2.py`
+(evidence, with `orig/standard.truth.json` as the truth whose notes it names), `time_new.py`, `build_truth_fix2.py`
+and `write_gp5_fix2.py` (on the first repair's `stage/aligned_fix_rm.json` with `out/changes2.json`), `compare2.py`,
+`checks2.sh`, `repairs_csv.py`; for the video `neck_track2.py`, `pose_split.py` (10 px, step 5, median 5),
+`make_video_json.py`, `string_check.py`, `quad_sheet.py`.
