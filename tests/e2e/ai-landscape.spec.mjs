@@ -1435,7 +1435,7 @@ async function tone(page, [x, y]) {
 }
 // What one picture adds to the screen (review round 4, T-1): a frame drawn with its mesh and one without, read at 225
 // points across it. The largest change of any channel at any point, 0 to 255 (two frames of the same moment are the
-// same, so a picture drawn at opacity 0 reads 0); -1 where the mesh is not shown. kind:
+// same, so a picture drawn at opacity 0 reads 0); -1 where the mesh is not shown, -2 where it stands out of the window. kind:
 // 'around' (the object in drawer `arg`), 'bench' (the object on piece `arg`), 'wall', or the room's 'portrait' or 'card'.
 async function drawnBy(page, kind, arg = null) {
   return page.evaluate(([kind, arg]) => {
@@ -1454,6 +1454,7 @@ async function drawnBy(page, kind, arg = null) {
       const sx = ((p.x + 1) / 2) * innerWidth, sy = ((1 - p.y) / 2) * innerHeight;
       if (sx > 2 && sx < innerWidth - 2 && sy > 2 && sy < innerHeight - 2 && p.z < 1) at.push([sx, sy]);
     }
+    if (!at.length) return -2;
     const read = () => { r.render(x.scene, x.camera); return at.map(([sx, sy]) => { const px = new Uint8Array(4); gl.readPixels(Math.round(sx * k), Math.round((innerHeight - sy) * k), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); return px; }); };
     const drawn = read();
     mesh.visible = false;
@@ -1540,7 +1541,14 @@ test('landscape-28 the lamp desk lies on the floor in front of five whole stacks
   const wanted = (b) => b.sizes.filter((p) => b.kept.includes(p.layer) && !b.swaps.includes(p.id)).map((p) => p.id);
   await expect.poll(async () => { const b = await bench(); return b.sizes.filter((p) => p.thing > 0).map((p) => p.id).join() === wanted(b).join() ? 'all' : JSON.stringify(b.sizes); }, { timeout: 60_000, message: 'each thing the cabinet keeps stands on the bench as its paper object, and nothing else does' }).toBe('all');
   expect(wanted(await bench()).length, 'there are such things on his bench').toBeGreaterThan(0);
-  for (const id of wanted(await bench())) expect(await drawnBy(page, 'bench', id), `the object on ${id} is drawn on the screen`).toBeGreaterThan(25);
+  const inView = [];
+  for (const id of wanted(await bench())) {
+    const seen = await drawnBy(page, 'bench', id);
+    if (seen === -2) continue;      // (a phone frames his pair: the things further along the bench are out of the window)
+    inView.push(id);
+    expect(seen, `the object on ${id} is drawn on the screen`).toBeGreaterThan(25);
+  }
+  if (!isMobile) expect(inView, 'a desktop frame holds every one of them').toEqual(wanted(await bench()));
 
   // ---- the far wall's picture hangs in the studio
   await go(page, 'top', 1.5, 300);
