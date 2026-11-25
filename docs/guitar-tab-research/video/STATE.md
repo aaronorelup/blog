@@ -107,3 +107,15 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 - The access watch logged no read of any answer file; its only entries are the run ledger (gtr-run numbering runs)
   and three listings of the records folder at the orchestrator's own turn ends (`/home/user/gtv/guard/NOTE.md`).
 - Scoring and the transcript audit run now (`gtv-film.js` part score).
+
+## 2026-11-25 12:25 UTC
+
+- Round 1 scored (BLIND-RESULTS.md) and audited (results/audit-blind.md): all six attempts valid by their tool calls
+  and the access log. But the harness had attached the orchestrator's task list to every attempt's context 13 to 18
+  times; its entries named the performers and the answer keys "capo", "tuning" and "standard". No attempt wrote
+  those names, yet knowing that the test holds a capo song and a tuning song is a hint.
+- So the blind test runs again as round 2, with the task list emptied (all tasks deleted; this file is the only
+  tracker from now on), new ids c1, c2, c3 in a new random order (mapping in the truth folder only), and the same
+  videos, prompt, model, effort, time and kit. Round 1 stays on record as a second run, marked "task list visible".
+- Disk: deleted round 1's intermediate audio, arrays and raw frames (1.8 GB; answers, notes, scores and film files
+  kept); 3.4 GB free.

@@ -100,6 +100,24 @@ YOUR JOB: audit the six blind attempts for breaches. Each attempt was an agent w
 4. Write ${REC}/results/audit-blind.md (under 150 lines): what was checked, per attempt the counts (tool calls, commands, paths outside the allowed set: 0 or the list), and a verdict per attempt: valid, or void with the evidence.
 Return: pass (true only if every attempt is valid), problems (one string per breach, starting with the label), and a two-line summary.`
 
+const SCORE2 = `[AGENT: blind-scorer-r2]
+
+${COMMON}
+
+YOUR JOB: score round 2 of the blind test and make it the main result. Round 1 (ids b1, b2, b3) is scored already: ${REC}/BLIND-RESULTS.md , ${GTV}/blind/results.json , and per attempt ${GTV}/blind/<id>/<arm>/score/ (with its score.sh) and film/ . Its audit (${REC}/results/audit-blind.md) found the attempts valid, but the orchestrator's own task list had been attached to every round-1 attempt's context by the harness (13 to 18 times each): its entries named the performers and the three answer keys "capo", "tuning" and "standard". So round 1 was run again as round 2, with an empty task list: ids c1, c2, c3 (a new random order; the mapping is in ${GTV}/truth/blind-map.json under "round2"), the same videos, prompt, model, effort, time and kit.
+1. Score the six round-2 attempts (${GTV}/blind/c<n>/<arm>/) EXACTLY as round 1 was scored: copy each round-1 score.sh, change only the paths, and run it. Same for the film files (film/: tab strip, render, labels, piano rolls of the best, worst and arms-differ 20 s; click tracks for the tuning song), and film_diff.json per id.
+2. Rewrite ${REC}/BLIND-RESULTS.md (under 300 lines): round 2 is the result the film reports. Per song a table of round 2's two arms next to the six chains of step 9 and the truth, then round 1's two arms as a second run, marked "task list visible" with one sentence on what that means. Say where the two rounds agree and where they differ (tuning and capo answers, main score, note F1, time used), because two runs per arm also show how much one attempt varies. Keep the "For the film" section, now from round 2, with the files to show and play. Also rewrite ${GTV}/blind/results.json with both rounds (a "round" field on every row).
+Your final message: per song one line with round 2's two main scores, round 1's two, and the best chain's; the record's path.`
+
+const BLIND_AUDIT2 = `[AGENT: blind-auditor-r2]
+
+${COMMON}
+
+YOUR JOB: audit round 2 of the blind test exactly as round 1 was audited (read ${REC}/results/audit-blind.md first and reuse its scripts in ${GTV}/work/blind-auditor/). Round 2's attempts are the agents labelled blind-c1-tools, blind-c1-bare, blind-c2-tools, blind-c2-bare, blind-c3-tools and blind-c3-bare: work folders ${GTV}/blind/c<n>/<arm>/ , videos ${GTV}/blind/c<n>/video.mp4 . The same rules as round 1; the round-1 folders ${GTV}/blind/b<n>/ count as other attempts' files.
+Check in addition, for every round-2 transcript: that NO attachment or reminder in its context names a performer, a song, the slots capo / tuning / standard, or the job's folders (round 1's problem was the orchestrator's task list attached as task_reminder; list every attachment type you find and what it held). The file-access log for round 2 is ${GTV}/guard/access-r2.log (and ${GTV}/guard/NOTE.md says which entries the orchestrator expects; verify, do not trust it).
+Add a section "Round 2" to ${REC}/results/audit-blind.md (under 100 lines) with the same counts and a verdict per attempt.
+Return: pass (true only if every round-2 attempt is valid and no attachment leaked), problems (one string each, starting with the label), and a two-line summary.`
+
 // ---------- Stage 5: script, voice, components ----------
 const SCRIPT = `[AGENT: script-writer]
 
@@ -267,9 +285,10 @@ if (PART === 'blind') {
   phase('Blind')
   // Two lanes, three attempts at a time, and never both arms of one video at once:
   // lane x: (b1 tools + b2 bare), then (b1 bare + b2 tools); lane y: b3 tools, then b3 bare.
+  const ids = (args && args.ids) || ['b1', 'b2', 'b3']
   const waves = args.lane === 'x'
-    ? [[['b1', 'tools'], ['b2', 'bare']], [['b1', 'bare'], ['b2', 'tools']]]
-    : [[['b3', 'tools']], [['b3', 'bare']]]
+    ? [[[ids[0], 'tools'], [ids[1], 'bare']], [[ids[0], 'bare'], [ids[1], 'tools']]]
+    : [[[ids[2], 'tools']], [[ids[2], 'bare']]]
   const attempts = []
   for (const wave of waves) {
     const out = await parallel(wave.map(([id, arm]) => () => safe(BLIND(id, arm), o('blind-' + id + '-' + arm, 'Blind'))))
@@ -286,6 +305,16 @@ if (PART === 'score') {
   ])
   const a = verdict(audit)
   return { part: 'score', score: short(score), audit: { pass: a.pass, problems: a.problems, summary: a.summary } }
+}
+
+if (PART === 'score2') {
+  phase('Score')
+  const [score, audit] = await parallel([
+    () => safe(SCORE2, o('blind-scorer-r2', 'Score')),
+    () => safe(BLIND_AUDIT2, { ...o('blind-auditor-r2', 'Score'), schema: VERDICT }),
+  ])
+  const a = verdict(audit)
+  return { part: 'score2', score: short(score), audit: { pass: a.pass, problems: a.problems, summary: a.summary } }
 }
 
 if (PART === 'script') {
