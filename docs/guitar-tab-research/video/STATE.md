@@ -370,3 +370,18 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   Total 2,973.5 s (49:33).
 - Part finish launched (wf_24e91e53-107, args {"part":"finish"}): the join with its gate, disk clearing and level
   matching, then the three film checkers.
+
+## 2026-11-25 23:50 UTC (check-in)
+
+- film-join finished: all 18 chapters passed its gate. The film is 2,975.0 s (49:35), 723 MB, -16.0 LUFS, -2.0 dBTP,
+  LRA 5.0. Four chapters were gained -2.9 dB to match the narration level. Web files are made
+  (`/home/user/gtv/render/web/`), and `/home/user/gtv/production/FILM.md` is written.
+- Film checks so far:
+  - picture: 1 BLOCKING. In ch10 at 29:45-29:55 a finding line sits in the caption band. 7 NITs.
+  - sound: 1 BLOCKING. join.py's concat demuxer rounds each chapter's audio up to whole AAC frames, so the sound
+    falls behind the picture at every join, +235 ms by the credits. 3 NITs.
+  - story: still running.
+- Part joinfix launched (wf_107b63f5-026): fix join.py (each chapter's audio trimmed or padded to its video length,
+  per-chapter gains as an option) and prove 0 ±1 ms lag at every join.
+- Next: chapter fixes (ch10 BLOCKING, plus the cheap NITs and whatever the story check finds), then part finish
+  again, then publish.

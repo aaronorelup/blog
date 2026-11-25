@@ -306,6 +306,16 @@ YOUR JOB: check, independently, the repair of the tab strip seams. Another agent
 3. Check AFFECTED.md against the chapters: for each chapter's build script, data and compositions, does it use a strip that was damaged, and is AFFECTED.md right about it and about whether the damage was on screen? Are its refresh steps enough?
 Return: pass, problems (one string each, with the path and the fix), and a two-line summary.`
 
+const JOINFIX = `[AGENT: kit-joinfix]
+
+${COMMON}
+
+YOUR JOB: fix the film's join tool so the sound stays in sync with the picture over the whole film. Never edit anything under ${PROD}/chapters/.
+The bug (found by the film's sound check, ${PROD}/FILM-QC-sound.md and /home/user/gtv/work/film-qc-sound/: drift.txt, sync.txt, sync_lag.txt, vframe.py, drift.py): ${PROD}/kit/tools/join.py concatenates the chapters' chapter.mp4 with ffmpeg's concat demuxer. Each chapter starts at the previous chapter's audio length rounded up to a whole AAC frame, so the sound falls behind the picture at every join: +17 ms at ch01, +95 ms at ch07, +130 ms at ch09, +235 ms at ch17. The picture is right to within one frame. Also, film-join (${GTV}/work/film-join/PROGRESS.md and ${PROD}/FILM.md) level-matched four chapters by making gained copies (-2.9 dB on ch02, ch04, ch13 and ch16).
+1. Fix join.py: keep the video stream-copied as now; build the audio by decoding each chapter's sound, trimming or padding it to exactly that chapter's video length (its frame count / 30; check against chapter.json), applying a per-chapter gain, and concatenating the parts sample-exactly (one ffmpeg filter graph: atrim, apad, volume, concat; or numpy), then master once with finish.py as now. Add an option for the per-chapter gains (a JSON file of chapter folder name to dB) so no gained copies are needed. Captions and chapter marks must use the same per-chapter lengths. Keep its command line otherwise and update its docstring and ${REC}/PRODUCTION.md section 6.6 (one or two lines).
+2. Prove it on the current 18 chapters (gains from FILM.md): join into ${GTV}/work/kit-joinfix/out/ and measure the lag of the film's sound against each chapter's own sound at its place, at the start, the middle and the end of every chapter (cross-correlation), with your own code and with the sound checker's drift.py: every lag 0 within 1 ms, the film's length equal to the sum of the chapter video lengths, and the picture still within one frame (vframe.py). Also check that the loudness numbers stay as FILM.md has them (about -16.0 LUFS, true peak at most -1.5 dBTP, LRA about 5). Keep 3 GB of disk free: delete the test outputs once measured (keep the logs and numbers).
+Write ${GTV}/work/kit-joinfix/REPORT.md (the cause, the fix, the numbers before and after). Your final message: the fix, the lag numbers, the command to join the film with the gains.`
+
 // ---------- Stage 5: finish ----------
 const JOIN = `[AGENT: film-join]
 
@@ -477,6 +487,12 @@ if (PART === 'kitfix') {
   const fixed = await safe(KITFIX, o('kit-seamfix', 'Kit fix'))
   const v = verdict(await safe(KITFIX_VERIFY, { ...o('kit-seamfix-check', 'Kit fix', 'high'), schema: VERDICT }))
   return { part: 'kitfix', fixed: short(fixed), check: { pass: v.pass, problems: v.problems, summary: v.summary } }
+}
+
+if (PART === 'joinfix') {
+  phase('Join fix')
+  const fixed = await safe(JOINFIX, o('kit-joinfix', 'Join fix', 'high'))
+  return { part: 'joinfix', fixed: short(fixed) }
 }
 
 if (PART === 'voicefix') {
