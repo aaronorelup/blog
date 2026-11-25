@@ -1,13 +1,15 @@
 ---
 // A post's header: the way back, its icon (or its topic's glyph; data-no-zoom: it isn't one of the post's pictures),
 // id · date · minutes, its topic and projects as ledger filters, the title and summary (data-r t and s: read-aloud
-// reads them first), the byline when Claude wrote it as "I" (voice: claude), and the Listen button. A notes page
-// (note given) gets the note's title, summary and byline, and its way back is the short version.
+// reads them first), the byline when Claude wrote it as "I" (voice: claude), who made the post (its credits, one
+// quiet line: schemas/credits.js), and the Listen button. A notes page (note given) gets the note's title, summary
+// and byline, no credits, and its way back is the short version.
 import { PROJECTS, TOPICS } from '../../data/taxonomy.js';
 import { slugOf } from '../../lib/content.js';
 import { isoDay, shortDate } from '../../lib/dates.js';
 import { iconFor } from '../../lib/icons.js';
 import { readingMinutes } from '../../lib/text/minutes.js';
+import { creditParts } from '../../schemas/credits.js';
 import Glyph from '../chrome/Glyph.astro';
 import ReadAloud from './ReadAloud.astro';
 
@@ -15,6 +17,7 @@ const { post, note, text } = Astro.props;
 const { id, date, topic, project } = post.data;
 const { title, summary, voice } = (note ?? post).data;
 const icon = iconFor(post);
+const credits = note ? [] : creditParts(post.data.credits);
 ---
 <header class="post-head">
   {note
@@ -39,5 +42,10 @@ const icon = iconFor(post);
   <h1 class="post-title" data-r={note ? undefined : 't'}>{title}</h1>
   <p class="post-summary" data-r={note ? undefined : 's'}>{summary}</p>
   {voice === 'claude' && <p class="post-by">Written by Claude. Every “I” here is Claude.</p>}
+  {credits.length > 0 && (
+    <p class="post-credits" title="Who made this post. A dollar figure is what the work would cost at API prices.">
+      {credits.map(([role, who], i) => <Fragment>{i > 0 && ' · '}<span class="post-credit">{role}: {who}</span></Fragment>)}
+    </p>
+  )}
   {!note && <ReadAloud post={post} text={text} />}
 </header>

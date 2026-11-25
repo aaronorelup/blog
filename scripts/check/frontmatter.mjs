@@ -1,11 +1,13 @@
 // Frontmatter facts: YAML that parses, every post's id its own, each notes page named after a built post (and saying
 // so in `post:`), START_HERE empty or 5 different listed slugs, and on every post the v2 content rules
 // (src/schemas/strict.js) with no leftover v1 field (`series`, `status`, `tags`), which live notebooks keep for good.
-// Those last two fail the deploy build once STRICT is on.
+// Those last two fail the deploy build once STRICT is on. And who made each post (src/schemas/credits.js), which
+// fails npm run check only.
 import { START_HERE } from '../../src/data/picks.js';
 import { isHeld, isLive } from '../../src/data/exempt.js';
 import { isListed } from '../../src/lib/posts.js';
 import { STRICT, v2Rules } from '../../src/schemas/strict.js';
+import { creditRules } from '../../src/schemas/credits.js';
 import { keyLine } from './text.mjs';
 
 const V1_FIELDS = ['series', 'status', 'tags'];
@@ -48,6 +50,10 @@ export default function frontmatter(repo, report) {
     v2Rules(p.data, (key, message) => report(p.file, keyLine(p.raw, key), `${key}: ${message}`, level));
     for (const key of V1_FIELDS.filter((k) => k in p.data && !isLive(p.slug))) {
       report(p.file, keyLine(p.raw, key), `${key}: a v1 field; leave it out (WRITING.md lists the frontmatter)`, strict);
+    }
+    // Who made the post. Never 'deploy': a post from an agent that has not read the rule must not stop the site.
+    if (!isLive(p.slug)) {
+      creditRules(p.data, (key, message) => report(p.file, keyLine(p.raw, key), `${key}: ${message}`, isHeld(p.slug) ? 'warn' : 'check'));
     }
   }
 }

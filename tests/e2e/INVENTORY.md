@@ -429,7 +429,7 @@ sound (WebAudio, only after a gesture), the tab hidden pauses the loop (`visibil
 | Read next: three listed posts, never the post itself; older and newer follow the ledger's order; no series threads | post-2 (desktop: built files) |
 | A long post's contents list is open and sticky beside the text at 1440 px, marking the heading read; a closed `<details>` above the text on a phone; a short post has none | post-3 |
 | `?hl=` opens the folded `<details>` holding the term and marks it; a `#target` inside a closed `<details>` opens it (`scripts/post/details.js`) | post-4 |
-| The header: the 96/256 icon, `AO-### · date · N min`, topic and project chips linking to the ledger's filters; the byline on Claude's pages (`voice: claude`) only | post-5 (desktop: built files) |
+| The header: the 96/256 icon, `AO-### · date · N min`, topic and project chips linking to the ledger's filters; the byline on Claude's pages (`voice: claude`) only; who made the post (its `credits`), on the post and never on its notes page | post-5 (desktop: built files) |
 | An unlisted post: noindex, no share card, no short version, its topic glyph, only listed posts in Read next | post-6 |
 | Every listed post shares an absolute `/og/<slug>.jpg?v=` card, 1200×630 JPEG under 150 KB, as `og:type article` | post-7 (desktop: built files) |
 | RSS categories are the topic label, then the project labels | post-8 (desktop: built files) |

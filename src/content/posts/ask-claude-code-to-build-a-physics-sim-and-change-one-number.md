@@ -5,6 +5,10 @@ summary: "Experiment: a tablecloth trick simulation with one input, the pull spe
 date: 2026-11-25
 topic: "agents"
 draft: false
+credits:
+  owner: "Gages"
+  worker: "Opus 5.5 max"
+  cost: 27.58        # one session: the experiment and the post (14.82), then the rework that teaches it
 preview:
   verdict: "Plate stays from 3.51 m/s"
   takeaway: "Friction can push the plate only so hard, so the pull speed sets how long it pushes. Across 76 speeds the plate stayed from 3.51 m/s, and the post's own values gave 2.80 m/s."

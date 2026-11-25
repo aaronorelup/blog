@@ -9,6 +9,9 @@
 - `now/<YYYY-MM-DD>.md` is one dated snapshot of the Now page: the newest is `/now`, each stays at `/now/<date>/`.
   An update is a new file named by today's date (copy the newest, keep `summary:` to one line), never an edit to
   an old one (README.md, "The Now page"). It waits for Aaron's OK like a post: `draft: true` until he says so.
+- Every post says who made it: a `credits:` block with `owner` and `worker` (WRITING.md "Credits"). `npm run check`
+  asks for it on posts dated 27 Nov 2026 or later. The title, the description and the card are read in a row and say
+  nothing twice (WRITING.md "Four layers").
 - Every post needs a `topic` (from `src/data/taxonomy.js`), and a listed one a `preview` with a verdict; the caps
   and voice rules are errors (`src/schemas/strict.js`, `scripts/check/`). AO-028 is `HELD` for Aaron's own rewrite
   (`src/data/exempt.js`): those rules only warn on it. The icon is `public/media/icons/<AO-###>.webp` by convention,

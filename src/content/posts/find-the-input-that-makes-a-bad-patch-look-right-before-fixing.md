@@ -5,6 +5,12 @@ summary: "Experiment: a plain fix prompt vs a find-the-trap-input-first prompt o
 date: 2026-11-24
 topic: "agents"
 draft: false
+credits:
+  owner: "Gages"
+  worker: "Opus 5.5 fleet"
+  orchestrator: "Opus 5.5 xhigh"
+  writer: "Opus 5.5 medium"
+  cost: 16.73        # the build session with its 14 sub-agents, and the session that wrote the post
 preview:
   verdict: "34/34 vs 33/34"
   takeaway: "Plain-prompt patches passed 34 of 34 hidden tests. Find-the-trap-first patches passed 33 of 34 and took 7.63 agent-minutes to the plain arm's 2.92."

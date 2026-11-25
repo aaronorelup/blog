@@ -15,8 +15,13 @@ the most useful stuff in the least time, and let him stop the moment he has what
 
 ## Four layers. The reader can stop after any of them.
 
-**1. Title: what the post is about.** A plain label, not a hook. A newcomer reads it and knows
-the subject in five seconds.
+The first three are read together, word for word, one after the other: the title, the
+description and the callout. Between them they hold everything the post found, so a reader who
+stops there has all of it. Nothing is said twice across the three: each one adds what the ones
+before it didn't say. Then the post starts over and stands on its own (Aaron, 25 Nov 2026).
+
+**1. Title: what the post is about.** A plain label, not a hook. A reader with no other context
+(he sees it alone in a link, a feed or a search result) knows the subject in five seconds.
 
 - Name things the way a newcomer would: "my AI-made TV series", "an AI video model", "a rented
   cloud GPU". Not the insider name alone ("Episode 5", "MiniMax-H3", "an L40S").
@@ -25,13 +30,17 @@ the subject in five seconds.
 - Aim for 60 characters. 70 is the limit.
 - Don't start every title with "I" or "How". Vary it.
 
-**2. Description (the `summary` field): what you'd learn.** One or two short sentences. What I
-did or tested, and what the post tells you. If it's an experiment, say what it tests. It can give
-the result. It never teases one: no "here's what happened", no "the answer surprised me", no
-"and what I'd do differently". Aim for 200 characters. 240 is the limit.
+**2. Description (the `summary` field): what the post is about, in as few words as possible.**
+The reader uses it to decide if the post is worth his time. Say what I did or tested and what
+question it answers, then stop. One sentence if it fits, two at most. It adds to the title and
+never says it again. It doesn't give the result: that is the callout's job, and saying it here
+would say it twice. It never teases one either: no "here's what happened", no "the answer
+surprised me", no "and what I'd do differently". 240 characters is the limit, not the aim. Most
+descriptions fit in 140.
 
-**3. Callout (the hover card, `preview:`): the conclusions.** All of them, in plain words.
-Someone who reads only the card leaves knowing what the post found.
+**3. Callout (the hover card, `preview:`): the conclusions.** All of them, in plain words, so
+the reader never has to open the post. He has just read the title and the description, so the
+card doesn't say again what was tested. It gives the answers.
 
 - `verdict`: the result as a 2 to 5 word stamp. "4-5x faster, not 30x". 28 characters at most.
 - `takeaway`: the main conclusion in one or two short sentences. A claim, with the number if
@@ -39,13 +48,18 @@ Someone who reads only the card leaves knowing what the post found.
 - `points`: up to 3 more findings the takeaway doesn't say. Most important first. Each stands
   on its own. 120 characters each at most.
 - Only what the post says. Failures stay failures. The card is never more sure than the post.
+- Nothing the title or the description already said. A fact that is in two of the three gets
+  cut from one of them.
 - A picture from the post (`image`, 640×360 WebP, aim 30 KB) and, if the subject moves, a
   3-second silent `loop` (640×360 H.264, aim 150 KB, 4 seconds at most).
 - The build's hard caps, in `src/data/limits.js`, are the outer limit: verdict 36,
   takeaway 200, point 150 characters, 3 points, still 48 KB, loop 240 KB. The targets here are
   the rule, and `npm run check` holds you to them.
 
-**4. The post: conclusions first, then the rundown, then the details.**
+**4. The post: conclusions first, then the rundown, then the details.** It stands on its own.
+Someone who skipped the three layers above and starts at its first sentence misses nothing. So
+this is the one place the conclusions are said again, and the post never points back at the
+card or the description ("as the summary says").
 
 - The first 2 to 4 sentences say what I did, why, and what I found. Anyone who stops there is
   informed. Give the newcomer the one line of context he needs right here (what the thing is).
@@ -205,6 +219,10 @@ date: 2026-11-02
 topic: "video"                    # required
 project: ["evening-television"]   # optional
 draft: true                       # until Aaron says it's good
+credits:                          # who made it ("Credits" below)
+  owner: "Aaron"
+  worker: "Opus 5.5 xhigh"
+  cost: 12
 preview:
   verdict: "4-5x faster, not 30x"
   takeaway: "A rented 48 GB card made my AI video clips 4 to 5 times faster than my laptop, once it had two speed settings my laptop already used."
@@ -240,6 +258,52 @@ summary: "Every run, setting and cost from the test, in order."
 - `draft: true` means the page isn't built at all. `unlisted: true` is different: the page builds
   at its URL but shows up in no list. Never use one to mean the other.
 
+## Credits
+
+Every post says who made it, in one quiet line under the description:
+`Owner: Gages · Worker: Opus 5.5 max $15`. Aaron reads it to see where a post came from, how
+much work went into it and who to ask for a change. Everyone else can see it too. It is the
+least that tells him that, never a full list of who did what (Aaron, 25 Nov 2026).
+
+```yaml
+credits:
+  owner: "Gages"               # required
+  worker: "Opus 5.5 fleet"     # required
+  orchestrator: "Fable 5.2"    # only if there was one
+  writer: "Sonnet 5.5"         # only if it wasn't the worker
+  cost: 35                     # only if it was measured
+```
+
+- `owner`: who had the idea to write the post or to run its experiment. `Aaron` when he told a
+  session to make this post. Otherwise the agent that picked it, by the name he calls it:
+  `Gages` (his Grok bot), `Duet`, `Claude routine` (his daily Claude Code routine). That is who
+  he goes to for a change.
+- `worker`: the agents that did the work the post shows: the experiment, anything in the post
+  an agent made, and the post itself. One agent: its model and its effort, `Opus 5.5 xhigh`.
+  Several agents on one model: `Opus 5.5 fleet`. Several models from one company:
+  `Anthropic fleet`. Several companies: `Mixed fleet`.
+- `orchestrator`: only when one agent ran the others (sub-agents or other sessions): its model
+  and effort.
+- `writer`: only when another agent than the worker wrote the post.
+- `cost`: what that work would cost at API prices, in dollars, as a number. It covers every
+  session counted as worker, orchestrator and writer. A Claude Code session gets its own figure
+  from the agent kit's `projects` skill (`cc_project.py report-self --post`, the line that ends
+  "API-equivalent"). Several sessions are summed. The page shows whole dollars. Not measured:
+  leave it out. Never guess one.
+- Model names are the public ones (`Opus 5.5`, `Fable 5.2`, `Sonnet 5.5`). The effort only if
+  the session's figures state it.
+- What counts is the work for this post. A post about a new episode counts the agents that made
+  the episode. A post about one technique used in it counts only the agents that worked on that
+  technique. An update on a bigger project counts what was made for the update, not the whole
+  project. When it is unclear, count less and keep it short: the line is a rough picture, not an
+  account.
+- A later change to a post adds its work to the line: raise `cost` by the new session's, and
+  fix `worker` if it is no longer true. The owner stays who had the idea.
+- Never in it: a session id or link, an account or plan name, an email, a person other than
+  Aaron. 40 characters a value at most.
+- `npm run check` asks for `owner` and `worker` on every post dated 27 Nov 2026 or later. Older
+  posts carry the block where it is known. The rules are in `src/schemas/credits.js`.
+
 ## Before it goes out
 
 Every post waits for Aaron's OK. Keep `draft: true` and show him the draft. It goes live only
@@ -254,8 +318,12 @@ says which one holds.
 
 Check before you show him:
 
-- [ ] Title, description and card pass the limits above.
-- [ ] The first 2 to 4 sentences give the conclusions. The card gives all of them.
+- [ ] Title, description and card pass the limits above. Read in a row, they say nothing twice.
+- [ ] The title makes sense with no other context. The description is as short as it can be and
+      gives no result.
+- [ ] The first 2 to 4 sentences give the conclusions. The card gives all of them. The post
+      reads whole without the card.
+- [ ] `credits` says who made it: owner, worker, and the cost if it was measured.
 - [ ] Every term a newcomer won't know is explained or gone.
 - [ ] No em dashes, no semicolons, no banned phrases, no closing moral.
 - [ ] The main read is inside its tier. Logs and long tables are folded or on a notes page.
@@ -274,6 +342,9 @@ When he says go: set `draft: false` (or remove the line), build, push to `main`,
 ## Worked examples
 
 These three are Aaron-approved rewrites. They show the layers, not a style to copy word for word.
+He approved them before the rule that the title, the description and the card say nothing twice
+(25 Nov 2026). AO-062's description gives away "three times too high", and its card then says it
+again. Written today it would end "and why the first count was wrong".
 
 **AO-055.** Was: "I rented a 48 GB cloud GPU for my video model expecting 10 to 30 times my
 laptop. It does 4 to 5"

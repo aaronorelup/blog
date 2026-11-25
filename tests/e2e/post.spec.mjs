@@ -122,14 +122,16 @@ test('post-4 ?hl= opens the folded details holding the term and marks it; a #tar
   await expect.poll(() => page.evaluate(() => document.querySelector('.pc-prose details').open)).toBe(true);
 });
 
-test('post-5 the header: icon (or the topic glyph), id, date, minutes, topic and project filters; the byline on Claude\'s pages only', async ({ page, request }, info) => {
+test('post-5 the header: icon (or the topic glyph), id, date, minutes, topic and project filters; the byline on Claude\'s pages only; who made it, on the post only', async ({ page, request }, info) => {
   desktopOnly(info);
   const claude = postUrls.find((u) => front(slugOf(u)).voice === 'claude');
   const aaron = postUrls.find((u) => !front(slugOf(u)).voice && targets.pages[`${u}notes/`]);
+  const credited = postUrls.find((u) => front(slugOf(u)).credits?.owner && front(slugOf(u)).credits.worker);
   await page.goto('/404');
-  const heads = await read(page, request, [claude, aaron, `${aaron}notes/`], (html) => {
+  const heads = await read(page, request, [claude, aaron, `${aaron}notes/`, credited], (html) => {
     const h = new DOMParser().parseFromString(html, 'text/html').querySelector('.post-head');
-    return { by: h.querySelector('.post-by')?.textContent ?? null, icon: h.querySelector('img.post-icon')?.getAttribute('srcset'),
+    return { by: h.querySelector('.post-by')?.textContent ?? null,
+      credits: h.querySelector('.post-credits')?.textContent.replace(/\s+/g, ' ').trim() ?? null, icon: h.querySelector('img.post-icon')?.getAttribute('srcset'),
       line: h.querySelector('.post-line').textContent.replace(/\s+/g, ' ').trim(),
       chips: [...h.querySelectorAll('.chip')].map((a) => a.getAttribute('href')) };
   });
@@ -140,6 +142,10 @@ test('post-5 the header: icon (or the topic glyph), id, date, minutes, topic and
   expect(heads[aaron].icon).toBe(`/media/icons/${id}-96.webp 96w, /media/icons/${id}.webp 256w`);
   expect(heads[aaron].line).toMatch(new RegExp(`^${id} · \\w{3} \\d\\d, \\d{4} · \\d+ min$`));
   expect(heads[aaron].chips[0]).toBe(`/ledger/?topic=${topic}`);
+  // Who made it (src/schemas/credits.js): the owner first, then the worker, and never on a notes page.
+  const { owner, worker } = front(slugOf(credited)).credits;
+  expect(heads[credited].credits.startsWith(`Owner: ${owner} · Worker: ${worker}`)).toBe(true);
+  expect(heads[`${aaron}notes/`].credits).toBeNull();
 });
 
 test('post-6 an unlisted post: noindex, no share card, no short version, its topic glyph for an icon, no unlisted post in Read next', async ({ page, request }) => {
