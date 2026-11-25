@@ -209,3 +209,24 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   wf_f653901e-6ea (ch04, ch14). Args are in `/home/user/gtv/work/polish-P2-args.json` and `polish-P3-args.json`.
 - Waiting for the kit fix: ch01, 10, 11, 13 and 16, which use strips. Lane A (ch00, 03, 06, 09, 12, 15) is still
   running.
+
+## 2026-11-25 20:30 UTC
+
+- P1 finished: ch02, ch05 and ch08 pass, with minor items only.
+- The kit fix found the real cause. alphaTab scrolls the page 10 px to the first bar, every tile carried that shift,
+  and the browser dropped it for the last tile. It affected 46 of 53 strips; on 19 of them the join looks clean, but
+  the marks in the last tile are still off.
+  - The fix: `page.html` turns the scroll off, `tabstrip.cjs` checks the shift, and `kit/tools/strip_seams.py` checks
+    any strip.
+  - 43 strips outside the chapters were shot again in place; the old files are kept as `*.pre-seamfix`.
+  - `/home/user/gtv/work/seamfix/AFFECTED.md`: the damage is on screen in ch08 (155-168 s), ch11 (scene 2) and ch15
+    (scene 6). ch10, ch12 and ch16 only refresh files. ch00, ch01 and ch13 are not affected.
+- Disk: dropped HyperFrames frame-cache folders older than 15 minutes and the old scouting venv (in the scratchpad).
+  3.7 GB free.
+- Polish runs, all with `wide: true`; args in `/home/user/gtv/work/polish-PN-args.json`:
+  - P4 wf_b00f10ac-d69: ch10, ch11
+  - P5 wf_fce67cf6-1ba: ch13, ch16
+  - P6 wf_3e589e37-574: ch01, plus ch08's strip refresh and the film-wide checks
+  - P7 wf_ecd31a48-179: the film-wide check for ch02 and ch05 (render only if a number is outside)
+- Still running: P2 (ch07, ch17), P3 (ch04, ch14), lane A (fix-ch15, rereview-ch12), the kit-fix check. Lane A's
+  chapters (ch00, 03, 06, 09, 12, 15) go into polish when it ends.
