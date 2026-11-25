@@ -346,4 +346,4 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 - P8 finished: ch03 passes. ch00 still has one BLOCKING regression after its second round: the tool tag is cut to
   'gp…' at 96.6-98.0 s, after the font went from 20 to 22 px. Third round running: P16 (wf_1d8520b7-6a1), that one
   problem only.
-- Done: 16 of 18 (all but ch00 and ch02); ch10 is in its second round.
+- Done: 15 of 18. Not yet: ch00 (P16), ch02 (P11), ch10 (P4, second round).
