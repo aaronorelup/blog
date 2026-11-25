@@ -390,6 +390,89 @@ where `automation` times are seconds from that media element's own start.
 - **barchart**: `mode` (`verdict` or `value`), `truth_notes`, `rows [{name, meta, found, missed, extra} or {name,
   meta, value, color}, label, sublabel]`, `eyebrow`, `title`, `subtitle`, `source`, `top`, `row_h`.
 
+Added for the script's shots (`/home/user/gtv/production/KIT-NEEDS.md`, K1 to K7). Each has a worked example on this
+job's real data in `/home/user/gtv/production/kittest/<component>/build.py`, checked and rendered once.
+
+- **tabplayer with `strips`** (the stack; `hfkit.py build tabplayer` with `strips` builds `tabstack.html`):
+  `strips [{role ("key" on paper | "tool" on a panel), chip, title, facts, tag, strip, time_zero, clock, marks,
+  counts, badge {text, at, until}, note {text, at}}]`. `strip`, `time_zero`, `clock` and `file_t0` come from
+  `stack_data.py strip` (only the tiles the window can show are copied; tool strips are alphaTab's ink strips,
+  recoloured for the panel by an SVG filter). `marks [{t, string, fret, verdict, pulse, label}]` are in recording time,
+  from `stack_data.py marks`: `right` (sky blue fill, the digit redrawn dark), `other` (sky blue outline), `missed`
+  (gold dashed ghost with the key's fret, at the key's place on this strip; it frames the tool's note when one sits
+  there), `extra` (hatch), `ontime` / `offtime` (a note's time within 50 ms or not), `octave` (terracotta, 'OCTAVE
+  UP'), `ring`, `underline` (gold), `moved_in` / `moved_out` (an arrow into or out of the key's place); `pulse` swells a
+  mark as it sounds. `counts {window [t0, t1], template ('{right} right · {other} other place · {missed} missed · {extra}
+  made up' by default; any verdict in braces), totals {verdict: n} from the file, totals_label}` count the marks the
+  cursor has passed, then show `totals` from `cues.totals_on`. The clock: `audio [{slot, strip_index (or "all"),
+  start, song_at_start}]` (one media slot per listening window, any names; the strip heard is lit with NOW PLAYING,
+  the others at 45 %) and `sweeps [{start, dur, from, rate}]` (silent scrolls, e.g. to reveal marks to the window's
+  end); between them the strips hold, then move to the next start in the gap's last 0.7 s. Also `cues {marks_on,
+  counts_on, totals_on}`, `marks_reveal` (`cursor` or `all`), `chips [{text, at, until}]` ('RECORDING LEFT · FILE
+  RIGHT'), `tag` (one line under the stack), `credit`, `top`, `bottom`, `compact` (on with three strips: counts in the
+  header row). **Pass `--notes` to `stack_data.py strip` for every tab with a tempo on every beat** (the key's
+  `o-01-c01-32`, `chain-*`, the blind arms): alphaTab's clock drifts from gtr-eval's reading of the same GP5, by
+  -0.18 to -0.32 s on capo `o-01-c01-32` at 169-206 s, so marks placed by `time_zero` alone land a beat off. `--notes`
+  is the tab's own notes in recording time (a `stretch_*.json`, a blind arm's `answer_gp5_notes.csv`, a gp5fb
+  `notes.csv`; not `o-01/notes.csv`, which is the writer's input before the one-tempo grid moved it). Cut that strip's
+  own MIDI render from `file_t0`.
+- **timeline**: `window {t0, t1}` (song seconds), `lanes [{kind ("wave" | "ticks" | "spans"), label, key, h, peaks,
+  under (a faint waveform behind ticks), events [{t, bar}], spans [{t0, t1, label, name, agree}], key_lane, verdict,
+  match ("bars": only bar lines are scored), tolerance_ms, offsets (a stroke from each tick to the nearest key event),
+  reveal ("cursor" | "all"), count {template with {n} {hit} {extra} {missed} {bars}, label, totals, totals_on, at} or
+  {value, label, at}}]`. With `verdict` each key event is matched once, to the nearest tick within the tolerance: hit
+  sky blue, extra hatched, a key event nothing hit a gold dashed ghost on that lane; without it the ticks are cream
+  (judgement shots). Spans of the key lane are paper with ink names; a tool's are blue (same major or minor), hatched
+  (not) or outlined (not scored), named above the bar. `audio [{slot, lane, start, song_at_start}]` (the lane heard is
+  lit with NOW PLAYING), `sweeps`, `cues {reveal_on}`, `bracket {a, b, ta, tb, label, at}` ('≈ 0.2 s'), `readout
+  [{text | html, at}]`, `well {x, y, w, h}` with media slots `video` to `video4` (one per window, `has_audio:
+  false`) over `stills [{src}]`, `chips`, `eyebrow`, `title`, `meta`, `panel {y}`, `label_w`, `count_w`, `source`.
+- **grid**: `layout` (`table`, `rows`, `columns`, `cards`, `quote`, `credits`), `eyebrow`, `title`, `subtitle`, `chips
+  [{text, kind: judgement | tool | key | gold}]`, `footer {text | html, kind: card | read | mono, cue}`, `source`,
+  `top`, `size`, `pad`, `title_size`, `push` (1.02), `center`. Table and rows: `columns [{text, w ('1.4fr'), align,
+  font: ui | mono | read}]`, `groups [{label, from, to}]`, `rows [{cells [text | {text | html, style (right, other,
+  missed, wrong, judgement), font, bold, dim, sub (a mono second line), align, size}], cue, lit [[a, b]]} | {section,
+  cue}]`, `lit: "follow"` (each row lit from its cue to the next) and `lit_until`. Columns: `lists [{head, kind (tool |
+  source | none), items [text | {text, sub, cue}], cue}]`. Cards: `cards [{n, head, text, sub, cue}]`. Quote: `quote
+  {eyebrow, parts [{text, cue | lit [[a, b]]}], source, size}` on paper, the parts lit in turn. Credits: `roll {items
+  [{role, lines [text | {text, mono, soft}]}], speed (px a second, or "fit"), start, from_y, end_y, top, bottom}`. A
+  dense table must end above y 930: look at the snapshot, then `pad: 9` and `title_size: 46` (the chord table needed both).
+- **chainmap**: `layout: "stations"` with `stations [{n, name, tool, cue, give {at, tool, detail, measure}}]` (1 to 5,
+  then 6 to 9, and 10 apart, dashed, reached by a dashed bypass from the start chip `start_label`; `cue` lights a
+  station; `give` turns it to paper and puts its `detail` and `measure` in the strip under the map), `hint {to, cue,
+  text}`, `leave_out [{text, measure, cue}]`, `leave_label`; or `layout: "chains"` with `columns`, `chains [{name, cells
+  [{text, given (a paper 'THE KEY' chip), key, span}], cue}]`, `lit_until`. Also `eyebrow`, `title`, `source`, `top`,
+  `card_w`, `card_h`, `row_h`. Replays under the stations are media slots at the stations' cues.
+- **clipoverlay, more** (any of `overlays`, `stills` or `wells` switches it on): `wells [{x, y, w, h, view {x, y, w, h}
+  (the media rectangle to show, in media px), chip}]`, media slot `video` (well 0) with `video_size {w, h}` and
+  `video_view`, `stills [{src, w, h, well, start, dur, push, view}]` (each fades in and out on its own; leave 0.45 s
+  between two), `hold {at, frame_t}` (from `at` the video's layers stay on scene time `frame_t`; lay a still of that
+  frame over the video), `overlays [{kind, still, at, until, norm, ...}]` in media px: `hands {fps, start, frames}`,
+  `grid {lines [{line [[x, y], [x, y]], label}], edges, label_pos, label {text, x, y, at}}`, `cells {fps, start, frames
+  [[{x, y, text, style}]]}` or `{events [{t, dur, x, y, text, style}]}` (style `exact` or `right` blue, `within` or
+  `other` blue outline, `wrong` hatched, `none` a tool's dark label), `boxes {boxes [{box [x0, y0, x1, y1], score,
+  label}]}`, `quad {times, frames}` (a sample with NaN or null draws nothing: `tuning/w-07` has no outline at 1.5-14.0
+  s), `sweep {t0, t1, x0, x1, y0, y1, w}`; `panel {eyebrow, name, meta, width, readout [{k, v, tool, at}], live {k,
+  times, values}, quote {text, at, source}, chips [{text, style (right | wrong | judgement | tool), at}], sets [{label,
+  notes, at, play {start, step, dur}}], lines [{text, at}]}` or `panel: null`; `notes [{text, at, until, well, pos}]`.
+- **pianoroll, more**: `audio` as a list of windows `[{slot, start, song_at_start, pass ("truth" | "verdict"),
+  heard}]`: the truth pass draws only the key's notes, found and missed alike, in cream outline with the legend THE KEY;
+  the verdict pass after it is the drawing above; the playhead goes back between them. `ticks [t]` (the key's slaps and
+  thumps on the time axis), `doubt [t]` (a '?' badge on a missed note the key's own check doubted). `mode: "voices"`
+  with `voices [{on, off, pitch, labels (one per split state), key_label}]` (melody cream, bass sand, a terracotta ring
+  where the label is not the key's voice), `split {pitches [55, 53], names ['G3', 'F3'], cues}`, `ring_counts ['35 of
+  42', '42 of 42']` (from the file), `count_window`; `heard: "bass"` on a window dims the other voice.
+- **barchart, more**: `mode: "tab"` with rows `{name, meta, right, other, missed, extra, label, sublabel}` against
+  `truth_notes`. `mode: "grouped"` with `groups [{name, short, color}]` (a letter on every bar, the legend in words),
+  rows `{name, meta, values [v | {v, hollow} | {text}], note, note_at, labels, decimals}`, `reference` (a dashed tick per
+  group) and `reference_label`, `max`, `min`, `bar_h`, `bar_gap`, `row_h`, `label_w`, `panels [{title, sub, t_bars,
+  rows, reference}]` (side by side, one legend). `mode: "delta"` with rows `{name, meta, pairs [{before, after, hollow}
+  or null, one per group]}`: up sky blue, down terracotta, hollow dashed. Every mode: `note {text | html, at}`, `push`
+  (1.015; `0` turns it off).
+- **root** (`hfkit.py root`): an `audio` entry can be a bed under the voice: `{"id", "src", "start", "duration",
+  "media_start", "volume", "automation": [[t, gain], ...], "track"}` (gain about 0.12, down to 0 by 0.4 s before a
+  listening window). A component with no audio of its own takes no media slot (optional slots are left out).
+
 Producing the data:
 
 ```bash
@@ -405,7 +488,22 @@ python3 /home/user/gtv/production/kit/tools/level.py data/truth-tab.wav project/
 # a footage excerpt: only the seconds used, a keyframe every second
 ffmpeg -ss 202 -t 9 -i source.mp4 -c:v libx264 -preset slow -crf 17 -g 30 -keyint_min 30 -pix_fmt yuv420p \
   -af "volume=XdB" -c:a aac -b:a 192k -movflags +faststart project/assets/video/clip.mp4
+# the stack: a strip entry (with its clock map) and its marks; K=/home/user/gtv/production/kit/tools, E=/home/user/gtv/experiments
+python3 $K/stack_data.py strip $E/capo/o-01-c01-32/strip.json --tz 0.34 --t0 169 --t1 189 --notes $E/capo/o-01-c01-32/notes.csv \
+  --dest project/assets/img/key --rel assets/img/key --out data/key-strip.json
+python3 $K/stack_data.py marks /home/user/gtv/blind/c1/tools/film/stretch_diff.json --kind stretch --t0 169 --t1 189 --out data/kit-marks.json
+# the timeline (V=/home/user/gtr/eval/venv/bin/python): peaks, ticks, chord spans against the key, a click track
+$V $K/timeline_data.py peaks /home/user/gtv/songs/capo/capo.wav --t0 65 --t1 85 --out data/rec-peaks.json
+$V $K/timeline_data.py events /home/user/gtv/truth/capo/capo.beats.txt --t0 12.76 --t1 32.76 --out data/key-beats.json
+$V $K/timeline_data.py spans $E/capo/c-03/chords.lab --key /home/user/gtv/truth/capo/capo.chords.lab --t0 39 --t1 59 --flats --out data/chordino.json
+$V $K/timeline_data.py clicks data/key-beats.json --audio /home/user/gtv/songs/capo/capo.wav --t0 12.76 --t1 18.76 \
+  --out project/assets/audio/click-key.wav
+# look inside one built component without HyperFrames (seek with callbacks on, print an expression)
+node $K/probe.cjs project/compositions/stack.html project 10.4 "document.querySelectorAll('svg.mk g').length"
 ```
+
+Both helpers print what they found to stderr (tiles, string lines, the clock map's drift, mark counts next to the
+file's own `counts_in_window`, events in the window, the major/minor share): check those against the brief's numbers.
 
 ### 6.5 Rules learned building the proof
 
@@ -420,6 +518,10 @@ ffmpeg -ss 202 -t 9 -i source.mp4 -c:v libx264 -preset slow -crf 17 -g 30 -keyin
 - The film's first frame is the finished title card. Every later scene fades in from the bench.
 - AAC adds about 1 dB of peak. `finish.py` limits below the ceiling and measures after the encode.
 - Keep alphaTab's "♪ alphaTab.net" credit in the strip images. Never crop it out of a tile.
+- Building the K1-K7 components: a colour crossfade fails the contrast audit in its middle, so swap a card's colours in
+  one cut (under a ring or a rise); text drawn over a box that is its sibling (redrawn fret digits, SVG labels) needs
+  `data-layout-ignore` because the audit cannot see the box; NaN in overlay data reaches the browser as NaN (Python's
+  `json` writes it), so components skip samples that are not finite.
 
 ### 6.6 Joining, captions and loudness
 

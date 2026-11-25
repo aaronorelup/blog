@@ -156,3 +156,13 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 - Disk: the experiments' `render.wav` files (201, 3.1 GB) were deleted; PRODUCTION.md already forbade them in the film
   and now says they are gone (list in `/home/user/gtv/work/deleted-render-wavs.txt`). 5.3 GB free.
 - Next: part chapters in three lanes once the kit-extender is done.
+
+## 2026-11-25 16:47 UTC
+
+- The kit-extender built all seven missing components (tab stack, timeline, grid, chain map, and extensions to
+  clipoverlay, pianoroll and barchart), each checked and test-rendered (`/home/user/gtv/work/kit-extender/PROGRESS.md`;
+  formats in PRODUCTION.md 6.4). Its finding: alphaTab's clock and gtr-eval's reading of a GP5 with a tempo on every
+  beat drift apart by up to 0.3 s, so builders place marks from `stack_data.py strip --notes`.
+- Part chapters launched in three lanes: A wf_90c13fe7-558 (ch00, 03, 06, 09, 12, 15), B wf_16b3a406-098 (ch01, 04,
+  07, 10, 13, 16), C wf_0cbb4c63-4e1 (ch02, 05, 08, 11, 14, 17). Each chapter: build, independent review, fix and
+  re-review. Renders one at a time under the lock. Check-in at 19:30 UTC.
