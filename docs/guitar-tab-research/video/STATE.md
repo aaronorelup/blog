@@ -277,3 +277,14 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 - Placed narration measured now: ch02 and ch07 already re-copied (0 clipped, refresh runs P11 and P12 under way).
   Still clipped: ch04 176, ch13 176, ch14 551, ch16 391. ch01, ch10 and ch11 show 0 samples at full scale but carry
   flat tops at a lower level (AFFECTED.md), so they refresh too.
+
+## 2026-11-25 21:36 UTC
+
+- P5 finished: ch13 and ch16 pass. Their narration refresh is P14 (wf_3abb3a87-bf1).
+- The chapters' own tab strips (ch10 pinned, ch12 key-gp5, ch16 key-flats) are shot again with the fixed tool (their
+  strip.json has the "shot" key).
+- Running now:
+  - P4 (ch10, ch11) and P6 (ch01, ch08) still in polish;
+  - P8 (ch00, ch03), P9 (ch06, ch09) and P10 (ch12, ch15), lane A's polish;
+  - refresh runs P11 (ch02), P12 (ch07), P13 (ch04, ch14) and P14 (ch13, ch16).
+- Still to start: the refresh for ch01, ch10 and ch11 once P4 and P6 end.
