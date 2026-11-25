@@ -721,6 +721,15 @@ test('landscape-22 the watchdog knows a display that hands out 30 frames a secon
     expect(r.gaveUp, `${frame} ms frames on a ${pace} ms display end in the text version`).not.toBeNull();
     expect(r.gaveUp).toBeLessThan(20);
   }
+  // a machine that draws a frame in 0.7 s (software WebGL) is not walked through every rung, a window of a frozen page
+  // each: one leap takes them all, and the next window as slow gives up
+  const hopeless = await judge(700, 16.7);
+  expect(hopeless.steps, '0.7 s frames take every step at once').toBe(1);
+  expect(hopeless.gaveUp, '0.7 s frames read as text after two windows').toBeLessThan(4.5);
+  // but a stall alone is not a slow machine: good frames after it give the whole leap back, and the page keeps its 3D
+  const stall = await page.evaluate(() => window.__landscape.debug.judge([[700, 2.2], [16.7, 30]], 16.7));
+  expect(stall.gaveUp, 'a 2 s stall then good frames keeps the 3D page').toBeNull();
+  expect([stall.dust, stall.props], 'and gets its dust and props back').toEqual([120, 2]);
   // a stall while the page loads is not a display's pace: the limit never passes 45 ms, and with no pace known it is 21
   expect((await judge(16.7, 400)).limit).toBe(45);
   expect((await judge(16.7, 0)).limit).toBe(21);

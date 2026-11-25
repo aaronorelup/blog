@@ -146,7 +146,8 @@ export async function mount(boot) {
   }
 
   // hooks for tests and screenshots: the context itself, the watchdog's pace, one stack shown in the five states, and its
-  // verdict on a steady frame time (a fresh one, fed `seconds` of `frameMs` frames on a display of `cadenceMs`)
+  // verdict on a steady frame time (a fresh one, fed `seconds` of `frameMs` frames on a display of `cadenceMs`; or
+  // `frameMs` a list of [ms, seconds] runs fed in turn, `seconds` then ignored)
   state.debug = {
     ctx,
     pace: cadence, limit: watchdog.limit,      // the display's pace this load handed the watchdog (seconds a frame), and its limit (ms)
@@ -154,8 +155,11 @@ export async function mount(boot) {
       const out = { steps: 0, gaveUp: null };
       const w = createWatchdog({ ...RUNGS[name], pinned: false }, { apply() { out.steps++; }, onStatic() { out.gaveUp = out.gaveUp ?? at; } }, cadenceMs / 1000);
       let at = 0;
-      for (; at < seconds && out.gaveUp == null; at += frameMs / 1000) w.sample(frameMs / 1000);
-      return { ...out, steps: out.steps - 1, limit: w.limit, ratio: w.quality.ratio };
+      for (const [ms, s] of Array.isArray(frameMs) ? frameMs : [[frameMs, seconds]]) {
+        for (const end = at + s; at < end && out.gaveUp == null; at += ms / 1000) w.sample(ms / 1000);
+      }
+      const { ratio, dust, props } = w.quality;
+      return { ...out, steps: out.steps - 1, limit: w.limit, ratio, dust, props };
     },
     states(id, list = ['solid', 'hatch', 'frost', 'dotted', 'hollow', 'solid', 'hatch', 'frost', 'hollow']) {
       ctx.row.tower(id).setCells(list.map((s) => ({ s, g: [] })), true);
