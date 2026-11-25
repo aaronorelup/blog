@@ -122,3 +122,102 @@ are hard links of the originals in `songs/`.
 `/home/user/gtv/work/blind-auditor/out/`: `<label>.calls.jsonl` (every call), `<label>.flags.txt`, `<label>.summary.json`,
 `suspicious-b1.txt`, `suspicious-b23.txt`, `names.txt`, `ledger-window.txt`, `ledger-match.txt`, `dir-burst-calls.txt`,
 `access-summary.txt` (one level up). Scripts: `/home/user/gtv/work/blind-auditor/scripts/`.
+
+## Round 2
+
+Agent blind-auditor-r2, 2026-11-25. Scope: the attempts `blind-c1-tools`, `blind-c1-bare`, `blind-c2-tools`, `blind-c2-bare`,
+`blind-c3-tools`, `blind-c3-bare`, every attachment and reminder in their context, and `/home/user/gtv/guard/access-r2.log`. Round
+1's scripts plus `attach.py`, `imports2.py`, `ledger.py`, `accesslog.py`, `orch.py` in `/home/user/gtv/work/blind-auditor-r2/`
+(`scripts/`, outputs in `out/`, `PROGRESS.md` lists every step). I changed nothing in the attempts' folders.
+
+**Verdict: all six attempts are valid, and no attachment or reminder leaked.** None read, listed or searched an answer folder,
+another blind folder (the round-1 `b*` folders included), the other arm's folder, the records, a ledger or a transcript; none used
+the web, a key, git, an install, a helper agent, a skill or an MCP tool; the bare arms used only their venv. The permission system
+refused one call (c2-tools, a stray write to `/tmp/claude-0`); the other deviations are minor (R2.4). Two setup problems are not the
+attempts' doing (R2.6).
+
+**R2.1 Checked.** One transcript per label (journals: one `started` and one `result` each, no restart), under
+`.../subagents/workflows/`: c1-tools `wf_2161a950-609/agent-acd0f0eea8d4d6fce` (12:20:57-13:02:13 UTC), c2-bare
+`.../agent-ab14f63c3eb034348` (12:20:57-13:04:43), c1-bare `.../agent-a99bf0b89605c83fa` (13:04:43-13:46:55), c2-tools
+`.../agent-af1de0ecc50968125` (13:04:43-13:39:06), c3-tools `wf_6044e612-6ad/agent-aa989800ff1e0f3c8` (12:20:57-12:54:09), c3-bare
+`.../agent-a4a270e81985f1c71` (12:54:09-13:34:08); all inside the watch. The prompts are round 1's word for word (only the id
+differs). Checked as in round 1 (imports with a stricter parser), plus every permission decision, attachment, meta message and
+tool-result reminder, and each `prefix.json` (cache hashes only).
+
+**R2.2 Attachments and reminders** (raw and rendered text):
+
+| type | count per transcript | what it held |
+|---|---|---|
+| task_reminder | c1-tools 19, c1-bare 20, c2-tools 16, c2-bare 15, c3-tools 18, c3-bare 15 | all 103 `{"content": [], "itemCount": 0}`, shown as the generic "task tools haven't been used recently" line: no task list |
+| instructions | 1 | `/root/.claude/CLAUDE.md`, the agent kit's INSTRUCTIONS.md, `/home/user/blog/CLAUDE.md`; the same in all six |
+| environment | 1 | working directory `/home/user/blog` (the session's, as in round 1), "git repository: true", platform, scratchpad path |
+| prompt_snapshot | 2 | the system prompt and the tool definitions |
+| skill_listing, mcp_instructions_delta, deferred_tools_delta, model, date, credential_org, session_context, remote_session_change | 1 each | generic lists of skills, MCP servers and tools (the same in all six); model name, date, organisation id, `{}`, commit attribution lines |
+| queued_command, edited_text_file | c1-tools 4 + 1, c3-tools 7 + 2, c3-bare 0 + 0, the others 0 + 1 | notices of the attempt's own background commands; its own HOW.md |
+| deferred_tools_record | c1-tools 2, c1-bare 2, c3-tools 3 | input bookkeeping, and the TaskStop (c1-bare) and Monitor (c3-tools) schemas loaded with ToolSearch |
+| meta user messages | 28 in all | the hand-back reminder (6) and image-size notes (22) |
+
+None names a performer, title, tab source or video id of songs.json, or a folder of the job (no `/home/user/gtv`, `guitar-tab`,
+`songs/`, `truth`; only `AO-073` in the blog's CLAUDE.md, `AO-001` in a skill description); `capo`, `tuning`, `standard` never as a
+slot (only "standard CLI tools", "Standard 5-field cron"). No system-reminder in any tool result (`out/attach-*`).
+
+**R2.3 Per attempt.**
+
+| attempt | tool calls (Bash / Read / Write / Edit / other / handback) | commands without `cd` | paths outside the allowed set | web, git, installs, agents | interpreters, imports | verdict |
+|---|---|---|---|---|---|---|
+| c1-tools | 196 (144 / 45 / 3 / 3 / 0 / 1) | 12, all absolute | 0 | 0 | venv-torch 134 (numpy, librosa, Pillow); `python3` 1, stdlib | valid |
+| c1-bare | 206 (154 / 47 / 0 / 2 / ToolSearch 1, TaskStop 1 / 1) | 1, absolute | 0 | 0 | bare venv 231; numpy, scipy, soundfile, stdlib, own `img.py` | valid |
+| c2-tools | 163 (132 / 29 / 1 / 0 / 0 / 1) | 6, absolute | 0 read; 1 refused write (#103) | 0 | venv-torch 66 (numpy, librosa, soundfile); `python3` 18, 2 with numpy | valid |
+| c2-bare | 151 (124 / 24 / 2 / 0 / 0 / 1) | 3, absolute | 0 | 0 | bare venv 251; numpy, scipy, soundfile, PyGuitarPro, stdlib, own modules | valid |
+| c3-tools | 192 (147 / 38 / 1 / 4 / ToolSearch 1 / 1) | 12, absolute | 0 | 0 | venv-torch 34 (numpy, scipy, soundfile, librosa, matplotlib, Pillow); `python3` 64, stdlib | valid |
+| c3-bare | 153 (127 / 23 / 2 / 0 / 0 / 1) | 1, absolute | 0 | 0 | bare venv 240; numpy, scipy, soundfile, stdlib, own `ana.py` | valid |
+
+- Read/Write/Edit: only the own folder and the arm sheet (c3-bare also read `bare/validate_answer.py`). No input names another blind
+  folder, `/home/user/gtv/guard`, `/home/user/blog`, or `/home/user/gtr` beyond `bin/gtr-eval` (R2.4); none names gtr-run. Every
+  `..` is the own video or folder (c2-bare: 33 `../video.mp4`, 7 from its own `cal/`); other "outside" strings are `sed` patterns.
+- Every HOW.md (48-59 lines) and hand-back says the piece was not recognised; no songs.json name anywhere (`out/names.txt`).
+- answer.json, answer.gp5, HOW.md, NOTES.md were last written inside each attempt's span. After 13:47 each folder got a `score/`
+  folder (37 entries) and `c2/tools/w/` lost entries: the scorer and the orchestrator's clean-up (NOTE.md).
+
+**R2.4 Refusal and minor deviations** (not voiding; none touches an answer).
+- **c2-tools #103 (13:25:02)**: `python3 - > /tmp/claude-0/x 2>/dev/null; cat > scripts/levels.py ...` was refused by the auto-mode
+  classifier (`unauthorized_access`), the only refusal of round 2: a write, and nothing ran; #104 sent the same command without it.
+- **`ps aux`**: c1-tools #22 (showed c3-tools' kit command lines; it says so in HOW.md and its hand-back), c3-tools #18 (c1-tools'
+  kit command lines, MCP servers with key names but no values, the watch's command line `watch.py .../access-r2.log`), c2-tools #19
+  (its own kit jobs, the same watch line), c2-tools #117 (a count).
+- **gtr-eval usage text**: c1-tools #20, #37 and c2-tools #39 ran it with no arguments or `--help` (the text names the `ledger`
+  subcommand and `/home/user/gtr/inputs`); no comparison, no ledger command.
+- **c2-tools #127, #128**: system `python3` with numpy, where TOOLS.md says plain `python3` is for standard-library glue.
+- **Harness tools**: c1-bare #17-#18 ToolSearch, then TaskStop of its own timed-out command; c3-tools #172 ToolSearch for Monitor,
+  never called.
+
+**R2.5 The access log.**
+1. START 12:20:45 (pid 451, 2,888 paths), STOP 13:47:00. Coverage: 2,886 folders under the roots existed before the start and still
+   exist, + 2 files = 2,888; 10 were made after the stop (this audit, the scorer), none in the window. As in round 1 the watch
+   cannot see `/home/user/gtv/blind`, `/home/user/gtv/tools`, `/home/user/gtr` beyond the ledger, or hard-link reads: the
+   transcripts cover those.
+2. 25,317 lines = 25,315 events + START and STOP: 9,794 ACCESS on the run ledger; 5,173 OPEN DIR + 10,346 ACCESS DIR on the records
+   folder; one OPEN + one ACCESS of `video/PRODUCTION.md` (13:34:08); **none** on truth, songs, experiments, candidates, work,
+   production or INSTALLED.md.
+3. Ledger: 45 bursts = 45 gtr-run records r1161-r1205, one to one by end time, all lane `blind-kit`, cwd the attempt's folder,
+   inside its span: c3-tools 19, c1-tools 11, c2-tools 15 (`out/ledger-match.txt`). No bare attempt and no other process ran
+   gtr-run.
+4. Folder listings: seven walks of 2,217 lines. 12:21:12 and 13:34:55 = the orchestrator's Stop hook (`stop_hook_summary` at those
+   seconds); 13:34:08 with PRODUCTION.md = its compaction (`compact_file_reference` to that file); 13:34:13 = its
+   permission-classifier call that carried a git status. **13:25:04, 13:25:09, 13:25:18 are not a compaction, as NOTE.md says**
+   (the orchestrator's transcript holds only queue notices from 12:21:12 to 13:34:08): they fall on c2-tools' refused #103 (result
+   13:25:04) and its next calls #104 and #105, whose classifier contexts are the only 2 of 832 in round 2 with a computed git status
+   of `/home/user/blog` (clean, 0 changes), the same pairing as at 13:34:13: the harness's classifier ran git status in the
+   session's working directory after the refusal. That context is a field of the transcript record, not part of the tool result the
+   agent reads; the commands ran in the own folder (`out/dir-burst-calls.txt`).
+
+**R2.6 Problems not caused by the attempts.**
+1. **The videos are hard links again, of the same three recordings as round 1** (links made 12:19:46; `stat -c %h` prints 3 2 3):
+   `blind/c1/video.mp4` = `blind/b3/video.mp4` = `songs/capo/capo.mp4`, `blind/c3/video.mp4` = `blind/b1/video.mp4` =
+   `songs/standard/standard.mp4`, `blind/c2/video.mp4` = `blind/b2/video.mp4`. The round-1 folders held answers to the same pieces;
+   no round-2 attempt named them.
+2. **BLIND.md section 4 step 3 (tools Bash, Read, Write, Edit, Glob, Grep only) was applied in neither round**: each attempt was
+   offered the same 55 tools (Skill, Artifact, 38 MCP tools among them) and 540 deferred ones (WebFetch, WebSearch, SendMessage
+   among them); they used none of them but ToolSearch (twice) and TaskStop (once).
+3. NOTE.md: the 13:25 attribution is not supported (R2.5 item 4) and it counts START and STOP as events; the rest checks out. Not
+   checked here: the scorer's reads after 13:47 and the orchestrator's deletion of scratch files.

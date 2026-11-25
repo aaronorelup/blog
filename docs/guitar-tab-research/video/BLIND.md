@@ -205,3 +205,20 @@ All on `/home/user/gtr/inputs/` clips, scored with gtr-eval 0.12.1 against those
   from the arm's paragraph, 90 minutes each from the attempt's own START file.
 - **The blind videos were checked** by eye at their first 12 and last 24 seconds: playing only, no title, tab, chord
   name or end card.
+
+### As run, round 2 (added after its audit)
+
+- **Why a round 2.** The round-1 audit found the orchestrator's task list attached by the harness to every round-1
+  attempt's context (13 to 18 times); it named the performers and the answer keys "capo", "tuning" and "standard". All
+  tasks were deleted and the test was run again with new ids c1, c2, c3 in a new random order (12:20-13:46 UTC). The
+  round-2 audit found 103 task reminders, all empty. Round 1 stays on record as a second run, "task list visible".
+- **The tool limit of section 4 step 3 was not applied, in either round.** Every attempt was offered the session's
+  full tool list (55 tools and 540 deferred ones, WebFetch and WebSearch among them), not only Bash, Read, Write,
+  Edit, Glob and Grep. The rule held by the prompt alone: the audits found no web, MCP, skill or agent call; the
+  attempts used ToolSearch twice and TaskStop once, to stop their own background command.
+- **The videos are hard links** of the same recordings as round 1 (c1 = b3 = the capo song, c2 = b2, c3 = b1). No
+  attempt opened another blind folder.
+- **One refused call.** c2-tools tried a stray redirect into `/tmp/claude-0`; the permission system refused it and
+  nothing ran. A write, not a read: it does not void the attempt.
+- **Scratch files deleted by the orchestrator.** After each attempt finished, its large scratch audio and arrays were
+  deleted to keep the disk from filling up. Answers, notes, scripts and pictures were kept.

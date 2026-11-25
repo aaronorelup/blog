@@ -132,3 +132,16 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 - Disk: each finished attempt's large scratch audio and arrays deleted by the orchestrator (answers, notes, scripts and
   pictures kept); 3.0 GB free.
 - Scoring and the transcript audit of round 2 run now (`gtv-film.js` part score2, run wf_d1c32948-4e0).
+
+## 2026-11-25 14:10 UTC
+
+- Round 2 scored and audited (run wf_d1c32948-4e0). All six attempts valid; no attachment leaked. Main score (same
+  string and fret, share of truth notes, in the GP5), kit arm / bare arm: standard 0.865 / 0.705; tuning 0.548 / 0.347
+  (both arms named D G C F A D, the key's first string is C4); capo 0.930 / 0.816. Round 1 (task list visible): 0.828 /
+  0.694, 0.562 / 0.159, 0.907 / 0.805. Best chain per song: 0.918, 0.914, 0.940. The kit arm beat the bare arm on every
+  song in both rounds.
+- The auditor corrected the guard note: the 13:25 folder walks came from the permission classifier's context for
+  c2-tools' one refused call, not from the orchestrator's compaction (NOTE.md, BLIND.md section 7).
+- The protocol's tool limit (section 4 step 3) was never applied; the attempts used none of the extra tools beyond
+  ToolSearch and TaskStop. Written into BLIND.md section 7 and to be said in the film.
+- Next: stage 5, part script (`gtv-film.js`).
