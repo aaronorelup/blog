@@ -145,3 +145,14 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 - The protocol's tool limit (section 4 step 3) was never applied; the attempts used none of the extra tools beyond
   ToolSearch and TaskStop. Written into BLIND.md section 7 and to be said in the film.
 - Next: stage 5, part script (`gtv-film.js`).
+
+## 2026-11-25 16:55 UTC
+
+- Stage 5, part script (run wf_106dfdd6-045): the script is written (`/home/user/gtv/production/SCRIPT.md`, title "From
+  a guitar video to a finished tab", 18 chapters ch00-ch17, 156 lines, 4,883 words, 83 listening windows, estimate
+  about 44 minutes). The fact check and the viewer read raised 38 problems; script-fix fixed 37 and part of the 38th
+  (length). Voiced: all 156 lines, 35.1 minutes of narration, 19,477 ElevenLabs credits (14,046 -> 33,523 on the
+  counter). The kit-extender is building the seven missing scene components (KIT-NEEDS.md).
+- Disk: the experiments' `render.wav` files (201, 3.1 GB) were deleted; PRODUCTION.md already forbade them in the film
+  and now says they are gone (list in `/home/user/gtv/work/deleted-render-wavs.txt`). 5.3 GB free.
+- Next: part chapters in three lanes once the kit-extender is done.

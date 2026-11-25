@@ -163,7 +163,8 @@ read as well as 28 px sentence case.
   and a tool are compared by ear, play the same bars twice, truth first, through the same SoundFont and program
   (`/usr/share/sounds/sf2/FluidR3_GM.sf2`, 24 nylon or 25 steel), so the difference is in the notes, not the timbre.
   Never put an experiment's own `render.wav` in the film: to save disk some were cut to mono 22.05 kHz. Render every
-  window again from the tool's notes (its CSV, MIDI or GP5) at 48 kHz stereo, as in section 6.
+  window again from the tool's notes (its CSV, MIDI or GP5) at 48 kHz stereo, as in section 6. Since 2026-11-25 16:50
+  UTC the experiments' `render.wav` files are gone (deleted for disk; the list is `/home/user/gtv/work/deleted-render-wavs.txt`).
 - Master: -16 LUFS integrated, true peak at most -1.5 dBTP **after** the AAC encode, loudness range under 8 LU.
   `finish.py` does this and measures it.
 
@@ -207,7 +208,14 @@ piano roll, so those were built.
 | `components/clipoverlay.html` | footage in a well with per-frame overlay data and a live readout |
 | `components/tabplayer.html` | tab on paper, scrolling under the cursor, with its audio |
 | `components/pianoroll.html` | truth against a tool, revealed under a playhead, with audio |
-| `components/barchart.html` | verdict bars or value bars |
+| `components/barchart.html` | verdict bars, tab verdict bars, value bars, grouped bars (one per song or arm), before -> after arrows |
+| `components/tabstack.html` | two or three tab strips under one cursor with verdict marks and live counts (built as `tabplayer` with `strips`) |
+| `components/grid.html` | a table, statement rows, two lists, numbered cards, a passage on paper, the credit roll |
+| `components/timeline.html` | waveform, tick and chord-span lanes under one playhead, verdicts against the key lane, an optional footage well |
+| `components/chainmap.html` | the ten steps as stations (lit, given, left out), or the six chains as rows of sources |
+| `tools/stack_data.py` | for the stack: a strip entry (tiles near the window, beat map, string lines, clock map) and verdict marks |
+| `tools/timeline_data.py` | for the timeline: waveform peaks, beat and tap ticks, chord spans scored with mir_eval, click tracks |
+| `tools/probe.cjs` | loads one built component in Chromium outside HyperFrames, seeks it, prints an expression (debugging) |
 | `tools/hfkit.py` | `init` (fonts), `build` (a component with its data inlined), `root` (a chapter's index.html), `vtt` (captions) |
 | `tools/tabstrip/tabstrip.cjs` | a Guitar Pro / MusicXML / alphaTex file to a TAB strip PNG (tiles of 8,000 px for long songs), a beat map JSON and the tab's own MIDI |
 | `tools/tab_align_check.py` | checks a strip: drawn fret numbers against beat x (median must be within 1 px) |
@@ -370,8 +378,8 @@ where `automation` times are seconds from that media element's own start.
 - **lowerthird**: `kind` (`source` or `tool`), `eyebrow`, `name`, `meta`, `result {label, value, at}`, `t_in`.
 - **clipoverlay**: `well {x, y, w, h}`, `video {start}`, media slot `video`, `push`, `overlay {fps, frame_w, frame_h,
   crop_x, crop_y, crop_w, crop_h, frames, scores}` where `frames[i]` is 42 numbers (21 normalised x, y pairs) or
-  null, `tag`, `panel {eyebrow, name, meta}`, `source`. Today it draws the 21-point hand. For boxes or fretboard
-  lines add a kind to `draw()` the same way.
+  null, `tag`, `panel {eyebrow, name, meta}`, `source`. This data draws the 21-point hand as before; stills, more
+  wells and the other overlay kinds are in **clipoverlay, more** below.
 - **tabplayer**: `kind` (`truth` or `tool`), `strip {tiles [{src, x, w}], width, height, beats, bars, staff_y,
   staff_h}` straight from the tabstrip JSON, `sheet {x, y, w, h, cursor}`, `audio {start, song_at_start}`, media slot
   `audio`, `header {chip, title, facts}`, `note`, `credit`, `highlight_w`. Always put the tuning and capo in `facts`:

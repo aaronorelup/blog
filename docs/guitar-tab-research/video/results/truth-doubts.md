@@ -27,3 +27,12 @@ Every later record and the film's script follow these readings.
 - The keys label no sevenths (the Cmaj7 colour of the intro and the E7 of the chorus are named as plain triads).
   A tool that names Cmaj7 or E7 there counts as wrong under "sevenths" but right under "root" and "majmin". Read the
   sevenths column of these two songs with that in mind; the film quotes majmin or root.
+
+## Tuning song: the home key
+
+- `truth-tuning.md` names the key D minor "(a judgement)": a key-profile fit on duration-weighted pitch classes of the
+  repaired notes gives D minor r = 0.744, C major 0.732, F major 0.725 (F major is the relative major, the same pitch
+  set). `RESULTS.md` Limits: "the key (D minor or F major) is a judgement".
+- So D minor against F major is not settled by the key. The film does not grade a tool or a blind attempt on it (madmom
+  and the bare arm said F major, the kit arm D minor); it names both and leaves it to the ear. Added by the script-fix
+  agent, 2026-11-25, from the script fact check's records note (`script-factcheck.md`).

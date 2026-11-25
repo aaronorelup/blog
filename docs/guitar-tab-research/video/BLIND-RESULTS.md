@@ -148,7 +148,8 @@ visible*: its attempts had the orchestrator's task list, which named the three a
 0.201 (tuning) and 0.114 (capo); in round 1 by 0.134, 0.403 and 0.102. The gap comes from finding the notes (note F1
 0.908 / 0.688 / 0.904 against 0.694 / 0.500 / 0.777, with fewer invented notes). Once a note was found, both arms put it
 on the right string and fret about equally often (of matched: 0.941 / 0.798 / 0.966 against 0.928 / 0.690 / 0.977). Both
-arms named capo and tempo right on all three songs, and the key on all but one (bare, tuning song: F major for D minor).
+arms named capo and tempo right on all three songs, and the key on the capo and standard songs; on the tuning song the kit
+arm said D minor and the bare arm F major, which the key does not settle (D minor is a judgement, `results/truth-doubts.md`).
 Neither found the tuning song's 1st string. Chords (majmin): 0.914 / 0.954 / 0.706 (kit), 0.777 / 0.733 / 0.680 (bare),
 chains 0.863 / 0.657 / 0.716.
 
