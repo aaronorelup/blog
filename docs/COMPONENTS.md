@@ -180,7 +180,7 @@ folder leaves the fallback; a chunk that fails to load leaves it too, and the ne
 
 | Attribute | |
 |---|---|
-| `name="synthid"` | the demo: the folder under `demos/` (`synthid`, `cf`, `goobie-lab`, `candy-card`) |
+| `name="synthid"` | the demo: the folder under `demos/` (`synthid`, `cf`, `goobie-lab`, `candy-card`, `tablecloth`) |
 | `part="tournament"` | which part of it to mount; an unknown part leaves the fallback |
 | `data-slug="…"` | `cf`'s `count` only: the post whose reads it counts (default: the page's own slug) |
 
@@ -220,8 +220,17 @@ The demos:
   (`public/labs/candy-card/cndy-041/`, its media under `/media/candy-machine/cndy-041/`), loaded only once the card is
   within 600 px of the screen and sized to its content. The card keeps the command centre's dark palette in day and
   night, because it shows that page as it is. Never fetch the live card or its API from here.
+- **`tablecloth`** (`ask-claude-code-to-build-a-physics-sim-and-change-one-number`, AO-092): the tablecloth trick as
+  pictures that move. `sim.js` is the experiment's own simulation (the file that ran its 76-speed sweep, so the
+  demo's numbers are the post's), `draw.js` the canvas side view and the push-and-brake graph, `ui.js` the setups,
+  the slow-motion player and the controls. Parts: `rub` (a 1 m/s pull drags the plate off), `weight` (a light and a
+  heavy plate: a bigger push, the same motion), `time` (3 and 6 m/s with their push-times-time boxes), `lab` (pull
+  speed, cloth friction and plate weight sliders, the cutoff for the friction set) and `compare` (two pulls either
+  side of the cutoff for the plate, the glass and the post's own table). A part plays while on screen and stops off
+  it; with reduced motion it shows its last moment and a Play button. Colours are the page's tokens, read at each
+  frame, so day and night both work.
 
-Behaviours: demo-synthid-1 to demo-synthid-8, demo-cf-1, demo-cf-2, demo-lab-1 to demo-lab-7 (`candy-card` has no e2e spec yet). Used by 4 posts
+Behaviours: demo-synthid-1 to demo-synthid-8, demo-cf-1, demo-cf-2, demo-lab-1 to demo-lab-7 (`candy-card` and `tablecloth` have no e2e spec yet). Used by 5 posts
 (`INVENTORY.md`).
 
 ## <ao-diff>
