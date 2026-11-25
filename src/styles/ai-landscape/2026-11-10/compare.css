@@ -114,9 +114,11 @@
   /* the five answers stand at the foot of the sheet, or right under the sentence where the window is tall (a tablet) */
   .ail-gl .ail-lu { --lu-foot: max(var(--ail-margin), 65svh - 508px); }
   /* the sheet begins a third of the way down, or higher in a short window: under it the chips (150 px), the sentence
-     with its note line (at most 67), the five answers (220) and the foot. Below about 700 px a note printed over the
-     first answer (round 3, N-5) */
-  .ail-gl .ail-lu { --lu-sheet: max(88px, min(35svh, 100svh - var(--lu-foot) - 451px)); }
+     with its note line (at most 61), the five answers (220) and the foot. Below about 700 px a note printed over the
+     first answer (round 3, N-5). The strip above keeps room for the signs on a phone 664 px tall (a real iPhone with
+     Safari's bars): the note sits 6 px under the sentence and, in a short window, the answers 8 px off the bottom */
+  .ail-gl .ail-lu { --lu-sheet: max(88px, min(35svh, 100svh - var(--lu-foot) - 445px)); }
+  .ail-gl .ail-lu__note { margin-top: 6px; }
   .ail-gl .ail-lu__now { top: calc(var(--lu-sheet) + 158px); right: var(--ail-margin); width: auto; }
   .ail-gl .ail-lu__say .ail-lu__head { display: none; }
   .ail-gl .ail-lu__say .ail-sentence { margin: 0; font-size: 19px; }
@@ -133,6 +135,9 @@
   .ail-gl .ail-lu__more { position: fixed; left: var(--ail-margin); right: var(--ail-margin); top: auto; bottom: calc(var(--lu-foot) + 5 * 44px + 6px); width: auto; transform: none; }
   /* the five rows name their companies, so the legend steps aside (60 words a screen): each row's swatch and tag say its state */
   .ail-gl .ail-lu__foot { display: none; }
+}
+@media (max-width: 899px) and (max-height: 699px) {
+  .ail-gl .ail-lu { --lu-foot: 8px; }
 }
 
 
