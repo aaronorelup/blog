@@ -22,7 +22,7 @@ note matched by no estimated note.
 | n-03 | guitar-fl.pth | 155.8 s r0794 | 102.1 s r0833 | 110.4 s r0847 | whole song (mono) |
 | n-04 (B) | Transkun 2.0.1 | 159.7 s r0875 | 181.3 s r0891 | 185.2 s r0897 | whole song; also run on the segment WAV: 55.3 s r0855, 38.6 s r0859, 38.7 s r0860 |
 | n-05 | YourMT3+ CPU Space (bd69fbac) | 340.6 s | 252.4 s | 254.0 s | whole song as 30 s pieces without overlap (8/7/6 calls, all ok; notes cut at piece ends); time = sum of the calls (remote CPU) |
-| n-08 (B) | MiMo v2.6 Flash via Vercel AI Gateway | 32.2 s r0799, $0.00027 | 44.5 s r0820, $0.00066 | 130.8 s r0828, $0.00163 | 30 s segment (mono) |
+| n-08 (B) | MiMo v2.6 Flash via Vercel AI Gateway; re-run after the audit with the audio named `clip.wav` | 33.3 s r1098, $0.00042 | 63.7 s r1103, $0.00078 | 78.4 s r1106, $0.00148 | 30 s segment (mono) |
 | n-08-hint (B) | same, true tuning and capo appended to the prompt (`work/exp-notes/notes_prompt_hint_<S>.txt`) | 70.7 s r0844, $0.00088 | 41.1 s r0822, $0.00051 | 64.5 s r0846, $0.00083 | 30 s segment |
 
 Not run: n-06, n-07, n-09 (priority C). Transkun took 160-185 s per whole song here, not the 19 min the plan estimated.
@@ -126,7 +126,7 @@ Standard rescored against the repaired answer key on 2026-11-25; changes: recall
 | n-03 guitar-fl.pth | **0.941** 96/6/6 e2078 | **0.783** 81/25/20 e2083 | **0.988** 125/0/3 e2555 |
 | n-04 Transkun (piano model) | **0.848** 89/13/19 e2090 | **0.760** 79/27/23 e2091 | **0.976** 122/3/3 e2556 |
 | n-05 YourMT3+ CPU Space | **0.777** 94/8/46 e2079 | **0.678** 81/25/52 e2084 | **0.924** 121/4/16 e2557 |
-| n-08 MiMo v2.6 Flash | **0.000** 0/102/30 e2045 | **0.021** 2/104/80 e2047 | **0.042** 7/118/199 e2535 |
+| n-08 MiMo v2.6 Flash (re-run, neutral file name) | **0.000** 0/102/49 e3121 | **0.000** 0/106/95 e3119 | **0.026** 4/121/179 e3120 |
 | n-08-hint MiMo v2.6 Flash + tuning/capo in prompt | **0.010** 1/101/107 e2046 | **0.012** 1/105/56 e2048 | **0.000** 0/125/107 e2536 |
 Standard rescored against the repaired answer key on 2026-11-25; changes: segment truth re-cropped (bar 3's C3 at 6.886 s out, a note at 29.338 s in; still 125 notes): n-01 0.738->0.745, n-01-hint 0.741->0.747, n-02 0.984->0.992, n-03 0.980->0.988, n-04 0.968->0.976, n-05 0.916->0.924; n-08 and n-08-hint unchanged (new eval ids e2535, e2536).
 
@@ -209,12 +209,31 @@ nylon 24 for tuning; time 0 = WAV time 0) over the same seconds, then the record
 | n-01 | capo 184-204 s | 81 / 3 / 83 | whole song: 782 of 815 truth notes found, 674 invented; 240 invented start within 50 ms of a slap or thump; 71 invented lie below G2 (capo 3) | whether the invented notes sound like the slaps they sit on, or like wrong notes |
 | n-01-hint | capo 60-80 s | 81 / 2 / 52 | the range hint removes invented notes (here 62 -> 52; whole capo song 674 -> 610, below-G2 71 -> 8) and finds the same 782 notes; on tuning and standard F1 moves by 0.002 and 0.0004 | the same 20 s rendered with and without the hint (n-01/render.wav, n-01-hint/render.wav) |
 | n-02 | tuning 111-131 s | 52 / 21 / 24 | best tuning F1 (0.830); 2 truth notes inside this stretch (#397 113.192, #435 123.745 s) are named as doubtful in truth-tuning-check.md | whether the missed notes are audible in the recording's rolled chords |
-| n-03 | tuning 107-127 s | 46 / 28 / 17 | tuning F1 0.796 vs 0.920 / 0.882 on the steel-string songs; inside this stretch truth-tuning-check.md names #386 110.405, #397 113.192 and #435 123.745 s as doubtful | whether the render keeps the piece's line |
+| n-03 | tuning 107-127 s | 46 / 28 / 17 | tuning F1 0.796 vs 0.920 / 0.892 on the steel-string songs; inside this stretch truth-tuning-check.md names #386 110.405, #397 113.192 and #435 123.745 s as doubtful | whether the render keeps the piece's line |
 | n-04 | tuning 110-130 s | 48 / 25 / 23 | a piano model: tuning F1 0.785, onset+offset F1 0.146 (lowest of the six whole-song runs on tuning); truth-tuning-check.md names #386, #397 and #435 inside this stretch as doubtful | the render's note lengths against the ringing nylon strings |
 | n-05 | standard 120-140 s | 70 / 6 / 64 | standard: 279 invented, 199 of them within 50 ms of a slap or thump; extra instruments returned (piano, drums) | whether the invented notes at the slaps are audible as pitches |
-| n-08 | standard 0.0-20.0 s | 4 / 81 / 131 | 4 of 85 truth notes found, 131 invented; segment F1 0.042 | the render against the recording: whether any of the piece survives |
-| n-08-hint | standard 2.0-22.0 s | 0 / 86 / 83 | with the tuning and capo in the prompt: 0 of 86 found; segment F1 0.0 (no hint 0.042) | as n-08 |
+| n-08 | standard 10.0-30.0 s | 3 / 77 / 116 | 3 of 80 truth notes found, 116 invented; segment F1 0.026 | the render against the recording: whether any of the piece survives |
+| n-08-hint | standard 2.0-22.0 s | 0 / 86 / 83 | with the tuning and capo in the prompt: 0 of 86 found; segment F1 0.0 (no hint 0.026) | as n-08 |
 
-n-08 and n-08-hint ran on the segment only; their `render.wav` and `labels.json` are on the segment timeline, which
-for standard starts at WAV 0 s, so the times above apply as written. Hit/missed/invented counts and F1 are settled by
+n-08 and n-08-hint ran on the segment only. Since the audit their `notes.csv` and `render.wav` are on the WAV's timeline
+(`notes.seg30.csv` keeps the segment copy; the render is silent before t0 and ends at t0 + 30 s); `labels.json` stays
+on the segment timeline, which for standard starts at WAV 0 s, so the times above apply as written. Hit/missed/invented counts and F1 are settled by
 the truth (numbers); how close a render sounds to the piece is for the viewer's ear.
+
+## After the audit
+
+Fixes for `audit-a.md` (2026-11-25, agent audit-fix-a; work folder `/home/user/gtv/work/audit-fix-a/`, `PROGRESS.md`).
+- **P1**: n-08 (no hint) sent the audio as `<S>.seg30.mono.wav`, so the slot name was in the request's file name. Re-run on
+  the three songs with the same bytes named `clip.wav` (`bin/n08_rerun.sh`, `bin/n08_result.sh`). Old -> new (segment F1,
+  found/missed/invented): capo 0.000 0/102/30 -> 0.000 0/102/49 (e3121), tuning 0.021 2/104/80 -> 0.000 0/106/95 (e3119),
+  standard 0.042 7/118/199 -> 0.026 4/121/179 (e3120). First runs in `<S>/n-08/named-file/`. The gateway counted 337
+  prompt tokens for every n-08 request, with either name and on every song (`work/audit-fix-a/prompt_tokens_old_vs_new.json`).
+  n-08-hint was not re-run: its prompt states the tuning and capo.
+- **P3**: n-08 and n-08-hint `notes.csv` and `render.wav` were on the segment's timeline. On capo and tuning `notes.csv` is
+  now `notes.seg30.csv` + t0 and `render.wav` is rendered from it (0 to t0 + 30 s, silent before t0); standard has t0 = 0.
+  `labels.json` and `breakdown.json` stay on the segment timeline. n-08-hint scores unchanged.
+- **P5**: n-03 film row: 0.882 -> 0.892 (`standard/n-03/result.json` onset_f1 0.89172).
+- `film_stretch.py` re-run (`work/exp-notes/film_stretch.json`): n-05 missed 7 -> 6 and n-08-hint missed 87 -> 86 (the
+  table already had 6 and 86); n-08's new stretch is standard 10.0-30.0 s, 3 / 77 / 116.
+- `n-05/score.sh` now holds the command that wrote `score_notes_guitar_programs.json` (not re-run; the audit re-computed it
+  equal). The 0.663 / 0.664 Basic Pitch readings on standard: see `step-01-separation.md`, After the audit.

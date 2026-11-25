@@ -36,7 +36,8 @@ on 2 cores, over the 10-minute rule.
 | metric | capo | tuning | standard |
 |---|---|---|---|
 | truth notes | 102 | 106 | 125 |
-| notes found, mix / stem | 181 / 178 | 136 / 135 | 199 / 198 |
+| notes written, mix / stem | 181 / 178 | 136 / 135 | 199 / 198 |
+| notes found (matched), mix / stem | 92 / 92 | 79 / 79 | 120 / 120 |
 | precision, mix / stem | 0.508287 / 0.516854 | 0.580882 / 0.585185 | 0.60301 / 0.60606 |
 | recall, mix / stem | 0.901961 / 0.901961 | 0.745283 / 0.745283 | 0.96 / 0.96 |
 | F1, mix / stem | 0.650177 / 0.657143 | 0.652893 / 0.655602 | 0.740741 / 0.743034 |
@@ -60,8 +61,9 @@ gain x guitar stem + residual (least-squares gain over the 30 s):
 
 Files per song (`experiments/<S>/sep-04/`): `raw/` six stems, `guitar.wav`, `residual.wav` (mix minus stem, no gain),
 `ab_mix_then_stem_5s.wav` (5 s of the mix, then the same 5 s of the stem, through the segment), `notes.csv` (stem
-notes on the recording timeline), `render.wav` and `render.mix.wav` (time 0 = t0; recording left, render right),
-`bp-mix/render.wav`, `cmd.sh`, `score.sh`, `result.json`.
+notes on the recording timeline), `render.wav` and `bp-mix/render.wav` (stem and mix notes on the recording's
+timeline, silent before t0; since the audit), `render.seg30.wav`, `render.mix.seg30.wav` (time 0 = t0; segment recording
+left, render right) and `bp-mix/render.seg30.wav`, `cmd.sh`, `score.sh`, `result.json`.
 
 ## t-06 SAM 3: not run
 
@@ -119,3 +121,14 @@ handoff per pose, and w-05's own grid scores 0.0165 exact cells on standard
 
 All paths are under `/home/user/gtv/experiments/<S>/`. Video clips for the film come from `/home/user/gtv/songs/<S>/<S>.mp4`
 at the same times (overlay times are video times; video time = audio time for all three, `video.json` av_offset_s 0).
+
+## After the audit
+
+Fixes for `audit-a.md` (2026-11-25, agent audit-fix-a; work folder `/home/user/gtv/work/audit-fix-a/`).
+- **P10**: the row "notes found, mix / stem" held notes written (`n_est`); renamed "notes written", and the matched counts
+  added as "notes found (matched)": 92 / 92, 79 / 79, 120 / 120 (`n_matched` in `bp-mix/eval.json`, `bp-guitar/eval.json`).
+- **P4**: on capo and tuning `render.wav` and `render.mix.wav` started at t0 (both result.json files already said "time 0 =
+  t0"). Now `render.wav` and `bp-mix/render.wav` are on the recording's timeline (`notes.csv`; the mix CSV with
+  `--time-shift` t0), 44.558 s on capo and 56.798 s on tuning, silent before t0; the segment renders are kept as
+  `render.seg30.wav`, `render.mix.seg30.wav` and `bp-mix/render.seg30.wav` (`bin/sep04_renders.sh`; lines added to
+  `score.sh`). No score changes.

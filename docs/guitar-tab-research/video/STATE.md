@@ -75,3 +75,13 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 - Disk fell to 2.4 GB at 07:36; the string-and-fret agent cut its render.wav files to mono 22.05 kHz and I cleared
   the npm and node caches (3.1 GB free now). PRODUCTION.md now says to render every listening window again from the
   notes. After the blind test the experiment venvs can go to make room for the film render.
+
+## 2026-11-25 09:40 UTC
+
+- Chains done (step-09 record). Best finished tab per song, share of all truth notes with the same string and fret:
+  capo 0.940, tuning 0.914, standard 0.918. The blind tuning-and-capo step loses the most; a per-beat tempo GP5 writer
+  was needed to keep notes on time.
+- Both audits failed and their fix agents run. One finding matters for stage 4: hosted runs sent audio named after
+  the slot (capo / tuning / standard), and one frame sheet showed a video end card with a site name. Before the blind
+  test: check that each blind video holds only the playing (no end card, no title) and that no file the sessions can
+  see carries a slot name.

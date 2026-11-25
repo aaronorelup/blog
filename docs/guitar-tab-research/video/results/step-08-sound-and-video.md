@@ -149,8 +149,18 @@ under a fingertip / by the hand span / notes with no cell at that frame; honoure
 |---|---|---|---|---|
 | y-01 clock | capo 12.76-32.76 (any stretch) | one line: "sound and picture start together: lag 0 ms" (`capo/y-01/av_sync.json`) | the recording | number: 0 ms on all three songs; picture-to-sound lag not measured (corr <= 0.11) |
 | y-02 notes on the neck | capo 171.0-191.0 | `songs/capo/capo.mp4` with `capo/y-02/overlay.json` (each note at its onset: fingertip pixels `tip_px`, cells, `pitch_hint` = fits a fingertip or open string under the true tuning and capo) | the recording | number: 94 notes, 91 with a cell; 49 fit a fingertip cell or an open string, 42 fit neither; of 64 matched fretted truth notes a cell is exact for 12 and on the right string within one fret for 39 (`capo/y-02/capo.join.json`) |
-| y-03 where the video helps | capo 142.0-162.0, no hint | `capo/y-03/tab.gp5` (with pins) next to `capo/f-03/tab.gp5` (without) and `truth/capo/capo.gp5`; changed notes in `capo/y-03/diff.json` | `capo/y-03/render.wav` (the same notes either way: the eye judges) | number: in the stretch 33 positions went wrong -> right, 32 right -> wrong; whole song 0.393 -> 0.610 (frets from the nut) |
-| y-03 where the video hurts | capo 29.0-49.0, with the hint | `capo/y-03-hint/tab.gp5` next to `capo/f-03-hint/tab.gp5` and the truth | `capo/y-03-hint/render.wav` | number: 22 wrong -> right, 21 right -> wrong in the stretch; whole song 0.795 -> 0.636 |
+| y-03 where the video helps | capo 172.0-192.0, no hint | `capo/y-03/tab.gp5` (with pins) next to `capo/f-03/tab.gp5` (without) and `truth/capo/capo.gp5`; changed notes in `capo/y-03/diff.json` | `capo/y-03/render.wav` (the same notes either way: the eye judges) | number: in the stretch 60 positions went wrong -> right, 21 right -> wrong (the largest net gain of any 20 s); whole song 0.393 -> 0.610 (frets from the nut) |
+| y-03 where the video hurts | capo 142.0-162.0, with the hint | `capo/y-03-hint/tab.gp5` next to `capo/f-03-hint/tab.gp5` and the truth | `capo/y-03-hint/render.wav` | number: 5 wrong -> right, 32 right -> wrong in the stretch (the largest net loss of any 20 s); whole song 0.795 -> 0.636 |
 | y-03 tips rule, tuning | tuning 40.0-60.0, with the hint | `tuning/y-03-tips-hint/tab.gp5` next to `tuning/f-03-hint/tab.gp5` and the truth | `tuning/y-03-tips-hint/render.wav` | number: 3 wrong -> right, 7 right -> wrong in the stretch; whole song 0.967 -> 0.914 |
 
 All paths under `/home/user/gtv/experiments/` unless they start with `songs/` or `truth/` (`/home/user/gtv/`).
+
+## After the audit (audit B)
+
+- `audit-b.md` problem 8: the two y-03 film stretches did not show what their labels say (capo 142-162 s without the
+  hint: 33 wrong -> right against 32 right -> wrong; capo 29-49 s with the hint: 22 against 21, a net gain). Counted
+  again from `capo/y-03/diff.json` and `capo/y-03-hint/diff.json` over every 20 s window in 1 s steps
+  (`/home/user/gtv/work/audit-fix-b/p8/capo_<run>_windows.json`, `bin/y03_windows.py`): the largest net gain without
+  the hint is 172-192 s (60 against 21), the largest net loss with the hint 142-162 s (5 against 32). The film table
+  now uses those windows (agent audit-fix-b, 2026-11-25). No score changed.
+

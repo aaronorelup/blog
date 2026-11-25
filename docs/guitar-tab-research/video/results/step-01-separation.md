@@ -176,8 +176,24 @@ on a guitar sound; `render.piano.wav` for the piano stem) and the stem in `stems
   -26.18 dB.
 - **sep-02 htdemucs 4 stems**: capo 130-150 s: 79/120 vs mix 78/140. Play `capo/sep-02/stems/other.flac`. Settled:
   whole-song F1 0.698 / 0.627 / 0.658 vs 0.689 / 0.626 / 0.664.
-- **sep-07 HPSS**: capo 65-85 s: 79 matched / 105 written against the mix's 80/157. The one technique here that
-  changes a solo song's score: capo F1 0.783 vs 0.689 (precision 0.666 vs 0.537, recall 0.950 vs 0.960); standard
-  0.685 vs 0.664; tuning 0.625 vs 0.626. Show the spectrogram split; play `capo/sep-07/stems/percussive.flac` (the
+- **sep-07 HPSS**: capo 65-85 s: 79 matched / 105 written against the mix's 80/157. The technique here that moves a
+  solo song's whole-song F1 the most: capo F1 0.783 vs 0.689 (+0.094; precision 0.666 vs 0.537, recall 0.950 vs
+  0.960); standard 0.685 vs 0.664 (+0.021); tuning 0.625 vs 0.626. Every other separator moves it by 0.0112 or less
+  (sep-01 capo +0.0112, sep-02 capo +0.0091); no run-to-run spread was measured. Show the spectrogram split; play `capo/sep-07/stems/percussive.flac` (the
   slaps) then `harmonic.flac`, then `capo/sep-07/render.wav` against `capo/sep-00/render.wav`. Settled by the truth.
   Taps from the percussive part: F 0.442 vs 0.472 from the mix (section 5).
+
+## After the audit
+
+Fixes for `audit-a.md` (2026-11-25, agent audit-fix-a; work folder `/home/user/gtv/work/audit-fix-a/`, `PROGRESS.md`).
+- **P9**: the sep-07 film note said it was "the one technique here that changes a solo song's score". Reworded above
+  from the result.json files (`<S>/sep-0*/result.json`, stem `*_onset_f1` minus sep-00 `mix_onset_f1`): sep-07 moves
+  whole-song F1 the most (capo +0.0939, standard +0.0205, tuning -0.0008); every other separator 0.0112 or less (sep-01
+  capo +0.0112, sep-02 capo +0.0091). No run-to-run spread was measured.
+- `capo/sep-07/score.sh` had `<audio>` in its two `perc_onsets.py` lines. The real inputs are `capo/sep-07/stems/percussive.flac`
+  and `songs/capo/capo.wav`: run again on them, the script rebuilds `taps_percussive.txt` (910 lines) and `taps_mix_onsets.txt`
+  (832) byte for byte (`work/audit-fix-a/sep07/`). No number changes.
+- One Basic Pitch run, two readings on standard: F1 0.664376 here (sep-00, scored from its CSV, 580 matched) and 0.66323
+  in step 2 (n-01, scored from its MIDI, 579 matched; MIDI tick rounding moves one onset out of the 50 ms window). Every
+  difference in this record is taken against 0.664, every one in step 2 against 0.663.
+- sep-04 renders: see `step-gpu.md`, After the audit.

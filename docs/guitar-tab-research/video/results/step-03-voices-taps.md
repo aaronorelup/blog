@@ -103,7 +103,7 @@ standard.wav t=0 = video.mkv audio 20.992 s, `../truth-standard.md`). Per 20 s w
   over the whole song labelled melody. Truth-settled. Show `capo/v-02/voices.csv` (or the voice numbers in
   `capo/v-01/raw/P1_partitura_poly.csv`) as a roll. Play: `capo/v-02/render.bass.wav` (it holds nearly every note;
   `render.melody.wav` is almost silent).
-- **v-03 HPSS taps: capo 60-80 s.** 32 truth taps, 89 onsets, all 32 hit (57 extra onsets; over the song 526 of the 910 onsets fall on a truth note-only event, `capo/v-03/chainB.json`).
+- **v-03 HPSS taps: capo 60-80 s.** 32 truth taps, 89 onsets, all 32 hit (57 extra onsets; over the song 535 of the 910 onsets fall on a truth note-only event, 526 of them with a transcribed note within 50 ms, `capo/v-03/chainB.json`).
   Truth-settled. Play `capo/v-03/clicks_60-80.wav` (recording with a click per onset) against
   `capo/v-03/clicks_truth_60-80.wav` (a click per truth tap); show `capo/v-03/taps.txt` as ticks on the waveform.
   Hear the stem: `capo/v-03/percussive.wav` (cut 60-80 s).
@@ -114,3 +114,14 @@ standard.wav t=0 = video.mkv audio 20.992 s, `../truth-standard.md`). Per 20 s w
 - **Taps on the song with no taps marked: tuning 40-60 s.** Not scored. v-03 gives 87 onsets and v-04 121 onsets in
   these 20 s. For the viewer's ear: `tuning/v-03/clicks_40-60.wav`, `tuning/v-04/clicks_40-60.wav`,
   `tuning/v-04/drums.wav`.
+
+## After the audit
+
+Fixes for `audit-a.md` (2026-11-25, agent audit-fix-a; work folder `/home/user/gtv/work/audit-fix-a/`).
+- **P6**: the v-03 film line said 526 of the 910 onsets fall on a truth note-only event. `capo/v-03/chainB.json` by_class
+  gives 526 with a transcribed note within 50 ms plus 9 without, so 535 (truth events over all 910 onsets: note-only 535,
+  tap+note 199, tap-only 59, none 117). Corrected above.
+- v-01, v-01-hint and v-02 now have a `cmd.sh` (it runs `cmd.raw.sh`, and for v-01 also `cmd.truthnotes.sh`; v-02 is the
+  `P1_partitura_poly` output of v-01's run). The tap-kind recall commands are now in `v-03/score.sh` and `v-04/score.sh` on
+  capo and standard (not re-run; standard v-03 body-slap exits 1: the truth has no body-slap). tuning v-03 and v-04 have
+  no `score.sh` (no taps in the tuning truth, not scored). No number changes.

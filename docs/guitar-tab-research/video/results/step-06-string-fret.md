@@ -205,3 +205,17 @@ ear cannot judge this step: the viewer judges by eye only how a tab reads.
 | f-04 tabsynth | capo 70-85 | f-04-hint: 30 right, 32 other string; f-04 (nut): 31 right, 31 other string | capo/f-04-hint/..., capo/f-04/... | number (0.521 hint vs 0.405 nut no-hint) |
 | f-06 TabCNN | standard 152-167 | 33 right, 6 other string, 105 written notes with no truth note (68 truth notes) | standard/f-06/{tab.gp5,render.wav,frames.csv,labels_tab.json} | number for positions (0.915 of matched); the 105 extra notes are audible in render.wav |
 | f-07 Guitab | capo 92-107 of the recording (Guitab GP5 time 91.7-106.7: its times + 0.29 s matched with 0.15 s tolerance) | f-07-hint: 26 right, 26 other string, 31 unmatched; f-07: 22 right, 30 other string, 31 unmatched | capo/f-07-hint/{tab.gp5,render.wav,labels_tab.json}, capo/f-07/... | number (order-matched 0.832 vs 0.759 from nut); its own rhythm in the GP5 is for the eye |
+
+## After the audit (audit B)
+
+Fixes by agent audit-fix-b, 2026-11-25, for `audit-b.md` problems 1 and 7. No number in this record changed.
+- f-06 (problem 1): the `gtr-eval tab-frames` line of the three `<S>/f-06/score.sh` lacked `--est-tuning
+  40,45,50,55,59,64 --est-capo 0`, which the saved `score_frames.json` used (`score_frames.sh`). Without them the line
+  gives frame pitch F1 0.045 / 0.039 on capo / tuning instead of 0.608 / 0.494 (`/home/user/gtv/work/audit-b/rescore/`).
+  The flags are now in `score.sh`; the line re-run without the ledger reproduces all three `score_frames.json`
+  exactly (`/home/user/gtv/work/audit-fix-b/p1/`).
+- f-07 (problem 7): `notes.csv`, `render.wav` and `tab.gp5` are on Guitab's own GP5 time, as this record says. The
+  `result.json` notes of capo f-07, capo f-07-hint, tuning f-07 and standard f-07 now say so as well (their first 20
+  notes lie a median 0.29 / 0.29 / 1.28 / 0.99 s from a same-pitch truth note:
+  `/home/user/gtv/work/audit-fix-b/p7/f07_gaps.json`). tuning and standard f-07-hint were skipped and have no files.
+

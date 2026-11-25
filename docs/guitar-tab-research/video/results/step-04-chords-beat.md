@@ -6,7 +6,7 @@ them; `score.sh` holds the commands, `eval_*.json` the full output, eval ids in 
 `/home/user/gtv/truth/<S>/<S>.truth.json`, scored over the whole `scored_range` (the full file on all three songs).
 MiMo runs on the 30 s segment are scored against the segment truth (`crop_truth.py`: capo t0 12.76 s, standard t0 0.0 s;
 tuning: the truth folder's `tuning.seg30.truth.json`, t0 25.0 s), copies in `/home/user/gtv/work/exp-chords/tr30/`.
-Audio: `songs/<S>/<S>.wav`; for tuning `truth/tuning/tuning.wav` (the songs folder has no `tuning.wav`).
+Audio: `songs/<S>/<S>.wav`; for tuning `truth/tuning/tuning.wav` (the same file as `songs/tuning/tuning.wav`, a hard link).
 
 ## Runs: scope, wall time on 2 cores (gtr-run id)
 
@@ -18,8 +18,8 @@ Audio: `songs/<S>/<S>.wav`; for tuning `truth/tuning/tuning.wav` (the songs fold
 | c-03 | Chordino + NNLS Tuning (chord-extractor 0.1.3) | whole song | 10.66 s (r0849) | 8.16 s (r0869) | 7.86 s (r0863) |
 | c-04 | lv-chordia 1.1.0 (submission and ismir2017 dictionaries) | whole song | 64.88 s (r0854) | 31.11 s (r0870) | 29.03 s (r0864) |
 | c-05 | All-In-One 1.1.0 | not run | skipped | skipped | skipped |
-| c-06 | MiMo v2.6 Flash (Vercel AI Gateway), chords + tempo + key | 30 s segment, mono | 8.3 s (r0783) | 14.97 s (r0786) | 12.68 s (r0785) |
-| c-06 repeat | the identical request sent again (`c-06/repeat2/`) | 30 s segment | r0885 | r0892 | r0889 |
+| c-06 | MiMo v2.6 Flash (Vercel AI Gateway), chords + tempo + key; re-run after the audit with the audio named `clip.wav` | 30 s segment, mono | 11.89 s (r1099) | 10.93 s (r1101) | 9.5 s (r1104) |
+| c-06 repeat | the identical request sent again (`c-06/repeat2/`), also as `clip.wav` | 30 s segment | r1100 | r1102 | r1105 |
 | c-06-hint | c-06 prompt plus one sentence: true tuning and capo, 4/4, "give sounding names" (no tempo, no key) | 30 s segment | 35.94 s (r0888) | 51.15 s (r0893) | 8.57 s (r0890) |
 
 Hints: Beat This, Chordino, lv-chordia and madmom's chord and key recognisers take no tuning, capo, tempo or range
@@ -84,9 +84,9 @@ For comparison: truth clicks `/home/user/gtv/work/exp-chords/clicks/<S>.truth.cl
 | c-01 Beat This | 77.000 / 0.006 / True | 72.000 / 0.095 / False | 76.000 / -0.002 / True |
 | c-02 madmom | 77.000 / 0.006 / True | 65.000 / -0.011 / True | 76.000 / -0.002 / True |
 | c-02-hint madmom + tempo/meter hint | 77.000 / 0.006 / True | 66.000 / 0.004 / True | 76.000 / -0.002 / True |
-| c-06 MiMo (seg30) | 96.000 / 0.254 / False | 76.000 / 0.156 / False | 55.000 / -0.278 / False |
+| c-06 MiMo (seg30) | 80.000 / 0.045 / False | 65.000 / -0.011 / True | 90.000 / 0.182 / False |
 | c-06-hint MiMo + hint (seg30) | 60.000 / -0.216 / False | 76.000 / 0.156 / False | 72.000 / -0.054 / False |
-| c-06 MiMo, identical request repeated (seg30) | 79.000 / 0.032 / True | 75.000 / 0.141 / False | 80.000 / 0.051 / False |
+| c-06 MiMo, identical request repeated (seg30) | 96.000 / 0.254 / False | 75.000 / 0.141 / False | 80.000 / 0.051 / False |
 
 **madmom TempoEstimationProcessor (comb): BPM / rel. dev. / within 4 %**
 
@@ -101,7 +101,7 @@ For comparison: truth clicks `/home/user/gtv/work/exp-chords/clicks/<S>.truth.cl
 | c-02 madmom CNN | 0.710 / 0.710 / 0.710 | 0.722 / 0.680 / 0.680 | 0.877 / 0.851 / 0.851 |
 | c-03 Chordino | 0.630 / 0.585 / 0.177 | 0.688 / 0.669 / 0.176 | 0.839 / 0.779 / 0.443 |
 | c-04 lv-chordia | 0.676 / 0.676 / 0.568 | 0.580 / 0.554 / 0.392 | 0.892 / 0.864 / 0.753 |
-| c-06 MiMo (seg30) | 0.422 / 0.422 / 0.422 | 0.317 / 0.122 / 0.000 | 0.709 / 0.709 / 0.308 |
+| c-06 MiMo (seg30) | 0.480 / 0.480 / 0.480 | 0.412 / 0.105 / 0.105 | 0.564 / 0.564 / 0.564 |
 | c-06-hint MiMo + hint (seg30) | 0.207 / 0.207 / 0.207 | 0.506 / 0.485 / 0.485 | 0.497 / 0.497 / 0.000 |
 
 **Chords, second output of the same tool: root / majmin / sevenths**
@@ -123,7 +123,7 @@ For comparison: truth clicks `/home/user/gtv/work/exp-chords/clicks/<S>.truth.cl
 
 | technique | capo | tuning | standard |
 |---|---|---|---|
-| c-06 MiMo, identical request repeated | 0.403 / 0.403 / 0.403 | 0.316 / 0.261 / 0.261 | 0.723 / 0.723 / 0.723 |
+| c-06 MiMo, identical request repeated | 0.805 / 0.805 / 0.805 | 0.430 / 0.384 / 0.000 | 0.570 / 0.570 / 0.570 |
 
 **Key: estimate / weighted score (truth capo Bb major, tuning D minor, standard C major)**
 
@@ -131,7 +131,7 @@ For comparison: truth clicks `/home/user/gtv/work/exp-chords/clicks/<S>.truth.cl
 |---|---|---|---|
 | c-02 madmom CNN key | Bb major / 1.000 | F major / 0.300 | C major / 1.000 |
 | c-06 MiMo (seg30) | Bb major / 1.000 | A minor / 0.500 | C major / 1.000 |
-| c-06 MiMo, identical request repeated | Bb major / 1.000 | G minor / 0.000 | C major / 1.000 |
+| c-06 MiMo, identical request repeated | Bb major / 1.000 | F major / 0.300 | C major / 1.000 |
 | c-06-hint MiMo + hint | Bb major / 1.000 | D minor / 1.000 | F major / 0.000 |
 
 **Tuning offset: NNLS Tuning estimate (cents) / difference to truth (truth capo +2, tuning -9, standard +6)**
@@ -152,8 +152,8 @@ Notes on reading these:
 - sevenths: the capo and standard truths label no sevenths (chords derived from the notes, maj/min templates), so a
   tool that names Cmaj7 or Ebmaj7 loses those seconds under `sevenths` only. The tuning truth has `C:maj(11)` and `F:5`,
   which `majmin` and `sevenths` leave out of the weighting.
-- MiMo: the identical request gave capo majmin 0.422 then 0.403, tuning 0.122 then 0.261, standard 0.709 then 0.723, and
-  a different key on tuning (A minor, then G minor). With the hint the tuning key became D minor (= truth) and the
+- MiMo: the identical request gave capo majmin 0.480 then 0.805, tuning 0.105 then 0.384, standard 0.564 then 0.570, and
+  a different key on tuning (A minor, then F major). With the hint the tuning key became D minor (= truth) and the
   standard key F major (truth C major).
 
 ## What failed or did not run
@@ -176,6 +176,24 @@ One stretch per technique (times on the recording's timeline, seconds). Counts i
 | c-02-hint madmom + tempo and 4/4 | capo 12.76-32.76 | same stretch, 7 bar lines on the 7 truth bar starts | `experiments/capo/c-02-hint/click.wav`, `c-02-hint/downbeats.txt` | the number (downbeat F 0.993) |
 | c-03 Chordino | capo 39-59 | majmin 0.499 in the stretch (window range 0.19-0.97; whole song 0.585); its labels (this song: Ebmaj7, Bbaug, D7/F#, Bb6) against the truth's maj/min | `experiments/capo/c-03/chords.lab`, played `c-03/render.wav` against `work/exp-chords/render/capo.truth.chords.wav` | the number; the truth chords on capo are derived from the notes, so the labels themselves are for the ear |
 | c-04 lv-chordia | tuning 79-99 | majmin 0.493 in the stretch (window range 0.17-0.99; whole song 0.554) | `experiments/tuning/c-04/chords.lab`, played `c-04/render.wav` against `work/exp-chords/render/tuning.truth.chords.wav` | the number |
-| c-06 MiMo | tuning 29-49 (inside its segment) | majmin 0.17 in the stretch without the hint, 0.488 with it (c-06-hint); key A minor / G minor on two identical requests, D minor with the hint | `experiments/tuning/c-06/chords.lab`, `c-06/repeat2/chords.lab`, `c-06-hint/chords.lab`; played `c-06/render.wav`, `c-06-hint/render.wav` | the number |
+| c-06 MiMo | tuning 29-49 (inside its segment) | majmin 0.146 in the stretch without the hint, 0.488 with it (c-06-hint); key A minor / F major on two identical requests, D minor with the hint | `experiments/tuning/c-06/chords.lab`, `c-06/repeat2/chords.lab`, `c-06-hint/chords.lab`; played `c-06/render.wav`, `c-06-hint/render.wav` | the number |
 | c-06-hint | as c-06 | as c-06 | as c-06 | the number |
 | c-03 tuning readout | tuning, whole song | NNLS Tuning -9.1 cents against the truth's -9 (capo 0.4 vs 2, standard 3.9 vs 6) | number only | the number |
+
+## After the audit
+
+Fixes for `audit-a.md` (2026-11-25, agent audit-fix-a; work folder `/home/user/gtv/work/audit-fix-a/`, `PROGRESS.md`).
+- **P1**: c-06 and its repeat (no hint) sent the audio as `<S>.seg30.mono.wav`, so the slot name was in the request's file
+  name. Both re-run on the three songs with the same bytes named `clip.wav` (`bin/c06_rerun.sh`, `bin/c06_post.sh`; plain
+  r1099 / r1101 / r1104, repeat r1100 / r1102 / r1105; eval ids e3100-e3117 in each `c-06/result.json`). Old -> new,
+  capo / tuning / standard: majmin 0.422 / 0.122 / 0.709 -> 0.480 / 0.105 / 0.564, repeat 0.403 / 0.261 / 0.723 -> 0.805 /
+  0.384 / 0.570; tempo 96 / 76 / 55 -> 80 / 65 / 90 (tuning now within 4 %), repeat 79 / 75 / 80 -> 96 / 75 / 80 (capo no
+  longer within 4 %); key of the first request unchanged; repeat key on tuning G minor (0.0) -> F major (0.3). Film row:
+  majmin in tuning 29-49 s 0.17 -> 0.146 (`work/exp-chords/bin/windows.py` re-run; only the c-06 entries changed). The
+  gateway counted 368 prompt tokens for every c-06 request, with either name and on every song
+  (`work/audit-fix-a/prompt_tokens_old_vs_new.json`). First runs in `<S>/c-06/named-file/` (repeat in `named-file/repeat2/`).
+  c-06-hint was not re-run: its prompt states the tuning and capo.
+- **P8**: the header said the songs folder has no `tuning.wav`. `songs/tuning/tuning.wav` and `truth/tuning/tuning.wav` are
+  one file (inode 1467372, same bytes, dated 02:47 UTC). Corrected above; no number changes.
+- The audit listed c-06 `repeat2` as in no `score.sh`: `repeat2/score.sh` existed (06:07, its three gtr-eval lines; now in
+  `named-file/repeat2/`). `c-06/score.sh` now also calls `repeat2/score.sh` and holds the render lines.

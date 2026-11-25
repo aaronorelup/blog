@@ -14,7 +14,7 @@ score file under `/home/user/gtv/experiments/<S>/<exp>/`; work scripts and the r
 | w-04 fret grid: hand-set quad, OpenCV LSD/Hough, 12-TET fit | A | capo, standard; **failed on tuning** | 3 frames per shot + every 1 s |
 | w-05 fingertip -> (string, fret) cell, scored | A | capo, standard; **not possible on tuning** | whole piece |
 | w-06 SAM 2.1 tiny neck mask -> quad | B | capo, tuning, standard | one frame each |
-| w-07 CoTracker3 (RunPod) | B | not run: no pod in this job | - |
+| w-07 CoTracker3 (planned for RunPod) | B | capo, tuning, standard, on the box CPU in the GPU lane: `step-gpu.md` | whole video, sampled at 2 / 2 / 5 fps |
 | w-08 WiLoR, w-09 Roboflow | C | not run (C) | - |
 
 No hint input: none of the w-* tools takes a tuning, capo, tempo or range, so there are no `-hint` runs.
@@ -132,7 +132,8 @@ edges in frame pixels), `cells` (per frame, tip -> [string, fret from nut]) and 
 - **w-04 standard pose A (0-50 s)**: no fit on frames 250, 450, 650 with either detector; its 148 fretted notes
   count as misses in w-05.
 - **w-06**: ran, but through Hugging Face, not Ultralytics (github.com 403); no grid on its quads (below).
-- **w-07 CoTracker3**: RunPod only; no pod in this job (EXPERIMENTS.md "RunPod plan": planned only). Not run.
+- **w-07 CoTracker3**: not run in this step (planned for RunPod). The GPU lane ran it on the box CPU on all three
+  songs (r0917 / r0921 / r0914; tracked-quad error, median over shots, 28.0 / 142.8 / 17.5 px): `step-gpu.md`.
 - **w-08, w-09**: priority C, not run.
 - **No subagent tool in this session**: no step-7 technique needed a model to look at frames (capo reading by
   Opus is t-07, step 5), so nothing was lost, but none could have been delegated.
@@ -151,7 +152,7 @@ centre line of the hand-set quad at 30/50/70 % of its length.
 | | capo f165 | tuning f990 | standard f450 (pose A) |
 |---|---|---|---|
 | mask area (px) | 209,760 | 153,897 | 230,429 |
-| worst corner vs the hand-set quad | 314.4 px | 428.1 px | 70.8 px |
+| worst corner vs the hand-set quad | 314.4 px | 428.1 px | 70.7 px |
 | worst corner vs the truth neck track | - | - | 70.8 px (the track equals the hand quad at 9.0 s) |
 | 12-TET fit with the SAM quad (LSD / Hough) | none / none | none / none | none / none |
 
@@ -176,3 +177,16 @@ min-area rectangle does not follow the neck's perspective, and fret detection on
 
 Nothing in this step is a tab or a note list, so there is no `render.wav`: the cells become notes only when joined
 with audio onsets (y-02, step 8).
+
+## After the audit (audit B)
+
+Fixes by agent audit-fix-b, 2026-11-25, for `audit-b.md` problems 2-4:
+- w-07 (problem 3): the run table and the "not run" bullet said w-07 was not run. The GPU lane ran it on the box CPU on
+  all three songs (`<S>/w-07/result.json`, status ran); both lines now point to `step-gpu.md`, which holds its numbers.
+- w-06 (problem 4): standard's worst SAM corner against the hand-set quad is 70.7 px (`standard/w-06/
+  sam_quad_standard_f0450.json`, `corner_dist_to_hand_quad_px`; result.json 70.7), not 70.8. The 70.8 px row against
+  the truth's neck track stands: it is the smoothed track at frame 450, 0.1-0.2 px from the hand quad per corner
+  (`/home/user/gtv/work/audit-fix-b/p4/w06_track.json`).
+- w-05 standard (problem 2): this record already printed the fret-error histogram 1: 3, 2: 6, 3: 3 (12 tips). Its
+  `result.json` held a stale `{"1": 3, "2": 5, "3": 3}`; it now holds the value of `score_cells.json` (`result.py`).
+
