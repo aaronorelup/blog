@@ -5,6 +5,7 @@
 // (200, Accept-Ranges). A read-aloud post file not recorded yet answers 200 { ready: false }, never a 404.
 import { json, status } from '../lib/http.js';
 import { buildJson } from '../lib/build-files.js';
+import { withheld } from './shown.js';
 
 // What the asset server sends with every file, so a file answers the same from either place. A read-aloud
 // recording's files in R2 are named by the hash of their text, so they never change.
@@ -23,7 +24,7 @@ export async function serve(request, env) {
   let path;
   try { path = decodeURIComponent(url.pathname); } catch { return status(400); } // a broken %-escape names no file
   if (request.method === 'GET' || request.method === 'HEAD') {
-    const stored = await fromR2(request, env, path.slice(1));
+    const stored = withheld(path) ? null : await fromR2(request, env, path.slice(1));
     if (stored) return stored;
     if (RECORDING.test(path)) return json({ ready: false });
   }

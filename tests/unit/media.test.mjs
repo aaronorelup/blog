@@ -52,3 +52,23 @@ test('a path with a broken %-escape answers 400 before R2 or the assets are aske
   assert.equal(asked, 0);
   assert.equal((await serve(get('/media/caf%C3%A9.mp4'), env)).status, 404, 'a well-formed escape still reaches the asset');
 });
+
+test('a folder that shows only some of its files answers the rest as not there, without asking R2', async () => {
+  const asked = [];
+  const object = () => ({ httpEtag: '"e"', size: 4, body: new Response('data').body, writeHttpMetadata: (h) => h.set('Content-Type', 'video/mp4') });
+  const env = { MEDIA: { get: async (key) => { asked.push(key); return object(); }, head: async () => null }, ASSETS: assets(() => Response.json({})) };
+  const shown = await serve(get('/media/guitar-tabs-from-video/song-003.mp4'), env);
+  assert.equal(shown.status, 200);
+  assert.equal(shown.headers.get('X-Media-Source'), 'r2');
+  for (const path of ['/media/guitar-tabs-from-video/song-000.mp4', '/media/guitar-tabs-from-video%2Fsong-000.mp4', '/media/guitar-tabs-from-video/opus-blind-000.mp3', '/media/guitar-tabs-from-video/song-003.mp4.bak.mp4']) {
+    for (const method of ['GET', 'HEAD']) {
+      const res = await serve(new Request(`https://aaronorelup.com${path}`, { method }), env);
+      assert.equal(res.status, 404, `${method} ${path}`);
+      assert.equal(res.headers.get('X-Media-Source'), null);
+    }
+    assert.equal((await serve(get(path, { Range: 'bytes=0-' }), env)).status, 404, `a range of ${path}`);
+  }
+  assert.deepEqual(asked, ['media/guitar-tabs-from-video/song-003.mp4'], 'R2 is asked for the shown file only');
+  assert.equal((await serve(get('/media/another-post/song-000.mp4'), env)).status, 200, 'other folders are untouched');
+});
+
