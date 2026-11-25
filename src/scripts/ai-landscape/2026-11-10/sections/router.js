@@ -5,14 +5,11 @@
 import { Color, Group, Vector3 } from 'three';
 import { clamp01, easeIO, smooth, span } from '../core/clock.js';
 import { $, $$, announce, rove } from '../core/dom.js';
-import { block, dot, drop, INK, ribbon, roundBox, setGlass, STOPS } from '../scene/bench.js';
+import { block, dot, drop, INK, LAMP, lampOn, ribbon, roundBox, setGlass, STOPS } from '../scene/bench.js';
 
-const CX = [-6.7, 0, 6.7];
-const CZ = 5.5;
+const CX = [LAMP.first, 0, -LAMP.first];
+const CZ = LAMP.z;
 const BIG = 1.6;                  // the pieces of a diagram against their first size: they are read from across the room
-// the lamp: how dark the room goes, the pool's radius (it has an edge: studio.glow.lamp) and strength, how fast it follows the lit diagram (a second),
-// and the grey a diagram's lines wait in outside the pool
-const LAMP = { dark: 0.92, radius: 3.5, amount: 1.05, x: 0.3, y: 0.6, follow: 6, grey: '#7D838E' };
 const ink = new Color(INK), grey = new Color(LAMP.grey);
 const LEAVES = 3;                 // a team or a router hands out to several: three of each are drawn
 const HUB = { w: 0.86 * BIG, h: 0.56 * BIG };
@@ -126,7 +123,9 @@ export function create(ctx, el, sec) {
       const lit = st.chosen >= 0 ? st.chosen : u < 0.36 ? 0 : u < 0.62 ? 1 : 2;
       light(lit);
       // (the diagrams and the dark are gone before the five come back for the lamp board: the two never share the floor)
-      const k = smooth(span(u, 0, 0.16)) * (1 - smooth(span(u, 0.86, 0.94)));
+      // The dark and the lamp are on from the first step: my stack brought them in (W-1). The diagrams come up under it
+      const out = 1 - smooth(span(u, 0.86, 0.94));
+      const k = smooth(span(u, 0, 0.05)) * out;
       st.k = k;
 
       // camera: the floor from above. A phone follows the lit diagram. Then on to the lamp board
@@ -144,13 +143,9 @@ export function create(ctx, el, sec) {
       // the lamp: the room goes dark and one pool of light stands on the lit diagram. It follows the lit one at
       // 6 a second (reduced motion: it is there at once)
       st.spot = st.spot == null || reduced ? CX[lit] : st.spot + (CX[lit] - st.spot) * (1 - Math.exp(-LAMP.follow * dt));
-      studio.dark = LAMP.dark * k; studio.roomX = 0;
-      studio.glow.amount = LAMP.amount * k; studio.glow.radius = LAMP.radius; studio.glow.cap = 1; studio.glow.lamp = 1;
-      studio.glow.color.set('#FFFFFF'); studio.glow.pos.set(st.spot + LAMP.x, LAMP.y, CZ);
       // the chrome and the words flip to paper on ink while the room is dark, as they do for the links at night: the
       // lamp's pool is then the one light in the frame, the lit diagram's name the one bright chip, and the rail shows
-      const night = k > 0.34;
-      if (night !== (document.documentElement.dataset.chrome === 'dark')) { if (night) document.documentElement.dataset.chrome = 'dark'; else delete document.documentElement.dataset.chrome; }
+      lampOn(ctx, out, st.spot);
 
       // the diagrams: ink at full strength in the pool, the others grey in the dark. Beads run along each dispatch
       shapes.forEach((s, i) => {

@@ -133,8 +133,10 @@ export function create(ctx, el, sec) {
   };
   window.addEventListener('click', onCanvas);
   // the other myths behind their flags: the scroll says them one after another through the catch, struck through over
-  // the row of flags, so a visitor who only scrolls reads all of them (a tap opens the one on show with its fact: the
-  // whole card would pass 60 words). A flag opened by hand holds until the scroll has moved a tenth of a screen
+  // the row of flags, and after the first 40 percent of its step stamps the fact's short form under it (is-told), so a
+  // visitor who only scrolls learns what is true as well as what is not (round 4, W-2). A tap opens the one on show
+  // with its whole fact (myth and fact in full would pass 60 words). A flag opened by hand holds until the scroll has
+  // moved a tenth of a screen
   const flags = $$('.ail-flag', el);
   const onFlag = (e) => { if (e.target.closest('.ail-flag summary')) st.flagAt = st.u; };
   el.addEventListener('click', onFlag);
@@ -202,9 +204,9 @@ export function create(ctx, el, sec) {
       if (input.moved || !st.rect) measure();
       if (beat === 'd' && flags.length) {
         if (st.flagAt != null && Math.abs(u - st.flagAt) > 0.1) st.flagAt = null;
-        const k = Math.floor((u - FLAG0) / FLAGW);
-        if (st.flagAt == null && k !== st.flag) { st.flag = k; flags.forEach((f, n) => { f.open = false; f.classList.toggle('is-said', n === k); }); }
-      } else if (st.flag != null) { st.flag = null; st.flagAt = null; flags.forEach((f) => { f.open = false; f.classList.remove('is-said'); }); }
+        const at = (u - FLAG0) / FLAGW, k = Math.floor(at), told = at - k >= 0.4, key = `${k}${told ? '+' : ''}`;
+        if (st.flagAt == null && key !== st.flag) { st.flag = key; flags.forEach((f, n) => { if (st.flagKey !== k) f.open = false; f.classList.toggle('is-said', n === k); f.classList.toggle('is-told', n === k && told); }); st.flagKey = k; }
+      } else if (st.flag != null) { st.flag = null; st.flagKey = null; st.flagAt = null; flags.forEach((f) => { f.open = false; f.classList.remove('is-said', 'is-told'); }); }
 
       // camera: truck along the row to this stack, settle wider when it opens, hold. The last world pulls back out
       const from = before ? rig.world(before.x, 'open') : rig.stops.row;

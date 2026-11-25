@@ -54,6 +54,7 @@ export function defaults(id) {
     dust: own.glow,
     signature: id,
     myth: null,
+    line: null,                    // or a claim id: beat c says that claim instead of the myth (World.astro)
     catchFloor: 5,
   };
 }

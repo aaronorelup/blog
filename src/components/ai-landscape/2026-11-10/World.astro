@@ -7,6 +7,7 @@ import Glyph from './Glyph.astro';
 import Mark from './Mark.astro';
 import Stack from './Stack.astro';
 import { COPY } from './data/copy.js';
+import { fact } from './data/view.js';
 import { world } from '../../../scripts/ai-landscape/2026-11-10/worlds/index.js';
 
 const { p } = Astro.props;
@@ -18,6 +19,9 @@ const A = COPY.a11y;
 const myth = cfg.myth ? p.myths.find((m) => m.id === cfg.myth) : p.myths[0];
 if (!myth) throw new Error(`ai-landscape: worlds/${p.id}.js asks for the myth "${cfg.myth}". The data holds: ${p.myths.map((m) => m.id).join(', ')}`);
 const others = p.myths.filter((m) => m !== myth);
+// a world may answer its signature with a claim where the picture draws that claim, not a myth (Anthropic's plug draws
+// the standards it made; its media myth is the catch's own line. Review round 4, W-7). A wrong id fails the build
+const line = cfg.line ? fact({ claimRef: cfg.line }) : null;
 const markName = cfg.marks.of === 'name' ? p.name : p.brand;
 const model = p.stack[4];                                                             // floor 5: what the agent thinks with
 ---
@@ -96,7 +100,7 @@ const model = p.stack[4];                                                       
       <p class="ail-sig__ui">
         {ACTS.map((k) => <button type="button" class="ail-btn" data-act={k}>{sig[k]}</button>)}
       </p>
-      <p class="ail-myth"><s><span class="ail-vh">{A.myth} </span>{myth.myth}</s> <span class="ail-vh">{A.fact} </span><Fact fact={myth.truth} /></p>
+      {line ? <p class="ail-myth ail-myth--line"><Fact fact={line} /></p> : <p class="ail-myth"><s><span class="ail-vh">{A.myth} </span>{myth.myth}</s> <span class="ail-vh">{A.fact} </span><Fact fact={myth.truth} /></p>}
       {sig.note && <p class="ail-sig__note ail-label">{sig.note}</p>}
       <div class="ail-sig__lists">
         {p.lists.map((l, k) => (
@@ -142,6 +146,7 @@ const model = p.stack[4];                                                       
                 <summary><Glyph name="flag" /><span class="ail-flag__myth"><span class="ail-vh">{A.myth} </span>{m.myth}</span></summary>
                 <p class="ail-flag__truth"><s><span class="ail-vh">{A.myth} </span>{m.myth}</s> <span class="ail-vh">{A.fact} </span><Fact fact={m.truth} /></p>
               </details>
+              {m.truth.short && <p class="ail-flag__fix"><span class="ail-label">{m.truth.short}</span></p>}
             </li>
           ))}
         </ul>

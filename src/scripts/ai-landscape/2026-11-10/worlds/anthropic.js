@@ -30,5 +30,6 @@ export default {
   dust: '#F3D9C4',
   signature: 'anthropic',
   myth: 'anthropic-myth-media',
+  line: 'anthropic-standard-mcp',                               // beat c's sentence: the claim the plug draws (the media myth is the catch's)
   catchFloor: 5,
 };

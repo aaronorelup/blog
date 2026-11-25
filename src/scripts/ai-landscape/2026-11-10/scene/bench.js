@@ -15,6 +15,20 @@ export const STOPS = {
   board: { pos: [-0.4, 7.4, 28], look: [-0.4, 0.7, 3.8], fov: 24, fit: 24.4, cx: 0.565, cy: 0.44, cyd: 0.59 },      // from above: five whole stacks, the lamp desk in front of their feet
   rail: { pos: [-0.4, 6.4, 26.5], look: [-0.4, 1.2, 2.6], fov: 24, fit: 23.6, cy: 0.47, cyd: 0.585 },                // from above: tank and tray stand under each stack and cover no floor
 };
+// The router's lamp (sections/router.js): how dark the room goes, the pool's radius (it has an edge: studio.glow.lamp)
+// and strength, how fast it follows the lit diagram (a second), the grey a diagram's lines wait in outside the pool, and
+// where the first diagram stands. lampOn(ctx, a, x): the room at `a` of its dark (0 to 1), the pool on the diagram at x,
+// and the chrome and words in paper on ink once it is dark. My stack brings it in over its last steps, so the bench
+// leaves in the dark under a lamp already on, and the router starts in it: no frame between them is an empty room
+// (review round 4, W-1).
+export const LAMP = { dark: 0.92, radius: 3.5, amount: 1.05, x: 0.3, y: 0.6, follow: 6, grey: '#7D838E', first: -6.7, z: 5.5 };
+export function lampOn({ studio }, a, x = LAMP.first) {
+  studio.dark = LAMP.dark * a; studio.roomX = 0;
+  studio.glow.amount = LAMP.amount * a; studio.glow.radius = LAMP.radius; studio.glow.cap = 1; studio.glow.lamp = 1;
+  studio.glow.color.set('#FFFFFF'); studio.glow.pos.set(x + LAMP.x, LAMP.y, LAMP.z);
+  const root = document.documentElement, night = a > 0.34;
+  if (night !== (root.dataset.chrome === 'dark')) { if (night) root.dataset.chrome = 'dark'; else delete root.dataset.chrome; }
+}
 const shapeOf = (w, d, r) => {
   const x = w / 2, z = d / 2;
   r = Math.min(r, x, z);

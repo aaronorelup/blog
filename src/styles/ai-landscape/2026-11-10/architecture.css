@@ -160,7 +160,9 @@
 .ail-rt__chip[data-official='partial'] .ail-rt__wire { border-top-style: dotted; }
 .ail-rt__cw { margin-left: 8px; font-size: 15px; }
 
-.ail-gl .ail-rt__title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+/* the section's name heads the first two lamps; the third brings its rule in the same place (review round 4, W-8) */
+.ail-gl .ail-rt__title { position: absolute; left: var(--ail-margin); top: var(--ail-top); margin: 0; padding: 4px 10px 2px; background: var(--ail-veil); opacity: var(--rt-on, 0); }
+.ail-gl .ail-rt:has(.ail-rt__more.is-on) .ail-rt__title { visibility: hidden; }
 .ail-gl .ail-rt__shapes { display: block; margin: 0; }
 .ail-gl .ail-rt__shape { display: grid; justify-items: center; gap: 6px; width: max-content; max-width: 300px; opacity: 0; }
 .ail-gl .ail-rt__fig { display: none; }
@@ -183,6 +185,7 @@
   .ail-gl .ail-rt__name { min-height: 36px; padding: 0 6px; letter-spacing: .02em; }
   .ail-gl .ail-rt__limit { order: 9; flex-basis: 100%; max-width: none; margin-top: 4px; font-size: 17px; text-align: left; }
   .ail-gl .ail-rt__more { right: var(--ail-margin); width: auto; top: calc(var(--ail-top) - 6px); gap: 6px; }
+  .ail-gl .ail-rt__title { top: calc(var(--ail-top) - 6px); font-size: 30px; }
   .ail-gl .ail-rt__rule { font-size: 19px; }
   .ail-gl .ail-rt__cav { font-size: 15px; }
   .ail-gl .ail-rt__card { left: 0; right: 0; width: auto; }
@@ -306,3 +309,9 @@
   .ail:not(.ail-gl) :is(.ail-agn__board, .ail-bill__table) :is(th, td) { padding-right: 5px; font-size: 15px; overflow-wrap: anywhere; }
   .ail:not(.ail-gl) :is(.ail-agn__q, .ail-agn__p, .ail-bill__table thead th, .ail-bill__pick) { letter-spacing: 0; }
 }
+
+/* billing's card keys carry the rail's own marks: a glass before the monthly plan (the tank) and a bead before pay per
+   use (the tray), so the picture and the words are one key (review round 4, W-8) */
+.ail-gl .ail-bill__cell:is([data-k='plan'], [data-k='meter']) .ail-bill__h::before { content: ''; display: inline-block; margin-right: 7px; vertical-align: -1px; }
+.ail-gl .ail-bill__cell[data-k='plan'] .ail-bill__h::before { width: 8px; height: 11px; box-sizing: border-box; border: 1.5px solid currentColor; border-radius: 1px 1px 3px 3px; background: linear-gradient(to top, currentColor 50%, transparent 50%); }
+.ail-gl .ail-bill__cell[data-k='meter'] .ail-bill__h::before { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }

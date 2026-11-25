@@ -6,7 +6,7 @@ import { Line, LineBasicMaterial, Mesh, Vector3 } from 'three';
 import { backOut, clamp01, easeIO, easeOut, smooth, span } from '../core/clock.js';
 import { $, $$, announce } from '../core/dom.js';
 import { ORDER, owner, world } from '../worlds/index.js';
-import { block, createBase, dot, dovetail, INK, roundBox, setGlass, shadow, STOPS } from '../scene/bench.js';
+import { block, createBase, dot, dovetail, INK, lampOn, roundBox, setGlass, shadow, STOPS } from '../scene/bench.js';
 import { createFigure } from '../scene/cast.js';
 import { GLYPHS } from '../scene/glyphs.js';
 import { createObject } from '../scene/objects.js';
@@ -261,7 +261,7 @@ export function create(ctx, el, sec) {
   return {
     stops: [0.6],
     enter() { show(true); },
-    leave() { show(false); base.show = 0; base.update(); pieces.forEach((p) => { p.li.querySelector('details').open = false; }); },
+    leave() { show(false); base.show = 0; base.update(); pieces.forEach((p) => { p.li.querySelector('details').open = false; }); delete document.documentElement.dataset.chrome; },
     update(t, dt, u) {
       st.time += dt;
       // camera: from the cabinet down to the bench, hold, then on to the floor where the router idea is drawn
@@ -275,7 +275,7 @@ export function create(ctx, el, sec) {
       base.blocks.forEach((b, i) => { b.rise = 1 - span(u, 0.02 + (8 - i) * 0.017, 0.11 + (8 - i) * 0.017); });
       base.update();
       const back = smooth(span(u, 0.06, 0.3));
-      const gone = smooth(span(u, 1.1, 1.26));
+      const gone = smooth(span(u, 1.02, 1.12)); lampOn(ctx, smooth(span(u, 1.03, 1.17)));      // the lenders leave, the room goes dark under the router's lamp, then the bench leaves in it (W-1)
       // an open card hides the lids: a mark is never covered, and one drawn as an image would sit over the card
       const carded = el.querySelector('details[open]:not(.ail-ms__pairs)') ? 0 : 1;
       lenders(dt);
@@ -292,7 +292,7 @@ export function create(ctx, el, sec) {
       });
 
       // the bench rises, then the pieces fly in once, 70 ms apart, and settle with a small overshoot
-      const rise = smooth(span(u, 0.14, 0.3)) * (1 - smooth(span(u, 1.12, 1.28)));
+      const rise = smooth(span(u, 0.14, 0.3)) * (1 - smooth(span(u, 1.21, 1.3)));
       bench.forEach((m) => { m.position.y = H * (rise - 0.5); setGlass(m, { show: Math.min(1, rise * 4) }); });
       shade.material.opacity = 0.2 * rise;
       if (!st.flown && u > 0.24) {
@@ -376,7 +376,7 @@ export function create(ctx, el, sec) {
       });
     },
     dispose() {
-      if (ctx.state.compare) delete ctx.state.compare.mystack;
+      if (ctx.state.compare) delete ctx.state.compare.mystack; if (sec === ctx.clock.current) delete document.documentElement.dataset.chrome;
       pieces.forEach((p) => { p.li.removeEventListener('pointerenter', p.over); p.li.removeEventListener('pointerleave', p.leave); });
       buttons.forEach((b) => { b.removeEventListener('click', onSwap); b.hidden = true; });
       window.removeEventListener('keydown', onEsc);
