@@ -319,3 +319,9 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   - The join starts with a gate (every chapter current and passed) and frees disk (previews, frame cache).
   - It matches the chapters' narration loudness before joining (one gain per chapter).
   - Then three film checkers run in parallel: picture, sound, story. Each marks problems BLOCKING or NIT.
+
+## 2026-11-25 22:25 UTC
+
+- P6 finished: ch01 passes after its second round (narration rebuilt from the re-levelled sources; its stamp now
+  counts Imagine's 11 heard-only notes, 1,900 heard). ch08 passes with nothing open. Done: ch01, 05, 06, 07, 08, 09,
+  12, 15, 17.
