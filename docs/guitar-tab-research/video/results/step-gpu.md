@@ -25,7 +25,8 @@ the downstream one of `EXPERIMENTS.md` (Basic Pitch n-01 on the guitar stem minu
 |---|---|---|---|
 | separation, 30 s, 2 cores | r0805, 265.35 s | r0821, 230.30 s | r0830, 234.96 s |
 | Basic Pitch on stem / on mix | r0853 4.78 s / r0856 4.63 s | r0871 3.53 s / r0877 3.75 s | r0879 3.76 s / r0881 4.34 s |
-| eval ids stem / mix | e2050 / e2073 | e2114 / e2130 | e2131 / e2132 |
+| eval ids stem / mix | e2050 / e2073 | e2114 / e2130 | e2537 / e2538 |
+Standard rescored against the repaired answer key on 2026-11-25; changes: eval ids e2131 / e2132 -> e2537 / e2538 (same estimates, segment truth re-cropped from the 679-note key).
 
 Whole songs were not separated: at these rates (7.7 to 8.8 s of wall time per second of audio) a song takes 22 to 33 min
 on 2 cores, over the 10-minute rule.
@@ -36,13 +37,14 @@ on 2 cores, over the 10-minute rule.
 |---|---|---|---|
 | truth notes | 102 | 106 | 125 |
 | notes found, mix / stem | 181 / 178 | 136 / 135 | 199 / 198 |
-| precision, mix / stem | 0.508287 / 0.516854 | 0.580882 / 0.585185 | 0.59799 / 0.60101 |
-| recall, mix / stem | 0.901961 / 0.901961 | 0.745283 / 0.745283 | 0.952 / 0.952 |
-| F1, mix / stem | 0.650177 / 0.657143 | 0.652893 / 0.655602 | 0.734568 / 0.736842 |
-| F1 stem minus mix | +0.006966 | +0.002709 | +0.002274 |
-| onset+offset F1, mix / stem | 0.268551 / 0.271429 | 0.198347 / 0.19917 | 0.41358 / 0.414861 |
+| precision, mix / stem | 0.508287 / 0.516854 | 0.580882 / 0.585185 | 0.60301 / 0.60606 |
+| recall, mix / stem | 0.901961 / 0.901961 | 0.745283 / 0.745283 | 0.96 / 0.96 |
+| F1, mix / stem | 0.650177 / 0.657143 | 0.652893 / 0.655602 | 0.740741 / 0.743034 |
+| F1 stem minus mix | +0.006966 | +0.002709 | +0.002293 |
+| onset+offset F1, mix / stem | 0.268551 / 0.271429 | 0.198347 / 0.19917 | 0.41975 / 0.421053 |
 | recall melody, mix = stem | 0.888889 | 0.8 | 0.9375 |
-| recall bass, mix = stem | 0.952381 | 0.588235 | 0.970149 |
+| recall bass, mix = stem | 0.952381 | 0.588235 | 0.985075 |
+Standard rescored against the repaired answer key on 2026-11-25; changes: precision 0.59799 / 0.60101 -> 0.60301 / 0.60606, recall 0.952 -> 0.96, F1 0.734568 / 0.736842 -> 0.740741 / 0.743034, stem minus mix +0.002274 -> +0.002293, onset+offset 0.41358 / 0.414861 -> 0.41975 / 0.421053, recall bass 0.970149 -> 0.985075; the stem still adds nothing on standard.
 
 Recall is identical on every song and voice; the stem's Basic Pitch output has 1 to 3 fewer notes, all unmatched ones.
 

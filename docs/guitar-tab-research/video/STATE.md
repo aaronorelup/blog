@@ -64,3 +64,14 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 - Standard answer key: the second repair fixed the second check's problems; the third check found three smaller
   ones (one unplayed C3 at 6.886 s, 16 string slaps 55-70 ms late, the neck outline missing quick jolts for 5.5 % of
   fretted notes). A last repair round with a focused check runs as lane t3; lane m's rescore waits for it.
+
+## 2026-11-25 08:24 UTC
+
+- Standard answer key passes its fourth check (third repair round: one unplayed C3 removed, 16 slaps re-timed,
+  video scored against a per-frame neck outline). All three keys are final.
+- Lanes b, c, t and t3 finished. Lane m finished separation, notes, voices, string and fret, and sound plus picture,
+  rescored 30 standard experiments against the final key (no ranking or conclusion changed), and is in the chains;
+  then audits, results and the blind kit.
+- Disk fell to 2.4 GB at 07:36; the string-and-fret agent cut its render.wav files to mono 22.05 kHz and I cleared
+  the npm and node caches (3.1 GB free now). PRODUCTION.md now says to render every listening window again from the
+  notes. After the blind test the experiment venvs can go to make room for the film render.

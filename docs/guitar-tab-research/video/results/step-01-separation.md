@@ -67,8 +67,8 @@ whole-song run. exp-gpu's sep-04 (below) has Basic Pitch on the 30 s file as its
 
 **sep-04 BS-RoFormer-SW** was run by the exp-gpu agent (its RunPod pod was refused by the permission system, so 30 s
 segments on the box CPU), not by this step: guitar stem 0.657 against 0.650 for Basic Pitch on the 30 s mix file
-(capo, e2050/e2073), tuning 0.656 against 0.653 (e2114/e2130), standard 0.737 against 0.735 (e2131/e2132, scored
-before the standard truth changed). Its records: `experiments/<S>/sep-04/result.json`, `results/step-gpu.md`.
+(capo, e2050/e2073), tuning 0.656 against 0.653 (e2114/e2130), standard 0.743 against 0.741 (e2537/e2538, rescored
+against the repaired answer key on 2026-11-25; was 0.737 against 0.735, e2131/e2132). Its records: `experiments/<S>/sep-04/result.json`, `results/step-gpu.md`.
 It did not run on S4.
 
 ## 3. The band clip S4: how clean is the guitar stem

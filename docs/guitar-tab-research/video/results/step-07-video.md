@@ -86,18 +86,20 @@ Runs: grid r0829 capo, r0852 tuning, r0857/r0873/r0874 standard (2-4 s each); tr
 | measure | capo (capo 3) | tuning | standard |
 |---|---|---|---|
 | grid used | Hough, frame 165, RMS 4.5 px | none (w-04 failed) | Hough, frames 2750 (B) and 5585 (C); pose A none |
-| fretted truth notes | 557 | 206 | 547 |
-| notes with no grid | 0 | all | 149 (pose A, 0-50 s) |
-| **exact (string and fret)** | 49 = **0.088** | not scored | 9 = **0.0165** |
-| **same string, fret +-1** | 222 = **0.3986** | not scored | 81 = **0.1481** |
-| fret right, any string | 270 | - | 121 |
-| fret +-1, any string | 464 | - | 310 |
-| labelled fingertips: with a cell / exact | 3 of 5 / 0 | - | 11 of 12 / 0 |
-| labelled fingertips: fret error (cells - truth) | +1 (3x) | - | +1 (3x), +2 (5x), +3 (3x) |
-| labelled fingertips: string error | 0 (2x), -1 (1x) | - | 0 (4x), -1 (3x), +1 (2x), +2 (2x) |
+| fretted truth notes | 557 | 206 | 546 |
+| notes with no grid | 0 | all | 148 (pose A, 0-50 s) |
+| **exact (string and fret)** | 49 = **0.088** | not scored | 16 = **0.0293** |
+| **same string, fret +-1** | 222 = **0.3986** | not scored | 100 = **0.1832** |
+| fret right, any string | 270 | - | 118 |
+| fret +-1, any string | 464 | - | 322 |
+| labelled fingertips: with a cell / exact | 3 of 5 / 0 | - | 12 of 12 / 0 |
+| labelled fingertips: fret error (cells - truth) | +1 (3x) | - | +1 (3x), +2 (6x), +3 (3x) |
+| labelled fingertips: string error | 0 (2x), -1 (1x) | - | 0 (6x), -1 (1x), +1 (4x), +2 (1x) |
+Standard rescored against the repaired answer key on 2026-11-25; changes: 547 -> 546 fretted notes, no grid 149 -> 148, exact 9 (0.0165) -> 16 (0.0293), same string +-1 fret 81 (0.1481) -> 100 (0.1832), fret right any string 121 -> 118, fret +-1 any string 310 -> 322, labelled fingertips with a cell 11 -> 12 (fret error +2: 5x -> 6x; string error exact 4 -> 6); mostly from the scorer now carrying each fingertip along the truth's per-frame neck outline (400 lookups compensated). Capo stays far ahead.
 
-Standard is scored against the repaired truth (`standard.truth.json`, 06:05, 547 fretted notes; the first score on
-the earlier file was 9 / 81 of 542); the shots for scoring are the 3 poses w-04 ran on
+Standard is scored against the repaired truth (`standard.truth.json`, third repair round, 546 fretted notes; rescored
+2026-11-25 with `score_video_cells.py`'s per-frame neck outline `standard.neck_track.json`, 400 lookups compensated;
+earlier scores: 9 / 81 of 542 on the first file, 9 / 81 of 547 on the second); the shots for scoring are the 3 poses w-04 ran on
 (`standard/w-05/standard.video.3poses.json`), labelled frames from the repaired file. Sources:
 `<S>/w-05/score_cells.json`, `<S>/w-05/score.sh`.
 
@@ -127,7 +129,7 @@ edges in frame pixels), `cells` (per frame, tip -> [string, fret from nut]) and 
 
 - **w-04 / w-05 tuning: failed** - no fret line found (above). Nothing to score.
 - **w-04 LSD everywhere**: < 6 clusters (2 of 228 capo samples fit); the Hough fallback was used and is recorded.
-- **w-04 standard pose A (0-50 s)**: no fit on frames 250, 450, 650 with either detector; its 149 fretted notes
+- **w-04 standard pose A (0-50 s)**: no fit on frames 250, 450, 650 with either detector; its 148 fretted notes
   count as misses in w-05.
 - **w-06**: ran, but through Hugging Face, not Ultralytics (github.com 403); no grid on its quads (below).
 - **w-07 CoTracker3**: RunPod only; no pod in this job (EXPERIMENTS.md "RunPod plan": planned only). Not run.
@@ -135,7 +137,8 @@ edges in frame pixels), `cells` (per frame, tip -> [string, fret from nut]) and 
 - **No subagent tool in this session**: no step-7 technique needed a model to look at frames (capo reading by
   Opus is t-07, step 5), so nothing was lost, but none could have been delegated.
 - Mid-run, another agent repaired `standard.truth.json` and `standard.video.json` (06:05; 3 poses became 76
-  tracked poses). w-04 had already run on the 3 poses; w-05 and the stretch scores were re-run on the repaired truth.
+  tracked poses). w-04 had already run on the 3 poses; w-05 and the stretch scores were re-run on the repaired truth, and again on
+  2026-11-25 after the third repair round (`rescore-standard.md`).
 
 ## w-06
 

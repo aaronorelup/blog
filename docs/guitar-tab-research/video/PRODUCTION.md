@@ -162,6 +162,8 @@ read as well as 28 px sentence case.
 - **Listening windows:** whenever a tab is on screen, at least 4 s of it is heard alone with its cursor. When truth
   and a tool are compared by ear, play the same bars twice, truth first, through the same SoundFont and program
   (`/usr/share/sounds/sf2/FluidR3_GM.sf2`, 24 nylon or 25 steel), so the difference is in the notes, not the timbre.
+  Never put an experiment's own `render.wav` in the film: to save disk some were cut to mono 22.05 kHz. Render every
+  window again from the tool's notes (its CSV, MIDI or GP5) at 48 kHz stereo, as in section 6.
 - Master: -16 LUFS integrated, true peak at most -1.5 dBTP **after** the AAC encode, loudness range under 8 LU.
   `finish.py` does this and measures it.
 
