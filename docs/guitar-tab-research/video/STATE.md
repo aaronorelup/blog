@@ -97,3 +97,13 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 - Disk: removed three tool environments the kit does not use (msst, ultra, uvr), the CoTracker model, the four backup
   recordings and 39 orphaned uv cache archives (1.2 GB); 3.9 GB free.
 - Stage 4 starts now: file-access watch, then `gtv-film.js` part blind, lanes x and y, nothing else running.
+
+## 2026-11-25 11:58 UTC
+
+- Blind test done: six attempts (three songs, with and without the kit), 10:39-11:57 UTC. Every attempt handed in a
+  valid answer in 16 to 40 minutes of its 90 and stopped by its own choice. Said before scoring: capo song, both arms
+  standard tuning with capo 3; standard song, both arms standard with no capo; tuning song, the kit arm D G C F A D
+  (five of six strings as the key has them), the bare arm D G D G C D.
+- The access watch logged no read of any answer file; its only entries are the run ledger (gtr-run numbering runs)
+  and three listings of the records folder at the orchestrator's own turn ends (`/home/user/gtv/guard/NOTE.md`).
+- Scoring and the transcript audit run now (`gtv-film.js` part score).
