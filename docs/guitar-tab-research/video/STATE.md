@@ -300,3 +300,9 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   (`/home/user/gtv/work/janitor.sh`, pid in `janitor.pid`, log `janitor.log`). Every 5 minutes it deletes frame-cache
   folders not touched for 45 minutes. 4.3 GB free.
 - Film length now: 49:34 over the 18 chapters (current chapter.mp4 files).
+
+## 2026-11-25 21:55 UTC
+
+- P9 finished: ch06 and ch09 pass, and their placed narration has no clipped or flat-topped samples
+  (`scratchpad/vocheck.py`). Done: ch05, ch06, ch08, ch09, ch17. Minor items left for the film check: ch06 has a
+  3.3 s silence at 1:57; ch09's s5 finding text ends at y 921.
