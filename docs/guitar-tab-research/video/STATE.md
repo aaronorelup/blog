@@ -166,3 +166,23 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 - Part chapters launched in three lanes: A wf_90c13fe7-558 (ch00, 03, 06, 09, 12, 15), B wf_16b3a406-098 (ch01, 04,
   07, 10, 13, 16), C wf_0cbb4c63-4e1 (ch02, 05, 08, 11, 14, 17). Each chapter: build, independent review, fix and
   re-review. Renders one at a time under the lock. Check-in at 19:30 UTC.
+
+## 2026-11-25 19:45 UTC
+
+- Check-in. The three chapter lanes are still running. All 18 chapters are built and reviewed once. 15 have had a fix
+  round. Every review so far found something; ch03 and ch04 say they pass their own QC after the fix.
+- Disk was down to 301 MB free. Freed 3.7 GB, all of it re-creatable or no longer needed:
+  - the finished experiments' model caches (torch hub and Hugging Face, 1.9 GB, list in
+    `/home/user/gtv/work/deleted-caches-1935.txt`);
+  - 9 stale HyperFrames frame-cache folders;
+  - the experiments' other note renders (`render.*.wav`, `click.wav`, the chord and click renders; 50 files, 1.4 GB,
+    list in `/home/user/gtv/work/deleted-render-wavs-2.txt`).
+  Now 4.0 GB free.
+- Problem found: build and fix agents that ended their turn while their render waited for the lock had the render
+  killed. ch02 has no current chapter.mp4. New part `polish` in `gtv-film.js`: renders are started detached and waited
+  for in the foreground; it fixes what the re-review left open, then a closing check marks problems BLOCKING or NIT,
+  with one more fix round for anything BLOCKING.
+- Polish run P1 (wf_368d80d9-86e, args in `/home/user/gtv/work/polish-P1-args.json`): ch02, ch05, ch08. ch08 has one
+  factual fix: LilyPond's time with the tuning and capo given is 3.3 to 3.7 s, not 3.3 to 8.8 s. Its line is voiced
+  again.
+- Next: polish the other chapters as their lanes finish, then part finish.

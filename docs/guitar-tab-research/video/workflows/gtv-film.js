@@ -11,7 +11,7 @@ export const meta = {
   ],
 }
 
-// One part per workflow run: args.part is blind (with args.lane x or y), score, script, chapters (with args.chapters), finish or publish.
+// One part per workflow run: args.part is blind (with args.lane x or y), score, script, chapters (with args.chapters), polish (with args.items), finish or publish.
 const OPUS = 'claude-opus-5-5'
 const GTV = '/home/user/gtv'
 const REC = '/home/user/blog/docs/guitar-tab-research/video'
@@ -222,6 +222,40 @@ The problems:
 ${problems}
 Your final message: each problem in a few words with what you did, and the new length.`
 
+// ---------- Stage 5b: polish (a second round on what the re-review left open) ----------
+const RENDER_RULE = (ch) => `RENDERING (this went wrong in the first round: agents that ended their turn while their render waited for the lock had it killed, and chapters were left without a chapter.mp4). Do exactly this:
+- From ${PROD}/chapters/${ch}/ : mkdir -p logs; setsid nohup bash ${PROD}/kit/tools/render_chapter.sh project chapter.new.mp4 > logs/render.out 2>&1 < /dev/null & echo $! > logs/render.pid
+- Then wait in the foreground, one Bash call at a time with a 600000 ms timeout: timeout 580 tail --pid=$(cat logs/render.pid) -f /dev/null; tail -3 logs/render.out ; repeat until the process is gone. Renders queue behind each other (about 5 minutes each, several may be waiting), so a 30 to 60 minute wait is normal. Do not use Monitor, background waits or sleep, and never end your turn while a render you started is queued or running: your final message is your result and nobody will come back for the render.
+- When it says exit=0: mv chapter.new.mp4 chapter.mp4 and mv chapter.new.mp4.log logs/chapter.mp4.log, then run the QC (finish.py to qc/preview.mp4 with the captions, sync_check.py for every listening window, the contact sheet, loudness and true peak of the preview, freeze detection). If it fails, read the log, fix, and render again the same way.
+- Render once if you can: check everything with snapshots first. Keep 3 GB of disk free (df -h /): delete your own superseded renders and intermediates (old chapter copies, frame dumps) when you no longer need them.`
+
+const POLISH_FIX = (ch, problems, round) => `[AGENT: polish${round}-${ch}]
+
+${COMMON}
+
+YOUR JOB: finish chapter ${ch} of the film so it can be joined: ${PROD}/chapters/${ch}/. It was built, reviewed, fixed and reviewed again; the problems below are what the last review left open (its notes: qc/review2.md, or qc/review.md; ${round > 1 ? 'qc/verify.md has the check after the first polish round' : 'the fix agent wrote qc/README.md'}). Read ${REC}/PRODUCTION.md sections 2 and 6 for the look and the tools, and the chapter's build script and qc/README.md before you change anything.
+Fix every problem in the list, nits too where the fix is small. Where a problem is wrong, say why with evidence in qc/README.md rather than change the film. A problem that blames the shared kit: fix it inside this chapter (other chapters are rendered with the same kit; never edit ${PROD}/kit/). Touch only this chapter's folder and ${GTV}/work/polish-${ch}/. Captions keep the script's spelling (${PROD}/VOICE.md lists the respelt lines). Check every change with snapshots before rendering.
+
+${RENDER_RULE(ch)}
+
+Then update captions.vtt, chapter.json (its length) and qc/README.md (a "Polish round ${round}" section: each problem, what you did, the QC numbers).
+The problems:
+${problems}
+Your final message: each problem in a few words with what you did, the new length, and the QC numbers (loudness, true peak, the sync of each window).`
+
+const POLISH_VERIFY = (ch, problems, round) => `[AGENT: verify${round}-${ch}]
+
+${COMMON}
+
+YOUR JOB: check that chapter ${ch} (${PROD}/chapters/${ch}/) is ready to be joined into the film. You did not build or fix it. This is a closing check, not a fresh review: it was already reviewed twice.
+1. The render is current: chapter.mp4 exists, plays to the end (ffprobe duration matches chapter.json within 0.1 s; decode the last 2 s), is newer than every file in project/ (find project -newer chapter.mp4 must list nothing that matters), and qc/preview.mp4 is newer than chapter.mp4.
+2. Each problem in the list below is fixed, or qc/README.md shows with evidence that it was not a problem. Check each one on the frames or the sound at its time (ffmpeg frames into ${GTV}/work/verify-${ch}/, look at them).
+3. No new damage: a contact sheet every 4 s over the whole chapter, looked at; loudness of the preview (-16 LUFS integrated within 1 LU, true peak at most -1.5 dBTP), no silence over 3 s that is not in the script, no frame frozen over 3 s, no narration inside a listening window, the qc sync numbers within 20 ms.
+4. The privacy rules above.
+Mark each problem you return BLOCKING (a viewer would notice: wrong or missing picture or sound, a wrong number, text cut off or unreadable, a broken listening window, a stale or missing render, privacy) or NIT (polish). Write ${PROD}/chapters/${ch}/qc/verify.md (under 60 lines). Return: pass (true when nothing BLOCKING is left), problems (each starting with BLOCKING: or NIT:, with the time, what is wrong and the fix), and a two-line summary.
+The problems that were to be fixed:
+${problems}`
+
 // ---------- Stage 5: finish ----------
 const JOIN = `[AGENT: film-join]
 
@@ -358,6 +392,27 @@ if (PART === 'chapters') {
     },
   )
   return { part: 'chapters', chapters: done }
+}
+
+if (PART === 'polish') {
+  phase('Polish')
+  // args.items: [{ch, problems: [...]}], from the chapters lanes' open problems (or what I add)
+  const items = args.items || []
+  const done = await pipeline(
+    items,
+    (it) => safe(POLISH_FIX(it.ch, numbered(it.problems), 1), o('polish1-' + it.ch, 'Polish', 'high')),
+    async (fixed, it) => {
+      let v = verdict(await safe(POLISH_VERIFY(it.ch, numbered(it.problems), 1), { ...o('verify1-' + it.ch, 'Polish', 'high'), schema: VERDICT }))
+      let fixed2 = null
+      const blocking = (vv) => vv.problems.filter((p) => !/^NIT:/.test(p))
+      if (!v.pass && blocking(v).length) {
+        fixed2 = await safe(POLISH_FIX(it.ch, numbered(v.problems), 2), o('polish2-' + it.ch, 'Polish', 'high'))
+        v = verdict(await safe(POLISH_VERIFY(it.ch, numbered(v.problems), 2), { ...o('verify2-' + it.ch, 'Polish', 'high'), schema: VERDICT }))
+      }
+      return { ch: it.ch, fixed: short(fixed).slice(0, 400), fixed2: fixed2 ? short(fixed2).slice(0, 400) : null, pass: v.pass, open: v.problems, summary: v.summary }
+    },
+  )
+  return { part: 'polish', chapters: done }
 }
 
 if (PART === 'finish') {

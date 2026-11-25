@@ -7,8 +7,11 @@ Every later record and the film's script follow these readings.
 
 - The tuning song's tab has no rhythm. Its answer-key beats were placed by rule (beats 3 and 4 on note onsets,
   beat 2 between, beat 1 on the lowest note of the rolled chord).
-- Every beat tracker (Beat This!, madmom, madmom with a tempo hint) agrees with the key on tempo and bar length but puts
-  each beat about 0.2 s later (median +0.195 to +0.199 s; about a sixteenth note of a 0.9 s beat).
+- Every beat tracker (Beat This!, madmom, madmom with a tempo hint) puts each beat about 0.2 s later than the key
+  (median +0.195 to +0.199 s; about a sixteenth note of a 0.9 s beat). madmom agrees with the key on tempo (65 and 66
+  BPM against 65.73, step-04 tempo table). Beat This! does not: its tempo is 72 BPM (9.5 % off) and it adds beats in
+  places (211 beats for the key's 193, nine bars counted to a fifth beat and four to a sixth;
+  `experiments/tuning/c-01/beats.txt`), corrected 2026-11-25 after the ch06 film review.
 - Unshifted beat F on the tuning song (0.02 to 0.05) measures that phase difference, not missing beats. Moved by the
   median offset, beat F is 0.77 to 0.86.
 - So which phase is right is a matter of judgement, not settled by the key. The film does not call the trackers wrong
