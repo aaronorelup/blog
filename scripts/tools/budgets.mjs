@@ -1,5 +1,5 @@
 // Page-weight budgets (ARCHITECTURE.md section 6), gzipped, without fonts and media, each measured on something
-// content can't grow. `node scripts/tools/budgets.mjs [dist]` prints them and fails on any over budget by 20%, as
+// content can't grow. `node scripts/tools/budgets.mjs [dist]` prints them and fails on any over budget by 20% (a hard row: at all), as
 // npm test does (tests/unit/budgets.test.mjs); verify-dist prints the same rows after every build and never fails.
 // Live notebooks are left out. fontMisses() lists display code points the self-hosted fonts miss: the command fails
 // on any, verify-dist warns.
@@ -17,8 +17,9 @@ const KB = 1024;
 const PROSE = ['pc-prose', 'prose'];   // the post body's class: pc-prose until T2.1 names it prose
 
 const gz = (text) => zlib.gzipSync(text).length;
-// The rows more than 20% over their budget: what fails npm test and this command.
-export const failing = (rows) => rows.filter((r) => r.bytes > r.budget * 1.2);
+// The rows more than 20% over their budget: what fails npm test and this command. A row marked `hard` (the AI
+// landscape's, whose budget is its measured weight with a little room) fails as soon as it is over at all.
+export const failing = (rows) => rows.filter((r) => r.bytes > r.budget * (r.hard ? 1 : 1.2));
 const parse = (file) => fromHtml(fs.readFileSync(file, 'utf8'));
 
 // The tree without every element the test picks out.
@@ -95,7 +96,7 @@ function elementWeights(dist, pages, upFront) {
 
 export function measure(dist) {
   const rows = [];
-  const row = (name, bytes, budget, where = '') => rows.push({ name, bytes, budget, where });
+  const row = (name, bytes, budget, where = '', hard = false) => rows.push({ name, bytes, budget, where, hard });
 
   const posts = fs.readdirSync(path.join(dist, 'ledger'), { withFileTypes: true })
     .filter((e) => e.isDirectory() && !isLivePath(`dist/ledger/${e.name}/`) && fs.existsSync(path.join(dist, 'ledger', e.name, 'index.html')))
@@ -142,6 +143,20 @@ export function measure(dist) {
   row('homepage before the scene', html + css + js, 30 * KB);
   row('  HTML', html, 12 * KB);
   row('  entry JS', js, 12 * KB);
+
+  // The AI landscape's newest page: what reaches first paint. Its document carries the whole text version and every
+  // proof card's second depth on purpose (its SPEC 7.3 and 7.6), so 95 KB, not the 40 first guessed (93 measured after
+  // review round 2: these four rows are hard, nothing over passes). The scene, its art and its draw calls are measured
+  // in a browser (the e2e spec), not here.
+  const landscape = path.join(dist, 'ai-landscape', 'index.html');
+  if (fs.existsSync(landscape)) {
+    const page = assets(dist, parse(landscape));
+    const doc = gz(fs.readFileSync(landscape, 'utf8'));
+    row('/ai-landscape/ first paint', doc + page.css, 95 * KB, 'HTML + CSS', true);
+    row('  HTML', doc, 72 * KB, '', true);
+    row('  CSS', page.css, 26 * KB, '', true);
+    row('  entry JS', page.js, 15 * KB, '', true);
+  }
   return rows;
 }
 

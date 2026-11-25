@@ -1,0 +1,61 @@
+/* Access and failure (review round 1, E07 to E12), loaded last by Page.astro so it wins over every section's rules.
+   No visible word, size, colour or timing of the 3D page changes here, except the 44 px floor for a finger. */
+
+/* a stage that is not lit holds nothing a finger, Tab or a screen reader can reach, whatever its children say */
+.ail-gl .ail-stage:not(.is-on) { pointer-events: none; }
+.ail-gl .ail-stage:not(.is-on) * { visibility: hidden !important; }
+
+/* the link to the next section that ends every stage: read always, seen only while it has focus */
+.ail-gl .ail-next.ail-vh:focus { position: fixed; left: 50%; bottom: 24px; z-index: 30; width: auto; height: auto; margin: 0; overflow: visible; clip-path: none;
+  transform: translateX(-50%); display: inline-flex; align-items: center; min-height: 44px; padding: 0 16px; border: 1px solid var(--ail-fg);
+  background: var(--ail-card); color: var(--ail-fg); font: 400 var(--ail-fs-label)/1 var(--ail-mono); letter-spacing: .08em; text-transform: uppercase; text-decoration: none; }
+
+/* an arc's two names are pinned at its ends, so the button that holds them has no box of its own: focus is drawn on the names */
+.ail-gl .ail-ln__ends:focus-visible { outline: 0 !important; box-shadow: none !important; }
+.ail-gl .ail-ln__ends:focus-visible .ail-own { outline: 2px solid var(--ail-fg) !important; outline-offset: 3px !important; }
+
+/* a finger (SPEC 7.1): 44 px at the least. The controls SPEC 7.1 names grow to it; a control set in a line of words
+   or a list row grows its hit area by padding that a negative margin takes back, so nothing around it moves.
+   Fact buttons inside sentences stay as they are (WCAG 2.5.8 exempts inline targets) */
+@media (pointer: coarse) {
+  .ail .ail-chrome__chip, .ail .ail-bill__dot, .ail .ail-bill__pick, .ail .ail-ms__swap, .ail .ail-ms__tag, .ail .ail-ar__name,
+  .ail .ail-rt__name, .ail .ail-ba__stamp, .ail .ail-end__links a, .ail .ail-chip { min-height: 44px !important; min-width: 44px !important; }
+  .ail .ail-ms__tag, .ail .ail-ar__name, .ail .ail-ba__stamp, .ail .ail-end__links a { display: inline-flex; align-items: center; }
+  .ail .ail-chrome__title a, .ail .ail-open__name, .ail .ail-ag__s, .ail .ail-ln__ends, .ail .ail-gram__past button,
+  .ail .ail-layer__head, .ail .ail-rt__more summary { padding-block: 15px; margin-block: -15px; }
+  .ail .ail-chrome__title a, .ail .ail-open__name, .ail .ail-ag__s { padding-inline: 10px; margin-inline: -10px; }
+  /* my stack's date is a framed chip: its hit area is an unseen layer around it, so its frame keeps its size and its
+     gap after the name (round 5, P-1: the padded frame ran over the P of the name) */
+  .ail .ail-ms__date { position: relative; }
+  .ail .ail-ms__date::before { content: ''; position: absolute; inset: -15px -10px; }
+  .ail .ail-gram__past button { padding-inline: 14px; margin-inline: -14px; }
+  /* a row of the best-at board is one target as tall as its row (22 rows share a phone's height: 44 px each cannot be) */
+  .ail .ail-bd__open { display: flex; align-items: center; justify-content: inherit; min-height: var(--bd-row, 26px); }
+}
+/* so is a floor's name on the line-up's axis, on a touch screen too wide for the phone's chips (round 3, N-7: 20 px tall
+   on rows 24 px apart) */
+@media (pointer: coarse) and (min-width: 900px) {
+  .ail-gl .ail-lu__layer { padding-block: 5px; margin-block: -2px; }
+}
+
+/* the text version's wide tables scroll sideways on a phone: a fade at the edge says so */
+.ail:not(.ail-gl) [data-sideways] { -webkit-mask: linear-gradient(90deg, #000 calc(100% - 28px), transparent); mask: linear-gradient(90deg, #000 calc(100% - 28px), transparent); }
+.ail:not(.ail-gl) [data-sideways][data-end] { -webkit-mask: none; mask: none; }
+
+/* reduced motion: an animation that repeats (Meta's Approve) plays once at most */
+@media (prefers-reduced-motion: reduce) {
+  .ail *, .ail *::before, .ail *::after { animation-iteration-count: 1 !important; }
+  .ail .ail-world .ail-btn[data-act] { animation: none !important; }
+}
+
+/* print takes the text version (index.js switches on beforeprint). Should a print skip that, nothing stays hidden */
+@media print {
+  .ail-gl .ail-stage:not(.is-on) * { visibility: visible !important; }
+  .ail [data-sideways] { -webkit-mask: none; mask: none; overflow: visible !important; }
+  /* a wide table takes the paper's width and wraps inside it: no column is cut at the page's edge */
+  .ail :is(.ail-lu__table, .ail-ag__table, .ail-bd__table) { table-layout: fixed; width: 100% !important; min-width: 0 !important; }
+  .ail :is(.ail-lu__table, .ail-ag__table, .ail-bd__table) :is(th, td) { overflow-wrap: anywhere; white-space: normal !important; }
+  /* the voice lamps' key goes onto a second line in the narrow first column: its words stay whole */
+  .ail .ail-lu__tnote { flex-wrap: wrap; gap: 2px 12px; overflow-wrap: normal; }
+  .ail .ail-lu__nk { margin-left: 0; white-space: nowrap; }
+}

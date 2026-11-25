@@ -68,8 +68,10 @@ export const lamp = (f) => (f && f.value ? f.value : 'unknown');
 
 export const layers = raw.architecture.stackLayers.map((l) => ({ id: l.id, n: String(l.order).padStart(2, '0'), name: l.name, sentence: l.sentence, without: l.without }));
 
-// One floor of one product: its state, its words, its parts and whose they are.
-function cell(layer, i, provider) {
+// One floor of one product: its state, its words, its parts and whose they are. A part from outside the five has no
+// status of its own: the claim by which this product uses it (`via`, its poweredBy) gives one (round 3, F3-1: two
+// models only "named by Musk" are announced, not running)
+function cell(layer, i, provider, via = []) {
   const base = { layer: layer.layer, n: layers[i].n, label: layers[i].name };
   if (!layer.name) {
     const s = stateOf('none', layer.gap);
@@ -79,10 +81,20 @@ function cell(layer, i, provider) {
   const s = stateOf(f ? f.status : 'released', f && f.gap);
   const parts = (layer.parts || []).slice(0, 6).map((p) => {
     const t = thing(p.ref);
-    return { name: p.name, owner: t ? t.owner : provider, status: t ? t.status : 'released', official: p.official || 'yes' };
+    const use = p.ref && p.ref.startsWith('ext-') ? fact((via.find((m) => m.modelRef === p.ref) || {}).claim) : null;
+    return { name: p.name, owner: t ? t.owner : provider, status: use ? use.status : t ? t.status : 'released', official: p.official || 'yes' };
   });
   const guests = [...new Set((layer.refs || []).map(ownerOf).filter((o) => o && o !== provider))];
-  return { ...base, ...s, name: layer.name, reason: null, fact: f, tag: f ? tagOf(f.status) : null, parts, guests };
+  return { ...base, ...s, name: layer.name, reason: null, fact: f, tag: f ? tagOf(f.status) : null, parts, guests, looks: guests.map((o) => guestLook(o, parts, layer.refs)) };
+}
+
+// A guest's core in a floor is drawn as settled as its most settled part there, as the signs draw the parts (round 4,
+// F4-1): faint where every part of that owner is unofficial, hatched where none is released yet, else solid.
+function guestLook(o, parts, refs = []) {
+  const mine = parts.filter((q) => q.owner === o);
+  if (mine.length && mine.every((q) => q.official === 'no')) return 'faint';
+  const statuses = mine.length ? mine.map((q) => q.status) : refs.filter((r) => ownerOf(r) === o).map((r) => thing(r).status);
+  return statuses.some((x) => x === 'released') || !statuses.some((x) => x === 'preview' || x === 'announced') ? 'solid' : 'hatch';
 }
 
 const THINKS = ['default', 'option', 'route', 'fallback'];
@@ -90,7 +102,7 @@ function door(s, provider, agentId) {
   const f = fact(s.claim);
   return {
     id: s.id, name: s.name, kind: s.kind, agent: s.id === agentId, status: f.status, tag: tagOf(f.status), access: s.access, fact: f,
-    stack: s.stack ? s.stack.map((l, i) => cell(l, i, provider)) : null,
+    stack: s.stack ? s.stack.map((l, i) => cell(l, i, provider, s.poweredBy)) : null,
     models: s.poweredBy.filter((m) => THINKS.includes(m.role)).map((m) => ({ ...thing(m.modelRef), role: m.role })),
   };
 }
@@ -135,15 +147,18 @@ const SIGNATURE = {
 
 // ---- what the catch floor shows in beat d (SPEC 2.5, "The catch"), where the words are not already in `lists`.
 // kind is how the piece behaves: an `empty` socket, a `locked` drawer, a plate that is `renamed` (was: its old
-// name), `shut-down` (it falls) or `stale` (until: the day its claim expires, it tilts). Anthropic's three empty
-// sockets are its second list, and xAI's catch is the frosted floor itself, so neither has one.
+// name), `shut-down` (it falls) or `closing` (a dated change is shutting it: its note says what happens, in the
+// data's words, and it tilts). A plate never prints a claim's expiry day: that is the day the page's sentence goes
+// stale, not the day the product ends. Anthropic's three empty sockets are its second list, and xAI's catch is the
+// frosted floor itself, so neither has one.
 const dated = (p) => [...p.surfaces, ...p.models].map((t) => ({ name: t.name, f: fact(t.claim) })).filter((t) => t.f);
 const CATCH = {
   openai: (p) => (p.media.video.primaryRef ? [] : [{ ...mediaItem(p.media.video), kind: 'empty' }]),
   google: (p) => [
     ...p.surfaces.flatMap((s) => (s.formerNames || []).map((was) => ({ text: s.name, was, kind: 'renamed', fact: fact(s.claim) }))),
     ...dated(p).filter((t) => t.f.status === 'shut-down').map((t) => ({ text: t.name, kind: 'shut-down', tag: TAG['shut-down'], fact: t.f })),
-    ...dated(p).filter((t) => t.f.staleAfter).map((t) => ({ text: t.name, kind: 'stale', until: t.f.staleAfter, fact: t.f })),
+    ...p.changes.filter((c) => c.kind === 'shutdown').map((c) => ({ c, s: p.surfaces.find((x) => x.id === c.entityRef) })).filter((x) => x.s)
+      .map(({ c, s }) => ({ text: s.name, note: s.access, kind: 'closing', fact: { ...fact(c.claim), status: '' } })),      // (a notice is not a product: no "Shipped" on its card)
   ],
   meta: (p, fl) => [{ text: fl.name, note: fl.access, kind: 'locked', fact: fact(fl.claim) }],
 };
@@ -152,19 +167,21 @@ function provider(id) {
   const p = raw.providers[id];
   const pa = p.personalAgent;
   const surface = p.surfaces.find((s) => s.id === pa.surfaceRef) || fail(`${id}: no surface for the personal agent`);
-  const stack = surface.stack.map((l, i) => cell(l, i, id));
+  const stack = surface.stack.map((l, i) => cell(l, i, id, surface.poweredBy));
   const access = fact(pa.access);
   const fl = raw.bestAt.flagships.find((f) => f.provider === id);
   const computer = p.cloudComputers.find((c) => c.primary) || null;
   // what it leads outright and where it is in the running: read from the best-at cells, so the card and the board agree
   const caps = raw.bestAt.capabilities;
-  const leads = caps.filter((c) => c.verdict === 'clear' && c.leader && c.leader.provider === id).map((c) => ({ id: c.id, name: c.name }));
+  const leads = caps.filter((c) => c.verdict === 'clear' && c.leader && c.leader.provider === id).map((c) => ({ id: c.id, name: c.name, reported: c.confidence === 'reported' }));
   const contends = caps.filter((c) => (c.verdict === 'contested' || c.verdict === 'tie') && (c.contenders || []).some((x) => x.provider === id)).length;
   // the flagship's price is second depth: the proof card and the text version print it, with its end date when it has one
   const flFact = fact(fl.claim);
   const price = fl.priceIn == null ? null : `$${fl.priceIn} / $${fl.priceOut} ${COPY.world.perMillion}`;
   const until = fl.priceUntil || null;
-  const priced = price ? { ...flFact, text: `${flFact.text} ${price}${until ? ` ${COPY.world.until} ${until}` : ''}.` } : flFact;
+  // (a price with its own claim brings that claim's sources to the card: the pricing pages, not the model's)
+  const priceSrc = fl.priceClaim ? fact(fl.priceClaim).sources : [];
+  const priced = price ? { ...flFact, text: `${flFact.text} ${price}${until ? ` ${COPY.world.until} ${until}` : ''}.`, sources: [...new Set([...flFact.sources, ...priceSrc])] } : flFact;
   // its top models: released language models of the four main tiers, the flagship always among them, newest first
   const main = p.models.filter((m) => ['flagship', 'workhorse', 'fast', 'small'].includes(m.tier) && m.modality === 'language' && (resolve(m.claim) || {}).status === 'released');
   const byNew = [...main].sort((a, b) => String(b.released || '').localeCompare(String(a.released || '')));
@@ -172,7 +189,7 @@ function provider(id) {
   const top = byNew.filter((m) => kept.includes(m)).map((m, k) => ({ name: m.name, released: k === 0 ? m.released : null, fact: m.id === fl.modelRef ? priced : fact(m.claim) }));
   return {
     id, name: p.identity.name, nameNote: p.identity.nameNote, brand: p.identity.assistantBrand, homepage: p.identity.homepage,
-    rename: p.identity.rename ? fact(p.identity.rename) : null, leads, contends, top,
+    rename: p.identity.rename ? { ...fact(p.identity.rename), status: '' } : null, leads, contends, top,      // a name is not a product: its card prints no "Shipped"
     signature: { line: p.signature.line, fact: fact(p.signature.claim) },
     tension: { line: p.tension.line, fact: fact(p.tension.claim) },
     agent: { id: pa.surfaceRef, name: pa.name, status: access.status, tag: tagOf(access.status), access },
@@ -190,16 +207,17 @@ function provider(id) {
   };
 }
 
-// The same data with every { claimRef } swapped for its claim, for sections that pick their own fields.
+// The same data with every { claimRef } swapped for its claim, for sections that pick their own fields. An arrow
+// (it has a fromRef) that also points at the vendor's view of it stays an arrow: its ends and its verb are kept.
 function resolved(node) {
   if (Array.isArray(node)) return node.map(resolved);
   if (!node || typeof node !== 'object') return node;
-  if (typeof node.claimRef === 'string') return resolve(node);
+  if (typeof node.claimRef === 'string' && !('fromRef' in node)) return resolve(node);
   return Object.fromEntries(Object.entries(node).map(([k, v]) => [k, resolved(v)]));
 }
 
 // ---- what the browser gets: structure only. Words stay in the HTML, where they also read without JavaScript.
-const cellCode = (c) => ({ s: c.state, g: c.guests, p: c.parts.map((q) => [q.owner, q.status, q.official]) });
+const cellCode = (c) => ({ s: c.state, g: c.guests, ...(c.looks && c.looks.some((k) => k !== 'solid') ? { k: c.looks } : {}), p: c.parts.map((q) => [q.owner, q.status, q.official]) });
 const clientOf = (p) => ({
   agent: p.agent.id, status: p.agent.status, stack: p.stack.map(cellCode),
   doors: p.doors.map((d) => ({ id: d.id, kind: d.kind, status: d.status, stack: d.stack ? d.stack.map(cellCode) : null, m: d.models.map((m) => [m.owner, m.status, m.role]) })),

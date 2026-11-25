@@ -11,6 +11,7 @@ uniform float uTime;
 uniform vec4 uDark;      // x lights-out sweep 0..1, y world x of the room, z glow radius, w glow amount
 uniform vec3 uGlowPos;
 uniform vec3 uGlowCol;
+uniform float uLamp;     // 0: the glow blooms from its point with a long tail. 1: a lamp's pool, even inside, with an edge
 float ign(vec2 p) { return fract(52.9829189 * fract(dot(p, vec2(0.06711056, 0.00583715)))); }
 float vnoise(vec2 p) {
   vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
@@ -37,11 +38,14 @@ float irisKeep(float side, out float band) {
   band = side > 0.0 ? ib.y : 0.0;
   return side > 0.0 ? ib.x : 1.0 - ib.x;
 }
-// lights out: a falloff that sweeps the room from left to right, then colour blooming from one point
+// lights out: a falloff that sweeps the room from left to right, then colour blooming from one point, or (uLamp) one
+// pool of light with an edge: even across, a soft rim a third of its radius wide, and a tenth of the bloom past it
 float darkAt(vec3 w) { return uDark.x <= 0.0 ? 0.0 : smoothstep(0.0, 1.0, (uDark.x * 84.0 - (clamp(w.x - uDark.y, -34.0, 42.0) + 34.0)) / 8.0); }
 vec3 glowAt(vec3 w) {
   float r = max(uDark.z, 0.001), d = distance(w, uGlowPos);
-  return uGlowCol * uDark.w / (1.0 + (d * d) / (r * r) * 2.0);
+  float bloom = 1.0 / (1.0 + (d * d) / (r * r) * 2.0);
+  float pool = (1.0 - smoothstep(r * 0.8, r * 1.12, d)) * (1.0 - 0.16 * (d * d) / (r * r)) + 0.1 * bloom;
+  return uGlowCol * uDark.w * mix(bloom, pool, uLamp);
 }
 `;
 
@@ -111,8 +115,8 @@ void main() {
     float s = fract(ph);
     float gap = 1.0 - smoothstep(0.0, px, s) * (1.0 - smoothstep(0.5, 0.5 + px, s));
     gap = mix(gap, 0.5, smoothstep(0.11, 0.2, px)) * uHatch * (1.0 - smoothstep(0.25, 0.4, abs(N.y)));
-    col = mix(col, uHatchCol.rgb, gap * mix(0.13, 0.34, uHatchCol.a));
-    a *= mix(1.0, mix(0.92, 1.0, uHatchCol.a), gap);
+    col = mix(col, uHatchCol.rgb, gap * mix(0.085, 0.27, uHatchCol.a));      // band against gap: 12 percent of white or less
+    a *= mix(1.0, mix(0.95, 1.0, uHatchCol.a), gap);
   }
 
   // frosted glass: it exists and the maker has not said what it is. Milky, matte, nothing shows through

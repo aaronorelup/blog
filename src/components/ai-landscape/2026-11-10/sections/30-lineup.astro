@@ -18,6 +18,8 @@ const voices = Object.fromEntries(view.providers.map((p) => {
   return [p.id, { tools: own ? lamp(own.callsTools) : 'unknown', list: all.map((v) => ({ name: v.name, fact: fact(v.callsTools.claim) || fact(v.claim) })) }];
 }));
 const NOTE = { [VOICE]: COPY.lineup.voiceActs, [ROUTER]: COPY.lineup.stands };
+// the voice lamps' other shapes get their word beside the note: a dotted ring is "not said", never "no" (round 2, V-3)
+const others = ['partial', 'no', 'unknown'].filter((v) => Object.values(voices).some((x) => x.tools === v));
 ---
 <section id="line-up" class="ail-sec ail-lu" data-sec="lineup" data-screens="2" data-land="0.2" data-rail={COPY.lineup.title} aria-labelledby="line-up-title">
   <div class="ail-stage">
@@ -26,7 +28,7 @@ const NOTE = { [VOICE]: COPY.lineup.voiceActs, [ROUTER]: COPY.lineup.stands };
       {view.layers.map((l, i) => (
         <p class="ail-lu__say" data-i={i}>
           <span class="ail-lu__head"><span class="ail-label">{l.n}</span> <span class="ail-title">{l.name}</span></span> <span class="ail-sentence">{l.sentence}</span>
-          {NOTE[i] && <span class="ail-lu__note ail-label">{i === VOICE && <span class="ail-lampx" data-v="yes" aria-hidden="true"></span>}{NOTE[i]}</span>}
+          {NOTE[i] && <span class="ail-lu__note ail-label">{i === VOICE && <span class="ail-lampx" data-v="yes" aria-hidden="true"></span>}{NOTE[i]}{i === VOICE && others.map((v) => <span class="ail-lu__nk"><span class="ail-lampx" data-v={v} aria-hidden="true"></span>{SAY[v]}</span>)}</span>}
         </p>
       ))}
     </div>
@@ -41,13 +43,13 @@ const NOTE = { [VOICE]: COPY.lineup.voiceActs, [ROUTER]: COPY.lineup.stands };
               <th scope="row" class="ail-lu__th">
                 <button type="button" class="ail-lu__layer ail-label" data-i={i}><span class="ail-lu__tip"><span class="ail-lu__k">{l.n}</span> {l.name}</span></button>
                 <span class="ail-lu__sent">{l.sentence}</span>
-                {NOTE[i] && <span class="ail-lu__sent ail-lu__tnote">{i === VOICE && <span class="ail-lampx" data-v="yes" aria-hidden="true"></span>}{NOTE[i]}</span>}
+                {NOTE[i] && <span class="ail-lu__sent ail-lu__tnote">{i === VOICE && <span class="ail-lampx" data-v="yes" aria-hidden="true"></span>}{NOTE[i]}{i === VOICE && others.map((v) => <span class="ail-lu__nk"><span class="ail-lampx" data-v={v} aria-hidden="true"></span>{SAY[v]}</span>)}</span>}
               </th>
               {view.providers.map((p) => {
                 const c = p.stack[i];
                 const v = i === VOICE ? voices[p.id] : null;
                 return (
-                  <td class="ail-lu__cell" data-p={p.id} data-state={c.state} data-guest={c.guests.join(' ') || undefined}>
+                  <td class="ail-lu__cell" data-p={p.id} data-state={c.state} data-guest={c.guests.join(' ') || undefined} data-faint={c.guests.filter((_, k) => c.looks[k] === 'faint').join(' ') || undefined}>
                     <details class="ail-lu__d" name="ail-lu">
                       <summary class="ail-lu__a">
                         <span class="ail-lu__who ail-label">{p.name}</span>
@@ -78,7 +80,7 @@ const NOTE = { [VOICE]: COPY.lineup.voiceActs, [ROUTER]: COPY.lineup.stands };
       <ul class="ail-lu__key">
         {KEY.map(([state, word]) => <li data-state={state}><span class="ail-sw" data-state={state} aria-hidden="true"></span>{word}</li>)}
       </ul>
-      <p class="ail-lu__guest"><span class="ail-sw ail-sw--guest" aria-hidden="true"></span>{COPY.state.guest}</p>
+      <p class="ail-lu__guest"><span class="ail-sw ail-sw--guest" aria-hidden="true"></span><span class="ail-sw ail-sw--guest" aria-hidden="true"></span><span class="ail-sw ail-sw--guest" aria-hidden="true"></span>{COPY.state.guest}</p>
     </div>
     <div class="ail-lens" aria-hidden="true"><canvas></canvas></div>
   </div>

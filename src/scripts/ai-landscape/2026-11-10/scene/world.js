@@ -111,7 +111,16 @@ export function createWorlds(ctx) {
       return mesh;
     };
     inst.parts.props = cfg.props.slice(0, ctx.quality.props).map((p, k) => cut(cfg.art.props[(p.file || k + 1) - 1], p, -6 + k));
-    if (cfg.fore && cfg.art.fore) inst.parts.fore = cut(cfg.art.fore, cfg.fore, 12);
+    if (cfg.fore && cfg.art.fore && !cfg.fore.draw) inst.parts.fore = cut(cfg.art.fore, cfg.fore, 12);
+    // a foreground piece drawn in code (fore.draw names a textures function, as sign.draw does), its height from the
+    // drawing: no contact shadow, and none on a phone, where it would stand over the floors of the open stack
+    if (cfg.fore && cfg.fore.draw && !ctx.phone) {
+      const f = cfg.fore, tex = textures[f.draw]();
+      const mesh = new Mesh(new PlaneGeometry(f.w, (f.w * tex.image.height) / tex.image.width), mats.paper(tex, { side: 1, blended: true, opacity: 0 }));
+      mesh.renderOrder = 12; mesh.visible = false;
+      group.add(mesh);
+      inst.parts.dock = mesh;
+    }
 
     // dust: slow motes in the world's light colour
     if (ctx.quality.dust > 0) {
@@ -148,7 +157,7 @@ export function createWorlds(ctx) {
     inst.dispose = () => {
       group.traverse((o) => { if (o.isMesh || o.isPoints) { o.geometry.dispose(); o.material.dispose(); } });
       scene.remove(group);
-      if (inst.name) { scene.remove(inst.name); inst.name.material.uniforms.uMap.value.dispose(); inst.name.material.dispose(); }
+      if (inst.name) { scene.remove(inst.name); inst.name.material.uniforms.uMap.value.dispose(); inst.name.material.dispose(); inst.name.geometry.dispose(); }
       if (inst.parts.portraitTex) inst.parts.portraitTex.dispose();
       urls.forEach((u) => textures.release(u));
     };
@@ -163,7 +172,7 @@ export function createWorlds(ctx) {
       return mounted.get(cfg.id);
     },
     unmount(id) { const inst = mounted.get(id); if (inst) { inst.dispose(); mounted.delete(id); if (worlds.active === inst) worlds.active = null; } },
-    reset() { for (const inst of mounted.values()) { inst.open = 0; inst.nameShow = 0; } },
+    reset() { for (const inst of mounted.values()) { inst.open = 0; inst.nameShow = 0; inst.dock = 0; } },
     resize(w, h, ratio) { size.w = w; size.h = h; size.ratio = ratio; chrome = null; },
 
     // Write the iris and the world's ground for whichever world is open this frame. inst.open: 0 shut .. 1 open.
@@ -190,11 +199,11 @@ export function createWorlds(ctx) {
       sh.uPaper.value.copy(HOUSE).lerp(sh.uWorld.value, Math.min(1, top.open * 1.5));
       if (top.parts.dust) top.parts.dust.material.uniforms.uPx.value = size.ratio * size.h * 0.26;      // motes about 0.25 units across, soft
 
-      // a portrait shows only whole: inside the window, 24 px clear of the chrome, with the iris quite open. It
+      // a portrait shows only whole: inside the window, 24 px clear of the chrome and of the words, the iris quite open. It
       // comes and goes by scale in 0.18 s at full value (a little slack once shown, so a pointer swing never flickers it)
       const f = top.parts.portrait;
       if (f && top.parts.portraitTex) {
-        if (!chrome) chrome = [...document.querySelectorAll('.ail-chrome__side')].map((n) => n.getBoundingClientRect());
+        if (!chrome) chrome = [...document.querySelectorAll('.ail-chrome__side, .ail-rail')].map((n) => n.getBoundingClientRect());
         let l = 1e9, r = -1e9, hi = 1e9, lo = -1e9;
         for (const [sx, sy] of CORNERS) {
           v.set((sx * FRAME.w) / 2, (sy * FRAME.h) / 2, 0).applyEuler(f.rotation).add(f.position).add(top.group.position).project(cam);
@@ -202,14 +211,30 @@ export function createWorlds(ctx) {
           l = Math.min(l, x); r = Math.max(r, x); hi = Math.min(hi, y); lo = Math.max(lo, y);
         }
         const m = top.portraitOn ? 10 : 24, e = top.portraitOn ? -16 : 4;      // (the pointer's far swing may take a shown frame's mat to the window's edge)
+        const on = (c) => l < c.right + m && r > c.left - m && hi < c.bottom + m && lo > c.top - m;
+        // (`avoid`: the boxes of the words its section has on show beside it, the tabs and the callouts)
         top.portraitOn = top.open >= 0.999 && l >= e && r <= size.w - e && hi >= e && lo <= size.h - e
-          && !chrome.some((c) => c.width > 0 && l < c.right + m && r > c.left - m && hi < c.bottom + m && lo > c.top - m);
+          && !chrome.some((c) => c.width > 0 && on(c)) && !(top.avoid || []).some(on);
         top.portraitK = ctx.reduced ? (top.portraitOn ? 1 : 0) : Math.max(0, Math.min(1, (top.portraitK || 0) + (top.portraitOn ? ctx.dt : -ctx.dt) / 0.18));
         f.visible = top.portraitK > 0.001;
         f.scale.setScalar(0.6 + 0.4 * top.portraitK);
       }
-      // a sign on the wall steps back while the name stands in front of it
-      if (top.parts.sign) top.parts.sign.material.uniforms.uOpacity.value = 1 - top.nameShow;
+      // a docked piece stands whole or not at all: its section says how far it is in (inst.dock, 0 to 1), and it comes
+      // up from under its place only while all of it is inside the window. It follows the scroll, so it is still
+      const dock = top.parts.dock;
+      if (dock) {
+        const f = top.cfg.fore, e = top.dock || 0, hw = dock.geometry.parameters.width / 2, hh = dock.geometry.parameters.height / 2;
+        let whole = e > 0.001;
+        for (const [sx, sy] of CORNERS) {
+          v.set(f.x + sx * hw, f.y + sy * hh, f.z).add(top.group.position).project(cam);
+          if (Math.abs(v.x) > 1 - 16 / size.w || Math.abs(v.y) > 1 - 16 / size.h) whole = false;
+        }
+        dock.visible = whole;
+        dock.position.set(f.x, f.y - (1 - e) * 0.35, f.z);
+        dock.material.uniforms.uOpacity.value = e;
+      }
+      // a sign on the wall steps back while the name stands in front of it (sign.keep: it is part of the wall and stays)
+      if (top.parts.sign && !top.cfg.sign.keep) top.parts.sign.material.uniforms.uOpacity.value = 1 - top.nameShow;
 
       // the name: a camera-facing plane behind the stack, sized so it covers the DOM box given in nameRect
       const r = top.nameRect;

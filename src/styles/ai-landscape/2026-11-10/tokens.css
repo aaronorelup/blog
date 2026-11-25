@@ -69,3 +69,6 @@
 @media (max-width: 899px) {
   .ail { --ail-fs-body: 18px; --ail-top: 60px; }
 }
+@media (max-width: 599px) {
+  .ail { --ail-top: 76px; }      /* the chrome's title and stamp chip stand on two lines */
+}

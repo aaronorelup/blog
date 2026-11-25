@@ -16,13 +16,13 @@ const first = layers[0];
 const last = layers[layers.length - 1];
 const rail = `${first.n} ${first.name} – ${last.n} ${last.name}`;
 ---
-<section id="layers" class="ail-sec ail-gram" data-sec="grammar" data-screens="3.2" data-land="0.3" data-rail={rail} aria-labelledby="layers-title">
+<section id="layers" class="ail-sec ail-gram" data-sec="grammar" data-screens="3.5" data-land="0.3" data-rail={rail} aria-labelledby="layers-title">
   <div class="ail-stage">
     <h2 id="layers-title" class="ail-gram__close ail-sentence">{COPY.grammar.close}</h2>
     <p class="ail-gram__ask ail-sentence">{COPY.grammar.request}</p>
     <ol class="ail-gram__list">
-      {layers.map((l, i) => (
-        <li class="ail-layer" data-i={i} data-layer={l.id}>
+      {layers.map((l) => (
+        <li class="ail-layer" data-layer={l.id}>
           <details class="ail-layer__d" name="ail-layer">
             <summary class="ail-layer__head">
               <Glyph name={l.id} /><span class="ail-layer__n ail-label">{l.n}</span><span class="ail-layer__name ail-title">{l.name}</span>
@@ -38,7 +38,7 @@ const rail = `${first.n} ${first.name} – ${last.n} ${last.name}`;
       ))}
     </ol>
     <ol class="ail-gram__past">
-      {layers.map((l, i) => <li data-i={i}><button type="button" class="ail-label" data-i={i}><span class="ail-gram__pn">{l.n}</span> <span class="ail-gram__pw">{l.name}</span></button></li>)}
+      {layers.map((l, i) => <li><button type="button" class="ail-label" data-i={i}><span class="ail-gram__pn">{l.n}</span> <span class="ail-gram__pw">{l.name}</span></button></li>)}
     </ol>
     <p class="ail-gram__chip" aria-hidden="true">{layers.map((l) => <Glyph name={l.id} />)}</p>
   </div>

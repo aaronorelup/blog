@@ -35,15 +35,16 @@
   .ail-gl .ail-ar__quote { font-size: 18px; line-height: 1.18; }
   .ail-gl .ail-ar__list { position: absolute; left: var(--ail-margin); right: var(--ail-margin); bottom: var(--ail-margin); display: flex; flex-wrap: wrap; gap: 4px; opacity: var(--ar-up, 0); }
   .ail-gl .ail-ar__d { opacity: 1; }
-  .ail-gl .ail-ar__name { min-height: 34px; padding: 0 8px; font-size: 11px; box-shadow: inset 0 0 0 1px var(--ail-hair); }
+  .ail-gl .ail-ar__name { min-height: 34px; padding: 0 8px; letter-spacing: .04em; box-shadow: inset 0 0 0 1px var(--ail-hair); }
   .ail-gl .ail-ar__more { position: fixed; left: var(--ail-margin); right: var(--ail-margin); bottom: auto; top: 34%; width: auto; transform: none; }
   .ail-gl .ail-ar__say { left: var(--ail-margin); right: var(--ail-margin); bottom: calc(var(--ail-margin) + 84px); max-width: none; font-size: 20px; }
 }
 
 /* ---- 2.9.2 my stack. Text version: five bands, each a list of pieces that open */
 .ail-ms__head { display: grid; gap: 12px; max-width: 46rem; }
+.ail-ms__who { margin-left: .6em; vertical-align: .55em; color: var(--ail-fg-2); }
 .ail-ms__date { margin-left: .5em; vertical-align: .55em; text-decoration: none; padding: 3px 6px 2px; border: 1px solid var(--ail-hair); }
-.ail-ms__quote.is-gone { visibility: hidden; }
+.ail-gl .ail-ms__quote.is-gone { visibility: hidden; }
 .ail-ms__bands { display: grid; gap: 18px; margin-top: 26px; }
 .ail-ms__bandname { color: var(--ail-fg-2); margin-bottom: 6px; }
 .ail-ms__pieces { display: flex; flex-wrap: wrap; gap: 6px 10px; }
@@ -83,7 +84,7 @@
 .ail-gl .ail-ms__tag:hover, .ail-gl .ail-ms__d[open] > .ail-ms__tag { box-shadow: inset 0 0 0 1px var(--ail-fg); }
 .ail-gl .ail-ms__tag .ail-ms__name { font-size: 18px; white-space: nowrap; }
 .ail-gl .ail-ms__tag .ail-ms__name::before { display: none; }
-.ail-gl .ail-ms__role { font-size: 10.5px; }
+.ail-gl .ail-ms__role { font-size: 12px; }
 .ail-gl .ail-ms__tag .ail-ar-glyph { position: absolute; right: -4px; top: -6px; width: 16px; height: 16px; padding: 1px; background: var(--ail-floor); border-radius: 50%; box-shadow: 0 0 0 1px var(--ail-hair); }
 .ail-gl .ail-ms__d[open] > .ail-ms__more { position: absolute; z-index: 5; width: 320px; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); }
 .ail-gl .ail-ms__piece[data-layer='you'] .ail-ms__name { display: none; }
@@ -98,6 +99,10 @@
 .ail-gl .ail-ms__say.is-on { display: block; animation: ail-ar-in var(--ail-t) var(--ail-ease); }
 .ail-gl .ail-ms__pair { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .ail-gl .ail-ms__stamp { display: table; margin: 0 0 8px; font-size: 13px; letter-spacing: .14em; border-width: 2px; outline: 1px solid currentColor; outline-offset: 2px; transform: rotate(-2deg); }
+/* his own pair's stamp over their cord (mystack.js pins it): the text version has it in the list of pairs */
+.ail-ms__cordword { display: none; }
+.ail-gl .ail-ms__cordword { display: block; opacity: 0; padding: 4px 5px 0; background: var(--ail-veil); pointer-events: none; }
+.ail-gl .ail-ms__cordword .ail-ms__stamp { margin: 0 0 4px; font-size: 12px; letter-spacing: .08em; padding: 3px 6px 2px; }
 .ail-gl .ail-ms__line { font: italic 400 clamp(20px, 1.7vw, 27px)/1.1 var(--ail-serif); }
 .ail-gl .ail-ms__rest { display: block; position: absolute; right: var(--ail-margin); bottom: var(--ail-margin); z-index: 7; opacity: var(--ms-on, 0); }
 .ail-gl .ail-ms__restbtn { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid var(--ail-fg); background: var(--ail-card); }
@@ -114,7 +119,7 @@
   .ail-gl .ail-ms__piece[data-first] { opacity: 1; position: relative; }
   .ail-gl .ail-ms__tag { flex-direction: row; gap: 5px; padding: 3px 7px; min-height: 34px; }
   .ail-gl .ail-ms__tag .ail-ms__name { font-size: 15px; }
-  .ail-gl .ail-ms__role { font-size: 9.5px; }
+  .ail-gl .ail-ms__role { letter-spacing: .02em; }
   .ail-gl .ail-ms__d[open] > .ail-ms__more { position: fixed; left: var(--ail-margin); right: var(--ail-margin); top: 30%; bottom: auto; width: auto; transform: none; }
   .ail-gl .ail-ms__pairs { left: var(--ail-margin); right: var(--ail-margin); bottom: calc(var(--ail-margin) + 168px); max-width: none; }
   .ail-gl .ail-ms__line { font-size: 17px; }
@@ -155,7 +160,9 @@
 .ail-rt__chip[data-official='partial'] .ail-rt__wire { border-top-style: dotted; }
 .ail-rt__cw { margin-left: 8px; font-size: 15px; }
 
-.ail-gl .ail-rt__title, .ail-gl .ail-rt__cw { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+/* the section's name heads the first two lamps; the third brings its rule in the same place (review round 4, W-8) */
+.ail-gl .ail-rt__title { position: absolute; left: var(--ail-margin); top: var(--ail-top); margin: 0; padding: 4px 10px 2px; background: var(--ail-veil); opacity: var(--rt-on, 0); }
+.ail-gl .ail-rt:has(.ail-rt__more.is-on) .ail-rt__title { opacity: 0; }      /* out of sight, still the section's heading (round 5, D-1) */
 .ail-gl .ail-rt__shapes { display: block; margin: 0; }
 .ail-gl .ail-rt__shape { display: grid; justify-items: center; gap: 6px; width: max-content; max-width: 300px; opacity: 0; }
 .ail-gl .ail-rt__fig { display: none; }
@@ -169,14 +176,16 @@
 .ail-gl .ail-rt__cav { font-size: 18px; line-height: 1.25; }
 .ail-gl .ail-rt__src { justify-self: start; background: var(--ail-veil); padding: 0 10px; }
 .ail-gl .ail-rt__card { position: absolute; left: 0; top: calc(100% + 8px); width: min(560px, 90vw); max-height: 56vh; overflow: auto; z-index: 4; }
-.ail-gl .ail-rt__chips { padding: 6px 10px; background: var(--ail-veil); justify-self: start; gap: 8px 12px; }
+/* the pairs that ship today are second depth: a named list in the essay's card */
+.ail-rt__card .ail-rt__chips { display: grid; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--ail-hair); }
 
 @media (max-width: 899px) {
   .ail-gl .ail-rt__shapes { position: absolute; left: var(--ail-margin); right: var(--ail-margin); bottom: var(--ail-margin); display: flex; flex-wrap: wrap; gap: 4px; opacity: var(--rt-on, 0); }
   .ail-gl .ail-rt__shape { display: contents; opacity: 1; }
-  .ail-gl .ail-rt__name { min-height: 36px; font-size: 10.5px; padding: 0 8px; }
+  .ail-gl .ail-rt__name { min-height: 36px; padding: 0 6px; letter-spacing: .02em; }
   .ail-gl .ail-rt__limit { order: 9; flex-basis: 100%; max-width: none; margin-top: 4px; font-size: 17px; text-align: left; }
   .ail-gl .ail-rt__more { right: var(--ail-margin); width: auto; top: calc(var(--ail-top) - 6px); gap: 6px; }
+  .ail-gl .ail-rt__title { top: calc(var(--ail-top) - 6px); font-size: 30px; }
   .ail-gl .ail-rt__rule { font-size: 19px; }
   .ail-gl .ail-rt__cav { font-size: 15px; }
   .ail-gl .ail-rt__card { left: 0; right: 0; width: auto; }
@@ -240,11 +249,22 @@
 .ail-bill__dot { width: 28px; height: 28px; display: grid; place-items: center; }
 .ail-bill__dot::before { content: ''; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid var(--ail-fg); }
 .ail-bill__dot[aria-pressed='true']::before { background: var(--ail-fg); }
-.ail-gl .ail-bill__pick { width: 112px; height: 96px; border-radius: 8px; opacity: 0; }
-.ail-gl .ail-bill__pick:is(:hover, :focus-visible) { box-shadow: inset 0 0 0 1.5px var(--ail-fg); }
 .ail-gl .ail-bill__row:not(.is-on) :is(.ail-bill__nm, .ail-bill__cell, .ail-bill__x) { display: none; }
-.ail-gl .ail-bill__row.is-on :is(.ail-bill__nm, .ail-bill__cell) { display: block; width: 236px; height: 46px; padding: 5px 11px 6px; background: var(--ail-veil); }
-.ail-gl .ail-bill__nm { font-size: 30px; line-height: 38px; padding-top: 4px !important; }
+.ail-gl .ail-bill__row.is-on :is(.ail-bill__nm, .ail-bill__cell) { display: block; padding: 6px 12px 7px; background: var(--ail-veil); }
+@media (min-width: 900px) {
+  /* a dot in its owner's colour in front of each company's tank and meter, as on a phone: the underlined one is the
+     company whose card is up. Its mark, over its stack, names it */
+  .ail-gl .ail-bill__pick { display: grid; place-items: center; width: 44px; height: 40px; opacity: 0; }
+  .ail-gl .ail-bill__pick::before { content: ''; width: 14px; height: 14px; border-radius: 50%; background: var(--o); box-shadow: 0 0 0 1px var(--ail-fg); }
+  .ail-gl .ail-bill__pick:is(:hover, :focus-visible) { box-shadow: inset 0 0 0 1px var(--ail-fg); }
+  .ail-gl .ail-bill__pick[aria-pressed='true'] { box-shadow: inset 0 -3px 0 var(--ail-fg); }
+  /* the picked company's card: its name and three lines, at the top right, clear of every stack and mark */
+  .ail-gl .ail-bill__row.is-on :is(.ail-bill__nm, .ail-bill__cell) { position: absolute; right: var(--ail-margin); top: var(--ail-top); width: min(27vw, 330px); height: 50px; opacity: var(--an-on, 0); }
+  .ail-gl .ail-bill__row.is-on .ail-bill__nm { height: 44px; font-size: 30px; line-height: 36px; padding-top: 5px; border-bottom: 3px solid var(--o, var(--ail-mid)); }
+  .ail-gl .ail-bill__row.is-on .ail-bill__cell[data-k='plan'] { top: calc(var(--ail-top) + 46px); }
+  .ail-gl .ail-bill__row.is-on .ail-bill__cell[data-k='meter'] { top: calc(var(--ail-top) + 98px); }
+  .ail-gl .ail-bill__row.is-on .ail-bill__cell[data-k='limit'] { top: calc(var(--ail-top) + 150px); }
+}
 .ail-gl .ail-bill__h { display: block; color: var(--ail-fg-2); margin-bottom: 3px; }
 .ail-gl .ail-bill__cell .ail-fact { font-size: 19px; line-height: 1.15; white-space: nowrap; }
 
@@ -253,8 +273,8 @@
   .ail-gl .ail-agn__key { right: calc(var(--ail-margin) + 52px); }
   .ail-gl table.ail-agn__board { position: absolute; left: var(--ail-margin); right: var(--ail-margin); bottom: calc(var(--ail-margin) + 58px); display: grid; grid-template-columns: 70px repeat(4, 1fr); align-items: center; width: auto; margin: 0; padding: 6px 8px; background: var(--ail-veil); opacity: var(--an-on, 0); }
   .ail-gl .ail-agn__board td:empty { display: block; }
-  .ail-gl .ail-agn__q { width: auto; max-width: none; padding: 0 2px 6px; background: none; opacity: 1; font-size: 9px; letter-spacing: .02em; text-align: center; align-self: end; }
-  .ail-gl .ail-agn__p { padding: 0; background: none; opacity: 1; font-size: 10px; letter-spacing: .04em; }
+  .ail-gl .ail-agn__q { width: auto; max-width: none; padding: 0 2px 6px; background: none; opacity: 1; letter-spacing: 0; line-height: 1.15; text-align: center; align-self: end; }
+  .ail-gl .ail-agn__p { padding: 0; background: none; opacity: 1; letter-spacing: .02em; }
   .ail-gl .ail-agn__cell { display: grid; place-items: center; }
   .ail-gl .ail-agn__cell .ail-fact { display: grid; place-items: center; width: 44px; height: 44px; opacity: 1; --lamp: var(--ail-fg); }
   .ail-gl .ail-agn__cell .ail-fact:is(:hover, :focus-visible) { box-shadow: 0 0 0 2px var(--ail-fg); }
@@ -263,14 +283,15 @@
   .ail-gl .ail-bill__trends { right: var(--ail-margin); max-width: none; }
   .ail-gl .ail-bill__trend { font-size: 17px; }
   .ail-gl .ail-bill__row.is-on :is(.ail-bill__nm, .ail-bill__cell) { position: absolute; left: var(--ail-margin); width: calc(50vw - var(--ail-margin) - 2px); height: auto; padding: 4px 8px 6px; }
-  .ail-gl .ail-bill__nm { bottom: calc(var(--ail-margin) + 210px); font-size: 26px; }
-  .ail-gl .ail-bill__cell[data-k='plan'] { bottom: calc(var(--ail-margin) + 150px); }
-  .ail-gl .ail-bill__cell[data-k='meter'] { left: 50vw !important; bottom: calc(var(--ail-margin) + 150px); }
-  .ail-gl .ail-bill__cell[data-k='limit'] { bottom: calc(var(--ail-margin) + 96px); width: calc(100vw - 2 * var(--ail-margin)) !important; }
+  /* (the card stands 24 px higher than its three rows need: a trend of three lines under it never touches it) */
+  .ail-gl .ail-bill__nm { bottom: calc(var(--ail-margin) + 234px); font-size: 26px; }
+  .ail-gl .ail-bill__cell[data-k='plan'] { bottom: calc(var(--ail-margin) + 174px); }
+  .ail-gl .ail-bill__cell[data-k='meter'] { left: 50vw !important; bottom: calc(var(--ail-margin) + 174px); }
+  .ail-gl .ail-bill__cell[data-k='limit'] { bottom: calc(var(--ail-margin) + 120px); width: calc(100vw - 2 * var(--ail-margin)) !important; }
   .ail-gl .ail-bill__cell .ail-fact { font-size: 16px; }
-  .ail-gl .ail-bill__x { bottom: calc(var(--ail-margin) + 210px); }
-  .ail-gl .ail-bill__pick { position: absolute; bottom: calc(var(--ail-margin) + 262px); width: 44px; height: 40px; border-radius: 0; opacity: 1; display: grid; place-items: center; }
-  .ail-gl .ail-bill__pick::before { content: ''; width: 14px; height: 14px; border-radius: 50%; background: var(--o); box-shadow: 0 0 0 1px var(--ail-fg); }
+  .ail-gl .ail-bill__x { bottom: calc(var(--ail-margin) + 234px); }
+  .ail-gl .ail-bill__pick { position: absolute; bottom: calc(var(--ail-margin) + 286px); width: 44px; height: 40px; border-radius: 0; opacity: 1; display: grid; place-items: center; }
+  .ail-gl .ail-bill__pick::before { content: ''; width: 26px; height: 26px; border-radius: 4px; background: var(--o); box-shadow: 0 0 0 1px var(--ail-fg); }
   .ail-gl .ail-bill__pick[aria-pressed='true'] { box-shadow: inset 0 -2px 0 var(--ail-fg); }
   .ail-gl .ail-bill__row:nth-child(1) .ail-bill__pick { left: var(--ail-margin); }
   .ail-gl .ail-bill__row:nth-child(2) .ail-bill__pick { left: calc(var(--ail-margin) + 46px); }
@@ -286,5 +307,11 @@
 @media (max-width: 899px) {
   .ail:not(.ail-gl) :is(.ail-agn__board, .ail-bill__table) { table-layout: fixed; }
   .ail:not(.ail-gl) :is(.ail-agn__board, .ail-bill__table) :is(th, td) { padding-right: 5px; font-size: 15px; overflow-wrap: anywhere; }
-  .ail:not(.ail-gl) :is(.ail-agn__q, .ail-agn__p, .ail-bill__table thead th, .ail-bill__pick) { font-size: 9.5px; letter-spacing: .02em; }
+  .ail:not(.ail-gl) :is(.ail-agn__q, .ail-agn__p, .ail-bill__table thead th, .ail-bill__pick) { letter-spacing: 0; }
 }
+
+/* billing's card keys carry the rail's own marks: a glass before the monthly plan (the tank) and a bead before pay per
+   use (the tray), so the picture and the words are one key (review round 4, W-8) */
+.ail-gl .ail-bill__cell:is([data-k='plan'], [data-k='meter']) .ail-bill__h::before { content: ''; display: inline-block; margin-right: 8px; vertical-align: -3px; }
+.ail-gl .ail-bill__cell[data-k='plan'] .ail-bill__h::before { width: 11px; height: 16px; box-sizing: border-box; border: 1.5px solid currentColor; border-radius: 1px 1px 4px 4px; background: linear-gradient(to top, currentColor 45%, transparent 45%); }
+.ail-gl .ail-bill__cell[data-k='meter'] .ail-bill__h::before { width: 12px; height: 12px; border-radius: 50%; background: currentColor; }      /* 16 and 12 px: a tank and a bead, not a box (round 5, E-6) */

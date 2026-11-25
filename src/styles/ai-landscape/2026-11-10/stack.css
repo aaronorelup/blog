@@ -16,7 +16,7 @@
 .ail-floor[data-state='hatch'] .ail-floor__slab { background: repeating-linear-gradient(135deg, transparent 0 3.5px, var(--w-hatch, var(--ail-floor)) 3.5px 6.5px), var(--g); }
 .ail-floor[data-state='frost'] .ail-floor__slab { background: linear-gradient(rgba(248, 249, 251, .78), rgba(248, 249, 251, .78)), var(--g); border-style: dotted; border-color: var(--ail-fg-2); }
 .ail-floor[data-state='dotted'] .ail-floor__slab { background: none; border: 1.5px dotted color-mix(in srgb, var(--ail-fg) 45%, transparent); }
-.ail-floor[data-state='dotted'] .ail-floor__slab::before { content: '?'; position: absolute; inset: 0; display: grid; place-items: center; font: 400 11px/1 var(--ail-mono); color: var(--ail-fg-2); }
+.ail-floor[data-state='dotted'] .ail-floor__slab::before { content: '?'; position: absolute; inset: 0; display: grid; place-items: center; font: 400 12px/1 var(--ail-mono); color: var(--ail-fg-2); }
 .ail-floor[data-state='hollow'] .ail-floor__slab { background: none; border: 1.5px solid color-mix(in srgb, var(--ail-fg) 55%, transparent); }
 /* another colour inside the glass is someone else's part */
 .ail-floor[data-guest] .ail-floor__slab::after { content: ''; position: absolute; right: 6px; top: 50%; width: 9px; height: 9px; margin-top: -4.5px; border-radius: 50%; background: var(--guest, var(--ail-mid)); box-shadow: 0 0 0 1.5px var(--ail-floor); }
@@ -48,10 +48,11 @@
   .ail-floor__more { grid-column: 1 / -1; }
   /* phone, 3D page: no label is drawn over a stack. The nine rows sit as a list in the sheet under it */
   .ail-gl .ail-world .ail-stack { position: static; display: grid; gap: 0; pointer-events: auto; }
-  .ail-gl .ail-world .ail-floor { position: static; display: grid; grid-template-columns: 6.6em 1fr; column-gap: 8px; align-items: baseline; width: auto; max-width: none; padding: 3px 0; background: none; opacity: 1 !important; visibility: visible; pointer-events: auto; transform: none !important; border-bottom: 1px solid var(--ail-hair); }
-  .ail-gl .ail-world .ail-floor__k { font-size: 10px; }
+  .ail-gl .ail-world .ail-floor { position: static; display: grid; grid-template-columns: 7.4em 1fr; column-gap: 8px; align-items: baseline; width: auto; max-width: none; padding: 3px 0; background: none; opacity: 1 !important; visibility: visible; pointer-events: auto; transform: none !important; border-bottom: 1px solid var(--ail-hair); }
+  .ail-gl .ail-world .ail-floor__k { letter-spacing: .03em; }
+  .ail-gl .ail-world .ail-floor__k::before { margin-right: .6em; }
   .ail-gl .ail-world .ail-floor__v { margin: 0; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .ail-gl .ail-world .ail-floor__v .ail-tag { font-size: 9px; padding: .2em .4em; }
+  .ail-gl .ail-world .ail-floor__v .ail-tag { padding: .2em .4em; }
   .ail-gl .ail-world .ail-floor__more { grid-column: 1 / -1; width: auto; }
   .ail-gl .ail-world .ail-stack.is-compact .ail-floor:not(.is-lit):not(.is-open) { opacity: .32 !important; visibility: visible; }
 }

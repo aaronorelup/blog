@@ -46,7 +46,8 @@ export function createRig(ctx) {
       const open = kind === 'open';
       // a phone stands further back than the 1.45 of the first plan: the open stack and the chrome must fit in 55 percent
       if (rig.phone) return open ? { pos: [x - 0.5, 3.0, 31], look: [x, 2.7, 0], fov: 24, cy: 0.335 } : { pos: [x - 0.4, 2.3, 23.6], look: [x, 1.95, 0], fov: 24, cy: 0.335 };
-      return open ? { pos: [x - 1.6, 3.0, 17.6], look: [x + 1.05, 2.8, 0], fov: 24 } : { pos: [x - 0.9, 2.4, 13.5], look: [x + 0.5, 2.2, 0], fov: 24 };
+      // the open stop looks a little above the stack's middle: the tabs, the top floor and what stands on it clear the chrome
+      return open ? { pos: [x - 1.6, 3.2, 17.6], look: [x + 1.05, 3.0, 0], fov: 24 } : { pos: [x - 0.9, 2.4, 13.5], look: [x + 0.5, 2.2, 0], fov: 24 };
     },
     to(stop) { read(stop, want); },
     // Between two stops. `e` is already eased by the caller (easeIO for a scrubbed move).
@@ -81,11 +82,12 @@ export function createRig(ctx) {
       let dist = off.length();
       if (want.fit) dist = Math.max(dist, want.fit / (2 * Math.tan(fov * RAD / 2) * camera.aspect));
       off.normalize();
-      // push-in: 5.5 units from the floor, 12 degrees above it, from the side the camera is already on
+      // push-in: 9 units from the floor, 12 degrees above it, from the side the camera is already on: the floor stays
+      // whole in the frame, with its neighbours above and below
       if (rig.push && rig.push.k > 0.001) {
         const k = easeIO(rig.push.k), pt = rig.push.point;
         right.set(p.x - pt.x, 0, p.z - pt.z).normalize();
-        const far = rig.phone ? 9 : 6.8;                 // a little further than the 5.5 of the plan: the card needs the right third
+        const far = rig.phone ? 10.5 : 9;
         right.multiplyScalar(far * Math.cos(12 * RAD)).setY(far * Math.sin(12 * RAD));
         p.copy(l).addScaledVector(off, dist).lerp(right.add(pt), k);
         l.lerp(right.copy(pt).setX(pt.x + (rig.phone ? 0 : 1.1)), k);    // look a little right of the floor, so it sits left of its card

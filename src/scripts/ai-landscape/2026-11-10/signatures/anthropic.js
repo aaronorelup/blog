@@ -129,7 +129,7 @@ export function create(ctx, world) {
   const petShade = new Mesh(new PlaneGeometry(1, 1), mats.paper(textures.soft(true), { side: 1, blended: true, mask: true, tint: cfg.theme.ink, opacity: 0.22 }));
   petShade.rotation.x = -Math.PI / 2; petShade.renderOrder = -6.5; petShade.visible = false;
   tower.group.add(petShade);
-  const PET = { door: 'anthropic-claude-code', big: 0.95, small: 0.7, x: 4.4, z: 0.8, wide: 1, was: false, hop: 0 };
+  const PET = { door: 'anthropic-claude-code', big: 0.85, small: 0.7, x: 4.12, z: 0.8, wide: 1, was: false, hop: 0 };      // (x: whole inside a 16:10 frame, at the end of the figure's cord)
   textures.load(cfg.art.props[0]).then((tex) => { if (tex && !st.gone) { pet.material.uniforms.uMap.value = tex; PET.wide = tex.image.width / tex.image.height; } });
 
   // ---- flights. A seat is decided by the lid's own data, never by the visitor
@@ -244,7 +244,7 @@ export function create(ctx, world) {
       PET.was = now; PET.hop = Math.max(0, PET.hop - dt);
       const up = Math.sin(Math.PI * k) * 1.4 + Math.sin(Math.PI * (PET.hop / 0.5)) * 0.4;
       pet.scale.set(tall * PET.wide, tall, 1);
-      pet.position.set(lerp(PET.x, 0.72, k), lerp(0.02, tower.floors[HANDS].y + FLOOR.h / 2, k) + tall / 2 + up, lerp(PET.z, 0.98, k));
+      pet.position.set(lerp(PET.x, 0.62, k), lerp(0.02, tower.floors[HANDS].y + FLOOR.h / 2, k) + tall / 2 + up, lerp(PET.z, FLOOR.w / 2 + 0.05, k));      // on the floor's front lip: further in, the floor above would hide it
       pet.quaternion.copy(camera.quaternion);
       pet.material.uniforms.uOpacity.value = here * tower.show;
       petShade.visible = k < 0.5;

@@ -83,6 +83,7 @@ export function create(ctx, world) {
     setDark(false);
     names.concat(handNames).forEach((n) => { n.classList.remove('is-on'); n.removeAttribute('data-picked'); });
     if (world.ui) world.ui.removeAttribute('data-handoff');
+    el.removeAttribute('data-handoff');
     sats.forEach((s) => { s.arc.draw = 0; s.arc.update(); });
   };
   // The catch (beat d): the model floor slides out, still frosted. You cannot see which model it is.
@@ -140,6 +141,7 @@ export function create(ctx, world) {
 
     // the hand-off: three lines from the delegation floor to its coding agents. Their names need the room: the pick keeps its model and owner
     if (world.ui) world.ui.toggleAttribute('data-handoff', playing && t >= atHands);
+    el.toggleAttribute('data-handoff', playing && t >= atHands);                  // the header's rename note steps aside for the three names
     const y = tower.floors[HANDS].y;
     sats.forEach((s) => {
       const k = playing ? smooth(span(t, atHands + s.n * 0.25, atHands + 0.6 + s.n * 0.25)) * amount : 0;

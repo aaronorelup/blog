@@ -15,3 +15,7 @@ duet-icon.svg          https://claude.com/static/claude-duet/app-icon-flat.svg, 
 
 Rule kept (SPEC 3.2 and ART-PLAN "marks"): "Use the Slate, Ivory or Clay files as given. No rules page was found
 in the kit, so keep clear space of half the mark height and never recolour." Duet icon: "Unaltered."
+
+Kept in source/, not shipped (review round 1, E15, 2026-11-16): claude-logo.svg, claude-logo-ivory.svg,
+claude-code-logo.svg, anthropic-logo.svg and duet-icon.svg. The page draws only claude-spark.svg, and a file in this
+folder is emitted to the live site whether used or not. Moved unchanged (same SHA-1); move one back to use it.

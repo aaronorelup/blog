@@ -55,14 +55,27 @@ as they are: they are the history. A snapshot an agent writes keeps `draft: true
 `/ai-landscape/` shows the newest snapshot, and each one stays readable at `/ai-landscape/<date>/`. A snapshot is a
 data file, `src/data/ai-landscape/<date>.json`, and four dated folders, `ai-landscape/<date>/` under
 `src/components/`, `src/scripts/`, `src/styles/` and `src/assets/`. To add one, copy the four folders to the new
-date and edit the copies, add `src/pages/ai-landscape/<date>.astro` and `<date>/sources.astro`, a share picture at
+date and rewrite every dated path in the copies to the new date (the unit tests fail on a copy that kept one old
+path), add `src/pages/ai-landscape/<date>.astro` and `<date>/sources.astro`, a share picture at
 `public/ai-landscape/<date>/og.jpg`, put the date first in `SNAPSHOTS` (`src/data/ai-landscape.js`, which the
-sitemap reads) and point `src/pages/ai-landscape/index.astro` at the new `Page.astro`. Never edit an old snapshot:
-the only thing that changes on an old page is its list of editions.
+sitemap reads) and point `src/pages/ai-landscape/index.astro` at the new `Page.astro`. The unit tests loop over
+`SNAPSHOTS`, so the new data, copy and view are checked with no test to copy. The data file is cut from the research
+fact base by one script that lives with the research, outside this repository: it drops what the page withholds
+(leads, check notes, how each conflict was settled, the titles of sources only a lead cited).
+
+Never edit an old snapshot's facts, words or pictures: the only thing that changes on an old page is its list of
+editions. "Frozen" means those three. A bug fix that changes none of them (a lifecycle, access or loading fault) may
+be applied to an old snapshot's code, and should be, since every snapshot copies the code before it.
 
 `LISTED` in the same file is the one switch for whether the page is listed. While it is `false` (a preview under
-review, reachable only by its address) every page and sources page says noindex, the sitemap leaves them out, the
-project card shows nowhere and the chrome carries a small Draft label. Set it to `true` to list the page.
+review, reachable only by its address) every page and sources page says noindex and carries `ao-secret` (so
+`stats-pages.txt`, and with it `/stats`, never names them), the sitemap leaves them out, the project card shows
+nowhere and the chrome carries a small Draft label. Set it to `true` to list the page.
+
+Its budgets (review rounds 1 and 2): first paint 95 KB gzipped of HTML and CSS (`node scripts/tools/budgets.mjs` rows,
+which fail as soon as they are over; the document carries the whole text version on purpose), a first view of 650 KB on desktop and phone, 130 draw calls in
+the studio and in links and 120 in a world, 370 words of fixed copy and 60 for screen readers, 60 words on screen
+(80 on a board). A window under 540 px tall reads the text version.
 
 ## Post URLs
 

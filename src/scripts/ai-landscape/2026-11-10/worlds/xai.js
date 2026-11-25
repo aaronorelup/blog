@@ -24,7 +24,6 @@ export default {
     { file: 1, z: -3.5, x: 7.5, y: 0.55, w: 3.0 },              // prop-1: the car with no badge, low on the right
   ],
   fore: null,
-  stripe: { z: 3.1, w: 0.12, colour: '#D4583A' },               // the pad's safety line, painted on the floor itself
   portrait: { x: 12.4, y: 5.5 },
   dust: '#FFFFFF',
   signature: 'xai',

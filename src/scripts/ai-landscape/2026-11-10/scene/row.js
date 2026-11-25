@@ -12,7 +12,7 @@ const LEDGE = FLOOR.w / 2 + 0.62;
 const BIG_WIDE = 1.6;     // how much larger a character stands when a world opens (pose "beside")
 // How large a character stands in each pose, times its own size: on its lid (the opening, the ending), on its ledge,
 // and free on the ground at its stack's front left (the sections where the figures have the floor to themselves).
-const SCALE = { top: 2.1, tight: 1.6, floor: 1.3, front: 2.6 };      // (tight: on its lid in a 16:9 frame or wider, which has less head room)
+const SCALE = { top: 2.1, tight: 1.6, floor: 1.3, front: 2.25 };      // (tight: on its lid in a 16:9 frame or wider, which has less head room)
 const PLATE_MIN = 28;     // CSS px: a plate that would be drawn narrower is absent, and the HTML list shows the mark
 const PLATE_OUT = 0.18;   // seconds a plate takes to leave or come back, by scale alone
 
@@ -20,6 +20,7 @@ export function createRow(ctx) {
   const BIG = ctx.phone ? 1.15 : BIG_WIDE;
   const { scene, mats, textures, data } = ctx;
   const pale = (hex) => { const c = new Color(hex); return c.r + c.g + c.b > 2.2 ? new Color('#B9BEC8') : c; };
+  let gone = false;
 
   const towers = ORDER.map((id, t) => {
     const cfg = world(id);
@@ -36,7 +37,7 @@ export function createRow(ctx) {
     const name = document.querySelector(`.ail-world[data-world="${id}"] .ail-mark img`)?.alt || document.querySelector(`.ail-world[data-world="${id}"] .ail-mark__name`)?.textContent || id;
     textures.markPlate({ url: cfg.marks.lid, name, plate: cfg.marks.plate, clear: cfg.marks.clear }).then((tex) => {
       plate.material.uniforms.uMap.value = tex; plate.visible = true;
-      if (!tex.userData.over) return;
+      if (!tex.userData.over || gone) return;
       // a mark that cannot be drawn to a canvas: the official file itself rides the blank plate as an image
       const img = document.createElement('img');
       img.src = cfg.marks.lid; img.alt = ''; img.className = 'ail-lidmark';
@@ -52,13 +53,15 @@ export function createRow(ctx) {
       : new Mesh(new PlaneGeometry(1, 1), mats.paper(null, { side: 0, blended: true }));
     body.renderOrder = 7; body.visible = kind === 'orb3d';
     scene.add(body);
-    if (kind !== 'orb3d') textures.load(cfg.art.hero).then((tex) => { if (tex) { body.material.uniforms.uMap.value = tex; body.visible = true; } });
+    // the first view draws the 512 px character; the full one replaces it later (sharpen, below), on the high rung only
+    const first = cfg.art.heroSmall || cfg.art.hero;
+    if (kind !== 'orb3d') textures.load(first).then((tex) => { if (tex && !(tower.char && tower.char.sharp)) { body.material.uniforms.uMap.value = tex; body.visible = true; } });
     const ledge = new Mesh(new BoxGeometry(1.3, 0.05, 0.95).translate(-0.07, 0, 0), mats.glass(owner(id), { halfH: 0.025, alpha: 0.82 }));
     tower.group.add(ledge);
     const shade = new Mesh(new PlaneGeometry(1, 1), mats.paper(textures.soft(true), { side: 0, blended: true, mask: true, tint: '#0C0D10', opacity: 0.22 }));
     shade.rotation.x = -Math.PI / 2; shade.renderOrder = -6.5; shade.visible = false;
     scene.add(shade);
-    tower.char = { mesh: body, ledge, shade, kind, size, floor: cfg.character.floor - 1, from: 'floor', to: 'floor', t: 1, show: 1, scale: 1, pos: new Vector3(), blink: 2 + t };
+    tower.char = { mesh: body, ledge, shade, kind, size, perch: cfg.character.perch || 1, out: cfg.character.out || 0, floor: cfg.character.floor - 1, from: 'floor', to: 'floor', t: 1, show: 1, scale: 1, pos: new Vector3(), blink: 2 + t };
     return tower;
   });
 
@@ -69,6 +72,21 @@ export function createRow(ctx) {
   datumGeo.setAttribute('position', new Float32BufferAttribute(pts, 3));
   const datum = new LineSegments(datumGeo, new LineBasicMaterial({ color: '#0C0D10', transparent: true, opacity: 0 }));
   scene.add(datum);
+
+  // the full 1024 px character, on the high rung only: when its world is within a section, or once the worlds are
+  // behind (the studio sections draw the figures large). The 512 px one stays cached for the row
+  const worldOf = new Map();
+  function sharpen() {
+    if (ctx.quality.name !== 'high') return;
+    for (const tw of towers) {
+      if (tw.char.sharp || tw.char.kind === 'orb3d' || !tw.cfg.art.heroSmall || !tw.cfg.art.hero) continue;
+      if (!worldOf.has(tw.id)) worldOf.set(tw.id, ctx.clock.sections.find((s) => s.id === tw.id) || null);
+      const sec = worldOf.get(tw.id);
+      if (!sec || !(sec.near || ctx.clock.s >= sec.s0)) continue;
+      tw.char.sharp = true;
+      textures.load(tw.cfg.art.hero).then((tex) => { if (tex) { tw.char.mesh.material.uniforms.uMap.value = tex; tw.char.mesh.visible = true; } });
+    }
+  }
 
   const ray = new Raycaster();
   const ndc = new Vector2();
@@ -82,20 +100,26 @@ export function createRow(ctx) {
     const x = tower.x + tower.shift;
     if (name === 'top') return out.set(x, tower.height + tower.lift + c.size * onLid() * 0.5, tower.z + 0.2);
     // front: on the ground left of the stack's front corner. On a raised base it steps back onto the base
-    if (name === 'front') return out.set(x - 2.0, tower.lift + c.size * SCALE.front * 0.5 + 0.02, tower.z + 1.6 - Math.min(0.6, tower.lift));
+    // (1.6 left of the stack's middle: the first figure of the row stays whole inside the frame)
+    if (name === 'front') return out.set(x - 1.6, tower.lift + c.size * SCALE.front * 0.5 + 0.02, tower.z + 1.6 - Math.min(0.6, tower.lift));
     // beside: large, on the ground to the right of the stack (on a phone, where there is no room, on its lid)
     if (name === 'beside') return ctx.phone ? out.set(x, tower.height + tower.lift + c.size * BIG * 0.5, tower.z + 0.2) : out.set(x + 2.9, c.size * BIG * 0.5 + 0.02, tower.z + 0.8);
-    return out.set(x - LEDGE, tower.floors[c.floor].y + tower.lift + FLOOR.h / 2 + c.size * SCALE.floor * 0.5, tower.z + 0.25);
+    return out.set(x - LEDGE - c.out, tower.floors[c.floor].y + tower.lift + FLOOR.h / 2 + c.size * SCALE.floor * c.perch * 0.5, tower.z + 0.25);
   }
   // how much head room the frame has over the row seen from above: 1 at 16:10 and taller, 0 at 16:9 and wider
   const roomy = () => Math.max(0, Math.min(1, (1.78 - ctx.camera.aspect) / 0.18));
   const onLid = () => lerp(SCALE.tight, SCALE.top, roomy());
-  const big = (name) => (name === 'beside' ? BIG : name === 'top' ? onLid() : SCALE[name] || SCALE.floor);
+  const big = (name, c) => (name === 'beside' ? BIG : name === 'top' ? onLid() : SCALE[name] || SCALE.floor * c.perch);
 
   const row = {
     roomy,
     towers, datum: 0,
     tower: (id) => towers.find((tw) => tw.id === id),
+    // the lid marks that ride the page as images leave with the scene (a print, a short window or a turn builds a new one)
+    dispose() {
+      gone = true;
+      towers.forEach((tw) => { if (tw.lid.dom) tw.lid.dom.remove(); tw.lid.dom = null; });
+    },
     reset() {
       row.datum = 0;
       for (const tw of towers) {
@@ -114,6 +138,7 @@ export function createRow(ctx) {
     },
     update(dt, time, input) {
       const cam = ctx.camera;
+      sharpen();
       towers.forEach((tw, t) => {
         tw.apply(dt);
         const c = ctx.studio.casters[t];
@@ -122,7 +147,7 @@ export function createRow(ctx) {
 
         // the lid plate. It is wanted when its section shows it, its stack is there, it would be 28 px wide or
         // more, and no iris is about to cut across it. It leaves and returns by scale in 0.18 s, at full value
-        ctx.studio.bays[t].x = tw.x + tw.shift;                 // its bay of the house set follows it
+        ctx.studio.bays[t].x = tw.x + tw.shift; ctx.studio.bays[t].tower = tw;      // its board of the house set follows it
         const lid = tw.lid;
         const full = lid.size * (0.55 + 0.45 * lid.lift);
         lid.mesh.quaternion.copy(cam.quaternion);
@@ -155,7 +180,7 @@ export function createRow(ctx) {
         const near = c2.from === 'front' || c2.to === 'front';
         if (c2.from !== c2.to) c2.pos.y += Math.sin(Math.PI * e) * Math.max(0.35, ctx.phone || near ? 0.35 : tw.height + tw.lift + c2.size * 0.5 + 0.35 - (a.y + b.y) / 2);
         const breathe = ctx.reduced ? 0 : Math.sin(time * 2 * Math.PI * 0.4 + t) * 0.015;
-        const sc = c2.size * lerp(big(c2.from), big(c2.to), e) * c2.scale;
+        const sc = c2.size * lerp(big(c2.from, c2), big(c2.to, c2), e) * c2.scale;
         const m = c2.mesh;
         m.position.copy(c2.pos);
         m.visible = c2.show * tw.show > 0.01 && (c2.kind === 'orb3d' || !!m.material.uniforms.uMap.value);
@@ -184,7 +209,10 @@ export function createRow(ctx) {
         }
         const onLedge = (c2.to === 'floor' ? e : 0) + (c2.from === 'floor' ? 1 - e : 0);
         c2.ledge.visible = onLedge * c2.show > 0.02;
-        c2.ledge.position.set(-LEDGE, tw.floors[c2.floor].y + FLOOR.h / 2 - 0.03, 0.25);
+        // (a figure that stands further out has a longer ledge: its end at the stack stays where it is)
+        const wide = 1 + c2.out / 1.3;
+        c2.ledge.scale.x = wide;
+        c2.ledge.position.set(-LEDGE + 0.58 * (1 - wide), tw.floors[c2.floor].y + FLOOR.h / 2 - 0.03, 0.25);
         const lu = c2.ledge.material.uniforms;
         lu.uShow.value = Math.min(1, onLedge) * tw.show * c2.show; lu.uDim.value = tw.dim; lu.uSide.value = tw.side;
       });

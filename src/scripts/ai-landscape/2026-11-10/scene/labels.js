@@ -6,6 +6,28 @@ import { smooth } from '../core/clock.js';
 
 const NS = 'http://www.w3.org/2000/svg';
 
+// A row of tabs that scrolls sideways (a phone, a short window) never rests on a cut word or glyph: the cover at its
+// right end reaches back to where the last whole tab ends (--cut, read by the row's ::after). show(el) brings one tab
+// whole into the row.
+export function wholeTabs(row, tabs) {
+  let raf = 0;
+  const fit = () => {
+    const box = row.getBoundingClientRect();
+    let end = -1;
+    for (const el of tabs()) { const r = el.getBoundingClientRect(); if (r.width > 0 && r.left >= box.left - 1 && r.right <= box.right - 46) end = Math.max(end, r.right); }      // 46: clear of the fade itself
+    row.style.setProperty('--cut', `${end < 0 ? 0 : Math.max(0, box.right - end - 45).toFixed(0)}px`);      // the cover starts 1 px after the last whole tab
+  };
+  const later = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(fit); };
+  row.addEventListener('scroll', later, { passive: true });
+  window.addEventListener('resize', later);
+  later();
+  return {
+    fit: later,
+    show(el) { const box = row.getBoundingClientRect(), r = el.getBoundingClientRect(); if (r.width > 0 && (r.right > box.right - 44 || r.left < box.left)) row.scrollLeft += r.left - box.left - 2; later(); },
+    drop() { cancelAnimationFrame(raf); row.removeEventListener('scroll', later); window.removeEventListener('resize', later); row.style.removeProperty('--cut'); },
+  };
+}
+
 export function createLabels(ctx) {
   const svg = document.getElementById('ail-leaders');
   const v = new Vector3();
@@ -86,6 +108,12 @@ export function createLabels(ctx) {
         if (!at) continue;
         const p = at.isVector3 ? labels.project(at) : at;
         pin.el.style.transform = `translate3d(${(p.x + pin.dx).toFixed(1)}px,${(p.y + pin.dy).toFixed(1)}px,0) translate(${-pin.ax * 100}%,${-pin.ay * 100}%)`;
+        // a pin its section has faded out is hidden as well, so Tab and a screen reader skip what nobody can see
+        const o = pin.el.style.opacity;
+        const gone = o !== '' && Number(o) < 0.1;
+        if (gone) pin.el.style.visibility = 'hidden';
+        else if (pin.el.style.visibility === 'hidden' && pin.gone) pin.el.style.visibility = '';
+        pin.gone = gone;
       }
     },
   };

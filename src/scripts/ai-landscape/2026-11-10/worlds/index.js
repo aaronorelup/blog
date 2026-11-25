@@ -8,6 +8,7 @@ export const ORDER = ['anthropic', 'openai', 'google', 'meta', 'xai'];
 export { HOUSE };
 
 const NESTED = ['theme', 'hour', 'marks', 'art', 'alt', 'character', 'backdrop', 'fore'];
+const PORTRAITS = true;      // the owner's switch: false hangs no portrait in any room, on the 3D page and in the text version
 const cache = new Map();
 
 // brandMode "marks-only" (SPEC 3.2, 10): glass, glow and the chrome line fall back to house greys.
@@ -22,7 +23,7 @@ export function world(id) {
   const own = FILES[`./${id}.js`] || {};
   const cfg = { ...base, ...own };
   for (const key of NESTED) cfg[key] = own[key] === null ? null : { ...base[key], ...(own[key] || {}) };
-  if (own.portrait === undefined && !cfg.art.portrait) cfg.portrait = null;
+  if (!PORTRAITS || (own.portrait === undefined && !cfg.art.portrait)) cfg.portrait = null;
   if (cfg.brandMode === 'marks-only') cfg.theme = reserved(cfg.theme);
   cache.set(id, cfg);
   return cfg;

@@ -34,16 +34,16 @@ const SAY = { yes: COPY.architecture.yes, partial: COPY.best.partly, no: COPY.ar
                 <details class="ail-ag__d" name="ail-ag">
                   <summary class="ail-ag__s"><span class="ail-ag__agent">{a.agent}</span>{a.tag && <span class="ail-tag" data-status={a.status}>{a.tag}</span>}</summary>
                   <div class="ail-ag__more ail-card">
-                    <p><Fact fact={a.access} tag={false} /></p>
-                    {a.alwaysOn && <p><Fact fact={a.alwaysOn} tag={false} /></p>}
-                    {a.approvals && <p><Fact fact={a.approvals} tag={false} /></p>}
+                    {[a.access, a.alwaysOn, a.approvals].filter(Boolean).map((f) => (
+                      <p><Fact fact={f} tag={false} />{f.staleAfter && <span class="ail-until ail-label" data-until={f.staleAfter}> <span class="ail-until__w">{COPY.world.freshUntil}</span><span class="ail-until__x">{COPY.world.staleSince}</span> <time datetime={f.staleAfter}>{f.staleAfter}</time></span>}</p>
+                    ))}
                   </div>
                 </details>
                 <span class="ail-ag__co ail-label">{a.name}</span>
               </th>
               <td class="ail-ag__per">{a.perFact ? <Fact fact={a.perFact} full tag={false}>{a.per}</Fact> : a.per}</td>
               {LAMPS.map(([k, , g]) => (
-                <td class="ail-ag__lamp" data-lamp={k}><span class="ail-agt" data-v={a.lamps[k]} aria-hidden="true"><Glyph name={g} /></span><span class="ail-ag__lw ail-label">{SAY[a.lamps[k]]}</span></td>
+                <td class="ail-ag__lamp" data-lamp={k}><span class="ail-agt" data-v={a.lamps[k]} title={SAY[a.lamps[k]]} aria-hidden="true"><Glyph name={g} /></span><span class="ail-ag__lw ail-label">{SAY[a.lamps[k]]}</span></td>
               ))}
               <td class="ail-ag__cu" data-local={a.local ? '' : undefined}><Fact fact={a.screen} full tag={false}>{a.screen.short}</Fact></td>
               <td class="ail-ag__price"><Fact fact={a.plan.fact} full tag={false}>{a.plan.price}</Fact></td>

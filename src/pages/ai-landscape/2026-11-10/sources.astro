@@ -35,6 +35,7 @@ const cited = new Set();
     <title>{title}</title>
     <meta name="description" content={description} />
     {!LISTED && <meta name="robots" content="noindex" />}
+    {!LISTED && <meta name="ao-secret" content="" />}
     <link rel="canonical" href={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />

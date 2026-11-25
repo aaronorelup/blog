@@ -8,7 +8,10 @@
 .ail-sw[data-state='frost'] { background: color-mix(in srgb, var(--e) 22%, var(--ail-floor)); border-style: dotted; border-color: var(--ail-fg-2); }
 .ail-sw[data-state='dotted'] { background: none; border: 1.5px dotted color-mix(in srgb, var(--ail-fg) 55%, transparent); }
 .ail-sw[data-state='hollow'] { background: linear-gradient(var(--ail-fg-2), var(--ail-fg-2)) center / 40% 1.5px no-repeat; border-color: color-mix(in srgb, var(--ail-fg) 60%, transparent); }
-.ail-sw--guest { width: 10px; border-radius: 50%; --g: var(--ail-own-anthropic); }
+.ail-sw--guest { width: 10px; border-radius: 50%; }      /* grey, or the colours of the lit floor's guests (lineup.js) */
+.ail-sw--guest ~ .ail-sw--guest { margin-left: -4px; }
+.ail-sw--guest ~ .ail-sw--guest:not([data-p]) { display: none; }
+.ail-sw--guest[data-faint] { background: color-mix(in srgb, var(--g) 30%, transparent); border-style: dashed; }      /* unofficial: faint, as on its sign */
 [data-p='anthropic'] .ail-sw, .ail-sw[data-p='anthropic'] { --g: var(--ail-own-anthropic); }
 [data-p='openai'] .ail-sw, .ail-sw[data-p='openai'] { --g: var(--ail-own-openai); --e: var(--ail-rim-openai); }
 [data-p='google'] .ail-sw, .ail-sw[data-p='google'] { --g: var(--ail-own-google); --e: #378AFF; }
@@ -37,6 +40,7 @@
 .ail-lu__lamp { display: inline-flex; margin-left: 10px; }
 .ail-lu__lamp .ail-lampx { margin: 0; }
 .ail-lu__tnote { display: flex; align-items: center; }
+.ail-lu__nk { display: inline-flex; align-items: center; margin-left: 18px; }
 .ail-lu__voices { display: grid; gap: 5px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--ail-hair); }
 .ail-lu__voices b { font-weight: 400; font-style: italic; }
 .ail-lu__guest { margin-top: 8px; font-size: 16px; color: var(--ail-fg-2); }
@@ -56,11 +60,10 @@
 .ail-gl .ail-lu__table thead, .ail-gl .ail-lu__sent { display: none; }
 .ail-gl .ail-lu__table :is(th, td) { padding: 0; border: 0; width: auto; }
 /* the axis: the nine names, always printed, each on its floor's height and right-aligned against the first stack.
-   The lit one is in ink with its number, the rest stand back at 55 percent */
-.ail-gl .ail-lu__layer { display: block; padding: 3px 0 3px 8px; white-space: nowrap; text-align: right; color: color-mix(in srgb, var(--ail-fg) 55%, transparent); transition: color 150ms; }
+   The lit one is in ink with its number, the rest stand back at 64 percent (4.5 to 1 on the studio's paper, and more) */
+.ail-gl .ail-lu__layer { display: block; padding: 3px 0 3px 8px; white-space: nowrap; text-align: right; color: color-mix(in srgb, var(--ail-fg) 64%, transparent); transition: color 150ms; }
 .ail-gl .ail-lu__layer:is(:hover, :focus-visible), .ail-gl .ail-lu__layer[aria-pressed='true'] { color: var(--ail-fg); }
-.ail-gl .ail-lu__k { display: none; color: inherit; }
-.ail-gl .ail-lu__layer[aria-pressed='true'] .ail-lu__k { display: inline; }
+.ail-gl .ail-lu__k { display: none; color: inherit; }      /* the lit floor's number stands with its name at the top left, once */
 .ail-gl .ail-lu__cell { display: none; width: max-content; max-width: min(214px, 15.5vw); text-align: center; transition: opacity 150ms; }   /* never wider than the pitch of the row: on a narrow window an answer wraps, it does not run under its neighbour */
 .ail-gl .ail-lu__row.is-lit .ail-lu__cell { display: block; }
 .ail-gl .ail-lu__cell.is-dim { opacity: .42 !important; }
@@ -71,17 +74,29 @@
 .ail-gl .ail-lu__lamp .ail-lampx { width: 16px; height: 16px; }
 .ail-gl .ail-lu__v { display: block; font-size: 19px; line-height: 1.12; }
 .ail-gl .ail-lu__v .ail-sw { display: inline-block; vertical-align: 2px; margin-right: 6px; }
-.ail-gl .ail-lu__v .ail-tag { font-size: 9px; margin-left: 5px; }
+.ail-gl .ail-lu__v .ail-tag { margin-left: 5px; }
 .ail-gl .ail-lu__d[open] .ail-lu__a { background: var(--ail-fg); color: var(--ail-bg); }
 .ail-gl .ail-lu__d[open] .ail-lu__who { color: inherit; }
 .ail-gl .ail-lu__more { position: absolute; left: 50%; top: calc(100% + 6px); width: 300px; margin: 0; transform: translateX(-50%); text-align: left; z-index: 5; }
+.ail-gl .ail-lu__cell:last-child { max-width: min(186px, 13vw); }      /* the last answer keeps inside the window */
 .ail-gl .ail-lu__cell:first-child + .ail-lu__cell .ail-lu__more { left: 0; transform: none; }
 .ail-gl .ail-lu__cell:last-child .ail-lu__more { left: auto; right: 0; transform: none; }
 .ail-gl .ail-lu__foot { position: absolute; left: var(--ail-margin); bottom: var(--ail-margin); display: grid; gap: 6px; }
 .ail-gl .ail-lu__key { margin: 0; }
 .ail-gl .ail-lu__key li:nth-child(n + 3) { display: none; }
+.ail-gl .ail-lu__foot:has(.ail-lu__guest.is-on) .ail-lu__key { display: none; }      /* a floor with a guest's part says that instead: 60 words a screen */
 .ail-gl .ail-lu__guest { margin: 0; font-size: 18px; color: var(--ail-fg); opacity: 0; transition: opacity var(--ail-t) var(--ail-ease); }
 .ail-gl .ail-lu__guest.is-on { opacity: 1; }
+@media (min-width: 900px) and (max-height: 760px) {
+  /* a short window: the lit floor's words are smaller and run wider, the legend lies on one line (sections/lineup.js
+     stands the row under the words) */
+  .ail-gl .ail-lu__now { width: min(66vw, 920px); }
+  .ail-gl .ail-lu__now .ail-title { font-size: clamp(34px, 7vh, 52px); }
+  .ail-gl .ail-lu__say .ail-sentence { margin-top: 6px; max-width: 36em; font-size: clamp(21px, 4.2vh, 30px); }
+  .ail-gl .ail-lu__note { margin-top: 6px; }
+  .ail-gl .ail-lu__foot { grid-auto-flow: column; align-items: center; gap: 18px; }
+  .ail-gl .ail-lu__guest { font-size: 16px; }
+}
 /* the lens: a loupe over the stack under the pointer. It grows into the iris when a click opens the world */
 .ail-gl .ail-lens { display: block; position: fixed; left: 0; top: 0; z-index: 4; width: 180px; height: 180px; border-radius: 50%; pointer-events: none; visibility: hidden; will-change: transform;
   box-shadow: 0 0 0 1px var(--ail-ink), 0 0 0 5px rgba(248, 249, 251, .88), 0 0 0 6px rgba(12, 13, 16, .2), 0 16px 36px rgba(12, 13, 16, .22); }
@@ -92,27 +107,38 @@
 @media (max-width: 899px) {
   .ail-lu__sent { font-size: 14px; }
   /* phone, 3D page: slim stacks in the top third, then the nine names as tappable chips, the sentence, the answers */
-  .ail-gl .ail-lu .ail-stage::before { content: ''; position: absolute; left: 0; right: 0; top: 35svh; bottom: 0; background: rgba(248, 249, 251, .94); box-shadow: 0 -1px 0 var(--ail-line); }
-  .ail-gl .ail-lu__wrap { position: absolute; left: var(--ail-margin); right: var(--ail-margin); top: calc(35svh + 10px); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+  .ail-gl .ail-lu .ail-stage::before { content: ''; position: absolute; left: 0; right: 0; top: var(--lu-sheet); bottom: 0; background: rgba(248, 249, 251, .94); box-shadow: 0 -1px 0 var(--ail-line); }
+  .ail-gl .ail-lu__wrap { position: absolute; left: var(--ail-margin); right: var(--ail-margin); top: calc(var(--lu-sheet) + 10px); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
   .ail-gl .ail-lu__layer { width: 100%; height: auto; min-height: 44px; padding: 0 4px; font-size: 12px; letter-spacing: .02em; text-align: center; white-space: normal; color: var(--ail-fg); background: var(--ail-floor); box-shadow: inset 0 0 0 1px var(--ail-line); }
   .ail-gl .ail-lu__layer[aria-pressed='true'] { background: var(--ail-fg); color: var(--ail-bg); }
   .ail-gl .ail-lu__layer .ail-lu__k, .ail-gl .ail-lu__layer[aria-pressed='true'] .ail-lu__k { display: none; }
-  .ail-gl .ail-lu__now { top: calc(35svh + 158px); right: var(--ail-margin); width: auto; }
+  /* the five answers stand at the foot of the sheet, or right under the sentence where the window is tall (a tablet) */
+  .ail-gl .ail-lu { --lu-foot: max(var(--ail-margin), 65svh - 508px); }
+  /* the sheet begins a third of the way down, or higher in a short window: under it the chips (150 px), the sentence
+     with its note line (at most 61), the five answers (220) and the foot. Below about 700 px a note printed over the
+     first answer (round 3, N-5). The strip above keeps room for the signs on a phone 664 px tall (a real iPhone with
+     Safari's bars): the note sits 6 px under the sentence and, in a short window, the answers 8 px off the bottom */
+  .ail-gl .ail-lu { --lu-sheet: max(88px, min(35svh, 100svh - var(--lu-foot) - 445px)); }
+  .ail-gl .ail-lu__note { margin-top: 6px; }
+  .ail-gl .ail-lu__now { top: calc(var(--lu-sheet) + 158px); right: var(--ail-margin); width: auto; }
   .ail-gl .ail-lu__say .ail-lu__head { display: none; }
   .ail-gl .ail-lu__say .ail-sentence { margin: 0; font-size: 19px; }
   .ail-gl .ail-lu__row.is-lit .ail-lu__cell { position: fixed; left: var(--ail-margin); right: var(--ail-margin); max-width: none; width: auto; text-align: left; }
-  .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(2) { bottom: calc(var(--ail-margin) + 34px + 4 * 44px); }
-  .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(3) { bottom: calc(var(--ail-margin) + 34px + 3 * 44px); }
-  .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(4) { bottom: calc(var(--ail-margin) + 34px + 2 * 44px); }
-  .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(5) { bottom: calc(var(--ail-margin) + 34px + 44px); }
-  .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(6) { bottom: calc(var(--ail-margin) + 34px); }
-  .ail-gl .ail-lu__a { display: grid; grid-template-columns: 6.4em 1fr auto; align-items: baseline; gap: 8px; min-height: 44px; padding: 6px 0; background: none; border-top: 1px solid var(--ail-line); }
+  .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(2) { bottom: calc(var(--lu-foot) + 4 * 44px); }
+  .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(3) { bottom: calc(var(--lu-foot) + 3 * 44px); }
+  .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(4) { bottom: calc(var(--lu-foot) + 2 * 44px); }
+  .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(5) { bottom: calc(var(--lu-foot) + 1 * 44px); }
+  .ail-gl .ail-lu__row.is-lit .ail-lu__cell:nth-child(6) { bottom: var(--lu-foot); }
+  .ail-gl .ail-lu__a { display: grid; grid-template-columns: 7em 1fr auto; align-items: center; gap: 8px; height: 44px; padding: 2px 0; background: none; border-top: 1px solid var(--ail-line); }
   .ail-gl .ail-lu__lamp { margin: 0; align-self: center; }
-  .ail-gl .ail-lu__who { position: static; width: auto; height: auto; overflow: visible; clip-path: none; margin: 0; color: var(--ail-fg-2); }
-  .ail-gl .ail-lu__v { font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .ail-gl .ail-lu__more { position: fixed; left: var(--ail-margin); right: var(--ail-margin); top: auto; bottom: calc(var(--ail-margin) + 34px + 5 * 44px + 6px); width: auto; transform: none; }
-  .ail-gl .ail-lu__foot { left: var(--ail-margin); right: var(--ail-margin); bottom: var(--ail-margin); }
-  .ail-gl .ail-lu__guest { display: none; }
+  .ail-gl .ail-lu__who { display: block; position: static; width: auto; height: auto; overflow: visible; clip-path: none; margin: 0; color: var(--ail-fg-2); }
+  .ail-gl .ail-lu__v { font-size: 16px; line-height: 1.1; }      /* a long answer takes two lines: no word is ever cut */
+  .ail-gl .ail-lu__more { position: fixed; left: var(--ail-margin); right: var(--ail-margin); top: auto; bottom: calc(var(--lu-foot) + 5 * 44px + 6px); width: auto; transform: none; }
+  /* the five rows name their companies, so the legend steps aside (60 words a screen): each row's swatch and tag say its state */
+  .ail-gl .ail-lu__foot { display: none; }
+}
+@media (max-width: 899px) and (max-height: 699px) {
+  .ail-gl .ail-lu { --lu-foot: 8px; }
 }
 
 
@@ -206,14 +232,26 @@
 .ail-gl .ail-ba__why { position: fixed; left: var(--ail-margin); bottom: calc(var(--ail-margin) + 26px); width: min(40vw, 560px); padding: 12px 16px 0; background: var(--ail-veil); font-size: 20px; }
 .ail-gl .ail-ba__when { position: fixed; left: var(--ail-margin); bottom: var(--ail-margin); padding: 4px 16px 10px; background: var(--ail-veil); }
 .ail-gl .ail-ba__guess { position: fixed; right: calc(var(--ail-margin) + 8px); bottom: calc(var(--ail-margin) + 18px); width: min(30vw, 420px); margin: 0; }
+@media (min-width: 900px) and (max-height: 760px) {
+  /* a short window: the reason stands under the title and his guess at the top right, so the labels under the stacks
+     have the foot of the window to themselves (sections/bestat.js stands the podium under both) */
+  .ail-gl .ail-ba__why { top: calc(var(--ail-top) + 62px); bottom: auto; padding: 8px 12px 2px; font-size: 17px; }
+  .ail-gl .ail-ba__when { top: var(--ba-why, 200px); bottom: auto; padding: 2px 12px 8px; }
+  .ail-gl .ail-ba__guess { top: calc(var(--ail-top) + 2px); bottom: auto; padding: 10px 16px 16px; }
+  .ail-gl .ail-ba__guess blockquote { font-size: 20px; }
+}
 
 @media (max-width: 899px) {
   /* phone, 3D page: the row keeps the top third, each section's words sit in the sheet below it */
   .ail-gl :is(.ail-ag, .ail-ln, .ail-ba) .ail-stage::before { content: ''; position: absolute; left: 0; right: 0; top: 35svh; bottom: 0; background: var(--ail-veil); box-shadow: 0 -1px 0 var(--ail-hair); }
   .ail-gl :is(.ail-ag__title, .ail-ln__title, .ail-ba__title) { top: calc(35svh + 10px); right: var(--ail-margin); max-width: none; font-size: 28px; }
-  .ail-gl .ail-ln__kinds { top: calc(35svh + 50px); right: var(--ail-margin); max-width: none; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  /* the kinds scroll inside their own row and fade out at its right end, as a world's tabs do */
+  .ail-gl .ail-ln__kinds { top: calc(35svh + 50px); right: 0; max-width: none; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; }
+  .ail-gl .ail-ln__kinds::-webkit-scrollbar { display: none; }
+  .ail-gl .ail-ln__kinds::after { content: ''; position: sticky; right: 0; flex: none; width: 44px; box-sizing: content-box; border-left: var(--cut, 0px) solid transparent; margin-left: calc(-1 * var(--cut, 0px)); background: linear-gradient(90deg, transparent, var(--ail-bg) 2px) border-box; pointer-events: none; }
+  .ail-gl .ail-ln__kind { scroll-snap-align: start; }
   .ail-gl .ail-ln__kind { flex: none; min-height: 44px; }
-  .ail-gl .ail-ln__styles { left: var(--ail-margin); right: var(--ail-margin); top: auto; bottom: var(--ail-margin); flex-direction: row; justify-content: space-between; padding: 0; background: none; font-size: 10px; }
+  .ail-gl .ail-ln__styles { left: var(--ail-margin); right: var(--ail-margin); top: auto; bottom: var(--ail-margin); flex-direction: row; justify-content: space-between; padding: 0; background: none; letter-spacing: .02em; }
   .ail-gl .ail-ln__styles svg { width: 26px; }
   .ail-gl .ail-ln__item.is-on { left: var(--ail-margin); right: var(--ail-margin); top: calc(35svh + 108px); bottom: auto; width: auto; padding: 0; background: none; }
   .ail-gl .ail-ln__ends { font-size: 17px; }

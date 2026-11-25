@@ -11,22 +11,23 @@ export default {
   marks: { of: 'name', plate: 'white', clear: 0.75 },          // never tinted, never beside the wordmark, three quarters of its height clear
   art: artOf('openai'),
   alt: {
-    plate: 'A white paper gallery at noon: low plinths, a pill-shaped bar on the wall, a shelf of fuzzy balls in many colours, a laptop and a phone.',
+    plate: 'A white paper gallery at noon: a chat window in paper relief on the wall, with blank rows and a message bar, a laptop and a phone on low plinths.',
     hero: 'A round yellow felt figure with round black glasses and a small bow tie.',
     portrait: 'Cut-paper illustration of Sam Altman',
     person: 'Sam Altman',                                       // the gallery label under the frame: the name only
   },
   character: { kind: 'sprite', floor: 3, size: 1.15 },
-  backdrop: { y: -4.7, turn: -0.1 },                            // the plain wall inside the right arch stands right of the callouts
+  backdrop: { y: -4.7, turn: -0.068 },                          // the chat window's message bar ends left of the stack, the plain wall inside the right arch stands right of the callouts
   props: [
     { file: 3, z: -3.5, x: 7.6, y: 1.1, w: 2.6 },               // prop-3: an empty frame under a dust sheet, low on the right
-    { file: 2, z: -12, x: -5.9, y: 0.68, w: 1.7 },              // prop-2: three fuzzy balls on the floor, far back on the left
-  ],                                                            // prop-1, a second laptop on a plinth, is left out: the plate has one, and two crowded the frame
-  fore: null,                                                   // the white plinth at the front edge is left out: it read as a blank
-  sign: { draw: 'bar', x: -5.5, y: 6.6, w: 3.4, h: 0.644 },     // a message bar with no words, on the wall's blank lozenge left of the figure
+  ],                                                            // prop-1 (a second laptop) and prop-2 (three fuzzy balls in colour) are left out: the room is ink and white
+  // the message bar with no words (a plus, a caret, a microphone, the round send button), docked at the foot of the
+  // frame in front of the wall's chat window, as it is docked at the foot of the app. It stands there for the open beat
+  fore: { draw: 'bar', z: 5.6, x: -2.5, y: 1.09, w: 2.0 },
   portrait: { x: 12.5, y: 5.9 },                                // on the plain wall inside the right arch
   dust: '#C9CDD5',
   signature: 'openai',
   myth: 'openai-myth-voice',
+  stamps: { 'openai-myth-diffusion': -1 },        // its stamp is a sentence of the fact: the short form alone leaves the strike's idea standing
   catchFloor: 5,
 };

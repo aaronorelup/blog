@@ -49,6 +49,10 @@ export const COPY = {
     perMillion: 'per 1M tokens',
     until: 'until',
     expired: 'Expired',
+    // a fact's own staleAfter, the day it was expected to change, where it is not an end date: the words are about the
+    // fact, never about the thing (round 4, F4-2)
+    freshUntil: 'Fresh until',
+    staleSince: 'Stale since',
   },
   signature: {
     anthropic: { go: 'Try the plug' },
@@ -129,6 +133,7 @@ export const COPY = {
     since: 'changes since the snapshot',
     expiring: 'facts carry an expiry date',
     gathered: 'Facts gathered',
+    to: 'to',
     utc: 'UTC',
     editions: 'Editions',
     next: 'Next',

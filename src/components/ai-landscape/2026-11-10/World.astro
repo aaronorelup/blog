@@ -7,6 +7,7 @@ import Glyph from './Glyph.astro';
 import Mark from './Mark.astro';
 import Stack from './Stack.astro';
 import { COPY } from './data/copy.js';
+import { fact } from './data/view.js';
 import { world } from '../../../scripts/ai-landscape/2026-11-10/worlds/index.js';
 
 const { p } = Astro.props;
@@ -17,7 +18,15 @@ const A = COPY.a11y;
 // the myth beat c answers: the id a world file names (a wrong id fails the build), or the first when it names none
 const myth = cfg.myth ? p.myths.find((m) => m.id === cfg.myth) : p.myths[0];
 if (!myth) throw new Error(`ai-landscape: worlds/${p.id}.js asks for the myth "${cfg.myth}". The data holds: ${p.myths.map((m) => m.id).join(', ')}`);
+// a world may answer its signature with a claim where the picture draws that claim, not a myth (Anthropic's plug draws
+// the standards it made. Review round 4, W-7). A wrong id fails the build. Its myth is then struck as the catch's own
+// first line, over the catch that answers it (round 5, W7-a)
+const line = cfg.line ? fact({ claimRef: cfg.line }) : null;
 const others = p.myths.filter((m) => m !== myth);
+// the stamp under a struck myth is its fact's short form, or where that alone would leave the strike's idea standing,
+// one sentence of the fact itself (`stamps` in the world file: myth id to sentence, -1 the last. Round 5, W2-a)
+for (const id of Object.keys(cfg.stamps || {})) if (!p.myths.some((m) => m.id === id)) throw new Error(`ai-landscape: worlds/${p.id}.js stamps the myth "${id}". The data holds: ${p.myths.map((m) => m.id).join(', ')}`);
+const stamp = (m) => { const k = (cfg.stamps || {})[m.id]; if (k == null) return m.truth.short; const all = m.truth.text.split(/(?<=\.)\s+(?=[A-Z])/); return all[k < 0 ? all.length + k : k]; };
 const markName = cfg.marks.of === 'name' ? p.name : p.brand;
 const model = p.stack[4];                                                             // floor 5: what the agent thinks with
 ---
@@ -46,9 +55,9 @@ const model = p.stack[4];                                                       
       <p class="ail-leads">
         <span class="ail-label">{COPY.world.leads}</span>
         {p.leads.length > 0
-          ? <span class="ail-leads__caps">{p.leads.map((c) => <a class="ail-leads__cap" href={`#cap-${c.id}`} data-cap={c.id}>{c.name}</a>)}</span>
+          ? <span class="ail-leads__caps">{p.leads.map((c) => <span class="ail-leads__one"><a class="ail-leads__cap" href={`#cap-${c.id}`} data-cap={c.id}>{c.name}</a>{c.reported && <span class="ail-leads__conf ail-label">{COPY.stamp.reported}</span>}</span>)}</span>
           : <span class="ail-word">{COPY.world.noneOutright}</span>}
-        {p.contends > 0 && <span class="ail-leads__run"><span class="ail-label">{COPY.world.contends}</span> <b>{p.contends}</b></span>}
+        {p.contends > 0 && <a class="ail-leads__run" href="#best-at" data-cap="board"><span class="ail-label">{COPY.world.contends}</span> <b>{p.contends}</b> <span class="ail-label">{COPY.world.more}</span></a>}
       </p>
       <p class="ail-agent">
         <span class="ail-agent__name">{p.agent.name}</span>{p.agent.tag && <span class="ail-tag" data-status={p.agent.status}>{p.agent.tag}</span>}
@@ -96,7 +105,7 @@ const model = p.stack[4];                                                       
       <p class="ail-sig__ui">
         {ACTS.map((k) => <button type="button" class="ail-btn" data-act={k}>{sig[k]}</button>)}
       </p>
-      <p class="ail-myth"><s><span class="ail-vh">{A.myth} </span>{myth.myth}</s> <span class="ail-vh">{A.fact} </span><Fact fact={myth.truth} /></p>
+      {line ? <p class="ail-myth ail-myth--line"><Fact fact={line} /></p> : <p class="ail-myth"><s><span class="ail-vh">{A.myth} </span>{myth.myth}</s> <span class="ail-vh">{A.fact} </span><Fact fact={myth.truth} /></p>}
       {sig.note && <p class="ail-sig__note ail-label">{sig.note}</p>}
       <div class="ail-sig__lists">
         {p.lists.map((l, k) => (
@@ -121,14 +130,13 @@ const model = p.stack[4];                                                       
     </div>
 
     <div class="ail-catch" data-beat="d">
-      <p class="ail-catch__line"><span class="ail-label">{COPY.world.catch}</span> <span class="ail-sentence"><Fact fact={p.tension.fact} full tag={false}>{p.tension.line}</Fact></span></p>
+      <p class="ail-catch__line"><span class="ail-label">{COPY.world.catch}</span> {line && <s class="ail-catch__myth"><span class="ail-vh">{A.myth} </span>{myth.myth}</s>} <span class="ail-sentence"><Fact fact={p.tension.fact} full tag={false}>{p.tension.line}</Fact></span></p>
       {p.catch.length > 0 && (
         <ul class="ail-catch__list">
           {p.catch.map((it, n) => (
-            <li class="ail-catch__item" data-n={n} data-kind={it.kind} data-until={it.until}>
+            <li class="ail-catch__item" data-n={n} data-kind={it.kind}>
               {it.was && <s class="ail-catch__was">{it.was}</s>}
               <span class="ail-own" data-owner={p.id}>{it.fact ? <Fact fact={it.fact} full tag={false}>{it.text}</Fact> : it.text}</span>
-              {it.until && <span class="ail-until ail-catch__until ail-label"><span class="ail-until__w">{COPY.world.until}</span><span class="ail-until__x">{COPY.world.expired}</span> <time datetime={it.until}>{it.until}</time></span>}
               {it.note && <span class="ail-note">{it.note}</span>}{it.tag && <span class="ail-tag">{it.tag}</span>}
             </li>
           ))}
@@ -143,6 +151,7 @@ const model = p.stack[4];                                                       
                 <summary><Glyph name="flag" /><span class="ail-flag__myth"><span class="ail-vh">{A.myth} </span>{m.myth}</span></summary>
                 <p class="ail-flag__truth"><s><span class="ail-vh">{A.myth} </span>{m.myth}</s> <span class="ail-vh">{A.fact} </span><Fact fact={m.truth} /></p>
               </details>
+              {stamp(m) && <p class="ail-flag__fix"><s aria-hidden="true">{m.myth}</s><span class="ail-flag__true">{stamp(m)}</span></p>}
             </li>
           ))}
         </ul>

@@ -13,3 +13,5 @@
   /* in the phone's sheet the ring grows outward, so the pick stays on the line of the names beside it */
   .ail-gl .ail-world[data-world='xai'] .ail-sig__item[data-picked] { margin: -4px 0 -5px; }
 }
+/* the hand-off prints three more names: the rename note in the header steps aside for them (60 words a screen) */
+.ail-gl .ail-world[data-world='xai'][data-handoff] .ail-kicker__note { display: none; }

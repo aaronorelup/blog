@@ -101,8 +101,9 @@ a.ail-slab:hover { background: var(--ail-fg); color: var(--ail-bg); }
 .ail-proof__say { font: 400 19px/1.28 var(--ail-serif); }
 .ail-proof__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; margin-top: 12px; color: var(--ail-ink-2); }
 .ail-proof__meta .ail-tag { margin: 0; color: var(--ail-ink); }
+.ail-proof__state:empty { display: none; }      /* a claim that is not a product (a ranking's reason, a rename) has no status word */
 .ail-proof__conf[data-conf='reported'] { text-decoration: underline dotted 1px; text-underline-offset: .3em; }
-.ail-proof__date time { color: var(--ail-ink); }
+.ail-proof__date time, .ail-proof__until time { color: var(--ail-ink); }
 .ail-proof__src { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--ail-line); }
 .ail-proof__src > .ail-label { color: var(--ail-ink-2); }
 .ail-proof__list { display: grid; margin-top: 4px; }
@@ -148,7 +149,7 @@ a.ail-eds__ed:hover { background: color-mix(in srgb, var(--ail-ink) 8%, var(--ai
 .ail-src__t { font: 400 18px/1.25 var(--ail-serif); color: var(--ail-ink); overflow-wrap: anywhere; }
 a.ail-src__t { text-decoration: underline 1px; text-decoration-color: var(--ail-mid); text-underline-offset: .18em; }
 a.ail-src__t:hover { text-decoration-color: currentColor; }
-.ail-src__m { display: flex; flex-wrap: wrap; gap: 4px 10px; color: var(--ail-ink-2); font-size: 11px; }
+.ail-src__m { display: flex; flex-wrap: wrap; gap: 4px 10px; color: var(--ail-ink-2); font-size: 12px; }
 .ail-src__k { color: var(--ail-ink); }
 .ail-src.is-hit, .ail-src:target { background: #FFFFFF; box-shadow: inset 4px 0 0 var(--ail-ink); }
 /* withheld with the unverified leads: the number, kind and date stay, the title is a redaction bar */

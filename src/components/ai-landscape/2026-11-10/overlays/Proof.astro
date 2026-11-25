@@ -1,14 +1,14 @@
 ---
 // The proof card (SPEC 2.11): one card for every fact on the page. A fact is a button carrying its claim's data
-// (Fact.astro). Activating it fills this card with the claim's sentence, its status, how sure it is, its date and
-// its source numbers, each a link into the sources drawer. The data-w-* words are the card's labels.
+// (Fact.astro). Activating it fills this card with the claim's sentence, its status, how sure it is, its date (and
+// the day it holds until, when it has one) and its source numbers, each a link into the sources drawer.
 import '../../../../styles/ai-landscape/2026-11-10/trust.css';
 import Glyph from '../Glyph.astro';
 import { COPY } from '../data/copy.js';
 import { view } from '../data/view.js';
 const S = COPY.state;
 ---
-<div class="ail-proof" id="ail-proof" role="dialog" aria-labelledby="ail-proof-say" tabindex="-1" hidden data-ail-card
+<div class="ail-proof" id="ail-proof" role="dialog" aria-modal="true" aria-labelledby="ail-proof-say" tabindex="-1" hidden data-ail-card
   data-src={`/ai-landscape/${view.snapshot.date}/sources/`} data-w-released={S.released} data-w-preview={S.preview}
   data-w-announced={S.announced} data-w-shut-down={S.shutDown} data-w-undisclosed={S.undisclosed} data-w-not-found={S.notFound}
   data-w-absent={S.absent} data-w-not-applicable={S.absent} data-w-confirmed={COPY.stamp.confirmed} data-w-reported={COPY.stamp.reported}>
@@ -17,6 +17,7 @@ const S = COPY.state;
     <span class="ail-tag ail-proof__state"></span>
     <span class="ail-proof__conf"></span>
     <span class="ail-proof__date">{COPY.best.asOf} <time></time></span>
+    <span class="ail-proof__until" hidden>{COPY.world.until} <time></time></span>
   </p>
   <div class="ail-proof__src">
     <p class="ail-label">{COPY.stamp.sources}</p>

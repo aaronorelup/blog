@@ -5,7 +5,8 @@
 .ail-world__head { display: grid; grid-template-columns: auto 1fr; column-gap: 14px; row-gap: 10px; align-items: center; }
 .ail-kicker { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; padding-bottom: 7px; border-bottom: 2px solid var(--w-line, var(--ail-ink-2)); justify-self: start; }
 .ail-kicker span + span::before { content: '/'; margin-right: 12px; color: var(--ail-fg-2); }
-.ail-kicker__note { color: var(--ail-fg-2); }
+/* the note beside a name is a reported fact: it is set as one, in the serif, with its dotted line */
+.ail-kicker__note { color: var(--ail-fg-2); font: italic 400 15px/1 var(--ail-serif); letter-spacing: 0; text-transform: none; }
 /* justify-self: the h2 is as wide as its word, not as its grid column (the 3D name is laid over its letters) */
 .ail-world__name { grid-column: 1 / -1; justify-self: start; font-size: clamp(64px, 11vw, 150px); }
 
@@ -30,6 +31,7 @@
 
 .ail-world__intro, .ail-sig, .ail-catch { margin-top: 28px; display: grid; gap: 10px; max-width: 46rem; }
 .ail-known .ail-label, .ail-catch__line .ail-label { display: block; margin-bottom: 4px; color: var(--ail-fg-2); }
+.ail-catch__myth { display: block; margin-bottom: 2px; font-style: italic; color: var(--ail-fg-2); text-decoration-thickness: 1px; }
 .ail-agent__name { font: 400 var(--ail-fs-title)/.95 var(--ail-display); letter-spacing: .015em; text-transform: uppercase; }
 .ail-agent .ail-tag { vertical-align: .9em; }
 /* the entry card's three short lines: what it leads, what its agent thinks with, its top models. A label, then values */
@@ -37,7 +39,8 @@
 :is(.ail-leads, .ail-thinks, .ail-top) > .ail-label, .ail-leads__run .ail-label { color: var(--ail-fg-2); }
 .ail-leads__caps, .ail-top__list { display: inline-flex; flex-wrap: wrap; gap: 2px 14px; }
 .ail-leads__cap { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .2em; }
-.ail-leads__run { white-space: nowrap; }
+.ail-leads__conf { margin-left: 6px; color: var(--ail-fg-2); text-decoration: underline dotted 1px; text-underline-offset: .3em; }      /* a lead that rests on reports says so */
+.ail-leads__run { white-space: nowrap; text-decoration: none; }
 .ail-leads__run b { font-weight: 400; }
 .ail-top__m { white-space: nowrap; }
 .ail-top__m time { margin-left: .6em; color: var(--ail-fg-2); }
@@ -66,10 +69,9 @@
 .ail-sig__list ul[data-ordered] li::before { content: counter(step) '. '; font: 400 var(--ail-fs-label)/1 var(--ail-mono); }
 .ail-sig__item .ail-own, .ail-catch__item .ail-own { text-transform: none; font: inherit; letter-spacing: 0; display: inline; }
 .ail-sig__item .ail-own::before, .ail-catch__item .ail-own::before { display: inline-block; margin-right: .5em; transform: translateY(-1px); }
-/* the pieces of the catch: an empty socket, a locked drawer, a plate that was renamed, shut down or about to expire */
+/* the pieces of the catch: an empty socket, a locked drawer, a plate that was renamed, shut down or is closing */
 .ail-catch__list { display: grid; gap: 5px; }
 .ail-catch__was { margin-right: .5em; }
-.ail-catch__until { margin-left: .7em; color: var(--ail-fg-2); }
 .ail-flags { margin-top: 10px; }
 .ail-flags ul { display: grid; gap: 2px; margin-top: 6px; }
 .ail-flag summary { display: flex; align-items: center; gap: 10px; min-height: 44px; }
@@ -81,10 +83,15 @@
 .ail-gl .ail-world .ail-stage { color: var(--ail-fg); }
 /* a signature that sets `dark` (lights out): the words flip to paper, on the ink scrim, in any world */
 .ail-gl .ail-world[data-dark] { --w-scrim: rgba(12, 13, 16, .88); --w-card: #16171B; --w-ground: #0C0D10; }
+/* a dark world's words stand on its own dark scrim from the moment they arrive, before the chrome has flipped
+   (the iris is still opening) and after it has flipped back: they carry their own paper ink, never the studio's */
+.ail-gl .ail-world[data-chrome='dark'] :is(.ail-world__intro, .ail-kicker, .ail-sig, .ail-catch, .ail-world__caption) { --ail-fg: #F8F9FB; --ail-fg-2: #B7BBC4; --ail-hair: #33363D; --ail-bg: var(--ail-night); color: var(--ail-fg); }
 .ail-gl .ail-world__pic { display: none; }
 .ail-gl .ail-world__head { position: absolute; left: var(--ail-margin); top: var(--ail-top); max-width: 54vw; opacity: 0; transition: opacity var(--ail-t) var(--ail-ease); }
 .ail-gl .ail-kicker { padding: 7px 10px; background: var(--w-scrim); }
 .ail-gl .ail-world__head.is-on { opacity: 1; }
+/* a link or Tab that lands a world puts focus on its name: its head stands at once, so the ring is seen (round 3, N-8) */
+.ail-gl .ail-world__head:has(.ail-world__name:focus-visible) { opacity: 1 !important; transition: none; }
 .ail-gl .ail-world__name { font-size: var(--ail-fs-display); margin-top: 4px; white-space: nowrap; }
 .ail-3d .ail-world__name { color: transparent; user-select: none; }
 .ail-gl .ail-world__caption { display: block; padding: 3px 7px; background: var(--w-scrim); font-size: 12px; white-space: nowrap; opacity: 0; visibility: hidden; }
@@ -108,14 +115,21 @@
 .ail-gl .ail-sig__item, .ail-gl .ail-catch__item { position: fixed; left: 0; top: 0; z-index: 3; padding: 4px 8px 5px; background: var(--w-scrim); white-space: nowrap; opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 300ms var(--ail-ease); font-size: 17px; }
 .ail-gl .ail-sig__item.is-on, .ail-gl .ail-catch__item.is-on { opacity: 1; visibility: visible; }
 .ail-gl .ail-sig__item .ail-note, .ail-gl .ail-catch__item .ail-note { display: none; }
-.ail-gl .ail-sig__item .ail-tag, .ail-gl .ail-catch__item .ail-tag { font-size: 10px; }
+.ail-gl .ail-sig__item .ail-tag, .ail-gl .ail-catch__item .ail-tag { font-size: 12px; }
 
 /* doors: this company's products as a row of named tabs above the callouts, after the one word "Products". The row
    wraps to two lines. A tab is its glyph and its product's name, always: a name never waits for a hover */
 .ail-gl .ail-doors[data-beat] { position: fixed; left: 0; top: 0; z-index: 4; display: flex; flex-wrap: wrap; align-items: stretch; gap: 3px; margin: 0; transform: none; }
 .ail-gl .ail-door { border: 0; flex: none; }          /* a tab keeps its width: the row wraps or scrolls, it never squeezes a name */
+/* a short window with no room for two lines over the first callout: one row that scrolls sideways, each tab whole at rest */
+.ail-gl .ail-doors[data-row] { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; white-space: nowrap; }
+.ail-gl .ail-doors[data-row]::-webkit-scrollbar { display: none; }
+/* the fade at a scrolling row's right end rides the row, never a mask: a mask would also hide the open product's nine rows
+   (--cut: how far it reaches back to the end of the last whole tab, so no word or glyph rests half shown) */
+.ail-gl .ail-doors[data-row]::after { content: ''; position: sticky; right: 0; flex: none; width: 44px; box-sizing: content-box; border-left: var(--cut, 0px) solid transparent; margin-left: calc(-1 * var(--cut, 0px)); background: linear-gradient(90deg, transparent, var(--w-ground, var(--ail-paper)) 2px) border-box; pointer-events: none; }
 .ail-gl .ail-doors__cap { display: flex; align-items: center; margin: 0; padding: 0 9px; background: var(--w-scrim); color: var(--ail-fg-2); transition: opacity var(--ail-t) var(--ail-ease); }
 .ail-gl .ail-world:not([data-beat-now='b']) :is(.ail-door__tab, .ail-doors__cap) { opacity: 0; visibility: hidden; pointer-events: none; }
+.ail-gl .ail-world:not([data-beat-now='b']) .ail-doors::after { display: none; }      /* the row's fade leaves with its tabs: it never lies on the catch's sentence */
 /* pushed in on a floor, the camera is close and the tabs would lie over a callout: they step aside (a phone lists them in the sheet) */
 @media (min-width: 900px) { .ail-gl .ail-world.is-pushed :is(.ail-door__tab, .ail-doors__cap) { opacity: 0; visibility: hidden; pointer-events: none; } }
 .ail-gl .ail-door__tab { position: relative; min-height: 32px; min-width: 32px; padding: 0 9px 0 8px; gap: 6px; justify-content: center; background: var(--w-scrim); box-shadow: inset 0 0 0 1px var(--ail-hair); font: 400 15px/1 var(--ail-serif); letter-spacing: 0; text-transform: none; transition: background-color 150ms, color 150ms, opacity var(--ail-t) var(--ail-ease); }
@@ -131,7 +145,17 @@
 .ail-gl .ail-flags ul { display: flex; gap: 6px; }
 .ail-gl .ail-flag summary { justify-content: center; min-width: 44px; padding: 0 12px; background: var(--w-card); box-shadow: inset 0 0 0 1px var(--ail-fg); }
 .ail-gl .ail-flag__myth { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-.ail-gl .ail-flag[open] summary { background: var(--ail-fg); color: var(--ail-bg); }
+.ail-gl .ail-flag:is([open], .is-said) summary { background: var(--ail-fg); color: var(--ail-bg); }
+/* the scroll says one myth at a time, struck through in grey over the row of flags, and a beat later writes its
+   correction under it in ink at the same size, marked with the world's line: the eye ends on what is true. The room
+   is kept for the whole catch, so the card never jumps. The flag opens the whole sentence (sections/worlds.js;
+   review round 4, W-2; round 5, E-5, E-9) */
+.ail-flag__fix { display: none; }
+.ail-gl .ail-world[data-beat-now='d'] .ail-flags ul { position: relative; padding-top: 104px; }
+.ail-gl .ail-flag.is-said:not([open]) + .ail-flag__fix { position: absolute; left: 0; right: 0; top: 0; height: 98px; margin: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: 4px; }
+.ail-gl .ail-flag__fix > s { font: italic 400 20px/1.2 var(--ail-serif); color: var(--ail-fg-2); text-decoration-thickness: 1px; }
+.ail-gl .ail-flag__true { font: 400 20px/1.2 var(--ail-serif); color: var(--ail-fg); padding-left: 10px; box-shadow: inset 3px 0 0 var(--w-line, var(--ail-fg)); visibility: hidden; }
+.ail-gl .ail-flag.is-told + .ail-flag__fix > .ail-flag__true { visibility: visible; animation: ail-ar-in var(--ail-t) var(--ail-ease); }
 .ail-gl .ail-flag__truth { position: absolute; left: 0; right: 0; bottom: calc(100% + 8px); padding: 14px 18px; background: var(--w-card); box-shadow: 0 0 0 1px var(--ail-fg); max-width: none; }
 .ail-gl .ail-catch { overflow: visible; }
 
@@ -147,9 +171,9 @@
   .ail-gl .ail-world:not([data-beat-now='a']) .ail-world__name { opacity: 0; }
   .ail-gl .ail-sig, .ail-gl .ail-catch, .ail-gl .ail-world__intro { left: 0; right: 0; bottom: 0; width: auto; height: 45svh; padding: 12px var(--ail-margin); background: none; align-content: start; gap: 8px; }
   .ail-gl .ail-world__intro { padding-top: calc(17vw * .88 + 22px); }
+  .ail-gl .ail-world[data-chrome='dark'] .ail-world__intro { background: var(--w-ground); }      /* its sheet arrives with it */
   /* the tabs scroll inside their own row, each whole when it comes to rest, and fade out at the right edge */
-  .ail-gl .ail-doors[data-beat] { left: var(--ail-margin); right: 0; top: auto; bottom: calc(45svh - 46px); flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; padding-right: 44px;
-    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent); }
+  .ail-gl .ail-doors[data-beat] { left: var(--ail-margin); right: 0; top: auto; bottom: calc(45svh - 46px); flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; }
   .ail-gl .ail-doors[data-beat]::-webkit-scrollbar { display: none; }
   .ail-gl .ail-door, .ail-gl .ail-doors__cap { scroll-snap-align: start; }
   .ail-gl .ail-doors__cap { background: none; padding: 0 6px 0 0; }

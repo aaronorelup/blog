@@ -30,3 +30,6 @@ muse-mark.svg (Muse mark, the blue looping M) - OFFICIAL FILE, UNALTERED
   https://muse.ai/images/landing/brand/muse-app-icon.svg; it is not shipped.
   Plan rule kept: an official file, never redrawn or traced. No written usage rule for the Muse mark was found on
   muse.ai; keep Meta's logo rules above (clear space, no recolouring, never to stand for another Meta app).
+
+Kept in source/, not shipped (review round 1, E15, 2026-11-16): muse-mark.svg. The page draws only meta-logo.svg,
+and a file in this folder is emitted to the live site whether used or not. Moved unchanged (same SHA-1).

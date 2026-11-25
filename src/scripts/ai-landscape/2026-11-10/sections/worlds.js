@@ -1,17 +1,20 @@
 // One world section (SPEC 2.4): the same four beats for all five companies, driven by the scroll.
 // a Enter 0 to 0.8: truck along the row, the iris opens, the entry card. b Open 0.8 to 1.62: nine callouts and the
-// product tabs, held. c Signature 1.62 to 2.5: signatures/<name>.js plays. d The catch 2.5 to 3.0, then the iris shuts.
+// product tabs, held. c Signature 1.62 to 2.5: signatures/<name>.js plays. d The catch 2.5 to 3.0, its other myths
+// said in turn by the scroll, then the iris shuts.
 // Words are triggered at a scroll position and then run on time (SPEC 4.3): nothing rests half-faded.
 // Everything world-specific comes from worlds/<id>.js and the page's data: this file never names a company.
 import { Vector3 } from 'three';
 import { easeIO, lerp, smooth, span, win } from '../core/clock.js';
 import { $, $$, announce, rove, setBeat, toggle } from '../core/dom.js';
 import { HOURS } from '../scene/studio.js';
+import { wholeTabs } from '../scene/labels.js';
 import { FRAME } from '../scene/world.js';
 import { world } from '../worlds/index.js';
 
 const BEATS = [['a', 0.8], ['b', 1.62], ['c', 2.5], ['d', 3.01]];
 const MODEL = 4;
+const FLAG0 = 2.5, FLAG1 = 2.96, TOLD = 0.3;      // the myths share the catch, which stays until the iris has all but shut. Each is stamped 0.3 s after it shows
 
 export function create(ctx, el, sec) {
   const { rig, row, studio, labels, prims, input } = ctx;
@@ -49,8 +52,10 @@ export function create(ctx, el, sec) {
     const box = nameEl.getBoundingClientRect();
     st.rect = { left: ink.left, width: ink.width, top: box.top, height: box.height };
   };
-  const onResize = () => { st.rect = null; st.doorsCol = -99; };
+  const onResize = () => { st.rect = null; st.doorsCol = -99; st.callW = 0; };
+  const tabsRow = wholeTabs(doorsEl, () => doors.map((d) => d.tab));      // a phone, or a short window: the tabs scroll in their own row
   window.addEventListener('resize', onResize);
+  doorsEl.toggleAttribute('data-row', ctx.phone);
 
   // ---- doors: this company's products. Picking one relabels the nine callouts from that product's own stack
   function select(k, quiet = false) {
@@ -59,6 +64,7 @@ export function create(ctx, el, sec) {
     st.door = k;
     doors.forEach((x) => { x.node.open = x === d; x.tab.setAttribute('aria-expanded', String(x === d)); });
     if (st.calls) { st.calls.drop(); st.calls = null; }
+    st.callW = 0;
     if (st.cores) { st.cores.dispose(); st.cores = null; }
     if (st.cardPin) { st.cardPin.drop(); st.cardPin = null; }
     closePush();
@@ -73,6 +79,7 @@ export function create(ctx, el, sec) {
       if (d.card && !ctx.phone) st.cardPin = labels.pin(d.card, () => tower.anchor(MODEL, 1, labels.project), { dx: 46, ay: 0.2 });
     }
     leaves.open = k;
+    tabsRow.show(d.tab);
     if (!quiet) announce(d.tab.textContent.trim());
   }
   const onTab = (e) => { const tab = e.target.closest('summary'); const d = tab && doors.find((x) => x.tab === tab); if (d) { e.preventDefault(); select(d.k); } };
@@ -125,6 +132,15 @@ export function create(ctx, el, sec) {
     if (hit) push(hit.i); else closePush();
   };
   window.addEventListener('click', onCanvas);
+  // the other myths behind their flags: the scroll says them one after another through the whole catch, struck through
+  // over the row of flags, and 0.3 s after it shows stamps the fact under it (is-told): a step is 0.115 screens, 104 px
+  // at 900, longer than a wheel's notch, so a wheel rests on every one, and every rest ends on the fact (round 5, E-4;
+  // round 4, W-2). A tap opens the one on show
+  // with its whole fact (myth and fact in full would pass 60 words). A flag opened by hand holds until the scroll has
+  // moved a tenth of a screen
+  const flags = $$('.ail-flag', el);
+  const onFlag = (e) => { if (e.target.closest('.ail-flag summary')) st.flagAt = st.u; };
+  el.addEventListener('click', onFlag);
   // a capability this company leads is a link to its row of the board in "best at"
   const onCap = (e) => { if (e.target.closest('a[data-cap]')) { e.preventDefault(); ctx.scrollTo('best-at', 2.25); } };
   el.addEventListener('click', onCap);
@@ -169,7 +185,7 @@ export function create(ctx, el, sec) {
       // a jump out of the world (a rail link, reduced motion) skips the frames in which the signature fades:
       // one update at amount 0 makes it hide what it drew, so nothing of it stands in the next section
       if (st.sig) { st.sig.reset(); if (st.caught && st.sig.catch) st.sig.catch(0); if (st.sig.update) st.sig.update(0, 0); }
-      st.stilled = false; st.caught = false; st.nameK = 0; st.callK = 0; st.callOn = false;
+      st.stilled = false; st.caught = false; st.nameK = 0; st.callK = 0; st.callOn = false; st.sayK = null;
       stage.removeAttribute('data-board');
       if (st.calls) st.calls.update(0);
       st.beat = ''; delete el.dataset.beatNow; el.classList.remove('is-pushed');
@@ -180,12 +196,20 @@ export function create(ctx, el, sec) {
       st.u = u;
       const beat = BEATS.find(([, end]) => u < end)[0];
       if (beat !== st.beat) {
+        tabsRow.fit();
         if (st.beat === 'c') { if (st.sig) st.sig.reset(); st.stilled = false; }
         if (beat !== 'b' && st.door !== agentDoor) select(agentDoor, true);
         if (beat !== 'b') closePush();
         st.beat = beat;
       }
       if (input.moved || !st.rect) measure();
+      if (beat === 'd' && flags.length) {
+        if (st.flagAt != null && Math.abs(u - st.flagAt) > 0.1) st.flagAt = null;
+        const k = Math.floor(Math.min(flags.length - 1e-6, Math.max(0, (u - FLAG0) / ((FLAG1 - FLAG0) / flags.length))));
+        if (k !== st.sayK) { st.sayK = k; st.sayT = 0; } else st.sayT += dt;
+        const told = ctx.reduced || st.sayT >= TOLD, key = `${k}${told ? '+' : ''}`;
+        if (st.flagAt == null && key !== st.flag) { st.flag = key; flags.forEach((f, n) => { if (st.flagKey !== k) f.open = false; f.classList.toggle('is-said', n === k); f.classList.toggle('is-told', n === k && told); }); st.flagKey = k; }
+      } else if (st.flag != null) { st.flag = null; st.flagKey = null; st.flagAt = null; st.sayK = null; flags.forEach((f) => { f.open = false; f.classList.remove('is-said', 'is-told'); }); }
 
       // camera: truck along the row to this stack, settle wider when it opens, hold. The last world pulls back out
       const from = before ? rig.world(before.x, 'open') : rig.stops.row;
@@ -204,7 +228,7 @@ export function create(ctx, el, sec) {
       st.open = open;
       // the entry card comes in at 0.25 and leaves at 0.74, the callouts and the tabs come at 0.8, and the catch
       // leaves with the world. The open beat is a board: nine rows and the tabs, up to 80 words
-      setBeat(el, beat === 'a' ? (u >= 0.25 && u < 0.74 ? 'a' : '') : beat === 'd' && open < 0.4 ? '' : beat);
+      setBeat(el, beat === 'a' ? (u >= 0.25 && u < 0.74 ? 'a' : '') : beat === 'd' && u >= FLAG1 ? '' : beat);
       stage.toggleAttribute('data-board', beat === 'b');
       inst.open = open;
       for (const tw of row.towers) if (tw !== tower) tw.side = -1;
@@ -213,7 +237,12 @@ export function create(ctx, el, sec) {
       studio.roomX = tower.x;
       stage.style.setProperty('--sheet', open.toFixed(3));
       toggle(head, open > 0.35);
-      nameEl.style.visibility = inst.nameShow > 0.02 || ctx.phone ? '' : 'hidden';
+      // while the scene draws no name, the heading (transparent over the 3D) is clipped away rather than hidden: it is
+      // not counted as words on screen, and it stays a heading a screen reader finds and a link can focus
+      // (unless a key put focus on it: then it prints itself in ink, so the focus is seen, round 3 N-8)
+      const keyed = nameEl === document.activeElement && nameEl.matches(':focus-visible');
+      nameEl.style.clipPath = inst.nameShow > 0.02 || ctx.phone || keyed ? '' : 'inset(50%)';
+      nameEl.style.color = keyed && inst.nameShow <= 0.02 ? 'var(--ail-fg)' : '';
       inst.nameRect = st.rect;
       // the name is the entrance. It appears whole, once the iris edge has passed its far end (an edge never
       // slices it), and leaves when the stack opens
@@ -231,6 +260,9 @@ export function create(ctx, el, sec) {
 
       // the stack pulls apart from the top. The character stands large beside it, then hops onto its floor
       tower.open = smooth(span(u, 0.6, 1.0)) * (1 - smooth(span(u, 2.72, 2.9)));
+      // a piece docked at the foot of the frame (fore.draw) stands there for the open beat: it comes when the entry card
+      // has left that corner and goes before the next beat's card takes it
+      inst.dock = smooth(span(u, 0.82, 1.0)) * (1 - smooth(span(u, 1.5, 1.6)));
       const c = tower.char;
       if (u < 0.62) { c.from = 'floor'; c.to = 'beside'; c.t = smooth(span(u, 0.22, 0.52)); }
       else { c.from = 'beside'; c.to = 'floor'; c.t = easeIO(span(u, 0.62, 1.0)); }
@@ -248,18 +280,28 @@ export function create(ctx, el, sec) {
         calls.rows[0].parentElement.classList.toggle('is-compact', beat === 'c' || beat === 'd');
         calls.update(amount, lit);
       }
-      // the tabs stand above the first callout, as wide as the room to the window's edge, on one line or two
+      // the tabs stand above the first callout, as wide as the room to the window's edge, on one line or two. Where two
+      // lines would lie on that callout (a short window) they are one row that scrolls sideways, as on a phone
+      inst.avoid = null;
       if (!ctx.phone && beat === 'b') {
         const a0 = calls && calls.anchors.length ? { x: calls.column, y: calls.anchors[0].y } : tower.anchor(0, 1, labels.project);
         const col = calls && calls.anchors.length ? a0.x : a0.x + 46;
-        if (Math.abs(col - (st.doorsCol ?? -99)) > 6) {
+        const room = a0.y - 96;                                         // from under the chrome to the first callout
+        if (Math.abs(col - (st.doorsCol ?? -99)) > 6 || (st.doorsWrap > room) !== doorsEl.hasAttribute('data-row')) {
           st.doorsCol = col;
           doorsEl.style.maxWidth = `${Math.max(260, window.innerWidth - col - 28).toFixed(0)}px`;
-          doorsEl.removeAttribute('data-tight');
+          doorsEl.removeAttribute('data-tight'); doorsEl.removeAttribute('data-row');
           if (doorsEl.offsetHeight > 76) doorsEl.setAttribute('data-tight', '');
-          st.doorsH = doorsEl.offsetHeight;
+          st.doorsWrap = doorsEl.offsetHeight;
+          if (st.doorsWrap > room) { doorsEl.setAttribute('data-row', ''); tabsRow.show(doors[st.door].tab); }
+          st.doorsH = doorsEl.offsetHeight; st.doorsW = doorsEl.offsetWidth;
         }
-        doorsEl.style.left = `${col.toFixed(0)}px`; doorsEl.style.top = `${Math.max(64, a0.y - 32 - st.doorsH).toFixed(0)}px`;
+        const top = Math.max(64, a0.y - 32 - st.doorsH);
+        doorsEl.style.left = `${col.toFixed(0)}px`; doorsEl.style.top = `${top.toFixed(0)}px`;
+        // what the framed portrait must not stand on: the tabs and the nine callouts (scene/world.js shows it only clear)
+        if (calls && calls.anchors.length && amount >= 1 && !st.callW) st.callW = Math.max(...calls.rows.map((r) => r.offsetWidth));
+        inst.avoid = [{ left: col, right: col + st.doorsW, top, bottom: top + st.doorsH }];
+        if (calls && calls.anchors.length) inst.avoid.push({ left: col - 8, right: col + (st.callW || 300), top: calls.anchors[0].y - 34, bottom: calls.anchors[calls.anchors.length - 1].y + 34 });
       }
       if (st.cardPin) st.cardPin.el.style.opacity = amount.toFixed(2);
       if (!ctx.phone) doorsEl.style.visibility = beat === 'b' && amount < 0.02 ? 'hidden' : '';
@@ -306,11 +348,13 @@ export function create(ctx, el, sec) {
       window.removeEventListener('keydown', onKey);
       window.removeEventListener('click', onCanvas);
       el.removeEventListener('click', onCap);
+      el.removeEventListener('click', onFlag);
       doorsEl.removeEventListener('click', onRow);
       doorsEl.removeEventListener('click', onTab);
       doorsEl.removeEventListener('keydown', onRowKey);
       window.removeEventListener('resize', onResize);
       unrove();
+      tabsRow.drop(); doorsEl.removeAttribute('data-row');
       if (st.sig) st.sig.dispose();
       if (st.calls) st.calls.drop();
       if (st.cores) st.cores.dispose();

@@ -5,7 +5,7 @@
 import '../../../../styles/ai-landscape/2026-11-10/compare.css';
 import Fact from '../Fact.astro';
 import { COPY } from '../data/copy.js';
-import { LINK_KINDS, links } from '../data/compare.js';
+import { LINK_KINDS, links, tagOf } from '../data/compare.js';
 import { ORDER, view } from '../data/view.js';
 
 const STYLES = [['yes', COPY.links.official], ['partial', COPY.links.partial], ['no', COPY.links.unofficial]];
@@ -33,6 +33,7 @@ const OFFICIAL = Object.fromEntries(STYLES);
           {ORDER.includes(l.to.owner) && <span class="ail-ln__floor ail-label">{view.layers[l.to.floor - 1].name}</span>}
           <span class="ail-ln__kind-w ail-label">{COPY.links[l.kind]}</span>
           {l.official !== 'yes' && <span class="ail-tag" data-official={l.official}>{OFFICIAL[l.official]}</span>}
+          {l.fact.status === 'announced' && <span class="ail-tag" data-status={l.fact.status}>{tagOf(l.fact.status)}</span>}
           <p class="ail-ln__say"><Fact fact={l.fact} tag={false} /></p>
         </li>
       ))}

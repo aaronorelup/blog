@@ -24,6 +24,17 @@ export const GLYPHS = {
   prompt: 'M4 6l6 6-6 6M12 18h8',
   pointer: 'M3 4h18v13H3zM8 21h8M12 17v4M10 7l1.6 6 1.4-2.2 2.6-.8z',
   clock: 'M12 21a9 9 0 1 0 0-18a9 9 0 0 0 0 18M12 7v5l3.5 2',
+  // the nine things kept around the five, on the drawer fronts of the cabinet (scene only: the page prints none):
+  // a sheet, a branch, a folder, a lock, a chip, a drum, a globe, a bell, a gauge
+  context: 'M6 3h9l4 4v14H6zM15 3v4h4M9 12h7M9 16h7',
+  repos: 'M7 7v10M7 7a2 2 0 1 0 0-4a2 2 0 0 0 0 4M7 21a2 2 0 1 0 0-4a2 2 0 0 0 0 4M17 9a2 2 0 1 0 0-4a2 2 0 0 0 0 4M17 9c0 4-10 2-10 6',
+  skills: 'M4 7h6l2 2h8v10H4zM8 14h8',
+  secrets: 'M6 11h12v9H6zM8.5 11V8a3.5 3.5 0 0 1 7 0v3M12 15v2',
+  gpu: 'M7 7h10v10H7zM10 10h4v4h-4zM9 4v3M12 4v3M15 4v3M9 17v3M12 17v3M15 17v3M4 9h3M4 12h3M4 15h3M17 9h3M17 12h3M17 15h3',
+  storage: 'M5 6c0-1.7 3.1-3 7-3s7 1.3 7 3v12c0 1.7-3.1 3-7 3s-7-1.3-7-3zM5 6c0 1.7 3.1 3 7 3s7-1.3 7-3M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3',
+  hosting: 'M12 3a9 9 0 1 0 0 18a9 9 0 0 0 0-18M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18',
+  feedback: 'M6 17v-6a6 6 0 0 1 12 0v6l2 2H4zM10 21h4',
+  billing: 'M4 16a8 8 0 0 1 16 0M12 16l4-5M3 19h18',
   // small signs
   flag: 'M6 21V4M6 5h11l-2.5 3.5L17 12H6',
   question: 'M9 9a3 3 0 1 1 4.4 2.6c-.9.5-1.4 1.2-1.4 2.2v.7M12 18.2v.3',

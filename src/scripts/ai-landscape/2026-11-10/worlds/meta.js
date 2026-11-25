@@ -21,11 +21,14 @@ export default {
   },
   character: { kind: 'sprite', floor: 3, size: 1.05 },
   backdrop: { y: -4.2, turn: -0.1 },
+  // a blank paper card over the wall picture's one panel that carries a grid (it read as a calendar: a product this
+  // page says nothing about). The wall's other panels are blank too. 8 percent larger than the panel, the canvas's margin for its shadow added
+  sign: { draw: 'card', x: 12.02, y: 5.97, w: 3.68, h: 3.23, keep: true },
   props: [
     { file: 2, z: -6, x: -4.1, y: 1.2, w: 1.55 },               // prop-2: a white paper gate, at the left
     { file: 1, z: -3.5, x: 7.3, y: 0.62, w: 2.2 },              // prop-1: glasses on a stand, low on the right
   ],
-  fore: { z: 3.2, x: 3.5, y: -0.2, w: 6.2 },                    // a bank of cloud with a loop of blue ribbon
+  fore: { z: 5.6, x: 2.9, y: 0.3, w: 4.6 },                     // a bank of cloud with a loop of blue ribbon: close enough that its flat foot is below the frame
   portrait: { x: 12.4, y: 5.6 },
   dust: '#FFFFFF',
   signature: 'meta',

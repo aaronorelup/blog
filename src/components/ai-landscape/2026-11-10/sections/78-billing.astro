@@ -1,7 +1,8 @@
 ---
 // Billing (SPEC 2.9.5): a monthly plan, pay per use, and what happens at the limit, for each company. Text version:
 // the trends, then a table of the five with their plan lines. 3D page (sections/agnostic.js, kind "rail"): a rail along
-// the front of the floor, a tank and a meter for each company, a bead that switches to the meter when the tank is dry.
+// the front of the floor, a tank and a tray for each company, and beads that land in the tray once the tank is dry.
+// The scroll picks the company: its three lines hang as one card at the top right, and its named chip is pressed.
 import '../../../../styles/ai-landscape/2026-11-10/architecture.css';
 import Fact from '../Fact.astro';
 import { COPY } from '../data/copy.js';
@@ -20,13 +21,13 @@ const rows = B.providers.map((bp) => {
   };
 });
 ---
-<section id="billing" class="ail-sec ail-bill" data-sec="agnostic" data-kind="rail" data-screens="0.7" data-land="0.35" data-rail={B.claim.short} aria-labelledby="billing-title">
+<section id="billing" class="ail-sec ail-bill" data-sec="agnostic" data-kind="rail" data-screens="1" data-land="0.3" data-rail={B.claim.short} aria-labelledby="billing-title">
   <div class="ail-stage">
     <h2 id="billing-title" class="ail-bill__claim ail-sentence"><Fact fact={fact(B.claim)} /></h2>
     <ol class="ail-bill__trends">
       {B.trends.map((t, i) => <li class="ail-bill__trend" data-i={i}><Fact fact={fact(t)} /></li>)}
     </ol>
-    <p class="ail-bill__pager" hidden>{B.trends.map((_, i) => <button type="button" class="ail-bill__dot" data-i={i} aria-label={String(i + 1)} aria-pressed="false"></button>)}</p>
+    <p class="ail-bill__pager" role="group" aria-labelledby="billing-title" hidden>{B.trends.map((t, i) => <button type="button" class="ail-bill__dot" data-i={i} aria-label={fact(t).text} aria-pressed="false"></button>)}</p>
     <table class="ail-bill__table">
       <thead>
         <tr><td></td>{HEADS.map(([k, w]) => <th scope="col" class="ail-label" data-k={k}>{w}</th>)}<td></td></tr>

@@ -41,7 +41,7 @@
 .ail-gl .ail-ag__table :is(th, td) { padding: 0; border: 0; text-align: center; }
 .ail-gl .ail-ag__heads > .ail-ag__h { padding: 3px 8px; background: var(--ail-veil); white-space: nowrap; text-align: right; }
 .ail-gl .ail-ag__lw { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-.ail-gl .ail-ag__agent { font-size: 25px; }
+.ail-gl .ail-ag__agent { font-size: clamp(21px, 1.74vw, 25px); }      /* a long name and its tag keep to one line in a narrow column */
 .ail-gl .ail-ag__per, .ail-gl .ail-ag__cu { font-size: 15px; line-height: 1.02; }
 .ail-gl .ail-ag__price { font-size: 21px; line-height: 1.05; }
 .ail-gl .ail-ag__more { position: absolute; left: 50%; top: calc(100% + 6px); width: 300px; transform: translateX(-50%); z-index: 5; }
@@ -51,9 +51,19 @@
 .ail-gl .ail-ag[data-closed] .ail-ag__switch { background: var(--ail-fg); color: var(--ail-bg); gap: 0; padding-right: 12px; }
 /* shut, the laptop says it by its picture, and the line beside it says what went dark (the button keeps its name for a screen reader) */
 .ail-gl .ail-ag[data-closed] .ail-ag__sww { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-/* the laptop is shut: whatever needs your own computer falls to 15 percent, and the one line beside the switch says so */
-.ail-gl .ail-ag__cu { transition: opacity 300ms; }
-.ail-gl .ail-ag[data-closed] .ail-ag__cu[data-local] { opacity: .15; }
+/* the laptop is shut: an answer that needs your own computer goes onto the grey tile of the line beside the switch, and
+   stays readable (its lamps, cores and cables are what go dark) */
+.ail-gl .ail-ag__cu { transition: background-color 300ms, color 300ms; }
+.ail-gl .ail-ag[data-closed] .ail-ag__cu[data-local] { padding: 2px 6px !important; border-radius: 2px; background: color-mix(in srgb, var(--ail-fg) 15%, transparent); box-shadow: 0 0 0 1px color-mix(in srgb, var(--ail-fg) 30%, transparent); color: var(--ail-fg-2); }
+/* a short window: the switch stands at the top right, smaller, its line to its left (sections/agents.js sets data-desk) */
+.ail-gl .ail-ag[data-desk='top'] .ail-ag__console { left: auto; right: var(--ail-margin); bottom: auto; top: calc(var(--ail-top) + 4px); flex-direction: row-reverse; gap: 10px; }
+.ail-gl .ail-ag[data-desk='top'] .ail-ag__switch { min-height: 48px; }
+.ail-gl .ail-ag[data-desk='top'] .ail-ag__laptop { width: 44px; height: 31px; }
+@media (min-width: 900px) and (max-height: 760px) {
+  /* a short window: the title on one line, the table's rows a little closer */
+  .ail-gl .ail-ag__title { max-width: none; font-size: clamp(30px, 6vh, 44px); white-space: nowrap; }
+  .ail-gl .ail-ag { --ag-rows: 32px 22px repeat(4, 21px) 30px 28px; }
+}
 .ail-gl .ail-ag__needs { display: flex; align-items: center; gap: 8px; margin: 0; padding: 5px 9px; background: var(--ail-veil); visibility: hidden; opacity: 0; transition: opacity 300ms; }
 .ail-gl .ail-ag[data-closed] .ail-ag__needs { visibility: visible; opacity: 1; }
 .ail-ag__dim { width: 22px; height: 12px; border-radius: 2px; background: color-mix(in srgb, var(--ail-fg) 15%, transparent); box-shadow: 0 0 0 1px color-mix(in srgb, var(--ail-fg) 30%, transparent); }
@@ -61,14 +71,18 @@
 @media (max-width: 899px) {
   .ail-gl .ail-ag__wrap { position: absolute; left: var(--ail-margin); right: var(--ail-margin); top: calc(35svh + 82px); }
   .ail-gl :is(.ail-ag__table, .ail-ag__table thead, .ail-ag__table tbody) { display: block; min-width: 0; }
-  .ail-gl .ail-ag__heads { display: flex; flex-wrap: wrap; gap: 2px 12px; width: auto; padding: 0 0 6px; }
+  /* the heads: the four glyphs' names at the left, and at the right what the two values at the right of every row are */
+  .ail-gl .ail-ag__heads { display: grid; grid-template-columns: auto auto 1fr auto; grid-template-rows: auto auto; gap: 2px 12px; justify-items: start; width: auto; padding: 0 0 6px; }
   .ail-gl .ail-ag__heads > td { display: none; }
   .ail-gl .ail-ag__heads > .ail-ag__h { padding: 0; background: none; font-size: 12px; letter-spacing: .02em; }
-  .ail-gl .ail-ag__heads > .ail-ag__h:not(.ail-ag__lh) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .ail-gl .ail-ag__heads > .ail-ag__h:not(.ail-ag__lh, .ail-ag__ph, :nth-child(2)) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .ail-gl .ail-ag__heads > :is([data-lamp='screen'], [data-lamp='alwaysOn']) { grid-row: 2; }
+  .ail-gl .ail-ag__heads > .ail-ag__ph { grid-area: 1 / 4; justify-self: end; }
+  .ail-gl .ail-ag__heads > .ail-ag__h:nth-child(2) { grid-area: 2 / 4; justify-self: end; }
   .ail-gl .ail-ag__lh .ail-glyph { width: 14px; height: 14px; margin-right: 4px; }
   .ail-gl .ail-ag__row { display: grid; grid-template-columns: repeat(4, 26px) 1fr auto; grid-template-rows: auto auto; gap: 3px 4px; align-items: center; justify-items: start; width: auto; min-width: 0; max-width: none; padding: 6px 0; background: none; border-top: 1px solid var(--ail-hair); text-align: left; }
   .ail-gl .ail-ag__name { grid-column: 1 / 6; }
-  .ail-gl .ail-ag__price { grid-column: 6; grid-row: 1; font-size: 18px; }
+  .ail-gl .ail-ag__price { grid-column: 6; grid-row: 1; justify-self: end; font-size: 18px; }
   .ail-gl .ail-ag__lamp { grid-row: 2; }
   .ail-gl .ail-ag__cu { grid-column: 5; grid-row: 2; padding-left: 6px !important; font-size: 14px; }
   .ail-gl .ail-ag__per { grid-column: 6; grid-row: 2; justify-self: end; font-size: 14px; }
@@ -76,6 +90,6 @@
   .ail-gl .ail-agt { width: 24px; height: 18px; }
   .ail-gl .ail-ag__more { position: fixed; left: var(--ail-margin); right: var(--ail-margin); top: calc(35svh + 10px); width: auto; transform: none; z-index: 6; }
   .ail-gl .ail-ag__console { left: var(--ail-margin); right: var(--ail-margin); gap: 10px; }
-  .ail-gl .ail-ag__switch { min-height: 48px; }
+  .ail-gl .ail-ag__switch { flex: none; min-height: 48px; white-space: nowrap; }      /* the button is as wide as its label */
   .ail-gl .ail-ag__laptop { width: 44px; height: 31px; }
 }

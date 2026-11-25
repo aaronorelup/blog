@@ -137,7 +137,7 @@ export function create(ctx, world) {
     else if (st.paint && st.paint.mode === mode) { st.paint = null; st.stamped = true; } else st.paint = { mode, t: PAINT / 2 };
     if (sentence) announce(sentence.textContent.trim());
   }
-  const mine = () => { st.tour = -1; };                                       // the tour stops for good on the first input
+  const mine = () => { st.tour = -1; st.own = true; };                       // the tour stops for good on the first input
   const onGo = () => { mine(); if (ctx.reduced) sig.step(); else pick(st.press++ % xs.length); };
   const onDial = { a: () => { mine(); paint('a'); }, b: () => { mine(); paint('b'); } };
   // which tall door a point of the screen is on, with a finger's width of grace around it (or -1)
@@ -177,7 +177,7 @@ export function create(ctx, world) {
   };
   sig.still = () => { st.runs.fill(AT_INDEX); st.step = 4; st.last = xs.length - 1; st.part = 1; st.paint = null; st.stamped = true; };
   sig.reset = () => {
-    st.runs.fill(-1); st.last = -1; st.press = 0; st.tour = -1; st.part = 1; st.paint = null; st.stamped = false; st.lean = 0; st.vel = 0; st.step = 0; sig.lit = -1;
+    st.runs.fill(-1); st.last = -1; st.press = 0; st.tour = -1; st.part = 1; st.paint = null; st.stamped = false; st.lean = 0; st.vel = 0; st.step = 0; st.own = false; sig.lit = -1;
     setMore(false);
     unink();
     [...names, indexName, stamp].forEach((n) => n && n.classList.remove('is-on'));
@@ -199,6 +199,9 @@ export function create(ctx, world) {
     const step = ctx.reduced ? 0 : dt;
     if (!on) { threads[1].show = 0; threads[1].update(); if (pic) { pic.show = 0; pic.update(); } pickers.forEach((p) => { p.cores.show = 0; p.cores.update(); }); return; }
 
+    // a visitor who scrolls on before the tour has painted, and has pressed nothing, still gets the answer: late in the
+    // beat it stands as the tour ends, the picture painted and stamped (round 5, W-8: it waited for a tap)
+    if (!st.stamped && !st.paint && !st.own && world.sec.u > 2.15) { sig.still(); st.part = 2; st.tour = -1; }
     // the tour: both doors, then both ways of painting. Then it waits for the visitor
     if (st.tour >= 0) {
       const t0 = st.tour;
@@ -257,7 +260,9 @@ export function create(ctx, world) {
     lineMat.opacity = amount;
     if (ctx.input.moved && !ctx.input.touch) point(hit({ clientX: ctx.input.px, clientY: ctx.input.py }) >= 0);
     slab.material.uniforms.uPulse.value = arrived ? 0.25 : 0;
-    if (!ctx.phone) for (const [n, k] of names.map((n, k) => [n, k])) n.style.transform = pinned(v.set(base + xs[k] + (k ? 0.08 : -0.08), top + tower.lift + 0.6, tower.z + FLOOR.w / 2 - 0.15), k ? 0.12 : 0.88, 1);      // the two spread outward from their doors
+    // each door's name stands under its door on the face of floor 1, the two either side of their threads: above the
+    // doors they would lie under the chrome
+    if (!ctx.phone) for (const [n, k] of names.map((n, k) => [n, k])) n.style.transform = pinned(v.set(base + xs[k] + (k ? 0.1 : -0.1), f[0].y + tower.lift - 0.06, tower.z + FRONT), k ? 0 : 1, 0.5);
     if (ctx.phone) names.forEach((n, k) => n.classList.toggle('is-on', st.runs[k] >= 0 && st.part === 1));
     if (indexName) {
       indexName.classList.toggle('is-on', arrived > 0 && st.part === 1 && amount > 0.5);
@@ -293,7 +298,7 @@ export function create(ctx, world) {
   }
 
   // The catch (beat d): plates on the wall. A renamed one flips to its new name, a shut-down one drops and hangs
-  // by a corner, one whose claim carries an expiry date tilts
+  // by a corner, one that is closing tilts
   sig.catch = (k) => {
     if (k <= 0) { st.ct = 0; plates.forEach((p) => { p.classList.remove('is-on'); p.removeAttribute('data-new'); p.style.transform = ''; }); return; }
     if (k > 0.55) st.ct += ctx.reduced ? 99 : ctx.dt || 0.016;
@@ -304,9 +309,11 @@ export function create(ctx, world) {
       if (kind === 'renamed') p.toggleAttribute('data-new', e > 0.5);
       if (ctx.phone) return;
       const drop = kind === 'shut-down' ? backOut(e) : 0;
-      const turn = kind === 'stale' ? (n % 2 ? -3 : 3.5) * smooth(e) : -11 * drop;
+      const turn = kind === 'closing' ? (n % 2 ? -3 : 3.5) * smooth(e) : -11 * drop;
       const flip = kind === 'renamed' ? Math.max(0.05, Math.abs(Math.cos(e * Math.PI))) : 1;
-      v.set(tower.x + tower.shift + 2.85 + (n % 3) * 1.62, 2.66 - Math.floor(n / 3) * 0.86, tower.z - 2.4);
+      // three to a row. A second row starts half a plate in, so a long plate there stays clear of the stack
+      const rowN = Math.floor(n / 3);
+      v.set(tower.x + tower.shift + 2.85 + ((n % 3) + (rowN ? 0.62 : 0)) * 1.62, 2.66 - rowN * 0.86, tower.z - 2.4);
       p.style.transform = `${pinned(v, 0.5, 0.5, 0, drop * 14)} rotate(${turn.toFixed(2)}deg) scaleY(${flip.toFixed(3)})`;
     });
   };
