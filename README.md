@@ -30,7 +30,7 @@ npm run media:push               # new video and audio to R2 (docs/MEDIA.md)
 ```
 
 Writing a post: `WRITING.md` (how it's written) and `PREVIEWS.md` (its hover card). Every post stays a draft until
-Aaron says it can go out.
+Aaron says it can go out. His one standing yes, for daily X experiment posts, is in `CLAUDE.md` ("Hard rules").
 
 ## Deploying
 

@@ -16,6 +16,7 @@
 - **The `<ao-*>` tags and their attributes are frozen.** 72 posts use them. A rewrite keeps every component,
   video, audio and iframe block byte for byte (`node scripts/tools/element-usage.mjs --diff <old> <new> [notes]`).
 - **`teardown-lab.md` (AO-073) is not yours.** Other sessions write it live. Never edit it or its media.
-- Every post waits for Aaron's OK: `draft: true` until he says so in his own words.
+- Every post waits for Aaron's OK: `draft: true` until he says so in his own words. His one standing OK, for a
+  daily X experiment post, is in the root `CLAUDE.md` under "Hard rules".
 - Before pushing: `npm run check -- <your files>` (no errors), then `npm run build`.
 - Never put a never-publish term in any file here, drafts included: the repo is public.

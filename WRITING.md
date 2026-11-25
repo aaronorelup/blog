@@ -247,6 +247,11 @@ when he says so in his own words ("looks good", "publish it"). If his request al
 publish it straight away, that counts. No agent and no scheduled job gives the OK. The daily blog
 job is paused, and when it restarts its drafts wait for him the same way.
 
+His one standing OK (24 Nov 2026): the one post a daily X experiment makes goes live without a look
+from him, through the agent kit's `daily-x-experiment` skill, while that skill's publish switch
+reads live. That skill's rules for the post add to this file, and where the two differ, the skill
+says which one holds.
+
 Check before you show him:
 
 - [ ] Title, description and card pass the limits above.

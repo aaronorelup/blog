@@ -35,7 +35,9 @@ anything. `ARCHITECTURE.md` is the map of the code.
   (`skills/blog-post/never-publish.txt`). Keys come from `python3 ~/.claude/bin/getkey.py NAME` inside a script and
   are never printed.
 - **Every post waits for Aaron's OK.** Keep `draft: true` until he approves it in his own words (a request that
-  already says "publish it" counts). No agent or scheduled job gives the OK.
+  already says "publish it" counts). No agent or scheduled job gives the OK. His one standing OK (24 Nov 2026): the
+  one post a daily X experiment makes goes live through the agent kit's `daily-x-experiment` skill, while that
+  skill's publish switch reads live. While it reads off, that post is not committed here at all, not even as a draft.
 - **No IP addresses.** Nothing in the Worker reads or keys on a visitor's IP. Never let an unlisted post appear
   in a list, a feed, a card or `/stats`.
 - **Keep every behaviour.** The post components (synced videos, players, sliders, calculators, timelines) and the
