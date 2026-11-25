@@ -84,7 +84,7 @@ export function create(ctx, el, sec) {
     // (data-full: the table stands at the word cap, so the chrome's stamp chip drops its first word while it is on)
     enter() { pins.forEach((p) => { p.on = true; }); document.documentElement.toggleAttribute('data-full', true); },
     leave() {
-      document.documentElement.removeAttribute('data-full');
+      document.documentElement.removeAttribute('data-full'); delete el.dataset.desk;
       pins.forEach((p) => { p.on = false; });
       if (st.tour > 0 && !st.toured) st.toured = true;
       setClosed(false, true); st.closed = 0;
@@ -100,9 +100,12 @@ export function create(ctx, el, sec) {
         // (a short window) it stands at the top right, under the chrome, and its cables run from there
         const H = window.innerHeight, tr = title.getBoundingClientRect(), dr = desk.getBoundingClientRect();
         const high = el.dataset.desk === 'top';
-        // (it moves up when the heads reach 6 px into its place, and back only once they are 14 px clear: no flicker)
+        // (it moves up when the heads reach 6 px into its place, and back only once they are 14 px clear: no flicker.
+        // Judged afresh on each visit, once the table has settled and the heads have stood there 0.6 s: a camera still
+        // easing in from below never picks the layout. E-8)
         const gap = H - Math.min(36, Math.max(16, 0.024 * window.innerWidth)) - 64 - heads.getBoundingClientRect().bottom;
-        if (k > 0.5 && (high ? gap > 14 : gap < -6)) { if (high) delete el.dataset.desk; else el.dataset.desk = 'top'; }
+        st.deskT = k > 0.95 && (high ? gap > 14 : gap < -6) ? (st.deskT || 0) + dt : 0;
+        if (st.deskT > 0.6) { st.deskT = 0; if (high) delete el.dataset.desk; else el.dataset.desk = 'top'; }
         seat.level(Math.max(tr.bottom, high ? dr.bottom : 0) + 10, H - 22 - plates[0].offsetHeight);
         st.run = dr.bottom + 6;
       }

@@ -11,6 +11,7 @@
 .ail-sw--guest { width: 10px; border-radius: 50%; }      /* grey, or the colours of the lit floor's guests (lineup.js) */
 .ail-sw--guest ~ .ail-sw--guest { margin-left: -4px; }
 .ail-sw--guest ~ .ail-sw--guest:not([data-p]) { display: none; }
+.ail-sw--guest[data-faint] { background: color-mix(in srgb, var(--g) 30%, transparent); border-style: dashed; }      /* unofficial: faint, as on its sign */
 [data-p='anthropic'] .ail-sw, .ail-sw[data-p='anthropic'] { --g: var(--ail-own-anthropic); }
 [data-p='openai'] .ail-sw, .ail-sw[data-p='openai'] { --g: var(--ail-own-openai); --e: var(--ail-rim-openai); }
 [data-p='google'] .ail-sw, .ail-sw[data-p='google'] { --g: var(--ail-own-google); --e: #378AFF; }

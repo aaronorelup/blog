@@ -6,7 +6,7 @@ import { Line, LineBasicMaterial, Mesh, Vector3 } from 'three';
 import { backOut, clamp01, easeIO, easeOut, smooth, span } from '../core/clock.js';
 import { $, $$, announce } from '../core/dom.js';
 import { ORDER, owner, world } from '../worlds/index.js';
-import { block, createBase, dot, dovetail, INK, lampOn, roundBox, setGlass, shadow, STOPS } from '../scene/bench.js';
+import { block, createBase, dot, dovetail, INK, LAMP, lampOn, roundBox, setGlass, shadow, STOPS } from '../scene/bench.js';
 import { createFigure } from '../scene/cast.js';
 import { GLYPHS } from '../scene/glyphs.js';
 import { createObject } from '../scene/objects.js';
@@ -61,6 +61,7 @@ export function create(ctx, el, sec) {
   }
   const span0 = x - GAP;
   shelves.forEach((s) => { s[0] -= span0 / 2; s[1] -= span0 / 2; }); pieces.forEach((p) => { p.x -= span0 / 2; });
+  const pair = ((a, b) => (a && b ? { x: (a.x + b.x) / 2 } : a || null))(pieces.find((p) => p.layer === 'you'), pieces.find((p) => p.layer === 'router'));      // you and your router: the lamp's pool stands there (E-3)
 
   // ---- the bench: five shelves of house glass, and the shadow the analytic floor cannot give it
   const bench = shelves.map(([a, b]) => { const m = keep(block(ctx, roundBox(b - a, H, DEPTH, 0.16), 'house', H)); m.position.set((a + b) / 2, H / 2, Z); return m; });
@@ -95,12 +96,10 @@ export function create(ctx, el, sec) {
   pieces[0].li.dataset.edge = 'start'; pieces[pieces.length - 1].li.dataset.edge = 'end';      // cards at the ends open inward
   const swapped = { router: pieces.find((p) => p.swap === 'router'), worker: pieces.find((p) => p.swap === 'worker') };
   st.r = Math.max(0, opts.router.findIndex((o) => o.ref === mineR)); st.w = Math.max(0, opts.worker.findIndex((o) => o.ref === mineW));
-
   // ---- the cast, on his own pair only (scene/cast.js): the character of his router's company on the router, the
   // creature of his coding agent's company on the coding agent. A piece that is swapped in shows its glass alone
   const cast = [[swapped.router, mineR, 'agent'], [swapped.worker, mineW, 'tool']]
     .map(([p, mine, role]) => ({ p, mine, fig: p && provider(p.owner) ? createFigure(ctx, world(p.owner), role) : null })).filter((c) => c.fig);
-
   // a borrowed piece leaves its company's stack at the floor of its layer. An outside one rises through the floor
   const source = (p, own, out) => (provider(own) && FLOOR[p.layer] !== undefined ? row.tower(own).point(FLOOR[p.layer], 0, out) : out.set(p.x, -1.1, Z));
   // the glyph on a block's front is printed in its glass's own edge colour (paper on black, ink on milk), ink on grey
@@ -275,7 +274,8 @@ export function create(ctx, el, sec) {
       base.blocks.forEach((b, i) => { b.rise = 1 - span(u, 0.02 + (8 - i) * 0.017, 0.11 + (8 - i) * 0.017); });
       base.update();
       const back = smooth(span(u, 0.06, 0.3));
-      const gone = smooth(span(u, 1.02, 1.12)); lampOn(ctx, smooth(span(u, 1.03, 1.17)));      // the lenders leave, the room goes dark under the router's lamp, then the bench leaves in it (W-1)
+      const gone = smooth(span(u, 1.02, 1.12)); lampOn(ctx, smooth(span(u, 1.03, 1.17)), LAMP.first, true);      // the lenders leave, the room dims under the router's lamp, then the bench leaves in it (W-1, W1-a)
+      if (u > 1.03 && pair)      /* the pool on his pair in the dark, then to the router's first diagram (round 5, E-3) */ ctx.studio.glow.pos.lerpVectors(v.set(pair.x + LAMP.x, LAMP.y, Z + 0.4), ctx.studio.glow.pos, smooth(span(u, 1.24, 1.3)));
       // an open card hides the lids: a mark is never covered, and one drawn as an image would sit over the card
       const carded = el.querySelector('details[open]:not(.ail-ms__pairs)') ? 0 : 1;
       lenders(dt);
@@ -292,7 +292,7 @@ export function create(ctx, el, sec) {
       });
 
       // the bench rises, then the pieces fly in once, 70 ms apart, and settle with a small overshoot
-      const rise = smooth(span(u, 0.14, 0.3)) * (1 - smooth(span(u, 1.21, 1.3)));
+      const rise = smooth(span(u, 0.14, 0.3)) * (1 - smooth(span(u, 1.27, 1.34)));      // (still half there at the seam, where the router's diagrams are half up: no bare floor between, E-1)
       bench.forEach((m) => { m.position.y = H * (rise - 0.5); setGlass(m, { show: Math.min(1, rise * 4) }); });
       shade.material.opacity = 0.2 * rise;
       if (!st.flown && u > 0.24) {

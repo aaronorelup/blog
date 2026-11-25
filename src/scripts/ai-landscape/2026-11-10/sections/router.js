@@ -125,7 +125,7 @@ export function create(ctx, el, sec) {
       // (the diagrams and the dark are gone before the five come back for the lamp board: the two never share the floor)
       // The dark and the lamp are on from the first step: my stack brought them in (W-1). The diagrams come up under it
       const out = 1 - smooth(span(u, 0.86, 0.94));
-      const k = smooth(span(u, 0, 0.05)) * out;
+      const k = smooth(span(u, -0.02, 0.02)) * out;      // (half up as the section starts, whole in 27 px at 900: my stack's bench has just sunk, E-1)
       st.k = k;
 
       // camera: the floor from above. A phone follows the lit diagram. Then on to the lamp board

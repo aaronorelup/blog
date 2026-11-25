@@ -147,8 +147,14 @@ export function create(ctx, el, sec) {
     layers.forEach((b, k) => b.setAttribute('aria-pressed', String(k === i)));
     guestLine.classList.toggle('is-on', i >= 0 && rowsEl[i].hasAttribute('data-guest'));
     // its swatches are the other colours on this floor's signs, whoever's they are (round 3, F3-2: it was always clay)
-    const others = i < 0 ? [] : [...new Set($$('.ail-lu__cell[data-guest]', rowsEl[i]).flatMap((td) => td.dataset.guest.split(' ')))];
-    $$('.ail-sw--guest', guestLine).forEach((sw, k) => { if (others[k]) sw.dataset.p = others[k]; else sw.removeAttribute('data-p'); });
+    // one that is only ever an unofficial guest here is drawn faint, as its sign and stack draw it (round 5, F5-1)
+    const cells = i < 0 ? [] : $$('.ail-lu__cell[data-guest]', rowsEl[i]);
+    const others = [...new Set(cells.flatMap((td) => td.dataset.guest.split(' ')))];
+    const faint = (o) => cells.every((td) => !td.dataset.guest.split(' ').includes(o) || (td.dataset.faint || '').split(' ').includes(o));
+    $$('.ail-sw--guest', guestLine).forEach((sw, k) => {
+      if (others[k]) sw.dataset.p = others[k]; else sw.removeAttribute('data-p');
+      sw.toggleAttribute('data-faint', !!others[k] && faint(others[k]));
+    });
     $$('.ail-map__col').forEach((col) => [...col.children].forEach((cell, k) => cell.toggleAttribute('data-row', k === i)));
     if (!quiet && i >= 0) announce(says[i].textContent.trim());
   }

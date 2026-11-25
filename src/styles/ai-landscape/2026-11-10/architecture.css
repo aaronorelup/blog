@@ -162,7 +162,7 @@
 
 /* the section's name heads the first two lamps; the third brings its rule in the same place (review round 4, W-8) */
 .ail-gl .ail-rt__title { position: absolute; left: var(--ail-margin); top: var(--ail-top); margin: 0; padding: 4px 10px 2px; background: var(--ail-veil); opacity: var(--rt-on, 0); }
-.ail-gl .ail-rt:has(.ail-rt__more.is-on) .ail-rt__title { visibility: hidden; }
+.ail-gl .ail-rt:has(.ail-rt__more.is-on) .ail-rt__title { opacity: 0; }      /* out of sight, still the section's heading (round 5, D-1) */
 .ail-gl .ail-rt__shapes { display: block; margin: 0; }
 .ail-gl .ail-rt__shape { display: grid; justify-items: center; gap: 6px; width: max-content; max-width: 300px; opacity: 0; }
 .ail-gl .ail-rt__fig { display: none; }
@@ -312,6 +312,6 @@
 
 /* billing's card keys carry the rail's own marks: a glass before the monthly plan (the tank) and a bead before pay per
    use (the tray), so the picture and the words are one key (review round 4, W-8) */
-.ail-gl .ail-bill__cell:is([data-k='plan'], [data-k='meter']) .ail-bill__h::before { content: ''; display: inline-block; margin-right: 7px; vertical-align: -1px; }
-.ail-gl .ail-bill__cell[data-k='plan'] .ail-bill__h::before { width: 8px; height: 11px; box-sizing: border-box; border: 1.5px solid currentColor; border-radius: 1px 1px 3px 3px; background: linear-gradient(to top, currentColor 50%, transparent 50%); }
-.ail-gl .ail-bill__cell[data-k='meter'] .ail-bill__h::before { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.ail-gl .ail-bill__cell:is([data-k='plan'], [data-k='meter']) .ail-bill__h::before { content: ''; display: inline-block; margin-right: 8px; vertical-align: -3px; }
+.ail-gl .ail-bill__cell[data-k='plan'] .ail-bill__h::before { width: 11px; height: 16px; box-sizing: border-box; border: 1.5px solid currentColor; border-radius: 1px 1px 4px 4px; background: linear-gradient(to top, currentColor 45%, transparent 45%); }
+.ail-gl .ail-bill__cell[data-k='meter'] .ail-bill__h::before { width: 12px; height: 12px; border-radius: 50%; background: currentColor; }      /* 16 and 12 px: a tank and a bead, not a box (round 5, E-6) */

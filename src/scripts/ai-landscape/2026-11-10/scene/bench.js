@@ -22,11 +22,14 @@ export const STOPS = {
 // leaves in the dark under a lamp already on, and the router starts in it: no frame between them is an empty room
 // (review round 4, W-1).
 export const LAMP = { dark: 0.92, radius: 3.5, amount: 1.05, x: 0.3, y: 0.6, follow: 6, grey: '#7D838E', first: -6.7, z: 5.5 };
-export function lampOn({ studio }, a, x = LAMP.first) {
-  studio.dark = LAMP.dark * a; studio.roomX = 0;
+// `even`: the room dims evenly (dusk) until it is dark, rather than the sweep crossing it: my stack's way in, where a
+// sweep read as a dark slab sliding over the bench, and the words turned dark before it reached them (round 5, W1-a)
+export function lampOn({ studio }, a, x = LAMP.first, even = false) {
+  if (even && a < 1) { studio.dark = 0; studio.dusk = a; } else studio.dark = LAMP.dark * a;
+  studio.roomX = 0;
   studio.glow.amount = LAMP.amount * a; studio.glow.radius = LAMP.radius; studio.glow.cap = 1; studio.glow.lamp = 1;
   studio.glow.color.set('#FFFFFF'); studio.glow.pos.set(x + LAMP.x, LAMP.y, LAMP.z);
-  const root = document.documentElement, night = a > 0.34;
+  const root = document.documentElement, night = a > (even ? 0.5 : 0.34);
   if (night !== (root.dataset.chrome === 'dark')) { if (night) root.dataset.chrome = 'dark'; else delete root.dataset.chrome; }
 }
 const shapeOf = (w, d, r) => {

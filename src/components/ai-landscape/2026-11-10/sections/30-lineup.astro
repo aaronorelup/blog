@@ -49,7 +49,7 @@ const others = ['partial', 'no', 'unknown'].filter((v) => Object.values(voices).
                 const c = p.stack[i];
                 const v = i === VOICE ? voices[p.id] : null;
                 return (
-                  <td class="ail-lu__cell" data-p={p.id} data-state={c.state} data-guest={c.guests.join(' ') || undefined}>
+                  <td class="ail-lu__cell" data-p={p.id} data-state={c.state} data-guest={c.guests.join(' ') || undefined} data-faint={c.guests.filter((_, k) => c.looks[k] === 'faint').join(' ') || undefined}>
                     <details class="ail-lu__d" name="ail-lu">
                       <summary class="ail-lu__a">
                         <span class="ail-lu__who ail-label">{p.name}</span>

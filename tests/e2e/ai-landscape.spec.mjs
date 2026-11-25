@@ -1437,31 +1437,46 @@ async function tone(page, [x, y]) {
 // points across it. The largest change of any channel at any point, 0 to 255 (two frames of the same moment are the
 // same, so a picture drawn at opacity 0 reads 0); -1 where the mesh is not shown, -2 where it stands out of the window. kind:
 // 'around' (the object in drawer `arg`), 'bench' (the object on piece `arg`), 'wall', or the room's 'portrait' or 'card'.
-async function drawnBy(page, kind, arg = null) {
-  return page.evaluate(([kind, arg]) => {
+// aim: a thing out of the window (a phone frames less) is read with the camera turned to it for this one read, then
+// put back as it was, so a phone checks every one too (round 5, T1-a). Without aim such a thing reads -2
+async function drawnBy(page, kind, arg = null, aim = false) {
+  return page.evaluate(([kind, arg, aim]) => {
     const x = window.__landscape.debug.ctx, r = x.renderer, gl = r.getContext(), k = r.getPixelRatio(), c = window.__landscape.compare, w = x.worlds.active;
     const mesh = { around: () => c.around.mesh(arg), bench: () => c.mystack.thing(arg), wall: () => x.studio.plate.mesh, portrait: () => w && w.parts.portrait, card: () => w && w.parts.sign }[kind]();
     if (!mesh || !mesh.visible) return -1;
     if (!mesh.geometry.boundingBox) mesh.geometry.computeBoundingBox();
     const { min, max } = mesh.geometry.boundingBox;
     mesh.updateMatrixWorld();
-    const at = [];
+    const cam = x.camera, was = [cam.position.clone(), cam.quaternion.clone()];
     const GRID = Array.from({ length: 15 }, (_, i) => 0.1 + (0.8 * i) / 14);      // (a far wall drawn at a pixel ratio of 0.25 needs this many to meet its shelf)
-    for (const u of GRID) for (const v of GRID) {
-      const p = min.clone().lerp(max, 0.5);
-      p.x = min.x + (max.x - min.x) * u; p.y = min.y + (max.y - min.y) * v;
-      p.applyMatrix4(mesh.matrixWorld).project(x.camera);
-      const sx = ((p.x + 1) / 2) * innerWidth, sy = ((1 - p.y) / 2) * innerHeight;
-      if (sx > 2 && sx < innerWidth - 2 && sy > 2 && sy < innerHeight - 2 && p.z < 1) at.push([sx, sy]);
+    const points = () => {
+      const at = [];
+      for (const u of GRID) for (const v of GRID) {
+        const p = min.clone().lerp(max, 0.5);
+        p.x = min.x + (max.x - min.x) * u; p.y = min.y + (max.y - min.y) * v;
+        p.applyMatrix4(mesh.matrixWorld).project(cam);
+        const sx = ((p.x + 1) / 2) * innerWidth, sy = ((1 - p.y) / 2) * innerHeight;
+        if (sx > 2 && sx < innerWidth - 2 && sy > 2 && sy < innerHeight - 2 && p.z < 1) at.push([sx, sy]);
+      }
+      return at;
+    };
+    let at = points();
+    if (!at.length && aim) {
+      const mid = min.clone().lerp(max, 0.5).applyMatrix4(mesh.matrixWorld), far = min.clone().applyMatrix4(mesh.matrixWorld).distanceTo(max.clone().applyMatrix4(mesh.matrixWorld));
+      const reach = (far / (2 * Math.tan((cam.fov * Math.PI) / 360) * Math.min(1, cam.aspect))) * 1.4;
+      cam.position.copy(mid).add(mid.clone().set(0, reach * 0.25, reach)); cam.lookAt(mid); cam.updateMatrixWorld();
+      at = points();
     }
-    if (!at.length) return -2;
-    const read = () => { r.render(x.scene, x.camera); return at.map(([sx, sy]) => { const px = new Uint8Array(4); gl.readPixels(Math.round(sx * k), Math.round((innerHeight - sy) * k), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); return px; }); };
+    const back = () => { cam.position.copy(was[0]); cam.quaternion.copy(was[1]); cam.updateMatrixWorld(); };
+    if (!at.length) { back(); return -2; }
+    const read = () => { r.render(x.scene, cam); return at.map(([sx, sy]) => { const px = new Uint8Array(4); gl.readPixels(Math.round(sx * k), Math.round((innerHeight - sy) * k), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px); return px; }); };
     const drawn = read();
     mesh.visible = false;
     const bare = read();
     mesh.visible = true;
+    back();
     return Math.max(0, ...drawn.map((px, i) => Math.max(...[0, 1, 2].map((ch) => Math.abs(px[ch] - bare[i][ch])))));
-  }, [kind, arg]);
+  }, [kind, arg, aim]);
 }
 test('landscape-28 the lamp desk lies on the floor in front of five whole stacks, a column of lamps under each, drawn in ink, and has left before the camera moves on; billing\'s five run in step, so no frame holds more in one tray than in another, and no tank stands over a floor; both keep every word clear in a 1280 by 560 window; the drawer being read holds its paper object and the bench\'s things stand as objects no larger than him; the far wall has its picture; a room hangs a portrait where its text version shows one, and Meta\'s grid panel is under a blank card', async ({ page, isMobile }) => {
   test.setTimeout(900_000);
@@ -1543,10 +1558,9 @@ test('landscape-28 the lamp desk lies on the floor in front of five whole stacks
   expect(wanted(await bench()).length, 'there are such things on his bench').toBeGreaterThan(0);
   const inView = [];
   for (const id of wanted(await bench())) {
-    const seen = await drawnBy(page, 'bench', id);
-    if (seen === -2) continue;      // (a phone frames his pair: the things further along the bench are out of the window)
-    inView.push(id);
-    expect(seen, `the object on ${id} is drawn on the screen`).toBeGreaterThan(25);
+    if (await drawnBy(page, 'bench', id) !== -2) inView.push(id);
+    // (a phone frames his pair: the things further along the bench are read with the camera turned to them)
+    expect(await drawnBy(page, 'bench', id, true), `the object on ${id} is drawn on the screen`).toBeGreaterThan(25);
   }
   if (!isMobile) expect(inView, 'a desktop frame holds every one of them').toEqual(wanted(await bench()));
 
@@ -1572,9 +1586,8 @@ test('landscape-28 the lamp desk lies on the floor in front of five whole stacks
   }
   await go(page, 'meta', 1.15, 600);
   await expect.poll(async () => { const r = await room(); return r && r.id === 'meta' ? r.card : null; }, { timeout: 60_000, message: 'Meta\'s wall carries its blank card' }).toEqual([true, 1]);
-  // (a phone frames the stack: the wall with the card may stand out of its window)
-  const card = await drawnBy(page, 'card');
-  if (!isMobile || card !== -2) expect(card, 'and it is drawn on the screen, over the panel (white on a pale panel)').toBeGreaterThan(8);
+  // (a phone frames the stack: the wall with the card may stand out of its window, and is read with the camera turned to it)
+  expect(await drawnBy(page, 'card', null, isMobile), 'and it is drawn on the screen, over the panel (white on a pale panel)').toBeGreaterThan(8);
   await go(page, 'meta', 0.5, 600);
   expect((await room()).card, 'and keeps it while the room\'s name stands on the wall').toEqual([true, 1]);
 

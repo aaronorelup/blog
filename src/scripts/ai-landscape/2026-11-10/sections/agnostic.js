@@ -219,7 +219,7 @@ function rail(ctx, el, sec) {
     const rows = $$('.ail-bill__row', el);
     const trends = $$('.ail-bill__trend', el);
     const dots = $$('.ail-bill__dot', el);
-    const st = { active: 0, trend: 0, hold: null, holdT: null, u: 0, time: 0 };
+    const st = { active: 0, trend: 0, hold: null, holdT: null, u: 0, time: SWITCH + 1.2 };      // (the first look: the plan spent, beads landing. E-6)
     const S = sec.screens, FROM = 0.1, EACH = (S - 0.2) / rows.length, TREND = (S - 0.2) / Math.max(1, trends.length);
     const units = rows.map((tr, c) => {
       const id = tr.dataset.p;
