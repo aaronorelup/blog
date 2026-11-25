@@ -25,3 +25,15 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   embed, and the dataset and creator song scouts). Stage 1 resumed: the archive scout and the selector.
   Findings so far: YouTube refuses downloads from this box, so songs must come from hosts that answer (Vimeo,
   archives, dataset hosts). HyperFrames renders 1080p30 at about 1.15 s per second here. Narrator candidate chosen.
+- 2026-11-25 01:27 UTC: the container restarted again (it does so about every 80 minutes). From here every agent
+  keeps a PROGRESS.md in `/home/user/gtv/work/<agent>/` and continues from it after a restart.
+- 2026-11-25 01:50 UTC: stage 1 finished. Picks (`SONGS.md`, `songs.json`): capo = "Steal My Girl", arranged and
+  played by Gareth Evans (standard tuning, capo 3, his Guitar Pro tab on screen with rhythm). Tuning = "A soft
+  collision of breath", composed and played by Evan Handyside (D G C F A C, handwritten tab with no rhythm).
+  Standard = "Imagine", arranged and played by Gareth Evans (tab on screen with rhythm). Two players, not three.
+  Rights to flag at the end: two covers of major-label songs taken from a third-party mirror, tabs that are now
+  sold, and a tab file that sits behind the composer's paywall plugin.
+- 2026-11-25 01:55 UTC: stages 2 and 3 launched as one workflow (`gtv-lab`): per song two independent readers of
+  the tab, a truth builder, an independent checker and a repair pass. Two toolkit installers. Then one agent per
+  step of the job in three waves plus a rented GPU lane, two auditors, a results editor and the picker of the
+  blind test's toolkit.
