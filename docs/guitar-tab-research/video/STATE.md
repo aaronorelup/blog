@@ -269,4 +269,4 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   venvs that nothing in the film uses (`venv-torch`, `venv-bp`, `venv-madmom`; package lists are kept next to them as
   `*.freeze.txt`, see `/home/user/gtv/work/deleted-venvs.txt`). 4.1 GB free.
 - Refresh args are made with `scratchpad/refresh_args.py` (`polish-PN-args.json`).
-- Chapters done (passed polish, nothing left to refresh): ch03 (P8 still running), ch05, ch08 (P6 still running), ch17.
+- Chapters done (passed polish, nothing left to refresh): ch05 and ch17. Next to finish: ch08, when P6 passes it.
