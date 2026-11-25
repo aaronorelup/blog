@@ -171,7 +171,7 @@ for (const { date } of SNAPSHOTS) {
     const marks = [...board.matchAll(/<span class="ail-until[^"]*" data-until="([^"]+)">(.*?)<\/span><\/span>|<span class="ail-until[^"]*" data-until="([^"]+)">(.*?<time[^>]*>[^<]*<\/time>)<\/span>/g)].map((m) => decode(m[2] || m[4] || ''));
     assert.ok(marks.length >= 1, 'the board marks at least one dated access line');
     for (const m of marks) {
-      assert.ok(m.includes(COPY.world.mayChange) && m.includes(COPY.world.mayHaveChanged), `the mark reads "${COPY.world.mayChange}" before its date and "${COPY.world.mayHaveChanged}" after: ${m}`);
+      assert.ok(m.includes(COPY.world.freshUntil) && m.includes(COPY.world.staleSince), `the mark reads "${COPY.world.freshUntil}" before its date and "${COPY.world.staleSince}" after: ${m}`);
       assert.ok(!m.includes(`>${COPY.world.expired}<`) && !m.includes(`>${COPY.world.until}<`), `no "until" or "Expired" on the board: ${m}`);
     }
   });

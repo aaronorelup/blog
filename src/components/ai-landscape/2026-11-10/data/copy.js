@@ -49,9 +49,10 @@ export const COPY = {
     perMillion: 'per 1M tokens',
     until: 'until',
     expired: 'Expired',
-    // a fact's own staleAfter, the day it was expected to change, where it is not an end date (round 4, F4-2)
-    mayChange: 'may change after',
-    mayHaveChanged: 'May have changed since',
+    // a fact's own staleAfter, the day it was expected to change, where it is not an end date: the words are about the
+    // fact, never about the thing (round 4, F4-2)
+    freshUntil: 'Fresh until',
+    staleSince: 'Stale since',
   },
   signature: {
     anthropic: { go: 'Try the plug' },
