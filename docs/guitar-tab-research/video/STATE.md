@@ -325,3 +325,7 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 - P6 finished: ch01 passes after its second round (narration rebuilt from the re-levelled sources; its stamp now
   counts Imagine's 11 heard-only notes, 1,900 heard). ch08 passes with nothing open. Done: ch01, 05, 06, 07, 08, 09,
   12, 15, 17.
+
+## 2026-11-25 22:35 UTC
+
+- P13 finished: ch04 and ch14 pass with clean narration. Done: ch01, 04, 05, 06, 07, 08, 09, 12, 14, 15, 17.
