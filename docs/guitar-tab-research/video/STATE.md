@@ -197,3 +197,15 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 - Part kitfix running (wf_0bbaa7e8-d14): fix the tool, shoot the strips again outside the chapters, write
   `/home/user/gtv/work/seamfix/AFFECTED.md`, then an independent check. Later polish runs use `wide: true` (6.10 and
   AFFECTED.md in every fix and check). P1's chapters get a levels and seams check before the join.
+
+## 2026-11-25 20:15 UTC
+
+- Lane B (ch01, 04, 07, 10, 13, 16) finished; none passed outright. Its open items are in
+  `/home/user/gtv/work/polish-pending-laneB.json`. ch10 and ch13 had no render of their fixes; their fix agents' renders
+  died in the lock queue.
+- PRODUCTION.md 6.10 now also covers voice edges (5 ms fade-in, 20 to 25 ms fade-out, no clicks) and the song under
+  the voice (section 2.7's 0.22 to 0.3, never 0.12).
+- Polish runs with `wide: true`, for the chapters without tab strips: P2 wf_943bbafb-7d3 (ch07, ch17) and P3
+  wf_f653901e-6ea (ch04, ch14). Args are in `/home/user/gtv/work/polish-P2-args.json` and `polish-P3-args.json`.
+- Waiting for the kit fix: ch01, 10, 11, 13 and 16, which use strips. Lane A (ch00, 03, 06, 09, 12, 15) is still
+  running.

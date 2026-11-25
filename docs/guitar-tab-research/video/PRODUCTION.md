@@ -590,6 +590,17 @@ from the three recordings or the research clips, and every graphic is drawn from
   `work/` are shot again in place. `/home/user/gtv/work/seamfix/AFFECTED.md` lists what each chapter has to refresh.
   A chapter that copied tiles into its project copies them again; one with its own strips in `data/` shoots them
   again with the fixed `tabstrip.cjs`.
+  Found while fixing it: the cause was alphaTab's scroll to the first bar (10 px, run even with the player off), which
+  every tile carried and the browser undid for the last one, not the narrower viewport. It hit every strip wider than
+  about 30,000 px, 46 of 53 (on 19 the join looks clean, but the marks are still off). `kit/tools/strip_seams.py`
+  checks a strip.
+- **Voice edges.** Several takes start or end inside a sound (a breath, room tone or a word cut by the ElevenLabs
+  file), which clicks in the mix. Every narration placement starts at a quiet point and gets a 5 ms fade-in and a
+  20 to 25 ms fade-out. The check: no sample step over 0.01 within 10 ms of a line's start or end.
+- **Song under the voice.** Section 2.7 stands: where a scene keeps a song playing under the narration, it sits at
+  gain 0.22 to 0.3 on its -19 LUFS asset and comes up to 1.0 over 0.35 to 0.4 s in gaps longer than about 1 s. Some
+  briefs said 0.12; at 0.12 the song is about 24 dB under the voice and cannot be heard, so either use 2.7's level or
+  leave the song out of that stretch.
 
 ## 7. Licensing notes that matter for specific choices
 

@@ -256,7 +256,7 @@ Mark each problem you return BLOCKING (a viewer would notice: wrong or missing p
 The problems that were to be fixed:
 ${problems}`
 
-const WIDE = (ch) => `FILM-WIDE DECISIONS (${REC}/PRODUCTION.md section 6.10, read it): (a) in chapter.mp4 every narration line is 1.5 to 3 dB louder than the listening windows; measure it (each line's span against each window's span with ffmpeg ebur128) and fix the mix if it is outside; (b) tab strips: read /home/user/gtv/work/seamfix/AFFECTED.md and do what it says for ${ch}, if it is listed.`
+const WIDE = (ch) => `FILM-WIDE DECISIONS (${REC}/PRODUCTION.md section 6.10, read it; they apply even where the problems below do not mention them): (a) in chapter.mp4 every narration line is 1.5 to 3 dB louder than the listening windows; measure it (each line's span against each window's span with ffmpeg ebur128) and fix the mix if it is outside; (b) tab strips: if this chapter shows a tab strip, read /home/user/gtv/work/seamfix/AFFECTED.md and do what it says for ${ch}; (c) voice edges: every narration placement starts at a quiet point with a 5 ms fade-in and ends with a 20 to 25 ms fade-out, and no sample step over 0.01 within 10 ms of a line's start or end; (d) a song kept under the narration sits at gain 0.22 to 0.3 and comes up to 1.0 in gaps longer than about 1 s, or is left out of that stretch (never 0.12).`
 
 const KITFIX = `[AGENT: kit-seamfix]
 
