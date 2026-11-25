@@ -347,3 +347,10 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   'gp…' at 96.6-98.0 s, after the font went from 20 to 22 px. Third round running: P16 (wf_1d8520b7-6a1), that one
   problem only.
 - Done: 15 of 18. Not yet: ch00 (P16), ch02 (P11), ch10 (P4, second round).
+
+## 2026-11-25 23:10 UTC
+
+- P4 finished: ch10 passes after its second round (narration rebuilt, 24-bit, no flat tops; 103.0 s). Its checker
+  overwrote the placed vo-l01.wav by mistake, rebuilt it with build.py's steps and put it back. chapter.mp4 was
+  rendered before that and is unchanged. Recorded in its qc/verify.md.
+- Done: 16 of 18. Not yet: ch00 (P16), ch02 (P11).
