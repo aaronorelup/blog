@@ -132,7 +132,7 @@ I have two weekly usage limits, one on all my Claude use and a separate one on F
 | Claude Opus 5.5 | Ten researchers, the fact base (every claim checked against its source by a second agent), design judges, tests and engineering, most reviews and fixes, putting it live, and every job after the switch | 68 | $858 |
 | Claude Sonnet 5.5 | Ten blind tests of about 20 seconds each: shown the five company rooms with every word and logo hidden, asked whose room each was | 10 | $1.75 |
 | Claude Haiku 5.5 | Read one page of Anthropic's docs for the main session | 1 | under 1 cent |
-| Higgsfield (Nano Banana Pro stills, background remover) | 30 still pictures and 10 background removals | | 70 credits |
+| Higgsfield | 30 still pictures with its Nano Banana Pro model and 10 background removals with its background remover | | 70 credits |
 
 <details><summary>Runs, hours and tokens per model</summary>
 
