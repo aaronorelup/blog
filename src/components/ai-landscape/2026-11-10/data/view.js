@@ -85,7 +85,16 @@ function cell(layer, i, provider, via = []) {
     return { name: p.name, owner: t ? t.owner : provider, status: use ? use.status : t ? t.status : 'released', official: p.official || 'yes' };
   });
   const guests = [...new Set((layer.refs || []).map(ownerOf).filter((o) => o && o !== provider))];
-  return { ...base, ...s, name: layer.name, reason: null, fact: f, tag: f ? tagOf(f.status) : null, parts, guests };
+  return { ...base, ...s, name: layer.name, reason: null, fact: f, tag: f ? tagOf(f.status) : null, parts, guests, looks: guests.map((o) => guestLook(o, parts, layer.refs)) };
+}
+
+// A guest's core in a floor is drawn as settled as its most settled part there, as the signs draw the parts (round 4,
+// F4-1): faint where every part of that owner is unofficial, hatched where none is released yet, else solid.
+function guestLook(o, parts, refs = []) {
+  const mine = parts.filter((q) => q.owner === o);
+  if (mine.length && mine.every((q) => q.official === 'no')) return 'faint';
+  const statuses = mine.length ? mine.map((q) => q.status) : refs.filter((r) => ownerOf(r) === o).map((r) => thing(r).status);
+  return statuses.some((x) => x === 'released') || !statuses.some((x) => x === 'preview' || x === 'announced') ? 'solid' : 'hatch';
 }
 
 const THINKS = ['default', 'option', 'route', 'fallback'];
@@ -208,7 +217,7 @@ function resolved(node) {
 }
 
 // ---- what the browser gets: structure only. Words stay in the HTML, where they also read without JavaScript.
-const cellCode = (c) => ({ s: c.state, g: c.guests, p: c.parts.map((q) => [q.owner, q.status, q.official]) });
+const cellCode = (c) => ({ s: c.state, g: c.guests, ...(c.looks && c.looks.some((k) => k !== 'solid') ? { k: c.looks } : {}), p: c.parts.map((q) => [q.owner, q.status, q.official]) });
 const clientOf = (p) => ({
   agent: p.agent.id, status: p.agent.status, stack: p.stack.map(cellCode),
   doors: p.doors.map((d) => ({ id: d.id, kind: d.kind, status: d.status, stack: d.stack ? d.stack.map(cellCode) : null, m: d.models.map((m) => [m.owner, m.status, m.role]) })),

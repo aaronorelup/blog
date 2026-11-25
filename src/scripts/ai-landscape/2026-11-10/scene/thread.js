@@ -94,7 +94,7 @@ export function createThread(ctx, { max = 48, radius = 0.017, head: withHead = t
       ringMat.color.copy(PAPER).lerp(INK, thread.dark); ringMat.opacity = thread.show * 0.92;
       head.position.copy(thread.pos); ring.position.copy(thread.pos);
     },
-    dispose() { ctx.scene.remove(tube, head, ring); geo.dispose(); mat.dispose(); headMat.dispose(); ringMat.dispose(); head.geometry.dispose(); ring.geometry.dispose(); },
+    dispose() { ctx.scene.remove(tube, head, ring); tube.dispose(); geo.dispose(); mat.dispose(); headMat.dispose(); ringMat.dispose(); head.geometry.dispose(); ring.geometry.dispose(); },
   };
   return thread;
 }

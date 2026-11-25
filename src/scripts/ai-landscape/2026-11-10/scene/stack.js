@@ -78,10 +78,15 @@ export function createTower(ctx, { id, x = 0, z = 0, owner, cells, ownerOf, ink 
       pulse: 0, dim: 0, lit: 0, slide: 0, raise: 0, frost: 0, guests: [], guestShow: 1, mark: null });
   }
 
-  function setGuests(f, owners) {
+  // looks: per guest, 'solid', 'hatch' (none of its parts released yet) or 'faint' (no company documents it), as the
+  // signs draw the same parts (round 4, F4-1)
+  function setGuests(f, owners, looks = []) {
     f.guests.forEach((g) => { group.remove(g); g.material.dispose(); });
     f.guests = (owners || []).slice(0, 3).map((o, k, all) => {
-      const core = new Mesh(coreGeo, ctx.mats.core(ownerOf(o)));
+      const mat = ctx.mats.core(ownerOf(o), { hatch: looks[k] === 'hatch' });
+      if (looks[k] === 'faint') { mat.transparent = true; mat.depthWrite = false; mat.uniforms.uFade.value = 0.3; }
+      const core = new Mesh(coreGeo, mat);
+      core.userData.look = looks[k] || 'solid';
       core.userData.dx = (k - (all.length - 1) / 2) * 0.42 + 0.55;
       group.add(core);
       return core;
@@ -95,8 +100,8 @@ export function createTower(ctx, { id, x = 0, z = 0, owner, cells, ownerOf, ink 
       f.state = STATES[c.s] ? c.s : 'solid';
       f.target = STATES[f.state];
       if (now) Object.assign(f.cur, f.target);
-      const key = (c.g || []).join(' ');
-      if (f.guestKey !== key) { f.guestKey = key; setGuests(f, c.g); }
+      const key = `${(c.g || []).join(' ')}|${(c.k || []).join(' ')}`;
+      if (f.guestKey !== key) { f.guestKey = key; setGuests(f, c.g, c.k); }
     });
   };
   // A pale glass (milk white) needs an ink edge on every floor to read on paper: its rim is drawn as a line.

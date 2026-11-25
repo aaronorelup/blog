@@ -173,6 +173,7 @@ export async function mount(boot) {
       live = false;
       for (const slot of slots.values()) { slot.gone = true; if (slot.ctl && slot.ctl.dispose) slot.ctl.dispose(); }
       slots.clear();
+      ctx.row.dispose();
       renderer.dispose();
       const lose = renderer.getContext().getExtension('WEBGL_lose_context');
       if (lose) lose.loseContext();

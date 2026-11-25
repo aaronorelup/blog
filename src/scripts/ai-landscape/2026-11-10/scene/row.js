@@ -20,6 +20,7 @@ export function createRow(ctx) {
   const BIG = ctx.phone ? 1.15 : BIG_WIDE;
   const { scene, mats, textures, data } = ctx;
   const pale = (hex) => { const c = new Color(hex); return c.r + c.g + c.b > 2.2 ? new Color('#B9BEC8') : c; };
+  let gone = false;
 
   const towers = ORDER.map((id, t) => {
     const cfg = world(id);
@@ -36,7 +37,7 @@ export function createRow(ctx) {
     const name = document.querySelector(`.ail-world[data-world="${id}"] .ail-mark img`)?.alt || document.querySelector(`.ail-world[data-world="${id}"] .ail-mark__name`)?.textContent || id;
     textures.markPlate({ url: cfg.marks.lid, name, plate: cfg.marks.plate, clear: cfg.marks.clear }).then((tex) => {
       plate.material.uniforms.uMap.value = tex; plate.visible = true;
-      if (!tex.userData.over) return;
+      if (!tex.userData.over || gone) return;
       // a mark that cannot be drawn to a canvas: the official file itself rides the blank plate as an image
       const img = document.createElement('img');
       img.src = cfg.marks.lid; img.alt = ''; img.className = 'ail-lidmark';
@@ -114,6 +115,11 @@ export function createRow(ctx) {
     roomy,
     towers, datum: 0,
     tower: (id) => towers.find((tw) => tw.id === id),
+    // the lid marks that ride the page as images leave with the scene (a print, a short window or a turn builds a new one)
+    dispose() {
+      gone = true;
+      towers.forEach((tw) => { if (tw.lid.dom) tw.lid.dom.remove(); tw.lid.dom = null; });
+    },
     reset() {
       row.datum = 0;
       for (const tw of towers) {

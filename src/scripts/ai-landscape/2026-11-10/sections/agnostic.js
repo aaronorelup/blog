@@ -19,7 +19,7 @@ const RZ = 8.6;                       // the billing rail stands this far in fro
 const DARK = { glass: '#17181C', rim: '#5B606A', glow: '#17181C' };
 const TAN = Math.tan((24 * Math.PI) / 360);
 const PX_MIN = 36;                    // a window that would draw a unit smaller than this gives up the lid plates (a mark is whole or absent) and seats again
-const BASE = { board: { ...STOPS.board }, rail: { ...STOPS.rail } };
+const BASE = { board: { ...STOPS.board }, rail: { cx: 0.5, ...STOPS.rail } };      // (a reset puts back every field a framing writes, cx too)
 const bare = { board: false, rail: false };      // the lid plates are away and the boards stand low
 const edges = () => { const W = window.innerWidth; return [Math.max(40, Math.min(96, W / 15)), W - Math.max(24, Math.min(64, W / 22.5))]; };      // clear of the rail of dots, and of the right edge
 // What bounds the five stacks: their lid plates (or, bare, the low boards) and their feet. (A board's paper may pass under a
@@ -369,7 +369,7 @@ function rail(ctx, el, sec) {
         pile.instanceMatrix.needsUpdate = true;
         return k;
       },
-      dispose() { el.removeEventListener('click', onPick); window.removeEventListener('click', onStack); window.removeEventListener('resize', place); Object.assign(STOPS.rail, BASE.rail); if (ctx.state.compare) delete ctx.state.compare.rail; dots.forEach((d) => d.removeEventListener('click', onDot)); units.forEach((u) => { drop(u.bead); u.pick.style.removeProperty('--o'); }); },
+      dispose() { el.removeEventListener('click', onPick); window.removeEventListener('click', onStack); window.removeEventListener('resize', place); Object.assign(STOPS.rail, BASE.rail); if (ctx.state.compare) delete ctx.state.compare.rail; dots.forEach((d) => d.removeEventListener('click', onDot)); units.forEach((u) => { drop(u.bead); u.pick.style.removeProperty('--o'); }); pile.dispose(); },
     };
   });
 }

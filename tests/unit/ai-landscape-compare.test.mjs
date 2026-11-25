@@ -138,6 +138,44 @@ for (const { date } of SNAPSHOTS) {
     assert.ok(unsettled >= 5, `the line-up has parts that are not settled (${unsettled}): the two user-installed, the two named by Musk, the announced model`);
   });
 
+  test(`${date}: a guest's core in a stack floor is as settled as its parts there: faint where no company documents them, hatched before release, and the tower builds it so (round 4, F4-1)`, async () => {
+    const { createTower } = await import(`../../src/scripts/ai-landscape/${date}/scene/stack.js`);
+    const built = [];
+    const mat = (o = {}) => ({ transparent: false, depthWrite: true, uniforms: { uFade: { value: 1 }, uHatch: { value: o.hatch ? 1 : 0 } }, dispose() {} });
+    const ctx = { mats: { glass: () => ({ uniforms: {}, dispose() {} }), core: (own, o) => { const m = mat(o); built.push(m); return m; }, setOwner() {} } };
+    const look = (m) => (m.transparent && !m.depthWrite && m.uniforms.uFade.value < 0.5 ? 'faint' : m.uniforms.uHatch.value ? 'hatch' : 'solid');
+    let faint = 0;
+    for (const id of ORDER) {
+      const p = view.client.p[id];
+      for (const stack of [p.stack, ...p.doors.map((d) => d.stack).filter(Boolean)]) stack.forEach((c, i) => {
+        const looks = c.k || c.g.map(() => 'solid');
+        assert.equal(looks.length, c.g.length, `${id} floor ${i + 1}: one look per guest`);
+        c.g.forEach((o, k) => {
+          const mine = c.p.filter((q) => q[0] === o);
+          const want = mine.length && mine.every((q) => q[2] === 'no') ? 'faint' : mine.length && !mine.some((q) => q[1] === 'released') && mine.some((q) => q[1] === 'preview' || q[1] === 'announced') ? 'hatch' : 'solid';
+          if (mine.length) assert.equal(looks[k], want, `${id} floor ${i + 1}: guest ${o} is drawn ${want}`);
+          if (looks[k] === 'faint') faint++;
+        });
+        built.length = 0;
+        createTower(ctx, { id, owner: { glass: '#8C929C' }, cells: [...Array(i).fill({ s: 'solid', g: [] }), c], ownerOf: () => ({}) });
+        assert.deepEqual(built.map(look), looks.slice(0, 3), `${id} floor ${i + 1}: the tower draws its guests ${looks.join(', ')}`);
+      });
+    }
+    const xai = view.client.p.xai.stack[7];
+    assert.deepEqual(xai.g.map((o, k) => `${o} ${(xai.k || [])[k] || 'solid'}`), ['you solid', 'anthropic faint', 'openai faint'], "xAI's Delegation floor: the user-installed Claude Code and Codex are faint, your other Bots solid");
+    assert.ok(faint >= 2, `faint guests: ${faint}`);
+  });
+
+  test(`${date}: the agents board says a fact's staleAfter may have changed, never that the rule expired (round 4, F4-2)`, { skip: !html }, () => {
+    const board = html.slice(html.indexOf('class="ail-ag__'), html.indexOf('</table>', html.indexOf('class="ail-ag__')));
+    const marks = [...board.matchAll(/<span class="ail-until[^"]*" data-until="([^"]+)">(.*?)<\/span><\/span>|<span class="ail-until[^"]*" data-until="([^"]+)">(.*?<time[^>]*>[^<]*<\/time>)<\/span>/g)].map((m) => decode(m[2] || m[4] || ''));
+    assert.ok(marks.length >= 1, 'the board marks at least one dated access line');
+    for (const m of marks) {
+      assert.ok(m.includes(COPY.world.mayChange) && m.includes(COPY.world.mayHaveChanged), `the mark reads "${COPY.world.mayChange}" before its date and "${COPY.world.mayHaveChanged}" after: ${m}`);
+      assert.ok(!m.includes(`>${COPY.world.expired}<`) && !m.includes(`>${COPY.world.until}<`), `no "until" or "Expired" on the board: ${m}`);
+    }
+  });
+
   test(`${date}: best at: never more certain than the cell holds`, () => {
     const caps = raw.bestAt.capabilities;
     assert.equal(best.caps.length, 22);

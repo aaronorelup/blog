@@ -27,7 +27,7 @@ const rows = B.providers.map((bp) => {
     <ol class="ail-bill__trends">
       {B.trends.map((t, i) => <li class="ail-bill__trend" data-i={i}><Fact fact={fact(t)} /></li>)}
     </ol>
-    <p class="ail-bill__pager" hidden>{B.trends.map((_, i) => <button type="button" class="ail-bill__dot" data-i={i} aria-label={String(i + 1)} aria-pressed="false"></button>)}</p>
+    <p class="ail-bill__pager" role="group" aria-labelledby="billing-title" hidden>{B.trends.map((t, i) => <button type="button" class="ail-bill__dot" data-i={i} aria-label={fact(t).text} aria-pressed="false"></button>)}</p>
     <table class="ail-bill__table">
       <thead>
         <tr><td></td>{HEADS.map(([k, w]) => <th scope="col" class="ail-label" data-k={k}>{w}</th>)}<td></td></tr>

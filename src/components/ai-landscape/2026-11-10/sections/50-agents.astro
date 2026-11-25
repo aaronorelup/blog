@@ -35,7 +35,7 @@ const SAY = { yes: COPY.architecture.yes, partial: COPY.best.partly, no: COPY.ar
                   <summary class="ail-ag__s"><span class="ail-ag__agent">{a.agent}</span>{a.tag && <span class="ail-tag" data-status={a.status}>{a.tag}</span>}</summary>
                   <div class="ail-ag__more ail-card">
                     {[a.access, a.alwaysOn, a.approvals].filter(Boolean).map((f) => (
-                      <p><Fact fact={f} tag={false} />{f.staleAfter && <span class="ail-until ail-label" data-until={f.staleAfter}> <span class="ail-until__w">{COPY.world.until}</span><span class="ail-until__x">{COPY.world.expired}</span> <time datetime={f.staleAfter}>{f.staleAfter}</time></span>}</p>
+                      <p><Fact fact={f} tag={false} />{f.staleAfter && <span class="ail-until ail-label" data-until={f.staleAfter}> <span class="ail-until__w">{COPY.world.mayChange}</span><span class="ail-until__x">{COPY.world.mayHaveChanged}</span> <time datetime={f.staleAfter}>{f.staleAfter}</time></span>}</p>
                     ))}
                   </div>
                 </details>

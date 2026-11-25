@@ -74,7 +74,7 @@ function stop3D() {
   for (const el of $$('main [style]')) el.removeAttribute('style');
   for (const el of $$('main [inert]')) el.inert = false;
   for (const el of $$('main [data-faint]')) el.removeAttribute('data-faint');
-  for (const el of $$('.ail-next')) el.remove();
+  for (const el of $$('.ail-next, body > .ail-lidmark')) el.remove();
   const leaders = $('#ail-leaders');
   if (leaders) leaders.replaceChildren();
 }

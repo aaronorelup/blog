@@ -391,7 +391,7 @@ export function create(ctx, el, sec) {
       cast.forEach((c) => c.fig.dispose());
       pieces.forEach((p) => { if (p.glyph) { p.glyph.geometry.dispose(); p.glyph.material.dispose(); } if (p.obj) p.obj.dispose(); });
       made.forEach((m) => { if (m.material) m.material.dispose(); m.removeFromParent(); });
-      geo.dispose(); bigGeo.dispose(); tail.geo.dispose(); tail.seam.dispose(); bigTail.geo.dispose(); bigTail.seam.dispose(); shade.geometry.dispose();
+      geo.dispose(); bigGeo.dispose(); lowGeo.dispose(); tail.geo.dispose(); tail.seam.dispose(); bigTail.geo.dispose(); bigTail.seam.dispose(); shade.geometry.dispose();
       bench.forEach((m) => m.geometry.dispose());
       pieces.forEach((p) => { if (p.layer === 'you') p.mesh.geometry.dispose(); });
       base.dispose();
