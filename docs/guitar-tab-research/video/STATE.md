@@ -368,4 +368,5 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   - nothing in project/ is newer than the render;
   - every latest qc/verify.md says PASS or READY.
   Total 2,973.5 s (49:33).
-- Part finish launched: the join with its gate, disk clearing and level matching, then the three film checkers.
+- Part finish launched (wf_24e91e53-107, args {"part":"finish"}): the join with its gate, disk clearing and level
+  matching, then the three film checkers.
