@@ -14,7 +14,7 @@ import { world } from '../worlds/index.js';
 
 const BEATS = [['a', 0.8], ['b', 1.62], ['c', 2.5], ['d', 3.01]];
 const MODEL = 4;
-const FLAG0 = 2.5, FLAG1 = 2.92, TOLD = 0.25;      // the myths share the catch while it is up (it leaves with the iris at 2.93), each stamped after the first quarter of its step
+const FLAG0 = 2.5, FLAG1 = 2.96, TOLD = 0.3;      // the myths share the catch, which stays until the iris has all but shut. Each is stamped 0.3 s after it shows
 
 export function create(ctx, el, sec) {
   const { rig, row, studio, labels, prims, input } = ctx;
@@ -133,8 +133,9 @@ export function create(ctx, el, sec) {
   };
   window.addEventListener('click', onCanvas);
   // the other myths behind their flags: the scroll says them one after another through the whole catch, struck through
-  // over the row of flags, and after the first quarter of its step stamps the fact under it (is-told), 95 px of scroll
-  // each at 900 px, so a wheel's notch rests on every one (round 5, E-4; round 4, W-2). A tap opens the one on show
+  // over the row of flags, and 0.3 s after it shows stamps the fact under it (is-told): a step is 0.115 screens, 104 px
+  // at 900, longer than a wheel's notch, so a wheel rests on every one, and every rest ends on the fact (round 5, E-4;
+  // round 4, W-2). A tap opens the one on show
   // with its whole fact (myth and fact in full would pass 60 words). A flag opened by hand holds until the scroll has
   // moved a tenth of a screen
   const flags = $$('.ail-flag', el);
@@ -184,7 +185,7 @@ export function create(ctx, el, sec) {
       // a jump out of the world (a rail link, reduced motion) skips the frames in which the signature fades:
       // one update at amount 0 makes it hide what it drew, so nothing of it stands in the next section
       if (st.sig) { st.sig.reset(); if (st.caught && st.sig.catch) st.sig.catch(0); if (st.sig.update) st.sig.update(0, 0); }
-      st.stilled = false; st.caught = false; st.nameK = 0; st.callK = 0; st.callOn = false;
+      st.stilled = false; st.caught = false; st.nameK = 0; st.callK = 0; st.callOn = false; st.sayK = null;
       stage.removeAttribute('data-board');
       if (st.calls) st.calls.update(0);
       st.beat = ''; delete el.dataset.beatNow; el.classList.remove('is-pushed');
@@ -204,9 +205,11 @@ export function create(ctx, el, sec) {
       if (input.moved || !st.rect) measure();
       if (beat === 'd' && flags.length) {
         if (st.flagAt != null && Math.abs(u - st.flagAt) > 0.1) st.flagAt = null;
-        const at = Math.min(flags.length - 1e-6, Math.max(0, (u - FLAG0) / ((FLAG1 - FLAG0) / flags.length))), k = Math.floor(at), told = at - k >= TOLD, key = `${k}${told ? '+' : ''}`;
+        const k = Math.floor(Math.min(flags.length - 1e-6, Math.max(0, (u - FLAG0) / ((FLAG1 - FLAG0) / flags.length))));
+        if (k !== st.sayK) { st.sayK = k; st.sayT = 0; } else st.sayT += dt;
+        const told = ctx.reduced || st.sayT >= TOLD, key = `${k}${told ? '+' : ''}`;
         if (st.flagAt == null && key !== st.flag) { st.flag = key; flags.forEach((f, n) => { if (st.flagKey !== k) f.open = false; f.classList.toggle('is-said', n === k); f.classList.toggle('is-told', n === k && told); }); st.flagKey = k; }
-      } else if (st.flag != null) { st.flag = null; st.flagKey = null; st.flagAt = null; flags.forEach((f) => { f.open = false; f.classList.remove('is-said', 'is-told'); }); }
+      } else if (st.flag != null) { st.flag = null; st.flagKey = null; st.flagAt = null; st.sayK = null; flags.forEach((f) => { f.open = false; f.classList.remove('is-said', 'is-told'); }); }
 
       // camera: truck along the row to this stack, settle wider when it opens, hold. The last world pulls back out
       const from = before ? rig.world(before.x, 'open') : rig.stops.row;
@@ -225,7 +228,7 @@ export function create(ctx, el, sec) {
       st.open = open;
       // the entry card comes in at 0.25 and leaves at 0.74, the callouts and the tabs come at 0.8, and the catch
       // leaves with the world. The open beat is a board: nine rows and the tabs, up to 80 words
-      setBeat(el, beat === 'a' ? (u >= 0.25 && u < 0.74 ? 'a' : '') : beat === 'd' && open < 0.2 ? '' : beat);
+      setBeat(el, beat === 'a' ? (u >= 0.25 && u < 0.74 ? 'a' : '') : beat === 'd' && u >= FLAG1 ? '' : beat);
       stage.toggleAttribute('data-board', beat === 'b');
       inst.open = open;
       for (const tw of row.towers) if (tw !== tower) tw.side = -1;
