@@ -119,3 +119,16 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   videos, prompt, model, effort, time and kit. Round 1 stays on record as a second run, marked "task list visible".
 - Disk: deleted round 1's intermediate audio, arrays and raw frames (1.8 GB; answers, notes, scores and film files
   kept); 3.4 GB free.
+
+## 2026-11-25 13:50 UTC
+
+- Blind round 2 done: six attempts, 12:20-13:46 UTC, each stopped by its own choice in about 33 to 41 of its 90
+  minutes. The task reminders in every attempt's context were empty this time (itemCount 0).
+- Said before scoring: c3 both arms standard tuning, no capo, C major, about 77 BPM; c1 both arms standard tuning with
+  capo 3, B-flat major; c2 both arms D standard (D G C F A D, about -10 cents), no capo.
+- Access watch stopped 13:47 (`/home/user/gtv/guard/access-r2.log`): no read of any answer file; the ledger reads of
+  gtr-run and three listings of the records folder by the orchestrator's own harness (12:21 turn end; 13:25 and 13:34
+  around the orchestrator's context compaction). No attempt's tool call names a watched path.
+- Disk: each finished attempt's large scratch audio and arrays deleted by the orchestrator (answers, notes, scripts and
+  pictures kept); 3.0 GB free.
+- Scoring and the transcript audit of round 2 run now (`gtv-film.js` part score2, run wf_d1c32948-4e0).
