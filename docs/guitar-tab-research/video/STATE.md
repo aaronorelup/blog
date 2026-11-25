@@ -261,3 +261,12 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   cover ch00, 06, 12 and 15 (rule (e) is in their prompts). The others get a refresh run when their current polish run
   ends: P11 wf_fd3f8bfc-99a (ch02) is running; ch01, 04, 07, 10, 11, 13, 14 and 16 are still to come.
 - P7 finished: ch02 and ch05 pass the film-wide check.
+
+## 2026-11-25 21:22 UTC
+
+- P2 finished: ch07 and ch17 pass. ch17 is done. ch07 gets the narration refresh: P12 wf_95aabce1-663.
+- Disk was at 2.6 GB free. I deleted stale frame-cache folders, dead files in four work folders, and three experiment
+  venvs that nothing in the film uses (`venv-torch`, `venv-bp`, `venv-madmom`; package lists are kept next to them as
+  `*.freeze.txt`, see `/home/user/gtv/work/deleted-venvs.txt`). 4.1 GB free.
+- Refresh args are made with `scratchpad/refresh_args.py` (`polish-PN-args.json`).
+- Chapters done (passed polish, nothing left to refresh): ch03 (P8 still running), ch05, ch08 (P6 still running), ch17.
