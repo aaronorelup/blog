@@ -37,3 +37,12 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   the tab, a truth builder, an independent checker and a repair pass. Two toolkit installers. Then one agent per
   step of the job in three waves plus a rented GPU lane, two auditors, a results editor and the picker of the
   blind test's toolkit.
+- 2026-11-25 04:10 UTC: answer keys built for all three songs. The independent checker failed two of them on
+  timing (capo: notes 50 to 100 ms early in 24 runs, beats early; standard: one bar and three rolled chords) and
+  one on pitch (tuning: the bass of 12 verse bars is E2, not D2, plus about 55 notes nothing plays). Repair passes
+  and re-checks are running. Freed 4.7 GB of package cache nobody linked to. The orchestrator moved from Fable 5.2
+  to Opus 5.5 (Aaron's switch, Fable's weekly limit reached).
+- Next: stage 3 runs in three side-by-side lanes (`workflows/gtv-lanes.js`, lanes m, b, c), because one workflow
+  runs only two agents at a time on this box. Then stage 4 to 6 (`workflows/gtv-film.js`, one part per run). The
+  blind test runs with nothing else on the box and a file-access watch on the answer folders
+  (`workflows/guard-watch.py`), and its transcripts are audited afterwards.

@@ -1,0 +1,335 @@
+export const meta = {
+  name: 'gtv-film',
+  description: 'Guitar tab video, stages 4 to 6: the blind Opus 5.5 attempts with and without tools, the script, the voice, the chapters, the finished film and its publication at the top of AO-082',
+  phases: [
+    { title: 'Blind', detail: 'Opus 5.5 recreates each tab from the video alone, with the toolkit and without (Opus 5.5, max)' },
+    { title: 'Score', detail: 'the blind answers scored against the truth, rendered, and the attempts audited (Opus 5.5, max)' },
+    { title: 'Script', detail: 'the script, a fact check and a viewer read, a fix pass, then the voice and the missing scene components (Opus 5.5)' },
+    { title: 'Chapters', detail: 'one builder per chapter, an independent reviewer, a fix pass (Opus 5.5)' },
+    { title: 'Finish', detail: 'join, master, poster and stills, then an independent check of the whole film (Opus 5.5, max)' },
+    { title: 'Publish', detail: 'studio library, the post edit, landing on main and the live checks (Opus 5.5, max)' },
+  ],
+}
+
+// One part per workflow run: args.part is blind (with args.lane x or y), score, script, chapters (with args.chapters), finish or publish.
+const OPUS = 'claude-opus-5-5'
+const GTV = '/home/user/gtv'
+const REC = '/home/user/blog/docs/guitar-tab-research/video'
+const RES = '/home/user/blog/docs/guitar-tab-research'
+const PROD = GTV + '/production'
+const PART = (args && args.part) || 'none'
+
+const COMMON = `THE JOB (read this first)
+Aaron Orelup (aaronorelup.com) has a published post, "Testing the tools a guitar tab web app would need" (AO-082, /home/user/blog/src/content/posts/guitar-tab-tools.md, research folder ${RES}). He asked for a FILM at the top of that post. His words: "make a 30 minute long video where you apply everything and show what it looks like and the results from each tool so that the reader can get the best understanding of the current state ... at the quality of my I Love My Evening Television series, but this is completely separate and should not try to imitate it, that's just a reference for how much effort you should put into it to make it look and sound good ... Let the watching judge for themselves when it is a matter of judgement, otherwise since you have the ground truth you can tell them. At the end ... have an Opus 5.5 session try to recreate the tab from the video with the answer hidden and see how close it can get with using the different techniques and its own judgement ... also let it try without the tool. The finished video can be as long as an hour long, but shoot for 30 minutes in the beginning and add to it when there are useful findings and good examples to show the viewer. When you make a tab, don't just show it, but play part of it so the listener can hear what it sounds like. Make it visually very pleasing and the audio high quality ... All of this is to show the current state of having AI do video of a person playing guitar to a finished tablature on its own using the tools that are already out there ... we want to know which tools to give our AI to help it do this task and which ones actually make the output work ... Once you are done, post it at the top of the blog post and push it live. You do not need to ask me permission for anything, you are preapproved."
+Everything is pre-approved: do not stop to ask. If this box's permission system refuses a step, do not work around it: write down what was refused and take another route.
+
+WHERE THINGS ARE
+- Records (in the repo, PUBLIC): ${REC}/ . The three recordings: SONGS.md, songs.json. The experiments: EXPERIMENTS.md, RESULTS.md, results.json, results/step-*.md (each has a "For the film" section), results/audit-*.md, truth-<slot>.md and truth-<slot>-check.md. The blind test: BLIND.md, BLIND-RESULTS.md. The film's build manual: PRODUCTION.md. How it goes on the site: EMBED.md.
+- Heavy files: ${GTV}/ (songs/<slot>/, truth/<slot>/, experiments/<slot>/<exp id>/, blind/, tools/, production/). Slots: capo, tuning, standard.
+- The film's kit: ${PROD}/kit/ (PRODUCTION.md section 3.1). Chapters: ${PROD}/chapters/chNN-slug/ (PRODUCTION.md 6.2). One render at a time, under ${PROD}/render.lock (render_chapter.sh takes it).
+- Written records go under ${REC}/ : no audio or video there, no file over 300 KB, no key, nothing personal about Aaron. Touch nothing else in /home/user/blog and run no git command that changes state there.
+
+PRIVACY (hard rules)
+- None of Aaron's own videos or recordings appear in the film or its records. Nothing at all from the earlier post AO-078 (guitar-tabs-from-video): no clip, no picture, no tab, no number. The film may say in one plain sentence that an earlier test found Opus sometimes did better without tools, nothing more.
+- No person is named anywhere except the performers and tab authors listed in songs.json (credited as songs.json says).
+- Never print a key, never write one to a file, a URL or a log: keys come from python3 ~/.claude/bin/getkey.py NAME inside a script.
+
+THE BOX
+4 vCPU, 15 GB of memory, no graphics card. Keep at least 3 GB of disk free (df -h /), delete superseded intermediates. Heavy analysis jobs go through /home/user/gtr/bin/gtr-run (source /home/user/gtr/env.sh first; ignore its "DISK LOW" notice). Renders only through render_chapter.sh. Long transfers can stall: use curl -C - with --speed-limit and --speed-time in a retry loop.
+
+THE BOX CAN RESTART WITHOUT WARNING, and a restart kills you. A new copy of you then starts with this same prompt and no memory. So:
+- Your work folder is ${GTV}/work/<your agent name>/ . FIRST read PROGRESS.md there if it exists, and continue from it. Never redo a finished step.
+- After every finished step append to PROGRESS.md what was done, the numbers, the paths and what comes next. Put results at their final paths as soon as they exist. Make long jobs restartable.
+KEEP YOUR OWN CONTEXT SMALL: send command output to log files and read only the lines you need, never print a whole JSON or CSV file, do not read a document twice, read only the sections that concern you.
+HONESTY: every number you report must come from a file you can name. If something did not run or failed, say so with the error. Never fill a gap with a guess.
+MODELS: if you start a helper agent, give it the model opus or sonnet explicitly. Never start anything on Fable.
+YOUR FINAL MESSAGE goes to the orchestrator, whose reading budget is small: AT MOST 12 LINES, facts only, with the path of the file that holds the detail.`
+
+// ---------- Stage 4: the blind attempts ----------
+const ARM = {
+  tools: `WHAT YOU MAY USE: the toolkit in ${GTV}/tools/kit/ . Read its TOOLS.md first. Its wrappers (which run the Python environments they name), plus ffmpeg, ffprobe, FluidSynth, the system Python for your own scripts, and your own judgement: look at frames you extract, at pictures you draw of the sound, and listen through analyses you write. Its selfcheck.sh renders your answer and compares it with the recording. A hosted service only through a wrapper inside the kit, if TOOLS.md lists one.`,
+  bare: `WHAT YOU MAY USE: only what ${GTV}/tools/bare/BARE.md allows. Read it first. In short: the Python environment in ${GTV}/tools/bare/ (numpy, scipy, soundfile), ffmpeg and ffprobe, FluidSynth, PyGuitarPro, and the helper scripts in that folder (the answer checker and the Guitar Pro writer). No other Python environment, no music analysis or machine learning package, no trained model, no hosted service. You may write your own signal processing, draw your own pictures of the sound, and look at frames you extract.`,
+}
+const ARM_DIR = { tools: GTV + '/tools/kit', bare: GTV + '/tools/bare' }
+
+const BLIND = (id, arm) => `[AGENT: blind-${id}-${arm}]
+
+You are taking part in a measured test. Your task: write down the guitar tablature of the piece played in one video, as close as you can get to what the player actually plays, from the video alone.
+
+THE INPUT: ${GTV}/blind/${id}/video.mp4 . One person plays one guitar, with sound and picture. Nothing else about it is given to you: not its title, the player, the tuning, or whether a capo is used. Find out what you need from the sound and the picture.
+
+YOUR WORK FOLDER: ${GTV}/blind/${id}/${arm}/ . Create it, cd into it, and write only inside it.
+
+${ARM[arm]}
+
+WHAT YOU MAY NOT DO. This is what makes the test valid. Your whole transcript and every file access on this machine are audited afterwards, and any breach voids your attempt:
+- Read, list or search anything outside your work folder, the video, and ${ARM_DIR[arm]} . In particular nothing else under ${GTV}/ (not the other folders under ${GTV}/blind/, not the rest of ${GTV}/tools/), nothing under /home/user/blog, /home/user/land, /home/user/gtr, /root/.claude or /tmp/claude-0, and no git command anywhere.
+- Use the web in any way: no web search or fetch tool, no curl, wget or pip to the internet, no tab or chord site.
+- Start helper agents.
+- Recall instead of hearing: if you think you recognise the piece, do not use remembered tabs or chords. Write only what you hear and see, and say in HOW.md that you thought you recognised it and what you thought it was.
+
+TIME: 90 minutes of wall-clock time from your first start, the same for every attempt. First: mkdir -p the work folder, cd into it, then: [ -f START ] || date +%s > START . Check the elapsed time often (echo $(( ($(date +%s) - $(cat START)) / 60 )) min). Have a first complete answer.json by 45 minutes and improve it after. At 75 minutes stop exploring and finish. If you are a new copy after a machine restart (START exists), read PROGRESS.md and carry on: the clock keeps running from START.
+
+THE ANSWER: answer.json in your work folder, this object:
+{"tuning_midi": [six MIDI numbers, lowest string first], "capo": <fret, 0 for none>, "tuning_offset_cents": <number>, "tempo_bpm": <number>, "key": "<like C:maj or A:min>", "notes": [{"onset": <s>, "offset": <s>, "pitch": <MIDI number as it sounds>, "string": <1 to 6, 1 is the highest>, "fret": <counted from the capo>}], "beats": [<s>, ...], "downbeats": [<s>, ...], "chords": [{"start": <s>, "end": <s>, "label": "<Harte label like C:maj, A:min7, G:maj/3 or N>"}]}
+Times are seconds on the video's own timeline. pitch must equal tuning_midi[6 - string] + capo + fret. Cover the whole piece, from its first note to its last.
+Check it with the validate_answer.py in ${ARM_DIR[arm]} until it passes. Then write answer.gp5 with answer2gp5.py from the same folder, and HOW.md (under 60 lines): what you did in order, which tools or methods you used and what each told you, what you decided by your own judgement and why, how sure you are of each part (tuning, capo, notes, strings and frets, rhythm, chords), and what you would do with more time.
+Keep PROGRESS.md in the work folder as you go (what is done, what comes next).
+
+YOUR FINAL MESSAGE (at most 8 lines): the tuning, the capo, the number of notes, the minutes used, and what you are least sure of.`
+
+const SCORE = `[AGENT: blind-scorer]
+
+${COMMON}
+
+YOUR JOB: score the blind test. Six attempts: for each blind id b1, b2, b3 an Opus 5.5 session wrote ${GTV}/blind/<id>/tools/answer.json (with the toolkit of ${GTV}/tools/kit/) and ${GTV}/blind/<id>/bare/answer.json (without tools). The mapping from blind id to song is ONLY in ${GTV}/truth/blind-map.json . Read ${REC}/BLIND.md (the protocol and how answers are scored) and the step-09 record ${REC}/results/step-09-tabs-and-chains.md (how the finished tabs of the chains were scored: use exactly the same commands and the same scope, so that the blind answers and the six chains sit in one table).
+1. For each attempt: did it finish (answer.json valid by validate_answer.py, answer.gp5, HOW.md), the minutes used (START to the last write of answer.json), and its scores against the truth with gtr-eval: tab, notes, beats, chords, tuning (and key). Put the outputs in ${GTV}/blind/<id>/<arm>/score/ with score.sh.
+2. Make each answer showable and playable: its tab strip with the production kit's tabstrip tool (PRODUCTION.md 6.4) from answer.gp5, its render through FluidSynth with the same SoundFont and program as the truth's render, and a truth-against-answer piano roll JSON with pianoroll_data.py for the best 20 second stretch and the worst. Paths in ${GTV}/blind/<id>/<arm>/film/ .
+3. Read each HOW.md and summarise in two lines per attempt what it did and what it decided by judgement.
+4. Write ${REC}/BLIND-RESULTS.md (under 250 lines): per song a table of both arms next to the six chains of step 9 and the truth (tuning, capo, the main tab score, note F1, string and fret right, beat F, chord score); what each arm got right and wrong, with numbers; the time used; "For the film": per song the stretch (at most 20 s) that shows best where the two arms differ, the files to show and to play, and which points the truth settles and which are for the viewer's ear. Use the songs' slot names there (the film may name them). Also ${GTV}/blind/results.json with every number.
+Your final message: per song one line with both arms' main scores next to the best chain's, and the record's path.`
+
+const BLIND_AUDIT = `[AGENT: blind-auditor]
+
+${COMMON}
+
+YOUR JOB: audit the six blind attempts for breaches. Each attempt was an agent whose label is blind-<id>-<arm> (ids b1, b2, b3, arms tools and bare). Its rules: read only its work folder ${GTV}/blind/<id>/<arm>/ , its video ${GTV}/blind/<id>/video.mp4 and its arm's folder (${GTV}/tools/kit/ for tools, ${GTV}/tools/bare/ for bare; the tools arm may run the Python environments that the kit's wrappers name); no web at all; no helper agents; no git; nothing under /home/user/blog, /home/user/land, /home/user/gtr, /root/.claude, /tmp/claude-0, or anywhere else in ${GTV}/ ; the bare arm no MIR or machine learning package or model.
+1. Find each attempt's transcript: the files agent-<id>.jsonl next to an agent-<id>.meta.json whose "description" is the label, under /root/.claude/projects/-home-user-blog/*/subagents/workflows/*/ . There may be more than one per label (a restart starts a new copy): audit all of them.
+2. Go through every tool call in each transcript (write a script that lists them: tool name, command or path, never the whole file). Flag every path or command that leaves the allowed set, every web tool or internet call, every helper agent, every git command, every package install, and for the bare arm every import beyond numpy, scipy, soundfile, PyGuitarPro and the standard library. Flag any place where the attempt names the piece, the player or a remembered tab or chord chart.
+3. Read the file-access log of the watch that ran during the attempts: ${GTV}/guard/access.log (every open or read of the answer folders while the attempts ran; its header says what was watched and when it started and stopped). For every line in the attempt window, find which process could have made it (the attempts' commands, or something else) and say so.
+4. Write ${REC}/results/audit-blind.md (under 150 lines): what was checked, per attempt the counts (tool calls, commands, paths outside the allowed set: 0 or the list), and a verdict per attempt: valid, or void with the evidence.
+Return: pass (true only if every attempt is valid), problems (one string per breach, starting with the label), and a two-line summary.`
+
+// ---------- Stage 5: script, voice, components ----------
+const SCRIPT = `[AGENT: script-writer]
+
+${COMMON}
+
+YOUR JOB: write the film. Read first: ${REC}/RESULTS.md, ${REC}/BLIND-RESULTS.md, ${REC}/results/audit-blind.md, the "For the film" sections of ${REC}/results/step-*.md, ${REC}/SONGS.md, ${REC}/truth-*.md (what each answer key is and how sure it is), ${REC}/PRODUCTION.md sections 1, 2, 5 and 6 (the look, the voice, the shots that exist, the timing rules), ${REC}/EMBED.md section 1 (chapter labels), and the post itself (its vocabulary, and so that the film does not contradict it; where the film's numbers differ from the post's, say why in the film).
+THE STORY: a viewer who wants to give an AI tools to turn a guitar video into a finished tab should come away knowing, step by step, which tools' output was closest to the truth on these three recordings, what each costs, what still fails, and how close Opus 5.5 got on its own with and without the tools. Order: a cold open with one striking result heard and seen; the three recordings and how each answer key was made (and how sure it is); the job as a chain of steps; one chapter per step of the job with its best and worst tools shown and heard; the finished tabs (the chains); the blind test, both arms, heard against the original; what to give the AI, stated as measured on these recordings; credits.
+LENGTH: aim for 30 to 40 minutes. Go longer (up to 60) only where a chapter has more findings and examples worth showing. About 3,200 to 4,600 narrated words at the narrator's 164 words a minute, plus listening windows.
+RULES
+- Every tab or set of notes on screen is also heard: at least 4 s alone with its cursor, truth first, then the tool through the same SoundFont and program, the same bars. Never narrate over a listening window. Also let the viewer hear the original recording often.
+- Where the truth settles it, the narrator states the number. Where it is a matter of judgement (how a render sounds, whether an overlay follows the hand), the narrator sets it up and lets the viewer judge, without telling them what to think.
+- Every tool is named with its version and the setting that matters. Every number on screen names its metric and comes from a named file (result.json, a step record, BLIND-RESULTS.md).
+- Write the narration for the ear: short sentences, terms explained the first time (onset, F1, capo, tuning, string and fret assignment), numbers written as they are said ("zero point eight nine", "ninety notes"), tool names as they are said. A neutral documentary narrator: it is not Aaron and does not speak for him.
+- Visual variety: every shot is drawn from real data or real footage (PRODUCTION.md 2.5 and 2.6). No generated imagery. Vary the shots across the film. List any shot the kit cannot draw yet.
+- The credits name the performers and tab authors as songs.json credits them, with their links, alphaTab 1.9.0 (its credit must stay visible on every tab strip), the tools, the narrator voice (ElevenLabs, "Mike"), and that the film was made by Claude agents for aaronorelup.com.
+WRITE
+1. ${PROD}/SCRIPT.md: the film's title, its one-sentence finding, the chapter list with target lengths, then per chapter: its finding, its shots in order (component, data files with exact paths, which lines play over it, each listening window with what is heard and for how long), its narration lines numbered l01, l02 ... (1 to 4 sentences each).
+2. Per chapter, ${PROD}/chapters/chNN-slug/brief.json and script.md as PRODUCTION.md 6.2 describes (ch00 is the cold open and title).
+3. ${PROD}/KIT-NEEDS.md: every shot the kit's components (kit/components/) cannot draw yet, each with the data it takes, which chapters use it, and a sketch of the frame in words. Keep the list short: reuse and extend the six components where you can.
+Your final message: the title, the chapters with their target lengths, the narrated word count, and the paths.`
+
+const SCRIPT_FACTS = `[AGENT: script-factcheck]
+
+${COMMON}
+
+YOUR JOB: fact-check the film's script before it is voiced: ${PROD}/SCRIPT.md and every ${PROD}/chapters/*/script.md and brief.json. You did not write it.
+1. Every number, said or on screen: find it in its source (result.json under ${GTV}/experiments/, ${REC}/RESULTS.md, ${REC}/BLIND-RESULTS.md, the step records) and compare. Write a script that lists them. Rounding as said is fine. A number with no source is a problem.
+2. Every claim: does its source carry it? Is a truth-settled point stated with its number, and is a matter of judgement left to the viewer? Does the film contradict the post or the records anywhere?
+3. Every tool named with its version and the setting that matters. Every data file named in a brief exists.
+4. The privacy rules above, and nothing that is not public.
+Write ${REC}/results/script-factcheck.md (under 150 lines). Return: pass, problems (one string each: chapter, line, what is wrong, the source, the fix), and a two-line summary.`
+
+const SCRIPT_VIEWER = `[AGENT: script-viewer]
+
+${COMMON}
+
+YOUR JOB: read the film's script as its viewer will meet it: ${PROD}/SCRIPT.md and the ${PROD}/chapters/*/script.md files, together with ${REC}/PRODUCTION.md sections 1 and 2. You are someone who plays guitar and is curious about AI, but knows nothing about music information retrieval. You did not write it.
+Flag: any term used before it is explained; any stretch over about 90 seconds with nothing new to see or hear; any tab or note list shown and not played, or played under narration; any place that tells the viewer what to think about a matter of judgement; any place where the main question (which tools to give an AI, and which ones make the output work) is lost; repetition; any chapter whose shots are all of one kind; anything that would look or sound cheap next to the bar in PRODUCTION.md section 1; length, if a chapter does not earn its minutes or a strong finding is rushed.
+Write ${REC}/results/script-viewer.md (under 120 lines). Return: pass, problems (one string each: chapter, line or shot, what is wrong, the fix), and a two-line summary.`
+
+const SCRIPT_FIX = (problems) => `[AGENT: script-fix]
+
+${COMMON}
+
+YOUR JOB: a fact checker and a viewer read the film's script (${PROD}/SCRIPT.md, ${PROD}/chapters/*/script.md and brief.json). Their reports: ${REC}/results/script-factcheck.md and ${REC}/results/script-viewer.md. Fix every problem at its source in the script files, keeping the rules of the script (every tab heard, judgement left to the viewer, numbers from named files). Where a reviewer is wrong, say why with evidence. Add a section "After review" to SCRIPT.md listing each change.
+The problems:
+${problems}
+Your final message: the count of problems fixed and refused, the new narrated word count and target length.`
+
+const VOICE = `[AGENT: voice]
+
+${COMMON}
+
+YOUR JOB: voice the whole film before any chapter is built (narration timing decides every chapter's length). Read ${REC}/PRODUCTION.md section 5 (the voice, the settings, tts.py, stt_check.py, level.py) and section 6.2. For every chapter in ${PROD}/chapters/ and every line in its script.md: render the line with tts.py (with its neighbours as previous and next text), run stt_check.py and retake a line above 5% word error (at most two retakes, then fix the spelling of the line for the ear and note it), level it with level.py to -17 LUFS mono, and put lNN.mp3, lNN.words.json, lNN.req.json and the levelled lNN.wav in that chapter's vo/ . Read the account's credits before and after. Stop and report if the job would pass 40,000 credits.
+Write ${PROD}/VOICE.md: per chapter the lines, the narration seconds, the retakes, and the credits used in all.
+Your final message: the line count, the narration minutes per chapter and in all, the credits used, and any line that failed.`
+
+const KITX = `[AGENT: kit-extender]
+
+${COMMON}
+
+YOUR JOB: build the scene components the film's script needs and the kit lacks, before the chapter builders start. The list: ${PROD}/KIT-NEEDS.md . The kit: ${PROD}/kit/ (components, kit.css, kit.js, tools/hfkit.py). Read ${REC}/PRODUCTION.md sections 2, 3.1 and 6.3 to 6.5, and copy the patterns of the existing components (data JSON in, HFK.driver for anything drawn from data, the palette and type of section 2, the motion rules, nothing in the caption band).
+For each new component: add it to kit/components/ and make hfkit.py build it; build a one-scene test project from real data of this job in ${PROD}/kittest/<component>/ ; run hyperframes check and a snapshot at three times; look at the frames yourself and fix what looks wrong; render it once under the lock to prove it renders. Extend an existing component instead of adding one where that is enough. Write each new component's data format into ${REC}/PRODUCTION.md section 6.4 (keep that section's style).
+Your final message: per component one line (what it draws, its test frames), and anything not built.`
+
+// ---------- Stage 5: chapters ----------
+const CH_BUILD = (ch) => `[AGENT: build-${ch}]
+
+${COMMON}
+
+YOUR JOB: build chapter ${ch} of the film, from its brief to a finished render: ${PROD}/chapters/${ch}/ (brief.json, script.md, vo/ are given). Read ${REC}/PRODUCTION.md sections 2, 3.1 and 6 first (the look, the kit, the chapter folder, how a chapter agent builds, the data formats, the rules learned, render time and the lock), ${PROD}/SCRIPT.md for this chapter only, and ${PROD}/VOICE.md for its narration lengths.
+1. Data: make every shot's data from the files the brief names (tab strips, beat maps and MIDI with tabstrip.cjs and tab_align_check.py, renders through FluidSynth with the truth's SoundFont and program, piano roll JSON with pianoroll_data.py, overlay frames, chart rows, footage excerpts cut to only the seconds used). Numbers on screen come from the files, never typed by hand.
+2. Build the project with hfkit.py (build per scene, root, vtt) following the timing rules of 6.3 and the sound rules of 2.7: lines from their words files, every listening window heard alone, music ducked under narration, the scene's own audio starting after the picture settles.
+3. Check and look before rendering: hyperframes check (no errors), snapshots at the middle of every shot and at every scene change. Look at every snapshot yourself and fix what is off: overlaps, text under 22 px, anything in the bottom 150 px, empty or crowded frames, a tab without its alphaTab credit, a tool without its version, a frame that is static for more than 3 s. Aim for the care of PRODUCTION.md section 1.
+4. Render once with render_chapter.sh (it waits for the lock), then finish.py to qc/preview.mp4 with the captions, sync_check.py for every listening window (each within 20 ms), a contact sheet at the shot midpoints in qc/, loudness of the preview. Fix and re-render if a window is off.
+5. Deliver chapter.mp4, captions.vtt and chapter.json, and qc/README.md (what was checked, the numbers).
+Your final message: the chapter's length, its shots, the sync and loudness numbers, and anything that does not match the brief.`
+
+const CH_REVIEW = (ch, again) => `[AGENT: ${again ? 're' : ''}review-${ch}]
+
+${COMMON}
+
+YOUR JOB: review the finished chapter ${ch} as an independent viewer and editor: ${PROD}/chapters/${ch}/ (chapter.mp4, captions.vtt, qc/, brief.json, script.md). You did not build it. Read ${REC}/PRODUCTION.md sections 1 and 2 (the bar and the look).
+1. Look: pull frames every 2 seconds and around every scene change (ffmpeg into ${GTV}/work/<your name>/frames/), make contact sheets, and look at all of them. Flag what a careful viewer would notice: text overlapping or cut off, text too small to read, anything that matters in the bottom 150 px, a frame static for more than 3 s, jumps or flashes at scene changes, a tab strip without its alphaTab credit, a tool named without its version, a number on screen that differs from the script or its source file, ugly or crowded layouts, colours outside the palette.
+2. Listen by measurement: loudness per scene (ffmpeg ebur128), that no narration plays during a listening window (the words files against the timeline), that music sits under the voice as section 2.7 says, no clicks, gaps or clipping (true peak), and the sync_check numbers in qc/.
+3. Captions: every narration line has its cues, in time, two lines at most.
+4. The privacy rules above.
+Write ${PROD}/chapters/${ch}/qc/review${again ? '2' : ''}.md (under 100 lines). Return: pass (true only if nothing needs fixing), problems (one string each: the time, what is wrong, the fix), and a two-line summary.`
+
+const CH_FIX = (ch, problems) => `[AGENT: fix-${ch}]
+
+${COMMON}
+
+YOUR JOB: a reviewer found problems in chapter ${ch} (${PROD}/chapters/${ch}/qc/review.md). Fix each one in the chapter's project (${PROD}/chapters/${ch}/project/ and its build script), check with snapshots, re-render once with render_chapter.sh, finish the preview, re-run sync_check, and update chapter.mp4, captions.vtt, chapter.json and qc/README.md. Read ${REC}/PRODUCTION.md section 6 for the tools. Where the reviewer is wrong, say why with evidence in qc/README.md.
+The problems:
+${problems}
+Your final message: each problem in a few words with what you did, and the new length.`
+
+// ---------- Stage 5: finish ----------
+const JOIN = `[AGENT: film-join]
+
+${COMMON}
+
+YOUR JOB: make the finished film and its web files. Chapters: ${PROD}/chapters/ch*/ in order of their number (each has chapter.mp4, captions.vtt, chapter.json). Read ${REC}/PRODUCTION.md section 6.6 and ${REC}/EMBED.md sections 2 and 6 step 1 and 2.
+1. Join with join.py into ${PROD}/film/ (film.mp4, film.vtt, chapters.vtt), mastered to -16 LUFS integrated, true peak at most -1.5 dBTP after the AAC encode.
+2. Make the site copy exactly as EMBED.md 2.1 says: /home/user/gtv/render/guitar-video-to-tab.mp4 , and run its checks (profile, size, faststart, loudness after encode).
+3. captions.vtt (EMBED 2.4, with its never-publish check), the poster (2.2), the chapter stills (2.3) with the chapter times from chapters.vtt, the card still and loop (2.5), all under ${GTV}/render/web/ with the names EMBED.md uses.
+Write ${PROD}/FILM.md: the length, the chapter list with start times and labels (EMBED.md 1 rules for labels), the loudness and file numbers, and the paths.
+Your final message: the length, the file size, the loudness numbers, and the paths.`
+
+const FILM_QC = `[AGENT: film-qc]
+
+${COMMON}
+
+YOUR JOB: check the finished film as Aaron would watch it, before it goes live: /home/user/gtv/render/guitar-video-to-tab.mp4 , its captions /home/user/gtv/render/web/captions.vtt (or as ${PROD}/FILM.md says), the poster and chapter stills. You made none of it. Read ${REC}/PRODUCTION.md sections 1 and 2 and ${PROD}/FILM.md.
+1. Picture: a frame every 10 seconds and three frames around every chapter join (contact sheets in ${GTV}/work/film-qc/). Look at all of them. Flag anything a viewer would notice (black or frozen stretches, a cut mid-movement, broken layout, text too small, a number that differs from the records, a missing alphaTab credit, the AO-082 mark missing).
+2. Sound: loudness per minute and over the whole film, true peak, silences over 3 s, any narration during a listening window, the loudness jump at chapter joins, clipping.
+3. Captions: they cover all narration, in time (check 20 cues spread over the film against the audio), no cue over two lines.
+4. The story: does the film answer which tools to give an AI and which ones make the output work, and does it show the blind test with both arms, heard against the original? Is every tab shown also heard?
+5. The privacy rules above, and the never-publish check of EMBED.md 2.4 over the captions and the stills' alt texts in FILM.md.
+Write ${PROD}/FILM-QC.md (under 120 lines). Return: pass, problems (one string each: chapter id, time, what is wrong, the fix), and a two-line summary.`
+
+const PUBLISH = `[AGENT: publisher]
+
+${COMMON}
+
+YOUR JOB: put the finished film at the top of AO-082 and push it live, as Aaron asked ("Once you are done, post it at the top of the blog post and push it live. You do not need to ask me permission for anything, you are preapproved."). Read /home/user/blog/CLAUDE.md, ${REC}/EMBED.md (all of it: it is the procedure), /home/user/blog/WRITING.md and PREVIEWS.md, ${PROD}/FILM.md and ${REC}/BLIND-RESULTS.md.
+Follow EMBED.md section 6 steps 3 to 6:
+1. The studio library: file the originals as EMBED.md section 5 says (studio push blog-posts <folder> --agent gtv-publisher with NOTES.md, a dry run first). Record the run id.
+2. Work in the worktree /home/user/land (git fetch origin && git checkout -B land-guitar origin/main). Never push from /home/user/blog.
+3. The web files into public/media/guitar-tab-tools/film/ and the video through npm run media:push (EMBED.md 3).
+4. The post edit (EMBED.md 1 and 4.2): the <ao-shots> block first in the body, the new opening paragraph with the blind test's result and the film's length (WRITING.md voice: Aaron, first person, no em dashes, no semicolons), the credits of the three recordings, the film's costs in "What it cost" (ElevenLabs credits from ${PROD}/VOICE.md, any rented GPU from ${GTV}/work/exp-gpu/POD.json, hosted calls from the step-10 record; tokens if you can measure them with the agent-metrics skill), the credit line. The post stays listed.
+5. npm run check, npm run build, npm test (fonts.test.mjs fails on main already and is not yours), the e2e specs for ao-shots against npm run preview. Then git fetch origin && git rebase origin/main, git push origin HEAD:main, repeat on rejection, never force.
+6. Within 10 minutes https://aaronorelup.com/version.json must show branch main and your commit or newer. Then npm run media:verify, and a live check with Playwright of https://aaronorelup.com/ledger/guitar-tab-tools/ : the video element loads its metadata, the poster shows, the captions track loads, a chapter click seeks. If a live check fails because of your change, push a git revert at once and report.
+Commit message: a plain subject, Aaron's words quoted above in the body, and these two last lines exactly:
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01UUo1wzpodZueETn2SeiGku
+Your final message: the commit on main, the version.json line, the live checks, the studio run id and item ids, and anything left.`
+
+// ---------- helpers ----------
+const VERDICT = {
+  type: 'object',
+  properties: {
+    pass: { type: 'boolean' },
+    problems: { type: 'array', items: { type: 'string' } },
+    summary: { type: 'string' },
+  },
+  required: ['pass', 'problems', 'summary'],
+}
+const o = (label, ph, effort) => ({ label, phase: ph, model: OPUS, effort: effort || 'max', agentType: 'general-purpose' })
+const safe = async (prompt, opts) => {
+  try {
+    const r = await agent(prompt, opts)
+    return r == null ? 'NO RESULT' : r
+  } catch (e) {
+    return 'FAILED: ' + String(e && e.message ? e.message : e).slice(0, 300)
+  }
+}
+const short = (r) => (typeof r === 'string' ? r.slice(0, 1500) : JSON.stringify(r).slice(0, 1500))
+const verdict = (v) => (v && typeof v === 'object' && Array.isArray(v.problems) ? v : { pass: false, problems: ['the reviewer returned no verdict: ' + short(v)], summary: '' })
+const numbered = (ps) => ps.map((p, i) => (i + 1) + '. ' + p).join('\n')
+
+// ---------- Run ----------
+if (PART === 'blind') {
+  phase('Blind')
+  const plan = args.lane === 'x'
+    ? [['b1', 'tools'], ['b1', 'bare'], ['b3', 'tools']]
+    : [['b2', 'tools'], ['b2', 'bare'], ['b3', 'bare']]
+  const out = await parallel(plan.map(([id, arm]) => () => safe(BLIND(id, arm), o('blind-' + id + '-' + arm, 'Blind'))))
+  return { part: 'blind', lane: args.lane, attempts: plan.map(([id, arm], i) => ({ id, arm, said: short(out[i]).slice(0, 600) })) }
+}
+
+if (PART === 'score') {
+  phase('Score')
+  const [score, audit] = await parallel([
+    () => safe(SCORE, o('blind-scorer', 'Score')),
+    () => safe(BLIND_AUDIT, { ...o('blind-auditor', 'Score'), schema: VERDICT }),
+  ])
+  const a = verdict(audit)
+  return { part: 'score', score: short(score), audit: { pass: a.pass, problems: a.problems, summary: a.summary } }
+}
+
+if (PART === 'script') {
+  phase('Script')
+  const written = await safe(SCRIPT, o('script-writer', 'Script'))
+  const [facts, viewer] = await parallel([
+    () => safe(SCRIPT_FACTS, { ...o('script-factcheck', 'Script'), schema: VERDICT }),
+    () => safe(SCRIPT_VIEWER, { ...o('script-viewer', 'Script'), schema: VERDICT }),
+  ])
+  const f = verdict(facts)
+  const v = verdict(viewer)
+  const problems = [...f.problems.map((p) => 'FACT: ' + p), ...v.problems.map((p) => 'VIEWER: ' + p)]
+  const fixed = problems.length ? await safe(SCRIPT_FIX(numbered(problems)), o('script-fix', 'Script')) : 'nothing to fix'
+  const [voice, kitx] = await parallel([
+    () => safe(VOICE, o('voice', 'Script', 'high')),
+    () => safe(KITX, o('kit-extender', 'Script')),
+  ])
+  return { part: 'script', written: short(written), facts: { pass: f.pass, n: f.problems.length, summary: f.summary }, viewer: { pass: v.pass, n: v.problems.length, summary: v.summary }, fixed: short(fixed), voice: short(voice), kit: short(kitx) }
+}
+
+if (PART === 'chapters') {
+  phase('Chapters')
+  const list = args.chapters || []
+  const done = await pipeline(
+    list,
+    (ch) => safe(CH_BUILD(ch), o('build-' + ch, 'Chapters', 'high')),
+    async (built, ch) => {
+      let v = verdict(await safe(CH_REVIEW(ch, false), { ...o('review-' + ch, 'Chapters', 'high'), schema: VERDICT }))
+      let fixed = null
+      if (!v.pass && v.problems.length) {
+        fixed = await safe(CH_FIX(ch, numbered(v.problems)), o('fix-' + ch, 'Chapters', 'high'))
+        v = verdict(await safe(CH_REVIEW(ch, true), { ...o('rereview-' + ch, 'Chapters', 'high'), schema: VERDICT }))
+      }
+      return { ch, built: short(built).slice(0, 500), fixed: fixed ? short(fixed).slice(0, 500) : null, pass: v.pass, open: v.problems, summary: v.summary }
+    },
+  )
+  return { part: 'chapters', chapters: done }
+}
+
+if (PART === 'finish') {
+  phase('Finish')
+  const joined = await safe(JOIN, o('film-join', 'Finish', 'high'))
+  const qc = verdict(await safe(FILM_QC, { ...o('film-qc', 'Finish'), schema: VERDICT }))
+  return { part: 'finish', joined: short(joined), qc: { pass: qc.pass, problems: qc.problems, summary: qc.summary } }
+}
+
+if (PART === 'publish') {
+  phase('Publish')
+  const pub = await safe(PUBLISH, o('publisher', 'Publish'))
+  return { part: 'publish', publish: short(pub) }
+}
+
+return { error: 'unknown part: ' + PART }
