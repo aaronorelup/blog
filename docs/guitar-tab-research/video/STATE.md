@@ -340,3 +340,10 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 - P15 finished: ch11 passes, with its narration refreshed (no clipped samples; flat tops 1,016 to 4, one of them a
   documented turning point). ch03 passed its check in P8.
 - Done: 15 of 18. Still running: ch00 (P8 polish2), ch02 (P11), ch10 (P4 polish2), each queued for a render.
+
+## 2026-11-25 23:00 UTC
+
+- P8 finished: ch03 passes. ch00 still has one BLOCKING regression after its second round: the tool tag is cut to
+  'gp…' at 96.6-98.0 s, after the font went from 20 to 22 px. Third round running: P16 (wf_1d8520b7-6a1), that one
+  problem only.
+- Done: 16 of 18 (all but ch00 and ch02); ch10 is in its second round.
