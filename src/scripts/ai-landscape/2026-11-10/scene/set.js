@@ -56,12 +56,17 @@ export function createSet(ctx, xs) {
   const shades = add(new Mesh(quads(xs.length), mats.paper(textures.soft(), { side: -1, blended: true, mask: true, tint: '#4A4E57', opacity: 0.15 })), -9.2);
   flats.frustumCulled = shades.frustumCulled = false;
   const px = ctx.quality.small ? 256 : 512;
+  // The five signs share one plane, and each is drawn once, unseen (a point's size, unculled), on the first frame: its
+  // plane, vertex array and sheet reach the GPU with the set, not on the visit that first raises it (round 5, R30)
+  const card = new PlaneGeometry(BAY.sign, BAY.sign);
   const bays = xs.map((x) => {
     const sheet = textures.sheet(px);
-    const sign = add(new Mesh(new PlaneGeometry(BAY.sign, BAY.sign), mats.paper(sheet.texture, { side: -1, blended: true })), -9);
-    sign.visible = false;
+    const sign = add(new Mesh(card, mats.paper(sheet.texture, { side: -1, blended: true })), -9);
+    const b = { sign, sheet, x, tower: null, show: 1, up: 0, tile: null, low: false, at: x, z: BAY.z, wide: BAY.w, top: 0, seen: false, rise: 0, goal: 0, wait: 0, key: '', next: '', hold: 0, flip: 0, sunk: 0, cold: true };
+    sign.frustumCulled = false; sign.scale.set(1e-4, 1e-4, 1);
+    sign.onAfterRender = () => { if (b.cold) { b.cold = false; sign.frustumCulled = true; } };
     // (at, z, wide, top, seen: where the board was drawn last frame, for whoever asks: its middle, depth, width, top edge)
-    return { sign, sheet, x, tower: null, show: 1, up: 0, tile: null, low: false, at: x, z: BAY.z, wide: BAY.w, top: 0, seen: false, rise: 0, goal: 0, wait: 0, key: '', next: '', hold: 0, flip: 0, sunk: 0 };
+    return b;
   });
 
   // dust: a few slow motes of paper white between the row and the wall
@@ -170,9 +175,9 @@ export function createSet(ctx, xs) {
         put(flats.geometry, k, x - w / 2, x + w / 2, 0, b.top, BAY.z, k, k + 1, 1 - b.top / BAY.tall, 1);
         const sx = x + 0.15 * w, sy = b.seen ? b.top + 0.2 : 0;
         put(shades.geometry, k, sx - 0.65 * w, sx + 0.65 * w, b.seen ? sy - SHADE : 0, sy, BAY.z - 0.06, 0, 1, 0, 1);
-        b.sign.visible = b.seen && b.flip > 0.01 && !!b.key;
+        b.sign.visible = (b.seen && b.flip > 0.01 && !!b.key) || b.cold;
         const s = Math.min(1, (w - 0.2) / BAY.sign);
-        if (b.sign.visible) { b.sign.position.set(x, b.top - BAY.head - (BAY.sign * s) / 2, BAY.z + 0.03); b.sign.scale.set(s, s * smooth(b.flip), 1); }
+        if (b.sign.visible && !b.cold) { b.sign.position.set(x, b.top - BAY.head - (BAY.sign * s) / 2, BAY.z + 0.03); b.sign.scale.set(s, s * smooth(b.flip), 1); }
       });
       for (const m of [flats, shades]) { m.visible = on && bays.some((b) => b.seen); m.geometry.attributes.position.needsUpdate = true; m.geometry.attributes.uv.needsUpdate = true; }
       if (dust) { dust.visible = on; dust.material.uniforms.uPx.value = ctx.renderer.getPixelRatio() * window.innerHeight * 0.2; }

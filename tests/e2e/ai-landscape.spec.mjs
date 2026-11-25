@@ -1689,12 +1689,23 @@ test('landscape-30 a visit to my stack, billing or the line-up and back leaves n
   await open(page);
   await light(page);
   const live = () => page.evaluate(() => ({ buffers: window.__gl.Buffer, arrays: window.__gl.VertexArray, geometries: window.__landscape.debug.ctx.renderer.info.memory.geometries }));
+  // A hop lands on the place with no frame drawn on the way: what is counted is the place and the top, not whichever
+  // sections a scroll's easing happens to draw between them (round 5: the nine layers' cores, first drawn on the way
+  // back of a later trip, read as a leak of the line-up)
+  const hop = async (id, u) => {
+    await page.evaluate(([id, u]) => {
+      const c = window.__landscape.debug.ctx.clock;
+      window.scrollTo(0, c.pixels(c.sections.find((s) => s.id === id).s0 + u));
+      c.update(0); c.jump(); c.update(0);
+    }, [id, u]);
+    await go(page, id, u, 600);
+  };
   for (const [id, u] of [['my-stack', 0.8], ['billing', 0.5], ['line-up', 0.6]]) {
     // (the first visit builds what stays: shared shapes, textures, programs)
-    await go(page, id, u, 600);
-    await go(page, 'top', 0.3, 600);
+    await hop(id, u);
+    await hop('top', 0.3);
     const before = await live();
-    for (let k = 0; k < 2; k++) { await go(page, id, u, 600); await go(page, 'top', 0.3, 600); }
+    for (let k = 0; k < 2; k++) { await hop(id, u); await hop('top', 0.3); }
     expect(await live(), `${id}: two more visits and back leave nothing behind`).toEqual(before);
   }
 });

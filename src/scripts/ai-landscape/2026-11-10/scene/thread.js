@@ -18,7 +18,13 @@ export function createThread(ctx, { max = 48, radius = 0.017, head: withHead = t
   const head = new Mesh(new SphereGeometry(0.075, 20, 14), headMat);
   const ring = new Mesh(new SphereGeometry(0.108, 20, 14), ringMat);
   head.renderOrder = 21; ring.renderOrder = 20;
-  head.visible = false; ring.visible = false;
+  // Each piece is drawn once on the first frame, unseen (an empty tube, a head and ring a point's size, at opacity 0),
+  // so its shape and vertex array reach the GPU when the thread is made, not on the frame that first shows it (R30)
+  let cold = true;
+  head.visible = ring.visible = withHead;
+  head.scale.setScalar(1e-4); ring.scale.setScalar(1e-4); head.frustumCulled = ring.frustumCulled = false;
+  mat.opacity = headMat.opacity = ringMat.opacity = 0;
+  (withHead ? head : tube).onAfterRender = () => { if (cold) { cold = false; head.scale.setScalar(1); ring.scale.setScalar(1); head.frustumCulled = ring.frustumCulled = true; } };
   ctx.scene.add(tube, ring, head);
   const dummy = new Object3D();
   const dir = new Vector3();
@@ -57,7 +63,7 @@ export function createThread(ctx, { max = 48, radius = 0.017, head: withHead = t
     update() {
       const pts = thread.points;
       const on = thread.show > 0.01 && pts.length > 1;
-      tube.visible = on; head.visible = on && withHead; ring.visible = on && withHead;
+      tube.visible = on || cold; head.visible = ring.visible = (on || cold) && withHead;
       if (!on) return;
       const period = thread.dash ? thread.dash[0] + thread.dash[1] : 0;
       let total = 0;
