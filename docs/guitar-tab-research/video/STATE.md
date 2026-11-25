@@ -101,7 +101,7 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 ## 2026-11-25 11:58 UTC
 
 - Blind test done: six attempts (three songs, with and without the kit), 10:39-11:57 UTC. Every attempt handed in a
-  valid answer in 16 to 40 minutes of its 90 and stopped by its own choice. Said before scoring: capo song, both arms
+  valid answer well inside its 90 minutes (by their own account 28 to 40) and stopped by its own choice. Said before scoring: capo song, both arms
   standard tuning with capo 3; standard song, both arms standard with no capo; tuning song, the kit arm D G C F A D
   (five of six strings as the key has them), the bare arm D G D G C D.
 - The access watch logged no read of any answer file; its only entries are the run ledger (gtr-run numbering runs)
