@@ -446,3 +446,43 @@ C4; #106 A#3 is the figure of #487. #29 does not sound (Problem 1). All 35 frett
    guitar-gaps E3 155.474, 165.866, 168.220 (no rise).
 4. Thumps sit a median 25 ms after their attack (97.5% within 50 ms): fine for scoring, worth re-timing with the slaps.
 5. Bars 34 and 39 carry B and E weight under C:maj (Cmaj7 / E-minor colour); bar 34's downbeat is 70.8 ms after the E3.
+
+## Fourth check
+
+Agent `truth-recheck3-standard`, 2026-11-25, of the third repair round only. Own scripts, logs and frames:
+`/home/user/gtv/work/truth-recheck3-standard/` (`K/` below). Truth files not changed.
+
+1. **Schema and side files.** `gtr-eval check-truth`: 6961 checks, 0 mismatches (`K/logs/check_truth.log`). notes.csv
+   679/679 rows equal; .mid 679 notes all matched by onset and pitch (673 offsets within 5 ms; pre-repair 674/680);
+   beats.txt, downbeats, chords.lab equal; tab.txt 679 frets; .gp5 `tab --ignore-time` 679/679 (`K/logs/s1_*.log`,
+   `gp5_ignore.log`). Against `F3/orig/` (`K/bin/s1_side.py`): one note removed (C3 s5 f3, 6.8856 s), none added,
+   5 changed (E3 6.9205 s chord -> bass; offsets at 36.49, 74.39, 137.57, 159.95 s, 52.5-62.5 ms earlier), 16
+   `string-slap` taps 52.5-66.5 ms earlier; beats, downbeats, chords, key, tempo, tuning, capo, `scored_range` identical.
+   As the record says. The C3 at 6.886 s is gone from the JSON and every side file.
+2. **Slaps** (`K/bin/s2_slaps.py`, `K/logs/s2_slaps.log`; my own detector: 2.5 kHz high-pass, 2-ms RMS every 0.5 ms,
+   attack = first frame 10 dB over the floor before the steepest 4-ms rise): the 16 moved slaps are -1.2 to +7.8 ms
+   from their attack (median -0.7; 16/16 within 20 ms; before 52.8-66.3). The other 77: median +4.4, largest 36.9 ms.
+3. **Neck outline.** Frames 2475, 2950, 3425, 5400 (49.5, 59.0, 68.5, 108.0 s) of `standard.full.mp4`, full
+   resolution, `quad_per_frame` drawn with its six lane centres and the pose quad (`K/bin/s3_draw.py`,
+   `K/frames/zn_*.png` nut end 2x, `body_*.png`), looked at: the lane centres lie on the six strings from the nut to the
+   soundhole on all four; the pose lanes are about half a lane off, as the third check said. **Numbers, without the
+   tracker** (`K/bin/s4_lanes.py`, gtr-run r1019, 2 cores, 47 s, `K/logs/s4_lanes.log`): at each of the 546 fretted
+   notes' frames the neck from the nut to 0.40 of its length is rectified with the outline and the six string ridges
+   found (12 bands, comb fit over -1..+1 lane). Per-frame outline: median 0.05 lane, 4 notes over 0.25, 1 over half a
+   lane (84.246 s, -0.95); looked at 84.246 and 38.505 s: centres on the strings, the finder fooled by fingers (a
+   whole-lane alias). So 0 of 546 seen off. Poses, same frames: 70 over half a lane. Body half: by eye only.
+4. **`score_video_cells.py` on capo** (`K/bin/s5_scorer.py`, `K/logs/s5_scorer.log`): new and pre-repair scorer on
+   the inputs of capo w-02, w-03 (both runs), w-05: identical output except two added keys (`neck_track` null,
+   `neck_motion` lookups not compensated). **Mishap**: a faulty first loop of mine made the pre-repair scorer rewrite
+   capo `w-02/cells_window.json` and `w-03/cells_rtm.json` (07:34, same inputs as their `score.sh`). It is deterministic
+   (untouched `w-03/cells_mediapipe_same_window.json`, `w-05/score_cells.json` equal its output) and both files carry
+   their `result.json` numbers (50 fretted / 2 exact / 28 fret-exact; 80 / 7): content unchanged, mtime new.
+
+### PROBLEMS (fourth check)
+
+None. The three problems of the third check are fixed.
+
+### Doubts (fourth check)
+
+1. Rescoring the standard video lane needs one grid per pose (the experiment's 3-pose file): with the installed 76-pose
+   video.json only 2 poses have a grid and 523 of 546 notes are "no grid" (the record says so).

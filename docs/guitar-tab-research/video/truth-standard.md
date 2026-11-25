@@ -5,16 +5,17 @@ slot. Heavy files and every script: `/home/user/gtv/truth/standard/`, `/home/use
 `/home/user/gtv/work/truth-standard/` (`bin/`, `logs/`, `PROGRESS.md`). Every number below comes from a file named
 next to it.
 
-**In one paragraph.** 680 notes over the whole piece (0 to 177.00 s of `standard.wav`, all 56 bars, nothing left
+**In one paragraph.** 679 notes over the whole piece (0 to 177.00 s of `standard.wav`, all 56 bars, nothing left
 out), strings and frets from Gareth Evans' own on-screen Guitar Pro tab, read twice independently (853 of 853 tab
 notes identical), timed to the recording, and following the performance where it departs from the tab. Standard
-tuning, no capo, +6 cents sharp. 573 notes are confirmed by a pitch rise in the audio at their onset, 96 come from the
+tuning, no capo, +6 cents sharp. 572 notes are confirmed by a pitch rise in the audio at their onset, 96 come from the
 tab alone (mostly re-plucks of a pitch that is still ringing), 11 are heard but not in the tab. The guitar-trained
-model scores onset F1 0.891 against it and Basic Pitch 0.663, both in or near the range the research saw on real
+model scores onset F1 0.892 against it and Basic Pitch 0.663, both in or near the range the research saw on real
 guitar; the truth's timing agrees with the model's notes to a median of 0.0 ms. Repaired twice after independent
 checks: 14 onsets re-timed, bar 36 and the rolled-chord rule (Repairs); then 2 notes re-pitched, 2 unplayed tab notes
 removed, 6 played notes added, and the video's neck outline tracked through the whole video, now 76 poses instead of 3
-(Repairs, second round, at the end).
+(Repairs, second round); then 1 unplayed C3 removed, 16 thumb slaps re-timed to their attack, and the neck outline
+tracked on every frame for the video scorer (Repairs, third round, at the end).
 
 ## Files
 
@@ -29,8 +30,9 @@ removed, 6 played notes added, and the video's neck outline tracked through the 
 | `standard.tab-merged.json` | the merged reading (reader a + a `merge` block); `read-a.json`, `read-b.json` the two readings |
 | `truth-standard-repairs.csv` (next to this record) | every note the repair changed, before and after, with its evidence (Repairs) |
 | `truth-standard-repairs2.csv` (next to this record) | every note the second repair changed, before and after, with its evidence (Repairs, second round) |
+| `truth-standard-repairs3.csv` (next to this record) | every note and tap the third repair changed, before and after, with its evidence (Repairs, third round) |
 | `standard.video.json` | video truth: fps, size, capo 0, 76 pose ranges with neck quadrilaterals, 6 labelled frames |
-| `standard.neck_track.json` | the neck outline tracked every 5 frames (0.1 s), raw and 0.5-s-smoothed, that the poses come from |
+| `standard.neck_track.json` | the neck outline tracked every 5 frames (0.1 s), raw and 0.5-s-smoothed, that the poses come from; since the third repair also on every frame (`quad_per_frame`), which `score_video_cells.py` uses to follow the neck's jolts |
 
 ## Source and credit
 
@@ -104,10 +106,10 @@ original carries the standard YouTube licence; a cover of a major-label composit
 ## Covered range and counts
 
 Whole piece: `scored_range` [0.0, 177.00102] s, bars 1-56, no repeat signs (all bars written out), all 56 bars seen
-by the cursor in order. Notes **680**: `tab+audio` **573**, `tab` **96**, `audio` **11**; voice bass 274, melody 313,
-chord 93; pitches E2 (40) to G4 (67); first onset 0.448 s, last 174.621 s. Beats 224, downbeats 56, chord segments 70
-(C:maj, F:maj, G:maj, A:min, D:min, E:maj, N), taps 211. `gtr-eval check-truth`: **6971 checks, 0 mismatches**
-(after the second repair: `work/truth-fix2-standard/logs/chk_final2_checktruth.log`).
+by the cursor in order. Notes **679**: `tab+audio` **572**, `tab` **96**, `audio` **11**; voice bass 274, melody 313,
+chord 92; pitches E2 (40) to G4 (67); first onset 0.448 s, last 174.621 s. Beats 224, downbeats 56, chord segments 70
+(C:maj, F:maj, G:maj, A:min, D:min, E:maj, N), taps 211. `gtr-eval check-truth`: **6961 checks, 0 mismatches**
+(after the third repair: `work/truth-fix3-standard/logs/chk_final3_checktruth.log`).
 
 ## Departures from the tab (the truth follows the performance)
 
@@ -414,3 +416,113 @@ checker's Doubt 1); the tuning offset (Doubt 2); the slide-ins (Doubt 3). Order 
 and `write_gp5_fix2.py` (on the first repair's `stage/aligned_fix_rm.json` with `out/changes2.json`), `compare2.py`,
 `checks2.sh`, `repairs_csv.py`; for the video `neck_track2.py`, `pose_split.py` (10 px, step 5, median 5),
 `make_video_json.py`, `string_check.py`, `quad_sheet.py`.
+
+## Repairs, third round
+
+Agent `truth-fix3-standard`, 2026-11-25, after the third independent check (`truth-standard-check.md`, "Third check",
+PROBLEMS 1-3). Scripts, logs and the pre-repair files: `/home/user/gtv/work/truth-fix3-standard/` (below `F3/`;
+`F3/orig/` holds the installed files as they were, `F3/logs/orig.sha256`). Every changed note and tap, before and after,
+with its evidence: `truth-standard-repairs3.csv` next to this record (23 rows). Only the three listed problems were
+touched; nothing was cut from `scored_range` (still [0, 177.00102]).
+
+### Problem 1, bar 3's first C3 (#29, 6.886 s): fixed, 1 note removed
+
+- **Own measure** (`F3/bin/p1_c3.py`, `F3/logs/p1_c3.log`; exact-frequency DFT at C3 +6 cents, every 20 ms): with an
+  8192-sample window the C3 fundamental holds -27 to -30 dB from 6.40 s (the C3 struck at 5.733 s), falls at 6.82-6.86 s
+  to -45 dB and stays down (-51 dB at 7.00 s, -50 to -61 dB until 7.24 s); it rises again only at the next C3 (#33,
+  7.306 s: -26 dB at 7.36 s, held to 7.60 s). The 2048-sample window shows a brief -21 dB at 6.90 s, the broadband attack
+  of the E3/G3/C4 struck there, not a held C3. guitar-fl and Basic Pitch have no C3 between 6.4 and 7.29 s (both have
+  7.296 / 7.284 s). The checker is right: the thumb touches the string where the tab has the C3 and damps it.
+- **Change**: bar 3 pos 0 C3 s5 f3 (6.8856 s, was `tab+audio`) removed. The C3 ringing since 5.7334 s keeps its offset
+  6.8756 s (where the audio shows it damped) instead of the let-ring rule's 7.2965 s; the E3 s4 f2 of the same event
+  (6.9205 s) becomes `bass` by the voice rule (lowest note on strings 4-6). The other C3s the checker named in passing
+  (#196 #374 #403 #440 #621 #651) were not examined: not among the listed problems.
+
+### Problem 2, string slaps late: fixed, 16 taps re-timed
+
+- **Own measure** (`F3/bin/p2_slaps.py`, `F3/logs/p2_slaps.log`): high-frequency energy (squared first difference of the
+  mono waveform) in 5-ms windows every 1 ms, -120..+60 ms around each of the 93 slaps; attack = the first window at
+  half-way (dB) between the floor before the steepest 5-ms rise and the peak after it. The same 16 slaps the checker
+  named are 52.5-66.5 ms after their attack (jumps 11.6-36.9 dB): all five slaps of the "(lh)" fills of bar 12 (pos 2.5,
+  2.75, 3.0, 3.25, 3.5), bar 24 and bar 44, and bar 51 pos 3.0. The other 77 are within 50 ms (median -10.5 ms over all 93).
+- **Change**: each of the 16 `string-slap` taps moved to its attack (37.3149 -> 37.2564 s ... 160.7797 -> 160.7172 s;
+  every pair in the CSV). The let-ring rule ends a note at the next attack on its string, slaps included, so 4 notes'
+  offsets move with them, 52.5-62.5 ms earlier (C3 s5 at 36.49, 74.39, 137.57 s, G2 s6 at 159.95 s). **Beats keep their
+  times**: the slaps at pos 3.0 of bars 12, 24, 44 and 51 sit on a quarter-note beat, whose time stays the event's grid
+  time (55-65 ms after the attack, inside the usual 70-ms beat window), so the beat files and every beat score are
+  unchanged. GP5 beat times are unchanged too (the slaps are dead notes there). After: all 93 slaps within 50 ms of
+  their attack, at most 37.5 ms (`F3/logs/p2_slaps_after3.log`).
+
+### Build
+
+`F3/bin/build_truth_fix3.py` and `write_gp5_fix3.py` are the second round's scripts plus a second changes file
+(`F3/out/changes3.json`: the deletion, the 16 slap times, the one kept offset); run on the same aligned file with the
+second round's `changes2.json` but without `changes3.json` they rewrite the installed side files byte for byte (the JSON
+differs only in two derivation texts; `F3/logs/compare_repro3.log`). Differences after the repair (`F3/bin/compare3.py`,
+`F3/logs/compare3.log`): notes 680 -> 679, 5 notes changed (4 offsets, 1 voice), 16 taps moved; beats, downbeats, the 70
+chord segments and labels, key, tempo, tuning and `scored_range` identical.
+
+### Problem 3, the poses miss the neck's quick jolts: fixed in the scoring, with a per-frame outline
+
+- **What was done** (the round's preferred fix; the 76 poses are kept as they are): the second round's tracker
+  (`F3/bin/neck_track3.py`, a copy of `neck_track2.py` with the same reference frame, mask, SIFT and RANSAC settings) run
+  on **every frame**, 0-8850 (gtr-run r0984, 2 cores, 1909 s; restartable chunks of 500 frames). All 8851 fits succeed,
+  and at the 1771 frames the 0.1-s track already had the outline is identical (largest difference 0.00 px,
+  `F3/logs/cmp_raw.log`). `F3/bin/neck_frames.py` adds it to `standard.neck_track.json` as `quad_per_frame` (one quad per
+  frame, plus `quad_per_frame_inliers` and `how_per_frame`; the file's other keys unchanged; 232 -> 691 KB), with 3
+  single-frame spikes (more than 6 px from both neighbours, which agree within 3 px; frames 3830, 3960, 6816) replaced by
+  the neighbours' mean. The checker's "single-sample jump" at 152.3 s is a real, fast swing, smooth from frame to frame
+  (nut-upper y 274 -> 214 -> 233 px over frames 7608-7622). `standard.video.json` gets one new key, `neck_track_note`.
+- **Independent check at frames the 0.1-s track never sampled** (round 2's `string_check.py`, which finds the strings
+  in the picture and does not use the tracker; columns with six evenly spaced strings visible; gtr-run r0987, r0988,
+  `F3/logs/sc_summary.log`): 52 frames inside the jolts the checker named (48.9-49.7, 58.9-59.1, 68.4-68.6,
+  107.8-108.3 s) and 89 frames every 2 s at frame = 3 mod 5. Per-frame outline: median 0.1-0.4 px, largest 0.8 px near
+  the nut and 1.2 px on the body half, except one frame (49.68 s, body half, only 2 usable columns: -14.3 px; the
+  all-column check on that frame gives 0). The poses on the same frames: median 2.2-6.3 px, up to 11.3 px.
+- **Lane error at the fretted notes** (`F3/bin/v_dev3.py`, the checker's geometry, the per-frame outline as reference;
+  `F3/logs/v_dev3.log`): the poses put 27 of 546 fretted notes more than half a lane off at their fret, 5 more than 0.75,
+  3 more than a whole lane (up to 29.5 px), none in 0-30 s (the checker: 30 / 5 / 3 of 547 against the nearest 0.1-s
+  sample). The nearest 0.1-s sample itself: 1 of 546 over half a lane (14.5 px), so even the 0.1-s track is not fine
+  enough for the jolts; the per-frame outline is the reference now.
+- **`score_video_cells.py`** (`/home/user/gtv/tools/bin/`, the old one kept as `F3/orig/score_video_cells.py.orig`):
+  when a neck-track JSON with `quad_per_frame` exists (named by video.json `neck_track_file`, or else found next to the
+  truth as `<truth id>.neck_track.json`), each fingertip is first carried from its own frame to the grid's frame by the
+  4-point perspective map between the two frames' outlines, then mapped through the grid. A moving guitar then no longer
+  moves fingertips across lanes. Without such a file (capo, tuning) or for a grid without `frame`, it does exactly what it
+  did. Command line unchanged; the output adds `neck_track` (the file used) and `neck_motion` (lookups compensated).
+- **Test on one standard experiment, w-05** (MediaPipe hands + the Hough fret grids of frames 2750 and 5585, the
+  experiment's own `score.sh` arguments and its 3-pose video.json, on the repaired truth; written to `F3/out/`, the
+  experiment's files untouched; `F3/logs/w05_old.log`, `w05_new.log`, `w05_compare.log`): 400 lookups compensated.
+  Exact 9 -> **16** of 546 fretted (0.0165 -> 0.0293), within +-1 fret 81 -> **100** (0.148 -> 0.183); 300 notes get
+  different fingertip cells (exact: 10 gained, 3 lost; within1: 54 gained, 35 lost); no-grid 148 and with-hand 396
+  unchanged; labelled frames: 12 of 12 fingertips get a cell (11 before), string error 0 for 6 (4 before), exact
+  string and fret still 0 (the grids' fret numbering is 1-3 frets off, as before). With the installed 76-pose
+  video.json instead, only the 2 poses that hold a grid frame are scored (523 of 546 notes "no grid"): the shot rule is
+  unchanged, so whoever rescores should keep passing one grid per pose or the experiment's 3-pose file. Not rescored
+  here (a later agent does that).
+
+| self-check (`F3/bin/checks3.sh`; before = round 2's installed files, `truth-fix2-standard/logs/chk_after2_*` and `chk_final2_*`; after = `F3/logs/chk_after3_*` on the build, `chk_final3_*` on the installed files, identical) | before | after |
+|---|---|---|
+| `gtr-eval check-truth` | 6971 checks, 0 mismatches | 6961, 0 |
+| notes: all / `tab+audio` / `tab` / `audio`; voice bass / melody / chord | 680 / 573 / 96 / 11; 274 / 313 / 93 | 679 / 572 / 96 / 11; 274 / 313 / 92 |
+| notes.csv, .mid, .tab.txt, beats.txt, chords.lab against the JSON | 1.0, 1.0 (on+off 0.9956), 680/680, 1.0 and 1.0, 1.0 | 1.0, 1.0 (on+off 0.9956), 679/679, 1.0 and 1.0, 1.0 |
+| .gp5 (`--time-shift 0.4981`): tab matched, notes F1, onset+offset; `--ignore-time` | 652/680, 0.959, 0.407; 680/680 | 651/679, 0.959, 0.406; 679/679 |
+| guitar-fl: P / R / F1, onset+offset F1 | 0.858 / 0.926 / 0.891, 0.571 | 0.858 / 0.928 / **0.892**, 0.572 |
+| guitar-fl F1 in 0-10 s (bar 3) | 0.97 | 0.98 (the other 10-s windows unchanged) |
+| Basic Pitch: P / R / F1 | 0.543 / 0.851 / 0.663 | 0.543 / 0.853 / 0.663 |
+| guitar-gaps (checker's r0771) F1 | 0.878 | 0.879 |
+| madmom (checker's r0772): beats F (matched), downbeats F | 0.982 (220), 0.982 | unchanged |
+| truth notes with a same-pitch guitar-fl onset within 50 ms | 630 of 638 | 630 of 638 |
+| truth late / early (2 of 3 models over 50 ms the same way, none within 30 ms) | 2 / 4 | 2 / 4 (the same notes, numbers one lower) |
+| guitar-fl notes with no truth note: same pitch ringing / octave or 12th / at a tap / other | 104 = 72 / 10 / 14 / 8 | 104 = 72 / 10 / 18 / 4 |
+| truth notes guitar-fl misses (of them `tab`) | 50 (22) | 49 (22) |
+| chroma, synthesized truth vs recording (+1 / -1 semitone); 0-10 s | 0.786 (0.454 / 0.425); 0.860 | 0.787 (0.454 / 0.425); 0.867 |
+| string slaps within 50 ms of their attack | 77 of 93 | 93 of 93 (largest 37.5 ms) |
+| fretted notes more than half a lane off where the scorer looks (poses / per-frame outline as used now) | 27 of 546 (poses) | 0 by construction; at the 141 unsampled frames checked the outline is within 1.2 px of the visible strings, one exception (49.68 s, above) |
+
+**Left as they are**: the beats at the four re-timed slaps (above); the thumps (median 25 ms after their attack, the
+checker's Doubt 4); the other C3s both models miss; the roll tops (Doubt 1); the poses themselves. Nothing was cut from
+`scored_range`. Order of this round's scripts: `p1_c3.py`, `p2_slaps.py`, `build_truth_fix3.py` and `write_gp5_fix3.py`
+(on `truth-fix-standard/stage/aligned_fix_rm.json` with `changes2.json` and `out/changes3.json`), `compare3.py`,
+`checks3.sh` + `summary3.py`, `p2_slaps_on.py`, `repairs3_csv.py`; for the video `neck_track3.py` (`run_track3.sh`),
+`cmp_raw.py`, `neck_frames.py`, `v_dev3.py`, `run_string_check3.sh` + `sc_summary.py`, then the scorer test.
