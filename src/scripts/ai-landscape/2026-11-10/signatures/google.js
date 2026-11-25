@@ -137,7 +137,7 @@ export function create(ctx, world) {
     else if (st.paint && st.paint.mode === mode) { st.paint = null; st.stamped = true; } else st.paint = { mode, t: PAINT / 2 };
     if (sentence) announce(sentence.textContent.trim());
   }
-  const mine = () => { st.tour = -1; };                                       // the tour stops for good on the first input
+  const mine = () => { st.tour = -1; st.own = true; };                       // the tour stops for good on the first input
   const onGo = () => { mine(); if (ctx.reduced) sig.step(); else pick(st.press++ % xs.length); };
   const onDial = { a: () => { mine(); paint('a'); }, b: () => { mine(); paint('b'); } };
   // which tall door a point of the screen is on, with a finger's width of grace around it (or -1)
@@ -177,7 +177,7 @@ export function create(ctx, world) {
   };
   sig.still = () => { st.runs.fill(AT_INDEX); st.step = 4; st.last = xs.length - 1; st.part = 1; st.paint = null; st.stamped = true; };
   sig.reset = () => {
-    st.runs.fill(-1); st.last = -1; st.press = 0; st.tour = -1; st.part = 1; st.paint = null; st.stamped = false; st.lean = 0; st.vel = 0; st.step = 0; sig.lit = -1;
+    st.runs.fill(-1); st.last = -1; st.press = 0; st.tour = -1; st.part = 1; st.paint = null; st.stamped = false; st.lean = 0; st.vel = 0; st.step = 0; st.own = false; sig.lit = -1;
     setMore(false);
     unink();
     [...names, indexName, stamp].forEach((n) => n && n.classList.remove('is-on'));
@@ -199,6 +199,9 @@ export function create(ctx, world) {
     const step = ctx.reduced ? 0 : dt;
     if (!on) { threads[1].show = 0; threads[1].update(); if (pic) { pic.show = 0; pic.update(); } pickers.forEach((p) => { p.cores.show = 0; p.cores.update(); }); return; }
 
+    // a visitor who scrolls on before the tour has painted, and has pressed nothing, still gets the answer: late in the
+    // beat it stands as the tour ends, the picture painted and stamped (round 5, W-8: it waited for a tap)
+    if (!st.stamped && !st.paint && !st.own && world.sec.u > 2.15) { sig.still(); st.part = 2; st.tour = -1; }
     // the tour: both doors, then both ways of painting. Then it waits for the visitor
     if (st.tour >= 0) {
       const t0 = st.tour;
