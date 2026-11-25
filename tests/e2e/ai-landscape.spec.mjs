@@ -1433,7 +1433,7 @@ async function tone(page, [x, y]) {
   const { channels } = await sharp(await page.screenshot({ clip: { x: Math.round(x) - 5, y: Math.round(y) - 5, width: 10, height: 10 } })).stats();
   return (channels[0].mean + channels[1].mean + channels[2].mean) / 3;
 }
-// What one picture adds to the screen (review round 4, T-1): a frame drawn with its mesh and one without, read at 49
+// What one picture adds to the screen (review round 4, T-1): a frame drawn with its mesh and one without, read at 225
 // points across it. The largest change of any channel at any point, 0 to 255 (two frames of the same moment are the
 // same, so a picture drawn at opacity 0 reads 0); -1 where the mesh is not shown. kind:
 // 'around' (the object in drawer `arg`), 'bench' (the object on piece `arg`), 'wall', or the room's 'portrait' or 'card'.
@@ -1446,7 +1446,7 @@ async function drawnBy(page, kind, arg = null) {
     const { min, max } = mesh.geometry.boundingBox;
     mesh.updateMatrixWorld();
     const at = [];
-    const GRID = [0.15, 0.25, 0.35, 0.5, 0.65, 0.75, 0.85];
+    const GRID = Array.from({ length: 15 }, (_, i) => 0.1 + (0.8 * i) / 14);      // (a far wall drawn at a pixel ratio of 0.25 needs this many to meet its shelf)
     for (const u of GRID) for (const v of GRID) {
       const p = min.clone().lerp(max, 0.5);
       p.x = min.x + (max.x - min.x) * u; p.y = min.y + (max.y - min.y) * v;
