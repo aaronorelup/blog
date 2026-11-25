@@ -541,6 +541,9 @@ the evening television series (-16.5). Captions are offset by each chapter's mea
 `chapters.vtt` gets one cue per chapter title. Outputs: `film.mp4` (AAC 256 kb/s, no in-band captions), `film.vtt`,
 `chapters.vtt`. The joiner took 17.8 s for 79 s, so about 7 minutes for 30 minutes of film and 14 for 60.
 
+Listen cues (EMBED 2.4's bracketed "what is playing" cues) are added after the join, never by hand: once the chapters are final, `python3 kit/tools/listen_cues.py chapters/ch* --out <dir>` reads each built project's sounds and writes `<dir>/<chapter>/captions.listen.vtt`, worded from `kit/tools/listen_cues_words.json` (it exits 1 and names any new sound the table does not word).
+Then `python3 kit/tools/merge_cues.py film/film.vtt film/chapters.vtt <dir> --out <captions.vtt> --report <json>` offsets them by each chapter's start, trims them to the gaps in the spoken cues, renumbers, checks the 2.4 format rules and lists any caption-free stretch over 5 s left; its output, not `film.vtt`, is what ships as `captions.vtt`.
+
 Delivery to the site follows `EMBED.md` (the `<ao-shots>` block, paths, bitrate, the 2 GB file limit of
 `media:push`, the poster and chapter stills). The renderer's own output is H.264 High@4.0, yuv420p, about 2.0 Mb/s
 for these mostly flat frames: a 30 minute film is about 500 MB and a 60 minute one about 1 GB, both well under the

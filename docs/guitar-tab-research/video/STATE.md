@@ -401,3 +401,9 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 - When all are done, part finish again. The join prompt now has a SECOND JOIN section: the fixed join.py with gains, a
   drift check at 0 ±1 ms, the merged listen cues, a new poster frame and alt text. Each film checker re-checks the
   earlier report's problems first.
+
+## 2026-11-26 00:10 UTC
+
+- listencues done (wf_5151e67d-752): `kit/tools/listen_cues.py` and `merge_cues.py` (words in
+  `listen_cues_words.json`). They add 100 bracketed cues. Caption-free stretches over 5 s went from 52 to 1, and the
+  one left is the silent title card. 15 cues were compared with their frames. Never-publish: 0 hits.
