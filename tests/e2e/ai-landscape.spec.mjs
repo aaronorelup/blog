@@ -1137,8 +1137,15 @@ async function signsSeen(page) {
   }
   await ratio(page, 1);
   await frames(page, 2);
+  // (read from the scene's own canvas, drawn and read in one task: a page screenshot under the trace recorder on WebKit
+  // came back changed enough to tie two of Google's signs, on the round-four build as on this one. Round 5)
+  const shot = await page.evaluate(() => { const c = window.__landscape.debug.ctx; c.renderer.render(c.scene, c.camera); return c.renderer.domElement.toDataURL('image/png'); });
+  const canvas = Buffer.from(shot.split(',')[1], 'base64');
   const out = [];
-  for (const x of was) out.push({ p: x.p, key: x.key, screen: await grid(await page.screenshot({ clip: x.box })), drawn: await grid(Buffer.from(x.drawn.split(',')[1], 'base64')) });
+  for (const x of was) {
+    const box = { left: Math.round(x.box.x), top: Math.round(x.box.y), width: Math.round(x.box.width), height: Math.round(x.box.height) };
+    out.push({ p: x.p, key: x.key, screen: await grid(await sharp(canvas).extract(box).png().toBuffer()), drawn: await grid(Buffer.from(x.drawn.split(',')[1], 'base64')) });
+  }
   await ratio(page, 0.25);
   return out;
 }
