@@ -85,3 +85,15 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   the slot (capo / tuning / standard), and one frame sheet showed a video end card with a site name. Before the blind
   test: check that each blind video holds only the playing (no end card, no title) and that no file the sessions can
   see carries a slot name.
+
+## 2026-11-25 10:45 UTC
+
+- Stage 3 finished: RESULTS.md and results.json written after both audits were fixed; BLIND.md and the kit
+  (`/home/user/gtv/tools/kit/`, `/home/user/gtv/tools/bare/`) built; blind videos made (mapping only in the truth
+  folder).
+- Before the blind test: removed hints about the test recordings from the kit's TOOLS.md, checked the blind videos by
+  eye (playing only), aligned the blind prompt with the kit (key format, NOTES.md, what the tools arm may run) and
+  changed the order to two waves of three so that both arms of one video never run at once (BLIND.md section 7).
+- Disk: removed three tool environments the kit does not use (msst, ultra, uvr), the CoTracker model, the four backup
+  recordings and 39 orphaned uv cache archives (1.2 GB); 3.9 GB free.
+- Stage 4 starts now: file-access watch, then `gtv-film.js` part blind, lanes x and y, nothing else running.

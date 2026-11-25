@@ -47,7 +47,7 @@ YOUR FINAL MESSAGE goes to the orchestrator, whose reading budget is small: AT M
 
 // ---------- Stage 4: the blind attempts ----------
 const ARM = {
-  tools: `WHAT YOU MAY USE: the toolkit in ${GTV}/tools/kit/ . Read its TOOLS.md first. Its wrappers (which run the Python environments they name), plus ffmpeg, ffprobe, FluidSynth, the system Python for your own scripts, and your own judgement: look at frames you extract, at pictures you draw of the sound, and listen through analyses you write. Its selfcheck.sh renders your answer and compares it with the recording. A hosted service only through a wrapper inside the kit, if TOOLS.md lists one.`,
+  tools: `WHAT YOU MAY USE: only what ${GTV}/tools/kit/TOOLS.md allows ("What you may use, and nothing else"). Read it first. In short: the kit's tools in that folder (they run the environments they need by themselves), your own scripts run with the Python that TOOLS.md names, ffmpeg, ffprobe, FluidSynth, /home/user/gtr/bin/gtr-run for long computations, and /home/user/gtr/bin/gtr-eval ONLY to compare two files you made yourself (never its ledger command), plus your own judgement: look at frames you extract and at pictures you draw of the sound, and listen to renderings you make. Its selfcheck.sh renders your answer and compares it with the recording.`,
   bare: `WHAT YOU MAY USE: only what ${GTV}/tools/bare/BARE.md allows. Read it first. In short: the Python environment in ${GTV}/tools/bare/ (numpy, scipy, soundfile), ffmpeg and ffprobe, FluidSynth, PyGuitarPro, and the helper scripts in that folder (the answer checker and the Guitar Pro writer). No other Python environment, no music analysis or machine learning package, no trained model, no hosted service. You may write your own signal processing, draw your own pictures of the sound, and look at frames you extract.`,
 }
 const ARM_DIR = { tools: GTV + '/tools/kit', bare: GTV + '/tools/bare' }
@@ -63,18 +63,18 @@ YOUR WORK FOLDER: ${GTV}/blind/${id}/${arm}/ . Create it, cd into it, and write 
 ${ARM[arm]}
 
 WHAT YOU MAY NOT DO. This is what makes the test valid. Your whole transcript and every file access on this machine are audited afterwards, and any breach voids your attempt:
-- Read, list or search anything outside your work folder, the video, and ${ARM_DIR[arm]} . In particular nothing else under ${GTV}/ (not the other folders under ${GTV}/blind/, not the rest of ${GTV}/tools/), nothing under /home/user/blog, /home/user/land, /home/user/gtr, /root/.claude or /tmp/claude-0, and no git command anywhere.
+- Read, list or search anything outside your work folder, the video, and ${ARM_DIR[arm]} . Running the programs that ${arm === 'tools' ? 'TOOLS.md' : 'BARE.md'} names is allowed; opening, listing or searching their folders is not. In particular nothing else under ${GTV}/ (not the other folders under ${GTV}/blind/, not the rest of ${GTV}/tools/), nothing under /home/user/blog, /home/user/land, /home/user/gtr (apart from running what is named above), /root/.claude or /tmp/claude-0, no ledger or log of other jobs, no search over the whole disk (find / , grep -r /, locate), and no git command anywhere.
 - Use the web in any way: no web search or fetch tool, no curl, wget or pip to the internet, no tab or chord site.
 - Start helper agents.
 - Recall instead of hearing: if you think you recognise the piece, do not use remembered tabs or chords. Write only what you hear and see, and say in HOW.md that you thought you recognised it and what you thought it was.
 
-TIME: 90 minutes of wall-clock time from your first start, the same for every attempt. First: mkdir -p the work folder, cd into it, then: [ -f START ] || date +%s > START . Check the elapsed time often (echo $(( ($(date +%s) - $(cat START)) / 60 )) min). Have a first complete answer.json by 45 minutes and improve it after. At 75 minutes stop exploring and finish. If you are a new copy after a machine restart (START exists), read PROGRESS.md and carry on: the clock keeps running from START.
+TIME: 90 minutes of wall-clock time from your first start, the same for every attempt. First: mkdir -p the work folder, cd into it, then: [ -f START ] || date +%s > START . Check the elapsed time often (echo $(( ($(date +%s) - $(cat START)) / 60 )) min). Have a first complete answer.json by 45 minutes and improve it after. At 75 minutes stop exploring and finish. If you are a new copy after a machine restart (START exists), read NOTES.md and carry on: the clock keeps running from START.
 
 THE ANSWER: answer.json in your work folder, this object:
-{"tuning_midi": [six MIDI numbers, lowest string first], "capo": <fret, 0 for none>, "tuning_offset_cents": <number>, "tempo_bpm": <number>, "key": "<like C:maj or A:min>", "notes": [{"onset": <s>, "offset": <s>, "pitch": <MIDI number as it sounds>, "string": <1 to 6, 1 is the highest>, "fret": <counted from the capo>}], "beats": [<s>, ...], "downbeats": [<s>, ...], "chords": [{"start": <s>, "end": <s>, "label": "<Harte label like C:maj, A:min7, G:maj/3 or N>"}]}
+{"tuning_midi": [six MIDI numbers, lowest string first], "capo": <fret, 0 for none>, "tuning_offset_cents": <number>, "tempo_bpm": <number>, "key": "<tonic> major or <tonic> minor, like E minor or Bb major", "notes": [{"onset": <s>, "offset": <s>, "pitch": <MIDI number as it sounds>, "string": <1 to 6, 1 is the highest>, "fret": <counted from the capo>}], "beats": [<s>, ...], "downbeats": [<s>, ...], "chords": [{"start": <s>, "end": <s>, "label": "<Harte label like C:maj, A:min7, G:maj/3 or N>"}]}
 Times are seconds on the video's own timeline. pitch must equal tuning_midi[6 - string] + capo + fret. Cover the whole piece, from its first note to its last.
 Check it with the validate_answer.py in ${ARM_DIR[arm]} until it passes. Then write answer.gp5 with answer2gp5.py from the same folder, and HOW.md (under 60 lines): what you did in order, which tools or methods you used and what each told you, what you decided by your own judgement and why, how sure you are of each part (tuning, capo, notes, strings and frets, rhythm, chords), and what you would do with more time.
-Keep PROGRESS.md in the work folder as you go (what is done, what comes next).
+Keep NOTES.md in the work folder as you go (what is done, what you decided, what comes next).
 
 YOUR FINAL MESSAGE (at most 8 lines): the tuning, the capo, the number of notes, the minutes used, and what you are least sure of.`
 
@@ -265,11 +265,17 @@ const numbered = (ps) => ps.map((p, i) => (i + 1) + '. ' + p).join('\n')
 // ---------- Run ----------
 if (PART === 'blind') {
   phase('Blind')
-  const plan = args.lane === 'x'
-    ? [['b1', 'tools'], ['b1', 'bare'], ['b3', 'tools']]
-    : [['b2', 'tools'], ['b2', 'bare'], ['b3', 'bare']]
-  const out = await parallel(plan.map(([id, arm]) => () => safe(BLIND(id, arm), o('blind-' + id + '-' + arm, 'Blind'))))
-  return { part: 'blind', lane: args.lane, attempts: plan.map(([id, arm], i) => ({ id, arm, said: short(out[i]).slice(0, 600) })) }
+  // Two lanes, three attempts at a time, and never both arms of one video at once:
+  // lane x: (b1 tools + b2 bare), then (b1 bare + b2 tools); lane y: b3 tools, then b3 bare.
+  const waves = args.lane === 'x'
+    ? [[['b1', 'tools'], ['b2', 'bare']], [['b1', 'bare'], ['b2', 'tools']]]
+    : [[['b3', 'tools']], [['b3', 'bare']]]
+  const attempts = []
+  for (const wave of waves) {
+    const out = await parallel(wave.map(([id, arm]) => () => safe(BLIND(id, arm), o('blind-' + id + '-' + arm, 'Blind'))))
+    wave.forEach(([id, arm], i) => attempts.push({ id, arm, said: short(out[i]).slice(0, 600) }))
+  }
+  return { part: 'blind', lane: args.lane, attempts }
 }
 
 if (PART === 'score') {
