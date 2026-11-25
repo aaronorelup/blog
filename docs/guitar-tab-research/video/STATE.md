@@ -270,3 +270,10 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   `*.freeze.txt`, see `/home/user/gtv/work/deleted-venvs.txt`). 4.1 GB free.
 - Refresh args are made with `scratchpad/refresh_args.py` (`polish-PN-args.json`).
 - Chapters done (passed polish, nothing left to refresh): ch05 and ch17. Next to finish: ch08, when P6 passes it.
+
+## 2026-11-25 21:30 UTC
+
+- P3 finished: ch04 and ch14 pass. Their narration refresh is running as P13 (wf_617c730a-2e7).
+- Placed narration measured now: ch02 and ch07 already re-copied (0 clipped, refresh runs P11 and P12 under way).
+  Still clipped: ch04 176, ch13 176, ch14 551, ch16 391. ch01, ch10 and ch11 show 0 samples at full scale but carry
+  flat tops at a lower level (AFFECTED.md), so they refresh too.
