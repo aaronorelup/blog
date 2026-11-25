@@ -385,3 +385,19 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   per-chapter gains as an option) and prove 0 ±1 ms lag at every join.
 - Next: chapter fixes (ch10 BLOCKING, plus the cheap NITs and whatever the story check finds), then part finish
   again, then publish.
+
+## 2026-11-26 00:00 UTC
+
+- First finish run done (wf_24e91e53-107). Story check: 1 BLOCKING. The captions have no bracketed cues for the
+  listening windows (EMBED 2.4; about 10 minutes uncaptioned). Its NITs are text slips in ch08, ch11 and ch15.
+  Otherwise the story holds: the tool question is asked and answered, the blind test plays both arms against the
+  original with round 2 as the result, and all 53 numbers checked are right.
+- Second pass, running:
+  - chapter fixes P17 (ch10 BLOCKING, ch13), P18 (ch16, ch04), P19 (ch11, ch15), P20 (ch08, ch14, ch03); args in
+    `polish-P17..P20-args.json`;
+  - joinfix (wf_107b63f5-026);
+  - listencues (wf_5151e67d-752): `listen_cues.py` per chapter plus `merge_cues.py`, so the cues survive chapter
+    rebuilds.
+- When all are done, part finish again. The join prompt now has a SECOND JOIN section: the fixed join.py with gains, a
+  drift check at 0 ±1 ms, the merged listen cues, a new poster frame and alt text. Each film checker re-checks the
+  earlier report's problems first.

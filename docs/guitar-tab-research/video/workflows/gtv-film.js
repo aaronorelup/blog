@@ -316,6 +316,17 @@ The bug (found by the film's sound check, ${PROD}/FILM-QC-sound.md and /home/use
 2. Prove it on the current 18 chapters (gains from FILM.md): join into ${GTV}/work/kit-joinfix/out/ and measure the lag of the film's sound against each chapter's own sound at its place, at the start, the middle and the end of every chapter (cross-correlation), with your own code and with the sound checker's drift.py: every lag 0 within 1 ms, the film's length equal to the sum of the chapter video lengths, and the picture still within one frame (vframe.py). Also check that the loudness numbers stay as FILM.md has them (about -16.0 LUFS, true peak at most -1.5 dBTP, LRA about 5). Keep 3 GB of disk free: delete the test outputs once measured (keep the logs and numbers).
 Write ${GTV}/work/kit-joinfix/REPORT.md (the cause, the fix, the numbers before and after). Your final message: the fix, the lag numbers, the command to join the film with the gains.`
 
+const LISTENCUES = `[AGENT: kit-listencues]
+
+${COMMON}
+
+YOUR JOB: the film's captions say nothing while a tab, a recording or a tool's output plays with no speech (the film's story check: ${PROD}/FILM-QC-story.md, its first problem; 50 caption-free stretches over 5 s, about 10 minutes in all). ${REC}/EMBED.md section 2.4 asks for a short cue in brackets that says what is playing, e.g. [Basic Pitch's notes, played back]. Make a tool that adds them, so they survive any chapter rebuild. Other agents are fixing chapters and join.py right now: never edit anything under ${PROD}/chapters/ or ${PROD}/kit/tools/join.py.
+1. Write ${PROD}/kit/tools/listen_cues.py: for one chapter folder, read where its listening windows are and what plays in each (its project/data timing files and root.json audio entries, its build script's window list, its script.md and ${PROD}/SCRIPT.md LISTEN lines, the brief) and write <chapter>/captions.listen.vtt into a folder you name with an --out option: one bracketed cue per window, timed to the window in chapter time, 1 to 7 s (a window longer than 7 s gets its cue at the start, or two cues), never overlapping that chapter's captions.vtt cues (trim to the gap), worded from what the script says plays, in the film's words (the answer key, the kit arm, the bare arm, a tool by its name and version as on screen, the recording). Name tools as the chapter shows them. Keep each under 42 characters a line, at most 2 lines.
+2. Write ${PROD}/kit/tools/merge_cues.py: takes the film's film.vtt and chapters.vtt and the folder of captions.listen.vtt files, offsets each chapter's listen cues by that chapter's start in chapters.vtt, merges them into one WebVTT in time order, renumbers, and checks EMBED 2.4's format rules (hours always written, no overlap, 1 to 7 s, two lines at most, escaping).
+3. Run both on the current chapters and the current film (/home/user/gtv/production/film/film.vtt and chapters.vtt) into ${GTV}/work/listencues/ and check the result: every caption-free stretch over 5 s in the film is now covered or is a scripted pause with nothing playing; look at 15 windows spread over the film and say whether each cue is right about what plays (compare with the chapter's frames or data). Run the never-publish check of EMBED 2.4 on the merged file.
+4. Add two lines to ${REC}/PRODUCTION.md section 6.6 on how the join uses them (listen_cues.py per chapter after the chapters are final, then merge_cues.py on the joined film's captions).
+Your final message: the number of cues added, what is still uncovered and why, and the two commands.`
+
 // ---------- Stage 5: finish ----------
 const JOIN = `[AGENT: film-join]
 
@@ -328,7 +339,11 @@ YOUR JOB: make the finished film and its web files. Chapters: ${PROD}/chapters/c
 3. Make the site copy exactly as EMBED.md 2.1 says: /home/user/gtv/render/guitar-video-to-tab.mp4 , and run its checks (profile, size, faststart, loudness after encode).
 4. captions.vtt (EMBED 2.4, with its never-publish check), the poster (2.2), the chapter stills (2.3) with the chapter times from chapters.vtt, the card still and loop (2.5), all under ${GTV}/render/web/ with the names EMBED.md uses.
 Write ${PROD}/FILM.md: the length, the chapter list with start times and labels (EMBED.md 1 rules for labels), the loudness and file numbers, and the paths.
-Your final message: the length, the file size, the loudness numbers, and the paths.`
+SECOND JOIN (when ${PROD}/FILM-QC-*.md exist from an earlier film check, as now): this is a re-join after fixes. Read those three reports and ${GTV}/work/film-join/PROGRESS.md first, and keep the earlier FILM.md as FILM.1.md.
+- join.py was fixed (${GTV}/work/kit-joinfix/REPORT.md): it trims each chapter's sound to its video length and takes per-chapter gains as an option. Use the option, measure the gains again (chapters were re-rendered), and make no gained copies. After the join, check with /home/user/gtv/work/film-qc-sound/drift.py (or the joinfix's own check) that the sound lags the picture by 0 within 1 ms at the start, middle and end of every chapter. Do not go on if it does not.
+- Listening-window cues (EMBED 2.4): run ${PROD}/kit/tools/listen_cues.py on every chapter and merge_cues.py on the joined film's film.vtt and chapters.vtt (${GTV}/work/listencues/ and PRODUCTION 6.6 say how); the merged file is the captions.vtt you ship, after its format and never-publish checks.
+- Poster: the picture check found a fingertip mark covering a tool label's fret digit at 1712 s; choose a poster frame where no mark covers a digit and look at it. The card's alt text must describe only what its crop shows (the picture check: it does not show the capo).
+- Bitrate: peaks over EMBED's "about 6 Mbit/s at most" were left as they were in the first join; keep that unless EMBED.md says otherwise, and say so in FILM.md.`
 
 const FILM_QC = `[AGENT: film-qc]
 
@@ -348,6 +363,7 @@ const QC_HEAD = (lens) => `[AGENT: film-qc-${lens}]
 ${COMMON}
 
 YOUR JOB: check the finished film as Aaron would watch it, before it goes live, through one lens: ${lens.toUpperCase()}. Two other checkers look at the other lenses at the same time; stay on yours. The film: /home/user/gtv/render/guitar-video-to-tab.mp4 (the site copy), its captions and chapters under /home/user/gtv/render/web/ (names as ${PROD}/FILM.md says), the chapter folders ${PROD}/chapters/chNN-slug/ it was joined from (their qc/verify.md say what was already checked). You made none of it. Read ${REC}/PRODUCTION.md sections 1, 2 and 6.10 and ${PROD}/FILM.md. Work in ${GTV}/work/film-qc-${lens}/.
+If ${PROD}/FILM-QC-${lens}.md exists from an earlier check of the film, this is a re-check after fixes: rename it to FILM-QC-${lens}.1.md, check that each of its problems is fixed (BLOCKING and NIT), and then do your full check again; a problem that came back or a fix that broke something else is BLOCKING.
 `
 const QC_TAIL = (lens) => `
 Mark each problem BLOCKING (a viewer would notice, or it is wrong: a wrong number, a broken or missing picture or sound, text cut off or unreadable, a broken listening window, a privacy breach) or NIT (polish). Give each one the chapter id and the time in the film and in the chapter, what is wrong, and the fix. Write ${PROD}/FILM-QC-${lens}.md (under 100 lines). Return: pass (true when nothing BLOCKING), problems (each starting with BLOCKING: or NIT:), and a two-line summary.`
@@ -487,6 +503,12 @@ if (PART === 'kitfix') {
   const fixed = await safe(KITFIX, o('kit-seamfix', 'Kit fix'))
   const v = verdict(await safe(KITFIX_VERIFY, { ...o('kit-seamfix-check', 'Kit fix', 'high'), schema: VERDICT }))
   return { part: 'kitfix', fixed: short(fixed), check: { pass: v.pass, problems: v.problems, summary: v.summary } }
+}
+
+if (PART === 'listencues') {
+  phase('Listen cues')
+  const made = await safe(LISTENCUES, o('kit-listencues', 'Listen cues', 'high'))
+  return { part: 'listencues', made: short(made) }
 }
 
 if (PART === 'joinfix') {

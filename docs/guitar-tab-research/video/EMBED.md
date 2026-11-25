@@ -143,9 +143,9 @@ What the production kit already gives (`video/PRODUCTION.md`; measured today on 
 H.264 High@4.0 1920x1080 30 fps yuv420p with BT.709 tags, video 2.0 Mbit/s, AAC-LC 48 kHz (192k target, 178k
 read), moov first, keyframes at 0, 7.3, 15.6, 24.0 and 32.3 s, plus a mov_text subtitle track. Its path is
 `render_chapter.sh` per chapter, then `join.py` (chapters joined with `-c:v copy`, so each chapter starts on a
-keyframe, sound joined as PCM), then `finish.py` (sound mastered and encoded once, `+faststart`). That meets
+keyframe, sound joined as FLAC, each chapter cut to its video length), then `finish.py` (sound mastered and encoded once, `+faststart`). That meets
 everything above except the subtitle track: `join.py` calls `finish.py --vtt`. For the site copy, run
-`python3 kit/tools/finish.py <out>/film_raw.mov /home/user/gtv/render/guitar-video-to-tab.mp4` without `--vtt`
+`python3 kit/tools/finish.py <out>/film_raw.mp4 /home/user/gtv/render/guitar-video-to-tab.mp4` without `--vtt`
 (the library copy may keep it), and ship `film.vtt` as `captions.vtt`.
 
 Fallback, only if the film is encoded outside the kit. Tested on this box (ffmpeg 6.1.1, libx264): the output read
@@ -167,10 +167,10 @@ For RGB sources (PNG frames, a browser capture) the `out_color_matrix=bt709` par
 input is BT.601, which shifts colours against what players assume for HD. If the film is not 1920x1080, change the
 markup's `width` and `height` to its size.
 
-Disk (8 GB free today, 3 GB kept spare): at the peak `join.py` holds the chapter renders, `film_raw.mov` (the video
-plus PCM sound, about 0.7 GB an hour more than the film) and `film.mp4` at once, about three times the film. A
+Disk (8 GB free today, 3 GB kept spare): at the peak `join.py` holds the chapter renders, `film_raw.mp4` (the video
+plus FLAC sound, about 0.2 GB an hour more than the film) and `film.mp4` at once, about three times the film. A
 full-length master at a higher quality does not fit beside that (60 minutes at 10 Mbit/s is 4.5 GB), so the web copy
-is the master. Delete chapter renders and `film_raw.mov` once the film is checked, and hard-link rather than copy
+is the master. Delete chapter renders and `film_raw.mp4` once the film is checked, and hard-link rather than copy
 from then on (3.1, section 5).
 
 Size: the binding limit is `npm run media:push`, which reads each file with `fs.readFileSync`. Node refuses a file

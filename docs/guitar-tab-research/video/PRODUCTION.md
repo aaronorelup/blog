@@ -527,8 +527,13 @@ file's own `counts_in_window`, events in the window, the major/minor share): che
 
 ```bash
 python3 /home/user/gtv/production/kit/tools/join.py /home/user/gtv/production/film \
-  /home/user/gtv/production/chapters/ch00-* /home/user/gtv/production/chapters/ch01-* ...
+  /home/user/gtv/production/chapters/ch00-* /home/user/gtv/production/chapters/ch01-* ... \
+  --gains /home/user/gtv/production/film/gains.json
 ```
+
+Sync: the sound is not taken from the concat demuxer (that starts each chapter at the previous one's AAC length rounded up
+to 1024 samples: +235 ms late by ch17). Each chapter's sound is cut or padded to its own video length (frames / 30) and
+joined sample-exactly; `--gains` (chapter folder name -> dB) level-matches chapters with no gained copies.
 
 The video is stream-copied (every chapter comes from the same renderer settings), the sound is decoded and
 mastered once over the whole film: -16 LUFS integrated, true peak at most -1.5 dBTP after AAC, the same level as
@@ -539,7 +544,7 @@ the evening television series (-16.5). Captions are offset by each chapter's mea
 Delivery to the site follows `EMBED.md` (the `<ao-shots>` block, paths, bitrate, the 2 GB file limit of
 `media:push`, the poster and chapter stills). The renderer's own output is H.264 High@4.0, yuv420p, about 2.0 Mb/s
 for these mostly flat frames: a 30 minute film is about 500 MB and a 60 minute one about 1 GB, both well under the
-limit. If `EMBED.md`'s encode settings differ (bitrate floor, colour tags), re-encode `film_raw.mov` once at the end
+limit. If `EMBED.md`'s encode settings differ (bitrate floor, colour tags), re-encode `film_raw.mp4` (video copy + FLAC) once at the end
 rather than changing the chapter renders.
 
 ### 6.7 Render time and the lock
