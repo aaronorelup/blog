@@ -294,6 +294,32 @@ if (LANE === 't') {
   return { lane: 't', fixed: short(fixed), pass: v.pass, open: v.problems, check: v.summary, mark: short(mark).slice(0, 200) }
 }
 
+if (LANE === 't3') {
+  // third and last repair round for the standard answer key: a fix, then a focused check of only what it touched
+  phase('Experiments')
+  const P = (args && args.problems) || []
+  const fixP = TRUTH_FIX('standard', P.map((x, i) => (i + 1) + '. ' + x).join('\n'))
+    .replace('[AGENT: truth-fix-standard]', '[AGENT: truth-fix3-standard]')
+    .replace('add a section "Repairs" to the record', 'add a section "Repairs, third round" to the record (earlier rounds wrote "Repairs" and "Repairs, second round"; keep them)')
+    + `
+
+THIS IS THE LAST REPAIR ROUND. Fix exactly the listed problems and nothing else, so that the experiments already scored change as little as possible. For the video problem, prefer giving ${GTV}/truth/standard/ a per-frame neck outline that follows the raw 0.1 s track (standard.neck_track.json) and making ${GTV}/tools/bin/score_video_cells.py use it when it exists (keep its old behaviour for files without a track, and keep its command line the same), over splitting poses again. Test score_video_cells.py on one standard experiment afterwards and say what changed. Do not rescore the experiments yourself: a later agent does that.`
+  const fixed = await safe(fixP, o('truth-fix3-standard', 'Experiments', 'high'))
+  const chkP = `[AGENT: truth-recheck3-standard]
+
+${COMMON}
+
+YOUR JOB: a focused, independent check of the third repair round of the ground truth for slot "standard" (${GTV}/truth/standard/ , record ${REC}/truth-standard.md section "Repairs, third round", the checker's report ${REC}/truth-standard-check.md section "Third check"). Do NOT change the truth files. Check, with scripts of your own:
+1. gtr-eval check-truth passes; the side files agree with the JSON; the note count changed only by what the repair says.
+2. Each of the three problems of the third check is really fixed: the C3 at about 6.886 s is gone; the 16 string slaps sit within 20 ms of their waveform attacks; the neck outline used for scoring lies on the fretboard at 49.5, 59.0, 68.5 and 108.0 s (LOOK at those frames at full resolution with the outline drawn) and the share of fretted notes more than half a string lane off is now near 0.
+3. score_video_cells.py still gives the same result as before on a capo experiment (it must not have changed for files without a track).
+Write a section "Fourth check" at the end of ${REC}/truth-standard-check.md (under 40 lines). A problem is only something that would make the film say a wrong thing about a tool. Budget: about 25 minutes.
+Return: pass (true only if no problem is left), the problems (one string each, with where), and a two-line summary.`
+  const v = verdict(await safe(chkP, { ...o('truth-recheck3-standard', 'Experiments', 'high'), schema: VERDICT }))
+  const mark = await safe(MARK('t'), SON('mark-t3'))
+  return { lane: 't3', fixed: short(fixed), pass: v.pass, open: v.problems, check: v.summary, mark: short(mark).slice(0, 200) }
+}
+
 const RESCORE = `[AGENT: rescore-standard]
 
 ${COMMON}

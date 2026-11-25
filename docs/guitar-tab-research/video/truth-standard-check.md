@@ -296,3 +296,153 @@ sat off in late pose-A frames, Problem 3). No fretted note was seen on another f
    39.24 s (bar 13) has no rise of its own (-0.5 dB clean): not added.
 5. Downbeats sit a median 34.5 ms after the bar's first note (up to 50; Beat This! +82 at bar 1): inside 70 ms.
 6. Tools may report F#2 after thumps (the body resonance near 92.5 Hz; both models at 37.65 s): no truth error.
+
+## Third check
+
+Independent re-check, 2026-11-25 (agent `truth-recheck2-standard`), of the truth after the second repair
+(`standard.truth.json` SHA-256 `daa4884b3543041b...`, `standard.video.json` `e2211bef511ee2a5...`, the installed hashes).
+Own scripts, logs, results: `/home/user/gtv/work/truth-recheck2-standard/` (below `Q/`); truth files unchanged
+(`Q/logs/sha256_start.txt` = `_end`). Own runs: guitar-fl r0916 (2 cores, 114 s; notes byte-identical to r0779), gtr-eval
+e2245 (notes), e2246 (beats); guitar-gaps is checker 1's r0771 output (same mono WAV, SHA-256 `c985b9f9...`).
+
+**Verdict: not yet.** The second check's problems are fixed in the notes (bars 17 and 39, the six added notes, the two
+removed ones all measure right) and pose A's large misfit is gone. New: bar 3's first C3 (#29, inside the 30-s segment)
+does not sound; the slap fills of bars 12, 24 and 44 are 55-70 ms late in `taps`; and the 76 poses miss the neck's quick
+jolts after thumps, so 5.5% of fretted notes would land in the wrong string lane (none in 0-30 s).
+
+### 1. Schema and side files (in full)
+
+- `gtr-eval check-truth`: 6971 checks, 0 mismatches (`Q/logs/c1_checktruth.log`).
+- Own (`Q/bin/c1_schema.py` -> `Q/out/c1_schema.json`): all 20 fields and 5 source fields; 680 notes with all 7 fields +
+  conf (573 `tab+audio` / 96 `tab` / 11 `audio`; bass 274, melody 313, chord 93); pitch = tuning + capo + fret 680/680;
+  onsets 0.448-174.621 s, offsets <= 176.989, all inside the WAV (7,805,745 frames = 177.00102 s); sorted; 0 exact
+  duplicates, 0 same pitch within 50 ms, 0 same-string overlaps or re-attacks under 60 ms, 0 zero-length (shortest
+  132 ms); beats 224 rising, downbeats 56 = every 4th beat; chords 70 contiguous 0-177.001; taps 211 (93 slap, 118 thump).
+- Side files: notes.csv, beats.txt, chords.lab equal to the JSON field by field; .mid every onset within 1.8 ms, 6
+  offsets differ (same pitch on two strings at once, which one MIDI channel cannot hold, `Q/logs/c1c_midoff.log`); .gp5
+  read with PyGuitarPro: 56 bars, 467 beats, 680 notes, (string, fret) multiset equal to the truth's. gtr-eval
+  (`Q/out/side_*.json`): .mid onset F1 1.0 (on+off 0.9956), notes.csv 1.0/1.0, .tab.txt 680/680, beats and downbeats
+  1.0, chords 1.0, .gp5 (`--time-shift 0.4981`) 652/680 all same string and fret, `--ignore-time` 680/680.
+
+### 2. Tuning and capo (not touched by the repair; blind, `Q/bin/c2_tuning.py`, `c2_lowest.py`)
+
+- Lowest pitch with h1, h2, h3 peaks (within 25 dB of the frame maximum) per 0.37-s frame: F2 38 frames, G2 75, C3 389,
+  nothing below F2; guitar-fl's lowest notes are E2 (8) and F2 (18), none lower: low string E2, no drop tuning, and E2
+  sounding rules out a capo on a standard guitar.
+- Cents (h1 and h2 peak frequency, 16384 samples from 80 ms after the onset, 566 confirmed notes): median +5.1, IQR +1.6
+  to +7.4 (s6 +8.2, s5 +7.0, s4 +2.2, s3 +4.0, s2 +4.9); open B3 +1.6 (37 notes), G3 +3.2 (43), D3 +1.5 (7), E2 +6.0 (3):
+  standard tuning; the truth's 6 is within 1 cent.
+- Picture: 4x crops of the nut at 15 times (`Q/frames/strip_a-d.jpg`): the cream nut with the strings running over it,
+  frets 1-2 bare, no capo; fingers at frets 1-3 in the C and F shapes counted from the nut (`Q/frames/notes_1-4.jpg`).
+
+### 3. Timing, in full (`Q/bin/c3_onsets.py`, `c3_model.py`, `c3_cross.py`)
+
+| detector | per 10 s (0-10 ... 170-177 s) | whole piece |
+|---|---|---|
+| own onsets (log-frequency flux, hop 2.5 ms, 613 detections): truth notes with one within 50 ms | .91 .97 1.00 .97 .97 .93 1.00 .88 .94 .93 .91 .93 .98 .94 .97 **.81** .88 .91 | 0.934 (482 events 0.932; the truth shifted 0.1 s: 0.02-0.09), median 0.0 ms, p10/p90 -7.3/+4.9 |
+| guitar-fl r0916, `gtr-eval notes` F1 | .97 .99 1.00 .85 .86 .90 .95 .82 .82 .94 .91 .84 .90 .84 **.78** .87 .91 .81 | P .858 R .926 **F1 .891** (e2245) |
+| guitar-gaps (r0771) F1 | .99 .99 .99 .86 **.75** .87 .92 **.76** .82 .93 .86 .88 .91 .83 .81 .86 .85 .81 | F1 .878 |
+
+Drops: own onsets under 0.8 in bars 25, 48, 53, 56; guitar-fl recall under 0.75 in bars 13, 25, 56: roll tops (#156,
+#289-291, #577-578, #632-633: both models 56-93 ms earlier or absent), slide-ins (#545, #571), re-plucks, bar 56's end.
+Every bar's notes sit a median -5.3 to +6.8 ms from guitar-fl (`Q/logs/c3_bar_timing.log`). The 43 notes both models
+miss: roll tops, `tab` re-plucks, #487 A#3 (s3 f2 -> f3; on 8192 samples A#3 rises -60 -> -34 dB as A3 dies) and #29
+(Problem 1). Of guitar-fl's 104 extra notes, 4 are not a ringing pitch, an octave/12th or at a tap (Doubt 3). Taps:
+thumps a median 25 ms after their attack (97.5% within 50 ms); 16 slaps 55-70 ms late (Problem 2).
+
+### The second check's problems, re-measured (`Q/bin/spec.py`: exact-frequency DFT, 4096/8192 Hann; rise = median level 60-200 ms after minus 200-60 ms before)
+
+- P1 fixed: E3 #197 (51.664 s) h1 +18.4 dB, the old G3 there +3.5; E3 #468 (121.197) +15.1, the old G3 -1.8; removed
+  #466 E3 121.366: -12.9 dB (decaying). Both models have both E3s (guitar-fl recall of the 11 `audio` notes: 11/11).
+- P2 fixed: A3 29.338 +14.5 dB (8192 +13.9), G2 83.891 +10.9 (+14.0), E3 92.102 +19.6, E3 104.644 +10.6, D3 166.206
+  +21.4 (+29.7); C4 140.861 only +2.7 against the ringing C4, but its line dips to -42 dB at 140.80-140.84 s and is back
+  at -27 dB from +20 ms: a re-pluck (`Q/logs/trace_543.log`). Removed C4 141.126: -3.5 dB. Departure G3s +16 to +21.
+- P3 fixed for the slow movement of the neck, not for the quick one (Problem 3).
+
+### 4. Twenty random notes (one per 1/20 of the piece, seed 20261128) + every note of bars 5 and 8
+
+h1 rise as above; near = max 20-100 ms after minus min 100-20 ms before (the dip and re-attack of a re-pluck); nbrs =
+level over both semitone neighbours 60-300 ms after (8192; 16384 below A2). Models: g guitar-fl, p gaps. Video (frame
+round(t x 50)): Y fingertip on the marked cell (pose quad's string lane, fret by the rule of 18), O open string with no
+finger on it (`Q/logs/c4_table.log`, `Q/frames/notes_1-4.jpg`).
+
+| # | t s | note s/f | bar | conf | h1 / near / nbrs dB | models | video |
+|---|---|---|---|---|---|---|---|
+| 29 | 6.886 | C3 5/3 | 3 | tab+audio | **-20.7** / 15.9 / 4.2 | none | Y (shape held) |
+| 48, 229, 450 | 10.444, 59.363, 116.225 | C3 5/3 | 4, 19, 37 | tab+audio | +7.2..+35.8 / 26.8..49.6 / 10.6..12.2 | gp, g, gp | Y Y Y |
+| 84, 111, 520, 560 | 19.480, 26.628, 134.595, 145.799 | G3 3/0 | 7, 9, 43, 47 | t+a, t+a, tab, t+a | +1.9..+45.6 / 15.8..38.5 / 8.3..33.4 | gp x4 | O O O O? |
+| 169, 329, 512, 588 | 42.386, 88.979, 132.355, 154.895 | A3 3/2 | 14, 29, 42, 49 | tab+audio | +7.7..+34.6 / 9.7..32.2 / 8.3..30.3 | gp x4 | Y x4 |
+| 187, 262, 323 | 47.930, 67.664, 85.839 | F3 4/3 | 16, 22, 28 | tab+audio | +14.3..+27.5 / 23.3..47.0 / 18.3..22.0 | gp x3 | Y x3 |
+| 289 | 76.412 | F3 4/3 | 25 | tab+audio | +12.7 / 23.1 / 13.2 | none (both 56-59 ms earlier: roll top) | Y |
+| 382, 428, 650 | 100.741, 111.066, 168.592 | E3 4/2 | 32, 36, 54 | tab+audio | +5.4..+9.5 / 17.0..28.2 / 5.7..15.3 | gp, none, none | Y x3 |
+| 633 | 164.718 | C4 2/1 | 53 | tab+audio | +22.3 / 14.3 / 23.5 | gp | Y |
+| 58-73 | 13.219-16.136 | bar 5, 16 notes (C3, E3, G3, B3 3/4, A3) | 5 | 14 t+a, 2 tab | -2.1..+25.4 / 14.1..49.1 / 5.5..33.3, #72 -1.3 | gp 16/16 | Y 11, O 5 |
+| 99-107 | 22.658-25.441 | bar 8, 9 notes (F3, C3, A3, A#3 3/3, B3 2/0) | 8 | tab+audio | +0.5..+33.9 / 5.5..47.3 / 10.3..22.0, #106 -1.2 | gp 8, g 9 | Y 8, O 1 |
+
+44 of 45 sound from their onset (a rise or a re-pluck dip, above both neighbours or heard by both models): the small h1
+rises are re-plucks of a ringing G3 or C3 (#61 #63 #65 #66 #100); #72 B3 rises -36 -> -26 dB beside an equally loud
+C4; #106 A#3 is the figure of #487. #29 does not sound (Problem 1). All 35 fretted notes show a fingertip on the cell.
+
+### 5. Beats, downbeats, chords (`Q/bin/c5_beats.py` -> `Q/out/c5_beats.json`)
+
+- Beats, downbeats, chords, taps, tempo and key equal to the pre-repair truth (`truth-fix2-standard/orig/`).
+- Own flux: mean peak 13.5 (x median) at the beats, 6.5 at the off-beat eighths, 1.9 at the sixteenths. librosa beat
+  tracker (own run): 76.0 bpm, gtr-eval e2246 beats F 0.977 (216/224 within 70 ms), CMLt 0.969, median +16 ms.
+- Downbeats -2.1 to +70.8 ms (median 35.0) after their bar's first note; only bar 34 over +60 (the added E3 of 104.644 s
+  leads the chord by 41 ms). Beat intervals 0.642-0.957 s.
+- Five chords (seed 20261130), seconds sounding per pitch class: 22.69-25.85 F:maj (C 3.1, F 3.1, A 1.9); 54.28-57.43
+  F:maj (F 3.1, A 2.0, C 1.9); 104.71-106.25 C:maj (C 2.1, E 1.5, B 1.0, G 0.8); 111.05-117.45 C:maj (C 9.0, E 7.1,
+  G 6.3); 120.60-123.73 C:maj (E 3.1, G 2.3, B 2.2, C 1.9: since the bar-39 E3 more E minor by duration, C:maj by the
+  builder's bass rule). Consistent with the notes (sevenths unlabelled, as recorded).
+
+### 6. The record and the tools' video
+
+- Borne out: counts, pitch range E2-G4, check-truth, guitar-fl P/R/F1 and per 10 s (90-100 s: .94 against .93),
+  guitar-gaps .878, GP5 652/680 and 467 beats, the repairs CSV (19 rows, 4.8 KB), the 76 poses (0.2-14.55 s, median 1.7,
+  quad_frame inside each, the 6 labelled frames in the poses named), raw outline vs pose: median 6.0, p90 10.4, p99 18.7
+  px, 3.3% over 15 px (`Q/logs/c6_claims.log`).
+- Not borne out: (a) the over-15-px raw samples as "quick movements, fits with few inliers": they are real (Problem 3).
+  (b) "the new quads follow the fretboard edges in all 12" includes 49.5 s, where p12's top edge is 17-18 px above the
+  fretboard at the nut (`Q/frames/strip_b.jpg`); `string_check.py` needs six visible strings and takes one frame per
+  2 s, so it never measured 15-37 s (box over string 6) or a jolt. (c) .mid on+off 0.996 is same-pitch overlaps, not tick
+  rounding. (d) "1778 frames" tracked: the file has 1771 samples. (e) Smoothed samples "within 10 px": up to 10.4.
+- standard.mp4 unchanged (`fbaf409f...`); six frames (n 100, 1500, 3000, 5000, 7000, 8700, `Q/frames/six.jpg`): no tab,
+  chord name, title or logo; the last row is a static 1-px line, nothing readable (`Q/frames/bottom_zoom.png`); tags only encoder.
+
+### PROBLEMS (third check)
+
+1. **#29 C3 s5 f3, bar 3 pos 0 (6.886 s, `tab+audio`) does not sound** (inside the 30-s segment). C3's fundamental
+   holds -29 dB while #25 rings, dips to -44 dB at 6.85 s, is back at -30 for 6.88-6.91 s, then falls to -46 (6.97), -48
+   (7.00) and about -50 until 7.27 s; at #33 (C3, 7.306 s) it rises to -25 and holds -26/-27 to 7.60 s
+   (`Q/logs/ftrace_c3_bar3.log`, `c3_bar3_evidence.log`): rise -20.7 dB, the only fall among the 45 sampled notes.
+   guitar-fl and guitar-gaps have no C3 from 6.50 to 7.29 s; both have #33 (7.296/7.294) and the bar's E3, G3, C4. The
+   video shows the C shape held, not a pluck. Fix: remove #29 (as #466 and #541 were), rebuild offsets and side files;
+   look at the other C3s both models miss while there (#196 51.485 s, h1 -1.3 dB; #374 #403 #440 #621 #651, all `tab`).
+2. **16 string-slap taps are 55-70 ms late**: all five slaps of the "(lh)" fills of bar 12 (37.315-38.087 s), bar 24
+   (75.211-75.995 s) and bar 44 (138.395-139.179 s), and 160.780 s (bar 51). The high-frequency attack (waveform first
+   difference, 5-ms frames, a jump of 6-33 dB) comes 55-70 ms before each truth time and nothing happens at it; the truth
+   times sit on the tab's sixteenth grid. guitar-gaps marks 17 slaps with a C8 artefact a median 64.5 ms before the
+   truth (`Q/bin/c3_slaps.py`, `Q/logs/c3_slaps.log`, `c3_taps.log`). The other 77 slaps are within 50 ms (median
+   -10 ms). A perfect tap detector loses 16 of 211 taps (7.6%) at 50 ms (`onsets --field taps`). Fix: re-time each slap
+   to its attack (steepest high-frequency rise within -120..+60 ms).
+3. **The poses miss the neck's quick jolts; the tracked outline is right there.** At 49.5, 59.0, 68.5 and 108.0 s the
+   strings and the nut sit where the raw outline puts them (my 4x readings within about 3 px; 75-110 inliers) and 17-23
+   px below the pose quad; at 107.90/108.00/108.10/108.20 s, after the thump of 107.80 s, the neck jolts -12/+22/-12/+8 px
+   against p39 and the raw outline -12/+23/-13/+7 (frame 5400 identical to ffmpeg's, `Q/bin/ffcmp.py`; `Q/frames/strip_b-d.jpg`).
+   With the raw outline as reference, 30 of 547 fretted notes (5.5%) have their string lane more than half a lane off at
+   their fret, 3 more than a whole lane (up to 31.7 px), in 20 poses (p15-p73); none of the 99 in 0-30 s
+   (`Q/bin/v_dev.py`, `Q/logs/v_dev_raw.log`; 12 with a 3-sample median of the raw outline). A correct fingertip there is
+   scored on the wrong string. Fix: score each note against the nearest 0.1-s tracked outline (`quad_raw`, single-sample
+   jumps such as 152.3 s dropped), or cut a pose wherever the raw outline leaves its quad by more than half a lane (about
+   12 px at the nut); until then score the video lane on 0-30 s only.
+
+### Doubts (third check)
+
+1. Roll tops (#156 #289-291 #313 #539 #561 #577-578): both models 55-83 ms earlier or absent; C4 over F2 has no partial
+   of its own. The film should not judge a tool on them (as checks 1 and 2).
+2. `tab` re-plucks neither model hears that do not rise: #199 G3 51.877 s (-9.6 dB, the record's doubt), #520 G3 134.595.
+3. Model-only notes: B3 151.650 (guitar-fl; -38 dB, rising with both semitone neighbours: the shift to s2 f5), A2 156.564
+   (guitar-fl; +20 dB, 0.17 s before the E chord: the record's brushed A2), G2 91.891 and 104.473 (+1.9, -0.5 dB);
+   guitar-gaps E3 155.474, 165.866, 168.220 (no rise).
+4. Thumps sit a median 25 ms after their attack (97.5% within 50 ms): fine for scoring, worth re-timing with the slaps.
+5. Bars 34 and 39 carry B and E weight under C:maj (Cmaj7 / E-minor colour); bar 34's downbeat is 70.8 ms after the E3.

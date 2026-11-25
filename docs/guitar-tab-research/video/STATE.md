@@ -56,3 +56,11 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   sound plus picture, chains, audits, results), b (chords and beat, tuning and capo, rented GPU), c (video, hosted
   services) and t (a second repair and a third check of the standard answer key). Lane m waits for b, c and t, then
   rescores every standard experiment against the repaired key before the chains.
+
+## 2026-11-25 06:51 UTC
+
+- Lane c (video, hosted) finished. The GPU lane ran on the box's CPU: the permission system refused creating a
+  RunPod pod, and it was not retried another way. SAM 3 skipped (no GPU, no Hugging Face token).
+- Standard answer key: the second repair fixed the second check's problems; the third check found three smaller
+  ones (one unplayed C3 at 6.886 s, 16 string slaps 55-70 ms late, the neck outline missing quick jolts for 5.5 % of
+  fretted notes). A last repair round with a focused check runs as lane t3; lane m's rescore waits for it.
