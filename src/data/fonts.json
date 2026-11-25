@@ -118,6 +118,12 @@
   {
    "family": "Zen Maru Gothic",
    "weight": 500,
+   "file": "/fonts/zen-maru-gothic-500-81.e9a88836.woff2",
+   "range": "U+25B6"
+  },
+  {
+   "family": "Zen Maru Gothic",
+   "weight": 500,
    "file": "/fonts/zen-maru-gothic-500-82.35d20a88.woff2",
    "range": "U+6C88"
   },
@@ -244,6 +250,12 @@
   {
    "family": "Zen Maru Gothic",
    "weight": 700,
+   "file": "/fonts/zen-maru-gothic-700-81.e748668a.woff2",
+   "range": "U+25B6"
+  },
+  {
+   "family": "Zen Maru Gothic",
+   "weight": 700,
    "file": "/fonts/zen-maru-gothic-700-82.82a71b3d.woff2",
    "range": "U+6C88"
   },
@@ -334,8 +346,10 @@
  ],
  "lacking": [
   9823,
+  9998,
   10007,
   10060,
+  10074,
   10084,
   65039,
   127769,
