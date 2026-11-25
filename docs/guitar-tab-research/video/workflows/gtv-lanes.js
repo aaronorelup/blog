@@ -278,6 +278,33 @@ Time limit: ${minutes} minutes from your first start.
 3. Final message: each marker as "present" or "missing", and the minutes waited.`
 }
 
+if (LANE === 't') {
+  // second repair round for the standard answer key, beside the experiments
+  phase('Experiments')
+  const P = (args && args.problems) || []
+  const fixP = TRUTH_FIX('standard', P.map((x, i) => (i + 1) + '. ' + x).join('\n'))
+    .replace('[AGENT: truth-fix-standard]', '[AGENT: truth-fix2-standard]')
+    .replace('add a section "Repairs" to the record', 'add a section "Repairs, second round" to the record (an earlier repair round already wrote "Repairs"; keep it)')
+  const fixed = await safe(fixP, o('truth-fix2-standard', 'Experiments'))
+  const chkP = TRUTH_CHECK('standard', true)
+    .replace('[AGENT: truth-recheck-standard]', '[AGENT: truth-recheck2-standard]')
+    .replace('as a new section "Second check"', 'as a new section "Third check" (after "Second check", which lists the problems of this round)')
+  const v = verdict(await safe(chkP, { ...o('truth-recheck2-standard', 'Experiments'), schema: VERDICT }))
+  const mark = await safe(MARK('t'), SON('mark-t'))
+  return { lane: 't', fixed: short(fixed), pass: v.pass, open: v.problems, check: v.summary, mark: short(mark).slice(0, 200) }
+}
+
+const RESCORE = `[AGENT: rescore-standard]
+
+${COMMON}
+
+YOUR JOB: the answer key for slot "standard" (${GTV}/truth/standard/) was repaired a second time WHILE the experiments ran (see "Repairs, second round" in ${REC}/truth-standard.md and "Third check" in ${REC}/truth-standard-check.md): a few notes changed and the pose-A neck outline in standard.video.json may have changed. So scores of the standard slot made before that repair are stale.
+1. Find when the repaired files were written (their modification times, and the record). For every experiment folder under ${GTV}/experiments/standard/ whose result.json is older, run its score.sh again exactly as it is (do not change any tool output), and rewrite result.json with result.py. Keep the old scores in result.json under notes as "before rescore: ...".
+2. In every step file in ${REC}/results/ (step-NN.md and step-gpu.md) correct the standard rows of the tables and any sentence that quotes a standard number, and add one line under each changed table: "Standard rescored against the repaired answer key on <date>; changes: ...".
+3. Write ${REC}/results/rescore-standard.md (under 80 lines): each experiment, old and new score, and whether any ranking or conclusion in a step file changed.
+Do not run any tool again, only the scoring. Budget: about 30 minutes.
+Your final message: how many experiments were rescored, the biggest change, and whether any conclusion changed.`
+
 if (LANE === 'b') {
   phase('Experiments')
   const out = await parallel([() => safe(GPU, o('exp-gpu', 'Experiments', 'high')), step('chords'), step('tuning')])
@@ -304,7 +331,8 @@ const w2 = await parallel([
   },
   step('voices'),
 ])
-const g2 = await safe(GATE('all', ['b', 'c'], 360), SON('gate-all'))
+const g2 = await safe(GATE('all', ['b', 'c', 't'], 360), SON('gate-all'))
+const rescore = await safe(RESCORE, o('rescore-standard', 'Experiments', 'high'))
 const chains = await safe(CHAINS, o('exp-chains', 'Experiments', 'max'))
 
 phase('Audit')
@@ -332,6 +360,7 @@ return {
   line: w2[0],
   voices: short(w2[1]),
   gate: short(g2).slice(0, 300),
+  rescore: short(rescore),
   chains: short(chains),
   audits,
   results: short(results),

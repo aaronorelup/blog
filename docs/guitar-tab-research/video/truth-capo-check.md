@@ -145,3 +145,152 @@ R and R100 are recall within 50 and 100 ms.
 - **Eb4 on s2 f1, last 16th of beat 1**, in bars 21, 25, 43, 47 and 63 (63.29, 75.78, 131.89, 144.39, 194.34 s): the detector and guitar-fl put the onset 150-180 ms later, but Basic Pitch hears Eb4 at the truth time. Probably a soft hammer-on; check by ear.
 - `SONGS.md` says "the nut at the right edge". The nut is off-frame, as `truth-capo.md` says.
 - **Not re-checked:** the labelled frames of `capo.video.json` (2.60 s, 59.96 s), the record's time base, and its 10-note hand check.
+
+## Second check (after the repairs)
+
+Checked 2026-11-25 by the truth-recheck-capo agent with its own scripts. Nothing in `/home/user/gtv/truth/capo/` was changed. Truth checked: the repaired `capo.truth.json`, SHA-256 `426d256fcec1...491f74d9`. Scripts, logs, outputs and frames: `/home/user/gtv/work/truth-recheck-capo/` (`bin/`, `logs/`, `out/`, `frames/`). The model runs are mine (gtr-run r0773 Basic Pitch, r0774 Beat This, r0775 guitar-fl; byte-identical to the first check's, since the audio did not change), scored as e1909-e1911. The onset detector is new: madmom 0.16.1 CNN onsets with its own peak picking (threshold 0.54, `out/madmom.thr0.54.txt`). It is a trained detector, not the mel flux that the build and the first check used.
+
+**Verdict. Both listed problems are fixed, and I found nothing the repair broke. No problem is left.** Four doubts remain.
+
+### 1. Schema, times, side files (`out/check1.json`, `logs/check_truth.json`, `out/gp5_*.json`)
+
+- `gtr-eval check-truth`: 8317 checks, 0 mismatches. Every schema and `source` key is present.
+- `capo.wav` has 10,051,317 frames at 44.1 kHz, 2 channels: 227.92102 s, equal to `duration_s`. No note, beat, chord or tap lies outside it.
+- 0 zero-length notes (the shortest is 0.1265 s). No duplicate (onset, pitch) or (onset, string), no same-pitch pair within 30 ms, no overlap on one string. Every offset keeps the let-ring rule: at most 2 s, and at least 10 ms before the next onset on its string.
+- pitch = tuning + capo + fret for 815/815. Beats rise strictly, the downbeats are every 4th beat, the chords cover 0-227.921 s without a gap, and tempo 76.56 = 60 / median beat interval.
+- **Side files agree with the JSON:**
+  - `notes.csv` (815), `beats.txt` (288; its beat-1 rows are the 72 downbeats) and `chords.lab` (68) are identical to it.
+  - `tab.txt` bar times equal the downbeats (within 0.5 ms), with the same 815 (bar, string, fret).
+  - `.mid`: 815 notes, onsets within 1.8 ms. 19 offsets differ by 0.055-1.82 s, where same-pitch notes overlap on different strings.
+  - `.gp5` with `--time-shift 0.3455`: 815/815 same string and fret, onset F1 1.0, largest offset 7.3 ms.
+- **Against the first build** (`truth-fix-capo/orig/capo.truth.json`):
+  - Pitch, string, fret and voice are identical for all 815 notes.
+  - 128 onsets moved, all later, by 31.8-119.0 ms (median 49.3), and no two notes changed order. 103 offsets changed, and 7 notes became `conf` `tab` (now 761 / 54).
+  - 57 beats (by up to 101.6 ms), 22 downbeats, 24 taps and 24 chord boundaries changed. Chord labels, key, tuning, capo and cents did not.
+  - `truth-capo-repairs.csv` lists exactly the 128 moved notes.
+
+### 3. Timing (`bin/timing.py`, `bin/timing2.py`; `out/timing.json`, `out/timing2.json`, `logs/timing_table.log`)
+
+- **madmom against the 738 truth onset events: recall within 50 ms 0.993 after the repair, 0.961 before.** The lowest 10 s window is 0.97 after and 0.87 before.
+  - Precision against notes and taps 0.909; taps found within 50 ms 0.992. The median detection minus truth is -15.7 ms: the CNN peak comes before the flux peak.
+- **SuperFlux** (librosa 0.11, hop 128, default peak picking) finds 0.889. None of its 82 misses has a detection within 136 ms, so they are notes it does not hear (legato), not shifted ones.
+- **Models** (my runs, `gtr-eval notes`): Basic Pitch P .537, R .960, F1 .689 (median offset -15 ms); guitar-fl P .884, R .958, F1 .920 (-20 ms).
+
+"mad" is madmom recall within 50 ms. R and F1 are the models' scores within 50 ms; R100 is their recall within 100 ms.
+
+| s | mad | BP R/F1 | gfl R/F1 | | s | mad | BP R/F1 | gfl R/F1 | | s | mad | BP R/F1 | gfl R/F1 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 0-10 | 1.00 | 1.00/.76 | 1.00/1.00 | | 80-90 | 1.00 | 1.00/.63 | 1.00/.96 | | 160-170 | 1.00 | 1.00/.77 | 1.00/.98 |
+| 10-20 | 1.00 | 1.00/.69 | 1.00/.98 | | 90-100 | 1.00 | .89/.67 | .92/.91 | | 170-180 | 1.00 | .95/.74 | .93/.93 |
+| 20-30 | 1.00 | .92/.69 | .94/.95 | | 100-110 | 1.00 | .88/.68 | .94/.91 | | 180-190 | .97 | .96/.76 | .94/.94 |
+| 30-40 | 1.00 | .88/.69 | .91/.94 | | 110-120 | 1.00 | .97/.68 | 1.00/.98 | | 190-200 | .97 | .93/.64 | .90/.87 |
+| 40-50 | 1.00 | .91/.66 | .97/.94 | | 120-130 | 1.00 | .94/.67 | .97/.92 | | 200-210 | 1.00 | 1.00/.65 | 1.00/.92 |
+| 50-60 | 1.00 | .96/.68 | 1.00/.93 | | 130-140 | .97 | 1.00/.76 | .97/.95 | | 210-220 | 1.00 | 1.00/.61 | .97/.89 |
+| 60-70 | .97 | 1.00/.76 | .95/.95 | | 140-150 | .97 | .95/.67 | .90/.87 | | 220-228 | 1.00 | 1.00/.71 | 1.00/**.62** |
+| 70-80 | .97 | .95/.68 | .90/.86 | | 150-160 | 1.00 | 1.00/.63 | 1.00/.91 | | | | | |
+
+- **Every drop is explained**, and none is a shifted passage. R100 equals R in every window but five, where it is at most .06 higher.
+  - madmom .97 (60-80, 130-150, 180-200 s, one event each):
+    - Four Eb4 hammer-ons (75.78, 144.39, 181.81, 194.34 s; below).
+    - Two D4 + thump events (67.74, 136.35 s), where it fires 50 ms early on the thump. Both models put the D4 within 8 ms of the truth (bias removed).
+  - Basic Pitch .88-.92 (20-50, 90-110 s): it misses 15 C4 pull-off targets (s4 f7).
+  - guitar-fl .90-.91 (30-40, 70-80, 140-150, 190-200 s): it misses the Eb4 hammer-ons, some C4 pull-offs and Bb2 bass notes, and the Eb3 under the thumps at 79.64, 148.24 and 198.20 s.
+  - guitar-fl .62 (220-228 s): extra notes in the ringing last chord (P .44, R 1.00).
+- **Note level** (`logs/suspects.log`, `out/timing2.json`, `logs/ctx.log`).
+  - Four methods (madmom, SuperFlux, and both models with their median offset removed): **0 notes** that two methods hear more than 50 ms after the truth, with none within 30 ms. In the other direction there is one: #648 (181.81 s), a hammer-on whose "evidence" is the attacks of its neighbours.
+  - Three methods (no SuperFlux): 50 such notes on the first build, 5 now. All 5 have no model note of that pitch within 200 ms, so madmom alone gives a time: #648 again, and four C4 pull-off targets at +32 to +51 ms with its bias removed (see Doubts).
+- **The 128 re-timed notes:** madmom (bias removed) median -2 ms, 128/128 within 30 ms. The Basic Pitch and guitar-fl medians are -3 ms. None was moved past its sound.
+- **The Eb4 hammer-ons (s2 f0 to f1), a doubt in the first check, are settled** (`logs/sal2_eb4.log`, `out/legato.json`).
+  - Six of them have no detector onset (63.30, 75.78, 131.89, 144.39, 181.81, 194.34 s).
+  - At all six, D4 (harmonics 2-4, 46 ms STFT) falls 9-18 dB from 20 ms before to 20-40 ms after the truth onset. Eb4 turns from 1-4 dB below D4 to 1-12 dB above it.
+  - The truth is right: a hammer-on has no attack for a detector to find.
+- **The D4 at 197.80 s** (the one note the repair left): madmom is +28 ms and guitar-fl +22 ms raw (about +43 ms with bias removed). Basic Pitch has no D4 there. It is inside 50 ms.
+
+### 2. Tuning and capo (not touched by the repair; measured again; `out/check2.json`)
+
+- **Pitches** (my Basic Pitch run):
+  - The open strings with capo 3 (G2 C3 F3 Bb3 D4 G4) sound 57/25/62/129/289/70 times.
+  - The open strings without a capo (E2 A2 D3 G3 B3 E4) sound 0/0/2/16/0/0 times. G3 is also s4 f2 in the tab.
+  - The capo-2 set sounds 8/0/0/0/0/0 times.
+  - guitar-fl's lowest note is Bb2 (69 notes), apart from one F2.
+- **Frames** 6.12, 120.20 and 128.57 s at full resolution (`frames/f_6.116_right.png`, `frames/cmp3.jpg`):
+  - The capo sits in fret space 3. The single dot between it and the next wire toward the nut is the 3rd-fret dot: counting on from it, the dots fall in spaces 5, 7, 9, 12 (three), 15 and 17.
+  - The nut is off-frame. **Capo 3.**
+- **Cents:** I measured the fundamentals of 877 guitar-fl notes (0.25 s from +60 ms, zero-padded FFT, parabolic peak). The median is **+2.8**, IQR -2.0 to +6.7. The truth's +2.0 agrees.
+
+### 4. Twenty random notes (seed 7, one per twentieth of the piece) and all 26 notes of bars 9 and 13
+
+Files: `bin/check45.py`, `out/check45.json`, `frames/sheet_r1.jpg`, `frames/sheet_r2.jpg`, `frames/sheet_bars.jpg`, `frames/zoom_open.jpg`.
+
+- **Rise**: the salience of the pitch (harmonics 1-4, 46 ms STFT), 25-100 ms after the onset minus 25-80 ms before.
+- **Offsets**: madmom / Basic Pitch / guitar-fl, raw, in ms.
+- **Frame**: the frame at the onset, with fret spaces from my wire positions on frame 6.12 s. The neck moves up to about 45 px sideways, so the fret space is good to about half a fret. "nfN" means a fingertip is in nut-fret space N (= fret + 3).
+
+| # s note s/f | rise dB; offsets | frame | | # s note s/f | rise dB; offsets | frame |
+|---|---|---|---|---|---|---|
+| 20 6.12 C4 3/2 | 8.4; -16/-16/-18 | nf5 | | 416 120.20 F4 2/3 | 10.0; -21/-8/-19 | nf6, low strings |
+| 48 14.38 C4 3/2 | 14.6; -12/-23/-17 | nf5 | | 439 128.57 F4 2/3 (moved) | 17.8; -9/-10/-14 | nf6 |
+| 98 29.64 D4 4/9 | 7.8; -17/-3/-25 | nf12 | | 476 137.52 Bb2 6/3 | 5.0; -17/-24/-23 | thumb at nf6 |
+| 117 35.58 D4 2/0 | 18.1; -12/-11/-21 | open: fingers near s1-s2 | | 525 149.62 C4 4/7 | 9.8; -21/-23/-26 | nf10 |
+| 157 46.70 Bb3 3/0 | 15.2; -14/-13/-21 | open: unclear | | 590 168.56 C4 3/2 | 3.5; -12/-17/-21 | nf5 |
+| 215 65.01 G3 4/2 | 7.0; -13/-2/-16 | nf5 | | 621 176.91 D4 3/4 | 6.9; -10/-21/-15 | nf7 |
+| 234 69.92 F4 2/3 (moved) | 10.2; -15/-24/-22 | nf6 | | 655 183.59 G3 4/2 | 6.3; -16/-29/-22 | nf5 |
+| 299 86.18 C4 3/2 | 10.0; -18/-23/-22 | nf5 | | 715 197.64 Eb4 2/1 `tab` | ring; -20/none/none | nf4 |
+| 354 101.09 D4 2/0 | 13.3; -15/-15/-24 | open: unclear | | 749 206.10 F4 2/3 | 6.8; -13/-10/-25 | nf6 |
+| 362 103.64 Eb4 2/1 | 9.4; -9/-23/-18 | nf4, low strings | | 803 221.56 Bb3 3/0 | 14.0; -16/-22/-21 | open: unclear |
+
+- **Bars 9 and 13** (#80-92, 25.22-28.13 s; #124-136, 37.74-40.64 s): Bb2 on s6 f3 and the D4/C4 pull-off figure on s4 f9/f7.
+  - Every D4 and Bb2: madmom -22 to -4 ms, and one model within 30 ms (raw).
+  - The 8 C4 pull-off targets rise -4.7 to 8.5 dB, with madmom at -24 to +18 ms. Seven have a model note within 31 ms; #133 (39.62 s) has none.
+  - Frames (8): the thumb over the top frets s6 at nf6, and a fingertip is at nf10 or nf12 on the middle strings.
+- **Result.** Every note's pitch sounds from its onset, or rings on into it, within the timing above.
+  - All 16 fretted notes show a fingertip in the right fret space.
+  - In the 4 open-string frames, fingers rest near the bottom strings at nf4-6; from the front, pressing cannot be told from hovering. The string can be read only roughly. No frame contradicts the truth.
+
+### 5. Beats, downbeats, chords (`out/eval_beats.json` e1909, `logs/beats_detail.log`, `out/check45.json`)
+
+- **Beat This** (my run):
+  - Beats F **.998** (288/288 within 70 ms), CMLt .997, median offset -11 ms; the largest is 53 ms, at 161.73 s (the slide's attack; madmom is at -17 ms there).
+  - Downbeats F **.986** (72/72), largest offset 41 ms. 72 of its downbeats fall on a truth beat 1, and 1 on a beat 2.
+- **Onset envelope:**
+  - 272 of 288 beats carry a note or tap, and all 272 have a madmom onset within 50 ms (0.949 on the first build).
+  - So do all 71 downbeats that carry one (0.873 before). Bar 60 starts on a tie.
+  - The 16 beats with no event lie -35 to +27 ms from Beat This.
+- **Bar starts:** every downbeat is beat 1 of a `tab.txt` bar, within 0.5 ms.
+- **Five random chord segments (seed 7).** Cosine of the label against major/minor templates, then the best template:
+
+| segment s | label | truth notes: label / best | CQT chroma: label / best |
+|---|---|---|---|
+| 23.69-25.22 | C:min | .55 / C:min | .55 / A#:maj .60 |
+| 37.74-43.92 | A#:maj | .75 / tie with G:min (Bb, D, C sound) | .69 / G:min .72 |
+| 64.26-65.79 | C:min | .68 / C:min | .63 / C:min |
+| 135.97-142.24 | A#:maj | .83 / A#:maj | .65 / A#:maj |
+| 165.66-167.25 | D#:maj | .80 / D#:maj | .71 / D#:maj |
+
+### 6. The record and the tools' video
+
+- **Six frames of `capo.mp4`** (6.1, 40, 120.2, 128.6, 180, 225 s; `frames/cmp3.jpg`, `frames/six_b.jpg`), 1920x556: no tab, chord name, title, logo or text. The container tags hold only encoders (Lavf60.16.100, Lavc60.31.102 libx264).
+- **The Repairs section holds up against my files.** Every number below matches:
+  - 128 notes in 120 events moved later by 32-119 ms (median 49), with pitch, string, fret and voice unchanged; 103 offsets; 7 notes to `tab` (761/54).
+  - 57 beats (up to 102 ms), 22 downbeats, 24 taps and 24 chord boundaries changed; labels and range unchanged; tempo 76.56.
+  - Beat This .998 / 288 and .986 / 72. guitar-fl .884/.958/.920 and Basic Pitch .537/.960/.689. `.gp5` onset+offset .409.
+  - The only text change in the truth is `what` (it now mentions the repair), besides `derivation`.
+- **Small mismatches with no effect:**
+  - The record gives guitar-fl's lowest per-10 s recall as .88 and Basic Pitch's as .85; I get .90 and .88. Probably other window edges.
+  - The record says "17 same-pitch notes overlap". The repaired truth has 23 overlapping same-pitch pairs on different strings. The 19 MIDI offsets agree.
+
+### PROBLEMS (second check)
+
+None. Both earlier problems are fixed. No note is more than 50 ms from its sound for two independent methods, and no beat is more than 70 ms from Beat This.
+
+### Doubts (second check)
+
+- **The C4 pull-off targets (s4 f7 after s4 f9; 20 notes, `out/legato.json`).**
+  - madmom is at a median -8 ms raw, but up to +35 ms at 28.65, 41.17 and 97.31 s. There the C4 rises 10-40 ms after the truth (`logs/sal2_c4.log`).
+  - At 7 of them the repair moved the D4 before the C4 later and moved the C4 less or not at all. The D4-to-C4 gap shrank from 174-221 ms to 136-171 ms.
+  - This is inside 50 ms, and both models miss most of these C4s, so no score moves. Re-time them from the D4's stop if the build is touched again.
+- **Pull-off origins struck with an X slap** (Eb4 on s2 f1 at 79.08, 147.68 and 197.64 s; `conf` `tab`; `logs/ctx.log`): neither model hears an Eb4 attack there.
+  - The Eb4 hammered on 0.2 s earlier is still ringing, and the slap brings out Eb3, Bb3 and D4.
+  - They are right by the tab, but no tool can be expected to report them.
+- **The five thump events the record names** (56.47, 79.64, 125.08, 148.24, 198.20 s; `logs/ctx.log`): the models put the written notes 19-42 ms after the thump (raw), inside 50 ms.
+- **The first check's doubts on derived chord labels and the static `neck_quad_px` still stand.** Across my six frames the capo moves about 45 px sideways (1725 to 1770 px), and at 40 s the neck is tilted. The repair did not touch either.

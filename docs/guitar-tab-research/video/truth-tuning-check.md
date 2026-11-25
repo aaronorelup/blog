@@ -146,3 +146,151 @@ the video confirms frets, not strings (it cannot decide Problem 1).
 - Tuning per string s2 -3.9 c to s6 -18.5 c (median -9). #190 (55.00 s, C4, tab): no rise, no Basic Pitch C4 within 0.5 s.
 - `tuning.tab.txt` says one column = one 16th note, but a bar has 32 columns (32nds at 66 bpm). `tuning.video.json`: the
   fingertip strings of its two labelled frames come from the tab, not the picture (the record says so).
+
+## Second check (after the repairs)
+
+Checked 2026-11-25 by truth-recheck-tuning, after the repairs, with its own scripts: `/home/user/gtv/work/truth-recheck-tuning/`
+(`PROGRESS.md`, `logs/`, `frames/`). Own runs: Basic Pitch 0.4 (gtr-run r0776, 65-1400 Hz), guitar-fl.pth (r0777, a model
+neither the builder nor the repair used), Beat This! final0 (r0778). Distances in ms below have each method's median lead over
+the truth removed (detector 31.9, Basic Pitch 21.0, guitar-fl 29.6). No truth file changed.
+
+**Verdict: passed, no problem left.** Problem 1 is fixed. Problem 2 is fixed as far as the recording can show: 18 notes are
+still unconfirmed, but they are marked `tab` and 4 of them show counter-evidence. The repair misplaced one note (#498) and
+moved one unconfirmed note away from both models (#397). Neither changes any score: see Doubts.
+
+### S1. Schema, times, side files (`c1_check.py`, `logs/c1_*.log`): pass
+
+- `gtr-eval check-truth`: 6411 checks, 0 mismatches (SHA-256 `0075867d551a...`, as the record says). Segment: 1109 checks, 0
+  mismatches (`4747d3b03228...`). Every schema and source key is present. 628 notes (481 events, 49 bars; melody 384, chord
+  147, bass 97; conf 556 `tab+audio` / 72 `tab`). Onsets 1.678-177.464 s, offsets up to 182.497 s, WAV 187.37068 s.
+  0 notes of zero length (shortest 0.186 s), 0 same-pitch or same-string pairs within 30 ms, 0 overlaps on one string
+  (shortest gap 0.221 s), 0 of 628 break pitch = tuning + capo + fret. Frets 0-5. Only the last chord's `end` (187.3707,
+  rounded) is 20 us past the last sample.
+- Side files against the JSON: `notes.csv` 0 of 628 differ. `beats.txt`: 193 rows within 0.05 ms, its 49 beat-1 rows are the
+  downbeats. `chords.lab`: 0 of 50 differ. `.mid`: onsets within 2.1 ms, pitches equal, 16 offsets differ (up to 2.17 s: one
+  pitch on two strings in one channel, as recorded). `.gp5` (49 measures, tuning 60 57 53 48 43 38), `.tab.txt` and
+  `quantized.json`: each bar's (string, fret) multiset equals the JSON's. `seg30.truth.json` equals my own crop at 25.0 s
+  (106 = 92 + 14 notes, 33 beats, 8 downbeats, 9 chords). `seg30.wav` = `tuning.wav` from 25.0 s, sample for sample.
+
+### S2. Tuning and capo (`c2_tuning.py`, `frames/nut_95_1to1.png`): pass
+
+- Open strings, 0.05-0.5 s after each fret-0 onset: the claimed pitch is louder than the standard-tuning pitch for s6 37/37
+  notes (D2 over E2, median +18.2 dB), s5 30/30 (+23.0), s4 15/15 (+18.1), s3 70/82 (+11.7), s2 142/144 (+32.1) and s1
+  106/114 (C4 over E4, +23.2). Long-term spectrum 2-176 s, level above the 40-60 Hz floor: C#2 +11.1, **D2 +30.0**, E2 +34.3.
+  D2 is the lowest pitch that sounds, which standard tuning cannot reach. **D G C F A C confirmed.**
+- Frame at 95.0 s, 1:1 crop: the nut and the slotted headstock are in view, there is no capo and the hand is at frets 1-3. The
+  same holds in the 46 crops of S4 and in `nut_compare.png` (33, 50, 125.5 and 170 s). **No capo.**
+- Cents: parabolic fundamental peaks of 414 single notes from G2 up give a median of **-8.1 c** (IQR -12.7 to -1.9). The
+  truth's -9 agrees.
+
+### S3. Timing (`c3_onsets.py`, `c3_models.py`, `c3_consensus.py`, `logs/c3_*.log`): pass
+
+- Onset detector (my own SuperFlux-like method: log filterbank, lag 2, 747 onsets): **591 of 628 truth onsets (0.941) have an
+  onset within 50 ms**, against 0.30-0.58 when the truth is shifted by +-0.25 or +-0.5 s. The detector is a median 31.9 ms
+  earlier; with that removed, 602 (0.959). By conf: `tab+audio` 0.969, `tab` 0.722. Per 10 s from 0 s (raw):
+  .94 1.0 1.0 .97 .95 .79 .97 .92 .95 .91 .84 .92 .92 .94 .97 1.0 .97 1.0. With the lead removed the lowest is .865 (100-110 s).
+- Models, `gtr-eval notes`: Basic Pitch e1965 onset **P .562 R .705 F1 .626** (the record's numbers exactly); guitar-fl e1966
+  **P .848 R .753 F1 .798**. Shifting either model by +10, +20 or +30 ms changes F1 by less than 0.03 (best +10 ms: .629 and
+  .803), so the truth's later onset convention costs the tools nothing. Per 10 s F1 (one matching over the whole piece,
+  split by onset time): Basic Pitch .69 .70 .68 .68 .68 .58 .59 .75 .65 .57 .61 .51 .63 .59 .60 .65 .60 .60; guitar-fl .87
+  .84 .83 .77 .77 .76 .84 .79 .91 .76 .81 .60 .77 .81 .73 .85 .78 .90.
+- No stretch drops for both measures at once. The lowest model window is 110-120 s for both models, but there the
+  detector gives .917 (.972 with the lead removed), and the pitch of 94 % of the notes stands at least 3 dB above both
+  neighbouring semitones (0.89-0.97 in every window). That window is hard for the models; it is not misaligned.
+  **Only 7 notes have no method within 50 ms**: #173, 209, 264, 500 (unconfirmed `tab`), 386, 435 and 572 (Doubts).
+
+### S4. Twenty random notes (seed 20261126) and every note of bars 8 and 14 (`c4_spec.py`, `c4_table.md`)
+
+rise = level change of the note's fundamental / median of harmonics 1-4, after against before the onset (window 0.15-0.5 s
+by pitch, at -9 c). onset / BP / g-fl = ms, with each method's lead removed (`-` = none within 0.5 s). `*` = bar 8 or 14.
+Verdicts: ok = the pitch rises and something lands within 50 ms; re-pluck = no rise, but a model writes the pitch within
+50 ms; onset only = an onset within 50 ms with no evidence of the pitch.
+
+| # | t s | note | conf | rise dB f0/h | onset | BP | g-fl | verdict | # | t s | note | conf | rise dB f0/h | onset | BP | g-fl | verdict |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 14 | 5.47 | G2 s5 f0 | t+a | +16.1/+12.8 | +32 | +18 | - | ok | 43 | 13.52 | A3 s2 f0 | tab | -6.2/-0.3 | -7 | +408 | +403 | onset only |
+| 105 | 31.33 | D3 s4 f2 | t+a | +25.3/+14.9 | -3 | +0 | -2 | ok | 131 | 38.37 | G3 s3 f2 | t+a | +25.3/+15.5 | +35 | +34 | +203 | ok |
+| 141 | 41.48 | G3 s3 f2 | tab | +1.5/-5.3 | +39 | -446 | -462 | onset only | 196 | 56.59 | E3 s4 f4 | t+a | +23.3/+18.8 | +0 | - | +5 | ok |
+| 229 | 65.96 | C4 s1 f0 | t+a | +19.0/+15.2 | +0 | -6 | -1 | ok | 237 | 67.73 | F3 s3 f0 | t+a | +27.8/+11.9 | +35 | +12 | +26 | ok |
+| 271 | 78.06 | F3 s3 f0 | t+a | +16.2/+12.3 | -6 | -16 | -8 | ok | 285 | 81.90 | A3 s2 f0 | t+a | +2.8/+2.3 | -3 | -13 | -3 | ok, re-pluck |
+| 298 | 85.63 | A3 s2 f0 | t+a | +6.7/+9.8 | +0 | +1 | -4 | ok | 300 | 86.11 | G2 s5 f0 | t+a | +18.6/+13.2 | +32 | +7 | - | ok |
+| 304 | 87.11 | A3 s2 f0 | t+a | +27.5/+23.8 | +0 | +7 | +0 | ok | 306 | 87.83 | C4 s1 f0 | t+a | +4.8/+8.4 | +0 | +426 | +0 | ok |
+| 355 | 101.26 | C4 s1 f0 | t+a | -3.2/-1.1 | -6 | -89 | -63 | onset only | 364 | 104.23 | G2 s5 f0 | t+a | +13.7/+13.6 | +29 | +1 | +20 | ok |
+| 410 | 116.75 | C4 s1 f0 | t+a | +2.2/-8.6 | -6 | +84 | +13 | ok, re-pluck | 441 | 125.52 | A3 s2 f0 | tab | +2.4/-4.3 | -8 | +79 | -1 | ok, re-pluck |
+| 531 | 150.52 | F3 s3 f0 | t+a | +11.7/+4.4 | -9 | -16 | -12 | ok | 547 | 154.76 | A#2 s5 f3 | t+a | +20.8/+13.5 | -3 | -8 | +1 | ok |
+| 91* | 27.52 | E2 s6 f2 | t+a | +30.3/+29.0 | +29 | +20 | +21 | ok | 92* | 27.68 | G2 s5 f0 | t+a | +15.8/+16.4 | -6 | -9 | -5 | ok |
+| 93* | 27.68 | G3 s3 f2 | t+a | +21.3/+18.9 | -6 | +154 | +146 | ok | 94* | 27.73 | C3 s4 f0 | t+a | +14.1/+11.0 | +18 | +109 | +36 | ok |
+| 95* | 27.83 | A3 s2 f0 | t+a | +7.3/+2.6 | -3 | +39 | - | ok | 96* | 28.64 | A3 s2 f0 | t+a | +31.3/+26.9 | +0 | -8 | -2 | ok |
+| 97* | 29.04 | E2 s6 f2 | t+a | +5.1/+6.0 | -6 | +50 | -13 | ok | 98* | 29.30 | C4 s1 f0 | t+a | +13.1/+19.0 | -3 | +428 | -2 | ok |
+| 99* | 29.73 | C4 s1 f0 | t+a | +19.7/+17.6 | -3 | -2 | -2 | ok | 100* | 30.19 | G3 s3 f2 | t+a | +8.8/+5.9 | -9 | +435 | -15 | ok |
+| 101* | 30.42 | A3 s2 f0 | t+a | +17.9/+8.7 | +3 | +0 | +1 | ok | 102* | 30.63 | G3 s3 f2 | t+a | +13.3/+14.7 | -6 | -12 | -8 | ok |
+| 103* | 30.85 | A3 s2 f0 | t+a | +8.6/+6.2 | +0 | +0 | +0 | ok | 169* | 49.15 | D2 s6 f0 | t+a | +21.2/+12.2 | +41 | +46 | +35 | ok |
+| 170* | 49.20 | D3 s4 f2 | t+a | +37.7/+9.4 | -6 | +139 | - | ok | 171* | 49.27 | A2 s5 f2 | t+a | +23.8/+8.3 | +35 | +34 | +34 | ok |
+| 172* | 49.48 | F3 s3 f0 | t+a | +18.9/+11.6 | -99 | +0 | -3 | ok | 173* | 49.90 | A3 s2 f0 | tab | -5.5/-3.4 | -94 | +368 | +376 | **FAIL** |
+| 174* | 50.27 | A3 s2 f0 | t+a | +17.3/+15.8 | +0 | -5 | +3 | ok | 175* | 50.72 | D2 s6 f0 | tab | +1.0/+0.7 | -19 | - | - | onset only |
+| 176* | 50.94 | C4 s1 f0 | t+a | +2.4/+16.8 | -6 | +1 | -4 | ok | 177* | 51.38 | C4 s1 f0 | t+a | +17.6/+18.5 | +3 | +1 | +5 | ok |
+| 178* | 51.80 | F3 s3 f0 | t+a | +23.7/+19.6 | -6 | -15 | -8 | ok | 179* | 52.05 | A3 s2 f0 | t+a | +6.3/+1.3 | +0 | -15 | -9 | ok |
+| 180* | 52.26 | F3 s3 f0 | t+a | +9.6/+2.6 | -6 | -9 | +3 | ok | 181* | 52.47 | A3 s2 f0 | tab | -1.4/+0.6 | -8 | -11 | -12 | ok, re-pluck |
+
+The 46 notes: 37 ok, 4 re-pluck, 4 onset only (#43, #141, #175 `tab`; #355, which both models place 63-89 ms earlier), 1
+FAIL (#173 `tab`: A3 falls 5.5 dB, and the nearest onset is 94 ms away). The two repaired notes of bar 8 hold up: #95 (A3 at
+27.83 s, +7.3 dB) and #97 (E2 at 29.04 s, +5.1 dB, guitar-fl within 13 ms). Video (`frames/sheet_*.png`, 1:1 crops of
+frets 0-4): no capo in any crop and the hand at frets 1-3 throughout. In bar 8 the thumb comes over the neck at fret 2 for
+the whole bar, so string 6 fret 2 (E2) is held, as the repaired #97 says. A fingertip's string cannot be resolved at this
+camera angle. In bar 14 (49.15-50.72 s) the neck sits about 75 px lower in the frame.
+
+### S5. Beats, downbeats, chords (`c5_check.py`, `logs/c5_check.log`, gtr-eval e1967)
+
+- Truth beats on a detector onset within 50 ms: beat 1 45/49, beat 3 48/48, beat 4 46/48, beat 2 0/48 (interpolated by
+  design). The 9 beats the repair changed: the beats 3 and 4 now sit on onsets (-6 to +6 ms; before 54-174 ms away), and the
+  beats 2 stay interpolated.
+- Beat This!: 211 beats at 68.2 bpm (truth 65.73). It is later than the truth on every beat: median +142, +198, +191 and +214
+  ms on beats 1-4. `gtr-eval beats`: F 0.050. Its downbeats are a median +142 ms from the truth's (46 of 49 within 0.2 s),
+  with 4 to 6 of its beats in each truth bar. Its beats sit on onsets as often as the truth's (0.725 against 0.720), but the
+  truth's beats 1, 3 and 4 alone score 0.96. This is the same finding as madmom in the first check.
+- Downbeats: 49/49 are the first onset of their tab bar, but not always its bass (see Doubts). All 5 random chords (5.41
+  C:maj/3, 12.82 C:maj/3, 38.34 G:min, 89.64 G:min, 151.07 C:maj/3 s) have every label tone among their notes, with 3/3,
+  2/3, 2/3, 3/3 and 3/3 of the tones in the audio chroma's top 4. The extra notes are the melody's open A3 and C4: the
+  labels fit.
+
+### S6. The repairs, the record and the video the tools get (`c4_analyze.py`, `c4_moves.py`, `logs/c4_*.log`)
+
+- **Problem 1 fixed.** 0.02-0.47 s after each of the 12 new onsets, E2 is +19.9 to +38.8 dB above D2. guitar-fl writes an E2
+  within 16 ms of all 12, and my detector has an onset within 12 ms of 11 of them (#305: none, but guitar-fl is within 10 ms).
+  The bar 8 video agrees (S4).
+- **Problem 2 fixed.** 29 of the 33 moved notes have a model note of their pitch within 20 ms at the new time (2 at the old);
+  of the 51 repaired rows not `tab`, 47 are ok or re-pluck; the 18 unconfirmed: 1 ok, 2 re-pluck, 11 onset only, 4 FAIL.
+- What the record claims and the files show: every count (notes, events, bars, voices, conf, beats, downbeats, chords and
+  labels, segment 106 = 92 + 14 / 33 / 8 / 9), the check-truth counts, the SHA-256s, Basic Pitch .562/.705/.626, 33 moved
+  (19 later, 14 earlier), 12 re-pitched, the 9 beat changes, 37 open-6th notes on D2, 69 CSV rows (all match the JSON).
+  guitar-gaps .837/.823/.830 was not re-run (guitar-fl ran instead). What the files do not show: (a) "never before the bass" and
+  "beat 1 = onset of the chord's lowest note": in bars 15, 31, 35 and 37 a chord note comes 64-70 ms before the bass and
+  carries the downbeat (as before the repair, `orig/tuning.notes.csv`). (b) "The guitar moves by about 10-30 px": the nut is
+  about 100 px lower at 50 s and 125.5 s than the quad (`frames/nut_compare.png`). Nothing scores against the quad
+  (`score_video_cells.py` does not read it). (c) The record says 45 and 46 bars for the 0.488 / 0.727 positions; the JSON
+  says 46 and 47.
+- `tuning.mp4`, six frames at 1/7 to 6/7 (`frames/six.png`) and the 46 crops: no tab, chord name, title or caption; only the
+  player in his room.
+
+### PROBLEMS (second check): none
+
+### Doubts (second check)
+
+- **#498 (140.487 s, melody C4 on s1, bar 39), misplaced by the repair.** It was moved 469 ms into the chord roll, 82 ms after
+  the chord's own C4 (#497, s2 f3). It now comes 0.168 s after the downbeat, where bars 15 and 31 (same pattern) put this
+  note at 0.750 and 0.722 s. Its evidence at 140.487 is the roll's one C4 attack (both models put it at 140.536). There is a
+  weak onset at the old time, 140.954 s (strength 0.14), with no C4 rise. Scores do not change (one truth C4 there stays
+  unmatched either way). Fix: put it back at about 140.95 s as `tab`, and move #497 toward the C4 attack.
+- **#397 (113.192 s, C4, `tab`).** Rule A moved it 38 ms later, so both models' C4 (113.09 s) is now 75 ms early instead of 38.
+  Fix: put it back at 113.154 s or leave it unconfirmed. #355 (101.262 s, C4, `tab+audio`): both models are 63-89 ms
+  earlier, and the C4 band rises at 101.17 s. #572 (161.930 s, D2): all three methods are 58-73 ms later. #386 (110.405 s,
+  F3, kept as heard): both models and an onset put the F3 at 110.83 s, and the nearest onset to 110.405 s is 145 ms away.
+  #435 (123.745 s, D2): no onset within 96 ms. All are single notes, none in the 30 s segment.
+- **The unconfirmed `tab` notes** are left in the truth. #173 (49.90 s, in the segment), #209, #264 and #500 show their pitch
+  falling 5.5-11.7 dB, with the nearest onset 67-214 ms away and no model note within 0.24 s. They are probably not played there. The
+  film's scores should be given without the `tab` notes, or both ways, as the record does. #173 is not played in a tab shown
+  over the segment.
+- **Beats are an inference.** Beat 2 sits on no onset in 48/48 bars, while the nearest event, the first single note, comes at
+  about 0.21 of the bar, about 0.15 s earlier. Two trackers land 0.14-0.21 s after every truth beat. The film should report
+  the right tempo and bars with an offset, not "no beat found".
+- Onset convention 21-32 ms later than all three methods (no cost, S3); 16 `.mid` offsets; last chord end 20 us past the WAV.

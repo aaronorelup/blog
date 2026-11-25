@@ -1,0 +1,70 @@
+index_before,index_after,bar,bar_position,onset_before_s,onset_after_s,shift_ms,pitch_before,pitch_after,string,fret_before,fret_after,conf_before,conf_after,decision,in_checker_list,problem1_bass,f0_rise_db,harmonics_median_rise_db,flux_peak_strength
+4,4,1,1,2.3394,2.4439,105,A3,A3,2,0,0,tab+audio,tab+audio,A moved to the stronger peak,yes,no,5.1,2.8,0.377
+10,10,1,7,4.5453,4.6266,81,A3,A3,2,0,0,tab+audio,tab+audio,A moved to the stronger peak,yes,no,14.1,10.5,1.09
+19,19,2,3,6.8442,6.9021,58,D2,E2,6,0,2,tab,tab+audio,B2 re-timed,yes,yes,5.6,9.1,0.201
+32,32,3,3,10.5576,10.6638,106,D2,D2,6,0,0,tab,tab+audio,B2 re-timed,yes,no,3.7,-1.8,0.311
+33,33,3,4,10.8437,10.9250,81,C4,C4,1,0,0,tab+audio,tab+audio,A moved to the stronger peak,yes,no,15.4,15.5,0.361
+34,34,3,5,11.3081,11.3952,87,C4,C4,1,0,0,tab+audio,tab+audio,A moved to the stronger peak,yes,no,18.2,16.4,0.482
+45,45,4,3,14.3548,14.3383,-16,D2,E2,6,0,2,tab,tab+audio,B2 re-timed,no,yes,6.0,17.0,0.29
+64,64,5,9,19.7838,19.8182,34,A3,A3,2,0,0,tab,tab,A moved to the stronger peak,no,no,0.2,-0.5,0.567
+71,71,6,3,21.6698,21.6120,-58,D2,E2,6,0,2,tab,tab+audio,B2 re-timed,yes,yes,2.5,3.4,0.167
+87,87,7,6,26.4824,26.4824,0,F3,F3,3,0,0,tab+audio,tab+audio,B1 heard where it is,yes,no,3.7,4.9,0.23
+95,95,8,1,28.2358,27.8291,-407,A3,A3,2,0,0,tab,tab+audio,B2 re-timed,yes,no,10.6,-0.7,0.163
+97,97,8,3,29.0687,29.0366,-32,D2,E2,6,0,2,tab,tab+audio,B2 re-timed,yes,yes,6.5,8.8,0.179
+141,141,11,8,41.4755,41.4755,0,G3,G3,3,2,2,tab,tab,B4 unconfirmed (template time),yes,no,3.4,-4.2,
+173,173,14,1,49.8984,49.8984,0,A3,A3,2,0,0,tab,tab,B4 unconfirmed (template time),yes,no,-5.4,-4.0,
+175,175,14,3,50.7168,50.7168,0,D2,D2,6,0,0,tab,tab,B4 unconfirmed (template time),yes,no,2.0,-0.9,
+188,188,15,3,54.3325,54.3325,0,F2,F2,6,3,3,tab,tab,B4 unconfirmed (template time),yes,no,-0.8,1.2,
+191,191,15,6,55.3970,55.3970,0,F3,F3,3,0,0,tab+audio,tab+audio,B1 heard where it is,yes,no,-1.5,4.1,0.219
+201,201,16,3,57.9624,57.9624,0,C3,C3,5,5,5,tab,tab,B3 unconfirmed (on a peak),yes,no,-0.5,-1.7,0.163
+209,209,17,0,60.0236,60.0236,0,F3,F3,3,0,0,tab,tab,B3 unconfirmed (on a peak),yes,no,-12.1,-7.5,0.062
+214,214,17,3,61.5561,61.5561,0,D2,D2,6,0,0,tab+audio,tab+audio,B1 heard where it is,yes,no,5.8,1.3,0.085
+220,220,17,9,63.3512,63.3789,28,A3,A3,2,0,0,tab,tab,A moved to the stronger peak,no,no,-1.6,-3.0,0.418
+227,227,18,3,65.2740,65.2945,20,D2,E2,6,0,2,tab,tab+audio,B2 re-timed,no,yes,4.5,12.8,0.252
+240,240,19,3,69.0566,69.0213,-35,D2,D2,6,0,0,tab,tab+audio,B2 re-timed,yes,no,3.5,-1.9,0.142
+251,251,20,1,71.9682,71.9682,0,A3,A3,2,0,0,tab,tab,B4 unconfirmed (template time),yes,no,-13.5,-2.4,
+253,253,20,3,72.7481,72.7481,0,D2,E2,6,0,2,tab+audio,tab+audio,B1 heard where it is,yes,yes,5.2,7.5,0.125
+264,264,21,1,75.6359,75.6359,0,A3,A3,2,0,0,tab,tab,B3 unconfirmed (on a peak),yes,no,-7.9,0.5,0.103
+269,269,21,6,77.6069,77.6069,0,F3,F3,3,0,0,tab+audio,tab+audio,B1 heard where it is,yes,no,18.8,-1.8,0.178
+279,279,22,3,80.1400,80.1400,0,D2,E2,6,0,2,tab,tab+audio,B1 heard where it is,no,yes,2.9,4.5,0.273
+282,282,22,6,81.2176,81.2176,0,G3,G3,3,2,2,tab+audio,tab+audio,B1 heard where it is,yes,no,7.2,7.3,0.159
+302,302,24,0,86.3144,86.3144,0,G3,G3,3,2,2,tab+audio,tab+audio,B1 heard where it is,yes,no,2.6,5.8,0.093
+305,305,24,3,87.5630,87.5334,-30,D2,E2,6,0,2,tab,tab+audio,B2 re-timed,yes,yes,2.8,10.5,0.189
+318,318,25,3,91.1906,91.1906,0,G2,G2,5,0,0,tab+audio,tab,B3 unconfirmed (on a peak),yes,no,2.3,-0.7,0.153
+334,334,26,6,96.0319,96.0319,0,F3,F3,3,0,0,tab+audio,tab+audio,B1 heard where it is,yes,no,8.5,9.6,0.129
+335,335,26,7,96.1945,96.2757,81,A3,A3,2,0,0,tab+audio,tab+audio,A moved to the stronger peak,yes,no,13.3,5.7,1.246
+342,342,27,1,97.7221,97.7221,0,D4,D4,1,2,2,tab,tab,B4 unconfirmed (template time),yes,no,-1.3,-2.1,
+354,354,28,0,100.9023,100.9023,0,A#3,A#3,2,1,1,tab+audio,tab+audio,B1 heard where it is,yes,no,-2.5,5.3,0.092
+357,357,28,3,102.1399,102.1399,0,A#2,A#2,5,3,3,tab,tab,B4 unconfirmed (template time),yes,no,-3.4,-4.0,
+358,358,28,4,102.3594,102.4232,64,C4,C4,1,0,0,tab+audio,tab+audio,A moved to the stronger peak,no,no,1.4,3.7,0.476
+386,386,30,6,110.4051,110.4051,0,F3,F3,3,0,0,tab+audio,tab+audio,B1 heard where it is,yes,no,4.3,5.0,0.169
+389,389,30,9,111.0030,111.0727,70,A3,A3,2,0,0,tab+audio,tab,A moved to the stronger peak,yes,no,1.3,-3.4,0.454
+394,394,31,1,112.0967,112.0967,0,C4,C4,1,0,0,tab,tab,B4 unconfirmed (template time),yes,no,-1.8,1.1,
+397,397,31,4,113.1538,113.1915,38,C4,C4,1,0,0,tab,tab,A moved to the stronger peak,no,no,0.8,-5.0,0.324
+409,409,32,3,116.5673,116.5673,0,C3,C3,5,5,5,tab,tab,B4 unconfirmed (template time),yes,no,5.0,0.5,
+436,436,34,4,123.9713,124.0352,64,C4,C4,1,0,0,tab+audio,tab+audio,A moved to the stronger peak,no,no,11.3,5.7,0.34
+437,437,34,5,124.4241,124.4590,35,C4,C4,1,0,0,tab+audio,tab+audio,A moved to the stronger peak,no,no,10.0,5.7,0.316
+461,461,36,3,130.9657,130.9657,0,A#2,A#2,5,3,3,tab,tab,B3 unconfirmed (on a peak),yes,no,-3.9,-2.2,0.131
+484,484,38,0,136.9281,136.9281,0,F3,F3,3,0,0,tab+audio,tab+audio,B1 heard where it is,yes,no,26.6,3.4,
+487,487,38,3,138.1920,138.1920,0,D2,D2,6,0,0,tab,tab,B3 unconfirmed (on a peak),yes,no,0.3,-0.3,0.177
+498,498,39,1,140.9552,140.4865,-469,C4,C4,1,0,0,tab,tab+audio,B2 re-timed,yes,no,2.0,4.3,0.276
+500,500,39,3,141.7671,141.7671,0,F2,F2,6,3,3,tab,tab,B4 unconfirmed (template time),yes,no,-8.8,-1.3,
+524,524,41,1,148.1290,148.1290,0,A3,A3,2,0,0,tab,tab,B3 unconfirmed (on a peak),yes,no,-0.7,-1.8,0.1
+539,539,42,3,152.5355,152.4854,-50,D2,E2,6,0,2,tab,tab+audio,B2 re-timed,yes,yes,2.8,5.6,0.318
+542,542,42,6,153.5942,153.5942,0,G3,G3,3,2,2,tab+audio,tab+audio,B1 heard where it is,yes,no,12.2,8.1,0.168
+555,555,43,6,157.2746,157.2746,0,F3,F3,3,0,0,tab+audio,tab+audio,B1 heard where it is,yes,no,8.1,1.3,0.099
+563,563,44,1,158.9289,158.9522,23,A3,A3,2,0,0,tab,tab,A moved to the stronger peak,no,no,1.0,0.9,0.302
+565,565,44,3,159.7868,159.7997,13,D2,E2,6,0,2,tab,tab+audio,B2 re-timed,no,yes,1.4,6.2,0.167
+572,572,45,0,161.9302,161.9302,0,D2,D2,6,0,0,tab+audio,tab+audio,B1 heard where it is,yes,no,17.2,13.9,0.079
+582,582,45,7,164.8152,164.8849,70,A3,A3,2,0,0,tab+audio,tab+audio,A moved to the stronger peak,yes,no,0.8,3.6,0.769
+584,584,45,9,165.1055,165.1055,0,A3,A3,2,0,0,tab+audio,tab+audio,B1 heard where it is,yes,no,7.3,-2.7,0.066
+591,591,46,3,167.0884,167.1024,14,D2,E2,6,0,2,tab,tab+audio,B2 re-timed,no,yes,9.9,14.4,0.163
+596,596,46,8,168.6523,168.6523,0,G3,G3,3,2,2,tab+audio,tab+audio,B1 heard where it is,yes,no,7.1,5.6,0.116
+601,601,47,0,169.4824,169.4824,0,F3,F3,3,0,0,tab+audio,tab+audio,B1 heard where it is,yes,no,19.4,2.8,
+609,609,47,8,172.2630,172.2630,0,F3,F3,3,0,0,tab+audio,tab,B3 unconfirmed (on a peak),yes,no,-5.0,3.2,0.069
+616,616,48,2,174.1135,173.9407,-173,A3,A3,2,0,0,tab,tab+audio,B2 re-timed,yes,no,26.8,18.1,1.5
+617,617,48,3,174.6230,174.3644,-259,D2,E2,6,0,2,tab,tab+audio,B2 re-timed,no,yes,2.3,8.9,0.163
+618,618,48,4,174.9033,174.6663,-237,C4,C4,1,0,0,tab,tab+audio,B2 re-timed,yes,no,2.8,3.6,0.287
+619,619,48,5,175.4253,175.1481,-277,C4,C4,1,0,0,tab,tab+audio,B2 re-timed,yes,no,29.9,27.6,1.376
+620,620,48,6,175.9481,175.6299,-318,G3,G3,3,2,2,tab,tab+audio,B2 re-timed,no,no,19.6,12.9,0.319
+621,621,48,7,176.2307,175.9956,-235,A3,A3,2,0,0,tab,tab+audio,B2 re-timed,yes,no,18.1,11.5,0.436

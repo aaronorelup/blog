@@ -46,3 +46,13 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   runs only two agents at a time on this box. Then stage 4 to 6 (`workflows/gtv-film.js`, one part per run). The
   blind test runs with nothing else on the box and a file-access watch on the answer folders
   (`workflows/guard-watch.py`), and its transcripts are audited afterwards.
+
+## 2026-11-25 05:27 UTC
+
+- Answer keys: capo and tuning pass the second check (capo: 128 onsets re-timed; tuning: 12 bass notes corrected
+  to E2, unplayed notes removed). Standard still has three open problems after its first repair (two notes heard
+  as E3 not G3, six played notes missing, the pose-A neck outline drifting after about 40 s).
+- Stage 3 started in four lanes of `workflows/gtv-lanes.js`: m (separation, notes, string and fret, voices, then
+  sound plus picture, chains, audits, results), b (chords and beat, tuning and capo, rented GPU), c (video, hosted
+  services) and t (a second repair and a third check of the standard answer key). Lane m waits for b, c and t, then
+  rescores every standard experiment against the repaired key before the chains.

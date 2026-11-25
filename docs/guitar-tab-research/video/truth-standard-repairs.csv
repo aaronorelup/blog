@@ -1,0 +1,28 @@
+old_index,new_index,bar,pos,string,fret,pitch,old_onset,new_onset,d_onset_ms,old_offset,new_offset,old_conf,new_conf,change,rule,why
+2,2,1,0.0,3,0,55,0.593,0.6019,8.9,1.3841,1.3841,tab+audio,tab+audio,onset,clean,"rolled chord, rule v2: clean partials h1 0.6029, h3 0.6009 (median)"
+27,27,2,3.25,3,3,58,6.3051,6.3051,0.0,6.9366,6.9051,tab+audio,tab+audio,offset (let ring: next attack on the string moved),,
+28,28,2,3.5,2,0,59,6.4996,6.4996,0.0,6.9627,6.9308,tab+audio,tab+audio,offset (let ring: next attack on the string moved),,
+31,30,3,0.0,3,0,55,6.9466,6.9151,-31.5,7.6738,7.6738,tab+audio,tab+audio,onset,clean,"rolled chord, rule v2: clean partials h1 6.9176, h3 6.9126 (median)"
+32,32,3,0.0,2,1,60,6.9727,6.9408,-31.9,7.668,7.668,tab+audio,tab,onset,forced,"rolled chord, no clean partial (all shared with a lower note): first own-flux peak 5-100 ms after the string below, which moved; conf: CQT rise at the new onset -1.3 dB (< 3)"
+322,322,28,2.0,3,9,64,87.4792,87.4792,0.0,88.9901,88.969,tab+audio,tab+audio,offset (let ring: next attack on the string moved),,
+325,325,28,3.75,2,3,62,88.7824,88.7824,0.0,89.0051,88.994,tab+audio,tab+audio,offset (let ring: next attack on the string moved),,
+328,327,29,0.0,3,2,57,89.0001,88.979,-21.1,89.7912,89.7912,tab+audio,tab+audio,onset,clean,"rolled chord, rule v2: clean partials h1 88.9790, h5 88.9760, h7 88.9910, h10 88.9640 (median)"
+329,329,29,0.0,2,1,60,89.0151,89.004,-11.1,90.3717,90.3717,tab+audio,tab+audio,onset,forced,"rolled chord, no clean partial (all shared with a lower note): first own-flux peak 5-100 ms after the string below, which moved"
+343,343,30,0.25,2,1,60,92.3351,92.3351,0.0,93.6776,93.6657,tab,tab,offset (let ring: next attack on the string moved),,
+350,350,30,2.0,2,5,64,93.6876,93.6757,-11.9,94.4236,94.4236,tab+audio,tab+audio,onset,clean,"rolled chord, rule v2: clean partials h7 93.6822, h10 93.6692 (median)"
+406,406,34,3.0,3,1,56,107.0275,107.0275,0.0,107.8157,107.8192,tab+audio,tab+audio,offset (let ring: next attack on the string moved),,
+411,411,35,0.0,3,2,57,107.8257,107.8292,3.5,108.7039,108.7039,tab+audio,tab+audio,onset,clean,"rolled chord, rule v2: clean partials h1 107.8227, h7 107.8357 (median)"
+421,421,35,3.0,3,5,60,110.2928,110.2928,0.0,111.1507,111.0652,tab+audio,tab+audio,offset (let ring: next attack on the string moved),,
+424,424,36,0.0,4,2,52,111.0939,111.066,-27.9,113.0939,113.066,tab+audio,tab+audio,onset,override,"by hand: E3 h1 165.4 Hz (clean, N4096, +27 dB, the note's only strong clean partial): steepest rise 111.0657; roll order s5 C3 111.042 < s4 E3 < s3 G3 111.075. Was forced to 111.094"
+425,425,36,0.0,3,0,55,111.1607,111.0752,-85.5,113.1607,113.0752,tab+audio,tab+audio,onset,clean,"rolled chord, rule v2: clean partials h1 111.0797, h7 111.0707 (median)"
+426,426,36,0.0,1,0,64,111.1757,111.0968,-78.9,113.1757,113.0968,tab+audio,tab+audio,onset,forced,"rolled chord, no clean partial (all shared with a lower note): first own-flux peak 5-100 ms after the string below, which moved"
+429,429,36,1.0,6,3,43,111.7847,111.92,135.3,113.7847,113.92,tab+audio,tab+audio,onset,override,"by hand: G2 clean partials h1 111.961, h3 111.934, h7 111.907, h9 111.894 (median 111.920); was 111.785"
+431,431,36,2.0,5,0,45,112.7135,112.7135,0.0,112.9589,113.09,tab+audio,tab+audio,offset (let ring: next attack on the string moved),,
+432,432,36,2.5,5,3,48,112.9689,113.1,131.1,113.4959,113.4959,tab+audio,tab+audio,onset,override,"by hand: C3 clean partials h1 113.096, h7 113.105 (median 113.100); was 112.969"
+626,626,52,3.0,3,1,56,163.8583,163.8583,0.0,164.6698,164.6836,tab+audio,tab+audio,offset (let ring: next attack on the string moved),,
+629,629,53,0.0,3,2,57,164.6798,164.6936,13.8,165.3112,165.3112,tab+audio,tab+audio,onset,clean,"rolled chord, rule v2: clean partials h1 164.6906, h5 164.6996, h7 164.6936 (median)"
+668,668,55,3.0,3,5,60,173.4888,173.4888,0.0,174.2741,174.276,tab+audio,tab+audio,offset (let ring: next attack on the string moved),,
+672,672,56,0.0,3,0,55,174.2841,174.286,1.9,176.2841,176.286,tab+audio,tab+audio,onset,clean,"rolled chord, rule v2: clean partials h1 174.2835, h7 174.2885 (median)"
+177,177,15,0.0,2,0,59,44.7893,44.7893,0.0,,,tab+audio,tab+audio,"none: checker problem 2, kept",,"B3 fundamental 247.8 Hz (Hann 8192, clear of C4) main rise 44.80-44.84; at the first attack (44.741) only 4-9 dB over a neutral bin; gaps 44.735 / gfl 44.757 put the whole roll at the first attack"
+312,312,27,0.0,2,0,59,82.6959,82.6959,0.0,,,tab+audio,tab+audio,"none: checker problem 2, kept",,B3 fundamental main rise 82.686-82.717 (to -31 dB); a faint B3 (-45 dB) from the first attack 82.61; Basic Pitch 82.704
+636,636,53,2.0,2,0,59,166.2848,166.2848,0.0,,,tab+audio,tab+audio,"none: checker problem 2, kept",,"clean partials h1 166.292 h3 166.280 h5 166.294 h7 166.292 h9 166.274; guitar-fl 166.275, Basic Pitch 166.292; only guitar-gaps 166.233"
