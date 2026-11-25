@@ -11,7 +11,7 @@ export const meta = {
   ],
 }
 
-// One part per workflow run: args.part is blind (with args.lane x or y), score, script, chapters (with args.chapters), polish (with args.items), finish or publish.
+// One part per workflow run: args.part is blind (with args.lane x or y), score, script, chapters (with args.chapters), polish (with args.items, args.wide), kitfix, finish or publish.
 const OPUS = 'claude-opus-5-5'
 const GTV = '/home/user/gtv'
 const REC = '/home/user/blog/docs/guitar-tab-research/video'
@@ -256,6 +256,31 @@ Mark each problem you return BLOCKING (a viewer would notice: wrong or missing p
 The problems that were to be fixed:
 ${problems}`
 
+const WIDE = (ch) => `FILM-WIDE DECISIONS (${REC}/PRODUCTION.md section 6.10, read it): (a) in chapter.mp4 every narration line is 1.5 to 3 dB louder than the listening windows; measure it (each line's span against each window's span with ffmpeg ebur128) and fix the mix if it is outside; (b) tab strips: read /home/user/gtv/work/seamfix/AFFECTED.md and do what it says for ${ch}, if it is listed.`
+
+const KITFIX = `[AGENT: kit-seamfix]
+
+${COMMON}
+
+YOUR JOB: fix a bug in the film's shared tab strip tool and repair the strips it damaged. Chapters are being polished by other agents at the same time: never edit anything under ${PROD}/chapters/.
+The bug (found by the ch11 re-review: /home/user/gtv/work/rereview-ch11-tab-file/PROGRESS.md, seam_scan.txt, crop_seam.jpg, seamstrip.jpg): ${PROD}/kit/tools/tabstrip/tabstrip.cjs cuts a long strip into tiles of 8000 px. For the last, narrower tile it calls page.setViewportSize with the tile's width, and the score is then shot about 10 px left of the x the tile claims in strip.json: the first columns of the last tile repeat the last columns of the tile before, and marks drawn from the beat map sit off their digits there. The reviewer's scan found 23 of 47 strips affected.
+1. Find the real cause in tabstrip.cjs and page.html (alphaTab re-layout on resize, centring, a scrollbar or something else) and fix it so every tile shows exactly the pixels its x and w claim, with the same layout as the beat map. Prove it on one affected strip: adjacent tiles join with no repeated and no missing columns, and with the debug option the beat lines land on the note glyphs in the last tile as in the others.
+2. Write ${PROD}/kit/tools/strip_seams.py: it checks every tile join of a strip.json against its tiles and tells a real overlap from look-alike blank staff columns (compare columns that hold glyphs, or test candidate shifts on the whole join and pick the best). Run it on every strip.json under ${GTV} (experiments, blind, work, production) and keep the output.
+3. Shoot again in place, with the fixed tool and the same source and options each strip.json records, every affected strip outside ${PROD}/chapters/. Keep each old strip.json as strip.json.pre-seamfix. Check that the beat map (every beat's t and x) is unchanged and only the damaged tile's pixels changed; flag anything else. Run strip_seams.py again: zero overlaps outside the chapters.
+4. Find every chapter that uses an affected strip: by path in its build script, data and compositions, and by the hash of tile images copied into its project. For each, work out whether the part of the strip shown on screen reaches the damaged tile (from the scene's data: the strip window and the times shown). Write /home/user/gtv/work/seamfix/AFFECTED.md: per chapter, which strips, whether the damage was visible and when, and the exact steps to refresh (copy which files again, or shoot its own data strips again with which command), so a chapter agent can do it in a few minutes. Also list chapters checked and not affected.
+5. Add a short line to ${REC}/PRODUCTION.md section 6.10 only if what you found differs from what it says (do not rewrite it).
+Your final message: the cause, the fix, the strips shot again, and the AFFECTED.md summary (chapter: visible or not).`
+
+const KITFIX_VERIFY = `[AGENT: kit-seamfix-check]
+
+${COMMON}
+
+YOUR JOB: check, independently, the repair of the tab strip seams. Another agent fixed ${PROD}/kit/tools/tabstrip/tabstrip.cjs, re-shot the damaged strips and wrote /home/user/gtv/work/seamfix/AFFECTED.md (the bug: ${REC}/PRODUCTION.md section 6.10). You did not do it. Never edit anything under ${PROD}/chapters/.
+1. With your own method (not its strip_seams.py), check every tile join of every strip.json under ${GTV} outside the chapters: no repeated and no missing columns. Look at crops of at least five joins, including two last tiles.
+2. For three re-shot strips, check that the beat map is the same as in strip.json.pre-seamfix and that beat x lines land on note glyphs in the last tile.
+3. Check AFFECTED.md against the chapters: for each chapter's build script, data and compositions, does it use a strip that was damaged, and is AFFECTED.md right about it and about whether the damage was on screen? Are its refresh steps enough?
+Return: pass, problems (one string each, with the path and the fix), and a two-line summary.`
+
 // ---------- Stage 5: finish ----------
 const JOIN = `[AGENT: film-join]
 
@@ -394,20 +419,29 @@ if (PART === 'chapters') {
   return { part: 'chapters', chapters: done }
 }
 
+if (PART === 'kitfix') {
+  phase('Kit fix')
+  const fixed = await safe(KITFIX, o('kit-seamfix', 'Kit fix'))
+  const v = verdict(await safe(KITFIX_VERIFY, { ...o('kit-seamfix-check', 'Kit fix', 'high'), schema: VERDICT }))
+  return { part: 'kitfix', fixed: short(fixed), check: { pass: v.pass, problems: v.problems, summary: v.summary } }
+}
+
 if (PART === 'polish') {
   phase('Polish')
-  // args.items: [{ch, problems: [...]}], from the chapters lanes' open problems (or what I add)
+  // args.items: [{ch, problems: [...]}], from the chapters lanes' open problems (or what I add).
+  // args.wide: true adds the film-wide decisions (PRODUCTION 6.10) to every fix and check (run P1 was launched without it).
   const items = args.items || []
+  const W = (ch, p) => (args.wide ? p + '\n\n' + WIDE(ch) : p)
   const done = await pipeline(
     items,
-    (it) => safe(POLISH_FIX(it.ch, numbered(it.problems), 1), o('polish1-' + it.ch, 'Polish', 'high')),
+    (it) => safe(W(it.ch, POLISH_FIX(it.ch, numbered(it.problems), 1)), o('polish1-' + it.ch, 'Polish', 'high')),
     async (fixed, it) => {
-      let v = verdict(await safe(POLISH_VERIFY(it.ch, numbered(it.problems), 1), { ...o('verify1-' + it.ch, 'Polish', 'high'), schema: VERDICT }))
+      let v = verdict(await safe(W(it.ch, POLISH_VERIFY(it.ch, numbered(it.problems), 1)), { ...o('verify1-' + it.ch, 'Polish', 'high'), schema: VERDICT }))
       let fixed2 = null
       const blocking = (vv) => vv.problems.filter((p) => !/^NIT:/.test(p))
       if (!v.pass && blocking(v).length) {
-        fixed2 = await safe(POLISH_FIX(it.ch, numbered(v.problems), 2), o('polish2-' + it.ch, 'Polish', 'high'))
-        v = verdict(await safe(POLISH_VERIFY(it.ch, numbered(v.problems), 2), { ...o('verify2-' + it.ch, 'Polish', 'high'), schema: VERDICT }))
+        fixed2 = await safe(W(it.ch, POLISH_FIX(it.ch, numbered(v.problems), 2)), o('polish2-' + it.ch, 'Polish', 'high'))
+        v = verdict(await safe(W(it.ch, POLISH_VERIFY(it.ch, numbered(v.problems), 2)), { ...o('verify2-' + it.ch, 'Polish', 'high'), schema: VERDICT }))
       }
       return { ch: it.ch, fixed: short(fixed).slice(0, 400), fixed2: fixed2 ? short(fixed2).slice(0, 400) : null, pass: v.pass, open: v.problems, summary: v.summary }
     },

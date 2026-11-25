@@ -574,6 +574,23 @@ bring the `chapter.mp4` files back, then delete the pod. Use it only if the queu
 Not used. Nothing in this film should be generated imagery of people playing: every frame of guitar footage comes
 from the three recordings or the research clips, and every graphic is drawn from measured data.
 
+### 6.10 Film-wide decisions from the reviews (2026-11-25, polish round)
+
+- **Voice against the guitar.** The narration lines are mono files levelled to -17 LUFS. A stereo mix plays a mono
+  file on both channels, and EBU R128 then measures it 3 dB louder, so in the first renders the voice sat about 5 dB
+  over the listening windows instead of 2. The rule now is measured in the stereo chapter, `chapter.mp4`: each
+  narration line is 1.5 to 3 dB louder than the listening windows (loudness of each line's span against each window's
+  span). The usual way is to place the mono lines at about -3 dB (`data-volume` about 0.71) and leave the windows at
+  -19 LUFS. A chapter that already compensated keeps its own way if it measures inside the range. `finish.py` then
+  sets the chapter's overall loudness, so only the gap matters.
+- **Tab strip seams.** `tabstrip.cjs` shrank the viewport for the last, narrower tile of a long strip. The score was
+  then shot about 10 px left of the x its tile claims, so the last tile repeats a sliver of the one before it, and
+  every mark drawn from the beat map sits off its digit there. 23 of 47 strips had it (the ch11 re-review found it,
+  `/home/user/gtv/work/rereview-ch11-tab-file/`). The kit is fixed and the strips under `experiments/`, `blind/` and
+  `work/` are shot again in place. `/home/user/gtv/work/seamfix/AFFECTED.md` lists what each chapter has to refresh.
+  A chapter that copied tiles into its project copies them again; one with its own strips in `data/` shoots them
+  again with the fixed `tabstrip.cjs`.
+
 ## 7. Licensing notes that matter for specific choices
 
 - **alphaTab asks for its credit to stay visible.** Its 1.9.0 docs: "Do not hide, cover, crop or remove it without

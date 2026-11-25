@@ -186,3 +186,14 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   factual fix: LilyPond's time with the tuning and capo given is 3.3 to 3.7 s, not 3.3 to 8.8 s. Its line is voiced
   again.
 - Next: polish the other chapters as their lanes finish, then part finish.
+
+## 2026-11-25 19:55 UTC
+
+- Lane C (ch02, 05, 08, 11, 14, 17) finished: none passed the re-review outright. ch02, 05 and 08 are in polish P1.
+  ch11, 14 and 17 wait for the kit fix (their items: `/home/user/gtv/work/polish-pending-laneC.json`).
+- Two film-wide findings, decided in PRODUCTION.md 6.10: the mono narration plays 3 dB louder in the stereo mix than
+  its -17 LUFS level suggests (rule now: each line 1.5 to 3 dB over the windows, measured in chapter.mp4), and
+  `tabstrip.cjs` shot the last tile of long strips about 10 px off (23 of 47 strips).
+- Part kitfix running (wf_0bbaa7e8-d14): fix the tool, shoot the strips again outside the chapters, write
+  `/home/user/gtv/work/seamfix/AFFECTED.md`, then an independent check. Later polish runs use `wide: true` (6.10 and
+  AFFECTED.md in every fix and check). P1's chapters get a levels and seams check before the join.
