@@ -311,10 +311,12 @@ const JOIN = `[AGENT: film-join]
 
 ${COMMON}
 
-YOUR JOB: make the finished film and its web files. Chapters: ${PROD}/chapters/ch*/ in order of their number (each has chapter.mp4, captions.vtt, chapter.json). Read ${REC}/PRODUCTION.md section 6.6 and ${REC}/EMBED.md sections 2 and 6 step 1 and 2.
-1. Join with join.py into ${PROD}/film/ (film.mp4, film.vtt, chapters.vtt), mastered to -16 LUFS integrated, true peak at most -1.5 dBTP after the AAC encode.
-2. Make the site copy exactly as EMBED.md 2.1 says: /home/user/gtv/render/guitar-video-to-tab.mp4 , and run its checks (profile, size, faststart, loudness after encode).
-3. captions.vtt (EMBED 2.4, with its never-publish check), the poster (2.2), the chapter stills (2.3) with the chapter times from chapters.vtt, the card still and loop (2.5), all under ${GTV}/render/web/ with the names EMBED.md uses.
+YOUR JOB: make the finished film and its web files. Chapters: ${PROD}/chapters/ch*/ in order of their number (each has chapter.mp4, captions.vtt, chapter.json). Read ${REC}/PRODUCTION.md sections 6.6 and 6.10 and ${REC}/EMBED.md sections 2 and 6 step 1 and 2.
+0. Gate: for each of the 18 chapters, chapter.mp4 decodes to its end, its length matches chapter.json within 0.1 s, nothing that feeds the render in project/ is newer than it (Studio state files do not count), and qc/verify.md is its latest check and says it passes. If one fails the gate, stop and report it; do not join. Disk: the film needs about 3 GB while you work (df -h /). Free it first by deleting every chapter's qc/preview.mp4 (listening copies, made again by finish.py when needed) and /tmp/hyperframes-extract-cache-0/* (no render runs now: check that no hyperframes render process is alive), never chapter.mp4 or anything in project/.
+1. Level match before joining: the chapters were mixed one by one (narration placed at 0.71 to 1.0 against mono or stereo lines; PRODUCTION 6.10), so their raw loudness differs. For each chapter.mp4 measure the narration's loudness over its lines' spans (the words files and the chapter's timing data say where the lines are) and the integrated loudness. If a chapter's narration is more than 0.75 LU from the median of all chapters' narration, gain that chapter's whole audio by the difference before joining (one gain per chapter, so its own voice-to-window gap stays as checked). Record every chapter's numbers and gains in ${PROD}/FILM.md. join.py takes chapter folders: give it level-matched copies under ${GTV}/work/film-join/ (video stream-copied, sound gained) for the chapters that need a gain.
+2. Join with join.py into ${PROD}/film/ (film.mp4, film.vtt, chapters.vtt), mastered to -16 LUFS integrated, true peak at most -1.5 dBTP after the AAC encode, loudness range under 8 LU (if it is over, say by how much and where; do not compress the film to hide it). Delete film_raw.mov once film.mp4 is checked if the disk needs it.
+3. Make the site copy exactly as EMBED.md 2.1 says: /home/user/gtv/render/guitar-video-to-tab.mp4 , and run its checks (profile, size, faststart, loudness after encode).
+4. captions.vtt (EMBED 2.4, with its never-publish check), the poster (2.2), the chapter stills (2.3) with the chapter times from chapters.vtt, the card still and loop (2.5), all under ${GTV}/render/web/ with the names EMBED.md uses.
 Write ${PROD}/FILM.md: the length, the chapter list with start times and labels (EMBED.md 1 rules for labels), the loudness and file numbers, and the paths.
 Your final message: the length, the file size, the loudness numbers, and the paths.`
 
@@ -329,6 +331,32 @@ YOUR JOB: check the finished film as Aaron would watch it, before it goes live: 
 4. The story: does the film answer which tools to give an AI and which ones make the output work, and does it show the blind test with both arms, heard against the original? Is every tab shown also heard?
 5. The privacy rules above, and the never-publish check of EMBED.md 2.4 over the captions and the stills' alt texts in FILM.md.
 Write ${PROD}/FILM-QC.md (under 120 lines). Return: pass, problems (one string each: chapter id, time, what is wrong, the fix), and a two-line summary.`
+
+// The whole-film check, split by lens so a 50-minute film gets three full looks (run in parallel after the join).
+const QC_HEAD = (lens) => `[AGENT: film-qc-${lens}]
+
+${COMMON}
+
+YOUR JOB: check the finished film as Aaron would watch it, before it goes live, through one lens: ${lens.toUpperCase()}. Two other checkers look at the other lenses at the same time; stay on yours. The film: /home/user/gtv/render/guitar-video-to-tab.mp4 (the site copy), its captions and chapters under /home/user/gtv/render/web/ (names as ${PROD}/FILM.md says), the chapter folders ${PROD}/chapters/chNN-slug/ it was joined from (their qc/verify.md say what was already checked). You made none of it. Read ${REC}/PRODUCTION.md sections 1, 2 and 6.10 and ${PROD}/FILM.md. Work in ${GTV}/work/film-qc-${lens}/.
+`
+const QC_TAIL = (lens) => `
+Mark each problem BLOCKING (a viewer would notice, or it is wrong: a wrong number, a broken or missing picture or sound, text cut off or unreadable, a broken listening window, a privacy breach) or NIT (polish). Give each one the chapter id and the time in the film and in the chapter, what is wrong, and the fix. Write ${PROD}/FILM-QC-${lens}.md (under 100 lines). Return: pass (true when nothing BLOCKING), problems (each starting with BLOCKING: or NIT:), and a two-line summary.`
+
+const QC_PICTURE = QC_HEAD('picture') + `
+1. A frame every 5 seconds over the whole film, and five frames around every chapter join (contact sheets). Look at every sheet.
+2. Flag what a viewer would notice: black, empty or frozen stretches (ffmpeg freezedetect over the film, then look), a flash or jump at a join, broken or overlapping layout, text cut off or under 22 px, anything that matters in the bottom 150 px under the captions, a tab strip without its alphaTab credit, a tool named without its version, colours outside the palette, the AO-082 mark missing where PRODUCTION.md says it shows, a tab strip seam or marks off their digits (PRODUCTION 6.10).
+3. The poster, the chapter stills and the card still and loop: each is the frame FILM.md says, readable, and none shows anything private.` + QC_TAIL('picture')
+
+const QC_SOUND = QC_HEAD('sound') + `
+1. Over the whole film: integrated loudness, true peak, loudness range, and loudness per minute (ffmpeg ebur128); the jump in narration loudness at every chapter join (compare the last line before and the first line after); clipping (samples at full scale) and flat tops; silences over 3 s (silencedetect) and whether each is in the script.
+2. The rules of PRODUCTION 6.10 on the joined film, sampled: in at least six chapters, each narration line against the listening windows (1.5 to 3 dB), voice edges (no clicks: sample steps near line starts and ends), the song under the voice (0.22 to 0.3, never inaudible).
+3. Listening windows: in every chapter, at least one window is heard alone (no narration over it, from the words files against the chapter's timing), truth first and then the tool when both are played; spot-check sync of five windows with the qc sync tool against their sources.` + QC_TAIL('sound')
+
+const QC_STORY = QC_HEAD('story') + `
+1. Watch the film's argument end to end from the captions and the chapter scripts (${PROD}/SCRIPT.md): does it answer which tools to give an AI to go from a video of a person playing guitar to a finished tab, and which ones actually make the output work? Does it show the blind test with both arms (with tools and without), heard against the original, and give round 2 as the result with round 1 as a second run, as ${REC}/BLIND.md section 7 and ${REC}/BLIND-RESULTS.md say? Is every tab shown also heard? Does it say plainly where it lets the viewer judge (answer keys in doubt) and where the answer key decides?
+2. Numbers: check at least 40 numbers on screen or in the narration, spread over all chapters, against their source files (${REC}/BLIND-RESULTS.md, ${REC}/results/, /home/user/gtv/blind/results.json, the experiments' result.json files). Pull the frame for each.
+3. Captions: they cover all narration (compare word counts per chapter with the vo .txt files), in time (20 cues spread over the film against the audio), two lines at most, and the script's spelling (VOICE.md's respelt lines).
+4. Privacy and records: the never-publish check of EMBED.md 2.4 over the captions, chapter titles and alt texts; nothing from the removed AO-078 videos; no private person's name; the credits name the three recordings' performers and the tools as songs.json and results.json say.` + QC_TAIL('story')
 
 const PUBLISH = `[AGENT: publisher]
 
@@ -484,8 +512,11 @@ if (PART === 'polish') {
 if (PART === 'finish') {
   phase('Finish')
   const joined = await safe(JOIN, o('film-join', 'Finish', 'high'))
-  const qc = verdict(await safe(FILM_QC, { ...o('film-qc', 'Finish'), schema: VERDICT }))
-  return { part: 'finish', joined: short(joined), qc: { pass: qc.pass, problems: qc.problems, summary: qc.summary } }
+  // three lenses on the joined film; the cap of 2 agents per run means the third starts when one ends
+  const lenses = [['picture', QC_PICTURE], ['sound', QC_SOUND], ['story', QC_STORY]]
+  const qcs = await parallel(lenses.map(([k, p]) => () => safe(p, { ...o('film-qc-' + k, 'Finish', 'high'), schema: VERDICT })))
+  const qc = lenses.map(([k], i) => { const v = verdict(qcs[i]); return { lens: k, pass: v.pass, problems: v.problems, summary: v.summary } })
+  return { part: 'finish', joined: short(joined), qc }
 }
 
 if (PART === 'publish') {
