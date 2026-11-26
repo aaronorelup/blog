@@ -96,7 +96,7 @@ I also get a few resets that clear a limit early. Over those two weeks I used al
 | All four | 283.5 h | 40.6 to 115.8 h | 167.7 to 243.0 h |
 
 - **Without the stops:** 357.6 minus 283.5 is 74.0 hours. Without the 8.0-hour wait for my "put it live" too, it's 66.1, the same as the time agents were working.
-- **If it had restarted itself at each announced reset,** the job would have taken about 190 hours. That saves nothing on the 13 November stop: a reset I used had cleared that limit by the time I came back on 16 November, two days before its announced reset. When the reset went in, the logs don't show. The 17 November limit may have been cleared early by another of those resets too. Nothing in the logs shows it, so the table counts it to its announced reset.
+- **If it had restarted itself at each announced reset,** the job would have taken about 190 hours. That saves nothing on the 13 November stop: a reset I used had cleared that limit by the time I came back on 16 November, two days before its announced reset, at a time the logs don't show. Another of those resets may have cleared the 17 November limit early too. Nothing in the logs shows it, so the table counts that stop to its announced reset.
 - **Agents side by side:** 93.0 agent-hours in 66.1 working hours, about 1.4 at once on average. Exactly one sub-agent was running for 47.0 of the 64.9 hours that any was.
 - **How "working" is counted:** an agent counts as working between two lines of its log that are at most 15 minutes apart, or while it waits on its own command. Any rule from 10 to 60 minutes gives about 66 hours.
 - **The first version** went live on 16 November at 04:36 UTC, 127.2 hours in. The finished one went live on 25 November at 18:59 UTC.
@@ -123,7 +123,7 @@ I also get a few resets that clear a limit early. Over those two weeks I used al
 <tr><td>2026-11-24</td><td>6.05</td><td>0</td><td>17.95</td><td>0</td></tr>
 <tr><td>2026-11-25</td><td>10.79</td><td>0.24</td><td>7.96</td><td>0</td></tr>
 </tbody></table>
-<ol><li data-d="2026-11-16">First version live, unlisted</li><li data-d="2026-11-25">Finished version live</li></ol>
+<ol><li data-d="2026-11-16">First version live</li><li data-d="2026-11-25">Finished version live</li></ol>
 <figcaption><b>Every day of the job, in hours (UTC)</b> Work happened on 8 of the 16 days. The first and last days are partial.</figcaption>
 </ao-series>
 
