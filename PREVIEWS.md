@@ -67,13 +67,13 @@ Rules:
 
 - **The card gives the answer, all of it.** Nothing is held back for the click. If the post found
   three things, the card says three things.
-- **The description doesn't hold it back either.** It says what was done or tested and what
-  you'd learn. It can state the result. It never teases it ("here's what happened", "the answer
-  surprised me", "what each one is, and when I'd reach for which"). If a description reads like
-  a hook, fix the description. Don't write the card around it.
-- **Don't repeat the description.** In the ledger it sits right next to the card. Where the
-  description already states the result, the takeaway can say it in fewer words, but the points
-  must say things the description doesn't.
+- **The description asks, the card answers.** The description says what was done or tested, in
+  as few words as possible, and gives no result. It never teases one either ("here's what
+  happened", "the answer surprised me", "what each one is, and when I'd reach for which"). If a
+  description reads like a hook, fix the description. Don't write the card around it.
+- **Don't repeat the title or the description.** The reader reads all three word for word, one
+  after the other, and in the ledger they sit side by side. A fact that is in two of them gets
+  cut from one. If the description states a result, move it here and shorten the description.
 - **Only what the post says.** Every number and claim must be in the post. Don't add, don't
   round in a way that changes the meaning, don't improve on the result. A card must never be
   more sure than its post.

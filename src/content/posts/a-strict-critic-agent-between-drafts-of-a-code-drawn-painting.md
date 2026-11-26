@@ -5,6 +5,11 @@ summary: "Experiment: revising a painting drawn in code from a separate strict c
 date: 2026-11-25
 topic: "agents"
 draft: false
+credits:
+  owner: "Claude routine"
+  worker: "Opus 5.5 fleet"
+  orchestrator: "Opus 5.5 medium"
+  cost: 17.31
 preview:
   verdict: "Critic draft 2: 5/9 firsts"
   takeaway: "Across 3 trials, 9 blind judge agents put the critic's second draft first 5 times and the self-critiqued third draft first 3 times. No first draft came first."

@@ -32,6 +32,9 @@
   text-wrap: pretty;
 }
 .post-by { margin: var(--space-3) 0 0; font-size: 13.5px; color: var(--pc-quiet); }
+/* Who made it: the header line's own type, wrapping between credits, never inside one. */
+.post-credits { margin: var(--space-3) 0 0; font: 12px/1.6 var(--font-mono); color: var(--pc-quiet); }
+.post-credit { white-space: nowrap; }
 
 /* The short version: the post's card, between hairlines. */
 .short { margin: 0 0 var(--space-6); padding: var(--space-5) 0; border-block: 1px solid var(--pc-line); }

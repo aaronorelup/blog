@@ -1,0 +1,35 @@
+/* AO-092's demo (index.js beside it): the tablecloth trick drawn on canvas, with its captions and controls.
+   Page tokens throughout, so day and night both work. Divs and spans only, so the post's prose rules stay out. */
+
+ao-demo[name="tablecloth"] { display: block; margin: 26px 0 30px; }
+
+.tcd {
+  font: 400 14.5px/1.5 Karla, system-ui, sans-serif;
+  color: var(--pc-body);
+  border-top: 1px solid var(--pc-line);
+  border-bottom: 1px solid var(--pc-line);
+  padding: 14px 0 14px;
+}
+.tcd * { box-sizing: border-box; }
+.tcd .tcd-canvas { display: block; width: 100%; }
+.tcd .tcd-cap { margin: 10px 0 0; color: var(--pc-body); max-width: 680px; }
+.tcd .tcd-cut { margin: 6px 0 0; color: var(--pc-strong); font-weight: 600; }
+
+.tcd .tcd-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 0; }
+.tcd .tcd-seg { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 10px; }
+.tcd .tcd-btn {
+  border: 1px solid var(--pc-line2); background: transparent; color: var(--pc-strong); border-radius: 999px;
+  min-height: 34px; padding: 0 14px; font: 600 13px/1 Karla, system-ui, sans-serif; cursor: pointer;
+  transition: background 180ms cubic-bezier(.4, 0, .2, 1), border-color 180ms cubic-bezier(.4, 0, .2, 1);
+}
+.tcd .tcd-btn:hover { background: var(--pc-hover); border-color: var(--pc-head); }
+.tcd .tcd-btn[aria-pressed="true"] { border-color: var(--pc-head); color: var(--pc-head); }
+.tcd :focus-visible { outline: 3px solid var(--pc-head); outline-offset: 3px; }
+
+.tcd .tcd-sliders { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px 22px; margin: 12px 0 0; }
+.tcd .tcd-slider { display: block; }
+.tcd .tcd-name { display: flex; justify-content: space-between; gap: 10px; font: 600 13px/1.4 Karla, system-ui, sans-serif; color: var(--pc-strong); }
+.tcd .tcd-val { font: 400 13px/1.4 "JetBrains Mono", ui-monospace, monospace; color: var(--pc-head); }
+.tcd input[type="range"] { width: 100%; margin: 6px 0 0; accent-color: var(--pc-head); height: 26px; }
+
+@media (prefers-reduced-motion: reduce) { .tcd .tcd-btn { transition: none; } }

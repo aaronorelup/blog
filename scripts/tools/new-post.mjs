@@ -30,11 +30,17 @@ const id = `AO-${String(last + 1).padStart(3, '0')}`;
 fs.writeFileSync(file, `---
 id: "${id}"
 title: "${title.replace(/[\\"]/g, '\\$&')}"
-summary: "What I did or tested and what the post tells you. Aim for 200 characters, 240 at most."
+summary: "What the post is about, in as few words as possible. No result here: the card gives it. 240 characters at most."
 date: ${new Date().toISOString().slice(0, 10)}
 topic: ""          # required, one of: ${TOPIC_KEYS.join(', ')}
 project: []        # optional, any of: ${PROJECT_KEYS.join(', ')}
 draft: true        # until Aaron says it's good, in his own words
+credits:           # who made this post, shown under the summary (WRITING.md "Credits")
+  owner: ""        # who had the idea: Aaron, or the agent that picked it, by the name he calls it (Gages, Duet)
+  worker: ""       # the model that did the work, with its effort: "Opus 5.5 xhigh", "Opus 5.5 fleet"
+  # orchestrator: ""   # only if one agent ran other agents or sessions for it: its model
+  # writer: ""         # only if another agent than the worker wrote the post
+  # cost: 0            # what the work would cost at API prices, in dollars, only if measured
 # The hover card: write it once the post is finished. PREVIEWS.md is the spec.
 # preview:
 #   verdict: "2 to 5 words: the outcome"

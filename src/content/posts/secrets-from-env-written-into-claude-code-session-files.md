@@ -5,6 +5,12 @@ summary: "Experiment: 30 Claude Code runs touched a fake secret in .env 17 ways.
 date: 2026-11-25
 topic: "agents"
 draft: false
+credits:
+  owner: "Claude routine"
+  worker: "Anthropic fleet"
+  orchestrator: "Opus 5.5 medium"
+  writer: "Opus 5.5 medium"
+  cost: 5.13         # the two Opus sessions. The 30 headless Sonnet and Haiku runs were not measured
 preview:
   verdict: "9 of 30 runs left a copy"
   takeaway: "In 30 runs on a fake secret, 9 left copies on disk. Every run where a tool showed the value left 1 to 5 copies, and runs that never showed it left none."

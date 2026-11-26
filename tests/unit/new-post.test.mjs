@@ -46,6 +46,7 @@ test('a new post takes the next id after every post, drafts included, and starts
   assert.equal(data.topic, '');
   assert.deepEqual(data.project, []);
   assert.equal(data.preview, undefined);
+  assert.deepEqual(data.credits, { owner: '', worker: '' });   // to fill in: WRITING.md "Credits"
   assert.ok([before, today()].includes(data.date.toISOString().slice(0, 10)));
   assert.equal(content.trim(), 'Start writing here.');
   assert.equal(files().length, 7);

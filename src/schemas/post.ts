@@ -6,6 +6,7 @@ import { TOPIC_KEYS, PROJECT_KEYS } from '../data/taxonomy.js';
 import { isHeld, isLive, LIVE_NOTEBOOKS } from '../data/exempt.js';
 import { preview, checkPreview } from './preview';
 import { STRICT, v2Rules } from './strict.js';
+import { creditsOf } from './credits.js';
 
 export const post = z.object({
   id: z.string(),                                  // AO-###, assigned by npm run new-post
@@ -17,6 +18,7 @@ export const post = z.object({
   preview: preview.optional(),
   icon: z.string().optional(),                     // overrides /media/icons/<id>.webp
   voice: z.string().optional(),                    // 'claude' where Claude tells its own story; absent means Aaron's
+  credits: z.unknown().optional(),                 // who made it: owner, worker, orchestrator, writer, cost (credits.js)
   draft: z.boolean().default(false),               // not built at all
   unlisted: z.boolean().default(false),            // built at its URL with noindex, and in no list (lib/posts.js)
 })
@@ -38,6 +40,7 @@ export const post = z.object({
 })
 .transform((p) => ({
   ...p,
+  credits: creditsOf(p.credits),
   topic: TOPIC_KEYS.includes(p.topic as string) ? (p.topic as string) : 'agents',
   project: (p.project ?? (LIVE_NOTEBOOKS as Record<string, { project?: string[] }>)[p.id]?.project ?? [])
     .filter((k) => PROJECT_KEYS.includes(k)),
