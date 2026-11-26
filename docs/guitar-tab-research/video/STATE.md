@@ -407,3 +407,12 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 - listencues done (wf_5151e67d-752): `kit/tools/listen_cues.py` and `merge_cues.py` (words in
   `listen_cues_words.json`). They add 100 bracketed cues. Caption-free stretches over 5 s went from 52 to 1, and the
   one left is the silent title card. 15 cues were compared with their frames. Never-publish: 0 hits.
+
+## 2026-11-26 00:20 UTC
+
+- joinfix done (wf_107b63f5-026; `/home/user/gtv/work/kit-joinfix/REPORT.md`):
+  - join.py copies only the video. The sound is one graph: each chapter trimmed or padded to frames×1600 samples,
+    gained (`--gains` JSON) and concatenated; finish.py is unchanged.
+  - Lags at the start, middle and end of all 18 chapters: before, 0 up to +238.7 ms; after, 54 of 54 at 0.000 ms.
+  - PRODUCTION 6.6 and EMBED updated (film_raw.mp4).
+- Waiting for the chapter fixes P17 to P20, then part finish again.
