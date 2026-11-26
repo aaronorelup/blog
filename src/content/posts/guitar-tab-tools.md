@@ -1,7 +1,7 @@
 ---
 id: "AO-082"
 title: "Testing the tools a guitar tab web app would need"
-summary: "I had Claude agents list every tool they could find for turning songs and guitar videos into tabs, run what they could on test clips and read each license. What went in, what came out, what it cost."
+summary: "I had Claude agents list every tool they could find for turning songs and guitar videos into tabs, run what they could and read each license. Then a film tests the main ones on three guitar videos. What went in, what came out, what it cost."
 date: 2026-11-10
 topic: "agents"
 project: []
@@ -9,16 +9,54 @@ preview:
   verdict: "138 of 575 tools ran"
   takeaway: "My agents' ten lists come to 575 tools for a guitar tab web app. 138 of them ran, 128 on a cloud computer with no graphics card."
   points:
-    - "One chain turned a full band mix into a drawn tab, by way of a guitar track, notes, strings and frets, and a tab file."
+    - "Opus 5.5 tabbed three guitar videos blind. With the best tools it placed 55 to 93 notes in 100 right, without 35 to 82."
     - "With a capo on fret 2, no chord tool named it or the G and C shapes played. Xiaomi's MiMo said fret 2 in 2 of 3 tries."
     - "It took 183 agents in two sittings. At API list prices that's about $2,430 to $2,700 of tokens."
   image: "/media/previews/guitar-tab-tools.webp"
-  alt: "Four fingertips on a straightened close-up of a guitar neck, each with a green dot and the string and fret a program gave it (index s4 f3, middle s5 f4, ring s2 f5, pinky s2 f5), magenta lines where it found fret-like lines and cyan fret numbers 0 to 6 along the top"
+  loop: "/media/previews/guitar-tab-tools.mp4"
+  alt: "A fretting hand on a steel-string guitar neck"
 ---
+
+<ao-shots>
+<video controls playsinline preload="metadata" width="1920" height="1080" aria-label="From a guitar video to a finished tab" poster="/media/guitar-tab-tools/film/poster.webp" src="/media/guitar-tab-tools/film/guitar-video-to-tab.mp4"><track kind="captions" srclang="en" label="English" src="/media/guitar-tab-tools/film/captions.vtt"></video>
+<ol>
+<li data-t="0:00"><img src="/media/guitar-tab-tools/film/chapters/01.webp" alt="Title card: From a guitar video to a finished tab" loading="lazy">Opening</li>
+<li data-t="2:11.57"><img src="/media/guitar-tab-tools/film/chapters/02.webp" alt="Title card: Three recordings, three answer keys" loading="lazy">The three recordings</li>
+<li data-t="5:25.57"><img src="/media/guitar-tab-tools/film/chapters/03.webp" alt="Title card: The job, step by step" loading="lazy">The job, step by step</li>
+<li data-t="7:39.10"><img src="/media/guitar-tab-tools/film/chapters/04.webp" alt="Title card: Splitting the guitar out" loading="lazy">Splitting the guitar out</li>
+<li data-t="11:21.47"><img src="/media/guitar-tab-tools/film/chapters/05.webp" alt="Title card: Sound to notes" loading="lazy">Sound to notes</li>
+<li data-t="14:27.90"><img src="/media/guitar-tab-tools/film/chapters/06.webp" alt="Title card: Melody, bass and taps" loading="lazy">Melody, bass and taps</li>
+<li data-t="16:33.07"><img src="/media/guitar-tab-tools/film/chapters/07.webp" alt="Title card: Chords, beat and home key" loading="lazy">Chords, beat and home key</li>
+<li data-t="20:02.17"><img src="/media/guitar-tab-tools/film/chapters/08.webp" alt="Title card: Capo and tuning" loading="lazy">Capo and tuning</li>
+<li data-t="23:13.23"><img src="/media/guitar-tab-tools/film/chapters/09.webp" alt="Title card: String and fret" loading="lazy">String and fret</li>
+<li data-t="26:14.63"><img src="/media/guitar-tab-tools/film/chapters/10.webp" alt="Title card: Hands on the fretboard" loading="lazy">Hands on the fretboard</li>
+<li data-t="28:21.80"><img src="/media/guitar-tab-tools/film/chapters/11.webp" alt="Title card: Sound and video together" loading="lazy">Sound and video together</li>
+<li data-t="30:04.80"><img src="/media/guitar-tab-tools/film/chapters/12.webp" alt="Title card: The tab file, drawn and played" loading="lazy">The tab file played back</li>
+<li data-t="32:29.10"><img src="/media/guitar-tab-tools/film/chapters/13.webp" alt="Title card: The whole job in one call" loading="lazy">The job in one call</li>
+<li data-t="33:59.90"><img src="/media/guitar-tab-tools/film/chapters/14.webp" alt="Title card: The finished tabs" loading="lazy">The finished tabs</li>
+<li data-t="36:17.27"><img src="/media/guitar-tab-tools/film/chapters/15.webp" alt="Title card: The blind test" loading="lazy">The blind test</li>
+<li data-t="39:08.97"><img src="/media/guitar-tab-tools/film/chapters/16.webp" alt="Title card: Opus 5.5, with and without the tools" loading="lazy">Blind test results</li>
+<li data-t="45:17.73"><img src="/media/guitar-tab-tools/film/chapters/17.webp" alt="Title card: What to give the AI" loading="lazy">What to give the AI</li>
+<li data-t="49:01.50"><img src="/media/guitar-tab-tools/film/chapters/18.webp" alt="The credits page, naming the three recordings and their players" loading="lazy">Credits</li>
+</ol>
+<figcaption><b>From a guitar video to a finished tab</b><span class="ao-meta">49:35 · three songs with known tabs, one with a capo, one in D G C F A C tuning, one with neither · every tab played back · captions in the player · click a chapter to play from it</span></figcaption>
+</ao-shots>
+
+<details><summary>The three recordings in the film</summary>
+
+The answer keys in the film are these players' own tabs, timed to their recordings.
+
+- Steal My Girl (One Direction), fingerstyle arrangement, tab and performance by Gareth Evans (goliathguitartutorials.com). Video from his YouTube channel, via [the Internet Archive](https://archive.org/details/gareth-evans_202101). Played with a capo on fret 3.
+- Imagine (John Lennon), fingerstyle arrangement, tab and performance by Gareth Evans (goliathguitartutorials.com). Video from his YouTube channel, via [the Internet Archive](https://archive.org/details/gareth-evans_202101). Standard tuning, no capo.
+- A soft collision of breath, composed and played by Evan Handyside, [intellimusica.com](https://www.intellimusica.com/a-soft-collision-of-breath/), with [the video on Vimeo](https://vimeo.com/1149455966). Nylon strings tuned D G C F A C, with his own handwritten tab.
+
+</details>
 
 I want to build a web app that turns a song, or a video of someone playing guitar, into tabs. Tabs are guitar music written as fret numbers on six lines, one per string. Before building anything I had a team of Claude agents list every tool they could find for each step, run the ones they could in the time they had, and read each license. **Their ten lists come to 575 tools, and 138 of them ran**: 128 on a cloud computer with no graphics card, which I call the cloud box, and 10 more through a public demo page or a service an agent can call, counting two helpers those calls went through. 116 others have steps written for me instead, because they need a graphics card, an account or my own hands, or because Claude's permission system wouldn't let my agents install or run them. I asked for facts only: what went in and what came out, with no grades and no picks.
 
 The app would work in steps, with a person correcting it along the way. Split the song into instruments. Turn the guitar into notes. Find the chords and the beat. Choose a string and a fret for each note. Show the tab, play it back against a metronome, and run the analysis again when the person says there's a capo on fret 2. A capo is a clamp across the strings that raises every note. For a fingerstyle video, a guitar played with the fingers, it would also watch the hands. I'd already had three AI passes [turn some of my own guitar videos into tabs](/ledger/guitar-tabs-from-video/). This time each tool gets looked at by itself.
+
+Two weeks later my agents made the film at the top. It puts these tools to work on three real recordings of a whole song played on guitar, each with a video and the player's own tab to check against. One is played with a capo, one on a nylon-string guitar tuned D G C F A C instead of the usual E A D G B E, and one with neither. It follows the job step by step, and every tab in it is played back, so you can hear where it's right and where it isn't. At the end Claude Opus 5.5 tabs each song from the video alone with the answer hidden, once with a kit of the tools that measured best and once without it. **With the kit it put 55 to 93 notes in 100 on the right string and fret, and without it 35 to 82.** The kit won on every song, mostly by finding more of the notes. It was also picked on these same recordings, which favors it. No tool and no attempt found the nylon guitar's tuning. The film ends on what to give an AI for this job, as measured on these three songs: its own eyes on the video for the capo, a note finder trained on guitar, and a string and fret chooser that's told the tuning and capo. It runs just under 50 minutes.
 
 ## The quick rundown
 
@@ -122,6 +160,22 @@ These come from the agents' own transcripts on the cloud box. Prices are from An
 | Claude Fable 5.2 | $8 | $40 | $0.20 | $10 or $16 |
 
 A cache write has two prices by how long the cache is kept. Input that wasn't cached was 42,341 tokens in all. The first count alone comes to about $1,950 to $2,170 and the second to about $480 to $530. The measured files are in [the research folder](https://github.com/aaronorelup/blog/tree/research/guitar-tab-tools/docs/guitar-tab-research/costs).
+
+</details>
+
+The film at the top was a second run of 250 agents, from 2026-11-24 to 2026-11-26. They wrote 15.7 million tokens and re-read 3.4 billion from the cache, about $1,390 to $1,620 at the same list prices. The narration used 21,873 ElevenLabs credits, the one-call services the film tested cost 3 cents, and no graphics card was rented this time either.
+
+<details><summary>The film's token counts and other costs</summary>
+
+These come from the agents' transcripts on the cloud box, from my request for the film on 2026-11-24 to 2026-11-26, when it went up, priced with the table above.
+
+| Model | Output tokens | Cache reads | Cache writes | At list prices |
+|---|---|---|---|---|
+| Claude Opus 5.5 | 15,569,613 | 3,406,833,601 | 75,658,799 | $1,371 to $1,598 |
+| Claude Fable 5.2 | 120,653 | 15,339,820 | 970,049 | $18 to $23 |
+| Claude Sonnet 5.5 | 1,727 | 618,670 | 419,435 | $1 to $2 |
+
+Input that wasn't cached was 33,480 tokens. The ElevenLabs figure is the account's credit counter before the first line of narration was voiced and after the film was done, 14,046 and 35,919, so it also holds the speech-to-text checks of each take if those bill there. The one-call services were 14 calls through Vercel's AI Gateway, $0.03 in all. The tests' other paid calls, ElevenLabs splitting songs into stems and Opus looking at the video's frames, are counted in [the film's research records](https://github.com/aaronorelup/blog/tree/research/guitar-tab-tools/docs/guitar-tab-research/video).
 
 </details>
 
@@ -3497,4 +3551,4 @@ None. No tool in this lane produced audio or video (`trials.md`, "Media kept out
 
 </details>
 
-*Researched, run and checked by a team of Claude agents from 2026-11-10 to 2026-11-12: Fable 5.2 directing, Opus 5.5 and Sonnet 5.5 doing the work. I haven't run any of these tools myself yet. Every run, quote and count is in [the research folder](https://github.com/aaronorelup/blog/tree/research/guitar-tab-tools/docs/guitar-tab-research).*
+*Researched, run and checked by a team of Claude agents from 2026-11-10 to 2026-11-12: Fable 5.2 directing, Opus 5.5 and Sonnet 5.5 doing the work. The film was made by Claude agents from 2026-11-24 to 2026-11-26, Fable 5.2 directing. I haven't run any of these tools myself yet. Every run, quote and count is in [the research folder](https://github.com/aaronorelup/blog/tree/research/guitar-tab-tools/docs/guitar-tab-research).*

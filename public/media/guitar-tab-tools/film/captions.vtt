@@ -1,0 +1,2946 @@
+WEBVTT
+
+1
+00:00:05.100 --> 00:00:11.450
+[The recording: the
+capo song, heard alone]
+
+2
+00:00:11.500 --> 00:00:15.331
+Gareth Evans plays his
+arrangement of Steal My Girl,
+
+3
+00:00:15.331 --> 00:00:18.077
+with a capo on the third fret:
+
+4
+00:00:18.245 --> 00:00:23.128
+a clamp across the strings
+that raises every note.
+
+5
+00:00:24.680 --> 00:00:28.541
+Below, a tab written by software alone:
+
+6
+00:00:28.639 --> 00:00:33.812
+the best automatic tool at each step,
+chained, with nothing given.
+
+7
+00:00:34.119 --> 00:00:36.749
+Above, the answer key.
+
+8
+00:00:36.975 --> 00:00:39.744
+The same six seconds of each.
+
+9
+00:00:40.090 --> 00:00:46.090
+[The answer key's tab, played back]
+
+10
+00:00:46.890 --> 00:00:52.890
+[Chain-1's tab, played back]
+
+11
+00:00:53.490 --> 00:00:55.516
+The notes are nearly the same:
+
+12
+00:00:55.824 --> 00:01:01.542
+ninety-four in a hundred real notes are
+there, at the right pitch and time.
+
+13
+00:01:02.740 --> 00:01:07.413
+But a tab also says where to play
+each note: which string, which fret.
+
+14
+00:01:07.802 --> 00:01:10.328
+Here not one is in the right place.
+
+15
+00:01:10.542 --> 00:01:12.951
+Zero of eight hundred and fifteen.
+
+16
+00:01:13.247 --> 00:01:17.433
+Outlined in blue: the right note,
+in the wrong place.
+
+17
+00:01:17.926 --> 00:01:20.358
+Gold: a note it missed.
+
+18
+00:01:20.515 --> 00:01:23.342
+Striped orange: a note it made up.
+
+19
+00:01:23.754 --> 00:01:28.996
+Someone playing along would find
+every note somewhere his hand is not.
+
+20
+00:01:30.120 --> 00:01:32.918
+One rule, reading the lowest notes,
+
+21
+00:01:32.918 --> 00:01:37.104
+missed the capo,
+and every fret moved with it.
+
+22
+00:01:38.500 --> 00:01:40.741
+Told the true tuning and capo,
+
+23
+00:01:40.741 --> 00:01:44.718
+the same chain puts seventy-five
+in a hundred in place.
+
+24
+00:01:45.373 --> 00:01:50.632
+At the end of this film,
+Claude Opus 5.5, Anthropic's AI model,
+
+25
+00:01:50.632 --> 00:01:52.873
+given the video and a kit of tools,
+
+26
+00:01:52.873 --> 00:01:57.698
+puts ninety-three in a hundred in place.
+
+27
+00:01:58.870 --> 00:02:04.159
+This film follows the job step by step,
+on three recordings with known answers,
+
+28
+00:02:04.211 --> 00:02:10.451
+to find which tools to give an AI for this
+job, and which ones make the tab right.
+
+29
+00:02:12.367 --> 00:02:16.204
+Every test in this film runs
+on the same three recordings.
+
+30
+00:02:16.512 --> 00:02:22.277
+Each is one guitar,
+one player and one fixed camera.
+
+31
+00:02:23.357 --> 00:02:29.107
+[The recording: the
+capo song, heard alone]
+
+32
+00:02:29.157 --> 00:02:34.265
+The first is Gareth Evans' fingerstyle
+arrangement of Steal My Girl:
+
+33
+00:02:34.265 --> 00:02:38.985
+standard tuning,
+a capo on the third fret, steel strings.
+
+34
+00:02:39.327 --> 00:02:42.323
+Standard tuning means
+the open strings ring
+
+35
+00:02:42.323 --> 00:02:46.457
+E, A, D, G, B, E.
+
+36
+00:02:46.457 --> 00:02:52.698
+He also slaps the strings with his thumb,
+and many tools hear those slaps as notes.
+
+37
+00:02:54.057 --> 00:02:59.357
+[The recording: Imagine, heard alone]
+
+38
+00:02:59.407 --> 00:03:05.369
+The second is his arrangement of Imagine,
+in standard tuning with no capo.
+
+39
+00:03:05.781 --> 00:03:10.292
+The song is famous, so a
+language model may know its chords.
+
+40
+00:03:11.327 --> 00:03:17.077
+[The recording: the
+nylon song, heard alone]
+
+41
+00:03:17.127 --> 00:03:20.180
+The third is A soft collision of breath,
+
+42
+00:03:20.180 --> 00:03:24.378
+a new piece by Evan Handyside
+on a nylon-string guitar.
+
+43
+00:03:24.685 --> 00:03:27.106
+Every string is tuned away from standard:
+
+44
+00:03:27.204 --> 00:03:32.934
+D, G, C, F, A, C.
+
+45
+00:03:34.687 --> 00:03:38.803
+Each recording needs an answer key:
+every note,
+
+46
+00:03:38.820 --> 00:03:42.477
+with its time, its string and its fret.
+
+47
+00:03:42.477 --> 00:03:46.059
+Gareth Evans shows his own
+tab on screen as he plays.
+
+48
+00:03:46.471 --> 00:03:49.130
+Two agents read it bar by bar, separately,
+
+49
+00:03:49.130 --> 00:03:54.465
+and agreed on all but ten of the
+capo song's thousand and seven note heads,
+
+50
+00:03:54.563 --> 00:03:59.967
+slap marks included,
+and on all of Imagine.
+
+51
+00:03:59.967 --> 00:04:03.282
+Each note was then timed to the recording,
+
+52
+00:04:03.380 --> 00:04:06.463
+to the moment it starts in the sound.
+
+53
+00:04:06.968 --> 00:04:10.967
+Here is the capo song's key, played back.
+
+54
+00:04:10.987 --> 00:04:16.387
+[The capo song's answer key, played back]
+
+55
+00:04:17.837 --> 00:04:20.809
+Without the slaps,
+which are not pitched notes,
+
+56
+00:04:20.809 --> 00:04:24.519
+the capo key has
+eight hundred and fifteen notes.
+
+57
+00:04:24.745 --> 00:04:27.503
+Seven hundred and sixty-one
+can be heard starting.
+
+58
+00:04:27.914 --> 00:04:32.994
+The other fifty-four come from the
+tab alone, like soft pull-offs.
+
+59
+00:04:34.187 --> 00:04:37.867
+Separate agents checked each key
+against the sound and repaired it,
+
+60
+00:04:37.867 --> 00:04:43.586
+Imagine's three times, until a last
+check found nothing left to fix.
+
+61
+00:04:44.757 --> 00:04:47.817
+Evan Handyside's tab is handwritten.
+
+62
+00:04:47.985 --> 00:04:51.851
+It gives the order of the notes,
+but no rhythm and no bar lines,
+
+63
+00:04:51.851 --> 00:04:56.367
+so every note was placed in
+time from the recording itself.
+
+64
+00:04:56.367 --> 00:05:00.814
+Five hundred and fifty-six of its
+six hundred and twenty-eight notes
+
+65
+00:05:00.814 --> 00:05:02.677
+are confirmed in the sound.
+
+66
+00:05:03.182 --> 00:05:05.870
+Its beats were placed by a rule,
+
+67
+00:05:05.887 --> 00:05:12.128
+and whether its home key is
+D minor or F major is a judgement.
+
+68
+00:05:12.617 --> 00:05:18.017
+[The nylon song's answer key, played back]
+
+69
+00:05:18.217 --> 00:05:20.417
+Where a key itself is in doubt,
+
+70
+00:05:20.435 --> 00:05:24.829
+this film lets you listen,
+and does not grade the tool.
+
+71
+00:05:26.167 --> 00:05:31.560
+Turning a guitar video into a tab
+is a chain of smaller jobs.
+
+72
+00:05:31.972 --> 00:05:34.265
+This film counts ten.
+
+73
+00:05:35.967 --> 00:05:37.471
+Split the guitar out.
+
+74
+00:05:37.569 --> 00:05:39.770
+Turn the sound into notes.
+
+75
+00:05:39.938 --> 00:05:43.293
+Tell the melody from the bass,
+and find the taps,
+
+76
+00:05:43.293 --> 00:05:46.097
+the slaps and thumps of the picking hand.
+
+77
+00:05:46.404 --> 00:05:50.126
+Find the beat,
+the chords and the home key.
+
+78
+00:05:50.433 --> 00:05:52.808
+Read the tuning and capo.
+
+79
+00:05:53.034 --> 00:05:57.301
+Choose a string and fret for every note.
+
+80
+00:05:57.497 --> 00:06:01.160
+Read the hands in the video,
+and join them to the sound.
+
+81
+00:06:01.328 --> 00:06:03.633
+Write the tab file and play it.
+
+82
+00:06:03.685 --> 00:06:05.357
+And apart from the chain,
+
+83
+00:06:05.357 --> 00:06:11.354
+a tenth test sends the whole job
+to a hosted service in one call.
+
+84
+00:06:12.007 --> 00:06:17.440
+Each step was tested on its own, often
+fed the key's version of the step before,
+
+85
+00:06:17.440 --> 00:06:20.488
+so that only its own errors count.
+
+86
+00:06:20.900 --> 00:06:23.310
+Then whole chains ran.
+
+87
+00:06:23.557 --> 00:06:28.312
+Some tools were also given a hint:
+the true tuning and capo.
+
+88
+00:06:28.538 --> 00:06:33.049
+That shows what a step can do
+when the one before it is right.
+
+89
+00:06:34.947 --> 00:06:38.134
+Here is how a tool is scored.
+
+90
+00:06:38.442 --> 00:06:40.956
+Its notes are laid over the key's.
+
+91
+00:06:41.367 --> 00:06:46.296
+Blue it found, gold it missed,
+orange it made up.
+
+92
+00:06:46.497 --> 00:06:48.308
+A note is found when it starts
+
+93
+00:06:48.308 --> 00:06:52.320
+within fifty milliseconds of
+a key note of the same pitch.
+
+94
+00:06:52.523 --> 00:06:54.410
+That start is its onset.
+
+95
+00:06:54.694 --> 00:06:57.201
+Here is Transkun, a piano model,
+
+96
+00:06:57.201 --> 00:07:01.979
+on the nylon song:
+the key first, then the tool.
+
+97
+00:07:02.327 --> 00:07:08.327
+[The answer key's notes, played back]
+
+98
+00:07:09.127 --> 00:07:15.127
+[Transkun 2.0.1's notes, played back]
+
+99
+00:07:15.927 --> 00:07:20.786
+The F1 score sums this up,
+from zero to one.
+
+100
+00:07:21.093 --> 00:07:24.205
+It rises with every real note found,
+
+101
+00:07:24.205 --> 00:07:28.066
+and falls with every
+note missed or made up.
+
+102
+00:07:28.317 --> 00:07:32.445
+For a finished tab,
+one more score matters most:
+
+103
+00:07:32.752 --> 00:07:36.386
+the share of the key's notes that
+land on the right string and fret,
+
+104
+00:07:36.386 --> 00:07:37.901
+at the right time.
+
+105
+00:07:39.900 --> 00:07:46.280
+Step one: a separator splits a recording
+into stems, one per instrument.
+
+106
+00:07:46.506 --> 00:07:50.326
+Each stem was judged by the notes
+found in it by Basic Pitch,
+
+107
+00:07:50.326 --> 00:07:53.385
+a free note finder from Spotify.
+
+108
+00:07:54.235 --> 00:07:57.910
+These recordings are one guitar alone,
+so there is little to remove.
+
+109
+00:07:58.008 --> 00:08:04.423
+But the capo song has thumb slaps,
+and Basic Pitch hears many as notes.
+
+110
+00:08:04.623 --> 00:08:09.784
+HPSS splits sound by shape:
+steady tones in one part,
+
+111
+00:08:09.952 --> 00:08:13.488
+short hits in the other,
+with no trained model.
+
+112
+00:08:13.656 --> 00:08:15.786
+The short hits.
+
+113
+00:08:16.136 --> 00:08:21.136
+[HPSS short hits: the percussive part]
+
+114
+00:08:21.636 --> 00:08:23.372
+The steady part.
+
+115
+00:08:23.722 --> 00:08:28.722
+[HPSS steady tones: the harmonic part]
+
+116
+00:08:30.222 --> 00:08:34.373
+The key's notes in these bars,
+then Basic Pitch on the full recording.
+
+117
+00:08:34.723 --> 00:08:40.723
+[The answer key's notes, played back]
+
+118
+00:08:41.723 --> 00:08:47.723
+[Basic Pitch 0.4.0's notes from the full
+recording, played back]
+
+119
+00:08:48.223 --> 00:08:52.560
+Blue it found, gold it missed,
+orange it made up.
+
+120
+00:08:54.660 --> 00:08:58.021
+Then Basic Pitch on the steady part alone.
+
+121
+00:08:58.371 --> 00:09:04.371
+[Basic Pitch 0.4.0's notes from the steady
+part, played back]
+
+122
+00:09:04.971 --> 00:09:08.350
+In these twenty seconds
+the key has eighty-two notes.
+
+123
+00:09:08.350 --> 00:09:11.983
+On the full recording
+Basic Pitch found eighty,
+
+124
+00:09:11.983 --> 00:09:14.730
+but wrote a hundred and fifty-seven.
+
+125
+00:09:14.747 --> 00:09:20.082
+On the steady part,
+seventy-nine of a hundred and five.
+
+126
+00:09:22.182 --> 00:09:24.046
+Over the whole capo song,
+
+127
+00:09:24.144 --> 00:09:28.899
+F1 rose from zero point six nine
+to zero point seven eight.
+
+128
+00:09:29.392 --> 00:09:32.579
+Imagine gained two hundredths.
+
+129
+00:09:32.805 --> 00:09:36.875
+The nylon song,
+with no slaps, did not move.
+
+130
+00:09:38.075 --> 00:09:44.217
+Two Demucs models, a guitar fine-tune
+and ElevenLabs' six-stem service
+
+131
+00:09:44.217 --> 00:09:48.472
+moved these scores
+by about a hundredth at most.
+
+132
+00:09:48.954 --> 00:09:53.836
+Unlike the post's synthesized guitar,
+which Demucs put in its piano track,
+
+133
+00:09:53.877 --> 00:09:58.434
+these real guitars stayed
+in its guitar stem.
+
+134
+00:09:59.683 --> 00:10:02.174
+Separators are built for bands,
+
+135
+00:10:02.272 --> 00:10:05.715
+so they also ran on a band clip
+made for the research.
+
+136
+00:10:06.022 --> 00:10:10.243
+The mix, then ElevenLabs' guitar stem.
+
+137
+00:10:10.593 --> 00:10:15.593
+[The band mix S4]
+
+138
+00:10:16.593 --> 00:10:21.593
+[ElevenLabs' guitar stem]
+
+139
+00:10:22.093 --> 00:10:27.173
+It measured cleanest, thirteen point seven
+decibels of signal over distortion,
+
+140
+00:10:27.178 --> 00:10:31.109
+against one point seven five
+for the six-stem Demucs
+
+141
+00:10:31.114 --> 00:10:34.406
+and six point one
+for its guitar fine-tune.
+
+142
+00:10:34.876 --> 00:10:40.251
+It lifted Basic Pitch's F1 from
+zero point six to zero point seven seven.
+
+143
+00:10:40.251 --> 00:10:42.568
+It costs about a dollar forty a song.
+
+144
+00:10:42.980 --> 00:10:45.145
+HPSS is free.
+
+145
+00:10:47.045 --> 00:10:49.861
+Whether a stem sounds cleaner
+is for your ear:
+
+146
+00:10:50.029 --> 00:10:54.958
+Imagine,
+then a Mel-Band RoFormer guitar stem.
+
+147
+00:10:55.308 --> 00:11:00.308
+[The recording: Imagine]
+
+148
+00:11:01.308 --> 00:11:06.308
+[Mel-Band RoFormer's guitar stem]
+
+149
+00:11:06.808 --> 00:11:10.210
+For the AI's kit: on a solo guitar,
+
+150
+00:11:10.210 --> 00:11:14.401
+HPSS in front of a general note model
+where the strings are slapped,
+
+151
+00:11:14.401 --> 00:11:16.253
+and no trained separator.
+
+152
+00:11:16.479 --> 00:11:20.108
+For a band, ElevenLabs' stems.
+
+153
+00:11:22.067 --> 00:11:25.742
+Step two: turn the sound into notes.
+
+154
+00:11:26.154 --> 00:11:30.258
+Five tools ran on all three whole songs.
+
+155
+00:11:30.847 --> 00:11:35.497
+On the capo song,
+Basic Pitch found nearly every note,
+
+156
+00:11:35.503 --> 00:11:38.551
+seven hundred and eighty-two
+of eight hundred and fifteen.
+
+157
+00:11:38.707 --> 00:11:41.871
+But it made up six hundred
+and seventy-four more.
+
+158
+00:11:41.969 --> 00:11:46.933
+Blue it found, gold it missed,
+orange it made up.
+
+159
+00:11:47.667 --> 00:11:52.480
+Two models trained on guitar,
+guitar-fl and guitar-gaps,
+
+160
+00:11:52.532 --> 00:11:55.545
+found as many and made up about a hundred.
+
+161
+00:11:56.049 --> 00:12:00.479
+Their F1 is zero point nine two.
+
+162
+00:12:00.891 --> 00:12:05.378
+Transkun, a piano model, came next.
+
+163
+00:12:05.977 --> 00:12:08.798
+Two hundred and forty of
+Basic Pitch's made-up notes
+
+164
+00:12:08.798 --> 00:12:12.392
+start within fifty milliseconds
+of a slap or a thump.
+
+165
+00:12:12.897 --> 00:12:16.380
+Whether they sound like the slaps
+they sit on is for you to judge:
+
+166
+00:12:16.380 --> 00:12:20.902
+the key, then Basic Pitch,
+then the recording.
+
+167
+00:12:21.547 --> 00:12:27.897
+[The answer key's notes, played back]
+
+168
+00:12:28.447 --> 00:12:34.797
+[Basic Pitch 0.4.0's notes, played back]
+
+169
+00:12:35.347 --> 00:12:41.697
+[The recording]
+
+170
+00:12:42.897 --> 00:12:45.980
+Given a pitch range from
+the true tuning and capo,
+
+171
+00:12:45.997 --> 00:12:51.785
+Basic Pitch made up fewer, six hundred
+and ten, and found the same notes.
+
+172
+00:12:52.287 --> 00:12:57.320
+The nylon song was harder for every tool,
+worst on its low strings.
+
+173
+00:12:57.546 --> 00:13:01.349
+Guitar-gaps did best,
+at zero point eight three.
+
+174
+00:13:01.656 --> 00:13:05.064
+In one twenty-second stretch
+it missed twenty-one notes,
+
+175
+00:13:05.081 --> 00:13:08.420
+one of them a note the
+key's own checkers doubted.
+
+176
+00:13:09.147 --> 00:13:15.497
+[The answer key's notes, played back]
+
+177
+00:13:16.047 --> 00:13:22.397
+[guitar-gaps.pth's notes, played back]
+
+178
+00:13:23.697 --> 00:13:27.540
+MiMo Flash,
+a multimodal language model from Xiaomi,
+
+179
+00:13:27.540 --> 00:13:32.028
+was sent thirty seconds of each
+song and asked for the notes.
+
+180
+00:13:32.416 --> 00:13:35.836
+On Imagine, in one twenty-second stretch,
+
+181
+00:13:35.841 --> 00:13:40.618
+it found three of the eighty and
+made up a hundred and sixteen.
+
+182
+00:13:41.427 --> 00:13:47.777
+[The answer key's notes, played back]
+
+183
+00:13:48.327 --> 00:13:54.677
+[MiMo v2.6 Flash's notes, played back]
+
+184
+00:13:55.327 --> 00:13:57.103
+Told the tuning and capo,
+
+185
+00:13:57.103 --> 00:14:03.100
+it found one note, one note
+and none on the three songs.
+
+186
+00:14:03.787 --> 00:14:08.385
+Basic Pitch takes about fifteen
+seconds a song on two processor cores,
+
+187
+00:14:08.385 --> 00:14:11.827
+the guitar models about two minutes,
+with free weights.
+
+188
+00:14:12.460 --> 00:14:16.529
+MiMo cost a fraction of a cent a request.
+
+189
+00:14:16.917 --> 00:14:18.827
+For the AI's kit:
+
+190
+00:14:18.879 --> 00:14:24.028
+a guitar-trained note model,
+guitar-fl or guitar-gaps.
+
+191
+00:14:24.255 --> 00:14:27.244
+Not a language model asked for the notes.
+
+192
+00:14:28.450 --> 00:14:33.373
+Step three: fingerstyle guitar plays
+a melody and a bass line at once,
+
+193
+00:14:33.373 --> 00:14:37.524
+and on two of these songs,
+taps that keep the beat.
+
+194
+00:14:38.500 --> 00:14:43.139
+The simplest split puts every note
+above one pitch in the melody.
+
+195
+00:14:43.434 --> 00:14:48.554
+Drawn at G3, of the forty-two melody
+and bass notes in these twenty seconds,
+
+196
+00:14:48.554 --> 00:14:51.231
+it labels thirty-five right.
+
+197
+00:14:51.840 --> 00:14:55.503
+The first six seconds
+of the key's bass line,
+
+198
+00:14:55.555 --> 00:14:58.161
+then the split's version.
+
+199
+00:14:59.100 --> 00:15:05.100
+[The answer key's bass notes, played back]
+
+200
+00:15:05.700 --> 00:15:11.700
+[The split's bass notes (split at G3),
+played back]
+
+201
+00:15:12.500 --> 00:15:16.175
+The seven rings are melody
+notes that fell into the bass.
+
+202
+00:15:16.680 --> 00:15:21.376
+Drawn at the real open third string,
+F3, it gets all forty-two.
+
+203
+00:15:21.475 --> 00:15:24.929
+Partitura,
+a voice finder for written music,
+
+204
+00:15:25.027 --> 00:15:28.772
+found seven or eight voices
+where there are two.
+
+205
+00:15:30.000 --> 00:15:31.260
+Then the taps.
+
+206
+00:15:31.347 --> 00:15:35.817
+Onsets of the HPSS short-hit
+part caught all thirty-two here,
+
+207
+00:15:35.817 --> 00:15:41.001
+but marked eighty-nine moments,
+because every pluck starts with a hit too.
+
+208
+00:15:41.598 --> 00:15:47.154
+The key's taps,
+then those onsets, as clicks.
+
+209
+00:15:48.000 --> 00:15:54.000
+[The answer key's taps as clicks, over the
+recording]
+
+210
+00:15:54.600 --> 00:16:00.600
+[HPSS onsets as clicks, over the
+recording]
+
+211
+00:16:01.700 --> 00:16:07.360
+Onsets of Demucs' drum stem were
+precise on the capo song's slaps,
+
+212
+00:16:07.459 --> 00:16:12.074
+but of Imagine's soft thumps they
+caught four of twenty-nine here.
+
+213
+00:16:12.370 --> 00:16:17.600
+Here are Imagine's thumps,
+marked by the key's clicks.
+
+214
+00:16:18.500 --> 00:16:23.500
+[Imagine: the answer key's taps as clicks,
+over the recording]
+
+215
+00:16:24.300 --> 00:16:28.010
+For the AI's kit, this step can wait:
+
+216
+00:16:28.178 --> 00:16:32.816
+the tab it is asked for later
+has no voices and no taps.
+
+217
+00:16:33.617 --> 00:16:39.486
+Step four: the beat, the bars,
+the chords and the home key.
+
+218
+00:16:41.167 --> 00:16:45.353
+A beat tracker marks every beat,
+and the first beat of each bar.
+
+219
+00:16:45.416 --> 00:16:47.210
+It is scored like F1,
+
+220
+00:16:47.239 --> 00:16:51.390
+with a beat found if it falls within
+seventy milliseconds of the key's.
+
+221
+00:16:51.813 --> 00:16:56.742
+The key's beats first,
+as clicks, the bar lines higher.
+
+222
+00:16:57.087 --> 00:17:03.087
+[The answer key's beats as clicks]
+
+223
+00:17:03.687 --> 00:17:08.192
+Beat This! scored zero point
+nine nine eight on the capo song
+
+224
+00:17:08.192 --> 00:17:11.158
+and zero point nine eight nine on Imagine.
+
+225
+00:17:11.384 --> 00:17:15.570
+Madmom started a bar every
+two beats on the capo song:
+
+226
+00:17:15.587 --> 00:17:19.239
+thirteen bar lines here,
+for the key's seven.
+
+227
+00:17:19.639 --> 00:17:25.903
+Madmom's, then madmom's told the tempo
+and four beats to a bar.
+
+228
+00:17:27.157 --> 00:17:33.157
+[madmom's beats as clicks]
+
+229
+00:17:33.757 --> 00:17:39.757
+[madmom's beats as clicks, told the tempo]
+
+230
+00:17:41.157 --> 00:17:44.298
+With that hint it drew all seven.
+
+231
+00:17:45.081 --> 00:17:50.050
+On the nylon song, madmom agrees with
+the key on tempo and bar length,
+
+232
+00:17:50.050 --> 00:17:55.293
+but every tracker marks each beat
+about a fifth of a second later.
+
+233
+00:17:55.547 --> 00:17:59.779
+These beats were placed by a rule,
+so which is right is a judgement.
+
+234
+00:17:59.947 --> 00:18:04.249
+The key's beats, then Beat This!,
+over the recording.
+
+235
+00:18:04.597 --> 00:18:08.597
+[The answer key's beats as clicks]
+
+236
+00:18:08.597 --> 00:18:12.597
+[The answer key's beats as clicks]
+
+237
+00:18:13.197 --> 00:18:17.197
+[Beat This!'s beats as clicks]
+
+238
+00:18:17.197 --> 00:18:21.197
+[Beat This!'s beats as clicks]
+
+239
+00:18:21.907 --> 00:18:26.098
+Moved a fifth of a second earlier,
+the trackers' beats score between
+
+240
+00:18:26.098 --> 00:18:31.642
+zero point seven seven and zero
+point eight six against the key.
+
+241
+00:18:33.737 --> 00:18:36.158
+Chord names were harder.
+
+242
+00:18:36.663 --> 00:18:40.622
+The best recogniser named the
+right major or minor chord
+
+243
+00:18:40.622 --> 00:18:43.693
+for sixty-eight to eighty-six
+percent of each song:
+
+244
+00:18:44.105 --> 00:18:47.878
+madmom on the capo and nylon songs,
+
+245
+00:18:47.878 --> 00:18:51.913
+lv-chordia on Imagine.
+
+246
+00:18:53.167 --> 00:18:57.881
+The post's strummed test clip scored
+seventy-eight to ninety-seven percent,
+
+247
+00:18:57.881 --> 00:18:59.564
+but the clips differ,
+
+248
+00:18:59.564 --> 00:19:04.563
+so this test cannot say whether
+fingerstyle chords are harder to name.
+
+249
+00:19:04.807 --> 00:19:09.614
+Chordino adds colour,
+like E-flat major seven,
+
+250
+00:19:09.614 --> 00:19:13.254
+where the answer key names plain chords.
+
+251
+00:19:13.480 --> 00:19:15.042
+That is for your ear:
+
+252
+00:19:15.268 --> 00:19:20.057
+the answer key's chords, then Chordino's.
+
+253
+00:19:20.407 --> 00:19:26.407
+[The answer key's chords,
+played as block chords]
+
+254
+00:19:27.007 --> 00:19:33.007
+[Chordino's chords, played the same way]
+
+255
+00:19:34.529 --> 00:19:37.826
+Madmom named the home keys of
+the capo song and Imagine,
+
+256
+00:19:37.826 --> 00:19:41.239
+and said F major for the nylon song,
+
+257
+00:19:41.239 --> 00:19:44.519
+whose D minor is itself a judgement.
+
+258
+00:19:44.931 --> 00:19:49.686
+MiMo, asked twice,
+gave two different sets of chords.
+
+259
+00:19:50.037 --> 00:19:53.961
+For the AI's kit: Beat This! for the beat,
+
+260
+00:19:53.961 --> 00:19:59.343
+and madmom or lv-chordia for chord names,
+checked by ear.
+
+261
+00:20:02.767 --> 00:20:05.989
+Step five: the tuning and the capo.
+
+262
+00:20:06.157 --> 00:20:10.819
+Get them wrong and every fret in the
+tab moves, as the opening showed.
+
+263
+00:20:12.417 --> 00:20:17.417
+[The recording: the capo song]
+
+264
+00:20:18.017 --> 00:20:20.601
+First, how far the guitar
+sits from concert pitch,
+
+265
+00:20:20.629 --> 00:20:24.188
+in cents, hundredths of a semitone.
+
+266
+00:20:24.530 --> 00:20:28.960
+librosa came within one cent
+on the capo and nylon songs,
+
+267
+00:20:29.023 --> 00:20:31.844
+and three cents under on Imagine,
+
+268
+00:20:31.844 --> 00:20:35.543
+whose key is itself unsure by about two.
+
+269
+00:20:37.497 --> 00:20:39.012
+Then the open strings.
+
+270
+00:20:39.180 --> 00:20:41.909
+The lowest-note rule
+takes the lowest notes
+
+271
+00:20:41.909 --> 00:20:44.156
+that keep coming back as the open strings.
+
+272
+00:20:44.788 --> 00:20:49.571
+On the nylon song it called Drop D:
+five strings wrong.
+
+273
+00:20:49.571 --> 00:20:53.119
+The key's open strings, then the rule's.
+
+274
+00:20:53.467 --> 00:20:58.467
+[The answer key's open
+strings: D G C F A C]
+
+275
+00:20:59.067 --> 00:21:04.067
+[The lowest-note rule's
+open strings: Drop D]
+
+276
+00:21:04.667 --> 00:21:08.104
+On the capo song,
+Basic Pitch's made-up notes from
+
+277
+00:21:08.104 --> 00:21:12.429
+the slaps dragged it below
+what the guitar can play.
+
+278
+00:21:12.655 --> 00:21:18.803
+It read the sixth string a semitone low,
+and missed the capo.
+
+279
+00:21:20.407 --> 00:21:25.092
+MiMo was asked three times, with the
+same audio, whether there was a capo.
+
+280
+00:21:25.109 --> 00:21:29.306
+It said capo one,
+cannot tell, and capo one.
+
+281
+00:21:29.474 --> 00:21:34.357
+Shown thirty frames, it said fret two.
+
+282
+00:21:37.357 --> 00:21:42.007
+OWL v2, a detector that
+finds things named in words,
+
+283
+00:21:42.024 --> 00:21:45.270
+boxed the real capo on the capo song.
+
+284
+00:21:45.681 --> 00:21:48.584
+On the nylon guitar, which has no capo,
+
+285
+00:21:48.584 --> 00:21:52.050
+it boxed one in all six frames.
+
+286
+00:21:54.047 --> 00:21:58.268
+Opus 5.5 was shown two contact sheets,
+
+287
+00:21:58.389 --> 00:22:03.213
+grids of small video frames,
+and three close crops of the neck.
+
+288
+00:22:03.648 --> 00:22:07.277
+On the capo song the nut is out of frame,
+
+289
+00:22:07.340 --> 00:22:10.922
+so it counted frets from the inlay dots.
+
+290
+00:22:11.177 --> 00:22:15.821
+In its words: counting from the
+twelfth-fret cluster toward the headstock,
+
+291
+00:22:15.821 --> 00:22:19.008
+the capo sits in the third fret space.
+
+292
+00:22:19.420 --> 00:22:22.956
+It was right about the
+capo on all three songs.
+
+293
+00:22:23.182 --> 00:22:27.449
+Each look cost about half a dollar,
+in about a minute.
+
+294
+00:22:29.147 --> 00:22:32.416
+But it called the nylon
+guitar standard tuning.
+
+295
+00:22:32.920 --> 00:22:35.481
+All six strings wrong.
+
+296
+00:22:35.892 --> 00:22:41.611
+The key's open strings,
+then the tuning Opus named.
+
+297
+00:22:41.957 --> 00:22:46.957
+[The answer key's open strings again]
+
+298
+00:22:47.557 --> 00:22:52.557
+[Opus 5.5's answer: standard tuning]
+
+299
+00:22:54.107 --> 00:22:57.701
+No technique named the
+nylon song's tuning,
+
+300
+00:22:57.927 --> 00:23:01.137
+and only the picture
+gave the capo reliably.
+
+301
+00:23:01.549 --> 00:23:05.932
+For the AI's kit:
+its own eyes for the capo.
+
+302
+00:23:06.158 --> 00:23:10.425
+For an unusual tuning,
+nothing here was enough.
+
+303
+00:23:13.833 --> 00:23:18.170
+Step six: choose a string
+and a fret for every note.
+
+304
+00:23:18.477 --> 00:23:21.263
+Most pitches can be played
+in several places on the neck,
+
+305
+00:23:21.263 --> 00:23:24.253
+and a tab must pick one.
+
+306
+00:23:24.593 --> 00:23:27.554
+Four choosers were handed
+the key's own notes,
+
+307
+00:23:27.554 --> 00:23:31.530
+without their strings,
+plus the true tuning and capo.
+
+308
+00:23:32.023 --> 00:23:34.502
+tuttut and LilyPond chose alike,
+
+309
+00:23:34.589 --> 00:23:39.472
+matching the key on eighty
+in a hundred notes on the capo song,
+
+310
+00:23:39.686 --> 00:23:44.812
+eighty-nine on Imagine
+and ninety-seven on the nylon song.
+
+311
+00:23:45.123 --> 00:23:47.956
+scorify placed no notes on a whole song,
+
+312
+00:23:47.956 --> 00:23:52.571
+only on ten-second pieces,
+and tabsynth cannot be told a tuning.
+
+313
+00:23:53.076 --> 00:23:56.344
+Guitab, which the post's
+survey could not run,
+
+314
+00:23:56.443 --> 00:24:02.068
+ran here in its browser page and listened
+for itself, told only the capo.
+
+315
+00:24:02.480 --> 00:24:07.490
+Its tab keeps its own timing,
+so it is matched in note order:
+
+316
+00:24:07.658 --> 00:24:10.671
+seventy-eight in a hundred
+on the capo song.
+
+317
+00:24:10.978 --> 00:24:17.091
+By time, only sixty-nine
+of eight hundred and fifteen line up.
+
+318
+00:24:18.293 --> 00:24:22.154
+Here is tuttut on the nylon
+song without the tuning:
+
+319
+00:24:22.380 --> 00:24:25.857
+not one of these fifty-six
+notes in the key's place.
+
+320
+00:24:26.269 --> 00:24:28.922
+Fifty-two keep their pitch somewhere else.
+
+321
+00:24:29.334 --> 00:24:32.631
+Four low Ds come out an octave higher,
+
+322
+00:24:32.631 --> 00:24:36.167
+because standard tuning
+has no string that low.
+
+323
+00:24:36.799 --> 00:24:40.803
+Listen for the low D:
+the key, then tuttut.
+
+324
+00:24:40.803 --> 00:24:46.803
+[The answer key's tab, played back]
+
+325
+00:24:47.703 --> 00:24:53.703
+[tuttut 0.0.7's tab, not told the tuning]
+
+326
+00:24:54.503 --> 00:24:57.388
+The rest only the eye can catch.
+
+327
+00:24:57.696 --> 00:25:00.947
+At sixty seconds the key's
+open F string becomes
+
+328
+00:25:00.947 --> 00:25:04.772
+the fifth string at the eighth
+fret: the right note,
+
+329
+00:25:04.871 --> 00:25:07.738
+but a player following
+this tab would reach up
+
+330
+00:25:07.738 --> 00:25:11.233
+the neck for a note
+the guitarist plays open.
+
+331
+00:25:11.233 --> 00:25:16.208
+Given the tuning, tuttut puts
+forty-nine of the fifty-six in place.
+
+332
+00:25:16.434 --> 00:25:18.977
+Without the capo, the best choosers fell
+
+333
+00:25:18.977 --> 00:25:23.325
+to thirty-nine in a hundred
+on the capo song.
+
+334
+00:25:24.243 --> 00:25:27.273
+TabCNN, which also listens for itself,
+
+335
+00:25:27.273 --> 00:25:29.665
+wrote
+two thousand eight hundred and sixty-four
+
+336
+00:25:29.665 --> 00:25:33.688
+notes for the capo song's
+eight hundred and fifteen.
+
+337
+00:25:34.297 --> 00:25:38.065
+On Imagine, in these fifteen seconds,
+
+338
+00:25:38.151 --> 00:25:40.584
+thirty-three are in the key's place,
+
+339
+00:25:40.601 --> 00:25:44.032
+and a hundred and five match no key note.
+
+340
+00:25:44.049 --> 00:25:45.413
+You can hear them.
+
+341
+00:25:45.413 --> 00:25:51.413
+[The answer key's tab, played back]
+
+342
+00:25:52.313 --> 00:25:58.313
+[TabCNN's tab, played back]
+
+343
+00:26:01.013 --> 00:26:07.219
+For the AI's kit: tuttut or LilyPond,
+given the tuning and capo.
+
+344
+00:26:07.631 --> 00:26:13.523
+tuttut takes under half a second a song,
+LilyPond about three and a half.
+
+345
+00:26:15.183 --> 00:26:21.470
+Step seven: read the hands and
+the fretboard from the video.
+
+346
+00:26:22.633 --> 00:26:28.033
+[The recording: the capo song]
+
+347
+00:26:28.133 --> 00:26:31.895
+MediaPipe, Google's hand tracker,
+followed the fretting hand
+
+348
+00:26:31.895 --> 00:26:36.057
+in four hundred and ninety-five
+of these five hundred frames.
+
+349
+00:26:36.562 --> 00:26:43.290
+Over the three songs it lost that hand
+in one to twelve frames in a hundred.
+
+350
+00:26:44.583 --> 00:26:47.706
+There is no answer key for hand points,
+
+351
+00:26:47.706 --> 00:26:51.996
+so whether the skeleton follows
+the hand is for your eye.
+
+352
+00:26:52.501 --> 00:26:54.945
+RTMPose, a second tracker,
+
+353
+00:26:55.102 --> 00:26:59.972
+lost the hand in a fifth of
+the thirty seconds from here.
+
+354
+00:27:00.733 --> 00:27:03.786
+To turn a fingertip into
+a string and a fret,
+
+355
+00:27:03.786 --> 00:27:08.924
+a fret grid was fitted to an
+outline of the neck set by hand.
+
+356
+00:27:09.336 --> 00:27:14.358
+Around the capo,
+it numbers every fret one too high.
+
+357
+00:27:14.683 --> 00:27:18.497
+Each fretted note's fingertip cell
+was then checked against the key.
+
+358
+00:27:18.897 --> 00:27:21.539
+On the capo song it was exactly right
+
+359
+00:27:21.637 --> 00:27:25.190
+for two of fifty notes in
+a twenty-second stretch,
+
+360
+00:27:25.190 --> 00:27:29.329
+and for nine in a hundred over the song.
+
+361
+00:27:30.983 --> 00:27:36.492
+On Imagine, for none of sixty-seven
+notes in twenty seconds,
+
+362
+00:27:36.660 --> 00:27:40.057
+and three in a hundred over the song.
+
+363
+00:27:40.561 --> 00:27:45.954
+The grid held the neck in only
+four of those twenty seconds.
+
+364
+00:27:47.883 --> 00:27:53.283
+[The recording: the nylon song]
+
+365
+00:27:53.383 --> 00:27:57.998
+On the nylon guitar,
+no detector found a single fret line,
+
+366
+00:27:58.004 --> 00:28:00.622
+so there are no cells at all.
+
+367
+00:28:00.918 --> 00:28:04.256
+CoTracker three,
+run without a graphics card,
+
+368
+00:28:04.273 --> 00:28:09.608
+drifted ninety-five pixels off
+the neck in twenty seconds.
+
+369
+00:28:09.783 --> 00:28:13.504
+MediaPipe takes three
+to five minutes a song.
+
+370
+00:28:13.916 --> 00:28:17.376
+For the AI's kit:
+a hand tracker finds the hand,
+
+371
+00:28:17.376 --> 00:28:20.853
+but no tool here read the
+string and fret from it.
+
+372
+00:28:22.350 --> 00:28:27.476
+Step eight:
+join what is heard to what is seen.
+
+373
+00:28:29.100 --> 00:28:34.800
+[The recording: the capo song]
+
+374
+00:28:35.000 --> 00:28:37.264
+Every note's onset was
+looked up in the video
+
+375
+00:28:37.264 --> 00:28:39.964
+at that moment, against the fingertips.
+
+376
+00:28:40.468 --> 00:28:43.557
+Of sixty-four fretted
+notes in twenty seconds,
+
+377
+00:28:43.557 --> 00:28:48.764
+the cell under a fingertip was
+exactly the key's for twelve.
+
+378
+00:28:50.610 --> 00:28:55.841
+Those cells can pin a note to a string
+before LilyPond chooses the rest.
+
+379
+00:28:56.473 --> 00:28:59.236
+Without the capo, that helped:
+
+380
+00:28:59.236 --> 00:29:03.335
+in these twenty seconds sixty notes moved
+into the key's place,
+
+381
+00:29:03.335 --> 00:29:05.604
+and twenty-one moved out.
+
+382
+00:29:06.109 --> 00:29:11.804
+Over the song,
+thirty-nine in a hundred became sixty-one.
+
+383
+00:29:13.000 --> 00:29:18.950
+The pins change places, not pitches,
+so both tabs sound like this.
+
+384
+00:29:19.455 --> 00:29:22.074
+Watch the moved notes light.
+
+385
+00:29:22.420 --> 00:29:28.420
+[The answer key's tab, played back: the
+pinned tab sounds the same]
+
+386
+00:29:29.770 --> 00:29:34.025
+With the true tuning and capo,
+the pins only got in the way:
+
+387
+00:29:34.124 --> 00:29:38.303
+all twelve pinned runs scored
+lower than the chooser alone,
+
+388
+00:29:38.303 --> 00:29:40.852
+by five to thirty in a hundred,
+
+389
+00:29:40.950 --> 00:29:46.924
+the nylon song's on a grid that
+borrowed the key maker's fret count.
+
+390
+00:29:48.120 --> 00:29:53.583
+Once the tuning and capo were right,
+seeing the fingers made the strings worse:
+
+391
+00:29:53.809 --> 00:29:57.275
+the cells were rarely the played position.
+
+392
+00:29:57.687 --> 00:30:03.370
+For the AI's kit: leave the pins out
+once the tuning and capo are known.
+
+393
+00:30:05.400 --> 00:30:09.638
+Step nine: write the tab as
+a file a guitarist can open,
+
+394
+00:30:09.638 --> 00:30:11.699
+draw it, and play it back.
+
+395
+00:30:12.111 --> 00:30:16.703
+The format here is Guitar Pro 5.
+
+396
+00:30:17.800 --> 00:30:21.614
+The research's first writer
+gave the whole song one tempo.
+
+397
+00:30:21.922 --> 00:30:26.386
+Fed the key's own tab,
+it kept nearly every note, in order.
+
+398
+00:30:26.693 --> 00:30:29.033
+But a player speeds up and slows down.
+
+399
+00:30:29.340 --> 00:30:33.468
+The recording on the left,
+the one-tempo file on the right.
+
+400
+00:30:33.720 --> 00:30:37.720
+[The one-tempo file over the recording]
+
+401
+00:30:37.720 --> 00:30:41.720
+[The one-tempo file over the recording]
+
+402
+00:30:42.220 --> 00:30:44.397
+The notes drift off their times:
+
+403
+00:30:44.565 --> 00:30:47.886
+only forty-four in a hundred
+of the capo song's notes
+
+404
+00:30:47.886 --> 00:30:50.365
+landed within fifty milliseconds,
+
+405
+00:30:50.405 --> 00:30:54.092
+and seven in a hundred on the nylon song.
+
+406
+00:30:54.712 --> 00:30:58.880
+A writer that sets a new
+tempo on every beat,
+
+407
+00:30:58.880 --> 00:31:00.970
+on a grid of thirty-second notes,
+
+408
+00:31:00.970 --> 00:31:05.342
+kept ninety-four to a
+hundred in a hundred.
+
+409
+00:31:05.753 --> 00:31:09.312
+The same bars from that file.
+
+410
+00:31:10.560 --> 00:31:14.560
+[The per-beat file over the recording]
+
+411
+00:31:14.560 --> 00:31:18.560
+[The per-beat file over the recording]
+
+412
+00:31:19.060 --> 00:31:21.899
+As in the post, no note was lost:
+
+413
+00:31:22.067 --> 00:31:25.997
+what one tempo loses is the timing.
+
+414
+00:31:27.450 --> 00:31:30.185
+alphaTab draws the file in a browser.
+
+415
+00:31:30.352 --> 00:31:35.119
+With a tempo change on most beats,
+it prints a tempo mark over most of them.
+
+416
+00:31:35.345 --> 00:31:38.288
+Its first bars sound like this.
+
+417
+00:31:38.540 --> 00:31:43.540
+[The drawn file's first bars, played back]
+
+418
+00:31:45.040 --> 00:31:50.619
+Its metronome keeps to a one-tempo
+file within three milliseconds.
+
+419
+00:31:51.031 --> 00:31:52.958
+With a tempo on most beats,
+
+420
+00:31:52.958 --> 00:31:57.678
+its clicks fell up to a hundred
+and thirteen milliseconds off.
+
+421
+00:31:58.182 --> 00:32:00.871
+Here is its metronome over the recording:
+
+422
+00:32:01.097 --> 00:32:05.259
+the recording on the left,
+its clicks on the right.
+
+423
+00:32:05.510 --> 00:32:11.510
+[alphaTab's metronome
+right, the recording left]
+
+424
+00:32:12.010 --> 00:32:15.330
+So every tab in this film
+is played by FluidSynth,
+
+425
+00:32:15.330 --> 00:32:20.097
+a software synthesizer, from the file's
+notes, on the recording's clock.
+
+426
+00:32:20.323 --> 00:32:24.491
+For the AI's kit: a tempo on every beat,
+
+427
+00:32:24.491 --> 00:32:28.328
+and FluidSynth to check the tab by ear.
+
+428
+00:32:29.700 --> 00:32:32.667
+The tenth test skipped the chain.
+
+429
+00:32:33.079 --> 00:32:35.865
+Hosted services that
+promise a tab in one step
+
+430
+00:32:35.865 --> 00:32:39.192
+were offered the thirty-second segments.
+
+431
+00:32:40.590 --> 00:32:43.887
+Klangio's Guitar to Tabs
+stopped before the upload,
+
+432
+00:32:43.887 --> 00:32:49.466
+at a box asking to confirm the rights to
+the music, where this test always stops.
+
+433
+00:32:49.878 --> 00:32:53.820
+Fretwise answered with a
+check that the user is human.
+
+434
+00:32:54.324 --> 00:32:57.227
+Five more needed an application,
+an account,
+
+435
+00:32:57.227 --> 00:33:01.784
+a paid plan, a rights box or a balance.
+
+436
+00:33:04.880 --> 00:33:08.892
+MiMo Flash, asked for the whole
+tab in one prompt, did answer.
+
+437
+00:33:09.164 --> 00:33:14.447
+On Imagine its tab has two of the key's
+hundred and twenty-five notes in place,
+
+438
+00:33:14.447 --> 00:33:18.795
+and its chords name one C
+for all thirty seconds.
+
+439
+00:33:18.940 --> 00:33:21.430
+The key, then MiMo.
+
+440
+00:33:22.680 --> 00:33:28.680
+[The answer key's tab, played back]
+
+441
+00:33:29.280 --> 00:33:35.280
+[MiMo v2.6 Flash's tab, played back]
+
+442
+00:33:35.880 --> 00:33:39.235
+The sound went first under a file
+name that named the song's test,
+
+443
+00:33:39.235 --> 00:33:42.202
+like capo, then again as plain clip.
+
+444
+00:33:42.335 --> 00:33:48.286
+With the same sound and prompt, MiMo
+changed its capo answer on every song.
+
+445
+00:33:48.651 --> 00:33:52.616
+All fourteen calls cost under three cents.
+
+446
+00:33:53.270 --> 00:33:58.489
+For the AI's kit:
+none of the one-call services tested here.
+
+447
+00:34:00.500 --> 00:34:05.104
+Now the whole chain,
+from the recording to a finished file.
+
+448
+00:34:05.736 --> 00:34:10.967
+Six chains ran on each song,
+one technique per step.
+
+449
+00:34:11.640 --> 00:34:15.506
+Chain one is blind:
+the best tool at each step,
+
+450
+00:34:15.506 --> 00:34:19.019
+with the tuning and capo
+from the lowest-note rule.
+
+451
+00:34:19.256 --> 00:34:23.012
+Chain two is the same,
+given the true tuning and capo.
+
+452
+00:34:23.180 --> 00:34:25.479
+Chain three is blind too,
+
+453
+00:34:25.479 --> 00:34:30.617
+with Opus 5.5 reading the capo and
+the fingertips pinning strings.
+
+454
+00:34:31.121 --> 00:34:33.652
+On the nylon song its fret grid borrowed
+
+455
+00:34:33.652 --> 00:34:38.330
+the key maker's fret count,
+which changed nothing.
+
+456
+00:34:38.330 --> 00:34:40.414
+Chain four is the one hosted call.
+
+457
+00:34:40.582 --> 00:34:43.659
+Chains five and six are
+each given part of the key,
+
+458
+00:34:43.659 --> 00:34:49.122
+its notes or its strings,
+to show what the other steps alone can do.
+
+459
+00:34:50.260 --> 00:34:56.437
+Blind, the capo song scored zero and
+the nylon song eight in a hundred,
+
+460
+00:34:56.437 --> 00:34:59.844
+both sunk by the tuning and capo answer.
+
+461
+00:35:00.152 --> 00:35:06.718
+Imagine, in standard tuning with no capo,
+scored eighty-two.
+
+462
+00:35:07.270 --> 00:35:12.663
+With Opus reading the capo, the capo
+song rose to seventy-one in a hundred.
+
+463
+00:35:12.889 --> 00:35:15.101
+Given the true tuning and capo,
+
+464
+00:35:15.118 --> 00:35:21.591
+the three songs reached seventy-five,
+seventy-one and eighty-two.
+
+465
+00:35:21.591 --> 00:35:26.010
+[The recording plays on: the capo song]
+
+466
+00:35:26.950 --> 00:35:30.096
+Even given the key's string
+for every note it found,
+
+467
+00:35:30.096 --> 00:35:33.980
+the nylon song's chain still
+misses and makes up notes:
+
+468
+00:35:34.183 --> 00:35:37.417
+here twenty-four missed
+and twenty-eight made up.
+
+469
+00:35:37.805 --> 00:35:41.650
+Listen for the gaps:
+the key, then chain six.
+
+470
+00:35:41.700 --> 00:35:47.700
+[The answer key's tab, played back]
+
+471
+00:35:48.600 --> 00:35:54.600
+[Chain-6's tab, played back]
+
+472
+00:35:56.450 --> 00:35:57.954
+Where does the score go?
+
+473
+00:35:58.052 --> 00:36:03.202
+Step by step, a wrong tuning or capo cost
+up to seventy-five notes in a hundred.
+
+474
+00:36:03.509 --> 00:36:06.945
+Finding the notes
+cost six to twenty-seven,
+
+475
+00:36:06.945 --> 00:36:09.425
+the string choice nine to twenty-one,
+
+476
+00:36:09.523 --> 00:36:15.276
+the video pins up to ten,
+and writing the file at most six.
+
+477
+00:36:17.867 --> 00:36:20.393
+Then the test this film builds to.
+
+478
+00:36:20.619 --> 00:36:24.508
+Opus 5.5 was given one of
+the three videos and asked
+
+479
+00:36:24.508 --> 00:36:29.263
+to write down what the guitarist plays,
+as a tab.
+
+480
+00:36:30.667 --> 00:36:34.392
+[The blind video's sound: the nylon song]
+
+481
+00:36:34.392 --> 00:36:38.117
+[The blind video's sound: the nylon song]
+
+482
+00:36:38.217 --> 00:36:41.369
+This was the whole prompt, with the video.
+
+483
+00:36:41.537 --> 00:36:43.715
+Nothing else about the piece.
+
+484
+00:36:43.715 --> 00:36:48.782
+[The blind video's sound: the nylon song]
+
+485
+00:36:48.782 --> 00:36:53.850
+[The blind video's sound: the nylon song]
+
+486
+00:36:53.850 --> 00:36:58.917
+[The blind video's sound: the nylon song]
+
+487
+00:36:59.017 --> 00:37:03.853
+Each song was done twice, each time
+in a fresh session with no memory:
+
+488
+00:37:04.079 --> 00:37:06.935
+once with a kit of the tools
+that measured best here,
+
+489
+00:37:06.935 --> 00:37:11.103
+and a sheet of their accuracy,
+and once bare, with Python,
+
+490
+00:37:11.103 --> 00:37:14.766
+its number libraries and the
+same file writer and checker.
+
+491
+00:37:15.178 --> 00:37:19.375
+The film calls these the
+kit arm and the bare arm.
+
+492
+00:37:19.627 --> 00:37:24.591
+With the kit, the tuning and capo are
+read the way the best technique did,
+
+493
+00:37:24.619 --> 00:37:30.756
+from frames and by ear, with the
+lowest-note rule only as evidence.
+
+494
+00:37:31.179 --> 00:37:36.781
+Same model, told to think as hard
+as it can, ninety minutes each.
+
+495
+00:37:38.177 --> 00:37:41.121
+The attempts built their
+own tools as they went.
+
+496
+00:37:41.219 --> 00:37:44.952
+On the capo song the kit
+arm cut strips of the neck,
+
+497
+00:37:45.050 --> 00:37:48.121
+one a second, to see where the hand was.
+
+498
+00:37:48.533 --> 00:37:52.817
+On Imagine the bare arm drew
+its own picture of the sound,
+
+499
+00:37:52.817 --> 00:37:55.424
+and wrote its own note finder.
+
+500
+00:37:56.827 --> 00:37:59.457
+Two things to know first.
+
+501
+00:37:59.474 --> 00:38:02.237
+This is the second run: in the first,
+
+502
+00:38:02.237 --> 00:38:07.380
+the software running the test showed
+each attempt the test's own task list,
+
+503
+00:38:07.380 --> 00:38:10.481
+which named the performers
+and the answer keys,
+
+504
+00:38:10.481 --> 00:38:12.913
+so it was run again with an empty list.
+
+505
+00:38:13.139 --> 00:38:15.670
+And the kit was picked, and measured,
+
+506
+00:38:15.670 --> 00:38:19.693
+on these same recordings,
+which favours it.
+
+507
+00:38:20.347 --> 00:38:22.646
+The attempts were told which tools to use,
+
+508
+00:38:22.646 --> 00:38:25.961
+but the others were not taken away,
+web search among them.
+
+509
+00:38:26.373 --> 00:38:31.882
+The audits found no web search, outside
+service, skill or helper agent used.
+
+510
+00:38:32.189 --> 00:38:34.895
+Two attempts looked up
+a tool's description,
+
+511
+00:38:34.895 --> 00:38:37.501
+and one stopped its own command.
+
+512
+00:38:38.897 --> 00:38:41.806
+The answer keys stayed
+on the same machine.
+
+513
+00:38:41.904 --> 00:38:44.981
+A file watch logged every
+read of their folders,
+
+514
+00:38:44.981 --> 00:38:48.319
+and an auditor read every
+attempt's transcript.
+
+515
+00:38:48.731 --> 00:38:52.289
+All six attempts were found valid.
+
+516
+00:38:53.887 --> 00:38:56.296
+All six handed in a tab,
+
+517
+00:38:56.348 --> 00:39:00.383
+a Guitar Pro file and a
+note on how they worked,
+
+518
+00:39:00.481 --> 00:39:03.634
+in thirty-two to forty-three minutes.
+
+519
+00:39:04.139 --> 00:39:07.233
+Each said it did not recognise the piece.
+
+520
+00:39:09.567 --> 00:39:11.791
+Here is what each attempt wrote,
+
+521
+00:39:11.889 --> 00:39:16.086
+against the key and
+against the fixed chains.
+
+522
+00:39:17.787 --> 00:39:22.787
+[The recording: the capo song]
+
+523
+00:39:23.387 --> 00:39:24.821
+The capo song.
+
+524
+00:39:25.326 --> 00:39:28.298
+With the kit, Opus
+merged both guitar models
+
+525
+00:39:28.426 --> 00:39:31.079
+and read capo three from the inlays,
+
+526
+00:39:31.131 --> 00:39:34.109
+overruling its own lowest-note tool.
+
+527
+00:39:34.416 --> 00:39:40.402
+Bare, it wrote its own note finder,
+with templates to set the slaps aside.
+
+528
+00:39:42.097 --> 00:39:45.034
+In these twenty seconds the kit arm has
+
+529
+00:39:45.034 --> 00:39:48.192
+eighty-three of the key's
+ninety notes in place,
+
+530
+00:39:48.192 --> 00:39:51.554
+the bare arm sixty-eight,
+missing seventeen.
+
+531
+00:39:51.722 --> 00:39:56.604
+Blue it found, gold it missed,
+orange it made up.
+
+532
+00:39:56.772 --> 00:40:01.573
+The key, the kit arm, then the bare arm.
+
+533
+00:40:01.927 --> 00:40:07.927
+[The answer key's tab, played back]
+
+534
+00:40:08.527 --> 00:40:14.527
+[The kit arm's tab, played back]
+
+535
+00:40:15.127 --> 00:40:21.127
+[The bare arm's tab, played back]
+
+536
+00:40:21.827 --> 00:40:27.377
+[The recording plays on: the capo song]
+
+537
+00:40:27.377 --> 00:40:28.962
+Over the whole song,
+
+538
+00:40:29.060 --> 00:40:33.908
+ninety-three in a hundred with the kit,
+eighty-two bare.
+
+539
+00:40:34.413 --> 00:40:37.710
+The kit arm beat every chain but
+
+540
+00:40:37.710 --> 00:40:41.048
+the one given the key's strings.
+
+541
+00:40:43.547 --> 00:40:48.547
+[The recording: Imagine]
+
+542
+00:40:49.147 --> 00:40:50.347
+Imagine.
+
+543
+00:40:50.668 --> 00:40:55.481
+Both arms named standard tuning,
+no capo, C major.
+
+544
+00:40:56.183 --> 00:41:00.879
+With the kit, Opus compared the
+two guitar models note by note.
+
+545
+00:41:01.152 --> 00:41:05.605
+Bare,
+it wrote its own onset and pitch pickers.
+
+546
+00:41:07.307 --> 00:41:12.503
+Here the kit arm has sixty-five
+of seventy-four notes in place.
+
+547
+00:41:12.810 --> 00:41:18.145
+The bare arm has thirty-seven,
+and made up sixty more.
+
+548
+00:41:18.497 --> 00:41:24.497
+[The answer key's tab, played back]
+
+549
+00:41:25.097 --> 00:41:31.097
+[The kit arm's tab, played back]
+
+550
+00:41:31.697 --> 00:41:37.697
+[The bare arm's tab, played back]
+
+551
+00:41:38.397 --> 00:41:43.947
+[The recording plays on: Imagine]
+
+552
+00:41:43.947 --> 00:41:48.969
+Over the song, eighty-six in a
+hundred against seventy-one.
+
+553
+00:41:49.137 --> 00:41:53.578
+More than a third of the bare arm's
+notes match nothing in the key.
+
+554
+00:41:56.077 --> 00:42:01.077
+[The recording: the nylon song]
+
+555
+00:42:01.677 --> 00:42:03.169
+The nylon song.
+
+556
+00:42:03.349 --> 00:42:08.411
+Both arms got five strings right and
+tuned the first a whole step too high,
+
+557
+00:42:08.411 --> 00:42:13.827
+D for C, the kit arm from the chord
+shapes, against its own rule's Drop D.
+
+558
+00:42:14.076 --> 00:42:17.624
+With the kit,
+Opus merged both guitar models.
+
+559
+00:42:17.757 --> 00:42:22.680
+Bare, it wrote its own note finder
+and kept to the first four frets,
+
+560
+00:42:22.680 --> 00:42:24.915
+as the video shows.
+
+561
+00:42:26.617 --> 00:42:29.874
+So every note the key plays
+on the first string moved.
+
+562
+00:42:30.100 --> 00:42:34.030
+The ear cannot catch a note in the
+wrong place, but the key shows it.
+
+563
+00:42:34.663 --> 00:42:37.595
+Here the arms differ more
+in the notes they found:
+
+564
+00:42:38.007 --> 00:42:42.750
+forty-four in place with the kit,
+twenty-four bare.
+
+565
+00:42:43.097 --> 00:42:49.097
+[The answer key's tab, played back]
+
+566
+00:42:49.697 --> 00:42:55.697
+[The kit arm's tab, played back]
+
+567
+00:42:56.297 --> 00:43:02.297
+[The bare arm's tab, played back]
+
+568
+00:43:02.997 --> 00:43:07.697
+[The recording plays on: the nylon song]
+
+569
+00:43:08.547 --> 00:43:12.176
+Where the beat falls in this piece
+is a judgement, so it is not scored.
+
+570
+00:43:12.402 --> 00:43:16.878
+The key's beats, the kit arm's,
+then the bare arm's.
+
+571
+00:43:17.227 --> 00:43:23.227
+[The answer key's beats as clicks]
+
+572
+00:43:23.827 --> 00:43:29.827
+[The kit arm's beats as clicks]
+
+573
+00:43:30.427 --> 00:43:36.427
+[The bare arm's beats as clicks]
+
+574
+00:43:38.277 --> 00:43:40.982
+Over the song, fifty-five in a hundred
+
+575
+00:43:40.982 --> 00:43:44.889
+with the kit, and thirty-five bare.
+
+576
+00:43:45.197 --> 00:43:48.935
+Both sit between the blind chain,
+at eight,
+
+577
+00:43:48.935 --> 00:43:53.481
+and the chain given the true tuning,
+at seventy-one.
+
+578
+00:43:55.977 --> 00:44:00.517
+Across the three songs, the kit arm
+beat the bare arm on every one,
+
+579
+00:44:00.517 --> 00:44:03.483
+by eleven to twenty notes in a hundred.
+
+580
+00:44:03.860 --> 00:44:08.139
+Both named the capo and
+tempo right on every song.
+
+581
+00:44:08.516 --> 00:44:11.413
+Neither found the nylon
+song's first string.
+
+582
+00:44:11.558 --> 00:44:17.311
+For its home key, the kit arm said
+D minor and the bare arm F major,
+
+583
+00:44:17.328 --> 00:44:19.865
+which share their notes.
+
+584
+00:44:22.167 --> 00:44:24.507
+Most of that gap came
+from finding the notes:
+
+585
+00:44:24.675 --> 00:44:27.850
+the kit arm found more, and made up fewer.
+
+586
+00:44:28.483 --> 00:44:30.242
+Once a note was found,
+
+587
+00:44:30.259 --> 00:44:35.072
+on the steel-string songs both arms
+placed it right about equally often.
+
+588
+00:44:35.704 --> 00:44:41.504
+On the nylon song, the kit arm also
+placed more of its found notes right.
+
+589
+00:44:43.257 --> 00:44:46.961
+An earlier test found Opus
+sometimes did better without tools,
+
+590
+00:44:46.961 --> 00:44:51.588
+but here the kit arm did better
+on every song, in both rounds.
+
+591
+00:44:53.287 --> 00:44:58.175
+Round one ran first,
+with the same videos, prompt, model,
+
+592
+00:44:58.175 --> 00:45:02.662
+time and kit, while each attempt
+could see the task list.
+
+593
+00:45:03.074 --> 00:45:08.159
+It put the arms in the same order,
+and where an arm kept its tuning answer,
+
+594
+00:45:08.159 --> 00:45:12.879
+its two runs differed by one
+to four notes in a hundred:
+
+595
+00:45:12.977 --> 00:45:15.921
+that is how much one attempt varies.
+
+596
+00:45:18.333 --> 00:45:22.698
+So which tools should
+an AI be given for this job,
+
+597
+00:45:22.698 --> 00:45:25.003
+and which ones make the tab right?
+
+598
+00:45:25.787 --> 00:45:29.450
+Measured on these three recordings,
+step by step:
+
+599
+00:45:31.653 --> 00:45:35.333
+For the capo, its own eyes: frames,
+
+600
+00:45:35.333 --> 00:45:38.474
+contact sheets and close
+crops of the neck.
+
+601
+00:45:38.886 --> 00:45:42.991
+That was the only way the capo was
+read right on all three songs.
+
+602
+00:45:43.298 --> 00:45:48.946
+For the tuning, eyes and ears together
+still missed the nylon guitar's.
+
+603
+00:45:49.593 --> 00:45:53.378
+To split the guitar out,
+HPSS helps a general note
+
+604
+00:45:53.378 --> 00:45:57.494
+model like Basic Pitch where
+the strings are slapped.
+
+605
+00:45:57.906 --> 00:46:01.000
+In front of the guitar-trained
+models it did not help.
+
+606
+00:46:01.633 --> 00:46:07.072
+For a band, ElevenLabs' stems
+measured cleanest.
+
+607
+00:46:07.423 --> 00:46:11.423
+[A replay: HPSS's steady
+part of the capo song]
+
+608
+00:46:12.023 --> 00:46:17.706
+For notes, a guitar-trained model,
+guitar-fl or guitar-gaps.
+
+609
+00:46:18.053 --> 00:46:22.053
+[A replay: guitar-fl's notes, played back]
+
+610
+00:46:22.653 --> 00:46:26.107
+Beat This! for the beat.
+
+611
+00:46:26.453 --> 00:46:30.453
+[A replay: Beat This!'s beats as clicks]
+
+612
+00:46:31.053 --> 00:46:35.366
+Madmom or lv-chordia for chord names,
+checked by ear.
+
+613
+00:46:35.755 --> 00:46:41.079
+tuttut or LilyPond for strings and frets,
+given the tuning and capo.
+
+614
+00:46:41.386 --> 00:46:44.497
+Then a file with a tempo on every beat,
+
+615
+00:46:44.497 --> 00:46:49.600
+drawn with alphaTab and played with
+FluidSynth against the recording.
+
+616
+00:46:49.953 --> 00:46:53.953
+[A replay: the per-beat file over the
+recording]
+
+617
+00:46:54.853 --> 00:47:00.403
+Leave out what did not help here: video
+pins once the tuning and capo are known,
+
+618
+00:47:00.403 --> 00:47:05.366
+a language model asked for notes,
+and the one-call services.
+
+619
+00:47:07.963 --> 00:47:13.879
+All of these tools ran without a graphics
+card, in seconds to minutes a song.
+
+620
+00:47:14.290 --> 00:47:19.863
+The only paid ones were ElevenLabs' stems,
+about a dollar forty a song,
+
+621
+00:47:19.863 --> 00:47:24.885
+and each look by Opus at the frames,
+about half a dollar.
+
+622
+00:47:27.183 --> 00:47:31.322
+What still fails:
+the nylon guitar's tuning,
+
+623
+00:47:31.339 --> 00:47:34.283
+which no tool and no attempt found.
+
+624
+00:47:34.590 --> 00:47:39.798
+Notes on nylon strings, where the best
+model reached zero point eight three.
+
+625
+00:47:40.105 --> 00:47:42.886
+And chord names from the tools alone,
+
+626
+00:47:42.984 --> 00:47:48.146
+right sixty-eight to eighty-six
+percent of the time.
+
+627
+00:47:49.493 --> 00:47:54.967
+These are three recordings by two players,
+with one run of most tools.
+
+628
+00:47:55.310 --> 00:47:58.288
+No strumming, no electric guitar,
+
+629
+00:47:58.537 --> 00:48:02.142
+no band, no moving camera.
+
+630
+00:48:02.392 --> 00:48:08.133
+They show where these tools stand
+on this job, not on every guitar.
+
+631
+00:48:10.333 --> 00:48:15.407
+The last word goes to the guitar,
+on the kit arm's best twenty seconds,
+
+632
+00:48:15.407 --> 00:48:19.523
+where it found every note of the key,
+with three extra.
+
+633
+00:48:19.830 --> 00:48:24.376
+Hear the key, the kit arm's tab,
+and the recording.
+
+634
+00:48:24.723 --> 00:48:30.723
+[The answer key's tab, played back]
+
+635
+00:48:31.323 --> 00:48:37.990
+[The kit arm's tab, played back]
+
+636
+00:48:37.990 --> 00:48:44.656
+[The kit arm's tab, played back]
+
+637
+00:48:44.656 --> 00:48:51.323
+[The kit arm's tab, played back]
+
+638
+00:48:53.873 --> 00:48:59.873
+[The recording]
+
+639
+00:49:02.500 --> 00:49:06.122
+The recordings are by
+Gareth Evans and Evan Handyside.
+
+640
+00:49:06.122 --> 00:49:10.180
+This film was made by
+Claude agents, for aaronorelup.com.
+
+641
+00:49:10.380 --> 00:49:16.280
+[The nylon song's last bars, under the
+credits]
+
+642
+00:49:16.280 --> 00:49:22.180
+[The nylon song's last bars, under the
+credits]
+
+643
+00:49:22.180 --> 00:49:28.080
+[The nylon song's last bars, under the
+credits]
+
+644
+00:49:28.080 --> 00:49:33.980
+[The nylon song's last bars, under the
+credits]
