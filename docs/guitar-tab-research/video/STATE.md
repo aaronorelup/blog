@@ -464,3 +464,16 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   - ch08's "from the nut" note sits under the nylon strip, though it starts with "capo song:".
   - ch16: its s2 push reaches 22 px into the margin.
 - Part publish launched: publisher, then an independent live check, then a fix and check again if needed.
+
+## 2026-11-26 02:00 UTC: the film is live
+
+- Part publish (wf_7544162c-4c2): the publisher pushed `111de742` "AO-082: the film at the top of the post" to main.
+  - The film is in R2: 726,291,765 B; media:verify passes 1410 of 1410.
+  - The web files are in `public/media/guitar-tab-tools/film/`.
+  - Post changes: the ao-shots block with 18 chapters, a folded credit of the recordings, a third opening paragraph
+    (round 2: 55 to 93 notes in 100 with the kit, 35 to 82 without), the film's costs, and a new card loop.
+  - Studio library: run `20261126-012533-vm-8c274f`, items #88975-#88992; the film is #88990. Record: `PUBLISH.md`.
+- Independent live check (publish-check): PASS on desktop and phone. Report in `results/publish-check.md`.
+- I corrected the post's credit line (Fable 5.2 directed at first, Opus 5.5 after that) in `c61d3ce9`: check 0
+  errors, build OK, 475 tests pass.
+- PR #10's description now has a section on the film. The janitor is stopped.
