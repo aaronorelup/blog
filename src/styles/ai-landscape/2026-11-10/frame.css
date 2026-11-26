@@ -12,6 +12,8 @@
 .ail-open__five { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 28px 16px; margin-top: 40px; }
 .ail-open__co { display: grid; gap: 8px; justify-items: start; align-content: start; }
 .ail-open__co .ail-mark { width: 54px; height: 54px; padding: 0; }
+/* a mark's clear space (world.css) would push it off the centre of this box: here every mark sits in the middle */
+.ail-open__co .ail-mark[data-clear] { padding: 0; }
 .ail-open__co .ail-mark__name { font-size: 16px; }
 .ail-open__who { display: flex; flex-wrap: wrap; gap: 2px 10px; }
 .ail-open__name { text-decoration: none; }

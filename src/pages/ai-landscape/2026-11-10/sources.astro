@@ -11,10 +11,13 @@ import { COPY } from '../../../components/ai-landscape/2026-11-10/data/copy.js';
 import { view } from '../../../components/ai-landscape/2026-11-10/data/view.js';
 import { COMMIT } from '../../../lib/build.js';
 import { LISTED } from '../../../data/ai-landscape.js';
+import { inPublic } from '../../../lib/paths.js';
 
 const DATE = view.snapshot.date;
 const page = `/ai-landscape/${DATE}/`;
 const canonical = `https://aaronorelup.com${page}sources/`;
+const og = `ai-landscape/${DATE}/og.jpg`;   // the snapshot's share card, as Page.astro gives it
+const hasOg = inPublic(og);
 const title = `${COPY.stamp.sources}, ${COPY.frame.title}, ${COPY.frame.snapshot.toLowerCase()} ${DATE}`;
 const description = `${view.counts.sources} ${COPY.stamp.sources.toLowerCase()}, ${view.counts.claims} ${COPY.stamp.claims}. ${COPY.frame.scope}`;
 const link = (s) => (s.kind !== 'request' && typeof s.url === 'string' && s.url.startsWith('https://') ? s.url : null);
@@ -41,6 +44,8 @@ const cited = new Set();
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
+    {hasOg && <meta property="og:image" content={`https://aaronorelup.com/${og}`} />}
+    {hasOg && <meta name="twitter:card" content="summary_large_image" />}
     <meta name="theme-color" content="#E6E8ED" />
   </head>
   <body>
