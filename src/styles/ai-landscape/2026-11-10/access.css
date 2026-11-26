@@ -15,8 +15,8 @@
 .ail-gl .ail-ln__ends:focus-visible .ail-own { outline: 2px solid var(--ail-fg) !important; outline-offset: 3px !important; }
 
 /* when the page falls back to text, the title takes focus so a screen reader hears it (index.js toText): a heading,
-   not a control, so no ring is drawn round it */
-.ail .ail-chrome__title[tabindex='-1']:focus-visible { outline: 0; box-shadow: none; }
+   not a control, so no ring is drawn round it (static.css draws every ring with !important) */
+.ail .ail-chrome__title[tabindex='-1']:focus-visible { outline: 0 !important; box-shadow: none !important; }
 
 /* a finger (SPEC 7.1): 44 px at the least. The controls SPEC 7.1 names grow to it; a control set in a line of words
    or a list row grows its hit area by padding that a negative margin takes back, so nothing around it moves.

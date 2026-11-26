@@ -210,13 +210,14 @@ Round 3 had a third reviewer, which hit Fable's limit. Round 5's art director ag
 
 Anthropic's list prices per million tokens, as listed on 3 November. Every call ran at standard speed. Playback Lens had no prices yet for Fable 5.2, Sonnet 5.5 or Haiku 5.5, so I added these to it.
 
-| Model | Input | Cache write, 5 min | Cache write, 1 hour | Cache read | Output |
-|---|---|---|---|---|---|
-| Fable 5.2 | $8 | $10 | $16 | $0.20 | $40 |
-| Opus 5.5 | $4 | $5 | $8 | $0.20 | $20 |
-| Sonnet 5.5 | $2 | $2.50 | $4 | $0.10 | $10 |
-| Haiku 5.5 | $0.10 | $0.125 | $0.20 | $0.01 | $0.50 |
+| Model | Input | Cache read | Output |
+|---|---|---|---|
+| Fable 5.2 | $8 | $0.20 | $40 |
+| Opus 5.5 | $4 | $0.20 | $20 |
+| Sonnet 5.5 | $2 | $0.10 | $10 |
+| Haiku 5.5 | $0.10 | $0.01 | $0.50 |
 
+- **Cache writes** cost 1.25 times the input price for a cache that lasts 5 minutes and twice it for one that lasts an hour: $10 and $16 for Fable, $5 and $8 for Opus, $2.50 and $4 for Sonnet, 12.5 and 20 cents for Haiku.
 - **Haiku's cache-read price** is a guess at the usual tenth of input.
 - **By kind:** cache writes $1,048, cache reads $760, output $410, plain input 13 cents. Behind 14 million output tokens sit 3.8 billion cache-read tokens.
 - **By date:** $1,187 up to the first go-live on 16 November, $1,031 after it.
