@@ -16,6 +16,8 @@ preview:
   alt: "Five glass towers in pink, blue, orange, purple and green standing on a white floor that reads THE AI LANDSCAPE"
 ---
 
+**Update, November 26.** The page is finished and [live](/ai-landscape/). [How it was made](/ledger/making-the-ai-landscape-page/) has the whole job, from this report to the page going live. This report is left as I wrote it.
+
 I asked Claude to build a new page for this site: an animated 3D snapshot of the five big AI companies, how each one's products are stacked in layers, and which one is best at what. **The research and three working design prototypes are done. The page itself isn't built yet.** I paused the job after about 4 hours because my Claude account was close to its weekly usage limit. By then 40 agents had worked on it, about $390 worth at API list prices by my estimate.
 
 - **Ten researchers** covered Anthropic, OpenAI, Google, Meta and xAI, plus who's best at what, how people manage their agents, my own setup, this site's code and the design reference I gave it.

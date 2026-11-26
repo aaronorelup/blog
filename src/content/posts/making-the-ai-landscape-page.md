@@ -1,31 +1,36 @@
 ---
 id: "AO-094"
 title: "What it took for AI agents to build my 3D AI landscape page"
-summary: "Claude agents built my 3D page on the five big AI companies. How long it took with and without usage-limit stops, which models did what, the cost, and what would have made it faster."
+summary: "How long it took with and without the usage-limit stops, which models did which jobs, the cost at API prices, and what would have made it faster."
 date: 2026-11-25
 topic: "agents"
 draft: false
+credits:
+  owner: "Aaron"
+  worker: "Anthropic fleet"
+  orchestrator: "Fable 5.2, then Opus 5.5"
+  cost: 2348
 preview:
   verdict: "15 days, 3 if never stopped"
   takeaway: "Agents took almost 15 days, or about 74 hours without the usage-limit stops, and $2,218 at API prices. No person did the work beyond my requests and OKs."
   points:
     - "For 7 to 10 of the 15 days the job sat waiting for me to come back, after a usage limit had already lifted."
-    - "Claude Fable 5.2 designed it and built the hardest parts, $1,359 of it. Opus 5.5 did research, tests and most fixes, $857."
-    - "Biggest fixes: go on with Opus at Fable's limit and resume by itself at each reset. A graphics card: a day, by estimate."
+    - "Claude Fable 5.2 designed it and built the hardest parts, $1,359. Opus 5.5 did research, tests and most fixes, $857."
+    - "Biggest savings: carry on with Opus at Fable's limit and restart itself at each reset. A graphics card: about a day."
   image: "/media/previews/making-the-ai-landscape-page.webp"
   loop: "/media/previews/making-the-ai-landscape-page.mp4"
-  alt: "Five product stacks in company colours, each with its mascot on top, above the words AI LANDSCAPE"
+  alt: "Five product stacks in company colours, each with its mascot or mark on top, above the words AI LANDSCAPE"
 ---
 
-I asked Claude to build [a 3D page that maps the AI landscape](/ai-landscape/), the five big AI companies and how each one's products stack up, and then I stayed out of the work. **It took 358 hours, almost 15 days, from my request to the finished page going live, or about 74 hours, a little over three days, without the usage-limit stops.** At Anthropic's pay-per-use API prices the work comes to **$2,218**, plus 70 credits on Higgsfield, the AI picture service that made the art. No person wrote code, designed a screen, made a picture, or reviewed or tested anything.
+I asked Claude to build [a 3D page that maps the AI landscape](/ai-landscape/), the five big AI companies and how each one's products stack up, and then I stayed out of the work. **It took 358 hours (almost 15 days) from my request to the finished page going live. Without the usage-limit stops it was about 74 hours, a little over three days.** At Anthropic's pay-per-use API prices the work comes to **$2,218**, plus 70 credits on Higgsfield, the AI picture service that made the art. No person wrote code, designed a screen, made a picture, or reviewed or tested anything.
 
-<figure><video class="fill" controls muted loop playsinline preload="metadata" poster="/media/making-the-ai-landscape-page/ai-landscape-tour.webp" src="/media/making-the-ai-landscape-page/ai-landscape-tour.mp4"></video><figcaption>A 38-second silent scroll through the best stretch of the page: the opening, Anthropic's and Google's worlds, and which company's agents run on whose models. The page is a dated snapshot of 10 November.</figcaption></figure>
+<figure class="flush"><video class="fill" controls muted loop playsinline preload="metadata" poster="/media/making-the-ai-landscape-page/ai-landscape-tour.webp" src="/media/making-the-ai-landscape-page/ai-landscape-tour.mp4"></video><figcaption>A 38-second silent scroll through the best stretch of the page: the opening, Anthropic's and Google's worlds, and the section on whose agent runs on whose. It was made frame by frame, since the cloud computer draws the page at about two frames a second. The page is a dated snapshot of 10 November.</figcaption></figure>
 
-- **Agents did the work.** One main Claude Code session on a cloud computer planned it and handed the jobs to 97 sub-agents (AI workers it starts for one task each), plus 10 quick blind tests of the design.
+- **Agents did the work.** One main Claude Code session (Anthropic's coding agent) on a cloud computer planned it and handed the jobs to 97 sub-agents (AI workers it starts for one task each), plus 10 quick blind tests of the design.
 - **Claude Fable 5.2 designed it and built the hardest parts. Claude Opus 5.5 did the research, the engineering and most of the reviews and fixes.**
 - **Five rounds of AI reviewers found 200 problems,** and a fixer agent went after each round.
 - **For 7 to 10 of the 15 days the job was waiting for me,** after a usage limit had already lifted. Once that took six days, until I typed "Continue".
-- **The biggest savings needed no new hardware.** It could have carried on with Opus when Fable's own limit ran out, and picked itself back up when a limit reset.
+- **Carrying on with Opus when Fable's own limit ran out, and picking itself back up when a limit reset, would have saved the most.** Neither needs new hardware.
 - **The slow cloud computer cost about a day of work, by estimate.**
 
 ## What the page looks like
@@ -60,7 +65,7 @@ My part was eleven messages (one passed on through another of my sessions), one 
 | 25 Nov 04:02 | Switched the model to Opus 5.5: "You hit the fable limit, but opus is fine so I set you to opus 5.5 please continue" |
 | 25 Nov 18:55 | "put it live" |
 
-The last, after the page was finished, asked for this post.
+One more message, after the page went live, asked for this post.
 
 </details>
 
@@ -83,21 +88,21 @@ The last, after the page was finished, asked for this post.
 
 I have two weekly usage limits, one on all my Claude use and a separate one on Fable alone. My other projects run on the same limits, so every percentage here counts them too. Three times Fable's ran out while the main one still had room, and once I paused the job myself at 91% of the main one.
 
-I also get a few resets that clear a limit early. Over those two weeks I used all three of Fable's and one weekly reset, with other projects running at the same time, so I can't say which went to this job. That's how the 13 November Fable limit cleared early. Only 41 to 116 of the stopped hours went to waiting on a limit, depending on when that reset went in. The rest of the time the job was waiting for me. If it had picked itself back up at each announced reset, it would have taken about 190 hours, 8 days.
+I also get a few resets that clear a limit early. I cleared the 13 November Fable limit with one of them. I've used all three of my Fable resets and one weekly reset, with other projects running at the same time, so I can't say which of the others went to this job. Only 41 to 116 of the stopped hours went to waiting on a limit, depending on when that reset went in. The rest of the time the job was waiting for me. If it had picked itself back up at each announced reset, it would have taken about 190 hours, 8 days.
 
 <details><summary>The four stops, hour by hour</summary>
 
 | Stop | Whole stretch | Until the limit reset | Reset, waiting for me |
 |---|---|---|---|
-| 11 Nov, a pause I asked for at 91% of my weekly limit for all of Claude, which another of my jobs was using too | 26.0 h | 9.3 h, to the weekly reset | 16.8 h |
+| 11 Nov, a pause I asked for at 91% of my weekly limit for all of Claude, which another of my jobs was using too | 26.0 h | 9.3 h, to the weekly limit's regular reset, 11 Nov 11:00 UTC | 16.8 h |
 | 13 Nov, Fable's limit, six minutes before the first machine restart | 75.2 h | 0 to 75.2 h, until one of my resets cleared it | the rest |
 | 17 Nov, Fable's limit | 182.0 h | 31.1 h, to 18 Nov 11:00 UTC | 151.0 h |
 | 25 Nov, Fable's limit, ended by my switch to Opus | 0.24 h | 0.24 h | 0 |
 | All four | 283.5 h | 40.6 to 115.8 h | 167.7 to 243.0 h |
 
 - **Without the stops:** 357.6 minus 283.5 is 74.0 hours. Without the 8.0-hour wait for my "put it live" too, it's 66.1, the same as the time agents were working.
-- **If it had restarted itself at each announced reset,** the job would have taken about 190 hours. That saves nothing on the 13 November stop: a reset I used had cleared that limit by the time I came back on 16 November, two days before its announced reset, at a time the logs don't show. Another of those resets may have cleared the 17 November limit early too. Nothing in the logs shows it, so the table counts that stop to its announced reset.
-- **Agents side by side:** 93.0 agent-hours in 66.1 working hours, about 1.4 at once on average. Exactly one sub-agent was running for 47.0 of the 64.9 hours that any was.
+- **If it had restarted itself at each announced reset,** the job would have taken about 190 hours. That saves nothing on the 13 November stop: I had cleared that limit with one of my resets by the time I came back on 16 November, two days before its announced reset.
+- **Agents side by side:** 92.7 agent-hours in 66.1 working hours, about 1.4 at once on average. Exactly one sub-agent was running for 47.0 of the 64.9 hours that any was.
 - **How "working" is counted:** an agent counts as working between two lines of its log that are at most 15 minutes apart, or while it waits on its own command. Any rule from 10 to 60 minutes gives about 66 hours.
 - **The first version** went live on 16 November at 04:36 UTC, 127.2 hours in. The finished one went live on 25 November at 18:59 UTC.
 
@@ -129,24 +134,31 @@ I also get a few resets that clear a limit early. Over those two weeks I used al
 
 ## Which models did what
 
-| Model | What it did | Runs | At API prices |
+| Model | Runs | At API prices |
+|---|---|---|
+| Claude Fable 5.2 | 28 | $1,359 |
+| Claude Opus 5.5 | 68 | $857 |
+| Claude Sonnet 5.5 | 10 | $1.75 |
+| Claude Haiku 5.5 | 1 | under 1 cent |
+| Higgsfield | | 70 credits |
+
+- **Fable 5.2** is Anthropic's most capable public model, at twice Opus's price on everything but cache reads. It ran the main session until the last day. It made three competing designs and the build plan, built the five company worlds and the page around them, made the design fixes and reviewed it as a first-time visitor would.
+- **Opus 5.5** ran the ten researchers, the fact base (every claim checked against its source by a second agent), the design judges, tests and engineering, and most reviews and fixes. It put the page live and did every job after the switch.
+- **Sonnet 5.5** ran ten blind tests of about 20 seconds each. In each it was shown the five company rooms with every word and logo hidden and asked whose room each was.
+- **Haiku 5.5** read one page of Anthropic's docs for the main session.
+- **Higgsfield** made 30 still pictures with its Nano Banana Pro model and 10 background removals with its background remover.
+
+<details><summary>Hours, tokens and runs per model</summary>
+
+| Model | Agent-hours | Output tokens | Cache reads |
 |---|---|---|---|
-| Claude Fable 5.2 | Anthropic's most capable public model, at twice Opus's price on everything but cache reads. Ran the main session until the last day. Made three competing designs and the build plan, built the five company worlds and the page around them, made the design fixes and reviewed it as a first-time visitor would | 28 | $1,359 |
-| Claude Opus 5.5 | Ten researchers, the fact base (every claim checked against its source by a second agent), design judges, tests and engineering, most reviews and fixes, putting it live, and every job after the switch | 68 | $857 |
-| Claude Sonnet 5.5 | Ten blind tests of about 20 seconds each: shown the five company rooms with every word and logo hidden, asked whose room each was | 10 | $1.75 |
-| Claude Haiku 5.5 | Read one page of Anthropic's docs for the main session | 1 | under 1 cent |
-| Higgsfield | 30 still pictures with its Nano Banana Pro model and 10 background removals with its background remover | | 70 credits |
+| Fable 5.2 | 48.1 | 6.5 million | 1.65 billion |
+| Opus 5.5 | 44.5 | 7.4 million | 2.15 billion |
+| Sonnet 5.5 | 3 minutes | 19,604 | 735,258 |
+| Haiku 5.5 | 30 seconds | 3,067 | 4,015 |
 
-<details><summary>Runs, hours and tokens per model</summary>
-
-| Model | Runs | Agent-hours | Output tokens | Cache reads |
-|---|---|---|---|---|
-| Fable 5.2 | 28, plus the main session until 25 Nov 04:02 UTC | 45.6 | 6.5 million | 1.65 billion |
-| Opus 5.5 | 68, plus the main session after that | 44.4 | 7.4 million | 2.15 billion |
-| Sonnet 5.5 | 10 | 3 minutes | 19,604 | 735,258 |
-| Haiku 5.5 | 1 | 30 seconds | 3,067 | 4,015 |
-
-- The 97 runs were 90 jobs and 7 reruns after a machine restart or a usage stop. Six more Fable runs started after its limit and died on their first step.
+- **Fable's and Opus's rows include the main session,** on Fable until 25 Nov 04:02 UTC (2.4 agent-hours) and on Opus after that (0.2). Without it they are 45.6 and 44.4.
+- The 97 runs (Fable's 28, Opus's 68 and Haiku's 1) were 90 jobs and 7 reruns after a machine restart or a usage stop. Six more Fable runs started after its limit and died on their first step.
 - The 97 don't count the 10 Sonnet blind tests or the agent that wrote my progress report ($5.64, left out of the cost).
 - Every agent in the scripted runs but one, which only read a finished review back into a short summary, used the extra-high reasoning setting.
 - I'd said the Opus agents could hand bulk work to Sonnet 5.5 helpers. The agents inside a scripted run had no tool to hand work to helpers, so Sonnet only ran the blind tests, which they started as one-off sessions.
@@ -158,15 +170,15 @@ I also get a few resets that clear a limit early. Over those two weeks I used al
 
 The 10 scripted runs: the fact base, the design (three concepts and four judges), two build stages (art and the foundation, then six building packages), review round 1, its fixes with round 2, a studio pass with round 3, a finish pass with round 4, the final fixes, and round 5 with its fixes.
 
-| Round | When | Reviewers | Blockers | Major | Minor |
-|---|---|---|---|---|---|
-| 1 | 12 Nov | 6 | 6 | 52 | 42 |
-| 2 | 16 Nov | 3 | 1 | 15 | 28 |
-| 3 | 17 Nov | 2, the third hit Fable's limit | 1 | 6 | 9 |
-| 4 | 25 Nov | 3 | 0 | 5 | 17 |
-| 5 | 25 Nov | 2 | 0 | 2 | 16 |
+| Round | When | Reviewers | Found (blocker / major / minor) |
+|---|---|---|---|
+| 1 | 12 Nov | 6 | 6 / 52 / 42 |
+| 2 | 16 Nov | 3 | 1 / 15 / 28 |
+| 3 | 17 Nov | 2 | 1 / 6 / 9 |
+| 4 | 25 Nov | 3 | 0 / 5 / 17 |
+| 5 | 25 Nov | 2 | 0 / 2 / 16 |
 
-Round 5's art director agent said "Yes, I would put it live today".
+Round 3 had a third reviewer, which hit Fable's limit. Round 5's art director agent said "Yes, I would put it live today".
 
 </details>
 
@@ -203,14 +215,15 @@ Anthropic's list prices per million tokens, as listed on 3 November. Every call 
 | Fable 5.2 | $8 | $10 | $16 | $0.20 | $40 |
 | Opus 5.5 | $4 | $5 | $8 | $0.20 | $20 |
 | Sonnet 5.5 | $2 | $2.50 | $4 | $0.10 | $10 |
-| Haiku 5.5 | $0.10 | $0.125 | $0.20 | $0.01, a guess at the usual tenth of input | $0.50 |
+| Haiku 5.5 | $0.10 | $0.125 | $0.20 | $0.01 | $0.50 |
 
+- **Haiku's cache-read price** is a guess at the usual tenth of input.
 - **By kind:** cache writes $1,048, cache reads $760, output $410, plain input 13 cents. Behind 14 million output tokens sit 3.8 billion cache-read tokens.
 - **By date:** $1,187 up to the first go-live on 16 November, $1,031 after it.
 - **Fable is 61% of the cost** for 47% of the output, because it costs twice as much per token on everything but cache reads.
 - **Pictures:** 25 stills and all 10 background removals on 12 November, 5 more stills on 16 November. Three of the 30 weren't used.
 - **My agents' first count** came to $2,218.23, 35 cents more. It ran six minutes past the go-live, to my request for this post, and picked up the live checks in between. Otherwise both counted the same messages at the same prices.
-- **This post and the video:** writing this post (three researchers, a writer, two checkers and a fixer, all Opus) cost $45 more, measured at 21:02 UTC on 25 November. The video was made after that, so it isn't in any figure here. By then the whole session came to $2,279, with my progress report, this post, and the work of listing the page and measuring all this.
+- **This post and the video:** writing this post (three researchers, a writer, two checkers and a fixer, all Opus) cost $45 more by 21:02 UTC on 25 November. The video took four more Opus agents, $33: one to make it, two reviewers and a fixer. By 00:46 UTC on 26 November the whole session came to $2,348, with my progress report, this post and its checks, the video, and the work of listing the page and measuring all this.
 - **Not in the $2,218:** the agents' 236 web searches and 373 page fetches (about $2.36 more if priced like the API's web search at $10 per 1,000, a guess), two blind tests that left no log (about 35 cents, a guess), the cloud computer itself and the hosting.
 
 </details>
@@ -218,8 +231,8 @@ Anthropic's list prices per million tokens, as listed on 3 November. Every call 
 ## What would have made it faster
 
 1. **No usage-limit stops: 284 hours saved.** The job would have taken about 74.
-   - **Carry on with Opus when Fable runs out**, like I did on the last day: up to 257 hours, a guess. Only Fable's limit was full at those stops (the main one was at 75% and 82%), and nobody knows if the main one would have lasted to its reset.
-   - **Pick itself back up when a limit resets**, instead of waiting for my next message: about 168 hours.
+   - **Carry on with Opus when Fable runs out**, like I did on the last day: up to 257 hours, a guess. Only Fable's limit was full at those stops. On 13 November the main one was at 75% with 131 hours to its reset, so Opus would most likely have run it out too. On 17 November it was at 82% with 31 hours to go, which Opus alone might just have lasted.
+   - **Pick itself back up at each announced reset**, instead of waiting for my next message: about 168 hours.
 2. **A computer with a graphics card: about 14 to 28 hours,** by my agents' estimate.
 3. **More agents at once: up to about 6 hours.** Each scripted run had at most two working at a time.
 4. **Fewer review rounds: a few hours each,** but the last round still found two major problems.
