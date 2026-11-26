@@ -449,3 +449,18 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 - My gate on all 18 again: clean narration, current renders, every verify passes. Total 2,974.9 s.
 - Part finish, second time (args {"part":"finish"}): a re-join with the fixed join.py, gains, drift check and listen
   cues, then the three film checkers, which first check the earlier reports' problems.
+
+## 2026-11-26 01:30 UTC
+
+- Second finish run done (wf_b04793e2-97b). **All three film checks pass, 0 BLOCKING.**
+  - Film: 2,975.0 s (49:35), 726,291,765 B, I -16.0 LUFS, TP -1.9 dBTP, LRA 5.0.
+  - Sound matches picture to 0.000 ms at 54 of 54 probes.
+  - 100 listen cues; poster re-picked.
+- NITs left (none worth another render-and-rejoin):
+  - ch04: a chart holds 3.03 s.
+  - ch14: the version sub-lines are 22 px in CSS, read as 20-21 px on screen.
+  - ch06: a 3.3 s pause.
+  - Five windows are within 0.35 dB of the voice-gap range.
+  - ch08's "from the nut" note sits under the nylon strip, though it starts with "capo song:".
+  - ch16: its s2 push reaches 22 px into the margin.
+- Part publish launched: publisher, then an independent live check, then a fix and check again if needed.
