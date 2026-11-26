@@ -439,3 +439,13 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   - ch11 passes; its label reads "nylon 0.072" (tab_gp5_matched_of_truth 0.0717).
   - ch15 passes; it says "task list visible".
 - Waiting for P18 (ch16, ch04), then part finish again.
+
+## 2026-11-26 01:00 UTC
+
+- P18 finished:
+  - ch16 passes: no freeze, and its chip sits at x 96. One NIT left: its s2 push takes the left edge 22 px into the
+    margin near the end of the scene, not worth a render.
+  - ch04 passes; its text ends at 908 px.
+- My gate on all 18 again: clean narration, current renders, every verify passes. Total 2,974.9 s.
+- Part finish, second time (args {"part":"finish"}): a re-join with the fixed join.py, gains, drift check and listen
+  cues, then the three film checkers, which first check the earlier reports' problems.
