@@ -432,3 +432,10 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   - ch10 passes; its text now ends at 910 px, so the BLOCKING caption-band overlap is fixed.
   - ch13 passes: a 2% push on the whole of s3 (no freeze at -60 dB), and chain-1's note sits 7 px below its bar.
 - Waiting for P18 (ch16, ch04) and P19 (ch11, ch15).
+
+## 2026-11-26 00:50 UTC
+
+- P19 finished:
+  - ch11 passes; its label reads "nylon 0.072" (tab_gp5_matched_of_truth 0.0717).
+  - ch15 passes; it says "task list visible".
+- Waiting for P18 (ch16, ch04), then part finish again.
