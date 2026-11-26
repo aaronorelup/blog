@@ -425,3 +425,10 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   - ch14: no change needed. Its sub-lines are already 22 px, confirmed on the rendered frame; the render is unchanged.
   - ch03 passes; its mark now reads "AO-082".
 - Waiting for P17 (ch10, ch13), P18 (ch16, ch04) and P19 (ch11, ch15).
+
+## 2026-11-26 00:40 UTC
+
+- P17 finished:
+  - ch10 passes; its text now ends at 910 px, so the BLOCKING caption-band overlap is fixed.
+  - ch13 passes: a 2% push on the whole of s3 (no freeze at -60 dB), and chain-1's note sits 7 px below its bar.
+- Waiting for P18 (ch16, ch04) and P19 (ch11, ch15).
