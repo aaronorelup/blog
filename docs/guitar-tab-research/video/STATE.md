@@ -416,3 +416,12 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
   - Lags at the start, middle and end of all 18 chapters: before, 0 up to +238.7 ms; after, 54 of 54 at 0.000 ms.
   - PRODUCTION 6.6 and EMBED updated (film_raw.mp4).
 - Waiting for the chapter fixes P17 to P20, then part finish again.
+
+## 2026-11-26 00:30 UTC
+
+- P20 finished:
+  - ch08 passes. It now shows "counted from the nut, not from the capo" during l06 (the sentence was in l06 and s3,
+    not l07 as the film check said).
+  - ch14: no change needed. Its sub-lines are already 22 px, confirmed on the rendered frame; the render is unchanged.
+  - ch03 passes; its mark now reads "AO-082".
+- Waiting for P17 (ch10, ch13), P18 (ch16, ch04) and P19 (ch11, ch15).
