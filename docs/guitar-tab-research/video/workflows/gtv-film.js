@@ -399,7 +399,33 @@ Follow EMBED.md section 6 steps 3 to 6:
 Commit message: a plain subject, Aaron's words quoted above in the body, and these two last lines exactly:
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 Claude-Session: https://claude.ai/code/session_01UUo1wzpodZueETn2SeiGku
-Your final message: the commit on main, the version.json line, the live checks, the studio run id and item ids, and anything left.`
+Your final message: the commit on main, the version.json line, the live checks, the studio run id and item ids, and anything left.
+Notes for this run: the ElevenLabs credits in VOICE.md (19,477, counter 14,046 to 33,523) do not include lines voiced again later (ch03 l05b, ch06 l04, ch08 l08 and any other the chapters' qc/README.md files name); read the account's character counter now (the key through getkey.py inside a script, never printed) and give the film's total from 14,046. Read ${PROD}/FILM.md for the final length, chapters and file numbers (it was re-joined; FILM.1.md is the first join). The post's text about the film must match the film: its length, the blind test's round 2 numbers, and what the film says; do not describe anything the film does not show.`
+
+const PUB_CHECK = `[AGENT: publish-check]
+
+${COMMON}
+
+YOUR JOB: check, independently, that the film went live correctly at the top of AO-082. Another agent (the publisher) did it; you did not. Its notes: the latest commit on origin/main that touches src/content/posts/guitar-tab-tools.md, ${REC}/EMBED.md (the procedure), ${PROD}/FILM.md. Do not edit or push anything.
+1. https://aaronorelup.com/version.json shows branch main and the publisher's commit or newer.
+2. With Playwright at 1440x900 and at a phone size (390x844): https://aaronorelup.com/ledger/guitar-tab-tools/ shows the film first in the body; the video loads its metadata with duration within 0.5 s of FILM.md's length; the poster shows; the captions track loads and a cue shows at three times you seek to (one in a listening window, which should show a bracketed cue); every chapter in the strip seeks to its time from FILM.md's chapter list; playing for 5 s at three points advances currentTime; no console errors; nothing overflows the page width on the phone.
+3. The video file: a HEAD request on its URL gives the same byte length as /home/user/gtv/render/guitar-video-to-tab.mp4 and video/mp4, and a Range request returns 206. npm run media:verify passes (from a clean checkout of origin/main in ${GTV}/work/publish-check/repo, after npm ci).
+4. The post's new text: every number in it traced to its record (BLIND-RESULTS.md round 2, FILM.md, VOICE.md and the cost records); WRITING.md's voice rules (first person as Aaron, no em dashes, no semicolons); the credits of the three recordings as in songs.json; nothing it says about the film that the film does not show.
+5. The commit: it touches only the post, public/media/guitar-tab-tools/film/ and the files EMBED.md says (manifests); no video or audio in git; nothing under AO-073's paths; no key, private link or never-publish name (npm run check passes on that commit).
+6. Privacy: nothing from AO-078's removed videos anywhere on the page or in the captions file; no private person's name.
+Write ${GTV}/work/publish-check/REPORT.md. Return: pass, problems (one string each, with where and the fix), and a two-line summary.`
+
+const PUB_FIX = (problems) => `[AGENT: publish-fix]
+
+${COMMON}
+
+YOUR JOB: fix what the independent check found on the live AO-082 film page, and push the fix live. The publisher's procedure is ${REC}/EMBED.md; the check's report is ${GTV}/work/publish-check/REPORT.md. Work in the worktree /home/user/land (git fetch origin && git checkout -B land-guitar-fix origin/main). Never push from /home/user/blog, never force. Then npm run check, npm run build, npm test (fonts.test.mjs fails on main already and is not yours), the ao-shots e2e specs, git fetch origin && git rebase origin/main, git push origin HEAD:main, and within 10 minutes https://aaronorelup.com/version.json must show your commit; check the fixed things live. A fix that breaks the live page: revert at once.
+Commit message: a plain subject and these two last lines exactly:
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01UUo1wzpodZueETn2SeiGku
+The problems:
+${problems}
+Your final message: each problem and what you did, the commit, the version.json line.`
 
 // ---------- helpers ----------
 const VERDICT = {
@@ -560,7 +586,13 @@ if (PART === 'finish') {
 if (PART === 'publish') {
   phase('Publish')
   const pub = await safe(PUBLISH, o('publisher', 'Publish'))
-  return { part: 'publish', publish: short(pub) }
+  let chk = verdict(await safe(PUB_CHECK, { ...o('publish-check', 'Publish', 'high'), schema: VERDICT }))
+  let fix = null
+  if (!chk.pass && chk.problems.length) {
+    fix = await safe(PUB_FIX(numbered(chk.problems)), o('publish-fix', 'Publish', 'high'))
+    chk = verdict(await safe(PUB_CHECK, { ...o('publish-check2', 'Publish', 'high'), schema: VERDICT }))
+  }
+  return { part: 'publish', publish: short(pub), fix: fix ? short(fix) : null, check: { pass: chk.pass, problems: chk.problems, summary: chk.summary } }
 }
 
 return { error: 'unknown part: ' + PART }
