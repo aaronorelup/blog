@@ -3551,4 +3551,4 @@ None. No tool in this lane produced audio or video (`trials.md`, "Media kept out
 
 </details>
 
-*Researched, run and checked by a team of Claude agents from 2026-11-10 to 2026-11-12: Fable 5.2 directing, Opus 5.5 and Sonnet 5.5 doing the work. The film was made by Claude agents from 2026-11-24 to 2026-11-26, Fable 5.2 directing. I haven't run any of these tools myself yet. Every run, quote and count is in [the research folder](https://github.com/aaronorelup/blog/tree/research/guitar-tab-tools/docs/guitar-tab-research).*
+*Researched, run and checked by a team of Claude agents from 2026-11-10 to 2026-11-12: Fable 5.2 directing, Opus 5.5 and Sonnet 5.5 doing the work. The film was made by Claude agents from 2026-11-24 to 2026-11-26, with Fable 5.2 directing at first and Opus 5.5 after that, and Opus 5.5 doing the work. I haven't run any of these tools myself yet. Every run, quote and count is in [the research folder](https://github.com/aaronorelup/blog/tree/research/guitar-tab-tools/docs/guitar-tab-research).*
