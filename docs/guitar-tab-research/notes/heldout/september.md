@@ -7,10 +7,14 @@ folder (not in git): `/home/user/gtv/work/heldout-september/` (`PROGRESS.md`; fe
 readings: `read-A*`, `read-B*`; key: `key/bin/`, `key/out/`, `key/check/`, `key/logs/`). Every number below comes from a
 file named next to it. **No note transcriber was run on this recording, in either part**: the key was built, timed and
 checked with onset strength (spectral flux), CQT and STFT energy at the notes' partials, chroma, FluidSynth renderings
-of the key itself and the picture, so that it can score exactly those tools.
+of the key itself and the picture, so that it can score exactly those tools. **Repaired the same day** after the
+independent check (`september-check.md`): see **Repairs** at the end. The numbers in this record are those of the
+repaired key unless they say "before"; the first build is kept in the work folder's `orig/`.
 
-**Status:** key built (2026-11-27), `gtr-eval check-truth` 4325 checks, 0 mismatches. Not yet audited by an agent that
-did not build it (NOTES.md section 5 asks for that audit before the key is used).
+**Status:** key built, independently checked (`september-check.md`: not passed, five notes on a click and 35 `conf`
+changes) and repaired, all on 2026-11-27 (**Repairs**). `gtr-eval check-truth`: 4325 checks, 0 mismatches before and
+after the repair. The repair was re-checked by its own second pass (40 notes by eye, the check's scripts run again on
+the repaired key). Whether another agent re-checks the repair is the orchestrator's call.
 
 ## Source and credit
 
@@ -56,7 +60,7 @@ did not build it (NOTES.md section 5 asks for that audit before the key is used)
 | `september.full.mp4` | the same cut, no box (the title shows on its first 75 frames) |
 | `september.wav`, `september.mono.wav` | from `september.mp4`: 44.1 kHz 16-bit, stereo and mono |
 | `/home/user/gtv/truth/september/september.truth.json` | **the key** (schema of `capo.truth.json`), `september.wav` linked next to it |
-| `september.notes.csv`, `.beats.txt`, `.chords.lab`, `.mid`, `.tab.txt` | side files written from the key (the `.tab.txt` is a reading aid: one column = a sixth of a beat) |
+| `september.notes.csv`, `.beats.txt`, `.chords.lab`, `.mid`, `.tab.txt` | side files written from the key (the `.tab.txt` is a reading aid: one two-character cell = a sixth of a beat, so an eighth = 3 cells; before the repair its header said "one column") |
 | `september.tab-merged.json` | the merged reading of the tab (reader format plus a `merge` block) |
 
 **The cut (step 2).** One static camera, one take; no talking, no lesson part, no caption during the playing
@@ -146,11 +150,13 @@ check again (71 s). Python: the research's `venv-torch` (librosa 0.11), used onl
      with the note's own fundamental jump (>= 3 dB above, 1.8 x the strength; or >= 5 dB when the matched peak shows
      none) takes the note; so does a peak 12-80 ms earlier whose jump is >= 4 dB and CQT rise >= 3 dB above. Moved:
      126.717 -> 126.798 s (A3: only E6/D#5 rise at the first peak), 100.478 -> 100.426 s (A3: its partial level is
-     23.0 dB in the 30 ms window from 100.42 s and 36.1 dB in the one from 100.44 s, `key/bin/slices.py`). Intro: the
+     23.0 dB in the 30 ms window from 100.42 s and 36.1 dB in the one from 100.44 s, `key/bin/slices.py`; the repair
+     moved it back to 100.4785: the 100.42 level was the dip of a finger landing on the ringing string). Intro: the
      A2 of the third group is the peak at 3.727 s, not the louder click at 3.605 s (A2's fundamental is -0.9 dB in
      3.60-3.63 s, 38.2 dB in 3.73-3.76 s); the intro of the second round starts at 86.233 s, not at the click at
      85.972 s.
-   - Chords (15 four-note chords and 6 dyads in all): the lowest note on the event's peak (moved to a peak where its
+   - Chords (15 four-note chords and 6 dyads in all; the repair re-timed the F#4 of the four chorus D chords and one
+     E4, see Repairs): the lowest note on the event's peak (moved to a peak where its
      evidence is >= 5 dB higher: 3 chords, 70.803 -> 70.612, 73.886 -> 73.781, 107.909 -> 107.996 s); the others in
      string order 6 -> 1 on successive flux peaks up to 400 ms later (the chords are rolled upward, one peak per
      string), chosen by a DP on 0.25 x CQT rise + 0.75 x the jump of the fundamental's power in a 46 ms STFT (each
@@ -172,16 +178,23 @@ check again (71 s). Python: the research's `venv-torch` (librosa 0.11), used onl
    (estimates); voice by string (highest note on strings 1-3 melody, lowest on 4-6 bass, others chord); beats from the
    rhythm reading (beat k = eighth 2k, interpolated between plucked notes, exact on a note); downbeats = beat 1 of each
    measure; chords derived from the notes per half bar and key by Krumhansl-Kessler (the capo rules; chord naming is
-   left out of the research for now, DIRECTION.md); no taps (the tab marks none, none heard).
+   left out of the research for now, DIRECTION.md); no taps (the tab marks none). The repair added two `string-slap`
+   taps for muted strums (**Repairs**).
 
 ## Counts
 
-- **417 notes**: melody 254, bass 131, chord 32; **conf: tab+audio 351, tab 64, audio 2**. 26 legato or slide targets
-  (22 `tab+audio`). Whole piece scored: `scored_range` [0, 153.5295] s, first onset 0.308 s, last 151.412 s.
-- **192 beats, 48 downbeats** (48 measures of 4/4), tempo **77.71 bpm** (median beat 0.772 s, IQR 0.743-0.820, rubato
-  0.586-1.056 s); 62 chord segments (A:maj 19, E:maj 16, F#:min 10, D:maj 7, D:min 3, G#:min 2, G#:maj 1, N 4); key
+- **417 notes**: melody 254, bass 131, chord 32; **conf: tab+audio 377, tab 38, audio 2** (before the repair 351, 64,
+  2). 26 legato or slide targets (23 `tab+audio`; 22 before). Whole piece scored: `scored_range` [0, 153.5295] s, first
+  onset 0.308 s, last 151.412 s. **2 taps** (`string-slap`, 120.239 and 132.812 s; none before).
+- **192 beats, 48 downbeats** (48 measures of 4/4), tempo **78.01 bpm** (median beat 0.769 s, IQR 0.749-0.813, rubato
+  0.685-1.056 s; before the repair 77.71 bpm, median 0.772 s, shortest beat 0.586 s, because of the early downbeat at
+  10.08 s); 62 chord segments (A:maj 19, E:maj 16, F#:min 10, D:maj 7, D:min 3, G#:min 2, G#:maj 1, N 4); key
   **A major** (second A minor).
-- The 64 `tab` notes: 37 re-pluck a pitch that sounds in one of the three events before (A3 on s3 0 after A3 on s4 5,
+- **The 38 `tab` notes** (after the repair; `conf` now comes from the independent check, see Repairs): by string s3 19,
+  s4 15, s2 4; voice melody 23, bass 11, chord 4; 3 legato targets. Most re-pluck a pitch that is still ringing and show
+  only a broadband bump; #13 (7.518 s) and #357 (131.106 s), both A3, show no attack at all and may not have been
+  played (kept, as the check advised).
+- Before the repair, the 64 `tab` notes: 37 re-pluck a pitch that sounds in one of the three events before (A3 on s3 0 after A3 on s4 5,
   F#3 after the chord's F#3), 16 other single notes on strings 3-6, most with a clear CQT rise (up to 24 dB) but no
   sharp fundamental jump (a short STFT is too coarse for low notes), 7 chord notes, 4 legato targets. By string: s4
   29, s3 27, s2 6, s5 1, s6 1. Every `tab` note still sits on a flux peak (plucked notes) or a legato measure.
@@ -200,20 +213,24 @@ check again (71 s). Python: the research's `venv-torch` (librosa 0.11), used onl
 - **No written note is played as a different pitch** as far as these checks reach: at every onset the written pitch
   was compared with the pitches 1 and 2 semitones away (`key/bin/departures.py`, 0 flags), and the strong onsets that
   carry no key note were searched for a pitched note (`key/bin/extras.py`, `key/bin/newscan.py`): finger clicks
-  before plucks, a soft burst at 120.227 s (E3, E4, G#4 partials 15-20 dB below the notes around it), none a note.
+  before plucks, a soft burst at 120.227 s (E3, E4, G#4 partials 15-20 dB below the notes around it), none a note. The
+  check named that burst as a muted strum, and the repair added it and a weaker one at 132.80 s as `string-slap` taps.
+- **Timing (not a departure from the tab):** 14 onsets of the first build sat 43-158 ms before the note's own attack and
+  were moved in the repair (Repairs). In the chorus D chord (bars 9 and 11) the player rolls D3, A3, F#4 and E4 one
+  string at a time, the F#4 40-55 ms after the A3.
 
 ## Checks
 
 | check | result | file (work folder) |
 |---|---|---|
-| `gtr-eval check-truth` 0.12.1 | **4325 checks, 0 mismatches** | `key/logs/checktruth.json` |
-| side files against the JSON (`gtr-eval`, `--no-ledger`) | `notes.csv` onset and onset+offset F1 1.0; `.mid` onset 1.0, onset+offset 0.954 (same pitch on two strings, A3 on s4 5 and s3 0, overlaps in one MIDI channel, as in AO-082); `beats.txt` beats and downbeats F 1.0; `.tab.txt` `tab --ignore-time` 410 of 417 matched by order, 1.0 same string and fret | `key/logs/side_*.json` |
-| key rendered with FluidSynth (`notes2wav.py`, FluidR3_GM) against the recording, chroma cosine | nylon (program 24) **0.817** over 0.3-152 s, per 10 s 0.747-0.869; the same rendering one measure (3.09 s) late 0.524. Steel (25) 0.874, shifted 0.615 | `key/check/render_nylon.json`, `render_steel.json` |
-| onsets: the AO-082 checker's onset detector (librosa mel flux, `truth-check-capo/bin/timing.py` parameters) on the recording | **0.975 of the 402 key onset events have a detection within 50 ms** (per 10 s 0.93-1.00); detection minus key median -11.6 ms (p10-p90 -17.4 to -5.8: the key marks the 1 kHz+ transient peak, the mel detector the earlier low-band rise); missed: 0.308 s (first note, its A2 rises from 0.27 s: thumb stroke), 58.932 s (A3, a ringing re-pluck) and 7 legato or slide targets. 0.749 of the 526 detections are near a key onset: of the other 133, 88 lie 50-150 ms before a pluck (finger contact) and 15 just after one | `key/check/render_nylon.json`, `key/check/detector_extra.json` |
+| `gtr-eval check-truth` 0.12.1 | **4325 checks, 0 mismatches** (before and after the repair) | `fix/logs/checktruth.json` (before: `key/logs/checktruth.json`) |
+| side files against the JSON (`gtr-eval`, `--no-ledger`) | `notes.csv` onset and onset+offset F1 1.0; `.mid` onset 1.0, onset+offset 0.954 (same pitch on two strings, A3 on s4 5 and s3 0, overlaps in one MIDI channel, as in AO-082); `beats.txt` beats and downbeats F 1.0; `.tab.txt` `tab --ignore-time` 410 of 417 matched by order, 1.0 same string and fret. All the same after the repair | `fix/logs/side_*.json` (before: `key/logs/`) |
+| key rendered with FluidSynth (`notes2wav.py`, FluidR3_GM) against the recording, chroma cosine | nylon (program 24) **0.818** over 0.3-152 s, per 10 s 0.747-0.867; the same rendering one measure (3.08 s) late 0.523. Steel (25) 0.875, shifted 0.615. Before the repair 0.817 / 0.524 and 0.874 / 0.615 | `fix/check/render_nylon.json`, `render_steel.json` |
+| onsets: the AO-082 checker's onset detector (librosa mel flux, `truth-check-capo/bin/timing.py` parameters) on the recording | After the repair **0.970 of the 406 key onset events** (the four chorus F#4s are now events of their own) **have a detection within 50 ms**; it misses 40.196, 64.563 and 100.478 s, where its peak picking keeps the click or the A3 50-60 ms earlier and drops the pluck, which the check's SuperFlux finds (40.185, 64.554, 100.467 s). The check's SuperFlux: 0.978 of 406 within 50 ms, 0.968 within 30 ms (before 0.978 and 0.963 of 402; `fix/logs/sf_recall.txt`). Before the repair (the rest of this cell): 0.978 of the 402 events in the JSON (this record said 0.975) (per 10 s 0.93-1.00); detection minus key median -11.6 ms (p10-p90 -17.4 to -5.8: the key marks the 1 kHz+ transient peak, the mel detector the earlier low-band rise); missed: 0.308 s (first note, its A2 rises from 0.27 s: thumb stroke), 58.932 s (A3, a ringing re-pluck) and 7 legato or slide targets. 0.749 of the 526 detections are near a key onset: of the other 133, 88 lie 50-150 ms before a pluck (finger contact) and 15 just after one | `key/check/render_nylon.json`, `key/check/detector_extra.json` |
 | the same detector on the rendering against the recording | F 0.836 (P 0.970, R 0.734); rendering later by a median 34.8 ms = the FluidSynth nylon sample's own 23.2 ms from note-on to its detected onset + the 11.6 ms above | same |
-| early or late onsets (the capo fault) | key onset events with no detection within 30 ms but one 30-150 ms later: **1** (a pull-off, 104.171 s); 30-150 ms earlier: 4 (the first note and 3 legato or slide targets). Against 1 kHz+ peaks >= 0.15: 4 plucked notes 35-58 ms before a stronger peak where their own pitch evidence is weaker (kept) | `key/check/earlycheck.json` |
-| per-note energy at the partials (the conf test) and its calibration | Method 6 | `key/check/calib2.json` |
-| ten notes by hand (the middle of each tenth of the note list: CQT tile around the onset and the video frame) | 8 of 10 show their pitch's line starting at the onset (rise 9.8-21.0 dB, a sharp jump at 7); #145 (A3, 58.932 s, `tab`) is a ringing open string struck again (rise 3.7 dB, no jump); #312 (F#3 in the rolled chord at 117.493 s, `tab`): the F#3 line starts with the F#2 bass, 87 ms earlier, so it is either struck with the bass or only F#2's harmonic. The fretting hand is near the capo for the fret 0-3 notes and in the middle of the neck for the fret-7 notes (abs. fret 9); strings not resolvable at this size | `key/check/tencheck.jpg`, `tencheck.json` |
+| early or late onsets (the capo fault) | **This check could not see the fault the independent check found** (problem 1 there): it asks whether a detector fires near the key onset, and the key sat on finger clicks, which are onsets too. What finds it is a test on the note's own pitch: the steepest rise of its unique partials (the check's `ponset.py`) puts 5 notes more than 35 ms after the key before the repair and 1 after (#292, explained in Repairs), with 0.937 -> 0.962 of the 289 notes with a clear rise within 30 ms. The detector-based check itself, after the repair: 1 event early (the pull-off at 104.171 s); 6 late (the first note, 3 legato targets, and 40.196 and 100.478 s as in the row above). Before: 1 early, 4 late | `fix/c1/out/ponset.json`, `fix/check/earlycheck.json` (before: `key/check/`) |
+| per-note energy at the partials (the conf test) and its calibration | Method 6 (the builder's rule: 0.851 of the onsets pass after the repair, controls 0.061-0.077; before 0.846, 0.056-0.071). `conf` itself now comes from the independent check (Repairs) | `fix/check/calib2.json` |
+| ten notes by hand (the middle of each tenth of the note list: CQT tile around the onset and the video frame) | 8 of 10 show their pitch's line starting at the onset (rise 9.8-21.0 dB, a sharp jump at 7); #145 (A3, 58.932 s, `tab`) is a ringing open string struck again (rise 3.7 dB, no jump); #312 (F#3 in the rolled chord at 117.493 s, `tab`): the F#3 line starts with the F#2 bass, 87 ms earlier, so it is either struck with the bass or only F#2's harmonic. The fretting hand is near the capo for the fret 0-3 notes and in the middle of the neck for the fret-7 notes (abs. fret 9); strings not resolvable at this size. None of the ten was moved; the same after the repair | `key/check/tencheck.jpg`, `tencheck.json`; `fix/check/` |
 
 No transcription model was run against this key (the lane rule: the key will score them).
 
@@ -225,8 +242,17 @@ No transcription model was run against this key (the lane rule: the key will sco
 - **Legato and slide targets** (26): timed from salience changes and moved onto nearby flux peaks; the ornaments are
   fast (a hammer 29-157 ms after its pluck), so a target's onset may be off by up to about 50 ms. Slide targets mark
   the arrival of the pitch.
-- **The 64 `tab` notes**: re-plucks of ringing pitches and low notes without a sharp jump; their onsets are flux peaks
-  chosen with the tab's order, not proven plucks of that pitch.
+- **The 38 `tab` notes** (64 before the repair): re-plucks of ringing pitches with only a broadband bump; their onsets
+  are flux peaks chosen with the tab's order, not proven plucks of that pitch. Two of them (#13 and #357, A3) show no
+  attack at all.
+- **Two weak `tab+audio` notes moved in the repair:** #150 (A3, 60.861 s) and #377 (E4, 136.776 s) are re-plucks of a
+  ringing open string that pass the rules only just (Repairs).
+- **Onsets within 25-40 ms of the convention:** 0.898 of the 383 plucked notes lie within 25 ms of their own-pitch
+  estimate and 0.932 within 40 ms (`fix/logs/residual_repaired.txt`). The ones further off are re-plucks of ringing
+  open strings, whose estimate is unreliable, and none shows a clearly better pitch rise at its estimate than at the key.
+- **Non-note sounds that are not taps:** strong finger or hand clicks with no pitch at 25.61, 51.40, 73.29, 85.96 and
+  145.64 s (SuperFlux 0.60-1.63, energy at about 0.8-1.5 kHz only, `fix/frames/iso_a.png`, `iso_b.png`), and about 75
+  smaller clicks 50-150 ms before a pluck. A tool that reports a note at one of these is charged with an extra note.
 - **The onset convention**: the key marks the 1 kHz+ transient peak; the broadband attack starts a median 11.6 ms
   earlier and by 40-50 ms on a few thumb strokes (the first note). Models trained on GuitarSet mark about 20-30 ms
   earlier than such keys (AO-082).
@@ -234,7 +260,162 @@ No transcription model was run against this key (the lane rule: the key will sco
 - **Offsets** are a rule, not measured: use onset metrics.
 - **No video truth file** was written (not asked for this slot); the frames show one static shot with the nut and
   headstock in view.
-- **Not yet audited** by an agent that did not build the key (NOTES.md section 5).
+- **Audited** by an agent that did not build the key (`september-check.md`), and repaired (Repairs). The repair has been
+  re-checked only by its own second pass so far.
 - **Training sets**: not checked against the sets' file lists. GuitarSet (2018) cannot hold this 2023 recording; a
   Vimeo-only pop arrangement is unlikely to be in GAPS (classical scores), GOAT or the Leduc set, but that is not
   proven.
+
+## Repairs
+
+Done 2026-11-27 by a lane H repair agent after the independent check (`september-check.md`, verdict "not passed yet").
+Work folder `fix/` (`bin/`, `logs/`, `out/`, `frames/`, `c1/`; the first build's truth files in `orig/`, SHA-256
+`892d95c0cdb0...`). Repaired `september.truth.json`: SHA-256 `8bba0443bdcb...` (`fix/logs/installed.sha256`); every
+check below ran on that file.
+- **Scripts.** `fix/bin/rebuild.sh` runs the repair from the builder's refined alignment (`key/out/refined12.json`) to
+  the installed key: `moves.py`, then `build_fix.py` (the builder's `build.py` with the repair applied), then
+  `check-truth`, the install and a diff against the first build (`fix/logs/diff_repair.txt`). `fix/bin/selfcheck.sh`
+  runs the builder's self-checks again, and `fix/c1/run.sh` runs the independent check's scripts (copies) again.
+- **Per-note file.** Every note the repair changed or looked at, before and after, with its decision and evidence:
+  `fix/out/september-repairs.csv`, 60 rows. It stays out of git, as `notes/.gitignore` asks.
+- **No note transcriber was used.** Times and pitches came from the recording only: the builder's 1 kHz+ flux, the
+  check's SuperFlux peaks, STFT and CQT energy at each note's partials, and pictures.
+
+**The key's onset convention, measured** (`fix/bin/conv.py`, on 249 clean notes whose own pitch rises at least 10 dB):
+- The key marks the builder's 1 kHz+ flux peak.
+- That is the check's SuperFlux peak + 8.7 ms (IQR 5.8-11.6).
+- It is also the steepest rise of the note's unique partials + 17.0 ms (IQR 12.7-19.9). The unique partials are the
+  harmonics clear of every other key pitch nearby, measured with a 2048-point STFT at frame centre, as in the check's
+  `ponset.py`.
+- A moved note goes to the mean of those two estimates. If the builder's 1 kHz+ peak list has a peak within 5 ms of
+  that mean, the note goes to the peak instead (`fix/bin/moves.py`).
+
+### The 14 moved notes
+
+| # | note | before (s) | after (s) | shift ms | own-pitch steepest rise (s) | SuperFlux peak (s) | found by |
+|---|---|---|---|---|---|---|---|
+| 21 | G#3 s4 f4 | 10.0775 | 10.1888 | +111 | 10.1700 | 10.1820 | check, problem 1 |
+| 31 | F#3 s4 f2 | 13.0844 | 13.2401 | +156 | 13.2249 | 13.2296 | check, problem 1 |
+| 97 | F#3 s4 f2 | 40.1531 | 40.1958 | +43 | 40.1809 | 40.1850 | repair scan |
+| 103 | E3 s4 f0 | 42.0049 | 42.0612 | +56 | 42.0425 | 42.0542 | repair scan |
+| 136 | G#2 s6 f4 | 56.3664 | 56.4371 | +71 | 56.4183 | 56.4303 | check, problem 1 |
+| 150 | A3 s3 f0 | 60.7028 | 60.8605 | +158 | 60.8417 | 60.8537 | check, problem 1 |
+| 164 | F#4 s2 f5 | 64.5166 | 64.5633 | +47 | 64.5465 | 64.5544 | repair scan |
+| 205 | F#4 s2 f5 | 77.0612 | 77.1135 | +52 | 77.0965 | 77.1048 | repair scan |
+| 255 | G#3 s4 f4 | 95.8636 | 95.9660 | +102 | 95.9499 | 95.9565 | check, problem 1 |
+| 269 | A3 s3 f0 | 100.4263 | 100.4785 | +52 | 100.4585 | 100.4669 | check, problem 3 (on the builder's 1 kHz+ peak, its original time) |
+| 272 | F#3 s4 f2 | 101.1635 | 101.2083 | +45 | 101.1896 | 101.2013 | check, problem 3 |
+| 335 | F#4 s2 f5 | 124.0062 | 124.0574 | +51 | 124.0365 | 124.0526 | repair scan |
+| 376 | F#4 s2 f5 | 136.6320 | 136.6843 | +52 | 136.6636 | 136.6727 | repair scan (on the builder's 1 kHz+ peak) |
+| 377 | E4 s1 f0 | 136.6843 | 136.7761 | +92 | 136.7610 | 136.7655 | repair scan |
+
+- **Problem 1 of the check, five notes on a click: fixed** (#21, #31, #136, #150, #255).
+  - In the pictures the note's line starts at the new time, and the old time holds only the click's high partials
+    (`fix/frames/move_a.png`, `move_b.png`).
+  - Own-pitch rise, the summed unique partials over -85..-40 ms against +5..+55 ms (`fix/bin/heard.py`), old time ->
+    new time: #21 +6.3 -> +9.7 dB (h2 +15.5), #31 +1.1 -> +30.7, #136 +3.2 -> +12.5, #150 -0.4 -> +3.6 (h1 +11.6, h3
+    +13.4), #255 +3.7 -> +6.0. This measure cannot separate times 30-50 ms apart; the table's steepest rise and
+    SuperFlux columns place the notes.
+  - The new times are 0-17 ms from the check's suggestions. For #31 (13.225) and #136 (56.42) the check used the
+    half-rise + ~20 ms, and the repair used the measured convention.
+- **Problem 3 of the check: #269 and #272 fixed, #292 kept.**
+  - #269 goes back to the builder's first time, 100.4785. Its A3 dips at 100.42 (the finger lands on the ringing
+    string) and rises at 100.45-100.47.
+  - #292 (F4, 108.170 s) is plucked once, at 108.13-108.17. With a 2048 window its h4 rises 20 dB and its h1 24 dB
+    there, and neither rises again at 108.27 (`fix/bin/harm.py`). The later rise in the check's unique partials is the
+    E4 (#293, plucked at 108.27, a semitone away) leaking into the F4 h1 and h2 bands. The key's 108.170 is the
+    1 kHz+ peak of that pluck, 9 ms after its estimate.
+- **The same fault elsewhere: 7 more notes moved.** The check asked for a pitch-specific scan of every note.
+  - Two scans flagged 38 notes, and the repair looked at all of them in pictures (`fix/frames/scan_*.png`):
+    - `fix/bin/attack.py` takes the largest dB step of the note's unique partials within -80..+200 ms and compares it
+      with the key's convention.
+    - `fix/bin/scan_late.py` looks for a later rise of at least 6 dB, or of at least 10 dB at h1-h3, with a SuperFlux
+      peak.
+  - **The chorus D chord** (D3 A3 F#4 E4, chorus bars 9 and 11, four times) is rolled one string at a time. The
+    builder's roll model put the A3 and the F#4 on one flux peak. The F#4 is in fact plucked 40-55 ms after the A3, on
+    its own SuperFlux peak: #164, #205, #335, #376.
+  - In the fourth chord the E4 was one peak early too (#377). After the repair the E4 follows the F#4 by 92 ms; in the
+    other three chords the gap is 108-124 ms.
+  - The check had verified the other rolled chords, not these.
+  - **#97** (the same F#3 figure as #272, verse 2) and **#103** (E3, a downbeat) sat on a click 40-55 ms before the
+    pluck. The same figures in the other verse passes are on their attack (within 25 ms), so these were single
+    misplacements. The chorus F#4 was wrong in both choruses.
+- **Flagged and not moved: 24 notes.**
+  - Leakage, 3 notes: a pitch a semitone or a tone away leaks into the note's band in a 46 ms window. For #180 and
+    #310 it is the F#2 chord's F#3 leaking into E3 h1; an 8192 window shows E3 h1 flat there while F#3 rises 28-31 dB.
+    For #153 it is the G#3 #152 leaking into A3.
+  - Beating, 7 notes: a ringing open string with no step anywhere near (#22, #85, #88, #200, #296, #330, #371).
+  - Legato targets, 6 notes, flagged by the step measure, which does not fit them: the check's `legato.py` puts #46,
+    #109, #280 and #91 within 5 ms and #110 within 13 ms; #217 is a slide whose key marks the arrival, mid-glide by the
+    step measure.
+  - 26-38 ms from the convention by the step measure, 8 notes: #7, #16, #114, #161, #253, #319, #345, #368. By the
+    `moves.py` estimate, #345 and #368 lie within 25 ms. For the other six the own pitch rises about the same at the
+    key and at the estimate (within 1.5 dB; `fix/logs/residual_repaired.txt`). #368 sits on a strong attack
+    (SuperFlux 0.53). #319 sits 26 ms before the SuperFlux peak and rises 12 dB at both times. Both are drawn in
+    `fix/frames/scan_e.png`.
+
+**Fields that follow the moves** (`fix/logs/diff_repair.txt`):
+- **Offsets.** 14 notes' offsets changed (the rule measures from the attack). #31 was a 20 ms note ending at 13.1044
+  and now ends at 14.1341.
+- **Beats and downbeats.** 7 of 192 beats and 4 of 48 downbeats moved with their notes: 10.0775, 13.0844, 42.0049 and
+  95.8636 s, now 10.1888, 13.2401, 42.0612 and 95.9660 s.
+- **Chords.** The chord segments starting on those downbeats moved with them. The labels did not change: 62 segments.
+- **Tempo** is now 78.01 bpm (77.71 before). The key is still A major.
+
+### Problem 2, `conf`: set from the check, the moved notes re-checked
+
+- Every note's `conf` now comes from the check's `conf_check` (`check1.json`). That moves 30 notes up to `tab+audio`
+  and 5 down to `tab` (#253, #310, #327, #355, #357).
+- The 14 moved notes were re-checked at their new time. A note counts as heard when its unique partials rise at least
+  6 dB together, or one of h1-h3 rises at least 10 dB. All 14 are heard.
+- That changes one more note against the check: **#150 A3 is `tab+audio`**, where the check kept it `tab` (+8 dB at its
+  unique partials).
+  - At 60.8605, A3 h1 rises 11.6 dB and h3 13.4 dB from the damped level and stays up.
+  - The check's own two calibrated rules (null pass 0.029) both pass there when its scripts are run on the repaired key.
+  - The bump at the old time, 60.69, is the click's h6 and h8 only.
+  - It is still the weakest of the moved notes, with #377.
+- **Counts: 377 `tab+audio`, 38 `tab`, 2 `audio`** (before 351 / 64 / 2; the check's 376 / 39 / 2).
+
+### Problem 4, the muted strums: two `string-slap` taps
+
+- **120.239 s** (SuperFlux 1.36 at 120.227): open-string partials rise 15-28 dB and die within about 60 ms.
+- **132.812 s** (SuperFlux 0.61 at 132.804): the same, weaker.
+- Each tap sits at the builder's 1 kHz+ peak (`fix/bin/tapcheck.py`, `fix/frames/taps.png`). The video frames do not
+  settle the stroke at this size.
+- **Clicks that are not taps.** The strong isolated clicks at 25.61, 51.40, 73.29, 85.96 and 145.64 s carry no pitch
+  (energy at about 0.8-1.5 kHz only, no line after them). They are named under What remains uncertain and are not taps:
+  a finger or hand sound is not a stroke.
+
+### Problem 5, small: fixed
+
+- The `.tab.txt` header now says what a column is: one two-character cell = a sixth of a beat (an eighth = 3 cells = 6
+  characters, a bar = 24 cells).
+  - The check counted characters, so it read the old "one column = a sixth of a beat" as wrong. For a two-character
+    cell it was right, but it was unclear.
+- The early-placement line of Checks now names the fault that check cannot see.
+
+### Checks after the repair
+
+| check | after (before) | file |
+|---|---|---|
+| `gtr-eval check-truth` 0.12.1 | 4325 checks, 0 mismatches, 2 taps (the same, 0 taps) | `fix/logs/checktruth.json` |
+| side files rewritten and scored against the JSON | `notes.csv` 1.0 / 1.0; `.mid` onset 1.0, onset+offset 0.954; `beats.txt` F 1.0; `.tab.txt` 410 of 417 matched, 1.0 same string and fret (all as before) | `fix/logs/side_*.json` |
+| the check's schema script (copy) | every key present, 0 duplicates, 0 same-string overlaps, pitch formula 417/417; notes under 30 ms: #26 and #108 only (#31 fixed); taps sorted, inside the audio | `fix/c1/out/schema.json` |
+| the check's pitch-specific onsets (`ponset.py`, copy) | 0.962 of the 289 notes with a clear rise (>= 6 dB) within 30 ms of the key (0.937 of 287); notes whose pitch starts more than 35 ms after the key: 1, #292, explained above (5) | `fix/c1/out/ponset.json`, `fix/logs/c1_rerun_compare.txt` |
+| the check's two `conf` rules (copies of `pernote4.py`, `peaks.py`, `verdicts.py` with its look decisions) | both rules pass for 0.818 of the notes (0.813). The verdicts differ from the key's `conf` only at #150 (above), because the check's look decision for it was made at the old time | `fix/c1/out/check1_rerun.json` |
+| the check's SuperFlux against the key events | 0.978 of 406 events within 50 ms, 0.968 within 30 ms (0.978 and 0.963 of 402) | `fix/logs/sf_recall.txt` |
+| own-pitch estimate (`moves.py` rule) for every plucked note | 0.898 of 383 within 25 ms of the key, 0.932 within 40 ms (0.872 and 0.909) | `fix/logs/residual_repaired.txt` |
+| FluidSynth rendering against the recording, chroma | nylon 0.818, one measure late 0.523; steel 0.875 / 0.615 (0.817 / 0.524, 0.874 / 0.615) | `fix/check/render_*.json` |
+| the builder's detector checks | mel detector 0.970 of 406 (0.978 of 402), with the three misses explained in Checks; early/late as in Checks | `fix/check/render_nylon.json`, `earlycheck.json` |
+
+**Second pass, fresh eyes.** `fix/bin/pass2.py`, seed 20261127, took 30 random notes that were not moved and 10 of the
+14 moved notes. For each, the repair looked at a CQT crop with the note's unique-partial, h1 and h2 level traces and
+both detectors' peaks (`fix/frames/p2_0.png` to `p2_6.png`). Verdicts are in `fix/out/pass2_look.tsv`, numbers in
+`fix/out/pass2.json`.
+- **Random 30.** All 30 sit on the attack of their own pitch; for legato targets, the attack of the target pitch.
+- **`conf` of the random 30.** All 30 match what the pictures show: 27 heard, and 3 `tab` with no rise (#28, #85,
+  #310).
+  - The numeric heard rule agrees on 29. #46 is a hammer target whose unique set is only h7; in the picture its h1
+    rises 20 dB at the hammer.
+- **The 10 moved.** All 10 are heard at their new time, with the line starting there. #150 and #377 are weak (above).
+  #21 and #255 show the click's small G#3 bump 100 ms earlier and the pluck at the new time.

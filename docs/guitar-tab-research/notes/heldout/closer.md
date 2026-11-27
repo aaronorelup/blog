@@ -3,9 +3,11 @@
 Lane H of the NOTES session, 2026-11-27. The first part of this record covers **fetch and prepare** (task steps 1-4):
 the files, the cut, the time base, the tuning and capo checks, the rights note and the credit line. **The key** (the
 two readings of the tab compared and merged, notes timed to the recording, `conf`, the builder's own checks) is in
-[The key](#the-key) below; the independent check and the audit by an agent that did not build it are still to come.
+[The key](#the-key) below. An agent that did not build it checked it (`closer-check.md`), and the key was repaired
+the same day ([Repairs](#repairs), at the end); the audit is still to come.
 Work folder (not in git): `/home/user/gtv/work/heldout-closer/` (`PROGRESS.md`, `bin/`, `logs/`, `frames/`, `checks/`,
-`tabfix/`; the readers' `read-A*`/`read-B*`; the key builder's `key/`). Every number below comes from a file named next
+`tabfix/`; the readers' `read-A*`/`read-B*`; the key builder's `key/`; the checker's `check/`; the repair's `repair/`,
+with the first build in `orig/`). Every number below comes from a file named next
 to it. **No note transcriber was run on this recording, in any step**: the prepare checks and the key use only the raw
 audio (onset strength, STFT and CQT, chroma, energy at a note's partials at a known time), FluidSynth renders of the
 tab or the key, the playback cursor and the picture.
@@ -174,6 +176,11 @@ Built 2026-11-27 by lane H's key builder. Truth: `/home/user/gtv/truth/closer/cl
 `bar_fit.py`, `align_dp.py`, `build_truth.py`, `tuning.py`; `truth-fix-capo/bin/feat.py`, `retime4.py`), copied and
 changed, never edited in place.
 
+**This section describes the first build** (SHA-256 `bbfc78d24489...`, kept in the work folder's `orig/`). It was
+repaired the same day after the independent check: `conf` now comes from that check, the 7 unison doubles are one note
+each (1,149 notes) and 8 notes moved by 35-64 ms. [Repairs](#repairs) at the end gives the repaired key's numbers
+(SHA-256 `4c91534f5c5c...`).
+
 ### Files
 
 | file (`/home/user/gtv/truth/closer/`) | what |
@@ -338,3 +345,189 @@ note at its place).
 - **Voices, chords and key are derived** by rule, not given by the tab. **Taps**: kinds follow the legend; `lh` and `cl`
   times are envelope peaks near the written position.
 - **Not done here**: the independent check by an agent that did not build the key, and its audit.
+
+## Repairs
+
+Done 2026-11-27 by lane H's repair agent, after the independent check (`closer-check.md`). That agent built neither the
+key nor the check. Work folder `/home/user/gtv/work/heldout-closer/repair/` (`bin/`, `logs/`, `out/`, `frames/`; progress
+in the work folder's `PROGRESS.md`). The first build is kept in `/home/user/gtv/work/heldout-closer/orig/` (SHA-256
+`bbfc78d24489...`, with `SHA256SUMS`). Repaired `closer.truth.json`: SHA-256 `4c91534f5c5c...`
+(`repair/logs/installed.sha256`). Every changed note, before and after, with its reason, is in
+`/home/user/gtv/heldout/closer/closer-repairs.csv`: 122 rows (8 `retime`, 7 `unison`, 7 `unison-kept`, 100 `conf`). It is
+per-note data, so it is kept with the key outside git, next to the check's `closer-check-conf.csv`. The whole repair runs
+again from `repair/bin/run_all.sh` (gtr-run r1480, 2 cores, 43 s), then `bin/install.sh`.
+
+**No note transcriber was run.** The evidence is:
+- the check's own measures (its scripts copied into `repair/bin/`, never edited in place);
+- its two onset detectors' outputs (SuperFlux, HFC);
+- STFT magnitudes at each note's own partials, in 512- to 2048-point windows (`bin/p4scan.py`, `ptrace.py`, `tapscan.py`);
+- CQT pictures (`bin/detail.py`) and my eyes.
+
+The key builder's `build_truth.py` was copied as `bin/build_truth_fix.py` and changed only where the repair needed it.
+
+**In one line:** 1,156 → **1,149 notes**; `conf` **1,074 `tab+audio`, 74 `tab`, 1 `audio`** (was 1,056 / 99 / 1);
+8 notes re-timed by 35-64 ms; one beat moved 35 ms with its event.
+- Unchanged: pitches, strings, frets, voices of the remaining notes, the 243 taps, the 96 downbeats, the 187 chord segments,
+  key, tempo, tuning and `closer.wav`.
+- `what` and `derivation` (`onsets`, `conf`, `conf_counts`, new `unison` and `repair`) say what changed.
+
+### Problem 1, `conf`: fixed (taken from the check)
+
+- Every note's `conf` is now the check's verdict (`check1.json`):
+  - S, L, C → `tab+audio`;
+  - N → `tab`;
+  - the added D#3 of bar 68 stays `audio` (level S).
+  The 8 re-timed notes were checked again at their new time, with the check's rule (`notecheck.py`, `notecheck2.py`
+  without the null sets, `verdict.py`) and with my own scan (Problem 3).
+- **100 notes change against the first build** (rows with `change` = `conf` in `closer-repairs.csv`):
+  - 61 `tab` → `tab+audio` (16 S, 5 L, 40 C);
+  - 39 `tab+audio` → `tab` (34 with no attack, 3 absent, 2 weak).
+  The check's 105 are these 100, plus 4 second notes of unison pairs (merged now, Problem 2) and #840 at 184.93 s. #840
+  had no attack at its old time; at its new time it is heard (C), so it stays `tab+audio`.
+- The levels are in a new side file, `/home/user/gtv/truth/closer/closer.conf-levels.csv` (index, onset, pitch,
+  string, fret, conf, level, source):
+  - S 876, L 35, C 164;
+  - N 74 (68 no attack, 4 absent, 2 weak).
+  **A strict heard set is S + L: 911 notes.** C is not pitch-specific (the check's null test passes 62 % of ringing
+  pitches).
+- **The check's rule, run again on the installed key, gives its `conf` on all 1,149 notes** (`repair/logs/summary_installed.log`).
+  No unmoved note changed level, even where a moved or merged note changed what starts next to it.
+
+### Problem 2, the 7 unison pairs: fixed
+
+- Each pair is now one note:
+  - Kept: the higher string, s3 0 for the six G#3 pairs and s4 0 (the pull-off target) for the D#3 of bar 11. Its
+    offset is as long as the other's or longer.
+  - The other string is recorded on it, e.g. `"unison": {"string": 4, "fret": 5}` (bar 11: `{"string": 5, "fret": 5}`).
+    `check-truth` ignores the extra key, as it does `harmonic` and `legato`.
+- `conf` of each kept note is its own; the check gave its U to the second note. All 7 are `tab+audio` (S 3, C 3, L 1).
+- The let-ring offset of the note before the dropped one on its string still stops at its attack: that string was
+  struck.
+- **A transcriber can now reach recall 1,149/1,149.**
+- `closer.tab.txt` still draws both strings: 1,156 note heads, the same file as before (SHA-256 `33a0bbf76410...`).
+  `closer.tab-merged.json` is untouched.
+  - Scored as a tool output against the JSON (`gtr-eval tab --ignore-time`): 1,148 of 1,149 same string and fret.
+  - The one is the bar 11 pair: the matcher pairs the key's s4 0 with the drawn s5 5 (same pitch, same time).
+  - A tool that writes such a unison on either string is scored the same way.
+
+### Problem 3, chord notes split 44-64 ms after their sound: fixed, and 4 more of the same kind
+
+The builder's rule split 13 notes from their chord (Method 5). The check found two of them late.
+
+- **The check's two** (`frames/d_p3.png`) rejoin their chord:
+  - #610, A#3 s2 0, bar 54: 134.3507 → 134.2926 s;
+  - #840, A#3 s2 0, bar 74: 184.9295 → 184.8657 s.
+  - In both, the A#3's partials 3-5 step up at the chord. At the old time nothing rises (−0.8 and +0.7 dB), and
+    SuperFlux and HFC detect only the chord.
+- **The other 11 split notes, reviewed** (`bin/p4scan.py`: the rise of a note's own partials for attacks from −90 to
+  +90 ms, set beside its chord partners'; partial traces in `frames/pt_splits_a.png`, `pt_splits_b.png`,
+  `pt_keep_splits.png`).
+  - **Moved 4, by 35-41 ms, onto their chord:**
+    - bar 1 pos 2.5, s3 `<12>`: 2.1420 → 2.1014 s;
+    - bar 25 pos 0, s2 0: 61.1091 → 61.0743 s;
+    - bar 94 pos 0, s2 `<12>`: 235.3923 → 235.3517 s;
+    - bar 95 pos 0, s2 `<12>`: 237.9349 → 237.9000 s.
+
+    Each has no detector onset within 15 ms of its split time (one HFC blip of 0.13 at bar 94). Its own partials rise
+    −2.4 to +1.0 dB there. Its best rise sits at the same lag from the chord as a partner's (within 17 ms).
+
+    The check kept these four on its 46 ms-window pitch flux (−6 to −14 ms). Its own per-partial attack
+    (`attack_pp_ms`) put them at −38 to −50 ms, that is on the chord.
+  - **Kept 7:**
+    - bars 2 and 93 (harmonics): two rises about 45 ms apart, the second at the key time with a detector onset there
+      (SuperFlux +3 and −3 ms);
+    - bar 43 (s3 9, F4): its partials rise 15-25 ms before the key time and 20-30 ms after the chord, with SuperFlux
+      at −6 ms;
+    - bar 5: the bass sits 52 ms before its chord, on its own attack;
+    - bars 16, 34 and 87 (D#3 bass, 29-35 ms after the chord): the fundamental rises near the split time, with a
+      thump, while some upper partials rise with the chord. The evidence is not one-sided.
+- Re-checked at the new times (`repair/out/recheck_moved.json`; own scan in `repair/logs/p4scan_moved.log`):
+
+  | note (bar, string) | before → after (s) | check's rule | own rise at the new time | best rise (lag) | chord partners' best lag |
+  |---|---|---|---|---|---|
+  | bar 1, s3 `<12>` | 2.1420 → 2.1014 | S | +9.2 dB | +12.7 dB (−2 ms) | −14, −16 ms |
+  | bar 25, s2 0 | 61.1091 → 61.0743 | C | +5.2 | +7.1 (−6) | −20, −12 |
+  | bar 54, s2 0 | 134.3507 → 134.2926 | S | +0.4 | +15.2 (−16) | −18, −16 |
+  | bar 74, s2 0 | 184.9295 → 184.8657 | C | −1.4 | +12.4 (−12) | −28, −16 |
+  | bar 94, s2 `<12>` | 235.3923 → 235.3517 | S | +3.1 | +5.1 (−16) | −22, −12 |
+  | bar 95, s2 `<12>` | 237.9349 → 237.9000 | S | +7.6 | +8.8 (−6) | −12, −6 |
+
+  (This scan's windows put the best lag about 6-20 ms before an onset-envelope peak for every note: the 30 random
+  notes of the second pass have a median of −16 ms.)
+- The let-ring offset of the note before each one on string 2 or 3 follows its new attack (6 offsets).
+
+### Problem 4, 11 notes 32-52 ms from their pitch's attack: one moved (with its chord partner), 10 kept
+
+- **Moved:** bar 45 pos 3.0, the X chord (#493 A#4 s1 7, and #492 D#4 s2 5 with it, thumb slaps on s5/s6):
+  113.5107 → 113.4759 s, onto its slap, with its beat (beat 3 of bar 45).
+  - SuperFlux detects the slap at 113.476 s and nothing within 35 ms of 113.511 s.
+  - Both pitches step up between 113.44 and 113.48 s, and not at 113.511 s (`frames/d_493.png`, `pt_p4a.png`).
+  - The builder's DP had put the event at 113.482 s before its refinement moved it.
+  - Re-checked: both S.
+- **Kept, 9 the check found early:**
+  - the notes: #85 and #86 (19.737 s), #127 (30.105), #311 (71.100), #332 (76.220), #524 (118.190), #754 (167.149),
+    #829 (182.700) and #1095 (230.365);
+  - in 512- and 1024-point windows (11.6 and 23 ms) their own partials rise at the key time, by +7.6 to +27 dB for #85,
+    #86, #127, #311, #524 and #1095 (`logs/p4scan.log`);
+  - the harmonics #332 and #754 step in partials 3-6 within 10 ms before the key time (`frames/pt_harm.png`);
+  - the later peak the check measured sits in the 46 ms window's fundamental and 2nd partial, which the wrist thump
+    excites. At #311 the C#3's partials 1-2 jump with the thump 58 ms later, while partials 3-6 step at the key time;
+  - #829 (C4, level N) has no clear attack at either time;
+  - a scan of the 50 notes that have a tap 20-100 ms away (`bin/tapscan.py`, `logs/tapscan.log`) found no other note of
+    this kind.
+- **Kept, #1097** (bar 92, G#4 s1 5): the detectors fire at 230.675 s, at the start of a slide into it (a glide from A#4
+  in the CQT). The G#4's own fundamental rises at 230.70-230.725 s, at the key time, and its partner G#3 (s4 5) does
+  too (`frames/pt_p4b.png`). It is the same slide as in bars 64, 68 and 88 (Departures).
+
+### Self-checks after the repair
+
+All from `repair/bin/checks.sh`, run on the staged and on the installed folder (`repair/logs/summary_installed.log`).
+
+| check | first build | repaired |
+|---|---|---|
+| `gtr-eval check-truth` | 11,965 checks, 0 mismatches | **11,895 checks, 0 mismatches** (1,149 notes) |
+| the check's schema script (copied) | 7 duplicate (onset, pitch) | **0**; pitch rule, overlaps on a string, ranges, lengths and side files clean |
+| side files against the JSON | csv 1.0 / 1.0; mid 1.0 (onset+offset 0.946); tab 1,156/1,156; beats, downbeats, chords 1.0 | csv 1.0 / 1.0; mid 1.0 (0.949); tab 1,148/1,149 (the unison, above); beats, downbeats, chords 1.0 |
+| the check's SuperFlux: plucked onset groups within 50 / 30 ms | 0.989 / 0.975 (713 groups) | **0.992 / 0.984** (706) |
+| the check's HFC: the same | 0.980 / 0.930 | 0.989 / 0.936 |
+| groups where both detectors are 30-150 ms off on one side | 8 | **3**: bar 7 pos 0.5 (C4, 41 ms), bar 14 (a G#3 16th, 58 ms early by the detectors, no rise of its own), bar 92 (the slide) |
+| detector-backed "key late" notes (the check's rule) | 3 (#610, #840, #1097) | 1 (the bar 92 slide, kept) |
+| the builder's `validate.py` (librosa `onset_detect`): attack events within 50 ms | 0.945; early 0, late 4 | **0.949**; early 0, late 4 |
+| the check's per-note rule against the key's `conf` | 105 disagree | **0** |
+
+Runs: gtr-run r1459 and r1461 (the first staged re-check; r1459 stopped on a JSON type and was run again), r1471
+(stage 3), r1475 and r1480 (`run_all.sh`; r1480 only changed the `derivation` text).
+
+### Second pass (fresh eyes)
+
+- **What was looked at:** 30 random notes (seed 20261127, `repair/out/pass2_sample.json`) and 10 changed ones (the 8
+  re-timed, and 2 merged unisons, bars 11 and 64).
+- **How:** a CQT ±200 ms with the key drawn on it, the note's own partial traces, and the check's SuperFlux and HFC
+  (`repair/frames/pass2_rand_a.png`, `_b`, `_c`, `pass2_moved.png`; numbers in `repair/out/pass2.json`).
+- **Random 30:** levels S 21, L 2, C 6, N 1; `conf` 29 `tab+audio`, 1 `tab`. 27 are fine: the pitch is in the CQT from
+  the key time, and the attack is there. The N note (#539, 119.99 s, G#4 s2 10) rings from before and nothing starts:
+  `tab` fits.
+- **Doubts, no change made:**
+  - **#65** (14.698 s, G3 s4 4, a thump 29 ms before): its own partials do not rise in fine windows. The check's comb
+    rule passes it (S), so its `conf` stays as the check gives it.
+  - **#70 and #71** (15.656 s, bar 7 pos 0): a spread attack. The three pitches rise over about 50 ms (15.60-15.66 s,
+    `frames/pt_bar7.png`), and the key sits at its end, on the thump. It is within 50 ms of all of it.
+- **The 8 re-timed notes:** all on their attack, with a best-rise lag of −2 to −24 ms (median −6). For unmoved notes it
+  is −16.
+- **The 2 unisons:** on their attack (bar 11: the thump and the pull-off with the pluck; bar 64: the slap).
+
+### What remains uncertain after the repair
+
+- **`tab+audio` includes 164 C notes**, heard but not pitch-specifically; use S + L (911) for a strict heard set.
+- **Kept split notes:**
+  - bars 16, 34 and 87: a bass struck with a thump, 29-35 ms after its chord; the upper partials and the fundamental
+    disagree;
+  - bars 2 and 93: harmonics with two rises 45 ms apart. A tool that reports the first rise is 46 ms early: inside the
+    tolerance, at its edge.
+- **Bar 7 pos 0:** a spread chord.
+- **Taps not re-checked.** The builder's `validate.py` lists thumps 52-70 ms after their notes, with the detection on the
+  notes (33.263, 71.158, 86.349 and 162.110 s); the note scorer does not use taps.
+- **Not re-checked here:** the tab readings, the beats (one moved with its event), downbeats, chords and the let-ring
+  offsets.
+- **The check's doubts stand:** 21 harmonic fundamentals, the missing-note candidates, and the string of the added D#3.
+- **Still to come:** an audit by an agent that built neither the key nor the repair.
