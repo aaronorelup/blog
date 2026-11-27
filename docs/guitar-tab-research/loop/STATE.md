@@ -124,7 +124,7 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   rung, nylon window cells, the heard share, the check's fixes) started 03:16.
 - The nylon-window watcher looked one folder too shallow and timed out; the windows existed (G/loop/e1/tuning/dev/).
 
-## 2026-11-27 04:25 UTC: loop fixed; second review; network closing
+## 2026-11-27 03:28 UTC: loop fixed; second review; network closing
 
 - Loop fix lane done (`LOOP-BUILD.md` rewritten): copies only (st_nlink checked at every start), every writer, reviser,
   tuner and W2 call sandboxed through `sbxcall.py`, snapshots and `--restart-from`, void stops the run (or one restart
