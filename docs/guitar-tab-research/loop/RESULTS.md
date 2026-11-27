@@ -155,5 +155,7 @@ constraint to get right.
 ## Cost
 
 The loop's blind calls, at list prices (`units_log.jsonl`, `w2_summary.json`): L1, L2, L4 and E6 $289.06 (eight runs; L3 on Boats $17.33 more; the first calls of the five paused runs $1.26 more), W2 $27.90 on the three songs and $20.65 held out,
-three dry runs $7.65, the held-out prep's nine blind runs $39.58 (`HELDOUT-PREP.md`; Closer and September's six, $29.18, in `HELDOUT-BLIND.md`). The whole session's agents are measured with the
-`agent-metrics` skill at the end. The session's weekly Claude limit read 0.88 at 07:51 UTC; it resets 2026-12-02.
+three dry runs $7.65, the held-out prep's nine blind runs $39.58 (`HELDOUT-PREP.md`; Closer and September's six, $29.18, in `HELDOUT-BLIND.md`). All blind calls (the loop and W2 runs $363.85 with
+the dry runs and L3 on Boats, the held-out prep $39.58, E1's $26.34, E2's $18.47): $448.24. The session's own agents
+(the orchestrator and 27 helpers, 2.79 million output tokens) were $266.94 API-equivalent (`cc_project.py report-self`,
+09:30 UTC): about $715 before the film. The session's weekly Claude limit read 0.88 at 07:51 UTC; it resets 2026-12-02.

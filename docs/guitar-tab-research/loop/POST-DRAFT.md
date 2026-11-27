@@ -95,6 +95,6 @@ The method was frozen before any new song was run. Every number, with the file a
 
 ## What it cost
 
-[COST: the session's API-equivalent from report-self, and the blind calls' list-price total from results.json]
+[COST, update after the film: so far] It came to about $715 of Claude usage at API list prices: $448 for the blind attempts, each a fresh Claude that never saw the answers, and $267 for the agents that built the tools, ran the tests and checked every number. It all ran on my Claude plan.
 
 *Researched, run and written up by Claude Opus 5.5 agents.*

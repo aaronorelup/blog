@@ -457,3 +457,17 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   218 / 1 / 13 / 33 (gtr-eval, e2173); solver on its packs 0.909; 24 writes, 2 revisits, 74.4 writer minutes, $17.33.
   The found tuning was kept (no tuning change). Level with W2 (0.935) at 2.2 times the cost. Thirds 0.974 / 0.912 /
   0.929 (per-unit slope -0.002). Every planned run is now done or cut; no blind run is running.
+
+## 2026-11-27 09:35 UTC: checkpoint 5 sent; where this session stops
+
+- HQ page `guitar-tab-app/loop-draft` (the script, the post draft, the results, two tables) and review 48 ("Go, voice
+  it" / "Needs changes" / "Drop it"). Review 47 (film now or after the reset) still unopened. Default unchanged: the voice
+  waits for Aaron's OK on the script, the chapters and render for the weekly reset (2026-12-02 about 11:00 UTC).
+- Measured: the session's own agents $266.94 API-equivalent (orchestrator and 27 helpers, 2.79 M output tokens,
+  report-self 09:30); all blind calls $448.24 at list prices; about $715 in all before the film. Weekly window 0.89 at
+  08:16 UTC.
+- Archived to private R2: `workbench/guitar-tab-app/loop/archive-2026-11-27/` (G/loop without media copies, and
+  G/transcripts).
+- For the film session: `FILM-SCRIPT.md` (shots, data paths, the one new overlay render for ch01), `FILM-PLAN.md`, AO-082's
+  kit; then the post from `POST-DRAFT.md` by `npm run new-post` in a worktree from origin/main, `draft: true`, the film
+  through the studio library first, cost updated in credits.
