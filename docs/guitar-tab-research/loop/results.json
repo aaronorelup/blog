@@ -1,0 +1,1288 @@
+{
+ "made_by": "G/loop/work/make_results.py",
+ "scorer": "gtr-eval 0.12.1",
+ "main_number": "same string and fret as the key, frets from each side's capo, onset within 50 ms, same pitch, as a share of all key notes (gtr-eval tab, same_string_and_fret_fraction_of_truth)",
+ "heard": "the same over the key notes whose conf is not 'tab'",
+ "loop_runs": {
+  "l1-nylon": {
+   "what": "L1: the loop with the key's notes (ASSISTED: a ceiling)",
+   "song": "nylon",
+   "units_done": 54,
+   "units_total": 54,
+   "tab": {
+    "main": 1.0,
+    "of_matched": 1.0,
+    "matched": 1.0,
+    "right": 628,
+    "wrong_place": 0,
+    "missed": 0,
+    "invented": 0,
+    "key_notes": 628,
+    "file": "G/loop/runs/l1-nylon/score/span_tab.json",
+    "eval": "e1597"
+   },
+   "heard": {
+    "main": 1.0,
+    "of_matched": 1.0,
+    "matched": 1.0,
+    "right": 556,
+    "wrong_place": 0,
+    "missed": 0,
+    "invented": 72,
+    "key_notes": 556,
+    "file": "G/loop/runs/l1-nylon/score/span_tab_heard.json",
+    "eval": "e1599"
+   },
+   "onset_f1": 1.0,
+   "onset_f1_eval": "e1598",
+   "gp5": {
+    "main": 0.942675,
+    "of_matched": 1.0,
+    "matched": 0.942675,
+    "right": 592,
+    "wrong_place": 0,
+    "missed": 36,
+    "invented": 36,
+    "key_notes": 628,
+    "file": "G/loop/runs/l1-nylon/score/span_tab_gp5.json",
+    "eval": "e1600"
+   },
+   "thirds": {
+    "first": {
+     "units": 18,
+     "right_share": 1.0,
+     "heard_right_share": 1.0,
+     "min_per_unit": 1.59,
+     "out_tokens_per_unit": 9281,
+     "cost_per_unit": 0.45,
+     "revisit_cost": 0
+    },
+    "middle": {
+     "units": 18,
+     "right_share": 1.0,
+     "heard_right_share": 1.0,
+     "min_per_unit": 1.71,
+     "out_tokens_per_unit": 9455,
+     "cost_per_unit": 0.446,
+     "revisit_cost": 0
+    },
+    "last": {
+     "units": 18,
+     "right_share": 1.0,
+     "heard_right_share": 1.0,
+     "min_per_unit": 1.49,
+     "out_tokens_per_unit": 7989,
+     "cost_per_unit": 0.391,
+     "revisit_cost": 0
+    }
+   },
+   "per_unit_slope_of_right_share": 0.0,
+   "changes": {
+    "writer": {
+     "place": {
+      "wrong-to-right": 21
+     }
+    }
+   },
+   "log": {
+    "calls": {
+     "write": 54
+    },
+    "cost_usd_list": 23.15,
+    "writer_minutes": 86.3,
+    "output_tokens": 481045,
+    "file": "G/loop/runs/l1-nylon/units_log.jsonl"
+   }
+  },
+  "l2-capo": {
+   "what": "L2: the loop, the app's path with the tuning given",
+   "song": "capo",
+   "units_done": 73,
+   "units_total": 73,
+   "tab": {
+    "main": 0.858896,
+    "of_matched": 0.871731,
+    "matched": 0.985276,
+    "right": 700,
+    "wrong_place": 103,
+    "missed": 12,
+    "invented": 132,
+    "key_notes": 815,
+    "file": "G/loop/runs/l2-capo/score/span_tab.json",
+    "eval": "e1705"
+   },
+   "heard": {
+    "main": 0.863338,
+    "of_matched": 0.869048,
+    "matched": 0.99343,
+    "right": 657,
+    "wrong_place": 99,
+    "missed": 5,
+    "invented": 179,
+    "key_notes": 761,
+    "file": "G/loop/runs/l2-capo/score/span_tab_heard.json",
+    "eval": "e1707"
+   },
+   "onset_f1": 0.917714,
+   "onset_f1_eval": "e1706",
+   "gp5": {
+    "main": 0.845399,
+    "of_matched": 0.875476,
+    "matched": 0.965644,
+    "right": 689,
+    "wrong_place": 98,
+    "missed": 28,
+    "invented": 148,
+    "key_notes": 815,
+    "file": "G/loop/runs/l2-capo/score/span_tab_gp5.json",
+    "eval": "e1708"
+   },
+   "solver_alone": {
+    "main": 0.828221,
+    "of_matched": 0.864277,
+    "matched": 0.958282,
+    "right": 675,
+    "wrong_place": 106,
+    "missed": 34,
+    "invented": 101,
+    "key_notes": 815,
+    "file": "G/loop/runs/l2-capo/score/span_solver_tab.json",
+    "eval": "e1709"
+   },
+   "solver_alone_heard": {
+    "main": 0.837057,
+    "of_matched": 0.866667,
+    "matched": 0.965834,
+    "right": 637,
+    "wrong_place": 98,
+    "missed": 26,
+    "invented": 147,
+    "key_notes": 761,
+    "file": "G/loop/runs/l2-capo/score/span_solver_tab_heard.json",
+    "eval": "e1710"
+   },
+   "thirds": {
+    "first": {
+     "units": 25,
+     "right_share": 0.8401,
+     "heard_right_share": 0.8406,
+     "min_per_unit": 2.49,
+     "out_tokens_per_unit": 14322,
+     "cost_per_unit": 0.613,
+     "revisit_cost": 3.595
+    },
+    "middle": {
+     "units": 24,
+     "right_share": 0.8376,
+     "heard_right_share": 0.8425,
+     "min_per_unit": 2.41,
+     "out_tokens_per_unit": 14464,
+     "cost_per_unit": 0.627,
+     "revisit_cost": 3.431
+    },
+    "last": {
+     "units": 24,
+     "right_share": 0.8982,
+     "heard_right_share": 0.9062,
+     "min_per_unit": 2.57,
+     "out_tokens_per_unit": 15088,
+     "cost_per_unit": 0.653,
+     "revisit_cost": 1.571
+    }
+   },
+   "per_unit_slope_of_right_share": 0.00085,
+   "changes": {
+    "writer": {
+     "keep-alt": {
+      "right-to-wrong (an invented note)": 52,
+      "wrong-to-right": 16,
+      "wrong-to-half (a played note, wrong place)": 4
+     },
+     "place": {
+      "right-to-wrong": 14,
+      "wrong-to-right": 13
+     },
+     "place-alt": {
+      "right-to-wrong": 1,
+      "wrong-to-right": 1
+     },
+     "drop": {
+      "wrong-to-right (an invented note dropped)": 24
+     },
+     "add": {
+      "right-to-wrong (an invented note)": 1
+     }
+    },
+    "revisit:habit+asked": {
+     "add": {
+      "wrong-to-right": 2,
+      "right-to-wrong (an invented note)": 1
+     }
+    },
+    "revisit:asked": {
+     "place": {
+      "wrong-to-right": 4
+     },
+     "add": {
+      "right-to-wrong (an invented note)": 1
+     }
+    },
+    "revisit:shape": {
+     "place": {
+      "wrong-to-right": 4
+     }
+    }
+   },
+   "log": {
+    "calls": {
+     "write": 73,
+     "revisit": 22,
+     "revisit-skip": 10
+    },
+    "cost_usd_list": 54.64,
+    "writer_minutes": 209.5,
+    "output_tokens": 1217633,
+    "file": "G/loop/runs/l2-capo/units_log.jsonl"
+   }
+  },
+  "l2-nylon": {
+   "what": "L2: the loop, the app's path with the tuning given",
+   "song": "nylon",
+   "units_done": 53,
+   "units_total": 53,
+   "tab": {
+    "main": 0.835987,
+    "of_matched": 0.983146,
+    "matched": 0.850318,
+    "right": 525,
+    "wrong_place": 9,
+    "missed": 94,
+    "invented": 102,
+    "key_notes": 628,
+    "file": "G/loop/runs/l2-nylon/score/span_tab.json",
+    "eval": "e1613"
+   },
+   "heard": {
+    "main": 0.875899,
+    "of_matched": 0.983838,
+    "matched": 0.890288,
+    "right": 487,
+    "wrong_place": 8,
+    "missed": 61,
+    "invented": 141,
+    "key_notes": 556,
+    "file": "G/loop/runs/l2-nylon/score/span_tab_heard.json",
+    "eval": "e1615"
+   },
+   "onset_f1": 0.844937,
+   "onset_f1_eval": "e1614",
+   "gp5": {
+    "main": 0.742038,
+    "of_matched": 0.978992,
+    "matched": 0.757962,
+    "right": 466,
+    "wrong_place": 10,
+    "missed": 152,
+    "invented": 160,
+    "key_notes": 628,
+    "file": "G/loop/runs/l2-nylon/score/span_tab_gp5.json",
+    "eval": "e1616"
+   },
+   "solver_alone": {
+    "main": 0.800955,
+    "of_matched": 0.974806,
+    "matched": 0.821656,
+    "right": 503,
+    "wrong_place": 13,
+    "missed": 112,
+    "invented": 95,
+    "key_notes": 628,
+    "file": "G/loop/runs/l2-nylon/score/span_solver_tab.json",
+    "eval": "e1617"
+   },
+   "solver_alone_heard": {
+    "main": 0.841727,
+    "of_matched": 0.977035,
+    "matched": 0.861511,
+    "right": 468,
+    "wrong_place": 11,
+    "missed": 77,
+    "invented": 132,
+    "key_notes": 556,
+    "file": "G/loop/runs/l2-nylon/score/span_solver_tab_heard.json",
+    "eval": "e1618"
+   },
+   "thirds": {
+    "first": {
+     "units": 18,
+     "right_share": 0.8451,
+     "heard_right_share": 0.8867,
+     "min_per_unit": 2.47,
+     "out_tokens_per_unit": 14189,
+     "cost_per_unit": 0.604,
+     "revisit_cost": 0
+    },
+    "middle": {
+     "units": 18,
+     "right_share": 0.8326,
+     "heard_right_share": 0.8955,
+     "min_per_unit": 2.37,
+     "out_tokens_per_unit": 13598,
+     "cost_per_unit": 0.589,
+     "revisit_cost": 0
+    },
+    "last": {
+     "units": 17,
+     "right_share": 0.8284,
+     "heard_right_share": 0.8355,
+     "min_per_unit": 2.03,
+     "out_tokens_per_unit": 11743,
+     "cost_per_unit": 0.529,
+     "revisit_cost": 0
+    }
+   },
+   "per_unit_slope_of_right_share": -0.0014,
+   "changes": {
+    "writer": {
+     "keep-alt": {
+      "wrong-to-right": 23,
+      "right-to-wrong (an invented note)": 17
+     },
+     "add": {
+      "right-to-wrong (an invented note)": 1
+     },
+     "drop": {
+      "wrong-to-right (an invented note dropped)": 10,
+      "right-to-wrong (a played note dropped)": 6
+     },
+     "place": {
+      "wrong-to-right": 4,
+      "wrong-to-wrong": 4
+     },
+     "place-alt": {
+      "wrong-to-wrong": 1
+     }
+    }
+   },
+   "log": {
+    "calls": {
+     "write": 53
+    },
+    "cost_usd_list": 30.46,
+    "writer_minutes": 121.7,
+    "output_tokens": 699814,
+    "file": "G/loop/runs/l2-nylon/units_log.jsonl"
+   }
+  },
+  "l2-standard": {
+   "what": "L2: the loop, the app's path with the tuning given",
+   "song": "standard",
+   "units_done": 56,
+   "units_total": 56,
+   "tab": {
+    "main": 0.874816,
+    "of_matched": 0.941363,
+    "matched": 0.929308,
+    "right": 594,
+    "wrong_place": 37,
+    "missed": 48,
+    "invented": 91,
+    "key_notes": 679,
+    "file": "G/loop/runs/l2-standard/score/span_tab.json",
+    "eval": "e1633"
+   },
+   "heard": {
+    "main": 0.915952,
+    "of_matched": 0.946809,
+    "matched": 0.96741,
+    "right": 534,
+    "wrong_place": 30,
+    "missed": 19,
+    "invented": 158,
+    "key_notes": 583,
+    "file": "G/loop/runs/l2-standard/score/span_tab_heard.json",
+    "eval": "e1635"
+   },
+   "onset_f1": 0.900785,
+   "onset_f1_eval": "e1634",
+   "gp5": {
+    "main": 0.863034,
+    "of_matched": 0.94061,
+    "matched": 0.917526,
+    "right": 586,
+    "wrong_place": 37,
+    "missed": 56,
+    "invented": 99,
+    "key_notes": 679,
+    "file": "G/loop/runs/l2-standard/score/span_tab_gp5.json",
+    "eval": "e1636"
+   },
+   "solver_alone": {
+    "main": 0.854197,
+    "of_matched": 0.920635,
+    "matched": 0.927835,
+    "right": 580,
+    "wrong_place": 50,
+    "missed": 49,
+    "invented": 104,
+    "key_notes": 679,
+    "file": "G/loop/runs/l2-standard/score/span_solver_tab.json",
+    "eval": "e1637"
+   },
+   "solver_alone_heard": {
+    "main": 0.879931,
+    "of_matched": 0.922662,
+    "matched": 0.953688,
+    "right": 513,
+    "wrong_place": 43,
+    "missed": 27,
+    "invented": 178,
+    "key_notes": 583,
+    "file": "G/loop/runs/l2-standard/score/span_solver_tab_heard.json",
+    "eval": "e1638"
+   },
+   "thirds": {
+    "first": {
+     "units": 19,
+     "right_share": 0.906,
+     "heard_right_share": 0.9265,
+     "min_per_unit": 2.32,
+     "out_tokens_per_unit": 13636,
+     "cost_per_unit": 0.586,
+     "revisit_cost": 1.254
+    },
+    "middle": {
+     "units": 19,
+     "right_share": 0.8478,
+     "heard_right_share": 0.9026,
+     "min_per_unit": 2.74,
+     "out_tokens_per_unit": 15855,
+     "cost_per_unit": 0.664,
+     "revisit_cost": 0
+    },
+    "last": {
+     "units": 18,
+     "right_share": 0.8512,
+     "heard_right_share": 0.8967,
+     "min_per_unit": 2.75,
+     "out_tokens_per_unit": 16552,
+     "cost_per_unit": 0.689,
+     "revisit_cost": 0
+    }
+   },
+   "per_unit_slope_of_right_share": -0.002,
+   "changes": {
+    "writer": {
+     "drop": {
+      "wrong-to-right (an invented note dropped)": 33,
+      "right-to-wrong (a played note dropped)": 7
+     },
+     "keep-alt": {
+      "right-to-wrong (an invented note)": 16,
+      "wrong-to-right": 7
+     },
+     "place": {
+      "wrong-to-right": 13
+     },
+     "place-alt": {
+      "wrong-to-right": 2
+     },
+     "add": {
+      "right-to-wrong (an invented note)": 3
+     }
+    },
+    "revisit:asked": {
+     "add": {
+      "right-to-wrong (an invented note)": 1
+     }
+    },
+    "revisit:habit+asked": {
+     "add": {
+      "wrong-to-right": 1
+     }
+    }
+   },
+   "log": {
+    "calls": {
+     "write": 56,
+     "revisit": 2
+    },
+    "cost_usd_list": 37.41,
+    "writer_minutes": 150.5,
+    "output_tokens": 886503,
+    "file": "G/loop/runs/l2-standard/units_log.jsonl"
+   }
+  },
+  "l4-capo": {
+   "what": "L4: L2 with the hand window off",
+   "song": "capo",
+   "units_done": 73,
+   "units_total": 73,
+   "tab": {
+    "main": 0.782822,
+    "of_matched": 0.794521,
+    "matched": 0.985276,
+    "right": 638,
+    "wrong_place": 165,
+    "missed": 12,
+    "invented": 103,
+    "key_notes": 815,
+    "file": "G/loop/runs/l4-capo/score/span_tab.json",
+    "eval": "e1643"
+   },
+   "heard": {
+    "main": 0.785808,
+    "of_matched": 0.791005,
+    "matched": 0.99343,
+    "right": 598,
+    "wrong_place": 158,
+    "missed": 5,
+    "invented": 150,
+    "key_notes": 761,
+    "file": "G/loop/runs/l4-capo/score/span_tab_heard.json",
+    "eval": "e1645"
+   },
+   "onset_f1": 0.933178,
+   "onset_f1_eval": "e1644",
+   "gp5": {
+    "main": 0.770552,
+    "of_matched": 0.797967,
+    "matched": 0.965644,
+    "right": 628,
+    "wrong_place": 159,
+    "missed": 28,
+    "invented": 119,
+    "key_notes": 815,
+    "file": "G/loop/runs/l4-capo/score/span_tab_gp5.json",
+    "eval": "e1646"
+   },
+   "solver_alone": {
+    "main": 0.766871,
+    "of_matched": 0.800256,
+    "matched": 0.958282,
+    "right": 625,
+    "wrong_place": 156,
+    "missed": 34,
+    "invented": 101,
+    "key_notes": 815,
+    "file": "G/loop/runs/l4-capo/score/span_solver_tab.json",
+    "eval": "e1647"
+   },
+   "solver_alone_heard": {
+    "main": 0.770039,
+    "of_matched": 0.797279,
+    "matched": 0.965834,
+    "right": 586,
+    "wrong_place": 149,
+    "missed": 26,
+    "invented": 147,
+    "key_notes": 761,
+    "file": "G/loop/runs/l4-capo/score/span_solver_tab_heard.json",
+    "eval": "e1648"
+   },
+   "thirds": {
+    "first": {
+     "units": 25,
+     "right_share": 0.7881,
+     "heard_right_share": 0.7888,
+     "min_per_unit": 2.76,
+     "out_tokens_per_unit": 16611,
+     "cost_per_unit": 0.663,
+     "revisit_cost": 1.403
+    },
+    "middle": {
+     "units": 24,
+     "right_share": 0.7159,
+     "heard_right_share": 0.7165,
+     "min_per_unit": 2.44,
+     "out_tokens_per_unit": 14669,
+     "cost_per_unit": 0.599,
+     "revisit_cost": 0
+    },
+    "last": {
+     "units": 24,
+     "right_share": 0.8436,
+     "heard_right_share": 0.8516,
+     "min_per_unit": 2.26,
+     "out_tokens_per_unit": 13699,
+     "cost_per_unit": 0.588,
+     "revisit_cost": 0
+    }
+   },
+   "per_unit_slope_of_right_share": 0.00072,
+   "changes": {
+    "writer": {
+     "keep-alt": {
+      "right-to-wrong (an invented note)": 40,
+      "wrong-to-right": 9,
+      "wrong-to-half (a played note, wrong place)": 12
+     },
+     "place": {
+      "wrong-to-right": 22,
+      "right-to-wrong": 18
+     },
+     "drop": {
+      "wrong-to-right (an invented note dropped)": 40
+     },
+     "place-alt": {
+      "right-to-wrong": 1
+     }
+    },
+    "revisit:habit+asked": {
+     "add": {
+      "right-to-wrong (an invented note)": 2,
+      "wrong-to-right": 1
+     }
+    },
+    "revisit:asked": {
+     "place": {
+      "right-to-wrong": 1
+     }
+    }
+   },
+   "log": {
+    "calls": {
+     "write": 74,
+     "revisit": 3,
+     "restart-from": 1
+    },
+    "cost_usd_list": 46.95,
+    "writer_minutes": 188.5,
+    "output_tokens": 1131014,
+    "file": "G/loop/runs/l4-capo/units_log.jsonl"
+   }
+  },
+  "l4-nylon": {
+   "what": "L4: L2 with the hand window off",
+   "song": "nylon",
+   "units_done": 53,
+   "units_total": 53,
+   "tab": {
+    "main": 0.832803,
+    "of_matched": 0.983083,
+    "matched": 0.847134,
+    "right": 523,
+    "wrong_place": 9,
+    "missed": 96,
+    "invented": 105,
+    "key_notes": 628,
+    "file": "G/loop/runs/l4-nylon/score/span_tab.json",
+    "eval": "e1605"
+   },
+   "heard": {
+    "main": 0.875899,
+    "of_matched": 0.983838,
+    "matched": 0.890288,
+    "right": 487,
+    "wrong_place": 8,
+    "missed": 61,
+    "invented": 142,
+    "key_notes": 556,
+    "file": "G/loop/runs/l4-nylon/score/span_tab_heard.json",
+    "eval": "e1607"
+   },
+   "onset_f1": 0.841107,
+   "onset_f1_eval": "e1606",
+   "gp5": {
+    "main": 0.742038,
+    "of_matched": 0.978992,
+    "matched": 0.757962,
+    "right": 466,
+    "wrong_place": 10,
+    "missed": 152,
+    "invented": 161,
+    "key_notes": 628,
+    "file": "G/loop/runs/l4-nylon/score/span_tab_gp5.json",
+    "eval": "e1608"
+   },
+   "thirds": {
+    "first": {
+     "units": 18,
+     "right_share": 0.8319,
+     "heard_right_share": 0.8768,
+     "min_per_unit": 2.74,
+     "out_tokens_per_unit": 16475,
+     "cost_per_unit": 0.657,
+     "revisit_cost": 0
+    },
+    "middle": {
+     "units": 18,
+     "right_share": 0.8412,
+     "heard_right_share": 0.9055,
+     "min_per_unit": 2.34,
+     "out_tokens_per_unit": 13368,
+     "cost_per_unit": 0.589,
+     "revisit_cost": 0
+    },
+    "last": {
+     "units": 17,
+     "right_share": 0.8225,
+     "heard_right_share": 0.8355,
+     "min_per_unit": 2.28,
+     "out_tokens_per_unit": 13536,
+     "cost_per_unit": 0.573,
+     "revisit_cost": 0
+    }
+   },
+   "per_unit_slope_of_right_share": -0.0015,
+   "changes": {
+    "writer": {
+     "keep-alt": {
+      "wrong-to-right": 23,
+      "right-to-wrong (an invented note)": 18
+     },
+     "place": {
+      "wrong-to-wrong": 6,
+      "wrong-to-right": 4
+     },
+     "add": {
+      "right-to-wrong (an invented note)": 1
+     },
+     "drop": {
+      "right-to-wrong (a played note dropped)": 8,
+      "wrong-to-right (an invented note dropped)": 8
+     },
+     "pitch": {
+      "wrong-to-wrong": 1
+     }
+    }
+   },
+   "log": {
+    "calls": {
+     "write": 53
+    },
+    "cost_usd_list": 32.18,
+    "writer_minutes": 130.0,
+    "output_tokens": 767284,
+    "file": "G/loop/runs/l4-nylon/units_log.jsonl"
+   }
+  },
+  "l4-standard": {
+   "what": "L4: L2 with the hand window off",
+   "song": "standard",
+   "units_done": 56,
+   "units_total": 56,
+   "tab": {
+    "main": 0.830633,
+    "of_matched": 0.890995,
+    "matched": 0.932253,
+    "right": 564,
+    "wrong_place": 69,
+    "missed": 46,
+    "invented": 81,
+    "key_notes": 679,
+    "file": "G/loop/runs/l4-standard/score/span_tab.json",
+    "eval": "e1623"
+   },
+   "heard": {
+    "main": 0.862779,
+    "of_matched": 0.891844,
+    "matched": 0.96741,
+    "right": 503,
+    "wrong_place": 61,
+    "missed": 19,
+    "invented": 150,
+    "key_notes": 583,
+    "file": "G/loop/runs/l4-standard/score/span_tab_heard.json",
+    "eval": "e1625"
+   },
+   "onset_f1": 0.90883,
+   "onset_f1_eval": "e1624",
+   "gp5": {
+    "main": 0.821797,
+    "of_matched": 0.8928,
+    "matched": 0.920471,
+    "right": 558,
+    "wrong_place": 67,
+    "missed": 54,
+    "invented": 89,
+    "key_notes": 679,
+    "file": "G/loop/runs/l4-standard/score/span_tab_gp5.json",
+    "eval": "e1626"
+   },
+   "solver_alone": {
+    "main": 0.827688,
+    "of_matched": 0.892063,
+    "matched": 0.927835,
+    "right": 562,
+    "wrong_place": 68,
+    "missed": 49,
+    "invented": 104,
+    "key_notes": 679,
+    "file": "G/loop/runs/l4-standard/score/span_solver_tab.json",
+    "eval": "e1627"
+   },
+   "solver_alone_heard": {
+    "main": 0.850772,
+    "of_matched": 0.892086,
+    "matched": 0.953688,
+    "right": 496,
+    "wrong_place": 60,
+    "missed": 27,
+    "invented": 178,
+    "key_notes": 583,
+    "file": "G/loop/runs/l4-standard/score/span_solver_tab_heard.json",
+    "eval": "e1628"
+   },
+   "thirds": {
+    "first": {
+     "units": 19,
+     "right_share": 0.8846,
+     "heard_right_share": 0.902,
+     "min_per_unit": 2.17,
+     "out_tokens_per_unit": 13173,
+     "cost_per_unit": 0.549,
+     "revisit_cost": 0.307
+    },
+    "middle": {
+     "units": 19,
+     "right_share": 0.7957,
+     "heard_right_share": 0.8462,
+     "min_per_unit": 2.92,
+     "out_tokens_per_unit": 17284,
+     "cost_per_unit": 0.682,
+     "revisit_cost": 0
+    },
+    "last": {
+     "units": 18,
+     "right_share": 0.7907,
+     "heard_right_share": 0.8152,
+     "min_per_unit": 2.69,
+     "out_tokens_per_unit": 16370,
+     "cost_per_unit": 0.639,
+     "revisit_cost": 0
+    }
+   },
+   "per_unit_slope_of_right_share": -0.00353,
+   "changes": {
+    "writer": {
+     "drop": {
+      "wrong-to-right (an invented note dropped)": 42,
+      "right-to-wrong (a played note dropped)": 7
+     },
+     "keep-alt": {
+      "right-to-wrong (an invented note)": 15,
+      "wrong-to-right": 6,
+      "wrong-to-half (a played note, wrong place)": 4
+     },
+     "place": {
+      "wrong-to-wrong": 3,
+      "wrong-to-right": 3
+     },
+     "place-alt": {
+      "wrong-to-wrong": 1
+     },
+     "add": {
+      "right-to-wrong (an invented note)": 4
+     }
+    }
+   },
+   "log": {
+    "calls": {
+     "write": 56,
+     "revisit": 1
+    },
+    "cost_usd_list": 35.2,
+    "writer_minutes": 146.2,
+    "output_tokens": 878666,
+    "file": "G/loop/runs/l4-standard/units_log.jsonl"
+   }
+  }
+ },
+ "w2": {
+  "capo": {
+   "song": "capo",
+   "held_out": false,
+   "tab": {
+    "main": 0.947239,
+    "of_matched": 0.972292,
+    "matched": 0.974233,
+    "right": 772,
+    "wrong_place": 22,
+    "missed": 21,
+    "invented": 100,
+    "key_notes": 815,
+    "file": "G/loop/score/w2-capo/w2_tab.json",
+    "eval": "e1661"
+   },
+   "heard": {
+    "main": 0.955322,
+    "of_matched": 0.971925,
+    "matched": 0.982917,
+    "right": 727,
+    "wrong_place": 21,
+    "missed": 13,
+    "invented": 146,
+    "key_notes": 761,
+    "file": "G/loop/score/w2-capo/w2_tab_heard.json",
+    "eval": "e1662"
+   },
+   "minutes": 36.6,
+   "cost_usd_list": 10.85,
+   "answer": "G/loop/bw/2eff1507/w2/answer.json",
+   "onset_f1": 0.929198,
+   "onset_f1_eval": "e1663",
+   "solver_alone_same_inputs": {
+    "main": 0.828221,
+    "of_matched": 0.864277,
+    "matched": 0.958282,
+    "right": 675,
+    "wrong_place": 106,
+    "missed": 34,
+    "invented": 101,
+    "key_notes": 815,
+    "file": "G/loop/score/w2-capo/solver_tab_score.json",
+    "eval": "e1678"
+   }
+  },
+  "nylon": {
+   "song": "nylon",
+   "held_out": false,
+   "tab": {
+    "main": 0.829618,
+    "of_matched": 0.973832,
+    "matched": 0.851911,
+    "right": 521,
+    "wrong_place": 14,
+    "missed": 93,
+    "invented": 104,
+    "key_notes": 628,
+    "file": "G/loop/score/w2-nylon/w2_tab.json",
+    "eval": "e1667"
+   },
+   "heard": {
+    "main": 0.874101,
+    "of_matched": 0.973948,
+    "matched": 0.897482,
+    "right": 486,
+    "wrong_place": 13,
+    "missed": 57,
+    "invented": 140,
+    "key_notes": 556,
+    "file": "G/loop/score/w2-nylon/w2_tab_heard.json",
+    "eval": "e1668"
+   },
+   "minutes": 27.9,
+   "cost_usd_list": 8.2,
+   "answer": "G/loop/bw/d0aa264e/w2/answer.json",
+   "onset_f1": 0.844515,
+   "onset_f1_eval": "e1669",
+   "solver_alone_same_inputs": {
+    "main": 0.800955,
+    "of_matched": 0.974806,
+    "matched": 0.821656,
+    "right": 503,
+    "wrong_place": 13,
+    "missed": 112,
+    "invented": 95,
+    "key_notes": 628,
+    "file": "G/loop/score/w2-nylon/solver_tab_score.json",
+    "eval": "e1680"
+   }
+  },
+  "standard": {
+   "song": "standard",
+   "held_out": false,
+   "tab": {
+    "main": 0.877761,
+    "of_matched": 0.940063,
+    "matched": 0.933726,
+    "right": 596,
+    "wrong_place": 38,
+    "missed": 45,
+    "invented": 75,
+    "key_notes": 679,
+    "file": "G/loop/score/w2-standard/w2_tab.json",
+    "eval": "e1664"
+   },
+   "heard": {
+    "main": 0.914237,
+    "of_matched": 0.945035,
+    "matched": 0.96741,
+    "right": 533,
+    "wrong_place": 31,
+    "missed": 19,
+    "invented": 145,
+    "key_notes": 583,
+    "file": "G/loop/score/w2-standard/w2_tab_heard.json",
+    "eval": "e1665"
+   },
+   "minutes": 34.6,
+   "cost_usd_list": 8.86,
+   "answer": "G/loop/bw/7012dbd3/w2/answer.json",
+   "onset_f1": 0.913545,
+   "onset_f1_eval": "e1666",
+   "solver_alone_same_inputs": {
+    "main": 0.854197,
+    "of_matched": 0.920635,
+    "matched": 0.927835,
+    "right": 580,
+    "wrong_place": 50,
+    "missed": 49,
+    "invented": 104,
+    "key_notes": 679,
+    "file": "G/loop/score/w2-standard/solver_tab_score.json",
+    "eval": "e1679"
+   }
+  }
+ },
+ "e6": {
+  "span": "units 0 to 37, onsets before 118.77 s",
+  "key_notes": 414,
+  "heard_key_notes": 391,
+  "runs": {
+   "l2-capo": {
+    "tab": {
+     "main": 0.823671,
+     "of_matched": 0.831707,
+     "matched": 0.990338,
+     "right": 341,
+     "wrong_place": 69,
+     "missed": 4,
+     "invented": 65,
+     "key_notes": 414,
+     "file": "G/loop/score/e6-span/l2-capo_all.json",
+     "eval": "e1711"
+    },
+    "heard": {
+     "main": 0.823529,
+     "of_matched": 0.827763,
+     "matched": 0.994885,
+     "right": 322,
+     "wrong_place": 67,
+     "missed": 2,
+     "invented": 86,
+     "key_notes": 391,
+     "file": "G/loop/score/e6-span/l2-capo_heard.json",
+     "eval": "e1712"
+    }
+   },
+   "l4-capo": {
+    "tab": {
+     "main": 0.7343,
+     "of_matched": 0.741463,
+     "matched": 0.990338,
+     "right": 304,
+     "wrong_place": 106,
+     "missed": 4,
+     "invented": 61,
+     "key_notes": 414,
+     "file": "G/loop/score/e6-span/l4-capo_all.json",
+     "eval": "e1713"
+    },
+    "heard": {
+     "main": 0.731458,
+     "of_matched": 0.735219,
+     "matched": 0.994885,
+     "right": 286,
+     "wrong_place": 103,
+     "missed": 2,
+     "invented": 82,
+     "key_notes": 391,
+     "file": "G/loop/score/e6-span/l4-capo_heard.json",
+     "eval": "e1714"
+    }
+   },
+   "e6s-capo": {
+    "tab": {
+     "main": 0.842995,
+     "of_matched": 0.855392,
+     "matched": 0.985507,
+     "right": 349,
+     "wrong_place": 59,
+     "missed": 6,
+     "invented": 42,
+     "key_notes": 414,
+     "file": "G/loop/score/e6-span/e6s-capo_all.json",
+     "eval": "e1715"
+    },
+    "heard": {
+     "main": 0.846547,
+     "of_matched": 0.855297,
+     "matched": 0.98977,
+     "right": 331,
+     "wrong_place": 56,
+     "missed": 4,
+     "invented": 63,
+     "key_notes": 391,
+     "file": "G/loop/score/e6-span/e6s-capo_heard.json",
+     "eval": "e1716"
+    }
+   }
+  },
+  "e6_log": {
+   "calls": {
+    "write": 39,
+    "revisit": 8
+   },
+   "cost_usd_list": 29.08,
+   "writer_minutes": 119.8,
+   "output_tokens": 696549,
+   "file": "G/loop/runs/e6s-capo/units_log.jsonl"
+  },
+  "note": "E6 stopped at 38 of 73 units for the weekly limit; L2 and L4 cut to the same span"
+ },
+ "heldout": {
+  "closer": {
+   "song": "closer",
+   "held_out": true,
+   "tab": {
+    "main": 0.697998,
+    "of_matched": 0.767464,
+    "matched": 0.909487,
+    "right": 802,
+    "wrong_place": 243,
+    "missed": 104,
+    "invented": 143,
+    "key_notes": 1149,
+    "file": "G/loop/score/w2-ho-closer/w2_tab.json",
+    "eval": "e1673"
+   },
+   "heard": {
+    "main": 0.715349,
+    "of_matched": 0.772088,
+    "matched": 0.926512,
+    "right": 769,
+    "wrong_place": 227,
+    "missed": 79,
+    "invented": 192,
+    "key_notes": 1075,
+    "file": "G/loop/score/w2-ho-closer/w2_tab_heard.json",
+    "eval": "e1674"
+   },
+   "minutes": 35.9,
+   "cost_usd_list": 6.85,
+   "answer": "G/loop/bw/178cc70a/w2/answer.json",
+   "onset_f1": 0.894309,
+   "onset_f1_eval": "e1675",
+   "solver_alone_same_inputs": {
+    "main": 0.578764,
+    "of_matched": 0.657765,
+    "matched": 0.879896,
+    "right": 665,
+    "wrong_place": 346,
+    "missed": 138,
+    "invented": 158,
+    "key_notes": 1149,
+    "file": "G/loop/score/w2-ho-closer/solver_tab_score.json",
+    "eval": "e1677"
+   }
+  },
+  "september": {
+   "song": "september",
+   "held_out": true,
+   "tab": {
+    "main": 0.822542,
+    "of_matched": 0.838631,
+    "matched": 0.980815,
+    "right": 343,
+    "wrong_place": 66,
+    "missed": 8,
+    "invented": 19,
+    "key_notes": 417,
+    "file": "G/loop/score/w2-ho-september/w2_tab.json",
+    "eval": "e1670"
+   },
+   "heard": {
+    "main": 0.83905,
+    "of_matched": 0.84127,
+    "matched": 0.997361,
+    "right": 318,
+    "wrong_place": 60,
+    "missed": 1,
+    "invented": 50,
+    "key_notes": 379,
+    "file": "G/loop/score/w2-ho-september/w2_tab_heard.json",
+    "eval": "e1671"
+   },
+   "minutes": 25.7,
+   "cost_usd_list": 6.09,
+   "answer": "G/loop/bw/0e86f0c7/w2/answer.json",
+   "onset_f1": 0.968047,
+   "onset_f1_eval": "e1672",
+   "solver_alone_same_inputs": {
+    "main": 0.736211,
+    "of_matched": 0.771357,
+    "matched": 0.954436,
+    "right": 307,
+    "wrong_place": 91,
+    "missed": 19,
+    "invented": 14,
+    "key_notes": 417,
+    "file": "G/loop/score/w2-ho-september/solver_tab_score.json",
+    "eval": "e1676"
+   }
+  }
+ },
+ "heldout_tuning": {
+  "closer": {
+   "found": [
+    40,
+    45,
+    50,
+    55,
+    57,
+    62
+   ],
+   "key": [
+    40,
+    45,
+    50,
+    55,
+    57,
+    62
+   ],
+   "capo_given": 1,
+   "strings_right": 6,
+   "finder": "G/heldout/closer/finder.json",
+   "file": "G/loop/score/heldout-tuning/closer.json",
+   "eval": "e1717"
+  },
+  "september": {
+   "found": [
+    38,
+    43,
+    50,
+    55,
+    59,
+    62
+   ],
+   "key": [
+    38,
+    43,
+    50,
+    55,
+    59,
+    62
+   ],
+   "capo_given": 2,
+   "strings_right": 6,
+   "finder": "G/heldout/september/finder.json",
+   "file": "G/loop/score/heldout-tuning/september.json",
+   "eval": "e1718"
+  },
+  "boats": {
+   "found": [
+    40,
+    45,
+    50,
+    55,
+    59,
+    64
+   ],
+   "key": [
+    40,
+    45,
+    50,
+    55,
+    59,
+    64
+   ],
+   "capo_given": 0,
+   "strings_right": 6,
+   "finder": "G/heldout/boats/finder.json",
+   "file": "G/loop/score/heldout-tuning/boats.json",
+   "eval": "e1719"
+  }
+ }
+}
