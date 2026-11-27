@@ -6,29 +6,33 @@ files with AO-082's kit (`G/production/kit/`, `../video/PRODUCTION.md` sections 
 
 - **Title:** Where the hand can reach
 - **One sentence:** Given which frets the hand can reach and a tuning it found by itself, Opus 5.5 wrote closer tabs
-  than a plain solver on every song, best in one whole-song session, but scored lower on three recordings it had never
-  seen.
-- **Voice:** ElevenLabs "Mike", AO-082's settings (`VOICE.md`). A neutral narrator: it never says "I" and never speaks
+  than a plain solver on every song, best overall in one whole-song session; on three recordings it had never seen, it
+  held on two and fell on the third.
+- **Voice:** ElevenLabs "Mike", AO-082's settings (`G/production/VOICE.md`). A neutral narrator: it never says "I" and never speaks
   for Aaron.
 - **Colours** as AO-082: sky blue = right string and fret, blue outline = right note, other place, gold dashed =
-  missed, terracotta hatched = made up. Every tab is heard: the recording, then the key, then the attempt, the same
+  missed, terracotta hatched = made up. Every tab is heard: the recording, then the key, then the attempt (where two attempts play the same pitches, the
+  difference is shown, and the film says so), the same
   seconds through the same SoundFont program (24 nylon, 25 steel), at least 4 s each, alone.
-- **Length:** about 10:15: narration 1,077 words at 164 wpm = 6:34, 20 listening windows of 4 to 5 s with their gaps
-  1:50, holds and cards 1:00, line gaps and scene changes 0:50. Shorter than FILM-PLAN's 12 to 15 minutes: the findings
+- **Length:** about 12:05: narration 1,175 words at about 142 wpm (Mike's measured pace over AO-082's film,
+  `G/production/VOICE.md`: 4,995 words in 2,104 s) = 8:16, 24 listening windows of 4 to 5 s with their gaps 2:10, holds
+  and cards 1:00, line gaps and scene changes 0:40. The chapter times below are targets; the voice stage's measured line
+  lengths replace them. Shorter than FILM-PLAN's 12 to 15 minutes: the findings
   are fewer and plainer than planned, and no line is padded.
 - **Never shown:** Aaron's own recordings, anything of AO-078, the players' tab pages, a held-out key file.
 
 ## ch01 · One bar, written (1:40)
 
 Shots: (s1) title card, finished on frame one: "Where the hand can reach" / "Opus 5.5, the hand's reach and a tuning it
-found by itself". (s2) the capo song's footage 53.0 to 57.0 s with the window band (E1's
-overlay clip; frets 6 to 11 lit). (s3) tabplayer stack 53.29 to 56.45 s: key on cream, the loop with the hand off (L4)
+found by itself". (s2) the capo song's footage 53.0 to 57.0 s with the window band: a new render by
+`G/work/e1-record/film_overlay.py` (no E1 clip covers it), 6 to 11 as the riff starts, moving up to 11 to 16 for the
+twelfth-fret note at 55.7 s. (s3) tabplayer stack 53.29 to 56.45 s: key on cream, the loop with the hand off (L4)
 below, then the loop with it (L2). Verdict marks after the windows.
 
 Listen: the recording 53.3 to 57.3 s; the key's tab, same seconds; L4's tab; L2's tab.
 
 - `l01` [s2] Gareth Evans plays Steal My Girl, capo on the third fret. Over the neck, a band: the frets his hand can
-  reach at this moment, six to eleven.
+  reach, six to eleven as the riff begins, moving up the neck with him.
 - `l02` [s3] Above, the answer key, read from his own tab. Below, two tabs written by Claude Opus 5.5, one bar at a
   time, from the same detected notes.
 - `l03` [s3] The first never saw the band. It put this riff at the second and third frets: the right notes, all five in
@@ -43,7 +47,7 @@ s6f12); units.csv unit 17: L2 5 of 5, L4 0 of 5.
 
 ## ch02 · Constraints, not transcription (1:00)
 
-Shots: (s1) Aaron's direction as text cards (DIRECTION.md, his words, quoted). (s2) four tiles: TUNING, CAPO, HAND,
+Shots: (s1) Aaron's direction as text cards (`../DIRECTION.md`, his words, quoted). (s2) four tiles: TUNING, CAPO, HAND,
 NOTES, the capo tile marked GIVEN.
 
 - `l06` [s1] The last film, AO-082, chained the best tool at each step and found that reading the tuning and capo
@@ -51,7 +55,8 @@ NOTES, the capo tile marked GIVEN.
 - `l07` [s1] So this time the job was set as a constraints problem. A note can only be played where the tuning puts
   that pitch, above the capo, and within reach of the fretting hand.
 - `l08` [s2] The capo is given: a person filming knows where it is. The tuning is found. The hand's reach is read from
-  the video. And the notes come from the best note models AO-082 measured.
+  the video. And the notes come from the best note models measured so far:
+  AO-082's on these songs, and on the new recordings a newer one.
 - `l09` [s2] Chords and song analysis are left out.
 
 ## ch03 · Where the hand can reach (2:30)
@@ -59,13 +64,14 @@ NOTES, the capo tile marked GIVEN.
 Shots: (s1) one frame of the capo song with fret wires lettered by `wire_candidates.py`, two named by Opus. (s2) the
 neck model: every other fret from twelve-tone spacing, drawn over the frame. (s3) the overlay clip, 10 s, band
 following the hand (E1 film clip, `G/loop/e1/film/`). (s4) the check: a keyframe with Opus's accept / correct marks. (s5)
-stat tiles: coverage 0.995 / 1.000 / 0.998; places per note 3.46 to 1.53, 3.62 to 1.45, 3.24 to 1.24. (s6) one failure:
+stat tiles, labelled per song in the film's order: capo 0.995, 3.46 to 1.53 places; standard 0.998, 3.24 to 1.24;
+nylon 1.000, 3.62 to 1.45 (coverage of fretted key notes where the hand is seen). (s6) one failure:
 a tap read late, or a landmark a fret off (HAND.md failures list).
 
-- `l10` [s1] The hand tracker finds the fingertips in every frame. On its own, it cannot say which fret a fingertip is
+- `l10` [s1] The hand tracker finds the fingertips in most frames. On its own, it cannot say which fret a fingertip is
   on.
-- `l11` [s1] So Opus looks at a frame, finds the fret wires, and names a few of them, counting from the nut or reading
-  the inlays.
+- `l11` [s1] So Opus looks at a frame, finds the fret wires, and numbers the ones it can see, counting from the nut or
+  reading the inlays.
 - `l12` [s2] Every other fret follows from the way frets are spaced, so no fret line has to be detected. The model of
   the neck is then carried through the video as the guitar moves.
 - `l13` [s3] The band is the frets under the fingertips, one fret either side, counted from the capo. Open strings are
@@ -73,11 +79,11 @@ a tap read late, or a landmark a fret off (HAND.md failures list).
 - `l14` [s4] Then a second Opus, which never saw the first one's reasoning, checks the band on the overlay every ten
   seconds, and wherever it looks unsure, and accepts or corrects it.
 - `l15` [s5] Against the three answer keys, the band holds nearly every fretted note: ninety-nine and a half in a
-  hundred, all of them, and ninety-nine point eight.
+  hundred on the capo song, ninety-nine point eight on Imagine, and all of them on the nylon song.
 - `l16` [s5] And it narrows the choice. A note that could be played in three or four places can now be played in one
   or two.
-- `l17` [s6] It fails where the hand does something odd: a note tapped by the picking hand, read late; a fingertip
-  placed a fret off.
+- `l17` [s6] It fails where the hand does something odd: a note tapped by the picking hand, read late; a fast
+  shift up the neck, still blurred when the note starts.
 
 ## ch04 · The tuning, found like a person (1:50)
 
@@ -90,7 +96,7 @@ Listen: the nylon recording 31.0 to 35.0 s.
 
 - `l18` [s1] A person finds a tuning by looking and listening: which strings ring open, one clear chord shape, which
   notes the hand can reach.
-- `l19` [s2] On the nylon song, AO-082's tools said the first string was a D. The fingers say C. In this G minor grip a fourth
+- `l19` [s2] On the nylon song, AO-082's best answer said the first string was a D. The fingers say C. In this G minor grip a fourth
   finger presses the first string at the second fret just as a D sounds. On a D string that would be an E, and no E is
   ever heard.
 - `l20` [s3] Shown the video, the notes and the hand's band, Opus named all eighteen strings of the three songs. Later,
@@ -100,7 +106,8 @@ Listen: the nylon recording 31.0 to 35.0 s.
 
 ## ch05 · One bar at a time (1:50)
 
-Listen: the capo song's bar 39 (121.9 to 125.9 s): the key, then L2's tab (5 of 5 right).
+Listen: the capo song's unit 39 (121.89 to 125.05 s, held to 4 s): the recording, the key, then L2's tab (all 5 key
+notes in place; it adds 2 he did not play).
 
 Shots: (s1) the loop as a diagram: pack (spectrogram with candidates, neck picture with the band, solver proposal,
 similar bars, notes so far) -> writer -> checks -> state -> revisits. (s2) the pack view for one bar (still, two panels).
@@ -112,8 +119,8 @@ similar bars, notes so far) -> writer -> checks -> state -> revisits. (s2) the p
   then it goes back to an earlier bar.
 - `l24` [s3] Across the three songs, its tabs put eighty-six, eighty-seven and eighty-four in a hundred key notes in the
   right place.
-- `l25` [s4] Given the key's own notes instead, it placed all six hundred and twenty-eight of the nylon song right. With
-  the right notes, placing them is close to solved. What is left is finding the notes, and one kind of mistake.
+- `l25` [s4] Given the key's own notes instead, it placed all six hundred and twenty-eight of the nylon song right. On that
+  song, with the right notes, placing is solved; the other two were not tried. What is left is finding the notes, and one kind of mistake.
 
 ## ch06 · The ladder, heard (2:00)
 
@@ -128,8 +135,9 @@ Listen: recording 25.0 to 29.0 s; key; L2; W2.
 - `l27` [s1] Opus, one bar at a time but without the band: seventy-eight on the capo song. With the band: eighty-six. On
   the nylon song, played near the nut, the band adds almost nothing.
 - `l28` [s1] And one Opus session given the whole song at once: ninety-five, eighty-eight and eighty-three.
-- `l29` [s2] Here the gap is heard. He plays this phrase high on the fourth string. The bar-by-bar loop wrote the same
-  pitches down by the nut, one of them on an open string, which is always allowed. The whole-song session put them where he played them.
+- `l29` [s2] Here the gap is seen, not heard: both tabs play the same pitches. He plays this phrase high on the fourth
+  string. The bar-by-bar loop wrote it down by the nut: the D on an open string, which is always allowed, and the C at
+  the second fret. The whole-song session put them where he played them, though it added a few notes he did not play.
 
 ## ch07 · Bar by bar, or the whole song (1:40)
 
@@ -137,7 +145,7 @@ Shots: (s1) two columns: L2 and W2 per song, score, cost, minutes. (s2) E6: thre
 (s3) per-bar line: no slope.
 
 - `l30` [s1] The whole-song session matched the loop on two songs and beat it by nine points on the capo song, at a
-  fifth of the cost: eight to eleven
+  quarter to a fifth of the cost: eight to eleven
   dollars and about half an hour, against thirty to fifty-five dollars and two to three and a half hours.
 - `l31` [s2] Does the loop learn as it goes? A copy that forgot everything before each bar did no worse on the first
   half of the capo song: eighty-four in a hundred against eighty-two.
@@ -147,11 +155,11 @@ Shots: (s1) two columns: L2 and W2 per song, score, cost, minutes. (s2) E6: thre
 ## ch08 · Three new recordings (1:50)
 
 Shots: (s1) three cards with footage: Closer (Gareth Evans, E A D G A D, capo 1), September (Evan Handyside, open G,
-capo 2), Three Little Boats (Culture Vannin, a traditional Manx tune). (s2) "frozen at commit 497b3524" stamp. (s3)
+capo 2), Three Little Boats (Pete Lumb, a traditional Manx tune). (s2) "frozen at commit 497b3524" stamp. (s3)
 barchart: W2 on the three songs against the three new ones. (s4) tabplayer on September: key s2f3 against the open first
 string.
 
-Listen: each new recording 4 s on its card (s1), then W2's tab of the same seconds (3 x 2 windows); in s4 a September
+Listen: each new recording 4 s on its card (s1), then the key, then W2's tab of the same seconds (3 x 3 windows); in s4 a September
 passage with s2f3 (pick from `w2-ho-september` wrong places): the recording, the key, W2.
 
 - `l33` [s1] Everything was then frozen and run on three recordings it had never seen: a new tuning, an open tuning,
@@ -173,16 +181,17 @@ Shots: (s1) one card, four lines: ask for the capo; find the tuning; one whole-s
 
 ## ch10 · Credits (0:35)
 
-The recordings and players as `../video/songs.json` has them (AO-082's three), plus: *Closer*, fingerstyle arrangement
-and performance by Gareth Evans (archive.org mirror); *Wake Me Up When September Ends (Jonathan's Version)*, Evan
-Handyside (Vimeo); *Three Little Boats*, traditional Manx tune, guitar lesson by Culture Vannin, CC BY 3.0 (Wikimedia
-Commons). Keys built by the NOTES session from the players' own tabs. The tools and models by name as on the tool tags
+The recordings and players as `../video/songs.json` has them (AO-082's three), plus: *Closer* (The Chainsmokers), fingerstyle arrangement
+and performance by Gareth Evans (archive.org mirror); *Wake Me Up When September Ends* (Green Day),
+Jonathan's Version, arranged and played by Evan Handyside (Vimeo); *Three Little Boats* (Manx traditional), arranged by
+James Franklin, played by Pete Lumb, from Culture Vannin's guitar lesson, CC BY 3.0 (Wikimedia Commons). The new
+recordings' keys built by the NOTES session from the tabs they were played from. The tools and models by name as on the tool tags
 (MediaPipe hand landmarks, gaps-paper and the other note models, gtr-eval 0.12.1, FluidSynth FluidR3_GM). Written,
-run and checked by Claude Opus 5.5 at max effort.
+run and checked by Claude Opus 5.5 (the blind attempts at max effort).
 
 ## For the film lane
 
-- Kit needs: a fret-window band on footage (E1's overlay clips, no new overlay); a per-bar line chart in `barchart`'s
+- Kit needs: a fret-window band on footage (E1's overlay clips, plus one new 53 to 57 s render for ch01); a per-bar line chart in `barchart`'s
   style; the pack view (two stills side by side with a caption).
 - Every listening window rendered again from the tab's notes at 48 kHz, as AO-082.
 - Numbers the narration says, with their sources: l15 HAND.md; l20 TUNING.md and results.json heldout_tuning; l21

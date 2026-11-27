@@ -436,3 +436,17 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   folder (G/work/e3-refresh/PROGRESS.md).
 - W2's held-out wrong places by kind: September 65 of 66 an open string for a fretted note; Closer 138 of 243 (85 both
   fretted, 20 fretted for open); Boats none. RESULTS.md says "most", not "almost all".
+
+## 2026-11-27 09:20 UTC: fact check of RESULTS.md, the post draft and the film script
+
+- Workflow wf_906ad2ed-8a1 (6 agents: a checker per document, then a skeptic per document who re-read each source):
+  347 claims checked, 59 findings, 57 upheld and fixed, 2 refuted. All edits are in the next commit.
+- The ones that change a reading: the window lifts the plain solver nearly as much as it lifts Opus on the capo song
+  (+0.061 against +0.076), so the window's worth is not Opus's alone; W2 matches or beats bar by bar (it is below L2 on
+  nylon by 0.006), at a quarter to a fifth of the cost; L1's perfect placing was tried on the nylon song only, the
+  easiest to place; Opus's gain over the solver is better places on W2 capo, standard, September and Closer, and notes
+  kept elsewhere; the held-out blind steps ran from 06:04 under `G/heldout/freeze-ho-blind.json`, before the freeze
+  commit 497b3524 (07:08) of the same code; AO-082's tools gave E4 for the nylon 1st string, its blind Opus arms D4;
+  the Boats tab is James Franklin's arrangement, played by Pete Lumb; this session ran at xhigh (the blind attempts at
+  max); the capo passage at 25 s is seen, not heard (the two tabs play the same pitches); L2 standard and L4 standard
+  counts corrected to gtr-eval's (594 / 37 / 48 / 91, 564 / 69 / 46 / 81).
