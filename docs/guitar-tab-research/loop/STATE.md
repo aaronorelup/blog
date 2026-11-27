@@ -227,3 +227,17 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   0.000 to 0.013; it is a default stage of NOTES' frozen pipeline.
 - The hand windows' R2 copy is at `workbench/guitar-tab-app/loop/hand/<S>/` (a first copy went to the workbench's
   `2026-11-27/loop/hand/` by an rclone alias slip; both hold the same files).
+
+## 2026-11-27 05:15 UTC: a first look inside the running loop (orchestrator only, never shown to a writer)
+
+- `G/loop/work/peek.py` scores a running loop's finished units against the key (same pitch, string and fret, onset
+  within 50 ms) for the orchestrator. At about 05:05: L2 standard 0.919 of 185 key notes (15 units), L2 nylon 0.891 of 174
+  (14 units), L1 nylon 1.000 of 251 (20 units), L4 standard 0.893, L4 nylon 0.845, L2 capo 0.733 of 150 (14 units), L4
+  capo 0.764.
+- All 40 of L2 capo's wrong places in those units are in the two tap passages (25 to 31 s and 37 to 44 s): the key has D4
+  and C4 tapped at string 4 frets 9 and 7; the loop put them on the open 2nd string and string 3 fret 2, the solver's
+  choice, accepted by the writer. The pack showed one window per onset (the union of the fretting and the picking hand,
+  for example 2-11), so nothing told the writer the picking hand was on the board. This is E3's main error type (an open
+  string chosen where the player fretted). Not changed mid-run. A candidate change for the frozen held-out version:
+  show the picking hand's window apart from the fretting hand's and flag notes it can reach as possible taps. Decided
+  after the three L2 runs end, and tried only on the dev songs' affected units before freezing.
