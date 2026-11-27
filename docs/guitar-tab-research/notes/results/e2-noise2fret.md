@@ -20,9 +20,10 @@ script, run, score and log: `/home/user/notes/runs/e2/` (`PROGRESS.md`, `bin/`, 
 - **The GPU fine-tune gate is not met.** On the 30 s segments its best variant is 0.067 (capo), 0.116 (tuning) and
   0.117 (standard) below guitar-fl; the gate is 0.03.
 - **The film.** The "every note at once, then thinning" picture exists only in the noisy latent read through the
-  class head (`p_xt`), and at the start that is pure noise, not the model hearing every note. What the model
-  believes (`p_x0`) is sparse from the first step and barely moves. More steps make the answer worse (-0.06 to -0.15
-  F1 at 20 steps). So the honest film shows both rows, and E4 (the haze) remains the answer to Aaron's question by
+  class head (`p_xt`), and at the start that is pure noise, not the model hearing every note (the checker found
+  gs_laux's step-1 `p_xt` bit-identical on all three songs). What the model believes (`p_x0`) is sparse from the
+  first step; with gs_laux it barely moves, with goat it grows by 38 to 71 % as more attacks are committed. More
+  steps make the answer worse (-0.06 to -0.15 F1 at 20 steps). So the honest film shows both rows, and E4 (the haze) remains the answer to Aaron's question by
   intent.
 
 ## What was run
@@ -77,9 +78,12 @@ Onset F1. "30 s run": the model run on the 30 s file. "crop": the whole-song run
 | goat_laux | 0.516 | 0.272 | 0.387 | **0.545** | 0.285 | 0.326 | 0.530 | 0.291 | 0.375 |
 | for comparison: guitar-fl (n-03) | | | | 0.920 | 0.796 | 0.892 | 0.941 | 0.783 | 0.988 |
 | guitar-gaps (n-02) | | | | 0.919 | 0.830 | 0.879 | 0.922 | 0.807 | 0.992 |
-| Transkun (n-04) | | | | 0.896 | 0.785 | 0.866 | 0.848 | 0.760 | 0.976 |
+| Transkun (n-04) | | | | 0.896 | 0.785 | 0.866 | 0.898 | 0.790 | 0.976 |
 
 The comparison rows are N-E0's rescores (`/home/user/notes/runs/e0/rescore/<S>/n-0*/whole.json`, `seg30.json`).
+Checker correction: for Transkun, `seg30.json` scores its own run on the 30 s file (step 2's `cmd_seg30.sh`), not a
+crop, so the crop columns now hold the crop of its whole-song run (checker's own scorer). Its 30 s runs score
+0.848 / 0.760 / 0.976. For fl and gaps step 2's segment numbers are crops, as here.
 A 30 s run and the crop of the whole run differ a little: the GuitarSet ckpts scale the file to its peak, and the GOAT
 ckpts detect onsets and set the level over the file they are given.
 
@@ -104,8 +108,8 @@ median over matched notes, from gtr-eval). Key notes per string group: capo 298 
 
 What it says:
 
-- **Wrong and extra notes, not timing.** With a 100 ms onset tolerance F1 moves by at most 0.024
-  (`scores/<S>/<run>/whole_tol100_chroma.json`, gs_laux and goat_laux). Forgiving octaves too adds 0.03 to 0.13. The
+- **Wrong and extra notes, not timing.** With a 100 ms onset tolerance F1 moves by at most 0.023
+  (`scores/<S>/<run>/whole_tol100_chroma.json`, gs_laux and goat_laux; the checker found goat at +0.025 on tuning). Forgiving octaves too adds 0.03 to 0.13. The
   model hears the wrong notes, and many that are not there.
 - **Slaps.** On the steel-string songs 59 to 64 % of gs_laux's inventions sit at a slap (capo 635 of 1068). The
   GuitarSet model never heard percussive playing.
@@ -164,7 +168,7 @@ only the positions a capo-less guitar has at fret 3 and up, and a capo-3 open st
 
 The constraint that matches a pitch target is the **range mask** (`inputs/<S>/range.json`: sounding pitch from the
 lowest open string with the capo to string 1's fret 20; capo 43 to 84, tuning 38 to 80, standard 40 to 84). It costs
-nothing and helps a little where there is something to remove: capo +0.000 (gs) to +0.009 (goat, fl's onsets);
+nothing and helps a little where there is something to remove: capo +0.000 (gs) to +0.009 (goat; goat with fl's onsets +0.008);
 tuning and standard unchanged (same F1 to six places). So: pitch range yes, string mask no,
 for a model that hears a capo-less standard-tuned guitar.
 
@@ -209,8 +213,8 @@ come from N-E0's labels. The base 2-of-3 vote of fl, gaps and Transkun reproduce
 | gs_laux, fl U gaps pitch mask | 2 of 4 | 0.925 (-0.027) | 0.819 (+0.001) | 0.908 (-0.017) | 0.962 (-0.014) | 0.821 (-0.004) | 0.996 (-0.004) |
 | goat_laux, fl's onsets, pitch mask | 3 of 4 | 0.944 (-0.009) | 0.784 (-0.035) | 0.888 (-0.037) | 0.939 (-0.037) | 0.798 (-0.027) | 0.984 (-0.016) |
 
-Every run and variant, all three vote kinds, is in `votes/votes.json`. Over all 26 runs and 3 vote kinds the largest
-gain is +0.005 (gs_laux conf >= 0.8, 2 of 4, tuning). The largest on capo is -0.005, on standard -0.005. A 3-of-4 vote
+Every run and variant, all three vote kinds, is in `votes/votes.json`. Over all 58 song-runs (26 on capo, 16 on each
+other song) and 3 vote kinds, 174 votes, the largest whole-song gain is +0.005 (gs_laux conf >= 0.8, 2 of 4, tuning). The largest on capo is -0.005, on standard -0.005. A 3-of-4 vote
 always loses (-0.009 to -0.054): the model rarely agrees on the right notes the others are unsure of.
 
 **Notes Noise2Fret finds that fl, gaps and Transkun all miss** (by the labels of the whole-song matching):
@@ -308,3 +312,49 @@ What it shows, plainly:
 | `/home/user/notes/runs/e2/inputs/` | fl's onset times, the range masks, the fl U gaps pitch masks (`inputs.json`: counts) |
 | `/home/user/notes/runs/<S>/n2f-traj-<ckpt>/` | 20-step trajectories, contact sheets |
 | `/home/user/gtv/notes/<S>/n2f-gs_laux/`, `n2f-gs_laux-pmask/` | the handoff |
+
+## Checker
+
+An independent checker re-derived this record on 2026-11-27, with its own code, in `/home/user/notes/runs/check-n2f/`
+(`PROGRESS.md`, `bin/`, `out/check.json`). Its scorer (`bin/myscore.py`) uses mir_eval 0.8.2's `match_notes` at
+50 ms and 50 cents with offsets ignored. It reads the CSVs and the keys itself and makes its own 30 s crops. As a
+calibration it gives step 2's fl / gaps / fl 0.920 / 0.830 / 0.892 and 59 / 82 invented notes at slaps, as
+recorded. The verdict stands. Every number in sections 1 to 6 holds, apart from the five corrections below.
+
+**What was checked, and how**
+
+| check | how | result |
+|---|---|---|
+| every run's score | 70 output CSVs (67 model runs, 3 conf >= 0.8 filters), whole song, 30 s crop and 30 s run, against `e2.json` | 0 differences in F1, found, notes, heard-only recall, string-group recall, slaps, median onset error |
+| the record's tables | sections 2 to 6 printed from the checker's scores | all match, except the Transkun crop (correction 1) |
+| the vote | rebuilt from the raw `notes.csv` of n-03, n-02, n-04 and each run's `out.csv` (`bin/myvote.py`), not from labels | base 2-of-3: 0.952785 / 0.818182 / 0.924585, equal to N-E0's `e0.json` to six places; 174 votes (58 song-runs x 3 kinds): 0 differences; new-note counts 1 (0) / 32 (24) / 10 (4) |
+| confidence sweep | 10 runs x 3 songs x 9 thresholds | 270 of 270 equal |
+| no setting chosen on its own song | the run and the threshold picked together, on the other two songs only | gs_laux at 0.8 for every song, so the best standalone (0.601 / 0.383 / 0.394) holds out of sample |
+| masks | `make_inputs.py` read | the keys give only `tuning_midi` and `capo`; pitch-mask geometry (+-35 ms; GOAT -50 to +60 ms) is the README's, fixed on GuitarSet |
+| fl's onsets | unique onset times of `n-03/notes.csv` | 858 / 555 / 673, equal to the files |
+| ledger | `/home/user/gtr/ledger/runs.jsonl` | 74 rows labelled E2 (r1348 to r1423; r1392 is another lane), all exit 0, 2 cores, `--threads 2`; 73 run logs match their row (label, wall, input file); 24 timing cells and all 73 run ids cited here match |
+| reproducibility | two runs repeated through gtr-run | r1483 (capo gs_laux whole) and r1484 (tuning goat_laux whole): CSVs byte-identical to r1351 and r1367; r1483 took 14.94 s against 26.48 s, so timings vary about 2x with box load |
+| capo mask | recount from `out.csv` | goat_laux 146 notes at frets 0-2, 84 right, 3 / 116 / 27 as stated |
+| trajectories | cell counts and 20-step F1 from `trajectory.npz` and `out.csv` | all equal; contact sheets exist for all six |
+| segments | the 30 s WAVs against the whole songs; the 30 s keys against step 2's | offsets 12.76 / 25.0 / 0.0 s exact (lag 0, correlation 1.0); same notes |
+| handoff | `/home/user/gtv/notes/<S>/n2f-gs_laux*/` | columns onset, offset, pitch, support (1), conf; 786 / 615 / 434 notes; 0.601 / 0.383 / 0.394 (re-scorer 0.855 / 0.556 / 0.691); equal to their source runs; `source.json` hashes match |
+| this file | read in full; checked against the private never-publish list | numbers only: no key notes, no tab text, no keys, no hosts, no never-publish name; E2 wrote nothing else into the repo |
+
+**What I changed in this record** (copy of the earlier text:
+`/home/user/notes/runs/check-n2f/backup/e2-noise2fret.md.before-checker`)
+
+1. Section 2: Transkun's 30 s numbers (0.848 / 0.760 / 0.976) came from its own run on the 30 s file, not a crop. The
+   crop columns now hold 0.898 / 0.790 / 0.976. No gate uses Transkun.
+2. Section 2: the 100 ms tolerance moves gs_laux and goat_laux by at most 0.023, not 0.024. goat moves 0.025 on tuning.
+3. Section 3: the largest range-mask gain (+0.009) is goat with librosa onsets. With fl's onsets it is +0.008.
+4. Section 4: "26 runs" is the capo count. The votes cover 58 song-runs, 174 votes in all.
+5. In short: `p_x0` barely moves only with gs_laux. With goat it grows 38 to 71 %.
+
+**Notes**
+
+- gs_laux's step-1 `p_xt` is bit-identical on all three songs (the same seeded noise on the same 1,292 rows), so the
+  opening "every note at once" carries nothing from the recording. That supports section 6.
+- The gate rows "any variant" take each song's best variant after seeing the scores. That favours Noise2Fret,
+  so the "no" holds.
+- The job's own report says "52 model runs". The ledger has 73 in r1350 to r1423 (67 one-step runs and 6 of 20
+  steps), plus r1348, an earlier copy of capo seg30 gs_laux (5.84 s).
