@@ -392,3 +392,15 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   150.9 minutes, $39.58. The hand filter removed 0 of gaps-paper's 216 notes. The agent also fixed ho-blind's held-out
   name scan (it had dropped the names file's entries) and re-ran it on all nine transcripts: 0 hits.
 - Boats is short (24 units), so it gets both: W2 and L3 (the loop with the tuning found), started 08:05.
+
+## 2026-11-27 08:15 UTC: L2 capo done; E6 compared
+
+- **L2 capo done**: main **0.859** (heard 0.863), matched 0.985, of matched 0.872, onset F1 0.918, GP5 0.845; the solver
+  alone on the same packs 0.828; 73 units, 181.7 writer minutes, $54.64 (revisits $8.60: shape revisits 4 wrong to right,
+  asked revisits 4 wrong to right, 1 invented). By thirds: right 0.840 / 0.838 / 0.898; minutes 2.49 / 2.41 / 2.57;
+  output tokens 14,322 / 14,464 / 15,088. Decisions: alternatives 16 right against 52 invented; drops 24 invented, 0
+  played; placing 13 wrong to right against 14 right to wrong. The window adds 0.076 (L4 0.783); W2 0.947.
+- **E6, the state emptied before every unit** (stopped at 38 units for the weekly limit), against L2 and L4 on the same
+  units 0 to 37 (0 to 118.8 s, 414 key notes): E6 0.843 (349 right, 59 wrong place, 42 invented), L2 0.824 (341, 69,
+  65), L4 0.734 (304, 106, 61). Emptying the carried state cost nothing (it scored 0.019 higher, inside AO-082's run-to-run
+  spread of 0.011 to 0.037). By the brief's rule: on these songs, bar by bar is chunking, not learning; the film says so.
