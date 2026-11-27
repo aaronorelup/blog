@@ -61,3 +61,20 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
 - Nylon (tuning): the guitar moves in the wide shot (the nut at x 2170 at 45 s, 2197 at 60 s) and the board has no face
   inlays: wires are counted from the nut, and the neck needs tracking. Candidates found 8 wires and the nut at 60 s.
 - Two key-labelled fingertips on capo read one fret high (MediaPipe's tip lies past the wire): margin 1 covers it.
+
+## 2026-11-27 01:20 UTC: lanes running, NOTES joints settled
+
+- Lanes started (workflows): E1 the hand tool (wf_a8a17bff-83d: tracker, blind anchors and check, record, verify), E3 the
+  solver ladder (wf_9a546330-297), the loop build (wf_7a8adf63-0df: builder with a 3-unit blind dry run, then a review).
+  E2 (the tuning finder) waits for E1's first nylon window (script `G/loop/work/loop-e2-tuning.js`).
+- The design: `LOOP-DESIGN.md`. The file-access watch runs for the whole session (`G/guard/loop-access.log`, pid in
+  `G/guard/loop-watch.pid`). Blind runs go through `G/loop/tools/blind_run.sh` (the command line of the tool limit above).
+- Checkpoint 1 sent to Aaron (session chat and the command-center project guitar-tab-app). GPU: not needed so far.
+- The parent session says the briefs (sessions/LOOP.md, NOTES.md) were committed as drafts; a reviewed version follows.
+  Setup goes on; the experiment plan is not locked until it lands.
+- NOTES (session_01UUo1x31YLxTbeZLXqSR5T3) builds the held-out keys for both sessions (lane H from 01:05 UTC): closer
+  (Gareth Evans, E A D G A D, capo 1), september (Evan Handyside, Wake Me Up When September Ends, open G, capo 2), and a
+  new player (Culture Vannin / Pete Lumb "Three Little Boats", CC BY 3.0, or Gareth Evans "Stitches", capo 1). No note
+  transcriber is used to build, time or check them. They come to this box through R2 with a manifest; LOOP audits each
+  before use. NOTES' notes handoff: `G/notes/<S>/<method>/notes.csv` (onset, offset, pitch, support, conf). Both sessions
+  run on their own boxes.
