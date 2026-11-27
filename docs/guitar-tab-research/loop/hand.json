@@ -1,0 +1,6002 @@
+{
+ "id": "L-E1",
+ "made_by": "e1-record",
+ "date": "2026-11-27",
+ "definitions": {
+  "coverage": "fretted key notes (fret >= 1 from the capo) whose key fret lies inside the window at the onset (row nearest the onset), of rows not lost / of all fretted",
+  "heard": "the same over key notes whose conf is not \"tab\"",
+  "width": "hi - lo + 1 over fretted notes whose row is not lost",
+  "places": "possible places of each key note pitch, frets 0-17 from the capo, one per string; open strings always allowed; a lost row allows all",
+  "filter": "chain-2 notes removed by hand_filter.py (no open string and no fretted place inside the window), split by a key match (onset 50 ms, same pitch)",
+  "scorer": "G/loop/tools/handreach/score_e1.py (definitions of the first look unchanged; extended by e1-record)"
+ },
+ "conditions": {
+  "v0": "the orchestrator one keyframe per song by eye (capo 60 s, standard), no track; nylon none",
+  "dev": "the tracker agent (e1-tracker): capo/standard v0 anchors refined on their frame + neck_track.py; nylon 4 keyframes (20, 60, 110, 160 s), track.final2",
+  "alone": "blind anchors (Opus 5.5 at max effort, sandboxed) + neck_track.py, no check",
+  "checked": "the same after Opus's blind check: corrections applied per margin; nylon re-tracked with the added keyframe",
+  "assisted": "the answer keys neck outlines as anchors (wire 0 = the outline nut line, the body end at fret 20.75 on steel, 12.0 on nylon); standard tracked by its per-frame outlines; capo and nylon one static outline (the capo outline nut corners extrapolated off-frame by the key builder)"
+ },
+ "assisted_check": {
+  "capo": {
+   "n": 1,
+   "nut_f_median": 0.113,
+   "body_f_median": 20.883,
+   "body_f_p10_p90": [
+    20.883,
+    20.883
+   ],
+   "nut_f_p10_p90": [
+    0.113,
+    0.113
+   ],
+   "first": [
+    2.6,
+    0.11349421154402237,
+    20.883298405937076,
+    [
+     0.518,
+     0.464,
+     0.016,
+     1.018,
+     0.937,
+     -0.011
+    ]
+   ]
+  },
+  "standard": {
+   "n": 36,
+   "nut_f_median": -0.112,
+   "body_f_median": 20.702,
+   "body_f_p10_p90": [
+    20.682,
+    20.752
+   ],
+   "nut_f_p10_p90": [
+    -0.127,
+    -0.007
+   ],
+   "first": [
+    0.0,
+    -0.010692542777147993,
+    20.731266947285736,
+    [
+     0.408,
+     0.505,
+     -0.125,
+     0.935,
+     1.022,
+     -0.019
+    ]
+   ]
+  },
+  "tuning": {
+   "n": 1,
+   "nut_f_median": 0.252,
+   "body_f_median": 12.168,
+   "body_f_p10_p90": [
+    12.168,
+    12.168
+   ],
+   "nut_f_p10_p90": [
+    0.252,
+    0.252
+   ],
+   "first": [
+    33.0,
+    0.2515028732588466,
+    12.167857139051542,
+    [
+     0.531,
+     0.488,
+     0.108,
+     0.956,
+     0.914,
+     0.066
+    ]
+   ]
+  }
+ },
+ "per_song": {
+  "capo|v0|0|30": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 6,
+   "lost_share": 0.0108,
+   "coverage_of_not_lost": 0.9837,
+   "excluded": 9,
+   "coverage_of_all_fretted": 0.9731,
+   "mean_width": 3.96,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.371,
+   "one_place_before": 0.096,
+   "one_place_after": 0.67,
+   "key_place_kept": 0.989,
+   "fretted_heard": 519,
+   "lost_heard": 6,
+   "excluded_heard": 7,
+   "coverage_of_not_lost_heard": 0.9864,
+   "coverage_of_all_fretted_heard": 0.975,
+   "covered": 542,
+   "covered_heard": 506,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 1,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 1,
+    "invented_removed": 0
+   }
+  },
+  "capo|v0|0|10": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 8,
+   "lost_share": 0.0144,
+   "coverage_of_not_lost": 0.9909,
+   "excluded": 5,
+   "coverage_of_all_fretted": 0.9767,
+   "mean_width": 3.98,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.38,
+   "one_place_before": 0.096,
+   "one_place_after": 0.667,
+   "key_place_kept": 0.9939,
+   "fretted_heard": 519,
+   "lost_heard": 8,
+   "excluded_heard": 3,
+   "coverage_of_not_lost_heard": 0.9941,
+   "coverage_of_all_fretted_heard": 0.9788,
+   "covered": 544,
+   "covered_heard": 508,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 1,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 1,
+    "invented_removed": 0
+   }
+  },
+  "capo|v0|1|30": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 6,
+   "lost_share": 0.0108,
+   "coverage_of_not_lost": 0.9946,
+   "excluded": 3,
+   "coverage_of_all_fretted": 0.9838,
+   "mean_width": 5.53,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.536,
+   "one_place_before": 0.096,
+   "one_place_after": 0.524,
+   "key_place_kept": 0.9963,
+   "fretted_heard": 519,
+   "lost_heard": 6,
+   "excluded_heard": 3,
+   "coverage_of_not_lost_heard": 0.9942,
+   "coverage_of_all_fretted_heard": 0.9827,
+   "covered": 548,
+   "covered_heard": 510,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "capo|v0|1|10": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 8,
+   "lost_share": 0.0144,
+   "coverage_of_not_lost": 0.9964,
+   "excluded": 2,
+   "coverage_of_all_fretted": 0.982,
+   "mean_width": 5.54,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.537,
+   "one_place_before": 0.096,
+   "one_place_after": 0.525,
+   "key_place_kept": 0.9975,
+   "fretted_heard": 519,
+   "lost_heard": 8,
+   "excluded_heard": 2,
+   "coverage_of_not_lost_heard": 0.9961,
+   "coverage_of_all_fretted_heard": 0.9807,
+   "covered": 547,
+   "covered_heard": 509,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "capo|v0|2|30": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 6,
+   "lost_share": 0.0108,
+   "coverage_of_not_lost": 0.9964,
+   "excluded": 2,
+   "coverage_of_all_fretted": 0.9856,
+   "mean_width": 6.92,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.683,
+   "one_place_before": 0.096,
+   "one_place_after": 0.405,
+   "key_place_kept": 0.9975,
+   "fretted_heard": 519,
+   "lost_heard": 6,
+   "excluded_heard": 2,
+   "coverage_of_not_lost_heard": 0.9961,
+   "coverage_of_all_fretted_heard": 0.9846,
+   "covered": 549,
+   "covered_heard": 511,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "capo|v0|2|10": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 8,
+   "lost_share": 0.0144,
+   "coverage_of_not_lost": 0.9982,
+   "excluded": 1,
+   "coverage_of_all_fretted": 0.9838,
+   "mean_width": 6.94,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.699,
+   "one_place_before": 0.096,
+   "one_place_after": 0.395,
+   "key_place_kept": 0.9988,
+   "fretted_heard": 519,
+   "lost_heard": 8,
+   "excluded_heard": 1,
+   "coverage_of_not_lost_heard": 0.998,
+   "coverage_of_all_fretted_heard": 0.9827,
+   "covered": 548,
+   "covered_heard": 510,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "capo|dev|0|30": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 7,
+   "lost_share": 0.0126,
+   "coverage_of_not_lost": 0.9909,
+   "excluded": 5,
+   "coverage_of_all_fretted": 0.9785,
+   "mean_width": 3.95,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.391,
+   "one_place_before": 0.096,
+   "one_place_after": 0.665,
+   "key_place_kept": 0.9939,
+   "fretted_heard": 519,
+   "lost_heard": 7,
+   "excluded_heard": 3,
+   "coverage_of_not_lost_heard": 0.9941,
+   "coverage_of_all_fretted_heard": 0.9807,
+   "covered": 545,
+   "covered_heard": 509,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 1,
+    "invented_removed": 1
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 1,
+    "invented_removed": 1
+   }
+  },
+  "capo|dev|0|10": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 7,
+   "lost_share": 0.0126,
+   "coverage_of_not_lost": 0.9945,
+   "excluded": 3,
+   "coverage_of_all_fretted": 0.982,
+   "mean_width": 4.0,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.394,
+   "one_place_before": 0.096,
+   "one_place_after": 0.661,
+   "key_place_kept": 0.9963,
+   "fretted_heard": 519,
+   "lost_heard": 7,
+   "excluded_heard": 2,
+   "coverage_of_not_lost_heard": 0.9961,
+   "coverage_of_all_fretted_heard": 0.9827,
+   "covered": 547,
+   "covered_heard": 510,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 1,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 1,
+    "invented_removed": 0
+   }
+  },
+  "capo|dev|1|30": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 7,
+   "lost_share": 0.0126,
+   "coverage_of_not_lost": 0.9964,
+   "excluded": 2,
+   "coverage_of_all_fretted": 0.9838,
+   "mean_width": 5.51,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.551,
+   "one_place_before": 0.096,
+   "one_place_after": 0.517,
+   "key_place_kept": 0.9975,
+   "fretted_heard": 519,
+   "lost_heard": 7,
+   "excluded_heard": 2,
+   "coverage_of_not_lost_heard": 0.9961,
+   "coverage_of_all_fretted_heard": 0.9827,
+   "covered": 548,
+   "covered_heard": 510,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "capo|dev|1|10": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 7,
+   "lost_share": 0.0126,
+   "coverage_of_not_lost": 0.9964,
+   "excluded": 2,
+   "coverage_of_all_fretted": 0.9838,
+   "mean_width": 5.55,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.547,
+   "one_place_before": 0.096,
+   "one_place_after": 0.517,
+   "key_place_kept": 0.9975,
+   "fretted_heard": 519,
+   "lost_heard": 7,
+   "excluded_heard": 2,
+   "coverage_of_not_lost_heard": 0.9961,
+   "coverage_of_all_fretted_heard": 0.9827,
+   "covered": 548,
+   "covered_heard": 510,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "capo|dev|2|30": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 7,
+   "lost_share": 0.0126,
+   "coverage_of_not_lost": 0.9982,
+   "excluded": 1,
+   "coverage_of_all_fretted": 0.9856,
+   "mean_width": 6.9,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.696,
+   "one_place_before": 0.096,
+   "one_place_after": 0.399,
+   "key_place_kept": 0.9988,
+   "fretted_heard": 519,
+   "lost_heard": 7,
+   "excluded_heard": 1,
+   "coverage_of_not_lost_heard": 0.998,
+   "coverage_of_all_fretted_heard": 0.9846,
+   "covered": 549,
+   "covered_heard": 511,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "capo|dev|2|10": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 7,
+   "lost_share": 0.0126,
+   "coverage_of_not_lost": 0.9982,
+   "excluded": 1,
+   "coverage_of_all_fretted": 0.9856,
+   "mean_width": 6.94,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.702,
+   "one_place_before": 0.096,
+   "one_place_after": 0.393,
+   "key_place_kept": 0.9988,
+   "fretted_heard": 519,
+   "lost_heard": 7,
+   "excluded_heard": 1,
+   "coverage_of_not_lost_heard": 0.998,
+   "coverage_of_all_fretted_heard": 0.9846,
+   "covered": 549,
+   "covered_heard": 511,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "capo|alone|0|30": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 9,
+   "lost_share": 0.0162,
+   "coverage_of_not_lost": 0.9909,
+   "excluded": 5,
+   "coverage_of_all_fretted": 0.9749,
+   "mean_width": 3.96,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.393,
+   "one_place_before": 0.096,
+   "one_place_after": 0.664,
+   "key_place_kept": 0.9939,
+   "fretted_heard": 519,
+   "lost_heard": 9,
+   "excluded_heard": 3,
+   "coverage_of_not_lost_heard": 0.9941,
+   "coverage_of_all_fretted_heard": 0.9769,
+   "covered": 543,
+   "covered_heard": 507,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 1
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 1
+   }
+  },
+  "capo|alone|0|10": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 9,
+   "lost_share": 0.0162,
+   "coverage_of_not_lost": 0.9909,
+   "excluded": 5,
+   "coverage_of_all_fretted": 0.9749,
+   "mean_width": 4.01,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.388,
+   "one_place_before": 0.096,
+   "one_place_after": 0.66,
+   "key_place_kept": 0.9939,
+   "fretted_heard": 519,
+   "lost_heard": 9,
+   "excluded_heard": 3,
+   "coverage_of_not_lost_heard": 0.9941,
+   "coverage_of_all_fretted_heard": 0.9769,
+   "covered": 543,
+   "covered_heard": 507,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 1,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 1,
+    "invented_removed": 0
+   }
+  },
+  "capo|alone|1|30": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 9,
+   "lost_share": 0.0162,
+   "coverage_of_not_lost": 0.9964,
+   "excluded": 2,
+   "coverage_of_all_fretted": 0.9803,
+   "mean_width": 5.51,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.555,
+   "one_place_before": 0.096,
+   "one_place_after": 0.512,
+   "key_place_kept": 0.9975,
+   "fretted_heard": 519,
+   "lost_heard": 9,
+   "excluded_heard": 2,
+   "coverage_of_not_lost_heard": 0.9961,
+   "coverage_of_all_fretted_heard": 0.9788,
+   "covered": 546,
+   "covered_heard": 508,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "capo|alone|1|10": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 9,
+   "lost_share": 0.0162,
+   "coverage_of_not_lost": 0.9964,
+   "excluded": 2,
+   "coverage_of_all_fretted": 0.9803,
+   "mean_width": 5.55,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.548,
+   "one_place_before": 0.096,
+   "one_place_after": 0.513,
+   "key_place_kept": 0.9975,
+   "fretted_heard": 519,
+   "lost_heard": 9,
+   "excluded_heard": 2,
+   "coverage_of_not_lost_heard": 0.9961,
+   "coverage_of_all_fretted_heard": 0.9788,
+   "covered": 546,
+   "covered_heard": 508,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "capo|alone|2|30": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 9,
+   "lost_share": 0.0162,
+   "coverage_of_not_lost": 0.9982,
+   "excluded": 1,
+   "coverage_of_all_fretted": 0.982,
+   "mean_width": 6.91,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.699,
+   "one_place_before": 0.096,
+   "one_place_after": 0.395,
+   "key_place_kept": 0.9988,
+   "fretted_heard": 519,
+   "lost_heard": 9,
+   "excluded_heard": 1,
+   "coverage_of_not_lost_heard": 0.998,
+   "coverage_of_all_fretted_heard": 0.9807,
+   "covered": 547,
+   "covered_heard": 509,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "capo|alone|2|10": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 9,
+   "lost_share": 0.0162,
+   "coverage_of_not_lost": 0.9982,
+   "excluded": 1,
+   "coverage_of_all_fretted": 0.982,
+   "mean_width": 6.94,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.702,
+   "one_place_before": 0.096,
+   "one_place_after": 0.391,
+   "key_place_kept": 0.9988,
+   "fretted_heard": 519,
+   "lost_heard": 9,
+   "excluded_heard": 1,
+   "coverage_of_not_lost_heard": 0.998,
+   "coverage_of_all_fretted_heard": 0.9807,
+   "covered": 547,
+   "covered_heard": 509,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "capo|checked|0|30": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 0,
+   "lost_share": 0.0,
+   "coverage_of_not_lost": 0.9892,
+   "excluded": 6,
+   "coverage_of_all_fretted": 0.9892,
+   "mean_width": 3.9,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.371,
+   "one_place_before": 0.096,
+   "one_place_after": 0.671,
+   "key_place_kept": 0.9926,
+   "fretted_heard": 519,
+   "lost_heard": 0,
+   "excluded_heard": 4,
+   "coverage_of_not_lost_heard": 0.9923,
+   "coverage_of_all_fretted_heard": 0.9923,
+   "covered": 551,
+   "covered_heard": 515,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 1
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 1
+   }
+  },
+  "capo|checked|0|10": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 1,
+   "lost_share": 0.0018,
+   "coverage_of_not_lost": 0.9892,
+   "excluded": 6,
+   "coverage_of_all_fretted": 0.9874,
+   "mean_width": 3.95,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.373,
+   "one_place_before": 0.096,
+   "one_place_after": 0.665,
+   "key_place_kept": 0.9926,
+   "fretted_heard": 519,
+   "lost_heard": 1,
+   "excluded_heard": 4,
+   "coverage_of_not_lost_heard": 0.9923,
+   "coverage_of_all_fretted_heard": 0.9904,
+   "covered": 550,
+   "covered_heard": 514,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 1,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 1,
+    "invented_removed": 0
+   }
+  },
+  "capo|checked|1|30": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 0,
+   "lost_share": 0.0,
+   "coverage_of_not_lost": 0.9946,
+   "excluded": 3,
+   "coverage_of_all_fretted": 0.9946,
+   "mean_width": 5.45,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.533,
+   "one_place_before": 0.096,
+   "one_place_after": 0.519,
+   "key_place_kept": 0.9963,
+   "fretted_heard": 519,
+   "lost_heard": 0,
+   "excluded_heard": 3,
+   "coverage_of_not_lost_heard": 0.9942,
+   "coverage_of_all_fretted_heard": 0.9942,
+   "covered": 554,
+   "covered_heard": 516,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "capo|checked|1|10": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 1,
+   "lost_share": 0.0018,
+   "coverage_of_not_lost": 0.9946,
+   "excluded": 3,
+   "coverage_of_all_fretted": 0.9928,
+   "mean_width": 5.51,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.534,
+   "one_place_before": 0.096,
+   "one_place_after": 0.518,
+   "key_place_kept": 0.9963,
+   "fretted_heard": 519,
+   "lost_heard": 1,
+   "excluded_heard": 3,
+   "coverage_of_not_lost_heard": 0.9942,
+   "coverage_of_all_fretted_heard": 0.9923,
+   "covered": 553,
+   "covered_heard": 515,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "capo|checked|2|30": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 0,
+   "lost_share": 0.0,
+   "coverage_of_not_lost": 0.9982,
+   "excluded": 1,
+   "coverage_of_all_fretted": 0.9982,
+   "mean_width": 6.85,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.681,
+   "one_place_before": 0.096,
+   "one_place_after": 0.399,
+   "key_place_kept": 0.9988,
+   "fretted_heard": 519,
+   "lost_heard": 0,
+   "excluded_heard": 1,
+   "coverage_of_not_lost_heard": 0.9981,
+   "coverage_of_all_fretted_heard": 0.9981,
+   "covered": 556,
+   "covered_heard": 518,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "capo|checked|2|10": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 1,
+   "lost_share": 0.0018,
+   "coverage_of_not_lost": 0.9982,
+   "excluded": 1,
+   "coverage_of_all_fretted": 0.9964,
+   "mean_width": 6.9,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.69,
+   "one_place_before": 0.096,
+   "one_place_after": 0.394,
+   "key_place_kept": 0.9988,
+   "fretted_heard": 519,
+   "lost_heard": 1,
+   "excluded_heard": 1,
+   "coverage_of_not_lost_heard": 0.9981,
+   "coverage_of_all_fretted_heard": 0.9961,
+   "covered": 555,
+   "covered_heard": 517,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "capo|assisted|0|30": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 9,
+   "lost_share": 0.0162,
+   "coverage_of_not_lost": 0.9854,
+   "excluded": 8,
+   "coverage_of_all_fretted": 0.9695,
+   "mean_width": 3.6,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.274,
+   "one_place_before": 0.096,
+   "one_place_after": 0.783,
+   "key_place_kept": 0.9902,
+   "fretted_heard": 519,
+   "lost_heard": 9,
+   "excluded_heard": 6,
+   "coverage_of_not_lost_heard": 0.9882,
+   "coverage_of_all_fretted_heard": 0.9711,
+   "covered": 540,
+   "covered_heard": 504,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 1
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 1
+   }
+  },
+  "capo|assisted|0|10": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 10,
+   "lost_share": 0.018,
+   "coverage_of_not_lost": 0.9854,
+   "excluded": 8,
+   "coverage_of_all_fretted": 0.9677,
+   "mean_width": 3.64,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.275,
+   "one_place_before": 0.096,
+   "one_place_after": 0.78,
+   "key_place_kept": 0.9902,
+   "fretted_heard": 519,
+   "lost_heard": 10,
+   "excluded_heard": 6,
+   "coverage_of_not_lost_heard": 0.9882,
+   "coverage_of_all_fretted_heard": 0.9692,
+   "covered": 539,
+   "covered_heard": 503,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "capo|assisted|1|30": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 9,
+   "lost_share": 0.0162,
+   "coverage_of_not_lost": 0.9945,
+   "excluded": 3,
+   "coverage_of_all_fretted": 0.9785,
+   "mean_width": 5.06,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.459,
+   "one_place_before": 0.096,
+   "one_place_after": 0.609,
+   "key_place_kept": 0.9963,
+   "fretted_heard": 519,
+   "lost_heard": 9,
+   "excluded_heard": 2,
+   "coverage_of_not_lost_heard": 0.9961,
+   "coverage_of_all_fretted_heard": 0.9788,
+   "covered": 545,
+   "covered_heard": 508,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 1
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 1
+   }
+  },
+  "capo|assisted|1|10": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 10,
+   "lost_share": 0.018,
+   "coverage_of_not_lost": 0.9945,
+   "excluded": 3,
+   "coverage_of_all_fretted": 0.9767,
+   "mean_width": 5.1,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.459,
+   "one_place_before": 0.096,
+   "one_place_after": 0.609,
+   "key_place_kept": 0.9963,
+   "fretted_heard": 519,
+   "lost_heard": 10,
+   "excluded_heard": 2,
+   "coverage_of_not_lost_heard": 0.9961,
+   "coverage_of_all_fretted_heard": 0.9769,
+   "covered": 544,
+   "covered_heard": 507,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "capo|assisted|2|30": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 9,
+   "lost_share": 0.0162,
+   "coverage_of_not_lost": 0.9964,
+   "excluded": 2,
+   "coverage_of_all_fretted": 0.9803,
+   "mean_width": 6.35,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.675,
+   "one_place_before": 0.096,
+   "one_place_after": 0.427,
+   "key_place_kept": 0.9975,
+   "fretted_heard": 519,
+   "lost_heard": 9,
+   "excluded_heard": 2,
+   "coverage_of_not_lost_heard": 0.9961,
+   "coverage_of_all_fretted_heard": 0.9788,
+   "covered": 546,
+   "covered_heard": 508,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "capo|assisted|2|10": {
+   "notes": 815,
+   "fretted": 557,
+   "lost": 10,
+   "lost_share": 0.018,
+   "coverage_of_not_lost": 0.9963,
+   "excluded": 2,
+   "coverage_of_all_fretted": 0.9785,
+   "mean_width": 6.37,
+   "places_per_note_before": 3.459,
+   "places_per_note_after": 1.676,
+   "one_place_before": 0.096,
+   "one_place_after": 0.425,
+   "key_place_kept": 0.9975,
+   "fretted_heard": 519,
+   "lost_heard": 10,
+   "excluded_heard": 2,
+   "coverage_of_not_lost_heard": 0.9961,
+   "coverage_of_all_fretted_heard": 0.9769,
+   "covered": 545,
+   "covered_heard": 507,
+   "filter": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 882,
+    "real": 781,
+    "invented": 101,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "tuning|dev|0|30": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 2,
+   "lost_share": 0.0097,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9903,
+   "mean_width": 2.67,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.218,
+   "one_place_before": 0.107,
+   "one_place_after": 0.79,
+   "key_place_kept": 1.0,
+   "fretted_heard": 181,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.989,
+   "covered": 204,
+   "covered_heard": 179,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 2
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 2
+   }
+  },
+  "tuning|dev|0|10": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 2,
+   "lost_share": 0.0097,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9903,
+   "mean_width": 2.68,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.22,
+   "one_place_before": 0.107,
+   "one_place_after": 0.788,
+   "key_place_kept": 1.0,
+   "fretted_heard": 181,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.989,
+   "covered": 204,
+   "covered_heard": 179,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 2
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 2
+   }
+  },
+  "tuning|dev|1|30": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 2,
+   "lost_share": 0.0097,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9903,
+   "mean_width": 3.8,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.435,
+   "one_place_before": 0.107,
+   "one_place_after": 0.573,
+   "key_place_kept": 1.0,
+   "fretted_heard": 181,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.989,
+   "covered": 204,
+   "covered_heard": 179,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "tuning|dev|1|10": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 2,
+   "lost_share": 0.0097,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9903,
+   "mean_width": 3.8,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.435,
+   "one_place_before": 0.107,
+   "one_place_after": 0.575,
+   "key_place_kept": 1.0,
+   "fretted_heard": 181,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.989,
+   "covered": 204,
+   "covered_heard": 179,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "tuning|dev|2|30": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 2,
+   "lost_share": 0.0097,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9903,
+   "mean_width": 4.87,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.667,
+   "one_place_before": 0.107,
+   "one_place_after": 0.369,
+   "key_place_kept": 1.0,
+   "fretted_heard": 181,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.989,
+   "covered": 204,
+   "covered_heard": 179,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "tuning|dev|2|10": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 2,
+   "lost_share": 0.0097,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9903,
+   "mean_width": 4.87,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.664,
+   "one_place_before": 0.107,
+   "one_place_after": 0.373,
+   "key_place_kept": 1.0,
+   "fretted_heard": 181,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.989,
+   "covered": 204,
+   "covered_heard": 179,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "tuning|alone|0|30": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 2,
+   "lost_share": 0.0097,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9903,
+   "mean_width": 2.63,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.248,
+   "one_place_before": 0.107,
+   "one_place_after": 0.785,
+   "key_place_kept": 1.0,
+   "fretted_heard": 181,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.989,
+   "covered": 204,
+   "covered_heard": 179,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "tuning|alone|0|10": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 2,
+   "lost_share": 0.0097,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9903,
+   "mean_width": 2.62,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.248,
+   "one_place_before": 0.107,
+   "one_place_after": 0.785,
+   "key_place_kept": 1.0,
+   "fretted_heard": 181,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.989,
+   "covered": 204,
+   "covered_heard": 179,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "tuning|alone|1|30": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 2,
+   "lost_share": 0.0097,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9903,
+   "mean_width": 3.73,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.449,
+   "one_place_before": 0.107,
+   "one_place_after": 0.584,
+   "key_place_kept": 1.0,
+   "fretted_heard": 181,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.989,
+   "covered": 204,
+   "covered_heard": 179,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "tuning|alone|1|10": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 2,
+   "lost_share": 0.0097,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9903,
+   "mean_width": 3.72,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.446,
+   "one_place_before": 0.107,
+   "one_place_after": 0.588,
+   "key_place_kept": 1.0,
+   "fretted_heard": 181,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.989,
+   "covered": 204,
+   "covered_heard": 179,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "tuning|alone|2|30": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 2,
+   "lost_share": 0.0097,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9903,
+   "mean_width": 4.79,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.682,
+   "one_place_before": 0.107,
+   "one_place_after": 0.381,
+   "key_place_kept": 1.0,
+   "fretted_heard": 181,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.989,
+   "covered": 204,
+   "covered_heard": 179,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "tuning|alone|2|10": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 2,
+   "lost_share": 0.0097,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9903,
+   "mean_width": 4.78,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.682,
+   "one_place_before": 0.107,
+   "one_place_after": 0.381,
+   "key_place_kept": 1.0,
+   "fretted_heard": 181,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.989,
+   "covered": 204,
+   "covered_heard": 179,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "tuning|checked|0|30": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 2,
+   "lost_share": 0.0097,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9903,
+   "mean_width": 2.63,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.248,
+   "one_place_before": 0.107,
+   "one_place_after": 0.785,
+   "key_place_kept": 1.0,
+   "fretted_heard": 181,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.989,
+   "covered": 204,
+   "covered_heard": 179,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "tuning|checked|0|10": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 2,
+   "lost_share": 0.0097,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9903,
+   "mean_width": 2.62,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.248,
+   "one_place_before": 0.107,
+   "one_place_after": 0.785,
+   "key_place_kept": 1.0,
+   "fretted_heard": 181,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.989,
+   "covered": 204,
+   "covered_heard": 179,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "tuning|checked|1|30": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 2,
+   "lost_share": 0.0097,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9903,
+   "mean_width": 3.73,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.449,
+   "one_place_before": 0.107,
+   "one_place_after": 0.584,
+   "key_place_kept": 1.0,
+   "fretted_heard": 181,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.989,
+   "covered": 204,
+   "covered_heard": 179,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "tuning|checked|1|10": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 2,
+   "lost_share": 0.0097,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9903,
+   "mean_width": 3.72,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.446,
+   "one_place_before": 0.107,
+   "one_place_after": 0.588,
+   "key_place_kept": 1.0,
+   "fretted_heard": 181,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.989,
+   "covered": 204,
+   "covered_heard": 179,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "tuning|checked|2|30": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 2,
+   "lost_share": 0.0097,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9903,
+   "mean_width": 4.79,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.682,
+   "one_place_before": 0.107,
+   "one_place_after": 0.381,
+   "key_place_kept": 1.0,
+   "fretted_heard": 181,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.989,
+   "covered": 204,
+   "covered_heard": 179,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "tuning|checked|2|10": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 2,
+   "lost_share": 0.0097,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9903,
+   "mean_width": 4.78,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.682,
+   "one_place_before": 0.107,
+   "one_place_after": 0.381,
+   "key_place_kept": 1.0,
+   "fretted_heard": 181,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.989,
+   "covered": 204,
+   "covered_heard": 179,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "tuning|assisted|0|30": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 27,
+   "lost_share": 0.1311,
+   "coverage_of_not_lost": 0.9162,
+   "excluded": 15,
+   "coverage_of_all_fretted": 0.7961,
+   "mean_width": 2.23,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.32,
+   "one_place_before": 0.107,
+   "one_place_after": 0.779,
+   "key_place_kept": 0.9761,
+   "fretted_heard": 181,
+   "lost_heard": 25,
+   "excluded_heard": 14,
+   "coverage_of_not_lost_heard": 0.9103,
+   "coverage_of_all_fretted_heard": 0.7845,
+   "covered": 164,
+   "covered_heard": 142,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 7,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 7,
+    "invented_removed": 0
+   }
+  },
+  "tuning|assisted|0|10": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 29,
+   "lost_share": 0.1408,
+   "coverage_of_not_lost": 0.9266,
+   "excluded": 13,
+   "coverage_of_all_fretted": 0.7961,
+   "mean_width": 2.25,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.328,
+   "one_place_before": 0.107,
+   "one_place_after": 0.78,
+   "key_place_kept": 0.9793,
+   "fretted_heard": 181,
+   "lost_heard": 27,
+   "excluded_heard": 12,
+   "coverage_of_not_lost_heard": 0.9221,
+   "coverage_of_all_fretted_heard": 0.7845,
+   "covered": 164,
+   "covered_heard": 142,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 7,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 7,
+    "invented_removed": 0
+   }
+  },
+  "tuning|assisted|1|30": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 27,
+   "lost_share": 0.1311,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.8689,
+   "mean_width": 3.4,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.514,
+   "one_place_before": 0.107,
+   "one_place_after": 0.616,
+   "key_place_kept": 1.0,
+   "fretted_heard": 181,
+   "lost_heard": 25,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.8619,
+   "covered": 179,
+   "covered_heard": 156,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "tuning|assisted|1|10": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 29,
+   "lost_share": 0.1408,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.8592,
+   "mean_width": 3.42,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.518,
+   "one_place_before": 0.107,
+   "one_place_after": 0.616,
+   "key_place_kept": 1.0,
+   "fretted_heard": 181,
+   "lost_heard": 27,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.8508,
+   "covered": 177,
+   "covered_heard": 154,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "tuning|assisted|2|30": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 27,
+   "lost_share": 0.1311,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.8689,
+   "mean_width": 4.41,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.75,
+   "one_place_before": 0.107,
+   "one_place_after": 0.401,
+   "key_place_kept": 1.0,
+   "fretted_heard": 181,
+   "lost_heard": 25,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.8619,
+   "covered": 179,
+   "covered_heard": 156,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "tuning|assisted|2|10": {
+   "notes": 628,
+   "fretted": 206,
+   "lost": 29,
+   "lost_share": 0.1408,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.8592,
+   "mean_width": 4.43,
+   "places_per_note_before": 3.623,
+   "places_per_note_after": 1.755,
+   "one_place_before": 0.107,
+   "one_place_after": 0.4,
+   "key_place_kept": 1.0,
+   "fretted_heard": 181,
+   "lost_heard": 27,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.8508,
+   "covered": 177,
+   "covered_heard": 154,
+   "filter": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 611,
+    "real": 516,
+    "invented": 95,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "standard|v0|0|30": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 0.9743,
+   "excluded": 14,
+   "coverage_of_all_fretted": 0.9707,
+   "mean_width": 3.36,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.11,
+   "one_place_before": 0.057,
+   "one_place_after": 0.869,
+   "key_place_kept": 0.9794,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 13,
+   "coverage_of_not_lost_heard": 0.973,
+   "coverage_of_all_fretted_heard": 0.969,
+   "covered": 530,
+   "covered_heard": 469,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 13,
+    "invented_removed": 3
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 13,
+    "invented_removed": 3
+   }
+  },
+  "standard|v0|0|10": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 0.9743,
+   "excluded": 14,
+   "coverage_of_all_fretted": 0.9707,
+   "mean_width": 3.36,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.11,
+   "one_place_before": 0.057,
+   "one_place_after": 0.87,
+   "key_place_kept": 0.9794,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 13,
+   "coverage_of_not_lost_heard": 0.973,
+   "coverage_of_all_fretted_heard": 0.969,
+   "covered": 530,
+   "covered_heard": 469,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 13,
+    "invented_removed": 2
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 13,
+    "invented_removed": 2
+   }
+  },
+  "standard|v0|1|30": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 0.9982,
+   "excluded": 1,
+   "coverage_of_all_fretted": 0.9945,
+   "mean_width": 4.86,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.258,
+   "one_place_before": 0.057,
+   "one_place_after": 0.764,
+   "key_place_kept": 0.9985,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 1,
+   "coverage_of_not_lost_heard": 0.9979,
+   "coverage_of_all_fretted_heard": 0.9938,
+   "covered": 543,
+   "covered_heard": 481,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 1
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 1
+   }
+  },
+  "standard|v0|1|10": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9963,
+   "mean_width": 4.86,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.264,
+   "one_place_before": 0.057,
+   "one_place_after": 0.761,
+   "key_place_kept": 1.0,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.9959,
+   "covered": 544,
+   "covered_heard": 482,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "standard|v0|2|30": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9963,
+   "mean_width": 6.03,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.424,
+   "one_place_before": 0.057,
+   "one_place_after": 0.611,
+   "key_place_kept": 1.0,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.9959,
+   "covered": 544,
+   "covered_heard": 482,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "standard|v0|2|10": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9963,
+   "mean_width": 6.04,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.426,
+   "one_place_before": 0.057,
+   "one_place_after": 0.61,
+   "key_place_kept": 1.0,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.9959,
+   "covered": 544,
+   "covered_heard": 482,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "standard|dev|0|30": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 0.9798,
+   "excluded": 11,
+   "coverage_of_all_fretted": 0.9762,
+   "mean_width": 3.19,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.097,
+   "one_place_before": 0.057,
+   "one_place_after": 0.879,
+   "key_place_kept": 0.9838,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 11,
+   "coverage_of_not_lost_heard": 0.9772,
+   "coverage_of_all_fretted_heard": 0.9731,
+   "covered": 533,
+   "covered_heard": 471,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 10,
+    "invented_removed": 2
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 10,
+    "invented_removed": 2
+   }
+  },
+  "standard|dev|0|10": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 0.9816,
+   "excluded": 10,
+   "coverage_of_all_fretted": 0.978,
+   "mean_width": 3.2,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.1,
+   "one_place_before": 0.057,
+   "one_place_after": 0.881,
+   "key_place_kept": 0.9853,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 10,
+   "coverage_of_not_lost_heard": 0.9793,
+   "coverage_of_all_fretted_heard": 0.9752,
+   "covered": 534,
+   "covered_heard": 472,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 9,
+    "invented_removed": 2
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 9,
+    "invented_removed": 2
+   }
+  },
+  "standard|dev|1|30": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 0.9982,
+   "excluded": 1,
+   "coverage_of_all_fretted": 0.9945,
+   "mean_width": 4.69,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.243,
+   "one_place_before": 0.057,
+   "one_place_after": 0.764,
+   "key_place_kept": 0.9985,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 1,
+   "coverage_of_not_lost_heard": 0.9979,
+   "coverage_of_all_fretted_heard": 0.9938,
+   "covered": 543,
+   "covered_heard": 481,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "standard|dev|1|10": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9963,
+   "mean_width": 4.7,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.246,
+   "one_place_before": 0.057,
+   "one_place_after": 0.764,
+   "key_place_kept": 1.0,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.9959,
+   "covered": 544,
+   "covered_heard": 482,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "standard|dev|2|30": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9963,
+   "mean_width": 5.82,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.411,
+   "one_place_before": 0.057,
+   "one_place_after": 0.619,
+   "key_place_kept": 1.0,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.9959,
+   "covered": 544,
+   "covered_heard": 482,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "standard|dev|2|10": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9963,
+   "mean_width": 5.83,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.411,
+   "one_place_before": 0.057,
+   "one_place_after": 0.619,
+   "key_place_kept": 1.0,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.9959,
+   "covered": 544,
+   "covered_heard": 482,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "standard|alone|0|30": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 0.9853,
+   "excluded": 8,
+   "coverage_of_all_fretted": 0.9817,
+   "mean_width": 3.18,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.1,
+   "one_place_before": 0.057,
+   "one_place_after": 0.885,
+   "key_place_kept": 0.9882,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 8,
+   "coverage_of_not_lost_heard": 0.9834,
+   "coverage_of_all_fretted_heard": 0.9793,
+   "covered": 536,
+   "covered_heard": 474,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 7,
+    "invented_removed": 2
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 7,
+    "invented_removed": 2
+   }
+  },
+  "standard|alone|0|10": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 0.9853,
+   "excluded": 8,
+   "coverage_of_all_fretted": 0.9817,
+   "mean_width": 3.19,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.102,
+   "one_place_before": 0.057,
+   "one_place_after": 0.885,
+   "key_place_kept": 0.9882,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 8,
+   "coverage_of_not_lost_heard": 0.9834,
+   "coverage_of_all_fretted_heard": 0.9793,
+   "covered": 536,
+   "covered_heard": 474,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 7,
+    "invented_removed": 2
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 7,
+    "invented_removed": 2
+   }
+  },
+  "standard|alone|1|30": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 0.9982,
+   "excluded": 1,
+   "coverage_of_all_fretted": 0.9945,
+   "mean_width": 4.68,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.242,
+   "one_place_before": 0.057,
+   "one_place_after": 0.767,
+   "key_place_kept": 0.9985,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 1,
+   "coverage_of_not_lost_heard": 0.9979,
+   "coverage_of_all_fretted_heard": 0.9938,
+   "covered": 543,
+   "covered_heard": 481,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "standard|alone|1|10": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9963,
+   "mean_width": 4.69,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.244,
+   "one_place_before": 0.057,
+   "one_place_after": 0.766,
+   "key_place_kept": 1.0,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.9959,
+   "covered": 544,
+   "covered_heard": 482,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "standard|alone|2|30": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9963,
+   "mean_width": 5.8,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.411,
+   "one_place_before": 0.057,
+   "one_place_after": 0.619,
+   "key_place_kept": 1.0,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.9959,
+   "covered": 544,
+   "covered_heard": 482,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "standard|alone|2|10": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9963,
+   "mean_width": 5.81,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.411,
+   "one_place_before": 0.057,
+   "one_place_after": 0.619,
+   "key_place_kept": 1.0,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.9959,
+   "covered": 544,
+   "covered_heard": 482,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "standard|checked|0|30": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 1,
+   "lost_share": 0.0018,
+   "coverage_of_not_lost": 0.9853,
+   "excluded": 8,
+   "coverage_of_all_fretted": 0.9835,
+   "mean_width": 3.08,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.093,
+   "one_place_before": 0.057,
+   "one_place_after": 0.89,
+   "key_place_kept": 0.9882,
+   "fretted_heard": 484,
+   "lost_heard": 1,
+   "excluded_heard": 8,
+   "coverage_of_not_lost_heard": 0.9834,
+   "coverage_of_all_fretted_heard": 0.9814,
+   "covered": 537,
+   "covered_heard": 475,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 7,
+    "invented_removed": 2
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 7,
+    "invented_removed": 2
+   }
+  },
+  "standard|checked|0|10": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 1,
+   "lost_share": 0.0018,
+   "coverage_of_not_lost": 0.9853,
+   "excluded": 8,
+   "coverage_of_all_fretted": 0.9835,
+   "mean_width": 3.09,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.094,
+   "one_place_before": 0.057,
+   "one_place_after": 0.89,
+   "key_place_kept": 0.9882,
+   "fretted_heard": 484,
+   "lost_heard": 1,
+   "excluded_heard": 8,
+   "coverage_of_not_lost_heard": 0.9834,
+   "coverage_of_all_fretted_heard": 0.9814,
+   "covered": 537,
+   "covered_heard": 475,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 7,
+    "invented_removed": 2
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 7,
+    "invented_removed": 2
+   }
+  },
+  "standard|checked|1|30": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 1,
+   "lost_share": 0.0018,
+   "coverage_of_not_lost": 0.9982,
+   "excluded": 1,
+   "coverage_of_all_fretted": 0.9963,
+   "mean_width": 4.58,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.236,
+   "one_place_before": 0.057,
+   "one_place_after": 0.772,
+   "key_place_kept": 0.9985,
+   "fretted_heard": 484,
+   "lost_heard": 1,
+   "excluded_heard": 1,
+   "coverage_of_not_lost_heard": 0.9979,
+   "coverage_of_all_fretted_heard": 0.9959,
+   "covered": 544,
+   "covered_heard": 482,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "standard|checked|1|10": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 1,
+   "lost_share": 0.0018,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9982,
+   "mean_width": 4.6,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.239,
+   "one_place_before": 0.057,
+   "one_place_after": 0.77,
+   "key_place_kept": 1.0,
+   "fretted_heard": 484,
+   "lost_heard": 1,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.9979,
+   "covered": 545,
+   "covered_heard": 483,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "standard|checked|2|30": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 1,
+   "lost_share": 0.0018,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9982,
+   "mean_width": 5.71,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.405,
+   "one_place_before": 0.057,
+   "one_place_after": 0.623,
+   "key_place_kept": 1.0,
+   "fretted_heard": 484,
+   "lost_heard": 1,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.9979,
+   "covered": 545,
+   "covered_heard": 483,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "standard|checked|2|10": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 1,
+   "lost_share": 0.0018,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9982,
+   "mean_width": 5.72,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.405,
+   "one_place_before": 0.057,
+   "one_place_after": 0.623,
+   "key_place_kept": 1.0,
+   "fretted_heard": 484,
+   "lost_heard": 1,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.9979,
+   "covered": 545,
+   "covered_heard": 483,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "standard|assisted|0|30": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 0.954,
+   "excluded": 25,
+   "coverage_of_all_fretted": 0.9505,
+   "mean_width": 3.01,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.072,
+   "one_place_before": 0.057,
+   "one_place_after": 0.863,
+   "key_place_kept": 0.9632,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 24,
+   "coverage_of_not_lost_heard": 0.9502,
+   "coverage_of_all_fretted_heard": 0.9463,
+   "covered": 519,
+   "covered_heard": 458,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 23,
+    "invented_removed": 4
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 23,
+    "invented_removed": 4
+   }
+  },
+  "standard|assisted|0|10": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 0.9559,
+   "excluded": 24,
+   "coverage_of_all_fretted": 0.9524,
+   "mean_width": 3.02,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.075,
+   "one_place_before": 0.057,
+   "one_place_after": 0.865,
+   "key_place_kept": 0.9647,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 23,
+   "coverage_of_not_lost_heard": 0.9523,
+   "coverage_of_all_fretted_heard": 0.9483,
+   "covered": 520,
+   "covered_heard": 459,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 22,
+    "invented_removed": 3
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 22,
+    "invented_removed": 3
+   }
+  },
+  "standard|assisted|1|30": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 0.9982,
+   "excluded": 1,
+   "coverage_of_all_fretted": 0.9945,
+   "mean_width": 4.51,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.236,
+   "one_place_before": 0.057,
+   "one_place_after": 0.772,
+   "key_place_kept": 0.9985,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 1,
+   "coverage_of_not_lost_heard": 0.9979,
+   "coverage_of_all_fretted_heard": 0.9938,
+   "covered": 543,
+   "covered_heard": 481,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "standard|assisted|1|10": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9963,
+   "mean_width": 4.52,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.24,
+   "one_place_before": 0.057,
+   "one_place_after": 0.77,
+   "key_place_kept": 1.0,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.9959,
+   "covered": 544,
+   "covered_heard": 482,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "standard|assisted|2|30": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9963,
+   "mean_width": 5.73,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.405,
+   "one_place_before": 0.057,
+   "one_place_after": 0.622,
+   "key_place_kept": 1.0,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.9959,
+   "covered": 544,
+   "covered_heard": 482,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "standard|assisted|2|10": {
+   "notes": 679,
+   "fretted": 546,
+   "lost": 2,
+   "lost_share": 0.0037,
+   "coverage_of_not_lost": 1.0,
+   "excluded": 0,
+   "coverage_of_all_fretted": 0.9963,
+   "mean_width": 5.73,
+   "places_per_note_before": 3.239,
+   "places_per_note_after": 1.405,
+   "one_place_before": 0.057,
+   "one_place_after": 0.622,
+   "key_place_kept": 1.0,
+   "fretted_heard": 484,
+   "lost_heard": 2,
+   "excluded_heard": 0,
+   "coverage_of_not_lost_heard": 1.0,
+   "coverage_of_all_fretted_heard": 0.9959,
+   "covered": 544,
+   "covered_heard": 482,
+   "filter": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   },
+   "filter_hf": {
+    "notes": 734,
+    "real": 630,
+    "invented": 104,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  }
+ },
+ "pooled": {
+  "v0|0|30": {
+   "songs": 2,
+   "notes": 1494,
+   "fretted": 1103,
+   "lost": 8,
+   "lost_share": 0.0073,
+   "covered": 1072,
+   "excluded": 23,
+   "coverage_of_not_lost": 0.979,
+   "coverage_of_all_fretted": 0.9719,
+   "fretted_heard": 1003,
+   "excluded_heard": 20,
+   "coverage_of_not_lost_heard": 0.9799,
+   "coverage_of_all_fretted_heard": 0.9721,
+   "mean_width": 3.66,
+   "places_per_note_before": 3.359,
+   "places_per_note_after": 1.252,
+   "one_place_before": 0.078,
+   "one_place_after": 0.76,
+   "key_place_kept": 0.9846,
+   "filter_hf": {
+    "notes": 1616,
+    "real": 1411,
+    "invented": 205,
+    "real_removed": 14,
+    "invented_removed": 3
+   }
+  },
+  "v0|0|10": {
+   "songs": 2,
+   "notes": 1494,
+   "fretted": 1103,
+   "lost": 10,
+   "lost_share": 0.0091,
+   "covered": 1074,
+   "excluded": 19,
+   "coverage_of_not_lost": 0.9826,
+   "coverage_of_all_fretted": 0.9737,
+   "fretted_heard": 1003,
+   "excluded_heard": 16,
+   "coverage_of_not_lost_heard": 0.9839,
+   "coverage_of_all_fretted_heard": 0.9741,
+   "mean_width": 3.67,
+   "places_per_note_before": 3.359,
+   "places_per_note_after": 1.257,
+   "one_place_before": 0.078,
+   "one_place_after": 0.759,
+   "key_place_kept": 0.9873,
+   "filter_hf": {
+    "notes": 1616,
+    "real": 1411,
+    "invented": 205,
+    "real_removed": 14,
+    "invented_removed": 2
+   }
+  },
+  "v0|1|30": {
+   "songs": 2,
+   "notes": 1494,
+   "fretted": 1103,
+   "lost": 8,
+   "lost_share": 0.0073,
+   "covered": 1091,
+   "excluded": 4,
+   "coverage_of_not_lost": 0.9963,
+   "coverage_of_all_fretted": 0.9891,
+   "fretted_heard": 1003,
+   "excluded_heard": 4,
+   "coverage_of_not_lost_heard": 0.996,
+   "coverage_of_all_fretted_heard": 0.988,
+   "mean_width": 5.2,
+   "places_per_note_before": 3.359,
+   "places_per_note_after": 1.41,
+   "one_place_before": 0.078,
+   "one_place_after": 0.633,
+   "key_place_kept": 0.9973,
+   "filter_hf": {
+    "notes": 1616,
+    "real": 1411,
+    "invented": 205,
+    "real_removed": 0,
+    "invented_removed": 1
+   }
+  },
+  "v0|1|10": {
+   "songs": 2,
+   "notes": 1494,
+   "fretted": 1103,
+   "lost": 10,
+   "lost_share": 0.0091,
+   "covered": 1091,
+   "excluded": 2,
+   "coverage_of_not_lost": 0.9982,
+   "coverage_of_all_fretted": 0.9891,
+   "fretted_heard": 1003,
+   "excluded_heard": 2,
+   "coverage_of_not_lost_heard": 0.998,
+   "coverage_of_all_fretted_heard": 0.988,
+   "mean_width": 5.2,
+   "places_per_note_before": 3.359,
+   "places_per_note_after": 1.413,
+   "one_place_before": 0.078,
+   "one_place_after": 0.632,
+   "key_place_kept": 0.9986,
+   "filter_hf": {
+    "notes": 1616,
+    "real": 1411,
+    "invented": 205,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "v0|2|30": {
+   "songs": 2,
+   "notes": 1494,
+   "fretted": 1103,
+   "lost": 8,
+   "lost_share": 0.0073,
+   "covered": 1093,
+   "excluded": 2,
+   "coverage_of_not_lost": 0.9982,
+   "coverage_of_all_fretted": 0.9909,
+   "fretted_heard": 1003,
+   "excluded_heard": 2,
+   "coverage_of_not_lost_heard": 0.998,
+   "coverage_of_all_fretted_heard": 0.99,
+   "mean_width": 6.48,
+   "places_per_note_before": 3.359,
+   "places_per_note_after": 1.565,
+   "one_place_before": 0.078,
+   "one_place_after": 0.499,
+   "key_place_kept": 0.9986,
+   "filter_hf": {
+    "notes": 1616,
+    "real": 1411,
+    "invented": 205,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "v0|2|10": {
+   "songs": 2,
+   "notes": 1494,
+   "fretted": 1103,
+   "lost": 10,
+   "lost_share": 0.0091,
+   "covered": 1092,
+   "excluded": 1,
+   "coverage_of_not_lost": 0.9991,
+   "coverage_of_all_fretted": 0.99,
+   "fretted_heard": 1003,
+   "excluded_heard": 1,
+   "coverage_of_not_lost_heard": 0.999,
+   "coverage_of_all_fretted_heard": 0.989,
+   "mean_width": 6.49,
+   "places_per_note_before": 3.359,
+   "places_per_note_after": 1.575,
+   "one_place_before": 0.078,
+   "one_place_after": 0.493,
+   "key_place_kept": 0.9993,
+   "filter_hf": {
+    "notes": 1616,
+    "real": 1411,
+    "invented": 205,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "dev|0|30": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 11,
+   "lost_share": 0.0084,
+   "covered": 1282,
+   "excluded": 16,
+   "coverage_of_not_lost": 0.9877,
+   "coverage_of_all_fretted": 0.9794,
+   "fretted_heard": 1184,
+   "excluded_heard": 14,
+   "coverage_of_not_lost_heard": 0.9881,
+   "coverage_of_all_fretted_heard": 0.9789,
+   "mean_width": 3.43,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.246,
+   "one_place_before": 0.087,
+   "one_place_after": 0.77,
+   "key_place_kept": 0.9925,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 11,
+    "invented_removed": 5
+   }
+  },
+  "dev|0|10": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 11,
+   "lost_share": 0.0084,
+   "covered": 1285,
+   "excluded": 13,
+   "coverage_of_not_lost": 0.99,
+   "coverage_of_all_fretted": 0.9817,
+   "fretted_heard": 1184,
+   "excluded_heard": 12,
+   "coverage_of_not_lost_heard": 0.9898,
+   "coverage_of_all_fretted_heard": 0.9806,
+   "mean_width": 3.46,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.248,
+   "one_place_before": 0.087,
+   "one_place_after": 0.769,
+   "key_place_kept": 0.9939,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 10,
+    "invented_removed": 4
+   }
+  },
+  "dev|1|30": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 11,
+   "lost_share": 0.0084,
+   "covered": 1295,
+   "excluded": 3,
+   "coverage_of_not_lost": 0.9977,
+   "coverage_of_all_fretted": 0.9893,
+   "fretted_heard": 1184,
+   "excluded_heard": 3,
+   "coverage_of_not_lost_heard": 0.9974,
+   "coverage_of_all_fretted_heard": 0.9882,
+   "mean_width": 4.9,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.418,
+   "one_place_before": 0.087,
+   "one_place_after": 0.613,
+   "key_place_kept": 0.9986,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "dev|1|10": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 11,
+   "lost_share": 0.0084,
+   "covered": 1296,
+   "excluded": 2,
+   "coverage_of_not_lost": 0.9985,
+   "coverage_of_all_fretted": 0.9901,
+   "fretted_heard": 1184,
+   "excluded_heard": 2,
+   "coverage_of_not_lost_heard": 0.9983,
+   "coverage_of_all_fretted_heard": 0.989,
+   "mean_width": 4.92,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.418,
+   "one_place_before": 0.087,
+   "one_place_after": 0.613,
+   "key_place_kept": 0.999,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "dev|2|30": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 11,
+   "lost_share": 0.0084,
+   "covered": 1297,
+   "excluded": 1,
+   "coverage_of_not_lost": 0.9992,
+   "coverage_of_all_fretted": 0.9908,
+   "fretted_heard": 1184,
+   "excluded_heard": 1,
+   "coverage_of_not_lost_heard": 0.9991,
+   "coverage_of_all_fretted_heard": 0.9899,
+   "mean_width": 6.13,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.596,
+   "one_place_before": 0.087,
+   "one_place_after": 0.461,
+   "key_place_kept": 0.9995,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "dev|2|10": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 11,
+   "lost_share": 0.0084,
+   "covered": 1297,
+   "excluded": 1,
+   "coverage_of_not_lost": 0.9992,
+   "coverage_of_all_fretted": 0.9908,
+   "fretted_heard": 1184,
+   "excluded_heard": 1,
+   "coverage_of_not_lost_heard": 0.9991,
+   "coverage_of_all_fretted_heard": 0.9899,
+   "mean_width": 6.15,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.598,
+   "one_place_before": 0.087,
+   "one_place_after": 0.459,
+   "key_place_kept": 0.9995,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "alone|0|30": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 13,
+   "lost_share": 0.0099,
+   "covered": 1283,
+   "excluded": 13,
+   "coverage_of_not_lost": 0.99,
+   "coverage_of_all_fretted": 0.9801,
+   "fretted_heard": 1184,
+   "excluded_heard": 11,
+   "coverage_of_not_lost_heard": 0.9906,
+   "coverage_of_all_fretted_heard": 0.9797,
+   "mean_width": 3.42,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.256,
+   "one_place_before": 0.087,
+   "one_place_after": 0.771,
+   "key_place_kept": 0.9939,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 7,
+    "invented_removed": 3
+   }
+  },
+  "alone|0|10": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 13,
+   "lost_share": 0.0099,
+   "covered": 1283,
+   "excluded": 13,
+   "coverage_of_not_lost": 0.99,
+   "coverage_of_all_fretted": 0.9801,
+   "fretted_heard": 1184,
+   "excluded_heard": 11,
+   "coverage_of_not_lost_heard": 0.9906,
+   "coverage_of_all_fretted_heard": 0.9797,
+   "mean_width": 3.45,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.255,
+   "one_place_before": 0.087,
+   "one_place_after": 0.769,
+   "key_place_kept": 0.9939,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 8,
+    "invented_removed": 2
+   }
+  },
+  "alone|1|30": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 13,
+   "lost_share": 0.0099,
+   "covered": 1293,
+   "excluded": 3,
+   "coverage_of_not_lost": 0.9977,
+   "coverage_of_all_fretted": 0.9878,
+   "fretted_heard": 1184,
+   "excluded_heard": 3,
+   "coverage_of_not_lost_heard": 0.9974,
+   "coverage_of_all_fretted_heard": 0.9865,
+   "mean_width": 4.88,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.423,
+   "one_place_before": 0.087,
+   "one_place_after": 0.615,
+   "key_place_kept": 0.9986,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "alone|1|10": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 13,
+   "lost_share": 0.0099,
+   "covered": 1294,
+   "excluded": 2,
+   "coverage_of_not_lost": 0.9985,
+   "coverage_of_all_fretted": 0.9885,
+   "fretted_heard": 1184,
+   "excluded_heard": 2,
+   "coverage_of_not_lost_heard": 0.9983,
+   "coverage_of_all_fretted_heard": 0.9873,
+   "mean_width": 4.9,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.421,
+   "one_place_before": 0.087,
+   "one_place_after": 0.616,
+   "key_place_kept": 0.999,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "alone|2|30": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 13,
+   "lost_share": 0.0099,
+   "covered": 1295,
+   "excluded": 1,
+   "coverage_of_not_lost": 0.9992,
+   "coverage_of_all_fretted": 0.9893,
+   "fretted_heard": 1184,
+   "excluded_heard": 1,
+   "coverage_of_not_lost_heard": 0.9991,
+   "coverage_of_all_fretted_heard": 0.9882,
+   "mean_width": 6.11,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.602,
+   "one_place_before": 0.087,
+   "one_place_after": 0.463,
+   "key_place_kept": 0.9995,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "alone|2|10": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 13,
+   "lost_share": 0.0099,
+   "covered": 1295,
+   "excluded": 1,
+   "coverage_of_not_lost": 0.9992,
+   "coverage_of_all_fretted": 0.9893,
+   "fretted_heard": 1184,
+   "excluded_heard": 1,
+   "coverage_of_not_lost_heard": 0.9991,
+   "coverage_of_all_fretted_heard": 0.9882,
+   "mean_width": 6.13,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.603,
+   "one_place_before": 0.087,
+   "one_place_after": 0.461,
+   "key_place_kept": 0.9995,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "checked|0|30": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 3,
+   "lost_share": 0.0023,
+   "covered": 1292,
+   "excluded": 14,
+   "coverage_of_not_lost": 0.9893,
+   "coverage_of_all_fretted": 0.987,
+   "fretted_heard": 1184,
+   "excluded_heard": 12,
+   "coverage_of_not_lost_heard": 0.9898,
+   "coverage_of_all_fretted_heard": 0.9873,
+   "mean_width": 3.36,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.246,
+   "one_place_before": 0.087,
+   "one_place_after": 0.775,
+   "key_place_kept": 0.9934,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 7,
+    "invented_removed": 3
+   }
+  },
+  "checked|0|10": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 4,
+   "lost_share": 0.0031,
+   "covered": 1291,
+   "excluded": 14,
+   "coverage_of_not_lost": 0.9893,
+   "coverage_of_all_fretted": 0.9862,
+   "fretted_heard": 1184,
+   "excluded_heard": 12,
+   "coverage_of_not_lost_heard": 0.9898,
+   "coverage_of_all_fretted_heard": 0.9865,
+   "mean_width": 3.38,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.247,
+   "one_place_before": 0.087,
+   "one_place_after": 0.773,
+   "key_place_kept": 0.9934,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 8,
+    "invented_removed": 2
+   }
+  },
+  "checked|1|30": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 3,
+   "lost_share": 0.0023,
+   "covered": 1302,
+   "excluded": 4,
+   "coverage_of_not_lost": 0.9969,
+   "coverage_of_all_fretted": 0.9947,
+   "fretted_heard": 1184,
+   "excluded_heard": 4,
+   "coverage_of_not_lost_heard": 0.9966,
+   "coverage_of_all_fretted_heard": 0.9941,
+   "mean_width": 4.82,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.413,
+   "one_place_before": 0.087,
+   "one_place_after": 0.619,
+   "key_place_kept": 0.9981,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "checked|1|10": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 4,
+   "lost_share": 0.0031,
+   "covered": 1302,
+   "excluded": 3,
+   "coverage_of_not_lost": 0.9977,
+   "coverage_of_all_fretted": 0.9947,
+   "fretted_heard": 1184,
+   "excluded_heard": 3,
+   "coverage_of_not_lost_heard": 0.9975,
+   "coverage_of_all_fretted_heard": 0.9941,
+   "mean_width": 4.85,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.414,
+   "one_place_before": 0.087,
+   "one_place_after": 0.619,
+   "key_place_kept": 0.9986,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "checked|2|30": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 3,
+   "lost_share": 0.0023,
+   "covered": 1305,
+   "excluded": 1,
+   "coverage_of_not_lost": 0.9992,
+   "coverage_of_all_fretted": 0.9969,
+   "fretted_heard": 1184,
+   "excluded_heard": 1,
+   "coverage_of_not_lost_heard": 0.9992,
+   "coverage_of_all_fretted_heard": 0.9966,
+   "mean_width": 6.05,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.593,
+   "one_place_before": 0.087,
+   "one_place_after": 0.465,
+   "key_place_kept": 0.9995,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "checked|2|10": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 4,
+   "lost_share": 0.0031,
+   "covered": 1304,
+   "excluded": 1,
+   "coverage_of_not_lost": 0.9992,
+   "coverage_of_all_fretted": 0.9962,
+   "fretted_heard": 1184,
+   "excluded_heard": 1,
+   "coverage_of_not_lost_heard": 0.9992,
+   "coverage_of_all_fretted_heard": 0.9958,
+   "mean_width": 6.08,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.596,
+   "one_place_before": 0.087,
+   "one_place_after": 0.463,
+   "key_place_kept": 0.9995,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "assisted|0|30": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 38,
+   "lost_share": 0.029,
+   "covered": 1223,
+   "excluded": 48,
+   "coverage_of_not_lost": 0.9622,
+   "coverage_of_all_fretted": 0.9343,
+   "fretted_heard": 1184,
+   "excluded_heard": 44,
+   "coverage_of_not_lost_heard": 0.9617,
+   "coverage_of_all_fretted_heard": 0.9324,
+   "mean_width": 3.15,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.223,
+   "one_place_before": 0.087,
+   "one_place_after": 0.807,
+   "key_place_kept": 0.9774,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 30,
+    "invented_removed": 5
+   }
+  },
+  "assisted|0|10": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 41,
+   "lost_share": 0.0313,
+   "covered": 1223,
+   "excluded": 45,
+   "coverage_of_not_lost": 0.9645,
+   "coverage_of_all_fretted": 0.9343,
+   "fretted_heard": 1184,
+   "excluded_heard": 41,
+   "coverage_of_not_lost_heard": 0.9642,
+   "coverage_of_all_fretted_heard": 0.9324,
+   "mean_width": 3.18,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.227,
+   "one_place_before": 0.087,
+   "one_place_after": 0.807,
+   "key_place_kept": 0.9788,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 29,
+    "invented_removed": 3
+   }
+  },
+  "assisted|1|30": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 38,
+   "lost_share": 0.029,
+   "covered": 1267,
+   "excluded": 4,
+   "coverage_of_not_lost": 0.9969,
+   "coverage_of_all_fretted": 0.9679,
+   "fretted_heard": 1184,
+   "excluded_heard": 3,
+   "coverage_of_not_lost_heard": 0.9974,
+   "coverage_of_all_fretted_heard": 0.9671,
+   "mean_width": 4.59,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.404,
+   "one_place_before": 0.087,
+   "one_place_after": 0.663,
+   "key_place_kept": 0.9981,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 0,
+    "invented_removed": 1
+   }
+  },
+  "assisted|1|10": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 41,
+   "lost_share": 0.0313,
+   "covered": 1265,
+   "excluded": 3,
+   "coverage_of_not_lost": 0.9976,
+   "coverage_of_all_fretted": 0.9664,
+   "fretted_heard": 1184,
+   "excluded_heard": 2,
+   "coverage_of_not_lost_heard": 0.9983,
+   "coverage_of_all_fretted_heard": 0.9654,
+   "mean_width": 4.62,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.406,
+   "one_place_before": 0.087,
+   "one_place_after": 0.663,
+   "key_place_kept": 0.9986,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "assisted|2|30": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 38,
+   "lost_share": 0.029,
+   "covered": 1269,
+   "excluded": 2,
+   "coverage_of_not_lost": 0.9984,
+   "coverage_of_all_fretted": 0.9694,
+   "fretted_heard": 1184,
+   "excluded_heard": 2,
+   "coverage_of_not_lost_heard": 0.9983,
+   "coverage_of_all_fretted_heard": 0.9679,
+   "mean_width": 5.81,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.611,
+   "one_place_before": 0.087,
+   "one_place_after": 0.482,
+   "key_place_kept": 0.999,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "assisted|2|10": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 41,
+   "lost_share": 0.0313,
+   "covered": 1266,
+   "excluded": 2,
+   "coverage_of_not_lost": 0.9984,
+   "coverage_of_all_fretted": 0.9672,
+   "fretted_heard": 1184,
+   "excluded_heard": 2,
+   "coverage_of_not_lost_heard": 0.9983,
+   "coverage_of_all_fretted_heard": 0.9654,
+   "mean_width": 5.82,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.613,
+   "one_place_before": 0.087,
+   "one_place_after": 0.481,
+   "key_place_kept": 0.999,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  }
+ },
+ "solver_decision_aid": {
+  "what": "G/loop/tools/solver/solver.py, weights unchanged (fitted on the capo key), window hard, tuning and capo given; gtr-eval tab main (heard)",
+  "results": {
+   "capo|chain2|off": {
+    "main": 0.7669,
+    "of_matched": 0.8003,
+    "heard": 0.77,
+    "eval_tab": "e1309",
+    "eval_tab_heard": "e1311",
+    "soft_fallback_groups": 0
+   },
+   "capo|chain2|v0_m0": {
+    "main": 0.8344,
+    "of_matched": 0.8707,
+    "heard": 0.8423,
+    "eval_tab": "e1314",
+    "eval_tab_heard": "e1316",
+    "soft_fallback_groups": 1
+   },
+   "capo|chain2|v0_m1": {
+    "main": 0.8294,
+    "of_matched": 0.8656,
+    "heard": 0.8371,
+    "eval_tab": "e1318",
+    "eval_tab_heard": "e1320",
+    "soft_fallback_groups": 0
+   },
+   "capo|chain2|v0_m2": {
+    "main": 0.8258,
+    "of_matched": 0.8617,
+    "heard": 0.8331,
+    "eval_tab": "e1322",
+    "eval_tab_heard": "e1324",
+    "soft_fallback_groups": 0
+   },
+   "capo|chain2|dev_m0": {
+    "main": 0.8331,
+    "of_matched": 0.8694,
+    "heard": 0.841,
+    "eval_tab": "e1327",
+    "eval_tab_heard": "e1329",
+    "soft_fallback_groups": 2
+   },
+   "capo|chain2|dev_m1": {
+    "main": 0.8331,
+    "of_matched": 0.8694,
+    "heard": 0.841,
+    "eval_tab": "e1331",
+    "eval_tab_heard": "e1333",
+    "soft_fallback_groups": 0
+   },
+   "capo|chain2|dev_m2": {
+    "main": 0.8307,
+    "of_matched": 0.8668,
+    "heard": 0.8384,
+    "eval_tab": "e1335",
+    "eval_tab_heard": "e1337",
+    "soft_fallback_groups": 0
+   },
+   "capo|chain2|alone_m0": {
+    "main": 0.8331,
+    "of_matched": 0.8694,
+    "heard": 0.841,
+    "eval_tab": "e1340",
+    "eval_tab_heard": "e1342",
+    "soft_fallback_groups": 1
+   },
+   "capo|chain2|alone_m1": {
+    "main": 0.8319,
+    "of_matched": 0.8681,
+    "heard": 0.8397,
+    "eval_tab": "e1344",
+    "eval_tab_heard": "e1346",
+    "soft_fallback_groups": 0
+   },
+   "capo|chain2|alone_m2": {
+    "main": 0.8294,
+    "of_matched": 0.8656,
+    "heard": 0.8371,
+    "eval_tab": "e1347",
+    "eval_tab_heard": "e1348",
+    "soft_fallback_groups": 0
+   },
+   "capo|chain2|checked_m0": {
+    "main": 0.8331,
+    "of_matched": 0.8694,
+    "heard": 0.841,
+    "eval_tab": "e1349",
+    "eval_tab_heard": "e1350",
+    "soft_fallback_groups": 1
+   },
+   "capo|chain2|checked_m1": {
+    "main": 0.8319,
+    "of_matched": 0.8681,
+    "heard": 0.8397,
+    "eval_tab": "e1351",
+    "eval_tab_heard": "e1352",
+    "soft_fallback_groups": 0
+   },
+   "capo|chain2|checked_m2": {
+    "main": 0.8294,
+    "of_matched": 0.8656,
+    "heard": 0.8371,
+    "eval_tab": "e1353",
+    "eval_tab_heard": "e1354",
+    "soft_fallback_groups": 0
+   },
+   "capo|chain2|assisted_m0": {
+    "main": 0.8319,
+    "of_matched": 0.8681,
+    "heard": 0.8397,
+    "eval_tab": "e1355",
+    "eval_tab_heard": "e1356",
+    "soft_fallback_groups": 1
+   },
+   "capo|chain2|assisted_m1": {
+    "main": 0.8294,
+    "of_matched": 0.8656,
+    "heard": 0.8371,
+    "eval_tab": "e1357",
+    "eval_tab_heard": "e1358",
+    "soft_fallback_groups": 1
+   },
+   "capo|chain2|assisted_m2": {
+    "main": 0.8258,
+    "of_matched": 0.8617,
+    "heard": 0.8331,
+    "eval_tab": "e1359",
+    "eval_tab_heard": "e1360",
+    "soft_fallback_groups": 0
+   },
+   "capo|key|off": {
+    "main": 0.7951,
+    "of_matched": 0.7951,
+    "heard": 0.7897,
+    "eval_tab": "e1361",
+    "eval_tab_heard": "e1362",
+    "soft_fallback_groups": 0
+   },
+   "capo|key|v0_m0": {
+    "main": 0.8773,
+    "of_matched": 0.8773,
+    "heard": 0.8778,
+    "eval_tab": "e1363",
+    "eval_tab_heard": "e1364",
+    "soft_fallback_groups": 5
+   },
+   "capo|key|v0_m1": {
+    "main": 0.8699,
+    "of_matched": 0.8699,
+    "heard": 0.8699,
+    "eval_tab": "e1365",
+    "eval_tab_heard": "e1366",
+    "soft_fallback_groups": 1
+   },
+   "capo|key|v0_m2": {
+    "main": 0.8589,
+    "of_matched": 0.8589,
+    "heard": 0.8581,
+    "eval_tab": "e1367",
+    "eval_tab_heard": "e1368",
+    "soft_fallback_groups": 1
+   },
+   "capo|key|dev_m0": {
+    "main": 0.8761,
+    "of_matched": 0.8761,
+    "heard": 0.8765,
+    "eval_tab": "e1369",
+    "eval_tab_heard": "e1370",
+    "soft_fallback_groups": 1
+   },
+   "capo|key|dev_m1": {
+    "main": 0.8761,
+    "of_matched": 0.8761,
+    "heard": 0.8765,
+    "eval_tab": "e1371",
+    "eval_tab_heard": "e1372",
+    "soft_fallback_groups": 0
+   },
+   "capo|key|dev_m2": {
+    "main": 0.8663,
+    "of_matched": 0.8663,
+    "heard": 0.866,
+    "eval_tab": "e1373",
+    "eval_tab_heard": "e1374",
+    "soft_fallback_groups": 0
+   },
+   "capo|key|alone_m0": {
+    "main": 0.8761,
+    "of_matched": 0.8761,
+    "heard": 0.8765,
+    "eval_tab": "e1375",
+    "eval_tab_heard": "e1376",
+    "soft_fallback_groups": 1
+   },
+   "capo|key|alone_m1": {
+    "main": 0.8724,
+    "of_matched": 0.8724,
+    "heard": 0.8725,
+    "eval_tab": "e1377",
+    "eval_tab_heard": "e1378",
+    "soft_fallback_groups": 0
+   },
+   "capo|key|alone_m2": {
+    "main": 0.8613,
+    "of_matched": 0.8613,
+    "heard": 0.8607,
+    "eval_tab": "e1379",
+    "eval_tab_heard": "e1380",
+    "soft_fallback_groups": 0
+   },
+   "capo|key|checked_m0": {
+    "main": 0.8761,
+    "of_matched": 0.8761,
+    "heard": 0.8765,
+    "eval_tab": "e1381",
+    "eval_tab_heard": "e1382",
+    "soft_fallback_groups": 1
+   },
+   "capo|key|checked_m1": {
+    "main": 0.8724,
+    "of_matched": 0.8724,
+    "heard": 0.8725,
+    "eval_tab": "e1383",
+    "eval_tab_heard": "e1384",
+    "soft_fallback_groups": 0
+   },
+   "capo|key|checked_m2": {
+    "main": 0.8613,
+    "of_matched": 0.8613,
+    "heard": 0.8607,
+    "eval_tab": "e1385",
+    "eval_tab_heard": "e1386",
+    "soft_fallback_groups": 0
+   },
+   "capo|key|assisted_m0": {
+    "main": 0.8748,
+    "of_matched": 0.8748,
+    "heard": 0.8752,
+    "eval_tab": "e1387",
+    "eval_tab_heard": "e1388",
+    "soft_fallback_groups": 1
+   },
+   "capo|key|assisted_m1": {
+    "main": 0.8663,
+    "of_matched": 0.8663,
+    "heard": 0.866,
+    "eval_tab": "e1389",
+    "eval_tab_heard": "e1390",
+    "soft_fallback_groups": 0
+   },
+   "capo|key|assisted_m2": {
+    "main": 0.8564,
+    "of_matched": 0.8564,
+    "heard": 0.8555,
+    "eval_tab": "e1391",
+    "eval_tab_heard": "e1392",
+    "soft_fallback_groups": 0
+   },
+   "tuning|chain2|off": {
+    "main": 0.801,
+    "of_matched": 0.9748,
+    "heard": 0.8417,
+    "eval_tab": "e1393",
+    "eval_tab_heard": "e1394",
+    "soft_fallback_groups": 0
+   },
+   "tuning|chain2|dev_m0": {
+    "main": 0.801,
+    "of_matched": 0.9748,
+    "heard": 0.8417,
+    "eval_tab": "e1395",
+    "eval_tab_heard": "e1396",
+    "soft_fallback_groups": 2
+   },
+   "tuning|chain2|dev_m1": {
+    "main": 0.801,
+    "of_matched": 0.9748,
+    "heard": 0.8417,
+    "eval_tab": "e1397",
+    "eval_tab_heard": "e1398",
+    "soft_fallback_groups": 0
+   },
+   "tuning|chain2|dev_m2": {
+    "main": 0.801,
+    "of_matched": 0.9748,
+    "heard": 0.8417,
+    "eval_tab": "e1399",
+    "eval_tab_heard": "e1400",
+    "soft_fallback_groups": 0
+   },
+   "tuning|chain2|alone_m0": {
+    "main": 0.801,
+    "of_matched": 0.9748,
+    "heard": 0.8417,
+    "eval_tab": "e1401",
+    "eval_tab_heard": "e1402",
+    "soft_fallback_groups": 0
+   },
+   "tuning|chain2|alone_m1": {
+    "main": 0.801,
+    "of_matched": 0.9748,
+    "heard": 0.8417,
+    "eval_tab": "e1403",
+    "eval_tab_heard": "e1404",
+    "soft_fallback_groups": 0
+   },
+   "tuning|chain2|alone_m2": {
+    "main": 0.801,
+    "of_matched": 0.9748,
+    "heard": 0.8417,
+    "eval_tab": "e1405",
+    "eval_tab_heard": "e1406",
+    "soft_fallback_groups": 0
+   },
+   "tuning|chain2|checked_m0": {
+    "main": 0.801,
+    "of_matched": 0.9748,
+    "heard": 0.8417,
+    "eval_tab": "e1407",
+    "eval_tab_heard": "e1408",
+    "soft_fallback_groups": 0
+   },
+   "tuning|chain2|checked_m1": {
+    "main": 0.801,
+    "of_matched": 0.9748,
+    "heard": 0.8417,
+    "eval_tab": "e1409",
+    "eval_tab_heard": "e1410",
+    "soft_fallback_groups": 0
+   },
+   "tuning|chain2|checked_m2": {
+    "main": 0.801,
+    "of_matched": 0.9748,
+    "heard": 0.8417,
+    "eval_tab": "e1411",
+    "eval_tab_heard": "e1412",
+    "soft_fallback_groups": 0
+   },
+   "tuning|chain2|assisted_m0": {
+    "main": 0.801,
+    "of_matched": 0.9748,
+    "heard": 0.8417,
+    "eval_tab": "e1413",
+    "eval_tab_heard": "e1414",
+    "soft_fallback_groups": 7
+   },
+   "tuning|chain2|assisted_m1": {
+    "main": 0.801,
+    "of_matched": 0.9748,
+    "heard": 0.8417,
+    "eval_tab": "e1415",
+    "eval_tab_heard": "e1416",
+    "soft_fallback_groups": 0
+   },
+   "tuning|chain2|assisted_m2": {
+    "main": 0.801,
+    "of_matched": 0.9748,
+    "heard": 0.8417,
+    "eval_tab": "e1417",
+    "eval_tab_heard": "e1418",
+    "soft_fallback_groups": 0
+   },
+   "tuning|key|off": {
+    "main": 0.9666,
+    "of_matched": 0.9666,
+    "heard": 0.973,
+    "eval_tab": "e1419",
+    "eval_tab_heard": "e1420",
+    "soft_fallback_groups": 0
+   },
+   "tuning|key|dev_m0": {
+    "main": 0.9666,
+    "of_matched": 0.9666,
+    "heard": 0.973,
+    "eval_tab": "e1421",
+    "eval_tab_heard": "e1422",
+    "soft_fallback_groups": 0
+   },
+   "tuning|key|dev_m1": {
+    "main": 0.9666,
+    "of_matched": 0.9666,
+    "heard": 0.973,
+    "eval_tab": "e1423",
+    "eval_tab_heard": "e1424",
+    "soft_fallback_groups": 0
+   },
+   "tuning|key|dev_m2": {
+    "main": 0.9666,
+    "of_matched": 0.9666,
+    "heard": 0.973,
+    "eval_tab": "e1425",
+    "eval_tab_heard": "e1426",
+    "soft_fallback_groups": 0
+   },
+   "tuning|key|alone_m0": {
+    "main": 0.9666,
+    "of_matched": 0.9666,
+    "heard": 0.973,
+    "eval_tab": "e1427",
+    "eval_tab_heard": "e1428",
+    "soft_fallback_groups": 0
+   },
+   "tuning|key|alone_m1": {
+    "main": 0.9666,
+    "of_matched": 0.9666,
+    "heard": 0.973,
+    "eval_tab": "e1429",
+    "eval_tab_heard": "e1430",
+    "soft_fallback_groups": 0
+   },
+   "tuning|key|alone_m2": {
+    "main": 0.9666,
+    "of_matched": 0.9666,
+    "heard": 0.973,
+    "eval_tab": "e1431",
+    "eval_tab_heard": "e1432",
+    "soft_fallback_groups": 0
+   },
+   "tuning|key|checked_m0": {
+    "main": 0.9666,
+    "of_matched": 0.9666,
+    "heard": 0.973,
+    "eval_tab": "e1433",
+    "eval_tab_heard": "e1434",
+    "soft_fallback_groups": 0
+   },
+   "tuning|key|checked_m1": {
+    "main": 0.9666,
+    "of_matched": 0.9666,
+    "heard": 0.973,
+    "eval_tab": "e1435",
+    "eval_tab_heard": "e1436",
+    "soft_fallback_groups": 0
+   },
+   "tuning|key|checked_m2": {
+    "main": 0.9666,
+    "of_matched": 0.9666,
+    "heard": 0.973,
+    "eval_tab": "e1437",
+    "eval_tab_heard": "e1438",
+    "soft_fallback_groups": 0
+   },
+   "tuning|key|assisted_m0": {
+    "main": 0.9666,
+    "of_matched": 0.9666,
+    "heard": 0.973,
+    "eval_tab": "e1439",
+    "eval_tab_heard": "e1440",
+    "soft_fallback_groups": 10
+   },
+   "tuning|key|assisted_m1": {
+    "main": 0.9666,
+    "of_matched": 0.9666,
+    "heard": 0.973,
+    "eval_tab": "e1441",
+    "eval_tab_heard": "e1442",
+    "soft_fallback_groups": 0
+   },
+   "tuning|key|assisted_m2": {
+    "main": 0.9666,
+    "of_matched": 0.9666,
+    "heard": 0.973,
+    "eval_tab": "e1443",
+    "eval_tab_heard": "e1444",
+    "soft_fallback_groups": 0
+   },
+   "standard|chain2|off": {
+    "main": 0.8292,
+    "of_matched": 0.8937,
+    "heard": 0.8525,
+    "eval_tab": "e1445",
+    "eval_tab_heard": "e1446",
+    "soft_fallback_groups": 0
+   },
+   "standard|chain2|v0_m0": {
+    "main": 0.8571,
+    "of_matched": 0.9238,
+    "heard": 0.8834,
+    "eval_tab": "e1447",
+    "eval_tab_heard": "e1448",
+    "soft_fallback_groups": 16
+   },
+   "standard|chain2|v0_m1": {
+    "main": 0.8542,
+    "of_matched": 0.9206,
+    "heard": 0.8799,
+    "eval_tab": "e1449",
+    "eval_tab_heard": "e1450",
+    "soft_fallback_groups": 1
+   },
+   "standard|chain2|v0_m2": {
+    "main": 0.8483,
+    "of_matched": 0.9143,
+    "heard": 0.8731,
+    "eval_tab": "e1451",
+    "eval_tab_heard": "e1452",
+    "soft_fallback_groups": 0
+   },
+   "standard|chain2|dev_m0": {
+    "main": 0.8571,
+    "of_matched": 0.9238,
+    "heard": 0.8834,
+    "eval_tab": "e1453",
+    "eval_tab_heard": "e1454",
+    "soft_fallback_groups": 12
+   },
+   "standard|chain2|dev_m1": {
+    "main": 0.8542,
+    "of_matched": 0.9206,
+    "heard": 0.8799,
+    "eval_tab": "e1455",
+    "eval_tab_heard": "e1456",
+    "soft_fallback_groups": 0
+   },
+   "standard|chain2|dev_m2": {
+    "main": 0.8483,
+    "of_matched": 0.9143,
+    "heard": 0.8731,
+    "eval_tab": "e1457",
+    "eval_tab_heard": "e1458",
+    "soft_fallback_groups": 0
+   },
+   "standard|chain2|alone_m0": {
+    "main": 0.8571,
+    "of_matched": 0.9238,
+    "heard": 0.8834,
+    "eval_tab": "e1459",
+    "eval_tab_heard": "e1460",
+    "soft_fallback_groups": 9
+   },
+   "standard|chain2|alone_m1": {
+    "main": 0.8542,
+    "of_matched": 0.9206,
+    "heard": 0.8799,
+    "eval_tab": "e1461",
+    "eval_tab_heard": "e1462",
+    "soft_fallback_groups": 0
+   },
+   "standard|chain2|alone_m2": {
+    "main": 0.8483,
+    "of_matched": 0.9143,
+    "heard": 0.8731,
+    "eval_tab": "e1463",
+    "eval_tab_heard": "e1464",
+    "soft_fallback_groups": 0
+   },
+   "standard|chain2|checked_m0": {
+    "main": 0.8571,
+    "of_matched": 0.9238,
+    "heard": 0.8834,
+    "eval_tab": "e1465",
+    "eval_tab_heard": "e1466",
+    "soft_fallback_groups": 9
+   },
+   "standard|chain2|checked_m1": {
+    "main": 0.8542,
+    "of_matched": 0.9206,
+    "heard": 0.8799,
+    "eval_tab": "e1467",
+    "eval_tab_heard": "e1468",
+    "soft_fallback_groups": 0
+   },
+   "standard|chain2|checked_m2": {
+    "main": 0.8483,
+    "of_matched": 0.9143,
+    "heard": 0.8731,
+    "eval_tab": "e1469",
+    "eval_tab_heard": "e1470",
+    "soft_fallback_groups": 0
+   },
+   "standard|chain2|assisted_m0": {
+    "main": 0.8571,
+    "of_matched": 0.9238,
+    "heard": 0.8834,
+    "eval_tab": "e1471",
+    "eval_tab_heard": "e1472",
+    "soft_fallback_groups": 27
+   },
+   "standard|chain2|assisted_m1": {
+    "main": 0.8542,
+    "of_matched": 0.9206,
+    "heard": 0.8799,
+    "eval_tab": "e1473",
+    "eval_tab_heard": "e1474",
+    "soft_fallback_groups": 0
+   },
+   "standard|chain2|assisted_m2": {
+    "main": 0.8483,
+    "of_matched": 0.9143,
+    "heard": 0.8731,
+    "eval_tab": "e1475",
+    "eval_tab_heard": "e1476",
+    "soft_fallback_groups": 0
+   },
+   "standard|key|off": {
+    "main": 0.8925,
+    "of_matched": 0.8925,
+    "heard": 0.8885,
+    "eval_tab": "e1477",
+    "eval_tab_heard": "e1478",
+    "soft_fallback_groups": 0
+   },
+   "standard|key|v0_m0": {
+    "main": 0.9161,
+    "of_matched": 0.9161,
+    "heard": 0.9142,
+    "eval_tab": "e1479",
+    "eval_tab_heard": "e1480",
+    "soft_fallback_groups": 13
+   },
+   "standard|key|v0_m1": {
+    "main": 0.9146,
+    "of_matched": 0.9146,
+    "heard": 0.9125,
+    "eval_tab": "e1481",
+    "eval_tab_heard": "e1482",
+    "soft_fallback_groups": 0
+   },
+   "standard|key|v0_m2": {
+    "main": 0.9072,
+    "of_matched": 0.9072,
+    "heard": 0.9039,
+    "eval_tab": "e1483",
+    "eval_tab_heard": "e1484",
+    "soft_fallback_groups": 0
+   },
+   "standard|key|dev_m0": {
+    "main": 0.9161,
+    "of_matched": 0.9161,
+    "heard": 0.9142,
+    "eval_tab": "e1485",
+    "eval_tab_heard": "e1486",
+    "soft_fallback_groups": 10
+   },
+   "standard|key|dev_m1": {
+    "main": 0.9146,
+    "of_matched": 0.9146,
+    "heard": 0.9125,
+    "eval_tab": "e1487",
+    "eval_tab_heard": "e1488",
+    "soft_fallback_groups": 0
+   },
+   "standard|key|dev_m2": {
+    "main": 0.9072,
+    "of_matched": 0.9072,
+    "heard": 0.9039,
+    "eval_tab": "e1489",
+    "eval_tab_heard": "e1490",
+    "soft_fallback_groups": 0
+   },
+   "standard|key|alone_m0": {
+    "main": 0.9161,
+    "of_matched": 0.9161,
+    "heard": 0.9142,
+    "eval_tab": "e1491",
+    "eval_tab_heard": "e1492",
+    "soft_fallback_groups": 7
+   },
+   "standard|key|alone_m1": {
+    "main": 0.9146,
+    "of_matched": 0.9146,
+    "heard": 0.9125,
+    "eval_tab": "e1493",
+    "eval_tab_heard": "e1494",
+    "soft_fallback_groups": 0
+   },
+   "standard|key|alone_m2": {
+    "main": 0.9072,
+    "of_matched": 0.9072,
+    "heard": 0.9039,
+    "eval_tab": "e1495",
+    "eval_tab_heard": "e1496",
+    "soft_fallback_groups": 0
+   },
+   "standard|key|checked_m0": {
+    "main": 0.9161,
+    "of_matched": 0.9161,
+    "heard": 0.9142,
+    "eval_tab": "e1497",
+    "eval_tab_heard": "e1498",
+    "soft_fallback_groups": 7
+   },
+   "standard|key|checked_m1": {
+    "main": 0.9146,
+    "of_matched": 0.9146,
+    "heard": 0.9125,
+    "eval_tab": "e1499",
+    "eval_tab_heard": "e1500",
+    "soft_fallback_groups": 0
+   },
+   "standard|key|checked_m2": {
+    "main": 0.9072,
+    "of_matched": 0.9072,
+    "heard": 0.9039,
+    "eval_tab": "e1501",
+    "eval_tab_heard": "e1502",
+    "soft_fallback_groups": 0
+   },
+   "standard|key|assisted_m0": {
+    "main": 0.9161,
+    "of_matched": 0.9161,
+    "heard": 0.9142,
+    "eval_tab": "e1503",
+    "eval_tab_heard": "e1504",
+    "soft_fallback_groups": 24
+   },
+   "standard|key|assisted_m1": {
+    "main": 0.9146,
+    "of_matched": 0.9146,
+    "heard": 0.9125,
+    "eval_tab": "e1505",
+    "eval_tab_heard": "e1506",
+    "soft_fallback_groups": 0
+   },
+   "standard|key|assisted_m2": {
+    "main": 0.9072,
+    "of_matched": 0.9072,
+    "heard": 0.9039,
+    "eval_tab": "e1507",
+    "eval_tab_heard": "e1508",
+    "soft_fallback_groups": 0
+   }
+  }
+ },
+ "blind_runs": [
+  {
+   "run": "hand-a-anchors",
+   "label": "hand-a",
+   "song": "capo",
+   "kind": "anchors",
+   "start": "2026-11-27T02:58:19Z",
+   "wall_min": 31.1,
+   "output_tokens": 94947,
+   "cost_usd_list": 5.19,
+   "turns": 112,
+   "tool_calls": 111,
+   "image_reads": 49,
+   "keyframes": 22,
+   "keyframe_times": [
+    2.0,
+    26.0,
+    34.0,
+    40.0,
+    43.12,
+    47.0,
+    60.0,
+    75.0,
+    88.0,
+    96.0,
+    99.12,
+    102.0,
+    107.12,
+    110.0,
+    112.08,
+    122.0,
+    140.0,
+    158.0,
+    174.0,
+    190.0,
+    208.0,
+    226.0
+   ],
+   "keyframes_given": null,
+   "keyframes_after": null,
+   "keyframes_added": null,
+   "decisions": null,
+   "decisions_by_action": null,
+   "corrections_made": null,
+   "audit": "clean",
+   "audit_judgement": "clean: no path outside its folder, the hand-reach tools and the venv Python",
+   "audit_file": "/home/user/gtv/work/e1-blind/audit_hand-a-anchors.json",
+   "sandboxed": true,
+   "cache_read": 8811327,
+   "cache_write": 190917,
+   "input_tokens": 166,
+   "audit2_flags": 0,
+   "audit2_by_tool": {
+    "Bash": 56,
+    "Read": 50,
+    "Write": 3,
+    "Edit": 2
+   }
+  },
+  {
+   "run": "hand-a-check",
+   "label": "hand-a",
+   "song": "capo",
+   "kind": "check",
+   "start": "2026-11-27T03:40:03Z",
+   "wall_min": 12.5,
+   "output_tokens": 77305,
+   "cost_usd_list": 3.27,
+   "turns": 39,
+   "tool_calls": 38,
+   "image_reads": 14,
+   "keyframes": null,
+   "keyframe_times": null,
+   "keyframes_given": 22,
+   "keyframes_after": 22,
+   "keyframes_added": [],
+   "decisions": 106,
+   "decisions_by_action": {
+    "accept": 93,
+    "window": 13
+   },
+   "corrections_made": 13,
+   "audit": "clean",
+   "audit_judgement": "not void: the only paths outside its folder are its own session scratchpad under the sandbox's private /tmp (the harness's system prompt asks it to put temporary files there): a helper script and overlay images it made itself, lost when the sandbox closed; it also ran system python3 on its own files",
+   "audit_file": "/home/user/gtv/work/e1-blind/audit_hand-a-check.json",
+   "sandboxed": true,
+   "cache_read": 2937883,
+   "cache_write": 141434,
+   "input_tokens": 76,
+   "audit2_flags": 0,
+   "audit2_by_tool": {
+    "Bash": 20,
+    "Read": 16,
+    "Write": 1,
+    "Edit": 1
+   }
+  },
+  {
+   "run": "hand-b-anchors",
+   "label": "hand-b",
+   "song": "standard",
+   "kind": "anchors",
+   "start": "2026-11-27T02:58:19Z",
+   "wall_min": 29.1,
+   "output_tokens": 77592,
+   "cost_usd_list": 4.34,
+   "turns": 90,
+   "tool_calls": 89,
+   "image_reads": 32,
+   "keyframes": 14,
+   "keyframe_times": [
+    2.0,
+    15.0,
+    32.0,
+    42.0,
+    47.0,
+    60.0,
+    80.0,
+    95.0,
+    110.0,
+    130.0,
+    136.3,
+    150.0,
+    153.5,
+    170.0
+   ],
+   "keyframes_given": null,
+   "keyframes_after": null,
+   "keyframes_added": null,
+   "decisions": null,
+   "decisions_by_action": null,
+   "corrections_made": null,
+   "audit": "clean",
+   "audit_judgement": "not void: system python3 on its own files (13 calls)",
+   "audit_file": "/home/user/gtv/work/e1-blind/audit_hand-b-anchors.json",
+   "sandboxed": true,
+   "cache_read": 7419203,
+   "cache_write": 162466,
+   "input_tokens": 148,
+   "audit2_flags": 0,
+   "audit2_by_tool": {
+    "Bash": 49,
+    "Read": 34,
+    "Write": 3,
+    "Edit": 3
+   }
+  },
+  {
+   "run": "hand-b-check",
+   "label": "hand-b",
+   "song": "standard",
+   "kind": "check",
+   "start": "2026-11-27T03:40:03Z",
+   "wall_min": 9.5,
+   "output_tokens": 60711,
+   "cost_usd_list": 2.83,
+   "turns": 50,
+   "tool_calls": 42,
+   "image_reads": 16,
+   "keyframes": null,
+   "keyframe_times": null,
+   "keyframes_given": 14,
+   "keyframes_after": 14,
+   "keyframes_added": [],
+   "decisions": 53,
+   "decisions_by_action": {
+    "accept": 37,
+    "window": 16
+   },
+   "corrections_made": 16,
+   "audit": "clean",
+   "audit_judgement": "clean: no path outside its folder, the hand-reach tools and the venv Python",
+   "audit_file": "/home/user/gtv/work/e1-blind/audit_hand-b-check.json",
+   "sandboxed": true,
+   "cache_read": 2651578,
+   "cache_write": 135587,
+   "input_tokens": 82,
+   "audit2_flags": 0,
+   "audit2_by_tool": {
+    "Bash": 18,
+    "Read": 19,
+    "Write": 2,
+    "Edit": 3
+   }
+  },
+  {
+   "run": "hand-c-anchors",
+   "label": "hand-c",
+   "song": "tuning",
+   "kind": "anchors",
+   "start": "2026-11-27T02:58:19Z",
+   "wall_min": 30.5,
+   "output_tokens": 90889,
+   "cost_usd_list": 5.34,
+   "turns": 124,
+   "tool_calls": 119,
+   "image_reads": 32,
+   "keyframes": 11,
+   "keyframe_times": [
+    8.0,
+    30.0,
+    50.0,
+    75.0,
+    95.0,
+    105.0,
+    116.0,
+    128.0,
+    140.0,
+    160.0,
+    180.0
+   ],
+   "keyframes_given": null,
+   "keyframes_after": null,
+   "keyframes_added": null,
+   "decisions": null,
+   "decisions_by_action": null,
+   "corrections_made": null,
+   "audit": "clean",
+   "audit_judgement": "clean: no path outside its folder, the hand-reach tools and the venv Python",
+   "audit_file": "/home/user/gtv/work/e1-blind/audit_hand-c-anchors.json",
+   "sandboxed": true,
+   "cache_read": 10323829,
+   "cache_write": 182169,
+   "input_tokens": 202,
+   "audit2_flags": 0,
+   "audit2_by_tool": {
+    "Bash": 71,
+    "Read": 34,
+    "Write": 1,
+    "Edit": 13
+   }
+  },
+  {
+   "run": "hand-c-check",
+   "label": "hand-c",
+   "song": "tuning",
+   "kind": "check",
+   "start": "2026-11-27T03:40:03Z",
+   "wall_min": 20.3,
+   "output_tokens": 97289,
+   "cost_usd_list": 5.38,
+   "turns": 89,
+   "tool_calls": 87,
+   "image_reads": 28,
+   "keyframes": null,
+   "keyframe_times": null,
+   "keyframes_given": 11,
+   "keyframes_after": 12,
+   "keyframes_added": [
+    80.0
+   ],
+   "decisions": 59,
+   "decisions_by_action": {
+    "accept": 58,
+    "keyframe": 1
+   },
+   "corrections_made": 1,
+   "audit": "clean",
+   "audit_judgement": "not void: as hand-a-check (own session scratchpad under the sandbox's private /tmp; system python3 on its own files)",
+   "audit_file": "/home/user/gtv/work/e1-blind/audit_hand-c-check.json",
+   "sandboxed": true,
+   "cache_read": 9303122,
+   "cache_write": 196059,
+   "input_tokens": 162,
+   "audit2_flags": 0,
+   "audit2_by_tool": {
+    "Bash": 50,
+    "Read": 31,
+    "Write": 1,
+    "Edit": 5
+   }
+  }
+ ],
+ "blind_totals": {
+  "minutes": 133.0,
+  "output_tokens": 498733,
+  "cost": 26.35
+ },
+ "excluded_notes": [
+  {
+   "song": "capo",
+   "onset": 41.009,
+   "string": 4,
+   "fret": 9,
+   "excluded_by": {
+    "v0 m0": "3-7",
+    "v0 m1": "2-8",
+    "dev m0": "3-7",
+    "dev m1": "2-8",
+    "alone m0": "3-7",
+    "alone m1": "2-8",
+    "checked m0": "3-7",
+    "checked m1": "2-8",
+    "assisted m0": "3-6",
+    "assisted m1": "2-7",
+    "assisted m2": "1-8"
+   },
+   "category": "tap",
+   "why": "a picking-hand tap: the right hand's fingers come over the board at frets 6-9 from below; the landmarks place them below the string-1 edge until about 0.1 s later (window 3-9 at 41.12 s, 7-9 at 41.30 s)"
+  },
+  {
+   "song": "capo",
+   "onset": 57.467,
+   "string": 2,
+   "fret": 3,
+   "excluded_by": {
+    "v0 m0": "4-4"
+   },
+   "category": "no track",
+   "why": "v0 only: the fingers are hidden under the string-1 edge; the static neck (no track) puts two hidden tips on the board at fret 4; with the track they fall off the board and the row is lost"
+  },
+  {
+   "song": "capo",
+   "onset": 57.652,
+   "string": 2,
+   "fret": 3,
+   "excluded_by": {
+    "v0 m0": "4-4"
+   },
+   "category": "no track",
+   "why": "v0 only: as at 57.47 s"
+  },
+  {
+   "song": "capo",
+   "onset": 59.963,
+   "string": 2,
+   "fret": 3,
+   "excluded_by": {
+    "v0 m0": "4-4"
+   },
+   "category": "no track",
+   "why": "v0 only: as at 57.47 s"
+  },
+  {
+   "song": "capo",
+   "onset": 109.601,
+   "string": 4,
+   "fret": 9,
+   "excluded_by": {
+    "v0 m0": "2-4",
+    "v0 m1": "1-5",
+    "v0 m2": "1-6",
+    "dev m0": "2-5",
+    "dev m1": "1-6",
+    "dev m2": "1-7",
+    "alone m0": "2-5",
+    "alone m1": "1-6",
+    "alone m2": "1-7",
+    "checked m0": "2-5",
+    "checked m1": "1-6",
+    "checked m2": "1-7",
+    "assisted m0": "2-4",
+    "assisted m1": "1-5",
+    "assisted m2": "1-6"
+   },
+   "category": "tap",
+   "why": "the same tap as at 41.01 s (the passage repeats): right-hand fingers at frets 6-9 from below; the default window reaches fret 9 at 109.77 s (2-10), 0.17 s late"
+  },
+  {
+   "song": "capo",
+   "onset": 118.448,
+   "string": 3,
+   "fret": 4,
+   "excluded_by": {
+    "v0 m0": "1-3",
+    "dev m0": "1-3",
+    "alone m0": "1-3",
+    "checked m0": "1-3",
+    "assisted m0": "1-2",
+    "assisted m1": "1-3"
+   },
+   "category": "landmark",
+   "why": "the pinky's landmark reads fret 3 where the finger reaches fret 4 (a stretch read one fret short); margin 1 covers it"
+  },
+  {
+   "song": "capo",
+   "onset": 125.077,
+   "string": 6,
+   "fret": 3,
+   "excluded_by": {
+    "v0 m0": "19-21",
+    "v0 m1": "18-22",
+    "v0 m2": "17-23"
+   },
+   "category": "tap",
+   "why": "v0 only: the picking hand over the soundhole counted as a tap (window 19-21); the thumb over the neck at fret 3 plays the note"
+  },
+  {
+   "song": "capo",
+   "onset": 128.766,
+   "string": 2,
+   "fret": 5,
+   "excluded_by": {
+    "checked m0": "3-3",
+    "checked m1": "2-4"
+   },
+   "category": "check",
+   "why": "the check's own correction (the landmarks had lost the hand): it saw the thumb and a finger at fret 3 and set 3-3 (2-4 at margin 1); a finger reaches fret 5 on the treble strings at 128.77 s. Without the check the row is lost (no constraint)"
+  },
+  {
+   "song": "capo",
+   "onset": 171.848,
+   "string": 2,
+   "fret": 5,
+   "excluded_by": {
+    "assisted m0": "1-4"
+   },
+   "category": "assisted",
+   "why": "assisted only: see the assisted causes"
+  },
+  {
+   "song": "capo",
+   "onset": 173.407,
+   "string": 2,
+   "fret": 5,
+   "excluded_by": {
+    "assisted m0": "1-4"
+   },
+   "category": "assisted",
+   "why": "assisted only: see the assisted causes"
+  },
+  {
+   "song": "capo",
+   "onset": 174.974,
+   "string": 6,
+   "fret": 3,
+   "excluded_by": {
+    "v0 m0": "4-5",
+    "dev m0": "4-5",
+    "alone m0": "4-5",
+    "checked m0": "4-5",
+    "assisted m0": "4-5"
+   },
+   "category": "thumb",
+   "why": "the thumb over the neck frets string 6 at fret 3; the tool did not count it (its tip not past the string-6 edge); the fingers below the board read 4-5"
+  },
+  {
+   "song": "capo",
+   "onset": 185.937,
+   "string": 2,
+   "fret": 5,
+   "excluded_by": {
+    "assisted m0": "1-4"
+   },
+   "category": "assisted",
+   "why": "assisted only: see the assisted causes"
+  },
+  {
+   "song": "capo",
+   "onset": 188.09,
+   "string": 2,
+   "fret": 5,
+   "excluded_by": {
+    "assisted m0": "2-4"
+   },
+   "category": "assisted",
+   "why": "assisted only: see the assisted causes"
+  },
+  {
+   "song": "capo",
+   "onset": 199.573,
+   "string": 4,
+   "fret": 7,
+   "excluded_by": {
+    "v0 m0": "8-12",
+    "dev m0": "8-12",
+    "alone m0": "8-12",
+    "checked m0": "8-12"
+   },
+   "category": "landmark",
+   "why": "the index tip read one fret high (8 where it frets 7); the hand spans 7-12"
+  },
+  {
+   "song": "standard",
+   "onset": 7.678,
+   "string": 2,
+   "fret": 1,
+   "excluded_by": {
+    "v0 m0": "2-3"
+   },
+   "category": "no track",
+   "why": "v0 only: the static neck is a little off and the index tip reads one fret high (window 2-3)"
+  },
+  {
+   "song": "standard",
+   "onset": 14.003,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "dev m0": "3-4",
+    "alone m0": "3-4",
+    "checked m0": "3-4",
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 14.763,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "v0 m0": "3-4",
+    "dev m0": "3-4",
+    "alone m0": "3-4",
+    "checked m0": "3-4",
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 15.55,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "v0 m0": "3-5"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 16.136,
+   "string": 3,
+   "fret": 2,
+   "excluded_by": {
+    "v0 m0": "3-4",
+    "dev m0": "3-4",
+    "alone m0": "3-4",
+    "checked m0": "3-4",
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 19.471,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 20.301,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "dev m0": "3-4",
+    "alone m0": "3-4",
+    "checked m0": "3-4",
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 21.067,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "v0 m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 21.857,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "v0 m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 22.446,
+   "string": 3,
+   "fret": 2,
+   "excluded_by": {
+    "v0 m0": "3-4",
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 25.816,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 26.631,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "dev m0": "3-4",
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 27.421,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "dev m0": "3-4",
+    "alone m0": "3-4",
+    "checked m0": "3-4",
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 28.172,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "v0 m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 28.768,
+   "string": 3,
+   "fret": 2,
+   "excluded_by": {
+    "v0 m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 29.338,
+   "string": 3,
+   "fret": 2,
+   "excluded_by": {
+    "v0 m0": "3-4",
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 32.129,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "dev m0": "3-4",
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 32.956,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "dev m0": "3-4",
+    "alone m0": "3-4",
+    "checked m0": "3-4",
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 33.713,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "dev m0": "3-4",
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 34.488,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "v0 m0": "3-5",
+    "dev m0": "3-4",
+    "alone m0": "3-4",
+    "checked m0": "3-4",
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 49.462,
+   "string": 3,
+   "fret": 9,
+   "excluded_by": {
+    "v0 m0": "2-7",
+    "v0 m1": "1-8",
+    "dev m0": "2-7",
+    "dev m1": "1-8",
+    "alone m0": "2-7",
+    "alone m1": "1-8",
+    "checked m0": "2-7",
+    "checked m1": "1-8",
+    "assisted m0": "2-7",
+    "assisted m1": "1-8"
+   },
+   "category": "shift",
+   "why": "a fast shift up the neck in motion blur: the landmarks still show the hand at 2-7 (1-8 at margin 1) when the note at fret 9 starts; the default window reaches it 0.03 s later (2-10 at 49.50 s)"
+  },
+  {
+   "song": "standard",
+   "onset": 57.392,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "v0 m0": "3-4",
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 58.19,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 71.635,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 72.987,
+   "string": 3,
+   "fret": 2,
+   "excluded_by": {
+    "v0 m0": "3-4",
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 120.568,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 127.641,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 128.407,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 129.179,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 133.998,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "standard",
+   "onset": 134.787,
+   "string": 4,
+   "fret": 2,
+   "excluded_by": {
+    "assisted m0": "3-4"
+   },
+   "category": "landmark",
+   "why": "one recurring shape: MediaPipe reads the index tip one fret high (3) and labels the finger at fret 2 the thumb, which does not count, so the window is 3-4 (3-5) while string 3 or 4 is fretted at 2"
+  },
+  {
+   "song": "tuning",
+   "onset": 5.41,
+   "string": 6,
+   "fret": 2,
+   "excluded_by": {
+    "assisted m0": "1-1"
+   },
+   "category": "assisted",
+   "why": "assisted only: see the assisted causes"
+  },
+  {
+   "song": "tuning",
+   "onset": 9.253,
+   "string": 5,
+   "fret": 3,
+   "excluded_by": {
+    "assisted m0": "1-2"
+   },
+   "category": "assisted",
+   "why": "assisted only: see the assisted causes"
+  },
+  {
+   "song": "tuning",
+   "onset": 12.928,
+   "string": 3,
+   "fret": 2,
+   "excluded_by": {
+    "assisted m0": "1-1"
+   },
+   "category": "assisted",
+   "why": "assisted only: see the assisted causes"
+  },
+  {
+   "song": "tuning",
+   "onset": 23.946,
+   "string": 5,
+   "fret": 3,
+   "excluded_by": {
+    "assisted m0": "2-2"
+   },
+   "category": "assisted",
+   "why": "assisted only: see the assisted causes"
+  },
+  {
+   "song": "tuning",
+   "onset": 56.465,
+   "string": 5,
+   "fret": 5,
+   "excluded_by": {
+    "assisted m0": "2-4"
+   },
+   "category": "assisted",
+   "why": "assisted only: see the assisted causes"
+  },
+  {
+   "song": "tuning",
+   "onset": 60.192,
+   "string": 5,
+   "fret": 3,
+   "excluded_by": {
+    "assisted m0": "1-2"
+   },
+   "category": "assisted",
+   "why": "assisted only: see the assisted causes"
+  },
+  {
+   "song": "tuning",
+   "onset": 67.582,
+   "string": 5,
+   "fret": 3,
+   "excluded_by": {
+    "assisted m0": "1-2"
+   },
+   "category": "assisted",
+   "why": "assisted only: see the assisted causes"
+  },
+  {
+   "song": "tuning",
+   "onset": 75.035,
+   "string": 5,
+   "fret": 3,
+   "excluded_by": {
+    "assisted m0": "1-2"
+   },
+   "category": "assisted",
+   "why": "assisted only: see the assisted causes"
+  },
+  {
+   "song": "tuning",
+   "onset": 100.902,
+   "string": 2,
+   "fret": 1,
+   "excluded_by": {
+    "assisted m0": "2-3"
+   },
+   "category": "assisted",
+   "why": "assisted only: see the assisted causes"
+  },
+  {
+   "song": "tuning",
+   "onset": 115.032,
+   "string": 5,
+   "fret": 5,
+   "excluded_by": {
+    "assisted m0": "2-4"
+   },
+   "category": "assisted",
+   "why": "assisted only: see the assisted causes"
+  },
+  {
+   "song": "tuning",
+   "onset": 143.11,
+   "string": 2,
+   "fret": 3,
+   "excluded_by": {
+    "assisted m0": "1-2"
+   },
+   "category": "assisted",
+   "why": "assisted only: see the assisted causes"
+  },
+  {
+   "song": "tuning",
+   "onset": 143.509,
+   "string": 2,
+   "fret": 3,
+   "excluded_by": {
+    "assisted m0": "1-2"
+   },
+   "category": "assisted",
+   "why": "assisted only: see the assisted causes"
+  },
+  {
+   "song": "tuning",
+   "onset": 143.877,
+   "string": 5,
+   "fret": 5,
+   "excluded_by": {
+    "assisted m0": "2-4"
+   },
+   "category": "assisted",
+   "why": "assisted only: see the assisted causes"
+  },
+  {
+   "song": "tuning",
+   "onset": 147.569,
+   "string": 5,
+   "fret": 3,
+   "excluded_by": {
+    "assisted m0": "1-2"
+   },
+   "category": "assisted",
+   "why": "assisted only: see the assisted causes"
+  },
+  {
+   "song": "tuning",
+   "onset": 154.761,
+   "string": 5,
+   "fret": 3,
+   "excluded_by": {
+    "assisted m0": "2-2"
+   },
+   "category": "assisted",
+   "why": "assisted only: see the assisted causes"
+  }
+ ],
+ "excluded_categories_tool_conditions": {
+  "tap": 3,
+  "no track": 4,
+  "landmark": 21,
+  "check": 1,
+  "thumb": 1,
+  "shift": 1
+ },
+ "default": {
+  "condition": "after Opus's check",
+  "margin": 1,
+  "rows_per_second": 30,
+  "use": "hard rule",
+  "files": {
+   "capo": {
+    "dir": "G/loop/hand/capo",
+    "hand_window_sha256": "059da17ef62c32d96f7024c135d748000fc0abe20ea8d3e96cd4dcc0253b0624",
+    "records_copy": "docs/guitar-tab-research/loop/hand/capo/hand_window.csv"
+   },
+   "tuning": {
+    "dir": "G/loop/hand/tuning",
+    "hand_window_sha256": "744051af00dcc2f676d1c6c773478e2cf98f495ae7d33a79d7da9df1ca436ede",
+    "records_copy": "docs/guitar-tab-research/loop/hand/tuning/hand_window.csv"
+   },
+   "standard": {
+    "dir": "G/loop/hand/standard",
+    "hand_window_sha256": "1ca9118ccc36247270f10ad94b463ba0b94be1ffcb17dc443f08241023fed637",
+    "records_copy": "docs/guitar-tab-research/loop/hand/standard/hand_window.csv"
+   }
+  },
+  "scores": {
+   "capo": {
+    "notes": 815,
+    "fretted": 557,
+    "lost": 0,
+    "lost_share": 0.0,
+    "coverage_of_not_lost": 0.9946,
+    "excluded": 3,
+    "coverage_of_all_fretted": 0.9946,
+    "mean_width": 5.45,
+    "places_per_note_before": 3.459,
+    "places_per_note_after": 1.533,
+    "one_place_before": 0.096,
+    "one_place_after": 0.519,
+    "key_place_kept": 0.9963,
+    "fretted_heard": 519,
+    "lost_heard": 0,
+    "excluded_heard": 3,
+    "coverage_of_not_lost_heard": 0.9942,
+    "coverage_of_all_fretted_heard": 0.9942,
+    "covered": 554,
+    "covered_heard": 516,
+    "filter": {
+     "notes": 882,
+     "real": 781,
+     "invented": 101,
+     "real_removed": 0,
+     "invented_removed": 0
+    },
+    "filter_hf": {
+     "notes": 882,
+     "real": 781,
+     "invented": 101,
+     "real_removed": 0,
+     "invented_removed": 0
+    }
+   },
+   "tuning": {
+    "notes": 628,
+    "fretted": 206,
+    "lost": 2,
+    "lost_share": 0.0097,
+    "coverage_of_not_lost": 1.0,
+    "excluded": 0,
+    "coverage_of_all_fretted": 0.9903,
+    "mean_width": 3.73,
+    "places_per_note_before": 3.623,
+    "places_per_note_after": 1.449,
+    "one_place_before": 0.107,
+    "one_place_after": 0.584,
+    "key_place_kept": 1.0,
+    "fretted_heard": 181,
+    "lost_heard": 2,
+    "excluded_heard": 0,
+    "coverage_of_not_lost_heard": 1.0,
+    "coverage_of_all_fretted_heard": 0.989,
+    "covered": 204,
+    "covered_heard": 179,
+    "filter": {
+     "notes": 611,
+     "real": 516,
+     "invented": 95,
+     "real_removed": 0,
+     "invented_removed": 0
+    },
+    "filter_hf": {
+     "notes": 611,
+     "real": 516,
+     "invented": 95,
+     "real_removed": 0,
+     "invented_removed": 0
+    }
+   },
+   "standard": {
+    "notes": 679,
+    "fretted": 546,
+    "lost": 1,
+    "lost_share": 0.0018,
+    "coverage_of_not_lost": 0.9982,
+    "excluded": 1,
+    "coverage_of_all_fretted": 0.9963,
+    "mean_width": 4.58,
+    "places_per_note_before": 3.239,
+    "places_per_note_after": 1.236,
+    "one_place_before": 0.057,
+    "one_place_after": 0.772,
+    "key_place_kept": 0.9985,
+    "fretted_heard": 484,
+    "lost_heard": 1,
+    "excluded_heard": 1,
+    "coverage_of_not_lost_heard": 0.9979,
+    "coverage_of_all_fretted_heard": 0.9959,
+    "covered": 544,
+    "covered_heard": 482,
+    "filter": {
+     "notes": 734,
+     "real": 630,
+     "invented": 104,
+     "real_removed": 0,
+     "invented_removed": 0
+    },
+    "filter_hf": {
+     "notes": 734,
+     "real": 630,
+     "invented": 104,
+     "real_removed": 0,
+     "invented_removed": 0
+    }
+   }
+  },
+  "pooled": {
+   "songs": 3,
+   "notes": 2122,
+   "fretted": 1309,
+   "lost": 3,
+   "lost_share": 0.0023,
+   "covered": 1302,
+   "excluded": 4,
+   "coverage_of_not_lost": 0.9969,
+   "coverage_of_all_fretted": 0.9947,
+   "fretted_heard": 1184,
+   "excluded_heard": 4,
+   "coverage_of_not_lost_heard": 0.9966,
+   "coverage_of_all_fretted_heard": 0.9941,
+   "mean_width": 4.82,
+   "places_per_note_before": 3.437,
+   "places_per_note_after": 1.413,
+   "one_place_before": 0.087,
+   "one_place_after": 0.619,
+   "key_place_kept": 0.9981,
+   "filter_hf": {
+    "notes": 2227,
+    "real": 1927,
+    "invented": 300,
+    "real_removed": 0,
+    "invented_removed": 0
+   }
+  },
+  "hand_filter_sha256": "b210f11b53bcb04867ec8c39d9d58cb28e0f9ab16255c3eb9310f50999b00626"
+ },
+ "film": {
+  "picks": {
+   "capo": {
+    "best_start": 172,
+    "best": {
+     "notes": 96,
+     "narrowed_to_one": 40,
+     "several_before": 90,
+     "excluded": 0,
+     "places_before": 3.73,
+     "places_after": 1.56
+    },
+    "fail_start": 109,
+    "fail": {
+     "notes": 61,
+     "narrowed_to_one": 25,
+     "several_before": 56,
+     "excluded": 2,
+     "places_before": 3.43,
+     "places_after": 1.57
+    },
+    "excluded_times": [
+     41.01,
+     109.6,
+     128.77
+    ]
+   },
+   "tuning": {
+    "best_start": 86,
+    "best": {
+     "notes": 72,
+     "narrowed_to_one": 49,
+     "several_before": 69,
+     "excluded": 0,
+     "places_before": 3.69,
+     "places_after": 1.28
+    },
+    "fail_start": 0,
+    "fail": {
+     "notes": 65,
+     "narrowed_to_one": 24,
+     "several_before": 55,
+     "excluded": 0,
+     "places_before": 3.46,
+     "places_after": 1.8
+    },
+    "excluded_times": []
+   },
+   "standard": {
+    "best_start": 0,
+    "best": {
+     "notes": 85,
+     "narrowed_to_one": 72,
+     "several_before": 85,
+     "excluded": 0,
+     "places_before": 3.16,
+     "places_after": 1.15
+    },
+    "fail_start": 30,
+    "fail": {
+     "notes": 64,
+     "narrowed_to_one": 43,
+     "several_before": 59,
+     "excluded": 1,
+     "places_before": 3.27,
+     "places_after": 1.27
+    },
+    "excluded_times": [
+     49.46
+    ]
+   }
+  },
+  "videos": [
+   {
+    "out": "loop/e1/film/e1-capo-best-172-192.mp4",
+    "frames": 500,
+    "fps": 25.0,
+    "rc": 0,
+    "notes": 99,
+    "narrowed_to_one": 42,
+    "excluded": 0
+   },
+   {
+    "out": "loop/e1/film/e1-capo-fail-100-120.mp4",
+    "frames": 500,
+    "fps": 25.0,
+    "rc": 0,
+    "notes": 65,
+    "narrowed_to_one": 26,
+    "excluded": 1
+   },
+   {
+    "out": "loop/e1/film/e1-nylon-best-86-106.mp4",
+    "frames": 600,
+    "fps": 30.0,
+    "rc": 0,
+    "notes": 74,
+    "narrowed_to_one": 49,
+    "excluded": 0
+   },
+   {
+    "out": "loop/e1/film/e1-standard-best-0-20.mp4",
+    "frames": 1000,
+    "fps": 50.0,
+    "rc": 0,
+    "notes": 85,
+    "narrowed_to_one": 72,
+    "excluded": 0
+   },
+   {
+    "out": "loop/e1/film/e1-standard-fail-40-60.mp4",
+    "frames": 1000,
+    "fps": 50.0,
+    "rc": 0,
+    "notes": 73,
+    "narrowed_to_one": 52,
+    "excluded": 1
+   }
+  ]
+ }
+}

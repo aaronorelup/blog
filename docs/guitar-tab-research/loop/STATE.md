@@ -167,3 +167,28 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
 - **L4 started 04:18 UTC** (chain-2's notes, tuning given, hand off), one driver each, `--void-policy restart`:
   l4-capo (73 units, 1,853 candidates, 882 base), l4-standard (56 units, 1,458 / 734), l4-nylon (53 units cut at gaps:
   its downbeats are unsure; 1,120 / 611). A watcher reports driver ends, voids and errors.
+
+## 2026-11-27 04:35 UTC: L-E2 done; E1 published; twelve runs started, five paused for the weekly limit
+
+- **L-E2, the tuning finder** (wf_8855e028-4f8; `TUNING.md`, `tuning.json`, `E2-TUNING.md`): Opus 5.5, blind, capo given,
+  got all 36 open strings right in 6 runs (chord shape alone, and everything together, on each song), 10 to 15 minutes and
+  $2.48 to $3.51 a run. The nylon 1st string came out C4, from a G minor grip at 31.8 s (a fingertip at fret 2 on string 1
+  while D4 sounds) and Bb3 ringing with C4; AO-082's tools and both blind arms said D4. Code alone: (c) ties the key with
+  76 to 82 other tunings on every song (ranked first only by its prior), the finger rule settles the nylon 1st string 103
+  to 1 but puts a steel song's 1st string a semitone off in some rows (fingertip landmarks about a string off). By the
+  plan's rule, "tuning found" through Opus is the app's default; one run per condition, so no spread yet. These runs used
+  the file sandbox before the network was closed (caveat above); their audits found no network call. L3 starts from
+  `G/loop/e2/finder-answer.json` (the "everything" runs: the true tunings on all three songs).
+- **L-E1 published** `G/loop/hand/<S>/` at 04:20 UTC: the window after Opus's own blind check (anchors by Opus: 22
+  keyframes on capo; checks: 106, 53 and 59 decisions with 13, 16 and 0 window corrections and 1 new keyframe), margin 1,
+  a hard rule. Coverage of fretted key notes 0.995 / 0.998 / 1.000 (capo / standard / nylon), mean width 5.45 / 4.58 /
+  3.73 frets, places per note 3.46 -> 1.53 / 3.24 -> 1.24 / 3.62 -> 1.45, notes with one place 0.10 -> 0.52 / 0.06 ->
+  0.77 / 0.11 -> 0.58. Record `HAND.md` (E1's verify agent still running).
+- **Runs started 04:29** with E1's published windows: L2 on the three songs, L1 on the three, L3 on the three (12 with L4).
+- **Weekly limit.** This account's all-models weekly window read 68% used at 04:27 UTC (status allowed_warning, resets
+  about 2026-12-02 11:00 UTC, overage disabled for the org: 100% stops this session and NOTES until then). AO-082's rate
+  (about $2,000 for about 90% of a week) puts 1% near $22, so about $700 is left for both sessions, against about $1,000
+  to $1,200 for all of LOOP's plan. So at 04:30 L3 (three songs) and L1 (capo, standard) were stopped cleanly (each aborted
+  call logged, resumable with the same command): L3 duplicates L2 now that the finder was right on all three, and belongs
+  on the held-out songs (E7 runs L3); L1 is a ceiling, kept on the nylon song where model notes and the key's differ most.
+  Running: L2 x3, L4 x3, L1 nylon, about $100 an hour. NOTES told; dollars per percent to be measured.

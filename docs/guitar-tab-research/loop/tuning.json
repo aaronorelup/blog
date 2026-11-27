@@ -1,0 +1,5223 @@
+{
+ "made": "2026-11-27 e2-record (L-E2): the record of E2, every answer re-scored",
+ "scorer": "gtr-eval tuning 0.12.1, ledger G/loop/ledger/evals.jsonl, capo given, cents = t-01 librosa estimate; own count of open strings right of 6",
+ "keys_tunings": {
+  "capo": "E2 A2 D3 G3 B3 E4",
+  "standard": "E2 A2 D3 G3 B3 E4",
+  "tuning (nylon)": "D2 G2 C3 F3 A3 C4"
+ },
+ "rescore": {
+  "answers": 45,
+  "blind": 6,
+  "code": 39,
+  "mismatches": [],
+  "file": "G/loop/e2/rescore/rescore.json",
+  "script": "G/work/e2-record/rescore.py",
+  "blind_eval_ids_rescored": [
+   "e1284",
+   "e1285",
+   "e1286",
+   "e1287",
+   "e1288",
+   "e1289"
+  ],
+  "code_eval_ids_rescored": [
+   "e1290",
+   "e1291",
+   "e1292",
+   "e1293",
+   "e1294",
+   "e1295",
+   "e1296",
+   "e1297",
+   "e1298",
+   "e1299",
+   "e1300",
+   "e1301",
+   "e1302",
+   "e1303",
+   "e1304",
+   "e1305",
+   "e1306",
+   "e1307",
+   "e1308",
+   "e1310",
+   "e1312",
+   "e1313",
+   "e1315",
+   "e1317",
+   "e1319",
+   "e1321",
+   "e1323",
+   "e1325",
+   "e1326",
+   "e1328",
+   "e1330",
+   "e1332",
+   "e1334",
+   "e1336",
+   "e1338",
+   "e1339",
+   "e1341",
+   "e1343",
+   "e1345"
+  ],
+  "conflicts_rerun": {
+   "capo": {
+    "run_id": "r1347",
+    "wall_s": 18.16,
+    "cpu_user_s": 17.85,
+    "same_answers_as_recorded": true,
+    "file": "G/loop/e2/rescore/capo/base.json"
+   },
+   "standard": {
+    "run_id": "r1348",
+    "wall_s": 23.55,
+    "cpu_user_s": 23.24,
+    "same_answers_as_recorded": true,
+    "file": "G/loop/e2/rescore/standard/base.json"
+   },
+   "tuning": {
+    "run_id": "r1349",
+    "wall_s": 9.35,
+    "cpu_user_s": 9.22,
+    "same_answers_as_recorded": true,
+    "file": "G/loop/e2/rescore/tuning/base.json"
+   }
+  },
+  "audit_note": "own audit of every tool call: 6 tools only Bash/Read/Write/Edit/Glob/Grep; the only flags are Python/awk text read as paths (p//12-1, a//4, awk /-> B/): no path outside the folder, the named Python and the run's own /tmp scratchpad; no network, git or install command"
+ },
+ "totals_right_of_18": {
+  "sound only: t-02 lowest-note rule, as recorded": 12,
+  "(c) first 60 s": 18,
+  "(c) whole song": 18,
+  "(c)+finger first 60 s": 16,
+  "(c)+finger whole song": 17,
+  "Opus chord shape (b)": 18,
+  "Opus everything": 18
+ },
+ "songs": {
+  "capo": {
+   "label": "tun-a",
+   "capo_given": 3,
+   "t01_cents_est": 3.0,
+   "t01_cents_abs_diff": 1.0,
+   "t01_file": "G/experiments/capo/t-01/result.json",
+   "window": "G/loop/e1/capo/dev/final_m1_f30",
+   "window_sha256": {
+    "hand_window.csv": "607ab0cdfb10eb02dd9e1107e643fb3e1338300e1535dcf4a276eca43b4efb22",
+    "tips.jsonl": "0ee954b794c5cdf8da9b01174ed1aaac265e9c73680e1b524002e56a71bee099"
+   },
+   "rows": [
+    {
+     "condition": "sound only: t-02 lowest-note rule, as recorded",
+     "kind": "AO-082 t-02 (code)",
+     "est_midi": [
+      39,
+      45,
+      50,
+      55,
+      59,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "D#2",
+       "right": false,
+       "key": "E2",
+       "semitones": -1
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": true
+      }
+     ],
+     "right_of_6": 5,
+     "tuning_equal": false,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1173",
+     "eval_id_rescored": "e1290",
+     "source": "G/experiments/capo/t-02/result.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 0.1,
+     "seconds_note": "t-02 runtime_s (on Basic Pitch notes already made)"
+    },
+    {
+     "condition": "(c) first 30 s",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "tuning_equal": true,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1174",
+     "eval_id_rescored": "e1291",
+     "source": "G/loop/e2/score/dev/capo/base.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 18.16,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1347 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "tied": 5000,
+     "margin": null,
+     "key_rank": 1
+    },
+    {
+     "condition": "(c)+finger first 30 s",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      40,
+      44,
+      50,
+      54,
+      59,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "G#2",
+       "right": false,
+       "key": "A2",
+       "semitones": -1
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "F#3",
+       "right": false,
+       "key": "G3",
+       "semitones": -1
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": true
+      }
+     ],
+     "right_of_6": 4,
+     "tuning_equal": false,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1175",
+     "eval_id_rescored": "e1292",
+     "source": "G/loop/e2/score/dev/capo/base.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 18.16,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1347 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "switches": 2,
+     "beats": 484,
+     "undecided": 15,
+     "beaten_by": 0,
+     "pool": 500
+    },
+    {
+     "condition": "(c) first 60 s",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "tuning_equal": true,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1176",
+     "eval_id_rescored": "e1293",
+     "source": "G/loop/e2/score/dev/capo/base.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 18.16,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1347 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "tied": 2748,
+     "margin": 1,
+     "key_rank": 1
+    },
+    {
+     "condition": "(c)+finger first 60 s",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      60
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "C4",
+       "right": false,
+       "key": "E4",
+       "semitones": -4
+      }
+     ],
+     "right_of_6": 5,
+     "tuning_equal": false,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1177",
+     "eval_id_rescored": "e1294",
+     "source": "G/loop/e2/score/dev/capo/base.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 18.16,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1347 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "switches": 1,
+     "beats": 399,
+     "undecided": 100,
+     "beaten_by": 0,
+     "pool": 500
+    },
+    {
+     "condition": "(c) whole song",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "tuning_equal": true,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1178",
+     "eval_id_rescored": "e1295",
+     "source": "G/loop/e2/score/dev/capo/base.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 18.16,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1347 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "tied": 76,
+     "margin": 1,
+     "key_rank": 1
+    },
+    {
+     "condition": "(c)+finger whole song",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "tuning_equal": true,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1179",
+     "eval_id_rescored": "e1296",
+     "source": "G/loop/e2/score/dev/capo/base.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 18.16,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1347 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "switches": 0,
+     "beats": 62,
+     "undecided": 13,
+     "beaten_by": 0,
+     "pool": 76
+    },
+    {
+     "condition": "(c) first 30 s, +support notes",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "tuning_equal": true,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1180",
+     "eval_id_rescored": "e1297",
+     "source": "G/loop/e2/score/dev/capo/support.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 18.16,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1347 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "tied": 5000,
+     "margin": null,
+     "key_rank": 1
+    },
+    {
+     "condition": "(c)+finger first 30 s, +support notes",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      40,
+      44,
+      50,
+      54,
+      59,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "G#2",
+       "right": false,
+       "key": "A2",
+       "semitones": -1
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "F#3",
+       "right": false,
+       "key": "G3",
+       "semitones": -1
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": true
+      }
+     ],
+     "right_of_6": 4,
+     "tuning_equal": false,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1181",
+     "eval_id_rescored": "e1298",
+     "source": "G/loop/e2/score/dev/capo/support.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 18.16,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1347 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "switches": 2,
+     "beats": 478,
+     "undecided": 21,
+     "beaten_by": 0,
+     "pool": 500
+    },
+    {
+     "condition": "(c) first 60 s, +support notes",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      38,
+      45,
+      50,
+      55,
+      59,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "D2",
+       "right": false,
+       "key": "E2",
+       "semitones": -2
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": true
+      }
+     ],
+     "right_of_6": 5,
+     "tuning_equal": false,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1182",
+     "eval_id_rescored": "e1299",
+     "source": "G/loop/e2/score/dev/capo/support.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 18.16,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1347 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "tied": 805,
+     "margin": 1,
+     "key_rank": 1828
+    },
+    {
+     "condition": "(c)+finger first 60 s, +support notes",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      38,
+      45,
+      50,
+      55,
+      59,
+      60
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "D2",
+       "right": false,
+       "key": "E2",
+       "semitones": -2
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "C4",
+       "right": false,
+       "key": "E4",
+       "semitones": -4
+      }
+     ],
+     "right_of_6": 4,
+     "tuning_equal": false,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1183",
+     "eval_id_rescored": "e1300",
+     "source": "G/loop/e2/score/dev/capo/support.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 18.16,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1347 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "switches": 1,
+     "beats": 276,
+     "undecided": 223,
+     "beaten_by": 0,
+     "pool": 500
+    },
+    {
+     "condition": "(c) whole song, +support notes",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      38,
+      40,
+      45,
+      50,
+      55,
+      59
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "D2",
+       "right": false,
+       "key": "E2",
+       "semitones": -2
+      },
+      {
+       "string": 5,
+       "said": "E2",
+       "right": false,
+       "key": "A2",
+       "semitones": -5
+      },
+      {
+       "string": 4,
+       "said": "A2",
+       "right": false,
+       "key": "D3",
+       "semitones": -5
+      },
+      {
+       "string": 3,
+       "said": "D3",
+       "right": false,
+       "key": "G3",
+       "semitones": -5
+      },
+      {
+       "string": 2,
+       "said": "G3",
+       "right": false,
+       "key": "B3",
+       "semitones": -4
+      },
+      {
+       "string": 1,
+       "said": "B3",
+       "right": false,
+       "key": "E4",
+       "semitones": -5
+      }
+     ],
+     "right_of_6": 0,
+     "tuning_equal": false,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1184",
+     "eval_id_rescored": "e1301",
+     "source": "G/loop/e2/score/dev/capo/support.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 18.16,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1347 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "tied": 3,
+     "margin": 1,
+     "key_rank": 26
+    },
+    {
+     "condition": "(c)+finger whole song, +support notes",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      38,
+      40,
+      45,
+      50,
+      55,
+      59
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "D2",
+       "right": false,
+       "key": "E2",
+       "semitones": -2
+      },
+      {
+       "string": 5,
+       "said": "E2",
+       "right": false,
+       "key": "A2",
+       "semitones": -5
+      },
+      {
+       "string": 4,
+       "said": "A2",
+       "right": false,
+       "key": "D3",
+       "semitones": -5
+      },
+      {
+       "string": 3,
+       "said": "D3",
+       "right": false,
+       "key": "G3",
+       "semitones": -5
+      },
+      {
+       "string": 2,
+       "said": "G3",
+       "right": false,
+       "key": "B3",
+       "semitones": -4
+      },
+      {
+       "string": 1,
+       "said": "B3",
+       "right": false,
+       "key": "E4",
+       "semitones": -5
+      }
+     ],
+     "right_of_6": 0,
+     "tuning_equal": false,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1185",
+     "eval_id_rescored": "e1302",
+     "source": "G/loop/e2/score/dev/capo/support.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 18.16,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1347 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "switches": 0,
+     "beats": 2,
+     "undecided": 0,
+     "beaten_by": 0,
+     "pool": 3
+    },
+    {
+     "condition": "Opus chord shape (b)",
+     "kind": "blind Opus 5.5 max, sandboxed",
+     "label": "tun-a-shape",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "confidence_per_string": [
+      0.9,
+      0.85,
+      0.8,
+      0.85,
+      0.85,
+      0.75
+     ],
+     "tuning_equal": true,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1268",
+     "eval_id_rescored": "e1284",
+     "minutes": 12.9,
+     "output_tokens": 77975,
+     "cost_usd_list": 3.22,
+     "frames_looked_at": 16,
+     "tool_calls": 47,
+     "by_tool": {
+      "Bash": 25,
+      "Read": 18,
+      "Write": 2,
+      "Edit": 2
+     },
+     "audit_recorded": "clean",
+     "audit_rescored": "check",
+     "audit_rescored_flags": [
+      "path /12-1",
+      "path //2",
+      "path /4"
+     ],
+     "answer_sha256": "29e6e793a744ed6bb7bc9477f464128cf88bbcb6c2944f75b35666b17a164191",
+     "answer_file": "G/loop/e2/blind/tun-a-shape/tuning.json",
+     "how_file": "G/loop/e2/blind/tun-a-shape/HOW.md",
+     "transcript": "G/transcripts/tun-a-shape/-home-user-gtv-loop-e2-blind-tun-a-shape/00eeb8e8-2517-4f8f-b053-1c9ba57f5328.jsonl"
+    },
+    {
+     "condition": "Opus everything",
+     "kind": "blind Opus 5.5 max, sandboxed",
+     "label": "tun-a-all",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "confidence_per_string": [
+      0.85,
+      0.9,
+      0.85,
+      0.7,
+      0.75,
+      0.65
+     ],
+     "tuning_equal": true,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1281",
+     "eval_id_rescored": "e1285",
+     "minutes": 12.3,
+     "output_tokens": 72497,
+     "cost_usd_list": 3.1,
+     "frames_looked_at": 14,
+     "tool_calls": 48,
+     "by_tool": {
+      "Bash": 24,
+      "Read": 16,
+      "Write": 2,
+      "Edit": 6
+     },
+     "audit_recorded": "clean",
+     "audit_rescored": "check",
+     "audit_rescored_flags": [
+      "path /-"
+     ],
+     "answer_sha256": "5d5ef9b7ebbb668c1d2f09323cc7d2d0d04ec3c0d7293edbf1a81286b01d0d80",
+     "answer_file": "G/loop/e2/blind/tun-a-all/tuning.json",
+     "how_file": "G/loop/e2/blind/tun-a-all/HOW.md",
+     "transcript": "G/transcripts/tun-a-all/-home-user-gtv-loop-e2-blind-tun-a-all/0c4bba02-b3ff-451d-ae1c-dd7134feee72.jsonl"
+    }
+   ]
+  },
+  "standard": {
+   "label": "tun-b",
+   "capo_given": 0,
+   "t01_cents_est": 3.0,
+   "t01_cents_abs_diff": 3.0,
+   "t01_file": "G/experiments/standard/t-01/result.json",
+   "window": "G/loop/e1/standard/dev/final_m1_f30",
+   "window_sha256": {
+    "hand_window.csv": "9e398c6895afa6891abce61143b7a7475625f85328ac31976535285adca78372",
+    "tips.jsonl": "2c7f6fcd94ad2f64f3d5a217b83f38117760f47d655c5fef3300a0377e4123a8"
+   },
+   "rows": [
+    {
+     "condition": "sound only: t-02 lowest-note rule, as recorded",
+     "kind": "AO-082 t-02 (code)",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "tuning_equal": true,
+     "cents_abs_diff": 3.0,
+     "eval_id_recorded": "e1186",
+     "eval_id_rescored": "e1303",
+     "source": "G/experiments/standard/t-02/result.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 0.1,
+     "seconds_note": "t-02 runtime_s (on Basic Pitch notes already made)"
+    },
+    {
+     "condition": "(c) first 30 s",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "tuning_equal": true,
+     "cents_abs_diff": 3.0,
+     "eval_id_recorded": "e1187",
+     "eval_id_rescored": "e1304",
+     "source": "G/loop/e2/score/dev/standard/base.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 23.55,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1348 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "tied": 3744,
+     "margin": 1,
+     "key_rank": 1
+    },
+    {
+     "condition": "(c)+finger first 30 s",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      60
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "C4",
+       "right": false,
+       "key": "E4",
+       "semitones": -4
+      }
+     ],
+     "right_of_6": 5,
+     "tuning_equal": false,
+     "cents_abs_diff": 3.0,
+     "eval_id_recorded": "e1188",
+     "eval_id_rescored": "e1305",
+     "source": "G/loop/e2/score/dev/standard/base.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 23.55,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1348 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "switches": 1,
+     "beats": 235,
+     "undecided": 264,
+     "beaten_by": 0,
+     "pool": 500
+    },
+    {
+     "condition": "(c) first 60 s",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "tuning_equal": true,
+     "cents_abs_diff": 3.0,
+     "eval_id_recorded": "e1189",
+     "eval_id_rescored": "e1306",
+     "source": "G/loop/e2/score/dev/standard/base.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 23.55,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1348 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "tied": 1480,
+     "margin": 1,
+     "key_rank": 1
+    },
+    {
+     "condition": "(c)+finger first 60 s",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      60
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "C4",
+       "right": false,
+       "key": "E4",
+       "semitones": -4
+      }
+     ],
+     "right_of_6": 5,
+     "tuning_equal": false,
+     "cents_abs_diff": 3.0,
+     "eval_id_recorded": "e1190",
+     "eval_id_rescored": "e1307",
+     "source": "G/loop/e2/score/dev/standard/base.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 23.55,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1348 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "switches": 1,
+     "beats": 81,
+     "undecided": 418,
+     "beaten_by": 0,
+     "pool": 500
+    },
+    {
+     "condition": "(c) whole song",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "tuning_equal": true,
+     "cents_abs_diff": 3.0,
+     "eval_id_recorded": "e1191",
+     "eval_id_rescored": "e1308",
+     "source": "G/loop/e2/score/dev/standard/base.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 23.55,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1348 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "tied": 82,
+     "margin": 1,
+     "key_rank": 1
+    },
+    {
+     "condition": "(c)+finger whole song",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      60
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "C4",
+       "right": false,
+       "key": "E4",
+       "semitones": -4
+      }
+     ],
+     "right_of_6": 5,
+     "tuning_equal": false,
+     "cents_abs_diff": 3.0,
+     "eval_id_recorded": "e1192",
+     "eval_id_rescored": "e1310",
+     "source": "G/loop/e2/score/dev/standard/base.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 23.55,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1348 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "switches": 1,
+     "beats": 40,
+     "undecided": 41,
+     "beaten_by": 0,
+     "pool": 82
+    },
+    {
+     "condition": "(c) first 30 s, +support notes",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "tuning_equal": true,
+     "cents_abs_diff": 3.0,
+     "eval_id_recorded": "e1193",
+     "eval_id_rescored": "e1312",
+     "source": "G/loop/e2/score/dev/standard/support.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 23.55,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1348 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "tied": 3744,
+     "margin": 2,
+     "key_rank": 1
+    },
+    {
+     "condition": "(c)+finger first 30 s, +support notes",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      60
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "C4",
+       "right": false,
+       "key": "E4",
+       "semitones": -4
+      }
+     ],
+     "right_of_6": 5,
+     "tuning_equal": false,
+     "cents_abs_diff": 3.0,
+     "eval_id_recorded": "e1194",
+     "eval_id_rescored": "e1313",
+     "source": "G/loop/e2/score/dev/standard/support.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 23.55,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1348 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "switches": 1,
+     "beats": 235,
+     "undecided": 264,
+     "beaten_by": 0,
+     "pool": 500
+    },
+    {
+     "condition": "(c) first 60 s, +support notes",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "tuning_equal": true,
+     "cents_abs_diff": 3.0,
+     "eval_id_recorded": "e1195",
+     "eval_id_rescored": "e1315",
+     "source": "G/loop/e2/score/dev/standard/support.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 23.55,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1348 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "tied": 1165,
+     "margin": 1,
+     "key_rank": 1
+    },
+    {
+     "condition": "(c)+finger first 60 s, +support notes",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      60
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "C4",
+       "right": false,
+       "key": "E4",
+       "semitones": -4
+      }
+     ],
+     "right_of_6": 5,
+     "tuning_equal": false,
+     "cents_abs_diff": 3.0,
+     "eval_id_recorded": "e1196",
+     "eval_id_rescored": "e1317",
+     "source": "G/loop/e2/score/dev/standard/support.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 23.55,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1348 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "switches": 1,
+     "beats": 62,
+     "undecided": 437,
+     "beaten_by": 0,
+     "pool": 500
+    },
+    {
+     "condition": "(c) whole song, +support notes",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "tuning_equal": true,
+     "cents_abs_diff": 3.0,
+     "eval_id_recorded": "e1197",
+     "eval_id_rescored": "e1319",
+     "source": "G/loop/e2/score/dev/standard/support.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 23.55,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1348 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "tied": 62,
+     "margin": 1,
+     "key_rank": 1
+    },
+    {
+     "condition": "(c)+finger whole song, +support notes",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      60
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "C4",
+       "right": false,
+       "key": "E4",
+       "semitones": -4
+      }
+     ],
+     "right_of_6": 5,
+     "tuning_equal": false,
+     "cents_abs_diff": 3.0,
+     "eval_id_recorded": "e1198",
+     "eval_id_rescored": "e1321",
+     "source": "G/loop/e2/score/dev/standard/support.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 23.55,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1348 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "switches": 1,
+     "beats": 37,
+     "undecided": 24,
+     "beaten_by": 0,
+     "pool": 62
+    },
+    {
+     "condition": "Opus chord shape (b)",
+     "kind": "blind Opus 5.5 max, sandboxed",
+     "label": "tun-b-shape",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "confidence_per_string": [
+      0.85,
+      0.85,
+      0.85,
+      0.85,
+      0.85,
+      0.7
+     ],
+     "tuning_equal": true,
+     "cents_abs_diff": 3.0,
+     "eval_id_recorded": "e1269",
+     "eval_id_rescored": "e1286",
+     "minutes": 11.4,
+     "output_tokens": 68288,
+     "cost_usd_list": 2.81,
+     "frames_looked_at": 16,
+     "tool_calls": 48,
+     "by_tool": {
+      "Bash": 22,
+      "Read": 18,
+      "Write": 2,
+      "Edit": 6
+     },
+     "audit_recorded": "clean",
+     "audit_rescored": "check",
+     "audit_rescored_flags": [
+      "path /12-1"
+     ],
+     "answer_sha256": "9efdbf89c9fcf57c9a4b72d8ba33efa82cedf1b2fca005363a822ee0b9ba85d2",
+     "answer_file": "G/loop/e2/blind/tun-b-shape/tuning.json",
+     "how_file": "G/loop/e2/blind/tun-b-shape/HOW.md",
+     "transcript": "G/transcripts/tun-b-shape/-home-user-gtv-loop-e2-blind-tun-b-shape/648eddec-1ccf-4dac-873f-dd4e68b3dc4f.jsonl"
+    },
+    {
+     "condition": "Opus everything",
+     "kind": "blind Opus 5.5 max, sandboxed",
+     "label": "tun-b-all",
+     "est_midi": [
+      40,
+      45,
+      50,
+      55,
+      59,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "E2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "confidence_per_string": [
+      0.97,
+      0.9,
+      0.9,
+      0.9,
+      0.9,
+      0.85
+     ],
+     "tuning_equal": true,
+     "cents_abs_diff": 3.0,
+     "eval_id_recorded": "e1282",
+     "eval_id_rescored": "e1287",
+     "minutes": 10.2,
+     "output_tokens": 58785,
+     "cost_usd_list": 2.48,
+     "frames_looked_at": 13,
+     "tool_calls": 32,
+     "by_tool": {
+      "Bash": 15,
+      "Read": 15,
+      "Write": 2
+     },
+     "audit_recorded": "clean",
+     "audit_rescored": "check",
+     "audit_rescored_flags": [
+      "path /12-1",
+      "path /12-1",
+      "path /-"
+     ],
+     "answer_sha256": "ab9e0adcb21d7c9a783fa7a60040d9aabda3410d95b3dcdb0f7ecf9fd02ffbb1",
+     "answer_file": "G/loop/e2/blind/tun-b-all/tuning.json",
+     "how_file": "G/loop/e2/blind/tun-b-all/HOW.md",
+     "transcript": "G/transcripts/tun-b-all/-home-user-gtv-loop-e2-blind-tun-b-all/8ef2e027-32ab-4b2f-971a-91b347746cf8.jsonl"
+    }
+   ]
+  },
+  "tuning": {
+   "label": "tun-c",
+   "capo_given": 0,
+   "t01_cents_est": -10.0,
+   "t01_cents_abs_diff": 1.0,
+   "t01_file": "G/experiments/tuning/t-01/result.json",
+   "window": "G/loop/e1/tuning/dev/final2_m1_f30",
+   "window_sha256": {
+    "hand_window.csv": "9e57bb85d2a94b1c3fbfd2721864ecb6a194ce301c218b7b38e5cc450e1b050b",
+    "tips.jsonl": "51506e61bfda4759eb31fff4ee7952bb4a32bd3f4d3195f97e1d9739028eae6e"
+   },
+   "rows": [
+    {
+     "condition": "sound only: t-02 lowest-note rule, as recorded",
+     "kind": "AO-082 t-02 (code)",
+     "est_midi": [
+      38,
+      45,
+      50,
+      55,
+      59,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "D2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "A2",
+       "right": false,
+       "key": "G2",
+       "semitones": 2
+      },
+      {
+       "string": 4,
+       "said": "D3",
+       "right": false,
+       "key": "C3",
+       "semitones": 2
+      },
+      {
+       "string": 3,
+       "said": "G3",
+       "right": false,
+       "key": "F3",
+       "semitones": 2
+      },
+      {
+       "string": 2,
+       "said": "B3",
+       "right": false,
+       "key": "A3",
+       "semitones": 2
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": false,
+       "key": "C4",
+       "semitones": 4
+      }
+     ],
+     "right_of_6": 1,
+     "tuning_equal": false,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1199",
+     "eval_id_rescored": "e1323",
+     "source": "G/experiments/tuning/t-02/result.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 0.1,
+     "seconds_note": "t-02 runtime_s (on Basic Pitch notes already made)"
+    },
+    {
+     "condition": "(c) first 30 s",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      38,
+      43,
+      48,
+      53,
+      57,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "D2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "G2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "C3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "F3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "A3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": false,
+       "key": "C4",
+       "semitones": 4
+      }
+     ],
+     "right_of_6": 5,
+     "tuning_equal": false,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1200",
+     "eval_id_rescored": "e1325",
+     "source": "G/loop/e2/score/dev/tuning/base.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 9.35,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1349 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "tied": 264,
+     "margin": 1,
+     "key_rank": 1
+    },
+    {
+     "condition": "(c)+finger first 30 s",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      38,
+      43,
+      48,
+      53,
+      57,
+      60
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "D2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "G2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "C3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "F3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "A3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "C4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "tuning_equal": true,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1201",
+     "eval_id_rescored": "e1326",
+     "source": "G/loop/e2/score/dev/tuning/base.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 9.35,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1349 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "switches": 1,
+     "beats": 225,
+     "undecided": 38,
+     "beaten_by": 0,
+     "pool": 264
+    },
+    {
+     "condition": "(c) first 60 s",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      38,
+      43,
+      48,
+      53,
+      57,
+      60
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "D2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "G2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "C3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "F3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "A3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "C4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "tuning_equal": true,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1202",
+     "eval_id_rescored": "e1328",
+     "source": "G/loop/e2/score/dev/tuning/base.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 9.35,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1349 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "tied": 156,
+     "margin": 2,
+     "key_rank": 1
+    },
+    {
+     "condition": "(c)+finger first 60 s",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      38,
+      43,
+      48,
+      53,
+      57,
+      60
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "D2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "G2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "C3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "F3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "A3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "C4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "tuning_equal": true,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1203",
+     "eval_id_rescored": "e1330",
+     "source": "G/loop/e2/score/dev/tuning/base.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 9.35,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1349 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "switches": 0,
+     "beats": 140,
+     "undecided": 15,
+     "beaten_by": 0,
+     "pool": 156
+    },
+    {
+     "condition": "(c) whole song",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      38,
+      43,
+      48,
+      53,
+      57,
+      60
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "D2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "G2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "C3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "F3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "A3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "C4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "tuning_equal": true,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1204",
+     "eval_id_rescored": "e1332",
+     "source": "G/loop/e2/score/dev/tuning/base.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 9.35,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1349 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "tied": 64,
+     "margin": 1,
+     "key_rank": 1
+    },
+    {
+     "condition": "(c)+finger whole song",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      38,
+      43,
+      48,
+      53,
+      57,
+      60
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "D2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "G2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "C3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "F3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "A3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "C4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "tuning_equal": true,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1205",
+     "eval_id_rescored": "e1334",
+     "source": "G/loop/e2/score/dev/tuning/base.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 9.35,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1349 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "switches": 0,
+     "beats": 61,
+     "undecided": 2,
+     "beaten_by": 0,
+     "pool": 64
+    },
+    {
+     "condition": "(c) first 30 s, +support notes",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      38,
+      43,
+      48,
+      53,
+      57,
+      64
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "D2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "G2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "C3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "F3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "A3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "E4",
+       "right": false,
+       "key": "C4",
+       "semitones": 4
+      }
+     ],
+     "right_of_6": 5,
+     "tuning_equal": false,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1206",
+     "eval_id_rescored": "e1336",
+     "source": "G/loop/e2/score/dev/tuning/support.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 9.35,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1349 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "tied": 264,
+     "margin": 1,
+     "key_rank": 1
+    },
+    {
+     "condition": "(c)+finger first 30 s, +support notes",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      38,
+      43,
+      48,
+      53,
+      57,
+      60
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "D2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "G2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "C3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "F3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "A3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "C4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "tuning_equal": true,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1207",
+     "eval_id_rescored": "e1338",
+     "source": "G/loop/e2/score/dev/tuning/support.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 9.35,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1349 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "switches": 1,
+     "beats": 224,
+     "undecided": 39,
+     "beaten_by": 0,
+     "pool": 264
+    },
+    {
+     "condition": "(c) first 60 s, +support notes",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      38,
+      43,
+      48,
+      53,
+      57,
+      60
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "D2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "G2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "C3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "F3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "A3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "C4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "tuning_equal": true,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1208",
+     "eval_id_rescored": "e1339",
+     "source": "G/loop/e2/score/dev/tuning/support.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 9.35,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1349 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "tied": 134,
+     "margin": 1,
+     "key_rank": 1
+    },
+    {
+     "condition": "(c)+finger first 60 s, +support notes",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      38,
+      43,
+      48,
+      53,
+      57,
+      60
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "D2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "G2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "C3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "F3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "A3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "C4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "tuning_equal": true,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1209",
+     "eval_id_rescored": "e1341",
+     "source": "G/loop/e2/score/dev/tuning/support.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 9.35,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1349 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "switches": 0,
+     "beats": 118,
+     "undecided": 15,
+     "beaten_by": 0,
+     "pool": 134
+    },
+    {
+     "condition": "(c) whole song, +support notes",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      38,
+      43,
+      48,
+      53,
+      57,
+      60
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "D2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "G2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "C3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "F3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "A3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "C4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "tuning_equal": true,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1210",
+     "eval_id_rescored": "e1343",
+     "source": "G/loop/e2/score/dev/tuning/support.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 9.35,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1349 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "tied": 64,
+     "margin": 1,
+     "key_rank": 1
+    },
+    {
+     "condition": "(c)+finger whole song, +support notes",
+     "kind": "code (conflicts.py; finger rule = fingers.py tie-break)",
+     "est_midi": [
+      38,
+      43,
+      48,
+      53,
+      57,
+      60
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "D2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "G2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "C3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "F3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "A3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "C4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "tuning_equal": true,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1211",
+     "eval_id_rescored": "e1345",
+     "source": "G/loop/e2/score/dev/tuning/support.json",
+     "frames_looked_at": 0,
+     "cost_usd": 0.0,
+     "seconds": 9.35,
+     "seconds_note": "one conflicts.py call, all three stretches with the finger tie-break, gtr-run r1349 (re-run by e2-record, 2 cores; answers identical to the recorded run)",
+     "switches": 0,
+     "beats": 62,
+     "undecided": 1,
+     "beaten_by": 0,
+     "pool": 64
+    },
+    {
+     "condition": "Opus chord shape (b)",
+     "kind": "blind Opus 5.5 max, sandboxed",
+     "label": "tun-c-shape",
+     "est_midi": [
+      38,
+      43,
+      48,
+      53,
+      57,
+      60
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "D2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "G2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "C3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "F3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "A3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "C4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "confidence_per_string": [
+      0.9,
+      0.85,
+      0.8,
+      0.8,
+      0.8,
+      0.7
+     ],
+     "tuning_equal": true,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1270",
+     "eval_id_rescored": "e1288",
+     "minutes": 14.6,
+     "output_tokens": 86871,
+     "cost_usd_list": 3.51,
+     "frames_looked_at": 16,
+     "tool_calls": 41,
+     "by_tool": {
+      "Bash": 23,
+      "Read": 16,
+      "Write": 2
+     },
+     "audit_recorded": "clean",
+     "audit_rescored": "check",
+     "audit_rescored_flags": [
+      "path /12-1",
+      "path /12-1"
+     ],
+     "answer_sha256": "fd5da0638b2932fe4f6baeb253dc4a758d4e314b041086ce66e33ded2f4ab310",
+     "answer_file": "G/loop/e2/blind/tun-c-shape/tuning.json",
+     "how_file": "G/loop/e2/blind/tun-c-shape/HOW.md",
+     "transcript": "G/transcripts/tun-c-shape/-home-user-gtv-loop-e2-blind-tun-c-shape/29610c05-c98d-4fda-a213-ea4e67ec0c0e.jsonl"
+    },
+    {
+     "condition": "Opus everything",
+     "kind": "blind Opus 5.5 max, sandboxed",
+     "label": "tun-c-all",
+     "est_midi": [
+      38,
+      43,
+      48,
+      53,
+      57,
+      60
+     ],
+     "strings": [
+      {
+       "string": 6,
+       "said": "D2",
+       "right": true
+      },
+      {
+       "string": 5,
+       "said": "G2",
+       "right": true
+      },
+      {
+       "string": 4,
+       "said": "C3",
+       "right": true
+      },
+      {
+       "string": 3,
+       "said": "F3",
+       "right": true
+      },
+      {
+       "string": 2,
+       "said": "A3",
+       "right": true
+      },
+      {
+       "string": 1,
+       "said": "C4",
+       "right": true
+      }
+     ],
+     "right_of_6": 6,
+     "confidence_per_string": [
+      "high",
+      "high",
+      "medium-high",
+      "medium",
+      "high",
+      "medium-high"
+     ],
+     "tuning_equal": true,
+     "cents_abs_diff": 1.0,
+     "eval_id_recorded": "e1283",
+     "eval_id_rescored": "e1289",
+     "minutes": 13.4,
+     "output_tokens": 74281,
+     "cost_usd_list": 3.35,
+     "frames_looked_at": 17,
+     "tool_calls": 50,
+     "by_tool": {
+      "Bash": 29,
+      "Read": 19,
+      "Write": 2
+     },
+     "audit_recorded": "clean",
+     "audit_rescored": "check",
+     "audit_rescored_flags": [
+      "path /12-1",
+      "path /12-1",
+      "path /12-1"
+     ],
+     "answer_sha256": "aed606c2573c1ec6c21880677ab67eb7fde42bda5e4b3740261ef3f6de0a1937",
+     "answer_file": "G/loop/e2/blind/tun-c-all/tuning.json",
+     "how_file": "G/loop/e2/blind/tun-c-all/HOW.md",
+     "transcript": "G/transcripts/tun-c-all/-home-user-gtv-loop-e2-blind-tun-c-all/3a9f23ac-c7eb-43ac-a895-5588d688302e.jsonl"
+    }
+   ]
+  }
+ },
+ "plan_rule": {
+  "rule": "LOOP.md E2 'Changes the plan': 6 of 6 everywhere makes 'tuning found' the app's default; any wrong string means the app asks the person for the tuning first",
+  "verdict": "tuning found is the default, with the Opus 'everything' finder (6 of 6 on all three songs, 18 of 18 strings; the chord-shape run too)",
+  "but": [
+   "the code-only finder alone fails the rule: (c)+finger rule 16 of 18 over 60 s, 17 of 18 whole song (standard string 1 said C4)",
+   "(c) alone is 18 of 18 only through its tie-break prior (fewest strings moved from standard): 2,748 / 1,480 / 156 tunings tie at 60 s and 76 / 82 / 64 over the whole song (capo / standard / nylon)",
+   "one run per song and condition, three songs, two of them in standard tuning, E1's development windows: the held-out set (E7) must hold it"
+  ]
+ },
+ "finder_answer": {
+  "file": "G/loop/e2/finder-answer.json",
+  "from": {
+   "capo": "tun-a-all (Opus everything)",
+   "standard": "tun-b-all (Opus everything)",
+   "tuning": "tun-c-all (Opus everything)"
+  },
+  "why": "the everything run used all four steps (open strings, chord shapes, conflicts.py, fingers.py) and is right on every string of every song; the chord-shape run is as right with fewer tools; no code path is better (the finger rule loses the standard song's 1st string)"
+ },
+ "published_window": {
+  "note": "E1 published G/loop/hand/ at 04:20 UTC, after the blind runs: the code-only conditions were re-run on it by e2-record (builder's run_conflicts.sh, run_fingers.sh, score_conditions.py with tag pub; packs not rebuilt; Opus runs not repeated)",
+  "run": "gtr-run r1351, 138.35 s wall, 147.6 s CPU, all songs, base and support notes, conflicts + fingers + scoring",
+  "script": "G/work/e2-record/rerun_pub.sh",
+  "scores": "G/loop/e2/score/pub/scores.json",
+  "rescore": "G/loop/e2/rescore/pub/rescore.json",
+  "rescore_mismatches": [],
+  "songs": {
+   "capo": {
+    "window": "G/loop/hand/capo",
+    "sha256": {
+     "hand_window.csv": "059da17ef62c32d96f7024c135d748000fc0abe20ea8d3e96cd4dcc0253b0624",
+     "tips.jsonl": "526567e74dc5df52db5fa67035fa96f7a80a8fad0fad9d4bba42e8dd2be1d617"
+    },
+    "rows": [
+     {
+      "condition": "sound only: t-02 lowest-note rule, as recorded",
+      "est_midi": [
+       39,
+       45,
+       50,
+       55,
+       59,
+       64
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "D#2",
+        "right": false,
+        "key": "E2",
+        "semitones": -1
+       },
+       {
+        "string": 5,
+        "said": "A2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "B3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "E4",
+        "right": true
+       }
+      ],
+      "right_of_6": 5,
+      "tuning_equal": false,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1509",
+      "eval_id_rescored": "e1548"
+     },
+     {
+      "condition": "(c) first 30 s",
+      "est_midi": [
+       40,
+       45,
+       50,
+       55,
+       59,
+       64
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "E2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "A2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "B3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "E4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1510",
+      "eval_id_rescored": "e1549",
+      "tied": 5000,
+      "key_rank": 1
+     },
+     {
+      "condition": "(c)+finger first 30 s",
+      "est_midi": [
+       40,
+       44,
+       50,
+       55,
+       59,
+       64
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "E2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "G#2",
+        "right": false,
+        "key": "A2",
+        "semitones": -1
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "B3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "E4",
+        "right": true
+       }
+      ],
+      "right_of_6": 5,
+      "tuning_equal": false,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1511",
+      "eval_id_rescored": "e1550",
+      "switches": 1,
+      "beats": 471,
+      "undecided": 28,
+      "beaten_by": 0,
+      "pool": 500
+     },
+     {
+      "condition": "(c) first 60 s",
+      "est_midi": [
+       40,
+       45,
+       50,
+       55,
+       59,
+       64
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "E2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "A2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "B3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "E4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1512",
+      "eval_id_rescored": "e1551",
+      "tied": 2078,
+      "key_rank": 1
+     },
+     {
+      "condition": "(c)+finger first 60 s",
+      "est_midi": [
+       40,
+       45,
+       50,
+       55,
+       58,
+       59
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "E2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "A2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "A#3",
+        "right": false,
+        "key": "B3",
+        "semitones": -1
+       },
+       {
+        "string": 1,
+        "said": "B3",
+        "right": false,
+        "key": "E4",
+        "semitones": -5
+       }
+      ],
+      "right_of_6": 4,
+      "tuning_equal": false,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1513",
+      "eval_id_rescored": "e1552",
+      "switches": 2,
+      "beats": 432,
+      "undecided": 67,
+      "beaten_by": 0,
+      "pool": 500
+     },
+     {
+      "condition": "(c) whole song",
+      "est_midi": [
+       40,
+       45,
+       50,
+       55,
+       59,
+       64
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "E2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "A2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "B3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "E4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1514",
+      "eval_id_rescored": "e1553",
+      "tied": 104,
+      "key_rank": 1
+     },
+     {
+      "condition": "(c)+finger whole song",
+      "est_midi": [
+       40,
+       45,
+       50,
+       55,
+       59,
+       60
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "E2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "A2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "B3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "C4",
+        "right": false,
+        "key": "E4",
+        "semitones": -4
+       }
+      ],
+      "right_of_6": 5,
+      "tuning_equal": false,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1515",
+      "eval_id_rescored": "e1554",
+      "switches": 1,
+      "beats": 93,
+      "undecided": 10,
+      "beaten_by": 0,
+      "pool": 104
+     },
+     {
+      "condition": "(c) first 30 s, +support notes",
+      "est_midi": [
+       40,
+       45,
+       50,
+       55,
+       59,
+       64
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "E2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "A2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "B3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "E4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1516",
+      "eval_id_rescored": "e1555",
+      "tied": 5000,
+      "key_rank": 1
+     },
+     {
+      "condition": "(c)+finger first 30 s, +support notes",
+      "est_midi": [
+       40,
+       44,
+       50,
+       55,
+       59,
+       64
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "E2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "G#2",
+        "right": false,
+        "key": "A2",
+        "semitones": -1
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "B3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "E4",
+        "right": true
+       }
+      ],
+      "right_of_6": 5,
+      "tuning_equal": false,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1517",
+      "eval_id_rescored": "e1556",
+      "switches": 1,
+      "beats": 478,
+      "undecided": 21,
+      "beaten_by": 0,
+      "pool": 500
+     },
+     {
+      "condition": "(c) first 60 s, +support notes",
+      "est_midi": [
+       38,
+       43,
+       48,
+       55,
+       59,
+       64
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "D2",
+        "right": false,
+        "key": "E2",
+        "semitones": -2
+       },
+       {
+        "string": 5,
+        "said": "G2",
+        "right": false,
+        "key": "A2",
+        "semitones": -2
+       },
+       {
+        "string": 4,
+        "said": "C3",
+        "right": false,
+        "key": "D3",
+        "semitones": -2
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "B3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "E4",
+        "right": true
+       }
+      ],
+      "right_of_6": 3,
+      "tuning_equal": false,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1518",
+      "eval_id_rescored": "e1557",
+      "tied": 284,
+      "key_rank": 1320
+     },
+     {
+      "condition": "(c)+finger first 60 s, +support notes",
+      "est_midi": [
+       38,
+       43,
+       48,
+       55,
+       57,
+       59
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "D2",
+        "right": false,
+        "key": "E2",
+        "semitones": -2
+       },
+       {
+        "string": 5,
+        "said": "G2",
+        "right": false,
+        "key": "A2",
+        "semitones": -2
+       },
+       {
+        "string": 4,
+        "said": "C3",
+        "right": false,
+        "key": "D3",
+        "semitones": -2
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "A3",
+        "right": false,
+        "key": "B3",
+        "semitones": -2
+       },
+       {
+        "string": 1,
+        "said": "B3",
+        "right": false,
+        "key": "E4",
+        "semitones": -5
+       }
+      ],
+      "right_of_6": 1,
+      "tuning_equal": false,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1519",
+      "eval_id_rescored": "e1558",
+      "switches": 3,
+      "beats": 243,
+      "undecided": 40,
+      "beaten_by": 0,
+      "pool": 284
+     },
+     {
+      "condition": "(c) whole song, +support notes",
+      "est_midi": [
+       35,
+       41,
+       46,
+       51,
+       55,
+       60
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "B1",
+        "right": false,
+        "key": "E2",
+        "semitones": -5
+       },
+       {
+        "string": 5,
+        "said": "F2",
+        "right": false,
+        "key": "A2",
+        "semitones": -4
+       },
+       {
+        "string": 4,
+        "said": "A#2",
+        "right": false,
+        "key": "D3",
+        "semitones": -4
+       },
+       {
+        "string": 3,
+        "said": "D#3",
+        "right": false,
+        "key": "G3",
+        "semitones": -4
+       },
+       {
+        "string": 2,
+        "said": "G3",
+        "right": false,
+        "key": "B3",
+        "semitones": -4
+       },
+       {
+        "string": 1,
+        "said": "C4",
+        "right": false,
+        "key": "E4",
+        "semitones": -4
+       }
+      ],
+      "right_of_6": 0,
+      "tuning_equal": false,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1520",
+      "eval_id_rescored": "e1559",
+      "tied": 1,
+      "key_rank": 24
+     },
+     {
+      "condition": "(c)+finger whole song, +support notes",
+      "est_midi": [
+       35,
+       41,
+       46,
+       51,
+       55,
+       60
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "B1",
+        "right": false,
+        "key": "E2",
+        "semitones": -5
+       },
+       {
+        "string": 5,
+        "said": "F2",
+        "right": false,
+        "key": "A2",
+        "semitones": -4
+       },
+       {
+        "string": 4,
+        "said": "A#2",
+        "right": false,
+        "key": "D3",
+        "semitones": -4
+       },
+       {
+        "string": 3,
+        "said": "D#3",
+        "right": false,
+        "key": "G3",
+        "semitones": -4
+       },
+       {
+        "string": 2,
+        "said": "G3",
+        "right": false,
+        "key": "B3",
+        "semitones": -4
+       },
+       {
+        "string": 1,
+        "said": "C4",
+        "right": false,
+        "key": "E4",
+        "semitones": -4
+       }
+      ],
+      "right_of_6": 0,
+      "tuning_equal": false,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1521",
+      "eval_id_rescored": "e1560",
+      "switches": 0,
+      "beats": 0,
+      "undecided": 0,
+      "beaten_by": 0,
+      "pool": 1
+     }
+    ]
+   },
+   "standard": {
+    "window": "G/loop/hand/standard",
+    "sha256": {
+     "hand_window.csv": "1ca9118ccc36247270f10ad94b463ba0b94be1ffcb17dc443f08241023fed637",
+     "tips.jsonl": "7fdb07b6dcf14dbef729dcad77627e25eec0c5778f9920c1078798641d2cb1f6"
+    },
+    "rows": [
+     {
+      "condition": "sound only: t-02 lowest-note rule, as recorded",
+      "est_midi": [
+       40,
+       45,
+       50,
+       55,
+       59,
+       64
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "E2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "A2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "B3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "E4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 3.0,
+      "eval_id_recorded": "e1522",
+      "eval_id_rescored": "e1561"
+     },
+     {
+      "condition": "(c) first 30 s",
+      "est_midi": [
+       40,
+       45,
+       50,
+       55,
+       59,
+       64
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "E2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "A2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "B3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "E4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 3.0,
+      "eval_id_recorded": "e1523",
+      "eval_id_rescored": "e1562",
+      "tied": 3744,
+      "key_rank": 1
+     },
+     {
+      "condition": "(c)+finger first 30 s",
+      "est_midi": [
+       40,
+       45,
+       50,
+       55,
+       59,
+       64
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "E2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "A2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "B3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "E4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 3.0,
+      "eval_id_recorded": "e1524",
+      "eval_id_rescored": "e1563",
+      "switches": 0,
+      "beats": 213,
+      "undecided": 286,
+      "beaten_by": 0,
+      "pool": 500
+     },
+     {
+      "condition": "(c) first 60 s",
+      "est_midi": [
+       40,
+       45,
+       50,
+       55,
+       59,
+       64
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "E2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "A2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "B3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "E4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 3.0,
+      "eval_id_recorded": "e1525",
+      "eval_id_rescored": "e1564",
+      "tied": 1456,
+      "key_rank": 1
+     },
+     {
+      "condition": "(c)+finger first 60 s",
+      "est_midi": [
+       40,
+       45,
+       50,
+       51,
+       57,
+       59
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "E2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "A2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "D#3",
+        "right": false,
+        "key": "G3",
+        "semitones": -4
+       },
+       {
+        "string": 2,
+        "said": "A3",
+        "right": false,
+        "key": "B3",
+        "semitones": -2
+       },
+       {
+        "string": 1,
+        "said": "B3",
+        "right": false,
+        "key": "E4",
+        "semitones": -5
+       }
+      ],
+      "right_of_6": 3,
+      "tuning_equal": false,
+      "cents_abs_diff": 3.0,
+      "eval_id_recorded": "e1526",
+      "eval_id_rescored": "e1565",
+      "switches": 4,
+      "beats": 87,
+      "undecided": 412,
+      "beaten_by": 0,
+      "pool": 500
+     },
+     {
+      "condition": "(c) whole song",
+      "est_midi": [
+       40,
+       45,
+       50,
+       55,
+       59,
+       64
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "E2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "A2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "B3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "E4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 3.0,
+      "eval_id_recorded": "e1527",
+      "eval_id_rescored": "e1566",
+      "tied": 82,
+      "key_rank": 1
+     },
+     {
+      "condition": "(c)+finger whole song",
+      "est_midi": [
+       40,
+       45,
+       50,
+       55,
+       59,
+       64
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "E2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "A2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "B3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "E4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 3.0,
+      "eval_id_recorded": "e1528",
+      "eval_id_rescored": "e1567",
+      "switches": 0,
+      "beats": 52,
+      "undecided": 29,
+      "beaten_by": 0,
+      "pool": 82
+     },
+     {
+      "condition": "(c) first 30 s, +support notes",
+      "est_midi": [
+       40,
+       45,
+       50,
+       55,
+       59,
+       64
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "E2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "A2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "B3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "E4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 3.0,
+      "eval_id_recorded": "e1529",
+      "eval_id_rescored": "e1568",
+      "tied": 3744,
+      "key_rank": 1
+     },
+     {
+      "condition": "(c)+finger first 30 s, +support notes",
+      "est_midi": [
+       40,
+       45,
+       50,
+       55,
+       59,
+       64
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "E2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "A2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "B3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "E4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 3.0,
+      "eval_id_recorded": "e1530",
+      "eval_id_rescored": "e1569",
+      "switches": 0,
+      "beats": 284,
+      "undecided": 215,
+      "beaten_by": 0,
+      "pool": 500
+     },
+     {
+      "condition": "(c) first 60 s, +support notes",
+      "est_midi": [
+       40,
+       45,
+       50,
+       55,
+       59,
+       64
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "E2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "A2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "B3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "E4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 3.0,
+      "eval_id_recorded": "e1531",
+      "eval_id_rescored": "e1570",
+      "tied": 1141,
+      "key_rank": 1
+     },
+     {
+      "condition": "(c)+finger first 60 s, +support notes",
+      "est_midi": [
+       40,
+       45,
+       50,
+       51,
+       57,
+       59
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "E2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "A2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "D#3",
+        "right": false,
+        "key": "G3",
+        "semitones": -4
+       },
+       {
+        "string": 2,
+        "said": "A3",
+        "right": false,
+        "key": "B3",
+        "semitones": -2
+       },
+       {
+        "string": 1,
+        "said": "B3",
+        "right": false,
+        "key": "E4",
+        "semitones": -5
+       }
+      ],
+      "right_of_6": 3,
+      "tuning_equal": false,
+      "cents_abs_diff": 3.0,
+      "eval_id_recorded": "e1532",
+      "eval_id_rescored": "e1571",
+      "switches": 4,
+      "beats": 102,
+      "undecided": 397,
+      "beaten_by": 0,
+      "pool": 500
+     },
+     {
+      "condition": "(c) whole song, +support notes",
+      "est_midi": [
+       40,
+       45,
+       50,
+       55,
+       59,
+       64
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "E2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "A2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "B3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "E4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 3.0,
+      "eval_id_recorded": "e1533",
+      "eval_id_rescored": "e1572",
+      "tied": 62,
+      "key_rank": 1
+     },
+     {
+      "condition": "(c)+finger whole song, +support notes",
+      "est_midi": [
+       40,
+       45,
+       50,
+       55,
+       59,
+       64
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "E2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "A2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "B3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "E4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 3.0,
+      "eval_id_recorded": "e1534",
+      "eval_id_rescored": "e1573",
+      "switches": 0,
+      "beats": 49,
+      "undecided": 12,
+      "beaten_by": 0,
+      "pool": 62
+     }
+    ]
+   },
+   "tuning": {
+    "window": "G/loop/hand/tuning",
+    "sha256": {
+     "hand_window.csv": "744051af00dcc2f676d1c6c773478e2cf98f495ae7d33a79d7da9df1ca436ede",
+     "tips.jsonl": "c9ba18b357db00d85c9da2c295c563027f37a679b6995ac20045617c2b4cbe34"
+    },
+    "rows": [
+     {
+      "condition": "sound only: t-02 lowest-note rule, as recorded",
+      "est_midi": [
+       38,
+       45,
+       50,
+       55,
+       59,
+       64
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "D2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "A2",
+        "right": false,
+        "key": "G2",
+        "semitones": 2
+       },
+       {
+        "string": 4,
+        "said": "D3",
+        "right": false,
+        "key": "C3",
+        "semitones": 2
+       },
+       {
+        "string": 3,
+        "said": "G3",
+        "right": false,
+        "key": "F3",
+        "semitones": 2
+       },
+       {
+        "string": 2,
+        "said": "B3",
+        "right": false,
+        "key": "A3",
+        "semitones": 2
+       },
+       {
+        "string": 1,
+        "said": "E4",
+        "right": false,
+        "key": "C4",
+        "semitones": 4
+       }
+      ],
+      "right_of_6": 1,
+      "tuning_equal": false,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1535",
+      "eval_id_rescored": "e1574"
+     },
+     {
+      "condition": "(c) first 30 s",
+      "est_midi": [
+       38,
+       43,
+       48,
+       53,
+       57,
+       64
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "D2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "G2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "C3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "F3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "A3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "E4",
+        "right": false,
+        "key": "C4",
+        "semitones": 4
+       }
+      ],
+      "right_of_6": 5,
+      "tuning_equal": false,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1536",
+      "eval_id_rescored": "e1575",
+      "tied": 264,
+      "key_rank": 1
+     },
+     {
+      "condition": "(c)+finger first 30 s",
+      "est_midi": [
+       38,
+       43,
+       48,
+       53,
+       57,
+       60
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "D2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "G2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "C3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "F3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "A3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "C4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1537",
+      "eval_id_rescored": "e1576",
+      "switches": 1,
+      "beats": 256,
+      "undecided": 7,
+      "beaten_by": 0,
+      "pool": 264
+     },
+     {
+      "condition": "(c) first 60 s",
+      "est_midi": [
+       38,
+       43,
+       48,
+       53,
+       57,
+       60
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "D2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "G2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "C3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "F3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "A3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "C4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1538",
+      "eval_id_rescored": "e1577",
+      "tied": 156,
+      "key_rank": 1
+     },
+     {
+      "condition": "(c)+finger first 60 s",
+      "est_midi": [
+       38,
+       43,
+       48,
+       53,
+       57,
+       60
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "D2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "G2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "C3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "F3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "A3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "C4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1539",
+      "eval_id_rescored": "e1578",
+      "switches": 0,
+      "beats": 132,
+      "undecided": 23,
+      "beaten_by": 0,
+      "pool": 156
+     },
+     {
+      "condition": "(c) whole song",
+      "est_midi": [
+       38,
+       43,
+       48,
+       53,
+       57,
+       60
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "D2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "G2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "C3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "F3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "A3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "C4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1540",
+      "eval_id_rescored": "e1579",
+      "tied": 64,
+      "key_rank": 1
+     },
+     {
+      "condition": "(c)+finger whole song",
+      "est_midi": [
+       38,
+       43,
+       48,
+       53,
+       57,
+       60
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "D2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "G2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "C3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "F3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "A3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "C4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1541",
+      "eval_id_rescored": "e1580",
+      "switches": 0,
+      "beats": 60,
+      "undecided": 3,
+      "beaten_by": 0,
+      "pool": 64
+     },
+     {
+      "condition": "(c) first 30 s, +support notes",
+      "est_midi": [
+       38,
+       43,
+       48,
+       53,
+       57,
+       64
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "D2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "G2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "C3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "F3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "A3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "E4",
+        "right": false,
+        "key": "C4",
+        "semitones": 4
+       }
+      ],
+      "right_of_6": 5,
+      "tuning_equal": false,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1542",
+      "eval_id_rescored": "e1581",
+      "tied": 264,
+      "key_rank": 1
+     },
+     {
+      "condition": "(c)+finger first 30 s, +support notes",
+      "est_midi": [
+       38,
+       43,
+       48,
+       53,
+       57,
+       60
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "D2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "G2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "C3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "F3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "A3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "C4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1543",
+      "eval_id_rescored": "e1582",
+      "switches": 1,
+      "beats": 256,
+      "undecided": 7,
+      "beaten_by": 0,
+      "pool": 264
+     },
+     {
+      "condition": "(c) first 60 s, +support notes",
+      "est_midi": [
+       38,
+       43,
+       48,
+       53,
+       57,
+       60
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "D2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "G2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "C3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "F3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "A3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "C4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1544",
+      "eval_id_rescored": "e1583",
+      "tied": 134,
+      "key_rank": 1
+     },
+     {
+      "condition": "(c)+finger first 60 s, +support notes",
+      "est_midi": [
+       38,
+       43,
+       48,
+       53,
+       57,
+       60
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "D2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "G2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "C3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "F3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "A3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "C4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1545",
+      "eval_id_rescored": "e1584",
+      "switches": 0,
+      "beats": 105,
+      "undecided": 28,
+      "beaten_by": 0,
+      "pool": 134
+     },
+     {
+      "condition": "(c) whole song, +support notes",
+      "est_midi": [
+       38,
+       43,
+       48,
+       53,
+       57,
+       60
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "D2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "G2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "C3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "F3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "A3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "C4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1546",
+      "eval_id_rescored": "e1585",
+      "tied": 64,
+      "key_rank": 1
+     },
+     {
+      "condition": "(c)+finger whole song, +support notes",
+      "est_midi": [
+       38,
+       43,
+       48,
+       53,
+       57,
+       60
+      ],
+      "strings": [
+       {
+        "string": 6,
+        "said": "D2",
+        "right": true
+       },
+       {
+        "string": 5,
+        "said": "G2",
+        "right": true
+       },
+       {
+        "string": 4,
+        "said": "C3",
+        "right": true
+       },
+       {
+        "string": 3,
+        "said": "F3",
+        "right": true
+       },
+       {
+        "string": 2,
+        "said": "A3",
+        "right": true
+       },
+       {
+        "string": 1,
+        "said": "C4",
+        "right": true
+       }
+      ],
+      "right_of_6": 6,
+      "tuning_equal": true,
+      "cents_abs_diff": 1.0,
+      "eval_id_recorded": "e1547",
+      "eval_id_rescored": "e1586",
+      "switches": 0,
+      "beats": 60,
+      "undecided": 3,
+      "beaten_by": 0,
+      "pool": 64
+     }
+    ]
+   }
+  },
+  "nylon_s1_fingers": {
+   "C4_vs_D4": "109 to 4 (13 presences, 96 absences for C4; 4 absences for D4), 46 neutral",
+   "file": "G/loop/e2/score/pub/tuning/fingers_s1_all.txt"
+  },
+  "nylon_dgcfad_whole_song": {
+   "conflicts": 6,
+   "rank": 157,
+   "file": "G/loop/e2/score/pub/tuning/check_dgcfad.txt"
+  }
+ },
+ "totals_right_of_18_published_window": {
+  "(c) first 60 s": 18,
+  "(c) whole song": 18,
+  "(c)+finger first 60 s": 13,
+  "(c)+finger whole song": 17
+ },
+ "nylon_string1": {
+  "settled": "yes for these runs: both Opus runs (shape and everything) and the code finger rule say C4; AO-082's two blind arms said D4",
+  "evidence": [
+   {
+    "what": "seen: the G minor grip, a 4th finger at string 1 fret 2 exactly when D4 sounds (it only matters if string 1 is C4)",
+    "times_s": [
+     31.82,
+     32.26,
+     39.04,
+     39.48,
+     46.2,
+     46.61
+    ],
+    "numbers": "fingers.py d_s 0.06 to 0.3 at string 1 fret 2",
+    "file": "G/loop/e2/blind/tun-c-all/HOW.md; G/loop/e2/score/dev/tuning/fingers_s1_all.txt"
+   },
+   {
+    "what": "seen and heard: after the D4, C4 three times while every fingertip stays at frets 1-2",
+    "times_s": [
+     32.52,
+     32.92,
+     33.31
+    ],
+    "file": "G/loop/e2/blind/tun-c-shape/HOW.md"
+   },
+   {
+    "what": "heard: Bb3 and C4 start together; with the hand at frets 1-4 D G C F A D needs string 2 for both",
+    "times_s": [
+     43.07,
+     47.7,
+     91.86,
+     105.9,
+     106.32,
+     120.8
+    ],
+    "numbers": "conflicts.py whole song: D G C F A D 6 conflicts (rank 161), the answer 0",
+    "file": "G/loop/e2/blind/tun-c-all/HOW.md; G/loop/e2/score/dev/tuning/check_dgcfad.txt; checked by e2-record on chain-2's notes (6 onsets within 35 ms)"
+   },
+   {
+    "what": "heard: on the spectrogram Bb3 keeps ringing through new C4 notes, so C4 is not on string 2",
+    "times_s": [
+     127.61,
+     128.02
+    ],
+    "stretches_s": [
+     [
+      126.5,
+      130.0
+     ],
+     [
+      31.8,
+      34.6
+     ],
+     [
+      97.4,
+      100.6
+     ]
+    ],
+    "file": "G/loop/e2/blind/tun-c-all/HOW.md; G/loop/e2/blind/tun-c-shape/HOW.md"
+   },
+   {
+    "what": "counted: the finger rule over the whole song, C4 against D4 on string 1",
+    "numbers": "103 to 1 (16 presences at string 1 fret 2 for D4, 87 absences at string 2 fret 3 for C4), 55 neutral; also 94:9 against B3, 98:0 against C#4",
+    "file": "G/loop/e2/score/dev/tuning/fingers_s1_all.txt; G/loop/e2/blind/tun-c-all/tuning.json"
+   },
+   {
+    "what": "heard: nothing above D4 in the recording; C4 is the most common note",
+    "numbers": "611 notes, C4 142, D4 17, highest 62",
+    "file": "chain-2 notes (pack notes.csv), counted by e2-record"
+   }
+  ],
+  "doubt": "most of the 103 finger votes are absences that rest on the little finger's landmark, often 1-2 string spacings off; at 7.15, 7.60, 25.58, 36.51 s the little finger is at fret 3 near string 2 (C4 in either tuning, decides nothing)",
+  "confidence_given": {
+   "tun-c-shape": 0.7,
+   "tun-c-all": "medium-high"
+  },
+  "repeat_spread": "none: one run per condition"
+ },
+ "film": [
+  {
+   "song": "tuning (nylon)",
+   "seconds": [
+    31.2,
+    33.4
+   ],
+   "best": true,
+   "frames_used": "tun-c-shape zoom at 31.5, 32.0 s; tun-c-all overlay at 31.5, 31.85, 47.75 s; the same grip at 90.33, 91.5, 119.35, 120.85 s",
+   "see": "the overlay's string lines and fret wires on the G minor grip: the little finger on the 1st string at fret 2 as D4 sounds, then the hand holds still at frets 1-2 while C4 sounds three times: the open 1st string is C4, a tone below D standard's"
+  },
+  {
+   "song": "tuning (nylon)",
+   "seconds": [
+    126.5,
+    130.0
+   ],
+   "frames_used": "tun-c-all spectrogram 126.5-130 s (shape run: 31.8-34.6 s, 97.4-100.6 s)",
+   "see": "the Bb3 line running on under each new C4: two notes on two strings, so C4 cannot be string 2 fret 3"
+  },
+  {
+   "song": "tuning (nylon)",
+   "seconds": [
+    43.0,
+    43.2
+   ],
+   "frames_used": "tun-c-all overlay and frame at 43.08 s",
+   "see": "Bb3 and C4 struck together with the hand at frets 1-4; conflicts.py's count beside it: D G C F A D 6, the answer 0"
+  },
+  {
+   "song": "capo",
+   "seconds": [
+    124.0,
+    124.2
+   ],
+   "frames_used": "tun-a-all overlay at 124.12 s (also 55.50 s); spectrogram 122.5-126 s",
+   "see": "C3 heard while the hand is at frets 10-14: nothing in reach makes it, so string 5 rings open (C3 with capo 3 = A2)"
+  },
+  {
+   "song": "capo",
+   "seconds": [
+    81.7,
+    81.9
+   ],
+   "frames_used": "tun-a-all overlay at 81.83 s (also 65.40 s); tun-a-shape zoom at 81.82 s",
+   "see": "F3 heard, the hand at frets 1-4 with no finger on string 4: string 4 open, D3 below the capo"
+  },
+  {
+   "song": "standard",
+   "seconds": [
+    111.0,
+    111.2
+   ],
+   "frames_used": "tun-b-all overlay and frame at 111.10 s (also 174.32 s)",
+   "see": "a plain C shape (x32010) with nothing on string 1 while E4 sounds: string 1 = E4"
+  },
+  {
+   "song": "standard",
+   "seconds": [
+    93.6,
+    94.5
+   ],
+   "frames_used": "tun-b-all overlay at 93.72, 94.47 s; spectrogram 92.8-95.2 s",
+   "see": "E2 ringing under a triad played at frets 4-7, nothing touching string 6: string 6 = E2"
+  }
+ ]
+}
