@@ -101,3 +101,25 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   and the brief's new tuning rung wait for the nylon window.
 - The loop's 3-unit dry run (capo, L2): unit 0 took 213 s, 20.6k output tokens, $0.79 list; its 11 notes all on the key's
   string and fret (checked by the orchestrator only). Projected: about 4.3 hours and $57 for the capo song's 73 units.
+
+## 2026-11-27 03:20 UTC: the sandbox; E1 tracker done; E2 and E3's second pass started
+
+- **The sandbox** (`G/loop/tools/sandbox_run.sh`): every blind attempt now runs in a private mount and pid namespace in
+  which every answer-bearing place is an empty tmpfs (keys, songs, experiments, AO-082's blind answers, other runs, the
+  records, other transcripts, /tmp, the key store and agent kit), only its own folder under G/loop and G/loop/tools are
+  mounted back, ~/.claude/projects is its own transcripts folder (G/transcripts/<label>/), and CAP_SYS_ADMIN and
+  CAP_SYS_PTRACE are dropped so nothing inside can remount. Probe: keys, songs and records empty, 4 processes visible,
+  mount denied, the venvs, ffmpeg, fluidsynth and claude work; an attempt told to read a key found "the file does not
+  exist". This answers the loop review's leak problems at the root; the transcript audit and the watch stay as evidence.
+- The loop review (`LOOP-REVIEW.md`): 4 blocking problems (hard links, relative-path reads the audit missed, no
+  snapshots for a void restart, an orphaned writer after a kill) and 6 minor. Fix lane wf_9414ed6f-ca0: the fixer's
+  sandboxed dry run (3 capo units) placed 33 of 33 key notes right (heard 32 of 32), $0.62 to $0.75 and 2.6 to 3.4
+  minutes a unit; void restart and kill tested on copies. A second review is next.
+- L-E1 tracker done (`neck_track.py`: optical flow, ECC on the straightened board, a refit to detected wires; each
+  keyframe refined on its own frame). Self-check, distance to the nearest wire as a share of the fret spacing (chance
+  0.25): capo 0.017, standard 0.013, nylon 0.020 (untracked: 0.200). Development windows, coverage at margins 0 / 1 / 2:
+  capo 0.991 / 0.996 / 0.998 (width 3.95 at margin 0), standard 0.980 / 0.998 / 1.000 (3.19), nylon 1.000 / 1.000 / 1.000
+  (2.67). Its blind phase (Opus sets anchors, then checks, in the sandbox) started 02:58.
+- L-E2 (the tuning finder, wf_8855e028-4f8) and L-E3's second pass (wf_2a695ee9-c96: the reviewed brief's wrong-tuning
+  rung, nylon window cells, the heard share, the check's fixes) started 03:16.
+- The nylon-window watcher looked one folder too shallow and timed out; the windows existed (G/loop/e1/tuning/dev/).
