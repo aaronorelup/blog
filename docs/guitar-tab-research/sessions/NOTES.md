@@ -107,10 +107,11 @@ guitar-fl's found notes: most slaps land with a note.
 ## 4. The experiments
 
 Only E8 needs a graphics card; E0 to E7 run on this box's CPU with no outside spend. RunPod pod creation was refused by
-the permission system in AO-082. To ask, the first-hour message names the job, the GPU type and its hourly price from a
-live catalog read, the hours, a total cap, and that the session deletes its own pod after (`runpod-render` skill rules).
-His yes in his own words is the approval to try; if the permission system still refuses, record it and give him a test
-card for his laptop's RTX 4070 (8 GB), as in `../FOR_AARON.md`. Diffusion transcribers found on 2026-11-27, for E2:
+the permission system in AO-082. To ask, one message names the job, the GPU and its hourly price from a live catalog
+read (an RTX 4090 secure pod was $0.89 an hour on 2026-11-25), the hours, a cap, and that the session deletes its own
+pod after (`runpod-render` skill rules). His yes in his own words is the approval to try; if the permission system still
+refuses, record it and give him a test card for his laptop's RTX 4070 (8 GB), as in `../FOR_AARON.md`. Diffusion
+transcribers found on 2026-11-27, for E2:
 
 | model | what it is | numbers | here |
 |---|---|---|---|
@@ -125,10 +126,10 @@ card for his laptop's RTX 4070 (8 GB), as in `../FOR_AARON.md`. Diffusion transc
 - **E1. Several methods, one pick per bar.** Candidates: fl, gaps, Transkun, Basic Pitch with the range, YourMT3+
   guitar tracks, the separation-first runs, E2's models once they run. Pickers: the per-bar and note-level oracles (the
   best a careful user can pick), k-of-n votes, votes weighted by each tool's reliability per pitch range and string
-  group, a per-bar pick by agreement, a per-bar pick among the vote, fl, gaps and Transkun, and E3's Opus pick. Measure:
-  onset F1, edits left per bar, the share of the oracle's gain captured. Seconds per picker, a day of agent work. A vote
-  within 0.01 of the per-bar oracle on held-out songs makes it the app's default, with picks only where methods
-  disagree; a large gap makes picking the app's main interaction.
+  group, a per-bar pick by agreement or among the vote, fl, gaps and Transkun, and E3's Opus pick. Measure: onset F1,
+  edits left per bar, the oracle's gain captured. Seconds per picker, a day of agent work. A vote within 0.01 of the
+  per-bar oracle on held-out songs makes it the default, picks only where methods disagree; a large gap makes picking
+  the app's main interaction.
 - **E2. Diffusion transcribers, the literal reading** (CPU; training them would need a GPU). Each released model runs on
   the three 30 s segments, then whole songs; Noise2Fret also with the vote's onsets as its anchors. Measure: onset F1
   alone and as a voter in E1, and time per song (an afternoon of installs; stop at 30 minutes per 30 s on 2 cores). A
@@ -167,9 +168,9 @@ card for his laptop's RTX 4070 (8 GB), as in `../FOR_AARON.md`. Diffusion transc
   precision 0.284 and 0.412), Demucs drums onsets (v-04: precision 0.963 and 0.932, recall 0.713 and 0.322),
   Noise-to-Notes if out. For a note on a hit, a pitched-or-not test: energy at its partials 60-200 ms after the hit
   against before, its decay, and whether Transkun has it (14 of its 92 invented capo notes sit at slaps). Outputs: the
-  notes without slap notes, and the events scored against the keys' taps (`gtr-eval onsets`) for LOOP's slap marks.
-  Measure: F1, the share of the oracle's gain (fl 0.920 to 0.953 capo, 0.892 to 0.947 standard), found notes lost;
-  HPSS 147-212 s, Demucs 103-117 s a song. Half the oracle's gain, no loss on tuning: a default stage.
+  notes without slap notes, and the events scored against the keys' taps (`gtr-eval onsets`). Measure: F1, the share of
+  the oracle's gain (fl 0.920 to 0.953 capo, 0.892 to 0.947 standard), found notes lost; HPSS 147-212 s, Demucs 103-117
+  s a song. Half the oracle's gain, no loss on tuning: a default stage.
 - **E7. Songs the methods never saw.** Every choice from E1 to E6 goes into `frozen-rules.json`, committed before any
   held-out score exists; then every method and the pipeline run on each held-out song (about 20 CPU minutes a song). A
   stage that helps the three songs and lowers the held-out mean is dropped. The post's main numbers come from here.
@@ -206,11 +207,11 @@ as the result; where the key is in doubt, the recording, for the viewer to judge
 if the findings earn it: opening (2 min); the recordings and keys (3); where AO-082 left the notes (3); every possible
 note, then fewer (5); several methods, one pick per bar, Opus picking blind (5); what the guitar cannot play (3); slaps
 and thumps (3); songs the methods never saw (4); what the app should run and the user fixes (2); credits. Reuse
-`/home/user/gtv/production/kit/` (HyperFrames 0.9.91) and PRODUCTION.md's rules, 6.10 above all (narration 1.5 to 3 dB
-over the windows in the stereo chapter, the fixed strip tool, voice fades, the song at 0.22 to 0.3 under the voice, the
-true-peak limit); the same narrator unless Aaron says otherwise, after checking the ElevenLabs balance (AO-082's film
-used 21,873 credits). The post: `npm run new-post "Title"` on a branch from `origin/main`, the film at its top by
-EMBED.md's procedure with the new slug, a studio-library push, and `draft: true` until Aaron's OK in his own words.
+`/home/user/gtv/production/kit/` (HyperFrames 0.9.91) by PRODUCTION.md, 6.10's fixed faults above all, and the same
+narrator unless Aaron says otherwise (check the ElevenLabs balance; AO-082's film used 21,873 credits). The post: `npm
+run new-post "Title"` on a branch from `origin/main`, the film at its top by EMBED.md with the new slug, `draft: true`.
+Aaron sees the film through the studio library and the text as a private page; `media:push` and landing wait for his OK
+in his own words.
 
 ## 7. How to run it
 
@@ -227,32 +228,36 @@ EMBED.md's procedure with the new slug, a studio-library push, and `draft: true`
 - **Budget.** AO-082's film run: 250 agents, 15.7 M output tokens, $1,390 to $1,620 at API list prices. Plan about half
   (120 to 150 agents, $700 to $900) on Aaron's subscription, whose weekly limit is the real cap. Helpers on Opus 5.5 or
   Sonnet, never Fable. Outside: narration credits, and a pod only after a yes.
+- **Handoff to LOOP.** Each method's and the pipeline's notes as `/home/user/gtv/notes/<S>/<method>/notes.csv` (onset,
+  offset, pitch, then `support` and `conf`), the slap events as `events.csv`, the held-out keys in `truth/` form, and a
+  STATE.md line naming the frozen pipeline; LOOP takes them as a new rung, never silently.
 - **Records.** Branch `research/guitar-notes` from `origin/research/guitar-tab-tools` (or the session's designated
   branch), folder `docs/guitar-tab-research/notes/`: STATE.md (the orchestrator's log), RESULTS.md, `results/`,
-  `experiments.json`, `frozen-rules.json`, the held-out records; heavy files in `/home/user/gtv/notes/`, to R2 as
-  WORKBENCH.md does at each checkpoint. Plain commits with the two attribution lines, `git pull --rebase`, never force.
+  `experiments.json`, `frozen-rules.json`, the held-out records. Heavy files go to R2 under a new prefix beside
+  WORKBENCH.md's, with its wrapper and a manifest, at each checkpoint. Plain commits with the two attribution lines,
+  `git pull --rebase` before each push, never force.
 
 ## 8. The first hour after the go-ahead
 
 1. Read DIRECTION.md, this brief, LOOP.md and WORKBENCH.md. Use no task tools: STATE.md is the tracker.
-2. Restore the workbench as WORKBENCH.md says; check that `df -h /` still shows 3 GB free.
+2. Restore: `restore.sh --eval` as WORKBENCH.md says (it checks every file and re-scores blind c3 at 0.865); rebuild
+   gtr-eval's venv, `venv-torch` and `venv-bp`, and remake the mono WAVs (its last sections); keep 3 GB free.
 3. Check the scorer: `gtr-eval selftest`, then `experiments/capo/n-03/notes.csv` against `truth/capo/capo.truth.json`
    (0.920, e2052), tuning n-02 (0.830, e2062), standard n-03 (0.892, e2532). Any other value: stop.
-4. If missing, rebuild `venv-torch` and `venv-bp` from `tools/venv-*.freeze.txt` (uv, CPU torch, `tools/INSTALLED.md`)
-   and smoke-test `tools/kit/notes_guitar.sh` on R1c (0.8897, e3190).
+4. Smoke-test `tools/kit/notes_guitar.sh` on `songs/capo/capo.mono.wav` (about 2.5 minutes): its notes should score
+   0.920 again. R1c, the kit's own test clip, is in the studio library, not the workbench.
 5. Start lane N on E0 and lane H on the held-out scouting; send Aaron the first-hour message; message LOOP about the
-   held-out keys and its hand reach window's format. Write STATE.md's first entry.
+   held-out keys and the handoff files. Write STATE.md's first entry.
 
 ## 9. Risks and limits
 
-- **Three songs, two players**: anything tuned on them overfits; fit leave-one-song-out, freeze, test held out. Each
-  AO-082 number is one run, and Opus attempts vary (the tuning song's bare arm moved 0.188 between rounds).
-- **The keys' doubts**: tab-only notes, early onsets on the tuning song, the standard song's +6 cents (about 2
-  uncertain). A method can be right where the key is wrong; the film lets the viewer hear those places.
+- **Three songs, two players**: anything tuned on them overfits (fit leave-one-song-out, freeze, test held out); each
+  AO-082 number is one run, and Opus attempts vary (the tuning song's bare arm moved 0.188 between rounds). The keys
+  have doubts too (tab-only notes, the tuning song's early onsets): the film lets the viewer hear those places.
 - **Licences for an app.** guitar-gaps.pth trained on GAPS (non-commercial research), guitar-fl.pth on a dataset given
   by request for research, GOAT's licence unclear: the best tools here may not be usable in a product.
 - **Permission system, CPU, ears.** Cloned research code and pod creation were refused in AO-082 (own loaders, early
   questions); diffusion models may be too slow here or too far from their training data (measure on 30 s first); Opus
   hears through pictures and numbers, and FluidSynth is not the player's guitar (calibrate on the key).
-- **Two sessions.** LOOP runs at the same time, likely on its own box; the joints are the held-out keys and the hand
-  reach window. Sources: YouTube refuses downloads from the box, Vimeo only through its player, Commons rate-limits.
+- **Two sessions.** LOOP runs at the same time, likely on its own box; the joints are the held-out keys, the notes
+  handoff and the hand reach window. YouTube refuses downloads from the box, Vimeo answers only through its player.

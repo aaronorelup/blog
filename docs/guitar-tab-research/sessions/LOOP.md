@@ -77,8 +77,9 @@ From `V/RESULTS.md`, `V/BLIND.md`, `V/BLIND-RESULTS.md`, `V/results/step-0*.md` 
   `G/experiments` and the records, and `audit_blind.py` reads every transcript before scoring; a void run is repeated once
   and the film says so. Opus 5.5 at max effort everywhere; each attempt says if it recognised the piece. AO-082's kit was
   picked on the songs it was tested on: so E7 freezes everything before the held-out recordings.
-- **Privacy:** nothing from AO-078, and never Aaron's own videos or recordings as test material. Keys only through getkey (`python3 ~/.claude/bin/getkey.py NAME`) inside a script, never printed. The repo is public: no key, private link, command-center
-  host name or never-publish name in a commit (run `V/EMBED.md` 2.4's snippet over each records file).
+- **Privacy:** nothing from AO-078, and never Aaron's own videos or recordings as test material. Keys only through getkey
+  (`python3 ~/.claude/bin/getkey.py NAME`) inside a script, never printed. The repo is public: no key, private link,
+  command-center host name or never-publish name in a commit (run `V/EMBED.md` 2.4's snippet over each records file).
 
 ## 4. The experiments
 
@@ -229,10 +230,10 @@ round-2 attempts, so run L2 on one song first, measure it, and correct the plan 
 
 ## 8. The first hour after the go-ahead
 
-1. With DIRECTION.md, this brief, WORKBENCH.md and `V/BLIND.md` section 7 read, restore as WORKBENCH.md says (`restore.sh
-   --eval`); rebuild `venv-torch`, `venv-bp`, `venv-video` and `production/venv-mp` from their freeze files (madmom and
-   chordext are not needed). Check `df -h /` (3 GB free), the keys (815 / 628 / 679 notes), the chain-2 notes, the w-01
-   landmarks, `assign_dp.py`, the weights against `SHA256SUMS`.
+1. Once DIRECTION.md, this brief, WORKBENCH.md and `V/BLIND.md` section 7 are read, run `restore.sh --eval` as WORKBENCH.md
+   says; rebuild `venv-torch`, `venv-bp`, `venv-video` and `production/venv-mp` from their freeze files (madmom and chordext
+   are not needed). Check `df -h /` (3 GB free), the keys (815 / 628 / 679 notes), the chain-2 notes, the w-01 landmarks,
+   `assign_dp.py`, the weights against `SHA256SUMS`.
 2. Check the scorer: `gtr-eval selftest`, WORKBENCH.md's check (the Imagine kit arm: 0.875 in the list, 0.865 in the GP5,
    byte for byte) and chain-5 on capo (0.795 and 0.791). If anything differs, stop and find out why.
 3. Make the branch and `STATE.md`. Send NOTES one message on the held-out keys and the window's format.
@@ -241,7 +242,8 @@ round-2 attempts, so run L2 on one song first, measure it, and correct the plan 
 
 ## 9. Risks and limits
 
-- Three recordings, two players, fixed cameras; no strumming, electric guitar or band. Each number is one run unless repeated.
+- Three recordings, two players, fixed cameras; no strumming, electric guitar or band. Each number is one run unless
+  repeated.
 - The keys' doubts: notes from the tab alone (54 / 72 / 96), the nylon beat phase, the standard song's +6 cents (about 2
   either way); each held-out key has its own. Every design choice is tried on the three songs: only held-out numbers test.
   The perfect-window and true-notes rungs use the key: they are ceilings, never results.
