@@ -154,3 +154,15 @@ tracker (no task tools, so nothing can leak into a blind attempt's context). New
   - `closer.mono.wav` 7657f0d9918488560d92cae96c09ce823e48654799d06a0f0f4116c02fe93ddc
   - `video.mkv` 98ecf9028e71a800876e18e652addd883c0588b2f1a2694d04e832cbe6170cfd
   - `MANIFEST.sha256` 2915620e51d761fd4a82bc6452244252e67e859be9745692bfe4e8de39aabd5a
+
+## 2026-11-27 05:15 UTC: held-out key september passed, archived
+
+- `september` (Evan Handyside, *Wake Me Up When September Ends*, open G D G D G B D, capo 2): built, checked, repaired,
+  audited (`heldout/september-audit.md`: 7 PASS, 1 FAIL on three counts in the record, fixed in `september.md`). No note
+  transcriber was used to build, time or check it.
+- Archived to private R2 at `workbench/guitar-tab-app/heldout/september/` (`songs/september/` with the video,
+  `truth/september/`, `MANIFEST.sha256`, 16 files; `rclone check` 0 differences). SHA-256:
+  - `september.truth.json` 8bba0443bdcbbb8269ebd186d62ad5dfcb0b71d216309b2142799d7b32c9da5d
+  - `september.mono.wav` 31b7e69707c1cce0f76fa6ebdc28c7c09c401bde6a566d41913d94213609bd52
+  - `video.mp4` d9b8107e7bd96d74a65e6cbe68bd705e19b7db419806ba32b7b42d4134983863
+  - `MANIFEST.sha256` e647574d2f14accc670d229aff384c04c1d66ca2a56320f4e202ba91f4b40691
