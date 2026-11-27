@@ -1,0 +1,576 @@
+{
+ "made_by": "ho-blind (LOOP E7)",
+ "freeze": "/home/user/gtv/heldout/freeze-ho-blind.json",
+ "note": "minutes and list-price cost from run.meta.json (blind_run.sh, the CLI's JSON result); frames looked at = Read calls on image files in the transcript; every run in G/loop/tools/sandbox_run.sh (network closed but model requests), effort max, the prompt PROMPT.txt inside the folder (a copy beside it: <run>.prompt.txt)",
+ "procedure": "exactly the dev songs' E1 (anchors, then check) and E2 ('everything' condition) procedures and prompt words, the capo filled in; the check's onsets and the finder's notes.csv from gaps-paper (E7's one note rule) where the dev songs used chain-2",
+ "runs": [
+  {
+   "run": "ho-hand-a-anchors",
+   "label": "ho-hand-a",
+   "song": "closer",
+   "capo": 1,
+   "kind": "anchors",
+   "folder": "/home/user/gtv/loop/blind/ho-hand-a-anchors",
+   "start": "2026-11-27T06:04:41Z",
+   "wall_min": 33.5,
+   "output_tokens": 126672,
+   "input_tokens": 350,
+   "cache_read": 24344646,
+   "cache_write": 242879,
+   "cost_usd_list": 9.35,
+   "turns": 208,
+   "exit": 0,
+   "is_error": false,
+   "denials": [],
+   "sandboxed": true,
+   "transcript": "/home/user/gtv/transcripts/ho-hand-a-anchors/-home-user-gtv-loop-blind-ho-hand-a-anchors/756a469f-5f8a-4959-9cd3-127730e9141c.jsonl",
+   "tool_calls": 207,
+   "frames_looked_at": 73,
+   "audit": "clean",
+   "audit_void_flags": 0,
+   "audit_notes": 15,
+   "audit_note_kinds": [
+    "system python (not the named venv Python) on its own files"
+   ],
+   "audit_file": "/home/user/gtv/work/ho-blind/audit_ho-hand-a-anchors.json",
+   "watch_answer_place_lines_in_window": 43,
+   "keyframes": 20,
+   "keyframe_times": [
+    5.0,
+    20.0,
+    46.0,
+    60.0,
+    65.0,
+    90.0,
+    100.0,
+    114.8,
+    116.0,
+    128.0,
+    132.3,
+    142.0,
+    144.0,
+    160.0,
+    180.0,
+    186.0,
+    200.0,
+    210.0,
+    220.0,
+    240.0
+   ],
+   "shots": [
+    [
+     0.0,
+     10.35
+    ],
+    [
+     10.35,
+     50.7
+    ],
+    [
+     50.7,
+     70.2
+    ],
+    [
+     70.2,
+     111.7
+    ],
+    [
+     111.7,
+     123.75
+    ],
+    [
+     123.75,
+     131.75
+    ],
+    [
+     131.75,
+     150.2
+    ],
+    [
+     150.2,
+     171.8
+    ],
+    [
+     171.8,
+     191.8
+    ],
+    [
+     191.8,
+     232.4
+    ],
+    [
+     232.4,
+     246.4
+    ]
+   ],
+   "board_kind": "steel",
+   "network": {
+    "log": "/home/user/gtv/transcripts/ho-hand-a-anchors.net.jsonl",
+    "model_requests_allowed": 176,
+    "requests_refused": 175,
+    "refused_paths": {
+     "/api/claude_code/policy_limits": 1,
+     "/api/claude_code/settings": 1,
+     "/api/eval/sdk-zAZezfDKGoZuXXKe": 1,
+     "/api/claude_cli/bootstrap": 1,
+     "/api/model_selector/cc": 1,
+     "/api/event_logging/v2/batch": 170
+    },
+    "hosts_seen": [
+     "api.anthropic.com",
+     "http-intake.logs.us5.datadoghq.com"
+    ]
+   },
+   "own_words_scan": {
+    "held_out_names_mentioned": 0,
+    "tuning_names_mentioned": {}
+   },
+   "audit2": "clean",
+   "audit2_file": "/home/user/gtv/work/ho-blind/audit2.json",
+   "audit_judgement": "clean: no void flag in either audit; paths outside the folder only the run's own session scratchpad in the sandbox's private /tmp, system python3 on its own files"
+  },
+  {
+   "run": "ho-hand-a-check",
+   "label": "ho-hand-a",
+   "song": "closer",
+   "capo": 1,
+   "kind": "check",
+   "folder": "/home/user/gtv/loop/blind/ho-hand-a-check",
+   "start": "2026-11-27T06:42:47Z",
+   "wall_min": 10.7,
+   "output_tokens": 63021,
+   "input_tokens": 88,
+   "cache_read": 3795722,
+   "cache_write": 153556,
+   "cost_usd_list": 3.25,
+   "turns": 49,
+   "exit": 0,
+   "is_error": false,
+   "denials": [],
+   "sandboxed": true,
+   "transcript": "/home/user/gtv/transcripts/ho-hand-a-check/-home-user-gtv-loop-blind-ho-hand-a-check/f3e2808e-1271-401c-87c5-ea2eb8242020.jsonl",
+   "tool_calls": 48,
+   "frames_looked_at": 17,
+   "audit": "clean",
+   "audit_void_flags": 0,
+   "audit_notes": 21,
+   "audit_note_kinds": [
+    "path outside: /tmp/claude-0/-home-user-gtv-loop-blind-ho-hand-a-check/f3e2808e-1271-401c-87c5-ea2eb8242020/scratchpad",
+    "path outside: /tmp/claude-0/-home-user-gtv-loop-blind-ho-hand-a-check/f3e2808e-1271-401c-87c5-ea2eb8242020/scratchpad/build.py",
+    "path outside: /tmp/claude-0/-home-user-gtv-loop-blind-ho-hand-a-check/f3e2808e-1271-401c-87c5-ea2eb8242020/scratchpad/gen.py",
+    "path outside: /tmp/claude-0/-home-user-gtv-loop-blind-ho-hand-a-check/f3e2808e-1271-401c-87c5-ea2eb8242020/scratchpad/sheets.txt",
+    "path outside: /tmp/claude-0/-home-user-gtv-loop-blind-ho-hand-a-check/f3e2808e-1271-401c-87c5-ea2eb8242020/scratchpad/top60.json",
+    "path outside: /tmp/claude-0/-home-user-gtv-loop-blind-ho-hand-a-check/f3e2808e-1271-401c-87c5-ea2eb8242020/scratchpad/unsure.json",
+    "path outside: /tmp/claude-0/-home-user-gtv-loop-blind-ho-hand-a-check/f3e2808e-1271-401c-87c5-ea2eb8242020/scratchpad/unsure.py",
+    "path outside: /tmp/claude-0/-home-user-gtv-loop-blind-ho-hand-a-check/f3e2808e-1271-401c-87c5-ea2eb8242020/scratchpad/unsure_after.json"
+   ],
+   "audit_file": "/home/user/gtv/work/ho-blind/audit_ho-hand-a-check.json",
+   "watch_answer_place_lines_in_window": 163,
+   "keyframes_given": 20,
+   "keyframes_after": 20,
+   "keyframes_added": [],
+   "keyframes_removed": [],
+   "decisions": 873,
+   "decisions_by_action": {
+    "window": 848,
+    "accept": 25
+   },
+   "corrections_made": 848,
+   "looked_by_kind": {
+    "every-10s": 25,
+    "glitch": 16,
+    "keyframe": 10,
+    "onset": 97,
+    "picking-hand-rule": 725
+   },
+   "network": {
+    "log": "/home/user/gtv/transcripts/ho-hand-a-check.net.jsonl",
+    "model_requests_allowed": 45,
+    "requests_refused": 62,
+    "refused_paths": {
+     "/api/claude_code/policy_limits": 1,
+     "/api/claude_code/settings": 1,
+     "/api/eval/sdk-zAZezfDKGoZuXXKe": 1,
+     "/api/claude_cli/bootstrap": 1,
+     "/api/model_selector/cc": 1,
+     "/api/event_logging/v2/batch": 57
+    },
+    "hosts_seen": [
+     "api.anthropic.com",
+     "http-intake.logs.us5.datadoghq.com"
+    ]
+   },
+   "own_words_scan": {
+    "held_out_names_mentioned": 0,
+    "tuning_names_mentioned": {}
+   },
+   "audit2": "clean",
+   "audit2_file": "/home/user/gtv/work/ho-blind/audit2.json",
+   "audit_judgement": "clean: no void flag in either audit; paths outside the folder only the run's own session scratchpad in the sandbox's private /tmp, system python3 on its own files"
+  },
+  {
+   "run": "ho-tun-a",
+   "label": "ho-tun-a",
+   "song": "closer",
+   "capo": 1,
+   "kind": "finder",
+   "folder": "/home/user/gtv/loop/e2/blind/ho-tun-a",
+   "start": "2026-11-27T06:54:24Z",
+   "wall_min": 17.2,
+   "output_tokens": 98638,
+   "input_tokens": 112,
+   "cache_read": 4924101,
+   "cache_write": 177654,
+   "cost_usd_list": 4.38,
+   "turns": 64,
+   "exit": 0,
+   "is_error": false,
+   "denials": [],
+   "sandboxed": true,
+   "transcript": "/home/user/gtv/transcripts/ho-tun-a/-home-user-gtv-loop-e2-blind-ho-tun-a/6d9556ee-9195-4e8a-bb9a-77736299a1f5.jsonl",
+   "tool_calls": 63,
+   "frames_looked_at": 21,
+   "audit": "clean",
+   "audit_flags": [],
+   "audit_notes": [
+    "/dev/null",
+    "/tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-a/6d9556ee-9195-4e8a-bb9a-77736299a1f5/scratchpad",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-a/6d9556ee-9195-4e8a-bb9a-77736299a1f5/scratchpad/fr0.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-a/6d9556ee-9195-4e8a-bb9a-77736299a1f5/scratchpad/fr2.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-a/6d9556ee-9195-4e8a-bb9a-77736299a1f5/scratchpad/fr3.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-a/6d9556ee-9195-4e8a-bb9a-77736299a1f5/scratchpad/fr4.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-a/6d9556ee-9195-4e8a-bb9a-77736299a1f5/scratchpad/fr5.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-a/6d9556ee-9195-4e8a-bb9a-77736299a1f5/scratchpad/fr6.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-a/6d9556ee-9195-4e8a-bb9a-77736299a1f5/scratchpad/fr7.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-a/6d9556ee-9195-4e8a-bb9a-77736299a1f5/scratchpad/fr8.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-a/6d9556ee-9195-4e8a-bb9a-77736299a1f5/scratchpad/fr9.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-a/6d9556ee-9195-4e8a-bb9a-77736299a1f5/scratchpad/ov1.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-a/6d9556ee-9195-4e8a-bb9a-77736299a1f5/scratchpad/ov2.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-a/6d9556ee-9195-4e8a-bb9a-77736299a1f5/scratchpad/ov3.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-a/6d9556ee-9195-4e8a-bb9a-77736299a1f5/scratchpad/ov4.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-a/6d9556ee-9195-4e8a-bb9a-77736299a1f5/scratchpad/ov5.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-a/6d9556ee-9195-4e8a-bb9a-77736299a1f5/scratchpad/ov6.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-a/6d9556ee-9195-4e8a-bb9a-77736299a1f5/scratchpad/sp1.png",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-a/6d9556ee-9195-4e8a-bb9a-77736299a1f5/scratchpad/sp2.png",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-a/6d9556ee-9195-4e8a-bb9a-77736299a1f5/scratchpad/sp3.png"
+   ],
+   "audit_file": "/home/user/gtv/loop/e2/blind/ho-tun-a.audit.json",
+   "tuning_midi_found": [
+    40,
+    45,
+    50,
+    55,
+    57,
+    62
+   ],
+   "per_string_confidence": [
+    0.9,
+    0.9,
+    0.8,
+    0.85,
+    0.7,
+    0.7
+   ],
+   "decisions": 6,
+   "network": {
+    "log": "/home/user/gtv/transcripts/ho-tun-a.net.jsonl",
+    "model_requests_allowed": 57,
+    "requests_refused": 86,
+    "refused_paths": {
+     "/api/claude_code/policy_limits": 1,
+     "/api/claude_code/settings": 1,
+     "/api/eval/sdk-zAZezfDKGoZuXXKe": 1,
+     "/api/claude_cli/bootstrap": 1,
+     "/api/model_selector/cc": 1,
+     "/api/event_logging/v2/batch": 81
+    },
+    "hosts_seen": [
+     "api.anthropic.com",
+     "http-intake.logs.us5.datadoghq.com"
+    ]
+   },
+   "own_words_scan": {
+    "held_out_names_mentioned": 0,
+    "tuning_names_mentioned": {
+     "open D": 1,
+     "E A D G A D": 2,
+     "EADGAD": 1
+    }
+   },
+   "audit2": "clean",
+   "audit2_file": "/home/user/gtv/work/ho-blind/audit2.json",
+   "audit_judgement": "clean: no void flag in either audit; paths outside the folder only the run's own session scratchpad in the sandbox's private /tmp, system python3 on its own files"
+  },
+  {
+   "run": "ho-hand-b-anchors",
+   "label": "ho-hand-b",
+   "song": "september",
+   "capo": 2,
+   "kind": "anchors",
+   "folder": "/home/user/gtv/loop/blind/ho-hand-b-anchors",
+   "start": "2026-11-27T06:04:41Z",
+   "wall_min": 29.9,
+   "output_tokens": 98483,
+   "input_tokens": 208,
+   "cache_read": 12893726,
+   "cache_write": 207003,
+   "cost_usd_list": 6.21,
+   "turns": 125,
+   "exit": 0,
+   "is_error": false,
+   "denials": [],
+   "sandboxed": true,
+   "transcript": "/home/user/gtv/transcripts/ho-hand-b-anchors/-home-user-gtv-loop-blind-ho-hand-b-anchors/f5a37906-9fd9-4291-8353-1125ba6acb0d.jsonl",
+   "tool_calls": 124,
+   "frames_looked_at": 46,
+   "audit": "clean",
+   "audit_void_flags": 0,
+   "audit_notes": 0,
+   "audit_note_kinds": [],
+   "audit_file": "/home/user/gtv/work/ho-blind/audit_ho-hand-b-anchors.json",
+   "watch_answer_place_lines_in_window": 30,
+   "keyframes": 11,
+   "keyframe_times": [
+    0.6,
+    2.2,
+    3.0,
+    10.0,
+    25.0,
+    40.0,
+    55.0,
+    75.0,
+    100.0,
+    125.0,
+    150.0
+   ],
+   "shots": [
+    [
+     0.0,
+     2.47
+    ],
+    [
+     2.49,
+     153.5
+    ]
+   ],
+   "board_kind": "nylon",
+   "network": {
+    "log": "/home/user/gtv/transcripts/ho-hand-b-anchors.net.jsonl",
+    "model_requests_allowed": 105,
+    "requests_refused": 164,
+    "refused_paths": {
+     "/api/claude_code/policy_limits": 1,
+     "/api/claude_code/settings": 1,
+     "/api/eval/sdk-zAZezfDKGoZuXXKe": 1,
+     "/api/claude_cli/bootstrap": 1,
+     "/api/model_selector/cc": 1,
+     "/api/event_logging/v2/batch": 159
+    },
+    "hosts_seen": [
+     "api.anthropic.com",
+     "http-intake.logs.us5.datadoghq.com"
+    ]
+   },
+   "own_words_scan": {
+    "held_out_names_mentioned": 0,
+    "tuning_names_mentioned": {}
+   },
+   "audit2": "clean",
+   "audit2_file": "/home/user/gtv/work/ho-blind/audit2.json",
+   "audit_judgement": "clean: no void flag in either audit; paths outside the folder only the run's own session scratchpad in the sandbox's private /tmp, system python3 on its own files"
+  },
+  {
+   "run": "ho-hand-b-check",
+   "label": "ho-hand-b",
+   "song": "september",
+   "capo": 2,
+   "kind": "check",
+   "folder": "/home/user/gtv/loop/blind/ho-hand-b-check",
+   "start": "2026-11-27T06:38:48Z",
+   "wall_min": 11.8,
+   "output_tokens": 69678,
+   "input_tokens": 82,
+   "cache_read": 3582226,
+   "cache_write": 157065,
+   "cost_usd_list": 3.37,
+   "turns": 53,
+   "exit": 0,
+   "is_error": false,
+   "denials": [],
+   "sandboxed": true,
+   "transcript": "/home/user/gtv/transcripts/ho-hand-b-check/-home-user-gtv-loop-blind-ho-hand-b-check/8ad61df1-03f5-418f-b149-5ba5228fe3c5.jsonl",
+   "tool_calls": 52,
+   "frames_looked_at": 24,
+   "audit": "clean",
+   "audit_void_flags": 0,
+   "audit_notes": 12,
+   "audit_note_kinds": [
+    "path outside: /tmp/claude-0/-home-user-gtv-loop-blind-ho-hand-b-check/8ad61df1-03f5-418f-b149-5ba5228fe3c5/scratchpad",
+    "path outside: /tmp/claude-0/-home-user-gtv-loop-blind-ho-hand-b-check/8ad61df1-03f5-418f-b149-5ba5228fe3c5/scratchpad/unsure.py",
+    "system python (not the named venv Python) on its own files"
+   ],
+   "audit_file": "/home/user/gtv/work/ho-blind/audit_ho-hand-b-check.json",
+   "watch_answer_place_lines_in_window": 140,
+   "keyframes_given": 11,
+   "keyframes_after": 11,
+   "keyframes_added": [],
+   "keyframes_removed": [],
+   "decisions": 28,
+   "decisions_by_action": {
+    "accept": 21,
+    "window": 7
+   },
+   "corrections_made": 7,
+   "looked_by_kind": {
+    "every-10s": 16,
+    "onset": 10,
+    "selfcheck-worst": 2
+   },
+   "network": {
+    "log": "/home/user/gtv/transcripts/ho-hand-b-check.net.jsonl",
+    "model_requests_allowed": 42,
+    "requests_refused": 62,
+    "refused_paths": {
+     "/api/claude_code/policy_limits": 1,
+     "/api/claude_code/settings": 1,
+     "/api/eval/sdk-zAZezfDKGoZuXXKe": 1,
+     "/api/claude_cli/bootstrap": 1,
+     "/api/model_selector/cc": 1,
+     "/api/event_logging/v2/batch": 57
+    },
+    "hosts_seen": [
+     "api.anthropic.com",
+     "http-intake.logs.us5.datadoghq.com"
+    ]
+   },
+   "own_words_scan": {
+    "held_out_names_mentioned": 0,
+    "tuning_names_mentioned": {}
+   },
+   "audit2": "clean",
+   "audit2_file": "/home/user/gtv/work/ho-blind/audit2.json",
+   "audit_judgement": "clean: no void flag in either audit; paths outside the folder only the run's own session scratchpad in the sandbox's private /tmp, system python3 on its own files"
+  },
+  {
+   "run": "ho-tun-b",
+   "label": "ho-tun-b",
+   "song": "september",
+   "capo": 2,
+   "kind": "finder",
+   "folder": "/home/user/gtv/loop/e2/blind/ho-tun-b",
+   "start": "2026-11-27T06:51:21Z",
+   "wall_min": 10.4,
+   "output_tokens": 60276,
+   "input_tokens": 66,
+   "cache_read": 2135803,
+   "cache_write": 123598,
+   "cost_usd_list": 2.62,
+   "turns": 40,
+   "exit": 0,
+   "is_error": false,
+   "denials": [],
+   "sandboxed": true,
+   "transcript": "/home/user/gtv/transcripts/ho-tun-b/-home-user-gtv-loop-e2-blind-ho-tun-b/7454cd5c-bad6-4471-95f7-8642a2c79212.jsonl",
+   "tool_calls": 39,
+   "frames_looked_at": 13,
+   "audit": "clean",
+   "audit_flags": [],
+   "audit_notes": [
+    "/0.168",
+    "/12-1",
+    "/stretch",
+    "/tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-b/7454cd5c-bad6-4471-95f7-8642a2c79212/scratchpad",
+    "/tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-b/7454cd5c-bad6-4471-95f7-8642a2c79212/scratchpad/notes_win.txt",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-b/7454cd5c-bad6-4471-95f7-8642a2c79212/scratchpad/fr2.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-b/7454cd5c-bad6-4471-95f7-8642a2c79212/scratchpad/fr3.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-b/7454cd5c-bad6-4471-95f7-8642a2c79212/scratchpad/fr4.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-b/7454cd5c-bad6-4471-95f7-8642a2c79212/scratchpad/fr_end.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-b/7454cd5c-bad6-4471-95f7-8642a2c79212/scratchpad/ov1.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-b/7454cd5c-bad6-4471-95f7-8642a2c79212/scratchpad/ov2.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-b/7454cd5c-bad6-4471-95f7-8642a2c79212/scratchpad/ov3.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-b/7454cd5c-bad6-4471-95f7-8642a2c79212/scratchpad/ov5.jpg",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-b/7454cd5c-bad6-4471-95f7-8642a2c79212/scratchpad/sp_dm.png",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-b/7454cd5c-bad6-4471-95f7-8642a2c79212/scratchpad/sp_dm2.png",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-b/7454cd5c-bad6-4471-95f7-8642a2c79212/scratchpad/sp_dm3.png",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-b/7454cd5c-bad6-4471-95f7-8642a2c79212/scratchpad/sp_end.png",
+    "Read /tmp/claude-0/-home-user-gtv-loop-e2-blind-ho-tun-b/7454cd5c-bad6-4471-95f7-8642a2c79212/scratchpad/sp_fm.png"
+   ],
+   "audit_file": "/home/user/gtv/loop/e2/blind/ho-tun-b.audit.json",
+   "tuning_midi_found": [
+    38,
+    43,
+    50,
+    55,
+    59,
+    62
+   ],
+   "per_string_confidence": [
+    0.7,
+    0.85,
+    0.85,
+    0.9,
+    0.85,
+    0.65
+   ],
+   "decisions": 6,
+   "network": {
+    "log": "/home/user/gtv/transcripts/ho-tun-b.net.jsonl",
+    "model_requests_allowed": 34,
+    "requests_refused": 55,
+    "refused_paths": {
+     "/api/claude_code/policy_limits": 1,
+     "/api/claude_code/settings": 1,
+     "/api/eval/sdk-zAZezfDKGoZuXXKe": 1,
+     "/api/claude_cli/bootstrap": 1,
+     "/api/model_selector/cc": 1,
+     "/api/event_logging/v2/batch": 50
+    },
+    "hosts_seen": [
+     "api.anthropic.com",
+     "http-intake.logs.us5.datadoghq.com"
+    ]
+   },
+   "own_words_scan": {
+    "held_out_names_mentioned": 0,
+    "tuning_names_mentioned": {
+     "open G": 26
+    }
+   },
+   "audit2": "clean",
+   "audit2_file": "/home/user/gtv/work/ho-blind/audit2.json",
+   "audit_judgement": "clean: no void flag in either audit; paths outside the folder only the run's own session scratchpad in the sandbox's private /tmp, system python3 on its own files"
+  }
+ ],
+ "totals": {
+  "runs": 6,
+  "wall_min": 113.5,
+  "output_tokens": 516768,
+  "cost_usd_list": 29.18
+ },
+ "per_song": {
+  "closer": {
+   "wall_min": 61.4,
+   "output_tokens": 288331,
+   "cost_usd_list": 16.98
+  },
+  "september": {
+   "wall_min": 52.1,
+   "output_tokens": 228437,
+   "cost_usd_list": 12.2
+  }
+ },
+ "audits": "first: work/e1-blind/audit_run.py (hand runs) and work/e2-blind/audit.py (finder runs), as on the dev songs; second: work/ho-blind/audit2.py (independent, all six)",
+ "leak_checks": "every blind folder before its run: G/loop/tools/loop/blindcheck.py --slots closer,september (0 hits but, in the finder folders, 13 hits each that are the dev slot word 'capo' as code in tools/conflicts.py and tools/fingers.py, the same files the dev finder runs had) and a grep for the held-out names and tuning names (0)",
+ "outputs": {
+  "closer": {
+   "hand": "/home/user/gtv/heldout/closer/hand/",
+   "finder": "/home/user/gtv/heldout/closer/finder.json",
+   "base_notes": "/home/user/gtv/heldout/closer/notes/gaps-paper-hf/notes.csv"
+  },
+  "september": {
+   "hand": "/home/user/gtv/heldout/september/hand/",
+   "finder": "/home/user/gtv/heldout/september/finder.json",
+   "base_notes": "/home/user/gtv/heldout/september/notes/gaps-paper-hf/notes.csv"
+  }
+ }
+}

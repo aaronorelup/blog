@@ -330,3 +330,17 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   with the finder's tuning (alternatives fl, gaps, Transkun, Basic Pitch). No held-out run started before this line.
 - The capo song's tap miss (05:15 entry) is NOT fixed in the frozen loop: the held-out test runs the loop as the dev
   songs ran it.
+
+## 2026-11-27 07:25 UTC: held-out prep done (Closer, September); held-out W2 started
+
+- Prep (wf_1252baf2-15a; `HELDOUT-PREP.md`, `HELDOUT-BLIND.md`): blind videos checked by eye, five note models (gaps-paper
+  weights SHA-256 94a7c936ec9fde83686d29007dc256274384e832739cadece39e92cee3b69a7e), Beat This!, MediaPipe (after
+  installing libgles2), LOOP's own key audits: Closer PASS, September PASS (weak frame check: a wide shot). The held-out
+  blind steps ran after a freeze manifest of their inputs (`G/heldout/freeze-ho-blind.json`, 64 files, 06:03 UTC); the
+  repository snapshot of the same code is commit 497b3524.
+- Opus blind on the held-out songs, six runs, $29.18, all audits clean: Closer 20 keyframes in 11 shots, a check of 873
+  decisions (725 of them one rule: the picking hand's tips taken out of the window, no tap seen in about 50 frames);
+  September 11 keyframes, 28 decisions. The finder's tunings (scored later): Closer 40 45 50 55 57 62, September 38 43 50
+  55 59 62. The hand filter removed 22 of Closer's 1,191 gaps-paper notes, none of September's 412.
+- Held-out W2 started: September 07:18 (44 units' worth, 712 candidates, 412 base), Closer 07:24 (87 units' worth, 1,866
+  candidates, 1,169 base). Boats' prep is running (wf_62d3538c-c8b).
