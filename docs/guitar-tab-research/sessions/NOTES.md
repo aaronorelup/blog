@@ -55,8 +55,7 @@ Separating first helped only Basic Pitch (HPSS, capo 0.689 to 0.783); it moved t
   hint (invented 674 to 610); the guitar models invented 9 and 1 there: the range alone barely helps them.
 - **The nylon song in D G C F A C**, every tool's weak side: recall on strings 6-4 from 0.627 (Basic Pitch) to 0.802
   (gaps), chord-note recall 0.578-0.619, every tool's onsets 21-30 ms early (median), maybe the key's timing as much.
-- **The keys' doubts.** Tab-only notes, not confirmed in the audio: capo 54, tuning 72, standard 96; 11 standard notes
-  heard but not in the tab (`../video/results/truth-doubts.md`).
+- **The keys' doubts.** Tab-only notes (unheard): capo 54, tuning 72, standard 96; 11 standard notes heard, not tabbed.
 - **Opus 5.5 with the kit** (blind round 2, `/home/user/gtv/blind/c*/tools/score/summary.json`) merged both guitar
   models with Basic Pitch as a referee: onset F1 0.919 / 0.850 / 0.918, level with the best model on capo and above it
   on the others. The bare arm's own spectral code (KL-NMF on two songs): 0.822 / 0.564 / 0.697.
@@ -87,13 +86,12 @@ guitar-fl's found notes: most slaps land with a note.
   Where the player's tab and the recording differ, the recording wins, as in AO-082's repairs. String and fret are
   LOOP's subject. Left out: chord names, key, song analysis. Bars are only windows: the keys' downbeats on the three
   songs, Beat This! downbeats on held-out songs and in anything blind, 4 s windows where there is no steady pulse.
-- **Scored** with gtr-eval 0.12.1 (`/home/user/gtr/bin/gtr-eval notes`) as in AO-082: onset F1 at 50 ms and 50 cents,
-  one-to-one, with precision, recall, found, missed, invented; per bar; heard-only recall (truth `conf` not `tab`);
-  invented at slaps, recall by string group (`/home/user/gtv/work/exp-notes/bin/taps_invented.py`, `breakdown.py`);
-  whole songs and the film's 30 s segments (`crop_truth.py`). Each number in a `result.json` (`tools/bin/result.py`)
-  with its eval ids, heavy runs through `gtr-run`, fits leave-one-song-out. **Heard:** FluidSynth renders (`FluidR3_GM`,
-  program 25 steel, 24 nylon, 48 kHz stereo, on the recording's clock), the key first, then the method over the same
-  bars (PRODUCTION.md 2.7); where the key is in doubt, the viewer judges by ear.
+- **Scored** with gtr-eval 0.12.1 (`/home/user/gtr/bin/gtr-eval notes`) as in AO-082: onset F1 at 50 ms and 50 cents
+  with precision, recall, found, missed, invented; per bar; heard-only recall (truth `conf` not `tab`); invented at
+  slaps, recall by string group (`/home/user/gtv/work/exp-notes/bin/taps_invented.py`, `breakdown.py`); whole songs and
+  the 30 s segments (`crop_truth.py`). Each number in a `result.json` (`tools/bin/result.py`) with eval ids, heavy runs
+  through `gtr-run`, fits leave-one-song-out. **Heard:** FluidSynth (`FluidR3_GM`, program 25 steel, 24 nylon, 48 kHz
+  stereo, the recording's clock), the key first, then the method, same bars; where the key is in doubt, the ear judges.
 - **Blind AI attempts** (E3, any Opus pass that writes notes): keys hidden (`../video/workflows/guard-watch.py` over
   BLIND.md 7's folders, or `tools/blind-admin/vault.py` if the disk allows); no task tools in the whole session (AO-082
   round 1's harness attached the orchestrator's task list, which named the keys, to every attempt); a tool limit set by
@@ -102,16 +100,16 @@ guitar-fl's found notes: most slaps land with a note.
   each transcript, plus the access log. A void attempt is repeated once, and the film says so.
 - **Privacy, public repo.** Nothing from AO-078's removed videos anywhere; never Aaron's own guitar videos as test
   material. Keys only through `python3 ~/.claude/bin/getkey.py NAME` inside a script, never printed or written. No
-  private link, command-center host name or never-publish name in a commit (EMBED.md 2.4's scan before each commit).
+  private link, command-center host name or never-publish name in a commit (EMBED.md 2.4's scan before each commit),
+  and nothing copied from the work files that WORKBENCH.md names as holding private values.
 
 ## 4. The experiments
 
 Only E8 needs a graphics card; E0 to E7 run on this box's CPU with no outside spend. RunPod pod creation was refused by
-the permission system in AO-082. To ask, one message names the job, the GPU and its hourly price from a live catalog
-read (an RTX 4090 secure pod was $0.89 an hour on 2026-11-25), the hours, a cap, and that the session deletes its own
-pod after (`runpod-render` skill rules). His yes in his own words is the approval to try; if the permission system still
-refuses, record it and give him a test card for his laptop's RTX 4070 (8 GB), as in `../FOR_AARON.md`. Diffusion
-transcribers found on 2026-11-27, for E2:
+the permission system in AO-082. To ask, one message names the job, the GPU and its price from a live catalog read (an
+RTX 4090 secure pod was $0.89 an hour on 2026-11-25), the hours, a cap, and that the session deletes its own pod after
+(`runpod-render` rules). His yes in his own words is the approval to try; if still refused, record it and give him a
+test card for his laptop's RTX 4070 (8 GB), as in `../FOR_AARON.md`. Diffusion transcribers found on 2026-11-27, for E2:
 
 | model | what it is | numbers | here |
 |---|---|---|---|
@@ -145,17 +143,16 @@ transcribers found on 2026-11-27, for E2:
   whole-tab attempts took 32 to 43). Half the gain or more makes "Opus picks" an app method; less, and the user picks.
 - **E4. Every possible note, then fewer: the intent reading.** Start, at every candidate onset (the tools' and
   spectral-flux onsets), with every pitch the tuning and capo allow (about 40 to 45), weighted by the tools' votes and
-  frame posteriors (save the models' frame outputs; AO-082 kept only notes). Each round: synthesize the weighted notes
-  (a decaying harmonic template per pitch, from FluidSynth, then fitted to confident isolated notes of the recording),
-  compare on a log constant-Q spectrogram, update the weights (KL-NMF multiplicative updates, or gradient descent as
-  Gages did), drop weights under a threshold, add a note where the residual shows harmonic energy at an onset, until
-  nothing changes. Conditions: from every note, and from E1's vote (refinement only); FluidSynth or learned templates;
-  with and without E5. Calibrate first: the kit's `selfcheck.sh` read 0.601 to 0.879 for a perfect answer (BLIND.md 5),
-  so the key's notes must leave less residual than every tool's on 90 % of bars. Measure: F1 per round (a curve), notes
-  added and removed and how many were right, the residual as a picker for E1 and E3. Minutes of CPU a song, two to three
-  days of agent work. Expect the full haze to lose to the vote (the bare arm: 0.822 / 0.564 / 0.697): refinement is the
-  realistic use, and +0.01 on held-out songs with none lower makes it the last note stage. Keep every round's weights:
-  the film draws and plays them as AO-087's pad did, each candidate as loud as its weight.
+  saved frame posteriors (AO-082 kept only notes). Each round: synthesize the weighted notes (a decaying harmonic
+  template per pitch, from FluidSynth, then fitted to confident isolated notes of the recording), compare on a log
+  constant-Q spectrogram, update the weights (KL-NMF updates, or gradient descent as Gages did), drop weights under a
+  threshold, add a note where the residual shows harmonic energy at an onset; repeat until nothing changes. Conditions:
+  from every note, and from E1's vote (refinement only); FluidSynth or learned templates; with and without E5.
+  Calibrate first (`selfcheck.sh` read 0.601 to 0.879 for a perfect answer): the key's notes must leave less residual
+  than every tool's on 90 % of bars. Measure: F1 per round, notes added and removed and how many were right, the
+  residual as a picker for E1 and E3. Minutes of CPU a song, two to three days of agent work. Expect the full haze to
+  lose to the vote (the bare arm: 0.822 / 0.564 / 0.697); +0.01 on held-out songs, none lower, makes refinement the last
+  note stage. The film draws and plays every round as AO-087's pad did, each candidate as loud as its weight.
 - **E5. What the guitar cannot play.** Filters: the range (nothing below the lowest open string with the capo or above
   the 1st string's fret 20); the strings (notes sounding at once must fit on distinct strings of the tuning, each
   holding its string until the next attack there; the weakest of a set that does not fit goes); LOOP's hand reach
@@ -207,11 +204,10 @@ as the result; where the key is in doubt, the recording, for the viewer to judge
 if the findings earn it: opening (2 min); the recordings and keys (3); where AO-082 left the notes (3); every possible
 note, then fewer (5); several methods, one pick per bar, Opus picking blind (5); what the guitar cannot play (3); slaps
 and thumps (3); songs the methods never saw (4); what the app should run and the user fixes (2); credits. Reuse
-`/home/user/gtv/production/kit/` (HyperFrames 0.9.91) by PRODUCTION.md, 6.10's fixed faults above all, and the same
-narrator unless Aaron says otherwise (check the ElevenLabs balance; AO-082's film used 21,873 credits). The post: `npm
-run new-post "Title"` on a branch from `origin/main`, the film at its top by EMBED.md with the new slug, `draft: true`.
-Aaron sees the film through the studio library and the text as a private page; `media:push` and landing wait for his OK
-in his own words.
+`/home/user/gtv/production/kit/` by PRODUCTION.md, 6.10's fixed faults above all, and the same narrator unless Aaron
+says otherwise (check the ElevenLabs balance first). The post: `npm run new-post "Title"` on a branch from
+`origin/main`, the film at its top by EMBED.md with the new slug, `draft: true`; Aaron sees the film through the studio
+library and the text as a private page, and `media:push` and landing wait for his OK in his own words.
 
 ## 7. How to run it
 
@@ -233,19 +229,18 @@ in his own words.
   STATE.md line naming the frozen pipeline; LOOP takes them as a new rung, never silently.
 - **Records.** Branch `research/guitar-notes` from `origin/research/guitar-tab-tools` (or the session's designated
   branch), folder `docs/guitar-tab-research/notes/`: STATE.md (the orchestrator's log), RESULTS.md, `results/`,
-  `experiments.json`, `frozen-rules.json`, the held-out records. Heavy files go to R2 under a new prefix beside
-  WORKBENCH.md's, with its wrapper and a manifest, at each checkpoint. Plain commits with the two attribution lines,
-  `git pull --rebase` before each push, never force.
+  `experiments.json`, `frozen-rules.json`, held-out records. Heavy files to R2 under a new prefix beside WORKBENCH.md's
+  at each checkpoint. Plain commits with the two attribution lines, `git pull --rebase` before each push, never force.
 
 ## 8. The first hour after the go-ahead
 
 1. Read DIRECTION.md, this brief, LOOP.md and WORKBENCH.md. Use no task tools: STATE.md is the tracker.
-2. Restore: `restore.sh --eval` as WORKBENCH.md says (it checks every file and re-scores blind c3 at 0.865); rebuild
-   gtr-eval's venv, `venv-torch` and `venv-bp`, and remake the mono WAVs (its last sections); keep 3 GB free.
+2. Restore as WORKBENCH.md says, or check the restore this session's box already made (`restore.sh --eval` gives
+   0.874816 and 0.864507; its last `cmp` says "differ" only over the Python version); rebuild gtr-eval's venv,
+   `venv-torch` and `venv-bp`, and remake the mono WAVs (its last sections); keep 3 GB free.
 3. Check the scorer: `gtr-eval selftest`, then `experiments/capo/n-03/notes.csv` against `truth/capo/capo.truth.json`
    (0.920, e2052), tuning n-02 (0.830, e2062), standard n-03 (0.892, e2532). Any other value: stop.
-4. Smoke-test `tools/kit/notes_guitar.sh` on `songs/capo/capo.mono.wav` (about 2.5 minutes): its notes should score
-   0.920 again. R1c, the kit's own test clip, is in the studio library, not the workbench.
+4. Smoke-test `tools/kit/notes_guitar.sh` on `songs/capo/capo.mono.wav` (about 2.5 minutes): it should score 0.920.
 5. Start lane N on E0 and lane H on the held-out scouting; send Aaron the first-hour message; message LOOP about the
    held-out keys and the handoff files. Write STATE.md's first entry.
 
