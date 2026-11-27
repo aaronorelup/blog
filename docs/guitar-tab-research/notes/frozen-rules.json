@@ -1,0 +1,98 @@
+{
+ "id": "N-E7 frozen rules",
+ "session": "NOTES",
+ "frozen_utc": "2026-11-27T05:55Z",
+ "rule": "Committed before any held-out score exists. Every method below runs unchanged on each held-out song; each is scored once. A stage that helped the three development songs and lowers the held-out mean is dropped (brief, E7). The post's main numbers come from here.",
+ "scorer": "gtr-eval 0.12.1 notes (onset F1 at 50 ms and 50 cents, offsets ignored); heard-only recall = key notes with conf != 'tab'",
+ "inputs": "the song's mono WAV (Riley models) and stereo WAV (Transkun, Basic Pitch); tuning and capo given (from the held-out records); string type (steel or nylon) given only to the gate row",
+ "tools": {
+  "fl": "riley_post.py --checkpoint fl --threads 2, package default thresholds (onset 0.3, offset 0.3, frame 0.1)",
+  "gaps": "riley_post.py --checkpoint gaps, defaults",
+  "gaps-paper": "riley_post.py --checkpoint gaps-paper, defaults",
+  "transkun": "Transkun 2.0.1, transkun <song>.wav out.mid --device cpu; mid2notes.py",
+  "bp": "Basic Pitch 0.4.0 tflite, --minimum-frequency = lowest sounding open string (with capo) minus a quarter tone, --maximum-frequency = string 1 + capo + fret 20; mid2notes.py"
+ },
+ "primary": "vote5+filters",
+ "methods": {
+  "vote5": "3-of-5 vote of fl, gaps, gaps-paper, transkun, bp: cluster = same MIDI pitch, onsets within 50 ms of the cluster's first; kept when 3 or more tools have it; onset = median of members (N-E1's choice: k=3 by dev24 and by every leave-one-song-out fold)",
+  "vote3": "2-of-3 vote of fl, gaps-paper, transkun, same rule, k=2",
+  "fusion": "mean of the fl, gaps (shifted 0.751825 frames later: dev24 bias fit) and gaps-paper reg_onset and frame rolls, decoded by the package's RegressionPostProcessor at onset threshold 0.275 (dev24's choice)",
+  "gate": "gaps-paper on steel, gaps on nylon (needs the string type from the user)",
+  "fl, gaps, gaps-paper, transkun, bp": "each tool alone",
+  "+filters": "then the range filter (nothing below the lowest sounding open string, nothing above fret 20 of string 1) and the strings filter (notes sounding at once fit on distinct strings, each holding its string until the next attack there; gap 0.06 s; the weakest goes): N-E5, zero found notes lost on the three songs. LOOP's hand filter is not applied: no hand window exists for the held-out songs; the post says so."
+ },
+ "not_frozen": {
+  "N-E2 Noise2Fret": "missed every gate (best 0.60 / 0.38 / 0.39)",
+  "N-E4 haze refinement": "+0.000 / +0.002 / -0.006 on the three songs; calibration failed",
+  "N-E6 slap filter": "not a default stage (share of the oracle's gain 0.13 after the checker's fix, loses on tuning)",
+  "YourMT3+ votes": "need a public web service; not offline"
+ },
+ "development_numbers": {
+  "note": "onset F1 capo / tuning / standard, reproduced by methods.py on the step-2 and part-1 tool outputs (2026-11-27)",
+  "vote5+filters": [
+   0.9567,
+   0.8256,
+   0.9249
+  ],
+  "vote3+filters": [
+   0.9572,
+   0.8123,
+   0.9209
+  ],
+  "fusion+filters": [
+   0.9385,
+   0.847,
+   0.916
+  ],
+  "gate+filters": [
+   0.9542,
+   0.8299,
+   0.8955
+  ],
+  "gaps-paper": [
+   0.9536,
+   0.8217,
+   0.8955
+  ],
+  "fl": [
+   0.9199,
+   0.7976,
+   0.8917
+  ],
+  "gaps": [
+   0.9189,
+   0.8299,
+   0.8787
+  ]
+ },
+ "heldout_songs": {
+  "closer": {
+   "setup": "Gareth Evans, Closer, steel, E A D G A D, capo 1",
+   "key_sha256": "4c91534f5c5c8ec3cbefab7e8d91efb9585b4b05afe7fefd33cad9636eafe28e"
+  },
+  "september": {
+   "setup": "Evan Handyside, Wake Me Up When September Ends, nylon, D G D G B D, capo 2",
+   "key_sha256": "8bba0443bdcbbb8269ebd186d62ad5dfcb0b71d216309b2142799d7b32c9da5d"
+  },
+  "boats": {
+   "setup": "Pete Lumb, Three Little Boats (Culture Vannin), nylon, standard, no capo",
+   "key_sha256": "5bdcbfad3ea92a54ae3d0a80cb73e3790ecdf4f7d48f6da9c5ec1ead2f2b9b26"
+  }
+ },
+ "oracles_reported_beside": "per-bar pick over the five tools (bars from the key's downbeats) and the union of the five (labelled oracles, never a method)",
+ "files_sha256": {
+  "notes/runs/e7/bin/methods.py": "2bd069132d23545dbe88e20e8732c439c8555032dcbbdae27f13b4361d1c753c",
+  "notes/runs/e7/bin/run_tools.sh": "65079957bfa7932af1ae589cf880007e8278c061aaca064af0f6510d5bec49c5",
+  "notes/runs/e1/bin/e1lib.py (vote, cluster)": "be6dd9a41585530b340f18ecabafdf89614044214a87cb428526c8b6a80a4cf5",
+  "notes/runs/e1/bin/fuse_decode.py (roll fusion)": "5248df4becc8e27cecc3ca78ec39efc1d5a61b3b15ac9a87f5ee8ec1cc6d52e2",
+  "notes/runs/e5/bin/filters.py (range, strings)": "62076d2e736ff44197058acce449bfcd210c4e2354bc71648215e83aa0934f1e",
+  "notes/methods/riley/riley_post.py (Riley models, rolls, decoder)": "75f6528da8e6bbdfed0a69966bd8666c857a36d2c0e40d406f14fd64dd839b53",
+  "notes/dev/runs/dev-tools/bin/mid2notes.py (MIDI to notes)": "592a7c7ba40144f320625d5c7ca961a12d010cff78dde4bd781af0f4d63a008e",
+  "LOOP hand_filter.py (not applied on held-out songs: no hand window yet)": "b210f11b53bcb04867ec8c39d9d58cb28e0f9ab16255c3eb9310f50999b00626"
+ },
+ "weights_sha256": {
+  "guitar-fl.pth": "50d93dba89bdd3401849bc735614478e83d9f46d21fa3f71d8aca5acc0a52028",
+  "guitar-gaps.pth": "65483e7c0e340a90415b15b520687587698c8c728f5fa470a205f13ee45c6513",
+  "guitar-gaps-paper-version-12200_iterations.pth": "94a7c936ec9fde83686d29007dc256274384e832739cadece39e92cee3b69a7e"
+ }
+}

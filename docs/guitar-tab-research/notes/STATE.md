@@ -182,3 +182,25 @@ tracker (no task tools, so nothing can leak into a blind attempt's context). New
   (E A D G A D capo 1, steel), september (open G capo 2, nylon), boats (standard, nylon, a new player). Open item every
   audit names: the check that no tested model trained on these videos (GuitarSet, GAPS, Leduc, GOAT track lists) is not
   done; all three are a YouTube-mirror arrangement, a Vimeo video and a Commons lesson, so it is unlikely, not proven.
+
+## 2026-11-27 05:55 UTC: part 2 done, rules frozen (before any held-out score)
+
+- **Part 2 done** (wf_c2e67ee4-2b0, a checker per job; records in `results/`):
+  - **N-E1** (`e1-votes.md`): the best non-oracle methods are plain votes, about +0.013 over gaps-paper on the mean
+    (4-of-7 vote 0.9559 / 0.8313 / 0.9222; 3-of-5 vote 0.9567 / 0.8256 / 0.9249), nearly all of it on the standard
+    song. Roll fusion (mean, 0.275) is best on the nylon song (0.847). The per-bar pick (an oracle) reaches 0.924 over
+    all seven lists, the note-level oracle 0.973: single-note corrections are worth more than bar picks. dev24 shows no
+    vote gain over gaps-paper.
+  - **N-E4 the haze** (`e4-haze.md`): runs in about a CPU minute a song and gives the film's centre (every allowed pitch
+    at every onset, 25,000 to 38,000 candidates, round 1 removes 95-97 %), but it fails its calibration, scores 0.853 /
+    0.652 / 0.743 from a flat start, and as a refiner of the vote adds +0.000 / +0.002 / -0.006. Not a stage.
+  - **N-E5 filters** (`e5-filters.md`): range, strings and LOOP's hand window lose 0 of 11,087 found notes but remove
+    none of the vote's 159 invented notes; free, kept as a stage, not by the brief's 20 % rule.
+  - **N-E6 slaps** (`e6-slaps.md`): no per-note test reaches half the slap oracle's gain on gaps-paper or the votes; most
+    slap notes are a ringing pitch re-triggered by the hit, which three to five tools all report. Not a stage.
+- **Frozen** (`frozen-rules.json`, committed now, before any held-out score): primary `vote5+filters` (3-of-5 vote of fl,
+  gaps, gaps-paper, Transkun, Basic Pitch with range, median onset, then range and strings filters), with rows for
+  vote3, fusion, the string-type gate, and each tool alone, each with and without filters; oracles beside. Code and
+  weights by SHA-256; `methods.py` reproduces every development number (vote5 0.9567 / 0.8256 / 0.9249, fusion+filters
+  0.9385 / 0.8470 / 0.9160). No hand window exists for the held-out songs, so LOOP's hand filter is not applied there.
+- **N-E7 started:** the five tools run on closer, september and boats (`/home/user/notes/runs/e7/`), key-free.
