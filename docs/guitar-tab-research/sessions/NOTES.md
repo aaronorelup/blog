@@ -158,11 +158,11 @@ card for his laptop's RTX 4070 (8 GB), as in `../FOR_AARON.md`. Diffusion transc
 - **E5. What the guitar cannot play.** Filters: the range (nothing below the lowest open string with the capo or above
   the 1st string's fret 20); the strings (notes sounding at once must fit on distinct strings of the tuning, each
   holding its string until the next attack there; the weakest of a set that does not fit goes); LOOP's hand reach
-  window (DIRECTION.md, item 3): a fretted note no reachable fret can play is dropped or weighted down, open strings
-  always allowed; until it exists, an oracle window from the key's frets (marked assisted). Wrong-tuning row: the
-  tuning song read with standard tuning and with D G C F A D (both blind arms' answer). Measure: invented notes removed
-  against found notes lost. Seconds, a day of agent work. Removing 20 % of the vote's invented notes for under 1 % of
-  its found notes makes a filter a default, and LOOP's window an input of the note stage.
+  window (`hand_window.csv`: t, lo, hi, conf, lost; frets from the capo, open strings always allowed; DIRECTION.md, item
+  3): a fretted note no reachable fret can play is dropped or weighted down; until it exists, the key's own frets plus
+  one either side (marked assisted). Wrong-tuning row: the tuning song read with standard tuning and with D G C F A D
+  (both blind arms' answer). Measure: invented notes removed against found notes lost. Seconds, a day of agent work.
+  Removing 20 % of the vote's invented notes for under 1 % of its found notes makes a filter a default.
 - **E6. Slaps and thumps.** Detectors: HPSS percussive onsets (v-03, capo and standard: recall 1.000 and 0.986,
   precision 0.284 and 0.412), Demucs drums onsets (v-04: precision 0.963 and 0.932, recall 0.713 and 0.322),
   Noise-to-Notes if out. For a note on a hit, a pitched-or-not test: energy at its partials 60-200 ms after the hit
@@ -189,13 +189,14 @@ as AO-082 did (`SONGS.md`, `truth-<S>.md`, `truth-<S>-check.md`). Scouted leads 
   AO-082); a GAPS test-split recording (research-only; guitar-gaps trained on its train split); YouTube-only leads with
   free tabs (Martin Tallström's GP5 files, Antoine Dufour, Van Larkins, Jérémy Cauliez), if Aaron fetches the videos.
 
-Pick at least one new player and one capo with an altered tuning, prefer an obscure piece, and check that no tested
-model trained on it (GuitarSet, GAPS train, the Leduc set, GOAT). Per song: a credit line and a rights note (source,
-licence or "none stated", the tab's terms); title and end cards cut; two independent reads of the tab; notes timed to
-the recording; an independent check by ear and spectrogram that sets each note's `conf` (`tab`, `tab+audio`, `audio`),
+Pick at least two in other tunings, open G (Wake Me Up When September Ends) and E A D G A D (Closer) among them, for
+LOOP's tuning finder, and a new player if one can be found; prefer obscure pieces, and check that no tested model
+trained on them (GuitarSet, GAPS train, the Leduc set, GOAT). Per song: a credit line and a rights note (source, licence
+or "none stated", the tab's terms); title and end cards cut; two independent reads of the tab; notes timed to the
+recording; an independent check by ear and spectrogram that sets each note's `conf` (`tab`, `tab+audio`, `audio`),
 repair and check again (AO-082's keys took one to three repair rounds, about 6.5 hours for three side by side);
-`gtr-eval check-truth`; an audit by an agent that did not build the key. The set is shared with LOOP: this session
-builds the keys unless LOOP.md says LOOP does; if both claim them, settle it in the first hour so each is built once.
+`gtr-eval check-truth`; an audit by an agent that did not build the key. This session builds the keys for both sessions
+(LOOP.md agrees, and audits each key it uses): confirm it in the first hour with one message and a line in STATE.md.
 
 ## 6. The film and the post
 

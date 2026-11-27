@@ -77,8 +77,7 @@ From `V/RESULTS.md`, `V/BLIND.md`, `V/BLIND-RESULTS.md`, `V/results/step-0*.md` 
   `G/experiments` and the records, and `audit_blind.py` reads every transcript before scoring; a void run is repeated once
   and the film says so. Opus 5.5 at max effort everywhere; each attempt says if it recognised the piece. AO-082's kit was
   picked on the songs it was tested on: so E7 freezes everything before the held-out recordings.
-- **Privacy:** nothing from AO-078, and never Aaron's own videos or recordings as test material. Keys only through `python3
-  ~/.claude/bin/getkey.py NAME` inside a script, never printed. The repo is public: no key, private link, command-center
+- **Privacy:** nothing from AO-078, and never Aaron's own videos or recordings as test material. Keys only through getkey (`python3 ~/.claude/bin/getkey.py NAME`) inside a script, never printed. The repo is public: no key, private link, command-center
   host name or never-publish name in a commit (run `V/EMBED.md` 2.4's snippet over each records file).
 
 ## 4. The experiments
@@ -146,7 +145,7 @@ round-2 attempts, so run L2 on one song first, measure it, and correct the plan 
   keeping, dropping and adding notes and on the tuning, and the solver places them.
 - **E5. Bar by bar against whole song** (Opus). W2 gives one session L2's inputs for the whole song (notes, windows, overlay
   command, solver, renders) and 90 minutes, as AO-082's blind arms had, with the capo given; it is compared with L2. W2 on
-  the three recordings, then L2 and W2 once more on the nylon and capo songs for the spread: 7 runs, $100 to $200 (a W2
+  the three recordings, then L2 and W2 once more on the nylon and capo songs for the spread: 7 runs, $100 to $220 (a W2
   takes 35 to 45 minutes and $13 to $19). Measures as E4, plus wall time and tokens a song. If W2 matches L2 within the
   spread, the app runs the cheaper one; if L2 wins mostly in later bars, the carried state is why, and it stays.
 - **E6. What the loop learns** (Opus, the capo song: 72 bars, many repeats). L2 with the carried state emptied before every
@@ -155,7 +154,7 @@ round-2 attempts, so run L2 on one song first, measure it, and correct the plan 
   "bar by bar" is chunking, not learning, and the film says so.
 - **E7. Held-out recordings** (Opus, frozen). The tool, the finder, the solver, the loop and every prompt and threshold are
   frozen at one commit, named in STATE.md before the first held-out run. On each: L3 (the app's full path: capo given, all
-  else found), W2 and the E3 ladder, L2 where the budget allows; 2 to 4 recordings, $70 to $450. A held-out main number more
+  else found), W2 and the E3 ladder, L2 where the budget allows; 2 to 4 recordings, $70 to $550. A held-out main number more
   than 0.10 below the three songs' means the method was fitted to them, and the post says so.
 - **A graphics card.** E1 to E7 need none. Optional E8, only if E1 fails on a held-out camera: denser neck tracking
   (CoTracker3 took 380 to 719 s a song on this CPU, and a 1 fps call was killed at 12.2 GB) or a 3D hand model (WiLoR, never
@@ -217,7 +216,7 @@ round-2 attempts, so run L2 on one song first, measure it, and correct the plan 
   film; (4) the held-out keys passed; (5) the script, before voicing; (6) the film and the draft.
 - **Budget.** AO-082's film run (keys, experiments, blind test, a 50-minute film) took 250 agents and $1,390 to $1,620 at
   list prices; its first research sitting, about $2,000 of tokens, used about 90 % of a week's Claude limit. Plan 150 to 200
-  agents and $1,200 to $2,200, of which 25 to 30 Opus runs are $450 to $1,400. NOTES plans $700 to $900 more, so the two may
+  agents and $1,200 to $2,400, of which 25 to 33 Opus runs are $450 to $1,600. NOTES plans $700 to $900 more, so the two may
   pass a week's limit together: report the spend at each checkpoint (the `agent-metrics` skill), ask at half a week.
 - **Records.** Branch `research/guitar-tab-loop` from `origin/research/guitar-tab-tools` (or the session's designated
   branch), folder `docs/guitar-tab-research/loop/`: `STATE.md` (the log and only tracker), `RESULTS.md` and `results.json`
@@ -242,7 +241,7 @@ round-2 attempts, so run L2 on one song first, measure it, and correct the plan 
 
 ## 9. Risks and limits
 
-- Three recordings, two players, fixed cameras, no strumming, electric or band; each number is one run unless repeated.
+- Three recordings, two players, fixed cameras; no strumming, electric guitar or band. Each number is one run unless repeated.
 - The keys' doubts: notes from the tab alone (54 / 72 / 96), the nylon beat phase, the standard song's +6 cents (about 2
   either way); each held-out key has its own. Every design choice is tried on the three songs: only held-out numbers test.
   The perfect-window and true-notes rungs use the key: they are ceilings, never results.
@@ -253,4 +252,3 @@ round-2 attempts, so run L2 on one song first, measure it, and correct the plan 
 - The nylon song's downbeats fail (F 0.117), so its bars are windows of time. No graphics card, restarts, a 3 GB disk floor,
   15 GB of memory, one render at a time. A refusal by the permission system is recorded, never worked around.
 - The weekly limit can stop the work before the film: checkpoints 3 and 5 are where to cut scope.
-

@@ -237,3 +237,7 @@ The check (restore of 5,430 files, every sha256 right, blind c3 re-scored byte f
     `gtv/work/exp-tuning/prompts/*`.
 
   **Never copy those files, or text from them, into this public repo.**
+- **A fresh box's `restore.sh --eval` ends in "differ", and that is expected.** The NOTES session's fresh restore on
+  2026-11-27 gave the right numbers (0.874816 and 0.864507), and all 25,617 files matched. The final `cmp` still fails
+  because gtr-eval writes the Python version into its output: `libraries.python` is 3.11.18 there (uv now installs
+  that) against 3.11.15 here. Compare the scores, not the bytes.
