@@ -497,3 +497,10 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 - After the check I uploaded the files hand tracking and sep-05 need (89 files, `MANIFEST.add-hands.tsv`) and added a
   section to `../WORKBENCH.md`: what is still missing, and a warning about private values inside some work files.
 - Both new sessions were told WORKBENCH.md is ready. The briefs are still being written (wf_aea93cb3-a39).
+
+## 2026-11-27 01:45 UTC
+
+- Briefs done (wf_aea93cb3-a39): `../sessions/NOTES.md` and `../sessions/LOOP.md`, 259 lines each. A critic found 26
+  problems (blind watch gaps, which runs count as blind, cross-box handoffs, the post's worktree, Noise2Fret's weights,
+  no working around refusals, shared formats, budget, numbers). The fix pass fixed all 26: commit c608fa84.
+- Both sessions were told, with the changes that touch each. The combined budget in the briefs is $1,900 to $3,300.
