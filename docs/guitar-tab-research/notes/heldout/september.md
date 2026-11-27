@@ -7,6 +7,9 @@ tab, notes timed to the recording, `conf`, the independent check) is later work 
 number below comes from a file named next to it. No note transcriber was run on this recording in this step: the
 checks use only the raw audio (onset strength, CQT, chroma) and the picture.
 
+**Status:** fetched and prepared (2026-11-27); the song can be had. Key not started (`/home/user/gtv/truth/september/`
+exists and is empty).
+
 ## Source and credit
 
 - *Wake Me Up When September Ends* (Green Day, 2005), solo fingerstyle arrangement "Jonathan's Version", arranged,
@@ -26,7 +29,7 @@ checks use only the raw audio (onset strength, CQT, chroma) and the picture.
   states reuse terms (the PDF carries only the Intellimusica header). The post asks readers to "Feel free to share this
   post far and wide": an invitation to share the post, not a licence for the recording or the tab. Vimeo shows no
   licence (all rights reserved by default); the player config has the video hidden from vimeo.com and embeddable
-  anywhere (`privacy` "disable", `embed_permission` "public").
+  anywhere (`privacy` "disable", `embed_permission` "public"; work folder `dl/vimeo_meta.json`, signed links dropped).
 - **The composition is Green Day's** (a major-label song); the arrangement and its open-G fingering are Evan's. The
   post says this recording was also released as a single on the streaming services.
 - **Tab access (the creators scout's Intellimusica note, still true today).** The site runs the Leaky Paywall plugin:
@@ -44,7 +47,7 @@ checks use only the raw audio (onset strength, CQT, chroma) and the picture.
 
 | file | what |
 |---|---|
-| `/home/user/gtv/songs/september/video.mp4` | the download: the Vimeo HLS 1080p video rendition and its one audio rendition ("Original"), joined by stream copy (no re-encode). H.264 1920x1080, 29.97 fps (30000/1001), 165.532 s, 4961 frames; AAC 48 kHz stereo, 165.547 s; both streams start at 0 |
+| `/home/user/gtv/songs/september/video.mp4` | the download: the Vimeo HLS 1080p video rendition and its one audio rendition ("Original"), joined by stream copy (no re-encode; `bin/hls_fetch.py`, no yt-dlp on the box). H.264 1920x1080, 29.97 fps (30000/1001), 165.532 s, 4961 frames; AAC 48 kHz stereo, 165.547 s; both streams start at 0 |
 | `When-September-Ends-Jonathans-Version.pdf` | the tab as downloaded (806,343 bytes, 2 pages, scanned, no text layer); pages at 300 dpi in the work folder `tab/page-1.png`, `tab/page-2.png` |
 | `post.json`, `post.txt`, `page.logged-out.html` | the post from the REST API (whole), its musical part as text, and the page as a logged-out visitor sees it |
 | `september.mp4` | what the tools and any blind run get: the cut below, full frame 1920x1080, **a black box (x 200, y 428, w 1636, h 240) over the title on the cut's first 75 frames**, x264 crf 16 (preset medium, GOP 50, yuv420p), AAC audio copied, metadata stripped |
@@ -62,7 +65,15 @@ checks use only the raw audio (onset strength, CQT, chroma) and the picture.
   ("Guitar TAB and blog: intellimusica.com") starts on frame 4676 (156.0225 s) (`logs/env_end.txt`).
 - **Played range kept:** frames 75 to 4675 of `video.mp4`, **2.5025 s to 156.0225 s** (153.520 s, 4601 frames): the
   whole performance, 0.31 s of silence before the first pluck and the ring-out of the last notes.
-- **Time base:** TIMEBASE_LINE
+- **Time base:** `september.wav` sample 0 = **2.502494 s** of the `video.mp4` audio: cross-correlation of 3 s
+  windows at 5, 70 and 140 s of the cut gives the same lag in all three (110,360 samples at 44.1 kHz, normalised peak
+  0.9998-0.9999; `bin/xcorr.py`, `logs/xcorr.txt`). `september.mp4` frame 0 = `video.mp4` frame 75 (2.5025 s), its
+  last frame (4600) = frame 4675: mean abs difference 0.22 and 0.26 against 1.7-5.3 for the neighbouring frames
+  (`logs/cut_check.txt`). So **time t in the cut = t + 2.5025 s in `video.mp4`** (to within one sample). Audio
+  153.5295 s (6,770,651 samples at 44.1 kHz), video 153.5200 s (4601 frames). The source's A/V offset is not measured
+  (both streams start at 0): recorded as 0. The box: in `september.mp4` frames 0-74 the box is black and none of the
+  44,675 title pixels is left near-white (43,750-44,592 of them are in `september.full.mp4`); frame 75 is clean.
+  Encode: `bin/encode.sh`, gtr-run r1317 (2 cores, 1116 s wall).
 
 ## Tuning and capo (step 3)
 
@@ -93,7 +104,7 @@ checks use only the raw audio (onset strength, CQT, chroma) and the picture.
   from the recording (as `../../video/truth-tuning.md` did), without any note transcriber (lane rule).
 - Form in the post: Intro; Verse 2x, To Chorus, Chorus; Intro; Verse 1x, To Chorus, Chorus; End. The `tuning` slot's
   recording added a pass the post did not list; check the form against the recording before unrolling.
-- Marks seen on the page: slurs (3-5 and 0-3-0 on string 2, 0-2 on string 1), repeat signs, a "To Chorus" arrow from
+- Marks seen on the page: slurs (e.g. 3-5 and 0-3-0 on string 2, 0-2 on string 1), repeat signs, a "To Chorus" arrow from
   the middle of the verse's last system, and a slanted line in page 2, system 4 (a bar line or a slide: for the two
   readers to settle).
 - The intro is heard as written: four groups of open 5th string, open 3rd string, 2nd string fret 3 (A2 A3 E4), plucks

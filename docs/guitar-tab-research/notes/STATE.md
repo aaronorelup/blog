@@ -38,3 +38,34 @@ tracker (no task tools, so nothing can leak into a blind attempt's context). New
     scorer, so rules are tuned there and on leave-one-song-out, never on a held-out song.
 - Working folder outside git: `/home/user/notes/` (methods, dev set, runs). The brief's handoff folder for LOOP is
   `/home/user/gtv/notes/<S>/<method>/notes.csv`.
+
+## 2026-11-27 01:05-01:50 UTC: lane H, joints with LOOP, the reviewed brief
+
+- **Lane H started** (workflow `notes-heldout-keys`, wf_8ce83282-775): per song fetch, two independent tab reads,
+  timing, an independent check that sets `conf`, repair, audit. Slots: `closer` (Gareth Evans, E A D G A D, capo 1),
+  `september` (Evan Handyside, Open G, capo 2), `newplayer` (first choice Culture Vannin / Pete Lumb, "Three Little
+  Boats", CC BY 3.0; fallback Gareth Evans's "Stitches", capo 1, which would be said not to be a new player). One rule
+  beyond AO-082: **no note transcriber's output is used to build, time or check a held-out key**, so the keys lean toward
+  no tool that will be scored on them. Keys stay out of git (`/home/user/gtv/truth/<slug>/`); only their records
+  (method, counts, checks, rights notes) are in `notes/heldout/`.
+- **LOOP agreed** (two messages, 01:00 and 01:16 UTC): NOTES builds the held-out keys; LOOP audits each key it uses.
+  LOOP runs on its own fresh box, so each passed key goes to R2 under `workbench/guitar-tab-app/heldout/<slug>/`
+  (`songs/<slug>/` with the video, `truth/<slug>/`) with a manifest, and its SHA-256 lines here and in LOOP's STATE.md.
+  LOOP publishes `hand_window.csv` (t, lo, hi, conf, lost; 30 rows a second; frets from the capo; open strings always
+  allowed) on `research/guitar-tab-loop` at `docs/guitar-tab-research/loop/hand/<S>/` and in R2 under
+  `workbench/guitar-tab-app/loop/hand/<S>/` when its E1 passes.
+- **The reviewed brief** (c608fa84 on `research/guitar-tab-tools`) replaces the draft read at 00:55. What changed for
+  this session: ids N-E0 to N-E8; every Opus run scored against a key is a blind attempt under a harness-limited agent
+  definition approved by Aaron; held-out keys move only through private R2; a refused repository's code is recorded,
+  never re-typed; LOOP's Opus-checked `hand_window.csv` is the only hand filter that may be frozen; the post is made in
+  a `/home/user/land` worktree.
+- **Checked against it:** the Noise2Fret runner (`/home/user/notes/methods/n2f/n2f_infer.py`) imports the repository's
+  own modules; the only change to the repository's code is a one-line path fix in a copy of `midi_to_numpy.py` for the
+  reference run. Nothing was refused, nothing re-typed.
+- **First-hour steps done:** `venv-api` rebuilt; `tools/kit/notes_guitar.sh` on `songs/capo/capo.mono.wav`: 883
+  notes, onset F1 0.919906 (as recorded), 283 s wall on 2 cores with other agents running (gtr-run r1320).
+- **Blind agent definition** written for checkpoint 1: `~/.claude/agents/notes-blind.md` (tools Bash, Read, Write,
+  Edit, Glob, Grep; model opus; works only in its folder). Not used until Aaron's yes and a dummy run proves the limit.
+- **Checkpoint 1 sent to Aaron in the session chat** (01:08 UTC): the two readings of his question, the held-out picks,
+  no pod for now, and one question: a GPU for N-E8 up to $10, which the reviewed brief only allows if an N-E2 model
+  comes within 0.03 of guitar-fl on the segments or adds to the vote. The agent definition goes in the next message.
