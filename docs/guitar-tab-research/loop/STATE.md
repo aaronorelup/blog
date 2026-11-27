@@ -297,3 +297,8 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   13,598 / 11,743 (faster later, not more accurate). The writer's decisions, scored: keeping an alternative 23 wrong to
   right against 17 invented; dropping 10 invented against 6 played; placing 4 wrong to right, 4 wrong to wrong. Against
   L4 (hand off) 0.833 and W2 0.830: on this open-position song the window and bar-by-bar both add almost nothing.
+- 06:50 UTC: **L4 standard done** (hand off): main **0.831** (heard 0.863), matched 0.932, of matched 0.891, onset F1
+  0.909, GP5 0.822; solver alone on the same packs 0.828; 56 units, 145.2 writer minutes, $35.20 (revisits $0.31). By
+  thirds: right 0.885 / 0.796 / 0.791; minutes 2.17 / 2.92 / 2.69; output tokens 13,173 / 17,284 / 16,370 (slower and
+  worse after the first third, with no window). Decisions: drops 42 invented against 7 played; alternatives kept 6 right
+  against 15 invented and 4 played-but-misplaced; placing 3 wrong to right, 3 wrong to wrong.
