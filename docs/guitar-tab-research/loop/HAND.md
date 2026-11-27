@@ -8,7 +8,7 @@ not played there, and Opus uses the tool and checks its output himself. Numbers 
 **The default for the loop: the window after Opus's check, margin 1, 30 rows a second, used as a hard rule.** It needs no
 answer key. Coverage of the fretted key notes at their onsets (key fret inside the window): 0.995 / 1.000 / 0.998 of rows not lost
 (0.995 / 0.990 / 0.996 of all; heard notes 0.994 / 1.000 / 0.998), 3 / 0 / 1 excluded in all; mean width 5.45 / 3.73 / 4.58 frets; possible places per
-note 3.46 -> 1.53 / 3.62 -> 1.45 / 3.24 -> 1.24; notes with one possible place 0.10 -> 0.52 / 0.11 -> 0.58 / 0.06 -> 0.77. Pooled: 0.997 at a width of 4.82, 3.44 -> 1.41
+note (of all key notes, open ones included; over fretted notes only 3.24 -> 1.35 / 3.20 -> 1.12 / 3.13 -> 1.13) 3.46 -> 1.53 / 3.62 -> 1.45 / 3.24 -> 1.24; notes with one possible place 0.10 -> 0.52 / 0.11 -> 0.58 / 0.06 -> 0.77. Pooled: 0.997 at a width of 4.82, 3.44 -> 1.41
 places per note. Files: `G/loop/hand/<S>/` and `hand/<S>/hand_window.csv` here; the one hand filter `hand/hand_filter.py`.
 
 ## The method, in plain words
@@ -138,9 +138,13 @@ onset group with no allowed place a soft cost (9 such groups on standard at marg
 Opus 5.5 at max effort in the sandbox (`G/loop/tools/sandbox_run.sh` + `blind_run.sh`), with copies of the video (nylon's
 with its title and end cards blacked out), the landmarks, the tools' manual and, for the checks, the tool's output and
 chain-2's onset times; 45 minutes allowed. Time, tokens and list cost from each `run.meta.json`. Audited by e1-blind
-(`G/work/e1-blind/audit_*.json`, with the file-access watch) and again by e1-record (`G/work/e1-record/audit2.py`: every
+(`G/work/e1-blind/audit_*.json`) and again by e1-record (`G/work/e1-record/audit2.py`: every
 tool call; any answer-bearing path, network, git, install or search): clean. The only paths outside a run's folder were its
-own session scratchpad inside the sandbox's private /tmp and the system python3 on its own files. No run was void.
+own session scratchpad inside the sandbox's private /tmp and the system python3 on its own files. No run was void. The
+clean verdict rests on the sandbox (the answer places are empty inside it) and the transcripts; the file-access watch logs
+no process ids and other lanes opened the answer folders during these windows, so it can neither show nor clear a run.
+The tracker's smoke test of the manual (`G/loop/blind/e1-smoke-n`) is not a condition: it ran before the sandbox with
+hard links (replaced by copies on 2026-11-27 05:00 UTC); no E1 number uses it.
 
 | run | song | kind | minutes | output tokens | cache read / write | cost (list) | tool calls | images read | keyframes | decisions | corrections | audit (e1-blind / e1-record) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -150,7 +154,7 @@ own session scratchpad inside the sandbox's private /tmp and the system python3 
 | hand-b-check | standard | check | 9.5 | 60,711 | 2.65 M / 136 k | $2.83 | 42 | 16 | 14 -> 14 | 53 | 16 | clean / 0 flags |
 | hand-c-anchors | nylon | anchors | 30.5 | 90,889 | 10.32 M / 182 k | $5.34 | 119 | 32 | 11 | - | - | clean / 0 flags |
 | hand-c-check | nylon | check | 20.3 | 97,289 | 9.30 M / 196 k | $5.38 | 87 | 28 | 11 -> 12 | 59 | 1 | clean / 0 flags |
-| all six | | | 133.0 | 498,733 | | $26.35 | | | | | | |
+| all six | | | 132.9 | 498,733 | | $26.34 | | | | | | |
 
 What the checks did (margin 1): capo's 13 corrections (3 false taps from the picking hand, 10 lost runs set from the
 picture) took its lost share from 0.0162 to 0.0000 and coverage of all from 0.9803 to
@@ -188,6 +192,11 @@ later (extrapolated nut, no track): four new exclusions at 171.8 to 188.1 s. On 
 24 times (10 with the development neck). The outlines were made to put fingertips in cells; the tool's wires are better.
 
 ## What fails
+
+- **The nylon nut drawn about a quarter fret off** (at 104.37 s and 172.82 s the nut and wire 1 sit about 20 frame px
+  towards the headstock from the real nut; from wire 3 on under 10 px; HAND-CHECK.md): a fingertip just behind wire 1
+  could read as fret 2. Margin 1 absorbs it and the nylon window excludes no key note even at margin 0; a margin-0 or
+  new-player use should snap wire 0 to the visible nut.
 
 - **A picking-hand tap read late** (capo 41.01 and 109.60 s, at every margin up to 1 and 109.60 at 2): the tapping fingers
   come in from below the board and count only 0.1 to 0.2 s after the note starts.

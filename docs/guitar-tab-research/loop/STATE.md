@@ -192,3 +192,15 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   call logged, resumable with the same command): L3 duplicates L2 now that the finder was right on all three, and belongs
   on the held-out songs (E7 runs L3); L1 is a ceiling, kept on the nylon song where model notes and the key's differ most.
   Running: L2 x3, L4 x3, L1 nylon, about $100 an hour. NOTES told; dollars per percent to be measured.
+
+## 2026-11-27 05:00 UTC: L-E1 done and checked
+
+- L-E1 (wf_a8a17bff-83d) done; its verify (`HAND-CHECK.md`) reproduced every number of `hand.json` (84 conditions) with its
+  own code and found the fret numbering right and the window covering the playing finger at 12 random notes. Its five
+  problems change no number; fixed by the orchestrator: places per note are over all key notes (fretted only: 3.24 -> 1.35
+  / 3.20 -> 1.12 / 3.13 -> 1.13), the clean verdict rests on the sandbox and transcripts (the watch has no pids), totals
+  132.9 min and $26.34 for the six blind E1 runs, the nylon nut drawn about a quarter fret off (absorbed by margin 1), the
+  tracker's smoke test (not a condition) had hard links: replaced by copies.
+- NOTES (04:31): about $420 spent so far; it goes lean and proposes about $250 for the rest of NOTES (film included), LOOP
+  the rest of the weekly window. Its new note model, gaps-paper, reads 0.954 / 0.822 / 0.896 onset F1 (old best 0.920 /
+  0.830 / 0.892); not added as a rung on the three songs (budget); E7 uses NOTES' frozen pipeline if it is ready first.
