@@ -138,3 +138,17 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
 - Caveat on record: L-E1's and L-E2's blind runs started before the network was closed; they ran in the file sandbox
   with the transcript audit, as AO-082's attempts did. Their answers (anchors and checks; tunings) gain nothing from the
   web for the nylon original, and the audits flag any network command.
+
+## 2026-11-27 03:50 UTC: L-E3 second pass done (check passed)
+
+- Main / heard share, the solver on chain-2's notes with the tuning given, hand off -> tool window: capo 0.767 / 0.770
+  -> 0.833 / 0.841 (FITTED: weights chosen on capo's key; start weights 0.680 -> 0.791), standard 0.829 / 0.852 -> 0.854
+  / 0.880, nylon 0.801 / 0.842 -> 0.801 / 0.842 (open position: the window adds nothing). Key's notes: 0.795 -> 0.876,
+  0.892 -> 0.915, 0.967 -> 0.967.
+- The new wrong-tuning rung on nylon, D G C F A D (AO-082's blind arms' answer): key's notes 0.780, chain-2's 0.619 under
+  every window; all 129 matched C4 go to string 2 fret 3, all 18 D4 to the open 1st string; the window catches it in only
+  6 onset groups. The steel rungs are dropped: the capo-aware lowest-note rule on chain-2's notes returns the true tuning
+  (the check notes that AO-082's own t-02 inputs would give a wrong 6th string on capo: to be stated in LADDER.md).
+- The plan's rule does not fire (+0.066 capo, +0.025 standard): L4 runs on all three songs.
+- Left for the ladder's refresh when E1 publishes: the finder slot, hand_filter.py in chain2f, FITTED labels in four
+  places, 21 table cells 0.001 off from double rounding, the capo rung's disclosure (LADDER-CHECK2.md).
