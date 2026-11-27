@@ -211,3 +211,29 @@ cmp /tmp/tab.json $D/score/tab.json && cmp /tmp/gp5.json $D/score/score_tab.json
 the recorded `score/tab.json` and `score/score_tab.json` (gtr-eval writes no time or run id, and the paths are the
 same). Run on the old box on 2026-11-27 before the upload: identical. `GTR_EVAL_LEDGER` keeps the check out of the
 real ledger.
+
+## Added after the independent check (2026-11-27)
+
+The check (restore of 5,430 files, every sha256 right, blind c3 re-scored byte for byte) found these, now handled:
+
+- **Hand tracking and two separators need more than the venvs.** w-01 and w-07 (hand and fretboard tracking) and sep-05
+  (a separator model) used files from the first research's folders. They are now in the workbench too (89 files,
+  `MANIFEST.add-hands.tsv` beside `MANIFEST.tsv`):
+  - `gtr/lanes/video-hands-fretboard/clones/co-tracker/`: the CoTracker clone, without its `.git`;
+  - `gtr/lanes/video-hands-fretboard/dl/mediapipe/`: `hand_landmarker.task`, the same file as
+    `gtv/production/kit/tools/hand_landmarker.task`;
+  - `gtr/lanes/source-separation/models/msst/`: `becruily_guitar.ckpt` and its config.
+
+  Still missing, to fetch again if you need them:
+  - CoTracker's `scaled_offline.pth` was already gone from the box. It is the checkpoint named in
+    `video/EXPERIMENTS.md` (w-07), from the facebookresearch/co-tracker release.
+  - `venv-msst`, `venv-uvr` and `venv-ultra` have no freeze file. Rebuild `venv-ultra` with the command in
+    `video/EXPERIMENTS.md` (setup, "venv-ultra"). For the two others take the versions in `gtv/tools/INSTALLED.md`.
+  - sep-04 downloads its own 699 MB model on the first run.
+- **Private values inside some work files.** No key or secret is in the workbench (all 26 key-store values were
+  searched for). A few agents' work files do hold private values in the private bucket:
+  - the command-center host, in `gtv/work/blind-auditor-r2/out/attach-*.jsonl`;
+  - the account id, endpoint, access key id and bucket inside expired signed links, in `gtv/work/audit-fix-a/t07/*` and
+    `gtv/work/exp-tuning/prompts/*`.
+
+  **Never copy those files, or text from them, into this public repo.**
