@@ -302,3 +302,9 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   thirds: right 0.885 / 0.796 / 0.791; minutes 2.17 / 2.92 / 2.69; output tokens 13,173 / 17,284 / 16,370 (slower and
   worse after the first third, with no window). Decisions: drops 42 invented against 7 played; alternatives kept 6 right
   against 15 invented and 4 played-but-misplaced; placing 3 wrong to right, 3 wrong to wrong.
+- 07:10 UTC: **L2 standard done**: main **0.875** (heard 0.916), matched 0.929, of matched 0.941, onset F1 0.901, GP5
+  0.863; solver alone on the same packs 0.854 (heard 0.880); 56 units, 145.5 writer minutes, $37.41 (revisits $1.25, 2
+  revisits). By thirds: right 0.906 / 0.848 / 0.851; minutes 2.32 / 2.74 / 2.75; output tokens 13,636 / 15,855 / 16,552.
+  Decisions: drops 33 invented against 7 played; alternatives 7 right against 16 invented; placing 13 wrong to right and
+  2 more from alternatives. Against L4 (hand off) 0.831: the window adds 0.044 for the bar writer here; W2 0.878. (The
+  main number equals AO-082's kit arm's list number, 0.874816, by coincidence: 594 of 679 both.)
