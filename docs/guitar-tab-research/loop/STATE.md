@@ -350,3 +350,28 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   invented, 0 played; alternatives 9 right against 40 invented and 12 played-but-misplaced; placing 22 wrong to right
   against 18 right to wrong. Notes found well (onset F1 0.933 against chain-2's 0.920); places are what it loses (W2:
   0.947).
+
+## 2026-11-27 08:00 UTC: held-out W2 scored (Closer, September); the error that is left
+
+- W2 scored with `G/loop/work/score_w2.py` (gtr-eval tab on answer.json, the same on the key's heard notes, gtr-eval
+  notes; `G/loop/score/<run>/w2_summary.json`), and the plain solver's own tab from each W2 pack (`solver_tab.json`, the
+  same inputs) beside it:
+
+| song | W2 main | heard | of matched | onset F1 | solver alone | minutes, list cost |
+|---|---|---|---|---|---|---|
+| capo (dev) | 0.947 | 0.955 | 0.972 | | 0.828 | 36.6, $10.85 |
+| standard (dev) | 0.878 | 0.914 | 0.940 | | 0.854 | 34.6, $8.86 |
+| nylon (dev) | 0.830 | 0.874 | 0.974 | | 0.801 | 27.9, $8.20 |
+| **September (held out)** | **0.823** | 0.839 | 0.839 | 0.968 | 0.736 | 25.7, $6.09 |
+| **Closer (held out)** | **0.698** | 0.715 | 0.768 | 0.894 | 0.579 | 35.9, $6.85 |
+
+- The brief's rule: held-out W2 (0.760 on these two) is more than 0.10 below the dev songs' mean (0.885), so the post
+  says the method did worse on new songs. The plain solver drops the same way (dev 0.828 / 0.854 / 0.801 against held-out
+  0.736 / 0.579); Opus's gain over the solver holds or grows (dev +0.119 / +0.024 / +0.029, held-out +0.087 / +0.119).
+  The notes are found well on both (onset F1 0.968, 0.894); the places are what drop.
+- **The error that is left is one kind**: an open string where the player fretted the same pitch inside the window.
+  September: 56 of 66 wrong places are key string 2 fret 3 written as the open 1st string. Closer: 243 wrong places, led by
+  key s4 f5 -> open s3 (53), s4 f7 -> open s2 (32), s6 f10 -> open s4 (31), s5 f5 -> open s4 (17); s3 f12 -> s2 f10 (57) is
+  the one fretted-to-fretted pattern. The capo song's tap passages were the same error in the loop runs. The hand window
+  cannot tell these apart (open strings are always allowed); the fingers can (E2's finger rule settled the nylon 1st
+  string 103 to 1).
