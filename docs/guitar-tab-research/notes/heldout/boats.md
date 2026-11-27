@@ -5,6 +5,12 @@ checks and the rights note are in `newplayer.md` (next to this file); this recor
 comes from a file named next to it. Heavy files are under `/home/user/gtv/` (not in the repo); work scripts, logs and
 pictures in `/home/user/gtv/work/heldout-boats/` (`bin/`, `logs/`, `out/`, `frames/`, `PROGRESS.md`).
 
+**Repaired the same day** by the lane H repair agent after the independent check (`boats-check.md`): 4 onsets moved
+(a nail touch and two rolled pinches), 8 `conf` values changed and 11 left-hand sounds added as `audio`, so the key now
+has 232 notes (`tab+audio` 212, `tab` 8, `audio` 12). See **Repairs** at the end. The numbers above Repairs describe
+the first build unless they say otherwise; Repairs gives every number that changed. The first build is kept in
+`/home/user/gtv/work/heldout-newplayer/orig/`.
+
 **No note transcriber** (Basic Pitch, the guitar models, Transkun, YourMT3, Noise2Fret, the kit's notes tools) was run
 on this recording to build, time or check this key. Everything comes from the tab page, onset envelopes of the raw
 audio, a high-pass attack envelope, CQT and STFT energy at the notes' partials, chroma, FluidSynth renderings of the
@@ -39,6 +45,7 @@ key uses sits +25.5 ms after them (IQR 22-29 ms). See Method, step 3. A tool sco
 | `boats.notes.csv`, `.beats.txt`, `.chords.lab`, `.mid`, `.tab.txt` | side files, written by the same build |
 | `boats.tab-merged.json` | the merged reading: reader A's file plus a `merge` block (comparison and settled doubts) |
 | `read-A.json`, `read-B.json` | the two independent readings (copied from the prep work folder) |
+| `boats.lefthand-heard.json` | added by the repair: sounds heard that are not notes of the key (quieter left-hand sounds, unconfirmed candidates, a resonance), for scoring that wants to ignore them |
 
 The scripts are in `/home/user/gtv/work/heldout-boats/bin/`. `common.py`, `feats.py`, `feats2.py` and `newscan.py`
 are copied from the september lane. `align.py`, `refine.py`, `build.py` and `check_render.py` are adapted from that
@@ -227,5 +234,189 @@ recording (Checks) agrees.
   and the **key** from Krumhansl-Kessler; beats follow the written rhythm.
 - **Training sets** (GuitarSet, GAPS, the Leduc set, GOAT) were not checked against track lists here. A 2019 Manx
   lesson video is unlikely to be in any of them (`newplayer.md`), but that is not proven.
-- **No independent check yet.** As with AO-082's keys, an agent that did not build this key should check it, audit it
-  and repair it if needed.
+- **Independent check and repair: done** (`boats-check.md`, then Repairs below). An audit by an agent that did
+  neither is still to come.
+
+## Repairs
+
+Done 2026-11-27 by the lane H repair agent of the NOTES session, after the independent check (`boats-check.md`,
+`/home/user/gtv/work/heldout-newplayer/check1.json`). It did not build the key or run the check. Work folder:
+`/home/user/gtv/work/heldout-newplayer/fix1/` (`bin/`, `logs/`, `out/`, `frames/`, `PROGRESS.md`). The first build is
+in `orig/` next to it (SHA-256 `16516a204c9c...`, `orig/SHA256SUMS.txt`). Repaired `boats.truth.json`: SHA-256
+`5bdcbfad3ea9...` (`fix1/logs/installed.sha256`). Every change, with its evidence: `fix1/out/boats-repairs.csv` and
+`fix1/out/repairs.json` (per-note files stay with the keys, outside git).
+
+**No note transcriber was run.** The repair used my own code on the raw audio: partial levels from STFTs (2048, 4096
+and 8192 points), the rise of a pitch's own partials across a time against its semitone neighbours, before/after
+spectra, high-band attack envelopes, CQT pictures and my own eyes. I also used the builder's attack list and the
+check's per-note numbers as inputs. Scripts were copied into `fix1/bin/`; no original was edited.
+
+**How the key was rebuilt.** The builder's own `build.py` was copied (`fix1/bin/build_fix.py`) and run on the
+builder's unchanged event file (`refined4.json`) plus `fix1/out/repairs.json`. So offsets, voices, beats, downbeats,
+chord boundaries and side files follow the moved and added notes by the builder's rules. There are two rule changes,
+both marked `FIX1` in the script:
+- a heard-only (`audio`) note never carries a beat or starts a chord;
+- `tab.txt` draws added notes at their own time, and no longer draws the grace note (Problem 5).
+
+### Problem 1, loud left-hand sounds missing: fixed (8 added, and 3 more of the same kind)
+
+I re-checked each of the check's eight with my own traces (`fix1/logs/lh.log`, `lhtime.log`; pictures
+`frames/t_46.png`, `t_48.png`, `t_53b.png`, `t_62d.png`, `t_19.png`, `s_57.png`, `s_58.png`, `t_58b.png`, `t_59b.png`).
+All eight are real. Four of them start earlier than the check's time:
+- the two C4 hammers (pass 2 bars 8 and 16) come 64 and 54 ms before the pluck the check timed them at;
+- the E3 of pass 2 bar 12 comes 42 ms before its pluck;
+- the D3 of pass 2 bar 13 comes 51 ms before its pluck.
+
+That matters at a 50 ms window. Each was added as `conf: "audio"`, voice `chord`, with `"legato": "h"` where a finger
+lands on a ringing string and `"p"` where one leaves it.
+
+Timing rule: a high-band attack within 8 ms of the sound's own partial rise, or of the previous pitch's fall, if
+there is one; otherwise the mean of that rise and that fall. These onsets are good to about ±15 ms.
+
+| onset s | note | where | evidence (own partials; previous pitch) | check's time |
+|---|---|---|---|---|
+| 46.642 | B2 s5 f2, h | pass 2 bar 2 pos 1.5, G shape on the ringing A2 | B2's 3rd and 5th partials rise 15-25 dB with the G2/B3 pluck (5th: steepest at 46.638); A2 falls | 46.642 |
+| 48.446 | B2 s5 f2, h | pass 2 bar 4 pos 0, Em shape | F#4 (B2's 3rd) rises 15-20 dB; A2's 5th partial falls 20 dB; an attack at 48.446, 15 ms before the E2/B3 attack | 48.461 |
+| 53.073 | C4 s2 f1, h | pass 2, the Am shape of bar 8 lands on the ringing B3 | C4's partials 4-6 rise at 53.075, B3's fall at 53.081, a 4.6 dB high-band bump at 53.073; the A2/A3 pluck follows at 53.138 | 53.138 |
+| 62.541 | C4 s2 f1, h | pass 2, Am shape of bar 16 | C4's partials 3, 4, 6 rise at 62.540, B3's fall at 62.543; the A2 pluck follows at 62.595 | 62.595 |
+| 19.319 | C4 s2 f1, h | pass 1, 192 ms before bar 8 | C4's partials 2-10 rise 26-32 dB over the neighbours; B3 falls at 19.318, a 4.5 dB bump there | 19.317 |
+| 57.415 | E3 s4 f2, h | pass 2 bar 10 pos 1.5, C shape on the ringing D3 | D3's partials 4 and 5 fall at 57.415; a 165 Hz peak at about C3's level after it (8192 points) | about 57.42 |
+| 58.598 | E3 s4 f2, p | pass 2 bar 12, F3 to E3 | 175 → 165 Hz on 8192 points; E3's 5th partial rises at 58.594, F3's 5th and 7th fall at 58.603; the C3/E4 pluck follows at 58.640 | 58.640 |
+| 59.129 | D3 s4 f0, p | pass 2 bar 13, the finger leaves string 4 fret 2 | a 22.6 dB high-band attack at 59.129; D3's 2nd and 5th partials rise at 59.12-59.13; E3 falls; the A2/C4 pluck follows at 59.180 | 59.180 |
+| 8.994 | G3 s3 f0, p | pass 1, before bar 4 (Em: string 3 open) | **found in the repair**: G3's 2nd partial rises 5 → 27 dB, A3 falls 18 dB at 9.003, a bump at 8.994 | not listed |
+| 15.213 | G3 s3 f0, p | pass 1 bar 6, 125 ms after the D4 | **found in the repair**: G3's partials 1, 2 and 5 rise 11-17 dB; A3's 2nd falls 22 dB | not listed |
+| 34.935 | G3 s3 f0, p | pass 1 bar 14, 127 ms after the D4 | **found in the repair**: G3's partials 1, 2 and 5 rise 20-26 dB; A3 falls at 34.936 | not listed |
+
+- **Why add them, not mask them.** The target is the notes as played (DIRECTION.md), and these sounds are as loud
+  as the key's notes:
+  - On my level scale (`lh.py`: a pitch's strongest unshared partial over 186 ms, against the median key note), the
+    eleven lie between -1.2 and -5.6 dB.
+  - The first build's own added G3 (60.703 s) lies at -7.6 dB on that scale.
+  - `gtr-eval notes` has no mask, so a sound left out would count as an invented note for any tool that hears it.
+- **The three G3s of pass 1 are the same sound the first build added at 60.703 s.** The finger leaves string 3
+  fret 2 about 125 ms after the D4 of bars 6 and 14 (and before bar 4). The first build measured these G3s at the
+  D4's onset, before they sound, and found them 23-25 dB under the D4. At their own time G3's fundamental is 3-10
+  dB under the D4's (`frames/t_15.png`, `t_34.png`), and -2.8 to -5.6 dB on the level scale above.
+  In pass 2, at full speed, I find no G3 rise of its own at bars 6 and 10; there the lift falls with the D4 pluck.
+- **That G3 at 60.703 s now carries `"legato": "p"`,** like the added pull-off sounds. Its time and `conf` are
+  unchanged.
+- **Weaker ones are not added.** The check's five weaker sounds (A#2 at 3.695, 13.966 and 24.42 s, B2 at 5.189 s, A2
+  at 36.211 s) are listed in `boats.lefthand-heard.json` with their levels. So are the first build's G3 ghosts and
+  these candidates:
+  - a C4 at 58.545 s (D4 stops, but B3 cannot be ruled out);
+  - a C4 at 57.30 s (weak);
+  - the B3 that sounds 34 ms before its own pluck at 46.642 s;
+  - the E2 resonance and the G#3 the check left out.
+- **How far the search went.** I made two more searches of my own:
+  - a full-grid scan for pitched rises that no key note explains (`fix1/bin/scan.py`, `scanfilt.py`);
+  - a string-by-string search for a string changing pitch between plucks (`fix1/bin/lhsearch.py`).
+
+  I looked at the 18 most likely candidates by eye (`frames/grid1.png`). Three were added (the G3s). The rest either
+  showed no rise over their semitone neighbours or could not be told apart from a ringing note sharing their
+  partials. Barre and shape landings in the slow pass (for example the F barre at about 3.6 s, the G shape at about
+  5.0 s) make further quiet sounds this repair did not resolve.
+
+### Problem 2, pass 2 bar 7 on a nail touch: fixed
+
+- **What I saw.** At 51.925 s the high band jumps 31 dB but the broadband level only +1.6 dB, and the ringing E4
+  goes dark for about 50 ms (`frames/p2_51.png`). At 51.977 s comes the release: broadband +6.4 dB, and E4's partials
+  6-10 rise 18-24 dB over their neighbours. A2's 5th partial rises 21 dB over its neighbours on 8192 points.
+- **Fix.** #152 A2 and #153 E4 moved to **51.977** (+51.9 ms, the builder's attack 51.9773), `conf` `tab+audio`.
+- **What followed.** The rebuild moved the pass-2 bar-7 downbeat and beat (51.925 → 51.977), the `C:maj` → `A:min`
+  chord boundary with them, and the offsets of the C3/E4 before them (to 51.967).
+- **The other four places the check named** (12.916, 44.926, 53.770, 58.013 s) are not touches:
+  - at 12.916 and 44.926 the key time itself is the release (broadband +7.5 and +9.8 dB);
+  - at 53.770 none of the later attacks carries an A2 rise;
+  - at 58.013 the attack is on the key time and F3/F4 rise there.
+
+  They are unchanged.
+
+### Problem 3, a rolled pinch at 50.745 s: fixed; and a second one at 62.595 s
+
+- **50.745 s.** F2's partials 2, 4, 5, 7 and 8 rise at 50.745. C4's partials 3 and 4 (F2's 9th and 12th) rise
+  again at the attack 50.781. #146 C4 moved to **50.781** (+35.9 ms), `conf` `tab+audio`.
+- **62.595 s, found in the repair.** Octave pairs (A2 with A3) were not tested for rolls in the check. I compared
+  A2's own partials (its fundamental and odd partials) with A3's (A2's even ones) at all 8 such events
+  (`fix1/logs/octpair.log`):
+  - Five rise within 17 ms of each other.
+  - At 38.765 and 53.138 s A2 was still ringing, so its fundamental gives no clock. There A3's partials (A2's even
+    ones) rise at the key time by 12-25 dB more than A2's odd ones, and nothing rises later
+    (`fix1/logs/octpair_evenodd_more.log`).
+  - At 62.595 s A2's fundamental rises at the key time (+22 dB), but A3's partials 2, 4 and 5 rise 35-44 ms later.
+  - At the attack 62.638 s (the builder's list, 14 dB), A2's even partials rise 8-17 dB and its odd ones do not
+    (median even minus odd: +13 dB).
+  - The check's own per-note numbers agree: they put #218's largest specific rise at +49 ms.
+
+  #218 A3 moved to **62.638** (+42.9 ms), `conf` `tab+audio`. The bar-16 beat stays on the A2 at 62.595.
+- That makes three split rolls in the key: pass 1 bar 7 pos 1.5, pass 2 bar 6 pos 0 and pass 2 bar 16 pos 0.
+
+### Problem 4, `conf`: the 8 changes made
+
+All eight follow the check, each re-checked (`fix1/out/repairs.json` has my numbers):
+
+| note | change | my re-check |
+|---|---|---|
+| #29 A3, 11.802 | `tab+audio` | G3 falls 24.6 dB across the hammer; A3's 10th partial +14.9 dB (8192 points) |
+| #43 E4, 16.824 | `tab+audio` | E4's partials 8-10 rise 27 dB over the neighbours |
+| #146 C4, moved to 50.781 | `tab+audio` | Problem 3 |
+| #152 A2 and #153 E4, moved to 51.977 | `tab+audio` | Problem 2 |
+| #168 B3, 54.561 | `tab+audio` | B3's partials 3 and 5 +20 dB, C4 falls 25 dB |
+| #218 A3, moved to 62.638 | `tab+audio` | Problem 3 |
+| #205 D4, 60.709 (the soft D4) | `tab` | its fundamental rises 14 dB but so do its semitone neighbours; its 3rd partial falls; only its 5th rises (8 dB) |
+
+**Counts after the repair: 232 notes, `tab+audio` 212, `tab` 8, `audio` 12.**
+- Pass 1: 114 notes (109 / 1 / 4).
+- Pass 2: 118 notes (103 / 7 / 8).
+- Voices: melody 136, bass 78, chord 18.
+- Legato: `p` 20, `h` 8.
+
+### Problem 5, the small ones: fixed
+
+- **`tab.txt` bar 5.** It now draws the hammered A3's `2` on string 3 at beat 1 and leaves the grace G3 out, as its
+  header says. Added notes are drawn at their own time, rounded to the 16th.
+- **The build log's clock.** The builder's lines are left as written. I appended a note to
+  `heldout-boats/PROGRESS.md` that gives each step's true time from its files: 02:53-03:11, against the logged
+  03:25-05:15.
+
+### Self-checks after the repair
+
+| check | first build | repaired |
+|---|---|---|
+| `gtr-eval check-truth` 0.12.1 | 2339 checks, 0 mismatches | **2449 checks, 0 mismatches** (`fix1/logs/checktruth_installed.json`) |
+| side files against the JSON (`fix1/out/eval/`) | 1.0 | `notes.csv` and `.mid`: onset and onset+offset F1 1.0; beats and downbeats F 1.0; chords 1.0; `tab.txt` 229 of 230 drawn notes matched in order, all on the same string and fret (the 2 graces are not drawn) |
+| FluidSynth render (program 24) vs recording, chroma cosine | 0.839 (pass 1 0.840, pass 2 0.837); shifted one bar 0.488 | **0.842** (0.837 / **0.852**); shifted 0.492 (`fix1/out/check_render_p24.json`) |
+| the AO-082 checker's onset detector on the recording: key events with a detection within 50 ms | 0.988 (161 of 163); median detection - key +14.1 ms | 0.977 (169 of 173); +14.6 ms. Missed: the left-hand sounds at 49.679 (the first build's hammer), 53.073 and 60.703, and the rolled C4 at 50.781, which shares the F2's detection |
+| detections that fall near a key event | 0.70 | 0.725 |
+| per-note pitch check (the builder's `pitch_check.py`) | present 0.878, median margin +9.0 dB | present 0.875, +9.1 dB; `tab+audio` 0.883 → 0.892. Of the 12 `audio` notes, 3 are under 1 dB (the G3s at 8.994 and 60.703, the D3 at 59.129: a neighbour's or the next pluck's partials share their bins); my own traces show each one rise |
+| key events (not `audio` only) with the check's attack (>= 10 dB) within 50 ms / 5 ms | 136 / 126 of 163 | 138 / 128 of 165 (`fix1/logs/onsetagree2.log`) |
+| `tempo_bpm` | 69.42 | 69.86. The builder's rule takes one median over both passes' beat intervals; the passes are 47 and 101 per minute, so that median sits between them and moved with the one re-timed beat. The per-pass tempi are unchanged |
+
+### Second pass (fresh eyes)
+
+I picked **30 random notes** of the installed key (seed 20261127, none of them changed) and **10 changed ones** (the
+4 moved notes and 6 of the 11 added). For each I looked at CQT strips of the fundamental, the 2nd partial and the
+3rd partial, ±0.25 s (`fix1/bin/cqtnote.py`, `frames/n2_01.png` to `n2_10.png`; verdicts in `fix1/out/pass2.json`).
+
+- **All 40 agree with their `conf`.** 38 are heard at their onset. The two `tab` notes (#144, the pass-2 grace
+  G3, and #215, the soft D4) show no rise of their own.
+- **Seven are heard only weakly.**
+  - F2 three times: the fundamental is below the picture, so the 2nd partial was used.
+  - Re-plucks of a string already ringing: A2 at 47.272, A3 at 54.766, E3 at 58.969.
+  - The A2 at 51.977, after the nail touch.
+- **Two of the added B2s show only through F#4**, their 3rd partial: their 2nd partial is the plucked B3's.
+- **Each moved note now starts where its own partials start.** The C4 at 50.781 lights C4, C5 and G5 only after the
+  F2. The A3 at 62.638 lights A4 and E5 after the A2. The E4 at 51.977 resumes after the touch's dark gap.
+
+### What remains uncertain after the repair
+
+- **The added left-hand sounds.**
+  - Their strings and frets are the ones the shape requires. The video cannot show them (the check's frames:
+    first position, strings not readable).
+  - Their onsets are good to about ±15 ms.
+  - The two B2s rest on their 3rd and 5th partials (their 2nd is the plucked B3's). The moved C4 at 50.781 rests on
+    its 3rd and 4th partials, since all of C4's partials are also F2's.
+- **Other quiet left-hand sounds exist** (`boats.lefthand-heard.json`, and the search limits under Problem 1). A tool
+  that hears them is charged with an invention, at most a few per pass.
+- **The convention for left-hand sounds.** They are timed when the pitch changes (the finger's contact or
+  release), not at the next pluck. A tool that marks them at the pluck will sit 40-65 ms late at four of them
+  (53.073, 58.598, 59.129, 62.541), and 15 ms late at a fifth (48.446).
