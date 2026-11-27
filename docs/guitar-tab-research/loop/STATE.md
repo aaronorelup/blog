@@ -280,3 +280,10 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
 - The running loops at 05:50 (peek, orchestrator only): L2 capo 0.824 (28 units), standard 0.896 (28), nylon 0.861 (30);
   L4 0.785 / 0.850 / 0.843; L1 nylon 1.000 (42 units, 537 key notes); E6 state-off capo 0.824 (15 units). Loop calls so
   far $185.62.
+
+## 2026-11-27 06:10 UTC: L1 nylon done
+
+- L1 on the nylon song (the key's onsets, offsets and pitches; the tuning given; the hand window): **1.000** of all 628
+  key notes on the key's string and fret (heard notes 556 of 556), 54 units, 86.3 writer minutes, $23.15 list, no
+  revisit. The plain solver with the same inputs: 0.967 (LADDER.md); AO-082's chain-5 (tuttut): 0.967. By thirds:
+  1.59 / 1.71 / 1.49 minutes and 9,281 / 9,455 / 7,989 output tokens a unit. Score: `G/loop/runs/l1-nylon/score/`.
