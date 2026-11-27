@@ -79,7 +79,8 @@ From `V/RESULTS.md`, `V/BLIND.md`, `V/BLIND-RESULTS.md`, `V/results/step-0*.md` 
   picked on the songs it was tested on: so E7 freezes everything before the held-out recordings.
 - **Privacy:** nothing from AO-078, and never Aaron's own videos or recordings as test material. Keys only through getkey
   (`python3 ~/.claude/bin/getkey.py NAME`) inside a script, never printed. The repo is public: no key, private link,
-  command-center host name or never-publish name in a commit (run `V/EMBED.md` 2.4's snippet over each records file).
+  command-center host name or never-publish name in a commit (run `V/EMBED.md` 2.4's snippet over each records file), and
+  nothing from the work files WORKBENCH.md marks as holding private values.
 
 ## 4. The experiments
 
@@ -234,8 +235,8 @@ round-2 attempts, so run L2 on one song first, measure it, and correct the plan 
    says; rebuild `venv-torch`, `venv-bp`, `venv-video` and `production/venv-mp` from their freeze files (madmom and chordext
    are not needed). Check `df -h /` (3 GB free), the keys (815 / 628 / 679 notes), the chain-2 notes, the w-01 landmarks,
    `assign_dp.py`, the weights against `SHA256SUMS`.
-2. Check the scorer: `gtr-eval selftest`, WORKBENCH.md's check (the Imagine kit arm: 0.875 in the list, 0.865 in the GP5,
-   byte for byte) and chain-5 on capo (0.795 and 0.791). If anything differs, stop and find out why.
+2. Check the scorer: `gtr-eval selftest`, WORKBENCH.md's check (the Imagine kit arm: 0.875 in the list, 0.865 in the GP5;
+   compare the scores, not the bytes) and chain-5 on capo (0.795 and 0.791). If anything differs, stop and find out why.
 3. Make the branch and `STATE.md`. Send NOTES one message on the held-out keys and the window's format.
 4. Run E1 on the stored landmarks (coverage on the three keys before any tuning of the tool), the first E3 rows, one bar's
    pack for the capo song (and look at it), and the custom agent type with its dummy run. Then send checkpoint 1.
