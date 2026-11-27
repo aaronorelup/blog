@@ -477,3 +477,14 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
 - I corrected the post's credit line (Fable 5.2 directed at first, Opus 5.5 after that) in `c61d3ce9`: check 0
   errors, build OK, 475 tests pass.
 - PR #10's description now has a section on the film. The janitor is stopped.
+
+## 2026-11-27 00:30 UTC: next work
+
+- Aaron's direction after the film is in `../DIRECTION.md`. The command-center project is guitar-tab-app; its overview
+  page holds the notes.
+- Two Opus sessions started, waiting for Aaron's go-ahead (he turns on UltraCode):
+  - NOTES, session_01UUo1x31YLxTbeZLXqSR5T3: "Getting the notes that were played", brief `../sessions/NOTES.md`.
+  - LOOP, session_01UUo1x2f72eggfMRUMBDXBs: "Opus writes the tab, bar by bar, under constraints", brief
+    `../sessions/LOOP.md`.
+- Running in this session: the workbench archive to R2 (wf_5c84098c-8e4, then `../WORKBENCH.md`) and the two briefs
+  with a critic (wf_aea93cb3-a39).
