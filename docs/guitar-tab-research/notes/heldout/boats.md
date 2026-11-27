@@ -41,7 +41,7 @@ key uses sits +25.5 ms after them (IQR 22-29 ms). See Method, step 3. A tool sco
 | file | what |
 |---|---|
 | `/home/user/gtv/songs/boats/boats.wav`, `.mono.wav`, `.mp4`, `.full.mp4` | the cut (prep step, `newplayer.md`): 67.094 s, both play-throughs |
-| `/home/user/gtv/truth/boats/boats.truth.json` | the key, in the schema of `capo.truth.json`; `boats.wav` is linked next to it. SHA-256 `16516a204c9c...` |
+| `/home/user/gtv/truth/boats/boats.truth.json` | the key, in the schema of `capo.truth.json`; `boats.wav` is linked next to it. SHA-256 `5bdcbfad3ea9...` (the repaired key; the first build, `16516a204c9c...`, is in the work folder's `orig/`) |
 | `boats.notes.csv`, `.beats.txt`, `.chords.lab`, `.mid`, `.tab.txt` | side files, written by the same build |
 | `boats.tab-merged.json` | the merged reading: reader A's file plus a `merge` block (comparison and settled doubts) |
 | `read-A.json`, `read-B.json` | the two independent readings (copied from the prep work folder) |
@@ -234,8 +234,8 @@ recording (Checks) agrees.
   and the **key** from Krumhansl-Kessler; beats follow the written rhythm.
 - **Training sets** (GuitarSet, GAPS, the Leduc set, GOAT) were not checked against track lists here. A 2019 Manx
   lesson video is unlikely to be in any of them (`newplayer.md`), but that is not proven.
-- **Independent check and repair: done** (`boats-check.md`, then Repairs below). An audit by an agent that did
-  neither is still to come.
+- **Independent check and repair: done** (`boats-check.md`, then Repairs below). Audited by an agent that did
+  neither (`boats-audit.md`: 7 PASS; its one FAIL, a stale SHA-256 in the Files table, is fixed).
 
 ## Repairs
 

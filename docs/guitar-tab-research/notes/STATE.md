@@ -166,3 +166,19 @@ tracker (no task tools, so nothing can leak into a blind attempt's context). New
   - `september.mono.wav` 31b7e69707c1cce0f76fa6ebdc28c7c09c401bde6a566d41913d94213609bd52
   - `video.mp4` d9b8107e7bd96d74a65e6cbe68bd705e19b7db419806ba32b7b42d4134983863
   - `MANIFEST.sha256` e647574d2f14accc670d229aff384c04c1d66ca2a56320f4e202ba91f4b40691
+
+## 2026-11-27 05:30 UTC: held-out key boats passed, archived; lane H done
+
+- `boats` (slot newplayer: Culture Vannin's Manx lesson "Three Little Boats", played by Pete Lumb, arranged by James
+  Franklin, nylon, standard tuning, no capo; video CC BY on Wikimedia Commons): built, checked, repaired, audited
+  (`heldout/boats-audit.md`: 7 PASS, 1 FAIL on a stale SHA-256 in the record, fixed in `boats.md`). 232 notes. No note
+  transcriber was used to build, time or check it. A new player for the post, but a short lesson piece.
+- Archived to private R2 at `workbench/guitar-tab-app/heldout/boats/` (21 files; `rclone check` 0 differences). SHA-256:
+  - `boats.truth.json` 5bdcbfad3ea92a54ae3d0a80cb73e3790ecdf4f7d48f6da9c5ec1ead2f2b9b26
+  - `boats.mono.wav` 7cd121a4dedde0a7d60d797fd9b13538b684a982ab833c9f1a2f41b2cd3e185b
+  - `video.webm` 80c2bbb27387af3ad2faa2e0df8f3c0e0ddab775003e48ebe430273dc18f732d
+  - `MANIFEST.sha256` c873e8a44262c8142b746c046fd370fddececb8b97970080ec9105d5a0f3e062
+- **Lane H done** (wf_8ce83282-775, 21 agents, measured about $170 at list prices). Three held-out keys: closer
+  (E A D G A D capo 1, steel), september (open G capo 2, nylon), boats (standard, nylon, a new player). Open item every
+  audit names: the check that no tested model trained on these videos (GuitarSet, GAPS, Leduc, GOAT track lists) is not
+  done; all three are a YouTube-mirror arrangement, a Vimeo video and a Commons lesson, so it is unlikely, not proven.
