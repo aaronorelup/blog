@@ -123,3 +123,18 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
 - L-E2 (the tuning finder, wf_8855e028-4f8) and L-E3's second pass (wf_2a695ee9-c96: the reviewed brief's wrong-tuning
   rung, nylon window cells, the heard share, the check's fixes) started 03:16.
 - The nylon-window watcher looked one folder too shallow and timed out; the windows existed (G/loop/e1/tuning/dev/).
+
+## 2026-11-27 04:25 UTC: loop fixed; second review; network closing
+
+- Loop fix lane done (`LOOP-BUILD.md` rewritten): copies only (st_nlink checked at every start), every writer, reviser,
+  tuner and W2 call sandboxed through `sbxcall.py`, snapshots and `--restart-from`, void stops the run (or one restart
+  with `--void-policy restart`), process groups killed on exit, transactional apply, L3 revisits uncapped, E6 state-off
+  isolation, the heard share in `score_run.py`, stricter validation. Sandboxed dry run: 3 capo units, 33 of 33 right.
+- Second review (`LOOP-REVIEW2.md`): every first-review problem fixed and re-tested; 3 new blocking: the sandbox still
+  reached the internet and localhost through the agent proxy (the keys are published tabs), the session ingress token was
+  readable, and a copied track.json named the nylon slot. Lane wf_b05b1158-f3e gives each call its own network namespace
+  whose only way out is a filtering proxy that allows the model API alone, masks the session credentials, strips source
+  paths and checks every blind folder for slot names, titles and players, then an adversarial re-test.
+- Caveat on record: L-E1's and L-E2's blind runs started before the network was closed; they ran in the file sandbox
+  with the transcript audit, as AO-082's attempts did. Their answers (anchors and checks; tunings) gain nothing from the
+  web for the nylon original, and the audits flag any network command.
