@@ -124,3 +124,21 @@ tracker (no task tools, so nothing can leak into a blind attempt's context). New
   from its transcripts at list prices (Opus 5.5: $4 in, $20 out, $5 cache write, $0.20 cache read): about $420
   (survey $131, lane H $164, tools $61, part 1 $42, main $13). From here: no new fan-outs, lane H finishes its audits,
   frozen rules and held-out runs scripted, the film small. Proposed split for Aaron: NOTES about $250 more, LOOP the rest.
+
+## 2026-11-27 04:45 UTC: LOOP's hand window, first use (N-E5)
+
+- LOOP published the hand-reach windows (L-E1 passed its check; `research/guitar-tab-loop` at ff2469f1). SHA-256:
+  capo `059da17e...0624`, tuning `744051af...6ede`, standard `1ca9118c...d637`, `hand_filter.py` `b210f11b...0626`
+  (full lines in `/home/user/notes/hand/SHA256SUMS`). Called unchanged on four tools' whole-song notes (onset F1 before
+  and after; found notes before = after in all 12 runs):
+
+| tool | capo | tuning | standard |
+|---|---|---|---|
+| gaps-paper | 0.9536 -> 0.9542 | 0.8217 -> 0.8217 | 0.8955 -> 0.8955 |
+| fl | 0.9199 -> 0.9204 | 0.7960 -> 0.7960 | 0.8917 -> 0.8917 |
+| gaps | 0.9189 -> 0.9303 | 0.8299 -> 0.8299 | 0.8787 -> 0.8914 |
+| Transkun | 0.8959 -> 0.8992 | 0.7849 -> 0.7862 | 0.8659 -> 0.8679 |
+
+- So the filter costs no found note on any song and removes only a few invented ones (gaps's stray MIDI-108 notes above
+  all). It is free to keep as a default stage; it does not meet the brief's "20 % of the vote's invented notes" bar for
+  gaps-paper. The E5 job reports the full table with the vote.
