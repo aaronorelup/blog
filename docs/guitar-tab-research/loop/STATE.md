@@ -320,3 +320,13 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   quarter of the cost), L3 only on the short Boats if it fits; **the film**: planned and scripted now, built after the
   reset unless at least 8% is left. NOTES asked to cut the same way and to leave 5% untouched for Aaron's other agents.
   Aaron asked on the project page (review 47): film now, smaller, or after the reset.
+
+## 2026-11-27 07:16 UTC: FREEZE for E7 at commit 497b3524
+
+- Every tool, prompt and threshold the held-out runs use is frozen at **commit 497b3524** (`loop/code/`, 52 files with
+  `SHA256SUMS`, a copy of `G/loop/tools/`): the hand-reach tool and its blind procedure (anchors, then check; margin 1,
+  hard), the tuning finder's procedure (Opus "everything" run), the solver and its capo-fitted weights, the loop and
+  W2 with their prompts, the sandbox. E7's one note rule: gaps-paper alone, default thresholds, then the hand filter
+  with the finder's tuning (alternatives fl, gaps, Transkun, Basic Pitch). No held-out run started before this line.
+- The capo song's tap miss (05:15 entry) is NOT fixed in the frozen loop: the held-out test runs the loop as the dev
+  songs ran it.
