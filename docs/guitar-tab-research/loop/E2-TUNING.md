@@ -129,3 +129,36 @@ for every key tuning, note-name sequences, song words and box paths (clean). Eve
   (standard's C4: 0.61 to 1.38 spacings), and on string 3 of the steel songs it leans to a string a semitone lower
   (cause not checked).
 - Steps (a) and (b) need Opus (frames) and are not here.
+
+## Blind runs: Opus finds the tuning, capo given (2026-11-27, 03:43 to 04:12 UTC)
+
+Six headless Opus 5.5 runs (effort max), each in its own folder of copies made from the song's pack and run inside
+`sandbox_run.sh` (the file sandbox; the network-closed one was not used, see STATE's 03:28 caveat). Condition
+**shape** (b): frames, the overlay, a spectrogram and the notes only (no `conflicts.py`, `fingers.py` or `render.py`
+in the folder or its TOOLS doc), prompt "from one clear chord shape ... Check it on a second shape". Condition **all**:
+the whole pack, prompt (1) open strings seen and heard, (2) chord shapes, (3) `conflicts.py`, (4) `fingers.py`. Both
+had 40 minutes. The three songs ran side by side, shape first. Windows: E1's development windows at margin 1 (not yet
+published), named with their SHA-256 in `e2-blind-runs.json`. Scored after each run with `gtr-eval tuning`.
+
+| song | condition | answer (string 6 to 1) | right of 6 | minutes | output tokens | list cost | frames looked at | audit |
+|---|---|---|---|---|---|---|---|---|
+| capo (tun-a, capo 3) | shape | E2 A2 D3 G3 B3 E4 | 6 | 12.9 | 77,975 | $3.22 | 16 | clean |
+| capo (tun-a, capo 3) | all | E2 A2 D3 G3 B3 E4 | 6 | 12.3 | 72,497 | $3.10 | 14 | clean |
+| standard (tun-b) | shape | E2 A2 D3 G3 B3 E4 | 6 | 11.4 | 68,288 | $2.81 | 16 | clean |
+| standard (tun-b) | all | E2 A2 D3 G3 B3 E4 | 6 | 10.2 | 58,785 | $2.48 | 13 | clean |
+| nylon (tun-c) | shape | D2 G2 C3 F3 A3 C4 | 6 | 14.6 | 86,871 | $3.51 | 16 | clean |
+| nylon (tun-c) | all | D2 G2 C3 F3 A3 C4 | 6 | 13.4 | 74,281 | $3.35 | 17 | clean |
+
+36 of 36 strings right; ledger ids e1268 to e1270 (shape) and e1281 to e1283 (all). AO-082's results on the nylon
+song were Drop D (lowest-note rule), standard (Opus on frames) and D G C F A D (both blind arms). Here the nylon's
+string 1 came from a G minor shape: the shape run read a fingertip at fret 2 on the string-1 edge while D4 sounded
+(62 - 2 = 60), then C4 three times with every finger at frets 1 and 2; the all run added C4 starting with Bb3 six
+times. "Frames looked at" counts Read calls on images (sheets of several frames and spectrograms included).
+
+Audit (an own script over every tool call, `G/work/e2-blind/audit.py`, plus a check of every absolute path in every
+tool input): no tool outside the six, no path outside the folder and the named Python, no network, git, install or
+machine search. Every run kept frames and lists in its own Claude Code scratchpad under `/tmp`, which inside the
+sandbox is a private, empty tmpfs (a note, not a breach). The shape runs also read `notes.csv`, the window and the
+fingertips with their own Python one-liners, and the nylon shape run checked a few candidate tunings against the window
+in its own code once: a home-made form of step (c), so that run is not a pure "chord shape only" measure. No run was
+void, none hit the 60-minute watchdog. One run each: no repeat spread yet.

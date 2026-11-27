@@ -27,12 +27,14 @@ cd $R/<run> && setsid nohup python3 $L/driver.py $R/<run> --void-policy restart 
 | E6 revisits off | as L2, a new run folder | `--revisits off --void-policy restart` |
 | W2 (whole song, E5) | as L2, a new run folder | not the driver: `setsid nohup python3 $L/w2.py $R/<run> > w2.out 2>&1 < /dev/null &` |
 
-L2 on the capo song with today's best window (E1 has not published `G/loop/hand/capo/` yet; when it does, give that
-folder as `--hand-dir` and drop `--anchors`):
+L2 on the capo song with today's window (E1 has not published `G/loop/hand/capo/` yet; when it does, give that
+folder as `--hand-dir` and drop `--anchors` and `--track`; the window of each song and condition is in "Network and
+credentials", item 4):
 
 ```
-cd $R && $L/prep.py capo l2-capo --notes l2 --tuning 40 45 50 55 59 64 --capo 3 \
-  --hand-dir /home/user/gtv/loop/e1/capo/v0_m1 --anchors /home/user/gtv/loop/e1/capo/anchors.v0.json
+E=/home/user/gtv/loop/e1
+cd $R && $L/prep.py capo l2-capo --notes l2 --tuning 40 45 50 55 59 64 --capo 3 --hand-dir $E/capo/dev/final_m1_f30 \
+  --anchors $E/capo/anchors.v0.json --track $E/capo/dev/track.final.json
 cd $R/l2-capo && setsid nohup python3 $L/driver.py $R/l2-capo --void-policy restart > driver.out 2>&1 < /dev/null &
 ```
 
@@ -128,6 +130,120 @@ The review's ten problems, in its order, and the eleven items of the fix brief.
 - **W2** runs through the same sandbox (`w2.py`: work folder = the run's blind folder, whose `inputs/` and `tools/`
   are read-only; its own process group, `writer.pid`, the hard limit; audit from its transcript). Not run yet.
 
+## Network and credentials (after LOOP-REVIEW2.md)
+
+By the sandbox-net agent, 2026-11-27 03:30-04:10 UTC: LOOP-REVIEW2.md's three blocking problems and its minor ones.
+Evidence in `G/work/sandbox-net/` (PROGRESS.md, `probe4.out` with `netprobe.sh` and `apiprobe.py`, `probe3.net.jsonl`,
+`writeprobe.out`, `killtest.sh` and `kk*.log`, `run_cli.py`, `sbxcall_test.py`; the replaced files in `orig/`). New code
+in `G/loop/tools/`: `net_filter.py`, `net_bridge.py`, `sbx_ro.py`, `loop/blindcheck.py`; changed: `sandbox_run.sh`,
+`blind_run.sh`, `loop/sbxcall.py`, `prep.py`, `driver.py`, `score_run.py`, `copy_run.py`. Every caller of
+`sandbox_run.sh` gets all of it (the driver, W2, and the lanes that call it directly).
+
+1. **Network** (blocking 1). Each call has its own network namespace (`unshare -n`) whose only interface is
+   loopback. Inside, `net_bridge.py` (run as nobody, no capabilities) listens on 127.0.0.1:3128 and joins each
+   connection to a unix socket served outside by `net_filter.py`, which `sandbox_run.sh` starts for the call's
+   lifetime (it exits with the call; log `G/transcripts/<run>/<call id>.net.jsonl`, beside the transcripts folder,
+   not writable inside). The filter takes only `CONNECT api.anthropic.com:443` and opens that connection itself,
+   directly. It also ends the TLS of that host with the sandbox's own CA (`G/loop/netca/`, outside every sandbox;
+   inside it is the only CA the variables name) and checks each request before sending it on over a new TLS
+   connection checked against the real certificate: method and path must be `POST /v1/messages` or
+   `/v1/messages/count_tokens`, the Host header the API host, the HTTP framing strict (CRLF only, one length,
+   chunked never beside a Content-Length; the request is written anew with its own length, so nothing can be
+   smuggled behind it), and a model request may name no tool the API runs itself (any tool type but custom), no
+   `mcp_servers`, no `container`, no content block with a URL or stored-file source and no JSON key twice. Inside,
+   `HTTPS_PROXY` / `https_proxy` (and `HTTP_PROXY`) point to the bridge, `NO_PROXY` is localhost only, the other proxy
+   variables are dropped. The path check matters: the session ingress has the same host as the model API
+   (`SESSION_INGRESS_URL` names api.anthropic.com), so a host filter alone would have let a readable token reach it.
+   - What a real call needs, found by testing (`SBX_NET_MODE=observe`, a real dummy call): besides `POST
+     /v1/messages` (Opus and one Haiku request) the CLI asks for `/api/claude_code/policy_limits`,
+     `/api/claude_code/settings`, `/api/eval/sdk-…`, `/api/claude_cli/bootstrap` and `/api/event_logging/v2/batch`,
+     and CONNECTs to `http-intake.logs.us5.datadoghq.com` (telemetry). All of them are refused and logged: dummy calls
+     answered the same with and without them ($0.024 each), and so did the real L2 call (item 5). No other host or
+     path was needed.
+   - Proved (`probe4.out`, a writer-like probe run through `sandbox_run.sh`): example.com, raw.githubusercontent.com,
+     the HQ rules page, api.github.com, github.com, claude.ai and plain http all refused at CONNECT; no DNS, and no
+     route to 1.1.1.1, 8.8.8.8, the API's own address, 10/8, 172.17/16, 192.168/16, 169.254.169.254 or IPv6 (raw
+     Python sockets and bash `/dev/tcp`); the box's localhost services (2024, 34837, 35889, the old proxy port 36933,
+     42117, 45135) closed, being in another namespace; the only unix socket visible is the filter's; on the API host
+     15 crafted requests refused (two session-ingress paths, the CLI's settings, the files API, web_fetch, web_search,
+     an image and a document from a URL, mcp_servers, a server tool in a gzip body and in a chunked body, a JSON key
+     twice, Content-Length with chunked, a foreign Host header, an absolute URL) while a clean one without credential
+     went through (401 from the API); `unshare`, `mount` and taking loopback down refused.
+2. **Credentials** (blocking 2). Found by masking known paths only: the permission system refused a listing of
+   `/home/claude/.claude/remote/` (as it refused the reviewer's listing of `/home/claude`), so nothing there was
+   listed or traced. Dummy `claude -p` calls (effort low, network closed): all of `/home/claude` masked: "Not logged
+   in"; only `.session_ingress_token` and its variable kept: "Not logged in"; with every dropped variable kept:
+   "Authentication error"; `~claude/.claude/remote/` bound back with `.session_ingress_token` bound to `/dev/null`
+   and every variable below dropped: works. So the CLI authenticates with another file of that folder, not with
+   the session's ingress token. Now: `/home/claude` is a tmpfs; `~claude/.claude/remote/` comes back read-only (a
+   writer cannot change the session's files) with `.session_ingress_token` bound to `/dev/null`; dropped from the
+   call's environment: `SESSION_INGRESS_URL`, `CLAUDE_SESSION_INGRESS_TOKEN_FILE`, `SBX_TELEMETRY_SOCKET`,
+   `CLAUDE_CODE_REMOTE*`, `CCR_*`, the messaging socket and token, the session, container, account and organization
+   ids, the user's e-mail, GitHub, AWS, cloud and git variables. Masked as well: `/run` (the telemetry socket and the
+   rest), `/dev/shm`, `~/.aws`, `~/.ssh`, `~/.studio`, `~/.boto`, `~/.gitconfig`, the environment manager's files, and
+   `~/.claude.json` is a per-call copy without the account's e-mail and the MCP servers (before, the CLI put the
+   e-mail into the writer's context). **The CLI's own credential stays readable inside** (it must, for the CLI to
+   log in), **but with the network closed it reaches nothing but the model API**: the filter sends on only model
+   requests without web tools, URL sources or MCP servers, so it buys a model call that cannot fetch anything, which
+   is what the writer already is; the session ingress, the CLI's settings, the files API and every other host and
+   path are refused.
+3. **Slot names** (blocking 3). `prep.py` no longer byte-copies the hand files that can name their sources: it
+   rewrites `tips.jsonl`, `anchors.json` and `track.json` with every path-like string set to null (the video and
+   the anchors get the blind folder's own paths), so `track.json` no longer names `G/loop/e1/<slot>/...` or
+   `G/experiments/<slot>/...`. At the end of every prep `loop/blindcheck.py` reads every file of the blind folder
+   (text; JSON values; CSV cells; media tags and the printable strings of binary files) for a slot name in a path,
+   file name or id or as a whole value, "truth", "experiments", a song's title, artist, player, id, source file or
+   source host (read from `video/songs.json` and `G/library/NOTES.md`, there only) and any path outside the folder,
+   the loop's code and the venvs; one hit refuses the run and deletes the folder. `driver.py` runs the same check at
+   every start. The bare word as a key (`"capo": 3`, `tuning_midi`) is the schema of every run and passes. On the 22
+   old blind folders: the nylon one (`bw/4701f496`, `r2-nylon-l2`) has 8 hits, all in `track.json`; the two
+   pre-fix dry runs name transcript paths; the rest none. `r2-nylon-l2` is marked `UNUSABLE.json` and the driver
+   refuses it (tested). Its replacement, `runs/r3-nylon-l2` (`bw/bd5dda21`), was prepared with the
+   same arguments: 53 units, 1,120 candidates, 0 hits; track and tips identical but for the three paths; the neck
+   model loads it. Preps of the capo and standard songs with the windows below, and an L4 one: 0 hits. Negative
+   tests: a player's name and "capo" as a value put into a `track.json`: both runs refused, folders deleted.
+4. **Minor problems.**
+   - Key copies: `score_run.py` writes `truth_heard.json`, `truth_span.json` and `truth_span_heard.json` to
+     `G/loop/score/<run>/`, never into the run folder; the 11 such files of earlier scorings were moved there;
+     `copy_run.py` skips `truth*.json`. Tested on a copy of dry3: the same numbers, no key file in the run folder.
+   - Orphans: the call keeps its own hard limit, so it stops even when the driver dies. `sbxcall.py` sets
+     `SBX_HARD_S` = the driver's limit + 60 s; `blind_run.sh` runs claude under `timeout` at `SBX_HARD_S` - 45 s
+     (TERM, KILL 20 s later), and `sandbox_run.sh` at `SBX_HARD_S` sends TERM to every process of the call's pid
+     namespace and 30 s later KILL (`unshare --kill-child` ends the namespace). Tested with the driver killed by
+     SIGKILL 5 s into the call (limit 10 s, so 70 s): a real claude running `sleep 240` was gone at +72 s
+     (`run.meta.json` written, exit 143), a sandboxed sleep 600 at +102 s.
+   - `/run`: the staging folders have random names and are removed on exit; folders of a call killed outright are
+     removed by the next start; the old `/run/sbx-1` and `/run/sbxrw-1` are gone. None left after the tests.
+   - The hand window of each condition (L1, L2, L3, E5's W2 and E6's two runs; L4 has none): `G/loop/hand/<S>/` once
+     lane E1 publishes it (then `--hand-dir G/loop/hand/<S>` alone). Until then the development windows (margin 1,
+     30 rows a second, scores in `G/work/e1-tracker/PROGRESS.md`):
+
+     | song | `--hand-dir` | `--anchors` | `--track` |
+     |---|---|---|---|
+     | capo | `G/loop/e1/capo/dev/final_m1_f30` | `G/loop/e1/capo/anchors.v0.json` | `G/loop/e1/capo/dev/track.final.json` |
+     | standard | `G/loop/e1/standard/dev/final_m1_f30` | `G/loop/e1/standard/anchors.v0.json` | `G/loop/e1/standard/dev/track.final.json` |
+     | nylon | `G/loop/e1/tuning/dev/final2_m1_f30` | `G/loop/e1/tuning/anchors.dev.json` | `G/loop/e1/tuning/dev/track.final2.json` |
+
+   - Added: nothing a call writes can run outside later. `/root` is an overlay with a tmpfs above it (what the CLI
+     writes in its home is gone after the call), the loop's code is always read-only (`net_filter.py`, which runs
+     outside, is there), and `sbx_ro.py` remounts read-only every mount the namespace got from the box (`/`,
+     `/opt/claude-code`, `/opt/env-runner`, `/dev`, `/mnt/...`). `writeprobe.out`: the system's Python, `/etc`, the
+     CLI, the venvs, the scorer, the loop's code, `/var/tmp` and `/dev` refused; `/root` and `~/.claude` writable
+     inside only (the real `~/.bashrc` unchanged). The writer's five tools (render, spec, solve, overlay, check)
+     give the same output with it as without.
+5. **One real L2 writer call** with everything in place: `runs/sn-l2-capo`, a copy of dry3, unit 3 (9.59-12.75 s),
+   Opus 5.5 at effort max: **1.37 minutes, $0.422 list** (8,202 output tokens, 214,884 input tokens with cache, 16
+   turns, 15 tool calls, 3 pictures read), valid on the first ask, audit 0 void 0 warn. Its 11 notes: 11 of 11 key
+   notes on the key's string and fret (heard 11 of 11), 0 wrong, missed or invented (`score_run.py`, span 0-12.75 s:
+   44 of 44). Its network log: 15 CONNECTs, all to api.anthropic.com:443, 10 `POST /v1/messages` let through (9
+   Opus, 1 Haiku, custom tools only), 13 of the CLI's other requests refused (settings, policy, flags, bootstrap,
+   telemetry) and one CONNECT refused (the telemetry host). The same unit before the change (kt-dry3): 2.04 minutes,
+   $0.530, 11 of 11. This lane's 20 dummy calls cost $0.27 list.
+
+Lanes: E1's three `hand-*-check` calls started at 03:40 and 03:43 UTC, before the change, under the old sandbox
+(network open); their transcripts (167 tool calls) hold no network command. E2's `tun-*-all` calls (started 04:00)
+run under the closed network and work (17 to 25 model requests each by 04:04).
+
 ## The files
 
 - **Driver side** `<run>/` (never shown to a writer): `run.json`, `progress.json`, `tab.json`, `changes.jsonl`,
@@ -212,15 +328,15 @@ G/loop/e1/capo/anchors.v0.json`, every call sandboxed, Opus 5.5 at effort max. N
 
 ## What is still weak
 
-- **The hand window is E1's v0** (one keyframe, no tracking). `--hand-dir G/loop/hand/<S>/` takes E1's published
-  folder when it lands; the nylon song still has no anchors.
+- **The hand window is E1's development window** (item 4 of "Network and credentials"), scored on the keys:
+  `--hand-dir G/loop/hand/<S>/` takes E1's blind, published folder when it lands.
 - **The residual** is noisy (FluidSynth's timbre); the context is now masked; `check.txt` is the better evidence.
 - **Alternatives are many** (971 on the capo song, 899 held by one model); thinning their labels helps the picture.
 - **Revisits are untested on hard bars**; L3's tuning review and re-placing ran only with fake calls.
 - **The new string-rings rule** may cost writers a round of `check.sh` on legato passages (they must mark
   `repluck` or move a note); dry3's writers passed it on the first ask, and the stand-in marks it itself.
 - **The guard** (inotify, no process ids) is unchanged; the sandbox is the first line and the transcript audit the
-  second. An attacker inside the sandbox could still read the session's own ingress token or the agent kit's state
-  files under `/root/.claude` (not answers, and the audit voids any read under /root).
+  second. Readable inside and not answers: the CLI's own credential (it reaches only model requests through the
+  filter), `~/.claude/settings.json`, the cached policy and remote settings, the CLI binary (read-only).
 - **W2's sandboxed path** is built but has not run a session.
 - **Only serial units** (`--max-parallel 1`); songs can run side by side as separate drivers.

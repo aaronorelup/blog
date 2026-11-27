@@ -152,3 +152,18 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
 - The plan's rule does not fire (+0.066 capo, +0.025 standard): L4 runs on all three songs.
 - Left for the ladder's refresh when E1 publishes: the finder slot, hand_filter.py in chain2f, FITTED labels in four
   places, 21 table cells 0.001 off from double rounding, the capo rung's disclosure (LADDER-CHECK2.md).
+
+## 2026-11-27 04:20 UTC: network closed; L4 started on all three songs
+
+- Sandbox network lane (wf_b05b1158-f3e) passed its adversarial re-test (`LOOP-REVIEW3.md`): each call has its own
+  network namespace with loopback only; its one way out is `net_filter.py`, outside, which allows CONNECT to the model API
+  alone and, reading that traffic with its own CA (the only one trusted inside), passes only POST /v1/messages and
+  count_tokens with no server tools, MCP servers or URL sources. /home/claude is masked except what the CLI needs to log
+  in (the session ingress token is /dev/null); the box's mounts are read-only inside, /root is a throwaway overlay. prep
+  nulls every source path and `blindcheck.py` refuses a blind folder holding a slot name, title, player or source path.
+  A real L2 call: 1.37 min, $0.42, 11 of 11 notes right, every CONNECT to the API host only. L-E1's three check runs
+  (03:40 to 04:01) ran before this, in the file sandbox; their transcripts hold no network command.
+- Test runs moved to `G/loop/runs/_tests/` (nothing deleted).
+- **L4 started 04:18 UTC** (chain-2's notes, tuning given, hand off), one driver each, `--void-policy restart`:
+  l4-capo (73 units, 1,853 candidates, 882 base), l4-standard (56 units, 1,458 / 734), l4-nylon (53 units cut at gaps:
+  its downbeats are unsure; 1,120 / 611). A watcher reports driver ends, voids and errors.

@@ -1,0 +1,427 @@
+{
+ "made": "2026-11-27 e2-blind (L-E2)",
+ "how": {
+  "runner": "G/loop/tools/sandbox_run.sh <folder> G/transcripts/<label> G/loop/tools/blind_run.sh <folder> <folder>/PROMPT.txt <label> max (Opus 5.5, tools Bash/Read/Write/Edit/Glob/Grep); launcher G/work/e2-blind/launch.sh (3 songs side by side, watchdog 60 min: never fired)",
+  "sandbox": "file sandbox (answers hidden); the network-closed sandbox (sandbox_run.new.sh) was not used: per STATE 03:28 caveat, the audit checks for network commands (none)",
+  "folders": "G/loop/e2/blind/<label>/ made by G/work/e2-blind/make_blind.py from G/loop/e2/packs/<pack> (copies, st_nlink 1); manifests G/loop/e2/blind/<label>.manifest.json",
+  "shape_condition": "tools frames.py, overlay.py (+neck.py), spectro.py; TOOLS-TUNING.md without the conflicts.py, fingers.py and render.py sections; notes.csv, hand/ (the overlay's inputs), neck/",
+  "all_condition": "the whole pack (conflicts.py, fingers.py, render.py too)",
+  "window": "E1 development windows at margin 1, 30 rows a second (G/loop/hand not published at 04:13 UTC); file and SHA-256 per run",
+  "prompt_sha256": {
+   "tun-a-shape": "bf4f8a10cf25a2c2afb64d02c0b4d74795edb1fcf02253d34e51e6a60ab14f79",
+   "tun-b-shape": "31b4d8448d26a4af18bdec3aca5ef1c24c24cdb30e339cd267304cadd21fde62",
+   "tun-c-shape": "31b4d8448d26a4af18bdec3aca5ef1c24c24cdb30e339cd267304cadd21fde62",
+   "tun-a-all": "90a11a3890cc96305b8edf3391d8db995005c578321389e011d9b7c34893a1e8",
+   "tun-b-all": "32efbed88197e49d7798db1e2db4d4b7d8a4aa9cf3096dd8d9311cf4c0258b63",
+   "tun-c-all": "32efbed88197e49d7798db1e2db4d4b7d8a4aa9cf3096dd8d9311cf4c0258b63"
+  },
+  "audit": "G/work/e2-blind/audit.py (every tool call; paths outside the folder and the named Python; network, git, install, machine search; '..', '~'), results G/loop/e2/blind/<label>.audit.json; plus a cross-check of every absolute path under /home, /root, /etc in every tool input: none foreign",
+  "audit_notes": "every run used its Claude Code session scratchpad /tmp/claude-0/... (inside the sandbox: a private empty tmpfs) for frames and lists; counted as a note, not a breach. The shape runs read notes.csv, hand_window.csv and tips.jsonl with their own Python one-liners (the files are in their folder); tun-c-shape also checked a few candidate tunings against the window in its own code (one call), a home-made version of step (c)",
+  "scoring": "G/work/e2-blind/score.py after each run ended: gtr-eval tuning (ledger G/loop/ledger/evals.jsonl, cents from G/experiments/<S>/t-01) and an own count of open strings right of 6",
+  "frames_looked_at": "Read calls on image files (sheets of one or more frames, spectrograms included)"
+ },
+ "runs": {
+  "tun-a-shape": {
+   "label": "tun-a-shape",
+   "song": "capo",
+   "condition": "chord shape (b): frames, overlay, spectrogram, notes",
+   "capo_given": 3,
+   "window_sha256": {
+    "hand_window.csv": "607ab0cdfb10eb02dd9e1107e643fb3e1338300e1535dcf4a276eca43b4efb22",
+    "tips.jsonl": "0ee954b794c5cdf8da9b01174ed1aaac265e9c73680e1b524002e56a71bee099"
+   },
+   "minutes": 12.9,
+   "output_tokens": 77975,
+   "cost_usd_list": 3.2167483999999997,
+   "num_turns": 50,
+   "tool_calls": 47,
+   "frames_looked_at": 16,
+   "audit": "clean",
+   "audit_flags": [],
+   "answer_names": "E2 A2 D3 G3 B3 E4",
+   "open_right_of_6": 6,
+   "per_string": [
+    {
+     "string": 6,
+     "answer": "E2",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.9
+    },
+    {
+     "string": 5,
+     "answer": "A2",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.85
+    },
+    {
+     "string": 4,
+     "answer": "D3",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.8
+    },
+    {
+     "string": 3,
+     "answer": "G3",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.85
+    },
+    {
+     "string": 2,
+     "answer": "B3",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.85
+    },
+    {
+     "string": 1,
+     "answer": "E4",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.75
+    }
+   ],
+   "eval_id": "e1268",
+   "tuning_equal": true,
+   "cents_abs_diff": 1.0
+  },
+  "tun-a-all": {
+   "label": "tun-a-all",
+   "song": "capo",
+   "condition": "everything: the whole pack",
+   "capo_given": 3,
+   "window_sha256": {
+    "hand_window.csv": "607ab0cdfb10eb02dd9e1107e643fb3e1338300e1535dcf4a276eca43b4efb22",
+    "tips.jsonl": "0ee954b794c5cdf8da9b01174ed1aaac265e9c73680e1b524002e56a71bee099"
+   },
+   "minutes": 12.3,
+   "output_tokens": 72497,
+   "cost_usd_list": 3.1031372000000004,
+   "num_turns": 49,
+   "tool_calls": 48,
+   "frames_looked_at": 14,
+   "audit": "clean",
+   "audit_flags": [],
+   "answer_names": "E2 A2 D3 G3 B3 E4",
+   "open_right_of_6": 6,
+   "per_string": [
+    {
+     "string": 6,
+     "answer": "E2",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.85
+    },
+    {
+     "string": 5,
+     "answer": "A2",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.9
+    },
+    {
+     "string": 4,
+     "answer": "D3",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.85
+    },
+    {
+     "string": 3,
+     "answer": "G3",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.7
+    },
+    {
+     "string": 2,
+     "answer": "B3",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.75
+    },
+    {
+     "string": 1,
+     "answer": "E4",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.65
+    }
+   ],
+   "eval_id": "e1281",
+   "tuning_equal": true,
+   "cents_abs_diff": 1.0
+  },
+  "tun-b-shape": {
+   "label": "tun-b-shape",
+   "song": "standard",
+   "condition": "chord shape (b): frames, overlay, spectrogram, notes",
+   "capo_given": 0,
+   "window_sha256": {
+    "hand_window.csv": "9e398c6895afa6891abce61143b7a7475625f85328ac31976535285adca78372",
+    "tips.jsonl": "2c7f6fcd94ad2f64f3d5a217b83f38117760f47d655c5fef3300a0377e4123a8"
+   },
+   "minutes": 11.4,
+   "output_tokens": 68288,
+   "cost_usd_list": 2.8083042,
+   "num_turns": 50,
+   "tool_calls": 48,
+   "frames_looked_at": 16,
+   "audit": "clean",
+   "audit_flags": [],
+   "answer_names": "E2 A2 D3 G3 B3 E4",
+   "open_right_of_6": 6,
+   "per_string": [
+    {
+     "string": 6,
+     "answer": "E2",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.85
+    },
+    {
+     "string": 5,
+     "answer": "A2",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.85
+    },
+    {
+     "string": 4,
+     "answer": "D3",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.85
+    },
+    {
+     "string": 3,
+     "answer": "G3",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.85
+    },
+    {
+     "string": 2,
+     "answer": "B3",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.85
+    },
+    {
+     "string": 1,
+     "answer": "E4",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.7
+    }
+   ],
+   "eval_id": "e1269",
+   "tuning_equal": true,
+   "cents_abs_diff": 3.0
+  },
+  "tun-b-all": {
+   "label": "tun-b-all",
+   "song": "standard",
+   "condition": "everything: the whole pack",
+   "capo_given": 0,
+   "window_sha256": {
+    "hand_window.csv": "9e398c6895afa6891abce61143b7a7475625f85328ac31976535285adca78372",
+    "tips.jsonl": "2c7f6fcd94ad2f64f3d5a217b83f38117760f47d655c5fef3300a0377e4123a8"
+   },
+   "minutes": 10.2,
+   "output_tokens": 58785,
+   "cost_usd_list": 2.4842454000000003,
+   "num_turns": 41,
+   "tool_calls": 32,
+   "frames_looked_at": 13,
+   "audit": "clean",
+   "audit_flags": [],
+   "answer_names": "E2 A2 D3 G3 B3 E4",
+   "open_right_of_6": 6,
+   "per_string": [
+    {
+     "string": 6,
+     "answer": "E2",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.97
+    },
+    {
+     "string": 5,
+     "answer": "A2",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.9
+    },
+    {
+     "string": 4,
+     "answer": "D3",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.9
+    },
+    {
+     "string": 3,
+     "answer": "G3",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.9
+    },
+    {
+     "string": 2,
+     "answer": "B3",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.9
+    },
+    {
+     "string": 1,
+     "answer": "E4",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.85
+    }
+   ],
+   "eval_id": "e1282",
+   "tuning_equal": true,
+   "cents_abs_diff": 3.0
+  },
+  "tun-c-shape": {
+   "label": "tun-c-shape",
+   "song": "tuning",
+   "condition": "chord shape (b): frames, overlay, spectrogram, notes",
+   "capo_given": 0,
+   "window_sha256": {
+    "hand_window.csv": "9e57bb85d2a94b1c3fbfd2721864ecb6a194ce301c218b7b38e5cc450e1b050b",
+    "tips.jsonl": "51506e61bfda4759eb31fff4ee7952bb4a32bd3f4d3195f97e1d9739028eae6e"
+   },
+   "minutes": 14.6,
+   "output_tokens": 86871,
+   "cost_usd_list": 3.5125304,
+   "num_turns": 43,
+   "tool_calls": 41,
+   "frames_looked_at": 16,
+   "audit": "clean",
+   "audit_flags": [],
+   "answer_names": "D2 G2 C3 F3 A3 C4",
+   "open_right_of_6": 6,
+   "per_string": [
+    {
+     "string": 6,
+     "answer": "D2",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.9
+    },
+    {
+     "string": 5,
+     "answer": "G2",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.85
+    },
+    {
+     "string": 4,
+     "answer": "C3",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.8
+    },
+    {
+     "string": 3,
+     "answer": "F3",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.8
+    },
+    {
+     "string": 2,
+     "answer": "A3",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.8
+    },
+    {
+     "string": 1,
+     "answer": "C4",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": 0.7
+    }
+   ],
+   "eval_id": "e1270",
+   "tuning_equal": true,
+   "cents_abs_diff": 1.0
+  },
+  "tun-c-all": {
+   "label": "tun-c-all",
+   "song": "tuning",
+   "condition": "everything: the whole pack",
+   "capo_given": 0,
+   "window_sha256": {
+    "hand_window.csv": "9e57bb85d2a94b1c3fbfd2721864ecb6a194ce301c218b7b38e5cc450e1b050b",
+    "tips.jsonl": "51506e61bfda4759eb31fff4ee7952bb4a32bd3f4d3195f97e1d9739028eae6e"
+   },
+   "minutes": 13.4,
+   "output_tokens": 74281,
+   "cost_usd_list": 3.348542400000001,
+   "num_turns": 51,
+   "tool_calls": 50,
+   "frames_looked_at": 17,
+   "audit": "clean",
+   "audit_flags": [],
+   "answer_names": "D2 G2 C3 F3 A3 C4",
+   "open_right_of_6": 6,
+   "per_string": [
+    {
+     "string": 6,
+     "answer": "D2",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": "high"
+    },
+    {
+     "string": 5,
+     "answer": "G2",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": "high"
+    },
+    {
+     "string": 4,
+     "answer": "C3",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": "medium-high"
+    },
+    {
+     "string": 3,
+     "answer": "F3",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": "medium"
+    },
+    {
+     "string": 2,
+     "answer": "A3",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": "high"
+    },
+    {
+     "string": 1,
+     "answer": "C4",
+     "right": true,
+     "semitones_off": 0,
+     "confidence": "medium-high"
+    }
+   ],
+   "eval_id": "e1283",
+   "tuning_equal": true,
+   "cents_abs_diff": 1.0
+  }
+ }
+}
