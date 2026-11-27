@@ -204,3 +204,19 @@ tracker (no task tools, so nothing can leak into a blind attempt's context). New
   weights by SHA-256; `methods.py` reproduces every development number (vote5 0.9567 / 0.8256 / 0.9249, fusion+filters
   0.9385 / 0.8470 / 0.9160). No hand window exists for the held-out songs, so LOOP's hand filter is not applied there.
 - **N-E7 started:** the five tools run on closer, september and boats (`/home/user/notes/runs/e7/`), key-free.
+
+## 2026-11-27 07:08-07:30 UTC: N-E7 held-out result; the weekly limit at 85 %
+
+- The box restarted at 07:08 UTC mid-run (closer's last three tools); `run_tools.sh` resumed them.
+- **N-E7** (`results/e7-heldout.md`; frozen code re-hashed first, 0 mismatches; scored once with gtr-eval, ledger
+  e3544-e3598). Onset F1 closer / september / boats, mean:
+  - frozen primary vote5+filters 0.8917 / 0.9627 / 0.9374, **0.9306**;
+  - roll fusion+filters 0.8893 / 0.9713 / 0.9425, **0.9343** (best row; frozen as a row, so not claimed as the winner);
+  - gaps-paper alone 0.8812 / 0.9626 / 0.9420, 0.9286 (the best single tool); fl 0.9053; gaps 0.9139.
+  - per-bar pick ORACLE 0.9334; union of the five finds 0.947 / 0.988 / 0.983 of the key.
+  So both frozen combinations beat every single tool on the held-out mean (+0.002 and +0.006); the vote's gain lives on
+  the steel song. Not checked by a second agent (budget).
+- **Weekly limit:** LOOP read 0.85 at 06:51 UTC (0.72 at 05:02; about $30-35 per 1 % for both sessions), 12-15 % left
+  until about 2026-12-02 11:00 UTC; both sessions leave at least 5 % for Aaron's other agents. This session runs no more
+  agents now. The film (lane F) waits for the reset unless Aaron says otherwise; the blind Opus picks (N-E3) wait for his
+  yes and the budget.
