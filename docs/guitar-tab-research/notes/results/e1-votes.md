@@ -37,7 +37,8 @@ from the note lists and rolls that part 1 made.
 - **Why the steel and nylon songs differ** (step 0). On capo and standard, 53 % and 63 % of gaps-paper's misses
   have a strong onset in another model's roll (bucket A): the vote's job. On the nylon song, 42 of gaps's 111 misses
   (38 %) have no evidence in any of the three rolls (bucket C), and 55 of its 101 invented notes are an octave or a
-  twelfth of a key note that is sounding. Choosing among the models cannot fix those.
+  twelfth of a key note that is sounding (42 above it, where a partial sits, and 13 an octave below; checker).
+  Choosing among the models cannot fix those.
 - **What I would freeze:** the 3-of-5 vote, median onset, k = 3. It is 0.0007 below the 4-of-7 vote on the mean,
   uses only tools that run on this box (no public Space, no separation step), and its k does not move between dev24
   and any LOSO fold. Roll fusion (mean, 0.275) is the second app method, because it is the one that helps the nylon
@@ -144,8 +145,8 @@ What it says:
 
 Exclusive categories, in this order: out of range (below the lowest open string with the capo, or above the 1st
 string's fret 20); at a slap (within 50 ms of a key slap or thump, the `taps_invented.py` rule); an octave or a twelfth
-of a sounding key note (pitch difference 12, 19 or 24 from a key note whose onset is at most 50 ms after it and whose
-let-ring offset is after it); other. "Lone" = no other candidate list has that pitch within 50 ms.
+of a sounding key note (invented pitch minus key pitch = +12, -12, +19 or +24, for a key note whose onset is at most 50 ms after it and
+whose let-ring offset is after it); other. "Lone" = no other candidate list has that pitch within 50 ms.
 
 | song (tool) | invented | out of range | at a slap | octave or twelfth | other | lone |
 |---|---|---|---|---|---|---|
@@ -155,7 +156,8 @@ let-ring offset is after it); other. "Lone" = no other candidate list has that p
 
 - **Almost no invented note is lone** (12 of 188). Other tools invent the same notes, so a vote can only remove the
   ones that fewer than k tools share. On the steel songs they are slap notes (E6's subject). On the nylon song more
-  than half are octave or twelfth partials of notes that are ringing (E4's and E5's subject).
+  than half are an octave or a twelfth from a note that is ringing (E4's and E5's subject): 42 of the 55 sit above
+  it, at a partial; 13 are an octave below it, which is not a partial (checker).
 - The range alone removes 1 of the 188.
 
 ## Step 2: the methods
@@ -203,7 +205,7 @@ F1 over the 24 dev clips at the dev24-chosen setting. The rank is the row's plac
 | 63 | fl alone | none | 0.9199 | 0.7976 | 0.8917 | **0.8698** | 0.9040 | 529 | -0.75 | |
 
 The difference between neighbouring rows is often a single LOSO choice. Example: the 4-of-7 vote with the median
-onset (row 9) and with the reliable onset (row 1) score the same at every song for k = 4. They differ only because the
+onset (rank 12) and with the reliable onset (rank 1) score the same at every song for k = 4. They differ only because the
 LOSO fold for the tuning song picks k = 5 for the median rule: on capo and standard, k = 5 beats k = 4 by 0.0003.
 
 ### a. Oracles (they look at the key)
@@ -466,7 +468,7 @@ Columns `onset,offset,pitch,support,conf`.
 
 `source.json` beside each file gives the method, its setting for that song, the candidate files, the source CSV's
 sha256 and the song's scores. The handoff files score the same as the method's notes (checked with the gtr-eval CLI on
-capo, 3-of-5: 0.956734). Roll fusion (mean, dev24) is not in the handoff because it ranks 8th. Its notes are in
+capo, 3-of-5: 0.956734). Roll fusion (mean, dev24) is not in the handoff because it ranks 11th (its per-register variant ranks 8th). Its notes are in
 `/home/user/notes/runs/e1/out/notes/fuse-mean-dev24/`, for LOOP to take if the nylon song needs it.
 
 ## What is uncertain
@@ -502,3 +504,66 @@ capo, 3-of-5: 0.956734). Roll fusion (mean, dev24) is not in the handoff because
 | `/home/user/notes/runs/e1/out/disagree.json` | bars where the tools differ from the vote |
 | `/home/user/notes/runs/e1/bin/` | every script: `e1lib.py`, `methods.py`, `diag.py`, `fit.py`, `fuse_decode.py`, `fuse_score.py`, `fuse_time.py`, `collect.py`, `score_cli.py`, `tables.py`, `handoff.py`, `disagree.py` |
 | `/home/user/gtv/notes/<S>/e1-<method>/` | the handoff for LOOP |
+
+## Checker
+
+Checked on 2026-11-27 by an independent checker of the NOTES session. Work folder `/home/user/notes/runs/check-e1/`
+(`PROGRESS.md`, `bin/`, `out/`; the record before these edits is in `backup/e1-votes.md.orig`). I wrote my own scorer
+(`bin/ck.py`: mir_eval `match_notes`, onset 50 ms, 50 cents, offsets ignored, drums left out), my own clustering and
+votes, my own per-bar oracle and my own roll fusion. I did not import `e1lib.py` or `methods.py`. Nothing was run
+on a held-out song. Every check took seconds on this box, so none went through gtr-run.
+
+**Verdict: the numbers stand.** The fits are LOSO or dev24 as stated, and the oracles are labelled. Five sentences
+were wrong or unclear. I corrected them above, and they are listed at the end of this section.
+
+### What I re-derived
+
+| check | how | result |
+|---|---|---|
+| every method's F1, all 74 note folders, whole songs and seg30 | my scorer; my own crop of the whole-song notes; segment keys made again with `crop_truth.py` (they equal E0's) | the largest difference from `collect.json` is 5e-7 (F1, seg30 F1, heard-only recall) |
+| the three handoff methods | gtr-eval CLI on `/home/user/gtv/notes/<S>/e1-*/notes.csv` | 0.9559 / 0.8313 / 0.9222; 0.9567 / 0.8256 / 0.9249; 0.9505 / 0.8265 / 0.9291, as in the record |
+| k-of-n votes, both onset rules, all five sets | my own clustering; k re-fitted by LOSO and on dev24 | every chosen k and F1 is the same. 4-of-7 reliable: k 4, 4, 4, mean 0.9031. 3-of-5 median: k 3 in every fold and on dev24 (dev24 0.9053), mean 0.9024 |
+| the weighted vote of all seven, precision weights | weights and threshold fitted again on the two other songs | thresholds 4.5 / 5.5 / 6.0, F1 0.9505 / 0.8265 / 0.9291, mean 0.9020 |
+| roll fusion, mean | my own fusion (gaps moved 7.5 ms later with `np.interp`), the package's decoder at 0.275, range mask | 0.9385 / 0.8470 / 0.9160, the same note counts (860 / 607 / 666) |
+| the fusion threshold | E1's decoded notes scored again | dev24 picks 0.275 (dev24 0.9098); the LOSO picks are 0.275 / 0.35 / 0.35, mean 0.8971 |
+| single-model fusion and dev24 | the gaps-paper roll alone at 0.30 and 0.45 | it reproduces gaps-paper on the songs; dev24 0.9146 at 0.30 and 0.9177 at 0.45 |
+| ORACLE per-bar picks and the note-level oracle | my own code | three tools 0.9136, four 0.9189, all seven 0.9241, note level 0.9733 |
+| dev24 single tools | my scorer | gaps-paper 0.9146, fl 0.8957, gaps 0.866, Transkun 0.771, Basic Pitch 0.744 |
+| step 3's P, R, missed + invented, heard-only recall, seg30 | my scorer, for the six leaders | every cell of the step-3 table matches |
+| step 0's buckets and invented-note categories | my own code from the rolls | it matches when I use E1's frame window; see the first item below |
+| the reliability order | YourMT3+, Basic Pitch and the separation run moved to other places in the order | the 4-of-7 reliable vote does not change (0.9031) |
+| handoff files | columns, row counts, sha256 of the source, `support` and `conf` worked out again | columns `onset,offset,pitch,support,conf`; rows 840/575/657, 826/559/640 and 841/594/632; every sha256 matches; `support` matches everywhere; `conf` differs in 3 of 6,164 rows (the frame window) |
+| run ids | `/home/user/gtr/ledger/runs.jsonl` | r1493, r1497, r1498, r1511, r1512, r1521 and r1523 are all there, lane notes, exit 0, with the wall times the record gives |
+| this file | the repo's never-publish hashes, a scan for hosts, URLs, credentials and note rows | no hits. It holds numbers only: no key note list and no tab text |
+
+### Corrections and caveats
+
+- **Step 0's ±50 ms window is really up to ±55 ms.** E1 takes frames `round((t - 0.05) * 100)` to
+  `round((t + 0.05) * 100)`, inclusive. With an exact ±50 ms window:
+  - tuning is A 37, B 31, C 43 (record: 38 / 31 / 42), and its rolls at 0.3+ are fl 22, gaps 17, gaps-paper 24
+    (record: 23 / 18 / 27);
+  - standard is A 58, B 13, C 21 (record: 58 / 14 / 20);
+  - capo is the same.
+
+  No conclusion changes. The 3 handoff `conf` values come from the same window.
+- **"Octave or twelfth" was described as partials.** E1's rule takes invented pitch minus key pitch = +12, -12, +19
+  or +24. On the nylon song, 42 of the 55 sit above a ringing note, where a partial is. The other 13 are an octave
+  below one, and a note below is not a partial of it. I corrected the rule and the two sentences that read the 55
+  as partials.
+- **Two rank references were wrong.** The single-threshold roll fusion (mean, dev24) ranks 11th, not 8th (8th is its
+  per-register variant). The 4-of-7 vote with the median onset is rank 12, not "row 9". Both are fixed above.
+- **The string-type gate's nylon arm is an oracle choice for the tuning song.** The rule "gaps on nylon" was read off
+  the tuning song itself. Under LOSO the tuning fold has only steel songs, so it could not choose that rule. Its
+  0.8299 on tuning, and so its mean of 0.8930, is not a fitted number. The record says the rule was read off the
+  songs. Read that row as an oracle on tuning.
+- **The ranking itself is chosen on these three keys.** Each method's F1 is fitted without the song it is scored
+  on. But the frozen method was then picked among about 58 by those same scores. So 0.902 to 0.903 for the winner
+  is optimistic, and E7's held-out songs are the real test. The record already says the top ten cannot be told
+  apart.
+- **The reliability order is partly from the songs.** YourMT3+ has no dev24 run, so its place in the order came from
+  its song F1. Moving it, Basic Pitch or the separation run to other places changes nothing at k = 4. So that leak
+  has no effect.
+
+Checker files: `/home/user/notes/runs/check-e1/out/` (`rescore_all.json`, `refit_votes.json`,
+`refit_wvote_all_prec.json`, `refit_fusion.json`, `oracles.json`, `diag_check.json`, `diag_check_roundwin.json`,
+`handoff_check.json`, `fuse-mean-0.275.<S>.csv`).
