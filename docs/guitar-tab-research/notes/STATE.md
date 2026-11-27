@@ -142,3 +142,15 @@ tracker (no task tools, so nothing can leak into a blind attempt's context). New
 - So the filter costs no found note on any song and removes only a few invented ones (gaps's stray MIDI-108 notes above
   all). It is free to keep as a default stage; it does not meet the brief's "20 % of the vote's invented notes" bar for
   gaps-paper. The E5 job reports the full table with the vote.
+
+## 2026-11-27 04:50 UTC: held-out key closer passed, archived
+
+- `closer` (Gareth Evans, *Closer*, E A D G A D, capo 1): built, checked, repaired, audited (`heldout/closer-audit.md`:
+  7 PASS, 1 FAIL that was a wrong count in the record, "58 bars" for 45, fixed in `closer.md`). 1,149 notes; `conf`
+  1,074 tab+audio, 74 tab, 1 audio. No note transcriber was used to build, time or check it.
+- Archived to private R2 at `workbench/guitar-tab-app/heldout/closer/` (`songs/closer/` with the video, `truth/closer/`,
+  `MANIFEST.sha256`, 44 files, 362 MiB; `rclone check` 0 differences). SHA-256:
+  - `closer.truth.json` 4c91534f5c5c8ec3cbefab7e8d91efb9585b4b05afe7fefd33cad9636eafe28e
+  - `closer.mono.wav` 7657f0d9918488560d92cae96c09ce823e48654799d06a0f0f4116c02fe93ddc
+  - `video.mkv` 98ecf9028e71a800876e18e652addd883c0588b2f1a2694d04e832cbe6170cfd
+  - `MANIFEST.sha256` 2915620e51d761fd4a82bc6452244252e67e859be9745692bfe4e8de39aabd5a
