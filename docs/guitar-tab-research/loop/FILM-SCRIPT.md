@@ -83,7 +83,7 @@ a tap read late, or a landmark a fret off (HAND.md failures list).
 ## ch04 · The tuning, found like a person (1:50)
 
 Shots: (s1) the nylon song at 31.8 s: the G minor grip, fingertips on the overlay. (s2) AO-082's answer for the 1st
-string, D4, against the fingers' C4: Bb3 ringing with C4. (s3) grid: 18 of 18 strings, both Opus conditions; held out
+string, D4, against the fingers' C4: the fourth finger at string 1 fret 2 at 31.82 s (`fingers.py`) as D4 sounds. (s3) grid: 18 of 18 strings, both Opus conditions; held out
 18 of 18 (E A D G A D, D G D G B D, E A D G B E). (s4) barchart: the solver on the nylon song with the true tuning 0.801,
 with AO-082's wrong one 0.619.
 
@@ -91,8 +91,9 @@ Listen: the nylon recording 31.0 to 35.0 s.
 
 - `l18` [s1] A person finds a tuning by looking and listening: which strings ring open, one clear chord shape, which
   notes the hand can reach.
-- `l19` [s2] On the nylon song, AO-082's tools said the first string was a D. The fingers say C: this G minor grip, with
-  B-flat ringing against C, only works if it is.
+- `l19` [s2] On the nylon song, AO-082's tools said the first string was a D. The fingers say C. In this G minor grip a fourth
+  finger presses the first string at the second fret just as a D sounds. On a D string that would be an E, and no E is
+  ever heard.
 - `l20` [s3] Shown the video, the notes and the hand's band, Opus named all eighteen strings of the three songs. Later,
   on three recordings it had never seen, two of them in tunings it was never tried on, it named all eighteen again.
 - `l21` [s4] The tuning matters. With the nylon song's tuning wrong by one string, the same solver falls from eighty in
