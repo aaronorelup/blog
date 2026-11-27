@@ -488,3 +488,12 @@ Heavy files: `/home/user/gtv/` on the cloud box. Records: this folder.
     `../sessions/LOOP.md`.
 - Running in this session: the workbench archive to R2 (wf_5c84098c-8e4, then `../WORKBENCH.md`) and the two briefs
   with a critic (wf_aea93cb3-a39).
+
+## 2026-11-27 00:55 UTC
+
+- Workbench archived (wf_5c84098c-8e4): 25,617 files, 2.757 GB, under `workbench/guitar-tab-app/2026-11-27/` in the
+  bucket in getkey's R2_BUCKET. The independent check passed: 5,430 files restored, every sha256 right, blind c3
+  re-scored byte for byte.
+- After the check I uploaded the files hand tracking and sep-05 need (89 files, `MANIFEST.add-hands.tsv`) and added a
+  section to `../WORKBENCH.md`: what is still missing, and a warning about private values inside some work files.
+- Both new sessions were told WORKBENCH.md is ready. The briefs are still being written (wf_aea93cb3-a39).
