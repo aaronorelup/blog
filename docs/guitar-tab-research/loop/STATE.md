@@ -241,3 +241,27 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   string chosen where the player fretted). Not changed mid-run. A candidate change for the frozen held-out version:
   show the picking hand's window apart from the fretting hand's and flag notes it can reach as possible taps. Decided
   after the three L2 runs end, and tried only on the dev songs' affected units before freezing.
+
+## 2026-11-27 05:22 UTC: held-out keys in R2; held-out prep started; E7's note rule
+
+- NOTES' held-out keys (all built with no note transcriber; NOTES' audits 7 PASS each, one record count fixed each):
+  - september: Evan Handyside, Wake Me Up When September Ends, open G (D G D G B D), capo 2. R2
+    `workbench/guitar-tab-app/heldout/september/`. september.truth.json
+    8bba0443bdcbbb8269ebd186d62ad5dfcb0b71d216309b2142799d7b32c9da5d, september.mono.wav
+    31b7e69707c1cce0f76fa6ebdc28c7c09c401bde6a566d41913d94213609bd52, video.mp4
+    d9b8107e7bd96d74a65e6cbe68bd705e19b7db419806ba32b7b42d4134983863, MANIFEST.sha256
+    e647574d2f14accc670d229aff384c04c1d66ca2a56320f4e202ba91f4b40691.
+  - boats: Culture Vannin's Three Little Boats, played by Pete Lumb (a new player), nylon, standard tuning, no capo, 232
+    notes. R2 `.../heldout/boats/`. boats.truth.json 5bdcbfad3ea92a54ae3d0a80cb73e3790ecdf4f7d48f6da9c5ec1ead2f2b9b26,
+    boats.mono.wav 7cd121a4dedde0a7d60d797fd9b13538b684a982ab833c9f1a2f41b2cd3e185b, video.webm
+    80c2bbb27387af3ad2faa2e0df8f3c0e0ddab775003e48ebe430273dc18f732d, MANIFEST.sha256
+    c873e8a44262c8142b746c046fd370fddececb8b97970080ec9105d5a0f3e062. Short and cheap: in the held-out set.
+  - Open item named by every audit: no one has checked the note models' training sets (GuitarSet, GAPS, Leduc, GOAT)
+    against these videos.
+- **E7's one note rule**: NOTES' frozen pipeline will not be ready for 4 to 6 hours, so E7 freezes gaps-paper alone
+  (`guitar-gaps-paper-version-12200_iterations.pth`, xavriley/midi-transcription-models, default thresholds; onset F1 on
+  the dev songs, NOTES' numbers: 0.954 / 0.822 / 0.896), then `hand_filter.py` with the finder's tuning; alternatives as
+  on the dev songs (fl, gaps, Transkun, Basic Pitch; YourMT3+ was a remote Space and is left out).
+- Held-out prep lane (wf_1252baf2-15a, 05:10): blind videos, note models, beats, landmarks, LOOP's own key audit, a
+  prep.py option for held-out notes; then Opus blind hand anchors and check and the tuning finder, as on the dev songs.
+  Closer and September; Boats after.
