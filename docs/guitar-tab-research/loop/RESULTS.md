@@ -27,7 +27,8 @@ standard = *Imagine* (Gareth Evans, 679), nylon = *A soft collision of breath* (
    recordings**, two of them in tunings the finder was never tried on (E A D G A D, open G). A wrong tuning is costly: on
    the nylon song the plain solver falls from 0.801 to 0.619 (`LADDER.md`).
 3. **Opus places notes better than a plain solver in every cell**, on the same inputs: the loop by +0.031 / +0.021 /
-   +0.035, the whole-song session by +0.119 / +0.024 / +0.029 on the three songs and +0.087 / +0.119 on two held-out ones.
+   +0.035, the whole-song session by +0.119 / +0.024 / +0.029 on the three songs and +0.087 / +0.119 / +0.026 on the
+   held-out ones (September, Closer, Boats; on Boats the gain is notes kept, not places).
 4. **One whole-song session beats bar by bar, at a fifth of the cost.** W2 (one Opus session, the loop's inputs for the
    whole song, 90 minutes allowed): 0.947 / 0.878 / 0.830 against the loop's 0.859 / 0.875 / 0.836; $8 to $11 and 28 to
    37 minutes a song against $30 to $55 and 2 to 3.5 hours of writer time. On standard and nylon the two are inside
@@ -39,10 +40,12 @@ standard = *Imagine* (Gareth Evans, 679), nylon = *A soft collision of breath* (
 6. **With the right notes, placing them is nearly solved.** Given the key's notes (an ASSISTED ceiling), the loop placed
    all 628 of the nylon song's notes right (L1, 1.000; the plain solver 0.967). What is left is the notes themselves and
    one kind of place error (below).
-7. **New recordings score lower: the method was fitted to the three songs, and the post says so.** The frozen method's
-   whole-song session on September 0.823 and Closer 0.698 (mean 0.760, more than 0.10 below the three songs' 0.885; Boats
-   is in the held-out section below). The notes are found well on all of them (onset F1 0.968, 0.894); the places drop,
-   and almost all of the drop is one error: an open string written where the player fretted the same pitch.
+7. **On new recordings the method held on two of three and fell on one.** The frozen method's whole-song session:
+   Boats 0.935, September 0.823, Closer 0.698 (mean 0.819; the three songs' mean 0.885). Closer is more than 0.10 below,
+   so by the brief's rule the method was fitted to the songs it was built on, and the post says so. Boats sets no place
+   problem at all (every matched note is in the right place, for the plain solver too), so placing was tested on two of
+   the three. The notes are found well on all of them (onset F1 0.956 to 0.968 and 0.894 on Closer); where places drop,
+   almost all of the drop is one error: an open string written where the player fretted the same pitch.
 
 ## The three songs
 
@@ -117,9 +120,11 @@ anchors and a blind check), gaps-paper's notes after the hand filter.
 |---|---|---|---|---|---|---|
 | September (open G, capo 2) | 6 of 6 (D G D G B D) | 0.823 / 0.839 | 0.839 | 0.968 | 0.736 | 25.7, $6.09 |
 | Closer (E A D G A D, capo 1) | 6 of 6 (E A D G A D) | 0.698 / 0.715 | 0.768 | 0.894 | 0.579 | 35.9, $6.85 |
-| Boats (standard, a third player) | 6 of 6 (E A D G B E) | pending | | | | |
+| Three Little Boats (standard, a third player) | 6 of 6 (E A D G B E) | 0.935 / 0.942 | 1.000 | 0.956 | 0.909 | 23.0, $7.71 |
 
-Evals: tunings e1717 to e1719; W2 tab e1670 (September), e1673 (Closer).
+Evals: tunings e1717 to e1719; W2 tab e1670 (September), e1673 (Closer), e2140 (Boats; heard e2141, notes e2142, solver
+e2143). On Boats every error of both W2 and the solver is a missed or invented note (W2 217 right, 0 wrong place, 15
+missed, 5 invented): the tune sits in first position, where each pitch has one sensible place.
 
 **The error that is left** (`STATE.md` 08:00): an open string where the player fretted the same pitch, inside the window.
 September: 56 of its 66 wrong places are the key's string 2 fret 3 written as the open 1st string. Closer: 243 wrong
@@ -141,6 +146,6 @@ constraint to get right.
 ## Cost
 
 The loop's blind calls, at list prices (`units_log.jsonl`, `w2_summary.json`): L1, L2, L4 and E6 $289.07 (eight runs;
-the first calls of the five paused runs $1.25 more), W2 $27.91 on the three songs and $12.94 held out (Boats pending),
+the first calls of the five paused runs $1.25 more), W2 $27.91 on the three songs and $20.65 held out,
 three dry runs $7.65, the held-out prep's blind runs $39.58 (`HELDOUT-BLIND.md`). The whole session's agents are measured with the
 `agent-metrics` skill at the end. The session's weekly Claude limit read 0.88 at 07:51 UTC; it resets 2026-12-02.

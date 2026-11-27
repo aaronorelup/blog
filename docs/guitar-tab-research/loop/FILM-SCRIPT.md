@@ -3,7 +3,6 @@
 The film for LOOP's post, written 2026-11-27 from `RESULTS.md`, `results.json`, `HAND.md`, `TUNING.md`, `LADDER.md`,
 `STATE.md` and the runs in `G/loop/` (G = `/home/user/gtv`). Narration and shot list. The film lane wires each shot to its
 files with AO-082's kit (`G/production/kit/`, `../video/PRODUCTION.md` sections 2, 5, 6 and 6.10) after the weekly reset.
-Bracketed `[BOATS ...]` items are filled when the Boats runs are scored.
 
 - **Title:** Where the hand can reach
 - **One sentence:** Given which frets the hand can reach and a tuning it found by itself, Opus 5.5 wrote closer tabs
@@ -157,10 +156,9 @@ passage with s2f3 (pick from `w2-ho-september` wrong places): the recording, the
 
 - `l33` [s1] Everything was then frozen and run on three recordings it had never seen: a new tuning, an open tuning,
   and a third player.
-- `l34` [s3] The notes were found well. The places were not as good: eighty-two in a hundred on September, seventy on
-  Closer, [BOATS] on Three Little Boats, against eighty-eight and a half on the first three
-  songs. The method was fitted to the
-  songs it was built on.
+- `l34` [s3] The notes were found well. Three Little Boats, a folk tune where each note has one sensible place, scored
+  ninety-four in a hundred. September, eighty-two. Closer, in its new tuning, seventy. On the first three songs it was
+  eighty-eight and a half. The method does not carry over to every new song yet.
 - `l35` [s4] Almost all of the drop is one mistake. The player frets a note, and the same pitch is also an open string.
   The band cannot rule the open string out, so the tab says open.
 

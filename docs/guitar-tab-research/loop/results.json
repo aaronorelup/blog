@@ -1123,6 +1123,51 @@
   "note": "E6 stopped at 38 of 73 units for the weekly limit; L2 and L4 cut to the same span"
  },
  "heldout": {
+  "boats": {
+   "song": "boats",
+   "held_out": true,
+   "tab": {
+    "main": 0.935345,
+    "of_matched": 1.0,
+    "matched": 0.935345,
+    "right": 217,
+    "wrong_place": 0,
+    "missed": 15,
+    "invented": 5,
+    "key_notes": 232,
+    "file": "G/loop/score/w2-ho-boats/w2_tab.json",
+    "eval": "e2140"
+   },
+   "heard": {
+    "main": 0.941964,
+    "of_matched": 1.0,
+    "matched": 0.941964,
+    "right": 211,
+    "wrong_place": 0,
+    "missed": 13,
+    "invented": 11,
+    "key_notes": 224,
+    "file": "G/loop/score/w2-ho-boats/w2_tab_heard.json",
+    "eval": "e2141"
+   },
+   "minutes": 23.0,
+   "cost_usd_list": 7.71,
+   "answer": "G/loop/bw/57f67df2/w2/answer.json",
+   "onset_f1": 0.955947,
+   "onset_f1_eval": "e2142",
+   "solver_alone_same_inputs": {
+    "main": 0.909483,
+    "of_matched": 1.0,
+    "matched": 0.909483,
+    "right": 211,
+    "wrong_place": 0,
+    "missed": 21,
+    "invented": 5,
+    "key_notes": 232,
+    "file": "G/loop/score/w2-ho-boats/solver_tab_score.json",
+    "eval": "e2143"
+   }
+  },
   "closer": {
    "song": "closer",
    "held_out": true,

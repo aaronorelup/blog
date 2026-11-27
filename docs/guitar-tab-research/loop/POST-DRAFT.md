@@ -1,6 +1,5 @@
 <!-- The draft of LOOP's post. Becomes src/content/posts/<slug>.md through `npm run new-post` in a worktree from
-origin/main when the film exists; draft: true until Aaron's OK in his own words. [BOATS] fills when Boats is scored,
-[FILM] when the film is rendered, [COST] from report-self at the end. -->
+origin/main when the film exists; draft: true until Aaron's OK in his own words. [FILM] when the film is rendered, [COST] from report-self at the end. -->
 
 ---
 title: "Using a guitarist's hand position to fix AI guitar tabs"
@@ -19,7 +18,7 @@ preview:
   points:
     - "Claude found the tuning of all six guitars by itself, including two tunings it had never been tried on."
     - "Going bar by bar cost four to five times as much and learned nothing. Wiping its memory between bars didn't hurt."
-    - "On three new videos it placed 70 to 82 notes in 100 [BOATS], lower than on the three it was built on."
+    - "On three new videos it placed 94, 82 and 70 notes in 100. The 70 is a song played high up the neck."
   image: "/media/previews/[slug].webp"
   loop: "/media/previews/[slug].mp4"
   alt: "A guitarist's fretting hand with a band over the frets it can reach"
@@ -44,10 +43,10 @@ I want to build a web app that turns a video of someone playing guitar into tabs
 
 - **The hand's reach narrows each note down to one or two places.** Claude marks a few fret wires on a frame and the rest follows from how frets are spaced. A band over the frets under the fingertips held 99.5 to 100 of every 100 fretted notes.
 - **Claude found the tuning the way a person would.** It looked at which strings rang open and which chord shapes the hand made. It got all 18 strings of the first three guitars, then all 18 of three new ones, two of them in tunings it had never seen. My last test missed the nylon guitar's tuning completely.
-- **Claude placed notes better than a plain solver every time.** Given the same notes, tuning and hand band, a solver program put 80 to 85 in 100 in place. Claude beat it on every song scored so far [BOATS].
+- **Claude placed notes better than a plain solver every time.** Given the same notes, tuning and hand band, a solver program put 80 to 85 in 100 in place. Claude beat it on all six songs.
 - **One pass over the whole song beat going bar by bar.** It scored 95, 88 and 83 in 100 against 86, 87 and 84, in about half an hour and $8 to $11 a song, against 2 to 3.5 hours and $30 to $55.
 - **Going bar by bar didn't learn anything.** A copy that forgot everything before each bar did just as well (84 in 100 against 82), and no song got better as it went.
-- **New videos scored lower.** On three songs it had never seen, it placed 70 to 82 notes in 100 [BOATS], against about 88 on the first three. So the method was tuned to the songs it was built on.
+- **New videos were mixed.** On three songs it had never seen, it placed 94, 82 and 70 notes in 100, against about 88 on the first three. The 94 is a simple folk tune where every note has one sensible place. The 70 is Closer, played high up the neck in E A D G A D. So the method doesn't carry over to every new song yet.
 - **What's left is mostly one mistake.** When the player frets a note that's also an open string, Claude writes the open string. The hand band can't rule open strings out, so the next fix is reading the fingers themselves.
 
 The app should ask the person one thing, where the capo is. It can find the tuning, read the hand's reach, and give Claude the whole song in one go.
@@ -86,7 +85,7 @@ Share of the answer key's notes on the right string and fret, onset within 50 ms
 |---|---|---|---|
 | September (open G, capo 2) | all 6 strings | 0.823 | 0.736 |
 | Closer (E A D G A D, capo 1) | all 6 strings | 0.698 | 0.579 |
-| Three Little Boats (standard) | all 6 strings | [BOATS] | [BOATS] |
+| Three Little Boats (standard) | all 6 strings | 0.935 | 0.909 |
 
 The method was frozen before any new song was run. Everything, with every file and score, is in [the research records](https://github.com/aaronorelup/blog/tree/research/guitar-tab-loop/docs/guitar-tab-research/loop).
 
