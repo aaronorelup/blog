@@ -375,3 +375,11 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   the one fretted-to-fretted pattern. The capo song's tap passages were the same error in the loop runs. The hand window
   cannot tell these apart (open strings are always allowed); the fingers can (E2's finger rule settled the nylon 1st
   string 103 to 1).
+- **Exploratory, after the held-out results** (`G/loop/work/fingers_place.py`, code only, no Opus): move a note the
+  answer put on an open string to a fretted place of the same pitch inside the window when a fingertip is inside that
+  place's fret space within half a string spacing at the onset (fingers.py's presence test, constants unchanged). Main
+  number before -> after, W2 answers: capo 0.947 -> 0.936, standard 0.878 -> 0.904, nylon 0.830 -> 0.783, September
+  0.823 -> 0.883, Closer 0.698 -> 0.708; the solver's tabs: 0.828 -> 0.870, 0.854 -> 0.891, 0.801 -> 0.753, 0.736 ->
+  0.811, 0.579 -> 0.594. It helps where the player frets up the neck and hurts the nylon song, whose open strings really
+  ring: the fingertip landmarks are about a string off (E2). Not adopted; the fingers are the next constraint to get
+  right, with a better finger-to-string reading than MediaPipe's landmarks.
