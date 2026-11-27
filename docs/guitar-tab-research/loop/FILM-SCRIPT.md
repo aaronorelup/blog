@@ -159,7 +159,7 @@ passage with s2f3 (pick from `w2-ho-september` wrong places): the recording, the
 - `l34` [s3] The notes were found well. Three Little Boats, a folk tune where each note has one sensible place, scored
   ninety-four in a hundred. September, eighty-two. Closer, in its new tuning, seventy. On the first three songs it was
   eighty-eight and a half. The method does not carry over to every new song yet.
-- `l35` [s4] Almost all of the drop is one mistake. The player frets a note, and the same pitch is also an open string.
+- `l35` [s4] Most of the drop is one mistake. The player frets a note, and the same pitch is also an open string.
   The band cannot rule the open string out, so the tab says open.
 
 ## ch09 · What the app should ask (1:00)

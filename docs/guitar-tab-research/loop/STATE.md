@@ -420,3 +420,19 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   Checkpoint 3 sent to HQ. Review 47 (film now or after the reset) not yet opened by Aaron.
 - Running: l3-ho-boats (the loop, tuning found), e3-refresh (the ladder's fixes and held-out rows), the R2 archive of
   G/loop (no media copies) and G/transcripts.
+
+## 2026-11-27 08:55 UTC: the E3 ladder refreshed (e3-refresh, commit 11872511)
+
+- All six of LADDER-CHECK2's problems fixed; the capo wrong rung added (6th string 39 from t-02-hint's notes): with the
+  tool window key's notes 0.872 -> 0.762, chain-2's 0.832 -> 0.737 (FITTED). The finder rung equals given on all three
+  songs (answers byte for byte). chain2f with `hand_filter.py` removes 0 notes (1 invented under capo's wrong rung).
+- The tool cells now use the published windows everywhere: capo's key cell 0.876 -> 0.872 and chain-2 0.833 -> 0.832,
+  so the capo figures in this log's 03:50 entry (and the plan's-rule gain, now +0.065) are superseded by LADDER.md.
+- **Held out, the plain solver** (main, hand off -> tool): Closer 0.427 -> 0.571, September 0.710 -> 0.731, Boats 0.909
+  -> 0.909. The W2 packs' solver tabs (0.579 / 0.736 / 0.909) rebuild note for note; the gap is bar-by-bar context.
+- Records: 825 eval ids against the ledger, 0 mismatches; 465 table values against the cell files, 0 mismatches.
+- Access note: e3-refresh read the held-out keys (G/truth/<S>/) from 08:28 to 08:34 UTC, outside every sandbox, while
+  l3-ho-boats ran inside its own (the keys' places are tmpfs inside it); no key file was copied into a run or blind
+  folder (G/work/e3-refresh/PROGRESS.md).
+- W2's held-out wrong places by kind: September 65 of 66 an open string for a fretted note; Closer 138 of 243 (85 both
+  fretted, 20 fretted for open); Boats none. RESULTS.md says "most", not "almost all".

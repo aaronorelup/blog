@@ -21,7 +21,8 @@ standard = *Imagine* (Gareth Evans, 679), nylon = *A soft collision of breath* (
    from a few named fret wires, margin 1, checked by a second blind Opus run) covers 0.995 / 1.000 / 0.998 of the fretted
    key notes and cuts the possible places per note from 3.46 / 3.62 / 3.24 to 1.53 / 1.45 / 1.24 (`HAND.md`). In the loop
    it is worth **+0.076** on the capo song (L2 0.859 against L4, the same loop with the hand off, 0.783) and +0.044 on
-   standard (0.875 against 0.831); on the nylon song, played in open position, +0.003.
+   standard (0.875 against 0.831); on the nylon song, played in open position, +0.003. On the new recordings it lifts
+   the plain solver by **+0.144** on Closer (0.427 to 0.571), +0.021 on September and 0 on Boats (`LADDER.md`, held out).
 2. **The tuning is found the way a person finds it**, capo given: 18 of 18 open strings on the three songs, by both Opus
    conditions (`TUNING.md`; AO-082's best on the nylon song was 5 of 6), and **18 of 18 on the three held-out
    recordings**, two of them in tunings the finder was never tried on (E A D G A D, open G). A wrong tuning is costly: on
@@ -45,20 +46,22 @@ standard = *Imagine* (Gareth Evans, 679), nylon = *A soft collision of breath* (
    so by the brief's rule the method was fitted to the songs it was built on, and the post says so. Boats sets no place
    problem at all (every matched note is in the right place, for the plain solver too), so placing was tested on two of
    the three. The notes are found well on all of them (onset F1 0.956 to 0.968 and 0.894 on Closer); where places drop,
-   almost all of the drop is one error: an open string written where the player fretted the same pitch.
+   most of it is one error: an open string written where the player fretted the same pitch (65 of 66 wrong places on
+   September, 138 of 243 on Closer).
 
 ## The three songs
 
 | run | capo | standard | nylon |
 |---|---|---|---|
-| plain solver, same inputs (E3 cell) | 0.828 / 0.837 | 0.854 / 0.880 | 0.801 / 0.842 |
+| plain solver on the loop's own packs | 0.828 / 0.837 | 0.854 / 0.880 | 0.801 / 0.842 |
 | L4: the loop, hand window off | 0.783 / 0.786 | 0.831 / 0.863 | 0.833 / 0.876 |
 | **L2: the loop, bar by bar** | **0.859 / 0.863** | **0.875 / 0.916** | **0.836 / 0.876** |
 | **W2: one whole-song session** | **0.947 / 0.955** | **0.878 / 0.914** | **0.830 / 0.874** |
 | L1: the loop with the key's notes (A) | | | 1.000 / 1.000 |
 
 Each cell: main / heard. (A) = ASSISTED, a ceiling. The solver row is the loop's own packs' solver proposal, the same
-notes, tuning, capo and window (`span_solver_tab.json`; on nylon the L4 run has none, the L2 row is used). L3 (the tuning
+notes, tuning, capo and window (`span_solver_tab.json`; on nylon the L4 run has none, the L2 row is used). It differs
+from LADDER.md's whole-song solver cells by bar-by-bar context only (capo chain-2 tool 0.832 there). L3 (the tuning
 found) was not run on the three songs: the finder's tuning equals the given one on all of them, so L3's inputs are L2's.
 
 | run | of matched | matched | onset F1 | right / wrong place / missed / invented | writer minutes | list cost | eval |
@@ -126,9 +129,11 @@ Evals: tunings e1717 to e1719; W2 tab e1670 (September), e1673 (Closer), e2140 (
 e2143). On Boats every error of both W2 and the solver is a missed or invented note (W2 217 right, 0 wrong place, 15
 missed, 5 invented): the tune sits in first position, where each pitch has one sensible place.
 
-**The error that is left** (`STATE.md` 08:00): an open string where the player fretted the same pitch, inside the window.
-September: 56 of its 66 wrong places are the key's string 2 fret 3 written as the open 1st string. Closer: 243 wrong
-places, led by s4 f5 written as open s3 (53), s4 f7 as open s2 (32), s6 f10 as open s4 (31). The capo song's tap passages
+**The error that is left** (`STATE.md` 08:00; counted with the same onset and pitch matching): an open string where the
+player fretted the same pitch, inside the window. September: 65 of its 66 wrong places, 56 of them the key's string 2
+fret 3 written as the open 1st string. Closer: 138 of its 243, led by s4 f5 written as open s3 (53), s4 f7 as open s2
+(32), s6 f10 as open s4 (31); 85 more are fretted for fretted (s3 f12 as s2 f10, 57) and 20 fretted where the player
+played open. The capo song's tap passages
 were the same error in the loop runs. The hand window cannot tell these apart, because open strings are always allowed.
 An exploratory rule that moves such a note to a fretted place when a fingertip sits there (`G/loop/work/fingers_place.py`,
 made after the held-out results, so not a result) helped September (0.823 -> 0.883) and hurt the nylon song (0.830 ->
