@@ -383,3 +383,12 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   0.811, 0.579 -> 0.594. It helps where the player frets up the neck and hurts the nylon song, whose open strings really
   ring: the fingertip landmarks are about a string off (E2). Not adopted; the fingers are the next constraint to get
   right, with a better finger-to-string reading than MediaPipe's landmarks.
+
+## 2026-11-27 08:06 UTC: Boats ready; W2 and L3 started on it
+
+- Boats prep (wf_62d3538c-c8b; `HELDOUT-PREP.md` boats section): restored and checked against its manifest; video 67.08 s
+  with NOTES' boxes over 2 captions and the end logo; LOOP's key audit PASS; blind anchors (11 keyframes), check (76
+  decisions, 47 window), finder (40 45 50 55 59 64, scored later): 37.4 minutes, $10.40. All nine held-out blind runs:
+  150.9 minutes, $39.58. The hand filter removed 0 of gaps-paper's 216 notes. The agent also fixed ho-blind's held-out
+  name scan (it had dropped the names file's entries) and re-ran it on all nine transcripts: 0 hits.
+- Boats is short (24 units), so it gets both: W2 and L3 (the loop with the tuning found), started 08:05.

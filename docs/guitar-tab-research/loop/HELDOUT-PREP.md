@@ -91,3 +91,90 @@ Both PASS (`G/heldout/<S>/key-audit.md`; the key-derived pictures in `G/truth/<S
   September: no contradiction, but the wide shot resolves only about one fret and cannot show whether an open string
   is left free (6 of the 10 were open strings).
 - Notes per conf: closer 1,074 tab+audio, 74 tab, 1 audio; september 377, 38, 2.
+
+## Boats, the third held-out song (ho-boats, 2026-11-27 07:07-08:05 UTC)
+
+Made ready the same way as Closer and September, with the same scripts (ho-prep's `bin/` and ho-blind's scripts, or
+copies changed only in song, label and log folder), then put through the same blind hand and finder steps as
+`HELDOUT-BLIND.md` describes. Work notes: `G/work/ho-boats/PROGRESS.md`. Nothing here was scored.
+
+| slot | key (NOTES) | capo given | strings | video | sound | key audit |
+|---|---|---|---|---|---|---|
+| boats | Culture Vannin's Three Little Boats (Manx traditional, arranged by James Franklin), played by Pete Lumb, standard tuning, 232 notes | 0 | nylon | 1920x1080, 25 fps, 67.08 s, 1,677 frames | 67.09 s | PASS |
+
+- **Restore.** From R2 `workbench/guitar-tab-app/heldout/boats/` at 07:10: 21 files, every one matching
+  `MANIFEST.sha256` (c873e8a4...), boats.truth.json 5bdcbfad3ea92a54ae3d0a80cb73e3790ecdf4f7d48f6da9c5ec1ead2f2b9b26. In
+  `G/songs/boats/` and `G/truth/boats/`.
+- **The blind video.** `video.webm` is the whole 4:53 lesson; the key covers NOTES' excerpt of it (213.96 to 281.04 s:
+  a slow play-through, then a full-speed performance). `G/heldout/boats/video.mp4` is a plain copy of NOTES' cut
+  `boats.mp4` (SHA-256 248ce0ff...), which already carries NOTES' black boxes over the two section captions (frames
+  0-182 and 1115-1298) and the end logo (frames 1619-1676). Compared frame by frame with NOTES' unboxed cut: the boxes
+  cover every frame where a caption or the logo shows, and the fade frames on either side, looked at full size, show
+  nothing. Looked at: 8 frames spread over the video and one a second through the first and last 15 s: no tab, chord
+  name, title or logo; the music stand shows only the back of the sheets, illegible. Container tags neutral. The video's
+  sound and the WAV line up to the sample (lag 0 at 5, 30 and 55 s).
+- **Sound**: `audio.wav` = copy of `boats.wav` (44.1 kHz stereo); `audio.mono.wav` by `ffmpeg -ac 1` (within 1 LSB of
+  NOTES' own mono file).
+- **Note models, beats, hands** (gtr-run, one slot at a time; ho-prep's `run_inputs.sh`, its copy changed only in the
+  landmark call, which now runs the way Closer's rerun r1368 did):
+
+| run | notes / rows | wall s (CPU s) | gtr-run |
+|---|---|---|---|
+| gaps-paper (base; checkpoint iteration 12200, 0 missing and 0 unexpected keys) | 216 | 70.1 (93.0) | r1371 |
+| guitar-gaps | 215 | 59.0 (85.1) | r1372 |
+| guitar-fl | 252 | 54.2 (82.1) | r1373 |
+| Transkun 2.0.1 (stereo) | 288 | 58.7 (101.5) | r1374 |
+| Basic Pitch, plain | 375 | 6.9 (8.2) | r1375 |
+| Basic Pitch, range (60.0-1174.7 Hz from capo 0 and the finder's bounds) | 375 (same file as plain) | 5.7 (8.1) | r1376 |
+| Beat This! (`kit/beats.sh`) | 78 beats | 5.4 (8.7) | r1377 |
+| MediaPipe 1.2.2 hands | 1,677 frames (two hands in 0.849) | 68.5 (71.6) | r1378 |
+
+  SHA-256 of gaps-paper's notes: 71f1f09ad01687f661094e1be745169d86b92e18e34f5c50fcdf2d2b52817512. YourMT3+ not run, as
+  for the others. A blind check of copies of every input file: 0 hits. A held-out prep of the song (hand off, a dummy
+  tuning, nylon) passed the blind check (24 units, 460 candidates); its blind folder was deleted.
+- **Blind names**: `G/heldout/blind-names.json` now also holds the slot id boats and 13 names (titles, source files,
+  the publisher, the arranger, the player, the source host, the video id).
+
+**LOOP's audit of the key: PASS** (`G/heldout/boats/key-audit.md`; the key-derived pictures in `G/truth/boats/key-audit/`).
+- gtr-eval check-truth: pitch = tuning + capo + fret everywhere (2,449 checks; the one mismatch is the audio file not
+  lying next to the key).
+- Tuning and capo: the arranger's tab and the lesson page name none (standard, no capo); the video shows no capo at the
+  nut. Against the sound, string by string (15 heard notes a string, the string retuned -2..+2 semitones): the key's
+  tuning is best on all six strings (pass share 0.87 to 1.00 against at most 0.53). Open strings heard on every string
+  (s6 by its octave: this recording has little energy under about 100 Hz).
+- 20 random key notes on a constant-Q slice: all 17 "tab+audio" notes sound (four low bass notes 30-51 dB under the
+  loudest bin, but their fundamentals rise 4-8 dB and their octaves 9-21 dB at the onset); the 3 "audio" notes (quiet
+  left-hand sounds the key added) show their pitch rising 5-7 dB as the string's previous pitch falls. Of all 12 "audio"
+  notes, 9 rise; 3 show only the previous pitch stopping.
+- 10 random notes on video frames: no contradiction; the key never goes past fret 3 and the hand stays in first position
+  at the nut, fingers on the named strings to about one fret; open strings cannot be seen to ring free.
+- Notes per conf: 212 tab+audio, 8 tab, 12 audio.
+
+**The blind steps** (labels ho-hand-c and ho-tun-c; map in `G/heldout/blind-map.json`; every run in `sandbox_run.sh` +
+`blind_run.sh`, network closed but model requests, Opus 5.5 at max effort, PROMPT.txt inside the folder, copies with
+neutral names; each folder passed `blindcheck.py --slots closer,september,boats` and a grep for the names before its run:
+0 hits but, in the finder folder, the same 13 'capo' code tokens the dev finder folders had; the hand prompts are the dev
+ones with capo 0, the finder prompt is the dev one word for word, its capo being 0 already). The freeze of every tool and
+prompt (`G/heldout/freeze-ho-blind.json`, 64 files) was rechecked before the first run and after the last: no file changed.
+
+| run | what | minutes | output tokens | cost (list) | frames looked at | result |
+|---|---|---|---|---|---|---|
+| ho-hand-c-anchors | anchors | 19.6 | 99,982 | $5.57 | 40 | 11 keyframes, 5 shots; a 2-s close-up of the body (54.68-56.68 s) left without a model on purpose; nylon |
+| ho-hand-c-check | check | 8.4 | 49,317 | $2.49 | 17 | 76 decisions: 29 accept, 47 window; no new keyframe |
+| ho-tun-c | finder | 9.4 | 51,626 | $2.34 | 9 | 40,45,50,55,59,64 (not scored here) |
+| boats | | 37.4 | 200,925 | $10.40 | 66 | all nine held-out runs: 150.9 min, $39.58 |
+
+- **Track** (tool alone) r1379: 87.1 s wall, 102.3 CPU s; null 0.030 (the close-up); self-check median 0.008 of a gap;
+  cuts found at 45.6, 49.6, 54.8, 56.8 s. Window at margin 1 before the check: lost 0.031 of rows, mean width 5.62 frets.
+- **The check** found, as on Closer, picking-hand tips over the soundhole counted as taps (up to "wire 23" on a 19-fret
+  board), plus frames next to the cuts where the model was carried across; it set those stretches to the fretting
+  hand's own frets (1-3) and kept the close-up lost. After: lost 0.030, mean width 3.92. Published to
+  `G/heldout/boats/hand/` (hand_window.csv SHA-256 dffb0a73ec80a8a2a00829bd9de1d7762bb5f094df5918ff10194c7b061eb2e9).
+- **Finder**: `G/heldout/boats/finder.json` (tuning.json SHA-256
+  dabcab087b67cb8018dcf2b6419a86177decebe2ee3472f590393299ad4579d9). **Base notes** after the hand filter with it:
+  216 -> 216 (0 removed, 10 onsets in lost rows), `G/heldout/boats/notes/gaps-paper-hf/`.
+- **Audits**: the dev audits and ho-blind's independent second audit, all three clean (paths outside the folders only
+  the runs' own task output or scratchpad in the sandbox's private /tmp and the system python3 on their own files).
+  Rows added to `G/heldout/blind-runs.json`. A fix there: ho-blind's `record.py` read none of the held-out names (it
+  kept only plain strings, and the names file holds [kind, name] pairs), so its "names mentioned" counts scanned
+  nothing; rescanned with all 32 names, none of the nine transcripts names a held-out title, artist or player.
