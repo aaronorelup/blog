@@ -287,3 +287,7 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   key notes on the key's string and fret (heard notes 556 of 556), 54 units, 86.3 writer minutes, $23.15 list, no
   revisit. The plain solver with the same inputs: 0.967 (LADDER.md); AO-082's chain-5 (tuttut): 0.967. By thirds:
   1.59 / 1.71 / 1.49 minutes and 9,281 / 9,455 / 7,989 output tokens a unit. Score: `G/loop/runs/l1-nylon/score/`.
+- 06:35 UTC: **L4 nylon done** (hand off): main **0.833** (heard 0.876), matched 0.847, of matched 0.983, onset F1 0.841
+  (chain-2's notes alone: 0.796), GP5 read back 0.742; 53 units, 130 writer minutes, $32.18, no revisit. By thirds:
+  right 0.832 / 0.841 / 0.823; minutes a unit 2.74 / 2.34 / 2.28; output tokens a unit 16,475 / 13,368 / 13,536. The plain
+  solver with the tuning given and no window: 0.801 (LADDER.md).
