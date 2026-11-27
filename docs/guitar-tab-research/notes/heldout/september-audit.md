@@ -34,9 +34,10 @@ Audited 2026-11-27 by lane H's audit agent. This agent built neither the key, no
 | 8. Nothing private in the repo record | **PASS** |
 
 **The key is fit for scoring.** The fixes are in the record only:
-- `september.md` line 120 (Method 1): "the same marks on the same 7 origin events". Both readings have **9 marked
-  events** (6 figures). The builder's own list in the merge block names 6 figures.
-- `september.md` line 338 (Repairs): "in the other three chords the gap is 108-124 ms". The key gives **104.5-115.9 ms**.
+- `september.md` lines 119-120 (Method 1): "the same marks on the same 7 origin events". Both readings have **9
+  marked events** (6 figures). The builder's own list in the merge block names 6 figures.
+- `september.md` lines 337-338 (Repairs): "in the other three chords the gap is 108-124 ms". The key gives
+  **104.5-115.9 ms**.
 - `september.md` line 230 (Checks): "F 0.836 (P 0.970, R 0.734)". **No file holds these numbers.** The first build's
   file gives F 0.838 (P 0.972, R 0.736); the repaired key's file gives F 0.837 (P 0.968, R 0.738).
 
@@ -100,7 +101,8 @@ fact the scoring relies on.
 
 **The rendering.** I rendered the key with FluidSynth (`tools/bin/notes2wav.py`, nylon program 24 and steel program
 25, on the key's own timeline, r1505). The same onset envelope (log-mel flux, hop 128 = 2.9 ms) and the same peak
-picker then ran on the rendering and on `september.wav` (`bin/timezero.py`, r1506, `out/timezero_p24.json`, `_p25.json`).
+picker then ran on the rendering and on `september.wav` (`bin/timezero.py`, r1506, `out/timezero_p24.json`,
+`_p25.json`).
 
 | measure | result (nylon) |
 |---|---|
@@ -167,7 +169,7 @@ So this key follows its model key's convention.
   | capo 3 (+1) | **100 %** (347 of 347) |
   | open G without a capo (-2) | **98.1 %** (356 of 363) |
   | standard tuning on string 1, 5 or 6 (+2) | **100 %** (7 of 7, 44 of 44, 8 of 8) |
-  | open D on string 3 (-2) | **96.8 %** (122 of 126) |
+  | string 3 a tone lower (-2) | **96.8 %** (122 of 126) |
 
 - **Cents** (`out/tuning_capo.json`): the 377 `tab+audio` notes give a median of **+3.2 cents** (IQR -0.4..+5.8),
   measured at the peak of partials 1-4.
@@ -214,7 +216,7 @@ does not sound.
   - #26 (C#4, 12.098 s): every partial rises 30 dB at the key. Its hammer target 35 ms later shares the partials the
     rule needs.
   - #46 (E4 hammer target, 18.234 s): E4 h1 rises 20 dB at the hammer.
-  - #142 (A3 in a rolled F#m chord, 58.114 s): h2-h4 rise 15-28 dB at the key time.
+  - #142 (A3 in a rolled F#m chord, 58.114 s): h2-h4 rise more than 20 dB at the key time.
   - #324 and #375 (A3 re-plucks): h1 rises 12-18 dB after a damping dip.
 - **The 3 `tab` notes:**
   - #349 passes the rule. So that `tab` note may be heard; that errs on the safe side for heard-only recall.
@@ -237,8 +239,9 @@ of the summed usable partials in a 1,024-point STFT, hop 1.45 ms.
     key time (`frames/zoom_4.png`).
 
 **The 14 moved notes and #292.** Every one is heard at its new time.
-- Ten pass the rule. #103, #136 and #255 were looked at in `frames/zoom_103.png`, `zoom_136.png` and `zoom_255.png`:
-  their h1-h3 rise 20-40 dB within about 20 ms before the key. #150 passes through the presence rule.
+- Eleven pass the rule (#150 through its presence part). #103, #136 and #255 do not, and were looked at in
+  `frames/zoom_103.png`, `zoom_136.png` and `zoom_255.png`: their h1-h3 rise 20-36 dB, centred about 20 ms before the
+  key.
 - **Timing:** 12 of the 14 step within 9 ms of the median above.
 - **#376 and #377** (the fourth chorus D chord) step earlier by the 1,024-point measure, because the A3 pluck 52 ms
   before shares their window. In `frames/zoom_376.png` the F#4 rises at the key time.
@@ -285,7 +288,7 @@ Recomputed from the files (`bin/counts_audit.py` → `out/counts_audit.json`, `l
 is `orig/september.truth.json`.
 
 **Wrong:**
-1. **Line 120 (Method 1):** "the same marks on the same 7 origin events".
+1. **Lines 119-120 (Method 1):** "the same marks on the same 7 origin events".
    - `read-A.json` and `read-B.json` each have **9 marked events**, the same 9:
      - bar 2 ev 5 h, ev 14 h, ev 15 p;
      - bar 3 ev 5 h, ev 14 h, ev 15 p;
@@ -294,7 +297,7 @@ is `orig/september.truth.json`.
    - The builder's merge note (`september.tab-merged.json`, `merge.decisions`) names these as **6 figures**.
    - Played through the form they give the key's 26 legato targets exactly (h 14, p 8, slide 4).
    - Fix: "the same marks on the same 9 events (6 figures)".
-2. **Line 338 (Repairs):** "After the repair the E4 follows the F#4 by 92 ms; in the other three chords the gap is
+2. **Lines 337-338 (Repairs):** "After the repair the E4 follows the F#4 by 92 ms; in the other three chords the gap is
    108-124 ms."
    - The key gives 115.9 ms (#164 → #165), 104.5 ms (#205 → #206) and 105.5 ms (#335 → #336). The 91.8 ms of #376 →
      #377 is right.
@@ -317,6 +320,14 @@ is `orig/september.truth.json`.
 - Lines 263-264: "The repair has been re-checked only by its own second pass so far".
 
 Point both at this record.
+
+**After the audit.** The line numbers above are those of the record as audited (commit 14705f01). Commit 6227343c then
+fixed the three wrong numbers in `september.md`. I checked the fixes:
+- line 120 now reads "9 events (6 figures)";
+- line 230 now gives F 0.837 (P 0.968, R 0.738), with the first build's numbers;
+- line 338 now gives "104-116 ms".
+
+The two wording fixes in line 229 and the stale lines 17 and 264 are still open.
 
 **Reproduced exactly:**
 - **Notes:**
