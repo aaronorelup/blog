@@ -404,3 +404,19 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   units 0 to 37 (0 to 118.8 s, 414 key notes): E6 0.843 (349 right, 59 wrong place, 42 invented), L2 0.824 (341, 69,
   65), L4 0.734 (304, 106, 61). Emptying the carried state cost nothing (it scored 0.019 higher, inside AO-082's run-to-run
   spread of 0.011 to 0.037). By the brief's rule: on these songs, bar by bar is chunking, not learning; the film says so.
+
+## 2026-11-27 08:45 UTC: Boats W2 scored; held out read again; records written
+
+- **Boats W2** (`G/loop/score/w2-ho-boats/`): main **0.935** (heard 0.942), of matched 1.000, onset F1 0.956; the plain
+  solver on the same pack 0.909; 23.0 minutes, $7.71. No wrong place in either: W2 217 right, 15 missed, 5 invented
+  (the tune sits in first position). Evals e2140 to e2143.
+- **Held out, all three**: W2 0.935 / 0.823 / 0.698 (mean 0.819) against the dev songs' 0.885. Closer is more than 0.10
+  below, so the brief's rule fires on it ("a held-out main number"): the post says the method was fitted to the songs it
+  was built on, and that it held on Boats and nearly on September. Placing was tested on two of three (Boats has none
+  to get wrong). RESULTS.md's point 7 is rewritten to say this.
+- Held-out tunings scored with gtr-eval tuning: 6 of 6 on all three (e1717 to e1719).
+- E6 scored with gtr-eval on units 0 to 37 (e1711 to e1716): it matches the orchestrator's count exactly.
+- Written: `RESULTS.md`, `results.json` (by `make_results.py`), `FILM-SCRIPT.md` (about 10 minutes), `POST-DRAFT.md`.
+  Checkpoint 3 sent to HQ. Review 47 (film now or after the reset) not yet opened by Aaron.
+- Running: l3-ho-boats (the loop, tuning found), e3-refresh (the ladder's fixes and held-out rows), the R2 archive of
+  G/loop (no media copies) and G/transcripts.
