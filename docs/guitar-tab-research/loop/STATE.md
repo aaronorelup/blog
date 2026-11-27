@@ -78,3 +78,26 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   transcriber is used to build, time or check them. They come to this box through R2 with a manifest; LOOP audits each
   before use. NOTES' notes handoff: `G/notes/<S>/<method>/notes.csv` (onset, offset, pitch, support, conf). Both sessions
   run on their own boxes.
+
+## 2026-11-27 01:45 UTC: the reviewed brief (c608fa84), first results
+
+- The parent session's reviewed brief (sessions/LOOP.md at c608fa84) replaces the draft. Taken up now: blind folders get
+  copies, never hard links; the watch's roots now also cover G/blind, notes, loop, heldout, /home/user/blog and
+  /home/user/land (restarted 01:42:48 UTC, 4,195 folders; .git and node_modules left out); ids carry L- (L-E1 ...); LOOP
+  owns one `hand_filter.py`, published beside the windows; every main number also gets the share over heard key notes;
+  a void bar call voids its run from that bar on, restarted from the state saved before it; E3's wrong-tuning rung is
+  D G C F A D on nylon and the capo-aware lowest-note rule on steel; held-out keys move only through private R2 with
+  SHA-256 lines here; the post is made in a `/home/user/land` worktree. Amendments for the lanes' next agents are in their
+  PROGRESS.md files (G/work/e1-blind, e1-record, e1-verify, loop-review).
+- The tool limit: the brief asks for a custom agent type used after Aaron's yes. This session cannot load one (agent types
+  load at session start), so it uses the command-line limit (`blind_run.sh`), proved on two dummy runs, named at
+  checkpoint 1; Aaron's words at the go-ahead ("full freedom") are the go to carry on.
+- Pre-commit scan: `G/loop/tools/precommit_scan.sh` (never-publish hashes, the command-center host, signed R2 links).
+- L-E3 (wf_9a546330-297) done: `LADDER.md`, `ladder.json`, its check `LADDER-CHECK.md` (5 record problems, no number
+  wrong). The tool window adds +0.063 (capo, chain-2's notes, tuning given: 0.767 -> 0.829) and +0.025 (standard: 0.829 ->
+  0.854) to the plain solver, within 0.002 to 0.009 of the ceiling window. Most remaining wrong places (99 of 106 on capo)
+  are an open string chosen where the player fretted the same pitch: no window can fix those. The solver's weights were
+  fitted on the capo key (+0.087 / +0.049 there, about 0 elsewhere): its capo rows are marked fitted. Nylon's window cells
+  and the brief's new tuning rung wait for the nylon window.
+- The loop's 3-unit dry run (capo, L2): unit 0 took 213 s, 20.6k output tokens, $0.79 list; its 11 notes all on the key's
+  string and fret (checked by the orchestrator only). Projected: about 4.3 hours and $57 for the capo song's 73 units.
