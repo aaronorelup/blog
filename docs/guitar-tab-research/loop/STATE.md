@@ -344,3 +344,9 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   55 59 62. The hand filter removed 22 of Closer's 1,191 gaps-paper notes, none of September's 412.
 - Held-out W2 started: September 07:18 (44 units' worth, 712 candidates, 412 base), Closer 07:24 (87 units' worth, 1,866
   candidates, 1,169 base). Boats' prep is running (wf_62d3538c-c8b).
+- 07:35 UTC: **L4 capo done** (hand off): main **0.783** (heard 0.786), matched 0.985, of matched 0.795, onset F1 0.933,
+  GP5 0.771; solver alone on the same packs 0.767; 73 units, 182.1 writer minutes, $46.95 (revisits $1.40). By thirds:
+  right 0.788 / 0.716 / 0.844; minutes 2.76 / 2.44 / 2.26; output tokens 16,611 / 14,669 / 13,699. Decisions: drops 40
+  invented, 0 played; alternatives 9 right against 40 invented and 12 played-but-misplaced; placing 22 wrong to right
+  against 18 right to wrong. Notes found well (onset F1 0.933 against chain-2's 0.920); places are what it loses (W2:
+  0.947).
