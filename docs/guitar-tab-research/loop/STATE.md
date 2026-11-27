@@ -308,3 +308,15 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   Decisions: drops 33 invented against 7 played; alternatives 7 right against 16 invented; placing 13 wrong to right and
   2 more from alternatives. Against L4 (hand off) 0.831: the window adds 0.044 for the bar writer here; W2 0.878. (The
   main number equals AO-082's kit arm's list number, 0.874816, by coincidence: 594 of 679 both.)
+
+## 2026-11-27 07:12 UTC: the weekly limit at 0.85; cuts
+
+- The account's weekly window read **0.85 at 06:51 UTC** (past the 0.75 warning; 0.72 at 05:02): 13% in under two
+  hours, about $30 to $35 per 1% across both sessions (the loop's calls alone went from $70 at 05:01 to $303 at 07:07).
+  About 12 to 15% is left until the reset (about 2026-12-02 11:00 UTC); 100% stops both sessions and any other agent on
+  the account.
+- Cuts, decided now: **E6 stopped** at 38 of 73 units (07:08; compared with L2 on the same 38 units); **no L3 on Closer
+  and September**: the held-out test is W2 with the tuning found (the dev songs put W2 level with or above L2 at a
+  quarter of the cost), L3 only on the short Boats if it fits; **the film**: planned and scripted now, built after the
+  reset unless at least 8% is left. NOTES asked to cut the same way and to leave 5% untouched for Aaron's other agents.
+  Aaron asked on the project page (review 47): film now, smaller, or after the reset.
