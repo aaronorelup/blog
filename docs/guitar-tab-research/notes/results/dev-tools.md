@@ -57,7 +57,9 @@ gtr-run --lane notes --tool dev-basic-pitch --label "dev-tools basic-pitch dev24
 
 - **Transkun** is the same command as step 2's n-04 (`experiments/capo/n-04/cmd.sh`).
 - **Basic Pitch** has the same range as step 2's n-01-hint on the standard song: 79.9 to 1046.5 Hz. That is E2 to C6
-  (MIDI 40 to 84), from the open low E string to fret 20 of string 1.
+  (MIDI 40 to 84), from the open low E string to fret 20 of string 1. (Checker: Basic Pitch rounds the limits to
+  pitch bins, so it actually keeps MIDI 39 to 83. Its notes here run from 39 to 83, with one note at 39. The truth runs
+  from 40 to 77, so this changes no score. Step 2's n-01-hint had the same setting.)
 - **MIDI to notes.** Step 2 scored each tool's MIDI with gtr-eval's own reader (n-04's `score.sh`, then
   `breakdown.py`, which writes `notes.csv` from that reader). `bin/mid2notes.py` does the same: gtr-eval 0.12.1's
   reader (pretty_midi, every non-drum instrument pooled, pitch bends ignored). It writes the scorer's CSV with velocity
@@ -67,12 +69,15 @@ gtr-run --lane notes --tool dev-basic-pitch --label "dev-tools basic-pitch dev24
   (`dev-tools/checks/bp-float.json`).
 
 **Runs** (run ids and wall seconds per clip: `dev-tools/runs_transkun.tsv`, `runs_basic-pitch.tsv`). Every run exited
-0. The box was shared with other agents: the load average at the start of a run was 2.3 to 5.2, median 3.6.
+0. The box was shared with other agents: the load average at the start of a run was 2.3 to 5.2, median 3.5.
 
 | tool | run ids | wall per clip, min / median / max | wall, all 24 | audio |
 |---|---|---|---|---|
-| Transkun | r1434 to r1474 (24 runs) | 25.5 / 31.2 / 38.4 s | 750 s | 653.9 s |
-| Basic Pitch | r1424 to r1449 (24 runs) | 2.5 / 3.5 / 5.3 s | 83 s | 653.9 s |
+| Transkun | r1434 to r1474 (24 runs) | 25.5 / 31.1 / 38.4 s | 750 s | 653.9 s |
+| Basic Pitch | r1424 to r1449 (24 runs) | 2.5 / 3.4 / 5.3 s | 83 s | 653.9 s |
+
+The run ids are not continuous. Each tool's 24 ids are listed in its `runs_*.tsv`. The ids in between belong to the
+other tool and to three runs of another job (r1459, r1461, r1471).
 
 Wall time includes start-up and model loading. Transkun took about 1.15 s per second of audio here, on 2 cores.
 
@@ -80,14 +85,19 @@ Wall time includes start-up and model loading. Transkun took about 1.15 s per se
 
 | tool | training data | dev24 held out? |
 |---|---|---|
-| fl | Kong's piano model fine-tuned on the Francois Leduc jazz-guitar set | yes |
-| gaps | the same network fine-tuned on GAPS classical guitar | yes |
-| gaps-paper | the later GAPS upload (12,200 iterations); its training data is not stated anywhere | unknown |
+| fl | Kong's piano model fine-tuned on the Francois Leduc jazz-guitar set | probably (see below) |
+| gaps | the same network fine-tuned on GAPS classical guitar | probably (see below) |
+| gaps-paper | the later GAPS upload (12,200 iterations). The GAPS paper trained two versions: one without GuitarSet, and one on GAPS plus GuitarSet's MT3 training split. This upload does not say which it is | unknown |
 | Transkun | a piano model | yes |
 | Basic Pitch | several sets. Its package ships a GuitarSet loader with a random track split (`basic_pitch/data/datasets/guitarset.py`) | probably not |
 
 gaps-paper beats fl by -0.001 on player 00 and by +0.010 to +0.031 on the other five players. Four files a player is
 too few to say whether that is a sign of GuitarSet in its training.
+
+Checker: "probably" for fl and gaps. Each Riley paper trained one version without GuitarSet and one with GuitarSet's
+training split. The released files are described as trained on Leduc and on GAPS. The project's own scores fit the
+versions without GuitarSet. But neither the model card nor the code says which version was released
+(`/home/user/notes/methods/riley/README.md`).
 
 ## The five tools
 
@@ -154,7 +164,7 @@ ranges are MIDI below 52 (below E3), 52 to 63 (E3 to D#4), and 64 and up (E4 and
 | gaps | 0.893 | 0.734 | 0.865 | 0.855 | 0.878 | 0.890 | 0.794 | 0.880 |
 | gaps-paper | 0.905 | 0.898 | **0.904** | **0.900** | **0.932** | **0.948** | **0.897** | **0.930** |
 | Transkun | 0.895 | 0.819 | 0.879 | 0.788 | 0.851 | 0.522 | 0.817 | 0.626 |
-| Basic Pitch | 0.598 | 0.745 | 0.659 | 0.802 | 0.765 | 0.799 | 0.770 | 0.806 |
+| Basic Pitch | 0.598 | 0.745 | 0.660 | 0.802 | 0.765 | 0.800 | 0.770 | 0.806 |
 
 Counts behind it (truth notes / found / estimated notes / invented):
 
@@ -199,7 +209,7 @@ The most common support sets:
 | all but Transkun | 408 | 0.956 |
 | all but Basic Pitch | 207 | 0.874 |
 | gaps alone | 142 | 0.028 |
-| Transkun alone | 135 | 0.118 |
+| Transkun alone | 135 | 0.119 |
 | fl and gaps-paper | 98 | 0.643 |
 | fl, gaps and gaps-paper | 96 | 0.812 |
 | gaps-paper alone | 80 | 0.537 |
@@ -220,7 +230,7 @@ The vote rule is the brief's, and E0's code (`/home/user/notes/runs/e0/bin/first
 pooled per MIDI pitch and sorted by onset. A cluster starts at the first note not yet in a cluster. It takes every later
 note of that pitch within 50 ms of that first onset. It is kept when at least k different tools have a note in it.
 The kept note's onset and offset are the medians of the members. The votes' notes are in
-`dev-tools/votes/<name>/<id>.notes.csv`, scored with the batch scorer like the tools.
+`dev-tools/votes/<name>/<id>.notes.csv`, scored with the batch scorer like the tools. Their `conf` column is the share of the voting tools that have the note (0 to 1).
 
 | method | clusters / kept | mean F1 | pooled F1 | pooled P | pooled R | found | missed | invented | comp | solo |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -245,7 +255,7 @@ What it says:
 - **The votes are more precise than any tool** (0.921 to 0.931 against 0.913), but they lose more recall than they
   gain in precision. So they end below gaps-paper alone.
 - **Against the three songs.** There, the 2-of-3 vote of fl, gaps and Transkun scored 0.953, 0.818 and 0.925, against
-  0.920, 0.830 and 0.892 for the best single tool. On dev24 it adds only 0.001 to fl, and gaps-paper is 0.018 above it.
+  0.920, 0.830 and 0.892 for the best single tool. On dev24 it adds only 0.002 to fl (0.8973 against 0.8957), and gaps-paper is 0.017 above it (0.9146).
   Transkun is the weak voter here (0.771). On the songs it was 0.785 to 0.896.
 - **The 1-of-5 pool** finds 2727 notes, 5 fewer than the union (2732). Clustering and median onsets move a few notes
   out of the 50 ms window.
@@ -268,7 +278,7 @@ run in the work folder.
 
 ## What is uncertain
 
-- **gaps-paper's training data is not stated.** If it saw GuitarSet, its lead here is too high. Basic Pitch's training
+- **We do not know which training set gaps-paper used.** If it saw GuitarSet, its lead here is too high. Basic Pitch's training
   code includes GuitarSet, so its dev24 score is probably optimistic too, and it is still the lowest.
 - **Dev24 is not fingerstyle.** Its comp takes are accompaniment and its solos are mostly single lines. A ranking or a
   weight that holds here may not hold on the three songs, as the 2-of-3 vote shows.
@@ -277,3 +287,56 @@ run in the work folder.
 - **Why Transkun misses GuitarSet's high notes** is not known. It is not timing, octaves or fast lines (see above).
   Its weight in a vote should come from this table, not from its scores on the three songs.
 - **The per-range and support tables are pooled.** Big files weigh more. The per-file counts are in `ranges.json`.
+
+## Checker
+
+An independent check by a second agent, 2026-11-27, 04:28 to 04:36 UTC. I did not trust the report. I re-derived the
+numbers with my own code. Work folder: `/home/user/notes/runs/check-devtools/` (`PROGRESS.md`, `bin/`, one JSON per
+check, and `backup/` with a copy of every file I changed). None of this needed a model run, so nothing went through
+gtr-run.
+
+### What I checked
+
+| what | how | result |
+|---|---|---|
+| Every headline number. Five tools and four votes: mean and pooled F1, P, R, found, missed, invented, F1 at 100 ms, pitch-class F1, median onset error, comp and solo means, recall per string, by player, and all 192 per-file cells with the bold best tool | `bin/check_scores.py`: my own CSV reader and crop windows; mir_eval 0.8.2 `match_notes`, onset 50 ms, 50 cents, offsets ignored, onset only. Output `check_scores.json` | All agree at the decimals shown. gaps-paper is best on 18 files, fl on 5, gaps on 1 |
+| The votes | My own cluster code (the brief's rule), compared note by note with the job's vote files | Same notes in all 96 files (4 votes x 24 clips). Same cluster and kept counts |
+| Range, support and union tables | Same script | Same counts. Three shares were printed one step low (fixed, below) |
+| "Same as the earlier dev24 runs" (fl, gaps, gaps-paper) | Per-file F1 in `scores/<tool>.json` against `methods/riley/checker/score_*.json` | Same estimate files, unchanged since 03:13 UTC. Same F1 on all 24 files |
+| Basic Pitch float CSV against its MIDI | My own reader of `<id>_basic_pitch.csv` (`bin/check_side.py`) | Mean 0.745, pooled 0.728, 2259 found against 2257. Confirmed |
+| MIDI to notes | Each Transkun and Basic Pitch MIDI read with mido (my own note pairing) and with pretty_midi (`bin/check_midi.py`) | The same notes, pitches and velocities in all 48 files. Onsets agree within 0.01 ms. No drum-channel notes |
+| Run ids and times | `bin/ledger_check.py` against `/home/user/gtr/ledger/runs.jsonl` | All 48 ids are in the ledger. Each has lane `notes`, the clip as its input, the clip named in its label, exit 0, and the same wall time as the tsv. The commands are n-04's and n-01-hint's. Two medians were wrong (fixed) |
+| Same-string gap check | My own code | Same counts and recalls |
+| Is Transkun's high-note loss an artefact? | `bin/transkun_probe.py` | No. Its recall at MIDI 64 and up is 0.49, 0.51 and 0.58 in the first, middle and last 10 s (fl: 0.93, 0.92, 0.92). For 47 % of those truth notes Transkun has no note of that pitch within 100 ms. All its MIDI notes are on channel 0. The notes are not in its output |
+| Settings chosen on the set they are scored on | `run.json` files and the ledger commands | None. Riley's default thresholds (0.3 / 0.3 / 0.1), Transkun's defaults, the Basic Pitch range from the tuning, the vote rule from the brief. Nothing was fitted on dev24 |
+| What is in the repo | Read the record and searched it | Numbers, public GuitarSet file names and local paths only. No truth note lists, no tab text, no keys, no hosts |
+| Handoff files | Headers and columns | `dev/runs/transkun/` and `dev/runs/basic-pitch/`: 24 `<id>.notes.csv` each, with the project header. `dev-tools.json` is present |
+
+### What I changed
+
+No score changed.
+
+1. **Two median wall times.** `collect.py` took the upper of the two middle values. Transkun's median is 31.05 s
+   (31.1 above, was 31.2), Basic Pitch's 3.445 s (3.4, was 3.5). The median load average over the 48 runs is 3.52 (3.5,
+   was 3.6: that was Transkun's runs alone).
+2. **Three shares rounded twice.** The tables printed 4-decimal values at 3 decimals. Basic Pitch's 52 to 63
+   precision is 1135 / 1721 = 0.6595, so 0.660 (was 0.659). Its 64-and-up recall is 682 / 853 = 0.7995, so 0.800 (was
+   0.799). Transkun-alone notes are right 16 / 135 = 0.1185 of the time, so 0.119 (was 0.118). `collect.py` now
+   formats shares from the counts.
+3. **The vote's gain over fl**: 0.002, not 0.001. gaps-paper is 0.017 above the vote, not 0.018. Both came from
+   rounded values.
+4. **Training data.** fl and gaps are "probably" held out, not "yes". For gaps-paper, the record said its training
+   data "is not stated anywhere". The GAPS paper does state two training sets; the upload does not say which it used.
+5. **Basic Pitch's range.** It keeps MIDI 39 to 83, not 40 to 84 (note added above). This changes no score.
+6. **Vote files.** Their `conf` column held the number of tools (2 to 5). The project's note format wants 0 to 1, so
+   it is now the share of the voting tools (`analyze.py`).
+7. **Run ids.** Added a note that they are not continuous.
+
+Rebuilt with `analyze.py`, `score_all.sh` and `collect.py`. The rebuilt `scores/*.json`, `ranges.json`, `union.json`
+and `support.json` are identical to the backups. `dev-tools.json` differs only in the two medians and the training
+text, plus a new `checker` entry.
+
+### Still uncertain
+
+The record's own list holds. One addition: "Transkun's loss is not about fast lines" rests on only 144 truth notes with
+a same-string gap under 125 ms.
