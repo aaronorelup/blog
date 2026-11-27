@@ -204,3 +204,26 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
 - NOTES (04:31): about $420 spent so far; it goes lean and proposes about $250 for the rest of NOTES (film included), LOOP
   the rest of the weekly window. Its new note model, gaps-paper, reads 0.954 / 0.822 / 0.896 onset F1 (old best 0.920 /
   0.830 / 0.892); not added as a rung on the three songs (budget); E7 uses NOTES' frozen pipeline if it is ready first.
+
+## 2026-11-27 05:10 UTC: dollars per percent measured; scope set; W2 and E6 started; Closer restored
+
+- Weekly window: 0.68 (04:27) -> 0.70 (04:41) -> 0.71 (04:49) -> 0.72 (05:02). Over those 35 minutes the loop's calls
+  logged about $58 (`G/loop/work/spend.py`: $18.18 at 04:31, $69.99 at 05:01) and the account also ran NOTES' lanes and
+  LOOP's E1 agents: about $120 in all, so about $30 per 1%. 28% left is about $840 for both sessions; NOTES takes about
+  $250 (its message of 04:31), LOOP about $590. The seven running loop runs need about $200 more.
+- **Scope, decided now** (Aaron's "full freedom"; a cut, not a wait): keep L2, L4 (three songs) and L1 (nylon); W2 on the
+  three songs (E5); E6 once, the state emptied, on capo (revisits-off dropped); held-out (E7) L3 and W2 on Closer and
+  September, Three Little Boats if the budget allows; no repeated runs for spread (AO-082's measured run-to-run spread,
+  0.011 to 0.037 on the main number, stands in, and L2 against W2 and the held-out songs show variation); L3 and L1 on the
+  other two songs stay paused; a lean film of about 12 to 15 minutes.
+- **Started 05:02**: w2-capo, w2-standard, w2-nylon (one whole-song sandboxed session each, 90 minutes allowed, L2's
+  inputs) and e6s-capo (L2 with the state emptied before every unit). Eleven runs going.
+- **Held-out key Closer** (NOTES; Gareth Evans, E A D G A D, capo 1, 1,149 notes; no note transcriber used to build it)
+  restored from R2 `workbench/guitar-tab-app/heldout/closer/` to `G/songs/closer/` and `G/truth/closer/`; every file
+  matches `MANIFEST.sha256`; closer.truth.json 4c91534f5c5c8ec3cbefab7e8d91efb9585b4b05afe7fefd33cad9636eafe28e,
+  closer.mono.wav 7657f0d9918488560d92cae96c09ce823e48654799d06a0f0f4116c02fe93ddc, video.mkv
+  98ecf9028e71a800876e18e652addd883c0588b2f1a2694d04e832cbe6170cfd. LOOP audits it before any run uses it.
+- NOTES ran `hand_filter.py` unchanged on four note models' whole-song notes: no found note lost in 12 runs, onset F1 up
+  0.000 to 0.013; it is a default stage of NOTES' frozen pipeline.
+- The hand windows' R2 copy is at `workbench/guitar-tab-app/loop/hand/<S>/` (a first copy went to the workbench's
+  `2026-11-27/loop/hand/` by an rclone alias slip; both hold the same files).
