@@ -291,3 +291,9 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   (chain-2's notes alone: 0.796), GP5 read back 0.742; 53 units, 130 writer minutes, $32.18, no revisit. By thirds:
   right 0.832 / 0.841 / 0.823; minutes a unit 2.74 / 2.34 / 2.28; output tokens a unit 16,475 / 13,368 / 13,536. The plain
   solver with the tuning given and no window: 0.801 (LADDER.md).
+- 06:45 UTC: **L2 nylon done** (the main condition): main **0.836** (heard 0.876), matched 0.850, of matched 0.983, onset
+  F1 0.845, GP5 0.742; the solver alone on the same packs 0.801 (heard 0.842); 53 units, 121.7 writer minutes, $30.46, no
+  revisit fired. By thirds: right 0.845 / 0.833 / 0.828; minutes a unit 2.47 / 2.37 / 2.03; output tokens 14,189 /
+  13,598 / 11,743 (faster later, not more accurate). The writer's decisions, scored: keeping an alternative 23 wrong to
+  right against 17 invented; dropping 10 invented against 6 played; placing 4 wrong to right, 4 wrong to wrong. Against
+  L4 (hand off) 0.833 and W2 0.830: on this open-position song the window and bar-by-bar both add almost nothing.
