@@ -1,0 +1,3 @@
+# per-note files belong with the keys, outside git
+heldout/*.csv
+heldout/*.json

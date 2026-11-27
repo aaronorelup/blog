@@ -69,3 +69,29 @@ tracker (no task tools, so nothing can leak into a blind attempt's context). New
 - **Checkpoint 1 sent to Aaron in the session chat** (01:08 UTC): the two readings of his question, the held-out picks,
   no pod for now, and one question: a GPU for N-E8 up to $10, which the reviewed brief only allows if an N-E2 model
   comes within 0.03 of guitar-fl on the segments or adds to the vote. The agent definition goes in the next message.
+
+## 2026-11-27 01:50-03:35 UTC: tools built and checked; lane N part 1 started
+
+- **Workflow `notes-tools-setup` done** (wf_899edb11-c27; 6 agents, a builder and an independent checker per tool; the
+  checkers fixed what they found). Files outside git, in `/home/user/notes/`:
+  - **Noise2Fret runner** (`methods/n2f/n2f_infer.py`, README there): all four released checkpoints, one file of any
+    length, constraint mask, saved denoising trajectory. Features and sampler match the repository's own pipeline
+    exactly. Finding: the GuitarSet checkpoints learned a target where class 20 means "not played", and the repository's
+    metric counts those as correct notes (89.8 % of what it scores); decoded as notes, `gs_laux` reaches note F 0.589 on
+    GuitarSet's held-out player (GOAT checkpoints 0.45-0.50), far below the guitar models. With an oracle pitch mask it
+    assigns strings well (note F 0.799, precision 0.990). CPU: 0.02-0.10 s per second of audio at 1 step.
+  - **Riley rolls** (`methods/riley/riley_post.py`): fl and gaps with the onset, offset, frame and velocity rolls saved,
+    equal to the package's own output. The checker found a third public checkpoint on the same Hugging Face repo,
+    `guitar-gaps-paper-version-12200_iterations.pth`: dev F1 0.915 against fl 0.896 and gaps 0.866 (whether it saw
+    GuitarSet is unknown, so the three songs are its fair test). Velocity carries no information (92-104 on every note).
+  - **GuitarSet dev set** (`dev/`, CC BY 4.0): 24 clips of up to 30 s, 4 per player, 2860 notes; truth CSVs; scorer
+    `tools/score_notes.py` (mir_eval, 50 ms, 50 cents; checked against an independent matcher on 240 cases). Truth onsets
+    sit 3-5 ms after the attacks.
+- **Workflow `notes-methods-research`** (wf_046a9e05-dec) in its verify phase: about 40 candidates checked by a second
+  agent each (diffusion: Noise2Fret, D3RM and DiffRoll have public weights; guitar: gaps-paper, FretNet fold 0, SynthTab
+  TabCNNx4, Guitab, YourMT3+ local weights; test-time: TAPS pitch-shift ensembling).
+- **Lane N part 1 started** (workflow `notes-lane-n1`, wf_b68182bd-1ab): N-E0 rescore and time shifts; the three Riley
+  checkpoints on the three songs with rolls, threshold choice only by leave-one-song-out and on the dev set; N-E2
+  Noise2Fret on the three songs (alone, with fl's onsets, masked, as a re-scorer, as a voter; trajectory for the film);
+  Transkun and Basic Pitch on the dev set for the vote weights. A checker per job.
+- Checkpoint 1's second message (the blind agent definition) sent. No answer from Aaron yet on it or the GPU.

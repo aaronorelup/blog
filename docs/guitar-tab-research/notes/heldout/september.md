@@ -1,14 +1,16 @@
 # Held-out slot `september`: *Wake Me Up When September Ends (Jonathan's Version)*, Evan Handyside
 
-Lane H of the NOTES session, 2026-11-27. This record covers **fetch and prepare only** (task steps 1-4): the files,
-the cut, the time base, the tuning and capo checks, the rights note and the credit line. The key (two readings of the
-tab, notes timed to the recording, `conf`, the independent check) is later work and will be added below. Work folder
-(not in git): `/home/user/gtv/work/heldout-september/` (`PROGRESS.md`, `bin/`, `logs/`, `frames/`, `tab/`). Every
-number below comes from a file named next to it. No note transcriber was run on this recording in this step: the
-checks use only the raw audio (onset strength, CQT, chroma) and the picture.
+Lane H of the NOTES session, 2026-11-27. Two parts: **fetch and prepare** (the files, the cut, the time base, the
+tuning and capo checks, the rights note and the credit line; written first, kept below as it was) and **the key**
+(two readings of the tab compared, every note timed to the recording, `conf`, self-checks: from "Method" on). Work
+folder (not in git): `/home/user/gtv/work/heldout-september/` (`PROGRESS.md`; fetch: `bin/`, `logs/`, `frames/`, `tab/`;
+readings: `read-A*`, `read-B*`; key: `key/bin/`, `key/out/`, `key/check/`, `key/logs/`). Every number below comes from a
+file named next to it. **No note transcriber was run on this recording, in either part**: the key was built, timed and
+checked with onset strength (spectral flux), CQT and STFT energy at the notes' partials, chroma, FluidSynth renderings
+of the key itself and the picture, so that it can score exactly those tools.
 
-**Status:** fetched and prepared (2026-11-27); the song can be had. Key not started (`/home/user/gtv/truth/september/`
-exists and is empty).
+**Status:** key built (2026-11-27), `gtr-eval check-truth` 4325 checks, 0 mismatches. Not yet audited by an agent that
+did not build it (NOTES.md section 5 asks for that audit before the key is used).
 
 ## Source and credit
 
@@ -53,6 +55,9 @@ exists and is empty).
 | `september.mp4` | what the tools and any blind run get: the cut below, full frame 1920x1080, **a black box (x 200, y 428, w 1636, h 240) over the title on the cut's first 75 frames**, x264 crf 16 (preset medium, GOP 50, yuv420p), AAC audio copied, metadata stripped |
 | `september.full.mp4` | the same cut, no box (the title shows on its first 75 frames) |
 | `september.wav`, `september.mono.wav` | from `september.mp4`: 44.1 kHz 16-bit, stereo and mono |
+| `/home/user/gtv/truth/september/september.truth.json` | **the key** (schema of `capo.truth.json`), `september.wav` linked next to it |
+| `september.notes.csv`, `.beats.txt`, `.chords.lab`, `.mid`, `.tab.txt` | side files written from the key (the `.tab.txt` is a reading aid: one column = a sixth of a beat) |
+| `september.tab-merged.json` | the merged reading of the tab (reader format plus a `merge` block) |
 
 **The cut (step 2).** One static camera, one take; no talking, no lesson part, no caption during the playing
 (`logs/framediff.txt`: no cut after 5.1 s; contact sheets `frames/sheet1.jpg`, `frames/every_sheet.jpg`).
@@ -97,16 +102,139 @@ exists and is empty).
 
 `tuning_offset_cents` **+5**: `librosa.estimate_tuning` over the cut, +5.0 c (four 30 s windows +5 to +6 c,
 `logs/tuning_offset.txt`). The creators scout measured +5 c too.
+In the key: `tuning_midi` [38, 43, 50, 55, 59, 62], `capo` 2, `tuning_offset_cents` +5; every note's pitch = open
+string + capo + fret (`check-truth` checks it for all 417 notes).
 
-## Notes for the key builder
+## Method (the key)
 
-- The tab has **no rhythm and no bar lines inside most systems**: the order of notes is fixed, the onsets must come
-  from the recording (as `../../video/truth-tuning.md` did), without any note transcriber (lane rule).
-- Form in the post: Intro; Verse 2x, To Chorus, Chorus; Intro; Verse 1x, To Chorus, Chorus; End. The `tuning` slot's
-  recording added a pass the post did not list; check the form against the recording before unrolling.
-- Marks seen on the page: slurs (e.g. 3-5 and 0-3-0 on string 2, 0-2 on string 1), repeat signs, a "To Chorus" arrow from
-  the middle of the verse's last system, and a slanted line in page 2, system 4 (a bar line or a slide: for the two
-  readers to settle).
-- The intro is heard as written: four groups of open 5th string, open 3rd string, 2nd string fret 3 (A2 A3 E4), plucks
-  at 2.81, 3.24, 3.59 / 3.91, 4.43, 4.81 / 6.10, 6.63, 7.01 / 7.30, 7.86, 8.24 s of `video.mp4` (a pause of about
-  1.3 s after the second group).
+Scripts in `key/bin/` of the work folder; `key/bin/run_all.sh` runs everything from the merged reading to the last
+check again (71 s). Python: the research's `venv-torch` (librosa 0.11), used only for onset strength, CQT and STFT.
+
+1. **The two readings** (`read-A.json`, `read-B.json`; each reader worked from the PDF's own 300 dpi scans, without
+   the other's files, audio or video). Compared note by note (`key/bin/merge.py`): **188 of 188 notes agree** (164
+   events, 13 "bars" = the tab's lines, page 1 line 5 split at its bar line; same events in the same order), the same
+   marks on the same 7 origin events (arcs read h / p by the fret direction; one slide), event x positions within 18
+   px. Nothing to settle. The readers' doubts, settled from the tab and then the sound: the three string-2 digits that
+   might be 2s (bar 8 ev 11, bar 10 ev 14, bar 13 ev 8) are 3s, the same terminal dot as the clear 3s
+   (`key/out/doubts.png`), and at all five places they are played E4 rises 10.9-17.6 dB with a sharp jump while D#4
+   (fret 2) does not beat it; the slanted line in page 2 line 4 is a slide, heard as a glide (Departures). Merged
+   reading: `september.tab-merged.json`.
+2. **Form as played** = the post's: Intro; Verse 2x (pass 1 bars 2-6, pass 2 bars 2-5, the TO CHORUS arrow taken from
+   the bar line after bar 5, as both readers read it); To Chorus; Chorus; Intro; Verse 1x (bars 2-5); To Chorus;
+   Chorus; End: **364 events, 415 tab notes** (`key/out/form.txt`, `key/bin/events.py`). Seen first in the loudest bass
+   pitch per 0.5 s (`key/bin/lowmap.py`: A2 blocks at the intros, bars 5-6 and the end; F#2 at the chorus openings),
+   then in the alignment: each section's notes sit on its own plucks (sections start at 0.308, 7.117, 32.856, 54.904,
+   57.951, 86.233, 92.921, 114.416, 117.493, 145.850 s). Unlike the `tuning` slot, no section was added or left out.
+3. **Rhythm reading** (the tab has none; `key/bin/positions.py`): each tab line is two 4/4 measures of eighth notes in
+   the song's 3+3+2 grouping (bars 5, 6, 7 and 12 one measure); hammer, pull and slide targets sit between eighths; in
+   bar 12 the 5-7-5 ornament fits inside the first eighth (measured). Checked against the timed notes per measure: no
+   event is more than 0.3 eighth off its measure's straight-line fit except the opening chords of chorus bars 8 and 10
+   (rolled 0.30-0.37 eighth ahead of the beat). Used only as the DP's tempo model and for the beats.
+4. **Event alignment** (`key/bin/align4.py`, global DP, no search window): each event is matched to a peak of the
+   1 kHz+ spectral flux (pluck transients, 5.8 ms grid), or skipped. Match score = peak strength + pitch evidence, where
+   pitch evidence = 0.5 x the CQT rise of the note (36 bins per octave, fundamental or harmonics 2-4) less 0.7 x the
+   rise of a pitch 12, 19 or 24 semitones below it among the neighbouring notes (an A2 pluck raises A3 and E4 as its
+   harmonics, and the intro is A2 A3 E4) + 0.5 x the jump of its fundamental in a 23 ms STFT (sharp in time). Costs:
+   unexplained flux peaks between matched events, skipped events (cheap only for hammer, pull and slide targets), and
+   a Huber penalty on log(gap / (eighths x 0.40 s)). Result: 348 of 364 events on a flux peak, the 16 skipped all
+   legato or slide targets. A first try with a chroma-DTW prior and no sub-harmonic penalty (`key/bin/align.py`) put
+   intro notes on each other's harmonics and was dropped.
+5. **Per note** (`key/bin/refine.py`):
+   - Attack checks both ways, because of the early fault of AO-082's first capo build (onsets 32-119 ms before the
+     attack). The recording has many small finger-contact clicks 50-150 ms before a pluck (88 of the detector's 133
+     unexplained detections, Checks), and a pluck's 1 kHz+ peak can trail the note's own start. A peak 12-163 ms later
+     with the note's own fundamental jump (>= 3 dB above, 1.8 x the strength; or >= 5 dB when the matched peak shows
+     none) takes the note; so does a peak 12-80 ms earlier whose jump is >= 4 dB and CQT rise >= 3 dB above. Moved:
+     126.717 -> 126.798 s (A3: only E6/D#5 rise at the first peak), 100.478 -> 100.426 s (A3: its partial level is
+     23.0 dB in the 30 ms window from 100.42 s and 36.1 dB in the one from 100.44 s, `key/bin/slices.py`). Intro: the
+     A2 of the third group is the peak at 3.727 s, not the louder click at 3.605 s (A2's fundamental is -0.9 dB in
+     3.60-3.63 s, 38.2 dB in 3.73-3.76 s); the intro of the second round starts at 86.233 s, not at the click at
+     85.972 s.
+   - Chords (15 four-note chords and 6 dyads in all): the lowest note on the event's peak (moved to a peak where its
+     evidence is >= 5 dB higher: 3 chords, 70.803 -> 70.612, 73.886 -> 73.781, 107.909 -> 107.996 s); the others in
+     string order 6 -> 1 on successive flux peaks up to 400 ms later (the chords are rolled upward, one peak per
+     string), chosen by a DP on 0.25 x CQT rise + 0.75 x the jump of the fundamental's power in a 46 ms STFT (each
+     less a lower chord note's share where the note is its harmonic), the same peak for two notes costing as a pinch.
+     AO-082 `tuning`'s half-rise rule was tried and dropped here: where the string was still ringing it found no rise
+     and left whole chords on the bass (`key/out/refined6.json`).
+   - Hammer-ons, pull-offs and slides (26 notes, `legato` "h" 14, "p" 8, "slide" 4): the steepest rise of
+     (target - origin) harmonic salience in a 46 ms STFT between the origin + 30 ms and the next pluck, then the flux
+     peak within -30..+60 ms where the target's own fundamental jumps (the 46 ms measure runs 30-45 ms early against
+     those peaks). The ornaments are fast: in the C#4-E4-C#4 figures the hammer comes 29-93 ms after the pluck and the
+     pull-off 87-290 ms after the hammer; the other hammer-ons 58-157 ms after their pluck.
+6. **conf**: `tab+audio` when, at the note's onset, its CQT rise less the sub-harmonic share is >= 3 dB **and** its
+   fundamental jumps sharply (23 ms or 46 ms STFT, >= 2 dB); legato and slide targets also with a rise >= 3 dB and a
+   target-minus-origin salience jump >= 10 dB. Calibrated (`key/check/calib2.json`): 0.846 of the onsets pass, the
+   same pitch 0.2 s away 0.056 (away from any onset) to 0.071. The first rule (rise or jump >= 3 dB) passed 0.20-0.23
+   at those control times and was dropped. `tab` = in the tab, not confirmed that way; `audio` = heard, not in the tab.
+7. **The rest of the fields** (`key/bin/build.py`, the capo build's rules where they apply): offsets let ring to the
+   next onset on the same string - 10 ms, at most where the note's CQT band falls 25 dB under its peak, at most 6 s
+   (estimates); voice by string (highest note on strings 1-3 melody, lowest on 4-6 bass, others chord); beats from the
+   rhythm reading (beat k = eighth 2k, interpolated between plucked notes, exact on a note); downbeats = beat 1 of each
+   measure; chords derived from the notes per half bar and key by Krumhansl-Kessler (the capo rules; chord naming is
+   left out of the research for now, DIRECTION.md); no taps (the tab marks none, none heard).
+
+## Counts
+
+- **417 notes**: melody 254, bass 131, chord 32; **conf: tab+audio 351, tab 64, audio 2**. 26 legato or slide targets
+  (22 `tab+audio`). Whole piece scored: `scored_range` [0, 153.5295] s, first onset 0.308 s, last 151.412 s.
+- **192 beats, 48 downbeats** (48 measures of 4/4), tempo **77.71 bpm** (median beat 0.772 s, IQR 0.743-0.820, rubato
+  0.586-1.056 s); 62 chord segments (A:maj 19, E:maj 16, F#:min 10, D:maj 7, D:min 3, G#:min 2, G#:maj 1, N 4); key
+  **A major** (second A minor).
+- The 64 `tab` notes: 37 re-pluck a pitch that sounds in one of the three events before (A3 on s3 0 after A3 on s4 5,
+  F#3 after the chord's F#3), 16 other single notes on strings 3-6, most with a clear CQT rise (up to 24 dB) but no
+  sharp fundamental jump (a short STFT is too coarse for low notes), 7 chord notes, 4 legato targets. By string: s4
+  29, s3 27, s2 6, s5 1, s6 1. Every `tab` note still sits on a flux peak (plucked notes) or a legato measure.
+
+## Departures from the tab
+
+- **Notes heard but not written (`audio`, 2):** at the last event of bar 12 (s1 fret 7, B4), in both choruses (84.695 s
+  and 144.312 s), **G#4 (s2 fret 7) is plucked with the B4**: G#4 is the loudest new partial there, +17.6 and +19.9 dB
+  over the 150 ms before, with its harmonics G#5 (+17.4, +34.9 dB) and D#6 (+18.2 dB); B4 rises +14.2 and +24.8 dB
+  (B5 +25.2, +35.6 dB) (`key/bin/newpartials.py`). The string and fret are those of the G#4 two events earlier, which
+  the hand still holds. Added to that event, voice `chord`.
+- **The slanted line (page 2, line 4, bar 11) is a slide and is played as one** in both choruses: no new pluck at the
+  7s, the D3 and F#4 lines glide up to E3 and G#4 within 80.25-80.38 s and 139.75-140.00 s (`key/out/zoom_slide1.png`).
+  The 7s are `legato` "slide" notes at the arrival.
+- **Form:** as the post gives it (Method 2); the arrow is taken on the second verse pass, as read.
+- **No written note is played as a different pitch** as far as these checks reach: at every onset the written pitch
+  was compared with the pitches 1 and 2 semitones away (`key/bin/departures.py`, 0 flags), and the strong onsets that
+  carry no key note were searched for a pitched note (`key/bin/extras.py`, `key/bin/newscan.py`): finger clicks
+  before plucks, a soft burst at 120.227 s (E3, E4, G#4 partials 15-20 dB below the notes around it), none a note.
+
+## Checks
+
+| check | result | file (work folder) |
+|---|---|---|
+| `gtr-eval check-truth` 0.12.1 | **4325 checks, 0 mismatches** | `key/logs/checktruth.json` |
+| side files against the JSON (`gtr-eval`, `--no-ledger`) | `notes.csv` onset and onset+offset F1 1.0; `.mid` onset 1.0, onset+offset 0.954 (same pitch on two strings, A3 on s4 5 and s3 0, overlaps in one MIDI channel, as in AO-082); `beats.txt` beats and downbeats F 1.0; `.tab.txt` `tab --ignore-time` 410 of 417 matched by order, 1.0 same string and fret | `key/logs/side_*.json` |
+| key rendered with FluidSynth (`notes2wav.py`, FluidR3_GM) against the recording, chroma cosine | nylon (program 24) **0.817** over 0.3-152 s, per 10 s 0.747-0.869; the same rendering one measure (3.09 s) late 0.524. Steel (25) 0.874, shifted 0.615 | `key/check/render_nylon.json`, `render_steel.json` |
+| onsets: the AO-082 checker's onset detector (librosa mel flux, `truth-check-capo/bin/timing.py` parameters) on the recording | **0.975 of the 402 key onset events have a detection within 50 ms** (per 10 s 0.93-1.00); detection minus key median -11.6 ms (p10-p90 -17.4 to -5.8: the key marks the 1 kHz+ transient peak, the mel detector the earlier low-band rise); missed: 0.308 s (first note, its A2 rises from 0.27 s: thumb stroke), 58.932 s (A3, a ringing re-pluck) and 7 legato or slide targets. 0.749 of the 526 detections are near a key onset: of the other 133, 88 lie 50-150 ms before a pluck (finger contact) and 15 just after one | `key/check/render_nylon.json`, `key/check/detector_extra.json` |
+| the same detector on the rendering against the recording | F 0.836 (P 0.970, R 0.734); rendering later by a median 34.8 ms = the FluidSynth nylon sample's own 23.2 ms from note-on to its detected onset + the 11.6 ms above | same |
+| early or late onsets (the capo fault) | key onset events with no detection within 30 ms but one 30-150 ms later: **1** (a pull-off, 104.171 s); 30-150 ms earlier: 4 (the first note and 3 legato or slide targets). Against 1 kHz+ peaks >= 0.15: 4 plucked notes 35-58 ms before a stronger peak where their own pitch evidence is weaker (kept) | `key/check/earlycheck.json` |
+| per-note energy at the partials (the conf test) and its calibration | Method 6 | `key/check/calib2.json` |
+| ten notes by hand (the middle of each tenth of the note list: CQT tile around the onset and the video frame) | 8 of 10 show their pitch's line starting at the onset (rise 9.8-21.0 dB, a sharp jump at 7); #145 (A3, 58.932 s, `tab`) is a ringing open string struck again (rise 3.7 dB, no jump); #312 (F#3 in the rolled chord at 117.493 s, `tab`): the F#3 line starts with the F#2 bass, 87 ms earlier, so it is either struck with the bass or only F#2's harmonic. The fretting hand is near the capo for the fret 0-3 notes and in the middle of the neck for the fret-7 notes (abs. fret 9); strings not resolvable at this size | `key/check/tencheck.jpg`, `tencheck.json` |
+
+No transcription model was run against this key (the lane rule: the key will score them).
+
+## What remains uncertain
+
+- **Chord notes above the lowest** (51 notes in the 21 chords and dyads): their order and pitch are sure, their onsets
+  come from the one-peak-per-string roll model and are likely within about 0.1 s; a few may be pinched with the bass
+  instead (e.g. #312 above).
+- **Legato and slide targets** (26): timed from salience changes and moved onto nearby flux peaks; the ornaments are
+  fast (a hammer 29-157 ms after its pluck), so a target's onset may be off by up to about 50 ms. Slide targets mark
+  the arrival of the pitch.
+- **The 64 `tab` notes**: re-plucks of ringing pitches and low notes without a sharp jump; their onsets are flux peaks
+  chosen with the tab's order, not proven plucks of that pitch.
+- **The onset convention**: the key marks the 1 kHz+ transient peak; the broadband attack starts a median 11.6 ms
+  earlier and by 40-50 ms on a few thumb strokes (the first note). Models trained on GuitarSet mark about 20-30 ms
+  earlier than such keys (AO-082).
+- **Beats, measures, tempo** are the builder's reading (the tab has no rhythm); the chords and the key are derived.
+- **Offsets** are a rule, not measured: use onset metrics.
+- **No video truth file** was written (not asked for this slot); the frames show one static shot with the nut and
+  headstock in view.
+- **Not yet audited** by an agent that did not build the key (NOTES.md section 5).
+- **Training sets**: not checked against the sets' file lists. GuitarSet (2018) cannot hold this 2023 recording; a
+  Vimeo-only pop arrangement is unlikely to be in GAPS (classical scores), GOAT or the Leduc set, but that is not
+  proven.
