@@ -36,7 +36,7 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   leaves its transcript in `~/.claude/projects/<cwd slug>/<session id>.jsonl` for `audit_blind.py`, and the JSON result
   gives tokens, cost and time per call (the per-bar measures of E4).
 
-## 2026-11-27 01:25 UTC: E1 first look (the hand-reach tool, v0)
+## 2026-11-27 01:05 UTC: E1 first look (the hand-reach tool, v0)
 
 - Tool in `G/loop/tools/handreach/`: `frame_ruler.py` (a frame with a pixel ruler), `wire_candidates.py` (fret-wire
   candidates inside a rough board outline, lettered for naming), `make_anchors.py` (named wires -> a keyframe; prints each
