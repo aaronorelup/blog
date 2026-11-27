@@ -95,3 +95,32 @@ tracker (no task tools, so nothing can leak into a blind attempt's context). New
   Noise2Fret on the three songs (alone, with fl's onsets, masked, as a re-scorer, as a voter; trajectory for the film);
   Transkun and Basic Pitch on the dev set for the vote weights. A checker per job.
 - Checkpoint 1's second message (the blind agent definition) sent. No answer from Aaron yet on it or the GPU.
+
+## 2026-11-27 03:35-04:40 UTC: part 1 results, part 2 started, the weekly limit
+
+- **Lane N part 1 done** (wf_b68182bd-1ab, a checker per job; records in `results/`):
+  - **N-E0** (`e0-rescore.md`): every step-2 run rescores to its record (0.000000); anchors 0.919906 / 0.829856 /
+    0.891720. No time shift lifts every tool on the tuning song by 0.02 (only YourMT3+ gains 0.021), so the key's early
+    onsets need no re-timing; 33 timing suspects on the tuning song are listed for an ear check, outside git. The brief's
+    first-look table reproduces within 0.005.
+  - **Riley rolls** (`riley-rolls.md`): the third checkpoint `gaps-paper` scores **0.954 / 0.822 / 0.8955** (fl 0.920 /
+    0.798 / 0.892, gaps 0.919 / 0.830 / 0.879). The gain is precision: it invents 42 notes on capo (fl 102), 45 on
+    standard (fl 104), 28 and 44 of them at slaps. Default thresholds hold under leave-one-song-out and dev24 choice.
+  - **N-E2 Noise2Fret** (`e2-noise2fret.md`): runs in 5-27 s a song on 2 cores, scores at best 0.60 / 0.38 / 0.39, adds
+    at most +0.005 to the vote. Every gate missed, so **no GPU (N-E8) is asked for**. Its trajectory: `p_xt` opens as
+    every note and thins, but that is noise read through the head; what the model believes (`p_x0`) is sparse from step 1.
+  - **Dev tools** (`dev-tools.md`): on dev24 gaps-paper 0.915, fl 0.896, gaps 0.866, Transkun 0.771, Basic Pitch 0.744; no
+    vote beats gaps-paper there.
+- **Methods survey done** (wf_046a9e05-dec, 94 agents): its ranked plan puts gaps-paper first, roll fusion with
+  per-register thresholds second, the masked analysis-by-synthesis haze third; literal diffusion (D3RM, DiffRoll) only
+  for one honest number and the picture.
+- **A permission refusal** ("Undermining Oversight") stopped a part-2 launch that included downloading and running
+  outside code and weights (DiffRoll, D3RM with a NATTEN build, the unlicensed Harmonica reproduction whose weights need
+  unsafe unpickling, Guitab). Not worked around; asked Aaron. Relaunched with local code and data only.
+- **Lane N part 2 started** (wf_c2e67ee4-2b0): N-E1 votes, picks and roll fusion; N-E4 the haze; N-E6 slaps; N-E5 range,
+  strings and assisted hand filters (LOOP's `hand_window.csv` not published yet). A checker per job.
+- **Weekly limit** (LOOP's message, 04:31 UTC): the account's weekly window read 68 % at 04:27 UTC, about $700 left for both
+  sessions until it resets around 2026-12-02 11:00 UTC; overage is off, so 100 % stops both. This session so far, measured
+  from its transcripts at list prices (Opus 5.5: $4 in, $20 out, $5 cache write, $0.20 cache read): about $420
+  (survey $131, lane H $164, tools $61, part 1 $42, main $13). From here: no new fan-outs, lane H finishes its audits,
+  frozen rules and held-out runs scripted, the film small. Proposed split for Aaron: NOTES about $250 more, LOOP the rest.
