@@ -4,7 +4,7 @@ Lane H of the NOTES session, 2026-11-27. The first part of this record covers **
 the files, the cut, the time base, the tuning and capo checks, the rights note and the credit line. **The key** (the
 two readings of the tab compared and merged, notes timed to the recording, `conf`, the builder's own checks) is in
 [The key](#the-key) below. An agent that did not build it checked it (`closer-check.md`), and the key was repaired
-the same day ([Repairs](#repairs), at the end); the audit is still to come.
+the same day ([Repairs](#repairs), at the end) and audited (`closer-audit.md`).
 Work folder (not in git): `/home/user/gtv/work/heldout-closer/` (`PROGRESS.md`, `bin/`, `logs/`, `frames/`, `checks/`,
 `tabfix/`; the readers' `read-A*`/`read-B*`; the key builder's `key/`; the checker's `check/`; the repair's `repair/`,
 with the first build in `orig/`). Every number below comes from a file named next
@@ -268,7 +268,7 @@ pull-off targets.
 - **The whole performance**: `scored_range` [0, 246.301] s, bars 1-96, first note 0.546 s, last onset 242.649 s
   (bar 96 pos 3.5; the final chord rings to about 245 s).
 - **1156 notes**: melody 622, bass 346, chord 188; 222 `<12>` harmonics; 44 hammer/pull targets (h 5, p 39).
-  `conf`: **1056 tab+audio, 99 tab, 1 audio**. The 99 `tab` notes are spread over 58 bars; the bars with 3 or more
+  `conf`: **1056 tab+audio, 99 tab, 1 audio**. The 99 `tab` notes are spread over 45 bars; the bars with 3 or more
   are 6, 13, 14, 16, 22, 26, 36, 45, 46, 48, 68 and 92, mostly the same pitch struck again while it rings (s4 5 = G#3 at
   pos 3.0 under an X slap, 11 of 14; the repeated 16th dyad s2 10 + s4 9 of bars 46 and 48; the G#3 16ths of bars 13-16
   on two strings).
@@ -459,7 +459,7 @@ The builder's rule split 13 notes from their chord (Method 5). The check found t
 ### Problem 4, 11 notes 32-52 ms from their pitch's attack: one moved (with its chord partner), 10 kept
 
 - **Moved:** bar 45 pos 3.0, the X chord (#493 A#4 s1 7, and #492 D#4 s2 5 with it, thumb slaps on s5/s6):
-  113.5107 → 113.4759 s, onto its slap, with its beat (beat 3 of bar 45).
+  113.5107 → 113.4759 s, onto its slap, with its beat (the beat at pos 3.0 of bar 45, the bar's 4th).
   - SuperFlux detects the slap at 113.476 s and nothing within 35 ms of 113.511 s.
   - Both pitches step up between 113.44 and 113.48 s, and not at 113.511 s (`frames/d_493.png`, `pt_p4a.png`).
   - The builder's DP had put the event at 113.482 s before its refinement moved it.
@@ -530,4 +530,4 @@ Runs: gtr-run r1459 and r1461 (the first staged re-check; r1459 stopped on a JSO
 - **Not re-checked here:** the tab readings, the beats (one moved with its event), downbeats, chords and the let-ring
   offsets.
 - **The check's doubts stand:** 21 harmonic fundamentals, the missing-note candidates, and the string of the added D#3.
-- **Still to come:** an audit by an agent that built neither the key nor the repair.
+- **Audit:** `closer-audit.md`, by an agent that built neither the key nor the repair; its one FAIL ("58 bars", which the files give as 45) is fixed above.
