@@ -123,6 +123,12 @@ anchors and a blind check), gaps-paper's notes after the hand filter.
 | Closer (E A D G A D, capo 1) | 6 of 6 (E A D G A D) | 0.698 / 0.715 | 0.767 | 0.894 | 0.579 | 35.9, $6.85 |
 | Three Little Boats (standard, a third player) | 6 of 6 (E A D G B E) | 0.935 / 0.942 | 1.000 | 0.956 | 0.909 | 23.0, $7.71 |
 
+**L3 on Boats** (the loop bar by bar, the app's full path: capo given, tuning found, the window, gaps-paper's notes):
+main 0.940 / heard 0.951, of matched 0.995, onset F1 0.905, 218 right / 1 wrong place / 13 missed / 33 invented
+(e2173, heard e2175); the solver on its own packs 0.909; 24 writes and 2 revisits, 74.4 writer minutes, $17.33. It kept
+the found tuning. Level with W2 on the same recording (0.935) at 2.2 times the cost; L3 was not run on Closer or
+September (the weekly limit).
+
 Evals: tunings e1717 to e1719; W2 tab e1670 (September), e1673 (Closer), e2140 (Boats; heard e2141, notes e2142, solver
 e2143). On Boats every error of both W2 and the solver is a missed or invented note (W2 217 right, 0 wrong place, 15
 missed, 5 invented): the tune sits in first position, where each pitch has one sensible place.
@@ -148,6 +154,6 @@ constraint to get right.
 
 ## Cost
 
-The loop's blind calls, at list prices (`units_log.jsonl`, `w2_summary.json`): L1, L2, L4 and E6 $289.06 (eight runs; the first calls of the five paused runs $1.26 more), W2 $27.90 on the three songs and $20.65 held out,
+The loop's blind calls, at list prices (`units_log.jsonl`, `w2_summary.json`): L1, L2, L4 and E6 $289.06 (eight runs; L3 on Boats $17.33 more; the first calls of the five paused runs $1.26 more), W2 $27.90 on the three songs and $20.65 held out,
 three dry runs $7.65, the held-out prep's nine blind runs $39.58 (`HELDOUT-PREP.md`; Closer and September's six, $29.18, in `HELDOUT-BLIND.md`). The whole session's agents are measured with the
 `agent-metrics` skill at the end. The session's weekly Claude limit read 0.88 at 07:51 UTC; it resets 2026-12-02.

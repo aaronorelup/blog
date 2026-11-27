@@ -513,6 +513,142 @@
     "file": "G/loop/runs/l2-standard/units_log.jsonl"
    }
   },
+  "l3-ho-boats": {
+   "what": "L3: the loop, the tuning found",
+   "song": "ho-boats",
+   "units_done": 24,
+   "units_total": 24,
+   "tab": {
+    "main": 0.939655,
+    "of_matched": 0.995434,
+    "matched": 0.943966,
+    "right": 218,
+    "wrong_place": 1,
+    "missed": 13,
+    "invented": 33,
+    "key_notes": 232,
+    "file": "G/loop/runs/l3-ho-boats/score/span_tab.json",
+    "eval": "e2173"
+   },
+   "heard": {
+    "main": 0.950893,
+    "of_matched": 0.995327,
+    "matched": 0.955357,
+    "right": 213,
+    "wrong_place": 1,
+    "missed": 10,
+    "invented": 38,
+    "key_notes": 224,
+    "file": "G/loop/runs/l3-ho-boats/score/span_tab_heard.json",
+    "eval": "e2175"
+   },
+   "onset_f1": 0.904959,
+   "onset_f1_eval": "e2174",
+   "gp5": {
+    "main": 0.892241,
+    "of_matched": 0.995192,
+    "matched": 0.896552,
+    "right": 207,
+    "wrong_place": 1,
+    "missed": 24,
+    "invented": 43,
+    "key_notes": 232,
+    "file": "G/loop/runs/l3-ho-boats/score/span_tab_gp5.json",
+    "eval": "e2176"
+   },
+   "solver_alone": {
+    "main": 0.909483,
+    "of_matched": 1.0,
+    "matched": 0.909483,
+    "right": 211,
+    "wrong_place": 0,
+    "missed": 21,
+    "invented": 5,
+    "key_notes": 232,
+    "file": "G/loop/runs/l3-ho-boats/score/span_solver_tab.json",
+    "eval": "e2177"
+   },
+   "solver_alone_heard": {
+    "main": 0.919643,
+    "of_matched": 1.0,
+    "matched": 0.919643,
+    "right": 206,
+    "wrong_place": 0,
+    "missed": 18,
+    "invented": 10,
+    "key_notes": 224,
+    "file": "G/loop/runs/l3-ho-boats/score/span_solver_tab_heard.json",
+    "eval": "e2178"
+   },
+   "thirds": {
+    "first": {
+     "units": 8,
+     "right_share": 0.974,
+     "heard_right_share": 0.9868,
+     "min_per_unit": 2.9,
+     "out_tokens_per_unit": 16992,
+     "cost_per_unit": 0.68,
+     "revisit_cost": 0.397
+    },
+    "middle": {
+     "units": 8,
+     "right_share": 0.9123,
+     "heard_right_share": 0.9123,
+     "min_per_unit": 2.86,
+     "out_tokens_per_unit": 16264,
+     "cost_per_unit": 0.657,
+     "revisit_cost": 0
+    },
+    "last": {
+     "units": 8,
+     "right_share": 0.9286,
+     "heard_right_share": 0.9451,
+     "min_per_unit": 3.16,
+     "out_tokens_per_unit": 18349,
+     "cost_per_unit": 0.728,
+     "revisit_cost": 0.411
+    }
+   },
+   "per_unit_slope_of_right_share": -0.00223,
+   "changes": {
+    "writer": {
+     "place": {
+      "right-to-wrong": 1
+     },
+     "keep-alt": {
+      "right-to-wrong (an invented note)": 27,
+      "wrong-to-right": 10
+     },
+     "add": {
+      "right-to-wrong (an invented note)": 2
+     },
+     "drop": {
+      "right-to-wrong (a played note dropped)": 2,
+      "wrong-to-right (an invented note dropped)": 1
+     }
+    },
+    "revisit:habit+asked": {
+     "add": {
+      "right-to-wrong (an invented note)": 1
+     }
+    },
+    "revisit:asked": {
+     "drop": {
+      "wrong-to-right (an invented note dropped)": 1
+     }
+    }
+   },
+   "log": {
+    "calls": {
+     "write": 24,
+     "revisit": 2
+    },
+    "cost_usd_list": 17.33,
+    "writer_minutes": 74.4,
+    "output_tokens": 428902,
+    "file": "G/loop/runs/l3-ho-boats/units_log.jsonl"
+   }
+  },
   "l4-capo": {
    "what": "L4: L2 with the hand window off",
    "song": "capo",

@@ -450,3 +450,10 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
   the Boats tab is James Franklin's arrangement, played by Pete Lumb; this session ran at xhigh (the blind attempts at
   max); the capo passage at 25 s is seen, not heard (the two tabs play the same pitches); L2 standard and L4 standard
   counts corrected to gtr-eval's (594 / 37 / 48 / 91, 564 / 69 / 46 / 81).
+
+## 2026-11-27 09:25 UTC: L3 on Boats done
+
+- **l3-ho-boats** (the app's full path, bar by bar): main **0.940** (heard 0.951), of matched 0.995, onset F1 0.905,
+  218 / 1 / 13 / 33 (gtr-eval, e2173); solver on its packs 0.909; 24 writes, 2 revisits, 74.4 writer minutes, $17.33.
+  The found tuning was kept (no tuning change). Level with W2 (0.935) at 2.2 times the cost. Thirds 0.974 / 0.912 /
+  0.929 (per-unit slope -0.002). Every planned run is now done or cut; no blind run is running.

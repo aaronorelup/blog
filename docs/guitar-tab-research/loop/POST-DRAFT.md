@@ -87,6 +87,8 @@ Share of the answer key's notes on the right string and fret, onset within 50 ms
 | Closer (E A D G A D, capo 1) | all 6 strings | 0.698 | 0.579 |
 | Three Little Boats (standard) | all 6 strings | 0.935 | 0.909 |
 
+On Three Little Boats I also ran the bar-by-bar version with the tuning it found, the full path the app would take. It scored 0.940, level with the whole-song pass, at more than twice the cost.
+
 The method was frozen before any new song was run. Every number, with the file and eval it comes from, is in [the research records](https://github.com/aaronorelup/blog/tree/research/guitar-tab-loop/docs/guitar-tab-research/loop).
 
 </details>
