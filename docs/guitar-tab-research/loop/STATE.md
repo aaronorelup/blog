@@ -265,3 +265,18 @@ binding direction: `../DIRECTION.md`. Heavy files in `/home/user/gtv/loop/` (G/l
 - Held-out prep lane (wf_1252baf2-15a, 05:10): blind videos, note models, beats, landmarks, LOOP's own key audit, a
   prep.py option for held-out notes; then Opus blind hand anchors and check and the tuning finder, as on the dev songs.
   Closer and September; Boats after.
+
+## 2026-11-27 05:55 UTC: W2 done on the three songs (E5)
+
+- One whole-song session per song (L2's inputs: chain-2's notes and alternatives, the tuning given, the hand window,
+  the solver, renders; 90 minutes allowed; sandboxed, network closed). Scored with gtr-eval tab on its answer.json
+  (`G/loop/score/w2/`): capo **0.947** (of matched 0.972), standard **0.878** (0.940), nylon **0.830** (0.974).
+  Minutes and list cost: 36.6 / $10.85, 34.6 / $8.86, 27.9 / $8.20. The standard session named the piece ("Imagine"
+  arranged for fingerstyle in C): memory may have helped there; the other two said not recognised.
+- W2 placed every tapped note of the capo song's tap passages right (28 of 28 at 25-31 s, 28 of 28 at 37-44 s, 25 of 26
+  twice later); its HOW.md: "tapping bars ... right hand over the neck taps Bb2 6:3 ... left hand at frets 7-9 plays F3
+  4:0 / D4 4:9 / C4 4:7 hammer-pull figures (solver had D4 on 2:0)", reasoning from same-string evidence in the sound (a
+  note cut the instant the next starts) and the overlay pictures. The bar-by-bar L2 writer got 8 of 28 in each.
+- The running loops at 05:50 (peek, orchestrator only): L2 capo 0.824 (28 units), standard 0.896 (28), nylon 0.861 (30);
+  L4 0.785 / 0.850 / 0.843; L1 nylon 1.000 (42 units, 537 key notes); E6 state-off capo 0.824 (15 units). Loop calls so
+  far $185.62.
