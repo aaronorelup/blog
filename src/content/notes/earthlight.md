@@ -45,7 +45,7 @@ whole set, edge to edge
 
 **After the VOID.** 20:00 The break · 20:40 Decommissioning · 21:30 The window · 22:05 Down · 23:15 Never Rises, Never
 Sets · 25:05 The line is open · 25:20 The call · 26:05 Eleven days · 26:55 Sheet 3, revision B · 28:15 Issued for
-construction · 28:35 The whole city · 29:15 Occupant load · 29:30 Chaos · 30:00 One minute of black
+construction · 28:35 The whole city · 29:15 Occupant load · 29:30 Chaos · 30:00 Twenty seconds of black, and a heartbeat
 
 ## What Aaron asked for
 
@@ -62,7 +62,8 @@ His brief is long, and all of it is in the episode's playbook. These are the par
   ComfyUI for images and 3D assets, Blender, and MiniMax using the Blender render as a guide, with its adherence kept at
   an appropriate level, because last time it was set so high that every mistake in the guide was copied.
 - **A visceral new animation style** for the moment he describes the Moon's environment.
-- **30 minutes, then a minute of black** for YouTube's end screen. At 20:00 the series breaks, this time toward horror,
+- **30 minutes, then a minute of black** for YouTube's end screen. (After the master he made it 20 seconds, with
+  sound; see [After delivery](#after-delivery-twenty-seconds-a-heartbeat-and-a-quieter-pen).) At 20:00 the series breaks, this time toward horror,
   but not completely, with a music video and real fear.
 - **She stays quiet.** No voice for the first ten minutes; she phones in near the end. "I haven't decided if you should
   ever see her."
@@ -499,6 +500,25 @@ permission system until Aaron said yes. This time his brief says he doesn't need
 hidden page went live in one push to the site, and Aaron hadn't read the draft before you did. If anything here reads
 wrong to him, it's one edit away.
 
+## After delivery: twenty seconds, a heartbeat, and a quieter pen
+
+Aaron watched the master the same afternoon and sent two notes. The first: "Actually, it needs to be 20 seconds long,
+also there should still be some audio, even if it's just a heartbeat." YouTube's end screen lasts at most 20 seconds,
+so a silent minute was 40 seconds of nothing. Both episodes' YouTube files are now exactly 30:20, 54,600 frames. In
+this one, after "Good-" is cut at 30:00, there is one light-second of silence, 1.28 seconds, and then Noor's heartbeat:
+17 beats, slowing from about 64 a minute to about 47 as she falls asleep, over the faint hum of her life support,
+which fades out exactly on 30:20.
+The picture wasn't re-encoded: the first 54,590 frames of the new file are byte for byte the old ones, and only the
+last ten black frames are new. Episode 1's YouTube file got the same 20 seconds, with a heartbeat tuned to its score's
+D.
+
+The second note was that Teo's pen on the paper was a little loud. It was. The sound crew had written down that the
+ink strokes should come down about 6 dB, and nobody applied it. There are 3,678 drawing strokes in 22 segments (ink,
+vellum, pencil, chalk and one compass); they are now 6 dB quieter in his pauses and 8 dB quieter under his voice, and
+the paper slides are 4 dB quieter. Measured, the strokes sit about 21 LU under his voice instead of 13.6. Nobody had
+listened to the mix before it shipped, and this is what that costs: it took Aaron's ears, the one check no agent here
+has.
+
 ## The numbers
 
 Measured from the session's own transcripts with the agent-metrics skill, and priced at API list rates with Playback
@@ -520,8 +540,8 @@ Lens' rate table. Aaron's plan is a subscription, so the dollar figure is a size
   preferred T3's 3.6 hours, and the film still went 40% over it.
 - **About 13,600 ElevenLabs credits** by the episode's own ledgers: sound effects 4,900, music 5,143, dialogue 1,732,
   casting 1,427, scouting 363 and the 8-credit retake. The chat's robot voices are Windows' own, for 0.
-- **The film:** 42 segments, 55,800 frames at 1080p and 30 frames a second, 30:00.000 of programme and 60.000 s of
-  black, 31:00 in all. -14.0 LUFS, true peak -1.3 dBTP. 239 placed lines from 229 takes, 291 caption cues, 657
+- **The film:** 42 segments, 54,600 frames at 1080p and 30 frames a second, 30:00.000 of programme and 20.000 s of
+  black with her heartbeat under it, 30:20 in all (delivered at 31:00 and re-cut the same day). -14.0 LUFS, true peak -1.3 dBTP. 239 placed lines from 229 takes, 291 caption cues, 657
   sound-effect files, 18 sheets, 13 X posts, 13 easter eggs. The flash check passes in all 31 windows of the master.
 - **The machine:** the series' first local run, on Aaron's Windows 11 laptop: 16 CPU threads, 64 GB of RAM and an RTX
   4070 Laptop GPU with 8 GB, shared with his other sessions through a queue.
