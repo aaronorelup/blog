@@ -1,66 +1,78 @@
 ---
 id: "AO-096"
 title: "Same tasks timed with and without a skill"
-summary: "Four tasks on my blog, each given to two fresh AI agents: one read my blog-writing skill first, one never saw it."
+summary: "Three skills my agents use, one job each: a cost report, a small website and a video, to see if the skill makes the job faster or better."
 date: 2026-11-26
 topic: "agents"
 draft: false
 credits:
-  owner: "Claude routine"
+  owner: "Aaron"
   worker: "Opus 5.5 fleet"
-  orchestrator: "Opus 5.5 medium"
-  cost: 8.69
+  orchestrator: "Opus 5.5"
+  cost: 93.16
 preview:
-  verdict: "798 s vs 809 s"
-  takeaway: "The agents with the skill took 798 seconds in all and the ones without took 809. All 8 results passed the blog's strict checker."
+  verdict: "Brand 8.8 vs 2.8 of 10"
+  takeaway: "With the brand skill, blind judges scored brand match 8.8 of 10 against 2.8 without. With the video skills the video took 33 minutes against 17.5."
   points:
-    - "Per task the gap went both ways: 218 vs 234, 180 vs 144, 161 vs 192 and 238 vs 239 seconds."
-    - "With the skill the agents used 353,351 tokens and 57 tool calls. Without it, 319,948 tokens and 60 calls."
-    - "The skill agent hosted the demo under /games/ as the skill says. The other put it under /labs/."
+    - "The cost report took 4.7 minutes with its skill and 4.6 without. All 4 runs got all 22 agent rows right."
+    - "AI judges who never saw the brand rules scored the sites without the skill 8.5 for readers and those with it 7.5."
+    - "No judge found a data error in any video. Design scored 8.4 with the video skills and 8.2 without."
   image: "/media/previews/same-tasks-timed-with-and-without-a-skill.webp"
-  alt: "Dot chart of seconds per blog task, with the skill then without: new post 218 and 234, fix a broken post 180 and 144, add a picture 161 and 192, host a demo 238 and 239"
+  alt: "Bar chart of minutes per task, mean of 2 runs, with the skill then without: cost report 4.7 and 4.6, small website 9.4 and 9.2, 45-second video 33.0 and 17.5"
 ---
 
-My agents gave four tasks on this blog to eight fresh Claude agents, two per task. One of each pair read my blog-writing skill first. The other was told never to open it. **With the skill the four tasks took 798 seconds in all. Without it they took 809.** Per task the gap went both ways, and all 8 results passed the blog's strict checker with 0 errors and 0 warnings. One trial ran per task and arm.
+Fresh Claude agents did one job for each of three skills my agents use, twice with the skill and twice without. **With the brand skill, blind judges scored brand match 8.8 of 10. Without it, 2.8. With the video skills the video took 33 minutes. Without them, 17.5, for about the same scores. The cost report took 4.7 minutes with its skill and 4.6 without, and every run got every agent row right.**
 
-![Dot chart of seconds per blog task, with the skill then without: new post 218 and 234, fix a broken post 180 and 144, add a picture 161 and 192, host a demo 238 and 239](/media/same-tasks-timed-with-and-without-a-skill/seconds-per-task.webp)
+![Bar chart of minutes per task, mean of 2 runs, with the skill then without: cost report 4.7 and 4.6, small website 9.4 and 9.2, 45-second video 33.0 and 17.5](/media/same-tasks-timed-with-and-without-a-skill/minutes-per-task.webp)
 
-The idea comes from an X post by [Anton Martyniuk](https://x.com/AntonMartyniuk/status/2125570344589087215). He ran the same four .NET coding tasks twice and says they took 2.9 minutes with his Claude skills and 13.2 minutes without them.
+A skill is a folder of instructions, sometimes with scripts, that an AI agent reads before a job. The first version of this post tested an X post that advertised the poster's own skills, and its jobs took under 4 minutes. My agents no longer test posts that sell the poster's own product. I asked for this instead: a few of the skills my agents use, on jobs that take about 15 minutes without them, and a check of whether each skill does what it says. Only the video job got there. The cost report took under 5 minutes without its skill and the website about 9.
 
-The technique as a template: give the same task to two fresh agents in identical copies of a project, tell one to read the skill first and the other not to open it, then time both and grade what they made with the same checker (optional: several tasks, more than one trial each).
+The technique as a template: give the same job to two fresh agents in identical folders, tell one to read the skill first and the other never to open it, then time both and grade what they made with the same checks (optional: blind judges, more runs).
 
 **The rundown**
 
-- **New post from a page of notes:** 218 seconds with the skill, 234 without.
-- **Fix a broken draft** that the checker failed with 8 errors: 180 with, 144 without. The skill agent also drew a chart and a card picture. The other changed only the post.
-- **Add a picture** to a post and make it the card picture: 161 with, 192 without.
-- **Host a one-file dice demo** and write its post: 238 with, 239 without. The skill agent put it under /games/, where the skill says demos go. The other put it under /labs/.
-- **Tokens:** 353,351 with the skill and 319,948 without. Tool calls: 57 and 60.
+- **The cost report took 4.7 minutes with agent-metrics and 4.6 without.** It holds a script that measures what each helper agent in a session cost. The job covered one session with 20 of them. All four reports matched an independent count on all 22 agent rows.
+- **Blind judges scored brand match 8.8 of 10 with aaron-brand and 2.8 without.** It holds my Tea House look, its colours, three typefaces, ten visual rules and how I write. The job was a small site with ten generated pages, a light and dark switch and a social card. Every hex colour code on the skill sites came from my brand tokens. None on the others did.
+- **AI judges who never saw the brand rules scored the other sites higher for readers, 8.5 against 7.5.** They flagged dim labels on all four, and on the brand sites also big empty areas and a fallback-looking body font.
+- **The video took 33 minutes with the hyperframes skills and 17.5 without.** Its nine skills teach an agent HyperFrames, a tool that turns a web page into video. The job was a 45-second video with ten scenes and a bar chart, in wide and phone sizes.
+- **The videos scored about the same.** All 8 met the size, 30 frames a second and 45.0 seconds asked for, and no judge found a wrong date, name or count. Content scored 9.7 with the skills and 10.0 without, legibility 8.6 and 8.3, design 8.4 and 8.2. All three video judges said the skill-made phone versions left the bottom third of the frame empty.
 
 ## How it ran
 
-Each agent worked alone in its own copy of the blog, with no network and no commits. Both arms had the blog's own rule files, which already say most of what the skill says. The skill is my agents' short version of those rules plus the steps for publishing. The agents ran on Opus 5.5. All eight started at 11:57 UTC and the last one finished at 12:01.
+Every agent was Claude Opus 5.5 at extra-high effort, in its own folder on one cloud box with 4 processors, and both versions of a job started together. Their prompts differed in the agent's name and one line. "With" agents were told to read the skill and the files it points to, "without" agents never to open any skill, my agent kit or my blog's files. The transcripts show every "with" agent read its skill and no "without" agent opened one.
 
-Every agent also ran the blog's full build or its test suite on its own, unasked. The six that ran the tests spent 30 to 84 seconds of their time on it.
+Without the skills, both video agents skipped HyperFrames and wrote their own page-to-video script, so the gap includes learning and running HyperFrames.
 
-The transcripts show that no agent in the "without" arm opened the skill. They did see the general instructions every agent here gets, which name the skill but do not hold its text.
+Nine blind judge agents scored the results from screenshots and frames, with the runs relabelled A to D in three orders. Three read the brand rules, three never saw them and three scored the videos. They saw each site only in the mode it opens in, night for the brand sites and light for the others.
 
 <details>
-<summary>Per agent</summary>
+<summary>What else differs from a clean test, and the per-agent numbers</summary>
 
-| Task | Arm | Seconds | Tokens | Tool calls |
-|---|---|---|---|---|
-| New post from notes | with | 218 | 88,831 | 12 |
-| New post from notes | without | 234 | 84,294 | 13 |
-| Fix a broken post | with | 180 | 91,136 | 13 |
-| Fix a broken post | without | 144 | 74,494 | 12 |
-| Add a picture | with | 161 | 78,654 | 11 |
-| Add a picture | without | 192 | 69,824 | 13 |
-| Host a demo | with | 238 | 94,730 | 21 |
-| Host a demo | without | 239 | 91,336 | 22 |
+- Two runs per version show a pattern, not a rate. Means are taken from unrounded times and scores. The video skill runs wrote about twice the output tokens.
+- A first round with smaller jobs ran before this one and overlapped its first 12 minutes. Its runs without a skill took 2.5 to 3.4 minutes, so the jobs were made bigger: 20 helper agents instead of 8, a 12-page site instead of one page, and a 45-second video in two sizes instead of 15 seconds.
+- All agents shared one scratch folder. Once, a "with" agent's script overwrote a "without" agent's script for the cost report. That agent noticed and rebuilt its files in its own folder.
+- One brand run with the skill also read my blog's writing rules, which the brand skill points to.
+- The "without" agents could still see each skill's one-line description in their list of tools. None opened a skill.
+- The video skills send a new video to a workflow skill outside the set, and the prompt allowed only the set.
+- The cost reports were graded on their per-agent rows. Their totals and charts were not graded.
 
-Tokens are the totals the agent tool reports for each agent.
+| Job | Version | Minutes | Output tokens |
+|---|---|---|---|
+| Cost report | with | 4.4 | 27,816 |
+| Cost report | with | 5.1 | 32,491 |
+| Cost report | without | 4.5 | 27,971 |
+| Cost report | without | 4.7 | 28,578 |
+| Small website | with | 8.9 | 54,242 |
+| Small website | with | 9.9 | 55,300 |
+| Small website | without | 10.2 | 47,279 |
+| Small website | without | 8.2 | 37,432 |
+| 45-second video | with | 36.3 | 125,146 |
+| 45-second video | with | 29.6 | 106,050 |
+| 45-second video | without | 16.8 | 59,183 |
+| 45-second video | without | 18.2 | 51,759 |
+
+Brand match, mean of 3 judges per site: 8.8 and 8.8 with the skill, 3.0 and 2.7 without. Reader score: 7.5 and 7.5 with, 8.7 and 8.3 without.
 
 </details>
 
-*My agents picked this idea, ran the test and wrote it up.*
+*My agents ran the test and wrote it up.*
