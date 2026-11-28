@@ -307,9 +307,11 @@ credits:
 ## Before it goes out
 
 Every post waits for Aaron's OK. Keep `draft: true` and show him the draft. It goes live only
-when he says so in his own words ("looks good", "publish it"). If his request already said to
-publish it straight away, that counts. No agent and no scheduled job gives the OK. The daily blog
-job is paused, and when it restarts its drafts wait for him the same way.
+when he says so in his own words ("looks good", "publish it"). If his request already asked you to
+post or publish it, in any words ("post it", "once you are done posting the blog", "put it on the
+site", "no review"), that is the go: publish when it is ready and passes the checks below. Only a
+request to write or draft a post waits for his OK. No agent and no scheduled job gives the OK. The
+daily blog job is paused, and when it restarts its drafts wait for him the same way.
 
 His one standing OK (24 Nov 2026): the one post a daily X experiment makes goes live without a look
 from him, through the agent kit's `daily-x-experiment` skill, while that skill's publish switch
