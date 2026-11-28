@@ -1,0 +1,103 @@
+# verify-trials-audio-to-notes, 2026-11-10: re-run outputs (verify/out/<tool>/) against the trial outputs (out/<tool>/), from scripts/verify_trials/compare_outputs.py
+aubio/R1b.aubionotes.txt: identical bytes
+aubio/R1b.aubiopitch.txt: identical bytes
+aubio/R1b.f0.csv: identical bytes
+aubio/R1b.notes.csv: identical bytes
+aubio/R2.aubionotes.txt: identical bytes
+aubio/R2.aubiopitch.txt: identical bytes
+aubio/R2.f0.csv: identical bytes
+aubio/R2.notes.csv: identical bytes
+aubio/R3a.aubionotes.txt: identical bytes
+aubio/R3a.aubiopitch.txt: identical bytes
+aubio/R3a.f0.csv: identical bytes
+aubio/R3a.notes.csv: identical bytes
+aubio/S1.aubionotes.txt: identical bytes
+aubio/S1.aubiopitch.txt: identical bytes
+aubio/S1.f0.csv: identical bytes
+aubio/S1.notes.csv: identical bytes
+aubio/S2n.aubionotes.txt: identical bytes
+aubio/S2n.aubiopitch.txt: identical bytes
+aubio/S2n.f0.csv: identical bytes
+aubio/S2n.notes.csv: identical bytes
+aubio/S2s.aubionotes.txt: identical bytes
+aubio/S2s.aubiopitch.txt: identical bytes
+aubio/S2s.f0.csv: identical bytes
+aubio/S2s.notes.csv: identical bytes
+aubio/S4.aubionotes.txt: identical bytes
+aubio/S4.aubiopitch.txt: identical bytes
+aubio/S4.f0.csv: identical bytes
+aubio/S4.notes.csv: identical bytes
+aubio/S4lead.aubionotes.txt: identical bytes
+aubio/S4lead.aubiopitch.txt: identical bytes
+aubio/S4lead.f0.csv: identical bytes
+aubio/S4lead.notes.csv: identical bytes
+swiftf0/R1b.f0.csv: identical bytes
+swiftf0/R1b.notes.csv: identical bytes
+swiftf0/R2.f0.csv: identical bytes
+swiftf0/R2.notes.csv: identical bytes
+swiftf0/R3a.f0.csv: identical bytes
+swiftf0/R3a.notes.csv: identical bytes
+swiftf0/S1.f0.csv: identical bytes
+swiftf0/S1.notes.csv: identical bytes
+swiftf0/S2n.f0.csv: identical bytes
+swiftf0/S2n.notes.csv: identical bytes
+swiftf0/S2s.f0.csv: identical bytes
+swiftf0/S2s.notes.csv: identical bytes
+swiftf0/S4.f0.csv: identical bytes
+swiftf0/S4.notes.csv: identical bytes
+swiftf0/S4lead.f0.csv: identical bytes
+swiftf0/S4lead.notes.csv: identical bytes
+essentia-melodia/R1b.f0.csv: identical bytes
+essentia-melodia/R1b.notes.csv: identical bytes
+essentia-melodia/R2.f0.csv: identical bytes
+essentia-melodia/R2.notes.csv: identical bytes
+essentia-melodia/R3a.f0.csv: identical bytes
+essentia-melodia/R3a.notes.csv: identical bytes
+essentia-melodia/S1.f0.csv: identical bytes
+essentia-melodia/S1.notes.csv: identical bytes
+essentia-melodia/S2n.f0.csv: identical bytes
+essentia-melodia/S2n.notes.csv: identical bytes
+essentia-melodia/S2s.f0.csv: identical bytes
+essentia-melodia/S2s.notes.csv: identical bytes
+essentia-melodia/S4.f0.csv: identical bytes
+essentia-melodia/S4.notes.csv: identical bytes
+essentia-melodia/S4lead.f0.csv: identical bytes
+essentia-melodia/S4lead.notes.csv: identical bytes
+essentia-pyin/R1b.f0.csv: same rows (5047), max abs diff per column [0.0, 6.93, 0.1461]
+essentia-pyin/R2.f0.csv: same rows (6195), max abs diff per column [0.0, 138.591, 0.877]
+essentia-pyin/R3a.f0.csv: same rows (3094), max abs diff per column [0.0, 6.174, 0.1583]
+essentia-pyin/S1.f0.csv: same rows (5133), max abs diff per column [0.0, 391.995, 0.7208]
+essentia-pyin/S2n.f0.csv: same rows (5051), max abs diff per column [0.0, 8.241, 0.76]
+essentia-pyin/S2s.f0.csv: same rows (5051), max abs diff per column [0.0, 17.982, 0.8763]
+essentia-pyin/S4.f0.csv: same rows (6667), max abs diff per column [0.0, 73.416, 0.8435]
+essentia-pyin/S4lead.f0.csv: same rows (6667), max abs diff per column [0.0, 0.0, 0.5714]
+essentia-klapuri/S2n.multif0.json: identical bytes
+essentia-multimelodia/S2n.multif0.json: identical bytes
+contour-segmentation/runs.json: json differs
+contour-segmentation/pesto/R1b.notes.csv: identical bytes
+contour-segmentation/pesto/S1.notes.csv: identical bytes
+contour-segmentation/pesto/S4lead.notes.csv: identical bytes
+contour-segmentation/torchcrepe-full/R1b.notes.csv: identical bytes
+contour-segmentation/torchcrepe-full/S1.notes.csv: identical bytes
+contour-segmentation/torchcrepe-full/S4lead.notes.csv: identical bytes
+contour-segmentation/fcpe/R1b.notes.csv: identical bytes
+contour-segmentation/fcpe/S1.notes.csv: identical bytes
+contour-segmentation/fcpe/S4lead.notes.csv: identical bytes
+contour-segmentation/essentia-crepe-tiny/R1b.notes.csv: identical bytes
+contour-segmentation/essentia-crepe-tiny/S1.notes.csv: identical bytes
+contour-segmentation/essentia-crepe-tiny/S4lead.notes.csv: identical bytes
+basic-pitch/S1.mid: identical bytes
+basic-pitch/S1.notes.csv: identical bytes
+basic-pitch/S2n.mid: identical bytes
+basic-pitch/S2n.notes.csv: identical bytes
+pyin/S1.f0.csv: identical bytes
+fcpe/S1.f0.csv: identical bytes
+pesto/S1.f0.csv: identical bytes
+torchcrepe-tiny-decoders/viterbi/R1b.f0.csv: same rows (2934), max abs diff per column [0.0, 40.465, 0.0]
+torchcrepe-tiny-decoders/weighted_argmax/R1b.f0.csv: same rows (2934), max abs diff per column [0.0, 5.281, 0.0]
+torchcrepe-tiny-decoders/argmax/R1b.f0.csv: same rows (2934), max abs diff per column [0.0, 28.109, 0.0]
+essentia-crepe-tiny/S1.f0.csv: identical bytes
+transkun/S1.mid: identical bytes
+transkun/S1.notes.csv: identical bytes
+bytedance/S2n.mid: identical bytes
+bytedance/S2n.notes.csv: identical bytes

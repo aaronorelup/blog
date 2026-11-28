@@ -1,0 +1,488 @@
+[
+ {
+  "id": "G1",
+  "url": "https://www.guitar-pro.com/c/9-software-end-user-license-agreement",
+  "file": "www.guitar-pro.com_c_9-software-end-user-license-agreement",
+  "quote": "GUITAR PRO is software protected by the provisions of the French Intellectual Property Code. THIS PRODUCT IS NOT SOLD BUT PROVIDED WITHIN THE FRAMEWORK OF A LICENSE."
+ },
+ {
+  "id": "G2",
+  "url": "https://www.guitar-pro.com/c/9-software-end-user-license-agreement",
+  "file": "www.guitar-pro.com_c_9-software-end-user-license-agreement",
+  "quote": "This License excludes any transfer of intellectual property for the benefit of the Licensee/User."
+ },
+ {
+  "id": "G3",
+  "url": "https://www.guitar-pro.com/c/9-software-end-user-license-agreement",
+  "file": "www.guitar-pro.com_c_9-software-end-user-license-agreement",
+  "quote": "AROBAS MUSIC grants to the User, who accepts, a personal, non-exclusive and non-transferable right to use GUITAR PRO. This right of use is granted to the User for personal and professional use."
+ },
+ {
+  "id": "G4",
+  "url": "https://www.guitar-pro.com/c/9-software-end-user-license-agreement",
+  "file": "www.guitar-pro.com_c_9-software-end-user-license-agreement",
+  "quote": "The License acquired hereunder may be used to activate the software as many times as desired, within the limit of up to 5 computers at the same time."
+ },
+ {
+  "id": "G5",
+  "url": "https://www.guitar-pro.com/c/9-software-end-user-license-agreement",
+  "file": "www.guitar-pro.com_c_9-software-end-user-license-agreement",
+  "quote": "The liability of AROBAS MUSIC cannot be committed or sought: ... in the event of diffusion by the User in any manner whatsoever, with or without consideration, of the creations made with GUITAR PRO which contravene the rights of third parties,"
+ },
+ {
+  "id": "G6",
+  "url": "https://www.guitar-pro.com/c/9-software-end-user-license-agreement",
+  "file": "www.guitar-pro.com_c_9-software-end-user-license-agreement",
+  "quote": "The User shall be solely responsible for any use of GUITAR PRO that violates the rights of third parties, including those resulting in the creation of new works."
+ },
+ {
+  "id": "G7",
+  "url": "https://www.guitar-pro.com/c/9-software-end-user-license-agreement",
+  "file": "www.guitar-pro.com_c_9-software-end-user-license-agreement",
+  "quote": "You can review the most recent version of this EULA by clicking on the \"About Guitar Pro 8\" tab in the Help Menu (Windows) or Guitar Pro 8 (Macintosh)."
+ },
+ {
+  "id": "G8",
+  "url": "https://www.guitar-pro.com/c/6-terms-and-conditions-of-sale",
+  "file": "www.guitar-pro.com_c_6-terms-and-conditions-of-sale",
+  "quote": "With regard to the contractual relations between the Company and the Customer, the Customer is considered a consumer within the meaning of French law. The Customer undertakes to act exclusively within the private sphere, for personal purposes that are unrelated to their business activity."
+ },
+ {
+  "id": "G9",
+  "url": "https://www.guitar-pro.com/c/6-terms-and-conditions-of-sale",
+  "file": "www.guitar-pro.com_c_6-terms-and-conditions-of-sale",
+  "quote": "In order to respect copyrights, it will not be possible to modify or save a score on the Customer's device;export and printing will only be available to Customers with a valid subscription. Furthermore, the audio export of mySongBook files must be limited to private use. Any commercial use of such an export is strictly forbidden."
+ },
+ {
+  "id": "G10",
+  "url": "https://www.guitar-pro.com/c/3-terms-of-use",
+  "file": "www.guitar-pro.com_c_3-terms-of-use",
+  "quote": "Any representation, reproduction, partial or total use of the contents and services offered by the site by any means whatsoever, without the prior written authorization of Arobas Music SARL and / or its partners is strictly prohibited and could constitute an infringement in accordance with Article L.335-2 et seq. of the Intellectual Property Code."
+ },
+ {
+  "id": "M1",
+  "url": "https://www.celemony.com/en/melodyne/editions-and-technical-matters",
+  "file": "www.celemony.com_en_melodyne_editions-and-technical-matters",
+  "quote": "Intel Dual Core processor (Quad Core or better recommended), 4 GB RAM (8 GB or more recommended), macOS 10.12 (64-bit) or higher. Melodyne 5.2 or higher runs natively on Apple Silicon Macs."
+ },
+ {
+  "id": "M2",
+  "url": "https://www.celemony.com/en/melodyne/editions-and-technical-matters",
+  "file": "www.celemony.com_en_melodyne_editions-and-technical-matters",
+  "quote": "Intel or AMD Dual Core processor (Quad Core or better recommended), 4 GB RAM (8 GB or more recommended), Windows 10 (64-bit), Windows 11, ASIO-compatible audio hardware."
+ },
+ {
+  "id": "M3",
+  "url": "https://www.celemony.com/en/melodyne/editions-and-technical-matters",
+  "file": "www.celemony.com_en_melodyne_editions-and-technical-matters",
+  "quote": "Computer-based or iLok USB dongle (2nd or 3rd generation), Melodyne essential only computer-based. Internet access is required for the first activation."
+ },
+ {
+  "id": "M4",
+  "url": "https://www.celemony.com/en/melodyne/editions-and-technical-matters",
+  "file": "www.celemony.com_en_melodyne_editions-and-technical-matters",
+  "quote": "Plug-in operation via VST3, AU or AAX. ARA integration with compatible DAWs, as set out in the section on DAW compatibility."
+ },
+ {
+  "id": "M5",
+  "url": "https://www.celemony.com/en/melodyne/melodyne-5-editions",
+  "file": "www.celemony.com_en_melodyne_melodyne-5-editions",
+  "quote": "Audio-to-MIDI – export notes to a MIDI file"
+ },
+ {
+  "id": "M6",
+  "url": "https://www.celemony.com/en/melodyne/melodyne-5-editions",
+  "file": "www.celemony.com_en_melodyne_melodyne-5-editions",
+  "quote": "DNA Direct Note Access – algorithms for polyphonic instruments such as piano and guitar"
+ },
+ {
+  "id": "M7",
+  "url": "https://www.celemony.com/en/melodyne/melodyne-5-editions",
+  "file": "www.celemony.com_en_melodyne_melodyne-5-editions",
+  "quote": "Chord Track and chord recognition – bring notes into line harmonically, extract chords from audio"
+ },
+ {
+  "id": "M8",
+  "url": "https://www.celemony.com/en/melodyne/melodyne-5-editions",
+  "file": "www.celemony.com_en_melodyne_melodyne-5-editions",
+  "quote": "All that’s missing is the ability to edit individual notes played by polyphonic instruments such as the piano or guitar."
+ },
+ {
+  "id": "M9",
+  "url": "https://www.celemony.com/en/melodyne/melodyne-5-editions",
+  "file": "www.celemony.com_en_melodyne_melodyne-5-editions",
+  "quote": "Audio-to-MIDI: Export the MIDI equivalent of your audio, so you can double your vocal lines with a synthesizer or your acoustic bass with an electronic sound."
+ },
+ {
+  "id": "M10",
+  "url": "https://www.celemony.com/en/melodyne/melodyne-5-editions",
+  "file": "www.celemony.com_en_melodyne_melodyne-5-editions",
+  "quote": "For a period of 30 days, free of charge, with no obligations or limitations."
+ },
+ {
+  "id": "M11",
+  "url": "https://www.celemony.com/en/melodyne/melodyne-5-editions",
+  "file": "www.celemony.com_en_melodyne_melodyne-5-editions",
+  "quote": "By default, the trial version starts off as Melodyne studio"
+ },
+ {
+  "id": "M12",
+  "url": "https://www.celemony.com/en/shop",
+  "file": "www.celemony.com_en_shop",
+  "quote": "Melodyne 5 studio ... US$699 ... Our web shop price: ... You save US$150 (17 %) ... retail price of US$849 ... Melodyne 5 essential ... Melodyne 5 assistant ... Melodyne 5 editor ... US$99 ... US$249 ... retail price of US$299 ... US$399 ... retail price of US$499"
+ },
+ {
+  "id": "M13",
+  "url": "https://helpcenter.celemony.com/M5/doc/melodyneStudio5/en/M5tour_InstallationActivation",
+  "file": "helpcenter.celemony.com_M5_doc_melodyneStudio5_en_M5tour_InstallationActivation",
+  "quote": "The standard Melodyne license allows you to use Melodyne on one workstation only at a time. However, the license does allow you two activations, the second being an emergency one you can use to activate a substitute computer quickly and easily if, for example, your primary computer breaks down in the middle of a production."
+ },
+ {
+  "id": "M14",
+  "url": "https://www.celemony.com/en/service/legal/webshop-gtc",
+  "file": "www.celemony.com_en_service_legal_webshop-gtc",
+  "quote": "CELEMONY provides the Customer who has access to Internet the opportunity of downloading files of text, audio or video content against payment onto a computer of the Customer with Internet connection."
+ },
+ {
+  "id": "M15",
+  "url": "https://www.celemony.com/en/service/legal/webshop-gtc",
+  "file": "www.celemony.com_en_service_legal_webshop-gtc",
+  "quote": "Any use in excess of that granted by the licence, in particular the letting, broadcasting, public demonstration, re-licensing of the file, rendering it available in Internet or on other electronic networks (file sharing) or any other commercial use of the file is impermissible."
+ },
+ {
+  "id": "R1",
+  "url": "https://hitnmix.com/terms-of-use/",
+  "file": "hitnmix.com_terms-of-use",
+  "quote": "For the purposes of these Terms of use, HIT’N’MIX is used to mean any version of Hit’n’Mix products and the hitnmix.com website."
+ },
+ {
+  "id": "R2",
+  "url": "https://hitnmix.com/terms-of-use/",
+  "file": "hitnmix.com_terms-of-use",
+  "quote": "HIT’N’MIX is not intended for use by users which would infringe the copyright of any piece of music owned by a third party and is intended for lawful use only; ... Any use of HIT’N’MIX in conjunction with such music should only be carried out with the permission of the copyright owner in question."
+ },
+ {
+  "id": "R3",
+  "url": "https://hitnmix.com/terms-of-use/",
+  "file": "hitnmix.com_terms-of-use",
+  "quote": "All copyright, trade marks, design rights, patents and other intellectual property rights (registered and unregistered) in and on HIT’N’MIX and all content (including all applications) located on the site shall remain vested in Hit’n’Mix Ltd or its licensors (which includes other users). You may not copy, reproduce, republish, disassemble, decompile, reverse engineer, download, post, broadcast, transmit, or make available to the public any HIT’N’MIX content without the prior written permission of Hit’n’Mix Ltd."
+ },
+ {
+  "id": "R4",
+  "url": "https://buy.hitnmix.com/policies/terms-of-service",
+  "file": "buy.hitnmix.com_policies_terms-of-service",
+  "quote": "You may not copy, reproduce, republish, disassemble, decompile, reverse engineer, download, post, broadcast, transmit, make available to the public, or otherwise use HIT’N’MIX content in any way except for your own personal, non-commercial use. You also agree not to adapt, alter or create a derivative work from HIT’N’MIX."
+ },
+ {
+  "id": "R5",
+  "url": "https://buy.hitnmix.com/",
+  "file": "hitnmix.com_buy-ripx",
+  "quote": "macOS 10.15+ (2012 & later models, including M1 onwards) / Windows 8/10/11 (64-bit)"
+ },
+ {
+  "id": "R6",
+  "url": "https://buy.hitnmix.com/",
+  "file": "hitnmix.com_buy-ripx",
+  "quote": "Minimum: 2 Core 2.5GHz CPU, 8 GB RAM, 20 GB Free Disc Space"
+ },
+ {
+  "id": "R7",
+  "url": "https://buy.hitnmix.com/",
+  "file": "hitnmix.com_buy-ripx",
+  "quote": "In order to check for a valid license, an internet connection is required to activate RipX for the first time, and at least once every 15 times it is run."
+ },
+ {
+  "id": "R8",
+  "url": "https://buy.hitnmix.com/",
+  "file": "hitnmix.com_buy-ripx",
+  "quote": "RipX may be installed on up to two computers belonging to the registered license owner, for example a desktop and a laptop."
+ },
+ {
+  "id": "R9",
+  "url": "https://buy.hitnmix.com/",
+  "file": "hitnmix.com_buy-ripx",
+  "quote": "21-day trial ... RipX DAW PRO ... $198.00 USD ... RipX DAW ... $99.00 USD ... We offer license deactivation with a full refund within 14 days of purchase"
+ },
+ {
+  "id": "R10",
+  "url": "https://hitnmix.com/ripx-daw/",
+  "file": "hitnmix.com_ripx-daw",
+  "quote": "Print Audio to Midi to load a specific part onto a separate VST/Synth"
+ },
+ {
+  "id": "R11",
+  "url": "https://hitnmix.com/ripx-daw/",
+  "file": "hitnmix.com_ripx-daw",
+  "quote": "Ability to see specific chords & notes being played in a particular part"
+ },
+ {
+  "id": "J1",
+  "url": "https://jam.live/shop/",
+  "file": "jam.live_shop",
+  "quote": "Pay once = Lifetime license + Lifetime free updates"
+ },
+ {
+  "id": "J2",
+  "url": "https://jam.live/shop/",
+  "file": "jam.live_shop",
+  "quote": "The price is always USD 149.95 and there are never any discounts."
+ },
+ {
+  "id": "J3",
+  "url": "https://jam.live/shop/",
+  "file": "jam.live_shop",
+  "quote": "Please note that the iOS/iPadOS versions of MIDI Guitar have features that are only available as in-app purchases via Apple's App Store."
+ },
+ {
+  "id": "J4",
+  "url": "https://sites.fastspring.com/jamorigin/product/midi-guitar",
+  "file": "www.jamorigin.com_products_midi-guitar_buy",
+  "quote": "MIDI GUITAR, personal lifetime license ... $149.95 ... This is a personal license for MIDI GUITAR 3 for PC and Mac"
+ },
+ {
+  "id": "J5",
+  "url": "https://sites.fastspring.com/jamorigin/product/midi-guitar",
+  "file": "www.jamorigin.com_products_midi-guitar_buy",
+  "quote": "The license permits you to run MIDI GUITAR 3 or MIDI GUITAR 2, on two computers, and is possible to revoke when you buy a new computer."
+ },
+ {
+  "id": "J6",
+  "url": "https://www.jamorigin.com/",
+  "file": "www.jamorigin.com",
+  "quote": "Can i use the license on 2 or more computers? ... Yes, as long as they are yours."
+ },
+ {
+  "id": "J7",
+  "url": "https://jam.live/products/MG3/",
+  "file": "jam.live_products_MG3",
+  "quote": "MIDI Guitar 3 is in beta testing phase. ... Please refer to MIDI Guitar 2 for a production ready solution."
+ },
+ {
+  "id": "J8",
+  "url": "https://jam.live/developers/websocket/",
+  "file": "jam.live_developers_websocket",
+  "quote": "This API is not yet mature and is expected to change throughout the beta testing period. ... Notes are sent from MIDI Guitar's Lua and Html modules on a WebSocket at localhost, port 8080."
+ },
+ {
+  "id": "J9",
+  "url": "https://jam.live/developers/websocket/",
+  "file": "jam.live_developers_websocket",
+  "quote": "note-id, age, string, pitch, bend, pressure, brightness"
+ },
+ {
+  "id": "Y1",
+  "url": "https://yousician.com/terms-of-service",
+  "file": "yousician.com_terms-of-service",
+  "quote": "Effective as of December 17, 2024"
+ },
+ {
+  "id": "Y2",
+  "url": "https://yousician.com/terms-of-service",
+  "file": "yousician.com_terms-of-service",
+  "quote": "Subject to your acceptance of these Terms and your continued compliance with them and the Agreement, Yousician grants you a limited, non-exclusive, non-transferable and non-sublicensable license to use the Services and related software (only the executable version, excluding source) and any Service Content, strictly for your personal, non-commercial use."
+ },
+ {
+  "id": "Y3",
+  "url": "https://yousician.com/terms-of-service",
+  "file": "yousician.com_terms-of-service",
+  "quote": "You are prohibited from using the Services (including without limitation the Service Content) for public performances."
+ },
+ {
+  "id": "Y4",
+  "url": "https://yousician.com/terms-of-service",
+  "file": "yousician.com_terms-of-service",
+  "quote": "Yousician does not grant you any ownership rights in the Services, Service Content or any part thereof."
+ },
+ {
+  "id": "Y5",
+  "url": "https://yousician.com/terms-of-service",
+  "file": "yousician.com_terms-of-service",
+  "quote": "including, without limitation, data, text, writings, compositions, notes, music, sounds, videos, audiovisual effects, artwork, photographs, screenshots, videos, graphics, comments, suggestions or chat or message postings or other material (collectively, excluding Service Content, “User Content”)."
+ },
+ {
+  "id": "Y6",
+  "url": "https://yousician.com/terms-of-service",
+  "file": "yousician.com_terms-of-service",
+  "quote": "You retain all of your ownership rights in the User Content you submit and/or share with Yousician. However, in exchange of use of the Services, by submitting and/or sharing the User Content on the Services, you hereby grant Yousician an irrevocable, perpetual, sublicensable, transferable, worldwide, and royalty-free fully paid-up non-exclusive license in the User Content to reproduce, distribute, modify, prepare derivative works of, publicly display and perform and use, in any way, all or any portion of the User Content, in connection with the Services, and other services and products, of Yousician"
+ },
+ {
+  "id": "Y7",
+  "url": "https://yousician.com/terms-of-service",
+  "file": "yousician.com_terms-of-service",
+  "quote": "You agree that you will not in any circumstances: ... use the Services for any commercial activities, including, without limitation, any attempt to raise money for anyone or advertising or promoting a product, service, pyramid scheme or other multi-tiered marketing scheme, spam emails, chain letters or similar;"
+ },
+ {
+  "id": "Y8",
+  "url": "https://yousician.com/terms-of-service",
+  "file": "yousician.com_terms-of-service",
+  "quote": "use, either directly or indirectly, any automated system, cheats, spiders, hacks, scrapers, offline readers or any unauthorized third party software designed to modify or interfere with the Services;"
+ },
+ {
+  "id": "Y9",
+  "url": "https://yousician.com/terms-of-service",
+  "file": "yousician.com_terms-of-service",
+  "quote": "harvest, scrape or use any other automated means to view, access or collect any information about the Services or about other people using the Services;"
+ },
+ {
+  "id": "YA1",
+  "url": "https://usa.yamaha.com/musical-instruments/keyboards/products/apps/chord-tracker/",
+  "file": "usa.yamaha.com_musical-instruments_keyboards_products_apps_chord-tracker",
+  "quote": "Chord Tracker Android is now available at Google Play."
+ },
+ {
+  "id": "YA2",
+  "url": "https://usa.yamaha.com/musical-instruments/keyboards/products/apps/chord-tracker/",
+  "file": "usa.yamaha.com_musical-instruments_keyboards_products_apps_chord-tracker",
+  "quote": "You can even edit the chords to make your own arrangement of the song by choosing from two recommended chords or selecting the chord root and chord type."
+ },
+ {
+  "id": "YA3",
+  "url": "https://usa.yamaha.com/musical-instruments/keyboards/products/apps/chord-tracker/",
+  "file": "usa.yamaha.com_musical-instruments_keyboards_products_apps_chord-tracker",
+  "quote": "The Chord Tracker app will also transfer the chord information to the instrument. You can even record your performance on the device as an audio file and share it with others via email (AAC or WAV format)."
+ },
+ {
+  "id": "YA4",
+  "url": "https://usa.yamaha.com/musical-instruments/keyboards/products/apps/chord-tracker/specs.html",
+  "file": "usa.yamaha.com_musical-instruments_keyboards_products_apps_chord-tracker_specs.html",
+  "quote": "Compatible Devices ... iPhone / iPad / Android ... Compatible OS ... Please check the App Store or Google Play for information on supported OS and devices."
+ },
+ {
+  "id": "YA5",
+  "url": "https://www.yamaha.com/en/apps_docs/apps_dmi/dmi_PP_chordtracker20190827_us.html",
+  "file": "www.yamaha.com_en_apps_docs_apps_dmi_dmi_PP_chordtracker20190827_us.html",
+  "quote": "By using the Software, you are accepting and consenting to the terms of this Privacy Policy."
+ },
+ {
+  "id": "A1",
+  "url": "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/",
+  "file": "www.apple.com_legal_internet-services_itunes_dev_stdeula",
+  "quote": "Apps made available through the App Store are licensed, not sold, to you. Your license to each App is subject to your prior acceptance of either this Licensed Application End User License Agreement (“Standard EULA”), or a custom end user license agreement between you and the Application Provider (“Custom EULA”), if one is provided."
+ },
+ {
+  "id": "A2",
+  "url": "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/",
+  "file": "www.apple.com_legal_internet-services_itunes_dev_stdeula",
+  "quote": "Licensor grants to you a nontransferable license to use the Licensed Application on any Apple-branded products that you own or control and as permitted by the Usage Rules."
+ },
+ {
+  "id": "C1",
+  "url": "https://supermegaultragroovy.com/products/capo/mac/",
+  "file": "supermegaultragroovy.com_products_capo_mac",
+  "quote": "Draw what you hear onto the spectrogram, and Capo plays it back so you can compare your interpretation with the recording. See bends, slides, and vibrato that help you capture the real technique—and as you draw, tablature is generated automatically below."
+ },
+ {
+  "id": "C2",
+  "url": "https://supermegaultragroovy.com/products/capo/mac/",
+  "file": "supermegaultragroovy.com_products_capo_mac",
+  "quote": "Hear a note, draw it, play it back to verify your work. As you transcribe, tablature generates automatically below."
+ },
+ {
+  "id": "C3",
+  "url": "https://supermegaultragroovy.com/products/capo/mac/",
+  "file": "supermegaultragroovy.com_products_capo_mac",
+  "quote": "Export audio-synchronized MIDI containing your chord and note entries. Use in DAWs or other music software."
+ },
+ {
+  "id": "C4",
+  "url": "https://supermegaultragroovy.com/products/capo/mac/",
+  "file": "supermegaultragroovy.com_products_capo_mac",
+  "quote": "Set a virtual capo position and all chord diagrams adjust to show fingerings relative to the capo."
+ },
+ {
+  "id": "C5",
+  "url": "https://apps.apple.com/us/app/capo/id696977615?mt=12",
+  "file": "apps.apple.com_us_app_id696977615",
+  "quote": "Requires macOS 14.6 or later."
+ },
+ {
+  "id": "C6",
+  "url": "https://apps.apple.com/us/app/capo/id696977615?mt=12",
+  "file": "apps.apple.com_us_app_id696977615",
+  "quote": "Capo Platinum ... $49.99 ... Capo Pro - Yearly ... $39.99 ... Capo Platinum - Upgrade ... $29.99 ... Capo Pro - Monthly ... $5.99 ... Capo Pro - Upgrade ... $24.99"
+ },
+ {
+  "id": "U1",
+  "url": "https://chordu.com/terms-of-use",
+  "file": "chordu.com_terms-of-use",
+  "quote": "You shall not collect content or information or access ChordU service using automated means (such as bots, robots, spiders or scrapers) without our permission."
+ },
+ {
+  "id": "U2",
+  "url": "https://chordu.com/terms-of-use",
+  "file": "chordu.com_terms-of-use",
+  "quote": "Usage of songs and chords are limited to your personal, non-commercial use in accordance with the terms of agreement. You may not reproduce (other than as authorized for your own personal usage), publish, transmit, distribute, publicly display, rent or lend, modify, create derivative works from, sell or participate in the sale of or exploit in any way, in whole or in part, directly or indirectly, any of the contents provided."
+ },
+ {
+  "id": "U3",
+  "url": "https://chordu.com/terms-of-use",
+  "file": "chordu.com_terms-of-use",
+  "quote": "ChordU service contains material which is owned by us. This material includes, but is not limited to, the design, layout, look, sound, appearance and graphics."
+ },
+ {
+  "id": "U4",
+  "url": "https://chordu.com/terms-of-use",
+  "file": "chordu.com_terms-of-use",
+  "quote": "Certain service options are free of cost whereas others are only accessible through premium subscriptions."
+ },
+ {
+  "id": "U5",
+  "url": "https://chordu.com/terms-of-use",
+  "file": "chordu.com_terms-of-use",
+  "quote": "© 2023 ChordU. All contents are subject to copyright, provided for educational and personal non-commercial use only."
+ },
+ {
+  "id": "X1",
+  "url": "https://jam.live/developers/websocket/",
+  "file": "jam.live_developers_websocket",
+  "quote": "Note streaming format ... time, beat, beat-fraction ... number-of-played-notes ... for each played note: ... note-id, age, string, pitch, bend, pressure, brightness"
+ },
+ {
+  "id": "X2",
+  "url": "https://chordu.com/terms-of-use",
+  "file": "chordu.com_terms-of-use",
+  "quote": "Service options - free - premium ... User guidelines ... User Intellectual property rights ... Liability"
+ },
+ {
+  "id": "X3",
+  "url": "https://yousician.com/terms-of-service",
+  "file": "yousician.com_terms-of-service",
+  "quote": "4. Right to use the services ... Ownership ... 8. User content ... Rights you grant ... 10. Use restrictions"
+ },
+ {
+  "id": "X4",
+  "url": "https://www.guitar-pro.com/c/9-software-end-user-license-agreement",
+  "file": "www.guitar-pro.com_c_9-software-end-user-license-agreement",
+  "quote": "License agreement ... Guitar Pro software end-user license agreement (EULA)"
+ },
+ {
+  "id": "X5",
+  "url": "https://ec.crypton.co.jp/download/pdf/eula_celemonyme.pdf",
+  "file": "ec.crypton.co.jp_download_pdf_eula_celemonyme.pdf.503",
+  "quote": "クリプトン | サイトメンテナンス中 ... COPYRIGHT CRYPTON FUTURE MEDIA, INC."
+ },
+ {
+  "id": "X6",
+  "url": "https://hitnmix.com/terms-of-use/",
+  "file": "hitnmix.com_terms-of-use",
+  "quote": "Copyright © 2026 Hit'n'Mix Ltd."
+ },
+ {
+  "id": "X7",
+  "url": "https://chordify.net/pages/terms-and-conditions/",
+  "file": "chordify.net_pages_terms-and-conditions",
+  "quote": "Just a moment..."
+ },
+ {
+  "id": "X8",
+  "url": "https://usa.yamaha.com/musical-instruments/keyboards/products/apps/chord-tracker/",
+  "file": "usa.yamaha.com_musical-instruments_keyboards_products_apps_chord-tracker",
+  "quote": "Terms of Use ... Privacy Policy"
+ },
+ {
+  "id": "X9",
+  "url": "https://www.celemony.com/en/shop",
+  "file": "www.celemony.com_en_shop",
+  "quote": "Our web shop price"
+ }
+]

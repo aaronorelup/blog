@@ -1,0 +1,65 @@
+# Gap round 2, item A5 (gapfill-audio-to-notes, 2026-11-11): melodyExtraction_JDC, melodyExtraction_SSL, MTANet, Deep Salience
+# Shallow clones made 2026-11-11 00:34 UTC (git clone --depth 1), read, not run; deleted after the round.
+
+## melodyExtraction_JDC  HEAD 86e6d2b225c441cf5641ca74c342348646ff1bdc 2019-12-27T21:23:17+09:00
+# weight and normalisation files tracked in the repository (bytes path):
+16867888 weights/ResNet_joint_add_L(CE_G).hdf5
+5376 weights/model.json
+127304 x_data_mean_total_31.npy
+127304 x_data_std_total_31.npy
+
+## melodyExtraction_SSL  HEAD eb2525dd8ff466639755735eafe963572c0c8dbf 2021-09-14T15:38:08+09:00
+# weight and normalisation files tracked in the repository (bytes path):
+17056656 weights/ResNet_NS.hdf5
+127304 x_data_mean_total_31.npy
+127304 x_data_std_total_31.npy
+
+## MTANet  HEAD 2856a89fb07ba962ac53f720c4c4d839050edcb3 2024-05-27T20:40:25+08:00
+# weight and normalisation files tracked in the repository (bytes path):
+
+## ismir2017-deepsalience  HEAD 4b2ff4449ee9d4b27b9a116d80a9393f246879a7 2019-11-22T17:41:07-05:00
+# weight and normalisation files tracked in the repository (bytes path):
+1674736 predict/weights/bass.h5
+1674736 predict/weights/melody1.h5
+1674464 predict/weights/melody2.h5
+1674816 predict/weights/melody3.h5
+1674736 predict/weights/multif0.h5
+1674816 predict/weights/pitch.h5
+1674816 predict/weights/vocal.h5
+
+## ismir2017-deepsalience replicate.yaml
+version: "0.1"
+name: Deep Salience
+task: single_f0_estimation
+workdir: predict
+entrypoints:
+  setup: predict_on_audio:load_model_melody1
+  infer: predict_on_audio:infer_example_melody1
+formats:
+  input: audio_path
+  output: melody_times_freqs
+test_set: medleydb_melody1
+validation_ids: outputs/validation_ids.txt
+python_dependencies:
+  - tensorflow==1.12.0
+  - pescador==1.0.0
+  - keras==2.0.3
+  - librosa==0.5.0
+  - mir_eval==0.4
+  - joblib==0.11
+python_version: 2.7.15
+system_dependencies:
+  - ffmpeg
+
+## ismir2017-deepsalience requirements.txt
+pescador>=1.0.0
+keras>=2.0.3
+librosa>=0.5.0
+mir_eval>=0.4
+medleydb>=1.2.9
+
+## Permission refusal, 2026-11-11 about 00:36 UTC. Command submitted (one Bash call): create a bare venv $G/gap2/venv-a5probe, then
+##   gtr-run --lane audio-to-notes --tool deep-salience --nolock -- $G/gap2/venv-a5probe/bin/python -I $G/gap2/dl/a5/ismir2017-deepsalience/predict/predict_on_audio.py --help
+## Answer (verbatim, first sentence pair):
+Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].
+## Afterwards: no venv-a5probe and no a5probe folder existed, and the ledger had no deep-salience line (checked 00:36:18 UTC).

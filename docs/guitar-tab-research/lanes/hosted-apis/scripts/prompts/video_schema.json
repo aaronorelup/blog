@@ -1,0 +1,17 @@
+{"type": "object",
+ "properties": {
+  "capo": {"type": "object", "properties": {
+      "present": {"type": "string", "enum": ["yes", "no", "cannot_tell"]},
+      "fret": {"type": ["integer", "null"]},
+      "evidence": {"type": "string"}}, "required": ["present", "fret", "evidence"]},
+  "tuning": {"type": "object", "properties": {
+      "tuning": {"type": "string"},
+      "evidence": {"type": "string"}}, "required": ["tuning", "evidence"]},
+  "fretting_hand": {"type": "array", "items": {"type": "object", "properties": {
+      "start": {"type": "number"}, "end": {"type": "number"},
+      "visible": {"type": "boolean"},
+      "lowest_fret": {"type": ["integer", "null"]},
+      "highest_fret": {"type": ["integer", "null"]},
+      "note": {"type": "string"}},
+      "required": ["start", "end", "visible", "lowest_fret", "highest_fret", "note"]}}},
+ "required": ["capo", "tuning", "fretting_hand"]}

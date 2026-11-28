@@ -1,0 +1,7 @@
+	Command being timed: "/home/user/gtr/lanes/audio-to-notes/venv-oaf/bin/onsets_frames_transcription_transcribe --model_dir=/home/user/gtr/lanes/audio-to-notes/gap1/oaf/ckpt/train /home/user/gtr/lanes/audio-to-notes/out/onsets-frames/S1.wav /home/user/gtr/lanes/audio-to-notes/out/onsets-frames/S2n.wav /home/user/gtr/lanes/audio-to-notes/out/onsets-frames/R1c.wav /home/user/gtr/lanes/audio-to-notes/out/onsets-frames/S4guitar.wav"
+	User time (seconds): 40.19
+	System time (seconds): 1.96
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:39.54
+	Maximum resident set size (kbytes): 1178656
+	Exit status: 0
+[gtr-run r0545] audio-to-notes/onsets-frames-magenta-2.1.4 "gap1: Onsets and Frames (magenta 2.1.4 onsets_frames_transcription_transcribe, maestro_checkpoint, piano-trained) on S1, S2n, R1c, S4 guitar stem" wall=39.57s cpu=42.2s rss=1151.0MB cores=2 exit=0 slot_wait=329.3s

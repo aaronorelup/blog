@@ -1,0 +1,45 @@
+{
+ "url": "http://127.0.0.1:8791/wtrpages/alphatab.html?file=/chains/out/gp5/S4.beatthis.span.gp5",
+ "ready": true,
+ "readyExpr": "window.__rendered === true",
+ "ms_to_ready": 527,
+ "info": null,
+ "log": [
+  {
+   "type": "playerStateChanged",
+   "t_ms": 13.1,
+   "state": 0,
+   "stopped": false
+  },
+  {
+   "type": "position",
+   "t_ms": 13.1,
+   "currentTime": 0,
+   "endTime": 0,
+   "currentTick": 0,
+   "isSeek": false
+  },
+  {
+   "type": "scoreLoaded",
+   "t_ms": 66.8,
+   "title": "S4 chain A: htdemucs_6s guitar, Basic Pitch, tuttut, Beat This beats, Chordino chords",
+   "tracks": 1,
+   "masterBars": 19
+  },
+  {
+   "type": "renderStarted",
+   "t_ms": 182.8
+  },
+  {
+   "type": "renderFinished",
+   "t_ms": 242.4,
+   "width": 1200,
+   "height": 2381
+  },
+  {
+   "type": "postRenderFinished",
+   "t_ms": 244.9
+  }
+ ],
+ "console": []
+}

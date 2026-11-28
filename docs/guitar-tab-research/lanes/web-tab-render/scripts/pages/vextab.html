@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>VexTab trial</title>
+<style>body { margin: 0; background: #fff; } #out { padding: 10px; }</style>
+<script src="/nm/vextab/dist/main.prod.js"></script>
+</head>
+<body>
+<div id="out"></div>
+<script>
+// ?src=/lane/out/vextab/S2n.vextab  renders VexTab text with VexTab 4.0.5 (bundled VexFlow) into SVG
+const q = new URLSearchParams(location.search);
+window.__log = [];
+(async () => {
+  const t0 = performance.now();
+  try {
+    const text = await (await fetch(q.get('src'))).text();
+    const { VexTab, Artist, Vex } = vextab;
+    const Renderer = Vex.Flow.Renderer;
+    const renderer = new Renderer(document.getElementById('out'), Renderer.Backends.SVG);
+    const artist = new Artist(10, 10, 1200, { scale: 1.0 });
+    const tab = new VexTab(artist);
+    tab.parse(text);
+    artist.render(renderer);
+    const svg = document.querySelector('#out svg');
+    window.__info = {
+      ok: true, ms: performance.now() - t0, vexflowVersion: Vex.Flow.VERSION || (Vex.Flow.BUILD && Vex.Flow.BUILD.VERSION) || null,
+      svgBytes: svg ? svg.outerHTML.length : 0, staves: artist.staves ? artist.staves.length : null,
+      tabNotes: artist.staves ? artist.staves.reduce((a, s) => a + s.tab_notes.length, 0) : null,
+    };
+  } catch (e) {
+    window.__info = { ok: false, error: String(e && e.message || e).slice(0, 800) };
+  }
+  window.__rendered = true;
+})();
+</script>
+</body>
+</html>

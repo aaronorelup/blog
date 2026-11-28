@@ -1,0 +1,416 @@
+line	level	found_in_sources	quote (first 160 chars)
+8	NOTFOUND		Last commit
+54	NOTFOUND		Added after the first pass
+77	EXACT	at_attr_mdx,at_attr_web,at_header,at_readme	♪ alphaTab.net
+78	EXACT	at_attr_mdx,at_attr_web,flat_terms_embed,ly_tab,ms_license,pte_copying	or similar
+85	EXACT	at_readme	alphaTab renders interactive sheet music and guitar tablature from Guitar Pro, MusicXML, Capella and alphaTex files, and plays it back with a built-in synthesiz
+88	EXACT	at_license	Copyright © 2025, Daniel Kuschny and Contributors
+90	NOTFOUND		feat: keep the sharp or flat spelling of tunings (#3020)
+95	EXACT	at_readme	alphaTex editing in the Monaco editor (experimental)
+96	EXACT	at_readme	alphaTex language server with completion, hover docs and formatting, plus a TextMate grammar
+97	NOTFOUND		React bindings for alphaTab: API lifecycle, host element and event hooks
+98	NOTFOUND		The alphaTab player and alphaTex editor shared by the website and the playground
+102	MARKUP	at_readme	**Reads** | Guitar Pro 3–8 (`.gp3` `.gp4` `.gp5` `.gpx` `.gp`), MusicXML (`.xml` `.musicxml` `.mxl`), Capella (`.capx`), alphaTex
+103	EXACT	at_readme	**Writes** | Guitar Pro 7+ (`.gp`), alphaTex, MIDI, audio (PCM samples)
+104	NOTFOUND		since: 1.2
+104	EXACT	at_exp_gp7	Guitar Pro 7 and Guitar Pro 8 both open the resulting file
+105	EXACT	at_exp_midi	Standard MIDI File 1.0 output ... tempo map, time signatures, program changes, note on/off with expression and pitch bend
+106	NOTFOUND		since: 1.3
+107	NOTFOUND		since: 1.7
+111	MARKUP	at_imp_gp	GP3, GP4, GP5 (.gp3 / .gp4 / .gp5) — proprietary binary streams. GP4 has an official partial spec from Arobas; the rest was reverse-engineered from test files.
+112	MARKUP	at_imp_gp	GP6 (.gpx) — the first XML-based generation, wrapped in a custom container that behaves like a compressed filesystem. Inside sit `score.gpif` (the notation XML)
+114	MARKUP	at_imp_gp	GP7 and GP8 (.gp) — a standard ZIP archive holding `Content/score.gpif` plus the stylesheet and configuration blobs from GP6. GP8 uses the same envelope as GP7 
+118	MARKUP	at_imp_mxl	Guitar techniques — string and fret from `technical`, string numbers on standard notation staves, dead notes, harmonics, fingering, and let ring or palm mute li
+121	EXACT	at_node	you skip `AlphaTabApi` (which expects a DOM host) and drive the low-level `ScoreRenderer` directly
+126	MARKUP	at_backend	Web — SVG (default) or HTML5 Canvas. Skia is not available in the browser
+129	NOTFOUND		player and alphaTex editor
+130	EXACT	at_traverse	Iterate `Score → Track → Staff → Bar → Voice → Beat → Note`, change fields, call `api.render()`, and the render reflects the changes
+131	EXACT	at_readme	Modify the data model in code and export to Guitar Pro, alphaTex, MIDI or rendered audio
+135	EXACT	at_tex_syntax	On a stringed instrument, a note is written as `fret.string`. The number before the dot is the fret. The number after the dot is the string, counted from the hi
+140	EXACT	at_capo_ts	Defines the fret on which a capo should be placed.
+141	EXACT	at_tuning_ts	Defines the number of strings and their tuning for stringed (and fretted) instruments.
+145	EXACT	at_sf2	alphaTab converts the score into MIDI, feeds that stream to a built-in software synthesizer that plays samples from a SoundFont 2 (`.sf2`) file
+146	MARKUP	at_sf2	The current synthesizer implementation is derived from TinySoundFont
+147	EXACT	at_sf2	Web Audio through an AudioWorklet on the browser
+151	EXACT	at_sonivox	Copyright (c) 2004-2006 Sonic Network Inc. Licensed under the Apache License, Version 2.0 (the
+151	EXACT	at_sonivox,mei_readme	); you may not use this file except in compliance with the License.
+154	EXACT	at_customsf	about 9 MB as compressed SF3
+157	EXACT	at_license	alphaTab is licensed under MPL-2.0.
+158	EXACT	at_license,tf_license	Each Contributor hereby grants You a world-wide, royalty-free, non-exclusive license: (a) under intellectual property rights (other than patent or trademark) Li
+161	EXACT	at_license,tf_license	If You distribute Covered Software in Executable Form then: (a) such Covered Software must also be made available in Source Code Form, as described in Section 3
+164	EXACT	at_license,tf_license	You may create and distribute a Larger Work under terms of Your choice, provided that You also comply with the requirements of this License for the Covered Soft
+168	EXACT	at_header	Attribution: The
+169	EXACT	at_header	attribution in rendered scores must stay visible in the rendered output. Removing, hiding, covering or cropping it requires permission from the alphaTab maintai
+171	EXACT	at_attr_mdx,at_attr_web,at_readme	Scores rendered by alphaTab carry a small
+171	EXACT	at_readme	attribution above the staff at the end of the first system (in the horizontal layout, after the first group of bars). Songs with up to 10 bars are rendered with
+173	EXACT	at_readme	There is no setting to turn it off.
+175	EXACT	at_attr_mdx,at_attr_web	alphaTab is free, also for commercial products. In return, we ask for a visible credit.
+176	EXACT	at_attr_mdx,at_attr_web	MPL-2.0 has no clause about credits in your user interface. Keeping the attribution is what the project asks of everyone who uses alphaTab, and the license chan
+178	EXACT	at_attr_web	A future release of alphaTab will move from MPL-2.0 to an open-source license with an attribution clause. The choice is not settled yet. The Common Public Attri
+180	EXACT	at_attr_mdx,at_attr_web	Offering an app over a network counts as distribution. Changes you make to alphaTab's own files must be made available, also when they only run on your server o
+182	EXACT	at_attr_mdx,at_attr_web	Releases published under MPL-2.0 stay under MPL-2.0.
+183	EXACT	at_attr_mdx,at_attr_web	Alternative attribution
+183	EXACT	at_attr_mdx,at_attr_web	An entry in an about dialog, a credits screen or a license list does not qualify on its own.
+185	EXACT	at_header	Integrated Libraries
+185	EXACT	at_header	License: MIT
+186	EXACT	at_header	License: MIT
+186	EXACT	at_header	License: SIL Open Font License 1.1
+186	EXACT	at_readme	The bundled music fonts Bravura and Petaluma (© Steinberg Media Technologies) and the Noto fonts are licensed under the SIL Open Font License. The bundled SONiV
+194	EXACT	vf_readme	VexFlow is an open-source library for rendering sheet music. It is written in TypeScript, and outputs scores to HTML Canvas and SVG. It works in browsers and in
+204	EXACT	at_imp_mxl,at_pkg,at_readme,imt_readme,ly_usage,m21_artic	musicxml
+207	EXACT	vf_tabnote	An array of `{ str: X, fret: X }`
+207	EXACT	vf_tabnote	fret: 'X' indicates an unused/muted string.
+211	EXACT	vf_license	The MIT License ... Copyright (c) 2023-2026 VexFlow contributors (see AUTHORS.md) Copyright (c) 2010-2022 Mohit Muthanna Cheppudira ... Permission is hereby gra
+213	EXACT	abcjs_license,cdb_license,debian_fluid_copyright,gtr1j01_license,imt_license,mz_license	), to deal in the Software without restriction
+218	EXACT	vt_readme	VexTab is a language that allows you to easily create, edit, and share music notation and guitar tablature. Unlike ASCII tab, which is designed for readability,
+220	EXACT	vt_readme	VexTab 4.0
+231	EXACT	vt_license,vt_readme	VexTab is an open specification and the reference implementation (this repository) is open source. It is freely available complete and uncrippled for non-commer
+232	EXACT	vt_license,vt_readme	If you would like to use this code on commercial websites, products, blogs, plugins, or tools, please get in touch with me. (I'm very reasonable.)
+234	EXACT	vt_license,vt_readme	Copyright (c) 2012 Mohit Muthanna Cheppudira
+234	EXACT	vt_license,vt_readme	The above copyright notice shall be included in all copies or substantial portions of the Software.
+240	EXACT	vc_readme	VexChords renders guitar chords in your browser.
+242	EXACT	vc_readme	e.g., 4 for bass
+245	EXACT	vc_license	MIT License Copyright (c) 2019 Mohit Muthanna Cheppudira Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+251	MARKUP	osmd_readme	OpenSheetMusicDisplay renders MusicXML sheet music in the browser. It is the missing link between MusicXML and VexFlow.
+253	EXACT	osmd_license	Copyright 2019 PhonicScore
+257	EXACT	osmd_readme	Outputs SVG or PNG, also via nodejs script in the command line, completely headless/browserless (e.g. for server-side rendering - see generateImages script)
+259	EXACT	osmd_readme	Can display tablature (guitar tabs) from MusicXML, including effects like bends and glissandi. Can be combined with treble clef.
+261	MARKUP	osmd_readme	Soon: Audio Playback (work in progress, early access build available for Github sponsors)
+262	EXACT	osmd_readme	(Mockup, OSMD on its own does not support playback)
+263	EXACT	osmd_readme	Allows modification of the displayed score, like hiding parts or instruments, hiding instrument names, title or composer, a more compact layout, or coloring not
+266	EXACT	osmd_license	Copyright 2019 PhonicScore Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions
+276	MARKUP	oap_readme	Unoffical audio playback engine for OpenSheetMusicDisplay
+277	EXACT	oap_readme	This project is no longer in active development. I still keep an eye on it and it's open for contributions/PRs but I am not actively working on new feature impl
+283	EXACT	sfp_npm_readme	Out of the box are two Soundfonts available: MusyngKite and FluidR3_GM (MusyngKite by default: has more quality, but also weights more)
+284	MARKUP	sfp_npm_readme	Benjamin Gleitzman's package of pre-rendered sound fonts
+285	EXACT	at_customsf,at_sf2,genuser_license,mjs_gleitz,mjs_paul,ms_cli	SoundFonts
+287	EXACT	oap_license	MIT License Copyright (c) 2020 Jimmy Utterström
+291	EXACT	abcjs_readme	Javascript library for rendering standard music notation in a browser.
+295	EXACT	abcjs_tabdoc	Synthesized Sound
+295	EXACT	abcjs_tabdoc	Timing Callbacks
+296	EXACT	abcjs_tabdoc	Interactive Editor
+296	EXACT	abcjs_tabdoc,at_exp_midi,m21_fromxml,sp_readme	Transposition
+297	EXACT	abcjs_tabdoc	A line of tablature can be placed under a line of standard notation.
+298	EXACT	abcjs_tabdoc	To get tablature to appear, add the option abcjs.renderAbc(
+298	EXACT	abcjs_tabdoc	, abc, { tablature: [...] }
+299	EXACT	abcjs_tabdoc,vf_tabnote	Options:
+299	EXACT	abcjs_tabdoc,ly_tab,mei_tab	mandolin
+299	EXACT	abcjs_tabdoc,vf_readme,vt_readme	fiddle
+299	EXACT	abcjs_synth,abcjs_tabdoc,apollo_readme,as_readme,at_customsf,at_exp_gp7	guitar
+299	EXACT	abcjs_tabdoc	fiveString
+299	NOTFOUND		. tuning:
+301	NOTFOUND		with the guitar default `[ "E," , "A," , "D" , "G" , "B" , "e" ]`. capo:
+302	NOTFOUND		The tab is computed from the notes; ABC itself carries no string or fret per note (UNVERIFIED whether a per-note string choice can be forced; the page read show
+307	NOTFOUND		;` and `var alternateSoundFontUrl =
+308	NOTFOUND		;`, overridable with the `soundFontUrl` parameter. License of those sample sets: see
+309	NOTFOUND		below. - **LICENSE FACTS** (read 2026-11-10): https://raw.githubusercontent.com/paulrosen/abcjs/main/LICENSE.md:
+312	EXACT	abcjs_license,apollo_license,at_intro_web,at_license,cdb_license,csj_license	Software
+318	NOTFOUND		(https://raw.githubusercontent.com/CoderLine/alphaTab/develop/packages/alphatab/font/sonivox/LICENSE, read 2026-11-10). - **MIDI.js pre-rendered sets** (used by
+323	MARKUP	mjs_gleitz,mjs_paul	Musyng Kite Soundfont - Generated from Musyng Kite.sfpack (1.75 GB uncompressed) - Released under Creative Commons Attribution Share-Alike 3.0 license
+324	MARKUP	mjs_gleitz,mjs_paul	FatBoy Soundfont ... Released under Creative Commons Attribution Share-Alike 3.0 license
+328	EXACT	at_customsf	about 9 MB as compressed SF3
+332	MARKUP	mjs_gleitz,mjs_paul	Released under Creative Commons Attribution 3.0 license
+334	EXACT	debian_fluid_copyright	Upstream Author: Frank Wen
+334	EXACT	debian_fluid_copyright	Copyright © 2000-2002, 2008 Frank Wen
+335	EXACT	debian_fluid_copyright	From README:
+342	EXACT	vrv_readme	Verovio is written in standard C++20 and is available in several bindings (JavaScript, Python, Java, Swift, Go). It can be compiled as a standalone command-line
+348	EXACT	vrv_changelog	## [6.4.1] – 2026-11-03
+349	EXACT	vrv_changelog	[3.4.0] - 2021-05-01 ... Preliminary support for tablature (experimental work)
+350	EXACT	vrv_changelog	[3.7.0] - 2021-11-22 ... Preliminary support for tablature MIDI output
+351	EXACT	vrv_changelog	[3.9.0] - 2022-02-22 ... Preliminary support for stems and beam for guitar tablature
+351	EXACT	vrv_changelog	Preliminary support for tablature MusicXML import
+352	EXACT	vrv_changelog	[4.5.0] – 2024-12-22 ... Integration of tablature customization implementation
+353	EXACT	vrv_changelog	[5.2.0] – 2025-04-23 ... Support for additional tablature features introduced in MEI 5.1
+354	EXACT	vrv_changelog	[6.1.0] – 2026-03-12 ... Support (initial) for `notationtype@tab.staff-like`
+354	EXACT	vrv_changelog	[6.4.0] – 2026-10-30 ... Fix tablature tie and tuplet positioning
+357	EXACT	vrv_py	pip install verovio
+357	EXACT	vrv_py	import verovio
+357	NOTFOUND		tk = verovio . toolkit ()
+357	NOTFOUND		tk . loadFile (
+358	NOTFOUND		svg_string = tk . renderToSVG ( 1 )
+358	EXACT	vrv_methods	Render a document to MIDI and save it to the file. This method is not available in the JavaScript distributed version of the toolkit
+362	EXACT	vrv_input	When data is loaded into Verovio with no input format specifies, it tries to detect it based on the initial content of the data. MEI is assume to be the default
+367	MARKUP	vrv_readme	Verovio is available under the LGPL license (see COPYING and COPYING.LESSER)
+369	EXACT	pgp_license,vrv_lesser	GNU LESSER GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+370	EXACT	pgp_license,vrv_lesser	You may convey a Combined Work under terms of your choice that, taken together, effectively do not restrict modification of the portions of the Library containe
+378	EXACT	mx_index	Final Community Group Report 1 June 2021
+378	EXACT	mx_index	published by the Music Notation Community Group under the W3C Community Final Specification Agreement (FSA)
+379	EXACT	mx_index	It is not a W3C Standard nor is it on the W3C Standards Track.
+381	NOTFOUND		Update test suite
+382	NOTFOUND		Version 4.1 (Draft)
+383	EXACT	mx_v41	title: Version 4.1 Draft
+386	EXACT	mx_string	The <string> element is used with tablature notation, regular notation (where it is often circled), and chord diagrams. String numbers start with 1 for the high
+390	EXACT	mx_fret	The <fret> element is used with tablature notation and chord diagrams. Fret numbers start with 0 for an open string and 1 for the first fret.
+393	EXACT	mx_tuning	The <staff-tuning> element specifies the open, non-capo tuning of the lines on a tablature staff.
+394	EXACT	mx_tuning	<tuning-step> (Required) <tuning-alter> (Optional) <tuning-octave> (Required)
+395	EXACT	mx_tuning	Indicates the staff line for this tuning, numbered from bottom to top.
+397	EXACT	mx_capo	The <capo> element indicates at which fret a capo should be placed on a fretted instrument. This changes the open tuning of the strings specified by the <staff-
+401	EXACT	mx_details	Indicates whether to show tablature frets as numbers (0, 1, 2) or letters (a, b, c). It is numbers if not specified.
+404	EXACT	mx_tutorial	The <staff-lines> element specifies the number of lines on a tablature staff, usually one for each string. Staff tunings are described with the <staff-tuning> a
+408	EXACT	mx_tutorial	While elements like <harmonic> and <bend> have sporadic support in current MusicXML software, the <hammer-on> and <pull-off> elements are supported in many appl
+410	EXACT	at_imp_mxl	string and fret from `technical`
+411	EXACT	vrv_changelog	Preliminary support for tablature MusicXML import
+413	EXACT	mx_index	Copyright © 2004-2021 the Contributors to the MusicXML Specification, published by the Music Notation Community Group under the W3C Community Final Specificatio
+415	EXACT	mx_index	Please note that under the W3C Community Final Specification Agreement (FSA) other conditions apply.
+421	EXACT	mei_readme	The Music Encoding Initiative (MEI) is an open-source effort to define a system for encoding musical documents in a machine-readable structure.
+426	NOTFOUND		7 Repertoire: String Tablature
+427	EXACT	mei_tab	This chapter describes the MEI.stringtab module (which will be renamed to MEI.tablature in a future version). The MEI.stringtab module is used to record basic t
+430	TYPO	mei_tab	The notation used is defined on the staffDef element using the notationtype attribute. Possible values are: tab.guitar , tab.lute.italian , tab.lute.french and 
+431	EXACT	mei_tab	The tuning element is used inside staffDef to describe the pitches of the open strings of the instrument
+433	EXACT	mei_tab	guitar.standard
+433	EXACT	mei_tab	pname=
+433	NOTFOUND		/>`, where
+434	NOTFOUND		. Notes:
+437	NOTFOUND		, e.g. `<note tab.course="6" tab.fret="5"/>`; chords are `<tabGrp dur="4">` with an optional `<tabDurSym/>`. The word
+439	NOTFOUND		does not occur in that chapter (text search of the saved page). - **Renderer:** Verovio (section above). - **License:** the repository LICENSE (https://raw.gith
+442	EXACT	mei_license	The Educational Community License version 2.0 (
+443	EXACT	mei_license	) consists of the Apache 2.0 license, modified to change the scope of the patent grant in section 3 to be specific to the needs of the education communities usi
+448	EXACT	ms_readme	MuseScore Studio is an open source and free music notation software.
+454	TYPO	ms_cli	Export the given (or currently opened) file to the specified output file . The file type depends on the extension of the filename given. This option switches to
+456	EXACT	ms_cli	Valid file extensions for output are:
+457	EXACT	ms_cli	measure positions (XML)
+463	EXACT	ms_readme	MusicXML import/export
+463	EXACT	ms_readme	MIDI (SMF) import/export
+463	EXACT	ms_readme	MEI import/export
+463	EXACT	ms_readme	MuseData import
+466	EXACT	ms_license	MuseScore Studio, free and open source music notation software Copyright (C) 1999-2026 MuseScore Limited and others This program is free software; you can redis
+469	EXACT	ms_license	If you create a document which uses fonts included in MuseScore Studio, and embed this font or unaltered portions of this font into the document, then this font
+471	EXACT	ms_readme	MuseScore Studio is licensed under GPL version 3.0.
+476	EXACT	wms_readme	MuseScore's libmscore (the core library) in WebAssembly!
+479	EXACT	wms_readme	Parse `mscz` file data
+479	EXACT	wms_readme	Generate music sheets in SVG/PNG/PDF format
+479	EXACT	wms_readme	Generate MIDI
+480	EXACT	wms_readme	Generate audio files in WAV, OGG, MP3, or FLAC format
+480	EXACT	wms_readme	Synthesize raw audio frames, can be used in the Web Audio API
+481	EXACT	wms_readme	Export as MusicXML compressed/uncompressed
+481	EXACT	wms_readme	Generate position information of measures or segments on the generated sheets
+482	EXACT	wms_readme	Run inside a Web Worker thread
+487	EXACT	wms_readme	Loading a soudfont (sf2/sf3) file is required before generating/synthesizing audio.
+491	EXACT	wms_license	MuseScore, free and open source music notation software Copyright (C) 1999-2022 MuseScore BVBA and others This program is free software; you can redistribute it
+499	EXACT	ly_home	LilyPond 2.26.0 released - April 21, 2026
+499	EXACT	ly_home	LilyPond 2.27.4 released - October 20, 2026
+502	EXACT	ly_tab	Common notation for fretted strings
+503	TYPO	ly_tab	By default, string 1 is the highest string, and corresponds to the top line on the TabStaff . The tuning of the TabStaff strings defaults to the standard guitar
+506	NOTFOUND		LilyPond automatically calculates the fret for a note based on the string to which the note is assigned. In order to do this, the tuning of the strings must be 
+508	EXACT	ly_tab	guitar-open-g-tuning
+509	EXACT	ly_tab	If you would like a certain pitch to be played on a specific string you can add a string number indication to the pitch name.
+510	TYPO	ly_tab	Usually it will be more comfortable to define the playing position by using the value of minimumFret . The default value for minimumFret is 0. Even when minimum
+513	EXACT	ly_tab	Unique to the \fret-diagram-verbose interface is a capo indication that can be placed on the fret diagram.
+516	EXACT	ly_tab	23.3.1 SVG Output
+517	EXACT	ly_tab	24 Creating MIDI output
+521	EXACT	ly_license	GNU LilyPond is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foun
+529	EXACT	tg_readme	TuxGuitar is an open source multitrack tablature editor and player written in Java.
+531	EXACT	tg_readme	You can find ready to use installation packages for Linux, Windows, macOS, FreeBSD and Android
+532	EXACT	tg_changes	TuxGuitar 2.1.1 (2026-10-23)
+533	EXACT	tg_changes	TuxGuitar 2.1.0 (2026-06-30)
+533	EXACT	tg_changes	Security fix for CVE-2026-55543: Prevent embedding or loading malicious Java classes in a TG file
+535	EXACT	tg_gtp	Guitar Pro 1 to 5 file import/export plugin
+536	NOTFOUND		This plugin lets you open and export Guitar Pro version 1 to 5 files (GTP, GP3/GP4/GP5)
+537	EXACT	tg_gpx	Guitar Pro 6 and 7 file import plugin
+537	EXACT	tg_gpx	Plugin to open Guitar Pro 6 (GPX) and 7 (GP) files
+538	EXACT	tg_ascii	ASCII tab export plugin
+538	EXACT	tg_mxl	MusicXML file export plugin
+540	EXACT	tg_conv	Batch File Converter
+540	NOTFOUND		This plugin converts all tabs in the given input folder from various formats into the given output file format
+541	EXACT	tg_changes	Improve Guitar Pro import
+541	EXACT	tg_changes	Export beat text in MusicXML
+546	EXACT	tg_readme	Third party products
+546	EXACT	tg_readme	Gervill (Java Software Synthesizer)
+546	EXACT	tg_readme	Magic Sound Font v2.0 - Contributed by Dennis Deutschmann
+549	EXACT	tg_readme	TuxGuitar is released under the GNU Lesser General Public License. Copyright (C) 2005-2022 Julián Casadesús 2023-2025 guiv42, helge17
+550	EXACT	tg_license	GNU Lesser General Public License Version 2.1, February 1999
+555	NOTFOUND		PyGuitarPro is a package to read, write and manipulate GP3, GP4 and GP5 files. Initially PyGuitarPro is a Python port of AlphaTab which originally was a Haxe po
+564	EXACT	pgp_gp3	Height of the capo: :ref:`int`. The number of the fret on which a capo is set. If no capo is used, the value is 0.
+569	EXACT	pgp_license,vrv_lesser	GNU LESSER GENERAL PUBLIC LICENSE Version 3, 29 June 2007
+577	EXACT	m21_tab	Music21 representation of FretNote and FretBoard objects.
+578	EXACT	m21_tab	A FretBoard represents a displayed fretboard (i.e. used in chord symbols).
+579	EXACT	m21_artic	StringIndication indicates which string a note is played on.
+586	EXACT	m21_license	Copyright (c) 2006-2026 Michael Scott Asato Cuthbert Redistribution and use in source and binary forms, with or without modification, are permitted provided tha
+592	EXACT	cp_readme	ChordPro generates professional-looking sheet music from a text file containing the lyrics of one or many songs with chord information.
+593	EXACT	cp_readme	This program implements ChordPro language version 6.
+595	EXACT	cp_readme	execute `chordpro --help` for an overview about the available options
+597	TYPO	cp_tabdoc	Directives: start_of_tab Abbreviation: sot . This directive indicates that the lines that follow form a section of guitar TAB instructions. The lines will not b
+601	EXACT	cp_readme	Prominent features of ChordPro 6 are advanced text markup, annotations, integrated support for ABC
+602	EXACT	cp_license,csj_license,ms_license,wms_license	This program is free software; you can redistribute it and/or modify it under the terms of the
+603	EXACT	cp_license	, included in this document.
+612	EXACT	csj_readme	start_of_tab (short: sot)
+612	EXACT	csj_readme	end_of_tab (short: eot)
+614	EXACT	csj_license	GNU GENERAL PUBLIC LICENSE Version 2, June 1991
+619	EXACT	svg_readme	JavaScript (TypeScript) library to create beautiful SVG guitar chord charts directly in the browser.
+622	EXACT	svg_license	Copyright 2017 Raphael Voellmy <r.voellmy@gmail.com> Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+628	EXACT	ly_tab,rg_readme,tonal_readme,wiki_ascii	C major
+629	NOTFOUND		).name` (README of https://github.com/tonaljs/tonal, last commit 2026-10-14). npm `tonal` 6.5.1 published 2026-10-14. No rendering, no audio, no tab. - **LICENS
+636	NOTFOUND		(README of https://github.com/4lejandrito/react-guitar, last commit 2026-01-06); npm `react-guitar` 1.1.3 published 2026-01-04. Props: `strings`
+638	NOTFOUND		; `onChange`
+639	NOTFOUND		Sound via the `useSound` hook of `react-guitar-sound`, whose default instrument is `withSoundFont('acoustic_guitar_nylon')` built on `soundfont-player` with `so
+642	NOTFOUND		. A fretboard input and display, not a tab staff. - **LICENSE FACTS** (read 2026-11-10): `LICENSE`:
+655	NOTFOUND		Entries such as `key: 'D', suffix: 'sus2', positions: [{ frets: '0320xx', ...` (README of https://github.com/tombatossals/chords-db, last commit 2025-10-14). np
+664	EXACT	jtab_readme	Differences from the original tardate/jtab: ... it was not tested very well
+670	NOTFOUND		Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+677	EXACT	ss_terms	an Illinois Limited Liability Company
+679	EXACT	ss_teachers	full-featured notation and tab editor
+681	MARKUP	ss_licensing	Once you’ve created a lesson (a “slice”), you simply copy and paste our embed code into your site. It’s a simple <iframe> , similar to a YouTube video embed.
+683	EXACT	ss_licensing	We also have a JavaScript API for advanced integration.
+683	EXACT	ss_licensing	Every Soundslice account gets one free embed.
+684	EXACT	ss_licensing	We charge based on how many people use Soundslice on your site in a month. There’s a flat fee of $100 for the first 200 unique users. Each unique user after tha
+685	EXACT	ss_licensing	A “unique user” is a single computer that's viewed at least one Soundslice embed on your site in a given calendar month.
+687	NOTFOUND		; Plus
+687	NOTFOUND		per month or
+687	NOTFOUND		per year; Teacher
+688	NOTFOUND		per month or
+688	NOTFOUND		per year. Teacher page:
+689	NOTFOUND		- **Data API** (https://www.soundslice.com/help/data-api/, read 2026-11-10):
+691	TYPO	ss_api	This API is REST-based and works over HTTP. For each API call, you’ll need to authenticate with your API key, using HTTP Basic Authentication .
+693	TYPO	ss_api	This endpoint lets you upload a slice’s notation from one of our supported formats : MusicXML, Guitar Pro, PowerTab or TuxGuitar. It does not support our PDF/im
+696	EXACT	ss_api	Generates MusicXML for the slice
+696	EXACT	ss_api	this uses our own MusicXML exporting algorithm based on the slice’s current notation.
+697	EXACT	ss_api	Create recording
+697	EXACT	ss_api	Put recording’s audio/video
+698	EXACT	ss_api	Get recording’s syncpoints
+698	EXACT	ss_api	Set recording’s syncpoints
+698	EXACT	ss_api	Syncpoint data format
+701	EXACT	ss_terms	You retain any intellectual property rights in the content you upload or post to the Service. You hereby grant Soundslice a worldwide, non-exclusive, royalty-fr
+705	EXACT	ss_terms	Provider retains all right, title, and interest in and to the Service, and this Agreement does not grant User any intellectual property rights in or to the Serv
+707	EXACT	ss_aup	Attempt to access or search or scrape or download content from Soundslice, or otherwise use Soundslice through any engine, software, tool, agent, device or mech
+712	EXACT	ss_aup	Use Soundslice for any commercial purpose or the benefit of any third party, except as otherwise explicitly permitted for you by Soundslice or in any manner not
+714	EXACT	ss_aup	It's primarily for educational use
+715	EXACT	ss_terms	Provider reserves the right to modify, suspend or discontinue, at any time and from time to time, the Services or any part thereof, or User’s access to the Serv
+721	EXACT	flat_terms_embed	The Service is provided by Tutteo Limited (
+722	EXACT	flat_terms_embed	), a company incorporated and registered in England and Wales
+723	EXACT	flat_terms_embed	Last updated February 24, 2026
+725	EXACT	flat_dev	Embed and OMR are usage-based; the REST and Import APIs are free.
+726	EXACT	flat_dev	Free 14-day trial. The REST and Import APIs are free; no plan needed.
+726	EXACT	flat_dev	Viewer or editor mode
+727	EXACT	flat_dev,flat_embeddoc	JavaScript/TypeScript SDK
+727	EXACT	flat_dev,ss_aup,ss_licensing,ss_plans,ss_teachers,ss_terms	PDFs and photos in
+727	EXACT	flat_dev	MusicXML or MIDI out
+727	EXACT	flat_dev	Scores, collections and comments
+728	EXACT	flat_dev	Personal tokens or OAuth2
+729	EXACT	flat_dev	https://prod.flat-cdn.com/embed-js/v2.12.1/embed.min.js
+731	EXACT	flat_embeddoc	You can easily create and edit music notation and TABs with our web editor Flat and display them in no time on any web page.
+732	TYPO	flat_embeddoc	You can also embed our editor directly in your site , and let your users or visitors create and edit MusicXML files.
+733	EXACT	flat_embeddoc	You can try the embed for free with a personal Flat account ... (no customization or API available).
+734	TYPO	flat_embeddoc	If you want to customize it (e.g. removing Flat Branding, changing the controls displayed, the colors and theme) or use our embed commercially, subscribe to one
+737	EXACT	flat_apidoc	Creating and importing new music scores using MusicXML or MIDI files.
+738	EXACT	flat_apidoc	Browsing, updating, copying, exporting the user's scores (for example in MP3, WAV or MIDI).
+739	TYPO	flat_apidoc	By using this API, and especially on the behalf of a user account, you must accept, respect and enforce our Terms of Service and Privacy Policy .
+740	EXACT	flat_apidoc	Rate Limits
+741	EXACT	flat_embed	Flat Embed’s billing is based on the total number of unique users each month.
+742	EXACT	flat_embed	Beyond 200 users, each additional user results in a -- charge.
+743	NOTFOUND		in their place (UNVERIFIED amounts; open the page in a browser to read them).
+746	NOTFOUND		Listed features include
+746	EXACT	flat_embed	Personalized branding
+747	EXACT	flat_embed,flat_terms_indiv,ly_tab,ms_cli,vrv_changelog	MIDI output
+752	EXACT	flat_terms_embed	means the monthly licence fee payable for the Service (
+752	EXACT	flat_terms_embed	) plus the extra fee per view or active user (
+753	EXACT	flat_terms_embed	), as shown on our site https://flat.io/embed following the offer you select;
+755	EXACT	flat_terms_embed	We do not claim ownership in your User Content. Instead, you grant us a worldwide, non-exclusive, royalty-free and perpetual licence to use, copy, reproduce, di
+759	EXACT	flat_terms_embed	Flat is the owner of the licensee of all intellectual property rights in the Service.
+760	EXACT	flat_terms_embed	Flat may increase the Fees upon giving you 30 days' notice in writing.
+761	EXACT	flat_terms_embed	Flat may terminate these Terms of Service and your access to the Service with 30 days' notice in writing.
+769	EXACT	at_imp_gp	GP4 has an official partial spec from Arobas; the rest was reverse-engineered from test files.
+770	EXACT	at_imp_gp	the first XML-based generation, wrapped in a custom container that behaves like a compressed filesystem
+772	EXACT	at_imp_gp	a standard ZIP archive holding `Content/score.gpif`
+772	EXACT	at_imp_gp	GP8 uses the same envelope as GP7 with additional payloads (embedded audio)
+774	EXACT	rgp_readme	BCFZ/BCFS container
+774	EXACT	rgp_readme	ZIP container with GPIF XML
+780	EXACT	at_readme	Writes
+781	EXACT	pgp_readme	read, write and manipulate GP3, GP4 and GP5 files
+785	EXACT	pte_readme	Supported File Types
+786	EXACT	gpp_readme	Reads `.gp` (Guitar Pro 7 and 8), `.gpx` (Guitar Pro 6), `.gp5`, `.gp4` and `.gp3`
+787	EXACT	apollo_readme	Full support for GP3/GP4/GP5/GPX/GP(GP7/GP8) formats
+788	EXACT	rgp_readme,sp_readme	Supported formats
+789	EXACT	ss_api	MusicXML, Guitar Pro, PowerTab or TuxGuitar
+795	EXACT	at_tex_intro	alphaTex is a plain-text notation format for alphaTab. You write a score as source code and alphaTab parses it into the same data model any other format produce
+802	EXACT	obs_tabflow	Write scores in alphaTex (.atex files, or alphatex code blocks in notes)
+808	EXACT	abc_std	This is the home page for the abc standard, the (semi-formal) description of the rules of abc.
+808	EXACT	abc_std	The current version of the standard is at: abcnotation.com/wiki/abc:standard:v2.1 - abc standard 2.1 (Dec 2011)
+810	EXACT	abc_std	abcnotation.com/wiki/abc:standard:v2.2
+816	NOTFOUND		ASCII tab is intended to be a human-readable format rather than machine-readable, and hence is not strictly defined. Though some standards are used by all ASCII
+819	EXACT	rgp_readme,tg_ascii,vt_readme,wiki_ascii	ASCII tab
+821	EXACT	tabfaq	Tablature FAQ
+821	EXACT	tabfaq	Copyright Howard Wright and the olga-grunts
+822	MARKUP	tabfaq	This document may be distributed freely as long as NO CHARGE is made and my name and email address are not removed.
+824	EXACT	tg_ascii	ASCII tab export plugin
+825	EXACT	rgp_readme	generate ASCII tablatures
+826	EXACT	gtr1j01_readme	You can copy and paste entire webpages containing guitar tabs and it'll try to load all it can.
+832	EXACT	gpp_readme	TypeScript parser for Guitar Pro files. Returns a typed model of the score and computes playback order and timing.
+833	EXACT	gpp_readme	Reads `.gp` (Guitar Pro 7 and 8), `.gpx` (Guitar Pro 6), `.gp5`, `.gp4` and `.gp3`.
+834	EXACT	gpp_readme	Detects the format from the file's bytes.
+835	NOTFOUND		; note fields include `note.string; // 0-based, 0 is the highest string` (README of https://github.com/emilienbev/guitarpro-parser, last commit 2026-11-08). npm
+838	NOTFOUND		. Read only (no writer named in the README lines read). RUNNABLE. - **ApolloTab** (PyPI).
+840	MARKUP	apollo_readme	Tablature Rendering: Render high-quality tablature images (QPixmap) using QPainter
+841	MARKUP	apollo_readme	Audio Playback: Real-time MIDI synthesis engine based on FluidSynth with SoundFont support
+843	EXACT	apollo_license	GNU LESSER GENERAL PUBLIC LICENSE Version 2.1, February 1999
+845	EXACT	sp_readme	Parse MIDI and Guitar Pro files into a clean, format-neutral JSON structure.
+847	EXACT	sp_licence	MIT License Copyright (c) 2026 jbfullstack
+851	EXACT	rgp_readme	Guitar Pro Tools
+851	EXACT	rgp_readme	A comprehensive suite of tools for parsing, manipulating, and visualizing Guitar Pro files in Rust.
+852	EXACT	rgp_readme	GP3, GP4, GP5, GPX, GP7
+852	MARKUP	rgp_readme	MuseScore files (MSCZ)
+853	EXACT	rgp_readme	to inspect files, view metadata, and generate ASCII tablatures
+854	EXACT	rgp_readme	so C, C++, Swift, Kotlin or Python `ctypes` can parse and convert scores
+857	EXACT	rgp_license,tonal_license	The MIT License (MIT)
+865	EXACT	imt_readme	Open source, web based, self hostable guitar/bass tab viewer and player, similar to Songsterr.
+865	EXACT	imt_readme	Supports .gp, .gpx, .gp3, .gp4, .gp5, .musicxml, .capx formats
+865	EXACT	imt_readme	Sync your tabs with audio files (.mp3, .ogg) or Youtube videos
+865	EXACT	imt_license	Copyright (c) 2025 Louis Lam
+866	EXACT	obs_tabflow,tf_readme	Render, play and write guitar tabs in Obsidian
+866	EXACT	obs_tabflow	Powered by alphaTab
+867	EXACT	as_readme	an interactive tab player, a fast tab editor, and a collection of practice tools
+867	EXACT	as_readme	Every tab on Autostrum plays back using sampled acoustic or electric guitar audio
+868	NOTFOUND		Singe-page guitar tab editor (eventually scores!) built with: React, SVG / Canvas, Web Audio
+868	EXACT	mz_readme	This is just a fun personal project
+868	EXACT	mz_license	Copyright (c) 2018 Jason Gedge
+869	EXACT	sh_readme	Songshed is a proof-of-concept for a grid-based guitar tab editor.
+870	EXACT	flat_dev,te_readme	Guitar Tab Editor
+870	MARKUP	te_readme	This uses the Web Audio API for playback. Thanks to soundfont-player
+870	EXACT	te_license	Copyright (c) 2015 Cale Newman
+871	EXACT	slim_readme	SLiMTAB is a brand new guitar tab editor. And it is open source.
+871	MARKUP	slim_readme	requires Node.js
+872	EXACT	gtr1j01_readme	a virtual guitar record-a-synthesize-amatronic web application
+872	EXACT	gtr1j01_license	Copyright (c) 2018 Isaiah Odhner
+873	EXACT	pte_readme	A powerful cross platform guitar tablature viewer and editor
+873	EXACT	pte_readme	Cross platform - Windows, Mac, & Linux
+874	EXACT	tuitar_readme	A terminal-based guitar tablature editor built with Go and Bubble Tea
+874	EXACT	tuitar_readme	Karplus-Strong string synthesis
+878	NOTFOUND		(this file, X)
+883	EXACT	mx_string	String numbers start with 1 for the highest pitched full-length string
+883	EXACT	mx_fret	Fret numbers start with 0 for an open string
+885	EXACT	mx_tuning	numbered from bottom to top
+887	EXACT	at_tex_syntax	String 1 is the top string when you read tab — the thinnest string on a guitar, sounding highest.
+889	EXACT	mei_tab	counting from the course closest to the player’s feet when the instrument is played
+890	EXACT	mei_tab	0 ... refers to an unstopped, open course
+891	EXACT	ly_tab	By default, string 1 is the highest string
+893	NOTFOUND		more parsers
+894	EXACT	abcjs_tabdoc	starting from the lowest pitch of the instrument
+895	EXACT	rg_readme	`0` means open string and `-1` muted
+899	EXACT	at_exp_gp7	Guitar Pro 7 and Guitar Pro 8 both open the resulting file
+900	EXACT	gpp_readme	Reads `.gp` (Guitar Pro 7 and 8)
+900	EXACT	tg_gpx	open ... 7 (GP) files
+901	EXACT	apollo_readme,at_exp_gp7,at_exp_tex,at_imp_gp,at_imp_mxl,at_intro_web	Guitar Pro
+904	EXACT	obs_tabflow	.atex files
+908	EXACT	at_exp_midi	tempo map, time signatures, program changes, note on/off with expression and pitch bend
+909	EXACT	ms_readme	MIDI (SMF) import
+910	EXACT	flat_apidoc	Creating and importing new music scores using MusicXML or MIDI files
+911	NOTFOUND		list has no MIDI entry (README), so MIDI does not go straight into alphaTab. - MuseScore `mscore -o out.musicxml` / webmscore
+912	NOTFOUND		output MusicXML, which alphaTab reads (
+913	NOTFOUND		), OSMD renders as tab (
+913	NOTFOUND		), and Verovio imports (
+914	NOTFOUND		). - music21 writes `<technical><string>/<fret>` from `articulations.StringIndication` / `FretIndication` (`musicxml/xmlObjects.py`), and its MusicXML writer ha
+919	NOTFOUND		), which alphaTab, OSMD, MuseScore, Verovio accept as MusicXML (this file). - Flat REST API exports
+921	NOTFOUND		and its OMR outputs
+921	NOTFOUND		(Flat section), which MuseScore, webmscore and alphaTab (MusicXML only) accept. - chords-db entries give `frets: '0320xx'` per chord position (README), and reac
+933	NOTFOUND		; Audio2Tab
+934	NOTFOUND		, per `lanes/guitar-tab/survey.md` lines 27 and 48) produce a file that alphaTab, TuxGuitar, MuseScore, webmscore, guitarpro-parser and PyGuitarPro read as GP5 
+939	NOTFOUND		, per `lanes/audio-to-notes/survey.md` line 554) can be given string and fret by LilyPond's TabStaff (
+941	NOTFOUND		; options `stringTunings`, `minimumFret`, `restrainOpenStrings`, string-number indications) or drawn as tab by abcjs from ABC pitches (`tablature` with `tuning`
+945	NOTFOUND		(seconds), `lanes/chords-beats-key/survey.md` line 222) map onto alphaTab's `FlatSyncPoint { barIndex, barPosition, barOccurence, millisecondOffset }`, where `m
+947	NOTFOUND		and `barPosition`
+948	NOTFOUND		, applied with `score.applyFlatSyncPoints(list)` and `api.updateSyncPoints()` (https://raw.githubusercontent.com/CoderLine/alphaTab/develop/website/docs/feature
+951	EXACT	at_video	exposes `backingTrackDuration`, `playbackRate`, `masterVolume`, `seekTo`, `play`, and `pause`
+952	EXACT	ss_api	Set recording’s syncpoints
+954	MARKUP	at_imp_mxl	Tempo and tempo changes — read from `sound` and `metronome` markers
+960	EXACT	at_countin	Before the song starts, the count-in taps out one bar ... during playback, the metronome keeps clicking on every beat
+964	EXACT	ms_cli	measure positions (XML)
+965	EXACT	wms_readme	Generate position information of measures or segments on the generated sheets

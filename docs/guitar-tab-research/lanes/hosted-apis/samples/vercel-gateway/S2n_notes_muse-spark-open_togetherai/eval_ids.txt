@@ -1,0 +1,1 @@
+[gtr-eval e0068] notes truth=S2n exit=0 (ledger /home/user/gtr/eval/ledger/evals.jsonl)

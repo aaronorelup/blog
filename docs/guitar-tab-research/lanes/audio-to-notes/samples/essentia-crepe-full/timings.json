@@ -1,0 +1,46 @@
+{
+ "algo": "crepe-full",
+ "essentia": "2.1-beta6-dev",
+ "clips": {
+  "S1": {
+   "input": "/home/user/gtr/inputs/S1/S1.mono.wav",
+   "sample_rate": 16000,
+   "n_frames": 2984,
+   "hop_s": 0.009999999776482582,
+   "activation_shape": [
+    2984,
+    360
+   ],
+   "seconds": 168.802
+  },
+  "S4lead": {
+   "input": "/home/user/gtr/inputs/S4/stems/lead.wav",
+   "sample_rate": 16000,
+   "n_frames": 3875,
+   "hop_s": 0.009999999776482582,
+   "activation_shape": [
+    3875,
+    360
+   ],
+   "seconds": 168.841
+  },
+  "R1b": {
+   "input": "/home/user/gtr/inputs/R1b/R1b.mono.wav",
+   "sample_rate": 16000,
+   "n_frames": 2934,
+   "hop_s": 0.009999999776482582,
+   "activation_shape": [
+    2934,
+    360
+   ],
+   "seconds": 112.69
+  }
+ },
+ "setup_s": 0.726,
+ "settings": {
+  "graphFilename": "crepe-full-1.pb",
+  "hopSize_ms": 10,
+  "batchSize": 64,
+  "sampleRate": 16000
+ }
+}

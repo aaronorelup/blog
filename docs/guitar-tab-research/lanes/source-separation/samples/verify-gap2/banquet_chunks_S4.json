@@ -1,0 +1,18 @@
+{
+ "chunk_size": 264600,
+ "hop_size": 22050,
+ "overlap": 242550,
+ "scaler": 6.0,
+ "n_samples": 1708495,
+ "n_chunks_formula": 111,
+ "pad": 981605,
+ "padded_length": 3660300,
+ "n_chunks_after_unfold": 155,
+ "batches_of_12": 13,
+ "output_shape": [
+  1,
+  2,
+  1708495
+ ],
+ "torch": "2.15.0+cpu"
+}

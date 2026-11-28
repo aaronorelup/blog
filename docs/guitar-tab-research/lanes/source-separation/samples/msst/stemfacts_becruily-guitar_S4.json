@@ -1,0 +1,57 @@
+{
+ "input": {
+  "path": "/home/user/gtr/inputs/S4/S4.wav",
+  "sample_rate": 44100,
+  "channels": 2,
+  "frames": 1708495,
+  "subtype": "PCM_16",
+  "rms_dbfs": -17.368587345890337,
+  "seconds": 38.7414
+ },
+ "est_dir": "/home/user/gtr/lanes/source-separation/out/msst-becruily-guitar/S4",
+ "stems": {
+  "Guitar": {
+   "file": "Guitar.wav",
+   "bytes": 13668048,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "FLOAT",
+   "format": "WAV",
+   "frames": 1708495,
+   "seconds": 38.7414,
+   "frames_minus_input": 0,
+   "rms_dbfs": -39.19,
+   "peak_dbfs": -13.89
+  }
+ },
+ "sum_vs_mix": {
+  "common_rate": 44100,
+  "common_frames": 1708495,
+  "best_lag_samples": -1,
+  "residual_db_at_lag0": -0.26,
+  "note": "positive lag = the stems' sum is late relative to the mix"
+ },
+ "truth_dir": "/home/user/gtr/inputs/S4/stems",
+ "projection": {
+  "Guitar": {
+   "bass": 0.003,
+   "drums": 0.0084,
+   "guitar": 0.0773,
+   "lead": 0.0087
+  }
+ },
+ "projection_column_sums": {
+  "bass": 0.003,
+  "drums": 0.0084,
+  "guitar": 0.0773,
+  "lead": 0.0087
+ },
+ "si_sdr_db_cross": {
+  "Guitar": {
+   "bass": -34.68,
+   "drums": -30.79,
+   "guitar": -2.65,
+   "lead": -23.74
+  }
+ }
+}

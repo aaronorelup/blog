@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>OpenSheetMusicDisplay trial</title>
+<style>body { margin: 0; background: #fff; } #out { width: 1200px; }</style>
+<script src="/nm/opensheetmusicdisplay/build/opensheetmusicdisplay.min.js"></script>
+</head>
+<body>
+<div id="out"></div>
+<script>
+// ?src=/lane/out/musicxml-from-truth/S2n.truth.musicxml  renders MusicXML with OSMD (SVG backend)
+const q = new URLSearchParams(location.search);
+window.__log = [];
+(async () => {
+  const t0 = performance.now();
+  try {
+    const osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay(document.getElementById('out'), {
+      autoResize: false, backend: 'svg', drawTitle: true, drawPartNames: true,
+    });
+    window.osmd = osmd;
+    const xml = await (await fetch(q.get('src'))).text();
+    await osmd.load(xml);
+    const tLoad = performance.now() - t0;
+    osmd.render();
+    // count what OSMD built: graphical notes per staff, and TAB notes (string/fret) it read
+    let tabNotes = 0, notes = 0, staves = new Set();
+    const sheet = osmd.Sheet;
+    for (const m of sheet.SourceMeasures) {
+      for (const container of m.VerticalSourceStaffEntryContainers) {
+        for (const se of container.StaffEntries) {
+          if (!se) continue;
+          staves.add(se.ParentStaff.idInMusicSheet);
+          for (const ve of se.VoiceEntries) {
+            for (const n of ve.Notes) {
+              if (n.isRest && n.isRest()) continue;
+              notes++;
+              if (n.StringNumberTab !== undefined && n.FretNumber !== undefined && n.StringNumberTab > 0) tabNotes++;
+            }
+          }
+        }
+      }
+    }
+    window.__info = {
+      ok: true, version: osmd.Version, msLoad: tLoad, msTotal: performance.now() - t0,
+      measures: sheet.SourceMeasures.length, staves: [...staves].length, notes, notesWithStringFret: tabNotes,
+      staffTypes: sheet.Staves.map((s) => s.isTab ? 'tab' : 'standard'),
+      svgBytes: document.querySelector('#out svg') ? [...document.querySelectorAll('#out svg')].reduce((a, s) => a + s.outerHTML.length, 0) : 0,
+    };
+  } catch (e) {
+    window.__info = { ok: false, error: String(e && e.stack || e).slice(0, 1200) };
+  }
+  window.__rendered = true;
+})();
+</script>
+</body>
+</html>

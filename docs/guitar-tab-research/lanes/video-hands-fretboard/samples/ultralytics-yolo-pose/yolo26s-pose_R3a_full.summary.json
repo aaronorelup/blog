@@ -1,0 +1,75 @@
+{
+ "clip": "R3a",
+ "mode": "full",
+ "frames": 540,
+ "all": {
+  "frames": 540,
+  "frac_0_hands": 0.0,
+  "frac_1_hand": 0.0019,
+  "frac_2_hands": 0.9981,
+  "frac_more_than_2": 0.0,
+  "frac_at_least_1": 1.0,
+  "label_counts": {
+   "person_left": 540,
+   "person_right": 539
+  },
+  "infer_ms_mean": 292.67,
+  "infer_ms_median": 293.17,
+  "infer_ms_p90": 359.55,
+  "fps_from_mean": 3.42,
+  "score_mean": 0.9562,
+  "score_min": 0.5587,
+  "score_max": 0.9981
+ },
+ "per_shot": {
+  "medium": {
+   "frames": 319,
+   "frac_0_hands": 0.0,
+   "frac_1_hand": 0.0,
+   "frac_2_hands": 1.0,
+   "frac_more_than_2": 0.0,
+   "frac_at_least_1": 1.0,
+   "label_counts": {
+    "person_left": 319,
+    "person_right": 319
+   },
+   "infer_ms_mean": 281.11,
+   "infer_ms_median": 269.73,
+   "infer_ms_p90": 357.99,
+   "fps_from_mean": 3.56,
+   "score_mean": 0.9931,
+   "score_min": 0.9063,
+   "score_max": 0.9981
+  },
+  "wide": {
+   "frames": 221,
+   "frac_0_hands": 0.0,
+   "frac_1_hand": 0.0045,
+   "frac_2_hands": 0.9955,
+   "frac_more_than_2": 0.0,
+   "frac_at_least_1": 1.0,
+   "label_counts": {
+    "person_left": 221,
+    "person_right": 220
+   },
+   "infer_ms_mean": 309.34,
+   "infer_ms_median": 307.72,
+   "infer_ms_p90": 364.49,
+   "fps_from_mean": 3.23,
+   "score_mean": 0.9028,
+   "score_min": 0.5587,
+   "score_max": 0.9977
+  }
+ },
+ "tool": "ultralytics YOLO pose",
+ "ultralytics_version": "8.4.209",
+ "weights": "yolo26s-pose.pt",
+ "init_s": 0.082,
+ "settings": {
+  "imgsz": 640,
+  "conf": 0.25,
+  "wrist_kpt_conf_min": 0.5
+ },
+ "frac_frames_with_person": 1.0,
+ "persons_per_frame_max": 2
+}

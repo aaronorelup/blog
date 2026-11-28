@@ -1,0 +1,56 @@
+{
+ "version": "6.4.1-fbe8f46",
+ "input": "/home/user/gtr/lanes/web-tab-render/out/musicxml-from-truth/S2n.truth.musicxml",
+ "loadOk": 1,
+ "ms_init": 658,
+ "log": "",
+ "pages": 1,
+ "ms_render": 242,
+ "midiBytes": 1553,
+ "timemapEntries": 51,
+ "timemapFirst": [
+  {
+   "qstamp": 0,
+   "tempo": 112,
+   "tstamp": 0
+  },
+  {
+   "qstamp": 1,
+   "tstamp": 536
+  },
+  {
+   "on": [
+    "l1fp19up",
+    "q1soaa1w",
+    "vp0d68k",
+    "iycf6bm"
+   ],
+   "qstamp": 4,
+   "tstamp": 2143
+  },
+  {
+   "off": [
+    "l1fp19up",
+    "q1soaa1w",
+    "vp0d68k",
+    "iycf6bm"
+   ],
+   "on": [
+    "mi51rp2",
+    "r10r1d16",
+    "y1vy12jl",
+    "l9wsevd"
+   ],
+   "qstamp": 5,
+   "tstamp": 2679
+  }
+ ],
+ "exportMei": {
+  "bytes": 45004,
+  "tabGrp": 92,
+  "tabCourse": 90,
+  "notationtypeTab": true,
+  "staffDefs": 2
+ },
+ "ms_total": 1800
+}

@@ -1,0 +1,38 @@
+{
+ "space": "mimbres/YourMT3-cpu",
+ "api_name": "/process_audio",
+ "args": [
+  "file:/home/user/gtr/inputs/R1c/R1c.mono.wav"
+ ],
+ "token": null,
+ "runtime_before": {
+  "stage": "RUNNING",
+  "hardware": {
+   "current": "cpu-basic",
+   "requested": "cpu-basic"
+  }
+ },
+ "space_sha": "bd69fbac7da881df0dfb67d8f4068a3d473df347",
+ "client_connect_s": 1.287,
+ "ok": true,
+ "wall_s": 31.343,
+ "status_changes": [
+  {
+   "t_s": 1.31,
+   "code": "Status.STARTING",
+   "rank": null,
+   "queue_size": null,
+   "eta": null,
+   "progress": null
+  },
+  {
+   "t_s": 3.31,
+   "code": "Status.PROCESSING",
+   "rank": null,
+   "queue_size": null,
+   "eta": null,
+   "progress": null
+  }
+ ],
+ "result": "<HTML string of 6928 characters with an html-midi-player; MIDI taken from its data URL into yourmt3cpu_R1c.mid>"
+}

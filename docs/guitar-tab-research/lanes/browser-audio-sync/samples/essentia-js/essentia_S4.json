@@ -1,0 +1,127 @@
+{
+ "page": "/pages/essentia.html?clip=S4&algos=rhythm,key,tonal",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 5.663,
+ "external_requests": [],
+ "result": {
+  "clip": "S4",
+  "algos": [
+   "rhythm",
+   "key",
+   "tonal"
+  ],
+  "init_ms": 172.0950000002049,
+  "essentia_version": "2.1-beta6-dev",
+  "algorithmNames_count": 199,
+  "input": {
+   "sampleRate": 44100,
+   "channels": 2,
+   "seconds": 38.74138321995465
+  },
+  "rhythm": {
+   "ms": 3417.935000000056,
+   "bpm": 115.60549926757812,
+   "confidence": 3.052747964859009,
+   "n_ticks": 74,
+   "first10": [
+    0.5108389854431152,
+    1.0448979139328003,
+    1.5673469305038452,
+    2.0897958278656006,
+    2.6122448444366455,
+    3.1346938610076904,
+    3.6455328464508057,
+    4.1679816246032715,
+    4.678820610046387,
+    5.201269626617432
+   ],
+   "beats_file": "/home/user/gtr/lanes/browser-audio-sync/out/essentia/S4_beats.txt",
+   "bpm_file": "/home/user/gtr/lanes/browser-audio-sync/out/essentia/S4_bpm.txt"
+  },
+  "key": {
+   "ms": 104.63500000024214,
+   "key": "D",
+   "scale": "major",
+   "strength": 0.9155191779136658,
+   "file": "/home/user/gtr/lanes/browser-audio-sync/out/essentia/S4_key.txt"
+  },
+  "tonal": {
+   "ms": 450.8549999999814,
+   "n_frames": 836,
+   "n_segments": 33,
+   "key_key": "G",
+   "key_scale": "major",
+   "chords_key": "B",
+   "chords_scale": "minor",
+   "first_segments": [
+    [
+     0,
+     1.115,
+     "Am"
+    ],
+    [
+     1.115,
+     1.161,
+     "B"
+    ],
+    [
+     1.161,
+     1.3,
+     "Bm"
+    ],
+    [
+     1.3,
+     1.347,
+     "B"
+    ],
+    [
+     1.347,
+     3.715,
+     "Bm"
+    ],
+    [
+     3.715,
+     4.087,
+     "Dm"
+    ],
+    [
+     4.087,
+     5.898,
+     "D"
+    ],
+    [
+     5.898,
+     7.802,
+     "A"
+    ],
+    [
+     7.802,
+     7.848,
+     "E"
+    ],
+    [
+     7.848,
+     8.313,
+     "Em"
+    ],
+    [
+     8.313,
+     10.403,
+     "Bm"
+    ],
+    [
+     10.403,
+     12.028,
+     "G"
+    ]
+   ],
+   "lab": "/home/user/gtr/lanes/browser-audio-sync/out/essentia/S4_chords.lab"
+  },
+  "total_ms": 4443.305000000168
+ }
+}

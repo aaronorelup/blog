@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>alphaTab trial</title>
+<style>
+  body { margin: 0; background: #fff; font-family: sans-serif; }
+  #at { width: 1200px; }
+</style>
+<script src="/nm/@coderline/alphatab/dist/alphaTab.js"></script>
+</head>
+<body>
+<div id="at"></div>
+<script>
+// Query string: ?file=/inputs/S2n/S2n.gp5  or ?tex=/lane/out/alphatex-from-truth/S2n.truth.atex
+// &player=1 enables alphaSynth with the bundled Sonivox SoundFont; &layout=page|horizontal
+const q = new URLSearchParams(location.search);
+window.__log = [];
+const T0 = performance.now();
+window.__T0 = T0;
+const log = (type, data) => window.__log.push({ type, t_ms: +(performance.now() - T0).toFixed(3), ...data });
+const settings = {
+  core: {
+    fontDirectory: '/nm/@coderline/alphatab/dist/font/',
+    useWorkers: q.get('workers') !== '0',
+    includeNoteBounds: q.get('notebounds') === '1',
+  },
+  display: { layoutMode: q.get('layout') === 'horizontal' ? 'horizontal' : 'page', scale: parseFloat(q.get('scale') || '1') },
+  player: {
+    enablePlayer: q.get('player') === '1',
+    playerMode: q.get('player') === '1' ? 'EnabledSynthesizer' : 'Disabled',
+    soundFont: '/nm/@coderline/alphatab/dist/soundfont/sonivox.sf2',
+    enableCursor: true,
+    enableElementHighlighting: true,
+    scrollMode: 'Off',
+  },
+};
+if (q.get('file')) settings.core.file = q.get('file');
+const api = new alphaTab.AlphaTabApi(document.getElementById('at'), settings);
+window.api = api;
+api.error.on((e) => log('error', { message: String(e && e.message || e), stack: String(e && e.stack || '').slice(0, 500) }));
+api.scoreLoaded.on((score) => log('scoreLoaded', { title: score.title, tracks: score.tracks.length, masterBars: score.masterBars.length }));
+api.renderStarted.on(() => log('renderStarted', {}));
+api.renderFinished.on((r) => log('renderFinished', { width: r.totalWidth, height: r.totalHeight }));
+api.postRenderFinished.on(() => { log('postRenderFinished', {}); window.__rendered = true; });
+api.soundFontLoaded.on(() => log('soundFontLoaded', {}));
+api.midiLoaded.on((e) => log('midiLoaded', { endTime: e.endTime, endTick: e.endTick }));
+api.playerReady.on(() => { log('playerReady', {}); window.__playerReady = true; });
+api.playerStateChanged.on((e) => log('playerStateChanged', { state: e.state, stopped: e.stopped }));
+api.playerFinished.on(() => { log('playerFinished', {}); window.__finished = true; });
+api.playerPositionChanged.on((e) => log('position', { currentTime: e.currentTime, endTime: e.endTime, currentTick: e.currentTick, isSeek: e.isSeek }));
+api.playedBeatChanged.on((beat) => log('playedBeat', {
+  bar: beat.voice.bar.index, voice: beat.voice.index, beatIndex: beat.index,
+  absTick: beat.absolutePlaybackStart,
+  notes: beat.notes.map((n) => ({ string_alphatab: n.string, fret: n.fret, pitch: n.realValue })),
+}));
+api.activeBeatsChanged.on((e) => log('activeBeats', {
+  beats: e.activeBeats.map((b) => ({ bar: b.voice.bar.index, voice: b.voice.index, absTick: b.absolutePlaybackStart, notes: b.notes.length })),
+}));
+api.midiEventsPlayed.on((e) => log('midiEvents', {
+  events: e.events.map((ev) => ({ tick: ev.tick, type: ev.type, isMetronome: !!ev.isMetronome,
+    metronomeNumerator: ev.isMetronome ? ev.metronomeNumerator : undefined,
+    noteKey: ev.noteKey, velocity: ev.noteVelocity, channel: ev.channel })),
+}));
+if (q.get('tex')) {
+  fetch(q.get('tex')).then((r) => r.text()).then((t) => api.tex(t));
+}
+</script>
+</body>
+</html>

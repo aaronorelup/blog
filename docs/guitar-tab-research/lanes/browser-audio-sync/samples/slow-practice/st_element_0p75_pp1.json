@@ -1,0 +1,41 @@
+{
+ "page": "/pages/stretch.html?method=element&rate=0.75&pp=1",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 44.165,
+ "external_requests": [],
+ "result": {
+  "method": "element",
+  "rate": 0.75,
+  "preservesPitch": true,
+  "file": "/inputs/S1/S1.wav",
+  "input": {
+   "sampleRate": 44100,
+   "channels": 2,
+   "duration_s": 29.833333333333332
+  },
+  "ctx_sampleRate": 44100,
+  "ctx_seconds_play_to_ended": 39.761269841269836,
+  "capture_gaps": [
+   {
+    "atFrame": 1920,
+    "frames": 512,
+    "handled": true
+   }
+  ],
+  "out_sampleRate": 44100,
+  "play_to_ended_wall_s": 39.89325,
+  "processing_ms": 39893.25,
+  "output": {
+   "samples": 1776000,
+   "seconds": 40.27210884353742,
+   "expected_seconds": 39.77777777777778,
+   "peak": 0.8912625312805176
+  },
+  "wav": "/home/user/gtr/lanes/browser-audio-sync/out/stretch/S1_element_0p75_pp1.wav"
+ }
+}

@@ -1,0 +1,847 @@
+{
+ "page": "/gpages/opencvjs.html?input=raw&repeat=3",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 2.257,
+ "driver_cpus_allowed_list": "0-1",
+ "clk_tck": 100,
+ "sampler": {
+  "interval_ms": 500,
+  "samples": 5,
+  "mean_sample_cost_ms": 1.8
+ },
+ "external_requests": [],
+ "phases": [],
+ "phase_cpu": [],
+ "processes": [
+  {
+   "pid": 32185,
+   "type": "browser",
+   "exe": "chrome-headless-shell.real",
+   "seen_s": [
+    0.502,
+    2.255
+   ],
+   "cpu_s": 0.18,
+   "cpu_s_total_at_last_sample": 0.27,
+   "max_rss_mb_sampled": 94.125,
+   "vmhwm_mb": 98.67578125,
+   "max_threads": 23,
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 32187,
+   "type": "zygote",
+   "exe": "chrome-headless-shell.real",
+   "seen_s": [
+    0.502,
+    2.255
+   ],
+   "cpu_s": 0,
+   "cpu_s_total_at_last_sample": 0.01,
+   "max_rss_mb_sampled": 39.87890625,
+   "vmhwm_mb": 39.87890625,
+   "max_threads": 1,
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 32188,
+   "type": "zygote",
+   "exe": "chrome-headless-shell.real",
+   "seen_s": [
+    0.502,
+    2.255
+   ],
+   "cpu_s": 0,
+   "cpu_s_total_at_last_sample": 0.01,
+   "max_rss_mb_sampled": 39.98828125,
+   "vmhwm_mb": 39.98828125,
+   "max_threads": 1,
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 32205,
+   "type": "utility:network.mojom.NetworkService",
+   "exe": "chrome-headless-shell.real",
+   "seen_s": [
+    0.502,
+    2.255
+   ],
+   "cpu_s": 0.05,
+   "cpu_s_total_at_last_sample": 0.08,
+   "max_rss_mb_sampled": 69.14453125,
+   "vmhwm_mb": 70.84765625,
+   "max_threads": 8,
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 32203,
+   "type": "gpu-process",
+   "exe": "chrome-headless-shell.real",
+   "seen_s": [
+    0.502,
+    2.255
+   ],
+   "cpu_s": 0,
+   "cpu_s_total_at_last_sample": 0.01,
+   "max_rss_mb_sampled": 57.65234375,
+   "vmhwm_mb": 57.65234375,
+   "max_threads": 13,
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 32240,
+   "type": "renderer",
+   "exe": "chrome-headless-shell.real",
+   "seen_s": [
+    0.502,
+    2.255
+   ],
+   "cpu_s": 1.32,
+   "cpu_s_total_at_last_sample": 1.65,
+   "max_rss_mb_sampled": 246.2109375,
+   "vmhwm_mb": 253.38671875,
+   "max_threads": 10,
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  }
+ ],
+ "renderer_threads": [
+  {
+   "pid": 32240,
+   "tid": 32240,
+   "name": "chrome-headless",
+   "cpu_s": 1.29,
+   "processors_seen": [
+    0,
+    1
+   ],
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 32240,
+   "tid": 32245,
+   "name": "ThreadPoolForeg",
+   "cpu_s": 0.17,
+   "processors_seen": [
+    0,
+    1
+   ],
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 32240,
+   "tid": 32243,
+   "name": "ThreadPoolForeg",
+   "cpu_s": 0.13,
+   "processors_seen": [
+    0,
+    1
+   ],
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 32240,
+   "tid": 32244,
+   "name": "Chrome_ChildIOT",
+   "cpu_s": 0.01,
+   "processors_seen": [
+    0,
+    1
+   ],
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  },
+  {
+   "pid": 32240,
+   "tid": 32248,
+   "name": "ThreadPoolForeg",
+   "cpu_s": 0.01,
+   "processors_seen": [
+    0,
+    1
+   ],
+   "cpus_allowed_list": [
+    "0-1"
+   ]
+  }
+ ],
+ "processors_seen_by_renderer_threads": [
+  0,
+  1
+ ],
+ "result": {
+  "input": "raw",
+  "repeat": 3,
+  "crossOriginIsolated": true,
+  "hardwareConcurrency": 2,
+  "cv_script_load_ms": 271.695000000298,
+  "cv_ready_ms": 359.71000000089407,
+  "build_information_lines": [
+   "General configuration for OpenCV 5.0.0 =====================================",
+   "  Version control:               5.0.0",
+   "  Platform:",
+   "    Timestamp:                   2026-06-24T04:53:04Z",
+   "    Host:                        Linux 6.17.0-1018-azure x86_64",
+   "    Target:                      Emscripten 1 x86",
+   "  CPU/HW features:",
+   "    Baseline:",
+   "    C++ Compiler:                /home/runner/work/opencv-js/opencv-js/emsdk/upstream/emscripten/em++  (ver 22.0.0)",
+   "    To be built:                 calib core dnn features flann geometry imgproc js objdetect photo ptcloud stereo video",
+   "    Disabled:                    highgui imgcodecs stitching videoio world",
+   "    Disabled by dependency:      ts",
+   "  Parallel framework:            none",
+   "  Other third-party libraries:"
+  ],
+  "has": {
+   "Canny": "function",
+   "HoughLinesP": "function",
+   "HoughLines": "function",
+   "getPerspectiveTransform": "function",
+   "warpPerspective": "function",
+   "fillConvexPoly": "function",
+   "cvtColor": "function",
+   "createLineSegmentDetector": "undefined",
+   "LineSegmentDetector": "undefined",
+   "findContours": "function",
+   "minAreaRect": "function",
+   "boxPoints": "function",
+   "perspectiveTransform": "function",
+   "findHomography": "function",
+   "Sobel": "function",
+   "goodFeaturesToTrack": "undefined",
+   "calcOpticalFlowPyrLK": "function",
+   "imread": "function",
+   "matFromImageData": "function"
+  },
+  "frames": {
+   "R3a_cu_f0150": {
+    "quads": {
+     "handquad": {
+      "unrectified": {
+       "neck_axis_deg": 148.14370773699878,
+       "fretboard_width_px": 58.8217658996582,
+       "edge_pixels": 10410,
+       "mask_pixels": 25313,
+       "hough": {
+        "segments_total": 142,
+        "segments_in_quad": 70,
+        "string_like": 37,
+        "fret_like": 27
+       },
+       "hough_segments": "142 segments (full list in out/opencvjs/run_raw.json)",
+       "ms_canny_hough": 9.384999999776483,
+       "ms_total": 9.830000000074506
+      },
+      "homography_full": [
+       [
+        -1.8034453380062168,
+        1.2774404477544041,
+        822.3710741308348
+       ],
+       [
+        1.1192628205322381,
+        1.8012322600193225,
+        -821.6690571102596
+       ],
+       [
+        2.4228655632840325e-05,
+        0.0003539631079799435,
+        1
+       ]
+      ],
+      "rectified": {
+       "size": [
+        800,
+        116
+       ],
+       "edge_pixels": 7597,
+       "hough": {
+        "segments_total": 113,
+        "string_like": 31,
+        "fret_like": 8,
+        "fret_x_cluster_means": [
+         339,
+         408.5,
+         478,
+         647,
+         746.25,
+         793
+        ],
+        "string_y_cluster_means": [
+         5.545454545454546,
+         28.136363636363637,
+         46.111111111111114
+        ]
+       },
+       "hough_segments": "113 segments (full list in out/opencvjs/run_raw.json)",
+       "ms_getPerspectiveTransform": 0.06500000134110451,
+       "ms_warpPerspective": 4.60499999858439,
+       "ms_total": 10.75
+      },
+      "repeat_ms_unrect_rect": [
+       [
+        52.94999999925494,
+        13.765000000596046
+       ],
+       [
+        9.974999999627471,
+        10.644999999552965
+       ],
+       [
+        9.830000000074506,
+        10.75
+       ]
+      ],
+      "rect_upload": "/home/user/gtr/lanes/browser-audio-sync/out/opencvjs/R3a_cu_f0150_handquad_raw_rect.rgb"
+     },
+     "samquad": {
+      "unrectified": {
+       "neck_axis_deg": 147.76321392420917,
+       "fretboard_width_px": 70.17511749267578,
+       "edge_pixels": 10410,
+       "mask_pixels": 20749,
+       "hough": {
+        "segments_total": 142,
+        "segments_in_quad": 62,
+        "string_like": 33,
+        "fret_like": 21
+       },
+       "hough_segments": "142 segments (full list in out/opencvjs/run_raw.json)",
+       "ms_canny_hough": 10.509999999776483,
+       "ms_total": 11.10499999858439
+      },
+      "homography_full": [
+       [
+        -2.3039197436419663,
+        1.4529238334956696,
+        730.155496921146
+       ],
+       [
+        0.881746398504659,
+        1.3981978862491624,
+        -643.8638576962778
+       ],
+       [
+        0,
+        0,
+        1
+       ]
+      ],
+      "rectified": {
+       "size": [
+        800,
+        116
+       ],
+       "edge_pixels": 7276,
+       "hough": {
+        "segments_total": 98,
+        "string_like": 27,
+        "fret_like": 9,
+        "fret_x_cluster_means": [
+         309.5,
+         472.75,
+         547,
+         624,
+         690,
+         759
+        ],
+        "string_y_cluster_means": [
+         3.9545454545454546,
+         23.875,
+         39.25,
+         105.75
+        ]
+       },
+       "hough_segments": "98 segments (full list in out/opencvjs/run_raw.json)",
+       "ms_getPerspectiveTransform": 0.08499999903142452,
+       "ms_warpPerspective": 5.225000001490116,
+       "ms_total": 20.490000000223517
+      },
+      "repeat_ms_unrect_rect": [
+       [
+        12.18500000052154,
+        12.870000001043081
+       ],
+       [
+        17.190000001341105,
+        11.434999998658895
+       ],
+       [
+        11.10499999858439,
+        20.490000000223517
+       ]
+      ],
+      "rect_upload": "/home/user/gtr/lanes/browser-audio-sync/out/opencvjs/R3a_cu_f0150_samquad_raw_rect.rgb"
+     }
+    }
+   },
+   "R3a_cu_f0000": {
+    "quads": {
+     "handquad": {
+      "unrectified": {
+       "neck_axis_deg": 148.14370773699878,
+       "fretboard_width_px": 58.8217658996582,
+       "edge_pixels": 9973,
+       "mask_pixels": 25313,
+       "hough": {
+        "segments_total": 116,
+        "segments_in_quad": 54,
+        "string_like": 27,
+        "fret_like": 25
+       },
+       "hough_segments": "116 segments (full list in out/opencvjs/run_raw.json)",
+       "ms_canny_hough": 10.319999998435378,
+       "ms_total": 10.724999999627471
+      },
+      "homography_full": [
+       [
+        -1.8034453380062168,
+        1.2774404477544041,
+        822.3710741308348
+       ],
+       [
+        1.1192628205322381,
+        1.8012322600193225,
+        -821.6690571102596
+       ],
+       [
+        2.4228655632840325e-05,
+        0.0003539631079799435,
+        1
+       ]
+      ],
+      "rectified": {
+       "size": [
+        800,
+        116
+       ],
+       "edge_pixels": 6553,
+       "hough": {
+        "segments_total": 107,
+        "string_like": 31,
+        "fret_like": 10,
+        "fret_x_cluster_means": [
+         1,
+         97.5,
+         476.5,
+         536,
+         642,
+         695.5,
+         747,
+         786.5
+        ],
+        "string_y_cluster_means": [
+         2.7,
+         17.291666666666668,
+         38.75
+        ]
+       },
+       "hough_segments": "107 segments (full list in out/opencvjs/run_raw.json)",
+       "ms_getPerspectiveTransform": 0.06499999947845936,
+       "ms_warpPerspective": 5.839999999850988,
+       "ms_total": 12.324999999254942
+      },
+      "repeat_ms_unrect_rect": [
+       [
+        11.91499999910593,
+        11.264999998733401
+       ],
+       [
+        11.429999999701977,
+        11.765000000596046
+       ],
+       [
+        10.724999999627471,
+        12.324999999254942
+       ]
+      ],
+      "rect_upload": "/home/user/gtr/lanes/browser-audio-sync/out/opencvjs/R3a_cu_f0000_handquad_raw_rect.rgb"
+     }
+    }
+   },
+   "R3a_cu_f0280": {
+    "quads": {
+     "handquad": {
+      "unrectified": {
+       "neck_axis_deg": 148.14370773699878,
+       "fretboard_width_px": 58.8217658996582,
+       "edge_pixels": 9779,
+       "mask_pixels": 25313,
+       "hough": {
+        "segments_total": 118,
+        "segments_in_quad": 61,
+        "string_like": 29,
+        "fret_like": 31
+       },
+       "hough_segments": "118 segments (full list in out/opencvjs/run_raw.json)",
+       "ms_canny_hough": 10.025000000372529,
+       "ms_total": 10.375
+      },
+      "homography_full": [
+       [
+        -1.8034453380062168,
+        1.2774404477544041,
+        822.3710741308348
+       ],
+       [
+        1.1192628205322381,
+        1.8012322600193225,
+        -821.6690571102596
+       ],
+       [
+        2.4228655632840325e-05,
+        0.0003539631079799435,
+        1
+       ]
+      ],
+      "rectified": {
+       "size": [
+        800,
+        116
+       ],
+       "edge_pixels": 6685,
+       "hough": {
+        "segments_total": 89,
+        "string_like": 26,
+        "fret_like": 16,
+        "fret_x_cluster_means": [
+         1,
+         12.5,
+         270,
+         417,
+         482,
+         543.25,
+         599,
+         654.5,
+         704,
+         748,
+         794.5
+        ],
+        "string_y_cluster_means": [
+         3.7222222222222223,
+         24.642857142857142,
+         44.5
+        ]
+       },
+       "hough_segments": "89 segments (full list in out/opencvjs/run_raw.json)",
+       "ms_getPerspectiveTransform": 0.06499999947845936,
+       "ms_warpPerspective": 5.1400000005960464,
+       "ms_total": 10.93999999947846
+      },
+      "repeat_ms_unrect_rect": [
+       [
+        19.300000000745058,
+        18.970000000670552
+       ],
+       [
+        10.589999999850988,
+        11.095000000670552
+       ],
+       [
+        10.375,
+        10.93999999947846
+       ]
+      ],
+      "rect_upload": "/home/user/gtr/lanes/browser-audio-sync/out/opencvjs/R3a_cu_f0280_handquad_raw_rect.rgb"
+     }
+    }
+   },
+   "R3b_f0225": {
+    "quads": {
+     "handquad": {
+      "unrectified": {
+       "neck_axis_deg": 149.04452919158717,
+       "fretboard_width_px": 130.80137634277344,
+       "edge_pixels": 25294,
+       "mask_pixels": 160877,
+       "hough": {
+        "segments_total": 351,
+        "segments_in_quad": 115,
+        "string_like": 31,
+        "fret_like": 41
+       },
+       "hough_segments": "351 segments (full list in out/opencvjs/run_raw.json)",
+       "ms_canny_hough": 40.32499999925494,
+       "ms_total": 43.28999999910593
+      },
+      "homography_full": [
+       [
+        -0.9882726631499811,
+        0.7341454069114143,
+        1228.8464657224908
+       ],
+       [
+        0.6224517847034886,
+        1.0377597787597508,
+        -811.4781467647964
+       ],
+       [
+        0.00013064823717750493,
+        0.00028148479646890686,
+        1
+       ]
+      ],
+      "rectified": {
+       "size": [
+        1200,
+        130
+       ],
+       "edge_pixels": 7121,
+       "hough": {
+        "segments_total": 106,
+        "string_like": 15,
+        "fret_like": 15,
+        "fret_x_cluster_means": [
+         3,
+         499.5,
+         570,
+         649,
+         715,
+         777,
+         887,
+         931,
+         980,
+         1020,
+         1060,
+         1133,
+         1168
+        ],
+        "string_y_cluster_means": [
+         3.7222222222222223,
+         24.875,
+         68.5,
+         112
+        ]
+       },
+       "hough_segments": "106 segments (full list in out/opencvjs/run_raw.json)",
+       "ms_getPerspectiveTransform": 0.10500000044703484,
+       "ms_warpPerspective": 8.765000000596046,
+       "ms_total": 16.475000001490116
+      },
+      "repeat_ms_unrect_rect": [
+       [
+        47.019999999552965,
+        16.434999998658895
+       ],
+       [
+        43.81000000052154,
+        16.679999999701977
+       ],
+       [
+        43.28999999910593,
+        16.475000001490116
+       ]
+      ],
+      "rect_upload": "/home/user/gtr/lanes/browser-audio-sync/out/opencvjs/R3b_f0225_handquad_raw_rect.rgb"
+     }
+    }
+   },
+   "R3b_f0000": {
+    "quads": {
+     "handquad": {
+      "unrectified": {
+       "neck_axis_deg": 149.04452919158717,
+       "fretboard_width_px": 130.80137634277344,
+       "edge_pixels": 23364,
+       "mask_pixels": 160877,
+       "hough": {
+        "segments_total": 310,
+        "segments_in_quad": 109,
+        "string_like": 42,
+        "fret_like": 37
+       },
+       "hough_segments": "310 segments (full list in out/opencvjs/run_raw.json)",
+       "ms_canny_hough": 36.290000000968575,
+       "ms_total": 38.92000000178814
+      },
+      "homography_full": [
+       [
+        -0.9882726631499811,
+        0.7341454069114143,
+        1228.8464657224908
+       ],
+       [
+        0.6224517847034886,
+        1.0377597787597508,
+        -811.4781467647964
+       ],
+       [
+        0.00013064823717750493,
+        0.00028148479646890686,
+        1
+       ]
+      ],
+      "rectified": {
+       "size": [
+        1200,
+        130
+       ],
+       "edge_pixels": 7468,
+       "hough": {
+        "segments_total": 95,
+        "string_like": 18,
+        "fret_like": 21,
+        "fret_x_cluster_means": [
+         319.25,
+         408.75,
+         495,
+         569.5,
+         639,
+         770,
+         827,
+         883,
+         929,
+         976,
+         1058.5,
+         1093,
+         1128.5
+        ],
+        "string_y_cluster_means": [
+         5.764705882352941,
+         79
+        ]
+       },
+       "hough_segments": "95 segments (full list in out/opencvjs/run_raw.json)",
+       "ms_getPerspectiveTransform": 0.09999999962747097,
+       "ms_warpPerspective": 8.705000000074506,
+       "ms_total": 16.044999999925494
+      },
+      "repeat_ms_unrect_rect": [
+       [
+        39.334999999031425,
+        16.515000000596046
+       ],
+       [
+        40.125,
+        16.34999999962747
+       ],
+       [
+        38.92000000178814,
+        16.044999999925494
+       ]
+      ],
+      "rect_upload": "/home/user/gtr/lanes/browser-audio-sync/out/opencvjs/R3b_f0000_handquad_raw_rect.rgb"
+     }
+    }
+   },
+   "R3b_f0449": {
+    "quads": {
+     "handquad": {
+      "unrectified": {
+       "neck_axis_deg": 149.04452919158717,
+       "fretboard_width_px": 130.80137634277344,
+       "edge_pixels": 27013,
+       "mask_pixels": 160877,
+       "hough": {
+        "segments_total": 375,
+        "segments_in_quad": 151,
+        "string_like": 87,
+        "fret_like": 41
+       },
+       "hough_segments": "375 segments (full list in out/opencvjs/run_raw.json)",
+       "ms_canny_hough": 41.994999999180436,
+       "ms_total": 44.77999999932945
+      },
+      "homography_full": [
+       [
+        -0.9882726631499811,
+        0.7341454069114143,
+        1228.8464657224908
+       ],
+       [
+        0.6224517847034886,
+        1.0377597787597508,
+        -811.4781467647964
+       ],
+       [
+        0.00013064823717750493,
+        0.00028148479646890686,
+        1
+       ]
+      ],
+      "rectified": {
+       "size": [
+        1200,
+        130
+       ],
+       "edge_pixels": 8649,
+       "hough": {
+        "segments_total": 119,
+        "string_like": 20,
+        "fret_like": 15,
+        "fret_x_cluster_means": [
+         323,
+         492,
+         567.5,
+         639.5,
+         770.5,
+         826.5,
+         881,
+         929,
+         975.5,
+         1053,
+         1096.5,
+         1164.5
+        ],
+        "string_y_cluster_means": [
+         19.5,
+         37.5,
+         45.1,
+         91
+        ]
+       },
+       "hough_segments": "119 segments (full list in out/opencvjs/run_raw.json)",
+       "ms_getPerspectiveTransform": 0.14499999955296516,
+       "ms_warpPerspective": 9.015000000596046,
+       "ms_total": 17.094999998807907
+      },
+      "repeat_ms_unrect_rect": [
+       [
+        67.41500000096858,
+        16.71499999985099
+       ],
+       [
+        43.10999999940395,
+        17.095000000670552
+       ],
+       [
+        44.77999999932945,
+        17.094999998807907
+       ]
+      ],
+      "rect_upload": "/home/user/gtr/lanes/browser-audio-sync/out/opencvjs/R3b_f0449_handquad_raw_rect.rgb"
+     }
+    }
+   }
+  },
+  "hough_mat_layout": {
+   "rows": 1,
+   "cols": 142,
+   "type": 100,
+   "channels": 4,
+   "data32S_length": 568
+  }
+ }
+}

@@ -1,0 +1,673 @@
+{
+ "status": "success",
+ "diagnostics": [],
+ "stats": {
+  "strategy": "beam",
+  "frames": 97,
+  "expandedStates": 493934,
+  "discardedCandidates": 27495,
+  "dominatedStates": 33698,
+  "exhaustive": false
+ },
+ "ms": 2695.385855,
+ "notes": [
+  {
+   "id": "n0",
+   "string": 6,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 1
+  },
+  {
+   "id": "n1",
+   "string": 3,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n2",
+   "string": 4,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n3",
+   "string": 3,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n4",
+   "string": 6,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 1
+  },
+  {
+   "id": "n5",
+   "string": 2,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 2
+  },
+  {
+   "id": "n6",
+   "string": 4,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n7",
+   "string": 2,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 2
+  },
+  {
+   "id": "n8",
+   "string": 5,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 3
+  },
+  {
+   "id": "n9",
+   "string": 1,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n10",
+   "string": 4,
+   "relativeFret": 2,
+   "absoluteFret": 2,
+   "finger": 4
+  },
+  {
+   "id": "n11",
+   "string": 1,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n12",
+   "string": 6,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 1
+  },
+  {
+   "id": "n13",
+   "string": 2,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 2
+  },
+  {
+   "id": "n14",
+   "string": 4,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n15",
+   "string": 5,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 3
+  },
+  {
+   "id": "n16",
+   "string": 2,
+   "relativeFret": 1,
+   "absoluteFret": 1,
+   "finger": 1
+  },
+  {
+   "id": "n17",
+   "string": 4,
+   "relativeFret": 2,
+   "absoluteFret": 2,
+   "finger": 4
+  },
+  {
+   "id": "n18",
+   "string": 2,
+   "relativeFret": 1,
+   "absoluteFret": 1,
+   "finger": 1
+  },
+  {
+   "id": "n19",
+   "string": 6,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 3
+  },
+  {
+   "id": "n20",
+   "string": 2,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n21",
+   "string": 4,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n22",
+   "string": 2,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n23",
+   "string": 4,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n24",
+   "string": 3,
+   "relativeFret": 2,
+   "absoluteFret": 2,
+   "finger": 4
+  },
+  {
+   "id": "n25",
+   "string": 5,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n26",
+   "string": 3,
+   "relativeFret": 2,
+   "absoluteFret": 2,
+   "finger": 4
+  },
+  {
+   "id": "n27",
+   "string": 6,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 3
+  },
+  {
+   "id": "n28",
+   "string": 3,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n29",
+   "string": 4,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n30",
+   "string": 6,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 3
+  },
+  {
+   "id": "n31",
+   "string": 2,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 2
+  },
+  {
+   "id": "n32",
+   "string": 4,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n33",
+   "string": 2,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 2
+  },
+  {
+   "id": "n34",
+   "string": 5,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 3
+  },
+  {
+   "id": "n35",
+   "string": 2,
+   "relativeFret": 1,
+   "absoluteFret": 1,
+   "finger": 1
+  },
+  {
+   "id": "n36",
+   "string": 4,
+   "relativeFret": 2,
+   "absoluteFret": 2,
+   "finger": 4
+  },
+  {
+   "id": "n37",
+   "string": 2,
+   "relativeFret": 1,
+   "absoluteFret": 1,
+   "finger": 1
+  },
+  {
+   "id": "n38",
+   "string": 6,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 3
+  },
+  {
+   "id": "n39",
+   "string": 2,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n40",
+   "string": 4,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n41",
+   "string": 2,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n42",
+   "string": 4,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n43",
+   "string": 3,
+   "relativeFret": 2,
+   "absoluteFret": 2,
+   "finger": 4
+  },
+  {
+   "id": "n44",
+   "string": 5,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n45",
+   "string": 6,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 3
+  },
+  {
+   "id": "n46",
+   "string": 2,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 2
+  },
+  {
+   "id": "n47",
+   "string": 4,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n48",
+   "string": 2,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 2
+  },
+  {
+   "id": "n49",
+   "string": 5,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 3
+  },
+  {
+   "id": "n50",
+   "string": 2,
+   "relativeFret": 1,
+   "absoluteFret": 1,
+   "finger": 1
+  },
+  {
+   "id": "n51",
+   "string": 4,
+   "relativeFret": 2,
+   "absoluteFret": 2,
+   "finger": 4
+  },
+  {
+   "id": "n52",
+   "string": 2,
+   "relativeFret": 1,
+   "absoluteFret": 1,
+   "finger": 1
+  },
+  {
+   "id": "n53",
+   "string": 6,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 3
+  },
+  {
+   "id": "n54",
+   "string": 2,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n55",
+   "string": 4,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n56",
+   "string": 2,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n57",
+   "string": 4,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n58",
+   "string": 3,
+   "relativeFret": 2,
+   "absoluteFret": 2,
+   "finger": 4
+  },
+  {
+   "id": "n59",
+   "string": 5,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n60",
+   "string": 6,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 3
+  },
+  {
+   "id": "n61",
+   "string": 3,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n62",
+   "string": 4,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n63",
+   "string": 3,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n64",
+   "string": 6,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 3
+  },
+  {
+   "id": "n65",
+   "string": 2,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 2
+  },
+  {
+   "id": "n66",
+   "string": 4,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n67",
+   "string": 2,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 2
+  },
+  {
+   "id": "n68",
+   "string": 5,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 3
+  },
+  {
+   "id": "n69",
+   "string": 1,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n70",
+   "string": 4,
+   "relativeFret": 2,
+   "absoluteFret": 2,
+   "finger": 4
+  },
+  {
+   "id": "n71",
+   "string": 1,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n72",
+   "string": 6,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 3
+  },
+  {
+   "id": "n73",
+   "string": 2,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 2
+  },
+  {
+   "id": "n74",
+   "string": 4,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n75",
+   "string": 5,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 3
+  },
+  {
+   "id": "n76",
+   "string": 2,
+   "relativeFret": 1,
+   "absoluteFret": 1,
+   "finger": 1
+  },
+  {
+   "id": "n77",
+   "string": 4,
+   "relativeFret": 2,
+   "absoluteFret": 2,
+   "finger": 4
+  },
+  {
+   "id": "n78",
+   "string": 2,
+   "relativeFret": 1,
+   "absoluteFret": 1,
+   "finger": 1
+  },
+  {
+   "id": "n79",
+   "string": 6,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 3
+  },
+  {
+   "id": "n80",
+   "string": 2,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n81",
+   "string": 4,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n82",
+   "string": 2,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n83",
+   "string": 4,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n84",
+   "string": 3,
+   "relativeFret": 2,
+   "absoluteFret": 2,
+   "finger": 4
+  },
+  {
+   "id": "n85",
+   "string": 5,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n86",
+   "string": 3,
+   "relativeFret": 2,
+   "absoluteFret": 2,
+   "finger": 4
+  },
+  {
+   "id": "n87",
+   "string": 6,
+   "relativeFret": 3,
+   "absoluteFret": 3,
+   "finger": 3
+  },
+  {
+   "id": "n88",
+   "string": 3,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  },
+  {
+   "id": "n89",
+   "string": 4,
+   "relativeFret": 0,
+   "absoluteFret": 0,
+   "finger": 0
+  }
+ ],
+ "optimality": "best-found",
+ "cost": {
+  "musicalLoss": 0,
+  "ergonomicCost": 8.965234375000001,
+  "transitionCost": 0.4999999999999998,
+  "styleCost": 0,
+  "total": 9.465234375000001
+ },
+ "difficulty": {
+  "maxPolyphony": 2,
+  "maxVoices": 1,
+  "maxAttacksInOneSecond": 4,
+  "maxPickedInOneBar": 8,
+  "ornamentRetention": 0,
+  "maxFretSpan": 2,
+  "maxReachMm": null,
+  "maxShiftFrets": 2,
+  "model": "scorify-fretted-1",
+  "calibrated": false
+ },
+ "assumptions": [
+  "Level thresholds are editable, uncalibrated policies.",
+  "Sounding durations follow explicit gates; otherwise full notation.",
+  "Exactness/optimality is relative to the finite candidate and mechanics model.",
+  "Mechanics: scorify-fretted-1. Fretted adapter uses four ordered fingers and fixed barre footprints while held."
+ ],
+ "edits": 0,
+ "profileLevel": "maestro"
+}

@@ -1,0 +1,19 @@
+== R1a, larger search limits
+scorify R1a.truthmidi.bigsearch: status search-exhausted, arrange 9417.7 ms, notes in 189, notes placed 0, diagnostics: No valid path within the declared candidate and mechanics model  (node process 9.50 s)
+== R1b, larger search limits
+scorify R1b.truthmidi.bigsearch: status search-exhausted, arrange 7768.0 ms, notes in 70, notes placed 0, diagnostics: No valid path within the declared candidate and mechanics model  (node process 7.85 s)
+== S5capo2, larger search limits
+scorify S5capo2.truthmidi.bigsearch: status success (best-found), arrange 16546.4 ms, notes in 90, notes placed 90  (node process 16.66 s)
+== S5dropd, larger search limits
+scorify S5dropd.truthmidi.bigsearch: status search-exhausted, arrange 3426.2 ms, notes in 90, notes placed 0, diagnostics: No valid path within the declared candidate and mechanics model  (node process 3.54 s)
+== R1a, adaptive mode, hold shortening allowed
+scorify R1a.truthmidi.adaptive-hold: status search-exhausted, arrange 3041.3 ms, notes in 189, notes placed 0, diagnostics: Expansion budget exceeded  (node process 3.13 s)
+== R1b, adaptive mode, hold shortening allowed
+scorify R1b.truthmidi.adaptive-hold: status search-exhausted, arrange 3087.9 ms, notes in 70, notes placed 0, diagnostics: Expansion budget exceeded  (node process 3.16 s)
+== S5dropd (Drop D not told), adaptive mode, octave shift allowed
+scorify S5dropd.truthmidi.adaptive-octave: status search-exhausted, arrange 1612.7 ms, notes in 90, notes placed 0, diagnostics: Expansion budget exceeded  (node process 1.69 s)
+== R1c, player level amateur
+scorify R1c.truthmidi.amateur: status infeasible, arrange 43.8 ms, notes in 148, notes placed 0, diagnostics: No valid path within the declared candidate and mechanics model  (node process 0.12 s)
+== S2n, note n1 (G3 at 2.143 s) pinned to string 4
+scorify S2n.truthmidi.pin-n1-s4: status success (best-found), arrange 1780.3 ms, notes in 90, notes placed 90  (node process 1.87 s)
+[gtr-run r0623] guitar-tab/scorify-0.4.0 "gap round 2: scorify 0.4.0 second batch: larger search limits, adaptive hold shortening / octave shift, level amateur, pinned note" wall=48.26s cpu=55.4s rss=345.3MB cores=2 exit=0 slot_wait=0.0s

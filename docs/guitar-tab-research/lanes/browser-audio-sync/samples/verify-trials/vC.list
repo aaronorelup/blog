@@ -1,0 +1,15 @@
+/home/user/gtr/lanes/browser-audio-sync/verify/out/basicpitch/bp_ort_t1_S1.json /pages/basicpitch.html?clip=S1&engine=ort&threads=1&map=StatefulPartitionedCall:1,StatefulPartitionedCall:2
+/home/user/gtr/lanes/browser-audio-sync/verify/out/basicpitch/bp_tfjs_wasm_S1.json /pages/basicpitch.html?clip=S1&engine=tfjs&backend=wasm
+/home/user/gtr/lanes/browser-audio-sync/verify/out/basicpitch/bp_tfjs_cpu_S1.json /pages/basicpitch.html?clip=S1&engine=tfjs&backend=cpu
+/home/user/gtr/lanes/browser-audio-sync/verify/out/essentia/essentia_S3.json /pages/essentia.html?clip=S3&algos=rhythm,key,tonal
+/home/user/gtr/lanes/browser-audio-sync/verify/out/essentia/essentia_S1.json /pages/essentia.html?clip=S1&algos=key,melodia,rhythm
+/home/user/gtr/lanes/browser-audio-sync/verify/out/video/decode_mp4.json /pages/video.html?file=mp4&parts=decode
+/home/user/gtr/lanes/browser-audio-sync/verify/out/mediapipe/mp_cpu_R3c_webm_150.json /pages/mediapipe.html?file=/inputs/R3c/R3c.webm&delegate=CPU&max=150
+/home/user/gtr/lanes/browser-audio-sync/verify/out/ffmpegwasm/ff_st_mp4.json /pages/ffmpegwasm.html?core=st&file=R3a.mp4
+/home/user/gtr/lanes/browser-audio-sync/verify/out/stretch/st_soundtouch_0p5.json /pages/stretch.html?method=soundtouch&rate=0.5
+/home/user/gtr/lanes/browser-audio-sync/verify/out/stretch/st_rubberband_0p5.json /pages/stretch.html?method=rubberband&rate=0.5
+/home/user/gtr/lanes/browser-audio-sync/verify/out/stretch/st_signalsmith_0p5.json /pages/stretch.html?method=signalsmith&rate=0.5
+/home/user/gtr/lanes/browser-audio-sync/verify/out/alphatab/alphatab_S2n.json /pages/alphatab.html?gp=/inputs/S2n/S2n.gp5&tag=S2n
+/home/user/gtr/lanes/browser-audio-sync/verify/out/smalljs/smalljs.json /pages/smalljs.html?pitch=S1,R1b&beat=S3,S4,R2
+/home/user/gtr/lanes/browser-audio-sync/verify/out/smalljs/smalljs2.json /pages/smalljs2.html?pitch=S1,R1b&beat=S3,S4,R2
+/home/user/gtr/lanes/browser-audio-sync/verify/out/waveform/waveform.json /pages/waveform.html

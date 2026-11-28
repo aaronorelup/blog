@@ -1,0 +1,330 @@
+[
+ {
+  "name": "essentia od_complex",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/essentia/S6taps/od_complex.txt",
+  "n_est": 53,
+  "taps": {
+   "eval_id": "e0093",
+   "f_measure": 0.752941,
+   "precision": 0.603774,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e0094",
+   "f_measure": 0.950495,
+   "precision": 0.90566,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 53,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 0,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "essentia od_complex_phase",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/essentia/S6taps/od_complex_phase.txt",
+  "n_est": 79,
+  "taps": {
+   "eval_id": "e0096",
+   "f_measure": 0.576577,
+   "precision": 0.405063,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e0097",
+   "f_measure": 0.755906,
+   "precision": 0.607595,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 79,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 26,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "essentia od_flux",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/essentia/S6taps/od_flux.txt",
+  "n_est": 59,
+  "taps": {
+   "eval_id": "e0098",
+   "f_measure": 0.703297,
+   "precision": 0.542373,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e0099",
+   "f_measure": 0.897196,
+   "precision": 0.813559,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 59,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 6,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "essentia od_hfc",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/essentia/S6taps/od_hfc.txt",
+  "n_est": 52,
+  "taps": {
+   "eval_id": "e0100",
+   "f_measure": 0.738095,
+   "precision": 0.596154,
+   "recall": 0.96875,
+   "n_matched": 31
+  },
+  "notes": {
+   "eval_id": "e0101",
+   "f_measure": 0.96,
+   "precision": 0.923077,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 52,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 4
+   },
+   "matched_by_tap_kind": {
+    "thump": 7,
+    "slap": 24
+   },
+   "neither": 0,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 52
+  }
+ },
+ {
+  "name": "essentia od_melflux",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/essentia/S6taps/od_melflux.txt",
+  "n_est": 61,
+  "taps": {
+   "eval_id": "e0102",
+   "f_measure": 0.688172,
+   "precision": 0.52459,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e0103",
+   "f_measure": 0.880734,
+   "precision": 0.786885,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 61,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 8,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "essentia od_rms",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/essentia/S6taps/od_rms.txt",
+  "n_est": 157,
+  "taps": {
+   "eval_id": "e0104",
+   "f_measure": 0.338624,
+   "precision": 0.203822,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e0105",
+   "f_measure": 0.468293,
+   "precision": 0.305732,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 157,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 104,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "essentia onsetrate",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/essentia/S6taps/onsetrate.txt",
+  "n_est": 53,
+  "taps": {
+   "eval_id": "e0106",
+   "f_measure": 0.752941,
+   "precision": 0.603774,
+   "recall": 1.0,
+   "n_matched": 32
+  },
+  "notes": {
+   "eval_id": "e0107",
+   "f_measure": 0.950495,
+   "precision": 0.90566,
+   "recall": 1.0,
+   "n_matched": 48
+  },
+  "classes": {
+   "n_est": 53,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_tap_kind": {
+    "thump": 8,
+    "slap": 24
+   },
+   "neither": 0,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 53
+  }
+ },
+ {
+  "name": "essentia superflux",
+  "file": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/essentia/S6taps/superflux.txt",
+  "n_est": 19,
+  "taps": {
+   "eval_id": "e0108",
+   "f_measure": 0.470588,
+   "precision": 0.631579,
+   "recall": 0.375,
+   "n_matched": 12
+  },
+  "notes": {
+   "eval_id": "e0109",
+   "f_measure": 0.447761,
+   "precision": 0.789474,
+   "recall": 0.3125,
+   "n_matched": 15
+  },
+  "classes": {
+   "n_est": 19,
+   "n_events": 53,
+   "events_by_label": {
+    "tap+note": 27,
+    "note-only": 21,
+    "tap-only": 5
+   },
+   "matched_by_label": {
+    "tap+note": 9,
+    "note-only": 6,
+    "tap-only": 3
+   },
+   "matched_by_tap_kind": {
+    "thump": 6,
+    "slap": 6
+   },
+   "neither": 1,
+   "window_s": 0.05,
+   "coincide_s": 0.001,
+   "matched_total": 18
+  }
+ }
+]

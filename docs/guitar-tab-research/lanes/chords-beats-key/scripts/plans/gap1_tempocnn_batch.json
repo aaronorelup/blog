@@ -1,0 +1,1 @@
+[{"tool": "tempocnn", "python": "/home/user/gtr/lanes/chords-beats-key/venv-tempocnn/bin/python", "script": "/home/user/blog/docs/guitar-tab-research/lanes/chords-beats-key/scripts/tempocnn_run.py", "clips": ["S3", "S7flat30", "S4", "S2n", "S5capo2", "S5dropd", "R1a", "R1b", "R1c", "R2full"], "args": [], "tag": "tempocnn"}]

@@ -1,0 +1,5 @@
+{
+ "bpm": 116.0,
+ "confidence": 0.7881260514259338,
+ "weights": "/home/user/gtr/lanes/chords-beats-key/models/deeprhythm_home/.local/share/deeprhythm/deeprhythm-0.7.pth"
+}

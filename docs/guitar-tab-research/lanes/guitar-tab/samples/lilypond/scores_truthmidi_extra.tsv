@@ -1,0 +1,3 @@
+clip	estimate	eval_id	n_truth	n_est	n_matched	same_str_fret/matched	same_str/matched	same_str_absfret/matched	same_str_fret/truth	string_diff_counts	extra_args	est_tuning_capo
+S2n	S2n.truthmidi.restrainopen.minfret1.gtreval.json	e0189	90	90	90	0.5556	0.5556	0.5556	0.5556	{"0": 50, "+1": 40}		{"est_tuning": [40, 45, 50, 55, 59, 64], "est_capo": 0, "capo_differs": false, "tuning_differs": false, "assumed": false}
+S2n	S2n.truthmidi.minfret3.gtreval.json	e0190	90	90	90	0.7333	0.7333	0.7333	0.7333	{"0": 66, "+1": 24}		{"est_tuning": [40, 45, 50, 55, 59, 64], "est_capo": 0, "capo_differs": false, "tuning_differs": false, "assumed": false}

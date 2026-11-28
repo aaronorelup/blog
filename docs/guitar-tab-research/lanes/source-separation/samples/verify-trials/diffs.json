@@ -1,0 +1,816 @@
+{
+ "base-10s other vs jobs2-10s other (claim -20.74 dB, max 0.0549)": {
+  "a": "/home/user/gtr/lanes/source-separation/out/demucs-options/base-10s/htdemucs/S4_0-10s/other.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs-options/jobs2-10s/htdemucs/S4_0-10s/other.wav",
+  "frames": [
+   441000,
+   441000
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0549,
+  "diff_level_db_ref_a": -20.74,
+  "diff_level_db_ref_b": -20.67
+ },
+ "base-10s other vs float32-10s other (claim -20.49 dB)": {
+  "a": "/home/user/gtr/lanes/source-separation/out/demucs-options/base-10s/htdemucs/S4_0-10s/other.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs-options/float32-10s/htdemucs/S4_0-10s/other.wav",
+  "frames": [
+   441000,
+   441000
+  ],
+  "subtypes": [
+   "PCM_16",
+   "FLOAT"
+  ],
+  "max_abs_diff": 0.0559,
+  "diff_level_db_ref_a": -20.49,
+  "diff_level_db_ref_b": -20.51
+ },
+ "htdemucs_6s S4 guitar (r0021) vs --two-stems guitar (r0450) (claim -13.10 dB, max 0.0874)": {
+  "a": "/home/user/gtr/lanes/source-separation/out/htdemucs_6s/S4/guitar.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs-options/two-stems-guitar/htdemucs_6s/S4/guitar.wav",
+  "frames": [
+   1708495,
+   1708495
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0874,
+  "diff_level_db_ref_a": -13.1,
+  "diff_level_db_ref_b": -12.9
+ },
+ "demucs-onnx guitar vs PyTorch htdemucs_6s guitar (claim -12.41 dB, max 0.115)": {
+  "a": "/home/user/gtr/lanes/source-separation/out/demucs-onnx-htdemucs_6s-fp16/S4/guitar.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/htdemucs_6s/S4/guitar.wav",
+  "frames": [
+   1708495,
+   1708495
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.1148,
+  "diff_level_db_ref_a": -11.32,
+  "diff_level_db_ref_b": -12.41
+ },
+ "demucs.cpp target_4_guitar vs PyTorch htdemucs_6s guitar (claim -5.35 dB, max 0.215)": {
+  "a": "/home/user/gtr/lanes/source-separation/out/demucs.cpp-htdemucs_6s/S4/target_4_guitar.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/htdemucs_6s/S4/guitar.wav",
+  "frames": [
+   1708495,
+   1708495
+  ],
+  "subtypes": [
+   "FLOAT",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.215,
+  "diff_level_db_ref_a": -4.24,
+  "diff_level_db_ref_b": -5.35
+ },
+ "MSST BS-RoFormer-SW bass vs audio-separator BS-RoFormer-SW bass (claim -22.70 to -23.21 dB, max 0.037 to 0.072)": {
+  "a": "/home/user/gtr/lanes/source-separation/out/msst-bs-roformer-sw/S4_0-10s/bass.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/uvr/BS-Roformer-SW/S4_0-10s/bass.wav",
+  "frames": [
+   441000,
+   441000
+  ],
+  "subtypes": [
+   "FLOAT",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0484,
+  "diff_level_db_ref_a": -23.15,
+  "diff_level_db_ref_b": -23.21
+ },
+ "MSST BS-RoFormer-SW drums vs audio-separator BS-RoFormer-SW drums (claim -22.70 to -23.21 dB, max 0.037 to 0.072)": {
+  "a": "/home/user/gtr/lanes/source-separation/out/msst-bs-roformer-sw/S4_0-10s/drums.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/uvr/BS-Roformer-SW/S4_0-10s/drums.wav",
+  "frames": [
+   441000,
+   441000
+  ],
+  "subtypes": [
+   "FLOAT",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0365,
+  "diff_level_db_ref_a": -22.67,
+  "diff_level_db_ref_b": -22.7
+ },
+ "MSST BS-RoFormer-SW guitar vs audio-separator BS-RoFormer-SW guitar (claim -22.70 to -23.21 dB, max 0.037 to 0.072)": {
+  "a": "/home/user/gtr/lanes/source-separation/out/msst-bs-roformer-sw/S4_0-10s/guitar.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/uvr/BS-Roformer-SW/S4_0-10s/guitar.wav",
+  "frames": [
+   441000,
+   441000
+  ],
+  "subtypes": [
+   "FLOAT",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0574,
+  "diff_level_db_ref_a": -22.97,
+  "diff_level_db_ref_b": -23.03
+ },
+ "MSST BS-RoFormer-SW other vs audio-separator BS-RoFormer-SW other (claim -22.70 to -23.21 dB, max 0.037 to 0.072)": {
+  "a": "/home/user/gtr/lanes/source-separation/out/msst-bs-roformer-sw/S4_0-10s/other.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/uvr/BS-Roformer-SW/S4_0-10s/other.wav",
+  "frames": [
+   441000,
+   441000
+  ],
+  "subtypes": [
+   "FLOAT",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0717,
+  "diff_level_db_ref_a": -22.97,
+  "diff_level_db_ref_b": -23.05
+ },
+ "MSST BS-RoFormer-SW piano vs audio-separator BS-RoFormer-SW piano (claim -22.70 to -23.21 dB, max 0.037 to 0.072)": {
+  "a": "/home/user/gtr/lanes/source-separation/out/msst-bs-roformer-sw/S4_0-10s/piano.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/uvr/BS-Roformer-SW/S4_0-10s/piano.wav",
+  "frames": [
+   441000,
+   441000
+  ],
+  "subtypes": [
+   "FLOAT",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": 0.0,
+  "diff_level_db_ref_b": 17.8
+ },
+ "MSST BS-RoFormer-SW vocals vs audio-separator BS-RoFormer-SW vocals (claim -22.70 to -23.21 dB, max 0.037 to 0.072)": {
+  "a": "/home/user/gtr/lanes/source-separation/out/msst-bs-roformer-sw/S4_0-10s/vocals.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/uvr/BS-Roformer-SW/S4_0-10s/vocals.wav",
+  "frames": [
+   441000,
+   441000
+  ],
+  "subtypes": [
+   "FLOAT",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0001,
+  "diff_level_db_ref_a": 1.17,
+  "diff_level_db_ref_b": -1.55
+ },
+ "verify re-run htdemucs S4 drums vs r0019": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/htdemucs/S4/drums.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/htdemucs/S4/drums.wav",
+  "frames": [
+   1708495,
+   1708495
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0722,
+  "diff_level_db_ref_a": -19.86,
+  "diff_level_db_ref_b": -19.88
+ },
+ "verify re-run LoRA S4 drums vs r0467": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/demucs-guitar-lora/S4/drums.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs-guitar-lora/S4/drums.wav",
+  "frames": [
+   1708495,
+   1708495
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0677,
+  "diff_level_db_ref_a": -18.29,
+  "diff_level_db_ref_b": -18.25
+ },
+ "verify re-run --mp3 drums vs r0462": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/demucs-options/mp3-10s/htdemucs/S4_0-10s/drums.mp3",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs-options/mp3-10s/htdemucs/S4_0-10s/drums.mp3",
+  "frames": [
+   442368,
+   442368
+  ],
+  "subtypes": [
+   "MPEG_LAYER_III",
+   "MPEG_LAYER_III"
+  ],
+  "max_abs_diff": 0.0772,
+  "diff_level_db_ref_a": -16.97,
+  "diff_level_db_ref_b": -16.94
+ },
+ "verify re-run umxhq S4 drums vs r0085": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/umxhq/S4/drums.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/umxhq/S4/drums.wav",
+  "frames": [
+   1708495,
+   1708495
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run htdemucs S4 bass vs r0019": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/htdemucs/S4/bass.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/htdemucs/S4/bass.wav",
+  "frames": [
+   1708495,
+   1708495
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.05,
+  "diff_level_db_ref_a": -22.6,
+  "diff_level_db_ref_b": -22.63
+ },
+ "verify re-run LoRA S4 bass vs r0467": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/demucs-guitar-lora/S4/bass.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs-guitar-lora/S4/bass.wav",
+  "frames": [
+   1708495,
+   1708495
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0698,
+  "diff_level_db_ref_a": -19.51,
+  "diff_level_db_ref_b": -19.56
+ },
+ "verify re-run --mp3 bass vs r0462": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/demucs-options/mp3-10s/htdemucs/S4_0-10s/bass.mp3",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs-options/mp3-10s/htdemucs/S4_0-10s/bass.mp3",
+  "frames": [
+   442368,
+   442368
+  ],
+  "subtypes": [
+   "MPEG_LAYER_III",
+   "MPEG_LAYER_III"
+  ],
+  "max_abs_diff": 0.0687,
+  "diff_level_db_ref_a": -18.16,
+  "diff_level_db_ref_b": -18.33
+ },
+ "verify re-run umxhq S4 bass vs r0085": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/umxhq/S4/bass.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/umxhq/S4/bass.wav",
+  "frames": [
+   1708495,
+   1708495
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run htdemucs S4 other vs r0019": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/htdemucs/S4/other.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/htdemucs/S4/other.wav",
+  "frames": [
+   1708495,
+   1708495
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.2063,
+  "diff_level_db_ref_a": -14.72,
+  "diff_level_db_ref_b": -14.88
+ },
+ "verify re-run LoRA S4 other vs r0467": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/demucs-guitar-lora/S4/other.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs-guitar-lora/S4/other.wav",
+  "frames": [
+   1708495,
+   1708495
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.2007,
+  "diff_level_db_ref_a": -15.72,
+  "diff_level_db_ref_b": -15.94
+ },
+ "verify re-run --mp3 other vs r0462": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/demucs-options/mp3-10s/htdemucs/S4_0-10s/other.mp3",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs-options/mp3-10s/htdemucs/S4_0-10s/other.mp3",
+  "frames": [
+   442368,
+   442368
+  ],
+  "subtypes": [
+   "MPEG_LAYER_III",
+   "MPEG_LAYER_III"
+  ],
+  "max_abs_diff": 0.0638,
+  "diff_level_db_ref_a": -19.66,
+  "diff_level_db_ref_b": -19.64
+ },
+ "verify re-run umxhq S4 other vs r0085": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/umxhq/S4/other.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/umxhq/S4/other.wav",
+  "frames": [
+   1708495,
+   1708495
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run htdemucs S4 vocals vs r0019": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/htdemucs/S4/vocals.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/htdemucs/S4/vocals.wav",
+  "frames": [
+   1708495,
+   1708495
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.2098,
+  "diff_level_db_ref_a": -10.89,
+  "diff_level_db_ref_b": -10.51
+ },
+ "verify re-run LoRA S4 vocals vs r0467": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/demucs-guitar-lora/S4/vocals.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs-guitar-lora/S4/vocals.wav",
+  "frames": [
+   1708495,
+   1708495
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.2048,
+  "diff_level_db_ref_a": -11.91,
+  "diff_level_db_ref_b": -11.52
+ },
+ "verify re-run --mp3 vocals vs r0462": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/demucs-options/mp3-10s/htdemucs/S4_0-10s/vocals.mp3",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs-options/mp3-10s/htdemucs/S4_0-10s/vocals.mp3",
+  "frames": [
+   442368,
+   442368
+  ],
+  "subtypes": [
+   "MPEG_LAYER_III",
+   "MPEG_LAYER_III"
+  ],
+  "max_abs_diff": 0.0328,
+  "diff_level_db_ref_a": -23.92,
+  "diff_level_db_ref_b": -23.81
+ },
+ "verify re-run umxhq S4 vocals vs r0085": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/umxhq/S4/vocals.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/umxhq/S4/vocals.wav",
+  "frames": [
+   1708495,
+   1708495
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run htdemucs_6s S2s bass vs r0099": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/htdemucs_6s/S2s/bass.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/htdemucs_6s/S2s/bass.wav",
+  "frames": [
+   1294650,
+   1294650
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.003,
+  "diff_level_db_ref_a": -1.34,
+  "diff_level_db_ref_b": -1.15
+ },
+ "verify re-run demucs-onnx S4 bass vs r0471": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/demucs-onnx-htdemucs_6s-fp16/S4/bass.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs-onnx-htdemucs_6s-fp16/S4/bass.wav",
+  "frames": [
+   1708495,
+   1708495
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run htdemucs_6s S2s drums vs r0099": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/htdemucs_6s/S2s/drums.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/htdemucs_6s/S2s/drums.wav",
+  "frames": [
+   1294650,
+   1294650
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0008,
+  "diff_level_db_ref_a": -2.35,
+  "diff_level_db_ref_b": -2.17
+ },
+ "verify re-run demucs-onnx S4 drums vs r0471": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/demucs-onnx-htdemucs_6s-fp16/S4/drums.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs-onnx-htdemucs_6s-fp16/S4/drums.wav",
+  "frames": [
+   1708495,
+   1708495
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run htdemucs_6s S2s guitar vs r0099": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/htdemucs_6s/S2s/guitar.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/htdemucs_6s/S2s/guitar.wav",
+  "frames": [
+   1294650,
+   1294650
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0444,
+  "diff_level_db_ref_a": -7.67,
+  "diff_level_db_ref_b": -7.24
+ },
+ "verify re-run demucs-onnx S4 guitar vs r0471": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/demucs-onnx-htdemucs_6s-fp16/S4/guitar.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs-onnx-htdemucs_6s-fp16/S4/guitar.wav",
+  "frames": [
+   1708495,
+   1708495
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run htdemucs_6s S2s other vs r0099": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/htdemucs_6s/S2s/other.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/htdemucs_6s/S2s/other.wav",
+  "frames": [
+   1294650,
+   1294650
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.001,
+  "diff_level_db_ref_a": -5.22,
+  "diff_level_db_ref_b": -4.91
+ },
+ "verify re-run demucs-onnx S4 other vs r0471": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/demucs-onnx-htdemucs_6s-fp16/S4/other.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs-onnx-htdemucs_6s-fp16/S4/other.wav",
+  "frames": [
+   1708495,
+   1708495
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run htdemucs_6s S2s piano vs r0099": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/htdemucs_6s/S2s/piano.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/htdemucs_6s/S2s/piano.wav",
+  "frames": [
+   1294650,
+   1294650
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0897,
+  "diff_level_db_ref_a": -22.33,
+  "diff_level_db_ref_b": -22.34
+ },
+ "verify re-run demucs-onnx S4 piano vs r0471": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/demucs-onnx-htdemucs_6s-fp16/S4/piano.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs-onnx-htdemucs_6s-fp16/S4/piano.wav",
+  "frames": [
+   1708495,
+   1708495
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run htdemucs_6s S2s vocals vs r0099": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/htdemucs_6s/S2s/vocals.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/htdemucs_6s/S2s/vocals.wav",
+  "frames": [
+   1294650,
+   1294650
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0015,
+  "diff_level_db_ref_a": -0.64,
+  "diff_level_db_ref_b": 0.73
+ },
+ "verify re-run demucs-onnx S4 vocals vs r0471": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/demucs-onnx-htdemucs_6s-fp16/S4/vocals.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs-onnx-htdemucs_6s-fp16/S4/vocals.wav",
+  "frames": [
+   1708495,
+   1708495
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run demucs.cpp S4_0-10s target_0_drums vs r0508": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/demucs.cpp-htdemucs_6s/S4_0-10s/target_0_drums.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs.cpp-htdemucs_6s/S4_0-10s/target_0_drums.wav",
+  "frames": [
+   441000,
+   441000
+  ],
+  "subtypes": [
+   "FLOAT",
+   "FLOAT"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run demucs.cpp S4_0-10s target_1_bass vs r0508": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/demucs.cpp-htdemucs_6s/S4_0-10s/target_1_bass.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs.cpp-htdemucs_6s/S4_0-10s/target_1_bass.wav",
+  "frames": [
+   441000,
+   441000
+  ],
+  "subtypes": [
+   "FLOAT",
+   "FLOAT"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run demucs.cpp S4_0-10s target_2_other vs r0508": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/demucs.cpp-htdemucs_6s/S4_0-10s/target_2_other.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs.cpp-htdemucs_6s/S4_0-10s/target_2_other.wav",
+  "frames": [
+   441000,
+   441000
+  ],
+  "subtypes": [
+   "FLOAT",
+   "FLOAT"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run demucs.cpp S4_0-10s target_3_vocals vs r0508": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/demucs.cpp-htdemucs_6s/S4_0-10s/target_3_vocals.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs.cpp-htdemucs_6s/S4_0-10s/target_3_vocals.wav",
+  "frames": [
+   441000,
+   441000
+  ],
+  "subtypes": [
+   "FLOAT",
+   "FLOAT"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run demucs.cpp S4_0-10s target_4_guitar vs r0508": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/demucs.cpp-htdemucs_6s/S4_0-10s/target_4_guitar.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs.cpp-htdemucs_6s/S4_0-10s/target_4_guitar.wav",
+  "frames": [
+   441000,
+   441000
+  ],
+  "subtypes": [
+   "FLOAT",
+   "FLOAT"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run demucs.cpp S4_0-10s target_5_piano vs r0508": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/demucs.cpp-htdemucs_6s/S4_0-10s/target_5_piano.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/demucs.cpp-htdemucs_6s/S4_0-10s/target_5_piano.wav",
+  "frames": [
+   441000,
+   441000
+  ],
+  "subtypes": [
+   "FLOAT",
+   "FLOAT"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run HPSS S6taps default harmonic vs r0262": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/hpss/S6taps/default/harmonic.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/hpss/S6taps/default/harmonic.wav",
+  "frames": [
+   1294650,
+   1294650
+  ],
+  "subtypes": [
+   "FLOAT",
+   "FLOAT"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run HPSS S6taps default percussive vs r0262": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/hpss/S6taps/default/percussive.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/hpss/S6taps/default/percussive.wav",
+  "frames": [
+   1294650,
+   1294650
+  ],
+  "subtypes": [
+   "FLOAT",
+   "FLOAT"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run HPSS S6taps margin3 harmonic vs r0262": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/hpss/S6taps/margin3/harmonic.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/hpss/S6taps/margin3/harmonic.wav",
+  "frames": [
+   1294650,
+   1294650
+  ],
+  "subtypes": [
+   "FLOAT",
+   "FLOAT"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run HPSS S6taps margin3 percussive vs r0262": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/hpss/S6taps/margin3/percussive.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/hpss/S6taps/margin3/percussive.wav",
+  "frames": [
+   1294650,
+   1294650
+  ],
+  "subtypes": [
+   "FLOAT",
+   "FLOAT"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run HPSS S6taps margin1-5 harmonic vs r0262": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/hpss/S6taps/margin1-5/harmonic.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/hpss/S6taps/margin1-5/harmonic.wav",
+  "frames": [
+   1294650,
+   1294650
+  ],
+  "subtypes": [
+   "FLOAT",
+   "FLOAT"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run HPSS S6taps margin1-5 percussive vs r0262": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/hpss/S6taps/margin1-5/percussive.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/hpss/S6taps/margin1-5/percussive.wav",
+  "frames": [
+   1294650,
+   1294650
+  ],
+  "subtypes": [
+   "FLOAT",
+   "FLOAT"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run VR 1_HP-UVR S4 instrumental vs r0481": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/uvr/1_HP-UVR/S4/instrumental.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/uvr/1_HP-UVR/S4/instrumental.wav",
+  "frames": [
+   1708032,
+   1708032
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run VR 1_HP-UVR S4 vocals vs r0481": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/uvr/1_HP-UVR/S4/vocals.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/uvr/1_HP-UVR/S4/vocals.wav",
+  "frames": [
+   1708032,
+   1708032
+  ],
+  "subtypes": [
+   "PCM_16",
+   "PCM_16"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run becruily S4_0-10s Guitar vs r0473": {
+  "a": "/home/user/gtr/lanes/source-separation/verify/out/msst-becruily-guitar/S4_0-10s/Guitar.wav",
+  "b": "/home/user/gtr/lanes/source-separation/out/msst-becruily-guitar/S4_0-10s/Guitar.wav",
+  "frames": [
+   441000,
+   441000
+  ],
+  "subtypes": [
+   "FLOAT",
+   "FLOAT"
+  ],
+  "max_abs_diff": 0.0,
+  "diff_level_db_ref_a": "identical",
+  "diff_level_db_ref_b": "identical"
+ },
+ "verify re-run spleeter S4 bass vs r0419": "missing: /home/user/gtr/lanes/source-separation/verify/out/spleeter-4stems/S4/bass.wav",
+ "verify re-run spleeter S4 drums vs r0419": "missing: /home/user/gtr/lanes/source-separation/verify/out/spleeter-4stems/S4/drums.wav",
+ "verify re-run spleeter S4 other vs r0419": "missing: /home/user/gtr/lanes/source-separation/verify/out/spleeter-4stems/S4/other.wav",
+ "verify re-run spleeter S4 vocals vs r0419": "missing: /home/user/gtr/lanes/source-separation/verify/out/spleeter-4stems/S4/vocals.wav"
+}

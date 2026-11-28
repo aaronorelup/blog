@@ -1,0 +1,309 @@
+{
+ "owlv2": {
+  "space": "merve/owlv2",
+  "text_queries": "guitar neck, fretboard, headstock, capo, hand",
+  "score_threshold": 0.1,
+  "images": [
+   {
+    "image": "C1_kapodaster_960px",
+    "s": 31.3,
+    "annotations": [
+     {
+      "label": " fretboard",
+      "mask_box": [
+       253,
+       159,
+       678,
+       914
+      ],
+      "mask_px": 322056
+     },
+     {
+      "label": " fretboard",
+      "mask_box": [
+       257,
+       162,
+       662,
+       912
+      ],
+      "mask_px": 304906
+     },
+     {
+      "label": "guitar neck",
+      "mask_box": [
+       515,
+       344,
+       579,
+       859
+      ],
+      "mask_px": 33540
+     },
+     {
+      "label": " headstock",
+      "mask_box": [
+       175,
+       217,
+       756,
+       862
+      ],
+      "mask_px": 375972
+     },
+     {
+      "label": " headstock",
+      "mask_box": [
+       263,
+       167,
+       416,
+       908
+      ],
+      "mask_px": 114268
+     },
+     {
+      "label": "guitar neck",
+      "mask_box": [
+       342,
+       324,
+       441,
+       860
+      ],
+      "mask_px": 53700
+     },
+     {
+      "label": " headstock",
+      "mask_box": [
+       659,
+       547,
+       728,
+       587
+      ],
+      "mask_px": 2870
+     },
+     {
+      "label": " fretboard",
+      "mask_box": [
+       539,
+       160,
+       663,
+       891
+      ],
+      "mask_px": 91500
+     },
+     {
+      "label": " headstock",
+      "mask_box": [
+       659,
+       769,
+       748,
+       817
+      ],
+      "mask_px": 4410
+     },
+     {
+      "label": " capo",
+      "mask_box": [
+       176,
+       750,
+       278,
+       824
+      ],
+      "mask_px": 7725
+     },
+     {
+      "label": " headstock",
+      "mask_box": [
+       168,
+       124,
+       765,
+       1395
+      ],
+      "mask_px": 760656
+     },
+     {
+      "label": "guitar neck",
+      "mask_box": [
+       493,
+       296,
+       594,
+       1318
+      ],
+      "mask_px": 104346
+     },
+     {
+      "label": "guitar neck",
+      "mask_box": [
+       334,
+       350,
+       448,
+       1437
+      ],
+      "mask_px": 125120
+     },
+     {
+      "label": " fretboard",
+      "mask_box": [
+       240,
+       147,
+       711,
+       1436
+      ],
+      "mask_px": 608880
+     },
+     {
+      "label": " fretboard",
+      "mask_box": [
+       279,
+       458,
+       670,
+       1049
+      ],
+      "mask_px": 232064
+     },
+     {
+      "label": " fretboard",
+      "mask_box": [
+       420,
+       602,
+       519,
+       1705
+      ],
+      "mask_px": 110400
+     },
+     {
+      "label": " fretboard",
+      "mask_box": [
+       252,
+       527,
+       748,
+       1705
+      ],
+      "mask_px": 585963
+     },
+     {
+      "label": "guitar neck",
+      "mask_box": [
+       323,
+       548,
+       399,
+       1705
+      ],
+      "mask_px": 89166
+     },
+     {
+      "label": " fretboard",
+      "mask_box": [
+       297,
+       581,
+       664,
+       1705
+      ],
+      "mask_px": 414000
+     },
+     {
+      "label": "guitar neck",
+      "mask_box": [
+       349,
+       782,
+       597,
+       1705
+      ],
+      "mask_px": 230076
+     },
+     {
+      "label": " fretboard",
+      "mask_box": [
+       484,
+       610,
+       593,
+       1705
+      ],
+      "mask_px": 120560
+     },
+     {
+      "label": " fretboard",
+      "mask_box": [
+       347,
+       1077,
+       408,
+       1699
+      ],
+      "mask_px": 38626
+     },
+     {
+      "label": " capo",
+      "mask_box": [
+       614,
+       1397,
+       724,
+       1486
+      ],
+      "mask_px": 9990
+     },
+     {
+      "label": " fretboard",
+      "mask_box": [
+       549,
+       1064,
+       603,
+       1696
+      ],
+      "mask_px": 34815
+     },
+     {
+      "label": " capo",
+      "mask_box": [
+       614,
+       1400,
+       711,
+       1445
+      ],
+      "mask_px": 4508
+     },
+     {
+      "label": " fretboard",
+      "mask_box": [
+       327,
+       1050,
+       629,
+       1695
+      ],
+      "mask_px": 195738
+     },
+     {
+      "label": " fretboard",
+      "mask_box": [
+       502,
+       1069,
+       553,
+       1696
+      ],
+      "mask_px": 32656
+     },
+     {
+      "label": " capo",
+      "mask_box": [
+       291,
+       1434,
+       723,
+       1497
+      ],
+      "mask_px": 27712
+     }
+    ]
+   }
+  ],
+  "connect_s": 0.96
+ },
+ "grounding_dino": {
+  "space": "merve/Grounding_DINO_demo",
+  "prompt": "guitar neck . fretboard . headstock . capo . hand .",
+  "box_threshold": 0.25,
+  "text_threshold": 0.25,
+  "images": [
+   {
+    "image": "C1_kapodaster_960px",
+    "error": "ValueError('Unknown protocol: ws')"
+   }
+  ],
+  "connect_s": 1.19
+ }
+}

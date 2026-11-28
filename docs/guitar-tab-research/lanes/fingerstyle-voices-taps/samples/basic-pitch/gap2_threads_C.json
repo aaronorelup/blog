@@ -1,0 +1,87 @@
+{
+ "pid": 31925,
+ "substring": "out/gap2-bp-threads/C_slot_default",
+ "found_after_s": 4.572,
+ "watched_s": 5.15,
+ "samples": 98,
+ "max_threads_at_once": 6,
+ "process_masks": [
+  "0-1"
+ ],
+ "n_threads_seen": 6,
+ "threads": {
+  "31925": {
+   "name": "basic-pitch",
+   "masks": [
+    "0-1"
+   ],
+   "cpus_seen_while_accumulating": [
+    0,
+    1
+   ],
+   "cpu_ticks": 483
+  },
+  "31926": {
+   "name": "basic-pitch",
+   "masks": [
+    "0-1"
+   ],
+   "cpus_seen_while_accumulating": [
+    1
+   ],
+   "cpu_ticks": 9
+  },
+  "31927": {
+   "name": "basic-pitch",
+   "masks": [
+    "0-1"
+   ],
+   "cpus_seen_while_accumulating": [
+    1
+   ],
+   "cpu_ticks": 10
+  },
+  "31928": {
+   "name": "basic-pitch",
+   "masks": [
+    "1"
+   ],
+   "cpus_seen_while_accumulating": [
+    1
+   ],
+   "cpu_ticks": 282
+  },
+  "31929": {
+   "name": "basic-pitch",
+   "masks": [
+    "2"
+   ],
+   "cpus_seen_while_accumulating": [
+    2
+   ],
+   "cpu_ticks": 112
+  },
+  "31930": {
+   "name": "basic-pitch",
+   "masks": [
+    "3"
+   ],
+   "cpus_seen_while_accumulating": [
+    3
+   ],
+   "cpu_ticks": 119
+  }
+ },
+ "threads_per_mask": {
+  "0-1": 3,
+  "1": 1,
+  "2": 1,
+  "3": 1
+ },
+ "cpus_used_by_threads_with_ticks": [
+  0,
+  1,
+  2,
+  3
+ ]
+}

@@ -1,0 +1,23 @@
+# local_name	URL   (papers and web pages, fetched by verify-docs-fetch.sh into /home/user/gtr/lanes/source-separation/verify-docs/web/)
+arxiv_abs_2512.18099.html	https://arxiv.org/abs/2512.18099
+arxiv_2512.18099.pdf	https://arxiv.org/pdf/2512.18099
+arxiv_abs_2308.05037.html	https://arxiv.org/abs/2308.05037
+arxiv_2308.05037v3.pdf	https://arxiv.org/pdf/2308.05037v3
+arxiv_abs_2406.18747.html	https://arxiv.org/abs/2406.18747
+arxiv_2406.18747v2.pdf	https://arxiv.org/pdf/2406.18747v2
+arxiv_2406.18747v1.pdf	https://arxiv.org/pdf/2406.18747v1
+arxiv_abs_2309.02612.html	https://arxiv.org/abs/2309.02612
+arxiv_abs_2609.30912.html	https://arxiv.org/abs/2609.30912
+arxiv_abs_2611.08130.html	https://arxiv.org/abs/2611.08130
+arxiv_abs_2610.14993.html	https://arxiv.org/abs/2610.14993
+arxiv_abs_2607.23395.html	https://arxiv.org/abs/2607.23395
+arxiv_abs_2505.23625.html	https://arxiv.org/abs/2505.23625
+arxiv_abs_2508.14556.html	https://arxiv.org/abs/2508.14556
+mvsep_algorithms_135.html	https://mvsep.com/algorithms/135
+hf_page_sam-audio-large.html	https://huggingface.co/facebook/sam-audio-large
+hf_page_jarredou.html	https://huggingface.co/jarredou
+hf_page_becruily_guitar.html	https://huggingface.co/becruily/mel-band-roformer-guitar
+music.ai_research.html	https://music.ai/research/
+moises_blog_guitar.html	https://moises.ai/blog/moises-news/new-guitar-separation-models/
+zenodo_page_1117372.html	https://zenodo.org/records/1117372
+zenodo_page_3338373.html	https://zenodo.org/records/3338373

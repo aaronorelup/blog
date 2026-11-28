@@ -1,0 +1,95 @@
+{
+ "page": "/pages/alphatab.html",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 9.649,
+ "external_requests": [],
+ "result": {
+  "file": "/inputs/S2n/S2n.gp5",
+  "alphaTab_npm_version": "1.9.0",
+  "score": {
+   "title": "Twinkle (Ah! vous dirai-je, maman), fingerstyle, nylon",
+   "tempo": 112,
+   "tracks": [
+    {
+     "name": "Guitar",
+     "strings": [
+      64,
+      59,
+      55,
+      50,
+      45,
+      40
+     ],
+     "capo": 0
+    }
+   ],
+   "masterBars": 13,
+   "timeSignature": "4/4"
+  },
+  "load_ms": 616.4399999999441,
+  "metronome_render": {
+   "ms": 102.7050000000745,
+   "seconds": 27.85814058956916,
+   "last_chunk": {
+    "currentTime": 27000,
+    "endTime": 27857.14285714288,
+    "currentTick": 49922,
+    "endTick": 49920
+   }
+  },
+  "guitar_render": {
+   "ms": 85.25499999988824,
+   "seconds": 27.85814058956916,
+   "last_chunk": {
+    "currentTime": 27000,
+    "endTime": 27857.14285714288,
+    "currentTick": 49922,
+    "endTick": 49920
+   }
+  },
+  "metronome_wav": "/home/user/gtr/lanes/browser-audio-sync/out/alphatab/S2n_alphatab_metronome_only.wav",
+  "guitar_wav": "/home/user/gtr/lanes/browser-audio-sync/out/alphatab/S2n_alphatab_guitar_no_metronome.wav",
+  "metronome": {
+   "peak": 0.27846208214759827,
+   "n_onsets": 52,
+   "first10_s": [
+    0,
+    0.53551,
+    1.07102,
+    1.606531,
+    2.142041,
+    2.677551,
+    3.213061,
+    3.748571,
+    4.285533,
+    4.821043
+   ],
+   "beat_s": 0.5357142857142857,
+   "deviation_from_grid_ms": {
+    "n": 52,
+    "mean": -0.7107971393683035,
+    "mean_abs": 0.7107971393683035,
+    "sd": 0.42728723675553104,
+    "max_abs": 1.4285714285713347,
+    "p95_abs": 1.3605442176878313,
+    "min": -1.4285714285713347,
+    "max": 0
+   },
+   "interval_minus_beat_ms": {
+    "n": 51,
+    "mean": -0.004890845226978046,
+    "mean_abs": 0.34725001111556353,
+    "sd": 0.49939773313157043,
+    "max_abs": 1.2471655328798459,
+    "p95_abs": 1.2471655328798459,
+    "min": -0.20408163265306367,
+    "max": 1.2471655328798459
+   }
+  }
+ }
+}

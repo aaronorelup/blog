@@ -1,0 +1,28 @@
+{
+ "id": "R3c",
+ "title": "Classical guitar lesson, both hands, 18 s excerpt (Wikimedia Commons, CC BY 3.0)",
+ "what": "Real classical guitar lesson video (nylon strings, played with the fingers): 'Manx Guitar Lesson: Three Little Boats' (Culture Vannin, 2019), presented by Pete Lumb; the tune is the traditional Manx 'Three Little Boats'. 18 s excerpt (222-240 s) from the section captioned 'Slow play-through'; 1920x1080, 25 fps, progressive. One continuous medium shot, no cut inside the excerpt (the shot runs from 213.97 to 259.45 s of the source; cuts from ffmpeg scene score > 0.12): camera in front of the seated player at about chest height, head to lap in frame; both hands visible: the fretting hand (left) on the neck, which rises to the upper right with the headstock and nut in frame (the hand is near the nut on the frame at 232 s), and the picking hand (right) at the sound hole; the whole fretboard from the nut to the sound hole is in frame (frets not counted). Sheet music on a stand along the bottom edge covers the lower bout; a bright window behind the player (backlit); a second guitar stands at the left edge. No capo. The whole video is a multi-camera edit (wide shot, this medium shot, side close-ups of the fretting hand and of the picking hand, title cards). Audio: the two channels are the same signal apart from a residue at -67.1 dBFS RMS (left minus right in R3c.wav), i.e. effectively mono; R3c.wav peaks at -2.1 dBFS. No ground truth (the file description links a guitar tab for the tune; it was not downloaded or used).",
+ "audio": "R3c.wav",
+ "duration_s": 18.0,
+ "sample_rate": 44100,
+ "channels": 2,
+ "tempo_bpm": null,
+ "time_signature": null,
+ "key": null,
+ "tuning_midi": null,
+ "capo": null,
+ "tuning_offset_cents": null,
+ "notes": [],
+ "beats": [],
+ "downbeats": [],
+ "chords": [],
+ "taps": [],
+ "stems": {},
+ "source": {
+  "kind": "video",
+  "url": "https://commons.wikimedia.org/wiki/File:Manx_Guitar_Lesson-_Three_Little_Boats_2019.webm",
+  "license": "CC BY 3.0",
+  "license_quote": "This file is licensed under the Creative Commons Attribution 3.0 Unported license. Attribution: Culture Vannin",
+  "attribution": "\"Manx Guitar Lesson: Three Little Boats\" (2019) by Culture Vannin, presented by Pete Lumb, via Wikimedia Commons (File:Manx Guitar Lesson- Three Little Boats 2019.webm), CC BY 3.0 (https://creativecommons.org/licenses/by/3.0/); excerpt 222-240 s of Commons' 1080p VP9 transcode, re-encoded."
+ }
+}

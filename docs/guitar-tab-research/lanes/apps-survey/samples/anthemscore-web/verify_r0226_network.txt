@@ -1,0 +1,18 @@
+REQ  0.33 GET www.lunaverus.com/transcribe/audio-to-guitar-tab
+RESP 0.78 301 GET www.lunaverus.com/transcribe/audio-to-guitar-tab
+REQ  0.78 GET lunaverus.com/transcribe/audio-to-guitar-tab
+RESP 1.09 200 GET lunaverus.com/transcribe/audio-to-guitar-tab
+REQ  2.20 GET blob:<local file>
+RESP 2.20 206 GET blob:<local file>
+REQ  2.20 GET lunaverus.com/transcribe/getJobCode
+RESP 2.44 200 GET lunaverus.com/transcribe/getJobCode
+REQ  2.44 PUT sfo2.digitaloceanspaces.com/lunaverus/user_data/<job code>/input
+RESP 3.63 200 PUT sfo2.digitaloceanspaces.com/lunaverus/user_data/<job code>/input
+REQ  3.63 POST lunaverus.com/transcribe/uploaded/<job code>
+RESP 4.10 200 POST lunaverus.com/transcribe/uploaded/<job code>
+REQ  4.11 GET lunaverus.com/transcribe/jobSettings/<job code>
+RESP 4.47 200 GET lunaverus.com/transcribe/jobSettings/<job code>
+REQ  4.93 GET sfo2.digitaloceanspaces.com/lunaverus/user_data/<job code>/input
+REQ  4.93 GET sfo2.digitaloceanspaces.com/lunaverus/user_data/<job code>/input
+RESP 5.35 200 GET sfo2.digitaloceanspaces.com/lunaverus/user_data/<job code>/input
+RESP 5.80 206 GET sfo2.digitaloceanspaces.com/lunaverus/user_data/<job code>/input

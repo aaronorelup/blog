@@ -1,0 +1,5 @@
+S1 type 1 tpq 220 tracks 2 tempos(us/beat) [500000] program_change [0] instruments [(np.int64(0), False)] cc 0 pb 0 notes 65 vel (67, 76)
+S2n type 1 tpq 220 tracks 2 tempos(us/beat) [500000] program_change [0] instruments [(np.int64(0), False)] cc 0 pb 0 notes 91 vel (55, 74)
+  first10 2.143-2.368 62 70, 2.143-2.657 55 73, 2.143-2.752 43 69, 2.657-3.264 50 70, 2.657-3.809 55 72, 3.200-3.743 62 70, 3.200-3.809 43 64, 3.743-4.320 50 69, 3.743-4.320 62 73, 4.289-4.864 48 71
+R1c type 1 tpq 220 tracks 2 tempos(us/beat) [500000] program_change [0] instruments [(np.int64(0), False)] cc 0 pb 0 notes 173 vel (30, 76)
+S4guitar type 1 tpq 220 tracks 2 tempos(us/beat) [500000] program_change [0] instruments [(np.int64(0), False)] cc 0 pb 0 notes 372 vel (54, 75)

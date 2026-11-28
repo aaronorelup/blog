@@ -1,0 +1,30 @@
+{
+ "best": "Eb minor",
+ "method": "mean of librosa.feature.chroma_cqt(y, sr=22050) over the whole file, Pearson correlation with the 24 rotations of the Krumhansl-Kessler major and minor profiles, highest wins",
+ "correlations": {
+  "Eb minor": 0.9299,
+  "F# major": 0.6979,
+  "C# major": 0.492,
+  "Bb minor": 0.4899,
+  "Eb major": 0.4658,
+  "B major": 0.3996,
+  "Ab major": 0.3979,
+  "Ab minor": 0.3633,
+  "Bb major": 0.2281,
+  "F# minor": 0.1534,
+  "F minor": 0.0454,
+  "C# minor": -0.0416,
+  "C minor": -0.0635,
+  "G minor": -0.0817,
+  "B minor": -0.1434,
+  "E major": -0.1923,
+  "D minor": -0.3089,
+  "D major": -0.3244,
+  "A major": -0.3438,
+  "F major": -0.3599,
+  "E minor": -0.63,
+  "G major": -0.6892,
+  "A minor": -0.7128,
+  "C major": -0.7717
+ }
+}

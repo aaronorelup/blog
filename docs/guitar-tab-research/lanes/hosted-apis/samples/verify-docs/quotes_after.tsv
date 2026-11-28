@@ -1,0 +1,598 @@
+survey_line	status	found_on_pages	quote_first_140_chars
+9	NOT FOUND		## Verification log
+10	NOT FOUND		(added by verify-docs)
+25	found	moises-terms,music-ai-docs-home,music-ai-modules,musicai-apiref,musicai-docs,mus	Moises
+25	found	musicai-terms	Last updated: May 02, 2025
+28	found	el-llms,el-openapi,fadr-api,fadr-auth,fadr-billing,fadr-endpoints,fadr-plus,fadr	Basic
+31	found	lalal-privacy,lalal-tc,lalal-tos	Last updated: July 30, 2026
+34	found	audioshake-terms	Effective October 1, 2026
+36	found	fadr-api,fadr-endpoints	Aug 19, 2023
+36	found	fadr-billing	Aug 22, 2023
+36	found	fadr-terms	Sep 5, 2023
+39	found	mvsep-terms	Effective Date: October 19, 2026
+39	found	el-pricing-api,el-terms,flat-help-apiembed,flat-legal,flat-tos-embed,flat-tos-in	Limited
+42	found	replicate-terms	Last Update: April 1, 2026
+46	found	fal-demucs-llms	$0.0007 per seconds
+46	found	fal-terms	Last Updated: September 8, 2026
+46	found	up-demucs-readme	is not clear
+60	found	music-ai-docs-home,music-ai-modules,musicai-apiref,musicai-docs,musicai-faq,musi	Page not found!
+60	found	songsterr-aitxt	Last updated: 2026-11-09
+66	found	gemini-terms	Effective March 23, 2026
+74	found	yt-tos-plain,yt-tos	Dated: December 15, 2023
+74	found	yt-apiterms,yt-devpolicies	Last updated 2026-11-06 UTC
+80	found	moises-terms	Last Updated: October 7, 2026
+84	found	musicai-pricing	Music metadata (By Cyanite)
+85	found	el-sst,el-terms	Last Updated: 09 October 2026
+92	NOT FOUND		Other multimodal LLM APIs
+97	found	klangio-advanced-usage-transcription-model-selection,klangio-basic-workflow,klan	Klangio Transcription API
+97	found	hf-gradio-client,klangio-openapi-json,stemsplit-llms	0.2.0
+102	found	klangio-basic-workflow,klangio-chords-ext,klangio-chords,klangio-errors,klangio-	Basic Job Workflow
+112	found	klangio-basic-workflow	Depending on your current subscription billing status, creating a job may inflict quota costs. For a testing account a demo transcription is
+114	found	klangio-errors	Audio file format could not be parsed!
+114	found	klangio-errors	Audio file must be longer than 5 seconds!
+114	found	klangio-errors	this error may occur if the audio is a-rhythmic, has a tempo outside the 40-300 bpm range
+126	found	klangio-file-formats-guitar-pro,klangio-gp-docs	Guitar Pro 5 ... is available only if you choose the guitar or bass model for transcriptions.
+128	found	klangio-advanced-usage-transcription-model-selection	Optimized for audio consisting mainly of guitar.
+128	found	klangio-advanced-usage-transcription-model-selection	Will extract the overall melody and chords played in the audio.
+131	found	klangio-chords	the following two options
+138	found	klangio-chords	The job result is a json array, containing only triplet entries [<start_time_in_seconds>, <end_time_in_seconds>, <chord_name>] with the type
+140	found	flat-openapi,klangio-chords-ext,mistral-audio,musicai-mod-transcription-chords	A minor
+140	found	klangio-chords-ext,klangio-jobs-strum-recognition-requests	[<time_stamp_in_seconds>, <strum_direction>] with the type [float, string]
+140	short (checked by eye)		U
+140	short (checked by eye)		D
+141	found	klangio-jobs-beat-tracking-request	a json array, containing tuples in the format [<beat_timestamp_in_seconds>, <downbeat>] with the type [float, float]
+142	found	klangio-transcription	Results will be available for 14 days.
+142	found	klangio-file-formats-midi	contains the un-quantized note events detected in your audio
+143	found	klangio-file-formats-audio	Uncompressed 16-bit PCM audio
+144	found	klangio-transcription	mxml (MusicXML)
+144	found	klangio-basic-workflow,klangio-transcription	gp5 (Guitar Pro 5)
+144	found	fadr-api,fadr-auth,fadr-billing,fadr-endpoints,fadr-plus,fadr-terms,fadr-tutoria	midi
+144	found	klangio-basic-workflow,klangio-transcription	midi_quant (quantized)
+144	short (checked by eye)		pdf
+145	short (checked by eye)		$ 0
+145	found	klangio-api-page	50 requests included
+145	found	klangio-api-page	No additional requests
+145	found	klangio-api-page	Max 15s audio duration
+145	found	klangio-api-page	1 request per minute
+145	found	klangio-api-page	$ 99
+145	found	klangio-api-page	500 requests included
+145	found	klangio-api-page	$0.20 each other request
+145	found	klangio-api-page	Max 300s audio duration
+145	found	klangio-api-page	2 request per second
+145	found	klangio-api-page	$ 499
+145	found	klangio-api-page	3000 requests included
+145	found	klangio-api-page	$0.17 each other request
+145	found	klangio-api-page	Max 300s audio duration
+145	found	klangio-api-page	5 request per second
+145	found	fal-terms,gemini-pricing,klangio-api-page,music-ai-docs-home,music-ai-modules,mu	Contact Sales
+145	found	klangio-api-page	10,000 requests included
+145	found	klangio-api-page	$0.10 each other request
+145	found	klangio-api-page	Max 600s audio duration
+145	found	klangio-api-page	10 request per second
+145	found	el-pricing-api,klangio-api-page	Apply now
+145	found	klangio-transcription	Use as little output formats as possible. Multiple formats may inflict additional quota costs for a transcription job.
+145	found	klangio-file-formats-audio	The six-stems model inflicts higher quota costs than four-stems model!
+146	found	el-openapi,flat-openapi	last updated
+147	found	klangio-terms	API access and Bulk Transcription are not included in the subscription plans; they are offered exclusively as separate business services sub
+148	found	klangio-terms	We do not use the content uploaded by you to train our AI models or for any other purposes beyond the provision of the Klangio Services in a
+149	found	klangio-terms	If you submit a link to an external audio source (e.g., a YouTube, Instagram or TikTok video), the audio is retrieved via the respective pla
+150	found	klangio-terms	The use of Klangio Services and Apps is intended exclusively for private, non-commercial purposes, subject to the exception described below.
+151	found	klangio-terms	Transcriptions may only be used by you in accordance with applicable laws, in particular copyright laws. They must not be used to train musi
+152	found	klangio-terms	You warrant that you are the owner of (or are otherwise entitled to use or exercise) all necessary rights to any content uploaded by you ...
+157	found	moises-terms,music-ai-docs-home,music-ai-modules,musicai-apiref,musicai-docs,mus	Moises
+162	found	musicai-apiref	The API key should be included in the Authorization header of each request.
+162	found	musicai-apiref	URL to upload the file to. This URL is temporary.
+162	found	musicai-apiref	Processing results (URLs to output files) when status is SUCCEEDED
+162	found	musicai-apiref	must match the workflow's input schema
+174	found	musicai-mod-transcription-chords	Detected root key of the audio (e.g., C Major, A minor).
+174	found	musicai-mod-transcription-chords	Timeline of Chord annotations extracted from the input audio file. Each annotation specifies the chord's start time, end time, and multiple 
+174	found	music-ai-modules,musicai-mod-transcription-beats,musicai-mod-transcription-chord	Complex Jazz, Simple Jazz, Complex Pop, and Simple Pop
+174	found	music-ai-modules,musicai-mod-transcription-beats,musicai-mod-transcription-chord	bass detection
+175	found	musicai-mod-transcription-beats	JSON containing beat annotations extracted from the input audio. Each annotation specifies the beat's start time and beat number.
+179	found	musicai-fileformats	Include all audio formats, such as WAV, MP3, OGG, FLAC, etc.
+179	found	musicai-fileformats	Include all video formats, such as AVI, MP4, MKV, etc.
+179	found	musicai-mod-transcription-beats	the beat's start time and beat number
+181	found	musicai-pricing	Pay as you go $0
+181	found	musicai-pricing	48h temporary storage
+181	found	musicai-pricing	2 concurrent processing jobs
+181	found	musicai-pricing	Professional $25 USD Billed monthly
+181	found	musicai-pricing	10 concurrent processing jobs
+181	found	musicai-pricing	$25 credit included every month (limited offer)
+181	found	musicai-pricing	100GB permanent storage
+181	found	musicai-pricing	5% discount on all modules
+181	found	musicai-pricing	Business / Enterprise
+181	found	audioshake-billing,el-pricing-api,mistral-audio,musicai-pricing,qwen-omni,sounds	Contact us
+181	found	musicai-pricing	Transcription - Chords $0.04 / min
+181	found	musicai-pricing	Transcription - Beats $0.03 / min
+181	found	musicai-pricing	Transcription - Sections $0.04 / min
+181	found	musicai-pricing	Stem separation - Guitar stems (Acoustic guitar, Electric guitar) $0.1 / min
+181	found	musicai-pricing	Stem separation - Guitar parts (Rhythm guitars, Solo guitars) $0.1 / min
+181	found	musicai-pricing	Stem separation - Musical stems (Guitars) $0.07 / min
+181	found	musicai-pricing	Stem separation - Musical stems (Bass) $0.07 / min
+181	found	musicai-pricing	Generators - Metronome $0.002 / min
+181	found	musicai-pricing	Classification - Instruments detection $0.02 / min
+181	found	musicai-pricing	Classification - Music metadata (By Cyanite) $0.15 / min
+181	found	musicai-faq	Pay-as-you-go and Professional members must purchase credits up front and cannot have a negative credit balance.
+181	found	chordmini-readme	Music.ai API (deprecated - MUSIC.ai no longer provide individual API key, only business plan)
+182	found	musicai-terms	Last updated: May 02, 2025
+183	found	musicai-terms	a non-exclusive, non-transferable, non-sublicensable, revocable, limited license to use the Service ... on a computer or device that you own
+183	found	el-terms,moises-terms,musicai-terms	Limited License
+184	found	musicai-terms	you shall not ... (ii) use any robot, spider, site search/retrieval application, or other manual or automatic device to retrieve, index, “sc
+184	found	musicai-terms	Permitted Use; Restrictions
+185	found	musicai-terms	Subject to these Terms, You may use the Service to generate results and outputs (“Output”), for example data, text, audio, video, and artifi
+185	found	musicai-terms	Output of the Service
+186	found	musicai-terms	If you are accessing or making use of the Service on a no-fee, trial, or evaluation basis (the “Evaluation Access”), you may use the Service
+186	found	musicai-terms	Evaluation Access
+187	found	musicai-terms	THIS LICENSE IS GRANTED SOLELY FOR THE PURPOSE OF DELIVERING THE SERVICE TO YOU AND DOES NOT INCLUDE ANY RIGHTS FOR US TO USE YOUR CUSTOMER 
+187	found	musicai-terms	Limited License Grant to Customer Content
+187	found	el-api-terms,musicai-terms	Customer Content
+187	found	musicai-terms	We may use the Customer Content to provide the Service to you, to improve or develop our products and services, and, subject to Section 7(f)
+188	found	musicai-terms	we are under no obligation to store, maintain, or provide you with copies of any Customer Content you provide or any Outputs you generate us
+188	found	musicai-terms	No Obligation to Provide Storage
+189	found	musicai-faq	Music AI only trains on licensed materials.
+193	found	hf-ip-index,lalal-openapi,mvsep-fullapi	1.1.0
+193	found	lalal-api,lalal-llms,lalal-openapi	LALAL.AI API
+193	found	lalal-llms	Last updated: 2026-07-14
+193	found	lalal-llms	there is no official SDK - REST + OpenAPI only
+198	found	lalal-openapi	Uploads a file, up to 10 GB.
+198	found	lalal-openapi	The file is deleted at the `expires` time from the response.
+205	found	lalal-openapi	'guitar' extracts all guitars into one track, 'electric_guitar' and 'acoustic_guitar' extract only one kind of guitar. 'guitar' is available
+205	found	lalal-openapi	If None - convert to source file format.
+212	found	lalal-openapi	Pass all your `task_ids` in one request, up to 200: the limit is 30 requests per minute.
+212	found	lalal-openapi	A task stays here for 24 hours after it finishes.
+215	found	lalal-llms	shown in your regional currency
+215	found	lalal-pricing	$7.5 /mo$90 billed annually
+215	found	lalal-pricing	$15/mo$180 billed annually
+215	found	lalal-pricing	Pro is the better choice if you need more Fast Queue minutes, access to the VST plugin, local processing in the desktop app, or API access.
+215	found	lalal-pricing	Master with 750 minutes for $50, Premium with 3000 minutes for $190, and Enterprise with 5000 minutes for $300
+215	found	lalal-pricing	total file length × number of stem separation types
+215	found	lalal-llms	API access is available with the Pro plan or any minute top-up pack - no subscription required
+215	found	lalal-llms	API requests consume Fast-queue minutes.
+222	found	lalal-privacy,lalal-tc,lalal-tos	Last updated: July 30, 2026
+224	found	lalal-tc,lalal-tos	You agree not to reproduce, duplicate, copy, sell, trade, resell or exploit for any commercial purposes, any portion of the Service, use of 
+225	found	lalal-tc,lalal-tos	You are solely responsible for the usage and distribution of uploaded audio files and “end-result” audio files. ... The Service doesn’t stor
+226	found	lalal-privacy	the OmniSale GMBH does not assume the rights to any uploaded audio and video data, does not use user files for artificial intelligence train
+231	found	audioshake-quickstart	`pip install audioshake` gives you an official client and CLI that handle upload, polling, and download in one call
+231	found	audioshake-llms	Local Inference SDK
+231	found	audioshake-llms	Migrating from Jobs
+237	found	audioshake-quickstart	Each completed target includes an `output` array with download links.
+237	found	audioshake-quickstart	Output download links expire after one hour.
+237	found	audioshake-faq	Uploaded Assets expire after 72 hours.
+242	found	audioshake-list-models-doc,audioshake-llms	Unauthenticated requests return default app config values
+245	found	audioshake-models-live,audioshake-models	All guitar-family parts together (acoustic + electric).
+245	found	audioshake-models-live,audioshake-models	Electric guitar only (clean or distorted).
+245	found	audioshake-models-live,audioshake-models	Acoustic/plucked guitar-family sources (acoustic guitar, banjo, lute).
+245	found	audioshake-models-live,audioshake-models	Everything except vocals, drums, bass, and guitar.
+245	found	audioshake-models-live,audioshake-models	Everything not covered by the task's other targets.
+255	found	audioshake-api-reference-formats	Supports up to 192kHz sample rate
+255	found	audioshake-api-reference-formats,audioshake-faq	Only the audio stream is processed — video content is ignored.
+255	found	audioshake-api-reference-formats	Multi-channel or surround formats (e.g. 5.1) are not supported
+258	found	audioshake-api-reference-rate-limits	The AudioShake API allows **60 requests per second**.
+258	found	audioshake-models	Maximum input length for `transcription` and `alignment` is 45 minutes.
+260	found	audioshake-billing	Credits are charged **per minute of source audio, per target model**. Duration is always rounded up to the nearest minute.
+260	found	audioshake-quickstart	You'll get 10 free credits to start building immediately.
+264	found	audioshake-terms	Effective October 1, 2026
+265	found	audioshake-terms	Customer and End Users shall use the Audioshake Platform solely for Customer’s internal business purposes as contemplated by this Agreement 
+266	found	audioshake-terms	As between Customer and Audioshake, Customer shall retain all rights, title and interests in and to all Content.
+266	found	audioshake-terms	“Content” means any content uploaded by Customer or an End User to the Audioshake Platform, and any outputs derived from such content.
+267	found	audioshake-terms	You hereby grant Audioshake the right to (i) reproduce and use such information, Content and data to improve and enhance the Audioshake Plat
+272	found	fadr-api,fadr-auth,fadr-billing,fadr-endpoints,fadr-plus,fadr-terms,fadr-tutoria	Made with 💛 by Pebble
+272	found	fadr-api,fadr-auth,fadr-billing,fadr-endpoints,fadr-plus,fadr-terms,fadr-tutoria	v6.2
+272	found	fadr-api,fadr-endpoints	Aug 19, 2023
+272	found	fadr-billing	Aug 22, 2023
+272	found	fadr-terms	Sep 5, 2023
+280	found	fadr-auth	"Attach an API key to all of your requests as the Authorization header in the following format: `Authorization: ""Bearer [API Key]""`"
+280	found	fadr-tutorial	at 5 second intervals
+286	found	fadr-endpoints	separates a complete song into four primary stems, vocals, bass, drums, and melodies
+286	found	audioshake-faq,audioshake-home,audioshake-models-live,audioshake-models,audiosha	instrumental
+286	found	fadr-endpoints	Extraction of a unique MIDI file for the vocal, drums, bass, and melody stems.
+286	found	fadr-endpoints	Detection of the song's chord progression, represented in MIDI and CSV format
+286	found	fadr-endpoints	Detection of the song's Key and Tempo, which will be stored in all of the related asset's metaData fields.
+286	found	fadr-api	midi of each stem except for drums, the chord progression as txt and midi
+286	found	fadr-endpoints	separates a melodic stem into six new stems: piano, electric guitar, acoustic guitar, strings, wind, and other melodies
+286	found	fadr-tutorial	Stems usually take around 10-20 seconds, and the remainder usually takes another 10-20 seconds.
+296	found	fadr-api	Usage of the Fadr API requires a Fadr Plus subscription, which costs $10/mo or $100/yr. Your subscription pays for your first $10 of API usa
+296	found	fadr-billing	Create Stem Task US$0.05 per minute of audio
+296	found	fadr-plus	☁️ API Price (per 100 minutes per stem)
+296	short (checked by eye)		$1
+302	found	fadr-terms	Fadr does not acquire any ownership of any intellectual property rights in the content that you submit to our API through your API Client, e
+303	found	fadr-terms	Fadr does not acquire ownership in your API Clients, and by using our API, you do not acquire ownership of any rights in our API or the cont
+304	found	fadr-terms	Unless expressly permitted by the content owner or by applicable law, you will not, and will not permit your end users or others acting on y
+309	found	mvsep-terms	"Sole Proprietor (YTT) ""Elmurodov Olimjon Ermat o'g'li"""
+309	found	mvsep-openapi,ytdlp-pypi	1.1.1
+314	found	mvsep-fullapi,mvsep-openapi,replicate-allinone-api,replicate-http-docs,replicate	defaults to 20
+314	found	mvsep-fullapi	the output audios download details
+314	found	mvsep-fullapi	All regions share one account database, so the same account, API key and job hashes work everywhere
+314	found	mvsep-fullapi	Premium users can request unlimited concurrent jobs, while non-Premium users can only request 1 concurrent job.
+314	NOT FOUND		up to 10 concurrent jobs
+325	found	mvsep-algos,mvsep-fullapi,mvsep-openapi	MVSep Guitar (guitar, other)
+325	found	mvsep-algos,mvsep-fullapi	MVSep Acoustic Guitar (acoustic-guitar, other)
+325	found	mvsep-algos,mvsep-fullapi	MVSep Electric Guitar (electric-guitar, other)
+325	found	mvsep-algos,mvsep-fullapi	MVSep Lead/Rhythm Guitar (lead-guitar, rhythm-guitar)
+325	found	mvsep-algos,mvsep-fullapi	MVSep Pedal Steel Guitar
+325	found	mvsep-algos,mvsep-fullapi	BS Roformer SW (vocals, bass, drums, guitar, piano, other)
+325	found	mvsep-algos,mvsep-fullapi,mvsep-openapi	Ensemble All-In (vocals, bass, drums, piano, guitar, lead/back vocals, other)
+325	found	mvsep-algos,mvsep-fullapi,mvsep-openapi	Demucs4 HT (vocals, drums, bass, other)
+325	found	mvsep-algos,mvsep-fullapi	MVSep Bass (bass, other)
+330	found	mvsep-fullapi	0 - mdx23c (2023.08, SDR: 4.78)
+330	found	mvsep-fullapi	2 - mdx23c (2024.06, SDR: 6.34)
+330	found	mvsep-fullapi	3 - MelRoformer (2024.06, SDR: 7.02)
+330	found	mvsep-fullapi	5 - BSRoformer (viperx, SDR: 7.16)
+330	found	mvsep-fullapi	6 - Ensemble (BS + Mel, SDR: 7.51)
+330	found	mvsep-fullapi	7 - BS Roformer SW (SDR: 9.05) (default)
+330	found	mvsep-fullapi	0 - Two-stage model (SDR: 9.21) (default)
+330	found	mvsep-fullapi	1 - One-stage model (SDR: 9.02)
+330	found	mvsep-algos,mvsep-openapi	The model was compared with the Demucs4HT model (6 stems) on a guitar validation set.
+330	found	mvsep-algos	30 треков
+340	found	audioshake-home,audioshake-terms,el-api-terms,el-llms,el-music-terms,el-openapi,	Free
+340	found	audioshake-billing,el-pricing-api,fadr-api,fadr-auth,fadr-billing,fadr-endpoints	10 min
+340	found	mvsep-plans,qwen-omni	100 MB
+340	short (checked by eye)		50
+340	short (checked by eye)		1
+340	found	mvsep-plans	Pro · Credit-Based
+340	found	mvsep-plans	from $3
+340	found	el-music-terms,el-pricing-api,fadr-plus,flat-openapi,mvsep-plans,stemsplit-home,	100 min
+340	found	mvsep-plans	1000 MB
+340	found	el-pricing-api,fadr-api,fadr-auth,fadr-billing,fadr-endpoints,fadr-plus,fadr-ter	Unlimited
+340	found	mvsep-plans	No Limit
+340	short (checked by eye)		—
+340	found	el-pricing-api,el-terms,flat-help-apiembed,flat-legal,flat-tos-embed,flat-tos-in	Limited
+340	found	audioshake-models-live,audioshake-models,audioshake-quickstart,el-openapi,el-pri	Full
+340	short (checked by eye)		MP3
+340	found	mvsep-plans	WAV 16-bit / FLAC 16-bit
+340	found	mvsep-plans	WAV 32-bit float / FLAC 24-bit
+340	found	mvsep-plans	Standard models use 1 credit per minute of audio.
+340	found	mvsep-plans	*A 4-minute song with a standard model costs 4 credits. Ensemble models and some options cost more — see how credits are calculated. Prices 
+340	found	mvsep-algos,mvsep-fullapi,mvsep-openapi	Ensemble All-In
+340	found	mvsep-algos,mvsep-fullapi,mvsep-openapi	MVSep Guitar
+351	found	mvsep-terms	Effective Date: October 19, 2026
+352	found	mvsep-terms	The Operator does not claim ownership over uploaded content or generated outputs. You retain ownership of uploaded content and generated out
+353	found	mvsep-terms	Processed outputs generated through the Service may be used commercially by You, provided You possess the necessary rights to the original s
+354	found	mvsep-terms	Some models are provided under licenses that permit non-commercial use only (for example, CC BY-NC 4.0). Each such model is marked with a no
+359	found	claude-llms,gemini-audio,gemini-docs-home,mistral-audio,openai-audio,openai-audi	Structured output
+359	found	gemini-audio	Get transcription results in JSON format
+367	found	gemini-audio	Use the Files API for files larger than 20 MB.
+367	found	gemini-audio	Maximum request size is 20 MB total (including prompts and all files)
+367	found	gemini-audio	Interactions API reference
+373	found	gemini-audio	Technical details about audio
+373	found	gemini-audio	**Tokens**: 32 tokens per second of audio (1 minute = 1,920 tokens)
+373	found	gemini-audio	**Max length**: 9.5 hours of audio per prompt
+373	found	gemini-audio	**Resolution**: Downsampled to 16 Kbps
+373	found	gemini-audio	**Channels**: Multi-channel audio combined to single channel
+373	found	gemini-audio	**Non-speech**: Gemini understands non-speech sounds (birdsong, sirens, etc.)
+381	found	gemini-video	File API ... 20GB (paid) / 2GB (free)
+381	found	gemini-video	Cloud Storage Registration ... 2GB (per file ...)
+381	found	gemini-video	Inline Data ... < 100MB
+381	found	gemini-video	YouTube URLs ... Public YouTube videos.
+381	found	gemini-video	the model samples the video at a rate of **1 frame per second** (FPS). This default sampling rate works well for most content, but note that
+381	found	gemini-video	"These customization options are only supported when processing the video in `""static""` mode."
+381	found	gemini-video	Audio is processed at 1Kbps (single channel). Timestamps are added every second.
+381	found	gemini-video	If `media_resolution` is set to low, frames are tokenized at 66 tokens per frame.
+381	found	gemini-video	Otherwise, frames are tokenized at 258 tokens per frame.
+381	found	gemini-video	Audio: 32 tokens per second.
+381	found	gemini-video	Total: Approximately 100 tokens per second of video at default (low) media resolution, or approximately 300 tokens per second of video at hi
+381	found	gemini-video	Models with a 1M context window can process videos up to 3 hours long by default (at low media resolution), or up to 1 hour long at high med
+381	found	gemini-pricing,gemini-terms,gemini-video,mistral-audio	agentic
+381	found	gemini-video	Gemini 4 Carbon, Gemini 4 Argon, 3.8 Flash, 3.6 Flash, 3.5 Flash Lite
+396	found	gemini-video	Preview: The YouTube URL feature is in preview and is available at no charge. Pricing and rate limits are likely to change.
+396	found	gemini-video	For the free tier, you can't upload more than 8 hours of YouTube video per day.
+396	found	gemini-video	You can only upload public videos (not private or unlisted videos).
+401	found	gemini-pricing	Paid Tier, per 1M tokens in USD
+401	found	gemini-pricing	$0.30 (text / image / video / audio)
+401	found	fadr-plus,gemini-pricing	$2.50
+401	found	gemini-pricing	$0.75 through December 31, 2026. $1.50 starting January 1, 2027.
+401	found	gemini-pricing	$3.75 through December 31, 2026. $7.50 starting January 1, 2027.
+401	found	gemini-pricing	Free of charge
+401	found	gemini-pricing	$2.00 through November 30, 2026.
+401	found	gemini-pricing	$4.00 starting December 1, 2026.
+401	found	gemini-pricing	$10.00 through November 30, 2026.
+401	found	gemini-pricing	$20.00 starting December 1, 2026.
+401	found	gemini-pricing	Gemini 4 Carbon is not available on the Free tier.
+409	found	gemini-terms	Effective March 23, 2026
+410	found	gemini-terms	You may use only Paid Services when making API Clients available to users in the European Economic Area, Switzerland, or the United Kingdom.
+411	found	gemini-terms	Some of our Services allow you to generate original content. Google won't claim ownership over that content. You acknowledge that Google may
+412	found	gemini-terms	When you use Unpaid Services, including, for example, Google AI Studio and the unpaid quota on Gemini API, Google uses the content you submi
+413	found	gemini-terms	When you use Paid Services, including, for example, the paid quota of the Gemini API, Google doesn't use your prompts (including associated 
+414	found	gemini-terms	"Your access to Gemini API is a ""Paid Service"" only when accessing the API through a Cloud Project associated with an active billing account."
+420	found	yt-tos-plain,yt-tos	Dated: December 15, 2023
+420	found	yt-tos-plain,yt-tos	Effective as of December 15, 2023
+420	found	yt-tos-plain,yt-tos	Permissions and Restrictions
+422	found	yt-tos-plain,yt-tos	You may access and use the Service as made available to you, as long as you comply with this Agreement and applicable law. You may view or l
+423	found	yt-tos-plain,yt-tos	The following restrictions apply to your use of the Service. You are not allowed to: 1. access, reproduce, download, distribute, transmit, b
+424	found	yt-tos-plain,yt-tos	2. circumvent, disable, fraudulently engage with, or otherwise interfere with any part of the Service (or attempt to do any of these things)
+425	found	yt-tos-plain,yt-tos	3. access the Service using any automated means (such as robots, botnets or scrapers) except (a) in the case of public search engines, in ac
+426	found	yt-tos-plain,yt-tos	9. use the Service to view or listen to Content other than for personal, non-commercial use (for example, you may not publicly screen videos
+427	found	yt-apiterms,yt-devpolicies	Last updated 2026-11-06 UTC
+427	found	yt-apiterms	16.3 No Licenses or Rights to Patents or Content. Without limiting the generality of the foregoing, no rights or licenses are granted under 
+432	found	yt-apiterms,yt-devpolicies	Last updated 2026-11-06 UTC
+434	found	yt-devpolicies	1. Audiovisual Content
+434	found	yt-devpolicies	You and your API Clients must not, and must not encourage, enable, or require others to: a. download, import, backup, cache, or store copies
+435	found	yt-devpolicies	I. Additional Prohibitions
+435	found	yt-devpolicies	7. separate, isolate, or modify the audio or video components of any YouTube audiovisual content made available as part of, or in connection
+435	found	yt-devpolicies	8. promote separately the audio or video components of any YouTube audiovisual content made available as part of, or in connection with, the
+441	found	ytdlp-pypi,ytdlp-readme	a feature-rich command-line audio/video downloader with support for thousands of sites
+441	found	ytdlp-pypi,ytdlp-readme	a fork of youtube-dl based on the now inactive youtube-dlc
+444	found	ytdlp-pypi,ytdlp-readme	-x, --extract-audio Convert video files to audio-only files (requires ffmpeg and ffprobe)
+444	found	ytdlp-pypi,ytdlp-readme	While all the other dependencies are optional, `ffmpeg`, `ffprobe`, `yt-dlp-ejs` and a supported JavaScript runtime/engine are highly recomm
+444	found	ytdlp-pypi,ytdlp-readme	yt-dlp-ejs - Required for full YouTube support.
+444	found	ytdlp-pypi,ytdlp-readme	A JavaScript runtime/engine like deno (recommended), node.js, bun, or QuickJS is also required to run yt-dlp-ejs.
+444	found	ytdlp-pypi,ytdlp-readme	Unlicense
+453	found	ytdlp-license	This is free and unencumbered software released into the public domain. Anyone is free to copy, modify, publish, use, compile, sell, or dist
+457	found	audioshake-home,audioshake-terms,soundslice-dataapi,stemsplit-terms,ytdlp-pypi,y	Licensing
+457	found	ytdlp-pypi,ytdlp-readme	While yt-dlp is licensed under the Unlicense, many of the release files contain code from other projects with different licenses. Most notab
+457	found	ytdlp-pypi,ytdlp-readme	The git repository, the PyPI source distribution and the PyPI built distribution (wheel) only contain code licensed under the Unlicense.
+457	found	ytdlp-pypi,ytdlp-readme	License depends on the build
+467	found	songsterr-terms	Songsterr is an archive of guitar, bass and drum tabs with more than 80,000 songs.
+467	found	songsterr-terms	Guitar Tabs LLC
+467	found	songsterr-terms	Guitartabs LLC
+467	found	songsterr-terms	Our paid plan (Songsterr Plus) unlocks advanced features, including Pause-Free Sync with Original Audio, Playback Speed, Print, AI Transcrip
+473	found	music-ai-docs-home,music-ai-modules,musicai-apiref,musicai-docs,musicai-faq,musi	Page not found!
+478	found	songsterr-terms	You may not use, and may not instruct, enable, or permit any automated tool, script, browser extension, or AI agent to use, any means to cir
+483	found	songsterr-aitxt	Last updated: 2026-11-09
+483	NOT FOUND		AI model training: NOT permitted. Do not use Songsterr content (tabs, notation, song metadata, lyrics, audio, API responses) to train, fine-
+483	found	songsterr-aitxt	Allowed on a user's behalf, with or without a subscription:
+493	found	songsterr-terms,soundslice-terms	Some content on the Service may use a video player embedded from YouTube, using YouTube API services. When interacting with such content, yo
+507	found	moises-terms	Last Updated: October 7, 2026
+507	found	audioshake-home,audioshake-terms,chordmini-readme,el-api-terms,el-llms,el-music-	YouTube
+509	found	moises-terms	10.1 ... the Service may allow you to upload content to the Service from a third-party service.
+510	found	moises-terms	11.2 Ownership and Limitations. You (or if you are acting on behalf of an Organization, your Organization) retain(s) all rights, title, and 
+511	found	moises-terms	11.4 NO TRAINING. WE DO NOT USE YOUR USER CONTENT OR OUTPUT TO TRAIN AI MODELS WITHOUT YOUR PERMISSION.
+512	found	moises-terms	14.2 use the Service or any content, information, or data obtained from the Service for purposes of informing, training, or developing (or a
+514	found	klangio-terms	via the respective platform interface (e.g., the YouTube Data API)
+521	found	replicate-allinone-api,replicate-allinone	286.3K runs
+521	found	replicate-allinone	This model costs approximately $0.062 to run on Replicate, or 16 runs per $1, but this varies depending on your inputs.
+521	found	replicate-allinone	This model runs on Nvidia A100 (40GB) GPU hardware. Predictions typically complete within 54 seconds.
+521	found	replicate-allinone-api,replicate-allinone	An audio file input to analyze.
+530	found	replicate-demucs-versions,replicate-demucs	2.2M runs
+530	found	replicate-demucs	costs approximately $0.0050 to run on Replicate, or 200 runs per $1
+530	found	replicate-demucs	runs on Nvidia A100 (40GB) GPU hardware. Predictions typically complete within 5 seconds.
+530	found	replicate-demucs	Model updated 1 month, 1 week ago
+530	found	replicate-demucs-versions,replicate-demucs	Model to use for separation (this deployment serves htdemucs)
+530	found	replicate-demucs-versions,replicate-demucs	Output audio format, anything supported by FFmpeg
+530	found	fal-demucs-llms,mvsep-algos,mvsep-fullapi,mvsep-openapi,replicate-demucs-version	htdemucs_ft
+530	found	fal-demucs-llms,replicate-demucs-versions,replicate-demucs,up-demucs-readme	mdx_extra_q
+543	found	replicate-chord	1.3K runs
+543	found	replicate-chord	costs approximately $0.022 to run on Replicate, or 45 runs per $1
+543	found	replicate-chord	runs on Nvidia T4 GPU hardware. Predictions typically complete within 99 seconds.
+543	found	replicate-chord	This model doesn't have a readme.
+543	found	replicate-chord	Audio file for chord recognition (mp3, wav, flac, etc.)
+543	found	replicate-chord	Return a downloadable .lab file in addition to JSON output
+552	found	replicate-openapi	Replicate HTTP API
+552	found	replicate-allinone-api,replicate-http-docs,replicate-openapi	`{owner_name}/{model_name}` - Use this format for official models ... For all other models, the specific version is required.
+552	found	replicate-allinone-api,replicate-http-docs,replicate-openapi	`{owner_name}/{model_name}:{version_id}` - The owner and model name, plus the full 64-character version ID.
+552	found	replicate-allinone-api,replicate-http-docs,replicate-openapi	Files should be passed as HTTP URLs or data URLs.
+552	found	replicate-allinone-api,replicate-http-docs,replicate-openapi	The request will wait up to 60 seconds for the model to run.
+552	found	replicate-retention-md,replicate-retention	For predictions created through the API, all input parameters, output values, output files, and logs are automatically removed after an hour
+563	found	replicate-pricing	Nvidia T4 GPU gpu-t4 $0.000225/sec $0.81/hr
+563	found	replicate-pricing	Nvidia L40S GPU gpu-l40s $0.000975/sec $3.51/hr
+563	found	replicate-pricing	Nvidia A100 (80GB) GPU gpu-a100-large $0.001400/sec $5.04/hr
+563	found	replicate-pricing	CPU cpu $0.000100/sec $0.36/hr
+566	found	lic-allinone	MIT License ... Copyright (c) 2023 Taejun Kim
+566	found	lic-demucs,lic-demucscog	MIT License ... Copyright (c) Meta Platforms, Inc. and affiliates.
+566	found	el-api-terms,lic-allinone,lic-demucs,lic-demucscog,replicate-http-docs,replicate	MIT License
+572	found	el-api-terms,el-llms,el-pricing-api,el-terms,fadr-api,fadr-auth,fadr-billing,fad	License
+572	found	up-demucs-readme	Demucs code is released under the MIT license as found in the LICENSE file. The license of the weights is not clear: MusDB contains some dat
+572	found	up-demucs-readme	Trained on MusDB + 800 songs.
+572	found	up-demucs-readme	trained with extra training data (**including MusDB test set**)
+572	found	up-demucs-readme	11/07/2026: Released Demucs v4.1.0 with modernized packaging, lighter inference dependencies, numerous fixes, and pretrained models hosted o
+581	found	up-musdbhq-zenodo	MUSDBHQ: is provided for educational purposes only and the material contained in them should not be used for any commercial purpose without 
+581	found	up-musdb-page	the tracks can only be used for academic purposes
+586	found	up-allinone-readme	The models are trained on the Harmonix Set with 8-fold cross-validation.
+586	found	el-api-terms,lic-allinone,lic-demucs,lic-demucscog,replicate-http-docs,replicate	MIT License
+586	found	up-harmonix-license	Copyright (c) 2019 Oriol Nieto
+586	found	up-harmonix-readme	Users must agree to the License included before using these data.
+593	found	replicate-terms	Last Update: April 1, 2026
+594	found	replicate-terms	As between Customer and Replicate, Customer owns and will continue to own all rights, title, and interest, including all Intellectual Proper
+594	found	replicate-terms	“Customer Data” means Customer Inputs and Outputs.
+595	found	replicate-terms	Customer hereby grants Replicate a worldwide, non-exclusive, non-sublicensable (except for the purposes of making the Marketplace Models ava
+596	found	replicate-terms	Any Community Model you download, access, or use from us or another User, is at your own risk and subject to these Terms and/or the terms ac
+600	found	fal-demucs-llms	SOTA stemming model for voice, drums, bass, guitar and more.
+600	found	fal-demucs-llms	**Price**: $0.0007 per seconds
+600	found	fal-demucs-llms,mvsep-algos,mvsep-fullapi,mvsep-openapi,replicate-demucs-version	htdemucs_6s
+600	found	fal-demucs-llms,mvsep-algos,mvsep-fullapi,mvsep-openapi,replicate-allinone-api,r	htdemucs
+600	found	fal-demucs-llms,mvsep-algos,mvsep-fullapi,mvsep-openapi,replicate-demucs-version	htdemucs_ft
+600	found	fal-demucs-llms,mvsep-algos,mvsep-fullapi,mvsep-openapi,replicate-demucs-version	htdemucs_6s
+600	found	fal-demucs-llms,replicate-demucs-versions,replicate-demucs,up-demucs-readme	hdemucs_mmi
+600	short (checked by eye)		mdx
+600	found	fal-demucs-llms,replicate-demucs-versions,replicate-demucs,up-demucs-readme	mdx_extra
+600	found	fal-demucs-llms,replicate-demucs-versions,replicate-demucs,up-demucs-readme	mdx_q
+600	found	fal-demucs-llms,replicate-demucs-versions,replicate-demucs,up-demucs-readme	mdx_extra_q
+600	short (checked by eye)		wav
+600	short (checked by eye)		mp3
+600	short (checked by eye)		mp3
+600	found	fal-demucs-llms	only available for 6s models
+600	found	fal-demucs-llms	Example Response
+600	found	up-demucs-readme	was trained only on Meta internal dataset, which likely means CC-NC-BY license is applicable
+610	found	fal-llms,openai-audio,openai-audio2,openai-audiochat	Audio and speech
+613	found	fal-terms	Last Updated: September 8, 2026
+615	found	fal-terms	Company grants you a limited, non-exclusive, non-transferable, revocable right to access and use the Sites and the Services in accordance wi
+616	found	fal-terms	Company hereby grants Customer a limited, non-exclusive, non-transferable, non-sublicensable, license to access and use Company’s API materi
+617	found	fal-terms	Customer hereby grants Company a non-exclusive, non-sublicensable, royalty-free license to reproduce, use, access, store, display, adapt, tr
+617	found	fal-terms	Customer owns and retains all right, title, and interest in and to the Customer Input.
+618	found	fal-terms	Company may generate, collect, store, use, transfer, and/or disclose to third parties Usage Data and use Usage Data to perform data analytic
+622	found	hf-ip-index,hf-ip-tasks	Inference Tasks
+622	found	hf-ip-index,hf-ip-tasks	Other Tasks
+622	found	el-pricing-api,hf-gradio-client,hf-ip-index,hf-ip-tasks,hf-tos,mistral-audio,moi	Providers
+631	found	hf-gradio-client	While you can use any public Space as an API, you may get rate limited by Hugging Face if you make too many requests. For unlimited usage of
+631	found	hf-gradio-client	if the original Space uses GPUs, your private Space will as well, and your Hugging Face account will get billed based on the price of the GP
+639	short (checked by eye)		mit
+645	found	flat-openapi	guitar tab
+659	short (checked by eye)		mit
+659	found	el-api-terms,lic-allinone,lic-demucs,lic-demucscog,replicate-http-docs,replicate	MIT License
+659	found	up-transkun-license	Copyright (c) 2021 Yujia Yan
+659	found	up-transkun-readme	Maestro V3
+659	found	up-maestro	The dataset is made available by Google LLC under a Creative Commons Attribution Non-Commercial Share-Alike 4.0 (CC BY-NC-SA 4.0) license.
+672	found	hf-tos	Effective Date: September 15, 2022
+672	found	hf-tos	You hereby grant us a worldwide, royalty-free and non-exclusive license to use, display, publish, reproduce, distribute, and make derivative
+672	found	hf-tos	If you decide to set your Repository public, you grant each User a perpetual, irrevocable, worldwide, royalty-free, non-exclusive license to
+681	found	soundslice-dataapi	data API
+681	found	soundslice-dataapi	2026-09-18 — Added support for Mux videos to the create recording endpoint.
+687	found	soundslice-dataapi	API keys are only available to paying Soundslice customers — either in the Teacher or Licensing plans.
+687	found	soundslice-dataapi	A Soundslice API key consists of two strings — an application ID and associated password.
+687	found	soundslice-dataapi	For each API call, you’ll need to authenticate with your API key, using HTTP Basic Authentication.
+691	found	soundslice-dataapi	the original uploaded notation file ... (e.g., MusicXML, GPX, etc.)
+691	found	soundslice-dataapi	This API method is only available by special permission.
+691	found	soundslice-dataapi	upload a slice’s notation from one of our supported formats: MusicXML, Guitar Pro, PowerTab or TuxGuitar. It does not support our PDF/image 
+691	found	soundslice-dataapi	Generates MusicXML for the slice ... uses our own MusicXML exporting algorithm based on the slice’s current notation
+698	found	soundslice-dataapi	2 — MP3 uploaded to Soundslice
+698	found	soundslice-dataapi	4 — Video uploaded to Soundslice
+698	found	soundslice-dataapi	3 — Video URL
+698	found	soundslice-dataapi	8 — MP3 URL
+698	found	soundslice-dataapi	1 — YouTube video
+698	found	soundslice-dataapi	The URL or ID of the YouTube video.
+698	found	soundslice-dataapi	only allowed if your Soundslice account has been linked with
+701	found	soundslice-dataapi	syncpoints are stored as a simple JSON array. Example: [[0, 0], [1, 0.57], [1, 0.8, 240], [2, 1.3]]
+701	found	soundslice-dataapi	The zero-based bar number in the slice, as an integer
+701	found	soundslice-dataapi	Timecode in the audio, in seconds, as a float.
+701	found	soundslice-dataapi	a number (integer or float) between 0 and 480, where 0 is the start of the bar and 480 is the end of the bar.
+705	found	soundslice-terms	7.5 Copyright in User Generated Content. You retain any intellectual property rights in the content you upload or post to the Service. You h
+705	found	soundslice-terms	7.6 YouTube. Some content on the Service may use a video player embedded from YouTube, using YouTube API services. When interacting with suc
+715	found	flat-help-apiembed,flat-legal,flat-openapi	Flat API
+715	found	flat-openapi	Personal Access Tokens or OAuth2
+718	NOT FOUND		Preferred formats: MusicXML: `.xml`, `.musicxml`, `.mxl` (compressed) ... This is the only format that preserves all notation data ... MIDI:
+718	NOT FOUND		Also supported (converted to MusicXML on import, some notation details may be lost): Guitar Pro: `.gp`, `.gp3`, `.gp4`, `.gp5`, `.gpx`, `.gt
+718	found	flat-openapi	enable TABs, Chord grids
+725	found	flat-openapi	Get a score revision data
+725	found	flat-openapi	Flat JSON `json`, MusicXML `mxl`/`xml`, ABC notation `abc`, MP3 `mp3`, WAV `wav`, MIDI `midi`, Flat `flat`, a thumbnail of the first page `t
+728	found	flat-legal	Legal and privacy information
+728	found	flat-legal	Last updated December 7, 2023
+728	found	flat-legal	User content and ownership
+728	found	flat-legal	We do not claim ownership over your User Content
+728	found	flat-apiterms	The app could not be loaded.
+728	found	flat-help-apiembed,flat-legal	Flat APIs and Embed
+728	found	flat-help-apiembed	Last updated October 19, 2026
+728	found	flat-help-apiembed	AI assistants (MCP)
+728	found	flat-help-apiembed	Flat is available as a remote MCP server, so assistants and agents can create, search and read the scores of a Flat account.
+737	found	flat-tos-individual	Last updated September 4, 2026
+737	found	flat-legal	5 January 2016
+737	found	flat-tos-individual	We do not claim ownership in your User Content. However, we need a licence to host your User Content, make sure it is available to you when 
+741	found	flat-tos-embed	This is the current version of these terms, dated 16 May 2019.
+741	found	flat-tos-embed	apply to individuals and businesses using Flat Embed
+741	found	flat-tos-embed	We do not claim ownership in your User Content. Instead, you grant us a worldwide, non-exclusive, royalty-free and perpetual licence to use,
+754	found	hooktheory-apidocs	You authenticate to the Hooktheory API by providing an HTTP Bearer Token ... retrieved through the API with your hooktheory.com username and
+754	found	hooktheory-apidocs	Token lifetime changed in 2026. The activkey is now a short-lived token that expires about an hour after it is issued
+757	found	hooktheory-apidocs	The Hooktheory API limits requests to 10 every 10 seconds.
+757	found	hooktheory-apidocs	Over the limit the API answers 429 with a Retry-After header.
+759	found	hooktheory-apidocs	Each node contains a chord and the frequency with which it occurs in the database
+759	found	hooktheory-apidocs	paginated to 20 results per page
+763	found	hooktheory-terms	Last updated October, 2026
+763	found	hooktheory-terms	4. Anti-Scraping Policy – Public Display and Use. Except as expressly authorized by Hooktheory (e.g., via a written data license or API term
+772	found	openai-audio,openai-audio2	Audio and voice
+772	found	openai-audio,openai-audio2	Audio input or output in an existing chat app
+772	found	openai-audio,openai-audio2,openai-audiochat	Audio in Chat Completions
+772	found	openai-audiochat	include audio in the modalities array and use an audio model, like gpt-audio-1.5.
+772	found	openai-audiochat	The Responses API docs currently describe text and image inputs with text outputs. For this audio-chat pattern, use Chat Completions with an
+780	found	audioshake-api-reference-formats,audioshake-api-reference-rate-limits,audioshake	audio
+780	found	vercel-audio-md	Messages API | No audio content part
+785	found	qwen-omni	Text, images, audio, video
+785	found	audioshake-api-reference-formats,audioshake-faq,audioshake-home,audioshake-prici	Text
+785	found	qwen-omni	Chat Completions, Responses
+785	found	qwen-omni	The context length is 1M tokens.
+785	found	qwen-omni	Input limits: Up to 3 hours of audio or 1 hour of video
+785	found	qwen-omni	Input limits: 20 minutes of audio or 150 seconds of video
+785	found	qwen-omni	Using Base64 encoding: The encoded Base64 string must be smaller than 10 MB
+785	found	qwen-omni	common formats such as AMR, WAV, 3GP, 3GPP, AAC, and MP3.
+785	found	qwen-omni	MP4, AVI, MKV, MOV, FLV, WMV, and others.
+793	found	audioshake-api-reference-formats,audioshake-api-reference-rate-limits,audioshake	audio
+793	found	audioshake-api-reference-formats,audioshake-faq,audioshake-home,audioshake-list-	video
+804	found	spotify-blog	Posted November 27, 2024
+804	found	spotify-blog	Effective today, new Web API use cases will no longer be able to access or use the following endpoints and functionality in their third-part
+804	found	spotify-blog	Audio Features
+804	found	audioshake-home,audioshake-terms,spotify-blog	Audio Analysis
+804	found	spotify-blog	New apps that are registered on or after today's date
+813	found	chordmini-readme	Beat Detection: Beat-Transformer and madmom models
+813	found	chordmini-readme	Chord Recognition: Chord-CNN-LSTM, BTC-SL, BTC-PL models
+827	found	stemsplit-llms,stemsplit-ref	Base URL: `https://stemsplit.io/api/v1`
+827	found	stemsplit-launch-md	Pass a YouTube URL and get separated stems back — no need to download first
+827	found	stemsplit-launch-md	Webhook payloads include HMAC-SHA256 signatures for verification.
+827	found	stemsplit-launch-md	`SIX_STEMS` | Vocals, drums, bass, guitar, piano, other
+827	found	stemsplit-launch-md	`BEST` | ~60s per minute | Production quality; required for 6-stem
+827	found	stemsplit-launch-md	same HTDemucs FT model
+835	found	gemini-pricing,stemsplit-home,stemsplit-pricing	$2.00
+835	found	stemsplit-home,stemsplit-pricing	$0.20/minute
+835	found	gemini-pricing,stemsplit-home,stemsplit-pricing	$5.00
+835	found	stemsplit-home,stemsplit-pricing	$0.17/minute
+835	found	gemini-pricing,stemsplit-home,stemsplit-pricing	$12.00
+835	found	stemsplit-home,stemsplit-pricing	$0.12/minute
+835	found	gemini-pricing,stemsplit-home,stemsplit-pricing	$30.00
+835	found	stemsplit-home,stemsplit-pricing	$0.10/minute
+835	found	stemsplit-home,stemsplit-pricing	5 free minutes on signup
+835	found	stemsplit-launch-md	The API uses the same credit system as the web app — no separate API pricing, no subscription required.
+839	found	stemsplit-terms	Last updated: December 28, 2024
+839	found	stemsplit-terms	Last Updated: January 8, 2026
+841	found	stemsplit-terms	StemSplit provides a feature that allows users to submit URLs from YouTube, SoundCloud, and other third-party platforms for audio processing
+842	found	stemsplit-terms	Compliance with Platform Terms: You acknowledge that YouTube, SoundCloud, and other platforms have their own Terms of Service that may restr
+847	found	el-openapi	ElevenLabs API Documentation
+847	found	el-openapi,el-stems-md	The audio file to separate into stems.
+847	found	el-openapi,el-stems-md	MP3 with 192kbps bitrate requires you to be subscribed to Creator tier or above. PCM with 44.1kHz sample rate requires you to be subscribed 
+847	found	el-openapi,el-stems-md	When enable_logging is set to false zero retention mode will be used for the request. Zero retention mode may only be used by enterprise cus
+847	found	el-openapi,el-stems-md	ZIP archive containing separated audio stems. Each stem is provided as a separate audio file in the requested output format.
+847	found	el-openapi,el-stems-md	This endpoint might have high latency, depending on the length of the audio file.
+860	found	el-openapi	Supports hosted video or audio files, YouTube video URLs, TikTok video URLs, and other video hosting services.
+863	found	el-sst,el-terms	Last Updated: 09 October 2026
+864	found	el-terms	Except as expressly set forth herein, as between you and ElevenLabs, you retain all rights in and to your Output.
+865	found	el-terms	You hereby grant to ElevenLabs a license to use, reproduce, modify, adapt, publish, translate, create derivative works from, distribute, pub
+865	found	el-terms	perpetual and irrevocable
+865	found	el-terms	royalty-free and fully paid
+865	found	el-terms	sub-licensable, through multiple tiers
+866	found	el-terms	you may opt out of our use of your Content for training at any time by navigating to the 'Data use' menu in the 'Terms and Privacy' section 
+867	found	el-music-terms	Last updated: 09 October 2026
+867	found	el-music-terms	The “Music Service” is the ElevenLabs Service that generates and returns Output in the form of sound recordings and the musical compositions
+867	found	audioshake-apiref,audioshake-billing,audioshake-faq,audioshake-home,audioshake-l	stem
+867	found	audioshake-apiref,audioshake-home,audioshake-models,audioshake-pricing,audioshak	stems
+876	found	vercel-audio-md	The Chat Completions endpoint rejects `input_audio` parts. Use `file` with a model that accepts audio.
+876	found	vercel-audio-md	Audio support depends on the selected model, provider, and request format. Confirm the accepted encoding, duration, and request-size limits 
+880	found	vercel-video-md	Video support, sampling, duration limits, and audio-track handling depend on the model and provider.
+890	found	musicgpt-a2m-md	Musicgpt API
+890	found	musicgpt-a2m-md	Input audio URL (supported format: YouTube URL).
+890	found	musicgpt-a2m-md	If true, generates a .wav file that sonifies the MIDI output.
+890	found	musicgpt-a2m-md	If true, saves predicted note events as a CSV file.
+890	found	musicgpt-a2m-md,musicgpt-llms	This request is handled asynchronously.
+905	found	musicai-pricing	Music metadata (By Cyanite)
+905	found	musicai-pricing	$0.15 / min
+905	found	musicai-terms	to train artificial intelligence or machine learning
+915	NOT FOUND		Vocal To Midi
+926	NOT FOUND		X outputs <format>, which Y accepts as <input>
+927	found	audioshake-home,audioshake-terms,claude-llms,claude-messages-md,deepseek-docs,el	docs
+929	NOT FOUND		Output-only facts
+933	found	ytdlp-pypi,ytdlp-readme	-x, --extract-audio Convert video files to audio-only files (requires ffmpeg and ffprobe)
+933	found	lalal-openapi	up to 10 GB
+934	found	gemini-video	You can only upload public videos (not private or unlisted videos).
+934	found	musicgpt-a2m-md	supported format: YouTube URL
+935	found	audioshake-faq,audioshake-quickstart	expire after one hour
+935	found	audioshake-terms,chordify-about,chordify-terms,chordmini-readme,claude-messages-	direct
+935	found	replicate-allinone-api,replicate-http-docs,replicate-openapi	Files should be passed as HTTP URLs or data URLs.
+936	found	klangio-transcription	Results will be available for 14 days.
+936	found	lalal-openapi	A task stays here for 24 hours after it finishes.
+936	found	musicai-pricing	48h temporary storage
+936	found	audioshake-faq	Uploaded Assets expire after 72 hours.
+936	found	replicate-allinone-api,replicate-http-docs,replicate-openapi,replicate-retention	are automatically removed after an hour, by default
+938	found	klangio-file-formats-guitar-pro,klangio-gp-docs	available only if you choose the guitar or bass model
+938	found	flat-openapi	converted to MusicXML on import, some notation details may be lost
+938	found	soundslice-dataapi	MusicXML, Guitar Pro, PowerTab or TuxGuitar
+938	found	soundslice-dataapi	only available by special permission
+939	found	flat-openapi	Preferred formats
+940	found	flat-openapi	MIDI: `.mid`, `.midi`
+941	found	flat-openapi	Get a score revision data
+941	found	soundslice-dataapi	2 — MP3 uploaded to Soundslice
+941	found	soundslice-dataapi	8 — MP3 URL
+943	found	klangio-chords-ext,klangio-chords	E:maj
+943	found	flat-openapi,klangio-chords-ext,mistral-audio,musicai-mod-transcription-chords	A minor
+944	found	soundslice-dataapi	The URL or ID of the YouTube video.
+985	found	musicai-pricing	Business / Enterprise
+985	found	audioshake-billing,el-pricing-api,mistral-audio,musicai-pricing,qwen-omni,sounds	Contact us
+985	found	openai-audio,openai-audio2,openai-audiochat,replicate-chord	.lab
+991	NOT FOUND		up to 10 concurrent jobs
+991	NOT FOUND		processing timeout
+1002	found	fal-demucs-llms,mvsep-algos,mvsep-fullapi,mvsep-openapi,replicate-demucs-version	htdemucs_ft
+1002	found	fal-demucs-llms,replicate-demucs-versions,replicate-demucs,up-demucs-readme	mdx_extra_q
+1006	found	up-demucs-readme	is not clear
+1006	found	el-music-terms,el-terms,fal-terms,flat-tos-embed,flat-tos-individual,gemini-term	likely
+1006	found	up-musdb-zenodo,up-musdbhq-zenodo	for educational purposes only
+1015	found	mvsep-algos,mvsep-openapi	a guitar validation set
+1026	NOT FOUND		Output-only facts
+1031	NOT FOUND		Other multimodal LLM APIs
+1032	NOT FOUND		## Not covered
+1032	found	fal-demucs-llms,mistral-audio,mvsep-algos,replicate-pricing	SOTA
+1033	found	lalal-pricing	Pro is the better choice
+1033	found	chordmini-readme,claude-messages-md,el-openapi,el-pricing-api,flat-openapi,gemin	recommended

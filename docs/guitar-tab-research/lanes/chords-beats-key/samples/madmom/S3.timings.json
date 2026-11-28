@@ -1,0 +1,24 @@
+{
+ "madmom_version": "0.16.1",
+ "import_s": 0.165,
+ "rnn_beat_activation_s": 3.612,
+ "dbn_beat_tracking_s": 0.068,
+ "tempo_estimation_s": 0.667,
+ "rnn_downbeat_activation_s": 3.412,
+ "dbn_downbeat_tracking_s": 0.215,
+ "chords_cnn_crf_s": 10.225,
+ "chords_deepchroma_s": 0.063,
+ "key_cnn_s": 2.214,
+ "outputs": {
+  "n_beats": 37,
+  "tempo_top": [
+   95.23809523809524,
+   0.32616337211243185
+  ],
+  "n_downbeat_rows": 29,
+  "n_bar_starts": 8,
+  "chords_cnn_n_segments": 12,
+  "chords_dc_n_segments": 10,
+  "key": "G major"
+ }
+}

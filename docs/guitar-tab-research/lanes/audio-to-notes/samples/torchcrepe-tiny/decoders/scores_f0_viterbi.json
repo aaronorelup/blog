@@ -1,0 +1,46 @@
+{
+ "tool": "torchcrepe-tiny-viterbi",
+ "kind": "f0",
+ "dir": "/home/user/gtr/lanes/audio-to-notes/out/torchcrepe-tiny/decoders/viterbi",
+ "conf_threshold": null,
+ "results": {
+  "R1b": {
+   "eval_id": "e0969",
+   "args": "f0 --truth R1b --est /home/user/gtr/lanes/audio-to-notes/out/torchcrepe-tiny/decoders/viterbi/R1b.f0.csv --voice lead",
+   "metrics": {
+    "voicing_recall": 1.0,
+    "voicing_false_alarm": 1.0,
+    "raw_pitch_accuracy": 0.44158,
+    "raw_chroma_accuracy": 0.454196,
+    "overall_accuracy": 0.274369
+   },
+   "counts": {
+    "n_frames": 2934,
+    "n_ref_voiced_frames": 1823,
+    "n_est_voiced_frames": 2934,
+    "n_est_rows": 2934,
+    "n_reference_notes": 70,
+    "n_overlapping_consecutive_pairs": 7
+   }
+  },
+  "S2n": {
+   "eval_id": "e0972",
+   "args": "f0 --truth S2n --est /home/user/gtr/lanes/audio-to-notes/out/torchcrepe-tiny/decoders/viterbi/S2n.f0.csv",
+   "metrics": {
+    "voicing_recall": 1.0,
+    "voicing_false_alarm": 1.0,
+    "raw_pitch_accuracy": 0.069197,
+    "raw_chroma_accuracy": 0.231317,
+    "overall_accuracy": 0.059605
+   },
+   "counts": {
+    "n_frames": 2936,
+    "n_ref_voiced_frames": 2529,
+    "n_est_voiced_frames": 2936,
+    "n_est_rows": 2936,
+    "n_reference_notes": 42,
+    "n_overlapping_consecutive_pairs": 0
+   }
+  }
+ }
+}

@@ -1,0 +1,2403 @@
+{
+ "pattern": "allcores-repeat-4c",
+ "interval_s": 2.0,
+ "seconds": 368.8,
+ "box_busy_cpu_s": 1438.1,
+ "job_cpu_s": 816.1,
+ "other_cpu_s": 622.0,
+ "mean_load1": 6.5,
+ "samples": [
+  {
+   "t": 2.0,
+   "load1": 2.34,
+   "busy_per_cpu": {
+    "cpu0": 0.785,
+    "cpu1": 0.847,
+    "cpu2": 0.466,
+    "cpu3": 0.468
+   },
+   "box_busy_cpu_s": 5.2,
+   "job_cpu_s": 0.0,
+   "other_cpu_s": 5.2
+  },
+  {
+   "t": 4.0,
+   "load1": 2.34,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 0.99,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 7.98,
+   "job_cpu_s": 0.0,
+   "other_cpu_s": 7.98
+  },
+  {
+   "t": 6.0,
+   "load1": 2.63,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 0.47,
+    "cpu3": 0.673
+   },
+   "box_busy_cpu_s": 6.29,
+   "job_cpu_s": 1.11,
+   "other_cpu_s": 5.18
+  },
+  {
+   "t": 8.0,
+   "load1": 2.63,
+   "busy_per_cpu": {
+    "cpu0": 0.985,
+    "cpu1": 0.99,
+    "cpu2": 0.678,
+    "cpu3": 0.853
+   },
+   "box_busy_cpu_s": 7.03,
+   "job_cpu_s": 2.66,
+   "other_cpu_s": 4.37
+  },
+  {
+   "t": 10.0,
+   "load1": 3.22,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 7.98,
+   "job_cpu_s": 3.09,
+   "other_cpu_s": 4.89
+  },
+  {
+   "t": 12.0,
+   "load1": 3.22,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 0.985,
+    "cpu3": 0.965
+   },
+   "box_busy_cpu_s": 7.9,
+   "job_cpu_s": 3.45,
+   "other_cpu_s": 4.45
+  },
+  {
+   "t": 14.0,
+   "load1": 3.22,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 0.995,
+    "cpu2": 0.975,
+    "cpu3": 0.985
+   },
+   "box_busy_cpu_s": 7.89,
+   "job_cpu_s": 3.97,
+   "other_cpu_s": 3.92
+  },
+  {
+   "t": 16.0,
+   "load1": 3.37,
+   "busy_per_cpu": {
+    "cpu0": 0.955,
+    "cpu1": 0.935,
+    "cpu2": 0.883,
+    "cpu3": 0.894
+   },
+   "box_busy_cpu_s": 7.29,
+   "job_cpu_s": 6.93,
+   "other_cpu_s": 0.36
+  },
+  {
+   "t": 18.0,
+   "load1": 3.37,
+   "busy_per_cpu": {
+    "cpu0": 0.961,
+    "cpu1": 0.93,
+    "cpu2": 0.965,
+    "cpu3": 0.975
+   },
+   "box_busy_cpu_s": 7.7,
+   "job_cpu_s": 7.39,
+   "other_cpu_s": 0.31
+  },
+  {
+   "t": 20.0,
+   "load1": 3.42,
+   "busy_per_cpu": {
+    "cpu0": 0.921,
+    "cpu1": 0.926,
+    "cpu2": 0.941,
+    "cpu3": 0.97
+   },
+   "box_busy_cpu_s": 7.55,
+   "job_cpu_s": 6.96,
+   "other_cpu_s": 0.59
+  },
+  {
+   "t": 22.0,
+   "load1": 3.42,
+   "busy_per_cpu": {
+    "cpu0": 0.934,
+    "cpu1": 0.945,
+    "cpu2": 0.93,
+    "cpu3": 0.95
+   },
+   "box_busy_cpu_s": 7.55,
+   "job_cpu_s": 7.1,
+   "other_cpu_s": 0.45
+  },
+  {
+   "t": 24.0,
+   "load1": 3.42,
+   "busy_per_cpu": {
+    "cpu0": 0.955,
+    "cpu1": 0.931,
+    "cpu2": 0.945,
+    "cpu3": 0.966
+   },
+   "box_busy_cpu_s": 7.66,
+   "job_cpu_s": 6.6,
+   "other_cpu_s": 1.06
+  },
+  {
+   "t": 26.0,
+   "load1": 3.46,
+   "busy_per_cpu": {
+    "cpu0": 0.915,
+    "cpu1": 0.99,
+    "cpu2": 0.95,
+    "cpu3": 0.935
+   },
+   "box_busy_cpu_s": 7.58,
+   "job_cpu_s": 6.63,
+   "other_cpu_s": 0.95
+  },
+  {
+   "t": 28.0,
+   "load1": 3.46,
+   "busy_per_cpu": {
+    "cpu0": 0.985,
+    "cpu1": 0.965,
+    "cpu2": 0.965,
+    "cpu3": 0.935
+   },
+   "box_busy_cpu_s": 7.71,
+   "job_cpu_s": 6.59,
+   "other_cpu_s": 1.12
+  },
+  {
+   "t": 30.1,
+   "load1": 3.51,
+   "busy_per_cpu": {
+    "cpu0": 0.96,
+    "cpu1": 0.96,
+    "cpu2": 0.955,
+    "cpu3": 0.96
+   },
+   "box_busy_cpu_s": 7.68,
+   "job_cpu_s": 7.02,
+   "other_cpu_s": 0.66
+  },
+  {
+   "t": 32.1,
+   "load1": 3.51,
+   "busy_per_cpu": {
+    "cpu0": 0.924,
+    "cpu1": 0.95,
+    "cpu2": 0.965,
+    "cpu3": 0.939
+   },
+   "box_busy_cpu_s": 7.53,
+   "job_cpu_s": 6.94,
+   "other_cpu_s": 0.59
+  },
+  {
+   "t": 34.1,
+   "load1": 3.51,
+   "busy_per_cpu": {
+    "cpu0": 0.945,
+    "cpu1": 0.92,
+    "cpu2": 0.921,
+    "cpu3": 0.955
+   },
+   "box_busy_cpu_s": 7.48,
+   "job_cpu_s": 6.92,
+   "other_cpu_s": 0.56
+  },
+  {
+   "t": 36.1,
+   "load1": 3.55,
+   "busy_per_cpu": {
+    "cpu0": 0.955,
+    "cpu1": 0.95,
+    "cpu2": 0.905,
+    "cpu3": 0.915
+   },
+   "box_busy_cpu_s": 7.47,
+   "job_cpu_s": 6.91,
+   "other_cpu_s": 0.56
+  },
+  {
+   "t": 38.1,
+   "load1": 3.55,
+   "busy_per_cpu": {
+    "cpu0": 0.96,
+    "cpu1": 0.935,
+    "cpu2": 0.98,
+    "cpu3": 0.934
+   },
+   "box_busy_cpu_s": 7.58,
+   "job_cpu_s": 5.29,
+   "other_cpu_s": 2.29
+  },
+  {
+   "t": 40.1,
+   "load1": 3.66,
+   "busy_per_cpu": {
+    "cpu0": 0.99,
+    "cpu1": 0.99,
+    "cpu2": 1.0,
+    "cpu3": 0.98
+   },
+   "box_busy_cpu_s": 7.94,
+   "job_cpu_s": 3.52,
+   "other_cpu_s": 4.42
+  },
+  {
+   "t": 42.1,
+   "load1": 3.66,
+   "busy_per_cpu": {
+    "cpu0": 0.946,
+    "cpu1": 0.95,
+    "cpu2": 0.995,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.81,
+   "job_cpu_s": 4.4,
+   "other_cpu_s": 3.41
+  },
+  {
+   "t": 44.1,
+   "load1": 3.66,
+   "busy_per_cpu": {
+    "cpu0": 0.99,
+    "cpu1": 1.0,
+    "cpu2": 0.995,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.96,
+   "job_cpu_s": 4.35,
+   "other_cpu_s": 3.61
+  },
+  {
+   "t": 46.1,
+   "load1": 4.01,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 1.0,
+    "cpu2": 0.995,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.0,
+   "job_cpu_s": 4.36,
+   "other_cpu_s": 3.64
+  },
+  {
+   "t": 48.1,
+   "load1": 4.01,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.0,
+   "job_cpu_s": 2.75,
+   "other_cpu_s": 5.25
+  },
+  {
+   "t": 50.1,
+   "load1": 4.49,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.02,
+   "job_cpu_s": 3.15,
+   "other_cpu_s": 4.87
+  },
+  {
+   "t": 52.1,
+   "load1": 4.49,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.01,
+   "job_cpu_s": 2.12,
+   "other_cpu_s": 5.89
+  },
+  {
+   "t": 54.1,
+   "load1": 4.49,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.07,
+   "job_cpu_s": 1.9,
+   "other_cpu_s": 6.17
+  },
+  {
+   "t": 56.1,
+   "load1": 5.01,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.04,
+   "job_cpu_s": 2.01,
+   "other_cpu_s": 6.03
+  },
+  {
+   "t": 58.1,
+   "load1": 5.01,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 0.995,
+    "cpu2": 0.99,
+    "cpu3": 0.97
+   },
+   "box_busy_cpu_s": 7.94,
+   "job_cpu_s": 2.14,
+   "other_cpu_s": 5.8
+  },
+  {
+   "t": 60.1,
+   "load1": 5.09,
+   "busy_per_cpu": {
+    "cpu0": 0.99,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.99,
+   "job_cpu_s": 3.48,
+   "other_cpu_s": 4.51
+  },
+  {
+   "t": 62.1,
+   "load1": 5.09,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 0.995,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.01,
+   "job_cpu_s": 3.4,
+   "other_cpu_s": 4.61
+  },
+  {
+   "t": 64.1,
+   "load1": 5.09,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 0.99,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.99,
+   "job_cpu_s": 3.37,
+   "other_cpu_s": 4.62
+  },
+  {
+   "t": 66.2,
+   "load1": 5.56,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.0,
+   "job_cpu_s": 3.1,
+   "other_cpu_s": 4.9
+  },
+  {
+   "t": 68.2,
+   "load1": 5.56,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.02,
+   "job_cpu_s": 2.32,
+   "other_cpu_s": 5.7
+  },
+  {
+   "t": 70.2,
+   "load1": 6.08,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.01,
+   "job_cpu_s": 2.98,
+   "other_cpu_s": 5.03
+  },
+  {
+   "t": 72.2,
+   "load1": 6.08,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 1.0,
+    "cpu2": 0.98,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.96,
+   "job_cpu_s": 3.04,
+   "other_cpu_s": 4.92
+  },
+  {
+   "t": 74.2,
+   "load1": 6.08,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 0.99,
+    "cpu2": 0.99,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 7.93,
+   "job_cpu_s": 4.74,
+   "other_cpu_s": 3.19
+  },
+  {
+   "t": 76.2,
+   "load1": 6.15,
+   "busy_per_cpu": {
+    "cpu0": 0.985,
+    "cpu1": 0.98,
+    "cpu2": 0.99,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.93,
+   "job_cpu_s": 5.11,
+   "other_cpu_s": 2.82
+  },
+  {
+   "t": 78.2,
+   "load1": 6.15,
+   "busy_per_cpu": {
+    "cpu0": 0.985,
+    "cpu1": 1.0,
+    "cpu2": 0.975,
+    "cpu3": 0.99
+   },
+   "box_busy_cpu_s": 7.87,
+   "job_cpu_s": 5.03,
+   "other_cpu_s": 2.84
+  },
+  {
+   "t": 80.2,
+   "load1": 6.06,
+   "busy_per_cpu": {
+    "cpu0": 0.975,
+    "cpu1": 0.985,
+    "cpu2": 0.945,
+    "cpu3": 0.955
+   },
+   "box_busy_cpu_s": 7.73,
+   "job_cpu_s": 4.58,
+   "other_cpu_s": 3.15
+  },
+  {
+   "t": 82.2,
+   "load1": 6.06,
+   "busy_per_cpu": {
+    "cpu0": 0.96,
+    "cpu1": 0.96,
+    "cpu2": 0.98,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 7.74,
+   "job_cpu_s": 5.02,
+   "other_cpu_s": 2.72
+  },
+  {
+   "t": 84.2,
+   "load1": 6.06,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 0.945,
+    "cpu2": 0.97,
+    "cpu3": 0.98
+   },
+   "box_busy_cpu_s": 7.77,
+   "job_cpu_s": 4.8,
+   "other_cpu_s": 2.97
+  },
+  {
+   "t": 86.2,
+   "load1": 6.06,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 0.995,
+    "cpu2": 1.0,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 7.97,
+   "job_cpu_s": 4.9,
+   "other_cpu_s": 3.07
+  },
+  {
+   "t": 88.2,
+   "load1": 6.06,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 0.995,
+    "cpu2": 0.995,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.98,
+   "job_cpu_s": 5.04,
+   "other_cpu_s": 2.94
+  },
+  {
+   "t": 90.2,
+   "load1": 5.97,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 0.995,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.98,
+   "job_cpu_s": 5.11,
+   "other_cpu_s": 2.87
+  },
+  {
+   "t": 92.2,
+   "load1": 5.97,
+   "busy_per_cpu": {
+    "cpu0": 0.99,
+    "cpu1": 0.995,
+    "cpu2": 0.99,
+    "cpu3": 0.99
+   },
+   "box_busy_cpu_s": 7.99,
+   "job_cpu_s": 3.57,
+   "other_cpu_s": 4.42
+  },
+  {
+   "t": 94.2,
+   "load1": 5.97,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.01,
+   "job_cpu_s": 2.56,
+   "other_cpu_s": 5.45
+  },
+  {
+   "t": 96.2,
+   "load1": 6.05,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.01,
+   "job_cpu_s": 2.61,
+   "other_cpu_s": 5.4
+  },
+  {
+   "t": 98.2,
+   "load1": 6.05,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 1.0,
+    "cpu2": 0.995,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 7.99,
+   "job_cpu_s": 3.37,
+   "other_cpu_s": 4.62
+  },
+  {
+   "t": 100.2,
+   "load1": 6.29,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 0.99
+   },
+   "box_busy_cpu_s": 7.99,
+   "job_cpu_s": 3.43,
+   "other_cpu_s": 4.56
+  },
+  {
+   "t": 102.2,
+   "load1": 6.29,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.04,
+   "job_cpu_s": 3.53,
+   "other_cpu_s": 4.51
+  },
+  {
+   "t": 104.2,
+   "load1": 6.29,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 0.995,
+    "cpu2": 0.99,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.97,
+   "job_cpu_s": 3.4,
+   "other_cpu_s": 4.57
+  },
+  {
+   "t": 106.2,
+   "load1": 6.27,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.0,
+   "job_cpu_s": 3.32,
+   "other_cpu_s": 4.68
+  },
+  {
+   "t": 108.2,
+   "load1": 6.27,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 1.0,
+    "cpu2": 0.995,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 7.97,
+   "job_cpu_s": 3.68,
+   "other_cpu_s": 4.29
+  },
+  {
+   "t": 110.3,
+   "load1": 6.41,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.0,
+   "job_cpu_s": 4.78,
+   "other_cpu_s": 3.22
+  },
+  {
+   "t": 112.3,
+   "load1": 6.41,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 0.995,
+    "cpu2": 0.99,
+    "cpu3": 0.98
+   },
+   "box_busy_cpu_s": 7.94,
+   "job_cpu_s": 4.99,
+   "other_cpu_s": 2.95
+  },
+  {
+   "t": 114.3,
+   "load1": 6.41,
+   "busy_per_cpu": {
+    "cpu0": 0.985,
+    "cpu1": 0.98,
+    "cpu2": 0.98,
+    "cpu3": 0.975
+   },
+   "box_busy_cpu_s": 7.85,
+   "job_cpu_s": 4.44,
+   "other_cpu_s": 3.41
+  },
+  {
+   "t": 116.3,
+   "load1": 6.37,
+   "busy_per_cpu": {
+    "cpu0": 0.99,
+    "cpu1": 0.985,
+    "cpu2": 1.0,
+    "cpu3": 0.99
+   },
+   "box_busy_cpu_s": 7.94,
+   "job_cpu_s": 3.13,
+   "other_cpu_s": 4.81
+  },
+  {
+   "t": 118.3,
+   "load1": 6.37,
+   "busy_per_cpu": {
+    "cpu0": 0.99,
+    "cpu1": 0.99,
+    "cpu2": 0.955,
+    "cpu3": 0.975
+   },
+   "box_busy_cpu_s": 7.83,
+   "job_cpu_s": 4.53,
+   "other_cpu_s": 3.3
+  },
+  {
+   "t": 120.3,
+   "load1": 6.26,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 0.99,
+    "cpu2": 0.985,
+    "cpu3": 0.96
+   },
+   "box_busy_cpu_s": 7.86,
+   "job_cpu_s": 4.94,
+   "other_cpu_s": 2.92
+  },
+  {
+   "t": 122.3,
+   "load1": 6.26,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 0.995,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 8.02,
+   "job_cpu_s": 3.93,
+   "other_cpu_s": 4.09
+  },
+  {
+   "t": 124.3,
+   "load1": 6.26,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.96,
+   "job_cpu_s": 4.67,
+   "other_cpu_s": 3.29
+  },
+  {
+   "t": 126.3,
+   "load1": 6.24,
+   "busy_per_cpu": {
+    "cpu0": 0.99,
+    "cpu1": 0.995,
+    "cpu2": 0.99,
+    "cpu3": 0.98
+   },
+   "box_busy_cpu_s": 7.9,
+   "job_cpu_s": 4.84,
+   "other_cpu_s": 3.06
+  },
+  {
+   "t": 128.3,
+   "load1": 6.24,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 0.995,
+    "cpu2": 0.995,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 7.97,
+   "job_cpu_s": 5.23,
+   "other_cpu_s": 2.74
+  },
+  {
+   "t": 130.3,
+   "load1": 6.46,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 0.99,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.01,
+   "job_cpu_s": 4.6,
+   "other_cpu_s": 3.41
+  },
+  {
+   "t": 132.3,
+   "load1": 6.46,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 1.0,
+    "cpu2": 0.98,
+    "cpu3": 0.975
+   },
+   "box_busy_cpu_s": 7.91,
+   "job_cpu_s": 4.59,
+   "other_cpu_s": 3.32
+  },
+  {
+   "t": 134.3,
+   "load1": 6.46,
+   "busy_per_cpu": {
+    "cpu0": 0.985,
+    "cpu1": 0.995,
+    "cpu2": 0.995,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.92,
+   "job_cpu_s": 5.17,
+   "other_cpu_s": 2.75
+  },
+  {
+   "t": 136.3,
+   "load1": 6.59,
+   "busy_per_cpu": {
+    "cpu0": 0.97,
+    "cpu1": 0.99,
+    "cpu2": 0.995,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 7.87,
+   "job_cpu_s": 5.0,
+   "other_cpu_s": 2.87
+  },
+  {
+   "t": 138.3,
+   "load1": 6.59,
+   "busy_per_cpu": {
+    "cpu0": 0.98,
+    "cpu1": 0.975,
+    "cpu2": 0.97,
+    "cpu3": 0.975
+   },
+   "box_busy_cpu_s": 7.79,
+   "job_cpu_s": 4.88,
+   "other_cpu_s": 2.91
+  },
+  {
+   "t": 140.3,
+   "load1": 6.54,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 0.99,
+    "cpu2": 0.99,
+    "cpu3": 0.99
+   },
+   "box_busy_cpu_s": 7.93,
+   "job_cpu_s": 4.51,
+   "other_cpu_s": 3.42
+  },
+  {
+   "t": 142.3,
+   "load1": 6.54,
+   "busy_per_cpu": {
+    "cpu0": 0.98,
+    "cpu1": 0.956,
+    "cpu2": 0.955,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.8,
+   "job_cpu_s": 4.32,
+   "other_cpu_s": 3.48
+  },
+  {
+   "t": 144.3,
+   "load1": 6.54,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.0,
+   "job_cpu_s": 3.77,
+   "other_cpu_s": 4.23
+  },
+  {
+   "t": 146.3,
+   "load1": 6.98,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 0.995,
+    "cpu2": 0.995,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.98,
+   "job_cpu_s": 3.5,
+   "other_cpu_s": 4.48
+  },
+  {
+   "t": 148.3,
+   "load1": 6.98,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.04,
+   "job_cpu_s": 3.68,
+   "other_cpu_s": 4.36
+  },
+  {
+   "t": 150.3,
+   "load1": 6.98,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 0.99
+   },
+   "box_busy_cpu_s": 7.98,
+   "job_cpu_s": 3.44,
+   "other_cpu_s": 4.54
+  },
+  {
+   "t": 152.3,
+   "load1": 6.98,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.02,
+   "job_cpu_s": 3.64,
+   "other_cpu_s": 4.38
+  },
+  {
+   "t": 154.3,
+   "load1": 6.98,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.99,
+   "job_cpu_s": 3.32,
+   "other_cpu_s": 4.67
+  },
+  {
+   "t": 156.3,
+   "load1": 7.14,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.02,
+   "job_cpu_s": 3.45,
+   "other_cpu_s": 4.57
+  },
+  {
+   "t": 158.3,
+   "load1": 7.14,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 0.995,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.0,
+   "job_cpu_s": 3.49,
+   "other_cpu_s": 4.51
+  },
+  {
+   "t": 160.4,
+   "load1": 7.45,
+   "busy_per_cpu": {
+    "cpu0": 0.99,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.98,
+   "job_cpu_s": 3.53,
+   "other_cpu_s": 4.45
+  },
+  {
+   "t": 162.4,
+   "load1": 7.45,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 0.995,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.02,
+   "job_cpu_s": 3.76,
+   "other_cpu_s": 4.26
+  },
+  {
+   "t": 164.4,
+   "load1": 7.45,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 0.995,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.06,
+   "job_cpu_s": 2.89,
+   "other_cpu_s": 5.17
+  },
+  {
+   "t": 166.4,
+   "load1": 7.57,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.98,
+   "job_cpu_s": 3.24,
+   "other_cpu_s": 4.74
+  },
+  {
+   "t": 168.4,
+   "load1": 7.57,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 0.995,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 8.0,
+   "job_cpu_s": 2.95,
+   "other_cpu_s": 5.05
+  },
+  {
+   "t": 170.4,
+   "load1": 7.45,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.06,
+   "job_cpu_s": 3.28,
+   "other_cpu_s": 4.78
+  },
+  {
+   "t": 172.4,
+   "load1": 7.45,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 0.99,
+    "cpu2": 1.0,
+    "cpu3": 0.99
+   },
+   "box_busy_cpu_s": 7.95,
+   "job_cpu_s": 3.39,
+   "other_cpu_s": 4.56
+  },
+  {
+   "t": 174.4,
+   "load1": 7.45,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 0.995,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.05,
+   "job_cpu_s": 2.48,
+   "other_cpu_s": 5.57
+  },
+  {
+   "t": 176.4,
+   "load1": 7.89,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 0.995,
+    "cpu3": 0.99
+   },
+   "box_busy_cpu_s": 7.98,
+   "job_cpu_s": 2.78,
+   "other_cpu_s": 5.2
+  },
+  {
+   "t": 178.4,
+   "load1": 7.89,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 0.995,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.99,
+   "job_cpu_s": 3.0,
+   "other_cpu_s": 4.99
+  },
+  {
+   "t": 180.4,
+   "load1": 8.06,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 0.995,
+    "cpu2": 0.99,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 7.96,
+   "job_cpu_s": 3.01,
+   "other_cpu_s": 4.95
+  },
+  {
+   "t": 182.4,
+   "load1": 8.06,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.0,
+   "job_cpu_s": 2.58,
+   "other_cpu_s": 5.42
+  },
+  {
+   "t": 184.4,
+   "load1": 8.06,
+   "busy_per_cpu": {
+    "cpu0": 0.99,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.03,
+   "job_cpu_s": 3.39,
+   "other_cpu_s": 4.64
+  },
+  {
+   "t": 186.4,
+   "load1": 8.14,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.97,
+   "job_cpu_s": 3.13,
+   "other_cpu_s": 4.84
+  },
+  {
+   "t": 188.4,
+   "load1": 8.14,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.99,
+   "job_cpu_s": 3.12,
+   "other_cpu_s": 4.87
+  },
+  {
+   "t": 190.4,
+   "load1": 7.97,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.03,
+   "job_cpu_s": 3.59,
+   "other_cpu_s": 4.44
+  },
+  {
+   "t": 192.4,
+   "load1": 7.97,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 1.0,
+    "cpu2": 0.995,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.0,
+   "job_cpu_s": 2.8,
+   "other_cpu_s": 5.2
+  },
+  {
+   "t": 194.4,
+   "load1": 7.97,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.01,
+   "job_cpu_s": 3.22,
+   "other_cpu_s": 4.79
+  },
+  {
+   "t": 196.5,
+   "load1": 8.29,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 0.995,
+    "cpu2": 0.995,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.03,
+   "job_cpu_s": 3.05,
+   "other_cpu_s": 4.98
+  },
+  {
+   "t": 198.5,
+   "load1": 8.29,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.04,
+   "job_cpu_s": 3.24,
+   "other_cpu_s": 4.8
+  },
+  {
+   "t": 200.5,
+   "load1": 8.35,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.0,
+   "job_cpu_s": 2.79,
+   "other_cpu_s": 5.21
+  },
+  {
+   "t": 202.5,
+   "load1": 8.35,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.0,
+   "job_cpu_s": 3.55,
+   "other_cpu_s": 4.45
+  },
+  {
+   "t": 204.5,
+   "load1": 8.35,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.03,
+   "job_cpu_s": 2.9,
+   "other_cpu_s": 5.13
+  },
+  {
+   "t": 206.5,
+   "load1": 8.56,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 8.04,
+   "job_cpu_s": 2.09,
+   "other_cpu_s": 5.95
+  },
+  {
+   "t": 208.5,
+   "load1": 8.56,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.0,
+   "job_cpu_s": 2.16,
+   "other_cpu_s": 5.84
+  },
+  {
+   "t": 210.5,
+   "load1": 8.67,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.04,
+   "job_cpu_s": 2.14,
+   "other_cpu_s": 5.9
+  },
+  {
+   "t": 212.5,
+   "load1": 8.67,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.0,
+   "job_cpu_s": 2.27,
+   "other_cpu_s": 5.73
+  },
+  {
+   "t": 214.5,
+   "load1": 8.67,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.02,
+   "job_cpu_s": 3.24,
+   "other_cpu_s": 4.78
+  },
+  {
+   "t": 216.5,
+   "load1": 8.46,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 0.995,
+    "cpu2": 0.99,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.97,
+   "job_cpu_s": 4.83,
+   "other_cpu_s": 3.14
+  },
+  {
+   "t": 218.5,
+   "load1": 8.46,
+   "busy_per_cpu": {
+    "cpu0": 0.98,
+    "cpu1": 0.985,
+    "cpu2": 1.0,
+    "cpu3": 0.99
+   },
+   "box_busy_cpu_s": 7.89,
+   "job_cpu_s": 4.55,
+   "other_cpu_s": 3.34
+  },
+  {
+   "t": 220.5,
+   "load1": 8.42,
+   "busy_per_cpu": {
+    "cpu0": 0.98,
+    "cpu1": 0.985,
+    "cpu2": 0.96,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 7.86,
+   "job_cpu_s": 4.3,
+   "other_cpu_s": 3.56
+  },
+  {
+   "t": 222.5,
+   "load1": 8.42,
+   "busy_per_cpu": {
+    "cpu0": 0.975,
+    "cpu1": 0.985,
+    "cpu2": 0.99,
+    "cpu3": 0.98
+   },
+   "box_busy_cpu_s": 7.84,
+   "job_cpu_s": 4.65,
+   "other_cpu_s": 3.19
+  },
+  {
+   "t": 224.5,
+   "load1": 8.42,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 0.99,
+    "cpu2": 0.995,
+    "cpu3": 0.99
+   },
+   "box_busy_cpu_s": 7.92,
+   "job_cpu_s": 4.21,
+   "other_cpu_s": 3.71
+  },
+  {
+   "t": 226.5,
+   "load1": 8.39,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 7.97,
+   "job_cpu_s": 4.84,
+   "other_cpu_s": 3.13
+  },
+  {
+   "t": 228.5,
+   "load1": 8.39,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 0.985,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.01,
+   "job_cpu_s": 4.84,
+   "other_cpu_s": 3.17
+  },
+  {
+   "t": 230.5,
+   "load1": 8.12,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.97,
+   "job_cpu_s": 4.29,
+   "other_cpu_s": 3.68
+  },
+  {
+   "t": 232.5,
+   "load1": 8.12,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.0,
+   "job_cpu_s": 4.04,
+   "other_cpu_s": 3.96
+  },
+  {
+   "t": 234.6,
+   "load1": 8.12,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 0.995,
+    "cpu2": 1.0,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 8.02,
+   "job_cpu_s": 3.95,
+   "other_cpu_s": 4.07
+  },
+  {
+   "t": 236.6,
+   "load1": 8.19,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.01,
+   "job_cpu_s": 4.14,
+   "other_cpu_s": 3.87
+  },
+  {
+   "t": 238.6,
+   "load1": 8.19,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 0.995,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.98,
+   "job_cpu_s": 3.72,
+   "other_cpu_s": 4.26
+  },
+  {
+   "t": 240.6,
+   "load1": 7.93,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 0.995,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 7.96,
+   "job_cpu_s": 4.1,
+   "other_cpu_s": 3.86
+  },
+  {
+   "t": 242.6,
+   "load1": 7.93,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 0.985,
+    "cpu2": 0.98,
+    "cpu3": 0.99
+   },
+   "box_busy_cpu_s": 7.88,
+   "job_cpu_s": 4.3,
+   "other_cpu_s": 3.58
+  },
+  {
+   "t": 244.6,
+   "load1": 7.93,
+   "busy_per_cpu": {
+    "cpu0": 0.98,
+    "cpu1": 0.985,
+    "cpu2": 0.985,
+    "cpu3": 0.985
+   },
+   "box_busy_cpu_s": 7.88,
+   "job_cpu_s": 4.29,
+   "other_cpu_s": 3.59
+  },
+  {
+   "t": 246.6,
+   "load1": 7.7,
+   "busy_per_cpu": {
+    "cpu0": 0.99,
+    "cpu1": 0.99,
+    "cpu2": 0.98,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 7.88,
+   "job_cpu_s": 4.14,
+   "other_cpu_s": 3.74
+  },
+  {
+   "t": 248.6,
+   "load1": 7.7,
+   "busy_per_cpu": {
+    "cpu0": 0.97,
+    "cpu1": 1.0,
+    "cpu2": 0.99,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.91,
+   "job_cpu_s": 3.61,
+   "other_cpu_s": 4.3
+  },
+  {
+   "t": 250.6,
+   "load1": 7.8,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.03,
+   "job_cpu_s": 3.69,
+   "other_cpu_s": 4.34
+  },
+  {
+   "t": 252.6,
+   "load1": 7.8,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 0.995,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.02,
+   "job_cpu_s": 3.82,
+   "other_cpu_s": 4.2
+  },
+  {
+   "t": 254.6,
+   "load1": 7.8,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 8.02,
+   "job_cpu_s": 3.36,
+   "other_cpu_s": 4.66
+  },
+  {
+   "t": 256.6,
+   "load1": 7.82,
+   "busy_per_cpu": {
+    "cpu0": 0.99,
+    "cpu1": 0.995,
+    "cpu2": 0.995,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.14,
+   "job_cpu_s": 3.78,
+   "other_cpu_s": 4.36
+  },
+  {
+   "t": 258.6,
+   "load1": 7.82,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 0.995,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.96,
+   "job_cpu_s": 3.54,
+   "other_cpu_s": 4.42
+  },
+  {
+   "t": 260.6,
+   "load1": 7.91,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.99,
+   "job_cpu_s": 3.7,
+   "other_cpu_s": 4.29
+  },
+  {
+   "t": 262.6,
+   "load1": 7.91,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.04,
+   "job_cpu_s": 3.58,
+   "other_cpu_s": 4.46
+  },
+  {
+   "t": 264.6,
+   "load1": 7.91,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.01,
+   "job_cpu_s": 3.6,
+   "other_cpu_s": 4.41
+  },
+  {
+   "t": 266.7,
+   "load1": 7.76,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 0.98
+   },
+   "box_busy_cpu_s": 7.97,
+   "job_cpu_s": 4.14,
+   "other_cpu_s": 3.83
+  },
+  {
+   "t": 268.7,
+   "load1": 7.76,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.97,
+   "job_cpu_s": 5.04,
+   "other_cpu_s": 2.93
+  },
+  {
+   "t": 270.7,
+   "load1": 7.54,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 0.985,
+    "cpu2": 0.98,
+    "cpu3": 0.975
+   },
+   "box_busy_cpu_s": 7.91,
+   "job_cpu_s": 5.14,
+   "other_cpu_s": 2.77
+  },
+  {
+   "t": 272.7,
+   "load1": 7.54,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 0.995,
+    "cpu2": 0.995,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.97,
+   "job_cpu_s": 4.44,
+   "other_cpu_s": 3.53
+  },
+  {
+   "t": 274.7,
+   "load1": 7.54,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 0.985,
+    "cpu2": 0.995,
+    "cpu3": 0.985
+   },
+   "box_busy_cpu_s": 7.91,
+   "job_cpu_s": 3.35,
+   "other_cpu_s": 4.56
+  },
+  {
+   "t": 276.7,
+   "load1": 7.5,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 1.0,
+    "cpu2": 0.99,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.97,
+   "job_cpu_s": 2.63,
+   "other_cpu_s": 5.34
+  },
+  {
+   "t": 278.7,
+   "load1": 7.5,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 0.995,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 7.97,
+   "job_cpu_s": 3.13,
+   "other_cpu_s": 4.84
+  },
+  {
+   "t": 280.7,
+   "load1": 7.78,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 0.99,
+    "cpu2": 0.99,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.01,
+   "job_cpu_s": 3.4,
+   "other_cpu_s": 4.61
+  },
+  {
+   "t": 282.7,
+   "load1": 7.78,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.99,
+   "job_cpu_s": 3.64,
+   "other_cpu_s": 4.35
+  },
+  {
+   "t": 284.7,
+   "load1": 7.78,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.02,
+   "job_cpu_s": 3.36,
+   "other_cpu_s": 4.66
+  },
+  {
+   "t": 286.7,
+   "load1": 7.71,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 1.0,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.98,
+   "job_cpu_s": 4.17,
+   "other_cpu_s": 3.81
+  },
+  {
+   "t": 288.7,
+   "load1": 7.71,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 0.995,
+    "cpu2": 1.0,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 7.98,
+   "job_cpu_s": 5.1,
+   "other_cpu_s": 2.88
+  },
+  {
+   "t": 290.7,
+   "load1": 7.5,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 0.99,
+    "cpu2": 0.985,
+    "cpu3": 0.99
+   },
+   "box_busy_cpu_s": 7.93,
+   "job_cpu_s": 4.85,
+   "other_cpu_s": 3.08
+  },
+  {
+   "t": 292.7,
+   "load1": 7.5,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 0.99,
+    "cpu2": 0.995,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 8.01,
+   "job_cpu_s": 5.05,
+   "other_cpu_s": 2.96
+  },
+  {
+   "t": 294.7,
+   "load1": 7.5,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 0.975,
+    "cpu2": 0.99,
+    "cpu3": 0.98
+   },
+   "box_busy_cpu_s": 7.88,
+   "job_cpu_s": 5.12,
+   "other_cpu_s": 2.76
+  },
+  {
+   "t": 296.7,
+   "load1": 7.46,
+   "busy_per_cpu": {
+    "cpu0": 0.99,
+    "cpu1": 0.995,
+    "cpu2": 0.995,
+    "cpu3": 0.99
+   },
+   "box_busy_cpu_s": 7.89,
+   "job_cpu_s": 4.95,
+   "other_cpu_s": 2.94
+  },
+  {
+   "t": 298.7,
+   "load1": 7.46,
+   "busy_per_cpu": {
+    "cpu0": 0.975,
+    "cpu1": 0.959,
+    "cpu2": 0.99,
+    "cpu3": 0.955
+   },
+   "box_busy_cpu_s": 7.72,
+   "job_cpu_s": 4.99,
+   "other_cpu_s": 2.73
+  },
+  {
+   "t": 300.7,
+   "load1": 7.66,
+   "busy_per_cpu": {
+    "cpu0": 0.99,
+    "cpu1": 0.995,
+    "cpu2": 1.0,
+    "cpu3": 1.0
+   },
+   "box_busy_cpu_s": 7.94,
+   "job_cpu_s": 5.11,
+   "other_cpu_s": 2.83
+  },
+  {
+   "t": 302.7,
+   "load1": 7.66,
+   "busy_per_cpu": {
+    "cpu0": 0.94,
+    "cpu1": 0.95,
+    "cpu2": 0.955,
+    "cpu3": 0.955
+   },
+   "box_busy_cpu_s": 7.62,
+   "job_cpu_s": 7.17,
+   "other_cpu_s": 0.45
+  },
+  {
+   "t": 304.7,
+   "load1": 7.66,
+   "busy_per_cpu": {
+    "cpu0": 0.95,
+    "cpu1": 0.9,
+    "cpu2": 0.935,
+    "cpu3": 0.93
+   },
+   "box_busy_cpu_s": 7.44,
+   "job_cpu_s": 6.57,
+   "other_cpu_s": 0.87
+  },
+  {
+   "t": 306.7,
+   "load1": 7.37,
+   "busy_per_cpu": {
+    "cpu0": 0.941,
+    "cpu1": 0.94,
+    "cpu2": 0.925,
+    "cpu3": 0.98
+   },
+   "box_busy_cpu_s": 7.59,
+   "job_cpu_s": 7.27,
+   "other_cpu_s": 0.32
+  },
+  {
+   "t": 308.7,
+   "load1": 7.37,
+   "busy_per_cpu": {
+    "cpu0": 0.955,
+    "cpu1": 0.94,
+    "cpu2": 0.94,
+    "cpu3": 0.96
+   },
+   "box_busy_cpu_s": 7.63,
+   "job_cpu_s": 7.0,
+   "other_cpu_s": 0.63
+  },
+  {
+   "t": 310.7,
+   "load1": 7.1,
+   "busy_per_cpu": {
+    "cpu0": 0.94,
+    "cpu1": 0.935,
+    "cpu2": 0.97,
+    "cpu3": 0.98
+   },
+   "box_busy_cpu_s": 7.66,
+   "job_cpu_s": 7.11,
+   "other_cpu_s": 0.55
+  },
+  {
+   "t": 312.7,
+   "load1": 7.1,
+   "busy_per_cpu": {
+    "cpu0": 0.872,
+    "cpu1": 0.93,
+    "cpu2": 0.965,
+    "cpu3": 0.925
+   },
+   "box_busy_cpu_s": 7.41,
+   "job_cpu_s": 6.77,
+   "other_cpu_s": 0.64
+  },
+  {
+   "t": 314.7,
+   "load1": 7.1,
+   "busy_per_cpu": {
+    "cpu0": 0.965,
+    "cpu1": 0.929,
+    "cpu2": 0.915,
+    "cpu3": 0.91
+   },
+   "box_busy_cpu_s": 7.41,
+   "job_cpu_s": 6.81,
+   "other_cpu_s": 0.6
+  },
+  {
+   "t": 316.7,
+   "load1": 6.61,
+   "busy_per_cpu": {
+    "cpu0": 0.915,
+    "cpu1": 0.985,
+    "cpu2": 0.915,
+    "cpu3": 0.92
+   },
+   "box_busy_cpu_s": 7.49,
+   "job_cpu_s": 6.87,
+   "other_cpu_s": 0.62
+  },
+  {
+   "t": 318.7,
+   "load1": 6.61,
+   "busy_per_cpu": {
+    "cpu0": 0.955,
+    "cpu1": 0.97,
+    "cpu2": 0.975,
+    "cpu3": 0.93
+   },
+   "box_busy_cpu_s": 7.67,
+   "job_cpu_s": 6.78,
+   "other_cpu_s": 0.89
+  },
+  {
+   "t": 320.7,
+   "load1": 6.72,
+   "busy_per_cpu": {
+    "cpu0": 0.896,
+    "cpu1": 0.93,
+    "cpu2": 0.915,
+    "cpu3": 0.93
+   },
+   "box_busy_cpu_s": 7.38,
+   "job_cpu_s": 6.4,
+   "other_cpu_s": 0.98
+  },
+  {
+   "t": 322.7,
+   "load1": 6.72,
+   "busy_per_cpu": {
+    "cpu0": 0.945,
+    "cpu1": 0.945,
+    "cpu2": 0.965,
+    "cpu3": 0.945
+   },
+   "box_busy_cpu_s": 7.59,
+   "job_cpu_s": 6.89,
+   "other_cpu_s": 0.7
+  },
+  {
+   "t": 324.7,
+   "load1": 6.72,
+   "busy_per_cpu": {
+    "cpu0": 0.945,
+    "cpu1": 0.94,
+    "cpu2": 0.97,
+    "cpu3": 0.965
+   },
+   "box_busy_cpu_s": 7.66,
+   "job_cpu_s": 7.14,
+   "other_cpu_s": 0.52
+  },
+  {
+   "t": 326.7,
+   "load1": 6.42,
+   "busy_per_cpu": {
+    "cpu0": 0.935,
+    "cpu1": 0.94,
+    "cpu2": 0.944,
+    "cpu3": 0.925
+   },
+   "box_busy_cpu_s": 7.44,
+   "job_cpu_s": 6.55,
+   "other_cpu_s": 0.89
+  },
+  {
+   "t": 328.7,
+   "load1": 6.42,
+   "busy_per_cpu": {
+    "cpu0": 0.945,
+    "cpu1": 0.904,
+    "cpu2": 0.941,
+    "cpu3": 0.94
+   },
+   "box_busy_cpu_s": 7.48,
+   "job_cpu_s": 6.99,
+   "other_cpu_s": 0.49
+  },
+  {
+   "t": 330.7,
+   "load1": 6.23,
+   "busy_per_cpu": {
+    "cpu0": 0.946,
+    "cpu1": 0.92,
+    "cpu2": 0.97,
+    "cpu3": 0.94
+   },
+   "box_busy_cpu_s": 7.56,
+   "job_cpu_s": 6.89,
+   "other_cpu_s": 0.67
+  },
+  {
+   "t": 332.7,
+   "load1": 6.23,
+   "busy_per_cpu": {
+    "cpu0": 0.955,
+    "cpu1": 0.96,
+    "cpu2": 0.965,
+    "cpu3": 0.97
+   },
+   "box_busy_cpu_s": 7.71,
+   "job_cpu_s": 6.94,
+   "other_cpu_s": 0.77
+  },
+  {
+   "t": 334.7,
+   "load1": 6.23,
+   "busy_per_cpu": {
+    "cpu0": 0.95,
+    "cpu1": 0.886,
+    "cpu2": 0.915,
+    "cpu3": 0.925
+   },
+   "box_busy_cpu_s": 7.34,
+   "job_cpu_s": 6.76,
+   "other_cpu_s": 0.58
+  },
+  {
+   "t": 336.8,
+   "load1": 6.05,
+   "busy_per_cpu": {
+    "cpu0": 0.95,
+    "cpu1": 0.949,
+    "cpu2": 0.905,
+    "cpu3": 0.955
+   },
+   "box_busy_cpu_s": 7.52,
+   "job_cpu_s": 6.93,
+   "other_cpu_s": 0.59
+  },
+  {
+   "t": 338.8,
+   "load1": 6.05,
+   "busy_per_cpu": {
+    "cpu0": 0.95,
+    "cpu1": 0.951,
+    "cpu2": 0.914,
+    "cpu3": 0.934
+   },
+   "box_busy_cpu_s": 7.47,
+   "job_cpu_s": 7.16,
+   "other_cpu_s": 0.31
+  },
+  {
+   "t": 340.8,
+   "load1": 6.12,
+   "busy_per_cpu": {
+    "cpu0": 0.96,
+    "cpu1": 0.96,
+    "cpu2": 0.95,
+    "cpu3": 0.926
+   },
+   "box_busy_cpu_s": 7.63,
+   "job_cpu_s": 6.0,
+   "other_cpu_s": 1.63
+  },
+  {
+   "t": 342.8,
+   "load1": 6.12,
+   "busy_per_cpu": {
+    "cpu0": 1.0,
+    "cpu1": 0.995,
+    "cpu2": 1.0,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 7.97,
+   "job_cpu_s": 5.71,
+   "other_cpu_s": 2.26
+  },
+  {
+   "t": 344.8,
+   "load1": 6.12,
+   "busy_per_cpu": {
+    "cpu0": 0.995,
+    "cpu1": 0.97,
+    "cpu2": 0.965,
+    "cpu3": 0.975
+   },
+   "box_busy_cpu_s": 7.77,
+   "job_cpu_s": 6.62,
+   "other_cpu_s": 1.15
+  },
+  {
+   "t": 346.8,
+   "load1": 6.11,
+   "busy_per_cpu": {
+    "cpu0": 0.96,
+    "cpu1": 0.93,
+    "cpu2": 0.97,
+    "cpu3": 0.895
+   },
+   "box_busy_cpu_s": 7.55,
+   "job_cpu_s": 6.87,
+   "other_cpu_s": 0.68
+  },
+  {
+   "t": 348.8,
+   "load1": 6.11,
+   "busy_per_cpu": {
+    "cpu0": 0.93,
+    "cpu1": 0.894,
+    "cpu2": 0.94,
+    "cpu3": 0.975
+   },
+   "box_busy_cpu_s": 7.47,
+   "job_cpu_s": 7.18,
+   "other_cpu_s": 0.29
+  },
+  {
+   "t": 350.8,
+   "load1": 5.95,
+   "busy_per_cpu": {
+    "cpu0": 0.905,
+    "cpu1": 0.905,
+    "cpu2": 0.96,
+    "cpu3": 0.945
+   },
+   "box_busy_cpu_s": 7.39,
+   "job_cpu_s": 6.86,
+   "other_cpu_s": 0.53
+  },
+  {
+   "t": 352.8,
+   "load1": 5.95,
+   "busy_per_cpu": {
+    "cpu0": 0.965,
+    "cpu1": 0.96,
+    "cpu2": 0.965,
+    "cpu3": 0.995
+   },
+   "box_busy_cpu_s": 7.8,
+   "job_cpu_s": 5.52,
+   "other_cpu_s": 2.28
+  },
+  {
+   "t": 354.8,
+   "load1": 5.95,
+   "busy_per_cpu": {
+    "cpu0": 0.93,
+    "cpu1": 0.939,
+    "cpu2": 0.94,
+    "cpu3": 0.944
+   },
+   "box_busy_cpu_s": 7.5,
+   "job_cpu_s": 7.16,
+   "other_cpu_s": 0.34
+  },
+  {
+   "t": 356.8,
+   "load1": 5.79,
+   "busy_per_cpu": {
+    "cpu0": 0.96,
+    "cpu1": 0.94,
+    "cpu2": 0.96,
+    "cpu3": 0.975
+   },
+   "box_busy_cpu_s": 7.67,
+   "job_cpu_s": 6.8,
+   "other_cpu_s": 0.87
+  },
+  {
+   "t": 358.8,
+   "load1": 5.79,
+   "busy_per_cpu": {
+    "cpu0": 0.98,
+    "cpu1": 0.935,
+    "cpu2": 0.93,
+    "cpu3": 0.94
+   },
+   "box_busy_cpu_s": 7.59,
+   "job_cpu_s": 6.94,
+   "other_cpu_s": 0.65
+  },
+  {
+   "t": 360.8,
+   "load1": 5.65,
+   "busy_per_cpu": {
+    "cpu0": 0.975,
+    "cpu1": 0.96,
+    "cpu2": 0.95,
+    "cpu3": 0.95
+   },
+   "box_busy_cpu_s": 7.66,
+   "job_cpu_s": 7.24,
+   "other_cpu_s": 0.42
+  },
+  {
+   "t": 362.8,
+   "load1": 5.65,
+   "busy_per_cpu": {
+    "cpu0": 0.97,
+    "cpu1": 0.91,
+    "cpu2": 0.93,
+    "cpu3": 0.854
+   },
+   "box_busy_cpu_s": 7.35,
+   "job_cpu_s": 6.6,
+   "other_cpu_s": 0.75
+  },
+  {
+   "t": 364.8,
+   "load1": 5.65,
+   "busy_per_cpu": {
+    "cpu0": 0.945,
+    "cpu1": 0.97,
+    "cpu2": 0.941,
+    "cpu3": 0.97
+   },
+   "box_busy_cpu_s": 7.65,
+   "job_cpu_s": 7.12,
+   "other_cpu_s": 0.53
+  },
+  {
+   "t": 366.8,
+   "load1": 5.27,
+   "busy_per_cpu": {
+    "cpu0": 0.915,
+    "cpu1": 0.915,
+    "cpu2": 0.95,
+    "cpu3": 0.94
+   },
+   "box_busy_cpu_s": 7.42,
+   "job_cpu_s": 6.81,
+   "other_cpu_s": 0.61
+  },
+  {
+   "t": 368.8,
+   "load1": 5.27,
+   "busy_per_cpu": {
+    "cpu0": 0.34,
+    "cpu1": 0.373,
+    "cpu2": 0.896,
+    "cpu3": 0.363
+   },
+   "box_busy_cpu_s": 3.97,
+   "job_cpu_s": 0.0,
+   "other_cpu_s": 3.97
+  }
+ ]
+}

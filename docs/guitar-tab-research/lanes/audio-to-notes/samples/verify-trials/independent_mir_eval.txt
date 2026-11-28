@@ -1,0 +1,25 @@
+Basic Pitch S1 notes P/R/F1 (e0490: 0.953/0.984/0.968)	(0.953, 0.984, 0.968, 64)
+Transkun S1 notes (e0437: 0.984/1.000/0.992)	(0.984, 1.0, 0.992, 63)
+ByteDance S2n notes (e1393: 0.908/0.878/0.893)	(0.908, 0.878, 0.893, 87)
+aubionotes S1 50 ms (e0305: 0.048)	(0.048, 0.048, 0.048, 62)
+aubionotes S1 100 ms (e0352: 0.984)	(0.984, 0.984, 0.984, 62)
+SwiftF0 segment_notes S1 (e0152: 0.958/0.742/0.836)	(0.958, 0.742, 0.836, 48)
+Essentia Melodia+PCS S1 (e1038: 1.000/0.597/0.747)	(1.0, 0.597, 0.747, 37)
+FCPE->PCS S1 (e1319: 1.000/0.774/0.873)	(1.0, 0.774, 0.873, 48)
+Basic Pitch S4 bass stem from htdemucs_6s, voice bass (e0657: 0.324/0.754/0.453)	(0.324, 0.754, 0.453, 142)
+swiftf0 S1 RPA (0.961 e0113)	0.961
+pyin S1 RPA (0.958 e0121)	0.958
+fcpe S1 RPA (0.990 e0132)	0.99
+pesto S1 RPA (0.987 e0146)	0.987
+torchcrepe-tiny S1 RPA (0.982 e0747)	0.982
+torchcrepe-full S1 RPA (0.986 e0758)	0.986
+essentia-melodia S1 RPA (0.693 e0997)	0.693
+essentia-pyin S1 RPA (0.495 e1014)	0.495
+essentia-crepe-tiny S1 RPA (0.982 e1027)	0.982
+essentia-crepe-full S1 RPA (0.990 e1205)	0.99
+aubiopitch S1 RPA (0.957 e0293)	0.957
+torchcrepe tiny viterbi R1b RPA (0.442 e0969)	0.442
+torchcrepe tiny weighted_argmax R1b RPA (0.848 e0975)	0.848
+Klapuri S2n multipitch P/R/Acc (lane script: 0.722/0.803/0.613)	(np.float64(0.722), np.float64(0.803), np.float64(0.613))
+MultiPitchMelodia S2n multipitch P/R/Acc (lane script: 0.942/0.481/0.467)	(np.float64(0.942), np.float64(0.481), np.float64(0.467))
+Klapuri R1c multipitch P/R/Acc (lane script: 0.516/0.403/0.293)	(np.float64(0.516), np.float64(0.403), np.float64(0.293))

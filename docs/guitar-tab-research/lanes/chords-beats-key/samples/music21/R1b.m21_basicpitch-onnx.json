@@ -1,0 +1,117 @@
+{
+ "source": "/home/user/gtr/lanes/audio-to-notes/out/basic-pitch/onnx-default/R1b.mid",
+ "percussion_parts_removed": 0,
+ "n_note_or_chord_objects": 78,
+ "methods": {
+  "key": {
+   "key": "F# major",
+   "correlationCoefficient": 0.5716,
+   "alternates": [
+    [
+     "C# minor",
+     0.5549
+    ],
+    [
+     "F# minor",
+     0.4725
+    ],
+    [
+     "A major",
+     0.462
+    ],
+    [
+     "C# major",
+     0.4496
+    ]
+   ]
+  },
+  "key.krumhansl": {
+   "key": "C# minor",
+   "correlationCoefficient": 0.7794,
+   "alternates": [
+    [
+     "C# major",
+     0.7581
+    ],
+    [
+     "Bb minor",
+     0.4767
+    ],
+    [
+     "F# major",
+     0.456
+    ],
+    [
+     "F# minor",
+     0.2866
+    ]
+   ]
+  },
+  "key.simple": {
+   "key": "C# minor",
+   "correlationCoefficient": 0.6232,
+   "alternates": [
+    [
+     "F# major",
+     0.5943
+    ],
+    [
+     "C# major",
+     0.5838
+    ],
+    [
+     "F# minor",
+     0.5697
+    ],
+    [
+     "E major",
+     0.2204
+    ]
+   ]
+  },
+  "key.bellman": {
+   "key": "F# major",
+   "correlationCoefficient": 0.6106,
+   "alternates": [
+    [
+     "F# minor",
+     0.571
+    ],
+    [
+     "C# minor",
+     0.5206
+    ],
+    [
+     "C# major",
+     0.4602
+    ],
+    [
+     "B major",
+     0.3111
+    ]
+   ]
+  },
+  "key.temperley": {
+   "key": "C# minor",
+   "correlationCoefficient": 0.543,
+   "alternates": [
+    [
+     "C# major",
+     0.5406
+    ],
+    [
+     "F# major",
+     0.4979
+    ],
+    [
+     "F# minor",
+     0.4843
+    ],
+    [
+     "A major",
+     0.4162
+    ]
+   ]
+  }
+ }
+}

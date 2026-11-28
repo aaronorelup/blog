@@ -1,0 +1,13 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>SVG view</title>
+<style>body{margin:0;background:#fff} #out{width:1200px} #out svg{width:1200px;height:auto}</style></head>
+<body><div id="out"></div>
+<script>
+// ?src=<url of an SVG file>: inline it into the page so it can be screenshotted (used for Verovio and LilyPond SVG)
+const q = new URLSearchParams(location.search);
+fetch(q.get('src')).then((r) => r.text()).then((t) => {
+  document.getElementById('out').innerHTML = t;
+  window.__info = { svgChars: t.length };
+  window.__rendered = true;
+});
+</script></body></html>

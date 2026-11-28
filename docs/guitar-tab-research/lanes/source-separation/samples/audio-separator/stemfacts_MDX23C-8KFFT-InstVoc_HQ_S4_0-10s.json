@@ -1,0 +1,82 @@
+{
+ "input": {
+  "path": "/home/user/gtr/lanes/source-separation/inputs/S4_0-10s/S4_0-10s.wav",
+  "sample_rate": 44100,
+  "channels": 2,
+  "frames": 441000,
+  "subtype": "PCM_16",
+  "rms_dbfs": -19.149861873376654,
+  "seconds": 10.0
+ },
+ "est_dir": "/home/user/gtr/lanes/source-separation/out/uvr/MDX23C-8KFFT-InstVoc_HQ/S4_0-10s",
+ "stems": {
+  "instrumental": {
+   "file": "instrumental.wav",
+   "bytes": 1764078,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 441000,
+   "seconds": 10.0,
+   "frames_minus_input": 0,
+   "rms_dbfs": -19.16,
+   "peak_dbfs": -1.79
+  },
+  "vocals": {
+   "file": "vocals.wav",
+   "bytes": 1764078,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 441000,
+   "seconds": 10.0,
+   "frames_minus_input": 0,
+   "rms_dbfs": -67.52,
+   "peak_dbfs": -46.85
+  }
+ },
+ "sum_vs_mix": {
+  "common_rate": 44100,
+  "common_frames": 441000,
+  "best_lag_samples": 0,
+  "residual_db_at_lag0": -68.24,
+  "note": "positive lag = the stems' sum is late relative to the mix"
+ },
+ "truth_dir": "/home/user/gtr/inputs/S4/stems",
+ "projection": {
+  "instrumental": {
+   "bass": 1.0072,
+   "drums": 1.0496,
+   "guitar": 0.9709,
+   "lead": 0.9805
+  },
+  "vocals": {
+   "bass": 0.0011,
+   "drums": 0.0007,
+   "guitar": 0.0013,
+   "lead": 0.0019
+  }
+ },
+ "projection_column_sums": {
+  "bass": 1.0083,
+  "drums": 1.0503,
+  "guitar": 0.9722,
+  "lead": 0.9824
+ },
+ "si_sdr_db_cross": {
+  "instrumental": {
+   "bass": -4.71,
+   "drums": -10.62,
+   "guitar": -2.8,
+   "lead": -3.39
+  },
+  "vocals": {
+   "bass": -16.55,
+   "drums": -25.62,
+   "guitar": -12.89,
+   "lead": -10.35
+  }
+ }
+}

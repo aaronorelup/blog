@@ -1,0 +1,36 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>ffmpeg.wasm</title>
+<body>
+<script type="module">
+// ffmpeg.wasm (@ffmpeg/ffmpeg 0.12.15) with @ffmpeg/core 0.12.10 (single thread) or @ffmpeg/core-mt 0.12.10
+// (threads; needs cross-origin isolation): pull the audio out of an R3a file as 16-bit WAV, keeping its sample rate.
+import { finish, fail, upload, fetchArrayBuffer } from './common.js';
+import { FFmpeg } from '/nm/@ffmpeg/ffmpeg/dist/esm/index.js';
+const q = new URLSearchParams(location.search);
+const CORE = q.get('core') || 'st', FILE = q.get('file') || 'R3a.mp4';
+const R = { core: CORE, file: FILE, crossOriginIsolated: self.crossOriginIsolated };
+try {
+  const ffmpeg = new FFmpeg(); const logs = [];
+  ffmpeg.on('log', ({ type, message }) => { if (logs.length < 400) logs.push(message); });
+  const base = new URL(CORE === 'mt' ? '/nm/@ffmpeg/core-mt/dist/esm/' : '/nm/@ffmpeg/core/dist/esm/', location.href).href;
+  const t0 = performance.now();
+  await ffmpeg.load(CORE === 'mt' ? { coreURL: base + 'ffmpeg-core.js', wasmURL: base + 'ffmpeg-core.wasm', workerURL: base + 'ffmpeg-core.worker.js' }
+    : { coreURL: base + 'ffmpeg-core.js', wasmURL: base + 'ffmpeg-core.wasm' });
+  R.load_ms = performance.now() - t0;
+  const data = new Uint8Array(await fetchArrayBuffer(`/inputs/R3a/${FILE}`));
+  R.input_bytes = data.length;
+  await ffmpeg.writeFile('in', data);
+  const ext = FILE.split('.').pop();
+  const args = ['-hide_banner', '-i', 'in', '-vn', '-map', '0:a:0', '-c:a', 'pcm_s16le', 'out.wav'];
+  R.args = args;
+  const a = performance.now(); const rc = await ffmpeg.exec(args); R.exec_ms = performance.now() - a; R.exit_code = rc;
+  const out = await ffmpeg.readFile('out.wav');
+  R.output_bytes = out.length;
+  R.wav = await upload('ffmpegwasm', `${FILE.replace('.', '_')}_${CORE}.wav`, out);
+  logs.length = 0; await ffmpeg.exec(['-version']); R.version_lines = logs.slice(0, 3);
+  R.exec_log_tail = null;
+  finish(R);
+} catch (e) { fail(e, R); }
+</script>
+</body>

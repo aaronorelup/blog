@@ -1,0 +1,82 @@
+{
+ "input": {
+  "path": "/home/user/gtr/inputs/S4/S4.wav",
+  "sample_rate": 44100,
+  "channels": 2,
+  "frames": 1708495,
+  "subtype": "PCM_16",
+  "rms_dbfs": -17.368587345890337,
+  "seconds": 38.7414
+ },
+ "est_dir": "/home/user/gtr/lanes/source-separation/out/uvr/UVR-MDX-NET-Inst_HQ_3/S4",
+ "stems": {
+  "instrumental": {
+   "file": "instrumental.wav",
+   "bytes": 6834058,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 1708495,
+   "seconds": 38.7414,
+   "frames_minus_input": 0,
+   "rms_dbfs": -18.7,
+   "peak_dbfs": -2.23
+  },
+  "vocals": {
+   "file": "vocals.wav",
+   "bytes": 6834058,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 1708495,
+   "seconds": 38.7414,
+   "frames_minus_input": 0,
+   "rms_dbfs": -32.55,
+   "peak_dbfs": -9.97
+  }
+ },
+ "sum_vs_mix": {
+  "common_rate": 44100,
+  "common_frames": 1708495,
+  "best_lag_samples": 0,
+  "residual_db_at_lag0": -34.39,
+  "note": "positive lag = the stems' sum is late relative to the mix"
+ },
+ "truth_dir": "/home/user/gtr/inputs/S4/stems",
+ "projection": {
+  "instrumental": {
+   "bass": 0.8374,
+   "drums": 0.8778,
+   "guitar": 0.8338,
+   "lead": 0.8082
+  },
+  "vocals": {
+   "bass": 0.1052,
+   "drums": 0.1106,
+   "guitar": 0.1043,
+   "lead": 0.1692
+  }
+ },
+ "projection_column_sums": {
+  "bass": 0.9426,
+  "drums": 0.9884,
+  "guitar": 0.9381,
+  "lead": 0.9774
+ },
+ "si_sdr_db_cross": {
+  "instrumental": {
+   "bass": -5.25,
+   "drums": -10.78,
+   "guitar": -2.77,
+   "lead": -3.57
+  },
+  "vocals": {
+   "bass": -10.14,
+   "drums": -15.12,
+   "guitar": -8.19,
+   "lead": -3.16
+  }
+ }
+}

@@ -1,0 +1,6 @@
+R1b.wav
+/home/user/gtr/lanes/audio-to-notes/out/crepe-notes/tcfull/R1b.wav
+Onsets file not found at R1b.onsets.npz
+Running onset detection...
+Tuning offset: 20.000000000000007 cents
+time tcfull R1b wall 3.73 s user 3.42 s sys 0.26 s maxrss 433464 KiB exit 0

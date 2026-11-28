@@ -1,0 +1,70 @@
+{
+ "algo": "pyin",
+ "essentia": "2.1-beta6-dev",
+ "clips": {
+  "S1": {
+   "input": "/home/user/gtr/inputs/S1/S1.mono.wav",
+   "sample_rate": 44100,
+   "n_frames": 5133,
+   "hop_s": 0.005804988662131519,
+   "n_frames_voiced": 4474,
+   "seconds": 0.843
+  },
+  "S2n": {
+   "input": "/home/user/gtr/inputs/S2n/S2n.mono.wav",
+   "sample_rate": 44100,
+   "n_frames": 5051,
+   "hop_s": 0.005804988662131519,
+   "n_frames_voiced": 4388,
+   "seconds": 0.843
+  },
+  "S2s": {
+   "input": "/home/user/gtr/inputs/S2s/S2s.mono.wav",
+   "sample_rate": 44100,
+   "n_frames": 5051,
+   "hop_s": 0.005804988662131519,
+   "n_frames_voiced": 4511,
+   "seconds": 0.614
+  },
+  "S4": {
+   "input": "/home/user/gtr/inputs/S4/S4.mono.wav",
+   "sample_rate": 44100,
+   "n_frames": 6667,
+   "hop_s": 0.005804988662131519,
+   "n_frames_voiced": 5403,
+   "seconds": 1.118
+  },
+  "S4lead": {
+   "input": "/home/user/gtr/inputs/S4/stems/lead.wav",
+   "sample_rate": 44100,
+   "n_frames": 6667,
+   "hop_s": 0.005804988662131519,
+   "n_frames_voiced": 5210,
+   "seconds": 1.69
+  },
+  "R1b": {
+   "input": "/home/user/gtr/inputs/R1b/R1b.mono.wav",
+   "sample_rate": 44100,
+   "n_frames": 5047,
+   "hop_s": 0.005804988662131519,
+   "n_frames_voiced": 1537,
+   "seconds": 1.113
+  },
+  "R2": {
+   "input": "/home/user/gtr/inputs/R2/R2.mono.wav",
+   "sample_rate": 44100,
+   "n_frames": 6195,
+   "hop_s": 0.005804988662131519,
+   "n_frames_voiced": 5898,
+   "seconds": 1.512
+  },
+  "R3a": {
+   "input": "/home/user/gtr/inputs/R3a/R3a.mono.wav",
+   "sample_rate": 44100,
+   "n_frames": 3094,
+   "hop_s": 0.005804988662131519,
+   "n_frames_voiced": 1884,
+   "seconds": 0.746
+  }
+ }
+}

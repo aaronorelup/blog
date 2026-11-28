@@ -1,0 +1,48 @@
+{
+ "service": "vercel-ai-gateway",
+ "model": "google/gemini-3.5-flash-lite",
+ "media": "/home/user/gtr/inputs/S3/S3.mono.wav",
+ "media_bytes": 2116844,
+ "media_sha256": "92f5740a02860ee7e450f1a7da9ee8e3b6fad44b29ee11ddb98f913519265c2a",
+ "media_duration_s": 24.0,
+ "mime": "audio/wav",
+ "http_status": 403,
+ "wall_s": 1.201,
+ "reasoning_effort": null,
+ "max_tokens": 24576,
+ "price_usd_per_token": {
+  "input": 3e-07,
+  "output": 2.5e-06
+ },
+ "price_source": "https://ai-gateway.vercel.sh/v1/models entry 'pricing' (read at run time)",
+ "response_headers": {},
+ "finish_reason": null,
+ "provider_metadata": {
+  "gateway": {
+   "routing": {
+    "originalModelId": "google/gemini-3.5-flash-lite",
+    "resolvedProvider": "vertex",
+    "fallbacksAvailable": [
+     "google"
+    ],
+    "canonicalSlug": "google/gemini-3.5-flash-lite",
+    "modelAttemptCount": 1,
+    "modelAttempts": [
+     {
+      "canonicalSlug": "google/gemini-3.5-flash-lite",
+      "success": false,
+      "providerAttemptCount": 0,
+      "providerAttempts": []
+     }
+    ],
+    "totalProviderAttemptCount": 0,
+    "clientSessionId": "2972f905741de9ea213be301df2b3f88",
+    "clientSessionIdSource": "fingerprint"
+   },
+   "generationId": "gen_01M73KZQ7E5QQ9JVYGHZ8XB95T"
+  }
+ },
+ "output_text_chars": 0,
+ "answer_parsed": false,
+ "spent_service_before_usd": 0.0
+}

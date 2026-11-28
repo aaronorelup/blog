@@ -1,0 +1,9 @@
+52573995 /home/user/gtr/lanes/guitar-tab/src/SynthTab/demo_embedding/pretrained_models/SynthTab-Pretrained.pt
+52574019 /home/user/gtr/lanes/guitar-tab/src/SynthTab/demo_embedding/pretrained_models/finetuned/EGDB.pt
+52574019 /home/user/gtr/lanes/guitar-tab/src/SynthTab/demo_embedding/pretrained_models/finetuned/GuitarSet.pt
+52574019 /home/user/gtr/lanes/guitar-tab/src/SynthTab/demo_embedding/pretrained_models/finetuned/IDMT.pt
+52573995 /home/user/gtr/lanes/guitar-tab/src/SynthTab/demo_embedding/pretrained_models/non_finetuned/EGDB.pt
+52574007 /home/user/gtr/lanes/guitar-tab/src/SynthTab/demo_embedding/pretrained_models/non_finetuned/GuitarSet.pt
+52574007 /home/user/gtr/lanes/guitar-tab/src/SynthTab/demo_embedding/pretrained_models/non_finetuned/IDMT.pt
+sha256 finetuned/GuitarSet.pt 03c9486d1481472cde8668c04411be2e4314c7e4549268d194aa587aecd1b9c2
+sha256 SynthTab-Pretrained.pt a5a0812844edd1dd9540170d2bcadb543b83de2066bd18b18ac13d666d511318

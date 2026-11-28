@@ -1,0 +1,9 @@
+# Gap round 2 (gapfill-audio-to-notes), 2026-11-11, about 00:46 UTC: the one run attempt of the PyPI package mt3-infer 0.2.0
+# Command submitted (one Bash call; G=/home/user/gtr/lanes/audio-to-notes; the venv had been installed from PyPI just before, exit 0):
+#   mkdir -p $G/gap2/mt3ckpt $G/gap2/work/mt3infer && cd $G/gap2/work/mt3infer && export MT3_CHECKPOINT_DIR=$G/gap2/mt3ckpt &&
+#   { $G/venv-mt3infer/bin/mt3-infer --version; $G/venv-mt3infer/bin/mt3-infer list;
+#     /usr/bin/time $G/venv-mt3infer/bin/mt3-infer download mt3_pytorch; } > $G/gap2/logs/mt3infer-download.log
+# (planned next, not submitted: mt3-infer transcribe on S2n, R1c and the S4 guitar stem through gtr-run)
+# Answer of the session's permission system (verbatim, first two sentences):
+Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Code from External].
+# Afterwards (checked 2026-11-11T00:46:44Z): no $G/gap2/mt3ckpt, no $G/gap2/work/mt3infer, no log file. No other attempt was made.

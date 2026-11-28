@@ -1,0 +1,14 @@
+[
+ {
+  "tool": "librosa",
+  "python": "/home/user/gtr/lanes/chords-beats-key/verify-trials/venvs/librosa/bin/python",
+  "script": "/home/user/blog/docs/guitar-tab-research/lanes/chords-beats-key/scripts/librosa_run.py",
+  "clips": [
+   "S3",
+   "S7flat30",
+   "R1b"
+  ],
+  "args": [],
+  "tag": "librosa"
+ }
+]

@@ -1,0 +1,1129 @@
+{
+ "tuning": [
+  64,
+  59,
+  55,
+  50,
+  45,
+  40
+ ],
+ "measures": [
+  {
+   "events": [
+    {
+     "beats": 0,
+     "measureTiming": 0,
+     "seconds": 0,
+     "timeSignatureChange": [
+      4,
+      4
+     ]
+    }
+   ]
+  },
+  {
+   "events": [
+    {
+     "beats": 4,
+     "measureTiming": 0,
+     "seconds": 2.142856,
+     "notes": [
+      {
+       "string": 5,
+       "fret": 3,
+       "midi": 43,
+       "durationBeats": 0.98125,
+       "degree": "G",
+       "octave": "2"
+      },
+      {
+       "string": 2,
+       "fret": 0,
+       "midi": 55,
+       "durationBeats": 0.98125,
+       "degree": "G",
+       "octave": "3"
+      }
+     ]
+    },
+    {
+     "beats": 5,
+     "measureTiming": 0.25,
+     "seconds": 2.67857,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 0,
+       "midi": 50,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "3"
+      },
+      {
+       "string": 2,
+       "fret": 0,
+       "midi": 55,
+       "durationBeats": 0.98125,
+       "degree": "G",
+       "octave": "3"
+      }
+     ]
+    },
+    {
+     "beats": 6,
+     "measureTiming": 0.5,
+     "seconds": 3.214284,
+     "notes": [
+      {
+       "string": 5,
+       "fret": 3,
+       "midi": 43,
+       "durationBeats": 0.98125,
+       "degree": "G",
+       "octave": "2"
+      },
+      {
+       "string": 1,
+       "fret": 3,
+       "midi": 62,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "4"
+      }
+     ]
+    },
+    {
+     "beats": 7,
+     "measureTiming": 0.75,
+     "seconds": 3.749998,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 0,
+       "midi": 50,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "3"
+      },
+      {
+       "string": 1,
+       "fret": 3,
+       "midi": 62,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "4"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "events": [
+    {
+     "beats": 8,
+     "measureTiming": 0,
+     "seconds": 4.285712,
+     "notes": [
+      {
+       "string": 4,
+       "fret": 3,
+       "midi": 48,
+       "durationBeats": 0.98125,
+       "degree": "C",
+       "octave": "3"
+      },
+      {
+       "string": 0,
+       "fret": 0,
+       "midi": 64,
+       "durationBeats": 0.98125,
+       "degree": "E",
+       "octave": "4"
+      }
+     ]
+    },
+    {
+     "beats": 9,
+     "measureTiming": 0.25,
+     "seconds": 4.821426,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 2,
+       "midi": 52,
+       "durationBeats": 0.98125,
+       "degree": "E",
+       "octave": "3"
+      },
+      {
+       "string": 0,
+       "fret": 0,
+       "midi": 64,
+       "durationBeats": 0.98125,
+       "degree": "E",
+       "octave": "4"
+      }
+     ]
+    },
+    {
+     "beats": 10,
+     "measureTiming": 0.5,
+     "seconds": 5.35714,
+     "notes": [
+      {
+       "string": 5,
+       "fret": 3,
+       "midi": 43,
+       "durationBeats": 0.98125,
+       "degree": "G",
+       "octave": "2"
+      },
+      {
+       "string": 1,
+       "fret": 3,
+       "midi": 62,
+       "durationBeats": 1.98125,
+       "degree": "D",
+       "octave": "4"
+      }
+     ]
+    },
+    {
+     "beats": 11,
+     "measureTiming": 0.75,
+     "seconds": 5.892854,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 0,
+       "midi": 50,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "3"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "events": [
+    {
+     "beats": 12,
+     "measureTiming": 0,
+     "seconds": 6.428568,
+     "notes": [
+      {
+       "string": 4,
+       "fret": 3,
+       "midi": 48,
+       "durationBeats": 0.98125,
+       "degree": "C",
+       "octave": "3"
+      },
+      {
+       "string": 1,
+       "fret": 1,
+       "midi": 60,
+       "durationBeats": 0.98125,
+       "degree": "C",
+       "octave": "4"
+      }
+     ]
+    },
+    {
+     "beats": 13,
+     "measureTiming": 0.25,
+     "seconds": 6.964282,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 2,
+       "midi": 52,
+       "durationBeats": 0.98125,
+       "degree": "E",
+       "octave": "3"
+      },
+      {
+       "string": 1,
+       "fret": 1,
+       "midi": 60,
+       "durationBeats": 0.98125,
+       "degree": "C",
+       "octave": "4"
+      }
+     ]
+    },
+    {
+     "beats": 14,
+     "measureTiming": 0.5,
+     "seconds": 7.499996,
+     "notes": [
+      {
+       "string": 5,
+       "fret": 3,
+       "midi": 43,
+       "durationBeats": 0.98125,
+       "degree": "G",
+       "octave": "2"
+      },
+      {
+       "string": 1,
+       "fret": 0,
+       "midi": 59,
+       "durationBeats": 0.98125,
+       "degree": "B",
+       "octave": "3"
+      }
+     ]
+    },
+    {
+     "beats": 15,
+     "measureTiming": 0.75,
+     "seconds": 8.03571,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 0,
+       "midi": 50,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "3"
+      },
+      {
+       "string": 1,
+       "fret": 0,
+       "midi": 59,
+       "durationBeats": 0.98125,
+       "degree": "B",
+       "octave": "3"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "events": [
+    {
+     "beats": 16,
+     "measureTiming": 0,
+     "seconds": 8.571424,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 0,
+       "midi": 50,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "3"
+      },
+      {
+       "string": 2,
+       "fret": 2,
+       "midi": 57,
+       "durationBeats": 0.98125,
+       "degree": "A",
+       "octave": "3"
+      }
+     ]
+    },
+    {
+     "beats": 17,
+     "measureTiming": 0.25,
+     "seconds": 9.107138,
+     "notes": [
+      {
+       "string": 4,
+       "fret": 0,
+       "midi": 45,
+       "durationBeats": 0.98125,
+       "degree": "A",
+       "octave": "2"
+      },
+      {
+       "string": 2,
+       "fret": 2,
+       "midi": 57,
+       "durationBeats": 0.98125,
+       "degree": "A",
+       "octave": "3"
+      }
+     ]
+    },
+    {
+     "beats": 18,
+     "measureTiming": 0.5,
+     "seconds": 9.642852,
+     "notes": [
+      {
+       "string": 5,
+       "fret": 3,
+       "midi": 43,
+       "durationBeats": 0.98125,
+       "degree": "G",
+       "octave": "2"
+      },
+      {
+       "string": 2,
+       "fret": 0,
+       "midi": 55,
+       "durationBeats": 1.98125,
+       "degree": "G",
+       "octave": "3"
+      }
+     ]
+    },
+    {
+     "beats": 19,
+     "measureTiming": 0.75,
+     "seconds": 10.178566,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 0,
+       "midi": 50,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "3"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "events": [
+    {
+     "beats": 20,
+     "measureTiming": 0,
+     "seconds": 10.71428,
+     "notes": [
+      {
+       "string": 5,
+       "fret": 3,
+       "midi": 43,
+       "durationBeats": 0.98125,
+       "degree": "G",
+       "octave": "2"
+      },
+      {
+       "string": 1,
+       "fret": 3,
+       "midi": 62,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "4"
+      }
+     ]
+    },
+    {
+     "beats": 21,
+     "measureTiming": 0.25,
+     "seconds": 11.249994,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 0,
+       "midi": 50,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "3"
+      },
+      {
+       "string": 1,
+       "fret": 3,
+       "midi": 62,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "4"
+      }
+     ]
+    },
+    {
+     "beats": 22,
+     "measureTiming": 0.5,
+     "seconds": 11.785708,
+     "notes": [
+      {
+       "string": 4,
+       "fret": 3,
+       "midi": 48,
+       "durationBeats": 0.98125,
+       "degree": "C",
+       "octave": "3"
+      },
+      {
+       "string": 1,
+       "fret": 1,
+       "midi": 60,
+       "durationBeats": 0.98125,
+       "degree": "C",
+       "octave": "4"
+      }
+     ]
+    },
+    {
+     "beats": 23,
+     "measureTiming": 0.75,
+     "seconds": 12.321422,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 2,
+       "midi": 52,
+       "durationBeats": 0.98125,
+       "degree": "E",
+       "octave": "3"
+      },
+      {
+       "string": 1,
+       "fret": 1,
+       "midi": 60,
+       "durationBeats": 0.98125,
+       "degree": "C",
+       "octave": "4"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "events": [
+    {
+     "beats": 24,
+     "measureTiming": 0,
+     "seconds": 12.857136,
+     "notes": [
+      {
+       "string": 5,
+       "fret": 3,
+       "midi": 43,
+       "durationBeats": 0.98125,
+       "degree": "G",
+       "octave": "2"
+      },
+      {
+       "string": 1,
+       "fret": 0,
+       "midi": 59,
+       "durationBeats": 0.98125,
+       "degree": "B",
+       "octave": "3"
+      }
+     ]
+    },
+    {
+     "beats": 25,
+     "measureTiming": 0.25,
+     "seconds": 13.39285,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 0,
+       "midi": 50,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "3"
+      },
+      {
+       "string": 1,
+       "fret": 0,
+       "midi": 59,
+       "durationBeats": 0.98125,
+       "degree": "B",
+       "octave": "3"
+      }
+     ]
+    },
+    {
+     "beats": 26,
+     "measureTiming": 0.5,
+     "seconds": 13.928564,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 0,
+       "midi": 50,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "3"
+      },
+      {
+       "string": 2,
+       "fret": 2,
+       "midi": 57,
+       "durationBeats": 1.98125,
+       "degree": "A",
+       "octave": "3"
+      }
+     ]
+    },
+    {
+     "beats": 27,
+     "measureTiming": 0.75,
+     "seconds": 14.464278,
+     "notes": [
+      {
+       "string": 4,
+       "fret": 0,
+       "midi": 45,
+       "durationBeats": 0.98125,
+       "degree": "A",
+       "octave": "2"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "events": [
+    {
+     "beats": 28,
+     "measureTiming": 0,
+     "seconds": 14.999992,
+     "notes": [
+      {
+       "string": 5,
+       "fret": 3,
+       "midi": 43,
+       "durationBeats": 0.98125,
+       "degree": "G",
+       "octave": "2"
+      },
+      {
+       "string": 1,
+       "fret": 3,
+       "midi": 62,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "4"
+      }
+     ]
+    },
+    {
+     "beats": 29,
+     "measureTiming": 0.25,
+     "seconds": 15.535706,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 0,
+       "midi": 50,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "3"
+      },
+      {
+       "string": 1,
+       "fret": 3,
+       "midi": 62,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "4"
+      }
+     ]
+    },
+    {
+     "beats": 30,
+     "measureTiming": 0.5,
+     "seconds": 16.07142,
+     "notes": [
+      {
+       "string": 4,
+       "fret": 3,
+       "midi": 48,
+       "durationBeats": 0.98125,
+       "degree": "C",
+       "octave": "3"
+      },
+      {
+       "string": 1,
+       "fret": 1,
+       "midi": 60,
+       "durationBeats": 0.98125,
+       "degree": "C",
+       "octave": "4"
+      }
+     ]
+    },
+    {
+     "beats": 31,
+     "measureTiming": 0.75,
+     "seconds": 16.607134,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 2,
+       "midi": 52,
+       "durationBeats": 0.98125,
+       "degree": "E",
+       "octave": "3"
+      },
+      {
+       "string": 1,
+       "fret": 1,
+       "midi": 60,
+       "durationBeats": 0.98125,
+       "degree": "C",
+       "octave": "4"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "events": [
+    {
+     "beats": 32,
+     "measureTiming": 0,
+     "seconds": 17.142848,
+     "notes": [
+      {
+       "string": 5,
+       "fret": 3,
+       "midi": 43,
+       "durationBeats": 0.98125,
+       "degree": "G",
+       "octave": "2"
+      },
+      {
+       "string": 1,
+       "fret": 0,
+       "midi": 59,
+       "durationBeats": 0.98125,
+       "degree": "B",
+       "octave": "3"
+      }
+     ]
+    },
+    {
+     "beats": 33,
+     "measureTiming": 0.25,
+     "seconds": 17.678562,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 0,
+       "midi": 50,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "3"
+      },
+      {
+       "string": 1,
+       "fret": 0,
+       "midi": 59,
+       "durationBeats": 0.98125,
+       "degree": "B",
+       "octave": "3"
+      }
+     ]
+    },
+    {
+     "beats": 34,
+     "measureTiming": 0.5,
+     "seconds": 18.214276,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 0,
+       "midi": 50,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "3"
+      },
+      {
+       "string": 2,
+       "fret": 2,
+       "midi": 57,
+       "durationBeats": 1.98125,
+       "degree": "A",
+       "octave": "3"
+      }
+     ]
+    },
+    {
+     "beats": 35,
+     "measureTiming": 0.75,
+     "seconds": 18.74999,
+     "notes": [
+      {
+       "string": 4,
+       "fret": 0,
+       "midi": 45,
+       "durationBeats": 0.98125,
+       "degree": "A",
+       "octave": "2"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "events": [
+    {
+     "beats": 36,
+     "measureTiming": 0,
+     "seconds": 19.285704,
+     "notes": [
+      {
+       "string": 5,
+       "fret": 3,
+       "midi": 43,
+       "durationBeats": 0.98125,
+       "degree": "G",
+       "octave": "2"
+      },
+      {
+       "string": 2,
+       "fret": 0,
+       "midi": 55,
+       "durationBeats": 0.98125,
+       "degree": "G",
+       "octave": "3"
+      }
+     ]
+    },
+    {
+     "beats": 37,
+     "measureTiming": 0.25,
+     "seconds": 19.821418,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 0,
+       "midi": 50,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "3"
+      },
+      {
+       "string": 2,
+       "fret": 0,
+       "midi": 55,
+       "durationBeats": 0.98125,
+       "degree": "G",
+       "octave": "3"
+      }
+     ]
+    },
+    {
+     "beats": 38,
+     "measureTiming": 0.5,
+     "seconds": 20.357132,
+     "notes": [
+      {
+       "string": 5,
+       "fret": 3,
+       "midi": 43,
+       "durationBeats": 0.98125,
+       "degree": "G",
+       "octave": "2"
+      },
+      {
+       "string": 1,
+       "fret": 3,
+       "midi": 62,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "4"
+      }
+     ]
+    },
+    {
+     "beats": 39,
+     "measureTiming": 0.75,
+     "seconds": 20.892846,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 0,
+       "midi": 50,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "3"
+      },
+      {
+       "string": 1,
+       "fret": 3,
+       "midi": 62,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "4"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "events": [
+    {
+     "beats": 40,
+     "measureTiming": 0,
+     "seconds": 21.42856,
+     "notes": [
+      {
+       "string": 4,
+       "fret": 3,
+       "midi": 48,
+       "durationBeats": 0.98125,
+       "degree": "C",
+       "octave": "3"
+      },
+      {
+       "string": 0,
+       "fret": 0,
+       "midi": 64,
+       "durationBeats": 0.98125,
+       "degree": "E",
+       "octave": "4"
+      }
+     ]
+    },
+    {
+     "beats": 41,
+     "measureTiming": 0.25,
+     "seconds": 21.964274,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 2,
+       "midi": 52,
+       "durationBeats": 0.98125,
+       "degree": "E",
+       "octave": "3"
+      },
+      {
+       "string": 0,
+       "fret": 0,
+       "midi": 64,
+       "durationBeats": 0.98125,
+       "degree": "E",
+       "octave": "4"
+      }
+     ]
+    },
+    {
+     "beats": 42,
+     "measureTiming": 0.5,
+     "seconds": 22.499988,
+     "notes": [
+      {
+       "string": 5,
+       "fret": 3,
+       "midi": 43,
+       "durationBeats": 0.98125,
+       "degree": "G",
+       "octave": "2"
+      },
+      {
+       "string": 1,
+       "fret": 3,
+       "midi": 62,
+       "durationBeats": 1.98125,
+       "degree": "D",
+       "octave": "4"
+      }
+     ]
+    },
+    {
+     "beats": 43,
+     "measureTiming": 0.75,
+     "seconds": 23.035702,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 0,
+       "midi": 50,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "3"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "events": [
+    {
+     "beats": 44,
+     "measureTiming": 0,
+     "seconds": 23.571416,
+     "notes": [
+      {
+       "string": 4,
+       "fret": 3,
+       "midi": 48,
+       "durationBeats": 0.98125,
+       "degree": "C",
+       "octave": "3"
+      },
+      {
+       "string": 1,
+       "fret": 1,
+       "midi": 60,
+       "durationBeats": 0.98125,
+       "degree": "C",
+       "octave": "4"
+      }
+     ]
+    },
+    {
+     "beats": 45,
+     "measureTiming": 0.25,
+     "seconds": 24.10713,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 2,
+       "midi": 52,
+       "durationBeats": 0.98125,
+       "degree": "E",
+       "octave": "3"
+      },
+      {
+       "string": 1,
+       "fret": 1,
+       "midi": 60,
+       "durationBeats": 0.98125,
+       "degree": "C",
+       "octave": "4"
+      }
+     ]
+    },
+    {
+     "beats": 46,
+     "measureTiming": 0.5,
+     "seconds": 24.642844,
+     "notes": [
+      {
+       "string": 5,
+       "fret": 3,
+       "midi": 43,
+       "durationBeats": 0.98125,
+       "degree": "G",
+       "octave": "2"
+      },
+      {
+       "string": 1,
+       "fret": 0,
+       "midi": 59,
+       "durationBeats": 0.98125,
+       "degree": "B",
+       "octave": "3"
+      }
+     ]
+    },
+    {
+     "beats": 47,
+     "measureTiming": 0.75,
+     "seconds": 25.178558,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 0,
+       "midi": 50,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "3"
+      },
+      {
+       "string": 1,
+       "fret": 0,
+       "midi": 59,
+       "durationBeats": 0.98125,
+       "degree": "B",
+       "octave": "3"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "events": [
+    {
+     "beats": 48,
+     "measureTiming": 0,
+     "seconds": 25.714272,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 0,
+       "midi": 50,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "3"
+      },
+      {
+       "string": 2,
+       "fret": 2,
+       "midi": 57,
+       "durationBeats": 0.98125,
+       "degree": "A",
+       "octave": "3"
+      }
+     ]
+    },
+    {
+     "beats": 49,
+     "measureTiming": 0.2511773940345367,
+     "seconds": 26.249986,
+     "notes": [
+      {
+       "string": 4,
+       "fret": 0,
+       "midi": 45,
+       "durationBeats": 0.98125,
+       "degree": "A",
+       "octave": "2"
+      },
+      {
+       "string": 2,
+       "fret": 2,
+       "midi": 57,
+       "durationBeats": 0.98125,
+       "degree": "A",
+       "octave": "3"
+      }
+     ]
+    },
+    {
+     "beats": 50,
+     "measureTiming": 0.5023547880690734,
+     "seconds": 26.7857,
+     "notes": [
+      {
+       "string": 5,
+       "fret": 3,
+       "midi": 43,
+       "durationBeats": 0.98125,
+       "degree": "G",
+       "octave": "2"
+      },
+      {
+       "string": 2,
+       "fret": 0,
+       "midi": 55,
+       "durationBeats": 1.98125,
+       "degree": "G",
+       "octave": "3"
+      }
+     ]
+    },
+    {
+     "beats": 51,
+     "measureTiming": 0.7535321821036102,
+     "seconds": 27.321414,
+     "notes": [
+      {
+       "string": 3,
+       "fret": 0,
+       "midi": 50,
+       "durationBeats": 0.98125,
+       "degree": "D",
+       "octave": "3"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

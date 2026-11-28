@@ -1,0 +1,101 @@
+z114-desc                    lic      STRICT    
+dafx-amt                     doc      STRICT    
+dafx-gpfx                    doc      STRICT    
+dafx-t2                      doc      STRICT    
+cstr-lic                     lic      STRICT    
+cstr-van                     lic      STRICT    
+cstr-gpfx                    lic      STRICT    
+cstr-in                      doc      STRICT    
+cstr-out                     doc      STRICT    
+cstr-f1                      doc      STRICT    
+cstr-eg                      doc      STRICT    
+gguf-lic                     lic      STRICT    
+gguf-emis                    doc      NOT-FOUND missing fragment: 'these are emission scores, not a decided tablature. turning them into a playable fingering needs a constrained decoder (' ; longest prefix found: 'these are emission scores, not a decided tablature. turning them into a '
+hm-lic2                      lic      STRICT    
+ptiv-fork                    lic      STRICT    
+gt-bt-card                   lic      STRICT    
+bt-file                      lic      STRICT    
+bt-readme                    lic      STRICT    
+gt-chord                     doc      STRICT    
+gt-egdb                      doc      STRICT    
+chordo-lic                   lic      STRICT    
+gp5-tok                      doc      STRICT    
+gp5-std                      doc      STRICT    
+whisper                      lic      STRICT    
+a2t-n2f                      doc      STRICT    
+ny-sony                      lic      STRICT    
+tt-cli                       code     STRICT    
+tutts-licfile                lic      STRICT    
+tutts-core                   lic      STRICT    
+tabsynth-demo                doc      STRICT    
+m2t-ft                       doc      STRICT    
+m2t-61                       doc      STRICT    
+m2t-cap                      doc      STRICT    
+leduc-card                   doc      STRICT    
+gtab-run                     doc      STRICT    
+gtab-sup                     doc      STRICT    
+gtab-ofmt                    doc      STRICT    
+gtab-480                     doc      STRICT    
+gtab-demo                    doc      STRICT    
+m2td-conda                   doc      STRICT    
+bont-cplex                   doc      STRICT    
+bont-tabasco                 doc      STRICT    
+dg-960a                      code     STRICT    
+dg-960b                      code     STRICT    
+mtl:Code for "Automatic Gu   doc      STRICT    
+mtl:The paper is currently   doc      STRICT    
+mtl:The HCQT stacks six CQ   doc      STRICT    
+mtl:The Mel-spectrogram (2   doc      STRICT    
+mtl:Audio is resampled to    doc      STRICT    
+mtl:The tablature head is    doc      STRICT    
+mtl:Training on CPU works    doc      STRICT    
+mtl:They load into `src/mo   doc      STRICT    
+mtl:MIT. See [LICENSE](LIC   doc      STRICT    
+mtl:Experiments use [Guita   doc      STRICT    
+mtl:CPU: median of 5 runs    doc      STRICT    
+mtl:Instrument tuning/fret   doc      STRICT    
+mtl:| HCQT + Mel | Casc. M   doc      STRICT    
+mtl:| Cascaded MT† | 6.65    doc      STRICT    
+mtl-lic                      lic      STRICT    
+mtl-wlic                     lic      STRICT    
+mtl-card-lic                 lic      STRICT    
+mtl-card-w                   doc      STRICT    
+sc:Instrument-aware music    doc      STRICT    
+sc:All pitches are **soun    doc      STRICT    
+sc:Time is a normalized `    doc      STRICT    
+sc:`success` includes out    doc      STRICT    
+sc:Configurable fretted s    doc      STRICT    
+sc:Per-string configurati    doc      STRICT    
+sc:exhaustive reference,     doc      STRICT    
+sc:audio/MIDI/MusicXML im    doc      STRICT    
+sc:remain future work        doc      STRICT    
+sc:converts MusicXML, MXL    doc      STRICT    
+sc:classicalGuitar({ capo    doc      STRICT    
+sc:createFrettedInstrumen    doc      STRICT    
+sc-lic                       lic      STRICT    
+sc-licfile                   lic      NOT-FOUND missing fragment: '"license": "mit"' ; longest prefix found: ''
+cds-code                     lic      STRICT    
+cds-data                     lic      STRICT    
+cds-ckpt                     doc      STRICT    
+cds-train                    doc      STRICT    
+cds-test                     doc      STRICT    
+cds-shape                    doc      STRICT    
+cds-lic                      lic      STRICT    
+cds-dlic                     lic      STRICT    
+cds-space                    lic      STRICT    
+cds-paper                    doc      STRICT    
+cds-algomus                  doc      NOT-FOUND missing fragment: 'github.com/adhooge/guitar-chord-diagram-suggestion' ; longest prefix found: 'git'
+egdbpg                       doc      STRICT    
+rgtc                         doc      STRICT    
+pxu-lic                      lic      STRICT    
+pxu-dlic                     lic      STRICT    
+gf-readme                    doc      STRICT    
+gf-lic                       lic      STRICT    
+gf-terms1                    lic      STRICT    
+gf-terms2                    lic      STRICT    
+gf-doi                       doc      STRICT    
+hosted                       doc      STRICT    
+gs-capo                      doc      STRICT    
+gs-single                    doc      STRICT    
+fp-copy                      lic      STRICT    
+TOTAL 100  STRICT 97  LOOSE 0  NOT-FOUND 3

@@ -1,0 +1,122 @@
+{
+ "tool": "swiftf0",
+ "kind": "f0",
+ "dir": "/home/user/gtr/lanes/audio-to-notes/out/swiftf0/f0",
+ "conf_threshold": 0.5,
+ "results": {
+  "R1b": {
+   "eval_id": "e0112",
+   "args": "f0 --truth R1b --est /home/user/gtr/lanes/audio-to-notes/out/swiftf0/f0/R1b.f0.csv --voice lead --conf-threshold 0.5",
+   "metrics": {
+    "voicing_recall": 0.936917,
+    "voicing_false_alarm": 0.213321,
+    "raw_pitch_accuracy": 0.85299,
+    "raw_chroma_accuracy": 0.862863,
+    "overall_accuracy": 0.809134
+   },
+   "counts": {
+    "n_frames": 2934,
+    "n_ref_voiced_frames": 1823,
+    "n_est_voiced_frames": 1945,
+    "n_est_rows": 1833,
+    "n_reference_notes": 70,
+    "n_overlapping_consecutive_pairs": 7
+   }
+  },
+  "S1": {
+   "eval_id": "e0113",
+   "args": "f0 --truth S1 --est /home/user/gtr/lanes/audio-to-notes/out/swiftf0/f0/S1.f0.csv --conf-threshold 0.5",
+   "metrics": {
+    "voicing_recall": 0.999619,
+    "voicing_false_alarm": 0.252778,
+    "raw_pitch_accuracy": 0.961128,
+    "raw_chroma_accuracy": 0.961128,
+    "overall_accuracy": 0.935322
+   },
+   "counts": {
+    "n_frames": 2984,
+    "n_ref_voiced_frames": 2624,
+    "n_est_voiced_frames": 2714,
+    "n_est_rows": 1864,
+    "n_reference_notes": 62,
+    "n_overlapping_consecutive_pairs": 0
+   }
+  },
+  "S2n": {
+   "eval_id": "e0114",
+   "args": "f0 --truth S2n --est /home/user/gtr/lanes/audio-to-notes/out/swiftf0/f0/S2n.f0.csv --conf-threshold 0.5",
+   "metrics": {
+    "voicing_recall": 0.960459,
+    "voicing_false_alarm": 0.216216,
+    "raw_pitch_accuracy": 0.224199,
+    "raw_chroma_accuracy": 0.603796,
+    "overall_accuracy": 0.299387
+   },
+   "counts": {
+    "n_frames": 2936,
+    "n_ref_voiced_frames": 2529,
+    "n_est_voiced_frames": 2517,
+    "n_est_rows": 1834,
+    "n_reference_notes": 42,
+    "n_overlapping_consecutive_pairs": 0
+   }
+  },
+  "S2s": {
+   "eval_id": "e0115",
+   "args": "f0 --truth S2s --est /home/user/gtr/lanes/audio-to-notes/out/swiftf0/f0/S2s.f0.csv --conf-threshold 0.5",
+   "metrics": {
+    "voicing_recall": 0.558323,
+    "voicing_false_alarm": 0.115479,
+    "raw_pitch_accuracy": 0.213919,
+    "raw_chroma_accuracy": 0.559905,
+    "overall_accuracy": 0.271458
+   },
+   "counts": {
+    "n_frames": 2936,
+    "n_ref_voiced_frames": 2529,
+    "n_est_voiced_frames": 1459,
+    "n_est_rows": 1834,
+    "n_reference_notes": 42,
+    "n_overlapping_consecutive_pairs": 0
+   }
+  },
+  "S4": {
+   "eval_id": "e0117",
+   "args": "f0 --truth S4 --est /home/user/gtr/lanes/audio-to-notes/out/swiftf0/f0/S4.f0.csv --conf-threshold 0.5",
+   "metrics": {
+    "voicing_recall": 0.222662,
+    "voicing_false_alarm": 0.059361,
+    "raw_pitch_accuracy": 0.204317,
+    "raw_chroma_accuracy": 0.577698,
+    "overall_accuracy": 0.320258
+   },
+   "counts": {
+    "n_frames": 3875,
+    "n_ref_voiced_frames": 2780,
+    "n_est_voiced_frames": 684,
+    "n_est_rows": 2421,
+    "n_reference_notes": 37,
+    "n_overlapping_consecutive_pairs": 0
+   }
+  },
+  "S4lead": {
+   "eval_id": "e0118",
+   "args": "f0 --truth S4 --est /home/user/gtr/lanes/audio-to-notes/out/swiftf0/f0/S4lead.f0.csv --conf-threshold 0.5",
+   "metrics": {
+    "voicing_recall": 0.997482,
+    "voicing_false_alarm": 0.418265,
+    "raw_pitch_accuracy": 0.947122,
+    "raw_chroma_accuracy": 0.947122,
+    "overall_accuracy": 0.842323
+   },
+   "counts": {
+    "n_frames": 3875,
+    "n_ref_voiced_frames": 2780,
+    "n_est_voiced_frames": 3231,
+    "n_est_rows": 2421,
+    "n_reference_notes": 37,
+    "n_overlapping_consecutive_pairs": 0
+   }
+  }
+ }
+}

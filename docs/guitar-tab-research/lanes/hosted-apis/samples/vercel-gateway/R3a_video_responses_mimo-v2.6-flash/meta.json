@@ -1,0 +1,11 @@
+{
+ "model": "xiaomi/mimo-v2.6-flash",
+ "endpoint": "/v1/responses",
+ "part": "input_video",
+ "http_status": 400,
+ "wall_s": 0.778,
+ "usage": {},
+ "cost_usd": null,
+ "media_sha256": "9badbd52c96536733b8bcfe6ab896f43f765f9b691dc53fcac9d9e00efb0a31d",
+ "media_bytes": 2368626
+}

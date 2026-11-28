@@ -1,0 +1,138 @@
+{
+ "input": "/home/user/gtr/inputs/S6taps/S6taps.mono.wav",
+ "Fs": 22050,
+ "n_samples": 647325,
+ "libfmp": "1.3.0 (freeze)",
+ "librosa": "0.11.0",
+ "n_onsets_mix_22050": 53,
+ "runs": [
+  {
+   "name": "hps_binary",
+   "function": "hps",
+   "params": {
+    "N": 1024,
+    "H": 256,
+    "L_h": 0.2,
+    "L_p": 500,
+    "mask": "binary"
+   },
+   "seconds": 3.686,
+   "L_h_frames": 19,
+   "L_p_bins": 25,
+   "energy_fraction": {
+    "harmonic": 0.9222873935966504,
+    "percussive": 0.04094964809183394
+   },
+   "energy_fraction_mix_minus_parts": 7.441389918950302e-15,
+   "n_onsets_percussive": 53
+  },
+  {
+   "name": "hps_soft",
+   "function": "hps",
+   "params": {
+    "N": 1024,
+    "H": 256,
+    "L_h": 0.2,
+    "L_p": 500,
+    "mask": "soft"
+   },
+   "seconds": 1.016,
+   "L_h_frames": 19,
+   "L_p_bins": 25,
+   "energy_fraction": {
+    "harmonic": 0.8133663927771038,
+    "percussive": 0.044649910233157133
+   },
+   "energy_fraction_mix_minus_parts": 7.948560396328547e-15,
+   "n_onsets_percussive": 53
+  },
+  {
+   "name": "hrps_beta1.1",
+   "function": "hrps",
+   "params": {
+    "N": 1024,
+    "H": 256,
+    "L_h": 0.2,
+    "L_p": 500,
+    "beta": 1.1
+   },
+   "seconds": 1.104,
+   "L_h_frames": 19,
+   "L_p_bins": 25,
+   "energy_fraction": {
+    "harmonic": 0.9158737091505024,
+    "percussive": 0.03828536891109557,
+    "residual": 0.0028411306780599544
+   },
+   "energy_fraction_mix_minus_parts": 8.116250004686358e-15,
+   "n_onsets_percussive": 53,
+   "n_onsets_residual": 102
+  },
+  {
+   "name": "hrps_beta2",
+   "function": "hrps",
+   "params": {
+    "N": 1024,
+    "H": 256,
+    "L_h": 0.2,
+    "L_p": 500,
+    "beta": 2
+   },
+   "seconds": 1.095,
+   "L_h_frames": 19,
+   "L_p_bins": 25,
+   "energy_fraction": {
+    "harmonic": 0.8671871179624356,
+    "percussive": 0.02760703855028692,
+    "residual": 0.032111459685460815
+   },
+   "energy_fraction_mix_minus_parts": 7.887725684153079e-15,
+   "n_onsets_percussive": 53,
+   "n_onsets_residual": 53
+  },
+  {
+   "name": "hrps_beta4",
+   "function": "hrps",
+   "params": {
+    "N": 1024,
+    "H": 256,
+    "L_h": 0.2,
+    "L_p": 500,
+    "beta": 4
+   },
+   "seconds": 0.945,
+   "L_h_frames": 19,
+   "L_p_bins": 25,
+   "energy_fraction": {
+    "harmonic": 0.7931445835624232,
+    "percussive": 0.020443266881434857,
+    "residual": 0.09019716024706399
+   },
+   "energy_fraction_mix_minus_parts": 7.686189282884888e-15,
+   "n_onsets_percussive": 53,
+   "n_onsets_residual": 53
+  },
+  {
+   "name": "hrps_beta32",
+   "function": "hrps",
+   "params": {
+    "N": 1024,
+    "H": 256,
+    "L_h": 0.2,
+    "L_p": 500,
+    "beta": 32
+   },
+   "seconds": 0.985,
+   "L_h_frames": 19,
+   "L_p_bins": 25,
+   "energy_fraction": {
+    "harmonic": 0.39944381711663,
+    "percussive": 0.004890065453945838,
+    "residual": 0.45302493949547307
+   },
+   "energy_fraction_mix_minus_parts": 7.36902844503512e-15,
+   "n_onsets_percussive": 53,
+   "n_onsets_residual": 53
+  }
+ ]
+}

@@ -1,0 +1,93 @@
+{
+ "cmd": [
+  "/home/user/gtr/lanes/browser-audio-sync/venv-verify-demucsonnx/bin/python",
+  "-I",
+  "/home/user/gtr/lanes/browser-audio-sync/verify-gap2/scripts/ort_threads.py",
+  "2",
+  "/home/user/blog/docs/guitar-tab-research/lanes/browser-audio-sync/scripts/gap2/ref_demucs_onnx.py",
+  "/home/user/gtr/lanes/browser-audio-sync/verify-gap2/dl/htdemucs-6s-onnx/htdemucs_6s_fp16weights.onnx",
+  "/home/user/gtr/lanes/browser-audio-sync/inputs/S4_10s/S4_10s.wav",
+  "/home/user/gtr/lanes/browser-audio-sync/verify-gap2/out/htdemucs6s-native-optdisabled-2threads",
+  "disabled"
+ ],
+ "exit_code": 0,
+ "wall_s": 22.27,
+ "samples": 88,
+ "probe_cpus_allowed": "0-1",
+ "threads": [
+  {
+   "pid": 17766,
+   "tid": 17766,
+   "name": "python",
+   "allowed": [
+    "0-1"
+   ],
+   "processors": [
+    0,
+    1
+   ],
+   "first_s": 0.01,
+   "cpu_s": 21.56,
+   "last_s": 22.02
+  },
+  {
+   "pid": 17766,
+   "tid": 17810,
+   "name": "python",
+   "allowed": [
+    "0-1"
+   ],
+   "processors": [
+    1
+   ],
+   "first_s": 0.26,
+   "cpu_s": 8.29,
+   "last_s": 21.77
+  },
+  {
+   "pid": 17766,
+   "tid": 17782,
+   "name": "python",
+   "allowed": [
+    "0-1"
+   ],
+   "processors": [
+    1
+   ],
+   "first_s": 0.26,
+   "cpu_s": 0.1,
+   "last_s": 22.02
+  },
+  {
+   "pid": 17766,
+   "tid": 17805,
+   "name": "python",
+   "allowed": [
+    "0-1"
+   ],
+   "processors": [
+    1
+   ],
+   "first_s": 0.26,
+   "cpu_s": 0.0,
+   "last_s": 22.02
+  },
+  {
+   "pid": 17766,
+   "tid": 18181,
+   "name": "python",
+   "allowed": [
+    "0-1"
+   ],
+   "processors": [
+    1
+   ],
+   "first_s": 9.37,
+   "cpu_s": 0.0,
+   "last_s": 9.62
+  }
+ ],
+ "cpu_s_by_allowed_list": {
+  "0-1": 29.95
+ }
+}

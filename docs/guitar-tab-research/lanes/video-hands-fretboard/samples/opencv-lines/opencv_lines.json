@@ -1,0 +1,329 @@
+{
+ "opencv": "5.0.0",
+ "frames": {
+  "R3a_cu_f0150": {
+   "hand_quad": {
+    "quad": [
+     [
+      541.0,
+      120.0
+     ],
+     [
+      575.0,
+      168.0
+     ],
+     [
+      225.0,
+      390.0
+     ],
+     [
+      195.0,
+      335.0
+     ]
+    ],
+    "tag": "handquad",
+    "unrectified": {
+     "neck_axis_deg": 148.14,
+     "fretboard_width_px": 58.8,
+     "hough": {
+      "segments_total": 142,
+      "segments_in_quad": 70,
+      "string_like": 37,
+      "fret_like": 27
+     },
+     "lsd": {
+      "segments_total": 443,
+      "segments_in_quad": 129,
+      "string_like": 39,
+      "fret_like": 22
+     },
+     "time_s": 0.4464
+    },
+    "homography_img_to_rect": [
+     [
+      -1.803445,
+      1.27744,
+      822.371074
+     ],
+     [
+      1.119263,
+      1.801232,
+      -821.669057
+     ],
+     [
+      2.4e-05,
+      0.000354,
+      1.0
+     ]
+    ],
+    "rectified": {
+     "size": [
+      800,
+      116
+     ],
+     "hough": {
+      "segments_total": 113,
+      "string_like": 31,
+      "fret_like": 8,
+      "fret_x_clusters_px_from_nut": [
+       339.0,
+       408.5,
+       478.0,
+       647.0,
+       746.2,
+       793.0
+      ],
+      "string_y_clusters_px_from_upper_edge": [
+       5.5,
+       28.1,
+       46.1
+      ]
+     },
+     "lsd": {
+      "segments_total": 237,
+      "string_like": 39,
+      "fret_like": 21,
+      "fret_x_clusters_px_from_nut": [
+       5.7,
+       98.9,
+       341.2,
+       410.6,
+       476.7,
+       537.2,
+       594.8,
+       647.9,
+       698.1,
+       744.7,
+       789.7
+      ],
+      "string_y_clusters_px_from_upper_edge": [
+       6.4,
+       27.7,
+       46.2,
+       109.9
+      ]
+     },
+     "time_s": 0.2008
+    }
+   }
+  },
+  "R3a_cu_f0000": {
+   "hand_quad": {
+    "quad": [
+     [
+      541.0,
+      120.0
+     ],
+     [
+      575.0,
+      168.0
+     ],
+     [
+      225.0,
+      390.0
+     ],
+     [
+      195.0,
+      335.0
+     ]
+    ],
+    "tag": "handquad",
+    "unrectified": {
+     "neck_axis_deg": 148.14,
+     "fretboard_width_px": 58.8,
+     "hough": {
+      "segments_total": 116,
+      "segments_in_quad": 54,
+      "string_like": 27,
+      "fret_like": 25
+     },
+     "lsd": {
+      "segments_total": 436,
+      "segments_in_quad": 129,
+      "string_like": 44,
+      "fret_like": 20
+     },
+     "time_s": 0.1266
+    },
+    "homography_img_to_rect": [
+     [
+      -1.803445,
+      1.27744,
+      822.371074
+     ],
+     [
+      1.119263,
+      1.801232,
+      -821.669057
+     ],
+     [
+      2.4e-05,
+      0.000354,
+      1.0
+     ]
+    ],
+    "rectified": {
+     "size": [
+      800,
+      116
+     ],
+     "hough": {
+      "segments_total": 107,
+      "string_like": 31,
+      "fret_like": 10,
+      "fret_x_clusters_px_from_nut": [
+       1.0,
+       97.5,
+       476.5,
+       536.0,
+       642.0,
+       695.5,
+       747.0,
+       786.5
+      ],
+      "string_y_clusters_px_from_upper_edge": [
+       2.7,
+       17.3,
+       38.8
+      ]
+     },
+     "lsd": {
+      "segments_total": 228,
+      "string_like": 36,
+      "fret_like": 17,
+      "fret_x_clusters_px_from_nut": [
+       2.7,
+       94.9,
+       177.3,
+       473.8,
+       537.0,
+       591.4,
+       644.7,
+       695.3,
+       741.4,
+       785.9
+      ],
+      "string_y_clusters_px_from_upper_edge": [
+       3.4,
+       18.3,
+       37.9
+      ]
+     },
+     "time_s": 0.2741
+    }
+   }
+  },
+  "R3a_cu_f0280": {
+   "hand_quad": {
+    "quad": [
+     [
+      541.0,
+      120.0
+     ],
+     [
+      575.0,
+      168.0
+     ],
+     [
+      225.0,
+      390.0
+     ],
+     [
+      195.0,
+      335.0
+     ]
+    ],
+    "tag": "handquad",
+    "unrectified": {
+     "neck_axis_deg": 148.14,
+     "fretboard_width_px": 58.8,
+     "hough": {
+      "segments_total": 118,
+      "segments_in_quad": 61,
+      "string_like": 29,
+      "fret_like": 31
+     },
+     "lsd": {
+      "segments_total": 421,
+      "segments_in_quad": 136,
+      "string_like": 40,
+      "fret_like": 23
+     },
+     "time_s": 0.202
+    },
+    "homography_img_to_rect": [
+     [
+      -1.803445,
+      1.27744,
+      822.371074
+     ],
+     [
+      1.119263,
+      1.801232,
+      -821.669057
+     ],
+     [
+      2.4e-05,
+      0.000354,
+      1.0
+     ]
+    ],
+    "rectified": {
+     "size": [
+      800,
+      116
+     ],
+     "hough": {
+      "segments_total": 89,
+      "string_like": 26,
+      "fret_like": 16,
+      "fret_x_clusters_px_from_nut": [
+       1.0,
+       12.5,
+       270.0,
+       417.0,
+       482.0,
+       543.2,
+       599.0,
+       654.5,
+       704.0,
+       748.0,
+       794.5
+      ],
+      "string_y_clusters_px_from_upper_edge": [
+       3.7,
+       24.6,
+       44.5
+      ]
+     },
+     "lsd": {
+      "segments_total": 194,
+      "string_like": 40,
+      "fret_like": 20,
+      "fret_x_clusters_px_from_nut": [
+       1.7,
+       11.6,
+       31.7,
+       213.7,
+       272.1,
+       347.0,
+       416.3,
+       482.7,
+       543.6,
+       601.0,
+       651.1,
+       704.0,
+       753.2
+      ],
+      "string_y_clusters_px_from_upper_edge": [
+       3.4,
+       24.1,
+       44.7
+      ]
+     },
+     "time_s": 0.2964
+    }
+   }
+  }
+ }
+}

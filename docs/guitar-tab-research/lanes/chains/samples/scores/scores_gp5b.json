@@ -1,0 +1,474 @@
+[
+ {
+  "label": "A gp5 tab madmom span",
+  "cmd": "gtr-eval tab --truth S4 --est out/gp5/S4.madmom.span.gp5 --voice chord --time-shift -0.01",
+  "eval_id": "e1497",
+  "exit": 0,
+  "counts": {
+   "n_truth": 369,
+   "n_est": 325,
+   "n_matched": 223,
+   "n_truth_left_out": {
+    "drums": 194,
+    "bass": 61,
+    "melody": 37
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.941704,
+   "same_string_fraction_of_matched": 0.941704,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.941704,
+   "same_string_and_fret_fraction_of_truth": 0.569106,
+   "string_difference_counts": {
+    "-1": 6,
+    "0": 210,
+    "+1": 3,
+    "+2": 4
+   }
+  }
+ },
+ {
+  "label": "A gp5 beats madmom span",
+  "cmd": "gtr-eval beats --truth S4 --est out/gp5/S4.madmom.span.gp5.beats.txt --downbeats-est out/gp5/S4.madmom.span.gp5.downbeats.txt",
+  "eval_id": "e1498",
+  "exit": 0,
+  "counts": {
+   "n_truth_beats": 68,
+   "n_truth_downbeats": 17,
+   "n_est_beats": 73,
+   "n_est_downbeats": 18
+  },
+  "metrics": {
+   "beats": {
+    "f_measure": 0.964539,
+    "precision": 0.931507,
+    "recall": 1.0,
+    "CMLc": 0.931507,
+    "CMLt": 0.931507,
+    "AMLc": 0.931507,
+    "AMLt": 0.931507,
+    "n_truth": 68,
+    "n_est": 73,
+    "n_matched": 68,
+    "timing_of_matched": {
+     "n_pairs": 68,
+     "median_s": -0.01,
+     "mean_s": -0.01,
+     "mean_abs_s": 0.01,
+     "p95_abs_s": 0.01,
+     "max_abs_s": 0.01
+    }
+   },
+   "downbeats": {
+    "f_measure": 0.971429,
+    "precision": 0.944444,
+    "recall": 1.0,
+    "CMLc": 0.944444,
+    "CMLt": 0.944444,
+    "AMLc": 0.944444,
+    "AMLt": 0.944444,
+    "n_truth": 17,
+    "n_est": 18,
+    "n_matched": 17,
+    "timing_of_matched": {
+     "n_pairs": 17,
+     "median_s": -0.01,
+     "mean_s": -0.01,
+     "mean_abs_s": 0.01,
+     "p95_abs_s": 0.01,
+     "max_abs_s": 0.01
+    }
+   }
+  }
+ },
+ {
+  "label": "A gp5 chords madmom span",
+  "cmd": "gtr-eval chords --truth S4 --est out/gp5/S4.madmom.span.gp5.chords.lab",
+  "eval_id": "e1499",
+  "exit": 0,
+  "counts": {
+   "n_truth_segments": 18,
+   "n_est_segments": 18,
+   "n_est_labels_unparsed": 0,
+   "est_unparsed_duration_s": 0.0,
+   "truth_span_s": [
+    0.0,
+    38.741383
+   ]
+  },
+  "metrics": {
+   "root": 0.944593,
+   "majmin": 0.944593,
+   "sevenths": 0.897348,
+   "other_mir_eval_chord_scores": {
+    "thirds": 0.944593,
+    "thirds_inv": 0.944593,
+    "triads": 0.944593,
+    "triads_inv": 0.944593,
+    "tetrads": 0.897348,
+    "tetrads_inv": 0.897348,
+    "mirex": 0.947672,
+    "majmin_inv": 0.944593,
+    "sevenths_inv": 0.897348,
+    "underseg": 0.970218,
+    "overseg": 0.944593,
+    "seg": 0.944593
+   }
+  }
+ },
+ {
+  "label": "A gp5 tab madmom perbar",
+  "cmd": "gtr-eval tab --truth S4 --est out/gp5/S4.madmom.perbar.gp5 --voice chord --time-shift -0.01",
+  "eval_id": "e1500",
+  "exit": 0,
+  "counts": {
+   "n_truth": 369,
+   "n_est": 325,
+   "n_matched": 223,
+   "n_truth_left_out": {
+    "drums": 194,
+    "bass": 61,
+    "melody": 37
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.941704,
+   "same_string_fraction_of_matched": 0.941704,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.941704,
+   "same_string_and_fret_fraction_of_truth": 0.569106,
+   "string_difference_counts": {
+    "-1": 6,
+    "0": 210,
+    "+1": 3,
+    "+2": 4
+   }
+  }
+ },
+ {
+  "label": "A gp5 beats madmom perbar",
+  "cmd": "gtr-eval beats --truth S4 --est out/gp5/S4.madmom.perbar.gp5.beats.txt --downbeats-est out/gp5/S4.madmom.perbar.gp5.downbeats.txt",
+  "eval_id": "e1501",
+  "exit": 0,
+  "counts": {
+   "n_truth_beats": 68,
+   "n_truth_downbeats": 17,
+   "n_est_beats": 73,
+   "n_est_downbeats": 18
+  },
+  "metrics": {
+   "beats": {
+    "f_measure": 0.964539,
+    "precision": 0.931507,
+    "recall": 1.0,
+    "CMLc": 0.931507,
+    "CMLt": 0.931507,
+    "AMLc": 0.931507,
+    "AMLt": 0.931507,
+    "n_truth": 68,
+    "n_est": 73,
+    "n_matched": 68,
+    "timing_of_matched": {
+     "n_pairs": 68,
+     "median_s": 0.008298,
+     "mean_s": 0.008276,
+     "mean_abs_s": 0.009973,
+     "p95_abs_s": 0.025982,
+     "max_abs_s": 0.025982
+    }
+   },
+   "downbeats": {
+    "f_measure": 0.971429,
+    "precision": 0.944444,
+    "recall": 1.0,
+    "CMLc": 0.944444,
+    "CMLt": 0.944444,
+    "AMLc": 0.944444,
+    "AMLt": 0.944444,
+    "n_truth": 17,
+    "n_est": 18,
+    "n_matched": 17,
+    "timing_of_matched": {
+     "n_pairs": 17,
+     "median_s": 0.008298,
+     "mean_s": 0.008262,
+     "mean_abs_s": 0.010471,
+     "p95_abs_s": 0.025982,
+     "max_abs_s": 0.025982
+    }
+   }
+  }
+ },
+ {
+  "label": "A gp5 chords madmom perbar",
+  "cmd": "gtr-eval chords --truth S4 --est out/gp5/S4.madmom.perbar.gp5.chords.lab",
+  "eval_id": "e1502",
+  "exit": 0,
+  "counts": {
+   "n_truth_segments": 18,
+   "n_est_segments": 18,
+   "n_est_labels_unparsed": 0,
+   "est_unparsed_duration_s": 0.0,
+   "truth_span_s": [
+    0.0,
+    38.741383
+   ]
+  },
+  "metrics": {
+   "root": 0.941725,
+   "majmin": 0.941725,
+   "sevenths": 0.894511,
+   "other_mir_eval_chord_scores": {
+    "thirds": 0.941725,
+    "thirds_inv": 0.941725,
+    "triads": 0.941725,
+    "triads_inv": 0.941725,
+    "tetrads": 0.894511,
+    "tetrads_inv": 0.894511,
+    "mirex": 0.94482,
+    "majmin_inv": 0.941725,
+    "sevenths_inv": 0.894511,
+    "underseg": 0.966754,
+    "overseg": 0.941725,
+    "seg": 0.941725
+   }
+  }
+ },
+ {
+  "label": "A gp5 tab beatthis span",
+  "cmd": "gtr-eval tab --truth S4 --est out/gp5/S4.beatthis.span.gp5 --voice chord --time-shift 0.0",
+  "eval_id": "e1503",
+  "exit": 0,
+  "counts": {
+   "n_truth": 369,
+   "n_est": 325,
+   "n_matched": 223,
+   "n_truth_left_out": {
+    "drums": 194,
+    "bass": 61,
+    "melody": 37
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.941704,
+   "same_string_fraction_of_matched": 0.941704,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.941704,
+   "same_string_and_fret_fraction_of_truth": 0.569106,
+   "string_difference_counts": {
+    "-1": 6,
+    "0": 210,
+    "+1": 3,
+    "+2": 4
+   }
+  }
+ },
+ {
+  "label": "A gp5 beats beatthis span",
+  "cmd": "gtr-eval beats --truth S4 --est out/gp5/S4.beatthis.span.gp5.beats.txt --downbeats-est out/gp5/S4.beatthis.span.gp5.downbeats.txt",
+  "eval_id": "e1504",
+  "exit": 0,
+  "counts": {
+   "n_truth_beats": 68,
+   "n_truth_downbeats": 17,
+   "n_est_beats": 73,
+   "n_est_downbeats": 19
+  },
+  "metrics": {
+   "beats": {
+    "f_measure": 0.964539,
+    "precision": 0.931507,
+    "recall": 1.0,
+    "CMLc": 0.931507,
+    "CMLt": 0.931507,
+    "AMLc": 0.931507,
+    "AMLt": 0.931507,
+    "n_truth": 68,
+    "n_est": 73,
+    "n_matched": 68,
+    "timing_of_matched": {
+     "n_pairs": 68,
+     "median_s": 0.0,
+     "mean_s": 0.0,
+     "mean_abs_s": 0.0,
+     "p95_abs_s": 0.0,
+     "max_abs_s": 0.0
+    }
+   },
+   "downbeats": {
+    "f_measure": 0.944444,
+    "precision": 0.894737,
+    "recall": 1.0,
+    "CMLc": 0.894737,
+    "CMLt": 0.894737,
+    "AMLc": 0.894737,
+    "AMLt": 0.894737,
+    "n_truth": 17,
+    "n_est": 19,
+    "n_matched": 17,
+    "timing_of_matched": {
+     "n_pairs": 17,
+     "median_s": 0.0,
+     "mean_s": 0.0,
+     "mean_abs_s": 0.0,
+     "p95_abs_s": 0.0,
+     "max_abs_s": 0.0
+    }
+   }
+  }
+ },
+ {
+  "label": "A gp5 chords beatthis span",
+  "cmd": "gtr-eval chords --truth S4 --est out/gp5/S4.beatthis.span.gp5.chords.lab",
+  "eval_id": "e1505",
+  "exit": 0,
+  "counts": {
+   "n_truth_segments": 18,
+   "n_est_segments": 18,
+   "n_est_labels_unparsed": 0,
+   "est_unparsed_duration_s": 0.0,
+   "truth_span_s": [
+    0.0,
+    38.741383
+   ]
+  },
+  "metrics": {
+   "root": 0.867824,
+   "majmin": 0.867824,
+   "sevenths": 0.867824,
+   "other_mir_eval_chord_scores": {
+    "thirds": 0.867824,
+    "thirds_inv": 0.867824,
+    "triads": 0.867824,
+    "triads_inv": 0.867824,
+    "tetrads": 0.867824,
+    "tetrads_inv": 0.867824,
+    "mirex": 0.871161,
+    "majmin_inv": 0.867824,
+    "sevenths_inv": 0.867824,
+    "underseg": 0.933244,
+    "overseg": 0.947931,
+    "seg": 0.933244
+   }
+  }
+ },
+ {
+  "label": "A gp5 tab beatthis perbar",
+  "cmd": "gtr-eval tab --truth S4 --est out/gp5/S4.beatthis.perbar.gp5 --voice chord --time-shift 0.0",
+  "eval_id": "e1506",
+  "exit": 0,
+  "counts": {
+   "n_truth": 369,
+   "n_est": 325,
+   "n_matched": 223,
+   "n_truth_left_out": {
+    "drums": 194,
+    "bass": 61,
+    "melody": 37
+   },
+   "n_est_without_position": 0
+  },
+  "metrics": {
+   "same_string_and_fret_fraction_of_matched": 0.941704,
+   "same_string_fraction_of_matched": 0.941704,
+   "same_string_and_absolute_fret_fraction_of_matched": 0.941704,
+   "same_string_and_fret_fraction_of_truth": 0.569106,
+   "string_difference_counts": {
+    "-1": 6,
+    "0": 210,
+    "+1": 3,
+    "+2": 4
+   }
+  }
+ },
+ {
+  "label": "A gp5 beats beatthis perbar",
+  "cmd": "gtr-eval beats --truth S4 --est out/gp5/S4.beatthis.perbar.gp5.beats.txt --downbeats-est out/gp5/S4.beatthis.perbar.gp5.downbeats.txt",
+  "eval_id": "e1507",
+  "exit": 0,
+  "counts": {
+   "n_truth_beats": 68,
+   "n_truth_downbeats": 17,
+   "n_est_beats": 73,
+   "n_est_downbeats": 19
+  },
+  "metrics": {
+   "beats": {
+    "f_measure": 0.964539,
+    "precision": 0.931507,
+    "recall": 1.0,
+    "CMLc": 0.931507,
+    "CMLt": 0.931507,
+    "AMLc": 0.931507,
+    "AMLt": 0.931507,
+    "n_truth": 68,
+    "n_est": 73,
+    "n_matched": 68,
+    "timing_of_matched": {
+     "n_pairs": 68,
+     "median_s": 0.014301,
+     "mean_s": 0.013377,
+     "mean_abs_s": 0.015,
+     "p95_abs_s": 0.031842,
+     "max_abs_s": 0.03629
+    }
+   },
+   "downbeats": {
+    "f_measure": 0.944444,
+    "precision": 0.894737,
+    "recall": 1.0,
+    "CMLc": 0.894737,
+    "CMLt": 0.894737,
+    "AMLc": 0.894737,
+    "AMLt": 0.894737,
+    "n_truth": 17,
+    "n_est": 19,
+    "n_matched": 17,
+    "timing_of_matched": {
+     "n_pairs": 17,
+     "median_s": 0.018298,
+     "mean_s": 0.012926,
+     "mean_abs_s": 0.014753,
+     "p95_abs_s": 0.036044,
+     "max_abs_s": 0.03629
+    }
+   }
+  }
+ },
+ {
+  "label": "A gp5 chords beatthis perbar",
+  "cmd": "gtr-eval chords --truth S4 --est out/gp5/S4.beatthis.perbar.gp5.chords.lab",
+  "eval_id": "e1508",
+  "exit": 0,
+  "counts": {
+   "n_truth_segments": 18,
+   "n_est_segments": 18,
+   "n_est_labels_unparsed": 0,
+   "est_unparsed_duration_s": 0.0,
+   "truth_span_s": [
+    0.0,
+    38.741383
+   ]
+  },
+  "metrics": {
+   "root": 0.864997,
+   "majmin": 0.864997,
+   "sevenths": 0.864997,
+   "other_mir_eval_chord_scores": {
+    "thirds": 0.864997,
+    "thirds_inv": 0.864997,
+    "triads": 0.864997,
+    "triads_inv": 0.864997,
+    "tetrads": 0.864997,
+    "tetrads_inv": 0.864997,
+    "mirex": 0.8683,
+    "majmin_inv": 0.864997,
+    "sevenths_inv": 0.864997,
+    "underseg": 0.929193,
+    "overseg": 0.944871,
+    "seg": 0.929193
+   }
+  }
+ }
+]

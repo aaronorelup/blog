@@ -1,0 +1,62 @@
+{
+ "page": "/pages/essentia.html?clip=S1&algos=key,melodia,rhythm",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 11.705,
+ "external_requests": [],
+ "result": {
+  "clip": "S1",
+  "algos": [
+   "key",
+   "melodia",
+   "rhythm"
+  ],
+  "init_ms": 109.47999999998137,
+  "essentia_version": "2.1-beta6-dev",
+  "algorithmNames_count": 199,
+  "input": {
+   "sampleRate": 44100,
+   "channels": 2,
+   "seconds": 29.833333333333332
+  },
+  "rhythm": {
+   "ms": 3103.720000000205,
+   "bpm": 143.8736114501953,
+   "confidence": 3.3824894428253174,
+   "n_ticks": 70,
+   "first10": [
+    0.40634921193122864,
+    0.8243083953857422,
+    1.2422676086425781,
+    1.6718367338180542,
+    2.0897958278656006,
+    2.5077550411224365,
+    2.9257142543792725,
+    3.3436734676361084,
+    3.7616326808929443,
+    4.179591655731201
+   ],
+   "beats_file": "/home/user/gtr/lanes/browser-audio-sync/out/essentia/S1_beats.txt",
+   "bpm_file": "/home/user/gtr/lanes/browser-audio-sync/out/essentia/S1_bpm.txt"
+  },
+  "key": {
+   "ms": 202.4550000000745,
+   "key": "D",
+   "scale": "major",
+   "strength": 0.9236698150634766,
+   "file": "/home/user/gtr/lanes/browser-audio-sync/out/essentia/S1_key.txt"
+  },
+  "melodia": {
+   "ms": 6869.89000000013,
+   "n_frames": 10280,
+   "voiced_frames": 8156,
+   "hop_s": 0.0029024943310657597,
+   "file": "/home/user/gtr/lanes/browser-audio-sync/out/essentia/S1_pitchmelodia.csv"
+  },
+  "total_ms": 10615.069999999832
+ }
+}

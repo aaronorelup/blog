@@ -1,0 +1,20 @@
+{
+ "state_dict_tensors": 525,
+ "state_dict_numel": 27414996,
+ "parameter_tensors": 525,
+ "parameter_numel": 27414996,
+ "buffer_tensors": 0,
+ "buffer_numel": 0,
+ "dtypes": [
+  "torch.float32"
+ ],
+ "keys_start_with_models0": true,
+ "sources": [
+  "drums",
+  "bass",
+  "other",
+  "vocals",
+  "guitar",
+  "piano"
+ ]
+}

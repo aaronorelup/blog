@@ -1,0 +1,746 @@
+{
+ "tool": "tabsynth 1.0.6",
+ "tuning_midi": [
+  40,
+  45,
+  50,
+  55,
+  59,
+  64
+ ],
+ "capo": 0,
+ "settings": {
+  "midi": "/home/user/gtr/lanes/guitar-tab/inputs/merged/S2n.merged.mid",
+  "outdir": "/home/user/gtr/lanes/guitar-tab/out/tabsynth",
+  "name": "S2n.truthmidi.notes",
+  "mode": "notes",
+  "chord_window": 0.03,
+  "max_fret": 15,
+  "tolerance_cents": 50.0,
+  "transpose": 0
+ },
+ "n_events_in": 90,
+ "n_states_out": 90,
+ "notes": [
+  {
+   "onset": 2.142856,
+   "pitch": 43,
+   "string": 6,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 2.142856,
+   "pitch": 55,
+   "string": 4,
+   "fret": 5,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 2.67857,
+   "pitch": 50,
+   "string": 5,
+   "fret": 5,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 2.67857,
+   "pitch": 55,
+   "string": 4,
+   "fret": 5,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 3.214284,
+   "pitch": 43,
+   "string": 6,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 3.214284,
+   "pitch": 62,
+   "string": 2,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 3.749998,
+   "pitch": 50,
+   "string": 5,
+   "fret": 5,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 3.749998,
+   "pitch": 62,
+   "string": 2,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 4.285712,
+   "pitch": 48,
+   "string": 5,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 4.285712,
+   "pitch": 64,
+   "string": 2,
+   "fret": 5,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 4.821426,
+   "pitch": 52,
+   "string": 5,
+   "fret": 7,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 4.821426,
+   "pitch": 64,
+   "string": 2,
+   "fret": 5,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 5.35714,
+   "pitch": 43,
+   "string": 6,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 5.35714,
+   "pitch": 62,
+   "string": 2,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 5.892854,
+   "pitch": 50,
+   "string": 5,
+   "fret": 5,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 6.428568,
+   "pitch": 48,
+   "string": 5,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 6.428568,
+   "pitch": 60,
+   "string": 2,
+   "fret": 1,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 6.964282,
+   "pitch": 52,
+   "string": 4,
+   "fret": 2,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 6.964282,
+   "pitch": 60,
+   "string": 2,
+   "fret": 1,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 7.499996,
+   "pitch": 43,
+   "string": 6,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 7.499996,
+   "pitch": 59,
+   "string": 2,
+   "fret": 0,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 8.03571,
+   "pitch": 50,
+   "string": 4,
+   "fret": 0,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 8.03571,
+   "pitch": 59,
+   "string": 2,
+   "fret": 0,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 8.571424,
+   "pitch": 50,
+   "string": 4,
+   "fret": 0,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 8.571424,
+   "pitch": 57,
+   "string": 3,
+   "fret": 2,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 9.107138,
+   "pitch": 45,
+   "string": 5,
+   "fret": 0,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 9.107138,
+   "pitch": 57,
+   "string": 3,
+   "fret": 2,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 9.642852,
+   "pitch": 43,
+   "string": 6,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 9.642852,
+   "pitch": 55,
+   "string": 4,
+   "fret": 5,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 10.178566,
+   "pitch": 50,
+   "string": 5,
+   "fret": 5,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 10.71428,
+   "pitch": 43,
+   "string": 6,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 10.71428,
+   "pitch": 62,
+   "string": 2,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 11.249994,
+   "pitch": 50,
+   "string": 5,
+   "fret": 5,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 11.249994,
+   "pitch": 62,
+   "string": 2,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 11.785708,
+   "pitch": 48,
+   "string": 5,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 11.785708,
+   "pitch": 60,
+   "string": 2,
+   "fret": 1,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 12.321422,
+   "pitch": 52,
+   "string": 4,
+   "fret": 2,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 12.321422,
+   "pitch": 60,
+   "string": 2,
+   "fret": 1,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 12.857136,
+   "pitch": 43,
+   "string": 6,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 12.857136,
+   "pitch": 59,
+   "string": 2,
+   "fret": 0,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 13.39285,
+   "pitch": 50,
+   "string": 4,
+   "fret": 0,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 13.39285,
+   "pitch": 59,
+   "string": 2,
+   "fret": 0,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 13.928564,
+   "pitch": 50,
+   "string": 4,
+   "fret": 0,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 13.928564,
+   "pitch": 57,
+   "string": 3,
+   "fret": 2,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 14.464278,
+   "pitch": 45,
+   "string": 6,
+   "fret": 5,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 14.999992,
+   "pitch": 43,
+   "string": 6,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 14.999992,
+   "pitch": 62,
+   "string": 2,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 15.535706,
+   "pitch": 50,
+   "string": 5,
+   "fret": 5,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 15.535706,
+   "pitch": 62,
+   "string": 2,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 16.07142,
+   "pitch": 48,
+   "string": 5,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 16.07142,
+   "pitch": 60,
+   "string": 2,
+   "fret": 1,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 16.607134,
+   "pitch": 52,
+   "string": 4,
+   "fret": 2,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 16.607134,
+   "pitch": 60,
+   "string": 2,
+   "fret": 1,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 17.142848,
+   "pitch": 43,
+   "string": 6,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 17.142848,
+   "pitch": 59,
+   "string": 2,
+   "fret": 0,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 17.678562,
+   "pitch": 50,
+   "string": 4,
+   "fret": 0,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 17.678562,
+   "pitch": 59,
+   "string": 2,
+   "fret": 0,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 18.214276,
+   "pitch": 50,
+   "string": 4,
+   "fret": 0,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 18.214276,
+   "pitch": 57,
+   "string": 3,
+   "fret": 2,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 18.74999,
+   "pitch": 45,
+   "string": 6,
+   "fret": 5,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 19.285704,
+   "pitch": 43,
+   "string": 6,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 19.285704,
+   "pitch": 55,
+   "string": 4,
+   "fret": 5,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 19.821418,
+   "pitch": 50,
+   "string": 5,
+   "fret": 5,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 19.821418,
+   "pitch": 55,
+   "string": 4,
+   "fret": 5,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 20.357132,
+   "pitch": 43,
+   "string": 6,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 20.357132,
+   "pitch": 62,
+   "string": 2,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 20.892846,
+   "pitch": 50,
+   "string": 5,
+   "fret": 5,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 20.892846,
+   "pitch": 62,
+   "string": 2,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 21.42856,
+   "pitch": 48,
+   "string": 5,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 21.42856,
+   "pitch": 64,
+   "string": 2,
+   "fret": 5,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 21.964274,
+   "pitch": 52,
+   "string": 5,
+   "fret": 7,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 21.964274,
+   "pitch": 64,
+   "string": 2,
+   "fret": 5,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 22.499988,
+   "pitch": 43,
+   "string": 6,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 22.499988,
+   "pitch": 62,
+   "string": 2,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 23.035702,
+   "pitch": 50,
+   "string": 5,
+   "fret": 5,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 23.571416,
+   "pitch": 48,
+   "string": 5,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 23.571416,
+   "pitch": 60,
+   "string": 2,
+   "fret": 1,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 24.10713,
+   "pitch": 52,
+   "string": 4,
+   "fret": 2,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 24.10713,
+   "pitch": 60,
+   "string": 2,
+   "fret": 1,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 24.642844,
+   "pitch": 43,
+   "string": 6,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 24.642844,
+   "pitch": 59,
+   "string": 2,
+   "fret": 0,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 25.178558,
+   "pitch": 50,
+   "string": 4,
+   "fret": 0,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 25.178558,
+   "pitch": 59,
+   "string": 2,
+   "fret": 0,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 25.714272,
+   "pitch": 50,
+   "string": 4,
+   "fret": 0,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 25.714272,
+   "pitch": 57,
+   "string": 3,
+   "fret": 2,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 26.249986,
+   "pitch": 45,
+   "string": 5,
+   "fret": 0,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 26.249986,
+   "pitch": 57,
+   "string": 3,
+   "fret": 2,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 26.7857,
+   "pitch": 43,
+   "string": 6,
+   "fret": 3,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 26.7857,
+   "pitch": 55,
+   "string": 3,
+   "fret": 0,
+   "kind": "note",
+   "chord_id": null
+  },
+  {
+   "onset": 27.321414,
+   "pitch": 50,
+   "string": 4,
+   "fret": 0,
+   "kind": "note",
+   "chord_id": null
+  }
+ ]
+}

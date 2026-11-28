@@ -1,0 +1,110 @@
+{
+ "per_file_s": {
+  "S1.wav": 5.298,
+  "S2n.wav": 4.068,
+  "R1c.wav": 4.307,
+  "S4guitar.wav": 4.966
+ },
+ "midi": {
+  "S1.wav.midi": {
+   "type": 1,
+   "ticks_per_quarter": 220,
+   "tracks": 2,
+   "tempi": [
+    120.0
+   ],
+   "instruments": [
+    {
+     "program": 0,
+     "is_drum": false,
+     "notes": 65,
+     "control_changes": 0,
+     "pitch_bends": 0
+    }
+   ],
+   "velocity_min_max": [
+    67,
+    76
+   ],
+   "pitch_min_max": [
+    45,
+    69
+   ]
+  },
+  "S2n.wav.midi": {
+   "type": 1,
+   "ticks_per_quarter": 220,
+   "tracks": 2,
+   "tempi": [
+    120.0
+   ],
+   "instruments": [
+    {
+     "program": 0,
+     "is_drum": false,
+     "notes": 91,
+     "control_changes": 0,
+     "pitch_bends": 0
+    }
+   ],
+   "velocity_min_max": [
+    55,
+    74
+   ],
+   "pitch_min_max": [
+    43,
+    64
+   ]
+  },
+  "R1c.wav.midi": {
+   "type": 1,
+   "ticks_per_quarter": 220,
+   "tracks": 2,
+   "tempi": [
+    120.0
+   ],
+   "instruments": [
+    {
+     "program": 0,
+     "is_drum": false,
+     "notes": 173,
+     "control_changes": 0,
+     "pitch_bends": 0
+    }
+   ],
+   "velocity_min_max": [
+    30,
+    76
+   ],
+   "pitch_min_max": [
+    40,
+    69
+   ]
+  },
+  "S4guitar.wav.midi": {
+   "type": 1,
+   "ticks_per_quarter": 220,
+   "tracks": 2,
+   "tempi": [
+    120.0
+   ],
+   "instruments": [
+    {
+     "program": 0,
+     "is_drum": false,
+     "notes": 372,
+     "control_changes": 0,
+     "pitch_bends": 0
+    }
+   ],
+   "velocity_min_max": [
+    54,
+    75
+   ],
+   "pitch_min_max": [
+    43,
+    71
+   ]
+  }
+ }
+}

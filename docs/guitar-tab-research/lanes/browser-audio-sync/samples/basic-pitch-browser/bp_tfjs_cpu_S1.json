@@ -1,0 +1,151 @@
+{
+ "page": "/pages/basicpitch.html?clip=S1&engine=tfjs&backend=cpu",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 105.836,
+ "external_requests": [],
+ "result": {
+  "clip": "S1",
+  "engine": "tfjs",
+  "backend": "cpu",
+  "threads": null,
+  "crossOriginIsolated": true,
+  "decode_resample_ms": 219.04000000003725,
+  "tf_version": "3.21.0",
+  "backend_set": true,
+  "backend_active": "cpu",
+  "model_load_ms": 54.77999999979511,
+  "inference_ms": 103109.38999999966,
+  "n_frames": 2565,
+  "notes": {
+   "pydefault": {
+    "params": {
+     "onsetThresh": 0.5,
+     "frameThresh": 0.3,
+     "minNoteLen": 11
+    },
+    "n": 64,
+    "postprocess_ms": 451.3849999997765,
+    "first10": [
+     [
+      1.6834,
+      0.4076,
+      66
+     ],
+     [
+      2.0911,
+      0.418,
+      66
+     ],
+     [
+      2.509,
+      0.4412,
+      67
+     ],
+     [
+      2.927,
+      0.4296,
+      69
+     ],
+     [
+      3.3566,
+      0.6514,
+      69
+     ],
+     [
+      3.7629,
+      0.4076,
+      67
+     ],
+     [
+      4.1705,
+      0.5689,
+      66
+     ],
+     [
+      4.5885,
+      0.5224,
+      64
+     ],
+     [
+      5.0065,
+      0.418,
+      62
+     ],
+     [
+      5.4244,
+      0.4644,
+      62
+     ]
+    ],
+    "csv": "/home/user/gtr/lanes/browser-audio-sync/out/basicpitch/S1_tfjs-cpu_pydefault.csv"
+   },
+   "readme": {
+    "params": {
+     "onsetThresh": 0.25,
+     "frameThresh": 0.25,
+     "minNoteLen": 5
+    },
+    "n": 115,
+    "postprocess_ms": 616.7000000001863,
+    "first10": [
+     [
+      1.6834,
+      0.4076,
+      66
+     ],
+     [
+      2.0911,
+      0.418,
+      66
+     ],
+     [
+      2.509,
+      0.4528,
+      67
+     ],
+     [
+      2.927,
+      0.0929,
+      57
+     ],
+     [
+      2.927,
+      0.4296,
+      69
+     ],
+     [
+      3.345,
+      0.0813,
+      57
+     ],
+     [
+      3.3566,
+      0.418,
+      69
+     ],
+     [
+      3.7629,
+      0.4076,
+      67
+     ],
+     [
+      3.7629,
+      0.1858,
+      86
+     ],
+     [
+      3.7745,
+      0.2683,
+      69
+     ]
+    ],
+    "csv": "/home/user/gtr/lanes/browser-audio-sync/out/basicpitch/S1_tfjs-cpu_readme.csv"
+   }
+  }
+ }
+}

@@ -1,0 +1,15 @@
+{
+ "source": "/home/user/gtr/lanes/browser-audio-sync/out/synths/synth_spessa_S2n.json",
+ "clip": "S2n",
+ "n_detected": 46,
+ "sample_rate": 44100,
+ "shift_from_schedule_s": 2.5230385487528344,
+ "recorder_negative_step_correction_frames": 128,
+ "xcorr_with_truth_render": {
+  "lag_samples": 113785,
+  "lag_s": 2.5801587301587303,
+  "normalized_peak": -0.22877943515777588,
+  "gain_fit": -0.05420943722128868,
+  "residual_rms_rel": 0.9734782576560974
+ }
+}

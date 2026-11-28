@@ -1,0 +1,20 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>decodeAudioData of a 16-bit WAV, saved as float32</title>
+<body>
+<script type="module">
+// Decodes FILE with OfflineAudioContext(2, 1, 44100).decodeAudioData (as htdemucs6s.html does) and uploads the decoded
+// channels as a 32-bit float WAV, so the int16 -> float mapping can be compared exactly with soundfile's.
+import { finish, fail, encodeWav, upload, fetchArrayBuffer } from '/pages/common.js';
+const q = new URLSearchParams(location.search);
+const FILE = q.get('file') || '/laneinputs/S4_10s/S4_10s.wav';
+const R = { file: FILE };
+try {
+  const dec = await new OfflineAudioContext(2, 1, 44100).decodeAudioData(await fetchArrayBuffer(FILE));
+  R.decoded = { sampleRate: dec.sampleRate, channels: dec.numberOfChannels, samples: dec.length };
+  const chs = []; for (let c = 0; c < dec.numberOfChannels; c++) chs.push(dec.getChannelData(c));
+  R.wav = await upload('htdemucs6s-web', 'S4_10s_decoded_by_chromium.wav', encodeWav(chs, dec.sampleRate));
+  finish(R);
+} catch (e) { fail(e, R); }
+</script>
+</body>

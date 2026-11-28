@@ -1,0 +1,127 @@
+{
+ "mode": "stems",
+ "audio": "/home/user/gtr/inputs/S6taps/S6taps.wav",
+ "audio_bytes": 5178644,
+ "audio_sha256": "002921688d975fea51087bc360730bd9d56da70b2448f874168eabf4af6a389d",
+ "audio_duration_s": 29.357143,
+ "http_status": 200,
+ "wall_s": 6.096,
+ "content_type": "application/zip",
+ "response_bytes": 4232688,
+ "credits_used_measured": 807,
+ "headers_kept": {},
+ "stem_variation_id": "six_stems_v1",
+ "output_format": "mp3_44100_192",
+ "cost_usd_counted": 0.17754,
+ "cost_rule": "max(credits_used * 0.00022 USD (estimate), published per-hour rate for STT)",
+ "zip_files": [
+  {
+   "name": "guitar.mp3",
+   "bytes": 705350,
+   "ffprobe": {
+    "programs": [],
+    "streams": [
+     {
+      "codec_name": "mp3",
+      "sample_rate": "44100",
+      "channels": 2,
+      "bit_rate": "192000"
+     }
+    ],
+    "format": {
+     "duration": "29.387750"
+    }
+   }
+  },
+  {
+   "name": "drums.mp3",
+   "bytes": 705350,
+   "ffprobe": {
+    "programs": [],
+    "streams": [
+     {
+      "codec_name": "mp3",
+      "sample_rate": "44100",
+      "channels": 2,
+      "bit_rate": "192000"
+     }
+    ],
+    "format": {
+     "duration": "29.387750"
+    }
+   }
+  },
+  {
+   "name": "piano.mp3",
+   "bytes": 705350,
+   "ffprobe": {
+    "programs": [],
+    "streams": [
+     {
+      "codec_name": "mp3",
+      "sample_rate": "44100",
+      "channels": 2,
+      "bit_rate": "192000"
+     }
+    ],
+    "format": {
+     "duration": "29.387750"
+    }
+   }
+  },
+  {
+   "name": "bass.mp3",
+   "bytes": 705350,
+   "ffprobe": {
+    "programs": [],
+    "streams": [
+     {
+      "codec_name": "mp3",
+      "sample_rate": "44100",
+      "channels": 2,
+      "bit_rate": "192000"
+     }
+    ],
+    "format": {
+     "duration": "29.387750"
+    }
+   }
+  },
+  {
+   "name": "vocals.mp3",
+   "bytes": 705350,
+   "ffprobe": {
+    "programs": [],
+    "streams": [
+     {
+      "codec_name": "mp3",
+      "sample_rate": "44100",
+      "channels": 2,
+      "bit_rate": "192000"
+     }
+    ],
+    "format": {
+     "duration": "29.387750"
+    }
+   }
+  },
+  {
+   "name": "other.mp3",
+   "bytes": 705350,
+   "ffprobe": {
+    "programs": [],
+    "streams": [
+     {
+      "codec_name": "mp3",
+      "sample_rate": "44100",
+      "channels": 2,
+      "bit_rate": "192000"
+     }
+    ],
+    "format": {
+     "duration": "29.387750"
+    }
+   }
+  }
+ ]
+}

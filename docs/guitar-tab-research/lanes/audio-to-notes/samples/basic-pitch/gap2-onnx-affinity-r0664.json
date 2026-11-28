@@ -1,0 +1,167 @@
+{
+ "onnxruntime": "1.23.2",
+ "model_path": "/home/user/gtr/lanes/audio-to-notes/venv-bp-gap2/lib/python3.10/site-packages/basic_pitch/saved_models/icassp_2022/nmp.onnx",
+ "model_type": "MODEL_TYPES.ONNX",
+ "process_affinity_at_start": [
+  0,
+  1
+ ],
+ "model_load_s": 0.115,
+ "clips": {
+  "S1": {
+   "predict_s": 14.968,
+   "n_notes": 64
+  },
+  "S2n": {
+   "predict_s": 0.361,
+   "n_notes": 137
+  },
+  "S2s": {
+   "predict_s": 0.594,
+   "n_notes": 199
+  },
+  "S3": {
+   "predict_s": 0.304,
+   "n_notes": 197
+  },
+  "S4": {
+   "predict_s": 0.594,
+   "n_notes": 461
+  },
+  "S4guitar": {
+   "predict_s": 0.487,
+   "n_notes": 386
+  },
+  "S4lead": {
+   "predict_s": 0.537,
+   "n_notes": 39
+  },
+  "S5capo2": {
+   "predict_s": 0.353,
+   "n_notes": 139
+  },
+  "S5dropd": {
+   "predict_s": 0.355,
+   "n_notes": 130
+  },
+  "S6taps": {
+   "predict_s": 0.538,
+   "n_notes": 196
+  },
+  "S7flat30": {
+   "predict_s": 0.32,
+   "n_notes": 112
+  },
+  "R1a": {
+   "predict_s": 0.38,
+   "n_notes": 196
+  },
+  "R1b": {
+   "predict_s": 0.364,
+   "n_notes": 76
+  },
+  "R1c": {
+   "predict_s": 0.367,
+   "n_notes": 156
+  },
+  "R2": {
+   "predict_s": 0.815,
+   "n_notes": 334
+  },
+  "R3a": {
+   "predict_s": 0.33,
+   "n_notes": 105
+  }
+ },
+ "process_affinity_at_end": [
+  0,
+  1
+ ],
+ "n_samples": 412,
+ "threads": {
+  "13900": {
+   "comm": "python",
+   "first_seen_s": 0.001,
+   "cpus_allowed_list": [
+    "0-1"
+   ],
+   "ran_on_cpus": [
+    0,
+    1
+   ]
+  },
+  "13901": {
+   "comm": "python",
+   "first_seen_s": 0.001,
+   "cpus_allowed_list": [
+    "0-1"
+   ],
+   "ran_on_cpus": [
+    0,
+    1
+   ]
+  },
+  "13903": {
+   "comm": "python",
+   "first_seen_s": 0.129,
+   "cpus_allowed_list": [
+    "0-1"
+   ],
+   "ran_on_cpus": [
+    0
+   ]
+  },
+  "13917": {
+   "comm": "python",
+   "first_seen_s": 0.741,
+   "cpus_allowed_list": [
+    "0-1"
+   ],
+   "ran_on_cpus": [
+    1
+   ]
+  },
+  "14007": {
+   "comm": "python",
+   "first_seen_s": 2.588,
+   "cpus_allowed_list": [
+    "1"
+   ],
+   "ran_on_cpus": [
+    1
+   ]
+  },
+  "14008": {
+   "comm": "python",
+   "first_seen_s": 2.588,
+   "cpus_allowed_list": [
+    "2"
+   ],
+   "ran_on_cpus": [
+    2
+   ]
+  },
+  "14009": {
+   "comm": "python",
+   "first_seen_s": 2.588,
+   "cpus_allowed_list": [
+    "3"
+   ],
+   "ran_on_cpus": [
+    3
+   ]
+  }
+ },
+ "all_cpus_any_thread_ran_on": [
+  0,
+  1,
+  2,
+  3
+ ],
+ "all_cpus_allowed_lists_seen": [
+  "0-1",
+  "1",
+  "2",
+  "3"
+ ]
+}

@@ -1,0 +1,52 @@
+{
+ "page": "/pages/synths.html?method=sfplayer&clip=S2n",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 37.285,
+ "external_requests": [
+  {
+   "url": "https://gleitz.github.io/midi-js-soundfonts/FluidR3_GM/acoustic_guitar_nylon-mp3.js",
+   "served_from_cache": true,
+   "bytes": 1837439
+  }
+ ],
+ "result": {
+  "method": "sfplayer",
+  "clip": "S2n",
+  "n_notes": 90,
+  "sampleRate": 44100,
+  "load_ms": 1471.4550000000745,
+  "t0": 2.000612244897959,
+  "t0_frame": 88227,
+  "capture": {
+   "firstFrame": 896,
+   "frames": 1406848,
+   "gaps": [
+    {
+     "atFrame": 1211392,
+     "frames": -128,
+     "handled": true
+    },
+    {
+     "atFrame": 1211392,
+     "frames": 128,
+     "handled": true
+    }
+   ]
+  },
+  "playbackStats": {
+   "underrunDuration": 0.02,
+   "underrunEvents": 2,
+   "totalDuration": 31.10042,
+   "averageLatency": 0.031313,
+   "minimumLatency": 0,
+   "maximumLatency": 0.032879
+  },
+  "peak": 0.12177130579948425,
+  "wav": "/home/user/gtr/lanes/browser-audio-sync/out/synths/S2n_sfplayer.wav"
+ }
+}

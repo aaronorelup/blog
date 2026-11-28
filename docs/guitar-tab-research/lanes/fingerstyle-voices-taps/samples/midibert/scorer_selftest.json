@@ -1,0 +1,134 @@
+[
+ {
+  "pred": "selftest/S2n_truth_merged_480tpb_fake_melody.mid",
+  "input": "inputs/S2n_truth_merged_480tpb.mid",
+  "clip": "S2n",
+  "n_input_notes": 90,
+  "n_pred_notes": 42,
+  "n_input_bars_with_notes": 12,
+  "n_pred_outside_those_bars": 0,
+  "n_pred_matched_to_input": 42,
+  "n_pred_unmatched": 0,
+  "n_labelled_melody": 42,
+  "n_labelled_bass": 48,
+  "vs_truth": {
+   "n_matched": 90,
+   "n_right_voice": 90,
+   "confusion": {
+    "truth_bass->pred_bass": 48,
+    "truth_melody->pred_melody": 42
+   }
+  },
+  "fake_prediction_notes": 42
+ },
+ {
+  "pred": "selftest/S2n_basicpitch_480tpb_fake_melody.mid",
+  "input": "inputs/S2n_basicpitch_480tpb.mid",
+  "clip": "S2n",
+  "n_input_notes": 137,
+  "n_pred_notes": 42,
+  "n_input_bars_with_notes": 14,
+  "n_pred_outside_those_bars": 0,
+  "n_pred_matched_to_input": 42,
+  "n_pred_unmatched": 0,
+  "n_labelled_melody": 42,
+  "n_labelled_bass": 95,
+  "vs_truth": {
+   "n_matched": 90,
+   "n_right_voice": 90,
+   "confusion": {
+    "truth_bass->pred_bass": 48,
+    "truth_melody->pred_melody": 42
+   }
+  },
+  "fake_prediction_notes": 42
+ },
+ {
+  "pred": "selftest/S2n_basicpitch_112bpm_480tpb_fake_melody.mid",
+  "input": "inputs/S2n_basicpitch_112bpm_480tpb.mid",
+  "clip": "S2n",
+  "n_input_notes": 137,
+  "n_pred_notes": 42,
+  "n_input_bars_with_notes": 13,
+  "n_pred_outside_those_bars": 0,
+  "n_pred_matched_to_input": 42,
+  "n_pred_unmatched": 0,
+  "n_labelled_melody": 42,
+  "n_labelled_bass": 95,
+  "vs_truth": {
+   "n_matched": 90,
+   "n_right_voice": 90,
+   "confusion": {
+    "truth_bass->pred_bass": 48,
+    "truth_melody->pred_melody": 42
+   }
+  },
+  "fake_prediction_notes": 42
+ },
+ {
+  "pred": "selftest/S5dropd_truth_merged_480tpb_fake_melody.mid",
+  "input": "inputs/S5dropd_truth_merged_480tpb.mid",
+  "clip": "S5dropd",
+  "n_input_notes": 90,
+  "n_pred_notes": 42,
+  "n_input_bars_with_notes": 12,
+  "n_pred_outside_those_bars": 0,
+  "n_pred_matched_to_input": 42,
+  "n_pred_unmatched": 0,
+  "n_labelled_melody": 42,
+  "n_labelled_bass": 48,
+  "vs_truth": {
+   "n_matched": 90,
+   "n_right_voice": 90,
+   "confusion": {
+    "truth_bass->pred_bass": 48,
+    "truth_melody->pred_melody": 42
+   }
+  },
+  "fake_prediction_notes": 42
+ },
+ {
+  "pred": "selftest/S5dropd_basicpitch_480tpb_fake_melody.mid",
+  "input": "inputs/S5dropd_basicpitch_480tpb.mid",
+  "clip": "S5dropd",
+  "n_input_notes": 130,
+  "n_pred_notes": 42,
+  "n_input_bars_with_notes": 14,
+  "n_pred_outside_those_bars": 0,
+  "n_pred_matched_to_input": 42,
+  "n_pred_unmatched": 0,
+  "n_labelled_melody": 42,
+  "n_labelled_bass": 88,
+  "vs_truth": {
+   "n_matched": 90,
+   "n_right_voice": 90,
+   "confusion": {
+    "truth_bass->pred_bass": 48,
+    "truth_melody->pred_melody": 42
+   }
+  },
+  "fake_prediction_notes": 42
+ },
+ {
+  "pred": "selftest/S5dropd_basicpitch_112bpm_480tpb_fake_melody.mid",
+  "input": "inputs/S5dropd_basicpitch_112bpm_480tpb.mid",
+  "clip": "S5dropd",
+  "n_input_notes": 130,
+  "n_pred_notes": 42,
+  "n_input_bars_with_notes": 13,
+  "n_pred_outside_those_bars": 0,
+  "n_pred_matched_to_input": 42,
+  "n_pred_unmatched": 0,
+  "n_labelled_melody": 42,
+  "n_labelled_bass": 88,
+  "vs_truth": {
+   "n_matched": 90,
+   "n_right_voice": 90,
+   "confusion": {
+    "truth_bass->pred_bass": 48,
+    "truth_melody->pred_melody": 42
+   }
+  },
+  "fake_prediction_notes": 42
+ }
+]

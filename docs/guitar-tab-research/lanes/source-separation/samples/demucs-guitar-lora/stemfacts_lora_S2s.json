@@ -1,0 +1,73 @@
+{
+ "input": {
+  "path": "/home/user/gtr/inputs/S2s/S2s.wav",
+  "sample_rate": 44100,
+  "channels": 2,
+  "frames": 1294650,
+  "subtype": "PCM_16",
+  "rms_dbfs": -18.23225919639712,
+  "seconds": 29.3571
+ },
+ "est_dir": "/home/user/gtr/lanes/source-separation/out/demucs-guitar-lora/S2s",
+ "stems": {
+  "bass": {
+   "file": "bass.wav",
+   "bytes": 5178644,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 1294650,
+   "seconds": 29.3571,
+   "frames_minus_input": 0,
+   "rms_dbfs": -76.03,
+   "peak_dbfs": -52.81
+  },
+  "drums": {
+   "file": "drums.wav",
+   "bytes": 5178644,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 1294650,
+   "seconds": 29.3571,
+   "frames_minus_input": 0,
+   "rms_dbfs": -48.43,
+   "peak_dbfs": -26.68
+  },
+  "other": {
+   "file": "other.wav",
+   "bytes": 5178644,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 1294650,
+   "seconds": 29.3571,
+   "frames_minus_input": 0,
+   "rms_dbfs": -18.31,
+   "peak_dbfs": -1.11
+  },
+  "vocals": {
+   "file": "vocals.wav",
+   "bytes": 5178644,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "PCM_16",
+   "format": "WAV",
+   "frames": 1294650,
+   "seconds": 29.3571,
+   "frames_minus_input": 0,
+   "rms_dbfs": -81.1,
+   "peak_dbfs": -55.5
+  }
+ },
+ "sum_vs_mix": {
+  "common_rate": 44100,
+  "common_frames": 1294650,
+  "best_lag_samples": 0,
+  "residual_db_at_lag0": -36.87,
+  "note": "positive lag = the stems' sum is late relative to the mix"
+ }
+}

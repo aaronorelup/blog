@@ -1,0 +1,30 @@
+{
+ "tuningFrequency": 432.45,
+ "profiles": {
+  "bgate": {
+   "key": "G",
+   "scale": "major",
+   "strength": 0.9275
+  },
+  "krumhansl": {
+   "key": "G",
+   "scale": "major",
+   "strength": 0.914
+  },
+  "temperley": {
+   "key": "G",
+   "scale": "major",
+   "strength": 0.9304
+  },
+  "edma": {
+   "key": "G",
+   "scale": "major",
+   "strength": 0.8324
+  },
+  "shaath": {
+   "key": "G",
+   "scale": "major",
+   "strength": 0.9249
+  }
+ }
+}

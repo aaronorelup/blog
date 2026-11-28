@@ -1,0 +1,290 @@
+{
+ "cmd": [
+  "/home/user/gtr/lanes/source-separation/venv-uvr/bin/audio-separator",
+  "-m",
+  "UVR-MDX-NET-Inst_HQ_3.onnx",
+  "--model_file_dir",
+  "/home/user/gtr/lanes/source-separation/models/uvr",
+  "--output_dir",
+  "/home/user/gtr/lanes/source-separation/gap2/ort/mdx-default/S4",
+  "--output_format",
+  "WAV",
+  "--custom_output_names",
+  "{\"Vocals\":\"vocals\",\"Instrumental\":\"instrumental\",\"Drums\":\"drums\",\"Bass\":\"bass\",\"Other\":\"other\",\"Guitar\":\"guitar\",\"Piano\":\"piano\",\"No Other\":\"no_other\",\"No Drums\":\"no_drums\",\"No Bass\":\"no_bass\",\"Drum-Bass\":\"drum-bass\",\"No Drum-Bass\":\"no_drum-bass\"}",
+  "/home/user/gtr/inputs/S4/S4.wav"
+ ],
+ "exit_code": 0,
+ "wall_s": 85.73,
+ "interval_s": 0.25,
+ "samples": 336,
+ "probe_affinity": [
+  0,
+  1
+ ],
+ "probe_own_cpu_s": 0.75,
+ "max_threads_at_once": 15,
+ "threads_seen": 18,
+ "cpu_s_by_last_allowed_list": {
+  "0-1": 56.92,
+  "1": 28.34,
+  "2": 28.19,
+  "3": 27.87
+ },
+ "threads": [
+  {
+   "pid": 3359,
+   "tid": 3359,
+   "comm": "audio-separator",
+   "allowed_seen": {
+    "0-1": 335
+   },
+   "cpu_seen": {
+    "1": 176,
+    "0": 159
+   },
+   "cpu_s_last": 55.16,
+   "first_seen_s": 0.01,
+   "last_seen_s": 85.48
+  },
+  {
+   "pid": 3359,
+   "tid": 3377,
+   "comm": "audio-separator",
+   "allowed_seen": {
+    "0-1": 334
+   },
+   "cpu_seen": {
+    "1": 334
+   },
+   "cpu_s_last": 0.08,
+   "first_seen_s": 0.26,
+   "last_seen_s": 85.48
+  },
+  {
+   "pid": 3359,
+   "tid": 3406,
+   "comm": "audio-separator",
+   "allowed_seen": {
+    "0-1": 327
+   },
+   "cpu_seen": {
+    "1": 327
+   },
+   "cpu_s_last": 0.0,
+   "first_seen_s": 2.03,
+   "last_seen_s": 85.48
+  },
+  {
+   "pid": 3359,
+   "tid": 3410,
+   "comm": "audio-separator",
+   "allowed_seen": {
+    "0-1": 326
+   },
+   "cpu_seen": {
+    "0": 326
+   },
+   "cpu_s_last": 0.1,
+   "first_seen_s": 2.29,
+   "last_seen_s": 85.48
+  },
+  {
+   "pid": 3359,
+   "tid": 3686,
+   "comm": "audio-separator",
+   "allowed_seen": {
+    "1": 297
+   },
+   "cpu_seen": {
+    "1": 297
+   },
+   "cpu_s_last": 28.34,
+   "first_seen_s": 8.37,
+   "last_seen_s": 84.22
+  },
+  {
+   "pid": 3359,
+   "tid": 3687,
+   "comm": "audio-separator",
+   "allowed_seen": {
+    "2": 297
+   },
+   "cpu_seen": {
+    "2": 297
+   },
+   "cpu_s_last": 28.19,
+   "first_seen_s": 8.37,
+   "last_seen_s": 84.22
+  },
+  {
+   "pid": 3359,
+   "tid": 3688,
+   "comm": "audio-separator",
+   "allowed_seen": {
+    "3": 297
+   },
+   "cpu_seen": {
+    "3": 297
+   },
+   "cpu_s_last": 27.87,
+   "first_seen_s": 8.37,
+   "last_seen_s": 84.22
+  },
+  {
+   "pid": 3359,
+   "tid": 3727,
+   "comm": "audio-separator",
+   "allowed_seen": {
+    "0-1": 295
+   },
+   "cpu_seen": {
+    "0": 82,
+    "1": 213
+   },
+   "cpu_s_last": 1.45,
+   "first_seen_s": 10.15,
+   "last_seen_s": 85.48
+  },
+  {
+   "pid": 3359,
+   "tid": 3728,
+   "comm": "audio-separator",
+   "allowed_seen": {
+    "0-1": 290
+   },
+   "cpu_seen": {
+    "0": 290
+   },
+   "cpu_s_last": 0.0,
+   "first_seen_s": 10.15,
+   "last_seen_s": 84.22
+  },
+  {
+   "pid": 3359,
+   "tid": 3756,
+   "comm": "audio-separator",
+   "allowed_seen": {
+    "0-1": 2
+   },
+   "cpu_seen": {
+    "0": 1,
+    "1": 1
+   },
+   "cpu_s_last": 0.0,
+   "first_seen_s": 10.93,
+   "last_seen_s": 11.18
+  },
+  {
+   "pid": 3497,
+   "tid": 3497,
+   "comm": "ffmpeg",
+   "allowed_seen": {
+    "0-1": 1
+   },
+   "cpu_seen": {
+    "0": 1
+   },
+   "cpu_s_last": 0.01,
+   "first_seen_s": 3.56,
+   "last_seen_s": 3.56
+  },
+  {
+   "pid": 6278,
+   "tid": 6278,
+   "comm": "ffmpeg",
+   "allowed_seen": {
+    "0-1": 1
+   },
+   "cpu_seen": {
+    "0": 1
+   },
+   "cpu_s_last": 0.01,
+   "first_seen_s": 83.71,
+   "last_seen_s": 83.71
+  },
+  {
+   "pid": 6288,
+   "tid": 6288,
+   "comm": "ffmpeg",
+   "allowed_seen": {
+    "0-1": 1
+   },
+   "cpu_seen": {
+    "1": 1
+   },
+   "cpu_s_last": 0.09,
+   "first_seen_s": 83.96,
+   "last_seen_s": 83.96
+  },
+  {
+   "pid": 6288,
+   "tid": 6289,
+   "comm": "dec0:0:pcm_s16l",
+   "allowed_seen": {
+    "0-1": 1
+   },
+   "cpu_seen": {
+    "0": 1
+   },
+   "cpu_s_last": 0.01,
+   "first_seen_s": 83.96,
+   "last_seen_s": 83.96
+  },
+  {
+   "pid": 6288,
+   "tid": 6290,
+   "comm": "dmx0:wav",
+   "allowed_seen": {
+    "0-1": 1
+   },
+   "cpu_seen": {
+    "1": 1
+   },
+   "cpu_s_last": 0.0,
+   "first_seen_s": 83.96,
+   "last_seen_s": 83.96
+  },
+  {
+   "pid": 6288,
+   "tid": 6291,
+   "comm": "ffmpeg",
+   "allowed_seen": {
+    "0-1": 1
+   },
+   "cpu_seen": {
+    "1": 1
+   },
+   "cpu_s_last": 0.0,
+   "first_seen_s": 83.96,
+   "last_seen_s": 83.96
+  },
+  {
+   "pid": 6288,
+   "tid": 6292,
+   "comm": "ffmpeg",
+   "allowed_seen": {
+    "0-1": 1
+   },
+   "cpu_seen": {
+    "1": 1
+   },
+   "cpu_s_last": 0.0,
+   "first_seen_s": 83.96,
+   "last_seen_s": 83.96
+  },
+  {
+   "pid": 6288,
+   "tid": 6293,
+   "comm": "mux0:wav",
+   "allowed_seen": {
+    "0-1": 1
+   },
+   "cpu_seen": {
+    "0": 1
+   },
+   "cpu_s_last": 0.01,
+   "first_seen_s": 83.96,
+   "last_seen_s": 83.96
+  }
+ ]
+}

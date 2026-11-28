@@ -1,0 +1,26 @@
+{
+ "truth": "/home/user/gtr/inputs/S2n/S2n.truth.json",
+ "est": "S2n.mid",
+ "voice": null,
+ "estimate_handling": "MIDI notes put on the 10 ms grid",
+ "n_frames": 2936,
+ "ref_frames_with_notes": 2529,
+ "est_frames_with_pitches": 2573,
+ "mir_eval": "0.8.2",
+ "scores": {
+  "Precision": 0.860037,
+  "Recall": 0.999802,
+  "Accuracy": 0.859891,
+  "Substitution Error": 0.000198,
+  "Miss Error": 0.0,
+  "False Alarm Error": 0.16251,
+  "Total Error": 0.162708,
+  "Chroma Precision": 0.860037,
+  "Chroma Recall": 0.999802,
+  "Chroma Accuracy": 0.859891,
+  "Chroma Substitution Error": 0.000198,
+  "Chroma Miss Error": 0.0,
+  "Chroma False Alarm Error": 0.16251,
+  "Chroma Total Error": 0.162708
+ }
+}

@@ -1,0 +1,59 @@
+{
+ "service": "vercel-ai-gateway",
+ "model": "meta/muse-spark-open",
+ "media": "/home/user/gtr/inputs/S3/S3.mono.wav",
+ "media_bytes": 2116844,
+ "media_sha256": "92f5740a02860ee7e450f1a7da9ee8e3b6fad44b29ee11ddb98f913519265c2a",
+ "media_duration_s": 24.0,
+ "mime": "audio/wav",
+ "http_status": 400,
+ "wall_s": 0.847,
+ "reasoning_effort": null,
+ "max_tokens": 24576,
+ "price_usd_per_token": {
+  "input": 1.25e-06,
+  "output": 4.25e-06
+ },
+ "price_source": "https://ai-gateway.vercel.sh/v1/models entry 'pricing' (read at run time)",
+ "response_headers": {},
+ "finish_reason": null,
+ "reasoning_text_chars": 0,
+ "final_provider": null,
+ "provider_metadata": {
+  "gateway": {
+   "routing": {
+    "originalModelId": "meta/muse-spark-open",
+    "resolvedProvider": "fireworks",
+    "fallbacksAvailable": [],
+    "canonicalSlug": "meta/muse-spark-open",
+    "modelAttemptCount": 1,
+    "modelAttempts": [
+     {
+      "canonicalSlug": "meta/muse-spark-open",
+      "success": false,
+      "providerAttemptCount": 1,
+      "providerAttempts": [
+       {
+        "provider": "fireworks",
+        "credentialType": "system",
+        "success": false,
+        "error": "2 request validation errors: Input should be a valid string, field: 'messages[0].content.str'; Extra inputs are not permitted, field: 'messages[0].content.list[function-after[_validate_tool_reference(), ChatMessageContent]][0].input_audio'",
+        "startTime": 1794344386632,
+        "endTime": 1794344386844,
+        "providerRequestId": "chatcmpl-f5f9904355a748b18fec7e4a4498dd71",
+        "statusCode": 400
+       }
+      ]
+     }
+    ],
+    "totalProviderAttemptCount": 1,
+    "clientSessionId": "2972f905741de9ea213be301df2b3f88",
+    "clientSessionIdSource": "fingerprint"
+   },
+   "generationId": "gen_01M73M4ZWD8H4N8D8R815W7909"
+  }
+ },
+ "output_text_chars": 0,
+ "answer_parsed": false,
+ "spent_service_before_usd": 0.005482
+}

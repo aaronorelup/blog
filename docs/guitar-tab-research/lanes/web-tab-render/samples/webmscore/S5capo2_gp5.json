@@ -1,0 +1,44 @@
+{
+ "input": "/home/user/gtr/inputs/S5capo2/S5capo2.gp5",
+ "format": "gp5",
+ "ms_ready": 1769,
+ "ms_load": 183,
+ "musicxml": {
+  "bytes": 30713,
+  "ms": 34
+ },
+ "midi": {
+  "bytes": 687,
+  "ms": 3
+ },
+ "svg_p1": {
+  "bytes": 133694,
+  "ms": 110
+ },
+ "png_p1": {
+  "bytes": 243095,
+  "ms": 1880
+ },
+ "pdf": {
+  "bytes": 22296,
+  "ms": 55
+ },
+ "mscz": {
+  "bytes": 19828,
+  "ms": 137
+ },
+ "ms_total": 4178,
+ "metadata_summary": {
+  "title": "S2 with a capo on fret 2",
+  "measures": 13,
+  "duration": 28,
+  "parts": [
+   {
+    "name": "Guitar",
+    "instrumentId": "guitar-steel",
+    "program": 24
+   }
+  ],
+  "excerpts": 0
+ }
+}

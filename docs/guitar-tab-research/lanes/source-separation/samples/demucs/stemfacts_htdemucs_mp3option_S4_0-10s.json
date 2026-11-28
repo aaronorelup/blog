@@ -1,0 +1,73 @@
+{
+ "input": {
+  "path": "/home/user/gtr/lanes/source-separation/inputs/S4_0-10s/S4_0-10s.wav",
+  "sample_rate": 44100,
+  "channels": 2,
+  "frames": 441000,
+  "subtype": "PCM_16",
+  "rms_dbfs": -19.149861873376654,
+  "seconds": 10.0
+ },
+ "est_dir": "/home/user/gtr/lanes/source-separation/out/demucs-options/mp3-10s/htdemucs/S4_0-10s",
+ "stems": {
+  "bass": {
+   "file": "bass.mp3",
+   "bytes": 401240,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "MPEG_LAYER_III",
+   "format": "MP3",
+   "frames": 442368,
+   "seconds": 10.031,
+   "frames_minus_input": 1368,
+   "rms_dbfs": -27.62,
+   "peak_dbfs": -10.1
+  },
+  "drums": {
+   "file": "drums.mp3",
+   "bytes": 401240,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "MPEG_LAYER_III",
+   "format": "MP3",
+   "frames": 442368,
+   "seconds": 10.031,
+   "frames_minus_input": 1368,
+   "rms_dbfs": -31.2,
+   "peak_dbfs": -9.24
+  },
+  "other": {
+   "file": "other.mp3",
+   "bytes": 401240,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "MPEG_LAYER_III",
+   "format": "MP3",
+   "frames": 442368,
+   "seconds": 10.031,
+   "frames_minus_input": 1368,
+   "rms_dbfs": -24.13,
+   "peak_dbfs": -4.82
+  },
+  "vocals": {
+   "file": "vocals.mp3",
+   "bytes": 401240,
+   "sample_rate": 44100,
+   "channels": 2,
+   "subtype": "MPEG_LAYER_III",
+   "format": "MP3",
+   "frames": 442368,
+   "seconds": 10.031,
+   "frames_minus_input": 1368,
+   "rms_dbfs": -24.64,
+   "peak_dbfs": -9.68
+  }
+ },
+ "sum_vs_mix": {
+  "common_rate": 44100,
+  "common_frames": 441000,
+  "best_lag_samples": 1105,
+  "residual_db_at_lag0": 3.5,
+  "note": "positive lag = the stems' sum is late relative to the mix"
+ }
+}

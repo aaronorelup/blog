@@ -1,0 +1,13 @@
+[
+ {
+  "tool": "deeprhythm",
+  "python": "/home/user/gtr/lanes/chords-beats-key/verify-trials/venvs/deeprhythm/bin/python",
+  "script": "/home/user/blog/docs/guitar-tab-research/lanes/chords-beats-key/scripts/deeprhythm_run.py",
+  "clips": [
+   "S3",
+   "R1b"
+  ],
+  "args": [],
+  "tag": "deeprhythm"
+ }
+]

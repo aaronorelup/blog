@@ -1,0 +1,41 @@
+{
+ "settings": {
+  "fmin": 82.4,
+  "fmax": 1319.0,
+  "segment_notes": "pitch_hold_ms=80"
+ },
+ "clips": {
+  "S1": {
+   "seconds": 0.67,
+   "n_notes": 48
+  },
+  "S2n": {
+   "seconds": 0.338,
+   "n_notes": 55
+  },
+  "S2s": {
+   "seconds": 0.362,
+   "n_notes": 28
+  },
+  "S4": {
+   "seconds": 0.482,
+   "n_notes": 8
+  },
+  "S4lead": {
+   "seconds": 0.727,
+   "n_notes": 35
+  },
+  "R1b": {
+   "seconds": 0.398,
+   "n_notes": 60
+  },
+  "R2": {
+   "seconds": 0.81,
+   "n_notes": 47
+  },
+  "R3a": {
+   "seconds": 0.335,
+   "n_notes": 33
+  }
+ }
+}

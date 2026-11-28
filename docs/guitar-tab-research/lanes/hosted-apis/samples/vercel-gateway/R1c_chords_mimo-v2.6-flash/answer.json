@@ -1,0 +1,52 @@
+{
+ "chords": [
+  {
+   "start": 0.0,
+   "end": 3.5,
+   "label": "G"
+  },
+  {
+   "start": 3.5,
+   "end": 6.5,
+   "label": "D"
+  },
+  {
+   "start": 6.5,
+   "end": 9.5,
+   "label": "C"
+  },
+  {
+   "start": 9.5,
+   "end": 12.5,
+   "label": "G"
+  },
+  {
+   "start": 12.5,
+   "end": 15.5,
+   "label": "C"
+  },
+  {
+   "start": 15.5,
+   "end": 18.5,
+   "label": "G"
+  },
+  {
+   "start": 18.5,
+   "end": 21.5,
+   "label": "D"
+  },
+  {
+   "start": 21.5,
+   "end": 24.5,
+   "label": "C"
+  },
+  {
+   "start": 24.5,
+   "end": 28.0,
+   "label": "G"
+  }
+ ],
+ "tempo_bpm": 84,
+ "key": "G major",
+ "time_signature": "4/4"
+}

@@ -1,0 +1,44 @@
+{
+ "clip": "R3c",
+ "mode": "full",
+ "frames": 450,
+ "all": {
+  "frames": 450,
+  "frac_0_hands": 0.0,
+  "frac_1_hand": 0.0222,
+  "frac_2_hands": 0.9778,
+  "frac_more_than_2": 0.0,
+  "frac_at_least_1": 1.0,
+  "label_counts": {
+   "left_hand": 450,
+   "right_hand": 440
+  },
+  "infer_ms_mean": 62.49,
+  "infer_ms_median": 58.94,
+  "infer_ms_p90": 78.97,
+  "fps_from_mean": 16.0
+ },
+ "per_shot": {
+  "r3c_medium": {
+   "frames": 450,
+   "frac_0_hands": 0.0,
+   "frac_1_hand": 0.0222,
+   "frac_2_hands": 0.9778,
+   "frac_more_than_2": 0.0,
+   "frac_at_least_1": 1.0,
+   "label_counts": {
+    "left_hand": 450,
+    "right_hand": 440
+   },
+   "infer_ms_mean": 62.49,
+   "infer_ms_median": 58.94,
+   "infer_ms_p90": 78.97,
+   "fps_from_mean": 16.0
+  }
+ },
+ "tool": "mediapipe holistic",
+ "mediapipe_version": "1.2.2",
+ "model": "holistic_landmarker.task",
+ "init_s": 0.412,
+ "frac_pose_found": 1.0
+}

@@ -1,0 +1,25 @@
+ty-lim1                      doc      STRICT    
+ty-lim2                      doc      STRICT    
+ty-todo                      doc      STRICT    
+tutts-tun                    doc      STRICT    
+tutts-q                      doc      STRICT    
+tutts-t                      doc      STRICT    
+ly-doc                       doc      STRICT    
+ly-warn                      doc      STRICT    
+n2f-sub                      doc      STRICT    
+n2f-inf                      doc      STRICT    
+n2f-z                        lic      STRICT    
+fp-core1                     doc      STRICT    
+fp-core2                     doc      STRICT    
+fp-tun                       code     STRICT    
+dg-ex:artist:unknown         doc      STRICT    
+dg-ex:downtune:0             doc      STRICT    
+dg-ex:tempo:120              doc      STRICT    
+dg-ex:start                  doc      STRICT    
+dg-ex:new_measure            doc      STRICT    
+dg-ex:bass:note:s2:f16       doc      STRICT    
+dg-ex:nfx:slide:1            doc      STRICT    
+dg-ex:wait:240               doc      STRICT    
+gt-train                     code     STRICT    
+gt-bt                        code     STRICT    
+TOTAL 24  STRICT 24  LOOSE 0  NOT-FOUND 0

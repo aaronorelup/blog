@@ -1,0 +1,140 @@
+{
+ "opencv": "5.0.0",
+ "clip": "C1",
+ "quad_set_by_hand": [
+  [
+   345.0,
+   1090.0
+  ],
+  [
+   612.0,
+   1090.0
+  ],
+  [
+   617.0,
+   1700.0
+  ],
+  [
+   338.0,
+   1700.0
+  ]
+ ],
+ "rect_size": [
+  610,
+  270
+ ],
+ "frames": {
+  "C1_f0000": {
+   "hand_quad": {
+    "quad": [
+     [
+      345.0,
+      1090.0
+     ],
+     [
+      612.0,
+      1090.0
+     ],
+     [
+      617.0,
+      1700.0
+     ],
+     [
+      338.0,
+      1700.0
+     ]
+    ],
+    "tag": "handquad",
+    "unrectified": {
+     "neck_axis_deg": 90.66,
+     "fretboard_width_px": 267.0,
+     "hough": {
+      "segments_total": 1768,
+      "segments_in_quad": 326,
+      "string_like": 296,
+      "fret_like": 2
+     },
+     "lsd": {
+      "segments_total": 1693,
+      "segments_in_quad": 255,
+      "string_like": 106,
+      "fret_like": 3
+     },
+     "time_s": 0.6307
+    },
+    "homography_img_to_rect": [
+     [
+      -0.0,
+      1.136191,
+      -1238.447827
+     ],
+     [
+      1.099539,
+      0.012618,
+      -393.094332
+     ],
+     [
+      0.0,
+      8e-05,
+      1.0
+     ]
+    ],
+    "rectified": {
+     "size": [
+      610,
+      270
+     ],
+     "hough": {
+      "segments_total": 288,
+      "string_like": 91,
+      "fret_like": 3,
+      "fret_x_clusters_px_from_nut": [
+       1.0,
+       412.0,
+       452.0
+      ],
+      "string_y_clusters_px_from_upper_edge": [
+       0.5,
+       12.0,
+       62.5,
+       77.0,
+       112.6,
+       124.2,
+       130.2,
+       136.8,
+       143.5,
+       156.7,
+       171.7,
+       181.5,
+       188.0,
+       208.4,
+       255.0,
+       268.3
+      ]
+     },
+     "lsd": {
+      "segments_total": 262,
+      "string_like": 60,
+      "fret_like": 2,
+      "fret_x_clusters_px_from_nut": [
+       380.1,
+       394.3
+      ],
+      "string_y_clusters_px_from_upper_edge": [
+       10.8,
+       62.1,
+       111.9,
+       122.3,
+       159.8,
+       167.3,
+       206.9,
+       254.0,
+       267.4
+      ]
+     },
+     "time_s": 0.2802
+    }
+   }
+  }
+ }
+}

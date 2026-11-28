@@ -1,0 +1,108 @@
+{
+ "page": "/vpages/alphatab_backing.html?offset=1000",
+ "status": "ok",
+ "browser_version": "153.0.8010.12",
+ "channel": "default (chromium headless shell)",
+ "launch_args": [
+  "--autoplay-policy=no-user-gesture-required"
+ ],
+ "driver_wall_s": 8.938,
+ "external_requests": [],
+ "result": {
+  "page": "alphatab_backing (verifier)",
+  "alphaTab_npm_version": "1.9.0",
+  "sync_offset_ms": 1000,
+  "tempo": 112,
+  "master_bars": 13,
+  "bar_ms": 2142.8571428571427,
+  "sync_points_applied": 13,
+  "sync_points_exported": 13,
+  "wav_bytes": 5178644,
+  "player_ready": "ready",
+  "ready_ms": 141.2,
+  "output_class": "AudioElementBackingTrackSynthOutput",
+  "has_audio_element": true,
+  "audio_element": {
+   "duration_s": null,
+   "readyState": 0,
+   "src_kind": "blob:"
+  },
+  "api_endTime_ms": 0,
+  "after_6s": {
+   "audio_ms": 6902.95,
+   "api_timePosition": 5902.801,
+   "audio_paused": false
+  },
+  "after_seek_1p5s": {
+   "audio_ms": 22415.004,
+   "api_timePosition": 21411.486999999997
+  },
+  "audio_paused_after_pause": true,
+  "position_events": 190,
+  "position_minus_audio_ms_during_play": {
+   "n": 131,
+   "mean": -1000,
+   "mean_abs": 1000,
+   "sd": 1.9865730261268208e-14,
+   "max_abs": 1000,
+   "p95_abs": 1000,
+   "min": -1000,
+   "max": -999.9999999999998
+  },
+  "position_first": [
+   [
+    0.08,
+    0,
+    null,
+    true
+   ],
+   [
+    134.59,
+    0,
+    null,
+    true
+   ],
+   [
+    140.83,
+    0,
+    null,
+    true
+   ],
+   [
+    141.13,
+    0.56,
+    null,
+    true
+   ],
+   [
+    187.13,
+    0.56,
+    1000.56,
+    false
+   ],
+   [
+    188.03,
+    0.56,
+    1000.56,
+    false
+   ]
+  ],
+  "states": [
+   {
+    "now": 0,
+    "state": 0,
+    "stopped": false
+   },
+   {
+    "now": 141.3,
+    "state": 1,
+    "stopped": false
+   },
+   {
+    "now": 7651.9,
+    "state": 0,
+    "stopped": false
+   }
+  ]
+ }
+}

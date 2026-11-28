@@ -1,0 +1,25 @@
+== S2n onnx-vanilla-prep
+cstr/tabcnn-onnx tabcnn.onnx (ONNX Runtime 1.31.1, front-end prep): load 0.04s, features+inference+decoding 0.71s, frames 1265, notes 221, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['2-3']
+clip S2n: wall 5.89 s, maxrss 1028336 KB
+== S2s onnx-vanilla-prep
+cstr/tabcnn-onnx tabcnn.onnx (ONNX Runtime 1.31.1, front-end prep): load 0.04s, features+inference+decoding 0.71s, frames 1265, notes 189, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['2-3']
+clip S2s: wall 5.86 s, maxrss 1027776 KB
+== S3 onnx-vanilla-prep
+cstr/tabcnn-onnx tabcnn.onnx (ONNX Runtime 1.31.1, front-end prep): load 0.06s, features+inference+decoding 0.62s, frames 1034, notes 108, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['2-3']
+clip S3: wall 6.01 s, maxrss 1023652 KB
+== S5capo2 onnx-vanilla-prep
+cstr/tabcnn-onnx tabcnn.onnx (ONNX Runtime 1.31.1, front-end prep): load 0.05s, features+inference+decoding 0.68s, frames 1265, notes 182, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['2-3']
+clip S5capo2: wall 5.63 s, maxrss 1028244 KB
+== S5dropd onnx-vanilla-prep
+cstr/tabcnn-onnx tabcnn.onnx (ONNX Runtime 1.31.1, front-end prep): load 0.04s, features+inference+decoding 0.65s, frames 1265, notes 225, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['2-3']
+clip S5dropd: wall 5.86 s, maxrss 1027952 KB
+== R1a onnx-vanilla-prep
+cstr/tabcnn-onnx tabcnn.onnx (ONNX Runtime 1.31.1, front-end prep): load 0.04s, features+inference+decoding 0.70s, frames 1256, notes 120, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['2-3']
+clip R1a: wall 6.02 s, maxrss 1027616 KB
+== R1b onnx-vanilla-prep
+cstr/tabcnn-onnx tabcnn.onnx (ONNX Runtime 1.31.1, front-end prep): load 0.04s, features+inference+decoding 0.74s, frames 1264, notes 88, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['2-3']
+clip R1b: wall 5.71 s, maxrss 1027928 KB
+== R1c onnx-vanilla-prep
+cstr/tabcnn-onnx tabcnn.onnx (ONNX Runtime 1.31.1, front-end prep): load 0.04s, features+inference+decoding 0.70s, frames 1216, notes 151, tuning [40, 45, 50, 55, 59, 64], num_frets 19, cores 2, threads 6, Cpus_allowed_list of the threads ['2-3']
+clip R1c: wall 5.70 s, maxrss 1026896 KB
+[gtr-run r0601] guitar-tab/tabcnn-onnx-vanilla "gap round 2: tabcnn.onnx (vanilla) with the training repo's preprocess.py order (normalize at file rate, then resample) on 8 clips" wall=46.73s cpu=52.9s rss=1004.2MB cores=2 exit=0 slot_wait=0.0s

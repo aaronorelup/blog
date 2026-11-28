@@ -1,0 +1,343 @@
+{
+ "clip": "S2s",
+ "source": "/home/user/gtr/lanes/fingerstyle-voices-taps/out/basic-pitch/S2s.mono_basic_pitch.csv",
+ "n_notes_in": 201,
+ "methods": {
+  "B1_threshold_T55": {
+   "n_pred": 201,
+   "n_truth": 90,
+   "n_matched": 90,
+   "n_voice_agree": 90,
+   "fraction_voice_agree_of_matched": 1.0,
+   "confusion": {
+    "truth_bass->pred_bass": 48,
+    "truth_melody->pred_melody": 42
+   },
+   "onset_tol_s": 0.05,
+   "pitch_tol_semitones": 0.5,
+   "n_labelled_melody": 114,
+   "n_labelled_bass": 87,
+   "threshold_midi": 55
+  },
+  "B2_lowest_per_onset": {
+   "n_pred": 201,
+   "n_truth": 90,
+   "n_matched": 90,
+   "n_voice_agree": 84,
+   "fraction_voice_agree_of_matched": 0.9333333333333333,
+   "confusion": {
+    "truth_bass->pred_bass": 42,
+    "truth_melody->pred_melody": 42,
+    "truth_bass->pred_melody": 6
+   },
+   "onset_tol_s": 0.05,
+   "pitch_tol_semitones": 0.5,
+   "n_labelled_melody": 139,
+   "n_labelled_bass": 62,
+   "n_groups": 62
+  },
+  "B3_skyline": {
+   "n_pred": 201,
+   "n_truth": 90,
+   "n_matched": 90,
+   "n_voice_agree": 65,
+   "fraction_voice_agree_of_matched": 0.7222222222222222,
+   "confusion": {
+    "truth_bass->pred_bass": 46,
+    "truth_melody->pred_melody": 19,
+    "truth_melody->pred_bass": 23,
+    "truth_bass->pred_melody": 2
+   },
+   "onset_tol_s": 0.05,
+   "pitch_tol_semitones": 0.5,
+   "n_labelled_melody": 62,
+   "n_labelled_bass": 139,
+   "n_groups": 62
+  },
+  "P1_partitura_poly": {
+   "n_pred": 201,
+   "n_truth": 90,
+   "n_matched": 90,
+   "n_voice_agree": 48,
+   "fraction_voice_agree_of_matched": 0.5333333333333333,
+   "confusion": {
+    "truth_bass->pred_bass": 48,
+    "truth_melody->pred_bass": 42
+   },
+   "onset_tol_s": 0.05,
+   "pitch_tol_semitones": 0.5,
+   "n_labelled_melody": 3,
+   "n_labelled_bass": 198,
+   "n_voices": 7,
+   "notes_per_voice": {
+    "1": 34,
+    "2": 3,
+    "3": 28,
+    "4": 20,
+    "5": 38,
+    "6": 37,
+    "7": 41
+   },
+   "mean_pitch_per_voice": {
+    "1": 53.470588235294116,
+    "2": 73.66666666666667,
+    "3": 57.285714285714285,
+    "4": 62.55,
+    "5": 55.39473684210526,
+    "6": 51.108108108108105,
+    "7": 51.829268292682926
+   },
+   "partitura": "1.9.0",
+   "seconds": 0.5014
+  },
+  "P2_partitura_mono": {
+   "n_pred": 201,
+   "n_truth": 90,
+   "n_matched": 90,
+   "n_voice_agree": 48,
+   "fraction_voice_agree_of_matched": 0.5333333333333333,
+   "confusion": {
+    "truth_bass->pred_bass": 48,
+    "truth_melody->pred_bass": 42
+   },
+   "onset_tol_s": 0.05,
+   "pitch_tol_semitones": 0.5,
+   "n_labelled_melody": 1,
+   "n_labelled_bass": 200,
+   "n_voices": 8,
+   "notes_per_voice": {
+    "1": 1,
+    "2": 29,
+    "3": 16,
+    "4": 7,
+    "5": 33,
+    "6": 31,
+    "7": 38,
+    "8": 46
+   },
+   "mean_pitch_per_voice": {
+    "1": 64.0,
+    "2": 57.03448275862069,
+    "3": 62.375,
+    "4": 54.42857142857143,
+    "5": 52.696969696969695,
+    "6": 54.87096774193548,
+    "7": 51.973684210526315,
+    "8": 54.41304347826087
+   },
+   "partitura": "1.9.0",
+   "seconds": 1.0111
+  },
+  "M1_music21": {
+   "n_pred": 201,
+   "n_truth": 90,
+   "n_matched": 90,
+   "n_voice_agree": 79,
+   "fraction_voice_agree_of_matched": 0.8777777777777778,
+   "confusion": {
+    "truth_bass->pred_bass": 42,
+    "truth_melody->pred_melody": 37,
+    "truth_bass->pred_melody": 6,
+    "truth_melody->pred_bass": 5
+   },
+   "onset_tol_s": 0.05,
+   "pitch_tol_semitones": 0.5,
+   "n_labelled_melody": 105,
+   "n_labelled_bass": 96,
+   "music21": "10.5.2",
+   "n_parts": 1,
+   "n_chords": 61,
+   "n_single_notes": 58,
+   "n_voices": 45,
+   "n_notes_not_found_back": 0,
+   "seconds": 0.433
+  }
+ },
+ "B1_threshold_sweep": {
+  "36": {
+   "n_voice_agree": 42,
+   "n_matched": 90,
+   "fraction": 0.4666666666666667
+  },
+  "37": {
+   "n_voice_agree": 42,
+   "n_matched": 90,
+   "fraction": 0.4666666666666667
+  },
+  "38": {
+   "n_voice_agree": 42,
+   "n_matched": 90,
+   "fraction": 0.4666666666666667
+  },
+  "39": {
+   "n_voice_agree": 42,
+   "n_matched": 90,
+   "fraction": 0.4666666666666667
+  },
+  "40": {
+   "n_voice_agree": 42,
+   "n_matched": 90,
+   "fraction": 0.4666666666666667
+  },
+  "41": {
+   "n_voice_agree": 42,
+   "n_matched": 90,
+   "fraction": 0.4666666666666667
+  },
+  "42": {
+   "n_voice_agree": 42,
+   "n_matched": 90,
+   "fraction": 0.4666666666666667
+  },
+  "43": {
+   "n_voice_agree": 42,
+   "n_matched": 90,
+   "fraction": 0.4666666666666667
+  },
+  "44": {
+   "n_voice_agree": 56,
+   "n_matched": 90,
+   "fraction": 0.6222222222222222
+  },
+  "45": {
+   "n_voice_agree": 56,
+   "n_matched": 90,
+   "fraction": 0.6222222222222222
+  },
+  "46": {
+   "n_voice_agree": 60,
+   "n_matched": 90,
+   "fraction": 0.6666666666666666
+  },
+  "47": {
+   "n_voice_agree": 60,
+   "n_matched": 90,
+   "fraction": 0.6666666666666666
+  },
+  "48": {
+   "n_voice_agree": 60,
+   "n_matched": 90,
+   "fraction": 0.6666666666666666
+  },
+  "49": {
+   "n_voice_agree": 66,
+   "n_matched": 90,
+   "fraction": 0.7333333333333333
+  },
+  "50": {
+   "n_voice_agree": 66,
+   "n_matched": 90,
+   "fraction": 0.7333333333333333
+  },
+  "51": {
+   "n_voice_agree": 84,
+   "n_matched": 90,
+   "fraction": 0.9333333333333333
+  },
+  "52": {
+   "n_voice_agree": 84,
+   "n_matched": 90,
+   "fraction": 0.9333333333333333
+  },
+  "53": {
+   "n_voice_agree": 90,
+   "n_matched": 90,
+   "fraction": 1.0
+  },
+  "54": {
+   "n_voice_agree": 90,
+   "n_matched": 90,
+   "fraction": 1.0
+  },
+  "55": {
+   "n_voice_agree": 90,
+   "n_matched": 90,
+   "fraction": 1.0
+  },
+  "56": {
+   "n_voice_agree": 84,
+   "n_matched": 90,
+   "fraction": 0.9333333333333333
+  },
+  "57": {
+   "n_voice_agree": 84,
+   "n_matched": 90,
+   "fraction": 0.9333333333333333
+  },
+  "58": {
+   "n_voice_agree": 78,
+   "n_matched": 90,
+   "fraction": 0.8666666666666667
+  },
+  "59": {
+   "n_voice_agree": 78,
+   "n_matched": 90,
+   "fraction": 0.8666666666666667
+  },
+  "60": {
+   "n_voice_agree": 70,
+   "n_matched": 90,
+   "fraction": 0.7777777777777778
+  },
+  "61": {
+   "n_voice_agree": 62,
+   "n_matched": 90,
+   "fraction": 0.6888888888888889
+  },
+  "62": {
+   "n_voice_agree": 62,
+   "n_matched": 90,
+   "fraction": 0.6888888888888889
+  },
+  "63": {
+   "n_voice_agree": 52,
+   "n_matched": 90,
+   "fraction": 0.5777777777777777
+  },
+  "64": {
+   "n_voice_agree": 52,
+   "n_matched": 90,
+   "fraction": 0.5777777777777777
+  },
+  "65": {
+   "n_voice_agree": 48,
+   "n_matched": 90,
+   "fraction": 0.5333333333333333
+  },
+  "66": {
+   "n_voice_agree": 48,
+   "n_matched": 90,
+   "fraction": 0.5333333333333333
+  },
+  "67": {
+   "n_voice_agree": 48,
+   "n_matched": 90,
+   "fraction": 0.5333333333333333
+  },
+  "68": {
+   "n_voice_agree": 48,
+   "n_matched": 90,
+   "fraction": 0.5333333333333333
+  },
+  "69": {
+   "n_voice_agree": 48,
+   "n_matched": 90,
+   "fraction": 0.5333333333333333
+  },
+  "70": {
+   "n_voice_agree": 48,
+   "n_matched": 90,
+   "fraction": 0.5333333333333333
+  },
+  "71": {
+   "n_voice_agree": 48,
+   "n_matched": 90,
+   "fraction": 0.5333333333333333
+  },
+  "72": {
+   "n_voice_agree": 48,
+   "n_matched": 90,
+   "fraction": 0.5333333333333333
+  }
+ }
+}

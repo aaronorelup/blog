@@ -1,0 +1,21 @@
+scorify S1.truthmidi: status success (best-found), arrange 1700.3 ms, notes in 62, notes placed 62  (node process 1.77 s)
+  S1: process wall 1.86 s, maxrss 128556 KB
+scorify S2n.truthmidi: status success (best-found), arrange 2695.4 ms, notes in 90, notes placed 90  (node process 2.79 s)
+  S2n: process wall 2.92 s, maxrss 171888 KB
+scorify S3.truthmidi: status success (best-found), arrange 1621.7 ms, notes in 182, notes placed 182  (node process 1.72 s)
+  S3: process wall 1.81 s, maxrss 133768 KB
+scorify S5capo2.truthmidi: status search-exhausted, arrange 2088.8 ms, notes in 90, notes placed 0, diagnostics: Expansion budget exceeded  (node process 2.16 s)
+  S5capo2: process wall 2.24 s, maxrss 171044 KB
+scorify S5dropd.truthmidi: status search-exhausted, arrange 799.5 ms, notes in 90, notes placed 0, diagnostics: No valid path within the declared candidate and mechanics model  (node process 0.86 s)
+  S5dropd: process wall 0.95 s, maxrss 125944 KB
+scorify R1a.truthmidi: status search-exhausted, arrange 1827.2 ms, notes in 189, notes placed 0, diagnostics: No valid path within the declared candidate and mechanics model  (node process 1.97 s)
+  R1a: process wall 2.04 s, maxrss 163884 KB
+scorify R1b.truthmidi: status search-exhausted, arrange 1311.8 ms, notes in 70, notes placed 0, diagnostics: No valid path within the declared candidate and mechanics model  (node process 1.38 s)
+  R1b: process wall 1.45 s, maxrss 125228 KB
+scorify R1c.truthmidi: status success (best-found), arrange 1642.3 ms, notes in 148, notes placed 148  (node process 1.76 s)
+  R1c: process wall 1.83 s, maxrss 155192 KB
+scorify S5capo2.truthmidi.capo2: status success (best-found), arrange 2044.3 ms, notes in 90, notes placed 90  (node process 2.15 s)
+  S5capo2 capo 2: process wall 2.22 s, maxrss 172068 KB
+scorify S5dropd.truthmidi.dropD: status success (best-found), arrange 2113.7 ms, notes in 90, notes placed 90  (node process 2.26 s)
+  S5dropd Drop D: process wall 2.32 s, maxrss 179916 KB
+[gtr-run r0621] guitar-tab/scorify-0.4.0 "gap round 2: scorify 0.4.0 arrange (exact, default player) on merged truth MIDI of 8 clips + capo 2 + Drop D" wall=19.73s cpu=22.4s rss=175.7MB cores=2 exit=0 slot_wait=20.0s

@@ -1,0 +1,86 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>reference playback</title>
+<body>
+<script src="/nm/soundfont-player/dist/soundfont-player.min.js"></script>
+<script src="/nm/js-synthesizer/externals/libfluidsynth-2.4.6.js"></script>
+<script src="/nm/js-synthesizer/dist/js-synthesizer.min.js"></script>
+<script type="module">
+// Reference playback of the S2n truth notes with one sample player, recorded in real time by an AudioWorklet.
+//   smplr   : smplr Soundfont(), kit FluidR3_GM, instrument acoustic_guitar_nylon; start({note, velocity, time, duration})
+//   sfplayer: soundfont-player, soundfont FluidR3_GM, acoustic_guitar_nylon; play(note, time, {duration, gain})
+//   spessa  : spessasynth_lib WorkletSynthesizer + FluidR3_GM.sf2; noteOn/noteOff with {time} (program 24)
+//   jssynth : js-synthesizer AudioWorkletNodeSynthesizer (libfluidsynth 2.4.6 WASM) + FluidR3_GM.sf2; plays S2n.mid
+//             with FluidSynth's own MIDI player (start time not set by the page)
+// All notes are scheduled at t0 + onset on the AudioContext clock (except jssynth), t0 on an exact frame.
+import { finish, fail, sleep, makeRecorder, encodeWav, upload, fetchArrayBuffer } from './common.js';
+const q = new URLSearchParams(location.search);
+const METHOD = q.get('method') || 'smplr', CLIP = q.get('clip') || 'S2n';
+const R = { method: METHOD, clip: CLIP };
+try {
+  const truth = await (await fetch(`/inputs/${CLIP}/${CLIP}.truth.json`)).json();
+  const notes = truth.notes.filter((n) => n.voice !== 'drums');
+  R.n_notes = notes.length;
+  const ctx = new AudioContext({ latencyHint: 'interactive' }); await ctx.resume();
+  const sr = ctx.sampleRate; R.sampleRate = sr;
+  const rec = await makeRecorder(ctx, 2, 1);
+  const bus = new GainNode(ctx); bus.connect(rec.node); bus.connect(ctx.destination);
+  const tl = performance.now();
+  let t0 = null, endAt;
+  if (METHOD === 'smplr') {
+    const { Soundfont } = await import('/nm/smplr/dist/index.mjs');
+    const inst = Soundfont(ctx, { instrument: 'acoustic_guitar_nylon', kit: 'FluidR3_GM', destination: bus });
+    await inst.ready;
+    R.load_ms = performance.now() - tl;
+    t0 = Math.ceil((ctx.currentTime + 0.5) * sr) / sr;
+    for (const n of notes) inst.start({ note: n.pitch, velocity: n.velocity, time: t0 + n.onset, duration: n.offset - n.onset });
+  } else if (METHOD === 'sfplayer') {
+    const inst = await Soundfont.instrument(ctx, 'acoustic_guitar_nylon', { soundfont: 'FluidR3_GM', destination: bus });
+    R.load_ms = performance.now() - tl;
+    t0 = Math.ceil((ctx.currentTime + 0.5) * sr) / sr;
+    for (const n of notes) inst.play(n.pitch, t0 + n.onset, { duration: n.offset - n.onset, gain: n.velocity / 127 });
+  } else if (METHOD === 'spessa') {
+    const S = await import('/build/spessa.js');
+    await ctx.audioWorklet.addModule('/nm/spessasynth_lib/dist/spessasynth_processor.min.js');
+    const synth = new S.WorkletSynthesizer(ctx);
+    synth.connect(bus);
+    await synth.isReady;
+    const sf = await fetchArrayBuffer('/laneinputs/FluidR3_GM.sf2');
+    await synth.soundBankManager.addSoundBank(sf, 'main');
+    R.load_ms = performance.now() - tl; R.sf2_bytes = sf.byteLength;
+    synth.programChange(0, 24);
+    await sleep(200);
+    t0 = Math.ceil((ctx.currentTime + 0.5) * sr) / sr;
+    for (const n of notes) { synth.noteOn(0, n.pitch, n.velocity, { time: t0 + n.onset }); synth.noteOff(0, n.pitch, { time: t0 + n.offset }); }
+  } else if (METHOD === 'jssynth') {
+    await JSSynth.waitForReady();
+    await ctx.audioWorklet.addModule('/nm/js-synthesizer/externals/libfluidsynth-2.4.6.js');
+    await ctx.audioWorklet.addModule('/nm/js-synthesizer/dist/js-synthesizer.worklet.min.js');
+    const synth = new JSSynth.AudioWorkletNodeSynthesizer();
+    synth.init(sr);
+    const node = synth.createAudioNode(ctx, { outputChannelCount: [2] });
+    node.connect(bus);
+    const sf = await fetchArrayBuffer('/laneinputs/FluidR3_GM.sf2');
+    await synth.loadSFont(sf);
+    const mid = await fetchArrayBuffer(`/inputs/${CLIP}/${CLIP}.mid`);
+    await synth.addSMFDataToPlayer(mid);
+    R.load_ms = performance.now() - tl; R.sf2_bytes = sf.byteLength;
+    R.play_called_ctxTime = ctx.currentTime;
+    await synth.playPlayer();
+    R.play_resolved_ctxTime = ctx.currentTime;
+    R.note = 'start of the MIDI player is not scheduled by the page; analysis aligns by the best constant offset';
+  }
+  R.t0 = t0; R.t0_frame = t0 !== null ? Math.round(t0 * sr) : null;
+  endAt = (t0 ?? ctx.currentTime) + truth.duration_s + 0.5;
+  while (ctx.currentTime < endAt) await sleep(100);
+  const cap = await rec.stop();
+  R.capture = { firstFrame: cap.firstFrame, frames: cap.channels[0].length, gaps: cap.gaps };
+  R.playbackStats = ctx.playbackStats ? JSON.parse(JSON.stringify(ctx.playbackStats.toJSON())) : null;
+  let peak = 0; for (const c of cap.channels) for (let i = 0; i < c.length; i++) peak = Math.max(peak, Math.abs(c[i]));
+  R.peak = peak;
+  R.wav = await upload('synths', `${CLIP}_${METHOD}.wav`, encodeWav(cap.channels, sr, { float: true }));
+  await ctx.close();
+  finish(R);
+} catch (e) { fail(e, R); }
+</script>
+</body>

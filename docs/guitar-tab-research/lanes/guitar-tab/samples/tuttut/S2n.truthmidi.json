@@ -1,0 +1,952 @@
+{
+    "tuning": [
+        64,
+        59,
+        55,
+        50,
+        45,
+        40
+    ],
+    "measures": [
+        {
+            "events": [
+                {
+                    "time": 0.0,
+                    "time_ticks": 0,
+                    "measure_timing": 0.0,
+                    "time_signature_change": [
+                        4,
+                        4
+                    ]
+                }
+            ]
+        },
+        {
+            "events": [
+                {
+                    "time": 2.142856,
+                    "time_ticks": 3840,
+                    "measure_timing": 0.0,
+                    "notes": [
+                        {
+                            "degree": "G",
+                            "octave": "2",
+                            "string": 5,
+                            "fret": 3
+                        },
+                        {
+                            "degree": "G",
+                            "octave": "3",
+                            "string": 2,
+                            "fret": 0
+                        }
+                    ]
+                },
+                {
+                    "time": 2.67857,
+                    "time_ticks": 4800,
+                    "measure_timing": 0.25,
+                    "notes": [
+                        {
+                            "degree": "D",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 0
+                        },
+                        {
+                            "degree": "G",
+                            "octave": "3",
+                            "string": 2,
+                            "fret": 0
+                        }
+                    ]
+                },
+                {
+                    "time": 3.214284,
+                    "time_ticks": 5760,
+                    "measure_timing": 0.5,
+                    "notes": [
+                        {
+                            "degree": "G",
+                            "octave": "2",
+                            "string": 5,
+                            "fret": 3
+                        },
+                        {
+                            "degree": "D",
+                            "octave": "4",
+                            "string": 1,
+                            "fret": 3
+                        }
+                    ]
+                },
+                {
+                    "time": 3.749998,
+                    "time_ticks": 6720,
+                    "measure_timing": 0.75,
+                    "notes": [
+                        {
+                            "degree": "D",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 0
+                        },
+                        {
+                            "degree": "D",
+                            "octave": "4",
+                            "string": 1,
+                            "fret": 3
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "events": [
+                {
+                    "time": 4.285712,
+                    "time_ticks": 7680,
+                    "measure_timing": 0.0,
+                    "notes": [
+                        {
+                            "degree": "C",
+                            "octave": "3",
+                            "string": 4,
+                            "fret": 3
+                        },
+                        {
+                            "degree": "E",
+                            "octave": "4",
+                            "string": 0,
+                            "fret": 0
+                        }
+                    ]
+                },
+                {
+                    "time": 4.821426,
+                    "time_ticks": 8640,
+                    "measure_timing": 0.25,
+                    "notes": [
+                        {
+                            "degree": "E",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 2
+                        },
+                        {
+                            "degree": "E",
+                            "octave": "4",
+                            "string": 0,
+                            "fret": 0
+                        }
+                    ]
+                },
+                {
+                    "time": 5.35714,
+                    "time_ticks": 9600,
+                    "measure_timing": 0.5,
+                    "notes": [
+                        {
+                            "degree": "G",
+                            "octave": "2",
+                            "string": 5,
+                            "fret": 3
+                        },
+                        {
+                            "degree": "D",
+                            "octave": "4",
+                            "string": 1,
+                            "fret": 3
+                        }
+                    ]
+                },
+                {
+                    "time": 5.892854,
+                    "time_ticks": 10560,
+                    "measure_timing": 0.75,
+                    "notes": [
+                        {
+                            "degree": "D",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "events": [
+                {
+                    "time": 6.428568,
+                    "time_ticks": 11520,
+                    "measure_timing": 0.0,
+                    "notes": [
+                        {
+                            "degree": "C",
+                            "octave": "3",
+                            "string": 4,
+                            "fret": 3
+                        },
+                        {
+                            "degree": "C",
+                            "octave": "4",
+                            "string": 1,
+                            "fret": 1
+                        }
+                    ]
+                },
+                {
+                    "time": 6.964282,
+                    "time_ticks": 12480,
+                    "measure_timing": 0.25,
+                    "notes": [
+                        {
+                            "degree": "E",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 2
+                        },
+                        {
+                            "degree": "C",
+                            "octave": "4",
+                            "string": 1,
+                            "fret": 1
+                        }
+                    ]
+                },
+                {
+                    "time": 7.499996,
+                    "time_ticks": 13440,
+                    "measure_timing": 0.5,
+                    "notes": [
+                        {
+                            "degree": "G",
+                            "octave": "2",
+                            "string": 5,
+                            "fret": 3
+                        },
+                        {
+                            "degree": "B",
+                            "octave": "3",
+                            "string": 1,
+                            "fret": 0
+                        }
+                    ]
+                },
+                {
+                    "time": 8.03571,
+                    "time_ticks": 14400,
+                    "measure_timing": 0.75,
+                    "notes": [
+                        {
+                            "degree": "D",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 0
+                        },
+                        {
+                            "degree": "B",
+                            "octave": "3",
+                            "string": 1,
+                            "fret": 0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "events": [
+                {
+                    "time": 8.571424,
+                    "time_ticks": 15360,
+                    "measure_timing": 0.0,
+                    "notes": [
+                        {
+                            "degree": "D",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 0
+                        },
+                        {
+                            "degree": "A",
+                            "octave": "3",
+                            "string": 2,
+                            "fret": 2
+                        }
+                    ]
+                },
+                {
+                    "time": 9.107138,
+                    "time_ticks": 16320,
+                    "measure_timing": 0.25,
+                    "notes": [
+                        {
+                            "degree": "A",
+                            "octave": "2",
+                            "string": 4,
+                            "fret": 0
+                        },
+                        {
+                            "degree": "A",
+                            "octave": "3",
+                            "string": 2,
+                            "fret": 2
+                        }
+                    ]
+                },
+                {
+                    "time": 9.642852,
+                    "time_ticks": 17280,
+                    "measure_timing": 0.5,
+                    "notes": [
+                        {
+                            "degree": "G",
+                            "octave": "2",
+                            "string": 5,
+                            "fret": 3
+                        },
+                        {
+                            "degree": "G",
+                            "octave": "3",
+                            "string": 2,
+                            "fret": 0
+                        }
+                    ]
+                },
+                {
+                    "time": 10.178566,
+                    "time_ticks": 18240,
+                    "measure_timing": 0.75,
+                    "notes": [
+                        {
+                            "degree": "D",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "events": [
+                {
+                    "time": 10.71428,
+                    "time_ticks": 19200,
+                    "measure_timing": 0.0,
+                    "notes": [
+                        {
+                            "degree": "G",
+                            "octave": "2",
+                            "string": 5,
+                            "fret": 3
+                        },
+                        {
+                            "degree": "D",
+                            "octave": "4",
+                            "string": 1,
+                            "fret": 3
+                        }
+                    ]
+                },
+                {
+                    "time": 11.249994000000001,
+                    "time_ticks": 20160,
+                    "measure_timing": 0.25,
+                    "notes": [
+                        {
+                            "degree": "D",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 0
+                        },
+                        {
+                            "degree": "D",
+                            "octave": "4",
+                            "string": 1,
+                            "fret": 3
+                        }
+                    ]
+                },
+                {
+                    "time": 11.785708,
+                    "time_ticks": 21120,
+                    "measure_timing": 0.5,
+                    "notes": [
+                        {
+                            "degree": "C",
+                            "octave": "3",
+                            "string": 4,
+                            "fret": 3
+                        },
+                        {
+                            "degree": "C",
+                            "octave": "4",
+                            "string": 1,
+                            "fret": 1
+                        }
+                    ]
+                },
+                {
+                    "time": 12.321422,
+                    "time_ticks": 22080,
+                    "measure_timing": 0.75,
+                    "notes": [
+                        {
+                            "degree": "E",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 2
+                        },
+                        {
+                            "degree": "C",
+                            "octave": "4",
+                            "string": 1,
+                            "fret": 1
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "events": [
+                {
+                    "time": 12.857136,
+                    "time_ticks": 23040,
+                    "measure_timing": 0.0,
+                    "notes": [
+                        {
+                            "degree": "G",
+                            "octave": "2",
+                            "string": 5,
+                            "fret": 3
+                        },
+                        {
+                            "degree": "B",
+                            "octave": "3",
+                            "string": 1,
+                            "fret": 0
+                        }
+                    ]
+                },
+                {
+                    "time": 13.392850000000001,
+                    "time_ticks": 24000,
+                    "measure_timing": 0.25,
+                    "notes": [
+                        {
+                            "degree": "D",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 0
+                        },
+                        {
+                            "degree": "B",
+                            "octave": "3",
+                            "string": 1,
+                            "fret": 0
+                        }
+                    ]
+                },
+                {
+                    "time": 13.928564,
+                    "time_ticks": 24960,
+                    "measure_timing": 0.5,
+                    "notes": [
+                        {
+                            "degree": "D",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 0
+                        },
+                        {
+                            "degree": "A",
+                            "octave": "3",
+                            "string": 2,
+                            "fret": 2
+                        }
+                    ]
+                },
+                {
+                    "time": 14.464278,
+                    "time_ticks": 25920,
+                    "measure_timing": 0.75,
+                    "notes": [
+                        {
+                            "degree": "A",
+                            "octave": "2",
+                            "string": 4,
+                            "fret": 0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "events": [
+                {
+                    "time": 14.999992,
+                    "time_ticks": 26880,
+                    "measure_timing": 0.0,
+                    "notes": [
+                        {
+                            "degree": "G",
+                            "octave": "2",
+                            "string": 5,
+                            "fret": 3
+                        },
+                        {
+                            "degree": "D",
+                            "octave": "4",
+                            "string": 1,
+                            "fret": 3
+                        }
+                    ]
+                },
+                {
+                    "time": 15.535706000000001,
+                    "time_ticks": 27840,
+                    "measure_timing": 0.25,
+                    "notes": [
+                        {
+                            "degree": "D",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 0
+                        },
+                        {
+                            "degree": "D",
+                            "octave": "4",
+                            "string": 1,
+                            "fret": 3
+                        }
+                    ]
+                },
+                {
+                    "time": 16.07142,
+                    "time_ticks": 28800,
+                    "measure_timing": 0.5,
+                    "notes": [
+                        {
+                            "degree": "C",
+                            "octave": "3",
+                            "string": 4,
+                            "fret": 3
+                        },
+                        {
+                            "degree": "C",
+                            "octave": "4",
+                            "string": 1,
+                            "fret": 1
+                        }
+                    ]
+                },
+                {
+                    "time": 16.607134000000002,
+                    "time_ticks": 29760,
+                    "measure_timing": 0.75,
+                    "notes": [
+                        {
+                            "degree": "E",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 2
+                        },
+                        {
+                            "degree": "C",
+                            "octave": "4",
+                            "string": 1,
+                            "fret": 1
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "events": [
+                {
+                    "time": 17.142848,
+                    "time_ticks": 30720,
+                    "measure_timing": 0.0,
+                    "notes": [
+                        {
+                            "degree": "G",
+                            "octave": "2",
+                            "string": 5,
+                            "fret": 3
+                        },
+                        {
+                            "degree": "B",
+                            "octave": "3",
+                            "string": 1,
+                            "fret": 0
+                        }
+                    ]
+                },
+                {
+                    "time": 17.678562,
+                    "time_ticks": 31680,
+                    "measure_timing": 0.25,
+                    "notes": [
+                        {
+                            "degree": "D",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 0
+                        },
+                        {
+                            "degree": "B",
+                            "octave": "3",
+                            "string": 1,
+                            "fret": 0
+                        }
+                    ]
+                },
+                {
+                    "time": 18.214276,
+                    "time_ticks": 32640,
+                    "measure_timing": 0.5,
+                    "notes": [
+                        {
+                            "degree": "D",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 0
+                        },
+                        {
+                            "degree": "A",
+                            "octave": "3",
+                            "string": 2,
+                            "fret": 2
+                        }
+                    ]
+                },
+                {
+                    "time": 18.74999,
+                    "time_ticks": 33600,
+                    "measure_timing": 0.75,
+                    "notes": [
+                        {
+                            "degree": "A",
+                            "octave": "2",
+                            "string": 4,
+                            "fret": 0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "events": [
+                {
+                    "time": 19.285704,
+                    "time_ticks": 34560,
+                    "measure_timing": 0.0,
+                    "notes": [
+                        {
+                            "degree": "G",
+                            "octave": "2",
+                            "string": 5,
+                            "fret": 3
+                        },
+                        {
+                            "degree": "G",
+                            "octave": "3",
+                            "string": 2,
+                            "fret": 0
+                        }
+                    ]
+                },
+                {
+                    "time": 19.821418,
+                    "time_ticks": 35520,
+                    "measure_timing": 0.25,
+                    "notes": [
+                        {
+                            "degree": "D",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 0
+                        },
+                        {
+                            "degree": "G",
+                            "octave": "3",
+                            "string": 2,
+                            "fret": 0
+                        }
+                    ]
+                },
+                {
+                    "time": 20.357132,
+                    "time_ticks": 36480,
+                    "measure_timing": 0.5,
+                    "notes": [
+                        {
+                            "degree": "G",
+                            "octave": "2",
+                            "string": 5,
+                            "fret": 3
+                        },
+                        {
+                            "degree": "D",
+                            "octave": "4",
+                            "string": 1,
+                            "fret": 3
+                        }
+                    ]
+                },
+                {
+                    "time": 20.892846000000002,
+                    "time_ticks": 37440,
+                    "measure_timing": 0.75,
+                    "notes": [
+                        {
+                            "degree": "D",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 0
+                        },
+                        {
+                            "degree": "D",
+                            "octave": "4",
+                            "string": 1,
+                            "fret": 3
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "events": [
+                {
+                    "time": 21.42856,
+                    "time_ticks": 38400,
+                    "measure_timing": 0.0,
+                    "notes": [
+                        {
+                            "degree": "C",
+                            "octave": "3",
+                            "string": 4,
+                            "fret": 3
+                        },
+                        {
+                            "degree": "E",
+                            "octave": "4",
+                            "string": 0,
+                            "fret": 0
+                        }
+                    ]
+                },
+                {
+                    "time": 21.964274,
+                    "time_ticks": 39360,
+                    "measure_timing": 0.25,
+                    "notes": [
+                        {
+                            "degree": "E",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 2
+                        },
+                        {
+                            "degree": "E",
+                            "octave": "4",
+                            "string": 0,
+                            "fret": 0
+                        }
+                    ]
+                },
+                {
+                    "time": 22.499988000000002,
+                    "time_ticks": 40320,
+                    "measure_timing": 0.5,
+                    "notes": [
+                        {
+                            "degree": "G",
+                            "octave": "2",
+                            "string": 5,
+                            "fret": 3
+                        },
+                        {
+                            "degree": "D",
+                            "octave": "4",
+                            "string": 1,
+                            "fret": 3
+                        }
+                    ]
+                },
+                {
+                    "time": 23.035702,
+                    "time_ticks": 41280,
+                    "measure_timing": 0.75,
+                    "notes": [
+                        {
+                            "degree": "D",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "events": [
+                {
+                    "time": 23.571416,
+                    "time_ticks": 42240,
+                    "measure_timing": 0.0,
+                    "notes": [
+                        {
+                            "degree": "C",
+                            "octave": "3",
+                            "string": 4,
+                            "fret": 3
+                        },
+                        {
+                            "degree": "C",
+                            "octave": "4",
+                            "string": 1,
+                            "fret": 1
+                        }
+                    ]
+                },
+                {
+                    "time": 24.10713,
+                    "time_ticks": 43200,
+                    "measure_timing": 0.25,
+                    "notes": [
+                        {
+                            "degree": "E",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 2
+                        },
+                        {
+                            "degree": "C",
+                            "octave": "4",
+                            "string": 1,
+                            "fret": 1
+                        }
+                    ]
+                },
+                {
+                    "time": 24.642844,
+                    "time_ticks": 44160,
+                    "measure_timing": 0.5,
+                    "notes": [
+                        {
+                            "degree": "G",
+                            "octave": "2",
+                            "string": 5,
+                            "fret": 3
+                        },
+                        {
+                            "degree": "B",
+                            "octave": "3",
+                            "string": 1,
+                            "fret": 0
+                        }
+                    ]
+                },
+                {
+                    "time": 25.178558000000002,
+                    "time_ticks": 45120,
+                    "measure_timing": 0.75,
+                    "notes": [
+                        {
+                            "degree": "D",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 0
+                        },
+                        {
+                            "degree": "B",
+                            "octave": "3",
+                            "string": 1,
+                            "fret": 0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "events": [
+                {
+                    "time": 25.714272,
+                    "time_ticks": 46080,
+                    "measure_timing": 0.0,
+                    "notes": [
+                        {
+                            "degree": "D",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 0
+                        },
+                        {
+                            "degree": "A",
+                            "octave": "3",
+                            "string": 2,
+                            "fret": 2
+                        }
+                    ]
+                },
+                {
+                    "time": 26.249986,
+                    "time_ticks": 47040,
+                    "measure_timing": 0.25,
+                    "notes": [
+                        {
+                            "degree": "A",
+                            "octave": "2",
+                            "string": 4,
+                            "fret": 0
+                        },
+                        {
+                            "degree": "A",
+                            "octave": "3",
+                            "string": 2,
+                            "fret": 2
+                        }
+                    ]
+                },
+                {
+                    "time": 26.785700000000002,
+                    "time_ticks": 48000,
+                    "measure_timing": 0.5,
+                    "notes": [
+                        {
+                            "degree": "G",
+                            "octave": "2",
+                            "string": 5,
+                            "fret": 3
+                        },
+                        {
+                            "degree": "G",
+                            "octave": "3",
+                            "string": 2,
+                            "fret": 0
+                        }
+                    ]
+                },
+                {
+                    "time": 27.321414,
+                    "time_ticks": 48960,
+                    "measure_timing": 0.75,
+                    "notes": [
+                        {
+                            "degree": "D",
+                            "octave": "3",
+                            "string": 3,
+                            "fret": 0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "events": []
+        }
+    ]
+}

@@ -1,0 +1,42 @@
+{
+ "import_and_model_load_s": 7.797,
+ "recognize_s": 16.209,
+ "outputs": {
+  "n_segments": 11,
+  "labels": [
+   "A:min",
+   "C:maj",
+   "D:maj",
+   "E:min",
+   "G:maj",
+   "N"
+  ],
+  "first": [
+   [
+    0.0,
+    2.229,
+    "N"
+   ],
+   [
+    2.229,
+    4.969,
+    "G:maj"
+   ],
+   [
+    4.969,
+    7.338,
+    "E:min"
+   ],
+   [
+    7.338,
+    9.892,
+    "A:min"
+   ],
+   [
+    9.892,
+    12.307,
+    "D:maj"
+   ]
+  ]
+ }
+}

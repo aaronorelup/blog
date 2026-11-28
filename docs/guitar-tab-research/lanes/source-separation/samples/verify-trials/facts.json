@@ -1,0 +1,1965 @@
+{
+ "samples/audio-separator/stemfacts_1_HP-UVR_R2.json": {
+  "input_frames": 1587600,
+  "input_level_db": -10.27,
+  "stems": {
+   "instrumental": {
+    "frames": 1587200,
+    "subtype": "PCM_16",
+    "bytes": 6348878,
+    "sr": 44100,
+    "level_db": -17.01,
+    "peak_db": -0.92
+   },
+   "vocals": {
+    "frames": 1587200,
+    "subtype": "PCM_16",
+    "bytes": 6348878,
+    "sr": 44100,
+    "level_db": -13.99,
+    "peak_db": -0.92
+   }
+  },
+  "mismatch": [],
+  "residual_db": -14.71,
+  "lag": 0
+ },
+ "samples/audio-separator/stemfacts_1_HP-UVR_S4.json": {
+  "input_frames": 1708495,
+  "input_level_db": -17.37,
+  "stems": {
+   "instrumental": {
+    "frames": 1708032,
+    "subtype": "PCM_16",
+    "bytes": 6832206,
+    "sr": 44100,
+    "level_db": -18.76,
+    "peak_db": -1.41
+   },
+   "vocals": {
+    "frames": 1708032,
+    "subtype": "PCM_16",
+    "bytes": 6832206,
+    "sr": 44100,
+    "level_db": -26.47,
+    "peak_db": -10.14
+   }
+  },
+  "mismatch": [],
+  "residual_db": -37.71,
+  "lag": 0
+ },
+ "samples/audio-separator/stemfacts_BS-Roformer-SW_S4_0-10s.json": {
+  "input_frames": 441000,
+  "input_level_db": -19.15,
+  "stems": {
+   "bass": {
+    "frames": 441000,
+    "subtype": "PCM_16",
+    "bytes": 1764078,
+    "sr": 44100,
+    "level_db": -25.39,
+    "peak_db": -11.22
+   },
+   "drums": {
+    "frames": 441000,
+    "subtype": "PCM_16",
+    "bytes": 1764078,
+    "sr": 44100,
+    "level_db": -30.97,
+    "peak_db": -8.51
+   },
+   "guitar": {
+    "frames": 441000,
+    "subtype": "PCM_16",
+    "bytes": 1764078,
+    "sr": 44100,
+    "level_db": -23.87,
+    "peak_db": -4.3
+   },
+   "other": {
+    "frames": 441000,
+    "subtype": "PCM_16",
+    "bytes": 1764078,
+    "sr": 44100,
+    "level_db": -24.54,
+    "peak_db": -9.26
+   },
+   "piano": {
+    "frames": 441000,
+    "subtype": "PCM_16",
+    "bytes": 1764078,
+    "sr": 44100,
+    "level_db": -128.97,
+    "peak_db": -90.31
+   },
+   "vocals": {
+    "frames": 441000,
+    "subtype": "PCM_16",
+    "bytes": 1764078,
+    "sr": 44100,
+    "level_db": -111.73,
+    "peak_db": -78.27
+   }
+  },
+  "mismatch": [],
+  "residual_db": -36.86,
+  "lag": 0
+ },
+ "samples/audio-separator/stemfacts_MDX23C-8KFFT-InstVoc_HQ_S4_0-10s.json": {
+  "input_frames": 441000,
+  "input_level_db": -19.15,
+  "stems": {
+   "instrumental": {
+    "frames": 441000,
+    "subtype": "PCM_16",
+    "bytes": 1764078,
+    "sr": 44100,
+    "level_db": -19.16,
+    "peak_db": -1.79
+   },
+   "vocals": {
+    "frames": 441000,
+    "subtype": "PCM_16",
+    "bytes": 1764078,
+    "sr": 44100,
+    "level_db": -67.52,
+    "peak_db": -46.85
+   }
+  },
+  "mismatch": [],
+  "residual_db": -68.24,
+  "lag": 0
+ },
+ "samples/audio-separator/stemfacts_UVR-MDX-NET-Inst_HQ_3_R2.json": {
+  "input_frames": 1587600,
+  "input_level_db": -10.27,
+  "stems": {
+   "instrumental": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350478,
+    "sr": 44100,
+    "level_db": -17.61,
+    "peak_db": -0.92
+   },
+   "vocals": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350478,
+    "sr": 44100,
+    "level_db": -13.87,
+    "peak_db": -0.92
+   }
+  },
+  "mismatch": [],
+  "residual_db": -13.39,
+  "lag": 0
+ },
+ "samples/audio-separator/stemfacts_UVR-MDX-NET-Inst_HQ_3_S4.json": {
+  "input_frames": 1708495,
+  "input_level_db": -17.37,
+  "stems": {
+   "instrumental": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834058,
+    "sr": 44100,
+    "level_db": -18.7,
+    "peak_db": -2.23
+   },
+   "vocals": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834058,
+    "sr": 44100,
+    "level_db": -32.55,
+    "peak_db": -9.97
+   }
+  },
+  "mismatch": [],
+  "residual_db": -34.39,
+  "lag": 0
+ },
+ "samples/audio-separator/stemfacts_htdemucs_6s_S4.json": {
+  "input_frames": 1708495,
+  "input_level_db": -17.37,
+  "stems": {
+   "bass": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834058,
+    "sr": 44100,
+    "level_db": -25.31,
+    "peak_db": -10.84
+   },
+   "drums": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834058,
+    "sr": 44100,
+    "level_db": -29.21,
+    "peak_db": -8.48
+   },
+   "guitar": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834058,
+    "sr": 44100,
+    "level_db": -29.06,
+    "peak_db": -10.15
+   },
+   "other": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834058,
+    "sr": 44100,
+    "level_db": -59.26,
+    "peak_db": -28.87
+   },
+   "piano": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834058,
+    "sr": 44100,
+    "level_db": -30.77,
+    "peak_db": -9.75
+   },
+   "vocals": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834058,
+    "sr": 44100,
+    "level_db": -22.93,
+    "peak_db": -8.42
+   }
+  },
+  "mismatch": [],
+  "residual_db": -12.16,
+  "lag": 0
+ },
+ "samples/audio-separator/stemfacts_model_bs_roformer_ep_317_sdr_12.9755_S4_0-10s.json": {
+  "input_frames": 441000,
+  "input_level_db": -19.15,
+  "stems": {
+   "instrumental": {
+    "frames": 441000,
+    "subtype": "PCM_16",
+    "bytes": 1764078,
+    "sr": 44100,
+    "level_db": -19.15,
+    "peak_db": -1.78
+   },
+   "vocals": {
+    "frames": 441000,
+    "subtype": "PCM_16",
+    "bytes": 1764078,
+    "sr": 44100,
+    "level_db": -Infinity,
+    "peak_db": -Infinity
+   }
+  },
+  "mismatch": [],
+  "residual_db": -72.07,
+  "lag": 0
+ },
+ "samples/demucs-guitar-lora/stemfacts_lora_S2s.json": {
+  "input_frames": 1294650,
+  "input_level_db": -18.23,
+  "stems": {
+   "bass": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -76.03,
+    "peak_db": -52.81
+   },
+   "drums": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -48.43,
+    "peak_db": -26.68
+   },
+   "other": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -18.31,
+    "peak_db": -1.11
+   },
+   "vocals": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -81.1,
+    "peak_db": -55.5
+   }
+  },
+  "mismatch": [],
+  "residual_db": -36.87,
+  "lag": 0
+ },
+ "samples/demucs-guitar-lora/stemfacts_lora_S4.json": {
+  "input_frames": 1708495,
+  "input_level_db": -17.37,
+  "stems": {
+   "bass": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -25.04,
+    "peak_db": -10.68
+   },
+   "drums": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -28.68,
+    "peak_db": -7.24
+   },
+   "other": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -20.83,
+    "peak_db": -2.52
+   },
+   "vocals": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -25.76,
+    "peak_db": -8.33
+   }
+  },
+  "mismatch": [],
+  "residual_db": -31.63,
+  "lag": 0
+ },
+ "samples/demucs-onnx/stemfacts_htdemucs_6s-fp16_S4.json": {
+  "input_frames": 1708495,
+  "input_level_db": -17.37,
+  "stems": {
+   "bass": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -25.16,
+    "peak_db": -10.8
+   },
+   "drums": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -29.24,
+    "peak_db": -8.43
+   },
+   "guitar": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -29.54,
+    "peak_db": -9.66
+   },
+   "other": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -50.4,
+    "peak_db": -20.5
+   },
+   "piano": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -29.69,
+    "peak_db": -9.69
+   },
+   "vocals": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -23.08,
+    "peak_db": -8.02
+   }
+  },
+  "mismatch": [],
+  "residual_db": -12.05,
+  "lag": 0
+ },
+ "samples/demucs.cpp/stemfacts_demucs.cpp-htdemucs_6s_S4.json": {
+  "input_frames": 1708495,
+  "input_level_db": -17.37,
+  "stems": {
+   "target_0_drums": {
+    "frames": 1708495,
+    "subtype": "FLOAT",
+    "bytes": 13668016,
+    "sr": 44100,
+    "level_db": -29.24,
+    "peak_db": -8.61
+   },
+   "target_1_bass": {
+    "frames": 1708495,
+    "subtype": "FLOAT",
+    "bytes": 13668016,
+    "sr": 44100,
+    "level_db": -25.26,
+    "peak_db": -10.8
+   },
+   "target_2_other": {
+    "frames": 1708495,
+    "subtype": "FLOAT",
+    "bytes": 13668016,
+    "sr": 44100,
+    "level_db": -63.03,
+    "peak_db": -32.82
+   },
+   "target_3_vocals": {
+    "frames": 1708495,
+    "subtype": "FLOAT",
+    "bytes": 13668016,
+    "sr": 44100,
+    "level_db": -22.96,
+    "peak_db": -8.16
+   },
+   "target_4_guitar": {
+    "frames": 1708495,
+    "subtype": "FLOAT",
+    "bytes": 13668016,
+    "sr": 44100,
+    "level_db": -29.56,
+    "peak_db": -9.19
+   },
+   "target_5_piano": {
+    "frames": 1708495,
+    "subtype": "FLOAT",
+    "bytes": 13668016,
+    "sr": 44100,
+    "level_db": -29.18,
+    "peak_db": -8.29
+   }
+  },
+  "mismatch": [],
+  "residual_db": -12.1,
+  "lag": 0
+ },
+ "samples/demucs/stemfacts_htdemucs_6s_R2.json": {
+  "input_frames": 1587600,
+  "input_level_db": -10.27,
+  "stems": {
+   "bass": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350444,
+    "sr": 44100,
+    "level_db": -20.08,
+    "peak_db": -7.22
+   },
+   "drums": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350444,
+    "sr": 44100,
+    "level_db": -23.21,
+    "peak_db": -0.09
+   },
+   "guitar": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350444,
+    "sr": 44100,
+    "level_db": -19.36,
+    "peak_db": -3.7
+   },
+   "other": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350444,
+    "sr": 44100,
+    "level_db": -34.92,
+    "peak_db": -10.57
+   },
+   "piano": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350444,
+    "sr": 44100,
+    "level_db": -37.3,
+    "peak_db": -11.5
+   },
+   "vocals": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350444,
+    "sr": 44100,
+    "level_db": -13.02,
+    "peak_db": -0.09
+   }
+  },
+  "mismatch": [],
+  "residual_db": -21.56,
+  "lag": 0
+ },
+ "samples/demucs/stemfacts_htdemucs_6s_R2full.json": {
+  "input_frames": 10076073,
+  "input_level_db": -12.13,
+  "stems": {
+   "bass": {
+    "frames": 10076073,
+    "subtype": "PCM_16",
+    "bytes": 40304336,
+    "sr": 44100,
+    "level_db": -20.86,
+    "peak_db": -5.32
+   },
+   "drums": {
+    "frames": 10076073,
+    "subtype": "PCM_16",
+    "bytes": 40304336,
+    "sr": 44100,
+    "level_db": -24.52,
+    "peak_db": -0.09
+   },
+   "guitar": {
+    "frames": 10076073,
+    "subtype": "PCM_16",
+    "bytes": 40304336,
+    "sr": 44100,
+    "level_db": -19.25,
+    "peak_db": -1.4
+   },
+   "other": {
+    "frames": 10076073,
+    "subtype": "PCM_16",
+    "bytes": 40304336,
+    "sr": 44100,
+    "level_db": -45.22,
+    "peak_db": -14.12
+   },
+   "piano": {
+    "frames": 10076073,
+    "subtype": "PCM_16",
+    "bytes": 40304336,
+    "sr": 44100,
+    "level_db": -44.65,
+    "peak_db": -17.48
+   },
+   "vocals": {
+    "frames": 10076073,
+    "subtype": "PCM_16",
+    "bytes": 40304336,
+    "sr": 44100,
+    "level_db": -15.81,
+    "peak_db": -0.09
+   }
+  },
+  "mismatch": [],
+  "residual_db": -23.04,
+  "lag": 0
+ },
+ "samples/demucs/stemfacts_htdemucs_6s_R3a.json": {
+  "input_frames": 793780,
+  "input_level_db": -24.58,
+  "stems": {
+   "bass": {
+    "frames": 793780,
+    "subtype": "PCM_16",
+    "bytes": 3175164,
+    "sr": 44100,
+    "level_db": -75.04,
+    "peak_db": -62.01
+   },
+   "drums": {
+    "frames": 793780,
+    "subtype": "PCM_16",
+    "bytes": 3175164,
+    "sr": 44100,
+    "level_db": -75.16,
+    "peak_db": -65.2
+   },
+   "guitar": {
+    "frames": 793780,
+    "subtype": "PCM_16",
+    "bytes": 3175164,
+    "sr": 44100,
+    "level_db": -24.64,
+    "peak_db": -6.21
+   },
+   "other": {
+    "frames": 793780,
+    "subtype": "PCM_16",
+    "bytes": 3175164,
+    "sr": 44100,
+    "level_db": -63.19,
+    "peak_db": -40.4
+   },
+   "piano": {
+    "frames": 793780,
+    "subtype": "PCM_16",
+    "bytes": 3175164,
+    "sr": 44100,
+    "level_db": -75.07,
+    "peak_db": -65.2
+   },
+   "vocals": {
+    "frames": 793780,
+    "subtype": "PCM_16",
+    "bytes": 3175164,
+    "sr": 44100,
+    "level_db": -67.01,
+    "peak_db": -36.04
+   }
+  },
+  "mismatch": [],
+  "residual_db": -29.11,
+  "lag": 0
+ },
+ "samples/demucs/stemfacts_htdemucs_6s_R3b.json": {
+  "input_frames": 793800,
+  "input_level_db": -30.97,
+  "stems": {
+   "bass": {
+    "frames": 793800,
+    "subtype": "PCM_16",
+    "bytes": 3175244,
+    "sr": 44100,
+    "level_db": -46.91,
+    "peak_db": -33.9
+   },
+   "drums": {
+    "frames": 793800,
+    "subtype": "PCM_16",
+    "bytes": 3175244,
+    "sr": 44100,
+    "level_db": -94.69,
+    "peak_db": -68.73
+   },
+   "guitar": {
+    "frames": 793800,
+    "subtype": "PCM_16",
+    "bytes": 3175244,
+    "sr": 44100,
+    "level_db": -31.32,
+    "peak_db": -13.28
+   },
+   "other": {
+    "frames": 793800,
+    "subtype": "PCM_16",
+    "bytes": 3175244,
+    "sr": 44100,
+    "level_db": -94.4,
+    "peak_db": -54.05
+   },
+   "piano": {
+    "frames": 793800,
+    "subtype": "PCM_16",
+    "bytes": 3175244,
+    "sr": 44100,
+    "level_db": -101.36,
+    "peak_db": -61.06
+   },
+   "vocals": {
+    "frames": 793800,
+    "subtype": "PCM_16",
+    "bytes": 3175244,
+    "sr": 44100,
+    "level_db": -94.21,
+    "peak_db": -67.39
+   }
+  },
+  "mismatch": [],
+  "residual_db": -26.32,
+  "lag": 0
+ },
+ "samples/demucs/stemfacts_htdemucs_6s_R3c.json": {
+  "input_frames": 793800,
+  "input_level_db": -17.83,
+  "stems": {
+   "bass": {
+    "frames": 793800,
+    "subtype": "PCM_16",
+    "bytes": 3175244,
+    "sr": 44100,
+    "level_db": -89.2,
+    "peak_db": -66.23
+   },
+   "drums": {
+    "frames": 793800,
+    "subtype": "PCM_16",
+    "bytes": 3175244,
+    "sr": 44100,
+    "level_db": -71.33,
+    "peak_db": -35.63
+   },
+   "guitar": {
+    "frames": 793800,
+    "subtype": "PCM_16",
+    "bytes": 3175244,
+    "sr": 44100,
+    "level_db": -17.86,
+    "peak_db": -2.35
+   },
+   "other": {
+    "frames": 793800,
+    "subtype": "PCM_16",
+    "bytes": 3175244,
+    "sr": 44100,
+    "level_db": -89.96,
+    "peak_db": -66.79
+   },
+   "piano": {
+    "frames": 793800,
+    "subtype": "PCM_16",
+    "bytes": 3175244,
+    "sr": 44100,
+    "level_db": -86.15,
+    "peak_db": -59.18
+   },
+   "vocals": {
+    "frames": 793800,
+    "subtype": "PCM_16",
+    "bytes": 3175244,
+    "sr": 44100,
+    "level_db": -67.15,
+    "peak_db": -38.38
+   }
+  },
+  "mismatch": [],
+  "residual_db": -30.0,
+  "lag": 0
+ },
+ "samples/demucs/stemfacts_htdemucs_6s_S2s.json": {
+  "input_frames": 1294650,
+  "input_level_db": -18.23,
+  "stems": {
+   "bass": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -78.94,
+    "peak_db": -49.4
+   },
+   "drums": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -83.98,
+    "peak_db": -61.06
+   },
+   "guitar": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -42.15,
+    "peak_db": -18.48
+   },
+   "other": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -86.71,
+    "peak_db": -60.21
+   },
+   "piano": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -19.06,
+    "peak_db": -3.21
+   },
+   "vocals": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -83.55,
+    "peak_db": -56.68
+   }
+  },
+  "mismatch": [],
+  "residual_db": -16.18,
+  "lag": 0
+ },
+ "samples/demucs/stemfacts_htdemucs_6s_S4.json": {
+  "input_frames": 1708495,
+  "input_level_db": -17.37,
+  "stems": {
+   "bass": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -25.27,
+    "peak_db": -10.93
+   },
+   "drums": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -29.21,
+    "peak_db": -8.5
+   },
+   "guitar": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -28.46,
+    "peak_db": -9.55
+   },
+   "other": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -73.06,
+    "peak_db": -41.4
+   },
+   "piano": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -30.8,
+    "peak_db": -10.29
+   },
+   "vocals": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -22.89,
+    "peak_db": -8.48
+   }
+  },
+  "mismatch": [],
+  "residual_db": -12.76,
+  "lag": 0
+ },
+ "samples/demucs/stemfacts_htdemucs_6s_S6taps.json": {
+  "input_frames": 1294650,
+  "input_level_db": -18.03,
+  "stems": {
+   "bass": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -76.42,
+    "peak_db": -48.37
+   },
+   "drums": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -33.08,
+    "peak_db": -7.69
+   },
+   "guitar": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -34.66,
+    "peak_db": -16.37
+   },
+   "other": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -82.71,
+    "peak_db": -59.94
+   },
+   "piano": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -20.09,
+    "peak_db": -3.95
+   },
+   "vocals": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -82.17,
+    "peak_db": -60.21
+   }
+  },
+  "mismatch": [],
+  "residual_db": -12.59,
+  "lag": 0
+ },
+ "samples/demucs/stemfacts_htdemucs_R2.json": {
+  "input_frames": 1587600,
+  "input_level_db": -10.27,
+  "stems": {
+   "bass": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350444,
+    "sr": 44100,
+    "level_db": -20.23,
+    "peak_db": -7.71
+   },
+   "drums": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350444,
+    "sr": 44100,
+    "level_db": -22.77,
+    "peak_db": -0.09
+   },
+   "other": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350444,
+    "sr": 44100,
+    "level_db": -18.69,
+    "peak_db": -3.2
+   },
+   "vocals": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350444,
+    "sr": 44100,
+    "level_db": -12.95,
+    "peak_db": -0.09
+   }
+  },
+  "mismatch": [],
+  "residual_db": -26.8,
+  "lag": 0
+ },
+ "samples/demucs/stemfacts_htdemucs_R2full.json": {
+  "input_frames": 10076073,
+  "input_level_db": -12.13,
+  "stems": {
+   "bass": {
+    "frames": 10076073,
+    "subtype": "PCM_16",
+    "bytes": 40304336,
+    "sr": 44100,
+    "level_db": -21.23,
+    "peak_db": -5.66
+   },
+   "drums": {
+    "frames": 10076073,
+    "subtype": "PCM_16",
+    "bytes": 40304336,
+    "sr": 44100,
+    "level_db": -24.81,
+    "peak_db": -0.09
+   },
+   "other": {
+    "frames": 10076073,
+    "subtype": "PCM_16",
+    "bytes": 40304336,
+    "sr": 44100,
+    "level_db": -18.69,
+    "peak_db": -1.23
+   },
+   "vocals": {
+    "frames": 10076073,
+    "subtype": "PCM_16",
+    "bytes": 40304336,
+    "sr": 44100,
+    "level_db": -15.75,
+    "peak_db": -0.09
+   }
+  },
+  "mismatch": [],
+  "residual_db": -25.54,
+  "lag": 0
+ },
+ "samples/demucs/stemfacts_htdemucs_R3a.json": {
+  "input_frames": 793780,
+  "input_level_db": -24.58,
+  "stems": {
+   "bass": {
+    "frames": 793780,
+    "subtype": "PCM_16",
+    "bytes": 3175164,
+    "sr": 44100,
+    "level_db": -75.18,
+    "peak_db": -55.99
+   },
+   "drums": {
+    "frames": 793780,
+    "subtype": "PCM_16",
+    "bytes": 3175164,
+    "sr": 44100,
+    "level_db": -73.92,
+    "peak_db": -54.75
+   },
+   "other": {
+    "frames": 793780,
+    "subtype": "PCM_16",
+    "bytes": 3175164,
+    "sr": 44100,
+    "level_db": -24.57,
+    "peak_db": -6.11
+   },
+   "vocals": {
+    "frames": 793780,
+    "subtype": "PCM_16",
+    "bytes": 3175164,
+    "sr": 44100,
+    "level_db": -71.24,
+    "peak_db": -43.62
+   }
+  },
+  "mismatch": [],
+  "residual_db": -39.69,
+  "lag": 0
+ },
+ "samples/demucs/stemfacts_htdemucs_R3b.json": {
+  "input_frames": 793800,
+  "input_level_db": -30.97,
+  "stems": {
+   "bass": {
+    "frames": 793800,
+    "subtype": "PCM_16",
+    "bytes": 3175244,
+    "sr": 44100,
+    "level_db": -45.98,
+    "peak_db": -32.75
+   },
+   "drums": {
+    "frames": 793800,
+    "subtype": "PCM_16",
+    "bytes": 3175244,
+    "sr": 44100,
+    "level_db": -88.21,
+    "peak_db": -62.7
+   },
+   "other": {
+    "frames": 793800,
+    "subtype": "PCM_16",
+    "bytes": 3175244,
+    "sr": 44100,
+    "level_db": -31.28,
+    "peak_db": -12.97
+   },
+   "vocals": {
+    "frames": 793800,
+    "subtype": "PCM_16",
+    "bytes": 3175244,
+    "sr": 44100,
+    "level_db": -92.57,
+    "peak_db": -68.73
+   }
+  },
+  "mismatch": [],
+  "residual_db": -38.16,
+  "lag": 0
+ },
+ "samples/demucs/stemfacts_htdemucs_R3c.json": {
+  "input_frames": 793800,
+  "input_level_db": -17.83,
+  "stems": {
+   "bass": {
+    "frames": 793800,
+    "subtype": "PCM_16",
+    "bytes": 3175244,
+    "sr": 44100,
+    "level_db": -80.54,
+    "peak_db": -61.68
+   },
+   "drums": {
+    "frames": 793800,
+    "subtype": "PCM_16",
+    "bytes": 3175244,
+    "sr": 44100,
+    "level_db": -60.77,
+    "peak_db": -24.37
+   },
+   "other": {
+    "frames": 793800,
+    "subtype": "PCM_16",
+    "bytes": 3175244,
+    "sr": 44100,
+    "level_db": -17.84,
+    "peak_db": -2.14
+   },
+   "vocals": {
+    "frames": 793800,
+    "subtype": "PCM_16",
+    "bytes": 3175244,
+    "sr": 44100,
+    "level_db": -74.46,
+    "peak_db": -55.19
+   }
+  },
+  "mismatch": [],
+  "residual_db": -42.77,
+  "lag": 0
+ },
+ "samples/demucs/stemfacts_htdemucs_S2s.json": {
+  "input_frames": 1294650,
+  "input_level_db": -18.23,
+  "stems": {
+   "bass": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -81.35,
+    "peak_db": -56.33
+   },
+   "drums": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -77.25,
+    "peak_db": -51.72
+   },
+   "other": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -18.24,
+    "peak_db": -1.0
+   },
+   "vocals": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -80.95,
+    "peak_db": -55.66
+   }
+  },
+  "mismatch": [],
+  "residual_db": -44.67,
+  "lag": 0
+ },
+ "samples/demucs/stemfacts_htdemucs_S4.json": {
+  "input_frames": 1708495,
+  "input_level_db": -17.37,
+  "stems": {
+   "bass": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -25.01,
+    "peak_db": -10.37
+   },
+   "drums": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -29.12,
+    "peak_db": -7.55
+   },
+   "other": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -20.83,
+    "peak_db": -2.44
+   },
+   "vocals": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -25.43,
+    "peak_db": -8.54
+   }
+  },
+  "mismatch": [],
+  "residual_db": -32.14,
+  "lag": 0
+ },
+ "samples/demucs/stemfacts_htdemucs_S6taps.json": {
+  "input_frames": 1294650,
+  "input_level_db": -18.03,
+  "stems": {
+   "bass": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -78.77,
+    "peak_db": -53.04
+   },
+   "drums": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -33.37,
+    "peak_db": -7.85
+   },
+   "other": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -18.2,
+    "peak_db": -1.0
+   },
+   "vocals": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178644,
+    "sr": 44100,
+    "level_db": -82.43,
+    "peak_db": -55.82
+   }
+  },
+  "mismatch": [],
+  "residual_db": -39.05,
+  "lag": 0
+ },
+ "samples/demucs/stemfacts_htdemucs_ft_R2.json": {
+  "input_frames": 1587600,
+  "input_level_db": -10.27,
+  "stems": {
+   "bass": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350444,
+    "sr": 44100,
+    "level_db": -19.93,
+    "peak_db": -8.08
+   },
+   "drums": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350444,
+    "sr": 44100,
+    "level_db": -23.3,
+    "peak_db": -0.09
+   },
+   "other": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350444,
+    "sr": 44100,
+    "level_db": -18.79,
+    "peak_db": -2.86
+   },
+   "vocals": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350444,
+    "sr": 44100,
+    "level_db": -12.85,
+    "peak_db": -0.09
+   }
+  },
+  "mismatch": [],
+  "residual_db": -21.39,
+  "lag": 0
+ },
+ "samples/demucs/stemfacts_htdemucs_ft_S4.json": {
+  "input_frames": 1708495,
+  "input_level_db": -17.37,
+  "stems": {
+   "bass": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -24.97,
+    "peak_db": -10.86
+   },
+   "drums": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -29.21,
+    "peak_db": -8.36
+   },
+   "other": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -21.37,
+    "peak_db": -2.51
+   },
+   "vocals": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -24.54,
+    "peak_db": -9.23
+   }
+  },
+  "mismatch": [],
+  "residual_db": -17.55,
+  "lag": 0
+ },
+ "samples/demucs/stemfacts_htdemucs_mp3option_S4_0-10s.json": {
+  "input_frames": 441000,
+  "input_level_db": -19.15,
+  "stems": {
+   "bass": {
+    "frames": 442368,
+    "subtype": "MPEG_LAYER_III",
+    "bytes": 401240,
+    "sr": 44100,
+    "level_db": -27.62,
+    "peak_db": -10.1
+   },
+   "drums": {
+    "frames": 442368,
+    "subtype": "MPEG_LAYER_III",
+    "bytes": 401240,
+    "sr": 44100,
+    "level_db": -31.2,
+    "peak_db": -9.24
+   },
+   "other": {
+    "frames": 442368,
+    "subtype": "MPEG_LAYER_III",
+    "bytes": 401240,
+    "sr": 44100,
+    "level_db": -24.13,
+    "peak_db": -4.82
+   },
+   "vocals": {
+    "frames": 442368,
+    "subtype": "MPEG_LAYER_III",
+    "bytes": 401240,
+    "sr": 44100,
+    "level_db": -24.64,
+    "peak_db": -9.68
+   }
+  },
+  "mismatch": [],
+  "residual_db": 3.5,
+  "lag": 1105,
+  "residual_db_at_lag": -31.4
+ },
+ "samples/demucs/stemfacts_mdx_extra_R2.json": {
+  "input_frames": 1587600,
+  "input_level_db": -10.27,
+  "stems": {
+   "bass": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350444,
+    "sr": 44100,
+    "level_db": -19.5,
+    "peak_db": -6.4
+   },
+   "drums": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350444,
+    "sr": 44100,
+    "level_db": -24.3,
+    "peak_db": -0.09
+   },
+   "other": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350444,
+    "sr": 44100,
+    "level_db": -18.99,
+    "peak_db": -3.87
+   },
+   "vocals": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350444,
+    "sr": 44100,
+    "level_db": -13.13,
+    "peak_db": -0.09
+   }
+  },
+  "mismatch": [],
+  "residual_db": -24.07,
+  "lag": 0
+ },
+ "samples/demucs/stemfacts_mdx_extra_S4.json": {
+  "input_frames": 1708495,
+  "input_level_db": -17.37,
+  "stems": {
+   "bass": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -25.98,
+    "peak_db": -11.49
+   },
+   "drums": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -29.37,
+    "peak_db": -8.59
+   },
+   "other": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -21.37,
+    "peak_db": -2.6
+   },
+   "vocals": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834024,
+    "sr": 44100,
+    "level_db": -24.86,
+    "peak_db": -9.81
+   }
+  },
+  "mismatch": [],
+  "residual_db": -34.73,
+  "lag": 0
+ },
+ "samples/librosa-hpss/stemfacts_hpss-default_S6taps.json": {
+  "input_frames": 1294650,
+  "input_level_db": -18.03,
+  "stems": {
+   "harmonic": {
+    "frames": 1294650,
+    "subtype": "FLOAT",
+    "bytes": 10357288,
+    "sr": 44100,
+    "level_db": -19.03,
+    "peak_db": -3.02
+   },
+   "percussive": {
+    "frames": 1294650,
+    "subtype": "FLOAT",
+    "bytes": 10357288,
+    "sr": 44100,
+    "level_db": -29.91,
+    "peak_db": -5.11
+   }
+  },
+  "mismatch": [],
+  "residual_db": -143.18,
+  "lag": 0
+ },
+ "samples/librosa-hpss/stemfacts_hpss-margin1-5_S6taps.json": {
+  "input_frames": 1294650,
+  "input_level_db": -18.03,
+  "stems": {
+   "harmonic": {
+    "frames": 1294650,
+    "subtype": "FLOAT",
+    "bytes": 10357288,
+    "sr": 44100,
+    "level_db": -19.03,
+    "peak_db": -3.02
+   },
+   "percussive": {
+    "frames": 1294650,
+    "subtype": "FLOAT",
+    "bytes": 10357288,
+    "sr": 44100,
+    "level_db": -35.87,
+    "peak_db": -8.15
+   }
+  },
+  "mismatch": [],
+  "residual_db": -15.6,
+  "lag": 0
+ },
+ "samples/librosa-hpss/stemfacts_hpss-margin3_S6taps.json": {
+  "input_frames": 1294650,
+  "input_level_db": -18.03,
+  "stems": {
+   "harmonic": {
+    "frames": 1294650,
+    "subtype": "FLOAT",
+    "bytes": 10357288,
+    "sr": 44100,
+    "level_db": -21.17,
+    "peak_db": -5.62
+   },
+   "percussive": {
+    "frames": 1294650,
+    "subtype": "FLOAT",
+    "bytes": 10357288,
+    "sr": 44100,
+    "level_db": -33.77,
+    "peak_db": -7.18
+   }
+  },
+  "mismatch": [],
+  "residual_db": -8.48,
+  "lag": 0
+ },
+ "samples/msst/stemfacts_becruily-guitar_S2s.json": {
+  "input_frames": 1294650,
+  "input_level_db": -18.23,
+  "stems": {
+   "Guitar": {
+    "frames": 1294650,
+    "subtype": "FLOAT",
+    "bytes": 10357288,
+    "sr": 44100,
+    "level_db": -49.83,
+    "peak_db": -29.77
+   }
+  },
+  "mismatch": [],
+  "residual_db": -0.08,
+  "lag": 0
+ },
+ "samples/msst/stemfacts_becruily-guitar_S4.json": {
+  "input_frames": 1708495,
+  "input_level_db": -17.37,
+  "stems": {
+   "Guitar": {
+    "frames": 1708495,
+    "subtype": "FLOAT",
+    "bytes": 13668048,
+    "sr": 44100,
+    "level_db": -39.19,
+    "peak_db": -13.89
+   }
+  },
+  "mismatch": [],
+  "residual_db": -0.26,
+  "lag": -1,
+  "residual_db_at_lag": -0.26
+ },
+ "samples/msst/stemfacts_becruily-guitar_S4_0-10s.json": {
+  "input_frames": 441000,
+  "input_level_db": -19.15,
+  "stems": {
+   "Guitar": {
+    "frames": 441000,
+    "subtype": "FLOAT",
+    "bytes": 3528088,
+    "sr": 44100,
+    "level_db": -51.18,
+    "peak_db": -26.54
+   }
+  },
+  "mismatch": [],
+  "residual_db": -0.08,
+  "lag": -1,
+  "residual_db_at_lag": -0.08
+ },
+ "samples/msst/stemfacts_bs-roformer-sw_S4_0-10s.json": {
+  "input_frames": 441000,
+  "input_level_db": -19.15,
+  "stems": {
+   "bass": {
+    "frames": 441000,
+    "subtype": "FLOAT",
+    "bytes": 3528088,
+    "sr": 44100,
+    "level_db": -25.46,
+    "peak_db": -11.21
+   },
+   "drums": {
+    "frames": 441000,
+    "subtype": "FLOAT",
+    "bytes": 3528088,
+    "sr": 44100,
+    "level_db": -31.0,
+    "peak_db": -8.11
+   },
+   "guitar": {
+    "frames": 441000,
+    "subtype": "FLOAT",
+    "bytes": 3528088,
+    "sr": 44100,
+    "level_db": -23.94,
+    "peak_db": -4.39
+   },
+   "other": {
+    "frames": 441000,
+    "subtype": "FLOAT",
+    "bytes": 3528088,
+    "sr": 44100,
+    "level_db": -24.62,
+    "peak_db": -9.34
+   },
+   "piano": {
+    "frames": 441000,
+    "subtype": "FLOAT",
+    "bytes": 3528088,
+    "sr": 44100,
+    "level_db": -111.17,
+    "peak_db": -87.59
+   },
+   "vocals": {
+    "frames": 441000,
+    "subtype": "FLOAT",
+    "bytes": 3528088,
+    "sr": 44100,
+    "level_db": -114.45,
+    "peak_db": -85.81
+   }
+  },
+  "mismatch": [],
+  "residual_db": -36.21,
+  "lag": 0
+ },
+ "samples/openunmix/stemfacts_umxhq_R2.json": {
+  "input_frames": 1587600,
+  "input_level_db": -10.27,
+  "stems": {
+   "bass": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350478,
+    "sr": 44100,
+    "level_db": -19.22,
+    "peak_db": -4.13
+   },
+   "drums": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350478,
+    "sr": 44100,
+    "level_db": -23.48,
+    "peak_db": -0.0
+   },
+   "other": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350478,
+    "sr": 44100,
+    "level_db": -19.33,
+    "peak_db": -3.33
+   },
+   "vocals": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350478,
+    "sr": 44100,
+    "level_db": -12.69,
+    "peak_db": 0.0
+   }
+  },
+  "mismatch": [],
+  "residual_db": -35.35,
+  "lag": 0
+ },
+ "samples/openunmix/stemfacts_umxhq_S4.json": {
+  "input_frames": 1708495,
+  "input_level_db": -17.37,
+  "stems": {
+   "bass": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834058,
+    "sr": 44100,
+    "level_db": -26.29,
+    "peak_db": -11.65
+   },
+   "drums": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834058,
+    "sr": 44100,
+    "level_db": -30.02,
+    "peak_db": -8.06
+   },
+   "other": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834058,
+    "sr": 44100,
+    "level_db": -19.01,
+    "peak_db": -2.22
+   },
+   "vocals": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834058,
+    "sr": 44100,
+    "level_db": -66.97,
+    "peak_db": -44.29
+   }
+  },
+  "mismatch": [],
+  "residual_db": -39.85,
+  "lag": 0
+ },
+ "samples/openunmix/stemfacts_umxhq_S6taps.json": {
+  "input_frames": 1294650,
+  "input_level_db": -18.03,
+  "stems": {
+   "bass": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178678,
+    "sr": 44100,
+    "level_db": -67.37,
+    "peak_db": -46.62
+   },
+   "drums": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178678,
+    "sr": 44100,
+    "level_db": -32.4,
+    "peak_db": -7.79
+   },
+   "other": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178678,
+    "sr": 44100,
+    "level_db": -18.38,
+    "peak_db": -1.93
+   },
+   "vocals": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178678,
+    "sr": 44100,
+    "level_db": -64.49,
+    "peak_db": -41.68
+   }
+  },
+  "mismatch": [],
+  "residual_db": -42.83,
+  "lag": 0
+ },
+ "samples/openunmix/stemfacts_umxl_R2.json": {
+  "input_frames": 1587600,
+  "input_level_db": -10.27,
+  "stems": {
+   "bass": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350478,
+    "sr": 44100,
+    "level_db": -20.09,
+    "peak_db": -7.24
+   },
+   "drums": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350478,
+    "sr": 44100,
+    "level_db": -22.17,
+    "peak_db": -0.36
+   },
+   "other": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350478,
+    "sr": 44100,
+    "level_db": -19.38,
+    "peak_db": -3.73
+   },
+   "vocals": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350478,
+    "sr": 44100,
+    "level_db": -12.6,
+    "peak_db": 0.0
+   }
+  },
+  "mismatch": [],
+  "residual_db": -39.97,
+  "lag": 0
+ },
+ "samples/openunmix/stemfacts_umxl_S4.json": {
+  "input_frames": 1708495,
+  "input_level_db": -17.37,
+  "stems": {
+   "bass": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834058,
+    "sr": 44100,
+    "level_db": -25.99,
+    "peak_db": -11.95
+   },
+   "drums": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834058,
+    "sr": 44100,
+    "level_db": -30.56,
+    "peak_db": -8.84
+   },
+   "other": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834058,
+    "sr": 44100,
+    "level_db": -19.26,
+    "peak_db": -2.14
+   },
+   "vocals": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834058,
+    "sr": 44100,
+    "level_db": -55.89,
+    "peak_db": -30.65
+   }
+  },
+  "mismatch": [],
+  "residual_db": -22.22,
+  "lag": 0
+ },
+ "samples/spleeter/stemfacts_4stems_R2.json": {
+  "input_frames": 1587600,
+  "input_level_db": -10.27,
+  "stems": {
+   "bass": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350478,
+    "sr": 44100,
+    "level_db": -22.39,
+    "peak_db": -8.18
+   },
+   "drums": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350478,
+    "sr": 44100,
+    "level_db": -22.84,
+    "peak_db": -0.0
+   },
+   "other": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350478,
+    "sr": 44100,
+    "level_db": -17.53,
+    "peak_db": -2.33
+   },
+   "vocals": {
+    "frames": 1587600,
+    "subtype": "PCM_16",
+    "bytes": 6350478,
+    "sr": 44100,
+    "level_db": -12.55,
+    "peak_db": 0.0
+   }
+  },
+  "mismatch": [],
+  "residual_db": -29.92,
+  "lag": 0
+ },
+ "samples/spleeter/stemfacts_4stems_S4.json": {
+  "input_frames": 1708495,
+  "input_level_db": -17.37,
+  "stems": {
+   "bass": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834058,
+    "sr": 44100,
+    "level_db": -25.85,
+    "peak_db": -11.37
+   },
+   "drums": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834058,
+    "sr": 44100,
+    "level_db": -30.56,
+    "peak_db": -9.03
+   },
+   "other": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834058,
+    "sr": 44100,
+    "level_db": -19.28,
+    "peak_db": -2.05
+   },
+   "vocals": {
+    "frames": 1708495,
+    "subtype": "PCM_16",
+    "bytes": 6834058,
+    "sr": 44100,
+    "level_db": -32.24,
+    "peak_db": -8.93
+   }
+  },
+  "mismatch": [],
+  "residual_db": -30.28,
+  "lag": 0
+ },
+ "samples/spleeter/stemfacts_4stems_S6taps.json": {
+  "input_frames": 1294650,
+  "input_level_db": -18.03,
+  "stems": {
+   "bass": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178678,
+    "sr": 44100,
+    "level_db": -121.52,
+    "peak_db": -66.79
+   },
+   "drums": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178678,
+    "sr": 44100,
+    "level_db": -32.9,
+    "peak_db": -8.33
+   },
+   "other": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178678,
+    "sr": 44100,
+    "level_db": -18.23,
+    "peak_db": -0.93
+   },
+   "vocals": {
+    "frames": 1294650,
+    "subtype": "PCM_16",
+    "bytes": 5178678,
+    "sr": 44100,
+    "level_db": -59.84,
+    "peak_db": -25.23
+   }
+  },
+  "mismatch": [],
+  "residual_db": -31.92,
+  "lag": 0
+ }
+}

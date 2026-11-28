@@ -1,0 +1,14 @@
+{
+ "open_strings_midi": [
+  40,
+  45,
+  50,
+  55,
+  59,
+  64
+ ],
+ "tuning_name": "Standard",
+ "offset_cents": -15,
+ "capo_fret": 0,
+ "evidence": "The melody is played on a guitar in standard tuning without a capo. The pitches played are consistent with standard tuning, but the overall pitch of the recording is slightly flat, estimated to be around -15 cents."
+}

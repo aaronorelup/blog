@@ -1,0 +1,69 @@
+{
+ "clip": "R3a",
+ "mode": "full",
+ "frames": 540,
+ "all": {
+  "frames": 540,
+  "frac_0_hands": 0.0,
+  "frac_1_hand": 0.2759,
+  "frac_2_hands": 0.7241,
+  "frac_more_than_2": 0.0,
+  "frac_at_least_1": 1.0,
+  "label_counts": {
+   "person_right": 399,
+   "person_left": 532
+  },
+  "infer_ms_mean": 69.27,
+  "infer_ms_median": 65.84,
+  "infer_ms_p90": 82.03,
+  "fps_from_mean": 14.44,
+  "score_mean": 0.868,
+  "score_min": 0.5006,
+  "score_max": 0.9889
+ },
+ "per_shot": {
+  "medium": {
+   "frames": 319,
+   "frac_0_hands": 0.0,
+   "frac_1_hand": 0.0251,
+   "frac_2_hands": 0.9749,
+   "frac_more_than_2": 0.0,
+   "frac_at_least_1": 1.0,
+   "label_counts": {
+    "person_right": 319,
+    "person_left": 311
+   },
+   "infer_ms_mean": 70.47,
+   "infer_ms_median": 65.85,
+   "infer_ms_p90": 84.92,
+   "fps_from_mean": 14.19,
+   "score_mean": 0.8722,
+   "score_min": 0.503,
+   "score_max": 0.9644
+  },
+  "wide": {
+   "frames": 221,
+   "frac_0_hands": 0.0,
+   "frac_1_hand": 0.638,
+   "frac_2_hands": 0.362,
+   "frac_more_than_2": 0.0,
+   "frac_at_least_1": 1.0,
+   "label_counts": {
+    "person_left": 221,
+    "person_right": 80
+   },
+   "infer_ms_mean": 67.54,
+   "infer_ms_median": 65.84,
+   "infer_ms_p90": 79.74,
+   "fps_from_mean": 14.81,
+   "score_mean": 0.8591,
+   "score_min": 0.5006,
+   "score_max": 0.9889
+  }
+ },
+ "tool": "mediapipe pose",
+ "mediapipe_version": "1.2.2",
+ "model": "pose_landmarker_heavy.task",
+ "init_s": 0.72,
+ "frac_pose_found": 1.0
+}

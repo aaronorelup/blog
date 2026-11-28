@@ -1,0 +1,108 @@
+{
+ "source": "/home/user/gtr/lanes/web-tab-render/out/alphatab-player/S2n_metro_countin.player.json",
+ "truth": "/home/user/gtr/inputs/S2n/S2n.truth.json",
+ "bpm": 112.0,
+ "speed": 1.0,
+ "countin_bars_assumed": 1,
+ "setup": {
+  "playerState": 0,
+  "isReadyForPlayback": true,
+  "endTime": 27857.14285714288,
+  "endTick": 49920,
+  "metronomeVolume": 1,
+  "countInVolume": 1,
+  "playbackSpeed": 1,
+  "actualPlayerMode": 2,
+  "outputMode": 0,
+  "ctxState": null,
+  "AudioContext": "function",
+  "AudioWorkletNode": "function",
+  "playReturned": true
+ },
+ "event_counts": {
+  "playerStateChanged": 6,
+  "position": 2410,
+  "scoreLoaded": 1,
+  "midiLoaded": 2,
+  "soundFontLoaded": 1,
+  "playerReady": 1,
+  "renderStarted": 1,
+  "renderFinished": 1,
+  "postRenderFinished": 1,
+  "play_called": 1,
+  "playedBeat": 50,
+  "activeBeats": 50,
+  "metronome": 56,
+  "type_128": 90,
+  "type_144": 88,
+  "playerFinished": 1
+ },
+ "definition": "latency = (page time when the handler ran - page time of api.play()) - expected song time of the event (tick/960*60/bpm/speed, plus the count-in bars when given). Positive = the event arrived after its nominal time.",
+ "playedBeatChanged_latency": {
+  "n": 50,
+  "median_ms": 159.09,
+  "mean_ms": 113.27,
+  "min_ms": -2115.16,
+  "max_ms": 169.4,
+  "p95_abs_ms": 169.2,
+  "stdev_ms": 318.41
+ },
+ "midi_type_128_latency": {
+  "n": 90,
+  "median_ms": 135.04,
+  "mean_ms": 135.17,
+  "min_ms": 125.34,
+  "max_ms": 140.03,
+  "p95_abs_ms": 139.7,
+  "stdev_ms": 3.27
+ },
+ "position_wall_minus_reported_ms": {
+  "n": 2400,
+  "median_ms": 130.44,
+  "mean_ms": 130.6,
+  "min_ms": 124.97,
+  "max_ms": 170.08,
+  "p95_abs_ms": 135.09,
+  "stdev_ms": 3.67
+ },
+ "first_position_event_after_play_ms": 2287.9,
+ "playerFinished_after_play_ms": 30138.5,
+ "metronome_events": 56,
+ "metronome_first5": [
+  [
+   120.5,
+   0,
+   0
+  ],
+  [
+   658.2,
+   960,
+   1
+  ],
+  [
+   1188.0,
+   1920,
+   2
+  ],
+  [
+   1728.0,
+   2880,
+   3
+  ],
+  [
+   2288.0,
+   0,
+   0
+  ]
+ ],
+ "metronome_interval_ms": {
+  "n": 55,
+  "median_ms": 537.7,
+  "mean_ms": 535.95,
+  "min_ms": 528.4,
+  "max_ms": 560.0,
+  "p95_abs_ms": 543.7,
+  "stdev_ms": 6.25
+ },
+ "audio_export": null
+}

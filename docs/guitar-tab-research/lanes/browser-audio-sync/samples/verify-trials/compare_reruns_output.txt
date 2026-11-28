@@ -1,0 +1,120 @@
+== probe
+  hardwareConcurrency DIFF 2 -> 4
+  crossOriginIsolated same
+  canPlayType same
+  MediaSource_isTypeSupported same
+  VideoDecoder_isConfigSupported same
+  AudioDecoder_isConfigSupported same
+  VideoEncoder_isConfigSupported same
+  videoElement same
+  webgl same
+  webgpu same
+  wasm same
+  audio.sampleRate 44100 -> 44100
+  audio.baseLatency 0.01 -> 0.01
+  audio.outputLatency 0.032 -> 0.032
+  audio.renderQuantumSize 128 -> 128
+== sync buffer
+  orig clicks 68 of 68 maxdiff 2.6e-05 dev ms min 0.000 max 0.023 mean 0.012 S4 start frame found - scheduled: 0 late 0
+  rerun clicks 68 of 68 maxdiff 2.6e-05 dev ms min 0.000 max 0.023 mean 0.012 S4 start frame found - scheduled: 0 late 0
+== video mp4 (rVFC, seek)
+  play callbacks 539 -> 539
+  play presentedFrames_step_counts {'1': 538} -> {'1': 538}
+  play callback interval mean ms 33.46 -> 33.33
+  playid callbacks 539 -> 539
+  playid presentedFrames_step_counts {'1': 538} -> {'1': 538}
+  playid identified 539 -> 539
+  playid shown_frame_minus_ref_frame_at_mediaTime_counts {'0': 539} -> {'0': 539}
+  playid distinct_frames_shown 539 -> 539
+  playid callback interval mean ms 33.39 -> 33.30
+  seek rows same shown frame: 24 of 24 | rerun n_shown_equals_k 14 expected 18
+== metronome (busy 100)
+  lookahead orig clicks 122 mean 0.856 max 42.132 late 11 nonzero 11 gaps [(128, 896)] blocked s 59.1 underruns 0
+  lookahead rerun clicks 122 mean 0.726 max 61.769 late 8 nonzero 8 gaps [(128, 896), (2473344, -128), (2473344, 128)] blocked s 59.3 underruns 0
+  tone orig clicks 122 mean 2.195 max 5.170 late 7 nonzero 89 gaps [(128, 896), (752768, -128), (752768, 128)] blocked s 58.9 underruns 0
+  tone rerun clicks 122 mean 0.648 max 10.249 late 10 nonzero 11 gaps [(1024, 512)] blocked s 59.2 underruns 0
+== reference playback
+  smplr orig load_ms 740 onsets 46 F 0.979 xcorr peak 0.64959 lag 55551 underruns 0
+  smplr rerun load_ms 685 onsets 48 F 0.958 xcorr peak 0.64939 lag 53375 underruns 0
+  sfplayer orig load_ms 1471 onsets 49 F 0.990 xcorr peak 0.64838 lag 87296 underruns 2
+  sfplayer rerun load_ms 743 onsets 49 F 0.990 xcorr peak 0.64817 lag 56447 underruns 1
+  spessa orig load_ms 1794 onsets 46 F 0.979 xcorr peak -0.22878 lag 113785 underruns 32
+  spessa rerun load_ms 1416 onsets 46 F 0.979 xcorr peak -0.22906 lag 96889 underruns 33
+  jssynth orig load_ms 2176 onsets 46 F 0.979 xcorr peak 0.99908 lag 96640 underruns 47
+  jssynth rerun load_ms 1255 onsets 46 F 0.979 xcorr peak 0.99855 lag 56064 underruns 44
+== stretch
+  S1_element_0p75_pp1 orig len 40.272 span 35.8954 peak 0.891 sha 25768da7c92345a7
+  S1_element_0p75_pp1 rerun len 40.260 span 35.8954 peak 0.891 sha 9235b7e85aaacbf1
+   page orig processing_ms 39893 out samples 1776000
+   page rerun processing_ms 39745 out samples 1775488
+  S1_soundtouch_0p5 orig len 59.258 span 53.9211 peak 0.891 sha e72df8e62cf0056f
+  S1_soundtouch_0p5 rerun len 59.258 span 53.9211 peak 0.891 sha e72df8e62cf0056f
+   page orig processing_ms 195 out samples 2613260
+   page rerun processing_ms 283 out samples 2613260
+  S1_rubberband_0p5 orig len 59.667 span 53.8674 peak 0.855 sha 16da4027484efedb
+  S1_rubberband_0p5 rerun len 59.667 span 53.8674 peak 0.855 sha 16da4027484efedb
+   page orig processing_ms 2959 out samples 2631300
+   page rerun processing_ms 3761 out samples 2631300
+  S1_signalsmith_0p5 orig len 60.667 span 53.9963 peak 1.105 sha c570dcbec3f2437b
+  S1_signalsmith_0p5 rerun len 60.667 span 53.9963 peak 1.105 sha c570dcbec3f2437b
+   page orig processing_ms 2112 out samples 2675400
+   page rerun processing_ms 2439 out samples 2675400
+== alphaTab
+  export: onsets 52 -> 52 dev stats same: True load_ms 377 -> 405 render ms 196 -> 189
+    S2n_alphatab_metronome_only.wav sha orig d813268d7657a512 rerun d813268d7657a512
+    S2n_alphatab_guitar_no_metronome.wav sha orig 8360d96391767550 rerun 8360d96391767550
+  count-in: clicks 15 -> 15 intervals [535.51, 535.51, 535.51, 552.925, 535.51, 535.51, 535.51, 535.51, 535.51, 535.51, 535.51, 536.961, 535.51, 550.023] -> [535.51, 535.51, 535.51, 552.925, 535.51, 535.51, 535.51, 535.51, 535.51, 535.51, 535.51, 536.961, 535.51, 535.51] first after play ms 8.707482993197278 -> 11.609977324263038 taps 3 -> 3
+  external: calls [['seekTo', 0.5580357142857143], ['play', 595.7200000002049], ['seekTo', 20000], ['seekTo', 20892.857142857145], ['pause', 12101.649999999907]] -> [['seekTo', 0.5580357142857143], ['play', 90.89500000048429], ['seekTo', 20000], ['seekTo', 20892.857142857145], ['pause', 11601.839999999851]]
+            events 661 -> 695 checked 504 -> 562 max_abs 0 -> 0
+== Basic Pitch
+  ort-t1 pydefault n 64 -> 64 start/end/pitch identical: True
+  ort-t1 readme n 115 -> 115 start/end/pitch identical: True
+  tfjs-cpu pydefault n 64 -> 64 start/end/pitch identical: True
+  tfjs-cpu readme n 115 -> 115 start/end/pitch identical: True
+  bp_ort_t1_S1.json model_load_ms 1928 -> 1226 inference_ms 7860 -> 4404 error None -> None threads after 1 -> 1
+  bp_tfjs_cpu_S1.json model_load_ms 55 -> 62 inference_ms 103109 -> 72312 error None -> None threads after None -> None
+  bp_tfjs_wasm_S1.json model_load_ms 53 -> 74 inference_ms 0 -> 0 error Unknown dtype undefined -> Unknown dtype undefined threads after None -> None
+== essentia.js
+  S3 rhythm same values: True ms 2155 -> 1160
+  S3 key same values: True ms 69 -> 77
+  S3 tonal same values: True ms 148 -> 193
+    S3_beats.txt identical: True
+    S3_bpm.txt identical: True
+    S3_key.txt identical: True
+    S3_chords.lab identical: True
+  S1 rhythm same values: True ms 3104 -> 1785
+  S1 key same values: True ms 202 -> 77
+  S1 melodia same values: True ms 6870 -> 3953
+    S1_beats.txt identical: True
+    S1_bpm.txt identical: True
+    S1_key.txt identical: True
+    S1_pitchmelodia.csv identical: True
+== Mediabunny decode mp4
+  codec avc -> avc
+  frames_decoded 540 -> 540
+  y_plane_identical_to_ffmpeg_same_index 540 -> 540
+  getSample_matches_expected 6 -> 6
+  getSample frames same: True decode_only_ms 1079 -> 809
+== MediaPipe R3c CPU 150
+  hands {'0': 0, '1': 0, '2': 150} -> {'0': 0, '1': 0, '2': 150} ms/frame mean 148.1 -> 192.7
+  frames compared 150 largest landmark difference 0.0000 handedness same in 150 of 150
+  external requests (rerun): []
+== ffmpeg.wasm st mp4
+  output identical to trial's: True exec_ms 494 -> 516
+== small libraries
+  S1_pitchy.csv identical: True (rerun file present: True)
+  R1b_pitchy.csv identical: True (rerun file present: True)
+  S3_beatdetector_bpm.txt identical: True (rerun file present: True)
+  S4_beatdetector_grid.txt identical: True (rerun file present: True)
+  R2_beatdetector_bpm.txt identical: True (rerun file present: True)
+  S1_aubio_yinfft.csv identical: True (rerun file present: True)
+  R1b_aubio_yinfft.csv identical: True (rerun file present: True)
+  S1_pitchfinder_yin.csv identical: True (rerun file present: True)
+  S3_aubio_beats.txt identical: True (rerun file present: True)
+  S4_aubio_bpm.txt identical: True (rerun file present: True)
+  R2_aubio_bpm.txt identical: True (rerun file present: True)
+  S3_realtimebpm_bpm.txt identical: True (rerun file present: True)
+  S4_realtimebpm_bpm.txt identical: True (rerun file present: True)
+  R2_realtimebpm_bpm.txt identical: True (rerun file present: True)
+== waveform
+  wavesurfer S4 sampleRate 8000 -> 8000 | peaks S4 scale/length 512 3337 -> 512 3337 | video follow 0 -> 0

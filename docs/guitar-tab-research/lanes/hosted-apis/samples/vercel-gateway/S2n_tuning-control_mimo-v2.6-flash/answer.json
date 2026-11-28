@@ -1,0 +1,14 @@
+{
+ "open_strings_midi": [
+  40,
+  45,
+  50,
+  55,
+  59,
+  64
+ ],
+ "tuning_name": "standard",
+ "offset_cents": 0,
+ "capo_fret": 0,
+ "evidence": "The recording features standard open chord shapes (G, C, D) played in a fingerpicking style. The lowest notes heard correspond to the standard low E string tuned to E2, with no audible transposition that would indicate a capo. The pitch aligns with concert A4 = 440 Hz."
+}

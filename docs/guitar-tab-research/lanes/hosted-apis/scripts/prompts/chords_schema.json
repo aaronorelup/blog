@@ -1,0 +1,11 @@
+{"type": "object",
+ "properties": {
+  "chords": {"type": "array", "items": {"type": "object", "properties": {
+      "start": {"type": "number", "description": "segment start in seconds from the start of the file"},
+      "end": {"type": "number", "description": "segment end in seconds"},
+      "label": {"type": "string", "description": "chord label such as C, Am, G7, F#m, or N for no chord"}},
+      "required": ["start", "end", "label"]}},
+  "tempo_bpm": {"type": "number"},
+  "key": {"type": "string"},
+  "time_signature": {"type": "string"}},
+ "required": ["chords", "tempo_bpm", "key", "time_signature"]}

@@ -1,0 +1,38 @@
+[
+ {
+  "tool": "essentia",
+  "python": "/home/user/gtr/lanes/chords-beats-key/venv-essentia/bin/python",
+  "script": "/home/user/blog/docs/guitar-tab-research/lanes/chords-beats-key/scripts/essentia_run.py",
+  "clips": [
+   "S7flat30",
+   "S2n",
+   "S2s",
+   "S5capo2",
+   "S5dropd",
+   "S6taps",
+   "R1a",
+   "R1b",
+   "R1c",
+   "R2",
+   "R2full"
+  ],
+  "args": [
+   "--tempocnn-dir",
+   "/home/user/gtr/lanes/chords-beats-key/models/essentia_tempocnn"
+  ],
+  "tag": "essentia"
+ },
+ {
+  "tool": "librosa",
+  "python": "/home/user/gtr/lanes/chords-beats-key/venv-librosa/bin/python",
+  "script": "/home/user/blog/docs/guitar-tab-research/lanes/chords-beats-key/scripts/librosa_run.py",
+  "clips": [
+   "R1b",
+   "R1c",
+   "R2",
+   "R2full"
+  ],
+  "args": [],
+  "tag": "librosa"
+ }
+]

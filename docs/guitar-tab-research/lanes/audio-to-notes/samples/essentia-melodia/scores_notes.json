@@ -1,0 +1,306 @@
+{
+ "tool": "essentia-melodia",
+ "kind": "notes",
+ "dir": "/home/user/gtr/lanes/audio-to-notes/out/essentia-melodia/f0",
+ "conf_threshold": null,
+ "results": {
+  "R1b": {
+   "eval_id": "e1036",
+   "args": "notes --truth R1b --est /home/user/gtr/lanes/audio-to-notes/out/essentia-melodia/f0/R1b.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.45283,
+     "recall": 0.685714,
+     "f1": 0.545455,
+     "avg_overlap_ratio": 0.785474,
+     "n_matched": 48
+    },
+    "onset_offset": {
+     "precision": 0.377358,
+     "recall": 0.571429,
+     "f1": 0.454545,
+     "avg_overlap_ratio": 0.826393,
+     "n_matched": 40
+    },
+    "recall_by_voice": {
+     "lead": {
+      "n_truth": 70,
+      "onset_only_matched": 48,
+      "onset_only_recall": 0.685714,
+      "onset_offset_matched": 40,
+      "onset_offset_recall": 0.571429
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 48,
+     "median_s": -0.010242,
+     "mean_s": -0.007832,
+     "mean_abs_s": 0.01749,
+     "p95_abs_s": 0.040633,
+     "max_abs_s": 0.047615
+    }
+   },
+   "counts": {
+    "n_truth": 70,
+    "n_est": 106,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 48,
+    "n_matched_onset_offset": 40
+   }
+  },
+  "S1": {
+   "eval_id": "e1038",
+   "args": "notes --truth S1 --est /home/user/gtr/lanes/audio-to-notes/out/essentia-melodia/f0/S1.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 1.0,
+     "recall": 0.596774,
+     "f1": 0.747475,
+     "avg_overlap_ratio": 0.799263,
+     "n_matched": 37
+    },
+    "onset_offset": {
+     "precision": 0.756757,
+     "recall": 0.451613,
+     "f1": 0.565657,
+     "avg_overlap_ratio": 0.920073,
+     "n_matched": 28
+    },
+    "recall_by_voice": {
+     "melody": {
+      "n_truth": 62,
+      "onset_only_matched": 37,
+      "onset_only_recall": 0.596774,
+      "onset_offset_matched": 28,
+      "onset_offset_recall": 0.451613
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 37,
+     "median_s": 0.009467,
+     "mean_s": 0.009941,
+     "mean_abs_s": 0.009941,
+     "p95_abs_s": 0.019213,
+     "max_abs_s": 0.021067
+    }
+   },
+   "counts": {
+    "n_truth": 62,
+    "n_est": 37,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 37,
+    "n_matched_onset_offset": 28
+   }
+  },
+  "S2n": {
+   "eval_id": "e1040",
+   "args": "notes --truth S2n --est /home/user/gtr/lanes/audio-to-notes/out/essentia-melodia/f0/S2n.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.96875,
+     "recall": 0.344444,
+     "f1": 0.508197,
+     "avg_overlap_ratio": 0.562623,
+     "n_matched": 31
+    },
+    "onset_offset": {
+     "precision": 0.15625,
+     "recall": 0.055556,
+     "f1": 0.081967,
+     "avg_overlap_ratio": 0.854684,
+     "n_matched": 5
+    },
+    "recall_by_voice": {
+     "bass": {
+      "n_truth": 48,
+      "onset_only_matched": 0,
+      "onset_only_recall": 0.0,
+      "onset_offset_matched": 0,
+      "onset_offset_recall": 0.0
+     },
+     "melody": {
+      "n_truth": 42,
+      "onset_only_matched": 31,
+      "onset_only_recall": 0.738095,
+      "onset_offset_matched": 5,
+      "onset_offset_recall": 0.119048
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 31,
+     "median_s": 0.011271,
+     "mean_s": 0.011901,
+     "mean_abs_s": 0.012124,
+     "p95_abs_s": 0.0248,
+     "max_abs_s": 0.026957
+    }
+   },
+   "counts": {
+    "n_truth": 90,
+    "n_est": 32,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 31,
+    "n_matched_onset_offset": 5
+   }
+  },
+  "S2s": {
+   "eval_id": "e1042",
+   "args": "notes --truth S2s --est /home/user/gtr/lanes/audio-to-notes/out/essentia-melodia/f0/S2s.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.69697,
+     "recall": 0.255556,
+     "f1": 0.373984,
+     "avg_overlap_ratio": 0.644765,
+     "n_matched": 23
+    },
+    "onset_offset": {
+     "precision": 0.242424,
+     "recall": 0.088889,
+     "f1": 0.130081,
+     "avg_overlap_ratio": 0.937729,
+     "n_matched": 8
+    },
+    "recall_by_voice": {
+     "bass": {
+      "n_truth": 48,
+      "onset_only_matched": 0,
+      "onset_only_recall": 0.0,
+      "onset_offset_matched": 0,
+      "onset_offset_recall": 0.0
+     },
+     "melody": {
+      "n_truth": 42,
+      "onset_only_matched": 23,
+      "onset_only_recall": 0.547619,
+      "onset_offset_matched": 8,
+      "onset_offset_recall": 0.190476
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 23,
+     "median_s": 0.013743,
+     "mean_s": 0.015514,
+     "mean_abs_s": 0.015514,
+     "p95_abs_s": 0.040153,
+     "max_abs_s": 0.040371
+    }
+   },
+   "counts": {
+    "n_truth": 90,
+    "n_est": 33,
+    "n_truth_left_out": {},
+    "n_matched_onset_only": 23,
+    "n_matched_onset_offset": 8
+   }
+  },
+  "S4": {
+   "eval_id": "e1044",
+   "args": "notes --truth S4 --est /home/user/gtr/lanes/audio-to-notes/out/essentia-melodia/f0/S4.notes.csv --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.482759,
+     "recall": 0.059957,
+     "f1": 0.106667,
+     "avg_overlap_ratio": 0.548504,
+     "n_matched": 28
+    },
+    "onset_offset": {
+     "precision": 0.12069,
+     "recall": 0.014989,
+     "f1": 0.026667,
+     "avg_overlap_ratio": 0.917282,
+     "n_matched": 7
+    },
+    "recall_by_voice": {
+     "bass": {
+      "n_truth": 61,
+      "onset_only_matched": 0,
+      "onset_only_recall": 0.0,
+      "onset_offset_matched": 0,
+      "onset_offset_recall": 0.0
+     },
+     "chord": {
+      "n_truth": 369,
+      "onset_only_matched": 26,
+      "onset_only_recall": 0.070461,
+      "onset_offset_matched": 6,
+      "onset_offset_recall": 0.01626
+     },
+     "melody": {
+      "n_truth": 37,
+      "onset_only_matched": 2,
+      "onset_only_recall": 0.054054,
+      "onset_offset_matched": 1,
+      "onset_offset_recall": 0.027027
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 28,
+     "median_s": 0.021161,
+     "mean_s": 0.017791,
+     "mean_abs_s": 0.022403,
+     "p95_abs_s": 0.040008,
+     "max_abs_s": 0.042366
+    }
+   },
+   "counts": {
+    "n_truth": 467,
+    "n_est": 58,
+    "n_truth_left_out": {
+     "drums": 194
+    },
+    "n_matched_onset_only": 28,
+    "n_matched_onset_offset": 7
+   }
+  },
+  "S4lead": {
+   "eval_id": "e1046",
+   "args": "notes --truth S4 --est /home/user/gtr/lanes/audio-to-notes/out/essentia-melodia/f0/S4lead.notes.csv --voice melody --pitch-unit midi",
+   "metrics": {
+    "onset_only": {
+     "precision": 0.758621,
+     "recall": 0.594595,
+     "f1": 0.666667,
+     "avg_overlap_ratio": 0.725875,
+     "n_matched": 22
+    },
+    "onset_offset": {
+     "precision": 0.586207,
+     "recall": 0.459459,
+     "f1": 0.515152,
+     "avg_overlap_ratio": 0.843646,
+     "n_matched": 17
+    },
+    "recall_by_voice": {
+     "melody": {
+      "n_truth": 37,
+      "onset_only_matched": 22,
+      "onset_only_recall": 0.594595,
+      "onset_offset_matched": 17,
+      "onset_offset_recall": 0.459459
+     }
+    },
+    "onset_timing_of_matched": {
+     "n_pairs": 22,
+     "median_s": 0.01884,
+     "mean_s": 0.020459,
+     "mean_abs_s": 0.020459,
+     "p95_abs_s": 0.032737,
+     "max_abs_s": 0.034252
+    }
+   },
+   "counts": {
+    "n_truth": 37,
+    "n_est": 29,
+    "n_truth_left_out": {
+     "drums": 194,
+     "bass": 61,
+     "chord": 369
+    },
+    "n_matched_onset_only": 22,
+    "n_matched_onset_offset": 17
+   }
+  }
+ }
+}

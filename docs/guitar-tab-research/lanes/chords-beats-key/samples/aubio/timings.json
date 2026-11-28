@@ -1,0 +1,145 @@
+{
+ "S3": {
+  "aubio_tempo_s": 0.797,
+  "tempo_stdout": "121.24 bpm",
+  "tempo_rc": 0,
+  "aubio_beat_s": 0.575,
+  "aubio_beat_n": 40,
+  "beat_rc": 0,
+  "aubiotrack_s": 0.222,
+  "aubiotrack_n": 40,
+  "aubiotrack_rc": 0
+ },
+ "S4": {
+  "aubio_tempo_s": 0.918,
+  "tempo_stdout": "117.09 bpm",
+  "tempo_rc": 0,
+  "aubio_beat_s": 0.641,
+  "aubio_beat_n": 71,
+  "beat_rc": 0,
+  "aubiotrack_s": 0.296,
+  "aubiotrack_n": 71,
+  "aubiotrack_rc": 0
+ },
+ "S7flat30": {
+  "aubio_tempo_s": 0.909,
+  "tempo_stdout": "108.76 bpm",
+  "tempo_rc": 0,
+  "aubio_beat_s": 0.501,
+  "aubio_beat_n": 37,
+  "beat_rc": 0,
+  "aubiotrack_s": 0.114,
+  "aubiotrack_n": 37,
+  "aubiotrack_rc": 0
+ },
+ "S2n": {
+  "aubio_tempo_s": 0.435,
+  "tempo_stdout": "115.35 bpm",
+  "tempo_rc": 0,
+  "aubio_beat_s": 0.637,
+  "aubio_beat_n": 51,
+  "beat_rc": 0,
+  "aubiotrack_s": 0.174,
+  "aubiotrack_n": 51,
+  "aubiotrack_rc": 0
+ },
+ "S2s": {
+  "aubio_tempo_s": 0.458,
+  "tempo_stdout": "115.35 bpm",
+  "tempo_rc": 0,
+  "aubio_beat_s": 0.39,
+  "aubio_beat_n": 52,
+  "beat_rc": 0,
+  "aubiotrack_s": 0.109,
+  "aubiotrack_n": 52,
+  "aubiotrack_rc": 0
+ },
+ "S5capo2": {
+  "aubio_tempo_s": 0.557,
+  "tempo_stdout": "115.33 bpm",
+  "tempo_rc": 0,
+  "aubio_beat_s": 0.348,
+  "aubio_beat_n": 52,
+  "beat_rc": 0,
+  "aubiotrack_s": 0.237,
+  "aubiotrack_n": 52,
+  "aubiotrack_rc": 0
+ },
+ "S5dropd": {
+  "aubio_tempo_s": 0.51,
+  "tempo_stdout": "115.35 bpm",
+  "tempo_rc": 0,
+  "aubio_beat_s": 0.6,
+  "aubio_beat_n": 51,
+  "beat_rc": 0,
+  "aubiotrack_s": 0.151,
+  "aubiotrack_n": 51,
+  "aubiotrack_rc": 0
+ },
+ "S6taps": {
+  "aubio_tempo_s": 0.562,
+  "tempo_stdout": "115.38 bpm",
+  "tempo_rc": 0,
+  "aubio_beat_s": 0.396,
+  "aubio_beat_n": 52,
+  "beat_rc": 0,
+  "aubiotrack_s": 0.15,
+  "aubiotrack_n": 52,
+  "aubiotrack_rc": 0
+ },
+ "R1a": {
+  "aubio_tempo_s": 0.557,
+  "tempo_stdout": "105.59 bpm",
+  "tempo_rc": 0,
+  "aubio_beat_s": 0.735,
+  "aubio_beat_n": 47,
+  "beat_rc": 0,
+  "aubiotrack_s": 0.412,
+  "aubiotrack_n": 47,
+  "aubiotrack_rc": 0
+ },
+ "R1b": {
+  "aubio_tempo_s": 0.661,
+  "tempo_stdout": "155.34 bpm",
+  "tempo_rc": 0,
+  "aubio_beat_s": 0.435,
+  "aubio_beat_n": 65,
+  "beat_rc": 0,
+  "aubiotrack_s": 0.169,
+  "aubiotrack_n": 65,
+  "aubiotrack_rc": 0
+ },
+ "R1c": {
+  "aubio_tempo_s": 0.488,
+  "tempo_stdout": "113.92 bpm",
+  "tempo_rc": 0,
+  "aubio_beat_s": 0.71,
+  "aubio_beat_n": 49,
+  "beat_rc": 0,
+  "aubiotrack_s": 0.247,
+  "aubiotrack_n": 49,
+  "aubiotrack_rc": 0
+ },
+ "R2": {
+  "aubio_tempo_s": 0.629,
+  "tempo_stdout": "147.87 bpm",
+  "tempo_rc": 0,
+  "aubio_beat_s": 0.593,
+  "aubio_beat_n": 85,
+  "beat_rc": 0,
+  "aubiotrack_s": 0.23,
+  "aubiotrack_n": 85,
+  "aubiotrack_rc": 0
+ },
+ "R2full": {
+  "aubio_tempo_s": 1.563,
+  "tempo_stdout": "144.61 bpm",
+  "tempo_rc": 0,
+  "aubio_beat_s": 1.599,
+  "aubio_beat_n": 539,
+  "beat_rc": 0,
+  "aubiotrack_s": 0.868,
+  "aubiotrack_n": 539,
+  "aubiotrack_rc": 0
+ }
+}

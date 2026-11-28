@@ -1,0 +1,670 @@
+{
+ "S5capo2": {
+  "truth_midpoints_s": [
+   3.214,
+   4.821,
+   5.893,
+   6.964
+  ],
+  "rows": [
+   {
+    "tool": "truth",
+    "file": "S5capo2.chords.lab",
+    "first4": [
+     [
+      2.143,
+      4.286,
+      "A:maj"
+     ],
+     [
+      4.286,
+      5.357,
+      "D:maj"
+     ],
+     [
+      5.357,
+      6.429,
+      "A:maj"
+     ],
+     [
+      6.429,
+      7.5,
+      "D:maj"
+     ]
+    ],
+    "at_truth_midpoints": [
+     "A:maj",
+     "D:maj",
+     "A:maj",
+     "D:maj"
+    ]
+   },
+   {
+    "tool": "Chordino (chord-extractor 0.1.3), global tuning",
+    "file": "chordino/S5capo2/chords_chordino.lab",
+    "first4": [
+     [
+      0.464,
+      4.18,
+      "A"
+     ],
+     [
+      4.18,
+      7.616,
+      "D"
+     ],
+     [
+      7.616,
+      8.452,
+      "A"
+     ],
+     [
+      8.452,
+      9.567,
+      "E"
+     ]
+    ],
+    "at_truth_midpoints": [
+     "A",
+     "D",
+     "D",
+     "D"
+    ]
+   },
+   {
+    "tool": "Chordino, local tuning",
+    "file": "chordino/S5capo2/chords_chordino_localtuning.lab",
+    "first4": [
+     [
+      0.464,
+      4.18,
+      "A"
+     ],
+     [
+      4.18,
+      7.616,
+      "D"
+     ],
+     [
+      7.616,
+      8.452,
+      "A"
+     ],
+     [
+      8.452,
+      9.567,
+      "E"
+     ]
+    ],
+    "at_truth_midpoints": [
+     "A",
+     "D",
+     "D",
+     "D"
+    ]
+   },
+   {
+    "tool": "madmom 0.16.1 CNN + CRF",
+    "file": "madmom/S5capo2/chords_cnn.lab",
+    "first4": [
+     [
+      2.2,
+      4.3,
+      "A:maj"
+     ],
+     [
+      4.3,
+      7.7,
+      "D:maj"
+     ],
+     [
+      7.7,
+      11.9,
+      "A:maj"
+     ],
+     [
+      11.9,
+      13.0,
+      "D:maj"
+     ]
+    ],
+    "at_truth_midpoints": [
+     "A:maj",
+     "D:maj",
+     "D:maj",
+     "D:maj"
+    ]
+   },
+   {
+    "tool": "madmom 0.16.1 deep chroma",
+    "file": "madmom/S5capo2/chords_dc.lab",
+    "first4": [
+     [
+      2.2,
+      4.4,
+      "A:maj"
+     ],
+     [
+      4.4,
+      5.6,
+      "D:maj"
+     ],
+     [
+      5.6,
+      6.5,
+      "A:maj"
+     ],
+     [
+      6.5,
+      7.8,
+      "D:maj"
+     ]
+    ],
+    "at_truth_midpoints": [
+     "A:maj",
+     "D:maj",
+     "A:maj",
+     "D:maj"
+    ]
+   },
+   {
+    "tool": "Essentia TonalExtractor (440 Hz)",
+    "file": "essentia/S5capo2/chords_tonal.lab",
+    "first4": [
+     [
+      0.0,
+      1.207,
+      "Am"
+     ],
+     [
+      1.207,
+      1.533,
+      "F#m"
+     ],
+     [
+      1.533,
+      4.226,
+      "A"
+     ],
+     [
+      4.226,
+      4.83,
+      "Bm"
+     ]
+    ],
+    "at_truth_midpoints": [
+     "A",
+     "Bm",
+     "A",
+     "D"
+    ]
+   },
+   {
+    "tool": "autochord 0.1.4",
+    "file": "autochord/S5capo2/chords_autochord.lab",
+    "first4": [
+     [
+      1.95,
+      4.133,
+      "A:maj"
+     ],
+     [
+      4.133,
+      7.43,
+      "D:maj"
+     ],
+     [
+      7.43,
+      11.889,
+      "A:maj"
+     ],
+     [
+      11.889,
+      12.817,
+      "D:maj"
+     ]
+    ],
+    "at_truth_midpoints": [
+     "A:maj",
+     "D:maj",
+     "D:maj",
+     "D:maj"
+    ]
+   },
+   {
+    "tool": "CREMA 0.2.0",
+    "file": "crema/S5capo2/chords_crema.lab",
+    "first4": [
+     [
+      2.136,
+      4.272,
+      "A:maj"
+     ],
+     [
+      4.272,
+      7.43,
+      "D:maj"
+     ],
+     [
+      7.43,
+      21.362,
+      "A:maj"
+     ],
+     [
+      21.362,
+      22.477,
+      "D:maj"
+     ]
+    ],
+    "at_truth_midpoints": [
+     "A:maj",
+     "D:maj",
+     "D:maj",
+     "D:maj"
+    ]
+   },
+   {
+    "tool": "lv-chordia 1.1.0, submission",
+    "file": "lv_chordia/S5capo2/chords_lvchordia_submission.lab",
+    "first4": [
+     [
+      2.11,
+      4.3,
+      "A:maj"
+     ],
+     [
+      4.3,
+      5.41,
+      "D:maj"
+     ],
+     [
+      5.41,
+      6.43,
+      "A:maj"
+     ],
+     [
+      6.43,
+      7.55,
+      "D:maj"
+     ]
+    ],
+    "at_truth_midpoints": [
+     "A:maj",
+     "D:maj",
+     "A:maj",
+     "D:maj"
+    ]
+   },
+   {
+    "tool": "lv-chordia 1.1.0, ismir2017",
+    "file": "lv_chordia/S5capo2/chords_lvchordia_ismir2017.lab",
+    "first4": [
+     [
+      2.11,
+      4.3,
+      "A:maj"
+     ],
+     [
+      4.3,
+      5.41,
+      "D:maj"
+     ],
+     [
+      5.41,
+      6.43,
+      "A:maj"
+     ],
+     [
+      6.43,
+      7.55,
+      "D:maj"
+     ]
+    ],
+    "at_truth_midpoints": [
+     "A:maj",
+     "D:maj",
+     "A:maj",
+     "D:maj"
+    ]
+   },
+   {
+    "tool": "Omnizart 0.5.0 chord",
+    "file": null
+   }
+  ]
+ },
+ "S2n": {
+  "truth_midpoints_s": [
+   3.214,
+   4.821,
+   5.893,
+   6.964
+  ],
+  "rows": [
+   {
+    "tool": "truth",
+    "file": "S2n.chords.lab",
+    "first4": [
+     [
+      2.143,
+      4.286,
+      "G:maj"
+     ],
+     [
+      4.286,
+      5.357,
+      "C:maj"
+     ],
+     [
+      5.357,
+      6.429,
+      "G:maj"
+     ],
+     [
+      6.429,
+      7.5,
+      "C:maj"
+     ]
+    ],
+    "at_truth_midpoints": [
+     "G:maj",
+     "C:maj",
+     "G:maj",
+     "C:maj"
+    ]
+   },
+   {
+    "tool": "Chordino (chord-extractor 0.1.3), global tuning",
+    "file": "chordino/S2n/chords_chordino.lab",
+    "first4": [
+     [
+      0.464,
+      4.272,
+      "G"
+     ],
+     [
+      4.272,
+      5.201,
+      "Am"
+     ],
+     [
+      5.201,
+      6.316,
+      "G"
+     ],
+     [
+      6.316,
+      7.523,
+      "C"
+     ]
+    ],
+    "at_truth_midpoints": [
+     "G",
+     "Am",
+     "G",
+     "C"
+    ]
+   },
+   {
+    "tool": "Chordino, local tuning",
+    "file": "chordino/S2n/chords_chordino_localtuning.lab",
+    "first4": [
+     [
+      0.464,
+      4.272,
+      "G"
+     ],
+     [
+      4.272,
+      5.201,
+      "Am"
+     ],
+     [
+      5.201,
+      6.316,
+      "G"
+     ],
+     [
+      6.316,
+      7.523,
+      "C"
+     ]
+    ],
+    "at_truth_midpoints": [
+     "G",
+     "Am",
+     "G",
+     "C"
+    ]
+   },
+   {
+    "tool": "madmom 0.16.1 CNN + CRF",
+    "file": "madmom/S2n/chords_cnn.lab",
+    "first4": [
+     [
+      2.2,
+      4.3,
+      "G:maj"
+     ],
+     [
+      4.3,
+      5.6,
+      "C:maj"
+     ],
+     [
+      5.6,
+      6.5,
+      "G:maj"
+     ],
+     [
+      6.5,
+      7.6,
+      "C:maj"
+     ]
+    ],
+    "at_truth_midpoints": [
+     "G:maj",
+     "C:maj",
+     "G:maj",
+     "C:maj"
+    ]
+   },
+   {
+    "tool": "madmom 0.16.1 deep chroma",
+    "file": "madmom/S2n/chords_dc.lab",
+    "first4": [
+     [
+      2.1,
+      4.4,
+      "G:maj"
+     ],
+     [
+      4.4,
+      5.5,
+      "C:maj"
+     ],
+     [
+      5.5,
+      6.5,
+      "G:maj"
+     ],
+     [
+      6.5,
+      7.7,
+      "C:maj"
+     ]
+    ],
+    "at_truth_midpoints": [
+     "G:maj",
+     "C:maj",
+     "G:maj",
+     "C:maj"
+    ]
+   },
+   {
+    "tool": "Essentia TonalExtractor (440 Hz)",
+    "file": "essentia/S2n/chords_tonal.lab",
+    "first4": [
+     [
+      0.0,
+      1.207,
+      "Am"
+     ],
+     [
+      1.207,
+      6.269,
+      "G"
+     ],
+     [
+      6.269,
+      7.57,
+      "C"
+     ],
+     [
+      7.57,
+      7.709,
+      "Em"
+     ]
+    ],
+    "at_truth_midpoints": [
+     "G",
+     "G",
+     "G",
+     "C"
+    ]
+   },
+   {
+    "tool": "autochord 0.1.4",
+    "file": "autochord/S2n/chords_autochord.lab",
+    "first4": [
+     [
+      1.904,
+      4.087,
+      "G:maj"
+     ],
+     [
+      4.087,
+      5.248,
+      "C:maj"
+     ],
+     [
+      5.248,
+      5.944,
+      "G:maj"
+     ],
+     [
+      5.944,
+      6.269,
+      "D:maj"
+     ]
+    ],
+    "at_truth_midpoints": [
+     "G:maj",
+     "C:maj",
+     "G:maj",
+     "C:maj"
+    ]
+   },
+   {
+    "tool": "CREMA 0.2.0",
+    "file": "crema/S2n/chords_crema.lab",
+    "first4": [
+     [
+      2.043,
+      4.272,
+      "G:maj"
+     ],
+     [
+      4.272,
+      5.387,
+      "C:maj/5"
+     ],
+     [
+      5.387,
+      11.703,
+      "G:maj"
+     ],
+     [
+      11.703,
+      12.817,
+      "C:maj"
+     ]
+    ],
+    "at_truth_midpoints": [
+     "G:maj",
+     "C:maj/5",
+     "G:maj",
+     "G:maj"
+    ]
+   },
+   {
+    "tool": "lv-chordia 1.1.0, submission",
+    "file": "lv_chordia/S2n/chords_lvchordia_submission.lab",
+    "first4": [
+     [
+      2.11,
+      4.27,
+      "G:maj"
+     ],
+     [
+      4.27,
+      5.41,
+      "C:maj"
+     ],
+     [
+      5.41,
+      6.41,
+      "G:maj"
+     ],
+     [
+      6.41,
+      7.52,
+      "C:maj"
+     ]
+    ],
+    "at_truth_midpoints": [
+     "G:maj",
+     "C:maj",
+     "G:maj",
+     "C:maj"
+    ]
+   },
+   {
+    "tool": "lv-chordia 1.1.0, ismir2017",
+    "file": "lv_chordia/S2n/chords_lvchordia_ismir2017.lab",
+    "first4": [
+     [
+      2.11,
+      4.27,
+      "G:maj"
+     ],
+     [
+      4.27,
+      5.41,
+      "C:maj"
+     ],
+     [
+      5.41,
+      6.41,
+      "G:maj"
+     ],
+     [
+      6.41,
+      7.52,
+      "C:maj"
+     ]
+    ],
+    "at_truth_midpoints": [
+     "G:maj",
+     "C:maj",
+     "G:maj",
+     "C:maj"
+    ]
+   },
+   {
+    "tool": "Omnizart 0.5.0 chord",
+    "file": null
+   }
+  ]
+ }
+}

@@ -1,0 +1,28 @@
+{
+ "space": "mimbres/YourMT3",
+ "runtime_before": {
+  "stage": "RUNNING",
+  "hardware": {
+   "current": "zero-a10g",
+   "requested": "zero-a10g"
+  },
+  "sha": "5e66c1ea173a8186e0d20432b841d3180cc015b5",
+  "lastModified": "2025-01-31T14:38:17.000Z"
+ },
+ "clips": {
+  "S2n": {
+   "input": "/home/user/gtr/inputs/S2n/S2n.wav",
+   "seconds_round_trip": 1.81,
+   "error": "AppError(\"'You have exceeded your ZeroGPU quota (90s requested vs. 79s left). Try again in 6:54:35. Authenticate with a Hugging Face token for more quota - https://huggingface.co/settings/tokens'\")"
+  }
+ },
+ "runtime_after": {
+  "stage": "RUNNING",
+  "hardware": {
+   "current": "zero-a10g",
+   "requested": "zero-a10g"
+  },
+  "sha": "5e66c1ea173a8186e0d20432b841d3180cc015b5",
+  "lastModified": "2025-01-31T14:38:17.000Z"
+ }
+}
